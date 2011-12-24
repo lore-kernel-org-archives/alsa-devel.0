@@ -1,227 +1,150 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH 4/4] ASoC: OMAP: ams-delta: drop .set_bias_level callback
-Date: Sat, 24 Dec 2011 00:12:24 +0100
-Message-ID: <1324681944-19067-5-git-send-email-jkrzyszt@tis.icnet.pl>
-References: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: jz4740: Convert qi_lb60 to use
+	snd_soc_register_card()
+Date: Sat, 24 Dec 2011 19:28:07 +0800
+Message-ID: <1324726087.2925.3.camel@phoenix>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD18124573
+	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2011 12:28:19 +0100 (CET)
+Received: by iaae16 with SMTP id e16so15688487iaa.38
+	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2011 03:28:17 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Ralf Baechle <ralf@linux-mips.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This functionality has just been implemented in the cx20442 codec
-driver, no need to keep it here duplicated.
+Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
-Once done, remove the no longer needed AMS_DELTA_LATCH2_MODEM_NRESET
-symbol from the Amstrad Delta header file, and a call to the
-regulator_toggle() helper function from the old API wrapper found in the
-board file.  While being at it, move that function definition, together
-with the regulator consumer related data structure, down to the modem
-related section for better readability.
-
-Depends on patch 3/4 "ARM: OMAP1: ams-delta: update the modem to use
-regulator API"
-
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- arch/arm/mach-omap1/board-ams-delta.c             |   75 ++++++++++-----------
- arch/arm/plat-omap/include/plat/board-ams-delta.h |    1 -
- sound/soc/omap/ams-delta.c                        |   34 ---------
- 3 files changed, 36 insertions(+), 74 deletions(-)
+ arch/mips/jz4740/board-qi_lb60.c |    6 ++++
+ sound/soc/jz4740/qi_lb60.c       |   57 ++++++++++++++++++--------------------
+ 2 files changed, 33 insertions(+), 30 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index 9b52aeb..945c4db 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -289,41 +289,6 @@ static struct platform_device modem_nreset_device = {
+diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
+index 639e3ce..9a91fe9 100644
+--- a/arch/mips/jz4740/board-qi_lb60.c
++++ b/arch/mips/jz4740/board-qi_lb60.c
+@@ -418,6 +418,11 @@ static struct platform_device qi_lb60_charger_device = {
  	},
  };
  
--struct regulator_consumer_data {
--	struct mutex lock;
--	struct regulator *regulator;
--	bool enabled;
--};
--
--static int regulator_toggle(struct regulator_consumer_data *consumer,
--		bool enable)
--{
--	int err = 0;
--
--	if (!consumer->regulator)
--		return -ENODEV;
--
--	mutex_lock(&consumer->lock);
--	if (IS_ERR(consumer->regulator)) {
--		err = PTR_ERR(consumer->regulator);
--	} else if (enable) {
--		if (!consumer->enabled) {
--			err = regulator_enable(consumer->regulator);
--			consumer->enabled = true;
--		}
--	} else {
--		if (consumer->enabled) {
--			err = regulator_disable(consumer->regulator);
--			consumer->enabled = false;
--		}
--	}
--	mutex_unlock(&consumer->lock);
--
--	return err;
--}
--
--static struct regulator_consumer_data modem_nreset;
--
- void ams_delta_latch_write(int base, int ngpio, u16 mask, u16 value)
- {
- 	int bit = 0;
-@@ -333,7 +298,7 @@ void ams_delta_latch_write(int base, int ngpio, u16 mask, u16 value)
- 		if (!(mask & bitpos))
- 			continue;
- 		if (base + bit == AMS_DELTA_GPIO_PIN_MODEM_NRESET)
--			regulator_toggle(&modem_nreset, (value & bitpos) != 0);
-+			continue;
- 		else
- 			gpio_set_value(base + bit, (value & bitpos) != 0);
- 	}
-@@ -528,6 +493,39 @@ static void __init ams_delta_init(void)
- 	omap_writew(omap_readw(ARM_RSTCT1) | 0x0004, ARM_RSTCT1);
- }
++/* audio */
++static struct platform_device qi_lb60_audio_device = {
++	.name = "qi-lb60-audio",
++	.id = -1,
++};
  
-+struct regulator_consumer_data {
-+	struct mutex lock;
-+	struct regulator *regulator;
-+	bool enabled;
+ static struct platform_device *jz_platform_devices[] __initdata = {
+ 	&jz4740_udc_device,
+@@ -434,6 +439,7 @@ static struct platform_device *jz_platform_devices[] __initdata = {
+ 	&qi_lb60_gpio_keys,
+ 	&qi_lb60_pwm_beeper,
+ 	&qi_lb60_charger_device,
++	&qi_lb60_audio_device,
+ };
+ 
+ static void __init board_gpio_setup(void)
+diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
+index 0097c3b..f152b81a7 100644
+--- a/sound/soc/jz4740/qi_lb60.c
++++ b/sound/soc/jz4740/qi_lb60.c
+@@ -91,56 +91,53 @@ static struct snd_soc_card qi_lb60 = {
+ 	.num_dapm_routes = ARRAY_SIZE(qi_lb60_routes),
+ };
+ 
+-static struct platform_device *qi_lb60_snd_device;
+-
+ static const struct gpio qi_lb60_gpios[] = {
+ 	{ QI_LB60_SND_GPIO, GPIOF_OUT_INIT_LOW, "SND" },
+ 	{ QI_LB60_AMP_GPIO, GPIOF_OUT_INIT_LOW, "AMP" },
+ };
+ 
+-static int __init qi_lb60_init(void)
++static int __devinit qi_lb60_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = &qi_lb60;
+ 	int ret;
+ 
+-	qi_lb60_snd_device = platform_device_alloc("soc-audio", -1);
+-
+-	if (!qi_lb60_snd_device)
+-		return -ENOMEM;
+-
+ 	ret = gpio_request_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+-	if (ret) {
+-		pr_err("qi_lb60 snd: Failed to request gpios: %d\n", ret);
+-		goto err_device_put;
+-	}
++	if (ret)
++		return ret;
+ 
+-	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60);
++	card->dev = &pdev->dev;
+ 
+-	ret = platform_device_add(qi_lb60_snd_device);
++	ret = snd_soc_register_card(card);
+ 	if (ret) {
+-		pr_err("qi_lb60 snd: Failed to add snd soc device: %d\n", ret);
+-		goto err_unset_pdata;
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++			ret);
++		gpio_free_array(qi_lb60_audio_gpios,
++				ARRAY_SIZE(qi_lb60_audio_gpios));
+ 	}
+-
+-	 return 0;
+-
+-err_unset_pdata:
+-	platform_set_drvdata(qi_lb60_snd_device, NULL);
+-/*err_gpio_free_array:*/
+-	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+-err_device_put:
+-	platform_device_put(qi_lb60_snd_device);
+-
+ 	return ret;
+ }
+-module_init(qi_lb60_init);
+ 
+-static void __exit qi_lb60_exit(void)
++static int __devexit qi_lb60_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(qi_lb60_snd_device);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
+ 	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
++	snd_soc_unregister_card(card);
++	return 0;
+ }
+-module_exit(qi_lb60_exit);
++
++static struct platform_driver qi_lb60_driver = {
++	.driver		= {
++		.name	= "qi-lb60-audio",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= qi_lb60_probe,
++	.remove		= __devexit_p(qi_lb60_remove),
 +};
 +
-+static int regulator_toggle(struct regulator_consumer_data *consumer,
-+		bool enable)
-+{
-+	int err = 0;
-+
-+	if (!consumer->regulator)
-+		return -ENODEV;
-+
-+	mutex_lock(&consumer->lock);
-+	if (IS_ERR(consumer->regulator)) {
-+		err = PTR_ERR(consumer->regulator);
-+	} else if (enable) {
-+		if (!consumer->enabled) {
-+			err = regulator_enable(consumer->regulator);
-+			consumer->enabled = true;
-+		}
-+	} else {
-+		if (consumer->enabled) {
-+			err = regulator_disable(consumer->regulator);
-+			consumer->enabled = false;
-+		}
-+	}
-+	mutex_unlock(&consumer->lock);
-+
-+	return err;
-+}
-+
- static void modem_pm(struct uart_port *port, unsigned int state, unsigned old)
- {
- 	struct regulator_consumer_data *consumer = port->private_data;
-@@ -536,6 +534,8 @@ static void modem_pm(struct uart_port *port, unsigned int state, unsigned old)
- 		regulator_toggle(consumer, state == 0);
- }
++module_platform_driver(qi_lb60_driver);
  
-+static struct regulator_consumer_data modem_nreset;
-+
- static struct plat_serial8250_port ams_delta_modem_ports[] = {
- 	{
- 		.membase	= IOMEM(MODEM_VIRT),
-@@ -602,9 +602,6 @@ static int __init late_init(void)
- 	/*
- 	 * Once the modem device is registered, the modem_nreset
- 	 * regulator can be requested on behalf of that device.
--	 * In addition to the modem .pm callback, that regulator
--	 * is still used via the ams_delta_latch_write() wrapper
--	 * by the ASoC driver until updated.
- 	 */
- 	mutex_init(&modem_nreset.lock);
- 	modem_nreset.regulator = regulator_get(&ams_delta_modem_device.dev,
-diff --git a/arch/arm/plat-omap/include/plat/board-ams-delta.h b/arch/arm/plat-omap/include/plat/board-ams-delta.h
-index 027e79e..ad6f865 100644
---- a/arch/arm/plat-omap/include/plat/board-ams-delta.h
-+++ b/arch/arm/plat-omap/include/plat/board-ams-delta.h
-@@ -30,7 +30,6 @@
- 
- #define AMD_DELTA_LATCH2_SCARD_RSTIN	0x0400
- #define AMD_DELTA_LATCH2_SCARD_CMDVCC	0x0800
--#define AMS_DELTA_LATCH2_MODEM_NRESET	0x1000
- #define AMS_DELTA_LATCH2_MODEM_CODEC	0x2000
- 
- #define AMS_DELTA_GPIO_PIN_KEYBRD_DATA	0
-diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
-index be81bc7..d213d04 100644
---- a/sound/soc/omap/ams-delta.c
-+++ b/sound/soc/omap/ams-delta.c
-@@ -426,31 +426,6 @@ static struct snd_soc_ops ams_delta_ops = {
- };
- 
- 
--/* Board specific codec bias level control */
--static int ams_delta_set_bias_level(struct snd_soc_card *card,
--				    struct snd_soc_dapm_context *dapm,
--				    enum snd_soc_bias_level level)
--{
--	struct snd_soc_codec *codec = card->rtd->codec;
--
--	switch (level) {
--	case SND_SOC_BIAS_ON:
--	case SND_SOC_BIAS_PREPARE:
--	case SND_SOC_BIAS_STANDBY:
--		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
--			ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_NRESET,
--						AMS_DELTA_LATCH2_MODEM_NRESET);
--		break;
--	case SND_SOC_BIAS_OFF:
--		if (codec->dapm.bias_level != SND_SOC_BIAS_OFF)
--			ams_delta_latch2_write(AMS_DELTA_LATCH2_MODEM_NRESET,
--						0);
--	}
--	codec->dapm.bias_level = level;
--
--	return 0;
--}
--
- /* Digital mute implemented using modem/CPU multiplexer.
-  * Shares hardware with codec config pulse generation */
- static bool ams_delta_muted = 1;
-@@ -514,9 +489,6 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
- 		ams_delta_ops.shutdown = ams_delta_shutdown;
- 	}
- 
--	/* Set codec bias level */
--	ams_delta_set_bias_level(card, dapm, SND_SOC_BIAS_STANDBY);
--
- 	/* Add hook switch - can be used to control the codec from userspace
- 	 * even if line discipline fails */
- 	ret = snd_soc_jack_new(rtd->codec, "hook_switch",
-@@ -599,7 +571,6 @@ static struct snd_soc_card ams_delta_audio_card = {
- 	.name = "AMS_DELTA",
- 	.dai_link = &ams_delta_dai_link,
- 	.num_links = 1,
--	.set_bias_level = ams_delta_set_bias_level,
- };
- 
- /* Module init/exit */
-@@ -648,11 +619,6 @@ static void __exit ams_delta_module_exit(void)
- 			ARRAY_SIZE(ams_delta_hook_switch_gpios),
- 			ams_delta_hook_switch_gpios);
- 
--	/* Keep modem power on */
--	ams_delta_set_bias_level(&ams_delta_audio_card,
--				 &ams_delta_audio_card.rtd[0].codec->dapm,
--				 SND_SOC_BIAS_STANDBY);
--
- 	platform_device_unregister(cx20442_platform_device);
- 	platform_device_unregister(ams_delta_audio_platform_device);
- }
+ MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+ MODULE_DESCRIPTION("ALSA SoC QI LB60 Audio support");
+ MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:qi-lb60-audio");
 -- 
-1.7.3.4
-
+1.7.5.4
