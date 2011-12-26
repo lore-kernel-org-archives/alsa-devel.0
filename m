@@ -1,19 +1,18 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH 4/4] ASoC: OMAP: ams-delta: drop
-	.set_bias_level callback
-Date: Mon, 26 Dec 2011 13:30:22 +0100
-Message-ID: <201112261330.22783.jkrzyszt@tis.icnet.pl>
-References: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1324681944-19067-5-git-send-email-jkrzyszt@tis.icnet.pl>
-	<20111226110348.GB8722@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 01/10] ASoC: Convert 88pm860x-codec to
+	devm_kzalloc()
+Date: Mon, 26 Dec 2011 20:48:48 +0800
+Message-ID: <1324903728.26543.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D04710382F
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:31:13 +0100 (CET)
-In-Reply-To: <20111226110348.GB8722@opensource.wolfsonmicro.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24FB110386D
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:49:00 +0100 (CET)
+Received: by iaae16 with SMTP id e16so18092152iaa.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:48:59 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 of December 2011 at 12:03:49, Mark Brown wrote:
-> On Sat, Dec 24, 2011 at 12:12:24AM +0100, Janusz Krzysztofik wrote:
-> 
-> > +struct regulator_consumer_data {
-> > +	struct mutex lock;
-> > +	struct regulator *regulator;
-> > +	bool enabled;
-> > +};
-> > +
-> > +static int regulator_toggle(struct regulator_consumer_data *consumer,
-> > +		bool enable)
-> > +{
-> > +	int err = 0;
-> > +
-> > +	if (!consumer->regulator)
-> > +		return -ENODEV;
-> > +
-> > +	mutex_lock(&consumer->lock);
-> > +	if (IS_ERR(consumer->regulator)) {
-> > +		err = PTR_ERR(consumer->regulator);
-> > +	} else if (enable) {
-> > +		if (!consumer->enabled) {
-> > +			err = regulator_enable(consumer->regulator);
-> > +			consumer->enabled = true;
-> > +		}
-> > +	} else {
-> > +		if (consumer->enabled) {
-> > +			err = regulator_disable(consumer->regulator);
-> > +			consumer->enabled = false;
-> > +		}
-> > +	}
-> > +	mutex_unlock(&consumer->lock);
-> > +
-> > +	return err;
-> > +}
-> > +
-> 
-> Why's this code not been dropped and what is it for?
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/88pm860x-codec.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-It is, and will be, used by another regulator consumer, the modem. The 
-device is controlled by the generic serial8250 driver, extended with a 
-custom .pm hook which enables/disables the regulator. The above code, 
-temporarily shared with the ASoC device before updated, is now just 
-moved down the board file where the modem related bits are located (see 
-patch 3/4).
-
-Any hints like that for the codec driver?
-
-Thanks,
-Janusz
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index 99ca53c..9fd3b68 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -1430,7 +1430,8 @@ static int __devinit pm860x_codec_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int i, ret;
+ 
+-	pm860x = kzalloc(sizeof(struct pm860x_priv), GFP_KERNEL);
++	pm860x = devm_kzalloc(&pdev->dev, sizeof(struct pm860x_priv),
++			      GFP_KERNEL);
+ 	if (pm860x == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1459,17 +1460,13 @@ static int __devinit pm860x_codec_probe(struct platform_device *pdev)
+ 
+ out:
+ 	platform_set_drvdata(pdev, NULL);
+-	kfree(pm860x);
+ 	return -EINVAL;
+ }
+ 
+ static int __devexit pm860x_codec_remove(struct platform_device *pdev)
+ {
+-	struct pm860x_priv *pm860x = platform_get_drvdata(pdev);
+-
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	platform_set_drvdata(pdev, NULL);
+-	kfree(pm860x);
+ 	return 0;
+ }
+ 
+-- 
+1.7.5.4
