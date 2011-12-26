@@ -1,18 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2] ASoC: jz4740: Convert qi_lb60 to use
-	snd_soc_register_card()
-Date: Mon, 26 Dec 2011 11:33:00 +0100
-Message-ID: <4EF84D5C.2010908@metafoo.de>
-References: <1324873802.23831.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: cx20442: add bias control over a
+ platform provided regulator
+Date: Mon, 26 Dec 2011 11:02:01 +0000
+Message-ID: <20111226110201.GA8722@opensource.wolfsonmicro.com>
+References: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
+	<1324681944-19067-3-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35343103821
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 11:33:48 +0100 (CET)
-In-Reply-To: <1324873802.23831.1.camel@phoenix>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59916103821
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 12:02:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1324681944-19067-3-git-send-email-jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,66 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Ralf Baechle <ralf@linux-mips.org>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/26/2011 05:30 AM, Axel Lin wrote:
-> Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> v2: fix a typo in v1. 
-> Only compile tested, I appreciate if someone can test it.
+On Sat, Dec 24, 2011 at 12:12:22AM +0100, Janusz Krzysztofik wrote:
 
-Hi,
+> +	case SND_SOC_BIAS_ON:
+> +	case SND_SOC_BIAS_PREPARE:
+> +		if (IS_ERR(cx20442->por.regulator)) {
+> +			err = PTR_ERR(cx20442->por.regulator);
+> +		} else if (!cx20442->por.enabled) {
+> +			err = regulator_enable(cx20442->por.regulator);
+> +			if (!err)
+> +				cx20442->por.enabled = true;
+> +		}
+> +		break;
+> +	case SND_SOC_BIAS_STANDBY:
+> +	case SND_SOC_BIAS_OFF:
+> +		if (IS_ERR(cx20442->por.regulator)) {
+> +			err = PTR_ERR(cx20442->por.regulator);
+> +		} else if (cx20442->por.enabled) {
+> +			err = regulator_disable(cx20442->por.regulator);
+> +			if (!err)
+> +				cx20442->por.enabled = false;
+> +		}
+> +	}
+> +	mutex_unlock(&cx20442->por.lock);
 
-Looks good on first sight. One minor comment inline though. I wont have access
-to the hardware until new year, so I can't test the patch right now.
+You can avoid the mutex and simplify the code by relying on the fact
+that the only possible transitions are:
 
-Thanks,
-- Lars
+   OFF <-> STANDBY <-> PREPARE <-> ON
 
-> 
->  arch/mips/jz4740/board-qi_lb60.c |    6 ++++
->  sound/soc/jz4740/qi_lb60.c       |   56 +++++++++++++++++--------------------
->  2 files changed, 32 insertions(+), 30 deletions(-)
-> 
-> diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
-> index 639e3ce..9a91fe9 100644
-> --- a/arch/mips/jz4740/board-qi_lb60.c
-> +++ b/arch/mips/jz4740/board-qi_lb60.c
-> @@ -418,6 +418,11 @@ static struct platform_device qi_lb60_charger_device = {
-> [...]
->  
-> -static void __exit qi_lb60_exit(void)
-> +static int __devexit qi_lb60_remove(struct platform_device *pdev)
->  {
-> -	platform_device_unregister(qi_lb60_snd_device);
-> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +
->  	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
-> +	snd_soc_unregister_card(card);
-
-It's probably better to free the card before the GPIOs since the card uses the
-GPIOs.
-
-> +	return 0;
->  }
-> -module_exit(qi_lb60_exit);
-> +
-> +static struct platform_driver qi_lb60_driver = {
-> +	.driver		= {
-> +		.name	= "qi-lb60-audio",
-> +		.owner	= THIS_MODULE,
-> +	},
-> +	.probe		= qi_lb60_probe,
-> +	.remove		= __devexit_p(qi_lb60_remove),
-> +};
-> +
-> +module_platform_driver(qi_lb60_driver);
->  
->  MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
->  MODULE_DESCRIPTION("ALSA SoC QI LB60 Audio support");
->  MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:qi-lb60-audio");
+which would look a lot more natural - you shouldn't need to remember if
+the regulator is enabled, you should just turn it on in the STANDBY to
+PREPARE transition and turn it off in the ON to PREPARE or PREPARE to
+STANDBY transitions.
