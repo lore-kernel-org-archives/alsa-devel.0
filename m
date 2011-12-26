@@ -1,66 +1,32 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 10/10] ASoC: Convert uda1380 to devm_kzalloc()
-Date: Mon, 26 Dec 2011 20:58:14 +0800
-Message-ID: <1324904294.26543.11.camel@phoenix>
-References: <1324903728.26543.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: OMAP: ams-delta: drop .set_bias_level callback
+Date: Mon, 26 Dec 2011 17:23:50 +0000
+Message-ID: <20111226172349.GK8722@opensource.wolfsonmicro.com>
+References: <201112261330.22783.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 060CD1038F4
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:58:20 +0100 (CET)
-Received: by iaae16 with SMTP id e16so18103547iaa.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:58:20 -0800 (PST)
-In-Reply-To: <1324903728.26543.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <201112261330.22783.jkrzyszt@tis.icnet.pl>
+Sender: linux-omap-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: Tony Lindgren <tony@atomide.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/uda1380.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+On Mon, Dec 26, 2011 at 01:30:22PM +0100, Janusz Krzysztofik wrote:
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 8f734d6..4f1b23d 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -803,7 +803,8 @@ static __devinit int uda1380_i2c_probe(struct i2c_client *i2c,
- 	struct uda1380_priv *uda1380;
- 	int ret;
- 
--	uda1380 = kzalloc(sizeof(struct uda1380_priv), GFP_KERNEL);
-+	uda1380 = devm_kzalloc(&i2c->dev, sizeof(struct uda1380_priv),
-+			       GFP_KERNEL);
- 	if (uda1380 == NULL)
- 		return -ENOMEM;
- 
-@@ -812,15 +813,12 @@ static __devinit int uda1380_i2c_probe(struct i2c_client *i2c,
- 
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_uda1380, uda1380_dai, ARRAY_SIZE(uda1380_dai));
--	if (ret < 0)
--		kfree(uda1380);
- 	return ret;
- }
- 
- static int __devexit uda1380_i2c_remove(struct i2c_client *i2c)
- {
- 	snd_soc_unregister_codec(&i2c->dev);
--	kfree(i2c_get_clientdata(i2c));
- 	return 0;
- }
- 
--- 
-1.7.5.4
+> > Why's this code not been dropped and what is it for?
+
+> It is, and will be, used by another regulator consumer, the modem. The 
+> device is controlled by the generic serial8250 driver, extended with a 
+> custom .pm hook which enables/disables the regulator. The above code, 
+> temporarily shared with the ASoC device before updated, is now just 
+> moved down the board file where the modem related bits are located (see 
+> patch 3/4).
+
+> Any hints like that for the codec driver?
+
+The main thing that looks bad here is that you're keeping track of the
+state of the regulator by hand.  It may be that the upper layers aren't
+reference counting in which case you might need this but it certainly
+looks very suspicious as-is.
