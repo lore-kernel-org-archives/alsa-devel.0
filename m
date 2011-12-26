@@ -1,8 +1,7 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 09/10] ASoC: Convert tlv320aic32x4 to
-	devm_kzalloc()
-Date: Mon, 26 Dec 2011 20:57:24 +0800
-Message-ID: <1324904244.26543.10.camel@phoenix>
+Subject: [PATCH 10/10] ASoC: Convert uda1380 to devm_kzalloc()
+Date: Mon, 26 Dec 2011 20:58:14 +0800
+Message-ID: <1324904294.26543.11.camel@phoenix>
 References: <1324903728.26543.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +9,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AE291038E2
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:57:31 +0100 (CET)
-Received: by iaae16 with SMTP id e16so18102673iaa.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:57:30 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 060CD1038F4
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:58:20 +0100 (CET)
+Received: by iaae16 with SMTP id e16so18103547iaa.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:58:20 -0800 (PST)
 In-Reply-To: <1324903728.26543.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,41 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c |    6 ++----
+ sound/soc/codecs/uda1380.c |    6 ++----
  1 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 81a26e1..eb401ef 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -709,7 +709,8 @@ static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
- 	struct aic32x4_priv *aic32x4;
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 8f734d6..4f1b23d 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -803,7 +803,8 @@ static __devinit int uda1380_i2c_probe(struct i2c_client *i2c,
+ 	struct uda1380_priv *uda1380;
  	int ret;
  
--	aic32x4 = kzalloc(sizeof(struct aic32x4_priv), GFP_KERNEL);
-+	aic32x4 = devm_kzalloc(&i2c->dev, sizeof(struct aic32x4_priv),
+-	uda1380 = kzalloc(sizeof(struct uda1380_priv), GFP_KERNEL);
++	uda1380 = devm_kzalloc(&i2c->dev, sizeof(struct uda1380_priv),
 +			       GFP_KERNEL);
- 	if (aic32x4 == NULL)
+ 	if (uda1380 == NULL)
  		return -ENOMEM;
  
-@@ -728,15 +729,12 @@ static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
+@@ -812,15 +813,12 @@ static __devinit int uda1380_i2c_probe(struct i2c_client *i2c,
  
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_aic32x4, &aic32x4_dai, 1);
+ 	ret =  snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_uda1380, uda1380_dai, ARRAY_SIZE(uda1380_dai));
 -	if (ret < 0)
--		kfree(aic32x4);
+-		kfree(uda1380);
  	return ret;
  }
  
- static __devexit int aic32x4_i2c_remove(struct i2c_client *client)
+ static int __devexit uda1380_i2c_remove(struct i2c_client *i2c)
  {
- 	snd_soc_unregister_codec(&client->dev);
--	kfree(i2c_get_clientdata(client));
+ 	snd_soc_unregister_codec(&i2c->dev);
+-	kfree(i2c_get_clientdata(i2c));
  	return 0;
  }
  
