@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: jz4740: Convert qi_lb60 to use
-	snd_soc_register_card()
-Date: Sat, 24 Dec 2011 19:28:07 +0800
-Message-ID: <1324726087.2925.3.camel@phoenix>
+Subject: [PATCH v2] ASoC: jz4740: Convert qi_lb60 to use
+ snd_soc_register_card()
+Date: Mon, 26 Dec 2011 12:30:02 +0800
+Message-ID: <1324873802.23831.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD18124573
-	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2011 12:28:19 +0100 (CET)
-Received: by iaae16 with SMTP id e16so15688487iaa.38
-	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2011 03:28:17 -0800 (PST)
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B64B24498
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 05:30:16 +0100 (CET)
+Received: by yenr11 with SMTP id r11so2995214yen.38
+	for <alsa-devel@alsa-project.org>; Sun, 25 Dec 2011 20:30:14 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,9 +30,12 @@ Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
+v2: fix a typo in v1. 
+Only compile tested, I appreciate if someone can test it.
+
  arch/mips/jz4740/board-qi_lb60.c |    6 ++++
- sound/soc/jz4740/qi_lb60.c       |   57 ++++++++++++++++++--------------------
- 2 files changed, 33 insertions(+), 30 deletions(-)
+ sound/soc/jz4740/qi_lb60.c       |   56 +++++++++++++++++--------------------
+ 2 files changed, 32 insertions(+), 30 deletions(-)
 
 diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
 index 639e3ce..9a91fe9 100644
@@ -59,10 +62,10 @@ index 639e3ce..9a91fe9 100644
  
  static void __init board_gpio_setup(void)
 diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
-index 0097c3b..f152b81a7 100644
+index 0097c3b..b29aa55 100644
 --- a/sound/soc/jz4740/qi_lb60.c
 +++ b/sound/soc/jz4740/qi_lb60.c
-@@ -91,56 +91,53 @@ static struct snd_soc_card qi_lb60 = {
+@@ -91,56 +91,52 @@ static struct snd_soc_card qi_lb60 = {
  	.num_dapm_routes = ARRAY_SIZE(qi_lb60_routes),
  };
  
@@ -102,8 +105,7 @@ index 0097c3b..f152b81a7 100644
 -		goto err_unset_pdata;
 +		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
 +			ret);
-+		gpio_free_array(qi_lb60_audio_gpios,
-+				ARRAY_SIZE(qi_lb60_audio_gpios));
++		gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
  	}
 -
 -	 return 0;
