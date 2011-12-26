@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: cx20442: add bias control over a
- platform provided regulator
-Date: Mon, 26 Dec 2011 11:02:01 +0000
-Message-ID: <20111226110201.GA8722@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: OMAP: ams-delta: drop
+	.set_bias_level callback
+Date: Mon, 26 Dec 2011 11:03:49 +0000
+Message-ID: <20111226110348.GB8722@opensource.wolfsonmicro.com>
 References: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1324681944-19067-3-git-send-email-jkrzyszt@tis.icnet.pl>
+	<1324681944-19067-5-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59916103821
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 12:02:09 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27DC910382F
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 12:03:52 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1324681944-19067-3-git-send-email-jkrzyszt@tis.icnet.pl>
+In-Reply-To: <1324681944-19067-5-git-send-email-jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +27,40 @@ To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 24, 2011 at 12:12:22AM +0100, Janusz Krzysztofik wrote:
+On Sat, Dec 24, 2011 at 12:12:24AM +0100, Janusz Krzysztofik wrote:
 
-> +	case SND_SOC_BIAS_ON:
-> +	case SND_SOC_BIAS_PREPARE:
-> +		if (IS_ERR(cx20442->por.regulator)) {
-> +			err = PTR_ERR(cx20442->por.regulator);
-> +		} else if (!cx20442->por.enabled) {
-> +			err = regulator_enable(cx20442->por.regulator);
-> +			if (!err)
-> +				cx20442->por.enabled = true;
+> +struct regulator_consumer_data {
+> +	struct mutex lock;
+> +	struct regulator *regulator;
+> +	bool enabled;
+> +};
+> +
+> +static int regulator_toggle(struct regulator_consumer_data *consumer,
+> +		bool enable)
+> +{
+> +	int err = 0;
+> +
+> +	if (!consumer->regulator)
+> +		return -ENODEV;
+> +
+> +	mutex_lock(&consumer->lock);
+> +	if (IS_ERR(consumer->regulator)) {
+> +		err = PTR_ERR(consumer->regulator);
+> +	} else if (enable) {
+> +		if (!consumer->enabled) {
+> +			err = regulator_enable(consumer->regulator);
+> +			consumer->enabled = true;
 > +		}
-> +		break;
-> +	case SND_SOC_BIAS_STANDBY:
-> +	case SND_SOC_BIAS_OFF:
-> +		if (IS_ERR(cx20442->por.regulator)) {
-> +			err = PTR_ERR(cx20442->por.regulator);
-> +		} else if (cx20442->por.enabled) {
-> +			err = regulator_disable(cx20442->por.regulator);
-> +			if (!err)
-> +				cx20442->por.enabled = false;
+> +	} else {
+> +		if (consumer->enabled) {
+> +			err = regulator_disable(consumer->regulator);
+> +			consumer->enabled = false;
 > +		}
 > +	}
-> +	mutex_unlock(&cx20442->por.lock);
+> +	mutex_unlock(&consumer->lock);
+> +
+> +	return err;
+> +}
+> +
 
-You can avoid the mutex and simplify the code by relying on the fact
-that the only possible transitions are:
-
-   OFF <-> STANDBY <-> PREPARE <-> ON
-
-which would look a lot more natural - you shouldn't need to remember if
-the regulator is enabled, you should just turn it on in the STANDBY to
-PREPARE transition and turn it off in the ON to PREPARE or PREPARE to
-STANDBY transitions.
+Why's this code not been dropped and what is it for?
