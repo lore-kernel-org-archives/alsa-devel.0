@@ -1,19 +1,26 @@
 From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Capture from 3+ cards connected to a USB hub -
- distorted samples
-Date: Mon, 26 Dec 2011 20:48:44 +0100
-Message-ID: <4EF8CF9C.4040007@ivitera.com>
-References: <4EE29877.2050804@ivitera.com>
-	<4EE89434.9040609@ivitera.com>	<4EE896F2.9090806@perex.cz>
-	<4EEE4A58.90709@ivitera.com>
+Subject: Period time/size in adaptive USB - alignment to
+	nrpacks?
+Date: Mon, 26 Dec 2011 21:07:23 +0100
+Message-ID: <4EF8D3FB.8090109@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 3A059243B0
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 20:49:05 +0100 (CET)
-In-Reply-To: <4EEE4A58.90709@ivitera.com>
+	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id A4BE1243CC
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:07:29 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by cable.insite.cz (Postfix) with ESMTP id A0F2DA1A40B18
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:07:28 +0100 (CET)
+Received: from cable.insite.cz ([84.242.75.189])
+	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Sm1GsY8Cfy1e for <alsa-devel@alsa-project.org>;
+	Mon, 26 Dec 2011 21:07:23 +0100 (CET)
+Received: from [192.168.105.101] (ip28.insite.cz [81.0.237.28])
+	(Authenticated sender: pavel)
+	by cable.insite.cz (Postfix) with ESMTPSA id A2B43A1A40B07
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:07:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,76 +30,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 18.12.2011 21:17, Pavel Hofman napsal(a):
-> Dne 14.12.2011 13:30, Jaroslav Kysela napsal(a):
->> Date 14.12.2011 13:19, Pavel Hofman wrote:
->>>
->>> Dne 10.12.2011 00:23, Pavel Hofman napsal(a):
->>>> Hi,
->>>>
->>>> I have been informed about the following problem which I was able to
->>>> reproduce afterwards:
->>>>
->>>> * Latest git.alsa-project.org drivers
->>>>
->>>> * USB 2.0 hub, 3 or more USB soundcards (inexpensive USB sticks, USB
->>>> audio v.1 types, async capture, adaptive playback) hooked to the hub,
->>>> identified A, B, C, D.
->>>>
->>>> * NONE of these soundcards is playing back
->>>>
->>>> Now:
->>>>
->>>> * Card A begins microphone capturing (mono 48/16), result OK
->>>>
->>>> * Card B begins capturing (mono 48/16), both results still OK
->>>>
->>>> * As soon as the third card C begins capturing, the signal captured from
->>>>    cards A and B gets distorted. Audacity shows some samples are
->>>> incorrect, distorting the expected sine waveform of the testing signal.
->>>> I can provide screenshots as well as recorded samples, if needed.
->>>>
->>>> * The signal recorded from card C is OK.
->>>>
->>>> BUT
->>>>
->>>> * If any card hooked to the HUB is playing back (even a fourth one D),
->>>> the distortion does not occur. It happens only when there is no playback
->>>> stream going through the hub. Traffic on another USB port has no effect,
->>>> in fact the test signal for the three cards was provided by a
->>>> multichannel USB card hooked to another USB port.
->>>>
->>>> It seems to me as if blocks of samples for each card in the USB frame
->>>> sometimes overlap by a few bits, corrupting the neighbouring card
->>>> samples, or are recovered incorrectly.
->>>>
->>>> I understand I have provided no real data, I am ready to do so plus any
->>>> tests you would consider useful.
->>>>
->>>> Thanks a lot for suggestions of the next debugging steps I should do.
->>>>
->>>
->>> Hi, please may I ask for help? I think we could fix this likely bug.
->>
->> This looks like a USB core issue (lost / unsynced URBs from isochronous
->> transfers). I would try recent linux kernels and/or ask on the USB
->> development list for a help.
-> 
-> Hi Jaroslav,
-> 
-> Thanks a lot for your suggestion. I tested latest stable kernel 3.1.5.
-> The behaviour has somewhat improved (3 cards OK), but still IMO
-> incorrect (the fourth card D distorts captured streams from C and D). I
-> will ask at the usb development list.
-> 
+Hi,
 
-I checked USB communication with wireshark and the reduced data payload
-in URBs for card C and D suggest I am already hitting ceiling of the hub
-throughput. I think the hub support is already correct in the latest kernel.
+I have been analyzing USB URBs in wireshark. Output stream, adaptive
+mode, 16 bits, 48kHz, stereo. Each URB is issued always at nrpacks
+milliseconds. Each URB transfers 48 samples * 2 bytes * 2 channels *
+nrpacks milliseconds of bytes. The last URB of period keeps the same
+pace (nrpacks milliseconds), however holds only the remaining number of
+bytes. This creates ripples in the data stream bitrate, possibly leading
+to increased jitter of the PLL'd clock in the USB receiver.
+
+When period size is aligned to multiples of samplerate/1000 * audio
+frame bytes * nrpacks, all URBs carry constant number of bytes.
+
+I am wondering if for the xx.000 Hz samplerates it made sense to offer
+only these aligned multiples in snd_pcm_hw_params_set_period_time_near.
+
+Thank you for your expert opinion.
 
 Best regards,
 
