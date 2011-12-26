@@ -1,18 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 01/10] ASoC: Convert 88pm860x-codec to
-	devm_kzalloc()
-Date: Mon, 26 Dec 2011 20:48:48 +0800
-Message-ID: <1324903728.26543.1.camel@phoenix>
+Subject: [PATCH 02/10] ASoC: Convert ad1836 to devm_kzalloc()
+Date: Mon, 26 Dec 2011 20:50:02 +0800
+Message-ID: <1324903802.26543.2.camel@phoenix>
+References: <1324903728.26543.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 24FB110386D
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:49:00 +0100 (CET)
-Received: by iaae16 with SMTP id e16so18092152iaa.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:48:59 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 96C2510384C
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:50:09 +0100 (CET)
+Received: by iaae16 with SMTP id e16so18093631iaa.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:50:08 -0800 (PST)
+In-Reply-To: <1324903728.26543.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/88pm860x-codec.c |    7 ++-----
- 1 files changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/codecs/ad1836.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 99ca53c..9fd3b68 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -1430,7 +1430,8 @@ static int __devinit pm860x_codec_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int i, ret;
+diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
+index 919322d..982d201 100644
+--- a/sound/soc/codecs/ad1836.c
++++ b/sound/soc/codecs/ad1836.c
+@@ -341,7 +341,8 @@ static int __devinit ad1836_spi_probe(struct spi_device *spi)
+ 	struct ad1836_priv *ad1836;
+ 	int ret;
  
--	pm860x = kzalloc(sizeof(struct pm860x_priv), GFP_KERNEL);
-+	pm860x = devm_kzalloc(&pdev->dev, sizeof(struct pm860x_priv),
+-	ad1836 = kzalloc(sizeof(struct ad1836_priv), GFP_KERNEL);
++	ad1836 = devm_kzalloc(&spi->dev, sizeof(struct ad1836_priv),
 +			      GFP_KERNEL);
- 	if (pm860x == NULL)
+ 	if (ad1836 == NULL)
  		return -ENOMEM;
  
-@@ -1459,17 +1460,13 @@ static int __devinit pm860x_codec_probe(struct platform_device *pdev)
+@@ -351,17 +352,15 @@ static int __devinit ad1836_spi_probe(struct spi_device *spi)
  
- out:
- 	platform_set_drvdata(pdev, NULL);
--	kfree(pm860x);
- 	return -EINVAL;
+ 	ret = snd_soc_register_codec(&spi->dev,
+ 			&soc_codec_dev_ad1836, &ad183x_dais[ad1836->type], 1);
+-	if (ret < 0)
+-		kfree(ad1836);
+ 	return ret;
  }
  
- static int __devexit pm860x_codec_remove(struct platform_device *pdev)
+ static int __devexit ad1836_spi_remove(struct spi_device *spi)
  {
--	struct pm860x_priv *pm860x = platform_get_drvdata(pdev);
--
- 	snd_soc_unregister_codec(&pdev->dev);
- 	platform_set_drvdata(pdev, NULL);
--	kfree(pm860x);
+ 	snd_soc_unregister_codec(&spi->dev);
+-	kfree(spi_get_drvdata(spi));
  	return 0;
  }
- 
++
+ static const struct spi_device_id ad1836_ids[] = {
+ 	{ "ad1835", AD1835 },
+ 	{ "ad1836", AD1836 },
 -- 
 1.7.5.4
