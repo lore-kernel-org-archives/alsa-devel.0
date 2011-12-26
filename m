@@ -1,26 +1,18 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Period time/size in adaptive USB - alignment to
-	nrpacks?
-Date: Mon, 26 Dec 2011 21:07:23 +0100
-Message-ID: <4EF8D3FB.8090109@ivitera.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH 4/4] ASoC: OMAP: ams-delta: drop
+	.set_bias_level callback
+Date: Mon, 26 Dec 2011 21:43:23 +0100
+Message-ID: <201112262143.23704.jkrzyszt@tis.icnet.pl>
+References: <201112261330.22783.jkrzyszt@tis.icnet.pl>
+	<20111226172349.GK8722@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id A4BE1243CC
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:07:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by cable.insite.cz (Postfix) with ESMTP id A0F2DA1A40B18
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:07:28 +0100 (CET)
-Received: from cable.insite.cz ([84.242.75.189])
-	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Sm1GsY8Cfy1e for <alsa-devel@alsa-project.org>;
-	Mon, 26 Dec 2011 21:07:23 +0100 (CET)
-Received: from [192.168.105.101] (ip28.insite.cz [81.0.237.28])
-	(Authenticated sender: pavel)
-	by cable.insite.cz (Postfix) with ESMTPSA id A2B43A1A40B07
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:07:23 +0100 (CET)
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A192243E8
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:44:38 +0100 (CET)
+In-Reply-To: <20111226172349.GK8722@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,27 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Monday 26 of December 2011 at 18:23:50, Mark Brown wrote:
+> On Mon, Dec 26, 2011 at 01:30:22PM +0100, Janusz Krzysztofik wrote:
+> 
+> > > Why's this code not been dropped and what is it for?
+> 
+> > It is, and will be, used by another regulator consumer, the modem. The 
+> > device is controlled by the generic serial8250 driver, extended with a 
+> > custom .pm hook which enables/disables the regulator. The above code, 
+> > temporarily shared with the ASoC device before updated, is now just 
+> > moved down the board file where the modem related bits are located (see 
+> > patch 3/4).
+> 
+> > Any hints like that for the codec driver?
+> 
+> The main thing that looks bad here is that you're keeping track of the
+> state of the regulator by hand.  It may be that the upper layers aren't
+> reference counting in which case you might need this but it certainly
+> looks very suspicious as-is.
 
-I have been analyzing USB URBs in wireshark. Output stream, adaptive
-mode, 16 bits, 48kHz, stereo. Each URB is issued always at nrpacks
-milliseconds. Each URB transfers 48 samples * 2 bytes * 2 channels *
-nrpacks milliseconds of bytes. The last URB of period keeps the same
-pace (nrpacks milliseconds), however holds only the remaining number of
-bytes. This creates ripples in the data stream bitrate, possibly leading
-to increased jitter of the PLL'd clock in the USB receiver.
+OK, I can try to examine how the serial8250 driver tracks the device 
+power state when calling the .pm hook and if it looks safe to drop that 
+regulator state manual tracking.
 
-When period size is aligned to multiples of samplerate/1000 * audio
-frame bytes * nrpacks, all URBs carry constant number of bytes.
-
-I am wondering if for the xx.000 Hz samplerates it made sense to offer
-only these aligned multiples in snd_pcm_hw_params_set_period_time_near.
-
-Thank you for your expert opinion.
-
-Best regards,
-
-Pavel.
+Thanks,
+Janusz
