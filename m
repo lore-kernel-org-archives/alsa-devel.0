@@ -1,7 +1,7 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 04/10] ASoC: Convert adau1373 to devm_kzalloc()
-Date: Mon, 26 Dec 2011 20:52:13 +0800
-Message-ID: <1324903933.26543.5.camel@phoenix>
+Subject: [PATCH 05/10] ASoC: Convert adau1701 to devm_kzalloc()
+Date: Mon, 26 Dec 2011 20:53:09 +0800
+Message-ID: <1324903989.26543.6.camel@phoenix>
 References: <1324903728.26543.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,10 +9,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4897103894
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:52:19 +0100 (CET)
-Received: by iaae16 with SMTP id e16so18096351iaa.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:52:19 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id DD4A11038AF
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 13:53:15 +0100 (CET)
+Received: by iaae16 with SMTP id e16so18097619iaa.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 04:53:15 -0800 (PST)
 In-Reply-To: <1324903728.26543.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,36 +29,35 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/adau1373.c |    6 +-----
+ sound/soc/codecs/adau1701.c |    6 +-----
  1 files changed, 1 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 637b114..971ba45 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -1360,7 +1360,7 @@ static int __devinit adau1373_i2c_probe(struct i2c_client *client,
- 	struct adau1373 *adau1373;
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index 6a6af56..6b325ea 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -496,23 +496,19 @@ static __devinit int adau1701_i2c_probe(struct i2c_client *client,
+ 	struct adau1701 *adau1701;
  	int ret;
  
--	adau1373 = kzalloc(sizeof(*adau1373), GFP_KERNEL);
-+	adau1373 = devm_kzalloc(&client->dev, sizeof(*adau1373), GFP_KERNEL);
- 	if (!adau1373)
+-	adau1701 = kzalloc(sizeof(*adau1701), GFP_KERNEL);
++	adau1701 = devm_kzalloc(&client->dev, sizeof(*adau1701), GFP_KERNEL);
+ 	if (!adau1701)
  		return -ENOMEM;
  
-@@ -1368,16 +1368,12 @@ static int __devinit adau1373_i2c_probe(struct i2c_client *client,
- 
- 	ret = snd_soc_register_codec(&client->dev, &adau1373_codec_driver,
- 			adau1373_dai_driver, ARRAY_SIZE(adau1373_dai_driver));
+ 	i2c_set_clientdata(client, adau1701);
+ 	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
+ 			&adau1701_dai, 1);
 -	if (ret < 0)
--		kfree(adau1373);
+-		kfree(adau1701);
 -
  	return ret;
  }
  
- static int __devexit adau1373_i2c_remove(struct i2c_client *client)
+ static __devexit int adau1701_i2c_remove(struct i2c_client *client)
  {
  	snd_soc_unregister_codec(&client->dev);
--	kfree(dev_get_drvdata(&client->dev));
+-	kfree(i2c_get_clientdata(client));
  	return 0;
  }
  
