@@ -1,18 +1,18 @@
-From: Sangsu Park <sangsu@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: Allocate PCM operations dynamically
  to support multiple DAIs
-Date: Tue, 27 Dec 2011 17:06:56 +0900
-Message-ID: <CANh+=Y-xM6hq6N1umMxR4PATBj-OmKkfHoSpnzR5q2kjt2b79g@mail.gmail.com>
+Date: Tue, 27 Dec 2011 10:34:02 +0000
+Message-ID: <20111227103401.GB2870@opensource.wolfsonmicro.com>
+References: <CANh+=Y8HVjkChnMQLzHmGbpbxRu3wxqbUDp2SQ3SpQhpC-0oug@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9390024344
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 09:06:58 +0100 (CET)
-Received: by yenr11 with SMTP id r11so3273275yen.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 00:06:56 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 731152465C
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 11:34:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CANh+=Y8HVjkChnMQLzHmGbpbxRu3wxqbUDp2SQ3SpQhpC-0oug@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de
-Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, sangsu4u.park@samsung.com
+To: Sangsu Park <sangsu@gmail.com>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lrg@ti.com, sangsu4u.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-> This looks wrong. It will probably cause regression for all non ASoC sound
-> card drivers.
->
-> The issue this patch addresses came up before and I think the conclusion was
-> that it is best to embed the snd_pcm_ops struct into the snd_soc_pcm_runtime
-> struct.
+On Tue, Dec 27, 2011 at 04:49:46PM +0900, Sangsu Park wrote:
+> > On Fri, Dec 23, 2011 at 10:37:51AM +0900, Sangbeom Kim wrote:
 
-Hi, I'm Sangsu Park. (sangsu4u.park@samsung.com)
-I'm using gmail because of company's firewall problems...
+> +       struct snd_pcm_ops *soc_pcm_ops = platform->driver->ops;
+>         struct snd_pcm *pcm;
+>         char new_name[64];
+>         int ret = 0, playback = 0, capture = 0;
+> 
+>         if (playback)
+> -               snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &soc_pcm_ops);
+> +               snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, soc_pcm_ops);
+> 
+>         if (capture)
+> -               snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
+> +               snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, soc_pcm_ops);
 
-I agree you, So I've changed some code like follows.
-If you like that, I'll make patch version 2nd using that.
+> But, it seems to make mutex dead lock.
+> When starting playback, it tells some messages.
 
-//------------------------------------------------------------------------------
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 42ad2db..d1468aa 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -918,6 +918,9 @@ static void soc_remove_dai_link(struct
-snd_soc_card *card, int num, int order)
-                list_del(&cpu_dai->card_list);
-                module_put(cpu_dai->dev->driver->owner);
-        }
-+
-+       /* free the ops memory */
-+       if (rtd->ops) kfree(rtd->ops);
- }
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 8aa7cec..4eb793b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -641,22 +645,23 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
-        INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
-        rtd->pcm = pcm;
-+       rtd->ops = soc_pcm_ops;
-        pcm->private_data = rtd;
-        if (platform->driver->ops) {
-------------------------------------------------------------------------------//
-
-Thanks.
+We still need to use the indirections in the SoC ops in the same way as
+we do at present so that the DAI drivers and DAPM get called as well.
