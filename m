@@ -1,21 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: cx20442: add bias control over a
- platform provided regulator
-Date: Tue, 27 Dec 2011 17:26:00 +0000
-Message-ID: <20111227172559.GB22970@opensource.wolfsonmicro.com>
-References: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1324681944-19067-3-git-send-email-jkrzyszt@tis.icnet.pl>
-	<20111226110201.GA8722@opensource.wolfsonmicro.com>
-	<201112271516.09114.jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH 3/3 v2] sound/soc/lapis: add platform
+ driver for ML7213 IOH I2S
+Date: Tue, 27 Dec 2011 17:33:27 +0000
+Message-ID: <20111227173326.GC22970@opensource.wolfsonmicro.com>
+References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com>
+	<1324349144-12784-3-git-send-email-tomoya.rohm@gmail.com>
+	<20111220132314.GQ2866@opensource.wolfsonmicro.com>
+	<CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
+	<20111222005816.GB27144@opensource.wolfsonmicro.com>
+	<CANKRQnjCTAX02wJt7StjB0rXkg3Q6bPBRYCbkgq6vS5NFd97Fg@mail.gmail.com>
+	<20111222103946.GA4546@opensource.wolfsonmicro.com>
+	<CANKRQng+H4NxaSLpZpYOCT-CdovxbToT-waz0JNMFT2AcD_gvA@mail.gmail.com>
+	<20111226121207.GF8722@opensource.wolfsonmicro.com>
+	<CANKRQnhJhpwhGywGz=r0tVF0k+eWb4vrGkdVD9NdzRFNo9PNtA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BCE322412D
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 18:26:04 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DF8AD2414D
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 18:33:31 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <201112271516.09114.jkrzyszt@tis.icnet.pl>
+In-Reply-To: <CANKRQnhJhpwhGywGz=r0tVF0k+eWb4vrGkdVD9NdzRFNo9PNtA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +31,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 27, 2011 at 03:16:08PM +0100, Janusz Krzysztofik wrote:
-> On Monday 26 of December 2011 at 12:02:01, Mark Brown wrote:
+On Tue, Dec 27, 2011 at 10:25:25AM +0900, Tomoya MORINAGA wrote:
+> 2011/12/26 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-> > which would look a lot more natural - you shouldn't need to remember if
-> > the regulator is enabled, you should just turn it on in the STANDBY to
-> > PREPARE transition and turn it off in the ON to PREPARE or PREPARE to
-> > STANDBY transitions.
+> > So you're just talking about standard underflows if the application
+> > can't keep up?
 
-> Can I assume STANDBY or OFF at the time the codec .remove method is 
-> called? If not, is there a helper function available which can be called 
-> in order to perform all those ON -> PREPARE -> STANDBY [-> OFF] transitions before calling regulator_put()?
+> No. not only underflow but overflow.
 
-It'll be in STANDBY or OFF depending on if the device sets
-idle_bias_off.
+Same difference.
+
+> > There's *no* reason for your driver to do anything about
+> > this, it's a really basic thing that affects all audio hardware. =A0Just
+> > write a driver for the hardware.
+
+> In case driver layer doesn't have the function,
+> which part works for the under/overflow ? Application ? or nothing ?
+
+Your driver has to accurately describe what the hardware supports and
+then the application layer is responsible for making sure it keeps up
+with things.
