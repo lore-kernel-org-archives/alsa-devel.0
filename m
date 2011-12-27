@@ -1,18 +1,27 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH 4/4] ASoC: OMAP: ams-delta: drop
-	.set_bias_level callback
-Date: Mon, 26 Dec 2011 21:43:23 +0100
-Message-ID: <201112262143.23704.jkrzyszt@tis.icnet.pl>
-References: <201112261330.22783.jkrzyszt@tis.icnet.pl>
-	<20111226172349.GK8722@opensource.wolfsonmicro.com>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH 3/3 v2] sound/soc/lapis: add platform
+ driver for ML7213 IOH I2S
+Date: Tue, 27 Dec 2011 10:25:25 +0900
+Message-ID: <CANKRQnhJhpwhGywGz=r0tVF0k+eWb4vrGkdVD9NdzRFNo9PNtA@mail.gmail.com>
+References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com>
+	<1324349144-12784-3-git-send-email-tomoya.rohm@gmail.com>
+	<20111220132314.GQ2866@opensource.wolfsonmicro.com>
+	<CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
+	<20111222005816.GB27144@opensource.wolfsonmicro.com>
+	<CANKRQnjCTAX02wJt7StjB0rXkg3Q6bPBRYCbkgq6vS5NFd97Fg@mail.gmail.com>
+	<20111222103946.GA4546@opensource.wolfsonmicro.com>
+	<CANKRQng+H4NxaSLpZpYOCT-CdovxbToT-waz0JNMFT2AcD_gvA@mail.gmail.com>
+	<20111226121207.GF8722@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A192243E8
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 21:44:38 +0100 (CET)
-In-Reply-To: <20111226172349.GK8722@opensource.wolfsonmicro.com>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id D929024545
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 02:25:27 +0100 (CET)
+Received: by dadv40 with SMTP id v40so894751dad.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 17:25:25 -0800 (PST)
+In-Reply-To: <20111226121207.GF8722@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +32,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 of December 2011 at 18:23:50, Mark Brown wrote:
-> On Mon, Dec 26, 2011 at 01:30:22PM +0100, Janusz Krzysztofik wrote:
-> 
-> > > Why's this code not been dropped and what is it for?
-> 
-> > It is, and will be, used by another regulator consumer, the modem. The 
-> > device is controlled by the generic serial8250 driver, extended with a 
-> > custom .pm hook which enables/disables the regulator. The above code, 
-> > temporarily shared with the ASoC device before updated, is now just 
-> > moved down the board file where the modem related bits are located (see 
-> > patch 3/4).
-> 
-> > Any hints like that for the codec driver?
-> 
-> The main thing that looks bad here is that you're keeping track of the
-> state of the regulator by hand.  It may be that the upper layers aren't
-> reference counting in which case you might need this but it certainly
-> looks very suspicious as-is.
+2011/12/26 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Mon, Dec 26, 2011 at 03:33:29PM +0900, Tomoya MORINAGA wrote:
+>> 2011/12/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>
+>> >> Not sorted but queuing only.
+>> >> In sound/voice control system, queuing is not rare, I think.
+>> >> If necessary, though this method is very common, I can send the method
+>> >> of the queue.
+>
+>> > No, please describe the problem you're trying to fix.
+>
+>> When CPU is heavy load, this buffer is useful.
+>> The heavy load causes delaying receiving processing.
+>> If there is no buffer, stream sound/voice can be broken.
+>> If there is the buffer, it can prevent the broken sound.
+>
+> So you're just talking about standard underflows if the application
+> can't keep up?
+No. not only underflow but overflow.
 
-OK, I can try to examine how the serial8250 driver tracks the device 
-power state when calling the .pm hook and if it looks safe to drop that 
-regulator state manual tracking.
+> There's *no* reason for your driver to do anything about
+> this, it's a really basic thing that affects all audio hardware. =A0Just
+> write a driver for the hardware.
+In case driver layer doesn't have the function,
+which part works for the under/overflow ? Application ? or nothing ?
 
-Thanks,
-Janusz
+tomoya
