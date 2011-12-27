@@ -1,27 +1,31 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH 3/3 v2] sound/soc/lapis: add platform
- driver for ML7213 IOH I2S
-Date: Tue, 27 Dec 2011 10:25:25 +0900
-Message-ID: <CANKRQnhJhpwhGywGz=r0tVF0k+eWb4vrGkdVD9NdzRFNo9PNtA@mail.gmail.com>
-References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com>
-	<1324349144-12784-3-git-send-email-tomoya.rohm@gmail.com>
-	<20111220132314.GQ2866@opensource.wolfsonmicro.com>
-	<CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
-	<20111222005816.GB27144@opensource.wolfsonmicro.com>
-	<CANKRQnjCTAX02wJt7StjB0rXkg3Q6bPBRYCbkgq6vS5NFd97Fg@mail.gmail.com>
-	<20111222103946.GA4546@opensource.wolfsonmicro.com>
-	<CANKRQng+H4NxaSLpZpYOCT-CdovxbToT-waz0JNMFT2AcD_gvA@mail.gmail.com>
-	<20111226121207.GF8722@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC] hda - is_jack_detectable()
+Date: Tue, 27 Dec 2011 09:45:13 +0800
+Message-ID: <CAN8ccibh75HN0Des_4Vx7ozhsZsqqiFM7p2=oWRtQr-iXe0qYQ@mail.gmail.com>
+References: <CAN8cciZ4z5Jx9oHxoSt2K=NoOsOVMFjmaZjxPCXSDD05J5NdVA@mail.gmail.com>
+	<CAN8ccia3XSQ0TxD2CqH7bSv=stf4Z8qbdeo=sOt_NUZ5+GNM=w@mail.gmail.com>
+	<4EB05EA1.1060701@canonical.com> <s5hy5vzknvk.wl%tiwai@suse.de>
+	<CAN8cciZYTq7MCu18nF6ovJa9Km61HUjyBiRfFP3E4gp60i0yhA@mail.gmail.com>
+	<s5h8vntl7ix.wl%tiwai@suse.de>
+	<CAN8cciacfUwDh4+oK7sBnRDhyoh-rLrFxYnnZUHnNiZxn1P3Yw@mail.gmail.com>
+	<s5hy5vplqn2.wl%tiwai@suse.de> <s5hpqh1lopc.wl%tiwai@suse.de>
+	<CAN8ccibAoNQfDNWJ-zE_DGH6mc-ipmmdhBDQW+fjOMT8xHcD+Q@mail.gmail.com>
+	<s5h4ny76naa.wl%tiwai@suse.de>
+	<CAN8cciYT=tvXVzCyMjEpf=FKMA0OqTvqxtgEkEPJwbGfxH+hBA@mail.gmail.com>
+	<s5hr516lqw8.wl%tiwai@suse.de>
+	<CAN8cciaeA72ku+s1WWC3aJ21sXEV3B=yDDpZF2X7VXK+mUO6VA@mail.gmail.com>
+	<s5hhb0rod01.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id D929024545
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 02:25:27 +0100 (CET)
-Received: by dadv40 with SMTP id v40so894751dad.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 17:25:25 -0800 (PST)
-In-Reply-To: <20111226121207.GF8722@opensource.wolfsonmicro.com>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4CAD2455C
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 02:45:16 +0100 (CET)
+Received: by wibhm4 with SMTP id hm4so4894754wib.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2011 17:45:14 -0800 (PST)
+In-Reply-To: <s5hhb0rod01.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,34 +35,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/26 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Mon, Dec 26, 2011 at 03:33:29PM +0900, Tomoya MORINAGA wrote:
->> 2011/12/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+2011/12/23, Takashi Iwai <tiwai@suse.de>:
+> At Fri, 23 Dec 2011 10:37:15 +0800,
+> Raymond Yau wrote:
+>>
+>>
+>> How can I add the new hda-jack detect to patch_analog.c ?
+>>
+>> Only ad1988 use  snd_hda_parse_pin_def_config() to parse the pin,
+>> other ad198x codecs are used model since snd_hda_jack_add_ctls()
+>> require those pin info from autocfg
 >
->> >> Not sorted but queuing only.
->> >> In sound/voice control system, queuing is not rare, I think.
->> >> If necessary, though this method is very common, I can send the method
->> >> of the queue.
+> Not necessarily.  You can call snd_hda_jack_add_kctl() and enable the
+> pin-detection via snd_hda_jack_detect_enable() directly.
 >
->> > No, please describe the problem you're trying to fix.
+>> The auto model of ad1988 use init_verbs ad1988_6stack_init which
+>> cannot handle those 3 stack motherboard asus m2n
+>>
+>> What is the reason to call snd_hda_jack_report_sync() at the end of
+>> unsol event handler ?
 >
->> When CPU is heavy load, this buffer is useful.
->> The heavy load causes delaying receiving processing.
->> If there is no buffer, stream sound/voice can be broken.
->> If there is the buffer, it can prevent the broken sound.
+> To notify the jack-detection.
 >
-> So you're just talking about standard underflows if the application
-> can't keep up?
-No. not only underflow but overflow.
 
-> There's *no* reason for your driver to do anything about
-> this, it's a really basic thing that affects all audio hardware. =A0Just
-> write a driver for the hardware.
-In case driver layer doesn't have the function,
-which part works for the under/overflow ? Application ? or nothing ?
 
-tomoya
+It seem that I need to add jack->dirty = 1 in ad1988_unsol_event to
+force snd_hda_jack_detect() to call read_pin_sense() since
+jack->jack_detect is set when calling snd_hda_jack_detect_enable()
+
+Using snd_hda_jack_detect_enable(codec, pin, pin) instead of
+snd_hda_jack_detect_enable(codec, pin, HP_EVENT) simiar to hdmi so
+that all the detectable pins are assigned different tag
+
++static void ad1988_hp_automute(struct hda_codec *codec)
++{
++	int i, present;
++	struct ad198x_spec *spec = codec->spec;
++			
++	present = snd_hda_jack_detect(codec, 0x11);
++	if (spec->independent_hp)
++		return;
++	for (i=0; i < spec->multiout.num_dacs; i++)
++		snd_hda_codec_write(codec, spec->autocfg.line_out_pins[i],
++				0, AC_VERB_SET_AMP_GAIN_MUTE,
++				present ? AMP_OUT_MUTE : AMP_OUT_UNMUTE);		
++	
++	if (spec->autocfg.mono_out_pin)
++		snd_hda_codec_write(codec, spec->autocfg.mono_out_pin,
++			0, AC_VERB_SET_AMP_GAIN_MUTE,
++			present ? AMP_OUT_MUTE : AMP_OUT_UNMUTE);
++
++	for (i=0; i < spec->autocfg.speaker_outs; i++) {
++		snd_hda_codec_write(codec, spec->autocfg.speaker_pins[i],
++			0, AC_VERB_SET_AMP_GAIN_MUTE,
++			present ? AMP_OUT_MUTE : AMP_OUT_UNMUTE);
++	}
++}
++
++static void ad1988_unsol_event(struct hda_codec *codec, unsigned int res)
++{
++	struct hda_jack_tbl *jack = snd_hda_jack_tbl_get_from_tag(codec, res >> 26);
++	struct ad198x_spec *spec = codec->spec;
++	jack->jack_dirty = 1;
++	if (jack->nid == spec->autocfg.hp_pins[0])
++		ad1988_hp_automute(codec);
++	snd_hda_jack_report_sync(codec);
++}
++
++#define check_jack_detect(c, p) if (is_jack_detectable(c, p))
+snd_hda_jack_detect_enable(c, p, p)
++
++void ad1988_auto_init_unsol_event(struct hda_codec *codec)
++{
++	int i;
++	struct ad198x_spec *spec = codec->spec;
++	check_jack_detect(codec, spec->autocfg.hp_pins[0]);
++	for (i=0; i<spec->autocfg.line_outs; i++)
++		check_jack_detect(codec, spec->autocfg.line_out_pins[0]);
++	for (i=0; i<spec->autocfg.num_inputs; i++)
++		check_jack_detect(codec, spec->autocfg.inputs[i].pin);
++	snd_hda_jack_add_kctls(codec, &spec->autocfg);
++	snd_hda_jack_report_sync(codec);
++}
+
+static int ad1988_auto_init(struct hda_codec *codec)
+{
+	ad198x_init(codec);
+	ad1988_auto_init_multi_out(codec);
+	ad1988_auto_init_extra_out(codec);
+	ad1988_auto_init_analog_input(codec);
++	ad1988_auto_init_unsol_event(codec);
+	return 0;
+}
+
+
+
+	codec->patch_ops = ad198x_patch_ops;
+	switch (board_config) {
+	case AD1988_AUTO:
+		codec->patch_ops.init = ad1988_auto_init;
++		codec->patch_ops.unsol_event = ad1988_unsol_event;
+		break;
