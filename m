@@ -1,18 +1,19 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: Driver Soudcard/Midi BCD2000 Behringer
-Date: Tue, 27 Dec 2011 14:59:17 +0100
-Message-ID: <CACTFLANirzU4xFdX6GOXh7+D-eRr5emfueBQnYyNJhqUJixeFg@mail.gmail.com>
-References: <1324950800.13686.YahooMailNeo@web122307.mail.ne1.yahoo.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH 2/4] ASoC: cx20442: add bias control over a
+	platform provided regulator
+Date: Tue, 27 Dec 2011 15:16:08 +0100
+Message-ID: <201112271516.09114.jkrzyszt@tis.icnet.pl>
+References: <1324681944-19067-1-git-send-email-jkrzyszt@tis.icnet.pl>
+	<1324681944-19067-3-git-send-email-jkrzyszt@tis.icnet.pl>
+	<20111226110201.GA8722@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6BB77246E1
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 14:59:21 +0100 (CET)
-Received: by dadv40 with SMTP id v40so1133691dad.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 05:59:17 -0800 (PST)
-In-Reply-To: <1324950800.13686.YahooMailNeo@web122307.mail.ne1.yahoo.com>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4A68246E9
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2011 15:17:25 +0100 (CET)
+In-Reply-To: <20111226110201.GA8722@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: William Martins <wrmartins@ymail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 27, 2011 2:53 AM, "William Martins" <wrmartins@ymail.com> wrote:
->
-> Good evening Messrs. Developers,
-> at times I'm trying to make this device work in linux (Behringer
-BCD2000-), without success, that happens a few days I discovered that the
-manufacturer built the same non-standard midi, so it is not recognized by
-the kernel as a midi device.
+On Monday 26 of December 2011 at 12:02:01, Mark Brown wrote:
+> On Sat, Dec 24, 2011 at 12:12:22AM +0100, Janusz Krzysztofik wrote:
+> 
+> > +	case SND_SOC_BIAS_ON:
+> > +	case SND_SOC_BIAS_PREPARE:
+> > +		if (IS_ERR(cx20442->por.regulator)) {
+> > +			err = PTR_ERR(cx20442->por.regulator);
+> > +		} else if (!cx20442->por.enabled) {
+> > +			err = regulator_enable(cx20442->por.regulator);
+> > +			if (!err)
+> > +				cx20442->por.enabled = true;
+> > +		}
+> > +		break;
+> > +	case SND_SOC_BIAS_STANDBY:
+> > +	case SND_SOC_BIAS_OFF:
+> > +		if (IS_ERR(cx20442->por.regulator)) {
+> > +			err = PTR_ERR(cx20442->por.regulator);
+> > +		} else if (cx20442->por.enabled) {
+> > +			err = regulator_disable(cx20442->por.regulator);
+> > +			if (!err)
+> > +				cx20442->por.enabled = false;
+> > +		}
+> > +	}
+> > +	mutex_unlock(&cx20442->por.lock);
+> 
+> You can avoid the mutex and simplify the code by relying on the fact
+> that the only possible transitions are:
+> 
+>    OFF <-> STANDBY <-> PREPARE <-> ON
+> 
+> which would look a lot more natural - you shouldn't need to remember if
+> the regulator is enabled, you should just turn it on in the STANDBY to
+> PREPARE transition and turn it off in the ON to PREPARE or PREPARE to
+> STANDBY transitions.
 
-Please send us the output of "lsusb -v" with the device plugged in.
+Can I assume STANDBY or OFF at the time the codec .remove method is 
+called? If not, is there a helper function available which can be called 
+in order to perform all those ON -> PREPARE -> STANDBY [-> OFF] transitions before calling regulator_put()?
 
-Daniel
+Thanks,
+Janusz
