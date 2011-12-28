@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: mxs: Add .owner to struct
-	snd_soc_card
-Date: Wed, 28 Dec 2011 17:21:18 +0000
-Message-ID: <20111228172118.GB26400@opensource.wolfsonmicro.com>
-References: <1325073981.3037.1.camel@phoenix>
+Subject: Re: [PATCH] ASoC: Convert sgtl5000 to use
+	devm_kzalloc()
+Date: Wed, 28 Dec 2011 17:22:07 +0000
+Message-ID: <20111228172207.GC26400@opensource.wolfsonmicro.com>
+References: <1325078785-9063-1-git-send-email-festevam@gmail.com>
+	<1325079011-9128-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D55531039C3
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 18:21:20 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 937CB10394D
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 18:22:09 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1325073981.3037.1.camel@phoenix>
+In-Reply-To: <1325079011-9128-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,12 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, axel.lin@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 28, 2011 at 08:06:21PM +0800, Axel Lin wrote:
-> Add missing .owner of struct snd_soc_card. This prevents the module from being
-> removed from underneath its users.
+On Wed, Dec 28, 2011 at 11:30:11AM -0200, Fabio Estevam wrote:
+> Convert sgtl5000 codec driver to use devm_kzalloc().
 
 Applied, thanks.
