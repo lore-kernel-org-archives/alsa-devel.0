@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/2] ASoC: Convert kirkwood-t5325 to use
+Subject: [PATCH 2/2] ASoC: Convert kirkwood-openrd to use
  snd_soc_register_card()
-Date: Wed, 28 Dec 2011 20:30:15 +0800
-Message-ID: <1325075415.3601.1.camel@phoenix>
+Date: Wed, 28 Dec 2011 20:32:42 +0800
+Message-ID: <1325075562.3601.3.camel@phoenix>
+References: <1325075415.3601.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8742210396D
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 13:30:27 +0100 (CET)
-Received: by iaae16 with SMTP id e16so21270628iaa.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 04:30:25 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id E85CA10398A
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 13:32:49 +0100 (CET)
+Received: by iaae16 with SMTP id e16so21273451iaa.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 04:32:49 -0800 (PST)
+In-Reply-To: <1325075415.3601.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,72 +34,65 @@ Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
 I don't have this hardware, I'd appreciate if someone can test this patch.
 Axel
- arch/arm/mach-kirkwood/t5325-setup.c |    6 ++++
- sound/soc/kirkwood/kirkwood-t5325.c  |   47 +++++++++++++++++----------------
- 2 files changed, 30 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm/mach-kirkwood/t5325-setup.c b/arch/arm/mach-kirkwood/t5325-setup.c
-index 966b2b3..f9d2a11 100644
---- a/arch/arm/mach-kirkwood/t5325-setup.c
-+++ b/arch/arm/mach-kirkwood/t5325-setup.c
-@@ -106,6 +106,11 @@ static struct platform_device hp_t5325_button_device = {
- 	}
+ arch/arm/mach-kirkwood/openrd-setup.c |    6 ++++
+ sound/soc/kirkwood/kirkwood-openrd.c  |   46 ++++++++++++++++----------------
+ 2 files changed, 29 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm/mach-kirkwood/openrd-setup.c b/arch/arm/mach-kirkwood/openrd-setup.c
+index 01f8c89..7e99c3f 100644
+--- a/arch/arm/mach-kirkwood/openrd-setup.c
++++ b/arch/arm/mach-kirkwood/openrd-setup.c
+@@ -83,6 +83,11 @@ static struct i2c_board_info i2c_board_info[] __initdata = {
+ 	},
  };
  
-+static struct platform_device hp_t5325_audio_device = {
-+	.name		= "t5325-audio",
++static struct platform_device openrd_client_audio_device = {
++	.name		= "openrd-client-audio",
 +	.id		= -1,
 +};
 +
- static unsigned int hp_t5325_mpp_config[] __initdata = {
- 	MPP0_NF_IO2,
- 	MPP1_SPI_MOSI,
-@@ -179,6 +184,7 @@ static void __init hp_t5325_init(void)
- 	kirkwood_sata_init(&hp_t5325_sata_data);
- 	kirkwood_ehci_init();
- 	platform_device_register(&hp_t5325_button_device);
-+	platform_device_register(&hp_t5325_audio_device);
+ static int __initdata uart1;
  
- 	i2c_register_board_info(0, i2c_board_info, ARRAY_SIZE(i2c_board_info));
- 	kirkwood_audio_init();
-diff --git a/sound/soc/kirkwood/kirkwood-t5325.c b/sound/soc/kirkwood/kirkwood-t5325.c
-index 16b83e5..ce4f408 100644
---- a/sound/soc/kirkwood/kirkwood-t5325.c
-+++ b/sound/soc/kirkwood/kirkwood-t5325.c
-@@ -80,7 +80,6 @@ static struct snd_soc_dai_link t5325_dai[] = {
- },
+ static int __init sd_uart_selection(char *str)
+@@ -172,6 +177,7 @@ static void __init openrd_init(void)
+ 	kirkwood_i2c_init();
+ 
+ 	if (machine_is_openrd_client() || machine_is_openrd_ultimate()) {
++		platform_device_register(&openrd_client_audio_device);
+ 		i2c_register_board_info(0, i2c_board_info,
+ 			ARRAY_SIZE(i2c_board_info));
+ 		kirkwood_audio_init();
+diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/kirkwood-openrd.c
+index 55d2ed3..80bd59c 100644
+--- a/sound/soc/kirkwood/kirkwood-openrd.c
++++ b/sound/soc/kirkwood/kirkwood-openrd.c
+@@ -71,41 +71,41 @@ static struct snd_soc_card openrd_client = {
+ 	.num_links = ARRAY_SIZE(openrd_client_dai),
  };
  
+-static struct platform_device *openrd_client_snd_device;
 -
- static struct snd_soc_card t5325 = {
- 	.name = "t5325",
- 	.owner = THIS_MODULE,
-@@ -93,38 +92,40 @@ static struct snd_soc_card t5325 = {
- 	.num_dapm_routes = ARRAY_SIZE(t5325_route),
- };
- 
--static struct platform_device *t5325_snd_device;
--
--static int __init t5325_init(void)
-+static int __devinit t5325_probe(struct platform_device *pdev)
+-static int __init openrd_client_init(void)
++static int __devinit openrd_probe(struct platform_device *pdev)
  {
-+	struct snd_soc_card *card = &t5325;
++	struct snd_soc_card *card = &openrd_client;
  	int ret;
  
--	if (!machine_is_t5325())
+-	if (!machine_is_openrd_client() && !machine_is_openrd_ultimate())
 -		return 0;
 -
--	t5325_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!t5325_snd_device)
+-	openrd_client_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!openrd_client_snd_device)
 -		return -ENOMEM;
 -
--	platform_set_drvdata(t5325_snd_device,
--			&t5325);
+-	platform_set_drvdata(openrd_client_snd_device,
+-			&openrd_client);
 -
--	ret = platform_device_add(t5325_snd_device);
+-	ret = platform_device_add(openrd_client_snd_device);
 -	if (ret) {
 -		printk(KERN_ERR "%s: platform_device_add failed\n", __func__);
--		platform_device_put(t5325_snd_device);
+-		platform_device_put(openrd_client_snd_device);
 -	}
 +	card->dev = &pdev->dev;
  
@@ -107,33 +102,35 @@ index 16b83e5..ce4f408 100644
 +			ret);
  	return ret;
  }
--module_init(t5325_init);
  
--static void __exit t5325_exit(void)
-+static int __devexit t5325_remove(struct platform_device *pdev)
+-static void __exit openrd_client_exit(void)
++static int __devexit openrd_remove(struct platform_device *pdev)
  {
--	platform_device_unregister(t5325_snd_device);
+-	platform_device_unregister(openrd_client_snd_device);
 +	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
 +	snd_soc_unregister_card(card);
 +	return 0;
  }
--module_exit(t5325_exit);
-+
-+static struct platform_driver t5325_driver = {
+ 
+-module_init(openrd_client_init);
+-module_exit(openrd_client_exit);
++static struct platform_driver openrd_driver = {
 +	.driver		= {
-+		.name	= "t5325-audio",
++		.name	= "openrd-client-audio",
 +		.owner	= THIS_MODULE,
 +	},
-+	.probe		= t5325_probe,
-+	.remove		= __devexit_p(t5325_remove),
++	.probe		= openrd_probe,
++	.remove		= __devexit_p(openrd_remove),
 +};
 +
-+module_platform_driver(t5325_driver);
++module_platform_driver(openrd_driver);
  
+ /* Module information */
  MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
- MODULE_DESCRIPTION("ALSA SoC t5325 audio client");
+ MODULE_DESCRIPTION("ALSA SoC OpenRD Client");
  MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:t5325-audio");
+-MODULE_ALIAS("platform:soc-audio");
++MODULE_ALIAS("platform:openrd-client-audio");
 -- 
 1.7.5.4
