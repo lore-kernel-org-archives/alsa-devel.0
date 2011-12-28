@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: Fix voltage units in
-	dev_err message
-Date: Wed, 28 Dec 2011 17:21:08 +0000
-Message-ID: <20111228172108.GA26400@opensource.wolfsonmicro.com>
-References: <1325073315-5021-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: mxs: Add .owner to struct
+	snd_soc_card
+Date: Wed, 28 Dec 2011 17:21:18 +0000
+Message-ID: <20111228172118.GB26400@opensource.wolfsonmicro.com>
+References: <1325073981.3037.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E281510393B
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 18:21:11 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D55531039C3
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 18:21:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1325073315-5021-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1325073981.3037.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 28, 2011 at 09:55:15AM -0200, Fabio Estevam wrote:
-> vdda, vddio and vddd are voltages expressed in milivolts (mV), so use the
-> proper annotation.
+On Wed, Dec 28, 2011 at 08:06:21PM +0800, Axel Lin wrote:
+> Add missing .owner of struct snd_soc_card. This prevents the module from being
+> removed from underneath its users.
 
 Applied, thanks.
