@@ -1,19 +1,14 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: Convert sgtl5000 to use devm_kzalloc()
-Date: Wed, 28 Dec 2011 11:30:11 -0200
-Message-ID: <1325079011-9128-1-git-send-email-festevam@gmail.com>
-References: <1325078785-9063-1-git-send-email-festevam@gmail.com>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [PATCH] hda_intel: Add Oaktrail identifiers
+Date: Wed, 28 Dec 2011 15:17:26 +0000
+Message-ID: <20111228151715.2032.87840.stgit@bob.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 191C5103996
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 14:30:26 +0100 (CET)
-Received: by yhjj56 with SMTP id j56so7619842yhj.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 05:30:26 -0800 (PST)
-In-Reply-To: <1325078785-9063-1-git-send-email-festevam@gmail.com>
+Received: from lxorguk.ukuu.org.uk (lxorguk.ukuu.org.uk [81.2.110.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C29D103954
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 16:04:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, axel.lin@gmail.com, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Convert sgtl5000 codec driver to use devm_kzalloc().
+From: Li Peng <pengi.li@intel.com>
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Oaktrail has 0x8086, 0x080a - AZX_DRIVER_SCH
+
+Taken from the Meego patches for Oaktrail
+
+Signed-off-by: Li Peng <peng.li@intel.com>
+Signed-off-by: Alan Cox <alan@linux.intel.com>
 ---
-Changes since v1:
-- Fixed typo in codec name
- sound/soc/codecs/sgtl5000.c |   14 +++-----------
- 1 files changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index c189663..32f491d 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1402,7 +1402,8 @@ static __devinit int sgtl5000_i2c_probe(struct i2c_client *client,
- 	struct sgtl5000_priv *sgtl5000;
- 	int ret;
- 
--	sgtl5000 = kzalloc(sizeof(struct sgtl5000_priv), GFP_KERNEL);
-+	sgtl5000 = devm_kzalloc(&client->dev, sizeof(struct sgtl5000_priv),
-+								GFP_KERNEL);
- 	if (!sgtl5000)
- 		return -ENOMEM;
- 
-@@ -1410,22 +1411,13 @@ static __devinit int sgtl5000_i2c_probe(struct i2c_client *client,
- 
- 	ret = snd_soc_register_codec(&client->dev,
- 			&sgtl5000_driver, &sgtl5000_dai, 1);
--	if (ret) {
--		dev_err(&client->dev, "Failed to register codec: %d\n", ret);
--		kfree(sgtl5000);
--		return ret;
--	}
--
--	return 0;
-+	return ret;
- }
- 
- static __devexit int sgtl5000_i2c_remove(struct i2c_client *client)
- {
--	struct sgtl5000_priv *sgtl5000 = i2c_get_clientdata(client);
--
- 	snd_soc_unregister_codec(&client->dev);
- 
--	kfree(sgtl5000);
- 	return 0;
- }
- 
--- 
-1.7.1
+ sound/pci/hda/hda_intel.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index c2f79e6..b339eb5 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2972,6 +2972,9 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+ 	{ PCI_DEVICE(0x8086, 0x811b),
+ 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+ 	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_LPIB }, /* Poulsbo */
++	{ PCI_DEVICE(0x8086, 0x080a),
++	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
++	  AZX_DCAPS_BUFSIZE},
+ 	/* ICH */
+ 	{ PCI_DEVICE(0x8086, 0x2668),
+ 	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
