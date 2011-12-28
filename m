@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/3] ASoC: Use dai_fmt in kirkwood-openrd
+Subject: [PATCH 2/3] ASoC: Use dai_fmt in kirkwood-t5325
 	machine driver
-Date: Wed, 28 Dec 2011 18:58:17 +0800
-Message-ID: <1325069897.2497.1.camel@phoenix>
+Date: Wed, 28 Dec 2011 18:59:30 +0800
+Message-ID: <1325069970.2497.2.camel@phoenix>
+References: <1325069897.2497.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A43012441F
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 11:58:30 +0100 (CET)
-Received: by iaae16 with SMTP id e16so21168453iaa.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 02:58:27 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 964A52441F
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 11:59:37 +0100 (CET)
+Received: by iaae16 with SMTP id e16so21169886iaa.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 02:59:36 -0800 (PST)
+In-Reply-To: <1325069897.2497.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,14 +30,14 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/kirkwood/kirkwood-openrd.c |   14 ++------------
+ sound/soc/kirkwood/kirkwood-t5325.c |   14 ++------------
  1 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/kirkwood-openrd.c
-index 8a5a3dd..55d2ed3 100644
---- a/sound/soc/kirkwood/kirkwood-openrd.c
-+++ b/sound/soc/kirkwood/kirkwood-openrd.c
-@@ -26,18 +26,7 @@ static int openrd_client_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/kirkwood/kirkwood-t5325.c b/sound/soc/kirkwood/kirkwood-t5325.c
+index a8930c7..6e99230 100644
+--- a/sound/soc/kirkwood/kirkwood-t5325.c
++++ b/sound/soc/kirkwood/kirkwood-t5325.c
+@@ -25,18 +25,7 @@ static int t5325_hw_params(struct snd_pcm_substream *substream,
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
@@ -53,15 +55,15 @@ index 8a5a3dd..55d2ed3 100644
 -		return ret;
 +	unsigned int freq;
  
- 	switch (params_rate(params)) {
- 	default:
-@@ -69,6 +58,7 @@ static struct snd_soc_dai_link openrd_client_dai[] = {
+ 	freq = params_rate(params) * 256;
+ 
+@@ -90,6 +79,7 @@ static struct snd_soc_dai_link t5325_dai[] = {
  	.platform_name = "kirkwood-pcm-audio",
- 	.codec_dai_name = "cs42l51-hifi",
- 	.codec_name = "cs42l51-codec.0-004a",
+ 	.codec_dai_name = "alc5621-hifi",
+ 	.codec_name = "alc562x-codec.0-001a",
 +	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &openrd_client_ops,
+ 	.ops = &t5325_ops,
+ 	.init = t5325_dai_init,
  },
- };
 -- 
 1.7.5.4
