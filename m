@@ -1,17 +1,19 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: Convert sgtl500 to use devm_kzalloc()
-Date: Wed, 28 Dec 2011 11:26:25 -0200
-Message-ID: <1325078785-9063-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH] ASoC: Convert sgtl5000 to use devm_kzalloc()
+Date: Wed, 28 Dec 2011 11:30:11 -0200
+Message-ID: <1325079011-9128-1-git-send-email-festevam@gmail.com>
+References: <1325078785-9063-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A9771037F3
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 14:26:41 +0100 (CET)
-Received: by yenr11 with SMTP id r11so3660441yen.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 05:26:39 -0800 (PST)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 191C5103996
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 14:30:26 +0100 (CET)
+Received: by yhjj56 with SMTP id j56so7619842yhj.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 05:30:26 -0800 (PST)
+In-Reply-To: <1325078785-9063-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,10 +27,12 @@ To: alsa-devel@alsa-project.org
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, axel.lin@gmail.com, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Convert sgtl500 codec driver to use devm_kzalloc().
+Convert sgtl5000 codec driver to use devm_kzalloc().
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
+Changes since v1:
+- Fixed typo in codec name
  sound/soc/codecs/sgtl5000.c |   14 +++-----------
  1 files changed, 3 insertions(+), 11 deletions(-)
 
