@@ -1,17 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: mxs: Add .owner to struct snd_soc_card
-Date: Wed, 28 Dec 2011 20:06:21 +0800
-Message-ID: <1325073981.3037.1.camel@phoenix>
+Subject: [PATCH 1/2] ASoC: Convert kirkwood-t5325 to use
+ snd_soc_register_card()
+Date: Wed, 28 Dec 2011 20:30:15 +0800
+Message-ID: <1325075415.3601.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 990BA244F9
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 13:06:36 +0100 (CET)
-Received: by iaae16 with SMTP id e16so21243715iaa.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 04:06:34 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 8742210396D
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 13:30:27 +0100 (CET)
+Received: by iaae16 with SMTP id e16so21270628iaa.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 04:30:25 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +23,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Wolfram Sang <w.sang@pengutronix.de>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: Nicolas Pitre <nico@fluxnic.net>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lennert Buytenhek <kernel@wantstofly.org>, Liam@alsa-project.org, Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIG1pc3NpbmcgLm93bmVyIG9mIHN0cnVjdCBzbmRfc29jX2NhcmQuIFRoaXMgcHJldmVudHMg
-dGhlIG1vZHVsZSBmcm9tIGJlaW5nCnJlbW92ZWQgZnJvbSB1bmRlcm5lYXRoIGl0cyB1c2Vycy4K
-ClNpZ25lZC1vZmYtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVjdHJvbmljcy5kZT4K
-U2lnbmVkLW9mZi1ieTogQXhlbCBMaW4gPGF4ZWwubGluQGdtYWlsLmNvbT4KLS0tCkhpIE1hcmss
-CkkgZm91bmQgTG90aGFyJ3MgcGF0Y2ggaXMgbm90IG1lcmdlZCBub3cuCk5vdCBzdXJlIGlmIHlv
-dSBzdGlsbCBoYXZlIExvdGhhcidzIHBhdGNoLiBJZiBub3QsIHlvdSBjYW4gYXBwbHkgdGhpcyBv
-bmUuCgpSZWdhcmRzLApBeGVsCiBzb3VuZC9zb2MvbXhzL214cy1zZ3RsNTAwMC5jIHwgICAgMSAr
-CiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9zb3VuZC9zb2MvbXhzL214cy1zZ3RsNTAwMC5jIGIvc291bmQvc29jL214cy9teHMt
-c2d0bDUwMDAuYwppbmRleCAyNTkyNzhmLi42MGYwNTJiIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mv
-bXhzL214cy1zZ3RsNTAwMC5jCisrKyBiL3NvdW5kL3NvYy9teHMvbXhzLXNndGw1MDAwLmMKQEAg
-LTEwNSw2ICsxMDUsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgbXhzX3NndGw1
-MDAwX2RhaVtdID0gewogCiBzdGF0aWMgc3RydWN0IHNuZF9zb2NfY2FyZCBteHNfc2d0bDUwMDAg
-PSB7CiAJLm5hbWUJCT0gIm14c19zZ3RsNTAwMCIsCisJLm93bmVyCQk9IFRISVNfTU9EVUxFLAog
-CS5kYWlfbGluawk9IG14c19zZ3RsNTAwMF9kYWksCiAJLm51bV9saW5rcwk9IEFSUkFZX1NJWkUo
-bXhzX3NndGw1MDAwX2RhaSksCiB9OwotLSAKMS43LjUuNAoKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+I don't have this hardware, I'd appreciate if someone can test this patch.
+Axel
+ arch/arm/mach-kirkwood/t5325-setup.c |    6 ++++
+ sound/soc/kirkwood/kirkwood-t5325.c  |   47 +++++++++++++++++----------------
+ 2 files changed, 30 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm/mach-kirkwood/t5325-setup.c b/arch/arm/mach-kirkwood/t5325-setup.c
+index 966b2b3..f9d2a11 100644
+--- a/arch/arm/mach-kirkwood/t5325-setup.c
++++ b/arch/arm/mach-kirkwood/t5325-setup.c
+@@ -106,6 +106,11 @@ static struct platform_device hp_t5325_button_device = {
+ 	}
+ };
+ 
++static struct platform_device hp_t5325_audio_device = {
++	.name		= "t5325-audio",
++	.id		= -1,
++};
++
+ static unsigned int hp_t5325_mpp_config[] __initdata = {
+ 	MPP0_NF_IO2,
+ 	MPP1_SPI_MOSI,
+@@ -179,6 +184,7 @@ static void __init hp_t5325_init(void)
+ 	kirkwood_sata_init(&hp_t5325_sata_data);
+ 	kirkwood_ehci_init();
+ 	platform_device_register(&hp_t5325_button_device);
++	platform_device_register(&hp_t5325_audio_device);
+ 
+ 	i2c_register_board_info(0, i2c_board_info, ARRAY_SIZE(i2c_board_info));
+ 	kirkwood_audio_init();
+diff --git a/sound/soc/kirkwood/kirkwood-t5325.c b/sound/soc/kirkwood/kirkwood-t5325.c
+index 16b83e5..ce4f408 100644
+--- a/sound/soc/kirkwood/kirkwood-t5325.c
++++ b/sound/soc/kirkwood/kirkwood-t5325.c
+@@ -80,7 +80,6 @@ static struct snd_soc_dai_link t5325_dai[] = {
+ },
+ };
+ 
+-
+ static struct snd_soc_card t5325 = {
+ 	.name = "t5325",
+ 	.owner = THIS_MODULE,
+@@ -93,38 +92,40 @@ static struct snd_soc_card t5325 = {
+ 	.num_dapm_routes = ARRAY_SIZE(t5325_route),
+ };
+ 
+-static struct platform_device *t5325_snd_device;
+-
+-static int __init t5325_init(void)
++static int __devinit t5325_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = &t5325;
+ 	int ret;
+ 
+-	if (!machine_is_t5325())
+-		return 0;
+-
+-	t5325_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!t5325_snd_device)
+-		return -ENOMEM;
+-
+-	platform_set_drvdata(t5325_snd_device,
+-			&t5325);
+-
+-	ret = platform_device_add(t5325_snd_device);
+-	if (ret) {
+-		printk(KERN_ERR "%s: platform_device_add failed\n", __func__);
+-		platform_device_put(t5325_snd_device);
+-	}
++	card->dev = &pdev->dev;
+ 
++	ret = snd_soc_register_card(card);
++	if (ret)
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++			ret);
+ 	return ret;
+ }
+-module_init(t5325_init);
+ 
+-static void __exit t5325_exit(void)
++static int __devexit t5325_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(t5325_snd_device);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++	return 0;
+ }
+-module_exit(t5325_exit);
++
++static struct platform_driver t5325_driver = {
++	.driver		= {
++		.name	= "t5325-audio",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= t5325_probe,
++	.remove		= __devexit_p(t5325_remove),
++};
++
++module_platform_driver(t5325_driver);
+ 
+ MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
+ MODULE_DESCRIPTION("ALSA SoC t5325 audio client");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:t5325-audio");
+-- 
+1.7.5.4
