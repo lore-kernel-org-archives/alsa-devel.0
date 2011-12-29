@@ -1,132 +1,48 @@
-From: Jonathan Nieder <jrnieder@gmail.com>
-Subject: Re: hda-intel: azx_get_response timeout, switching to polling mode:
- last cmd=0x01db0000
-Date: Thu, 29 Dec 2011 00:21:05 -0600
-Message-ID: <20111229062105.GB28780@elie.Belkin>
-References: <20111229025953.15211.24880.reportbug@machine.or.cz>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Period time/size in adaptive USB - alignment to
+	nrpacks?
+Date: Thu, 29 Dec 2011 09:43:06 +0100
+Message-ID: <16ced9db-de9c-476b-bb3c-7af436aab558@email.android.com>
+References: <4EF8D3FB.8090109@ivitera.com>
+	<d230c209-78cd-4f34-bba4-b778eb88471e@email.android.com>
+	<4EFB763F.7030407@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20111229025953.15211.24880.reportbug@machine.or.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Petr Baudis <pasky@ucw.cz>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 1D7431037EE
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 09:40:44 +0100 (CET)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 3938721048
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 03:40:41 -0500 (EST)
+In-Reply-To: <4EFB763F.7030407@ivitera.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Petr,
+Pavel Hofman wrote:
+>Now please see the wireshark screenshot at
+>http://personal.educity.cz/dustin/wireshark.png . Frame 1197 is the last
+>URB of the period, with 960 bytes only. Yet the time distance around it
+>is again 8 ms (12.808-12.816-12.824). The expected 5 ms lag appears 2
+>URBs later, between frames 1201 and 1203 (12.832-12.837), all holding
+>1536 bytes.
 
-Petr Baudis wrote[1]:
+Wireshark shows the URBs when they are submitted, which
+is in the completion handler of some previous URB.
+This means that the timing of the submission has no
+relation with its size.
 
-> Version: 3.1.5-1
-[...]
-> this bug is twofold - I'm not sure which of the two problems is the real
-> culprit of the issue I'm seeing, and if it's worth fixing both or just
-> either one. It boils down to sometimes choppy playback and mainly
-> applications getting stuck on some audio operations.
-[...]
-> This did not use to happen at least back around 2.6.32.
-[...]
-> I'd be willing to do some bisecting if people believe it would make
-> sense.
 
-I don't see any relevant newer fixes, but could you test the for-next
-branch from [2] anyway?  Output from the alsa-info.sh script[3] would
-also be useful.
-
-Some snippets from the original report kept below, in case someone from
-the alsa project has ideas.  (The unabridged report is at [1].)
-
-Thanks and hope that helps,
-Jonathan
-
-[1] http://bugs.debian.org/653524
-[2] git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
-[3] http://www.alsa-project.org/alsa-info.sh
-
-> (i) hda-intel on my motherboard is sensitive to changing volume during
-> playback. If I start playback (e.g. mplayer) and start changing volume
-> levels in alsamixer wildly, in a few seconds the playback will stutter
-> for a bit and
->
-> 	hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x01db0000
->
-> gets logged.
->
-> (ii) After this happens, the playback will get slightly choppy, but that
-> is barely ever noticeable. The real issue is that applications will
-> get stuck on some audio operations - most notably, when mplayer stops
-> playing a song, it will do SNDCTL_DSP_SYNC:
->
->	03:52:14.774972 ioctl(4, SNDCTL_DSP_SYNC, 0) = ? ERESTARTSYS (To be restarted)
->	03:52:16.813873 --- SIGINT (Interrupt) @ 0 (0) ---
->	03:52:16.814479 write(2, "\n", 1)       = 1
->	03:52:16.821637 write(2, "\nMPlayer interrupted by signal 2"..., 54) = 54
->	03:52:16.835238 rt_sigreturn(0x29)      = 16
->	03:52:16.835348 ioctl(4, SNDCTL_DSP_SYNC, 0) = ? ERESTARTSYS (To be restarted)
->	03:52:18.393655 --- SIGINT (Interrupt) @ 0 (0) ---
->	03:52:18.393782 write(2, "\n", 1)       = 1
->	03:52:18.400725 write(2, "\nMPlayer interrupted by signal 2"..., 54) = 54
->	03:52:18.415261 close(4294967295)       = -1 EBADF (Bad file descriptor)
->	03:52:18.416276 exit_group(1)           = ?
->
-> When in the polling mode, *sometimes* the SNDCTL_DSP_SYNC will hang
-> indefinitely. I suspect this also causes my Flash sound playback
-> to break, but I do not have that confirmed 100%.
->
-> Removing the snd-intel-hda module and re-modprobing it will fix the
-> issue until next time the volume adjustment causes a switch to the
-> polling mode.
->
-> This did not use to happen at least back around 2.6.32. These kernel
-> versions had different issue with this particular chipset and mapping
-> DMA space above 4GiB boundary with >4GiB RAM installed, though. Not
-> sure if this bug does not have something still to do with that (though
-> similar symptoms disappeared for the network card).
->
-> I'd be willing to do some bisecting if people believe it would make
-> sense.
-[...]
-> [2174402.896629] snd_hda_intel 0000:01:00.1: PCI INT B disabled
-> [2174402.924482] snd_hda_intel 0000:00:14.2: PCI INT A disabled
-> [2174405.457990] snd_hda_intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-> [2174405.458166] snd_hda_intel 0000:00:14.2: irq 43 for MSI/MSI-X
-> [2174405.852109] hda_codec: AD1988: BIOS auto-probing.
-> [2174405.852420] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:14.2/input/input10
-> [2174405.877935] snd_hda_intel 0000:01:00.1: PCI INT B -> GSI 19 (level, low) -> IRQ 19
-> [2174405.878113] snd_hda_intel 0000:01:00.1: irq 44 for MSI/MSI-X
-> [2174405.878166] snd_hda_intel 0000:01:00.1: setting latency timer to 64
-> [2174405.892565] HDMI status: Codec=0 Pin=3 Presence_Detect=0 ELD_Valid=0
-> [2174405.893243] input: HDA ATI HDMI HDMI/DP as /devices/pci0000:00/0000:00:02.0/0000:01:00.1/sound/card2/input11
-> [2175405.280022] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x01db0000
-> <rmmod snd-intel-hda>
-> [2175808.496464] snd_hda_intel 0000:01:00.1: PCI INT B disabled
-> [2175808.528486] snd_hda_intel 0000:00:14.2: PCI INT A disabled
-> <modprobe snd-intel-hda>
-> [2175811.100597] snd_hda_intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-> [2175811.100774] snd_hda_intel 0000:00:14.2: irq 43 for MSI/MSI-X
-> [2175811.496115] hda_codec: AD1988: BIOS auto-probing.
-> [2175811.496406] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:14.2/input/input12
-> [2175811.513015] snd_hda_intel 0000:01:00.1: PCI INT B -> GSI 19 (level, low) -> IRQ 19
-> [2175811.513199] snd_hda_intel 0000:01:00.1: irq 44 for MSI/MSI-X
-> [2175811.513256] snd_hda_intel 0000:01:00.1: setting latency timer to 64
-> [2175811.533844] HDMI status: Codec=0 Pin=3 Presence_Detect=0 ELD_Valid=0
-> [2175811.534515] input: HDA ATI HDMI HDMI/DP as /devices/pci0000:00/0000:00:02.0/0000:01:00.1/sound/card2/input13
-> <twiddling volume controls in alsamixer>
-> [2175932.840016] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x01db0000
-[...]
-> bios_vendor: American Megatrends Inc.
-> bios_version: 1009   
-> board_vendor: ASUSTeK Computer INC.
-> board_name: M2R32-MVP
-> board_version: Rev 1.xx
-[...]
-> 00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383]
-> 	Subsystem: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383]
-> 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-> 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> 	Latency: 64, Cache Line Size: 64 bytes
-> 	Interrupt: pin A routed to IRQ 43
-> 	Region 0: Memory at fbcf0000 (64-bit, non-prefetchable) [size=16K]
-> 	Capabilities: <access denied>
-> 	Kernel driver in use: snd_hda_intel
+Regards,
+Clemens
