@@ -1,7 +1,7 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 4/10] sound/soc/au1x/i2sc.c: use devm_ functions
-Date: Thu, 29 Dec 2011 17:51:26 +0100
-Message-ID: <1325177489-13815-8-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 6/10] sound/soc/au1x/psc-i2s.c: use devm_ functions
+Date: Thu, 29 Dec 2011 17:51:24 +0100
+Message-ID: <1325177489-13815-6-git-send-email-Julia.Lawall@lip6.fr>
 References: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
@@ -20,24 +20,21 @@ device and is only freed in the remove function.
 Signed-off-by: Julia Lawall <julia.lawall@lip6.fr>
 
 ---
- sound/soc/au1x/i2sc.c |   45 +++++++++++++--------------------------------
- 1 file changed, 13 insertions(+), 32 deletions(-)
+ sound/soc/au1x/psc-i2s.c |   42 ++++++++++++++----------------------------
+ 1 file changed, 14 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
-index cb53ad8..d4b9e36 100644
---- a/sound/soc/au1x/i2sc.c
-+++ b/sound/soc/au1x/i2sc.c
-@@ -227,69 +227,50 @@ static struct snd_soc_dai_driver au1xi2s_dai_driver = {
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index 5c1dc8a..0607ba3 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -295,33 +295,34 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+ 	int ret;
+ 	struct au1xpsc_audio_data *wd;
  
- static int __devinit au1xi2s_drvprobe(struct platform_device *pdev)
- {
--	int ret;
- 	struct resource *iores, *dmares;
- 	struct au1xpsc_audio_data *ctx;
- 
--	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
+-	wd = kzalloc(sizeof(struct au1xpsc_audio_data), GFP_KERNEL);
++	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
++			  GFP_KERNEL);
+ 	if (!wd)
  		return -ENOMEM;
  
  	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -48,7 +45,7 @@ index cb53ad8..d4b9e36 100644
 +	if (!iores)
 +		return -ENODEV;
  
--	ret = -EBUSY;
+ 	ret = -EBUSY;
 -	if (!request_mem_region(iores->start, resource_size(iores),
 -				pdev->name))
 -		goto out0;
@@ -57,10 +54,10 @@ index cb53ad8..d4b9e36 100644
 +				     pdev->name))
 +		return -EBUSY;
  
--	ctx->mmio = ioremap_nocache(iores->start, resource_size(iores));
-+	ctx->mmio = devm_ioremap_nocache(&pdev->dev, iores->start,
-+					 resource_size(iores));
- 	if (!ctx->mmio)
+-	wd->mmio = ioremap(iores->start, resource_size(iores));
++	wd->mmio = devm_ioremap(&pdev->dev, iores->start,
++				resource_size(iores));
+ 	if (!wd->mmio)
 -		goto out1;
 +		return -EBUSY;
  
@@ -68,44 +65,47 @@ index cb53ad8..d4b9e36 100644
  	if (!dmares)
 -		goto out2;
 +		return -EBUSY;
- 	ctx->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = dmares->start;
+ 	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = dmares->start;
  
  	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 1);
  	if (!dmares)
 -		goto out2;
 +		return -EBUSY;
- 	ctx->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
+ 	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
  
- 	platform_set_drvdata(pdev, ctx);
+ 	/* preserve PSC clock source set up by platform (dev.platform_data
+@@ -349,23 +350,12 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
  
--	ret = snd_soc_register_dai(&pdev->dev, &au1xi2s_dai_driver);
--	if (ret)
--		goto out2;
--
--	return 0;
+ 	platform_set_drvdata(pdev, wd);
+ 
+-	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
+-	if (!ret)
+-		return 0;
 -
 -out2:
--	iounmap(ctx->mmio);
+-	iounmap(wd->mmio);
 -out1:
 -	release_mem_region(iores->start, resource_size(iores));
 -out0:
--	kfree(ctx);
+-	kfree(wd);
 -	return ret;
-+	return snd_soc_register_dai(&pdev->dev, &au1xi2s_dai_driver);
++	return snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
  }
  
- static int __devexit au1xi2s_drvremove(struct platform_device *pdev)
+ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
  {
- 	struct au1xpsc_audio_data *ctx = platform_get_drvdata(pdev);
+ 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
 -	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
  
  	snd_soc_unregister_dai(&pdev->dev);
  
- 	WR(ctx, I2S_ENABLE, EN_D);	/* clock off, disable */
+@@ -374,10 +364,6 @@ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
+ 	au_writel(PSC_CTRL_DISABLE, PSC_CTRL(wd));
+ 	au_sync();
  
--	iounmap(ctx->mmio);
+-	iounmap(wd->mmio);
 -	release_mem_region(r->start, resource_size(r));
--	kfree(ctx);
+-	kfree(wd);
 -
  	return 0;
  }
