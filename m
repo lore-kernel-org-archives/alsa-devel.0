@@ -1,7 +1,7 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 02/14] ASoC: Convert cs4270 to devm_kzalloc()
-Date: Thu, 29 Dec 2011 11:58:22 +0800
-Message-ID: <1325131102.19977.4.camel@phoenix>
+Subject: [PATCH 03/14] ASoC: Convert cs42l51 to devm_kzalloc()
+Date: Thu, 29 Dec 2011 12:00:13 +0800
+Message-ID: <1325131213.19977.6.camel@phoenix>
 References: <1325130983.19977.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,10 +9,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
 	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5F6824636
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 04:58:29 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so8431522ggn.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 19:58:29 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id C39852463F
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:00:19 +0100 (CET)
+Received: by ggnv5 with SMTP id v5so8431836ggn.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:00:19 -0800 (PST)
 In-Reply-To: <1325130983.19977.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,42 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/cs4270.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs42l51.c |    8 ++------
+ 1 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index fef0f48..0555366 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -671,7 +671,8 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
- 		i2c_client->addr);
- 	dev_info(&i2c_client->dev, "hardware revision %X\n", ret & 0xF);
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index ffce9f2..a8bf588 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -577,7 +577,8 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
+ 	dev_info(&i2c_client->dev, "found device cs42l51 rev %d\n",
+ 				ret & 7);
  
--	cs4270 = kzalloc(sizeof(struct cs4270_private), GFP_KERNEL);
-+	cs4270 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs4270_private),
-+			      GFP_KERNEL);
- 	if (!cs4270) {
+-	cs42l51 = kzalloc(sizeof(struct cs42l51_private), GFP_KERNEL);
++	cs42l51 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l51_private),
++			       GFP_KERNEL);
+ 	if (!cs42l51) {
  		dev_err(&i2c_client->dev, "could not allocate codec\n");
  		return -ENOMEM;
-@@ -682,8 +683,6 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+@@ -588,18 +589,13 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
  
- 	ret = snd_soc_register_codec(&i2c_client->dev,
- 			&soc_codec_device_cs4270, &cs4270_dai, 1);
+ 	ret =  snd_soc_register_codec(&i2c_client->dev,
+ 			&soc_codec_device_cs42l51, &cs42l51_dai, 1);
 -	if (ret < 0)
--		kfree(cs4270);
+-		kfree(cs42l51);
+ error:
  	return ret;
  }
  
-@@ -696,7 +695,6 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
- static int cs4270_i2c_remove(struct i2c_client *i2c_client)
+ static int cs42l51_i2c_remove(struct i2c_client *client)
  {
- 	snd_soc_unregister_codec(&i2c_client->dev);
--	kfree(i2c_get_clientdata(i2c_client));
+-	struct cs42l51_private *cs42l51 = i2c_get_clientdata(client);
+-
+ 	snd_soc_unregister_codec(&client->dev);
+-	kfree(cs42l51);
  	return 0;
  }
  
