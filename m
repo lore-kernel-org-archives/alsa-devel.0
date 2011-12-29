@@ -1,19 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 11/14] ASoC: Convert tlv320aic26 to
+Subject: [PATCH 12/14] ASoC: Convert tlv320aic3x to
 	devm_kzalloc()
-Date: Thu, 29 Dec 2011 12:08:36 +0800
-Message-ID: <1325131716.19977.15.camel@phoenix>
+Date: Thu, 29 Dec 2011 12:10:04 +0800
+Message-ID: <1325131804.19977.17.camel@phoenix>
 References: <1325130983.19977.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 401BF24655
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:08:43 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so8433369ggn.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:08:42 -0800 (PST)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id BFD5F24649
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:10:10 +0100 (CET)
+Received: by yhjj56 with SMTP id j56so7875759yhj.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:10:10 -0800 (PST)
 In-Reply-To: <1325130983.19977.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,43 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/tlv320aic26.c |    8 +-------
- 1 files changed, 1 insertions(+), 7 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 86d1fa3..a038dae 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -416,7 +416,7 @@ static int aic26_spi_probe(struct spi_device *spi)
- 	dev_dbg(&spi->dev, "probing tlv320aic26 spi device\n");
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 6f963c5..492f22f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1504,7 +1504,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 	struct aic3x_priv *aic3x;
+ 	int ret;
  
- 	/* Allocate driver data */
--	aic26 = kzalloc(sizeof *aic26, GFP_KERNEL);
-+	aic26 = devm_kzalloc(&spi->dev, sizeof *aic26, GFP_KERNEL);
- 	if (!aic26)
+-	aic3x = kzalloc(sizeof(struct aic3x_priv), GFP_KERNEL);
++	aic3x = devm_kzalloc(&i2c->dev, sizeof(struct aic3x_priv), GFP_KERNEL);
+ 	if (aic3x == NULL) {
+ 		dev_err(&i2c->dev, "failed to create private data\n");
  		return -ENOMEM;
+@@ -1524,15 +1524,12 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
  
-@@ -427,18 +427,12 @@ static int aic26_spi_probe(struct spi_device *spi)
- 
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&aic26_soc_codec_dev, &aic26_dai, 1);
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_aic3x, &aic3x_dai, 1);
 -	if (ret < 0)
--		kfree(aic26);
+-		kfree(aic3x);
  	return ret;
--
--	dev_dbg(&spi->dev, "SPI device initialized\n");
--	return 0;
  }
  
- static int aic26_spi_remove(struct spi_device *spi)
+ static int aic3x_i2c_remove(struct i2c_client *client)
  {
- 	snd_soc_unregister_codec(&spi->dev);
--	kfree(spi_get_drvdata(spi));
+ 	snd_soc_unregister_codec(&client->dev);
+-	kfree(i2c_get_clientdata(client));
  	return 0;
  }
  
