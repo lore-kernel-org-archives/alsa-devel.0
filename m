@@ -1,38 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/14] ASoC: Convert cs4270 to
-	devm_kzalloc()
-Date: Thu, 29 Dec 2011 18:17:32 +0000
-Message-ID: <20111229181731.GI2909@opensource.wolfsonmicro.com>
-References: <1325130983.19977.2.camel@phoenix>
-	<1325131102.19977.4.camel@phoenix> <4EFC8CB3.8050507@freescale.com>
+Subject: Re: It looks like snd-soc-rx51 only works as built-in, not as a
+ module
+Date: Thu, 29 Dec 2011 18:37:12 +0000
+Message-ID: <20111229183712.GB32392@sirena.org.uk>
+References: <CAMP44s1DPE3ey+Cf48ShbAu_-vv2NC8ppkABT7fDmsE3_j9AmQ@mail.gmail.com>
+ <20111210082741.GA32605@earth.universe>
+ <CAMP44s3c68z-+3j9OR3pyBFVzH-LJ7WcMu-BnejhkfrxnF4rqA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 06637103A2D
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 19:17:35 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4EFC8CB3.8050507@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: Axel Lin <axel.lin@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <CAMP44s3c68z-+3j9OR3pyBFVzH-LJ7WcMu-BnejhkfrxnF4rqA@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Felipe Contreras <felipe.contreras@gmail.com>
+Cc: Sebastian Reichel <sre@debian.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 29, 2011 at 03:52:30PM +0000, Tabi Timur-B04825 wrote:
-> Axel Lin wrote:
-> > Signed-off-by: Axel Lin<axel.lin@gmail.com>
+On Sat, Dec 10, 2011 at 05:59:57PM +0200, Felipe Contreras wrote:
 
-> I won't be able to test this for at least another week, so I can't give 
-> it an official ACK yet.
+> It was not working for me, but it seems the problem was related to
+> mdev/udev; snd_soc_tlv320aic3x has to be loaded before snd-soc-rx51.
 
-It's OK to ack things based purely off code review (epecially for simple
-transformations like this).
+That should not be required, the modules should be loadable in any
+order.
