@@ -1,18 +1,16 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Period time/size in adaptive USB - alignment to
- nrpacks?
-Date: Wed, 28 Dec 2011 21:04:15 +0100
-Message-ID: <4EFB763F.7030407@ivitera.com>
-References: <4EF8D3FB.8090109@ivitera.com>
-	<d230c209-78cd-4f34-bba4-b778eb88471e@email.android.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 01/14] ASoC: Convert alc5623 to devm_kzalloc()
+Date: Thu, 29 Dec 2011 11:56:23 +0800
+Message-ID: <1325130983.19977.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 3E387243A8
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 21:04:37 +0100 (CET)
-In-Reply-To: <d230c209-78cd-4f34-bba4-b778eb88471e@email.android.com>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1C47424634
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 04:56:34 +0100 (CET)
+Received: by yhjj56 with SMTP id j56so7873356yhj.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 19:56:34 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDI4LjEyLjIwMTEgMTQ6MDAsIENsZW1lbnMgTGFkaXNjaCBuYXBzYWwoYSk6Cj4+IEVhY2gg
-VVJCIGlzIGlzc3VlZCBhbHdheXMgYXQgbnJwYWNrcwo+PiBtaWxsaXNlY29uZHMuIEVhY2ggVVJC
-IHRyYW5zZmVycyA0OCBzYW1wbGVzICogMiBieXRlcyAqIDIgY2hhbm5lbHMgKgo+PiBucnBhY2tz
-IG1pbGxpc2Vjb25kcyBvZiBieXRlcy4gVGhlIGxhc3QgVVJCIG9mIHBlcmlvZCBrZWVwcyB0aGUg
-c2FtZQo+PiBwYWNlIChucnBhY2tzIG1pbGxpc2Vjb25kcyksIGhvd2V2ZXIgaG9sZHMgb25seSB0
-aGUgcmVtYWluaW5nIG51bWJlciBvZgo+PiBieXRlcy4KPiAKPiBObywgdGhlIHBlcmlvZCdzIGxh
-c3QgVVJCIHVzZXMgb25seSBhcyBtYW55IGZyYW1lcyBhcyBuZWVkZWQuCj4gCgpDbGVtZW5zLCB0
-aGFua3MgZm9yIHlvdXIgcmVwbHkuIEkgcmVjaGVja2VkIGFuZCB5b3UgYXJlIHJpZ2h0LCB0aGVy
-ZSBpcwphIGZhc3RlciBVUkIsIGJ1dCBoZXJlIGlzIHdoYXQgSSBhbSBhY3R1YWxseSBnZXR0aW5n
-IGluIHdpcmVzaGFyazoKCm5ycGFja3MgPSBkZWZhdWx0IDgKCgpwYXZlbEBuYWhvcmU6fiQgYXBs
-YXkgLXYgIC1EIHBsdWdodzoxICBhdWRpby80OC1sb25nLndhdgpQxZllaHLDoXbDoW0gV0FWRSAn
-YXVkaW8vNDgtbG9uZy53YXYnIDogU2lnbmVkIDE2IGJpdCBMaXR0bGUgRW5kaWFuLApGcmVrdmVu
-Y2UgNDgwMDAgSHosIFN0ZXJlbwpQbHVnIFBDTTogSGFyZHdhcmUgUENNIGNhcmQgMSAnQy1NZWRp
-YSBVU0IgSGVhZHBob25lIFNldCcgZGV2aWNlIDAKc3ViZGV2aWNlIDAKSXRzIHNldHVwIGlzOgog
-IHN0cmVhbSAgICAgICA6IFBMQVlCQUNLCiAgYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQK
-ICBmb3JtYXQgICAgICAgOiBTMTZfTEUKICBzdWJmb3JtYXQgICAgOiBTVEQKICBjaGFubmVscyAg
-ICAgOiAyCiAgcmF0ZSAgICAgICAgIDogNDgwMDAKICBleGFjdCByYXRlICAgOiA0ODAwMCAoNDgw
-MDAvMSkKICBtc2JpdHMgICAgICAgOiAxNgogIGJ1ZmZlcl9zaXplICA6IDI0MDAwCiAgcGVyaW9k
-X3NpemUgIDogNjAwMAogIHBlcmlvZF90aW1lICA6IDEyNTAwMAogIHBlcmlvZF90aW1lICA6IDEy
-NTAwMAogIHRzdGFtcF9tb2RlICA6IE5PTkUKICBwZXJpb2Rfc3RlcCAgOiAxCiAgYXZhaWxfbWlu
-ICAgIDogNjAwMAogIHBlcmlvZF9ldmVudCA6IDAKICBzdGFydF90aHJlc2hvbGQgIDogMjQwMDAK
-ICBzdG9wX3RocmVzaG9sZCAgIDogMjQwMDAKICBzaWxlbmNlX3RocmVzaG9sZDogMAogIHNpbGVu
-Y2Vfc2l6ZSA6IDAKICBib3VuZGFyeSAgICAgOiAxNTcyODY0MDAwCiAgYXBwbF9wdHIgICAgIDog
-MAogIGh3X3B0ciAgICAgICA6IDAKCgoKVGhpcyBwZXJpb2QgKDYwMDAgeCAyIHggMiA9IDI0MDAw
-IGJ5dGVzKSBwcm9kdWNlcyAxNSBVUkJzIHdpdGggMTUzNgpieXRlcyBmb2xsb3dlZCBieSAxIFVS
-QiB3aXRoIDk2MCBieXRlcy4KCk5vdyBwbGVhc2Ugc2VlIHRoZSB3aXJlc2hhcmsgc2NyZWVuc2hv
-dCBhdApodHRwOi8vcGVyc29uYWwuZWR1Y2l0eS5jei9kdXN0aW4vd2lyZXNoYXJrLnBuZyAuIEZy
-YW1lIDExOTcgaXMgdGhlIGxhc3QKVVJCIG9mIHRoZSBwZXJpb2QsIHdpdGggOTYwIGJ5dGVzIG9u
-bHkuIFlldCB0aGUgdGltZSBkaXN0YW5jZSBhcm91bmQgaXQKaXMgYWdhaW4gOCBtcyAoMTIuODA4
-LTEyLjgxNi0xMi44MjQpLiBUaGUgZXhwZWN0ZWQgNSBtcyBsYWcgYXBwZWFycyAyClVSQnMgbGF0
-ZXIsIGJldHdlZW4gZnJhbWVzIDEyMDEgYW5kIDEyMDMgKDEyLjgzMi0xMi44MzcpLCBhbGwgaG9s
-ZGluZwoxNTM2IGJ5dGVzLgoKSXQgbWF5IGJlIGp1c3QgYSBidWcgaW4gd2lyZXNoYXJrIG9yIGxp
-YnBjYXAuIFBsZWFzZSBpcyB0aGVyZSBhbm90aGVyCndheSB0byBjcm9zcy1jaGVjaz8KCj4+IFRo
-aXMgY3JlYXRlcyByaXBwbGVzIGluIHRoZSBkYXRhIHN0cmVhbSBiaXRyYXRlLCBwb3NzaWJseQo+
-PiBsZWFkaW5nCj4+IHRvIGluY3JlYXNlZCBqaXR0ZXIgb2YgdGhlIFBMTCdkIGNsb2NrIGluIHRo
-ZSBVU0IgcmVjZWl2ZXIuCj4gCj4gRGlkIHlvdSBhY3R1YWxseSBvYnNlcnZlIHRoaXM/CgpObywg
-aXQgd2FzIGp1c3QgbXkgY29uY2x1c2lvbi4gSSBhbSBhZnJhaWQgSSBkbyBub3QgaGF2ZSBhbnkg
-cHJvcGVyCmVxdWlwbWVudCB0byBjaGVjay4KCj4gCj4+IEkgYW0gd29uZGVyaW5nIGlmIGZvciB0
-aGUgeHguMDAwIEh6IHNhbXBsZXJhdGVzIGl0IG1hZGUgc2Vuc2UgdG8gb2ZmZXIKPj4gb25seSB0
-aGVzZSBhbGlnbmVkIG11bHRpcGxlcyBpbiBzbmRfcGNtX2h3X3BhcmFtc19zZXRfcGVyaW9kX3Rp
-bWVfbmVhci4KPiAKPiBPbmx5IGZvciBhZGFwdGl2ZSBwbGF5YmFjay4gQW5kIHRoZSBVUkIgbGVu
-Z3RoIGlzIGFsc28KPiBkZXJpdmVkIGZyb20gdGhlIHBlcmlvZCBzaXplLCBzbyBJJ2QgYmUgaW50
-ZXJlc3RlZCBpbiBzZWVpbmcKPiBob3cgdGhpcyBjb25zdHJhaW50IHdvdWxkIGJlIGltcGxlbWVu
-dGVkLgoKQWN0dWFsbHkgaXQgd291bGQgYmUgdXNlbGVzcyBpZiBldmVyeXRoaW5nIGlzIE9LIGFu
-ZCB0aGUgYml0cmF0ZSBpcwpiZWluZyBrZXB0IHN0ZWFkeSA6LSkKCgpUaGFua3MgYSBsb3QgZm9y
-IHlvdXIgZXhwZXJ0IGFkdmljZSwKCgpQYXZlbC4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/alc5623.c |   11 +++--------
+ 1 files changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index 6a9b621..3feee56 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -1022,7 +1022,8 @@ static int alc5623_i2c_probe(struct i2c_client *client,
+ 
+ 	dev_dbg(&client->dev, "Found codec id : alc56%02x\n", vid2);
+ 
+-	alc5623 = kzalloc(sizeof(struct alc5623_priv), GFP_KERNEL);
++	alc5623 = devm_kzalloc(&client->dev, sizeof(struct alc5623_priv),
++			       GFP_KERNEL);
+ 	if (alc5623 == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1044,7 +1045,6 @@ static int alc5623_i2c_probe(struct i2c_client *client,
+ 		alc5623_dai.name = "alc5623-hifi";
+ 		break;
+ 	default:
+-		kfree(alc5623);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1053,20 +1053,15 @@ static int alc5623_i2c_probe(struct i2c_client *client,
+ 
+ 	ret =  snd_soc_register_codec(&client->dev,
+ 		&soc_codec_device_alc5623, &alc5623_dai, 1);
+-	if (ret != 0) {
++	if (ret != 0)
+ 		dev_err(&client->dev, "Failed to register codec: %d\n", ret);
+-		kfree(alc5623);
+-	}
+ 
+ 	return ret;
+ }
+ 
+ static int alc5623_i2c_remove(struct i2c_client *client)
+ {
+-	struct alc5623_priv *alc5623 = i2c_get_clientdata(client);
+-
+ 	snd_soc_unregister_codec(&client->dev);
+-	kfree(alc5623);
+ 	return 0;
+ }
+ 
+-- 
+1.7.5.4
