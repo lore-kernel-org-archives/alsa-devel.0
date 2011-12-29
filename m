@@ -1,131 +1,347 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 8/10] sound/soc/davinci/davinci-i2s.c: use devm_ functions
-Date: Thu, 29 Dec 2011 17:51:22 +0100
-Message-ID: <1325177489-13815-4-git-send-email-Julia.Lawall@lip6.fr>
-References: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 0/10] use devm_ functions
+Date: Thu, 29 Dec 2011 17:51:19 +0100
+Message-ID: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia.lawall@lip6.fr>
+The following is a semantic patch (http://coccinelle.lip6.fr/) that
+introduces uses of various devm_ functions.  The main strategy is
+illustrated by the rules prb, rem, bad and modif.  prb finds a probe
+function that contains an allocation and possibly some frees of the
+allocated data.  rem finds the corresponding remove function and checks
+that it frees the allocated data.  bad checks whether the allocated data is
+freed elsewhere.  When prb and rem are satisfied, ie data is allocated in
+the probe function and freed in the remove function, and bad is not
+satisfied, ie the data is not freed elsewhere, then modif renames the
+allocation function and removes the freeing functions.
 
-The various devm_ functions allocate memory that is released when a driver
-detaches.  This patch uses devm_kzalloc, devm_request_mem_region and
-devm_ioremap for data that is allocated in the probe function of a platform
-device and is only freed in the remove function.
+The remaining rules consider different variations on how the allocated data
+may be referred to and do some cleanup.  Some cleanup must typically be
+done by hand, such as removing empty labels and converting gotos to returns
+when there is nothing to jump to.  The semantic patch also tries to clean
+up unneeded calls to platform_set_drvdata, but the detection of
+unneededness is not very sophisticated, and so it may delete calls that are
+actually needed.  This cleanup could perhaps be better done by hand.
 
-In this case, the original code did not contain a call to iounmap, nor does
-one appear anywhere else in the file.  I have assumed that it is safe to
-use devm_ioremap for the allocation in any case.
+// requires the -in_place option
+virtual after_start
+virtual returned
+virtual arg
+virtual get
 
-Signed-off-by: Julia Lawall <julia.lawall@lip6.fr>
+// ---------------------------------------------------------------------
+// find functions
 
----
- sound/soc/davinci/davinci-i2s.c |   39 +++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 26 deletions(-)
+@plat depends on !after_start@
+identifier i,pfn,rfn;
+position p;
+@@
 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index ec18710..0a74b95 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -661,18 +661,18 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	ioarea = request_mem_region(mem->start, resource_size(mem),
--				    pdev->name);
-+	ioarea = devm_request_mem_region(&pdev->dev, mem->start,
-+					 resource_size(mem),
-+					 pdev->name);
- 	if (!ioarea) {
- 		dev_err(&pdev->dev, "McBSP region already claimed\n");
- 		return -EBUSY;
- 	}
- 
--	dev = kzalloc(sizeof(struct davinci_mcbsp_dev), GFP_KERNEL);
--	if (!dev) {
--		ret = -ENOMEM;
--		goto err_release_region;
--	}
-+	dev = devm_kzalloc(&pdev->dev, sizeof(struct davinci_mcbsp_dev),
-+			   GFP_KERNEL);
-+	if (!dev)
-+		return -ENOMEM;
- 	if (pdata) {
- 		dev->enable_channel_combine = pdata->enable_channel_combine;
- 		dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].sram_size =
-@@ -691,13 +691,11 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].ram_chan_q	= ram_chan_q;
- 
- 	dev->clk = clk_get(&pdev->dev, NULL);
--	if (IS_ERR(dev->clk)) {
--		ret = -ENODEV;
--		goto err_free_mem;
--	}
-+	if (IS_ERR(dev->clk))
-+		return -ENODEV;
- 	clk_enable(dev->clk);
- 
--	dev->base = ioremap(mem->start, resource_size(mem));
-+	dev->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
- 	if (!dev->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
- 		ret = -ENOMEM;
-@@ -715,7 +713,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
- 		ret = -ENXIO;
--		goto err_iounmap;
-+		goto err_release_clk;
- 	}
- 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].channel = res->start;
- 
-@@ -723,7 +721,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
- 		ret = -ENXIO;
--		goto err_iounmap;
-+		goto err_release_clk;
- 	}
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].channel = res->start;
- 	dev->dev = &pdev->dev;
-@@ -732,35 +730,24 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_dai(&pdev->dev, &davinci_i2s_dai);
- 	if (ret != 0)
--		goto err_iounmap;
-+		goto err_release_clk;
- 
- 	return 0;
- 
--err_iounmap:
--	iounmap(dev->base);
- err_release_clk:
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
--err_free_mem:
--	kfree(dev);
--err_release_region:
--	release_mem_region(mem->start, resource_size(mem));
--
- 	return ret;
- }
- 
- static int davinci_i2s_remove(struct platform_device *pdev)
- {
- 	struct davinci_mcbsp_dev *dev = dev_get_drvdata(&pdev->dev);
--	struct resource *mem;
- 
- 	snd_soc_unregister_dai(&pdev->dev);
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
- 	dev->clk = NULL;
--	kfree(dev);
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(mem->start, resource_size(mem));
- 
- 	return 0;
- }
+struct platform_driver i@p = {
+  .probe = pfn,
+  .remove = (<+...rfn...+>),
+};
+
+// ---------------------------------------------------------------------
+// set up iteration
+
+@initialize:ocaml@
+
+type ret = UseReturned | UseArg | UseGet
+
+let add pfn rfn alloc free devm_alloc file rule =
+   let it = new iteration() in
+   it#set_files [file];
+   it#add_virtual_rule After_start;
+   (match rule with
+      UseReturned -> it#add_virtual_rule Returned
+    | UseArg -> it#add_virtual_rule Arg
+    | UseGet -> it#add_virtual_rule Get);
+   it#add_virtual_identifier Pfn pfn;
+   it#add_virtual_identifier Rfn rfn;
+   it#add_virtual_identifier Alloc alloc;
+   it#add_virtual_identifier Free free;
+   it#add_virtual_identifier Devm_alloc devm_alloc;
+   it#register()
+
+@script:ocaml@
+pfn << plat.pfn;
+rfn << plat.rfn;
+p << plat.p;
+@@
+
+let file = (List.hd p).file in
+add pfn rfn "kmalloc" "kfree" "devm_kzalloc" file UseReturned;
+add pfn rfn "kzalloc" "kfree" "devm_kzalloc" file UseReturned;
+add pfn rfn "ioremap" "iounmap" "devm_ioremap" file UseReturned;
+add pfn rfn "ioremap_nocache" "iounmap" "devm_ioremap_nocache" file
+   UseReturned;
+add pfn rfn "request_irq" "free_irq" "devm_request_irq" file UseArg;
+add pfn rfn "request_threaded_irq" "free_irq" "devm_request_threaded_irq" file
+  UseArg;
+add pfn rfn "request_region" "release_region" "devm_request_region" file
+  UseGet;
+add pfn rfn "request_mem_region" "release_mem_region"
+  "devm_request_mem_region" file UseGet;
+add pfn rfn "ioport_map" "ioport_unmap" "devm_ioport_map" file UseReturned
+
+// ---------------------------------------------------------------------
+// transform functions where free uses the result
+
+@prb depends on returned@
+identifier virtual.pfn,pdev,virtual.alloc,virtual.free;
+expression x;
+expression list args;
+position p1,p2;
+@@
+
+pfn(struct platform_device *pdev) { ... when any
+x = alloc@p1(args)
+<... when strict
+     when any
+free@p2(x,...)
+...>
+}
+
+@rem@
+identifier virtual.rfn,virtual.free;
+expression prb.x;
+position p3;
+@@
+
+rfn(...) {
+<+... when strict
+free@p3(x,...)
+...+>
+}
+
+@bad@
+identifier virtual.free;
+expression prb.x;
+position p != {prb.p2,rem.p3};
+@@
+
+free@p(x,...)
+
+@modif depends on rem && !bad@
+expression x;
+identifier prb.pdev,virtual.alloc,virtual.free,virtual.devm_alloc;
+expression list args;
+position prb.p1,prb.p2,rem.p3;
+@@
+
+(
+- free@p2(...);
+|
+- free@p3(...);
+|
+  x =
+- alloc@p1(
++ devm_alloc(&pdev->dev,
+    args)
+)
+
+// ---------------------------------------------------------------------
+// transform functions where free uses the first argument
+
+@prbx depends on arg@
+identifier virtual.pfn,pdev,virtual.alloc,virtual.free;
+expression x;
+expression list args;
+position p1,p2;
+@@
+
+pfn(struct platform_device *pdev) { ... when any
+alloc@p1(x,args)
+<... when strict
+     when any
+free@p2(x,...)
+...>
+}
+
+@remx@
+identifier virtual.rfn, virtual.free;
+expression prbx.x;
+position p3;
+@@
+
+rfn(...) {
+<+... when strict
+free@p3(x,...)
+...+>
+}
+
+@badx@
+identifier virtual.free;
+expression prbx.x;
+position p != {prbx.p2,remx.p3};
+@@
+
+free@p(x,...)
+
+@modifx depends on remx && !badx@
+expression x;
+identifier prbx.pdev,virtual.alloc,virtual.free,virtual.devm_alloc;
+expression list args;
+position prbx.p1,prbx.p2,remx.p3;
+@@
+
+(
+- free@p2(...);
+|
+- free@p3(...);
+|
+- alloc@p1(
++ devm_alloc(&pdev->dev,
+   x,args)
+)
+
+// ---------------------------------------------------------------------
+// transform functions where free uses the result of platform_get_resource
+
+@prbg depends on get@
+identifier virtual.pfn,pdev,virtual.alloc,virtual.free;
+expression x;
+expression list args;
+position p1,p2;
+@@
+
+pfn(struct platform_device *pdev) { ... when any
+alloc@p1(x,args)
+<... when strict
+     when any
+free@p2(x,...)
+...>
+}
+
+@remg@
+identifier virtual.rfn, virtual.free;
+identifier y;
+identifier pdev;
+position p3;
+@@
+
+rfn(struct platform_device *pdev) {
+<+... when strict
+y = platform_get_resource(pdev, IORESOURCE_MEM, 0)
+... when strict
+free@p3(y->start,...)
+...+>
+}
+
+@badg@
+identifier virtual.free;
+position p != {prbg.p2,remg.p3};
+@@
+
+free@p(...)
+
+@modifg depends on remg && !badg@
+expression x;
+identifier prbg.pdev,virtual.alloc,virtual.free,virtual.devm_alloc;
+expression list args;
+position prbg.p1,prbg.p2,remg.p3;
+@@
+
+(
+- free@p2(...);
+|
+- free@p3(...);
+|
+- alloc@p1(
++ devm_alloc(&pdev->dev,
+   x,args)
+)
+
+// ---------------------------------------------------------------------
+// cleanup, if the drvdata was only used to enable the free
+// probably only relevant for kmalloc/kzalloc
+
+@dclean depends on modif || modifx || modifg@
+identifier virtual.rfn, pdev, i;
+type T;
+@@
+
+rfn(struct platform_device *pdev) { ...
+(
+- T i = platform_get_drvdata(pdev);
+|
+- T i;
+  ... when != i
+- i = platform_get_drvdata(pdev);
+)
+... when != i
+}
+
+@useful depends on dclean@
+@@
+
+platform_get_drvdata(...)
+
+@depends on dclean && !useful@
+@@
+
+- platform_set_drvdata(...);
+
+@rclean depends on modif || modifx || modifg@
+identifier virtual.rfn, pdev, i;
+type T;
+@@
+
+rfn(struct platform_device *pdev) { ...
+(
+- T i = platform_get_resource(pdev,...);
+|
+- T i;
+  ... when != i
+- i = platform_get_resource(pdev,...);
+)
+... when != i
+}
+
+// ---------------------------------------------------------------------
+// cleanup empty ifs, etc
+
+@depends on modif || modifx || modifg@
+identifier virtual.pfn;
+@@
+
+pfn(...) { <...
+- if (...) {}
+...> }
+
+@depends on modif || modifx || modifg@
+identifier virtual.rfn;
+@@
+
+rfn(...) { <...
+- if (...) {}
+...> }
+
+@depends on modif || modifx || modifg@
+identifier virtual.pfn;
+expression ret,e;
+@@
+
+pfn(...) { <...
++ return
+- ret =
+ e;
+- return ret;
+...> }
+
+@depends on modif || modifx || modifg@
+identifier virtual.rfn;
+expression ret,e;
+@@
+
+rfn(...) { <...
++ return
+- ret =
+ e;
+- return ret;
+...> }
