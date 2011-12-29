@@ -1,7 +1,7 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 6/10] sound/soc/au1x/psc-i2s.c: use devm_ functions
-Date: Thu, 29 Dec 2011 17:51:24 +0100
-Message-ID: <1325177489-13815-6-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 3/10] sound/soc/au1x/dma.c: use devm_ functions
+Date: Thu, 29 Dec 2011 17:51:27 +0100
+Message-ID: <1325177489-13815-9-git-send-email-Julia.Lawall@lip6.fr>
 References: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
@@ -20,93 +20,40 @@ device and is only freed in the remove function.
 Signed-off-by: Julia Lawall <julia.lawall@lip6.fr>
 
 ---
- sound/soc/au1x/psc-i2s.c |   42 ++++++++++++++----------------------------
- 1 file changed, 14 insertions(+), 28 deletions(-)
+ sound/soc/au1x/dma.c |   12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index 5c1dc8a..0607ba3 100644
---- a/sound/soc/au1x/psc-i2s.c
-+++ b/sound/soc/au1x/psc-i2s.c
-@@ -295,33 +295,34 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- 	int ret;
- 	struct au1xpsc_audio_data *wd;
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index c4017bd..0a91b18 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -325,27 +325,19 @@ static struct snd_soc_platform_driver alchemy_pcm_soc_platform = {
+ static int __devinit alchemy_pcm_drvprobe(struct platform_device *pdev)
+ {
+ 	struct alchemy_pcm_ctx *ctx;
+-	int ret;
  
--	wd = kzalloc(sizeof(struct au1xpsc_audio_data), GFP_KERNEL);
-+	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
-+			  GFP_KERNEL);
- 	if (!wd)
+-	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
  		return -ENOMEM;
  
- 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iores) {
--		ret = -ENODEV;
--		goto out0;
--	}
-+	if (!iores)
-+		return -ENODEV;
+ 	platform_set_drvdata(pdev, ctx);
  
- 	ret = -EBUSY;
--	if (!request_mem_region(iores->start, resource_size(iores),
--				pdev->name))
--		goto out0;
-+	if (!devm_request_mem_region(&pdev->dev, iores->start,
-+				     resource_size(iores),
-+				     pdev->name))
-+		return -EBUSY;
- 
--	wd->mmio = ioremap(iores->start, resource_size(iores));
-+	wd->mmio = devm_ioremap(&pdev->dev, iores->start,
-+				resource_size(iores));
- 	if (!wd->mmio)
--		goto out1;
-+		return -EBUSY;
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmares)
--		goto out2;
-+		return -EBUSY;
- 	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = dmares->start;
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 1);
- 	if (!dmares)
--		goto out2;
-+		return -EBUSY;
- 	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
- 
- 	/* preserve PSC clock source set up by platform (dev.platform_data
-@@ -349,23 +350,12 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, wd);
- 
--	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
--	if (!ret)
--		return 0;
+-	ret = snd_soc_register_platform(&pdev->dev, &alchemy_pcm_soc_platform);
+-	if (ret)
+-		kfree(ctx);
 -
--out2:
--	iounmap(wd->mmio);
--out1:
--	release_mem_region(iores->start, resource_size(iores));
--out0:
--	kfree(wd);
 -	return ret;
-+	return snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
++	return snd_soc_register_platform(&pdev->dev, &alchemy_pcm_soc_platform);
  }
  
- static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
+ static int __devexit alchemy_pcm_drvremove(struct platform_device *pdev)
  {
- 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
--	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	snd_soc_unregister_dai(&pdev->dev);
- 
-@@ -374,10 +364,6 @@ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
- 	au_writel(PSC_CTRL_DISABLE, PSC_CTRL(wd));
- 	au_sync();
- 
--	iounmap(wd->mmio);
--	release_mem_region(r->start, resource_size(r));
--	kfree(wd);
+-	struct alchemy_pcm_ctx *ctx = platform_get_drvdata(pdev);
 -
+ 	snd_soc_unregister_platform(&pdev->dev);
+-	kfree(ctx);
+ 
  	return 0;
  }
- 
