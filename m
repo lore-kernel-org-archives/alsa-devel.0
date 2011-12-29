@@ -1,19 +1,17 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 13/14] ASoC: Convert tlv320dac33 to
-	devm_kzalloc()
-Date: Thu, 29 Dec 2011 12:11:00 +0800
-Message-ID: <1325131860.19977.18.camel@phoenix>
+Subject: [PATCH 14/14] ASoC: Convert tpa6130a2 to devm_kzalloc()
+Date: Thu, 29 Dec 2011 12:12:29 +0800
+Message-ID: <1325131949.19977.20.camel@phoenix>
 References: <1325130983.19977.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CA4824657
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:11:06 +0100 (CET)
-Received: by ghbz2 with SMTP id z2so2952906ghb.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:11:06 -0800 (PST)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id B9BA12465D
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:12:35 +0100 (CET)
+Received: by yhjj56 with SMTP id j56so7876164yhj.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:12:35 -0800 (PST)
 In-Reply-To: <1325130983.19977.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,39 +28,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/tlv320dac33.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tpa6130a2.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index c7a61fb..f0aad26 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -1532,7 +1532,8 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 7eeca79..363b99d 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -376,7 +376,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 		return -ENODEV;
  	}
- 	pdata = client->dev.platform_data;
  
--	dac33 = kzalloc(sizeof(struct tlv320dac33_priv), GFP_KERNEL);
-+	dac33 = devm_kzalloc(&client->dev, sizeof(struct tlv320dac33_priv),
-+			     GFP_KERNEL);
- 	if (dac33 == NULL)
+-	data = kzalloc(sizeof(*data), GFP_KERNEL);
++	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+ 	if (data == NULL) {
+ 		dev_err(dev, "Can not allocate memory\n");
  		return -ENOMEM;
- 
-@@ -1587,7 +1588,6 @@ err_get:
- 	if (dac33->power_gpio >= 0)
- 		gpio_free(dac33->power_gpio);
+@@ -450,7 +450,6 @@ err_regulator:
+ 	if (data->power_gpio >= 0)
+ 		gpio_free(data->power_gpio);
  err_gpio:
--	kfree(dac33);
+-	kfree(data);
+ 	tpa6130a2_client = NULL;
+ 
  	return ret;
- }
+@@ -466,8 +465,6 @@ static int __devexit tpa6130a2_remove(struct i2c_client *client)
+ 		gpio_free(data->power_gpio);
  
-@@ -1604,8 +1604,6 @@ static int __devexit dac33_i2c_remove(struct i2c_client *client)
- 	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
- 
- 	snd_soc_unregister_codec(&client->dev);
--	kfree(dac33);
+ 	regulator_put(data->supply);
 -
- 	return 0;
- }
+-	kfree(data);
+ 	tpa6130a2_client = NULL;
  
+ 	return 0;
 -- 
 1.7.5.4
