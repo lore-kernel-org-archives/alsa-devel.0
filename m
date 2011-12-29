@@ -1,115 +1,38 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 5/10] sound/soc/au1x/psc-ac97.c: use devm_ functions
-Date: Thu, 29 Dec 2011 17:51:25 +0100
-Message-ID: <1325177489-13815-7-git-send-email-Julia.Lawall@lip6.fr>
-References: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 02/14] ASoC: Convert cs4270 to
+	devm_kzalloc()
+Date: Thu, 29 Dec 2011 18:17:32 +0000
+Message-ID: <20111229181731.GI2909@opensource.wolfsonmicro.com>
+References: <1325130983.19977.2.camel@phoenix>
+	<1325131102.19977.4.camel@phoenix> <4EFC8CB3.8050507@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 06637103A2D
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 19:17:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4EFC8CB3.8050507@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: Axel Lin <axel.lin@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia.lawall@lip6.fr>
+On Thu, Dec 29, 2011 at 03:52:30PM +0000, Tabi Timur-B04825 wrote:
+> Axel Lin wrote:
+> > Signed-off-by: Axel Lin<axel.lin@gmail.com>
 
-The various devm_ functions allocate memory that is released when a driver
-detaches.  This patch uses devm_kzalloc, devm_request_mem_region and
-devm_ioremap for data that is allocated in the probe function of a platform
-device and is only freed in the remove function.
+> I won't be able to test this for at least another week, so I can't give 
+> it an official ACK yet.
 
-Signed-off-by: Julia Lawall <julia.lawall@lip6.fr>
-
----
- sound/soc/au1x/psc-ac97.c |   41 ++++++++++++++---------------------------
- 1 file changed, 14 insertions(+), 27 deletions(-)
-
-diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
-index 87daf45..476b79a 100644
---- a/sound/soc/au1x/psc-ac97.c
-+++ b/sound/soc/au1x/psc-ac97.c
-@@ -368,35 +368,35 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
- 	unsigned long sel;
- 	struct au1xpsc_audio_data *wd;
- 
--	wd = kzalloc(sizeof(struct au1xpsc_audio_data), GFP_KERNEL);
-+	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
-+			  GFP_KERNEL);
- 	if (!wd)
- 		return -ENOMEM;
- 
- 	mutex_init(&wd->lock);
- 
- 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iores) {
--		ret = -ENODEV;
--		goto out0;
--	}
-+	if (!iores)
-+		return -ENODEV;
- 
--	ret = -EBUSY;
--	if (!request_mem_region(iores->start, resource_size(iores),
--				pdev->name))
--		goto out0;
-+	if (!devm_request_mem_region(&pdev->dev, iores->start,
-+				     resource_size(iores),
-+				     pdev->name))
-+		return -EBUSY;
- 
--	wd->mmio = ioremap(iores->start, resource_size(iores));
-+	wd->mmio = devm_ioremap(&pdev->dev, iores->start,
-+				resource_size(iores));
- 	if (!wd->mmio)
--		goto out1;
-+		return -EBUSY;
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmares)
--		goto out2;
-+		return -EBUSY;
- 	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = dmares->start;
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 1);
- 	if (!dmares)
--		goto out2;
-+		return -EBUSY;
- 	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
- 
- 	/* configuration: max dma trigger threshold, enable ac97 */
-@@ -421,24 +421,15 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
- 	if (ret)
--		goto out2;
-+		return ret;
- 
- 	au1xpsc_ac97_workdata = wd;
- 	return 0;
--
--out2:
--	iounmap(wd->mmio);
--out1:
--	release_mem_region(iores->start, resource_size(iores));
--out0:
--	kfree(wd);
--	return ret;
- }
- 
- static int __devexit au1xpsc_ac97_drvremove(struct platform_device *pdev)
- {
- 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
--	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	snd_soc_unregister_dai(&pdev->dev);
- 
-@@ -448,10 +439,6 @@ static int __devexit au1xpsc_ac97_drvremove(struct platform_device *pdev)
- 	au_writel(PSC_CTRL_DISABLE, PSC_CTRL(wd));
- 	au_sync();
- 
--	iounmap(wd->mmio);
--	release_mem_region(r->start, resource_size(r));
--	kfree(wd);
--
- 	au1xpsc_ac97_workdata = NULL;	/* MDEV */
- 
- 	return 0;
+It's OK to ack things based purely off code review (epecially for simple
+transformations like this).
