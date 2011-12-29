@@ -1,7 +1,7 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 7/10] sound/soc/codecs/jz4740.c: use devm_ functions
-Date: Thu, 29 Dec 2011 17:51:23 +0100
-Message-ID: <1325177489-13815-5-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 10/10] sound/soc/davinci/davinci-vcif.c: use devm_ functions
+Date: Thu, 29 Dec 2011 17:51:20 +0100
+Message-ID: <1325177489-13815-2-git-send-email-Julia.Lawall@lip6.fr>
 References: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
@@ -20,84 +20,46 @@ device and is only freed in the remove function.
 Signed-off-by: Julia Lawall <julia.lawall@lip6.fr>
 
 ---
- sound/soc/codecs/jz4740.c |   36 ++++++++++--------------------------
- 1 file changed, 10 insertions(+), 26 deletions(-)
+ sound/soc/davinci/davinci-vcif.c |   14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index d73d283..ccbf0ac 100644
---- a/sound/soc/codecs/jz4740.c
-+++ b/sound/soc/codecs/jz4740.c
-@@ -353,29 +353,29 @@ static int __devinit jz4740_codec_probe(struct platform_device *pdev)
- 	struct jz4740_codec *jz4740_codec;
- 	struct resource *mem;
+diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+index 70ce10c..da030ff 100644
+--- a/sound/soc/davinci/davinci-vcif.c
++++ b/sound/soc/davinci/davinci-vcif.c
+@@ -210,7 +210,9 @@ static int davinci_vcif_probe(struct platform_device *pdev)
+ 	struct davinci_vcif_dev *davinci_vcif_dev;
+ 	int ret;
  
--	jz4740_codec = kzalloc(sizeof(*jz4740_codec), GFP_KERNEL);
-+	jz4740_codec = devm_kzalloc(&pdev->dev, sizeof(*jz4740_codec),
-+				    GFP_KERNEL);
- 	if (!jz4740_codec)
- 		return -ENOMEM;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
- 		dev_err(&pdev->dev, "Failed to get mmio memory resource\n");
--		ret = -ENOENT;
--		goto err_free_codec;
-+		return -ENOENT;
- 	}
- 
--	mem = request_mem_region(mem->start, resource_size(mem), pdev->name);
-+	mem = devm_request_mem_region(&pdev->dev, mem->start,
-+				      resource_size(mem), pdev->name);
- 	if (!mem) {
- 		dev_err(&pdev->dev, "Failed to request mmio memory region\n");
--		ret = -EBUSY;
--		goto err_free_codec;
-+		return -EBUSY;
- 	}
- 
--	jz4740_codec->base = ioremap(mem->start, resource_size(mem));
-+	jz4740_codec->base = devm_ioremap(&pdev->dev, mem->start,
-+					  resource_size(mem));
- 	if (!jz4740_codec->base) {
- 		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
--		ret = -EBUSY;
--		goto err_release_mem_region;
-+		return -EBUSY;
- 	}
- 	jz4740_codec->mem = mem;
- 
-@@ -385,33 +385,17 @@ static int __devinit jz4740_codec_probe(struct platform_device *pdev)
- 			&soc_codec_dev_jz4740_codec, &jz4740_codec_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register codec\n");
--		goto err_iounmap;
+-	davinci_vcif_dev = kzalloc(sizeof(struct davinci_vcif_dev), GFP_KERNEL);
++	davinci_vcif_dev = devm_kzalloc(&pdev->dev,
++					sizeof(struct davinci_vcif_dev),
++					GFP_KERNEL);
+ 	if (!davinci_vcif_dev) {
+ 		dev_dbg(&pdev->dev,
+ 			"could not allocate memory for private data\n");
+@@ -235,23 +237,15 @@ static int davinci_vcif_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_dai(&pdev->dev, &davinci_vcif_dai);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "could not register dai\n");
+-		goto fail;
 +		return ret;
  	}
  
  	return 0;
 -
--err_iounmap:
--	iounmap(jz4740_codec->base);
--err_release_mem_region:
--	release_mem_region(mem->start, resource_size(mem));
--err_free_codec:
--	kfree(jz4740_codec);
+-fail:
+-	kfree(davinci_vcif_dev);
 -
 -	return ret;
  }
  
- static int __devexit jz4740_codec_remove(struct platform_device *pdev)
+ static int davinci_vcif_remove(struct platform_device *pdev)
  {
--	struct jz4740_codec *jz4740_codec = platform_get_drvdata(pdev);
--	struct resource *mem = jz4740_codec->mem;
+-	struct davinci_vcif_dev *davinci_vcif_dev = dev_get_drvdata(&pdev->dev);
 -
- 	snd_soc_unregister_codec(&pdev->dev);
- 
--	iounmap(jz4740_codec->base);
--	release_mem_region(mem->start, resource_size(mem));
--
- 	platform_set_drvdata(pdev, NULL);
--	kfree(jz4740_codec);
+ 	snd_soc_unregister_dai(&pdev->dev);
+-	kfree(davinci_vcif_dev);
  
  	return 0;
  }
