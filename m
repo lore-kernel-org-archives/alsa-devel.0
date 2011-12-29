@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 08/14] ASoC: Convert ssm2602 to devm_kzalloc()
-Date: Thu, 29 Dec 2011 12:05:20 +0800
-Message-ID: <1325131520.19977.11.camel@phoenix>
+Subject: [PATCH 09/14] ASoC: Convert sta32x to devm_kzalloc()
+Date: Thu, 29 Dec 2011 12:06:39 +0800
+Message-ID: <1325131599.19977.13.camel@phoenix>
 References: <1325130983.19977.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F25924644
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:05:26 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so8432785ggn.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:05:26 -0800 (PST)
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F30824603
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 05:06:45 +0100 (CET)
+Received: by yenr11 with SMTP id r11so3918350yen.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2011 20:06:45 -0800 (PST)
 In-Reply-To: <1325130983.19977.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,67 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+Cc: Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/ssm2602.c |   12 ++++--------
- 1 files changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/sta32x.c |   13 ++++---------
+ 1 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 7dfc7b0..333dd98 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -652,7 +652,8 @@ static int __devinit ssm2602_spi_probe(struct spi_device *spi)
- 	struct ssm2602_priv *ssm2602;
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index 6648af6..fbd1450 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -968,28 +968,23 @@ static __devinit int sta32x_i2c_probe(struct i2c_client *i2c,
+ 	struct sta32x_priv *sta32x;
  	int ret;
  
--	ssm2602 = kzalloc(sizeof(struct ssm2602_priv), GFP_KERNEL);
-+	ssm2602 = devm_kzalloc(&spi->dev, sizeof(struct ssm2602_priv),
-+			       GFP_KERNEL);
- 	if (ssm2602 == NULL)
+-	sta32x = kzalloc(sizeof(struct sta32x_priv), GFP_KERNEL);
++	sta32x = devm_kzalloc(&i2c->dev, sizeof(struct sta32x_priv),
++			      GFP_KERNEL);
+ 	if (!sta32x)
  		return -ENOMEM;
  
-@@ -662,15 +663,12 @@ static int __devinit ssm2602_spi_probe(struct spi_device *spi)
+ 	i2c_set_clientdata(i2c, sta32x);
  
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_dev_ssm2602, &ssm2602_dai, 1);
--	if (ret < 0)
--		kfree(ssm2602);
- 	return ret;
+ 	ret = snd_soc_register_codec(&i2c->dev, &sta32x_codec, &sta32x_dai, 1);
+-	if (ret != 0) {
++	if (ret != 0)
+ 		dev_err(&i2c->dev, "Failed to register codec (%d)\n", ret);
+-		kfree(sta32x);
+-		return ret;
+-	}
+ 
+-	return 0;
++	return ret;
  }
  
- static int __devexit ssm2602_spi_remove(struct spi_device *spi)
+ static __devexit int sta32x_i2c_remove(struct i2c_client *client)
  {
- 	snd_soc_unregister_codec(&spi->dev);
--	kfree(spi_get_drvdata(spi));
- 	return 0;
- }
- 
-@@ -697,7 +695,8 @@ static int __devinit ssm2602_i2c_probe(struct i2c_client *i2c,
- 	struct ssm2602_priv *ssm2602;
- 	int ret;
- 
--	ssm2602 = kzalloc(sizeof(struct ssm2602_priv), GFP_KERNEL);
-+	ssm2602 = devm_kzalloc(&i2c->dev, sizeof(struct ssm2602_priv),
-+			       GFP_KERNEL);
- 	if (ssm2602 == NULL)
- 		return -ENOMEM;
- 
-@@ -707,15 +706,12 @@ static int __devinit ssm2602_i2c_probe(struct i2c_client *i2c,
- 
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_ssm2602, &ssm2602_dai, 1);
--	if (ret < 0)
--		kfree(ssm2602);
- 	return ret;
- }
- 
- static int __devexit ssm2602_i2c_remove(struct i2c_client *client)
- {
+-	struct sta32x_priv *sta32x = i2c_get_clientdata(client);
+-
  	snd_soc_unregister_codec(&client->dev);
--	kfree(i2c_get_clientdata(client));
+-	kfree(sta32x);
  	return 0;
  }
  
