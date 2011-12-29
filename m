@@ -1,22 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Period time/size in adaptive USB - alignment to
-	nrpacks?
-Date: Thu, 29 Dec 2011 09:43:06 +0100
-Message-ID: <16ced9db-de9c-476b-bb3c-7af436aab558@email.android.com>
-References: <4EF8D3FB.8090109@ivitera.com>
-	<d230c209-78cd-4f34-bba4-b778eb88471e@email.android.com>
-	<4EFB763F.7030407@ivitera.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/7] ASoC: Remove unused control type from
+	wm8978 driver
+Date: Thu, 29 Dec 2011 11:49:10 +0000
+Message-ID: <1325159355-31686-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1325159355-31686-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 1D7431037EE
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 09:40:44 +0100 (CET)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 3938721048
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 03:40:41 -0500 (EST)
-In-Reply-To: <4EFB763F.7030407@ivitera.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 726D924706
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 12:49:23 +0100 (CET)
+In-Reply-To: <1325159355-31686-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pavel Hofman wrote:
->Now please see the wireshark screenshot at
->http://personal.educity.cz/dustin/wireshark.png . Frame 1197 is the last
->URB of the period, with 960 bytes only. Yet the time distance around it
->is again 8 ms (12.808-12.816-12.824). The expected 5 ms lag appears 2
->URBs later, between frames 1201 and 1203 (12.832-12.837), all holding
->1536 bytes.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8978.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-Wireshark shows the URBs when they are submitted, which
-is in the completion handler of some previous URB.
-This means that the timing of the submission has no
-relation with its size.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+index 0b1f7ad..2ba8f8c 100644
+--- a/sound/soc/codecs/wm8978.c
++++ b/sound/soc/codecs/wm8978.c
+@@ -50,7 +50,6 @@ static const u16 wm8978_reg[WM8978_CACHEREGNUM] = {
+ 
+ /* codec private data */
+ struct wm8978_priv {
+-	enum snd_soc_control_type control_type;
+ 	unsigned int f_pllout;
+ 	unsigned int f_mclk;
+ 	unsigned int f_256fs;
+-- 
+1.7.7.3
