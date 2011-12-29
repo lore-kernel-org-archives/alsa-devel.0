@@ -1,7 +1,7 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 2/10] sound/soc/au1x/dbdma2.c: use devm_ functions
-Date: Thu, 29 Dec 2011 17:51:28 +0100
-Message-ID: <1325177489-13815-10-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 4/10] sound/soc/au1x/i2sc.c: use devm_ functions
+Date: Thu, 29 Dec 2011 17:51:26 +0100
+Message-ID: <1325177489-13815-8-git-send-email-Julia.Lawall@lip6.fr>
 References: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1325177489-13815-1-git-send-email-Julia.Lawall@lip6.fr>
@@ -20,42 +20,93 @@ device and is only freed in the remove function.
 Signed-off-by: Julia Lawall <julia.lawall@lip6.fr>
 
 ---
- sound/soc/au1x/dbdma2.c |   14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/au1x/i2sc.c |   45 +++++++++++++--------------------------------
+ 1 file changed, 13 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index 92bc1b0..8372cd3 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -350,27 +350,21 @@ static struct snd_soc_platform_driver au1xpsc_soc_platform = {
- static int __devinit au1xpsc_pcm_drvprobe(struct platform_device *pdev)
- {
- 	struct au1xpsc_audio_dmadata *dmadata;
--	int ret;
+diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
+index cb53ad8..d4b9e36 100644
+--- a/sound/soc/au1x/i2sc.c
++++ b/sound/soc/au1x/i2sc.c
+@@ -227,69 +227,50 @@ static struct snd_soc_dai_driver au1xi2s_dai_driver = {
  
--	dmadata = kzalloc(2 * sizeof(struct au1xpsc_audio_dmadata), GFP_KERNEL);
-+	dmadata = devm_kzalloc(&pdev->dev,
-+			       2 * sizeof(struct au1xpsc_audio_dmadata),
-+			       GFP_KERNEL);
- 	if (!dmadata)
+ static int __devinit au1xi2s_drvprobe(struct platform_device *pdev)
+ {
+-	int ret;
+ 	struct resource *iores, *dmares;
+ 	struct au1xpsc_audio_data *ctx;
+ 
+-	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
  		return -ENOMEM;
  
- 	platform_set_drvdata(pdev, dmadata);
+ 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!iores) {
+-		ret = -ENODEV;
+-		goto out0;
+-	}
++	if (!iores)
++		return -ENODEV;
  
--	ret = snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
+-	ret = -EBUSY;
+-	if (!request_mem_region(iores->start, resource_size(iores),
+-				pdev->name))
+-		goto out0;
++	if (!devm_request_mem_region(&pdev->dev, iores->start,
++				     resource_size(iores),
++				     pdev->name))
++		return -EBUSY;
+ 
+-	ctx->mmio = ioremap_nocache(iores->start, resource_size(iores));
++	ctx->mmio = devm_ioremap_nocache(&pdev->dev, iores->start,
++					 resource_size(iores));
+ 	if (!ctx->mmio)
+-		goto out1;
++		return -EBUSY;
+ 
+ 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+ 	if (!dmares)
+-		goto out2;
++		return -EBUSY;
+ 	ctx->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = dmares->start;
+ 
+ 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+ 	if (!dmares)
+-		goto out2;
++		return -EBUSY;
+ 	ctx->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
+ 
+ 	platform_set_drvdata(pdev, ctx);
+ 
+-	ret = snd_soc_register_dai(&pdev->dev, &au1xi2s_dai_driver);
 -	if (ret)
--		kfree(dmadata);
+-		goto out2;
 -
+-	return 0;
+-
+-out2:
+-	iounmap(ctx->mmio);
+-out1:
+-	release_mem_region(iores->start, resource_size(iores));
+-out0:
+-	kfree(ctx);
 -	return ret;
-+	return snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
++	return snd_soc_register_dai(&pdev->dev, &au1xi2s_dai_driver);
  }
  
- static int __devexit au1xpsc_pcm_drvremove(struct platform_device *pdev)
+ static int __devexit au1xi2s_drvremove(struct platform_device *pdev)
  {
--	struct au1xpsc_audio_dmadata *dmadata = platform_get_drvdata(pdev);
--
- 	snd_soc_unregister_platform(&pdev->dev);
--	kfree(dmadata);
+ 	struct au1xpsc_audio_data *ctx = platform_get_drvdata(pdev);
+-	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
  
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	WR(ctx, I2S_ENABLE, EN_D);	/* clock off, disable */
+ 
+-	iounmap(ctx->mmio);
+-	release_mem_region(r->start, resource_size(r));
+-	kfree(ctx);
+-
  	return 0;
  }
+ 
