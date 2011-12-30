@@ -1,20 +1,22 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/3] ASoC: pxa: Convert corgi to use
-	snd_soc_register_card()
-Date: Fri, 30 Dec 2011 11:18:13 +0800
-Message-ID: <1325215093.2569.8.camel@phoenix>
-References: <1325214804.2569.3.camel@phoenix>
+From: Appalayagari Sreedhar <sreecha01@gmail.com>
+Subject: Re: pcm timer resolution out of range (rate = 0,
+ period_size = 1), Division by zero in kernel
+Date: Fri, 30 Dec 2011 16:01:14 +0530
+Message-ID: <CAODvfaH3h1BYT_-gnbvsaNt_LEEPhhXLTjia9G=6v39CWppqzQ@mail.gmail.com>
+References: <CAODvfaGXziDeSAic-Rg_dBJYWeObgcQhmcy4=vNBL30Mc6GQQg@mail.gmail.com>
+	<CAN8cciaqyw=OJ3+2GbM6rqaQ+VLDbfijqgMZTODnQ-PffzDyaQ@mail.gmail.com>
+	<CAODvfaEX3A+Umgqw9eLoY-xe_NxC_yDnRNvRWk=NrGQ5-KP1Wg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
 	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 629BC24357
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 04:18:20 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so8765063ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 19:18:19 -0800 (PST)
-In-Reply-To: <1325214804.2569.3.camel@phoenix>
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CC26243BF
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 11:31:15 +0100 (CET)
+Received: by ggnv5 with SMTP id v5so8824663ggn.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 02:31:15 -0800 (PST)
+In-Reply-To: <CAODvfaEX3A+Umgqw9eLoY-xe_NxC_yDnRNvRWk=NrGQ5-KP1Wg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,118 +26,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
+Hi,
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- arch/arm/mach-pxa/corgi.c |    9 +++++++++
- sound/soc/pxa/corgi.c     |   43 +++++++++++++++++++++++--------------------
- 2 files changed, 32 insertions(+), 20 deletions(-)
+any suggestion for me to resolve this issue?
 
-diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
-index 66600f0..11f1e73 100644
---- a/arch/arm/mach-pxa/corgi.c
-+++ b/arch/arm/mach-pxa/corgi.c
-@@ -436,6 +436,14 @@ static struct platform_device corgiled_device = {
- };
- 
- /*
-+ * Corgi Audio
-+ */
-+static struct platform_device corgi_audio_device = {
-+	.name	= "corgi-audio",
-+	.id	= -1,
-+};
-+
-+/*
-  * MMC/SD Device
-  *
-  * The card detect interrupt isn't debounced so we delay it by 250ms
-@@ -641,6 +649,7 @@ static struct platform_device *devices[] __initdata = {
- 	&corgifb_device,
- 	&corgikbd_device,
- 	&corgiled_device,
-+	&corgi_audio_device,
- 	&sharpsl_nand_device,
- 	&sharpsl_rom_device,
- };
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 30ebce2..bc21944 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -291,7 +291,7 @@ static struct snd_soc_dai_link corgi_dai = {
- };
- 
- /* corgi audio machine driver */
--static struct snd_soc_card snd_soc_corgi = {
-+static struct snd_soc_card corgi = {
- 	.name = "Corgi",
- 	.owner = THIS_MODULE,
- 	.dai_link = &corgi_dai,
-@@ -305,38 +305,41 @@ static struct snd_soc_card snd_soc_corgi = {
- 	.num_dapm_routes = ARRAY_SIZE(corgi_audio_map),
- };
- 
--static struct platform_device *corgi_snd_device;
--
--static int __init corgi_init(void)
-+static int __devinit corgi_probe(struct platform_device *pdev)
- {
-+	struct snd_soc_card *card = &corgi;
- 	int ret;
- 
--	if (!(machine_is_corgi() || machine_is_shepherd() ||
--	      machine_is_husky()))
--		return -ENODEV;
--
--	corgi_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!corgi_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(corgi_snd_device, &snd_soc_corgi);
--	ret = platform_device_add(corgi_snd_device);
-+	card->dev = &pdev->dev;
- 
-+	ret = snd_soc_register_card(card);
- 	if (ret)
--		platform_device_put(corgi_snd_device);
--
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
-+			ret);
- 	return ret;
- }
- 
--static void __exit corgi_exit(void)
-+static int __devexit corgi_remove(struct platform_device *pdev)
- {
--	platform_device_unregister(corgi_snd_device);
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+	return 0;
- }
- 
--module_init(corgi_init);
--module_exit(corgi_exit);
-+static struct platform_driver corgi_driver = {
-+	.driver		= {
-+		.name	= "corgi-audio",
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe		= corgi_probe,
-+	.remove		= __devexit_p(corgi_remove),
-+};
-+
-+module_platform_driver(corgi_driver);
- 
- /* Module information */
- MODULE_AUTHOR("Richard Purdie");
- MODULE_DESCRIPTION("ALSA SoC Corgi");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:corgi-audio");
--- 
-1.7.5.4
+-Sreedhar
+
+
+On 12/23/11, Appalayagari Sreedhar <sreecha01@gmail.com> wrote:
+> Hi Raymond,
+>
+> We are working with DM368 processor and cx20709 conexant external
+> codec interfaced via McBSP.
+>
+> The davinci pcm hw params is below. (from davinci-pcm.c file)
+>
+> static struct snd_pcm_hardware davinci_pcm_hardware = {
+>         .info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER
+> |
+>                  SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+>                  SNDRV_PCM_INFO_PAUSE),
+>         .formats = (SNDRV_PCM_FMTBIT_S16_LE),
+>         .rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+>                   SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+>                   SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+>                   SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+>                   SNDRV_PCM_RATE_KNOT),
+>         .rate_min = 8000,
+>         .rate_max = 96000,
+>         .channels_min = 2,
+>         .channels_max = 2,
+>         .buffer_bytes_max = 128 * 1024,
+>         .period_bytes_min = 32,
+>         .period_bytes_max = 8 * 1024,
+>         .periods_min = 16,
+>         .periods_max = 255,
+>         .fifo_size = 0,
+> };
+>
+> and we are configuring from user space using OSS ioctl for Speed.
+> Format and Bits Per Sample.
+>
+> Speed = 8kHz/16kHz
+> Format = AFMT_S16LE
+> Bits Per Sample = 16
+> Channels = Stereo/Mono
+>
+> I am new to ALSA and OSS. Please let me know if you need further details.
+>
+> Thank you,
+> Sreedhar.
+>
+>
+> On 12/23/11, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+>> 2011/12/22, Appalayagari Sreedhar <sreecha01@gmail.com>:
+>>> Hi,
+>>>
+>>> We are working with 2.6.32 kernel. we are working with ALSA model
+>>> codec driver for conexant chipset. we are using OSS emulation for
+>>> audio playback and recording.
+>>>
+>>> we are not setting the fragmenttaion block using OSS ioctl function
+>>> (SNDCTL_DSP_SETFRAGMENT) , assuming that it will be taken care by the
+>>> ALSA framework based on the sampling rate, bits per sample etc.
+>>>
+>>> we are facing the below issue randomly.
+>>>
+>>> ALSA sound/core/pcm_timer.c:71: -calling VIDIOC_pcm timer resolution
+>>> out of range (rate = 0, period_size = 1)
+>>> Division by zero in kernel.
+>>
+>> Do your controller really support 1 frame per period (period_size = 1) ?
+>>
+>> What is the value of .period_bytes_min and other parameters in
+>> snd_pcm_hardware and format supported ?
+>>
+>>>
+>>> We tried to program the fragmentation block after the sampling rate,
+>>> bits per sample etc are configured. it is working fine for 5 or 6
+>>> iterations for recording and playback.
+>>>
+>>> after that the audio quality is gone bad. the audio is not smooth and
+>>> it is sharp.
+>>>
+>>> could you please help to resolve this problem.
+>>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
