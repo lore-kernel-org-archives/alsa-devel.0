@@ -1,19 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/3] ASoC: Fix return value of
-	wm8580_set_sysclk()
-Date: Fri, 30 Dec 2011 23:36:23 +0800
-Message-ID: <1325259383.4755.2.camel@phoenix>
+Subject: [PATCH 3/3] ASoC: Fix return value of
+	wm8962_gpio_direction_out()
+Date: Fri, 30 Dec 2011 23:38:03 +0800
+Message-ID: <1325259483.4755.4.camel@phoenix>
 References: <1325259294.4755.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A2259103ACB
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 16:36:31 +0100 (CET)
-Received: by yhjj56 with SMTP id j56so8333170yhj.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 07:36:31 -0800 (PST)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8E41103ACB
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 16:38:12 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so3413418ghb.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 07:38:12 -0800 (PST)
 In-Reply-To: <1325259294.4755.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,34 +33,33 @@ will be 1 if a bit changed rather than zero.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/wm8580.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8962.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index b1c8d3d..2112851 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -670,7 +670,7 @@ static int wm8580_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index be35b64..80e8b9f 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3878,13 +3878,17 @@ static int wm8962_gpio_direction_out(struct gpio_chip *chip,
  {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8580_priv *wm8580 = snd_soc_codec_get_drvdata(codec);
--	int sel, sel_mask, sel_shift;
-+	int ret, sel, sel_mask, sel_shift;
+ 	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
+ 	struct snd_soc_codec *codec = wm8962->codec;
+-	int val;
++	int ret, val;
  
- 	switch (dai->driver->id) {
- 	case WM8580_DAI_PAIFRX:
-@@ -711,7 +711,11 @@ static int wm8580_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	/* We really should validate PLL settings but not yet */
- 	wm8580->sysclk[dai->driver->id] = freq;
+ 	/* Force function 1 (logic output) */
+ 	val = (1 << WM8962_GP2_FN_SHIFT) | (value << WM8962_GP2_LVL_SHIFT);
  
--	return snd_soc_update_bits(codec, WM8580_CLKSEL, sel_mask, sel);
-+	ret = snd_soc_update_bits(codec, WM8580_CLKSEL, sel_mask, sel);
+-	return snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
+-				   WM8962_GP2_FN_MASK | WM8962_GP2_LVL, val);
++	ret = snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
++				  WM8962_GP2_FN_MASK | WM8962_GP2_LVL, val);
 +	if (ret < 0)
 +		return ret;
 +
 +	return 0;
  }
  
- static int wm8580_digital_mute(struct snd_soc_dai *codec_dai, int mute)
+ static struct gpio_chip wm8962_template_chip = {
 -- 
 1.7.5.4
