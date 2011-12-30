@@ -1,17 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/3] ASoC: Use dai_fmt in corgi machine driver
-Date: Fri, 30 Dec 2011 11:13:24 +0800
-Message-ID: <1325214804.2569.3.camel@phoenix>
+Subject: [PATCH 2/3] ASoC: Convert corgi to table based DAPM
+	and control init
+Date: Fri, 30 Dec 2011 11:16:32 +0800
+Message-ID: <1325214992.2569.6.camel@phoenix>
+References: <1325214804.2569.3.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E90E2414A
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 04:13:31 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so8764177ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 19:13:30 -0800 (PST)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 73F2024356
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 04:16:39 +0100 (CET)
+Received: by yhjj56 with SMTP id j56so8203221yhj.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 19:16:38 -0800 (PST)
+In-Reply-To: <1325214804.2569.3.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,40 +29,60 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/pxa/corgi.c |   14 ++------------
- 1 files changed, 2 insertions(+), 12 deletions(-)
+ sound/soc/pxa/corgi.c |   23 ++++++++---------------
+ 1 files changed, 8 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 5e5004a..5ff6dac 100644
+index 5ff6dac..30ebce2 100644
 --- a/sound/soc/pxa/corgi.c
 +++ b/sound/soc/pxa/corgi.c
-@@ -142,18 +142,6 @@ static int corgi_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
- 	/* set the codec system clock for DAC and ADC */
- 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL, clk,
- 		SND_SOC_CLOCK_IN);
-@@ -311,6 +299,8 @@ static struct snd_soc_dai_link corgi_dai = {
- 	.platform_name = "pxa-pcm-audio",
- 	.codec_name = "wm8731.0-001b",
- 	.init = corgi_wm8731_init,
-+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		   SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &corgi_ops,
+@@ -227,7 +227,7 @@ SND_SOC_DAPM_HP("Headset Jack", NULL),
  };
  
+ /* Corgi machine audio map (connections to the codec pins) */
+-static const struct snd_soc_dapm_route audio_map[] = {
++static const struct snd_soc_dapm_route corgi_audio_map[] = {
+ 
+ 	/* headset Jack  - in = micin, out = LHPOUT*/
+ 	{"Headset Jack", NULL, "LHPOUT"},
+@@ -269,24 +269,10 @@ static int corgi_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	int err;
+ 
+ 	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
+ 	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
+ 
+-	/* Add corgi specific controls */
+-	err = snd_soc_add_controls(codec, wm8731_corgi_controls,
+-				ARRAY_SIZE(wm8731_corgi_controls));
+-	if (err < 0)
+-		return err;
+-
+-	/* Add corgi specific widgets */
+-	snd_soc_dapm_new_controls(dapm, wm8731_dapm_widgets,
+-				  ARRAY_SIZE(wm8731_dapm_widgets));
+-
+-	/* Set up corgi specific audio path audio_map */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
+ 	return 0;
+ }
+ 
+@@ -310,6 +296,13 @@ static struct snd_soc_card snd_soc_corgi = {
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &corgi_dai,
+ 	.num_links = 1,
++
++	.controls = wm8731_corgi_controls,
++	.num_controls = ARRAY_SIZE(wm8731_corgi_controls),
++	.dapm_widgets = wm8731_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8731_dapm_widgets),
++	.dapm_routes = corgi_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(corgi_audio_map),
+ };
+ 
+ static struct platform_device *corgi_snd_device;
 -- 
 1.7.5.4
