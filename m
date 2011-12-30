@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/3] ASoC: pxa: Convert poodle to use
-	snd_soc_register_card()
-Date: Fri, 30 Dec 2011 09:16:11 +0800
-Message-ID: <1325207771.9599.1.camel@phoenix>
+Subject: [PATCH 2/3] ASoC: Convert poodle to table based DAPM
+ and control init
+Date: Fri, 30 Dec 2011 09:19:32 +0800
+Message-ID: <1325207972.9599.4.camel@phoenix>
+References: <1325207771.9599.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58ED2103A89
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 02:16:24 +0100 (CET)
-Received: by yenr11 with SMTP id r11so4228389yen.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 17:16:23 -0800 (PST)
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FF5A103A99
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 02:19:38 +0100 (CET)
+Received: by ggnv5 with SMTP id v5so8742968ggn.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2011 17:19:38 -0800 (PST)
+In-Reply-To: <1325207771.9599.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,116 +28,63 @@ To: linux-kernel@vger.kernel.org
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
-
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- arch/arm/mach-pxa/poodle.c |    6 ++++++
- sound/soc/pxa/poodle.c     |   42 +++++++++++++++++++++++-------------------
- 2 files changed, 29 insertions(+), 19 deletions(-)
+ sound/soc/pxa/poodle.c |   23 ++++++++---------------
+ 1 files changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/poodle.c b/arch/arm/mach-pxa/poodle.c
-index 69036e4..744baee 100644
---- a/arch/arm/mach-pxa/poodle.c
-+++ b/arch/arm/mach-pxa/poodle.c
-@@ -158,6 +158,11 @@ static struct scoop_pcmcia_config poodle_pcmcia_config = {
- EXPORT_SYMBOL(poodle_scoop_device);
- 
- 
-+static struct platform_device poodle_audio_device = {
-+	.name	= "poodle-audio",
-+	.id	= -1,
-+};
-+
- /* LoCoMo device */
- static struct resource locomo_resources[] = {
- 	[0] = {
-@@ -407,6 +412,7 @@ static struct platform_device sharpsl_rom_device = {
- static struct platform_device *devices[] __initdata = {
- 	&poodle_locomo_device,
- 	&poodle_scoop_device,
-+	&poodle_audio_device,
- 	&sharpsl_nand_device,
- 	&sharpsl_rom_device,
- };
 diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index 4c29bc1..c9e24bf 100644
+index c9e24bf..a321b4d 100644
 --- a/sound/soc/pxa/poodle.c
 +++ b/sound/soc/pxa/poodle.c
-@@ -281,22 +281,18 @@ static struct snd_soc_dai_link poodle_dai = {
+@@ -214,7 +214,7 @@ SND_SOC_DAPM_SPK("Ext Spk", poodle_amp_event),
  };
  
- /* poodle audio machine driver */
--static struct snd_soc_card snd_soc_poodle = {
-+static struct snd_soc_card poodle = {
- 	.name = "Poodle",
+ /* Corgi machine connections to the codec pins */
+-static const struct snd_soc_dapm_route audio_map[] = {
++static const struct snd_soc_dapm_route poodle_audio_map[] = {
+ 
+ 	/* headphone connected to LHPOUT1, RHPOUT1 */
+ 	{"Headphone Jack", NULL, "LHPOUT"},
+@@ -246,25 +246,11 @@ static int poodle_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	int err;
+ 
+ 	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
+ 	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
+ 	snd_soc_dapm_enable_pin(dapm, "MICIN");
+ 
+-	/* Add poodle specific controls */
+-	err = snd_soc_add_controls(codec, wm8731_poodle_controls,
+-				ARRAY_SIZE(wm8731_poodle_controls));
+-	if (err < 0)
+-		return err;
+-
+-	/* Add poodle specific widgets */
+-	snd_soc_dapm_new_controls(dapm, wm8731_dapm_widgets,
+-				  ARRAY_SIZE(wm8731_dapm_widgets));
+-
+-	/* Set up poodle specific audio path audio_map */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
+ 	return 0;
+ }
+ 
+@@ -286,6 +272,13 @@ static struct snd_soc_card poodle = {
  	.dai_link = &poodle_dai,
  	.num_links = 1,
  	.owner = THIS_MODULE,
++
++	.controls = wm8731_poodle_controls,
++	.num_controls = ARRAY_SIZE(wm8731_poodle_controls),
++	.dapm_widgets = wm8731_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8731_dapm_widgets),
++	.dapm_routes = poodle_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(poodle_audio_map),
  };
  
--static struct platform_device *poodle_snd_device;
--
--static int __init poodle_init(void)
-+static int __devinit poodle_probe(struct platform_device *pdev)
- {
-+	struct snd_soc_card *card = &poodle;
- 	int ret;
- 
--	if (!machine_is_poodle())
--		return -ENODEV;
--
- 	locomo_gpio_set_dir(&poodle_locomo_device.dev,
- 		POODLE_LOCOMO_GPIO_AMP_ON, 0);
- 	/* should we mute HP at startup - burning power ?*/
-@@ -305,28 +301,36 @@ static int __init poodle_init(void)
- 	locomo_gpio_set_dir(&poodle_locomo_device.dev,
- 		POODLE_LOCOMO_GPIO_MUTE_R, 0);
- 
--	poodle_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!poodle_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(poodle_snd_device, &snd_soc_poodle);
--	ret = platform_device_add(poodle_snd_device);
-+	card->dev = &pdev->dev;
- 
-+	ret = snd_soc_register_card(card);
- 	if (ret)
--		platform_device_put(poodle_snd_device);
--
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
-+			ret);
- 	return ret;
- }
- 
--static void __exit poodle_exit(void)
-+static int __devexit poodle_remove(struct platform_device *pdev)
- {
--	platform_device_unregister(poodle_snd_device);
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+	return 0;
- }
- 
--module_init(poodle_init);
--module_exit(poodle_exit);
-+static struct platform_driver poodle_driver = {
-+	.driver		= {
-+		.name	= "poodle-audio",
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe		= poodle_probe,
-+	.remove		= __devexit_p(poodle_remove),
-+};
-+
-+module_platform_driver(poodle_driver);
- 
- /* Module information */
- MODULE_AUTHOR("Richard Purdie");
- MODULE_DESCRIPTION("ALSA SoC Poodle");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:poodle-audio");
+ static int __devinit poodle_probe(struct platform_device *pdev)
 -- 
 1.7.5.4
