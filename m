@@ -1,35 +1,84 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] It looks like snd-soc-rx51 only works as
-	built-in, not as a module
-Date: Sat, 31 Dec 2011 01:02:14 +0000
-Message-ID: <20111231010214.GB5835@opensource.wolfsonmicro.com>
-References: <CAMP44s3c68z-+3j9OR3pyBFVzH-LJ7WcMu-BnejhkfrxnF4rqA@mail.gmail.com> <20111229183712.GB32392@sirena.org.uk> <CAMP44s2Vo0iPa6aq6PGy8YSEnEQuNVi1345BtLV9U8zng61uFA@mail.gmail.com> <20111229212707.GA9737@opensource.wolfsonmicro.com> <CAMP44s2SU_M0Fpt43YDLLhPrgsGzkgpHRWHLcJO4f8N=0HHdvg@mail.gmail.com> <20111229215407.GB9737@opensource.wolfsonmicro.com> <yw1x7h1ff26w.fsf@unicorn.mansr.com> <20111230105244.GA21638@sirena.org.uk> <yw1xy5ttex9k.fsf@unicorn.mansr.com> <yw1xaa69dfay.fsf@unicorn.mansr.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Fix return value of
+ wm8903_gpio_direction_in() and wm8903_gpio_direction_out()
+Date: Sat, 31 Dec 2011 11:01:41 +0800
+Message-ID: <1325300501.4616.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <yw1xaa69dfay.fsf@unicorn.mansr.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D9EFA103B4E
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2011 04:01:54 +0100 (CET)
+Received: by yenr11 with SMTP id r11so4533325yen.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 19:01:51 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 30, 2011 at 07:34:29PM +0000, M=E5ns Rullg=E5rd wrote:
-> M=E5ns Rullg=E5rd <mans@mansr.com> writes:
+We can't just pass back the return value of snd_soc_update_bits() as it
+will be 1 if a bit changed rather than zero.
 
-> > In which tree?  I haven't seen anything of the kind.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8903.c |   18 ++++++++++++++----
+ 1 files changed, 14 insertions(+), 4 deletions(-)
 
-The random sampling of drivers I looked at seemed to be doing something
-sensible.
-
-> That would be this one:
-> http://article.gmane.org/gmane.linux.alsa.devel/89052
-
-Oh, well.  Liam is a bit lossy sometimes.  You really need to repost
-patches if they're worthwhile, don't just let them rot.
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index d88b727..c91fb2f 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1777,13 +1777,18 @@ static int wm8903_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
+ 	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+ 	struct snd_soc_codec *codec = wm8903->codec;
+ 	unsigned int mask, val;
++	int ret;
+ 
+ 	mask = WM8903_GP1_FN_MASK | WM8903_GP1_DIR_MASK;
+ 	val = (WM8903_GPn_FN_GPIO_INPUT << WM8903_GP1_FN_SHIFT) |
+ 		WM8903_GP1_DIR;
+ 
+-	return snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
+-				   mask, val);
++	ret = snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
++				  mask, val);
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+ 
+ static int wm8903_gpio_get(struct gpio_chip *chip, unsigned offset)
+@@ -1803,13 +1808,18 @@ static int wm8903_gpio_direction_out(struct gpio_chip *chip,
+ 	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+ 	struct snd_soc_codec *codec = wm8903->codec;
+ 	unsigned int mask, val;
++	int ret;
+ 
+ 	mask = WM8903_GP1_FN_MASK | WM8903_GP1_DIR_MASK | WM8903_GP1_LVL_MASK;
+ 	val = (WM8903_GPn_FN_GPIO_OUTPUT << WM8903_GP1_FN_SHIFT) |
+ 		(value << WM8903_GP2_LVL_SHIFT);
+ 
+-	return snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
+-				   mask, val);
++	ret = snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
++				  mask, val);
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+ 
+ static void wm8903_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+-- 
+1.7.5.4
