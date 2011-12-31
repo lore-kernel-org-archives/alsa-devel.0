@@ -1,19 +1,26 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 4/4] ASoC: Convert z2 to table based DAPM init
-Date: Sat, 31 Dec 2011 08:45:49 +0800
-Message-ID: <1325292349.3270.4.camel@phoenix>
-References: <1325292030.3270.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: It looks like snd-soc-rx51 only works as built-in,
+	not as a	module
+Date: Sat, 31 Dec 2011 00:59:38 +0000
+Message-ID: <20111231005935.GA5835@opensource.wolfsonmicro.com>
+References: <CAMP44s1DPE3ey+Cf48ShbAu_-vv2NC8ppkABT7fDmsE3_j9AmQ@mail.gmail.com>
+	<20111210082741.GA32605@earth.universe>
+	<CAMP44s3c68z-+3j9OR3pyBFVzH-LJ7WcMu-BnejhkfrxnF4rqA@mail.gmail.com>
+	<20111229183712.GB32392@sirena.org.uk>
+	<CAMP44s2Vo0iPa6aq6PGy8YSEnEQuNVi1345BtLV9U8zng61uFA@mail.gmail.com>
+	<20111229212707.GA9737@opensource.wolfsonmicro.com>
+	<CAMP44s2SU_M0Fpt43YDLLhPrgsGzkgpHRWHLcJO4f8N=0HHdvg@mail.gmail.com>
+	<20111229215407.GB9737@opensource.wolfsonmicro.com>
+	<CAMP44s0EzmhdZ4X91c5X7Rn9q44QcUDm2KNDO81ue16SBWM6_g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47D17103B6A
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2011 01:45:56 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so9031910ggn.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2011 16:45:55 -0800 (PST)
-In-Reply-To: <1325292030.3270.1.camel@phoenix>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D597103B57
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2011 01:59:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAMP44s0EzmhdZ4X91c5X7Rn9q44QcUDm2KNDO81ue16SBWM6_g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +30,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
+To: Felipe Contreras <felipe.contreras@gmail.com>
+Cc: Sebastian Reichel <sre@debian.org>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/pxa/z2.c |   14 ++++++--------
- 1 files changed, 6 insertions(+), 8 deletions(-)
+On Fri, Dec 30, 2011 at 10:00:55PM +0200, Felipe Contreras wrote:
+> On Thu, Dec 29, 2011 at 11:54 PM, Mark Brown
+> > On Thu, Dec 29, 2011 at 11:51:11PM +0200, Felipe Contreras wrote:
 
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index e8f15ce..76ccb17 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -112,7 +112,7 @@ static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
- };
- 
- /* Z2 machine audio_map */
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route z2_audio_map[] = {
- 
- 	/* headphone connected to LOUT1, ROUT1 */
- 	{"Headphone Jack", NULL, "LOUT1"},
-@@ -142,13 +142,6 @@ static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "OUT3");
- 	snd_soc_dapm_disable_pin(dapm, "MONO1");
- 
--	/* Add z2 specific widgets */
--	snd_soc_dapm_new_controls(dapm, wm8750_dapm_widgets,
--				 ARRAY_SIZE(wm8750_dapm_widgets));
--
--	/* Set up z2 specific audio paths */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
- 	/* Jack detection API stuff */
- 	ret = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
- 				&hs_jack);
-@@ -195,6 +188,11 @@ static struct snd_soc_card snd_soc_z2 = {
- 	.owner		= THIS_MODULE,
- 	.dai_link	= &z2_dai,
- 	.num_links	= 1,
-+
-+	.dapm_widgets = wm8750_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8750_dapm_widgets),
-+	.dapm_routes = z2_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(z2_audio_map),
- };
- 
- static struct platform_device *z2_snd_device;
--- 
-1.7.5.4
+> >> >> > That should not be required, the modules should be loadable in any
+> >> >> > order.
+
+> >> Yes, but udev loads snd_soc_tlv320aic3x, not snd-soc-rx51.
+
+> > That is compltelely orthogonal to what you were saying above about the
+> > ordering of module loading.
+
+> Not really, because if both are compiled as modules,
+> snd_soc_tlv320aic3x will always be loaded first (automatically by
+> udev).
+
+Which is relevant because...?  To repeat, the ordering of module loading
+is totally ortogonal as any ordering of modules is supported.  You
+appear to be totally ignoring what I am writing here.
+
+> > The reason the driver is not loaded automatically is that the OMAP
+> > machine drivers have not been converted to platform devices.
+
+> Well, if that's the case then there's a real issue. There doesn't seem
+> to be a MODULE_DEPENDS(), or anything like that.
+
+A MODULE_DEPENDS() would also be irrelevant here.
+
+> snd-soc-rx51 seems to depend on snd_soc_tlv320aic3x through
+> codec_dai_name, and codec_name, and so on. I don't know how this
+> dependency is supposed to work out.
+
+All the drivers should load via the normal driver instantiation
+mechainsms and when they're all there they'll get matched together.
