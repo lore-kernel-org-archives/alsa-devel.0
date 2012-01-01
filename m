@@ -1,20 +1,20 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Period time/size in adaptive USB - alignment to
- nrpacks?
-Date: Sun, 01 Jan 2012 18:01:16 +0100
-Message-ID: <4F00915C.7070100@ivitera.com>
-References: <4EF8D3FB.8090109@ivitera.com>
-	<d230c209-78cd-4f34-bba4-b778eb88471e@email.android.com>
-	<4EFB763F.7030407@ivitera.com>
-	<16ced9db-de9c-476b-bb3c-7af436aab558@email.android.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: [PATCH 0/6] snd-usb endpoint rework, version 6
+Date: Sun, 1 Jan 2012 18:09:49 +0100
+Message-ID: <CAFz=ag6pqhfOvxv_ScbxJFs6OEZt18GM+Dgs1KWQMG7mdZO21g@mail.gmail.com>
+References: <1324656947-23169-1-git-send-email-zonque@gmail.com>
+	<4EFDC32B.10808@gmail.com>
+	<CAFz=ag7_qzPJq44havp=EbFVKud5VvKaOLJk0i0dM43X3urp9Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id B4162243ED
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2012 18:01:32 +0100 (CET)
-In-Reply-To: <16ced9db-de9c-476b-bb3c-7af436aab558@email.android.com>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 890B1243FD
+	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2012 18:09:51 +0100 (CET)
+Received: by werb12 with SMTP id b12so7896378wer.38
+	for <alsa-devel@alsa-project.org>; Sun, 01 Jan 2012 09:09:49 -0800 (PST)
+In-Reply-To: <CAFz=ag7_qzPJq44havp=EbFVKud5VvKaOLJk0i0dM43X3urp9Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: tiwai@suse.de, blablack@gmail.com, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 29.12.2011 09:43, Clemens Ladisch wrote:
-> Pavel Hofman wrote:
->> Now please see the wireshark screenshot at
->> http://personal.educity.cz/dustin/wireshark.png . Frame 1197 is the last
->> URB of the period, with 960 bytes only. Yet the time distance around it
->> is again 8 ms (12.808-12.816-12.824). The expected 5 ms lag appears 2
->> URBs later, between frames 1201 and 1203 (12.832-12.837), all holding
->> 1536 bytes.
->
-> Wireshark shows the URBs when they are submitted, which
-> is in the completion handler of some previous URB.
-> This means that the timing of the submission has no
-> relation with its size.
+Happy New Year!
 
-Hi Clemens, thanks a lot for the clarification. Everything seems to be 
-all right and verified :-)
+That being said, I've tested a kernel without Daniel's patch set. It
+doesn't work either. The error messages are only slightly different:
 
-Best regards,
+Jan  1 11:52:31 weasel mtp-probe: checking bus 1, device 4:
+"/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-1"
+Jan  1 11:52:31 weasel mtp-probe: bus: 1, device: 4 was not an MTP device
+Jan  1 11:52:31 weasel kernel: [  161.880773] usbcore: registered new
+interface driver snd-usb-audio
+Jan  1 11:52:34 weasel kernel: [  164.284980] cannot submit datapipe
+for urb 0, error -28: not enough bandwidth
 
-Pavel.
+So, It's not related to Daniel's rework. But nevertheless, something's broken...
