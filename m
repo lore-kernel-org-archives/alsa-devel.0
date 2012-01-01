@@ -1,92 +1,70 @@
-From: Andrew <necromant@necromant.ath.cx>
-Subject: [intel-hda] ALC663 question.
-Date: Sun, 01 Jan 2012 21:30:38 +0400
-Message-ID: <060957c544c2952d5be6283a582cc5a7@localhost>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [LAD] USB-Audio and XHCI (USB 3)
+Date: Sun, 1 Jan 2012 17:57:32 +0000
+Message-ID: <CAE-xCyPhrS6pgY0T9SG0TCubSi0CE2Yd5H=ttOzBmvgrR8fTPA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward5.mail.yandex.net (forward5.mail.yandex.net
-	[77.88.46.21]) by alsa0.perex.cz (Postfix) with ESMTP id 697EC2440B
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2012 18:31:23 +0100 (CET)
-Received: from smtp2.mail.yandex.net (smtp2.mail.yandex.net [77.88.46.102])
-	by forward5.mail.yandex.net (Yandex) with ESMTP id 82F361200BA5
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2012 21:30:34 +0400 (MSK)
-Received: from smtp2.mail.yandex.net (localhost [127.0.0.1])
-	by smtp2.mail.yandex.net (Yandex) with ESMTP id 732B8E203A6
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2012 21:30:34 +0400 (MSK)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, gdiffey-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I'm trying to get things working correctly for ASUS N75SF laptop and it
-looks like I'm somewhat stuck.
-The laptop has an ALC663 codec, 2 front speakers and an external
-subwoofer. 
-The 'auto' settings on 3.1.6 kernel provided me no meens of enabling the
-subwoofer, the automute switch didn't work either. 
-I threw on a patch with a quirk, that fixed most of the things except one:
-Whatever I do, I get lfe to output front-right channel. 
-I followed alc663_asus_21jd_clfe example, but still that only gives me a
-volume control of that mixer. 
-I'm not very familiar with alsa/hda codebase, so I might be missing some
-trivia. 
-Does the code have to register a pcm for each dac? If so, the problem is
-in alc_build_pcms, since it looks like it only uses 
-dac_nids[0]. Setting spec->multiout.max_channels in init code does not
-help. 
+Hi everyone,
 
-my current n75sf_setup code is as follows: 
+I was wondering if anyone managed to run a USB 2 soundcard on a USB3
+(XHCI) port?
 
+I'm running the kernel 3.2 rc7.
 
---- cut --- 
-	struct alc_spec *spec = codec->spec;
-	spec->autocfg.hp_pins[0] = 0x21;
-	spec->autocfg.speaker_pins[0] = 0x14;
-	spec->autocfg.speaker_pins[1] = 0x16;
-	spec->automute = 1;
-	spec->automute_mode = ALC_AUTOMUTE_PIN;
-	spec->ext_mic_pin = 0x18;
-	spec->int_mic_pin = 0x19;
-	spec->auto_mic = 1;
+With the M-Audio Fast Track Ultra (USB 2):
+The output of dmesg is this:
+[  475.094595] usb 3-1: new high-speed USB device number 2 using xhci_hcd
+[  475.108605] usb 3-1: config 1 interface 3 altsetting 0 bulk
+endpoint 0x7 has invalid maxpacket 8
+[  475.108615] usb 3-1: config 1 interface 3 altsetting 0 bulk
+endpoint 0x87 has invalid maxpacket 8
+[  475.108958] xhci_hcd 0000:04:00.0: WARN: short transfer on control ep
+[  475.109328] xhci_hcd 0000:04:00.0: WARN: short transfer on control ep
+[  475.109879] xhci_hcd 0000:04:00.0: WARN: short transfer on control ep
+[  475.110564] xhci_hcd 0000:04:00.0: ERROR: unexpected command
+completion code 0x11.
+[  475.110585] usb 3-1: can't set config #1, error -22
 
---- cut ---
+The snd-usb-audio module is not probed automatically, and if I
+modprobe it manually, no sound card is detected.
 
->From the codec's point of view, there are 3 dacs, 
-nids 0x02 0x03
-Either of these can serve stereo to front or headphone plug via mixers
-nid 0x4 dac is the for lfe, only the second channel is wired. 
-pin 0x16 (lfe) can only get stream from 0x4, which gets identical data as
-dac 0x2
+The error message is described in this bug:
+https://bugzilla.novell.com/show_bug.cgi?id=3D679944
+but if I understand well, kernel wise, everything is "ok" and the
+issue lies in Alsa
 
-This is the point I do not know where to look for the bug. 
+The output of lsusb is:
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
+Bus 002 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
+Bus 001 Device 003: ID 050d:0307 Belkin Components
+Bus 002 Device 003: ID 0408:1af1 Quanta Computer, Inc.
+Bus 001 Device 004: ID 046d:c51b Logitech, Inc. V220 Cordless Optical
+Mouse for Notebooks
+Bus 003 Device 002: ID 0763:2080 Midiman M-Audio RunTime DFU
 
+The Edirol UA-25Ex (USB 1) works fine, I get a few warnings in dmesg
+but the sound card is detected and functional...
 
-So far, my patch adds: 
-* Proper automuting toggle switch (subwoofer now gets disabled as well,
-when headphones are plugged). 
-* Volume control for LFE channel (the stream is still identical to front
-right) 
-* Channel mode switcher (2ch, front only, 3ch - front + subwoofer enabled)
-* (Mostly) working Headphone pin mode selection enum.
-Things I still want to fix before sending in the patch:
-* 5ch mode with headphone out configured as line-out for the rear
-speakers, 
-(Needs some things filled out and some testing as well)
-* Toggle 2ch/3ch mode on subwoofer insertion (Still needs some
-investigation and testing)
-* Auto-mic and external mic need testing. 
+Let me know if I should provide any more info, or outputs, anything
+that can help.
 
-
-Regards,
-Andrew
- 
+Kind Regards,
+Aur=E9lien
