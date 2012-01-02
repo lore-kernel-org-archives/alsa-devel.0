@@ -1,53 +1,86 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Does ASoC support sound card with multiple interfaces?
-Date: Mon, 2 Jan 2012 20:36:13 +0530
-Message-ID: <1325516773.12508.57.camel@matrix>
+From: Felipe Contreras <felipe.contreras@gmail.com>
+Subject: Re: It looks like snd-soc-rx51 only works as built-in, not as a module
+Date: Mon, 2 Jan 2012 20:33:03 +0200
+Message-ID: <CAMP44s1hUYAcMTDBBPAbV=m39oGrbKXUhv44bp71XkNg-dEBzA@mail.gmail.com>
+References: <CAMP44s1DPE3ey+Cf48ShbAu_-vv2NC8ppkABT7fDmsE3_j9AmQ@mail.gmail.com>
+	<20111210082741.GA32605@earth.universe>
+	<CAMP44s3c68z-+3j9OR3pyBFVzH-LJ7WcMu-BnejhkfrxnF4rqA@mail.gmail.com>
+	<20111229183712.GB32392@sirena.org.uk>
+	<CAMP44s2Vo0iPa6aq6PGy8YSEnEQuNVi1345BtLV9U8zng61uFA@mail.gmail.com>
+	<20111229212707.GA9737@opensource.wolfsonmicro.com>
+	<CAMP44s2SU_M0Fpt43YDLLhPrgsGzkgpHRWHLcJO4f8N=0HHdvg@mail.gmail.com>
+	<20111229215407.GB9737@opensource.wolfsonmicro.com>
+	<CAMP44s0EzmhdZ4X91c5X7Rn9q44QcUDm2KNDO81ue16SBWM6_g@mail.gmail.com>
+	<20111231005935.GA5835@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE002.bigfish.com (am1ehsobe002.messaging.microsoft.com
-	[213.199.154.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id B68741037F3
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 15:54:13 +0100 (CET)
-Received: from mail49-am1 (localhost [127.0.0.1])	by mail49-am1-R.bigfish.com
-	(Postfix) with ESMTP id 44514140476	for
-	<alsa-devel@alsa-project.org>; Mon, 2 Jan 2012 14:54:10 +0000 (UTC)
-Received: from AM1EHSMHS002.bigfish.com (unknown [10.3.201.250])	by
-	mail49-am1.bigfish.com (Postfix) with ESMTP id 1E14048004C	for
-	<alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 14:54:10 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20111231005935.GA5835@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sebastian Reichel <sre@debian.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-  I have a codec with multiple TX and RX channels. In ASoC tree, I have
-seen examples where these kind of codecs are implemented as multichannel
-codecs. Instead I want it to be treated as card with multiple
-interfaces, e.g. Instead of one interface with eight TX channels, I need
-it to behave it as card with four stereo playback interfaces. The
-primary aim for doing this is that multiple applications should be able
-to play/record simultaneously. AFAIK, In case of a multichannel card, if
-it is opened by one application for stereo playback, there is no way to
-use rest of the unused channels by other applications.
+On Sat, Dec 31, 2011 at 2:59 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Dec 30, 2011 at 10:00:55PM +0200, Felipe Contreras wrote:
+>> On Thu, Dec 29, 2011 at 11:54 PM, Mark Brown
+>> > On Thu, Dec 29, 2011 at 11:51:11PM +0200, Felipe Contreras wrote:
+>
+>> >> >> > That should not be required, the modules should be loadable =
+in any
+>> >> >> > order.
+>
+>> >> Yes, but udev loads snd_soc_tlv320aic3x, not snd-soc-rx51.
+>
+>> > That is compltelely orthogonal to what you were saying above about=
+ the
+>> > ordering of module loading.
+>
+>> Not really, because if both are compiled as modules,
+>> snd_soc_tlv320aic3x will always be loaded first (automatically by
+>> udev).
+>
+> Which is relevant because...? =C2=A0To repeat, the ordering of module=
+ loading
+> is totally ortogonal as any ordering of modules is supported. =C2=A0Y=
+ou
+> appear to be totally ignoring what I am writing here.
 
-Is it easily possible to achieve what I am trying to? Any pointers to
-example driver source will greatly help!
+One thing how things _should_ be, and another is how things actually
+_are_. Right now snd-soc-rx51 doesn't work if it's loaded before
+snd_soc_tlv320aic3x. Period.
 
-BTW all three i.e., platform, machine as well as codec driver are to be
-implemented. I am aware of the fact that this requirement may affect all
-three.
+That means that *right now*, snd-soc-rx51 works fine with udev,
+because snd_soc_tlv320aic3x will be loaded at boot time. Now, if
+snd-soc-rx51 is converted and loaded automatically by udev as well,
+the issues might appear again.
 
+>> > The reason the driver is not loaded automatically is that the OMAP
+>> > machine drivers have not been converted to platform devices.
+>
+>> Well, if that's the case then there's a real issue. There doesn't se=
+em
+>> to be a MODULE_DEPENDS(), or anything like that.
+>
+> A MODULE_DEPENDS() would also be irrelevant here.
 
-Thanks in advance,
+Ok.
 
--- Ashish
-|| GNU FAN ||
+>> snd-soc-rx51 seems to depend on snd_soc_tlv320aic3x through
+>> codec_dai_name, and codec_name, and so on. I don't know how this
+>> dependency is supposed to work out.
+>
+> All the drivers should load via the normal driver instantiation
+> mechainsms and when they're all there they'll get matched together.
+
+Ok, I hope so.
+
+--=20
+=46elipe Contreras
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
