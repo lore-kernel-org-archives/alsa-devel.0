@@ -1,21 +1,18 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v8 3/3 RESEND] ASoC: da7210: Add support
- for line input and mic
-Date: Mon, 2 Jan 2012 18:10:02 +0530
-Message-ID: <1325508002.12508.30.camel@matrix>
-References: <1325505952.12508.12.camel@matrix>
-	<20120102120024.GH2899@opensource.wolfsonmicro.com>
-	<1325506569.12508.15.camel@matrix>
-	<20120102121117.GI2899@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/14] ASoC: Convert alc5623 to
+	devm_kzalloc()
+Date: Mon, 2 Jan 2012 12:29:13 +0000
+Message-ID: <20120102122912.GK2899@opensource.wolfsonmicro.com>
+References: <1325130983.19977.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
-	[213.199.154.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id DAB54244CE
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 13:28:01 +0100 (CET)
-In-Reply-To: <20120102121117.GI2899@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 45DC5246D7
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 13:29:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1325130983.19977.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-01-02 at 12:11 +0000, Mark Brown wrote:
-> On Mon, Jan 02, 2012 at 05:46:09PM +0530, Ashish Chavan wrote:
-> > On Mon, 2012-01-02 at 12:00 +0000, Mark Brown wrote:
-> 
-> > > Where are patches 1 and 2?
-> 
-> > They are already merged.
-> 
-> Then this isn't patch 3/3, it's a single isolated patch!  If you post it
-> as though it's part of a patch series then you're saying there's another
-> two patches that should be arriving at the same time which this depends
-> on.  The fact that it's been posted as part of a series in the past is
-> really not interesting.
-> 
+On Thu, Dec 29, 2011 at 11:56:23AM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-I see, I was not aware of this norm. I just thought that not changing
-the subject line may help in identifying multiple submissions of the
-same patch.
-
-BTW, should the version info be also dropped in case if we consider this
-as a new, independent patch? Because many of the version increments were
-just because of changes in other, earlier patches in the series.
+Applied all, thanks.
