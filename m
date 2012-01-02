@@ -1,50 +1,39 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: It looks like snd-soc-rx51 only works as built-in, not as a
-	module
-Date: Mon, 2 Jan 2012 19:40:47 +0000
-Message-ID: <20120102194046.GA14418@opensource.wolfsonmicro.com>
-References: <20111210082741.GA32605@earth.universe> <CAMP44s3c68z-+3j9OR3pyBFVzH-LJ7WcMu-BnejhkfrxnF4rqA@mail.gmail.com> <20111229183712.GB32392@sirena.org.uk> <CAMP44s2Vo0iPa6aq6PGy8YSEnEQuNVi1345BtLV9U8zng61uFA@mail.gmail.com> <20111229212707.GA9737@opensource.wolfsonmicro.com> <CAMP44s2SU_M0Fpt43YDLLhPrgsGzkgpHRWHLcJO4f8N=0HHdvg@mail.gmail.com> <20111229215407.GB9737@opensource.wolfsonmicro.com> <CAMP44s0EzmhdZ4X91c5X7Rn9q44QcUDm2KNDO81ue16SBWM6_g@mail.gmail.com> <20111231005935.GA5835@opensource.wolfsonmicro.com> <CAMP44s1hUYAcMTDBBPAbV=m39oGrbKXUhv44bp71XkNg-dEBzA@mail.gmail.com>
+Subject: Re: Does ASoC support sound card with multiple
+ interfaces?
+Date: Mon, 2 Jan 2012 20:16:44 +0000
+Message-ID: <20120102201642.GA30932@sirena.org.uk>
+References: <1325516773.12508.57.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4561410393B
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 21:16:49 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CAMP44s1hUYAcMTDBBPAbV=m39oGrbKXUhv44bp71XkNg-dEBzA@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Felipe Contreras <felipe.contreras@gmail.com>
-Cc: Sebastian Reichel <sre@debian.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1325516773.12508.57.camel@matrix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 02, 2012 at 08:33:03PM +0200, Felipe Contreras wrote:
-> On Sat, Dec 31, 2011 at 2:59 AM, Mark Brown
+On Mon, Jan 02, 2012 at 08:36:13PM +0530, Ashish Chavan wrote:
 
-> > Which is relevant because...? =A0To repeat, the ordering of module =
-loading
-> > is totally ortogonal as any ordering of modules is supported. =A0Yo=
-u
-> > appear to be totally ignoring what I am writing here.
+Always CC maintainers!
 
-> One thing how things _should_ be, and another is how things actually
-> _are_. Right now snd-soc-rx51 doesn't work if it's loaded before
-> snd_soc_tlv320aic3x. Period.
+>   I have a codec with multiple TX and RX channels. In ASoC tree, I have
+> seen examples where these kind of codecs are implemented as multichannel
+> codecs. Instead I want it to be treated as card with multiple
 
-Can you provide logs showing this (with debug logging enabled in
-soc-core)?  If this is happening it's a very serious issue, though I am
-rather surprised that nobody else has noticed such an issue since the
-usual instantiation order would have the card appear before the CODEC
-(due to the fact that the card is normally a platform device) and the
-structure of the code makes it difficult to imagine a failure path.
-
-> That means that *right now*, snd-soc-rx51 works fine with udev,
-> because snd_soc_tlv320aic3x will be loaded at boot time. Now, if
-> snd-soc-rx51 is converted and loaded automatically by udev as well,
-> the issues might appear again.
-
-Not if we look at and resolve the actual issue.  Once again, any
-instantation ordering should be supported.  I really don't understand
-why you keep on talking about fixing the module ordering,
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Yes, this is totally supported.  There are quite a few examples of this
+in the tree.  Your CODEC driver should just implement one DAI per audio
+interface.
