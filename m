@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: soc-pcm: Allocate PCM operations
- dynamically to support multiple DAIs
-Date: Mon, 2 Jan 2012 13:19:49 +0000
-Message-ID: <20120102131949.GL4300@opensource.wolfsonmicro.com>
-References: <1325492110-12743-1-git-send-email-sangsu4u.park@samsung.com>
+Subject: Re: [PATCH] asoc: replace 0xffffffff with DMA_BIT_MASK
+	macro
+Date: Mon, 2 Jan 2012 13:29:33 +0000
+Message-ID: <20120102132933.GN4300@opensource.wolfsonmicro.com>
+References: <1325382183-21717-1-git-send-email-manabian@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C78AC246DE
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 14:19:51 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4520E10394F
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 14:29:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1325492110-12743-1-git-send-email-sangsu4u.park@samsung.com>
+In-Reply-To: <1325382183-21717-1-git-send-email-manabian@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangsu Park <sangsu4u.park@samsung.com>
-Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, sangsu@gmail.com, lrg@ti.com
+To: manabian@gmail.com
+Cc: Joachim Eastwood <joachim.eastwood@jotron.com>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 02, 2012 at 05:15:10PM +0900, Sangsu Park wrote:
-> The original code does not cover the case that two DAIs(CPU) have different
-> ASoC core PCM operations(like mmap, pointer...). Currently we have only one
-> global soc_pcm_ops for ASoC core PCM operation. When two DAIs have different
-> pointer functions, second DAI's pointer function is set for both first DAI
-> and second DAI in case of original code.
+On Sun, Jan 01, 2012 at 02:43:03AM +0100, manabian@gmail.com wrote:
+> From: Joachim Eastwood <joachim.eastwood@jotron.com>
+> 
+> Signed-off-by: Joachim Eastwood <joachim.eastwood@jotron.com>
 
-> This patch uses runtime's pcm_ops instead of global pcm_ops for each DAIs. So
-> each DAIs can have different ASoC core PCM operations. This is needed to
-> support multiple DAIs.
+I'm assuming that you are actually Joachim Eastwood and there's some git
+misconfiguration going on here?  If you're not Jochim you need to sign
+off the patch yourself as well.
 
-Applied, thanks.
-
-Actually it's not even allocating them dynamically as we already had the
-allocation happening.  :/
+Please also use subject lines corresponding to the subsystem.
