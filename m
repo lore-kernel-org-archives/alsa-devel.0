@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: Fix return value of
-	ak4641_pcm_set_dai_fmt()
-Date: Mon, 2 Jan 2012 12:44:11 +0000
-Message-ID: <20120102124410.GA4300@opensource.wolfsonmicro.com>
-References: <1325259294.4755.1.camel@phoenix>
+Subject: Re: [PATCH 1/4] ASoC: Use dai_fmt in saarb machine
+	driver
+Date: Mon, 2 Jan 2012 12:44:21 +0000
+Message-ID: <20120102124420.GB4300@opensource.wolfsonmicro.com>
+References: <1325259714.4755.6.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E57C61038C5
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 13:44:14 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 520591038F3
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 13:44:23 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1325259294.4755.1.camel@phoenix>
+In-Reply-To: <1325259714.4755.6.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,11 +23,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 30, 2011 at 11:34:54PM +0800, Axel Lin wrote:
-> We can't just pass back the return value of snd_soc_update_bits() as it
-> will be 1 if a bit changed rather than zero.
+On Fri, Dec 30, 2011 at 11:41:54PM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Applied, thanks.
+Applied all, thanks.
