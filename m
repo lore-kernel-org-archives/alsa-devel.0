@@ -1,25 +1,21 @@
 From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v8 3/3 RESEND] ASoC: da7210: Add support
- for line input and mic
-Date: Mon, 2 Jan 2012 19:38:22 +0530
-Message-ID: <1325513302.12508.34.camel@matrix>
-References: <1325505952.12508.12.camel@matrix>
-	<20120102120024.GH2899@opensource.wolfsonmicro.com>
-	<1325506569.12508.15.camel@matrix>
-	<20120102121117.GI2899@opensource.wolfsonmicro.com>
-	<1325508002.12508.30.camel@matrix>
-	<20120102125815.GI4300@opensource.wolfsonmicro.com>
-	<1325510729.12508.33.camel@matrix>
-	<20120102131758.GK4300@opensource.wolfsonmicro.com>
+Subject: Does ASoC support sound card with multiple interfaces?
+Date: Mon, 2 Jan 2012 20:36:13 +0530
+Message-ID: <1325516773.12508.57.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA6C610394A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 14:56:24 +0100 (CET)
-In-Reply-To: <20120102131758.GK4300@opensource.wolfsonmicro.com>
+Received: from AM1EHSOBE002.bigfish.com (am1ehsobe002.messaging.microsoft.com
+	[213.199.154.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id B68741037F3
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 15:54:13 +0100 (CET)
+Received: from mail49-am1 (localhost [127.0.0.1])	by mail49-am1-R.bigfish.com
+	(Postfix) with ESMTP id 44514140476	for
+	<alsa-devel@alsa-project.org>; Mon, 2 Jan 2012 14:54:10 +0000 (UTC)
+Received: from AM1EHSMHS002.bigfish.com (unknown [10.3.201.250])	by
+	mail49-am1.bigfish.com (Postfix) with ESMTP id 1E14048004C	for
+	<alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 14:54:10 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,15 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-01-02 at 13:17 +0000, Mark Brown wrote:
-> On Mon, Jan 02, 2012 at 06:55:29PM +0530, Ashish Chavan wrote:
-> 
-> > OK, let me post it as a new, independent patch.
-> 
-> Don't bother, I already applied this version.
+Hi,
+  I have a codec with multiple TX and RX channels. In ASoC tree, I have
+seen examples where these kind of codecs are implemented as multichannel
+codecs. Instead I want it to be treated as card with multiple
+interfaces, e.g. Instead of one interface with eight TX channels, I need
+it to behave it as card with four stereo playback interfaces. The
+primary aim for doing this is that multiple applications should be able
+to play/record simultaneously. AFAIK, In case of a multichannel card, if
+it is opened by one application for stereo playback, there is no way to
+use rest of the unused channels by other applications.
 
-Thanks!
+Is it easily possible to achieve what I am trying to? Any pointers to
+example driver source will greatly help!
+
+BTW all three i.e., platform, machine as well as codec driver are to be
+implemented. I am aware of the fact that this requirement may affect all
+three.
+
+
+Thanks in advance,
+
+-- Ashish
+|| GNU FAN ||
