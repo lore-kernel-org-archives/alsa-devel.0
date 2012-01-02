@@ -1,21 +1,32 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 4/4] ASoC: OMAP: ams-delta: drop .set_bias_level
- callback
-Date: Mon, 2 Jan 2012 12:48:00 +0000
-Message-ID: <20120102124759.GG4300@opensource.wolfsonmicro.com>
-References: <1325214296-2888-5-git-send-email-jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH 3/3] ASoC: pxa: Convert corgi to use
+ snd_soc_register_card()
+Date: Mon, 2 Jan 2012 12:48:40 +0000
+Message-ID: <20120102124840.GH4300@opensource.wolfsonmicro.com>
+References: <1325214804.2569.3.camel@phoenix> <1325215093.2569.8.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A8661038FA
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 13:48:43 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1325214296-2888-5-git-send-email-jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Tony Lindgren <tony@atomide.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1325215093.2569.8.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 30, 2011 at 04:04:56AM +0100, Janusz Krzysztofik wrote:
-> This functionality has just been implemented in the cx20442 codec
-> driver, no need to keep it here duplicated.
+On Fri, Dec 30, 2011 at 11:18:13AM +0800, Axel Lin wrote:
+> Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Applied, thanks.
