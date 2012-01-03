@@ -1,18 +1,15 @@
-From: Johannes Stezenbach <js@sig21.net>
-Subject: Re: [PATCH] ASoC: sta32x: Optimize the array work to
- find rate_min and rate_max
-Date: Tue, 3 Jan 2012 11:42:50 +0100
-Message-ID: <20120103104250.GA6037@sig21.net>
-References: <1325414174.4978.2.camel@phoenix>
+From: Ricardo Barbosa <spiderslack@yahoo.com.br>
+Subject: question application playback
+Date: Tue, 3 Jan 2012 04:23:36 -0800 (PST)
+Message-ID: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
+Reply-To: Ricardo Barbosa <spiderslack@yahoo.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bar.sig21.net (bar.sig21.net [80.81.252.164])
-	by alsa0.perex.cz (Postfix) with ESMTP id B501724780
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2012 11:42:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1325414174.4978.2.camel@phoenix>
+Received: from nm12.bullet.mail.bf1.yahoo.com (nm12.bullet.mail.bf1.yahoo.com
+	[98.139.212.171]) by alsa0.perex.cz (Postfix) with SMTP id 2F5102470B
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2012 13:25:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +19,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Lars-Peter Clausen <lars@metafoo.de>
+To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 01, 2012 at 06:36:14PM +0800, Axel Lin wrote:
-> For a given ir and fs, there is at most one possible match for the case
-> mclk_ratios[ir][j].ratio * fs == freq.
-> Thus we can break from the inner loop once a match is found.
-
-Yes, I think this is correct.
-
-Acked-by: Johannes Stezenbach <js@sig21.net>
+Hi all.
 
 
-Thanks
-Johannes
+I am new to development using the alsa API and follow the link code http://=
+equalarea.com/paul/alsa-audio.html
 
+insert the following code.
 
-> --- a/sound/soc/codecs/sta32x.c
-> +++ b/sound/soc/codecs/sta32x.c
-> @@ -522,6 +522,7 @@ static int sta32x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
->  						rate_min = fs;
->  					if (fs > rate_max)
->  						rate_max = fs;
-> +					break;
->  				}
->  			}
->  		}
+=A0FILE=A0*fp;
+=A0fp=A0=3D=A0fopen("file.mp3",=A0"r");
+=A0fclose(fp);
+
+and changed variable buf=A0by the variable fp, but by running the file file=
+.mp3 he does not play according to the way it interferes with the function =
+snd_pcm_writei ? someone could help me in developing this playback, I thank
+
+Regards.
