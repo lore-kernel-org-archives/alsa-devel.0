@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] hda_intel: Add Oaktrail identifiers
-Date: Mon, 02 Jan 2012 21:17:18 +0100
-Message-ID: <4F0210CE.1020007@canonical.com>
-References: <20111228151715.2032.87840.stgit@bob.linux.org.uk>
-	<s5hzke8n0o6.wl%tiwai@suse.de>
-	<20111231170001.22cdabdd@pyramind.ukuu.org.uk>
+From: Sangsu Park <sangsu@gmail.com>
+Subject: Re: [PATCH v2] ASoC: soc-pcm: Allocate PCM operations
+ dynamically to support multiple DAIs
+Date: Tue, 3 Jan 2012 09:09:20 +0900
+Message-ID: <CANh+=Y9F=YxL3QBCWgObYV90HvW63R1pquVOrixNmOPt15tCDQ@mail.gmail.com>
+References: <1325492110-12743-1-git-send-email-sangsu4u.park@samsung.com>
+	<20120102131949.GL4300@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE95F103951
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2012 21:17:22 +0100 (CET)
-In-Reply-To: <20111231170001.22cdabdd@pyramind.ukuu.org.uk>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2291210396B
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2012 01:09:22 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so4144745ghb.38
+	for <alsa-devel@alsa-project.org>; Mon, 02 Jan 2012 16:09:20 -0800 (PST)
+In-Reply-To: <20120102131949.GL4300@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: sbkim73@samsung.com, Sangsu Park <sangsu4u.park@samsung.com>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/31/2011 06:00 PM, Alan Cox wrote:
->> Thanks, applied.
->>
->> Meanwhile, could you double-check whether AZX_DCAPS_POSFIX_LPIB isn't
->> needed?  We have enabled this bit for Poulsbo recently for working
->> around problems regarding the playback positions.
+On Mon, Jan 2, 2012 at 10:19 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Jan 02, 2012 at 05:15:10PM +0900, Sangsu Park wrote:
+>> The original code does not cover the case that two DAIs(CPU) have differ=
+ent
+>> ASoC core PCM operations(like mmap, pointer...). Currently we have only =
+one
+>> global soc_pcm_ops for ASoC core PCM operation. When two DAIs have diffe=
+rent
+>> pointer functions, second DAI's pointer function is set for both first D=
+AI
+>> and second DAI in case of original code.
+>
+>> This patch uses runtime's pcm_ops instead of global pcm_ops for each DAI=
+s. So
+>> each DAIs can have different ASoC core PCM operations. This is needed to
+>> support multiple DAIs.
+>
+> Applied, thanks.
+>
+> Actually it's not even allocating them dynamically as we already had the
+> allocation happening. =A0:/
 
-That was my thought as well, but Takashi was quicker, as usual :-)
-
-> Is there a good way to test this and I'll run the test and see.
-
-I wouldn't say we have a really good way to test it; but PulseAudio is 
-relying heavily on this to be correct. So in short - test both playback 
-and recording through PulseAudio, and also test making volume changes 
-while playing back (or recording). If one position fix method is broken, 
-it usually manifests itself by glitches, audio breaking up, or maybe 
-stops completely. (There is actually a test tool called alsa-time-test 
-written by Lennart Poettering, but AFAIK it only tests playback, and I 
-don't exactly know how to use it.)
-
-A quick way to test different position fix methods is to add this module 
-parameter:
-
-# This will read from LPIB
-options snd-hda-intel position_fix=1
-
-# This will read from DMA Position buffer (the default as specified in 
-your patch)
-options snd-hda-intel position_fix=2
-
-Btw, you seem to be employed by Intel these days? [1] Any chance you can 
-talk to your firmware developers of this chip? I assume somebody at 
-Intel should know what method to prefer. That would be the safest/best 
-option IMHO.
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
-[1] https://secure.wikimedia.org/wikipedia/en/wiki/Alan_Cox
+You're right. but I don't want to happen any confusion :)
