@@ -1,17 +1,14 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: question application playback
-Date: Tue, 03 Jan 2012 18:19:00 +0530
-Message-ID: <1325594940.1540.53.camel@vkoul-udesk3>
-References: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
-	<4F02F487.9080906@gmail.com>
+From: Peter Meerwald <pmeerw@pmeerw.net>
+Subject: [PATCH] s3c24xx_simtec: fix typo
+Date: Tue,  3 Jan 2012 15:24:47 +0100
+Message-ID: <1325600687-32697-1-git-send-email-pmeerw@pmeerw.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4EFEE247A4
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2012 13:48:49 +0100 (CET)
-In-Reply-To: <4F02F487.9080906@gmail.com>
+Received: from pmeerw.net (ns.pmeerw.net [87.118.82.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61433247D8
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2012 15:25:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: ben@simtec.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-01-03 at 13:28 +0100, Daniel Mack wrote:
-> On 01/03/2012 01:23 PM, Ricardo Barbosa wrote:
-> > I am new to development using the alsa API and follow the link code http://equalarea.com/paul/alsa-audio.html
-> > 
-> > insert the following code.
-> > 
-> >  FILE *fp;
-> >  fp = fopen("file.mp3", "r");
-> 
-> MP3s are compressed audio files that cannot be used directly with the
-> ALSA API. If you have to use mp3 files, have a look at libmpg123 or use
-> a higher level interface in the first place, for example GStreamer.
-Not true anymore, if you have device which supports compressed formats,
-the shining new alsa compress API are there for you to use :)
+From: Peter Meerwald <p.meerwald@bct-electronic.com>
 
-See Documentation/sound/alsa/compress_offload.txt
+---
+ sound/soc/samsung/s3c24xx_simtec.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/sound/soc/samsung/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
+index a253bcc..dcef50c 100644
+--- a/sound/soc/samsung/s3c24xx_simtec.c
++++ b/sound/soc/samsung/s3c24xx_simtec.c
+@@ -343,7 +343,7 @@ int __devinit simtec_audio_core_probe(struct platform_device *pdev,
+ 
+ 	snd_dev = platform_device_alloc("soc-audio", -1);
+ 	if (!snd_dev) {
+-		dev_err(&pdev->dev, "failed to alloc soc-audio devicec\n");
++		dev_err(&pdev->dev, "failed to alloc soc-audio device\n");
+ 		ret = -ENOMEM;
+ 		goto err_gpio;
+ 	}
 -- 
-~Vinod
+1.7.4.1
