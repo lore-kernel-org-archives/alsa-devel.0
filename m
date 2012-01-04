@@ -1,20 +1,23 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] hda_intel: Add Oaktrail identifiers
-Date: Wed, 04 Jan 2012 12:55:04 +0100
-Message-ID: <4F043E18.1080903@canonical.com>
-References: <20111228151715.2032.87840.stgit@bob.linux.org.uk>
-	<s5hzke8n0o6.wl%tiwai@suse.de>
-	<20111231170001.22cdabdd@pyramind.ukuu.org.uk>
-	<4F0210CE.1020007@canonical.com>
-	<20120103230609.1e3a71ed@pyramind.ukuu.org.uk>
+From: "Reddy, MR Swami" <MR.Swami.Reddy@ti.com>
+Subject: FW: Your message to Alsa-devel awaits moderator
+	approval
+Date: Wed, 4 Jan 2012 05:23:52 -0800
+Message-ID: <290463D19D2E064191F1F96ECA480A89434A7595DF@EXMAIL02.scwf.nsc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id CD69E243F4
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 12:55:06 +0100 (CET)
-In-Reply-To: <20120103230609.1e3a71ed@pyramind.ukuu.org.uk>
+Received: from sc-mailgw05.nsc.com (mail2.nsc.com [12.238.8.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE5DC248E5
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 14:23:56 +0100 (CET)
+Received: from SCNTRDCSS6.nsc.com (scntrdcss6.nsc.com [10.188.130.177])
+	by sc-mailgw05.nsc.com (Tumbleweed MailGate 3.7.1) with ESMTP id
+	2FB6319A0391
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 05:23:48 -0800 (PST)
+Received: from exhub01.scwf.nsc.com (exhub01.nsc.com [10.188.134.103])
+	by nscmmp3.nsc.com with ESMTPS id BT-MMP-2849141 for
+	alsa-devel@alsa-project.org; Wed, 4 Jan 2012 05:23:48 -0800
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/04/2012 12:06 AM, Alan Cox wrote:
->> Btw, you seem to be employed by Intel these days? [1] Any chance you can
->> talk to your firmware developers of this chip? I assume somebody at
->> Intel should know what method to prefer. That would be the safest/best
->> option IMHO.
->
-> Indeed I am and by the time I got around to looking at it other Intel
-> folsk on the list were already digging. Yes we think it needs the same
-> settings as Poulsbo.
+Hi,
+Iam getting the below email, when I post patch to alsa-devel mailing list. This happens from yesterday onwards (ie 3rd Jan 2012).
+Do I need to take any action from my side? Plz confirm.
 
-While we're at it, I tried to backtrace the PCI Vendor ID:s for the 
-individual machine quirks we have, and came up with the following list:
+Thanks
+Swami
 
-8086:27d8 (rev 01) (Intel Corporation N10/ICH 7 Family) - appeared twice
-8086:284b (rev 02) (Intel Corporation 82801H (ICH8 Family))
-8086:293e (rev 03) (Intel Corporation 82801I (ICH9 Family))
-8086:3b56 (rev 05) (Intel Corporation 5 Series/3400 Series)
 
-If you don't mind doing some more lurking, do you think any of the above 
-chips should be tweaked to use LPIB position fix method for the entire 
-chip, and not just the individual machine?
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] 
+Sent: Wednesday, January 04, 2012 4:41 PM
+To: Reddy, MR Swami
+Subject: Your message to Alsa-devel awaits moderator approval
 
-(For the sake of completeness, 1106:3288 (rev 10) (VIA Technologies, 
-Inc. VT1708/A [Azalia HDAC]) also appeared three times.)
+Your mail to 'Alsa-devel' with the subject
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+    RE: [PATCH] ASoC: Add support for TI LM49453 Audio codec
+
+Is being held until the list moderator can review it for approval.
+
+The reason it is being held:
+
+    Post by non-member to a members-only list
+
+Either the message will get posted to the list, or you will receive notification of the moderator's decision.  If you would like to cancel this posting, please visit the following URL:
+
+    http://mailman.alsa-project.org/mailman/confirm/alsa-devel/ab4c2673e9de3c4ed600816b18be9859b9b31447
