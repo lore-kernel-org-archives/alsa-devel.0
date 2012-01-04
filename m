@@ -1,57 +1,53 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Does ASoC support sound card with multiple
-	interfaces?
-Date: Wed, 4 Jan 2012 12:33:39 +0530
-Message-ID: <4F03F9CB.20407@st.com>
-References: <1325516773.12508.57.camel@matrix>
-	<20120102201642.GA30932@sirena.org.uk>
-	<1325655413.12508.79.camel@matrix> <4F03E80B.907@st.com>
-	<1325660401.12508.113.camel@matrix>
+From: Manjunath Hadli <manjunath.hadli@ti.com>
+Subject: [PATCH v8 2/2] davinci: CQ93VC: remove machine specific header file
+ inclusion from codec driver
+Date: Wed, 4 Jan 2012 12:47:49 +0530
+Message-ID: <1325661469-4411-3-git-send-email-manjunath.hadli@ti.com>
+References: <1325661469-4411-1-git-send-email-manjunath.hadli@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
-	[207.126.144.137])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B3D324869
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 08:04:05 +0100 (CET)
-In-Reply-To: <1325660401.12508.113.camel@matrix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, ";
-	Liam Girdwood" <lrg@slimlogic.co.uk>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1325661469-4411-1-git-send-email-manjunath.hadli@ti.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: dlos <davinci-linux-open-source@linux.davincidsp.com>, LAK <linux-arm-kernel@lists.infradead.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Manjunath Hadli <manjunath.hadli@ti.com>, Miguel Aguilar <miguel.aguilar@ridgerun.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 1/4/2012 12:30 PM, Ashish Chavan wrote:
->
->> You need to redirect it . You can use
->>
->> aplay -Dplughw:0,1 x.wav.
->>
->> Here '0' indicated card number and '1' indicates device number
->
-> Is it really mandatory to specify card and device id? Isn't there a
-> middle layer that takes care of using "first free" interface for
-> playback or recording, if interface is not explicitly specified? As we
-> register DAIs with ALSA subsystem, it should be fairly easy for alsa-lib
-> to find out "first free" interface.
->
-> I am aware that this wouldn't be practically useful in most cases,
-> because generally we know beforehand which specific interface to be used
-> for playback/recording. In such cases, automatic selection of interface
-> may be confusing to users. But I just want to confirm if this is at all
-> possible?
->
->
+remove unnecessary inclusion of machine specific header
+file mach/dm365.h from cq93vc.c voice codec driver
+which comes in the way of platform code consolidation.
 
-AFAIK, automatic selection is not there
+Signed-off-by: Manjunath Hadli <manjunath.hadli@ti.com>
+Cc: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.de>
+Cc: <alsa-devel@alsa-project.org>
+Cc: <linux-kernel@vger.kernel.org>
+---
+ sound/soc/codecs/cq93vc.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-~Rajeev
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index 46dbfd0..ff4eb7a 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -38,8 +38,6 @@
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+ 
+-#include <mach/dm365.h>
+-
+ static inline unsigned int cq93vc_read(struct snd_soc_codec *codec,
+ 						unsigned int reg)
+ {
+-- 
+1.6.2.4
