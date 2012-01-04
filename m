@@ -1,17 +1,17 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: how to enumerate useful ALSA devices?
-Date: Wed, 04 Jan 2012 23:16:58 +0200
-Message-ID: <4F04C1CA.7070000@iki.fi>
-References: <20120104194956.GB9868@foghorn.codeweavers.com>
-	<4F04BAF8.6010701@iki.fi>
+From: alexander <axeldenstore@gmail.com>
+Subject: cannot submit syncpipe, usb2 audio
+Date: Wed, 04 Jan 2012 23:50:28 +0200
+Message-ID: <4F04C9A4.9020601@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw-out1.cc.tut.fi (mail-gw-out1.cc.tut.fi [130.230.160.32])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7F811038ED
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 22:17:06 +0100 (CET)
-In-Reply-To: <4F04BAF8.6010701@iki.fi>
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32EF810389C
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 22:57:14 +0100 (CET)
+Received: by lago2 with SMTP id o2so6431737lag.38
+	for <alsa-devel@alsa-project.org>; Wed, 04 Jan 2012 13:57:13 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Andrew Eikum <aeikum@codeweavers.com>
-Cc: alsa-devel@alsa-project.org, Joerg-Cyril.Hoehle@t-systems.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04.01.2012 22:47, Anssi Hannula wrote:
-> On 04.01.2012 21:49, Andrew Eikum wrote:
->> But, passing these to aplay fails if I have PulseAudio running
->> ("device in use").
-> 
-> Correct. You need to use pulse directly or the default/pulse device
-> which passes audio to pulseaudio.
+|I asked in alsa-users about the state of usb2 audio class compliance some time ago but I never got a definitive answer.. I've done some digging on my own and found someone had a similar issue with the same error about a year ago.
 
-For the record, pulseaudio does release the device by default after it
-has been unused for a few seconds. Not that it matters much here, though.
+This is what dmesg says when I connect the device in usb2 mode, the last row is the error when I try to use it.
 
->> So I'm really stuck here. Where am I supposed to get a list of devices
->> that I can present to the user, including their Bluetooth devices and
->> virtual devices from asound.conf?
-> 
-> I guess the preferred one is 'snd_device_name_hint()', but I don't
-> really know if the caller is supposed to then handle surroundXX stuff
-> themself.
+[ 2384.749399] usb 1-2: USB disconnect, device number 2
+[ 2390.729825] usb 1-2: new high speed USB device number 3 using ehci_hcd
+[ 2390.863654] generic-usb 0003:0926:0202.0003: hiddev0,hidraw0: USB HID v1.01 Device [Sound Devices USBPre2] on usb-0000:00:02.1-2/input3
+[ 2418.388135] cannot submit syncpipe for urb 0, error -90: internal error
 
-Reading your last reply made me realize that I forgot that when
-pulseaudio is not configured, there is also the "default:CARD=foo"
-device listed (which you noticed), so I guess one could just ignore
-entries beginning with "front:" or "surround(40|41|50|51|71):", since
-one can just use "default" instead of them.
+Here are the lsusb -v as usb1.1 http://pastebin.com/Jj6mXHxJ and here as usb2 http://pastebin.com/8uCBAkNb
 
--- 
-Anssi Hannula
+I've looked at them and the only thing that differs is the|bInterval, wich is 1 in usb1.1 and 4 in usb2
