@@ -1,18 +1,21 @@
-From: Xi Wang <xi.wang@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: fix possible hang and
-	overflow in parse_uac2_sample_rate_range()
-Date: Wed,  4 Jan 2012 12:39:09 -0500
-Message-ID: <1325698749-5353-1-git-send-email-xi.wang@gmail.com>
+From: Joachim  Eastwood <manabian@gmail.com>
+Subject: Re: [PATCH] asoc: replace 0xffffffff with DMA_BIT_MASK
+	macro
+Date: Wed, 4 Jan 2012 19:04:29 +0100
+Message-ID: <CAGhQ9VyxHvCFy4EJyabi8Tfy5NRQaOe4huAPXVYsrQ0GBDsc9g@mail.gmail.com>
+References: <1325382183-21717-1-git-send-email-manabian@gmail.com>
+	<20120102132933.GN4300@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 063D52439C
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 18:40:57 +0100 (CET)
-Received: by qcol42 with SMTP id l42so11004376qco.38
-	for <alsa-devel@alsa-project.org>; Wed, 04 Jan 2012 09:40:57 -0800 (PST)
+Received: from mail-tul01m020-f179.google.com (mail-tul01m020-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCBC8243BA
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 19:04:30 +0100 (CET)
+Received: by obcwm4 with SMTP id wm4so14418014obc.38
+	for <alsa-devel@alsa-project.org>; Wed, 04 Jan 2012 10:04:29 -0800 (PST)
+In-Reply-To: <20120102132933.GN4300@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Wolfgang Breyha <wbreyha@gmx.net>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Xi Wang <xi.wang@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Joachim Eastwood <joachim.eastwood@jotron.com>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-A malicious USB device may feed in carefully crafted min/max/res values,
-so that the inner loop in parse_uac2_sample_rate_range() could run for
-a long time or even never terminate, e.g., given max = INT_MAX.
+On Mon, Jan 2, 2012 at 2:29 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Sun, Jan 01, 2012 at 02:43:03AM +0100, manabian@gmail.com wrote:
+>> From: Joachim Eastwood <joachim.eastwood@jotron.com>
+>>
+>> Signed-off-by: Joachim Eastwood <joachim.eastwood@jotron.com>
+>
+> I'm assuming that you are actually Joachim Eastwood and there's some git
+> misconfiguration going on here? =A0If you're not Jochim you need to sign
+> off the patch yourself as well.
+I guess my git-send-mail config is a bit wrong.
 
-Also nr_rates could be a large integer, which causes an integer overflow
-in the subsequent call to kmalloc() in parse_audio_format_rates_v2().
-Thus, kmalloc() would allocate a smaller buffer than expected, leading
-to a memory corruption.
+> Please also use subject lines corresponding to the subsystem.
+The subject of this mail includes "asoc". Is there anything I should
+do different?
 
-To exploit the two vulnerabilities, an attacker needs physical access
-to the machine to plug in a malicious USB device.
-
-This patch makes two changes.
-
-1) The type of "rate" is changed to unsigned int, so that the loop could
-   stop once "rate" is larger than INT_MAX.
-
-2) Limit nr_rates to avoid overflow.
-
-Signed-off-by: Xi Wang <xi.wang@gmail.com>
----
- sound/usb/format.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 89421d1..a99de67 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -226,7 +226,7 @@ static int parse_uac2_sample_rate_range(struct audioformat *fp, int nr_triplets,
- 		int min = combine_quad(&data[2 + 12 * i]);
- 		int max = combine_quad(&data[6 + 12 * i]);
- 		int res = combine_quad(&data[10 + 12 * i]);
--		int rate;
-+		unsigned int rate;
- 
- 		if ((max < 0) || (min < 0) || (res < 0) || (max < min))
- 			continue;
-@@ -253,6 +253,9 @@ static int parse_uac2_sample_rate_range(struct audioformat *fp, int nr_triplets,
- 			fp->rates |= snd_pcm_rate_to_rate_bit(rate);
- 
- 			nr_rates++;
-+			/* avoid overflow */
-+			if (nr_rates == KMALLOC_MAX_SIZE / sizeof(int))
-+				break;
- 
- 			/* avoid endless loop */
- 			if (res == 0)
--- 
-1.7.5.4
+regards
+Joachim Eastwood
