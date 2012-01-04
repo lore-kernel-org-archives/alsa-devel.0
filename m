@@ -1,18 +1,20 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: question application playback
-Date: Wed, 4 Jan 2012 11:22:10 +0530
-Message-ID: <4F03E90A.1060908@st.com>
-References: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
-	<4F02F4FD.80802@sasken.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: Does ASoC support sound card with multiple
+ interfaces?
+Date: Wed, 4 Jan 2012 12:30:01 +0530
+Message-ID: <1325660401.12508.113.camel@matrix>
+References: <1325516773.12508.57.camel@matrix>
+	<20120102201642.GA30932@sirena.org.uk>
+	<1325655413.12508.79.camel@matrix> <4F03E80B.907@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
-	[207.126.144.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40C7D24833
-	for <Alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 06:52:16 +0100 (CET)
-In-Reply-To: <4F02F4FD.80802@sasken.com>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 351312485E
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 07:48:05 +0100 (CET)
+In-Reply-To: <4F03E80B.907@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan shaikh <irfan.shaikh@sasken.com>
-Cc: Ricardo Barbosa <spiderslack@yahoo.com.br>, "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, ";
+	Liam Girdwood" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello
-On 1/3/2012 6:00 PM, Irfan shaikh wrote:
-> Hi,
->
->          ALSA can play only raw PCM data. It is not possible to play mp3
-> file directly.
-> Use a decoder interface to decode the mp3 file and the send to ALSA.
->
-> Regards
-> Irfan
->
 
-Please avoid top posting
+> You need to redirect it . You can use
+> 
+> aplay -Dplughw:0,1 x.wav.
+> 
+> Here '0' indicated card number and '1' indicates device number
 
-> On 01/03/2012 05:53 PM, Ricardo Barbosa wrote:
->> Hi all.
->>
->>
->> I am new to development using the alsa API and follow the link code http://equalarea.com/paul/alsa-audio.html
->>
->> insert the following code.
->>
->>    FILE *fp;
->>    fp = fopen("file.mp3", "r");
->>    fclose(fp);
->>
->> and changed variable buf by the variable fp, but by running the file file.mp3 he does not play according to the way it interferes with the function snd_pcm_writei ? someone could help me in developing this playback, I thank
->>
+Is it really mandatory to specify card and device id? Isn't there a
+middle layer that takes care of using "first free" interface for
+playback or recording, if interface is not explicitly specified? As we
+register DAIs with ALSA subsystem, it should be fairly easy for alsa-lib
+to find out "first free" interface.
 
-AFAIK, ALSA can play mp3 files.
-
->> Regards.
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+I am aware that this wouldn't be practically useful in most cases,
+because generally we know beforehand which specific interface to be used
+for playback/recording. In such cases, automatic selection of interface
+may be confusing to users. But I just want to confirm if this is at all
+possible?
