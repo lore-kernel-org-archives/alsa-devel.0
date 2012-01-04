@@ -1,20 +1,18 @@
 From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Does ASoC support sound card with multiple
-	interfaces?
-Date: Wed, 4 Jan 2012 11:17:55 +0530
-Message-ID: <4F03E80B.907@st.com>
-References: <1325516773.12508.57.camel@matrix>
-	<20120102201642.GA30932@sirena.org.uk>
-	<1325655413.12508.79.camel@matrix>
+Subject: Re: question application playback
+Date: Wed, 4 Jan 2012 11:22:10 +0530
+Message-ID: <4F03E90A.1060908@st.com>
+References: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
+	<4F02F4FD.80802@sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog107.obsmtp.com (eu1sys200aog107.obsmtp.com
-	[207.126.144.123])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F98824830
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 06:48:04 +0100 (CET)
-In-Reply-To: <1325655413.12508.79.camel@matrix>
+Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
+	[207.126.144.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40C7D24833
+	for <Alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 06:52:16 +0100 (CET)
+In-Reply-To: <4F02F4FD.80802@sasken.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, ";
-	Liam Girdwood" <lrg@slimlogic.co.uk>
+To: Irfan shaikh <irfan.shaikh@sasken.com>
+Cc: Ricardo Barbosa <spiderslack@yahoo.com.br>, "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Ashish
+Hello
+On 1/3/2012 6:00 PM, Irfan shaikh wrote:
+> Hi,
+>
+>          ALSA can play only raw PCM data. It is not possible to play mp3
+> file directly.
+> Use a decoder interface to decode the mp3 file and the send to ALSA.
+>
+> Regards
+> Irfan
+>
 
-On 1/4/2012 11:06 AM, Ashish Chavan wrote:
->>>    I have a codec with multiple TX and RX channels. In ASoC tree, I have
->>> seen examples where these kind of codecs are implemented as multichannel
->>> codecs. Instead I want it to be treated as card with multiple
+Please avoid top posting
+
+> On 01/03/2012 05:53 PM, Ricardo Barbosa wrote:
+>> Hi all.
 >>
->> Yes, this is totally supported.  There are quite a few examples of this
->> in the tree.  Your CODEC driver should just implement one DAI per audio
->> interface.
 >>
->
-> Thanks.
->
-> I am looking at some of the examples in the tree and have a small query.
-> I want to know how alsa-utils (aplay, arecord) will behave when a codec
-> driver supports multiple DAIs. For example, let's assume that a codec
-> driver implements two DAIs, both capable of doing stereo playback. Then
-> I try to play two files simultaneously using aplay, e.g.
->
-> $ aplay x.wav
-> $ aplay y.wav
->
-> AFAIK first "aplay" will result in play back on default interface/DAI
-> (i.e. 0). What will happen with second aplay? Will it automatically find
-> a free DAI to playback?
+>> I am new to development using the alsa API and follow the link code http://equalarea.com/paul/alsa-audio.html
+>>
+>> insert the following code.
+>>
+>>    FILE *fp;
+>>    fp = fopen("file.mp3", "r");
+>>    fclose(fp);
+>>
+>> and changed variable buf by the variable fp, but by running the file file.mp3 he does not play according to the way it interferes with the function snd_pcm_writei ? someone could help me in developing this playback, I thank
+>>
 
-No,
+AFAIK, ALSA can play mp3 files.
 
-  or it is mandatory to explicitly specify the
-> PCM/card # for second aplay?
->
-
-You need to redirect it . You can use
-
-aplay -Dplughw:0,1 x.wav.
-
-Here '0' indicated card number and '1' indicates device number
-
-~Regards
-Rajeev
-
-
-> Similarly what will happen in case of arecord when a codec supports
-> multiple DAIs capable of capturing?
->
+>> Regards.
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
 >
 > _______________________________________________
 > Alsa-devel mailing list
