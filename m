@@ -1,14 +1,22 @@
 From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: Re: how to enumerate useful ALSA devices?
-Date: Wed, 4 Jan 2012 13:49:56 -0600
-Message-ID: <20120104194956.GB9868@foghorn.codeweavers.com>
+Subject: [alsa-lib PATCH 1/4] Remove docs for snd_names_list
+ and snd_names_list_free
+Date: Wed, 4 Jan 2012 14:11:27 -0600
+Message-ID: <20120104201127.GC9868@foghorn.codeweavers.com>
+Reply-To: alsa-devel <alsa-devel@alsa-project.org>,
+	Andrew Eikum <aeikum@codeweavers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/mixed; boundary="5mCyUwZo2JvN/JJP"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F6C82443E
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 20:50:02 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 29146243B5
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 21:11:31 +0100 (CET)
+Received: from foghorn.codeweavers.com ([216.251.189.130])
+	by mail.codeweavers.com with esmtpsa
+	(TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.72)
+	(envelope-from <aeikum@codeweavers.com>) id 1RiXBI-0008OB-CT
+	for alsa-devel@alsa-project.org; Wed, 04 Jan 2012 14:11:28 -0600
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,66 +27,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Joerg-Cyril.Hoehle@t-systems.com
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> The 2008 audio guide recommends
-> http://0pointer.de/blog/projects/guide-to-sound-apis.html
-> "Do not use the snd_card_xxx() APIs. For enumerating use
->  snd_device_name_hint() (and related functions).
->  snd_card_xxx() is obsolete... Bluetooth audio are not included"
-> 
-> Is that correct advice?
-> 
-> Wine still uses snd_card, so it knows only about "default" and
-> "plughw:x,y".  I believe that's wrong but don't know what should be
-> used instead in order not to come up with a long list of artificial
-> names mentioned in /usr/share/alsa/alsa.conf such as surround51 when
-> the poor on-board card knows nothing but 16 bit stereo.
-> 
-> I'm looking for a list of working devices on this machine, which likely
-> should contain "default" (usually leading to PA on a recent Ubuntu machine),
-> "plug:dmix" (PA getting out of the way when trying to use other devices),
-> "hw:0,0" and presumably not much more.
 
-Bump, still hoping for an answer to this.
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=utf-8; format=fixed
+Content-Disposition: inline
 
-I tried experimenting with snd_device_name_hint(). It gave me what
-looked like a promising list, consisting of:
 
-null
-front:CARD=SB,DEV=0
-surround40:CARD=SB,DEV=0
-surround41:CARD=SB,DEV=0
-surround50:CARD=SB,DEV=0
-surround51:CARD=SB,DEV=0
-surround71:CARD=SB,DEV=0
-iec958:CARD=SB,DEV=0
+No need to have misleading docs for functions that do nothing.
+---
 
-This is identical to the list from "aplay -L".
+Resending the whole sequence. New patch 4/4 improves the documentation
+for the name hints functions.
 
-But, passing these to aplay fails if I have PulseAudio running
-("device in use"). If I kill PA, then they don't fail, but give
-warnings about rate conversion and suggest the plug plugin. So I stick
-"plug:" in front of the device name, and they fail again ("unknown
-parameter front:CARD"). Clearly I'm doing something very wrong. But I
-don't know what!
+ src/names.c |   13 ++-----------
+ 1 files changed, 2 insertions(+), 11 deletions(-)
 
-Then it occurred to me that this list also contains neither "default"
-nor the "pulse" device in my asound.conf[1]. Both of these work when
-passed to aplay.
 
-Looking to other projects for help, I find that VLC uses the snd_card_
-functions, just like Wine currently does. Of course, that fails to
-find the "pulse" device from asound.conf. And mplayer's libao2 uses a
-couple of hard-coded device names, which is even worse (right?).
+--5mCyUwZo2JvN/JJP
+Content-Type: text/x-patch; charset=us-ascii;
+	name="0001-Remove-docs-for-snd_names_list-and-snd_names_list_fr.patch"
+Content-Disposition: inline; filename="0001-Remove-docs-for-snd_names_list-and-snd_names_list_fr.patch"
+Content-Transfer-Encoding: quoted-printable
 
-So I'm really stuck here. Where am I supposed to get a list of devices
-that I can present to the user, including their Bluetooth devices and
-virtual devices from asound.conf?
+diff --git a/src/names.c b/src/names.c
+index e7a6887..000e574 100644
+--- a/src/names.c
++++ b/src/names.c
+@@ -36,14 +36,8 @@
+ #include "local.h"
+=20
+ /**=20
+- * \brief Give a list of device names and associated comments for select=
+ed interface
+- * \param iface a string identifying interface ("pcm", "ctl", "seq", "ra=
+wmidi")
+- * \param list result - a pointer to list
+- * \return A non-negative value if successful, otherwise a negative erro=
+r code.
++ * \brief This function is unimplemented.
+  * \deprecated Since 1.0.14
+- *
+- * The global configuration files are specified in the environment varia=
+ble
+- * \c ALSA_NAMES_FILE.
+  */
+ int snd_names_list(const char *iface ATTRIBUTE_UNUSED,
+ 		   snd_devname_t **list ATTRIBUTE_UNUSED)
+@@ -53,11 +47,8 @@ int snd_names_list(const char *iface ATTRIBUTE_UNUSED,
+ link_warning(snd_names_list, "Warning: snd_names_list is deprecated, use=
+ snd_device_name_hint");
+=20
+ /**
+- * \brief Release the list of device names
+- * \param list the name list to release
++ * \brief This function is unimplemented.
+  * \deprecated Since 1.0.14
+- *
+- * Releases the list of device names allocated via #snd_names_list().
+  */
+ void snd_names_list_free(snd_devname_t *list ATTRIBUTE_UNUSED)
+ {
 
-[1] asound.conf from Arch Linux pulseaudio-alsa package:
-http://projects.archlinux.org/svntogit/packages.git/tree/trunk/asound.conf?h=packages/pulseaudio-alsa
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Andrew
+
+--5mCyUwZo2JvN/JJP--
