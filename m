@@ -1,22 +1,23 @@
 From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: [alsa-lib PATCH 3/4] Improve hw_params documentation
-Date: Wed, 4 Jan 2012 14:11:44 -0600
-Message-ID: <20120104201144.GE9868@foghorn.codeweavers.com>
+Subject: [alsa-lib PATCH 4/4] Improve snd_device_name_hint
+	documentation
+Date: Wed, 4 Jan 2012 14:11:49 -0600
+Message-ID: <20120104201149.GF9868@foghorn.codeweavers.com>
 References: <a0053dfb39d22118fce92031e4d6adac948b02fc.1325707699.git.aeikum@codeweavers.com>
 Reply-To: alsa-devel <alsa-devel@alsa-project.org>,
 	Andrew Eikum <aeikum@codeweavers.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="HG+GLK89HZ1zG0kk"
+Content-Type: multipart/mixed; boundary="GpGaEY17fSl8rd50"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id E073524469
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 21:11:45 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D61D1039D5
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2012 21:11:51 +0100 (CET)
 Received: from foghorn.codeweavers.com ([216.251.189.130])
 	by mail.codeweavers.com with esmtpsa
 	(TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.72)
-	(envelope-from <aeikum@codeweavers.com>) id 1RiXBZ-0008OP-9N
-	for alsa-devel@alsa-project.org; Wed, 04 Jan 2012 14:11:45 -0600
+	(envelope-from <aeikum@codeweavers.com>) id 1RiXBe-0008Ob-TG
+	for alsa-devel@alsa-project.org; Wed, 04 Jan 2012 14:11:50 -0600
 Content-Disposition: inline
 In-Reply-To: <a0053dfb39d22118fce92031e4d6adac948b02fc.1325707699.git.aeikum@codeweavers.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -32,99 +33,102 @@ To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---HG+GLK89HZ1zG0kk
+--GpGaEY17fSl8rd50
 Content-Type: text/plain; charset=utf-8; format=fixed
 Content-Disposition: inline
 
 ---
- include/pcm.h |   17 ++++++++++++++++-
- src/pcm/pcm.c |   10 +++++++++-
- 2 files changed, 25 insertions(+), 2 deletions(-)
+ src/control/namehint.c |   26 ++++++++++++++++----------
+ 1 files changed, 16 insertions(+), 10 deletions(-)
 
 
---HG+GLK89HZ1zG0kk
+--GpGaEY17fSl8rd50
 Content-Type: text/x-patch; charset=us-ascii;
-	name="0003-Improve-hw_params-documentation.patch"
-Content-Disposition: inline; filename="0003-Improve-hw_params-documentation.patch"
+	name="0004-Improve-snd_device_name_hint-documentation.patch"
+Content-Disposition: inline; filename="0004-Improve-snd_device_name_hint-documentation.patch"
 Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/pcm.h b/include/pcm.h
-index be355a9..4997557 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -44,8 +44,23 @@ extern "C" {
+diff --git a/src/control/namehint.c b/src/control/namehint.c
+index faaa5d5..19352be 100644
+--- a/src/control/namehint.c
++++ b/src/control/namehint.c
+@@ -517,15 +517,18 @@ static int add_software_devices(struct hint_list *l=
+ist)
+ }
 =20
- /** PCM generic info container */
- typedef struct _snd_pcm_info snd_pcm_info_t;
--/** PCM hardware configuration space container */
-+
-+/** PCM hardware configuration space container
-+ *
-+ *  snd_pcm_hw_params_t is an opaque structure which contains a set of p=
-ossible
-+ *  PCM hardware configurations. For example, a given instance might inc=
-lude a
-+ *  range of buffer sizes, a range of period sizes, and a set of several=
- sample
-+ *  formats. Some subset of all possible combinations these sets may be =
-valid,
-+ *  but not necessarily any combination will be valid.
-+ *
-+ *  When a parameter is set or restricted using a snd_pcm_hw_params_set*
-+ *  function, all of the other ranges will be updated to exclude as many
-+ *  impossible configurations as possible. Attempting to set a parameter
-+ *  outside of its acceptable range will result in the function failing
-+ *  and an error code being returned.
-+ */
- typedef struct _snd_pcm_hw_params snd_pcm_hw_params_t;
-+
- /** PCM software configuration container */
- typedef struct _snd_pcm_sw_params snd_pcm_sw_params_t;
- /** PCM status container */
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index dc91f79..ea1afdc 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -809,7 +809,9 @@ int snd_pcm_hw_params_current(snd_pcm_t *pcm, snd_pcm=
-_hw_params_t *params)
+ /**
+- * \brief Return string list with device name hints.
++ * \brief Get a set of device name hints
+  * \param card Card number or -1 (means all cards)
+  * \param iface Interface identification (like "pcm", "rawmidi", "timer"=
+, "seq")
+- * \param hints Result - array of string with device name hints
++ * \param hints Result - array of device name hints
+  * \result zero if success, otherwise a negative error code
   *
-  * The configuration is chosen fixing single parameters in this order:
-  * first access, first format, first subformat, min channels, min rate,=20
-- * min period time, max buffer size, min tick time
-+ * min period time, max buffer size, min tick time. If no mutually
-+ * compatible set of parameters can be chosen, a negative error code
-+ * will be returned.
+- * Note: The device description is separated with '|' char.
++ * hints will receive a NULL-terminated array of device name hints,
++ * which can be passed to #snd_device_name_get_hint to extract usable
++ * values. When no longer needed, hints should be passed to
++ * #snd_device_name_free_hint to release resources.
   *
-  * After this call, #snd_pcm_prepare() is called automatically and
-  * the stream is brought to \c #SND_PCM_STATE_PREPARED state.
-@@ -817,6 +819,9 @@ int snd_pcm_hw_params_current(snd_pcm_t *pcm, snd_pcm=
-_hw_params_t *params)
-  * The hardware parameters cannot be changed when the stream is
-  * running (active). The software parameters can be changed
-  * at any time.
+- * User defined hints are gathered from namehint.IFACE tree like:
++ * User-defined hints are gathered from namehint.IFACE tree like:
+  *
+  * <code>
+  * namehint.pcm {<br>
+@@ -534,6 +537,8 @@ static int add_software_devices(struct hint_list *lis=
+t)
+  * }
+  * </code>
+  *
++ * Note: The device description is separated with '|' char.
 + *
-+ * The configuration space will be updated to reflect the chosen
-+ * parameters.
+  * Special variables: defaults.namehint.showall specifies if all device
+  * definitions are accepted (boolean type).
   */
- int snd_pcm_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- {
-@@ -3183,6 +3188,9 @@ int snd_pcm_hw_params_get_fifo_size(const snd_pcm_h=
-w_params_t *params)
-  * \brief Fill params with a full configuration space for a PCM
-  * \param pcm PCM handle
-  * \param params Configuration space
+@@ -626,8 +631,8 @@ int snd_device_name_hint(int card, const char *iface,=
+ void ***hints)
+ }
+=20
+ /**
+- * \brief Free a string list with device name hints.
+- * \param hints A string list to free
++ * \brief Free a list of device name hints.
++ * \param hints List to free
+  * \result zero if success, otherwise a negative error code
+  */
+ int snd_device_name_free_hint(void **hints)
+@@ -646,16 +651,17 @@ int snd_device_name_free_hint(void **hints)
+ }
+=20
+ /**
+- * \brief Get a hint Free a string list with device name hints.
++ * \brief Extract a value from a hint
+  * \param hint A pointer to hint
+- * \param id Hint ID (see bellow)
++ * \param id Hint value to extract ("NAME", "DESC", or "IOID", see below=
+)
+  * \result an allocated ASCII string if success, otherwise NULL
+  *
+  * List of valid IDs:
+  * NAME - name of device
+  * DESC - description of device
+- * IOID - input / output identification (Input or Output strings),
+- *        not present (NULL) means both
++ * IOID - input / output identification ("Input" or "Output"), NULL mean=
+s both
 + *
-+ * The configuration space will be filled with all possible ranges
-+ * for the PCM device.
++ * The return value should be freed when no longer needed.
   */
- int snd_pcm_hw_params_any(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
+ char *snd_device_name_get_hint(const void *hint, const char *id)
  {
 
---HG+GLK89HZ1zG0kk
+--GpGaEY17fSl8rd50
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---HG+GLK89HZ1zG0kk--
+--GpGaEY17fSl8rd50--
