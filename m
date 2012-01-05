@@ -1,15 +1,16 @@
-From: Sangsu Park <sangsu4u.park@samsung.com>
-Subject: [PATCH v3] ASoC: soc-pcm: Allocate PCM operations
-	dynamically to support multiple DAIs
-Date: Tue,  3 Jan 2012 08:43:25 +0900
-Message-ID: <1325547805-16324-1-git-send-email-sangsu4u.park@samsung.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: tlv32aic3x, rx-51, regulator
+Date: Thu, 05 Jan 2012 13:24:39 +0200
+Message-ID: <4F058877.5010005@bitmer.com>
+References: <alpine.DEB.2.01.1201051057240.13332@pmeerw.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30CDC24344
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 12:12:58 +0100 (CET)
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED36124355
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 12:24:56 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.01.1201051057240.13332@pmeerw.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,96 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com
-Cc: sbkim73@samsung.com, sangsu@gmail.com, Sangsu Park <sangsu4u.park@samsung.com>
+To: Peter Meerwald <pmeerw@pmeerw.net>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org, Lauri Leukkunen <lauri.leukkunen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The original code does not cover the case that two DAIs(CPU) have different
-ASoC core PCM operations(like mmap, pointer...). Currently we have only one
-global soc_pcm_ops for ASoC core PCM operation. When two DAIs have different
-pointer functions, second DAI's pointer function is set for both first DAI
-and second DAI in case of original code.
+Hi
 
-This patch uses runtime's pcm_ops instead of global pcm_ops for each DAIs. So
-each DAIs can have different ASoC core PCM operations. This is needed to
-support multiple DAIs.
+On 05/01/12 12:02, Peter Meerwald wrote:
+> Hello,
+>
+> the tlv320aic3x codec driver requests a number of supplies/regulators
+> (IOVDD, DVDD, AVDD, DRVDD), these seem mandatory for the codec driver to
+> operate and somehow tied to the rx51 platform
+>
+They are the supply voltages for the aix3x codecs and not tied to rx51 only.
 
-Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
----
- sound/soc/soc-pcm.c |   38 ++++++++++++++++++--------------------
- 1 files changed, 18 insertions(+), 20 deletions(-)
+> I want to use the tlv320aic3x codec driver with some other board where I
+> don't care about supplies/regulators -- how is this going to work? do I
+> need to have dummy supplies just to keep tlv320aic3x happy?
+>
+> shouldn't the ai3x_supply_names be something that is optional and passed
+> in via platform_data?
+>
+Simplest option in case you don't have *any* controllable regulator or 
+if the kernel is not touching them is to not enable CONFIG_REGULATOR.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 8aa7cec..cdc860a 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -598,17 +598,6 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 	return offset;
- }
- 
--/* ASoC PCM operations */
--static struct snd_pcm_ops soc_pcm_ops = {
--	.open		= soc_pcm_open,
--	.close		= soc_pcm_close,
--	.hw_params	= soc_pcm_hw_params,
--	.hw_free	= soc_pcm_hw_free,
--	.prepare	= soc_pcm_prepare,
--	.trigger	= soc_pcm_trigger,
--	.pointer	= soc_pcm_pointer,
--};
--
- /* create a new pcm */
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- {
-@@ -616,10 +605,19 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_pcm_ops *soc_pcm_ops = &rtd->ops;
- 	struct snd_pcm *pcm;
- 	char new_name[64];
- 	int ret = 0, playback = 0, capture = 0;
- 
-+	soc_pcm_ops->open	= soc_pcm_open;
-+	soc_pcm_ops->close	= soc_pcm_close;
-+	soc_pcm_ops->hw_params	= soc_pcm_hw_params;
-+	soc_pcm_ops->hw_free	= soc_pcm_hw_free;
-+	soc_pcm_ops->prepare	= soc_pcm_prepare;
-+	soc_pcm_ops->trigger	= soc_pcm_trigger;
-+	soc_pcm_ops->pointer	= soc_pcm_pointer;
-+
- 	/* check client and interface hw capabilities */
- 	snprintf(new_name, sizeof(new_name), "%s %s-%d",
- 			rtd->dai_link->stream_name, codec_dai->name, num);
-@@ -643,20 +641,20 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	rtd->pcm = pcm;
- 	pcm->private_data = rtd;
- 	if (platform->driver->ops) {
--		soc_pcm_ops.mmap = platform->driver->ops->mmap;
--		soc_pcm_ops.pointer = platform->driver->ops->pointer;
--		soc_pcm_ops.ioctl = platform->driver->ops->ioctl;
--		soc_pcm_ops.copy = platform->driver->ops->copy;
--		soc_pcm_ops.silence = platform->driver->ops->silence;
--		soc_pcm_ops.ack = platform->driver->ops->ack;
--		soc_pcm_ops.page = platform->driver->ops->page;
-+		soc_pcm_ops->mmap = platform->driver->ops->mmap;
-+		soc_pcm_ops->pointer = platform->driver->ops->pointer;
-+		soc_pcm_ops->ioctl = platform->driver->ops->ioctl;
-+		soc_pcm_ops->copy = platform->driver->ops->copy;
-+		soc_pcm_ops->silence = platform->driver->ops->silence;
-+		soc_pcm_ops->ack = platform->driver->ops->ack;
-+		soc_pcm_ops->page = platform->driver->ops->page;
- 	}
- 
- 	if (playback)
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &soc_pcm_ops);
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, soc_pcm_ops);
- 
- 	if (capture)
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, soc_pcm_ops);
- 
- 	if (platform->driver->pcm_new) {
- 		ret = platform->driver->pcm_new(rtd);
+IMHO optional platform data for CONFIG_REGULATOR=y case doesn't win much 
+over defining fixed voltage regulators. Either it would be duplicate 
+information or needs modification to a machine driver anyway. And the 
+regulator framework can be useful in debugging too, like following the 
+use_counts via sysfs and so on.
+
 -- 
-1.7.1
+Jarkko
