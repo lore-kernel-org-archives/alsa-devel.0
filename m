@@ -1,27 +1,12 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: eeprom params for ice1724 module
-Date: Thu, 05 Jan 2012 21:58:34 +0100
-Message-ID: <4F060EFA.5010707@ivitera.com>
-References: <4F04B89A.1060801@ivitera.com> <4F04D2F3.5060609@ivitera.com>
+From: pavel.hofman@ivitera.com
+Subject: [PATCH - ice1724 1/4] ALSA: ice1724 - Create capture
+	pcm only for ADC-enabled configurations
+Date: Thu,  5 Jan 2012 22:01:55 +0100
+Message-ID: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 9ED2D245CE
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 21:58:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by cable.insite.cz (Postfix) with ESMTP id 9C5C0A1A40B3E
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 21:58:54 +0100 (CET)
-Received: from cable.insite.cz ([84.242.75.189])
-	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id fDsNflWqdHVn for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jan 2012 21:58:40 +0100 (CET)
-Received: from [192.168.105.101] (ip28.insite.cz [81.0.237.28])
-	(Authenticated sender: pavel)
-	by cable.insite.cz (Postfix) with ESMTPSA id 43107A1A32346
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 21:58:40 +0100 (CET)
-In-Reply-To: <4F04D2F3.5060609@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,21 +16,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 4.1.2012 23:30, Pavel Hofman napsal(a):
-> Dne 4.1.2012 21:37, Pavel Hofman napsal(a):
-> 
-> I think there is a much better option - defining the eeprom values for
-> this card in the driver and choosing it with the model name. I will send
-> the patch.
-> 
+From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-The patches allowing the above plus the actual config follow. I have put
-the card definition directly into ice1724.c since it is rather short. I
-can store it in a separate file should you find it necessary.
+Add the capture pcm only if there is at least one ADC configured in
+the SYSCONF register.
 
-Thanks a lot and best regards,
+Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
-Pavel.
+diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
+index 4353e76..2a0be2c 100644
+--- a/pci/ice1712/ice1724.c
++++ b/pci/ice1712/ice1724.c
+@@ -1117,14 +1117,18 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
+ static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
+ {
+ 	struct snd_pcm *pcm;
+-	int err;
++	int capt, err;
+ 
+-	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
++	capt = (~ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ?
++		1 : 0;
++	err = snd_pcm_new(ice->card, "ICE1724", device, 1, capt, &pcm);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_vt1724_playback_pro_ops);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vt1724_capture_pro_ops);
++	if (capt)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
++			&snd_vt1724_capture_pro_ops);
+ 
+ 	pcm->private_data = ice;
+ 	pcm->info_flags = 0;
+-- 
+1.7.0.4
