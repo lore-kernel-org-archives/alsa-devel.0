@@ -1,14 +1,12 @@
 From: pavel.hofman@ivitera.com
-Subject: [PATCH - ice1724 4/4] ALSA: ice1724 - Support for
-	ooAoo SQ210a
-Date: Thu,  5 Jan 2012 22:01:58 +0100
-Message-ID: <1325797318-16333-4-git-send-email-pavel.hofman@ivitera.com>
-References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
+Subject: [PATCH - ice1724 1/1] ALSA: ice1724 - Check for ac97
+	to avoid kernel oops
+Date: Thu,  5 Jan 2012 23:05:18 +0100
+Message-ID: <1325801118-3996-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +22,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-This card shares PCI ids with Chaintec AV710. Therefore, it will not be
-detected automatically, it can only be activated by the module parameter
-model=sq210a.
+Cards with identical PCI ids but no AC97 config in EEPROM do not have
+the ac97 field initialized. We must check for this case to avoid kernel oops.
 
 Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
-diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
-index 8c473b1..248ad31 100644
---- a/pci/ice1712/ice1724.c
-+++ b/pci/ice1712/ice1724.c
-@@ -2182,6 +2182,40 @@ static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
+diff --git a/pci/ice1712/amp.c b/pci/ice1712/amp.c
+index e328cfb..e525da2 100644
+--- a/pci/ice1712/amp.c
++++ b/pci/ice1712/amp.c
+@@ -68,8 +68,11 @@ static int __devinit snd_vt1724_amp_init(struct snd_ice1712 *ice)
  
- static struct snd_ice1712_card_info no_matched __devinitdata;
- 
-+
-+/*
-+  ooAoo cards with no controls
-+*/
-+static unsigned char ooaoo_sq210_eeprom[] __devinitdata = {
-+	[ICE_EEP2_SYSCONF]     = 0x4c,	/* 49MHz crystal, no mpu401, no ADC,
-+					   1xDACs */
-+	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-+	[ICE_EEP2_I2S]         = 0x78,	/* no volume, 96k, 24bit, 192k */
-+	[ICE_EEP2_SPDIF]       = 0xc1,	/* out-en, out-int, out-ext */
-+	[ICE_EEP2_GPIO_DIR]    = 0x00,	/* no GPIOs are used */
-+	[ICE_EEP2_GPIO_DIR1]   = 0x00,
-+	[ICE_EEP2_GPIO_DIR2]   = 0x00,
-+	[ICE_EEP2_GPIO_MASK]   = 0xff,
-+	[ICE_EEP2_GPIO_MASK1]  = 0xff,
-+	[ICE_EEP2_GPIO_MASK2]  = 0xff,
-+
-+	[ICE_EEP2_GPIO_STATE]  = 0x00, /* inputs */
-+	[ICE_EEP2_GPIO_STATE1] = 0x00, /* all 1, but GPIO_CPLD_RW
-+					  and GPIO15 always zero */
-+	[ICE_EEP2_GPIO_STATE2] = 0x00, /* inputs */
-+};
-+
-+
-+struct snd_ice1712_card_info snd_vt1724_ooaoo_cards[] __devinitdata = {
-+	{
-+		.name = "ooAoo SQ210a",
-+		.model = "sq210a",
-+		.eeprom_size = sizeof(ooaoo_sq210_eeprom),
-+		.eeprom_data = ooaoo_sq210_eeprom,
-+	},
-+	{ } /* terminator */
-+};
-+
- static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
- 	snd_vt1724_revo_cards,
- 	snd_vt1724_amp_cards,
-@@ -2196,6 +2230,7 @@ static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
- 	snd_vt1724_wtm_cards,
- 	snd_vt1724_se_cards,
- 	snd_vt1724_qtet_cards,
-+	snd_vt1724_ooaoo_cards,
- 	NULL,
- };
+ static int __devinit snd_vt1724_amp_add_controls(struct snd_ice1712 *ice)
+ {
+-	/* we use pins 39 and 41 of the VT1616 for left and right read outputs */
+-	snd_ac97_write_cache(ice->ac97, 0x5a, snd_ac97_read(ice->ac97, 0x5a) & ~0x8000);
++	if (ice->ac97)
++		/* we use pins 39 and 41 of the VT1616 for left and right
++		read outputs */
++		snd_ac97_write_cache(ice->ac97, 0x5a,
++			snd_ac97_read(ice->ac97, 0x5a) & ~0x8000);
+ 	return 0;
+ }
  
 -- 
 1.7.0.4
