@@ -1,17 +1,27 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: how to enumerate useful ALSA devices?
-Date: Thu, 05 Jan 2012 19:26:03 +0200
-Message-ID: <4F05DD2B.9080400@iki.fi>
-References: <20120104194956.GB9868@foghorn.codeweavers.com>
-	<8E4C156DA5797D418DBFADFD8CE655A41782620646@HE113481.emea1.cds.t-internal.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: eeprom params for ice1724 module
+Date: Thu, 05 Jan 2012 21:58:34 +0100
+Message-ID: <4F060EFA.5010707@ivitera.com>
+References: <4F04B89A.1060801@ivitera.com> <4F04D2F3.5060609@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw-out1.cc.tut.fi (mail-gw-out1.cc.tut.fi [130.230.160.32])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9481024502
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 18:26:09 +0100 (CET)
-In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41782620646@HE113481.emea1.cds.t-internal.com>
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 9ED2D245CE
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 21:58:56 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by cable.insite.cz (Postfix) with ESMTP id 9C5C0A1A40B3E
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 21:58:54 +0100 (CET)
+Received: from cable.insite.cz ([84.242.75.189])
+	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id fDsNflWqdHVn for <alsa-devel@alsa-project.org>;
+	Thu,  5 Jan 2012 21:58:40 +0100 (CET)
+Received: from [192.168.105.101] (ip28.insite.cz [81.0.237.28])
+	(Authenticated sender: pavel)
+	by cable.insite.cz (Postfix) with ESMTPSA id 43107A1A32346
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 21:58:40 +0100 (CET)
+In-Reply-To: <4F04D2F3.5060609@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joerg-Cyril.Hoehle@t-systems.com
-Cc: aeikum@codeweavers.com, alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05.01.2012 11:59, Joerg-Cyril.Hoehle@t-systems.com wrote:
-> Andrew Eikum wrote:
->> I tried experimenting with snd_device_name_hint().
->> surround40:CARD=SB,DEV=0
->> surround41:CARD=SB,DEV=0
->> surround50:CARD=SB,DEV=0
->> surround51:CARD=SB,DEV=0
->> surround71:CARD=SB,DEV=0
-> I'm not sure Wine should enumerate these.  How can it tell the difference
-> so as to announce the correct channel mapping to applications?
-> E.g. 41 vs 50, both 5 channels? Ideally, that should be announced as
-> one device (as it really is), capable of supporting different formats,
-> with one preferred format (perhaps the one with most channels) that GetMixFormat uses.
+Dne 4.1.2012 23:30, Pavel Hofman napsal(a):
+> Dne 4.1.2012 21:37, Pavel Hofman napsal(a):
+> 
+> I think there is a much better option - defining the eeprom values for
+> this card in the driver and choosing it with the model name. I will send
+> the patch.
+> 
 
-Yep, as noted I think it should just ignore "surroundXX" and "front" and
-only announce the "default" ones (there will be multiple "default" ones
-with different $CARD when there are multiple cards, except when
-pulseaudio is in use in which case there is only one "default" which
-goes to pulseaudio).
+The patches allowing the above plus the actual config follow. I have put
+the card definition directly into ice1724.c since it is rather short. I
+can store it in a separate file should you find it necessary.
 
-IIRC the "surroundXX" and "front" ones are just legacy stuff. Then
-again, if that is the case, one'd except them to not have the hint tag
-making them listed in "-L"...
+Thanks a lot and best regards,
 
-> OTOH, I find it important that Wine announces a device capable of more
-> than stereo if there's one in the system.
-
-
--- 
-Anssi Hannula
+Pavel.
