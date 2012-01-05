@@ -1,12 +1,14 @@
 From: pavel.hofman@ivitera.com
-Subject: [PATCH - ice1724 1/4] ALSA: ice1724 - Create capture
-	pcm only for ADC-enabled configurations
-Date: Thu,  5 Jan 2012 22:01:55 +0100
-Message-ID: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
+Subject: [PATCH - ice1724 2/4] ALSA: ice1724 - External clock
+	item only for cards with SPDIF_IN
+Date: Thu,  5 Jan 2012 22:01:56 +0100
+Message-ID: <1325797318-16333-2-git-send-email-pavel.hofman@ivitera.com>
+References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +24,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-Add the capture pcm only if there is at least one ADC configured in
-the SYSCONF register.
+Append the external clock item to the clock list only if
+the SPDIF_IN capability is defined in the SPDIF register.
 
 Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
 diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
-index 4353e76..2a0be2c 100644
+index 2a0be2c..a671377 100644
 --- a/pci/ice1712/ice1724.c
 +++ b/pci/ice1712/ice1724.c
-@@ -1117,14 +1117,18 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
- static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
- {
- 	struct snd_pcm *pcm;
--	int err;
-+	int capt, err;
+@@ -1829,7 +1829,12 @@ static int snd_vt1724_pro_internal_clock_info(struct snd_kcontrol *kcontrol,
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
  
--	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
-+	capt = (~ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ?
-+		1 : 0;
-+	err = snd_pcm_new(ice->card, "ICE1724", device, 1, capt, &pcm);
- 	if (err < 0)
- 		return err;
- 
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_vt1724_playback_pro_ops);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vt1724_capture_pro_ops);
-+	if (capt)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
-+			&snd_vt1724_capture_pro_ops);
- 
- 	pcm->private_data = ice;
- 	pcm->info_flags = 0;
+-	uinfo->value.enumerated.items = hw_rates_count + ice->ext_clock_count;
++	/* internal clocks */
++	uinfo->value.enumerated.items = hw_rates_count;
++	/* external clocks */
++	if (ice->force_rdma1 ||
++	    (ice->eeprom.data[ICE_EEP2_SPDIF] & VT1724_CFG_SPDIF_IN))
++		uinfo->value.enumerated.items += ice->ext_clock_count;
+ 	/* upper limit - keep at top */
+ 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
+ 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
 -- 
 1.7.0.4
