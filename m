@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] asoc: replace 0xffffffff with DMA_BIT_MASK
-	macro
-Date: Thu, 5 Jan 2012 05:36:27 +0000
-Message-ID: <20120105053625.GA11867@opensource.wolfsonmicro.com>
-References: <1325382183-21717-1-git-send-email-manabian@gmail.com>
-	<20120102132933.GN4300@opensource.wolfsonmicro.com>
-	<CAGhQ9VyxHvCFy4EJyabi8Tfy5NRQaOe4huAPXVYsrQ0GBDsc9g@mail.gmail.com>
+Subject: Re: Does ASoC support sound card with
+	multiple	interfaces?
+Date: Thu, 5 Jan 2012 06:02:55 +0000
+Message-ID: <20120105060255.GF11867@opensource.wolfsonmicro.com>
+References: <1325516773.12508.57.camel@matrix>
+	<20120102201642.GA30932@sirena.org.uk>
+	<1325655413.12508.79.camel@matrix> <4F03E80B.907@st.com>
+	<1325660401.12508.113.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0E281038CB
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 06:36:29 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 48328103918
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 07:02:57 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CAGhQ9VyxHvCFy4EJyabi8Tfy5NRQaOe4huAPXVYsrQ0GBDsc9g@mail.gmail.com>
+In-Reply-To: <1325660401.12508.113.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joachim Eastwood <manabian@gmail.com>
-Cc: Joachim Eastwood <joachim.eastwood@jotron.com>, alsa-devel@alsa-project.org, lrg@ti.com
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Rajeev kumar <rajeev-dlh.kumar@st.com>, "; Liam Girdwood" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 04, 2012 at 07:04:29PM +0100, Joachim Eastwood wrote:
-> On Mon, Jan 2, 2012 at 2:29 PM, Mark Brown
+On Wed, Jan 04, 2012 at 12:30:01PM +0530, Ashish Chavan wrote:
 
-> > Please also use subject lines corresponding to the subsystem.
+> Is it really mandatory to specify card and device id? Isn't there a
+> middle layer that takes care of using "first free" interface for
+> playback or recording, if interface is not explicitly specified? As we
+> register DAIs with ALSA subsystem, it should be fairly easy for alsa-lib
+> to find out "first free" interface.
 
-> The subject of this mail includes "asoc". Is there anything I should
-> do different?
+That's not implemented since genuinely identical interfaces should be
+implemented by supporting multiple opens on a single device but those
+essentailly don't exist in embedded hardware.  Pretty much all embedded
+hardware with multiple routes out of the CPU has either distinct fixed
+functions for the outputs or independant routing of them so they can't
+reliably be used interchangibly.
 
-If you look at all the other commits in the subsystem you'll see they're
-for "ASoC".
+You could implement it but it'd have to be a system specific option to
+use it.
