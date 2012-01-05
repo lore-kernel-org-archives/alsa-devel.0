@@ -1,17 +1,14 @@
-From: Joerg-Cyril.Hoehle@t-systems.com
-Subject: how to enumerate useful ALSA devices?
-Date: Thu, 5 Jan 2012 10:59:01 +0100
-Message-ID: <8E4C156DA5797D418DBFADFD8CE655A41782620646@HE113481.emea1.cds.t-internal.com>
-References: <20120104194956.GB9868@foghorn.codeweavers.com>
+From: Peter Meerwald <pmeerw@pmeerw.net>
+Subject: tlv32aic3x, rx-51, regulator
+Date: Thu, 5 Jan 2012 11:02:37 +0100 (CET)
+Message-ID: <alpine.DEB.2.01.1201051057240.13332@pmeerw.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tcmail83.telekom.de (tcmail83.telekom.de [62.225.183.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id C09282459B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 10:59:04 +0100 (CET)
-In-Reply-To: <20120104194956.GB9868@foghorn.codeweavers.com>
-Content-Language: de-DE
+Received: from pmeerw.net (ns.pmeerw.net [87.118.82.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18C39245A0
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2012 11:02:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: aeikum@codeweavers.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, Lauri Leukkunen <lauri.leukkunen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Andrew Eikum wrote:
->I tried experimenting with snd_device_name_hint().
->surround40:CARD=3DSB,DEV=3D0
->surround41:CARD=3DSB,DEV=3D0
->surround50:CARD=3DSB,DEV=3D0
->surround51:CARD=3DSB,DEV=3D0
->surround71:CARD=3DSB,DEV=3D0
-I'm not sure Wine should enumerate these.  How can it tell the difference
-so as to announce the correct channel mapping to applications?
-E.g. 41 vs 50, both 5 channels? Ideally, that should be announced as
-one device (as it really is), capable of supporting different formats,
-with one preferred format (perhaps the one with most channels) that GetMixF=
-ormat uses.
+Hello,
 
-OTOH, I find it important that Wine announces a device capable of more
-than stereo if there's one in the system.
+the tlv320aic3x codec driver requests a number of supplies/regulators 
+(IOVDD, DVDD, AVDD, DRVDD), these seem mandatory for the codec driver to 
+operate and somehow tied to the rx51 platform
 
-Regards,
- J=F6rg H=F6hle
+I want to use the tlv320aic3x codec driver with some other board where I 
+don't care about supplies/regulators -- how is this going to work? do I 
+need to have dummy supplies just to keep tlv320aic3x happy?
+
+shouldn't the ai3x_supply_names be something that is optional and passed 
+in via platform_data?
+
+regards, p.
+
+-- 
+
+Peter Meerwald
++43-664-2444418 (mobile)
