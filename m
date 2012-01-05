@@ -1,8 +1,8 @@
 From: pavel.hofman@ivitera.com
-Subject: [PATCH - ice1724 2/4] ALSA: ice1724 - External clock
-	item only for cards with SPDIF_IN
-Date: Thu,  5 Jan 2012 22:01:56 +0100
-Message-ID: <1325797318-16333-2-git-send-email-pavel.hofman@ivitera.com>
+Subject: [PATCH - ice1724 3/4] ALSA: ice1724 - Allow card info
+	based on model only
+Date: Thu,  5 Jan 2012 22:01:57 +0100
+Message-ID: <1325797318-16333-3-git-send-email-pavel.hofman@ivitera.com>
 References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,28 +24,37 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-Append the external clock item to the clock list only if
-the SPDIF_IN capability is defined in the SPDIF register.
+When two different cards share the same PCI vendor/subvendor
+identification, allow card info based on model only.
+Do not require subvendor ID.
 
 Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
 diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
-index 2a0be2c..a671377 100644
+index a671377..8c473b1 100644
 --- a/pci/ice1712/ice1724.c
 +++ b/pci/ice1712/ice1724.c
-@@ -1829,7 +1829,12 @@ static int snd_vt1724_pro_internal_clock_info(struct snd_kcontrol *kcontrol,
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
+@@ -2279,7 +2279,7 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+ 		}
+ 	}
+ 	for (tbl = card_tables; *tbl; tbl++) {
+-		for (c = *tbl; c->subvendor; c++) {
++		for (c = *tbl; c->model; c++) {
+ 			if (modelname && c->model &&
+ 			    !strcmp(modelname, c->model)) {
+ 				printk(KERN_INFO "ice1724: Using board model %s\n",
+@@ -2588,8 +2588,10 @@ static int __devinit snd_vt1724_probe(struct pci_dev *pci,
+ 	ice->ext_clock_count = 0;
  
--	uinfo->value.enumerated.items = hw_rates_count + ice->ext_clock_count;
-+	/* internal clocks */
-+	uinfo->value.enumerated.items = hw_rates_count;
-+	/* external clocks */
-+	if (ice->force_rdma1 ||
-+	    (ice->eeprom.data[ICE_EEP2_SPDIF] & VT1724_CFG_SPDIF_IN))
-+		uinfo->value.enumerated.items += ice->ext_clock_count;
- 	/* upper limit - keep at top */
- 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
- 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
+ 	for (tbl = card_tables; *tbl; tbl++) {
+-		for (c = *tbl; c->subvendor; c++) {
+-			if (c->subvendor == ice->eeprom.subvendor) {
++		for (c = *tbl; c->name; c++) {
++			if ((model[dev] && c->model &&
++				!strcmp(model[dev], c->model)) ||
++				(c->subvendor == ice->eeprom.subvendor)) {
+ 				strcpy(card->shortname, c->name);
+ 				if (c->driver) /* specific driver? */
+ 					strcpy(card->driver, c->driver);
 -- 
 1.7.0.4
