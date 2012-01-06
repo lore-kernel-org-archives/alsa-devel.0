@@ -1,79 +1,126 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: hdsp: potential oops in snd_hdsp_info_pref_sync_ref()
-Date: Fri, 6 Jan 2012 16:59:57 +0300
-Message-ID: <20120106135957.GA4316@elgon.mountain>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [RFC][PATCH] ARM: NUC900: Rename nuc900-audio platform device to nuc900-ac97
+Date: Fri, 6 Jan 2012 22:20:53 +0800
+Message-ID: <CAKT61h8vpk4xLEoKDJcLnAL54q-XzHj73LTwHb8LgxEx38+c=Q@mail.gmail.com>
+References: <1325850987.2773.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B705103851
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2012 15:00:11 +0100 (CET)
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by acsinet15.oracle.com (Switch-3.4.4/Switch-3.4.4) with ESMTP id
-	q06E07FU000582
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <alsa-devel@alsa-project.org>; Fri, 6 Jan 2012 14:00:08 GMT
-Received: from acsmt357.oracle.com (acsmt357.oracle.com [141.146.40.157])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	q06E06Uh000977
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Fri, 6 Jan 2012 14:00:07 GMT
-Received: from abhmt104.oracle.com (abhmt104.oracle.com [141.146.116.56])
-	by acsmt357.oracle.com (8.12.11.20060308/8.12.11) with ESMTP id
-	q06E04gR014973
-	for <alsa-devel@alsa-project.org>; Fri, 6 Jan 2012 08:00:06 -0600
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1325850987.2773.2.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-My static check complains that there is a potential oops here but I'm
-not sure what the correct fix is.
+2012/1/6, Axel Lin <axel.lin@gmail.com>:
+> This change ensures the platform device name matches nuc900-ac97 platform
+> driver name.
+>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-sound/pci/rme9652/hdsp.c
-  2631          switch (hdsp->io_type) {
-  2632          case Digiface:
-  2633          case H9652:
-  2634                  uinfo->value.enumerated.items = 6;
-  2635                  break;
-  2636          case Multiface:
-  2637                  uinfo->value.enumerated.items = 4;
-  2638                  break;
-  2639          case H9632:
-  2640                  uinfo->value.enumerated.items = 3;
-  2641                  break;
-  2642          default:
-  2643                  uinfo->value.enumerated.items = 0;
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-We set this to zero here.
+Acked-by: Wan Zongshun <mcuos.com@gmail.com>
 
-  2644                  break;
-  2645          }
-  2646  
-  2647          if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-enumerated.item is unsigned int so it's always greater or equal to zero.
+> ---
+> Hi ZongShun,
+> I don't have this hardware, I'd appreciate if you can test this patch.
+> This patch is against linux-next 20120103.
+> Thanks,
+> Axel
+>  arch/arm/mach-w90x900/clksel.c |    2 +-
+>  arch/arm/mach-w90x900/cpu.c    |    2 +-
+>  arch/arm/mach-w90x900/dev.c    |    6 +++---
+>  arch/arm/mach-w90x900/mfp.c    |    2 +-
+>  sound/soc/nuc900/nuc900-ac97.c |    2 +-
+>  5 files changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/arm/mach-w90x900/clksel.c b/arch/arm/mach-w90x900/clksel.c
+> index 3de4a52..06d867dc 100644
+> --- a/arch/arm/mach-w90x900/clksel.c
+> +++ b/arch/arm/mach-w90x900/clksel.c
+> @@ -48,7 +48,7 @@ static void clock_source_select(const char *dev_id,
+> unsigned int clkval)
+>  		offset = ATAOFFSET;
+>  	else if (strcmp(dev_id, "nuc900-lcd") == 0)
+>  		offset = LCDOFFSET;
+> -	else if (strcmp(dev_id, "nuc900-audio") == 0)
+> +	else if (strcmp(dev_id, "nuc900-ac97") == 0)
+>  		offset = AUDOFFSET;
+>  	else
+>  		offset = CPUOFFSET;
+> diff --git a/arch/arm/mach-w90x900/cpu.c b/arch/arm/mach-w90x900/cpu.c
+> index 604e1db..9a06619 100644
+> --- a/arch/arm/mach-w90x900/cpu.c
+> +++ b/arch/arm/mach-w90x900/cpu.c
+> @@ -79,7 +79,7 @@ static DEFINE_CLK(timer4, 23);
+>
+>  static struct clk_lookup nuc900_clkregs[] = {
+>  	DEF_CLKLOOK(&clk_lcd, "nuc900-lcd", NULL),
+> -	DEF_CLKLOOK(&clk_audio, "nuc900-audio", NULL),
+> +	DEF_CLKLOOK(&clk_audio, "nuc900-ac97", NULL),
+>  	DEF_CLKLOOK(&clk_fmi, "nuc900-fmi", NULL),
+>  	DEF_CLKLOOK(&clk_ms, "nuc900-fmi", "MS"),
+>  	DEF_CLKLOOK(&clk_sd, "nuc900-fmi", "SD"),
+> diff --git a/arch/arm/mach-w90x900/dev.c b/arch/arm/mach-w90x900/dev.c
+> index 5b0c38a..78110be 100644
+> --- a/arch/arm/mach-w90x900/dev.c
+> +++ b/arch/arm/mach-w90x900/dev.c
+> @@ -501,8 +501,8 @@ static struct resource nuc900_ac97_resource[] = {
+>
+>  };
+>
+> -struct platform_device nuc900_device_audio = {
+> -	.name		= "nuc900-audio",
+> +struct platform_device nuc900_device_ac97 = {
+> +	.name		= "nuc900-ac97",
+>  	.id		= -1,
+>  	.num_resources	= ARRAY_SIZE(nuc900_ac97_resource),
+>  	.resource	= nuc900_ac97_resource,
+> @@ -523,7 +523,7 @@ static struct platform_device *nuc900_public_dev[]
+> __initdata = {
+>  	&nuc900_device_emc,
+>  	&nuc900_device_spi,
+>  	&nuc900_device_wdt,
+> -	&nuc900_device_audio,
+> +	&nuc900_device_ac97,
+>  };
+>
+>  /* Provide adding specific CPU platform devices API */
+> diff --git a/arch/arm/mach-w90x900/mfp.c b/arch/arm/mach-w90x900/mfp.c
+> index 9dd7461..c58d142 100644
+> --- a/arch/arm/mach-w90x900/mfp.c
+> +++ b/arch/arm/mach-w90x900/mfp.c
+> @@ -155,7 +155,7 @@ void mfp_set_groupg(struct device *dev, const char
+> *subname)
+>  	} else if (strcmp(dev_id, "nuc900-i2c1") == 0) {
+>  		mfpen &= ~(GPIOG2TO3);
+>  		mfpen |= ENI2C1;/*enable i2c1*/
+> -	} else if (strcmp(dev_id, "nuc900-audio") == 0) {
+> +	} else if (strcmp(dev_id, "nuc900-ac97") == 0) {
+>  		mfpen &= ~(GPIOG22TO23);
+>  		mfpen |= ENAC97;/*enable AC97*/
+>  	} else if (strcmp(dev_id, "nuc900-mmc-port1") == 0) {
+> diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+> index 45d11dd..946020a 100644
+> --- a/sound/soc/nuc900/nuc900-ac97.c
+> +++ b/sound/soc/nuc900/nuc900-ac97.c
+> @@ -366,7 +366,7 @@ static int __devinit nuc900_ac97_drvprobe(struct
+> platform_device *pdev)
+>  		goto out3;
+>
+>  	/* enbale ac97 multifunction pin */
+> -	mfp_set_groupg(nuc900_audio->dev, "nuc900-audio");
+> +	mfp_set_groupg(nuc900_audio->dev, NULL);
+>
+>  	return 0;
+>
+> --
+> 1.7.5.4
+>
+>
+>
+>
 
-  2648                  uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
 
-We set it to UINT_MAX here.
-
-  2649          strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Reading UINT_MAX beyond the end of the array here will probably oops.
-
-  2650          return 0;
-
-There is a similar issue in snd_asihpi_cmode_info().
-
-regards,
-dan carpenter
+-- 
+Wan ZongShun.
+www.mcuos.com
