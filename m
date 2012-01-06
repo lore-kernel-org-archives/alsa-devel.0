@@ -1,17 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] ALSA au88x0: Fix IRQ fifo error and channels
- swap of 4 channels playback
-Date: Fri, 6 Jan 2012 10:22:22 +0800
-Message-ID: <CAN8cciYgJ9U0aS6np4nV+uws_0VEgmRXE2ocaLdc_7MgS6_7+w@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH v3] ASoC: jz4740: Convert qi_lb60 to use
+ snd_soc_register_card()
+Date: Fri, 06 Jan 2012 11:30:10 +0800
+Message-ID: <1325820610.10011.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=f46d043bdede15bb2b04b5d2b85f
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 669C2103B14
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2012 03:22:23 +0100 (CET)
-Received: by wibhm4 with SMTP id hm4so929090wib.38
-	for <alsa-devel@alsa-project.org>; Thu, 05 Jan 2012 18:22:23 -0800 (PST)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08BC4103B16
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2012 04:30:20 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so547132ghb.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 Jan 2012 19:30:19 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,82 +22,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Cc: Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---f46d043bdede15bb2b04b5d2b85f
-Content-Type: text/plain; charset=ISO-8859-1
+Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
-[PATCH ] ALSA au88x0 - Fix IRQ fifo error and channels swap of 4
-channels playback
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+v2: Fix a typo in v1.
+v3: Free the card before the GPIOs since the card uses the GPIOs
 
-- Fix IRQ fifo error when playing stereo by set stereo flag of fifo control
-  This also fix the swap of front and rear channels on au8830
+ arch/mips/jz4740/board-qi_lb60.c |    6 ++++
+ sound/soc/jz4740/qi_lb60.c       |   56 +++++++++++++++++--------------------
+ 2 files changed, 32 insertions(+), 30 deletions(-)
 
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
-
---f46d043bdede15bb2b04b5d2b85f
-Content-Type: application/octet-stream;
-	name="0001-Au88x0-Fix-IRQ-fifo-error-and-channels-swap-of-4-c.patch"
-Content-Disposition: attachment;
-	filename="0001-Au88x0-Fix-IRQ-fifo-error-and-channels-swap-of-4-c.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
-
-RnJvbSA4N2I4YjA1NjA1Y2QwODc3YzNkMmUyNTQ4YTBiNDZhZjIxNmM3NzI3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBGcmksIDYgSmFuIDIwMTIgMDk6MTk6MjkgKzA4MDAKU3ViamVjdDogW1BBVENI
-IC0gQUxTQSAxLzFdIEF1ODh4MCAtIEZpeCBJUlEgZmlmbyBlcnJvciBhbmQgY2hhbm5lbHMgc3dh
-cCBvZiA0IGNoYW5uZWxzIHBsYXliYWNrCgotIEZpeCBJUlEgZmlmbyBlcnJvciB3aGVuIHBsYXlp
-bmcgc3RlcmVvIGJ5IHNldCBzdGVyZW8gZmxhZyBvZiBmaWZvIGNvbnRyb2wKICBUaGlzIGFsc28g
-Zml4IHRoZSBzd2FwIG9mIGZyb250IGFuZCByZWFyIGNoYW5uZWxzIG9uIGF1ODgzMC4KClNpZ25l
-ZC1vZmYtYnk6IFJheW1vbmQgWWF1IDxzdXBlcnF1YWQudm9ydGV4MkBnbWFpbC5jb20+CgpkaWZm
-IC0tZ2l0IGEvc291bmQvcGNpL2F1ODh4MC9hdTg4eDBfY29yZS5jIGIvc291bmQvcGNpL2F1ODh4
-MC9hdTg4eDBfY29yZS5jCmluZGV4IDQ4OTE1MDMuLmQ0OWUyYzUgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L3BjaS9hdTg4eDAvYXU4OHgwX2NvcmUuYworKysgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9j
-b3JlLmMKQEAgLTgwNSw3ICs4MDUsNyBAQCBzdGF0aWMgdm9pZCB2b3J0ZXhfZmlmb19zZXRhZGJ2
-YWxpZCh2b3J0ZXhfdCAqIHZvcnRleCwgaW50IGZpZm8sIGludCBlbikKIH0KIAogc3RhdGljIHZv
-aWQKLXZvcnRleF9maWZvX3NldGFkYmN0cmwodm9ydGV4X3QgKiB2b3J0ZXgsIGludCBmaWZvLCBp
-bnQgYiwgaW50IHByaW9yaXR5LAordm9ydGV4X2ZpZm9fc2V0YWRiY3RybCh2b3J0ZXhfdCAqIHZv
-cnRleCwgaW50IGZpZm8sIGludCBzdGVyZW8sIGludCBwcmlvcml0eSwKIAkJICAgICAgIGludCBl
-bXB0eSwgaW50IHZhbGlkLCBpbnQgZikKIHsKIAlpbnQgdGVtcCwgbGlmZWJvYXQgPSAwOwpAQCAt
-ODM3LDcgKzgzNyw3IEBAIHZvcnRleF9maWZvX3NldGFkYmN0cmwodm9ydGV4X3QgKiB2b3J0ZXgs
-IGludCBmaWZvLCBpbnQgYiwgaW50IHByaW9yaXR5LAogI2Vsc2UKIAkJCXRlbXAgPSAodGhpc180
-ICYgMHgzZikgPDwgMHhjOwogI2VuZGlmCi0JCQl0ZW1wID0gKHRlbXAgJiAweGZmZmZmZmZkKSB8
-ICgoYiAmIDEpIDw8IDEpOworCQkJdGVtcCA9ICh0ZW1wICYgMHhmZmZmZmZmZCkgfCAoKHN0ZXJl
-byAmIDEpIDw8IDEpOwogCQkJdGVtcCA9ICh0ZW1wICYgMHhmZmZmZmZmMykgfCAoKHByaW9yaXR5
-ICYgMykgPDwgMik7CiAJCQl0ZW1wID0gKHRlbXAgJiAweGZmZmZmZmVmKSB8ICgodmFsaWQgJiAx
-KSA8PCA0KTsKIAkJCXRlbXAgfD0gRklGT19VMTsKQEAgLTExNDgsMTEgKzExNDgsMTEgQEAgdm9y
-dGV4X2FkYmRtYV9zZXRidWZmZXJzKHZvcnRleF90ICogdm9ydGV4LCBpbnQgYWRiZG1hLAogCiBz
-dGF0aWMgdm9pZAogdm9ydGV4X2FkYmRtYV9zZXRtb2RlKHZvcnRleF90ICogdm9ydGV4LCBpbnQg
-YWRiZG1hLCBpbnQgaWUsIGludCBkaXIsCi0JCSAgICAgIGludCBmbXQsIGludCBkLCB1MzIgb2Zm
-c2V0KQorCQkgICAgICBpbnQgZm10LCBpbnQgc3RlcmVvLCB1MzIgb2Zmc2V0KQogewogCXN0cmVh
-bV90ICpkbWEgPSAmdm9ydGV4LT5kbWFfYWRiW2FkYmRtYV07CiAKLQlkbWEtPmRtYV91bmtub3du
-ID0gZDsKKwlkbWEtPmRtYV91bmtub3duID0gc3RlcmVvOwogCWRtYS0+ZG1hX2N0cmwgPQogCSAg
-ICAoKG9mZnNldCAmIE9GRlNFVF9NQVNLKSB8IChkbWEtPmRtYV9jdHJsICYgfk9GRlNFVF9NQVNL
-KSk7CiAJLyogRW5hYmxlIFBDTU9VVCBpbnRlcnJ1cHRzLiAqLwpkaWZmIC0tZ2l0IGEvc291bmQv
-cGNpL2F1ODh4MC9hdTg4eDBfcGNtLmMgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYwpp
-bmRleCBjNWY3YWU0Li44ZDAwYWFhIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4
-MF9wY20uYworKysgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYwpAQCAtMzA3LDggKzMw
-Nyw4IEBAIHN0YXRpYyBpbnQgc25kX3ZvcnRleF9wY21fcHJlcGFyZShzdHJ1Y3Qgc25kX3BjbV9z
-dWJzdHJlYW0gKnN1YnN0cmVhbSkKIAlmbXQgPSB2b3J0ZXhfYWxzYWZtdF9hc3BmbXQocnVudGlt
-ZS0+Zm9ybWF0KTsKIAlzcGluX2xvY2tfaXJxKCZjaGlwLT5sb2NrKTsKIAlpZiAoVk9SVEVYX1BD
-TV9UWVBFKHN1YnN0cmVhbS0+cGNtKSAhPSBWT1JURVhfUENNX1dUKSB7Ci0JCXZvcnRleF9hZGJk
-bWFfc2V0bW9kZShjaGlwLCBkbWEsIDEsIGRpciwgZm10LCAwIC8qPyAqLyAsCi0JCQkJICAgICAg
-MCk7CisJCXZvcnRleF9hZGJkbWFfc2V0bW9kZShjaGlwLCBkbWEsIDEsIGRpciwgZm10LAorCQkJ
-CXJ1bnRpbWUtPmNoYW5uZWxzID09IDEgPyAwIDogMSwgMCk7CiAJCXZvcnRleF9hZGJkbWFfc2V0
-c3RhcnRidWZmZXIoY2hpcCwgZG1hLCAwKTsKIAkJaWYgKFZPUlRFWF9QQ01fVFlQRShzdWJzdHJl
-YW0tPnBjbSkgIT0gVk9SVEVYX1BDTV9TUERJRikKIAkJCXZvcnRleF9hZGJfc2V0c3JjKGNoaXAs
-IGRtYSwgcnVudGltZS0+cmF0ZSwgZGlyKTsKLS0gCjEuNi4wLjYKCg==
---f46d043bdede15bb2b04b5d2b85f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---f46d043bdede15bb2b04b5d2b85f--
+diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
+index 639e3ce..9a91fe9 100644
+--- a/arch/mips/jz4740/board-qi_lb60.c
++++ b/arch/mips/jz4740/board-qi_lb60.c
+@@ -418,6 +418,11 @@ static struct platform_device qi_lb60_charger_device = {
+ 	},
+ };
+ 
++/* audio */
++static struct platform_device qi_lb60_audio_device = {
++	.name = "qi-lb60-audio",
++	.id = -1,
++};
+ 
+ static struct platform_device *jz_platform_devices[] __initdata = {
+ 	&jz4740_udc_device,
+@@ -434,6 +439,7 @@ static struct platform_device *jz_platform_devices[] __initdata = {
+ 	&qi_lb60_gpio_keys,
+ 	&qi_lb60_pwm_beeper,
+ 	&qi_lb60_charger_device,
++	&qi_lb60_audio_device,
+ };
+ 
+ static void __init board_gpio_setup(void)
+diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
+index 0097c3b..e8aaff1 100644
+--- a/sound/soc/jz4740/qi_lb60.c
++++ b/sound/soc/jz4740/qi_lb60.c
+@@ -91,56 +91,52 @@ static struct snd_soc_card qi_lb60 = {
+ 	.num_dapm_routes = ARRAY_SIZE(qi_lb60_routes),
+ };
+ 
+-static struct platform_device *qi_lb60_snd_device;
+-
+ static const struct gpio qi_lb60_gpios[] = {
+ 	{ QI_LB60_SND_GPIO, GPIOF_OUT_INIT_LOW, "SND" },
+ 	{ QI_LB60_AMP_GPIO, GPIOF_OUT_INIT_LOW, "AMP" },
+ };
+ 
+-static int __init qi_lb60_init(void)
++static int __devinit qi_lb60_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = &qi_lb60;
+ 	int ret;
+ 
+-	qi_lb60_snd_device = platform_device_alloc("soc-audio", -1);
+-
+-	if (!qi_lb60_snd_device)
+-		return -ENOMEM;
+-
+ 	ret = gpio_request_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+-	if (ret) {
+-		pr_err("qi_lb60 snd: Failed to request gpios: %d\n", ret);
+-		goto err_device_put;
+-	}
++	if (ret)
++		return ret;
+ 
+-	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60);
++	card->dev = &pdev->dev;
+ 
+-	ret = platform_device_add(qi_lb60_snd_device);
++	ret = snd_soc_register_card(card);
+ 	if (ret) {
+-		pr_err("qi_lb60 snd: Failed to add snd soc device: %d\n", ret);
+-		goto err_unset_pdata;
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++			ret);
++		gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+ 	}
+-
+-	 return 0;
+-
+-err_unset_pdata:
+-	platform_set_drvdata(qi_lb60_snd_device, NULL);
+-/*err_gpio_free_array:*/
+-	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+-err_device_put:
+-	platform_device_put(qi_lb60_snd_device);
+-
+ 	return ret;
+ }
+-module_init(qi_lb60_init);
+ 
+-static void __exit qi_lb60_exit(void)
++static int __devexit qi_lb60_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(qi_lb60_snd_device);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
+ 	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
++	return 0;
+ }
+-module_exit(qi_lb60_exit);
++
++static struct platform_driver qi_lb60_driver = {
++	.driver		= {
++		.name	= "qi-lb60-audio",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= qi_lb60_probe,
++	.remove		= __devexit_p(qi_lb60_remove),
++};
++
++module_platform_driver(qi_lb60_driver);
+ 
+ MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+ MODULE_DESCRIPTION("ALSA SoC QI LB60 Audio support");
+ MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:qi-lb60-audio");
+-- 
+1.7.5.4
