@@ -1,20 +1,19 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: Public ridicule due to sound/soc/soc-core.c abuse
-	of the	driver model
-Date: Fri, 6 Jan 2012 21:10:27 +0000
-Message-ID: <20120106211027.GA17842@n2100.arm.linux.org.uk>
-References: <20120106194052.GA7781@kroah.com>
-	<20120106201458.GF2893@opensource.wolfsonmicro.com>
-	<20120106205036.GB13857@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Not able to restart audio after hibernation
+Date: Fri, 6 Jan 2012 15:25:09 -0800
+Message-ID: <20120106232504.GA5070@opensource.wolfsonmicro.com>
+References: <4F06D156.1020208@st.com>
+	<20120106183203.GA2893@opensource.wolfsonmicro.com>
+	<1325883273.18044.631.camel@razman.gruenet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id BFDDD243F5
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2012 22:10:49 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 226A9244F0
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2012 00:26:00 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20120106205036.GB13857@n2100.arm.linux.org.uk>
+In-Reply-To: <1325883273.18044.631.camel@razman.gruenet>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,162 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org, Frank Mandarino <fmandarino@endrelia.com>, Liam Girdwood <lrg@ti.com>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Rajeev kumar <rajeev-dlh.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>, tiwai@suse.de, "spear--sw-devel@lists.codex.cro.st.com" <spear--sw-devel@lists.codex.cro.st.com>, Armando VISCONTI <armando.visconti@st.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 06, 2012 at 08:50:36PM +0000, Russell King - ARM Linux wrote:
-> I also disagree with your statement - I think it's quite simple to fix:
-> 
-> 1. Change to using a flag to indicate whether the struct device is
->    registered rather than ac97->dev.bus.
+On Fri, Jan 06, 2012 at 12:54:33PM -0800, Tobin Davis wrote:
+> On Fri, 2012-01-06 at 10:32 -0800, Mark Brown wrote:
 
-Looking at this deeper, you already have such a flag.  It's called
-codec->ac97_registered:
+> > Hibernation is not supported on ARM at all.  Is SPEAR not an ARM based
+> > platform?
 
-                ret = soc_ac97_dev_register(rtd->codec);
-                if (ret < 0) {
-                        printk(KERN_ERR "asoc: AC97 device register failed\n");
-                        return ret;
-                }
+> It isn't?  Hibernate is supported on all systems to some level.  Essentially 
+> the cpu is just halting all threads and saving state (cpu, memory, and device configs) to storage.
 
-                rtd->codec->ac97_registered = 1;
+...and then restoring it later when we power on again.  It's this bit
+that had been tricky.
 
-static void soc_unregister_ac97_dai_link(struct snd_soc_codec *codec)
-{
-        if (codec->ac97_registered) {
-                soc_ac97_dev_unregister(codec);
-                codec->ac97_registered = 0;
-        }
-}
+> And I have a couple of arm development platforms here that would beg to
+> argue with this statement.
 
-and soc_ac97_dev_{un,}register() do this:
-
-static int soc_ac97_dev_unregister(struct snd_soc_codec *codec)
-{
-        if (codec->ac97->dev.bus)
-                device_unregister(&codec->ac97->dev);
-        return 0;
-}
-
-static int soc_ac97_dev_register(struct snd_soc_codec *codec)
-{
-        int err;
-
-        codec->ac97->dev.bus = &ac97_bus_type;
-...
-        err = device_register(&codec->ac97->dev);
-        if (err < 0) {
-...
-                codec->ac97->dev.bus = NULL;
-                return err;
-        }
-        return 0;
-}
-
-
-So, dev.bus is really duplicating what ac97_registered is doing and nothing
-more, and I'd suggest that the very first patch cleaning up this buggy code
-is to get rid of this duplication:
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a25fa63..961f980 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -452,8 +452,7 @@ static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- /* unregister ac97 codec */
- static int soc_ac97_dev_unregister(struct snd_soc_codec *codec)
- {
--	if (codec->ac97->dev.bus)
--		device_unregister(&codec->ac97->dev);
-+	device_unregister(&codec->ac97->dev);
- 	return 0;
- }
- 
-@@ -474,7 +473,6 @@ static int soc_ac97_dev_register(struct snd_soc_codec *codec)
- 	err = device_register(&codec->ac97->dev);
- 	if (err < 0) {
- 		snd_printk(KERN_ERR "Can't register ac97 bus\n");
--		codec->ac97->dev.bus = NULL;
- 		return err;
- 	}
- 	return 0;
-
-Second patch would be to make soc_ac97_dev_unregister return type void -
-it's pointless to have a function which always returns 0 and its return
-value is never checked at its solitary call site.
-
-Overall, it should look something like this (untested):
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a25fa63..090b89e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -448,33 +448,34 @@ static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- }
- #endif
- 
-+/* stop no dev release warning */
-+static void soc_ac97_device_release(struct device *dev)
-+{
-+	struct snd_ac97 *ac97 = container_of(dev, snd_ac97, dev);
-+
-+	kfree(ac97);
-+}
-+
- #ifdef CONFIG_SND_SOC_AC97_BUS
- /* unregister ac97 codec */
- static int soc_ac97_dev_unregister(struct snd_soc_codec *codec)
- {
--	if (codec->ac97->dev.bus)
--		device_unregister(&codec->ac97->dev);
-+	device_del(&codec->ac97->dev);
- 	return 0;
- }
- 
--/* stop no dev release warning */
--static void soc_ac97_device_release(struct device *dev){}
--
- /* register ac97 codec to bus */
- static int soc_ac97_dev_register(struct snd_soc_codec *codec)
- {
- 	int err;
- 
- 	codec->ac97->dev.bus = &ac97_bus_type;
--	codec->ac97->dev.parent = codec->card->dev;
--	codec->ac97->dev.release = soc_ac97_device_release;
- 
- 	dev_set_name(&codec->ac97->dev, "%d-%d:%s",
- 		     codec->card->snd_card->number, 0, codec->name);
--	err = device_register(&codec->ac97->dev);
-+	err = device_add(&codec->ac97->dev);
- 	if (err < 0) {
- 		snd_printk(KERN_ERR "Can't register ac97 bus\n");
--		codec->ac97->dev.bus = NULL;
- 		return err;
- 	}
- 	return 0;
-@@ -1748,9 +1749,13 @@ int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- 		return -ENOMEM;
- 	}
- 
-+	device_initialize(&codec->ac97->dev);
-+	codec->ac97->dev.parent = codec->card->dev;
-+	codec->ac97->dev.release = soc_ac97_device_release;
-+
- 	codec->ac97->bus = kzalloc(sizeof(struct snd_ac97_bus), GFP_KERNEL);
- 	if (codec->ac97->bus == NULL) {
--		kfree(codec->ac97);
-+		device_put(&codec->ac97->dev);
- 		codec->ac97 = NULL;
- 		mutex_unlock(&codec->mutex);
- 		return -ENOMEM;
-@@ -1783,7 +1788,7 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec)
- 	soc_unregister_ac97_dai_link(codec);
- #endif
- 	kfree(codec->ac97->bus);
--	kfree(codec->ac97);
-+	device_put(&codec->ac97->dev);
- 	codec->ac97 = NULL;
- 	codec->ac97_created = 0;
- 	mutex_unlock(&codec->mutex);
+Perhaps it's been supported since I last looked, but if it has there's a
+*lot* of drivers for ARM based systems which need to be updated.
