@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Fix recursive dependency due to select
- ATMEL_SSC in SND_ATMEL_SOC_SSC
-Date: Mon, 09 Jan 2012 17:39:18 +0800
-Message-ID: <1326101958.10572.1.camel@phoenix>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: [PATCH - ice1724 1/4] ALSA: ice1724 - Create
+ capture pcm only for ADC-enabled configurations
+Date: Mon, 09 Jan 2012 10:48:11 +0100
+Message-ID: <4F0AB7DB.2010407@ivitera.com>
+References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>	<s5hboqemubc.wl%tiwai@suse.de>	<4F0A9916.9050606@ivitera.com>
+	<s5hmx9xkyz6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F11C103A1D
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 10:39:30 +0100 (CET)
-Received: by yhjj72 with SMTP id j72so236112yhj.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 01:39:29 -0800 (PST)
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 3AB0E243D8
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 10:48:13 +0100 (CET)
+In-Reply-To: <s5hmx9xkyz6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Bolle <pebolle@tiscali.nl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-commit 739be96 "ASoC: Fix build dependency for SND_ATMEL_SOC_SSC"
-introduces below build warnings:
+Dne 9.1.2012 10:27, Takashi Iwai napsal(a):
+> At Mon, 09 Jan 2012 08:36:54 +0100,
+> Pavel Hofman wrote:
+>>
+>>
+> 
+> Ah, then I misunderstood your code.  The bit-wise operation is
+> confusing for such a case.
+> 
+> It should be rather more easy-readable like:
+> 
+> 	if ((ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ==
+> 	    VT1724_CFG_ADC_NONE)
+> 		capt = 0;
+> 	else
+> 		capt = 1;
+> 
+> Could you revise the patch?
+> 
 
-drivers/misc/Kconfig:212:error: recursive dependency detected!
-drivers/misc/Kconfig:212:       symbol ATMEL_SSC is selected by SND_ATMEL_SOC_SSC
-sound/soc/atmel/Kconfig:9:      symbol SND_ATMEL_SOC_SSC is selected by SND_AT91_SOC_SAM9G20_WM8731
-sound/soc/atmel/Kconfig:18:     symbol SND_AT91_SOC_SAM9G20_WM8731 depends on ATMEL_SSC
+Absolutely, happy to do so. Just please is there a way for me to
+"migrate" from git.alsa-project.org to your repozitory at kernel.org
+where the other patches were committed? I mean  without compiling the
+whole kernel, just the drivers as with alsa-project.org? I followed the
+description at
+http://alsa-project.org/main/index.php/GIT_Server#Occasional_Developers
+. The kmirror at git.alsa-project.org seems to be a bit behind.
 
-SND_ATMEL_SOC_SSC needs ATMEL_SSC to pass compilation.
-This patch removes the "select ATMEL_SSC" from SND_ATMEL_SOC_SSC to avoid above
-warnings. And then ensures all the machine drivers that select SND_ATMEL_SOC_SSC
-need to depend on ATMEL_SSC.
+Thanks a lot for help,
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/atmel/Kconfig |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index a4d6742..72b09cf 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -9,7 +9,6 @@ config SND_ATMEL_SOC
- config SND_ATMEL_SOC_SSC
- 	tristate
- 	depends on SND_ATMEL_SOC
--	select ATMEL_SSC
- 	help
- 	  Say Y or M if you want to add support for codecs the
- 	  ATMEL SSC interface. You will also needs to select the individual
-@@ -27,7 +26,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 
- config SND_AT91_SOC_AFEB9260
- 	tristate "SoC Audio support for AFEB9260 board"
--	depends on ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
-+	depends on ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
- 	select SND_ATMEL_SOC_SSC
- 	select SND_SOC_TLV320AIC23
- 	help
--- 
-1.7.5.4
+Pavel.
