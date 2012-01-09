@@ -1,30 +1,19 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: Re: [PATCH] ASoC: Fix idma build after update for
- channel count check
-Date: Mon, 09 Jan 2012 16:33:04 +0900
-Message-ID: <01d601cccea0$ec6716d0$c5354470$@com>
-References: <1326092003-21997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<CAGhQ9VzN-BWtM4XC1uL3VrTNFZN-j4xE1LXzO92zfTB80aWLbQ@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: [PATCH - ice1724 1/4] ALSA: ice1724 - Create
+ capture pcm only for ADC-enabled configurations
+Date: Mon, 09 Jan 2012 08:36:54 +0100
+Message-ID: <4F0A9916.9050606@ivitera.com>
+References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
+	<s5hboqemubc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FC7D10394B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 08:33:01 +0100 (CET)
-Received: from epcpsbgm1.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LXI00N8PSXH0030@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 09 Jan 2012 16:32:46 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.120.118])
-	by mmp2.samsung.com (Oracle Communications Messaging Exchange Server
-	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
-	<0LXI007ZNSYM0KX1@mmp2.samsung.com>
-	for alsa-devel@alsa-project.org; Mon, 09 Jan 2012 16:32:46 +0900 (KST)
-In-reply-to: <CAGhQ9VzN-BWtM4XC1uL3VrTNFZN-j4xE1LXzO92zfTB80aWLbQ@mail.gmail.com>
-Content-language: ko
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+	[84.242.75.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C97D10394B
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 08:36:58 +0100 (CET)
+In-Reply-To: <s5hboqemubc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,25 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Joachim Eastwood' <manabian@gmail.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: 'Joachim Eastwood' <joachim.eastwood@jotron.com>, alsa-devel@alsa-project.org, 'Liam Girdwood' <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Joachim,
 
-On Mon, Jan 9, 2012 at 4:08 PM, Joachim Eastwood wrote:
-> I accidentally added the brace to the if test in "ASoC: check for
-> substream not channels_min in pcm engines".
-> So you either remove the brace from the if test or add another one as you
-> did.
+
+Dne 8.1.2012 10:12, Takashi Iwai napsal(a):
+> At Thu,  5 Jan 2012 22:01:55 +0100,
+> pavel.hofman@ivitera.com wrote:
+>>
+>> From: Pavel Hofman <pavel.hofman@ivitera.com>
+>>
+>> Add the capture pcm only if there is at least one ADC configured in
+>> the SYSCONF register.
+>>
+>> Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+>>
+>> diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
+>> index 4353e76..2a0be2c 100644
+>> --- a/pci/ice1712/ice1724.c
+>> +++ b/pci/ice1712/ice1724.c
+>> @@ -1117,14 +1117,18 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
+>>  static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
+>>  {
+>>  	struct snd_pcm *pcm;
+>> -	int err;
+>> +	int capt, err;
+>>  
+>> -	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
+>> +	capt = (~ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ?
+>> +		1 : 0;
 > 
-> Acked-by: Joachim Eastwood <joachim.eastwood@jotron.com>
+> Are you sure that this is correct?  I thought the value 0 means 1 ADC,
+> 1 is two ADCS, etc.
 > 
 
-Thanks for your care to ASoC Samsung code.
-If you change ASoC Samsung code, Could you please include me in the CC list?
+I think it is correct. This is what the datasheet says:
 
-Acked-by: Sangbeom Kim <sbkim73@samsung.com>
+CCS04: System Configuration Register
+
+bits 3:2
+
+00: one stereo ADC connected
+01: two stereo ADCs connected
+10: one stereo ADC and a S/PDIF receiver connected
+11: No physical inputs
+
+
+I have two soundcards, one with 10 (ADC + SPDIF in), another with 11 (no
+ADC), the code seems to work fine.
 
 Thanks,
-Sangbeom.
+
+Pavel.
