@@ -1,19 +1,20 @@
 From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: [PATCH - ice1724 1/4] ALSA: ice1724 -
- Create	capture pcm only for ADC-enabled configurations
-Date: Mon, 09 Jan 2012 10:53:29 +0100
-Message-ID: <4F0AB919.40307@ivitera.com>
-References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>	<s5hboqemubc.wl%tiwai@suse.de>
-	<4F0A9916.9050606@ivitera.com>	<s5hmx9xkyz6.wl%tiwai@suse.de>
-	<4F0AB7DB.2010407@ivitera.com> <s5hhb05kxv1.wl%tiwai@suse.de>
+Subject: Re: [PATCH - ice1724 4/4] ALSA: ice1724 - Support for
+ ooAoo SQ210a
+Date: Mon, 09 Jan 2012 10:59:50 +0100
+Message-ID: <4F0ABA96.10303@ivitera.com>
+References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>	<1325797318-16333-4-git-send-email-pavel.hofman@ivitera.com>
+	<s5haa5ymu9b.wl%tiwai@suse.de> <4F0AA630.8000902@ivitera.com>
+	<4F0AB263.1040003@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 3EF39243D8
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 10:53:32 +0100 (CET)
-In-Reply-To: <s5hhb05kxv1.wl%tiwai@suse.de>
+	[84.242.75.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39EAA1039FC
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 10:59:54 +0100 (CET)
+In-Reply-To: <4F0AB263.1040003@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,51 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 9.1.2012 10:51, Takashi Iwai napsal(a):
-> At Mon, 09 Jan 2012 10:48:11 +0100,
+Dne 9.1.2012 10:24, Clemens Ladisch napsal(a):
 > Pavel Hofman wrote:
+>> Dne 8.1.2012 10:13, Takashi Iwai napsal(a):
+>>> pavel.hofman@ivitera.com wrote:
+>>>> This card shares PCI ids with Chaintec AV710. Therefore, it will not be
+>>>> detected automatically, it can only be activated by the module parameter
+>>>> model=sq210a.
+>>>
+>>> Hrm, that's bad.  Do you know any other way to identify the device?
 >>
->> Dne 9.1.2012 10:27, Takashi Iwai napsal(a):
->>> At Mon, 09 Jan 2012 08:36:54 +0100,
->>> Pavel Hofman wrote:
->>>>
->>>>
->>>
->>> Ah, then I misunderstood your code.  The bit-wise operation is
->>> confusing for such a case.
->>>
->>> It should be rather more easy-readable like:
->>>
->>> 	if ((ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ==
->>> 	    VT1724_CFG_ADC_NONE)
->>> 		capt = 0;
->>> 	else
->>> 		capt = 1;
->>>
->>> Could you revise the patch?
->>>
->>
->> Absolutely, happy to do so. Just please is there a way for me to
->> "migrate" from git.alsa-project.org to your repozitory at kernel.org
->> where the other patches were committed? I mean  without compiling the
->> whole kernel, just the drivers as with alsa-project.org? I followed the
->> description at
->> http://alsa-project.org/main/index.php/GIT_Server#Occasional_Developers
->> . The kmirror at git.alsa-project.org seems to be a bit behind.
+>> I am afraid I do not.
 > 
-> You can build locally with alsa-driver-build.git.  This tree contains
-> only the build stub.
+> There is already a conflict with the AV710; it appears all three vendors
+> use some default ID.
 > 
-> 	% git clone git://..../sound.git
-> 	% git clone git://..../alsa-driver-build.git
-> 	% cd alsa-driver-build
-> 	% utils/setup-alsa-kernel ../sound
-> 	% ./gitcompile --enable-dynamic-minors ....
+>> Plus I would not be surprised if the other cards with different
+>> accessories produced by that company shared all the same PCI ids and
+>> differed just in EEPROM configs (most likely incorrect too :-) )
 > 
-> 
+> Their CMI8788-based cards implement only features that are a subset of
+> those supported by the generic Windows driver.  (I guess they ship
+> an .ini file that disables things like 7.1 output on a stereo card (thus
+> breaking other models with the same ID), but it's possible that they
+> just don't bother.)
 
-That helps a lot, thanks you.
+They do seem not to bother much, they do not supply windows drivers for
+this one at all, people should just use generic Envy24 drivers by VIA
+:-) But the price is right.
+
+> 
+> Pavel, please don't forget to update the sound card matrix:
+> http://www.alsa-project.org/main/index.php/Matrix:Vendor-%E5%82%B2%E7%8E%8B
+
+Thanks for pointing out. I will add the latin "ooAoo" to the chinese
+name, I had no idea the company was already listed in the matrix :)
+
+Pavel.
