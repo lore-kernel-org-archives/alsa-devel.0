@@ -1,17 +1,20 @@
-From: Javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH] ASoC: Route Mic Bias in Visstrim_M10 board.
-Date: Mon,  9 Jan 2012 12:01:48 +0100
-Message-ID: <1326106908-28026-1-git-send-email-javier.martin@vista-silicon.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH v2 4/4] ASoC: OMAP: ams-delta: drop
+ .set_bias_level callback
+Date: Mon, 09 Jan 2012 11:53:35 +0000
+Message-ID: <1326110015.24178.5.camel@odin>
+References: <1325214296-2888-5-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D0AD103A5E
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 12:02:01 +0100 (CET)
-Received: by wibhm4 with SMTP id hm4so2802154wib.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 03:02:00 -0800 (PST)
+Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
+	[74.125.149.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB175103A6E
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 12:53:44 +0100 (CET)
+Received: by mail-we0-f182.google.com with SMTP id b13so3908400wer.13
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 03:53:43 -0800 (PST)
+In-Reply-To: <1325214296-2888-5-git-send-email-jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,73 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Javier Martin <javier.martin@vista-silicon.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Visstrim_M10 board uses an external microphone
-that can be enabled/disabled by the user.
+On Fri, 2011-12-30 at 04:04 +0100, Janusz Krzysztofik wrote:
+> This functionality has just been implemented in the cx20442 codec
+> driver, no need to keep it here duplicated.
+> 
+> Once done, remove the no longer used AMS_DELTA_LATCH2_MODEM_NRESET
+> symbol from the board header file and a call to the regulator_toggle()
+> helper function from the old API wrapper found in the board file.  While
+> being at it, simplify the way the modem .pm callback handles the
+> regulator, and drop that no longer used helper function and its related
+> consumer setup elements completely.
+> 
+> Depends on patch 3/4 "ARM: OMAP1: ams-delta: update the modem to use
+> regulator API"
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> ---
+> Changes against initial version:
+> * don't move consumer setup elements, now named to indicated their
+>   modem related purpose, down the file,
+> * don't track the regulator enavble/disable state, compare new target
+>   power state with the old one instead; thanks to Mark Brown for
+>   suggesting this simplification,
+> * actually drop all references to AMS_DELTA_LATCH2_MODEM_NRESET.
+> 
+>  arch/arm/mach-omap1/board-ams-delta.c             |   42 +++-----------------
+>  arch/arm/plat-omap/include/plat/board-ams-delta.h |    1 -
+>  sound/soc/omap/ams-delta.c                        |   32 ----------------
+>  3 files changed, 7 insertions(+), 68 deletions(-)
 
-Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
----
- sound/soc/imx/mx27vis-aic32x4.c |   38 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 38 insertions(+), 0 deletions(-)
+I tried to apply against ASoC but it failed with the omap files. It may
+be better for this patch to go via Tony. 
 
-diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
-index 054110b..7e55a99 100644
---- a/sound/soc/imx/mx27vis-aic32x4.c
-+++ b/sound/soc/imx/mx27vis-aic32x4.c
-@@ -74,6 +74,43 @@ static struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
- 	.hw_params	= mx27vis_aic32x4_hw_params,
- };
- 
-+static const struct snd_kcontrol_new mx27vis_aic32x4_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("External Mic"),
-+};
-+
-+static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIC("External Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	{"Mic Bias", NULL, "External Mic"},
-+	{"IN1_R", NULL, "Mic Bias"},
-+	{"IN2_R", NULL, "Mic Bias"},
-+	{"IN3_R", NULL, "Mic Bias"},
-+	{"IN1_L", NULL, "Mic Bias"},
-+	{"IN2_L", NULL, "Mic Bias"},
-+	{"IN3_L", NULL, "Mic Bias"},
-+};
-+
-+static int mx27vis_aic32x4_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	int err = 0;
-+
-+	snd_soc_dapm_new_controls(dapm, aic32x4_dapm_widgets,
-+				  ARRAY_SIZE(aic32x4_dapm_widgets));
-+
-+	err = snd_soc_add_controls(codec, mx27vis_aic32x4_controls,
-+				   ARRAY_SIZE(mx27vis_aic32x4_controls));
-+	if (err < 0)
-+		return err;
-+
-+	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
-+
-+	return 0;
-+}
-+
- static struct snd_soc_dai_link mx27vis_aic32x4_dai = {
- 	.name		= "tlv320aic32x4",
- 	.stream_name	= "TLV320AIC32X4",
-@@ -82,6 +119,7 @@ static struct snd_soc_dai_link mx27vis_aic32x4_dai = {
- 	.codec_name	= "tlv320aic32x4.0-0018",
- 	.cpu_dai_name	= "imx-ssi.0",
- 	.ops		= &mx27vis_aic32x4_snd_ops,
-+	.init		= mx27vis_aic32x4_dai_init,
- };
- 
- static struct snd_soc_card mx27vis_aic32x4 = {
--- 
-1.7.0.4
+2/4 applies and builds ok, but if there is a runtime dependency on the
+rest it should go via Tony too.
+
+Thanks
+
+Liam
