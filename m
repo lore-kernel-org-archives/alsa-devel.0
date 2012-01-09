@@ -1,20 +1,30 @@
-From: Joachim  Eastwood <manabian@gmail.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
 Subject: Re: [PATCH] ASoC: Fix idma build after update for
  channel count check
-Date: Mon, 9 Jan 2012 08:07:54 +0100
-Message-ID: <CAGhQ9VzN-BWtM4XC1uL3VrTNFZN-j4xE1LXzO92zfTB80aWLbQ@mail.gmail.com>
+Date: Mon, 09 Jan 2012 16:33:04 +0900
+Message-ID: <01d601cccea0$ec6716d0$c5354470$@com>
 References: <1326092003-21997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<CAGhQ9VzN-BWtM4XC1uL3VrTNFZN-j4xE1LXzO92zfTB80aWLbQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-tul01m020-f179.google.com (mail-tul01m020-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4FE4243C8
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 08:07:55 +0100 (CET)
-Received: by obcwm4 with SMTP id wm4so3736145obc.38
-	for <alsa-devel@alsa-project.org>; Sun, 08 Jan 2012 23:07:54 -0800 (PST)
-In-Reply-To: <1326092003-21997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FC7D10394B
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 08:33:01 +0100 (CET)
+Received: from epcpsbgm1.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LXI00N8PSXH0030@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 09 Jan 2012 16:32:46 +0900 (KST)
+Received: from DOSBKIM7302 ([12.23.120.118])
+	by mmp2.samsung.com (Oracle Communications Messaging Exchange Server
+	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
+	<0LXI007ZNSYM0KX1@mmp2.samsung.com>
+	for alsa-devel@alsa-project.org; Mon, 09 Jan 2012 16:32:46 +0900 (KST)
+In-reply-to: <CAGhQ9VzN-BWtM4XC1uL3VrTNFZN-j4xE1LXzO92zfTB80aWLbQ@mail.gmail.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +34,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Joachim Eastwood <joachim.eastwood@jotron.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: 'Joachim Eastwood' <manabian@gmail.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: 'Joachim Eastwood' <joachim.eastwood@jotron.com>, alsa-devel@alsa-project.org, 'Liam Girdwood' <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi Joachim,
 
-On Mon, Jan 9, 2012 at 7:53 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
-> =A0sound/soc/samsung/idma.c | =A0 =A01 +
-> =A01 files changed, 1 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
-> index 3ba6aba..c227c31 100644
-> --- a/sound/soc/samsung/idma.c
-> +++ b/sound/soc/samsung/idma.c
-> @@ -398,6 +398,7 @@ static int idma_new(struct snd_soc_pcm_runtime *rtd)
-> =A0 =A0 =A0 =A0if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret =3D preallocate_idma_buffer(pcm,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SNDRV_PCM_=
-STREAM_PLAYBACK);
-> + =A0 =A0 =A0 }
->
-> =A0 =A0 =A0 =A0return ret;
-> =A0}
-> --
+On Mon, Jan 9, 2012 at 4:08 PM, Joachim Eastwood wrote:
+> I accidentally added the brace to the if test in "ASoC: check for
+> substream not channels_min in pcm engines".
+> So you either remove the brace from the if test or add another one as you
+> did.
+> 
+> Acked-by: Joachim Eastwood <joachim.eastwood@jotron.com>
+> 
 
-I accidentally added the brace to the if test in "ASoC: check for
-substream not channels_min in pcm engines".
-So you either remove the brace from the if test or add another one as you d=
-id.
+Thanks for your care to ASoC Samsung code.
+If you change ASoC Samsung code, Could you please include me in the CC list?
 
-Acked-by: Joachim Eastwood <joachim.eastwood@jotron.com>
+Acked-by: Sangbeom Kim <sbkim73@samsung.com>
 
-regards
-Joachim Eastwood
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Thanks,
+Sangbeom.
