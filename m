@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Revert "ASoC: Fix build dependency for
-	SND_ATMEL_SOC_SSC"
-Date: Sun, 8 Jan 2012 22:23:43 -0800
-Message-ID: <20120109062342.GN29065@opensource.wolfsonmicro.com>
-References: <1326079783.2951.1.camel@phoenix>
-	<20120109041545.GK29065@opensource.wolfsonmicro.com>
-	<CAF+7xW=o2NuHZ4joJ7z-JWaA5n7gDpuHKcqHFwsE4f2TBT8CVw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: introduce SOC_SINGLE_S8_TLV macro
+Date: Sun, 8 Jan 2012 22:26:31 -0800
+Message-ID: <20120109062630.GQ29065@opensource.wolfsonmicro.com>
+References: <1325987606-7179-1-git-send-email-plai@codeaurora.org>
+	<20120108202332.GE29065@opensource.wolfsonmicro.com>
+	<4F0A8091.8050804@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 272BE10394B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 07:24:16 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A31F9103964
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 07:26:50 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CAF+7xW=o2NuHZ4joJ7z-JWaA5n7gDpuHKcqHFwsE4f2TBT8CVw@mail.gmail.com>
+In-Reply-To: <4F0A8091.8050804@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Paul Bolle <pebolle@tiscali.nl>, Liam Girdwood <lrg@ti.com>
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 09, 2012 at 12:40:35PM +0800, Axel Lin wrote:
+On Sun, Jan 08, 2012 at 09:52:17PM -0800, Patrick Lai wrote:
 
-> I think this patch reverts the problematic patch.
-> And then you can apply [PATCH] ASoC: Fix build dependency for
-> SND_AT91_SOC_AFEB9260 (
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-January/047861.html
-> )
+> >so it looks like what really ought to happen here is that the existing
+> >macro gets renamed to the new macro and a new macro gets defined for
+> >double values if one is needed.
 
-What I asked for here was a patch which brings the tree to the desired
-state.  Clearly I can just run git revert myself if I want to...
+> Is there backward compatibility concern? I see soc/codec/uda1380.c
+> already using SOC_DOUBLE_S8_TLV.
+
+Obviously all existing users would need to be updated.  Out of tree
+users will fail to compile which is fine, it's not going to fail
+mysteriously at runtime or anything.
