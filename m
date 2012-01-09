@@ -1,20 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH v2 4/4] ASoC: OMAP: ams-delta: drop
- .set_bias_level callback
-Date: Mon, 09 Jan 2012 11:53:35 +0000
-Message-ID: <1326110015.24178.5.camel@odin>
-References: <1325214296-2888-5-git-send-email-jkrzyszt@tis.icnet.pl>
+Subject: [PATCH] ASoC: core - Improve card registration error
+	messaging for large DAI links.
+Date: Mon,  9 Jan 2012 12:09:29 +0000
+Message-ID: <1326110969-6173-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
-	[74.125.149.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB175103A6E
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 12:53:44 +0100 (CET)
-Received: by mail-we0-f182.google.com with SMTP id b13so3908400wer.13
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 03:53:43 -0800 (PST)
-In-Reply-To: <1325214296-2888-5-git-send-email-jkrzyszt@tis.icnet.pl>
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBF79103A76
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 13:09:40 +0100 (CET)
+Received: by mail-we0-f175.google.com with SMTP id m13so2912743wer.20
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 04:09:37 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-12-30 at 04:04 +0100, Janusz Krzysztofik wrote:
-> This functionality has just been implemented in the cx20442 codec
-> driver, no need to keep it here duplicated.
-> 
-> Once done, remove the no longer used AMS_DELTA_LATCH2_MODEM_NRESET
-> symbol from the board header file and a call to the regulator_toggle()
-> helper function from the old API wrapper found in the board file.  While
-> being at it, simplify the way the modem .pm callback handles the
-> regulator, and drop that no longer used helper function and its related
-> consumer setup elements completely.
-> 
-> Depends on patch 3/4 "ARM: OMAP1: ams-delta: update the modem to use
-> regulator API"
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> ---
-> Changes against initial version:
-> * don't move consumer setup elements, now named to indicated their
->   modem related purpose, down the file,
-> * don't track the regulator enavble/disable state, compare new target
->   power state with the old one instead; thanks to Mark Brown for
->   suggesting this simplification,
-> * actually drop all references to AMS_DELTA_LATCH2_MODEM_NRESET.
-> 
->  arch/arm/mach-omap1/board-ams-delta.c             |   42 +++-----------------
->  arch/arm/plat-omap/include/plat/board-ams-delta.h |    1 -
->  sound/soc/omap/ams-delta.c                        |   32 ----------------
->  3 files changed, 7 insertions(+), 68 deletions(-)
+Print out the offending DAI link entry when a naming error occurs. Makes
+thing easier to debug for machines with a large number of DAI links.
 
-I tried to apply against ASoC but it failed with the omap files. It may
-be better for this patch to go via Tony. 
+Signed-off-by: Liam Girdwood <lrg@ti.com>
+---
+ sound/soc/soc-core.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-2/4 applies and builds ok, but if there is a runtime dependency on the
-rest it should go via Tony too.
-
-Thanks
-
-Liam
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index acbb960..e1d8433 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2854,7 +2854,8 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 		 */
+ 		if (!!link->codec_name == !!link->codec_of_node) {
+ 			dev_err(card->dev,
+-				"Neither/both codec name/of_node are set\n");
++				"Neither/both codec name/of_node are set for %s\n",
++				link->name);
+ 			return -EINVAL;
+ 		}
+ 
+@@ -2864,7 +2865,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 		 */
+ 		if (link->platform_name && link->platform_of_node) {
+ 			dev_err(card->dev,
+-				"Both platform name/of_node are set\n");
++				"Both platform name/of_node are set for %s\n", link->name);
+ 			return -EINVAL;
+ 		}
+ 
+@@ -2874,7 +2875,8 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 		 */
+ 		if (!!link->cpu_dai_name == !!link->cpu_dai_of_node) {
+ 			dev_err(card->dev,
+-				"Neither/both cpu_dai name/of_node are set\n");
++				"Neither/both cpu_dai name/of_node are set for %s\n",
++				link->name);
+ 			return -EINVAL;
+ 		}
+ 	}
+-- 
+1.7.5.4
