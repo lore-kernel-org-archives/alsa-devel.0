@@ -1,19 +1,18 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: [PATCH - ice1724 1/4] ALSA: ice1724 - Create
- capture pcm only for ADC-enabled configurations
-Date: Mon, 09 Jan 2012 08:36:54 +0100
-Message-ID: <4F0A9916.9050606@ivitera.com>
-References: <1325797318-16333-1-git-send-email-pavel.hofman@ivitera.com>
-	<s5hboqemubc.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: introduce SOC_SINGLE_S8_TLV macro
+Date: Mon, 09 Jan 2012 09:21:19 +0100
+Message-ID: <4F0AA37F.5050602@metafoo.de>
+References: <1325987606-7179-1-git-send-email-plai@codeaurora.org>
+	<20120108202332.GE29065@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C97D10394B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 08:36:58 +0100 (CET)
-In-Reply-To: <s5hboqemubc.wl%tiwai@suse.de>
+Received: from smtp-out-233.synserver.de (smtp-out-233.synserver.de
+	[212.40.185.233])
+	by alsa0.perex.cz (Postfix) with SMTP id 300231039B5
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 09:20:32 +0100 (CET)
+In-Reply-To: <20120108202332.GE29065@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-
-
-Dne 8.1.2012 10:12, Takashi Iwai napsal(a):
-> At Thu,  5 Jan 2012 22:01:55 +0100,
-> pavel.hofman@ivitera.com wrote:
->>
->> From: Pavel Hofman <pavel.hofman@ivitera.com>
->>
->> Add the capture pcm only if there is at least one ADC configured in
->> the SYSCONF register.
->>
->> Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
->>
->> diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
->> index 4353e76..2a0be2c 100644
->> --- a/pci/ice1712/ice1724.c
->> +++ b/pci/ice1712/ice1724.c
->> @@ -1117,14 +1117,18 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
->>  static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
->>  {
->>  	struct snd_pcm *pcm;
->> -	int err;
->> +	int capt, err;
->>  
->> -	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
->> +	capt = (~ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ?
->> +		1 : 0;
+On 01/08/2012 09:23 PM, Mark Brown wrote:
+> On Sat, Jan 07, 2012 at 05:53:26PM -0800, Patrick Lai wrote:
+>> ASoC currently has macro for double 8-bit signed TLV.
+>> Enhance info,get,put callback functions of SOC_DOUBLE_S8_TLV
+>> for single single 8-bit signed TLV.
 > 
-> Are you sure that this is correct?  I thought the value 0 means 1 ADC,
-> 1 is two ADCS, etc.
+> Actually now I look at this I'm not sure that the existing macro isn't
+> just misnamed:
+> 
+> | #define SOC_DOUBLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
+> 
+> Since no shifts are specified the signature is just the same as your
+> SOC_SINGLE_S8_TLV:
 > 
 
-I think it is correct. This is what the datasheet says:
+There is a shift, but it is hard coded to 8 in snd_soc_get_volsw_s8, which
+isn't considered by the patch currently. So either SOC_DOUBLE_S8_TLV should
+initialize rshift to 8 or a shift and rshift parameter should be added. It
+might also makes sense to add a shift parameter to SOC_SINGLE_S8_TLV as well.
 
-CCS04: System Configuration Register
-
-bits 3:2
-
-00: one stereo ADC connected
-01: two stereo ADCs connected
-10: one stereo ADC and a S/PDIF receiver connected
-11: No physical inputs
-
-
-I have two soundcards, one with 10 (ADC + SPDIF in), another with 11 (no
-ADC), the code seems to work fine.
-
-Thanks,
-
-Pavel.
+- Lars
