@@ -1,20 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH v3] ASoC: jz4740: Convert qi_lb60 to use
-	snd_soc_register_card()
-Date: Mon, 9 Jan 2012 22:12:30 +0800
-Message-ID: <CAF+7xW=x4mvod17gJXjGdTXA81k4ZoGmt3jC2yFb_KoR6eCcVg@mail.gmail.com>
-References: <1325820610.10011.1.camel@phoenix>
-Reply-To: axel.lin@gmail.com
+From: =?UTF-8?B?SsOpcsOpbXkgTGFs?= <kapouer@melix.org>
+Subject: Re: imac27 12,2 (2011) model for patch_cirrus.c
+Date: Mon, 09 Jan 2012 15:26:07 +0100
+Message-ID: <4F0AF8FF.2090208@melix.org>
+References: <4EFC5641.9010506@melix.org> <s5haa5xkvuw.wl%tiwai@suse.de>
+	<4F0AF146.9030000@melix.org> <s5h1ur9kmep.wl%tiwai@suse.de>
+Reply-To: kapouer@melix.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id E486A24378
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 15:12:52 +0100 (CET)
-Received: by lago2 with SMTP id o2so1343281lag.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 06:12:52 -0800 (PST)
-In-Reply-To: <1325820610.10011.1.camel@phoenix>
+Received: from mx1.polytechnique.org (mx1.polytechnique.org [129.104.30.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1962D24388
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 15:26:18 +0100 (CET)
+In-Reply-To: <s5h1ur9kmep.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/1/6 Axel Lin <axel.lin@gmail.com>:
-> Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
->
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> v2: Fix a typo in v1.
-> v3: Free the card before the GPIOs since the card uses the GPIOs
-
-Hi Lars,
-Any chance to test this patch if you think the patch is ok?
-
-Thanks,
-Axel
+T24gMDkvMDEvMjAxMiAxNDo1OCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IE1vbiwgMDkgSmFu
+IDIwMTIgMTQ6NTM6MTAgKzAxMDAsCj4gSsOpcsOpbXkgTGFsIHdyb3RlOgo+Pgo+PiBPbiAwOS8w
+MS8yMDEyIDExOjM0LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBBdCBUaHUsIDI5IERlYyAyMDEx
+IDEzOjAwOjAxICswMTAwLAo+Pj4gSsOpcsOpbXkgTGFsIHdyb3RlOgo+Pj4+Cj4+Pj4gSGksCj4+
+Pj4gaXQnZCBiZSBnbGFkIHRvIGhhdmUgcGF0Y2hfY2lycnVzLmMgcmVjb2duaXplIG1vZGVsPWlt
+YWMyN18xMjIsCj4+Pj4gKGknbSBhZGRpbmcgYSBtb2RlbCBiZWNhdXNlIGl0J3MgaGFyZGVyIHRv
+IGF1dG8tZGV0ZWN0IGl0KSwKPj4+PiBwbGVhc2UgZmluZCBhdHRhY2hlZCBwYXRjaCwgdGVzdGVk
+IG9uIGxpbnV4IDMuMi1yYzcuCj4+Pj4gSSBkb24ndCBrbm93IGFueXRoaW5nIGFib3V0IHBpbiBj
+b25maWdzLCBqdXN0IHRoYXQgaXQgd29ya3Mgd2l0aAo+Pj4+IHRoZSBvbmVzIGluIHRoZSBwYXRj
+aC4KPj4+PiBOb3RlIHRoYXQgaSB0cmllZCB3aXRoIG1vZGVsPWF1dG8gKG5vIHNvdW5kKSBhbmQg
+bW9kZWw9aW1hYzI3IChmcm9udCBzcGVha2Vycwo+Pj4+IG5vdCBtdXRlZCB3aGVuIGhlYWRwaG9u
+ZXMgYXJlIHBsdWdnZWQgaW4sIGFuZCBzdXJyb3VuZCBzcGVha2VycyBub3QgcHJvcGVybHkKPj4+
+PiBkZXRlY3RlZCkuCj4+Pgo+Pj4gVGhhbmtzIGZvciB0aGUgcGF0Y2guICBCdXQgSSBzZWUgYSBw
+cm9ibGVtIGluIHRoZSBjb2RlLCBpLmUuCj4+Pgo+Pj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGNz
+X3BpbmNmZyBpbWFjMjdfMTIyX3BpbmNmZ3NbXSA9IHsKPj4+PiArCXsgMHgwMCwgMHg4MjFjOTcw
+MCB9LAo+Pj4+ICsJeyAweDAxLCAweDAxMWQ5NzAwIH0sCj4+PiAoc25pcCkKPj4+PiArCXsgMHgy
+NywgMHg0MDFmNTcwMSB9LAo+Pj4+ICsJe30gLyogdGVybWluYXRvciAqLwo+Pj4+ICt9Owo+Pj4K
+Pj4+IFRoaXMgbG9va3Mgb2J2aW91c2x5IHdyb25nLiAgVGhlIHBpbmNmZyB0YWJsZSBzaG91bGQg
+Y29udGFpbiBvbmx5IHRoZQo+Pj4gZGVmYXVsdCBwaW4tY29uZmlndXJhdGlvbiB2YWx1ZXMgZm9y
+IHBpbiB3aWRnZXRzIHdoaWxlIHlvdSBhcmUgc2V0dGluZwo+Pj4gc29tZSB2YWx1ZXMgdG8gYWxs
+IHdpZGdldHMuICBQbGVhc2UgbWluaW1pemUgdGhpcyBlbnRyeS4KPj4KPj4gSXQncyB3b3JraW5n
+IHdpdGhvdXQgb3ZlcnJpZGluZyBwaW4tY29uZmlndXJhdGlvbnMgOikKPj4gSSB0ZXN0ZWQgYWxt
+b3N0IGV2ZXJ5dGhpbmcgZXhjZXB0IGRpZ2l0YWwgaW5wdXQvb3V0cHV0Lgo+Pgo+PiBBIGtlcm5l
+bCB3aXRoIHRoZSBmb2xsb3dpbmcgcGF0Y2ggYW5kCj4+IG9wdGlvbnMgc25kLWhkYS1pbnRlbCBt
+b2RlbD1pbWFjMjdfMTIyCj4+IGlzIGVub3VnaCB0byBnZXQgc291bmQgd29ya2luZy4KPiAKPiBP
+SywgdGhhdCdzIG11Y2ggYmV0dGVyLgo+IENvdWxkIHlvdSBnaXZlIHRoZSBwYXRjaCB3aXRoIGEg
+cHJvcGVyIGNoYW5nZWxvZyBhbmQgeW91ciBzaWduLW9mZgo+IHNvIHRoYXQgSSBjYW4gbWVyZ2Ug
+aXQgbm93PwoKQUxTQTogaGRhL2NpcnJ1cyAtIHN1cHBvcnQgZm9yIGlNYWMxMiwxIGFuZCAxMiwy
+IG1vZGVscwoKVGhvc2UgbW9kZWxzIGp1c3QgbmVlZCB0byBoYXZlIGhlYWRwaG9uZXMgb24gR1BJ
+MDIKaW5zdGVhZCBvZiBHUEkwMSwgYW5kIHVzZSBCSU9TIHBpbmNmZ3MuCgpTaWduZWQtb2ZmLWJ5
+OiBKw6lyw6lteSBMYWwgPGthcG91ZXJAbWVsaXgub3JnPgotLS0KCi0tLSBsaW51eC1zb3VyY2Ut
+My4yLXJjNy5vcmlnL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY2lycnVzLmMJMjAxMS0xMi0yNCAwNjo1
+MTowNi4wMDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4LXNvdXJjZS0zLjItcmM3L3NvdW5kL3BjaS9o
+ZGEvcGF0Y2hfY2lycnVzLmMJMjAxMi0wMS0wOSAxMjo0MDo1My4wMjY0MzA0NzUgKzAxMDAKQEAg
+LTc4LDYgKzc4LDcgQEAKIAlDUzQyMFhfTUJQNTMsCiAJQ1M0MjBYX01CUDU1LAogCUNTNDIwWF9J
+TUFDMjcsCisJQ1M0MjBYX0lNQUMyN18xMjIsCiAJQ1M0MjBYX0FQUExFLAogCUNTNDIwWF9BVVRP
+LAogCUNTNDIwWF9NT0RFTFMKQEAgLTEyNzgsNiArMTI3OSw3IEBACiAJW0NTNDIwWF9NQlA1M10g
+PSAibWJwNTMiLAogCVtDUzQyMFhfTUJQNTVdID0gIm1icDU1IiwKIAlbQ1M0MjBYX0lNQUMyN10g
+PSAiaW1hYzI3IiwKKwlbQ1M0MjBYX0lNQUMyN18xMjJdID0gImltYWMyN18xMjIiLAogCVtDUzQy
+MFhfQVBQTEVdID0gImFwcGxlIiwKIAlbQ1M0MjBYX0FVVE9dID0gImF1dG8iLAogfTsKQEAgLTEz
+OTIsNiArMTM5NCwxMiBAQAogCQlzcGVjLT5ncGlvX2VhcGRfc3BlYWtlciA9IDg7IC8qIEdQSU8z
+ID0gc3BlYWtlcnMgKi8KIAkJc3BlYy0+Z3Bpb19tYXNrID0gc3BlYy0+Z3Bpb19kaXIgPQogCQkJ
+c3BlYy0+Z3Bpb19lYXBkX2hwIHwgc3BlYy0+Z3Bpb19lYXBkX3NwZWFrZXI7CisJCWJyZWFrOwor
+CWNhc2UgQ1M0MjBYX0lNQUMyN18xMjI6CisJCXNwZWMtPmdwaW9fZWFwZF9ocCA9IDQ7IC8qIEdQ
+SU8yID0gaGVhZHBob25lcyAqLworCQlzcGVjLT5ncGlvX2VhcGRfc3BlYWtlciA9IDg7IC8qIEdQ
+SU8zID0gc3BlYWtlcnMgKi8KKwkJc3BlYy0+Z3Bpb19tYXNrID0gc3BlYy0+Z3Bpb19kaXIgPQor
+CQkJc3BlYy0+Z3Bpb19lYXBkX2hwIHwgc3BlYy0+Z3Bpb19lYXBkX3NwZWFrZXI7CiAJCWJyZWFr
+OwogCX0KIAoKIAo+IEFsc28sIEkgZ3Vlc3MgeW91ciBkZXZpY2Ugc2hvdWxkIGJlIGlkZW50aWZp
+ZWQgdmlhIFBDSSBTU0lELgo+IENvdWxkIHlvdSBjaGVjayB3aGV0aGVyIHRoZSBkZXZpY2UgaGFz
+IGEgdW5pcXVlIFBDSSBTU0lEIChjaGVjayBsc3BjaQo+IG91dHB1dCksIGFuZCBhZGQgdGhlIGNv
+cnJlc3BvbmRpbmcgZW50cnkgdG8gY3M0MjB4X2NmZ190YmxbXT8gIElmIGl0J3MKPiBhYm91dCAx
+MGRlOnh4eHgsIGl0IHNob3VsZCBiZSB1bmlxdWUuICBJZiBpdCdzIDgwODY6eHh4eCwgdGhlbiB3
+ZSdkCj4gbmVlZCB0byBjaGVjayB0aGUgY29kZWMgU1NJRCBpbnN0ZWFkIG9mIFBDSSBTU0lELgoK
+VGhlIFBDSSBTU0lEIGlzIDgwODY6MWMyMApIb3cgY2FuIGkgZ2V0IHRoZSBjb2RlYyBTU0lEID8K
+CkrDqXLDqW15LgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
