@@ -1,18 +1,17 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: utils - Add support for a dummy codec
-	driver.
-Date: Mon,  9 Jan 2012 12:36:24 +0000
-Message-ID: <1326112584-14942-1-git-send-email-lrg@ti.com>
+From: =?UTF-8?B?SsOpcsOpbXkgTGFs?= <kapouer@melix.org>
+Subject: Re: imac27 12,2 (2011) model for patch_cirrus.c
+Date: Mon, 09 Jan 2012 14:53:10 +0100
+Message-ID: <4F0AF146.9030000@melix.org>
+References: <4EFC5641.9010506@melix.org> <s5haa5xkvuw.wl%tiwai@suse.de>
+Reply-To: kapouer@melix.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
-	[74.125.149.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25E771039DB
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 13:36:28 +0100 (CET)
-Received: by mail-ww0-f53.google.com with SMTP id dt10so1266508wgb.22
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 04:36:27 -0800 (PST)
+Received: from mx1.polytechnique.org (mx1.polytechnique.org [129.104.30.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0F0F24133
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 14:53:12 +0100 (CET)
+In-Reply-To: <s5haa5xkvuw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is useful to create dummy codec devices where we need to have some
-DAI links without a real Codec. e.g. could be used to represent dumb FM,
-MODEM, etc
-
-This is also used by dynamic PCM for DAI links that have no codec.
-
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- sound/soc/soc-utils.c |   20 +++++++++++++++++++-
- 1 files changed, 19 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 4220bb0..329122d 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -89,14 +89,32 @@ static struct snd_soc_platform_driver dummy_platform = {
- 	.ops = &dummy_dma_ops,
- };
- 
-+static struct snd_soc_codec_driver dummy_codec;
-+static struct snd_soc_dai_driver dummy_dai = {
-+		.name = "snd-soc-dummy-dai",
-+};
-+
- static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&pdev->dev, &dummy_platform);
-+	int ret;
-+
-+	ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_register_platform(&pdev->dev, &dummy_platform);
-+	if (ret < 0) {
-+		snd_soc_unregister_codec(&pdev->dev);
-+		return ret;
-+	}
-+
-+	return ret;
- }
- 
- static __devexit int snd_soc_dummy_remove(struct platform_device *pdev)
- {
- 	snd_soc_unregister_platform(&pdev->dev);
-+	snd_soc_unregister_codec(&pdev->dev);
- 
- 	return 0;
- }
--- 
-1.7.5.4
+T24gMDkvMDEvMjAxMiAxMTozNCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgMjkgRGVj
+IDIwMTEgMTM6MDA6MDEgKzAxMDAsCj4gSsOpcsOpbXkgTGFsIHdyb3RlOgo+Pgo+PiBIaSwKPj4g
+aXQnZCBiZSBnbGFkIHRvIGhhdmUgcGF0Y2hfY2lycnVzLmMgcmVjb2duaXplIG1vZGVsPWltYWMy
+N18xMjIsCj4+IChpJ20gYWRkaW5nIGEgbW9kZWwgYmVjYXVzZSBpdCdzIGhhcmRlciB0byBhdXRv
+LWRldGVjdCBpdCksCj4+IHBsZWFzZSBmaW5kIGF0dGFjaGVkIHBhdGNoLCB0ZXN0ZWQgb24gbGlu
+dXggMy4yLXJjNy4KPj4gSSBkb24ndCBrbm93IGFueXRoaW5nIGFib3V0IHBpbiBjb25maWdzLCBq
+dXN0IHRoYXQgaXQgd29ya3Mgd2l0aAo+PiB0aGUgb25lcyBpbiB0aGUgcGF0Y2guCj4+IE5vdGUg
+dGhhdCBpIHRyaWVkIHdpdGggbW9kZWw9YXV0byAobm8gc291bmQpIGFuZCBtb2RlbD1pbWFjMjcg
+KGZyb250IHNwZWFrZXJzCj4+IG5vdCBtdXRlZCB3aGVuIGhlYWRwaG9uZXMgYXJlIHBsdWdnZWQg
+aW4sIGFuZCBzdXJyb3VuZCBzcGVha2VycyBub3QgcHJvcGVybHkKPj4gZGV0ZWN0ZWQpLgo+IAo+
+IFRoYW5rcyBmb3IgdGhlIHBhdGNoLiAgQnV0IEkgc2VlIGEgcHJvYmxlbSBpbiB0aGUgY29kZSwg
+aS5lLgo+IAo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBjc19waW5jZmcgaW1hYzI3XzEyMl9waW5j
+ZmdzW10gPSB7Cj4+ICsJeyAweDAwLCAweDgyMWM5NzAwIH0sCj4+ICsJeyAweDAxLCAweDAxMWQ5
+NzAwIH0sCj4gKHNuaXApCj4+ICsJeyAweDI3LCAweDQwMWY1NzAxIH0sCj4+ICsJe30gLyogdGVy
+bWluYXRvciAqLwo+PiArfTsKPiAKPiBUaGlzIGxvb2tzIG9idmlvdXNseSB3cm9uZy4gIFRoZSBw
+aW5jZmcgdGFibGUgc2hvdWxkIGNvbnRhaW4gb25seSB0aGUKPiBkZWZhdWx0IHBpbi1jb25maWd1
+cmF0aW9uIHZhbHVlcyBmb3IgcGluIHdpZGdldHMgd2hpbGUgeW91IGFyZSBzZXR0aW5nCj4gc29t
+ZSB2YWx1ZXMgdG8gYWxsIHdpZGdldHMuICBQbGVhc2UgbWluaW1pemUgdGhpcyBlbnRyeS4KCkl0
+J3Mgd29ya2luZyB3aXRob3V0IG92ZXJyaWRpbmcgcGluLWNvbmZpZ3VyYXRpb25zIDopCkkgdGVz
+dGVkIGFsbW9zdCBldmVyeXRoaW5nIGV4Y2VwdCBkaWdpdGFsIGlucHV0L291dHB1dC4KCkEga2Vy
+bmVsIHdpdGggdGhlIGZvbGxvd2luZyBwYXRjaCBhbmQKb3B0aW9ucyBzbmQtaGRhLWludGVsIG1v
+ZGVsPWltYWMyN18xMjIKaXMgZW5vdWdoIHRvIGdldCBzb3VuZCB3b3JraW5nLgoKCi0tLSBsaW51
+eC1zb3VyY2UtMy4yLXJjNy5vcmlnL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY2lycnVzLmMJMjAxMS0x
+Mi0yNCAwNjo1MTowNi4wMDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4LXNvdXJjZS0zLjItcmM3L3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfY2lycnVzLmMJMjAxMi0wMS0wOSAxMjo0MDo1My4wMjY0MzA0NzUg
+KzAxMDAKQEAgLTc4LDYgKzc4LDcgQEAKIAlDUzQyMFhfTUJQNTMsCiAJQ1M0MjBYX01CUDU1LAog
+CUNTNDIwWF9JTUFDMjcsCisJQ1M0MjBYX0lNQUMyN18xMjIsCiAJQ1M0MjBYX0FQUExFLAogCUNT
+NDIwWF9BVVRPLAogCUNTNDIwWF9NT0RFTFMKQEAgLTEyNzgsNiArMTI3OSw3IEBACiAJW0NTNDIw
+WF9NQlA1M10gPSAibWJwNTMiLAogCVtDUzQyMFhfTUJQNTVdID0gIm1icDU1IiwKIAlbQ1M0MjBY
+X0lNQUMyN10gPSAiaW1hYzI3IiwKKwlbQ1M0MjBYX0lNQUMyN18xMjJdID0gImltYWMyN18xMjIi
+LAogCVtDUzQyMFhfQVBQTEVdID0gImFwcGxlIiwKIAlbQ1M0MjBYX0FVVE9dID0gImF1dG8iLAog
+fTsKQEAgLTEzOTIsNiArMTM5NCwxMiBAQAogCQlzcGVjLT5ncGlvX2VhcGRfc3BlYWtlciA9IDg7
+IC8qIEdQSU8zID0gc3BlYWtlcnMgKi8KIAkJc3BlYy0+Z3Bpb19tYXNrID0gc3BlYy0+Z3Bpb19k
+aXIgPQogCQkJc3BlYy0+Z3Bpb19lYXBkX2hwIHwgc3BlYy0+Z3Bpb19lYXBkX3NwZWFrZXI7CisJ
+CWJyZWFrOworCWNhc2UgQ1M0MjBYX0lNQUMyN18xMjI6CisJCXNwZWMtPmdwaW9fZWFwZF9ocCA9
+IDQ7IC8qIEdQSU8yID0gaGVhZHBob25lcyAqLworCQlzcGVjLT5ncGlvX2VhcGRfc3BlYWtlciA9
+IDg7IC8qIEdQSU8zID0gc3BlYWtlcnMgKi8KKwkJc3BlYy0+Z3Bpb19tYXNrID0gc3BlYy0+Z3Bp
+b19kaXIgPQorCQkJc3BlYy0+Z3Bpb19lYXBkX2hwIHwgc3BlYy0+Z3Bpb19lYXBkX3NwZWFrZXI7
+CiAJCWJyZWFrOwogCX0KIAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
