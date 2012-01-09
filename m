@@ -1,34 +1,59 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: Re: linux-next: Tree for Jan 9 (sound/soc vs. drivers/misc)
-Date: Mon, 09 Jan 2012 12:57:04 -0800
-Message-ID: <4F0B54A0.20905@xenotime.net>
-References: <20120109170457.4465dfc66a0eace4a2230fef@canb.auug.org.au>
+From: Greg KH <greg@kroah.com>
+Subject: Re: Public ridicule due to sound/soc/soc-core.c abuse
+ of the driver model
+Date: Mon, 9 Jan 2012 12:11:10 -0800
+Message-ID: <20120109201110.GA8377@kroah.com>
+References: <20120106194052.GA7781@kroah.com>
+	<20120106201458.GF2893@opensource.wolfsonmicro.com>
+	<20120106205036.GB13857@n2100.arm.linux.org.uk>
+	<20120106234135.GH2893@opensource.wolfsonmicro.com>
+	<20120106234445.GC13857@n2100.arm.linux.org.uk>
+	<20120106234923.GI2893@opensource.wolfsonmicro.com>
+	<20120109095125.GG21765@n2100.arm.linux.org.uk>
+	<20120109195211.GA30766@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20120109170457.4465dfc66a0eace4a2230fef@canb.auug.org.au>
-Sender: linux-next-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 134B124427
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 21:15:14 +0100 (CET)
+Received: from compute2.internal (compute2.nyi.mail.srv.osa [10.202.2.42])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id C47C521F1D
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2012 15:15:13 -0500 (EST)
+Content-Disposition: inline
+In-Reply-To: <20120109195211.GA30766@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Frank Mandarino <fmandarino@endrelia.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/08/2012 10:04 PM, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Jan 09, 2012 at 07:52:13PM +0000, Mark Brown wrote:
+> On Mon, Jan 09, 2012 at 09:51:25AM +0000, Russell King - ARM Linux wrote:
 > 
-> Changes since 20120106:
+> > Anything which helps reduce the abuses of the driver model is a plus -
+> > it helps remove the possibility of kernel oopses.
 > 
-> This tree is still broken for sparc64 defconfig (at least).
+> Trying to make any sort of modification to code this fragile is risky,
+> especially during what's supposed to be a stabalization phase (which is
+> what Greg is requesting).  It just seems completely irresponsible for
+> something that isn't actually a practical problem.
 
+I find it hard to believe that ignoring the driver model is not a
+"practical" problem :)
 
-AFAICT, all builds (on X86_32 or X86_64) have this kconfig warning:
+For details as to why this is a problem, please see the kobject.txt
+file.
 
-drivers/misc/Kconfig:212:error: recursive dependency detected!
-drivers/misc/Kconfig:212:	symbol ATMEL_SSC is selected by SND_ATMEL_SOC_SSC
-sound/soc/atmel/Kconfig:9:	symbol SND_ATMEL_SOC_SSC is selected by SND_AT91_SOC_SAM9G20_WM8731
-sound/soc/atmel/Kconfig:18:	symbol SND_AT91_SOC_SAM9G20_WM8731 depends on ATMEL_SSC
+Please fix this up, as you have seen, people end up cutting-and-pasting
+bad code.
 
-
--- 
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+greg k-h
