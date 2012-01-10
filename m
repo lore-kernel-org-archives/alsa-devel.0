@@ -1,8 +1,8 @@
 From: pavel.hofman@ivitera.com
-Subject: [PATCH - ice1724 2/3] ALSA: ice1724 - Allow card info
-	based on model only
-Date: Tue, 10 Jan 2012 20:28:47 +0100
-Message-ID: <1326223728-3085-2-git-send-email-pavel.hofman@ivitera.com>
+Subject: [PATCH - ice1724 3/3] ALSA: ice1724 - Support for
+	ooAoo SQ210a
+Date: Tue, 10 Jan 2012 20:28:48 +0100
+Message-ID: <1326223728-3085-3-git-send-email-pavel.hofman@ivitera.com>
 References: <1326223728-3085-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,37 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-When two different cards share the same PCI vendor/subvendor
-identification, allow card info based on model only.
-Do not require subvendor ID.
+This card shares PCI ids with Chaintec AV710. Therefore, it will not be
+detected automatically, it can only be activated by the module parameter
+model=sq210a.
 
 Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
 diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index e797823..352f3ff 100644
+index 352f3ff..9236297 100644
 --- a/sound/pci/ice1712/ice1724.c
 +++ b/sound/pci/ice1712/ice1724.c
-@@ -2282,7 +2282,7 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
- 		}
- 	}
- 	for (tbl = card_tables; *tbl; tbl++) {
--		for (c = *tbl; c->subvendor; c++) {
-+		for (c = *tbl; c->name; c++) {
- 			if (modelname && c->model &&
- 			    !strcmp(modelname, c->model)) {
- 				printk(KERN_INFO "ice1724: Using board model %s\n",
-@@ -2591,8 +2591,10 @@ static int __devinit snd_vt1724_probe(struct pci_dev *pci,
- 	ice->ext_clock_count = 0;
+@@ -2185,6 +2185,40 @@ static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
  
- 	for (tbl = card_tables; *tbl; tbl++) {
--		for (c = *tbl; c->subvendor; c++) {
--			if (c->subvendor == ice->eeprom.subvendor) {
-+		for (c = *tbl; c->name; c++) {
-+			if ((model[dev] && c->model &&
-+			     !strcmp(model[dev], c->model)) ||
-+			    (c->subvendor == ice->eeprom.subvendor)) {
- 				strcpy(card->shortname, c->name);
- 				if (c->driver) /* specific driver? */
- 					strcpy(card->driver, c->driver);
+ static struct snd_ice1712_card_info no_matched __devinitdata;
+ 
++
++/*
++  ooAoo cards with no controls
++*/
++static unsigned char ooaoo_sq210_eeprom[] __devinitdata = {
++	[ICE_EEP2_SYSCONF]     = 0x4c,	/* 49MHz crystal, no mpu401, no ADC,
++					   1xDACs */
++	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
++	[ICE_EEP2_I2S]         = 0x78,	/* no volume, 96k, 24bit, 192k */
++	[ICE_EEP2_SPDIF]       = 0xc1,	/* out-en, out-int, out-ext */
++	[ICE_EEP2_GPIO_DIR]    = 0x00,	/* no GPIOs are used */
++	[ICE_EEP2_GPIO_DIR1]   = 0x00,
++	[ICE_EEP2_GPIO_DIR2]   = 0x00,
++	[ICE_EEP2_GPIO_MASK]   = 0xff,
++	[ICE_EEP2_GPIO_MASK1]  = 0xff,
++	[ICE_EEP2_GPIO_MASK2]  = 0xff,
++
++	[ICE_EEP2_GPIO_STATE]  = 0x00, /* inputs */
++	[ICE_EEP2_GPIO_STATE1] = 0x00, /* all 1, but GPIO_CPLD_RW
++					  and GPIO15 always zero */
++	[ICE_EEP2_GPIO_STATE2] = 0x00, /* inputs */
++};
++
++
++struct snd_ice1712_card_info snd_vt1724_ooaoo_cards[] __devinitdata = {
++	{
++		.name = "ooAoo SQ210a",
++		.model = "sq210a",
++		.eeprom_size = sizeof(ooaoo_sq210_eeprom),
++		.eeprom_data = ooaoo_sq210_eeprom,
++	},
++	{ } /* terminator */
++};
++
+ static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
+ 	snd_vt1724_revo_cards,
+ 	snd_vt1724_amp_cards,
+@@ -2199,6 +2233,7 @@ static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
+ 	snd_vt1724_wtm_cards,
+ 	snd_vt1724_se_cards,
+ 	snd_vt1724_qtet_cards,
++	snd_vt1724_ooaoo_cards,
+ 	NULL,
+ };
+ 
 -- 
 1.7.0.4
