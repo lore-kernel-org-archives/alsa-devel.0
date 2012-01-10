@@ -1,14 +1,17 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/1] ALSA: hdspm - Provide unique driver id
-	based on card serial
-Date: Tue, 10 Jan 2012 20:58:40 +0100
-Message-ID: <1326225520-6678-1-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <4F0C9733.8060300@drcomp.erfurt.thur.de>
+From: naveen440@comcast.net
+Subject: Questions on the ALSA user lib interfaces.
+Date: Tue, 10 Jan 2012 22:03:30 +0000 (UTC)
+Message-ID: <1179531161.522602.1326233010988.JavaMail.root@sz0111a.emeryville.ca.mail.comcast.net>
+References: <451051333.522506.1326232895040.JavaMail.root@sz0111a.emeryville.ca.mail.comcast.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4F0C9733.8060300@drcomp.erfurt.thur.de>
+Received: from qmta14.emeryville.ca.mail.comcast.net
+	(qmta14.emeryville.ca.mail.comcast.net [76.96.27.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B3B324649
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 23:03:34 +0100 (CET)
+In-Reply-To: <451051333.522506.1326232895040.JavaMail.root@sz0111a.emeryville.ca.mail.comcast.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,70 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Before, /proc/asound looked like this:
+Hello, 
 
- 2 [Default        ]: HDSPM - RME RayDAT_f1cd85
-                      RME RayDAT S/N 0xf1cd85 at 0xf7300000, irq 18
 
-In case of a second HDSPM card, its name would be Default_1. This is
-cumbersome, because the order of the cards isn't stable across reboots.
+I am new to ALSA interfaces and i wanted to understand some of the interfaces clearly to make sure that i write the application correctly. 
 
-To help userspace tools referring to the correct card, this commit
-provides a unique id for each card:
 
- 2 [HDSPMxf1cd85   ]: HDSPM - RME RayDAT_f1cd85
-                      RME RayDAT S/N 0xf1cd85 at 0xf7300000, irq 18
+Can someone provide with some information on the usage of the following interfaces? What is the usage model for using them. 
 
-In this example, userspace (configuration files) would then use
-hw:HDSPMxf1cd85 to choose the right card.
 
-The serial is masked to 24bits, so this string is always shorter than
-sixteen chars.
+1. Config interfaces (snd_config_top() and the rest of them). Are they to be used to configure the ALSA userlib? Some example code or pseudo code on this topic would be useful. 
+2. Higher level control interfaces (snd_hctl_ and the rest of them). Again some example code explaining the usage would be useful. 
+3. Setup controls (snd_sctl and the rest of them). Again some usage scenario's on this context would be useful to know. 
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 1609253..cc9f6c8 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6783,6 +6783,25 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 	tasklet_init(&hdspm->midi_tasklet,
- 			hdspm_midi_tasklet, (unsigned long) hdspm);
- 
-+
-+	if (hdspm->io_type != MADIface) {
-+		hdspm->serial = (hdspm_read(hdspm,
-+				HDSPM_midiStatusIn0)>>8) & 0xFFFFFF;
-+		/* id contains either a user-provided value or the default
-+		 * NULL. If it's the default, we're safe to
-+		 * fill card->id with the serial number.
-+		 *
-+		 * If the serial number is 0xFFFFFF, then we're dealing with
-+		 * an old PCI revision that comes without a sane number. In
-+		 * this case, we don't set card->id to avoid collisions
-+		 * when running with multiple cards.
-+		 */
-+		if (NULL == id[hdspm->dev] && hdspm->serial != 0xFFFFFF) {
-+			sprintf(card->id, "HDSPMx%06x", hdspm->serial);
-+			snd_card_set_id(card, card->id);
-+		}
-+	}
-+
- 	snd_printdd("create alsa devices.\n");
- 	err = snd_hdspm_create_alsa_devices(card, hdspm);
- 	if (err < 0)
-@@ -6867,8 +6886,6 @@ static int __devinit snd_hdspm_probe(struct pci_dev *pci,
- 	}
- 
- 	if (hdspm->io_type != MADIface) {
--		hdspm->serial = (hdspm_read(hdspm,
--				HDSPM_midiStatusIn0)>>8) & 0xFFFFFF;
- 		sprintf(card->shortname, "%s_%x",
- 			hdspm->card_name,
- 			hdspm->serial);
--- 
-1.7.8.2
+Thanks in advance. 
+Naveen 
