@@ -1,16 +1,12 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Make WM8962 I2C usage unconditional
-Date: Tue, 10 Jan 2012 18:56:21 +0000
-Message-ID: <1326221781-12663-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: pavel.hofman@ivitera.com
+Subject: [PATCH - ice1724 1/3] ALSA: ice1724 - Create capture
+	pcm only for ADC-enabled configurations
+Date: Tue, 10 Jan 2012 20:28:46 +0100
+Message-ID: <1326223728-3085-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EBB95103AD0
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 19:56:21 +0100 (CET)
-In-Reply-To: <>
-References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +16,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: patch@alsa-project.org
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We only support I2C so no need to ifdef.
+From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |   14 +-------------
- 1 files changed, 1 insertions(+), 13 deletions(-)
+Add the capture pcm only if there is at least one ADC configured in
+the SYSCONF register.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index e65c063..11125c9 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -4187,7 +4187,6 @@ static const struct regmap_config wm8962_regmap = {
- 	.cache_type = REGCACHE_RBTREE,
- };
- 
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
- 				      const struct i2c_device_id *id)
+Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index 9e18d3a..e797823 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -1117,14 +1117,21 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
+ static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
  {
-@@ -4316,27 +4315,16 @@ static struct i2c_driver wm8962_i2c_driver = {
- 	.remove =   __devexit_p(wm8962_i2c_remove),
- 	.id_table = wm8962_i2c_id,
- };
--#endif
+ 	struct snd_pcm *pcm;
+-	int err;
++	int capt, err;
  
- static int __init wm8962_modinit(void)
- {
--	int ret;
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--	ret = i2c_add_driver(&wm8962_i2c_driver);
--	if (ret != 0) {
--		printk(KERN_ERR "Failed to register WM8962 I2C driver: %d\n",
--		       ret);
--	}
--#endif
--	return 0;
-+	return i2c_add_driver(&wm8962_i2c_driver);
- }
- module_init(wm8962_modinit);
+-	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
++	if ((ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ==
++	    VT1724_CFG_ADC_NONE)
++		capt = 0;
++	else
++		capt = 1;
++	err = snd_pcm_new(ice->card, "ICE1724", device, 1, capt, &pcm);
+ 	if (err < 0)
+ 		return err;
  
- static void __exit wm8962_exit(void)
- {
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&wm8962_i2c_driver);
--#endif
- }
- module_exit(wm8962_exit);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_vt1724_playback_pro_ops);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vt1724_capture_pro_ops);
++	if (capt)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
++			&snd_vt1724_capture_pro_ops);
  
+ 	pcm->private_data = ice;
+ 	pcm->info_flags = 0;
 -- 
-1.7.7.3
+1.7.0.4
