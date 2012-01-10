@@ -1,12 +1,18 @@
-From: pavel.hofman@ivitera.com
-Subject: [FIXED PATCH - ice1724 1/1] ALSA: ice1724 - Create
-	capture pcm only for ADC-enabled configurations
-Date: Tue, 10 Jan 2012 20:45:28 +0100
-Message-ID: <1326224728-7069-1-git-send-email-pavel.hofman@ivitera.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH 2/2] ALSA: hdspm - Provide unique driver id
+ based on card serial
+Date: Tue, 10 Jan 2012 20:53:23 +0100
+Message-ID: <4F0C9733.8060300@drcomp.erfurt.thur.de>
+References: <1325683877-16783-1-git-send-email-adi@drcomp.erfurt.thur.de>	<1325683877-16783-2-git-send-email-adi@drcomp.erfurt.thur.de>
+	<s5hipkmkyy7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ltw.loris.tv (ltw.loris.tv [89.163.167.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C711103AF9
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 20:53:34 +0100 (CET)
+In-Reply-To: <s5hipkmkyy7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,57 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pavel Hofman <pavel.hofman@ivitera.com>
+On 01/08/2012 04:15 PM, Takashi Iwai wrote:
 
-Add the capture pcm only if there is at least one ADC configured in
-the SYSCONF register.
+Hi!
 
-Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+>> Before, /proc/asound looked like this:
+>>
+>>   2 [Default        ]: HDSPM - RME RayDAT_f1cd85
+>>                        RME RayDAT S/N 0xf1cd85 at 0xf7300000, irq 18
+>>
+>>
+>>   2 [HDSPM_f1cd85   ]: HDSPM - RME RayDAT_f1cd85
+>>                        RME RayDAT S/N 0xf1cd85 at 0xf7300000, irq 18
+> This can't be applied as is, unfortunately.
+> This would break when user passes the card id string via option.
 
-diff --git a/sound/pci/ice1712/envy24ht.h b/sound/pci/ice1712/envy24ht.h
-index a0c5e00..4ca33a8 100644
---- a/sound/pci/ice1712/envy24ht.h
-+++ b/sound/pci/ice1712/envy24ht.h
-@@ -66,6 +66,7 @@ enum {
- #define     VT1724_CFG_CLOCK384  0x40	/* 16.9344Mhz, 44.1kHz*384 */
- #define   VT1724_CFG_MPU401	0x20		/* MPU401 UARTs */
- #define   VT1724_CFG_ADC_MASK	0x0c	/* one, two or one and S/PDIF, stereo ADCs */
-+#define   VT1724_CFG_ADC_NONE	0x0c	/* no ADCs */
- #define   VT1724_CFG_DAC_MASK	0x03	/* one, two, three, four stereo DACs */
- 
- #define VT1724_REG_AC97_CFG		0x05	/* byte */
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index 9e18d3a..e797823 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -1117,14 +1117,21 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
- static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
- {
- 	struct snd_pcm *pcm;
--	int err;
-+	int capt, err;
- 
--	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
-+	if ((ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ==
-+	    VT1724_CFG_ADC_NONE)
-+		capt = 0;
-+	else
-+		capt = 1;
-+	err = snd_pcm_new(ice->card, "ICE1724", device, 1, capt, &pcm);
- 	if (err < 0)
- 		return err;
- 
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_vt1724_playback_pro_ops);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vt1724_capture_pro_ops);
-+	if (capt)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
-+			&snd_vt1724_capture_pro_ops);
- 
- 	pcm->private_data = ice;
- 	pcm->info_flags = 0;
--- 
-1.7.0.4
+Thanks for spotting, I wasn't even aware of this option. :-/
+
+> Also, if multiple boards have the same serial number (who can trust
+> the hardware? :), it gets -EBUSY at registration.
+
+Is that true? I don't have two RME cards here, but I've simply
+duplicated a string from my mainboard chip. snd_card_register() was just
+fine:
+
+$ cat /proc/asound/cards
+  0 [PCH            ]: HDA-Intel - HDA Intel PCH
+                       HDA Intel PCH at 0xf7420000 irq 55
+  1 [NVidia         ]: HDA-Intel - HDA NVidia
+                       HDA NVidia at 0xf7080000 irq 17
+  2 [PCH            ]: HDSPM - RME RayDAT_f1cd85
+                       RME RayDAT S/N 0xf1cd85 at 0xf7300000, irq 18
+
+
+Note that snd_card_create() is still called without any serial number
+magic, so card->id will first be set to "Default", "Default_1" and so on
+and only later modified before calling snd_card_register().
+
+Since I don't see anything in snd_card_register() that could possibly
+fail, it would at least still work. Anyway, I'm now using
+snd_card_set_id(), and this function claims to check for duplicates. ;)
+
+
+> And, MADIface will have no serial number, so it'll look strange.
+
+The code in question is limited to "if (!MADIface)", so no problem.
+
+
+> (Also the string with "%s_%04x" would be better, IMO.)
+
+I chose %06x, since the serial is masked with 0xFFFFFF.
+
+
+> For these, I'd suggest the following changes:
+> - check whether serial is non-zero
+
+That's actually 0xFFFFFF in case there is no serial. All PCI revisions
+behave like that.
+
+
+> - modify sound core registration part to re-generate the id string
+>    with suffix whenever conflicted, only not when the automated id
+>    string generation via card->id = NULL.
+
+I did not address this. Firstly, because snd_card_register() worked well
+even in case of colliding card->ids, and secondly, because
+snd_card_set_id would take care now to make it unique.
+
+
+I'll repost the patch in a second.
