@@ -1,21 +1,15 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: twl6040 - Add method to query
-	optimum PDM_DL1 gain
-Date: Tue, 10 Jan 2012 11:03:09 +0000
-Message-ID: <1326193389.3944.8.camel@odin>
-References: <1326111082-11678-1-git-send-email-lrg@ti.com>
-	<20120110004428.GL30766@opensource.wolfsonmicro.com>
+From: Manjunath Hadli <manjunath.hadli@ti.com>
+Subject: [RESEND PATCH] davinci: CQ93VC: remove machine
+	specific header file inclusion from codec driver
+Date: Tue, 10 Jan 2012 16:57:43 +0530
+Message-ID: <1326194863-31194-1-git-send-email-manjunath.hadli@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
-	[74.125.149.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16FD02453A
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 12:03:27 +0100 (CET)
-Received: by mail-wi0-f174.google.com with SMTP id hm6so4414689wib.5
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 03:03:12 -0800 (PST)
-In-Reply-To: <20120110004428.GL30766@opensource.wolfsonmicro.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id E06E624353
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 12:28:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: dlos <davinci-linux-open-source@linux.davincidsp.com>, LAK <linux-arm-kernel@lists.infradead.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Mark@alsa-project.org, Liam Girdwood <lrg@ti.com>, Manjunath Hadli <manjunath.hadli@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-01-10 at 00:44 +0000, Mark Brown wrote:
-> On Mon, Jan 09, 2012 at 12:11:22PM +0000, Liam Girdwood wrote:
-> > The DL1 PDM interface adds a little gain depending on the output device.
-> > Add a method to retrieve the gain value for machine driver usage.
-> 
-> I'm having a hard time understanding how the machine driver would use
-> this information...
-> 
+remove unnecessary inclusion of machine specific header
+file mach/dm365.h from cq93vc.c voice codec driver
+which comes in the way of platform code consolidation.
 
-It's intended that the machine driver would use this information to
-configure the ABE to compensate any attenuation so that the output
-volume level was constant.
+Signed-off-by: Manjunath Hadli <manjunath.hadli@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.de>
+Cc: <alsa-devel@alsa-project.org>
+Cc: <linux-kernel@vger.kernel.org>
+---
+ sound/soc/codecs/cq93vc.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-> > +int twl6040_get_dl1_gain(struct snd_soc_codec *codec)
-> > +{
-> > +	struct snd_soc_dapm_context *dapm = &codec->dapm;
-> > +
-> > +	if (snd_soc_dapm_get_pin_status(dapm, "EP"))
-> > +		return -1; /* -1dB */
-> 
-> Shouldn't this be being done by reading the CODEC register settings to
-> know which output DL1 is connected to?
-
-The DL1 path output devices can all operate at the same time and may or
-may not be connected by the machine drivers.
-
-Liam
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index 46dbfd0..ff4eb7a 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -38,8 +38,6 @@
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+ 
+-#include <mach/dm365.h>
+-
+ static inline unsigned int cq93vc_read(struct snd_soc_codec *codec,
+ 						unsigned int reg)
+ {
+-- 
+1.6.2.4
