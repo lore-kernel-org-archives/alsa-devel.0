@@ -1,18 +1,14 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH RESEND] ASoC: Fix recursive dependency due to
- select ATMEL_SSC in SND_ATMEL_SOC_SSC
-Date: Tue, 10 Jan 2012 14:19:12 +0800
-Message-ID: <1326176352.4443.1.camel@phoenix>
+From: Lauri Hintsala <lauri.hintsala@bluegiga.com>
+Subject: MXS: How to configure SGTL5000 ASoC as master?
+Date: Tue, 10 Jan 2012 08:19:36 +0200
+Message-ID: <4F0BD878.40508@bluegiga.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F01E31038CB
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 07:19:23 +0100 (CET)
-Received: by yhjj72 with SMTP id j72so757049yhj.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 22:19:23 -0800 (PST)
+Received: from darkblue.bluegiga.com (bluegiga.fi [194.100.31.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id C84A110393F
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 07:19:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +18,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Bolle <pebolle@tiscali.nl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-commit 739be96 "ASoC: Fix build dependency for SND_ATMEL_SOC_SSC"
-introduces below build warnings:
+Hi,
 
-drivers/misc/Kconfig:212:error: recursive dependency detected!
-drivers/misc/Kconfig:212:       symbol ATMEL_SSC is selected by SND_ATMEL_SOC_SSC
-sound/soc/atmel/Kconfig:9:      symbol SND_ATMEL_SOC_SSC is selected by SND_AT91_SOC_SAM9G20_WM8731
-sound/soc/atmel/Kconfig:18:     symbol SND_AT91_SOC_SAM9G20_WM8731 depends on ATMEL_SSC
+SGTL5000 ASoC is hard coded to be slave in sound/soc/mxs/mxs-sgtl5000.c. 
+In our HW design mclk of ASoC is sourced from external oscillator. 
+Because of our design ASoC should be configured as master. In that case 
+master clock of SAIF should be disabled.
 
-SND_ATMEL_SOC_SSC needs ATMEL_SSC to pass compilation.
-This patch remove the "select ATMEL_SSC" from SND_ATMEL_SOC_SSC to avoid above
-warnings. And then ensures all the machine drivers that select SND_ATMEL_SOC_SSC
-need to depend on ATMEL_SSC.
+Is there any plan to have configuration for mxs-sgtl5000 driver? What is 
+preferred way to solve this issue?
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/atmel/Kconfig |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+BR,
+Lauri Hintsala
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index a4d6742..72b09cf 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -9,7 +9,6 @@ config SND_ATMEL_SOC
- config SND_ATMEL_SOC_SSC
- 	tristate
- 	depends on SND_ATMEL_SOC
--	select ATMEL_SSC
- 	help
- 	  Say Y or M if you want to add support for codecs the
- 	  ATMEL SSC interface. You will also needs to select the individual
-@@ -27,7 +26,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 
- config SND_AT91_SOC_AFEB9260
- 	tristate "SoC Audio support for AFEB9260 board"
--	depends on ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
-+	depends on ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
- 	select SND_ATMEL_SOC_SSC
- 	select SND_SOC_TLV320AIC23
- 	help
--- 
-1.7.5.4
+p.s. I resent this mail because I wasn't subscriber of alsa-devel 
+mailing list.
