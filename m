@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: twl6040 - Add method to query
-	optimum PDM_DL1	gain
-Date: Tue, 10 Jan 2012 00:44:29 +0000
-Message-ID: <20120110004428.GL30766@opensource.wolfsonmicro.com>
-References: <1326111082-11678-1-git-send-email-lrg@ti.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: Fix recursive dependency for
+	SND_ATMEL_SOC_SSC
+Date: Mon,  9 Jan 2012 23:33:11 -0200
+Message-ID: <1326159191-11775-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BD70E244B2
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 01:44:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1326111082-11678-1-git-send-email-lrg@ti.com>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B9AA244D3
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 02:33:21 +0100 (CET)
+Received: by ggnf2 with SMTP id f2so5054ggn.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 17:33:20 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, axel.lin@gmail.com, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 09, 2012 at 12:11:22PM +0000, Liam Girdwood wrote:
-> The DL1 PDM interface adds a little gain depending on the output device.
-> Add a method to retrieve the gain value for machine driver usage.
+commit 739be96 (ASoC: Fix build dependency for SND_ATMEL_SOC_SSC) introduced the following
+recursive dependency:
 
-I'm having a hard time understanding how the machine driver would use
-this information...
+drivers/misc/Kconfig:212:error: recursive dependency detected!
+drivers/misc/Kconfig:212:	symbol ATMEL_SSC is selected by SND_ATMEL_SOC_SSC
+sound/soc/atmel/Kconfig:9:	symbol SND_ATMEL_SOC_SSC is selected by SND_AT91_SOC_SAM9G20_WM8731
+sound/soc/atmel/Kconfig:18:	symbol SND_AT91_SOC_SAM9G20_WM8731 depends on ATMEL_SSC
 
-> +int twl6040_get_dl1_gain(struct snd_soc_codec *codec)
-> +{
-> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
-> +
-> +	if (snd_soc_dapm_get_pin_status(dapm, "EP"))
-> +		return -1; /* -1dB */
+Fix it by moving ATMEL_SSC to the 'depends' line.
+ 
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+This applies against linux-next and doing a 'make randconfig' triggers the error.
 
-Shouldn't this be being done by reading the CODEC register settings to
-know which output DL1 is connected to?
+ sound/soc/atmel/Kconfig |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index a4d6742..509b152 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -8,8 +8,7 @@ config SND_ATMEL_SOC
+ 
+ config SND_ATMEL_SOC_SSC
+ 	tristate
+-	depends on SND_ATMEL_SOC
+-	select ATMEL_SSC
++	depends on SND_ATMEL_SOC && ATMEL_SSC
+ 	help
+ 	  Say Y or M if you want to add support for codecs the
+ 	  ATMEL SSC interface. You will also needs to select the individual
+-- 
+1.7.1
