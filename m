@@ -1,18 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: Fix recursive dependency for
-	SND_ATMEL_SOC_SSC
-Date: Mon,  9 Jan 2012 23:33:11 -0200
-Message-ID: <1326159191-11775-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v2] ASoC: Fix recursive dependency for
+	SND_AT91_SOC_SAM9G20_WM8731
+Date: Tue, 10 Jan 2012 00:05:22 -0200
+Message-ID: <1326161122-20717-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B9AA244D3
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 02:33:21 +0100 (CET)
-Received: by ggnf2 with SMTP id f2so5054ggn.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 17:33:20 -0800 (PST)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BABB1037EE
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2012 03:05:33 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so1896923ghb.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2012 18:05:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,22 +40,25 @@ Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
 This applies against linux-next and doing a 'make randconfig' triggers the error.
 
+Change since v1:
+
+- Get rid of the recursive errors by fixing SND_AT91_SOC_SAM9G20_WM8731
  sound/soc/atmel/Kconfig |    3 +--
  1 files changed, 1 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index a4d6742..509b152 100644
+index a4d6742..bb49b7d 100644
 --- a/sound/soc/atmel/Kconfig
 +++ b/sound/soc/atmel/Kconfig
-@@ -8,8 +8,7 @@ config SND_ATMEL_SOC
+@@ -17,8 +17,7 @@ config SND_ATMEL_SOC_SSC
  
- config SND_ATMEL_SOC_SSC
- 	tristate
--	depends on SND_ATMEL_SOC
--	select ATMEL_SSC
-+	depends on SND_ATMEL_SOC && ATMEL_SSC
+ config SND_AT91_SOC_SAM9G20_WM8731
+ 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+-	depends on ATMEL_SSC && ARCH_AT91SAM9G20 && SND_ATMEL_SOC && \
+-                   AT91_PROGRAMMABLE_CLOCKS
++	depends on ARCH_AT91SAM9G20 && AT91_PROGRAMMABLE_CLOCKS
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_SOC_WM8731
  	help
- 	  Say Y or M if you want to add support for codecs the
- 	  ATMEL SSC interface. You will also needs to select the individual
 -- 
 1.7.1
