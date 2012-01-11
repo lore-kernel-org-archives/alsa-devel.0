@@ -1,145 +1,171 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH V2 1/4] ARM: dt: tegra: Add Tegra APB DMA device tree binding
-Date: Wed, 11 Jan 2012 16:09:54 -0700
-Message-ID: <1326323397-23931-1-git-send-email-swarren@nvidia.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
-Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: [PATCH 1/4] snd-usb-6fire: remove driver version
+	information
+Date: Thu, 12 Jan 2012 00:15:28 +0100
+Message-ID: <134cf0e0191.-577657617600901807.-8896687299096855085@zoho.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AB4224759
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 00:15:31 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: tiwai <tiwai@suse.de>, clemens <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Document binding, and add the node to tegra*.dtsi.
+Remove unused driver version information from the individual files.
 
-The driver isn't actually instantiated from this node yet, but the I2S
-binding will rely on being able to refer to the APB DMA node using a
-phandle.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
-v2: Added this to tegra30.dtsi too. Fixed interrupt IDs. Fixed reg to
-include all the per-channel registers.
----
- .../devicetree/bindings/dma/tegra20-apbdma.txt     |   30 ++++++++++++++++
- arch/arm/boot/dts/tegra20.dtsi                     |   21 +++++++++++
- arch/arm/boot/dts/tegra30.dtsi                     |   37 ++++++++++++++++++++
- 3 files changed, 88 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/dma/tegra20-apbdma.txt
+Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
 
-diff --git a/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt b/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt
-new file mode 100644
-index 0000000..90fa7da
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/tegra20-apbdma.txt
-@@ -0,0 +1,30 @@
-+* NVIDIA Tegra APB DMA controller
-+
-+Required properties:
-+- compatible: Should be "nvidia,<chip>-apbdma"
-+- reg: Should contain DMA registers location and length. This shuld include
-+  all of the per-channel registers.
-+- interrupts: Should contain all of the per-channel DMA interrupts.
-+
-+Examples:
-+
-+apbdma: dma@6000a000 {
-+	compatible = "nvidia,tegra20-apbdma";
-+	reg = <0x6000a000 0x1200>;
-+	interrupts = < 0 136 0x04
-+		       0 137 0x04
-+		       0 138 0x04
-+		       0 139 0x04
-+		       0 140 0x04
-+		       0 141 0x04
-+		       0 142 0x04
-+		       0 143 0x04
-+		       0 144 0x04
-+		       0 145 0x04
-+		       0 146 0x04
-+		       0 147 0x04
-+		       0 148 0x04
-+		       0 149 0x04
-+		       0 150 0x04
-+		       0 151 0x04 >;
-+};
-diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-index 853a5c6..0a5d092 100644
---- a/arch/arm/boot/dts/tegra20.dtsi
-+++ b/arch/arm/boot/dts/tegra20.dtsi
-@@ -12,6 +12,27 @@
- 		      < 0x50040100 0x0100 >;
- 	};
+diff -Nur a/sound/usb/6fire/chip.c b/sound/usb/6fire/chip.c
+--- a/sound/usb/6fire/chip.c	2012-01-09 21:55:55.863579333 +0100
++++ b/sound/usb/6fire/chip.c	2012-01-09 22:33:49.857786986 +0100
+@@ -5,7 +5,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -29,7 +28,7 @@
+ #include <sound/initval.h>
  
-+	apbdma: dma@6000a000 {
-+		compatible = "nvidia,tegra20-apbdma";
-+		reg = <0x6000a000 0x1200>;
-+		interrupts = < 0 104 0x04
-+			       0 105 0x04
-+			       0 106 0x04
-+			       0 107 0x04
-+			       0 108 0x04
-+			       0 109 0x04
-+			       0 110 0x04
-+			       0 111 0x04
-+			       0 112 0x04
-+			       0 113 0x04
-+			       0 114 0x04
-+			       0 115 0x04
-+			       0 116 0x04
-+			       0 117 0x04
-+			       0 118 0x04
-+			       0 119 0x04 >;
-+	};
-+
- 	i2c@7000c000 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 368cbb3..537953a 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -12,6 +12,43 @@
- 		      < 0x50040100 0x0100 >;
- 	};
+ MODULE_AUTHOR("Torsten Schenk <torsten.schenk@zoho.com>");
+-MODULE_DESCRIPTION("TerraTec DMX 6Fire USB audio driver, version 0.3.0");
++MODULE_DESCRIPTION("TerraTec DMX 6Fire USB audio driver");
+ MODULE_LICENSE("GPL v2");
+ MODULE_SUPPORTED_DEVICE("{{TerraTec, DMX 6Fire USB}}");
  
-+	apbdma: dma@6000a000 {
-+		compatible = "nvidia,tegra30-apbdma", "nvidia,tegra20-apbdma";
-+		reg = <0x6000a000 0x1400>;
-+		interrupts = < 0 104 0x04
-+			       0 105 0x04
-+			       0 106 0x04
-+			       0 107 0x04
-+			       0 108 0x04
-+			       0 109 0x04
-+			       0 110 0x04
-+			       0 111 0x04
-+			       0 112 0x04
-+			       0 113 0x04
-+			       0 114 0x04
-+			       0 115 0x04
-+			       0 116 0x04
-+			       0 117 0x04
-+			       0 118 0x04
-+			       0 119 0x04
-+			       0 128 0x04
-+			       0 129 0x04
-+			       0 130 0x04
-+			       0 131 0x04
-+			       0 132 0x04
-+			       0 133 0x04
-+			       0 134 0x04
-+			       0 135 0x04
-+			       0 136 0x04
-+			       0 137 0x04
-+			       0 138 0x04
-+			       0 139 0x04
-+			       0 140 0x04
-+			       0 141 0x04
-+			       0 142 0x04
-+			       0 143 0x04 >;
-+	};
-+
- 	i2c@7000c000 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--- 
-1.7.0.4
+diff -Nur a/sound/usb/6fire/chip.h b/sound/usb/6fire/chip.h
+--- a/sound/usb/6fire/chip.h	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/chip.h	2012-01-09 22:33:38.469409108 +0100
+@@ -3,7 +3,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
+--- a/sound/usb/6fire/comm.c	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/comm.c	2012-01-09 22:33:11.620517902 +0100
+@@ -5,7 +5,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/comm.h b/sound/usb/6fire/comm.h
+--- a/sound/usb/6fire/comm.h	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/comm.h	2012-01-09 22:33:16.900693132 +0100
+@@ -3,7 +3,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/common.h b/sound/usb/6fire/common.h
+--- a/sound/usb/6fire/common.h	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/common.h	2012-01-09 22:33:24.636949983 +0100
+@@ -3,7 +3,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/control.c b/sound/usb/6fire/control.c
+--- a/sound/usb/6fire/control.c	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/control.c	2012-01-09 22:33:01.512182294 +0100
+@@ -5,7 +5,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/control.h b/sound/usb/6fire/control.h
+--- a/sound/usb/6fire/control.h	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/control.h	2012-01-09 22:32:56.088002206 +0100
+@@ -3,7 +3,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+--- a/sound/usb/6fire/firmware.c	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/firmware.c	2012-01-09 22:33:30.933158868 +0100
+@@ -5,7 +5,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/midi.c b/sound/usb/6fire/midi.c
+--- a/sound/usb/6fire/midi.c	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/midi.c	2012-01-09 22:35:07.356357430 +0100
+@@ -5,7 +5,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/midi.h b/sound/usb/6fire/midi.h
+--- a/sound/usb/6fire/midi.h	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/midi.h	2012-01-09 22:33:58.866085888 +0100
+@@ -3,7 +3,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/pcm.c b/sound/usb/6fire/pcm.c
+--- a/sound/usb/6fire/pcm.c	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/pcm.c	2012-01-09 22:34:04.546274285 +0100
+@@ -5,7 +5,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
+diff -Nur a/sound/usb/6fire/pcm.h b/sound/usb/6fire/pcm.h
+--- a/sound/usb/6fire/pcm.h	2012-01-09 21:55:55.000000000 +0100
++++ b/sound/usb/6fire/pcm.h	2012-01-09 22:34:07.798382278 +0100
+@@ -3,7 +3,6 @@
+  *
+  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
+  * Created:	Jan 01, 2011
+- * Version:	0.3.0
+  * Copyright:	(C) Torsten Schenk
+  *
+  * This program is free software; you can redistribute it and/or modify
