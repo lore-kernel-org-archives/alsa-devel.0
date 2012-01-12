@@ -1,95 +1,86 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing iounmap
-Date: Thu, 12 Jan 2012 12:45:50 +0200
-Message-ID: <20120112104549.GA3549@legolas.emea.dhcp.ti.com>
-References: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
-Reply-To: balbi@ti.com
+From: Cefn Hoile <alsa-project.org@cefn.com>
+Subject: Re: Dell N5110 HDA External Speaker is mute
+Date: Thu, 12 Jan 2012 10:52:57 +0000
+Message-ID: <CA+P0tC_Pnx_JTE7dfiH+PY+hCf-wVsY+vp9H_KVdHpOz5uxgEw@mail.gmail.com>
+References: <CA+P0tC_jvOyEsbmZoF5oJZ9k6DA3FRaHCbq+xP3axw+jgLaQ8w@mail.gmail.com>
+	<s5h4nw1fbxj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Liam Girdwood <lrg@ti.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-tul01m020-f179.google.com (mail-tul01m020-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8290224808
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 11:52:58 +0100 (CET)
+Received: by obbuo13 with SMTP id uo13so562971obb.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 02:52:57 -0800 (PST)
+In-Reply-To: <s5h4nw1fbxj.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for your interest, Takashi.
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The alsa disgnostic script output was already linked (but a bit hidden
+in all the noise) in the downstream bug report...
 
-Hi,
+http://www.alsa-project.org/db/?f=3D039be3036a03f707edc130bbc63b5063619e5755
 
-On Thu, Jan 12, 2012 at 10:55:03AM +0100, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
->=20
-> Add missing iounmap in error handling code, in a case where the function
-> already preforms iounmap on some other execution path.
->=20
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
->=20
-> // <smpl>
-> @@
-> expression e;
-> statement S,S1;
-> int ret;
-> @@
-> e =3D \(ioremap\|ioremap_nocache\)(...)
-> ... when !=3D iounmap(e)
-> if (<+...e...+>) S
-> ... when any
->     when !=3D iounmap(e)
-> *if (...)
->    { ... when !=3D iounmap(e)
->      return ...; }
-> ... when any
-> iounmap(e);
-> // </smpl>
->=20
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Cefn
+http://cefn.com
 
-This is not related to this patch actually, but when you send a series
-of patches could you make sure to send them all as a thread ? It makes
-it easier (at least for me) to see that those are all related to each
-other (in your case, sematich patches).
-
-In order to do that with git you could:
-
-$ git format-patch -o patches --cover-letter linus/master
-
-[ edit cover letter]
-
-$ git send-email --to lkml patches/
-
-that will do the trick. Thanks
-
---=20
-balbi
-
---dDRMvlgZJXvWKvBx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPDrndAAoJEIaOsuA1yqREORoP/0IcRn+/KvjBvyn6Sp3S2kLQ
-eWz3BoyriEZioRjmNXc2NIYH6+8A2Z/V4nH2z608r+vMor9Kfck+5RxDcuqRhHde
-E4KWaz1BJ2llOq3P18IpsU6I/KIJlk9bpBK2a/lKCcR54iqdIDe/leuMOoX7Tdy6
-efV4l1ylPK5G83yGGtMDiTl++R0rcfCHCz/b6AmBZ7kqBXIDq/tL0zaTYHAPWCjF
-lx8HLk/WlRombimVO2jF4+SjoBMFYohI1kb5/D15YDKzvIioRknFZULkJPQlczMP
-iJb0fe2phB1A0icfvgVjcC6vXfudUdW7GaO9oLlNA8FROHUYAHyGI/ZSbZicZr8g
-9gmVzqOqH1afZoWKm/zoboJqsGfCEiwJ3qexy/vldoYiJBLFklKmaOEK60iyl5qp
-+tpWQTV/Mifut+OSb/LvndwDp2A9pvRbzUr6063PO6YqFlrZUnhetrVAICREkFMX
-Z4EgT8h6dtklePG3vypu9474aSva/GRjI9WbJw0qWs9/54JMngMbsqAyZ0F9+o0l
-owGL2/4e/cZZe/3dnJVlDksLCHJeGFVEoQOAD9eJsPt1SUiv8UemNbl5eTXTSnAZ
-hY3zHPZ8QU4WCxA9Rm/j7jB4OP1JRRa0UpVECICenVd56nJ5xtVTSdHrEkwBqfrt
-5WN+okbq74B/P/jfGvLO
-=LvWk
------END PGP SIGNATURE-----
-
---dDRMvlgZJXvWKvBx--
+On 12 January 2012 10:32, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 11 Jan 2012 00:56:18 +0000,
+> Cefn Hoile wrote:
+>>
+>> I'd like to report an issue experienced with the latest Oneiric, Dell
+>> N5110, and IDT STAC92HD87 which has been explored through quite a few
+>> steps already, and seems to have bottomed out to a set of
+>> pins/controls/flags which are not being properly managed in order to
+>> toggle speaker activation when a headphone is inserted.
+>>
+>> So far, I haven't heard sound from my speakers at all, although within
+>> Alsamixer, the Speaker volume is visibly toggled from 100% to MM
+>> (mute) on headphone insertion.
+>>
+>> I've tried every model against snd-hda-intel, many different other
+>> options, and started to explore the HDA Analyzer, which includes
+>> controls named like this...
+>>
+>> Node 0x13 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+>> =A0 Device: name=3D"STAC92xx Analog", type=3D"Audio", device=3D0
+>> =A0 Control: name=3D"Speaker Playback Volume", index=3D0, device=3D0
+>> =A0 =A0 ControlAmp: chs=3D3, dir=3D1, idx=3D0, ofs=3D63
+>> =A0 Control: name=3D"Speaker Playback Switch", index=3D0, device=3D0
+>> =A0 =A0 ControlAmp: chs=3D3, dir=3D1, idx=3D0, ofs=3D0
+>> =A0 Amp-Out caps: ofs=3D0x7f, nsteps=3D0x7f, stepsize=3D0x02, mute=3D1
+>> =A0 Amp-Out vals: [0x7f 0x7f]
+>> =A0 Converter: stream=3D5, channel=3D0
+>> =A0 Power: setting=3DD0, actual=3DD0
+>> =A0 Delay: 13 samples
+>>
+>> ...but toggling these checkboxes within the HDA Analyzer gui doesn't
+>> trigger any sound from the speakers either. It could be a rich
+>> combination of the very many checkboxes and sliders which are revealed
+>> by the Analyzer, but I don't really know where to start. The bug
+>> information downstream is here...
+>>
+>> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/914290
+>>
+>> I'd really welcome suggestions for what else to try and happy to
+>> invest time exploring options to try and make ALSA better still.
+>
+> Could you give alsa-info.sh output for checking the mixer and register
+> states?
+>
+>
+> Takashi
