@@ -1,15 +1,15 @@
 From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: Re: [PATCH 2/4] snd-usb-6fire: add individual volume
- control for analog channels
-Date: Thu, 12 Jan 2012 10:02:58 +0100
-Message-ID: <134d127df60.633262844244093947.2863191508683130170@zoho.com>
+Subject: Re: [PATCH 4/4] snd-usb-6fire: add analog input volume
+	control
+Date: Thu, 12 Jan 2012 10:17:24 +0100
+Message-ID: <134d13514f7.-5018115515449834943.-612702814653695676@zoho.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2D43103B51
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 10:03:02 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D2151103B54
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 10:17:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,51 +23,23 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, clemens <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAxMiBKYW4gMjAxMiAwNzo0MjoxOSArMDEwMFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
-ZS5kZT4gd3JvdGU6Cj4gQXQgVGh1LCAxMiBKYW4gMjAxMiAwMDoxNTo1NiArMDEwMCw+IFRvcnN0
-ZW4gU2NoZW5rIHdyb3RlOj4gPsKgPiA+IMKgLyo+ID4gLSAqIGNhbGN1bGF0ZWQgd2l0aCAkdmFs
-dWVcW2lcXSA9IDEyOCBcY2RvdCBzcXJ0WzNde1xmcmFje2l9ezEyOH19JD4gPiAtICogdGhpcyBp
-cyBkb25lIGJlY2F1c2UgdGhlIGxpbmVhciB2YWx1ZXMgY2F1c2UgcmFwaWQgZGVncmVkYXRpb24+
-ID4gLSAqIG9mIHZvbHVtZSBpbiB0aGUgdXBwZXJtb3N0IHJlZ2lvbi4+ID4gLSAqLz4gPiAtc3Rh
-dGljIGNvbnN0IHU4IGxvZ192b2x1bWVfdGFibGVbMTI4XSA9IHs+ID4gLQkweDAwLCAweDE5LCAw
-eDIwLCAweDI0LCAweDI4LCAweDJiLCAweDJlLCAweDMwLCAweDMyLCAweDM0LD4gPiAtCTB4MzYs
-IDB4MzgsIDB4M2EsIDB4M2IsIDB4M2QsIDB4M2UsIDB4NDAsIDB4NDEsIDB4NDIsIDB4NDMsPiA+
-IC0JMHg0NCwgMHg0NiwgMHg0NywgMHg0OCwgMHg0OSwgMHg0YSwgMHg0YiwgMHg0YywgMHg0ZCwg
-MHg0ZSw+ID4gLQkweDRlLCAweDRmLCAweDUwLCAweDUxLCAweDUyLCAweDUzLCAweDUzLCAweDU0
-LCAweDU1LCAweDU2LD4gPiAtCTB4NTYsIDB4NTcsIDB4NTgsIDB4NTgsIDB4NTksIDB4NWEsIDB4
-NWIsIDB4NWIsIDB4NWMsIDB4NWMsPiA+IC0JMHg1ZCwgMHg1ZSwgMHg1ZSwgMHg1ZiwgMHg2MCwg
-MHg2MCwgMHg2MSwgMHg2MSwgMHg2MiwgMHg2Miw+ID4gLQkweDYzLCAweDYzLCAweDY0LCAweDY1
-LCAweDY1LCAweDY2LCAweDY2LCAweDY3LCAweDY3LCAweDY4LD4gPiAtCTB4NjgsIDB4NjksIDB4
-NjksIDB4NmEsIDB4NmEsIDB4NmIsIDB4NmIsIDB4NmMsIDB4NmMsIDB4NmMsPiA+IC0JMHg2ZCwg
-MHg2ZCwgMHg2ZSwgMHg2ZSwgMHg2ZiwgMHg2ZiwgMHg3MCwgMHg3MCwgMHg3MCwgMHg3MSw+ID4g
-LQkweDcxLCAweDcyLCAweDcyLCAweDczLCAweDczLCAweDczLCAweDc0LCAweDc0LCAweDc1LCAw
-eDc1LD4gPiAtCTB4NzUsIDB4NzYsIDB4NzYsIDB4NzcsIDB4NzcsIDB4NzcsIDB4NzgsIDB4Nzgs
-IDB4NzgsIDB4NzksPiA+IC0JMHg3OSwgMHg3YSwgMHg3YSwgMHg3YSwgMHg3YiwgMHg3YiwgMHg3
-YiwgMHg3YywgMHg3YywgMHg3Yyw+ID4gLQkweDdkLCAweDdkLCAweDdkLCAweDdlLCAweDdlLCAw
-eDdlLCAweDdmLCAweDdmIH07PsKgPiBTbywgd2l0aCB0aGUgbmV3IGltcGxlbWVudGF0aW9uLCB5
-b3UgZG9uJ3QgbmVlZCB0aGUgbGluZWFyIC0+IGRCPiBjb252ZXJzaW9uP0kgZGVjaWRlZCB0byBj
-aGFuZ2UgdGhlIHZvbHVtZSBzbGlkZXIgYmVoYXZpb3VyIGJlY2F1c2Ugb2YgdGhlYWRkaXRpb25h
-bCBpbmZvcm1hdGlvbiBJIGdvdCBvbiB0aGUgREFDLiBPbiB0aGUgb3RoZXIgaGFuZCBpdCBzZWVt
-c3JlYXNvbmFibGUgdG8gZG8gdGhhdCBpbiBhIHNlcGFyYXRlIHBhdGNoLiBJIGNvdWxkIGRvIHNv
-IGluIG15IG5leHRzdWJtaXQuCj7CoD4gPiDCoAkJLmFjY2VzcyA9IFNORFJWX0NUTF9FTEVNX0FD
-Q0VTU19SRUFEV1JJVEUsPiA+IC0JCS5pbmZvID0gdXNiNmZpcmVfY29udHJvbF9tYXN0ZXJfdm9s
-X2luZm8sPiA+IC0JCS5nZXQgPSB1c2I2ZmlyZV9jb250cm9sX21hc3Rlcl92b2xfZ2V0LD4gPiAt
-CQkucHV0ID0gdXNiNmZpcmVfY29udHJvbF9tYXN0ZXJfdm9sX3B1dD4gPiArCQkuaW5mbyA9IHVz
-YjZmaXJlX2NvbnRyb2xfb3V0cHV0X3ZvbF9pbmZvLD4gPiArCQkuZ2V0ID0gdXNiNmZpcmVfY29u
-dHJvbF9vdXRwdXRfdm9sX2dldCw+ID4gKwkJLnB1dCA9IHVzYjZmaXJlX2NvbnRyb2xfb3V0cHV0
-X3ZvbF9wdXQsPiA+ICsJCS5wcml2YXRlX3ZhbHVlID0gMT4gPiDCoAl9LD4gPiDCoAl7PiA+IMKg
-CQkuaWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUiw+ID4gKwkJLm5hbWUgPSAiT3V0
-cHV0IDUvNiBQbGF5YmFjayBWb2x1bWUiLD4gPiArCQkuaW5kZXggPSAwLD4gPiArCQkuYWNjZXNz
-ID0gU05EUlZfQ1RMX0VMRU1fQUNDRVNTX1JFQURXUklURSw+ID4gKwkJLmluZm8gPSB1c2I2Zmly
-ZV9jb250cm9sX291dHB1dF92b2xfaW5mbyw+ID4gKwkJLmdldCA9IHVzYjZmaXJlX2NvbnRyb2xf
-b3V0cHV0X3ZvbF9nZXQsPiA+ICsJCS5wdXQgPSB1c2I2ZmlyZV9jb250cm9sX291dHB1dF92b2xf
-cHV0LD4gPiArCQkucHJpdmF0ZV92YWx1ZSA9IDI+ID4gKwl9PiA+ICt9Oz7CoD4gQWRkIHRoZSB0
-ZXJtaW5hdG9yIGluIHRoaXMgcGF0Y2guIMKgSSBrbm93IHlvdSBmaXhlZCBpbiB0aGUgbGFzdCBw
-YXRjaD4gYnV0LCBJbiBnZW5lcmFsLCB0cnkgbm90IHRvIGludHJvZHVjZSBhIGJ1ZyBpbiBlYWNo
-IGNvbW1pdC4gwqBPdGhlcndpc2U+IGl0J2xsIG1ha2UgYmlzZWN0aW9uIGRpZmZpY3VsdC5UaGF0
-J3MgcmlnaHQsIEkndmUgb3ZlcnNlZW4gdGhpcyBwcm9ibGVtIGluIHRoZSBmaXJzdCBwbGFjZSBh
-bmRzdHVtYmxlZCB1cG9uIGl0IGFmdGVyIHBhdGNoIDIgYW5kIDMgaGF2ZSBhbHJlYWR5IGJlZW4g
-c2VudC4KVGhhbmtzLFRvcnN0ZW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+> >  static struct __devinitdata snd_kcontrol_new elements[] = {
+> > @@ -442,6 +497,15 @@
+> >  		.get = usb6fire_control_digital_thru_get,
+> >  		.put = usb6fire_control_digital_thru_put
+> >  	},
+> > +	{
+> > +		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> > +		.name = "Input 1/2 Capture Volume",
+> > +		.index = 0,
+> 
+> If this is the only volume element, you don't need to add "1/2", no?
+
+The problem is, that there is only an input control for 2 out of 4
+analog input channels since channel 3 and 4 use a different ADC and
+there doesn't seem to be a volume control on that chip. Since this
+control only changes volume of channel 1 and 2, I wanted to have an
+indication about that.
+
+Thanks,
+Torsten
