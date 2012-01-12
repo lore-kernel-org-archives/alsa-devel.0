@@ -1,15 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.3
-Date: Thu, 12 Jan 2012 00:38:12 -0800
-Message-ID: <20120112083811.GB1176@opensource.wolfsonmicro.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: Exporting playback and capture capability to user
+ space
+Date: Thu, 12 Jan 2012 14:15:04 +0530
+Message-ID: <4F0E9D90.1060908@st.com>
+References: <4E65E934.2070706@st.com>
+	<20110906180138.GC2924@opensource.wolfsonmicro.com>
+	<4E66EFC3.2070706@st.com> <4EC50DB2.6090009@st.com>
+	<4EC9E656.1050706@st.com> <1321856626.1516.208.camel@vkoul-udesk3>
+	<4ECB24C7.4080908@st.com> <4ED8AD60.6060000@st.com>
+	<4F0A89CD.9000602@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89D51103B37
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 09:38:17 +0100 (CET)
-Content-Disposition: inline
+Received: from eu1sys200aog120.obsmtp.com (eu1sys200aog120.obsmtp.com
+	[207.126.144.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 21F8F103B51
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 09:45:24 +0100 (CET)
+In-Reply-To: <4F0A89CD.9000602@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,49 +27,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit d6b24507972341e5babdca8e25448325c9137232:
+Hello Mark
 
-  Merge branch 'for-3.3' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc into topic/asoc (2012-01-11 15:30:53 +0100)
+On 1/9/2012 12:01 PM, Rajeev kumar wrote:
+> On 12/2/2011 4:20 PM, Rajeev kumar wrote:
+>> Hello Vinod,
+>>
+>> On 11/22/2011 9:57 AM, Rajeev kumar wrote:
+>>> Hello Vinod, Mark
+>>>
+>>>
+>>> On 11/21/2011 11:53 AM, Vinod Koul wrote:
+>>>> On Mon, 2011-11-21 at 11:19 +0530, Rajeev kumar wrote:
+>>>>> Hello Mark
+>>>>>
+>>>>> Could you please help me by answering these questions?
+>>>>>
+>>>>> Best Regards
+>>>>> Rajeev
+>>>>>
+>>>> Pls don't top-post!!
+>>>>> On 11/17/2011 7:05 PM, Rajeev kumar wrote:
+>>>>>> Hello Mark
+>>>>>>
+>>>>>> I have a single codec with playback and capture capability. We are
+>>>>>> using
+>>>>>> it for different i2s controller. Below are the details for that.
+>>>>>>
+>>>>>> case 1: I2S controller-1: with playback and capture capability
+>>>>>> case 2: I2S controller-2: with playback capability only
+>>>>>> case 3: I2S controller-3: with capture capability only.
+>>>>>>
+>>>>>> We are registering all the I2S controller with there respective
+>>>>>> capability.
+>>>>>>
+>>>>>> In command 'aplay -l' or 'cat /proc/asound/pcm', among playback
+>>>>>> devices,
+>>>>>> capture device is also listed. This is true in case-1 but for case-2
+>>>>>> and
+>>>>>> case-3 also it is showing the same behavior. According to my
+>>>>>> understanding it should not show the list of all devices i.e. in
+>>>>>> case of
+>>>>>> controller having playback capability it should show only playback
+>>>>>> devices not capture devices and vice versa. Please correct me if I am
+>>>>>> wrong.
+>>>>>>
+>>>>>> So my questions are
+>>>>>> 1. How to separate playback and capture devices in case-2 and case-3.
+>>>>>> Are we need to register different codec for different i2s controller?
+>>>> How asoc builds this is based on dailinks you have provided. If for the
+>>>> device 2 and device 3 the cpu and codec dais support both playback and
+>>>> capture devices, it will go ahead and register these device.
+>>>> The fact that for device 2 and device 3 capture is also registered
+>>>> suggests me that your cpu dais are not correct.
+>>>>
+>>>> Would help if you post your code, esp the codec, cpu dais and dialinks.
+>>>>
+>>>
+>>> Codec dai:
+>>>
+>>> static struct snd_soc_dai_driver sta529_dai = {
+>>> .name = "sta529-audio",
+>>> .playback = {
+>>> .stream_name = "Playback",
+>>> .channels_min = 2,
+>>> .channels_max = 2,
+>>> .rates = SPEAR_PCM_RATES,
+>>> .formats = SPEAR_PCM_FORMAT,
+>>> },
+>>> .capture = {
+>>> .stream_name = "Capture",
+>>> .channels_min = 2,
+>>> .channels_max = 2,
+>>> .rates = SPEAR_PCM_RATES,
+>>> .formats = SPEAR_PCM_FORMAT,
+>>> },
+>>> .ops = &sta529_dai_ops,
+>>> };
+>>>
+>>> cpu dai: In case of cpu dai, we are passing the playback and capture
+>>> capability from the platform code and depending on the capability we are
+>>> filling the cpu dai structure in probe function, like
+>>>
+>>> if (cap & PLAY) {
+>>>
+>>> /* Fill Playback capability */
+>>> }
+>>>
+>>> if (cap & RECORD) {
+>>> /* Fill Capture capability */
+>>> }
+>>>
+>>> dai links:
+>>>
+>>> static struct snd_soc_dai_link spear_evb_dai[] = {
+>>> {
+>>> .name = "sta529-pcm0",
+>>> .stream_name = "I2S Playback",
+>>> .cpu_dai_name = "designware-i2s.0",
+>>> .platform_name = "spear-pcm-audio",
+>>> .codec_dai_name = "sta529-audio",
+>>> .codec_name = "sta529-codec.0-001a",
+>>> .ops = &sta529_ops,
+>>> }, {
+>>> .name = "sta529-pcm1",
+>>> .stream_name = "I2S Capture",
+>>> .cpu_dai_name = "designware-i2s.1",
+>>> .platform_name = "spear-pcm-audio",
+>>> .codec_dai_name = "sta529-audio",
+>>> .codec_name = "sta529-codec.0-001a",
+>>> .ops = &sta529_ops,
+>>> },
+>>> };
+>>>
+>>> static struct snd_soc_card spear_snd_card = {
+>>> .name = "spear-evb",
+>>> .dai_link = spear_evb_dai,
+>>> .num_links = ARRAY_SIZE(spear_evb_dai),
+>>> };
+>>>
+>>
+>> I had actually missed the last mail by mark. I dont know why? . So sorry
+>> for replying on the top of this mail.
+>>
+>> Vinod, have you gone through the cpu_dai, codec_dai and dailink ? Could
+>> you please make any suggestion?
+>>
+>
+> Ping
+>
 
-are available in the git repository at:
+The o/p of the cat /proc/asound/pcm does not depends on the &ing of the 
+capability of i2s controller and codec. I was going through the 
+soc-core.c and it seems that the capability exposed to user space only 
+depends on the codec. If codec has both playback and capture capability 
+,then in user space both will be exported and hence cat /proc/asound/pcm 
+will show two different devices one for playback and other for capture. 
+In case codec has only playback capability, the o/p of the cat 
+/proc/asound/pcm will contain only playback device.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.3
+So in case of three different i2s controller with different capability, 
+separate codec are required.
 
-The MFD patch is an incremental patch on top of the WM8994 changes being
-carried by ASoC this merge window.
+Please correct me if I am wrong.
 
-Axel Lin (2):
-      ASoC: Fix build dependency for SND_ATMEL_SOC_SSC
-      ASoC: Fix recursive dependency due to select ATMEL_SSC in SND_ATMEL_SOC_SSC
+Best Regards
+Rajeev
 
-Joachim Eastwood (1):
-      ASoC: check for substream not channels_min in pcm engines
-
-Mark Brown (3):
-      ASoC: Fix idma build after update for channel count check
-      mfd: Put WM8994 into cache only mode when suspending
-      ASoC: Dynamically allocate the rtd device for a non-empty release()
-
- drivers/mfd/wm8994-core.c           |    2 +
- include/sound/soc.h                 |    6 ++--
- sound/soc/atmel/Kconfig             |    2 +-
- sound/soc/atmel/atmel-pcm.c         |    5 +--
- sound/soc/blackfin/bf5xx-ac97-pcm.c |    5 +--
- sound/soc/blackfin/bf5xx-i2s-pcm.c  |    5 +--
- sound/soc/blackfin/bf5xx-tdm-pcm.c  |    5 +--
- sound/soc/davinci/davinci-pcm.c     |    5 +--
- sound/soc/ep93xx/ep93xx-pcm.c       |    5 +--
- sound/soc/jz4740/jz4740-pcm.c       |    5 +--
- sound/soc/kirkwood/kirkwood-dma.c   |    5 +--
- sound/soc/mid-x86/sst_platform.c    |    5 +--
- sound/soc/omap/omap-pcm.c           |    5 +--
- sound/soc/samsung/dma.c             |    5 +--
- sound/soc/samsung/idma.c            |    4 +-
- sound/soc/soc-core.c                |   44 +++++++++++++++++++---------------
- sound/soc/soc-dapm.c                |    3 +-
- sound/soc/tegra/tegra_pcm.c         |    5 +--
- 18 files changed, 58 insertions(+), 63 deletions(-)
+>> Best Regards
+>> ~Rajeev
+>>
+>>
+>>
+>>> Best Regards
+>>> ~Rajeev
+>>
+>
