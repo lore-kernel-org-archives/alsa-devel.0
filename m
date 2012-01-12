@@ -1,17 +1,17 @@
-From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: Re: Trying to understand alsa
-Date: Thu, 12 Jan 2012 16:12:18 -0600
-Message-ID: <20120112221218.GE24575@foghorn.codeweavers.com>
-References: <1326404651.22083.28.camel@jonspc>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: duplicated test in sound/soc/codecs/sgtl5000.c
+Date: Thu, 12 Jan 2012 22:28:02 +0000
+Message-ID: <20120112222759.GA23716@opensource.wolfsonmicro.com>
+References: <alpine.DEB.2.00.1201122210520.25187@pl-59034.rocq.inria.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id A770424398
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 23:12:24 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A6BF7243B0
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 23:28:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1326404651.22083.28.camel@jonspc>
+In-Reply-To: <alpine.DEB.2.00.1201122210520.25187@pl-59034.rocq.inria.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jonathan Andrews <jon@jonshouse.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Julia Lawall <julia.lawall@lip6.fr>, Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 12, 2012 at 09:44:11PM +0000, Jonathan Andrews wrote:
-> I have an application that works using 512 sample packets of 22050Hz 16
-> bit mono audio.  The 'receiver' takes many audio streams from a network
-> via UDP, at the moment it pipes them into pulse.
-> 
-> Can alsa buffer audio. At the moment every time I and set an audio
-> buffer size I get a negative response from
-> snd_pcm_hw_params_set_buffer_size .  I'm somewhat confused about the
-> units alsa uses ...
-> 
+On Thu, Jan 12, 2012 at 10:13:24PM +0100, Julia Lawall wrote:
+> There is a duplicated test in the function sgtl5000_restore_regs in the  
+> file sound/soc/codecs/sgtl5000.c:
 
-You don't want to over-specify your requirements. You require a buffer
-size of "at least" 3 * 512 frames. So use set_buffer_size_min().
-Otherwise ALSA will try to set exactly that buffer size, which can
-fail.
+>                /* this regs depends on the others */
+>                 if (reg == SGTL5000_CHIP_ANA_POWER ||
+>                         reg == SGTL5000_CHIP_CLK_CTRL ||
+>                         reg == SGTL5000_CHIP_LINREG_CTRL ||
+>                         reg == SGTL5000_CHIP_LINE_OUT_CTRL ||
+>                         reg == SGTL5000_CHIP_CLK_CTRL)
+>                         continue;
 
-Check the function signatures for units. Notice that
-set_buffer_size*() all take snd_pcm_uframes_t, that is, the number of
-frames you want to store. In ALSA terms, a "frame" is a set of a
-single sample for every channel. Since you have mono audio, a frame
-and a sample are actually the same unit (for 16 bit stereo audio,
-1 frame = 2 samples = 32 bits).
+> I don't know if some constant other than SGTL5000_CHIP_CLK_CTRL should be 
+> tested, or if the second test should just be deleted.
 
-> What I want to do is tell ALSA to hold a buffer of 3 of my packets (3 x
-> 1024Bytes, thats 512 x 16 bit samples) while I feed extra packets (1K
-> Byte, 512 samples per buffer) in for playback.  The packets are arriving
-> at roughly the correct rate, I just need a buffer to  iron out any
-> jitter in network transmit, do I have to do this myself ?
-> 
-> Can somebody help by telling me which numbers I push into which places
-> to make it work ?
-> 
-> At the moment I get i keep getting a broken pipe, if I underrun how can
-> I make it just wait for me ?
-> 
-
-If a packet arrives very late (and one will, eventually), you will
-underrun.  That's unavoidable. You can check for SND_PCM_STATE_XRUN
-from snd_pcm_state().  It's undocumented, but you need to call
-snd_pcm_avail_update() first to get an accurate reading from
-snd_pcm_state(). When an underrun occurs, recover with
-snd_pcm_recover() and then start writing data again.
-
-If a packet arrives early, you'll need to check that the ALSA buffer
-isn't full (see snd_pcm_avail_update()), and store it within your
-application to write later if it is full.
-
-There's some mostly-accurate information here:
-http://0pointer.de/blog/projects/guide-to-sound-apis.html
-As with all ALSA documentation, it is confusing and often incorrect,
-but it's probably the most helpful document I've found.
-
-Good luck!
-
-Andrew
+Adding the people who've been working on the driver.  Generally this is
+a good idea when reporting issues like this.
