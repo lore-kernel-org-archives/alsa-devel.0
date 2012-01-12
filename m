@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Use regmap update bits operation for
-	drivers using regmap
-Date: Thu, 12 Jan 2012 00:32:46 -0800
-Message-ID: <1326357167-891-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.3
+Date: Thu, 12 Jan 2012 00:38:12 -0800
+Message-ID: <20120112083811.GB1176@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 658C5247E6
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 09:32:51 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89D51103B37
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 09:38:17 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,132 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-If a driver is using regmap directly ensure that we're coherent with
-non-ASoC register updates by using the regmap API directly to do our
-read/modify/write cycles. This will bypass the ASoC cache but drivers
-using regmap directly should not be using the ASoC cache.
+The following changes since commit d6b24507972341e5babdca8e25448325c9137232:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    1 +
- sound/soc/soc-core.c |   25 +++++++++++++++----------
- sound/soc/soc-dapm.c |   27 +++++++++++++++++----------
- sound/soc/soc-io.c   |    1 +
- 4 files changed, 34 insertions(+), 20 deletions(-)
+  Merge branch 'for-3.3' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc into topic/asoc (2012-01-11 15:30:53 +0100)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0992dff..fde163b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -559,6 +559,7 @@ struct snd_soc_codec {
- 	unsigned int ac97_created:1; /* Codec has been created by SoC */
- 	unsigned int sysfs_registered:1; /* codec has been sysfs registered */
- 	unsigned int cache_init:1; /* codec cache has been initialized */
-+	unsigned int using_regmap:1; /* using regmap access */
- 	u32 cache_only;  /* Suppress writes to hardware */
- 	u32 cache_sync; /* Cache needs to be synced to hardware */
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3986520..07ab062e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1865,23 +1865,28 @@ EXPORT_SYMBOL_GPL(snd_soc_bulk_write_raw);
- int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
- 				unsigned int mask, unsigned int value)
- {
--	int change;
-+	bool change;
- 	unsigned int old, new;
- 	int ret;
- 
--	ret = snd_soc_read(codec, reg);
--	if (ret < 0)
--		return ret;
--
--	old = ret;
--	new = (old & ~mask) | (value & mask);
--	change = old != new;
--	if (change) {
--		ret = snd_soc_write(codec, reg, new);
-+	if (codec->using_regmap) {
-+		ret = regmap_update_bits_check(codec->control_data, reg,
-+					       mask, value, &change);
-+	} else {
-+		ret = snd_soc_read(codec, reg);
- 		if (ret < 0)
- 			return ret;
-+
-+		old = ret;
-+		new = (old & ~mask) | (value & mask);
-+		change = old != new;
-+		if (change)
-+			ret = snd_soc_write(codec, reg, new);
- 	}
- 
-+	if (ret < 0)
-+		return ret;
-+
- 	return change;
- }
- EXPORT_SYMBOL_GPL(snd_soc_update_bits);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 3ad1f59..3b8eaa8 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -197,21 +197,28 @@ static int soc_widget_write(struct snd_soc_dapm_widget *w, int reg, int val)
- static int soc_widget_update_bits(struct snd_soc_dapm_widget *w,
- 	unsigned short reg, unsigned int mask, unsigned int value)
- {
--	int change;
-+	bool change;
- 	unsigned int old, new;
- 	int ret;
- 
--	ret = soc_widget_read(w, reg);
--	if (ret < 0)
--		return ret;
--
--	old = ret;
--	new = (old & ~mask) | (value & mask);
--	change = old != new;
--	if (change) {
--		ret = soc_widget_write(w, reg, new);
-+	if (w->codec && w->codec->using_regmap) {
-+		ret = regmap_update_bits_check(w->codec->control_data,
-+					       reg, mask, value, &change);
-+		if (ret != 0)
-+			return ret;
-+	} else {
-+		ret = soc_widget_read(w, reg);
- 		if (ret < 0)
- 			return ret;
-+
-+		old = ret;
-+		new = (old & ~mask) | (value & mask);
-+		change = old != new;
-+		if (change) {
-+			ret = soc_widget_write(w, reg, new);
-+			if (ret < 0)
-+				return ret;
-+		}
- 	}
- 
- 	return change;
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index c8610cb..39ba507 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -140,6 +140,7 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_REGMAP:
- 		/* Device has made its own regmap arrangements */
-+		codec->using_regmap = true;
- 		break;
- 
- 	default:
--- 
-1.7.7.3
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.3
+
+The MFD patch is an incremental patch on top of the WM8994 changes being
+carried by ASoC this merge window.
+
+Axel Lin (2):
+      ASoC: Fix build dependency for SND_ATMEL_SOC_SSC
+      ASoC: Fix recursive dependency due to select ATMEL_SSC in SND_ATMEL_SOC_SSC
+
+Joachim Eastwood (1):
+      ASoC: check for substream not channels_min in pcm engines
+
+Mark Brown (3):
+      ASoC: Fix idma build after update for channel count check
+      mfd: Put WM8994 into cache only mode when suspending
+      ASoC: Dynamically allocate the rtd device for a non-empty release()
+
+ drivers/mfd/wm8994-core.c           |    2 +
+ include/sound/soc.h                 |    6 ++--
+ sound/soc/atmel/Kconfig             |    2 +-
+ sound/soc/atmel/atmel-pcm.c         |    5 +--
+ sound/soc/blackfin/bf5xx-ac97-pcm.c |    5 +--
+ sound/soc/blackfin/bf5xx-i2s-pcm.c  |    5 +--
+ sound/soc/blackfin/bf5xx-tdm-pcm.c  |    5 +--
+ sound/soc/davinci/davinci-pcm.c     |    5 +--
+ sound/soc/ep93xx/ep93xx-pcm.c       |    5 +--
+ sound/soc/jz4740/jz4740-pcm.c       |    5 +--
+ sound/soc/kirkwood/kirkwood-dma.c   |    5 +--
+ sound/soc/mid-x86/sst_platform.c    |    5 +--
+ sound/soc/omap/omap-pcm.c           |    5 +--
+ sound/soc/samsung/dma.c             |    5 +--
+ sound/soc/samsung/idma.c            |    4 +-
+ sound/soc/soc-core.c                |   44 +++++++++++++++++++---------------
+ sound/soc/soc-dapm.c                |    3 +-
+ sound/soc/tegra/tegra_pcm.c         |    5 +--
+ 18 files changed, 58 insertions(+), 63 deletions(-)
