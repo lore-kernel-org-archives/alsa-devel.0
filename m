@@ -1,23 +1,15 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Exporting playback and capture capability to user
- space
-Date: Thu, 12 Jan 2012 14:15:04 +0530
-Message-ID: <4F0E9D90.1060908@st.com>
-References: <4E65E934.2070706@st.com>
-	<20110906180138.GC2924@opensource.wolfsonmicro.com>
-	<4E66EFC3.2070706@st.com> <4EC50DB2.6090009@st.com>
-	<4EC9E656.1050706@st.com> <1321856626.1516.208.camel@vkoul-udesk3>
-	<4ECB24C7.4080908@st.com> <4ED8AD60.6060000@st.com>
-	<4F0A89CD.9000602@st.com>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: Re: [PATCH 2/4] snd-usb-6fire: add individual volume
+ control for analog channels
+Date: Thu, 12 Jan 2012 10:02:58 +0100
+Message-ID: <134d127df60.633262844244093947.2863191508683130170@zoho.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog120.obsmtp.com (eu1sys200aog120.obsmtp.com
-	[207.126.144.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 21F8F103B51
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 09:45:24 +0100 (CET)
-In-Reply-To: <4F0A89CD.9000602@st.com>
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2D43103B51
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 10:03:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,163 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, clemens <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark
-
-On 1/9/2012 12:01 PM, Rajeev kumar wrote:
-> On 12/2/2011 4:20 PM, Rajeev kumar wrote:
->> Hello Vinod,
->>
->> On 11/22/2011 9:57 AM, Rajeev kumar wrote:
->>> Hello Vinod, Mark
->>>
->>>
->>> On 11/21/2011 11:53 AM, Vinod Koul wrote:
->>>> On Mon, 2011-11-21 at 11:19 +0530, Rajeev kumar wrote:
->>>>> Hello Mark
->>>>>
->>>>> Could you please help me by answering these questions?
->>>>>
->>>>> Best Regards
->>>>> Rajeev
->>>>>
->>>> Pls don't top-post!!
->>>>> On 11/17/2011 7:05 PM, Rajeev kumar wrote:
->>>>>> Hello Mark
->>>>>>
->>>>>> I have a single codec with playback and capture capability. We are
->>>>>> using
->>>>>> it for different i2s controller. Below are the details for that.
->>>>>>
->>>>>> case 1: I2S controller-1: with playback and capture capability
->>>>>> case 2: I2S controller-2: with playback capability only
->>>>>> case 3: I2S controller-3: with capture capability only.
->>>>>>
->>>>>> We are registering all the I2S controller with there respective
->>>>>> capability.
->>>>>>
->>>>>> In command 'aplay -l' or 'cat /proc/asound/pcm', among playback
->>>>>> devices,
->>>>>> capture device is also listed. This is true in case-1 but for case-2
->>>>>> and
->>>>>> case-3 also it is showing the same behavior. According to my
->>>>>> understanding it should not show the list of all devices i.e. in
->>>>>> case of
->>>>>> controller having playback capability it should show only playback
->>>>>> devices not capture devices and vice versa. Please correct me if I am
->>>>>> wrong.
->>>>>>
->>>>>> So my questions are
->>>>>> 1. How to separate playback and capture devices in case-2 and case-3.
->>>>>> Are we need to register different codec for different i2s controller?
->>>> How asoc builds this is based on dailinks you have provided. If for the
->>>> device 2 and device 3 the cpu and codec dais support both playback and
->>>> capture devices, it will go ahead and register these device.
->>>> The fact that for device 2 and device 3 capture is also registered
->>>> suggests me that your cpu dais are not correct.
->>>>
->>>> Would help if you post your code, esp the codec, cpu dais and dialinks.
->>>>
->>>
->>> Codec dai:
->>>
->>> static struct snd_soc_dai_driver sta529_dai = {
->>> .name = "sta529-audio",
->>> .playback = {
->>> .stream_name = "Playback",
->>> .channels_min = 2,
->>> .channels_max = 2,
->>> .rates = SPEAR_PCM_RATES,
->>> .formats = SPEAR_PCM_FORMAT,
->>> },
->>> .capture = {
->>> .stream_name = "Capture",
->>> .channels_min = 2,
->>> .channels_max = 2,
->>> .rates = SPEAR_PCM_RATES,
->>> .formats = SPEAR_PCM_FORMAT,
->>> },
->>> .ops = &sta529_dai_ops,
->>> };
->>>
->>> cpu dai: In case of cpu dai, we are passing the playback and capture
->>> capability from the platform code and depending on the capability we are
->>> filling the cpu dai structure in probe function, like
->>>
->>> if (cap & PLAY) {
->>>
->>> /* Fill Playback capability */
->>> }
->>>
->>> if (cap & RECORD) {
->>> /* Fill Capture capability */
->>> }
->>>
->>> dai links:
->>>
->>> static struct snd_soc_dai_link spear_evb_dai[] = {
->>> {
->>> .name = "sta529-pcm0",
->>> .stream_name = "I2S Playback",
->>> .cpu_dai_name = "designware-i2s.0",
->>> .platform_name = "spear-pcm-audio",
->>> .codec_dai_name = "sta529-audio",
->>> .codec_name = "sta529-codec.0-001a",
->>> .ops = &sta529_ops,
->>> }, {
->>> .name = "sta529-pcm1",
->>> .stream_name = "I2S Capture",
->>> .cpu_dai_name = "designware-i2s.1",
->>> .platform_name = "spear-pcm-audio",
->>> .codec_dai_name = "sta529-audio",
->>> .codec_name = "sta529-codec.0-001a",
->>> .ops = &sta529_ops,
->>> },
->>> };
->>>
->>> static struct snd_soc_card spear_snd_card = {
->>> .name = "spear-evb",
->>> .dai_link = spear_evb_dai,
->>> .num_links = ARRAY_SIZE(spear_evb_dai),
->>> };
->>>
->>
->> I had actually missed the last mail by mark. I dont know why? . So sorry
->> for replying on the top of this mail.
->>
->> Vinod, have you gone through the cpu_dai, codec_dai and dailink ? Could
->> you please make any suggestion?
->>
->
-> Ping
->
-
-The o/p of the cat /proc/asound/pcm does not depends on the &ing of the 
-capability of i2s controller and codec. I was going through the 
-soc-core.c and it seems that the capability exposed to user space only 
-depends on the codec. If codec has both playback and capture capability 
-,then in user space both will be exported and hence cat /proc/asound/pcm 
-will show two different devices one for playback and other for capture. 
-In case codec has only playback capability, the o/p of the cat 
-/proc/asound/pcm will contain only playback device.
-
-So in case of three different i2s controller with different capability, 
-separate codec are required.
-
-Please correct me if I am wrong.
-
-Best Regards
-Rajeev
-
->> Best Regards
->> ~Rajeev
->>
->>
->>
->>> Best Regards
->>> ~Rajeev
->>
->
+T24gVGh1LCAxMiBKYW4gMjAxMiAwNzo0MjoxOSArMDEwMFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
+ZS5kZT4gd3JvdGU6Cj4gQXQgVGh1LCAxMiBKYW4gMjAxMiAwMDoxNTo1NiArMDEwMCw+IFRvcnN0
+ZW4gU2NoZW5rIHdyb3RlOj4gPsKgPiA+IMKgLyo+ID4gLSAqIGNhbGN1bGF0ZWQgd2l0aCAkdmFs
+dWVcW2lcXSA9IDEyOCBcY2RvdCBzcXJ0WzNde1xmcmFje2l9ezEyOH19JD4gPiAtICogdGhpcyBp
+cyBkb25lIGJlY2F1c2UgdGhlIGxpbmVhciB2YWx1ZXMgY2F1c2UgcmFwaWQgZGVncmVkYXRpb24+
+ID4gLSAqIG9mIHZvbHVtZSBpbiB0aGUgdXBwZXJtb3N0IHJlZ2lvbi4+ID4gLSAqLz4gPiAtc3Rh
+dGljIGNvbnN0IHU4IGxvZ192b2x1bWVfdGFibGVbMTI4XSA9IHs+ID4gLQkweDAwLCAweDE5LCAw
+eDIwLCAweDI0LCAweDI4LCAweDJiLCAweDJlLCAweDMwLCAweDMyLCAweDM0LD4gPiAtCTB4MzYs
+IDB4MzgsIDB4M2EsIDB4M2IsIDB4M2QsIDB4M2UsIDB4NDAsIDB4NDEsIDB4NDIsIDB4NDMsPiA+
+IC0JMHg0NCwgMHg0NiwgMHg0NywgMHg0OCwgMHg0OSwgMHg0YSwgMHg0YiwgMHg0YywgMHg0ZCwg
+MHg0ZSw+ID4gLQkweDRlLCAweDRmLCAweDUwLCAweDUxLCAweDUyLCAweDUzLCAweDUzLCAweDU0
+LCAweDU1LCAweDU2LD4gPiAtCTB4NTYsIDB4NTcsIDB4NTgsIDB4NTgsIDB4NTksIDB4NWEsIDB4
+NWIsIDB4NWIsIDB4NWMsIDB4NWMsPiA+IC0JMHg1ZCwgMHg1ZSwgMHg1ZSwgMHg1ZiwgMHg2MCwg
+MHg2MCwgMHg2MSwgMHg2MSwgMHg2MiwgMHg2Miw+ID4gLQkweDYzLCAweDYzLCAweDY0LCAweDY1
+LCAweDY1LCAweDY2LCAweDY2LCAweDY3LCAweDY3LCAweDY4LD4gPiAtCTB4NjgsIDB4NjksIDB4
+NjksIDB4NmEsIDB4NmEsIDB4NmIsIDB4NmIsIDB4NmMsIDB4NmMsIDB4NmMsPiA+IC0JMHg2ZCwg
+MHg2ZCwgMHg2ZSwgMHg2ZSwgMHg2ZiwgMHg2ZiwgMHg3MCwgMHg3MCwgMHg3MCwgMHg3MSw+ID4g
+LQkweDcxLCAweDcyLCAweDcyLCAweDczLCAweDczLCAweDczLCAweDc0LCAweDc0LCAweDc1LCAw
+eDc1LD4gPiAtCTB4NzUsIDB4NzYsIDB4NzYsIDB4NzcsIDB4NzcsIDB4NzcsIDB4NzgsIDB4Nzgs
+IDB4NzgsIDB4NzksPiA+IC0JMHg3OSwgMHg3YSwgMHg3YSwgMHg3YSwgMHg3YiwgMHg3YiwgMHg3
+YiwgMHg3YywgMHg3YywgMHg3Yyw+ID4gLQkweDdkLCAweDdkLCAweDdkLCAweDdlLCAweDdlLCAw
+eDdlLCAweDdmLCAweDdmIH07PsKgPiBTbywgd2l0aCB0aGUgbmV3IGltcGxlbWVudGF0aW9uLCB5
+b3UgZG9uJ3QgbmVlZCB0aGUgbGluZWFyIC0+IGRCPiBjb252ZXJzaW9uP0kgZGVjaWRlZCB0byBj
+aGFuZ2UgdGhlIHZvbHVtZSBzbGlkZXIgYmVoYXZpb3VyIGJlY2F1c2Ugb2YgdGhlYWRkaXRpb25h
+bCBpbmZvcm1hdGlvbiBJIGdvdCBvbiB0aGUgREFDLiBPbiB0aGUgb3RoZXIgaGFuZCBpdCBzZWVt
+c3JlYXNvbmFibGUgdG8gZG8gdGhhdCBpbiBhIHNlcGFyYXRlIHBhdGNoLiBJIGNvdWxkIGRvIHNv
+IGluIG15IG5leHRzdWJtaXQuCj7CoD4gPiDCoAkJLmFjY2VzcyA9IFNORFJWX0NUTF9FTEVNX0FD
+Q0VTU19SRUFEV1JJVEUsPiA+IC0JCS5pbmZvID0gdXNiNmZpcmVfY29udHJvbF9tYXN0ZXJfdm9s
+X2luZm8sPiA+IC0JCS5nZXQgPSB1c2I2ZmlyZV9jb250cm9sX21hc3Rlcl92b2xfZ2V0LD4gPiAt
+CQkucHV0ID0gdXNiNmZpcmVfY29udHJvbF9tYXN0ZXJfdm9sX3B1dD4gPiArCQkuaW5mbyA9IHVz
+YjZmaXJlX2NvbnRyb2xfb3V0cHV0X3ZvbF9pbmZvLD4gPiArCQkuZ2V0ID0gdXNiNmZpcmVfY29u
+dHJvbF9vdXRwdXRfdm9sX2dldCw+ID4gKwkJLnB1dCA9IHVzYjZmaXJlX2NvbnRyb2xfb3V0cHV0
+X3ZvbF9wdXQsPiA+ICsJCS5wcml2YXRlX3ZhbHVlID0gMT4gPiDCoAl9LD4gPiDCoAl7PiA+IMKg
+CQkuaWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUiw+ID4gKwkJLm5hbWUgPSAiT3V0
+cHV0IDUvNiBQbGF5YmFjayBWb2x1bWUiLD4gPiArCQkuaW5kZXggPSAwLD4gPiArCQkuYWNjZXNz
+ID0gU05EUlZfQ1RMX0VMRU1fQUNDRVNTX1JFQURXUklURSw+ID4gKwkJLmluZm8gPSB1c2I2Zmly
+ZV9jb250cm9sX291dHB1dF92b2xfaW5mbyw+ID4gKwkJLmdldCA9IHVzYjZmaXJlX2NvbnRyb2xf
+b3V0cHV0X3ZvbF9nZXQsPiA+ICsJCS5wdXQgPSB1c2I2ZmlyZV9jb250cm9sX291dHB1dF92b2xf
+cHV0LD4gPiArCQkucHJpdmF0ZV92YWx1ZSA9IDI+ID4gKwl9PiA+ICt9Oz7CoD4gQWRkIHRoZSB0
+ZXJtaW5hdG9yIGluIHRoaXMgcGF0Y2guIMKgSSBrbm93IHlvdSBmaXhlZCBpbiB0aGUgbGFzdCBw
+YXRjaD4gYnV0LCBJbiBnZW5lcmFsLCB0cnkgbm90IHRvIGludHJvZHVjZSBhIGJ1ZyBpbiBlYWNo
+IGNvbW1pdC4gwqBPdGhlcndpc2U+IGl0J2xsIG1ha2UgYmlzZWN0aW9uIGRpZmZpY3VsdC5UaGF0
+J3MgcmlnaHQsIEkndmUgb3ZlcnNlZW4gdGhpcyBwcm9ibGVtIGluIHRoZSBmaXJzdCBwbGFjZSBh
+bmRzdHVtYmxlZCB1cG9uIGl0IGFmdGVyIHBhdGNoIDIgYW5kIDMgaGF2ZSBhbHJlYWR5IGJlZW4g
+c2VudC4KVGhhbmtzLFRvcnN0ZW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
