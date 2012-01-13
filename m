@@ -1,19 +1,15 @@
-From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: Re: Trying to understand alsa
-Date: Fri, 13 Jan 2012 09:10:58 -0600
-Message-ID: <20120113151058.GG24575@foghorn.codeweavers.com>
-References: <1326404651.22083.28.camel@jonspc>
-	<20120112221218.GE24575@foghorn.codeweavers.com>
-	<1326410207.23310.17.camel@jonspc>
+From: Ivan Bublikov <ivanbublikov@yahoo.com>
+Subject: Hardware-specific IOCTLs
+Date: Fri, 13 Jan 2012 08:22:38 -0800 (PST)
+Message-ID: <1326471758.45923.YahooMailNeo@web121806.mail.ne1.yahoo.com>
+Reply-To: Ivan Bublikov <ivanbublikov@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFC002412E
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 16:11:01 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1326410207.23310.17.camel@jonspc>
+Received: from nm10.bullet.mail.ne1.yahoo.com (nm10.bullet.mail.ne1.yahoo.com
+	[98.138.90.73]) by alsa0.perex.cz (Postfix) with SMTP id 8F37A243C4
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 17:22:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jonathan Andrews <jon@jonshouse.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 12, 2012 at 11:16:47PM +0000, Jonathan Andrews wrote:
-> On Thu, 2012-01-12 at 16:12 -0600, Andrew Eikum wrote:
-> > On Thu, Jan 12, 2012 at 09:44:11PM +0000, Jonathan Andrews wrote:
-> > > I have an application that works using 512 sample packets of 22050Hz 16
-> > > bit mono audio.  The 'receiver' takes many audio streams from a network
-> > > via UDP, at the moment it pipes them into pulse.
-> > > 
-> > > Can alsa buffer audio. At the moment every time I and set an audio
-> > > buffer size I get a negative response from
-> > > snd_pcm_hw_params_set_buffer_size .  I'm somewhat confused about the
-> > > units alsa uses ...
-> > > 
-> > 
-> > You don't want to over-specify your requirements. You require a buffer
-> > size of "at least" 3 * 512 frames. So use set_buffer_size_min().
-> 
-> I cant find any reference to "set_buffer_size_min" in the ALSA API
-> documentation I have or the link you provided ?
-> snd_pcm_hw_params_set_buffer_time_near() is the closest and that seems
-> to take an argument in useconds.  
-> ?
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html
-> 
-
-The doxygen docs are split strangely. The function is documented here:
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#gb8d160039ffbbb15cb7187aa9ffae462
-
-I find keeping the alsa-lib source on hand for quick grepping is often
-helpful.
-
-Andrew
+Message body
+Hello All,
+=A0
+My question is about how to allocate a new hardware-specific IOCTL code. Fo=
+r example, the HDA driver consists of common HDA code and vendor-specific c=
+odes for various HDA codecs. As an HDA codec vendor, I want to be able to c=
+ontrol some functionality in my codec, that is not present in codecs from o=
+ther vendors. For this, I want to implement a special IOCTL in my vendor-sp=
+ecific code. I understand that I can register an IOCTL handler using snd_ct=
+l_register_ioctl. My difficulty is how to define a code for my IOCTL and av=
+oid a conflict with the common code in the future.
+=A0
+Looking at header files, I see=A0 common "ALSA" audio IOCTLs starting with =
+letter 'A', and "HWDEP" IOCTLs starting with letter 'H'. Some of H-IOCTLs a=
+re defined in asound.h, starting at offset 0, and some in hda_hwdep.h and s=
+b16_csp.h starting at offset 0x10. My guess is that the latter start at 0x1=
+0 to give some expansion room for H-IOCTLs in asound.h...?
+=A0
+I think I need=A0some offset range in H-IOCTLs or a new IOCTL family with a=
+nother letter,=A0officially reserved for such codec-specific IOCTLs. Any su=
+ggestions?
+=A0
+Best regards,
+Ivan
