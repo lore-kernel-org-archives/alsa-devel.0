@@ -1,18 +1,18 @@
 From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: duplicated test in sound/soc/codecs/sgtl5000.c
-Date: Fri, 13 Jan 2012 06:21:00 +0000
-Message-ID: <7FE21149F4667147B645348EC605788508FBC9@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <alpine.DEB.2.00.1201122210520.25187@pl-59034.rocq.inria.fr>
-	<20120112222759.GA23716@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing
+	iounmap
+Date: Fri, 13 Jan 2012 06:25:26 +0000
+Message-ID: <7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id ACDB02414B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 07:21:05 +0100 (CET)
-In-Reply-To: <20120112222759.GA23716@opensource.wolfsonmicro.com>
+	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id B776B2414E
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 07:25:34 +0100 (CET)
+In-Reply-To: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,44 +23,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Julia Lawall <julia.lawall@lip6.fr>, Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>, "zengzm.kernel@gmail.com" <zengzm.kernel@gmail.com>
+To: Julia Lawall <Julia.Lawall@lip6.fr>, Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Friday, January 13, 2012 6:28 AM
-> To: Julia Lawall; Fabio Estevam; Wolfram Sang; Dong Aisheng-B29396; Shawn Guo
-> Cc: lrg@ti.com; alsa-devel@alsa-project.org
-> Subject: Re: duplicated test in sound/soc/codecs/sgtl5000.c
-> Importance: High
+> From: linux-kernel-owner@vger.kernel.org [mailto:linux-kernel-
+> owner@vger.kernel.org] On Behalf Of Julia Lawall
+> Sent: Thursday, January 12, 2012 5:55 PM
+> To: Liam Girdwood
+> Cc: kernel-janitors@vger.kernel.org; Mark Brown; Jaroslav Kysela; Takashi Iwai;
+> alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing iounmap
 > 
-> On Thu, Jan 12, 2012 at 10:13:24PM +0100, Julia Lawall wrote:
-> > There is a duplicated test in the function sgtl5000_restore_regs in
-> > the file sound/soc/codecs/sgtl5000.c:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
 > 
-> >                /* this regs depends on the others */
-> >                 if (reg == SGTL5000_CHIP_ANA_POWER ||
-> >                         reg == SGTL5000_CHIP_CLK_CTRL ||
-> >                         reg == SGTL5000_CHIP_LINREG_CTRL ||
-> >                         reg == SGTL5000_CHIP_LINE_OUT_CTRL ||
-> >                         reg == SGTL5000_CHIP_CLK_CTRL)
-> >                         continue;
+> Add missing iounmap in error handling code, in a case where the function already
+> preforms iounmap on some other execution path.
 > 
-> > I don't know if some constant other than SGTL5000_CHIP_CLK_CTRL should
-> > be tested, or if the second test should just be deleted.
+> A simplified version of the semantic match that finds this problem is as
+> follows: (http://coccinelle.lip6.fr/)
 > 
-> Adding the people who've been working on the driver.  Generally this is a good
-> idea when reporting issues like this.
-Cc Zhaoming.
+> // <smpl>
+> @@
+> expression e;
+> statement S,S1;
+> int ret;
+> @@
+> e = \(ioremap\|ioremap_nocache\)(...)
+> ... when != iounmap(e)
+> if (<+...e...+>) S
+> ... when any
+>     when != iounmap(e)
+> *if (...)
+>    { ... when != iounmap(e)
+>      return ...; }
+> ... when any
+> iounmap(e);
+> // </smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> 
+> ---
+>  sound/soc/mxs/mxs-saif.c |    3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c index
+> 049e543..5ee0adb 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -680,7 +680,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+>  		ret = -ENODEV;
+>  		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
+>  			ret);
+> -		goto failed_ioremap;
+> +		goto failed_get_resource;
+>  	}
+>  	saif->dma_param.chan_num = dmares->start;
+> 
+> @@ -739,6 +739,7 @@ failed_register:
+>  failed_get_irq2:
+>  	free_irq(saif->irq, saif);
+>  failed_get_irq1:
+> +failed_get_resource:
+There's already a 'failed_get_resource' there, wouldn't your change break
+The original code?
 
-Looking at the code, I guess it's a typo error and the second check should be
-SGTL5000_CHIP_REF_CTRL since it will restore it again.
-
-Hi Mark,
-Since zhaoming leaved Freescale a few month ago,
-would you mind if I send a patch to add my name under MODULE_AHTOER as
-Co-maintainer for this driver and update Zhaoming's email address?
+BTW, I guess a better way is that you can submit a patch to change the driver
+To use devm_alloc_* and it's friend routines, then we do not need to fix
+Such things any more.
 
 Regards
 Dong Aisheng
+>  	iounmap(saif->base);
+>  failed_ioremap:
+>  	release_mem_region(iores->start, resource_size(iores));
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in the
+> body of a message to majordomo@vger.kernel.org More majordomo info at
+> http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
