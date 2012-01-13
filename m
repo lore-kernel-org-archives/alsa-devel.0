@@ -1,18 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] ALSA : Au88x0 - Support 4 channels playback
- when AC97 codec has SDAC bit ,
- Reduce the number of playback devices of au8830 from 32 to 16
-Date: Fri, 13 Jan 2012 18:47:45 +0800
-Message-ID: <CAN8cciY_uuOFEm-cyJ2owH51Zp_pdti=mFt1f00oEvQEKvAchw@mail.gmail.com>
+From: Kusanagi Kouichi <slash@ac.auone-net.jp>
+Subject: [PATCH] alsamixer: Confirm that a drastic volume
+ change is intentional.
+Date: Fri, 13 Jan 2012 20:14:49 +0900
+Message-ID: <20120113111449.EDBE06FC039@msa105.auone-net.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=f46d044267405be5ea04b6669869
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71C552451E
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 11:47:47 +0100 (CET)
-Received: by wibhm6 with SMTP id hm6so254109wib.38
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 02:47:46 -0800 (PST)
+Received: from msa105.auone-net.jp (msa105.auone-net.jp [61.117.18.165])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CCBA24528
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 12:14:52 +0100 (CET)
+Received: from ppp.dion.ne.jp (ZJ087010.ppp.dion.ne.jp [222.4.87.10])
+	by msa105.auone-net.jp (au one net msa) with ESMTP id EDBE06FC039
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 20:14:49 +0900 (JST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,101 +23,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---f46d044267405be5ea04b6669869
-Content-Type: text/plain; charset=ISO-8859-1
+Home key has been disabled because it might at least surprise a user
+unless volume is already nearly full. Not only home but 9, 8 and so
+on might also surprise a user. So instead of disableing key, show
+confirmation dialog for drastic volume change.
 
-[PATCH - ALSA 1/2] Au88x0 - Support 4 channels playback when AC97
-codecs has SDAC bit
+Signed-off-by: Kusanagi Kouichi <slash@ac.auone-net.jp>
+---
+ alsamixer/mixer_widget.c   |   52 ++++++++++++++++++++++++++++++++++++++------
+ alsamixer/volume_mapping.c |    3 ++
+ 2 files changed, 48 insertions(+), 7 deletions(-)
 
-- Check SDAC bit of AC97 codec for supporting 4 channels playback.
-
-
-[PATCH - ALSA 2/2] Au88x0 - Reduce the number of playback subdevices
-of au8830 from 32 to 16
-
-- The maximum number of playback streams depend on the number of sample
-  rate conveters (16) and the number of DMA channels (32).
-
---f46d044267405be5ea04b6669869
-Content-Type: application/octet-stream;
-	name="0001-Au88x0-Support-4-channels-playback-when-AC97-codec.patch"
-Content-Disposition: attachment;
-	filename="0001-Au88x0-Support-4-channels-playback-when-AC97-codec.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
-
-RnJvbSBlZTg3OTYwMTgxMGJlODFiYTRmMDBiNzBiN2Y1ZThmNmFlNTZhOGU2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBGcmksIDEzIEphbiAyMDEyIDEwOjMwOjA4ICswODAwClN1YmplY3Q6IFtQQVRD
-SCAtIEFMU0EgMS8yXSBBdTg4eDAgLSBTdXBwb3J0IDQgY2hhbm5lbHMgcGxheWJhY2sgd2hlbiBB
-Qzk3IGNvZGVjcyBoYXMgU0RBQyBiaXQKCi0gQ2hlY2sgU0RBQyBiaXQgb2YgQUM5NyBjb2RlYyBm
-b3Igc3VwcG9ydGluZyA0IGNoYW5uZWxzIHBsYXliYWNrLgoKU2lnbmVkLW9mZi1ieTogUmF5bW9u
-ZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9w
-Y2kvYXU4OHgwL2F1ODh4MC5jIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4eDAuYwppbmRleCA3NjJi
-YjEwLi5iOGJjMTE1IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MC5jCisrKyBi
-L3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwLmMKQEAgLTI2OCw2ICsyNjgsMTEgQEAgc25kX3ZvcnRl
-eF9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGNpLCBjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCAq
-cGNpX2lkKQogCQljYXJkLT5zaG9ydG5hbWUsIGNoaXAtPmlvLCBjaGlwLT5pcnEpOwogCiAJLy8g
-KDQpIEFsbG9jIGNvbXBvbmVudHMuCisJZXJyID0gc25kX3ZvcnRleF9taXhlcihjaGlwKTsKKwlp
-ZiAoZXJyIDwgMCkgeworCQlzbmRfY2FyZF9mcmVlKGNhcmQpOworCQlyZXR1cm4gZXJyOworCX0K
-IAkvLyBBREIgcGNtLgogCWlmICgoZXJyID0gc25kX3ZvcnRleF9uZXdfcGNtKGNoaXAsIFZPUlRF
-WF9QQ01fQURCLCBOUl9BREIpKSA8IDApIHsKIAkJc25kX2NhcmRfZnJlZShjYXJkKTsKQEAgLTI5
-OSwxMSArMzA0LDYgQEAgc25kX3ZvcnRleF9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGNpLCBjb25z
-dCBzdHJ1Y3QgcGNpX2RldmljZV9pZCAqcGNpX2lkKQogCQlyZXR1cm4gZXJyOwogCX0KICNlbmRp
-ZgotCS8vIHNuZF9hYzk3X21peGVyIGFuZCBWb3J0ZXggbWl4ZXIuCi0JaWYgKChlcnIgPSBzbmRf
-dm9ydGV4X21peGVyKGNoaXApKSA8IDApIHsKLQkJc25kX2NhcmRfZnJlZShjYXJkKTsKLQkJcmV0
-dXJuIGVycjsKLQl9CiAJaWYgKChlcnIgPSBzbmRfdm9ydGV4X21pZGkoY2hpcCkpIDwgMCkgewog
-CQlzbmRfY2FyZF9mcmVlKGNhcmQpOwogCQlyZXR1cm4gZXJyOwpkaWZmIC0tZ2l0IGEvc291bmQv
-cGNpL2F1ODh4MC9hdTg4eDBfcGNtLmMgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYwpp
-bmRleCAwNDg4NjMzLi4wZWYyZjk3IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4
-MF9wY20uYworKysgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYwpAQCAtMTY4LDYgKzE2
-OCw3IEBAIHN0YXRpYyBpbnQgc25kX3ZvcnRleF9wY21fb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnN1YnN0cmVhbSkKIAkJCXJ1bnRpbWUtPmh3ID0gc25kX3ZvcnRleF9wbGF5YmFja19o
-d19hZGI7CiAjaWZkZWYgQ0hJUF9BVTg4MzAKIAkJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNO
-RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0sgJiYKKwkJCVZPUlRFWF9JU19RVUFEKHZvcnRleCkgJiYK
-IAkJCVZPUlRFWF9QQ01fVFlQRShzdWJzdHJlYW0tPnBjbSkgPT0gVk9SVEVYX1BDTV9BREIpIHsK
-IAkJCXJ1bnRpbWUtPmh3LmNoYW5uZWxzX21heCA9IDQ7CiAJCQlzbmRfcGNtX2h3X2NvbnN0cmFp
-bnRfbGlzdChydW50aW1lLCAwLAotLSAKMS42LjAuNgoK
---f46d044267405be5ea04b6669869
-Content-Type: application/octet-stream;
-	name="0002-Au88x0-Reduce-the-number-of-playback-subdevices-of.patch"
-Content-Disposition: attachment;
-	filename="0002-Au88x0-Reduce-the-number-of-playback-subdevices-of.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
-
-RnJvbSAzYWY5YjY3NWQyOTEzZGE5ZTM3ZDEyNzQyZDVjYjk4ZTgzMGJmMTgxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBGcmksIDEzIEphbiAyMDEyIDEwOjM1OjAxICswODAwClN1YmplY3Q6IFtQQVRD
-SCAtIEFMU0EgMi8yXSBBdTg4eDAgLSBSZWR1Y2UgdGhlIG51bWJlciBvZiBwbGF5YmFjayBzdWJk
-ZXZpY2VzIG9mIGF1ODgzMCBmcm9tIDMyIHRvIDE2CgotIFRoZSBtYXhpbXVtIG51bWJlciBvZiBw
-bGF5YmFjayBzdHJlYW1zIGRlcGVuZCBvbiB0aGUgbnVtYmVyIG9mIHNhbXBsZQogIHJhdGUgY29u
-dmV0ZXJzICgxNikgYW5kIHRoZSBudW1iZXIgb2YgRE1BIGNoYW5uZWxzICgzMikuCgpTaWduZWQt
-b2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPgoKZGlmZiAt
-LWdpdCBhL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwLmMgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4
-MC5jCmluZGV4IGI4YmMxMTUuLmYxM2FkNTMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9hdTg4eDAv
-YXU4OHgwLmMKKysrIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4eDAuYwpAQCAtMjc0LDcgKzI3NCw4
-IEBAIHNuZF92b3J0ZXhfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBjaSwgY29uc3Qgc3RydWN0IHBj
-aV9kZXZpY2VfaWQgKnBjaV9pZCkKIAkJcmV0dXJuIGVycjsKIAl9CiAJLy8gQURCIHBjbS4KLQlp
-ZiAoKGVyciA9IHNuZF92b3J0ZXhfbmV3X3BjbShjaGlwLCBWT1JURVhfUENNX0FEQiwgTlJfQURC
-KSkgPCAwKSB7CisJZXJyID0gc25kX3ZvcnRleF9uZXdfcGNtKGNoaXAsIFZPUlRFWF9QQ01fQURC
-LCBOUl9QQ00pOworCWlmIChlcnIgPCAwKSB7CiAJCXNuZF9jYXJkX2ZyZWUoY2FyZCk7CiAJCXJl
-dHVybiBlcnI7CiAJfQpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2F1ODh4MC9hdTg4eDAuaCBiL3Nv
-dW5kL3BjaS9hdTg4eDAvYXU4OHgwLmgKaW5kZXggMDJmNmUwOC4uYmI5MzgxNSAxMDA2NDQKLS0t
-IGEvc291bmQvcGNpL2F1ODh4MC9hdTg4eDAuaAorKysgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4
-MC5oCkBAIC0xMDUsNiArMTA1LDcgQEAKICNkZWZpbmUgTUlYX1NQRElGKHgpICh2b3J0ZXgtPm1p
-eHNwZGlmW3hdKQogCiAjZGVmaW5lIE5SX1dUUEIgMHgyMAkJLyogV1QgY2hhbm5lbHMgcGVyIGVh
-Y2ggYmFuay4gKi8KKyNkZWZpbmUgTlJfUENNCTB4MTAKIAogLyogU3RydWN0cyAqLwogdHlwZWRl
-ZiBzdHJ1Y3QgewotLSAKMS42LjAuNgoK
---f46d044267405be5ea04b6669869
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---f46d044267405be5ea04b6669869--
+diff --git a/alsamixer/mixer_widget.c b/alsamixer/mixer_widget.c
+index caaf777..d01a6ec 100644
+--- a/alsamixer/mixer_widget.c
++++ b/alsamixer/mixer_widget.c
+@@ -207,6 +207,7 @@ static void show_help(void)
+ 		_("Up/Down    Change volume"),
+ 		_("+ -        Change volume"),
+ 		_("Page Up/Dn Change volume in big steps"),
++		_("Home       Set volume to 100%"),
+ 		_("End        Set volume to 0%"),
+ 		_("0-9        Set volume to 0%-90%"),
+ 		_("Q W E      Increase left/both/right volumes"),
+@@ -305,9 +306,10 @@ static void change_enum_relative(struct control *control, int delta)
+ 			snd_mixer_selem_set_enum_item(control->elem, i, new_index);
+ }
+ 
+-static void change_volume_to_percent(struct control *control, int value, unsigned int channels)
++static int change_volume_to_percent(struct control *control, int value, unsigned int channels)
+ {
+ 	int (*set_func)(snd_mixer_elem_t *, snd_mixer_selem_channel_id_t, double, int);
++	int err = 0;
+ 
+ 	if (!(control->flags & HAS_VOLUME_1))
+ 		channels = LEFT;
+@@ -316,9 +318,10 @@ static void change_volume_to_percent(struct control *control, int value, unsigne
+ 	else
+ 		set_func = set_normalized_capture_volume;
+ 	if (channels & LEFT)
+-		set_func(control->elem, control->volume_channels[0], value / 100.0, 0);
+-	if (channels & RIGHT)
+-		set_func(control->elem, control->volume_channels[1], value / 100.0, 0);
++		err = set_func(control->elem, control->volume_channels[0], value / 100.0, 0);
++	if (channels & RIGHT && err <= 0)
++		err = set_func(control->elem, control->volume_channels[1], value / 100.0, 0);
++	return err;
+ }
+ 
+ static double clamp_volume(double v)
+@@ -371,7 +374,44 @@ static void change_control_to_percent(int value, unsigned int channels)
+ 	if (control->flags & TYPE_ENUM)
+ 		change_enum_to_percent(control, value);
+ 	else
+-		change_volume_to_percent(control, value, channels);
++		if (change_volume_to_percent(control, -value, channels)) {
++			char buf[50];
++			const char * const text[] = { buf, "               (Y/n)" };
++			const struct widget *active_widget;
++
++			snprintf(buf, sizeof buf, "Do you really change volume to %d%%?", value);
++			show_text(text, 2, "");
++			active_widget = get_active_widget();
++			wtimeout(active_widget->window, -1);
++			while (1) {
++				switch (wgetch(active_widget->window)) {
++#ifdef KEY_RESIZE
++				case KEY_RESIZE:
++					window_size_changed();
++					continue;
++#endif
++				case 'Y':
++				case 'y':
++				case '\n':
++				case KEY_ENTER:
++					change_volume_to_percent(control, value, channels);
++					break;
++				case 'N':
++				case 'n':
++				case 27:
++				case KEY_CANCEL:
++				case KEY_CLOSE:
++				case KEY_EXIT:
++					break;
++				default:
++					continue;
++				}
++				break;
++			}
++			active_widget->handle_key(KEY_ENTER);
++		} else
++			change_volume_to_percent(control, value, channels);
++
+ 	display_controls();
+ }
+ 
+@@ -536,12 +576,10 @@ static void on_handle_key(int key)
+ 	case KEY_NPAGE:
+ 		change_control_relative(-5, LEFT | RIGHT);
+ 		break;
+-#if 0
+ 	case KEY_BEG:
+ 	case KEY_HOME:
+ 		change_control_to_percent(100, LEFT | RIGHT);
+ 		break;
+-#endif
+ 	case KEY_LL:
+ 	case KEY_END:
+ 		change_control_to_percent(0, LEFT | RIGHT);
+diff --git a/alsamixer/volume_mapping.c b/alsamixer/volume_mapping.c
+index 1c0d7c4..bd160ed 100644
+--- a/alsamixer/volume_mapping.c
++++ b/alsamixer/volume_mapping.c
+@@ -133,6 +133,9 @@ static int set_normalized_volume(snd_mixer_elem_t *elem,
+ 	double min_norm;
+ 	int err;
+ 
++	if (volume < 0)
++		return -volume - get_normalized_volume(elem, channel, ctl_dir) >= 0.5;
++
+ 	err = get_dB_range[ctl_dir](elem, &min, &max);
+ 	if (err < 0 || min >= max) {
+ 		err = get_raw_range[ctl_dir](elem, &min, &max);
+-- 
+1.7.8.3
