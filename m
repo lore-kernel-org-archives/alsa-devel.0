@@ -1,15 +1,19 @@
-From: Donn Washburn <n5xwb@comcast.net>
-Subject: Todays GIT system of alsa
-Date: Thu, 12 Jan 2012 21:51:12 -0600
-Message-ID: <4F0FAA30.8000106@comcast.net>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: duplicated test in sound/soc/codecs/sgtl5000.c
+Date: Fri, 13 Jan 2012 06:21:00 +0000
+Message-ID: <7FE21149F4667147B645348EC605788508FBC9@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <alpine.DEB.2.00.1201122210520.25187@pl-59034.rocq.inria.fr>
+	<20120112222759.GA23716@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qmta13.emeryville.ca.mail.comcast.net
-	(qmta13.emeryville.ca.mail.comcast.net [76.96.27.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AE1B24502
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 04:51:17 +0100 (CET)
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACDB02414B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 07:21:05 +0100 (CET)
+In-Reply-To: <20120112222759.GA23716@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,41 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel elist <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Julia Lawall <julia.lawall@lip6.fr>, Fabio Estevam <festevam@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>, "zengzm.kernel@gmail.com" <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hey Group;
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Friday, January 13, 2012 6:28 AM
+> To: Julia Lawall; Fabio Estevam; Wolfram Sang; Dong Aisheng-B29396; Shawn Guo
+> Cc: lrg@ti.com; alsa-devel@alsa-project.org
+> Subject: Re: duplicated test in sound/soc/codecs/sgtl5000.c
+> Importance: High
+> 
+> On Thu, Jan 12, 2012 at 10:13:24PM +0100, Julia Lawall wrote:
+> > There is a duplicated test in the function sgtl5000_restore_regs in
+> > the file sound/soc/codecs/sgtl5000.c:
+> 
+> >                /* this regs depends on the others */
+> >                 if (reg == SGTL5000_CHIP_ANA_POWER ||
+> >                         reg == SGTL5000_CHIP_CLK_CTRL ||
+> >                         reg == SGTL5000_CHIP_LINREG_CTRL ||
+> >                         reg == SGTL5000_CHIP_LINE_OUT_CTRL ||
+> >                         reg == SGTL5000_CHIP_CLK_CTRL)
+> >                         continue;
+> 
+> > I don't know if some constant other than SGTL5000_CHIP_CLK_CTRL should
+> > be tested, or if the second test should just be deleted.
+> 
+> Adding the people who've been working on the driver.  Generally this is a good
+> idea when reporting issues like this.
+Cc Zhaoming.
 
-I wish to let you know that todays GIT set of files fixed openSuSEs 11.4 
-and 12.1 problem that I have been having.  That was a loss of 
-pots/adjustments and mixed mute controls on kmix, gmixer and 
-pavucontrol.   All of mixers work.  The system required snd-hda-intel 
-module.  The system is a
-ASUS M4A87TD Mother board and sound VIA VT1818 High Definition Audio 8 
-Channel Codec.
+Looking at the code, I guess it's a typo error and the second check should be
+SGTL5000_CHIP_REF_CTRL since it will restore it again.
 
-lsmod | less
-snd_pcm_oss            42358    0
-snd_mixer_oss          18292    1 snd_pcm_oss
-snd_seq                    49875    0
-snd_seq_device         14530    1 snd_seq
-snd_hda_intel            29539    10
-snd_hda_codec         105907  3 
-snd_hda_codec_hdmi,snd_hda_codec_via,snd_hda_intel
-snd_hwdep               13604    1 snd_hda_codec
-snd_pcm                   81432    7 
-snd_pcm_oss,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec
-snd_timer                  25525    5 snd_seq,snd_pcm
-snd_pcm_oss,snd_mixer_oss,snd_seq,snd_seq_device,snd_hda_codec_hdmi,
-snd_hda-codec_via,snd_hda_soundcore              15165  1 snd
+Hi Mark,
+Since zhaoming leaved Freescale a few month ago,
+would you mind if I send a patch to add my name under MODULE_AHTOER as
+Co-maintainer for this driver and update Zhaoming's email address?
 
-
-Thanks again
-
--- 
-73 de Donn Washburn
-307 Savoy Street    Email:" n5xwb@comcast.net "
-Sugar Land, TX 77478 LL# 1.281.242.3256
-Ham Callsign N5XWB   HAMs : " n5xwb@arrl.net "
-VoIP via Skype:n5xwbg  BMWMOA #:4146 Ambassador
-       " http://counter.li.org " #279316
+Regards
+Dong Aisheng
