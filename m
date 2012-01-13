@@ -1,55 +1,58 @@
-From: Tejun Heo <htejun@gmail.com>
-Subject: Re: [PATCH 2/2] cuse: implement memory mapping
-Date: Fri, 13 Jan 2012 10:49:13 -0800
-Message-ID: <20120113184913.GB11112@google.com>
-References: <1326474399-27278-1-git-send-email-miklos@szeredi.hu>
- <1326474399-27278-3-git-send-email-miklos@szeredi.hu>
- <CA+55aFy7xLkMThg8+G=e7v7x7WaHSkLWGRiRF8hCq4WEUHxymw@mail.gmail.com>
+From: Ivan Bublikov <ivanbublikov@yahoo.com>
+Subject: Re: Hardware-specific IOCTLs
+Date: Fri, 13 Jan 2012 14:45:46 -0800 (PST)
+Message-ID: <1326494746.63666.YahooMailNeo@web121805.mail.ne1.yahoo.com>
+References: <1326471758.45923.YahooMailNeo@web121806.mail.ne1.yahoo.com>
+	<4F106A66.4080803@ladisch.de>
+Reply-To: Ivan Bublikov <ivanbublikov@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CA+55aFy7xLkMThg8+G=e7v7x7WaHSkLWGRiRF8hCq4WEUHxymw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, david.henningsson@canonical.com, smcnam@gmail.com, gmane@colin.guthr.ie, jamescaldwell1@gmail.com, s.maddox@lantizia.me.uk, mszeredi@suse.cz
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm38-vm1.bullet.mail.ne1.yahoo.com
+	(nm38-vm1.bullet.mail.ne1.yahoo.com [98.138.229.145])
+	by alsa0.perex.cz (Postfix) with SMTP id 9B9B524402
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 23:45:48 +0100 (CET)
+In-Reply-To: <4F106A66.4080803@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello, Linus.
 
-On Fri, Jan 13, 2012 at 10:19:50AM -0800, Linus Torvalds wrote:
-> On Fri, Jan 13, 2012 at 9:06 AM, Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > From: Tejun Heo <htejun@gmail.com>
-> >
-> > This implements memory mapping of char devices.
-> 
-> I don't think this is how you want to do it.
-> 
-> It seems to maintain a page list of its own, and do the magic page
-> fault etc behavior. Which to me smells like a really bad design.
-> 
-> I would expect that what you actually want to do is to expose it as a
-> shared mmap, and depend on all the normal shmem support. Is there any
-> reason not to do that?
-> 
-> I guess you don't generally have big mappings, so an argument like
-> "that way you can page out pages etc" may not strike you as a very
-> strong argument, but I'd still prefer to at least see that approach
-> explored. Hmm?
 
-The patch is years old and the original implementation had different
-requirements (it mapped the same pages in the client's and server's
-address spaces instead of using notifications).  I don't really
-remember the details but I tried to use shmem pretty hard but
-couldn't.  I *think* it was about having to accept random mapping
-offset.  ISTR shmem implementation wasn't too happy with randomish
-high mapping offset and I couldn't shift the mapping offset due to the
-direct mapping requirement (again, memory is quite fuzzy).
+> From: Clemens Ladisch <clemens@ladisch.de>
+> =
 
-With notification based implementation, it might be able to just shift
-the mapping offset and use shmem.  Miklos, what do you think?
+> Ivan Bublikov wrote:
+>> As an HDA codec vendor, I want to be able to control some functionality
+>> in my codec, that is not present in codecs from other vendors.=A0 [...]
+>> I can register an IOCTL handler using snd_ctl_register_ioctl.
+> =
 
-Thanks.
+> This functions is for ioctl calls on the ctl device, which is global
+> for one sound card and is not appropriate if one wants to address
+> something like a PCM device or a codec.
+> =
 
--- 
-tejun
+> For a HDA codec, use a hwdep device.
+
+OK, I understand I simply need to add a new case in hda_hwdep_ioctl().
+
+>> My difficulty is how to define a code for my IOCTL and avoid
+>> a conflict with the common code in the future.
+> =
+
+> Pick something not yet allocated in Documentation/ioctl/ioctl-number.txt.
+
+Since half of the=A0lines in it are marked "Conflict!" anyway, should I onl=
+y pay attention to not conflict with "sound/*" lines?=A0 And then add a new=
+ line for my IOCTLs? And should I put my IOCTL definitions in hda_hwdep.h o=
+r create a new file?
