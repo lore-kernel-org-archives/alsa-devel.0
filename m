@@ -1,20 +1,16 @@
-From: Jonathan Andrews <jon@jonshouse.co.uk>
-Subject: Re: Trying to understand alsa
-Date: Fri, 13 Jan 2012 01:25:32 +0000
-Message-ID: <1326417932.26936.5.camel@jonspc>
-References: <1326411940.23310.47.camel@jonspc>
-Reply-To: jon@jonshouse.co.uk
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: codecs: wm9090: Fix build warnings due
+	to unused variables
+Date: Thu, 12 Jan 2012 23:55:59 -0200
+Message-ID: <1326419759-14853-1-git-send-email-festevam@gmail.com>
+Content-Type: multipart/mixed; boundary="===============2575078280996627456=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFFC224498
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 02:22:06 +0100 (CET)
-Received: from [10.10.10.6] (jonspc [10.10.10.6])
-	by mail.jonshouse.co.uk (8.14.1/8.13.8) with ESMTP id q0D1PVus007596
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 01:25:38 GMT
-In-Reply-To: <1326411940.23310.47.camel@jonspc>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E57924332
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2012 02:56:12 +0100 (CET)
+Received: by ghrr11 with SMTP id r11so686469ghr.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2012 17:56:10 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-01-12 at 23:45 +0000, Jonathan Andrews wrote:
-> On Thu, 2012-01-12 at 16:12 -0600, Andrew Eikum wrote:
-> > On Thu, Jan 12, 2012 at 09:44:11PM +0000, Jonathan Andrews wrote:
-> > > I have an application that works using 512 sample packets of 22050Hz 16
-> > > bit mono audio.  The 'receiver' takes many audio streams from a network
-> > > via UDP, at the moment it pipes them into pulse.
-> > > 
-> > > Can alsa buffer audio. At the moment every time I and set an audio
-> > > buffer size I get a negative response from
-> > > snd_pcm_hw_params_set_buffer_size .  I'm somewhat confused about the
-> > > units alsa uses ...
-> > > 
-> > 
-> > You don't want to over-specify your requirements. You require a buffer
-> > size of "at least" 3 * 512 frames. So use set_buffer_size_min().
-> 
-> I cant find any reference to "set_buffer_size_min" in the ALSA API
-> documentation I have or the link you provided ?
-> snd_pcm_hw_params_set_buffer_time_near() is the closest and that seems
-> to take an argument in useconds.  
-> ?
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html
+--===============2575078280996627456==
 
-Scrub that, found it in the end ..... Im over 40, I miss plain old
-manuals .....
+Fix the following build warnings:
+
+sound/soc/codecs/wm9090.c: In function ‘wm9090_set_bias_level’:
+sound/soc/codecs/wm9090.c:496: warning: unused variable ‘ret’
+sound/soc/codecs/wm9090.c:496: warning: unused variable ‘i’
+sound/soc/codecs/wm9090.c:495: warning: unused variable ‘reg_cache’
+sound/soc/codecs/wm9090.c: In function ‘wm9090_i2c_remove’:
+sound/soc/codecs/wm9090.c:658: warning: unused variable ‘wm9090’
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/wm9090.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index 41ebe0d..acac7d6 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -492,9 +492,6 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
+ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+-	u16 *reg_cache = codec->reg_cache;
+-	int i, ret;
+-
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		break;
+@@ -655,8 +652,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 
+ static int __devexit wm9090_i2c_remove(struct i2c_client *i2c)
+ {
+-	struct wm9090_priv *wm9090 = i2c_get_clientdata(i2c);
+-
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 
+ 	return 0;
+-- 
+1.7.1
+
+
+--===============2575078280996627456==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2575078280996627456==--
