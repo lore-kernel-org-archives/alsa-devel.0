@@ -1,16 +1,21 @@
-From: Wayne Tams <wayne.tams@gmail.com>
-Subject: Unable to see ADC output data with ADAV801
-Date: Tue, 17 Jan 2012 12:29:03 +0000
-Message-ID: <CAN=k24=OeT10vuo1Z5gLXtjw5zV_Cd7Uxmmf20KRgeEf2A2doQ@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: Allow drivers to specify how
+ many bits are significant on a DAI
+Date: Tue, 17 Jan 2012 14:06:44 +0100
+Message-ID: <4F157264.5020102@ti.com>
+References: <1326739267-9678-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<4F15377B.6080108@ti.com>
+	<20120117113848.GE2944@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF4B4245E2
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 13:29:25 +0100 (CET)
-Received: by eeke52 with SMTP id e52so168066eek.38
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 04:29:24 -0800 (PST)
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69]) by alsa0.perex.cz (Postfix) with ESMTP id 3EE7A24366
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 14:06:56 +0100 (CET)
+Received: by mail-gy0-f176.google.com with SMTP id g2so686328ghb.7
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 05:06:48 -0800 (PST)
+In-Reply-To: <20120117113848.GE2944@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 01/17/2012 12:38 PM, Mark Brown wrote:
+>> Might be not an issue to say that we have 24msbit on the 8bit sample,
+>> but it does not sound right.
+> =
 
-I am attempting to add ADAV801 codec support to my 2.6.35 kernel to be
-used with an ARM processor. I can see that there is a mainlined
-adav80x.c driver that appears at kernel version 3.1, I have had a
-quick look at back-porting the driver but this looks as though it
-could get quite messy.
+> It shouldn't hurt and it is potentially useful to the application to
+> know that things will be converted up by the hardware; unless there's a
+> great reason to do so I'd rather not hide the information.
 
-However, I did come across an older ADAV801 driver which looks a lot
-simpler, but I cannot find it in previous mainlined kernel versions,
-http://www.spinics.net/lists/alsa-devel/msg36465.html, so I thought I
-would use this as a basis for my own driver.
+I can only speak in behalf of OMAP, twl4030, tlv320dac33 here, but the
+24msbit only applies to 32bit samples. In case of 16 bit the samples are
+not converted in any way, they are processed as 16 bit data.
+So if we say 24msbit for 16bit sample we are not correct. It is correct
+for 32bit sample.
+I would think most of the codecs/cpus are working in a same way.
 
->From what I understand from the datasheet and the way the older driver
-has configured the registers on the ADAV801 I should be able to see
-some data on the record outputs, however this is not the case. Could
-anyone confirm whether or not this driver dated August 2010 is OK to
-use? Or perhaps some advice on areas to look at that may be preventing
-the CODEC from manipulating and outputting the digital conversion.
+-- =
 
-Best regards
-
-Wayne
+P=E9ter
