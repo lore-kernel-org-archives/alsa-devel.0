@@ -1,18 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] ALSA ymfpci - Don't create rear device,
- 4ch device and 4ch duplication switch when AC97 codec does not has
- SDAC bit
-Date: Tue, 17 Jan 2012 12:05:26 +0800
-Message-ID: <CAN8cciaLW=arna6DMZtQxzhDPtKqXz9fNKw7dX72-_EVYG8a9A@mail.gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] ASoC: Fix DMA channel leak in
+	imx-pcm-dma-mx2 driver.
+Date: Tue, 17 Jan 2012 09:19:51 +0100
+Message-ID: <20120117081951.GT5446@pengutronix.de>
+References: <1326367838-12947-1-git-send-email-javier.martin@vista-silicon.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=f46d043c7fbae4567604b6b1709a
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96B6424361
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 05:05:26 +0100 (CET)
-Received: by wico1 with SMTP id o1so1441561wic.38
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2012 20:05:26 -0800 (PST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 9BEEB2453E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 09:19:54 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1326367838-12947-1-git-send-email-javier.martin@vista-silicon.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,89 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, arnaud.patard@rtp-net.org
 List-Id: alsa-devel@alsa-project.org
 
---f46d043c7fbae4567604b6b1709a
-Content-Type: text/plain; charset=ISO-8859-1
+On Thu, Jan 12, 2012 at 12:30:38PM +0100, Javier Martin wrote:
+> "snd_imx_pcm_hw_params" callback can be called
+> several times by the user (i.e. OSS emulation)
+> leading to a DMA channel leak.
 
-[PATCH] ALSA ymfpci - Don't create rear device, 4ch device and 4ch
-duplication switch when AC97 codec does not has SDAC bit
+Then maybe this means that imx_ssi_dma_alloc is called from the wrong
+place. I think it should be called from the
+snd_soc_platform_driver.pcm_new callback.
 
-- check SDAC bit of AC97 primary codec when create "rear" device 3,
-  "4ch" device 2 and "4ch Duplication" switch as the card need a four channels
-  AC97 codec to support surround40.
+Sascha
 
---f46d043c7fbae4567604b6b1709a
-Content-Type: application/octet-stream;
-	name="0001-ymfpci-Don-t-create-rear-device-4ch-device-and-4c.patch"
-Content-Disposition: attachment;
-	filename="0001-ymfpci-Don-t-create-rear-device-4ch-device-and-4c.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
+> 
+> Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+> ---
+>  sound/soc/imx/imx-pcm-dma-mx2.c |   12 +++++++-----
+>  1 files changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
+> index 43fdc24..d2bb1cb 100644
+> --- a/sound/soc/imx/imx-pcm-dma-mx2.c
+> +++ b/sound/soc/imx/imx-pcm-dma-mx2.c
+> @@ -88,11 +88,13 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
+>  	iprtd->dma_data.dma_request = dma_params->dma;
+>  
+>  	/* Try to grab a DMA channel */
+> -	dma_cap_zero(mask);
+> -	dma_cap_set(DMA_SLAVE, mask);
+> -	iprtd->dma_chan = dma_request_channel(mask, filter, iprtd);
+> -	if (!iprtd->dma_chan)
+> -		return -EINVAL;
+> +	if (!iprtd->dma_chan) {
+> +		dma_cap_zero(mask);
+> +		dma_cap_set(DMA_SLAVE, mask);
+> +		iprtd->dma_chan = dma_request_channel(mask, filter, iprtd);
+> +		if (!iprtd->dma_chan)
+> +			return -EINVAL;
+> +	}
+>  
+>  	switch (params_format(params)) {
+>  	case SNDRV_PCM_FORMAT_S16_LE:
+> -- 
+> 1.7.0.4
+> 
+> 
 
-RnJvbSAyMTA4MzY2NTJjZjIwMzg1ZjE5YjE3Nzk0NzQ1Mzc4YjI1MzZlYzA3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBUdWUsIDE3IEphbiAyMDEyIDExOjQxOjQ3ICswODAwClN1YmplY3Q6IFtQQVRD
-SF0gQUxTQSB5bWZwY2kgLSBEb24ndCBjcmVhdGUgcmVhciBkZXZpY2UsIDRjaCBkZXZpY2UgYW5k
-IDRjaCBkdXBsaWNhdGlvbiBzd2l0Y2ggd2hlbiBBQzk3IGNvZGVjIGRvZXMgbm90IGhhcyBTREFD
-IGJpdAoKLSBjaGVjayBTREFDIGJpdCBvZiBBQzk3IHByaW1hcnkgY29kZWMgd2hlbiBjcmVhdGUg
-InJlYXIiIGRldmljZSAzLAogICI0Y2giIGRldmljZSAyIGFuZCAiNGNoIER1cGxpY2F0aW9uIiBz
-d2l0Y2ggYXMgdGhlIGNhcmQgbmVlZCBhIGZvdXIgY2hhbm5lbHMKICBBQzk3IGNvZGVjIHRvIHN1
-cHBvcnQgc3Vycm91bmQ0MC4KClNpZ25lZC1vZmYtYnk6IFJheW1vbmQgWWF1IDxzdXBlcnF1YWQu
-dm9ydGV4MkBnbWFpbC5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL3ltZnBjaS95bWZwY2ku
-YyBiL3NvdW5kL3BjaS95bWZwY2kveW1mcGNpLmMKaW5kZXggZTU3Yjg5ZS4uOTRhYjcyOCAxMDA2
-NDQKLS0tIGEvc291bmQvcGNpL3ltZnBjaS95bWZwY2kuYworKysgYi9zb3VuZC9wY2kveW1mcGNp
-L3ltZnBjaS5jCkBAIC0yODYsMTcgKzI4NiwyMiBAQCBzdGF0aWMgaW50IF9fZGV2aW5pdCBzbmRf
-Y2FyZF95bWZwY2lfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBjaSwKIAkJc25kX2NhcmRfZnJlZShj
-YXJkKTsKIAkJcmV0dXJuIGVycjsKIAl9Ci0JaWYgKChlcnIgPSBzbmRfeW1mcGNpX3BjbV80Y2go
-Y2hpcCwgMiwgTlVMTCkpIDwgMCkgeworCWVyciA9IHNuZF95bWZwY2lfbWl4ZXIoY2hpcCwgcmVh
-cl9zd2l0Y2hbZGV2XSk7CisJaWYgKGVyciA8IDApIHsKIAkJc25kX2NhcmRfZnJlZShjYXJkKTsK
-IAkJcmV0dXJuIGVycjsKIAl9Ci0JaWYgKChlcnIgPSBzbmRfeW1mcGNpX3BjbTIoY2hpcCwgMywg
-TlVMTCkpIDwgMCkgewotCQlzbmRfY2FyZF9mcmVlKGNhcmQpOwotCQlyZXR1cm4gZXJyOwotCX0K
-LQlpZiAoKGVyciA9IHNuZF95bWZwY2lfbWl4ZXIoY2hpcCwgcmVhcl9zd2l0Y2hbZGV2XSkpIDwg
-MCkgewotCQlzbmRfY2FyZF9mcmVlKGNhcmQpOwotCQlyZXR1cm4gZXJyOworCWlmIChjaGlwLT5h
-Yzk3LT5leHRfaWQgJiBBQzk3X0VJX1NEQUMpIHsKKwkJZXJyID0gc25kX3ltZnBjaV9wY21fNGNo
-KGNoaXAsIDIsIE5VTEwpOworCQlpZiAoZXJyIDwgMCkgeworCQkJc25kX2NhcmRfZnJlZShjYXJk
-KTsKKwkJCXJldHVybiBlcnI7CisJCX0KKwkJZXJyID0gc25kX3ltZnBjaV9wY20yKGNoaXAsIDMs
-IE5VTEwpOworCQlpZiAoZXJyIDwgMCkgeworCQkJc25kX2NhcmRfZnJlZShjYXJkKTsKKwkJCXJl
-dHVybiBlcnI7CisJCX0KIAl9CiAJaWYgKChlcnIgPSBzbmRfeW1mcGNpX3RpbWVyKGNoaXAsIDAp
-KSA8IDApIHsKIAkJc25kX2NhcmRfZnJlZShjYXJkKTsKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS95
-bWZwY2kveW1mcGNpX21haW4uYyBiL3NvdW5kL3BjaS95bWZwY2kveW1mcGNpX21haW4uYwppbmRl
-eCAwM2VlNGUzLi4xMmE5YTJiIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kveW1mcGNpL3ltZnBjaV9t
-YWluLmMKKysrIGIvc291bmQvcGNpL3ltZnBjaS95bWZwY2lfbWFpbi5jCkBAIC0xNjE0LDYgKzE2
-MTQsMTQgQEAgc3RhdGljIGludCBzbmRfeW1mcGNpX3B1dF9kdXA0Y2goc3RydWN0IHNuZF9rY29u
-dHJvbCAqa2NvbnRyb2wsIHN0cnVjdCBzbmRfY3RsX2UKIAlyZXR1cm4gY2hhbmdlOwogfQogCitz
-dGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgc25kX3ltZnBjaV9kdXA0Y2ggX19kZXZpbml0
-ZGF0YSA9IHsKKwkuaWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUiwKKwkubmFtZSA9
-ICI0Y2ggRHVwbGljYXRpb24iLAorCS5hY2Nlc3MgPSBTTkRSVl9DVExfRUxFTV9BQ0NFU1NfUkVB
-RFdSSVRFLAorCS5pbmZvID0gc25kX3ltZnBjaV9pbmZvX2R1cDRjaCwKKwkuZ2V0ID0gc25kX3lt
-ZnBjaV9nZXRfZHVwNGNoLAorCS5wdXQgPSBzbmRfeW1mcGNpX3B1dF9kdXA0Y2gsCit9OwogCiBz
-dGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgc25kX3ltZnBjaV9jb250cm9sc1tdIF9fZGV2
-aW5pdGRhdGEgPSB7CiB7CkBAIC0xNjQyLDEzICsxNjUwLDYgQEAgWU1GUENJX0RPVUJMRShTTkRS
-Vl9DVExfTkFNRV9JRUM5NTgoIiIsQ0FQVFVSRSxWT0xVTUUpLCAxLCBZRFNYR1JfU1BESUZMT09Q
-Vk9MKSwKIFlNRlBDSV9TSU5HTEUoU05EUlZfQ1RMX05BTUVfSUVDOTU4KCIiLFBMQVlCQUNLLFNX
-SVRDSCksIDAsIFlEU1hHUl9TUERJRk9VVENUUkwsIDApLAogWU1GUENJX1NJTkdMRShTTkRSVl9D
-VExfTkFNRV9JRUM5NTgoIiIsQ0FQVFVSRSxTV0lUQ0gpLCAwLCBZRFNYR1JfU1BESUZJTkNUUkws
-IDApLAogWU1GUENJX1NJTkdMRShTTkRSVl9DVExfTkFNRV9JRUM5NTgoIkxvb3AiLE5PTkUsTk9O
-RSksIDAsIFlEU1hHUl9TUERJRklOQ1RSTCwgNCksCi17Ci0JLmlmYWNlID0gU05EUlZfQ1RMX0VM
-RU1fSUZBQ0VfTUlYRVIsCi0JLm5hbWUgPSAiNGNoIER1cGxpY2F0aW9uIiwKLQkuaW5mbyA9IHNu
-ZF95bWZwY2lfaW5mb19kdXA0Y2gsCi0JLmdldCA9IHNuZF95bWZwY2lfZ2V0X2R1cDRjaCwKLQku
-cHV0ID0gc25kX3ltZnBjaV9wdXRfZHVwNGNoLAotfSwKIH07CiAKIApAQCAtMTgzOCw2ICsxODM5
-LDEyIEBAIGludCBfX2RldmluaXQgc25kX3ltZnBjaV9taXhlcihzdHJ1Y3Qgc25kX3ltZnBjaSAq
-Y2hpcCwgaW50IHJlYXJfc3dpdGNoKQogCQlpZiAoKGVyciA9IHNuZF9jdGxfYWRkKGNoaXAtPmNh
-cmQsIHNuZF9jdGxfbmV3MSgmc25kX3ltZnBjaV9jb250cm9sc1tpZHhdLCBjaGlwKSkpIDwgMCkK
-IAkJCXJldHVybiBlcnI7CiAJfQorCWlmIChjaGlwLT5hYzk3LT5leHRfaWQgJiBBQzk3X0VJX1NE
-QUMpIHsKKwkJa2N0bCA9IHNuZF9jdGxfbmV3MSgmc25kX3ltZnBjaV9kdXA0Y2gsIGNoaXApOwor
-CQllcnIgPSBzbmRfY3RsX2FkZChjaGlwLT5jYXJkLCBrY3RsKTsKKwkJaWYgKGVyciA8IDApCisJ
-CQlyZXR1cm4gZXJyOworCX0KIAogCS8qIGFkZCBTL1BESUYgY29udHJvbCAqLwogCWlmIChzbmRf
-QlVHX09OKCFjaGlwLT5wY21fc3BkaWYpKQotLSAKMS42LjAuNgoK
---f46d043c7fbae4567604b6b1709a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---f46d043c7fbae4567604b6b1709a--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
