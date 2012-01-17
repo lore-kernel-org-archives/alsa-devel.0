@@ -1,27 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: Allow drivers to specify how
- many bits are significant on a DAI
-Date: Tue, 17 Jan 2012 18:59:53 +0000
-Message-ID: <20120117185953.GN2944@opensource.wolfsonmicro.com>
-References: <20120117113848.GE2944@opensource.wolfsonmicro.com>
-	<4F157264.5020102@ti.com>
-	<20120117131950.GF2944@opensource.wolfsonmicro.com>
-	<4F15833B.2000808@ti.com>
-	<20120117145646.GG2944@opensource.wolfsonmicro.com>
-	<4F159CE2.4090306@ti.com>
-	<20120117164452.GJ2944@opensource.wolfsonmicro.com>
-	<4F15B611.2080808@ti.com>
-	<20120117181709.GM2944@opensource.wolfsonmicro.com>
-	<4F15C331.1020701@ti.com>
+Subject: [PATCH] ASoC: When releasing WM5100 put /RESET into
+	reset
+Date: Tue, 17 Jan 2012 19:19:15 +0000
+Message-ID: <1326827955-30443-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE727103A71
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 19:59:56 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4F15C331.1020701@ti.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 10097103A75
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2012 20:19:22 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,30 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 17, 2012 at 07:51:29PM +0100, Peter Ujfalusi wrote:
+Reset is active low, make sure we leave it asserted when release the
+device.
 
-> >> Yeah, but it is not correct. If it does not know this we have 8bit
-> >> 'latency' in gain control. Pulse can change the gain which will have no
-> >> effect.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5100.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-> > Which will have the same overall effect as if it doesn't do anything
-> > based on knowing the resolution.
-
-> But we still 'loose' 8bits. It might be not a big loss at the end when
-> PA for example applies the gain, but for sure we will loose resolution
-> (8bit worth).
-
-Whereas if you do the gain to the lower resolution you'll discard the
-same amount of information...
-
-> My only problem is to say this to application: "out of 8/16bit you
-> should use 24msb". AFAIK this is the meaning of the constraint. This
-> constraint makes sense for 32bit samples: "out of 32bit you should use
-> 24msb".
-
-Well, like I say I don't see this as a problem and have no intention of
-writing any code to handle that myself.
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 9995d14..0e38a24 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2901,7 +2901,7 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
+ err_reset:
+ 	wm5100_free_gpio(i2c);
+ 	if (wm5100->pdata.reset) {
+-		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
++		gpio_set_value_cansleep(wm5100->pdata.reset, 0);
+ 		gpio_free(wm5100->pdata.reset);
+ 	}
+ err_ldo:
+@@ -2934,7 +2934,7 @@ static __devexit int wm5100_i2c_remove(struct i2c_client *client)
+ 	snd_soc_unregister_codec(&client->dev);
+ 	wm5100_free_gpio(client);
+ 	if (wm5100->pdata.reset) {
+-		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
++		gpio_set_value_cansleep(wm5100->pdata.reset, 0);
+ 		gpio_free(wm5100->pdata.reset);
+ 	}
+ 	if (wm5100->pdata.ldo_ena) {
+-- 
+1.7.7.3
