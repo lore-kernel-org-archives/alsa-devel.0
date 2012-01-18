@@ -1,19 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 2/7] ASoC: Apply msbits constraint for
-	sample size bigger than the msbits
-Date: Wed, 18 Jan 2012 10:51:03 +0100
-Message-ID: <1326880268-3509-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 5/7] ASoC: omap-mcpdm: Set 24msbits
+	constraint
+Date: Wed, 18 Jan 2012 10:51:06 +0100
+Message-ID: <1326880268-3509-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1326880268-3509-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog118.obsmtp.com (na3sys009aog118.obsmtp.com
-	[74.125.149.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BB801038A9
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 10:51:31 +0100 (CET)
-Received: by ggdk5 with SMTP id k5so3676109ggd.25
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 01:51:29 -0800 (PST)
+Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
+	[74.125.149.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75BAF245CA
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 10:51:38 +0100 (CET)
+Received: by yhnn12 with SMTP id n12so1863434yhn.17
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 01:51:37 -0800 (PST)
 In-Reply-To: <1326880268-3509-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,44 +28,33 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In order to avoid confusing the applications with msbits bigger
-than the selected sample size apply the msbits constraint only
-to sample seze bigger than the requested msbits.
+McPDM internal FIFO is 24 bit wide. From the 32 bit sample
+8 bit is discarded. Let application know about this
+via msbits constraint.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/soc-pcm.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap-mcpdm.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 8bb1793..e150ede 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -68,13 +68,14 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
-  * like the DAC/ADC resolution to use but there isn't right now.
-  */
- static int sample_sizes[] = {
--	8, 16, 24, 32,
-+	32, 24, 16, 8,
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 0e25df4..3970556 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -419,12 +419,14 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 		.channels_max = 5,
+ 		.rates = OMAP_MCPDM_RATES,
+ 		.formats = OMAP_MCPDM_FORMATS,
++		.sig_bits = 24,
+ 	},
+ 	.capture = {
+ 		.channels_min = 1,
+ 		.channels_max = 3,
+ 		.rates = OMAP_MCPDM_RATES,
+ 		.formats = OMAP_MCPDM_FORMATS,
++		.sig_bits = 24,
+ 	},
+ 	.ops = &omap_mcpdm_dai_ops,
  };
- 
- static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
--	int ret, i, bits;
-+	int i, bits;
-+	int ret = 0;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		bits = dai->driver->playback.sig_bits;
-@@ -85,6 +86,8 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
- 		return;
- 
- 	for (i = 0; i < ARRAY_SIZE(sample_sizes); i++) {
-+		if (sample_sizes[i] <= bits)
-+			break;
- 		ret = snd_pcm_hw_constraint_msbits(substream->runtime,
- 						   0, sample_sizes[i],
- 						   bits);
 -- 
 1.7.8.3
