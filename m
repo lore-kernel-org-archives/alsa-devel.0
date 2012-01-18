@@ -1,18 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 0/5] ASoC: updates for core support for
-	msbits constraints
-Date: Wed, 18 Jan 2012 12:18:21 +0100
-Message-ID: <1326885506-6140-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v4 5/5] ASoC: twl4030: Use core to set the
+	msbits constraint
+Date: Wed, 18 Jan 2012 12:18:26 +0100
+Message-ID: <1326885506-6140-6-git-send-email-peter.ujfalusi@ti.com>
+References: <1326885506-6140-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
-	[74.125.149.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6031E103B48
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97EEA103B41
 	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 12:18:53 +0100 (CET)
-Received: by mail-gx0-f180.google.com with SMTP id k5so5363365ggd.39
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 03:18:40 -0800 (PST)
+Received: by ghrr16 with SMTP id r16so1519291ghr.17
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 03:18:52 -0800 (PST)
+In-Reply-To: <1326885506-6140-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,36 +28,42 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Core can set the msbits constraint in behalf of the dai.
 
-Changes from v3:
-- no need to initialize ret to zero in soc_pcm_apply_msb. The function is void.
-- created against for-3.4 branch (leaving out already applied patches)
-
-Intro mail for v1:
-I would prefer to have the msbits constraints to be applied to only sample sizes
-bigger than the requested msbits from dais.
-I'm resending your patch plus the modification which will make the possible.
-I have also converted the drivers I know have this constraint.
-
-If you prefer, you can squash the first two patch.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (5):
-  ASoC: Apply msbits constraint for sample size bigger than the msbits
-  ASoC: omap-dmic: Use core to set the msbits constraint
-  ASoC: omap-mcpdm: Set 24msbits constraint
-  ASoC: tlv320dac33: Use core to set the msbits constraint
-  ASoC: twl4030: Use core to set the msbits constraint
+ sound/soc/codecs/twl4030.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
- sound/soc/codecs/tlv320dac33.c |    3 +--
- sound/soc/codecs/twl4030.c     |    7 ++++---
- sound/soc/omap/omap-dmic.c     |    7 +++----
- sound/soc/omap/omap-mcpdm.c    |    2 ++
- sound/soc/soc-pcm.c            |    4 +++-
- 5 files changed, 13 insertions(+), 10 deletions(-)
-
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 18e7101..a193f5f 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1689,7 +1689,6 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+ 
+-	snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
+ 	if (twl4030->master_substream) {
+ 		twl4030->slave_substream = substream;
+ 		/* The DAI has one configuration for playback and capture, so
+@@ -2175,13 +2174,15 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
+ 		.channels_min = 2,
+ 		.channels_max = 4,
+ 		.rates = TWL4030_RATES | SNDRV_PCM_RATE_96000,
+-		.formats = TWL4030_FORMATS,},
++		.formats = TWL4030_FORMATS,
++		.sig_bits = 24,},
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 2,
+ 		.channels_max = 4,
+ 		.rates = TWL4030_RATES,
+-		.formats = TWL4030_FORMATS,},
++		.formats = TWL4030_FORMATS,
++		.sig_bits = 24,},
+ 	.ops = &twl4030_dai_hifi_ops,
+ },
+ {
 -- 
 1.7.8.3
