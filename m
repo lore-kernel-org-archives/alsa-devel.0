@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5] ASoC: Apply msbits constraint for
- sample size bigger than the msbits
-Date: Wed, 18 Jan 2012 15:29:05 +0000
-Message-ID: <20120118152905.GP8732@opensource.wolfsonmicro.com>
-References: <1326899114-26979-1-git-send-email-peter.ujfalusi@ti.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH 1/2] ASoC: tlv320aic32x4: always enable
+	dividers
+Date: Wed, 18 Jan 2012 16:29:16 +0100
+Message-ID: <CACKLOr3On8ZZ+K3J4YbE21H-QKimHROMOCL0rqaA02gX7EMseA@mail.gmail.com>
+References: <1326883739-8148-1-git-send-email-w.sang@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14E002465C
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 16:29:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1326899114-26979-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A32A3103B4D
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 16:29:16 +0100 (CET)
+Received: by wico1 with SMTP id o1so2815394wic.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 07:29:16 -0800 (PST)
+In-Reply-To: <1326883739-8148-1-git-send-email-w.sang@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 18, 2012 at 04:05:14PM +0100, Peter Ujfalusi wrote:
+On 18 January 2012 11:48, Wolfram Sang <w.sang@pengutronix.de> wrote:
+> Dividers (such as MDAC) are always needed, independent of the codec
+> being I2S master or slave. Needed on a custom board where the codec has
+> to be slave.
+>
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 
-> Converted to use while loop.
-> We run the loop as long as the sample size is bigger than the requested
-> msbits.
-
-I'm not sure this is actually a legibility improvement, if anything it's
-probably less clear than the original as now the setup of the loop is
-spread even further around the function.
-
-> Most of the drivers require 24/32 configuration, so not point of looping
-> for smaller sample sizes.
-
-Performance isn't really a concern in this path unless we do something
-totally insane.  Thinking time on the part of the reader needs to be
-considered too...
+Acked-by: Javier Martin <javier.martin@vista-silicon.com>
