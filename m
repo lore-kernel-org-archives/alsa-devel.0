@@ -1,18 +1,17 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix wrong register name
-	in restore
-Date: Wed, 18 Jan 2012 06:09:00 +0000
-Message-ID: <7FE21149F4667147B645348EC6057885093CC1@039-SN2MPN1-013.039d.mgd.msft.net>
-References: <1326866287-16283-1-git-send-email-zengzm.kernel@gmail.com>
+From: Roman Haefeli <reduzent@gmail.com>
+Subject: hdsp rpm support
+Date: Wed, 18 Jan 2012 10:05:59 +0100
+Message-ID: <1326877559.24738.84.camel@yoyo4>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE008.bigfish.com (va3ehsobe001.messaging.microsoft.com
-	[216.32.180.11]) by alsa0.perex.cz (Postfix) with ESMTP id 8649E244F7
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 07:09:10 +0100 (CET)
-In-Reply-To: <1326866287-16283-1-git-send-email-zengzm.kernel@gmail.com>
-Content-Language: en-US
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8713A245A8
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 10:06:03 +0100 (CET)
+Received: by wera13 with SMTP id a13so2119125wer.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 01:06:02 -0800 (PST)
+In-Reply-To: 47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "zengzm.kernel@gmail.com" <zengzm.kernel@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "julia.lawall@lip6.fr" <julia.lawall@lip6.fr>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "festevam@gmail.com" <festevam@gmail.com>, "lrg@ti.com" <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: zengzm.kernel@gmail.com [mailto:zengzm.kernel@gmail.com]
-> Sent: Wednesday, January 18, 2012 1:58 PM
-> To: alsa-devel@alsa-project.org
-> Cc: Dong Aisheng-B29396; broonie@opensource.wolfsonmicro.com;
-> julia.lawall@lip6.fr; festevam@gmail.com; w.sang@pengutronix.de;
-> shawn.guo@linaro.org; lrg@ti.com; zengzm.kernel@gmail.com
-> Subject: [PATCH v2] ASoC: sgtl5000: Fix wrong register name in restore
-> Importance: High
-> 
-> From: Zeng Zhaoming <zengzm.kernel@gmail.com>
-> 
-> Correct SGTL5000_CHIP_CLK_CTRL to SGTL5000_CHIP_REF_CTRL in
-> sgtl5000_restore_regs(), and add comment to explain the restore order.
-> 
-> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-> Signed-off-by: Zeng Zhaoming <zengzm.kernel@gmail.com>
-> ---
->  sound/soc/codecs/sgtl5000.c |   17 +++++++++++++----
->  1 files changed, 13 insertions(+), 4 deletions(-)
-> 
+Hi everyone
 
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
+I would like to know current state of the RME HDSP RPM support. There
+was a thread [1] in 2008 on this list about the issue and things looked
+promising back then. However, I'm still unable to upload the firmware
+with alsa-driver from git on my Ubuntu 11.04 (32bit) machine with a
+2.6.38 kernel. I posted a detailed description of the issue on the
+alsa-user list here [2].
 
-Regards
-Dong Aisheng
+Is it supposed to work with Cardbus? If not, is there something I can do
+to help support it?
+
+Any hints appreciated.
+
+Roman
+
+
+
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-May/008128.html
+
+[2] http://article.gmane.org/gmane.linux.alsa.user/36022
