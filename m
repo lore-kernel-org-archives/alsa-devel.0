@@ -1,55 +1,54 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH 6/7] ASoC: SIU: prepare for conversion to simple DMA
-Date: Wed, 18 Jan 2012 11:22:37 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1201181117590.28782@axis700.grange>
-References: <Pine.LNX.4.64.1201181025280.28782@axis700.grange>
+From: Fons Adriaensen <fons@linuxaudio.org>
+Subject: Re: hdsp rpm support
+Date: Wed, 18 Jan 2012 10:26:58 +0000
+Message-ID: <20120118102658.GA5351@linuxaudio.org>
+References: <1326877559.24738.84.camel@yoyo4>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1201181025280.28782@axis700.grange>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lists.linuxaudio.org (bukvic.music.vt.edu [198.82.152.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34F29244B4
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 11:27:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1326877559.24738.84.camel@yoyo4>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
- sound/soc/sh/siu_pcm.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+On Wed, Jan 18, 2012 at 10:05:59AM +0100, Roman Haefeli wrote:
 
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index f8f6816..6390fec 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -330,12 +330,12 @@ static bool filter(struct dma_chan *chan, void *slave)
- {
- 	struct sh_dmae_slave *param = slave;
- 
--	pr_debug("%s: slave ID %d\n", __func__, param->slave_id);
-+	pr_debug("%s: slave ID %d\n", __func__, param->simple_slave.slave_id);
- 
- 	if (unlikely(param->dma_dev != chan->device->dev))
- 		return false;
- 
--	chan->private = param;
-+	chan->private = &param->simple_slave;
- 	return true;
- }
- 
-@@ -360,12 +360,12 @@ static int siu_pcm_open(struct snd_pcm_substream *ss)
- 	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		siu_stream = &port_info->playback;
- 		param = &siu_stream->param;
--		param->slave_id = port ? pdata->dma_slave_tx_b :
-+		param->simple_slave.slave_id = port ? pdata->dma_slave_tx_b :
- 			pdata->dma_slave_tx_a;
- 	} else {
- 		siu_stream = &port_info->capture;
- 		param = &siu_stream->param;
--		param->slave_id = port ? pdata->dma_slave_rx_b :
-+		param->simple_slave.slave_id = port ? pdata->dma_slave_rx_b :
- 			pdata->dma_slave_rx_a;
- 	}
- 
+> I would like to know current state of the RME HDSP RPM support. There
+> was a thread [1] in 2008 on this list about the issue and things looked
+> promising back then. However, I'm still unable to upload the firmware
+> with alsa-driver from git on my Ubuntu 11.04 (32bit) machine with a
+> 2.6.38 kernel. I posted a detailed description of the issue on the
+> alsa-user list here [2].
+
+It seems that the developer of the driver - Adrian Knoth - has
+two versions: one that works for me, and one that works for
+another user. 
+
+AFAICS, the problem is with the code that identifies the card
+as an RPM, Multiface or Digiface, and that triggers ths HW into
+accepting the firmware. Once past this point everything works
+perfectly, including switching the phone preamps etc.
+
+I've use it with both Cardbus and ExpressCard.
+
+One more user would probably help...
+
+Ciao,
+
 -- 
-1.7.2.5
+FA
+
+Vor uns liegt ein weites Tal, die Sonne scheint - ein Glitzerstrahl.
