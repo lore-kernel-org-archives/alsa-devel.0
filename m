@@ -1,46 +1,55 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH 0/7] extract a simple dmaengine library from
-	shdma.c
-Date: Wed, 18 Jan 2012 11:22:14 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1201181025280.28782@axis700.grange>
+Subject: [PATCH 6/7] ASoC: SIU: prepare for conversion to simple DMA
+Date: Wed, 18 Jan 2012 11:22:37 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1201181117590.28782@axis700.grange>
+References: <Pine.LNX.4.64.1201181025280.28782@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 673A1244B4
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 11:22:18 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.1201181025280.28782@axis700.grange>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, "Shimoda,
-	Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series has been triggered by a recent series by Shimoda-san
-http://www.spinics.net/lists/linux-sh/index.html#09895
-In a follow up to that thread it has been decided to extract a common 
-library from the current shdma driver to be re-used by other dmaengine 
-drivers. Primarily this library provides a flexible transfer descriptor 
-management for hardware, that does not dupport scatter-gather lists 
-natively. In such cases this library can be used to split transfer 
-requests into smaller chunks, up to the size, supported by the specific 
-hardware, enter them onto a linked list, thack their completion and call 
-user callbacks. This is a first shot, aimed to be used by the SUDMAC 
-driver. Once it is confirmed, that this version can be conveniently used 
-with it, I'll do some cosmetic clean up, notably, add / improve 
-documentation:-)
-
-Thanks
-Guennadi
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 ---
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+ sound/soc/sh/siu_pcm.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index f8f6816..6390fec 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -330,12 +330,12 @@ static bool filter(struct dma_chan *chan, void *slave)
+ {
+ 	struct sh_dmae_slave *param = slave;
+ 
+-	pr_debug("%s: slave ID %d\n", __func__, param->slave_id);
++	pr_debug("%s: slave ID %d\n", __func__, param->simple_slave.slave_id);
+ 
+ 	if (unlikely(param->dma_dev != chan->device->dev))
+ 		return false;
+ 
+-	chan->private = param;
++	chan->private = &param->simple_slave;
+ 	return true;
+ }
+ 
+@@ -360,12 +360,12 @@ static int siu_pcm_open(struct snd_pcm_substream *ss)
+ 	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		siu_stream = &port_info->playback;
+ 		param = &siu_stream->param;
+-		param->slave_id = port ? pdata->dma_slave_tx_b :
++		param->simple_slave.slave_id = port ? pdata->dma_slave_tx_b :
+ 			pdata->dma_slave_tx_a;
+ 	} else {
+ 		siu_stream = &port_info->capture;
+ 		param = &siu_stream->param;
+-		param->slave_id = port ? pdata->dma_slave_rx_b :
++		param->simple_slave.slave_id = port ? pdata->dma_slave_rx_b :
+ 			pdata->dma_slave_rx_a;
+ 	}
+ 
+-- 
+1.7.2.5
