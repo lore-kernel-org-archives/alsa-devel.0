@@ -1,15 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Realtek model parser problem with the new jack
-	detection
-Date: Wed, 18 Jan 2012 17:28:32 +0100
-Message-ID: <4F16F330.1020109@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v5] ASoC: Apply msbits constraint for
+ sample size bigger than the msbits
+Date: Wed, 18 Jan 2012 17:43:28 +0100
+Message-ID: <4F16F6B0.7030707@ti.com>
+References: <1326899114-26979-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120118152905.GP8732@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 8D5D32414A
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 17:28:34 +0100 (CET)
+Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
+	[74.125.149.75]) by alsa0.perex.cz (Postfix) with ESMTP id E89AC24670
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 17:43:46 +0100 (CET)
+Received: by mail-yw0-f54.google.com with SMTP id s35so1572183yhf.27
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 08:43:30 -0800 (PST)
+In-Reply-To: <20120118152905.GP8732@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On 01/18/2012 04:29 PM, Mark Brown wrote:
+> I'm not sure this is actually a legibility improvement, if anything it's
+> probably less clear than the original as now the setup of the loop is
+> spread even further around the function.
 
-I'm troubleshooting a problem with the Realtek quirk/model parsers. The 
-problem is basically that add_jack_kctls call 
-snd_hda_jack_detect_enable, which in turn overwrites the current unsol tag.
+Would it make it clearer if I set i to 0 right before the while?
 
-E g, first the model parser sets a pin to AC_USRSP_EN | ALC_HP_EVENT, 
-then comes snd_hda_jack_detect_enable and does AC_USRSP_EN | jack->tag.
+>> Most of the drivers require 24/32 configuration, so not point of looping
+>> for smaller sample sizes.
+> =
 
-I'm not sure of the best way to resolve this; either keep the current 
-tag (and mark all jacks as dirty on an unsol event), or read back the 
-current tag and set it as jack->action (and then always use the jack 
-table). What do you think?
+> Performance isn't really a concern in this path unless we do something
+> totally insane.  Thinking time on the part of the reader needs to be
+> considered too...
 
-Example alsa-info for this is in 
-http://www.alsa-project.org/db/?f=5cc88967e9da547975924a06c948ece00f1f0263
+Sure it is not a concern. These small 'Performance isn't really a
+concern in this path' at the end ads up that we need faster CPUs to have
+the same perceived perfomrance.
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+-- =
+
+P=E9ter
