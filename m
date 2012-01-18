@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: tlv320aic32x4: always enable
-	dividers
-Date: Wed, 18 Jan 2012 10:50:54 +0000
-Message-ID: <20120118105054.GE8732@opensource.wolfsonmicro.com>
-References: <1326883739-8148-1-git-send-email-w.sang@pengutronix.de>
+From: Roman Haefeli <reduzent@gmail.com>
+Subject: Re: hdsp rpm support
+Date: Wed, 18 Jan 2012 11:54:00 +0100
+Message-ID: <1326884040.18308.6.camel@yoyo4>
+References: <1326877559.24738.84.camel@yoyo4>
+	<20120118102658.GA5351@linuxaudio.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1A01B103AA5
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 11:50:56 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1326883739-8148-1-git-send-email-w.sang@pengutronix.de>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 41E8A103AB6
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 11:54:03 +0100 (CET)
+Received: by wera13 with SMTP id a13so2181600wer.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 02:54:03 -0800 (PST)
+In-Reply-To: <20120118102658.GA5351@linuxaudio.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Javier Martin <javier.martin@vista-silicon.com>, Liam Girdwood <lrg@ti.com>
+To: Fons Adriaensen <fons@linuxaudio.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 18, 2012 at 11:48:58AM +0100, Wolfram Sang wrote:
+Hi Fons
 
-> +		/* Switch on PLL */
-> +		snd_soc_update_bits(codec, AIC32X4_PLLPR,
-> +				    AIC32X4_PLLEN, AIC32X4_PLLEN);
+I'm glad to hear about people having success with this issue.
 
-Looking at this code it looks a lot like these ought to be supplies, not
-that that needs to be fixed right now.
+On Wed, 2012-01-18 at 10:26 +0000, Fons Adriaensen wrote:
+> On Wed, Jan 18, 2012 at 10:05:59AM +0100, Roman Haefeli wrote:
+> 
+> > I would like to know current state of the RME HDSP RPM support. There
+> > was a thread [1] in 2008 on this list about the issue and things looked
+> > promising back then. However, I'm still unable to upload the firmware
+> > with alsa-driver from git on my Ubuntu 11.04 (32bit) machine with a
+> > 2.6.38 kernel. I posted a detailed description of the issue on the
+> > alsa-user list here [2].
+> 
+> It seems that the developer of the driver - Adrian Knoth - has
+> two versions: one that works for me, and one that works for
+> another user. 
+> 
+> AFAICS, the problem is with the code that identifies the card
+> as an RPM, Multiface or Digiface, and that triggers ths HW into
+> accepting the firmware. Once past this point everything works
+> perfectly, including switching the phone preamps etc.
+
+I can confirm this. When I upload the firmware with Windows, I can fully
+use the card and a recent 'hdspmixer' shows me the correct number of
+channels. However, the culprit seems to be uploading the firmware. 
+
+> I've use it with both Cardbus and ExpressCard.
+
+Good to hear.
+
+May I ask kindly for the 'other' version of the driver, which I would be
+happy to test?
+
+> 
+> One more user would probably help...
+
+I'm willing to test and report back (as much as I can as a non-dev).
+
+Roman
