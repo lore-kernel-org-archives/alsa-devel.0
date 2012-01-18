@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v5] ASoC: Apply msbits constraint for
- sample size bigger than the msbits
-Date: Wed, 18 Jan 2012 16:49:36 +0100
-Message-ID: <4F16EA10.6080306@ti.com>
-References: <1326899114-26979-1-git-send-email-peter.ujfalusi@ti.com>
-	<4F16E6C7.5070502@ladisch.de> <4F16E8A8.9070209@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Realtek model parser problem with the new jack
+	detection
+Date: Wed, 18 Jan 2012 17:28:32 +0100
+Message-ID: <4F16F330.1020109@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76]) by alsa0.perex.cz (Postfix) with ESMTP id 4E03924669
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 16:49:51 +0100 (CET)
-Received: by mail-yw0-f49.google.com with SMTP id j72so2939688yhj.8
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 07:49:38 -0800 (PST)
-In-Reply-To: <4F16E8A8.9070209@ti.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 8D5D32414A
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 17:28:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/18/2012 04:43 PM, Peter Ujfalusi wrote:
-> On 01/18/2012 04:35 PM, Clemens Ladisch wrote:
->> Peter Ujfalusi wrote:
->>> We run the loop as long as the sample size is bigger than the requested
->>> msbits.
->>
->>> +	while (sample_sizes[i] > bits && i < ARRAY_SIZE(sample_sizes)) {
->>
->> This will overrun sample_sizes[] if bits < 8.
-> =
+Hi Takashi,
 
-> which is prevented by the: && i < ARRAY_SIZE(sample_sizes)
+I'm troubleshooting a problem with the Realtek quirk/model parsers. The 
+problem is basically that add_jack_kctls call 
+snd_hda_jack_detect_enable, which in turn overwrites the current unsol tag.
 
-I take it back. True, we overrun. These need to be swapped.
+E g, first the model parser sets a pin to AC_USRSP_EN | ALC_HP_EVENT, 
+then comes snd_hda_jack_detect_enable and does AC_USRSP_EN | jack->tag.
 
--- =
+I'm not sure of the best way to resolve this; either keep the current 
+tag (and mark all jacks as dirty on an unsol event), or read back the 
+current tag and set it as jack->action (and then always use the jack 
+table). What do you think?
 
-P=E9ter
+Example alsa-info for this is in 
+http://www.alsa-project.org/db/?f=5cc88967e9da547975924a06c948ece00f1f0263
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
