@@ -1,18 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 3/7] ASoC: 24 bits are significant on the
-	WM8996 audio interfaces
-Date: Wed, 18 Jan 2012 10:51:04 +0100
-Message-ID: <1326880268-3509-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 4/7] ASoC: omap-dmic: Use core to set the
+	msbits constraint
+Date: Wed, 18 Jan 2012 10:51:05 +0100
+Message-ID: <1326880268-3509-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1326880268-3509-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
-	[74.125.149.67]) by alsa0.perex.cz (Postfix) with ESMTP id 75203245BA
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 10:51:33 +0100 (CET)
-Received: by yenq3 with SMTP id q3so1453402yen.13
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 01:51:32 -0800 (PST)
+Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
+	[74.125.149.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD5F7103AB3
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 10:51:35 +0100 (CET)
+Received: by yenq3 with SMTP id q3so1677203yen.27
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 01:51:34 -0800 (PST)
 In-Reply-To: <1326880268-3509-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,48 +28,39 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Core can set the msbits constraint in behalf of the dai.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/wm8996.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ sound/soc/omap/omap-dmic.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index d8da10f..691ae4e 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -3082,6 +3082,7 @@ static struct snd_soc_dai_driver wm8996_dai[] = {
- 			.channels_max = 6,
- 			.rates = WM8996_RATES,
- 			.formats = WM8996_FORMATS,
-+			.sig_bits = 24,
- 		},
- 		.capture = {
- 			 .stream_name = "AIF1 Capture",
-@@ -3089,6 +3090,7 @@ static struct snd_soc_dai_driver wm8996_dai[] = {
- 			 .channels_max = 6,
- 			 .rates = WM8996_RATES,
- 			 .formats = WM8996_FORMATS,
-+			 .sig_bits = 24,
- 		 },
- 		.ops = &wm8996_dai_ops,
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 0855c1c..4dcb5a7 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -113,12 +113,10 @@ static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
+ 
+ 	mutex_lock(&dmic->mutex);
+ 
+-	if (!dai->active) {
+-		snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
++	if (!dai->active)
+ 		dmic->active = 1;
+-	} else {
++	else
+ 		ret = -EBUSY;
+-	}
+ 
+ 	mutex_unlock(&dmic->mutex);
+ 
+@@ -445,6 +443,7 @@ static struct snd_soc_dai_driver omap_dmic_dai = {
+ 		.channels_max = 6,
+ 		.rates = SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S32_LE,
++		.sig_bits = 24,
  	},
-@@ -3100,6 +3102,7 @@ static struct snd_soc_dai_driver wm8996_dai[] = {
- 			.channels_max = 2,
- 			.rates = WM8996_RATES,
- 			.formats = WM8996_FORMATS,
-+			.sig_bits = 24,
- 		},
- 		.capture = {
- 			 .stream_name = "AIF2 Capture",
-@@ -3107,6 +3110,7 @@ static struct snd_soc_dai_driver wm8996_dai[] = {
- 			 .channels_max = 2,
- 			 .rates = WM8996_RATES,
- 			 .formats = WM8996_FORMATS,
-+			.sig_bits = 24,
- 		 },
- 		.ops = &wm8996_dai_ops,
- 	},
+ 	.ops = &omap_dmic_dai_ops,
+ };
 -- 
 1.7.8.3
