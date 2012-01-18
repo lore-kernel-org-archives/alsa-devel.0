@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 7/7] ASoC: twl4030: Use core to set the
-	msbits constraint
-Date: Wed, 18 Jan 2012 10:51:08 +0100
-Message-ID: <1326880268-3509-8-git-send-email-peter.ujfalusi@ti.com>
-References: <1326880268-3509-1-git-send-email-peter.ujfalusi@ti.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH 0/7] extract a simple dmaengine library from
+	shdma.c
+Date: Wed, 18 Jan 2012 11:22:14 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1201181025280.28782@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
-	[74.125.149.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id C801710388D
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 10:51:42 +0100 (CET)
-Received: by yhfs35 with SMTP id s35so1301996yhf.27
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 01:51:41 -0800 (PST)
-In-Reply-To: <1326880268-3509-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 673A1244B4
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 11:22:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, "Shimoda,
+	Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Core can set the msbits constraint in behalf of the dai.
+This patch series has been triggered by a recent series by Shimoda-san
+http://www.spinics.net/lists/linux-sh/index.html#09895
+In a follow up to that thread it has been decided to extract a common 
+library from the current shdma driver to be re-used by other dmaengine 
+drivers. Primarily this library provides a flexible transfer descriptor 
+management for hardware, that does not dupport scatter-gather lists 
+natively. In such cases this library can be used to split transfer 
+requests into smaller chunks, up to the size, supported by the specific 
+hardware, enter them onto a linked list, thack their completion and call 
+user callbacks. This is a first shot, aimed to be used by the SUDMAC 
+driver. Once it is confirmed, that this version can be conveniently used 
+with it, I'll do some cosmetic clean up, notably, add / improve 
+documentation:-)
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Thanks
+Guennadi
 ---
- sound/soc/codecs/twl4030.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 18e7101..a193f5f 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1689,7 +1689,6 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 
--	snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
- 	if (twl4030->master_substream) {
- 		twl4030->slave_substream = substream;
- 		/* The DAI has one configuration for playback and capture, so
-@@ -2175,13 +2174,15 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
- 		.channels_min = 2,
- 		.channels_max = 4,
- 		.rates = TWL4030_RATES | SNDRV_PCM_RATE_96000,
--		.formats = TWL4030_FORMATS,},
-+		.formats = TWL4030_FORMATS,
-+		.sig_bits = 24,},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 2,
- 		.channels_max = 4,
- 		.rates = TWL4030_RATES,
--		.formats = TWL4030_FORMATS,},
-+		.formats = TWL4030_FORMATS,
-+		.sig_bits = 24,},
- 	.ops = &twl4030_dai_hifi_ops,
- },
- {
--- 
-1.7.8.3
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
