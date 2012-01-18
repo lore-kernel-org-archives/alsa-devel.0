@@ -1,20 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 3/5] ASoC: omap-mcpdm: Set 24msbits
-	constraint
-Date: Wed, 18 Jan 2012 12:18:24 +0100
-Message-ID: <1326885506-6140-4-git-send-email-peter.ujfalusi@ti.com>
-References: <1326885506-6140-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v4 0/5] ASoC: updates for core support for
+	msbits constraints
+Date: Wed, 18 Jan 2012 12:18:21 +0100
+Message-ID: <1326885506-6140-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
-	[74.125.149.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9BA0103B3F
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 12:18:48 +0100 (CET)
-Received: by mail-yx0-f169.google.com with SMTP id m10so2663204yen.14
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 03:18:47 -0800 (PST)
-In-Reply-To: <1326885506-6140-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
+	[74.125.149.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6031E103B48
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 12:18:53 +0100 (CET)
+Received: by mail-gx0-f180.google.com with SMTP id k5so5363365ggd.39
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 03:18:40 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,33 +26,36 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-McPDM internal FIFO is 24 bit wide. From the 32 bit sample
-8 bit is discarded. Let application know about this
-via msbits constraint.
+Hi Mark,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Changes from v3:
+- no need to initialize ret to zero in soc_pcm_apply_msb. The function is void.
+- created against for-3.4 branch (leaving out already applied patches)
+
+Intro mail for v1:
+I would prefer to have the msbits constraints to be applied to only sample sizes
+bigger than the requested msbits from dais.
+I'm resending your patch plus the modification which will make the possible.
+I have also converted the drivers I know have this constraint.
+
+If you prefer, you can squash the first two patch.
+
+Regards,
+Peter
 ---
- sound/soc/omap/omap-mcpdm.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Peter Ujfalusi (5):
+  ASoC: Apply msbits constraint for sample size bigger than the msbits
+  ASoC: omap-dmic: Use core to set the msbits constraint
+  ASoC: omap-mcpdm: Set 24msbits constraint
+  ASoC: tlv320dac33: Use core to set the msbits constraint
+  ASoC: twl4030: Use core to set the msbits constraint
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 0e25df4..3970556 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -419,12 +419,14 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
- 		.channels_max = 5,
- 		.rates = OMAP_MCPDM_RATES,
- 		.formats = OMAP_MCPDM_FORMATS,
-+		.sig_bits = 24,
- 	},
- 	.capture = {
- 		.channels_min = 1,
- 		.channels_max = 3,
- 		.rates = OMAP_MCPDM_RATES,
- 		.formats = OMAP_MCPDM_FORMATS,
-+		.sig_bits = 24,
- 	},
- 	.ops = &omap_mcpdm_dai_ops,
- };
+ sound/soc/codecs/tlv320dac33.c |    3 +--
+ sound/soc/codecs/twl4030.c     |    7 ++++---
+ sound/soc/omap/omap-dmic.c     |    7 +++----
+ sound/soc/omap/omap-mcpdm.c    |    2 ++
+ sound/soc/soc-pcm.c            |    4 +++-
+ 5 files changed, 13 insertions(+), 10 deletions(-)
+
 -- 
 1.7.8.3
