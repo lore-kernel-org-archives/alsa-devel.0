@@ -1,45 +1,63 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v5] ASoC: Apply msbits constraint for
- sample size bigger than the msbits
-Date: Thu, 19 Jan 2012 09:27:33 +0100
-Message-ID: <4F17D3F5.3020901@ti.com>
-References: <1326899114-26979-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120118152905.GP8732@opensource.wolfsonmicro.com>
-	<4F16F6B0.7030707@ti.com>
-	<20120118174648.GQ8732@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 00/10] patch set about the MXS-DMA
+Date: Thu, 19 Jan 2012 17:10:37 +0800
+Message-ID: <20120119091034.GH2247@S2101-09.ap.freescale.net>
+References: <1326953767-24155-1-git-send-email-b32955@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
-	[74.125.149.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BD3724567
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 09:27:38 +0100 (CET)
-Received: by ghrr18 with SMTP id r18so2178590ghr.25
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 00:27:37 -0800 (PST)
-In-Reply-To: <20120118174648.GQ8732@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mmc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1326953767-24155-1-git-send-email-b32955@freescale.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Huang Shijie <b32955@freescale.com>
+Cc: vinod.koul@intel.com, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/18/2012 06:46 PM, Mark Brown wrote:
-> That'd help a bit.  Though I'd just go with a for loop, the while
-> clearly doesn't look any better - I was just suggesting it without
-> actually having tried writing it out.
+On Thu, Jan 19, 2012 at 02:15:57PM +0800, Huang Shijie wrote:
+> This patch set does two things about the MXS-DMA:
+> [1] patch 1 ~ patch 5: move the mxs dma header to a more common place.
+> 	Beside the mx23/mx28, the APBH-DMA is also used by MX50 and MX6Q.
+> 	So move the mxs dma header file to a more common place, and rename
+> 	it to mxs-dma.h
+> 
+For the sake of bitsec, these 5 patches need to be one.
 
-Are you going to take the for version of patch, or should I resend it?
-I can add a comment to explain that we bail out, and not checking the
-sample sizes lower than the requested msbits, if it helps.
+> [2] patch 6 ~ patch 10: rewrite the last parameter of mxs_dma_prep_slave_sg().
 
--- =
+For the sake of bitsec, at least patches #7 and #8 need to be one patch.
+That said, if I apply the series and then check out the commit at patch
+#7, you need to all mxs-dma client drivers, mxs-mmc, gpmi do not break.
 
-P=E9ter
+> 	In the new GPMI version, some hardware behavior changes.
+> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+> 	The DMA chain should be set like this:
+> 
+>           +-----+               +-----+                      +-----+
+>           | cmd | ------------> | cmd | ------------------>  | cmd |
+>           +-----+               +-----+                      +-----+
+>                                    ^                            ^
+>                                    |                            |
+>                                    |                            |
+>                               set WAIT4END here too        set WAIT4END here
+> 
+>          Please read the comment in patch "MXS-DMA : add more flags for MXS-DMA".
+> 
+> Huang Shijie (10):
+>   MXS-DMA : move the mxs-dma.h to a more common place
+>   MXS-DMA : change the header
+>   MXS-MMC : change the DMA header file
+>   MTD/GPMI : change the DMA header file
+>   ASoc : change the DMA header file
+>   MXS-DMA : add more flags for MXS-DMA
+>   MXS-DMA : change the last parameter of mxs_dma_prep_slave_sg()
+>   MXS-MMC : use the new DMA flags
+>   MTD/GPMI : add a new field `gpmi_version`
+>   MTD/GPMI : change the code for new DMA interface
+> 
+Please try to make these subject prefix consistent with the existing
+ones in the tree.  You can get them from 'git log' output.  For example
+"mxs-dma: ..." is better than "MXS-DMA : ...".
+
+-- 
+Regards,
+Shawn
