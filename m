@@ -1,175 +1,67 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH] ASoC: Convert blackfin directory to
-	module_platform_driver
-Date: Thu, 19 Jan 2012 09:52:38 +0800
-Message-ID: <CAGsJ_4xQg7vDqNNirMQC=Q3-h7gw50hGL8Z_FXWkGG2yG-ch6Q@mail.gmail.com>
-References: <1322117092.19406.3.camel@phoenix>
+From: Huang Shijie <b32955@freescale.com>
+Subject: [PATCH 00/10] patch set about the MXS-DMA
+Date: Thu, 19 Jan 2012 14:15:57 +0800
+Message-ID: <1326953767-24155-1-git-send-email-b32955@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 0D28724433
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 02:53:01 +0100 (CET)
-Received: by bkaq10 with SMTP id q10so6213376bka.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2012 17:52:59 -0800 (PST)
-In-Reply-To: <1322117092.19406.3.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, artem.bityutskiy@intel.com, b29396@freescale.com, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, LW@KARO-electronics.de
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMS8xMS8yNCBBeGVsIExpbiA8YXhlbC5saW5AZ21haWwuY29tPjoKPiBGYWN0b3Igb3V0IHNv
-bWUgYm9pbGVycGxhdGUgY29kZS4KPgo+IFNpZ25lZC1vZmYtYnk6IEF4ZWwgTGluIDxheGVsLmxp
-bkBnbWFpbC5jb20+CgpBY2tlZC1ieTogQmFycnkgU29uZyA8MjFjbmJhb0BnbWFpbC5jb20+Cgo+
-IC0tLQo+IMKgc291bmQvc29jL2JsYWNrZmluL2JmNXh4LWFjOTctcGNtLmMgwqAgwqAgfCDCoCAx
-MiArLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hYzk3LmMgwqAgwqAg
-wqAgwqAgfCDCoCAxMyArLS0tLS0tLS0tLS0tCj4gwqBzb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgt
-aTJzLXBjbS5jIMKgIMKgIMKgfCDCoCAxMiArLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9ibGFj
-a2Zpbi9iZjV4eC1pMnMuYyDCoCDCoCDCoCDCoCDCoHwgwqAgMTMgKy0tLS0tLS0tLS0tLQo+IMKg
-c291bmQvc29jL2JsYWNrZmluL2JmNXh4LXRkbS1wY20uYyDCoCDCoCDCoHwgwqAgMTIgKy0tLS0t
-LS0tLS0tCj4gwqBzb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtdGRtLmMgwqAgwqAgwqAgwqAgwqB8
-IMKgIDEyICstLS0tLS0tLS0tLQo+IMKgc291bmQvc29jL2JsYWNrZmluL2JmaW4tZXZhbC1hZGF1
-MTM3My5jIHwgwqAgMTIgKy0tLS0tLS0tLS0tCj4gwqBzb3VuZC9zb2MvYmxhY2tmaW4vYmZpbi1l
-dmFsLWFkYXUxNzAxLmMgfCDCoCAxMiArLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9ibGFja2Zp
-bi9iZmluLWV2YWwtYWRhdjgweC5jIMKgfCDCoCAxMiArLS0tLS0tLS0tLS0KPiDCoDkgZmlsZXMg
-Y2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAxMDEgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2JsYWNrZmluL2JmNXh4LWFjOTctcGNtLmMgYi9zb3VuZC9zb2MvYmxhY2tm
-aW4vYmY1eHgtYWM5Ny1wY20uYwo+IGluZGV4IDU2ODE1YzEuLmZjZmY1ODMgMTAwNjQ0Cj4gLS0t
-IGEvc291bmQvc29jL2JsYWNrZmluL2JmNXh4LWFjOTctcGNtLmMKPiArKysgYi9zb3VuZC9zb2Mv
-YmxhY2tmaW4vYmY1eHgtYWM5Ny1wY20uYwo+IEBAIC00NzUsMTcgKzQ3NSw3IEBAIHN0YXRpYyBz
-dHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGJmNXh4X3BjbV9kcml2ZXIgPSB7Cj4gwqAgwqAgwqAgwqAu
-cmVtb3ZlID0gX19kZXZleGl0X3AoYmY1eHhfc29jX3BsYXRmb3JtX3JlbW92ZSksCj4gwqB9Owo+
-Cj4gLXN0YXRpYyBpbnQgX19pbml0IHNuZF9iZjV4eF9wY21faW5pdCh2b2lkKQo+IC17Cj4gLSDC
-oCDCoCDCoCByZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZiZjV4eF9wY21fZHJpdmVy
-KTsKPiAtfQo+IC1tb2R1bGVfaW5pdChzbmRfYmY1eHhfcGNtX2luaXQpOwo+IC0KPiAtc3RhdGlj
-IHZvaWQgX19leGl0IHNuZF9iZjV4eF9wY21fZXhpdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCBw
-bGF0Zm9ybV9kcml2ZXJfdW5yZWdpc3RlcigmYmY1eHhfcGNtX2RyaXZlcik7Cj4gLX0KPiAtbW9k
-dWxlX2V4aXQoc25kX2JmNXh4X3BjbV9leGl0KTsKPiArbW9kdWxlX3BsYXRmb3JtX2RyaXZlcihi
-ZjV4eF9wY21fZHJpdmVyKTsKPgo+IMKgTU9EVUxFX0FVVEhPUigiQ2xpZmYgQ2FpIik7Cj4gwqBN
-T0RVTEVfREVTQ1JJUFRJT04oIkFESSBCbGFja2ZpbiBBQzk3IFBDTSBETUEgbW9kdWxlIik7Cj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1hYzk3LmMgYi9zb3VuZC9zb2Mv
-YmxhY2tmaW4vYmY1eHgtYWM5Ny5jCj4gaW5kZXggNmQyMTYyNS4uZjRlOWRjNCAxMDA2NDQKPiAt
-LS0gYS9zb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtYWM5Ny5jCj4gKysrIGIvc291bmQvc29jL2Js
-YWNrZmluL2JmNXh4LWFjOTcuYwo+IEBAIC0zNzUsMTggKzM3NSw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
-cGxhdGZvcm1fZHJpdmVyIGFzb2NfYmZpbl9hYzk3X2RyaXZlciA9IHsKPiDCoCDCoCDCoCDCoC5y
-ZW1vdmUgPSBfX2RldmV4aXRfcChhc29jX2JmaW5fYWM5N19yZW1vdmUpLAo+IMKgfTsKPgo+IC1z
-dGF0aWMgaW50IF9faW5pdCBiZmluX2FjOTdfaW5pdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCBy
-ZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZhc29jX2JmaW5fYWM5N19kcml2ZXIpOwo+
-IC19Cj4gLW1vZHVsZV9pbml0KGJmaW5fYWM5N19pbml0KTsKPiAtCj4gLXN0YXRpYyB2b2lkIF9f
-ZXhpdCBiZmluX2FjOTdfZXhpdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCBwbGF0Zm9ybV9kcml2
-ZXJfdW5yZWdpc3RlcigmYXNvY19iZmluX2FjOTdfZHJpdmVyKTsKPiAtfQo+IC1tb2R1bGVfZXhp
-dChiZmluX2FjOTdfZXhpdCk7Cj4gLQo+ICttb2R1bGVfcGxhdGZvcm1fZHJpdmVyKGFzb2NfYmZp
-bl9hYzk3X2RyaXZlcik7Cj4KPiDCoE1PRFVMRV9BVVRIT1IoIlJveSBIdWFuZyIpOwo+IMKgTU9E
-VUxFX0RFU0NSSVBUSU9OKCJBQzk3IGRyaXZlciBmb3IgQURJIEJsYWNrZmluIik7Cj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC1pMnMtcGNtLmMgYi9zb3VuZC9zb2MvYmxh
-Y2tmaW4vYmY1eHgtaTJzLXBjbS5jCj4gaW5kZXggNzU2NWUxNS4uNmVjM2Q0MSAxMDA2NDQKPiAt
-LS0gYS9zb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtaTJzLXBjbS5jCj4gKysrIGIvc291bmQvc29j
-L2JsYWNrZmluL2JmNXh4LWkycy1wY20uYwo+IEBAIC0zMTQsMTcgKzMxNCw3IEBAIHN0YXRpYyBz
-dHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGJmaW5faTJzX3BjbV9kcml2ZXIgPSB7Cj4gwqAgwqAgwqAg
-wqAucmVtb3ZlID0gX19kZXZleGl0X3AoYmZpbl9pMnNfc29jX3BsYXRmb3JtX3JlbW92ZSksCj4g
-wqB9Owo+Cj4gLXN0YXRpYyBpbnQgX19pbml0IHNuZF9iZmluX2kyc19wY21faW5pdCh2b2lkKQo+
-IC17Cj4gLSDCoCDCoCDCoCByZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZiZmluX2ky
-c19wY21fZHJpdmVyKTsKPiAtfQo+IC1tb2R1bGVfaW5pdChzbmRfYmZpbl9pMnNfcGNtX2luaXQp
-Owo+IC0KPiAtc3RhdGljIHZvaWQgX19leGl0IHNuZF9iZmluX2kyc19wY21fZXhpdCh2b2lkKQo+
-IC17Cj4gLSDCoCDCoCDCoCBwbGF0Zm9ybV9kcml2ZXJfdW5yZWdpc3RlcigmYmZpbl9pMnNfcGNt
-X2RyaXZlcik7Cj4gLX0KPiAtbW9kdWxlX2V4aXQoc25kX2JmaW5faTJzX3BjbV9leGl0KTsKPiAr
-bW9kdWxlX3BsYXRmb3JtX2RyaXZlcihiZmluX2kyc19wY21fZHJpdmVyKTsKPgo+IMKgTU9EVUxF
-X0FVVEhPUigiQ2xpZmYgQ2FpIik7Cj4gwqBNT0RVTEVfREVTQ1JJUFRJT04oIkFESSBCbGFja2Zp
-biBJMlMgUENNIERNQSBtb2R1bGUiKTsKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2JsYWNrZmlu
-L2JmNXh4LWkycy5jIGIvc291bmQvc29jL2JsYWNrZmluL2JmNXh4LWkycy5jCj4gaW5kZXggMDBj
-YzNlMC4uYTQwMDYzMyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtaTJz
-LmMKPiArKysgYi9zb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtaTJzLmMKPiBAQCAtMjg4LDE4ICsy
-ODgsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBiZmluX2kyc19kcml2ZXIgPSB7
-Cj4gwqAgwqAgwqAgwqB9LAo+IMKgfTsKPgo+IC1zdGF0aWMgaW50IF9faW5pdCBiZmluX2kyc19p
-bml0KHZvaWQpCj4gLXsKPiAtIMKgIMKgIMKgIHJldHVybiBwbGF0Zm9ybV9kcml2ZXJfcmVnaXN0
-ZXIoJmJmaW5faTJzX2RyaXZlcik7Cj4gLX0KPiAtCj4gLXN0YXRpYyB2b2lkIF9fZXhpdCBiZmlu
-X2kyc19leGl0KHZvaWQpCj4gLXsKPiAtIMKgIMKgIMKgIHBsYXRmb3JtX2RyaXZlcl91bnJlZ2lz
-dGVyKCZiZmluX2kyc19kcml2ZXIpOwo+IC19Cj4gLQo+IC1tb2R1bGVfaW5pdChiZmluX2kyc19p
-bml0KTsKPiAtbW9kdWxlX2V4aXQoYmZpbl9pMnNfZXhpdCk7Cj4gK21vZHVsZV9wbGF0Zm9ybV9k
-cml2ZXIoYmZpbl9pMnNfZHJpdmVyKTsKPgo+IMKgLyogTW9kdWxlIGluZm9ybWF0aW9uICovCj4g
-wqBNT0RVTEVfQVVUSE9SKCJDbGlmZiBDYWkiKTsKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2Js
-YWNrZmluL2JmNXh4LXRkbS1wY20uYyBiL3NvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC10ZG0tcGNt
-LmMKPiBpbmRleCBjOTVjYzAzLi40NDA2ZjlhIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9ibGFj
-a2Zpbi9iZjV4eC10ZG0tcGNtLmMKPiArKysgYi9zb3VuZC9zb2MvYmxhY2tmaW4vYmY1eHgtdGRt
-LXBjbS5jCj4gQEAgLTMzOSwxNyArMzM5LDcgQEAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2
-ZXIgYmZpbl90ZG1fZHJpdmVyID0gewo+IMKgIMKgIMKgIMKgLnJlbW92ZSA9IF9fZGV2ZXhpdF9w
-KGJmNXh4X3NvY19wbGF0Zm9ybV9yZW1vdmUpLAo+IMKgfTsKPgo+IC1zdGF0aWMgaW50IF9faW5p
-dCBzbmRfYmZpbl90ZG1faW5pdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCByZXR1cm4gcGxhdGZv
-cm1fZHJpdmVyX3JlZ2lzdGVyKCZiZmluX3RkbV9kcml2ZXIpOwo+IC19Cj4gLW1vZHVsZV9pbml0
-KHNuZF9iZmluX3RkbV9pbml0KTsKPiAtCj4gLXN0YXRpYyB2b2lkIF9fZXhpdCBzbmRfYmZpbl90
-ZG1fZXhpdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCBwbGF0Zm9ybV9kcml2ZXJfdW5yZWdpc3Rl
-cigmYmZpbl90ZG1fZHJpdmVyKTsKPiAtfQo+IC1tb2R1bGVfZXhpdChzbmRfYmZpbl90ZG1fZXhp
-dCk7Cj4gK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYmZpbl90ZG1fZHJpdmVyKTsKPgo+IMKgTU9E
-VUxFX0FVVEhPUigiQmFycnkgU29uZyIpOwo+IMKgTU9EVUxFX0RFU0NSSVBUSU9OKCJBREkgQmxh
-Y2tmaW4gVERNIFBDTSBETUEgbW9kdWxlIik7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9ibGFj
-a2Zpbi9iZjV4eC10ZG0uYyBiL3NvdW5kL3NvYy9ibGFja2Zpbi9iZjV4eC10ZG0uYwo+IGluZGV4
-IGE4MjJkMWUuLmJmNjVlMGUgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2JsYWNrZmluL2JmNXh4
-LXRkbS5jCj4gKysrIGIvc291bmQvc29jL2JsYWNrZmluL2JmNXh4LXRkbS5jCj4gQEAgLTMxNCwx
-NyArMzE0LDcgQEAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgYmZpbl90ZG1fZHJpdmVy
-ID0gewo+IMKgIMKgIMKgIMKgfSwKPiDCoH07Cj4KPiAtc3RhdGljIGludCBfX2luaXQgYmZpbl90
-ZG1faW5pdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCByZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3Jl
-Z2lzdGVyKCZiZmluX3RkbV9kcml2ZXIpOwo+IC19Cj4gLW1vZHVsZV9pbml0KGJmaW5fdGRtX2lu
-aXQpOwo+IC0KPiAtc3RhdGljIHZvaWQgX19leGl0IGJmaW5fdGRtX2V4aXQodm9pZCkKPiAtewo+
-IC0gwqAgwqAgwqAgcGxhdGZvcm1fZHJpdmVyX3VucmVnaXN0ZXIoJmJmaW5fdGRtX2RyaXZlcik7
-Cj4gLX0KPiAtbW9kdWxlX2V4aXQoYmZpbl90ZG1fZXhpdCk7Cj4gK21vZHVsZV9wbGF0Zm9ybV9k
-cml2ZXIoYmZpbl90ZG1fZHJpdmVyKTsKPgo+IMKgLyogTW9kdWxlIGluZm9ybWF0aW9uICovCj4g
-wqBNT0RVTEVfQVVUSE9SKCJCYXJyeSBTb25nIik7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9i
-bGFja2Zpbi9iZmluLWV2YWwtYWRhdTEzNzMuYyBiL3NvdW5kL3NvYy9ibGFja2Zpbi9iZmluLWV2
-YWwtYWRhdTEzNzMuYwo+IGluZGV4IDhkZjJhM2IuLjg1ZWQzOWEgMTAwNjQ0Cj4gLS0tIGEvc291
-bmQvc29jL2JsYWNrZmluL2JmaW4tZXZhbC1hZGF1MTM3My5jCj4gKysrIGIvc291bmQvc29jL2Js
-YWNrZmluL2JmaW4tZXZhbC1hZGF1MTM3My5jCj4gQEAgLTE4NCwxNyArMTg0LDcgQEAgc3RhdGlj
-IHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgYmZpbl9ldmFsX2FkYXUxMzczX2RyaXZlciA9IHsKPiDC
-oCDCoCDCoCDCoC5yZW1vdmUgPSBfX2RldmV4aXRfcChiZmluX2V2YWxfYWRhdTEzNzNfcmVtb3Zl
-KSwKPiDCoH07Cj4KPiAtc3RhdGljIGludCBfX2luaXQgYmZpbl9ldmFsX2FkYXUxMzczX2luaXQo
-dm9pZCkKPiAtewo+IC0gwqAgwqAgwqAgcmV0dXJuIHBsYXRmb3JtX2RyaXZlcl9yZWdpc3Rlcigm
-YmZpbl9ldmFsX2FkYXUxMzczX2RyaXZlcik7Cj4gLX0KPiAtbW9kdWxlX2luaXQoYmZpbl9ldmFs
-X2FkYXUxMzczX2luaXQpOwo+IC0KPiAtc3RhdGljIHZvaWQgX19leGl0IGJmaW5fZXZhbF9hZGF1
-MTM3M19leGl0KHZvaWQpCj4gLXsKPiAtIMKgIMKgIMKgIHBsYXRmb3JtX2RyaXZlcl91bnJlZ2lz
-dGVyKCZiZmluX2V2YWxfYWRhdTEzNzNfZHJpdmVyKTsKPiAtfQo+IC1tb2R1bGVfZXhpdChiZmlu
-X2V2YWxfYWRhdTEzNzNfZXhpdCk7Cj4gK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYmZpbl9ldmFs
-X2FkYXUxMzczX2RyaXZlcik7Cj4KPiDCoE1PRFVMRV9BVVRIT1IoIkxhcnMtUGV0ZXIgQ2xhdXNl
-biA8bGFyc0BtZXRhZm9vLmRlPiIpOwo+IMKgTU9EVUxFX0RFU0NSSVBUSU9OKCJBTFNBIFNvQyBi
-ZmluIGFkYXUxMzczIGRyaXZlciIpOwo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYmxhY2tmaW4v
-YmZpbi1ldmFsLWFkYXUxNzAxLmMgYi9zb3VuZC9zb2MvYmxhY2tmaW4vYmZpbi1ldmFsLWFkYXUx
-NzAxLmMKPiBpbmRleCBlNTU1MGFjLi4xYTg4ZmU5IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9i
-bGFja2Zpbi9iZmluLWV2YWwtYWRhdTE3MDEuYwo+ICsrKyBiL3NvdW5kL3NvYy9ibGFja2Zpbi9i
-ZmluLWV2YWwtYWRhdTE3MDEuYwo+IEBAIC0xMjEsMTcgKzEyMSw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
-cGxhdGZvcm1fZHJpdmVyIGJmaW5fZXZhbF9hZGF1MTcwMV9kcml2ZXIgPSB7Cj4gwqAgwqAgwqAg
-wqAucmVtb3ZlID0gX19kZXZleGl0X3AoYmZpbl9ldmFsX2FkYXUxNzAxX3JlbW92ZSksCj4gwqB9
-Owo+Cj4gLXN0YXRpYyBpbnQgX19pbml0IGJmaW5fZXZhbF9hZGF1MTcwMV9pbml0KHZvaWQpCj4g
-LXsKPiAtIMKgIMKgIMKgIHJldHVybiBwbGF0Zm9ybV9kcml2ZXJfcmVnaXN0ZXIoJmJmaW5fZXZh
-bF9hZGF1MTcwMV9kcml2ZXIpOwo+IC19Cj4gLW1vZHVsZV9pbml0KGJmaW5fZXZhbF9hZGF1MTcw
-MV9pbml0KTsKPiAtCj4gLXN0YXRpYyB2b2lkIF9fZXhpdCBiZmluX2V2YWxfYWRhdTE3MDFfZXhp
-dCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCBwbGF0Zm9ybV9kcml2ZXJfdW5yZWdpc3RlcigmYmZp
-bl9ldmFsX2FkYXUxNzAxX2RyaXZlcik7Cj4gLX0KPiAtbW9kdWxlX2V4aXQoYmZpbl9ldmFsX2Fk
-YXUxNzAxX2V4aXQpOwo+ICttb2R1bGVfcGxhdGZvcm1fZHJpdmVyKGJmaW5fZXZhbF9hZGF1MTcw
-MV9kcml2ZXIpOwo+Cj4gwqBNT0RVTEVfQVVUSE9SKCJMYXJzLVBldGVyIENsYXVzZW4gPGxhcnNA
-bWV0YWZvby5kZT4iKTsKPiDCoE1PRFVMRV9ERVNDUklQVElPTigiQUxTQSBTb0MgYmZpbiBBREFV
-MTcwMSBkcml2ZXIiKTsKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2JsYWNrZmluL2JmaW4tZXZh
-bC1hZGF2ODB4LmMgYi9zb3VuZC9zb2MvYmxhY2tmaW4vYmZpbi1ldmFsLWFkYXY4MHguYwo+IGlu
-ZGV4IDg5N2NmYTYuLjBiYzk5NWYgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2JsYWNrZmluL2Jm
-aW4tZXZhbC1hZGF2ODB4LmMKPiArKysgYi9zb3VuZC9zb2MvYmxhY2tmaW4vYmZpbi1ldmFsLWFk
-YXY4MHguYwo+IEBAIC0xNTcsMTcgKzE1Nyw3IEBAIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJp
-dmVyIGJmaW5fZXZhbF9hZGF2ODB4X2RyaXZlciA9IHsKPiDCoCDCoCDCoCDCoC5pZF90YWJsZSA9
-IGJmaW5fZXZhbF9hZGF2ODB4X2lkcywKPiDCoH07Cj4KPiAtc3RhdGljIGludCBfX2luaXQgYmZp
-bl9ldmFsX2FkYXY4MHhfaW5pdCh2b2lkKQo+IC17Cj4gLSDCoCDCoCDCoCByZXR1cm4gcGxhdGZv
-cm1fZHJpdmVyX3JlZ2lzdGVyKCZiZmluX2V2YWxfYWRhdjgweF9kcml2ZXIpOwo+IC19Cj4gLW1v
-ZHVsZV9pbml0KGJmaW5fZXZhbF9hZGF2ODB4X2luaXQpOwo+IC0KPiAtc3RhdGljIHZvaWQgX19l
-eGl0IGJmaW5fZXZhbF9hZGF2ODB4X2V4aXQodm9pZCkKPiAtewo+IC0gwqAgwqAgwqAgcGxhdGZv
-cm1fZHJpdmVyX3VucmVnaXN0ZXIoJmJmaW5fZXZhbF9hZGF2ODB4X2RyaXZlcik7Cj4gLX0KPiAt
-bW9kdWxlX2V4aXQoYmZpbl9ldmFsX2FkYXY4MHhfZXhpdCk7Cj4gK21vZHVsZV9wbGF0Zm9ybV9k
-cml2ZXIoYmZpbl9ldmFsX2FkYXY4MHhfZHJpdmVyKTsKPgo+IMKgTU9EVUxFX0FVVEhPUigiTGFy
-cy1QZXRlciBDbGF1c2VuIDxsYXJzQG1ldGFmb28uZGU+Iik7Cj4gwqBNT0RVTEVfREVTQ1JJUFRJ
-T04oIkFMU0EgU29DIGJmaW4gYWRhdjgweCBkcml2ZXIiKTsKPiAtLQo+IDEuNy41LjQKPgo+Cj4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patch set does two things about the MXS-DMA:
+[1] patch 1 ~ patch 5: move the mxs dma header to a more common place.
+	Beside the mx23/mx28, the APBH-DMA is also used by MX50 and MX6Q.
+	So move the mxs dma header file to a more common place, and rename
+	it to mxs-dma.h
+
+[2] patch 6 ~ patch 10: rewrite the last parameter of mxs_dma_prep_slave_sg().
+	In the new GPMI version, some hardware behavior changes.
+	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+	The DMA chain should be set like this:
+
+          +-----+               +-----+                      +-----+
+          | cmd | ------------> | cmd | ------------------>  | cmd |
+          +-----+               +-----+                      +-----+
+                                   ^                            ^
+                                   |                            |
+                                   |                            |
+                              set WAIT4END here too        set WAIT4END here
+
+         Please read the comment in patch "MXS-DMA : add more flags for MXS-DMA".
+
+Huang Shijie (10):
+  MXS-DMA : move the mxs-dma.h to a more common place
+  MXS-DMA : change the header
+  MXS-MMC : change the DMA header file
+  MTD/GPMI : change the DMA header file
+  ASoc : change the DMA header file
+  MXS-DMA : add more flags for MXS-DMA
+  MXS-DMA : change the last parameter of mxs_dma_prep_slave_sg()
+  MXS-MMC : use the new DMA flags
+  MTD/GPMI : add a new field `gpmi_version`
+  MTD/GPMI : change the code for new DMA interface
+
+ arch/arm/mach-mxs/include/mach/dma.h   |   28 ----------------
+ drivers/dma/mxs-dma.c                  |   12 ++++---
+ drivers/mmc/host/mxs-mmc.c             |   12 +++---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   23 ++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    6 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    2 +
+ include/linux/mxs-dma.h                |   54 ++++++++++++++++++++++++++++++++
+ sound/soc/mxs/mxs-pcm.c                |    2 +-
+ sound/soc/mxs/mxs-pcm.h                |    2 +-
+ sound/soc/mxs/mxs-saif.c               |    2 +-
+ 10 files changed, 94 insertions(+), 49 deletions(-)
+ delete mode 100644 arch/arm/mach-mxs/include/mach/dma.h
+ create mode 100644 include/linux/mxs-dma.h
