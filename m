@@ -1,42 +1,58 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 01/10] MXS-DMA : move the mxs-dma.h to a more common place
-Date: Thu, 19 Jan 2012 21:04:06 +0800
-Message-ID: <20120119130404.GI2247@S2101-09.ap.freescale.net>
-References: <1326953767-24155-1-git-send-email-b32955@freescale.com>
- <1326953767-24155-2-git-send-email-b32955@freescale.com>
+From: Andrew Eikum <aeikum@codeweavers.com>
+Subject: Re: [alsa-lib PATCH] Document strdup allocation in
+ snd_card_get_name family
+Date: Thu, 19 Jan 2012 08:48:45 -0600
+Message-ID: <20120119144845.GT24575@foghorn.codeweavers.com>
+References: <20120118145808.GR24575@foghorn.codeweavers.com>
+	<s5h4nvr9awq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-mmc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
+	by alsa0.perex.cz (Postfix) with ESMTP id 00449103BFF
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 15:48:48 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1326953767-24155-2-git-send-email-b32955@freescale.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Huang Shijie <b32955@freescale.com>
-Cc: vinod.koul@intel.com, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
+In-Reply-To: <s5h4nvr9awq.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 19, 2012 at 02:15:58PM +0800, Huang Shijie wrote:
-> Move the header to a more common place.
-> The DMA engine is not only used in mx23/mx28, but also used
-> in mx50/mx6q.
-> It will also be used in the future chips.
-> 
-> Rename it to mxs-dma.h
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  arch/arm/mach-mxs/include/mach/dma.h |   28 ----------------------------
->  include/linux/mxs-dma.h              |   28 ++++++++++++++++++++++++++++
->  2 files changed, 28 insertions(+), 28 deletions(-)
->  delete mode 100644 arch/arm/mach-mxs/include/mach/dma.h
->  create mode 100644 include/linux/mxs-dma.h
-> 
-I'm wondering if it would be better to create folder include/linux/fsl
-for mxs-dma.h accommodation, so that any headers that need to shared
-between mxs and imx later can find a place.  Considering that Freescale
-has many IPs shared between MPCxxx (PowerPC) and i.MX (ARM) families,
-it could also be a good place for any headers that need to be shared
-between these two product lines from Freescale.
-
--- 
-Regards,
-Shawn
+T24gVGh1LCBKYW4gMTksIDIwMTIgYXQgMTI6NDE6NTdQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEF0IFdlZCwgMTggSmFuIDIwMTIgMDg6NTg6MDggLTA2MDAsCj4gQW5kcmV3IEVpa3Vt
+IHdyb3RlOgo+ID4gCj4gPiBUaGlzIHdhcyBzcG90dGVkIGJ5IErDtnJnIEjDtmhsZSBvbiB0aGUg
+d2luZS1wYXRjaGVzIE1MLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZXcgRWlrdW0gPGFl
+aWt1bUBjb2Rld2VhdmVycy5jb20+Cj4gPiAtLS0KPiA+IAo+ID4gSSBub3RpY2VkIG15IGRvY3Vt
+ZW50YXRpb24gcGF0Y2hlcyBoYXZlbid0IGJlZW4gbWFraW5nIHRoZWlyIHdheSBpbnRvCj4gPiBh
+bHNhLWxpYi5naXQuIEFtIEkgc3VibWl0dGluZyB0aGVzZSB3cm9uZz8gSSBhZGRlZCB0aGUgU09C
+IGxpbmUgYWJvdmUsCj4gPiBhbHRob3VnaCBJIG5vdGljZSBub3QgYWxsIHBhdGNoZXMgdGhhdCBn
+ZXQgaW50byBBTFNBIGhhdmUgaXQuIE9uIHRoZQo+ID4gb3RoZXIgaGFuZCwgYWxzYS1saWIuZ2l0
+IGhhc24ndCBiZWVuIGNoYW5nZWQgc2luY2UgTm92ZW1iZXIgc28gcGVyaGFwcwo+ID4gbXkgcGF0
+Y2hlcyBhcmUgc2l0dGluZyBpbiBzb21lb25lJ3MgdHJlZSB3YWl0aW5nIHRvIGJlIHB1c2hlZCA6
+KQo+IAo+IFNvcnJ5LCBJIHNpbXBseSBvdmVybG9va2VkIHlvdXIgcGF0Y2hlcyBzaW5jZSB0aGV5
+IGhhdmUgYmVlbiBwb3N0ZWQKPiBkdXJpbmcgbXkgdmFjYXRpb24uICBOb3cgYWxsIHBhdGNoZXMg
+YXJlIGNvbW1pdHRlZCBhbmQgcHVzaGVkIG91dC4KPiAKCkdyZWF0LCB0aGFuayB5b3UhCgo+ID4g
+UGxlYXNlIGxldCBtZSBrbm93IGlmIEkgY2FuIGhlbHAgZ2V0IHRoZXNlIGluLgo+IAo+IFBsZWFz
+ZSBhZGQgbWFpbnRhaW5lcnMgdG8gQ2MuICBBbHNvLCBhdCB0aGUgbmV4dCB0aW1lLCB0cnkgdG8g
+Y3JlYXRlCj4gcGF0Y2hlcyBkaXJlY3RseSBhcHBsaWNhYmxlIHZpYSBnaXQtYW0uICBJIGhhZCB0
+byBhcHBseSBhbmQgZml4IHRoZW0KPiBtYW51YWxseS4KPiAKCkhtLCB0aGF0J3Mgc3RyYW5nZS4g
+IEkgdXNlIGZvcm1hdC1wYXRjaCB0byBnZW5lcmF0ZSB0aGUgbWFpbCBmaWxlcwp3aGljaCBJIHRo
+ZW4gc2VuZCBvdXQgd2l0aCBtdXR0LCBhbmQgdGhleSB3b3JrIGZpbmUgb24gbXkgZW5kLiBJCnB1
+bGxlZCB0aGUgbWFpbCBmaWxlIGZvciB0aGUgc3RyZHVwIHBhdGNoIGFzIGRlbGl2ZXJlZCBieSBh
+bHNhLWRldmVsCm9mZiBvdXIgbWFpbCBzZXJ2ZXIgYW5kIGltcG9ydGVkIGl0IHdpdGggZ2l0LWFt
+IHdpdGhvdXQgYW55IGlzc3VlIGF0CmFsbC4gV2hhdCBkbyB0aGUgbWFpbCBmaWxlcyBsb29rIGxp
+a2Ugd2hlbiB0aGV5IHJlYWNoIHlvdT8KCkhlcmUncyB0aGUgbWFpbCBhcyBpdCBhcnJpdmVkIGlu
+IG15IE1haWxkaXIsIHdoaWNoIGltcG9ydHMgZmluZSB3aXRoCmdpdC1hbSAxLjcuOC4zOgo8aHR0
+cDovL3Bhc3RlYmluLmNvbS9DNFIwOFhqMz4KCkFuZHJldwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
