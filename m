@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add external amplifier controls for
-	Visstrim_M10.
-Date: Thu, 19 Jan 2012 15:45:21 +0000
-Message-ID: <20120119154521.GG3178@opensource.wolfsonmicro.com>
-References: <1326984807-10424-1-git-send-email-javier.martin@vista-silicon.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v6] ASoC: Apply msbits constraint for sample
+	size bigger than the msbits
+Date: Thu, 19 Jan 2012 17:06:03 +0100
+Message-ID: <1326989163-5187-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2AB9E103C1F
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 16:45:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1326984807-10424-1-git-send-email-javier.martin@vista-silicon.com>
+Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
+	[74.125.149.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFAE124133
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 17:06:16 +0100 (CET)
+Received: by mail-yx0-f170.google.com with SMTP id q1so49824yen.15
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 08:06:14 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Javier Martin <javier.martin@vista-silicon.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 19, 2012 at 03:53:27PM +0100, Javier Martin wrote:
-> Visstrim_M10 has an external class D amplifier.
-> This patch provides support for controlling the 4
-> possible gain levels and per channel muting.
+In order to avoid confusing the applications with msbits bigger
+than the selected sample size apply the msbits constraint only
+to sample size bigger than the requested msbits.
 
-It does seem like there could usefully be a generic driver but it's so
-little code...
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi Mark,
 
-> +	switch (reg) {
-> +	case MX27VIS_AMP_GAIN:
-> +		gpio_set_value(MX27VIS_PIN_G0, value & 1);
-> +		gpio_set_value(MX27VIS_PIN_G1, value >> 1);
-> +		mx27vis_amp_gain = value;
-> +		break;
-> +	case MX27VIS_AMP_MUTE:
-> +		gpio_set_value(MX27VIS_PIN_SDL, value & 1);
-> +		gpio_set_value(MX27VIS_PIN_SDR, value >> 1);
-> +		mx27vis_amp_mute = value;
-> +		break;
+Let's try this way.
+I think this implementation is quete clear for the first look to understand what
+it is doing.
 
-These should validate that value is in range.
+Regards,
+Peter
 
-> +	ret = mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
-> +			ARRAY_SIZE(mx27vis_amp_pins), "MX27VIS_AMP");
-> +	if (ret) {
-> +		printk(KERN_ERR "ASoC: unable to setup gpios\n");
-> +		platform_device_put(mx27vis_aic32x4_snd_device);
-> +	}
+ sound/soc/soc-pcm.c |   23 +++++++++++++++--------
+ 1 files changed, 15 insertions(+), 8 deletions(-)
 
-This looks awfully like it should be arch/arm code except it looks like
-it also munges in the gpio_request.  Odd.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8bb1793..d6fdde2 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -68,7 +68,7 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
+  * like the DAC/ADC resolution to use but there isn't right now.
+  */
+ static int sample_sizes[] = {
+-	8, 16, 24, 32,
++	32, 24, 16, 8,
+ };
+ 
+ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
+@@ -85,13 +85,20 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
+ 		return;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sample_sizes); i++) {
+-		ret = snd_pcm_hw_constraint_msbits(substream->runtime,
+-						   0, sample_sizes[i],
+-						   bits);
+-		if (ret != 0)
+-			dev_warn(dai->dev,
+-				 "Failed to set MSB %d/%d: %d\n",
+-				 bits, sample_sizes[i], ret);
++		if (sample_sizes[i] > bits) {
++			ret = snd_pcm_hw_constraint_msbits(substream->runtime,
++						      0, sample_sizes[i], bits);
++			if (ret != 0)
++				dev_warn(dai->dev,
++					 "Failed to set MSB %d/%d: %d\n",
++					 bits, sample_sizes[i], ret);
++		} else {
++			/*
++			 * The remaining sample sizes are smaller than the
++			 * requested msbits, we can bail out from the loop.
++			 */
++			break;
++		}
+ 	}
+ }
+ 
+-- 
+1.7.8.3
