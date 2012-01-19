@@ -1,20 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add external amplifier controls for
-	Visstrim_M10.
-Date: Thu, 19 Jan 2012 17:59:13 +0000
-Message-ID: <20120119175913.GL3178@opensource.wolfsonmicro.com>
-References: <1326984807-10424-1-git-send-email-javier.martin@vista-silicon.com>
-	<20120119154521.GG3178@opensource.wolfsonmicro.com>
-	<CACKLOr10BtcBjRGYjU7H+6tBYwWZf4h15O=bNU2gxvGU9re0qQ@mail.gmail.com>
+Subject: [PATCH] ASoC: Don't tell applications about msbits
+	unless we're ignoring input
+Date: Thu, 19 Jan 2012 18:04:50 +0000
+Message-ID: <1326996290-15956-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 036F72436E
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 18:59:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CACKLOr10BtcBjRGYjU7H+6tBYwWZf4h15O=bNU2gxvGU9re0qQ@mail.gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 39DD42436F
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 19:04:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 19, 2012 at 05:37:46PM +0100, javier Martin wrote:
-> On 19 January 2012 16:45, Mark Brown
+On the off chance that an application both pays attention and gets
+confused.
 
-> >> + =A0 =A0 ret =3D mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ARRAY_SIZE(mx27vis_amp_pins)=
-, "MX27VIS_AMP");
-> >> + =A0 =A0 if (ret) {
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "ASoC: unable to setup gpios=
-\n");
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 platform_device_put(mx27vis_aic32x4_snd_devi=
-ce);
-> >> + =A0 =A0 }
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-pcm.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-> > This looks awfully like it should be arch/arm code except it looks like
-> > it also munges in the gpio_request. =A0Odd.
-
-> This is a doubt I had. I could also use board specific file to request
-> these gpios and then use some platform data to tell the driver what
-> GPIOS must be used.
-> However, as those gpios are fixed for all Visstrim_M10 boards I
-> considered it didn't worth it.
-
-> On the other hand, if you think it's cleaner that way I can do that.
-
-I think this is just the arch being non-standard.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 77c40ee..9f6e55b 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -85,9 +85,11 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
+ 		return;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sample_sizes); i++) {
+-		ret = snd_pcm_hw_constraint_msbits(substream->runtime,
+-						   0, sample_sizes[i],
+-						   bits);
++		if (bits >= sample_sizes)
++			continue;
++
++		ret = snd_pcm_hw_constraint_msbits(substream->runtime, 0,
++						   sample_sizes[i], bits);
+ 		if (ret != 0)
+ 			dev_warn(dai->dev,
+ 				 "Failed to set MSB %d/%d: %d\n",
+-- 
+1.7.7.3
