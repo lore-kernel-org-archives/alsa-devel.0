@@ -1,19 +1,18 @@
-From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: Re: [alsa-lib PATCH] Document strdup allocation in
- snd_card_get_name family
-Date: Thu, 19 Jan 2012 08:48:45 -0600
-Message-ID: <20120119144845.GT24575@foghorn.codeweavers.com>
-References: <20120118145808.GR24575@foghorn.codeweavers.com>
-	<s5h4nvr9awq.wl%tiwai@suse.de>
+From: Javier Martin <javier.martin@vista-silicon.com>
+Subject: [PATCH] ASoC: Add external amplifier controls for
+	Visstrim_M10.
+Date: Thu, 19 Jan 2012 15:53:27 +0100
+Message-ID: <1326984807-10424-1-git-send-email-javier.martin@vista-silicon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00449103BFF
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 15:48:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h4nvr9awq.wl%tiwai@suse.de>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A39A4103C08
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 15:53:38 +0100 (CET)
+Received: by wera13 with SMTP id a13so3341468wer.38
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 06:53:38 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +22,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Javier Martin <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKYW4gMTksIDIwMTIgYXQgMTI6NDE6NTdQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IFdlZCwgMTggSmFuIDIwMTIgMDg6NTg6MDggLTA2MDAsCj4gQW5kcmV3IEVpa3Vt
-IHdyb3RlOgo+ID4gCj4gPiBUaGlzIHdhcyBzcG90dGVkIGJ5IErDtnJnIEjDtmhsZSBvbiB0aGUg
-d2luZS1wYXRjaGVzIE1MLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZXcgRWlrdW0gPGFl
-aWt1bUBjb2Rld2VhdmVycy5jb20+Cj4gPiAtLS0KPiA+IAo+ID4gSSBub3RpY2VkIG15IGRvY3Vt
-ZW50YXRpb24gcGF0Y2hlcyBoYXZlbid0IGJlZW4gbWFraW5nIHRoZWlyIHdheSBpbnRvCj4gPiBh
-bHNhLWxpYi5naXQuIEFtIEkgc3VibWl0dGluZyB0aGVzZSB3cm9uZz8gSSBhZGRlZCB0aGUgU09C
-IGxpbmUgYWJvdmUsCj4gPiBhbHRob3VnaCBJIG5vdGljZSBub3QgYWxsIHBhdGNoZXMgdGhhdCBn
-ZXQgaW50byBBTFNBIGhhdmUgaXQuIE9uIHRoZQo+ID4gb3RoZXIgaGFuZCwgYWxzYS1saWIuZ2l0
-IGhhc24ndCBiZWVuIGNoYW5nZWQgc2luY2UgTm92ZW1iZXIgc28gcGVyaGFwcwo+ID4gbXkgcGF0
-Y2hlcyBhcmUgc2l0dGluZyBpbiBzb21lb25lJ3MgdHJlZSB3YWl0aW5nIHRvIGJlIHB1c2hlZCA6
-KQo+IAo+IFNvcnJ5LCBJIHNpbXBseSBvdmVybG9va2VkIHlvdXIgcGF0Y2hlcyBzaW5jZSB0aGV5
-IGhhdmUgYmVlbiBwb3N0ZWQKPiBkdXJpbmcgbXkgdmFjYXRpb24uICBOb3cgYWxsIHBhdGNoZXMg
-YXJlIGNvbW1pdHRlZCBhbmQgcHVzaGVkIG91dC4KPiAKCkdyZWF0LCB0aGFuayB5b3UhCgo+ID4g
-UGxlYXNlIGxldCBtZSBrbm93IGlmIEkgY2FuIGhlbHAgZ2V0IHRoZXNlIGluLgo+IAo+IFBsZWFz
-ZSBhZGQgbWFpbnRhaW5lcnMgdG8gQ2MuICBBbHNvLCBhdCB0aGUgbmV4dCB0aW1lLCB0cnkgdG8g
-Y3JlYXRlCj4gcGF0Y2hlcyBkaXJlY3RseSBhcHBsaWNhYmxlIHZpYSBnaXQtYW0uICBJIGhhZCB0
-byBhcHBseSBhbmQgZml4IHRoZW0KPiBtYW51YWxseS4KPiAKCkhtLCB0aGF0J3Mgc3RyYW5nZS4g
-IEkgdXNlIGZvcm1hdC1wYXRjaCB0byBnZW5lcmF0ZSB0aGUgbWFpbCBmaWxlcwp3aGljaCBJIHRo
-ZW4gc2VuZCBvdXQgd2l0aCBtdXR0LCBhbmQgdGhleSB3b3JrIGZpbmUgb24gbXkgZW5kLiBJCnB1
-bGxlZCB0aGUgbWFpbCBmaWxlIGZvciB0aGUgc3RyZHVwIHBhdGNoIGFzIGRlbGl2ZXJlZCBieSBh
-bHNhLWRldmVsCm9mZiBvdXIgbWFpbCBzZXJ2ZXIgYW5kIGltcG9ydGVkIGl0IHdpdGggZ2l0LWFt
-IHdpdGhvdXQgYW55IGlzc3VlIGF0CmFsbC4gV2hhdCBkbyB0aGUgbWFpbCBmaWxlcyBsb29rIGxp
-a2Ugd2hlbiB0aGV5IHJlYWNoIHlvdT8KCkhlcmUncyB0aGUgbWFpbCBhcyBpdCBhcnJpdmVkIGlu
-IG15IE1haWxkaXIsIHdoaWNoIGltcG9ydHMgZmluZSB3aXRoCmdpdC1hbSAxLjcuOC4zOgo8aHR0
-cDovL3Bhc3RlYmluLmNvbS9DNFIwOFhqMz4KCkFuZHJldwpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Visstrim_M10 has an external class D amplifier.
+This patch provides support for controlling the 4
+possible gain levels and per channel muting.
+
+Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+---
+ sound/soc/imx/mx27vis-aic32x4.c |   72 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 72 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
+index d37e23c..47a7bf9 100644
+--- a/sound/soc/imx/mx27vis-aic32x4.c
++++ b/sound/soc/imx/mx27vis-aic32x4.c
+@@ -25,16 +25,36 @@
+ #include <linux/moduleparam.h>
+ #include <linux/device.h>
+ #include <linux/i2c.h>
++#include <linux/gpio.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ #include <asm/mach-types.h>
+ #include <mach/audmux.h>
++#include <mach/iomux-mx27.h>
+ 
+ #include "../codecs/tlv320aic32x4.h"
+ #include "imx-ssi.h"
+ 
++#define MX27VIS_AMP_GAIN	0
++#define MX27VIS_AMP_MUTE	1
++
++#define MX27VIS_PIN_G0		(GPIO_PORTF + 9)
++#define MX27VIS_PIN_G1		(GPIO_PORTF + 8)
++#define MX27VIS_PIN_SDL		(GPIO_PORTE + 5)
++#define MX27VIS_PIN_SDR		(GPIO_PORTF + 7)
++
++static int mx27vis_amp_gain;
++static int mx27vis_amp_mute;
++
++static const int mx27vis_amp_pins[] = {
++	MX27VIS_PIN_G0 | GPIO_GPIO | GPIO_OUT,
++	MX27VIS_PIN_G1 | GPIO_GPIO | GPIO_OUT,
++	MX27VIS_PIN_SDL | GPIO_GPIO | GPIO_OUT,
++	MX27VIS_PIN_SDR | GPIO_GPIO | GPIO_OUT,
++};
++
+ static int mx27vis_aic32x4_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params)
+ {
+@@ -74,8 +94,53 @@ static struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
+ 	.hw_params	= mx27vis_aic32x4_hw_params,
+ };
+ 
++static int mx27vis_amp_set(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	int value = ucontrol->value.integer.value[0];
++	unsigned int reg = mc->reg;
++
++	switch (reg) {
++	case MX27VIS_AMP_GAIN:
++		gpio_set_value(MX27VIS_PIN_G0, value & 1);
++		gpio_set_value(MX27VIS_PIN_G1, value >> 1);
++		mx27vis_amp_gain = value;
++		break;
++	case MX27VIS_AMP_MUTE:
++		gpio_set_value(MX27VIS_PIN_SDL, value & 1);
++		gpio_set_value(MX27VIS_PIN_SDR, value >> 1);
++		mx27vis_amp_mute = value;
++		break;
++	}
++	return 0;
++}
++
++static int mx27vis_amp_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	unsigned int reg = mc->reg;
++
++	switch (reg) {
++	case MX27VIS_AMP_GAIN:
++		ucontrol->value.integer.value[0] = mx27vis_amp_gain;
++		break;
++	case MX27VIS_AMP_MUTE:
++		ucontrol->value.integer.value[0] = mx27vis_amp_mute;
++		break;
++	}
++	return 0;
++}
++
+ static const struct snd_kcontrol_new mx27vis_aic32x4_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("External Mic"),
++	SOC_SINGLE_EXT("LO Ext Boost", MX27VIS_AMP_GAIN, 0, 3, 0,
++		       mx27vis_amp_get, mx27vis_amp_set),
++	SOC_DOUBLE_EXT("LO Ext Mute Switch", MX27VIS_AMP_MUTE, 0, 1, 1, 0,
++		       mx27vis_amp_get, mx27vis_amp_set),
+ };
+ 
+ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
+@@ -146,6 +211,13 @@ static int __init mx27vis_aic32x4_init(void)
+ 			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
+ 	);
+ 
++	ret = mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
++			ARRAY_SIZE(mx27vis_amp_pins), "MX27VIS_AMP");
++	if (ret) {
++		printk(KERN_ERR "ASoC: unable to setup gpios\n");
++		platform_device_put(mx27vis_aic32x4_snd_device);
++	}
++
+ 	return ret;
+ }
+ 
+-- 
+1.7.0.4
