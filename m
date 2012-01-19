@@ -1,106 +1,42 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v5] ASoC: Apply msbits constraint for
- sample size bigger than the msbits
-Date: Thu, 19 Jan 2012 13:40:35 +0100
-Message-ID: <4F180F43.40706@ti.com>
-References: <1326899114-26979-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120118152905.GP8732@opensource.wolfsonmicro.com>
-	<4F16F6B0.7030707@ti.com>
-	<20120118174648.GQ8732@opensource.wolfsonmicro.com>
-	<4F17D3F5.3020901@ti.com>
-	<20120119104800.GC3178@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 01/10] MXS-DMA : move the mxs-dma.h to a more common place
+Date: Thu, 19 Jan 2012 21:04:06 +0800
+Message-ID: <20120119130404.GI2247@S2101-09.ap.freescale.net>
+References: <1326953767-24155-1-git-send-email-b32955@freescale.com>
+ <1326953767-24155-2-git-send-email-b32955@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
-	[74.125.149.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE881103BF6
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 13:40:40 +0100 (CET)
-Received: by mail-gy0-f171.google.com with SMTP id g18so90989910ghb.30
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 04:40:38 -0800 (PST)
-In-Reply-To: <20120119104800.GC3178@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mmc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1326953767-24155-2-git-send-email-b32955@freescale.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Huang Shijie <b32955@freescale.com>
+Cc: vinod.koul@intel.com, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/19/2012 11:48 AM, Mark Brown wrote:
-> On Thu, Jan 19, 2012 at 09:27:33AM +0100, Peter Ujfalusi wrote:
-> =
+On Thu, Jan 19, 2012 at 02:15:58PM +0800, Huang Shijie wrote:
+> Move the header to a more common place.
+> The DMA engine is not only used in mx23/mx28, but also used
+> in mx50/mx6q.
+> It will also be used in the future chips.
+> 
+> Rename it to mxs-dma.h
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  arch/arm/mach-mxs/include/mach/dma.h |   28 ----------------------------
+>  include/linux/mxs-dma.h              |   28 ++++++++++++++++++++++++++++
+>  2 files changed, 28 insertions(+), 28 deletions(-)
+>  delete mode 100644 arch/arm/mach-mxs/include/mach/dma.h
+>  create mode 100644 include/linux/mxs-dma.h
+> 
+I'm wondering if it would be better to create folder include/linux/fsl
+for mxs-dma.h accommodation, so that any headers that need to shared
+between mxs and imx later can find a place.  Considering that Freescale
+has many IPs shared between MPCxxx (PowerPC) and i.MX (ARM) families,
+it could also be a good place for any headers that need to be shared
+between these two product lines from Freescale.
 
->> Are you going to take the for version of patch, or should I resend it?
->> I can add a comment to explain that we bail out, and not checking the
->> sample sizes lower than the requested msbits, if it helps.
-> =
-
-> I'd just replace it with a continue on sizes we don't want, much
-> simpler.
-
-If I can do this (bits =3D=3D 24):
-i =3D 0
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] <=3D bits)
- apply constraint
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] <=3D bits)
- go out
-
---------------------------------------
-I will not do this (bits =3D=3D 24):
-static int sample_sizes[] =3D {
-	8, 16, 24, 32,
-};
-
-i =3D 0
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] > bits)
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] > bits)
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] > bits)
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] > bits)
- apply constraint
-i++
-check (i < ARRAY_SIZE(sample_sizes))
- go out
-
---------------------------------------
-nor this (bits =3D=3D 24):
-static int sample_sizes[] =3D {
-	32, 24, 16, 8,
-};
-
-i =3D 0
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] <=3D bits)
- apply constraint
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] <=3D bits)
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] <=3D bits)
-i++
-check (i < ARRAY_SIZE(sample_sizes))
-check (sample_sizes[i] <=3D bits)
-i++
-check (i < ARRAY_SIZE(sample_sizes))
- go out
-
--- =
-
-P=E9ter
+-- 
+Regards,
+Shawn
