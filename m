@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Don't tell applications about msbits
-	unless we're ignoring input
-Date: Thu, 19 Jan 2012 18:04:50 +0000
-Message-ID: <1326996290-15956-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v6] ASoC: Apply msbits constraint for
+ sample size bigger than the msbits
+Date: Thu, 19 Jan 2012 19:23:28 +0100
+Message-ID: <4F185FA0.5080903@ti.com>
+References: <1326989163-5187-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120119175147.GJ3178@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 39DD42436F
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 19:04:54 +0100 (CET)
+Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
+	[74.125.149.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 727422437B
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 19:23:33 +0100 (CET)
+Received: by mail-yx0-f180.google.com with SMTP id l2so151753yen.25
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 10:23:31 -0800 (PST)
+In-Reply-To: <20120119175147.GJ3178@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,36 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On the off chance that an application both pays attention and gets
-confused.
+On 01/19/2012 06:51 PM, Mark Brown wrote:
+> *sigh*  I think from the tone of the above you know that's not really
+> addressing the issue.
+> =
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-pcm.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+> My yak is getting pretty bald now and I'm running out of razors.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 77c40ee..9f6e55b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -85,9 +85,11 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
- 		return;
- 
- 	for (i = 0; i < ARRAY_SIZE(sample_sizes); i++) {
--		ret = snd_pcm_hw_constraint_msbits(substream->runtime,
--						   0, sample_sizes[i],
--						   bits);
-+		if (bits >= sample_sizes)
-+			continue;
-+
-+		ret = snd_pcm_hw_constraint_msbits(substream->runtime, 0,
-+						   sample_sizes[i], bits);
- 		if (ret != 0)
- 			dev_warn(dai->dev,
- 				 "Failed to set MSB %d/%d: %d\n",
--- 
-1.7.7.3
+Mine still have plenty of hair, and I have some spare razors left.
+But it is getting it cold over here. I don't want it to fall sick.
+I gave up.
+
+-- =
+
+P=E9ter
