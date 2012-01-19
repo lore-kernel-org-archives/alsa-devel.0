@@ -1,19 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/4] Revert "ASoC: twl4030: Use core to set the
-	msbits constraint"
-Date: Thu, 19 Jan 2012 19:24:14 +0100
-Message-ID: <1326997456-16296-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 4/4] ASoC: omap-mcpdm: Do not use core to set
+	msbit constraint
+Date: Thu, 19 Jan 2012 19:24:16 +0100
+Message-ID: <1326997456-16296-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1326997456-16296-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5830E103C64
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 19:24:43 +0100 (CET)
-Received: by mail-yx0-f173.google.com with SMTP id l8so167632yen.32
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 10:24:39 -0800 (PST)
+Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
+	[74.125.149.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 650D32439F
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 19:24:44 +0100 (CET)
+Received: by mail-gy0-f177.google.com with SMTP id r17so200423ghr.8
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 10:24:43 -0800 (PST)
 In-Reply-To: <1326997456-16296-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,42 +30,41 @@ List-Id: alsa-devel@alsa-project.org
 
 The core implementation applies the msbits constraint to samples
 where it should not.
-Do not ask core to do this, the original code does the right thing.
+Set the 24msbits constraint in the omap-mcpdm driver for 32
+bit samples.
 
-This reverts commit f3da57f0fc092d338fe83cf89e3fe25ca2283bbf.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl4030.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/omap/omap-mcpdm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index a193f5f..18e7101 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1689,6 +1689,7 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 3970556..50d758a 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -265,6 +265,8 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
+ 
+ 	mutex_lock(&mcpdm->mutex);
  
 +	snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
- 	if (twl4030->master_substream) {
- 		twl4030->slave_substream = substream;
- 		/* The DAI has one configuration for playback and capture, so
-@@ -2174,15 +2175,13 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
- 		.channels_min = 2,
- 		.channels_max = 4,
- 		.rates = TWL4030_RATES | SNDRV_PCM_RATE_96000,
--		.formats = TWL4030_FORMATS,
--		.sig_bits = 24,},
-+		.formats = TWL4030_FORMATS,},
++
+ 	if (!dai->active) {
+ 		/* Enable watch dog for ES above ES 1.0 to avoid saturation */
+ 		if (omap_rev() != OMAP4430_REV_ES1_0) {
+@@ -419,14 +421,12 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 		.channels_max = 5,
+ 		.rates = OMAP_MCPDM_RATES,
+ 		.formats = OMAP_MCPDM_FORMATS,
+-		.sig_bits = 24,
+ 	},
  	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 2,
- 		.channels_max = 4,
- 		.rates = TWL4030_RATES,
--		.formats = TWL4030_FORMATS,
--		.sig_bits = 24,},
-+		.formats = TWL4030_FORMATS,},
- 	.ops = &twl4030_dai_hifi_ops,
- },
- {
+ 		.channels_min = 1,
+ 		.channels_max = 3,
+ 		.rates = OMAP_MCPDM_RATES,
+ 		.formats = OMAP_MCPDM_FORMATS,
+-		.sig_bits = 24,
+ 	},
+ 	.ops = &omap_mcpdm_dai_ops,
+ };
 -- 
 1.7.8.3
