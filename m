@@ -1,40 +1,62 @@
 From: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 00/10] patch set about the MXS-DMA
-Date: Fri, 20 Jan 2012 11:29:25 +0800
-Message-ID: <4F18DF95.80700@freescale.com>
-References: <1326953767-24155-1-git-send-email-b32955@freescale.com> <20120119091034.GH2247@S2101-09.ap.freescale.net> <20120119094513.GB2630@pengutronix.de>
+Subject: [PATCH v2 0/2] patch set about the MXS-DMA
+Date: Fri, 20 Jan 2012 15:33:36 +0800
+Message-ID: <1327044818-4464-1-git-send-email-b32955@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <20120119094513.GB2630@pengutronix.de>
 Sender: linux-mmc-owner@vger.kernel.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>, vinod.koul@intel.com, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
+To: vinod.koul@intel.com
+Cc: shawn.guo@linaro.org, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com, Huang Shijie <b32955@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
+patch 1: move the mxs dma header to a more common place.
+	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
+	So move the mxs dma header file to a more common place, and rename
+	it to mxs-dma.h
 
->>> [2] patch 6 ~ patch 10: rewrite the last parameter of mxs_dma_prep_slave_sg().
->> For the sake of bitsec, at least patches #7 and #8 need to be one patch.
->> That said, if I apply the series and then check out the commit at patch
->> #7, you need to all mxs-dma client drivers, mxs-mmc, gpmi do not break.
-> I'd say patch 6-10 should be squashed, simply. My personal preference is
-> to change #9 to simply read the register when needed and do not expand
-It's better to add a new field. i also want to add a new field
-`bch_version`, because different
-BCH version may support different ECC strength. For example, some
-version BCH can support to 24 bit,
-while the latest BCH may support to 40 bit. So the BCH version may
-limits the computing of ECC strength.
+patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
+	In the new GPMI version, some hardware behavior changes.
+	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+	The DMA chain should be set like this:
 
-Best Regards
-Huang Shijie
+          +-----+               +-----+                      +-----+
+          | cmd | ------------> | cmd | ------------------>  | cmd |
+          +-----+               +-----+                      +-----+
+                                   ^                            ^
+                                   |                            |
+                                   |                            |
+                              set WAIT4END here too        set WAIT4END here
 
-> the struct, but this is a minor thing.
->
-> Regards,
->
->    Wolfram
->
+        So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
+	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
+	And change the relative drivers with the dma_ctrl_flags.
+
+TEST:
+	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
+	in MX28 board.
+
+v1 --> v2:
+	[1] squash the trial patches into single patch.
+	[2] use the dma_ctrl_flags.
+
+Huang Shijie (2):
+  mxs-dma : move the mxs dma.h to a more common place
+  mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
+
+ drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
+ drivers/mmc/host/mxs-mmc.c                         |   12 +++---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   28 +++++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-regs.h             |    2 +
+ .../include/mach/dma.h => include/linux/mxs-dma.h  |    0
+ sound/soc/mxs/mxs-pcm.c                            |    2 +-
+ sound/soc/mxs/mxs-pcm.h                            |    2 +-
+ sound/soc/mxs/mxs-saif.c                           |    2 +-
+ 9 files changed, 67 insertions(+), 21 deletions(-)
+ rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/mxs-dma.h (100%)
+
+-- 
+1.7.3.2
 
 
