@@ -1,16 +1,20 @@
-From: Joerg-Cyril.Hoehle@t-systems.com
-Subject: Improve hw_params documentation -- details of
-	constraint resolution
-Date: Fri, 20 Jan 2012 11:33:16 +0100
-Message-ID: <8E4C156DA5797D418DBFADFD8CE655A41782ACA717@HE113481.emea1.cds.t-internal.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Improve hw_params documentation -- details of
+ constraint resolution
+Date: Fri, 20 Jan 2012 14:41:23 +0100
+Message-ID: <4F196F03.8080002@ladisch.de>
+References: <8E4C156DA5797D418DBFADFD8CE655A41782ACA717@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tcmail83.telekom.de (tcmail83.telekom.de [62.225.183.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A941246A9
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2012 11:44:40 +0100 (CET)
-Content-Language: de-DE
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id B7A4C2470F
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2012 14:39:26 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 289FE216B7
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2012 08:39:23 -0500 (EST)
+In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41782ACA717@HE113481.emea1.cds.t-internal.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,52 +24,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Joerg-Cyril.Hoehle@t-systems.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksDQoNCkFuZHJldyBFaWt1bSByZWNlbnRseSBpbXByb3ZlZCB0aGUgKHN0aWxsIG11Y2ggbGFj
-a2luZykgQUxTQSBkb2N1bWVudGF0aW9uDQogLS0gdGhhbmtzIEFuZHJldzoNCisgKiAgV2hlbiBh
-IHBhcmFtZXRlciBpcyBzZXQgb3IgcmVzdHJpY3RlZCB1c2luZyBhIHNuZF9wY21faHdfcGFyYW1z
-X3NldCoNCisgKiAgZnVuY3Rpb24sIGFsbCBvZiB0aGUgb3RoZXIgcmFuZ2VzIHdpbGwgYmUgdXBk
-YXRlZCB0byBleGNsdWRlIGFzIG1hbnkNCisgKiAgaW1wb3NzaWJsZSBjb25maWd1cmF0aW9ucyBh
-cyBwb3NzaWJsZS4gQXR0ZW1wdGluZyB0byBzZXQgYSBwYXJhbWV0ZXINCisgKiAgb3V0c2lkZSBv
-ZiBpdHMgYWNjZXB0YWJsZSByYW5nZSB3aWxsIHJlc3VsdCBpbiB0aGUgZnVuY3Rpb24gZmFpbGlu
-Zw0KKyAqICBhbmQgYW4gZXJyb3IgY29kZSBiZWluZyByZXR1cm5lZC4NCg0KSSdkIGxpa2UgdG8g
-Y2hlY2sgd2hldGhlciB0aGF0J3MgZXhhY3RseSB3aGF0J3MgaGFwcGVuaW5nLg0KDQoxLiBDb25z
-aWRlciB0aGUgZm9sbG93aW5nIHNjZW5hcmlvOg0KDQpzZXRfaHdfcGFyYW1zX3BlcmlvZF9uZWFy
-KFtpbixvdXRdMTBtcyxbb3V0XWRpcikNCnlpZWxkcyAxNm1zIGFuZCBkaXJlY3Rpb249MCA8PT4g
-ImV4YWN0IG1hdGNoIg0KDQpzZXRfaHdfcGFyYW1zX2J1ZmZlcl9zaXplKFgpDQpzZXRfaHdfcGFy
-YW1zKCkNCg0KU28gZmFyLCBJIHRob3VnaHQgdGhhdCBpZiBBTFNBIHJlcGxpZWQgd2l0aCBkaXJl
-Y3Rpb249MCwgdGhlbiB0aGF0DQpjb3JuZXIgc3RvbmUgb2YgdGhlIGNvbmZpZ3VyYXRpb24gc3Bh
-Y2Ugd2FzIGZpeGVkLiAgT1RPSCwgaWYNCmNvbnN0cmFpbnQgcmVzb2x1dGlvbnMgb2NjdXJzIGF0
-IHRoZSB0aW1lIG9mIHNldF9od19wYXJhbXMoKSAqYWdhaW4NCmFuZCBmaW5hbGx5KiwgQUxTQSBt
-YXkgcmVhbGl6ZSB0aGF0IHRoZSBwYXJ0aWN1bGFybHkgbGFyZ2Ugb3Igc21hbGwNCmJ1ZmZlciBz
-aXplIFggaXMgbm90IHJlYWNoYWJsZSB3aXRoIHRoZSAxNm1zIHBlcmlvZCwgd2hlcmVhcyBhIDUw
-bXMgb3INCjVtcyBwZXJpb2QgbWF5IGFsbG93IGJ1ZmZlciBzaXplIFguDQoNClNvIHdoYXQgaXMg
-dGhlIG91dGNvbWU/DQphKSAxNm1zIHBlcmlvZCBhbmQgZXJyb3IgZnJvbSBzZXRfaHdfcGFyYW1z
-KCkNCiAgIGJlY2F1c2UgdGhlIGNvbnN0cmFpbnRzIGRvbid0IGZpdD8NCmIpIHJldmlzZWQgNSBv
-ciA1MG1zIHBlcmlvZCB3aXRoIGJ1ZmZlciBzaXplIFgsDQogICBiZWNhdXNlIDUgb3IgNTBtcyBp
-cyBhIG5lYXIgcGVyaW9kPw0KYykgMTZtcyBwZXJpb2QsIGVycm9yIGZyb20gc2V0X2J1ZmZlcl9z
-aXplIGFuZCBzdWNjZXNzIGZyb20gc2V0X2h3X3BhcmFtcw0KICAgYXMgQUxTQSBjaG9vc2VzIGFu
-IGFyYml0cmFyeSBidWZmZXIgc2l6ZSAodHlwaWNhbGx5IDQtOCBwZXJpb2RzKT8NCg0KSSBiZWxp
-ZXZlIGMpIGlzIGltcGxlbWVudGVkLiBUaGUgZG9jdW1lbnRhdGlvbiBtYXkgbGVhZCBvbmUgdG8g
-YmVsaWV2ZSBiKSBoYXBwZW5zLg0KDQpCZWhhdmlvdXIgYikgbWF5IGJldHRlciBzdWl0IHdoYXQg
-dXNlcnMgZXhwZWN0LCBidXQgY29tcGF0aWJpbGl0eSBsaWtlbHkgaW1wb3NlcyBjKS4NCg0KQW55
-ICJvZmZpY2lhbCIgc3RhdGVtZW50Pw0KDQoNCjIuDQorICogIEF0dGVtcHRpbmcgdG8gc2V0IGEg
-cGFyYW1ldGVyDQorICogIG91dHNpZGUgb2YgaXRzIGFjY2VwdGFibGUgcmFuZ2Ugd2lsbCByZXN1
-bHQgaW4gdGhlIGZ1bmN0aW9uIGZhaWxpbmcNCisgKiAgYW5kIGFuIGVycm9yIGNvZGUgYmVpbmcg
-cmV0dXJuZWQuDQoNClRoYXQgZG9lcyBub3Qgc2VlbSB0byBhcHBseSB0byB0aGUgc2V0XypfbmVh
-cigpIGZ1bmN0aW9ucy4NCg0Kc2V0X2h3X3BhcmFtc19wZXJpb2RfdGltZSgybXMpIG1heSBmYWls
-IGJlY2F1c2UgaXQncyB0b28gc21hbGwgZm9yIHRoZQ0KZGV2aWNlIGF0IGhhbmQsIHdoZXJlYXMg
-c2V0X2h3X3BhcmFtc19wZXJpb2RfdGltZV9uZWFyKDJtcykgY2F1c2VzIHRoZQ0Kc21hbGxlc3Qg
-c3VwcG9ydGVkIHBlcmlvZCB0byBiZSBjaG9zZW4uICBEb2VzIHRoaXMgbmVlZCBjbGFyaWZpY2F0
-aW9uDQpvciBpcyB1c2luZyAqX25lYXIgbm90ICJhdHRlbXB0aW5nIHRvIHNldCBhIHBhcmFtZXRl
-ciI/DQoNCipfbWluIGFuZCAqX21heCBhcHBlYXIgdG8gYmVoYXZlIGxpa2V3aXNlOiB0aGV5IHNl
-dCBsb3dlciBhbmQgdXBwZXINCmJvdW5kcyB3aXRob3V0IGNoZWNraW5nIHdoZXRoZXIgdGhlc2Ug
-YXJlIHJlYWNoYWJsZS4NCg0KSSB0aGluayB0aGUgY3VycmVudCBiZWhhdmlvdXIsIG5hbWVseSBu
-b3QgY2hlY2tpbmcgd2hldGhlciBuZWFyLCBtaW4NCm9yIG1heCBmYWxsIGludG8gdGhlICJhY2Nl
-cHRhYmxlIHJhbmdlIiwgaXMgdXNlZnVsLg0KDQpUaGFuayB5b3UgZm9yIHlvdXIgaGVscCwNCglK
-w7ZyZyBIw7ZobGUNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Joerg-Cyril.Hoehle@t-systems.com wrote:
+> + *  When a parameter is set or restricted using a snd_pcm_hw_params_set*
+> + *  function, all of the other ranges will be updated to exclude as many
+> + *  impossible configurations as possible. Attempting to set a parameter
+> + *  outside of its acceptable range will result in the function failing
+> + *  and an error code being returned.
+>
+> I'd like to check whether that's exactly what's happening.
+>
+> 1. Consider the following scenario:
+>
+> set_hw_params_period_near([in,out]10ms,[out]dir)
+> yields 16ms and direction=0 <=> "exact match"
+>
+> set_hw_params_buffer_size(X)
+> set_hw_params()
+>
+> So far, I thought that if ALSA replied with direction=0, then that
+> corner stone of the configuration space was fixed.
+
+This has nothing to do with the dir parameter.
+
+The period_time parameter is fixed when the set(_near) function
+returns successfully.
+
+The dir parameter tells whether the value is an exact integer,
+or if it's smaller or larger (such as 15.9 or 16.667).
+
+> OTOH, if constraint resolutions occurs at the time of set_hw_params()
+> *again and finally*,
+
+Indeed this occurs again because not all parameters might have been
+reduced to a single value yet.
+
+> ALSA may realize that the particularly large or
+> small buffer size X is not reachable with the 16ms period, whereas
+> a 50ms or 5ms period may allow buffer size X.
+>
+> So what is the outcome?
+> b) revised 5 or 50ms period with buffer size X,
+>    because 5 or 50ms is a near period?
+
+Setting a parameter always happens in the context of the values of
+any other parameters that have been set, and all rules and restrictions
+implied by that.
+
+Once a parameter has been reduced to a single value (or just to
+a smaller interval), it cannot be changed back.
+
+> c) 16ms period, error from set_buffer_size and success from set_hw_params
+>    as ALSA chooses an arbitrary buffer size (typically 4-8 periods)?
+
+Yes.
+
+> The documentation may lead one to believe b) happens.
+
+How so?
+
+> 2.
+> + *  Attempting to set a parameter
+> + *  outside of its acceptable range will result in the function failing
+> + *  and an error code being returned.
+>
+> That does not seem to apply to the set_*_near() functions.
+>
+> set_hw_params_period_time(2ms) may fail because it's too small for the
+> device at hand, whereas set_hw_params_period_time_near(2ms) causes the
+> smallest supported period to be chosen.  Does this need clarification
+> or is using *_near not "attempting to set a parameter"?
+
+set_*_near() searches for the nearest value in the acceptable range,
+which it then attempts to set.
+
+> *_min and *_max appear to behave likewise: they set lower and upper
+> bounds without checking whether these are reachable.
+
+They do not 'set' the value, they just restrict the acceptable range;
+a limit that is outside the previously acceptable range is not an error
+because this does not result in an 'impossible' configuration.
+For example, assume that a device supports period times from 10 ms to
+100 ms.  Calling set_period_time_min(2ms) means "I accept anything in
+the range from 2 ms to infinity", so the resulting period time is the
+interval from 10 ms to 100 ms (i.e., unchanged).  This is correct
+because all values in this interval indeed are >= 2 ms.
+
+set_period_time_min(2ms) would fail if the maximum period time is
+already less than 2 ms, because then there wouldn't be any valid
+period time value left.
+
+
+Regards,
+Clemens
