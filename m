@@ -1,53 +1,40 @@
-From: Alban Browaeys <prahal@yahoo.com>
-Subject: acer ferrari one hda realtek - attempt to improve
- forte mic IC support
-Date: Thu, 19 Jan 2012 22:59:55 +0100
-Message-ID: <1327010395.22934.12.camel@argos.server.maison>
+From: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 00/10] patch set about the MXS-DMA
+Date: Fri, 20 Jan 2012 11:29:25 +0800
+Message-ID: <4F18DF95.80700@freescale.com>
+References: <1326953767-24155-1-git-send-email-b32955@freescale.com> <20120119091034.GH2247@S2101-09.ap.freescale.net> <20120119094513.GB2630@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A954103C58
-	for <Alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 23:00:42 +0100 (CET)
-Received: from argos.server.maison (unknown [IPv6:2a01:e35:8a6b:8030::2])
-	by smtp1-g21.free.fr (Postfix) with ESMTP id 3BF199402D1
-	for <Alsa-devel@alsa-project.org>; Thu, 19 Jan 2012 23:00:37 +0100 (CET)
-Received: from prahal by argos.server.maison with local (Exim 4.77)
-	(envelope-from <prahal@yahoo.com>) id 1Ro027-0007mB-6T
-	for Alsa-devel@alsa-project.org; Thu, 19 Jan 2012 23:00:35 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <20120119094513.GB2630@pengutronix.de>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Shawn Guo <shawn.guo@linaro.org>, vinod.koul@intel.com, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-A lot of reports about aspire one issues lead me to think the mic IC
-processing is the same as on this acer ferrari one 200.
 
-Looking at alsa-driver-aspire_one-v1.09 assembly I see that it setup the
-bdl entries to point to a capture buffer which it then split in two
-buffers : namely mic and speaker .
-This split happens by moving the first 32 bits to mic , the next 32 to
-speaker , then to mic and so forth.
-azx_pcm_hw formats is set to S16 LE.
-I was wondering about the the 32 bits step between mic and speaker
-buffer and ended up on azx_pcm_preapre where for the capture case
-snd_hda_calc_stream_format is hardcoded a number of channels of 4.
+>>> [2] patch 6 ~ patch 10: rewrite the last parameter of mxs_dma_prep_slave_sg().
+>> For the sake of bitsec, at least patches #7 and #8 need to be one patch.
+>> That said, if I apply the series and then check out the commit at patch
+>> #7, you need to all mxs-dma client drivers, mxs-mmc, gpmi do not break.
+> I'd say patch 6-10 should be squashed, simply. My personal preference is
+> to change #9 to simply read the register when needed and do not expand
+It's better to add a new field. i also want to add a new field
+`bch_version`, because different
+BCH version may support different ECC strength. For example, some
+version BCH can support to 24 bit,
+while the latest BCH may support to 40 bit. So the BCH version may
+limits the computing of ECC strength.
 
-My issue is I attempted the same trick and it seems I still miss
-something . Ie the azx_dev->format passed in azx_setup_controller to
-SD_FORMAT registry is incremented by 3 namely 0x33 . Though I still miss
-half of each samples same as when I was passing runtime->channels ie 2
-and 0x31. 
+Best Regards
+Huang Shijie
 
-The codec is ALC272X ATI SB.
+> the struct, but this is a minor thing.
+>
+> Regards,
+>
+>    Wolfram
+>
 
-Best regards,
-Alban Browaeys
+
