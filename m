@@ -1,51 +1,97 @@
-From: Petr Baudis <pasky@ucw.cz>
-Subject: Re: hda-intel: azx_get_response timeout, switching to polling mode:
- last cmd=0x01db0000
-Date: Sat, 21 Jan 2012 10:16:02 +0100
-Message-ID: <20120121091602.GF30898@machine.or.cz>
-References: <20111229025953.15211.24880.reportbug@machine.or.cz>
- <20111229062105.GB28780@elie.Belkin>
+From: Dave Lentz <dtl131@gmail.com>
+Subject: [PATCH] - HDA-Models.txt: Update model names
+Date: Sat, 21 Jan 2012 07:37:44 -0500
+Message-ID: <4F1AB198.207@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20111229062105.GB28780@elie.Belkin>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jonathan Nieder <jrnieder@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Content-Type: multipart/mixed; boundary="------------090605090300030300050908"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  Hi!
+This is a multi-part message in MIME format.
+--------------090605090300030300050908
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 29, 2011 at 12:21:05AM -0600, Jonathan Nieder wrote:
-> Petr Baudis wrote[1]:
-> 
-> > Version: 3.1.5-1
-> [...]
-> > this bug is twofold - I'm not sure which of the two problems is the real
-> > culprit of the issue I'm seeing, and if it's worth fixing both or just
-> > either one. It boils down to sometimes choppy playback and mainly
-> > applications getting stuck on some audio operations.
-> [...]
-> > This did not use to happen at least back around 2.6.32.
-> [...]
-> > I'd be willing to do some bisecting if people believe it would make
-> > sense.
-> 
-> I don't see any relevant newer fixes, but could you test the for-next
-> branch from [2] anyway?  Output from the alsa-info.sh script[3] would
-> also be useful.
+Update Conexant model names and add Realtek ALC665.
 
-I'm really sorry for taking so long - this is still an issue for me, but
-contrary to my expectations, I was not able to reboot this machine yet
-and it might take some more time (weeks...) before that's convenient.
-I will try the then-current kernel and for-next branch then.
+Signed-off-by: Dave Lentz <dtl131 at gmail.com>
+---
+  Documentation/sound/alsa/HD-Audio-Models.txt |    10 +++++-----
+  1 files changed,  5 insertions(+),  5 deletions(-)
 
-The output from the alsa-info.sh script is at:
+--------------090605090300030300050908
+Content-Type: text/x-diff;
+ name="hdamodels.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="hdamodels.patch"
 
-	http://www.alsa-project.org/db/?f=184928832b33b23c68d17460604b9a37af0fac4b
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index c8c5454..a2a2865 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -53,7 +53,7 @@ ALC269
+   laptop-amic	Laptops with analog-mic input
+   laptop-dmic	Laptops with digital-mic input
+ 
+-ALC662/663/272
++ALC662/663/665/272
+ ==============
+   asus-mode1	ASUS
+   asus-mode2	ASUS
+@@ -192,7 +192,7 @@ AD1988/AD1988B/AD1989A/AD1989B
+   laptop-dig	ditto with SPDIF
+   auto		auto-config reading BIOS (default)
+ 
+-Conexant 5045
++Conexant 5045  Venice/CX20549
+ =============
+   laptop-hpsense    Laptop with HP sense (old model laptop)
+   laptop-micsense   Laptop with Mic sense (old model fujitsu)
+@@ -203,7 +203,7 @@ Conexant 5045
+ 		can be adjusted.  Appearing only when compiled with
+ 		$CONFIG_SND_DEBUG=y
+ 
+-Conexant 5047
++Conexant 5047  Waikiki/CX20551
+ =============
+   laptop	Basic Laptop config 
+   laptop-hp	Laptop config for some HP models (subdevice 30A5)
+@@ -212,7 +212,7 @@ Conexant 5047
+ 		can be adjusted.  Appearing only when compiled with
+ 		$CONFIG_SND_DEBUG=y
+ 
+-Conexant 5051
++Conexant 5051  Hermosa/CX20561
+ =============
+   laptop	Basic Laptop config (default)
+   hp		HP Spartan laptop
+@@ -221,7 +221,7 @@ Conexant 5051
+   ideapad	Lenovo IdeaPad laptop
+   toshiba	Toshiba Satellite M300
+ 
+-Conexant 5066
++Conexant 5066  Pebble/CX20582 
+ =============
+   laptop	Basic Laptop config (default)
+   hp-laptop	HP laptops, e g G60
 
--- 
-				Petr "Pasky" Baudis
-	The goal of Computer Science is to build something that will
-	last at least until we've finished building it.
+--------------090605090300030300050908
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------090605090300030300050908--
