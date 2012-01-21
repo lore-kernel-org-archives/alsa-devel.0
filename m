@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: wm8985: Use standard cache sync
-	implementation
-Date: Sat, 21 Jan 2012 15:45:25 +0000
-Message-ID: <1327160727-1546-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ASoC: wm8985: Convert to devm_kzalloc()
+Date: Sat, 21 Jan 2012 15:45:23 +0000
+Message-ID: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6598910383E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66428103846
 	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2012 16:45:33 +0100 (CET)
-In-Reply-To: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,47 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8985.c |   21 +--------------------
- 1 files changed, 1 insertions(+), 20 deletions(-)
+ sound/soc/codecs/wm8985.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index ee3aba3..297119f 100644
+index c0c86b3..e62a4c5 100644
 --- a/sound/soc/codecs/wm8985.c
 +++ b/sound/soc/codecs/wm8985.c
-@@ -834,25 +834,6 @@ static int wm8985_set_sysclk(struct snd_soc_dai *dai,
+@@ -1079,7 +1079,7 @@ static int __devinit wm8985_spi_probe(struct spi_device *spi)
+ 	struct wm8985_priv *wm8985;
+ 	int ret;
+ 
+-	wm8985 = kzalloc(sizeof *wm8985, GFP_KERNEL);
++	wm8985 = devm_kzalloc(&spi->dev, sizeof *wm8985, GFP_KERNEL);
+ 	if (!wm8985)
+ 		return -ENOMEM;
+ 
+@@ -1088,15 +1088,12 @@ static int __devinit wm8985_spi_probe(struct spi_device *spi)
+ 
+ 	ret = snd_soc_register_codec(&spi->dev,
+ 				     &soc_codec_dev_wm8985, &wm8985_dai, 1);
+-	if (ret < 0)
+-		kfree(wm8985);
+ 	return ret;
+ }
+ 
+ static int __devexit wm8985_spi_remove(struct spi_device *spi)
+ {
+ 	snd_soc_unregister_codec(&spi->dev);
+-	kfree(spi_get_drvdata(spi));
  	return 0;
  }
  
--static void wm8985_sync_cache(struct snd_soc_codec *codec)
--{
--	short i;
--	u16 *cache;
--
--	if (!codec->cache_sync)
--		return;
--	codec->cache_only = 0;
--	/* restore cache */
--	cache = codec->reg_cache;
--	for (i = 0; i < codec->driver->reg_cache_size; i++) {
--		if (i == WM8985_SOFTWARE_RESET
--				|| cache[i] == wm8985_reg_defs[i])
--			continue;
--		snd_soc_write(codec, i, cache[i]);
--	}
--	codec->cache_sync = 0;
--}
--
- static int wm8985_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
+@@ -1117,7 +1114,7 @@ static __devinit int wm8985_i2c_probe(struct i2c_client *i2c,
+ 	struct wm8985_priv *wm8985;
+ 	int ret;
+ 
+-	wm8985 = kzalloc(sizeof *wm8985, GFP_KERNEL);
++	wm8985 = devm_kzalloc(&i2c->dev, sizeof *wm8985, GFP_KERNEL);
+ 	if (!wm8985)
+ 		return -ENOMEM;
+ 
+@@ -1126,15 +1123,12 @@ static __devinit int wm8985_i2c_probe(struct i2c_client *i2c,
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 				     &soc_codec_dev_wm8985, &wm8985_dai, 1);
+-	if (ret < 0)
+-		kfree(wm8985);
+ 	return ret;
+ }
+ 
+ static __devexit int wm8985_i2c_remove(struct i2c_client *client)
  {
-@@ -879,7 +860,7 @@ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
- 				return ret;
- 			}
+ 	snd_soc_unregister_codec(&client->dev);
+-	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
  
--			wm8985_sync_cache(codec);
-+			snd_soc_cache_sync(codec);
- 
- 			/* enable anti-pop features */
- 			snd_soc_update_bits(codec, WM8985_OUT4_TO_ADC,
 -- 
 1.7.7.3
