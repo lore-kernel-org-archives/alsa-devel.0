@@ -1,23 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] Revert "ASoC: tlv320dac33: Use core to
- set the msbits constraint"
-Date: Sat, 21 Jan 2012 15:20:42 +0000
-Message-ID: <20120121152041.GC10751@opensource.wolfsonmicro.com>
-References: <1326997456-16296-1-git-send-email-peter.ujfalusi@ti.com>
-	<1326997456-16296-2-git-send-email-peter.ujfalusi@ti.com>
-	<20120119182602.GM3178@opensource.wolfsonmicro.com>
-	<4F1861E6.1000700@ti.com>
-	<20120119190701.GN3178@opensource.wolfsonmicro.com>
-	<4F1AC612.3090808@ti.com>
+Subject: [PATCH 4/5] ASoC: wm8985 Don't directly reference the
+	cache data structure
+Date: Sat, 21 Jan 2012 15:45:26 +0000
+Message-ID: <1327160727-1546-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 989EA103807
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2012 16:20:46 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4F1AC612.3090808@ti.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B5C210389A
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2012 16:45:33 +0100 (CET)
+In-Reply-To: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,56 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 21, 2012 at 04:05:06PM +0200, Peter Ujfalusi wrote:
+In preparation for conversion to regmap.
 
-> AFAIK we only place this constraint to 32bit samples. I have not
-> encountered any other HW limitation.
-> What if we just simply convert the msbit core support to apply the
-> constraint to 32 bit samples only?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8985.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
 
-I do think we can safely drop the 8 and 16 bit entries from the array,
-even where there are lower accuracy devices (like basebands) I can't see
-anyone caring.  However I think if we go and check there's also going to
-be some cases where 24 bit will be used due to 16-23 bit ADCs and DACs,
-grep turned up a few non-ASoC devices using 20 bits for example.  
-
-> With the current code we are not able to apply different constraint to
-> different sample size anyway.
-> Locally I have added the support for this, but it looks like over
-> engineering.
-
-I can't think of any hardware where that would be required, as I as far
-as I am aware this mostly comes from devices using a fixed internal
-resolution independant of the audio interface format.
-
-> I have the patch(s) for both way, but I think we are better off if we
-> support 32 samples only (simple, clean, covers 99% of use case, well as
-> it is now it covers 100%).
-
-The 32 bit only one is better, yes, though like I say I think will have
-to add in the 24 bit case again if it gets dropped.
-
-> > We've got real CPU consumption problems in ASoC - the DAPM algorithm is
-
-> And things aren't getting any simpler. For sure we need to do something
-> about this.
-
-Yeah, I will probably actually do something about the stream start/stop
-soon as it's inconvenient for the CODEC<>CODEC link stuff.
-
-> > We'll all get *much* more benefit from working on improvements of things
-> > like that (and on the memory consumption which isn't great either and
-> > probably manages to burn measurable CPU cycles due to cache misses) than
-> > we ever will from anything we do with this code.
-> 
-> You know Mark, I'm an engineer. It bothers me. It bothers me more since
-> I _know_ it is there. I just can not help myself...
-
-One way or another I've always done a lot of work on old code and code
-I'm not familiar with and obviously recently I've been doing a lot of
-review as well so I do tend to value maintainability really highly, if
-only from a "do unto others" point of view.
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index 297119f..bbe19b2 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -946,7 +946,6 @@ static int wm8985_probe(struct snd_soc_codec *codec)
+ 	size_t i;
+ 	struct wm8985_priv *wm8985;
+ 	int ret;
+-	u16 *cache;
+ 
+ 	wm8985 = snd_soc_codec_get_drvdata(codec);
+ 
+@@ -979,13 +978,13 @@ static int wm8985_probe(struct snd_soc_codec *codec)
+ 		goto err_reg_enable;
+ 	}
+ 
+-	cache = codec->reg_cache;
+ 	/* latch volume update bits */
+ 	for (i = 0; i < ARRAY_SIZE(volume_update_regs); ++i)
+-		cache[volume_update_regs[i]] |= 0x100;
++		snd_soc_update_bits(codec, volume_update_regs[i],
++				    0x100, 0x100);
+ 	/* enable BIASCUT */
+-	cache[WM8985_BIAS_CTRL] |= WM8985_BIASCUT;
+-	codec->cache_sync = 1;
++	snd_soc_update_bits(codec, WM8985_BIAS_CTRL, WM8985_BIASCUT,
++			    WM8985_BIASCUT);
+ 
+ 	wm8985_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+-- 
+1.7.7.3
