@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/5] ASoC: wm8985: Convert to table based DAPM
-	and control init
-Date: Sat, 21 Jan 2012 15:45:24 +0000
-Message-ID: <1327160727-1546-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/5] ASoC: wm8985: Use standard cache sync
+	implementation
+Date: Sat, 21 Jan 2012 15:45:25 +0000
+Message-ID: <1327160727-1546-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D3D3103836
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6598910383E
 	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2012 16:45:33 +0100 (CET)
 In-Reply-To: <1327160727-1546-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -27,67 +27,47 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8985.c |   24 ++++++++----------------
- 1 files changed, 8 insertions(+), 16 deletions(-)
+ sound/soc/codecs/wm8985.c |   21 +--------------------
+ 1 files changed, 1 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index e62a4c5..ee3aba3 100644
+index ee3aba3..297119f 100644
 --- a/sound/soc/codecs/wm8985.c
 +++ b/sound/soc/codecs/wm8985.c
-@@ -428,7 +428,7 @@ static const struct snd_soc_dapm_widget wm8985_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("SPKR")
- };
- 
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route wm8985_dapm_routes[] = {
- 	{ "Right Output Mixer", "PCM Switch", "Right DAC" },
- 	{ "Right Output Mixer", "Aux Switch", "AUXR" },
- 	{ "Right Output Mixer", "Line Switch", "Right Boost Mixer" },
-@@ -531,17 +531,6 @@ static int eqmode_put(struct snd_kcontrol *kcontrol,
+@@ -834,25 +834,6 @@ static int wm8985_set_sysclk(struct snd_soc_dai *dai,
  	return 0;
  }
  
--static int wm8985_add_widgets(struct snd_soc_codec *codec)
+-static void wm8985_sync_cache(struct snd_soc_codec *codec)
 -{
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	short i;
+-	u16 *cache;
 -
--	snd_soc_dapm_new_controls(dapm, wm8985_dapm_widgets,
--				  ARRAY_SIZE(wm8985_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, audio_map,
--				ARRAY_SIZE(audio_map));
--	return 0;
+-	if (!codec->cache_sync)
+-		return;
+-	codec->cache_only = 0;
+-	/* restore cache */
+-	cache = codec->reg_cache;
+-	for (i = 0; i < codec->driver->reg_cache_size; i++) {
+-		if (i == WM8985_SOFTWARE_RESET
+-				|| cache[i] == wm8985_reg_defs[i])
+-			continue;
+-		snd_soc_write(codec, i, cache[i]);
+-	}
+-	codec->cache_sync = 0;
 -}
 -
- static int wm8985_reset(struct snd_soc_codec *codec)
+ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
  {
- 	return snd_soc_write(codec, WM8985_SOFTWARE_RESET, 0x0);
-@@ -1017,10 +1006,6 @@ static int wm8985_probe(struct snd_soc_codec *codec)
- 	cache[WM8985_BIAS_CTRL] |= WM8985_BIASCUT;
- 	codec->cache_sync = 1;
+@@ -879,7 +860,7 @@ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
+ 				return ret;
+ 			}
  
--	snd_soc_add_controls(codec, wm8985_snd_controls,
--			     ARRAY_SIZE(wm8985_snd_controls));
--	wm8985_add_widgets(codec);
--
- 	wm8985_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	return 0;
+-			wm8985_sync_cache(codec);
++			snd_soc_cache_sync(codec);
  
-@@ -1068,9 +1053,16 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8985 = {
- 	.suspend = wm8985_suspend,
- 	.resume = wm8985_resume,
- 	.set_bias_level = wm8985_set_bias_level,
-+
-+	.controls = wm8985_snd_controls,
-+	.num_controls = ARRAY_SIZE(wm8985_snd_controls),
-+	.dapm_widgets = wm8985_dapm_widgets,
- 	.reg_cache_size = ARRAY_SIZE(wm8985_reg_defs),
- 	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = wm8985_reg_defs
-+	.num_dapm_widgets = ARRAY_SIZE(wm8985_dapm_widgets),
-+	.dapm_routes = wm8985_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(wm8985_dapm_routes),
- };
- 
- #if defined(CONFIG_SPI_MASTER)
+ 			/* enable anti-pop features */
+ 			snd_soc_update_bits(codec, WM8985_OUT4_TO_ADC,
 -- 
 1.7.7.3
