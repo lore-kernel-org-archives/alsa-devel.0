@@ -1,22 +1,18 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: alsa-utils-1.0.24.2 won't compile on x86_64 -
- CoreFoundation error
-Date: Mon, 23 Jan 2012 12:15:52 +0200
-Message-ID: <4F1D3358.2010701@pardus.org.tr>
-References: <20120122211947.GA3594@localhost0.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: sgtl5000: Convert to table based
+ DAPM and control init
+Date: Mon, 23 Jan 2012 10:17:26 +0000
+Message-ID: <20120123101725.GA2879@opensource.wolfsonmicro.com>
+References: <1327285076-27501-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 361072447B
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 11:15:54 +0100 (CET)
-Received: from [192.168.1.100] (unknown [81.214.87.249])
-	(using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by lider.pardus.org.tr (Postfix) with ESMTPSA id E4223A7AAF7
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 11:58:36 +0200 (EET)
-In-Reply-To: <20120122211947.GA3594@localhost0.localdomain>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CFE762447F
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 11:17:27 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1327285076-27501-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22.01.2012 23:19, John Rigg wrote:
-> Apologies if this should have gone to alsa-user instead, but I've
-> just tried compiling alsa-utils-1.0.24.2 on a Debian testing amd64 system,
-> and configure gave a list of errors related to CoreFoundation.
-> There were several similar to this in config.log:
+On Mon, Jan 23, 2012 at 12:17:56AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 > 
-> ...
-> configure:4589: checking for CFPreferencesCopyAppValue
-> configure:4607: gcc -o conftest -g -O2   conftest.c  -Wl,-framework -Wl,CoreFoundation >&5
-> conftest.c:11:42: fatal error: CoreFoundation/CFPreferences.h: No such file or directory
-> compilation terminated.
+> Convert to table based DAPM and control init.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - Fixed typo in codec name (500 instead of 5000)
 
-Are you sure that the error is related to this? My configure&make
-completes succesfully but in my config.log I have those lines too.
-Actually they're normal tests to check for the availability of
-CoreFoundation libraries.
-
-
--- 
-Ozan Caglayan
-
-Pardus Linux
-http://www.pardus.org.tr/eng
+Once things have been applied you should send incremental patches, I've
+fixed this by hand.
