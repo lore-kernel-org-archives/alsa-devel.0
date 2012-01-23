@@ -1,178 +1,105 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] mfd/ASoC: Convert WM8994 driver to use regmap patches
-Date: Mon, 23 Jan 2012 13:59:31 +0000
-Message-ID: <1327327172-8411-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: Convert the WM5100 revision A
+	updates to a regmap patch
+Date: Mon, 23 Jan 2012 13:59:32 +0000
+Message-ID: <1327327172-8411-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1327327172-8411-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 089092434E
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 14:59:38 +0100 (CET)
 In-Reply-To: <1327327172-8411-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Early revisions of several of the WM8994 variants have register updates
-to improve performance. Move these over to using the regmap patch system
-instead of open coding them in the audio driver. Since the regmap init
-is done by the MFD the code is moved there.
-
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
+ sound/soc/codecs/wm5100.c |   46 ++++++++++++++++----------------------------
+ 1 files changed, 17 insertions(+), 29 deletions(-)
 
-If possible I'd like to merge this via regmap as the regmap patch
-support is new and won't be in mainline until 3.4.  Is that OK Samuel?
-
- drivers/mfd/wm8994-core.c |   61 ++++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wm8994.c |   25 +-----------------
- 2 files changed, 61 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index a215b15..f275427 100644
---- a/drivers/mfd/wm8994-core.c
-+++ b/drivers/mfd/wm8994-core.c
-@@ -359,6 +359,27 @@ static int wm8994_ldo_in_use(struct wm8994_pdata *pdata, int ldo)
- }
- #endif
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index e99fadc..f916043 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -1388,10 +1388,7 @@ static const struct snd_soc_dapm_route wm5100_dapm_routes[] = {
+ 	{ "PWM2", NULL, "PWM2 Driver" },
+ };
  
-+static const __devinitdata struct reg_default wm8994_revc_patch[] = {
-+	{ 0x102, 0x3 },
-+	{ 0x56, 0x3 },
-+	{ 0x817, 0x0 },
-+	{ 0x102, 0x0 },
-+};
-+
-+static const __devinitdata struct reg_default wm8958_reva_patch[] = {
-+	{ 0x102, 0x3 },
-+	{ 0xcb, 0x81 },
-+	{ 0x817, 0x0 },
-+	{ 0x102, 0x0 },
-+};
-+
-+static const __devinitdata struct reg_default wm1811_reva_patch[] = {
-+	{ 0x102, 0x3 },
-+	{ 0x5d, 0x7e },
-+	{ 0x5e, 0x0 },
-+	{ 0x102, 0x0 },
-+};
-+
- /*
-  * Instantiate the generic non-control parts of the device.
-  */
-@@ -366,8 +387,9 @@ static __devinit int wm8994_device_init(struct wm8994 *wm8994, int irq)
- {
- 	struct wm8994_pdata *pdata = wm8994->dev->platform_data;
- 	struct regmap_config *regmap_config;
-+	const struct reg_default *regmap_patch = NULL;
- 	const char *devname;
--	int ret, i;
-+	int ret, i, patch_regs;
- 	int pulls = 0;
- 
- 	dev_set_drvdata(wm8994->dev, wm8994);
-@@ -488,15 +510,42 @@ static __devinit int wm8994_device_init(struct wm8994 *wm8994, int irq)
- 				 "revision %c not fully supported\n",
- 				 'A' + wm8994->revision);
- 			break;
-+		case 2:
-+		case 3:
-+			regmap_patch = wm8994_revc_patch;
-+			patch_regs = ARRAY_SIZE(wm8994_revc_patch);
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case WM8958:
-+		switch (wm8994->revision) {
-+		case 0:
-+			regmap_patch = wm8958_reva_patch;
-+			patch_regs = ARRAY_SIZE(wm8958_reva_patch);
-+			break;
- 		default:
- 			break;
- 		}
- 		break;
-+
- 	case WM1811:
- 		/* Revision C did not change the relevant layer */
- 		if (wm8994->revision > 1)
- 			wm8994->revision++;
-+		switch (wm8994->revision) {
-+		case 0:
-+		case 1:
-+			regmap_patch = wm1811_reva_patch;
-+			patch_regs = ARRAY_SIZE(wm1811_reva_patch);
-+			break;
-+		default:
-+			break;
-+		}
- 		break;
-+
- 	default:
- 		break;
- 	}
-@@ -526,6 +575,16 @@ static __devinit int wm8994_device_init(struct wm8994 *wm8994, int irq)
- 		return ret;
- 	}
- 
-+	if (regmap_patch) {
-+		ret = regmap_register_patch(wm8994->regmap, regmap_patch,
-+					    patch_regs);
-+		if (ret != 0) {
-+			dev_err(wm8994->dev, "Failed to register patch: %d\n",
-+				ret);
-+			goto err_regmap;
-+		}
-+	}
-+
- 	if (pdata) {
- 		wm8994->irq_base = pdata->irq_base;
- 		wm8994->gpio_base = pdata->gpio_base;
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b047bfa..143f1c4 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2090,26 +2090,9 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_STANDBY:
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
- 			switch (control->type) {
--			case WM8994:
--				if (wm8994->revision < 4) {
--					/* Tweak DC servo and DSP
--					 * configuration for improved
--					 * performance. */
--					snd_soc_write(codec, 0x102, 0x3);
--					snd_soc_write(codec, 0x56, 0x3);
--					snd_soc_write(codec, 0x817, 0);
--					snd_soc_write(codec, 0x102, 0);
--				}
--				break;
--
- 			case WM8958:
- 				if (wm8994->revision == 0) {
- 					/* Optimise performance for rev A */
--					snd_soc_write(codec, 0x102, 0x3);
--					snd_soc_write(codec, 0xcb, 0x81);
--					snd_soc_write(codec, 0x817, 0);
--					snd_soc_write(codec, 0x102, 0);
--
- 					snd_soc_update_bits(codec,
- 							    WM8958_CHARGE_PUMP_2,
- 							    WM8958_CP_DISCH,
-@@ -2117,13 +2100,7 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 				}
- 				break;
- 
--			case WM1811:
--				if (wm8994->revision < 2) {
--					snd_soc_write(codec, 0x102, 0x3);
--					snd_soc_write(codec, 0x5d, 0x7e);
--					snd_soc_write(codec, 0x5e, 0x0);
--					snd_soc_write(codec, 0x102, 0x0);
--				}
-+			default:
- 				break;
+-static struct {
+-	int reg;
+-	int val;
+-} wm5100_reva_patches[] = {
++static const __devinitdata struct reg_default wm5100_reva_patches[] = {
+ 	{ WM5100_AUDIO_IF_1_10, 0 },
+ 	{ WM5100_AUDIO_IF_1_11, 1 },
+ 	{ WM5100_AUDIO_IF_1_12, 2 },
+@@ -1454,31 +1451,6 @@ static int wm5100_set_bias_level(struct snd_soc_codec *codec,
  			}
  
+ 			regcache_cache_only(wm5100->regmap, false);
+-
+-			switch (wm5100->rev) {
+-			case 0:
+-				regcache_cache_bypass(wm5100->regmap, true);
+-				snd_soc_write(codec, 0x11, 0x3);
+-				snd_soc_write(codec, 0x203, 0xc);
+-				snd_soc_write(codec, 0x206, 0);
+-				snd_soc_write(codec, 0x207, 0xf0);
+-				snd_soc_write(codec, 0x208, 0x3c);
+-				snd_soc_write(codec, 0x209, 0);
+-				snd_soc_write(codec, 0x211, 0x20d8);
+-				snd_soc_write(codec, 0x11, 0);
+-
+-				for (i = 0;
+-				     i < ARRAY_SIZE(wm5100_reva_patches);
+-				     i++)
+-					snd_soc_write(codec,
+-						      wm5100_reva_patches[i].reg,
+-						      wm5100_reva_patches[i].val);
+-				regcache_cache_bypass(wm5100->regmap, false);
+-				break;
+-			default:
+-				break;
+-			}
+-
+ 			regcache_sync(wm5100->regmap);
+ 		}
+ 		break;
+@@ -2838,6 +2810,22 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
+ 		goto err_reset;
+ 	}
+ 
++	switch (wm5100->rev) {
++	case 0:
++		ret = regmap_register_patch(wm5100->regmap,
++					    wm5100_reva_patches,
++					    ARRAY_SIZE(wm5100_reva_patches));
++		if (ret != 0) {
++			dev_err(&i2c->dev, "Failed to register patches: %d\n",
++				ret);
++			goto err_reset;
++		}
++		break;
++	default:
++		break;
++	}
++
++
+ 	wm5100_init_gpio(i2c);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm5100->pdata.gpio_defaults); i++) {
 -- 
 1.7.7.3
