@@ -1,71 +1,40 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH] ASoC: Add __devinit/__devexit annotations
-	at necessary places
-Date: Mon, 23 Jan 2012 11:39:45 +0200
-Message-ID: <CALq1K=Jzw0038BRSU3KsoKNL+jb3K_PH6gyxwsCVrxSjAdej8A@mail.gmail.com>
-References: <1327288697.14153.1.camel@phoenix>
+From: Petr Baudis <pasky@ucw.cz>
+Subject: Re: hda-intel: azx_get_response timeout, switching to polling mode:
+ last cmd=0x01db0000
+Date: Mon, 23 Jan 2012 10:46:30 +0100
+Message-ID: <20120123094629.GO30898@machine.or.cz>
+References: <20111229025953.15211.24880.reportbug@machine.or.cz>
+ <20111229062105.GB28780@elie.Belkin>
+ <20120121091602.GF30898@machine.or.cz>
+ <s5hhazm6alb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7FB612445C
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 10:40:07 +0100 (CET)
-Received: by vbbfo1 with SMTP id fo1so600931vbb.38
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 01:40:06 -0800 (PST)
-In-Reply-To: <1327288697.14153.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hhazm6alb.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Nieder <jrnieder@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKYW4gMjMsIDIwMTIgYXQgMDU6MTgsIEF4ZWwgTGluIDxheGVsLmxpbkBnbWFpbC5j
-b20+IHdyb3RlOgo+IEZpeCBiZWxvdyBidWlsZCB3YXJuaW5nIHdoZW4gQ09ORklHX0hPVFBMVUcg
-aXMgbm90IHNldC4KPgo+IMKgQ0MgwqAgwqAgwqBzb3VuZC9zb2MvY29kZWNzL2FsYzU2MjMubwo+
-IHNvdW5kL3NvYy9jb2RlY3MvYWxjNTYyMy5jOjEwNjI6IHdhcm5pbmc6IOKAmGFsYzU2MjNfaTJj
-X3JlbW92ZeKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZAo+IMKgQ0MgwqAgwqAgwqBzb3VuZC9zb2Mv
-Y29kZWNzL2FsYzU2MzIubwo+IHNvdW5kL3NvYy9jb2RlY3MvYWxjNTYzMi5jOjExMTI6IHdhcm5p
-bmc6IOKAmGFsYzU2MzJfaTJjX3JlbW92ZeKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZAo+Cj4gU2ln
-bmVkLW9mZi1ieTogQXhlbCBMaW4gPGF4ZWwubGluQGdtYWlsLmNvbT4KPiAtLS0KPiDCoHNvdW5k
-L3NvYy9jb2RlY3MvYWxjNTYyMy5jIHwgwqAgwqA0ICsrLS0KPiDCoHNvdW5kL3NvYy9jb2RlY3Mv
-YWxjNTYzMi5jIHwgwqAgwqAyICstCj4gwqAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
-KSwgMyBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FsYzU2
-MjMuYyBiL3NvdW5kL3NvYy9jb2RlY3MvYWxjNTYyMy5jCj4gaW5kZXggM2ZlZWU1Ni4uMDhmMjQx
-OSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2FsYzU2MjMuYwo+ICsrKyBiL3NvdW5k
-L3NvYy9jb2RlY3MvYWxjNTYyMy5jCj4gQEAgLTk5Miw3ICs5OTIsNyBAQCBzdGF0aWMgc3RydWN0
-IHNuZF9zb2NfY29kZWNfZHJpdmVyIHNvY19jb2RlY19kZXZpY2VfYWxjNTYyMyA9IHsKPiDCoCog
-wqAgwqBsb3cgwqA9IDB4MWEKPiDCoCogwqAgwqBoaWdoID0gMHgxYgo+IMKgKi8KPiAtc3RhdGlj
-IGludCBhbGM1NjIzX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50LAo+ICtzdGF0
-aWMgX19kZXZpbml0IGludCBhbGM1NjIzX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xp
-ZW50LAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgY29u
-c3Qgc3RydWN0IGkyY19kZXZpY2VfaWQgKmlkKQo+IMKgewo+IMKgIMKgIMKgIMKgc3RydWN0IGFs
-YzU2MjNfcGxhdGZvcm1fZGF0YSAqcGRhdGE7Cj4gQEAgLTEwNTksNyArMTA1OSw3IEBAIHN0YXRp
-YyBpbnQgYWxjNTYyM19pMmNfcHJvYmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKPiDCoCDC
-oCDCoCDCoHJldHVybiByZXQ7Cj4gwqB9Cj4KPiAtc3RhdGljIGludCBhbGM1NjIzX2kyY19yZW1v
-dmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCkKPiArc3RhdGljIF9fZGV2ZXhpdCBpbnQgYWxj
-NTYyM19pMmNfcmVtb3ZlKHN0cnVjdCBpMmNfY2xpZW50ICpjbGllbnQpCj4gwqB7Cj4gwqAgwqAg
-wqAgwqBzbmRfc29jX3VucmVnaXN0ZXJfY29kZWMoJmNsaWVudC0+ZGV2KTsKPiDCoCDCoCDCoCDC
-oHJldHVybiAwOwo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FsYzU2MzIuYyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvYWxjNTYzMi5jCj4gaW5kZXggMzkwZTQzNy4uYWY5YzI3YSAxMDA2NDQK
-PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2FsYzU2MzIuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvYWxjNTYzMi5jCj4gQEAgLTExMDksNyArMTEwOSw3IEBAIHN0YXRpYyBfX2RldmluaXQgaW50
-IGFsYzU2MzJfaTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICpjbGllbnQsCj4gwqAgwqAgwqAg
-wqByZXR1cm4gcmV0Owo+IMKgfQo+Cj4gLXN0YXRpYyBpbnQgYWxjNTYzMl9pMmNfcmVtb3ZlKHN0
-cnVjdCBpMmNfY2xpZW50ICpjbGllbnQpCj4gK3N0YXRpYyBfX2RldmV4aXQgaW50IGFsYzU2MzJf
-aTJjX3JlbW92ZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50KQo+IMKgewo+IMKgIMKgIMKgIMKg
-c3RydWN0IGFsYzU2MzJfcHJpdiAqYWxjNTYzMiA9IGkyY19nZXRfY2xpZW50ZGF0YShjbGllbnQp
-Owo+IMKgIMKgIMKgIMKgc25kX3NvY191bnJlZ2lzdGVyX2NvZGVjKCZjbGllbnQtPmRldik7Cj4g
-LS0KPiAxLjcuNS40ClRoYW5rcy4KCkFja2VkLWJ5OiBMZW9uIFJvbWFub3Zza3kgPGxlb25AbGVv
-bi5udT4KCgo+Cj4KPgoKCgotLSAKTGVvbiBSb21hbm92c2t5IHwgSW5kZXBlbmRlbnQgTGludXgg
-Q29uc3VsdGFudArCoCDCoCDCoCDCoMKgd3d3Lmxlb24ubnXCoHwgbGVvbkBsZW9uLm51Cl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Jan 23, 2012 at 10:18:24AM +0100, Takashi Iwai wrote:
+> Thanks.  Switching to the polling mode is really harmless.
+> So, basically you can ignore these messages.  I can change it only as a
+> debug message.
+> 
+> OTOH, if the switching to single_cmd mode happens, this is a serious
+> problem.  But, as far as I see in alsa-info.sh output, it didn't
+> happen.
+
+Ok, then the bug is in handling of polling mode in this particular chip.
+After such switch to polling mode, applications will get stuck on
+releasing the soundcard. Another symptom I forgot to describe is that
+the last ~100ms of output will keep repeating when I pause/stop
+playback, one has to mute the volume to get rid of this. Again, this
+starts happenning only sometimes after the switch to polling mode,
+but then keeps happenning fairly consistently.
+
+-- 
+				Petr "Pasky" Baudis
+	The goal of Computer Science is to build something that will
+	last at least until we've finished building it.
