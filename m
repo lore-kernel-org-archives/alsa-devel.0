@@ -1,16 +1,17 @@
-From: ozan <ozan@pardus.org.tr>
-Subject: Re: Request for compilation test - v1.0.25
-Date: Mon, 23 Jan 2012 16:44:24 +0200
-Message-ID: <8b58ef2e6ba0ad6a3b42e7124911cd84@pardus.org.tr>
-References: <4F1D405E.50301@perex.cz>
+From: Dave Lentz <dtl131@gmail.com>
+Subject: Re: [PATCH] - HDA-Models.txt: Update model names2
+Date: Mon, 23 Jan 2012 10:37:29 -0500
+Message-ID: <4F1D7EB9.6010205@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2756024380
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 16:01:44 +0100 (CET)
-In-Reply-To: <4F1D405E.50301@perex.cz>
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05D902413B
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 16:37:33 +0100 (CET)
+Received: by vcbfo13 with SMTP id fo13so1165044vcb.38
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 07:37:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- On Mon, 23 Jan 2012 12:11:26 +0100, Jaroslav Kysela <perex@perex.cz> wrote:
-> Hi all,
->
-> 	I would like to ask for a package compilation test in your distribution
-> for latest ALSA package snapshots available at:
+Update Conexant model names and add Realtek ALC665.
 
-> alsa-plugins 	1.0.24.11.gb3fb5
+Signed-off-by: Dave Lentz <dtl131 at gmail.com>
+---
+   Documentation/sound/alsa/HD-Audio-Models.txt |    10 +++++-----
+   1 files changed,  5 insertions(+),  5 deletions(-)
 
- alsa-plugins tarball doesn't contain the *.conf files for PulseAudio added 
- with the commit below:
-   
- http://git.alsa-project.org/?p=alsa-plugins.git;a=commit;h=84ce9d8230d19ebd67bc8db691bab74c4cbac979
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt 
+b/Documentation/sound/alsa/HD-Audio-Models.txt
+index c8c5454..a2a2865 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -53,7 +53,7 @@ ALC269
+     laptop-amic    Laptops with analog-mic input
+     laptop-dmic    Laptops with digital-mic input
 
- Thus build fails as they're referenced in pulse/Makefile.*
+-ALC662/663/272
++ALC662/663/665/272
+   ==============
+     asus-mode1    ASUS
+     asus-mode2    ASUS
+@@ -192,7 +192,7 @@ AD1988/AD1988B/AD1989A/AD1989B
+     laptop-dig    ditto with SPDIF
+     auto        auto-config reading BIOS (default)
 
- The other ones except alsa-oss which doesn't have a package in Pardus are 
- building just fine on x86_64 over linux 3.2.1 with GCC 4.5.3.
+-Conexant 5045
++Conexant 5045  Venice/CX20549
+   =============
+     laptop-hpsense    Laptop with HP sense (old model laptop)
+     laptop-micsense   Laptop with Mic sense (old model fujitsu)
+@@ -203,7 +203,7 @@ Conexant 5045
+           can be adjusted.  Appearing only when compiled with
+           $CONFIG_SND_DEBUG=y
 
- Sound works as expected after a reboot.
+-Conexant 5047
++Conexant 5047  Waikiki/CX20551
+   =============
+     laptop    Basic Laptop config
+     laptop-hp    Laptop config for some HP models (subdevice 30A5)
+@@ -212,7 +212,7 @@ Conexant 5047
+           can be adjusted.  Appearing only when compiled with
+           $CONFIG_SND_DEBUG=y
 
- ---
- Ozan Caglayan
+-Conexant 5051
++Conexant 5051  Hermosa/CX20561
+   =============
+     laptop    Basic Laptop config (default)
+     hp        HP Spartan laptop
+@@ -221,7 +221,7 @@ Conexant 5051
+     ideapad    Lenovo IdeaPad laptop
+     toshiba    Toshiba Satellite M300
+
+-Conexant 5066
++Conexant 5066  Pebble/CX20582
+   =============
+     laptop    Basic Laptop config (default)
+     hp-laptop    HP laptops, e g G60
