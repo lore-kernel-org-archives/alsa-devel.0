@@ -1,14 +1,26 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Use model=auto for Thinkpad T510
-Date: Mon, 23 Jan 2012 16:39:55 +0100
-Message-ID: <1327333195-2782-1-git-send-email-david.henningsson@canonical.com>
+From: John Rigg <aldev@jrigg.co.uk>
+Subject: Re: alsa-utils-1.0.24.2 won't compile on x86_64
+	-	CoreFoundation error
+Date: Mon, 23 Jan 2012 15:48:57 +0000
+Message-ID: <20120123154857.GA3183@localhost0.localdomain>
+References: <20120122211947.GA3594@localhost0.localdomain>
+	<4F1D3358.2010701@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 3470324141
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 16:40:00 +0100 (CET)
+Received: from vm2962.vps.tagadab.com (vm2962.vps.tagadab.com [95.172.24.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id F09BB24151
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 16:43:41 +0100 (CET)
+Received: from [78.32.150.178] (helo=localhost0.localdomain)
+	by vm2962.vps.tagadab.com with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <noreply@jrigg.co.uk>) id 1RpLvN-0002YX-HI
+	for alsa-devel@alsa-project.org; Mon, 23 Jan 2012 15:35:13 +0000
+Received: from anon by localhost0.localdomain with local (Exim 4.69)
+	(envelope-from <noreply@jrigg.co.uk>) id 1RpM8f-0000px-MT
+	for alsa-devel@alsa-project.org; Mon, 23 Jan 2012 15:48:57 +0000
+Content-Disposition: inline
+In-Reply-To: <4F1D3358.2010701@pardus.org.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,33 +30,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The user reports that model=auto works fine for him. Using
-model=auto bring in new features such as jack detection notification
-to userspace.
-
-Alsa info is available at http://paste.ubuntu.com/805351/
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 8a32a69..c3e7952 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -3027,7 +3027,7 @@ static const struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
-- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
-+ 	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo T510", CXT5066_AUTO),
- 	SND_PCI_QUIRK(0x17aa, 0x21cf, "Lenovo T520 & W520", CXT5066_AUTO),
- 	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT5066_THINKPAD),
--- 
-1.7.8.3
+T24gTW9uLCBKYW4gMjMsIDIwMTIgYXQgMTI6MTU6NTJQTSArMDIwMCwgT3phbiDDh2HEn2xheWFu
+IHdyb3RlOgo+IE9uIDIyLjAxLjIwMTIgMjM6MTksIEpvaG4gUmlnZyB3cm90ZToKPiA+IC4uLgo+
+ID4gY29uZmlndXJlOjQ1ODk6IGNoZWNraW5nIGZvciBDRlByZWZlcmVuY2VzQ29weUFwcFZhbHVl
+Cj4gPiBjb25maWd1cmU6NDYwNzogZ2NjIC1vIGNvbmZ0ZXN0IC1nIC1PMiAgIGNvbmZ0ZXN0LmMg
+IC1XbCwtZnJhbWV3b3JrIC1XbCxDb3JlRm91bmRhdGlvbiA+JjUKPiA+IGNvbmZ0ZXN0LmM6MTE6
+NDI6IGZhdGFsIGVycm9yOiBDb3JlRm91bmRhdGlvbi9DRlByZWZlcmVuY2VzLmg6IE5vIHN1Y2gg
+ZmlsZSBvciBkaXJlY3RvcnkKPiA+IGNvbXBpbGF0aW9uIHRlcm1pbmF0ZWQuCj4gCj4gQXJlIHlv
+dSBzdXJlIHRoYXQgdGhlIGVycm9yIGlzIHJlbGF0ZWQgdG8gdGhpcz8gTXkgY29uZmlndXJlJm1h
+a2UKPiBjb21wbGV0ZXMgc3VjY2VzZnVsbHkgYnV0IGluIG15IGNvbmZpZy5sb2cgSSBoYXZlIHRo
+b3NlIGxpbmVzIHRvby4KPiBBY3R1YWxseSB0aGV5J3JlIG5vcm1hbCB0ZXN0cyB0byBjaGVjayBm
+b3IgdGhlIGF2YWlsYWJpbGl0eSBvZgo+IENvcmVGb3VuZGF0aW9uIGxpYnJhcmllcy4KClRoYW5r
+cyBmb3IgdGhlIHJlcGxpZXMuIEkgdGhpbmsgSSBmb3VuZCB0aGUgcHJvYmxlbS4gRGViaWFuIHRl
+c3RpbmcgcHV0cwpzb21lIG9mIHRoZSByZXF1aXJlZCBsaWJyYXJpZXMgaW4gL3Vzci9saWIveDg2
+XzY0LWxpbnV4LWdudSBpbnN0ZWFkIG9mCi91c3IvbGliLiBTb3JyeSBmb3IgdGhlIG5vaXNlLgoK
+Sm9obgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
