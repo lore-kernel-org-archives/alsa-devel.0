@@ -1,18 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] ASoC: sgtl5000: Convert to table based DAPM
-	and control init
-Date: Mon, 23 Jan 2012 00:17:56 -0200
-Message-ID: <1327285076-27501-1-git-send-email-festevam@gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Add __devinit/__devexit annotations at
+ necessary places
+Date: Mon, 23 Jan 2012 11:18:17 +0800
+Message-ID: <1327288697.14153.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86BD0103883
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 03:18:12 +0100 (CET)
-Received: by yhoo47 with SMTP id o47so998789yho.38
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2012 18:18:09 -0800 (PST)
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A6572413B
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 04:18:31 +0100 (CET)
+Received: by yenl11 with SMTP id l11so1004364yen.38
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2012 19:18:31 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com
+Cc: Arnaud@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Leon Romanovsky <leon@leon.nu>, Andrey Danin <danindrey@mail.ru>, Liam Girdwood <lrg@ti.com>, Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-Convert to table based DAPM and control init.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Fixed typo in codec name (500 instead of 5000)
- sound/soc/codecs/sgtl5000.c |   17 +++++++----------
- 1 files changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 7f4ba81..d6f76cf 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -227,7 +227,7 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
- };
- 
- /* routes for sgtl5000 */
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
- 	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
- 	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
- 
-@@ -1353,15 +1353,6 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 	if (ret)
- 		goto err;
- 
--	snd_soc_add_controls(codec, sgtl5000_snd_controls,
--			     ARRAY_SIZE(sgtl5000_snd_controls));
--
--	snd_soc_dapm_new_controls(&codec->dapm, sgtl5000_dapm_widgets,
--				  ARRAY_SIZE(sgtl5000_dapm_widgets));
--
--	snd_soc_dapm_add_routes(&codec->dapm, audio_map,
--				ARRAY_SIZE(audio_map));
--
- 	snd_soc_dapm_new_widgets(&codec->dapm);
- 
- 	return 0;
-@@ -1402,6 +1393,12 @@ static struct snd_soc_codec_driver sgtl5000_driver = {
- 	.reg_cache_step = 2,
- 	.reg_cache_default = sgtl5000_regs,
- 	.volatile_register = sgtl5000_volatile_register,
-+	.controls = sgtl5000_snd_controls,
-+	.num_controls = ARRAY_SIZE(sgtl5000_snd_controls),
-+	.dapm_widgets = sgtl5000_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(sgtl5000_dapm_widgets),
-+	.dapm_routes = sgtl5000_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(sgtl5000_dapm_routes),
- };
- 
- static __devinit int sgtl5000_i2c_probe(struct i2c_client *client,
--- 
-1.7.1
+Rml4IGJlbG93IGJ1aWxkIHdhcm5pbmcgd2hlbiBDT05GSUdfSE9UUExVRyBpcyBub3Qgc2V0LgoK
+ICBDQyAgICAgIHNvdW5kL3NvYy9jb2RlY3MvYWxjNTYyMy5vCnNvdW5kL3NvYy9jb2RlY3MvYWxj
+NTYyMy5jOjEwNjI6IHdhcm5pbmc6IOKAmGFsYzU2MjNfaTJjX3JlbW92ZeKAmSBkZWZpbmVkIGJ1
+dCBub3QgdXNlZAogIENDICAgICAgc291bmQvc29jL2NvZGVjcy9hbGM1NjMyLm8Kc291bmQvc29j
+L2NvZGVjcy9hbGM1NjMyLmM6MTExMjogd2FybmluZzog4oCYYWxjNTYzMl9pMmNfcmVtb3Zl4oCZ
+IGRlZmluZWQgYnV0IG5vdCB1c2VkCgpTaWduZWQtb2ZmLWJ5OiBBeGVsIExpbiA8YXhlbC5saW5A
+Z21haWwuY29tPgotLS0KIHNvdW5kL3NvYy9jb2RlY3MvYWxjNTYyMy5jIHwgICAgNCArKy0tCiBz
+b3VuZC9zb2MvY29kZWNzL2FsYzU2MzIuYyB8ICAgIDIgKy0KIDIgZmlsZXMgY2hhbmdlZCwgMyBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2Rl
+Y3MvYWxjNTYyMy5jIGIvc291bmQvc29jL2NvZGVjcy9hbGM1NjIzLmMKaW5kZXggM2ZlZWU1Ni4u
+MDhmMjQxOSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9hbGM1NjIzLmMKKysrIGIvc291
+bmQvc29jL2NvZGVjcy9hbGM1NjIzLmMKQEAgLTk5Miw3ICs5OTIsNyBAQCBzdGF0aWMgc3RydWN0
+IHNuZF9zb2NfY29kZWNfZHJpdmVyIHNvY19jb2RlY19kZXZpY2VfYWxjNTYyMyA9IHsKICAqICAg
+IGxvdyAgPSAweDFhCiAgKiAgICBoaWdoID0gMHgxYgogICovCi1zdGF0aWMgaW50IGFsYzU2MjNf
+aTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICpjbGllbnQsCitzdGF0aWMgX19kZXZpbml0IGlu
+dCBhbGM1NjIzX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50LAogCQkJCWNvbnN0
+IHN0cnVjdCBpMmNfZGV2aWNlX2lkICppZCkKIHsKIAlzdHJ1Y3QgYWxjNTYyM19wbGF0Zm9ybV9k
+YXRhICpwZGF0YTsKQEAgLTEwNTksNyArMTA1OSw3IEBAIHN0YXRpYyBpbnQgYWxjNTYyM19pMmNf
+cHJvYmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKIAlyZXR1cm4gcmV0OwogfQogCi1zdGF0
+aWMgaW50IGFsYzU2MjNfaTJjX3JlbW92ZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50KQorc3Rh
+dGljIF9fZGV2ZXhpdCBpbnQgYWxjNTYyM19pMmNfcmVtb3ZlKHN0cnVjdCBpMmNfY2xpZW50ICpj
+bGllbnQpCiB7CiAJc25kX3NvY191bnJlZ2lzdGVyX2NvZGVjKCZjbGllbnQtPmRldik7CiAJcmV0
+dXJuIDA7CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FsYzU2MzIuYyBiL3NvdW5kL3Nv
+Yy9jb2RlY3MvYWxjNTYzMi5jCmluZGV4IDM5MGU0MzcuLmFmOWMyN2EgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3NvYy9jb2RlY3MvYWxjNTYzMi5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvYWxjNTYzMi5j
+CkBAIC0xMTA5LDcgKzExMDksNyBAQCBzdGF0aWMgX19kZXZpbml0IGludCBhbGM1NjMyX2kyY19w
+cm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50LAogCXJldHVybiByZXQ7CiB9CiAKLXN0YXRp
+YyBpbnQgYWxjNTYzMl9pMmNfcmVtb3ZlKHN0cnVjdCBpMmNfY2xpZW50ICpjbGllbnQpCitzdGF0
+aWMgX19kZXZleGl0IGludCBhbGM1NjMyX2kyY19yZW1vdmUoc3RydWN0IGkyY19jbGllbnQgKmNs
+aWVudCkKIHsKIAlzdHJ1Y3QgYWxjNTYzMl9wcml2ICphbGM1NjMyID0gaTJjX2dldF9jbGllbnRk
+YXRhKGNsaWVudCk7CiAJc25kX3NvY191bnJlZ2lzdGVyX2NvZGVjKCZjbGllbnQtPmRldik7Ci0t
+IAoxLjcuNS40CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
