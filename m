@@ -1,58 +1,36 @@
 From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] sound: Fix memory leak on error in snd_compr_set_params()
-Date: Mon, 23 Jan 2012 21:02:57 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1201232059540.8772@swampdragon.chaosbits.net>
+Subject: [PATCH] Sound WM8958 DSP2: Use correct format string in dev_err()
+ call
+Date: Mon, 23 Jan 2012 21:15:48 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1201232113400.8772@swampdragon.chaosbits.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lrg@ti.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-If copy_from_user() does not return 0 we'll leak the memory we
-allocated for 'params' when that variable goes out of scope.
-
-Also a small CodingStyle cleanup: Use braces on both branches of
-if/else when one branch needs it.
+To print a value of type size_t one should use %zd, not %d.
 
 Signed-off-by: Jesper Juhl <jj@chaosbits.net>
 ---
- sound/core/compress_offload.c |   13 ++++++++-----
- 1 files changed, 8 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8958-dsp2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index dac3633..a68aed7 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -441,19 +441,22 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
- 		params = kmalloc(sizeof(*params), GFP_KERNEL);
- 		if (!params)
- 			return -ENOMEM;
--		if (copy_from_user(params, (void __user *)arg, sizeof(*params)))
--			return -EFAULT;
-+		if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
-+			retval = -EFAULT;
-+			goto out;
-+		}
- 		retval = snd_compr_allocate_buffer(stream, params);
- 		if (retval) {
--			kfree(params);
--			return -ENOMEM;
-+			retval = -ENOMEM;
-+			goto out;
- 		}
- 		retval = stream->ops->set_params(stream, params);
- 		if (retval)
- 			goto out;
- 		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
--	} else
-+	} else {
- 		return -EPERM;
-+	}
- out:
- 	kfree(params);
- 	return retval;
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index 8d4ea43..40ac888 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -55,7 +55,7 @@ static int wm8958_dsp2_fw(struct snd_soc_codec *codec, const char *name,
+ 		return 0;
+ 
+ 	if (fw->size < 32) {
+-		dev_err(codec->dev, "%s: firmware too short (%d bytes)\n",
++		dev_err(codec->dev, "%s: firmware too short (%zd bytes)\n",
+ 			name, fw->size);
+ 		goto err;
+ 	}
 -- 
 1.7.8.4
 
