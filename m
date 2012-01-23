@@ -1,69 +1,67 @@
-From: Petr Baudis <pasky@ucw.cz>
-Subject: Re: hda-intel: azx_get_response timeout, switching to polling mode:
- last cmd=0x01db0000
-Date: Mon, 23 Jan 2012 11:23:28 +0100
-Message-ID: <20120123102327.GP30898@machine.or.cz>
-References: <20111229025953.15211.24880.reportbug@machine.or.cz>
- <20111229062105.GB28780@elie.Belkin>
- <20120121091602.GF30898@machine.or.cz>
- <s5hhazm6alb.wl%tiwai@suse.de>
- <20120123094629.GO30898@machine.or.cz>
- <s5h7h0i691s.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Request for compilation test - v1.0.25
+Date: Mon, 23 Jan 2012 12:11:26 +0100
+Message-ID: <4F1D405E.50301@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h7h0i691s.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Nieder <jrnieder@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [77.48.224.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB9E9244AE
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 12:11:06 +0100 (CET)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	AD3401498C9
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 12:11:06 +0100 (CET)
+Received: from t510.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	A11808503E
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2012 12:11:05 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 23, 2012 at 10:51:43AM +0100, Takashi Iwai wrote:
-> At Mon, 23 Jan 2012 10:46:30 +0100,
-> Petr Baudis wrote:
-> > 
-> > On Mon, Jan 23, 2012 at 10:18:24AM +0100, Takashi Iwai wrote:
-> > > Thanks.  Switching to the polling mode is really harmless.
-> > > So, basically you can ignore these messages.  I can change it only as a
-> > > debug message.
-> > > 
-> > > OTOH, if the switching to single_cmd mode happens, this is a serious
-> > > problem.  But, as far as I see in alsa-info.sh output, it didn't
-> > > happen.
-> > 
-> > Ok, then the bug is in handling of polling mode in this particular chip.
-> > After such switch to polling mode, applications will get stuck on
-> > releasing the soundcard.
-> 
-> What do you mean "releasing the soundcard"?  Closing the PCM stream,
-> or unloading the module, or at shutdown?
+Hi all,
 
-  Closing the PCM stream - see strace snippet in the original post.
+	I would like to ask for a package compilation test in your distribution
+for latest ALSA package snapshots available at:
 
-> > Another symptom I forgot to describe is that
-> > the last ~100ms of output will keep repeating when I pause/stop
-> > playback, one has to mute the volume to get rid of this. Again, this
-> > starts happenning only sometimes after the switch to polling mode,
-> > but then keeps happenning fairly consistently.
-> 
-> Hm, this sounds like some interrupt issue, then.  After all, switching
-> to the polling-mode happens because the expected interrupt didn't
-> arrive in time.  If a similar problem happens in the PCM stream, too,
-> it might be some other generic interrupt problem.
+http://www.alsa-project.org/snapshot/
 
-  The soundcard used to work on much older kernel versions. The only
-issue I had with this chipset were general (sound, network, ...) DMA
-problems from 4GiB+ memory areas after I upgraded my memory, but that
-got fixed in newer kernel version. The soundcard uses unique IRQs:
+	At this time, these snapshots are available:
 
-	           CPU0       CPU1
-	 43:         24       7290   PCI-MSI-edge      snd_hda_intel
-	 44:          1         60   PCI-MSI-edge      snd_hda_intel
+alsa-driver 	1.0.24.110.g22743.2525.ge60f5
+alsa-lib 	1.0.24.1.53.g98d4e
+alsa-utils 	1.0.24.2.26.g7d33a
+alsa-firmware 	1.0.24.1.3.g3c38d
+alsa-tools 	1.0.24.1.51.g234fa
+alsa-oss 	1.0.17.2.g1dfe1
+alsa-plugins 	1.0.24.11.gb3fb5
+alsa-python 	1.0.24.2.g4c452
 
-  Any clues on how I can debug this?
+	Please, report any compilation/installation issues to this list (you
+may add CC to me). I am going to make 1.0.25 release on Wednesday.
+
+	The alsa-driver package will not support the kernels bellow 2.6.18
+(released Sep 20 2006), from README:
+
+ - Vanilla 3.0 to 3.2
+ - Vanilla 2.6.18 to 2.6.39
+
+	I kept the 2.4 build code, but it is not maintained and definitely, it
+will be removed in next alsa-driver versions.
+
+				Jaroslav
 
 -- 
-				Petr "Pasky" Baudis
-	The goal of Computer Science is to build something that will
-	last at least until we've finished building it.
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
