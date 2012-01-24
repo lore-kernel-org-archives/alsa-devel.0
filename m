@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC update for 3.3
-Date: Tue, 24 Jan 2012 19:50:10 +0000
-Message-ID: <20120124195009.GA30474@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: default is working, but hw:0,0 is do not...
+Date: Tue, 24 Jan 2012 21:00:16 +0100
+Message-ID: <4F1F0DD0.6020101@canonical.com>
+References: <BLU0-SMTP104845BEB7A301DD21ED66CC18B0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BF10E24600
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 20:50:13 +0100 (CET)
-Content-Disposition: inline
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id C96A724602
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 21:00:16 +0100 (CET)
+In-Reply-To: <BLU0-SMTP104845BEB7A301DD21ED66CC18B0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,55 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Dmitrij K <kdiman@live.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit dcd6c92267155e70a94b3927bce681ce74b80d1f:
+On 01/24/2012 08:15 PM, Dmitrij K wrote:
+> Hi all.
+>
+> I have problem with openning a device for playback.
+>
+>
+> this is working code:
+> snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
+>
+>
+> but this is not working:
+> snd_pcm_open(&handle, "hw:0,0", SND_PCM_STREAM_PLAYBACK, 0);
+>
+> I get this is: Device or resource busy
+>
+>
+> PS: I have been started the `phonon' (KDE sound daemon), and the amarok (audio
+> player).
+>
+>
+> My question: what I need to do for correct open "hw:0,0" for multiply playback
+> ?
 
-  Linux 3.3-rc1 (2012-01-19 15:04:48 -0800)
+Make sure that nobody else is using the device at the same time. 
+"hw:0,0" requires exclusive access to the device.
 
-are available in the git repository at:
+You can see who is currently using your sound device(s) using this command:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-3.3-20120124
+sudo fuser -v /dev/snd/*
 
-for you to fetch changes up to c83f1d7e71625801c72f4013291194e09b6f0a6e:
-
-  ASoC: wm2000: Fix use-after-free - don't release_firmware() twice on error (2012-01-24 11:34:19 +0000)
-
-----------------------------------------------------------------
-ASoC: Updates for 3.3
-
-A bunch of small updates for drivers that accumilated during the merge
-window.
-
-----------------------------------------------------------------
-Fabio Estevam (1):
-      ASoC: mxs: Fix mxs-saif timeout
-
-Jesper Juhl (2):
-      ASoC: wm8958: Use correct format string in dev_err() call
-      ASoC: wm2000: Fix use-after-free - don't release_firmware() twice on error
-
-Mark Brown (4):
-      ASoC: Mark WM5100 register map cache only when going into BIAS_OFF
-      ASoC: Don't go through cache when applying WM5100 rev A updates
-      ASoC: Disable register synchronisation for low frequency WM8996 SYSCLK
-      ASoC: wm8996: Call _POST_PMU callback for CPVDD
-
-Wolfram Sang (2):
-      ASoC: tlv320aic32x4: always enable dividers
-      ASoC: tlv320aic32x4: always enable analouge block
-
-Zeng Zhaoming (1):
-      ASoC: sgtl5000: Fix wrong register name in restore
-
- sound/soc/codecs/sgtl5000.c      |   17 +++++--
- sound/soc/codecs/tlv320aic32x4.c |  110 +++++++++++++++++--------------------
- sound/soc/codecs/wm2000.c        |   31 +++++------
- sound/soc/codecs/wm5100.c        |    3 +
- sound/soc/codecs/wm8958-dsp2.c   |    2 +-
- sound/soc/codecs/wm8996.c        |    7 ++-
- sound/soc/codecs/wm8996.h        |    4 ++
- sound/soc/mxs/mxs-saif.c         |    5 ++
- 8 files changed, 96 insertions(+), 83 deletions(-)
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
