@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Fix use-after-free in wm2000 - don't
- release_firmware() twice
-Date: Tue, 24 Jan 2012 11:34:49 +0000
-Message-ID: <20120124113449.GA14888@opensource.wolfsonmicro.com>
-References: <alpine.LNX.2.00.1201232224250.8772@swampdragon.chaosbits.net>
+Subject: Re: Hang up at .prepare( )
+Date: Tue, 24 Jan 2012 11:42:10 +0000
+Message-ID: <20120124114210.GB14888@opensource.wolfsonmicro.com>
+References: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
+	<20120124105528.GA20519@opensource.wolfsonmicro.com>
+	<CANKRQnibHChSVEOvsDuKTXcnDkx5KQAMOxfheocTJt+ar0CgPw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD6B524570
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 12:34:51 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2ECC424571
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 12:42:13 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1201232224250.8772@swampdragon.chaosbits.net>
+In-Reply-To: <CANKRQnibHChSVEOvsDuKTXcnDkx5KQAMOxfheocTJt+ar0CgPw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,11 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Ian Lartey <ian@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 23, 2012 at 10:28:44PM +0100, Jesper Juhl wrote:
-> In wm2000_i2c_probe(), if we take the true branch in
+On Tue, Jan 24, 2012 at 08:30:17PM +0900, Tomoya MORINAGA wrote:
+> 2012/1/24 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> > What efforts have you made to debug this yourself? =A0Clearly this is n=
+ot
+> > happening for other people, perhaps it is related to something you have
+> > in your drivers - have you addressed the issues raised with them?
 
-Applied, thanks.
+> I said previously, "our ASoC drivers" not others.
+> Of course, I understand current upstreamed drivers don't have this issue.
+> I just asked "If someone faced the same issue when debugging, let me
+> know about it."
+
+That's not answering my question - I'm asking you what steps you've
+taken to progress, to explain the analysis you've done so far.  For
+example, what is the blocked thread blocked on - what is it waiting for
+and why has that thing happened?
+
+If you have not addressed the review issues with your driver then take a
+look at those, perhaps the problem has already been identified through
+code review.
