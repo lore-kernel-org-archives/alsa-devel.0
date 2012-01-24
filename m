@@ -1,81 +1,129 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH] sound: Fix memory leak on error in
- snd_compr_set_params()
-Date: Tue, 24 Jan 2012 14:46:14 +0530
-Message-ID: <1327396574.517.33.camel@vkoul-udesk3>
-References: <alpine.LNX.2.00.1201232059540.8772@swampdragon.chaosbits.net>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Hang up at .prepare( )
+Date: Tue, 24 Jan 2012 18:38:45 +0900
+Message-ID: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id ADD1E1039CD
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 10:15:17 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1201232059540.8772@swampdragon.chaosbits.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-01-23 at 21:02 +0100, Jesper Juhl wrote:
-> If copy_from_user() does not return 0 we'll leak the memory we
-> allocated for 'params' when that variable goes out of scope.
-> 
-> Also a small CodingStyle cleanup: Use braces on both branches of
-> if/else when one branch needs it.
-> 
-> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
-Thanks for the fix
-Acked-by: Vinod Koul <vinod.koul@linux.intel.com>
-> ---
->  sound/core/compress_offload.c |   13 ++++++++-----
->  1 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> index dac3633..a68aed7 100644
-> --- a/sound/core/compress_offload.c
-> +++ b/sound/core/compress_offload.c
-> @@ -441,19 +441,22 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
->  		params = kmalloc(sizeof(*params), GFP_KERNEL);
->  		if (!params)
->  			return -ENOMEM;
-> -		if (copy_from_user(params, (void __user *)arg, sizeof(*params)))
-> -			return -EFAULT;
-> +		if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
-> +			retval = -EFAULT;
-> +			goto out;
-> +		}
->  		retval = snd_compr_allocate_buffer(stream, params);
->  		if (retval) {
-> -			kfree(params);
-> -			return -ENOMEM;
-> +			retval = -ENOMEM;
-> +			goto out;
->  		}
->  		retval = stream->ops->set_params(stream, params);
->  		if (retval)
->  			goto out;
->  		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-> -	} else
-> +	} else {
->  		return -EPERM;
-> +	}
->  out:
->  	kfree(params);
->  	return retval;
-> -- 
-> 1.7.8.4
-> 
-> 
+Hi
 
+I've started debugging our ASoC drivers.
+I've faced issue when installing these drivers,
+system becomes hang up at async_synchronize_full_domain() of
+dapm_power_widgets()
+in .prepare().
 
--- 
-~Vinod
+Do you have any information about this hang up ?
+
+I show details below.
+
+======Details============
+
+ * Procedure
+install codec-driver
+install platform-driver
+install machine driver
+
+echo ml26124 0x1A > /sys/bus/i2c/devices/i2c-1/new_device
+After this command,
+occur system hang up within a few seconds
+
+ * Call Trees
+
+platform-driver:.open()
+machine-driver:.hw_params()
+codec-driver:.hw_params()
+platform-driver:.dai_hw_params()
+platform-driver:.hw_params()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+
+platform-driver:.open()
+machine-driver:.hw_params()
+codec-driver:.hw_params()
+platform-driver:.dai_hw_params()
+platform-driver:.hw_params()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.close()
+
+platform-driver:.open()
+machine-driver:.hw_params()
+codec-driver:.hw_params()
+platform-driver:.dai_hw_params()
+platform-driver:.hw_params()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.close()
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.close()
+platform-driver:.dai_digital_mute()
+
+platform-driver:.open()
+machine-driver:.hw_params()
+codec-driver:.hw_params()
+platform-driver:.dai_hw_params()
+platform-driver:.hw_params()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+
+platform-driver:.open()
+machine-driver:.hw_params()
+codec-driver:.hw_params()
+platform-driver:.dai_hw_params()
+platform-driver:.hw_params()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.prepare()
+platform-driver:.dai_digital_mute()
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.hw_free
+platform-driver:.dai_hw_free
+platform-driver:.close()
+
+platform-driver:.open()
+machine-driver:.hw_params()
+codec-driver:.hw_params()
+platform-driver:.dai_hw_params()
+platform-driver:.hw_params()
+platform-driver:.prepare()
+
+==> Occur system hang up.
+
+According to system log,
+the hang up seems occuring at async_synchronize_full_domain(),
+which is at soc_pcm_prepare -> soc_dapm_stream_event ->
+dapm_power_widgets -> async_synchronize_full_domain [2nd call]
+
+ * Test condition
+CPU=Intel Atom E6xx series
+IOH=LAPIS Semiconductor ML7213
+Fedora15
+Kernel=3.2
+
+thanks in advance.
+tomoya
