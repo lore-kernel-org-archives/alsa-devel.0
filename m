@@ -1,34 +1,81 @@
-From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
-Subject: Re: [PATCH V2 1/4] ARM: dt: tegra: Add Tegra APB DMA device tree
- binding
-Date: Tue, 24 Jan 2012 00:42:49 -0800
-Message-ID: <20120124084249.GA14682@quad.lixom.net>
-References: <1326323397-23931-1-git-send-email-swarren@nvidia.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH] sound: Fix memory leak on error in
+ snd_compr_set_params()
+Date: Tue, 24 Jan 2012 14:46:14 +0530
+Message-ID: <1327396574.517.33.camel@vkoul-udesk3>
+References: <alpine.LNX.2.00.1201232059540.8772@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1326323397-23931-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Content-Disposition: inline
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADD1E1039CD
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 10:15:17 +0100 (CET)
+In-Reply-To: <alpine.LNX.2.00.1201232059540.8772@swampdragon.chaosbits.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Wed, Jan 11, 2012 at 04:09:54PM -0700, Stephen Warren wrote:
-> Document binding, and add the node to tegra*.dtsi.
+On Mon, 2012-01-23 at 21:02 +0100, Jesper Juhl wrote:
+> If copy_from_user() does not return 0 we'll leak the memory we
+> allocated for 'params' when that variable goes out of scope.
 > 
-> The driver isn't actually instantiated from this node yet, but the I2S
-> binding will rely on being able to refer to the APB DMA node using a
-> phandle.
+> Also a small CodingStyle cleanup: Use braces on both branches of
+> if/else when one branch needs it.
 > 
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+Thanks for the fix
+Acked-by: Vinod Koul <vinod.koul@linux.intel.com>
 > ---
-> v2: Added this to tegra30.dtsi too. Fixed interrupt IDs. Fixed reg to
-> include all the per-channel registers.
+>  sound/core/compress_offload.c |   13 ++++++++-----
+>  1 files changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index dac3633..a68aed7 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -441,19 +441,22 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+>  		params = kmalloc(sizeof(*params), GFP_KERNEL);
+>  		if (!params)
+>  			return -ENOMEM;
+> -		if (copy_from_user(params, (void __user *)arg, sizeof(*params)))
+> -			return -EFAULT;
+> +		if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
+> +			retval = -EFAULT;
+> +			goto out;
+> +		}
+>  		retval = snd_compr_allocate_buffer(stream, params);
+>  		if (retval) {
+> -			kfree(params);
+> -			return -ENOMEM;
+> +			retval = -ENOMEM;
+> +			goto out;
+>  		}
+>  		retval = stream->ops->set_params(stream, params);
+>  		if (retval)
+>  			goto out;
+>  		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+> -	} else
+> +	} else {
+>  		return -EPERM;
+> +	}
+>  out:
+>  	kfree(params);
+>  	return retval;
+> -- 
+> 1.7.8.4
+> 
+> 
 
-Thanks, applied 1-4.
 
-
--Olof
+-- 
+~Vinod
