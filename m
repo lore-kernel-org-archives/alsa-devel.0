@@ -1,34 +1,46 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: Re: [PATCH] Sound WM8958 DSP2: Use correct format string in dev_err()
- call
-Date: Mon, 23 Jan 2012 22:29:48 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1201232228510.8772@swampdragon.chaosbits.net>
-References: <alpine.LNX.2.00.1201232113400.8772@swampdragon.chaosbits.net> <20120123211107.GD26409@opensource.wolfsonmicro.com>
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 1/6] hda_intel: Add Lynx Point HD Audio Controller DeviceIDs
+Date: Mon, 23 Jan 2012 16:24:31 -0800
+Message-ID: <201201231624.31275.seth.heasley@intel.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120123211107.GD26409@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lrg@ti.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org, perex@perex.cz
+Cc: linux-kernel@vger.kernel.org, james.d.ralston@intel.com, seth.heasley@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Jan 2012, Mark Brown wrote:
+This patch adds the HD Audio DeviceIDs for the Intel Lynx Point PCH.
 
-> On Mon, Jan 23, 2012 at 09:15:48PM +0100, Jesper Juhl wrote:
-> > To print a value of type size_t one should use %zd, not %d.
-> 
-> Applied, 
+Signed-off-by: Seth Heasley <seth.heasley@intel.com>
+---
+ sound/pci/hda/hda_intel.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-Thank you.
-
-> thanks, but please do at least try to use a subject line in the
-> style for the subsystem.
-
-I'll try. I hope I hit closer to that mark with the other patch I just 
-mailed you. :-)
-
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0852e20..adb4fa7 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -148,6 +148,7 @@ MODULE_SUPPORTED_DEVICE("{{Intel, ICH6},"
+ 			 "{Intel, PCH},"
+ 			 "{Intel, CPT},"
+ 			 "{Intel, PPT},"
++			 "{Intel, LPT},"
+ 			 "{Intel, PBG},"
+ 			 "{Intel, SCH},"
+ 			 "{ATI, SB450},"
+@@ -2989,6 +2990,10 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+ 	{ PCI_DEVICE(0x8086, 0x1e20),
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+ 	  AZX_DCAPS_BUFSIZE},
++	/* Lynx Point */
++	{ PCI_DEVICE(0x8086, 0x8c20),
++	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
++	  AZX_DCAPS_BUFSIZE},
+ 	/* SCH */
+ 	{ PCI_DEVICE(0x8086, 0x811b),
+ 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
 -- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+1.7.4.4
