@@ -1,49 +1,62 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Hang up at .prepare( )
-Date: Tue, 24 Jan 2012 11:42:10 +0000
-Message-ID: <20120124114210.GB14888@opensource.wolfsonmicro.com>
-References: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
-	<20120124105528.GA20519@opensource.wolfsonmicro.com>
-	<CANKRQnibHChSVEOvsDuKTXcnDkx5KQAMOxfheocTJt+ar0CgPw@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v4 - resend 00/13] OMAP4: ASoC: Support for PandaBoard family
+Date: Tue, 24 Jan 2012 13:52:17 +0200
+Message-ID: <1327405950-6676-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2ECC424571
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 12:42:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CANKRQnibHChSVEOvsDuKTXcnDkx5KQAMOxfheocTJt+ar0CgPw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 24, 2012 at 08:30:17PM +0900, Tomoya MORINAGA wrote:
-> 2012/1/24 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> > What efforts have you made to debug this yourself? =A0Clearly this is n=
-ot
-> > happening for other people, perhaps it is related to something you have
-> > in your drivers - have you addressed the issues raised with them?
+Hello,
 
-> I said previously, "our ASoC drivers" not others.
-> Of course, I understand current upstreamed drivers don't have this issue.
-> I just asked "If someone faced the same issue when debugging, let me
-> know about it."
+the following series will add ASoC support for PandaBoards.
+PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
+the differences not that big to justify a new ASoC machine driver.
 
-That's not answering my question - I'm asking you what steps you've
-taken to progress, to explain the analysis you've done so far.  For
-example, what is the blocked thread blocked on - what is it waiting for
-and why has that thing happened?
+The v3 series did not made it to 3.3 kernel.
+This set contains all the patches needed to enable the audio support on the
+PandaBoard family.
+The machine driver has been converted to a generic OMAP4 driver which can
+support wide range of machines using OMAP4 with twl6040 codec.
 
-If you have not addressed the review issues with your driver then take a
-look at those, perhaps the problem has already been identified through
-code review.
+I have remove the hardcoded MCLK clock frequency use in the machine driver
+(there can be devices with different MCLK configuration). This changed
+patch 04, 05, and 12. Since this does not affect the functionality I kept the
+acks for these patches. Patch 11 did not existed in the v3 series.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (13):
+  ASoC: sdp4430: Correct author e-mail address
+  ASoC: OMAP4: Rename the sdp4430 machine driver
+  ASoC: omap-abe-twl6040: Correct internal prefix, Kconfig entry
+  include: platform_data: Platform data header for OMAP4 ASoC audio
+  OMAP4: 4430sdp: Register platform device for OMAP4 audio
+  ASoC: omap-abe-twl6040: Convert to platform deriver
+  ASoC: twl6040: Convert MICBIAS to SUPPLY widget
+  ASoC: omap-abe-twl6040: Add complete DAPM routing
+  ASoC: omap-abe-twl6040: DAI link selection based on platform data
+  ASoC: omap-abe-twl6040: Configure card according to platform data
+  ASoC: omap-abe-twl6040: Use provided MCLK frequency from pdata
+  OMAP4: omap4panda: Enable audio support
+  ASoC: Kconfig: OMAP4: Enable support for PandaBoards
+
+ arch/arm/mach-omap2/board-4430sdp.c            |   29 ++
+ arch/arm/mach-omap2/board-omap4panda.c         |   60 ++++-
+ include/linux/platform_data/omap-abe-twl6040.h |   49 ++++
+ sound/soc/codecs/twl6040.c                     |   16 +-
+ sound/soc/omap/Kconfig                         |   13 +-
+ sound/soc/omap/Makefile                        |    4 +-
+ sound/soc/omap/omap-abe-twl6040.c              |  349 ++++++++++++++++++++++++
+ sound/soc/omap/sdp4430.c                       |  279 -------------------
+ 8 files changed, 504 insertions(+), 295 deletions(-)
+ create mode 100644 include/linux/platform_data/omap-abe-twl6040.h
+ create mode 100644 sound/soc/omap/omap-abe-twl6040.c
+ delete mode 100644 sound/soc/omap/sdp4430.c
+
+-- 
+1.7.8.3
+
