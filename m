@@ -1,129 +1,74 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Hang up at .prepare( )
-Date: Tue, 24 Jan 2012 18:38:45 +0900
-Message-ID: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 1/6] hda_intel: Add Lynx Point HD Audio
+ Controller DeviceIDs
+Date: Tue, 24 Jan 2012 10:45:36 +0100
+Message-ID: <4F1E7DC0.5060208@canonical.com>
+References: <201201231624.31275.seth.heasley@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id A76BA1039CE
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 10:45:36 +0100 (CET)
+In-Reply-To: <201201231624.31275.seth.heasley@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Seth Heasley <seth.heasley@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, james.d.ralston@intel.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On 01/24/2012 01:24 AM, Seth Heasley wrote:
+> This patch adds the HD Audio DeviceIDs for the Intel Lynx Point PCH.
 
-I've started debugging our ASoC drivers.
-I've faced issue when installing these drivers,
-system becomes hang up at async_synchronize_full_domain() of
-dapm_power_widgets()
-in .prepare().
+Thanks. As we asked for oak trail: can you confirm you prefer DMA 
+Position buffers for detecting current playback/recording position, over 
+using the LPIB register?
 
-Do you have any information about this hang up ?
+Also; these types of quirks should have a line "Cc: stable@kernel.org" 
+added to their commit messages, that will make it automatically be 
+applied to some of the older kernels in due time.
 
-I show details below.
+>
+> Signed-off-by: Seth Heasley<seth.heasley@intel.com>
+> ---
+>   sound/pci/hda/hda_intel.c |    5 +++++
+>   1 files changed, 5 insertions(+), 0 deletions(-)
+>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 0852e20..adb4fa7 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -148,6 +148,7 @@ MODULE_SUPPORTED_DEVICE("{{Intel, ICH6},"
+>   			 "{Intel, PCH},"
+>   			 "{Intel, CPT},"
+>   			 "{Intel, PPT},"
+> +			 "{Intel, LPT},"
+>   			 "{Intel, PBG},"
+>   			 "{Intel, SCH},"
+>   			 "{ATI, SB450},"
+> @@ -2989,6 +2990,10 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>   	{ PCI_DEVICE(0x8086, 0x1e20),
+>   	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+>   	  AZX_DCAPS_BUFSIZE},
+> +	/* Lynx Point */
+> +	{ PCI_DEVICE(0x8086, 0x8c20),
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> +	  AZX_DCAPS_BUFSIZE},
+>   	/* SCH */
+>   	{ PCI_DEVICE(0x8086, 0x811b),
+>   	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
 
-======Details============
 
- * Procedure
-install codec-driver
-install platform-driver
-install machine driver
 
-echo ml26124 0x1A > /sys/bus/i2c/devices/i2c-1/new_device
-After this command,
-occur system hang up within a few seconds
-
- * Call Trees
-
-platform-driver:.open()
-machine-driver:.hw_params()
-codec-driver:.hw_params()
-platform-driver:.dai_hw_params()
-platform-driver:.hw_params()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-
-platform-driver:.open()
-machine-driver:.hw_params()
-codec-driver:.hw_params()
-platform-driver:.dai_hw_params()
-platform-driver:.hw_params()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.close()
-
-platform-driver:.open()
-machine-driver:.hw_params()
-codec-driver:.hw_params()
-platform-driver:.dai_hw_params()
-platform-driver:.hw_params()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.close()
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.close()
-platform-driver:.dai_digital_mute()
-
-platform-driver:.open()
-machine-driver:.hw_params()
-codec-driver:.hw_params()
-platform-driver:.dai_hw_params()
-platform-driver:.hw_params()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-
-platform-driver:.open()
-machine-driver:.hw_params()
-codec-driver:.hw_params()
-platform-driver:.dai_hw_params()
-platform-driver:.hw_params()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.prepare()
-platform-driver:.dai_digital_mute()
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.hw_free
-platform-driver:.dai_hw_free
-platform-driver:.close()
-
-platform-driver:.open()
-machine-driver:.hw_params()
-codec-driver:.hw_params()
-platform-driver:.dai_hw_params()
-platform-driver:.hw_params()
-platform-driver:.prepare()
-
-==> Occur system hang up.
-
-According to system log,
-the hang up seems occuring at async_synchronize_full_domain(),
-which is at soc_pcm_prepare -> soc_dapm_stream_event ->
-dapm_power_widgets -> async_synchronize_full_domain [2nd call]
-
- * Test condition
-CPU=Intel Atom E6xx series
-IOH=LAPIS Semiconductor ML7213
-Fedora15
-Kernel=3.2
-
-thanks in advance.
-tomoya
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
