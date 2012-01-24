@@ -1,20 +1,18 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: Hang up at .prepare( )
-Date: Tue, 24 Jan 2012 20:30:17 +0900
-Message-ID: <CANKRQnibHChSVEOvsDuKTXcnDkx5KQAMOxfheocTJt+ar0CgPw@mail.gmail.com>
-References: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
-	<20120124105528.GA20519@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: Fix use-after-free in wm2000 - don't
+ release_firmware() twice
+Date: Tue, 24 Jan 2012 11:34:49 +0000
+Message-ID: <20120124113449.GA14888@opensource.wolfsonmicro.com>
+References: <alpine.LNX.2.00.1201232224250.8772@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2C461039EC
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 12:30:19 +0100 (CET)
-Received: by pbaa7 with SMTP id a7so285446pba.38
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 03:30:17 -0800 (PST)
-In-Reply-To: <20120124105528.GA20519@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD6B524570
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 12:34:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1201232224250.8772@swampdragon.chaosbits.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Ian Lartey <ian@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2012/1/24 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> What efforts have you made to debug this yourself? =A0Clearly this is not
-> happening for other people, perhaps it is related to something you have
-> in your drivers - have you addressed the issues raised with them?
+On Mon, Jan 23, 2012 at 10:28:44PM +0100, Jesper Juhl wrote:
+> In wm2000_i2c_probe(), if we take the true branch in
 
-I said previously, "our ASoC drivers" not others.
-Of course, I understand current upstreamed drivers don't have this issue.
-I just asked "If someone faced the same issue when debugging, let me
-know about it."
-
-thanks,
+Applied, thanks.
