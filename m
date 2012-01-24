@@ -1,40 +1,41 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
- space
-Date: Tue, 24 Jan 2012 12:01:42 +0200
-Message-ID: <4F1E8186.2060307@ti.com>
-References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com> <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com> <4EEB5913.3090901@ti.com> <alpine.DEB.2.00.1112191451140.12660@utopia.booyaka.com> <4F1D4A03.3050700@ti.com> <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Hang up at .prepare( )
+Date: Tue, 24 Jan 2012 10:55:29 +0000
+Message-ID: <20120124105528.GA20519@opensource.wolfsonmicro.com>
+References: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Paul Walmsley <paul@pwsan.com>
-Cc: "Cousson, Benoit" <b-cousson@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C216424565
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 11:55:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CANKRQngqJaAq7ucg3VzCMs+-KFXTSuJG=uq4d0kQ95gEMFfB4w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/24/2012 10:36 AM, Paul Walmsley wrote:
->> This patch seams to be missing from 3.3-rc1. The rest of the series =
-is
->> there, but because of the missing patch audio does not probe on
->> 4430SDP/Blaze.
->> Can you queue this as a fix for Linus?
->=20
-> Doh, not sure what happened here.  A brief triage question.  Did audi=
-o=20
-> probe correctly on 4430SDP/Blaze on 3.2?
+On Tue, Jan 24, 2012 at 06:38:45PM +0900, Tomoya MORINAGA wrote:
 
-Yes, it did.
-I have added the DMIC support for 3.3. Without this patch the DMIC
-driver is not probing (can't get the resources) which prevents the audi=
-o
-to work (the DMIC dai is missing, so the card does not come up).
+> I've faced issue when installing these drivers,
+> system becomes hang up at async_synchronize_full_domain() of
+> dapm_power_widgets()
+> in .prepare().
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Do you have any information about this hang up ?
+
+> I show details below.
+
+What efforts have you made to debug this yourself?  Clearly this is not
+happening for other people, perhaps it is related to something you have
+in your drivers - have you addressed the issues raised with them?
