@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 3.4
-Date: Tue, 24 Jan 2012 20:46:16 +0000
-Message-ID: <20120124204615.GE1135@opensource.wolfsonmicro.com>
-References: <20120124201157.GB1135@opensource.wolfsonmicro.com>
-	<s5h39b4n8lw.wl%tiwai@suse.de>
+Subject: [PATCH] ASoC: wm8962: Optimise power consumption for
+	IN4 DC measurement usage
+Date: Tue, 24 Jan 2012 21:17:00 +0000
+Message-ID: <1327439820-28465-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0771332478770605136=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14E04103B1E
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 21:46:18 +0100 (CET)
-In-Reply-To: <s5h39b4n8lw.wl%tiwai@suse.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8D26C103B28
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 22:17:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,73 +19,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+When the hardware is configured with one or both of the IN4 inputs used
+for DC measurement (with no DC blocking capacitor connected) then we can
+improve power consumption slightly in idle modes by applying a register
+write sequence. Provide platform data to enable this, implemented using
+a regmap patch.
 
---===============0771332478770605136==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5p8PegU4iirBW1oA"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/wm8962.h    |    6 ++++++
+ sound/soc/codecs/wm8962.c |   18 ++++++++++++++++++
+ 2 files changed, 24 insertions(+), 0 deletions(-)
 
-
---5p8PegU4iirBW1oA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 24, 2012 at 09:33:47PM +0100, Takashi Iwai wrote:
-
-> Yeah, my git is still 1.7.8.x and it doesn't seem to work well with
-
-Oh, well.  I think it's the tag rather than the signed bit.
-
-> the singed tag, so I pulled for-3.x branches now.
-
-Trust me, you don't want to hear my singing :)
-
-> I'm going to upgrade in this week sometime later.
-
-I wouldn't worry, it's still not a full release I believe and it's not
-exactly crtitical.  The only reason I'm trying it right now is because
-I was setting up my new GPG smartcard Debian has packages already (but
-do let me know when you have upgraded and I'll try again).
-
-Actually, looking again I can generate a tag with the same name as the
-branch quite happily - if I do that when requesting pulls then
-everything should transparently do the right thing, older versions of
-git will pick up the branch rather than the tag and newer ones will
-prefer the tag and so get the signature goodness.  He said hopefully :)
-
---5p8PegU4iirBW1oA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPHxiQAAoJEBus8iNuMP3dkuQP/09ytBLrh52nFjzoSttHRWEA
-4McPw2/QXu1XB54XqB0o8+iK7JiOaoJ1uqkFXVdRsPdYD8pP51hmIRBcRqlWteQJ
-vR48Qd+0l0AwCPkuJb8XhUnF1ErlMyYyPBHRDE1egOmpiEhv+5wpVtKXnRvFNVFJ
-iXWelcMGBKQcq/Edh2GnJj9ZvNxELIw7SZnqFd07+BtLf2KF4zxl+nR1v4Z6eR7d
-FTxbXPQ58vPPAG54+1j11VV9AygNw8ER/WpCY7CO7/2fwBG2wxN9eIpPCrSjq4Kh
-2GPTxQRk9+hOuo6nOp0sEf7UT4DbHJkAyriQvFfd3yBAxs/rwLRPM2PVkz+yMh1k
-fUH7JzDoVAxcWFVOq3UJKHPOM+eTDJF1H/zRqJ0dXsv223hupSYLl+XXSHebIcsB
-luyZewtZ28lEd4FEDyojOjnDmfuLR7F5clNyHfMtor5XMuA5tfSwvzjiZM3S+UJj
-cCdnq3Qij/KKJBzQ1/Xs4wfXEQdiIiWiakB7ez/oqturDQh6Mpog/Dy08/bActLL
-pW3i5Qyy2qE+ziaRO836mp3Lhe0V59aVwMx3/zcApZj7OQFB+febd2E1BHLhxDjL
-RWkKYz7gRIyyHNdjL3NdnsBVlev55u7AO6MVoF0Q6bD+mAYp4urXN8tuFUJkyaQO
-AXtIzEETKnDhVGYiJVEv
-=oG33
------END PGP SIGNATURE-----
-
---5p8PegU4iirBW1oA--
-
---===============0771332478770605136==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0771332478770605136==--
+diff --git a/include/sound/wm8962.h b/include/sound/wm8962.h
+index f131cd2..39477a7 100644
+--- a/include/sound/wm8962.h
++++ b/include/sound/wm8962.h
+@@ -50,6 +50,12 @@ struct wm8962_pdata {
+ 	bool irq_edge;
+ 
+ 	bool spk_mono;   /* Speaker outputs tied together as mono */
++
++	/**
++	 * This flag should be set if one or both IN4 inputs is wired
++	 * in a DC measurement configuration.
++	 */
++	bool in4_dc_measure;
+ };
+ 
+ #endif
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 9faef60..f1fd630 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3668,6 +3668,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8962 = {
+ 	.volatile_register = wm8962_soc_volatile,
+ };
+ 
++/* Improve power consumption for IN4 DC measurement mode */
++static const struct reg_default wm8962_dc_measure[] = {
++	{ 0xfd, 0x1 },
++	{ 0xcc, 0x40 },
++	{ 0xfd, 0 },
++};
++
+ static const struct regmap_config wm8962_regmap = {
+ 	.reg_bits = 16,
+ 	.val_bits = 16,
+@@ -3683,6 +3690,7 @@ static const struct regmap_config wm8962_regmap = {
+ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
++	struct wm8962_pdata *pdata = dev_get_platdata(&i2c->dev);
+ 	struct wm8962_priv *wm8962;
+ 	unsigned int reg;
+ 	int ret, i;
+@@ -3761,6 +3769,16 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
+ 		goto err_regmap;
+ 	}
+ 
++	if (pdata && pdata->in4_dc_measure) {
++		ret = regmap_register_patch(wm8962->regmap,
++					    wm8962_dc_measure,
++					    ARRAY_SIZE(wm8962_dc_measure));
++		if (ret != 0)
++			dev_err(&i2c->dev,
++				"Failed to configure for DC mesurement: %d\n",
++				ret);
++	}
++
+ 	regcache_cache_only(wm8962->regmap, true);
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+-- 
+1.7.9.rc1
