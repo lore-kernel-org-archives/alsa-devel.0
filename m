@@ -1,21 +1,16 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing
-	iounmap
-Date: Tue, 24 Jan 2012 21:45:26 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1201242144580.1998@hadrien>
-References: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
-	<7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
-	<alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6>
-	<20120124202203.GD1135@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 3.4
+Date: Tue, 24 Jan 2012 20:46:16 +0000
+Message-ID: <20120124204615.GE1135@opensource.wolfsonmicro.com>
+References: <20120124201157.GB1135@opensource.wolfsonmicro.com>
+	<s5h39b4n8lw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0771332478770605136=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1-relais-roc.national.inria.fr
-	(mail1-relais-roc.national.inria.fr [192.134.164.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36DA424617
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 21:45:28 +0100 (CET)
-In-Reply-To: <20120124202203.GD1135@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14E04103B1E
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 21:46:18 +0100 (CET)
+In-Reply-To: <s5h39b4n8lw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,159 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
->From nobody Tue Jan 24 18:26:10 CET 2012
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>,Jaroslav Kysela <perex@perex.cz>,Takashi Iwai <tiwai@suse.de>,alsa-devel@alsa-project.org,linux-kernel@vger.kernel.org
-Subject: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_ functions
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+--===============0771332478770605136==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5p8PegU4iirBW1oA"
+Content-Disposition: inline
 
-The various devm_ functions allocate memory that is released when a driver
-detaches.  This patch uses these functions for data that is allocated in
-the probe function of a platform device and is only freed in the remove
-function.
 
-By removing the need for iounmap, this also eliminates a missing iounmap
-problem, in the the original error handling code following a successful
-call to ioremap.
+--5p8PegU4iirBW1oA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+On Tue, Jan 24, 2012 at 09:33:47PM +0100, Takashi Iwai wrote:
 
----
-  sound/soc/mxs/mxs-saif.c |   43 ++++++++++++++-----------------------------
-  1 file changed, 14 insertions(+), 29 deletions(-)
+> Yeah, my git is still 1.7.8.x and it doesn't seem to work well with
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index f204dba..7d755e0 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -630,7 +630,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  	if (pdev->id >= ARRAY_SIZE(mxs_saif))
-  		return -EINVAL;
+Oh, well.  I think it's the tag rather than the signed bit.
 
--	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
-+	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
-  	if (!saif)
-  		return -ENOMEM;
+> the singed tag, so I pulled for-3.x branches now.
 
-@@ -655,7 +655,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  		ret = PTR_ERR(saif->clk);
-  		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
-  			ret);
--		goto failed_clk;
-+		return ret;
-  	}
+Trust me, you don't want to hear my singing :)
 
-  	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -666,18 +666,19 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  		goto failed_get_resource;
-  	}
+> I'm going to upgrade in this week sometime later.
 
--	if (!request_mem_region(iores->start, resource_size(iores),
--				"mxs-saif")) {
-+	if (!devm_request_mem_region(&pdev->dev, iores->start,
-+				     resource_size(iores), "mxs-saif")) {
-  		dev_err(&pdev->dev, "request_mem_region failed\n");
-  		ret = -EBUSY;
-  		goto failed_get_resource;
-  	}
+I wouldn't worry, it's still not a full release I believe and it's not
+exactly crtitical.  The only reason I'm trying it right now is because
+I was setting up my new GPG smartcard Debian has packages already (but
+do let me know when you have upgraded and I'll try again).
 
--	saif->base = ioremap(iores->start, resource_size(iores));
-+	saif->base = devm_ioremap(&pdev->dev, iores->start,
-+				  resource_size(iores));
-  	if (!saif->base) {
-  		dev_err(&pdev->dev, "ioremap failed\n");
-  		ret = -ENODEV;
--		goto failed_ioremap;
-+		goto failed_get_resource;
-  	}
+Actually, looking again I can generate a tag with the same name as the
+branch quite happily - if I do that when requesting pulls then
+everything should transparently do the right thing, older versions of
+git will pick up the branch rather than the tag and newer ones will
+prefer the tag and so get the signature goodness.  He said hopefully :)
 
-  	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-@@ -685,7 +686,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  		ret = -ENODEV;
-  		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
-  			ret);
--		goto failed_ioremap;
-+		goto failed_get_resource;
-  	}
-  	saif->dma_param.chan_num = dmares->start;
+--5p8PegU4iirBW1oA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-@@ -694,14 +695,15 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  		ret = saif->irq;
-  		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
-  			ret);
--		goto failed_get_irq1;
-+		goto failed_get_resource;
-  	}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-  	saif->dev = &pdev->dev;
--	ret = request_irq(saif->irq, mxs_saif_irq, 0, "mxs-saif", saif);
-+	ret = devm_request_irq(&pdev->dev, saif->irq, mxs_saif_irq, 0,
-+			       "mxs-saif", saif);
-  	if (ret) {
-  		dev_err(&pdev->dev, "failed to request irq\n");
--		goto failed_get_irq1;
-+		goto failed_get_resource;
-  	}
+iQIcBAEBAgAGBQJPHxiQAAoJEBus8iNuMP3dkuQP/09ytBLrh52nFjzoSttHRWEA
+4McPw2/QXu1XB54XqB0o8+iK7JiOaoJ1uqkFXVdRsPdYD8pP51hmIRBcRqlWteQJ
+vR48Qd+0l0AwCPkuJb8XhUnF1ErlMyYyPBHRDE1egOmpiEhv+5wpVtKXnRvFNVFJ
+iXWelcMGBKQcq/Edh2GnJj9ZvNxELIw7SZnqFd07+BtLf2KF4zxl+nR1v4Z6eR7d
+FTxbXPQ58vPPAG54+1j11VV9AygNw8ER/WpCY7CO7/2fwBG2wxN9eIpPCrSjq4Kh
+2GPTxQRk9+hOuo6nOp0sEf7UT4DbHJkAyriQvFfd3yBAxs/rwLRPM2PVkz+yMh1k
+fUH7JzDoVAxcWFVOq3UJKHPOM+eTDJF1H/zRqJ0dXsv223hupSYLl+XXSHebIcsB
+luyZewtZ28lEd4FEDyojOjnDmfuLR7F5clNyHfMtor5XMuA5tfSwvzjiZM3S+UJj
+cCdnq3Qij/KKJBzQ1/Xs4wfXEQdiIiWiakB7ez/oqturDQh6Mpog/Dy08/bActLL
+pW3i5Qyy2qE+ziaRO836mp3Lhe0V59aVwMx3/zcApZj7OQFB+febd2E1BHLhxDjL
+RWkKYz7gRIyyHNdjL3NdnsBVlev55u7AO6MVoF0Q6bD+mAYp4urXN8tuFUJkyaQO
+AXtIzEETKnDhVGYiJVEv
+=oG33
+-----END PGP SIGNATURE-----
 
-  	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
-@@ -709,7 +711,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  		ret = saif->dma_param.chan_irq;
-  		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
-  			ret);
--		goto failed_get_irq2;
-+		goto failed_get_resource;
-  	}
+--5p8PegU4iirBW1oA--
 
-  	platform_set_drvdata(pdev, saif);
-@@ -717,7 +719,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
-  	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
-  	if (ret) {
-  		dev_err(&pdev->dev, "register DAI failed\n");
--		goto failed_register;
-+		goto failed_get_resource;
-  	}
+--===============0771332478770605136==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-  	saif->soc_platform_pdev = platform_device_alloc(
-@@ -740,36 +742,19 @@ failed_pdev_add:
-  	platform_device_put(saif->soc_platform_pdev);
-  failed_pdev_alloc:
-  	snd_soc_unregister_dai(&pdev->dev);
--failed_register:
--failed_get_irq2:
--	free_irq(saif->irq, saif);
--failed_get_irq1:
--	iounmap(saif->base);
--failed_ioremap:
--	release_mem_region(iores->start, resource_size(iores));
-  failed_get_resource:
-  	clk_put(saif->clk);
--failed_clk:
--	kfree(saif);
 
-  	return ret;
-  }
-
-  static int __devexit mxs_saif_remove(struct platform_device *pdev)
-  {
--	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-  	struct mxs_saif *saif = platform_get_drvdata(pdev);
-
-  	platform_device_unregister(saif->soc_platform_pdev);
--
-  	snd_soc_unregister_dai(&pdev->dev);
--
--	iounmap(saif->base);
--	release_mem_region(res->start, resource_size(res));
--	free_irq(saif->irq, saif);
--
-  	clk_put(saif->clk);
--	kfree(saif);
-
-  	return 0;
-  }
+--===============0771332478770605136==--
