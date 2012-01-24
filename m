@@ -1,16 +1,13 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: default is working, but hw:0,0 is do not...
-Date: Tue, 24 Jan 2012 21:00:16 +0100
-Message-ID: <4F1F0DD0.6020101@canonical.com>
-References: <BLU0-SMTP104845BEB7A301DD21ED66CC18B0@phx.gbl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.4
+Date: Tue, 24 Jan 2012 20:11:57 +0000
+Message-ID: <20120124201157.GB1135@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7336654469079092546=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id C96A724602
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 21:00:16 +0100 (CET)
-In-Reply-To: <BLU0-SMTP104845BEB7A301DD21ED66CC18B0@phx.gbl>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 975452460C
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 21:12:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,40 +17,248 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitrij K <kdiman@live.ru>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/24/2012 08:15 PM, Dmitrij K wrote:
-> Hi all.
->
-> I have problem with openning a device for playback.
->
->
-> this is working code:
-> snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
->
->
-> but this is not working:
-> snd_pcm_open(&handle, "hw:0,0", SND_PCM_STREAM_PLAYBACK, 0);
->
-> I get this is: Device or resource busy
->
->
-> PS: I have been started the `phonon' (KDE sound daemon), and the amarok (audio
-> player).
->
->
-> My question: what I need to do for correct open "hw:0,0" for multiply playback
-> ?
 
-Make sure that nobody else is using the device at the same time. 
-"hw:0,0" requires exclusive access to the device.
+--===============7336654469079092546==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
 
-You can see who is currently using your sound device(s) using this command:
 
-sudo fuser -v /dev/snd/*
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+The following changes since commit dcd6c92267155e70a94b3927bce681ce74b80d1f:
+
+  Linux 3.3-rc1 (2012-01-19 15:04:48 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-3.4
+
+for you to fetch changes up to 5509f2f80c711add6bbcec9af7f4bbba2e2cc22b:
+
+  ASoC: wm5100: Fix warnings from recent patches (2012-01-24 19:51:34 +0000)
+
+----------------------------------------------------------------
+A random collection of updates, pretty much all driver specific cleanups
+of various kinds which have accumilated over the merge window.  There's
+one feature (support for announcing msbits in the core) and a merge over
+of a new regmap feature (register patches) the initial users for which
+are a few ASoC drivers.
+
+----------------------------------------------------------------
+
+(I'm also trying this shiny new git signed tags foo, which may well not
+actually accomplish anything if you're not using a shiny new git 1.7.9
+prerelease, though the regmap merge did the right thing at least.  If
+the asoc-3.4 tag can't be pulled correctly then the for-3.4 branch is
+still there as normal.)
+
+Axel Lin (2):
+      ASoC: jz4740: Convert qi_lb60 to use snd_soc_register_card()
+      ASoC: Add __devinit/__devexit annotations at necessary places
+
+Dimitris Papastamos (1):
+      ASoC: wm8983: Remove useless snd_kcontrol
+
+Fabio Estevam (2):
+      ASoC: sgtl5000: Print revision number in hex
+      ASoC: sgtl5000: Convert to table based DAPM and control init
+
+Javier Martin (2):
+      ASoC: Route Mic Bias in Visstrim_M10 board.
+      ASoC: Add external amplifier controls for Visstrim_M10.
+
+Joachim Eastwood (2):
+      ASoC: use proper defines for stream directions in pcm engines
+      ASoC: replace 0xffffffff with DMA_BIT_MASK macro
+
+Liam Girdwood (3):
+      ASoC: core - Improve card registration error messaging for large DAI links.
+      ASoC: twl6040 - add method to query HS DC offset step size in mV
+      ASoC: utils - Add support for a dummy codec driver.
+
+Manjunath Hadli (1):
+      ASoC: CQ93VC: remove machine specific header file inclusion from codec driver
+
+Mark Brown (66):
+      ASoC: Mark WM5100 register map cache only when going into BIAS_OFF
+      ASoC: Don't go through cache when applying WM5100 rev A updates
+      ASoC: Disable register synchronisation for low frequency WM8996 SYSCLK
+      ASoC: Make WM8978 I2C usage unconditional
+      ASoC: Remove unused control type from wm8978 driver
+      ASoC: Convert wm8978 to table based DAPM and control init
+      ASoC: Convert wm8978 to devm_kzalloc()
+      ASoC: Use standard cache sync for WM8978
+      ASoC: Convert wm8978 to direct regmap API usage
+      ASoC: Push wm8978 reset down into the I2C probe
+      ASoC: Convert WM9090 to use regmap directly
+      ASoC: Move WM9090 device identification and reset to I2C probe
+      ASoC: Convert wm8993 to direct regmap API usage
+      ASoC: Move WM8993 resource acquisition and device reset to bus probe
+      ASoC: Convert WM8753 to direct regmap API usage
+      ASoC: Make WM8971 I2C usage unconditional
+      ASoC: Convert wm8971 to table based DAPM and control init
+      ASoC: Convert wm8971 to devm_kzalloc()
+      ASoC: Make wm8974 I2C usage unconditional
+      ASoC: Convert wm8974 to table based DAPM and control init
+      ASoC: Remove wm8974 private data
+      ASoC: Use standard cache sync for wm8804
+      ASoC: Convert wm8804 to devm_kzalloc()
+      ASoC: Convert wm8804 to direct regmap API usage
+      ASoC: Make WM8904 I2C usage unconditional
+      ASoC: Convert wm8904 to devm_kzalloc()
+      ASoC: Use standard cache sync for WM8904
+      ASoC: Convert WM8904 to direct regmap API usage
+      ASoC: Make I2C usage unconditional in WM8940
+      ASoC: Convert WM8940 to devm_kzalloc()
+      ASoC: Make I2C usage unconditional in WM8955
+      ASoC: Convert WM8955 to devm_kzalloc()
+      ASoC: Use standard register cache sync for WM8955
+      ASoC: Convert WM8955 to direct regmap API usage
+      ASoC: Convert WM8955 to table based DAPM and control init
+      ASoC: Optimise performance of WM8904 ADC 128fs OSR mode
+      ASoC: Make WM8962 I2C usage unconditional
+      ASoC: Convert WM8962 register access map to modern style
+      ASoC: Add WM8962 DAC and ADC L/R swap support
+      ASoC: Allow drivers to specify how many bits are significant on a DAI
+      ASoC: 24 bits are significant on the WM8996 audio interfaces
+      ASoC: Implement basic WM8993 interrupt support
+      ASoC: Make WM8993 I2C usage unconditional
+      ASoC: 24 bits are significant on wm_hubs DAIs
+      ASoC: When releasing WM5100 put /RESET into reset
+      ASoC: Say we can't read WM5100 ID register
+      ASoC: Remove redundant set_bias_level() from WM5100 remove()
+      ASoC: Make WM5100 interrupt path use regmap directly
+      ASoC: Push WM5100 interrupt request into I2C probe
+      ASoC: Don't tell applications about msbits unless we're ignoring input
+      ASoC: Use regmap update bits operation for drivers using regmap
+      ASoC: Fix build of tlv320dac33
+      ASoC: wm8985: Convert to devm_kzalloc()
+      ASoC: wm8985: Convert to table based DAPM and control init
+      ASoC: wm8985: Use standard cache sync implementation
+      ASoC: wm8985 Don't directly reference the cache data structure
+      ASoC: wm8985: Convert to direct regmap API usage
+      ASoC: wm8988: Convert to table based DAPM and control init
+      ASoC: wm8988: Convert to devm_kzalloc()
+      ASoC: sgtl5000: It's sgtl5000 not sgtl500
+      regmap: Support register patch sets
+      ASoC: Convert WM8731 to direct regmap API usage
+      ASoC: wm5100: Fix mismerge of IRQ frees
+      Merge tag 'regmap-patch-initial' of git://git.kernel.org/.../broonie/regmap into for-3.4
+      ASoC: Convert the WM5100 revision A updates to a regmap patch
+      ASoC: wm5100: Fix warnings from recent patches
+
+Peter Ujfalusi (4):
+      ASoC: tlv320dac33: Use core to set the msbits constraint
+      ASoC: twl4030: Use core to set the msbits constraint
+      ASoC: omap-dmic: Use core to set the msbits constraint
+      ASoC: omap-mcpdm: Set 24msbits constraint
+
+Ryan Mallon (1):
+      ep93xx: Don't use system controller defines in audio drivers
+
+Wolfram Sang (2):
+      ASoC: tlv320aic32x4: always enable dividers
+      ASoC: tlv320aic32x4: always enable analouge block
+
+Zeng Zhaoming (1):
+      ASoC: sgtl5000: Fix wrong register name in restore
+
+ arch/arm/mach-ep93xx/core.c                  |   19 +-
+ arch/arm/mach-ep93xx/include/mach/platform.h |    2 +-
+ arch/mips/jz4740/board-qi_lb60.c             |    6 +
+ drivers/base/regmap/internal.h               |    3 +
+ drivers/base/regmap/regcache.c               |   11 +
+ drivers/base/regmap/regmap.c                 |   58 +
+ include/linux/regmap.h                       |    3 +
+ include/sound/soc.h                          |    2 +
+ sound/soc/atmel/atmel-pcm.c                  |    4 +-
+ sound/soc/codecs/alc5623.c                   |    4 +-
+ sound/soc/codecs/alc5632.c                   |    2 +-
+ sound/soc/codecs/cq93vc.c                    |    2 -
+ sound/soc/codecs/sgtl5000.c                  |   36 +-
+ sound/soc/codecs/tlv320aic32x4.c             |  110 +-
+ sound/soc/codecs/tlv320dac33.c               |    6 +-
+ sound/soc/codecs/twl4030.c                   |    7 +-
+ sound/soc/codecs/twl6040.c                   |   13 +
+ sound/soc/codecs/twl6040.h                   |    1 +
+ sound/soc/codecs/wm5100.c                    |  356 +++---
+ sound/soc/codecs/wm8731.c                    |  109 ++-
+ sound/soc/codecs/wm8753.c                    |  186 ++-
+ sound/soc/codecs/wm8804.c                    |  146 +--
+ sound/soc/codecs/wm8904.c                    |  838 ++++--------
+ sound/soc/codecs/wm8904.h                    |   11 +
+ sound/soc/codecs/wm8940.c                    |   14 +-
+ sound/soc/codecs/wm8955.c                    |  247 ++--
+ sound/soc/codecs/wm8962.c                    | 1819 +++++++++-----------------
+ sound/soc/codecs/wm8971.c                    |   37 +-
+ sound/soc/codecs/wm8974.c                    |   45 +-
+ sound/soc/codecs/wm8978.c                    |  185 ++-
+ sound/soc/codecs/wm8978.h                    |    2 +
+ sound/soc/codecs/wm8983.c                    |    5 -
+ sound/soc/codecs/wm8985.c                    |  315 +++--
+ sound/soc/codecs/wm8988.c                    |   29 +-
+ sound/soc/codecs/wm8993.c                    |  599 ++++++---
+ sound/soc/codecs/wm8994.c                    |    8 +-
+ sound/soc/codecs/wm8996.c                    |    8 +
+ sound/soc/codecs/wm8996.h                    |    4 +
+ sound/soc/codecs/wm9090.c                    |  266 ++--
+ sound/soc/davinci/davinci-pcm.c              |    4 +-
+ sound/soc/ep93xx/edb93xx.c                   |    4 +-
+ sound/soc/ep93xx/ep93xx-pcm.c                |    4 +-
+ sound/soc/ep93xx/snappercl15.c               |    4 +-
+ sound/soc/fsl/fsl_dma.c                      |   10 +-
+ sound/soc/fsl/mpc5200_dma.c                  |   16 +-
+ sound/soc/imx/mx27vis-aic32x4.c              |  104 ++
+ sound/soc/jz4740/qi_lb60.c                   |   56 +-
+ sound/soc/kirkwood/kirkwood-dma.c            |    4 +-
+ sound/soc/omap/omap-dmic.c                   |    7 +-
+ sound/soc/omap/omap-mcpdm.c                  |    2 +
+ sound/soc/s6000/s6000-pcm.c                  |    5 +-
+ sound/soc/samsung/dma.c                      |    2 +-
+ sound/soc/soc-core.c                         |   33 +-
+ sound/soc/soc-dapm.c                         |   27 +-
+ sound/soc/soc-io.c                           |    1 +
+ sound/soc/soc-pcm.c                          |   38 +
+ sound/soc/soc-utils.c                        |   20 +-
+ sound/soc/tegra/tegra_pcm.c                  |    2 +-
+ 58 files changed, 2917 insertions(+), 2944 deletions(-)
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPHxCFAAoJEBus8iNuMP3dXrwP/1uXzbpEf6lVJwsm/5ZTJDWO
+nQNdmtFmuB31DfN5NwCZVImj2NcqqEO8kX+zNx3lripB1Ywnoh572RzhlRk22iTN
+rrGNPf+1VSFKfMs35AM/fDsDvaloO+CA0XWSF1Kqsn3R9rk6K4yoosdpBipvcR6K
+ReLO7pWk7q+2wNTWZNm1C5HRK1jBT/xlTTgGsSxq32xHHjVNx7mM3zar/IN+6Ksf
+srCgNIvLAUfrmw/14ci67+HX1dkQwVgQPic53ttPAnPoYYgFadqXq5HxuSoaIPdq
+DuY2sbRhBcX5pYme+DracmkZI69bQ5KksWkw3RRvVqFkv6hV08z0GjEUCGUO5Fo6
+M7iyBnNZgM/rUD+PRu+yI1sZ0usICzaso/6v2BF3FlZVH0Iari9b8kmF4VTZPr4c
+uBseF605L+nI+/m4iMsDqij1pXwT7TxudC4gcA0728mKdjpR6j20nS0gzFdCuzIZ
+kBnONZXcj33rAdj73vjjOyWdvVowakyZXgB6mjW5Z0cgz9KuSI/JF/SxyanGJeY0
+VBh3sXmVidWkZPzEHz/wz5NZdEq/GdJ9JyZkD+PjjwsRcPitYQNUb42hd0SXypLE
++QTmXjBgc4xv80nUHTUJKikHPDskKcPh4NB3f0Y3yGZQL4Spa2qmD+tMuMpwkH9T
+b9Sc42pLKuXBli6PpOg4
+=G1X1
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--
+
+--===============7336654469079092546==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7336654469079092546==--
