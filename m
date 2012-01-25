@@ -1,21 +1,14 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: soc-dsp programming model for loopbacks
-Date: Wed, 25 Jan 2012 17:48:57 +0000
-Message-ID: <1327513737.11901.47.camel@odin>
-References: <007801ccdae0$381fcf40$a85f6dc0$@bossart@linux.intel.com>
-	<20120124220036.GA11635@sirena.org.uk> <1327511545.11901.41.camel@odin>
-	<20120125172051.GS3687@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5100: Fix microphone configuration
+Date: Wed, 25 Jan 2012 17:57:45 +0000
+Message-ID: <1327514265-17171-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
-	[74.125.149.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 322D0103BCB
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 18:51:23 +0100 (CET)
-Received: by wibhm4 with SMTP id hm4so3153128wib.15
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 09:51:09 -0800 (PST)
-In-Reply-To: <20120125172051.GS3687@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07A55103BCB
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 18:57:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-01-25 at 17:20 +0000, Mark Brown wrote:
-> On Wed, Jan 25, 2012 at 05:12:25PM +0000, Liam Girdwood wrote:
-> > On Tue, 2012-01-24 at 22:00 +0000, Mark Brown wrote:
-> 
-> > > Note that the use of soc-dsp isn't required for on-SoC DSPs - it really
-> > > depends on how the hardware looks.  If the DSP external format is very
-> > > strongly tied to the format used to DMA to and from main memory (or
-> > > other interfaces) then soc-dsp is what you need, if the DSP is able to
-> > > rewrite formats more flexibly then it should be more direct to model it
-> > > as a CODEC device with whatever number of DAIs and routing between them.
-> 
-> > It's also needed if your DSP cant control or configure any of your host
-> > CPU DAI hardware controllers that it needs to physically use to route
-> > audio data.
-> 
-> Depends how they're allocated - the DSP driver can always do the
-> management on behalf of the DSP firmware if the hardware is structured
-> in a way that makes that make sense (for example, if the CPU never talks
-> to the outside world directly).
+We need to write the configuration for each microphone to a different
+register.
 
-Wouldn't that either mean the DSP driver (re)implements some of the CPU
-DAI driver operations OR the DSP driver calling the CPU DAI driver ops
-directly ? 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5100.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
 
-Regards
-
-Liam
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 0c82f38..51b281b 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2610,6 +2610,13 @@ static const struct regmap_config wm5100_regmap = {
+ 	.cache_type = REGCACHE_RBTREE,
+ };
+ 
++static const unsigned int wm5100_mic_ctrl_reg[] = {
++	WM5100_IN1L_CONTROL,
++	WM5100_IN2L_CONTROL,
++	WM5100_IN3L_CONTROL,
++	WM5100_IN4L_CONTROL,
++};
++
+ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+@@ -2740,7 +2747,7 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm5100->pdata.in_mode); i++) {
+-		regmap_update_bits(wm5100->regmap, WM5100_IN1L_CONTROL,
++		regmap_update_bits(wm5100->regmap, wm5100_mic_ctrl_reg[i],
+ 				   WM5100_IN1_MODE_MASK |
+ 				   WM5100_IN1_DMIC_SUP_MASK,
+ 				   (wm5100->pdata.in_mode[i] <<
+-- 
+1.7.9.rc1
