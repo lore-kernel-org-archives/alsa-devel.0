@@ -1,47 +1,41 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA release version 1.0.25
-Date: Wed, 25 Jan 2012 11:03:16 +0100
-Message-ID: <4F1FD364.8020905@perex.cz>
+From: Jassi Brar <jaswinder.singh@linaro.org>
+Subject: Re: [alsa-devel] [PATCH v4 - resend 00/13] OMAP4: ASoC: Support for
+ PandaBoard family
+Date: Wed, 25 Jan 2012 16:20:31 +0530
+Message-ID: <CAJe_Zhfn3urdXfRgAKvdW2_ECYGbNO0b2BuZnCZxrGcL4_sVSg@mail.gmail.com>
+References: <1327405950-6676-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0C42103B76
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 11:02:59 +0100 (CET)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	E760C1498C6
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 11:02:59 +0100 (CET)
-Received: from t510.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	D67D385089
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 11:02:59 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1327405950-6676-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+On 24 January 2012 17:22, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+> Hello,
+>
+> the following series will add ASoC support for PandaBoards.
+> PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
+> the differences not that big to justify a new ASoC machine driver.
+>
+> The v3 series did not made it to 3.3 kernel.
+> This set contains all the patches needed to enable the audio support on the
+> PandaBoard family.
+> The machine driver has been converted to a generic OMAP4 driver which can
+> support wide range of machines using OMAP4 with twl6040 codec.
+>
+> I have remove the hardcoded MCLK clock frequency use in the machine driver
+> (there can be devices with different MCLK configuration). This changed
+> patch 04, 05, and 12. Since this does not affect the functionality I kept the
+> acks for these patches. Patch 11 did not existed in the v3 series.
+>
+Hi Peter,
+   I tried the patchset on my 4430 Panda. Playback works ok, but not Capture.
+All is get is a hiss.
+  Is capture supposed to work ? If yes, any amixer settings that need
+to be done?
 
-	the ALSA release version 1.0.25 is available for download at
-http://www.alsa-project.org . All packages were updated. The full
-changelog can be obtained from:
-
-http://www.alsa-project.org/main/index.php/Changes_v1.0.24_v1.0.25
-
-				Have fun with it,
-						Jaroslav
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Thanks,
+-Jassi
