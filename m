@@ -1,39 +1,56 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 - resend 10/13] ASoC: omap-abe-twl6040: Configure card
- according to platform data
-Date: Wed, 25 Jan 2012 14:48:08 +0200
-Message-ID: <4F1FFA08.1030505@ti.com>
-References: <1327405950-6676-1-git-send-email-peter.ujfalusi@ti.com> <1327405950-6676-11-git-send-email-peter.ujfalusi@ti.com> <20120124130008.GC31839@opensource.wolfsonmicro.com> <4F1FBBE5.5080804@ti.com> <20120125113341.GB3687@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5100: Make sure we switch to button
+	reporting mode
+Date: Wed, 25 Jan 2012 15:20:04 +0000
+Message-ID: <1327504804-26830-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120125113341.GB3687@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 44A2924361
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 16:20:21 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/25/2012 01:33 PM, Mark Brown wrote:
-> It'd do the right thing if you changed the code to only register the
-> board widgets and routes as required - from your reply to Jassi it lo=
-oks
-> like you ought to do conditional reigstration anyway as the input pat=
-hs
-> move around between board variations.
+When we have identified an accessory make sure we've flagged that we've
+done so in order to make sure we always report buttons and don't continue
+to polarity flip.
 
-I'm planning to do similar thing as an increment on top of this series.
-Most likely the DT support will have conditional registration or - like
-Tegra does - we will receive the map from DT. Not sure yet which way it
-is going to be. The Tegra implementation is already there, so I might
-just follow it.
-At the end I want to have some consistency between the resulting sound
-cards (w/ DT, w/o DT).
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5100.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 6a04ee2..0c82f38 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2161,6 +2161,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
+ 		if (wm5100->jack_detecting) {
+ 			dev_dbg(wm5100->dev, "Microphone detected\n");
+ 			wm5100->jack_mic = true;
++			wm5100->jack_detecting = false;
+ 			snd_soc_jack_report(wm5100->jack,
+ 					    SND_JACK_HEADSET,
+ 					    SND_JACK_HEADSET | SND_JACK_BTN_0);
+@@ -2199,6 +2200,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
+ 					    SND_JACK_BTN_0);
+ 		} else if (wm5100->jack_detecting) {
+ 			dev_dbg(wm5100->dev, "Headphone detected\n");
++			wm5100->jack_detecting = false;
+ 			snd_soc_jack_report(wm5100->jack, SND_JACK_HEADPHONE,
+ 					    SND_JACK_HEADPHONE);
+ 
+-- 
+1.7.9.rc1
