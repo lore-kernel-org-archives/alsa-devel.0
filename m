@@ -1,49 +1,52 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH 2/3] ARM: tegra: Enable the headphone
- detection gpio on PAZ00 board.
-Date: Wed, 25 Jan 2012 14:23:58 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF178CB821B4@HQMAIL01.nvidia.com>
-References: <1327517420-29746-1-git-send-email-leon@leon.nu>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH 3/3] ASoC: dt: tegra: Enable headphone autodetection on
+ PAZ00 board.
+Date: Wed, 25 Jan 2012 14:31:06 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF178CB821BE@HQMAIL01.nvidia.com>
+References: <1327517477-29785-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id A322E2435E
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 23:24:06 +0100 (CET)
-In-Reply-To: <1327517420-29746-1-git-send-email-leon@leon.nu>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1327517477-29785-1-git-send-email-leon-2ukJVAZIZ/Y@public.gmane.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>, "lrg@ti.com" <lrg@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "olof@lixom.net" <olof@lixom.net>, "ccross@android.com" <ccross@android.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Leon Romanovsky wrote at Wednesday, January 25, 2012 11:50 AM:
-> Signed-off-by: Leon Romanovsky <leon@leon.nu>
+Leon Romanovsky wrote at Wednesday, January 25, 2012 11:51 AM:
+> This patch is adding support of headphone autodetection on PAZ00 board.
 
-> diff --git a/arch/arm/mach-tegra/board-paz00-pinmux.c b/arch/arm/mach-tegra/board-paz00-pinmux.c
-...
-> @@ -152,6 +152,7 @@ static struct tegra_gpio_table gpio_table[] = {
-...
-> +	{ .gpio = TEGRA_HP_DET,		.enable = true },
+> diff --git a/arch/arm/boot/dts/tegra-paz00.dts b/arch/arm/boot/dts/tegra-paz00.dts
+> +		nvidia,hp-det-gpios = <&gpio 178 0>; /* gpio PW2 */
 
-There's no need to do this at all if you're only supporting audio when
-booting use device tree. If you intend for audio to work when booting
-using a board file, then the previous patch needs a bunch of rework
-to make some of the code conditional on device tree; the same structure
-as tegra_wm8903.c uses.
+That isn't documented in the binding documentation. You may as well
+just document the whole thing and add this to the .dts file in one patch
+even if the feature isn't implemented yet in that patch.
 
-Talking of which, in the previous patch, you can remove a number of
-things from tegra_alc5632.c if you are only supporting device tree, like
-the DAPM route map, since that's parsed from device tree now.
+> diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
+
+> +#define GPIO_HP_DET     BIT(1)
+> +
+> +
+
+Why two extra blank lines?
+
+> +static struct snd_soc_jack_gpio tegra_alc5632_hp_jack_gpio = {
+> +	.name = "Headphone detect",
+> +	.report = SND_JACK_HEADPHONE,
+
+I think that should be HEADSET not HEADPHONE, since it's a combo socket
+for both headphones and a mic isn't it? (so perhaps the name should also
+be "Headset detection"?
+
+> -	struct tegra_alc5632 *alc5632 = snd_soc_card_get_drvdata(card);
+> +	struct tegra_alc5632 *machine = snd_soc_card_get_drvdata(card);
+
+I guess that's fine, but it makes the patch a little noisy and somewhat
+obscures the real change. I guess it's useful to be consistent with
+tegra_wm8903.c though.
 
 -- 
 nvpublic
