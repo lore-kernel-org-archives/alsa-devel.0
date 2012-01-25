@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: soc-dsp programming model for loopbacks
-Date: Tue, 24 Jan 2012 22:00:36 +0000
-Message-ID: <20120124220036.GA11635@sirena.org.uk>
-References: <007801ccdae0$381fcf40$a85f6dc0$@bossart@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: soc-pcm: msbits constraint: Drop 8 and
+	16 bit sample sizes
+Date: Wed, 25 Jan 2012 10:09:41 +0200
+Message-ID: <1327478981-8443-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13F64103B32
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2012 23:00:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <007801ccdae0$381fcf40$a85f6dc0$@bossart@linux.intel.com>
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68FB02440D
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 09:09:57 +0100 (CET)
+Received: by lahg1 with SMTP id g1so3942493lah.1
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 00:09:54 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, 'Liam Girdwood' <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 24, 2012 at 01:36:18PM -0800, Pierre-Louis Bossart wrote:
+As per discussion we can safely ignore the 8 and 16 bit sample
+sizes when applying the msbits constraint.
 
-> Now if the FM radio routing is handled with a digital loopback on the
-> application processor audio dsp (omap-abe, Intel SST, etc), then soc-dsp
-> will need to be used. And for a simple FM playback, I need to 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi Mark,
 
-Note that the use of soc-dsp isn't required for on-SoC DSPs - it really
-depends on how the hardware looks.  If the DSP external format is very
-strongly tied to the format used to DMA to and from main memory (or
-other interfaces) then soc-dsp is what you need, if the DSP is able to
-rewrite formats more flexibly then it should be more direct to model it
-as a CODEC device with whatever number of DAIs and routing between them.
+As we discussed [1] let's remove the 8 and 16 bit size from the array.
+
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-January/048276.html
+
+Regards,
+Peter
+
+ sound/soc/soc-pcm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 3268901..93be95b 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -68,7 +68,7 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
+  * like the DAC/ADC resolution to use but there isn't right now.
+  */
+ static int sample_sizes[] = {
+-	8, 16, 24, 32,
++	24, 32,
+ };
+ 
+ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
+-- 
+1.7.8.3
