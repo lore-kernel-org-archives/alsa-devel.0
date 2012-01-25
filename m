@@ -1,37 +1,56 @@
-From: "John P. Hartmann" <jphartmann@gmail.com>
-Subject: salsa-lib-0.1.2 alsa/pcm_macros.h (on Linux, at least)
-Date: Wed, 25 Jan 2012 16:27:52 +0100
-Message-ID: <CANM685JYrx_8BkKBjbQXDJVS=TiDFOOmAR3LRjVoQSkJXVCsmg@mail.gmail.com>
+From: Philippe =?ISO-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using mc13783
+ codec
+Date: Wed, 25 Jan 2012 16:45:40 +0100
+Message-ID: <2667396.yifGumf5nD@laptop>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+ <4E1711EA.5070209@televic.com> <201107271028.09928.philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86AE824360
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 16:27:53 +0100 (CET)
-Received: by vcbfo13 with SMTP id fo13so2951780vcb.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 07:27:52 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <201107271028.09928.philippe.retornaz@epfl.ch>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lambrecht =?ISO-8859-1?Q?J=FCrgen?= <J.Lambrecht@televic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?ISO-8859-1?Q?J=FCrgen?= Lambrecht <juergen.lambrecht@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-The salsa macros do not compile with -Wall -Werror.
+Hi
 
-The culprit is the use of "access", which is also a UNIX function.
-This function is defined unistd.h, which is included by stddef.h.  And
-stddef.h is one of the files mangled into the belly of GCC.
+> Le vendredi 8 juillet 2011 16:19:22, Lambrecht J=FCrgen a =E9crit :
+> > indeed, doesn't work at all. I know it used to work on 2.6.34.
+> > We also have a fsl linux 2.6.22 were it works.
+> > I must say: when i use aplay to play a mono file, then there is no
+> > error, it just never ends, and no sound also.
+> > For a stereo file, it gives the error.
+> > Mark also that when I use madplay (v0.15.2) (or mp3play) to play a mono
+> > or stereo mp3, it allocates 3 DMA channels, but only frees one after the
+> > error.
+> =
 
-So it is a royal mess, and nobody's fault in particular, but could we
-please have the header file updated, for example to use "Acc" rather
-than "access" for the parameter?
+> Did you made any progress on this ?
+
+I have a working sound support for the mx31moboard boards available here:
+http://github.com/retornaz/linux/commits/moboard-sound
+
+It's basically Sascha mc13783 codec driver (from his git tree) rebased on 3=
+.2 =
+
+and some mx31moboad specific code.
+
+I can playback & record sound on our board (2 channels@16Khz) with the sdma.
+
+Sascha, do you have any plan to upstream the mc13783 codec driver ? =
+
 
 Thanks,
+
+Philippe
