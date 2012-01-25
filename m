@@ -1,48 +1,36 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: wm5100: Mark register cache as dirty
-	when regulators are disabled
-Date: Wed, 25 Jan 2012 21:14:10 +0000
-Message-ID: <1327526050-1182-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1327526050-1182-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Paul Walmsley <paul@pwsan.com>
+Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
+ space
+Date: Wed, 25 Jan 2012 14:23:13 -0700 (MST)
+Message-ID: <alpine.DEB.2.00.1201251423030.5324@utopia.booyaka.com>
+References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com> <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com> <4EEB5913.3090901@ti.com> <alpine.DEB.2.00.1112191451140.12660@utopia.booyaka.com>
+ <4F1D4A03.3050700@ti.com> <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com> <4F1E8186.2060307@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED6352414C
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2012 22:14:16 +0100 (CET)
-In-Reply-To: <1327526050-1182-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <4F1E8186.2060307@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "Cousson, Benoit" <b-cousson@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise we won't resync later.
+On Tue, 24 Jan 2012, Peter Ujfalusi wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5100.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> On 01/24/2012 10:36 AM, Paul Walmsley wrote:
+> >> This patch seams to be missing from 3.3-rc1. The rest of the series is
+> >> there, but because of the missing patch audio does not probe on
+> >> 4430SDP/Blaze.
+> >> Can you queue this as a fix for Linus?
+> > 
+> > Doh, not sure what happened here.  A brief triage question.  Did audio 
+> > probe correctly on 4430SDP/Blaze on 3.2?
+> 
+> Yes, it did.
+> I have added the DMIC support for 3.3. Without this patch the DMIC
+> driver is not probing (can't get the resources) which prevents the audio
+> to work (the DMIC dai is missing, so the card does not come up).
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 51b281b..273093f 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -1376,6 +1376,7 @@ static int wm5100_set_bias_level(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_BIAS_OFF:
- 		regcache_cache_only(wm5100->regmap, true);
-+		regcache_mark_dirty(wm5100->regmap);
- 		for (i = 0; i < ARRAY_SIZE(wm5100->adsp1); i++)
- 			wm_adsp1_reinit(wm5100->adsp1[i]);
- 		regcache_cache_only(wm5100->regmap, true);
--- 
-1.7.9.rc1
+Okay, thanks, queued for 3.3-rc.
+
+
+- Paul
