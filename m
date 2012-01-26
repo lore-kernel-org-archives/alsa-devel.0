@@ -1,27 +1,25 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing
- iounmap
-Date: Thu, 26 Jan 2012 15:07:06 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1201261504200.1851@localhost6.localdomain6>
-References: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
-	<7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
-	<alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6>
-	<20120124202203.GD1135@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1201242144580.1998@hadrien>
-	<20120126110506.GB2611@pengutronix.de>
-	<alpine.DEB.2.02.1201261220460.1851@localhost6.localdomain6>
-	<20120126112242.GA9401@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1201261439460.1851@localhost6.localdomain6>
-	<20120126135135.GD2611@pengutronix.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: soc-dsp programming model for loopbacks
+Date: Thu, 26 Jan 2012 14:27:48 +0000
+Message-ID: <1327588068.7134.5.camel@odin>
+References: <4f1f2489.c602440a.208e.ffff9d7bSMTPIN_ADDED@mx.google.com>
+	<1327511249.11901.37.camel@odin>
+	<20120125171112.GR3687@opensource.wolfsonmicro.com>
+	<002d01ccdb9c$7099f1e0$51cdd5a0$@bossart@linux.intel.com>
+	<20120125201438.GA17032@opensource.wolfsonmicro.com>
+	<4F215127.8050509@linux.intel.com>
+	<20120126140310.GA28994@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1-relais-roc.national.inria.fr
-	(mail1-relais-roc.national.inria.fr [192.134.164.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58CFB103830
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 15:07:07 +0100 (CET)
-In-Reply-To: <20120126135135.GD2611@pengutronix.de>
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id C2F6C103830
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 15:27:52 +0100 (CET)
+Received: by mail-ww0-f42.google.com with SMTP id gn7so56048wgb.1
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 06:27:50 -0800 (PST)
+In-Reply-To: <20120126140310.GA28994@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,43 +29,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 26 Jan 2012, Wolfram Sang wrote:
+On Thu, 2012-01-26 at 14:03 +0000, Mark Brown wrote:
+> On Thu, Jan 26, 2012 at 07:12:07AM -0600, Pierre-Louis Bossart wrote:
+> 
+> > Bear with me here, I am still somewhat confused.
+> > - Liam suggested either a hard-coded DAI configuration or machine
+> > driver logic to remove the need for virtual front-ends
+> > - Mark suggested to consider the DSP as a CODEC with some work to
+> > re-implement the host-dsp interface.
+> > Is this CODEC<->CODEC solution on top of the Dynamic PCM patches? Or
+> > are we talking about two completely different approaches?
+> 
+> The two are orthogonal to each other but complimenary.  Like I say it
+> really depends on how your hardware is wired up - it depends on the
+> level of isolation that the DSP provides between the CPU and the outside
+> world.
+> 
+> If the system looks like:
+> 
+>     CPU <-> DSP <-> External
+> 
+> you should model the DSP as a separate device.  If on the other hand it
+> looks more like this:
+> 
+> 
+>    DSP     External
+>     ^----v----^
+>         CPU
+> 
+> then soc-pcm is what you're looking for.
 
-> Julia,
->
->>  	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> @@ -663,18 +663,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
->>  		goto failed_get_resource;
->>  	}
->>
->> -	if (!request_mem_region(iores->start, resource_size(iores),
->> -				"mxs-saif")) {
->> -		dev_err(&pdev->dev, "request_mem_region failed\n");
->> -		ret = -EBUSY;
->> -		goto failed_get_resource;
->> -	}
->> -
->> -	saif->base = ioremap(iores->start, resource_size(iores));
->> +	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
->
-> You can skip checking 'iores', too. I also did that in the example, but
-> a lot of people seem to miss it.
+Fwiw, the OMAP ABE architecture mixes both above diagrams. We are using
+dynamic PCM for managing all the DAI links and will add in support to
+use the CODEC <-> CODEC stuff for the loopback DAI interfaces (saving
+the need to open()), hw_oparams() etc).
 
-I can try to do that, but it seems a little bit unintuitive.  Perhaps it 
-would be easier for people to remember to put in error handling code when 
-they need it if they always have to do it?  If I remove it, there will be 
-one call that has no test and then another call a few lines later that 
-does.
+Regards
 
-> Where did you get the information how
-> to use devm_request_and_ioremap? I probably need to spread the word even
-> more...
-
-I saw it in Documentation/driver-model/devres.txt and then looked around 
-for some examples.
-
-julia
+Liam
