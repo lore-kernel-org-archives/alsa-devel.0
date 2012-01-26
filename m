@@ -1,18 +1,18 @@
-From: =?UTF-8?B?UmFmYcWCIENpZcWbbGFr?= <rafalcieslak256@gmail.com>
-Subject: Why does snd_seq_drain_output() need lots of time to
-	execute?
-Date: Thu, 26 Jan 2012 18:19:48 +0100
-Message-ID: <CABscqj76Lb9fgD-FY1otzETWwjJO9vwCG=Rt83jU8ti0bE6KpA@mail.gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
+Date: Thu, 26 Jan 2012 18:34:44 +0100
+Message-ID: <20120126173444.GM5446@pengutronix.de>
+References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
+	<1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76DA3243CC
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 18:20:10 +0100 (CET)
-Received: by ggm4 with SMTP id 4so392249ggm.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 09:20:08 -0800 (PST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 052EB243E3
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 18:34:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-mmc@vger.kernel.org, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, linux-serial@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpJIGhhdmUgYSBzZXJpb3VzIHByb2JsZW0gdXNpbmcgdGhlIEFMU0Egc2VxdWVuY2Vy
-IGludGVyZmFjZS4gSSBhbQp3cml0aW5nIGFuIGFwcGxpY2F0aW9uIHRoYXQgbWFrZXMgdXNlIG9m
-IGl0J3MgcXVldWVzLCBhbmQgaGF2ZSBnb3QKaW50byB0cm91YmxlcyB3aGljaCBJIGNhbid0IHJl
-c29sdmUgYXQgYW55IGNvc3QuCgpUaGUgbWFpbiBwcm9ibGVtIGlzIHRoYXQgYWx0aG91Z2ggdGhl
-IGRvY3VtZW50YXRpb24gc3RhdGVzIHRoYXQKc25kX3NlcV9kcmFpbl9vdXRwdXQoKSByZXR1cm5z
-IGltbWVkaWF0ZWx5LCBpdCB0dXJucyBvdXQgdGhhdCBpdApvY2Nhc2lvbmFsbHkgbmVlZHMgbG90
-cyBvZiB0aW1lIChldmVuIGEgc2Vjb25kIG9yIHR3byksIGFuZCBibG9ja3MgbXkKYXBwbGljYXRp
-b24sIGFzIEkgY2FsbCBpdC4gQWNjb3JkaW5nIHRvIG15IHJlc2VhcmNoLCBpdCBsb29rcyBsaWtl
-IGEKcG9zc2libGUgYnVnIGluIEFMU0EsIGJ1dCBJJ2QgcmF0aGVyIGFzayB5b3UgaWYgaXQgaXMg
-aW5kZWVkCnVuaW50ZW5kZWQuCgpJIHdvbid0IHBvc3QgdGhlIGNvZGUgdW5sZXNzIHlvdSBhc2sg
-bWUgZm9yIGl0LCBhcyBpdCBpcyBxdWl0ZSBhCmNvbXBsZXggYXBwbGljYXRpb24sIGFuZCB0aGF0
-IHdvdWxkIHVubmVjZXNzYXJpbHkgbWVzcyB1cCB0aGlzIHBvc3QuClNvIGxldCBtZSBkZXNjcmli
-ZSB3aGF0IEkndmUgZm91bmQgYWJvdXQgdGhpcyBwcm9ibGVtLgoKTW9zdCBvZiB0aW1lIHNuZF9z
-ZXFfZHJhaW5fb3V0cHV0KCkgd29ya3MgYXMgaXQgc2hvdWxkLiBJIGNhbGwgaXQgZnJvbQp0aW1l
-IHRvIHRpbWUgYWZ0ZXIgcHV0dGluZyBhIGJ1bmNoIG9mIE1JREkgZXZlbnRzIG9uIGEgcXVldWUu
-IEkgdXNlIGl0CnRvIHNjaGVkdWxlIGxvdHMgb2Ygbm90ZXMsIE1JREkgY29udHJvbGxlciBjaGFu
-Z2UgbWVzc2FnZXMsIGFuZApzZXZlcmFsIGN1c3RvbSBldmVudHMuIEl0IHNlZW1zIEkgdXNlIGl0
-IG1vcmUgb3IgbGVzcyBhcHByb3ByaWF0ZWx5LApmb3IgdGhlIG91dHB1dHRpbmcgZGF0YSBpcyBz
-Y2hlZHVsZWQgYXMgSSB3aXNoIGl0IHRvIGJlLiBJIGhhdmUKZm9sbG93ZWQgdHV0b3JpYWxzIGFu
-ZCBleGFtcGxlcyB0byBsZWFybiBob3cgdG8gdXNlIEFMU0Egc2VxdWVuY2VyCmludGVyZmFjZSwg
-Zm9yIHRoZSBkb2N1bWVudGF0aW9uIGRvZXMgbm90IG1lbnRpb24gYSB3b3JkIG9uIGhvdyBvbmUK
-c2hvdWxkIGFjdHVhbGx5IHVzZSB0aGVzZSBjYWxscy4gSG93ZXZlciwgSSBoYXZlIGNvbXBhcmVk
-IG15IHNuZF9zZXFfKgpjYWxscyB0byBtYW55IG90aGVyIG9wZW4tc291cmNlIE1JREkgYXBwbGlj
-YXRpb25zLCBhbmQgaXQgc2VlbXMgSSBnb3QKZXZlcnl0aGluZyByaWdodC4gQW5kLCBpbmRlZWQs
-IG1vc3Qgb2YgdGltZSB0aGUgYXBwIHdvcmtzIHBlcmZlY3RseS4KUHJvYmxlbXMgc3RhcnQgd2hl
-biBJIHNjaGVkdWxlIGEgYmlnIGFtb3VudCBvZiBldmVudHMgb24gdGhlIHF1ZXVlLgpUaGVyZSBp
-cyBubyBleGFjdCBudW1iZXIgdGhhdCB0cmlnZ2VycyB0aGUgcHJvYmxlbSwgYnV0IGl0J3MgdXN1
-YWxseQppbiBiZXR3ZWVuIDkwMCBhbmQgMTEwMC4gSW4gdGhhdCBjYXNlIHNuZF9zZXFfZHJhaW5f
-b3V0cHV0KCkgZnJlZXplcwpmb3IgYSB2ZXJ5IGxvbmcgdGltZS4gVGhlIGV4YWN0IHRpbWUgZGVw
-ZW5kcyBvbiB0aGUgdGVtcG8gYXBwbGllZCB0bwp0aGUgcXVldWUgKHdoaWNoIEkgZmluZCB2ZXJ5
-IHdlaXJkKSwgYnV0IGlzIGFib3V0IDAsNiBzZWMgZm9yIHRlbXBvIG9mCjYwYnBtLCBhbmQgZ3Jl
-YXRlciBmb3Igc2xvd2VyIHRlbXBvcy4KCkkgdHJpZWQgYWxzbyBzY2hlZHVsaW5nIG5vdGVzIHVz
-aW5nIHNuZF9zZXFfZXZlbnRfb3V0cHV0X2RpcmVjdCgpIHRvCmF2b2lkIGNhbGxpbmcgc25kX3Nl
-cV9kcmFpbl9vdXRwdXQoKSwgYnV0IHRoYXQgY2F1c2VkCnNuZF9zZXFfZXZlbnRfb3V0cHV0X2Rp
-cmVjdCgpIHRvIGxhZyBzaW1pbGFybHkgYWZ0ZXIgc3VjaCBsYXJnZSBhbW91bnQKb2Ygbm90ZXMg
-Z2V0cyBzY2hlZHVsZWQgb24gdGhlIHF1ZXVlLgpBbmQgYmVmb3JlIHlvdSBhc2ssIEkndmUgc2V0
-IHRoZSBvdXRwdXQgYnVmZmVyIHRvIHNvbWUgaHVnZSBhbW91bnQsCnRoYXQgaXMgbXVjaCBsYWdl
-ciB0aGVuIHRoZSBhbW91bnQgb2Ygbm90ZXMgSSBhbSB0cnlpbmcgdG8gc2NoZWR1bGUuCgpJdCBp
-cyBsaWtlbHkgdGhhdCBpdCdzIG15IGZhdWx0LCBmb3IgSSBjYW4ndCBmdWxseSB1bmRlcnN0YW5k
-IGhvdwp0aGVzZSBjYWxscyBzaG91bGQgYmUgdXNlZC4gSW4gdGhpcyBjYXNlIGNvdWxkIGFueW9u
-ZSBwbGVhc2UgZXhwbGFpbgptZSBpbiB3aGljaCBjYXNlcyBzbmRfc2VxX2RyYWluX291dHB1dCgp
-IG1heSBibG9jayB0aGUgY2FsbGluZyBhcHA/IEkKd2lsbCBjaGVjayBpZiBteSBjb2RlIG1pZ2h0
-IHRyaWdnZXIgdGhpcyBiZWhhdmlvdXIuIE90aGVyd2lzZSwgaXMKdGhlcmUgYW55IHdvcmthcm91
-bmQgZm9yIHRoaXMgbGFnPyBPciBtYXliZSBJIGhhdmUgbWlzc2VkIHNvbWV0aGluZz8gSQpuZWVk
-IGhlbHAgYSBsb3QsIGJlY2F1c2UgdGhpcyBwcm9ibGVtIG1ha2VzIG1lIGNvbXBsZXRlbHkgdW5h
-YmxlIHRvCmNvbnRpbnVlIGRldmVsb3BtZW50IG9mIG15IGFwcGxpY2F0aW9uLgoKUGxlYXNlIGxl
-dCBtZSBrbm93IGluIGNhc2UgeW91IG5lZWQgbWUgdG8gcHJvdmlkZSBhZGRpdGlvbmFsIGluZm9y
-bWF0aW9uLgoKUmVnYXJkcywKUmFmYcWCIENpZcWbbGFrCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Guennadi,
+
+On Thu, Jan 26, 2012 at 03:56:18PM +0100, Guennadi Liakhovetski wrote:
+> This patch adds a library of functions, helping to implement dmaengine
+> drivers for hardware, unable to handle scatter-gather lists natively.
+> The first version of this driver only supports memcpy and slave DMA
+> operation.
+> 
+> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> ---
+> 
+
+[...]
+
+> +
+> +/*
+> + * For slave DMA we assume, that there is a finite number of DMA slaves in the
+> + * system, and that each such slave can only use a finite number of channels.
+> + * We use slave channel IDs to make sure, that no such slave channel ID is
+> + * allocated more than once.
+> + */
+> +static unsigned int slave_num = 256;
+> +module_param(slave_num, uint, 0444);
+> +
+> +/* A bitmask with slave_num bits */
+> +static unsigned long *simple_slave_used;
+
+You never check that the slave ids passed into this code are
+within the range of slave_num. Given that this is a user changeable
+value this is a bit flawy.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
