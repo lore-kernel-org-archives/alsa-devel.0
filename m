@@ -1,36 +1,31 @@
-From: =?UTF-8?B?0KHQtdGA0LPQtdC5INCa0L7RgNC+0LvRkdCy?=
-	<sliped_on_blade@mail.ru>
-Subject: =?utf-8?q?E-mu_1616_PCIe_support=2E?=
-Date: Thu, 26 Jan 2012 11:32:43 +0400
-Message-ID: <E1RqJp5-0004ov-5v.sliped_on_blade-mail-ru@f49.mail.ru>
-Reply-To: =?UTF-8?B?0KHQtdGA0LPQtdC5INCa0L7RgNC+0LvRkdCy?=
-	<sliped_on_blade@mail.ru>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: dt: tegra: Enable headphone
+ autodetection on PAZ00 board.
+Date: Thu, 26 Jan 2012 10:45:25 +0000
+Message-ID: <20120126104525.GA7695@sirena.org.uk>
+References: <1327517477-29785-1-git-send-email-leon@leon.nu>
+ <74CDBE0F657A3D45AFBB94109FB122FF178CB821BE@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f49.mail.ru (f49.mail.ru [217.69.128.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14717103C38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 08:32:44 +0100 (CET)
-Received: from mail by f49.mail.ru with local (envelope-from
-	<sliped_on_blade@mail.ru>) id 1RqJp5-0004ov-5v
-	for alsa-devel@alsa-project.org; Thu, 26 Jan 2012 11:32:43 +0400
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF178CB821BE-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-This is my first email to developers' mailing list so I apologise for inconvinience.
+On Wed, Jan 25, 2012 at 02:31:06PM -0800, Stephen Warren wrote:
+> Leon Romanovsky wrote at Wednesday, January 25, 2012 11:51 AM:
 
-Yesterday 1.0.25 was released and I was hoping that small patch that fixes E-mu 1616 PCIe support has made it's way up to the final release. It didn't happen. Patch that should be applied to sound/pci/emu10k1/emu10k1_main.c is here  - https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5250
-So I'm here just to remind you that there are bunch of E-mu users who will be very glad if you will free them from hard burden of recompiling the kernel and adding patch after every new kernel release.
+> > +static struct snd_soc_jack_gpio tegra_alc5632_hp_jack_gpio = {
+> > +	.name = "Headphone detect",
+> > +	.report = SND_JACK_HEADPHONE,
 
-Thank you.
+> I think that should be HEADSET not HEADPHONE, since it's a combo socket
+> for both headphones and a mic isn't it? (so perhaps the name should also
+> be "Headset detection"?
+
+Unless the CODEC can do accessory detection on the mic in which case the
+jack GPIO usually only reports headphone and then the CODEC detects if
+it's a headset or headphone.
