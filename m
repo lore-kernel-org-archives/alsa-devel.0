@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: wm5100: Handle failures to determine
+Subject: [PATCH 1/3] ASoC: wm8996: Handle failures to determine
 	accessory polarity
-Date: Thu, 26 Jan 2012 19:16:01 +0000
-Message-ID: <1327605362-27065-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1327605362-27065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Thu, 26 Jan 2012 19:16:00 +0000
+Message-ID: <1327605362-27065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85B4710391F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 83FCB10390F
 	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 20:16:05 +0100 (CET)
-In-Reply-To: <1327605362-27065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,94 +29,94 @@ retrying.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5100.c |   38 +++++++++++++++++++++++++-------------
- 1 files changed, 25 insertions(+), 13 deletions(-)
+ sound/soc/codecs/wm8996.c |   38 ++++++++++++++++++++++++++------------
+ 1 files changed, 26 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 1ed4421..0521b40 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -71,6 +71,7 @@ struct wm5100_priv {
- 	bool jack_detecting;
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index fc4f8fc..ab1fb0c 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -89,6 +89,7 @@ struct wm8996_priv {
+ 	struct snd_soc_jack *jack;
+ 	bool detecting;
  	bool jack_mic;
- 	int jack_mode;
 +	int jack_flips;
+ 	wm8996_polarity_fn polarity_cb;
  
- 	struct wm5100_fll fll[2];
+ #ifdef CONFIG_GPIOLIB
+@@ -2427,6 +2428,7 @@ int wm8996_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
+ 	wm8996->jack = jack;
+ 	wm8996->detecting = true;
+ 	wm8996->polarity_cb = polarity_cb;
++	wm8996->jack_flips = 0;
  
-@@ -2039,6 +2040,19 @@ static void wm5100_set_detect_mode(struct wm5100_priv *wm5100, int the_mode)
- 		wm5100->jack_mode);
+ 	if (wm8996->polarity_cb)
+ 		wm8996->polarity_cb(codec, 0);
+@@ -2542,6 +2544,19 @@ static void wm8996_hpdet_start(struct snd_soc_codec *codec)
+ 			    WM8996_HP_POLL, WM8996_HP_POLL);
  }
  
-+static void wm5100_report_headphone(struct wm5100_priv *wm5100)
++static void wm8996_report_headphone(struct snd_soc_codec *codec)
 +{
-+	dev_dbg(wm5100->dev, "Headphone detected\n");
-+	wm5100->jack_detecting = false;
-+	snd_soc_jack_report(wm5100->jack, SND_JACK_HEADPHONE,
-+			    SND_JACK_HEADPHONE);
++	dev_dbg(codec->dev, "Headphone detected\n");
++	wm8996_hpdet_start(codec);
 +
 +	/* Increase the detection rate a bit for responsiveness. */
-+	regmap_update_bits(wm5100->regmap, WM5100_MIC_DETECT_1,
-+			   WM5100_ACCDET_RATE_MASK,
-+			   7 << WM5100_ACCDET_RATE_SHIFT);
++	snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
++			    WM8996_MICD_RATE_MASK |
++			    WM8996_MICD_BIAS_STARTTIME_MASK,
++			    7 << WM8996_MICD_RATE_SHIFT |
++			    7 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
 +}
 +
- static void wm5100_micd_irq(struct wm5100_priv *wm5100)
+ static void wm8996_micd(struct snd_soc_codec *codec)
  {
- 	unsigned int val;
-@@ -2063,6 +2077,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
- 		dev_dbg(wm5100->dev, "Jack removal detected\n");
- 		wm5100->jack_mic = false;
- 		wm5100->jack_detecting = true;
-+		wm5100->jack_flips = 0;
- 		snd_soc_jack_report(wm5100->jack, 0,
+ 	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
+@@ -2561,6 +2576,7 @@ static void wm8996_micd(struct snd_soc_codec *codec)
+ 		dev_dbg(codec->dev, "Jack removal detected\n");
+ 		wm8996->jack_mic = false;
+ 		wm8996->detecting = true;
++		wm8996->jack_flips = 0;
+ 		snd_soc_jack_report(wm8996->jack, 0,
  				    SND_JACK_LINEOUT | SND_JACK_HEADSET |
  				    SND_JACK_BTN_0);
-@@ -2102,10 +2117,16 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
+@@ -2601,9 +2617,17 @@ static void wm8996_micd(struct snd_soc_codec *codec)
  	/* If we detected a lower impedence during initial startup
  	 * then we probably have the wrong polarity, flip it.  Don't
  	 * do this for the lowest impedences to speed up detection of
 -	 * plain headphones.
-+	 * plain headphones and give up if neither polarity looks
-+	 * sensible.
++	 * plain headphones.  If both polarities report a low
++	 * impedence then give up and report headphones.
  	 */
- 	if (wm5100->jack_detecting && (val & 0x3f8)) {
--		wm5100_set_detect_mode(wm5100, !wm5100->jack_mode);
-+		wm5100->jack_flips++;
+ 	if (wm8996->detecting && (val & 0x3f0)) {
++		wm8996->jack_flips++;
 +
-+		if (wm5100->jack_flips > 1)
-+			wm5100_report_headphone(wm5100);
-+		else
-+			wm5100_set_detect_mode(wm5100, !wm5100->jack_mode);
- 
- 		return;
- 	}
-@@ -2119,17 +2140,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
- 			snd_soc_jack_report(wm5100->jack, SND_JACK_BTN_0,
++		if (wm8996->jack_flips > 1) {
++			wm8996_report_headphone(codec);
++			return;
++		}
++
+ 		reg = snd_soc_read(codec, WM8996_ACCESSORY_DETECT_MODE_2);
+ 		reg ^= WM8996_HPOUT1FB_SRC | WM8996_MICD_SRC |
+ 			WM8996_MICD_BIAS_SRC;
+@@ -2630,17 +2654,7 @@ static void wm8996_micd(struct snd_soc_codec *codec)
+ 			snd_soc_jack_report(wm8996->jack, SND_JACK_BTN_0,
  					    SND_JACK_BTN_0);
- 		} else if (wm5100->jack_detecting) {
--			dev_dbg(wm5100->dev, "Headphone detected\n");
--			wm5100->jack_detecting = false;
--			snd_soc_jack_report(wm5100->jack, SND_JACK_HEADPHONE,
--					    SND_JACK_HEADPHONE);
+ 		} else if (wm8996->detecting) {
+-			dev_dbg(codec->dev, "Headphone detected\n");
+-			wm8996_hpdet_start(codec);
 -
 -			/* Increase the detection rate a bit for
 -			 * responsiveness.
 -			 */
--			regmap_update_bits(wm5100->regmap, WM5100_MIC_DETECT_1,
--					   WM5100_ACCDET_RATE_MASK,
--					   7 << WM5100_ACCDET_RATE_SHIFT);
-+			wm5100_report_headphone(wm5100);
+-			snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
+-					    WM8996_MICD_RATE_MASK |
+-					    WM8996_MICD_BIAS_STARTTIME_MASK,
+-					    7 << WM8996_MICD_RATE_SHIFT |
+-					    7 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
++			wm8996_report_headphone(codec);
  		}
  	}
  }
-@@ -2141,6 +2152,7 @@ int wm5100_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- 	if (jack) {
- 		wm5100->jack = jack;
- 		wm5100->jack_detecting = true;
-+		wm5100->jack_flips = 0;
- 
- 		wm5100_set_detect_mode(wm5100, 0);
- 
 -- 
 1.7.9.rc1
