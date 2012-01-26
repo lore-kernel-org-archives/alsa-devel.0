@@ -1,51 +1,59 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: wm8994: Report any low impedance
-	accessory as a headphone
-Date: Thu, 26 Jan 2012 19:16:02 +0000
-Message-ID: <1327605362-27065-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1327605362-27065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [alsa-devel] [PATCH 1/7 v2] dmaengine: add a simple dma library
+Date: Thu, 26 Jan 2012 22:07:50 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1201262206530.10057@axis700.grange>
+References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
+ <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
+ <20120126173444.GM5446@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9077B103920
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 20:16:05 +0100 (CET)
-In-Reply-To: <1327605362-27065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <20120126173444.GM5446@pengutronix.de>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, linux-serial@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Report any accessory with a low impedance as a headphone, previously
-anything other than a short or microphone would not be reported at all.
-The most likely reason is a microphone with incorrect polarity.
+Hi Sascha
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+On Thu, 26 Jan 2012, Sascha Hauer wrote:
+
+> Hi Guennadi,
+> 
+> On Thu, Jan 26, 2012 at 03:56:18PM +0100, Guennadi Liakhovetski wrote:
+> > This patch adds a library of functions, helping to implement dmaengine
+> > drivers for hardware, unable to handle scatter-gather lists natively.
+> > The first version of this driver only supports memcpy and slave DMA
+> > operation.
+> > 
+> > Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> > ---
+> > 
+> 
+> [...]
+> 
+> > +
+> > +/*
+> > + * For slave DMA we assume, that there is a finite number of DMA slaves in the
+> > + * system, and that each such slave can only use a finite number of channels.
+> > + * We use slave channel IDs to make sure, that no such slave channel ID is
+> > + * allocated more than once.
+> > + */
+> > +static unsigned int slave_num = 256;
+> > +module_param(slave_num, uint, 0444);
+> > +
+> > +/* A bitmask with slave_num bits */
+> > +static unsigned long *simple_slave_used;
+> 
+> You never check that the slave ids passed into this code are
+> within the range of slave_num. Given that this is a user changeable
+> value this is a bit flawy.
+
+Right, never trust the user;-) I'll fix that.
+
+Thanks
+Guennadi
 ---
- sound/soc/codecs/wm8994.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b047bfa..11ca19b 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3089,7 +3089,7 @@ static void wm8958_default_micdet(u16 status, void *data)
- 	}
- 
- 
--	if (wm8994->mic_detecting && status & 0x4) {
-+	if (wm8994->mic_detecting && status & 0xfc) {
- 		dev_dbg(codec->dev, "Detected headphone\n");
- 		wm8994->mic_detecting = false;
- 
--- 
-1.7.9.rc1
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
