@@ -1,20 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: =?UTF-8?B?UmFmYcWCIENpZcWbbGFr?= <rafalcieslak256@gmail.com>
 Subject: Re: Why does snd_seq_drain_output() need lots of time
- to execute?
-Date: Thu, 26 Jan 2012 23:04:42 +0100
-Message-ID: <4F21CDFA.3070608@ladisch.de>
+	to execute?
+Date: Fri, 27 Jan 2012 01:20:17 +0100
+Message-ID: <CABscqj6i0JAVbrhFN=BQEjkQFFDdng2jc+mf8ATqMNfGEMq4Lw@mail.gmail.com>
 References: <CABscqj76Lb9fgD-FY1otzETWwjJO9vwCG=Rt83jU8ti0bE6KpA@mail.gmail.com>
+	<4F21CDFA.3070608@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id E21761038DE
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 23:05:15 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id AE61D21159
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 17:05:11 -0500 (EST)
-In-Reply-To: <CABscqj76Lb9fgD-FY1otzETWwjJO9vwCG=Rt83jU8ti0bE6KpA@mail.gmail.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BD2D243C7
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 01:20:38 +0100 (CET)
+Received: by iaby26 with SMTP id y26so1477250iab.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 16:20:37 -0800 (PST)
+In-Reply-To: <4F21CDFA.3070608@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?UmFmYcWCIENpZcWbbGFr?= <rafalcieslak256@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UmFmYcWCIENpZcWbbGFrIHdyb3RlOgo+IFRoZSBtYWluIHByb2JsZW0gaXMgdGhhdCBhbHRob3Vn
-aCB0aGUgZG9jdW1lbnRhdGlvbiBzdGF0ZXMgdGhhdAo+IHNuZF9zZXFfZHJhaW5fb3V0cHV0KCkg
-cmV0dXJucyBpbW1lZGlhdGVseSwKCnwgIlRoZSBmdW5jdGlvbiByZXR1cm5zIGltbWVkaWF0ZWx5
-IGFmdGVyIHRoZSBldmVudHMgYXJlIHNlbnQgdG8gdGhlCnwgIHF1ZXVlcyAuLi4iCgo+IGl0IHR1
-cm5zIG91dCB0aGF0IGl0IG9jY2FzaW9uYWxseSBuZWVkcyBsb3RzIG9mIHRpbWUgKGV2ZW4gYSBz
-ZWNvbmQgb3IKPiB0d28pLCBhbmQgYmxvY2tzIG15IGFwcGxpY2F0aW9uLCBhcyBJIGNhbGwgaXQu
-CgpZb3UgY291bGQgZW5hYmxlIG5vbi1ibG9ja2luZyBtb2RlIHRvIGdldCBhbiBlcnJvciBpbnN0
-ZWFkIG9mIHdhaXRpbmcuCgpPciB5b3UgY291bGQgdG8gaW5jcmVhc2UgdGhlIHNpemUgb2YgdGhl
-IG91dHB1dCBidWZmZXIuCgo+IEFuZCBiZWZvcmUgeW91IGFzaywgSSd2ZSBzZXQgdGhlIG91dHB1
-dCBidWZmZXIgdG8gc29tZSBodWdlIGFtb3VudCwKCkEgc2VxdWVuY2VyIGNsaWVudCBoYXMgX3R3
-b18gb3V0cHV0IGJ1ZmZlcnMsIG9uZSBpbiBhbHNhLWxpYiwgYW5kIG9uZSBpbgp0aGUga2VybmVs
-LiAgRXZlbnRzIHRoYXQgYXJlIHNjaGVkdWxlZCBmb3IgbGF0ZXIgc3RheSBpbiB0aGUga2VybmVs
-CmJ1ZmZlciB1bnRpbCB0aGV5IGFyZSBhY3R1YWxseSBkZWxpdmVyZWQ7IHdoZW4gdGhpcyBidWZm
-ZXIgd291bGQKb3ZlcmZsb3csIGZ1bmN0aW9ucyB0aGF0IGRyYWluIHRoZSB1c2Vyc3BhY2UgYnVm
-ZmVyIHRvIHRoZSBrZXJuZWwgYnVmZmVyCndhaXQgaW5zdGVhZC4KClRvIGluY3JlYXNlIHRoZSBr
-ZXJuZWwgYnVmZmVyJ3Mgc2l6ZSwgdXNlIHRoZSBzbmRfc2VxX2NsaWVudF9wb29sKiBhbmQKc25k
-X3NlcV9nZXQvc2V0X2NsaWVudF9wb29sIGZ1bmN0aW9ucy4gICgicG9vbCIgaXMgdGhlIGJ1ZmZl
-ciBzaXplLCBpbgpldmVudHM7ICJyb29tIiBpcyB0aGUgbnVtYmVyIG9mIGZyZWUgZXZlbnRzIHRo
-YXQgY2F1c2VzIGEgYmxvY2tlZApmdW5jdGlvbiB0byB3YWtlIHVwLikKCgpSZWdhcmRzLApDbGVt
-ZW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+PiBBIHNlcXVlbmNlciBjbGllbnQgaGFzIF90d29fIG91dHB1dCBidWZmZXJzLCBvbmUgaW4gYWxz
+YS1saWIsIGFuZCBvbmUgaW4KPiB0aGUga2VybmVsLiDCoEV2ZW50cyB0aGF0IGFyZSBzY2hlZHVs
+ZWQgZm9yIGxhdGVyIHN0YXkgaW4gdGhlIGtlcm5lbAo+IGJ1ZmZlciB1bnRpbCB0aGV5IGFyZSBh
+Y3R1YWxseSBkZWxpdmVyZWQ7IHdoZW4gdGhpcyBidWZmZXIgd291bGQKPiBvdmVyZmxvdywgZnVu
+Y3Rpb25zIHRoYXQgZHJhaW4gdGhlIHVzZXJzcGFjZSBidWZmZXIgdG8gdGhlIGtlcm5lbCBidWZm
+ZXIKPiB3YWl0IGluc3RlYWQuCj4KPiBUbyBpbmNyZWFzZSB0aGUga2VybmVsIGJ1ZmZlcidzIHNp
+emUsIHVzZSB0aGUgc25kX3NlcV9jbGllbnRfcG9vbCogYW5kCj4gc25kX3NlcV9nZXQvc2V0X2Ns
+aWVudF9wb29sIGZ1bmN0aW9ucy4gwqAoInBvb2wiIGlzIHRoZSBidWZmZXIgc2l6ZSwgaW4KPiBl
+dmVudHM7ICJyb29tIiBpcyB0aGUgbnVtYmVyIG9mIGZyZWUgZXZlbnRzIHRoYXQgY2F1c2VzIGEg
+YmxvY2tlZAo+IGZ1bmN0aW9uIHRvIHdha2UgdXAuKQoKCkdyZWF0IHRoYW5rcyBmb3IgeW91ciBo
+ZWxwLgpUaGF0IG1ha2VzIHNlbnNlLCBhbmQgdmVyeSBsaWtlbHkgdGhpcyBpcyB3aGF0IEkndmUg
+YmVlbiBsb29raW5nIGZvci4KSWYgaXQgZ290IGl0IHJpZ2h0LCB0aGUgYWxzYS1saWIgYnVmZmVy
+IGlzIHRoZSBvbmUgd2hpY2ggSSBjYW4gcmVzaXplCnVzaW5nIHNuZF9zZXFfc2V0X291dHB1dF9i
+dWZmZXJfc2l6ZSgpLiBTbyBpdCBzZWVtcyB0aGF0IEkgaGF2ZSB0bwppbmNyZWFzZSB0aGUga2Vy
+bmVsIGJ1ZmZlciBzaXplLCBhcyB5b3UgaGF2ZSBzdWdnZXN0ZWQuCgpIb3dldmVyLCBpdCBzZWVt
+cyB0aGF0IHNvbWVob3cgSSBjYW5ub3QgY2hhbmdlIGl0LiBJZiBJIHRyeSB1c2luZwpzbmRfc2Vx
+X3NldF9jbGllbnRfcG9vbF9vdXRwdXQoKSwgdGhpcyBnaXZlcyBhYnNvbHV0ZWx5IG5vIGVmZmVj
+dCwgYW5kCmRvZXMgbm90IHNlZW0gdG8gbWFrZSBhbnkgZWZmZWN0LCB0aGUgcG9vbCBzaXplIHN0
+YXlzIGF0IDUwMCAoZXZlbgp0aG91Z2ggdGhlIGZ1bmN0aW9uIHJldHVybnMgMCkgICh0byBjaGVj
+ayB0aGUgcG9vbCBzaXplIEkgbG9vayBhdAovcHJvYy9hc291bmQvc2VxL2NsaWVudHMsIGFuZCBp
+dCBpcyBhbHdheXMgNTAwKS4gSWYgSSB1c2UgdGhlCnNuZF9zZXFfY2xpZW50X3Bvb2wqLCBpdCBk
+b2VzIG5vdCBjaGFuZ2UgdGhlIGJ1ZmZlciBlaXRoZXIsIGJ1dCBhbnkKY2FsbCB0byBzbmRfc2Vx
+X2dldC9zZXRfY2xpZW50X3Bvb2wgcmVzdWx0cyBpbiByYW5kb20gc2VnbWVudGF0aW9uCmZhdWx0
+cyBhIGZldyBtb21lbnRzIGxhdGVyICh0aGVzZSBzZWdmYXVsdHMgb3JnaW5hdGUgZnJvbSBub3do
+ZXJlKS4KQ2FuIGl0IGJlIHRoYXQgSSBhbSBpbXByb3Blcmx5IHRyeWluZyB0byBzZXQgdGhlIGtl
+cm5lbCBidWZmZXIgc2l6ZSwKb3Igc29tZXRoaW5nIGVsc2UgaXMgd3Jvbmc/CgpSZWdhcmRzLApS
+YWZhxYIgQ2llxZtsYWsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
