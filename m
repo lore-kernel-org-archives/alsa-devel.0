@@ -1,14 +1,22 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Remove quirk for Asus N53Jq
-Date: Fri, 27 Jan 2012 14:31:19 +0100
-Message-ID: <1327671079-3230-1-git-send-email-david.henningsson@canonical.com>
+From: Fons Adriaensen <fons@linuxaudio.org>
+Subject: Re: Why does snd_seq_drain_output() need lots of
+	time	to execute?
+Date: Fri, 27 Jan 2012 13:56:38 +0000
+Message-ID: <20120127135638.GD29445@linuxaudio.org>
+References: <CABscqj76Lb9fgD-FY1otzETWwjJO9vwCG=Rt83jU8ti0bE6KpA@mail.gmail.com>
+	<4F21CDFA.3070608@ladisch.de>
+	<CABscqj6i0JAVbrhFN=BQEjkQFFDdng2jc+mf8ATqMNfGEMq4Lw@mail.gmail.com>
+	<20120127120313.GC29445@linuxaudio.org>
+	<CABscqj4qkkwPjBPv40MtL2VrY=sAnyhFoNRY8v0ymFb95tDJFA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 4A37E24416
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 14:31:26 +0100 (CET)
+Received: from lists.linuxaudio.org (bukvic.music.vt.edu [198.82.152.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1D5D24447
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 14:56:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CABscqj4qkkwPjBPv40MtL2VrY=sAnyhFoNRY8v0ymFb95tDJFA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,33 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 918254@bugs.launchpad.net
-Cc: "3.2+" <stable@kernel.org>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The user reports that he needs to add model=auto for audio to
-work properly. In fact, since node 0x15 is not even a pin node,
-the existing fixup is definitely wrong. Relevant information can
-be found in the buglink below.
-
-Cc: stable@kernel.org (3.2+)
-BugLink: https://bugs.launchpad.net/bugs/918254
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 0db1dc4..a7f17be 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5377,7 +5377,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x8330, "ASUS Eeepc P703 P900A",
- 		      ALC269_FIXUP_AMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1013, "ASUS N61Da", ALC269_FIXUP_AMIC),
--	SND_PCI_QUIRK(0x1043, 0x1113, "ASUS N63Jn", ALC269_FIXUP_AMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1143, "ASUS B53f", ALC269_FIXUP_AMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1133, "ASUS UJ20ft", ALC269_FIXUP_AMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1183, "ASUS K72DR", ALC269_FIXUP_AMIC),
--- 
-1.7.8.3
+T24gRnJpLCBKYW4gMjcsIDIwMTIgYXQgMDI6Mjg6NDJQTSArMDEwMCwgUmFmYcWCIENpZcWbbGFr
+IHdyb3RlOgo+ID4gSWYgeW91IG1hbmFnZSB0byBmaWxsIGEgNTAwLWV2ZW50IGJ1ZmZlciwgY291
+bGQgdGhhdCBtZWFuIHRoYXQKPiA+IHlvdSBhcmUgc2VuZGluZyBldmVudHMgYSBsb25nIHRpbWUg
+YWhlYWQgb2YgdGhlaXIgZHVlIHRpbWUgPwo+IAo+IE5vLCBJJ20gbm90IGJ1ZmZlcmluZyBhIHdo
+b2xlIHNvbmcsIGV2ZW50cyBhcmUgc2VuZCBhdCBtb3N0IGEgc2Vjb25kCj4gb3IgdHdvIGFoZWFk
+IChmb3IgZWFjaCBiYXIpLiBUaGUgcmVhc29uIHdoeSB0aGVyZSBtYXkgYmUgc28gbWFueSBvZgo+
+IHRoZW0sIGlzIHRoYXQgSSBlbXVsYXRlIHNtb290aCBtb3ZlbWVudCBvZiBjb250cm9sIHBhcmFt
+ZXRlcnMgKGp1c3QgYXMKPiBpZiBvbmUgd2FzIHNsb3dseSBtb3ZpbmcgYSBzbGlkZXIva25vYiBv
+biBhbiBleHRlcm5hbCBNSURJCj4gY29udHJvbGxlciksIHdoaWNoIHJlcXVpcmVzIGxvdHMgb2Yg
+ZXZlbnRzLCBhbmQgdGhlIHByb2JsZW0gc3RhcnRzCj4gd2hlbiBJIHRyeSB0byBkbyB0aGUgc2Ft
+ZSBmb3IgbWFueSBkaWZmZXJlbnQgY29udHJvbGxlcnMvY2hhbm5lbHMKPiBpbmRlcGVuZGVudGx5
+LgoKSSBzZWUuIE1JREkgaXNuJ3QgcmVhbGx5IHVwIHRvIHRoaXMgc29ydCBvZiB0aGluZy4uLiBU
+aGUgcmVjZWl2ZXIKY2FuIGJlIGV4cGVjdGVkIHRvIHNtb290aCB0aGUgY29udHJvbGxlciB2YWx1
+ZXMsIGJ1dCBzaW5jZSB0aGlzIGlzCnVuc3BlY2lmaWVkIHlvdSBkb24ndCBrbm93IGhvdyBtYW55
+IGFyZSBuZWVkZWQuCiAKPiBBbHNvLCBpdCB0dXJuZWQgb3V0IHRoYXQgYWN0dWFsbHkgc25kX3Nl
+cV9zZXRfY2xpZW50X3Bvb2xfb3V0cHV0KCkKPiBkb2VzIHdvcmssIHVubGVzcyBJIHRyeSB0byBz
+ZXQgaXQgdG8gYW55dGhpbmcgZ3JlYXRlciB0aGVuIDIwMDAuIElzCj4gdGhpcyBhIGhhcmQtY29k
+ZWQgbGltaXQsIG9yIGNhbiBJIHNvbWVob3cgaW5jcmVhc2UgaXQgZXZlbiBtb3JlPwoKRG9uJ3Qg
+a25vdy4uLgoKMjAwMCBldmVudHMvcyB3b3VsZCBiZSBjbG9zZSB0byB3aGF0IGEgaGFyZHdhcmUg
+TUlESSBpbnRlcmZhY2UgY2FuCmhhbmRsZSBhbnl3YXkgLSB0aGF0IGNvdWxkIGJlIHlvdXIgbmV4
+dCBwcm9ibGVtLgoKT1RPSCwgeW91IGNvdWxkIHJlZHVjZSB0aGUgdXBkYXRlIHBlcmlvZCB0byAx
+LzQgc2Vjb25kIG9yIHNvLiBUaGF0CnNob3VsZCBiZSBubyBwcm9ibGVtIGlmIHlvdSB1c2UgYSBS
+VCB0aHJlYWQgdG8gZG8gaXQgLSB3ZSdyZSB1c2luZwptdWNoIHNob3J0ZXIgcGVyaW9kcyBmb3Ig
+YXVkaW8uIAoKQ2lhbywKCi0tIApGQQoKVm9yIHVucyBsaWVndCBlaW4gd2VpdGVzIFRhbCwgZGll
+IFNvbm5lIHNjaGVpbnQgLSBlaW4gR2xpdHplcnN0cmFobC4KCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
