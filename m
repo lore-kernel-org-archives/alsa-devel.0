@@ -1,18 +1,16 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ALSA: aoa: Convert onyx and tas codec drivers
- to module_i2c_driver
-Date: Fri, 27 Jan 2012 15:23:51 +0800
-Message-ID: <1327649031.3758.1.camel@phoenix>
+Subject: [PATCH] ALSA: Convert at73c213 to module_spi_driver
+Date: Fri, 27 Jan 2012 15:29:13 +0800
+Message-ID: <1327649353.3758.3.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63FAD24525
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 08:24:06 +0100 (CET)
-Received: by ggm4 with SMTP id 4so724355ggm.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 23:24:03 -0800 (PST)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8BE2E24528
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 08:29:19 +0100 (CET)
+Received: by yhoo47 with SMTP id o47so694026yho.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2012 23:29:18 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
+Cc: Takashi Iwai <tiwai@suse.de>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, Jaroslav@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch converts onyx and tas codec drivers to use the module_i2c_driver()
+This patch converts at73c213 to use the module_spi_driver()
 macro which makes the code smaller and a bit simpler.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/aoa/codecs/onyx.c |   13 +------------
- sound/aoa/codecs/tas.c  |   13 +------------
- 2 files changed, 2 insertions(+), 24 deletions(-)
+ sound/spi/at73c213.c |   12 +-----------
+ 1 files changed, 1 insertions(+), 11 deletions(-)
 
-diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
-index 762af68..270790d 100644
---- a/sound/aoa/codecs/onyx.c
-+++ b/sound/aoa/codecs/onyx.c
-@@ -1132,15 +1132,4 @@ static struct i2c_driver onyx_driver = {
- 	.id_table = onyx_i2c_id,
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index 4dd051b..c6500d0 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -1112,17 +1112,7 @@ static struct spi_driver at73c213_driver = {
+ 	.remove		= __devexit_p(snd_at73c213_remove),
  };
  
--static int __init onyx_init(void)
+-static int __init at73c213_init(void)
 -{
--	return i2c_add_driver(&onyx_driver);
+-	return spi_register_driver(&at73c213_driver);
 -}
+-module_init(at73c213_init);
 -
--static void __exit onyx_exit(void)
+-static void __exit at73c213_exit(void)
 -{
--	i2c_del_driver(&onyx_driver);
+-	spi_unregister_driver(&at73c213_driver);
 -}
--
--module_init(onyx_init);
--module_exit(onyx_exit);
-+module_i2c_driver(onyx_driver);
-diff --git a/sound/aoa/codecs/tas.c b/sound/aoa/codecs/tas.c
-index fd2188c..8e63d1f 100644
---- a/sound/aoa/codecs/tas.c
-+++ b/sound/aoa/codecs/tas.c
-@@ -1026,15 +1026,4 @@ static struct i2c_driver tas_driver = {
- 	.id_table = tas_i2c_id,
- };
+-module_exit(at73c213_exit);
++module_spi_driver(at73c213_driver);
  
--static int __init tas_init(void)
--{
--	return i2c_add_driver(&tas_driver);
--}
--
--static void __exit tas_exit(void)
--{
--	i2c_del_driver(&tas_driver);
--}
--
--module_init(tas_init);
--module_exit(tas_exit);
-+module_i2c_driver(tas_driver);
+ MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
+ MODULE_DESCRIPTION("Sound driver for AT73C213 with Atmel SSC");
 -- 
 1.7.5.4
