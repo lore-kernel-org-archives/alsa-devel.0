@@ -1,76 +1,59 @@
-From: "Guiriec, Sebastien" <s-guiriec@ti.com>
-Subject: Re: [alsa-devel] [PATCH v4 - resend 00/13] OMAP4: ASoC: Support for
- PandaBoard family
-Date: Fri, 27 Jan 2012 23:51:39 +0100
-Message-ID: <CAAURCh7u=3KLNKfK_YYkVJ_i8azQ=oV0ugVxYvi=thhoLdGEJQ@mail.gmail.com>
-References: <1327405950-6676-1-git-send-email-peter.ujfalusi@ti.com>
-	<CAJe_Zhfn3urdXfRgAKvdW2_ECYGbNO0b2BuZnCZxrGcL4_sVSg@mail.gmail.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] Sound, SoC,
+ WM9090: Remove unused variable 'wm9090' from wm9090_i2c_remove()
+Date: Sat, 28 Jan 2012 00:57:42 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1201280055410.13952@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <CAJe_Zhfn3urdXfRgAKvdW2_ECYGbNO0b2BuZnCZxrGcL4_sVSg@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
+	[90.184.90.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA1F8103840
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2012 00:57:33 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/25/2012 11:50 AM, Jassi Brar wrote:
-> On 24 January 2012 17:22, Peter Ujfalusi<peter.ujfalusi@ti.com>  wrote:
->> Hello,
->>
->> the following series will add ASoC support for PandaBoards.
->> PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
->> the differences not that big to justify a new ASoC machine driver.
->>
->> The v3 series did not made it to 3.3 kernel.
->> This set contains all the patches needed to enable the audio support on the
->> PandaBoard family.
->> The machine driver has been converted to a generic OMAP4 driver which can
->> support wide range of machines using OMAP4 with twl6040 codec.
->>
->> I have remove the hardcoded MCLK clock frequency use in the machine driver
->> (there can be devices with different MCLK configuration). This changed
->> patch 04, 05, and 12. Since this does not affect the functionality I kept the
->> acks for these patches. Patch 11 did not existed in the v3 series.
->>
-> Hi Peter,
->     I tried the patchset on my 4430 Panda. Playback works ok, but not Capture.
-> All is get is a hiss.
->    Is capture supposed to work ? If yes, any amixer settings that need
-> to be done?
+The variable 'wm9090' is assigned to but never used, so let's just
+remove it.
 
-Hi Jassi,
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ sound/soc/codecs/wm9090.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-With the next update the PandaBoard 4430 is working fine.
-cpu_is_omap4430() macro is not define. We should use cpu_is_omap443x()
-macro in order to select correctly PandaBoard and not PandaBoardES
-board. Due to this error the heaset Mic pin is not enable so record is not
-working (use for Panda 4430 recording).
+	compile teste only
 
-diff --git a/arch/arm/mach-omap2/board-omap4panda.c b/arch/arm/mach-
-omap2/board-omap4panda.c
-index 5f27387..6a397e9 100644
---- a/arch/arm/mach-omap2/board-omap4panda.c
-+++ b/arch/arm/mach-omap2/board-omap4panda.c
-@@ -580,7 +580,7 @@ void omap4_panda_display_init(void)
-
- static void omap4_panda_init_rev(void)
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index 41ebe0d..db1ba30 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -655,10 +655,7 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 
+ static int __devexit wm9090_i2c_remove(struct i2c_client *i2c)
  {
--	if (cpu_is_omap4430()) {
-+	if (cpu_is_omap443x()) {
- 		/* PandaBoard 4430 */
- 		/* ASoC audio configuration */
- 		panda_abe_audio_data.card_name = "PandaBoard";
+-	struct wm9090_priv *wm9090 = i2c_get_clientdata(i2c);
+-
+ 	snd_soc_unregister_codec(&i2c->dev);
+-
+ 	return 0;
+ }
+ 
 -- 
-1.7.4.1
+1.7.8.4
 
 
-Sebastien.
-
->
-> Thanks,
-> -Jassi
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
