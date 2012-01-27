@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] regmap: Properly round reg_bytes and
-	val_bytes
-Date: Fri, 27 Jan 2012 16:28:37 +0000
-Message-ID: <20120127162837.GB18572@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] regmap: Add support for 2/6 register
+	formating
+Date: Fri, 27 Jan 2012 16:28:59 +0000
+Message-ID: <20120127162859.GC18572@opensource.wolfsonmicro.com>
 References: <1327677023-29310-1-git-send-email-w.sang@pengutronix.de>
+	<1327677023-29310-2-git-send-email-w.sang@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1029667618505721188=="
+Content-Type: multipart/mixed; boundary="===============1859723228307358051=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED61D24336
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 17:28:38 +0100 (CET)
-In-Reply-To: <1327677023-29310-1-git-send-email-w.sang@pengutronix.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AAA3F244D4
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2012 17:29:00 +0100 (CET)
+In-Reply-To: <1327677023-29310-2-git-send-email-w.sang@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +26,50 @@ Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-ker
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1029667618505721188==
+--===============1859723228307358051==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CdrF4e02JqNVZeln"
+	protocol="application/pgp-signature"; boundary="adJ1OR3c6QgCpb/j"
 Content-Disposition: inline
 
 
---CdrF4e02JqNVZeln
+--adJ1OR3c6QgCpb/j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 27, 2012 at 04:10:21PM +0100, Wolfram Sang wrote:
-> For the upcoming 2/6-format, we don't see debugfs output otherwise,
-> since the current division results in 0. I'd think 10/14 is broken
-> currently, too.
+On Fri, Jan 27, 2012 at 04:10:22PM +0100, Wolfram Sang wrote:
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 
-This looks good but could you please rebase on top of topic/core, it
-conflicts with the support for padding bytes.  It's not really entirely
-incorrect, the bytes values aren't terribly well defined for register
-sizes that aren't integer numbers of bytes as they were never intended
-to be used then.  The assumption did leak out into debugfs though.
+Applied, thanks.
 
---CdrF4e02JqNVZeln
+--adJ1OR3c6QgCpb/j
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPItCuAAoJEBus8iNuMP3dbi4P/2a55sT+Mq8DKhCkBvsH9CFN
-nJW2T5sVpCgJv+3efhT+86MmQPQHg4PX9g3wZWi5fdIpSJZq4NaMr0w7vdR9gaIF
-oZruriWt2cFewm4KyZlzlYKLVBee+XmdQdqQIQs2Wanrlw9kwCpKq92trA6BM9Bu
-vx7QryRFUN3w4CqilOkQ+WazfXLewGhSyAhacToIsktYoeEJi3FPPOF7zrnXl0n3
-m2IxFTxs3uaLqs7YQgmEME40YwbsJIviy2f9eWapl/zF1KNW5injtcn/UMXvTj3b
-7EszPBpx024hP8auXiZ8hj6wmGoe4704TZApeSvul3YMvwqjLlepoRhgGakky9sj
-Sgki3SeQNA2gf4zl+vMGoyH17DWueDvQ+YMRHhYFN1NaJQbxDFceHZMazajnXhCv
-Uy66lrAOzxmCqTsRZL9RuLd+nCjPVFePaXRbrMMfpEcSPc5RJE1OYoahfDpTvdqj
-eCTiMy+pw98eb8dcMN/k/X0bW94EbkbXS8rmvEUvgyoc75r6dSqGeXX2LY7WIDiP
-WYRp0oaZlyLIEKHtE/Bz+wdYN6F0/Mi0lou0zKbEJmw91dI9NUApVErW9koJ3w6n
-LHLmNgsByB+yc2YlomBafZ+ytyme2nqLZ6AAI7Fcx2G/x4GIRBol+9upM36zg4ux
-9dGB09C8VLi+8iwfclIO
-=kYeL
+iQIcBAEBAgAGBQJPItDEAAoJEBus8iNuMP3dzpAP/jhkAE8X7eOLfpTOaV1e8xtU
+2nyBAsTxg7QF77N0PVufgJ1uXb0QHr+HO5UpMPY3S/RzTkK7Tx6Ddi6jlTxyRJUB
+AERsMOdykh4X4/cv6T6v4LjfDXL/BNJkwW1aXdLgRvsJ8pyaXs8ifZXtE/LoIbRy
+ybXMQAKII31EeMNj9KhZIucya+TJD8fNaKSM7yfgM6Gwe4tfG138plLRaeS1UF1a
+qHYi9iiO+VBw1oprfAjAZ7iCHEHMcJ8hWA//MKhEOvazZY5w8yJZDBIivlLOgNzk
+HbMXgHa7F/7xAydb9WEOj4xmXa+XHC9FK4z+umzE2xjMj4khvQGstrB98hDFiTuR
+lQl71RfNhXat2DtCsJ6L/6WdEEwIQQC2cbHw40uDtuAg0kZu3MlubZBaz06Na2Cm
+on760hLQqsBc2cGB7gCrbccXnZD4wucIo/L2/ZD2qJaCoijnWTIU2z6MJ1ZhrQNP
+UqMbjYQR24G+nhPO1pQ5ZCQkGf+kcxq55pQw4ObVvyVtDB0Rcbm2QKCj9hHr/2/9
+T3j9WzuACyYftyY0+rhLtRy/7mQTuj+kxpB0WFJd7TQIurBx8AVPWCjBMsdfBHoD
+wnKtvhiydEISP/3c20xEFRrddYzGxQhWgDF0kkmsGQJ7A2cdtRP+WZDYYNqUvw55
+3oW1OUoC6H4SpVSpoJZP
+=WmnW
 -----END PGP SIGNATURE-----
 
---CdrF4e02JqNVZeln--
+--adJ1OR3c6QgCpb/j--
 
---===============1029667618505721188==
+--===============1859723228307358051==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1029667618505721188==--
+--===============1859723228307358051==--
