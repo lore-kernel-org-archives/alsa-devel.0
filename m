@@ -1,40 +1,46 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [alsa-devel] [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing
- iounmap
-Date: Sat, 28 Jan 2012 09:51:46 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1201280950120.2045@hadrien>
-References: <7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net> <alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6> <20120124202203.GD1135@opensource.wolfsonmicro.com> <alpine.DEB.2.02.1201242144580.1998@hadrien>
- <20120126110506.GB2611@pengutronix.de> <alpine.DEB.2.02.1201261220460.1851@localhost6.localdomain6> <20120126112242.GA9401@opensource.wolfsonmicro.com> <alpine.DEB.2.02.1201261439460.1851@localhost6.localdomain6> <20120126135135.GD2611@pengutronix.de>
- <alpine.DEB.2.02.1201261504200.1851@localhost6.localdomain6> <20120128082630.GA2509@pengutronix.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for
+	imx27pdk using mc13783 codec
+Date: Sat, 28 Jan 2012 18:57:45 -0200
+Message-ID: <CAOMZO5CRmvwCy_qE81PauZ6jmPN7S3N3pky01V0OmWBLCJ5JyA@mail.gmail.com>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+	<4E1711EA.5070209@televic.com>
+	<201107271028.09928.philippe.retornaz@epfl.ch>
+	<2667396.yifGumf5nD@laptop>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120128082630.GA2509@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Julia Lawall <julia.lawall@lip6.fr>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 535AC2475A
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2012 21:57:46 +0100 (CET)
+Received: by eekd49 with SMTP id d49so880854eek.38
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2012 12:57:45 -0800 (PST)
+In-Reply-To: <2667396.yifGumf5nD@laptop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Philippe_R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: =?UTF-8?Q?Lambrecht_J=C3=BCrgen?= <J.Lambrecht@televic.com>, =?UTF-8?Q?J=C3=BCrgen_Lambrecht?= <juergen.lambrecht@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 28 Jan 2012, Wolfram Sang wrote:
-
->>> You can skip checking 'iores', too. I also did that in the example, but
->>> a lot of people seem to miss it.
->>
->> I can try to do that, but it seems a little bit unintuitive.
->> Perhaps it would be easier for people to remember to put in error
->> handling code when they need it if they always have to do it?  If I
->> remove it, there will be one call that has no test and then another
->> call a few lines later that does.
->
-> I see your point. I would still like to get rid of the duplicated code
-> (then it can't be forgotten as well). Maybe I should have named the
-> function something alike devm_check_and_request_and_ioremap()? Then I
-> could have also introduced a similar function for requesting irq. Will
-> think about this a bit more. Thanks for updating your patch!
-
-Despite believing in my point, error handling code is where people make a 
-lot of mistakes.  Getting rid of it seems always to be a good idea.  Maybe 
-such checks could be moved into more uses of the result of 
-platform_get_resource.
-
-julia
+SGkgUGhpbGlwcGUsCgpPbiBXZWQsIEphbiAyNSwgMjAxMiBhdCAxOjQ1IFBNLCBQaGlsaXBwZSBS
+w6l0b3JuYXoKPHBoaWxpcHBlLnJldG9ybmF6QGVwZmwuY2g+IHdyb3RlOgoKPiBJIGhhdmUgYSB3
+b3JraW5nIHNvdW5kIHN1cHBvcnQgZm9yIHRoZSBteDMxbW9ib2FyZCBib2FyZHMgYXZhaWxhYmxl
+IGhlcmU6Cj4gaHR0cDovL2dpdGh1Yi5jb20vcmV0b3JuYXovbGludXgvY29tbWl0cy9tb2JvYXJk
+LXNvdW5kCgpUaGF0J3MgY29vbCA6LSkKCj4gSXQncyBiYXNpY2FsbHkgU2FzY2hhIG1jMTM3ODMg
+Y29kZWMgZHJpdmVyIChmcm9tIGhpcyBnaXQgdHJlZSkgcmViYXNlZCBvbiAzLjIKPiBhbmQgc29t
+ZSBteDMxbW9ib2FkIHNwZWNpZmljIGNvZGUuCj4KPiBJIGNhbiBwbGF5YmFjayAmIHJlY29yZCBz
+b3VuZCBvbiBvdXIgYm9hcmQgKDIgY2hhbm5lbHNAMTZLaHopIHdpdGggdGhlIHNkbWEuCj4KPiBT
+YXNjaGEsIGRvIHlvdSBoYXZlIGFueSBwbGFuIHRvIHVwc3RyZWFtIHRoZSBtYzEzNzgzIGNvZGVj
+IGRyaXZlciA/CgpJbiBjYXNlIFNhc2NoYSBkb2Vzbid0IGhhdmUgcGxhbnMgdG8gdXBzdHJlYW0g
+bWMxMzc4MywgaXMgdGhpcwpzb21ldGhpbmcgeW91IGNvdWxkIGRvPwoKVGhhbmtzLAoKRmFiaW8g
+RXN0ZXZhbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
