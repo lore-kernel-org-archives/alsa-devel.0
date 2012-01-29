@@ -1,51 +1,42 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Sound, SoC, WM9090: Remove unused variable 'wm9090' from
- wm9090_i2c_remove()
-Date: Sun, 29 Jan 2012 21:42:05 +0000
-Message-ID: <20120129214205.GD2994@opensource.wolfsonmicro.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: Re: [PATCH] Sound, SoC,
+ WM9090: Remove unused variable 'wm9090' from wm9090_i2c_remove()
+Date: Sun, 29 Jan 2012 22:43:06 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1201292242530.27749@swampdragon.chaosbits.net>
 References: <alpine.LNX.2.00.1201280055410.13952@swampdragon.chaosbits.net>
+	<20120129214205.GD2994@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0ntfKIWw70PvrIHh"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1201280055410.13952@swampdragon.chaosbits.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lrg@ti.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
+	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id EB99B24719
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 22:42:51 +0100 (CET)
+In-Reply-To: <20120129214205.GD2994@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Ian Lartey <ian@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 29 Jan 2012, Mark Brown wrote:
 
---0ntfKIWw70PvrIHh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Sat, Jan 28, 2012 at 12:57:42AM +0100, Jesper Juhl wrote:
+> > The variable 'wm9090' is assigned to but never used, so let's just
+> > remove it.
+> 
+> There's already a fix in for this (adding use back).
+> 
+Ok. Thank you for letting me know.
 
-On Sat, Jan 28, 2012 at 12:57:42AM +0100, Jesper Juhl wrote:
-> The variable 'wm9090' is assigned to but never used, so let's just
-> remove it.
-
-There's already a fix in for this (adding use back).
-
---0ntfKIWw70PvrIHh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPJb0kAAoJEBus8iNuMP3d1ikP/RZFTU8ntAyoDce0lTOSPcj8
-+vpgsyC6rGxPpFdzHaeNtLaYMOhI+N9BGA3cmUHhwUFVDNalU4AwOaLsKywYJRfW
-R2g9uZqOLa1GLQDRVCU+BnSZ8UAc3k+cgbYoJzbTzBkgwApjPt/DObQUqeLGYTbh
-ps04fpGl9tper3nnTe/Ke3HcmEwHKgnP3bYX721GGk3D90KUthBoMeePFCRkftgJ
-wNgN2Ppb29CnI7sTfdFkLql3WL1kB0GdQO+5fp4Qq3pausUdBDdZHFfK8tGPmtos
-lG7qkpnz3Ecx5NqNhrajk1fLqIibi8sRCIDEuitrpFPJi7hyP+gSAcEDMJ3XF0cV
-88gCDzmxco6g5vOigZvSyaV/wfZPUK4/W8uzbgdgHjl3rm77aWxgfE/DwfJg8OdR
-yFGsyEvRDPFV+fi6Kkgr1gZEIdYbozDxTcBKCVdeLaMrHV/7OUWUl6VN4IkCsfGw
-2MMZf120v4ZsCBAB7q2cxy5Oz3ztQW4NzJGmg40a6WhTDsxvY7LB1POh4BNyOVai
-G6vkkkyZ4YSIkssAJKHjCALzBm/qssmsrkSk4Q0AjUOnpAwiPEVIuiJ40kCC/2QL
-0hlu8tluaOi/3gPxJL3/kzU7ucmoaCMXi0TbE0pNYGK763NHKnjnD7Go54Kafoim
-Clvtrq6lcGRmQuXxaKWs
-=jFN1
------END PGP SIGNATURE-----
-
---0ntfKIWw70PvrIHh--
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
