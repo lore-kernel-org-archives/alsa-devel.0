@@ -1,59 +1,45 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: question application playback
-Date: Sun, 29 Jan 2012 09:51:27 -0600
-Message-ID: <4F256AFF.3000208@gmail.com>
-References: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
-	<4F02F4FD.80802@sasken.com> <4F03E90A.1060908@st.com>
-	<1325683983.1540.68.camel@vkoul-udesk3>
-	<CA+v+29hAqCFvyVxe6+XhQz0O+Kvudypo63JQW9OwuAhVG4JY_Q@mail.gmail.com>
+From: Philippe =?ISO-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using mc13783
+ codec
+Date: Sun, 29 Jan 2012 20:01:38 +0100
+Message-ID: <2851519.TkeCdfD43W@laptop>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+ <2667396.yifGumf5nD@laptop>
+ <CAOMZO5CRmvwCy_qE81PauZ6jmPN7S3N3pky01V0OmWBLCJ5JyA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35A6224682
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 16:51:44 +0100 (CET)
-Received: by ghbz2 with SMTP id z2so1486557ghb.38
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 07:51:42 -0800 (PST)
-In-Reply-To: <CA+v+29hAqCFvyVxe6+XhQz0O+Kvudypo63JQW9OwuAhVG4JY_Q@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CAOMZO5CRmvwCy_qE81PauZ6jmPN7S3N3pky01V0OmWBLCJ5JyA@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Lambrecht =?ISO-8859-1?Q?J=FCrgen?= <J.Lambrecht@televic.com>, =?ISO-8859-1?Q?J=FCrgen?= Lambrecht <juergen.lambrecht@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/29/2012 12:31 AM, Wang Xingchao wrote:
-> i used tool "aplay" to "play" mp3 files sucessfully. :)
-> well, in this scenario, alsa is used as data transfer interface, there
-> must be mp3 decode interface in kernel layer to receive mp3 data and
-> do the post work.  mp3 data is regarded as pcm data during transfer,
-> so the format and rate must be specified with aplay.
+Hi
 
-1. There is no DSP done in the kernel.  That includes
-    MP3 decode.  This is a hard and fast rule.  Decode
-    must either be done by the hardware or userspace.
-    Never in the kernel.
+Le samedi 28 janvier 2012 18:57:45 Fabio Estevam a =E9crit :
+> On Wed, Jan 25, 2012 at 1:45 PM, Philippe R=E9tornaz
+> =
 
-2. Some audio hardware is able to decode the MP3
-    directly.  Since I've never seen/used one, I
-    don't know how its driver would work or how
-    to set the hw_params... or if ALSA even supports
-    passing this format to the audio device.
+> <philippe.retornaz@epfl.ch> wrote:
+(...)
+> > Sascha, do you have any plan to upstream the mc13783 codec driver ?
+> =
 
-3. aplay is able to do some format conversion. For
-    example, `man aplay` shows that it supports MPEG
-    decode.
+> In case Sascha doesn't have plans to upstream mc13783, is this
+> something you could do?
 
-Conclusion:  If you can set your hw_params to do SND_PCM_FORMAT_MPEG, 
-then the hardware is doing the MPEG decode.  Most cards/drivers will 
-reject this, though... in which case you have to do the decode yourself 
-with something like liblame or libmpg123.
+It's an option, but I cannot work full-time on it so it would not be fast.
 
--gabriel
+Thanks,
+
+Philippe
