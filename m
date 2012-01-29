@@ -1,15 +1,18 @@
 From: Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
-Subject: [Patch v2] ASOC: neo1973_wm8753: remove references to
-	the neo1973-gta01 machine
-Date: Mon, 30 Jan 2012 00:31:47 +0100
-Message-ID: <1327879907-13028-1-git-send-email-GNUtoo@no-log.org>
+Subject: kernel panic with gta02 sound driver
+Date: Mon, 30 Jan 2012 00:48:20 +0100
+Message-ID: <1327880901-15944-1-git-send-email-GNUtoo@no-log.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp203.alice.it (smtp203.alice.it [82.57.200.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9EB3C24752
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 00:31:59 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E4EE24763
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 00:48:32 +0100 (CET)
+Received: from trisquel.workgroup (82.48.81.29) by smtp203.alice.it
+	(8.6.023.02) (authenticated as editempo@alice.it)
+	id 4ECA5E2302386ED2 for alsa-devel@alsa-project.org;
+	Mon, 30 Jan 2012 00:48:31 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,81 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIE9wZW5tb2tvIEdUQTAxIG1hY2hpbmUgaGFzIGJlZW4gcmVtb3ZlZCBmcm9tIHRoZSBtYWNo
-aW5lIElEIGRhdGFiYXNlLAogIHNvIHdlIG5lZWQgdG8gcmVtb3ZlIHJlZmVyZW5jZXMgdG8gaXQg
-YXMgd2VsbC4KCldpdGhvdXQgdGhhdCBmaXggd2UgaGF2ZToKICBzb3VuZC9zb2Mvc2Ftc3VuZy9u
-ZW8xOTczX3dtODc1My5jOiBJbiBmdW5jdGlvbiDigJhuZW8xOTczX3dtODc1M19pbml04oCZOgog
-IHNvdW5kL3NvYy9zYW1zdW5nL25lbzE5NzNfd204NzUzLmM6MzI1OjI6IGVycm9yOiBpbXBsaWNp
-dCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhtYWNoaW5lX2lzX25lbzE5NzNfZ3RhMDHigJkK
-ClNpZ25lZC1vZmYtYnk6IERlbmlzICdHTlV0b28nIENhcmlrbGkgPEdOVXRvb0Buby1sb2cub3Jn
-PgotLS0KIHNvdW5kL3NvYy9zYW1zdW5nL25lbzE5NzNfd204NzUzLmMgfCAgIDY1ICstLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlv
-bnMoKyksIDY0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zYW1zdW5nL25l
-bzE5NzNfd204NzUzLmMgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9uZW8xOTczX3dtODc1My5jCmluZGV4
-IDFiZjBjMzIuLmQyM2IxOWEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zYW1zdW5nL25lbzE5NzNf
-d204NzUzLmMKKysrIGIvc291bmQvc29jL3NhbXN1bmcvbmVvMTk3M193bTg3NTMuYwpAQCAtMjMw
-LDggKzIzMCw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBuZW8xOTcz
-X3dtODc1M19jb250cm9sc1tdID0gewogCiAvKiBHVEEwMiBzcGVjaWZpYyByb3V0ZXMgYW5kIGNv
-bnRyb2xzICovCiAKLSNpZmRlZiBDT05GSUdfTUFDSF9ORU8xOTczX0dUQTAyCi0KIHN0YXRpYyBp
-bnQgZ3RhMDJfc3BlYWtlcl9lbmFibGVkOwogCiBzdGF0aWMgaW50IGxtNDg1M19zZXRfc3BrKHN0
-cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLApAQCAtMzExLDEwICszMDksNiBAQCBzdGF0aWMg
-aW50IG5lbzE5NzNfZ3RhMDJfd204NzUzX2luaXQoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVj
-KQogCXJldHVybiAwOwogfQogCi0jZWxzZQotc3RhdGljIGludCBuZW8xOTczX2d0YTAyX3dtODc1
-M19pbml0KHN0cnVjdCBzbmRfc29jX2NvZGUgKmNvZGVjKSB7IHJldHVybiAwOyB9Ci0jZW5kaWYK
-LQogc3RhdGljIGludCBuZW8xOTczX3dtODc1M19pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50
-aW1lICpydGQpCiB7CiAJc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjID0gcnRkLT5jb2RlYzsK
-QEAgLTMyMiwxMCArMzE2LDYgQEAgc3RhdGljIGludCBuZW8xOTczX3dtODc1M19pbml0KHN0cnVj
-dCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCiAJaW50IHJldDsKIAogCS8qIHNldCB1cCBOQyBj
-b2RlYyBwaW5zICovCi0JaWYgKG1hY2hpbmVfaXNfbmVvMTk3M19ndGEwMSgpKSB7Ci0JCXNuZF9z
-b2NfZGFwbV9uY19waW4oZGFwbSwgIkxPVVQyIik7Ci0JCXNuZF9zb2NfZGFwbV9uY19waW4oZGFw
-bSwgIlJPVVQyIik7Ci0JfQogCXNuZF9zb2NfZGFwbV9uY19waW4oZGFwbSwgIk9VVDMiKTsKIAlz
-bmRfc29jX2RhcG1fbmNfcGluKGRhcG0sICJPVVQ0Iik7CiAJc25kX3NvY19kYXBtX25jX3Bpbihk
-YXBtLCAiTElORTEiKTsKQEAgLTM3MCw1MCArMzYwLDYgQEAgc3RhdGljIGludCBuZW8xOTczX3dt
-ODc1M19pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCiAJcmV0dXJuIDA7CiB9
-CiAKLS8qIEdUQTAxIHNwZWNpZmljIGNvbnRyb2xzICovCi0KLSNpZmRlZiBDT05GSUdfTUFDSF9O
-RU8xOTczX0dUQTAxCi0KLXN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlIG5l
-bzE5NzNfbG00ODU3X3JvdXRlc1tdID0gewotCXsiQW1wIElOIiwgTlVMTCwgIlJPVVQxIn0sCi0J
-eyJBbXAgSU4iLCBOVUxMLCAiTE9VVDEifSwKLQotCXsiSGFuZHNldCBTcGsiLCBOVUxMLCAiQW1w
-IEVQIn0sCi0JeyJTdGVyZW8gT3V0IiwgTlVMTCwgIkFtcCBMUyJ9LAotCXsiSGVhZHBob25lIiwg
-TlVMTCwgIkFtcCBIUCJ9LAotfTsKLQotc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1f
-d2lkZ2V0IG5lbzE5NzNfbG00ODU3X2RhcG1fd2lkZ2V0c1tdID0gewotCVNORF9TT0NfREFQTV9T
-UEsoIkhhbmRzZXQgU3BrIiwgTlVMTCksCi0JU05EX1NPQ19EQVBNX1NQSygiU3RlcmVvIE91dCIs
-IE5VTEwpLAotCVNORF9TT0NfREFQTV9IUCgiSGVhZHBob25lIiwgTlVMTCksCi19OwotCi1zdGF0
-aWMgaW50IG5lbzE5NzNfbG00ODU3X2luaXQoc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0ICpk
-YXBtKQotewotCWludCByZXQ7Ci0KLQlyZXQgPSBzbmRfc29jX2RhcG1fbmV3X2NvbnRyb2xzKGRh
-cG0sIG5lbzE5NzNfbG00ODU3X2RhcG1fd2lkZ2V0cywKLQkJCUFSUkFZX1NJWkUobmVvMTk3M19s
-bTQ4NTdfZGFwbV93aWRnZXRzKSk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKLQotCXJldCA9
-IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKGRhcG0sIG5lbzE5NzNfbG00ODU3X3JvdXRlcywKLQkJ
-CUFSUkFZX1NJWkUobmVvMTk3M19sbTQ4NTdfcm91dGVzKSk7Ci0JaWYgKHJldCkKLQkJcmV0dXJu
-IHJldDsKLQotCXNuZF9zb2NfZGFwbV9pZ25vcmVfc3VzcGVuZChkYXBtLCAiU3RlcmVvIE91dCIp
-OwotCXNuZF9zb2NfZGFwbV9pZ25vcmVfc3VzcGVuZChkYXBtLCAiSGFuZHNldCBTcGsiKTsKLQlz
-bmRfc29jX2RhcG1faWdub3JlX3N1c3BlbmQoZGFwbSwgIkhlYWRwaG9uZSIpOwotCi0JcmV0dXJu
-IDA7Ci19Ci0KLSNlbHNlCi1zdGF0aWMgaW50IG5lbzE5NzNfbG00ODU3X2luaXQoc3RydWN0IHNu
-ZF9zb2NfZGFwbV9jb250ZXh0ICpkYXBtKSB7IHJldHVybiAwOyB9OwotI2VuZGlmCi0KIHN0YXRp
-YyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBuZW8xOTczX2RhaVtdID0gewogeyAvKiBIaWZpIFBs
-YXliYWNrIC0gZm9yIHNpbWlsYXRpb3VzIHVzZSB3aXRoIHZvaWNlIGJlbG93ICovCiAJLm5hbWUg
-PSAiV004NzUzIiwKQEAgLTQ0MCwxMSArMzg2LDYgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2F1
-eF9kZXYgbmVvMTk3M19hdXhfZGV2c1tdID0gewogCQkubmFtZSA9ICJkZmJtY3MzMjAiLAogCQku
-Y29kZWNfbmFtZSA9ICJkZmJtY3MzMjAuMCIsCiAJfSwKLQl7Ci0JCS5uYW1lID0gImxtNDg1NyIs
-Ci0JCS5jb2RlY19uYW1lID0gImxtNDg1Ny4wLTAwN2MiLAotCQkuaW5pdCA9IG5lbzE5NzNfbG00
-ODU3X2luaXQsCi0JfSwKIH07CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jb2RlY19jb25mIG5l
-bzE5NzNfY29kZWNfY29uZltdID0gewpAQCAtNDU0LDE0ICszOTUsMTAgQEAgc3RhdGljIHN0cnVj
-dCBzbmRfc29jX2NvZGVjX2NvbmYgbmVvMTk3M19jb2RlY19jb25mW10gPSB7CiAJfSwKIH07CiAK
-LSNpZmRlZiBDT05GSUdfTUFDSF9ORU8xOTczX0dUQTAyCiBzdGF0aWMgY29uc3Qgc3RydWN0IGdw
-aW8gbmVvMTk3M19ndGEwMl9ncGlvc1tdID0gewogCXsgR1RBMDJfR1BJT19IUF9JTiwgR1BJT0Zf
-T1VUX0lOSVRfSElHSCwgIkdUQTAyX0hQX0lOIiB9LAogCXsgR1RBMDJfR1BJT19BTVBfU0hVVCwg
-R1BJT0ZfT1VUX0lOSVRfSElHSCwgIkdUQTAyX0FNUF9TSFVUIiB9LAogfTsKLSNlbHNlCi1zdGF0
-aWMgY29uc3Qgc3RydWN0IGdwaW8gbmVvMTk3M19ndGEwMl9ncGlvc1tdID0ge307Ci0jZW5kaWYK
-IAogc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgbmVvMTk3MyA9IHsKIAkubmFtZSA9ICJuZW8x
-OTczIiwKQEAgLTQ4MCw3ICs0MTcsNyBAQCBzdGF0aWMgaW50IF9faW5pdCBuZW8xOTczX2luaXQo
-dm9pZCkKIHsKIAlpbnQgcmV0OwogCi0JaWYgKCFtYWNoaW5lX2lzX25lbzE5NzNfZ3RhMDEoKSAm
-JiAhbWFjaGluZV9pc19uZW8xOTczX2d0YTAyKCkpCisJaWYgKCFtYWNoaW5lX2lzX25lbzE5NzNf
-Z3RhMDIoKSkKIAkJcmV0dXJuIC1FTk9ERVY7CiAKIAlpZiAobWFjaGluZV9pc19uZW8xOTczX2d0
-YTAyKCkpIHsKLS0gCjEuNy40LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+
+hi,
+
+The patch contained in that mail fixes the dai link of
+  the gta02 machine, it worked (better) on a 3.2.1 kernel
+  (it didn't made the card work but only permitted the dai link
+  to happen).
+
+but with linux-next it produces a kernel panic:
+[    0.985000] Alignment trap: not handling swp instruction
+[    0.985000] Alignment trap: not handling instruction e1003092 at [<c03b0244>]
+[    0.990000] Unhandled fault: alignment exception (0x803) at 0x37386d77
+[    0.995000] Internal error: : 803 [#1]
+[    0.995000] CPU: 0    Not tainted  (3.3.0-rc1-next-20120127+ #55)
+[    0.995000] PC is at mutex_lock+0x8/0x14
+[    0.995000] LR is at regmap_write+0x14/0x38
+[    0.995000] pc : [<c03b0248>]    lr : [<c01bf7ac>]    psr: 60000013
+[    0.995000] sp : c7821e28  ip : 00000000  fp : 00000000
+[    0.995000] r10: c79a59c0  r9 : 00000001  r8 : c052fd5c
+[    0.995000] r7 : 00000001  r6 : 0000001f  r5 : 00000000  r4 : 37386d77
+[    0.995000] r3 : 00000000  r2 : 00000000  r1 : 0000001f  r0 : 37386d77
+[    0.995000] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+[    0.995000] Control: c000717f  Table: 30004000  DAC: 00000017
+[    0.995000] Process swapper (pid: 1, stack limit = 0xc7820270)
+[    0.995000] Stack: (0xc7821e28 to 0xc7822000)
+[    0.995000] 1e20:                   c79bfa00 00000000 c79a5a40 c024e408 000000c0 c0257838
+[    0.995000] 1e40: c79bfa00 c052fb80 c052efb8 c024e7e4 c041e348 c0013658 c052fb80 c79bf800
+[    0.995000] 1e60: c79bfa00 00000000 c79bee60 00000000 c7894240 c024efb4 c052fb90 3ab5e842
+[    0.995000] 1e80: c79bec80 00000000 c052ed50 c052fce8 c052fc3c c052fba0 c052fc54 c052fc34
+[    0.995000] 1ea0: c052fc64 c052ebe8 00000000 c052fb80 c052fb98 c052eb60 00000000 c052ebe8
+[    0.995000] 1ec0: 00000000 00000000 00000000 c0250484 c79bfc08 c79bfc08 00000000 00000000
+[    0.995000] 1ee0: c052eb8c c025053c c052eb8c c79bfc08 c05842d4 c01b5edc c01b5ec8 c01b4c70
+[    0.995000] 1f00: c79bfc08 c01b4e10 00000000 00000000 c05842b0 c01b3bc0 c7840c1c c79a60f4
+[    0.995000] 1f20: c79bfc08 c79bfc3c c79bfc08 c01b4ee0 c79bfc08 c0527a98 c79bfc08 c01b3db4
+[    0.995000] 1f40: c79bfc08 c79bfc10 c0527958 c01b26d0 c79bfc10 00000000 00000021 c0165884
+[    0.995000] 1f60: c7821f88 c79bfc00 c79bfc08 c79bfc00 c79bfc08 00000000 00000013 00000000
+[    0.995000] 1f80: 00000000 00000000 00000000 c01b646c c79bec20 c052fb80 00000000 c05854f8
+[    0.995000] 1fa0: 00000013 c04efdb8 c05023b0 00000000 c04efd5c c04da800 c0009850 60000013
+[    0.995000] 1fc0: 00000000 c0501f28 c050269c c05023b0 c050269c c0009850 00000013 00000000
+[    0.995000] 1fe0: 00000000 c04da960 00000000 00000000 c04da8d0 c0009850 00000000 00000000
+[    0.995000] [<c03b0248>] (mutex_lock+0x8/0x14) from [<c01bf7ac>] (regmap_write+0x14/0x38)
+[    0.995000] [<c01bf7ac>] (regmap_write+0x14/0x38) from [<c024e408>] (snd_soc_write+0xc/0x10)
+[    0.995000] [<c024e408>] (snd_soc_write+0xc/0x10) from [<c0257838>] (wm8753_probe+0x74/0x1c4)
+[    0.995000] [<c0257838>] (wm8753_probe+0x74/0x1c4) from [<c024e7e4>] (soc_probe_codec+0x124/0x208)
+[    0.995000] [<c024e7e4>] (soc_probe_codec+0x124/0x208) from [<c024efb4>] (snd_soc_instantiate_cards+0x664/0xd5c)
+[    0.995000] [<c024efb4>] (snd_soc_instantiate_cards+0x664/0xd5c) from [<c0250484>] (snd_soc_register_card+0x240/0x2d4)
+[    0.995000] [<c0250484>] (snd_soc_register_card+0x240/0x2d4) from [<c025053c>] (soc_probe+0x24/0x40)
+[    0.995000] [<c025053c>] (soc_probe+0x24/0x40) from [<c01b5edc>] (platform_drv_probe+0x14/0x18)
+[    0.995000] [<c01b5edc>] (platform_drv_probe+0x14/0x18) from [<c01b4c70>] (driver_probe_device+0xa0/0x1b0)
+[    0.995000] [<c01b4c70>] (driver_probe_device+0xa0/0x1b0) from [<c01b3bc0>] (bus_for_each_drv+0x64/0x8c)
+[    0.995000] [<c01b3bc0>] (bus_for_each_drv+0x64/0x8c) from [<c01b4ee0>] (device_attach+0x8c/0xa4)
+[    0.995000] [<c01b4ee0>] (device_attach+0x8c/0xa4) from [<c01b3db4>] (bus_probe_device+0x88/0xac)
+[    0.995000] [<c01b3db4>] (bus_probe_device+0x88/0xac) from [<c01b26d0>] (device_add+0x4a0/0x570)
+[    0.995000] [<c01b26d0>] (device_add+0x4a0/0x570) from [<c01b646c>] (platform_device_add+0xf0/0x18c)
+[    0.995000] [<c01b646c>] (platform_device_add+0xf0/0x18c) from [<c04efdb8>] (neo1973_init+0x5c/0x9c)
+[    0.995000] [<c04efdb8>] (neo1973_init+0x5c/0x9c) from [<c04da800>] (do_one_initcall+0xa4/0x174)
+[    0.995000] [<c04da800>] (do_one_initcall+0xa4/0x174) from [<c04da960>] (kernel_init+0x90/0x128)
+[    0.995000] [<c04da960>] (kernel_init+0x90/0x128) from [<c0009850>] (kernel_thread_exit+0x0/0x8)
+[    0.995000] Code: e28dd010 e8bd81f0 e3a02000 e1003092 (e3530001) 
+[    1.000000] ---[ end trace 81e43b55a6684d02 ]---
+
+What could be the cause? (the CPU is an armv4).
+
+Denis.
