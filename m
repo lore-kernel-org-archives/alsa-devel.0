@@ -1,17 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/2] ASoC: Use dai_fmt in afeb9260 machine
-	driver
-Date: Sun, 29 Jan 2012 16:52:02 +0800
-Message-ID: <1327827122.7085.1.camel@phoenix>
+Subject: [PATCH 2/2] ASoC: Convert afeb9260 to table based DAPM
+	init
+Date: Sun, 29 Jan 2012 16:52:51 +0800
+Message-ID: <1327827171.7085.2.camel@phoenix>
+References: <1327827122.7085.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9BB3A24577
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 09:52:14 +0100 (CET)
-Received: by dadz14 with SMTP id z14so2878959dad.38
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 00:52:12 -0800 (PST)
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 26E6D2457A
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 09:52:57 +0100 (CET)
+Received: by dadz14 with SMTP id z14so2879243dad.38
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 00:52:57 -0800 (PST)
+In-Reply-To: <1327827122.7085.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,51 +29,47 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/atmel/snd-soc-afeb9260.c |   23 ++---------------------
- 1 files changed, 2 insertions(+), 21 deletions(-)
+ sound/soc/atmel/snd-soc-afeb9260.c |   14 ++++++--------
+ 1 files changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/atmel/snd-soc-afeb9260.c b/sound/soc/atmel/snd-soc-afeb9260.c
-index 4ca667d..cb0130c 100644
+index cb0130c..f65f08b 100644
 --- a/sound/soc/atmel/snd-soc-afeb9260.c
 +++ b/sound/soc/atmel/snd-soc-afeb9260.c
-@@ -46,29 +46,8 @@ static int afeb9260_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
- 
--	/* Set codec DAI configuration */
--	err = snd_soc_dai_set_fmt(codec_dai,
--				  SND_SOC_DAIFMT_I2S|
--				  SND_SOC_DAIFMT_NB_IF |
--				  SND_SOC_DAIFMT_CBM_CFM);
--	if (err < 0) {
--		printk(KERN_ERR "can't set codec DAI configuration\n");
--		return err;
--	}
--
--	/* Set cpu DAI configuration */
--	err = snd_soc_dai_set_fmt(cpu_dai,
--				  SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_IF |
--				  SND_SOC_DAIFMT_CBM_CFM);
--	if (err < 0) {
--		printk(KERN_ERR "can't set cpu DAI configuration\n");
--		return err;
--	}
--
- 	/* Set the codec system clock for DAC and ADC */
- 	err =
- 	    snd_soc_dai_set_sysclk(codec_dai, 0, CODEC_CLOCK, SND_SOC_CLOCK_IN);
-@@ -129,6 +108,8 @@ static struct snd_soc_dai_link afeb9260_dai = {
- 	.platform_name = "atmel_pcm-audio",
- 	.codec_name = "tlv320aic23-codec.0-001a",
- 	.init = afeb9260_tlv320aic23_init,
-+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
-+		   SND_SOC_DAIFMT_CBM_CFM,
- 	.ops = &afeb9260_ops,
+@@ -70,7 +70,7 @@ static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
  };
  
+-static const struct snd_soc_dapm_route audio_map[] = {
++static const struct snd_soc_dapm_route afeb9260_audio_map[] = {
+ 	{"Headphone Jack", NULL, "LHPOUT"},
+ 	{"Headphone Jack", NULL, "RHPOUT"},
+ 
+@@ -85,13 +85,6 @@ static int afeb9260_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
+-	/* Add afeb9260 specific widgets */
+-	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
+-				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
+-
+-	/* Set up afeb9260 specific audio path audio_map */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
+ 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
+ 	snd_soc_dapm_enable_pin(dapm, "Line In");
+ 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+@@ -119,6 +112,11 @@ static struct snd_soc_card snd_soc_machine_afeb9260 = {
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &afeb9260_dai,
+ 	.num_links = 1,
++
++	.dapm_widgets = tlv320aic23_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
++	.dapm_routes = afeb9260_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(afeb9260_audio_map),
+ };
+ 
+ static struct platform_device *afeb9260_snd_device;
 -- 
 1.7.5.4
