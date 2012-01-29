@@ -1,19 +1,22 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: Convert afeb9260 to table based DAPM
-	init
-Date: Sun, 29 Jan 2012 16:52:51 +0800
-Message-ID: <1327827171.7085.2.camel@phoenix>
-References: <1327827122.7085.1.camel@phoenix>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: question application playback
+Date: Sun, 29 Jan 2012 09:51:27 -0600
+Message-ID: <4F256AFF.3000208@gmail.com>
+References: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
+	<4F02F4FD.80802@sasken.com> <4F03E90A.1060908@st.com>
+	<1325683983.1540.68.camel@vkoul-udesk3>
+	<CA+v+29hAqCFvyVxe6+XhQz0O+Kvudypo63JQW9OwuAhVG4JY_Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 26E6D2457A
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 09:52:57 +0100 (CET)
-Received: by dadz14 with SMTP id z14so2879243dad.38
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 00:52:57 -0800 (PST)
-In-Reply-To: <1327827122.7085.1.camel@phoenix>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35A6224682
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 16:51:44 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so1486557ghb.38
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 07:51:42 -0800 (PST)
+In-Reply-To: <CA+v+29hAqCFvyVxe6+XhQz0O+Kvudypo63JQW9OwuAhVG4JY_Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,52 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Sergey Lapin <slapin@ossfans.org>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/atmel/snd-soc-afeb9260.c |   14 ++++++--------
- 1 files changed, 6 insertions(+), 8 deletions(-)
+On 01/29/2012 12:31 AM, Wang Xingchao wrote:
+> i used tool "aplay" to "play" mp3 files sucessfully. :)
+> well, in this scenario, alsa is used as data transfer interface, there
+> must be mp3 decode interface in kernel layer to receive mp3 data and
+> do the post work.  mp3 data is regarded as pcm data during transfer,
+> so the format and rate must be specified with aplay.
 
-diff --git a/sound/soc/atmel/snd-soc-afeb9260.c b/sound/soc/atmel/snd-soc-afeb9260.c
-index cb0130c..f65f08b 100644
---- a/sound/soc/atmel/snd-soc-afeb9260.c
-+++ b/sound/soc/atmel/snd-soc-afeb9260.c
-@@ -70,7 +70,7 @@ static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
- };
- 
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route afeb9260_audio_map[] = {
- 	{"Headphone Jack", NULL, "LHPOUT"},
- 	{"Headphone Jack", NULL, "RHPOUT"},
- 
-@@ -85,13 +85,6 @@ static int afeb9260_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
--	/* Add afeb9260 specific widgets */
--	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
--				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
--
--	/* Set up afeb9260 specific audio path audio_map */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
- 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
- 	snd_soc_dapm_enable_pin(dapm, "Line In");
- 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
-@@ -119,6 +112,11 @@ static struct snd_soc_card snd_soc_machine_afeb9260 = {
- 	.owner = THIS_MODULE,
- 	.dai_link = &afeb9260_dai,
- 	.num_links = 1,
-+
-+	.dapm_widgets = tlv320aic23_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
-+	.dapm_routes = afeb9260_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(afeb9260_audio_map),
- };
- 
- static struct platform_device *afeb9260_snd_device;
--- 
-1.7.5.4
+1. There is no DSP done in the kernel.  That includes
+    MP3 decode.  This is a hard and fast rule.  Decode
+    must either be done by the hardware or userspace.
+    Never in the kernel.
+
+2. Some audio hardware is able to decode the MP3
+    directly.  Since I've never seen/used one, I
+    don't know how its driver would work or how
+    to set the hw_params... or if ALSA even supports
+    passing this format to the audio device.
+
+3. aplay is able to do some format conversion. For
+    example, `man aplay` shows that it supports MPEG
+    decode.
+
+Conclusion:  If you can set your hw_params to do SND_PCM_FORMAT_MPEG, 
+then the hardware is doing the MPEG decode.  Most cards/drivers will 
+reject this, though... in which case you have to do the decode yourself 
+with something like liblame or libmpg123.
+
+-gabriel
