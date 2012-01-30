@@ -1,88 +1,86 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
-Date: Mon, 30 Jan 2012 10:34:02 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1201300944360.7932@axis700.grange>
-References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
- <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
- <1327912346.1527.13.camel@vkoul-udesk3>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] regmap: Properly round reg_bytes and
+	val_bytes
+Date: Mon, 30 Jan 2012 13:21:34 +0000
+Message-ID: <20120130132134.GB4882@opensource.wolfsonmicro.com>
+References: <1327677023-29310-1-git-send-email-w.sang@pengutronix.de>
+	<20120127162837.GB18572@opensource.wolfsonmicro.com>
+	<20120128011403.GA6669@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1327912346.1527.13.camel@vkoul-udesk3>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
+Content-Type: multipart/mixed; boundary="===============8588136467901612362=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A149724600
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 14:21:36 +0100 (CET)
+In-Reply-To: <20120128011403.GA6669@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod
 
-Thanks for your email.
+--===============8588136467901612362==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
+Content-Disposition: inline
 
-On Mon, 30 Jan 2012, Vinod Koul wrote:
 
-> On Thu, 2012-01-26 at 15:56 +0100, Guennadi Liakhovetski wrote:
-> > This patch adds a library of functions, helping to implement dmaengine
-> > drivers for hardware, unable to handle scatter-gather lists natively.
-> > The first version of this driver only supports memcpy and slave DMA
-> > operation.
-> > 
-> > Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> > ---
-> > 
-> > v2:
-> > 
-> > 1. switch from using a tasklet to threaded IRQ, which allowed to
-> > 2. remove lock / unlock inline functions
-> > 3. remove __devinit, __devexit annotations
-> Sorry to join the discussion late, was on vacation, travel, long
-> weekend...
-> 
-> I don't still comprehend the need for a library on top of dmaengine
-> which gain is just a library between clients and dmacs. Surely we don't
-> want to write another abstraction on top of one provided?
-> 
-> If the question is to handle scatter-gather even if the hardware doesn't
-> have the capability, then why don't add that in dmaengine itself rather
-> than one more layer?
+--ZfOjI3PrQbgiZnxM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Well, yes, adding new abstraction layers is always a decision, that has to 
-be well justified. In this case it does at least make the life easier for 
-two sh-mobile drivers: shdma and the new SUDMAC driver.
+On Sat, Jan 28, 2012 at 02:14:03AM +0100, Wolfram Sang wrote:
 
-However, I did name the library in a generic way without reference to sh, 
-assuming, that it might with time become useful for other architectures 
-too. The reasons why I prefered to keep it as an optional addition to 
-dmaengine core, instead of tightly integrating it with it are, that (1) I 
-did not want to add useless code to drivers, that do not need it, (2) I am 
-not sure if and when this library will become useful for other drivers: 
-apart from sh I am only familiar with one more dmaengine driver: 
-ipu/ipu_idmac.c, and that one supports scatter-gather lists in a limited 
-way and has some further peculiarities, that would likely make it a bad 
-match for the simple DMA library, (3) keeping it separate makes its 
-further development easier.
+> I wondered if you'd save reg_bits and val_bits there (converting to *_bytes
+> when needed), you could replace all the format_x_y-functions with a few generic
+> functions doing (reg << y) | val. Unsure if it is worth it...
 
-OTOH, I'm certainly fine with a tighter library integration with the 
-dmaengine core. I think, it still would be better to keep it in a separate 
-file and only build it if needed, right? This woult also simplify code 
-debugging and further development. I can remove the "simple" notation, 
-which does make it look like an additional abstraction layer, and replace 
-it with, say, sgsoft (scatter-gather software implementation)? A more 
-interesting question is what to do with struct dma_simple_dev, struct 
-dma_simple_chan, struct dma_simple_desc, that embed struct dma_device, 
-struct dma_chan and struct dma_async_tx_descriptor respectively. I don't 
-think we want to merge all the additions from those wrapping structs back 
-into their dmaengine counterparts?
+Clearly we *can* but there's other bits (chiefly the cache code once we
+acquire the ability to do block operations from cache) which really want
+stuff to be 8 bit aligned.  I deliberately chose to make things byte
+aligned so we have to think about this stuff before we do things that
+make byte aligned stuff hard, it felt like if we were going to take a
+complexity hit we probably want it to be on the odd register formats as
+pretty much all of the more demanding modern devices seem to be going
+for multiples of 8 bits.
 
-How would you like to do this? Don't you think, it would be good to allow 
-both: either implement a dmaengine driver directly, exactly as all drivers 
-are doing now, or use the additional helper library for suitable (simple) 
-hardware types? I see it similar to I2C, where you either implement an I2C 
-driver directly, or you use the bitbanging abstraction for simpler 
-hardware.
+--ZfOjI3PrQbgiZnxM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks
-Guennadi
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPJpjHAAoJEBus8iNuMP3djwQP/i0IM21+bujNLinqA/of3T9l
+pNcTb7YjfCvjv+5RGzw2NXuffRp9i1cFZemTC1y+am+eVPvt+k1y4C8YbQXrqFli
+1K38LOjOxTXI5y6oNtg2/Te3sq4OY5OCgRayLZ/wW7I/CcYsf3U/I3BApowLzOJl
+mvrDlPSRXYypPfnE53u41S3W+fOdgf5AxHTjP48Bi2ssD1aLbGgSF+IeDpAaDjEM
+2IarJnTNVap2FlcLSLT7QeIp8opYoSu/C24y3BbVLwjph8hIaECaEHsQZs+UwPu4
+hCx5H3JI8WtgoBCB5ACeBDZY2DAJJJiOGXTajW59JG1qgwiYD2QDctot+gptnSQJ
+C22WzOCh5PMZqbyU5uOvD8m4cw23B8M0xrtlK6e6KBHx98F1y82899L7JogX82AE
+8QmmYw6hZqBGQ2z4mWNJIkSUvpaXHJ1St9vvC4gpf+SapSRoz0npuE0fJezfd4xI
+Hhn6wlNP2EMWoGCEsLNfM5m2zYJQNcTblOEHRR3pz0iH3b8JCBzauWa8yJEhpr5U
+Do8pS3SHoL0IPFGtOVswYAmIprN0KmEsKeLzoxFInJWi2iYqg9mpqI9vOyzJK8RG
+QFHdXDnL2I3JMrH6zknCu+OfZwMBvVgH7Youz4en3sZLN1US0kX5mTgrdRhYhgaD
+K+0SX4Aq1a3CKpR7Ld92
+=SDPn
+-----END PGP SIGNATURE-----
+
+--ZfOjI3PrQbgiZnxM--
+
+--===============8588136467901612362==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8588136467901612362==--
