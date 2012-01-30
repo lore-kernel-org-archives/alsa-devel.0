@@ -1,22 +1,17 @@
-From: Wang Xingchao <wangxingchao2011@gmail.com>
-Subject: Re: question application playback
-Date: Sun, 29 Jan 2012 21:25:25 -0500
-Message-ID: <CA+v+29ibbs_bVxuPM4gP4nNf=yCcJEnbywcc7HWwNzrLGvjF-Q@mail.gmail.com>
-References: <1325593416.22411.YahooMailNeo@web161301.mail.bf1.yahoo.com>
-	<4F02F4FD.80802@sasken.com> <4F03E90A.1060908@st.com>
-	<1325683983.1540.68.camel@vkoul-udesk3>
-	<CA+v+29hAqCFvyVxe6+XhQz0O+Kvudypo63JQW9OwuAhVG4JY_Q@mail.gmail.com>
-	<4F256AFF.3000208@gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ALSA: Include linux/pci.h in sound/core.h
+Date: Mon, 30 Jan 2012 13:44:35 +0800
+Message-ID: <1327902275.12540.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f44.google.com (mail-qw0-f44.google.com
-	[209.85.216.44]) by alsa0.perex.cz (Postfix) with ESMTP id DC17E24154
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 03:25:47 +0100 (CET)
-Received: by qafi29 with SMTP id i29so1851723qaf.17
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 18:25:47 -0800 (PST)
-In-Reply-To: <4F256AFF.3000208@gmail.com>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FE7724485
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 06:44:46 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so1649632ghb.38
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 21:44:44 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,47 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-dGhhbmtzIHlvdXIgY29tbWVudHMsIGdhYnJpZWwuCgrlnKggMjAxMuW5tDHmnIgyOeaXpSDkuIrl
-jYgxMDo1Me+8jEdhYnJpZWwgTS4gQmVkZGluZ2ZpZWxkIDxnYWJyYmVkZEBnbWFpbC5jb20+IOWG
-memBk++8mgo+IE9uIDAxLzI5LzIwMTIgMTI6MzEgQU0sIFdhbmcgWGluZ2NoYW8gd3JvdGU6Cj4+
-IGkgdXNlZCB0b29sICJhcGxheSIgdG8gInBsYXkiIG1wMyBmaWxlcyBzdWNlc3NmdWxseS4gOikK
-Pj4gd2VsbCwgaW4gdGhpcyBzY2VuYXJpbywgYWxzYSBpcyB1c2VkIGFzIGRhdGEgdHJhbnNmZXIg
-aW50ZXJmYWNlLCB0aGVyZQo+PiBtdXN0IGJlIG1wMyBkZWNvZGUgaW50ZXJmYWNlIGluIGtlcm5l
-bCBsYXllciB0byByZWNlaXZlIG1wMyBkYXRhIGFuZAo+PiBkbyB0aGUgcG9zdCB3b3JrLiAgbXAz
-IGRhdGEgaXMgcmVnYXJkZWQgYXMgcGNtIGRhdGEgZHVyaW5nIHRyYW5zZmVyLAo+PiBzbyB0aGUg
-Zm9ybWF0IGFuZCByYXRlIG11c3QgYmUgc3BlY2lmaWVkIHdpdGggYXBsYXkuCj4KPiAxLiBUaGVy
-ZSBpcyBubyBEU1AgZG9uZSBpbiB0aGUga2VybmVsLiAgVGhhdCBpbmNsdWRlcwo+ICAgIE1QMyBk
-ZWNvZGUuICBUaGlzIGlzIGEgaGFyZCBhbmQgZmFzdCBydWxlLiAgRGVjb2RlCj4gICAgbXVzdCBl
-aXRoZXIgYmUgZG9uZSBieSB0aGUgaGFyZHdhcmUgb3IgdXNlcnNwYWNlLgo+ICAgIE5ldmVyIGlu
-IHRoZSBrZXJuZWwuCgpBIG1pc3VuZGVyc3RhbmRpbmcgaGVyZS4gSXQncyBEU1AgaW50ZXJmYWNl
-IGluIGtlcm5lbCwgd2hpY2ggc2VuZApjb21wcmVzcyBhdWRpbyBkYXRhIHRvIERTUCBmb3IgcG9z
-dCBwcm9jZXNzLiBUaGUgZGVjb2RpbmcgaXMgZG9uZQpieSBIVywgdGhhdCdzIHRydWUuIDopCj4K
-PiAyLiBTb21lIGF1ZGlvIGhhcmR3YXJlIGlzIGFibGUgdG8gZGVjb2RlIHRoZSBNUDMKPiAgICBk
-aXJlY3RseS4gIFNpbmNlIEkndmUgbmV2ZXIgc2Vlbi91c2VkIG9uZSwgSQo+ICAgIGRvbid0IGtu
-b3cgaG93IGl0cyBkcml2ZXIgd291bGQgd29yayBvciBob3cKPiAgICB0byBzZXQgdGhlIGh3X3Bh
-cmFtcy4uLiBvciBpZiBBTFNBIGV2ZW4gc3VwcG9ydHMKPiAgICBwYXNzaW5nIHRoaXMgZm9ybWF0
-IHRvIHRoZSBhdWRpbyBkZXZpY2UuCgpUaGUgaW50ZXJmYWNlIGNhbiByZWNlaXZlIGNvbXByZXNz
-ZWQgZm9ybWF0IGRhdGEgc3VjaCBhcyBNUDMsCnNvIEFMU0EgaXMgb25seSBhIHRyYW5zZmVyIGNo
-YW5uZWwuICBBTFNBIGlzIGFibGUgdG8gc2VuZCBNUDMgZGF0YSBhcyBmYWtlZApQQ00gZm9ybWF0
-LgoKPgo+IDMuIGFwbGF5IGlzIGFibGUgdG8gZG8gc29tZSBmb3JtYXQgY29udmVyc2lvbi4gRm9y
-Cj4gICAgZXhhbXBsZSwgYG1hbiBhcGxheWAgc2hvd3MgdGhhdCBpdCBzdXBwb3J0cyBNUEVHCj4g
-ICAgZGVjb2RlLgoKZXhhY3RseS4gIDopCgo+Cj4gQ29uY2x1c2lvbjogIElmIHlvdSBjYW4gc2V0
-IHlvdXIgaHdfcGFyYW1zIHRvIGRvIFNORF9QQ01fRk9STUFUX01QRUcsCj4gdGhlbiB0aGUgaGFy
-ZHdhcmUgaXMgZG9pbmcgdGhlIE1QRUcgZGVjb2RlLiAgTW9zdCBjYXJkcy9kcml2ZXJzIHdpbGwK
-PiByZWplY3QgdGhpcywgdGhvdWdoLi4uIGluIHdoaWNoIGNhc2UgeW91IGhhdmUgdG8gZG8gdGhl
-IGRlY29kZSB5b3Vyc2VsZgo+IHdpdGggc29tZXRoaW5nIGxpa2UgbGlibGFtZSBvciBsaWJtcGcx
-MjMuCgpUaGF0J3MgdHJ1ZS4gVGFrZSBJbnRlbCdzIE1lZGZpZWxkIHBsYXRmb3JtIGZvciBleGFt
-cGxlLCBJdCBoYXMgRFNQCndoaWNoIGhhbmRsZSBIVyBkZWNvZGluZy4gQW5kIHRoZSBEU1AgRlcg
-dmFyaWVzIG9uIGRpZmZlcmVudCBwbGF0Zm9ybSwKaXQncyBhYmxlIHRvIHJlY2VpdmUgY29tcHJl
-c3NlZCBhdWRpbyBkYXRhKE1wMywgRFRTLCBBQUMsIGV0YykgYW5kCndoYXQga2VybmVsIGxheWVy
-IGRvbmUgaXMgdGhlIHRyYW5zZmVyIHdvcmsuCgp0aGFua3MKLS14aW5nY2hhbwo+Cj4gLWdhYnJp
-ZWwKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+commit d1458279b "ALSA: Add snd_pci_quirk_lookup_id()" introduces below build
+waring:
+  CC      sound/sound_core.o
+In file included from sound/sound_core.c:15:
+include/sound/core.h:454: warning: 'struct pci_dev' declared inside parameter list
+include/sound/core.h:454: warning: its scope is only this definition or declaration, which is probably not what you want
+
+Include linux/pci.h to fix the build warning.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ include/sound/core.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 5ab255f..4ea14f2 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -28,6 +28,7 @@
+ #include <linux/pm.h>			/* pm_message_t */
+ #include <linux/device.h>
+ #include <linux/stringify.h>
++#include <linux/pci.h>
+ 
+ /* number of supported soundcards */
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+-- 
+1.7.5.4
