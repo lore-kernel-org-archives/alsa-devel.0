@@ -1,15 +1,15 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 2/3] ARM: ux500: Add DMA-channels for MSP
-Date: Mon, 30 Jan 2012 15:18:22 +0100
-Message-ID: <1327933102-22193-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 0/3] Support U8500/AB8500 ASoC
+Date: Mon, 30 Jan 2012 15:17:50 +0100
+Message-ID: <1327933070-22118-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog101.obsmtp.com (eu1sys200aog101.obsmtp.com
-	[207.126.144.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5441910396A
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 15:18:27 +0100 (CET)
+Received: from eu1sys200aog109.obsmtp.com (eu1sys200aog109.obsmtp.com
+	[207.126.144.127])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF4EB103976
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 15:18:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +23,76 @@ To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add DMA-channels for MSP0, MSP1, MSP2 and MSP3.
+First try to upload the ASoC-driver for ST-Ericsson U8500-platform.
 
-Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
----
- arch/arm/mach-ux500/devices-db8500.c        |    6 ++++++
- arch/arm/mach-ux500/include/mach/hardware.h |    2 ++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+The audio system in the Ux500 platform consists of an external
+mixed signal ASIC called AB8500:
+http://www.stericsson.com/developers/CD00291561_UM1031_AB8500_user_manual-rev5_CTDS_public.pdf
 
-diff --git a/arch/arm/mach-ux500/devices-db8500.c b/arch/arm/mach-ux500/devices-db8500.c
-index a7c6cdc..6e66d37 100644
---- a/arch/arm/mach-ux500/devices-db8500.c
-+++ b/arch/arm/mach-ux500/devices-db8500.c
-@@ -101,6 +101,9 @@ static const dma_addr_t dma40_tx_map[DB8500_DMA_NR_DEV] = {
- 	[DB8500_DMA_DEV41_SD_MM3_TX] = -1,
- 	[DB8500_DMA_DEV42_SD_MM4_TX] = -1,
- 	[DB8500_DMA_DEV43_SD_MM5_TX] = -1,
-+	[DB8500_DMA_DEV14_MSP2_TX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV30_MSP1_TX] = U8500_MSP1_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV31_MSP0_TX_SLIM0_CH0_TX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
- };
- 
- /* Mapping between source event lines and physical device address */
-@@ -133,6 +136,9 @@ static const dma_addr_t dma40_rx_map[DB8500_DMA_NR_DEV] = {
- 	[DB8500_DMA_DEV41_SD_MM3_RX] = -1,
- 	[DB8500_DMA_DEV42_SD_MM4_RX] = -1,
- 	[DB8500_DMA_DEV43_SD_MM5_RX] = -1,
-+	[DB8500_DMA_DEV14_MSP2_RX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV30_MSP3_RX] = U8500_MSP3_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV31_MSP0_RX_SLIM0_CH0_RX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
- };
- 
- /* Reserved event lines for memcpy only */
-diff --git a/arch/arm/mach-ux500/include/mach/hardware.h b/arch/arm/mach-ux500/include/mach/hardware.h
-index b6ba26a..d93d6db 100644
---- a/arch/arm/mach-ux500/include/mach/hardware.h
-+++ b/arch/arm/mach-ux500/include/mach/hardware.h
-@@ -30,6 +30,8 @@
- #include <mach/db8500-regs.h>
- #include <mach/db5500-regs.h>
- 
-+#define MSP_TX_RX_REG_OFFSET	0
-+
- #ifndef __ASSEMBLY__
- 
- #include <mach/id.h>
+The audio portions of the AB8500 are configured over I2C and
+the raw data streams are sent using I2S/TDM. For this reason
+the I2S/TDM drivers for the DB8500 chip are included in this
+submission.
+
+Two of the patches mainly concern adding proper DMA channels
+and regulators to the Ux500 platform and may be treated
+individually, but preferably all patches shall be merged
+through the ASoC tree.
+
+Since we have more codecs for related platforms named U5500
+(etc) the soc directory is name ux500.
+
+Ola Lilja (3):
+  ARM: ux500: Add placeholder for clk_set_parent
+  ARM: ux500: Add DMA-channels for MSP
+  ASoC: Ux500: Add driver for Ux500/AB8500 platform/codec
+
+ arch/arm/mach-ux500/Makefile                  |    3 +-
+ arch/arm/mach-ux500/board-mop500-msp.c        |  195 ++
+ arch/arm/mach-ux500/board-mop500-regulators.c |   28 +
+ arch/arm/mach-ux500/board-mop500.c            |    7 +-
+ arch/arm/mach-ux500/board-mop500.h            |    1 +
+ arch/arm/mach-ux500/clock.c                   |   15 +-
+ arch/arm/mach-ux500/clock.h                   |    1 +
+ arch/arm/mach-ux500/devices-common.h          |    2 +-
+ arch/arm/mach-ux500/devices-db8500.c          |    6 +
+ arch/arm/mach-ux500/include/mach/hardware.h   |    2 +
+ arch/arm/mach-ux500/include/mach/msp.h        | 1030 +++++++++
+ include/sound/ux500_ab8500.h                  |   36 +
+ sound/soc/Kconfig                             |    1 +
+ sound/soc/Makefile                            |    1 +
+ sound/soc/codecs/Kconfig                      |    4 +
+ sound/soc/codecs/Makefile                     |    6 +
+ sound/soc/codecs/Makefile.rej                 |   10 +
+ sound/soc/codecs/ab8500_audio.c               | 2928 +++++++++++++++++++++++++
+ sound/soc/codecs/ab8500_audio.h               |  673 ++++++
+ sound/soc/ux500/Kconfig                       |   33 +
+ sound/soc/ux500/Makefile                      |   25 +
+ sound/soc/ux500/u8500.c                       |  150 ++
+ sound/soc/ux500/ux500_ab8500.c                |  790 +++++++
+ sound/soc/ux500/ux500_msp_dai.c               |  998 +++++++++
+ sound/soc/ux500/ux500_msp_dai.h               |   83 +
+ sound/soc/ux500/ux500_msp_i2s.c               | 1004 +++++++++
+ sound/soc/ux500/ux500_msp_i2s.h               |   40 +
+ sound/soc/ux500/ux500_pcm.c                   |  428 ++++
+ sound/soc/ux500/ux500_pcm.h                   |   44 +
+ 29 files changed, 8535 insertions(+), 9 deletions(-)
+ create mode 100644 arch/arm/mach-ux500/board-mop500-msp.c
+ create mode 100644 arch/arm/mach-ux500/include/mach/msp.h
+ create mode 100644 include/sound/ux500_ab8500.h
+ create mode 100644 sound/soc/codecs/Makefile.rej
+ create mode 100644 sound/soc/codecs/ab8500_audio.c
+ create mode 100644 sound/soc/codecs/ab8500_audio.h
+ create mode 100644 sound/soc/ux500/Kconfig
+ create mode 100644 sound/soc/ux500/Makefile
+ create mode 100644 sound/soc/ux500/u8500.c
+ create mode 100644 sound/soc/ux500/ux500_ab8500.c
+ create mode 100644 sound/soc/ux500/ux500_msp_dai.c
+ create mode 100644 sound/soc/ux500/ux500_msp_dai.h
+ create mode 100644 sound/soc/ux500/ux500_msp_i2s.c
+ create mode 100644 sound/soc/ux500/ux500_msp_i2s.h
+ create mode 100644 sound/soc/ux500/ux500_pcm.c
+ create mode 100644 sound/soc/ux500/ux500_pcm.h
+
 -- 
 1.7.8.3
