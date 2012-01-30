@@ -1,20 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH] ALSA: Include linux/pci.h in sound/core.h
-Date: Mon, 30 Jan 2012 14:01:37 +0800
-Message-ID: <CAF+7xW=CcvgVaNBZc+Ky8ogC-vn-XehxesLQT9Shb7ADYuypTQ@mail.gmail.com>
-References: <1327902275.12540.1.camel@phoenix>
-Reply-To: axel.lin@gmail.com
+Subject: [PATCH] ALSA: Add #ifdef CONFIG_PCI guard for
+ snd_pci_quirk_lookup* functions
+Date: Mon, 30 Jan 2012 14:03:30 +0800
+Message-ID: <1327903410.12540.3.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m020-f179.google.com (mail-lpp01m020-f179.google.com
-	[209.85.217.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC7FF24499
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 07:01:57 +0100 (CET)
-Received: by lbbge1 with SMTP id ge1so236339lbb.38
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 22:01:57 -0800 (PST)
-In-Reply-To: <1327902275.12540.1.camel@phoenix>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55DD224499
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 07:03:37 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so1653212ghb.38
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2012 22:03:36 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,21 +26,35 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-2012/1/30 Axel Lin <axel.lin@gmail.com>:
-> commit d1458279b "ALSA: Add snd_pci_quirk_lookup_id()" introduces below b=
-uild
-> waring:
-> =A0CC =A0 =A0 =A0sound/sound_core.o
-> In file included from sound/sound_core.c:15:
-> include/sound/core.h:454: warning: 'struct pci_dev' declared inside param=
-eter list
-> include/sound/core.h:454: warning: its scope is only this definition or d=
-eclaration, which is probably not what you want
->
-> Include linux/pci.h to fix the build warning.
->
-oh.. The correct fix should be to add #ifdef CONFIG_PCI guard for
-snd_pci_quirk_*
-I'll send the fix now.
+This fixes below build warning when CONFIG_PCI is not set.
 
-Axel
+CC      sound/sound_core.o
+In file included from sound/sound_core.c:15:
+include/sound/core.h:454: warning: 'struct pci_dev' declared inside parameter list
+include/sound/core.h:454: warning: its scope is only this definition or declaration, which is probably not what you want
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ include/sound/core.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 5ab255f..fce4b6f 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -450,11 +450,13 @@ struct snd_pci_quirk {
+ 	{_SND_PCI_QUIRK_ID_MASK(vend, 0, 0), .value = (val)}
+ #endif
+ 
++#ifdef CONFIG_PCI
+ const struct snd_pci_quirk *
+ snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list);
+ 
+ const struct snd_pci_quirk *
+ snd_pci_quirk_lookup_id(u16 vendor, u16 device,
+ 			const struct snd_pci_quirk *list);
++#endif
+ 
+ #endif /* __SOUND_CORE_H */
+-- 
+1.7.5.4
