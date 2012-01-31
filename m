@@ -1,58 +1,78 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [RFC][PATCH] ASoC: cs42l73: Fix Output [X|A|V]SP_SCLK
- Sourcing Mode setting for master mode
-Date: Tue, 31 Jan 2012 09:49:04 +0800
-Message-ID: <1327974544.4566.1.camel@phoenix>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
+Date: Tue, 31 Jan 2012 12:11:30 +0530
+Message-ID: <1327992090.1527.116.camel@vkoul-udesk3>
+References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
+	 <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
+	 <1327912346.1527.13.camel@vkoul-udesk3>
+	 <Pine.LNX.4.64.1201300944360.7932@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D13710386C
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 02:49:16 +0100 (CET)
-Received: by yenl11 with SMTP id l11so2197554yen.38
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 17:49:14 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-serial-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.1201300944360.7932@axis700.grange>
+Sender: linux-serial-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
 List-Id: alsa-devel@alsa-project.org
 
-For master mode, set Output [X|A|V]SP_SCLK Sourcing Mode to MCLK Mode.
+On Mon, 2012-01-30 at 10:34 +0100, Guennadi Liakhovetski wrote:
+> > I don't still comprehend the need for a library on top of dmaengine
+> > which gain is just a library between clients and dmacs. Surely we don't
+> > want to write another abstraction on top of one provided?
+> > 
+> > If the question is to handle scatter-gather even if the hardware doesn't
+> > have the capability, then why don't add that in dmaengine itself rather
+> > than one more layer?
+> 
+> Well, yes, adding new abstraction layers is always a decision, that has to 
+> be well justified. In this case it does at least make the life easier for 
+> two sh-mobile drivers: shdma and the new SUDMAC driver.
+> 
+> However, I did name the library in a generic way without reference to sh, 
+> assuming, that it might with time become useful for other architectures 
+> too. The reasons why I prefered to keep it as an optional addition to 
+> dmaengine core, instead of tightly integrating it with it are, that (1) I 
+> did not want to add useless code to drivers, that do not need it, 
+So are we sure that only sh-mobile drivers need this capablity?
+Btw does you hardware only support single transfers and no sg support,
+would this remain the same in future?
+> (2) I am 
+> not sure if and when this library will become useful for other drivers: 
+> apart from sh I am only familiar with one more dmaengine driver: 
+> ipu/ipu_idmac.c, and that one supports scatter-gather lists in a limited 
+> way and has some further peculiarities, that would likely make it a bad 
+> match for the simple DMA library,
+typically the dmacs will support this in some form or other, so your
+point is valid :)
+>  (3) keeping it separate makes its 
+> further development easier.
+> 
+> OTOH, I'm certainly fine with a tighter library integration with the 
+> dmaengine core. I think, it still would be better to keep it in a separate 
+> file and only build it if needed, right? This woult also simplify code 
+> debugging and further development. I can remove the "simple" notation, 
+> which does make it look like an additional abstraction layer, and replace 
+> it with, say, sgsoft (scatter-gather software implementation)?
+that would be more apt :)
+>  A more 
+> interesting question is what to do with struct dma_simple_dev, struct 
+> dma_simple_chan, struct dma_simple_desc, that embed struct dma_device, 
+> struct dma_chan and struct dma_async_tx_descriptor respectively. I don't 
+> think we want to merge all the additions from those wrapping structs back 
+> into their dmaengine counterparts?
+Sure they should be kept separate. I like the wrapping, this keeps it
+simple.
+> 
+> How would you like to do this? Don't you think, it would be good to allow 
+> both: either implement a dmaengine driver directly, exactly as all drivers 
+> are doing now, or use the additional helper library for suitable (simple) 
+> hardware types? I see it similar to I2C, where you either implement an I2C 
+> driver directly, or you use the bitbanging abstraction for simpler 
+> hardware.
+I think it would be good to have both, this can be used by folks who
+don't have sg support available.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
-Hi Brian,
-I think current code of setting priv->config[id].spc for master mode is wrong:
-priv->config[id].spc &= MCK_SCLK_64FS; will set priv->config[id].spc to be 0.
-
-I don't have this hardware, I'd appreciate you can review and test this patch.
-
-Regards,
-Axel
- sound/soc/codecs/cs42l73.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 9d38db8..78979b3 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1113,7 +1113,7 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
- 		priv->config[id].mmcc &= 0xC0;
- 		priv->config[id].mmcc |= cs42l73_mclk_coeffs[mclk_coeff].mmcc;
- 		priv->config[id].spc &= 0xFC;
--		priv->config[id].spc &= MCK_SCLK_64FS;
-+		priv->config[id].spc |= MCK_SCLK_MCLK;
- 	} else {
- 		/* CS42L73 Slave */
- 		priv->config[id].spc &= 0xFC;
 -- 
-1.7.5.4
+~Vinod
+
