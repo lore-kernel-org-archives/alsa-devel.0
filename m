@@ -1,54 +1,117 @@
-From: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
-Subject: [PATCH 5/5] ASoC: tegra: Remove unused DAPM route structure.
-Date: Tue, 31 Jan 2012 09:32:17 +0200
-Message-ID: <1327995137-27237-1-git-send-email-leon@leon.nu>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fix jack creation for codecs with
+	front and rear Line In
+Date: Tue, 31 Jan 2012 09:04:15 +0100
+Message-ID: <1327997055-7855-1-git-send-email-david.henningsson@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCEBC103977
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 09:04:20 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 923409@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-All DAPM routes are configured via device tree, and there is no need in
-DAPM route structures in board file.
+If a codec has both a front and a rear Line In, two controls both
+named "Line Jack" will be created, which causes parsing to fail.
+While a long term solution might be to name the jacks differently,
+this extra check is consistent with what is already being done in many
+auto-parsers, and will also protect against other cases when two
+inputs have the same label.
 
-Signed-off-by: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+BugLink: https://bugs.launchpad.net/bugs/923409
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/tegra/tegra_alc5632.c |   16 ----------------
- 1 files changed, 0 insertions(+), 16 deletions(-)
+ sound/pci/hda/hda_jack.c |   24 +++++++++++++++---------
+ 1 files changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
-index 1794139..c000f51 100644
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -104,20 +104,6 @@ static const struct snd_soc_dapm_widget tegra_alc5632_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- };
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index d8a35da..9d819c4 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -282,7 +282,8 @@ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+ EXPORT_SYMBOL_HDA(snd_hda_jack_add_kctl);
  
--static const struct snd_soc_dapm_route tegra_alc5632_audio_map[] = {
--	/* Internal Speaker */
--	{"Int Spk", NULL, "SPKOUT"},
--	{"Int Spk", NULL, "SPKOUTN"},
--
--	/* Headset Mic */
--	{"MIC1", NULL, "MICBIAS1"},
--	{"MICBIAS1", NULL, "Headset Mic"},
--
--	/* Headset Stereophone */
--	{"Headset Stereophone", NULL, "HPR"},
--	{"Headset Stereophone", NULL, "HPL"},
--};
--
- static const struct snd_kcontrol_new tegra_alc5632_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Int Spk"),
- };
-@@ -172,8 +158,6 @@ static struct snd_soc_card snd_soc_tegra_alc5632 = {
- 	.num_controls = ARRAY_SIZE(tegra_alc5632_controls),
- 	.dapm_widgets = tegra_alc5632_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(tegra_alc5632_dapm_widgets),
--	.dapm_routes = tegra_alc5632_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(tegra_alc5632_audio_map),
- 	.fully_routed = true,
- };
+ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			 const struct auto_pin_cfg *cfg)
++			 const struct auto_pin_cfg *cfg,
++			 char *lastname, int *lastidx)
+ {
+ 	unsigned int def_conf, conn;
+ 	char name[44];
+@@ -298,6 +299,10 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
+ 		return 0;
  
+ 	snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
++	if (!strcmp(name, lastname) && idx == *lastidx)
++		idx++;
++	strncpy(lastname, name, 44);
++	*lastidx = idx;
+ 	err = snd_hda_jack_add_kctl(codec, nid, name, idx);
+ 	if (err < 0)
+ 		return err;
+@@ -311,41 +316,42 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+ 			   const struct auto_pin_cfg *cfg)
+ {
+ 	const hda_nid_t *p;
+-	int i, err;
++	int i, err, lastidx = 0;
++	char lastname[44] = "";
+ 
+ 	for (i = 0, p = cfg->line_out_pins; i < cfg->line_outs; i++, p++) {
+-		err = add_jack_kctl(codec, *p, cfg);
++		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
+ 		if (err < 0)
+ 			return err;
+ 	}
+ 	for (i = 0, p = cfg->hp_pins; i < cfg->hp_outs; i++, p++) {
+ 		if (*p == *cfg->line_out_pins) /* might be duplicated */
+ 			break;
+-		err = add_jack_kctl(codec, *p, cfg);
++		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
+ 		if (err < 0)
+ 			return err;
+ 	}
+ 	for (i = 0, p = cfg->speaker_pins; i < cfg->speaker_outs; i++, p++) {
+ 		if (*p == *cfg->line_out_pins) /* might be duplicated */
+ 			break;
+-		err = add_jack_kctl(codec, *p, cfg);
++		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
+ 		if (err < 0)
+ 			return err;
+ 	}
+ 	for (i = 0; i < cfg->num_inputs; i++) {
+-		err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg);
++		err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg, lastname, &lastidx);
+ 		if (err < 0)
+ 			return err;
+ 	}
+ 	for (i = 0, p = cfg->dig_out_pins; i < cfg->dig_outs; i++, p++) {
+-		err = add_jack_kctl(codec, *p, cfg);
++		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
+ 		if (err < 0)
+ 			return err;
+ 	}
+-	err = add_jack_kctl(codec, cfg->dig_in_pin, cfg);
++	err = add_jack_kctl(codec, cfg->dig_in_pin, cfg, lastname, &lastidx);
+ 	if (err < 0)
+ 		return err;
+-	err = add_jack_kctl(codec, cfg->mono_out_pin, cfg);
++	err = add_jack_kctl(codec, cfg->mono_out_pin, cfg, lastname, &lastidx);
+ 	if (err < 0)
+ 		return err;
+ 	return 0;
 -- 
-1.7.3.4
+1.7.8.3
