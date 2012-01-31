@@ -1,16 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Fix jack creation for codecs with
-	front and rear Line In
-Date: Tue, 31 Jan 2012 09:04:15 +0100
-Message-ID: <1327997055-7855-1-git-send-email-david.henningsson@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: HDA: Fix jack creation for codecs
+ with front and rear Line In
+Date: Tue, 31 Jan 2012 16:29:12 +0800
+Message-ID: <CAN8ccibRNQAEopWKYdifHcsa84xDYsbH6KmTUWiQrR7o0PvHNA@mail.gmail.com>
+References: <1327997055-7855-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCEBC103977
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 09:04:20 +0100 (CET)
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71034103977
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 09:29:13 +0100 (CET)
+Received: by wera1 with SMTP id a1so4355409wer.38
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 00:29:12 -0800 (PST)
+In-Reply-To: <1327997055-7855-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,98 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 923409@bugs.launchpad.net
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If a codec has both a front and a rear Line In, two controls both
-named "Line Jack" will be created, which causes parsing to fail.
-While a long term solution might be to name the jacks differently,
-this extra check is consistent with what is already being done in many
-auto-parsers, and will also protect against other cases when two
-inputs have the same label.
+2012/1/31, David Henningsson <david.henningsson@canonical.com>:
+> If a codec has both a front and a rear Line In, two controls both
+> named "Line Jack" will be created, which causes parsing to fail.
+> While a long term solution might be to name the jacks differently,
+> this extra check is consistent with what is already being done in many
+> auto-parsers, and will also protect against other cases when two
+> inputs have the same label.
+>
+> BugLink: https://bugs.launchpad.net/bugs/923409
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> ---
 
-BugLink: https://bugs.launchpad.net/bugs/923409
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/hda_jack.c |   24 +++++++++++++++---------
- 1 files changed, 15 insertions(+), 9 deletions(-)
-
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index d8a35da..9d819c4 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -282,7 +282,8 @@ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
- EXPORT_SYMBOL_HDA(snd_hda_jack_add_kctl);
- 
- static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
--			 const struct auto_pin_cfg *cfg)
-+			 const struct auto_pin_cfg *cfg,
-+			 char *lastname, int *lastidx)
- {
- 	unsigned int def_conf, conn;
- 	char name[44];
-@@ -298,6 +299,10 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
- 		return 0;
- 
- 	snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
-+	if (!strcmp(name, lastname) && idx == *lastidx)
-+		idx++;
-+	strncpy(lastname, name, 44);
-+	*lastidx = idx;
- 	err = snd_hda_jack_add_kctl(codec, nid, name, idx);
- 	if (err < 0)
- 		return err;
-@@ -311,41 +316,42 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
- 			   const struct auto_pin_cfg *cfg)
- {
- 	const hda_nid_t *p;
--	int i, err;
-+	int i, err, lastidx = 0;
-+	char lastname[44] = "";
- 
- 	for (i = 0, p = cfg->line_out_pins; i < cfg->line_outs; i++, p++) {
--		err = add_jack_kctl(codec, *p, cfg);
-+		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
- 		if (err < 0)
- 			return err;
- 	}
- 	for (i = 0, p = cfg->hp_pins; i < cfg->hp_outs; i++, p++) {
- 		if (*p == *cfg->line_out_pins) /* might be duplicated */
- 			break;
--		err = add_jack_kctl(codec, *p, cfg);
-+		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
- 		if (err < 0)
- 			return err;
- 	}
- 	for (i = 0, p = cfg->speaker_pins; i < cfg->speaker_outs; i++, p++) {
- 		if (*p == *cfg->line_out_pins) /* might be duplicated */
- 			break;
--		err = add_jack_kctl(codec, *p, cfg);
-+		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
- 		if (err < 0)
- 			return err;
- 	}
- 	for (i = 0; i < cfg->num_inputs; i++) {
--		err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg);
-+		err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg, lastname, &lastidx);
- 		if (err < 0)
- 			return err;
- 	}
- 	for (i = 0, p = cfg->dig_out_pins; i < cfg->dig_outs; i++, p++) {
--		err = add_jack_kctl(codec, *p, cfg);
-+		err = add_jack_kctl(codec, *p, cfg, lastname, &lastidx);
- 		if (err < 0)
- 			return err;
- 	}
--	err = add_jack_kctl(codec, cfg->dig_in_pin, cfg);
-+	err = add_jack_kctl(codec, cfg->dig_in_pin, cfg, lastname, &lastidx);
- 	if (err < 0)
- 		return err;
--	err = add_jack_kctl(codec, cfg->mono_out_pin, cfg);
-+	err = add_jack_kctl(codec, cfg->mono_out_pin, cfg, lastname, &lastidx);
- 	if (err < 0)
- 		return err;
- 	return 0;
--- 
-1.7.8.3
+I have doubt since most of ad1988 6stack-dig quirks have two Line In (
+one is ext front and the other is int ATAPI and the "Input Source"
+controls are broken
