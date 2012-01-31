@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: codecs: add driver for max9768
- amplifier
-Date: Mon, 30 Jan 2012 21:54:09 +0000
-Message-ID: <20120130215409.GA16187@opensource.wolfsonmicro.com>
-References: <1327677023-29310-1-git-send-email-w.sang@pengutronix.de>
-	<1327677023-29310-3-git-send-email-w.sang@pengutronix.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [RFC][PATCH] ASoC: cs42l73: Fix Output [X|A|V]SP_SCLK
+ Sourcing Mode setting for master mode
+Date: Tue, 31 Jan 2012 09:49:04 +0800
+Message-ID: <1327974544.4566.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9154807263258592262=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B8EFE24337
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 22:54:13 +0100 (CET)
-In-Reply-To: <1327677023-29310-3-git-send-email-w.sang@pengutronix.de>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D13710386C
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 02:49:16 +0100 (CET)
+Received: by yenl11 with SMTP id l11so2197554yen.38
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2012 17:49:14 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+For master mode, set Output [X|A|V]SP_SCLK Sourcing Mode to MCLK Mode.
 
---===============9154807263258592262==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+Hi Brian,
+I think current code of setting priv->config[id].spc for master mode is wrong:
+priv->config[id].spc &= MCK_SCLK_64FS; will set priv->config[id].spc to be 0.
 
+I don't have this hardware, I'd appreciate you can review and test this patch.
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Regards,
+Axel
+ sound/soc/codecs/cs42l73.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-On Fri, Jan 27, 2012 at 04:10:23PM +0100, Wolfram Sang wrote:
-> Add a driver supporting the volume control and the mute pin. Shdn pin
-> and DAPM are not taken care of yet.
-
-Given your comments about being out of time I went ahead and applied
-this, I'll do a patch fixing up the main review comments I had on top of
-it (the Mute Switch name and the always_false thing which you now fixed
-in the regmap core).
-
---huq684BweRXVnRxX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPJxE9AAoJEBus8iNuMP3dliIP/iocevPV4vd+N2lR4kLVNKAi
-+lm1HNk75jAl7sdGuao7CxoDu2wh4ZZ6Ok1x/gisBSmJulSQaWA2+2yKn60TbEoo
-qzm89uFec4xT9Q+diVAJwS1Ekc7/nDkbX8j8WYuPIAhF03LzU+IAE9IsCjO6MCfy
-8Unoka4a3wphVLDJr99tuJUwF0iAA8PXjVNNIUxJv2rQ8B0r9xrWoaD62NyjnVQW
-kGZkwVMYXqCaRePcaFt7MxdsBuUxGu2nnllnH6bzIoW+dzXktK8zRj8HeOBiqqkD
-j8buXsN9bY6A/GO8MJisdmLlH2zG3AKWRlZfwOmWHOwhJhSY+SBZDs4f+LscNXpw
-AcDoa74JOmBTB/K5y2Pz4O/41FjYK5Cev8cl5q5K4pAAuoeFW/yFiers1tNEpO/T
-QFoJJ3GDWjhtmPLe/6eKf04mZx7P2p8HkVDZli9S3e7XRq5fDRuIQZWk2aX/BR1i
-MlxGZCcKGnCtJp/pwqcXc4bl/zpsG1hk/yNz44kbh7yuSOmiz6m+7z8gBlk/fAM4
-n0WjXrSYWJsj0lQ9RkDy0QgmP9b+PN2QKE5pzWK8lffor/qSCUhUuaxTSkojwMTt
-cquzdCiJ0bOLBQQS39FUNJPgH61VikJ+szDNgj0CTd1As9dmkDuycEhdY7Z99ZMS
-anTkdz0LEVcJieK0oSyf
-=Xwyf
------END PGP SIGNATURE-----
-
---huq684BweRXVnRxX--
-
---===============9154807263258592262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9154807263258592262==--
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 9d38db8..78979b3 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1113,7 +1113,7 @@ static int cs42l73_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		priv->config[id].mmcc &= 0xC0;
+ 		priv->config[id].mmcc |= cs42l73_mclk_coeffs[mclk_coeff].mmcc;
+ 		priv->config[id].spc &= 0xFC;
+-		priv->config[id].spc &= MCK_SCLK_64FS;
++		priv->config[id].spc |= MCK_SCLK_MCLK;
+ 	} else {
+ 		/* CS42L73 Slave */
+ 		priv->config[id].spc &= 0xFC;
+-- 
+1.7.5.4
