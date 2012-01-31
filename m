@@ -1,19 +1,15 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: core: Support suspend to disk
-Date: Tue, 31 Jan 2012 15:40:50 +0000
-Message-ID: <1328024450.4978.0.camel@odin>
-References: <1328023854-10981-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: core: Better support for idle_bias_off
+	suspend ignores
+Date: Tue, 31 Jan 2012 15:49:40 +0000
+Message-ID: <1328024980-19949-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog121.obsmtp.com (na3sys009aog121.obsmtp.com
-	[74.125.149.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A05B103AD4
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 16:40:56 +0100 (CET)
-Received: by mail-we0-f169.google.com with SMTP id a13so163397wer.0
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 07:40:54 -0800 (PST)
-In-Reply-To: <1328023854-10981-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 187092438E
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 16:49:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-01-31 at 15:30 +0000, Mark Brown wrote:
-> Use the same pm_ops for all system suspend and resume paths. This isn't
-> ideal for suspend to disk with older CODECs as we'll suspend and then
-> resume the CODEC before powering off all of which takes a long time due
-> to VMID ramps but it's very simple to implement and for modern CODECs the
-> overhead should be minimal.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-core.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index e25d69c..53fd9d2 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1663,8 +1663,7 @@ int snd_soc_poweroff(struct device *dev)
->  EXPORT_SYMBOL_GPL(snd_soc_poweroff);
->  
->  const struct dev_pm_ops snd_soc_pm_ops = {
-> -	.suspend = snd_soc_suspend,
-> -	.resume = snd_soc_resume,
-> +	SET_SYSTEM_SLEEP_PM_OPS(snd_soc_suspend, snd_soc_resume)
->  	.poweroff = snd_soc_poweroff,
->  };
->  EXPORT_SYMBOL_GPL(snd_soc_pm_ops);
+If an idle_bias_off device is in any state other than off then it is still
+active for some reason (typically a low power function such as accessory
+detection). This wasn't an issue when the feature was implemented as we
+always went to _ON for any active function, subsequent power improvements
+have changed things.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+With the modern way of doing things we should overhaul the infrastructure
+to allow devices to explicitly take references for these functions but
+that's a much more invasive change and will require driver updates to
+deploy, this will bring the framework into line with the existing driver
+set before we do that work.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 53fd9d2..09fa8a6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -567,6 +567,17 @@ int snd_soc_suspend(struct device *dev)
+ 		if (!codec->suspended && codec->driver->suspend) {
+ 			switch (codec->dapm.bias_level) {
+ 			case SND_SOC_BIAS_STANDBY:
++				/*
++				 * If the CODEC is capable of idle
++				 * bias off then being in STANDBY
++				 * means it's doing something,
++				 * otherwise fall through.
++				 */
++				if (codec->dapm.idle_bias_off) {
++					dev_dbg(codec->dev,
++						"idle_bias_off CODEC on over suspend\n");
++					break;
++				}
+ 			case SND_SOC_BIAS_OFF:
+ 				codec->driver->suspend(codec);
+ 				codec->suspended = 1;
+-- 
+1.7.9.rc1
