@@ -1,65 +1,56 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA: HDA: Fix jack creation for codecs
- with front and rear Line In
-Date: Tue, 31 Jan 2012 19:52:32 +0800
-Message-ID: <CAN8cciYsOdhpWOD-b5ybFuajamV89MB74=P7fV+ADY1DtyYsDA@mail.gmail.com>
-References: <1327997055-7855-1-git-send-email-david.henningsson@canonical.com>
-	<CAN8ccibRNQAEopWKYdifHcsa84xDYsbH6KmTUWiQrR7o0PvHNA@mail.gmail.com>
-	<4F27BFFE.6090400@canonical.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 3/5] ASoC: Tegra+ALC5632 machine: Add device tree binding
+ documentation
+Date: Tue, 31 Jan 2012 11:53:02 +0000
+Message-ID: <20120131115302.GF18444@opensource.wolfsonmicro.com>
+References: <1327995040-27152-1-git-send-email-leon@leon.nu>
+ <20120131112706.GE18444@opensource.wolfsonmicro.com>
+ <CALq1K=JbPspu2ShkfgcvQ_+cw6kxZNxe_zUdwrz3Sfn3YFv_rg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E080103A74
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 12:52:34 +0100 (CET)
-Received: by wera1 with SMTP id a1so4492374wer.38
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 03:52:34 -0800 (PST)
-In-Reply-To: <4F27BFFE.6090400@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2FkSFaIQeDFoAt0B"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CALq1K=JbPspu2ShkfgcvQ_+cw6kxZNxe_zUdwrz3Sfn3YFv_rg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+Cc: lrg-l0cyMroinI0@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, rdunlap-/UHa2rfvQTnk1uMJSBkQmQ@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/1/31, David Henningsson <david.henningsson@canonical.com>:
-> On 01/31/2012 09:29 AM, Raymond Yau wrote:
->> 2012/1/31, David Henningsson<david.henningsson@canonical.com>:
->>> If a codec has both a front and a rear Line In, two controls both
->>> named "Line Jack" will be created, which causes parsing to fail.
->>> While a long term solution might be to name the jacks differently,
->>> this extra check is consistent with what is already being done in many
->>> auto-parsers, and will also protect against other cases when two
->>> inputs have the same label.
->>>
->>> BugLink: https://bugs.launchpad.net/bugs/923409
->>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
->>> ---
->>
->> I have doubt since most of ad1988 6stack-dig quirks have two Line In (
->> one is ext front and the other is int ATAPI and the "Input Source"
->> controls are broken
->
-> Well, it won't fix any "Input Source" controls, of course. Only jack
-> creation later, assuming you have your autocfg struct set up correctly.
->
 
-There is another bug in snd_hda_parse_def_pincfg() when bios assigned
-two Line Out at ext front and rear 0x14 and 0x1b
+--2FkSFaIQeDFoAt0B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
-   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   mono: mono_out=0x0
-   dig-out=0x1e/0x0
-   inputs: Rear Mic=0x18 Front Mic=0x19 Line=0x1a
+On Tue, Jan 31, 2012 at 01:51:43PM +0200, Leon Romanovsky wrote:
+> On Tue, Jan 31, 2012 at 13:27, Mark Brown
 
+> > This should really be more detailed, mentioning the CODEC.
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5518
+> Can it be done in followup patch ? or do I need resend them all ?
+
+Followup.
+
+--2FkSFaIQeDFoAt0B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPJ9YTAAoJEBus8iNuMP3d648P/3plWOOkSYyeNWK0fRg6WRph
+T9dSL9/L/Y5T+JtK/bzEZNfDftIJRF1UeOHObXfexnPcA5eNNhBzcjio2+PPkJFJ
+faPf199MzspxEZ84m2mTOiTcPSGfRQ/fkHZyMXVi+kN3MkHSsbpp2S+lLYNcwWKf
+j6+sGtTHuw9++hmV5spiJwcMlPk+ROy+C1C1BKcS5NgBnloQ1+isPFzhwhYgVbCk
+1tv2mvQPpvuiwZr4SNdftg3JAVxHF6hmmBTSF0/VBMzi/2gRrbEo67gWspWF2ui9
+E2CCsejy8PnMLBE7bof2ilPdF/t44qgMFAE7uyWJIq/pmXQHHq85sM+17tZBtLJh
+62bFmbTGEa/X3MchdTpH6oDH2+OtSUjStzfr3WneCn/cgRT3usZxA02ulKU3Q63C
+kxmntGYDXmctjep2jgf+R03dAvQUKdbl/1hpvd7nh6R2qa+QG8Fv2RiaQmX156M+
+6EphTr7DvQXz8uR14Ye47f1dlm3lMh9dODScoi0U6SP6x7a5ZXj5qPJBCpIkHugv
+EGinkzLMxM0XP0AsDmbLu/RaG7mFLeVUBQnu2LNffc6OzDJhJmGF8S/U8nscHnLN
+d6qxwH4ZU/yYbeWMWMFKDGDhvHzDfDNfwWwpw4VSrMMID/o/46+3QV+hyxCGZGRO
+R7YybyZLebIjBUXlf7Ny
+=EOo5
+-----END PGP SIGNATURE-----
+
+--2FkSFaIQeDFoAt0B--
