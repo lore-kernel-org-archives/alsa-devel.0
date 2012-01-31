@@ -1,15 +1,18 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Remove quirk for Toshiba Qosmio G50
-Date: Tue, 31 Jan 2012 10:31:49 +0100
-Message-ID: <1328002309-9914-1-git-send-email-david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Fix jack creation for codecs
+ with front and rear Line In
+Date: Tue, 31 Jan 2012 11:18:38 +0100
+Message-ID: <4F27BFFE.6090400@canonical.com>
+References: <1327997055-7855-1-git-send-email-david.henningsson@canonical.com>
+	<CAN8ccibRNQAEopWKYdifHcsa84xDYsbH6KmTUWiQrR7o0PvHNA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0931F103A30
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 10:31:53 +0100 (CET)
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 044DC2469D
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 11:18:39 +0100 (CET)
+In-Reply-To: <CAN8ccibRNQAEopWKYdifHcsa84xDYsbH6KmTUWiQrR7o0PvHNA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,61 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 923316@bugs.launchpad.net
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The user reports that model=auto works better than current handling
-on a 3.2 based kernel (with jack detection patches backported).
-Since model=auto is what we prefer these days anyway, the quirk
-should be removed.
+On 01/31/2012 09:29 AM, Raymond Yau wrote:
+> 2012/1/31, David Henningsson<david.henningsson@canonical.com>:
+>> If a codec has both a front and a rear Line In, two controls both
+>> named "Line Jack" will be created, which causes parsing to fail.
+>> While a long term solution might be to name the jacks differently,
+>> this extra check is consistent with what is already being done in many
+>> auto-parsers, and will also protect against other cases when two
+>> inputs have the same label.
+>>
+>> BugLink: https://bugs.launchpad.net/bugs/923409
+>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+>> ---
+>
+> I have doubt since most of ad1988 6stack-dig quirks have two Line In (
+> one is ext front and the other is int ATAPI and the "Input Source"
+> controls are broken
 
-Alsa-info for the relevant machine:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/923316/+attachment/2702812/+files/alsa-info.txt.Pbfno2x7bp
+Well, it won't fix any "Input Source" controls, of course. Only jack 
+creation later, assuming you have your autocfg struct set up correctly.
 
-BugLink: https://bugs.launchpad.net/bugs/923316
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   13 -------------
- 1 files changed, 0 insertions(+), 13 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 42b6a01..a8e82be 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4747,7 +4747,6 @@ enum {
- 	ALC262_FIXUP_FSC_H270,
- 	ALC262_FIXUP_HP_Z200,
- 	ALC262_FIXUP_TYAN,
--	ALC262_FIXUP_TOSHIBA_RX1,
- 	ALC262_FIXUP_LENOVO_3000,
- 	ALC262_FIXUP_BENQ,
- 	ALC262_FIXUP_BENQ_T31,
-@@ -4777,16 +4776,6 @@ static const struct alc_fixup alc262_fixups[] = {
- 			{ }
- 		}
- 	},
--	[ALC262_FIXUP_TOSHIBA_RX1] = {
--		.type = ALC_FIXUP_PINS,
--		.v.pins = (const struct alc_pincfg[]) {
--			{ 0x14, 0x90170110 }, /* speaker */
--			{ 0x15, 0x0421101f }, /* HP */
--			{ 0x1a, 0x40f000f0 }, /* N/A */
--			{ 0x1b, 0x40f000f0 }, /* N/A */
--			{ 0x1e, 0x40f000f0 }, /* N/A */
--		}
--	},
- 	[ALC262_FIXUP_LENOVO_3000] = {
- 		.type = ALC_FIXUP_VERBS,
- 		.v.verbs = (const struct hda_verb[]) {
-@@ -4819,8 +4808,6 @@ static const struct snd_pci_quirk alc262_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x10cf, 0x1397, "Fujitsu", ALC262_FIXUP_BENQ),
- 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FIXUP_BENQ),
- 	SND_PCI_QUIRK(0x10f1, 0x2915, "Tyan Thunder n6650W", ALC262_FIXUP_TYAN),
--	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba dynabook SS RX1",
--		      ALC262_FIXUP_TOSHIBA_RX1),
- 	SND_PCI_QUIRK(0x1734, 0x1147, "FSC Celsius H270", ALC262_FIXUP_FSC_H270),
- 	SND_PCI_QUIRK(0x17aa, 0x384e, "Lenovo 3000", ALC262_FIXUP_LENOVO_3000),
- 	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8", ALC262_FIXUP_BENQ),
 -- 
-1.7.8.3
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
