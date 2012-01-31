@@ -1,101 +1,79 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
-Date: Tue, 31 Jan 2012 09:59:36 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1201310746470.31226@axis700.grange>
-References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
- <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
- <1327912346.1527.13.camel@vkoul-udesk3>  <Pine.LNX.4.64.1201300944360.7932@axis700.grange>
- <1327992090.1527.116.camel@vkoul-udesk3>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Remove quirk for Toshiba Qosmio G50
+Date: Tue, 31 Jan 2012 10:31:49 +0100
+Message-ID: <1328002309-9914-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1327992090.1527.116.camel@vkoul-udesk3>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0931F103A30
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 10:31:53 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 923316@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod
+The user reports that model=auto works better than current handling
+on a 3.2 based kernel (with jack detection patches backported).
+Since model=auto is what we prefer these days anyway, the quirk
+should be removed.
 
-Thanks for your reply.
+Alsa-info for the relevant machine:
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/923316/+attachment/2702812/+files/alsa-info.txt.Pbfno2x7bp
 
-On Tue, 31 Jan 2012, Vinod Koul wrote:
-
-> On Mon, 2012-01-30 at 10:34 +0100, Guennadi Liakhovetski wrote:
-> > > I don't still comprehend the need for a library on top of dmaengine
-> > > which gain is just a library between clients and dmacs. Surely we don't
-> > > want to write another abstraction on top of one provided?
-> > > 
-> > > If the question is to handle scatter-gather even if the hardware doesn't
-> > > have the capability, then why don't add that in dmaengine itself rather
-> > > than one more layer?
-> > 
-> > Well, yes, adding new abstraction layers is always a decision, that has to 
-> > be well justified. In this case it does at least make the life easier for 
-> > two sh-mobile drivers: shdma and the new SUDMAC driver.
-> > 
-> > However, I did name the library in a generic way without reference to sh, 
-> > assuming, that it might with time become useful for other architectures 
-> > too. The reasons why I prefered to keep it as an optional addition to 
-> > dmaengine core, instead of tightly integrating it with it are, that (1) I 
-> > did not want to add useless code to drivers, that do not need it, 
-> So are we sure that only sh-mobile drivers need this capablity?
-
-If I was sure about that, I'd call the library shmobile-dma or something 
-similar:-)
-
-> Btw does you hardware only support single transfers and no sg support,
-
-Well, the controller does have some repeat- and reload-modes, but they are 
-currently not supported by the driver and from the documentation I cannot 
-easily understand, how useful those modes could be to implement SG.
-
-> would this remain the same in future?
-
-Who knows?...
-
-> > (2) I am 
-> > not sure if and when this library will become useful for other drivers: 
-> > apart from sh I am only familiar with one more dmaengine driver: 
-> > ipu/ipu_idmac.c, and that one supports scatter-gather lists in a limited 
-> > way and has some further peculiarities, that would likely make it a bad 
-> > match for the simple DMA library,
-> typically the dmacs will support this in some form or other, so your
-> point is valid :)
-> >  (3) keeping it separate makes its 
-> > further development easier.
-> > 
-> > OTOH, I'm certainly fine with a tighter library integration with the 
-> > dmaengine core. I think, it still would be better to keep it in a separate 
-> > file and only build it if needed, right? This woult also simplify code 
-> > debugging and further development. I can remove the "simple" notation, 
-> > which does make it look like an additional abstraction layer, and replace 
-> > it with, say, sgsoft (scatter-gather software implementation)?
-> that would be more apt :)
-> >  A more 
-> > interesting question is what to do with struct dma_simple_dev, struct 
-> > dma_simple_chan, struct dma_simple_desc, that embed struct dma_device, 
-> > struct dma_chan and struct dma_async_tx_descriptor respectively. I don't 
-> > think we want to merge all the additions from those wrapping structs back 
-> > into their dmaengine counterparts?
-> Sure they should be kept separate. I like the wrapping, this keeps it
-> simple.
-> > 
-> > How would you like to do this? Don't you think, it would be good to allow 
-> > both: either implement a dmaengine driver directly, exactly as all drivers 
-> > are doing now, or use the additional helper library for suitable (simple) 
-> > hardware types? I see it similar to I2C, where you either implement an I2C 
-> > driver directly, or you use the bitbanging abstraction for simpler 
-> > hardware.
-> I think it would be good to have both, this can be used by folks who
-> don't have sg support available.
-
-Ok, so, should I just rename the driver to sgsoft? Is this the only 
-change, that you'd like to see?
-
-Thanks
-Guennadi
+BugLink: https://bugs.launchpad.net/bugs/923316
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+ sound/pci/hda/patch_realtek.c |   13 -------------
+ 1 files changed, 0 insertions(+), 13 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 42b6a01..a8e82be 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4747,7 +4747,6 @@ enum {
+ 	ALC262_FIXUP_FSC_H270,
+ 	ALC262_FIXUP_HP_Z200,
+ 	ALC262_FIXUP_TYAN,
+-	ALC262_FIXUP_TOSHIBA_RX1,
+ 	ALC262_FIXUP_LENOVO_3000,
+ 	ALC262_FIXUP_BENQ,
+ 	ALC262_FIXUP_BENQ_T31,
+@@ -4777,16 +4776,6 @@ static const struct alc_fixup alc262_fixups[] = {
+ 			{ }
+ 		}
+ 	},
+-	[ALC262_FIXUP_TOSHIBA_RX1] = {
+-		.type = ALC_FIXUP_PINS,
+-		.v.pins = (const struct alc_pincfg[]) {
+-			{ 0x14, 0x90170110 }, /* speaker */
+-			{ 0x15, 0x0421101f }, /* HP */
+-			{ 0x1a, 0x40f000f0 }, /* N/A */
+-			{ 0x1b, 0x40f000f0 }, /* N/A */
+-			{ 0x1e, 0x40f000f0 }, /* N/A */
+-		}
+-	},
+ 	[ALC262_FIXUP_LENOVO_3000] = {
+ 		.type = ALC_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -4819,8 +4808,6 @@ static const struct snd_pci_quirk alc262_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10cf, 0x1397, "Fujitsu", ALC262_FIXUP_BENQ),
+ 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FIXUP_BENQ),
+ 	SND_PCI_QUIRK(0x10f1, 0x2915, "Tyan Thunder n6650W", ALC262_FIXUP_TYAN),
+-	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba dynabook SS RX1",
+-		      ALC262_FIXUP_TOSHIBA_RX1),
+ 	SND_PCI_QUIRK(0x1734, 0x1147, "FSC Celsius H270", ALC262_FIXUP_FSC_H270),
+ 	SND_PCI_QUIRK(0x17aa, 0x384e, "Lenovo 3000", ALC262_FIXUP_LENOVO_3000),
+ 	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8", ALC262_FIXUP_BENQ),
+-- 
+1.7.8.3
