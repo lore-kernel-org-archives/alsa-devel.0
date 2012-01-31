@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_hubs: Fix routing of input PGAs to
-	line output mixer
-Date: Tue, 31 Jan 2012 11:56:15 +0000
-Message-ID: <1328010975-3007-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Fons Adriaensen <fons@linuxaudio.org>
+Subject: Re: Some questions related to ALSA based duplex
+	audio	processing
+Date: Tue, 31 Jan 2012 12:10:19 +0000
+Message-ID: <20120131121018.GA7388@linuxaudio.org>
+References: <4F259BD1.4030001@ind.rwth-aachen.de> <4F27C51F.1000202@ladisch.de>
+	<4F27D30B.6010607@ind.rwth-aachen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1CD13246A5
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 12:56:17 +0100 (CET)
+Received: from lists.linuxaudio.org (bukvic.music.vt.edu [198.82.152.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26658246B0
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 13:10:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4F27D30B.6010607@ind.rwth-aachen.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,43 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-IN1L/R is routed to both line output mixers, we don't route IN1 to LINEOUT1
-and IN2 to LINEOUT2.
+On Tue, Jan 31, 2012 at 12:39:55PM +0100, public-hk wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_hubs.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+> So, the conclusion is that it is not really defined and I have to deal 
+> with synchronization of
+> input and output myself, is that the right interpretation?
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index ea26724..c1a3f8c 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -586,8 +586,8 @@ SOC_DAPM_SINGLE("Left Output Switch", WM8993_LINE_MIXER1, 0, 1, 0),
- };
- 
- static const struct snd_kcontrol_new line2_mix[] = {
--SOC_DAPM_SINGLE("IN2R Switch", WM8993_LINE_MIXER2, 2, 1, 0),
--SOC_DAPM_SINGLE("IN2L Switch", WM8993_LINE_MIXER2, 1, 1, 0),
-+SOC_DAPM_SINGLE("IN1R Switch", WM8993_LINE_MIXER2, 2, 1, 0),
-+SOC_DAPM_SINGLE("IN1L Switch", WM8993_LINE_MIXER2, 1, 1, 0),
- SOC_DAPM_SINGLE("Output Switch", WM8993_LINE_MIXER2, 0, 1, 0),
- };
- 
-@@ -848,8 +848,8 @@ static const struct snd_soc_dapm_route lineout1_se_routes[] = {
- };
- 
- static const struct snd_soc_dapm_route lineout2_diff_routes[] = {
--	{ "LINEOUT2 Mixer", "IN2L Switch", "IN2L PGA" },
--	{ "LINEOUT2 Mixer", "IN2R Switch", "IN2R PGA" },
-+	{ "LINEOUT2 Mixer", "IN1L Switch", "IN1L PGA" },
-+	{ "LINEOUT2 Mixer", "IN1R Switch", "IN1R PGA" },
- 	{ "LINEOUT2 Mixer", "Output Switch", "Right Output PGA" },
- 
- 	{ "LINEOUT2N Driver", NULL, "LINEOUT2 Mixer" },
+If the capture and playback devices use the same sample clock
+(which will be the case if they refer to the same soundcard),
+and they are started together, they will remain in sync and
+both sides will be ready at the same time - any difference
+will be trivially small compared to the period time.
+
+If they don't use the same sample clock you have a difficult
+problem: you need adaptive resampling (which is the subject
+of my proposed LAC paper).
+
+So in practice, if you use one and the same soundcard for input
+and output there is nothing to be gained from keeping the two
+separate, and in most cases the driver will allow then to be
+'linked', that is started and stopped with a single call.  
+
+Waiting for ALSA devices using poll() can be complicated.
+In the general case there will be more than one filedesc,
+the poll events returned don't always correspond to the
+logical direction and have to reworked, you need to take
+care of error recovery, etc. This is one of the many things
+zita-alsa-pcmi will do for you, just call pcm_wait(). When
+it returns you can read and write one period (in theory
+there could be more than one, but that is quite exceptional
+- I've never seen it happen). 
+
+
+Ciao,
+
 -- 
-1.7.9.rc1
+FA
+
+Vor uns liegt ein weites Tal, die Sonne scheint - ein Glitzerstrahl.
