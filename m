@@ -1,66 +1,59 @@
-From: public-hk <public-hk@ind.rwth-aachen.de>
-Subject: Re: Some questions related to ALSA based duplex	audio
- processing
-Date: Tue, 31 Jan 2012 12:07:56 +0100
-Message-ID: <4F27CB8C.2050804@ind.rwth-aachen.de>
-References: <4F259BD1.4030001@ind.rwth-aachen.de>
-	<20120129203102.GA20883@linuxaudio.org>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 3/5] ASoC: Tegra+ALC5632 machine: Add device tree binding
+ documentation
+Date: Tue, 31 Jan 2012 11:27:06 +0000
+Message-ID: <20120131112706.GE18444@opensource.wolfsonmicro.com>
+References: <1327995040-27152-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-2.ms.rz.rwth-aachen.de (mta-2.ms.rz.RWTH-Aachen.DE
-	[134.130.7.73]) by alsa0.perex.cz (Postfix) with ESMTP id 82421103A5B
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 12:07:55 +0100 (CET)
-Received: from ironport-out-1.rz.rwth-aachen.de ([134.130.5.186])
-	by mta-2.ms.rz.RWTH-Aachen.de
-	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008))
-	with ESMTP id <0LYN006KQTL7GH10@mta-2.ms.rz.RWTH-Aachen.de> for
-	alsa-devel@alsa-project.org; Tue, 31 Jan 2012 12:07:55 +0100 (CET)
-Received: from mail.ind.rwth-aachen.de
-	(mail.ind.RWTH-Aachen.DE [137.226.238.9])	by smarthost.rwth-aachen.de
-	(8.14.4+Sun/8.13.8/1) with ESMTP id q0VB7tvk016443	for
-	<alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 12:07:55 +0100 (CET)
-Received: from [137.226.198.65] (pontos.ind.RWTH-Aachen.DE [137.226.198.65])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
-	(No client certificate requested)	by mail.ind.rwth-aachen.de (Postfix)
-	with ESMTP id 0454216740BA	for <alsa-devel@alsa-project.org>; Tue,
-	31 Jan 2012 12:07:55 +0100 (CET)
-In-reply-to: <20120129203102.GA20883@linuxaudio.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1327995040-27152-1-git-send-email-leon-2ukJVAZIZ/Y@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+Cc: lrg-l0cyMroinI0@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, rdunlap-/UHa2rfvQTnk1uMJSBkQmQ@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-thank you very much for this hint. I noticed that there are also some other
-interesting publications on the referred webpage!
+--SNIs70sCzqvszXB4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards
+On Tue, Jan 31, 2012 at 09:30:40AM +0200, Leon Romanovsky wrote:
+> Document device tree binding for the tegra board with ALC5632 codec
+> according to datasheet functional block description.
 
-HK
+If resending please send the documentation in the same patch as you add
+the binding (unless that patch is complex enough to need splitting).
 
-Am 29.01.2012 21:31, schrieb Fons Adriaensen:
-> On Sun, Jan 29, 2012 at 08:19:45PM +0100, public-hk wrote:
->
->> I have just started to develop a duplex audio processing application
->> based on ALSA.
->> My development goals are - of course - maximum stability as well as
->> lowest possible delay (latency).
-> Have a look at the zita-alsa-pcmi library. It probably does all
-> you need - it takes care of the zillions of calls necessary to
-> initialise mmap access, and provides/accepts floating point audio
-> samples regardless of the soundcard's format. No documentation ATM
-> but the examples should get you going. It's C++, but using on the
-> class mechanism, no templates, dependency on C++ libriries etc.
->
-> <http://kokkinizita.linuxaudio.org/linuxaudio/downloads>
->
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/tegra-audio-alc5632.txt
+> @@ -0,0 +1,57 @@
+> +NVIDIA Tegra audio complex
+
+This should really be more detailed, mentioning the CODEC.
+
+--SNIs70sCzqvszXB4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPJ8/5AAoJEBus8iNuMP3dtuoP/ii46USw52pBs4MIpPohPAci
+GWkeWlln2k4FLtSLMPtf7DuzImLdKw29HX1mSe7HYQQXTP9AdC1s7qOCGNd1zHTS
+8C6B/gikVGkg72Zck5b5EbHXrHLTDvcT2T6lnN3tNWIPneMx5VHiTkOtwMBTS6lr
+sMeni5/JAg1BhEHzysL44LBsonGjC5ffFPBN+Amo+Kuyf+HYAWcxoNF/r/HEbvNd
+ZZbCf+KylKHPyj0ntYJgmt/qDdQmv9v2KefqqQ8JGiFG3/ltcxYMcXc+EGu8eM0v
+o1fvkE6ay5FnfyFlP1edHVSJF003sE1kZUaKHwPaMveSiuRj6TAJFmGb9W8F9rvf
+WqNDs53nqyZyUwHHq+EC2Ru1XvFr/2zleejGyOJatvlZzyYQPcnWDFsGgAn2eqHa
+HxqEJ6vAjpuFEQJQ92ZIcEMOiuE83LpS+N7D+zLeXtPozY264ODLDkItozqEMUYe
+RX0M6FZCNbskpvniz4NRUovC8T1XY7oRoNayKF9jZ0D12llyIItp51PL9RyAbwaX
+pjtgV0/cx3ZgB+Uxsn27BHokrBLUO94XQkW/sGy6hLjH+KbOofgV6tMWB+yX6RSu
+7n95ETJ5EN4fw1OvYgG+mLFlGO5akpCCX+yGpJRJnxohsPxYfI23yinerHqyeqmf
+1GcrXvKp7/R+/Ixu/fUc
+=n1JL
+-----END PGP SIGNATURE-----
+
+--SNIs70sCzqvszXB4--
