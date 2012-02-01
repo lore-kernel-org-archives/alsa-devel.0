@@ -1,47 +1,49 @@
-From: Sergey Korolev <slipped.on.blade@gmail.com>
-Subject: [PATCH] ALSA: E-mu 1616m PCIe support
-Date: Wed, 1 Feb 2012 22:33:09 +0400
-Message-ID: <CAH2VuH7_2oRmpkvKc5zenJVPaeYAjJKpKkJ5w=Lk9AvdS909wQ@mail.gmail.com>
+From: Paul Walmsley <paul@pwsan.com>
+Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
+ space
+Date: Wed, 1 Feb 2012 12:08:08 -0700 (MST)
+Message-ID: <alpine.DEB.2.00.1202011203210.10541@utopia.booyaka.com>
+References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com> <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com> <4EEB5913.3090901@ti.com> <alpine.DEB.2.00.1112191451140.12660@utopia.booyaka.com>
+ <4F1D4A03.3050700@ti.com> <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com> <4F1E8186.2060307@ti.com> <alpine.DEB.2.00.1201251423030.5324@utopia.booyaka.com> <4F28EC71.1070105@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D873B24588
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 19:33:10 +0100 (CET)
-Received: by ggnq4 with SMTP id q4so833459ggn.38
-	for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2012 10:33:10 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="155748971-598164942-1328123185=:10541"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <4F28EC71.1070105@ti.com>
+Content-ID: <alpine.DEB.2.00.1202011207310.10541@utopia.booyaka.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "Cousson, Benoit" <b-cousson@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-diff -urdN linux-2.6.36.orig/sound/pci/emu10k1/emu10k1_main.c
-linux-2.6.36/sound/pci/emu10k1/emu10k1_main.c
---- linux-2.6.36.orig/sound/pci/emu10k1/emu10k1_main.c 2010-10-20
-22:30:22.000000000 +0200
-+++ linux-2.6.36/sound/pci/emu10k1/emu10k1_main.c 2011-01-21
-17:48:11.440000537 +0100
-@@ -1415,6 +1415,14 @@
-  .ca0108_chip = 1,
-  .spk71 = 1,
-  .emu_model = EMU_MODEL_EMU1010B}, /* EMU 1010 new revision */
-+ /* Tested 21th Jan 2011. */
-+ {.vendor = 0x1102, .device = 0x0008, .subsystem = 0x40071102,
-+ .driver = "Audigy2", .name = "E-mu 1010 PCIe",
-+ .id = "EMU1010",
-+ .emu10k2_chip = 1,
-+ .ca0108_chip = 1,
-+ .spk71 = 1,
-+ .emu_model = EMU_MODEL_EMU1010B}, /* EMU 1010 PCIe */
-  /* Tested by James@superbug.co.uk 8th July 2005. */
-  /* This is MAEM8810, 0202 is MAEM8820 */
-  {.vendor = 0x1102, .device = 0x0004, .subsystem = 0x40011102,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--155748971-598164942-1328123185=:10541
+Content-Type: TEXT/PLAIN; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <alpine.DEB.2.00.1202011207311.10541@utopia.booyaka.com>
+
+Hi P=E9ter,
+
+On Wed, 1 Feb 2012, Peter Ujfalusi wrote:
+
+> On 01/25/2012 11:23 PM, Paul Walmsley wrote:
+> > Okay, thanks, queued for 3.3-rc.
+>=20
+> It seams this patch did not made it to 3.3-rc2.
+> We still have broken audio out of box on SDP4430/Blaze.
+> Can you make sure that this will be queued for rc3?
+
+No sadly I can't.  There are at least three levels of maintainers above me=
+=20
+in my mainline submission path.  As you may have seen, I've sent the patch=
+=20
+to Tony and he has pulled the series:
+
+http://www.spinics.net/lists/linux-omap/msg63525.html
+
+so I've done what I can.
+
+
+- Paul
+--155748971-598164942-1328123185=:10541--
