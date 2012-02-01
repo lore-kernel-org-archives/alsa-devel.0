@@ -1,105 +1,38 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
-Date: Wed, 01 Feb 2012 11:08:46 +0530
-Message-ID: <1328074726.1610.1.camel@vkoul-udesk3>
-References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
-	 <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
-	 <1327912346.1527.13.camel@vkoul-udesk3>
-	 <Pine.LNX.4.64.1201300944360.7932@axis700.grange>
-	 <1327992090.1527.116.camel@vkoul-udesk3>
-	 <Pine.LNX.4.64.1201310746470.31226@axis700.grange>
+From: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+Subject: Re: [PATCH 0/5] Add device tree support of audio (ALC5632) on PAZ00 board
+Date: Wed, 1 Feb 2012 08:45:27 +0200
+Message-ID: <CALq1K=JUqjSV0jx=nWyXF+7C4OMn+b=1PaYRsr==SM+fDozwnQ@mail.gmail.com>
+References: <1327994757-26950-1-git-send-email-leon@leon.nu>
+ <74CDBE0F657A3D45AFBB94109FB122FF178E124441@HQMAIL01.nvidia.com> <20120131194249.GF3429@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-serial-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1201310746470.31226@axis700.grange>
-Sender: linux-serial-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20120131194249.GF3429-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-01-31 at 09:59 +0100, Guennadi Liakhovetski wrote:
-> Hi Vinod
-> 
-> Thanks for your reply.
-> 
-> On Tue, 31 Jan 2012, Vinod Koul wrote:
-> 
-> > On Mon, 2012-01-30 at 10:34 +0100, Guennadi Liakhovetski wrote:
-> > > > I don't still comprehend the need for a library on top of dmaengine
-> > > > which gain is just a library between clients and dmacs. Surely we don't
-> > > > want to write another abstraction on top of one provided?
-> > > > 
-> > > > If the question is to handle scatter-gather even if the hardware doesn't
-> > > > have the capability, then why don't add that in dmaengine itself rather
-> > > > than one more layer?
-> > > 
-> > > Well, yes, adding new abstraction layers is always a decision, that has to 
-> > > be well justified. In this case it does at least make the life easier for 
-> > > two sh-mobile drivers: shdma and the new SUDMAC driver.
-> > > 
-> > > However, I did name the library in a generic way without reference to sh, 
-> > > assuming, that it might with time become useful for other architectures 
-> > > too. The reasons why I prefered to keep it as an optional addition to 
-> > > dmaengine core, instead of tightly integrating it with it are, that (1) I 
-> > > did not want to add useless code to drivers, that do not need it, 
-> > So are we sure that only sh-mobile drivers need this capablity?
-> 
-> If I was sure about that, I'd call the library shmobile-dma or something 
-> similar:-)
-> 
-> > Btw does you hardware only support single transfers and no sg support,
-> 
-> Well, the controller does have some repeat- and reload-modes, but they are 
-> currently not supported by the driver and from the documentation I cannot 
-> easily understand, how useful those modes could be to implement SG.
-> 
-> > would this remain the same in future?
-> 
-> Who knows?...
-> 
-> > > (2) I am 
-> > > not sure if and when this library will become useful for other drivers: 
-> > > apart from sh I am only familiar with one more dmaengine driver: 
-> > > ipu/ipu_idmac.c, and that one supports scatter-gather lists in a limited 
-> > > way and has some further peculiarities, that would likely make it a bad 
-> > > match for the simple DMA library,
-> > typically the dmacs will support this in some form or other, so your
-> > point is valid :)
-> > >  (3) keeping it separate makes its 
-> > > further development easier.
-> > > 
-> > > OTOH, I'm certainly fine with a tighter library integration with the 
-> > > dmaengine core. I think, it still would be better to keep it in a separate 
-> > > file and only build it if needed, right? This woult also simplify code 
-> > > debugging and further development. I can remove the "simple" notation, 
-> > > which does make it look like an additional abstraction layer, and replace 
-> > > it with, say, sgsoft (scatter-gather software implementation)?
-> > that would be more apt :)
-> > >  A more 
-> > > interesting question is what to do with struct dma_simple_dev, struct 
-> > > dma_simple_chan, struct dma_simple_desc, that embed struct dma_device, 
-> > > struct dma_chan and struct dma_async_tx_descriptor respectively. I don't 
-> > > think we want to merge all the additions from those wrapping structs back 
-> > > into their dmaengine counterparts?
-> > Sure they should be kept separate. I like the wrapping, this keeps it
-> > simple.
-> > > 
-> > > How would you like to do this? Don't you think, it would be good to allow 
-> > > both: either implement a dmaengine driver directly, exactly as all drivers 
-> > > are doing now, or use the additional helper library for suitable (simple) 
-> > > hardware types? I see it similar to I2C, where you either implement an I2C 
-> > > driver directly, or you use the bitbanging abstraction for simpler 
-> > > hardware.
-> > I think it would be good to have both, this can be used by folks who
-> > don't have sg support available.
-> 
-> Ok, so, should I just rename the driver to sgsoft? Is this the only 
-> change, that you'd like to see?
-That would be one :)
-Also, I would review the other patch patches by today/tomorrow, you can
-add any changes in next version as well
+On Tue, Jan 31, 2012 at 21:42, Mark Brown
+<broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
+>
+> On Tue, Jan 31, 2012 at 10:00:45AM -0800, Stephen Warren wrote:
+>
+> > (Olof may wish to comment on whether he wishes the patches split up=
+ to
+> > apply the Tegra/ASoC parts separately, or merge them into both tree=
+s,
+> > to avoid any potential merge conflicts on the .dts files)
+>
+> I'm leaving the last two patches to see what Olof thinks; Leon, if yo=
+u
+> get to it first splitting the DTS file update from the patch updating
+> the machine driver would avoid any issue.
+I'll try to resend them today/tomorrow.
 
--- 
-~Vinod
 
+
+--
+Leon Romanovsky | Independent Linux Consultant
+=C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0www.leon.nu=C2=A0| leon-2ukJVAZIZ/Y@public.gmane.org
