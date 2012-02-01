@@ -1,15 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: wm9712: Remove driver specific
-	version
-Date: Wed,  1 Feb 2012 12:43:35 +0000
-Message-ID: <1328100216-23825-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: RIDDICC <rektal_ranger@yahoo.com>
+Subject: Re:
+	=?utf-8?q?=5BPATCH=5D_ALSA=3A_HDA=3A_Remove_unconnec?=
+	=?utf-8?q?ted_PCM_devices=09for_Intel_HDMI?=
+Date: Wed, 1 Feb 2012 12:38:48 +0000 (UTC)
+Message-ID: <loom.20120201T133714-830@post.gmane.org>
+References: <4CDD615A.7000807@canonical.com> <s5hfwu94cw5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E71C3103BAA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 13:43:41 +0100 (CET)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37D27243FE
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 15:15:11 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Rsaxj-0000MX-Dh
+	for alsa-devel@alsa-project.org; Wed, 01 Feb 2012 15:15:03 +0100
+Received: from dslc-082-083-166-141.pools.arcor-ip.net ([82.83.166.141])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2012 15:15:03 +0100
+Received: from rektal_ranger by dslc-082-083-166-141.pools.arcor-ip.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2012 15:15:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,38 +31,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I don't think it's been updated since the driver was merged.
+Takashi Iwai <tiwai <at> suse.de> writes:
+> Should I apply this now, or would you make another small fix
+> Fengguang suggested?
+> 
+I still have this problem...
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5522
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9712.c |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
+what can we do about it?
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index b7b31f8..247f19a 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -22,8 +22,6 @@
- #include <sound/soc.h>
- #include "wm9712.h"
- 
--#define WM9712_VERSION "0.4"
--
- static unsigned int ac97_read(struct snd_soc_codec *codec,
- 	unsigned int reg);
- static int ac97_write(struct snd_soc_codec *codec,
-@@ -619,8 +617,6 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- {
- 	int ret = 0;
- 
--	printk(KERN_INFO "WM9711/WM9712 SoC Audio Codec %s\n", WM9712_VERSION);
--
- 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
- 	if (ret < 0) {
- 		printk(KERN_ERR "wm9712: failed to register AC97 codec\n");
--- 
-1.7.9.rc1
+-arne
