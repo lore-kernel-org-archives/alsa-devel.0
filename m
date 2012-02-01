@@ -1,49 +1,163 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
- space
-Date: Wed, 1 Feb 2012 12:08:08 -0700 (MST)
-Message-ID: <alpine.DEB.2.00.1202011203210.10541@utopia.booyaka.com>
-References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com> <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com> <4EEB5913.3090901@ti.com> <alpine.DEB.2.00.1112191451140.12660@utopia.booyaka.com>
- <4F1D4A03.3050700@ti.com> <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com> <4F1E8186.2060307@ti.com> <alpine.DEB.2.00.1201251423030.5324@utopia.booyaka.com> <4F28EC71.1070105@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: pcm: Improve error logging
+Date: Wed,  1 Feb 2012 21:30:55 +0000
+Message-ID: <1328131855-22916-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="155748971-598164942-1328123185=:10541"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <4F28EC71.1070105@ti.com>
-Content-ID: <alpine.DEB.2.00.1202011207310.10541@utopia.booyaka.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "Cousson, Benoit" <b-cousson@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FFC324380
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 22:31:00 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Use the standard logging macros and use dev_ variants where we can, also
+reporting error codes whenever we report an error. These changes (the
+error codes in particular) make it noticeably easier to figure out what
+went wrong just from the basic dmesg output.
 
---155748971-598164942-1328123185=:10541
-Content-Type: TEXT/PLAIN; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <alpine.DEB.2.00.1202011207311.10541@utopia.booyaka.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-pcm.c |   39 ++++++++++++++++++++++-----------------
+ 1 files changed, 22 insertions(+), 17 deletions(-)
 
-Hi P=E9ter,
-
-On Wed, 1 Feb 2012, Peter Ujfalusi wrote:
-
-> On 01/25/2012 11:23 PM, Paul Walmsley wrote:
-> > Okay, thanks, queued for 3.3-rc.
->=20
-> It seams this patch did not made it to 3.3-rc2.
-> We still have broken audio out of box on SDP4430/Blaze.
-> Can you make sure that this will be queued for rc3?
-
-No sadly I can't.  There are at least three levels of maintainers above me=
-=20
-in my mainline submission path.  As you may have seen, I've sent the patch=
-=20
-to Tony and he has pulled the series:
-
-http://www.spinics.net/lists/linux-omap/msg63525.html
-
-so I've done what I can.
-
-
-- Paul
---155748971-598164942-1328123185=:10541--
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index fabd33e..ef28dd5 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -123,8 +123,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	if (cpu_dai->driver->ops->startup) {
+ 		ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: can't open interface %s\n",
+-				cpu_dai->name);
++			dev_err(cpu_dai->dev, "can't open interface %s: %d\n",
++				cpu_dai->name, ret);
+ 			goto out;
+ 		}
+ 	}
+@@ -132,7 +132,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	if (platform->driver->ops && platform->driver->ops->open) {
+ 		ret = platform->driver->ops->open(substream);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: can't open platform %s\n", platform->name);
++			dev_err(platform->dev, "can't open platform %s: %d\n",
++				platform->name, ret);
+ 			goto platform_err;
+ 		}
+ 	}
+@@ -140,8 +141,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	if (codec_dai->driver->ops->startup) {
+ 		ret = codec_dai->driver->ops->startup(substream, codec_dai);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: can't open codec %s\n",
+-				codec_dai->name);
++			dev_err(codec_dai->dev, "can't open codec %s: %d\n",
++				codec_dai->name, ret);
+ 			goto codec_dai_err;
+ 		}
+ 	}
+@@ -149,7 +150,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	if (rtd->dai_link->ops && rtd->dai_link->ops->startup) {
+ 		ret = rtd->dai_link->ops->startup(substream);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: %s startup failed\n", rtd->dai_link->name);
++			pr_err("asoc: %s startup failed: %d\n",
++			       rtd->dai_link->name, ret);
+ 			goto machine_err;
+ 		}
+ 	}
+@@ -413,7 +415,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (rtd->dai_link->ops && rtd->dai_link->ops->prepare) {
+ 		ret = rtd->dai_link->ops->prepare(substream);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: machine prepare error\n");
++			pr_err("asoc: machine prepare error: %d\n", ret);
+ 			goto out;
+ 		}
+ 	}
+@@ -421,7 +423,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (platform->driver->ops && platform->driver->ops->prepare) {
+ 		ret = platform->driver->ops->prepare(substream);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: platform prepare error\n");
++			dev_err(platform->dev, "platform prepare error: %d\n",
++				ret);
+ 			goto out;
+ 		}
+ 	}
+@@ -429,7 +432,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (codec_dai->driver->ops->prepare) {
+ 		ret = codec_dai->driver->ops->prepare(substream, codec_dai);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: codec DAI prepare error\n");
++			dev_err(codec_dai->dev, "DAI prepare error: %d\n",
++				ret);
+ 			goto out;
+ 		}
+ 	}
+@@ -437,7 +441,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (cpu_dai->driver->ops->prepare) {
+ 		ret = cpu_dai->driver->ops->prepare(substream, cpu_dai);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: cpu DAI prepare error\n");
++			dev_err(cpu_dai->dev, "DAI prepare error: %d\n",
++				ret);
+ 			goto out;
+ 		}
+ 	}
+@@ -484,7 +489,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (rtd->dai_link->ops && rtd->dai_link->ops->hw_params) {
+ 		ret = rtd->dai_link->ops->hw_params(substream, params);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: machine hw_params failed\n");
++			pr_err("asoc: machine hw_params failed: %d\n", ret);
+ 			goto out;
+ 		}
+ 	}
+@@ -492,8 +497,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (codec_dai->driver->ops->hw_params) {
+ 		ret = codec_dai->driver->ops->hw_params(substream, params, codec_dai);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: can't set codec %s hw params\n",
+-				codec_dai->name);
++			dev_err(codec_dai->dev, "can't set %s hw params: %d\n",
++				codec_dai->name, ret);
+ 			goto codec_err;
+ 		}
+ 	}
+@@ -501,8 +506,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (cpu_dai->driver->ops->hw_params) {
+ 		ret = cpu_dai->driver->ops->hw_params(substream, params, cpu_dai);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: interface %s hw params failed\n",
+-				cpu_dai->name);
++			dev_err(cpu_dai->dev, "%s hw params failed: %d\n",
++				cpu_dai->name, ret);
+ 			goto interface_err;
+ 		}
+ 	}
+@@ -510,8 +515,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (platform->driver->ops && platform->driver->ops->hw_params) {
+ 		ret = platform->driver->ops->hw_params(substream, params);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: platform %s hw params failed\n",
+-				platform->name);
++			dev_err(platform->dev, "%s hw params failed: %d\n",
++			       platform->name, ret);
+ 			goto platform_err;
+ 		}
+ 	}
+-- 
+1.7.9.rc1
