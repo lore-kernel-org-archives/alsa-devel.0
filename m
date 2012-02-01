@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] sound: soc: add alias for tlv320aic3x
-Date: Wed, 1 Feb 2012 12:39:48 +0000
-Message-ID: <20120201123947.GB17170@opensource.wolfsonmicro.com>
-References: <1328058380-29360-1-git-send-email-felipe.contreras@gmail.com>
-	<1328058380-29360-2-git-send-email-felipe.contreras@gmail.com>
-	<CAF+7xWnDPQEXQM_Qtb=700OscztcHJGszDE6fHdE0LkPkQUr2w@mail.gmail.com>
-	<CAMP44s2iq-RNNNNeFTZYBJbobEPE7sCOyduh=J--hhRghXkVJg@mail.gmail.com>
+Subject: [PATCH 2/2] ASoC: wm9712: Add TLV information for
+	microphone input
+Date: Wed,  1 Feb 2012 12:43:36 +0000
+Message-ID: <1328100216-23825-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1328100216-23825-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1517177037553987920=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55470103BA1
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 13:39:50 +0100 (CET)
-In-Reply-To: <CAMP44s2iq-RNNNNeFTZYBJbobEPE7sCOyduh=J--hhRghXkVJg@mail.gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B73BD103BBD
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 13:43:46 +0100 (CET)
+In-Reply-To: <1328100216-23825-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,65 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felipe Contreras <felipe.contreras@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, axel.lin@gmail.com, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm9712.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
---===============1517177037553987920==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CUfgB8w4ZwR/yMy5"
-Content-Disposition: inline
-
-
---CUfgB8w4ZwR/yMy5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 01, 2012 at 01:57:56PM +0200, Felipe Contreras wrote:
-> On Wed, Feb 1, 2012 at 3:56 AM, Axel Lin <axel.lin@gmail.com> wrote:
-
-> >> +MODULE_ALIAS("i2c:tlv320aic3x");
-> > This is not required because "tlv320aic3x" is already in the aic3x_i2c_id table.
-> > MODULE_DEVICE_TABLE will automatically setup this modalias.
-
-> Since when? Last time I checked that was not the case. I will try
-> again with v3.2 final, but I think on some of the rc's the alias
-> wasn't there.
-
-Since it was introduced, this is really nothing new (which is why you'll
-not find I2C drivers with MODULE_ALIAS).  This is the whole point of having
-MODULE_DEVICE_TABLE.
-
---CUfgB8w4ZwR/yMy5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPKTKNAAoJEBus8iNuMP3dedMP/3xMX3d8TZe5q5IXPE19z9E/
-49oA34SIsnI9TfO3ePVybuEA0yQIw/U+JToXvMDJHF5HzSO1+9x3Eo+GpsBiY8wq
-Gluk9MFj3vJCj+1UM28eHjoKXn1609Th71+31arzxYsEIJc5AS9PoqYKk3cKTMtD
-P+hPWFKmasm4C2xwDe6yPELnROravDvaq0I5lFKRKHQshNOXOhiJgJtRfrigSlXw
-NPMQc5kweK0sBjl2XSdmWwJn5NeU8UUiDv/RKM4weF2CfIF6bA9UzwqQCEoKAQJQ
-xF+09ILY9SDM8t6w50bZfcXLn1GuCE01+3/hGL1NPSdik+F9rSUTD06l8qh/SF3D
-UYzn5Enrmu2MCXhPWVfimNwLUaz+SBTxDSBUC+LOgaQkvab6GQb8Zxqc6wehpOAZ
-FobGpF/sX8/A9Zn5tKV54JBq/xw6hBcJ2e1ypp15umm3h4Crm8VV22Tfp2JvTlbB
-6NJONRiuZyNVOiPY/pGrIFct+DEnRunBYX0kbHWj2j8gGfiKohF3oa4jYP89ThjF
-MXhESBAyMvlhnzdVYP1TJz2yciJ9UcNBvcGVb25AWo3uYT0XxmQdFgXvGcaf/0j+
-VonptoTiWu0CCrzdlrHIejbn4NlnMvvBbsQpa9+G90X7iN0Kf4ZX9cDkrkSw1rww
-VhSqi/IzWVyGWMcAisAX
-=oA20
------END PGP SIGNATURE-----
-
---CUfgB8w4ZwR/yMy5--
-
---===============1517177037553987920==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1517177037553987920==--
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 247f19a..7291eab 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -20,6 +20,7 @@
+ #include <sound/ac97_codec.h>
+ #include <sound/initval.h>
+ #include <sound/soc.h>
++#include <sound/tlv.h>
+ #include "wm9712.h"
+ 
+ static unsigned int ac97_read(struct snd_soc_codec *codec,
+@@ -69,6 +70,9 @@ static const char *wm9712_rec_sel[] = {"Mic", "NC", "NC", "Speaker Mixer",
+ static const char *wm9712_ng_type[] = {"Constant Gain", "Mute"};
+ static const char *wm9712_diff_sel[] = {"Mic", "Line"};
+ 
++static const DECLARE_TLV_DB_SCALE(main_tlv, -3450, 150, 0);
++static const DECLARE_TLV_DB_SCALE(boost_tlv, 0, 2000, 0);
++
+ static const struct soc_enum wm9712_enum[] = {
+ SOC_ENUM_SINGLE(AC97_PCI_SVID, 14, 4, wm9712_alc_select),
+ SOC_ENUM_SINGLE(AC97_VIDEO, 12, 4, wm9712_alc_mux),
+@@ -147,9 +151,9 @@ SOC_ENUM("Capture Volume Steps", wm9712_enum[6]),
+ SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 1),
+ SOC_SINGLE("Capture ZC Switch", AC97_REC_GAIN, 7, 1, 0),
+ 
+-SOC_SINGLE("Mic 1 Volume", AC97_MIC, 8, 31, 1),
+-SOC_SINGLE("Mic 2 Volume", AC97_MIC, 0, 31, 1),
+-SOC_SINGLE("Mic 20dB Boost Switch", AC97_MIC, 7, 1, 0),
++SOC_SINGLE_TLV("Mic 1 Volume", AC97_MIC, 8, 31, 1, main_tlv),
++SOC_SINGLE_TLV("Mic 2 Volume", AC97_MIC, 0, 31, 1, main_tlv),
++SOC_SINGLE_TLV("Mic Boost Volume", AC97_MIC, 7, 1, 0, boost_tlv),
+ };
+ 
+ /* We have to create a fake left and right HP mixers because
+-- 
+1.7.9.rc1
