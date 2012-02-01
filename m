@@ -1,56 +1,73 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 1/2] sound: soc: add alias for tlv320aic3x
-Date: Wed, 1 Feb 2012 09:56:47 +0800
-Message-ID: <CAF+7xWnDPQEXQM_Qtb=700OscztcHJGszDE6fHdE0LkPkQUr2w@mail.gmail.com>
-References: <1328058380-29360-1-git-send-email-felipe.contreras@gmail.com>
-	<1328058380-29360-2-git-send-email-felipe.contreras@gmail.com>
-Reply-To: axel.lin@gmail.com
+From: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2 0/2] patch set about the MXS-DMA
+Date: Wed, 1 Feb 2012 10:21:35 +0800
+Message-ID: <4F28A1AF.8040402@freescale.com>
+References: <1327044818-4464-1-git-send-email-b32955@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29EF11038DE
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 02:57:08 +0100 (CET)
-Received: by lags15 with SMTP id s15so392769lag.38
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 17:57:07 -0800 (PST)
-In-Reply-To: <1328058380-29360-2-git-send-email-felipe.contreras@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felipe Contreras <felipe.contreras@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <1327044818-4464-1-git-send-email-b32955@freescale.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Huang Shijie <b32955@freescale.com>
+Cc: vinod.koul@intel.com, shawn.guo@linaro.org, artem.bityutskiy@intel.com, shijie8@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, LW@KARO-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-2012/2/1 Felipe Contreras <felipe.contreras@gmail.com>:
-> According to the documentation, should help hotplugging.
+hi,
+> patch 1: move the mxs dma header to a more common place.
+> 	Beside the mx23/mx28, the apbh-dma is also used by MX50 and MX6Q.
+> 	So move the mxs dma header file to a more common place, and rename
+> 	it to mxs-dma.h
 >
-> Signed-off-by: Felipe Contreras <felipe.contreras@gmail.com>
-> ---
-> =A0sound/soc/codecs/tlv320aic3x.c | =A0 =A01 +
-> =A01 files changed, 1 insertions(+), 0 deletions(-)
+> patch 2: rewrite the last parameter of mxs_dma_prep_slave_sg().
+> 	In the new GPMI version, some hardware behavior changes.
+> 	The WAIT4END bit should be set in the middle one of the ECC READ page DMA chain.
+> 	The DMA chain should be set like this:
 >
-> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3=
-x.c
-> index 492f22f..00eb29d 100644
-> --- a/sound/soc/codecs/tlv320aic3x.c
-> +++ b/sound/soc/codecs/tlv320aic3x.c
-> @@ -1565,3 +1565,4 @@ module_exit(aic3x_exit);
-> =A0MODULE_DESCRIPTION("ASoC TLV320AIC3X codec driver");
-> =A0MODULE_AUTHOR("Vladimir Barinov");
-> =A0MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("i2c:tlv320aic3x");
-This is not required because "tlv320aic3x" is already in the aic3x_i2c_id t=
-able.
-MODULE_DEVICE_TABLE will automatically setup this modalias.
+>           +-----+               +-----+                      +-----+
+>           | cmd | ------------> | cmd | ------------------>  | cmd |
+>           +-----+               +-----+                      +-----+
+>                                    ^                            ^
+>                                    |                            |
+>                                    |                            |
+>                               set WAIT4END here too        set WAIT4END here
+>
+>         So rewrite the last parameter of mxs_dma_prep_slave_sg(), use the
+> 	dma_ctrl_flags to set the proper DMA bit for DMA Command Structure.
+> 	And change the relative drivers with the dma_ctrl_flags.
+>
+> TEST:
+> 	Tested the mxs-mmc driver and gpmi-nand drive with the two patches
+> 	in MX28 board.
+>
+> v1 --> v2:
+> 	[1] squash the trial patches into single patch.
+> 	[2] use the dma_ctrl_flags.
+>
+> Huang Shijie (2):
+>   mxs-dma : move the mxs dma.h to a more common place
+>   mxs-dma : rewrite the last parameter of mxs_dma_prep_slave_sg()
+>
+>  drivers/dma/mxs-dma.c                              |   34 +++++++++++++++++---
+>  drivers/mmc/host/mxs-mmc.c                         |   12 +++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   28 +++++++++++++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    6 +++-
+>  drivers/mtd/nand/gpmi-nand/gpmi-regs.h             |    2 +
+>  .../include/mach/dma.h => include/linux/mxs-dma.h  |    0
+>  sound/soc/mxs/mxs-pcm.c                            |    2 +-
+>  sound/soc/mxs/mxs-pcm.h                            |    2 +-
+>  sound/soc/mxs/mxs-saif.c                           |    2 +-
+>  9 files changed, 67 insertions(+), 21 deletions(-)
+>  rename arch/arm/mach-mxs/include/mach/dma.h => include/linux/mxs-dma.h (100%)
+>
+ping.
 
-> --
-> 1.7.9
->
+
+Could these two patches ok ?
+
+My following patches depend upon them.
+
+
+BR
+Huang Shijie
+
