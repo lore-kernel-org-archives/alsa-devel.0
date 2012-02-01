@@ -1,166 +1,56 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
-Date: Wed, 1 Feb 2012 01:52:45 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1202010145510.31226@axis700.grange>
-References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
- <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de> <4F22624E.2090201@renesas.com>
- <Pine.LNX.4.64.1201270946150.32661@axis700.grange> <4F27CA7D.601@renesas.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 1/2] sound: soc: add alias for tlv320aic3x
+Date: Wed, 1 Feb 2012 09:56:47 +0800
+Message-ID: <CAF+7xWnDPQEXQM_Qtb=700OscztcHJGszDE6fHdE0LkPkQUr2w@mail.gmail.com>
+References: <1328058380-29360-1-git-send-email-felipe.contreras@gmail.com>
+	<1328058380-29360-2-git-send-email-felipe.contreras@gmail.com>
+Reply-To: axel.lin@gmail.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <4F27CA7D.601@renesas.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>
-Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29EF11038DE
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 02:57:08 +0100 (CET)
+Received: by lags15 with SMTP id s15so392769lag.38
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2012 17:57:07 -0800 (PST)
+In-Reply-To: <1328058380-29360-2-git-send-email-felipe.contreras@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Felipe Contreras <felipe.contreras@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shimoda-san
+2012/2/1 Felipe Contreras <felipe.contreras@gmail.com>:
+> According to the documentation, should help hotplugging.
+>
+> Signed-off-by: Felipe Contreras <felipe.contreras@gmail.com>
+> ---
+> =A0sound/soc/codecs/tlv320aic3x.c | =A0 =A01 +
+> =A01 files changed, 1 insertions(+), 0 deletions(-)
+>
+> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3=
+x.c
+> index 492f22f..00eb29d 100644
+> --- a/sound/soc/codecs/tlv320aic3x.c
+> +++ b/sound/soc/codecs/tlv320aic3x.c
+> @@ -1565,3 +1565,4 @@ module_exit(aic3x_exit);
+> =A0MODULE_DESCRIPTION("ASoC TLV320AIC3X codec driver");
+> =A0MODULE_AUTHOR("Vladimir Barinov");
+> =A0MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("i2c:tlv320aic3x");
+This is not required because "tlv320aic3x" is already in the aic3x_i2c_id t=
+able.
+MODULE_DEVICE_TABLE will automatically setup this modalias.
 
-On Tue, 31 Jan 2012, Shimoda, Yoshihiro wrote:
-
-> Hi Guennadi-san,
-> 
-> 2012/01/27 17:48, Guennadi Liakhovetski wrote:
-> > Hi Shimoda-san
-> > 
-> > On Fri, 27 Jan 2012, Shimoda, Yoshihiro wrote:
-> [ snip ]
-> >>>
-> >>> 1. switch from using a tasklet to threaded IRQ, which allowed to
-> >>
-> >> I tested this driver on 2 environment, but it could not work correctly.
-> >>  - renesas_usbhs driver with shdma driver on the mackerel board
-> >>  - renesas_usbhs driver with experimental SUDMAC driver
-> >>
-> >> In this case, should we modify the renesas_usbhs driver?
-> > 
-> > Yes, you do. Please, see the respective version of the shdma patch. It 
-> > doesn't request channel IRQs any more directly, instead, it uses a 
-> > dma-simple wrapper function. Also operations change a bit.
-> 
-> Thank you for your comment.
-> 
-> I investigaed the issue. I found out the renesas_usbhs driver may
-> call tx_submit() in the callback()
-
-Well, actually, this is not something, that shdma officially supports ATM. 
-Originally it was prohibited by the API, but later a correction has been 
-added to Documentation/dmaengine.txt, explicitly allowing this. So, good, 
-if this works for you, but watch out for possible issues.
-
-> of the dma-simple finally.
-> In this case, the value of power_up in the simple_tx_submit is 0,
-> the start_xfer() is not called. And then, even if the ld_queue is
-> not empty, the DMA doesn't start.
-
-This is correct. As soon as all the transfers, currently queued in the 
-shdma driver, has been processed and completed, to restart DMA you need to 
-call dma_async_issue_pending().
-
-> So, if I add codes like the following in the dma-simple.c,
-> the renesas_usbhs driver can work correctly without the driver changes.
-> If you think the code is good, would you merge it to your code?
-> ======= chan_irqt() =======
-> 	simple_chan_ld_cleanup(schan, false);
-> 
-> +	spin_lock_irq(&schan->chan_lock);
-> +	/* Next desc */
-> +	simple_chan_xfer_ld_queue(schan);
-> +	spin_unlock_irq(&schan->chan_lock);
-> 
-> 	return IRQ_HANDLED;
-> ==============
-
-Therefore, no, this shouldn't be needed.
-
-Thanks
-Guennadi
-
-> 
-> Best regards,
-> Yoshihiro Shimoda
-> 
-> > Thanks
-> > Guennadi
-> > 
-> >> For reference, if I changed the threaded IRQ to tasklet,
-> >> the 2 environment worked correctly:
-> >> ==============
-> >> diff --git a/drivers/dma/dma-simple.c b/drivers/dma/dma-simple.c
-> >> index 49d8f7d..65a5170 100644
-> >> --- a/drivers/dma/dma-simple.c
-> >> +++ b/drivers/dma/dma-simple.c
-> >> @@ -715,16 +715,18 @@ static irqreturn_t chan_irq(int irq, void *dev)
-> >>
-> >>  	spin_lock(&schan->chan_lock);
-> >>
-> >> -	ret = ops->chan_irq(schan, irq) ? IRQ_WAKE_THREAD : IRQ_NONE;
-> >> +	ret = ops->chan_irq(schan, irq) ? IRQ_HANDLED : IRQ_NONE;
-> >> +	if (ret == IRQ_HANDLED)
-> >> +		tasklet_schedule(&schan->tasklet);
-> >>
-> >>  	spin_unlock(&schan->chan_lock);
-> >>
-> >>  	return ret;
-> >>  }
-> >>
-> >> -static irqreturn_t chan_irqt(int irq, void *dev)
-> >> +static void chan_irqt(unsigned long dev)
-> >>  {
-> >> -	struct dma_simple_chan *schan = dev;
-> >> +	struct dma_simple_chan *schan = (struct dma_simple_chan *)dev;
-> >>  	const struct dma_simple_ops *ops =
-> >>  		to_simple_dev(schan->dma_chan.device)->ops;
-> >>  	struct dma_simple_desc *sdesc;
-> >> @@ -744,15 +746,13 @@ static irqreturn_t chan_irqt(int irq, void *dev)
-> >>  	spin_unlock_irq(&schan->chan_lock);
-> >>
-> >>  	simple_chan_ld_cleanup(schan, false);
-> >> -
-> >> -	return IRQ_HANDLED;
-> >>  }
-> >>
-> >>  int dma_simple_request_irq(struct dma_simple_chan *schan, int irq,
-> >>  			   unsigned long flags, const char *name)
-> >>  {
-> >> -	int ret = request_threaded_irq(irq, chan_irq, chan_irqt,
-> >> -				       flags, name, schan);
-> >> +	int ret = request_irq(irq, chan_irq, flags, name, schan);
-> >> +	tasklet_init(&schan->tasklet, chan_irqt, (unsigned long)schan);
-> >>
-> >>  	schan->irq = ret < 0 ? ret : irq;
-> >>
-> >> diff --git a/include/linux/dma-simple.h b/include/linux/dma-simple.h
-> >> index 5336674..beb1489 100644
-> >> --- a/include/linux/dma-simple.h
-> >> +++ b/include/linux/dma-simple.h
-> >> @@ -68,6 +68,7 @@ struct dma_simple_chan {
-> >>  	int id;				/* Raw id of this channel */
-> >>  	int irq;			/* Channel IRQ */
-> >>  	enum dma_simple_pm_state pm_state;
-> >> +	struct tasklet_struct tasklet;
-> >>  };
-> >>
-> >>  /**
-> >> ==============
-> >>
-> >> Best regards,
-> >> Yoshihiro Shimoda
-> >>
-> > 
-> > ---
-> > Guennadi Liakhovetski, Ph.D.
-> > Freelance Open-Source Software Developer
-> > http://www.open-technology.de/
-> > 
-> 
-> 
-> -- 
-> Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> EC No.
-> 
-
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+> --
+> 1.7.9
+>
