@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC][PATCH] ASoC: cs42l73: Fix Output
- [X|A|V]SP_SCLK Sourcing Mode setting for master mode
-Date: Wed, 1 Feb 2012 10:49:21 +0000
-Message-ID: <20120201104921.GA5648@opensource.wolfsonmicro.com>
-References: <1327974544.4566.1.camel@phoenix>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fix duplicated output to more than
+	one codec
+Date: Wed,  1 Feb 2012 12:05:41 +0100
+Message-ID: <1328094341-2488-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6888168228705144457=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 38B761038E8
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 11:49:24 +0100 (CET)
-In-Reply-To: <1327974544.4566.1.camel@phoenix>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 51131103B64
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2012 12:05:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,55 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 924320@bugs.launchpad.net
+Cc: stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+This typo caused the wrong codec's nid to be checked for wcaps type.
+As a result, sometimes speakers would duplicate the output sent to
+HDMI output.
 
---===============6888168228705144457==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-Content-Disposition: inline
+Cc: stable@kernel.org
+BugLink: https://bugs.launchpad.net/bugs/924320
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_codec.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 31, 2012 at 09:49:04AM +0800, Axel Lin wrote:
-> For master mode, set Output [X|A|V]SP_SCLK Sourcing Mode to MCLK Mode.
-
-Applied, thanks.
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPKRciAAoJEBus8iNuMP3dV4YP/02ZVf8O8RyerAGULpLP6VaY
-FJi7dJWkaH2CuchJSMt3L0qHIQv7hvxvjrHMlZtoyyEqv1Kn3RLzdy6CSbVXsaGt
-7L0vsnK+qY3igSHos90Nb6h1Sl1t3ANnaWnxzyiPagFVbmuQGDsNuNOuhY+67VSt
-6/6oQKh5B5t/Yk1W41ZJwcTMFyUfZiKMaV3caa2C9ReJAbIkZPGfZv6oA0n/LKHV
-68Iur3qawdUPF/UzNcWnfqyEwItJCDEbIEnxwhW4pGZIdISsTXBcEQ3t+AoQ8AVV
-OnyElEsa2E5hhMqSb1OhgD+xYD8crXAQP/kP5KEqcnhyDZhzivOiqyjmvGzUL9XB
-/pUbgZdajro7YNkddj7hP0GTPgAYQygCHhUVXFUZpRWTDhXvoyGTROntKFRsEnl3
-xIMtTjXThQpZsd6h6AU401tztocW6w922q2CSrqiW7E3Sy0zuLCAeWIiZNAWq2Gf
-x46plrtSYI0HzASZqhWnXkBu6kq8bHITOssgQjn2YJibD226qwpFmbqVHKeVvCgR
-DgzBPOBH267qkC9s1Dfl/4EFs61IqieHdPBJH83HgffbHZEoy5b2E0o8zlMQtltN
-a2aSGWONCMSd1nVT0yQaSiU9sjKqx26uf9G2qo/gEjZMCWqBytXDCQzQjP+v0KMh
-XoUhhIggP6cYAPnKYvNS
-=wLci
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
-
---===============6888168228705144457==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6888168228705144457==--
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 4df72c0..c2c65f6 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1447,7 +1447,7 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
+ 		for (i = 0; i < c->cvt_setups.used; i++) {
+ 			p = snd_array_elem(&c->cvt_setups, i);
+ 			if (!p->active && p->stream_tag == stream_tag &&
+-			    get_wcaps_type(get_wcaps(codec, p->nid)) == type)
++			    get_wcaps_type(get_wcaps(c, p->nid)) == type)
+ 				p->dirty = 1;
+ 		}
+ 	}
+-- 
+1.7.8.3
