@@ -1,50 +1,32 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_hubs: Correct line input to line
-	output 2 paths
-Date: Wed,  1 Feb 2012 23:47:37 +0000
-Message-ID: <1328140057-3217-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Richard Zhao <richard.zhao@linaro.org>
+Subject: [PATCH v2 0/9] imx patches when I enable imx6q sabrelite audio
+Date: Thu, 2 Feb 2012 10:11:59 +0800
+Message-ID: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4E211243FA
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 00:47:46 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: shawn.guo@linaro.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The second line output mixer has the controls for the line input bypasses
-in the opposite order.
+Changes in v2:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_hubs.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ - change dt peroperty/label to lower case as much as possible
+   keep XXX-supply property upper case.
+ - convert audmux-v2 to platform device driver
+ - move audmux-v2 driver to sound/soc/imx
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 57514dd2..b08d04c 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -586,8 +586,8 @@ SOC_DAPM_SINGLE("Left Output Switch", WM8993_LINE_MIXER1, 0, 1, 0),
- };
- 
- static const struct snd_kcontrol_new line2_mix[] = {
--SOC_DAPM_SINGLE("IN1R Switch", WM8993_LINE_MIXER2, 2, 1, 0),
--SOC_DAPM_SINGLE("IN1L Switch", WM8993_LINE_MIXER2, 1, 1, 0),
-+SOC_DAPM_SINGLE("IN1L Switch", WM8993_LINE_MIXER2, 2, 1, 0),
-+SOC_DAPM_SINGLE("IN1R Switch", WM8993_LINE_MIXER2, 1, 1, 0),
- SOC_DAPM_SINGLE("Output Switch", WM8993_LINE_MIXER2, 0, 1, 0),
- };
- 
--- 
-1.7.9.rc1
+[PATCH v2 1/9] ARM: mxc: make imx_dma_is_general_purpose more
+[PATCH v2 2/9] ARM: imx6q: add cko1 clock
+[PATCH v2 3/9] ARM: dts: imx6q-sabrelite: add 2p5v and 3p3v
+[PATCH v2 4/9] ARM: dts: imx6q-sabrelite: add sgtl5000 audio codec
+[PATCH v2 5/9] ARM: mxc: convert audmux-v2 to a platform driver
+[PATCH v2 6/9] ARM: mx31ads: add audmux device
+[PATCH v2 7/9] ARM: mxc: move audmux-v2 to sound/soc/imx
+[PATCH v2 8/9] ASoC: imx: add dt support for audmux-v2
+[PATCH v2 9/9] ARM: imx6q-sabrelite: add audmux support
+
+Thanks
+Richard
+
