@@ -1,50 +1,111 @@
-From: Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 2/2] USB: Gadget: Add Audio Class 2.0 Driver
-Date: Thu, 2 Feb 2012 21:49:09 +0530
-Message-ID: <CABb+yY3X0XDk0zByZZcJOO0h2Kxu14UD4w-GS7p1HPAAWU3SVA@mail.gmail.com>
-References: <1313752934-20081-1-git-send-email-jassisinghbrar@gmail.com>
-	<20110822113002.GD30398@legolas.emea.dhcp.ti.com>
-	<CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg@mail.gmail.com>
-	<20110822124406.GI30398@legolas.emea.dhcp.ti.com>
-	<CABb+yY3QxvHf38-qfD5ig77nJK=0eVLiSPVpbTh_DCfHNGRyGQ@mail.gmail.com>
-	<20110822134627.GP30398@legolas.emea.dhcp.ti.com>
-	<CABb+yY2m2MfkFwf+XTdKzsCCeSFz_J2LoGxJricamhNtTcSAcg@mail.gmail.com>
-	<20110822142805.GT30398@legolas.emea.dhcp.ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH 1/4] USB: Gadget: Rename audio function to uac1
+Date: Thu,  2 Feb 2012 21:59:53 +0530
+Message-ID: <1328200193-31939-1-git-send-email-jaswinder.singh@linaro.org>
+References: <CABb+yY3X0XDk0zByZZcJOO0h2Kxu14UD4w-GS7p1HPAAWU3SVA@mail.gmail.com>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20110822142805.GT30398-UiBtZHVXSwEVvW8u9ZQWYwjfymiNCTlR@public.gmane.org>
+In-Reply-To: <CABb+yY3X0XDk0zByZZcJOO0h2Kxu14UD4w-GS7p1HPAAWU3SVA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
 Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: balbi-l0cyMroinI0@public.gmane.org
-Cc: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-l3A5Bk7waGM@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jaredwiltshire-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jaredwiltshire-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 22, 2011 at 7:58 PM, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org> wrote:
->
->> > audio.c doesn't do anything audio related. It's just adding the
->> > configuration to composite layer. The real specification is implem=
-ented
->> > in f_audio.c (should probably be called f_uac1.c, though).
->> Agreed. Reusing audio.c is quite reasonable.
->> So, I'll :-
->> * Merge audio2.c into audio.c
->> * Rename f_audio.c -> f_uac1.c
->> * Add new f_audio2.c as f_uac2.c
->> * Add Kconfig switch to compile UAC_1 (audio.c + f_uac1.c) =C2=A0or =
-=C2=A0UAC_2
->> (audio.c + f_uac2.c)
->>
->> I'll wait for other comments and revise the patch after a few days.
->
-> ok, sounds reasonable.
->
-OK, after a 'few days' on some distant giant planet, here is the revise=
-d
-patchset accordingly.
+The extant USB-Audio function driver complies to UAC_1 spec.
+So name the files accordingly, paving way for inclusion of
+a new UAC_2 specified driver.
 
-Cheers
--jassi
+Signed-off-by: Yadi Brar <yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+---
+ drivers/usb/gadget/audio.c                 |    6 +++---
+ drivers/usb/gadget/{f_audio.c => f_uac1.c} |    2 +-
+ drivers/usb/gadget/{u_audio.c => u_uac1.c} |    4 ++--
+ drivers/usb/gadget/{u_audio.h => u_uac1.h} |    2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
+ rename drivers/usb/gadget/{f_audio.c => f_uac1.c} (99%)
+ rename drivers/usb/gadget/{u_audio.c => u_uac1.c} (99%)
+ rename drivers/usb/gadget/{u_audio.h => u_uac1.h} (94%)
+
+diff --git a/drivers/usb/gadget/audio.c b/drivers/usb/gadget/audio.c
+index 9d89ae47..056a2d9 100644
+--- a/drivers/usb/gadget/audio.c
++++ b/drivers/usb/gadget/audio.c
+@@ -14,7 +14,7 @@
+ #include <linux/kernel.h>
+ #include <linux/utsname.h>
+ 
+-#include "u_audio.h"
++#include "u_uac1.h"
+ 
+ #define DRIVER_DESC		"Linux USB Audio Gadget"
+ #define DRIVER_VERSION		"Dec 18, 2008"
+@@ -33,8 +33,8 @@
+ #include "config.c"
+ #include "epautoconf.c"
+ 
+-#include "u_audio.c"
+-#include "f_audio.c"
++#include "u_uac1.c"
++#include "f_uac1.c"
+ 
+ /*-------------------------------------------------------------------------*/
+ 
+diff --git a/drivers/usb/gadget/f_audio.c b/drivers/usb/gadget/f_uac1.c
+similarity index 99%
+rename from drivers/usb/gadget/f_audio.c
+rename to drivers/usb/gadget/f_uac1.c
+index ec7ffcd..e4c060f 100644
+--- a/drivers/usb/gadget/f_audio.c
++++ b/drivers/usb/gadget/f_uac1.c
+@@ -14,7 +14,7 @@
+ #include <linux/device.h>
+ #include <linux/atomic.h>
+ 
+-#include "u_audio.h"
++#include "u_uac1.h"
+ 
+ #define OUT_EP_MAX_PACKET_SIZE	200
+ static int req_buf_size = OUT_EP_MAX_PACKET_SIZE;
+diff --git a/drivers/usb/gadget/u_audio.c b/drivers/usb/gadget/u_uac1.c
+similarity index 99%
+rename from drivers/usb/gadget/u_audio.c
+rename to drivers/usb/gadget/u_uac1.c
+index 59ffe1e..af98989 100644
+--- a/drivers/usb/gadget/u_audio.c
++++ b/drivers/usb/gadget/u_uac1.c
+@@ -1,5 +1,5 @@
+ /*
+- * u_audio.c -- ALSA audio utilities for Gadget stack
++ * u_uac1.c -- ALSA audio utilities for Gadget stack
+  *
+  * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+  * Copyright (C) 2008 Analog Devices, Inc
+@@ -17,7 +17,7 @@
+ #include <linux/random.h>
+ #include <linux/syscalls.h>
+ 
+-#include "u_audio.h"
++#include "u_uac1.h"
+ 
+ /*
+  * This component encapsulates the ALSA devices for USB audio gadget
+diff --git a/drivers/usb/gadget/u_audio.h b/drivers/usb/gadget/u_uac1.h
+similarity index 94%
+rename from drivers/usb/gadget/u_audio.h
+rename to drivers/usb/gadget/u_uac1.h
+index 08ffce3..18c2e72 100644
+--- a/drivers/usb/gadget/u_audio.h
++++ b/drivers/usb/gadget/u_uac1.h
+@@ -1,5 +1,5 @@
+ /*
+- * u_audio.h -- interface to USB gadget "ALSA AUDIO" utilities
++ * u_uac1.h -- interface to USB gadget "ALSA AUDIO" utilities
+  *
+  * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+  * Copyright (C) 2008 Analog Devices, Inc
+-- 
+1.7.4.1
+
 --
 To unsubscribe from this list: send the line "unsubscribe linux-usb" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
