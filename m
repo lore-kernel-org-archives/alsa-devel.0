@@ -1,94 +1,39 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 7/7] MFD: TWL6040: Add regulator support for
- VIO, V2V1 supplies
-Date: Thu, 2 Feb 2012 14:19:04 +0000
-Message-ID: <20120202141904.GC22048@opensource.wolfsonmicro.com>
-References: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com>
-	<1328185019-29575-8-git-send-email-peter.ujfalusi@ti.com>
-	<20120202125250.GJ7428@opensource.wolfsonmicro.com>
-	<4F2A8D11.9010705@ti.com>
-	<20120202133207.GN7428@opensource.wolfsonmicro.com>
-	<4F2A96B8.2030004@ti.com>
+From: Richard Zhao <richard.zhao@linaro.org>
+Subject: Re: [PATCH v2 4/9] ARM: dts: imx6q-sabrelite: add sgtl5000 audio
+ codec
+Date: Thu, 2 Feb 2012 22:41:18 +0800
+Message-ID: <20120202144116.GA3278@richard-laptop>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+ <1328148728-32258-5-git-send-email-richard.zhao@linaro.org>
+ <CAOMZO5CxZgcO1JUZiFFJzWwLao1g7Y1_VNbsuiJOW+PH2B+FNQ@mail.gmail.com>
+ <20120202134907.GA3015@richard-laptop>
+ <CAOMZO5CuPDhU6zUyhE1jA0SDTjv1XDMCkNoQ_0nH82poGYOaqA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5720246932586257630=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AF1C1103CDB
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 15:19:07 +0100 (CET)
-In-Reply-To: <4F2A96B8.2030004@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5CuPDhU6zUyhE1jA0SDTjv1XDMCkNoQ_0nH82poGYOaqA@mail.gmail.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, shawn.guo@linaro.org, Dirk Behme <dirk.behme@de.bosch.com>, Eric Nelson <eric.nelson@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5720246932586257630==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
-Content-Disposition: inline
-
-
---PuGuTyElPB9bOcsM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 02, 2012 at 03:59:20PM +0200, Peter Ujfalusi wrote:
-> On 02/02/2012 03:32 PM, Mark Brown wrote:
-> > That's not a problem for using the bulk get - the array is part of the
-> > API so you can use regulator_bulk_get() and still look at individual
-> > supplies within the array later on when enabling and disabling them.
-
-> For some reason I have associated the use of regulator_bulk_get with the
-> use of regulator_bulk_enable/disable. It did not even crossed my mind
-> that I can still use regulator_enable on the individual regulators.
-
-They do normally end up going together since a very large proportion of
-devices need all their supplies on when active but don't care about
-sequencing so you end up with a common pattern.  It's not required,
-though.
-
-> Will convert the regulator_get/put to bulk operations. It will make the
-> code a bit cleaner.
-
-Good stuff.
-
---PuGuTyElPB9bOcsM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPKptHAAoJEBus8iNuMP3du/sP/2z53bmPM+Ks96P0MkL7ehgw
-PY3god+WXmcnvRvbSw3mcEkg9/BcbSm4SjjMvVyIjXoLJmOOoHtb/PlFBCpuVrtI
-v+LTUnbQqqaq3d0JuGG4ttCNd05/0VcKTGcluzvBqtDj5saXbhPKXIUa/jQUGZ4C
-l4itnlvjFqjJf0Uh+PiwlrDu6g6JS8iM9j7gr/bEBkgeqZDThNqfjo+mV3Wm1PEu
-8Dp0rGPWh8pC8Pl1W8xMBawRYTG8rTqzegaAm6iL36lAQWXFfD+hInj1hv1CmYUb
-Bg0E2TwYxor9YeccZ2WTLTwFWanFUrKb7VCWBQy87blHuBud+md0LE+lKDXlhYw7
-a06gPgiiYkcP5jnYp49lIy/x9sxGPuhCYOQ1vvDdDgNc569LyinY2thudmG4u6PA
-LXvBuqzJvCHqPIuixPlwG8jHnZL1OdiEb+3bszZtHTOCEfxbw8Qf/xhKKfmlAqQy
-/TGaLaU+ooRW08Sayd+rbarzHoJQMXqxNfQp0R+cnx4JPBR9Fie7P6KHO7gu+/Zz
-Agj8o10hR14vGBZpzHQ/BULY+YXiK4tyKaFKScDGGa8X3ecRBa4DUq0Wgx0nl8wK
-cHo1QgCFjX/f4PKj+pZSnmNLDjitovL5UCzMo9hB5iD3AF8h31fjnBCKRHOY29DE
-DptYmdznFwFq0jKEcMuN
-=a45s
------END PGP SIGNATURE-----
-
---PuGuTyElPB9bOcsM--
-
---===============5720246932586257630==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5720246932586257630==--
+On Thu, Feb 02, 2012 at 12:15:52PM -0200, Fabio Estevam wrote:
+> On 2/2/12, Richard Zhao <richard.zhao@linaro.org> wrote:
+> 
+> >> Without imx-sgtl5000.c in place, this patch only introduces dead code
+> >> at the moment.
+> > Each patch make sense too without sgtl5000.
+> 
+> Well, as this patch goal is to provide audio support to mx6sabrelite,
+> we need imx-sgtl5000 in place to test it, right?
+My goal seem less important here. You see I'm adding more and more things
+into the patch series, which is out of my goal. The maintainers only
+consider right patch go to right git.
+>  How can we know that
+> don't get a kernel oops or something?
+patch pass building is possible go to upstream too.
+> 
+> Regards,
+> 
+> Fabio Estevam
