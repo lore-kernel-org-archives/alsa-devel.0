@@ -1,45 +1,158 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH v2 1/4] ARM: dt: tegra: Enable device tree
- audio codec on PAZ00 board.
-Date: Thu, 2 Feb 2012 12:40:03 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF178E124B60@HQMAIL01.nvidia.com>
-References: <1328213618-15870-1-git-send-email-leon@leon.nu>
-	<1328213618-15870-2-git-send-email-leon@leon.nu>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
+Date: Thu, 2 Feb 2012 23:19:45 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1202022317560.13860@axis700.grange>
+References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
+ <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de> <4F22624E.2090201@renesas.com>
+ <Pine.LNX.4.64.1201270946150.32661@axis700.grange> <4F27CA7D.601@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94165103D60
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 21:40:18 +0100 (CET)
-In-Reply-To: <1328213618-15870-2-git-send-email-leon@leon.nu>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, "olof@lixom.net" <olof@lixom.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Cc: Marc Dietrich <marvin24@gmx.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <4F27CA7D.601@renesas.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>
+Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
 List-Id: alsa-devel@alsa-project.org
 
-Leon Romanovsky wrote at Thursday, February 02, 2012 1:14 PM:
-> This patch adds initial device tree support of ALC5632 sound codec and
-> machine driver for PAZ00 board. The implementation is based on the WM8903 codec.
+Shimoda-san
 
-This patch description seems a little unclear, since this is just adding
-the .dts changes to instantiate the drivers that already support DT, and
-mentioning WM8903 is a little confusing, since that's more relevant to
-the commit where you wrote the binding docs and implemented the driver
-changes.
+On Tue, 31 Jan 2012, Shimoda, Yoshihiro wrote:
 
-Aside from that, the series,
+> Hi Guennadi-san,
+> 
+> 2012/01/27 17:48, Guennadi Liakhovetski wrote:
+> > Hi Shimoda-san
+> > 
+> > On Fri, 27 Jan 2012, Shimoda, Yoshihiro wrote:
+> [ snip ]
+> >>>
+> >>> 1. switch from using a tasklet to threaded IRQ, which allowed to
+> >>
+> >> I tested this driver on 2 environment, but it could not work correctly.
+> >>  - renesas_usbhs driver with shdma driver on the mackerel board
+> >>  - renesas_usbhs driver with experimental SUDMAC driver
+> >>
+> >> In this case, should we modify the renesas_usbhs driver?
+> > 
+> > Yes, you do. Please, see the respective version of the shdma patch. It 
+> > doesn't request channel IRQs any more directly, instead, it uses a 
+> > dma-simple wrapper function. Also operations change a bit.
+> 
+> Thank you for your comment.
+> 
+> I investigaed the issue. I found out the renesas_usbhs driver may
+> call tx_submit() in the callback() of the dma-simple finally.
 
-Acked-by: Stephen Warren <swarren@nvidia.com>
+Sorry, in my first reply to this your email I misread the renesas_usbhs 
+for an issue with your new SUDMAC driver. Since this is not the case and 
+my patch seems to be causing a regression, I'll look at it.
 
--- 
-nvpublic
+Thanks
+Guennadi
+
+> In this case, the value of power_up in the simple_tx_submit is 0,
+> the start_xfer() is not called. And then, even if the ld_queue is
+> not empty, the DMA doesn't start.
+> 
+> 
+> So, if I add codes like the following in the dma-simple.c,
+> the renesas_usbhs driver can work correctly without the driver changes.
+> If you think the code is good, would you merge it to your code?
+> ======= chan_irqt() =======
+> 	simple_chan_ld_cleanup(schan, false);
+> 
+> +	spin_lock_irq(&schan->chan_lock);
+> +	/* Next desc */
+> +	simple_chan_xfer_ld_queue(schan);
+> +	spin_unlock_irq(&schan->chan_lock);
+> 
+> 	return IRQ_HANDLED;
+> ==============
+> 
+> Best regards,
+> Yoshihiro Shimoda
+> 
+> > Thanks
+> > Guennadi
+> > 
+> >> For reference, if I changed the threaded IRQ to tasklet,
+> >> the 2 environment worked correctly:
+> >> ==============
+> >> diff --git a/drivers/dma/dma-simple.c b/drivers/dma/dma-simple.c
+> >> index 49d8f7d..65a5170 100644
+> >> --- a/drivers/dma/dma-simple.c
+> >> +++ b/drivers/dma/dma-simple.c
+> >> @@ -715,16 +715,18 @@ static irqreturn_t chan_irq(int irq, void *dev)
+> >>
+> >>  	spin_lock(&schan->chan_lock);
+> >>
+> >> -	ret = ops->chan_irq(schan, irq) ? IRQ_WAKE_THREAD : IRQ_NONE;
+> >> +	ret = ops->chan_irq(schan, irq) ? IRQ_HANDLED : IRQ_NONE;
+> >> +	if (ret == IRQ_HANDLED)
+> >> +		tasklet_schedule(&schan->tasklet);
+> >>
+> >>  	spin_unlock(&schan->chan_lock);
+> >>
+> >>  	return ret;
+> >>  }
+> >>
+> >> -static irqreturn_t chan_irqt(int irq, void *dev)
+> >> +static void chan_irqt(unsigned long dev)
+> >>  {
+> >> -	struct dma_simple_chan *schan = dev;
+> >> +	struct dma_simple_chan *schan = (struct dma_simple_chan *)dev;
+> >>  	const struct dma_simple_ops *ops =
+> >>  		to_simple_dev(schan->dma_chan.device)->ops;
+> >>  	struct dma_simple_desc *sdesc;
+> >> @@ -744,15 +746,13 @@ static irqreturn_t chan_irqt(int irq, void *dev)
+> >>  	spin_unlock_irq(&schan->chan_lock);
+> >>
+> >>  	simple_chan_ld_cleanup(schan, false);
+> >> -
+> >> -	return IRQ_HANDLED;
+> >>  }
+> >>
+> >>  int dma_simple_request_irq(struct dma_simple_chan *schan, int irq,
+> >>  			   unsigned long flags, const char *name)
+> >>  {
+> >> -	int ret = request_threaded_irq(irq, chan_irq, chan_irqt,
+> >> -				       flags, name, schan);
+> >> +	int ret = request_irq(irq, chan_irq, flags, name, schan);
+> >> +	tasklet_init(&schan->tasklet, chan_irqt, (unsigned long)schan);
+> >>
+> >>  	schan->irq = ret < 0 ? ret : irq;
+> >>
+> >> diff --git a/include/linux/dma-simple.h b/include/linux/dma-simple.h
+> >> index 5336674..beb1489 100644
+> >> --- a/include/linux/dma-simple.h
+> >> +++ b/include/linux/dma-simple.h
+> >> @@ -68,6 +68,7 @@ struct dma_simple_chan {
+> >>  	int id;				/* Raw id of this channel */
+> >>  	int irq;			/* Channel IRQ */
+> >>  	enum dma_simple_pm_state pm_state;
+> >> +	struct tasklet_struct tasklet;
+> >>  };
+> >>
+> >>  /**
+> >> ==============
+> >>
+> >> Best regards,
+> >> Yoshihiro Shimoda
+> >>
+> > 
+> > ---
+> > Guennadi Liakhovetski, Ph.D.
+> > Freelance Open-Source Software Developer
+> > http://www.open-technology.de/
+> > 
+> 
+> 
+> -- 
+> Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> EC No.
+> 
+
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
