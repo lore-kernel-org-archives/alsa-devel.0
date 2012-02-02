@@ -1,32 +1,41 @@
 From: Richard Zhao <richard.zhao@linaro.org>
-Subject: [PATCH v2 0/9] imx patches when I enable imx6q sabrelite audio
-Date: Thu, 2 Feb 2012 10:11:59 +0800
-Message-ID: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+Subject: [PATCH v2 1/9] ARM: mxc: make imx_dma_is_general_purpose more generic for sdma
+Date: Thu, 2 Feb 2012 10:12:00 +0800
+Message-ID: <1328148728-32258-2-git-send-email-richard.zhao@linaro.org>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
 Sender: linux-doc-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org
-Cc: shawn.guo@linaro.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org
+Cc: shawn.guo@linaro.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, Richard Zhao <richard.zhao@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Changes in v2:
+sdma device names vary for different SoC. So we just check
+whether it includes "sdma" substring.
 
- - change dt peroperty/label to lower case as much as possible
-   keep XXX-supply property upper case.
- - convert audmux-v2 to platform device driver
- - move audmux-v2 driver to sound/soc/imx
+Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/plat-mxc/include/mach/dma.h |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-[PATCH v2 1/9] ARM: mxc: make imx_dma_is_general_purpose more
-[PATCH v2 2/9] ARM: imx6q: add cko1 clock
-[PATCH v2 3/9] ARM: dts: imx6q-sabrelite: add 2p5v and 3p3v
-[PATCH v2 4/9] ARM: dts: imx6q-sabrelite: add sgtl5000 audio codec
-[PATCH v2 5/9] ARM: mxc: convert audmux-v2 to a platform driver
-[PATCH v2 6/9] ARM: mx31ads: add audmux device
-[PATCH v2 7/9] ARM: mxc: move audmux-v2 to sound/soc/imx
-[PATCH v2 8/9] ASoC: imx: add dt support for audmux-v2
-[PATCH v2 9/9] ARM: imx6q-sabrelite: add audmux support
+diff --git a/arch/arm/plat-mxc/include/mach/dma.h b/arch/arm/plat-mxc/include/mach/dma.h
+index 233d0a5..1b90803 100644
+--- a/arch/arm/plat-mxc/include/mach/dma.h
++++ b/arch/arm/plat-mxc/include/mach/dma.h
+@@ -60,8 +60,7 @@ static inline int imx_dma_is_ipu(struct dma_chan *chan)
+ 
+ static inline int imx_dma_is_general_purpose(struct dma_chan *chan)
+ {
+-	return !strcmp(dev_name(chan->device->dev), "imx31-sdma") ||
+-		!strcmp(dev_name(chan->device->dev), "imx35-sdma") ||
++	return strstr(dev_name(chan->device->dev), "sdma") ||
+ 		!strcmp(dev_name(chan->device->dev), "imx-dma");
+ }
+ 
+-- 
+1.7.5.4
 
-Thanks
-Richard
 
