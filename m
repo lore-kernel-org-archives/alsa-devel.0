@@ -1,39 +1,100 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
-Date: Thu, 2 Feb 2012 21:17:18 +0800
-Message-ID: <20120202131716.GF9773@S2101-09.ap.freescale.net>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
- <20120202120900.GC7428@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC 7/7] MFD: TWL6040: Add regulator support for
+	VIO, V2V1 supplies
+Date: Thu, 02 Feb 2012 15:18:09 +0200
+Message-ID: <4F2A8D11.9010705@ti.com>
+References: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com>
+	<1328185019-29575-8-git-send-email-peter.ujfalusi@ti.com>
+	<20120202125250.GJ7428@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120202120900.GC7428@opensource.wolfsonmicro.com>
-Sender: linux-doc-owner@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BBC9244EE
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 14:18:17 +0100 (CET)
+Received: by mail-lpp01m020-f172.google.com with SMTP id gk8so334984lbb.3
+	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 05:18:15 -0800 (PST)
+In-Reply-To: <20120202125250.GJ7428@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Richard Zhao <richard.zhao@linaro.org>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 02, 2012 at 12:09:01PM +0000, Mark Brown wrote:
-> On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
-> 
-> >  static void __init mxc_init_audio(void)
-> >  {
-> >  	imx31_add_imx_ssi(0, NULL);
-> >  	mxc_iomux_setup_multiple_pins(ssi_pins, ARRAY_SIZE(ssi_pins), "ssi");
-> > +	imx_add_platform_device("audmux-v2", 0,
-> > +				audmux_res, ARRAY_SIZE(audmux_res), NULL, 0);
-> 
-> Since the audmux is a part of the SoC silicon shouldn't the SoC just
-> register the device without individual boards having to do anything
-> (possibly conditional on ASoC being selected in Kconfig or something)?
-> It's going to be connected in exactly the same fashion on any system
-> using the SoC.
+On 02/02/2012 02:52 PM, Mark Brown wrote:
+> On Thu, Feb 02, 2012 at 02:16:59PM +0200, Peter Ujfalusi wrote:
+> =
 
-Hmm, we are trying to save adding the device for those boards which do
-not route any audmux pins out at all.
+>> +	twl6040->vio =3D regulator_get(&client->dev, "vio");
+>> +	if (IS_ERR(twl6040->vio)) {
+>> +		ret =3D PTR_ERR(twl6040->vio);
+>> +		dev_err(&client->dev, "Failed to request VIO supply: %d\n",
+>> +			ret);
+>> +		goto regulator_get_err;
+>> +	}
+>> +	twl6040->v2v1 =3D regulator_get(&client->dev, "v2v1");
+>> +	if (IS_ERR(twl6040->v2v1)) {
+>> +		ret =3D PTR_ERR(twl6040->v2v1);
+>> +		dev_err(&client->dev, "Failed to request V2V1 supply: %d\n",
+>> +			ret);
+>> +		regulator_put(twl6040->vio);
+>> +		goto regulator_get_err;
+>> +	}
+> =
 
--- 
-Regards,
-Shawn
+> Looks like you want regulator_bulk_get() here.  Or (better yet though
+> it'd be a potential issue for merge via MFD and the benefits aren't that
+> exciting since you still need to disable) devm_regulator_bulk_get().
+
+I need separate control for the two power source since we can hit
+different power levels depending on which is powered/not powered:
+power down: vio, v2v1 is OFF
+deep sleep: vio is ON, v2v1 is OFF
+sleep/power on: vio, v2v1 is ON
+
+And we have certain sequence to move between power states.
+
+> =
+
+>> +	ret =3D regulator_enable(twl6040->vio);
+>> +	if (ret !=3D 0) {
+>> +		dev_err(&client->dev, "Failed to enable VIO: %d\n", ret);
+>> +		goto power_err;
+>> +	}
+>> +	ret =3D regulator_enable(twl6040->v2v1);
+>> +	if (ret !=3D 0) {
+>> +		dev_err(&client->dev, "Failed to enable V2V1: %d\n", ret);
+>> +		regulator_disable(twl6040->vio);
+
+I disable the vio here, if the v2v1 enable fails.
+
+>> +		goto power_err;
+>> +	}
+> =
+
+> Similarly regulator_bulk_enable() here, and it'll fix...
+> =
+
+>>  gpio1_err:
+>> +	regulator_disable(twl6040->v2v1);
+>> +	regulator_disable(twl6040->vio);
+> =
+
+> ...the fact that if you fail to enable the v2.1 regulator you don't
+> disable vio.
+
+It is handled within the if(){}
+With the devm_regulator this will be much nicer for sure.
+
+-- =
+
+P=E9ter
