@@ -1,84 +1,94 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
-Date: Thu, 2 Feb 2012 14:16:36 +0000
-Message-ID: <20120202141636.GB22048@opensource.wolfsonmicro.com>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
- <20120202120900.GC7428@opensource.wolfsonmicro.com>
- <20120202131716.GF9773@S2101-09.ap.freescale.net>
- <20120202132618.GL7428@opensource.wolfsonmicro.com>
- <20120202141124.GG9773@S2101-09.ap.freescale.net>
+Subject: Re: [RFC 7/7] MFD: TWL6040: Add regulator support for
+ VIO, V2V1 supplies
+Date: Thu, 2 Feb 2012 14:19:04 +0000
+Message-ID: <20120202141904.GC22048@opensource.wolfsonmicro.com>
+References: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com>
+	<1328185019-29575-8-git-send-email-peter.ujfalusi@ti.com>
+	<20120202125250.GJ7428@opensource.wolfsonmicro.com>
+	<4F2A8D11.9010705@ti.com>
+	<20120202133207.GN7428@opensource.wolfsonmicro.com>
+	<4F2A96B8.2030004@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3uo+9/B/ebqu+fSQ"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120202141124.GG9773@S2101-09.ap.freescale.net>
-Sender: linux-doc-owner@vger.kernel.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Richard Zhao <richard.zhao@linaro.org>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5720246932586257630=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AF1C1103CDB
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 15:19:07 +0100 (CET)
+In-Reply-To: <4F2A96B8.2030004@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---3uo+9/B/ebqu+fSQ
+--===============5720246932586257630==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
+Content-Disposition: inline
+
+
+--PuGuTyElPB9bOcsM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 02, 2012 at 10:11:26PM +0800, Shawn Guo wrote:
-> On Thu, Feb 02, 2012 at 01:26:18PM +0000, Mark Brown wrote:
+On Thu, Feb 02, 2012 at 03:59:20PM +0200, Peter Ujfalusi wrote:
+> On 02/02/2012 03:32 PM, Mark Brown wrote:
+> > That's not a problem for using the bulk get - the array is part of the
+> > API so you can use regulator_bulk_get() and still look at individual
+> > supplies within the array later on when enabling and disabling them.
 
-> > That's why I'm saying perhaps make it conditional on having ASoC built
-> > (or even on having the AUDMUX driver built).
+> For some reason I have associated the use of regulator_bulk_get with the
+> use of regulator_bulk_enable/disable. It did not even crossed my mind
+> that I can still use regulator_enable on the individual regulators.
 
-> Do you mean by having the below in some place like function
-> imx31_soc_init()?
+They do normally end up going together since a very large proportion of
+devices need all their supplies on when active but don't care about
+sequencing so you end up with a common pattern.  It's not required,
+though.
 
-> #ifdef CONFIG_SND_MXC_SOC_AUDMUXV2
-> 	imx_add_platform_device("audmux-v2", 0,
-> 		audmux_res, ARRAY_SIZE(audmux_res), NULL, 0);
-> #endif
+> Will convert the regulator_get/put to bulk operations. It will make the
+> code a bit cleaner.
 
-Yes (you need to check for module too, there's a macro for that the name
-of which escapes me right now).
+Good stuff.
 
-> I do not think it's nice and consistent to the way that imx
-> sub-architecture adds platform device.
-
-Well, the i.MX thus far has had relatively few of these always present
-type devices - it makes sense to make things conditional for devices
-with external signals but for things entirely within the SoC the above
-is less work.
-
-> Furthermore, when a DT based board boots here, the code is broken.
-> Explicitly adding the device by individual board as needed can easily
-> align with DT based boards.  By default, the audmux node in <soc>.dtsi
-> file has status = "disabled", and any board that needs audmux device
-> only need to overwrite status property of audmux node as 'okay' in its
-> <board>.dts.  Then DT core will add the audmux device when the board
-> boots.
-
-That seems like more work than is needed for boards, same issue applies.
-
---3uo+9/B/ebqu+fSQ
+--PuGuTyElPB9bOcsM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPKpqRAAoJEBus8iNuMP3dcbYP/REuhnMHtMcn4y+kNXls8dyF
-vpLiZKeLgODNMPLJ3X9zot3x0L+wANA1EZpTNcn6jD6mIEgnezEIv5VcJ1mRwAAP
-8Up8lKUF/7bqaeUfaUQS/3Spn1HC2LO3o05cKiYqeZClzoNyOdrLg8KeJeYm3GHY
-o+b81k5Fl1cM9ge1WMtBlnRnL7QLoTk84Szyw+NZemuJqcWoaALFHSCOCNaprnRR
-328zP7vWCSCxls8dgbBzq0m7vrsVTfKQCjUQo57DTSRqkl4cuCCZvensKv9Aruoz
-WTr2IDJZ0+NzX7lScBw11cT3mq7mpN4FzW513UkK94dS0INvJrYD7hxps+3NhLlB
-b6RefrEXiHab9hawTvM1gpqTywyNH1nYJxE/+Rtg0WFvxD/yOlEla+vWcAomy4qc
-UPx2mIUZKRZAmRcnhwhHldMWniaAPlvqYTnZx0aPsGika7vIsr/Jx/uoGK6YO5eT
-MNTACXQSb66Vgu5ERni4cldAoVSiiMWtib9mZ2HM4odzV1AaWXmyMNl3JyK1oEcv
-0B9oaJZeivLvmFeuYXqV4EAp5UCoBA7Op1ibO3mkhPhcw1qESVjkRbz8aZmvWnB0
-cM3bBd10J64Z4HmqOgZcIfUmZDmm7tTbFDA3VsKkmWZc25nC0Iwf6vMtn99VA9dj
-exsUe6ZQqT51vWzbPrAQ
-=o7Zy
+iQIcBAEBAgAGBQJPKptHAAoJEBus8iNuMP3du/sP/2z53bmPM+Ks96P0MkL7ehgw
+PY3god+WXmcnvRvbSw3mcEkg9/BcbSm4SjjMvVyIjXoLJmOOoHtb/PlFBCpuVrtI
+v+LTUnbQqqaq3d0JuGG4ttCNd05/0VcKTGcluzvBqtDj5saXbhPKXIUa/jQUGZ4C
+l4itnlvjFqjJf0Uh+PiwlrDu6g6JS8iM9j7gr/bEBkgeqZDThNqfjo+mV3Wm1PEu
+8Dp0rGPWh8pC8Pl1W8xMBawRYTG8rTqzegaAm6iL36lAQWXFfD+hInj1hv1CmYUb
+Bg0E2TwYxor9YeccZ2WTLTwFWanFUrKb7VCWBQy87blHuBud+md0LE+lKDXlhYw7
+a06gPgiiYkcP5jnYp49lIy/x9sxGPuhCYOQ1vvDdDgNc569LyinY2thudmG4u6PA
+LXvBuqzJvCHqPIuixPlwG8jHnZL1OdiEb+3bszZtHTOCEfxbw8Qf/xhKKfmlAqQy
+/TGaLaU+ooRW08Sayd+rbarzHoJQMXqxNfQp0R+cnx4JPBR9Fie7P6KHO7gu+/Zz
+Agj8o10hR14vGBZpzHQ/BULY+YXiK4tyKaFKScDGGa8X3ecRBa4DUq0Wgx0nl8wK
+cHo1QgCFjX/f4PKj+pZSnmNLDjitovL5UCzMo9hB5iD3AF8h31fjnBCKRHOY29DE
+DptYmdznFwFq0jKEcMuN
+=a45s
 -----END PGP SIGNATURE-----
 
---3uo+9/B/ebqu+fSQ--
+--PuGuTyElPB9bOcsM--
+
+--===============5720246932586257630==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5720246932586257630==--
