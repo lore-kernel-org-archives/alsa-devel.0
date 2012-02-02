@@ -1,40 +1,36 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] regulator: wm8350: Don't specify consumer
- supplies with struct device
-Date: Thu, 02 Feb 2012 13:59:39 +0000
-Message-ID: <1328191179.3974.8.camel@odin>
-References: <1328190339-21718-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Richard Zhao <richard.zhao@linaro.org>
+Subject: Re: [PATCH v2 8/9] ASoC: imx: add dt support for audmux-v2
+Date: Thu, 2 Feb 2012 22:02:15 +0800
+Message-ID: <20120202140212.GC3015@richard-laptop>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+ <1328148728-32258-9-git-send-email-richard.zhao@linaro.org>
+ <20120202121020.GD7428@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
-	[74.125.149.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AC53103CD9
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 14:59:43 +0100 (CET)
-Received: by wgbdy1 with SMTP id dy1so1901287wgb.20
-	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 05:59:41 -0800 (PST)
-In-Reply-To: <1328190339-21718-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120202121020.GD7428@opensource.wolfsonmicro.com>
+Sender: linux-doc-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Cc: linux-arm-kernel@lists.infradead.org, shawn.guo@linaro.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-02-02 at 13:45 +0000, Mark Brown wrote:
-> Very, very deprecated.
+On Thu, Feb 02, 2012 at 12:10:20PM +0000, Mark Brown wrote:
+> On Thu, Feb 02, 2012 at 10:12:07AM +0800, Richard Zhao wrote:
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  drivers/regulator/wm8350-regulator.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+> > +Required properties:
+> > +- compatible : "fsl,imx31-audmux".
+> > +
+> > +Example:
+> > +
+> > +audmux@021d8000 {
+> > +	compatible = "fsl,imx6q-audmux", "fsl,imx31-audmux";
+> > +	reg = <0x021d8000 0x4000>;
 > 
+> It's kind of obvious what it is but you should really document the reg
+> property for completeness.
+Right.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Thanks
+Richard
+
