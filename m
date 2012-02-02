@@ -1,49 +1,39 @@
-From: Richard Zhao <richard.zhao@linaro.org>
-Subject: Re: [PATCH v2 4/9] ARM: dts: imx6q-sabrelite: add sgtl5000 audio
- codec
-Date: Thu, 2 Feb 2012 21:49:09 +0800
-Message-ID: <20120202134907.GA3015@richard-laptop>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <1328148728-32258-5-git-send-email-richard.zhao@linaro.org>
- <CAOMZO5CxZgcO1JUZiFFJzWwLao1g7Y1_VNbsuiJOW+PH2B+FNQ@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: pcm: Improve error logging
+Date: Thu, 02 Feb 2012 13:57:55 +0000
+Message-ID: <1328191075.3974.6.camel@odin>
+References: <1328131855-22916-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5CxZgcO1JUZiFFJzWwLao1g7Y1_VNbsuiJOW+PH2B+FNQ@mail.gmail.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, shawn.guo@linaro.org, Dirk Behme <dirk.behme@de.bosch.com>, Eric Nelson <eric.nelson@boundarydevices.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
+	[74.125.149.76])
+	by alsa0.perex.cz (Postfix) with ESMTP id 659B9103C5D
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 14:58:01 +0100 (CET)
+Received: by mail-we0-f171.google.com with SMTP id b14so4692207wer.30
+	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 05:57:58 -0800 (PST)
+In-Reply-To: <1328131855-22916-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 02, 2012 at 09:24:57AM -0200, Fabio Estevam wrote:
-> Hi Richard,
->=20
-> On Thu, Feb 2, 2012 at 12:12 AM, Richard Zhao <richard.zhao@linaro.or=
-g> wrote:
-> > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
-> > ---
-> > =A0arch/arm/boot/dts/imx6q-sabrelite.dts | =A0 12 ++++++++++++
-> > =A01 files changed, 12 insertions(+), 0 deletions(-)
->=20
-> I would like to test your audio support patch on mx6sabrelite, but th=
-e
-> missing sound/soc/imx-sgtl5000.c does not allow me to do it.
-I have a test branch. I'll push to my linaro git  on git.linaro.org tom=
-orrow.
->=20
-> I think you would better introduce sound/soc/imx-sgtl5000.c first (on
-> separate patch series) so that people could test this patch without
-> using the imx-sgtl5000.c implementation from the Linaro kernel.
->=20
-> Without imx-sgtl5000.c in place, this patch only introduces dead code
-> at the moment.
-Each patch make sense too without sgtl5000.=20
+On Wed, 2012-02-01 at 21:30 +0000, Mark Brown wrote:
+> Use the standard logging macros and use dev_ variants where we can, also
+> reporting error codes whenever we report an error. These changes (the
+> error codes in particular) make it noticeably easier to figure out what
+> went wrong just from the basic dmesg output.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
 
-Thanks
-Richard
->=20
-> Regards,
->=20
-> Fabio Estevam
+Acked-by: Liam Girdwood <lrg@ti.com>
