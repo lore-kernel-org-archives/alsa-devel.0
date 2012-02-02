@@ -1,41 +1,43 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
- space
-Date: Thu, 02 Feb 2012 10:32:48 +0200
-Message-ID: <4F2A4A30.8060503@ti.com>
-References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com> <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com> <4EEB5913.3090901@ti.com> <alpine.DEB.2.00.1112191451140.12660@utopia.booyaka.com> <4F1D4A03.3050700@ti.com> <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com> <4F1E8186.2060307@ti.com> <alpine.DEB.2.00.1201251423030.5324@utopia.booyaka.com> <4F28EC71.1070105@ti.com> <alpine.DEB.2.00.1202011203210.10541@utopia.booyaka.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
+Date: Thu, 2 Feb 2012 16:55:23 +0800
+Message-ID: <20120202085521.GB9773@S2101-09.ap.freescale.net>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+ <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1202011203210.10541@utopia.booyaka.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Paul Walmsley <paul@pwsan.com>
-Cc: "Cousson, Benoit" <b-cousson@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: Richard Zhao <richard.zhao@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
+> Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
+> ---
+>  arch/arm/mach-imx/mach-mx31ads.c      |   10 ++++++++++
+>  arch/arm/plat-mxc/include/mach/mx31.h |    1 +
+>  2 files changed, 11 insertions(+), 0 deletions(-)
+> 
+Hmm, let's see who are actually using mxc_audmux_v2_configure_port().
 
-On 02/01/2012 09:08 PM, Paul Walmsley wrote:
-> No sadly I can't.  There are at least three levels of maintainers abo=
-ve me=20
-> in my mainline submission path.  As you may have seen, I've sent the =
-patch=20
-> to Tony and he has pulled the series:
->=20
-> http://www.spinics.net/lists/linux-omap/msg63525.html
+$ git grep -n mxc_audmux_v2_configure_port arch/arm/
+arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:246:     mxc_audmux_v2_configure_port(0,
+arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:254:     mxc_audmux_v2_configure_port(4,
+arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:257:     mxc_audmux_v2_configure_port(0,
+arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:265:     mxc_audmux_v2_configure_port(3,
+arch/arm/mach-imx/mach-pcm043.c:365:    mxc_audmux_v2_configure_port(3,
+arch/arm/mach-imx/mach-pcm043.c:371:    mxc_audmux_v2_configure_port(0,
 
-I have missed this.
+$ git grep -n mxc_audmux_v2_configure_port sound/soc/imx/
+sound/soc/imx/wm1133-ev1.c:277: mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT1_SSI0, ptcr, pdcr);
+sound/soc/imx/wm1133-ev1.c:281: mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT5_SSI_PINS_5, ptcr, pdcr);
 
-> so I've done what I can.
+I guess audmux device needs to be added for all these users.  And for
+sake of bisect, it should be added as part of patch #5.
 
-Thanks, it is enough if it is on it's way. Will end up in the correct
-place at some point.
-
+-- 
 Regards,
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Shawn
