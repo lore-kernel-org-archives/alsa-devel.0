@@ -1,83 +1,72 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
-Date: Thu, 2 Feb 2012 21:09:03 +0800
-Message-ID: <20120202130901.GE9773@S2101-09.ap.freescale.net>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
-	<1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
-	<20120202085521.GB9773@S2101-09.ap.freescale.net>
-	<20120202091132.GD9773@S2101-09.ap.freescale.net>
-	<20120202092427.GB32403@b20223-02.ap.freescale.net>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC 2/7] MFD: twl6040: Convert to i2c driver, and separate it
+ from twl core
+Date: Thu, 02 Feb 2012 15:01:06 +0200
+Message-ID: <4F2A8912.4070701@ti.com>
+References: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com> <1328185019-29575-3-git-send-email-peter.ujfalusi@ti.com> <20120202124828.GI7428@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06D2A103C73
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 13:56:41 +0100 (CET)
-Received: by pbcc7 with SMTP id c7so2127847pbc.38
-	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 04:56:41 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20120202092427.GB32403@b20223-02.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <richard.zhao@freescale.com>
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-doc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, eric.miao@linaro.org, patches@linaro.org, Richard Zhao <richard.zhao@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120202124828.GI7428@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Dmitry Torokhov <dtor@mail.ru>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 02, 2012 at 05:24:28PM +0800, Richard Zhao wrote:
-> On Thu, Feb 02, 2012 at 05:11:34PM +0800, Shawn Guo wrote:
-> > On Thu, Feb 02, 2012 at 04:55:23PM +0800, Shawn Guo wrote:
-> > > On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
-> > > > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
-> > > > ---
-> > > >  arch/arm/mach-imx/mach-mx31ads.c      |   10 ++++++++++
-> > > >  arch/arm/plat-mxc/include/mach/mx31.h |    1 +
-> > > >  2 files changed, 11 insertions(+), 0 deletions(-)
-> > > > 
-> > > Hmm, let's see who are actually using mxc_audmux_v2_configure_port().
-> > > 
-> > > $ git grep -n mxc_audmux_v2_configure_port arch/arm/
-> > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:246:     mxc_audmux_v2_configure_port(0,
-> > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:254:     mxc_audmux_v2_configure_port(4,
-> > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:257:     mxc_audmux_v2_configure_port(0,
-> > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:265:     mxc_audmux_v2_configure_port(3,
-> > > arch/arm/mach-imx/mach-pcm043.c:365:    mxc_audmux_v2_configure_port(3,
-> > > arch/arm/mach-imx/mach-pcm043.c:371:    mxc_audmux_v2_configure_port(0,
-> I didn't grep arch/arm. where is pc043 asoc machine file?
+On 02/02/2012 02:48 PM, Mark Brown wrote:
+> On Thu, Feb 02, 2012 at 02:16:54PM +0200, Peter Ujfalusi wrote:
+>=20
+>> +static int twl6040_i2c_read(struct i2c_client *i2c, u8 *value, u8 r=
+eg)
+>> +{
+>> +	struct i2c_msg msg[2];
+>> +	int ret;
+>=20
+> May as well convert to regmap while you're at it, saves some code and
+> will get you access to the regmap features - you have to make updates=
+ in
+> all the relevant places anyway.  We should be pushing to remove use o=
+f
+> the ASoC level code for register cache and whatnot to cut down on cod=
+e
+> duplication (especially for MFDs where it has a few issues interactin=
+g
+> with the MFD) and this seems like a good opportunity.
 
-It seems to be sound/soc/imx/phycore-ac97.c.
+True.
+I have done the bulk of this set back in June, 2011 and thought that I
+will do the move to regmap as increment, but you are right. I'm anyway
+touching the relevant places, so why not do it properly?
+I'll take the regmap into use for  v2.
 
-> > > 
-> > As we are moving audmux into sound/soc/imx, it makes less sense to
-> > still keep these calls in board files.
-> It don't corrupt git bisect. We don't have to include it in this patch.
+> The calling convention here seems a bit weird too, you've got value t=
+hen
+> register but normally we have register then value for I2C/SPI devices=
+=2E
 
-It's logically part of this series.
+I have based these part on the twl-core's implementation. I should not
+have done that, I know.. Let's see how it will look like with regmap.
 
-> >  Instead, I prefer to call it
-> > from machine driver like what wm1133-ev1 does below.
-> Maybe pass the info as asoc machine driver pdata.
+> Except when we don't :(
+>=20
+>> -module_platform_driver(twl6040_driver);
+>> +static int __devinit twl6040_init(void)
+>> +{
+>> +	return i2c_add_driver(&twl6040_driver);
+>> +}
+>> +module_init(twl6040_init);
+>> +
+>> +static void __devexit twl6040_exit(void)
+>> +{
+>> +	i2c_del_driver(&twl6040_driver);
+>> +}
+>> +
+>> +module_exit(twl6040_exit);
+>=20
+> There's module_i2c_driver() in mainline as of the last merge window.
 
-Sounds good.
+Oh, good to know. Thanks
 
-> >  Or we can simply
-> > make the it a audmux-self call with 3 parameters it needs retrieved
-> > from platform_data or device tree, so that machine driver does not
-> > even bother with the call.  Makes sense?
-> audux configuration may change after initial set. For example, it may use
-> one configuration for audio playback, but use another when you connect a
-> BT audio device.
-
-Right.  I forgot this point.
-
--- 
-Regards,
-Shawn
+--=20
+P=E9ter
