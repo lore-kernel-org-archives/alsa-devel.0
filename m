@@ -1,7 +1,7 @@
 From: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: [PATCH 1/4] USB: Gadget: Rename audio function to uac1
-Date: Thu,  2 Feb 2012 21:59:53 +0530
-Message-ID: <1328200193-31939-1-git-send-email-jaswinder.singh@linaro.org>
+Subject: [PATCH 2/4] USB: UAC2: Add ACHeader and FormatType descriptor
+Date: Thu,  2 Feb 2012 22:00:48 +0530
+Message-ID: <1328200248-31984-1-git-send-email-jaswinder.singh@linaro.org>
 References: <CABb+yY3X0XDk0zByZZcJOO0h2Kxu14UD4w-GS7p1HPAAWU3SVA@mail.gmail.com>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <CABb+yY3X0XDk0zByZZcJOO0h2Kxu14UD4w-GS7p1HPAAWU3SVA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
@@ -10,99 +10,46 @@ To: balbi-l0cyMroinI0@public.gmane.org
 Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jaredwiltshire-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The extant USB-Audio function driver complies to UAC_1 spec.
-So name the files accordingly, paving way for inclusion of
-a new UAC_2 specified driver.
+Add missing but needed ACHeader and FormatType descriptor definitions.
 
 Signed-off-by: Yadi Brar <yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Signed-off-by: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 ---
- drivers/usb/gadget/audio.c                 |    6 +++---
- drivers/usb/gadget/{f_audio.c => f_uac1.c} |    2 +-
- drivers/usb/gadget/{u_audio.c => u_uac1.c} |    4 ++--
- drivers/usb/gadget/{u_audio.h => u_uac1.h} |    2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
- rename drivers/usb/gadget/{f_audio.c => f_uac1.c} (99%)
- rename drivers/usb/gadget/{u_audio.c => u_uac1.c} (99%)
- rename drivers/usb/gadget/{u_audio.h => u_uac1.h} (94%)
+ include/linux/usb/audio-v2.h |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/usb/gadget/audio.c b/drivers/usb/gadget/audio.c
-index 9d89ae47..056a2d9 100644
---- a/drivers/usb/gadget/audio.c
-+++ b/drivers/usb/gadget/audio.c
-@@ -14,7 +14,7 @@
- #include <linux/kernel.h>
- #include <linux/utsname.h>
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index 964cb60..ed13053 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -43,6 +43,27 @@ static inline bool uac2_control_is_writeable(u32 bmControls, u8 control)
+ 	return (bmControls >> (control * 2)) & 0x2;
+ }
  
--#include "u_audio.h"
-+#include "u_uac1.h"
++/* 4.7.2 Class-Specific AC Interface Descriptor */
++struct uac2_ac_header_descriptor {
++	__u8  bLength;			/* 9 */
++	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
++	__u8  bDescriptorSubtype;	/* UAC_MS_HEADER */
++	__le16 bcdADC;			/* 0x0200 */
++	__u8  bCategory;
++	__le16 wTotalLength;		/* includes Unit and Terminal desc. */
++	__u8  bmControls;
++} __packed;
++
++/* 2.3.1.6 Type I Format Type Descriptor (Frmts20 final.pdf)*/
++struct uac2_format_type_i_descriptor {
++	__u8  bLength;			/* in bytes: 6 */
++	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
++	__u8  bDescriptorSubtype;	/* FORMAT_TYPE */
++	__u8  bFormatType;		/* FORMAT_TYPE_1 */
++	__u8  bSubslotSize;		/* {1,2,3,4} */
++	__u8  bBitResolution;
++} __packed;
++
+ /* 4.7.2.1 Clock Source Descriptor */
  
- #define DRIVER_DESC		"Linux USB Audio Gadget"
- #define DRIVER_VERSION		"Dec 18, 2008"
-@@ -33,8 +33,8 @@
- #include "config.c"
- #include "epautoconf.c"
- 
--#include "u_audio.c"
--#include "f_audio.c"
-+#include "u_uac1.c"
-+#include "f_uac1.c"
- 
- /*-------------------------------------------------------------------------*/
- 
-diff --git a/drivers/usb/gadget/f_audio.c b/drivers/usb/gadget/f_uac1.c
-similarity index 99%
-rename from drivers/usb/gadget/f_audio.c
-rename to drivers/usb/gadget/f_uac1.c
-index ec7ffcd..e4c060f 100644
---- a/drivers/usb/gadget/f_audio.c
-+++ b/drivers/usb/gadget/f_uac1.c
-@@ -14,7 +14,7 @@
- #include <linux/device.h>
- #include <linux/atomic.h>
- 
--#include "u_audio.h"
-+#include "u_uac1.h"
- 
- #define OUT_EP_MAX_PACKET_SIZE	200
- static int req_buf_size = OUT_EP_MAX_PACKET_SIZE;
-diff --git a/drivers/usb/gadget/u_audio.c b/drivers/usb/gadget/u_uac1.c
-similarity index 99%
-rename from drivers/usb/gadget/u_audio.c
-rename to drivers/usb/gadget/u_uac1.c
-index 59ffe1e..af98989 100644
---- a/drivers/usb/gadget/u_audio.c
-+++ b/drivers/usb/gadget/u_uac1.c
-@@ -1,5 +1,5 @@
- /*
-- * u_audio.c -- ALSA audio utilities for Gadget stack
-+ * u_uac1.c -- ALSA audio utilities for Gadget stack
-  *
-  * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-  * Copyright (C) 2008 Analog Devices, Inc
-@@ -17,7 +17,7 @@
- #include <linux/random.h>
- #include <linux/syscalls.h>
- 
--#include "u_audio.h"
-+#include "u_uac1.h"
- 
- /*
-  * This component encapsulates the ALSA devices for USB audio gadget
-diff --git a/drivers/usb/gadget/u_audio.h b/drivers/usb/gadget/u_uac1.h
-similarity index 94%
-rename from drivers/usb/gadget/u_audio.h
-rename to drivers/usb/gadget/u_uac1.h
-index 08ffce3..18c2e72 100644
---- a/drivers/usb/gadget/u_audio.h
-+++ b/drivers/usb/gadget/u_uac1.h
-@@ -1,5 +1,5 @@
- /*
-- * u_audio.h -- interface to USB gadget "ALSA AUDIO" utilities
-+ * u_uac1.h -- interface to USB gadget "ALSA AUDIO" utilities
-  *
-  * Copyright (C) 2008 Bryan Wu <cooloney-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-  * Copyright (C) 2008 Analog Devices, Inc
+ struct uac_clock_source_descriptor {
 -- 
 1.7.4.1
 
