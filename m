@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
-Date: Thu, 2 Feb 2012 14:09:30 +0000
-Message-ID: <20120202140927.GA22048@opensource.wolfsonmicro.com>
+Date: Thu, 2 Feb 2012 22:25:40 +0800
+Message-ID: <20120202142539.GH9773@S2101-09.ap.freescale.net>
 References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
  <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
  <20120202085521.GB9773@S2101-09.ap.freescale.net>
@@ -10,52 +10,66 @@ References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
  <20120202130901.GE9773@S2101-09.ap.freescale.net>
  <20120202135805.GB3015@richard-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <20120202135805.GB3015@richard-laptop>
 Sender: linux-doc-owner@vger.kernel.org
 To: Richard Zhao <richard.zhao@linaro.org>
-Cc: Shawn Guo <shawn.guo@linaro.org>, Richard Zhao <richard.zhao@freescale.com>, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Cc: Richard Zhao <richard.zhao@freescale.com>, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
-
-
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
 On Thu, Feb 02, 2012 at 09:58:07PM +0800, Richard Zhao wrote:
 > On Thu, Feb 02, 2012 at 09:09:03PM +0800, Shawn Guo wrote:
+> > On Thu, Feb 02, 2012 at 05:24:28PM +0800, Richard Zhao wrote:
+> > > On Thu, Feb 02, 2012 at 05:11:34PM +0800, Shawn Guo wrote:
+> > > > On Thu, Feb 02, 2012 at 04:55:23PM +0800, Shawn Guo wrote:
+> > > > > On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
+> > > > > > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
+> > > > > > ---
+> > > > > >  arch/arm/mach-imx/mach-mx31ads.c      |   10 ++++++++++
+> > > > > >  arch/arm/plat-mxc/include/mach/mx31.h |    1 +
+> > > > > >  2 files changed, 11 insertions(+), 0 deletions(-)
+> > > > > > 
+> > > > > Hmm, let's see who are actually using mxc_audmux_v2_configure_port().
+> > > > > 
+> > > > > $ git grep -n mxc_audmux_v2_configure_port arch/arm/
+> > > > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:246:     mxc_audmux_v2_configure_port(0,
+> > > > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:254:     mxc_audmux_v2_configure_port(4,
+> > > > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:257:     mxc_audmux_v2_configure_port(0,
+> > > > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:265:     mxc_audmux_v2_configure_port(3,
+> > > > > arch/arm/mach-imx/mach-pcm043.c:365:    mxc_audmux_v2_configure_port(3,
+> > > > > arch/arm/mach-imx/mach-pcm043.c:371:    mxc_audmux_v2_configure_port(0,
+> > > I didn't grep arch/arm. where is pc043 asoc machine file?
+> > 
+> > It seems to be sound/soc/imx/phycore-ac97.c.
+> You see, we're not famaliar with the boards.
 
+It does not need to be familiar with the board to find that out.  I'm
+not familiar with the board either, but I gave the answer.
+
+> > 
+> > > > > 
+> > > > As we are moving audmux into sound/soc/imx, it makes less sense to
+> > > > still keep these calls in board files.
+> > > It don't corrupt git bisect. We don't have to include it in this patch.
+> > 
 > > It's logically part of this series.
-
 > I don't know much about the above boards and I can not test either. I think I
 > have to leave it to other volunteers. I mainly focus on audmux itself.
 
-For stuff like this a build test and CCing the relevant maintainers is
-fine, you don't need to test everything.
+Since you get there, you should be the one cleaning that up.  You will
+need to touch those board files anyway, since you need to add audmux
+device for those boards.  So no hardware for testing is not an excuse.
+For those boards, all you need to do are:
 
---BOKacYhQ+x31HxR3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ * Change and compile-test the code
+ * Cc board maintainers when submitting the patch
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+We will wait for board maintainers to respond for a reasonable period
+of time.  If we do not get any response during the time, we will send
+patch upstream anyway.
 
-iQIcBAEBAgAGBQJPKpjCAAoJEBus8iNuMP3ds30P/3Y4qT7NUdOkEsITCgaWv5cx
-wfdntZbg0wiPY2hrR2uVeEm/c8+sC2DtpjrlAq7R94jQtPWNj416JaVCi1ltzWPJ
-D693tMY7UYtrcdd5KdQVhDAZpz9bDA6hCooXUSjwOYWHKVJHds8x5W33rdrIlhzv
-9dfgpeiCCNuXySbdsT27zuwDTfcJ7lRvszVZeo2K3DtnWpcgrf/0Qywxpi9ifFeq
-zJw0h+xXSlcn5IEobyiefpJvKayV+H0YMRwkxhUX4byeVfm7G5Bm1t4PHJlUflkN
-NpxLGYXqoNBmFTLSK3By3LlCAbOvFg94v+MXI6D0yf+FPIhdgswmGQfe0B77+aSr
-LEN0bzQs5RtPxzneU+KdeN48wm/PbUpeiyENFQt3yazJ6b/7qFA9mLzYPTStaj87
-4VKHUgs9KxPnb1JVOkXRqUlDPBF3Kf4PB7Fep1uE1TvdSscKr1NJ4caggBwNmiCW
-IbUk99xaEpg+BBWLj6ANjq+h/aswGcRW/X94Uc3GWLMj32p371YklGXt40XPWJB1
-i852cFahe5T3C35hAxzP1zOdwv4pf0OoLmQjCW0toLVHd2Wiim1n+rYm+IUX8xhk
-WyfFXoyJNqRfTM0D47rjzaqDCpbq9NTdWoBwRCEVd6l4EImst9gxZrlQk5x7gWkH
-pcV5uiTejJWn3l8ZSBgX
-=SLk7
------END PGP SIGNATURE-----
-
---BOKacYhQ+x31HxR3--
+-- 
+Regards,
+Shawn
