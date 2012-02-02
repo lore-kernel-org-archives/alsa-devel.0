@@ -1,39 +1,73 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: pcm: Improve error logging
-Date: Thu, 02 Feb 2012 13:57:55 +0000
-Message-ID: <1328191075.3974.6.camel@odin>
-References: <1328131855-22916-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Richard Zhao <richard.zhao@linaro.org>
+Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
+Date: Thu, 2 Feb 2012 21:58:07 +0800
+Message-ID: <20120202135805.GB3015@richard-laptop>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+ <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
+ <20120202085521.GB9773@S2101-09.ap.freescale.net>
+ <20120202091132.GD9773@S2101-09.ap.freescale.net>
+ <20120202092427.GB32403@b20223-02.ap.freescale.net>
+ <20120202130901.GE9773@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76])
-	by alsa0.perex.cz (Postfix) with ESMTP id 659B9103C5D
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 14:58:01 +0100 (CET)
-Received: by mail-we0-f171.google.com with SMTP id b14so4692207wer.30
-	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 05:57:58 -0800 (PST)
-In-Reply-To: <1328131855-22916-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120202130901.GE9773@S2101-09.ap.freescale.net>
+Sender: linux-doc-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Richard Zhao <richard.zhao@freescale.com>, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-01 at 21:30 +0000, Mark Brown wrote:
-> Use the standard logging macros and use dev_ variants where we can, also
-> reporting error codes whenever we report an error. These changes (the
-> error codes in particular) make it noticeably easier to figure out what
-> went wrong just from the basic dmesg output.
+On Thu, Feb 02, 2012 at 09:09:03PM +0800, Shawn Guo wrote:
+> On Thu, Feb 02, 2012 at 05:24:28PM +0800, Richard Zhao wrote:
+> > On Thu, Feb 02, 2012 at 05:11:34PM +0800, Shawn Guo wrote:
+> > > On Thu, Feb 02, 2012 at 04:55:23PM +0800, Shawn Guo wrote:
+> > > > On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
+> > > > > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
+> > > > > ---
+> > > > >  arch/arm/mach-imx/mach-mx31ads.c      |   10 ++++++++++
+> > > > >  arch/arm/plat-mxc/include/mach/mx31.h |    1 +
+> > > > >  2 files changed, 11 insertions(+), 0 deletions(-)
+> > > > > 
+> > > > Hmm, let's see who are actually using mxc_audmux_v2_configure_port().
+> > > > 
+> > > > $ git grep -n mxc_audmux_v2_configure_port arch/arm/
+> > > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:246:     mxc_audmux_v2_configure_port(0,
+> > > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:254:     mxc_audmux_v2_configure_port(4,
+> > > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:257:     mxc_audmux_v2_configure_port(0,
+> > > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:265:     mxc_audmux_v2_configure_port(3,
+> > > > arch/arm/mach-imx/mach-pcm043.c:365:    mxc_audmux_v2_configure_port(3,
+> > > > arch/arm/mach-imx/mach-pcm043.c:371:    mxc_audmux_v2_configure_port(0,
+> > I didn't grep arch/arm. where is pc043 asoc machine file?
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
-
-Acked-by: Liam Girdwood <lrg@ti.com>
+> It seems to be sound/soc/imx/phycore-ac97.c.
+You see, we're not famaliar with the boards.
+> 
+> > > > 
+> > > As we are moving audmux into sound/soc/imx, it makes less sense to
+> > > still keep these calls in board files.
+> > It don't corrupt git bisect. We don't have to include it in this patch.
+> 
+> It's logically part of this series.
+I don't know much about the above boards and I can not test either. I think I
+have to leave it to other volunteers. I mainly focus on audmux itself.
+> 
+> > >  Instead, I prefer to call it
+> > > from machine driver like what wm1133-ev1 does below.
+> > Maybe pass the info as asoc machine driver pdata.
+> 
+> Sounds good.
+> 
+> > >  Or we can simply
+> > > make the it a audmux-self call with 3 parameters it needs retrieved
+> > > from platform_data or device tree, so that machine driver does not
+> > > even bother with the call.  Makes sense?
+> > audux configuration may change after initial set. For example, it may use
+> > one configuration for audio playback, but use another when you connect a
+> > BT audio device.
+> 
+> Right.  I forgot this point.
+> 
+> -- 
+> Regards,
+> Shawn
