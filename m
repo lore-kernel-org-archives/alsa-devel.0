@@ -1,59 +1,51 @@
-From: Richard Zhao <richard.zhao@freescale.com>
-Subject: Re: [PATCH v2 7/9] ARM: mxc: move audmux-v2 to sound/soc/imx
-Date: Thu, 2 Feb 2012 17:42:52 +0800
-Message-ID: <20120202094252.GC32403@b20223-02.ap.freescale.net>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <1328148728-32258-8-git-send-email-richard.zhao@linaro.org>
- <20120202090248.GC9773@S2101-09.ap.freescale.net>
+From: public-hk <public-hk@ind.rwth-aachen.de>
+Subject: Re: Some questions related to ALSA based duplex	audio
+ processing
+Date: Thu, 02 Feb 2012 10:45:52 +0100
+Message-ID: <4F2A5B50.3080204@ind.rwth-aachen.de>
+References: <4F259BD1.4030001@ind.rwth-aachen.de> <4F27C51F.1000202@ladisch.de>
+	<4F27D30B.6010607@ind.rwth-aachen.de>
+	<20120131121018.GA7388@linuxaudio.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120202090248.GC9773@S2101-09.ap.freescale.net>
-Sender: linux-doc-owner@vger.kernel.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Richard Zhao <richard.zhao@linaro.org>, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mta-1.ms.rz.rwth-aachen.de (mta-1.ms.rz.RWTH-Aachen.DE
+	[134.130.7.72]) by alsa0.perex.cz (Postfix) with ESMTP id 4C4A62433B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 10:45:51 +0100 (CET)
+Received: from ironport-out-1.rz.rwth-aachen.de ([134.130.5.186])
+	by mta-1.ms.rz.RWTH-Aachen.de
+	(Sun Java(tm) System Messaging Server 6.3-7.04 (built Sep 26 2008))
+	with ESMTP id <0LYR00J1CF4FM5D0@mta-1.ms.rz.RWTH-Aachen.de> for
+	alsa-devel@alsa-project.org; Thu, 02 Feb 2012 10:45:51 +0100 (CET)
+Received: from mail.ind.rwth-aachen.de
+	(mail.ind.RWTH-Aachen.DE [137.226.238.9])	by smarthost.rwth-aachen.de
+	(8.14.4+Sun/8.13.8/1) with ESMTP id q129jpDa025662	for
+	<alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 10:45:51 +0100 (CET)
+Received: from [137.226.198.65] (pontos.ind.RWTH-Aachen.DE [137.226.198.65])
+	(using TLSv1 with cipher AES256-SHA (256/256 bits))
+	(No client certificate requested)	by mail.ind.rwth-aachen.de (Postfix)
+	with ESMTP id 068CA16744C5	for <alsa-devel@alsa-project.org>; Thu,
+	02 Feb 2012 10:45:51 +0100 (CET)
+In-reply-to: <20120131121018.GA7388@linuxaudio.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 02, 2012 at 05:02:50PM +0800, Shawn Guo wrote:
-> On Thu, Feb 02, 2012 at 10:12:06AM +0800, Richard Zhao wrote:
-> > It's for clean up code under arch/arm.
-> > 
-> > audmux.h is shared with audmux-v1, leave it under mach/.
-> > 
-> > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
-> > ---
-> >  arch/arm/plat-mxc/Kconfig                        |    3 ---
-> >  arch/arm/plat-mxc/Makefile                       |    1 -
-> >  sound/soc/imx/Kconfig                            |    4 ++++
-> >  sound/soc/imx/Makefile                           |    2 ++
-> >  {arch/arm/plat-mxc => sound/soc/imx}/audmux-v2.c |    0
-> >  5 files changed, 6 insertions(+), 4 deletions(-)
-> >  rename {arch/arm/plat-mxc => sound/soc/imx}/audmux-v2.c (100%)
-> > 
-> > diff --git a/arch/arm/plat-mxc/Kconfig b/arch/arm/plat-mxc/Kconfig
-> > index dcebb12..9e47d9c 100644
-> > --- a/arch/arm/plat-mxc/Kconfig
-> > +++ b/arch/arm/plat-mxc/Kconfig
-> > @@ -91,9 +91,6 @@ config ARCH_MXC_IOMUX_V3
-> >  config ARCH_MXC_AUDMUX_V1
-> >  	bool
-> >  
-> > -config ARCH_MXC_AUDMUX_V2
-> > -	bool
-> > -
-> 
-> There are 4 more occurrences of the symbol to be removed together.
-> 
-> arch/arm/mach-imx/Kconfig:58:   select ARCH_MXC_AUDMUX_V2
-> arch/arm/mach-imx/Kconfig:75:   select ARCH_MXC_AUDMUX_V2
-> arch/arm/mach-imx/Kconfig:83:   select ARCH_MXC_AUDMUX_V2
-> arch/arm/mach-imx/Kconfig:92:   select ARCH_MXC_AUDMUX_V2
-right.
+Dear FA, dear Clemens,
 
-Thanks
-Richard
-> 
-> Regards,
-> Shawn
+thank you a lot for the valuable comments, I have learned a lot about 
+Linux and ALSA
+from your comments!
 
+Best regards
+
+HK
