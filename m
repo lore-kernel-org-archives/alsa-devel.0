@@ -1,60 +1,84 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
-Date: Thu, 2 Feb 2012 12:09:01 +0000
-Message-ID: <20120202120900.GC7428@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 8/9] ASoC: imx: add dt support for
+	audmux-v2
+Date: Thu, 2 Feb 2012 12:10:20 +0000
+Message-ID: <20120202121020.GD7428@opensource.wolfsonmicro.com>
 References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
+	<1328148728-32258-9-git-send-email-richard.zhao@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nmemrqcdn5VTmUEE"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
-Sender: linux-doc-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3615970447595965540=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D4D782450D
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 13:10:21 +0100 (CET)
+In-Reply-To: <1328148728-32258-9-git-send-email-richard.zhao@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Richard Zhao <richard.zhao@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, shawn.guo@linaro.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---nmemrqcdn5VTmUEE
+--===============3615970447595965540==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mJm6k4Vb/yFcL9ZU"
+Content-Disposition: inline
+
+
+--mJm6k4Vb/yFcL9ZU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
+On Thu, Feb 02, 2012 at 10:12:07AM +0800, Richard Zhao wrote:
 
->  static void __init mxc_init_audio(void)
->  {
->  	imx31_add_imx_ssi(0, NULL);
->  	mxc_iomux_setup_multiple_pins(ssi_pins, ARRAY_SIZE(ssi_pins), "ssi");
-> +	imx_add_platform_device("audmux-v2", 0,
-> +				audmux_res, ARRAY_SIZE(audmux_res), NULL, 0);
+> +Required properties:
+> +- compatible : "fsl,imx31-audmux".
+> +
+> +Example:
+> +
+> +audmux@021d8000 {
+> +	compatible = "fsl,imx6q-audmux", "fsl,imx31-audmux";
+> +	reg = <0x021d8000 0x4000>;
 
-Since the audmux is a part of the SoC silicon shouldn't the SoC just
-register the device without individual boards having to do anything
-(possibly conditional on ASoC being selected in Kconfig or something)?
-It's going to be connected in exactly the same fashion on any system
-using the SoC.
+It's kind of obvious what it is but you should really document the reg
+property for completeness.
 
---nmemrqcdn5VTmUEE
+--mJm6k4Vb/yFcL9ZU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPKnzVAAoJEBus8iNuMP3dhSwQAJhYDCjxADdsI13lRT2DdEgn
-+y1XXlJH1dBySH2yw+N9CSmv6iJbBjZc81J5PiuPlPVShmKFV6lE9hUPEArW/XD3
-7wyzxyr14bHhmM1AuVuwbmCiLgfUc8J4P6dgc/Dew59fVn47hn/wzSGfArkN9sNP
-pZdmcYSeWReHJlGZee6Sa7ghW7glm13IJxJeEgmh04s6hVcWO9NlTe3od7ReI75v
-WPQOIk2KMf7aC5LluaHUtUT9qLbhcjlnjgN1Z7QsiALbojGeRVMeBePcDqZ0j34/
-W2Sd/S7gdLiNUr759SWGaBy3orxlzckJrawegmO+B+RW4ltjPwRgMqR4szmJV7kx
-p3ia8UxLVg/bV6siL2nEvQu6omvLqOmanQHnP2GAP9qJ62gX1YqIC1jjdmlOKiFr
-+6+rJ01yGOzyQuVFUdA4VNHEJPEflfKtJQAmKar66s2JVo9rOypMRaquY7wqq3OS
-A3PjyOu4AQ65ZYQl+BYcKJxBiBDr0WNjFQmY/RAVuY4s/2jJclVlZdvp1yNdlSKh
-kdN6y794GoMLRvPLaGljrrzG60qaNaDuVjFmdMA74oU1mpJ9iiI08LbhHS7yKh8x
-hUs7LClfgXeh3wwRoGHGeHLmrCmePE6xKihlfnuyYdIgdY9fftpPUKF0UXmtmbCA
-B1mKa201pgVYwRNmedHK
-=GtHt
+iQIcBAEBAgAGBQJPKn0lAAoJEBus8iNuMP3dAdsQAJyVXPJvhaxy6b+4+PyQBaUN
+TVcScf4pYSTiwoY7T1qgHQSDpBtsq5HMn5ybp1KweH2fy5mg/FcUvKJ52p5Le/W9
+fhxgvUdNyHFCgrmSy7NdXjxfbtuUx936gCSmH4vp79baPIk5uD9YknFuSB09wQpl
+SxeHcFLzMvvv+YY2Bsuo7cwhbDUJScXJff5AZnRA0MQ+a1W8kJks58YVMuGsQU70
+hsn70hMaftMsDzUfwI+YM+UNXFdetuA8zZRXskhysALJ4pYHEZR1VliwRCx0njPV
+cjnLDzs+60AqEWKKLLGFAamaf0WsreoQrjTF9eGtMUvlfuq3nrFb/rC7xXvM3egQ
+4eE9D1Pn1JsmZ1SxIv1qn11wgJAI/vmTwGZjRUEdUVGbpne9xOu0SAEpr70ZZH4I
+NfpkKtADO91RWsrmGvAezWjfL0QRkIH6HL8JKQ2wDo08stXDOVvdXmtwFBIjlX09
+bXGIAAIbiqvcMc/A4U8NWAcTXB6+QoiDYBf8BqI8oscbc10lqL8IYnu31RwHJ+og
+u6E7pRSep7QnJXFy2uqcNeHv38FkC+wC+xvzNNcs63SeKYl5l1mkaFJzpDPG7DcS
+czDktNTT4VouBcKomYdZEMQtnIYe7LHBBjqUKpNjFQ9Om/e3YqDftN2iOzrHjsrZ
+tSKYlIHSl7msREVDura9
+=s+V3
 -----END PGP SIGNATURE-----
 
---nmemrqcdn5VTmUEE--
+--mJm6k4Vb/yFcL9ZU--
+
+--===============3615970447595965540==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3615970447595965540==--
