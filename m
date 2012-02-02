@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 7/7] MFD: TWL6040: Add regulator support for
- VIO, V2V1 supplies
-Date: Thu, 2 Feb 2012 12:52:50 +0000
-Message-ID: <20120202125250.GJ7428@opensource.wolfsonmicro.com>
-References: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com>
-	<1328185019-29575-8-git-send-email-peter.ujfalusi@ti.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
+Date: Thu, 2 Feb 2012 21:09:03 +0800
+Message-ID: <20120202130901.GE9773@S2101-09.ap.freescale.net>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+	<1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
+	<20120202085521.GB9773@S2101-09.ap.freescale.net>
+	<20120202091132.GD9773@S2101-09.ap.freescale.net>
+	<20120202092427.GB32403@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7424103933356858824=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA298103C69
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 13:52:51 +0100 (CET)
-In-Reply-To: <1328185019-29575-8-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06D2A103C73
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 13:56:41 +0100 (CET)
+Received: by pbcc7 with SMTP id c7so2127847pbc.38
+	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 04:56:41 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120202092427.GB32403@b20223-02.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,93 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Richard Zhao <richard.zhao@freescale.com>
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, linux-doc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, eric.miao@linaro.org, patches@linaro.org, Richard Zhao <richard.zhao@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Feb 02, 2012 at 05:24:28PM +0800, Richard Zhao wrote:
+> On Thu, Feb 02, 2012 at 05:11:34PM +0800, Shawn Guo wrote:
+> > On Thu, Feb 02, 2012 at 04:55:23PM +0800, Shawn Guo wrote:
+> > > On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao wrote:
+> > > > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
+> > > > ---
+> > > >  arch/arm/mach-imx/mach-mx31ads.c      |   10 ++++++++++
+> > > >  arch/arm/plat-mxc/include/mach/mx31.h |    1 +
+> > > >  2 files changed, 11 insertions(+), 0 deletions(-)
+> > > > 
+> > > Hmm, let's see who are actually using mxc_audmux_v2_configure_port().
+> > > 
+> > > $ git grep -n mxc_audmux_v2_configure_port arch/arm/
+> > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:246:     mxc_audmux_v2_configure_port(0,
+> > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:254:     mxc_audmux_v2_configure_port(4,
+> > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:257:     mxc_audmux_v2_configure_port(0,
+> > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:265:     mxc_audmux_v2_configure_port(3,
+> > > arch/arm/mach-imx/mach-pcm043.c:365:    mxc_audmux_v2_configure_port(3,
+> > > arch/arm/mach-imx/mach-pcm043.c:371:    mxc_audmux_v2_configure_port(0,
+> I didn't grep arch/arm. where is pc043 asoc machine file?
 
---===============7424103933356858824==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gBdJBemW82xJqIAr"
-Content-Disposition: inline
+It seems to be sound/soc/imx/phycore-ac97.c.
 
+> > > 
+> > As we are moving audmux into sound/soc/imx, it makes less sense to
+> > still keep these calls in board files.
+> It don't corrupt git bisect. We don't have to include it in this patch.
 
---gBdJBemW82xJqIAr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It's logically part of this series.
 
-On Thu, Feb 02, 2012 at 02:16:59PM +0200, Peter Ujfalusi wrote:
+> >  Instead, I prefer to call it
+> > from machine driver like what wm1133-ev1 does below.
+> Maybe pass the info as asoc machine driver pdata.
 
-> +	twl6040->vio = regulator_get(&client->dev, "vio");
-> +	if (IS_ERR(twl6040->vio)) {
-> +		ret = PTR_ERR(twl6040->vio);
-> +		dev_err(&client->dev, "Failed to request VIO supply: %d\n",
-> +			ret);
-> +		goto regulator_get_err;
-> +	}
-> +	twl6040->v2v1 = regulator_get(&client->dev, "v2v1");
-> +	if (IS_ERR(twl6040->v2v1)) {
-> +		ret = PTR_ERR(twl6040->v2v1);
-> +		dev_err(&client->dev, "Failed to request V2V1 supply: %d\n",
-> +			ret);
-> +		regulator_put(twl6040->vio);
-> +		goto regulator_get_err;
-> +	}
+Sounds good.
 
-Looks like you want regulator_bulk_get() here.  Or (better yet though
-it'd be a potential issue for merge via MFD and the benefits aren't that
-exciting since you still need to disable) devm_regulator_bulk_get().
+> >  Or we can simply
+> > make the it a audmux-self call with 3 parameters it needs retrieved
+> > from platform_data or device tree, so that machine driver does not
+> > even bother with the call.  Makes sense?
+> audux configuration may change after initial set. For example, it may use
+> one configuration for audio playback, but use another when you connect a
+> BT audio device.
 
-> +	ret = regulator_enable(twl6040->vio);
-> +	if (ret != 0) {
-> +		dev_err(&client->dev, "Failed to enable VIO: %d\n", ret);
-> +		goto power_err;
-> +	}
-> +	ret = regulator_enable(twl6040->v2v1);
-> +	if (ret != 0) {
-> +		dev_err(&client->dev, "Failed to enable V2V1: %d\n", ret);
-> +		regulator_disable(twl6040->vio);
-> +		goto power_err;
-> +	}
+Right.  I forgot this point.
 
-Similarly regulator_bulk_enable() here, and it'll fix...
-
->  gpio1_err:
-> +	regulator_disable(twl6040->v2v1);
-> +	regulator_disable(twl6040->vio);
-
-...the fact that if you fail to enable the v2.1 regulator you don't
-disable vio.
-
---gBdJBemW82xJqIAr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPKocbAAoJEBus8iNuMP3dZ34P/0eSJ5nReLPQ7l+MLlZHOY/Q
-Z993OIDFDzV1VpQqU0FcrVZOhHQ/FAnzjUYQLHU6K974ZwF5ZbgE3OGTklhFSp5N
-3XovWeyaf4vWlYNtXjOlCtXdjTGmmxKeN69IGUsijy6Wc9+NDnYIdqwS/FYmcJRS
-ygGzpdsSFM7/AexQSlbW1GVCkX264MrnkoC84ucO+stmAVrhvthLm7591AMmkJNn
-EkzaSID0VZWYACIt+s0ANHR2cBER7/tPK8pkJKqMDXCW0SCnlpfsp2b7iudwkRX2
-Ua6vxCN7Y31wfpD/OKn8VMtayPutF0hJYSRibFZ8crgAHS/ctw0Mf4YXgtGLGBLU
-EAKL88xZF15TqMMT6fcnKWrIC9FKAgukfsuHnhxTLqxHyTdLS1B2xYQbjpvboUq6
-Mnqj8NhlAHxVee9mAb8onMQuzdXxsyWgZwehtIlQkW0AbZtuVU4Ah4DG7++K/iad
-hBC6sD7mH4HYpxcYw26fIuZdoM8gakAunV963uHHYoQUkSBYhyPotjbuXSZFs6J0
-N9OFfKZdbh/5hEbHWV5bJftrT0XzfekN66Rvle7s9WjpUMV6RTZhGRHpM8C+MhT1
-8yFcZhr+RqDCpbWV9jL7wQqrB2NdqJpneIZtI7nAd13KAIFglz/OvZ0DLi7LJo+y
-hBTmYQNy1Um9O4ZioqRd
-=278o
------END PGP SIGNATURE-----
-
---gBdJBemW82xJqIAr--
-
---===============7424103933356858824==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7424103933356858824==--
+-- 
+Regards,
+Shawn
