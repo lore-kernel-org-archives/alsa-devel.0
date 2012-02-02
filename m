@@ -1,92 +1,41 @@
-From: Richard Zhao <richard.zhao@freescale.com>
-Subject: Re: [PATCH v2 9/9] ARM: imx6q-sabrelite: add audmux support
-Date: Thu, 2 Feb 2012 16:22:29 +0800
-Message-ID: <20120202082228.GA32403@b20223-02.ap.freescale.net>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <1328148728-32258-10-git-send-email-richard.zhao@linaro.org>
- <20120202082807.GA3653@S2101-09.ap.freescale.net>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
+ space
+Date: Thu, 02 Feb 2012 10:32:48 +0200
+Message-ID: <4F2A4A30.8060503@ti.com>
+References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com> <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com> <4EEB5913.3090901@ti.com> <alpine.DEB.2.00.1112191451140.12660@utopia.booyaka.com> <4F1D4A03.3050700@ti.com> <alpine.DEB.2.00.1201240134421.29673@utopia.booyaka.com> <4F1E8186.2060307@ti.com> <alpine.DEB.2.00.1201251423030.5324@utopia.booyaka.com> <4F28EC71.1070105@ti.com> <alpine.DEB.2.00.1202011203210.10541@utopia.booyaka.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120202082807.GA3653@S2101-09.ap.freescale.net>
-Sender: linux-doc-owner@vger.kernel.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Richard Zhao <richard.zhao@linaro.org>, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1202011203210.10541@utopia.booyaka.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Paul Walmsley <paul@pwsan.com>
+Cc: "Cousson, Benoit" <b-cousson@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 02, 2012 at 04:30:24PM +0800, Shawn Guo wrote:
-> On Thu, Feb 02, 2012 at 10:12:08AM +0800, Richard Zhao wrote:
-> > - enable audmux in dts
-> > - enable audmux in Kconfig
-> > 
-> > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
-> > ---
-> >  arch/arm/boot/dts/imx6q-sabrelite.dts |    4 ++++
-> >  arch/arm/boot/dts/imx6q.dtsi          |    2 ++
-> >  arch/arm/mach-imx/Kconfig             |    1 +
-> >  3 files changed, 7 insertions(+), 0 deletions(-)
-> > 
-> > diff --git a/arch/arm/boot/dts/imx6q-sabrelite.dts b/arch/arm/boot/dts/imx6q-sabrelite.dts
-> > index 3a9d32c..5cd6698 100644
-> > --- a/arch/arm/boot/dts/imx6q-sabrelite.dts
-> > +++ b/arch/arm/boot/dts/imx6q-sabrelite.dts
-> > @@ -41,6 +41,10 @@
-> >  				status = "okay";
-> >  			};
-> >  
-> > +			audmux@021d8000 {
-> > +				status = "okay";
-> > +			};
-> > +
-> >  			uart2: uart@021e8000 {
-> >  				status = "okay";
-> >  			};
-> > diff --git a/arch/arm/boot/dts/imx6q.dtsi b/arch/arm/boot/dts/imx6q.dtsi
-> > index 263e8f3..b0ae495 100644
-> > --- a/arch/arm/boot/dts/imx6q.dtsi
-> > +++ b/arch/arm/boot/dts/imx6q.dtsi
-> > @@ -527,7 +527,9 @@
-> >  			};
-> >  
-> >  			audmux@021d8000 {
-> > +				compatible = "fsl,imx6q-audmux", "fsl,imx31-audmux";
-> >  				reg = <0x021d8000 0x4000>;
-> > +				status = "disabled";
-> >  			};
-> >  
-> >  			mipi@021dc000 { /* MIPI-CSI */
-> > diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-> > index 4defb97..1aec9c1 100644
-> > --- a/arch/arm/mach-imx/Kconfig
-> > +++ b/arch/arm/mach-imx/Kconfig
-> > @@ -835,6 +835,7 @@ comment "i.MX6 family:"
-> >  config SOC_IMX6Q
-> >  	bool "i.MX6 Quad support"
-> >  	select ARM_CPU_SUSPEND if PM
-> > +	select ARCH_MXC_AUDMUX_V2
-> 
-> The ARCH_MXC_AUDMUX_V2 has been removed by patch #7.  Why do you select
-> it here?
-I forgot to remove it when rebase. I can be removed.
+Hi Paul,
 
-Thanks
-Richard
-> 
-> Regards,
-> Shawn
-> 
-> >  	select ARM_GIC
-> >  	select CPU_V7
-> >  	select HAVE_ARM_SCU
-> > -- 
-> > 1.7.5.4
-> > 
-> > 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+On 02/01/2012 09:08 PM, Paul Walmsley wrote:
+> No sadly I can't.  There are at least three levels of maintainers abo=
+ve me=20
+> in my mainline submission path.  As you may have seen, I've sent the =
+patch=20
+> to Tony and he has pulled the series:
+>=20
+> http://www.spinics.net/lists/linux-omap/msg63525.html
 
+I have missed this.
+
+> so I've done what I can.
+
+Thanks, it is enough if it is on it's way. Will end up in the correct
+place at some point.
+
+Regards,
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
