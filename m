@@ -1,20 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [RFC 4/7] OMAP: 4430sdp: Correct fixed regulator
-	device ID
-Date: Thu,  2 Feb 2012 14:16:56 +0200
-Message-ID: <1328185019-29575-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: soc-dsp programming model for loopbacks
+Date: Thu, 02 Feb 2012 17:48:21 +0530
+Message-ID: <1328185101.26182.16.camel@vkoul-udesk3>
+References: <4f1f2489.c602440a.208e.ffff9d7bSMTPIN_ADDED@mx.google.com>
+	<1327511249.11901.37.camel@odin>
+	<1328087231.1610.28.camel@vkoul-udesk3>
+	<CABS+qY2GADPO+wkmDf5hzT7uaH7v1zNrdAGKnLbip-QAL8V_RQ@mail.gmail.com>
+	<1328181472.3974.5.camel@odin> <1328184200.26182.8.camel@vkoul-udesk3>
+	<20120202120602.GB7428@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
-	[74.125.149.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2F08103C1F
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 13:17:22 +0100 (CET)
-Received: by lagk11 with SMTP id k11so1253431lag.15
-	for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2012 04:17:20 -0800 (PST)
-In-Reply-To: <1328185019-29575-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EF4E103C63
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2012 13:18:13 +0100 (CET)
+In-Reply-To: <20120202120602.GB7428@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,51 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dtor@mail.ru>
-Cc: linux-arm-kernel@lists.infradead.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The board has two fixed voltage regulator. Correct the
-device ID for the vbat, which used -1.
-Create defines for the fixed regulator IDs so when adding new
-regulators we know the next available ID to use for them.
+On Thu, 2012-02-02 at 12:06 +0000, Mark Brown wrote:
+> On Thu, Feb 02, 2012 at 05:33:20PM +0530, Vinod Koul wrote:
+> 
+> > And Mark, can we see your wip changes??
+> 
+> No.  I essentially never have any WIP changes, anything I do to the
+> point where it's actually useful gets submitted to mainline pretty much
+> immediately.  I did do some stuff but it was too horrible as it was
+> trying to figure out the hw_params automatically and this was causing
+> appauling pain, underlying changes have bitrotted that away.
+Okay thanks.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- arch/arm/mach-omap2/board-4430sdp.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+your thoughts on how this should be done?
 
-diff --git a/arch/arm/mach-omap2/board-4430sdp.c b/arch/arm/mach-omap2/board-4430sdp.c
-index f4ac553..d02172d 100644
---- a/arch/arm/mach-omap2/board-4430sdp.c
-+++ b/arch/arm/mach-omap2/board-4430sdp.c
-@@ -62,6 +62,9 @@
- #define GPIO_WIFI_PMENA		54
- #define GPIO_WIFI_IRQ		53
- 
-+#define FIXED_REG_VBAT_ID	0
-+#define FIXED_REG_VWLAN_ID	1
-+
- static const int sdp4430_keymap[] = {
- 	KEY(0, 0, KEY_E),
- 	KEY(0, 1, KEY_R),
-@@ -368,7 +371,7 @@ static struct fixed_voltage_config sdp4430_vbat_pdata = {
- 
- static struct platform_device sdp4430_vbat = {
- 	.name		= "reg-fixed-voltage",
--	.id		= -1,
-+	.id		= FIXED_REG_VBAT_ID,
- 	.dev = {
- 		.platform_data = &sdp4430_vbat_pdata,
- 	},
-@@ -478,7 +481,7 @@ static struct fixed_voltage_config sdp4430_vwlan = {
- 
- static struct platform_device omap_vwlan_device = {
- 	.name		= "reg-fixed-voltage",
--	.id		= 1,
-+	.id		= FIXED_REG_VWLAN_ID,
- 	.dev = {
- 		.platform_data = &sdp4430_vwlan,
- 	},
 -- 
-1.7.8.4
+~Vinod
