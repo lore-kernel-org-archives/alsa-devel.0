@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: fsi: Add FSI DMAEngine support
-Date: Fri, 3 Feb 2012 11:56:52 +0000
-Message-ID: <20120203115652.GH3151@opensource.wolfsonmicro.com>
-References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for
+ imx27pdk using mc13783 codec
+Date: Fri, 3 Feb 2012 11:58:06 +0000
+Message-ID: <20120203115806.GI3151@opensource.wolfsonmicro.com>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+	<2851519.TkeCdfD43W@laptop> <20120202173212.GA1785@sirena.org.uk>
+	<1635894.OLo8mNMWim@laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7662838202061371376=="
+Content-Type: multipart/mixed; boundary="===============7228868265844563643=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C6E8103DF9
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 12:56:54 +0100 (CET)
-In-Reply-To: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1DA59103E0D
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 12:58:08 +0100 (CET)
+In-Reply-To: <1635894.OLo8mNMWim@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, J?rgen Lambrecht <juergen.lambrecht@gmail.com>, Lambrecht J?rgen <J.Lambrecht@televic.com>, Fabio Estevam <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7662838202061371376==
+--===============7228868265844563643==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MP5ln1Rcf9Bvi+ZW"
+	protocol="application/pgp-signature"; boundary="WHz+neNWvhIGAO8A"
 Content-Disposition: inline
 
 
---MP5ln1Rcf9Bvi+ZW
-Content-Type: text/plain; charset=us-ascii
+--WHz+neNWvhIGAO8A
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 03, 2012 at 12:48:46AM -0800, Kuninori Morimoto wrote:
+On Fri, Feb 03, 2012 at 08:45:10AM +0100, Philippe R=E9tornaz wrote:
+> Le jeudi 2 f=E9vrier 2012 17:32:12 Mark Brown a =E9crit :
 
-> These are DMAEngine support for FSI driver
+> > First step would be to post it :)
 
-Applied patches 1-17, thanks.
+> Well, that was the whole point to post a link to a git tree containing th=
+e=20
+> patches. But if you think I should post the patches directly on the maili=
+ng=20
+> list I can do it.
 
-> FSI will use PIO version if CPU/platform doesn't have DMAEngine support.
+The entire kernel code review process is based on patches posted to
+mailing lists.
 
-Is this a regression compared to the existing code?
-
---MP5ln1Rcf9Bvi+ZW
+--WHz+neNWvhIGAO8A
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPK8t+AAoJEBus8iNuMP3d2cwP+gM+xV4Vs0urilNoDur2+MnV
-+1TzZqGdPFhdXYXE5QZaAXSQ10GmQN15NTN+kl93soUCe1Ma/ivoMPfvP+h5DDw0
-cQrDzVr6/0SK760s4OBrjOo8BaRmJV+6y6VdKxNwqV8MFBJuAHIYHjvqBGmn+d4p
-Q3lQFodY0W67VVA8mjRPQjmOF4N5snPzphi6vSMtOJC0rfcVHJpKAu7/2Tk3RRQ0
-dyDjUOT5fImed20OLwcIiqqjewAExovCG//NwvewJUKN1LHCaYMdLk438MufzxrF
-iUaMSE1W0IPpz5T9pkPmXAQavbU0xoKdliOaG4Jqj/9ICOxmEx1aPpzKCrntr1qe
-aTRt4kb6JgpIqD8/ZVjLVhKstDIkis/GxWkHP4Hs0Znflpq/9VsQYk7X6T4niZaj
-wuXCcpx38mfIp+jmJeS5lpovGPCVx0SXcUS6m4S6B3LVWuOIEcGZDG9KmS+gF2JA
-g9BReLVPcPZJg5civi8QGImq3Cm5m9bl6R4aQuMjz6pjkcQfDrhStRErTg9zyuLR
-F9AvnqH4lm+kF6jgF57BrihX8MJce0TgouXN40rOWim2JLrcVAH8LZ8JDNNytIQK
-tyJSWNSyOz5kw7argRZfqp5a/+Q7ODK46f+E2DrRniLNLU8KltrZ7n0xTC6XX599
-ACIspOKWbLVlMnnZgKNo
-=7DaE
+iQIcBAEBAgAGBQJPK8vIAAoJEBus8iNuMP3dVL4P/0paKZd2yHNY2ttNqddr5jMs
+tHAln2f/DI0eqpahGH0swneFThIc7gosiwloZKU1PaVr/R8BVYequdrbNmt/N2Gb
+Jcx7JgDStTJW46ry+XOT2mes0QEmZIqAtRdlA7mHpJIzBkkrQZxL7MCXxYodQoLx
+E3MEy8mcB4PpSKNxbyZrp4CzMSNPSZPGYNZwwKgQPauveoXELGacsOqrvq+onxAV
+Fu8X9pCsh1m1kZS0ELeXhTqaoIwgTkQxHwv3F/pGu3rpw3uEogeB8f7RawoPpzmo
+3PX95rDWpXmRo8LsujWqWH3gPxN5Ok/0WmtiZjXUoNHsIq0tBLaMYoHV4HkiVIhm
+Fk7egUADBIFrCSFCELPjNcyYrdGhD9BIe0d4quhLgTKg7VbXUiPBewDpMaypE/YD
+U0ujWzO6DvLiqyKxdpkUo4L1JsumZwDPv59Wa61XKXYOWXhc9kyT0T6hfd7ZH9z9
+mn0MeFso8JsHgBF4gor29kk9Pcl5/pHO4MAnfqHvGrGJ9aa7DiUoiiTViUoQ7a1q
+0qM7WWf6Q3OLoY1dAguT5Jtn+D9KDO03nAJnizvdXLQhs7jfqzGDRY2FouQOHzw4
+6Mmx6XoWdwaobTO5U8sp9bvL8EQu1CAcqC4Qkvew9iVz54FviDL3pySvpwUbG27H
+AjP3KbnEj395jR20Vl1H
+=q6zc
 -----END PGP SIGNATURE-----
 
---MP5ln1Rcf9Bvi+ZW--
+--WHz+neNWvhIGAO8A--
 
---===============7662838202061371376==
+--===============7228868265844563643==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7662838202061371376==--
+--===============7228868265844563643==--
