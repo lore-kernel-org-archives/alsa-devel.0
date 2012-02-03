@@ -1,93 +1,76 @@
-From: Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/4] ASoC: Tegra+ALC5632: Enable headsetautodetection on PAZ00 board.
-Date: Fri, 03 Feb 2012 11:24 +0100
-Message-ID: <4279358.jLYZpuDUmS@ax5200p>
-References: <1328213618-15870-1-git-send-email-leon@leon.nu> <1328213618-15870-4-git-send-email-leon@leon.nu> <20120202224355.GD3112@opensource.wolfsonmicro.com>
+From: Josh Triplett <josh@joshtriplett.org>
+Subject: Re: TDM bus support in Linux Kernel
+Date: Fri, 3 Feb 2012 03:00:36 -0800
+Message-ID: <20120203110036.GA7732@leaf>
+References: <CAKa7sPRgROFY2RfeVW0G_1EWzWXakuWu50tGQ2QuzrvEimU3FQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20120202224355.GD3112-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAKa7sPRgROFY2RfeVW0G_1EWzWXakuWu50tGQ2QuzrvEimU3FQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Michail Kurachkin <michail.kurachkin@promwad.com>, Ivan Kuten <ivan.kuten@promwad.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 02 February 2012 22:44:02 Mark Brown wrote:
-> On Thu, Feb 02, 2012 at 10:13:37PM +0200, Leon Romanovsky wrote:
-> > This patch is adding device tree support of headset autodetection on
-> > PAZ00 board.
-> Applied, thanks.  I wonder if we ought to have a standard binding for
-> GPIO based headset detect...  can be tricky, though, when it gets
-> integrated with more advanced mechanisms.
+On Fri, Feb 03, 2012 at 11:59:10AM +0300, Viktar Palstsiuk wrote:
+> We are designing custom hardware board where processor is connected
+> with analog telephony
+> SLIC via TDM bus.
+> During investigation of Linux kernel we did not find any corresponding TDM code.
+> So decided to write a new TDM subsystem in drivers/tdm (like SPI).
+> The subsystem consists of tdm_core.c which implements TDM bus routines,
+> e.g. tdm_register_board_info(), tdm_add_device(),
+> tdm_controller_register() etc, and
+> someplatform_tdm.c which implements platform specific TDM contoller.
+> 
+> Any suggestion if we have chosen right direction and our approach
+> conforms Linux kernel architecture?
 
-arrr, I was too slow. Small nit below.
+Disclaimer: not a telephony expert.
 
-> diff --git a/sound/soc/tegra/tegra_alc5632.c
-> b/sound/soc/tegra/tegra_alc5632.c index c0ba1e4..1794139 100644
-> --- a/sound/soc/tegra/tegra_alc5632.c
-> +++ b/sound/soc/tegra/tegra_alc5632.c
-> @@ -18,6 +18,7 @@
-> 
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/gpio.h>
-> 
-> +#include <linux/of_gpio.h>
-> 
->  #include <sound/core.h>
->  #include <sound/jack.h>
-> 
-> @@ -34,9 +35,13 @@
-> 
->  #define DRV_NAME "tegra-alc5632"
-> 
-> +#define GPIO_HP_DET     BIT(0)
-> +
-> 
->  struct tegra_alc5632 {
->  
->         struct tegra_asoc_utils_data util_data;
->         struct platform_device *pcm_dev;
-> 
-> +       int gpio_requested;
-> +       int gpio_hp_det;
-> 
->  };
->  
->  static int tegra_alc5632_asoc_hw_params(struct snd_pcm_substream
->  *substream,> 
-> @@ -86,6 +91,13 @@ static struct snd_soc_jack_pin
-> tegra_alc5632_hs_jack_pins[] = {> 
->         },
->  
->  };
-> 
-> +static struct snd_soc_jack_gpio tegra_alc5632_hp_jack_gpio = {
-> +       .name = "Headset detection",
-> +       .report = SND_JACK_HEADSET,
-> +       .debounce_time = 150,
-> +       .invert = 1,
-> +};
-> +
-> 
->  static const struct snd_soc_dapm_widget tegra_alc5632_dapm_widgets[] = {
->  
->         SND_SOC_DAPM_SPK("Int Spk", NULL),
->         SND_SOC_DAPM_HP("Headset Stereophone", NULL),
-> 
-> @@ -114,6 +126,9 @@ static int tegra_alc5632_asoc_init(struct
-> snd_soc_pcm_runtime *rtd)> 
->  {
->  
->         struct snd_soc_codec *codec = rtd->codec;
->         struct snd_soc_dapm_context *dapm = &codec->dapm;
-> 
-> +       struct device_node *np = codec->card->dev->of_node;
-> +       struct tegra_alc5632 *machine =
-> snd_soc_card_get_drvdata(codec->card); 
-> +       int ret;
+>From the information you've provided in this mail, it *sounds* like you
+probably have the right approach.  You've definitely done the right
+thing by asking for architectural review sooner rather than later, and
+it sounds like you've created a nicely abstracted subsystem modeled
+after existing Linux subsystems rather than building an entire stack
+directly into your driver, which would already put you well ahead of
+most hardware vendors.  :)
 
-This one isn't used, but non critical (just creates a warning).
+You should post your code to LKML so that developers can review it.  You
+should also CC any potentially interested developers, so they actually
+see it.  In addition to CCing anyone specifically interested in
+telephony, since you've developed a new subsystem I'd suggest CCing Greg
+Kroah-Hartman <gregkh@linuxfoundation.org> as the maintainer of the
+driver core.
 
-Marc
+Also, I don't know whether the TDM bus allows device probing or whether
+you have to magically know in advance what devices you expect on a
+particular platform.  If the former, you probably want to make sure you
+support and use an appropriate MODULE_DEVICE_TABLE for your drivers, so
+you can easily look up the right driver for any given device.  If the
+latter, you may potentially want to look into the "flattened device
+tree" mechanism, which provides a standard means of providing
+"hardcoded" hardware configuration information to the kernel at boot
+time.  If as the maker of the hardware you have any control over this,
+go with the former. :)
+
+> May be there were already some preliminary work for this?
+
+In-kernel, it looks like a "slicoss" driver exists in staging, and
+drivers/isdn exists, but AFAICT neither one has had any non-bugfix
+development in a long time; the latter has some references to TDM,
+though I don't know to what extent it might prove relevant to you.
+
+Outside the kernel, you may want to look at
+http://wiki.freeswitch.org/wiki/FreeTDM ; it currently seems to rely on
+various out-of-tree and proprietary drivers of dubious status, but you
+might still want to look it over, to find out if it has useful ideas or
+if you might want to add support for your hardware.
+
+I don't know of any efforts specifically trying to provide a
+standardized interface for the TDM bus.  I suspect you'll end up getting
+to lead the way here.
+
+Hope that helps,
+Josh Triplett
