@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH ] ASoC: Add support for TI LM49453 Audio
-	codec
-Date: Fri, 3 Feb 2012 13:55:45 +0000
-Message-ID: <20120203135544.GP3151@opensource.wolfsonmicro.com>
-References: <290463D19D2E064191F1F96ECA480A89434AB423B2@EXMAIL02.scwf.nsc.com>
-	<20120202231427.GG3112@opensource.wolfsonmicro.com>
-	<290463D19D2E064191F1F96ECA480A89434ABCAEDD@EXMAIL02.scwf.nsc.com>
-	<20120203132504.GK3151@opensource.wolfsonmicro.com>
-	<4F2BE22A.7070006@nsc.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 19/19] ASoC: fsi: Add DMAEngine support
+Date: Fri, 03 Feb 2012 15:05:12 +0100
+Message-ID: <4F2BE998.4020903@metafoo.de>
+References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>	<87aa50i971.wl%kuninori.morimoto.gx@renesas.com>
+	<20120203134850.GM3151@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3492112872564280508=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B596A10B8A1
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 14:55:47 +0100 (CET)
-In-Reply-To: <4F2BE22A.7070006@nsc.com>
+Received: from smtp-out-085.synserver.de (smtp-out-085.synserver.de
+	[212.40.185.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id A587611CDFF
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 15:04:09 +0100 (CET)
+In-Reply-To: <20120203134850.GM3151@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,68 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: M R Swami Reddy <MR.Swami.Reddy@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
-	Liam" <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Ralf Baechle <ralf@linux-mips.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3492112872564280508==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6iXXu7NwgEt9u5a7"
-Content-Disposition: inline
-
-
---6iXXu7NwgEt9u5a7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Feb 03, 2012 at 07:03:30PM +0530, M R Swami Reddy wrote:
-> Mark Brown wrote:
-> >On Fri, Feb 03, 2012 at 04:19:00AM -0800, Reddy, MR Swami wrote:
-
-> >>Setting CHIP_EN bit as '0'. In the _STANDBY mode, CHIP_EN bit setting
-> >>not needed and will remove in the next patch.
-
-> >This also sounds broken, as I repeatedly said when reviewing previous
-> >versions of the driver if disabling the chip does anything at all then
-> >why don't you need to reenable the chip later?
-
-> OK. I will remove chip disable code in case if _STANDBY and _OFF modes.
-
-So the chip disable does nothing?  There's nothing wrong with disabling
-the chip when it goes to idle, it's just that one would expect that
-something ought to then reenable it when the device is needed again.
-
---6iXXu7NwgEt9u5a7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPK+daAAoJEBus8iNuMP3dpuMP/RXt4LIwVQxVIy8QzFOxACAg
-ZmuYduy8eIXw6LufMAV2eE9GpXFtVUWlNQV/eREHduKViuQIyMPtwks/UqXhgWF5
-dORnxHnnIHkDDsXwrNqHfs9He7y1g9OAEqQ0R3mm0CrLdltjsJT8P3eNvOXqtNLx
-LOhsavovu0YcRnwvWcm9srfNFqB/R/aVqXTjdtm38zExfpRTbm+DV41b74Bt/Idk
-z0oTwv04F4G9RryzxJqccuPCPAKRbz2yB7aonr0LM4HMqdN9MaKwPm1lPN8atzHn
-OeQ3245v2gKxVGjKzdtlBGE9foXHgkINZBp2CHGEc5jtRabZOoTYiunczPlHWefq
-k1ig9gb6XqMqkHcjDmSm1AnFQwOM5CDPPmZPoC8xDArCQ4aUu9FGXX1LzMp9rn9r
-mPejM+ePbV82zx+Nm47hUQWp72KnogrHgQ4usN6qs2+vrhqCHf0jqScFpDIHNFf4
-BTeY07cInJZEYCiCPox4djUmss7bItxYksRwhplkPyEHvQ2h57fqfdtSVM4RNBce
-BQlIeV2ziT5Ypg1ak/gUEBvdG28cpPsKs5ZjSzOmYvRUu5YIJpbjaHYPVDkSNB19
-Wg7pWf3VeKpNnu625OWf0rF3Ajg+3lgyiffgIEQLhmRX9/ZwB7Zfi31+w5KPrKFP
-wPwRLTNMTRCah17vKcip
-=Kp1r
------END PGP SIGNATURE-----
-
---6iXXu7NwgEt9u5a7--
-
---===============3492112872564280508==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 02/03/2012 02:48 PM, Mark Brown wrote:
+> So, we're getting more and more drivers converted over to dmaengine
+> (I've CCed a random selection of people working on relevant drivers and
+> Vinod).  This means we're getting a bunch of drivers that talk to the
+> ALSA API on the top and the dmaengine API on the bottom and seem to need
+> to implement very similar code patterns (like this tasklet to push the
+> DMA through).  This feels like we need some sort of abstraction to
+> factor out some code here, either library code or perhaps a framework
+> driver with callbacks that fill in the platform specifics - if the APIs
+> are providing useful abstractions then presumably a large part of this
+> is just translating between them.
+> 
+> If that's not doable then what are the problems?
 
 
---===============3492112872564280508==--
+Yes, I was faced with the task of writing yet another dmaengine based ASoC
+PCM driver last week. At first I thought it might be a good idea to come up
+with a common ASoC PCM driver which could be used by all platforms using DMA
+engine. Unfortunately this turned out to be not feasible due to how
+dmaengine works. Each dmaengine driver has it's custom API for configuring
+the DMA controller. :/
+
+So what I have come up with so far is a set of helper functions which can be
+used to implement a dmaengine based ASoC PCM driver. Right now I'm in the
+process of converting imx, mxs and ep93xx to this set of functions.
+
+These platforms have in common that their dmaengine driver implements
+device_prep_dma_cyclic function, which prepares a continuous transfer for
+cyclic buffer.
+The other ASoC platforms using dmaengine for their PCM driver (including the
+one in this patch series) don't have this function implemented and so the
+PCM drivers manually have to setup the cyclic SG lists. So while we could
+add a common set up functions for this to ASoC or ALSA I think the better
+place for this is in the dmaengine framework and implement
+device_prep_dma_cyclic for those drivers which don't do yet.
+
+I'll try to send patches and some further explanations next week.
+
+- Lars
