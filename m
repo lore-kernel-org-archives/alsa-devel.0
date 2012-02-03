@@ -1,31 +1,68 @@
-From: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
-Subject: TDM bus support in Linux Kernel
-Date: Fri, 3 Feb 2012 11:59:10 +0300
-Message-ID: <CAKa7sPRgROFY2RfeVW0G_1EWzWXakuWu50tGQ2QuzrvEimU3FQ@mail.gmail.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
+Date: Fri, 3 Feb 2012 11:21:46 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1202031114560.6211@axis700.grange>
+References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
+ <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de> <4F22624E.2090201@renesas.com>
+ <Pine.LNX.4.64.1201270946150.32661@axis700.grange> <4F27CA7D.601@renesas.com>
+ <Pine.LNX.4.64.1202022317560.13860@axis700.grange> <4F2B9F34.60308@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Michail Kurachkin <michail.kurachkin@promwad.com>, Ivan Kuten <ivan.kuten@promwad.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <4F2B9F34.60308@renesas.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>
+Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Fri, 3 Feb 2012, Shimoda, Yoshihiro wrote:
 
-We are designing custom hardware board where processor is connected
-with analog telephony
-SLIC via TDM bus.
-During investigation of Linux kernel we did not find any corresponding TDM code.
-So decided to write a new TDM subsystem in drivers/tdm (like SPI).
-The subsystem consists of tdm_core.c which implements TDM bus routines,
-e.g. tdm_register_board_info(), tdm_add_device(),
-tdm_controller_register() etc, and
-someplatform_tdm.c which implements platform specific TDM contoller.
+> Hi Guennadi-san,
+> 
+> 2012/02/03 7:19, Guennadi Liakhovetski wrote:
+> [ snip ]
+> >>
+> >> Thank you for your comment.
+> >>
+> >> I investigaed the issue. I found out the renesas_usbhs driver may
+> >> call tx_submit() in the callback() of the dma-simple finally.
+> > 
+> > Sorry, in my first reply to this your email I misread the renesas_usbhs 
+> > for an issue with your new SUDMAC driver. Since this is not the case and 
+> > my patch seems to be causing a regression, I'll look at it.
+> 
+> Thank you for the comment.
+> 
+> I found out that if the "power_up" is 0 in the sample_tx_submit(),
+> the pm_state will be changed to "PENDING".
+> And then, even if the renesas_usbhs calls dma_async_issue_pending(),
+> the dma-simple driver doesn't call the simple_chan_xfer_ld_queue().
+> This is because the driver will call the simple_chan_xfer_ld_queue()
+> when the pm_state is "ESTABLISHED" only.
+> 
+> So I guess that we have to modify the simple_issue_pending().
 
-Any suggestion if we have chosen right direction and our approach
-conforms Linux kernel architecture?
-May be there were already some preliminary work for this?
+Ok, I looked at this code, there's now a comment in simple_tx_submit():
 
--- 
-Best regards,
-Viktar Palstsiuk
+	if (power_up) {
+		...
+	} else {
+		/*
+		 * Tell .device_issue_pending() not to run the queue, interrupts
+		 * will do it anyway
+		 */
+		schan->pm_state = DMA_SIMPLE_PM_PENDING;
+	}
+
+And that's exactly what should be happening: an interrupt should trigger 
+the IRQ thread should call simple_chan_xfer_ld_queue(), so, looks like the 
+interrupt is not coming? It's also strange, why and how it worked without 
+dma-simple? I don't think I changed that with the transition... 
+Investigating.
+
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
