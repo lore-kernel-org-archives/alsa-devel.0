@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for
- imx27pdk using mc13783 codec
-Date: Fri, 3 Feb 2012 11:58:06 +0000
-Message-ID: <20120203115806.GI3151@opensource.wolfsonmicro.com>
-References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
-	<2851519.TkeCdfD43W@laptop> <20120202173212.GA1785@sirena.org.uk>
-	<1635894.OLo8mNMWim@laptop>
+From: "Reddy, MR Swami" <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH ] ASoC: Add support for TI LM49453 Audio
+	codec
+Date: Fri, 3 Feb 2012 04:19:00 -0800
+Message-ID: <290463D19D2E064191F1F96ECA480A89434ABCAEDD@EXMAIL02.scwf.nsc.com>
+References: <290463D19D2E064191F1F96ECA480A89434AB423B2@EXMAIL02.scwf.nsc.com>
+	<20120202231427.GG3112@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7228868265844563643=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1DA59103E0D
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 12:58:08 +0100 (CET)
-In-Reply-To: <1635894.OLo8mNMWim@laptop>
+Received: from sc-mailgw05.nsc.com (mail2.nsc.com [12.238.8.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D25C2436A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 13:20:56 +0100 (CET)
+Received: from SCNTRDCSS6.nsc.com (scntrdcss6.nsc.com [10.188.130.177])
+	by sc-mailgw05.nsc.com (Tumbleweed MailGate 3.7.1) with ESMTP id
+	29E2417AA248
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 04:20:48 -0800 (PST)
+In-Reply-To: <20120202231427.GG3112@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,65 +27,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, J?rgen Lambrecht <juergen.lambrecht@gmail.com>, Lambrecht J?rgen <J.Lambrecht@televic.com>, Fabio Estevam <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============7228868265844563643==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WHz+neNWvhIGAO8A"
-Content-Disposition: inline
+Apologies for missing a few review comments:
 
+>> +       snd_soc_write(codec, LM49453_P0_FLL_REF_FREQL_REG, (state->in & 0xff));
+>> +       snd_soc_write(codec, LM49453_P0_FLL_REF_FREQH_REG,
+>> +                            ((state->in >> 8) & 0xff));
+>> +
+>> +       snd_soc_write(codec, LM49453_P0_VCO_TARGETLL_REG,
+>> +                            state->out & 0xff);
+>> +       snd_soc_write(codec, LM49453_P0_VCO_TARGETLH_REG,
+>> +                            (state->out >> 8) & 0xff);
+>> +       snd_soc_write(codec, LM49453_P0_VCO_TARGETHL_REG,
+>> +                            (state->out >> 16) & 0xff);
+>> +       snd_soc_write(codec, LM49453_P0_VCO_TARGETHH_REG,
+>> +                            (state->out >> 24) & 0xff);
 
---WHz+neNWvhIGAO8A
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The above code used to set the reference frequencies for FLL and VCO. Ideally, this code can be removed, because these registers are used for reference only.
 
-On Fri, Feb 03, 2012 at 08:45:10AM +0100, Philippe R=E9tornaz wrote:
-> Le jeudi 2 f=E9vrier 2012 17:32:12 Mark Brown a =E9crit :
+ 
+>> +       switch (lm49453->sysclk) {
+>> +       case 12288000:
+>> +       case 26000000:
+>> +       case 19000000:
+>> +               /* PLL CLK slection */
+>> +               pll_clk = ~BIT(4);
+>> +               break;
+>> +       case 48000:
+>> +       case 32576:
+>> +               /* FLL CLK slection */
+>> +               pll_clk = BIT(4);
+>> +               break;
+>> +       default:
+>> +               return -EINVAL;
+>> +       }
 
-> > First step would be to post it :)
+The above code used to set for CLOCK type (ie either PLL or  FLL). The sysclk is PLL (HIGH FREQ mode) or FLL (LOW FREQ mode). So based on the sysclk, the BIT(4) will be set.
 
-> Well, that was the whole point to post a link to a git tree containing th=
-e=20
-> patches. But if you think I should post the patches directly on the maili=
-ng=20
-> list I can do it.
+>> +       case SND_SOC_BIAS_STANDBY:
+>> +               if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
+>> +                       regcache_sync(lm49453->regmap);
+>> +       
+>> +               snd_soc_update_bits(codec, LM49453_P0_PMC_SETUP_REG,
+>> +                                   LM49453_PMC_SETUP_CHIP_EN, 0);
+>> +               break;
+>> +
+>> +       case SND_SOC_BIAS_OFF:
+>> +               snd_soc_update_bits(codec, LM49453_P0_PMC_SETUP_REG,
+>> +                                   LM49453_PMC_SETUP_CHIP_EN, 0);
+>> +               break;
+>> +       }
 
-The entire kernel code review process is based on patches posted to
-mailing lists.
+Setting CHIP_EN bit as '0'. In the _STANDBY mode, CHIP_EN bit setting not needed and will remove in the next patch.
 
---WHz+neNWvhIGAO8A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPK8vIAAoJEBus8iNuMP3dVL4P/0paKZd2yHNY2ttNqddr5jMs
-tHAln2f/DI0eqpahGH0swneFThIc7gosiwloZKU1PaVr/R8BVYequdrbNmt/N2Gb
-Jcx7JgDStTJW46ry+XOT2mes0QEmZIqAtRdlA7mHpJIzBkkrQZxL7MCXxYodQoLx
-E3MEy8mcB4PpSKNxbyZrp4CzMSNPSZPGYNZwwKgQPauveoXELGacsOqrvq+onxAV
-Fu8X9pCsh1m1kZS0ELeXhTqaoIwgTkQxHwv3F/pGu3rpw3uEogeB8f7RawoPpzmo
-3PX95rDWpXmRo8LsujWqWH3gPxN5Ok/0WmtiZjXUoNHsIq0tBLaMYoHV4HkiVIhm
-Fk7egUADBIFrCSFCELPjNcyYrdGhD9BIe0d4quhLgTKg7VbXUiPBewDpMaypE/YD
-U0ujWzO6DvLiqyKxdpkUo4L1JsumZwDPv59Wa61XKXYOWXhc9kyT0T6hfd7ZH9z9
-mn0MeFso8JsHgBF4gor29kk9Pcl5/pHO4MAnfqHvGrGJ9aa7DiUoiiTViUoQ7a1q
-0qM7WWf6Q3OLoY1dAguT5Jtn+D9KDO03nAJnizvdXLQhs7jfqzGDRY2FouQOHzw4
-6Mmx6XoWdwaobTO5U8sp9bvL8EQu1CAcqC4Qkvew9iVz54FviDL3pySvpwUbG27H
-AjP3KbnEj395jR20Vl1H
-=q6zc
------END PGP SIGNATURE-----
-
---WHz+neNWvhIGAO8A--
-
---===============7228868265844563643==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7228868265844563643==--
+Thanks
+Swami
