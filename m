@@ -1,65 +1,57 @@
-From: Philippe =?ISO-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for
-	imx27pdk using mc13783 codec
-Date: Fri, 03 Feb 2012 08:45:10 +0100
-Message-ID: <1635894.OLo8mNMWim@laptop>
-References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
-	<2851519.TkeCdfD43W@laptop> <20120202173212.GA1785@sirena.org.uk>
+From: "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH 1/7 v2] dmaengine: add a simple dma library
+Date: Fri, 03 Feb 2012 17:47:48 +0900
+Message-ID: <4F2B9F34.60308@renesas.com>
+References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
+ <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de>
+ <4F22624E.2090201@renesas.com>
+ <Pine.LNX.4.64.1201270946150.32661@axis700.grange> <4F27CA7D.601@renesas.com>
+ <Pine.LNX.4.64.1202022317560.13860@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp0.epfl.ch (smtp0.epfl.ch [128.178.224.219])
-	by alsa0.perex.cz (Postfix) with SMTP id B161624474
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2012 08:45:15 +0100 (CET)
-In-Reply-To: <20120202173212.GA1785@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, J?rgen Lambrecht <juergen.lambrecht@gmail.com>, Lambrecht J?rgen <J.Lambrecht@televic.com>, Fabio Estevam <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-reply-to: <Pine.LNX.4.64.1202022317560.13860@axis700.grange>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
 List-Id: alsa-devel@alsa-project.org
 
-Le jeudi 2 f=E9vrier 2012 17:32:12 Mark Brown a =E9crit :
-> On Sun, Jan 29, 2012 at 08:01:38PM +0100, Philippe R?tornaz wrote:
-> > Le samedi 28 janvier 2012 18:57:45 Fabio Estevam a ?crit :
-> > > On Wed, Jan 25, 2012 at 1:45 PM, Philippe R?tornaz
-> > > =
+Hi Guennadi-san,
 
-> > > > Sascha, do you have any plan to upstream the mc13783 codec
-> > > > driver ?
-> > > =
+2012/02/03 7:19, Guennadi Liakhovetski wrote:
+[ snip ]
+>>
+>> Thank you for your comment.
+>>
+>> I investigaed the issue. I found out the renesas_usbhs driver may
+>> call tx_submit() in the callback() of the dma-simple finally.
+> 
+> Sorry, in my first reply to this your email I misread the renesas_usbhs 
+> for an issue with your new SUDMAC driver. Since this is not the case and 
+> my patch seems to be causing a regression, I'll look at it.
 
-> > > In case Sascha doesn't have plans to upstream mc13783, is this
-> > > something you could do?
-> > =
+Thank you for the comment.
 
-> > It's an option, but I cannot work full-time on it so it would not be
-> > fast.
-> First step would be to post it :)
-> =
+I found out that if the "power_up" is 0 in the sample_tx_submit(),
+the pm_state will be changed to "PENDING".
+And then, even if the renesas_usbhs calls dma_async_issue_pending(),
+the dma-simple driver doesn't call the simple_chan_xfer_ld_queue().
+This is because the driver will call the simple_chan_xfer_ld_queue()
+when the pm_state is "ESTABLISHED" only.
 
-> A useful approach might be to strip the driver down to the bare minimum
-> (for example just getting DAC to headphone working, possibly at a fixed
-> sample rate) and then build out functionality incrementally.  That would
-> make it easier for different people to contribute bits they need.
+So I guess that we have to modify the simple_issue_pending().
 
-Well, that was the whole point to post a link to a git tree containing the =
+Best regards,
+Yoshihiro Shimoda
 
-patches. But if you think I should post the patches directly on the mailing =
-
-list I can do it.
-
-But before investing too much time on it I would really like to have Sascha =
-
-opinion about it as he is the main author of the mc13783 codec code.
-
-Thanks,
-
-Philippe
+> Thanks
+> Guennadi
+> 
+> ---
+> Guennadi Liakhovetski, Ph.D.
+> Freelance Open-Source Software Developer
+> http://www.open-technology.de/
+> 
+-- 
+Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
