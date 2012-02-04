@@ -1,21 +1,26 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH 19/19] ASoC: fsi: Add DMAEngine support
-Date: Sat, 04 Feb 2012 23:36:59 +0530
-Message-ID: <1328378819.26182.33.camel@vkoul-udesk3>
-References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>
-	<87aa50i971.wl%kuninori.morimoto.gx@renesas.com>
-	<20120203134850.GM3151@opensource.wolfsonmicro.com>
-	<4F2BE998.4020903@metafoo.de>
-	<20120203141440.GR3151@opensource.wolfsonmicro.com>
-	<1328373092.26182.27.camel@vkoul-udesk3> <4F2D6416.2050400@metafoo.de>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: devm_request_and_ioremap
+Date: Sat, 4 Feb 2012 19:25:05 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1202041922070.1974@hadrien>
+References: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
+	<7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
+	<alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6>
+	<20120124202203.GD1135@opensource.wolfsonmicro.com>
+	<alpine.DEB.2.02.1201242144580.1998@hadrien>
+	<20120126110506.GB2611@pengutronix.de>
+	<alpine.DEB.2.02.1201261220460.1851@localhost6.localdomain6>
+	<20120126112242.GA9401@opensource.wolfsonmicro.com>
+	<alpine.DEB.2.02.1201261439460.1851@localhost6.localdomain6>
+	<20120126135135.GD2611@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0ABF5243EF
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 19:05:37 +0100 (CET)
-In-Reply-To: <4F2D6416.2050400@metafoo.de>
+Received: from mail1-relais-roc.national.inria.fr
+	(mail1-relais-roc.national.inria.fr [192.134.164.82])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDF462440D
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 19:25:05 +0100 (CET)
+In-Reply-To: <20120126135135.GD2611@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,28 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Ralf Baechle <ralf@linux-mips.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2012-02-04 at 18:00 +0100, Lars-Peter Clausen wrote:
-> This is sort of what I have implemented right now. Although I also prepare and
-> submit the dma descriptor in trigger START instead of prepare. Mainly beacuse I
-> mapped trigger STOP to dmaengine_terminate_all. Or is issue_pending supposed to
-> just restart the transfer if it is circular, even though terminate_all has been
-> called?
-trigger START should not be used for preparing descriptors. You want to
-start to actually start the descriptor (which is issue_pending and NOT
-submit!!). You should do this is prepare callback.
-> 
-> I also have a helper function which maps a hw_params to a dma_slave_config.
-> Individual drivers still have to implement their own hw_params callback since
-> not all fields of a dma_slave_config can be deduced from a hw_params (e.g. the
-> burst size). 
-yes, since dma_slave_config is dependent upon what you want to DMA and
-match that with peripheral, it can be done by PCM drivers only. Core
-cannot take care of this. That would also help, as channel is set
-rightly before core calls dmaengine APIs in prepare :-)
+How important is the name argument to request_mem_region?
 
--- 
-~Vinod
+devm_request_and_ioremap uses:
+
+name = res->name ?: dev_name(dev);
+
+In trying to introduce uses of devm_request_and_ioremap I thus look for 
+res->name and dev_name(dev) as well as the name in the driver structure in
+the platform_driver structure.  But sometimes the name is pdev->name, ie 
+the name field of the argument to the probe function.  And sometimes it is 
+a string that is slightly different than what is in the driver structure.
+
+thanks,
+julia
