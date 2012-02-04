@@ -1,18 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Jack detection on HDA vs SoC
-Date: Sat, 4 Feb 2012 11:41:07 +0800
-Message-ID: <CAN8ccib=5S6V+tpoN8TjHVBkpXL5LH8f4spPpVL+9v5UsgUQ-g@mail.gmail.com>
-References: <CAEUnVG4AGOk4tTC+KKiY_HgXNZs2wx5dD_mOy0vsaYP-ag24jA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core - Add support for DAI and
+	machine kcontrols.
+Date: Sat, 4 Feb 2012 12:42:32 +0000
+Message-ID: <20120204124232.GB8042@opensource.wolfsonmicro.com>
+References: <1328290989-14399-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5190313231758237636=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55461243ED
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 04:41:09 +0100 (CET)
-Received: by wgbdy1 with SMTP id dy1so3296626wgb.20
-	for <alsa-devel@alsa-project.org>; Fri, 03 Feb 2012 19:41:07 -0800 (PST)
-In-Reply-To: <CAEUnVG4AGOk4tTC+KKiY_HgXNZs2wx5dD_mOy0vsaYP-ag24jA@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 164CE24154
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 13:42:36 +0100 (CET)
+In-Reply-To: <1328290989-14399-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/2/4, Dylan Reid <dgreid@chromium.org>:
-> under hda I see: new, control-based jack notification, and
-> auto-switching of the output/input done in the driver.
-> under soc it is: /dev/input used for jack notification, with the
-> switching _not_ done in the driver.
->
-> Is there a plan for the soc code to use the control-based method?
-> Is there a consensus on whether new drivers should auto-switch or not?
->
 
-Is there any solution for those combo jack of lenovo t400 and ideapad s200 ?
+--===============5190313231758237636==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+Content-Disposition: inline
 
-http://forums.lenovo.com/t5/T400-T500-and-newer-T-series/Audio-combo-jack-vs-headphone-earphone-with-mic-and-speaker/ta-p/240186
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5272
+--RASg3xLB4tUQ4RcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5523
+On Fri, Feb 03, 2012 at 05:43:09PM +0000, Liam Girdwood wrote:
+> Currently ASoC can only add kcontrols using codec and platform component device
+> handles. It's also desirable to add kcontrols for DAIs (i.e. McBSP) and for
+> SoC card machine drivers too. This allows the kcontrol to have a direct handle to
+> the parent ASoC component DAI/SoC Card/Platform/Codec device and hence easily
+> get it's private data.
+
+Applied, thanks.
+
+--RASg3xLB4tUQ4RcS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPLSeoAAoJEBus8iNuMP3dstkP/jXAe/CWmQG2V5+RMbQ8/VKf
+KNgeEEyB2PfBgASKskhEIrpyuS4LJAtAy1cw8k5iIwR8bUcenCfvUYysEcXkQqD9
+2W4YysAqzUaGsEZPfds+Yy3547YoEo94t8vcPCXVKo5PyT7h3IHJd+g2Sy/0zF01
+XMFtdV/PG1mm0nMBbSbe//2GamnGsisKQIeNyeh+os6vurKT2iRdBLEmB+SzpaWr
+3+ZgjkBARIJ0xSQU7olOQrXaqPafNQkMFOYemktfEke42kkHfKA2iQ/LlkxrWqtv
+2zogjXI3zrTAs0kAeUwaiBR+6wfsGuhNd/vvF9YPoScFPVDUqEavufgoZtWiW2B8
+3NdCXlZLHnX18tFEg2BQXw9m0bcInuX5+dgLu3dYPDvq/bnjgBAkhSs4PDaEVC4K
+0XVQA66BYFBF9j7gWWDCiuA1qCo7/vJPsnLQqvTp903EFJiNzI9+vSs25Z3wx/7o
+9qtJTMk0q5hWNZ3VfJrvR9Nhtlt1eqIbfze4WCrldNWgvIRC9NPpCWDInsZ7+Kpk
+yvHLmCXwLzjZFdRktl49oSsEsqf7y7X0vOij89fftr2VQC6UyKUS505pmtxieKXD
++DjFMpne8OeWxzL0S3ssiG+acAROb/wZnMjckpdWUH/z4F9KgaUXsblOxtz1VV+V
+W+SgK0Wte6xiaYq0szy2
+=it6g
+-----END PGP SIGNATURE-----
+
+--RASg3xLB4tUQ4RcS--
+
+--===============5190313231758237636==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5190313231758237636==--
