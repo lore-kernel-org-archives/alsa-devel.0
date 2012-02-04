@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Julia Lawall <julia.lawall@lip6.fr>
 Subject: Re: devm_request_and_ioremap
-Date: Sat, 4 Feb 2012 18:46:39 +0000
-Message-ID: <20120204184638.GA10688@opensource.wolfsonmicro.com>
+Date: Sat, 4 Feb 2012 23:08:24 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1202042306520.1992@hadrien>
 References: <7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
 	<alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6>
 	<20120124202203.GD1135@opensource.wolfsonmicro.com>
@@ -12,13 +12,16 @@ References: <7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msf
 	<alpine.DEB.2.02.1201261439460.1851@localhost6.localdomain6>
 	<20120126135135.GD2611@pengutronix.de>
 	<alpine.DEB.2.02.1202041922070.1974@hadrien>
+	<20120204184638.GA10688@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6979629304579286155=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5796F10394D
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 19:46:43 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.02.1202041922070.1974@hadrien>
+Received: from mail1-relais-roc.national.inria.fr
+	(mail1-relais-roc.national.inria.fr [192.134.164.82])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06CF0103877
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 23:08:25 +0100 (CET)
+In-Reply-To: <20120204184638.GA10688@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,55 +31,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia.lawall@lip6.fr>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Wolfram Sang <w.sang@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+And how about a function devm_clk_get?  It looks like there would be 
+around 150 opportunities for its use.
 
---===============6979629304579286155==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
-Content-Disposition: inline
-
-
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Feb 04, 2012 at 07:25:05PM +0100, Julia Lawall wrote:
-> How important is the name argument to request_mem_region?
-
-It's just used for diagnostics.
-
---IS0zKkzwUGydFO0o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPLX0GAAoJEBus8iNuMP3dVBsP/jAVpSwJ9rWNJusL+qELD+JA
-M3/SmBVIyAD2gtyJ3PTfNn/o7OUyFVoNNBMcDv+YngSaT/T1L92bJ+nbrfB48why
-jh66v05yRMcrqsjQ75Tl5l6CD23CJXGCN9iMEQpTeKqUvq9jJqcphhbpN75Ln3EF
-fCL+br7P0rG5RZbjKsvCtr94EGGwdljLCnyafBqZRu3vnFu8fyWTCUmMruxI45Y1
-JKs/mzfS4cMosNkbI0A+jsI2CY8STWCgkiS72NHJmCwm4JV6ccG3dU6h2CCggTr+
-ab+yU8GiCqDhB5F1IaY1zOR8mbo3L9t+Va4wkC0YD1vYi1ISS3Lr0LBHeAzJdYqV
-L/8wXo61ekgg/KjW5wRXK/rwdLccrkUx3ocQingTd5TKEm4CHzUumcahowSGCi7O
-LyWI4BfrQFkNV/sBLjsG6JLwPWFO5AUqJU5DDERO7rEAMSaM3Ou3rsQimKne13Yi
-bQKGJo4N/edY3+pkNlR1WMnlRjhhzxAp8PjrrNdBdvG72H2OChk5l52si8KL5Zvt
-hTQlDo37SjJllUhucz2uq21rsyIFTVfV6Yt1gaErOSzkx9QlMSL0pHbU25O+eCov
-1Fzo8cFeqs3iT+RRIZzwg/IRyoYVeZviWtmFpWs2QojRb3EQrEFUaXwwRvb5OzWQ
-zTBD6iZWnIrqmQ2BnrJl
-=kug/
------END PGP SIGNATURE-----
-
---IS0zKkzwUGydFO0o--
-
---===============6979629304579286155==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6979629304579286155==--
+julia
