@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack detection on HDA vs SoC
-Date: Sat, 4 Feb 2012 14:02:09 +0000
-Message-ID: <20120204140209.GB7438@sirena.org.uk>
-References: <CAEUnVG4AGOk4tTC+KKiY_HgXNZs2wx5dD_mOy0vsaYP-ag24jA@mail.gmail.com>
-	<20120204132029.GA7438@sirena.org.uk>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH 19/19] ASoC: fsi: Add DMAEngine support
+Date: Sat, 04 Feb 2012 22:01:32 +0530
+Message-ID: <1328373092.26182.27.camel@vkoul-udesk3>
+References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>
+	<87aa50i971.wl%kuninori.morimoto.gx@renesas.com>
+	<20120203134850.GM3151@opensource.wolfsonmicro.com>
+	<4F2BE998.4020903@metafoo.de>
+	<20120203141440.GR3151@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3015243F9
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 15:02:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20120204132029.GA7438@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 387E624345
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 17:30:12 +0100 (CET)
+In-Reply-To: <20120203141440.GR3151@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Ralf Baechle <ralf@linux-mips.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 04, 2012 at 01:20:29PM +0000, Mark Brown wrote:
-> On Fri, Feb 03, 2012 at 06:01:41PM -0800, Dylan Reid wrote:
+On Fri, 2012-02-03 at 14:14 +0000, Mark Brown wrote:
+> On Fri, Feb 03, 2012 at 03:05:12PM +0100, Lars-Peter Clausen wrote:
+> 
+> > Yes, I was faced with the task of writing yet another dmaengine based ASoC
+> > PCM driver last week. At first I thought it might be a good idea to come up
+> > with a common ASoC PCM driver which could be used by all platforms using DMA
+> > engine. Unfortunately this turned out to be not feasible due to how
+> > dmaengine works. Each dmaengine driver has it's custom API for configuring
+> > the DMA controller. :/
+Not really, if the driver is written properly its doable..
+> 
+> That doesn't sound insurmountible - you need a callback to allow the
+> individual drivers to set the parameters but hopefully the data flow is
+> more generic?  There will probably be some other setup type stuff that
+> needs doing.
+I had though about this sometime back, and if we add dmaengine support
+into asoc, we wouldn't need to add this kind of support in every driver.
 
-> > Is there a plan for the soc code to use the control-based method?
+Typically, finding the right channel involves some handshaking between
+client and dma driver, so this is something the PCM driver should do as
+part of setup.
+The dma_chan can be part of the DAI, including the dma_add_t of the
+peripheral. Any required dmac parametrs should be set using
+dma_slave_config at setup.
+Once the stream is opened, asoc core on finding dma_chan in DAI should
+call the dmaengine APIs to get cyclic descriptor (in prepare) and then
+submit. The trigger START should invoke issue_pending callback of DMA.
+Similarly the trigger PAUSE, RESUME maps to dmanegine PAUSE and RESUME
+respectively (if implemented by dmac).
 
-> Not exactly.  I'm expecting that the new interface will be integrated
-> into the generic ALSA jack support rather than done as a custom thing in
-> the HDA drivers which will mean that anything supporting accessory
-> detect will get support, including ASoC.  This stuff should really be
-> handled in the core rather than in individual drivers, there's also
-> extcon which we'll need to integrate with.
+This way PCM driver would just need to setup the dma and not worry about
+data transfer as long as dma driver is properly done. 
+> 
+> > The other ASoC platforms using dmaengine for their PCM driver (including the
+> > one in this patch series) don't have this function implemented and so the
+> > PCM drivers manually have to setup the cyclic SG lists. So while we could
+> > add a common set up functions for this to ASoC or ALSA I think the better
+> > place for this is in the dmaengine framework and implement
+> > device_prep_dma_cyclic for those drivers which don't do yet.
+> 
+> That seems like a good plan, that way other users of cyclic DMA will
+> also benefit.
 
-BTW, the core code I'm talking about is that in sound/core/jack.c but I
-just noticed we also acquired a sound/core/ctljack.c.
 
-Takashi, we really need to sort this stuff out - it's all getting very
-confusing.  We've got two different bits of code with very similar
-interfaces on the driver side but totally different application layer
-interfaces.  From a driver point of view it's not great to have to tell
-the core the same thing twice and from an application point of view we
-don't have any consistency.
-
-Looking at the code I don't understand why ctljack is done separately to
-the rest of the accessory detection - surely we should just have the
-snd_jack code create a control for each thing that can be reported?  I
-can't immediately see a problem with just putting a "Headphone Jack" or
-whatever the naming convention is for these controls on the end of the
-name that we were given for the base jack (probably support that being
-empty).
+-- 
+~Vinod
