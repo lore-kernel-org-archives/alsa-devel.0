@@ -1,54 +1,77 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] Sound,
- emu8000: Remove duplicate linux/moduleparam.h include from
- emu8000_patch.c
-Date: Sun, 5 Feb 2012 01:27:44 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1202050126080.30244@swampdragon.chaosbits.net>
+From: Richard Zhao <richard.zhao@linaro.org>
+Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
+Date: Sun, 05 Feb 2012 12:50:15 +0800
+Message-ID: <a9d9bad3-edd0-4a5f-9bb3-15787430d858@email.android.com>
+References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org> <1328148728-32258-7-git-send-email-richard.zhao@linaro.org> <20120202085521.GB9773@S2101-09.ap.freescale.net> <20120202091132.GD9773@S2101-09.ap.freescale.net> <20120202092427.GB32403@b20223-02.ap.freescale.net> <20120202130901.GE9773@S2101-09.ap.freescale.net> <20120202135805.GB3015@richard-laptop> <20120203021554.GE32403@b20223-02.ap.freescale.net> <20120203133240.GB12915@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
-	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id 82CBA244B9
-	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2012 01:27:17 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, trivial@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20120203133240.GB12915@S2101-09.ap.freescale.net>
+Sender: linux-doc-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>, Richard Zhao <richard.zhao@freescale.com>
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, eric@eukrea.com, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The header 'linux/moduleparam.h' is included twice in
-'sound/isa/sb/emu8000_patch.c'. Once is enough.
-
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- sound/isa/sb/emu8000_patch.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/sound/isa/sb/emu8000_patch.c b/sound/isa/sb/emu8000_patch.c
-index e09f144..c99c607 100644
---- a/sound/isa/sb/emu8000_patch.c
-+++ b/sound/isa/sb/emu8000_patch.c
-@@ -22,7 +22,6 @@
- #include "emu8000_local.h"
- #include <asm/uaccess.h>
- #include <linux/moduleparam.h>
--#include <linux/moduleparam.h>
- 
- static int emu8000_reset_addr;
- module_param(emu8000_reset_addr, int, 0444);
--- 
-1.7.9
 
 
--- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+Shawn Guo <shawn.guo@linaro.org> wrote:
+
+>On Fri, Feb 03, 2012 at 10:15:54AM +0800, Richard Zhao wrote:
+>> adding Eric B=C3=A9nard.
+>>=20
+>> On Thu, Feb 02, 2012 at 09:58:07PM +0800, Richard Zhao wrote:
+>> > On Thu, Feb 02, 2012 at 09:09:03PM +0800, Shawn Guo wrote:
+>> > > On Thu, Feb 02, 2012 at 05:24:28PM +0800, Richard Zhao wrote:
+>> > > > On Thu, Feb 02, 2012 at 05:11:34PM +0800, Shawn Guo wrote:
+>> > > > > On Thu, Feb 02, 2012 at 04:55:23PM +0800, Shawn Guo wrote:
+>> > > > > > On Thu, Feb 02, 2012 at 10:12:05AM +0800, Richard Zhao
+>wrote:
+>> > > > > > > Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
+>> > > > > > > ---
+>> > > > > > >  arch/arm/mach-imx/mach-mx31ads.c      |   10 ++++++++++
+>> > > > > > >  arch/arm/plat-mxc/include/mach/mx31.h |    1 +
+>> > > > > > >  2 files changed, 11 insertions(+), 0 deletions(-)
+>> > > > > > >=20
+>> > > > > > Hmm, let's see who are actually using
+>mxc_audmux_v2_configure_port().
+>> > > > > >=20
+>> > > > > > $ git grep -n mxc_audmux_v2_configure_port arch/arm/
+>> > > > > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:246:   =20
+>mxc_audmux_v2_configure_port(0,
+>> > > > > > arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c:254:   =20
+>mxc_audmux_v2_configure_port(4,
+>> > > > > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:257:   =20
+>mxc_audmux_v2_configure_port(0,
+>> > > > > > arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c:265:   =20
+>mxc_audmux_v2_configure_port(3,
+>> > > > > > arch/arm/mach-imx/mach-pcm043.c:365:  =20
+>mxc_audmux_v2_configure_port(3,
+>> > > > > > arch/arm/mach-imx/mach-pcm043.c:371:  =20
+>mxc_audmux_v2_configure_port(0,
+>> It's machine specific code, though audmux driver is common. Might be
+>ok?
+>
+>With audmux driver moved out, it's not ok to me to have board file
+>call this function.
+>
+>> The asoc machine file for the above 3 boards is not platform driver,
+>and
+>> don't get any plat info.
+>
+>It can be nicely solved if we do these initial setup in audmux driver
+>probe function with the configuration data retrieved from audmux
+>platform data or device tree.
+no, it is asoc machine driver to have machine specific code.=20
+the machine driver do not correspond to any hw device, which cause hard=
+ to bind dt or create platform device.
+>
+>--=20
+>Regards,
+>Shawn
+>
+>_______________________________________________
+>linux-arm-kernel mailing list
+>linux-arm-kernel@lists.infradead.org
+>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
