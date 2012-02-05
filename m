@@ -1,27 +1,16 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: devm_request_and_ioremap
-Date: Sat, 4 Feb 2012 23:08:24 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1202042306520.1992@hadrien>
-References: <7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
-	<alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6>
-	<20120124202203.GD1135@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1201242144580.1998@hadrien>
-	<20120126110506.GB2611@pengutronix.de>
-	<alpine.DEB.2.02.1201261220460.1851@localhost6.localdomain6>
-	<20120126112242.GA9401@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1201261439460.1851@localhost6.localdomain6>
-	<20120126135135.GD2611@pengutronix.de>
-	<alpine.DEB.2.02.1202041922070.1974@hadrien>
-	<20120204184638.GA10688@opensource.wolfsonmicro.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] Sound,
+ emu8000: Remove duplicate linux/moduleparam.h include from
+ emu8000_patch.c
+Date: Sun, 5 Feb 2012 01:27:44 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1202050126080.30244@swampdragon.chaosbits.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1-relais-roc.national.inria.fr
-	(mail1-relais-roc.national.inria.fr [192.134.164.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06CF0103877
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2012 23:08:25 +0100 (CET)
-In-Reply-To: <20120204184638.GA10688@opensource.wolfsonmicro.com>
+Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
+	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id 82CBA244B9
+	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2012 01:27:17 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,11 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Wolfram Sang <w.sang@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, trivial@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-And how about a function devm_clk_get?  It looks like there would be 
-around 150 opportunities for its use.
+The header 'linux/moduleparam.h' is included twice in
+'sound/isa/sb/emu8000_patch.c'. Once is enough.
 
-julia
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ sound/isa/sb/emu8000_patch.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/sound/isa/sb/emu8000_patch.c b/sound/isa/sb/emu8000_patch.c
+index e09f144..c99c607 100644
+--- a/sound/isa/sb/emu8000_patch.c
++++ b/sound/isa/sb/emu8000_patch.c
+@@ -22,7 +22,6 @@
+ #include "emu8000_local.h"
+ #include <asm/uaccess.h>
+ #include <linux/moduleparam.h>
+-#include <linux/moduleparam.h>
+ 
+ static int emu8000_reset_addr;
+ module_param(emu8000_reset_addr, int, 0444);
+-- 
+1.7.9
+
+
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
