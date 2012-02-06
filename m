@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack detection on HDA vs SoC
-Date: Mon, 6 Feb 2012 11:06:00 +0000
-Message-ID: <20120206110600.GA3070@opensource.wolfsonmicro.com>
-References: <CAEUnVG4AGOk4tTC+KKiY_HgXNZs2wx5dD_mOy0vsaYP-ag24jA@mail.gmail.com>
-	<20120204132029.GA7438@sirena.org.uk>
-	<20120204140209.GB7438@sirena.org.uk>
-	<s5hmx8wqomb.wl%tiwai@suse.de>
+Subject: Re: ASoC updates for 3.3
+Date: Mon, 6 Feb 2012 11:08:07 +0000
+Message-ID: <20120206110807.GB3070@opensource.wolfsonmicro.com>
+References: <20120204125527.GC8042@opensource.wolfsonmicro.com>
+	<s5hobtcqpcr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8885899708601385283=="
+Content-Type: multipart/mixed; boundary="===============6120314026018031295=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE8E2103A5F
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 12:06:03 +0100 (CET)
-In-Reply-To: <s5hmx8wqomb.wl%tiwai@suse.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BD4524382
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 12:08:08 +0100 (CET)
+In-Reply-To: <s5hobtcqpcr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,79 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8885899708601385283==
+--===============6120314026018031295==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+	protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
 Content-Disposition: inline
 
 
---wac7ysb48OaltWcw
+--Fba/0zbH8Xs+Fj9o
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 06, 2012 at 10:48:12AM +0100, Takashi Iwai wrote:
+On Mon, Feb 06, 2012 at 10:32:20AM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> In the current release, I left ctljack.c as is before the integration
-> with jack.c simply because of different use-cases I faced: the
-> input-jack provides the multiple switches for a single jack while the
-> current ctljack.c provides only a boolean.  Although the ctljack can
-> provide an enum instead of a boolean for representing a similar model,
-> I wanted to get the global overlook and a consensus at first.
+> > The following changes since commit 1ae5cbc52e7c6619a3f44b87809fd25370df31bb:
 
-That's not the case with the standard jack stuff at all - it's not using
-any enumerations.  Everything that's grouped together is bitfields, it's
-just a set of booleans all the way up to userspace.
+> >   ASoC: neo1973_wm8753: remove references to the neo1973-gta01 machine (2012-01-30 13:22:13 +0000)
 
-> Meanwhile, the boolean implementation is enough for most of PC
-> (especially HD-audio) stuff and the ctljack implementation was
-> demanded.  Thus I decided to merge the branch for 3.2.
+> > are available in the git repository at:
 
-So are they just booleans, and is there a naming standard for the
-controls?  I've never seen any clear description of the semantics
-and I'd been assuming from the fact that all this had been done
-outside the standard infrastructure that there was some deep HDA
-specificness in the current somewhere but it's not sounding that
-way.
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.3
 
-> Definitely the integration work is necessary and foreseen.  The
-> biggest problem my workload for other tasks.
+> Would you like to let me pull from asoc-3.3 tag, or for-3.3 branch?
+> It seems that both point to the same.  I don't mind either, but I just
+> wonder how you get this pull request with a signed tag message below...
 
-TBH it looks like it'd have been less work to start off in the core -
-all the hooks were already in the drivers.
+The tag.  It's done this because I generated the request too soon after
+pushing the tag so the tag wasn't on the server but the branch was and
+it's not done the right thing with the error handling.
 
---wac7ysb48OaltWcw
+--Fba/0zbH8Xs+Fj9o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPL7QRAAoJEBus8iNuMP3dJNQP/13FbfRPX4IJdeYDf0Qh8nth
-0IlOmUXRfCixlMwDuDS4PKP6tWxOwRC0TV7JY3jr1CbrzBodVm9x7Ar0u9sFMqnt
-Agl4qdqL2TLPpSPXqLxUPznnlQurVi/tQUEUnwtQK9ytlGt+IgXCyYoHkPoQE2jz
-MPdIOTMdPa7IktsXAWwAGiNw/S+3xdNQ+SDsXocqxcCnC/6lKYuK9yvbYTQRhy5/
-TFc5aWzeA+oryw5SPawmctwLmxryaCGKpbpGTyikbxG+Et23HWp1wWc/Y4o+qKRE
-gMxr5IukD0NXBxhjgRf/NCH7jKb0SgwAzryzkljNAvLyGUvF1Nmanc2StVXBjkfT
-ORmNuuGnqGjLM+q3PW3iOIAvxbjd6YJLZRzs8Q2oxbTJt0CqgZke6wIxe35aECPh
-EYGCOh5eJamecaA6y5ZUVzagmzf4Xj0gHKuIz7d36bi5btk9/46zKg+ewqAekD3R
-nCaEVBP3P3/WtOow/JEyH86IgOr7wQXhZAk1cLaKT6/RaHwvtqJ2FHqX33q58tNv
-7IhqxW/mRONTAkqNXabCfKTQ1U6R7B8Aw7Dq5UcQlxG9ZeiTuC3yiCsYuEADnD9r
-/9F8WugMDinGW9jw5399rioi/yalaXq/COjgvBU3Eji4lKSSN+9A+5COzRGsCvSz
-i7yhDplF9/FLlTIYTgsR
-=X38+
+iQIcBAEBAgAGBQJPL7SQAAoJEBus8iNuMP3dKzkP/2TjF8Q+YDiwIKkct7rXZUdB
+aW+k4J/CSVg1JKj66L4i0qjqN/jaEV06wrCmtKbbPZiVPtb300hdETtgRV3orfNa
+eiP9RqYgBvevWs19YSK8w/Ai/KfyeJiDhYIdUSREtlpijbUcEVKQ2tdbZuOlwy9f
+Ogxt1muRoC8d3UNQg+8xZenZe4LLlR8UsTRfkWjRbj9KFYenFVEF9JbcTQzsm06x
+KAdx1f3RLYSdQBmKE1juQg+C72TrTCIzaQykcJ0yElYZXJPb/XIbxA66lU1KBDyF
+TlX1rC+0EWxSq4Ra045q9Z5KNNSkJjoWpzX0t4W3PAcsKEH0B6j3aHj7ndMqNzZA
+/igE/TEWUQf+mao6+xjciJUjB+F+vyUlWLySr8kM9TYyZbvliDDTqjA1PcPdjGNg
+daS6pKOZKhUiQ/wDujrlYFpjG8lk1ZilHE7P2v3SWeROvFbDyc5Gq9bPnvHNTeoc
+PVE3L5J1hnu7u3L+o5qACGUna02DO5CYAaQyCymOOxzHw0C3lbwQ0vHpQviNrBT1
+kQ10uPDQf1MoFdr4jTgc4J01vU57Qlzr8EDC/+CkhonR5kUQOSuXpAaqGDoQ3X0U
+FQDNE+TWhgBrPaB9XaFjwBA8XrCURC8p3LfqJorD/ipW7qCp0uFV3pECDVKbSjZK
+6ynSI//byMrXAJczdMsT
+=uliZ
 -----END PGP SIGNATURE-----
 
---wac7ysb48OaltWcw--
+--Fba/0zbH8Xs+Fj9o--
 
---===============8885899708601385283==
+--===============6120314026018031295==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8885899708601385283==--
+--===============6120314026018031295==--
