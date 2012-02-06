@@ -1,14 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: tlv320aic3x: Remove even more unused code
-Date: Mon,  6 Feb 2012 19:23:13 +0000
-Message-ID: <1328556193-24593-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Remove even more unused
+	code
+Date: Mon, 6 Feb 2012 19:28:26 +0000
+Message-ID: <20120206192826.GB12326@opensource.wolfsonmicro.com>
+References: <1328556193-24593-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7110448441309428569=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB508243DA
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 20:23:16 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DEA88243DD
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 20:28:29 +0100 (CET)
+In-Reply-To: <1328556193-24593-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,51 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Felipe Contreras <felipe.contreras@gmail.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that we're not implement GPIO or microphone support there's no users
-for the read() function any more.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/tlv320aic3x.c |   24 ------------------------
- 1 files changed, 0 insertions(+), 24 deletions(-)
+--===============7110448441309428569==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 07efbed..8d20f6e 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -121,30 +121,6 @@ static const u8 aic3x_reg[AIC3X_CACHEREGNUM] = {
- 	0x00, 0x00, 0x02,	/* 100 */
- };
- 
--/*
-- * read from the aic3x register space. Only use for this function is if
-- * wanting to read volatile bits from those registers that has both read-only
-- * and read/write bits. All other cases should use snd_soc_read.
-- */
--static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
--		      u8 *value)
--{
--	u8 *cache = codec->reg_cache;
--
--	if (codec->cache_only)
--		return -EINVAL;
--	if (reg >= AIC3X_CACHEREGNUM)
--		return -1;
--
--	codec->cache_bypass = 1;
--	*value = snd_soc_read(codec, reg);
--	codec->cache_bypass = 0;
--
--	cache[reg] = *value;
--
--	return 0;
--}
--
- #define SOC_DAPM_SINGLE_AIC3X(xname, reg, shift, mask, invert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = snd_soc_info_volsw, \
--- 
-1.7.9.rc1
+
+--TakKZr9L6Hm6aLOc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 06, 2012 at 07:23:13PM +0000, Mark Brown wrote:
+> Now that we're not implement GPIO or microphone support there's no users
+> for the read() function any more.
+
+That's microphone detect, not plain microphone.
+
+--TakKZr9L6Hm6aLOc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPMCl1AAoJEBus8iNuMP3dJx0P/1tGTD0Hn2RKSXgU7ENYVeR9
+hvVnIxBS9hPPX8GR4g/KSZZjcvXDMKqVZC19F9xgvQdLk9L5Mi3OHsLIgS469S/j
+S0GQWENeGt+Gl4nkZKRg7lzlsDiCdxvudkiEVpBKy47vxblBfLB9FW57BSfDaRzz
+fFZ5cSeg23tlugbDCromupe4XYM/XSOm2hvKIMhH0Q1T7VLuyDHFJYMECeibOOF3
+UWBHjmcgWUVUhQiyBcohywnrvx4WwBldnnwYFUdzL9G9Lc5u3+RjGs0PqcltsPRR
+jvTa1jOre7K1o2+tMplvTg4psJ1oRLa71+wz1aKPRNskBR9VxQwktd5qvLxej5gL
+B4FakUOQLIOpGlrY9sjNn7taMpy8R7nTKnF6ASiPgIewcRyowQxp5k/WMXJ87kyJ
+iEFhTmNN3K79MkP26jHZZwPoKTjCxCQIvWPUR4bKSN/zLoTfMI/q/s21HfkeXWtY
+bUGtCuT1VZnxYqo8ZhrHr4Xf90KHPJt091T8FTVCZgV+FH82Pe6pp7lAw1Wv91J/
+cdRHtO8I1wf2SjVH3DMUQVx4jonjNX3kbwBAu1S7zBLqL/HxLuKlhZKMpgS4H2Yx
+YQ3+VAJ+AP+SJ8u1rVkLeW8m5pWh2e3A1FWPxu1evQrxhaWfDWN6yl4gTpVGB7Q3
+ChHGrKIaOcHsmITXHp7/
+=q0+c
+-----END PGP SIGNATURE-----
+
+--TakKZr9L6Hm6aLOc--
+
+--===============7110448441309428569==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7110448441309428569==--
