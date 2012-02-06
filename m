@@ -1,21 +1,18 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: core - Add support for DAI and
-	machine kcontrols.
-Date: Mon, 06 Feb 2012 10:37:03 +0000
-Message-ID: <1328524623.6799.9.camel@odin>
-References: <1328290989-14399-1-git-send-email-lrg@ti.com>
-	<20120203204640.GD23505@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Jack detection on HDA vs SoC
+Date: Mon, 6 Feb 2012 11:06:00 +0000
+Message-ID: <20120206110600.GA3070@opensource.wolfsonmicro.com>
+References: <CAEUnVG4AGOk4tTC+KKiY_HgXNZs2wx5dD_mOy0vsaYP-ag24jA@mail.gmail.com>
+	<20120204132029.GA7438@sirena.org.uk>
+	<20120204140209.GB7438@sirena.org.uk>
+	<s5hmx8wqomb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8885899708601385283=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
-	[74.125.149.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE5D4103A54
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 11:37:19 +0100 (CET)
-Received: by mail-ww0-f46.google.com with SMTP id dt14so4056876wgb.27
-	for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2012 02:37:06 -0800 (PST)
-In-Reply-To: <20120203204640.GD23505@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE8E2103A5F
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 12:06:03 +0100 (CET)
+In-Reply-To: <s5hmx8wqomb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +22,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-02-03 at 20:46 +0000, Mark Brown wrote:
-> On Fri, Feb 03, 2012 at 05:43:09PM +0000, Liam Girdwood wrote:
-> 
-> > 1) Use snd_soc_add_card_controls() where no direct codec control is required.
-> > 2) Use snd_soc_add_codec_controls() where there is direct codec control.
-> 
-> > In the case of 1) above we also update the machine drivers to get the correct
-> > component data pointers from the kcontrol (rather than getting the machine pointer
-> > via the codec pointer).
-> 
-> Hrm, I can't apply this right now as I don't have an appropriate system
-> to hand but what are the cases where there is CODEC control?  This
-> sounds suspicous, perhaps we need some of the drivers enhancing (though
-> no reason to block this patch).
 
-There were some machine drivers that would just do a little extra
-indirection (getting the soc_card via the kcontrol codec ptr) with their
-kcontrols to access the machine private data. The patch fixed the
-appropriate machine drivers so that they can access soc_card directly
-now.
+--===============8885899708601385283==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
 
-There was also the McBSP DAI using the codec ptr for a similar purpose.
 
-The other machine drivers were all using the codec pointer to do extra
-codec configuration with their kcontrol code so there was no update for
-them.
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Liam  
+On Mon, Feb 06, 2012 at 10:48:12AM +0100, Takashi Iwai wrote:
+
+> In the current release, I left ctljack.c as is before the integration
+> with jack.c simply because of different use-cases I faced: the
+> input-jack provides the multiple switches for a single jack while the
+> current ctljack.c provides only a boolean.  Although the ctljack can
+> provide an enum instead of a boolean for representing a similar model,
+> I wanted to get the global overlook and a consensus at first.
+
+That's not the case with the standard jack stuff at all - it's not using
+any enumerations.  Everything that's grouped together is bitfields, it's
+just a set of booleans all the way up to userspace.
+
+> Meanwhile, the boolean implementation is enough for most of PC
+> (especially HD-audio) stuff and the ctljack implementation was
+> demanded.  Thus I decided to merge the branch for 3.2.
+
+So are they just booleans, and is there a naming standard for the
+controls?  I've never seen any clear description of the semantics
+and I'd been assuming from the fact that all this had been done
+outside the standard infrastructure that there was some deep HDA
+specificness in the current somewhere but it's not sounding that
+way.
+
+> Definitely the integration work is necessary and foreseen.  The
+> biggest problem my workload for other tasks.
+
+TBH it looks like it'd have been less work to start off in the core -
+all the hooks were already in the drivers.
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPL7QRAAoJEBus8iNuMP3dJNQP/13FbfRPX4IJdeYDf0Qh8nth
+0IlOmUXRfCixlMwDuDS4PKP6tWxOwRC0TV7JY3jr1CbrzBodVm9x7Ar0u9sFMqnt
+Agl4qdqL2TLPpSPXqLxUPznnlQurVi/tQUEUnwtQK9ytlGt+IgXCyYoHkPoQE2jz
+MPdIOTMdPa7IktsXAWwAGiNw/S+3xdNQ+SDsXocqxcCnC/6lKYuK9yvbYTQRhy5/
+TFc5aWzeA+oryw5SPawmctwLmxryaCGKpbpGTyikbxG+Et23HWp1wWc/Y4o+qKRE
+gMxr5IukD0NXBxhjgRf/NCH7jKb0SgwAzryzkljNAvLyGUvF1Nmanc2StVXBjkfT
+ORmNuuGnqGjLM+q3PW3iOIAvxbjd6YJLZRzs8Q2oxbTJt0CqgZke6wIxe35aECPh
+EYGCOh5eJamecaA6y5ZUVzagmzf4Xj0gHKuIz7d36bi5btk9/46zKg+ewqAekD3R
+nCaEVBP3P3/WtOow/JEyH86IgOr7wQXhZAk1cLaKT6/RaHwvtqJ2FHqX33q58tNv
+7IhqxW/mRONTAkqNXabCfKTQ1U6R7B8Aw7Dq5UcQlxG9ZeiTuC3yiCsYuEADnD9r
+/9F8WugMDinGW9jw5399rioi/yalaXq/COjgvBU3Eji4lKSSN+9A+5COzRGsCvSz
+i7yhDplF9/FLlTIYTgsR
+=X38+
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
+
+--===============8885899708601385283==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8885899708601385283==--
