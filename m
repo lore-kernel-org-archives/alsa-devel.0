@@ -1,66 +1,72 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 19/19] ASoC: fsi: Add DMAEngine support
-Date: Mon, 06 Feb 2012 15:50:39 +0100
-Message-ID: <4F2FE8BF.1000600@metafoo.de>
-References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>	
-	<87aa50i971.wl%kuninori.morimoto.gx@renesas.com>	
-	<20120203134850.GM3151@opensource.wolfsonmicro.com>	
-	<4F2BE998.4020903@metafoo.de>	
-	<20120203141440.GR3151@opensource.wolfsonmicro.com>	
-	<1328373092.26182.27.camel@vkoul-udesk3>
-	<4F2D6416.2050400@metafoo.de>	
-	<1328378819.26182.33.camel@vkoul-udesk3>
-	<4F2D7824.1020702@metafoo.de>	
-	<1328380815.26182.54.camel@vkoul-udesk3>
-	<4F2F93A3.2040402@metafoo.de>
-	<1328539560.26182.94.camel@vkoul-udesk3>
+From: Josh Boyer <jwboyer@redhat.com>
+Subject: 3.3-rc2 snd_pcm lockdep backtrace
+Date: Mon, 6 Feb 2012 09:56:22 -0500
+Message-ID: <20120206145621.GA4771@zod.bos.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-106.synserver.de (smtp-out-106.synserver.de
-	[212.40.185.106])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECB87103A58
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 15:49:24 +0100 (CET)
-In-Reply-To: <1328539560.26182.94.camel@vkoul-udesk3>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Ralf Baechle <ralf@linux-mips.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2012 03:46 PM, Vinod Koul wrote:
-> On Mon, 2012-02-06 at 09:47 +0100, Lars-Peter Clausen wrote:
->> On 02/04/2012 07:40 PM, Vinod Koul wrote:
->>> [...]
->>>
->>> And while at it, I believe for this use, terminate_all is too strong an
->>> API to be used, perhaps we should introduce a STOP call, which just
->>> aborts the current descriptor but doesn't free it, or possibly move to
->>> submitted state/queue. And yes terminate_all should used in scenarios
->>> like free callback.
->>> That way it should map properly to ALSA PCM operations.
->>>
->>
->> Yes, a call that would allow us to reset/restart a transfer would be nice.
->> While we are at it: Another nice addition, which would be good for sound
->> drivers is a callback, which reports the transfer's current position in the
->> datastream. This allows us to implement a pointer callback with sub-period
->> granularity and also allow us to implement the 'no period wakeup' feature. A
->> lot of DMA controllers support reporting this, but as far as I can see there
->> is currently no way to export this information using dmaengine.
-> What makes you think it's missing :-)
-> 
-> Pls see device_tx_status callback. You can return the descriptor
-> position using this and enable "no wake mode"
+Hi All,
 
-Ah nice, I somehow missed it, thanks.
+We've had a report[1] of a lockdep backtrace from the snd_pcm driver.  I
+was wondering if anyone had hit this already or had some decent ideas on
+what the issue might be.
 
-- Lars
+josh
+
+[1] https://bugzilla.redhat.com/show_bug.cgi?id=787319
+
+backtrace:
+:[ INFO: possible recursive locking detected ]
+:3.3.0-0.rc2.git2.1.fc17.x86_64 #1 Not tainted
+:---------------------------------------------
+:pulseaudio/954 is trying to acquire lock:
+: (&(&substream->self_group.lock)->rlock/1){......}, at: [<ffffffffa00d9093>]
+snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+:but task is already holding lock:
+: (&(&substream->self_group.lock)->rlock/1){......}, at: [<ffffffffa00d9093>]
+snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+:other info that might help us debug this:
+: Possible unsafe locking scenario:
+:       CPU0
+:       ----
+:  lock(&(&substream->self_group.lock)->rlock/1);
+:  lock(&(&substream->self_group.lock)->rlock/1);
+: *** DEADLOCK ***
+: May be due to missing lock nesting notation
+:4 locks held by pulseaudio/954:
+: #0:  (snd_pcm_link_rwlock){......}, at: [<ffffffffa00d9e62>]
+snd_pcm_drop+0x62/0x110 [snd_pcm]
+: #1:  (&(&substream->self_group.lock)->rlock){......}, at:
+[<ffffffffa00d9e6a>] snd_pcm_drop+0x6a/0x110 [snd_pcm]
+: #2:  (&(&substream->group->lock)->rlock){......}, at: [<ffffffffa00d93ce>]
+snd_pcm_action+0x3e/0xb0 [snd_pcm]
+: #3:  (&(&substream->self_group.lock)->rlock/1){......}, at:
+[<ffffffffa00d9093>] snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+:stack backtrace:
+:Pid: 954, comm: pulseaudio Not tainted 3.3.0-0.rc2.git2.1.fc17.x86_64 #1
+:Call Trace:
+: [<ffffffff810cb7ec>] __lock_acquire+0x160c/0x1ad0
+: [<ffffffff810ca4f6>] ? __lock_acquire+0x316/0x1ad0
+: [<ffffffff81020f99>] ? sched_clock+0x9/0x10
+: [<ffffffff810a24a5>] ? sched_clock_local+0x25/0xa0
+: [<ffffffff810cc381>] lock_acquire+0xa1/0x1e0
+: [<ffffffffa00d9093>] ? snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+: [<ffffffff8169cca4>] _raw_spin_lock_nested+0x44/0x80
+: [<ffffffffa00d9093>] ? snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+: [<ffffffffa00d9093>] snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+: [<ffffffffa00d9401>] snd_pcm_action+0x71/0xb0 [snd_pcm]
+: [<ffffffffa00d945a>] snd_pcm_stop+0x1a/0x20 [snd_pcm]
+: [<ffffffffa00d9e84>] snd_pcm_drop+0x84/0x110 [snd_pcm]
+: [<ffffffffa00dbba8>] snd_pcm_common_ioctl1+0x4a8/0xbe0 [snd_pcm]
+: [<ffffffffa00dc650>] snd_pcm_playback_ioctl1+0x60/0x2d0 [snd_pcm]
+: [<ffffffff812c1481>] ? file_has_perm+0xe1/0xf0
+: [<ffffffffa00dc8f4>] snd_pcm_playback_ioctl+0x34/0x40 [snd_pcm]
+: [<ffffffff811cf8d9>] do_vfs_ioctl+0x99/0x5a0
+: [<ffffffff811cfe79>] sys_ioctl+0x99/0xa0
+: [<ffffffff816a63e9>] system_call_fastpath+0x16/0x1b
