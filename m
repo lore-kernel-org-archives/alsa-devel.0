@@ -1,77 +1,65 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: DAPM - Export
- mixer|mux_update_power() to public API.
-Date: Mon, 6 Feb 2012 16:18:00 +0000
-Message-ID: <20120206161800.GL3070@opensource.wolfsonmicro.com>
-References: <1328544314-10552-1-git-send-email-lrg@ti.com>
+Subject: Re: [alsa-devel] [PATCH 1/15] sound/soc/mxs/mxs-saif.c: add missing
+ iounmap
+Date: Mon, 6 Feb 2012 16:20:17 +0000
+Message-ID: <20120206162017.GM3070@opensource.wolfsonmicro.com>
+References: <1326362117-29371-1-git-send-email-Julia.Lawall@lip6.fr>
+ <7FE21149F4667147B645348EC605788508FBDB@039-SN2MPN1-013.039d.mgd.msft.net>
+ <alpine.DEB.2.02.1201241828480.1779@localhost6.localdomain6>
+ <20120124202203.GD1135@opensource.wolfsonmicro.com>
+ <alpine.DEB.2.02.1201242144580.1998@hadrien>
+ <20120126110506.GB2611@pengutronix.de>
+ <alpine.DEB.2.02.1201261220460.1851@localhost6.localdomain6>
+ <20120126112242.GA9401@opensource.wolfsonmicro.com>
+ <alpine.DEB.2.02.1201280801230.2045@hadrien>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3104260259563348276=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E229B103B4D
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 17:18:02 +0100 (CET)
-In-Reply-To: <1328544314-10552-1-git-send-email-lrg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hdhkc9EpVJoq6PQ6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.02.1201280801230.2045@hadrien>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Wolfram Sang <w.sang@pengutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3104260259563348276==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Swj79WlilW4BQYVz"
-Content-Disposition: inline
-
-
---Swj79WlilW4BQYVz
+--hdhkc9EpVJoq6PQ6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 06, 2012 at 04:05:14PM +0000, Liam Girdwood wrote:
+On Sat, Jan 28, 2012 at 08:03:34AM +0100, Julia Lawall wrote:
 
-> Changes since V1:-
->  o Remove the unused "change" flag parameter from snd_soc_dapm_mux_update_power().
+> patch against
+> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
-Applied, but I had to hand edit the changelog to remove this - it's
-supposed to come after the --- so this happens automatically.
+Hrm, I know there had been some debate about what to generate against
+but this now once again fails to apply against for-3.4...  No idea
+what's going on there and I didn't investigate the conflicts, sorry.
 
---Swj79WlilW4BQYVz
+I had been waiting in the vauge hope that some of the mxs maintainers
+would review.
+
+--hdhkc9EpVJoq6PQ6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPL/0xAAoJEBus8iNuMP3dx5sP/iUK23Qm3e3jZ5HpkEzAsMEn
-R/LbXc4/Qjq0OQlAV+J4QCTjCBTcLvpK0dVy5LZ0QoZO8lNXY3i9/olIZwb2IpRR
-69O5EsMoV0vy85MIroMsVPvzGqnFfFActiKxjLCj5LPRAhSemjx8fNpvPqGBNWWQ
-gPAMfzYmrLoweXRgylYUQT/9LmH+sY8kbzmHolYzaQKMAuNqhH8y+GczEE81awWk
-owEuX0QeXwdNNvALpw7bMjZoI1oO5yLs464/d6vxbVRq96vRM5qOrvVA7QiuROF3
-WMDPjREnGr+zPVXOf5tjBLPWNyIHnH+lvyXgPqy1T4rW4qrLJBfGGVrz+k1OuxX2
-kklQGWzWAYI9Bs5gkYR+EibiokOpV07o3Bb4zbnLTOS4+IA19jZ3tfBkXd9OdogP
-JIy4SlpLQSsbbsoernALHmAm8jJ5ho2AVUTK/KpflPwUdWxerLL4KK9H/iR0aDIv
-7AiJh7yU2mewO3eF2rzXLOvhttEcp3iMTCkdLrk068l0JGiRLXtS+BF86nA4J0J8
-Tm6A7e9VwSuqVlaUuWUNhNDvEWL+r/zO7yAHS3myOV692oxe7FTu6EPSzhqULlwV
-tQEW9JY03sodd6HQigSPAnlDA8AzWHz6RZx6migirqbePjIQDgSH9P7rrXxdwGqa
-ELSjhBcTw7/BlryVpJHE
-=3H2H
+iQIcBAEBAgAGBQJPL/27AAoJEBus8iNuMP3dAHkQAIPFIMEo18/EJOkgCE2lz4M2
+RrvBrBnyqJDGkLiHeQhoVjRZ6nrRRWB6pKvlbUC9EoqsZmF8NEB5PFMw9ER4HgYh
+zUZDCm6aIlr5rkXBnfe+pmDdlEfLLy5Ypcd63y9XVaY6eDy6+BZc6lMCyco7xE34
+u9RvPA9hrAJ3mwVkNkokA/jd0Qq5YpUiEOY6nX3m5YaFmM/9nRzjLWVZplfmyMNu
+Zjl+7PaWgeqKwimufMHaVjeIdAQTaHn5G0itH75gUn4pXa6B1wTni8+AC88sFwMQ
+ODCsNrCt4mokeqCYVhwU8XypYg2iyYcD63vJjsLSzjJ5AmIaRfU/4+6G9bMhP0y9
+uqPxsc1UJQqXo1HuoBSjMiM1HOLANE7UA+jLxdyCfd62hdRXyV90SA4NZe1TotGj
+MM58sM/4lXy3H2UKlpwH3p4/wJiuVBz+S4br0gzKim9f7c1lgaxvyagLn+35JL/G
+SglmCZ8ascnjb3UjatfvASaoxl/A1TNRB9Sc14gLSBFbHi9SSXWfpEN4av+DZkaz
+95LQR2w5ntqFEvssYMeJkSvLVWUdVPjCk7SVLsx2QH0lMCKWatALQlJ0nThOqSqQ
+PbOJXhhhzsURXOwSPk8wr7jYhE+iaA294QxeisEdDd1WPtXKRuUoCMwrfnQMyPk0
+ZSQCghDGoTW9rbgDXUIV
+=Rd3a
 -----END PGP SIGNATURE-----
 
---Swj79WlilW4BQYVz--
-
---===============3104260259563348276==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3104260259563348276==--
+--hdhkc9EpVJoq6PQ6--
