@@ -1,17 +1,17 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [patch] ALSA: hda/realtek - cleanup a condition
-Date: Mon, 06 Feb 2012 09:06:11 +0100
-Message-ID: <4F2F89F3.4060301@canonical.com>
-References: <20120206075218.GA14304@elgon.mountain>
+Subject: Re: HDA irq understanding
+Date: Mon, 06 Feb 2012 09:15:11 +0100
+Message-ID: <4F2F8C0F.5010901@canonical.com>
+References: <CAFU7RzPKtt1-jJTgCWV1XgB+Fk-CA8FGeTCorW7cypBGFNoj7w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
 	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 021731039B7
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 09:06:17 +0100 (CET)
-In-Reply-To: <20120206075218.GA14304@elgon.mountain>
+	by alsa0.perex.cz (Postfix) with ESMTP id 987EF1039DA
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 09:15:13 +0100 (CET)
+In-Reply-To: <CAFU7RzPKtt1-jJTgCWV1XgB+Fk-CA8FGeTCorW7cypBGFNoj7w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Raffaele Recalcati <lamiaposta71@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2012 08:52 AM, Dan Carpenter wrote:
-> Sparse complains that "spec->multiout.dac_nids" is a pointer.
+On 02/06/2012 08:06 AM, Raffaele Recalcati wrote:
+> Hi,
+> I know my question is quite easy for this ml, but I hope to get a little help.
+> I'm an embedded developer and I'm not so good with x86.
+> I'm trying to load the system and hear mp3 decoding getting worst, but
+> no way on my "Intel(R) Core(TM)2 Duo CPU P8400  @ 2.26GHz"
+> very basic system.
+> I'm trying to understand why I can't.
+> Using trace (the complete one is here
+> www.opensurf.it/trace12-02-04-19-14-48.txt_orig.lzma ) I get:
 >
-> sound/pci/hda/patch_realtek.c:2321:37: error: incompatible types for operation (>)
-> sound/pci/hda/patch_realtek.c:2321:37:    left side has type unsigned short const [usertype] *dac_nids
-> sound/pci/hda/patch_realtek.c:2321:37:    right side has type int
+> grep HDA trace12-02-04-19-14-48.txt
+> ..
+>        cpu-100.sh-26486 [000]  9490.976257: irq_handler_entry: irq=21
+> handler=HDA Intel
+>        cpu-100.sh-26474 [000]  9490.984236: irq_handler_entry: irq=21
+> handler=HDA Intel
+>        cpu-100.sh-26467 [000]  9490.992220: irq_handler_entry: irq=21
+> handler=HDA Intel
+>        cpu-100.sh-26502 [000]  9491.088042: irq_handler_entry: irq=21
+> handler=HDA Intel
+> ..
+> almost every 10msec
+> pulseaudio reads from /dev/snd/pcmC0D0p,
+> mplayer reads from pulseaudio.
 >
-> I think the intent here was just to check if it was non-NULL, but please
-> double check.
+> How can I create context switch problem in this situation and trace is well ?
+> Thanks,
+> Raffaele
 
-It could also have meant to be "if (spec->multiout.num_dacs > 0)", but 
-either way, it seems very unlikely that the condition is false.
+Sorry, is your problem that you *do* get broken audio when you load the 
+system, or that you *don't* get broken audio when you load the system?
+
+Either way, PulseAudio uses RT prio to get higher priority than your 
+load scripts, so this is used in PulseAudio <=> ALSA communication, but 
+not in mplayer <=> PulseAudio communication.
+
+For the 10 msec frequency, it looks like timer-based scheduling is 
+turned off (or possibly mplayer is using very small buffer sizes?). You 
+might get help with this in the pulseaudio-discuss mailinglist.
 
 -- 
 David Henningsson, Canonical Ltd.
