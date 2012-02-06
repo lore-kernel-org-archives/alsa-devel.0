@@ -1,15 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: samsung: Enable accessory detect for
-	WM8994 on Littlemill
-Date: Mon,  6 Feb 2012 14:03:52 +0000
-Message-ID: <1328537032-7814-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: core - Add support for DAI and
+	machine kcontrols.
+Date: Mon, 06 Feb 2012 14:16:26 +0000
+Message-ID: <1328537786.6799.16.camel@odin>
+References: <1328290989-14399-1-git-send-email-lrg@ti.com>
+	<20120203204640.GD23505@opensource.wolfsonmicro.com>
+	<1328524623.6799.9.camel@odin>
+	<20120206110939.GC3070@opensource.wolfsonmicro.com>
+	<1328531118.6799.13.camel@odin>
+	<20120206132746.GH3070@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9DFCB103AFF
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 15:03:55 +0100 (CET)
+Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
+	[74.125.149.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50956103B17
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 15:16:42 +0100 (CET)
+Received: by mail-we0-f182.google.com with SMTP id m13so7657658wer.27
+	for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2012 06:16:28 -0800 (PST)
+In-Reply-To: <20120206132746.GH3070@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,32 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The WM8994 has a different accessory detect architecture, call its setup
-function too. We ignore the errors and the driver will check for chip type
-so it's safe to call the setup functions for both architectures.
+On Mon, 2012-02-06 at 13:27 +0000, Mark Brown wrote:
+> On Mon, Feb 06, 2012 at 12:25:18PM +0000, Liam Girdwood wrote:
+> 
+> > sound/soc/mid-x86/mfld_machine.c:238:	ret_val = snd_soc_add_codec_controls(codec, mfld_snd_controls,
+> 
+> This looks bogus - looks like the missing fanout mux support which we
+> should really fix properly.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/samsung/littlemill.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Vinod, fyi - something for your todo list ;-) 
 
-diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
-index 9dd818b..e741685 100644
---- a/sound/soc/samsung/littlemill.c
-+++ b/sound/soc/samsung/littlemill.c
-@@ -189,6 +189,9 @@ static int littlemill_late_probe(struct snd_soc_card *card)
- 	/* This will check device compatibility itself */
- 	wm8958_mic_detect(codec, &littlemill_headset, NULL, NULL);
- 
-+	/* As will this */
-+	wm8994_mic_detect(codec, &littlemill_headset, 1);
-+
- 	return 0;
- }
- 
--- 
-1.7.9.rc1
+> > sound/soc/omap/ams-delta.c:575:	ret = snd_soc_add_codec_controls(codec, ams_delta_audio_controls,
+> 
+> This one is more fun and probably reasonable for now, though it is about
+> the only example of a properly working baseband in mainline.
+
+Liam
