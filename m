@@ -1,17 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: HDA irq understanding
-Date: Mon, 06 Feb 2012 09:15:11 +0100
-Message-ID: <4F2F8C0F.5010901@canonical.com>
-References: <CAFU7RzPKtt1-jJTgCWV1XgB+Fk-CA8FGeTCorW7cypBGFNoj7w@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 19/19] ASoC: fsi: Add DMAEngine support
+Date: Mon, 06 Feb 2012 09:47:31 +0100
+Message-ID: <4F2F93A3.2040402@metafoo.de>
+References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>	<87aa50i971.wl%kuninori.morimoto.gx@renesas.com>	<20120203134850.GM3151@opensource.wolfsonmicro.com>	<4F2BE998.4020903@metafoo.de>	<20120203141440.GR3151@opensource.wolfsonmicro.com>	<1328373092.26182.27.camel@vkoul-udesk3>
+	<4F2D6416.2050400@metafoo.de>	<1328378819.26182.33.camel@vkoul-udesk3>
+	<4F2D7824.1020702@metafoo.de>
+	<1328380815.26182.54.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 987EF1039DA
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 09:15:13 +0100 (CET)
-In-Reply-To: <CAFU7RzPKtt1-jJTgCWV1XgB+Fk-CA8FGeTCorW7cypBGFNoj7w@mail.gmail.com>
+Received: from smtp-out-093.synserver.de (smtp-out-101.synserver.de
+	[212.40.185.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id E64C22446B
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 09:46:11 +0100 (CET)
+In-Reply-To: <1328380815.26182.54.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raffaele Recalcati <lamiaposta71@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Ralf Baechle <ralf@linux-mips.org>, H Hartley Sweeten <hsweeten@visionengravers.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2012 08:06 AM, Raffaele Recalcati wrote:
-> Hi,
-> I know my question is quite easy for this ml, but I hope to get a little help.
-> I'm an embedded developer and I'm not so good with x86.
-> I'm trying to load the system and hear mp3 decoding getting worst, but
-> no way on my "Intel(R) Core(TM)2 Duo CPU P8400  @ 2.26GHz"
-> very basic system.
-> I'm trying to understand why I can't.
-> Using trace (the complete one is here
-> www.opensurf.it/trace12-02-04-19-14-48.txt_orig.lzma ) I get:
->
-> grep HDA trace12-02-04-19-14-48.txt
-> ..
->        cpu-100.sh-26486 [000]  9490.976257: irq_handler_entry: irq=21
-> handler=HDA Intel
->        cpu-100.sh-26474 [000]  9490.984236: irq_handler_entry: irq=21
-> handler=HDA Intel
->        cpu-100.sh-26467 [000]  9490.992220: irq_handler_entry: irq=21
-> handler=HDA Intel
->        cpu-100.sh-26502 [000]  9491.088042: irq_handler_entry: irq=21
-> handler=HDA Intel
-> ..
-> almost every 10msec
-> pulseaudio reads from /dev/snd/pcmC0D0p,
-> mplayer reads from pulseaudio.
->
-> How can I create context switch problem in this situation and trace is well ?
-> Thanks,
-> Raffaele
+On 02/04/2012 07:40 PM, Vinod Koul wrote:
+>[...]
+> 
+> And while at it, I believe for this use, terminate_all is too strong an
+> API to be used, perhaps we should introduce a STOP call, which just
+> aborts the current descriptor but doesn't free it, or possibly move to
+> submitted state/queue. And yes terminate_all should used in scenarios
+> like free callback.
+> That way it should map properly to ALSA PCM operations.
+> 
 
-Sorry, is your problem that you *do* get broken audio when you load the 
-system, or that you *don't* get broken audio when you load the system?
+Yes, a call that would allow us to reset/restart a transfer would be nice.
+While we are at it: Another nice addition, which would be good for sound
+drivers is a callback, which reports the transfer's current position in the
+datastream. This allows us to implement a pointer callback with sub-period
+granularity and also allow us to implement the 'no period wakeup' feature. A
+lot of DMA controllers support reporting this, but as far as I can see there
+is currently no way to export this information using dmaengine.
 
-Either way, PulseAudio uses RT prio to get higher priority than your 
-load scripts, so this is used in PulseAudio <=> ALSA communication, but 
-not in mplayer <=> PulseAudio communication.
-
-For the 10 msec frequency, it looks like timer-based scheduling is 
-turned off (or possibly mplayer is using very small buffer sizes?). You 
-might get help with this in the pulseaudio-discuss mailinglist.
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+- Lars
