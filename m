@@ -1,101 +1,91 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH/RFC] usb: fix renesas_usbhs to not schedule in atomic
- context
-Date: Mon, 6 Feb 2012 11:11:45 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1202061058430.10363@axis700.grange>
-References: <1327589784-4287-1-git-send-email-g.liakhovetski@gmx.de>
- <1327589784-4287-2-git-send-email-g.liakhovetski@gmx.de> <4F22624E.2090201@renesas.com>
- <Pine.LNX.4.64.1201270946150.32661@axis700.grange> <4F27CA7D.601@renesas.com>
- <Pine.LNX.4.64.1202022317560.13860@axis700.grange> <4F2B9F34.60308@renesas.com>
- <Pine.LNX.4.64.1202031623000.6211@axis700.grange>
- <20120205145358.GA13762@legolas.emea.dhcp.ti.com>
+From: "M R Swami Reddy" <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH v2] ASoC: Add support for TI LM49453 Audio
+	codec
+Date: Mon, 06 Feb 2012 16:00:23 +0530
+Message-ID: <4F2FABBF.7010604@ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <20120205145358.GA13762@legolas.emea.dhcp.ti.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Felipe Balbi <balbi@ti.com>
-Cc: "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>, linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sc-mailgw05.nsc.com (mail2.nsc.com [12.238.8.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2898C243A9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 11:30:39 +0100 (CET)
+Received: from SCNTRDCSS6.nsc.com (scntrdcss6.nsc.com [10.188.130.177])
+	by sc-mailgw05.nsc.com (Tumbleweed MailGate 3.7.1) with ESMTP id
+	2F3F910D511E
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 02:30:30 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Felipe
+Mark Brown Wrote:
+ > > ---
+ > > Changes made in V2
+ > > o Removed fll and vco reference frequency settings from _set_dai_pll()
+ > > o Reworked chip enable and disable in _STANDBY and _OFF modes in
+ > > m49453_set_bias_level, as per the review comments.
 
-On Sun, 5 Feb 2012, Felipe Balbi wrote:
+ >You say this is version 2 but there's been rather more than two versions
+ > posted...
 
-> Hi,
-> 
-> On Fri, Feb 03, 2012 at 04:43:20PM +0100, Guennadi Liakhovetski wrote:
-> > The current renesas_usbhs driver triggers
-> > 
-> > BUG: scheduling while atomic: ksoftirqd/0/3/0x00000102
-> > 
-> > with enabled CONFIG_DEBUG_ATOMIC_SLEEP, by submitting DMA transfers from 
-> > an atomic (tasklet) context, which is not supported by the shdma dmaengine 
-> > driver. Fix it by switching to a work. Also simplify some list 
-> > manipulations.
-> 
-> you are doing much more than what you say.
+Thats right. I started numbering the patch version with previous one, so 
+mentioned it as v2. The version number will be continued.
 
-Are those two list macro changes what you refer to as "a lot?" ;-) You're 
-right in principle, they are not directly related to the purpose of this 
-patch, they are just something that occurred to me, while tracking down 
-DMA packets. But yes, it can be extracted to a separate cosmetic patch...
 
-> Also, instead of using a
-> workqueue, have you considered using threaded_irqs ?
-> 
-> (I didn't go over the driver again to see if it makes sense to use
-> threaded_irqs in this case, but doesn't hurt asking)
+ > > +static int lm49453_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ > > +                              int source, unsigned int freq_in,
+ > > +                              unsigned int freq_out) {
 
->From a first glance these tasklets are not directly enough related to 
-IRQs, so, doing that is either impossible, or would require a _much_ 
-deeper change to the driver and _this_ would indeed be a much bigger 
-change than just fixing the Oops.
+ >This is now a bit odd.
+
+I will update it as per the other drivers formate.
+
+
+ > > +       state->in = freq_in;
+ > > +       state->out = freq_out;
+
+ >It stores but otherwise ignores the configuration which was passed in (which
+ > seems more than a little odd).
+
+Will be removed in the next patch.
+
+
+ > > +       /* Always disable the PLL - it is not safe to leave it running
+ > > +        * while reprogramming it.
+ > > +        */
+ > > +       snd_soc_update_bits(codec, LM49453_P0_PMC_SETUP_REG,
+ > > +                           LM49453_PMC_SETUP_PLL_EN, 0);
+ > > +
+ > > +       if (!freq_in || !freq_out)
+ > > +               return 0;
+ > > +
+ > > +
+ > > +       /* All done, turn it on */
+ > > +       snd_soc_update_bits(codec, LM49453_P0_PMC_SETUP_REG, pwr_mask,
+ > > +                           pwr_mask);
+
+ >Then if the PLL was already enabled it bounces the power briefly.
+ >Really it seems like this should just be merged in with set_sysclk() - you're
+ >not actually configuring the PLL at all, just turning it on and off, at which 
+ >point it's just another SYSCLK source.
+
+
+Ok. The PLL disable code will be removed and the PLL enable code will be moved 
+to _sysclk().
+
+ >Otherwise this seems good, just this clock configuration stuff to sort out.
+
+OK. Thank you. Do I need to resend the patch.
 
 Thanks
-Guennadi
-
-> > Shimoda-san, this is the problem, that you were observing. However, it 
-> > exists with the present version of shdma just as well as with the new one 
-> > - on top of the simple DMA library. I marked it an RFC because (1) I only 
-> > lightly tested it with the gadget device on mackerel with the mass storage 
-> > gadget, and (2) I am somewhat concerned about races. Currently the work 
-> > function runs with no locking and there are no usual cancel_work_sync() 
-> > points in the patch. However, it has also been like this before with the 
-> > tasklet implementation, which is not much better, and it looks like there 
-> > are no asynchronous operations on the same packets like timeouts. Only 
-> > asynchronous events, that I can think about are things like unloading the 
-> > driver or unplugging the cable, but these have been there before too. It 
-> > would become worse on SMP, I think. Comments welcome.
-> > 
-> > diff --git a/drivers/usb/renesas_usbhs/fifo.c b/drivers/usb/renesas_usbhs/fifo.c
-> > index 72339bd..4d739ec 100644
-> > --- a/drivers/usb/renesas_usbhs/fifo.c
-> > +++ b/drivers/usb/renesas_usbhs/fifo.c
-> > @@ -75,8 +75,7 @@ void usbhs_pkt_push(struct usbhs_pipe *pipe, struct usbhs_pkt *pkt,
-> >  		pipe->handler = &usbhsf_null_handler;
-> >  	}
-> >  
-> > -	list_del_init(&pkt->node);
-> > -	list_add_tail(&pkt->node, &pipe->list);
-> > +	list_move_tail(&pkt->node, &pipe->list);
-> >  
-> >  	/*
-> >  	 * each pkt must hold own handler.
-> > @@ -106,7 +105,7 @@ static struct usbhs_pkt *__usbhsf_pkt_get(struct usbhs_pipe *pipe)
-> >  	if (list_empty(&pipe->list))
-> >  		return NULL;
-> >  
-> > -	return list_entry(pipe->list.next, struct usbhs_pkt, node);
-> > +	return list_first_entry(&pipe->list, struct usbhs_pkt, node);
-> 
-> these two hunks are not part of $SUBJECT
-> 
-> -- 
-> balbi
-> 
-
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+Swami
