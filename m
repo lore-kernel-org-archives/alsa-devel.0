@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: DAPM - Clean up header information.
-Date: Mon, 6 Feb 2012 16:37:30 +0000
-Message-ID: <20120206163729.GP3070@opensource.wolfsonmicro.com>
-References: <1328544329-10593-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH 2/2] sound: soc: tlv320aic3x: remove unused
+	code
+Date: Mon, 6 Feb 2012 16:44:36 +0000
+Message-ID: <20120206164435.GT3070@opensource.wolfsonmicro.com>
+References: <1328058380-29360-1-git-send-email-felipe.contreras@gmail.com>
+	<1328058380-29360-3-git-send-email-felipe.contreras@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9147493500056296033=="
+Content-Type: multipart/mixed; boundary="===============4412718396587225368=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 682C5103B3F
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 17:37:32 +0100 (CET)
-In-Reply-To: <1328544329-10593-1-git-send-email-lrg@ti.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6C3C4103BAC
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 17:44:38 +0100 (CET)
+In-Reply-To: <1328058380-29360-3-git-send-email-felipe.contreras@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Felipe Contreras <felipe.contreras@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9147493500056296033==
+--===============4412718396587225368==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A6Z7MKnLVMfR85kG"
+	protocol="application/pgp-signature"; boundary="6k8oSBQUGGHRSAt9"
 Content-Disposition: inline
 
 
---A6Z7MKnLVMfR85kG
+--6k8oSBQUGGHRSAt9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 06, 2012 at 04:05:29PM +0000, Liam Girdwood wrote:
-> Fix some spelling mistakes in the header and remove the todo items. Most
-> todo items are now available as kcontrol options now anyway.
+On Wed, Feb 01, 2012 at 03:06:20AM +0200, Felipe Contreras wrote:
+> Looks like nobody is or will be using this code.
 
-Applied, thanks.
+		      Applied but please make some effort to use subject
+                      lines appropriate for the subsystem.
 
---A6Z7MKnLVMfR85kG
+--6k8oSBQUGGHRSAt9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPMAHDAAoJEBus8iNuMP3dRAIP/iX/Dwn1pLbrd0fZmApbGHnd
-9U+tIkf23RMWvL8V1GKC0LQDvcc7cmV2j0XnGp8W3Ke75DlHZcJ/mFr5HahpdhF9
-L/qGWJIIzGikg4FKAFckVRZlzQCBNVcoTY1Wr+k0y0lzGy+kP7G+nrH8Fxrhwayh
-A9RtPmTVne9WV/YSeZHb28cuhkMVFiX33sfSsfxVliiPoMHig9LdbpOMYRYK02j8
-izn9ZVwRvBZ7/YXzNMEBV7GEht1jA4qtawir0GMoQFbY9pCcHIIPlBTodpF7wBP+
-8OgWPjbOBHmuP25/SmtaRE75rXMB94NaOHUGEOQp94fHj+pgngEeWlAfbtaISgX4
-0dn55CJMfcA7HDCwmtRuQPFmzmSw2jk3Ar8JO+mpejvLSUX9oXk1h+fC8EUGgFme
-T2MQ2cswx0C6GWvon0Dxm7OlIiS3qmGOTkakDvg/TbJfxdFUEg8ylzErZPcX5spF
-s1kiYZN4lSvND2Ht9s7WmHUqaB8M1Mf2qKqBjhlUpUO96tNsmOCoCkQ3SFIXFo5S
-jF3Bz8NAIx47RF59FHNDtTGqJ7yj7NpUu8OVivcnR/NufqxlAp4XH2B3TtCw0mMA
-pACgP6irPVt63MPp7GSLTs51rD3zg0O2NCcj1n/W55vDv9IqN4dBGb9XEZ+IY4ZO
-AHPX3FfttUjevHQzs1Cr
-=z0XU
+iQIcBAEBAgAGBQJPMANsAAoJEBus8iNuMP3dfHgQAIlU5OMC4cCC+NO5UKgLhbNv
+A/TvruQChbfQnRX6HSQ8Xde/vgsmR0FCuLT0/bX3etcAZdiVmwjuMDIUdWH/UeLH
+64CEtAlTEup3FkbCY3VUGZIULmYrr+IkyOKb3iZjXjKNRfRAUwDRn5JjrO7h6Fob
+Iuo4H2Hyz5MbpVXCPxNCT03j8Gth/Q2xEwWAttbcM19VVpYU/p4aOE0oFWEJWKbM
+sJOHnAtZdwmG3A0pTP6XborHXq9TF7Xng4QhfiuUS/fRCDywSn1BmBNVCfwB0voh
+W/lV4uy0uVhRdathX2AC1iKan8ObxeditOk34hcpDQn+5UWf+H/tT8kdmOm0N1Ql
+0xlu6+MeMTF2wTBIzVKS/BlNbQq/RTHO2kair8vkHH/e7oYa0jiOJTYH5w7qsIay
+Y7apnSnOThg22G+lIToQ9OEsGWsF3CZ4mM/IGQS6otUhy6hJ/QgC0ZpkseRBVUvR
+Eaovr4k6XDfBKuEGRQUfZMgpkZxiURuNc6FjgwuDrJZdG43O1ymVitOLe2FGp9zt
+ubpCK/24fNj1v3bdUmizFWYy2A1LjSmt3Cpo6yXOGr3Ihy2iZdI/pbUWF1bjlFAx
+v9fuHd8aoTkS31I/+HUstrstt1ZZb05A89kYEYgflK0bzuwpOxw3AcPvyFP809DK
+xla+KjP1ahkcQxirAGKb
+=ADbe
 -----END PGP SIGNATURE-----
 
---A6Z7MKnLVMfR85kG--
+--6k8oSBQUGGHRSAt9--
 
---===============9147493500056296033==
+--===============4412718396587225368==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9147493500056296033==--
+--===============4412718396587225368==--
