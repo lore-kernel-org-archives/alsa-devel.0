@@ -1,14 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] mfd: wm8994: Mark MICBIAS register as readable
-Date: Mon,  6 Feb 2012 16:50:03 +0000
-Message-ID: <1328547003-23496-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH] ASoC: core - Add support for DAI and
+ machine kcontrols.
+Date: Mon, 06 Feb 2012 23:39:12 +0530
+Message-ID: <1328551752.26182.141.camel@vkoul-udesk3>
+References: <1328290989-14399-1-git-send-email-lrg@ti.com>
+	<20120203204640.GD23505@opensource.wolfsonmicro.com>
+	<1328524623.6799.9.camel@odin>
+	<20120206110939.GC3070@opensource.wolfsonmicro.com>
+	<1328531118.6799.13.camel@odin>
+	<20120206132746.GH3070@opensource.wolfsonmicro.com>
+	<1328537786.6799.16.camel@odin>
+	<20120206142559.GJ3070@opensource.wolfsonmicro.com>
+	<1328541116.26182.99.camel@vkoul-udesk3>
+	<20120206151737.GK3070@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A7A5D103BCD
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 17:50:05 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA48A103B98
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 19:07:21 +0100 (CET)
+In-Reply-To: <20120206151737.GK3070@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,28 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Omitted in the regmap conversion.
+On Mon, 2012-02-06 at 15:17 +0000, Mark Brown wrote:
+> On Mon, Feb 06, 2012 at 08:41:56PM +0530, Vinod Koul wrote:
+> 
+> > Hopefully I got the context right :)
+> > So a machine driver should not add codec_controls but do a
+> > card_controls, right?
+> 
+> Yes, or rather if the machine driver is peering into the CODEC internals
+> at all something went wrong.
+Yes it was wrongly done due to "historical" reasons. We should ideally
+move this to codec driver... Let me see how I can fix this up :)
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- drivers/mfd/wm8994-regmap.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
-index c598ae6..47743fa 100644
---- a/drivers/mfd/wm8994-regmap.c
-+++ b/drivers/mfd/wm8994-regmap.c
-@@ -968,6 +968,7 @@ static bool wm8994_readable_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case WM8994_DC_SERVO_READBACK:
-+	case WM8994_MICBIAS:
- 	case WM8994_WRITE_SEQUENCER_CTRL_1:
- 	case WM8994_WRITE_SEQUENCER_CTRL_2:
- 	case WM8994_AIF1_ADC2_LEFT_VOLUME:
 -- 
-1.7.9.rc1
+~Vinod
