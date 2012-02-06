@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 3.3
-Date: Mon, 6 Feb 2012 11:15:51 +0000
-Message-ID: <20120206111551.GD3070@opensource.wolfsonmicro.com>
-References: <20120204125527.GC8042@opensource.wolfsonmicro.com>
-	<s5hobtcqpcr.wl%tiwai@suse.de>
-	<20120206110807.GB3070@opensource.wolfsonmicro.com>
-	<s5h8vkgqkoj.wl%tiwai@suse.de>
+Subject: Re: Sending "ASoC: Ensure we generate a driver name"
+	to stable
+Date: Mon, 6 Feb 2012 11:21:38 +0000
+Message-ID: <20120206112138.GF3070@opensource.wolfsonmicro.com>
+References: <20120205194129.GA11313@home.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4507177247106343163=="
+Content-Type: multipart/mixed; boundary="===============4605278224178522127=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A7B8103A71
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 12:15:52 +0100 (CET)
-In-Reply-To: <s5h8vkgqkoj.wl%tiwai@suse.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 83C7D103A85
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2012 12:21:41 +0100 (CET)
+In-Reply-To: <20120205194129.GA11313@home.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,66 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Junio C Hamano <gitster@pobox.com>
+To: Paul Fertser <fercerpav@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4507177247106343163==
+--===============4605278224178522127==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
+	protocol="application/pgp-signature"; boundary="Pgaa2uWPnPrfixyx"
 Content-Disposition: inline
 
 
---d9ADC0YsG2v16Js0
+--Pgaa2uWPnPrfixyx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 06, 2012 at 12:13:16PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Sun, Feb 05, 2012 at 11:41:29PM +0400, Paul Fertser wrote:
 
-> > The tag.  It's done this because I generated the request too soon after
-> > pushing the tag so the tag wasn't on the server but the branch was and
-> > it's not done the right thing with the error handling.
+> Can you please consider sending
+> f0e8ed858edb327802ee65fd695cc1538286226f (ASoC: Ensure we generate a
+> driver name) for inclusion in the Greg's stable tree as it's essential
+> to get nice alsa-lib autoconfiguration for the supported cards.
 
-> Interesting.  So, git is too clever and gives the alternative
-> automatically...?
+Please do that if you think it's useful, I'm happy to ack it.  In
+general it's easier to just do these things directly and put a note in
+the request saying that you'd like whoever is appropriate to sign off
+that it's OK.
 
-Sort of - AIUI it just looks for something on the remote end that is at
-the appropriate commit (which is what it's always done).  When the tag
-support was added it should probably have been modified to check that if
-a tag was specified to generate the pull request it's found the tag
-rather than the commit.
-
---d9ADC0YsG2v16Js0
+--Pgaa2uWPnPrfixyx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPL7ZcAAoJEBus8iNuMP3dDq4P/Rn2J5F9v900CI4rCWLRT1F4
-CgB64xq/kKJmAm5YmZkSE6ORwkMC3eqVm8l5/iB3YjVWwLcYnCD5diKbvBHMHZva
-c0ndXTSetUk+dCZBrb5m7ixE8I2lIsywnYggjAtVmyTQ5whhl1qD3xP1DUN1Ea7Z
-TLPFhBueHE9vBs/JsW4yc0xx/cUp1SI4rHy5LZMzb+2NKcWlF9ux+q87CjHlyQ7y
-juxDm1pi9jzG91mrLWPcN6dDPZcfwsibD/OnvH6xj3dRtMLcgn+8KDmRSZcSIUOv
-xCkrb0tqPyxvuJ4cQq3C62O6FdHSgepZmmN4987byr7mKJRwHinUJdsXl4tIXC5F
-8Z4OR81AMqdi1fv84u4746TPXxwwOOYXl4IqU6K0en0h/ykDd2MxAokpjVkT+m5l
-8KlsC2FI4r6WtnZj+c9VDHPakXIqFtVuJ4XFL7HWczIvMB6JYZ0hPGQOgdQvGntk
-bujxhq2bSheJpR9xE683hZATNhHaPjumqP03ZWb7xTALTBvbpiW9xTH2qilnqR7/
-vydXql/8Tgxj6J1hDSByDm3XMkW8zz1yReB308LLOS3uMAHMvvNab6MLY5eb4947
-hFZsCFsCVSiJYyvBpUs8Oifxq5x8bcxI1LXtWX/raWXdeChBgCLysFtOmru5Ql9g
-Bf3VDTqZE7d9EN/34eLu
-=/duA
+iQIcBAEBAgAGBQJPL7e7AAoJEBus8iNuMP3dMHgP/3QpOjVBa1MKe93gPna9dfkD
+IbldK/ezkdK/88VgR9kq7/3Y8b+4j4VWvoXj86HW+Cw8Xb8hw6pl8cS7bSUWmHhd
+xoUag6+uMGlnC3BcaIR94fp4gS3OgiGhgkRKTPlwpnhcKObtvnDu3M/wEfg9/wYv
+b4Flyy2kMK5IZOsT026Wnr3tPMXlq+nKLzbAET7p/EAmqRK8TsogpSTSbgMU0tnk
+KdKZ+x/bvZ/kbRWMcFoOitkuRQ82OlAzrQby6j42ddwNw8XrAjF2ogqWzblaos5F
+MW/kKonRWulIBrKV6TiFXccxUp5LnT+fUz0/qW3tWb7JTgdNa0AlCUeIu4OFkCUn
+hS/ZNu8Kw6Wl1usLv54+iIcKL35zBxLZHmqKM/PN0x8TbmY3Ghtpt3vCsz6Rj7CK
+/fS1DMmwgint9wBdGCfjiYB/1A+p7VNSDiRRrq8r+1rVGCWUzbCKjRXNyfTkkjGZ
+ObMeheBgyUQE10JE3Hkjn7HuuioEEuAeUFVJQBs0gY1I84ZesqoMW6o1e6dMdEoi
+dJjNCK79b+QhsS8/xr2dSOGdtSxBG2satvTnZxUQO6WFNPe9j/dMZrsZF29mg5qz
+PwZGCQN+T/QIAHg3OexuIEqASYJFe9MAXPBp/AVFrL8U0BCp2aaXxeIXZ6MximQy
+c4qSPZHq3k+VV4cu1Wa0
+=fey9
 -----END PGP SIGNATURE-----
 
---d9ADC0YsG2v16Js0--
+--Pgaa2uWPnPrfixyx--
 
---===============4507177247106343163==
+--===============4605278224178522127==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4507177247106343163==--
+--===============4605278224178522127==--
