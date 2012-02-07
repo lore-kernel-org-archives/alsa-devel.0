@@ -1,33 +1,77 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/7] MFD: twl6040: Convert to i2c driver, and separate
- it from twl core
-Date: Tue, 07 Feb 2012 15:52:00 +0200
-Message-ID: <4F312C80.2020108@ti.com>
-References: <1328619678-26080-1-git-send-email-peter.ujfalusi@ti.com> <1328619678-26080-3-git-send-email-peter.ujfalusi@ti.com> <20120207132925.GN3332@opensource.wolfsonmicro.com> <4F31298C.5090008@ti.com> <20120207134344.GP3332@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_hubs: Convert most output drivers to
+	OUT_DRV widgets
+Date: Tue,  7 Feb 2012 14:25:26 +0000
+Message-ID: <1328624726-5838-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120207134344.GP3332@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Dmitry Torokhov <dtor@mail.ru>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4A561103BE9
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 15:25:35 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/2012 03:43 PM, Mark Brown wrote:
-> That just sounds far too icky - I'm really not happy that people have
-> been doing that in ASoC TBH, it just makes everything more tricky tha=
-n
-> it should be.  It save a little bit of effort with the control but ju=
-st
-> pushes that complexity elsewhere where you're not expecting it.
+No practical impact but now we have the control type we may as well use
+it for the slightly nicer sequencing.
 
-=46air enough. I'll find a way to do this properly.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_hubs.c |   24 ++++++++++++------------
+ 1 files changed, 12 insertions(+), 12 deletions(-)
 
-Thanks,
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index e469483..a53daf6 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -656,10 +656,10 @@ SND_SOC_DAPM_MIXER("SPKR Boost", SND_SOC_NOPM, 0, 0,
+ 		   right_speaker_boost, ARRAY_SIZE(right_speaker_boost)),
+ 
+ SND_SOC_DAPM_SUPPLY("TSHUT", WM8993_POWER_MANAGEMENT_2, 14, 0, NULL, 0),
+-SND_SOC_DAPM_PGA("SPKL Driver", WM8993_POWER_MANAGEMENT_1, 12, 0,
+-		 NULL, 0),
+-SND_SOC_DAPM_PGA("SPKR Driver", WM8993_POWER_MANAGEMENT_1, 13, 0,
+-		 NULL, 0),
++SND_SOC_DAPM_OUT_DRV("SPKL Driver", WM8993_POWER_MANAGEMENT_1, 12, 0,
++		     NULL, 0),
++SND_SOC_DAPM_OUT_DRV("SPKR Driver", WM8993_POWER_MANAGEMENT_1, 13, 0,
++		     NULL, 0),
+ 
+ SND_SOC_DAPM_MIXER("LINEOUT1 Mixer", SND_SOC_NOPM, 0, 0,
+ 		   line1_mix, ARRAY_SIZE(line1_mix)),
+@@ -675,14 +675,14 @@ SND_SOC_DAPM_MIXER("LINEOUT2N Mixer", SND_SOC_NOPM, 0, 0,
+ SND_SOC_DAPM_MIXER("LINEOUT2P Mixer", SND_SOC_NOPM, 0, 0,
+ 		   line2p_mix, ARRAY_SIZE(line2p_mix)),
+ 
+-SND_SOC_DAPM_PGA("LINEOUT1N Driver", WM8993_POWER_MANAGEMENT_3, 13, 0,
+-		 NULL, 0),
+-SND_SOC_DAPM_PGA("LINEOUT1P Driver", WM8993_POWER_MANAGEMENT_3, 12, 0,
+-		 NULL, 0),
+-SND_SOC_DAPM_PGA("LINEOUT2N Driver", WM8993_POWER_MANAGEMENT_3, 11, 0,
+-		 NULL, 0),
+-SND_SOC_DAPM_PGA("LINEOUT2P Driver", WM8993_POWER_MANAGEMENT_3, 10, 0,
+-		 NULL, 0),
++SND_SOC_DAPM_OUT_DRV("LINEOUT1N Driver", WM8993_POWER_MANAGEMENT_3, 13, 0,
++		     NULL, 0),
++SND_SOC_DAPM_OUT_DRV("LINEOUT1P Driver", WM8993_POWER_MANAGEMENT_3, 12, 0,
++		     NULL, 0),
++SND_SOC_DAPM_OUT_DRV("LINEOUT2N Driver", WM8993_POWER_MANAGEMENT_3, 11, 0,
++		     NULL, 0),
++SND_SOC_DAPM_OUT_DRV("LINEOUT2P Driver", WM8993_POWER_MANAGEMENT_3, 10, 0,
++		     NULL, 0),
+ 
+ SND_SOC_DAPM_OUTPUT("SPKOUTLP"),
+ SND_SOC_DAPM_OUTPUT("SPKOUTLN"),
+-- 
+1.7.9.rc1
