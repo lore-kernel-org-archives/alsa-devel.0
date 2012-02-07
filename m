@@ -1,14 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Fix typo in VMID ramp setting
-Date: Tue,  7 Feb 2012 19:02:14 +0000
-Message-ID: <1328641334-30169-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [RESUBMIT][PATCH v2 0/4] Amstrad Delta: access
+	MODEM_RESET GPIO pin over a regulator
+Date: Tue,  7 Feb 2012 20:11:16 +0100
+Message-ID: <1328641879-18884-1-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8D13103C5A
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 20:02:18 +0100 (CET)
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D10C103C66
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 20:17:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,29 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The VMID ramp rate is supposed to be 3b, not 0x11. Fix that.
+The Amstrad Delta on-board latch2 bit named MODEM_NRESET, now available
+as a GPIO pin AMS_DELTA_GPIO_PIN_NMODEM_RESET, is used to power up/down
+(bring into/out of a reset state) two distinct on-board devices
+simultaneously: the modem, and the voice codec. As a consequence, that
+bit is, or can be, manipulated concurrently by two drivers, or their
+platform provided hooks.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Instead of updating those drivers to use the gpiolib API as a new method
+of controlling the MODEM_NRESET pin state, like it was done to other
+drivers accessing latch2 pins, and still being vulnerable to potential
+concurrency conflicts, or trying to solve that sharing issue with a
+custom piece of code, set up a fixed regulator device on top of that
+GPIO pin and update both drivers to manipulate that regulator, not the
+GPIO pin directly.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 81795eb..b75a652 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -785,7 +785,7 @@ static void vmid_reference(struct snd_soc_codec *codec)
- 				    WM8994_VMID_RAMP_MASK,
- 				    WM8994_STARTUP_BIAS_ENA |
- 				    WM8994_VMID_BUF_ENA |
--				    (0x11 << WM8994_VMID_RAMP_SHIFT));
-+				    (0x3 << WM8994_VMID_RAMP_SHIFT));
- 
- 		/* Main bias enable, VMID=2x40k */
- 		snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
+I'm resubmitting v2 of this series, originally posted on 30 Dec 2011,
+with Mark's Ack already collected, now rebased on top of current
+linux-omap/omap1 tip, commit 967809bd7faf71ddc29c8081e0f21db8b201a0f4.
+
+Since patch 2/4, "ASoC: cx20442: add bias control over a platform
+provided regulator", has already been applied by Liam (thanks!) and is
+already present in mainline, I've omitted it from this submission.
+
+v2 changes against initial version:
+* in both the codec and the modem callbacks, don't track the regulator
+  enable/disable state, compare new target bias level (the codec case)
+  or power state (the modem case) with the old value instead; thanks to
+  Mark Brown who suggested this solution,
+* a few other minor changes, mostly stylistic.
+
+Janusz Krzysztofik (3):
+  ARM: OMAP1: ams-delta: set up regulator over modem reset GPIO pin
+  ARM: OMAP1: ams-delta: update the modem to use regulator API
+  ASoC: OMAP: ams-delta: drop .set_bias_level callback
+
+ arch/arm/mach-omap1/Kconfig                       |    2 +
+ arch/arm/mach-omap1/board-ams-delta.c             |   94 +++++++++++++++++++--
+ arch/arm/plat-omap/include/plat/board-ams-delta.h |    1 -
+ sound/soc/omap/ams-delta.c                        |   32 -------
+ 4 files changed, 87 insertions(+), 42 deletions(-)
+
 -- 
-1.7.9.rc1
+1.7.3.4
