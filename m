@@ -1,19 +1,17 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v3] ASoC: da7210: Add support for PLL and
- SRM
-Date: Tue, 7 Feb 2012 18:55:49 +0530
-Message-ID: <1328621149.26721.18.camel@matrix>
-References: <1328095529.15257.7.camel@matrix>
-	<20120201115035.GC5648@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 7/7] MFD: TWL6040: Add regulator support
+ for VIO, V2V1 supplies
+Date: Tue, 7 Feb 2012 13:16:57 +0000
+Message-ID: <20120207131657.GL3332@opensource.wolfsonmicro.com>
+References: <1328619678-26080-1-git-send-email-peter.ujfalusi@ti.com>
+	<1328619678-26080-8-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8792861670143903095=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE007.bigfish.com (va3ehsobe006.messaging.microsoft.com
-	[216.32.180.16])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE769103C53
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 14:14:06 +0100 (CET)
-In-Reply-To: <20120201115035.GC5648@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D1C6103C13
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 14:16:59 +0100 (CET)
+In-Reply-To: <1328619678-26080-8-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-01 at 11:50 +0000, Mark Brown wrote:
-> On Wed, Feb 01, 2012 at 04:55:29PM +0530, Ashish Chavan wrote:
-> 
-> > +static const u32 da7210_pll_div[][COL_CNT] = {
-> > +	/* for MASTER mode, fs = 44.1Khz */
-> > +	{ 12000000, 0xE8, 0x6C, 0x2, },		/* MCLK=12Mhz */
-> 
-> Even better than defines to index into the array would be an array of
-> structs with named members...
-> 
 
-OK, will do that.
+--===============8792861670143903095==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NZiXfHLGvOGtDZMn"
+Content-Disposition: inline
 
-> > +	if (da7210->mclk_rate) {
-> > +		/* PLL mode, disable PLL bypass */
-> > +		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, 0);
-> > +	} else {
-> > +		/* PLL bypass mode, enable PLL bypass */
-> > +		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP,
-> > +							    DA7210_PLL_BYP);
-> > +	}
-> 
-> This is really weird - if anything it looks the wrong way round.
-> mclk_rate is what's set by set_sysclk() so if the user has configured
-> MCLK we will never use it even if it's at a suitable rate but if the
-> user hasn't configured one we rely on it directly.  If anything I'd
-> expect this code to enable the PLL only if the MCLK is not a suitable
-> rate.
-> 
 
-Actually it worked fine for me because of the way platform driver is
-written. It basically uses static configurations for PLL and PLL bypass
-modes. It calls set_sysclk() only in case of PLL. So the codec driver
-more or less uses mckl_rate as a flag to see if PLL is enabled. I know
-it's not clean and may be I can update it to comply with rest of the
-stuff.
+--NZiXfHLGvOGtDZMn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> The normal pattern is that set_sysclk() specifies the clock the bulk of
-> the device will be using, when used with the PLL that'd be the PLL
-> output not the PLL input.  Alternatively just specify the MCLK always
-> and let the driver figure out when to use the PLL.
+On Tue, Feb 07, 2012 at 03:01:18PM +0200, Peter Ujfalusi wrote:
+> twl6040 has three power supply source:
+> VBAT needs to be connected to VBAT, VIO, and V2V1.
+> Add regulator support for the VIO, V2V1 supplies.
+> Initially handle the two supply together with bulk commands.
 
-Yes, got the point.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-> 
-> > +	if (da7210->master) {
-> > +		/* In PLL master mode, use master mode PLL dividers */
-> > +		switch (fout) {
-> > +		case 2822400:
-> > +			row_idx = MASTER_2822400_DIV_OFFSET;
-> > +			break;
-> > +		case 3072000:
-> > +			row_idx = MASTER_3072000_DIV_OFFSET;
-> > +			break;
-> > +		default:
-> > +			dev_err(codec_dai->dev,
-> > +				"Unsupported PLL output frequency %d\n", fout);
-> > +			return -EINVAL;
-> > +		}
-> > +	} else {
-> > +		/* In PLL slave mode, use SRM mode PLL dividers */
-> > +		row_idx = SLAVE_SRM_DIV_OFFSET;
-> > +	}
-> 
-> You need checks elsewhere to make sure that the user doesn't try to
-> reconfigure master/slave while the PLL is active.
+Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-AFAIK master/slave configuration is static(depending on the board
-configuration) and done via set_fmt() from hw_params() of platform
-driver. Can you please point me to an example where dynamic/runtime
-setting of I2S master/slave mode is supported?
+> +	twl6040->supplies = devm_kzalloc(&client->dev,
+> +					 sizeof(struct regulator_bulk_data) *
+> +					 TWL6040_NUM_SUPPLIES, GFP_KERNEL);
+> +	if (!twl6040->supplies) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+
+though I'd be inclined to just embed this structure into the twl6040
+struct directly, you're always going to need to allocate it and it saves
+a tiny bit of error handling and whatnot.
+
+--NZiXfHLGvOGtDZMn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPMSRDAAoJEBus8iNuMP3dynEP/ixDQp/g4HRQThsELFNjhkI9
+uO4Rt1mK5kZg7OgioD0QfX8nNOO0cCxvBVX3Aaa49RnmgEtUWcYJSumW3ZAj4yIy
+4dwsMR0eemJnrnKQczOKDprKpds0OIWxd79WfsREV2jU6QhyrmHl38mRW31uLrDD
+Ab2y9sT6ZT+m7EnyAIr7K8d9z4ye+y04slOqwBNCnUZNBHqBF6XvMK78cffa/Icm
+WtO639Y32YXsO3QbaNxN2e4SDG5J6q2jrouxKm3+aukSe4ppieVM15ZbHIfE3C3k
+Q36clC/nQ6wmC+3hMkCcSFUH7zjfsW6T6rTUCgh7CJwj1HU2bhAzGnBARdQ3lqHh
+mMcXSnZd83QlhK4pUbgWfmCY3fG24XzMDS70Z0dG9s7E129Hou8eZMJjj4ivmCFW
+2vHBLa/zjSl8RHRe4VacMwWIknb7NoCX7DANWoWPhSGGYdvc4X1mjLQ2MYu0eUC7
+Gzr7l9o5xvLe5P+UQZDKguBrEXSNBNu7teBSZHbwvKTONA1WgKqLP7JR3pwrbx6v
+1weOnQN8oAGR8ce9rvxv2jsAB+CPPskw15BqW6dbUSYUZpBi46XhphegWcOubEPh
+jLogAmxTS5Oln/pJQFQzJRPc7TOdqZDLM4b75cxEklzvUNiAAgJyM6EEgfh2JGdy
+cmBuuLMzR/FdzZ1dDa2R
+=ucmh
+-----END PGP SIGNATURE-----
+
+--NZiXfHLGvOGtDZMn--
+
+--===============8792861670143903095==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8792861670143903095==--
