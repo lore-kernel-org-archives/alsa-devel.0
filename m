@@ -1,23 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Request for help CM109 on arm board
-Date: Tue, 07 Feb 2012 22:44:39 +0100
-Message-ID: <4F319B47.2080703@ladisch.de>
-References: <1328630452.28163.11.camel@jonspc>
-	<1328646929.31394.11.camel@jonspc>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: tea575x-tuner improvements & use in maxiradio
+Date: Tue, 7 Feb 2012 23:20:19 +0100
+Message-ID: <201202072320.30911.linux@rainbow-software.org>
+References: <1328447827-9842-1-git-send-email-hverkuil@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 5B0FB103CCB
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 22:45:15 +0100 (CET)
-Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 6808E20B16
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 16:45:12 -0500 (EST)
-Received: from [192.168.42.121] (unknown [176.1.222.55])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id DDC6848247C
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 16:45:11 -0500 (EST)
-In-Reply-To: <1328646929.31394.11.camel@jonspc>
+Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E00B103CCC
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 23:21:08 +0100 (CET)
+In-Reply-To: <1328447827-9842-1-git-send-email-hverkuil@xs4all.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,18 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Jonathan Andrews wrote:
-> ALSA lib timer.c:189:(snd_timer_open_noupdate) Unknown timer hw:CLASS=3,SCLASS=0,CARD=0,DEV=0,SUBDEV=0
+On Sunday 05 February 2012 14:17:05 Hans Verkuil wrote:
+> These patches improve the tea575x-tuner module to make it up to date with
+> the latest V4L2 frameworks.
+>
+> The maxiradio driver has also been converted to use the tea575x-tuner and
+> I've used that card to test it.
+>
+> Unfortunately, this card can't read the data pin, so the new hardware seek
+> functionality has been tested only partially (yes, it seeks, but when it
+> finds a channel I can't read back the frequency).
+>
+> Ondrej, are you able to test these patches for the sound cards that use
+> this tea575x tuner?
+>
+> Note that these two patches rely on other work that I did and that hasn't
+> been merged yet. So it is best to pull from my git tree:
+>
+> http://git.linuxtv.org/hverkuil/media_tree.git/shortlog/refs/heads/radio-pc
+>i2
+>
+> You can use the v4l-utils repository (http://git.linuxtv.org/v4l-utils.git)
+> to test the drivers: the v4l2-compliance test should succeed and with
+> v4l2-ctl you can test the hardware seek:
+>
+> To seek down:
+>
+> v4l2-ctl -d /dev/radio0 --freq-seek=dir=0
+>
+> To seek up:
+>
+> v4l2-ctl -d /dev/radio0 --freq-seek=dir=1
+>
+> To do the compliance test:
+>
+> v4l2-compliance -r /dev/radio0
 
-> ARM # cat /usr/share/alsa/alsa.conf
-> ...
+It seems to work (tested with SF64-PCR - snd_fm801) but the seek is severely 
+broken. Reading the frequency immediately after seek does not work, it always 
+returns the old value (haven't found a delay that works). Reading it later 
+(copied back snd_tea575x_get_freq function) works. The chip seeks randomly up 
+or down, ignoring UP/DOWN flag and often stops at wrong place (only noise) or 
+even outside the FM range.
 
-You have deleted alsa-lib's basic device definitions.  Device-specific
-definitions are supposed to go into /usr/share/alsa/cards/.  Your
-definitions look as if they are supposed to go into /etc/asound.conf.
+So I strongly suggest not to enable this (mis-)feature. The HW seems to be 
+completely broken (unless there's some weird bug in the code).
 
 
-Regards,
-Clemens
+-- 
+Ondrej Zary
