@@ -1,49 +1,48 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [alsa-devel] [PATCH 1/6] hda_intel: Add Lynx Point HD Audio Controller
- DeviceIDs
-Date: Tue, 07 Feb 2012 05:51:02 +0100
-Message-ID: <4F30ADB6.1000109@canonical.com>
-References: <201201231624.31275.seth.heasley@intel.com> <4F1E7DC0.5060208@canonical.com> <s5h7h0h2znx.wl%tiwai@suse.de> <DEC3922D1904474A8862C7BFF516EA9A37FB3863@ORSMSX101.amr.corp.intel.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: ALSA 1.0.25 broke AC3 passthrough?
+Date: Mon, 06 Feb 2012 21:46:37 -0800
+Message-ID: <4F30BABD.10504@nvidia.com>
+References: <CANpj82+DPJGg1vUvm-otVEWEeXwK8zOy4ZAGjFH81oc5n51CTw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <DEC3922D1904474A8862C7BFF516EA9A37FB3863@ORSMSX101.amr.corp.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Heasley, Seth" <seth.heasley@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>, "Ralston, James D" <james.d.ralston@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9430F24489
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 06:46:42 +0100 (CET)
+In-Reply-To: <CANpj82+DPJGg1vUvm-otVEWEeXwK8zOy4ZAGjFH81oc5n51CTw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jean-Yves Avenard <jyavenard@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/2012 01:13 AM, Heasley, Seth wrote:
->>>> This patch adds the HD Audio DeviceIDs for the Intel Lynx Point PCH.
->>>
->>> Thanks. As we asked for oak trail: can you confirm you prefer DMA
->>> Position buffers for detecting current playback/recording position,
->> over
->>> using the LPIB register?
->>
->> Yes, thanks for the notice.
->>
->> I guess this won't need it since it's the successor of PPT.
->> But it's always good to check it for the new hardware, indeed.
->
-> I'm also in favor of not rocking the boat, but I'm curious what changing this would entail, and what would be the advantage or rationale for making the change?
+On 02/06/2012 04:38 AM, Jean-Yves Avenard wrote:
+> Today, I installed 1.0.25 drivers and libraries...
+> AC3 passthrough is completely broken.
+> 
+> My hardware: NVidia GT430, hdmi output
+> Device used:
+> hdmi:CARD=NVidia,DEV=0,AES0=6,AES1=0x82,AES2=0x00,AES3=0x01
+> on Ubuntu 10.04 LTS (but using manually built alsa)
 
-Reading the LPIB register, and reading the DMA position buffer, are two 
-different methods of reading the current playback (or recording) 
-position, i e which sample is currently being played back.
+Are you able to regress this to a smaller window? I did do some rework a
+while back on the HDA driver to support newer GeForce GPUs' audio HW
+better, and this potentially had impact on bitstream pass-through,
+although it seemed to work at the time. Commits were:
 
-The problem is that some chipsets prefer one method over the other, i e, 
-only one of the methods work reliably. And if the other method only 
-breaks occasionally, this can be quite difficult to detect and track 
-down - we will have users complaining about their audio sometimes either 
-sounding distorted, maybe not working at all, or just once in a while 
-glitches. All of these symptoms can have many causes, so deducing that 
-to a broken playback position is time consuming. That's why I think it's 
-worth the extra question, to get it right from the start.
-
-So...thanks in advance for looking it up for us? :-)
+384a48d ALSA: hda: HDMI: Support codecs with fewer cvts than pins
+2def817 ALSA: hda: hdmi_eld_update_pcm_info: update a stream in place
+3aaf898 ALSA: hda: Separate generic and non-generic implementations
+74b654c ALSA: hda: Virtualize SPDIF out controls
+7c93597 ALSA: hda: Allow multple SPDIF controls per codec
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+nvpublic
