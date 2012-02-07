@@ -1,86 +1,33 @@
-From: Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH] Add default config for tegra-alc5632 (as found
-	on paz00)
-Date: Tue,  7 Feb 2012 00:51:38 +0400
-Message-ID: <1328561498-19337-1-git-send-email-fercerpav@gmail.com>
+From: "Heasley, Seth" <seth.heasley@intel.com>
+Subject: RE: [alsa-devel] [PATCH 1/6] hda_intel: Add Lynx Point HD Audio
+ Controller DeviceIDs
+Date: Tue, 7 Feb 2012 00:13:10 +0000
+Message-ID: <DEC3922D1904474A8862C7BFF516EA9A37FB3863@ORSMSX101.amr.corp.intel.com>
+References: <201201231624.31275.seth.heasley@intel.com>
+	<4F1E7DC0.5060208@canonical.com> <s5h7h0h2znx.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Paul Fertser <fercerpav@gmail.com>, alsa-devel@alsa-project.org, Oliver Grawert <ogra@ubuntu.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h7h0h2znx.wl%tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>, "Ralston, James D" <james.d.ralston@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This makes paz00 (aka Toshiba ac100, a popular arm-based netbook) use
-dmix/dsnoop by default since it doesn't support hw mixing.
+>> > This patch adds the HD Audio DeviceIDs for the Intel Lynx Point PCH.
+>>
+>> Thanks. As we asked for oak trail: can you confirm you prefer DMA
+>> Position buffers for detecting current playback/recording position,
+>over
+>> using the LPIB register?
+>
+>Yes, thanks for the notice.
+>
+>I guess this won't need it since it's the successor of PPT.
+>But it's always good to check it for the new hardware, indeed.
 
-Signed-off-by: Paul Fertser <fercerpav@gmail.com>
----
-Hi,
+I'm also in favor of not rocking the boat, but I'm curious what changing this would entail, and what would be the advantage or rationale for making the change?
 
-I haven't seen any other ASoC configs here so probably i'm missing
-something obvious. My reasoning is that when a person uses a regular
-notebook with HDA he gets DMix by default so it should be the case for this
-less common netbook too.
-
-Rate is set to 44100 because it's unlikely a person will listen to Hi-Fi
-music and hence it avoids resampling for the most common usecase. Feel free
-to drop if that's inappropriate, the device works fine with 48000 too.
-
- src/conf/cards/Makefile.am        |    1 +
- src/conf/cards/tegra-alc5632.conf |   23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+), 0 deletions(-)
- create mode 100644 src/conf/cards/tegra-alc5632.conf
-
-diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
-index b7190e7..efed590 100644
---- a/src/conf/cards/Makefile.am
-+++ b/src/conf/cards/Makefile.am
-@@ -44,6 +44,7 @@ cfg_files = aliases.conf \
- 	RME9652.conf \
- 	SI7018.conf \
- 	SB-XFi.conf \
-+	tegra-alc5632.conf \
- 	TRID4DWAVENX.conf \
- 	USB-Audio.conf \
- 	YMF744.conf \
-diff --git a/src/conf/cards/tegra-alc5632.conf b/src/conf/cards/tegra-alc5632.conf
-new file mode 100644
-index 0000000..371fe2a
---- /dev/null
-+++ b/src/conf/cards/tegra-alc5632.conf
-@@ -0,0 +1,23 @@
-+# default with dmix/dsnoop
-+tegra-alc5632.pcm.default {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type asym
-+	playback.pcm {
-+		type plug
-+		slave.pcm {
-+			@func concat
-+			strings [ "dmix:CARD=" $CARD ",RATE=44100" ]
-+		}
-+	}
-+	capture.pcm {
-+		type plug
-+		slave.pcm {
-+			@func concat
-+			strings [ "dsnoop:CARD=" $CARD ",RATE=44100" ]
-+		}
-+	}
-+}
-+
--- 
-1.7.3.4
+-Seth
