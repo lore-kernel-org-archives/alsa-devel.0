@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
- reporting with core jack reporting
-Date: Wed, 8 Feb 2012 13:57:20 +0000
-Message-ID: <20120208135719.GD5943@opensource.wolfsonmicro.com>
-References: <1328644128-32630-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1328644128-32630-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4F323405.8080902@canonical.com>
-	<20120208114642.GG3120@opensource.wolfsonmicro.com>
-	<4F327A21.8030805@canonical.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: FW: [PATCH v3] ASoC: Add support for TI LM49453
+ Audio codec
+Date: Wed, 08 Feb 2012 20:01:43 +0530
+Message-ID: <1328711503.21099.13.camel@vkoul-udesk3>
+References: <290463D19D2E064191F1F96ECA480A89434AC4A96E@EXMAIL02.scwf.nsc.com>
+	<4F323BF5.4010309@ti.com> <1328692723.3955.4.camel@odin>
+	<1328693854.21099.5.camel@vkoul-udesk3> <1328694877.3955.9.camel@odin>
+	<1328697415.21099.8.camel@vkoul-udesk3> <1328698650.3955.13.camel@odin>
+	<1328699820.21099.12.camel@vkoul-udesk3>
+	<20120208112156.GC3120@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6415470592112814181=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4200D103E6D
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 14:57:21 +0100 (CET)
-In-Reply-To: <4F327A21.8030805@canonical.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id F036D103E73
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 15:29:27 +0100 (CET)
+In-Reply-To: <20120208112156.GC3120@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,67 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, M R Swami Reddy <MR.Swami.Reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2012-02-08 at 11:21 +0000, Mark Brown wrote:
+> On Wed, Feb 08, 2012 at 04:47:00PM +0530, Vinod Koul wrote:
+> 
+> > Possibly a .set_machine_clock_input callback which can be called from
+> > codec driver in .set_bias_level callback?
+> 
+> The machine driver has set_bias_level() callbacks of its own.
+Thanks, _exactly_ what I needed :)
 
---===============6415470592112814181==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
-Content-Disposition: inline
-
-
---OaZoDhBhXzo6bW1J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 08, 2012 at 02:35:29PM +0100, David Henningsson wrote:
-> On 02/08/2012 12:46 PM, Mark Brown wrote:
-
-> >Except for Mic where I don't mind either way I'd rather bring the HDA
-> >names into (but note that the idea is to remove the HDA specific jack
-> >controls - I think these names are used in other places though?).
-
-> I'll let Takashi have the final say about the names. But note that
-> for HDA these names will not be enough, e g, we might have one
-> "Front Mic" and one "Rear Mic" and need to know which one is which.
-
-Remember that once these are merged properly we'll be adding the jack
-name on the front so the bare names will only exist for one or two
-commits - doing so sensibly would mean changing the kctl API and doing
-a refactor on that when the immediate goal is to make it private seems
-like more trouble than it's worth.
-
---OaZoDhBhXzo6bW1J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPMn84AAoJEBus8iNuMP3de4AQAJPp2l4PCvHKEW1xZsJl+cpf
-ynQ/IhgIBk4H/g1RIrvOoqBe21UteNzs3iqUwsqeNogEsSJGlGFRjfvHgcU+wub2
-3ag2hz3djiozTgZaBh5CoEoc9K0Bi2YfnMUKZ7vtXIE06UYchhdC2ZWqi8Y5/PcM
-6fY9ZlE0QvPnAS9bb1SegLCI0ukhd8rdaWjVjUtqaa7F3oLe9nPVcOGR2IODHlf6
-Skx2T4HAK0jaUAl6d7r8WOX0SEvNIEKzVdyXSXdWYDV1Zi2cJlBz4akO9emzF4Dp
-AmOEWhday/0LuKBFinoaMlIGmwRemYPUw6CxlhcYtNc1VJbq8XWT1XT2qwwoRrAp
-FjQ1th1CUgWVp/jNDE/bzs8Ki3aw7QTc2liaBCfEVUfpLcu7z2DsuxFaG0IJLNoX
-RXc9RheuLucgKNEf3xSP5mV8DKAteLKsRYLPLwu5DJ6mWH5BxhBynZ9yIxdyYIPh
-XajpLTy/JuBut6qB7cDHlB2CWbebBrTFSQvQhuSg28KqWaXFK8JSzYoU2TGrl7XT
-bKbNJ6RxslOw4BKpcB/iOg3ixEGLbbZR4I1an4xAyiDKK3QClknLEs7nXuWu/JOz
-eqWpRi1r1wfrZOH+K5cPnZBFNA4pvEwdNsUHznZHZ0WZSSjYpLBvrX77TO/gt7Fa
-0CPIl0UoJEbI9QSQ4SHc
-=PUQ1
------END PGP SIGNATURE-----
-
---OaZoDhBhXzo6bW1J--
-
---===============6415470592112814181==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6415470592112814181==--
+-- 
+~Vinod
