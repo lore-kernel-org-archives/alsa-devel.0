@@ -1,42 +1,46 @@
-From: "Heasley, Seth" <seth.heasley@intel.com>
-Subject: RE: [alsa-devel] [PATCH 1/6] hda_intel: Add Lynx Point HD Audio
- Controller DeviceIDs
-Date: Wed, 8 Feb 2012 00:35:33 +0000
-Message-ID: <DEC3922D1904474A8862C7BFF516EA9A37FB7D68@ORSMSX101.amr.corp.intel.com>
-References: <201201231624.31275.seth.heasley@intel.com>
- <4F1E7DC0.5060208@canonical.com> <s5h7h0h2znx.wl%tiwai@suse.de>
- <DEC3922D1904474A8862C7BFF516EA9A37FB3863@ORSMSX101.amr.corp.intel.com>
- <4F30ADB6.1000109@canonical.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Multiple channels mapping
+Date: Tue, 07 Feb 2012 17:02:00 -0800
+Message-ID: <4F31C988.3090201@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4F30ADB6.1000109@canonical.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>, "Ralston, James D" <james.d.ralston@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 712F8103842
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 02:02:21 +0100 (CET)
+Received: from [10.64.14.94] (pdmz-snip-v218.qualcomm.com [192.168.218.1])
+	by mostmsg01.qualcomm.com (Postfix) with ESMTPA id 496BB10004D1
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2012 17:02:01 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> I'm also in favor of not rocking the boat, but I'm curious what
->changing this would entail, and what would be the advantage or rationale
->for making the change?
->
->Reading the LPIB register, and reading the DMA position buffer, are two
->different methods of reading the current playback (or recording)
->position, i e which sample is currently being played back.
->
->The problem is that some chipsets prefer one method over the other, i e,
->only one of the methods work reliably. And if the other method only
->breaks occasionally, this can be quite difficult to detect and track
->down - we will have users complaining about their audio sometimes either
->sounding distorted, maybe not working at all, or just once in a while
->glitches. All of these symptoms can have many causes, so deducing that
->to a broken playback position is time consuming. That's why I think it's
->worth the extra question, to get it right from the start.
->
->So...thanks in advance for looking it up for us? :-)
+Hi,
 
-I'm inquiring about it, but I can say that it seems to work just fine using the DMA position buffer.
+The DSP I am working on supports channel assignments similar to ALSA
+route plug-in described in this link http://drona.csa.iisc.ernet.in
+/~uday/alsamch.shtml.
+I am currently looking a way to pass channel/speaker mapping
+information of PCM stream( i.c channel 0 -> Front Left speaker, channel
+1 -> Front Right speaker) to ALSA driver. I looked at latest kernel
+tree and don't think there is already provision for my purpose. Can
+anyone confirm? If I were to improvise a way to pass channel/speaker
+mapping information, should I follow the same approach similar to how
+bits per sample and other hardware parameter is passed?
 
--Seth
+Thanks
+Patrick
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
