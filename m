@@ -1,60 +1,58 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: core: Allow CODECs to set
-	ignore_pmdown_time in the driver struct
-Date: Wed,  8 Feb 2012 18:37:16 +0000
-Message-ID: <1328726238-556-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Maciej Rutecki <maciej.rutecki@gmail.com>
+Subject: Re: 3.3-rc2 snd_pcm lockdep backtrace
+Date: Wed, 8 Feb 2012 19:48:46 +0100
+Message-ID: <201202081948.46548.maciej.rutecki@gmail.com>
+References: <20120206145621.GA4771@zod.bos.redhat.com> <201202081854.08668.maciej.rutecki@gmail.com> <20120208181014.GA6188@zod.bos.redhat.com>
+Reply-To: maciej.rutecki@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE8FB103E98
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 19:37:23 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120208181014.GA6188@zod.bos.redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Josh Boyer <jwboyer@redhat.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org, "Rafael J. Wysocki" <rjw@sisk.pl>
 List-Id: alsa-devel@alsa-project.org
 
-This is usually not a use case dependant flag anyway.
+On =C5=9Broda, 8 lutego 2012 o 19:10:15 Josh Boyer wrote:
+> On Wed, Feb 08, 2012 at 06:54:08PM +0100, Maciej Rutecki wrote:
+> > On poniedzia=C5=82ek, 6 lutego 2012 o 15:56:22 Josh Boyer wrote:
+> >=20
+> > I created a Bugzilla entry at
+> > https://bugzilla.kernel.org/show_bug.cgi?id=3D42746
+> > for your bug report, please add your address to the CC list in ther=
+e,
+> > thanks!
+>=20
+> Er... why exactly?
+>=20
+> I mean, great I don't really mind at all that a bugzilla.kernel.org b=
+ug
+> was opened, but
+>=20
+> 1) there's already a bug opened in the RH bugzilla for this
+> 2) I've already emailed the upstream developers and list about it
+> 3) ALSA actually has it's own bug tool
+>=20
+> so unless the ALSA devs are going to do something with that particula=
+r
+> bug I don't see a huge amount of value.
+>=20
+> As an aside, I'm basically an intermediary here.  The original report=
+er
+> in the RHT bug should probably add their email to CC.
+>=20
+> josh
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    2 ++
- sound/soc/soc-core.c |    1 +
- 2 files changed, 3 insertions(+), 0 deletions(-)
+We use bugzilla.kernel.org to tracking regressions in one place (as dat=
+abase).=20
+I search LKML for it. It does not matter that you use another case for =
+resolve=20
+bug. But it will be useful, when you send information about status of t=
+his bug=20
+(solved, invalid etc.).
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index ecd5d72..d1e7a6a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -657,6 +657,8 @@ struct snd_soc_codec_driver {
- 	/* codec stream completion event */
- 	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
- 
-+	bool ignore_pmdown_time;  /* Doesn't benefit from pmdown delay */
-+
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
- 	int remove_order;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3a3b487..0b9974f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3380,6 +3380,7 @@ int snd_soc_register_codec(struct device *dev,
- 	codec->volatile_register = codec_drv->volatile_register;
- 	codec->readable_register = codec_drv->readable_register;
- 	codec->writable_register = codec_drv->writable_register;
-+	codec->ignore_pmdown_time = codec_drv->ignore_pmdown_time;
- 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
- 	codec->dapm.dev = dev;
- 	codec->dapm.codec = codec;
--- 
-1.7.9.rc1
+Regards
+--=20
+Maciej Rutecki
+http://www.mrutecki.pl
