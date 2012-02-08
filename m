@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC related suspend problems on OMAP3
-Date: Wed, 8 Feb 2012 11:51:32 +0000
-Message-ID: <20120208115132.GA25756@sirena.org.uk>
-References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
+Subject: Re: Multiple channels mapping
+Date: Wed, 8 Feb 2012 11:54:04 +0000
+Message-ID: <20120208115404.GB25756@sirena.org.uk>
+References: <4F31C988.3090201@codeaurora.org> <s5hwr7xln03.wl%tiwai@suse.de>
+	<4F323DE5.4050108@ladisch.de> <s5hvcnhllum.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4971103E22
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 12:51:34 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E7DA103E25
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 12:54:06 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
+In-Reply-To: <s5hvcnhllum.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,46 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>, lrg@ti.com
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Kevin Hilman <khilman@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 08, 2012 at 02:34:38AM +0200, Grazvydas Ignotas wrote:
-> Hi,
-> 
-> On OMAP3 pandora, system suspend stops working properly after using
-> audio at least once:
+On Wed, Feb 08, 2012 at 10:23:45AM +0100, Takashi Iwai wrote:
+> Clemens Ladisch wrote:
+> > Takashi Iwai wrote:
 
-Also adding Liam to the CC list (and not deleting any context for
-visibility).
+> > TLVs on media controller entities.
 
-> 
-> (just after boot):
-> # echo mem > /sys/power/state
-> [   12.578186] PM: Entering mem sleep
-> [   12.678802] PM: suspend of devices complete after 92.834 msecs
-> [   12.688201] PM: late suspend of devices complete after 3.173 msecs
-> [   17.607971] Successfully put all powerdomains to target state
-> 
-> # aplay /dev/zero
-> ^C
-> # echo mem > /sys/power/state
-> [  104.404663] PM: suspend of devices complete after 78.794 msecs
-> [  104.413909] PM: late suspend of devices complete after 3.021 msecs
-> [  106.601196] Powerdomain (per_pwrdm) didn't enter target state 1
-> [  106.607421] Powerdomain (core_pwrdm) didn't enter target state 1
-> [  106.613739] Could not enter target state in pm_suspend
-> 
-> I'm seeing this on 3.2, unable to verify on current Linus HEAD as
-> something else is preventing core/per low power states there.
-> Any ideas what could be causing this? Perhaps some clock is left enabled?
-> 
-> -- 
-> Gra??vydas
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Well, my concern is that it might be too far from the other PCM
+> stuff.  How the implementation would look like?
 
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+It would be really good if it could support dynamic remapping of
+channels - for example, with most of the devices I work on you just get
+a bunch of audio channels presented to the mixing core of the device and
+can send them wherever it amuses you to do so at runtime, there's no
+fixed assignments.
