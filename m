@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Trent Piepho <tpiepho@gmail.com>
 Subject: Re: [PATCH] ASoC: core: Convert single bit wide
  bitfields into bools
-Date: Wed, 8 Feb 2012 19:13:08 +0000
-Message-ID: <20120208191308.GA28103@opensource.wolfsonmicro.com>
+Date: Wed, 8 Feb 2012 14:52:49 -0500
+Message-ID: <CA+7tXij_LDDFSYM8Wkyfwb1cRDAZ4DMEDVBL-vrnXs+W-8zm3w@mail.gmail.com>
 References: <1328727486-923-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<CA+7tXihEOP0a-JwEw7LGEhtj3WFR30M0t9PJZ1Ykwq+G5PLE1Q@mail.gmail.com>
+	<20120208191308.GA28103@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0405867254312662081=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 647DE103EA2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 20:13:10 +0100 (CET)
-In-Reply-To: <CA+7tXihEOP0a-JwEw7LGEhtj3WFR30M0t9PJZ1Ykwq+G5PLE1Q@mail.gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC057103EB3
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 20:52:51 +0100 (CET)
+Received: by wgbdy1 with SMTP id dy1so676964wgb.20
+	for <alsa-devel@alsa-project.org>; Wed, 08 Feb 2012 11:52:49 -0800 (PST)
+In-Reply-To: <20120208191308.GA28103@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +25,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <tpiepho@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Feb 8, 2012 at 2:13 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, Feb 08, 2012 at 02:08:05PM -0500, Trent Piepho wrote:
+>> Aren't you increasing the size of some of these structs considerably?
+>
+> Hrm, possibly. =A0I'd rather have hoped that the bool type would work a
+> bit more sanely here.
 
---===============0405867254312662081==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
+Linux defines bool as _Bool, which is a native type from C99.  _Bools
+in structs appear to be the same as unsigned char.  They each take one
+byte and have an alignment of one.
 
+So in this struct:
+@@ -208,7 +208,7 @@ struct snd_soc_dai_driver {
+       /* DAI capabilities */
+       struct snd_soc_pcm_stream capture;
+       struct snd_soc_pcm_stream playback;
+-       unsigned int symmetric_rates:1;
++       bool symmetric_rates;
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+       /* probe ordering - for components with runtime dependencies */
+       int probe_order;
 
-On Wed, Feb 08, 2012 at 02:08:05PM -0500, Trent Piepho wrote:
+Changing from a bitfield to a bool doesn't make any difference, since
+both will consume 4 bytes as the int probe_order will need that for
+alignment.  Of course it might be possible to have less passing space
+by placing the bool or bitfield near other < 4 bytes members.
 
-Don't top post and trim the context from your replies.  This is basic
-stuff...
+This struct:
+@@ -230,13 +230,13 @@ struct snd_soc_dai {
+       struct snd_soc_dai_driver *driver;
 
-> Aren't you increasing the size of some of these structs considerably?
+       /* DAI runtime info */
+-       unsigned int capture_active:1;          /* stream is in use */
+-       unsigned int playback_active:1;         /* stream is in use */
+-       unsigned int symmetric_rates:1;
++       bool capture_active;            /* stream is in use */
++       bool playback_active;           /* stream is in use */
++       bool symmetric_rates;
+       struct snd_pcm_runtime *runtime;
+       unsigned int active;
+-       unsigned char pop_wait:1;
+-       unsigned char probed:1;
++       bool pop_wait;
++       bool probed;
 
-Hrm, possibly.  I'd rather have hoped that the bool type would work a
-bit more sanely here.
+Doesn't actually take more space either, 8 bytes total.  But if it was
+re-ordered so these bitfields were all together then bitfields with
+take four bytes vs 8 for the bools.
 
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+This struct on the other hand:
+@@ -488,16 +488,16 @@ struct snd_soc_dapm_widget {
+       unsigned int mask;                      /* non-shifted mask */
+       unsigned int on_val;                    /* on state value */
+       unsigned int off_val;                   /* off state value */
+-       unsigned char power:1;                  /* block power status */
+-       unsigned char invert:1;                 /* invert the power bit */
+-       unsigned char active:1;                 /* active stream on
+DAC, ADC's */
+-       unsigned char connected:1;              /* connected codec pin */
+-       unsigned char new:1;                    /* cnew complete */
+-       unsigned char ext:1;                    /* has external widgets */
+-       unsigned char force:1;                  /* force state */
+-       unsigned char ignore_suspend:1;         /* kept enabled over suspen=
+d */
+-       unsigned char new_power:1;              /* power from this run */
+-       unsigned char power_checked:1;          /* power checked this run */
++       bool power;                             /* block power status */
++       bool invert;                            /* invert the power bit */
++       bool active;                            /* active stream on
+DAC, ADC's */
++       bool connected;                         /* connected codec pin */
++       bool new;                               /* cnew complete */
++       bool ext;                               /* has external widgets */
++       bool force;                             /* force state */
++       bool ignore_suspend;                    /* kept enabled over suspen=
+d */
++       bool new_power;                         /* power from this run */
++       bool power_checked;                     /* power checked this run */
+       int subseq;                             /* sort within widget type */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPMsk8AAoJEBus8iNuMP3dSsUP/2ueF7stgFQGBTEgPdcDNLSA
-X+R0TxvpdsCsx4meYjOQ5Fv2xelOmb7Qnd+vCvwqBEurp57Q+eKyGYm03hj/vDFY
-/uKUNTBrWcmbuqzovsOJ0mjEzYHlcS2//7jK54SljcAeazIG/zevPJJROJtqgW3V
-VLJDLDlHNT9DdYlFlw2ccDmbr9jWE9LnKMRDVTyORKNA/BGutnX2ECyq6ZfkHyH6
-Tl2Fdw2AjR7oxFlIvN8hHWQ26kg9XehWDrb2CuuN9JPp7vBMw1DUGOSE/mH9m3vy
-EqqghZhKWLtg+KTD6Vy/CTg3yZm5ZTWr/u6uDRV7y5cfE5PbD/Has3BlISc/Vj86
-mShlCji7OCQv04U2WNW17k+PSX8L3RTonh2q6Mz/OGrieblcLA7ZvLNpol7gTBjh
-lcXdBaIEv9xZajwUOrH8gP8Xfc4Bb2isEsZuopxrJjlAmeF0jq8/t4i0OpkZMomi
-KrRhup2JUHDMKQILrbACHnfEav3UmWGl7RBcpvVQJn5hM9uJOf5rbXHRb97yzZb9
-Ui5rB4NG6MkgsIcvS5JflFjOBAb/EPM/W9eKAPS1/dgqIdRLEzRpO35GNFap1Vez
-j47yS9kt9didlfmB3ugZqwEP4YSjCaf4ns5HI2TSIEMW2SU5kkCVPyv0ZGrLWf+I
-dMdCWEv/+87c8hcN+qdk
-=QKD1
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
-
---===============0405867254312662081==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0405867254312662081==--
+It uses 12 bytes for bools and 4 for bitfields.
