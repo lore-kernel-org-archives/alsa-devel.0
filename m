@@ -1,107 +1,41 @@
-From: Maciej Rutecki <maciej.rutecki@gmail.com>
+From: Josh Boyer <jwboyer@redhat.com>
 Subject: Re: 3.3-rc2 snd_pcm lockdep backtrace
-Date: Wed, 8 Feb 2012 18:54:08 +0100
-Message-ID: <201202081854.08668.maciej.rutecki@gmail.com>
+Date: Wed, 8 Feb 2012 13:10:15 -0500
+Message-ID: <20120208181014.GA6188@zod.bos.redhat.com>
 References: <20120206145621.GA4771@zod.bos.redhat.com>
-Reply-To: maciej.rutecki@gmail.com
+ <201202081854.08668.maciej.rutecki@gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120206145621.GA4771@zod.bos.redhat.com>
+Content-Disposition: inline
+In-Reply-To: <201202081854.08668.maciej.rutecki@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Josh Boyer <jwboyer@redhat.com>
+To: Maciej Rutecki <maciej.rutecki@gmail.com>
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
-On poniedzia=C5=82ek, 6 lutego 2012 o 15:56:22 Josh Boyer wrote:
-> Hi All,
+On Wed, Feb 08, 2012 at 06:54:08PM +0100, Maciej Rutecki wrote:
+> On poniedzia=C5=82ek, 6 lutego 2012 o 15:56:22 Josh Boyer wrote:
 >=20
-> We've had a report[1] of a lockdep backtrace from the snd_pcm driver.=
-  I
-> was wondering if anyone had hit this already or had some decent ideas=
- on
-> what the issue might be.
->=20
-> josh
->=20
-> [1] https://bugzilla.redhat.com/show_bug.cgi?id=3D787319
->=20
-> backtrace:
-> :[ INFO: possible recursive locking detected ]
-> :3.3.0-0.rc2.git2.1.fc17.x86_64 #1 Not tainted
-> :---------------------------------------------
-> :
-> :pulseaudio/954 is trying to acquire lock:
-> : (&(&substream->self_group.lock)->rlock/1){......}, at:
-> : [<ffffffffa00d9093>]
->=20
-> snd_pcm_action_group+0xa3/0x240 [snd_pcm]
->=20
-> :but task is already holding lock:
-> : (&(&substream->self_group.lock)->rlock/1){......}, at:
-> : [<ffffffffa00d9093>]
->=20
-> snd_pcm_action_group+0xa3/0x240 [snd_pcm]
->=20
-> :other info that might help us debug this:
-> : Possible unsafe locking scenario:
-> :       CPU0
-> :       ----
-> : =20
-> :  lock(&(&substream->self_group.lock)->rlock/1);
-> :  lock(&(&substream->self_group.lock)->rlock/1);
-> :=20
-> : *** DEADLOCK ***
-> : May be due to missing lock nesting notation
-> :
-> :4 locks held by pulseaudio/954:
-> : #0:  (snd_pcm_link_rwlock){......}, at: [<ffffffffa00d9e62>]
->=20
-> snd_pcm_drop+0x62/0x110 [snd_pcm]
->=20
-> : #1:  (&(&substream->self_group.lock)->rlock){......}, at:
-> [<ffffffffa00d9e6a>] snd_pcm_drop+0x6a/0x110 [snd_pcm]
->=20
-> : #2:  (&(&substream->group->lock)->rlock){......}, at:
-> : [<ffffffffa00d93ce>]
->=20
-> snd_pcm_action+0x3e/0xb0 [snd_pcm]
->=20
-> : #3:  (&(&substream->self_group.lock)->rlock/1){......}, at:
-> [<ffffffffa00d9093>] snd_pcm_action_group+0xa3/0x240 [snd_pcm]
->=20
-> :stack backtrace:
-> :Pid: 954, comm: pulseaudio Not tainted 3.3.0-0.rc2.git2.1.fc17.x86_6=
-4 #1
-> :
-> :Call Trace:
-> : [<ffffffff810cb7ec>] __lock_acquire+0x160c/0x1ad0
-> : [<ffffffff810ca4f6>] ? __lock_acquire+0x316/0x1ad0
-> : [<ffffffff81020f99>] ? sched_clock+0x9/0x10
-> : [<ffffffff810a24a5>] ? sched_clock_local+0x25/0xa0
-> : [<ffffffff810cc381>] lock_acquire+0xa1/0x1e0
-> : [<ffffffffa00d9093>] ? snd_pcm_action_group+0xa3/0x240 [snd_pcm]
-> : [<ffffffff8169cca4>] _raw_spin_lock_nested+0x44/0x80
-> : [<ffffffffa00d9093>] ? snd_pcm_action_group+0xa3/0x240 [snd_pcm]
-> : [<ffffffffa00d9093>] snd_pcm_action_group+0xa3/0x240 [snd_pcm]
-> : [<ffffffffa00d9401>] snd_pcm_action+0x71/0xb0 [snd_pcm]
-> : [<ffffffffa00d945a>] snd_pcm_stop+0x1a/0x20 [snd_pcm]
-> : [<ffffffffa00d9e84>] snd_pcm_drop+0x84/0x110 [snd_pcm]
-> : [<ffffffffa00dbba8>] snd_pcm_common_ioctl1+0x4a8/0xbe0 [snd_pcm]
-> : [<ffffffffa00dc650>] snd_pcm_playback_ioctl1+0x60/0x2d0 [snd_pcm]
-> : [<ffffffff812c1481>] ? file_has_perm+0xe1/0xf0
-> : [<ffffffffa00dc8f4>] snd_pcm_playback_ioctl+0x34/0x40 [snd_pcm]
-> : [<ffffffff811cf8d9>] do_vfs_ioctl+0x99/0x5a0
-> : [<ffffffff811cfe79>] sys_ioctl+0x99/0xa0
-> : [<ffffffff816a63e9>] system_call_fastpath+0x16/0x1b
->=20
+> I created a Bugzilla entry at=20
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D42746
+> for your bug report, please add your address to the CC list in there,=
+ thanks!
 
-I created a Bugzilla entry at=20
-https://bugzilla.kernel.org/show_bug.cgi?id=3D42746
-for your bug report, please add your address to the CC list in there, t=
-hanks!
+Er... why exactly?
 
---=20
-Maciej Rutecki
-http://www.mrutecki.pl
+I mean, great I don't really mind at all that a bugzilla.kernel.org bug
+was opened, but
+
+1) there's already a bug opened in the RH bugzilla for this
+2) I've already emailed the upstream developers and list about it
+3) ALSA actually has it's own bug tool
+
+so unless the ALSA devs are going to do something with that particular
+bug I don't see a huge amount of value.
+
+As an aside, I'm basically an intermediary here.  The original reporter
+in the RHT bug should probably add their email to CC.
+
+josh
