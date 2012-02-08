@@ -1,154 +1,107 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_ functions
-Date: Wed,  8 Feb 2012 18:14:22 +0100
-Message-ID: <1328721262-20993-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Maciej Rutecki <maciej.rutecki@gmail.com>
+Subject: Re: 3.3-rc2 snd_pcm lockdep backtrace
+Date: Wed, 8 Feb 2012 18:54:08 +0100
+Message-ID: <201202081854.08668.maciej.rutecki@gmail.com>
+References: <20120206145621.GA4771@zod.bos.redhat.com>
+Reply-To: maciej.rutecki@gmail.com
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120206145621.GA4771@zod.bos.redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, B29396@freescale.com
+To: Josh Boyer <jwboyer@redhat.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+On poniedzia=C5=82ek, 6 lutego 2012 o 15:56:22 Josh Boyer wrote:
+> Hi All,
+>=20
+> We've had a report[1] of a lockdep backtrace from the snd_pcm driver.=
+  I
+> was wondering if anyone had hit this already or had some decent ideas=
+ on
+> what the issue might be.
+>=20
+> josh
+>=20
+> [1] https://bugzilla.redhat.com/show_bug.cgi?id=3D787319
+>=20
+> backtrace:
+> :[ INFO: possible recursive locking detected ]
+> :3.3.0-0.rc2.git2.1.fc17.x86_64 #1 Not tainted
+> :---------------------------------------------
+> :
+> :pulseaudio/954 is trying to acquire lock:
+> : (&(&substream->self_group.lock)->rlock/1){......}, at:
+> : [<ffffffffa00d9093>]
+>=20
+> snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+>=20
+> :but task is already holding lock:
+> : (&(&substream->self_group.lock)->rlock/1){......}, at:
+> : [<ffffffffa00d9093>]
+>=20
+> snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+>=20
+> :other info that might help us debug this:
+> : Possible unsafe locking scenario:
+> :       CPU0
+> :       ----
+> : =20
+> :  lock(&(&substream->self_group.lock)->rlock/1);
+> :  lock(&(&substream->self_group.lock)->rlock/1);
+> :=20
+> : *** DEADLOCK ***
+> : May be due to missing lock nesting notation
+> :
+> :4 locks held by pulseaudio/954:
+> : #0:  (snd_pcm_link_rwlock){......}, at: [<ffffffffa00d9e62>]
+>=20
+> snd_pcm_drop+0x62/0x110 [snd_pcm]
+>=20
+> : #1:  (&(&substream->self_group.lock)->rlock){......}, at:
+> [<ffffffffa00d9e6a>] snd_pcm_drop+0x6a/0x110 [snd_pcm]
+>=20
+> : #2:  (&(&substream->group->lock)->rlock){......}, at:
+> : [<ffffffffa00d93ce>]
+>=20
+> snd_pcm_action+0x3e/0xb0 [snd_pcm]
+>=20
+> : #3:  (&(&substream->self_group.lock)->rlock/1){......}, at:
+> [<ffffffffa00d9093>] snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+>=20
+> :stack backtrace:
+> :Pid: 954, comm: pulseaudio Not tainted 3.3.0-0.rc2.git2.1.fc17.x86_6=
+4 #1
+> :
+> :Call Trace:
+> : [<ffffffff810cb7ec>] __lock_acquire+0x160c/0x1ad0
+> : [<ffffffff810ca4f6>] ? __lock_acquire+0x316/0x1ad0
+> : [<ffffffff81020f99>] ? sched_clock+0x9/0x10
+> : [<ffffffff810a24a5>] ? sched_clock_local+0x25/0xa0
+> : [<ffffffff810cc381>] lock_acquire+0xa1/0x1e0
+> : [<ffffffffa00d9093>] ? snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+> : [<ffffffff8169cca4>] _raw_spin_lock_nested+0x44/0x80
+> : [<ffffffffa00d9093>] ? snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+> : [<ffffffffa00d9093>] snd_pcm_action_group+0xa3/0x240 [snd_pcm]
+> : [<ffffffffa00d9401>] snd_pcm_action+0x71/0xb0 [snd_pcm]
+> : [<ffffffffa00d945a>] snd_pcm_stop+0x1a/0x20 [snd_pcm]
+> : [<ffffffffa00d9e84>] snd_pcm_drop+0x84/0x110 [snd_pcm]
+> : [<ffffffffa00dbba8>] snd_pcm_common_ioctl1+0x4a8/0xbe0 [snd_pcm]
+> : [<ffffffffa00dc650>] snd_pcm_playback_ioctl1+0x60/0x2d0 [snd_pcm]
+> : [<ffffffff812c1481>] ? file_has_perm+0xe1/0xf0
+> : [<ffffffffa00dc8f4>] snd_pcm_playback_ioctl+0x34/0x40 [snd_pcm]
+> : [<ffffffff811cf8d9>] do_vfs_ioctl+0x99/0x5a0
+> : [<ffffffff811cfe79>] sys_ioctl+0x99/0xa0
+> : [<ffffffff816a63e9>] system_call_fastpath+0x16/0x1b
+>=20
 
-The various devm_ functions allocate memory that is released when a driver
-detaches.  This patch uses these functions for data that is allocated in
-the probe function of a platform device and is only freed in the remove
-function.
+I created a Bugzilla entry at=20
+https://bugzilla.kernel.org/show_bug.cgi?id=3D42746
+for your bug report, please add your address to the CC list in there, t=
+hanks!
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
-patch against git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-
- sound/soc/mxs/mxs-saif.c |   51 ++++++++++-------------------------------------
- 1 file changed, 11 insertions(+), 40 deletions(-)
-
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 76dc74d..63b0a81 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -632,7 +632,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 			return ret;
- 	}
- 
--	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
-+	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
- 
-@@ -652,29 +652,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = PTR_ERR(saif->clk);
- 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
- 			ret);
--		goto failed_clk;
-+		return ret;
- 	}
- 
- 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iores) {
--		ret = -ENODEV;
--		dev_err(&pdev->dev, "failed to get io resource: %d\n",
--			ret);
--		goto failed_get_resource;
--	}
- 
--	if (!request_mem_region(iores->start, resource_size(iores),
--				"mxs-saif")) {
--		dev_err(&pdev->dev, "request_mem_region failed\n");
--		ret = -EBUSY;
--		goto failed_get_resource;
--	}
--
--	saif->base = ioremap(iores->start, resource_size(iores));
-+	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
- 	if (!saif->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
- 		ret = -ENODEV;
--		goto failed_ioremap;
-+		goto failed_get_resource;
- 	}
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-@@ -682,7 +669,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = -ENODEV;
- 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
- 			ret);
--		goto failed_ioremap;
-+		goto failed_get_resource;
- 	}
- 	saif->dma_param.chan_num = dmares->start;
- 
-@@ -691,14 +678,15 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = saif->irq;
- 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
- 			ret);
--		goto failed_get_irq1;
-+		goto failed_get_resource;
- 	}
- 
- 	saif->dev = &pdev->dev;
--	ret = request_irq(saif->irq, mxs_saif_irq, 0, "mxs-saif", saif);
-+	ret = devm_request_irq(&pdev->dev, saif->irq, mxs_saif_irq, 0,
-+			       "mxs-saif", saif);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to request irq\n");
--		goto failed_get_irq1;
-+		goto failed_get_resource;
- 	}
- 
- 	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
-@@ -706,7 +694,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = saif->dma_param.chan_irq;
- 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
- 			ret);
--		goto failed_get_irq2;
-+		goto failed_get_resource;
- 	}
- 
- 	platform_set_drvdata(pdev, saif);
-@@ -714,7 +702,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
- 	if (ret) {
- 		dev_err(&pdev->dev, "register DAI failed\n");
--		goto failed_register;
-+		goto failed_get_resource;
- 	}
- 
- 	saif->soc_platform_pdev = platform_device_alloc(
-@@ -737,36 +725,19 @@ failed_pdev_add:
- 	platform_device_put(saif->soc_platform_pdev);
- failed_pdev_alloc:
- 	snd_soc_unregister_dai(&pdev->dev);
--failed_register:
--failed_get_irq2:
--	free_irq(saif->irq, saif);
--failed_get_irq1:
--	iounmap(saif->base);
--failed_ioremap:
--	release_mem_region(iores->start, resource_size(iores));
- failed_get_resource:
- 	clk_put(saif->clk);
--failed_clk:
--	kfree(saif);
- 
- 	return ret;
- }
- 
- static int __devexit mxs_saif_remove(struct platform_device *pdev)
- {
--	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct mxs_saif *saif = platform_get_drvdata(pdev);
- 
- 	platform_device_unregister(saif->soc_platform_pdev);
--
- 	snd_soc_unregister_dai(&pdev->dev);
--
--	iounmap(saif->base);
--	release_mem_region(res->start, resource_size(res));
--	free_irq(saif->irq, saif);
--
- 	clk_put(saif->clk);
--	kfree(saif);
- 
- 	return 0;
- }
+--=20
+Maciej Rutecki
+http://www.mrutecki.pl
