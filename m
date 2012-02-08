@@ -1,42 +1,87 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] Add support for Echo3G devices. Thanks to
- unimatrix.
-Date: Wed, 08 Feb 2012 09:03:02 +0100
-Message-ID: <4F322C36.2060006@perex.cz>
-References: <1328674195-26275-1-git-send-email-themuso@ubuntu.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: ASoC related suspend problems on OMAP3
+Date: Wed, 08 Feb 2012 10:29:29 +0200
+Message-ID: <4F323269.6090008@ti.com>
+References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7B46103D36
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 09:02:25 +0100 (CET)
-In-Reply-To: <1328674195-26275-1-git-send-email-themuso@ubuntu.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Luke Yelavich <themuso@ubuntu.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Kevin Hilman <khilman@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Date 8.2.2012 05:09, Luke Yelavich wrote:
-> From: Luke Yelavich <luke.yelavich@canonical.com>
-> 
-> BugLink: https://bugs.launchpad.net/bugs/433573
-> 
-> Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
+On 02/08/2012 02:34 AM, Grazvydas Ignotas wrote:
+> Hi,
+>=20
+> On OMAP3 pandora, system suspend stops working properly after using
+> audio at least once:
+>=20
+> (just after boot):
+> # echo mem > /sys/power/state
+> [   12.578186] PM: Entering mem sleep
+> [   12.678802] PM: suspend of devices complete after 92.834 msecs
+> [   12.688201] PM: late suspend of devices complete after 3.173 msecs
+> [   17.607971] Successfully put all powerdomains to target state
+>=20
+> # aplay /dev/zero
+> ^C
+> # echo mem > /sys/power/state
+> [  104.404663] PM: suspend of devices complete after 78.794 msecs
+> [  104.413909] PM: late suspend of devices complete after 3.021 msecs
+> [  106.601196] Powerdomain (per_pwrdm) didn't enter target state 1
+> [  106.607421] Powerdomain (core_pwrdm) didn't enter target state 1
+> [  106.613739] Could not enter target state in pm_suspend
+>=20
+> I'm seeing this on 3.2, unable to verify on current Linus HEAD as
+> something else is preventing core/per low power states there.
+> Any ideas what could be causing this? Perhaps some clock is left enab=
+led?
 
-Thanks, applied to the alsa-lib GIT repo.
+I would bet that some clocks left enabled, but it as far as I can tell
+the audio path is well balanced in regards of clocks.
 
-					Jaroslav
+So I'm not sure, but I just checked with 3.3-rc2 on Beagle xM (Rev C):
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+after boot:
+# echo mem > /sys/power/state
+[  163.776153] Freezing user space processes ...
+[  163.804595] (elapsed 0.02 seconds) done.
+[  163.808746] Freezing remaining freezable tasks ... (elapsed 0.02 sec=
+onds)
+[  163.837097] Suspending console(s) (use no_console_suspend to debug)
+[  164.019042] PM: suspend of devices complete after 157.684 msecs
+[  164.025115] PM: late suspend of devices complete after 6.011 msecs
+[  164.025238] Disabling non-boot CPUs ...
+[  172.497528] Successfully put all powerdomains to target state
+
+aplay <some wav>
+
+# echo mem > /sys/power/state
+[  300.574920] Freezing user space processes ...
+[  300.602874] (elapsed 0.02 seconds) done.
+[  300.607025] Freezing remaining freezable tasks ... (elapsed 0.02 sec=
+onds)
+[  300.635620] Suspending console(s) (use no_console_suspend to debug)
+[  300.809692] PM: suspend of devices complete after 149.810 msecs
+[  300.814117] PM: late suspend of devices complete after 4.364 msecs
+[  300.814147] Disabling non-boot CPUs ...
+[  309.520721] Successfully put all powerdomains to target state
+
+Here it seams to be OK...
+You could try to compare the clock counts after boot, and after the apl=
+ay:
+
+cat /sys/kernel/debug/clock/summary
+
+if they differ we leave have unbalanced clock handling...
+
+--=20
+P=C3=A9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
