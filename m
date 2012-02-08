@@ -1,18 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
- reporting with core jack reporting
-Date: Wed, 8 Feb 2012 11:46:42 +0000
-Message-ID: <20120208114642.GG3120@opensource.wolfsonmicro.com>
-References: <1328644128-32630-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1328644128-32630-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4F323405.8080902@canonical.com>
+Subject: Re: [PATCH 18/19] ASoC: fsi: fixup fsi_pointer()
+	calculation method
+Date: Wed, 8 Feb 2012 11:50:24 +0000
+Message-ID: <20120208115024.GH3120@opensource.wolfsonmicro.com>
+References: <871uqcjo9i.wl%kuninori.morimoto.gx@renesas.com>
+	<87bopgi97k.wl%kuninori.morimoto.gx@renesas.com>
+	<20120203115522.GG3151@opensource.wolfsonmicro.com>
+	<87k440x0ft.wl%kuninori.morimoto.gx@renesas.com>
+	<20120206164644.GU3070@opensource.wolfsonmicro.com>
+	<87k43zv6uc.wl%kuninori.morimoto.gx@renesas.com>
+	<20120207112959.GF3332@opensource.wolfsonmicro.com>
+	<87obtayynm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2608722730924907013=="
+Content-Type: multipart/mixed; boundary="===============7210018200914697571=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D847B103DCD
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 12:46:44 +0100 (CET)
-In-Reply-To: <4F323405.8080902@canonical.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F0578103DDB
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 12:50:25 +0100 (CET)
+In-Reply-To: <87obtayynm.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,79 +27,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2608722730924907013==
+--===============7210018200914697571==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="reI/iBAAp9kzkmX4"
+	protocol="application/pgp-signature"; boundary="N8ia4yKhAKKETby7"
 Content-Disposition: inline
 
 
---reI/iBAAp9kzkmX4
+--N8ia4yKhAKKETby7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 08, 2012 at 09:36:21AM +0100, David Henningsson wrote:
-> On 02/07/2012 08:48 PM, Mark Brown wrote:
+On Tue, Feb 07, 2012 at 04:08:52PM -0800, Kuninori Morimoto wrote:
 
-> I'd like these to match the names currently used in HDA, like this:
+> > I suspect it's worth fixing in 3.3 then, there's often issues where
+> > userspace applications don't work that don't get reported well or at
+> > all, often these are due to issues in the pointer implementations.
+> > People end up coming up with configurations that work around them and
+> > never think that there might be a driver issue.
 
-> 	{ SW_MICROPHONE_INSERT, "Mic" },
+> I'm not good at detail of user side applications,
+> but aplay was working correctly on old/PIO FSI.
+> So, I didn't notice it.
 
-It seems odd to abbreviate this and nothing else but I'm not that
-fussed either way.
+aplay is (un)fortunately pretty forgiving here - PulseAudio is the most
+difficult test, though some other applications do run into issues too.
+Anyway, can you please generate a version of this for 3.3 (or confirm if
+the current patch is OK for there) so we can integrate the change there?
 
-> 	{ SW_LINEOUT_INSERT, "Line-Out" },
-> 	{ SW_VIDEOOUT_INSERT, "Video-Out" },
+The change itself seems good, it's just that it'd be better done as a
+fix.
 
-For these it's really not normal English to hyphenate them, it looks
-strange to do so.
-
-> 	{ SW_LINEIN_INSERT, "Line" },
-
-It seems odd and a bit undescriptive to not specify the description here
-when it is specified for the outputs?
-
-> Actually, it matters less if we settle on the standard you set
-> above, or what the HDA currently does, as long as the names are the
-> same.
-
-Except for Mic where I don't mind either way I'd rather bring the HDA
-names into (but note that the idea is to remove the HDA specific jack
-controls - I think these names are used in other places though?).
-
---reI/iBAAp9kzkmX4
+--N8ia4yKhAKKETby7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPMmCbAAoJEBus8iNuMP3dAI4P/1+GpFzoubsp2i89mkxQ2PCr
-vyOfgRz5BfIiOvVIQcR5pqw1BxJOJJRAJ2dzH7nt2/Aqy7D+3n35qFCx2KZ0EIEZ
-NPW2whKY1iXeL1IVzHlwpsUBGegDtqxxbBhvhEcXZ0x/JtMgTxBj8ZHEF+n8xqMo
-CM45Qt0boIy2YOpo3oBdhOnDfiWWgXy9FQtkTunzJugheyyaQNEWJf417Cg5JPbC
-fegZL90DLHBbuHHPDoBUrU0ijoKtTseRVun/HwrSU2Qke93B383Z2650CcN5wjUf
-89fMJdvkMyEVeI3/hzevVFvekhfaRXonyx2hVkvQMaeCN4+AjUv/tocgSC7SCMqG
-eKqkISHa24+ShXr7/yTF8g5qNJTcIC/I8vaIYxm2F2zFFro0V8PkMcb3wdgddYmN
-vENPD9l39ZqZq4YRSH+NndSww6RBNzRipGA+iB+Px63/xS33qcqbDru16OFuSxsy
-XZCCF21prbkQYTc59q+roMJtINwH3tqOfjqQu6jJq2CrSy7uW0dIg/PBSTVC8Jav
-Cm3dyVel0de6BUEmwh3qD0jcy0rk1eiLikDxuQnGfMd1XUNEbWvCfsdSGx6jl9jH
-jh4lfm+j4EDpK6+wzRLain2KD/iBQbyOklaZmyPvVX9Tcih2LrYnkRmVIEcEfYs3
-EAiesXx7y2mXTL9aLwJw
-=gqvd
+iQIcBAEBAgAGBQJPMmF0AAoJEBus8iNuMP3d44MP/3LKDNfM+wvt+pqZnywS9ngL
+m6LNNOlDuCqR6j2FE5RQ5mjNiq3yfdv4u+I8WQ7XSTFHzN8vrGNVrrW23yiBRqk2
+gV3hS3kAQUCQ3K7/2T4MMlhTjyoBTaRDE+U8OklveQW+ovp6dHk/xzW/MJLWJ3m9
+nd+KMUTbXa47oJPAEW9tURDKPc3eUaC069jecf03Zdr2B6wc0Jv025drAVaQVAmq
+XBDSktC8r1frDkbUcOuv/+0KXX+uYjH/9diZfuSBP1YHemrGpuAdnDhu5LpJTteI
+d1rFXFNgAS08nmlXkZ2ZlQs824CbjP0ztc/7oG9829SmD0EZoN11K8S5DvRVUDrH
+5VQd1btsUJGhIzSFvo9R8vEXtv9Fz5IwxhoOhTqIs+LBiNksy0SQltF0K3mcyY2V
+raJa8cFrcLF8+Q4Lw16h2PDIR4mNvi8fOHSTipmz+PjwMg07nsorMxUzWSn37vms
+NW+yI2N5Qyw7xKkoDxpFA9x3ampKoLkSS9+0osI7dMgW3nM0+jaCpQwvIAxQIghO
+9M4oTuZfQu/YFSDVQ2EOtlqlfl8nYp93gzNzvIUAZ14baQLoooKT3QLxZy63H4rg
+E90j401ODY3g5VdwuRYnpKKyQWDUImwigrAhEFib/jlgcbEEPEwNGKy926tWNYO5
+iZnaH5HEWgMkgGz7prru
+=IpHi
 -----END PGP SIGNATURE-----
 
---reI/iBAAp9kzkmX4--
+--N8ia4yKhAKKETby7--
 
---===============2608722730924907013==
+--===============7210018200914697571==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2608722730924907013==--
+--===============7210018200914697571==--
