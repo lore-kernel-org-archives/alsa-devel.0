@@ -1,118 +1,80 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [alsa-devel] tea575x-tuner improvements & use in maxiradio
-Date: Wed, 8 Feb 2012 20:57:43 +0100
-Message-ID: <201202082057.48045.linux@rainbow-software.org>
-References: <1328447827-9842-1-git-send-email-hverkuil@xs4all.nl> <201202072320.30911.linux@rainbow-software.org> <201202080829.25201.hverkuil@xs4all.nl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: Convert single bit wide
+ bitfields into bools
+Date: Wed, 8 Feb 2012 20:05:37 +0000
+Message-ID: <20120208200536.GA11038@opensource.wolfsonmicro.com>
+References: <1328727486-923-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<CA+7tXihEOP0a-JwEw7LGEhtj3WFR30M0t9PJZ1Ykwq+G5PLE1Q@mail.gmail.com>
+	<20120208191308.GA28103@opensource.wolfsonmicro.com>
+	<CA+7tXij_LDDFSYM8Wkyfwb1cRDAZ4DMEDVBL-vrnXs+W-8zm3w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201202080829.25201.hverkuil@xs4all.nl>
-Content-Disposition: inline
-Sender: linux-media-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4428410605511242207=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F05F8103F38
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 21:05:39 +0100 (CET)
+In-Reply-To: <CA+7tXij_LDDFSYM8Wkyfwb1cRDAZ4DMEDVBL-vrnXs+W-8zm3w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Trent Piepho <tpiepho@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 08 February 2012 08:29:25 Hans Verkuil wrote:
-> On Tuesday, February 07, 2012 23:20:19 Ondrej Zary wrote:
-> > On Sunday 05 February 2012 14:17:05 Hans Verkuil wrote:
-> > > These patches improve the tea575x-tuner module to make it up to date
-> > > with the latest V4L2 frameworks.
-> > >
-> > > The maxiradio driver has also been converted to use the tea575x-tuner
-> > > and I've used that card to test it.
-> > >
-> > > Unfortunately, this card can't read the data pin, so the new hardware
-> > > seek functionality has been tested only partially (yes, it seeks, but
-> > > when it finds a channel I can't read back the frequency).
-> > >
-> > > Ondrej, are you able to test these patches for the sound cards that use
-> > > this tea575x tuner?
-> > >
-> > > Note that these two patches rely on other work that I did and that
-> > > hasn't been merged yet. So it is best to pull from my git tree:
-> > >
-> > > http://git.linuxtv.org/hverkuil/media_tree.git/shortlog/refs/heads/radi
-> > >o-pc i2
-> > >
-> > > You can use the v4l-utils repository
-> > > (http://git.linuxtv.org/v4l-utils.git) to test the drivers: the
-> > > v4l2-compliance test should succeed and with v4l2-ctl you can test the
-> > > hardware seek:
-> > >
-> > > To seek down:
-> > >
-> > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=0
-> > >
-> > > To seek up:
-> > >
-> > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=1
-> > >
-> > > To do the compliance test:
-> > >
-> > > v4l2-compliance -r /dev/radio0
-> >
-> > It seems to work (tested with SF64-PCR - snd_fm801) but the seek is
-> > severely broken. Reading the frequency immediately after seek does not
-> > work, it always returns the old value (haven't found a delay that works).
-> > Reading it later (copied back snd_tea575x_get_freq function) works. The
-> > chip seeks randomly up or down, ignoring UP/DOWN flag and often stops at
-> > wrong place (only noise) or even outside the FM range.
-> >
-> > So I strongly suggest not to enable this (mis-)feature. The HW seems to
-> > be completely broken (unless there's some weird bug in the code).
->
-> Well, it seemed like a good idea at the time :-) I'll remove this
-> 'feature', it's really not worth our time to try and make this work for
-> these old cards.
->
-> I wonder if you are able to test the ISA radio-sf16fmr2.c driver? I'm not
-> sure if you have the hardware, but since I changed this driver to use the
-> proper isa kernel framework I'd like to have this tested if possible.
 
-The driver works, provided that linux/slab.h is included. It oopses on rmmod
-because dev_set_drvdata() call is missing from init.
-This patch fixes all of that and also removes (now useless) static fmr2_card:
-
---- a/drivers/media/radio/radio-sf16fmr2.c
-+++ b/drivers/media/radio/radio-sf16fmr2.c
-@@ -9,6 +9,7 @@
- #include <linux/delay.h>
- #include <linux/module.h>	/* Modules 			*/
- #include <linux/init.h>		/* Initdata			*/
-+#include <linux/slab.h>
- #include <linux/ioport.h>	/* request_region		*/
- #include <linux/io.h>		/* outb, outb_p			*/
- #include <linux/isa.h>
-@@ -32,7 +33,6 @@ struct fmr2 {
- 
- /* the port is hardwired so no need to support multiple cards */
- #define FMR2_PORT	0x384
--static struct fmr2 fmr2_card;
- 
- /* TEA575x tuner pins */
- #define STR_DATA	(1 << 0)
-@@ -188,7 +188,7 @@ static int fmr2_tea_ext_init(struct snd_tea575x *tea)
- 
- static int __init fmr2_probe(struct device *pdev, unsigned int dev)
- {
--	struct fmr2 *fmr2 = &fmr2_card;
-+	struct fmr2 *fmr2;
- 	int err;
- 
- 	fmr2 = kzalloc(sizeof(*fmr2), GFP_KERNEL);
-@@ -229,6 +229,7 @@ static int __init fmr2_probe(struct device *pdev, unsigned int dev)
- 	}
- 
- 	printk(KERN_INFO "radio-sf16fmr2: SF16-FMR2 radio card at 0x%x.\n", fmr2->io);
-+	dev_set_drvdata(pdev, fmr2);
- 	return 0;
- }
- 
+--===============4428410605511242207==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
 
 
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Ondrej Zary
+On Wed, Feb 08, 2012 at 02:52:49PM -0500, Trent Piepho wrote:
+
+> Linux defines bool as _Bool, which is a native type from C99.  _Bools
+> in structs appear to be the same as unsigned char.  They each take one
+> byte and have an alignment of one.
+
+Well, that's a bit of a failure isn't it?  Let's not bother then.
+
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPMtVeAAoJEBus8iNuMP3dFiIP/iKAP2LqMxEc4TvgXsLLo1Ji
+zcQxHktuTT8jq3zyGxPtOd6fbm93CoOI1CKy36nfeLf4RUKTufAPrPtOCZTutoT7
+rWMicpC7LcMyNHpEaNCE8b3QBOIRb6cVVzA8GcXlXVcwCgrXRDPbedYnSklz7mdB
+saSwOHW4xdagRI/IdZTwwPYoPgNTN4JjhXmVtsiKYaYg7weGRRKNZJzsW5zT9qbc
+VlEBO+VxThN5dCsf6Ki07hcVZ9F6l8snY5ED0BLjvKYqzNmjjY3IJIYchkWLTGRz
+A45eWg4qhXhLnpuZOQonnfPltlz0jkjxZ7uFuRYWhp4gf6fRqCRC/hDnw4QJAJWF
+2NVPBFXruM3KyrYelGMFQ1pF3TKS90vqw1a3VZeDUnC+tM+k7XNzKWZSaRt46389
+tjvk9mJFFQaju2aYU1S5VFZGM4+BYPoUtWUbcBDHrj/sqHSfDvJ3mpTmPPLyz/B9
+RAI6AvmRZeicjfyRSpXB/0nWGK1TX2p+XjiKW9+LbBQyYIH68usp9jo7b1wdlkFX
+rzWN0STxNkk1WqQB1+yRTsAAT2dQYux4Zy49D4nt+9rLl2DkerfeDTwI0vfi5kdi
+ih3GBpt//o8EKmsPbGd/HjUXUwP6BRUwVbd1j0L/hSUcYfWrRMJRvbHgXOoBXsoR
+wp9dtnKXfpDLS223Yt7a
+=8RiU
+-----END PGP SIGNATURE-----
+
+--OXfL5xGRrasGEqWY--
+
+--===============4428410605511242207==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4428410605511242207==--
