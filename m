@@ -1,67 +1,58 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [RFC/PATCH] ALSA: PCM - Add PCM creation API for
- ASoC dynamic PCMs.
-Date: Wed, 08 Feb 2012 15:58:09 +0000
-Message-ID: <1328716689.3955.22.camel@odin>
-References: <1328702137-9552-1-git-send-email-lrg@ti.com>
-	<s5h7gzxlay7.wl%tiwai@suse.de>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [alsa-devel] ASoC related suspend problems on OMAP3
+Date: Wed, 8 Feb 2012 18:19:38 +0200
+Message-ID: <CANOLnOPkirGhw43u8sen9YDrsZH_g+HXsdOAefbNMkXEasifyQ@mail.gmail.com>
+References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
+	<20120208115132.GA25756@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
-	[74.125.149.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3118A103E34
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 16:58:17 +0100 (CET)
-Received: by mail-wi0-f179.google.com with SMTP id hj6so501279wib.38
-	for <alsa-devel@alsa-project.org>; Wed, 08 Feb 2012 07:58:11 -0800 (PST)
-In-Reply-To: <s5h7gzxlay7.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20120208115132.GA25756@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: lrg@ti.com, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Kevin Hilman <khilman@ti.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-08 at 14:19 +0100, Takashi Iwai wrote:
-> At Wed,  8 Feb 2012 11:55:37 +0000,
-> Liam Girdwood wrote:
-> > 
-> > The new ASoC dynamic PCM core needs to create PCMs and substreams that are
-> > for use by internal ASoC drivers only and not visible to userspace for
-> > direct IO. These new PCMs are similar to regular PCMs expect they have no
-> > device nodes or procfs entries. The ASoC component drivers use them in exactly
-> > the same way as regular PCMs for PCM and DAI operations.
-> > 
-> > The intention is that a dynamic PCM based driver will register both regular
-> > PCMs and dynamic PCMs. The regular PCMs will be used for all IO with userspace
-> > however the dynamic PCMs will be used by the driver to route digital audio
-> > through numerous back end DAI links (with potentially a DSP providing different
-> > hw_params, DAI formats based on the regular front end PCM params) to devices
-> > like CODECs, MODEMs, Bluetooth, FM, DMICs, etc
-> > 
-> > This patch adds a new snd_pcm_new_dynamic() API call to create the dynamic PCM
-> > without device nodes or procfs. It also adds snd_pcm_new_stream_dynamic() and
-> > snd_pcm_dev_register_dynamic() which are used to create the dynamic PCM.
-> 
-> I don't think you need to copy all functions just for stripping some
-> features.  Instead, add a new flag in snd_pcm indicating that it's
-> only for internal-use (or non-exposure, whatever), and set it in
-> snd_pcm_new().  Maybe make a static __snd_pcm_new() with an extra bool
-> flag and let snd_pcm_new() and snd_pcm_new_dynamic() call the function
-> with the appropriate flag value.
-> 
-> In snd_pcm_new_stream(), just skip unnecessary init parts when the pcm
-> flag is set.  Ditto for snd_pcm_dev_register().
-> 
+On Wed, Feb 8, 2012 at 1:51 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, Feb 08, 2012 at 02:34:38AM +0200, Grazvydas Ignotas wrote:
+>> # aplay /dev/zero
+>> ^C
+>> # echo mem > /sys/power/state
+>> [ =C2=A0104.404663] PM: suspend of devices complete after 78.794 mse=
+cs
+>> [ =C2=A0104.413909] PM: late suspend of devices complete after 3.021=
+ msecs
+>> [ =C2=A0106.601196] Powerdomain (per_pwrdm) didn't enter target stat=
+e 1
+>> [ =C2=A0106.607421] Powerdomain (core_pwrdm) didn't enter target sta=
+te 1
+>> [ =C2=A0106.613739] Could not enter target state in pm_suspend
+>>
+>> I'm seeing this on 3.2, unable to verify on current Linus HEAD as
+>> something else is preventing core/per low power states there.
+>> Any ideas what could be causing this? Perhaps some clock is left ena=
+bled?
 
-Ah, I did originally have something like this but didn't want to add a
-flag. Back to plan A.
+ok I've figured it out myself - it's because of McBSP2 clock source
+selection. Pandora has rather unusual config (compared to other
+boards) that it gets McBSP2 audio clock through external pin. As long
+as it's set to PRCM functional clock (OMAP internal, reset default)
+the system suspends fine, but if it's set to external,
+per_pwrdm+core_pwrdm won't switch to lower power states.
 
-Liam
+Pandora sets this by calling snd_soc_dai_set_sysclk() from
+snd_soc_ops.hw_params callback. Now I wonder, where should I set the
+clock back so it suspends again, perhaps from snd_soc_ops.hw_free
+callback? Or maybe it should be handled by omap-mcbsp ASoC driver,
+perhaps something needs to be configured on McBSP itself for it to go
+idle with external clock set?
+
+--=20
+Gra=C5=BEvydas
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
