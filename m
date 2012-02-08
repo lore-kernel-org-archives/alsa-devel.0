@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
 Subject: Re: FW: [PATCH v3] ASoC: Add support for TI LM49453
  Audio codec
-Date: Wed, 8 Feb 2012 11:12:53 +0000
-Message-ID: <20120208111252.GA3120@opensource.wolfsonmicro.com>
+Date: Wed, 08 Feb 2012 16:47:00 +0530
+Message-ID: <1328699820.21099.12.camel@vkoul-udesk3>
 References: <290463D19D2E064191F1F96ECA480A89434AC4A96E@EXMAIL02.scwf.nsc.com>
-	<4F323BF5.4010309@ti.com> <1328692723.3955.4.camel@odin>
-	<1328693854.21099.5.camel@vkoul-udesk3>
-	<1328694877.3955.9.camel@odin>
+	<4F323BF5.4010309@ti.com>  <1328692723.3955.4.camel@odin>
+	<1328693854.21099.5.camel@vkoul-udesk3> <1328694877.3955.9.camel@odin>
+	<1328697415.21099.8.camel@vkoul-udesk3> <1328698650.3955.13.camel@odin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0665832803777580082=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 730ED24337
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 12:12:54 +0100 (CET)
-In-Reply-To: <1328694877.3955.9.camel@odin>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B1E224346
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 12:14:43 +0100 (CET)
+In-Reply-To: <1328698650.3955.13.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,66 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, M R Swami Reddy <MR.Swami.Reddy@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, M R Swami Reddy <MR.Swami.Reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2012-02-08 at 10:57 +0000, Liam Girdwood wrote:
+> On Wed, 2012-02-08 at 16:06 +0530, Vinod Koul wrote:
+> > On Wed, 2012-02-08 at 09:54 +0000, Liam Girdwood wrote:
+> > > Atm, the machine driver would have to enable any system clocks before
+> > > the codec driver could use them. 
+> > But how would machine driver know _when_?
+> > 
+> 
+> The machine driver gets all the PCM ops that the codec driver does and
+> is responsible for configuring CODEC PLLs and clocks (usually in it's
+> hw_params()).
+> 
+> > We want to dynamical turn off this clock when not is use and turn on
+> > only when codec is using. So I was thinking of turning this ON in
+> > codecs .set_bias_level callback, but how to propagate this into machine
+> > driver?
+> > 
+> 
+> It's usually done in the machine driver hw_params() since at this point
+> we know the rate, format etc that can have a bearing on the clock
+> configuration. You could switch it OFF in machine hw_free().
+For DAIs yes. But I also have a Vibra controller on codec, which can be
+configured and turned On using alsa controls. I treat the Vibra as input
+(or as recoently as Mark has done a signal generator) so mixer
+connections ensure loopback from Input to Output and my codec is powered
+ON. Those cases DAI doesn't help me.
 
---===============0665832803777580082==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
-Content-Disposition: inline
-
-
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 08, 2012 at 09:54:37AM +0000, Liam Girdwood wrote:
-
-> However, I think one of the intentions of the clk framework rework is to
-> allow non CPU clocks like CODEC PLLs to register as clocks and have
-> their dependencies worked out. I've no idea of the status of this atm,
-> but maybe Mark knows or you could ask on lkml.
-
-It's going nowhere slowly.  Seems unlikely for 3.4 at this point,
-there's been no activity for a month or two except for rmk getting
-annoyed at the lack of activity.  The current block is that very few
-people are converting the new clk_prepare() APIs, though there's other
-problems we seem unable to get any traction on beyond that.
-
-I rather suspect that the general lack of any end in sight is not
-helpful for motivation of random maintainers and none of the folks
-working on the core API are doing any of that legwork for them.
-
---LQksG6bCIzRHxTLp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPMlirAAoJEBus8iNuMP3dQpgP/3YRkgB+KPUBZp48G916rqaf
-wrykcau//rptF6ZKYHUQbdkWKktSyua2A3wqEIzRy6/LpAdeGUH/RT/x6GBdV1fR
-wTyOfCRqpOo22erDtXx0Ce+pNKQV+2E2Z8MYq5NXom9GY4b8W/+igx8Wy/WsMWEX
-3mEvx+ZGR+GHALZViZstcF379kfnGptURhByGB5+e8LkCyslnD8O/ug70EeVEwu2
-RUks4IyRngeubTV78Uy4e5xZcpNxOJu67ne8TS0w1xBQF0TWN60J4PbevSp29hcd
-Id1zqmQGO1lQgZbB7e+ijsasU30NxCD9f9xX0TQ81UbydioWbWwrcHysXz1uvjTi
-1cYJ2Fxd28CFVDT2Ws9qLto3DgeeNJa4QoRQqAEdKbNPY+lr897gdhZU5GQJUCRa
-98YE0otzDDlIs+DJRPUT5dJChe4YuNrfaiYdioVQ57ycPG88cWADJEZGW4fEV+Xh
-5aSN0wETzrfK3GqE2MoiKhwX7HbSJ+pS6hXDP6roSEDlXcc5BI/m1mOhFPRq6RyP
-H220rYCqvzQuNGA/JfbTF4FesNk+vcFgooXt81WnRai/uUpSPxpdSS6ub2x8HOvs
-YncX/Dk6iY7FPHZXETvAyehYzyJOZB+mDK8Iq3k7vyjM9xGOpc7q3/7Rg1raJvb1
-BvZQeluvVTDtgMpZ/6gs
-=pl0A
------END PGP SIGNATURE-----
-
---LQksG6bCIzRHxTLp--
-
---===============0665832803777580082==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Possibly a .set_machine_clock_input callback which can be called from
+codec driver in .set_bias_level callback?
 
 
---===============0665832803777580082==--
+-- 
+~Vinod
