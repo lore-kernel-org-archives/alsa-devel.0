@@ -1,113 +1,118 @@
-From: Trent Piepho <tpiepho@gmail.com>
-Subject: Re: [PATCH] ASoC: core: Convert single bit wide
- bitfields into bools
-Date: Wed, 8 Feb 2012 14:52:49 -0500
-Message-ID: <CA+7tXij_LDDFSYM8Wkyfwb1cRDAZ4DMEDVBL-vrnXs+W-8zm3w@mail.gmail.com>
-References: <1328727486-923-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<CA+7tXihEOP0a-JwEw7LGEhtj3WFR30M0t9PJZ1Ykwq+G5PLE1Q@mail.gmail.com>
-	<20120208191308.GA28103@opensource.wolfsonmicro.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [alsa-devel] tea575x-tuner improvements & use in maxiradio
+Date: Wed, 8 Feb 2012 20:57:43 +0100
+Message-ID: <201202082057.48045.linux@rainbow-software.org>
+References: <1328447827-9842-1-git-send-email-hverkuil@xs4all.nl> <201202072320.30911.linux@rainbow-software.org> <201202080829.25201.hverkuil@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC057103EB3
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 20:52:51 +0100 (CET)
-Received: by wgbdy1 with SMTP id dy1so676964wgb.20
-	for <alsa-devel@alsa-project.org>; Wed, 08 Feb 2012 11:52:49 -0800 (PST)
-In-Reply-To: <20120208191308.GA28103@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201202080829.25201.hverkuil@xs4all.nl>
+Content-Disposition: inline
+Sender: linux-media-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 8, 2012 at 2:13 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Feb 08, 2012 at 02:08:05PM -0500, Trent Piepho wrote:
->> Aren't you increasing the size of some of these structs considerably?
+On Wednesday 08 February 2012 08:29:25 Hans Verkuil wrote:
+> On Tuesday, February 07, 2012 23:20:19 Ondrej Zary wrote:
+> > On Sunday 05 February 2012 14:17:05 Hans Verkuil wrote:
+> > > These patches improve the tea575x-tuner module to make it up to date
+> > > with the latest V4L2 frameworks.
+> > >
+> > > The maxiradio driver has also been converted to use the tea575x-tuner
+> > > and I've used that card to test it.
+> > >
+> > > Unfortunately, this card can't read the data pin, so the new hardware
+> > > seek functionality has been tested only partially (yes, it seeks, but
+> > > when it finds a channel I can't read back the frequency).
+> > >
+> > > Ondrej, are you able to test these patches for the sound cards that use
+> > > this tea575x tuner?
+> > >
+> > > Note that these two patches rely on other work that I did and that
+> > > hasn't been merged yet. So it is best to pull from my git tree:
+> > >
+> > > http://git.linuxtv.org/hverkuil/media_tree.git/shortlog/refs/heads/radi
+> > >o-pc i2
+> > >
+> > > You can use the v4l-utils repository
+> > > (http://git.linuxtv.org/v4l-utils.git) to test the drivers: the
+> > > v4l2-compliance test should succeed and with v4l2-ctl you can test the
+> > > hardware seek:
+> > >
+> > > To seek down:
+> > >
+> > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=0
+> > >
+> > > To seek up:
+> > >
+> > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=1
+> > >
+> > > To do the compliance test:
+> > >
+> > > v4l2-compliance -r /dev/radio0
+> >
+> > It seems to work (tested with SF64-PCR - snd_fm801) but the seek is
+> > severely broken. Reading the frequency immediately after seek does not
+> > work, it always returns the old value (haven't found a delay that works).
+> > Reading it later (copied back snd_tea575x_get_freq function) works. The
+> > chip seeks randomly up or down, ignoring UP/DOWN flag and often stops at
+> > wrong place (only noise) or even outside the FM range.
+> >
+> > So I strongly suggest not to enable this (mis-)feature. The HW seems to
+> > be completely broken (unless there's some weird bug in the code).
 >
-> Hrm, possibly. =A0I'd rather have hoped that the bool type would work a
-> bit more sanely here.
+> Well, it seemed like a good idea at the time :-) I'll remove this
+> 'feature', it's really not worth our time to try and make this work for
+> these old cards.
+>
+> I wonder if you are able to test the ISA radio-sf16fmr2.c driver? I'm not
+> sure if you have the hardware, but since I changed this driver to use the
+> proper isa kernel framework I'd like to have this tested if possible.
 
-Linux defines bool as _Bool, which is a native type from C99.  _Bools
-in structs appear to be the same as unsigned char.  They each take one
-byte and have an alignment of one.
+The driver works, provided that linux/slab.h is included. It oopses on rmmod
+because dev_set_drvdata() call is missing from init.
+This patch fixes all of that and also removes (now useless) static fmr2_card:
 
-So in this struct:
-@@ -208,7 +208,7 @@ struct snd_soc_dai_driver {
-       /* DAI capabilities */
-       struct snd_soc_pcm_stream capture;
-       struct snd_soc_pcm_stream playback;
--       unsigned int symmetric_rates:1;
-+       bool symmetric_rates;
+--- a/drivers/media/radio/radio-sf16fmr2.c
++++ b/drivers/media/radio/radio-sf16fmr2.c
+@@ -9,6 +9,7 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>	/* Modules 			*/
+ #include <linux/init.h>		/* Initdata			*/
++#include <linux/slab.h>
+ #include <linux/ioport.h>	/* request_region		*/
+ #include <linux/io.h>		/* outb, outb_p			*/
+ #include <linux/isa.h>
+@@ -32,7 +33,6 @@ struct fmr2 {
+ 
+ /* the port is hardwired so no need to support multiple cards */
+ #define FMR2_PORT	0x384
+-static struct fmr2 fmr2_card;
+ 
+ /* TEA575x tuner pins */
+ #define STR_DATA	(1 << 0)
+@@ -188,7 +188,7 @@ static int fmr2_tea_ext_init(struct snd_tea575x *tea)
+ 
+ static int __init fmr2_probe(struct device *pdev, unsigned int dev)
+ {
+-	struct fmr2 *fmr2 = &fmr2_card;
++	struct fmr2 *fmr2;
+ 	int err;
+ 
+ 	fmr2 = kzalloc(sizeof(*fmr2), GFP_KERNEL);
+@@ -229,6 +229,7 @@ static int __init fmr2_probe(struct device *pdev, unsigned int dev)
+ 	}
+ 
+ 	printk(KERN_INFO "radio-sf16fmr2: SF16-FMR2 radio card at 0x%x.\n", fmr2->io);
++	dev_set_drvdata(pdev, fmr2);
+ 	return 0;
+ }
+ 
 
-       /* probe ordering - for components with runtime dependencies */
-       int probe_order;
 
-Changing from a bitfield to a bool doesn't make any difference, since
-both will consume 4 bytes as the int probe_order will need that for
-alignment.  Of course it might be possible to have less passing space
-by placing the bool or bitfield near other < 4 bytes members.
 
-This struct:
-@@ -230,13 +230,13 @@ struct snd_soc_dai {
-       struct snd_soc_dai_driver *driver;
-
-       /* DAI runtime info */
--       unsigned int capture_active:1;          /* stream is in use */
--       unsigned int playback_active:1;         /* stream is in use */
--       unsigned int symmetric_rates:1;
-+       bool capture_active;            /* stream is in use */
-+       bool playback_active;           /* stream is in use */
-+       bool symmetric_rates;
-       struct snd_pcm_runtime *runtime;
-       unsigned int active;
--       unsigned char pop_wait:1;
--       unsigned char probed:1;
-+       bool pop_wait;
-+       bool probed;
-
-Doesn't actually take more space either, 8 bytes total.  But if it was
-re-ordered so these bitfields were all together then bitfields with
-take four bytes vs 8 for the bools.
-
-This struct on the other hand:
-@@ -488,16 +488,16 @@ struct snd_soc_dapm_widget {
-       unsigned int mask;                      /* non-shifted mask */
-       unsigned int on_val;                    /* on state value */
-       unsigned int off_val;                   /* off state value */
--       unsigned char power:1;                  /* block power status */
--       unsigned char invert:1;                 /* invert the power bit */
--       unsigned char active:1;                 /* active stream on
-DAC, ADC's */
--       unsigned char connected:1;              /* connected codec pin */
--       unsigned char new:1;                    /* cnew complete */
--       unsigned char ext:1;                    /* has external widgets */
--       unsigned char force:1;                  /* force state */
--       unsigned char ignore_suspend:1;         /* kept enabled over suspen=
-d */
--       unsigned char new_power:1;              /* power from this run */
--       unsigned char power_checked:1;          /* power checked this run */
-+       bool power;                             /* block power status */
-+       bool invert;                            /* invert the power bit */
-+       bool active;                            /* active stream on
-DAC, ADC's */
-+       bool connected;                         /* connected codec pin */
-+       bool new;                               /* cnew complete */
-+       bool ext;                               /* has external widgets */
-+       bool force;                             /* force state */
-+       bool ignore_suspend;                    /* kept enabled over suspen=
-d */
-+       bool new_power;                         /* power from this run */
-+       bool power_checked;                     /* power checked this run */
-       int subseq;                             /* sort within widget type */
-
-It uses 12 bytes for bools and 4 for bitfields.
+-- 
+Ondrej Zary
