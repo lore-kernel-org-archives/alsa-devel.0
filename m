@@ -1,60 +1,73 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: ASoC related suspend problems on OMAP3
-Date: Wed, 08 Feb 2012 08:59:20 +0200
-Message-ID: <4F321D48.2010700@bitmer.com>
-References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [alsa-devel] tea575x-tuner improvements & use in maxiradio
+Date: Wed, 8 Feb 2012 08:29:25 +0100
+Message-ID: <201202080829.25201.hverkuil@xs4all.nl>
+References: <1328447827-9842-1-git-send-email-hverkuil@xs4all.nl> <201202072320.30911.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9773103C5F
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 07:58:30 +0100 (CET)
-In-Reply-To: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Kevin Hilman <khilman@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201202072320.30911.linux@rainbow-software.org>
+Sender: linux-media-owner@vger.kernel.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/08/2012 02:34 AM, Grazvydas Ignotas wrote:
-> Hi,
+On Tuesday, February 07, 2012 23:20:19 Ondrej Zary wrote:
+> On Sunday 05 February 2012 14:17:05 Hans Verkuil wrote:
+> > These patches improve the tea575x-tuner module to make it up to date with
+> > the latest V4L2 frameworks.
+> >
+> > The maxiradio driver has also been converted to use the tea575x-tuner and
+> > I've used that card to test it.
+> >
+> > Unfortunately, this card can't read the data pin, so the new hardware seek
+> > functionality has been tested only partially (yes, it seeks, but when it
+> > finds a channel I can't read back the frequency).
+> >
+> > Ondrej, are you able to test these patches for the sound cards that use
+> > this tea575x tuner?
+> >
+> > Note that these two patches rely on other work that I did and that hasn't
+> > been merged yet. So it is best to pull from my git tree:
+> >
+> > http://git.linuxtv.org/hverkuil/media_tree.git/shortlog/refs/heads/radio-pc
+> >i2
+> >
+> > You can use the v4l-utils repository (http://git.linuxtv.org/v4l-utils.git)
+> > to test the drivers: the v4l2-compliance test should succeed and with
+> > v4l2-ctl you can test the hardware seek:
+> >
+> > To seek down:
+> >
+> > v4l2-ctl -d /dev/radio0 --freq-seek=dir=0
+> >
+> > To seek up:
+> >
+> > v4l2-ctl -d /dev/radio0 --freq-seek=dir=1
+> >
+> > To do the compliance test:
+> >
+> > v4l2-compliance -r /dev/radio0
 > 
-> On OMAP3 pandora, system suspend stops working properly after using
-> audio at least once:
+> It seems to work (tested with SF64-PCR - snd_fm801) but the seek is severely 
+> broken. Reading the frequency immediately after seek does not work, it always 
+> returns the old value (haven't found a delay that works). Reading it later 
+> (copied back snd_tea575x_get_freq function) works. The chip seeks randomly up 
+> or down, ignoring UP/DOWN flag and often stops at wrong place (only noise) or 
+> even outside the FM range.
 > 
-> (just after boot):
-> # echo mem > /sys/power/state
-> [   12.578186] PM: Entering mem sleep
-> [   12.678802] PM: suspend of devices complete after 92.834 msecs
-> [   12.688201] PM: late suspend of devices complete after 3.173 msecs
-> [   17.607971] Successfully put all powerdomains to target state
-> 
-> # aplay /dev/zero
-> ^C
-> # echo mem > /sys/power/state
-> [  104.404663] PM: suspend of devices complete after 78.794 msecs
-> [  104.413909] PM: late suspend of devices complete after 3.021 msecs
-> [  106.601196] Powerdomain (per_pwrdm) didn't enter target state 1
-> [  106.607421] Powerdomain (core_pwrdm) didn't enter target state 1
-> [  106.613739] Could not enter target state in pm_suspend
-> 
-> I'm seeing this on 3.2, unable to verify on current Linus HEAD as
-> something else is preventing core/per low power states there.
-> Any ideas what could be causing this? Perhaps some clock is left enabled?
-> 
-If this is still working in 3.1 then one possible reason could be my
-mcbsp changes between commits 40246e..7bc0c4 that went to 3.2.
+> So I strongly suggest not to enable this (mis-)feature. The HW seems to be 
+> completely broken (unless there's some weird bug in the code).
 
-Unfortunately I'm not near my OMAP3 boards in coming days so I cannot
-bisect myself.
+Well, it seemed like a good idea at the time :-) I'll remove this 'feature',
+it's really not worth our time to try and make this work for these old cards.
 
--- 
-Jarkko
+I wonder if you are able to test the ISA radio-sf16fmr2.c driver? I'm not
+sure if you have the hardware, but since I changed this driver to use the
+proper isa kernel framework I'd like to have this tested if possible.
+
+Regards,
+
+	Hans
