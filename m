@@ -1,58 +1,154 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [alsa-devel] ASoC related suspend problems on OMAP3
-Date: Wed, 8 Feb 2012 18:19:38 +0200
-Message-ID: <CANOLnOPkirGhw43u8sen9YDrsZH_g+HXsdOAefbNMkXEasifyQ@mail.gmail.com>
-References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
-	<20120208115132.GA25756@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120208115132.GA25756@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: lrg@ti.com, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Kevin Hilman <khilman@ti.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_ functions
+Date: Wed,  8 Feb 2012 18:14:22 +0100
+Message-ID: <1328721262-20993-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, B29396@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 8, 2012 at 1:51 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Feb 08, 2012 at 02:34:38AM +0200, Grazvydas Ignotas wrote:
->> # aplay /dev/zero
->> ^C
->> # echo mem > /sys/power/state
->> [ =C2=A0104.404663] PM: suspend of devices complete after 78.794 mse=
-cs
->> [ =C2=A0104.413909] PM: late suspend of devices complete after 3.021=
- msecs
->> [ =C2=A0106.601196] Powerdomain (per_pwrdm) didn't enter target stat=
-e 1
->> [ =C2=A0106.607421] Powerdomain (core_pwrdm) didn't enter target sta=
-te 1
->> [ =C2=A0106.613739] Could not enter target state in pm_suspend
->>
->> I'm seeing this on 3.2, unable to verify on current Linus HEAD as
->> something else is preventing core/per low power states there.
->> Any ideas what could be causing this? Perhaps some clock is left ena=
-bled?
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-ok I've figured it out myself - it's because of McBSP2 clock source
-selection. Pandora has rather unusual config (compared to other
-boards) that it gets McBSP2 audio clock through external pin. As long
-as it's set to PRCM functional clock (OMAP internal, reset default)
-the system suspends fine, but if it's set to external,
-per_pwrdm+core_pwrdm won't switch to lower power states.
+The various devm_ functions allocate memory that is released when a driver
+detaches.  This patch uses these functions for data that is allocated in
+the probe function of a platform device and is only freed in the remove
+function.
 
-Pandora sets this by calling snd_soc_dai_set_sysclk() from
-snd_soc_ops.hw_params callback. Now I wonder, where should I set the
-clock back so it suspends again, perhaps from snd_soc_ops.hw_free
-callback? Or maybe it should be handled by omap-mcbsp ASoC driver,
-perhaps something needs to be configured on McBSP itself for it to go
-idle with external clock set?
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
---=20
-Gra=C5=BEvydas
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+---
+patch against git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+
+ sound/soc/mxs/mxs-saif.c |   51 ++++++++++-------------------------------------
+ 1 file changed, 11 insertions(+), 40 deletions(-)
+
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 76dc74d..63b0a81 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -632,7 +632,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
+ 
+-	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
++	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
+ 	if (!saif)
+ 		return -ENOMEM;
+ 
+@@ -652,29 +652,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(saif->clk);
+ 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
+ 			ret);
+-		goto failed_clk;
++		return ret;
+ 	}
+ 
+ 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!iores) {
+-		ret = -ENODEV;
+-		dev_err(&pdev->dev, "failed to get io resource: %d\n",
+-			ret);
+-		goto failed_get_resource;
+-	}
+ 
+-	if (!request_mem_region(iores->start, resource_size(iores),
+-				"mxs-saif")) {
+-		dev_err(&pdev->dev, "request_mem_region failed\n");
+-		ret = -EBUSY;
+-		goto failed_get_resource;
+-	}
+-
+-	saif->base = ioremap(iores->start, resource_size(iores));
++	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
+ 	if (!saif->base) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+ 		ret = -ENODEV;
+-		goto failed_ioremap;
++		goto failed_get_resource;
+ 	}
+ 
+ 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+@@ -682,7 +669,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = -ENODEV;
+ 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
+ 			ret);
+-		goto failed_ioremap;
++		goto failed_get_resource;
+ 	}
+ 	saif->dma_param.chan_num = dmares->start;
+ 
+@@ -691,14 +678,15 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = saif->irq;
+ 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
+ 			ret);
+-		goto failed_get_irq1;
++		goto failed_get_resource;
+ 	}
+ 
+ 	saif->dev = &pdev->dev;
+-	ret = request_irq(saif->irq, mxs_saif_irq, 0, "mxs-saif", saif);
++	ret = devm_request_irq(&pdev->dev, saif->irq, mxs_saif_irq, 0,
++			       "mxs-saif", saif);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to request irq\n");
+-		goto failed_get_irq1;
++		goto failed_get_resource;
+ 	}
+ 
+ 	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
+@@ -706,7 +694,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = saif->dma_param.chan_irq;
+ 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
+ 			ret);
+-		goto failed_get_irq2;
++		goto failed_get_resource;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, saif);
+@@ -714,7 +702,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "register DAI failed\n");
+-		goto failed_register;
++		goto failed_get_resource;
+ 	}
+ 
+ 	saif->soc_platform_pdev = platform_device_alloc(
+@@ -737,36 +725,19 @@ failed_pdev_add:
+ 	platform_device_put(saif->soc_platform_pdev);
+ failed_pdev_alloc:
+ 	snd_soc_unregister_dai(&pdev->dev);
+-failed_register:
+-failed_get_irq2:
+-	free_irq(saif->irq, saif);
+-failed_get_irq1:
+-	iounmap(saif->base);
+-failed_ioremap:
+-	release_mem_region(iores->start, resource_size(iores));
+ failed_get_resource:
+ 	clk_put(saif->clk);
+-failed_clk:
+-	kfree(saif);
+ 
+ 	return ret;
+ }
+ 
+ static int __devexit mxs_saif_remove(struct platform_device *pdev)
+ {
+-	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	struct mxs_saif *saif = platform_get_drvdata(pdev);
+ 
+ 	platform_device_unregister(saif->soc_platform_pdev);
+-
+ 	snd_soc_unregister_dai(&pdev->dev);
+-
+-	iounmap(saif->base);
+-	release_mem_region(res->start, resource_size(res));
+-	free_irq(saif->irq, saif);
+-
+ 	clk_put(saif->clk);
+-	kfree(saif);
+ 
+ 	return 0;
+ }
