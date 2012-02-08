@@ -1,15 +1,13 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: pcm: If pmdown_time is zero then shut
-	down DAPM immediately
-Date: Wed,  8 Feb 2012 20:11:24 +0000
-Message-ID: <1328731884-12468-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.3
+Date: Wed, 8 Feb 2012 20:15:08 +0000
+Message-ID: <20120208201508.GA13783@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7838273764946360857=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C031103899
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 21:11:28 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 01508103F96
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 21:15:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,31 +17,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since we've already got logic to special case immediate teardown of the
-stream we may as well use it if the pmdown_time has been set to zero by
-the application layer instead of scheduling a work item with zero delay.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-pcm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+--===============7838273764946360857==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ef28dd5..d7bb268 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -369,7 +369,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	cpu_dai->runtime = NULL;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (codec->ignore_pmdown_time ||
-+		if (!rtd->pmdown_time || codec->ignore_pmdown_time ||
- 		    rtd->dai_link->ignore_pmdown_time) {
- 			/* powered down playback stream now */
- 			snd_soc_dapm_stream_event(rtd,
--- 
-1.7.9.rc1
+
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 43b6cec27e1e50a1de3eff47e66e502f3fe7e66e:
+
+  ASoC: wm_hubs: Correct line input to line output 2 paths (2012-02-01 23:55:56 +0000)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-3.3
+
+for you to fetch changes up to a7c4183be2d6a7da8c97a9b671b5f3aed321127e:
+
+  ASoC: wm8994: Disable line output discharge prior to ramping VMID (2012-02-08 19:52:00 +0000)
+
+----------------------------------------------------------------
+A few small WM8994 updates to go on top of the previous lot of things
+that were sent.  They collide with some -next work so I'd really like to
+get them into 3.3-rc3 if possible to merge back up into the -next code.
+All driver specific and unexciting in the grand scheme of things.
+----------------------------------------------------------------
+
+Mark Brown (3):
+      ASoC: wm8994: Enabling VMID should take a runtime PM reference
+      ASoC: wm8994: Fix typo in VMID ramp setting
+      ASoC: wm8994: Disable line output discharge prior to ramping VMID
+
+ sound/soc/codecs/wm8994.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPMtfFAAoJEBus8iNuMP3dMewP/0xq7f5/bq1RdLb1Omi0ol+F
+awq8hiCj9FIzDla28mKyjanevAkYb4uJ0ImU4gCGVhV+s4H5N3hgPHVkLTeJj0ne
+pcHuhPIJY3idKdeE9H2CPAZaEWpa4uODlq8NxrCboabDoXWNowd269XlXruX/n0m
+4Of4x2TwSha2WAL/xCePC61O4q6+4nAqcEDkdKlD8b4zYac0mkbnXVFyhelZ/GTP
+Asew301QPvDjE9HdRrzujQ9b+X+Flv4Fe4tc3IzbEiw1j+FLj5WNK7UuOgxhoHDZ
+d2NZPPcV4xifonY38mPihqcRNjvLt8nW5BjQsPZqqOd0fppq+yBHjjcpaN6BSnm+
+rW6PsNfPS3S2d9cxO/X+A/JFLs5Dd/X1OsQPNJoTvR0tQgUVaEGG5LeMF01T5jpV
+D1Hk35MX0u/ebcHcIEJDsDCjIea9fjziADlk/o0p3++roeT7NUD/+w71VlwPofdQ
+eipC2nklERde+mWdSN9BqwOUOdux9tawA7nB+HztiBiWKUXrudL0uYAHhJG5X46e
+wPgqNLIvhVaSjAiTrzAmWKsbodYsy+UV/+JgV7T5t97GjKXAeVwPg8uMjfK93/qh
+Ek0taX7epkx032sDLBUp/4hAWyx/htUaSFV3b+yzNe9+IjE6Mms4N0qjppZG44kb
+6NLSOPEl10M5titGxBDZ
+=cnf9
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
+
+--===============7838273764946360857==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7838273764946360857==--
