@@ -1,20 +1,23 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
- reporting with core jack reporting
-Date: Wed, 08 Feb 2012 14:35:29 +0100
-Message-ID: <4F327A21.8030805@canonical.com>
-References: <1328644128-32630-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1328644128-32630-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4F323405.8080902@canonical.com>
-	<20120208114642.GG3120@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: FW: [PATCH v3] ASoC: Add support for TI LM49453
+ Audio codec
+Date: Wed, 8 Feb 2012 13:54:41 +0000
+Message-ID: <20120208135440.GC5943@opensource.wolfsonmicro.com>
+References: <290463D19D2E064191F1F96ECA480A89434AC4A96E@EXMAIL02.scwf.nsc.com>
+	<4F323BF5.4010309@ti.com> <1328692723.3955.4.camel@odin>
+	<1328693854.21099.5.camel@vkoul-udesk3>
+	<1328694877.3955.9.camel@odin>
+	<1328697415.21099.8.camel@vkoul-udesk3>
+	<1328698650.3955.13.camel@odin>
+	<20120208112059.GB3120@opensource.wolfsonmicro.com>
+	<1328707650.3955.17.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6744261798746824247=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 9F41524419
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 14:35:30 +0100 (CET)
-In-Reply-To: <20120208114642.GG3120@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B973D24426
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2012 14:54:43 +0100 (CET)
+In-Reply-To: <1328707650.3955.17.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +27,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, M R Swami Reddy <MR.Swami.Reddy@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/08/2012 12:46 PM, Mark Brown wrote:
-> On Wed, Feb 08, 2012 at 09:36:21AM +0100, David Henningsson wrote:
->> On 02/07/2012 08:48 PM, Mark Brown wrote:
->
->> I'd like these to match the names currently used in HDA, like this:
->
->> 	{ SW_MICROPHONE_INSERT, "Mic" },
->
-> It seems odd to abbreviate this and nothing else but I'm not that
-> fussed either way.
->
->> 	{ SW_LINEOUT_INSERT, "Line-Out" },
->> 	{ SW_VIDEOOUT_INSERT, "Video-Out" },
->
-> For these it's really not normal English to hyphenate them, it looks
-> strange to do so.
 
-I guess it could be easier to parse if we avoid spaces in names, but 
-right now there is no such parser AFAIK anyway, so it does not matter 
-much. Video-Out is not present in HDA; I did that change to make it 
-consistent with "Line-Out".
+--===============6744261798746824247==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uXxzq0nDebZQVNAZ"
+Content-Disposition: inline
 
->> 	{ SW_LINEIN_INSERT, "Line" },
->
-> It seems odd and a bit undescriptive to not specify the description here
-> when it is specified for the outputs?
->
->> Actually, it matters less if we settle on the standard you set
->> above, or what the HDA currently does, as long as the names are the
->> same.
->
-> Except for Mic where I don't mind either way I'd rather bring the HDA
-> names into (but note that the idea is to remove the HDA specific jack
-> controls - I think these names are used in other places though?).
 
-I'll let Takashi have the final say about the names. But note that for 
-HDA these names will not be enough, e g, we might have one "Front Mic" 
-and one "Rear Mic" and need to know which one is which.
+--uXxzq0nDebZQVNAZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+On Wed, Feb 08, 2012 at 01:27:30PM +0000, Liam Girdwood wrote:
+> On Wed, 2012-02-08 at 11:20 +0000, Mark Brown wrote:
+
+> > I'd generally expect to see new machine drivers doing this stuff in
+> > set_bias_level() and possibly also having additional startup code in
+> > hw_params() depending on how flexible the clocking is.
+
+> The scope of set_bias_level() is now starting to increase to more than
+> just the card bias power. It may be worthwhile at some point to rename
+> it to cover all possibilities.
+
+I'm really not sure it's worth bothering going round and changing
+everything, and obviously the main candidate name is power which I'd
+worry is just going to confuse people even more into thinking they don't
+need to bother with DAPM when really it'd be helpful to made DAPM
+mandatory.
+
+For many of the things where it's important to have clocks for longer
+the clocks are being used as part of the biasing - the main reason we
+need clocks more these days is for things like the charge pumps which
+are not a million miles off what VMID was on older CODECs.
+
+--uXxzq0nDebZQVNAZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPMn0pAAoJEBus8iNuMP3demAP/3O+dU6IqKnDoTvimQjqBJP4
+OawY/AZ9V/HhSIQpLHH/YcxUeIzpabsybeT7vD2ISReySVGxXw0xeJKy7ecbFG0y
+E+dXR+jYR4rjB6gMieBqD8jnhBYXrecykip9eTP4Wz29ip18Q+MUX3k374E1QWic
+7QiQgmyCn9/HqIbfEExDAhoCU9yLU3EAT28UYbeFqBC6Irj3+AcQkqS5Gs0xeYLQ
+/3whYZ6XOViIExR5DkgKwDLoLSNwqxM9MrnZMZS6gOh6J38L3qNQVV9c73hhwex4
+t2Pk+WilbDRJeWy+y7hGi8Yy6d5yRmhJncImwl5Y3x1c75XqOL/ERu1/q9DhUWWE
+R9JNQ1gcCj+gxDhJcr27d46DBYAw1f3XFB52DZjtgCLW/RL66lyrOD8QZtZn4Q2t
+fHRprYXidN7YGdJiD3Bai4EXrWe30F0GjWuxjh3lKbonBOi3HS/4A0mys2pKscBb
+VHr48ogxlaAAOL5gJF3kivtEkjGmmwayF4A0h2S12gbVZxCV6UcB/+jl5QatUuB9
+C380yXiX0K051Ddk4vRJe6R3JQdQAew8tM691Qr38/auzhxp9cYIzX2YnOrLzAOm
+4NcN5d50RyiKtDIxzYRHL+HcnXpal7Gq53H7HZ/T/SKiQVqTUVcJDkC6qzPtB8ry
+FF/vxktzYVnk1n7bQTAF
+=mM9B
+-----END PGP SIGNATURE-----
+
+--uXxzq0nDebZQVNAZ--
+
+--===============6744261798746824247==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6744261798746824247==--
