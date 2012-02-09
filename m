@@ -1,19 +1,21 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_
-	functions
-Date: Thu, 9 Feb 2012 19:45:41 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1202091945150.1845@localhost6.localdomain6>
-References: <1328721262-20993-1-git-send-email-Julia.Lawall@lip6.fr>
-	<7FE21149F4667147B645348EC60578850C1864@039-SN2MPN1-012.039d.mgd.msft.net>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for
+ imx27pdk using mc13783 codec
+Date: Thu, 9 Feb 2012 19:24:09 -0200
+Message-ID: <CAOMZO5BpUQz3kpkWmDngCiwp5mJyDOicvk9pLSXuejDCvD70Jw@mail.gmail.com>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+	<2851519.TkeCdfD43W@laptop> <20120202173212.GA1785@sirena.org.uk>
+	<1635894.OLo8mNMWim@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail4-relais-sop.national.inria.fr
-	(mail4-relais-sop.national.inria.fr [192.134.164.105])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0CA3103937
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 19:45:41 +0100 (CET)
-In-Reply-To: <7FE21149F4667147B645348EC60578850C1864@039-SN2MPN1-012.039d.mgd.msft.net>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5191A10390A
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 22:24:10 +0100 (CET)
+Received: by eekd49 with SMTP id d49so688557eek.38
+	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2012 13:24:10 -0800 (PST)
+In-Reply-To: <1635894.OLo8mNMWim@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Julia Lawall <Julia.Lawall@lip6.fr>, Liam Girdwood <lrg@ti.com>
+To: =?UTF-8?Q?Philippe_R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, J?rgen Lambrecht <juergen.lambrecht@gmail.com>, Lambrecht J?rgen <J.Lambrecht@televic.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel@pengutronix.de, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Feb 2012, Dong Aisheng-B29396 wrote:
-
->> -----Original Message-----
->> From: Julia Lawall [mailto:Julia.Lawall@lip6.fr]
->> Sent: Wednesday, February 08, 2012 9:14 AM
->> To: Liam Girdwood
->> Cc: kernel-janitors@vger.kernel.org; Mark Brown; Jaroslav Kysela; Takashi Iwai;
->> alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; Dong Aisheng-B29396
->> Subject: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_ functions
->> Importance: High
->>
->> From: Julia Lawall <Julia.Lawall@lip6.fr>
->>
->> The various devm_ functions allocate memory that is released when a driver
->> detaches.  This patch uses these functions for data that is allocated in the
->> probe function of a platform device and is only freed in the remove function.
->>
->> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
->>
->> ---
->> patch against git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
->>
-> I still failed to apply against for-3.4 branch.
-> Can you switch to for-3.4 branch and then re-generate the patch based on it?
-
-OK.
-
-julia
+SGkgU2FzY2hhLAoKMjAxMi8yLzMgUGhpbGlwcGUgUsOpdG9ybmF6IDxwaGlsaXBwZS5yZXRvcm5h
+ekBlcGZsLmNoPjoKCj4gQnV0IGJlZm9yZSBpbnZlc3RpbmcgdG9vIG11Y2ggdGltZSBvbiBpdCBJ
+IHdvdWxkIHJlYWxseSBsaWtlIHRvIGhhdmUgU2FzY2hhCj4gb3BpbmlvbiBhYm91dCBpdCBhcyBo
+ZSBpcyB0aGUgbWFpbiBhdXRob3Igb2YgdGhlIG1jMTM3ODMgY29kZWMgY29kZS4KCkNvdWxkIHlv
+dSBwbGVhc2UgY29tbWVudD8KClRoYW5rcywKCkZhYmlvIEVzdGV2YW0KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
