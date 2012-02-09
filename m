@@ -1,60 +1,45 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] [trivial] twl4030: Fix typo in twl4030.c
-Date: Thu, 09 Feb 2012 09:19:21 +0200
-Message-ID: <4F337379.9060006@ti.com>
-References: <1328702014-1956-1-git-send-email-standby24x7@gmail.com>
+Subject: Re: [PATCH v2 0/7] MFD: twl6040: Conversion to i2c driver
+Date: Thu, 09 Feb 2012 09:47:22 +0200
+Message-ID: <4F337A0A.1010101@ti.com>
+References: <1328619678-26080-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with SMTP id DA35B1038D6
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 08:19:18 +0100 (CET)
-Received: by mail-lpp01m010-f51.google.com with SMTP id s15so1499924lag.24
-	for <alsa-devel@alsa-project.org>; Wed, 08 Feb 2012 23:19:16 -0800 (PST)
-In-Reply-To: <1328702014-1956-1-git-send-email-standby24x7@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Masanari Iida <standby24x7@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, trivial@kernel.org, linux-kernel@vger.kernel.org, "Girdwood,
-	Liam" <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1328619678-26080-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dtor@mail.ru>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On 02/08/2012 01:53 PM, Masanari Iida wrote:
-> Correct spelling "memroy" to "memory" in
-> sound/soc/codecs/twl4030.c
-> 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
-> ---
->  sound/soc/codecs/twl4030.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index 3039ba2..d7eee0d 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -2221,7 +2221,7 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
->  
->  	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
->  	if (twl4030 == NULL) {
-> -		printk("Can not allocate memroy\n");
-> +		printk("Can not allocate memory\n");
->  		return -ENOMEM;
->  	}
->  	snd_soc_codec_set_drvdata(codec, twl4030);
+On 02/07/2012 03:01 PM, Peter Ujfalusi wrote:
+> Still in the to-do list:
+> Implement proper regulator support on SDP4430, and PandaBoard for the=
+ needed
+> supplies by the twl6040.
+> The supply source is the same on both boards:
+> TWL6040 VDD2V1 <- TWL6030 V2V1 SMPS
+> TWL6040 VDDVIO <- TWL6030 V1V8 SMPS
+>=20
+> There seams to be no control implemented in the regulator driver for =
+these SMPS
+> regulators, so this need to be done first.
+>=20
+> The reason that I'm sending this series (even when I know that the pr=
+oper
+> regulator support is missing for SDP4430/PandaBoard) is to get feedba=
+ck for the
+> rest of the series, so I can include the fixes in the v3 series.
 
-Could you please resend the patch with the ASoC maintainers on CC (Liam,
-Mark), and the alsa-devel list.
-Thank you.
+I will separate the i2c driver conversion, and the regulator support to
+avoid bloating this series.
+Could you review the first three patch from this series (the i2c driver
+conversion part)?
+I can as well resend only that as version v3, but I would like to apply
+the fixes for the issues you might find before I send it.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Thank you,
+P=E9ter
