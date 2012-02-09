@@ -1,33 +1,31 @@
-From: Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH RESEND] [trivial] ASoC: Fix typo in twl4030.c
-Date: Thu,  9 Feb 2012 23:46:08 +0900
-Message-ID: <1328798768-2058-1-git-send-email-standby24x7@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lrg@ti.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: trivial@kernel.org, linux-kernel@vger.kernel.org, standby24x7@gmail.com, tiwai@suse.de
+From: Vikram Narayanan <vikram186@gmail.com>
+Subject: Submitting patches for alsa-utils
+Date: Thu, 9 Feb 2012 07:45:43 -0800
+Message-ID: <CAHwEkO2Em8LzFP2psMwyjV6iSN2fLGgkpFHcuSD6dTV4rGe36A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7170C24470
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 16:46:15 +0100 (CET)
+Received: by lags15 with SMTP id s15so1575565lag.38
+	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2012 07:46:13 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Correct spelling "memroy" to "memory" in
-sound/soc/codecs/twl4030.c
+Hello,
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
----
- sound/soc/codecs/twl4030.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Is there a separate mailing list for alsa-lib and alsa-utils?
+Or, Shall I submit patches to this list?
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 3039ba2..d7eee0d 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -2221,7 +2221,7 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
- 
- 	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
- 	if (twl4030 == NULL) {
--		printk("Can not allocate memroy\n");
-+		printk("Can not allocate memory\n");
- 		return -ENOMEM;
- 	}
- 	snd_soc_codec_set_drvdata(codec, twl4030);
--- 
-1.7.6.5
+~Vikram
