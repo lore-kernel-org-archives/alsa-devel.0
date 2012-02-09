@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: da7210: Add support for PLL and
-	SRM
-Date: Thu, 9 Feb 2012 12:50:03 +0000
-Message-ID: <20120209125003.GH3058@opensource.wolfsonmicro.com>
-References: <1328095529.15257.7.camel@matrix>
-	<20120201115035.GC5648@opensource.wolfsonmicro.com>
-	<1328621149.26721.18.camel@matrix>
-	<20120207191943.GB15929@opensource.wolfsonmicro.com>
-	<1328791340.22077.3.camel@matrix>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: ASoC related suspend problems on OMAP3
+Date: Thu, 9 Feb 2012 15:41:03 +0200
+Message-ID: <CANOLnOOEd=LWa4hUpfBKgg4K8627S0W5Dzv1dZso93EuL31D8g@mail.gmail.com>
+References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com>
+	<20120208115132.GA25756@sirena.org.uk>
+	<CANOLnOPkirGhw43u8sen9YDrsZH_g+HXsdOAefbNMkXEasifyQ@mail.gmail.com>
+	<4F338AFA.4000204@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5049855324525925569=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3793C2433D
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 13:50:06 +0100 (CET)
-In-Reply-To: <1328791340.22077.3.camel@matrix>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71593243ED
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 14:41:04 +0100 (CET)
+Received: by yenm14 with SMTP id m14so830656yen.38
+	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2012 05:41:03 -0800 (PST)
+In-Reply-To: <4F338AFA.4000204@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Kevin Hilman <khilman@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, lrg@ti.com, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5049855324525925569==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LiQwW4YX+w4axhAx"
-Content-Disposition: inline
-
-
---LiQwW4YX+w4axhAx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 09, 2012 at 06:12:20PM +0530, Ashish Chavan wrote:
-
-> BTW I am also planning to add SPI support to this driver. Just want to
-> know if it should be done via reg-map APIs? If yes, then do I need to
-> convert existing I2C stuff too to use reg-map?
-
-Yes, please.  The idea is that all of the I2C and SPI drivers will get
-converted over.
-
---LiQwW4YX+w4axhAx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPM8CgAAoJEBus8iNuMP3dgG8P/AgnmyDoMXMTkyuudtEMQKU7
-CCQ9U2iKnpx/DV3KiqMFCmP7dfxVtJMulym3if1oyDPupXthwrwKvdVoeExSsNDl
-HayyWqWYBWscM22Rsbb5K6nuJYDdSNVyltexpt6L8wg6zxZboYWeA4z6dcPSyp44
-p7IcsyeKxNQ3Ccru8chObbaAs1djl1ka+EXfEkmClJ8tg7hLEsE32b/NaeMaJPco
-CNQJJ8BJNfQRxYHsG7CnX0iwXXVLUSkBqKf+F4OosRRPyJ6JqIxKQVGU8SuotyJH
-m/F3ab4E4IlEo1RtP6uBxrZ/bXWL/sbolLWYDBmnp4KGJLBJ1L5ms1kvB3PNqRRh
-FqSTQLIsg4KNUlhyQ9yAl1SA5TeU2zPkliuR8S5wlHV72YcehkN3ZtvmcXZf5BSw
-FeCyMvsxR1/0KhA62iFkTAvFnTfRsw2t8OQMwH/0CtI39jeLAl1qs9MDrN+lH9sd
-ZInc10e93iREZ+DMr6wLwd1gHigHak9ngAwXPC3TwL3mVG5r+uTOWSP70qN4EQG9
-vNr1R3Uo3tFPHvFp+VHDY053Ly8jDNN39TB7O5l8Qbx0oFw+W1FuLiku5oij6VAl
-sbxNdlfg2Hw9kgLpgJVkNRzEqcDgoor9sFbWBQ87VlVc/odoa6eNoyrGvJuM5UVP
-wIXa2i54dYnSiEsaSqvt
-=Pz40
------END PGP SIGNATURE-----
-
---LiQwW4YX+w4axhAx--
-
---===============5049855324525925569==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5049855324525925569==--
+T24gVGh1LCBGZWIgOSwgMjAxMiBhdCAxMDo1OSBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDIvMDgvMjAxMiAwNjoxOSBQTSwgR3JhenZ5ZGFz
+IElnbm90YXMgd3JvdGU6Cj4+IG9rIEkndmUgZmlndXJlZCBpdCBvdXQgbXlzZWxmIC0gaXQncyBi
+ZWNhdXNlIG9mIE1jQlNQMiBjbG9jayBzb3VyY2UKPj4gc2VsZWN0aW9uLiBQYW5kb3JhIGhhcyBy
+YXRoZXIgdW51c3VhbCBjb25maWcgKGNvbXBhcmVkIHRvIG90aGVyCj4+IGJvYXJkcykgdGhhdCBp
+dCBnZXRzIE1jQlNQMiBhdWRpbyBjbG9jayB0aHJvdWdoIGV4dGVybmFsIHBpbi4gQXMgbG9uZwo+
+PiBhcyBpdCdzIHNldCB0byBQUkNNIGZ1bmN0aW9uYWwgY2xvY2sgKE9NQVAgaW50ZXJuYWwsIHJl
+c2V0IGRlZmF1bHQpCj4+IHRoZSBzeXN0ZW0gc3VzcGVuZHMgZmluZSwgYnV0IGlmIGl0J3Mgc2V0
+IHRvIGV4dGVybmFsLAo+PiBwZXJfcHdyZG0rY29yZV9wd3JkbSB3b24ndCBzd2l0Y2ggdG8gbG93
+ZXIgcG93ZXIgc3RhdGVzLgo+Pgo+PiBQYW5kb3JhIHNldHMgdGhpcyBieSBjYWxsaW5nIHNuZF9z
+b2NfZGFpX3NldF9zeXNjbGsoKSBmcm9tCj4+IHNuZF9zb2Nfb3BzLmh3X3BhcmFtcyBjYWxsYmFj
+ay4gTm93IEkgd29uZGVyLCB3aGVyZSBzaG91bGQgSSBzZXQgdGhlCj4+IGNsb2NrIGJhY2sgc28g
+aXQgc3VzcGVuZHMgYWdhaW4sIHBlcmhhcHMgZnJvbSBzbmRfc29jX29wcy5od19mcmVlCj4+IGNh
+bGxiYWNrPyBPciBtYXliZSBpdCBzaG91bGQgYmUgaGFuZGxlZCBieSBvbWFwLW1jYnNwIEFTb0Mg
+ZHJpdmVyLAo+PiBwZXJoYXBzIHNvbWV0aGluZyBuZWVkcyB0byBiZSBjb25maWd1cmVkIG9uIE1j
+QlNQIGl0c2VsZiBmb3IgaXQgdG8gZ28KPj4gaWRsZSB3aXRoIGV4dGVybmFsIGNsb2NrIHNldD8K
+Pgo+IEkgYXNzdW1lIHRoaXMgd29ya2VkIGluIHRoZSBwYXN0IG9uIHBhbmRvcmEgKHN1c3BlbmQp
+LCByaWdodD8KCk5vdCByZWFsbHksIHdlIGRpZCBub3QgaGF2ZSB3b3JraW5nIHN1c3BlbmQgdW50
+aWwgbm93IGR1ZSB0byB1bnJlbGF0ZWQKZHJpdmVyIGlzc3VlcyAod2UgYXJlIHNsb3csIEkga25v
+dy4uKS4KCj4gQ2FuIHlvdSB0cnkgb25lIF9oYWNrXyB0byBzZWUgaWYgaXQgaGVscHM/Cj4gSW4g
+b21hcF9tY2JzcF9yZXF1ZXN0IGZ1bmN0aW9uOgo+IHNldCB0aGUgQ0xPQ0tBQ1RJVklUWSBmaWVs
+ZCB0byAweDMgaW4gdGhlIHN5c2NvbmZpZyByZWdpc3Rlci4KPiBPciB5b3UgY2FuIGFzIHdlbGwg
+dHJ5IHRvIGRvIHRoZSBzYW1lIGluCj4gbWFjaC1vbWFwMi9vbWFwX2h3bW9kXzN4eHhfZGF0YS5j
+LCBsb29rIGZvciBvbWFwM3h4eF9tY2JzcF9zeXNjLCBhbmQKPiBjaGFuZ2UgdGhlIC5jbG9ja2Fj
+dCA9IDB4MiB0byAweDMuCj4KPiBOb3Qgc3VyZSBpZiB0aGlzIGhlbHBzLCBidXQgSSB3b3VsZCBi
+ZSBpbnRlcmVzdGVkIHRvIHNlZSB0aGUgcmVzdWx0cy4uLgoKSSd2ZSBjaGFuZ2VkIHRoZSBod21v
+ZCBkYXRhIGFuZCBpdCBkb2Vzbid0IHNlZW0gdG8gaGVscC4gQWZ0ZXIKcGxheWluZywganVzdCBi
+ZWZvcmUgc3VzcGVuZCwgSSd2ZSB0cmllZCB0byByZWFkIG1jYnNwMiBTWVNDT05GSUcKdGhyb3Vn
+aCAvZGV2L21lbSBhbmQgaXQgc2VlbXMgQ0xPQ0tBQ1RJVklUWSBpcyAwIGF0IHRoYXQgdGltZS4g
+QWxzbwp0cmllZCBmb3JjaW5nIENMT0NLQUNUSVZJVFkgdG8gMywgMiwgMSB1c2luZyB0aGUgc2Ft
+ZSBtZXRob2QganVzdApiZWZvcmUgc3VzcGVuZCwgZGlkbid0IGhlbHAgZWl0aGVyLiBBcyBzb29u
+IGFzIEkgY2xlYXJlZCBNQ0JTUDJfQ0xLUwppbiBDT05UUk9MX0RFVkNPTkYwIGl0IHN0YXJ0ZWQg
+c3VzcGVuZGluZyBwcm9wZXJseS4KCgotLSAKR3Jhxb52eWRhcwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
