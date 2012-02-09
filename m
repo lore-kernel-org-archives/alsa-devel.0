@@ -1,48 +1,37 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [alsa-devel] ASoC related suspend problems on OMAP3
-Date: Thu, 09 Feb 2012 10:59:38 +0200
-Message-ID: <4F338AFA.4000204@ti.com>
-References: <CANOLnOMhetqt0ZCCfS0UwnfE0DxLhLhK9=7t0BaQ1SUsv0OWjw@mail.gmail.com> <20120208115132.GA25756@sirena.org.uk> <CANOLnOPkirGhw43u8sen9YDrsZH_g+HXsdOAefbNMkXEasifyQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: twl6040: Move ignore_pmdown_time
+ to driver struct
+Date: Thu, 09 Feb 2012 12:34:58 +0200
+Message-ID: <4F33A152.3020703@ti.com>
+References: <1328726238-556-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1328726238-556-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <CANOLnOPkirGhw43u8sen9YDrsZH_g+HXsdOAefbNMkXEasifyQ@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, alsa-devel@alsa-project.org, Kevin Hilman <khilman@ti.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog121.obsmtp.com (na3sys009aog121.obsmtp.com
+	[74.125.149.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FDDC24380
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 11:34:55 +0100 (CET)
+Received: by mail-lpp01m010-f46.google.com with SMTP id u2so1677104lag.5
+	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2012 02:34:53 -0800 (PST)
+In-Reply-To: <1328726238-556-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/08/2012 06:19 PM, Grazvydas Ignotas wrote:
-> ok I've figured it out myself - it's because of McBSP2 clock source
-> selection. Pandora has rather unusual config (compared to other
-> boards) that it gets McBSP2 audio clock through external pin. As long
-> as it's set to PRCM functional clock (OMAP internal, reset default)
-> the system suspends fine, but if it's set to external,
-> per_pwrdm+core_pwrdm won't switch to lower power states.
->=20
-> Pandora sets this by calling snd_soc_dai_set_sysclk() from
-> snd_soc_ops.hw_params callback. Now I wonder, where should I set the
-> clock back so it suspends again, perhaps from snd_soc_ops.hw_free
-> callback? Or maybe it should be handled by omap-mcbsp ASoC driver,
-> perhaps something needs to be configured on McBSP itself for it to go
-> idle with external clock set?
+On 02/08/2012 08:37 PM, Mark Brown wrote:
+> It's set unconditionally.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-I assume this worked in the past on pandora (suspend), right?
-
-Can you try one _hack_ to see if it helps?
-In omap_mcbsp_request function:
-set the CLOCKACTIVITY field to 0x3 in the sysconfig register.
-Or you can as well try to do the same in
-mach-omap2/omap_hwmod_3xxx_data.c, look for omap3xxx_mcbsp_sysc, and
-change the .clockact =3D 0x2 to 0x3.
-
-Not sure if this helps, but I would be interested to see the results...
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
