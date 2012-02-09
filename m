@@ -1,20 +1,22 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: pcm: If pmdown_time is zero then
- shut down DAPM immediately
-Date: Thu, 09 Feb 2012 08:33:05 +0000
-Message-ID: <1328776385.3951.1.camel@odin>
-References: <1328731884-12468-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ALSA: PCM - Add PCM creation API for
+ internal PCMs.
+Date: Thu, 09 Feb 2012 08:41:02 +0000
+Message-ID: <1328776862.3951.3.camel@odin>
+References: <1328733211-3234-1-git-send-email-lrg@ti.com>
+	<s5hk43xypmq.wl%tiwai@suse.de> <20120208225728.GA6596@sirena.org.uk>
+	<s5hhaz0jtw4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
-	[74.125.149.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CD63103FE8
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 09:33:23 +0100 (CET)
-Received: by wgbdt14 with SMTP id dt14so955870wgb.27
-	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2012 00:33:08 -0800 (PST)
-In-Reply-To: <1328731884-12468-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
+	[74.125.149.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C32F103FE9
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2012 09:41:19 +0100 (CET)
+Received: by werp13 with SMTP id p13so1103629wer.12
+	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2012 00:41:04 -0800 (PST)
+In-Reply-To: <s5hhaz0jtw4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-08 at 20:11 +0000, Mark Brown wrote:
-> Since we've already got logic to special case immediate teardown of the
-> stream we may as well use it if the pmdown_time has been set to zero by
-> the application layer instead of scheduling a work item with zero delay.
+On Thu, 2012-02-09 at 09:25 +0100, Takashi Iwai wrote:
+> At Wed, 8 Feb 2012 22:57:34 +0000,
+> Mark Brown wrote:
+> > 
+> > [1  <text/plain; us-ascii (7bit)>]
+> > On Wed, Feb 08, 2012 at 10:35:57PM +0100, Takashi Iwai wrote:
+> > > At Wed,  8 Feb 2012 20:33:31 +0000,
+> > > Liam Girdwood wrote:
+> > 
+> > > > The new ASoC dynamic PCM core needs to create PCMs and substreams that are
+> > > > for use by internal ASoC drivers only and not visible to userspace for
+> > > > direct IO. These new PCMs are similar to regular PCMs expect they have no
+> > > > device nodes or procfs entries. The ASoC component drivers use them in exactly
+> > > > the same way as regular PCMs for PCM and DAI operations.
+> > 
+> > > The changes look OK to me, but could you fix a few errors/warnings
+> > > by checkpatch.pl?
+> > 
+> > Since Liam's got a whole raft of ASoC changes depending on this one can
+> > you please either apply it to a branch or ack it for merge via ASoC?
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-pcm.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> OK, now I fixed coding-style issues by myself and applied the patch.
+> It's found in an individual branch, topic/pcm-internal of sound git
+> tree.  Feel free to pull this branch to your trees.
 > 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index ef28dd5..d7bb268 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -369,7 +369,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
->  	cpu_dai->runtime = NULL;
->  
->  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> -		if (codec->ignore_pmdown_time ||
-> +		if (!rtd->pmdown_time || codec->ignore_pmdown_time ||
->  		    rtd->dai_link->ignore_pmdown_time) {
->  			/* powered down playback stream now */
->  			snd_soc_dapm_stream_event(rtd,
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Appologies, I didn't catch that after rebasing from V1.
+
+Liam
