@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RESEND] [trivial] ASoC: Fix typo in
-	twl4030.c
-Date: Thu, 9 Feb 2012 23:04:03 +0000
-Message-ID: <20120209230403.GQ3058@opensource.wolfsonmicro.com>
-References: <1328798768-2058-1-git-send-email-standby24x7@gmail.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: ALSA 1.0.25 broke AC3 passthrough?
+Date: Thu, 09 Feb 2012 20:09:26 -0800
+Message-ID: <4F349876.6080109@nvidia.com>
+References: <CANpj82+DPJGg1vUvm-otVEWEeXwK8zOy4ZAGjFH81oc5n51CTw@mail.gmail.com>
+	<4F30BABD.10504@nvidia.com>
+	<CANpj82JTMW-nm4r_Z3JgK_Ft7oimr84Yz+-8m-41d1pwEvtfoQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8028281911201239683=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CBD5E1038C8
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 00:04:13 +0100 (CET)
-In-Reply-To: <1328798768-2058-1-git-send-email-standby24x7@gmail.com>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B9BC24332
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 05:09:29 +0100 (CET)
+In-Reply-To: <CANpj82JTMW-nm4r_Z3JgK_Ft7oimr84Yz+-8m-41d1pwEvtfoQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,56 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Masanari Iida <standby24x7@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, trivial@kernel.org, lrg@ti.com, linux-kernel@vger.kernel.org
+To: Jean-Yves Avenard <jyavenard@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 02/09/2012 03:01 AM, Jean-Yves Avenard wrote:
+> [Re-send to include distribution list]
+> 
+> Hi
+> 
+> On 7 February 2012 16:46, Stephen Warren <swarren@nvidia.com> wrote:
+> 
+>> Are you able to regress this to a smaller window? I did do some rework a
+>> while back on the HDA driver to support newer GeForce GPUs' audio HW
+>> better, and this potentially had impact on bitstream pass-through,
+>> although it seemed to work at the time. Commits were:
+> 
+> I'm not sure what you mean by regress to a smaller window.
 
---===============8028281911201239683==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0fZkDq/H4AmqaB8D"
-Content-Disposition: inline
+You'd mentioned that this problem was present in ALSA 1.0.25, but wasn't
+in some earlier release. Potentially a lot changed between those two
+releases. It'd be nice if you could try compiling a number of
+intermediate versions of the ALSA driver to try and more precisely
+locate the change that caused the issue. "git bisect" on the ALSA driver
+repository might be useful here.
 
-
---0fZkDq/H4AmqaB8D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 09, 2012 at 11:46:08PM +0900, Masanari Iida wrote:
-> Correct spelling "memroy" to "memory" in
-> sound/soc/codecs/twl4030.c
-
-Applied, thanks.
-
---0fZkDq/H4AmqaB8D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPNFDFAAoJEBus8iNuMP3dX5UP/iOgDiA5/2WZR/OTxSkNfU7s
-cP3YL6ZLUC0ZZBtf1uX09M18+Tm3Owwm1WSDUt8755yKrvbXN4fEfQqgpQGvEZYD
-MnWVyavt4328e1ZGPRwWk+oIVXmg95+C02likMar8t1pJbxwJ+hUkzcmNPEXIJ9P
-xnloNAudwj04HHrJK2CBwAQrjI0p4gGhlvmBUdjJrRMl2UH9Ol32QknExh8HN8Jc
-YiJamTvh17g89Sm6no/R5fr917mmV7C2iOKfQvQhxfBjOrayYxFBch41q0BjoRaY
-nJ5lxsYNqewzDOQAU1EIkcEvtTeJ2MmwBIN3pXgGoOxbPDCLq2l5Utf6h+LlmUxX
-GsXCg1noKh+T1aEOWRygbn5LWUzk0IQ1CPIGATUBxPWx30IqG/L62YPRQgJ7gF56
-lEY+87csr0Owy391pXZRDMZchPG+ILUnzHTOgt3wdQeFX94154XLTqLg1ZqqYeOk
-j8xnScHXnPd0jQuMBxPC85DqaUf2fs8klO8ngiVwmCSgIIQB4xCl/DEMeagjaVYb
-I4+GexuAUtSfzhCsh1RexpQ13ryozxlnAl7pRw/ne+FEQAu8Ja9Jve7/wEg07Mcp
-3akbGfuWh2ZH65wDAHU1fUUhbCOriTEdalV1R7w2upNNdD4rGt8EMI9gtPVUdsCo
-kBEdfBAjxxuNnXS68GHe
-=rywH
------END PGP SIGNATURE-----
-
---0fZkDq/H4AmqaB8D--
-
---===============8028281911201239683==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8028281911201239683==--
+-- 
+nvpublic
