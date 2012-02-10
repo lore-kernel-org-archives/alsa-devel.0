@@ -1,14 +1,17 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_ functions
-Date: Fri, 10 Feb 2012 09:17:01 +0100
-Message-ID: <1328861821-3380-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/3] MFD: twl6040: Conversion to i2c driver
+Date: Fri, 10 Feb 2012 12:00:15 +0200
+Message-ID: <1328868018-24668-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6272424502
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 09:17:09 +0100 (CET)
+Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
+	[74.125.149.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AAC61038D2
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 11:00:37 +0100 (CET)
+Received: by lahl5 with SMTP id l5so3566733lah.17
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 02:00:34 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,153 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dtor@mail.ru>
+Cc: linux-arm-kernel@lists.infradead.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+Hello,
 
-The various devm_ functions allocate memory that is released when a driver
-detaches.  This patch uses these functions for data that is allocated in
-the probe function of a platform device and is only freed in the remove
-function.
+Changes since v2:
+- soc/codec/Kconfig: make twl6040 depend on I2C
+- Regulator related patches has been removed (to be sent as separate series)
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+------
+Intro mail from the original series:
 
+This series will convert the twl6040 MFD driver to an i2c driver.
+Compared to older twl4030/5030/TPS the twl6040 is a standalone audio IC. It is
+better if the twl6040-core (and all of it's child devices) does not depend on
+the twl-core since it has nothing to with it.
+
+With this conversion the dependency on twl can be dropped from the twl6040
+driver stack (core, vibra, audio).
+
+Between the first and second patch the audio will not probe on OMAP4, but I felt
+it is better this way at least for the first RFC series to not have too big
+change within one patch. The two patch can be squashed together later if no
+objections.
+
+Regards,
+Peter
 ---
-patch against
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git from the
-branch for-3.4
+Peter Ujfalusi (3):
+  MFD: twl-core: Detach twl6040 from the pmic mfd driver
+  MFD: twl6040: Convert to i2c driver, and separate it from twl core
+  ASoC: twl6040: Remove dependency on twl4030 from Kconfig
 
- sound/soc/mxs/mxs-saif.c |   51 ++++++++++-------------------------------------
- 1 file changed, 11 insertions(+), 40 deletions(-)
+ arch/arm/mach-omap2/board-4430sdp.c    |   12 ++--
+ arch/arm/mach-omap2/board-generic.c    |    2 +-
+ arch/arm/mach-omap2/board-omap4panda.c |   13 ++--
+ arch/arm/mach-omap2/twl-common.c       |   37 +++++++++--
+ arch/arm/mach-omap2/twl-common.h       |   10 +--
+ drivers/input/misc/Kconfig             |    1 -
+ drivers/input/misc/twl6040-vibra.c     |    4 +-
+ drivers/mfd/Kconfig                    |    2 +-
+ drivers/mfd/twl-core.c                 |   58 +++++++++-------
+ drivers/mfd/twl6040-core.c             |  114 +++++++++++++++++++-------------
+ include/linux/i2c/twl.h                |   12 ----
+ include/linux/mfd/twl6040.h            |   27 ++++++++
+ sound/soc/codecs/Kconfig               |    2 +-
+ sound/soc/codecs/twl6040.c             |    3 +-
+ 14 files changed, 182 insertions(+), 115 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index f204dba..12be05b 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -630,7 +630,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (pdev->id >= ARRAY_SIZE(mxs_saif))
- 		return -EINVAL;
- 
--	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
-+	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
- 
-@@ -655,29 +655,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = PTR_ERR(saif->clk);
- 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
- 			ret);
--		goto failed_clk;
-+		return ret;
- 	}
- 
- 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iores) {
--		ret = -ENODEV;
--		dev_err(&pdev->dev, "failed to get io resource: %d\n",
--			ret);
--		goto failed_get_resource;
--	}
- 
--	if (!request_mem_region(iores->start, resource_size(iores),
--				"mxs-saif")) {
--		dev_err(&pdev->dev, "request_mem_region failed\n");
--		ret = -EBUSY;
--		goto failed_get_resource;
--	}
--
--	saif->base = ioremap(iores->start, resource_size(iores));
-+	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
- 	if (!saif->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
- 		ret = -ENODEV;
--		goto failed_ioremap;
-+		goto failed_get_resource;
- 	}
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-@@ -685,7 +672,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = -ENODEV;
- 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
- 			ret);
--		goto failed_ioremap;
-+		goto failed_get_resource;
- 	}
- 	saif->dma_param.chan_num = dmares->start;
- 
-@@ -694,14 +681,15 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = saif->irq;
- 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
- 			ret);
--		goto failed_get_irq1;
-+		goto failed_get_resource;
- 	}
- 
- 	saif->dev = &pdev->dev;
--	ret = request_irq(saif->irq, mxs_saif_irq, 0, "mxs-saif", saif);
-+	ret = devm_request_irq(&pdev->dev, saif->irq, mxs_saif_irq, 0,
-+			       "mxs-saif", saif);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to request irq\n");
--		goto failed_get_irq1;
-+		goto failed_get_resource;
- 	}
- 
- 	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
-@@ -709,7 +697,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = saif->dma_param.chan_irq;
- 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
- 			ret);
--		goto failed_get_irq2;
-+		goto failed_get_resource;
- 	}
- 
- 	platform_set_drvdata(pdev, saif);
-@@ -717,7 +705,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
- 	if (ret) {
- 		dev_err(&pdev->dev, "register DAI failed\n");
--		goto failed_register;
-+		goto failed_get_resource;
- 	}
- 
- 	saif->soc_platform_pdev = platform_device_alloc(
-@@ -740,36 +728,19 @@ failed_pdev_add:
- 	platform_device_put(saif->soc_platform_pdev);
- failed_pdev_alloc:
- 	snd_soc_unregister_dai(&pdev->dev);
--failed_register:
--failed_get_irq2:
--	free_irq(saif->irq, saif);
--failed_get_irq1:
--	iounmap(saif->base);
--failed_ioremap:
--	release_mem_region(iores->start, resource_size(iores));
- failed_get_resource:
- 	clk_put(saif->clk);
--failed_clk:
--	kfree(saif);
- 
- 	return ret;
- }
- 
- static int __devexit mxs_saif_remove(struct platform_device *pdev)
- {
--	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct mxs_saif *saif = platform_get_drvdata(pdev);
- 
- 	platform_device_unregister(saif->soc_platform_pdev);
--
- 	snd_soc_unregister_dai(&pdev->dev);
--
--	iounmap(saif->base);
--	release_mem_region(res->start, resource_size(res));
--	free_irq(saif->irq, saif);
--
- 	clk_put(saif->clk);
--	kfree(saif);
- 
- 	return 0;
- }
+-- 
+1.7.8.4
