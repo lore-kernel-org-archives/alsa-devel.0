@@ -1,44 +1,95 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8993: Add register default for
-	INPUTS_CLAMP
-Date: Fri, 10 Feb 2012 20:51:35 +0000
-Message-ID: <1328907096-13345-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH v3 1/2] mxs-dma : move the mxs dma.h to a more common place
+Date: Sat, 11 Feb 2012 07:36:50 +0800
+Message-ID: <CAMiH66EP6UFDYkguzfSFgysDzVREPZ8P1x29TkYvQ+Cuvz-4hg@mail.gmail.com>
+References: <1328612075-5825-1-git-send-email-b32955@freescale.com>
+	<1328612075-5825-2-git-send-email-b32955@freescale.com>
+	<20120210162134.GA2723@r65073-Latitude-D630>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 44A00103830
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 21:51:39 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <20120210162134.GA2723@r65073-Latitude-D630>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Huang Shijie <b32955@freescale.com>, vinod.koul@intel.com, artem.bityutskiy@intel.com, linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, LW@karo-electronics.de, alsa-devel@alsa-project.org, b29396@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8993.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+hi,
 
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index acc39ea..1e69f63 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -61,6 +61,7 @@ static struct reg_default wm8993_reg_defaults[] = {
- 	{ 18,  0x0000 },     /* R18  - GPIO CTRL 1 */
- 	{ 19,  0x0010 },     /* R19  - GPIO1 */
- 	{ 20,  0x0000 },     /* R20  - IRQ_DEBOUNCE */
-+	{ 21,  0x0000 },     /* R21  - Inputs Clamp */
- 	{ 22,  0x8000 },     /* R22  - GPIOCTRL 2 */
- 	{ 23,  0x0800 },     /* R23  - GPIO_POL */
- 	{ 24,  0x008B },     /* R24  - Left Line Input 1&2 Volume */
--- 
-1.7.9.rc1
+On Sat, Feb 11, 2012 at 12:21 AM, Shawn Guo <shawn.guo@linaro.org> wrot=
+e:
+> On Tue, Feb 07, 2012 at 06:54:34PM +0800, Huang Shijie wrote:
+>> Move the header to a more common place.
+>> The mxs dma engine is not only used in mx23/mx28, but also used
+>> in mx50/mx6q. =C2=A0It will also be used in the future chips.
+>>
+>> Rename it to mxs-dma.h
+>>
+>> change mxs-dma driver, mxs-mmc driver, gpmi-nand driver, mxs-saif dr=
+iver
+>> to the new header file.
+>>
+>> Signed-off-by: Huang Shijie <b32955@freescale.com>
+>> ---
+>> =C2=A0drivers/dma/mxs-dma.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0=
+ =C2=A02 +-
+>> =C2=A0drivers/mmc/host/mxs-mmc.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +-
+>> =C2=A0drivers/mtd/nand/gpmi-nand/gpmi-nand.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +-
+>> =C2=A0.../include/mach/dma.h =3D> include/linux/mxs-dma.h =C2=A0| =C2=
+=A0 =C2=A00
+>> =C2=A0sound/soc/mxs/mxs-pcm.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=
+=A02 +-
+>> =C2=A0sound/soc/mxs/mxs-pcm.h =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=
+=A02 +-
+>> =C2=A0sound/soc/mxs/mxs-saif.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +=
+-
+>> =C2=A07 files changed, 6 insertions(+), 6 deletions(-)
+>> =C2=A0rename arch/arm/mach-mxs/include/mach/dma.h =3D> include/linux=
+/mxs-dma.h (100%)
+>
+> I suggested you rename it include/linux/fsl/mxs-dma.h [1]. =C2=A0It s=
+eems
+> you are ignoring the comment. =C2=A0Can you explain why it's not a
+> reasonable suggestion?
+
+=46or gpmi-nand.h is placed in include/linux/mtd/ directory, so i think
+it's better to place the mxs-dma.h
+to similar include/linux/dma/ directory, but the directory does not exi=
+t.
+
+If i place it at include/linux/fsl/mxs-dma.h , i have to create a new
+folder, I am not sure i have the right
+to do so. But i can try it in the next version.
+
+thanks a lot.
+
+
+
+>
+> And Wolfram and Mark told you that you need to Cc subsystem maintaine=
+rs
+> to collect their acks [2]. =C2=A0But you are still not Ccing Mark Bro=
+wn and
+> Chris Ball for sound/soc/ and drivers/mmc changes. =C2=A0So you are n=
+ot
+> listening.
+
+ok, i will CC them in next version.  I=E3=80=80really did not know to w=
+hom I=E3=80=80should cc .
+
+BR
+Huang Shijie
+
+>
+> Regards,
+> Shawn
+>
+> [1] http://article.gmane.org/gmane.linux.kernel.mmc/12301
+> [2] http://article.gmane.org/gmane.linux.alsa.devel/93751
