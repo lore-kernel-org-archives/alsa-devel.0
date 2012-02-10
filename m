@@ -1,50 +1,170 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Fix build error in sound/soc/omap/n810.c
-Date: Fri, 10 Feb 2012 14:54:37 +0800
-Message-ID: <1328856877.27353.1.camel@phoenix>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH] sound/soc/mxs/mxs-saif.c: use devm_ functions
+Date: Fri, 10 Feb 2012 09:17:01 +0100
+Message-ID: <1328861821-3380-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6272424502
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 09:17:09 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix below build error which is introduced by
-commit 022658 "ASoC: core: Add support for DAI and machine kcontrols".
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-  CC [M]  sound/soc/omap/n810.o
-sound/soc/omap/n810.c: In function 'n810_set_input':
-sound/soc/omap/n810.c:194: error: 'codec' undeclared (first use in this function)
-sound/soc/omap/n810.c:194: error: (Each undeclared identifier is reported only once
-sound/soc/omap/n810.c:194: error: for each function it appears in.)
-sound/soc/omap/n810.c:188: warning: unused variable 'card'
-make[3]: *** [sound/soc/omap/n810.o] Error 1
-make[2]: *** [sound/soc/omap] Error 2
-make[1]: *** [sound/soc] Error 2
-make: *** [sound] Error 2
+The various devm_ functions allocate memory that is released when a driver
+detaches.  This patch uses these functions for data that is allocated in
+the probe function of a platform device and is only freed in the remove
+function.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
 ---
- sound/soc/omap/n810.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+patch against
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git from the
+branch for-3.4
 
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 1490227..c292bf0 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -191,7 +191,7 @@ static int n810_set_input(struct snd_kcontrol *kcontrol,
- 		return 0;
+ sound/soc/mxs/mxs-saif.c |   51 ++++++++++-------------------------------------
+ 1 file changed, 11 insertions(+), 40 deletions(-)
+
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index f204dba..12be05b 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -630,7 +630,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (pdev->id >= ARRAY_SIZE(mxs_saif))
+ 		return -EINVAL;
  
- 	n810_dmic_func = ucontrol->value.integer.value[0];
--	n810_ext_control(codec);
-+	n810_ext_control(&card->dapm);
+-	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
++	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
+ 	if (!saif)
+ 		return -ENOMEM;
  
- 	return 1;
+@@ -655,29 +655,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(saif->clk);
+ 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
+ 			ret);
+-		goto failed_clk;
++		return ret;
+ 	}
+ 
+ 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!iores) {
+-		ret = -ENODEV;
+-		dev_err(&pdev->dev, "failed to get io resource: %d\n",
+-			ret);
+-		goto failed_get_resource;
+-	}
+ 
+-	if (!request_mem_region(iores->start, resource_size(iores),
+-				"mxs-saif")) {
+-		dev_err(&pdev->dev, "request_mem_region failed\n");
+-		ret = -EBUSY;
+-		goto failed_get_resource;
+-	}
+-
+-	saif->base = ioremap(iores->start, resource_size(iores));
++	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
+ 	if (!saif->base) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+ 		ret = -ENODEV;
+-		goto failed_ioremap;
++		goto failed_get_resource;
+ 	}
+ 
+ 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+@@ -685,7 +672,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = -ENODEV;
+ 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
+ 			ret);
+-		goto failed_ioremap;
++		goto failed_get_resource;
+ 	}
+ 	saif->dma_param.chan_num = dmares->start;
+ 
+@@ -694,14 +681,15 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = saif->irq;
+ 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
+ 			ret);
+-		goto failed_get_irq1;
++		goto failed_get_resource;
+ 	}
+ 
+ 	saif->dev = &pdev->dev;
+-	ret = request_irq(saif->irq, mxs_saif_irq, 0, "mxs-saif", saif);
++	ret = devm_request_irq(&pdev->dev, saif->irq, mxs_saif_irq, 0,
++			       "mxs-saif", saif);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to request irq\n");
+-		goto failed_get_irq1;
++		goto failed_get_resource;
+ 	}
+ 
+ 	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
+@@ -709,7 +697,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = saif->dma_param.chan_irq;
+ 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
+ 			ret);
+-		goto failed_get_irq2;
++		goto failed_get_resource;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, saif);
+@@ -717,7 +705,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "register DAI failed\n");
+-		goto failed_register;
++		goto failed_get_resource;
+ 	}
+ 
+ 	saif->soc_platform_pdev = platform_device_alloc(
+@@ -740,36 +728,19 @@ failed_pdev_add:
+ 	platform_device_put(saif->soc_platform_pdev);
+ failed_pdev_alloc:
+ 	snd_soc_unregister_dai(&pdev->dev);
+-failed_register:
+-failed_get_irq2:
+-	free_irq(saif->irq, saif);
+-failed_get_irq1:
+-	iounmap(saif->base);
+-failed_ioremap:
+-	release_mem_region(iores->start, resource_size(iores));
+ failed_get_resource:
+ 	clk_put(saif->clk);
+-failed_clk:
+-	kfree(saif);
+ 
+ 	return ret;
  }
--- 
-1.7.5.4
-
-
-
+ 
+ static int __devexit mxs_saif_remove(struct platform_device *pdev)
+ {
+-	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	struct mxs_saif *saif = platform_get_drvdata(pdev);
+ 
+ 	platform_device_unregister(saif->soc_platform_pdev);
+-
+ 	snd_soc_unregister_dai(&pdev->dev);
+-
+-	iounmap(saif->base);
+-	release_mem_region(res->start, resource_size(res));
+-	free_irq(saif->irq, saif);
+-
+ 	clk_put(saif->clk);
+-	kfree(saif);
+ 
+ 	return 0;
+ }
