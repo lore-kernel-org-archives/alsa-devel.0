@@ -1,19 +1,18 @@
 From: Leon Romanovsky <leon@leon.nu>
-Subject: [PATCH v2 10/12] ASoC: alc5632: Fix Boost Volume TLVs
-	used for the external microphones
-Date: Sat, 11 Feb 2012 23:26:36 +0200
-Message-ID: <1328995598-8788-11-git-send-email-leon@leon.nu>
+Subject: [PATCH v2 11/12] ASoC: alc5632: Fix Capture/Playback
+	attributes for microphone inputs
+Date: Sat, 11 Feb 2012 23:26:37 +0200
+Message-ID: <1328995598-8788-12-git-send-email-leon@leon.nu>
 References: <1328995598-8788-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE245103ABA
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 22:27:09 +0100 (CET)
-Received: by mail-ey0-f179.google.com with SMTP id n11so1209112eaa.38
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 13:27:09 -0800 (PST)
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F07E103B1D
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 22:27:11 +0100 (CET)
+Received: by mail-ee0-f51.google.com with SMTP id d49so1256798eek.38
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 13:27:11 -0800 (PST)
 In-Reply-To: <1328995598-8788-1-git-send-email-leon@leon.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,44 +29,49 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Paul Fertser <fercerpav@gmail.com>
 
-This brings the TLVs in sync with the documentation and allows to properly
-manipulate mic boost controls with alsamixer.
+According to the mixer path diagram input sources' attenuators logically
+belong to the playback path and DMIC boost only affects capture.
 
 Signed-off-by: Paul Fertser <fercerpav@gmail.com>
 Signed-off-by: Leon Romanovsky <leon@leon.nu>
 ---
- sound/soc/codecs/alc5632.c |   11 +++++------
- 1 files changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/codecs/alc5632.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index 69c652c..b77f4e7 100644
+index b77f4e7..b347611 100644
 --- a/sound/soc/codecs/alc5632.c
 +++ b/sound/soc/codecs/alc5632.c
-@@ -145,10 +145,9 @@ static const DECLARE_TLV_DB_SCALE(hp_tlv, -4650, 150, 0);
- /* -16.5db min scale, 1.5db steps, no mute */
- static const DECLARE_TLV_DB_SCALE(adc_rec_tlv, -1650, 150, 0);
- static const unsigned int boost_tlv[] = {
--	TLV_DB_RANGE_HEAD(3),
--	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
--	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
--	2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
-+	TLV_DB_RANGE_HEAD(2),
-+	0, 1, TLV_DB_SCALE_ITEM(0, 2000, 0),
-+	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0),
- };
- /* 0db min scale, 6 db steps, no mute */
- static const DECLARE_TLV_DB_SCALE(dig_tlv, 0, 600, 0);
-@@ -193,9 +192,9 @@ static const struct snd_kcontrol_new alc5632_snd_controls[] = {
+@@ -177,17 +177,17 @@ static const struct snd_kcontrol_new alc5632_snd_controls[] = {
+ 			ALC5632_VOICE_DAC_VOL, 0, 63, 0, vdac_tlv),
+ 	SOC_SINGLE("Voice DAC Playback Switch",
+ 			ALC5632_VOICE_DAC_VOL, 12, 1, 1),
+-	SOC_SINGLE_TLV("Phone Capture Volume",
++	SOC_SINGLE_TLV("Phone Playback Volume",
+ 			ALC5632_PHONE_IN_VOL, 8, 31, 1, vol_tlv),
+-	SOC_DOUBLE_TLV("LineIn Capture Volume",
++	SOC_DOUBLE_TLV("LineIn Playback Volume",
+ 			ALC5632_LINE_IN_VOL, 8, 0, 31, 1, vol_tlv),
+ 	SOC_DOUBLE_TLV("Master Playback Volume",
+ 			ALC5632_STEREO_DAC_IN_VOL, 8, 0, 63, 1, vdac_tlv),
+ 	SOC_DOUBLE("Master Playback Switch",
+ 			ALC5632_STEREO_DAC_IN_VOL, 15, 7, 1, 1),
+-	SOC_SINGLE_TLV("Mic1 Capture Volume",
++	SOC_SINGLE_TLV("Mic1 Playback Volume",
+ 			ALC5632_MIC_VOL, 8, 31, 1, vol_tlv),
+-	SOC_SINGLE_TLV("Mic2 Capture Volume",
++	SOC_SINGLE_TLV("Mic2 Playback Volume",
+ 			ALC5632_MIC_VOL, 0, 31, 1, vol_tlv),
  	SOC_DOUBLE_TLV("Rec Capture Volume",
  			ALC5632_ADC_REC_GAIN, 8, 0, 31, 0, adc_rec_tlv),
- 	SOC_SINGLE_TLV("Mic 1 Boost Volume",
--			ALC5632_MIC_CTRL, 10, 2, 0, boost_tlv),
-+			ALC5632_MIC_CTRL, 10, 3, 0, boost_tlv),
+@@ -195,7 +195,7 @@ static const struct snd_kcontrol_new alc5632_snd_controls[] = {
+ 			ALC5632_MIC_CTRL, 10, 3, 0, boost_tlv),
  	SOC_SINGLE_TLV("Mic 2 Boost Volume",
--			ALC5632_MIC_CTRL, 8, 2, 0, boost_tlv),
-+			ALC5632_MIC_CTRL, 8, 3, 0, boost_tlv),
- 	SOC_SINGLE_TLV("DMIC Boost Volume",
+ 			ALC5632_MIC_CTRL, 8, 3, 0, boost_tlv),
+-	SOC_SINGLE_TLV("DMIC Boost Volume",
++	SOC_SINGLE_TLV("DMIC Boost Capture Volume",
  			ALC5632_DIGI_BOOST_CTRL, 0, 7, 0, dig_tlv),
  	SOC_SINGLE("DMIC En Capture Switch",
+ 			ALC5632_DIGI_BOOST_CTRL, 15, 1, 0),
 -- 
 1.7.3.4
