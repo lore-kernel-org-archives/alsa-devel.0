@@ -1,18 +1,19 @@
 From: Leon Romanovsky <leon@leon.nu>
-Subject: [PATCH 01/12] ASoC: alc5632: Coding style. Remove two
-	extra empty lines.
-Date: Sat, 11 Feb 2012 23:10:34 +0200
-Message-ID: <1328994645-8237-2-git-send-email-leon@leon.nu>
+Subject: [PATCH 03/12] ASoC: alc5632: Add voice DAC playback
+	switch
+Date: Sat, 11 Feb 2012 23:10:36 +0200
+Message-ID: <1328994645-8237-4-git-send-email-leon@leon.nu>
 References: <1328994645-8237-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F5571039F1
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 22:11:09 +0100 (CET)
-Received: by mail-ee0-f51.google.com with SMTP id d49so1252422eek.38
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 13:11:09 -0800 (PST)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E39701039EE
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 22:11:13 +0100 (CET)
+Received: by eaan11 with SMTP id n11so1204912eaa.38
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 13:11:13 -0800 (PST)
 In-Reply-To: <1328994645-8237-1-git-send-email-leon@leon.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,24 +30,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Andrey Danin <danindrey@mail.ru>
 
+Add voice DAC playback switch.
+
 Signed-off-by: Andrey Danin <danindrey@mail.ru>
 Signed-off-by: Leon Romanovsky <leon@leon.nu>
 ---
- sound/soc/codecs/alc5632.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ sound/soc/codecs/alc5632.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index f69fb42..0d574aa 100644
+index fce5e76..6bb6075 100644
 --- a/sound/soc/codecs/alc5632.c
 +++ b/sound/soc/codecs/alc5632.c
-@@ -437,8 +437,6 @@ static const struct snd_soc_dapm_route alc5632_dapm_routes[] = {
- 	{"Speaker Mix", "MIC22SPK Playback Switch",	"MIC2 PGA"},
- 	{"Speaker Mix", "DAC2SPK Playback Switch",	"DAC Left Channel"},
- 
--
--
- 	/* mono mixer */
- 	{"Mono Mix", "ADC2MONO_L Playback Switch",	"Left Capture Mix"},
- 	{"Mono Mix", "ADC2MONO_R Playback Switch",	"Right Capture Mix"},
+@@ -176,6 +176,8 @@ static const struct snd_kcontrol_new alc5632_snd_controls[] = {
+ 			ALC5632_AUX_OUT_VOL, 15, 7, 1, 1),
+ 	SOC_SINGLE_TLV("Voice DAC Playback Volume",
+ 			ALC5632_VOICE_DAC_VOL, 0, 63, 0, vdac_tlv),
++	SOC_SINGLE("Voice DAC Playback Switch",
++			ALC5632_VOICE_DAC_VOL, 12, 1, 1),
+ 	SOC_SINGLE_TLV("Phone Capture Volume",
+ 			ALC5632_PHONE_IN_VOL, 8, 31, 1, vol_tlv),
+ 	SOC_DOUBLE_TLV("LineIn Capture Volume",
 -- 
 1.7.3.4
