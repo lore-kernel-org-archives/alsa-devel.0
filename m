@@ -1,18 +1,23 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
-	B1900 Series
-Date: Sat, 11 Feb 2012 12:35:02 +1030
-Message-ID: <20120211020502.GA25041@marvin.atrad.com.au>
-References: <4F35C191.9080401@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3 1/2] mxs-dma : move the mxs dma.h to a
+ more common place
+Date: Fri, 10 Feb 2012 23:39:36 -0800
+Message-ID: <20120211073934.GE2198@r65073-Latitude-D630>
+References: <1328612075-5825-1-git-send-email-b32955@freescale.com>
+	<1328612075-5825-2-git-send-email-b32955@freescale.com>
+	<20120210162134.GA2723@r65073-Latitude-D630>
+	<CAMiH66EP6UFDYkguzfSFgysDzVREPZ8P1x29TkYvQ+Cuvz-4hg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 046702451F
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 03:05:12 +0100 (CET)
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id E344E24429
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2012 08:39:43 +0100 (CET)
+Received: by pbbrp2 with SMTP id rp2so2821039pbb.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2012 23:39:42 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <4F35C191.9080401@gmail.com>
+In-Reply-To: <CAMiH66EP6UFDYkguzfSFgysDzVREPZ8P1x29TkYvQ+Cuvz-4hg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,61 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "joey.jiaojg" <joey.jiaojg@gmail.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, pshou@realtek.com.tw, kailang@realtek.com.tw, jwoithe@just42.net
+To: Huang Shijie <shijie8@gmail.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, w.sang@pengutronix.de, Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org, artem.bityutskiy@intel.com, b29396@freescale.com, linux-arm-kernel@lists.infradead.org, LW@karo-electronics.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Joey
-
-For future reference, please email reports like this to the alsa-devel list. 
-The relevant developers are far more likely to respond to messages on the
-list than they are to messages sent privately.
-
-I have copied this to the list to maximise its distribution.
-
-On Sat, Feb 11, 2012 at 09:17:05AM +0800, joey.jiaojg wrote:
-> I'm reporting a bug related to ALSA and ALC260, which perhaps only
-> you can solve. Appreciate if you can check.
-> We got a lot of users using HP COMPAQ B1900 series which using ATI
-> SB450 and ALC260 for linux systems like Debian, Ubuntu and etc. The
-> problem is that there is no sound from speaker while enable
-> model=will can hear from earphone. The problem and alsa-info.txt is
-> reported here https://answers.launchpad.net/ubuntu/+source/alsa-driver/+question/186698,
-> which thought be a bug of ALC260 driver bug.
-> Hope you can check what we can do to solve it.
-
->From the above I am not entirely sure what the problem is.  You seem to be
-talking about two separate conditions.  In the first (where I presume the
-module is loaded without any parameters you say there's no sound from the
-speaker.  Do other aspects of the card work correctly in this case?
-
-The second situation is where "model=will" is specified as a module
-parameter.  Here you say you can get audio from the headphone, but again
-what about other aspects of the soundcard - do they work normally?
-
-At a rough guess, it sounds like there are two underlying issues.  The first
-is that this system requires some model-specific handing in order to map
-chip outputs correctly.  The second is that if such model-specific details
-are required then the driver preferrably would activate these automatically
-without the need to specify "model=will".
-
-Another possibility is that there is something about this laptop system
-which is confusing the auto-probing of the alc260 codec code.
-
-I'm not sure what is the best way of proceeding here.  I suspect other more
-active developers will have a streamlined approach to help rectify the
-trouble.  In the first instance I would tend to load the module with
-"model=test" and experiment with the resulting alsamixer controls to
-determine what chip outputs are connected to which pins.  However, this is
-quite "old school" now - while it's the approach I used when getting my
-system working, my impression is that its use has been mostly deprecated by
-the automatic parser which is now present.
-
-In the above-referenced launchpad report the question is asked about the
-ALC260 datasheet.  This is readily available on the net.  I doubt it is all
-that necessary now since I think the base infrastructure is pretty solid,
-but if you do need it and have difficulty finding it please contact me
-off-list.
-
-Regards
-  jonathan
+T24gU2F0LCBGZWIgMTEsIDIwMTIgYXQgMDc6MzY6NTBBTSArMDgwMCwgSHVhbmcgU2hpamllIHdy
+b3RlOgo+IGhpLAo+IAo+IE9uIFNhdCwgRmViIDExLCAyMDEyIGF0IDEyOjIxIEFNLCBTaGF3biBH
+dW8gPHNoYXduLmd1b0BsaW5hcm8ub3JnPiB3cm90ZToKPiA+IE9uIFR1ZSwgRmViIDA3LCAyMDEy
+IGF0IDA2OjU0OjM0UE0gKzA4MDAsIEh1YW5nIFNoaWppZSB3cm90ZToKPiA+PiBNb3ZlIHRoZSBo
+ZWFkZXIgdG8gYSBtb3JlIGNvbW1vbiBwbGFjZS4KPiA+PiBUaGUgbXhzIGRtYSBlbmdpbmUgaXMg
+bm90IG9ubHkgdXNlZCBpbiBteDIzL214MjgsIGJ1dCBhbHNvIHVzZWQKPiA+PiBpbiBteDUwL214
+NnEuIMKgSXQgd2lsbCBhbHNvIGJlIHVzZWQgaW4gdGhlIGZ1dHVyZSBjaGlwcy4KPiA+Pgo+ID4+
+IFJlbmFtZSBpdCB0byBteHMtZG1hLmgKPiA+Pgo+ID4+IGNoYW5nZSBteHMtZG1hIGRyaXZlciwg
+bXhzLW1tYyBkcml2ZXIsIGdwbWktbmFuZCBkcml2ZXIsIG14cy1zYWlmIGRyaXZlcgo+ID4+IHRv
+IHRoZSBuZXcgaGVhZGVyIGZpbGUuCj4gPj4KPiA+PiBTaWduZWQtb2ZmLWJ5OiBIdWFuZyBTaGlq
+aWUgPGIzMjk1NUBmcmVlc2NhbGUuY29tPgo+ID4+IC0tLQo+ID4+IMKgZHJpdmVycy9kbWEvbXhz
+LWRtYS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDC
+oDIgKy0KPiA+PiDCoGRyaXZlcnMvbW1jL2hvc3QvbXhzLW1tYy5jIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHwgwqAgwqAyICstCj4gPj4gwqBkcml2ZXJzL210ZC9uYW5kL2dw
+bWktbmFuZC9ncG1pLW5hbmQuaCDCoCDCoCDCoCDCoCDCoCDCoCB8IMKgIMKgMiArLQo+ID4+IMKg
+Li4uL2luY2x1ZGUvbWFjaC9kbWEuaCA9PiBpbmNsdWRlL2xpbnV4L214cy1kbWEuaCDCoHwgwqAg
+wqAwCj4gPj4gwqBzb3VuZC9zb2MvbXhzL214cy1wY20uYyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqAyICstCj4gPj4gwqBzb3VuZC9zb2MvbXhzL214cy1w
+Y20uaCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqAyICst
+Cj4gPj4gwqBzb3VuZC9zb2MvbXhzL214cy1zYWlmLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgfCDCoCDCoDIgKy0KPiA+PiDCoDcgZmlsZXMgY2hhbmdlZCwgNiBpbnNl
+cnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQo+ID4+IMKgcmVuYW1lIGFyY2gvYXJtL21hY2gtbXhz
+L2luY2x1ZGUvbWFjaC9kbWEuaCA9PiBpbmNsdWRlL2xpbnV4L214cy1kbWEuaCAoMTAwJSkKPiA+
+Cj4gPiBJIHN1Z2dlc3RlZCB5b3UgcmVuYW1lIGl0IGluY2x1ZGUvbGludXgvZnNsL214cy1kbWEu
+aCBbMV0uIMKgSXQgc2VlbXMKPiA+IHlvdSBhcmUgaWdub3JpbmcgdGhlIGNvbW1lbnQuIMKgQ2Fu
+IHlvdSBleHBsYWluIHdoeSBpdCdzIG5vdCBhCj4gPiByZWFzb25hYmxlIHN1Z2dlc3Rpb24/Cj4g
+Cj4gRm9yIGdwbWktbmFuZC5oIGlzIHBsYWNlZCBpbiBpbmNsdWRlL2xpbnV4L210ZC8gZGlyZWN0
+b3J5LCBzbyBpIHRoaW5rCj4gaXQncyBiZXR0ZXIgdG8gcGxhY2UgdGhlIG14cy1kbWEuaAo+IHRv
+IHNpbWlsYXIgaW5jbHVkZS9saW51eC9kbWEvIGRpcmVjdG9yeSwgYnV0IHRoZSBkaXJlY3Rvcnkg
+ZG9lcyBub3QgZXhpdC4KPiAKWWVzLCBmcm9tIHN1YnN5c3RlbSBwb2ludCBvZiB2aWV3LCBpdCBt
+YWtlcyBzZW5zZSB0b28uCgo+IElmIGkgcGxhY2UgaXQgYXQgaW5jbHVkZS9saW51eC9mc2wvbXhz
+LWRtYS5oICwgaSBoYXZlIHRvIGNyZWF0ZSBhIG5ldwo+IGZvbGRlciwgSSBhbSBub3Qgc3VyZSBp
+IGhhdmUgdGhlIHJpZ2h0Cj4gdG8gZG8gc28uIEJ1dCBpIGNhbiB0cnkgaXQgaW4gdGhlIG5leHQg
+dmVyc2lvbi4KPiAKU28gZWl0aGVyIHdheSB3b3JrcyBmb3IgbWUuICBCdXQgeW91IG5lZWQgdG8g
+Y3JlYXRlIGEgZm9sZGVyIGFueXdheS4KU28gbGV0J3MgZG8gaXQgdG8gdGVzdCBwZW9wbGUuCgo+
+IHRoYW5rcyBhIGxvdC4KPiAKPiAKPiAKPiA+Cj4gPiBBbmQgV29sZnJhbSBhbmQgTWFyayB0b2xk
+IHlvdSB0aGF0IHlvdSBuZWVkIHRvIENjIHN1YnN5c3RlbSBtYWludGFpbmVycwo+ID4gdG8gY29s
+bGVjdCB0aGVpciBhY2tzIFsyXS4gwqBCdXQgeW91IGFyZSBzdGlsbCBub3QgQ2NpbmcgTWFyayBC
+cm93biBhbmQKPiA+IENocmlzIEJhbGwgZm9yIHNvdW5kL3NvYy8gYW5kIGRyaXZlcnMvbW1jIGNo
+YW5nZXMuIMKgU28geW91IGFyZSBub3QKPiA+IGxpc3RlbmluZy4KPiAKPiBvaywgaSB3aWxsIEND
+IHRoZW0gaW4gbmV4dCB2ZXJzaW9uLiAgSeOAgHJlYWxseSBkaWQgbm90IGtub3cgdG8gd2hvbSBJ
+44CAc2hvdWxkIGNjIC4KPiAKVGhlIGZpbGUgTUFJTlRBSU5FUlMgaXMgY3JlYXRlZCBmb3IgdGhp
+cyBwdXJwb3NlLgoKLS0gClJlZ2FyZHMsClNoYXduCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
