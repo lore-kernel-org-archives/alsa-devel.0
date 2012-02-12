@@ -1,21 +1,19 @@
-From: Jean-Yves Avenard <jyavenard@gmail.com>
-Subject: Re: 1ca3d59d5a3e762fb1c002bcd912914bc858b430 broke
- passthrough [Was: Re: ALSA 1.0.25 broke AC3 passthrough?]
-Date: Mon, 13 Feb 2012 00:44:53 +1100
-Message-ID: <CANpj82+JuX69+Qw1VU=cE9TxHnMi_cPfmiQyGMf5rmY6wY+-yg@mail.gmail.com>
-References: <CANpj82JKFx1YXgaY3HZyTSyCZs83ZdvEtYGAbNJPdb6q7qN7kg@mail.gmail.com>
-	<4F37BBDD.1090207@iki.fi>
+From: tilt <tilt@linuxfoo.de>
+Subject: snd_emu10k1 with E-MU 1616m PCIe
+Date: Sun, 12 Feb 2012 23:45:18 +0100
+Message-ID: <4F3840FE.9090006@linuxfoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E82A024346
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2012 14:44:55 +0100 (CET)
-Received: by yenm14 with SMTP id m14so2090661yen.38
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2012 05:44:54 -0800 (PST)
-In-Reply-To: <4F37BBDD.1090207@iki.fi>
+Received: from mail.tk-sls.de (linuxfoo.de [91.204.170.65])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4AC9103B27
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2012 23:45:31 +0100 (CET)
+Received: from [192.168.2.101] (pD9FA4AC7.dip.t-dialin.net [217.250.74.199])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "Tilman Kranz", Issuer "Tilman Kranz" (not verified))
+	by mail.tk-sls.de (Postfix) with ESMTPS id 2955F3080D
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2012 23:45:22 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hello!
 
-On 13 February 2012 00:17, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+I use the Creative E-MU 1616m PCIe:
 
-> I'm not familiar enough with HDA to comment on the cause of the issue,
-> but out of interest, does the hang really only happen with passthrough,
-> i.e. (AES0 & 0x02) set, or does it happen with a PCM stream with the
-> same parameters as well (and the application(s) just happen to set
-> problematic ALSA parameters only in passthrough mode)?
+   03:04.0 Multimedia audio controller: Creative Labs SB0400 Audigy2 Value
+           Subsystem: Creative Labs Device 4007
 
-Hi
+I am on Linux kernel 3.2.4, -driver and -firmware from git;
+-utils from 1.0.24.2-5 (Debian amd_64).
 
-To be honest, I don't really know for sure.
+I have manually applied the patch from [1] and initialized
+the device successfully:
 
-But I've only experienced it with digital passthrough.
+[    3.387211] snd_emu10k1 0000:03:04.0: PCI INT A -> GSI 16 (level,
+low) -> IRQ 16
+[    3.387341] ALSA emu10k1_main.c:823 emu1010: Special config.
+[    3.387479] ALSA emu10k1_main.c:862 emu1010: EMU_HANA_ID = 0x3f
+[    3.387530] ALSA emu10k1_main.c:881 emu1010: filename emu/emu1010b.fw
+testing
+[    3.393206] ALSA emu10k1_main.c:686 firmware size = 0x11bdc
+[    6.294376] ALSA emu10k1_main.c:898 emu1010: Hana Firmware loaded
+[    6.294475] ALSA emu10k1_main.c:901 emu1010: Hana version: 1.6
+[    6.294583] ALSA emu10k1_main.c:906 emu1010: Card options = 0x8
+[    6.294656] ALSA emu10k1_main.c:908 emu1010: Card options = 0x8
+[    6.295222] ALSA emu10k1_main.c:947 emu1010: Card options3 = 0x8
+[    6.314806] ALSA emu10k1_main.c:227 Audigy2 value: Special config.
+[    6.315231] ALSA emufx.c:1545 EMU outputs on
+[    6.315280] ALSA emufx.c:1593 EMU2 inputs on
 
-If I disable passthrough, and force the decoding of the AC3 and
-downmix it as stereo (so it would open the audio card with the same
-parameters as with passthrough), then I do not see the hang
+There are irregularities & limitations, but I do have 48kHz
+capture and playback.
 
-But I haven't looked into the details very carefully to make sure that
-it is indeed the case.
+I have two questions:
 
-I will try more tomorrow..
+1.: I only use Dock ports, and I notice many irregularities in
+DAC and ADC assignment; so I wonder: should
+
+   /usr/local/lib/firmware/emu/micro_dock.fw
+
+not also be loaded?
+
+2.: I use JACK with
+
+   input: hw:0,2 (Mutichannel Capture/PT Playback)
+   output: hw:0,3 (Multichannel Playback)
+
+One thing that I would like to fix if at all possible: I can not assign
+anything
+to Dock Phones L/R; instead they always repeat Dock DAC 1L/R, no matter
+what I route there.
+
+Is this a limitation of the firmware, or are the controls misleading me?
+
+Kind regards & thanks in advance for any suggestions,
+Tilman.
+
+[1] ALSA bugtracking system
+     0005250: E-MU 1010 PCI-Express not recognized
+     https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5250
