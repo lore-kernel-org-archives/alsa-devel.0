@@ -1,21 +1,19 @@
-From: Jean-Yves Avenard <jyavenard@gmail.com>
-Subject: Re: 1ca3d59d5a3e762fb1c002bcd912914bc858b430 broke
- passthrough [Was: Re: ALSA 1.0.25 broke AC3 passthrough?]
-Date: Mon, 13 Feb 2012 17:32:03 +1100
-Message-ID: <CANpj82J+MmYNGbOqmFMCA587sCiUZfjRqDfesfmOG616478SqQ@mail.gmail.com>
-References: <CANpj82JKFx1YXgaY3HZyTSyCZs83ZdvEtYGAbNJPdb6q7qN7kg@mail.gmail.com>
-	<4F37BBDD.1090207@iki.fi>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Adding sound to BeagleBone
+Date: Mon, 13 Feb 2012 10:06:54 +0200
+Message-ID: <4F38C49E.3060205@ti.com>
+References: <4F37963A.7050906@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B2D1103842
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2012 07:32:04 +0100 (CET)
-Received: by ggnq4 with SMTP id q4so2205198ggn.38
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2012 22:32:03 -0800 (PST)
-In-Reply-To: <4F37BBDD.1090207@iki.fi>
+Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
+	[74.125.149.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C3AF103BA1
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2012 09:06:52 +0100 (CET)
+Received: by mail-lpp01m010-f50.google.com with SMTP id m13so3866041lah.9
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2012 00:06:50 -0800 (PST)
+In-Reply-To: <4F37963A.7050906@t-online.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,106 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>
+To: Peter Bolch <peter.bolch@t-online.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there
+Hi,
 
-Okay, I had time today to test a bit more on what was going on
+On 02/12/2012 12:36 PM, Peter Bolch wrote:
+> what - beside making the hardware -  has to be done in principle to add =
 
-On 13 February 2012 00:17, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+> an external audio codec to BeagleBone board (OMAPAM3358 based, with I2S  =
 
-> I'm not familiar enough with HDA to comment on the cause of the issue,
-> but out of interest, does the hang really only happen with passthrough,
-> i.e. (AES0 & 0x02) set, or does it happen with a PCM stream with the
-> same parameters as well (and the application(s) just happen to set
-> problematic ALSA parameters only in passthrough mode)?
+> but without a codec on board)?
 
-Actually, went through over a lot of different type, only to find that
-the problem isn't with passthrough as such, but a combination of the
-prealloc value set and if 16 bits / 32 bits audio.
+I'm not really familiar with BeagleBone, and AM3359, but:
+You will need a driver for McASP (0 is routed to expansion). It looks
+like that the McASP IP is the same as in DaVinci. With luck you might be
+able to reuse the code for AM3359.
+Apart from this you will need a machine driver.
 
-16 bits audio, as soon as the ALSA hardware buffer is set to something
-different than the default 64 (like 4096, the default when using
-Ubuntu)  snd_pcm_write will hang then error.
+-- =
 
-32 bits audio, plays under most combinations tried, except for 5.1 PCM
-where I had to set the prealloc buffer to 1024 and above to get it
-work
-
-Here are the various mode I tried, the output of the log is for 4096
-prealloc buffer
-
-For a reminder:
-format=2 -> SND_PCM_FORMAT_S16_LE
-format=10 -> SND_PCM_FORMAT_S32_LE
-
-AC3 Passthrough: working for 64kB, Not working for: 128, 256, 512,
-1024, 2048 and 4096
-2012-02-13 15:58:50.339376 I  ALSA: SetParameters(format=2,
-channels=2, rate=48000, buffer_time=500000, period_time=4)
-2012-02-13 15:58:50.339437 I  ALSA: Buffer size range from 64 to 1048576
-2012-02-13 15:58:50.339441 I  ALSA: Period size range from 32 to 524288
-2012-02-13 15:58:50.339455 I  ALSA: Buffer time = 500000 us
-2012-02-13 15:58:50.339465 I  ALSA: Period time = 4 periods
-2012-02-13 15:58:50.458098 I  ALSA: Buffer size = 24000 | Period size = 6000
-2012-02-13 15:58:50.696838 I  AO: Audio fragment size: 12000
-
-16 bits stereo: working for 64, Not working for: 128, 256, 512, 1024, 2048, 4096
-2012-02-13 16:20:39.027793 I  ALSA: SetParameters(format=2,
-channels=2, rate=48000, buffer_time=500000, period_time=4)
-2012-02-13 16:20:39.027855 I  ALSA: Buffer size range from 64 to 1048576
-2012-02-13 16:20:39.027859 I  ALSA: Period size range from 32 to 524288
-2012-02-13 16:20:39.027873 I  ALSA: Buffer time = 500000 us
-2012-02-13 16:20:39.027883 I  ALSA: Period time = 4 periods
-2012-02-13 16:20:39.267237 I  ALSA: Buffer size = 24000 | Period size = 6000
-2012-02-13 16:20:39.507467 I  AO: Audio fragment size: 12000
-
-32 bits Stereo: working for: 64, 128,,256, 512, 1024, 2048 and 4096
-2012-02-13 16:05:25.010312 I  ALSA: SetParameters(format=10,
-channels=2, rate=48000, buffer_time=500000, period_time=4)
-2012-02-13 16:05:25.010372 I  ALSA: Buffer size range from 32 to 524288
-2012-02-13 16:05:25.010376 I  ALSA: Period size range from 16 to 262144
-2012-02-13 16:05:25.010389 I  ALSA: Buffer time = 500000 us
-2012-02-13 16:05:25.010400 I  ALSA: Period time = 4 periods
-2012-02-13 16:05:25.286857 I  ALSA: Buffer size = 24000 | Period size = 6000
-2012-02-13 16:05:25.526849 I  AO: Audio fragment size: 24000
-
-5.1 16 bits PCM:
-Using 64kB prealloc buffer, snd_pcm_hw_params_set_buffer_time_near
-gives the error "Invalid Parameter" for 500000
-Not working for 128, 256, 512, 1024, 2048 and 4096
-
-2012-02-13 16:09:11.621562 I  ALSA: SetParameters(format=2,
-channels=6, rate=48000, buffer_time=500000, period_time=4)
-2012-02-13 16:09:11.621628 I  ALSA: Buffer size range from 22 to 349525
-2012-02-13 16:09:11.621632 I  ALSA: Period size range from 11 to 174762
-2012-02-13 16:09:11.621645 I  ALSA: Buffer time = 500000 us
-2012-02-13 16:09:11.621663 I  ALSA: Period time = 4 periods
-2012-02-13 16:09:11.796861 I  ALSA: Buffer size = 24000 | Period size = 6000
-2012-02-13 16:09:12.036842 I  AO: Audio fragment size: 36000
-
-5.1 32 bits PCM:
-Not working for: 64, 256, 512. Working for 1024, 2048, 4096
-128 gives Invalid argument for snd_pcm_hw_params_set_buffer_time_near
-
-2012-02-13 16:25:12.890306 I  ALSA: SetParameters(format=10,
-channels=6, rate=48000, buffer_time=500000, period_time=4)
-2012-02-13 16:25:12.890366 I  ALSA: Buffer size range from 12 to 174762
-2012-02-13 16:25:12.890370 I  ALSA: Period size range from 6 to 87381
-2012-02-13 16:25:12.890383 I  ALSA: Buffer time = 500000 us
-2012-02-13 16:25:12.890393 I  ALSA: Period time = 4 periods
-2012-02-13 16:25:13.066855 I  ALSA: Buffer size = 24000 | Period size = 6000
-2012-02-13 16:25:13.316823 I  AO: Audio fragment size: 72000
-
->From looking at hda_intel.c, it seems that the problem is that the
-nvidia set AZX_DCAPS_BUFSIZE in driver_caps when it probably doesn't
-support it..
-Hopefully Stephen will be able to answer that one.
-
-I'm surprised not more people has reported the problem, surely there
-are a lot of people affected by this... Though 1.0.25 is very recent
-and not used yet by many linux distribution. Soon this will change :(
-
-Jean-Yves
+P=E9ter
