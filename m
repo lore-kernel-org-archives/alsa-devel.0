@@ -1,21 +1,16 @@
-From: Roman Haefeli <reduzent@gmail.com>
-Subject: Re: hdsp rpm support
-Date: Wed, 15 Feb 2012 00:07:20 +0100
-Message-ID: <1329260840.2350.27.camel@yoyo5>
-References: <1326877559.24738.84.camel@yoyo4>
-	<20120118102658.GA5351@linuxaudio.org> <1326884040.18308.6.camel@yoyo4>
-	<4F3926E3.1050809@drcomp.erfurt.thur.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: Fix snd_soc_add_card_controls
+ to pass correct data
+Date: Tue, 14 Feb 2012 15:17:03 -0800
+Message-ID: <20120214231702.GD3152@opensource.wolfsonmicro.com>
+References: <1329260193-9757-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4585264748731031298=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6DA8D24158
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 00:07:26 +0100 (CET)
-Received: by eaan11 with SMTP id n11so149946eaa.38
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 15:07:26 -0800 (PST)
-In-Reply-To: <4F3926E3.1050809@drcomp.erfurt.thur.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 762C2243A1
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 00:17:10 +0100 (CET)
+In-Reply-To: <1329260193-9757-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,85 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Adrian
 
-On Mon, 2012-02-13 at 16:06 +0100, Adrian Knoth wrote:
-> On 01/18/2012 11:54 AM, Roman Haefeli wrote:
-> Sorry for the late reply, I was on vacation...
-
-No problem at all. I'm glad to get a response.
-
-> [RME HDSP RPM]
-> > May I ask kindly for the 'other' version of the driver, which I would be
-> > happy to test?
-> 
-> As already mentioned by Fons, there are so many differnt versions now
-> that I hardly remember which one is supposed to work. ;)
-> 
->     http://adi.loris.tv/hdsp_20111031.tar.bz2
-> 
-> 
-> seems to be a combined archive. It contains two versions of the driver,
-> the first (hdsp.c) is more or less what's in current alsa-driver, the
-> other one (hdsp-test.c) is what turned out to be working for one user,
-> so you would do
-
-Unfortunately, it seems that none of those versions is working for me. 
-I did as you suggested and inserted the module based on hdsp-test.c.
-When inserting the cardbus interface (with connected iobox), I get this:
-
----
-Feb 14 23:48:38 yoyo5 kernel: [40573.384092] pcmcia_socket pcmcia_socket0: pccard: CardBus card inserted into slot 0
-Feb 14 23:48:38 yoyo5 kernel: [40573.384130] pci 0000:16:00.0: [10ee:3fc5] type 0 class 0x000401
-Feb 14 23:48:38 yoyo5 kernel: [40573.384172] pci 0000:16:00.0: reg 10: [mem 0x00000000-0x0000ffff]
-Feb 14 23:48:38 yoyo5 kernel: [40573.384337] pci 0000:16:00.0: BAR 0: assigned [mem 0x80000000-0x8000ffff]
-Feb 14 23:48:38 yoyo5 kernel: [40573.384352] pci 0000:16:00.0: BAR 0: set to [mem 0x80000000-0x8000ffff] (PCI address [0x80000000-0x8000ffff])
-Feb 14 23:48:38 yoyo5 kernel: [40573.384376] pci 0000:16:00.0: cache line size of 64 is not supported
-Feb 14 23:48:38 yoyo5 kernel: [40573.384673] hdsp 0000:16:00.0: enabling device (0000 -> 0002)
-Feb 14 23:48:38 yoyo5 kernel: [40573.384691] hdsp 0000:16:00.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Feb 14 23:48:41 yoyo5 kernel: [40576.408074] Hammerfall-DSP: no IO box connected!
-Feb 14 23:48:41 yoyo5 kernel: [40576.408148] hdsp 0000:16:00.0: PCI INT A disabled
-Feb 14 23:48:41 yoyo5 kernel: [40576.408173] hdsp: probe of 0000:16:00.0 failed with error -5
----
-
-It's seems it's not even recognizing that an RPM box is attached.
-
-The other version (hdsp.c from your archive) gives me this, which is
-similar to what I get with the stock alsa drivers:
-
----
-Feb 14 23:57:52 yoyo5 kernel: [41126.784055] pcmcia_socket pcmcia_socket0: pccard: CardBus card inserted into slot 0
-Feb 14 23:57:52 yoyo5 kernel: [41126.784093] pci 0000:16:00.0: [10ee:3fc5] type 0 class 0x000401
-Feb 14 23:57:52 yoyo5 kernel: [41126.784134] pci 0000:16:00.0: reg 10: [mem 0x00000000-0x0000ffff]
-Feb 14 23:57:52 yoyo5 kernel: [41126.784300] pci 0000:16:00.0: BAR 0: assigned [mem 0x80000000-0x8000ffff]
-Feb 14 23:57:52 yoyo5 kernel: [41126.784315] pci 0000:16:00.0: BAR 0: set to [mem 0x80000000-0x8000ffff] (PCI address [0x80000000-0x8000ffff])
-Feb 14 23:57:52 yoyo5 kernel: [41126.784339] pci 0000:16:00.0: cache line size of 64 is not supported
-Feb 14 23:57:52 yoyo5 kernel: [41126.784639] hdsp 0000:16:00.0: enabling device (0000 -> 0002)
-Feb 14 23:57:52 yoyo5 kernel: [41126.784658] hdsp 0000:16:00.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-Feb 14 23:57:54 yoyo5 kernel: [41129.343204] Hammerfall-DSP: wait for FIFO status <= 0 failed after 30 iterations
-Feb 14 23:57:54 yoyo5 kernel: [41129.346250] Hammerfall-DSP: wait for FIFO status <= 0 failed after 30 iterations
-Feb 14 23:57:54 yoyo5 kernel: [41129.351601] Hammerfall-DSP: loading firmware
-Feb 14 23:57:55 yoyo5 kernel: [41129.857764] Hammerfall-DSP: wait for FIFO status <= 0 failed after 5000 iterations
-Feb 14 23:57:55 yoyo5 kernel: [41129.857767] Hammerfall-DSP: timeout waiting for download preparation
-Feb 14 23:57:55 yoyo5 kernel: [41129.857769] Hammerfall-DSP: couldn't get firmware from userspace. try using hdsploader
-Feb 14 23:57:55 yoyo5 kernel: [41129.857771] Hammerfall-DSP: card initialization pending : waiting for firmware
----
-
->From what I can tell, it finds the correct firmware. If I remove the
-firmware file, I get different messages. So the problem must be
-something else.
+--===============4585264748731031298==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="t0UkRYy7tHLRMCai"
+Content-Disposition: inline
 
 
-> Final remark: For some devices (digiface, multiface, iirc), the firmware
-> filename was too long. mv /lib/firmware/hdsploader/* /lib/firmware/ did
-> the trick, but iirc, the RPM wasn't affected.
+--t0UkRYy7tHLRMCai
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-With hdsp-test.c, it doesn't even try to find the firmware, since it
-doesn't seem to see the attached iobox.
+On Tue, Feb 14, 2012 at 03:56:33PM -0700, Stephen Warren wrote:
+> Commit 022658b "ASoC: core: Add support for DAI and machine kcontrols."
+> created new functions to create controls for cards, codecs, platforms,
+> and DAIs. The new snd_soc_add_card_controls() passed the wrong "data" to
+> utility function snd_soc_add_controls(); it should be passing a codec,
+> but instead ended up passing the soc_card. Fix this.
 
-Is there something else I could try?
+Well, sort of.  The idea with Liam's commit was to split things out so
+that card operations got given a card so the argument change was
+intentional.  What's gone wrong is that things like PIN_SWITCH() (which
+is only ever used by cards) weren't updated to match so they still
+expect to find a CODEC there.  This'll quite probably have broken some
+other machine specific controls too.
 
-Roman
+I'll send a patch for PIN_SWITCH later today but it looks like we need
+an audit of all the drivers using non-CODEC adds to make sure they don't
+assume a CODEC in the callbacks.
+
+--t0UkRYy7tHLRMCai
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPOutmAAoJEBus8iNuMP3d2LYP/2LIxAizqjQYtCLcDUfBuylS
+9Snl/LMO1u3FSUQDQJvHwGmoNvpVnycsEYdr11BOTssu459J0lZFgb5gJqwM+czW
+2mVEx6mpiziKd56xfpB+RZqrA2/mOQeWpZkbAbhPzTWnvg48IGEMG7w/ftHNCBvn
+wljse+tvnEFkJMplJeYfXbGHqQUQvDjgBVv9K2UHslM7v/lLgKMLenrKHUtAAVsI
+R4p4opfbfnQdtwltXirStc7ohRu3xGOaTMgSiPg8A5FJZreD5AnI370NVp8HpHXQ
+W19ghp8WtNfyZ3vhIXsvLGAHHbiAP2pGNuUhwOZO5XyCOC/sGjR8rRtm6kRTxDD7
+lhrhdSP/9+OaaGm8WNI3/3aN8xCEdXGcgmJ+lxbr0JUousQFpe/kAv2No0Wl4wcr
+xK6ynq1iUkMz1NtXQj91hKM7sX3pH844LAwm9XaSsybPx9YMzaEkXfNhPsDKd7Dw
+xwP0oUGy431lPGFZFT6KdOaAXGYJqB6VuRm9XrRGh0AVwiBvYKbz0r/7njm0CO1K
+CWETfqEhAOeanfcHKLk3Pev2K92xWZgFICbLP5sVrLLZUiifcVLJZeq1ECJRH73T
+NRr55DXN2xth7+ugPRNZgZBiW/lJKIqpOVblJlBqmKNJGynuh/czVcfrQY5D2FfE
+9rVORL6y2QqdjC595KfD
+=ptDv
+-----END PGP SIGNATURE-----
+
+--t0UkRYy7tHLRMCai--
+
+--===============4585264748731031298==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4585264748731031298==--
