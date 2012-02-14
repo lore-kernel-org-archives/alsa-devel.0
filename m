@@ -1,46 +1,68 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8962: Fix sidetone enumeration texts
-Date: Mon, 13 Feb 2012 22:02:06 -0800
-Message-ID: <1329199326-13595-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
+Date: Mon, 13 Feb 2012 22:06:28 -0800
+Message-ID: <20120214060627.GB13456@opensource.wolfsonmicro.com>
+References: <1328148728-32258-7-git-send-email-richard.zhao@linaro.org>
+ <20120202085521.GB9773@S2101-09.ap.freescale.net>
+ <20120202091132.GD9773@S2101-09.ap.freescale.net>
+ <20120202092427.GB32403@b20223-02.ap.freescale.net>
+ <20120202130901.GE9773@S2101-09.ap.freescale.net>
+ <20120202135805.GB3015@richard-laptop>
+ <20120203021554.GE32403@b20223-02.ap.freescale.net>
+ <20120203133240.GB12915@S2101-09.ap.freescale.net>
+ <a9d9bad3-edd0-4a5f-9bb3-15787430d858@email.android.com>
+ <20120214013506.GA3276@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA15424404
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 07:02:12 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LyciRD1jyfeSSjG0"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120214013506.GA3276@b20223-02.ap.freescale.net>
+Sender: linux-doc-owner@vger.kernel.org
+To: Richard Zhao <richard.zhao@freescale.com>
+Cc: Richard Zhao <richard.zhao@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, kernel@pengutronix.de, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, eric.miao@linaro.org, eric@eukrea.com, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The sidetone enumeration texts have left and right swapped.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+--LyciRD1jyfeSSjG0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 85f71a7..0fc7a56 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2001,7 +2001,7 @@ static int dsp2_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static const char *st_text[] = { "None", "Right", "Left" };
-+static const char *st_text[] = { "None", "Left", "Right" };
- 
- static const struct soc_enum str_enum =
- 	SOC_ENUM_SINGLE(WM8962_DAC_DSP_MIXING_1, 2, 3, st_text);
--- 
-1.7.9.rc1
+On Tue, Feb 14, 2012 at 09:35:07AM +0800, Richard Zhao wrote:
+> On Sun, Feb 05, 2012 at 12:50:15PM +0800, Richard Zhao wrote:
+
+> > no, it is asoc machine driver to have machine specific code.=20
+> > the machine driver do not correspond to any hw device, which cause hard
+> > to bind dt or create platform device.
+
+> I'll have to keep audmux driver in arch/, till ASOC machine driver
+> has a way to get platfrom parameters.
+
+Machine drivers can easily get platform data, they're just regular
+drivers of whatever type so can get platform data in the same way that
+any other driver for their bus can.
+
+--LyciRD1jyfeSSjG0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPOfmkAAoJEBus8iNuMP3dnRQQAJyGTi2uSzQ/Y7Pa8drwExCx
+ZdMxeS6zi+Sis0UYl5nuoqP+cBV4JaQiVa4x0xuGUyN2L6pz30q4MIPlpq5V8iUs
+wsIWtP9z3LCvUJTmVKcA1eLCSmayh1uAer1l4KzMP21EzlbjlI6O6jHIekGD7/kv
+8a9FEmptwyQn83Gc430FaFvIbPTtP/Et1ZEQ0/235M6EJTzNjyk+A9J+9w9vLDoe
+7YbPxPGerNdTnAjfr6xoq/e9s5Nlozmrv0CzvSHAST8EWr2G1tino8HiNWIKS5N1
+4chgYbquQaq6jWw4ni+PblCKTx7ly0B+GB5kScUeBzKWv8/deCk4mrHAqBAPnVKy
+fZnyu7HxANPZx6qQ5JBjsF2i8kN1owLLslNTFSOsaLIEBcGrwMBjg3KODdpnXJ+m
+DTHhdcnv0nUGKK9Hbzro5/W9VtIAcm4C/RE5kDHjzDRA7mTgVdtotaX6gA7rdu0O
+o/X4tiKVrdJWpz0P6nS8drMOXEy3oqG7Vvl98F+kmZaTJrBK6vl/5vIH3P4DJ5/W
+C4nJ/h0EW+VbD1Q34cBbsz+++mPtrpUO84/xkBwbkwtbviaZeNZtvTdhfWe5FRJu
+mNAz2bNVKjt7YAnSx//akmTwo5xkv9rZZ1vbd8hVvbSYjYHOAsTaw3AvuWp8wx7x
+XERBCK7GYYP9daHbre8e
+=Od6n
+-----END PGP SIGNATURE-----
+
+--LyciRD1jyfeSSjG0--
