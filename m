@@ -1,237 +1,44 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
- reporting with core jack reporting
-Date: Tue, 14 Feb 2012 08:20:50 +0100
-Message-ID: <4F3A0B52.2010708@canonical.com>
-References: <1328644128-32630-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4F323405.8080902@canonical.com>
-	<20120208114642.GG3120@opensource.wolfsonmicro.com>
-	<4F327A21.8030805@canonical.com> <s5h39aj5569.wl%tiwai@suse.de>
-	<4F3516E4.2080706@canonical.com>
-	<20120210155003.GA11701@sirena.org.uk>
-	<4F35413F.9000701@canonical.com>
-	<20120210163946.GG6472@opensource.wolfsonmicro.com>
-	<s5hy5s625w8.wl%tiwai@suse.de>
-	<20120213154458.GB3494@opensource.wolfsonmicro.com>
-	<s5hwr7qzl6g.wl%tiwai@suse.de>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: Re: [PATCH v2 6/9] ARM: mx31ads: add audmux device
+Date: Tue, 14 Feb 2012 15:34:15 +0800
+Message-ID: <20120214073414.GB3276@b20223-02.ap.freescale.net>
+References: <20120202085521.GB9773@S2101-09.ap.freescale.net>
+ <20120202091132.GD9773@S2101-09.ap.freescale.net>
+ <20120202092427.GB32403@b20223-02.ap.freescale.net>
+ <20120202130901.GE9773@S2101-09.ap.freescale.net>
+ <20120202135805.GB3015@richard-laptop>
+ <20120203021554.GE32403@b20223-02.ap.freescale.net>
+ <20120203133240.GB12915@S2101-09.ap.freescale.net>
+ <a9d9bad3-edd0-4a5f-9bb3-15787430d858@email.android.com>
+ <20120214013506.GA3276@b20223-02.ap.freescale.net>
+ <20120214060627.GB13456@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F33E103D16
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 08:20:53 +0100 (CET)
-In-Reply-To: <s5hwr7qzl6g.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120214060627.GB13456@opensource.wolfsonmicro.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Richard Zhao <richard.zhao@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, kernel@pengutronix.de, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, eric.miao@linaro.org, eric@eukrea.com, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/13/2012 06:40 PM, Takashi Iwai wrote:
-> At Mon, 13 Feb 2012 07:44:59 -0800,
-> Mark Brown wrote:
->>
->> On Mon, Feb 13, 2012 at 02:56:55PM +0100, Takashi Iwai wrote:
->>> Mark Brown wrote:
->>
->>>> There's rather a lot of people who do embedded development and do need
->>>> to look at this stuff, though.  There's a real cost to raising the bar
->>>> for humans to understand things.
->>
->>> Hm, I'm afraid that this is getting apart from the real worth
->>> discussion.  I'm interested in whether "Line-Out" is acceptable
->>> enough, or it's a matter of taste, just like Marmite is acceptable as
->>> the normal English breakfasts.
->>
->> Well, I dunno - you did suggest adding direction modifiers to the jack
->> names which would both be a more general solution to the problem and
->> clean up the naming issue.
->
-> OK, let's postpone about it.
+On Mon, Feb 13, 2012 at 10:06:28PM -0800, Mark Brown wrote:
+> On Tue, Feb 14, 2012 at 09:35:07AM +0800, Richard Zhao wrote:
+> > On Sun, Feb 05, 2012 at 12:50:15PM +0800, Richard Zhao wrote:
+> 
+> > > no, it is asoc machine driver to have machine specific code. 
+> > > the machine driver do not correspond to any hw device, which cause hard
+> > > to bind dt or create platform device.
+> 
+> > I'll have to keep audmux driver in arch/, till ASOC machine driver
+> > has a way to get platfrom parameters.
+> 
+> Machine drivers can easily get platform data, they're just regular
+> drivers of whatever type so can get platform data in the same way that
+> any other driver for their bus can.
+Machine drivers don't correspond to any hw devices. If we create a
+virtual platform device, it'll be hard for DT binding.
 
-I've seen enough "Line-Out"s in my life that I'm pretty sure everyone 
-will understand it, even though "Line Out" is more common.
+Thanks
+Richard
 
->>> with the input-jack layer.  The input-jack doesn't provide the index
->>> number.  So, you can't register the same name correctly.  Thus I tried
->>> to create a unique name string as input-jack id.
->>
->> It's really never been the intention to have an "input-jack" layer -
->
-> I called it just to distinguish with kctl jack, not intended to stress
-> that it's an input layer.
->
->> the API is there to hide all the input layer stuff it can from the
->> individual audio drivers.  The only thing that leaks out is the button
->> remapping which I couldn't think of anything more sensible to do with
->> them.
->>
->>> Now, looking back to your implementation, the kctl jack is created
->>> with a name string based on the switch type, not from the name string
->>> passed to snd_jack_new() itself.  Why not passing the string as is?
->>
->> We can't pass it as-is since we'll need multiple controls per jack -
->> literally all the systems I have available to test on would fail if they
->> used the same name as they all have headset jacks.  As I said further up
->> the thread my plan had been to refactor the name generation code once
->> the separate kctl code is gone and they can be merged into the same
->> source file which makes this a lot easier.
->
-> Makes sense.
->
->> With these patches I'm mainly looking for a quick and simple refactoring
->> to get rid of the duplication - once we've got rid of the duplicate
->> driver APIs then we can refactor the internals of the implementation
->> however we like but there's a pretty pressing need to fix the driver
->> API and get all the drivers doing the same thing to userspace even if
->> it's not ideal.
->
-> Hm, then I'd say let's hold on.  Merging this half-baked stuff is
-> rather confusing at this point since the use of kctl jack isn't
-> targeted yet for ASoC.
->
-> I believe what we need _now_ is to decide the policy (i.e. element
-> naming rule and TLV definitions) for kctl jacks quickly.
->
->>> If multiple kctls are needed (e.g. for headset), you can either create
->>> a new name or just create the multiple instances with the same name
->>> but give extra TLVs to identify which type it is.  Or, you can create
->>> an enum control so that both the input-jack and the kctl-jack
->>> correspond as 1:1.
->>
->> This stuff is why I've been asking you about the ABI and general
->> semantics for the new controls, I was never sure what the intention was
->> - when you said they were just plain booleans I just went ahead and
->> created multiple controls as that seemed to be what the current idiom
->> was.
->>
->> I don't think an enumeration is going to scale so well given the number
->> of possible combinations you can get on more complex jacks.
->
-> OK.
->
->>> In other words, if 1:1 mapping isn't needed, we don't have to create a
->>> different name string at all.  Just create "Jack Detect" controls with
->>> different indices and with corresponding TLVs.  This would be enough
->>> (could be even easier) for a machine parser.
->>
->> That'd work I think, though I would create a new control for each
->> physical jack at least just for clarity.
->
-> They are indeed individual ctl elements.  They just share the same
-> name and are distinguished by the index numbers.  For the parser
-> program, it would be even easier because it needs to look only for
-> elements containing the single string.  The rest is the parse of TLVs
-> of gathered elements, which would be needed no matter whether we have
-> multiple name strings or not.
->
->>> And, it seems that there is no standard rule defined for the id string
->>> of input-jack.  If 1:1 model is used, we'd need to define this rule.
->>
->> The input stack doesn't have the same concept of machine parsable names
->> for things that ALSA does (honestly that's pretty unique to ALSA within
->> the kernel) - the names it users are all free form text intended to be
->> meaningful to humans only.
->
-> Yeah, maybe.  But, if you have two headset jacks, how would you
-> identify with the current jack stuff...?
->
->>> BTW, I found another issue.  With this implementation, you can't build
->>> kjack ctl without input-jack.  I can work around it for HD-audio by
->>> adding more ifdef, but it'd be ugly...
->>
->> I really don't see this as a problem; it seems vanishingly unlikely that
->> any realistic system would want to disable the input API and need
->> accessory detection.  Obviously the end goal here is that you wouldn't
->> be able to have HDA specific hacks in the code as everything will be
->> handled by the ALSA core code...
->
-> Yeah, the more code may be moved toward the core once when we decide
-> the standards.
->
->> To my mind we should just support everything and let userspace worry
->> about deciding what to use, this isn't the sort of thing which should
->> require a kernel rebuild to configure and it's not like there's any
->> fundamental problem or massive overhead caused by having the devices
->> show up.
->
-> That's one option, yes.  OTOH, people always want to diet the kernel
-> code.  It's a good dream that is hardly to achieve in reality (for
-> human beings, too), though.
->
->
-> So, at this point, I can list the following policies for kctl jacks:
->
-> A. all kctls have one name string with different indices.  Each jack
->     is distinguished by the TLV provided to each kctl.
->
-> B. kctls are built with only a base name ("Headphone", "Mic") with
->     different indices and TLVs.
->
-> C. kctls contain unique names ([location] base [direction] [channel])
->     optionally with TLVs
-
-I would vote for "C2", although I would probably prefer "[location] base 
-[channel]" over "[location] base [direction] [channel]", as direction is 
-superfluous given "base". This is also what the current implementation 
-offers, and what I've based my PulseAudio patches on.
-
-A and B requires additional work as we would need an API in alsa-lib 
-from where you can read and interpret the TLVs, and stuff like amixer 
-needs to understand it too make it reasonable easy to work with and 
-test. And C gives the option to add TLVs later whenever we feel the need 
-for it, so it seems to be an all-win.
-
-Also; as this graph exposing thing is unlikely to be implemented in all 
-layers of the audio stack any time soon, maybe C2 is also the one that 
-gives the most obvious matching between mixer kcontrols and jack 
-kcontrols? I'd like to move in this direction; not only because we 
-currently do not have the graph, but also because that even if we have 
-it, userspace apps choosing not to implement it will have a good option.
-
-> It'd be clear when thinking some real cases.  Assume a headset jack
-> containing a headphone and a mic switch:
-> A: two kctls with TLV JACK_HEADSET but with TYPE_HEADPHONE and
->     TYPE_MIC, respectively.
-> B1: two kctls with the same "Headset" name, with TLV TYPE_HEADPHONE
->      and TYPE_MIC
-> B2: separate to a kctl with "Headphone" and a kctl with "Mic"
-> C1: same as B1
-> C2: same as B2
->
-> When an extra headphone jack is added to the above,
-> A: another kctl with TLV_JACK_HEADPHONE, TYPE_HEADPHONE
-> B1: A kctl "Headphone" with TLV TYPE_HEADPHONE
-> B2: A kctl "Headphone" with index 1
-> C1: same as B1
-> C2: A kctl "Rear Headphone" (and rename other "Front Headphone")
->
-> Yet more another headphone jack on left,
-> A: another kctl with TLV_JACK_HEADPHONE, TYPE_HEADPHONE, LOC_LEFT
-> B1: A kctl "Headphone" index 1 with TLV TYPE_HEADPHONE, LOC_LEFT
-> B2: A kctl "Headphone" index 2 with LOC_LEFT
-> C1: A kctl "Left Headphone" (rename other "Rear Headphone")
-> C2: A kctl "Left Headphone"
->
-> ... or does it make things more complicated? :)
->
->
-> thanks,
->
-> Takashi
->
-
-
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
