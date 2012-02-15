@@ -1,15 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: dapm: Convert pin switches to use
-	snd_soc_card
-Date: Tue, 14 Feb 2012 17:12:20 -0800
-Message-ID: <1329268340-25342-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Joey Jiao <joey.jiaojg@gmail.com>
+Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
+ B1900 Series
+Date: Wed, 15 Feb 2012 09:29:38 +0800
+Message-ID: <CAKOmCvofbM9+5SGSMkAP=ansfxCz835LF3GfM6=OF3zn-+10iw@mail.gmail.com>
+References: <4F35C191.9080401@gmail.com>
+	<20120211020502.GA25041@marvin.atrad.com.au>
+	<CAN8cciZejU6suH_pF5OzpVgjjUYsYgTCf14T5J=0G-c0wSfyAA@mail.gmail.com>
+	<CAKOmCvoS+tgvyPZJey4gfFFq=Uz01pnZY7YvGbxgQPpAzQ7KCA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C075510392F
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 02:12:25 +0100 (CET)
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70572103940
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 02:30:00 +0100 (CET)
+Received: by qcha6 with SMTP id a6so376176qch.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 17:29:58 -0800 (PST)
+In-Reply-To: <CAKOmCvoS+tgvyPZJey4gfFFq=Uz01pnZY7YvGbxgQPpAzQ7KCA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +27,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: tiwai@suse.de, pshou@realtek.com.tw, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com.tw
 List-Id: alsa-devel@alsa-project.org
 
-Since the addition of the non-CODEC control adds card controls like the
-DAPM pin switch have been broken as they are expecting the private data
-for the control to be the CODEC but it's now the card. Fix that for the
-pin switches, an audit of other drivers is required.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   20 ++++++++++----------
- 1 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 6fc488e..9b796e3 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2644,15 +2644,15 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_info_pin_switch);
- int snd_soc_dapm_get_pin_switch(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
- 
--	mutex_lock(&codec->mutex);
-+	mutex_lock(&card->mutex);
- 
- 	ucontrol->value.integer.value[0] =
--		snd_soc_dapm_get_pin_status(&codec->dapm, pin);
-+		snd_soc_dapm_get_pin_status(&card->dapm, pin);
- 
--	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&card->mutex);
- 
- 	return 0;
- }
-@@ -2667,19 +2667,19 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_get_pin_switch);
- int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
- 
--	mutex_lock(&codec->mutex);
-+	mutex_lock(&card->mutex);
- 
- 	if (ucontrol->value.integer.value[0])
--		snd_soc_dapm_enable_pin(&codec->dapm, pin);
-+		snd_soc_dapm_enable_pin(&card->dapm, pin);
- 	else
--		snd_soc_dapm_disable_pin(&codec->dapm, pin);
-+		snd_soc_dapm_disable_pin(&card->dapm, pin);
- 
--	snd_soc_dapm_sync(&codec->dapm);
-+	snd_soc_dapm_sync(&card->dapm);
- 
--	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&card->mutex);
- 
- 	return 0;
- }
--- 
-1.7.9.rc1
+QnR3LCBmb3IgdGhlIGNvZGUgbW9kaWZpY2F0aW9uLCBJIG1vZGlmaWVkIG1vZGVsIHdpbGwgaW4K
+cGF0Y2hfcmVhbHRlay5jIHdoaWNoIHdvcmtzIHNhbWUgYXMgdGhlIGhkYS12ZXJiIGNvbW1hbmQu
+CkZyb206CnN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX3ZlcmIgYWxjMjYwX3dpbGxfdmVyYnNbXSA9
+IHsKICAgICAgICB7MHgwZiwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fSFB9
+LAogICAgICAgIHsweDBiLCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgwMH0sCiAgICAgICAg
+ezB4MGQsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAwfSwKICAgICAgICB7MHgwZiwgQUNf
+VkVSQl9TRVRfRUFQRF9CVExFTkFCTEUsIDB4MDJ9LAogICAgICAgIHsweDFhLCBBQ19WRVJCX1NF
+VF9DT0VGX0lOREVYLCAweDA3fSwKICAgICAgICB7MHgxYSwgQUNfVkVSQl9TRVRfUFJPQ19DT0VG
+LCAweDMwNDB9LAogICAgICAgIHt9Cn07ClRvOgpzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV92ZXJi
+IGFsYzI2MF93aWxsX3ZlcmJzW10gPSB7CiAgICAgICAgezB4MGYsIEFDX1ZFUkJfU0VUX1BJTl9X
+SURHRVRfQ09OVFJPTCwgUElOX0hQfSwKICAgICAgICB7MHgwYiwgQUNfVkVSQl9TRVRfQ09OTkVD
+VF9TRUwsIDB4MDB9LAogICAgICAgIHsweDBkLCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgw
+MH0sCiAgICAgICAgezB4MGYsIEFDX1ZFUkJfU0VUX0VBUERfQlRMRU5BQkxFLCAweDAyfSwKICAg
+ICAgICB7MHgxYSwgQUNfVkVSQl9TRVRfQ09FRl9JTkRFWCwgMHgwN30sCiAgICAgICAgezB4MWEs
+IEFDX1ZFUkJfU0VUX1BST0NfQ09FRiwgMHgzMDQwfSwKICAgICAgICB7MHgwMSwgQUNfVkVSQl9T
+RVRfR1BJT19NQVNLLCAweDAxfSwKICAgICAgICB7MHgwMSwgQUNfVkVSQl9TRVRfR1BJT19ESVJF
+Q1RJT04sIDB4MDF9LAogICAgICAgIHt9Cn07CgoK5ZyoIDIwMTLlubQy5pyIMTXml6Ug5LiK5Y2I
+OToxOO+8jEpvZXkgSmlhbyA8am9leS5qaWFvamdAZ21haWwuY29tPiDlhpnpgZPvvJoKPiBIaSBh
+bGwsCj4gSSBzb2x2ZWQgdGhlIHNwZWFrZXIgcHJvYmxlbSBvZiBCMTkwMCwgYW5kIEkgaGF2ZSB5
+b3UgY2FuIGZpeCB0aGUKPiBkcml2ZXIgaW4gbmV4dCBhbHNhIHJlbGVhc2UuCj4gSSB1c2UgaGRh
+LXZlcmIgdG9vbCB0byBlbmFibGUgc291bmQgZnJvbSBzcGVha2VyLgo+IENvbW1hbmRzIGFzIGJl
+bG93Ogo+IHN1ZG8gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgMHg3MTYgMHgwMQo+IHN1
+ZG8gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgMHg3MTcgMHgwMQo+Cj4gUGVyaGFwcyB5
+b3UgbmVlZCB0byBhZGQgYSBuZXcgbW9kZWwgYmVzaWRlcyB3aWxsLiBNZWFud2hpbGUsIGF1dG8K
+PiBkZXRlY3Qgb2YgaGVhZHBob25lIGluc2VydGluZyBpcyBub3QgZnVuY3Rpb24sIHNvIHNwZWFr
+ZXIgYW5kCj4gaGVhZHBob25lIGRvbid0IHN3aXRjaCBhdXRvbWF0aWNhbGx5Lgo+Cj4KPiDlnKgg
+MjAxMuW5tDLmnIgxNeaXpSDkuIrljYg4OjUw77yMUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0
+ZXgyQGdtYWlsLmNvbT4g5YaZ6YGT77yaCj4+IDIwMTIvMi8xMSwgSm9uYXRoYW4gV29pdGhlIDxq
+d29pdGhlQGp1c3Q0Mi5uZXQ+Ogo+Pj4gSGkgSm9leQo+Pj4KPj4+IEZvciBmdXR1cmUgcmVmZXJl
+bmNlLCBwbGVhc2UgZW1haWwgcmVwb3J0cyBsaWtlIHRoaXMgdG8gdGhlIGFsc2EtZGV2ZWwgbGlz
+dC4KPj4+IFRoZSByZWxldmFudCBkZXZlbG9wZXJzIGFyZSBmYXIgbW9yZSBsaWtlbHkgdG8gcmVz
+cG9uZCB0byBtZXNzYWdlcyBvbiB0aGUKPj4+IGxpc3QgdGhhbiB0aGV5IGFyZSB0byBtZXNzYWdl
+cyBzZW50IHByaXZhdGVseS4KPj4+Cj4+PiBJIGhhdmUgY29waWVkIHRoaXMgdG8gdGhlIGxpc3Qg
+dG8gbWF4aW1pc2UgaXRzIGRpc3RyaWJ1dGlvbi4KPj4+Cj4+PiBPbiBTYXQsIEZlYiAxMSwgMjAx
+MiBhdCAwOToxNzowNUFNICswODAwLCBqb2V5LmppYW9qZyB3cm90ZToKPj4+PiBJJ20gcmVwb3J0
+aW5nIGEgYnVnIHJlbGF0ZWQgdG8gQUxTQSBhbmQgQUxDMjYwLCB3aGljaCBwZXJoYXBzIG9ubHkK
+Pj4+PiB5b3UgY2FuIHNvbHZlLiBBcHByZWNpYXRlIGlmIHlvdSBjYW4gY2hlY2suCj4+Pj4gV2Ug
+Z290IGEgbG90IG9mIHVzZXJzIHVzaW5nIEhQIENPTVBBUSBCMTkwMCBzZXJpZXMgd2hpY2ggdXNp
+bmcgQVRJCj4+Pj4gU0I0NTAgYW5kIEFMQzI2MCBmb3IgbGludXggc3lzdGVtcyBsaWtlIERlYmlh
+biwgVWJ1bnR1IGFuZCBldGMuIFRoZQo+Pj4+IHByb2JsZW0gaXMgdGhhdCB0aGVyZSBpcyBubyBz
+b3VuZCBmcm9tIHNwZWFrZXIgd2hpbGUgZW5hYmxlCj4+Pj4gbW9kZWw9d2lsbCBjYW4gaGVhciBm
+cm9tIGVhcnBob25lLiBUaGUgcHJvYmxlbSBhbmQgYWxzYS1pbmZvLnR4dCBpcwo+Pj4+IHJlcG9y
+dGVkIGhlcmUKPj4+PiBodHRwczovL2Fuc3dlcnMubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJj
+ZS9hbHNhLWRyaXZlci8rcXVlc3Rpb24vMTg2Njk4LAo+Pj4+IHdoaWNoIHRob3VnaHQgYmUgYSBi
+dWcgb2YgQUxDMjYwIGRyaXZlciBidWcuCj4+Pj4gSG9wZSB5b3UgY2FuIGNoZWNrIHdoYXQgd2Ug
+Y2FuIGRvIHRvIHNvbHZlIGl0Lgo+Pj4KPj4+IEZyb20gdGhlIGFib3ZlIEkgYW0gbm90IGVudGly
+ZWx5IHN1cmUgd2hhdCB0aGUgcHJvYmxlbSBpcy4gwqBZb3Ugc2VlbSB0byBiZQo+Pj4gdGFsa2lu
+ZyBhYm91dCB0d28gc2VwYXJhdGUgY29uZGl0aW9ucy4gwqBJbiB0aGUgZmlyc3QgKHdoZXJlIEkg
+cHJlc3VtZSB0aGUKPj4+IG1vZHVsZSBpcyBsb2FkZWQgd2l0aG91dCBhbnkgcGFyYW1ldGVycyB5
+b3Ugc2F5IHRoZXJlJ3Mgbm8gc291bmQgZnJvbSB0aGUKPj4+IHNwZWFrZXIuIMKgRG8gb3RoZXIg
+YXNwZWN0cyBvZiB0aGUgY2FyZCB3b3JrIGNvcnJlY3RseSBpbiB0aGlzIGNhc2U/Cj4+Pgo+Pj4g
+VGhlIHNlY29uZCBzaXR1YXRpb24gaXMgd2hlcmUgIm1vZGVsPXdpbGwiIGlzIHNwZWNpZmllZCBh
+cyBhIG1vZHVsZQo+Pj4gcGFyYW1ldGVyLiDCoEhlcmUgeW91IHNheSB5b3UgY2FuIGdldCBhdWRp
+byBmcm9tIHRoZSBoZWFkcGhvbmUsIGJ1dCBhZ2Fpbgo+Pj4gd2hhdCBhYm91dCBvdGhlciBhc3Bl
+Y3RzIG9mIHRoZSBzb3VuZGNhcmQgLSBkbyB0aGV5IHdvcmsgbm9ybWFsbHk/Cj4+Pgo+Pj4gQXQg
+YSByb3VnaCBndWVzcywgaXQgc291bmRzIGxpa2UgdGhlcmUgYXJlIHR3byB1bmRlcmx5aW5nIGlz
+c3Vlcy4gwqBUaGUgZmlyc3QKPj4+IGlzIHRoYXQgdGhpcyBzeXN0ZW0gcmVxdWlyZXMgc29tZSBt
+b2RlbC1zcGVjaWZpYyBoYW5kaW5nIGluIG9yZGVyIHRvIG1hcAo+Pj4gY2hpcCBvdXRwdXRzIGNv
+cnJlY3RseS4gwqBUaGUgc2Vjb25kIGlzIHRoYXQgaWYgc3VjaCBtb2RlbC1zcGVjaWZpYyBkZXRh
+aWxzCj4+PiBhcmUgcmVxdWlyZWQgdGhlbiB0aGUgZHJpdmVyIHByZWZlcnJhYmx5IHdvdWxkIGFj
+dGl2YXRlIHRoZXNlIGF1dG9tYXRpY2FsbHkKPj4+IHdpdGhvdXQgdGhlIG5lZWQgdG8gc3BlY2lm
+eSAibW9kZWw9d2lsbCIuCj4+Pgo+Pj4gQW5vdGhlciBwb3NzaWJpbGl0eSBpcyB0aGF0IHRoZXJl
+IGlzIHNvbWV0aGluZyBhYm91dCB0aGlzIGxhcHRvcCBzeXN0ZW0KPj4+IHdoaWNoIGlzIGNvbmZ1
+c2luZyB0aGUgYXV0by1wcm9iaW5nIG9mIHRoZSBhbGMyNjAgY29kZWMgY29kZS4KPj4+Cj4+PiBJ
+J20gbm90IHN1cmUgd2hhdCBpcyB0aGUgYmVzdCB3YXkgb2YgcHJvY2VlZGluZyBoZXJlLiDCoEkg
+c3VzcGVjdCBvdGhlciBtb3JlCj4+PiBhY3RpdmUgZGV2ZWxvcGVycyB3aWxsIGhhdmUgYSBzdHJl
+YW1saW5lZCBhcHByb2FjaCB0byBoZWxwIHJlY3RpZnkgdGhlCj4+PiB0cm91YmxlLiDCoEluIHRo
+ZSBmaXJzdCBpbnN0YW5jZSBJIHdvdWxkIHRlbmQgdG8gbG9hZCB0aGUgbW9kdWxlIHdpdGgKPj4+
+ICJtb2RlbD10ZXN0IiBhbmQgZXhwZXJpbWVudCB3aXRoIHRoZSByZXN1bHRpbmcgYWxzYW1peGVy
+IGNvbnRyb2xzIHRvCj4+PiBkZXRlcm1pbmUgd2hhdCBjaGlwIG91dHB1dHMgYXJlIGNvbm5lY3Rl
+ZCB0byB3aGljaCBwaW5zLiDCoEhvd2V2ZXIsIHRoaXMgaXMKPj4+IHF1aXRlICJvbGQgc2Nob29s
+IiBub3cgLSB3aGlsZSBpdCdzIHRoZSBhcHByb2FjaCBJIHVzZWQgd2hlbiBnZXR0aW5nIG15Cj4+
+PiBzeXN0ZW0gd29ya2luZywgbXkgaW1wcmVzc2lvbiBpcyB0aGF0IGl0cyB1c2UgaGFzIGJlZW4g
+bW9zdGx5IGRlcHJlY2F0ZWQgYnkKPj4+IHRoZSBhdXRvbWF0aWMgcGFyc2VyIHdoaWNoIGlzIG5v
+dyBwcmVzZW50Lgo+Pj4KPj4+IEluIHRoZSBhYm92ZS1yZWZlcmVuY2VkIGxhdW5jaHBhZCByZXBv
+cnQgdGhlIHF1ZXN0aW9uIGlzIGFza2VkIGFib3V0IHRoZQo+Pj4gQUxDMjYwIGRhdGFzaGVldC4g
+wqBUaGlzIGlzIHJlYWRpbHkgYXZhaWxhYmxlIG9uIHRoZSBuZXQuIMKgSSBkb3VidCBpdCBpcyBh
+bGwKPj4+IHRoYXQgbmVjZXNzYXJ5IG5vdyBzaW5jZSBJIHRoaW5rIHRoZSBiYXNlIGluZnJhc3Ry
+dWN0dXJlIGlzIHByZXR0eSBzb2xpZCwKPj4+IGJ1dCBpZiB5b3UgZG8gbmVlZCBpdCBhbmQgaGF2
+ZSBkaWZmaWN1bHR5IGZpbmRpbmcgaXQgcGxlYXNlIGNvbnRhY3QgbWUKPj4+IG9mZi1saXN0Lgo+
+Pj4KPj4KPj4gVGhlIGF1dG8tcGFyc2VyIHJlcXVpcmUgY29ycmVjdCBwaW4gZGVmYXVsdAo+Pgo+
+PiBSZWZlciB0byBhbGMyNjAgR2VuZXJhbCBEZXNjcmlwdGlvbgo+Pgo+PiBSZWFsdGVrJ3MgcHJv
+cHJpZXRhcnkgaW1wZWRhbmNlIHNlbnNpbmcgYW5kIGphY2sgZGV0ZWN0IHRlY2huaXF1ZXMKPj4g
+YWxsb3cgZGV2aWNlIGxvYWRzIG9uIGlucHV0cyBhbmQgb3V0cHV0cyB0byBiZSBhdXRvLWRldGVj
+dGVkLiBBbGwKPj4gYW5hbG9nIElPcyBhcmUgaW5wdXQgYW5kIG91dHB1dCBjYXBhYmxlLiBIZWFk
+cGhvbmUgYW1wbGlmaWVycyBhcmUgYWxzbwo+PiBpbnRlZ3JhdGVkIGF0IGVhY2ggYW5hbG9nIG91
+dHB1dC4gQWxsIGFuYWxvZyBJT3MgY2FuIGJlIHJlLXRhc2tlZAo+PiBhY2NvcmRpbmcgdG8gdXNl
+cidzIGRlZmluaXRpb25zLCBvciBhdXRvbWF0aWNhbGx5IHN3aXRjaGVkIHRvIHN1aXQgdGhlCj4+
+IGNvbm5lY3RpbmcgZGV2aWNlIChVbml2ZXJzYWwgQXVkaW8gSmFja8KuKS4KPj4KPj4gUmVzZXJ2
+ZSBhbmFsb2cgbWl4ZXIgYXJjaGl0ZWN0dXJlIGlzIGJhY2t3YXJkcyBjb21wYXRpYmxlIHdpdGgg
+QUMnOTcKPgo+Cj4KPiAtLQo+IC1Kb2V5IEppYW8KCgoKLS0gCi1Kb2V5IEppYW8KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
