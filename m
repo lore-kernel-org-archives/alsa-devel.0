@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: core: Fix snd_soc_add_card_controls
- to pass correct data
-Date: Tue, 14 Feb 2012 15:17:03 -0800
-Message-ID: <20120214231702.GD3152@opensource.wolfsonmicro.com>
-References: <1329260193-9757-1-git-send-email-swarren@nvidia.com>
+From: tilt <tilt@linuxfoo.de>
+Subject: Re: snd_emu10k1 with E-MU 1616m PCIe
+Date: Wed, 15 Feb 2012 01:42:03 +0100
+Message-ID: <4F3AFF5B.60303@linuxfoo.de>
+References: <4F3840FE.9090006@linuxfoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4585264748731031298=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 762C2243A1
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 00:17:10 +0100 (CET)
-In-Reply-To: <1329260193-9757-1-git-send-email-swarren@nvidia.com>
+Received: from mail.tk-sls.de (linuxfoo.de [91.204.170.65])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35B9B243ED
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 01:42:15 +0100 (CET)
+Received: from [192.168.2.101] (pD9FA4E30.dip.t-dialin.net [217.250.78.48])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "Tilman Kranz", Issuer "Tilman Kranz" (not verified))
+	by mail.tk-sls.de (Postfix) with ESMTPS id CE095302C0
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 01:42:08 +0100 (CET)
+In-Reply-To: <4F3840FE.9090006@linuxfoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,68 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
---===============4585264748731031298==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="t0UkRYy7tHLRMCai"
-Content-Disposition: inline
+Myself wrote @ 02/12/2012 11:45 PM:
+> [...]; so I wonder: should 
+> /usr/local/lib/firmware/emu/micro_dock.fw not also be loaded? 
+> [...]
 
+I see there is a test in pci/emu10k1/emu10k1_main.c, line 735f:
 
---t0UkRYy7tHLRMCai
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
+   if (reg & EMU_HANA_OPTION_DOCK_OFFLINE) {
+      ... the following code is NOT executed on my hardware
 
-On Tue, Feb 14, 2012 at 03:56:33PM -0700, Stephen Warren wrote:
-> Commit 022658b "ASoC: core: Add support for DAI and machine kcontrols."
-> created new functions to create controls for cards, codecs, platforms,
-> and DAIs. The new snd_soc_add_card_controls() passed the wrong "data" to
-> utility function snd_soc_add_controls(); it should be passing a codec,
-> but instead ended up passing the soc_card. Fix this.
+The flag is defined in include/sound/emu10k1.h, line 1089:
 
-Well, sort of.  The idea with Liam's commit was to split things out so
-that card operations got given a card so the argument change was
-intentional.  What's gone wrong is that things like PIN_SWITCH() (which
-is only ever used by cards) weren't updated to match so they still
-expect to find a CODEC there.  This'll quite probably have broken some
-other machine specific controls too.
+   #define EMU_HANA_OPTION_DOCK_OFFLINE    0x08
+      /* Audio Dock online and FPGA not configured */
 
-I'll send a patch for PIN_SWITCH later today but it looks like we need
-an audit of all the drivers using non-CODEC adds to make sure they don't
-assume a CODEC in the callbacks.
+However, if instead of the above I test for
 
---t0UkRYy7tHLRMCai
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+   #define EMU_HANA_OPTION_DOCK_ONLINE     0x04
+      /* Audio Dock online and FPGA configured */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+the test succeeds.
 
-iQIcBAEBAgAGBQJPOutmAAoJEBus8iNuMP3d2LYP/2LIxAizqjQYtCLcDUfBuylS
-9Snl/LMO1u3FSUQDQJvHwGmoNvpVnycsEYdr11BOTssu459J0lZFgb5gJqwM+czW
-2mVEx6mpiziKd56xfpB+RZqrA2/mOQeWpZkbAbhPzTWnvg48IGEMG7w/ftHNCBvn
-wljse+tvnEFkJMplJeYfXbGHqQUQvDjgBVv9K2UHslM7v/lLgKMLenrKHUtAAVsI
-R4p4opfbfnQdtwltXirStc7ohRu3xGOaTMgSiPg8A5FJZreD5AnI370NVp8HpHXQ
-W19ghp8WtNfyZ3vhIXsvLGAHHbiAP2pGNuUhwOZO5XyCOC/sGjR8rRtm6kRTxDD7
-lhrhdSP/9+OaaGm8WNI3/3aN8xCEdXGcgmJ+lxbr0JUousQFpe/kAv2No0Wl4wcr
-xK6ynq1iUkMz1NtXQj91hKM7sX3pH844LAwm9XaSsybPx9YMzaEkXfNhPsDKd7Dw
-xwP0oUGy431lPGFZFT6KdOaAXGYJqB6VuRm9XrRGh0AVwiBvYKbz0r/7njm0CO1K
-CWETfqEhAOeanfcHKLk3Pev2K92xWZgFICbLP5sVrLLZUiifcVLJZeq1ECJRH73T
-NRr55DXN2xth7+ugPRNZgZBiW/lJKIqpOVblJlBqmKNJGynuh/czVcfrQY5D2FfE
-9rVORL6y2QqdjC595KfD
-=ptDv
------END PGP SIGNATURE-----
+Does this tell me that there is no need to load a dock firmware
+on my hardware? After all, dock relais went online with an audible
+click, dock exposes functionality, just a bit messy.
 
---t0UkRYy7tHLRMCai--
+Kind regards,
+Tilman.
 
---===============4585264748731031298==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4585264748731031298==--
+P.S.: Will also start working with the emutrix group to get a
+hold on the mixer names & routings. I hope I can get Phones L/R
+configurable with existing driver
