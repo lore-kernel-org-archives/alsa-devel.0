@@ -1,77 +1,56 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: core - add platform DAPM debugfs
-	support
-Date: Wed, 15 Feb 2012 08:06:08 -0800
-Message-ID: <20120215160607.GE2996@opensource.wolfsonmicro.com>
-References: <1329319531-14940-1-git-send-email-lrg@ti.com>
+Subject: Re: [RFC 00/11]O MAP/ASoC: Move and merge McBSP driver under ASoC
+Date: Wed, 15 Feb 2012 08:08:10 -0800
+Message-ID: <20120215160809.GF2996@opensource.wolfsonmicro.com>
+References: <1329320280-1621-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6256667308952056188=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89123103EA2
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 17:06:12 +0100 (CET)
-In-Reply-To: <1329319531-14940-1-git-send-email-lrg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Sebastien Guiriec <s-guiriec@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aPdhxNJGSeOG9wFI"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1329320280-1621-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6256667308952056188==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X3gaHHMYHkYqP6yf"
-Content-Disposition: inline
-
-
---X3gaHHMYHkYqP6yf
+--aPdhxNJGSeOG9wFI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 15, 2012 at 03:25:31PM +0000, Liam Girdwood wrote:
-> From: Sebastien Guiriec <s-guiriec@ti.com>
+On Wed, Feb 15, 2012 at 05:37:49PM +0200, Peter Ujfalusi wrote:
+> Hello,
 >=20
-> Allow platform widgets to be visible in debugfs like codec widgets.
+> The aim of this series is to move the plat-omap/mcbsp.c driver out to
+> sound/soc/omap/
+> By doing this we can combine the two levels of McBSP driver stack into a =
+single
+> one.
 
-Applied, thanks.
+This all looks OK to me.
 
---X3gaHHMYHkYqP6yf
+--aPdhxNJGSeOG9wFI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPO9fJAAoJEBus8iNuMP3dol4QAIZk0QS6U5lw4FS0E4GTAyJo
-Tjbnhry4RYGUeAG3iynBlT3qX2pBSQoIXy6dflxJKgeOJj2sZOTN+1cQPXthWn2Q
-4IZfMBlJh2zFFFEDPcApNOMsIIjtBXin+2ns4wSrHh7KanadeBvx0dHYzrUAy8+9
-9hiLJvK8jEcJPL7IRw5z81nmJSsCnU50rfmMr10v7M1uMvNh9S1J7UCEJoJkOaqR
-4uAz9jMqB8Azyoa2XLV7sD+PdsW26b7VV0hqTbS9eR/zslmFpzT4uUyrvR49u5JX
-cvDVBtf26l7HJePuzkWtgcgbqyPD43wsaT47nULSHjemU8/tC4896Nb0X3BJHjZR
-xg/oPyqxQHoIC6sSp4ULFGjwBRriWlxVLZg2wqoPXmN9U3p++076k243eD+rDF4q
-4ZNhPraIFDi8+ZizR4Rm3CnSk7f65xS7Hsnhju/6KzLsIUdx2Q0eQxtBFTGTZkiG
-/8wvyhfZ1rScZAqPopqJ2ysIw7G/VMvK2EckTk3u9Qt1Hy1dYfKrNvZ16XkE8N2z
-y8v5cwtxcJrG21088X+8pjBh1gcZK2rIn0Owx2aIQ5mws2+scarEW8uREfTXIvZ/
-LkqNTqJfNZeRrTgj+aVGcIFDFmM1xrUiDS5lFLDT9EI6z98ag48OJlncUdFFCNyR
-MH4K+nQw/1se2Rr306Qy
-=SXIq
+iQIcBAEBAgAGBQJPO9hiAAoJEBus8iNuMP3dx08P/jSTD9OK6dy+jpZ4aqCcNBT+
+SGvuArB8DDsUppfs5rSfqorWOk1YO0ksJkWPj2K+/5EcUwS+kBeRW0StfDpS9QTr
+j8Hl6Ip6ksr+gHi1fksiDmak2lp2sNc8cVsntbckeIO7qjq6sVvJuGUCY9nywH9g
+yK54UpVCXXTPxMawo5SVzteL+YnxhxR/YVC8qxKWm7euPGksrKKMVrqpQKVpklmZ
+jwQo6AKZ51Yhl9ipzLw9vIi6B1baQE3pvM0+vvAcclcFTNcdbOYA7SFtgTVrHSgm
+dH+mJZJDt3Jd4wbctH7p6rx0K4jq4uxc8yMlhU0aGYrNDbe+0Kx2buxyCUdLZRA0
+s/MFcA5Z1sukRJOekukxr8wrgEMheHa6lmW3NIdp7lbfLxyeScYE2DmfYgEMcymn
+KogpdMv7MYB0xMHDYifVVRIamKRgPwKQ5kFHrgzepoDaHBYKHQtb098zpTMsLnZp
+tqXP7sdVNjJRItkL5EJEJ3q0acnMdXjUTGmcCTxSdfrkQbcJFiiQYGtTKWa/MRxu
+vOyl8n8Tz4MJrM2KFZRkszhe4nfksEB1N8AIq2EQ+o/wxHgaIFN2C76I8WYD0hIx
+yPqQdd3+Fci+aVIppEK355phaDR3kTHCQ2VE2Cvn+AEROoDsLfLMy2ST/kMQ4NT8
+GbAF72ALyman2+Yrr61T
+=4BcC
 -----END PGP SIGNATURE-----
 
---X3gaHHMYHkYqP6yf--
-
---===============6256667308952056188==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6256667308952056188==--
+--aPdhxNJGSeOG9wFI--
