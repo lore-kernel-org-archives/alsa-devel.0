@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: core - add platform DAPM debugfs support
-Date: Wed, 15 Feb 2012 15:15:36 +0000
-Message-ID: <1329318937-14488-3-git-send-email-lrg@ti.com>
+Subject: [PATCH] ASoC: DAPM - Notify stream event to all card
+	components.
+Date: Wed, 15 Feb 2012 15:15:35 +0000
+Message-ID: <1329318937-14488-2-git-send-email-lrg@ti.com>
 References: <1329318937-14488-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
-	[74.125.149.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 379A3103E0A
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 59242103E10
 	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 16:15:51 +0100 (CET)
-Received: by mail-we0-f181.google.com with SMTP id p13so834063wer.40
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 07:15:50 -0800 (PST)
+Received: by wibhm4 with SMTP id hm4so687141wib.29
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 07:15:48 -0800 (PST)
 In-Reply-To: <1329318937-14488-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,102 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Sebastien Guiriec <s-guiriec@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sebastien Guiriec <s-guiriec@ti.com>
-
-Allow platform widgets to be visible in debugfs like codec widgets.
+Currently when DAPM widgets are power sequenced the stream_event()
+completion callback is only called for the stream_event originator
+DAPM context. Other components in the card may also be interested so
+make sure they are also notified of any widget power events.
 
 Signed-off-by: Liam Girdwood <lrg@ti.com>
 ---
- include/sound/soc.h  |    5 +++++
- sound/soc/soc-core.c |   33 ++++++++++++++++++++++++++++++++-
- 2 files changed, 37 insertions(+), 1 deletions(-)
+ sound/soc/soc-dapm.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4f67e01..8fa4dca 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -706,6 +706,11 @@ struct snd_soc_platform {
- 	struct list_head card_list;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 227887e..63a5614 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1516,6 +1516,12 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 					&async_domain);
+ 	async_synchronize_full_domain(&async_domain);
  
- 	struct snd_soc_dapm_context dapm;
-+
-+#ifdef CONFIG_DEBUG_FS
-+	struct dentry *debugfs_platform_root;
-+	struct dentry *debugfs_dapm;
-+#endif
- };
- 
- struct snd_soc_dai_link {
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8bd9995..e1d6bfc 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -302,6 +302,27 @@ static void soc_cleanup_codec_debugfs(struct snd_soc_codec *codec)
- 	debugfs_remove_recursive(codec->debugfs_codec_root);
- }
- 
-+static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
-+{
-+	struct dentry *debugfs_card_root = platform->card->debugfs_card_root;
-+
-+	platform->debugfs_platform_root = debugfs_create_dir(platform->name,
-+						       debugfs_card_root);
-+	if (!platform->debugfs_platform_root) {
-+		dev_warn(platform->dev,
-+			"Failed to create platform debugfs directory\n");
-+		return;
++	/* do we need to notify any clients that DAPM event is complete */
++	list_for_each_entry(d, &card->dapm_list, list) {
++		if (d->stream_event)
++			d->stream_event(d, event);
 +	}
 +
-+	snd_soc_dapm_debugfs_init(&platform->dapm,
-+		platform->debugfs_platform_root);
-+}
-+
-+static void soc_cleanup_platform_debugfs(struct snd_soc_platform *platform)
-+{
-+	debugfs_remove_recursive(platform->debugfs_platform_root);
-+}
-+
- static ssize_t codec_list_read_file(struct file *file, char __user *user_buf,
- 				    size_t count, loff_t *ppos)
- {
-@@ -435,6 +456,14 @@ static inline void soc_cleanup_codec_debugfs(struct snd_soc_codec *codec)
- {
- }
+ 	pop_dbg(dapm->dev, card->pop_time,
+ 		"DAPM sequencing finished, waiting %dms\n", card->pop_time);
+ 	pop_wait(card->pop_time);
+@@ -2854,10 +2860,6 @@ static void soc_dapm_stream_event(struct snd_soc_dapm_context *dapm,
+ 	}
  
-+static inline void soc_init_platform_debugfs(struct snd_soc_platform *platform)
-+{
-+}
-+
-+static inline void soc_cleanup_platform_debugfs(struct snd_soc_platform *platform)
-+{
-+}
-+
- static inline void soc_init_card_debugfs(struct snd_soc_card *card)
- {
- }
-@@ -918,10 +947,10 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
- 			if (err < 0)
- 				printk(KERN_ERR "asoc: failed to remove %s\n", platform->name);
- 		}
+ 	dapm_power_widgets(dapm, event);
 -
- 		/* Make sure all DAPM widgets are freed */
- 		snd_soc_dapm_free(&platform->dapm);
+-	/* do we need to notify any clients that DAPM stream is complete */
+-	if (dapm->stream_event)
+-		dapm->stream_event(dapm, event);
+ }
  
-+		soc_cleanup_platform_debugfs(platform);
- 		platform->probed = 0;
- 		list_del(&platform->card_list);
- 		module_put(platform->dev->driver->owner);
-@@ -1039,6 +1068,8 @@ static int soc_probe_platform(struct snd_soc_card *card,
- 	if (!try_module_get(platform->dev->driver->owner))
- 		return -ENODEV;
- 
-+	soc_init_platform_debugfs(platform);
-+
- 	if (driver->dapm_widgets)
- 		snd_soc_dapm_new_controls(&platform->dapm,
- 			driver->dapm_widgets, driver->num_dapm_widgets);
+ /**
 -- 
 1.7.5.4
