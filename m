@@ -1,31 +1,38 @@
-From: Liam Girdwood <lrg@ti.com>
+From: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
 Subject: Re: [RFC 04/11] ASoC: core - Add API call to register dai kcontrols.
-Date: Wed, 15 Feb 2012 15:46:21 +0000
-Message-ID: <1329320781.14552.1.camel@odin>
+Date: Wed, 15 Feb 2012 17:52:37 +0200
+Message-ID: <CAPo=G1zK9zB7ZEHa3_0ZfGsxFkqcvPcvQv4Nkjd3GFUwCYFTvg@mail.gmail.com>
 References: <1329320280-1621-1-git-send-email-peter.ujfalusi@ti.com>
-	 <1329320280-1621-5-git-send-email-peter.ujfalusi@ti.com>
+	<1329320280-1621-5-git-send-email-peter.ujfalusi@ti.com>
+	<1329320781.14552.1.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1329320280-1621-5-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <1329320781.14552.1.camel@odin>
 Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: Liam Girdwood <lrg@ti.com>
 Cc: Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-15 at 17:37 +0200, Peter Ujfalusi wrote:
-> Allow dai drivers to register kcontrols.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  include/sound/soc.h  |    2 ++
->  sound/soc/soc-core.c |   31 +++++++++++++++++++++++++++++++
->  2 files changed, 33 insertions(+), 0 deletions(-)
+On Wed, Feb 15, 2012 at 5:46 PM, Liam Girdwood <lrg@ti.com> wrote:
+> On Wed, 2012-02-15 at 17:37 +0200, Peter Ujfalusi wrote:
+>> Allow dai drivers to register kcontrols.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>> =A0include/sound/soc.h =A0| =A0 =A02 ++
+>> =A0sound/soc/soc-core.c | =A0 31 +++++++++++++++++++++++++++++++
+>> =A02 files changed, 33 insertions(+), 0 deletions(-)
+>
+> This feature has already been applied.
 
-This feature has already been applied.
+Oh, I'll take a look and use the existing feature.
 
-Regards
-
-Liam
-
+Thanks,
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
