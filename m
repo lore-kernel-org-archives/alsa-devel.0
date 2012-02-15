@@ -1,23 +1,23 @@
-From: Jean-Yves Avenard <jyavenard@gmail.com>
-Subject: Re: 1ca3d59d5a3e762fb1c002bcd912914bc858b430 broke
- passthrough [Was: Re: ALSA 1.0.25 broke AC3 passthrough?]
-Date: Wed, 15 Feb 2012 13:09:04 +1100
-Message-ID: <CANpj82Ktb8BZiOA50HuR5r0n6NpHk+Y5Bt0uU+mk=01q4VdAPg@mail.gmail.com>
-References: <CANpj82JKFx1YXgaY3HZyTSyCZs83ZdvEtYGAbNJPdb6q7qN7kg@mail.gmail.com>
-	<4F37BBDD.1090207@iki.fi>
-	<CANpj82J+MmYNGbOqmFMCA587sCiUZfjRqDfesfmOG616478SqQ@mail.gmail.com>
-	<s5h39ae3lhk.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
+ B1900 Series
+Date: Wed, 15 Feb 2012 10:49:08 +0800
+Message-ID: <CAN8cciY2M+9h-3BROUV03VuNL5WLJsxG-Tx1+MG5=+kxrZqaoQ@mail.gmail.com>
+References: <4F35C191.9080401@gmail.com>
+	<20120211020502.GA25041@marvin.atrad.com.au>
+	<CAN8cciZejU6suH_pF5OzpVgjjUYsYgTCf14T5J=0G-c0wSfyAA@mail.gmail.com>
+	<CAKOmCvoS+tgvyPZJey4gfFFq=Uz01pnZY7YvGbxgQPpAzQ7KCA@mail.gmail.com>
+	<CAKOmCvofbM9+5SGSMkAP=ansfxCz835LF3GfM6=OF3zn-+10iw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B708243E0
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 03:09:05 +0100 (CET)
-Received: by ghbg19 with SMTP id g19so439291ghb.38
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 18:09:04 -0800 (PST)
-In-Reply-To: <s5h39ae3lhk.wl%tiwai@suse.de>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9959424423
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 03:49:11 +0100 (CET)
+Received: by wgbdy1 with SMTP id dy1so372407wgb.20
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 18:49:08 -0800 (PST)
+In-Reply-To: <CAKOmCvofbM9+5SGSMkAP=ansfxCz835LF3GfM6=OF3zn-+10iw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,29 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>
+To: Joey Jiao <joey.jiaojg@gmail.com>
+Cc: tiwai@suse.de, pshou@realtek.com.tw, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com.tw
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-On 14 February 2012 00:34, Takashi Iwai <tiwai@suse.de> wrote:
-
-> The problem of Nvidia HDMI and the buffer-alignment was already fixed
-> in the upstream code. =A0Nvidia HDMI is known to be broken with the
-> arbitrary alignment, so it's disabled automatically.
-
-Is the issue believed to be related to nvidia hdmi only ?
-
-I just got the report from a user stating that he had issue playing
-audio on his Dell Vostro 200, which is pure intel
-
-> Maybe little people are actually using the released alsa-driver any
-> longer.
-
-If they are like me, to get the latest stable version of alsa, they go
-to alsa-project.org and download whatever is there. Today that's
-1.0.25 and IMHO, that bug is a massive blocker.. I hope it will be
-updated soon.
-
-Jean-Yves
+MjAxMi8yLzE1LCBKb2V5IEppYW8gPGpvZXkuamlhb2pnQGdtYWlsLmNvbT46Cj4gQnR3LCBmb3Ig
+dGhlIGNvZGUgbW9kaWZpY2F0aW9uLCBJIG1vZGlmaWVkIG1vZGVsIHdpbGwgaW4KPiBwYXRjaF9y
+ZWFsdGVrLmMgd2hpY2ggd29ya3Mgc2FtZSBhcyB0aGUgaGRhLXZlcmIgY29tbWFuZC4KPiBGcm9t
+Ogo+IHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX3ZlcmIgYWxjMjYwX3dpbGxfdmVyYnNbXSA9IHsK
+PiAgICAgICAgIHsweDBmLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9IUH0s
+Cj4gICAgICAgICB7MHgwYiwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAo+ICAgICAg
+ICAgezB4MGQsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAwfSwKPiAgICAgICAgIHsweDBm
+LCBBQ19WRVJCX1NFVF9FQVBEX0JUTEVOQUJMRSwgMHgwMn0sCj4gICAgICAgICB7MHgxYSwgQUNf
+VkVSQl9TRVRfQ09FRl9JTkRFWCwgMHgwN30sCj4gICAgICAgICB7MHgxYSwgQUNfVkVSQl9TRVRf
+UFJPQ19DT0VGLCAweDMwNDB9LAo+ICAgICAgICAge30KPiB9Owo+IFRvOgo+IHN0YXRpYyBjb25z
+dCBzdHJ1Y3QgaGRhX3ZlcmIgYWxjMjYwX3dpbGxfdmVyYnNbXSA9IHsKPiAgICAgICAgIHsweDBm
+LCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9IUH0sCj4gICAgICAgICB7MHgw
+YiwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAo+ICAgICAgICAgezB4MGQsIEFDX1ZF
+UkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAwfSwKPiAgICAgICAgIHsweDBmLCBBQ19WRVJCX1NFVF9F
+QVBEX0JUTEVOQUJMRSwgMHgwMn0sCj4gICAgICAgICB7MHgxYSwgQUNfVkVSQl9TRVRfQ09FRl9J
+TkRFWCwgMHgwN30sCj4gICAgICAgICB7MHgxYSwgQUNfVkVSQl9TRVRfUFJPQ19DT0VGLCAweDMw
+NDB9LAo+ICAgICAgICAgezB4MDEsIEFDX1ZFUkJfU0VUX0dQSU9fTUFTSywgMHgwMX0sCj4gICAg
+ICAgICB7MHgwMSwgQUNfVkVSQl9TRVRfR1BJT19ESVJFQ1RJT04sIDB4MDF9LAo+ICAgICAgICAg
+e30KPiB9Owo+Cj4KPiDlnKggMjAxMuW5tDLmnIgxNeaXpSDkuIrljYg5OjE477yMSm9leSBKaWFv
+IDxqb2V5LmppYW9qZ0BnbWFpbC5jb20+IOWGmemBk++8mgo+PiBIaSBhbGwsCj4+IEkgc29sdmVk
+IHRoZSBzcGVha2VyIHByb2JsZW0gb2YgQjE5MDAsIGFuZCBJIGhhdmUgeW91IGNhbiBmaXggdGhl
+Cj4+IGRyaXZlciBpbiBuZXh0IGFsc2EgcmVsZWFzZS4KPj4gSSB1c2UgaGRhLXZlcmIgdG9vbCB0
+byBlbmFibGUgc291bmQgZnJvbSBzcGVha2VyLgo+PiBDb21tYW5kcyBhcyBiZWxvdzoKPj4gc3Vk
+byBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwMSAweDcxNiAweDAxCj4+IHN1ZG8gaGRhLXZl
+cmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgMHg3MTcgMHgwMQo+Pgo+PiBQZXJoYXBzIHlvdSBuZWVk
+IHRvIGFkZCBhIG5ldyBtb2RlbCBiZXNpZGVzIHdpbGwuIE1lYW53aGlsZSwgYXV0bwo+PiBkZXRl
+Y3Qgb2YgaGVhZHBob25lIGluc2VydGluZyBpcyBub3QgZnVuY3Rpb24sIHNvIHNwZWFrZXIgYW5k
+Cj4+IGhlYWRwaG9uZSBkb24ndCBzd2l0Y2ggYXV0b21hdGljYWxseS4KPj4KPj4KPj4g5ZyoIDIw
+MTLlubQy5pyIMTXml6Ug5LiK5Y2IODo1MO+8jFJheW1vbmQgWWF1IDxzdXBlcnF1YWQudm9ydGV4
+MkBnbWFpbC5jb20+IOWGmemBk++8mgo+Pj4KPj4+IFRoZSBhdXRvLXBhcnNlciByZXF1aXJlIGNv
+cnJlY3QgcGluIGRlZmF1bHQKPj4+Cj4+PiBSZWZlciB0byBhbGMyNjAgR2VuZXJhbCBEZXNjcmlw
+dGlvbgo+Pj4KPj4+IFJlYWx0ZWsncyBwcm9wcmlldGFyeSBpbXBlZGFuY2Ugc2Vuc2luZyBhbmQg
+amFjayBkZXRlY3QgdGVjaG5pcXVlcwo+Pj4gYWxsb3cgZGV2aWNlIGxvYWRzIG9uIGlucHV0cyBh
+bmQgb3V0cHV0cyB0byBiZSBhdXRvLWRldGVjdGVkLiBBbGwKPj4+IGFuYWxvZyBJT3MgYXJlIGlu
+cHV0IGFuZCBvdXRwdXQgY2FwYWJsZS4gSGVhZHBob25lIGFtcGxpZmllcnMgYXJlIGFsc28KPj4+
+IGludGVncmF0ZWQgYXQgZWFjaCBhbmFsb2cgb3V0cHV0LiBBbGwgYW5hbG9nIElPcyBjYW4gYmUg
+cmUtdGFza2VkCj4+PiBhY2NvcmRpbmcgdG8gdXNlcidzIGRlZmluaXRpb25zLCBvciBhdXRvbWF0
+aWNhbGx5IHN3aXRjaGVkIHRvIHN1aXQgdGhlCj4+PiBjb25uZWN0aW5nIGRldmljZSAoVW5pdmVy
+c2FsIEF1ZGlvIEphY2vCrikuCj4+Pgo+Pj4gUmVzZXJ2ZSBhbmFsb2cgbWl4ZXIgYXJjaGl0ZWN0
+dXJlIGlzIGJhY2t3YXJkcyBjb21wYXRpYmxlIHdpdGggQUMnOTcKPj4KPj4KCnRoZSBmdW5jdGlv
+biBpc19qYWNrX2RldGVjdGFibGUoKSBoYXMgYmVlbiBjaGFuZ2VkIHRvIGNoZWNrCkFDX0RFRkNG
+R19NSVNDX05PX1BSRVNFTkNFCgpodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5h
+bHNhLmRldmVsLzkwOTExL2ZvY3VzPTkxMjE1CgpJIGd1ZXNzIFRha2FzaGkgSXdhaSBleHBlY3Qg
+eW91IHRvIHByb3ZpZGUgYSBwaW4gZml4dXAgcGF0Y2ggd2hpY2gKcHJvdmlkZSB0aGUgcGluIGxv
+Y2F0aW9uIG9mIHRoZSBzcGVha2VyICwgaW50ZXJuYWwgbWljLCBoZWFkcGhvbmUgYW5kCmV4dGVy
+bmFsIG1pYyBqYWNrIGZvciB0aGUgYXV0byBwYXJzZXIKClJlZmVyIHRvICMyNQoKPj4gQWRkaW5n
+IG1pY3Bob25lIGRldGVjdDoKPj4gJCBzdWRvIGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDEy
+IDB4RjA5IDB4MAo+PiBuaWQgPSAweDEyLCB2ZXJiID0gMHhmMDksIHBhcmFtID0gMHgwCj4+dmFs
+dWUgPSAweDgwMDAwMGM4Cgpkb2VzIGltcGVkZW5jZSBzZW5zZSByZXF1aXJlIHNvbWUgZGVsYXkg
+dG8gZ2V0IHRoZSBhY2N1cmF0ZSByZWFkaW5nID8KaXQgc2VlbSB0aGUgbWljcm9waG9uZSBoYXMg
+YSBtdWNoIGhpZ2hlciBpbXBlZGVuYW5jZSB0aGFuIHlvdXIgcmVzdWx0CjB4YzgKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
