@@ -1,21 +1,20 @@
-From: tilt <tilt@linuxfoo.de>
-Subject: Re: snd_emu10k1 with E-MU 1616m PCIe
-Date: Wed, 15 Feb 2012 01:42:03 +0100
-Message-ID: <4F3AFF5B.60303@linuxfoo.de>
-References: <4F3840FE.9090006@linuxfoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
+ B1900 Series
+Date: Wed, 15 Feb 2012 08:50:38 +0800
+Message-ID: <CAN8cciZejU6suH_pF5OzpVgjjUYsYgTCf14T5J=0G-c0wSfyAA@mail.gmail.com>
+References: <4F35C191.9080401@gmail.com>
+	<20120211020502.GA25041@marvin.atrad.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.tk-sls.de (linuxfoo.de [91.204.170.65])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35B9B243ED
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 01:42:15 +0100 (CET)
-Received: from [192.168.2.101] (pD9FA4E30.dip.t-dialin.net [217.250.78.48])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "Tilman Kranz", Issuer "Tilman Kranz" (not verified))
-	by mail.tk-sls.de (Postfix) with ESMTPS id CE095302C0
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 01:42:08 +0100 (CET)
-In-Reply-To: <4F3840FE.9090006@linuxfoo.de>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 23B0924404
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 01:50:39 +0100 (CET)
+Received: by wera1 with SMTP id a1so335575wer.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2012 16:50:38 -0800 (PST)
+In-Reply-To: <20120211020502.GA25041@marvin.atrad.com.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: tiwai@suse.de, pshou@realtek.com.tw, kailang@realtek.com.tw, "joey.jiaojg" <joey.jiaojg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
-
-Myself wrote @ 02/12/2012 11:45 PM:
-> [...]; so I wonder: should 
-> /usr/local/lib/firmware/emu/micro_dock.fw not also be loaded? 
-> [...]
-
-I see there is a test in pci/emu10k1/emu10k1_main.c, line 735f:
-
-   snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
-   if (reg & EMU_HANA_OPTION_DOCK_OFFLINE) {
-      ... the following code is NOT executed on my hardware
-
-The flag is defined in include/sound/emu10k1.h, line 1089:
-
-   #define EMU_HANA_OPTION_DOCK_OFFLINE    0x08
-      /* Audio Dock online and FPGA not configured */
-
-However, if instead of the above I test for
-
-   #define EMU_HANA_OPTION_DOCK_ONLINE     0x04
-      /* Audio Dock online and FPGA configured */
-
-the test succeeds.
-
-Does this tell me that there is no need to load a dock firmware
-on my hardware? After all, dock relais went online with an audible
-click, dock exposes functionality, just a bit messy.
-
-Kind regards,
-Tilman.
-
-P.S.: Will also start working with the emutrix group to get a
-hold on the mixer names & routings. I hope I can get Phones L/R
-configurable with existing driver
+MjAxMi8yLzExLCBKb25hdGhhbiBXb2l0aGUgPGp3b2l0aGVAanVzdDQyLm5ldD46Cj4gSGkgSm9l
+eQo+Cj4gRm9yIGZ1dHVyZSByZWZlcmVuY2UsIHBsZWFzZSBlbWFpbCByZXBvcnRzIGxpa2UgdGhp
+cyB0byB0aGUgYWxzYS1kZXZlbCBsaXN0Lgo+IFRoZSByZWxldmFudCBkZXZlbG9wZXJzIGFyZSBm
+YXIgbW9yZSBsaWtlbHkgdG8gcmVzcG9uZCB0byBtZXNzYWdlcyBvbiB0aGUKPiBsaXN0IHRoYW4g
+dGhleSBhcmUgdG8gbWVzc2FnZXMgc2VudCBwcml2YXRlbHkuCj4KPiBJIGhhdmUgY29waWVkIHRo
+aXMgdG8gdGhlIGxpc3QgdG8gbWF4aW1pc2UgaXRzIGRpc3RyaWJ1dGlvbi4KPgo+IE9uIFNhdCwg
+RmViIDExLCAyMDEyIGF0IDA5OjE3OjA1QU0gKzA4MDAsIGpvZXkuamlhb2pnIHdyb3RlOgo+PiBJ
+J20gcmVwb3J0aW5nIGEgYnVnIHJlbGF0ZWQgdG8gQUxTQSBhbmQgQUxDMjYwLCB3aGljaCBwZXJo
+YXBzIG9ubHkKPj4geW91IGNhbiBzb2x2ZS4gQXBwcmVjaWF0ZSBpZiB5b3UgY2FuIGNoZWNrLgo+
+PiBXZSBnb3QgYSBsb3Qgb2YgdXNlcnMgdXNpbmcgSFAgQ09NUEFRIEIxOTAwIHNlcmllcyB3aGlj
+aCB1c2luZyBBVEkKPj4gU0I0NTAgYW5kIEFMQzI2MCBmb3IgbGludXggc3lzdGVtcyBsaWtlIERl
+YmlhbiwgVWJ1bnR1IGFuZCBldGMuIFRoZQo+PiBwcm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8g
+c291bmQgZnJvbSBzcGVha2VyIHdoaWxlIGVuYWJsZQo+PiBtb2RlbD13aWxsIGNhbiBoZWFyIGZy
+b20gZWFycGhvbmUuIFRoZSBwcm9ibGVtIGFuZCBhbHNhLWluZm8udHh0IGlzCj4+IHJlcG9ydGVk
+IGhlcmUKPj4gaHR0cHM6Ly9hbnN3ZXJzLmxhdW5jaHBhZC5uZXQvdWJ1bnR1Lytzb3VyY2UvYWxz
+YS1kcml2ZXIvK3F1ZXN0aW9uLzE4NjY5OCwKPj4gd2hpY2ggdGhvdWdodCBiZSBhIGJ1ZyBvZiBB
+TEMyNjAgZHJpdmVyIGJ1Zy4KPj4gSG9wZSB5b3UgY2FuIGNoZWNrIHdoYXQgd2UgY2FuIGRvIHRv
+IHNvbHZlIGl0Lgo+Cj4gRnJvbSB0aGUgYWJvdmUgSSBhbSBub3QgZW50aXJlbHkgc3VyZSB3aGF0
+IHRoZSBwcm9ibGVtIGlzLiAgWW91IHNlZW0gdG8gYmUKPiB0YWxraW5nIGFib3V0IHR3byBzZXBh
+cmF0ZSBjb25kaXRpb25zLiAgSW4gdGhlIGZpcnN0ICh3aGVyZSBJIHByZXN1bWUgdGhlCj4gbW9k
+dWxlIGlzIGxvYWRlZCB3aXRob3V0IGFueSBwYXJhbWV0ZXJzIHlvdSBzYXkgdGhlcmUncyBubyBz
+b3VuZCBmcm9tIHRoZQo+IHNwZWFrZXIuICBEbyBvdGhlciBhc3BlY3RzIG9mIHRoZSBjYXJkIHdv
+cmsgY29ycmVjdGx5IGluIHRoaXMgY2FzZT8KPgo+IFRoZSBzZWNvbmQgc2l0dWF0aW9uIGlzIHdo
+ZXJlICJtb2RlbD13aWxsIiBpcyBzcGVjaWZpZWQgYXMgYSBtb2R1bGUKPiBwYXJhbWV0ZXIuICBI
+ZXJlIHlvdSBzYXkgeW91IGNhbiBnZXQgYXVkaW8gZnJvbSB0aGUgaGVhZHBob25lLCBidXQgYWdh
+aW4KPiB3aGF0IGFib3V0IG90aGVyIGFzcGVjdHMgb2YgdGhlIHNvdW5kY2FyZCAtIGRvIHRoZXkg
+d29yayBub3JtYWxseT8KPgo+IEF0IGEgcm91Z2ggZ3Vlc3MsIGl0IHNvdW5kcyBsaWtlIHRoZXJl
+IGFyZSB0d28gdW5kZXJseWluZyBpc3N1ZXMuICBUaGUgZmlyc3QKPiBpcyB0aGF0IHRoaXMgc3lz
+dGVtIHJlcXVpcmVzIHNvbWUgbW9kZWwtc3BlY2lmaWMgaGFuZGluZyBpbiBvcmRlciB0byBtYXAK
+PiBjaGlwIG91dHB1dHMgY29ycmVjdGx5LiAgVGhlIHNlY29uZCBpcyB0aGF0IGlmIHN1Y2ggbW9k
+ZWwtc3BlY2lmaWMgZGV0YWlscwo+IGFyZSByZXF1aXJlZCB0aGVuIHRoZSBkcml2ZXIgcHJlZmVy
+cmFibHkgd291bGQgYWN0aXZhdGUgdGhlc2UgYXV0b21hdGljYWxseQo+IHdpdGhvdXQgdGhlIG5l
+ZWQgdG8gc3BlY2lmeSAibW9kZWw9d2lsbCIuCj4KPiBBbm90aGVyIHBvc3NpYmlsaXR5IGlzIHRo
+YXQgdGhlcmUgaXMgc29tZXRoaW5nIGFib3V0IHRoaXMgbGFwdG9wIHN5c3RlbQo+IHdoaWNoIGlz
+IGNvbmZ1c2luZyB0aGUgYXV0by1wcm9iaW5nIG9mIHRoZSBhbGMyNjAgY29kZWMgY29kZS4KPgo+
+IEknbSBub3Qgc3VyZSB3aGF0IGlzIHRoZSBiZXN0IHdheSBvZiBwcm9jZWVkaW5nIGhlcmUuICBJ
+IHN1c3BlY3Qgb3RoZXIgbW9yZQo+IGFjdGl2ZSBkZXZlbG9wZXJzIHdpbGwgaGF2ZSBhIHN0cmVh
+bWxpbmVkIGFwcHJvYWNoIHRvIGhlbHAgcmVjdGlmeSB0aGUKPiB0cm91YmxlLiAgSW4gdGhlIGZp
+cnN0IGluc3RhbmNlIEkgd291bGQgdGVuZCB0byBsb2FkIHRoZSBtb2R1bGUgd2l0aAo+ICJtb2Rl
+bD10ZXN0IiBhbmQgZXhwZXJpbWVudCB3aXRoIHRoZSByZXN1bHRpbmcgYWxzYW1peGVyIGNvbnRy
+b2xzIHRvCj4gZGV0ZXJtaW5lIHdoYXQgY2hpcCBvdXRwdXRzIGFyZSBjb25uZWN0ZWQgdG8gd2hp
+Y2ggcGlucy4gIEhvd2V2ZXIsIHRoaXMgaXMKPiBxdWl0ZSAib2xkIHNjaG9vbCIgbm93IC0gd2hp
+bGUgaXQncyB0aGUgYXBwcm9hY2ggSSB1c2VkIHdoZW4gZ2V0dGluZyBteQo+IHN5c3RlbSB3b3Jr
+aW5nLCBteSBpbXByZXNzaW9uIGlzIHRoYXQgaXRzIHVzZSBoYXMgYmVlbiBtb3N0bHkgZGVwcmVj
+YXRlZCBieQo+IHRoZSBhdXRvbWF0aWMgcGFyc2VyIHdoaWNoIGlzIG5vdyBwcmVzZW50Lgo+Cj4g
+SW4gdGhlIGFib3ZlLXJlZmVyZW5jZWQgbGF1bmNocGFkIHJlcG9ydCB0aGUgcXVlc3Rpb24gaXMg
+YXNrZWQgYWJvdXQgdGhlCj4gQUxDMjYwIGRhdGFzaGVldC4gIFRoaXMgaXMgcmVhZGlseSBhdmFp
+bGFibGUgb24gdGhlIG5ldC4gIEkgZG91YnQgaXQgaXMgYWxsCj4gdGhhdCBuZWNlc3Nhcnkgbm93
+IHNpbmNlIEkgdGhpbmsgdGhlIGJhc2UgaW5mcmFzdHJ1Y3R1cmUgaXMgcHJldHR5IHNvbGlkLAo+
+IGJ1dCBpZiB5b3UgZG8gbmVlZCBpdCBhbmQgaGF2ZSBkaWZmaWN1bHR5IGZpbmRpbmcgaXQgcGxl
+YXNlIGNvbnRhY3QgbWUKPiBvZmYtbGlzdC4KPgoKVGhlIGF1dG8tcGFyc2VyIHJlcXVpcmUgY29y
+cmVjdCBwaW4gZGVmYXVsdAoKUmVmZXIgdG8gYWxjMjYwIEdlbmVyYWwgRGVzY3JpcHRpb24KClJl
+YWx0ZWsncyBwcm9wcmlldGFyeSBpbXBlZGFuY2Ugc2Vuc2luZyBhbmQgamFjayBkZXRlY3QgdGVj
+aG5pcXVlcwphbGxvdyBkZXZpY2UgbG9hZHMgb24gaW5wdXRzIGFuZCBvdXRwdXRzIHRvIGJlIGF1
+dG8tZGV0ZWN0ZWQuIEFsbAphbmFsb2cgSU9zIGFyZSBpbnB1dCBhbmQgb3V0cHV0IGNhcGFibGUu
+IEhlYWRwaG9uZSBhbXBsaWZpZXJzIGFyZSBhbHNvCmludGVncmF0ZWQgYXQgZWFjaCBhbmFsb2cg
+b3V0cHV0LiBBbGwgYW5hbG9nIElPcyBjYW4gYmUgcmUtdGFza2VkCmFjY29yZGluZyB0byB1c2Vy
+J3MgZGVmaW5pdGlvbnMsIG9yIGF1dG9tYXRpY2FsbHkgc3dpdGNoZWQgdG8gc3VpdCB0aGUKY29u
+bmVjdGluZyBkZXZpY2UgKFVuaXZlcnNhbCBBdWRpbyBKYWNrwq4pLgoKUmVzZXJ2ZSBhbmFsb2cg
+bWl4ZXIgYXJjaGl0ZWN0dXJlIGlzIGJhY2t3YXJkcyBjb21wYXRpYmxlIHdpdGggQUMnOTcKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
