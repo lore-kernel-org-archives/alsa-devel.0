@@ -1,25 +1,29 @@
-From: Jean-Yves Avenard <jyavenard@gmail.com>
-Subject: Re: 1ca3d59d5a3e762fb1c002bcd912914bc858b430 broke
- passthrough [Was: Re: ALSA 1.0.25 broke AC3 passthrough?]
-Date: Wed, 15 Feb 2012 21:34:45 +1100
-Message-ID: <CANpj82LR6ZDuFS0FNESuT3WUbQvan5ENq-XghaTXs=bRFUO9Kw@mail.gmail.com>
-References: <CANpj82JKFx1YXgaY3HZyTSyCZs83ZdvEtYGAbNJPdb6q7qN7kg@mail.gmail.com>
-	<4F37BBDD.1090207@iki.fi>
-	<CANpj82J+MmYNGbOqmFMCA587sCiUZfjRqDfesfmOG616478SqQ@mail.gmail.com>
-	<s5h39ae3lhk.wl%tiwai@suse.de>
-	<CANpj82Ktb8BZiOA50HuR5r0n6NpHk+Y5Bt0uU+mk=01q4VdAPg@mail.gmail.com>
-	<4F3B2D6D.20400@linux.intel.com>
+From: "joey.jiaojg" <joey.jiaojg@gmail.com>
+Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
+ B1900 Series
+Date: Wed, 15 Feb 2012 21:14:48 +0800
+Message-ID: <4F3BAFC8.4030903@gmail.com>
+References: <4F35C191.9080401@gmail.com>
+	<20120211020502.GA25041@marvin.atrad.com.au>
+	<CAN8cciZejU6suH_pF5OzpVgjjUYsYgTCf14T5J=0G-c0wSfyAA@mail.gmail.com>
+	<CAKOmCvoS+tgvyPZJey4gfFFq=Uz01pnZY7YvGbxgQPpAzQ7KCA@mail.gmail.com>
+	<CAKOmCvofbM9+5SGSMkAP=ansfxCz835LF3GfM6=OF3zn-+10iw@mail.gmail.com>
+	<CAN8cciY2M+9h-3BROUV03VuNL5WLJsxG-Tx1+MG5=+kxrZqaoQ@mail.gmail.com>
+	<4F3B761D.4060306@gmail.com> <s5h8vk4wivv.wl%tiwai@suse.de>
+	<4F3B7B80.5030102@gmail.com> <s5h39acwi30.wl%tiwai@suse.de>
+	<4F3B7EC1.4000503@gmail.com> <s5hy5s4v2og.wl%tiwai@suse.de>
+	<4F3B83AF.3020301@gmail.com> <s5hvcn8v22z.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1735C103954
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 11:34:46 +0100 (CET)
-Received: by yhr47 with SMTP id 47so515959yhr.38
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 02:34:46 -0800 (PST)
-In-Reply-To: <4F3B2D6D.20400@linux.intel.com>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 931CB244CC
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 14:14:59 +0100 (CET)
+Received: by ggnq4 with SMTP id q4so584643ggn.38
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 05:14:57 -0800 (PST)
+In-Reply-To: <s5hvcn8v22z.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,34 +33,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, pshou@realtek.com.tw, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com.tw
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-On 15 February 2012 14:58, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> This is surprising, the hardware folks at Intel confirmed the rounding
-> to multiple of 128 bytes is not needed and this patch has been there for
-> over 6 months now without generating any complaints. Can you get us more
-> information on that case, and ask this user to see what happens by
-> enabling this rounding again.
-
-Seeing that 1.0.25 broke it for any nvidia user and not many people
-have complained yet, my guess is that it's not much in use yet.
-
-The default ALSA prealloc size is 64, with that value, the problem
-isn't seen much.
-
-Following the recommendation of the pulseaudio folks, he set the value
-to 2048, with this value the user reported that it failed with mythtv.
-
-I have asked him more details about his configuration... I'm hoping to
-be able to pass that information on soon
-
-I will also ask him if he can patch it to disable the rounding and if
-that makes any differences to him.
-
-Thanks
-Jean-Yves
+UGxlYXNlIGNoZWNrIG15IHJlcGx5IGJlbG93LgoKT24gMjAxMuW5tDAy5pyIMTXml6UgMTg6MTEs
+IFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBXZWQsIDE1IEZlYiAyMDEyIDE4OjA2OjM5ICswODAw
+LAo+IGpvZXkuamlhb2pnIHdyb3RlOgo+PiBPSywgdGhlIHNpdHVhdGlvbiBpcyAweDAxIGlzIHRv
+IGNvbnRyb2wgR1BJTzA6Cj4+IDEuIGlmIEkgd3JpdGUgKGNvZGVjLDB4MDEsMCxBQ19WRVJCX1NF
+VF9HUElPX01BU0ssMSkgb25seTsgdGhlIHJlc3VsdCBpcwo+PiBzcGVha2VyIG5vdCB3b3JrLgo+
+Pgo+PiAyLiBpZiBJIHdyaXRlIChjb2RlYywweDAxLDAsQUNfVkVSQl9TRVRfR1BJT19ESVJFQ1RJ
+T04sMSkgb25seTsgdGhlCj4+IHJlc3VsdCBpcyBzcGVha2VyIG5vdCB3b3JrLgo+Pgo+IFN1cmUs
+IEdQSU8gbXVzdCBiZSBhbHdheXMgc2V0IG1hc2ssIGRpcmVjdGlvbiBhbmQgZGF0YSBhbGwgdG9n
+ZXRoZXIuCj4gVGhlIHF1ZXN0aW9uIGlzLCB3aGVuIHlvdSBzZXQgR1BJTyBtYXNrL2Rpci9kYXRh
+LCB0aGUgc3BlYWtlciBzdGFydHMKPiBwbGF5aW5nLCBhbmQgaWYgc2V0IHRvIHplcm8gKGUuZy4g
+b25seSBkYXRhKSwgdGhlIHNwZWFrZXIgaXMgbXV0ZWQ/CkpPRVk6IEkgdHJpZWQgc2V0IGRhdGEg
+dG8gMCBvciAxIGRvZXNuJ3QgaW5mbHVlbmNlLiB3aGVuIEkgc2V0IG1hc2sgJiAKZGlyIHRvIDEs
+IHNwZWFrZXIgc3RhcnRzIHRvIHdvcmsgYW5kIHRvIDAgc3BlYWtlciBtdXRlZCB3aGlsZSBoZWFk
+cGhvbmUgCndvcmtzIGlmIGhlYWRwaG9uZSBwbHVnZ2VkIGluLgo+Cj4+IDMuIElmIEkgd3JpdGUg
+c3RlcCAxJiAgMiB0b2dldGhlciwgc3BlYWtlciB3b3JrcyB3aGVuIEkgcmVib290Lgo+IFRoZW4g
+R1BJTyBpcyBsaWtlbHkgYW4gZXh0ZXJuYWwgYW1wIGNvbnRyb2wuCkpPRVk6IFlFUy4KPgo+PiA0
+LiBUaGVuIElmIEkgcGx1Z2dlZCBpbiB0aGUgaGVhZHBob25lLCB0aGUgaGVhZHBob25lIGRvZXNu
+J3Qgd29yay4gSXQKPj4gb25seSB3b3JrcyB3aGVuIEkgd3JpdGUKPj4gKGNvZGVjLDB4MEYsMCxB
+Q19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsUElOX0hQKS4KPiBUaGlzIGlzIG5vcm1hbC4K
+Sk9FWTogSWYgSSBkb24ndCBtb2RpZnkgbW9kZWw9d2lsbC4gQW5kIGhlYWRwaG9uZSBjYW4gcGxh
+eSBldmVuIHdpdGhvdXQgCnNldCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wgdG8gUElO
+X0hQLiBPZiBjb3Vyc2UsIGF1dG9tdXRlIApkb2Vzbid0IHdvcmsgYXMgdGhlcmUgaXMgZnVuY3Rp
+b24gaW1wbGVtZW50ZWQuCj4KPj4gNS4gRnJvbSBzdGVwIDMmICA0LCBpdCdzIHNpbWlsYXIgZm9y
+IGNhc2VzIHRoYXQgSSByZWJvb3Qgd2l0aCBoZWFkcGhvbmUKPj4gcGx1Z2dlZCBpbi4gVGhhdCBp
+cywgaWYgSSByZW1vdmUgaGVhZHBob25lLCBzcGVha2VyIGRvZXNuJ3Qgd29yawo+PiBhdXRvbWF0
+aWNhbGx5LiBJZiBJIHdyaXRlCj4+IChjb2RlYywweDBGLDAsQUNfVkVSQl9TRVRfUElOX1dJREdF
+VF9DT05UUk9MLFBJTl9PVVQpLCB0aGUKPj4gYXV0by1kZXRlY3Rpb24gZnVuY3Rpb24gd29ya3Mg
+d2VsbCBjYW4gc3dpdGNoIHNwZWFrZXIvaGVhZHBob25lCj4+IGF1dG9tYXRpY2FsbHkuCj4gVGhh
+dCdzIG9kZC4gIElmIHlvdSBkb24ndCBjaGFuZ2UgZnJvbSBQSU5fSFAsIGRvZXNuJ3QgdGhlIHVu
+c29saWNpdGVkCj4gZXZlbnQgd29yaz8KSk9FWTogdGhlIHVuc29saWNpdGVkIHdvcmtzIGZyb20g
+dGhlIHJlZ2lzdGVyIEkgcmVhZCBhbHNvIGZyb20gdGhlIApwcmludGsgSSBwcmV2aW91cyBhZGRl
+ZC4gQnV0IHRoZSBhdWRpbyBwYXRoIGRvZXNuJ3Qgc3dpdGNoIGJldHdlZW4gCnNwZWFrZXIgYW5k
+IGhlYWRwaG9uZS4gSSBkb24ndCBrbm93IHdoeS4gSXQgY2FuIHdvcmtzIG1hbnVhbGx5IGlmIEkg
+c2VuZCAKYW55IGhkYS12ZXJiIGNvbW1hbmQgdG8gY29kZWMsIGxpa2UgaGRhLXZlcmIgL2Rldi9z
+bmQvaHdDMEQwIDB4MEYgMHhGMDkgCjB4MDsgSSB0aGluayBwZXJoYXBzIHRoZXJlIG5lZWRzIHRv
+IGJlIHNvbWUgZGVsYXkuIEJ1dCBJIHdhaXQgc2Vjb25kcyAKYW5kIGl0IGRvZXNuJ3Qgc3dpdGNo
+LiBUaGVuIGlmIEkgcnVuIGFueSBoZGEtdmVyYiBjb21tYW5kLCBpdCB3aWxsIHRoZW4gCnN3aXRj
+aC4KVGhlbiBhZnRlciBJIGNoYW5nZSBmcm9tIFBJTl9IUCBvciBmcm9tIFBJTl9PVVQsIHRoZSBh
+dXRvbXV0ZSAoYWN0dWFsbHkgCmF1ZGlvIHBhdGggc3dpdGNoKSB3b3Jrcy4KPiBBbm90aGVyIHF1
+ZXN0aW9uIGlzLCB3aGVuIHlvdSBzZXQgUElOX1dJREdFVF9DT05UUk9MIG9uIHRoZSBzcGVha2Vy
+Cj4gcGluIChub3Qgc3VyZSB3aGljaCBvbmUgaXMpIHRvIDB4MDAsIGRvZXMgaXQgbXV0ZSB0aGUg
+c3BlYWtlciwgdG9vPwpKT0VZOiBObywgaXQgZG9lc24ndCBtdXRlIHRoZSBzcGVha2VyLiBUbyBt
+dXRlIHRoZSBzcGVha2VyLCBJIGp1c3QgbmVlZCAKdG8gc2V0IDAgdG8gZGlyIG9yIG1hc2suIFRo
+ZW4gYXVkaW8gcGF0aCBpcyB0byBoZWFkcGhvbmUuCj4KPiBUYWthc2hpCj4KPgo+PiBJIGRvbid0
+IGtub3cgd2h5IGl0J3MgdGhpcyBjYXNlLCBhbmQgZnJvbSBhbHNhIGRvY3VtZW50LCBpdCBzZWVt
+cyBvbmx5Cj4+IGVuYWJsZSBHUElPMCB3aWxsIHdvcmsgYnV0IGFjdHVhbGx5IG5vdC4KPj4KPj4K
+Pj4gT24gMjAxMuW5tDAy5pyIMTXml6UgMTc6NTgsIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IEF0
+IFdlZCwgMTUgRmViIDIwMTIgMTc6NDU6MzcgKzA4MDAsCj4+PiBqb2V5LmppYW9qZyB3cm90ZToK
+Pj4+PiBJIGhhdmUgdHJpZWQgdG8gZW5hYmxlIGVhY2ggb25lIG9mIHRoZW0gc2VwYXJhdGVseSwg
+YW5kIHRoZSBzcGVha2VyCj4+Pj4gZG9lc24ndCB3b3JrLgo+Pj4gU29ycnksIGl0J3Mgbm90IGNs
+ZWFyIHdoYXQgeW91IG1lYW50LiAgRWFjaCBvZiB3aGF0IHNlcGFyYXRlbHk/Cj4+PiBBbmQgd2hh
+dCBkb2VzIEdQSU8gZG8gZXhhY3RseT8KPj4+Cj4+Pj4gSSBoYXZlIHRvIHVzZSB0aGVzZSAzIHdy
+aXRlX2NhY2hlIHRvIG1ha2Ugc3dpdGNoIGFuZCBhdXRvLWRldGVjdCB3b3JrCj4+Pj4gc21vb3Ro
+bHkuCj4+PiBXZSBuZWVkIHRvIGtub3cgdGhlIHJlYXNvbiB3aHkgdGhlc2UgbXVzdCBiZSBuZWVk
+ZWQuCj4+Pgo+Pj4KPj4+IFRha2FzaGkKPj4+Cj4+Pgo+Pj4+IE9uIDIwMTLlubQwMuaciDE15pel
+IDE3OjQwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4+IEF0IFdlZCwgMTUgRmViIDIwMTIgMTc6
+MzE6NDQgKzA4MDAsCj4+Pj4+IGpvZXkuamlhb2pnIHdyb3RlOgo+Pj4+Pj4gSGVyZSBpcyB0aGUg
+ZGlmZiBmaWxlLgo+Pj4+PiBUaGFua3MuCj4+Pj4+Cj4+Pj4+PiArLyogdG9nZ2xlIHNwZWFrZXIt
+b3V0cHV0IGFjY29yZGluZyB0byB0aGUgaHAtamFjayBzdGF0ZSAqLwo+Pj4+Pj4gK3N0YXRpYyB2
+b2lkIGFsYzI2MF9iMTkwMF9hdXRvbXV0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKPj4+Pj4+
+ICt7Cj4+Pj4+PiArICAgICAgICB1bnNpZ25lZCBpbnQgcHJlc2VudDsKPj4+Pj4+ICsKPj4+Pj4+
+ICsJcHJlc2VudCA9IHNuZF9oZGFfamFja19kZXRlY3QoY29kZWMsIDB4MGYpOwo+Pj4+Pj4gKwlp
+ZiAocHJlc2VudCkgewo+Pj4+Pj4gKwkJc25kX2hkYV9jb2RlY193cml0ZV9jYWNoZShjb2RlYywg
+MHgwMSwgMCwKPj4+Pj4+ICsJCQkJCSAgQUNfVkVSQl9TRVRfR1BJT19NQVNLLCAwKTsKPj4+Pj4+
+ICsJCXNuZF9oZGFfY29kZWNfd3JpdGVfY2FjaGUoY29kZWMsIDB4MDEsIDAsCj4+Pj4+PiArCQkJ
+CQkgIEFDX1ZFUkJfU0VUX0dQSU9fRElSRUNUSU9OLAo+Pj4+Pj4gKwkJCQkJICAwKTsKPj4+Pj4g
+V2hhdCBhY3R1YWxseSB0aGlzIEdQSU8gYml0IGRvZXMgb24geW91ciBkZXZpY2U/Cj4+Pj4+IFRv
+IG11dGUvdW5tdXRlIHRoZSBzcGVha2VyPwo+Pj4+Pgo+Pj4+PiBJZiBzbywgZG9lc24ndCB0aGUg
+c3BlYWtlciB0b2dnbGUgd29yayB3aXRoIGp1c3QgY2hhbmdpbmcgdGhlCj4+Pj4+IHBpbi1jb250
+cm9sIG9mIHRoZSBjb3JyZXNwb25kaW5nIHBpbj8KPj4+Pj4KPj4+Pj4KPj4+Pj4gVGFrYXNoaQoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
