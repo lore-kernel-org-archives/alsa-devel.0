@@ -1,18 +1,19 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: spitz - Fix kcontrols to use card
-	instead of codec.
-Date: Thu, 16 Feb 2012 12:00:23 +0000
-Message-ID: <1329393623-28816-1-git-send-email-lrg@ti.com>
+From: Jonathan Andrews <jon@jonshouse.co.uk>
+Subject: Random process lockup on ARM board:   alsa-lib-1.0.25,
+ FUTEX_WAIT_PRIVATE
+Date: Thu, 16 Feb 2012 12:01:31 +0000
+Message-ID: <1329393691.6830.20.camel@jonspc>
+Reply-To: jon@jonshouse.co.uk
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
-	[74.125.149.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A98624518
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 13:00:30 +0100 (CET)
-Received: by mail-wi0-f175.google.com with SMTP id hq7so1580979wib.34
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 04:00:28 -0800 (PST)
+Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id E547624518
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 13:01:18 +0100 (CET)
+Received: from [10.10.10.6] (jonspc [10.10.10.6])
+	by mail.jonshouse.co.uk (8.14.1/8.13.8) with ESMTP id q1GC1WmM013488
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 12:01:37 GMT
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +23,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Machine kcontrols now use card instead of codec for thier "chip".
+Sorry all me again.
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- sound/soc/pxa/spitz.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+I've written a program that picks up UDP broadcast packets containing
+audio from a number of sources, mixes it together and presents it to
+alsa for playback.
 
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index 90c5245..4d108dc 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -44,9 +44,9 @@ static int spitz_jack_func;
- static int spitz_spk_func;
- static int spitz_mic_gpio;
- 
--static void spitz_ext_control(struct snd_soc_codec *codec)
-+static void spitz_ext_control(struct snd_soc_card *card)
- {
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = &card->dapm;
- 
- 	if (spitz_spk_func == SPITZ_SPK_ON)
- 		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
-@@ -173,13 +173,13 @@ static int spitz_get_jack(struct snd_kcontrol *kcontrol,
- static int spitz_set_jack(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 
- 	if (spitz_jack_func == ucontrol->value.integer.value[0])
- 		return 0;
- 
- 	spitz_jack_func = ucontrol->value.integer.value[0];
--	spitz_ext_control(codec);
-+	spitz_ext_control(card);
- 	return 1;
- }
- 
-@@ -193,13 +193,13 @@ static int spitz_get_spk(struct snd_kcontrol *kcontrol,
- static int spitz_set_spk(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
- 
- 	if (spitz_spk_func == ucontrol->value.integer.value[0])
- 		return 0;
- 
- 	spitz_spk_func = ucontrol->value.integer.value[0];
--	spitz_ext_control(codec);
-+	spitz_ext_control(card);
- 	return 1;
- }
- 
--- 
-1.7.5.4
+I'm experiencing random freezes.  I cant reproduce then running the
+process under strace as the process on the ARM board slows down to the
+point it underruns with ALSA all the time and the symptom doesn't show.
+
+If I attach strace after the process has frozen I get this and nothing
+else:
+
+# strace -p 443
+Process 443 attached - interrupt to quit
+futex(0x4030e144, FUTEX_WAIT_PRIVATE, 2, NULL
+
+
+This stop happens at random at any point typically after minutes but run
+time can be over an hour.
+
+I need to work around this as I need the board for a demo.
+
+Im using, alsa-lib-1.0.25
+kernel 2.6.36.4
+BusyBox v1.19.2
+
+I also compiled strace for arm, but this and a busybox shell is the only
+environment I have on the board.
+
+The problem showed when I starting using this function to poll alsa:
+
+The same code on my PC dual core AMD does not seem to suffer the
+problem  : alsa-lib-1.0.23, Linux jonspc 2.6.32.26-175.fc12.i686 #1 SMP
+
+Before anyone points it out I want to poll as alsa is not the only sound
+output supported by the code.
+
+int sound_system_needs_data_now()
+{
+        int framesleft;
+        snd_pcm_status_t *status;
+        snd_pcm_status_alloca( &status );
+
+        // If the alsa playback has stalled then it definately needs data
+        snd_pcm_status(playback_handle,status);
+        if( snd_pcm_status_get_state( status ) != SND_PCM_STATE_RUNNING )
+                return(TRUE);
+
+        framesleft=snd_pcm_avail (playback_handle);
+	//printf("FL=%d\n",framesleft); fflush(stdout);
+
+        if (framesleft>1000)
+                return(TRUE);
+        else
+                return(FALSE);
+}
+
+
+Stuck process
+
+# cat /proc/443/status 
+Name:   udp-many-way-au
+State:  S (sleeping)
+Tgid:   443
+Pid:    443
+PPid:   392
+TracerPid:      0
+Uid:    0       0       0       0
+Gid:    0       0       0       0
+FDSize: 32
+Groups: 
+VmPeak:     4356 kB
+VmSize:     4292 kB
+VmLck:       132 kB
+VmHWM:      1788 kB
+VmRSS:      1788 kB
+VmData:      396 kB
+VmStk:       136 kB
+VmExe:        28 kB
+VmLib:      3348 kB
+VmPTE:        12 kB
+VmSwap:        0 kB
+Threads:        1
+SigQ:   0/471
+SigPnd: 0000000000000000
+ShdPnd: 0000000000000000
+SigBlk: 0000000000002000
+SigIgn: 0000000000000006
+SigCgt: 0000000180002000
+CapInh: 0000000000000000
+CapPrm: ffffffffffffffff
+CapEff: ffffffffffffffff
+CapBnd: ffffffffffffffff
+Cpus_allowed:   1
+Cpus_allowed_list:      0
+Mems_allowed:   1
+Mems_allowed_list:      0
+voluntary_ctxt_switches:        5908
+nonvoluntary_ctxt_switches:     1766
+
+
+Any useful suggestions welcome.
+
+Thanks,
+Jon
