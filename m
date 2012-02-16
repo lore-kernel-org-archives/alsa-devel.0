@@ -1,31 +1,14 @@
-From: Philip Spencer <pspencer@fields.utoronto.ca>
-Subject: [PATCH] Wrong latency in pulseaudio plugin breaks
- Adobe Flash Player
-Date: Thu, 16 Feb 2012 10:48:12 -0500 (EST)
-Message-ID: <alpine.LFD.2.00.1202161015470.19707@lpc8.fields.utoronto.ca>
+From: Marco De Maio - BETTINI Srl <demaio@bettinivideo.com>
+Subject: Strange behaviour on audio chipset VIA VT2021 codec
+Date: Thu, 16 Feb 2012 16:52:15 +0100
+Message-ID: <4F3D262F.4010605@bettinivideo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fileserver.fields.utoronto.ca (fileserver.fields.utoronto.ca
-	[128.100.216.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 036C32457E
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 16:48:16 +0100 (CET)
-Received: from lpc8.fields.utoronto.ca (lpc8.fields.utoronto.ca
-	[128.100.216.128])
-	by fileserver.fields.utoronto.ca (8.14.4/8.14.4/Fields_8.1M) with ESMTP
-	id q1GFmEXr002226
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 10:48:14 -0500
-Received: from lpc8.fields.utoronto.ca (localhost [127.0.0.1])
-	by lpc8.fields.utoronto.ca (8.14.4/8.14.4/Fields_8.1W) with ESMTP id
-	q1GFmEO7024688
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 10:48:14 -0500
-Received: from localhost (pspencer@localhost)
-	by lpc8.fields.utoronto.ca (8.14.4/8.14.4/Submit) with ESMTP id
-	q1GFmCem024684
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 10:48:14 -0500
+Received: from it17.anothertv.net (it17.anothertv.net [95.110.203.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FDCC24589
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 16:52:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,180 +21,156 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When Adobe Flash player is playing a live stream in "live" (no internal 
-latency) mode[1], through alsa's pulseaudio plugin, the audio is a 
-half-second out of sync with the video. This is with alsa-plugins version 
-1.0.25.[2]
+Hello,
 
-I see the problem is one already reported on the bug tracker several years 
-ago (issue #3944). The plugin sets pulseaudio's target buffer length to
-match the IO buffer length, and sets the prebuffering attribute to match
-the IO buffer length less one period.
+i need to develop for my work an audio recorder application. I have to 
+develop the software on Linux OS (Ubuntu 8.04 with kernel 2.6.23.13), 
+and the motherboard is Gigabyte GA-G41MT-S2P (rev. 1.3) where is 
+installed the integrated audio chipset VIA VT2021 codec.
 
-In our case, the IO buffer is 500ms long, the IO period length is 20ms 
-(for 16KHz Speex soud packets), and the application requests that playback 
-start immediately (by setting the start_threshold software parameter very 
-low).
+I upgraded the alsa driver to 1.0.25 version for support of audio 
+chipset VIA VT2021. I downloaded the driver and compiled it with the 
+following option
 
-However, the plugin ignores start_threshold and sets the pulseaudio target 
-buffer length to 500ms, meaning pulseaudio plays the sound with a 
-half-second delay.
+./configure --with-cards=hda-intel --with-sequencer=yes
 
-The fix initially suggested in the bug report was to implement the 
-start_threshold parameter and use it to lower the prebuffering attribute 
-but this does not work: playback STARTS sooner, but when dropouts and 
-underruns occur pulseaudio increases the latency to match the target 
-buffer length. It is necessary to lower the target buffer length too.
+and i done some experiments with the following simple application 
+example with alsa lib:
 
-Below is a proposed patch (my apologies if I've missed some 
-subtleties as I've never looked at the alsa source code before). The patch
-changes the plugin to do the following:
+#include <alsa/asoundlib.h>
 
-   -- decouple the length of the fake ring buffer seen by ALSA (which needs
-      to match the IO buffer length) from the "target length" parameter
-      sent to pulseaudio (which needs to reflect the desired latency),
-      adding a new variable to the structure to store the former value.
-      Currently they are forced to be the same value.
+int main()
+{
+     int rc;
+     int size;
+     snd_pcm_t *handle;
+     snd_pcm_hw_params_t *params;
+     unsigned int val;
+     int dir;
+     snd_pcm_uframes_t frames;
+     char *buffer;
 
-   -- when the start_threshold software parameter is seen, lower both
-      the target length and prebuffering attributes to match it, except
-      don't set them less than one IO period or longer than the IO buffer
-      length
+     /* Open PCM device for playback. */
+     rc = snd_pcm_open(&handle, "default",
+                       SND_PCM_STREAM_CAPTURE, 0);
+     if (rc < 0)
+     {
+         fprintf(stderr,
+                 "unable to open pcm device: %s\n",
+                 snd_strerror(rc));
+         exit(1);
+     }
 
-   -- when hardware parameters are seen, don't mess with the target length
-      or prebuffering attributes if already set by software.
+     /* Allocate a hardware parameters object. */
+     snd_pcm_hw_params_alloca(&params);
 
-It doesn't currently tell pulseaudio to change its parameters if the
-start_threshold is enountered after the stream is already started, but
-that could be added too if necessary with
-          if (pcm->stream) pa_stream_set_buffer_attr( ... )
+     /* Fill it in with default values. */
+     snd_pcm_hw_params_any(handle, params);
 
-I hope this patch (or something like it) can get put into an alsa release
-since otherwise the Flash Player 2-way interaction app we're developing 
-won't be usable by Linux users unless it runs in about 750ms time-delayed 
-mode!
+     /* Set the desired hardware parameters. */
 
-Thank you,
+     /* Interleaved mode */
+     snd_pcm_hw_params_set_access(handle, params,
+                                  SND_PCM_ACCESS_RW_INTERLEAVED);
 
-Philip
+     /* Signed 16-bit little-endian format */
+     snd_pcm_hw_params_set_format(handle, params,
+                                  SND_PCM_FORMAT_S16_LE);
 
-[1] Normally Flash Player plays prerecorded streams with a slight internal 
-buffering delay, and in this mode it requests the audio be buffered for 
-500ms in addition to its own internal delay, and it automatically delays 
-video frames for 500ms beyond its own internal delay to compensate, so 
-there are no out-of-sync problems with prerecorded streams or live streams 
-played in regular buffered mode.
+     /* Two channels (stereo) */
+     snd_pcm_hw_params_set_channels(handle, params, 2);
 
-[2] In 1.0.23 with low-sample-rate streams there was no sync problem but
-each sound sample was truncated, resulting in distorted and crackly sound; 
-this problem has been fixed in 1.0.25 -- thanks!
+     /* 44100 bits/second sampling rate (CD quality) */
+     val = 44100;
+     snd_pcm_hw_params_set_rate_near(handle, params,
+&val, &dir);
 
---------------------------------------------+-------------------------------
-Philip Spencer  pspencer@fields.utoronto.ca | Director of Computing Services
-Room 336        (416)-348-9710  ext3036     | The Fields Institute for
-222 College St, Toronto ON M5T 3J1 Canada   | Research in Mathematical Sciences
+     /* Set period size to 32 frames. */
+     frames = 32;
+     snd_pcm_hw_params_set_period_size_near(handle,
+                                            params, &frames, &dir);
 
-Signed-Of-By: Philip Spencer <pspencer@fields.utoronto.ca>
+     /* Write the parameters to the driver */
+     rc = snd_pcm_hw_params(handle, params);
+     if (rc < 0)
+     {
+         fprintf(stderr,
+                 "unable to set hw parameters: %s\n",
+                 snd_strerror(rc));
+         exit(1);
+     }
 
---- alsa-plugins-1.0.25.orig/pulse/pcm_pulse.c	2012-01-25 02:57:07.000000000 -0500
-+++ alsa-plugins-1.0.25/pulse/pcm_pulse.c	2012-02-15 16:23:08.000000000 -0500
-@@ -49,6 +49,9 @@
-  	pa_sample_spec ss;
-  	size_t frame_size;
-  	pa_buffer_attr buffer_attr;
-+	uint32_t ring_buffer_length;
-+	int tlength_set_by_sw;
-+
-  } snd_pcm_pulse_t;
+     /* Use a buffer large enough to hold one period */
+     snd_pcm_hw_params_get_period_size(params, &frames,
+&dir);
+     size = frames * 4; /* 2 bytes/sample, 2 channels */
+     buffer = (char *) malloc(size);
 
-  static int check_stream(snd_pcm_pulse_t *pcm)
-@@ -93,12 +96,12 @@
-  		size -= pcm->offset;
+     snd_pcm_hw_params_get_period_time(params,
+&val, &dir);
 
-  	/* Prevent accidental overrun of the fake ringbuffer */
--	if (size > pcm->buffer_attr.tlength - pcm->frame_size)
--		size = pcm->buffer_attr.tlength - pcm->frame_size;
-+	if (size > pcm->ring_buffer_length - pcm->frame_size)
-+		size = pcm->ring_buffer_length - pcm->frame_size;
+     while (1)
+     {
+         printf ("Capture data\n");
+         rc = snd_pcm_readi(handle, buffer, size);
 
-  	if (size > pcm->last_size) {
-  		pcm->ptr += size - pcm->last_size;
--		pcm->ptr %= pcm->buffer_attr.tlength;
-+		pcm->ptr %= pcm->ring_buffer_length;
-  	}
+         if (rc == -EAGAIN)
+         {
+             fprintf(stderr, "EAGAIN occurred\n");
+             snd_pcm_prepare(handle);
+         }
+         else if (rc == -EPIPE)
+         {
+             fprintf(stderr, "EPIPE occurred\n");
+             snd_pcm_prepare(handle);
+         }
+         else if (rc == -ESTRPIPE)
+         {
+             fprintf(stderr, "ESTRPIPE occurred\n");
+             snd_pcm_prepare(handle);
+         }
+         else if (rc > 0)
+         {
+             fprintf(stderr, "read %d ok\n", rc);
+         }
+         else
+         {
+             fprintf(stderr, "error occurred %s\n", snd_strerror(rc));
+             exit (1);
+         }
+     }
 
-  	pcm->last_size = size;
-@@ -830,12 +833,16 @@
-  	pcm->ss.rate = io->rate;
-  	pcm->ss.channels = io->channels;
+     snd_pcm_drain(handle);
+     snd_pcm_close(handle);
+     free(buffer);
 
-+	pcm->ring_buffer_length =
-+		io->buffer_size * pcm->frame_size;
-  	pcm->buffer_attr.maxlength =
-  		4 * 1024 * 1024;
--	pcm->buffer_attr.tlength =
--		io->buffer_size * pcm->frame_size;
--	pcm->buffer_attr.prebuf =
--	    (io->buffer_size - io->period_size) * pcm->frame_size;
-+	if (! pcm->tlength_set_by_sw) {
-+		pcm->buffer_attr.tlength =
-+			io->buffer_size * pcm->frame_size;
-+		pcm->buffer_attr.prebuf =
-+			(io->buffer_size - io->period_size) * pcm->frame_size;
-+	}
-  	pcm->buffer_attr.minreq = io->period_size * pcm->frame_size;
-  	pcm->buffer_attr.fragsize = io->period_size * pcm->frame_size;
+     return 0;
+}
 
-@@ -845,6 +852,36 @@
-  	return err;
-  }
+Running the example above, I found the following behaviors:
 
-+static int pulse_sw_params(snd_pcm_ioplug_t * io,
-+			   snd_pcm_sw_params_t * params)
-+{
-+	snd_pcm_pulse_t *pcm = io->private_data;
-+	int err = 0;
-+
-+	assert(pcm);
-+
-+	if (!pcm->p || !pcm->p->mainloop)
-+		return -EBADFD;
-+
-+	pa_threaded_mainloop_lock(pcm->p->mainloop);
-+	snd_pcm_uframes_t start_thresh;
-+	err = snd_pcm_sw_params_get_start_threshold(params, &start_thresh);
-+ 	if (! err) {
-+		if (start_thresh <  io->period_size)
-+			start_thresh = io->period_size;
-+		if (start_thresh > io->buffer_size)
-+			start_thresh = io->buffer_size;
-+
-+		pcm->buffer_attr.tlength = start_thresh * pcm->frame_size;
-+		pcm->buffer_attr.prebuf = start_thresh * pcm->frame_size;
-+		pcm->tlength_set_by_sw = 1;
-+	}
-+
-+	pa_threaded_mainloop_unlock(pcm->p->mainloop);
-+	return err;
-+
-+}
-+
-  static int pulse_close(snd_pcm_ioplug_t * io)
-  {
-  	snd_pcm_pulse_t *pcm = io->private_data;
-@@ -911,6 +948,7 @@
-  	.poll_revents = pulse_pcm_poll_revents,
-  	.prepare = pulse_prepare,
-  	.hw_params = pulse_hw_params,
-+	.sw_params = pulse_sw_params,
-  	.close = pulse_close,
-  	.pause = pulse_pause
-  };
-@@ -1080,6 +1118,7 @@
-  	pcm->io.mmap_rw = 0;
-  	pcm->io.callback = stream == SND_PCM_STREAM_PLAYBACK ?
-  	    &pulse_playback_callback : &pulse_capture_callback;
-+	pcm->tlength_set_by_sw = 0;
-  	pcm->io.private_data = pcm;
+1) Until there is no mic plugged, the application stop on snd_pcm_readi. 
+When mic is plugged, the application starts again.
+So when i unplug mic the application stops on snd_pcm_readi, when i plug 
+mic the application starts again, and so on.
+I want to point out that i achieve the same result with a simple stand 
+alone jack.
 
-  	err = snd_pcm_ioplug_create(&pcm->io, name, stream, mode);
+2) If i reboot my machine with mic plugged, after restart, I run the 
+application but it stop immediately on snd_pcm_readi
+and I need to unplug/plug the mic to stats again the application.
+
+This behavior seems to me quite strange. Please someone could help me to 
+figure out why this behavior ? Maybe something wrong with my
+example ? Maybe something wrong with compiling options of the driver or 
+maybe into the drivers itself ?
+
+I tried the same application on a different mainboard with Realtek 
+ALC889 codec, and the applications never stops on snd_pcm_readi
+(I suppose this is the correct behavior), and run correctly.
+
+Let me know if you need more information about.
+
+Thank to all in advance.
+
+Marco
