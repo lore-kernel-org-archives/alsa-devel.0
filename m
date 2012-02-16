@@ -1,17 +1,31 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Show device id in the debug message
-Date: Thu, 16 Feb 2012 10:33:45 +0800
-Message-ID: <1329359625.29391.4.camel@phoenix>
+From: "joey.jiaojg" <joey.jiaojg@gmail.com>
+Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
+ B1900 Series
+Date: Thu, 16 Feb 2012 11:41:10 +0800
+Message-ID: <4F3C7AD6.9040001@gmail.com>
+References: <4F35C191.9080401@gmail.com>
+	<20120211020502.GA25041@marvin.atrad.com.au>
+	<CAN8cciZejU6suH_pF5OzpVgjjUYsYgTCf14T5J=0G-c0wSfyAA@mail.gmail.com>
+	<CAKOmCvoS+tgvyPZJey4gfFFq=Uz01pnZY7YvGbxgQPpAzQ7KCA@mail.gmail.com>
+	<CAKOmCvofbM9+5SGSMkAP=ansfxCz835LF3GfM6=OF3zn-+10iw@mail.gmail.com>
+	<CAN8cciY2M+9h-3BROUV03VuNL5WLJsxG-Tx1+MG5=+kxrZqaoQ@mail.gmail.com>
+	<4F3B761D.4060306@gmail.com> <s5h8vk4wivv.wl%tiwai@suse.de>
+	<4F3B7B80.5030102@gmail.com> <s5h39acwi30.wl%tiwai@suse.de>
+	<4F3B7EC1.4000503@gmail.com> <s5hy5s4v2og.wl%tiwai@suse.de>
+	<4F3B83AF.3020301@gmail.com> <s5hvcn8v22z.wl%tiwai@suse.de>
+	<4F3BAFC8.4030903@gmail.com> <s5hwr7otep6.wl%tiwai@suse.de>
+	<4F3BC507.2040001@gmail.com> <s5h7gzot9wu.wl%tiwai@suse.de>
+	<CAKOmCvq_akAUvvSCxNj1=Cfk5swRWTYSjhdHgJAxFsoDq-00bw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAA30103F62
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 03:33:51 +0100 (CET)
-Received: by dady9 with SMTP id y9so1587090dad.38
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 18:33:50 -0800 (PST)
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 23BFA2438F
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 04:41:19 +0100 (CET)
+Received: by dady9 with SMTP id y9so1642712dad.38
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 19:41:18 -0800 (PST)
+In-Reply-To: <CAKOmCvq_akAUvvSCxNj1=Cfk5swRWTYSjhdHgJAxFsoDq-00bw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +35,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, pshou@realtek.com.tw, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com.tw
 List-Id: alsa-devel@alsa-project.org
 
-Show the id we read when the id mismatch is detected.
-This is useful for debugging.
-
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8962.c |    2 +-
- sound/soc/codecs/wm8996.c |    2 +-
- sound/soc/codecs/wm9090.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 172dcac..5a6516e 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3718,7 +3718,7 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
- 	}
- 	if (reg != 0x6243) {
- 		dev_err(&i2c->dev,
--			"Device is not a WM8962, ID %x != 0x6243\n", ret);
-+			"Device is not a WM8962, ID %x != 0x6243\n", reg);
- 		ret = -EINVAL;
- 		goto err_regmap;
- 	}
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 759ea69..c3bde4a 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -3185,7 +3185,7 @@ static __devinit int wm8996_i2c_probe(struct i2c_client *i2c,
- 		goto err_regmap;
- 	}
- 	if (reg != 0x8915) {
--		dev_err(&i2c->dev, "Device is not a WM8996, ID %x\n", ret);
-+		dev_err(&i2c->dev, "Device is not a WM8996, ID %x\n", reg);
- 		ret = -EINVAL;
- 		goto err_regmap;
- 	}
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index e8280ee..4b263b6 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -639,7 +639,7 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 	if (ret < 0)
- 		goto err;
- 	if (reg != 0x9093) {
--		dev_err(&i2c->dev, "Device is not a WM9090, ID=%x\n", ret);
-+		dev_err(&i2c->dev, "Device is not a WM9090, ID=%x\n", reg);
- 		ret = -ENODEV;
- 		goto err;
- 	}
--- 
-1.7.5.4
+QW5kIG5vdyB0aGlzIGNvZGUgd29ya3M6Ci8qIHRvZ2dsZSBzcGVha2VyLW91dHB1dCBhY2NvcmRp
+bmcgdG8gdGhlIGhwLWphY2sgc3RhdGUgKi8Kc3RhdGljIHZvaWQgYWxjMjYwX2IxOTAwX2F1dG9t
+dXRlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQp7CiAgICAgICAgIHVuc2lnbmVkIGludCBwcmVz
+ZW50OwoKICAgICAgICAgcHJlc2VudCA9IHNuZF9oZGFfamFja19kZXRlY3QoY29kZWMsIDB4MGYp
+OwogICAgICAgICBpZiAocHJlc2VudCkgewogICAgICAgICAgICAgICAgIHNuZF9oZGFfY29kZWNf
+d3JpdGVfY2FjaGUoY29kZWMsIDB4MDEsIDAsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBBQ19WRVJCX1NFVF9HUElPX01BU0ssIDApOwogICAgICAgICAgICAgICAg
+IHNuZF9oZGFfY29kZWNfd3JpdGVfY2FjaGUoY29kZWMsIDB4MDEsIDAsCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBQ19WRVJCX1NFVF9HUElPX0RJUkVDVElPTiwK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDApOwogICAgICAgICAg
+ICAgICAgIHNuZF9oZGFfY29kZWNfd3JpdGVfY2FjaGUoY29kZWMsIDB4MDEsIDAsCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBQ19WRVJCX1NFVF9HUElPX0RBVEEs
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAxKTsKICAgICAgICAg
+fSBlbHNlIHsKICAgICAgICAgICAgICAgICBzbmRfaGRhX2NvZGVjX3dyaXRlX2NhY2hlKGNvZGVj
+LCAweDAxLCAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQUNf
+VkVSQl9TRVRfR1BJT19NQVNLLCAxKTsKICAgICAgICAgICAgICAgICBzbmRfaGRhX2NvZGVjX3dy
+aXRlX2NhY2hlKGNvZGVjLCAweDAxLCAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgQUNfVkVSQl9TRVRfR1BJT19ESVJFQ1RJT04sCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAxKTsKICAgICAgICAgICAgICAgICBzbmRfaGRhX2Nv
+ZGVjX3dyaXRlX2NhY2hlKGNvZGVjLCAweDAxLCAwLAogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgQUNfVkVSQl9TRVRfR1BJT19EQVRBLAogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgMCk7CiAgICAgICAgIH0KfQoKCk9uIDIwMTLlubQw
+MuaciDE25pelIDEwOjA0LCBKb2V5IEppYW8gd3JvdGU6Cj4gMS4gSSBjaGFuZ2VkIHRvIG1vZGVs
+PXdpbGwgdG8gdGVzdCB3aXRob3V0IGhlYWRwaG9uZQo+IGhkYS12ZXJiIC9kZXYvc25kL2h3QzBE
+MCAweDBGfjB4MUIgMHg3MDcgMHhDMCBbTklEPTB4MEYsIDB4MTB+MHgxOSwgMHgxQl0KPiBSZXN1
+bHQ6IGZvciBzdXJlIG5vdCB3b3JrIGFzIEdQSU8gbm90IG9wZW4KPiAyLiBJIGNoYW5nZWQgdG8g
+bW9kZWw9YjE5MDAgdG8gdGVzdCB3aXRob3V0IGhlYWRwaG9uZQo+IGhkYS12ZXJiIC9kZXYvc25k
+L2h3QzBEMCAweDBGfjB4MUIgMHg3MDcgMHhDMAo+IFJlc3VsdDogc3BlYWtlciBzdGlsbCB3b3Jr
+cy4gSXQncyBmb3Igc3VyZS4KPiAzLiBUaGVuIHNhbWUgY29uZGl0aW9uIGFzIHN0ZXAgMiBidXQg
+Y2hhbmdlIDB4QzAgdG8gMHgwCj4gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MEZ+MHgxQiAw
+eDcwNyAweDAKPiBSZXN1bHQ6IHNwZWFrZXIgZG9lc24ndCB3b3JrIG9ubHkgd2hlbiBOSUQ9MHgw
+RjsgdGhlbiBJIHRyaWVkCj4gcGFyYW09MHg0MCBhbmQgMHg4MCwgd2hlbiBwYXJhbT0weDQwLCBz
+cGVha2VyIHdvcmtzIHdoaWxlIHBhcmFtPTB4ODAsCj4gc3BlYWtlciBkb2Vzbid0IHdvcmsuCj4g
+NC4gVGhlbiBJIHBsdWdnZWQgaW4gaGVhZHBob25lLgo+IE5vdyB0aGUgcGFyYW0gPTB4NDAgZm9y
+IE5JRD0weDBGLgo+IFJlc3VsdDogSGVhZHBob25lIHdvcmtzIHdoaWxlIHNwZWFrZXIgbXV0ZWQu
+Cj4gVGhlbiBJIGNoYW5nZWQgcGFyYW09MHg4MC4gKHNhbWUgcmVzdWx0IHdoZW4gcGFyYW09MHhD
+MCkKPiBSZXN1bHQ6IEhlYWRwaG9uZSBzdGlsbCB3b3JrcyB3aGlsZSBzcGVha2VyIG11dGVkLgo+
+IDUuIFRoZW4gSSByZWJvb3Qgd2l0aCBoZWFkcGhvbmUgcGx1Z2dlZCBpbiB0byB0ZXN0IHlvdXIg
+c3RlcCAyLgo+IFlFUywgbm93IHRoZSBzcGVha2VyIG11dGVkIHdoaWxlIGhlYWRwaG9uZSB3b3Jr
+cy4KPiBUaGVuIEkgZG8geW91ciBjbWRzOgo+IGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDAx
+IFNFVF9HUElPX01BU0sgMQo+IFJlc3VsdDogaGVhZHBob25lIHdvcmtzLCBzcGVha2VyIG11dGVk
+Cj4gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgU0VUX0dQSU9fRElSIDEKPiBSZXN1bHQ6
+IGhlYWRwaG9uZSBtdXRlZCwgc3BlYWtlciB3b3Jrcwo+IGhkYS12ZXJiIC9kZXYvc25kL2h3QzBE
+MCAweDAxIFNFVF9HUElPX0RBVEEgMQo+IFJlc3VsdDogaGVhZHBob25lIHdvcmtzLCBzcGVha2Vy
+IG11dGVkCj4gaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgU0VUX0dQSU9fREFUQSAwCj4g
+UmVzdWx0OiBoZWFkcGhvbmUgbXV0ZWQsIHNwZWFrZXIgd29ya3MuCj4gUGxlYXNlIG5vdGVkIHRo
+ZSBsYXN0IHR3byBjbWRzLCBpdCdzIHN0cmFuZ2UgYnV0IGl0J3MgdHJ1ZS4KPgo+IEFueSBhZGRp
+dGlvbmFsIHRlc3RzPwo+Cj4g5ZyoIDIwMTLlubQy5pyIMTXml6Ug5LiL5Y2IMTE6MDTvvIxUYWth
+c2hpIEl3YWk8dGl3YWlAc3VzZS5kZT4gIOWGmemBk++8mgo+PiBBdCBXZWQsIDE1IEZlYiAyMDEy
+IDIyOjQ1OjI3ICswODAwLAo+PiBqb2V5LmppYW9qZyB3cm90ZToKPj4+IEkgdGhpbmsgdGhlIG9u
+bHkgcXVlc3Rpb24gYmVsb3cgaXMgYWJvdXQgdGhlIGF1dG9tdXRlLCByaWdodD8KPj4gTm90IHJl
+YWxseS4gIFRoZSBtb3N0IGltcG9ydGFudCB0aGluZyBpcyB0byB1bmRlcnN0YW5kIHdoYXQncyBk
+b2luZwo+PiB3aGF0LiAgU2luY2UgeW91ciBjb2RlIGNhbid0IGJlIGFwcGxpZWQgYW55IGxvbmdl
+ciBhdCBhbGwgdG8gdGhlCj4+IGxhdGVzdCBjb2RlIHRyZWUgYmVjYXVzZSBvZiB0aGUgZnVuZGFt
+ZW50YWwgY29kZSByZXdyaXRlLCB3ZSBuZWVkIHRvCj4+IGRvIGl0IHJpZ2h0Lgo+Pgo+PiBTbywg
+cGxlYXNlIGNoZWNrIHRoZSBmb2xsb3dpbmc6Cj4+Cj4+IDEuIERvZXMgYW55IHBpbiBjb3JyZXNw
+b25kIHRvIHRoZSBzcGVha2VyIG91dHB1dD8gIFRyeSB0byBjaGFuZ2UgdGhlCj4+ICAgIHBpbiBj
+b250cm9sIG9mIGVhY2ggcGluIGJldHdlZW4gMHgxMCBhbmQgMHgxOSB2aWEgaGRhLXZlcmIgd2hp
+bGUKPj4gICAgdGhlIHNwZWFrZXIgb3V0cHV0IGlzIGFjdGl2ZS4gIERvZXMgYW55IHBpbiBjaGFu
+Z2UgdGhlIHNwZWFrZXIKPj4gICAgb3V0cHV0Pwo+Pgo+PiAyLiBQbHVnIHlvdXIgaGVhZHBob25l
+LiAgTm93IHRoZSBzcGVha2VyIGlzIG11dGVkIHdpdGggeW91ciBwYXRjaC4KPj4gICAgV2hhdCBo
+YXBwZW5zIHdoZW4geW91IHJ1biBsaWtlIGJlbG93Pwo+Pgo+PiAgICAgICAgIGhkYS12ZXJiIC9k
+ZXYvc25kL2h3RDBEMCAweDAxIFNFVF9HUElPX01BU0sgMQo+PiAgICAgICAgIGhkYS12ZXJiIC9k
+ZXYvc25kL2h3RDBEMCAweDAxIFNFVF9HUElPX0RJUiAxCj4+ICAgICAgICAgaGRhLXZlcmIgL2Rl
+di9zbmQvaHdEMEQwIDB4MDEgU0VUX0dQSU9fREFUQSAxCj4+Cj4+ICAgIERvZXMgdGhlIHNwZWFr
+ZXIgc3RhcnRzIHBsYXlpbmcgYWdhaW4/ICBUaGVuLCB3aGF0IGhhcHBlbnMgbm93Cj4+ICAgIHdp
+dGg6Cj4+Cj4+ICAgICAgICAgaGRhLXZlcmIgL2Rldi9zbmQvaHdEMEQwIDB4MDEgU0VUX0dQSU9f
+REFUQSAwCj4+Cj4+ICAgID8/Cj4+Cj4+Cj4+IFRha2FzaGkKPgo+CgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
