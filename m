@@ -1,31 +1,17 @@
-From: Joey Jiao <joey.jiaojg@gmail.com>
-Subject: Re: Bug report - patch_realtek.c - Laptop HP COMPAQ
- B1900 Series
-Date: Thu, 16 Feb 2012 10:04:09 +0800
-Message-ID: <CAKOmCvq_akAUvvSCxNj1=Cfk5swRWTYSjhdHgJAxFsoDq-00bw@mail.gmail.com>
-References: <4F35C191.9080401@gmail.com>
-	<20120211020502.GA25041@marvin.atrad.com.au>
-	<CAN8cciZejU6suH_pF5OzpVgjjUYsYgTCf14T5J=0G-c0wSfyAA@mail.gmail.com>
-	<CAKOmCvoS+tgvyPZJey4gfFFq=Uz01pnZY7YvGbxgQPpAzQ7KCA@mail.gmail.com>
-	<CAKOmCvofbM9+5SGSMkAP=ansfxCz835LF3GfM6=OF3zn-+10iw@mail.gmail.com>
-	<CAN8cciY2M+9h-3BROUV03VuNL5WLJsxG-Tx1+MG5=+kxrZqaoQ@mail.gmail.com>
-	<4F3B761D.4060306@gmail.com> <s5h8vk4wivv.wl%tiwai@suse.de>
-	<4F3B7B80.5030102@gmail.com> <s5h39acwi30.wl%tiwai@suse.de>
-	<4F3B7EC1.4000503@gmail.com> <s5hy5s4v2og.wl%tiwai@suse.de>
-	<4F3B83AF.3020301@gmail.com> <s5hvcn8v22z.wl%tiwai@suse.de>
-	<4F3BAFC8.4030903@gmail.com> <s5hwr7otep6.wl%tiwai@suse.de>
-	<4F3BC507.2040001@gmail.com> <s5h7gzot9wu.wl%tiwai@suse.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Get correct revision id for wm2200
+Date: Thu, 16 Feb 2012 10:05:59 +0800
+Message-ID: <1329357959.29391.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6580C103834
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 03:04:30 +0100 (CET)
-Received: by qan41 with SMTP id 41so1999416qan.17
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 18:04:29 -0800 (PST)
-In-Reply-To: <s5h7gzot9wu.wl%tiwai@suse.de>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F871103838
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 03:06:10 +0100 (CET)
+Received: by pbbrp2 with SMTP id rp2so2097145pbb.38
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2012 18:06:09 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,54 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, pshou@realtek.com.tw, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com.tw
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-MS4gSSBjaGFuZ2VkIHRvIG1vZGVsPXdpbGwgdG8gdGVzdCB3aXRob3V0IGhlYWRwaG9uZQpoZGEt
-dmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwRn4weDFCIDB4NzA3IDB4QzAgW05JRD0weDBGLCAweDEw
-fjB4MTksIDB4MUJdClJlc3VsdDogZm9yIHN1cmUgbm90IHdvcmsgYXMgR1BJTyBub3Qgb3Blbgoy
-LiBJIGNoYW5nZWQgdG8gbW9kZWw9YjE5MDAgdG8gdGVzdCB3aXRob3V0IGhlYWRwaG9uZQpoZGEt
-dmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwRn4weDFCIDB4NzA3IDB4QzAKUmVzdWx0OiBzcGVha2Vy
-IHN0aWxsIHdvcmtzLiBJdCdzIGZvciBzdXJlLgozLiBUaGVuIHNhbWUgY29uZGl0aW9uIGFzIHN0
-ZXAgMiBidXQgY2hhbmdlIDB4QzAgdG8gMHgwCmhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDBG
-fjB4MUIgMHg3MDcgMHgwClJlc3VsdDogc3BlYWtlciBkb2Vzbid0IHdvcmsgb25seSB3aGVuIE5J
-RD0weDBGOyB0aGVuIEkgdHJpZWQKcGFyYW09MHg0MCBhbmQgMHg4MCwgd2hlbiBwYXJhbT0weDQw
-LCBzcGVha2VyIHdvcmtzIHdoaWxlIHBhcmFtPTB4ODAsCnNwZWFrZXIgZG9lc24ndCB3b3JrLgo0
-LiBUaGVuIEkgcGx1Z2dlZCBpbiBoZWFkcGhvbmUuCk5vdyB0aGUgcGFyYW0gPTB4NDAgZm9yIE5J
-RD0weDBGLgpSZXN1bHQ6IEhlYWRwaG9uZSB3b3JrcyB3aGlsZSBzcGVha2VyIG11dGVkLgpUaGVu
-IEkgY2hhbmdlZCBwYXJhbT0weDgwLiAoc2FtZSByZXN1bHQgd2hlbiBwYXJhbT0weEMwKQpSZXN1
-bHQ6IEhlYWRwaG9uZSBzdGlsbCB3b3JrcyB3aGlsZSBzcGVha2VyIG11dGVkLgo1LiBUaGVuIEkg
-cmVib290IHdpdGggaGVhZHBob25lIHBsdWdnZWQgaW4gdG8gdGVzdCB5b3VyIHN0ZXAgMi4KWUVT
-LCBub3cgdGhlIHNwZWFrZXIgbXV0ZWQgd2hpbGUgaGVhZHBob25lIHdvcmtzLgpUaGVuIEkgZG8g
-eW91ciBjbWRzOgpoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwMSBTRVRfR1BJT19NQVNLIDEK
-UmVzdWx0OiBoZWFkcGhvbmUgd29ya3MsIHNwZWFrZXIgbXV0ZWQKaGRhLXZlcmIgL2Rldi9zbmQv
-aHdDMEQwIDB4MDEgU0VUX0dQSU9fRElSIDEKUmVzdWx0OiBoZWFkcGhvbmUgbXV0ZWQsIHNwZWFr
-ZXIgd29ya3MKaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgU0VUX0dQSU9fREFUQSAxClJl
-c3VsdDogaGVhZHBob25lIHdvcmtzLCBzcGVha2VyIG11dGVkCmhkYS12ZXJiIC9kZXYvc25kL2h3
-QzBEMCAweDAxIFNFVF9HUElPX0RBVEEgMApSZXN1bHQ6IGhlYWRwaG9uZSBtdXRlZCwgc3BlYWtl
-ciB3b3Jrcy4KUGxlYXNlIG5vdGVkIHRoZSBsYXN0IHR3byBjbWRzLCBpdCdzIHN0cmFuZ2UgYnV0
-IGl0J3MgdHJ1ZS4KCkFueSBhZGRpdGlvbmFsIHRlc3RzPwoK5ZyoIDIwMTLlubQy5pyIMTXml6Ug
-5LiL5Y2IMTE6MDTvvIxUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IOWGmemBk++8mgo+IEF0
-IFdlZCwgMTUgRmViIDIwMTIgMjI6NDU6MjcgKzA4MDAsCj4gam9leS5qaWFvamcgd3JvdGU6Cj4+
-Cj4+IEkgdGhpbmsgdGhlIG9ubHkgcXVlc3Rpb24gYmVsb3cgaXMgYWJvdXQgdGhlIGF1dG9tdXRl
-LCByaWdodD8KPgo+IE5vdCByZWFsbHkuIMKgVGhlIG1vc3QgaW1wb3J0YW50IHRoaW5nIGlzIHRv
-IHVuZGVyc3RhbmQgd2hhdCdzIGRvaW5nCj4gd2hhdC4gwqBTaW5jZSB5b3VyIGNvZGUgY2FuJ3Qg
-YmUgYXBwbGllZCBhbnkgbG9uZ2VyIGF0IGFsbCB0byB0aGUKPiBsYXRlc3QgY29kZSB0cmVlIGJl
-Y2F1c2Ugb2YgdGhlIGZ1bmRhbWVudGFsIGNvZGUgcmV3cml0ZSwgd2UgbmVlZCB0bwo+IGRvIGl0
-IHJpZ2h0Lgo+Cj4gU28sIHBsZWFzZSBjaGVjayB0aGUgZm9sbG93aW5nOgo+Cj4gMS4gRG9lcyBh
-bnkgcGluIGNvcnJlc3BvbmQgdG8gdGhlIHNwZWFrZXIgb3V0cHV0PyDCoFRyeSB0byBjaGFuZ2Ug
-dGhlCj4gwqAgcGluIGNvbnRyb2wgb2YgZWFjaCBwaW4gYmV0d2VlbiAweDEwIGFuZCAweDE5IHZp
-YSBoZGEtdmVyYiB3aGlsZQo+IMKgIHRoZSBzcGVha2VyIG91dHB1dCBpcyBhY3RpdmUuIMKgRG9l
-cyBhbnkgcGluIGNoYW5nZSB0aGUgc3BlYWtlcgo+IMKgIG91dHB1dD8KPgo+IDIuIFBsdWcgeW91
-ciBoZWFkcGhvbmUuIMKgTm93IHRoZSBzcGVha2VyIGlzIG11dGVkIHdpdGggeW91ciBwYXRjaC4K
-PiDCoCBXaGF0IGhhcHBlbnMgd2hlbiB5b3UgcnVuIGxpa2UgYmVsb3c/Cj4KPiDCoCDCoCDCoCDC
-oGhkYS12ZXJiIC9kZXYvc25kL2h3RDBEMCAweDAxIFNFVF9HUElPX01BU0sgMQo+IMKgIMKgIMKg
-IMKgaGRhLXZlcmIgL2Rldi9zbmQvaHdEMEQwIDB4MDEgU0VUX0dQSU9fRElSIDEKPiDCoCDCoCDC
-oCDCoGhkYS12ZXJiIC9kZXYvc25kL2h3RDBEMCAweDAxIFNFVF9HUElPX0RBVEEgMQo+Cj4gwqAg
-RG9lcyB0aGUgc3BlYWtlciBzdGFydHMgcGxheWluZyBhZ2Fpbj8gwqBUaGVuLCB3aGF0IGhhcHBl
-bnMgbm93Cj4gwqAgd2l0aDoKPgo+IMKgIMKgIMKgIMKgaGRhLXZlcmIgL2Rldi9zbmQvaHdEMEQw
-IDB4MDEgU0VUX0dQSU9fREFUQSAwCj4KPiDCoCA/Pwo+Cj4KPiBUYWthc2hpCgoKCi0tIAotSm9l
-eSBKaWFvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm2200.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index a9388df..acbdc5f 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -2084,7 +2084,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 		goto err_reset;
+ 	}
+ 
+-	wm2200->rev = ret & WM2200_DEVICE_REVISION_MASK;
++	wm2200->rev = reg & WM2200_DEVICE_REVISION_MASK;
+ 
+ 	dev_info(&i2c->dev, "revision %c\n", wm2200->rev + 'A');
+ 
+-- 
+1.7.5.4
