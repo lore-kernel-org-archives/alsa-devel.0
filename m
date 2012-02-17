@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 5/8] ASoC: dapm: Constify lots of names that
-	are never modified
-Date: Thu, 16 Feb 2012 21:56:07 -0800
-Message-ID: <1329458170-22119-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/8] ASoC: dapm: Refactor
+	snd_soc_dapm_new_widget() to return the widget
+Date: Thu, 16 Feb 2012 21:56:05 -0800
+Message-ID: <1329458170-22119-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1498E103A4A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 103CD103A40
 	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 06:56:17 +0100 (CET)
 In-Reply-To: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,67 +25,96 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Neater and avoids warnings when used in other places where const strings
-are desired.
+Let the caller fiddle with the widget after we're done in order to
+facilitate further refactoring.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc-dapm.h |    8 ++++----
- include/sound/soc.h      |    2 +-
- sound/soc/soc-core.c     |    2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/soc-dapm.c |   35 ++++++++++++++---------------------
+ 1 files changed, 14 insertions(+), 21 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index c32c521..91eb812 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -445,8 +445,8 @@ struct snd_soc_dapm_route {
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index c7032fa..bfaa9d2 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2701,24 +2701,16 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
  
- /* dapm audio path between two widgets */
- struct snd_soc_dapm_path {
--	char *name;
--	char *long_name;
-+	const char *name;
-+	const char *long_name;
- 
- 	/* source (input) and sink (output) widgets */
- 	struct snd_soc_dapm_widget *source;
-@@ -469,8 +469,8 @@ struct snd_soc_dapm_path {
- /* dapm widget */
- struct snd_soc_dapm_widget {
- 	enum snd_soc_dapm_type id;
--	char *name;		/* widget name */
--	char *sname;	/* stream name */
-+	const char *name;		/* widget name */
-+	const char *sname;	/* stream name */
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_platform *platform;
- 	struct list_head list;
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a1da298..b78f84d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -373,7 +373,7 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec);
-  *Controls
-  */
- struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
--				  void *data, char *long_name,
-+				  void *data, const char *long_name,
- 				  const char *prefix);
- int snd_soc_add_codec_controls(struct snd_soc_codec *codec,
- 	const struct snd_kcontrol_new *controls, int num_controls);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 87a3c5c..bfcf5d7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2018,7 +2018,7 @@ EXPORT_SYMBOL_GPL(snd_soc_set_runtime_hwparams);
-  * Returns 0 for success, else error.
-  */
- struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
--				  void *data, char *long_name,
-+				  void *data, const char *long_name,
- 				  const char *prefix)
+-/**
+- * snd_soc_dapm_new_control - create new dapm control
+- * @dapm: DAPM context
+- * @widget: widget template
+- *
+- * Creates a new dapm control based upon the template.
+- *
+- * Returns 0 for success else error.
+- */
+-static int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+-				    const struct snd_soc_dapm_widget *widget)
++static struct snd_soc_dapm_widget *
++snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
++			 const struct snd_soc_dapm_widget *widget)
  {
- 	struct snd_kcontrol_new template;
+ 	struct snd_soc_dapm_widget *w;
+ 	size_t name_len;
+ 	int ret;
+ 
+ 	if ((w = dapm_cnew_widget(widget)) == NULL)
+-		return -ENOMEM;
++		return NULL;
+ 
+ 	switch (w->id) {
+ 	case snd_soc_dapm_regulator_supply:
+@@ -2727,7 +2719,7 @@ static int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 			ret = PTR_ERR(w->priv);
+ 			dev_err(dapm->dev, "Failed to request %s: %d\n",
+ 				w->name, ret);
+-			return ret;
++			return NULL;
+ 		}
+ 		break;
+ 	default:
+@@ -2740,7 +2732,7 @@ static int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	w->name = kmalloc(name_len, GFP_KERNEL);
+ 	if (w->name == NULL) {
+ 		kfree(w);
+-		return -ENOMEM;
++		return NULL;
+ 	}
+ 	if (dapm->codec && dapm->codec->name_prefix)
+ 		snprintf(w->name, name_len, "%s %s",
+@@ -2799,7 +2791,7 @@ static int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 
+ 	/* machine layer set ups unconnected pins and insertions */
+ 	w->connected = 1;
+-	return 0;
++	return w;
+ }
+ 
+ /**
+@@ -2816,15 +2808,16 @@ int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
+ 	const struct snd_soc_dapm_widget *widget,
+ 	int num)
+ {
+-	int i, ret;
++	struct snd_soc_dapm_widget *w;
++	int i;
+ 
+ 	for (i = 0; i < num; i++) {
+-		ret = snd_soc_dapm_new_control(dapm, widget);
+-		if (ret < 0) {
++		w = snd_soc_dapm_new_control(dapm, widget);
++		if (!w) {
+ 			dev_err(dapm->dev,
+-				"ASoC: Failed to create DAPM control %s: %d\n",
+-				widget->name, ret);
+-			return ret;
++				"ASoC: Failed to create DAPM control %s\n",
++				widget->name);
++			return -ENOMEM;
+ 		}
+ 		widget++;
+ 	}
 -- 
 1.7.9.rc1
