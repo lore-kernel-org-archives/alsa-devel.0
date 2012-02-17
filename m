@@ -1,14 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ALSA: core: Constify the name in new kcontrols
-Date: Thu, 16 Feb 2012 17:09:09 -0800
-Message-ID: <1329440949-20353-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] Wrong latency in pulseaudio plugin breaks
+ Adobe Flash Player
+Date: Fri, 17 Feb 2012 02:24:17 +0100
+Message-ID: <4F3DAC41.4000602@canonical.com>
+References: <alpine.LFD.2.00.1202161015470.19707@lpc8.fields.utoronto.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09F29243A3
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:09:16 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 92EC1243C4
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:24:14 +0100 (CET)
+In-Reply-To: <alpine.LFD.2.00.1202161015470.19707@lpc8.fields.utoronto.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,34 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Philip Spencer <pspencer@fields.utoronto.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We never modify it and this lets us use a const string as the name without
-warnings.
+On 02/16/2012 04:48 PM, Philip Spencer wrote:
+> When Adobe Flash player is playing a live stream in "live" (no internal
+> latency) mode[1], through alsa's pulseaudio plugin, the audio is a
+> half-second out of sync with the video. This is with alsa-plugins version
+> 1.0.25.[2]
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
+Hi and thanks for investigating!
 
-I've got some ASoC patches which need this to avoid warnings, if you're
-OK with it can I apply it via there please?
+> I see the problem is one already reported on the bug tracker several years
+> ago (issue #3944). The plugin sets pulseaudio's target buffer length to
+> match the IO buffer length, and sets the prebuffering attribute to match
+> the IO buffer length less one period.
+>
+> In our case, the IO buffer is 500ms long, the IO period length is 20ms
+> (for 16KHz Speex soud packets), and the application requests that playback
+> start immediately (by setting the start_threshold software parameter very
+> low).
 
- include/sound/control.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Hmm, if you want ~20 ms of latency, why have a 500 ms long buffer in the 
+first place?
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index b2796e8..57815f6 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -40,7 +40,7 @@ struct snd_kcontrol_new {
- 	snd_ctl_elem_iface_t iface;	/* interface identifier */
- 	unsigned int device;		/* device/client number */
- 	unsigned int subdevice;		/* subdevice (substream) number */
--	unsigned char *name;		/* ASCII name of item */
-+	const unsigned char *name;	/* ASCII name of item */
- 	unsigned int index;		/* index of item */
- 	unsigned int access;		/* access rights */
- 	unsigned int count;		/* count of same elements */
+> However, the plugin ignores start_threshold and sets the pulseaudio target
+> buffer length to 500ms, meaning pulseaudio plays the sound with a
+> half-second delay.
+>
+> The fix initially suggested in the bug report was to implement the
+> start_threshold parameter and use it to lower the prebuffering attribute
+
+This sounds like a reasonable thing to do.
+
+> but this does not work: playback STARTS sooner, but when dropouts and
+> underruns occur pulseaudio increases the latency to match the target
+> buffer length.
+
+Just a quick question: Are you saying there is an immediate change from 
+20 to 500 ms at the first underrun, or that things gradually adapts up 
+to a stable level?
+
+> It is necessary to lower the target buffer length too.
+
+I think this part requires more investigation though. First, I'm 
+assuming you are talking about underruns between the client and 
+PulseAudio, rather than underruns between PulseAudio and the hardware.
+
+Setting a tlength of 500 ms will have PulseAudio believe you intend to 
+have latency in the range of 250 - 500 ms, so you're starting with the 
+buffer almost empty, and if I understand it correctly, things continue 
+that way? This is usually bad and a recipe for underruns. Anyway, this 
+is probably why lowering the tlength works for your particular use case.
+
+Note though that I'm sceptic to the tlength part of the patch not mainly 
+for philosophical reasons (hey, I want things to just work too!) but 
+because I'm afraid it will fix some applications and break others. 
+Emulating ALSA over PulseAudio is not easy due to the asynchronous 
+nature of PulseAudio (among other things), and applications use and 
+expect ALSA to do different things.
+
+> [2] In 1.0.23 with low-sample-rate streams there was no sync problem but
+> each sound sample was truncated, resulting in distorted and crackly sound;
+> this problem has been fixed in 1.0.25 -- thanks!
+
+Hmm, I wonder why this could be. Probably because we have changed the 
+underrun handling a few times, but it always seems to improve one 
+application and at the same time break another :-(
+
 -- 
-1.7.9.rc1
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
