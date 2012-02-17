@@ -1,54 +1,77 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: core - Add direct mapping
- between DAIs and DAPM
-Date: Fri, 17 Feb 2012 10:47:58 +0000
-Message-ID: <1329475678.3972.20.camel@odin>
-References: <1329321775-21082-1-git-send-email-lrg@ti.com>
-	<20120215162412.GG2996@opensource.wolfsonmicro.com>
-	<1329399358.28852.19.camel@odin>
-	<20120216175955.GE3383@opensource.wolfsonmicro.com>
-	<1329457253.24656.7.camel@vkoul-udesk3>
-	<20120217054339.GB1231@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 0/3] MFD: twl6040: Conversion to i2c driver
+Date: Fri, 17 Feb 2012 13:47:25 +0200
+Message-ID: <4F3E3E4D.6080505@ti.com>
+References: <1328868018-24668-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog118.obsmtp.com (na3sys009aog118.obsmtp.com
-	[74.125.149.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 773B9103B87
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 11:48:13 +0100 (CET)
-Received: by mail-we0-f181.google.com with SMTP id p13so2134041wer.40
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:48:00 -0800 (PST)
-In-Reply-To: <20120217054339.GB1231@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1328868018-24668-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dtor@mail.ru>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-02-16 at 21:43 -0800, Mark Brown wrote:
-> On Fri, Feb 17, 2012 at 11:10:53AM +0530, Vinod Koul wrote:
-> > On Thu, 2012-02-16 at 09:59 -0800, Mark Brown wrote:
-> 
-> > > I *think* can get something working quickly that doesn't fill in the
-> > > blanks for CODEC-CODEC links, though the conference is looking quite
-> > > interesting today.  I'll try to send something later.
-> 
-> > On conference, when are we planing our next ASoC conference?
-> 
-> Not at present.  It would probably have been colocated with ELC but
-> that didn't happen.
+Hi,
 
-Sadly I didn't have enough time to set this up for ELC but I should have
-more time after Dynamic PCM is upstream. I've had some discussions with
-the Linux Foundation and they are happy to co-locate. Lets discuss when
-you get back in the UK. 
+On 02/10/2012 12:00 PM, Peter Ujfalusi wrote:
+> Hello,
+>=20
+> Changes since v2:
+> - soc/codec/Kconfig: make twl6040 depend on I2C
+> - Regulator related patches has been removed (to be sent as separate =
+series)
+>=20
+> ------
+> Intro mail from the original series:
+>=20
+> This series will convert the twl6040 MFD driver to an i2c driver.
+> Compared to older twl4030/5030/TPS the twl6040 is a standalone audio =
+IC. It is
+> better if the twl6040-core (and all of it's child devices) does not d=
+epend on
+> the twl-core since it has nothing to with it.
+>=20
+> With this conversion the dependency on twl can be dropped from the tw=
+l6040
+> driver stack (core, vibra, audio).
+>=20
+> Between the first and second patch the audio will not probe on OMAP4,=
+ but I felt
+> it is better this way at least for the first RFC series to not have t=
+oo big
+> change within one patch. The two patch can be squashed together later=
+ if no
+> objections.
+>=20
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (3):
+>   MFD: twl-core: Detach twl6040 from the pmic mfd driver
+>   MFD: twl6040: Convert to i2c driver, and separate it from twl core
+>   ASoC: twl6040: Remove dependency on twl4030 from Kconfig
+>=20
+>  arch/arm/mach-omap2/board-4430sdp.c    |   12 ++--
+>  arch/arm/mach-omap2/board-generic.c    |    2 +-
+>  arch/arm/mach-omap2/board-omap4panda.c |   13 ++--
+>  arch/arm/mach-omap2/twl-common.c       |   37 +++++++++--
+>  arch/arm/mach-omap2/twl-common.h       |   10 +--
+>  drivers/input/misc/Kconfig             |    1 -
+>  drivers/input/misc/twl6040-vibra.c     |    4 +-
+>  drivers/mfd/Kconfig                    |    2 +-
+>  drivers/mfd/twl-core.c                 |   58 +++++++++-------
+>  drivers/mfd/twl6040-core.c             |  114 +++++++++++++++++++---=
+----------
+>  include/linux/i2c/twl.h                |   12 ----
+>  include/linux/mfd/twl6040.h            |   27 ++++++++
+>  sound/soc/codecs/Kconfig               |    2 +-
+>  sound/soc/codecs/twl6040.c             |    3 +-
+>  14 files changed, 182 insertions(+), 115 deletions(-)
 
-Liam
+It has been a week since I have sent this series. It would be great if
+this be on time for 3.4 merge window.
+
+Thank you,
+P=E9ter
