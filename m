@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 5/5] ASoC: ak4104: Convert to direct regmap API
-	usage
-Date: Fri, 17 Feb 2012 12:23:12 -0800
-Message-ID: <1329510192-4442-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20120217202240.GA2784@opensource.wolfsonmicro.com>
-	<1329510192-4442-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Jonathan Andrews <jon@jonshouse.co.uk>
+Subject: Re: Random process lockup on ARM board:
+ alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
+Date: Fri, 17 Feb 2012 21:04:41 +0000
+Message-ID: <1329512682.29051.1.camel@jonspc>
+References: <1329393691.6830.20.camel@jonspc>
+Reply-To: jon@jonshouse.co.uk
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4FE95103FE1
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 21:23:20 +0100 (CET)
-In-Reply-To: <1329510192-4442-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 528A6103FDE
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 22:04:28 +0100 (CET)
+Received: from [10.10.10.6] (jonspc [10.10.10.6])
+	by mail.jonshouse.co.uk (8.14.1/8.13.8) with ESMTP id q1HL4fkP022454
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 21:04:47 GMT
+In-Reply-To: <1329393691.6830.20.camel@jonspc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,191 +25,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since the cache is currently open coded this is more of a win than for
-most devices.
+Reposting this:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/ak4104.c |  119 +++++++++++++++++----------------------------
- 1 files changed, 44 insertions(+), 75 deletions(-)
+# strace -p 443
+> Process 443 attached - interrupt to quit
+> futex(0x4030e144, FUTEX_WAIT_PRIVATE, 2, NULL
+> 
+locks up.  Stops, stalls ... fails to continue ....
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index 34a840c..ceb96ec 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -46,69 +46,15 @@
- #define DRV_NAME "ak4104-codec"
- 
- struct ak4104_private {
--	enum snd_soc_control_type control_type;
--	void *control_data;
-+	struct regmap *regmap;
- };
- 
--static int ak4104_fill_cache(struct snd_soc_codec *codec)
--{
--	int i;
--	u8 *reg_cache = codec->reg_cache;
--	struct spi_device *spi = codec->control_data;
--
--	for (i = 0; i < codec->driver->reg_cache_size; i++) {
--		int ret = spi_w8r8(spi, i | AK4104_READ);
--		if (ret < 0) {
--			dev_err(&spi->dev, "SPI write failure\n");
--			return ret;
--		}
--
--		reg_cache[i] = ret;
--	}
--
--	return 0;
--}
--
--static unsigned int ak4104_read_reg_cache(struct snd_soc_codec *codec,
--					  unsigned int reg)
--{
--	u8 *reg_cache = codec->reg_cache;
--
--	if (reg >= codec->driver->reg_cache_size)
--		return -EINVAL;
--
--	return reg_cache[reg];
--}
--
--static int ak4104_spi_write(struct snd_soc_codec *codec, unsigned int reg,
--			    unsigned int value)
--{
--	u8 *cache = codec->reg_cache;
--	struct spi_device *spi = codec->control_data;
--
--	if (reg >= codec->driver->reg_cache_size)
--		return -EINVAL;
--
--	/* only write to the hardware if value has changed */
--	if (cache[reg] != value) {
--		u8 tmp[2] = { (reg & AK4104_REG_MASK) | AK4104_WRITE, value };
--
--		if (spi_write(spi, tmp, sizeof(tmp))) {
--			dev_err(&spi->dev, "SPI write failed\n");
--			return -EIO;
--		}
--
--		cache[reg] = value;
--	}
--
--	return 0;
--}
--
- static int ak4104_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int format)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	int val = 0;
-+	int ret;
- 
- 	/* set DAI format */
- 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
-@@ -192,23 +138,12 @@ static struct snd_soc_dai_driver ak4104_dai = {
- static int ak4104_probe(struct snd_soc_codec *codec)
- {
- 	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
--	int ret, val;
--
--	codec->control_data = ak4104->control_data;
-+	int ret;
- 
--	/* read all regs and fill the cache */
--	ret = ak4104_fill_cache(codec);
--	if (ret < 0) {
--		dev_err(codec->dev, "failed to fill register cache\n");
-+	codec->control_data = ak4104->regmap;
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
-+	if (ret != 0)
- 		return ret;
--	}
--
--	/* read the 'reserved' register - according to the datasheet, it
--	 * should contain 0x5b. Not a good way to verify the presence of
--	 * the device, but there is no hardware ID register. */
--	if (ak4104_read_reg_cache(codec, AK4104_REG_RESERVED) !=
--					 AK4104_RESERVED_VAL)
--		return -ENODEV;
- 
- 	/* set power-up and non-reset bits */
- 	ret = snd_soc_update_bits(codec, AK4104_REG_CONTROL1,
-@@ -237,13 +172,23 @@ static int ak4104_remove(struct snd_soc_codec *codec)
- static struct snd_soc_codec_driver soc_codec_device_ak4104 = {
- 	.probe =	ak4104_probe,
- 	.remove =	ak4104_remove,
--	.reg_cache_size = AK4104_NUM_REGS,
--	.reg_word_size = sizeof(u8),
-+};
-+
-+static const struct regmap_config ak4104_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = AK4104_NUM_REGS - 1,
-+	.read_flag_mask = AK4104_READ,
-+	.write_flag_mask = AK4104_WRITE,
-+
-+	.cache_type = REGCACHE_RBTREE,
- };
- 
- static int ak4104_spi_probe(struct spi_device *spi)
- {
- 	struct ak4104_private *ak4104;
-+	unsigned int val;
- 	int ret;
- 
- 	spi->bits_per_word = 8;
-@@ -257,17 +202,41 @@ static int ak4104_spi_probe(struct spi_device *spi)
- 	if (ak4104 == NULL)
- 		return -ENOMEM;
- 
--	ak4104->control_data = spi;
--	ak4104->control_type = SND_SOC_SPI;
-+	ak4104->regmap = regmap_init_spi(spi, &ak4104_regmap);
-+	if (IS_ERR(ak4104->regmap)) {
-+		ret = PTR_ERR(ak4104->regmap);
-+		return ret;
-+	}
-+
-+	/* read the 'reserved' register - according to the datasheet, it
-+	 * should contain 0x5b. Not a good way to verify the presence of
-+	 * the device, but there is no hardware ID register. */
-+	ret = regmap_read(ak4104->regmap, AK4104_REG_RESERVED, &val);
-+	if (ret != 0)
-+		goto err;
-+	if (val != AK4104_RESERVED_VAL) {
-+		ret = -ENODEV;
-+		goto err;
-+	}
-+
- 	spi_set_drvdata(spi, ak4104);
- 
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_device_ak4104, &ak4104_dai, 1);
-+	if (ret != 0)
-+		goto err;
-+
-+	return 0;
-+
-+err:
-+	regmap_exit(ak4104->regmap);
- 	return ret;
- }
- 
- static int __devexit ak4104_spi_remove(struct spi_device *spi)
- {
-+	struct ak4104_private *ak4101 = spi_get_drvdata(spi);
-+	regmap_exit(ak4101->regmap);
- 	snd_soc_unregister_codec(&spi->dev);
- 	return 0;
- }
--- 
-1.7.9
+
+Now tried several alsa-lib versions.  A clue would be nice?
+What do I replace to fix this ?
+
+Anyone ?
+
+
+Thanks,
+Jon
+
+
+
+On Thu, 2012-02-16 at 12:01 +0000, Jonathan Andrews wrote:
+> Sorry all me again.
+> 
+> I've written a program that picks up UDP broadcast packets containing
+> audio from a number of sources, mixes it together and presents it to
+> alsa for playback.
+> 
+> I'm experiencing random freezes.  I cant reproduce then running the
+> process under strace as the process on the ARM board slows down to the
+> point it underruns with ALSA all the time and the symptom doesn't show.
+> 
+> If I attach strace after the process has frozen I get this and nothing
+> else:
+> 
+> # strace -p 443
+> Process 443 attached - interrupt to quit
+> futex(0x4030e144, FUTEX_WAIT_PRIVATE, 2, NULL
+> 
+> 
+> This stop happens at random at any point typically after minutes but run
+> time can be over an hour.
+> 
+> I need to work around this as I need the board for a demo.
+> 
+> Im using, alsa-lib-1.0.25
+> kernel 2.6.36.4
+> BusyBox v1.19.2
+> 
+> I also compiled strace for arm, but this and a busybox shell is the only
+> environment I have on the board.
+> 
+> The problem showed when I starting using this function to poll alsa:
+> 
+> The same code on my PC dual core AMD does not seem to suffer the
+> problem  : alsa-lib-1.0.23, Linux jonspc 2.6.32.26-175.fc12.i686 #1 SMP
+> 
+> Before anyone points it out I want to poll as alsa is not the only sound
+> output supported by the code.
+> 
+> int sound_system_needs_data_now()
+> {
+>         int framesleft;
+>         snd_pcm_status_t *status;
+>         snd_pcm_status_alloca( &status );
+> 
+>         // If the alsa playback has stalled then it definately needs data
+>         snd_pcm_status(playback_handle,status);
+>         if( snd_pcm_status_get_state( status ) != SND_PCM_STATE_RUNNING )
+>                 return(TRUE);
+> 
+>         framesleft=snd_pcm_avail (playback_handle);
+> 	//printf("FL=%d\n",framesleft); fflush(stdout);
+> 
+>         if (framesleft>1000)
+>                 return(TRUE);
+>         else
+>                 return(FALSE);
+> }
+> 
+> 
+> Stuck process
+> 
+> # cat /proc/443/status 
+> Name:   udp-many-way-au
+> State:  S (sleeping)
+> Tgid:   443
+> Pid:    443
+> PPid:   392
+> TracerPid:      0
+> Uid:    0       0       0       0
+> Gid:    0       0       0       0
+> FDSize: 32
+> Groups: 
+> VmPeak:     4356 kB
+> VmSize:     4292 kB
+> VmLck:       132 kB
+> VmHWM:      1788 kB
+> VmRSS:      1788 kB
+> VmData:      396 kB
+> VmStk:       136 kB
+> VmExe:        28 kB
+> VmLib:      3348 kB
+> VmPTE:        12 kB
+> VmSwap:        0 kB
+> Threads:        1
+> SigQ:   0/471
+> SigPnd: 0000000000000000
+> ShdPnd: 0000000000000000
+> SigBlk: 0000000000002000
+> SigIgn: 0000000000000006
+> SigCgt: 0000000180002000
+> CapInh: 0000000000000000
+> CapPrm: ffffffffffffffff
+> CapEff: ffffffffffffffff
+> CapBnd: ffffffffffffffff
+> Cpus_allowed:   1
+> Cpus_allowed_list:      0
+> Mems_allowed:   1
+> Mems_allowed_list:      0
+> voluntary_ctxt_switches:        5908
+> nonvoluntary_ctxt_switches:     1766
+> 
+> 
+> Any useful suggestions welcome.
+> 
+> Thanks,
+> Jon
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
