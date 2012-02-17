@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/4] ASoC: ak4535: Remove bitrotted driver
-	version
-Date: Thu, 16 Feb 2012 23:04:14 -0800
-Message-ID: <1329462255-11374-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: ak4535: Make I2C usage unconditional
+Date: Thu, 16 Feb 2012 23:04:13 -0800
+Message-ID: <1329462255-11374-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1329462255-11374-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 654BE103A9D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 68E36103AE0
 	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 08:04:22 +0100 (CET)
 In-Reply-To: <1329462255-11374-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,32 +24,55 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Convert to module_i2c_driver() too.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/ak4535.c |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ak4535.c |   24 +-----------------------
+ 1 files changed, 1 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index 71fca53..e13303a 100644
+index 29d4dec..71fca53 100644
 --- a/sound/soc/codecs/ak4535.c
 +++ b/sound/soc/codecs/ak4535.c
-@@ -27,8 +27,6 @@
+@@ -409,7 +409,6 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
+ 	.num_dapm_routes = ARRAY_SIZE(ak4535_audio_map),
+ };
  
- #include "ak4535.h"
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+@@ -450,29 +449,8 @@ static struct i2c_driver ak4535_i2c_driver = {
+ 	.remove =   __devexit_p(ak4535_i2c_remove),
+ 	.id_table = ak4535_i2c_id,
+ };
+-#endif
  
--#define AK4535_VERSION "0.3"
+-static int __init ak4535_modinit(void)
+-{
+-	int ret = 0;
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	ret = i2c_add_driver(&ak4535_i2c_driver);
+-	if (ret != 0) {
+-		printk(KERN_ERR "Failed to register AK4535 I2C driver: %d\n",
+-		       ret);
+-	}
+-#endif
+-	return ret;
+-}
+-module_init(ak4535_modinit);
 -
- /* codec private data */
- struct ak4535_priv {
- 	unsigned int sysclk;
-@@ -372,8 +370,6 @@ static int ak4535_probe(struct snd_soc_codec *codec)
- 	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
+-static void __exit ak4535_exit(void)
+-{
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	i2c_del_driver(&ak4535_i2c_driver);
+-#endif
+-}
+-module_exit(ak4535_exit);
++module_i2c_driver(ak4535_i2c_driver);
  
--	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
--
- 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4535->control_type);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+ MODULE_DESCRIPTION("Soc AK4535 driver");
+ MODULE_AUTHOR("Richard Purdie");
 -- 
 1.7.9.rc1
