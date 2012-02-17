@@ -1,66 +1,217 @@
-From: Philip Spencer <pspencer@fields.utoronto.ca>
-Subject: Re: [PATCH] Wrong latency in pulseaudio plugin breaks
- Adobe Flash Player
-Date: Fri, 17 Feb 2012 16:15:40 -0500 (EST)
-Message-ID: <alpine.LFD.2.00.1202171606030.11808@lpc8.fields.utoronto.ca>
-References: <alpine.LFD.2.00.1202161015470.19707@lpc8.fields.utoronto.ca>
-	<4F3DAC41.4000602@canonical.com>
-	<alpine.LFD.2.00.1202162248280.21549@fields.fields.utoronto.ca>
-	<4F3E1A04.9080404@canonical.com>
-	<alpine.LFD.2.00.1202171351300.11808@lpc8.fields.utoronto.ca>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [alsa-devel] tea575x-tuner improvements & use in maxiradio
+Date: Fri, 17 Feb 2012 22:15:43 +0100
+Message-ID: <201202172215.43484.hverkuil@xs4all.nl>
+References: <201202172113.43729.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fileserver.fields.utoronto.ca (fileserver.fields.utoronto.ca
-	[128.100.216.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id B76E0103FFA
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 22:15:43 +0100 (CET)
-In-Reply-To: <alpine.LFD.2.00.1202171351300.11808@lpc8.fields.utoronto.ca>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201202172113.43729.linux@rainbow-software.org>
+Sender: linux-media-owner@vger.kernel.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I have pulseaudio logs from two runs of FlashPlayer. In each one I 
-commented out the plugin's call to pa_stream_trigger just to avoid the
-irrelevant problem of FlashPlayer starting the stream a little too early;
-I merely patched it to set prebuf low.
+On Friday, February 17, 2012 21:13:40 Ondrej Zary wrote:
+> On Wednesday 08 February 2012 08:29:25 Hans Verkuil wrote:
+> > On Tuesday, February 07, 2012 23:20:19 Ondrej Zary wrote:
+> > > On Sunday 05 February 2012 14:17:05 Hans Verkuil wrote:
+> > > > These patches improve the tea575x-tuner module to make it up to date
+> > > > with the latest V4L2 frameworks.
+> > > >
+> > > > The maxiradio driver has also been converted to use the tea575x-tuner
+> > > > and I've used that card to test it.
+> > > >
+> > > > Unfortunately, this card can't read the data pin, so the new hardware
+> > > > seek functionality has been tested only partially (yes, it seeks, but
+> > > > when it finds a channel I can't read back the frequency).
+> > > >
+> > > > Ondrej, are you able to test these patches for the sound cards that use
+> > > > this tea575x tuner?
+> > > >
+> > > > Note that these two patches rely on other work that I did and that
+> > > > hasn't been merged yet. So it is best to pull from my git tree:
+> > > >
+> > > > http://git.linuxtv.org/hverkuil/media_tree.git/shortlog/refs/heads/radi
+> > > >o-pc i2
+> > > >
+> > > > You can use the v4l-utils repository
+> > > > (http://git.linuxtv.org/v4l-utils.git) to test the drivers: the
+> > > > v4l2-compliance test should succeed and with v4l2-ctl you can test the
+> > > > hardware seek:
+> > > >
+> > > > To seek down:
+> > > >
+> > > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=0
+> > > >
+> > > > To seek up:
+> > > >
+> > > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=1
+> > > >
+> > > > To do the compliance test:
+> > > >
+> > > > v4l2-compliance -r /dev/radio0
+> > >
+> > > It seems to work (tested with SF64-PCR - snd_fm801) but the seek is
+> > > severely broken. Reading the frequency immediately after seek does not
+> > > work, it always returns the old value (haven't found a delay that works).
+> > > Reading it later (copied back snd_tea575x_get_freq function) works. The
+> > > chip seeks randomly up or down, ignoring UP/DOWN flag and often stops at
+> > > wrong place (only noise) or even outside the FM range.
+> > >
+> > > So I strongly suggest not to enable this (mis-)feature. The HW seems to
+> > > be completely broken (unless there's some weird bug in the code).
+> >
+> > Well, it seemed like a good idea at the time :-) I'll remove this
+> > 'feature', it's really not worth our time to try and make this work for
+> > these old cards.
+> 
+> I fixed it somehow. Now it works most of the time.
+> The important things:
+>  - a delay must be present after search start and before first register read
+>    or the seek does weird things
+>  - when the search stops, the new frequency is not available immediately, we
+>    must wait until it appears in the register (fortunately, we can clear the
+>    frequency bits when starting the search as it starts at the frequency
+>    currently set, not from the value written)
+>  - sometimes, seek remains on the current frequency (or moves only a little),
+>    so repeat it until it moves by at least 50 kHz
 
-In the first run, logged at www.fields.utoronto.ca/~pspencer/pulsebad.log,
-I made no changes to tlength so it was left at 500ms. This resulted in
-audio with several hiccups during the first two seconds and latency
-rising to 500ms after two seconds.
+Thanks! And I'm impressed that you spent all that time on this old hardware :-)
 
-In the second run I altered the patch to lower tlength. This resulted in
-smooth audio with no discernible latency. The log is at
+Can I get your Signed-off-by line for this patch?
 
-www.fields.utoronto.ca/~pspencer/pulsegood.log
+Regards,
 
-Unfortunately, there is no discernible difference between the two logs. A 
-diff of the log files (with the initial timestamp removed before diffing) 
-is at www.fields.utoronto.ca/~pspencer/pulse.diff. The only changes are
+	Hans
 
-   (a) different addresses for things like bus ids
-   (b) the different tlength and latency values being reported
-   (c) minor differences (on the order of a few bytes / a few microseconds)
-       in some of the rewinds and volume adjustments.
-
-So I am still at a loss as to why lowering tlength produces smooth audio
-and raising it causes hiccups and -- presumably -- hardware underruns that 
-aren't getting logged.
-
-- Philip
-
---------------------------------------------+-------------------------------
-Philip Spencer  pspencer@fields.utoronto.ca | Director of Computing Services
-Room 336        (416)-348-9710  ext3036     | The Fields Institute for
-222 College St, Toronto ON M5T 3J1 Canada   | Research in Mathematical Sciences
+> 
+> --- a/sound/i2c/other/tea575x-tuner.c
+> +++ b/sound/i2c/other/tea575x-tuner.c
+> @@ -89,7 +89,7 @@ static void snd_tea575x_write(struct snd_tea575x *tea, unsigned int val)
+>  		tea->ops->set_pins(tea, 0);
+>  }
+>  
+> -static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
+> +static u32 snd_tea575x_read(struct snd_tea575x *tea)
+>  {
+>  	u16 l, rdata;
+>  	u32 data = 0;
+> @@ -120,6 +120,27 @@ static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
+>  	return data;
+>  }
+>  
+> +static void snd_tea575x_get_freq(struct snd_tea575x *tea)
+> +{
+> +	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
+> +
+> +	if (freq == 0) {
+> +		tea->freq = 0;
+> +		return;
+> +	}
+> +
+> +	/* freq *= 12.5 */
+> +	freq *= 125;
+> +	freq /= 10;
+> +	/* crystal fixup */
+> +	if (tea->tea5759)
+> +		freq += TEA575X_FMIF;
+> +	else
+> +		freq -= TEA575X_FMIF;
+> +
+> +	tea->freq = clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
+> +}
+> +
+>  static void snd_tea575x_set_freq(struct snd_tea575x *tea)
+>  {
+>  	u32 freq = tea->freq;
+> @@ -203,6 +224,8 @@ static int vidioc_g_frequency(struct file *file, void *priv,
+>  	if (f->tuner != 0)
+>  		return -EINVAL;
+>  	f->type = V4L2_TUNER_RADIO;
+> +	if (!tea->cannot_read_data)
+> +		snd_tea575x_get_freq(tea);
+>  	f->frequency = tea->freq;
+>  	return 0;
+>  }
+> @@ -225,36 +248,50 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
+>  					struct v4l2_hw_freq_seek *a)
+>  {
+>  	struct snd_tea575x *tea = video_drvdata(file);
+> +	int i, old_freq;
+> +	unsigned long timeout;
+>  
+>  	if (tea->cannot_read_data)
+>  		return -ENOTTY;
+> +
+> +	snd_tea575x_get_freq(tea);
+> +	old_freq = tea->freq;
+> +	/* clear the frequency, HW will fill it in */
+> +	tea->val &= ~TEA575X_BIT_FREQ_MASK;
+>  	tea->val |= TEA575X_BIT_SEARCH;
+> -	tea->val &= ~TEA575X_BIT_UPDOWN;
+>  	if (a->seek_upward)
+>  		tea->val |= TEA575X_BIT_UPDOWN;
+> +	else
+> +		tea->val &= ~TEA575X_BIT_UPDOWN;
+>  	snd_tea575x_write(tea, tea->val);
+> +	timeout = jiffies + msecs_to_jiffies(10000);
+>  	for (;;) {
+> -		unsigned val = snd_tea575x_read(tea);
+> -
+> -		if (!(val & TEA575X_BIT_SEARCH)) {
+> -			/* Found a frequency */
+> -			val &= TEA575X_BIT_FREQ_MASK;
+> -			val = (val * 10) / 125;
+> -			if (tea->tea5759)
+> -				val += TEA575X_FMIF;
+> -			else
+> -				val -= TEA575X_FMIF;
+> -			tea->freq = clamp(val * 16, FREQ_LO, FREQ_HI);
+> -			return 0;
+> -		}
+> +		if (time_after(jiffies, timeout))
+> +			break;
+>  		if (schedule_timeout_interruptible(msecs_to_jiffies(10))) {
+>  			/* some signal arrived, stop search */
+>  			tea->val &= ~TEA575X_BIT_SEARCH;
+>  			snd_tea575x_write(tea, tea->val);
+>  			return -ERESTARTSYS;
+>  		}
+> +		if (!(snd_tea575x_read(tea) & TEA575X_BIT_SEARCH)) {
+> +			/* Found a frequency, wait until it can be read */
+> +			for (i = 0; i < 100; i++) {
+> +				msleep(10);
+> +				snd_tea575x_get_freq(tea);
+> +				if (tea->freq != 0) /* available */
+> +					break;
+> +			}
+> +			/* if we moved by less than 50 kHz, continue seeking */
+> +			if (abs(old_freq - tea->freq) < 16 * 500) {
+> +				snd_tea575x_write(tea, tea->val);
+> +				continue;
+> +			}
+> +			tea->val &= ~TEA575X_BIT_SEARCH;
+> +			return 0;
+> +		}
+>  	}
+> -	return 0;
+> +	return -ETIMEDOUT;
+>  }
+>  
+>  static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
+> @@ -318,7 +355,7 @@ int snd_tea575x_init(struct snd_tea575x *tea)
+>  			return -ENODEV;
+>  	}
+>  
+> -	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
+> +	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_5_28;
+>  	tea->freq = 90500 * 16;		/* 90.5Mhz default */
+>  	snd_tea575x_set_freq(tea);
+>  
+> 
+> 
+> 
+> 
