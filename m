@@ -1,217 +1,170 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [alsa-devel] tea575x-tuner improvements & use in maxiradio
-Date: Fri, 17 Feb 2012 22:15:43 +0100
-Message-ID: <201202172215.43484.hverkuil@xs4all.nl>
-References: <201202172113.43729.linux@rainbow-software.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: soc-core: Show the returned values on
+	error messages
+Date: Fri, 17 Feb 2012 19:40:38 -0200
+Message-ID: <1329514838-30933-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201202172113.43729.linux@rainbow-software.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8276103FFC
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 22:40:50 +0100 (CET)
+Received: by ggnq4 with SMTP id q4so2099709ggn.38
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 13:40:49 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, February 17, 2012 21:13:40 Ondrej Zary wrote:
-> On Wednesday 08 February 2012 08:29:25 Hans Verkuil wrote:
-> > On Tuesday, February 07, 2012 23:20:19 Ondrej Zary wrote:
-> > > On Sunday 05 February 2012 14:17:05 Hans Verkuil wrote:
-> > > > These patches improve the tea575x-tuner module to make it up to date
-> > > > with the latest V4L2 frameworks.
-> > > >
-> > > > The maxiradio driver has also been converted to use the tea575x-tuner
-> > > > and I've used that card to test it.
-> > > >
-> > > > Unfortunately, this card can't read the data pin, so the new hardware
-> > > > seek functionality has been tested only partially (yes, it seeks, but
-> > > > when it finds a channel I can't read back the frequency).
-> > > >
-> > > > Ondrej, are you able to test these patches for the sound cards that use
-> > > > this tea575x tuner?
-> > > >
-> > > > Note that these two patches rely on other work that I did and that
-> > > > hasn't been merged yet. So it is best to pull from my git tree:
-> > > >
-> > > > http://git.linuxtv.org/hverkuil/media_tree.git/shortlog/refs/heads/radi
-> > > >o-pc i2
-> > > >
-> > > > You can use the v4l-utils repository
-> > > > (http://git.linuxtv.org/v4l-utils.git) to test the drivers: the
-> > > > v4l2-compliance test should succeed and with v4l2-ctl you can test the
-> > > > hardware seek:
-> > > >
-> > > > To seek down:
-> > > >
-> > > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=0
-> > > >
-> > > > To seek up:
-> > > >
-> > > > v4l2-ctl -d /dev/radio0 --freq-seek=dir=1
-> > > >
-> > > > To do the compliance test:
-> > > >
-> > > > v4l2-compliance -r /dev/radio0
-> > >
-> > > It seems to work (tested with SF64-PCR - snd_fm801) but the seek is
-> > > severely broken. Reading the frequency immediately after seek does not
-> > > work, it always returns the old value (haven't found a delay that works).
-> > > Reading it later (copied back snd_tea575x_get_freq function) works. The
-> > > chip seeks randomly up or down, ignoring UP/DOWN flag and often stops at
-> > > wrong place (only noise) or even outside the FM range.
-> > >
-> > > So I strongly suggest not to enable this (mis-)feature. The HW seems to
-> > > be completely broken (unless there's some weird bug in the code).
-> >
-> > Well, it seemed like a good idea at the time :-) I'll remove this
-> > 'feature', it's really not worth our time to try and make this work for
-> > these old cards.
-> 
-> I fixed it somehow. Now it works most of the time.
-> The important things:
->  - a delay must be present after search start and before first register read
->    or the seek does weird things
->  - when the search stops, the new frequency is not available immediately, we
->    must wait until it appears in the register (fortunately, we can clear the
->    frequency bits when starting the search as it starts at the frequency
->    currently set, not from the value written)
->  - sometimes, seek remains on the current frequency (or moves only a little),
->    so repeat it until it moves by at least 50 kHz
+Showing the returned values on error messages is useful information.
 
-Thanks! And I'm impressed that you spent all that time on this old hardware :-)
+While at it, use pr_err/pr_warn whenever possible.
 
-Can I get your Signed-off-by line for this patch?
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/soc-core.c |   39 ++++++++++++++++++++++-----------------
+ 1 files changed, 22 insertions(+), 17 deletions(-)
 
-Regards,
-
-	Hans
-
-> 
-> --- a/sound/i2c/other/tea575x-tuner.c
-> +++ b/sound/i2c/other/tea575x-tuner.c
-> @@ -89,7 +89,7 @@ static void snd_tea575x_write(struct snd_tea575x *tea, unsigned int val)
->  		tea->ops->set_pins(tea, 0);
->  }
->  
-> -static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
-> +static u32 snd_tea575x_read(struct snd_tea575x *tea)
->  {
->  	u16 l, rdata;
->  	u32 data = 0;
-> @@ -120,6 +120,27 @@ static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
->  	return data;
->  }
->  
-> +static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-> +{
-> +	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
-> +
-> +	if (freq == 0) {
-> +		tea->freq = 0;
-> +		return;
-> +	}
-> +
-> +	/* freq *= 12.5 */
-> +	freq *= 125;
-> +	freq /= 10;
-> +	/* crystal fixup */
-> +	if (tea->tea5759)
-> +		freq += TEA575X_FMIF;
-> +	else
-> +		freq -= TEA575X_FMIF;
-> +
-> +	tea->freq = clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
-> +}
-> +
->  static void snd_tea575x_set_freq(struct snd_tea575x *tea)
->  {
->  	u32 freq = tea->freq;
-> @@ -203,6 +224,8 @@ static int vidioc_g_frequency(struct file *file, void *priv,
->  	if (f->tuner != 0)
->  		return -EINVAL;
->  	f->type = V4L2_TUNER_RADIO;
-> +	if (!tea->cannot_read_data)
-> +		snd_tea575x_get_freq(tea);
->  	f->frequency = tea->freq;
->  	return 0;
->  }
-> @@ -225,36 +248,50 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
->  					struct v4l2_hw_freq_seek *a)
->  {
->  	struct snd_tea575x *tea = video_drvdata(file);
-> +	int i, old_freq;
-> +	unsigned long timeout;
->  
->  	if (tea->cannot_read_data)
->  		return -ENOTTY;
-> +
-> +	snd_tea575x_get_freq(tea);
-> +	old_freq = tea->freq;
-> +	/* clear the frequency, HW will fill it in */
-> +	tea->val &= ~TEA575X_BIT_FREQ_MASK;
->  	tea->val |= TEA575X_BIT_SEARCH;
-> -	tea->val &= ~TEA575X_BIT_UPDOWN;
->  	if (a->seek_upward)
->  		tea->val |= TEA575X_BIT_UPDOWN;
-> +	else
-> +		tea->val &= ~TEA575X_BIT_UPDOWN;
->  	snd_tea575x_write(tea, tea->val);
-> +	timeout = jiffies + msecs_to_jiffies(10000);
->  	for (;;) {
-> -		unsigned val = snd_tea575x_read(tea);
-> -
-> -		if (!(val & TEA575X_BIT_SEARCH)) {
-> -			/* Found a frequency */
-> -			val &= TEA575X_BIT_FREQ_MASK;
-> -			val = (val * 10) / 125;
-> -			if (tea->tea5759)
-> -				val += TEA575X_FMIF;
-> -			else
-> -				val -= TEA575X_FMIF;
-> -			tea->freq = clamp(val * 16, FREQ_LO, FREQ_HI);
-> -			return 0;
-> -		}
-> +		if (time_after(jiffies, timeout))
-> +			break;
->  		if (schedule_timeout_interruptible(msecs_to_jiffies(10))) {
->  			/* some signal arrived, stop search */
->  			tea->val &= ~TEA575X_BIT_SEARCH;
->  			snd_tea575x_write(tea, tea->val);
->  			return -ERESTARTSYS;
->  		}
-> +		if (!(snd_tea575x_read(tea) & TEA575X_BIT_SEARCH)) {
-> +			/* Found a frequency, wait until it can be read */
-> +			for (i = 0; i < 100; i++) {
-> +				msleep(10);
-> +				snd_tea575x_get_freq(tea);
-> +				if (tea->freq != 0) /* available */
-> +					break;
-> +			}
-> +			/* if we moved by less than 50 kHz, continue seeking */
-> +			if (abs(old_freq - tea->freq) < 16 * 500) {
-> +				snd_tea575x_write(tea, tea->val);
-> +				continue;
-> +			}
-> +			tea->val &= ~TEA575X_BIT_SEARCH;
-> +			return 0;
-> +		}
->  	}
-> -	return 0;
-> +	return -ETIMEDOUT;
->  }
->  
->  static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
-> @@ -318,7 +355,7 @@ int snd_tea575x_init(struct snd_tea575x *tea)
->  			return -ENODEV;
->  	}
->  
-> -	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
-> +	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_5_28;
->  	tea->freq = 90500 * 16;		/* 90.5Mhz default */
->  	snd_tea575x_set_freq(tea);
->  
-> 
-> 
-> 
-> 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6bad7cd..7001fb3 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -931,7 +931,8 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
+ 		if (codec_dai->driver->remove) {
+ 			err = codec_dai->driver->remove(codec_dai);
+ 			if (err < 0)
+-				printk(KERN_ERR "asoc: failed to remove %s\n", codec_dai->name);
++				pr_err("asoc: failed to remove %s: %d\n",
++							codec_dai->name, err);
+ 		}
+ 		codec_dai->probed = 0;
+ 		list_del(&codec_dai->card_list);
+@@ -943,7 +944,8 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
+ 		if (platform->driver->remove) {
+ 			err = platform->driver->remove(platform);
+ 			if (err < 0)
+-				printk(KERN_ERR "asoc: failed to remove %s\n", platform->name);
++				pr_err("asoc: failed to remove %s: %d\n",
++							platform->name, err);
+ 		}
+ 
+ 		/* Make sure all DAPM widgets are freed */
+@@ -966,7 +968,8 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
+ 		if (cpu_dai->driver->remove) {
+ 			err = cpu_dai->driver->remove(cpu_dai);
+ 			if (err < 0)
+-				printk(KERN_ERR "asoc: failed to remove %s\n", cpu_dai->name);
++				pr_err("asoc: failed to remove %s: %d\n",
++							cpu_dai->name, err);
+ 		}
+ 		cpu_dai->probed = 0;
+ 		list_del(&cpu_dai->card_list);
+@@ -1213,8 +1216,8 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num, int order)
+ 		if (cpu_dai->driver->probe) {
+ 			ret = cpu_dai->driver->probe(cpu_dai);
+ 			if (ret < 0) {
+-				printk(KERN_ERR "asoc: failed to probe CPU DAI %s\n",
+-						cpu_dai->name);
++				pr_err("asoc: failed to probe CPU DAI %s: %d\n",
++							cpu_dai->name, ret);
+ 				module_put(cpu_dai->dev->driver->owner);
+ 				return ret;
+ 			}
+@@ -1245,8 +1248,8 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num, int order)
+ 		if (codec_dai->driver->probe) {
+ 			ret = codec_dai->driver->probe(codec_dai);
+ 			if (ret < 0) {
+-				printk(KERN_ERR "asoc: failed to probe CODEC DAI %s\n",
+-						codec_dai->name);
++				pr_err("asoc: failed to probe CODEC DAI %s: %d\n",
++							codec_dai->name, ret);
+ 				return ret;
+ 			}
+ 		}
+@@ -1266,12 +1269,13 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num, int order)
+ 
+ 	ret = device_create_file(rtd->dev, &dev_attr_pmdown_time);
+ 	if (ret < 0)
+-		printk(KERN_WARNING "asoc: failed to add pmdown_time sysfs\n");
++		pr_warn("asoc: failed to add pmdown_time sysfs:%d\n", ret);
+ 
+ 	/* create the pcm */
+ 	ret = soc_new_pcm(rtd, num);
+ 	if (ret < 0) {
+-		printk(KERN_ERR "asoc: can't create pcm %s\n", dai_link->stream_name);
++		pr_err("asoc: can't create pcm %s :%d\n",
++				dai_link->stream_name, ret);
+ 		return ret;
+ 	}
+ 
+@@ -1304,7 +1308,7 @@ static int soc_register_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
+ 
+ 		ret = soc_ac97_dev_register(rtd->codec);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: AC97 device register failed\n");
++			pr_err("asoc: AC97 device register failed:%d\n", ret);
+ 			return ret;
+ 		}
+ 
+@@ -1444,8 +1448,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	ret = snd_card_create(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+ 			card->owner, 0, &card->snd_card);
+ 	if (ret < 0) {
+-		printk(KERN_ERR "asoc: can't create sound card for card %s\n",
+-			card->name);
++		pr_err("asoc: can't create sound card for card %s: %d\n",
++			card->name, ret);
+ 		mutex_unlock(&card->mutex);
+ 		return;
+ 	}
+@@ -1563,7 +1567,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ 	ret = snd_card_register(card->snd_card);
+ 	if (ret < 0) {
+-		printk(KERN_ERR "asoc: failed to register soundcard for %s\n", card->name);
++		pr_err("asoc: failed to register soundcard for %s: %d\n",
++							card->name, ret);
+ 		goto probe_aux_dev_err;
+ 	}
+ 
+@@ -1572,7 +1577,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	for (i = 0; i < card->num_rtd; i++) {
+ 		ret = soc_register_ac97_dai_link(&card->rtd[i]);
+ 		if (ret < 0) {
+-			printk(KERN_ERR "asoc: failed to register AC97 %s\n", card->name);
++			pr_err("asoc: failed to register AC97 %s: %d\n",
++							card->name, ret);
+ 			while (--i >= 0)
+ 				soc_unregister_ac97_dai_link(card->rtd[i].codec);
+ 			goto probe_aux_dev_err;
+@@ -3070,7 +3076,7 @@ static inline char *fmt_multiple_name(struct device *dev,
+ 		struct snd_soc_dai_driver *dai_drv)
+ {
+ 	if (dai_drv->name == NULL) {
+-		printk(KERN_ERR "asoc: error - multiple DAI %s registered with no name\n",
++		pr_err("asoc: error - multiple DAI %s registered with no name\n",
+ 				dev_name(dev));
+ 		return NULL;
+ 	}
+@@ -3542,8 +3548,7 @@ static int __init snd_soc_init(void)
+ #ifdef CONFIG_DEBUG_FS
+ 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
+ 	if (IS_ERR(snd_soc_debugfs_root) || !snd_soc_debugfs_root) {
+-		printk(KERN_WARNING
+-		       "ASoC: Failed to create debugfs directory\n");
++		pr_warn("ASoC: Failed to create debugfs directory\n");
+ 		snd_soc_debugfs_root = NULL;
+ 	}
+ 
+-- 
+1.7.1
