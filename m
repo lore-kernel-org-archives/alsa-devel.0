@@ -1,23 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
- reporting with core jack reporting
-Date: Thu, 16 Feb 2012 19:59:09 +0000
-Message-ID: <20120216195908.GA32497@sirena.org.uk>
-References: <1328644128-32630-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1328644128-32630-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4F323405.8080902@canonical.com>
-	<20120208114642.GG3120@opensource.wolfsonmicro.com>
-	<4F327A21.8030805@canonical.com> <s5h39aj5569.wl%tiwai@suse.de>
-	<CAN8cciaa4Htu5cS7AGuX347xY_Vbx5Uk9i4f605MRVmTQthtmw@mail.gmail.com>
+Subject: [PATCH] ALSA: core: Constify the name in new kcontrols
+Date: Thu, 16 Feb 2012 17:09:09 -0800
+Message-ID: <1329440949-20353-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E58F103FB6
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2012 20:59:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAN8cciaa4Htu5cS7AGuX347xY_Vbx5Uk9i4f605MRVmTQthtmw@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09F29243A3
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:09:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 14, 2012 at 09:29:27AM +0800, Raymond Yau wrote:
+We never modify it and this lets us use a const string as the name without
+warnings.
 
-I really shouldn't have ot remind you to not remove people from the CC
-list, this is really basic stuff...
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
 
-> 1) The problem of core jack api which is tailor made for embedded
-> device, it assume there is only one sound card
+I've got some ASoC patches which need this to avoid warnings, if you're
+OK with it can I apply it via there please?
 
-This is not the case at all, there is no such assumption and indeed many
-embedded devices have multiple sound cards.
+ include/sound/control.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> when the desktop computer have more than one sound cards which have jack detect
-> there is no mapping to which sound card has the events.
-
-The jack device is a child of the sound card, userspace can look at the
-parent to see which sound card a given jack is associated with.
-
-> 2) if the objective of adding jack detection is for trapping
-> plug/unplug event to trigger the reconfiguration of audio server
-
-> http://thread.gmane.org/gmane.linux.alsa.devel/89781/focus=89788
-
-> does the audio server require to know the initial state of the hdmi
-> or just need the trigger event ?
-
-For all three of the accessory detection mechanisms the state can be
-read at any time.
+diff --git a/include/sound/control.h b/include/sound/control.h
+index b2796e8..57815f6 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -40,7 +40,7 @@ struct snd_kcontrol_new {
+ 	snd_ctl_elem_iface_t iface;	/* interface identifier */
+ 	unsigned int device;		/* device/client number */
+ 	unsigned int subdevice;		/* subdevice (substream) number */
+-	unsigned char *name;		/* ASCII name of item */
++	const unsigned char *name;	/* ASCII name of item */
+ 	unsigned int index;		/* index of item */
+ 	unsigned int access;		/* access rights */
+ 	unsigned int count;		/* count of same elements */
+-- 
+1.7.9.rc1
