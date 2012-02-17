@@ -1,20 +1,17 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Change spitz_ext_control to take
-	dapm as argument.
-Date: Fri, 17 Feb 2012 10:17:31 +0000
-Message-ID: <1329473851.3972.12.camel@odin>
-References: <1329466556.21113.1.camel@phoenix>
+From: Aleksey Midenkov <midenok@gmail.com>
+Subject: Realtime controlling of ALSA parameters from UI
+Date: Fri, 17 Feb 2012 14:18:02 +0400
+Message-ID: <CAF8BazCiswNQbrUk9CPkz2bFq80qK2qXMJ2trjCBMwwv8FaX3g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29B14103BD5
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 11:17:47 +0100 (CET)
-Received: by wgbdq12 with SMTP id dq12so2331545wgb.23
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:17:32 -0800 (PST)
-In-Reply-To: <1329466556.21113.1.camel@phoenix>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3958C103FD0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 11:18:03 +0100 (CET)
+Received: by iabz21 with SMTP id z21so4522616iab.38
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:18:02 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@marvell.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-02-17 at 16:15 +0800, Axel Lin wrote:
-> This fixes below build warning:
->   CC      sound/soc/pxa/spitz.o
-> sound/soc/pxa/spitz.c: In function 'spitz_startup':
-> sound/soc/pxa/spitz.c:116: warning: passing argument 1 of 'spitz_ext_control' from incompatible pointer type
-> sound/soc/pxa/spitz.c:47: note: expected 'struct snd_soc_card *' but argument is of type 'struct snd_soc_codec *'
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Hello guys!
 
-gah, I must have only compile tested on OMAP.
+I want to suggest you an idea of what I am thinking for a long time.
+And want to know of what you are thinking on it from perspective of
+how hard it would be to implement. I'm pretty sure the feature will be
+well popular because for me as an ordinary user it would be great
+stuff!
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+So to the point. What I am saying about is the ability to control
+parameters from asound.conf at user level. This would give us such
+great things like switching sound output realtime or control each
+channel volume level in mixer GUI.
 
-Thanks !
+If you will suggest userpace daemons like Pulse or Jack. There are
+some situations (like playing piano f.ex.) where realtime really
+matters, where such daemons put unacceptable latency. Another point is
+that they are not such feature rich. They cannot downmix f.ex. with
+controlling of each channel volume level (please tell me if I am wrong
+here).
 
-Liam
+Every opinion is appreciated!
