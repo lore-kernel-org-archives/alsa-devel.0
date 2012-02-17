@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: wm8962: Convert to
+Subject: [PATCH 2/3] ASoC: wm8993: Convert to
 	module_i2c_driver()
-Date: Thu, 16 Feb 2012 22:46:45 -0800
-Message-ID: <1329461207-31969-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Thu, 16 Feb 2012 22:46:46 -0800
+Message-ID: <1329461207-31969-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1329461207-31969-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D479103A5A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 135B3103A62
 	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 07:47:26 +0100 (CET)
+In-Reply-To: <1329461207-31969-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +27,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8962.c |   12 +-----------
- 1 files changed, 1 insertions(+), 11 deletions(-)
+ sound/soc/codecs/wm8993.c |   19 +------------------
+ 1 files changed, 1 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 2f06886..bc04b49 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3793,17 +3793,7 @@ static struct i2c_driver wm8962_i2c_driver = {
- 	.id_table = wm8962_i2c_id,
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index 1e69f63..d256a93 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1859,24 +1859,7 @@ static struct i2c_driver wm8993_i2c_driver = {
+ 	.id_table = wm8993_i2c_id,
  };
  
--static int __init wm8962_modinit(void)
+-static int __init wm8993_modinit(void)
 -{
--	return i2c_add_driver(&wm8962_i2c_driver);
+-	int ret = 0;
+-	ret = i2c_add_driver(&wm8993_i2c_driver);
+-	if (ret != 0) {
+-		pr_err("WM8993: Unable to register I2C driver: %d\n",
+-		       ret);
+-	}
+-	return ret;
 -}
--module_init(wm8962_modinit);
+-module_init(wm8993_modinit);
 -
--static void __exit wm8962_exit(void)
+-static void __exit wm8993_exit(void)
 -{
--	i2c_del_driver(&wm8962_i2c_driver);
+-	i2c_del_driver(&wm8993_i2c_driver);
 -}
--module_exit(wm8962_exit);
-+module_i2c_driver(wm8962_i2c_driver);
+-module_exit(wm8993_exit);
+-
++module_i2c_driver(wm8993_i2c_driver);
  
- MODULE_DESCRIPTION("ASoC WM8962 driver");
+ MODULE_DESCRIPTION("ASoC WM8993 driver");
  MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 -- 
 1.7.9.rc1
