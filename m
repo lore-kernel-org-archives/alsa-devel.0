@@ -1,17 +1,21 @@
-From: Aleksey Midenkov <midenok@gmail.com>
-Subject: Realtime controlling of ALSA parameters from UI
-Date: Fri, 17 Feb 2012 14:18:02 +0400
-Message-ID: <CAF8BazCiswNQbrUk9CPkz2bFq80qK2qXMJ2trjCBMwwv8FaX3g@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 6/8] ASoC: dapm: Implement and instantiate
+ DAI widgets
+Date: Fri, 17 Feb 2012 10:39:18 +0000
+Message-ID: <1329475158.3972.15.camel@odin>
+References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1329458170-22119-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1329468009.24656.15.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3958C103FD0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 11:18:03 +0100 (CET)
-Received: by iabz21 with SMTP id z21so4522616iab.38
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:18:02 -0800 (PST)
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240]) by alsa0.perex.cz (Postfix) with SMTP id CE0EA24551
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 11:39:22 +0100 (CET)
+Received: by mail-we0-f176.google.com with SMTP id f1so2524594wer.21
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2012 02:39:20 -0800 (PST)
+In-Reply-To: <1329468009.24656.15.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello guys!
+On Fri, 2012-02-17 at 14:10 +0530, Vinod Koul wrote:
 
-I want to suggest you an idea of what I am thinking for a long time.
-And want to know of what you are thinking on it from perspective of
-how hard it would be to implement. I'm pretty sure the feature will be
-well popular because for me as an ordinary user it would be great
-stuff!
+> 
+> Also in dai widget would it make sense to add channel map and associate
+> that with DAI?
+> 
 
-So to the point. What I am saying about is the ability to control
-parameters from asound.conf at user level. This would give us such
-great things like switching sound output realtime or control each
-channel volume level in mixer GUI.
+Yeah, I think that would work. I've already started some work on the
+channel mapping (just associating unique PCM channel masks with DAI
+widgets) but I do need to upstream dynamic PCM first !
 
-If you will suggest userpace daemons like Pulse or Jack. There are
-some situations (like playing piano f.ex.) where realtime really
-matters, where such daemons put unacceptable latency. Another point is
-that they are not such feature rich. They cannot downmix f.ex. with
-controlling of each channel volume level (please tell me if I am wrong
-here).
-
-Every opinion is appreciated!
+Liam
