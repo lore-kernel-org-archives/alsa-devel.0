@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: core: Add support for masking out
-	parts of coefficient blocks
-Date: Fri, 17 Feb 2012 16:49:51 -0800
-Message-ID: <1329526192-6747-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: core: Add SND_SOC_BYTES control for
+	coefficient blocks
+Date: Fri, 17 Feb 2012 16:49:50 -0800
+Message-ID: <1329526192-6747-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20120218004909.GA6712@opensource.wolfsonmicro.com>
-	<1329526192-6747-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82F97103BE1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 41167103BDA
 	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2012 01:50:11 +0100 (CET)
-In-Reply-To: <1329526192-6747-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <20120218004909.GA6712@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,143 +25,127 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Chip designers frequently include things like the enable and disable
-controls for algorithms in the register blocks which also hold the
-coefficients. Since it's desirable to split out the enable/disable
-control from userspace the plain SND_SOC_BYTES() isn't optimal for
-these devices.
+Allow devices to export blocks of registers to the application layer,
+intended for use for reading and writing coefficient data which can't
+usefully be worked with by the kernel at runtime (for example, due to
+requiring complex and expensive calculations or being the results of
+callibration procedures). Currently drivers are using platform data to
+provide configurations for coefficient blocks which isn't at all
+convenient for runtime management or configuration development.
 
-Add a SND_SOC_BYTES_MASK() which allows a bitmask from the first word
-of the block to be excluded from the control. This supports the needs
-of devices I've looked at and lets us have a reasonably simple API.
-Further controls can be added in future if that's needed.
+Currently only devices using regmap are supported, an error will be
+generated for any attempt to work with a byte control on a non-regmap
+device. There's no fundamental block to other devices so support could
+be added if required.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    9 ++++++
- sound/soc/soc-core.c |   75 +++++++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 77 insertions(+), 7 deletions(-)
+ include/sound/soc.h  |   18 ++++++++++++++++++
+ sound/soc/soc-core.c |   49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 67 insertions(+), 0 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3e9cae0..82bd773 100644
+index 1e16d6e..3e9cae0 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -192,6 +192,14 @@
- 		((unsigned long)&(struct soc_bytes)           \
- 		{.base = xbase, .num_regs = xregs }) }
+@@ -185,6 +185,12 @@
+ 		 .rreg = xreg_right, .shift = xshift, \
+ 		 .min = xmin, .max = xmax} }
  
-+#define SND_SOC_BYTES_MASK(xname, xbase, xregs, xmask)	      \
++#define SND_SOC_BYTES(xname, xbase, xregs)		      \
 +{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
 +	.info = snd_soc_bytes_info, .get = snd_soc_bytes_get, \
 +	.put = snd_soc_bytes_put, .private_value =	      \
 +		((unsigned long)&(struct soc_bytes)           \
-+		{.base = xbase, .num_regs = xregs,	      \
-+		 .mask = xmask }) }
-+
++		{.base = xbase, .num_regs = xregs }) }
+ 
  /*
   * Simplified versions of above macros, declaring a struct and calculating
-  * ARRAY_SIZE internally
-@@ -904,6 +912,7 @@ struct soc_mixer_control {
- struct soc_bytes {
- 	int base;
- 	int num_regs;
-+	u32 mask;
+@@ -413,6 +419,13 @@ int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
++		       struct snd_ctl_elem_info *uinfo);
++int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol);
++int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol);
++
+ 
+ /**
+  * struct snd_soc_reg_access - Describes whether a given register is
+@@ -888,6 +901,11 @@ struct soc_mixer_control {
+ 	unsigned int reg, rreg, shift, rshift, invert;
  };
  
++struct soc_bytes {
++	int base;
++	int num_regs;
++};
++
  /* enumerated kcontrol */
+ struct soc_enum {
+ 	unsigned short reg;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ed9138e..bb01c02 100644
+index 14bdaee..ed9138e 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2757,6 +2757,25 @@ int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
- 	else
- 		ret = -EINVAL;
- 
-+	/* Hide any masked bytes to ensure consistent data reporting */
-+	if (ret == 0 && params->mask) {
-+		switch (codec->val_bytes) {
-+		case 1:
-+			ucontrol->value.bytes.data[0] &= ~params->mask;
-+			break;
-+		case 2:
-+			((u16 *)(&ucontrol->value.bytes.data))[0]
-+				&= ~params->mask;
-+			break;
-+		case 4:
-+			((u32 *)(&ucontrol->value.bytes.data))[0]
-+				&= ~params->mask;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
- 	return ret;
+@@ -2730,6 +2730,55 @@ int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
  }
- EXPORT_SYMBOL_GPL(snd_soc_bytes_get);
-@@ -2766,14 +2785,56 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- {
- 	struct soc_bytes *params = (void *)kcontrol->private_value;
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	int ret;
-+	int ret, len;
-+	unsigned int val;
-+	void *data;
+ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_2r_sx);
  
--	if (codec->using_regmap)
--		ret = regmap_raw_write(codec->control_data, params->base,
--				       ucontrol->value.bytes.data,
--				       params->num_regs * codec->val_bytes);
--	else
--		ret = -EINVAL;
-+	if (!codec->using_regmap)
-+		return -EINVAL;
++int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
++		       struct snd_ctl_elem_info *uinfo)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct soc_bytes *params = (void *)kcontrol->private_value;
 +
-+	len = params->num_regs * codec->val_bytes;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
++	uinfo->count = params->num_regs * codec->val_bytes;
 +
-+	/*
-+	 * If we've got a mask then we need to preserve the register
-+	 * bits.  We shouldn't modify the incoming data so take a
-+	 * copy.
-+	 */
-+	if (params->mask) {
-+		ret = regmap_read(codec->control_data, params->base, &val);
-+		if (ret != 0)
-+			return ret;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_bytes_info);
 +
-+		val |= ~params->mask;
++int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_bytes *params = (void *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int ret;
 +
-+		data = kmalloc(len, GFP_KERNEL);
-+		if (!data)
-+			return -ENOMEM;
++	if (codec->using_regmap)
++		ret = regmap_raw_read(codec->control_data, params->base,
++				      ucontrol->value.bytes.data,
++				      params->num_regs * codec->val_bytes);
++	else
++		ret = -EINVAL;
 +
-+		switch (codec->val_bytes) {
-+		case 1:
-+			((u8 *)data)[0] &= ~params->mask;
-+			((u8 *)data)[0] |= val;
-+			break;
-+		case 2:
-+			((u16 *)data)[0] &= ~params->mask;
-+			((u16 *)data)[0] |= val;
-+			break;
-+		case 4:
-+			((u32 *)data)[0] &= ~params->mask;
-+			((u32 *)data)[0] |= val;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	} else {
-+		data = ucontrol->value.bytes.data;
-+	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_bytes_get);
 +
-+	ret = regmap_raw_write(codec->control_data, params->base,
-+			       data, len);
++int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_bytes *params = (void *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int ret;
 +
-+	if (params->mask)
-+		kfree(data);
- 
- 	return ret;
- }
++	if (codec->using_regmap)
++		ret = regmap_raw_write(codec->control_data, params->base,
++				       ucontrol->value.bytes.data,
++				       params->num_regs * codec->val_bytes);
++	else
++		ret = -EINVAL;
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_bytes_put);
++
+ /**
+  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+  * @dai: DAI
 -- 
 1.7.9
