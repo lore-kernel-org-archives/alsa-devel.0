@@ -1,21 +1,11 @@
-From: Jonathan Andrews <jon@jonshouse.co.uk>
-Subject: Re: Random process lockup on ARM board:
- alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
-Date: Sat, 18 Feb 2012 13:02:08 +0000
-Message-ID: <1329570128.6670.0.camel@jonspc>
-References: <1329393691.6830.20.camel@jonspc> <1329512682.29051.1.camel@jonspc>
-Reply-To: jon@jonshouse.co.uk
+From: Vikram Narayanan <vikram186@gmail.com>
+Subject: [PATCH] Remove the cvscompile file
+Date: Sat, 18 Feb 2012 20:53:56 +0530
+Message-ID: <4F3FC28C.3010605@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE0A124157
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2012 14:01:54 +0100 (CET)
-Received: from [10.10.10.6] (jonspc [10.10.10.6])
-	by mail.jonshouse.co.uk (8.14.1/8.13.8) with ESMTP id q1ID28gI009856
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2012 13:02:13 GMT
-In-Reply-To: <1329512682.29051.1.camel@jonspc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +15,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-02-17 at 21:04 +0000, Jonathan Andrews wrote:
-> Reposting this:
-> 
-> # strace -p 443
-> > Process 443 attached - interrupt to quit
-> > futex(0x4030e144, FUTEX_WAIT_PRIVATE, 2, NULL
-> > 
-> locks up.  Stops, stalls ... fails to continue ....
-> 
-> 
-> Now tried several alsa-lib versions.  A clue would be nice?
-> What do I replace to fix this ?
-> 
-Now tried 2 kernels, 3 versions of alsalib still stalls.
+package: alsa-utils
 
-If I remove alsa code it works forever.
+Removed the cvscompile file.
 
-Thanks to everyone who helped (no one at all).
+Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
+---
+ cvscompile |   25 -------------------------
+ 1 files changed, 0 insertions(+), 25 deletions(-)
+ delete mode 100755 cvscompile
 
-FUCK OPEN SOURCE !!!!!!!!!!!
+diff --git a/cvscompile b/cvscompile
+deleted file mode 100755
+index 64ade4f..0000000
+--- a/cvscompile
++++ /dev/null
+@@ -1,25 +0,0 @@
+-#!/bin/bash
+-
+-if test -d ../alsa-lib/utils && ! test -r `aclocal --print-ac-dir`/alsa.m4; then
+-  alsa_m4_flags="-I ../alsa-lib/utils"
+-fi
+-aclocal $alsa_m4_flags $ACLOCAL_FLAGS
+-# save original files to avoid stupid modifications by gettextize
+-cp Makefile.am Makefile.am.ok
+-cp configure.in configure.in.ok
+-gettextize -c -f --no-changelog
+-echo "EXTRA_DIST = gettext.m4" > m4/Makefile.am
+-cp Makefile.am.ok Makefile.am
+-cp configure.in.ok configure.in
+-autoheader
+-automake --foreign --copy --add-missing
+-touch depcomp		# for older automake
+-autoconf
+-export CFLAGS='-O2 -Wall -pipe -g'
+-echo "CFLAGS=$CFLAGS"
+-echo "./configure $@"
+-./configure $@ || exit 1
+-unset CFLAGS
+-if [ -z "$CVSCOMPILE_NO_MAKE" ]; then
+-  make
+-fi
+-- 
+1.7.4.1
