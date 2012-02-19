@@ -1,18 +1,16 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: [PATCH] ASoC: pandora: switch clock back to internal
-	on stop
-Date: Sun, 19 Feb 2012 00:39:55 +0200
-Message-ID: <1329604795-24509-1-git-send-email-notasas@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: pandora: switch clock back to
+	internal on stop
+Date: Sat, 18 Feb 2012 22:30:06 -0800
+Message-ID: <20120219063005.GA4517@opensource.wolfsonmicro.com>
+References: <1329604795-24509-1-git-send-email-notasas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0247796993966281692=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A083624355
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2012 23:40:01 +0100 (CET)
-Received: by eaan11 with SMTP id n11so1605079eaa.38
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2012 14:40:01 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A165824520
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2012 07:30:10 +0100 (CET)
+In-Reply-To: <1329604795-24509-1-git-send-email-notasas@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Grazvydas Ignotas <notasas@gmail.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-For some reason, OMAP doesn't enter lower power states with functional
-clock (CLKS) source set to external, so switch it back to internal when
-done playing.
 
-Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
----
- sound/soc/omap/omap3pandora.c |   22 ++++++++++++++++++++++
- 1 files changed, 22 insertions(+), 0 deletions(-)
+--===============0247796993966281692==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
+Content-Disposition: inline
 
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index 07794bd..1be26df 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -77,6 +77,27 @@ static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int omap3pandora_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int ret;
-+
-+	/*
-+	 * For some reason, if we don't set clock back to internal, OMAP power
-+	 * saving features don't work properly (per power domain doesn't enter
-+	 * lower power states). Switch it back until better solution is found.
-+	 */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_FCLK,
-+				     0, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		pr_err(PREFIX "can't set cpu system clock\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *k, int event)
- {
-@@ -201,6 +222,7 @@ static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
- 
- static struct snd_soc_ops omap3pandora_ops = {
- 	.hw_params = omap3pandora_hw_params,
-+	.hw_free = omap3pandora_hw_free,
- };
- 
- /* Digital audio interface glue - connects codec <--> CPU */
--- 
-1.7.0.4
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Feb 19, 2012 at 12:39:55AM +0200, Grazvydas Ignotas wrote:
+> For some reason, OMAP doesn't enter lower power states with functional
+> clock (CLKS) source set to external, so switch it back to internal when
+> done playing.
+>=20
+> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+
+Might be an idea to do this in the McBSP driver - have it do the switch
+transparently, then flip back when the port is brought up again?
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPQJbmAAoJEBus8iNuMP3djuYP/1IfcbwuCbaEcn57/Y9GTuld
+gPa4qIi2njejYaeOcDk9ywwtL4gxvtQVGMPGoT3mq8NoqjCNQTIElwjft/DlEKgX
+YTt4iqO8gfYIQVW7GlGymzk/voeG1FteTrOE8FPxdvwDWEcBf+PUC+dnWx9eQz90
+iHqfaGoR4UY9EFPu/0b2g+kmMKR47L5WKOel4Td8n/vCCdGtlgAkA5tO35btpm47
+3lSgKPigHwmC9f2mdgqpObEvaTJd8rbMwFmv2S47xjocVYbbDYyXVnhjzbVej/DR
++SMDdWSS6md2vaPnTLo9usMZJP7yvuh4mG0nHx12PTYQS1+RJ9gRtXX+N+CVXfzG
+gxfJzjl+6dBxiKVXKF4PC7wsFM66UCdXSXrUljr/KjHyddkqGcMILl1DIHtScEEJ
+fiLHpw43m13/GTiovMMTYTZP9J8JU9amKkGoTJfXM2YyqRYG1byzO/q2vb78rgUI
+lfKhuLE5JAZcaI6QPIlIDAhooGLeYD/ARS+uim30Ft9k9ax5KVaKQf4bc1Nh9Z4w
+i4aEqritA9N/0dhqhXNu5NasKO68iAgQTp7ZyUQhy9YyzD+JQRv1OuHRC33gyalY
+NeNJZc087MQe60KVlqsPFF1/cL1O4fWSOAE5hw55CZ6IvH2ZXgTjJYSaWlnJ9QwK
+7raIATMBCJsnzHmQMWP4
+=NZVE
+-----END PGP SIGNATURE-----
+
+--X1bOJ3K7DJ5YkBrT--
+
+--===============0247796993966281692==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0247796993966281692==--
