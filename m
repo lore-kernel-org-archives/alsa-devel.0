@@ -1,43 +1,38 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH] ASoC: pandora: switch clock back to internal on stop
-Date: Sun, 19 Feb 2012 17:52:57 +0200
-Message-ID: <CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
-References: <1329604795-24509-1-git-send-email-notasas@gmail.com>
-	<20120219063005.GA4517@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ALSA: Remove __devinit annotation
+	for	pxa2xx_ac97_hw_probe to fix section mismatch warning
+Date: Sun, 19 Feb 2012 18:20:08 +0000
+Message-ID: <20120219182005.GA16078@opensource.wolfsonmicro.com>
+References: <1329637158.4818.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120219063005.GA4517@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E87A6103C17
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2012 19:20:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1329637158.4818.4.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 19, 2012 at 8:30 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Sun, Feb 19, 2012 at 12:39:55AM +0200, Grazvydas Ignotas wrote:
->> For some reason, OMAP doesn't enter lower power states with function=
-al
->> clock (CLKS) source set to external, so switch it back to internal w=
-hen
->> done playing.
->>
->> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
->
-> Might be an idea to do this in the McBSP driver - have it do the swit=
-ch
-> transparently, then flip back when the port is brought up again?
+On Sun, Feb 19, 2012 at 03:39:18PM +0800, Axel Lin wrote:
+> This fixes below build warning:
+> WARNING: vmlinux.o(.text+0x1e632c): Section mismatch in reference from the function pxa2xx_ac97_probe() to the function .devinit.text:pxa2xx_ac97_hw_probe()
+> The function pxa2xx_ac97_probe() references
+> the function __devinit pxa2xx_ac97_hw_probe().
+> This is often because pxa2xx_ac97_probe lacks a __devinit
+> annotation or the annotation of pxa2xx_ac97_hw_probe is wrong.
 
-Maybe, but I think pandora is the only one using external clock in
-mainline and mcbsp currently doesn't track this state, just does a
-register write. If you still prefer it on mcbsp side, I can do it
-after Peter's mcbsp merge work is finished I guess.
-
---=20
-Gra=C5=BEvydas
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This seems like the wrong fix - shouldn't we be adding annotations
+rather than removing them here?
