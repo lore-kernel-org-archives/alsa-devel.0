@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: pandora: switch clock back to
-	internal on stop
-Date: Sat, 18 Feb 2012 22:30:06 -0800
-Message-ID: <20120219063005.GA4517@opensource.wolfsonmicro.com>
-References: <1329604795-24509-1-git-send-email-notasas@gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/2] ALSA: Remove __devinit annotation for
+ pxa2xx_ac97_hw_probe to fix section mismatch warning
+Date: Sun, 19 Feb 2012 15:39:18 +0800
+Message-ID: <1329637158.4818.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0247796993966281692=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A165824520
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2012 07:30:10 +0100 (CET)
-In-Reply-To: <1329604795-24509-1-git-send-email-notasas@gmail.com>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 398C1103BE8
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2012 08:39:25 +0100 (CET)
+Received: by dady9 with SMTP id y9so4940710dad.38
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2012 23:39:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Eric Miao <eric.y.miao@gmail.com>, Iwai <tiwai@suse.de>, Takashi@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+This fixes below build warning:
+WARNING: vmlinux.o(.text+0x1e632c): Section mismatch in reference from the function pxa2xx_ac97_probe() to the function .devinit.text:pxa2xx_ac97_hw_probe()
+The function pxa2xx_ac97_probe() references
+the function __devinit pxa2xx_ac97_hw_probe().
+This is often because pxa2xx_ac97_probe lacks a __devinit
+annotation or the annotation of pxa2xx_ac97_hw_probe is wrong.
 
---===============0247796993966281692==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/arm/pxa2xx-ac97-lib.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
---X1bOJ3K7DJ5YkBrT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Feb 19, 2012 at 12:39:55AM +0200, Grazvydas Ignotas wrote:
-> For some reason, OMAP doesn't enter lower power states with functional
-> clock (CLKS) source set to external, so switch it back to internal when
-> done playing.
->=20
-> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
-
-Might be an idea to do this in the McBSP driver - have it do the switch
-transparently, then flip back when the port is brought up again?
-
---X1bOJ3K7DJ5YkBrT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPQJbmAAoJEBus8iNuMP3djuYP/1IfcbwuCbaEcn57/Y9GTuld
-gPa4qIi2njejYaeOcDk9ywwtL4gxvtQVGMPGoT3mq8NoqjCNQTIElwjft/DlEKgX
-YTt4iqO8gfYIQVW7GlGymzk/voeG1FteTrOE8FPxdvwDWEcBf+PUC+dnWx9eQz90
-iHqfaGoR4UY9EFPu/0b2g+kmMKR47L5WKOel4Td8n/vCCdGtlgAkA5tO35btpm47
-3lSgKPigHwmC9f2mdgqpObEvaTJd8rbMwFmv2S47xjocVYbbDYyXVnhjzbVej/DR
-+SMDdWSS6md2vaPnTLo9usMZJP7yvuh4mG0nHx12PTYQS1+RJ9gRtXX+N+CVXfzG
-gxfJzjl+6dBxiKVXKF4PC7wsFM66UCdXSXrUljr/KjHyddkqGcMILl1DIHtScEEJ
-fiLHpw43m13/GTiovMMTYTZP9J8JU9amKkGoTJfXM2YyqRYG1byzO/q2vb78rgUI
-lfKhuLE5JAZcaI6QPIlIDAhooGLeYD/ARS+uim30Ft9k9ax5KVaKQf4bc1Nh9Z4w
-i4aEqritA9N/0dhqhXNu5NasKO68iAgQTp7ZyUQhy9YyzD+JQRv1OuHRC33gyalY
-NeNJZc087MQe60KVlqsPFF1/cL1O4fWSOAE5hw55CZ6IvH2ZXgTjJYSaWlnJ9QwK
-7raIATMBCJsnzHmQMWP4
-=NZVE
------END PGP SIGNATURE-----
-
---X1bOJ3K7DJ5YkBrT--
-
---===============0247796993966281692==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0247796993966281692==--
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 0e9e822..5e926c4 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -313,7 +313,7 @@ int pxa2xx_ac97_hw_resume(void)
+ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_resume);
+ #endif
+ 
+-int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
++int pxa2xx_ac97_hw_probe(struct platform_device *dev)
+ {
+ 	int ret;
+ 	pxa2xx_audio_ops_t *pdata = dev->dev.platform_data;
+-- 
+1.7.5.4
