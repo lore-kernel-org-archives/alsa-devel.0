@@ -1,37 +1,26 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: [PATCH 1/3] mfd: Add __devinit and __devexit annotations in
- wm8994
-Date: Mon, 20 Feb 2012 18:03:06 +0100
-Message-ID: <20120220170306.GF5387@sortiz-mobl>
-References: <1327327172-8411-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [RFC 01/11] ARM: OMAP: mcbsp: Convert core driver to proper
+ platform driver
+Date: Mon, 20 Feb 2012 09:20:41 -0800
+Message-ID: <20120220172040.GJ18185@atomide.com>
+References: <1329320280-1621-1-git-send-email-peter.ujfalusi@ti.com>
+ <1329320280-1621-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1327327172-8411-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+In-Reply-To: <1329320280-1621-2-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On Mon, Jan 23, 2012 at 01:59:30PM +0000, Mark Brown wrote:
-> The wm8994_device_init() and wm8994_device_exit() functions were not
-> annotated as device init and exit functions, meaning they shouldn't
-> reference __devinitdata.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [120215 07:06]:
+> Convert the plat-omap/mcbsp.c driver to be proper platform driver.
+> Remove the omap_mcbsp_init function call which was called from
+> mach-omap1/2/mcbsp.c to register the platform driver for the just
+> created platform device in the same function.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
-> 
-> This is mostly just a warning fix for the second patch and doesn't seem
-> terribly critical otherwise so it should probably get merged along with
-> it.
-Fine with me as well.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Cheers,
-Samuel.
-
--- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+Acked-by: Tony Lindgren <tony@atomide.com>
