@@ -1,73 +1,239 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH] ASoC: pandora: switch clock back to internal on stop
-Date: Mon, 20 Feb 2012 12:50:26 +0200
-Message-ID: <CANOLnOPdDHimsiKFBVvDJcoaE2y9be=vzZj8hTQvbL2sOhgOgA@mail.gmail.com>
-References: <1329604795-24509-1-git-send-email-notasas@gmail.com>
-	<20120219063005.GA4517@opensource.wolfsonmicro.com>
-	<CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
-	<4F4217EC.7080806@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] Wrong latency in pulseaudio plugin breaks
+ Adobe Flash Player
+Date: Mon, 20 Feb 2012 12:45:02 +0100
+Message-ID: <4F42323E.1030204@canonical.com>
+References: <alpine.LFD.2.00.1202161015470.19707@lpc8.fields.utoronto.ca>
+	<4F3DAC41.4000602@canonical.com>
+	<alpine.LFD.2.00.1202162248280.21549@fields.fields.utoronto.ca>
+	<4F3E1A04.9080404@canonical.com>
+	<alpine.LFD.2.00.1202171351300.11808@lpc8.fields.utoronto.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <4F4217EC.7080806@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id B517F243AC
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 12:45:04 +0100 (CET)
+In-Reply-To: <alpine.LFD.2.00.1202171351300.11808@lpc8.fields.utoronto.ca>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Philip Spencer <pspencer@fields.utoronto.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 20, 2012 at 11:52 AM, Peter Ujfalusi <peter.ujfalusi@ti.com=
-> wrote:
-> On 02/19/2012 05:52 PM, Grazvydas Ignotas wrote:
->>> Might be an idea to do this in the McBSP driver - have it do the sw=
-itch
->>> transparently, then flip back when the port is brought up again?
+On 02/17/2012 08:36 PM, Philip Spencer wrote:
+> It seems you are right ... things are much more complicated than I
+> realized.
+
+Indeed. Welcome :-)
+
+>> Now; if an application start playback with an empty buffer (either by
+>> calling
+>> "trigger" or by setting a low start threshold), should we assume that
+>> 1) the
+>> application is going to stay almost empty all the time, like it seems
+>> Flash
+>> does in this scenario, or 2) fill it up completely and stay there (IIRC,
+>> mpg123 did this)?
 >>
->> Maybe, but I think pandora is the only one using external clock in
->> mainline
+>> Lowering tlength might be reasonable in scenario 1, but scenario 2
+>> will cause
+>> the client to block (trying to fill an already filled buffer) in ways
+>> that
+>> differs from the expected behaviour.
 >
-> I have patch on top of the mcbsp merge series which allows users
-> (developers) to switch between McBSP2 master/slave configuration on
-> Beagle. It will have two PCM:
-> 0 is the current configuration (twl4030 master, mcbsp2 slave)
-> 1 is the same as with pandora (twl4030 slave, mcbsp2 master - CLKS pi=
-n
-> is the source for the SRG).
-> With this I can help to track down the suspend issue you see on Pando=
-ra.
-> I hope.
+> Obviously the plugin needs to work properly for both scenarios -- and
+> indeed Flash itself could be in either scenario, depending on whether
+> it's receiving packets from the network smoothly or in bunches.
 
-Sounds good, I can wait for this I guess.
+This smooth vs bunches thing is something we haven't talked much about, 
+but I guess Flash would have some kind of latency adaption to try 
+determine whether packages are delayed, dropped, or on time and adjust 
+latency accordingly to how many percent of packages are in one category 
+or another?
 
-Slightly off-topic: would you mind getting OSS emulation working on
-OMAP? We talked about it some years back.. I'm still carrying this
-hack in pandora tree:
-http://git.openpandora.org/cgi-bin/gitweb.cgi?p=3Dpandora-kernel.git;a=3D=
-commitdiff;h=3D7717278f6e
+> I agree that it is unacceptable for the client to block if it's writing
+> fewer bytes than the buffer length it asked for. I did not realize
+> pulseaudio would do that.
 
-We have found in-kernel OSS emulation to have best compatibility and
-performance, and the later is important for a games machine with an
-aging SoC..
+At least it does if you use the simple API to access it. The 
+asynchronous API gives you a few options.
 
-The other issue with pandora on mainline is frequent buffer underflows
-just after the stream starts. Games tend to use tiny buffers with a
-goal to have low audio latency, and this often ends up with endless
-loop of stream start and underflow events. We used this hack on
-earlier kernels (the comment is probably not entirely correct, and
-fifo_samples should be multiplied by channels I guess):
-http://git.openpandora.org/cgi-bin/gitweb.cgi?p=3Dpandora-kernel.git;a=3D=
-commitdiff;h=3Dd3ef3adfa
+> I thought that, if there were more than
+> tlength bytes in the buffer, pulseaudio simply would not issue the "I
+> want more data!" callback to the plugin until the length dropped below
+> tlength/2, but that client was free to write, without blocking, as many
+> bytes as it wished up to maxlength. Apparently I was wrong.
 
-This can of course be fixed in a program itself, but the idea was to
-reduce effort needed to port things to pandora, and now I'll have to
-be carrying this for compatibility, but I wonder how that looks from
-mainline point of view.
+PulseAudio adjusts tlength upwards as it sees it needs to, to avoid 
+underruns. Maxlength only tells PA not to adjust tlength any further 
+than up to maxlength.
 
+> Next complication -- when I went to get a pulseaudio log of how the
+> latency rose when only prebuf was lowered, I found I had accidentally
+> been compiling the plugin when configure had been run against an older
+> pulseaudio version. Compiling it against pulseaudio 1.1 caused
+> everything to break again -- samples coming with no latency (good) but
+> with part of each sample cut off (very bad). I realized this is because
+> the plugin is now setting handle_underrun to 1 by default. With
+> handle_underrun turned off, I get the behaviour I saw before: works
+> perfectly with tlength lowered, but latency jumps up to 500ms when
+> tlength=500ms, even with prebuf lowered.
+>
+> Putting some trace statements into the plugin code, I see the following
+> sequence of events is happening:
+>
+> 1. Alsa initialized with buffer = 500ms, io period = 20ms,
+> start threshold = 20ms, 16 kHz audio, 2byte samples, 1 channel.
+>
+> 2. Flash writes 640 bytes (320 samples, 20ms) and these are sent by the
+> plugin to pulseaudio.
+>
+> 3. An *explicit* stream start is then called (so in this case the prebuf
+> setting is actually totally irrelevant!)
+>
+> 4. 11 milliseconds later, the plugin gets an underrun callback from
+> PulseAudio. (Note that at this point only half the sample will actually
+> have been played, so this is definitely connected to the "false alarm"
+> underrun discussions you pointed me to).
+>
+> 5. If the plugin's underrun handling is enabled, this causes the whole
+> stream to be closed and re-opened. Unplayed samples are lost, but the
+> next packet plays at exactly the right time. Result: in-sync, but
+> unacceptably distorted, audio.
+>
+> 6. If the plugin's underrun handling is disabled, nothing further happens.
+> Flash writes the next 640 bytes about 16ms after its first packet was
+> written (so well before the first 20ms have finished actually playing).
 
---=20
-Gra=C5=BEvydas
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I think the 4 ms margin here is quite tight; given that the threads 
+we're working with are normal priority. A small thing in the background, 
+like fetching new email or checking distribution updates or maybe even 
+flushing cache to disk can cause an underrun; regardless of whether 
+you're running PulseAudio or not.
+
+> 7. From then on in, there are *NO* underruns reported back to the plugin
+> from pulseaudio.
+>
+> 8. However, I hear several brief hiccups in playback, and the pulseaudio
+> latency very quickly increases to 500ms.
+
+Does 7 and 8 both apply to both underrun enabled and underrun disabled? 
+And if there are no underruns reported, how come every sample is cut off...?
+
+> I assume, then, that the tlength value also influences the buffering
+> between pulseaudio and the hardware sink, and it is this that is
+> underrunning and causing pulseaudio to raise the latency when it is
+> much larger than the fill level at which the client keeps the buffer.
+
+The buffer parameters affects the buffering between PulseAudio and the 
+hardware sink, yes.
+
+What bothers me is that I don't see either type of underrun in the logs 
+you provided. Underrun on PA - hardware looks something like:
+
+"alsa-sink.c: Underrun!"
+
+Underrun on client - PA looks something like:
+
+"protocol-native.c: Underrun on '<name>', 0 bytes in queue"
+
+There's something fishy here...
+
+> This means that something probably needs to be fixed in pulseaudio. For
+> the plugin, there are probably some things that could be changed but they
+> won't help me directly:
+>
+> - Definitely prebuf should be lowered if the client requests an explicit
+> start threshold, but this fix won't have any impact on my situation
+> since the stream is already being started explicitly.
+>
+> - Something should be done about that early false-alarm underrun.
+> Maybe the pulse_start routine should not do anything if fewer than n
+> IO periods' worth of data has been written yet (where n is to be
+> determined), just set a flag and have the start retried after enough
+> data is written? Or maybe an underrun detected when fewer than n IO
+> period's worth of data have been sent should be silently ignored?
+>
+> (If no such fix is made, though, I can easily work around things
+> by arranging my data stream so that Flash player always gets
+> sound packets in pairs and that will avoid this underrun. Indeed,
+> I note that the ffmpeg encoder by default always stuffs two
+> Speex packets together into a single packet and notes that Flash
+> Player doesn't play it properly otherwise; I wonder if this is
+> why?)
+>
+> Now I guess it's time to dig in to pulseaudio, and see whether (a) it
+> can be changed so that the client is free to write more than tlength
+> bytes without blocking, or (b) the buffering between pulseaudio and its
+> hardware sink can be adjusted to use prebuf or minreq or something when
+> the stream
+> is started early.
+
+I don't recommend trying (a). I think a lot of applications, including 
+those using alsa-plugins, is depending on blocking to work correctly. 
+(b) The person who wrote all this, Lennart Poettering, stopped working 
+on PulseAudio two years ago to work on systemd instead. Us who are 
+working on it now, still try to understand all details and consequences 
+of the buffering. You're welcome to try though, but don't expect it to 
+easy :-)
+
+>> So this is the usual problem with closed source applications: no
+>> application is bug free, but when the closed source application is
+>> broken, it's much harder to fix it. The sad reality is that by
+>> depending on a closed source application, you're putting yourself in
+>> this situation.
+>
+> I agree wholeheartedly about the drawback with closed source applications.
+> Unfortunately we don't really have any choice: we need something that can
+> work for anybody who has a browser and webcam, without the need for them
+> to install any special software from us, and until HTML5's device access
+> (camera/microphone) and WebSocket APIs have matured and become available
+> on a majority of browsers, Flash Player is pretty much the only choice.
+> I do look forward, though, to being able to ditch it in favour of an
+> all-in-browser, HTML5 solution in a few years once that technology is
+> ready.
+>
+> Besides, I really don't think there are any bugs in Flash here. It has
+> to try to deliver audio packets to the sound system as soon as they are
+> received and decoded from the network. It can't set a small IO buffer in
+> case it gets a large bunch of packets at once.
+
+It could set a small IO buffer, buffer them internally in flash and pump 
+out them every 20 ms when PA asks for more data.
+
+> It has to set an early
+> playback start threshold to minimize latency. So I really don't see what
+> else it can do (except maybe waiting until it sent the second packet to
+> start the stream, instead of starting it after only the first) -- do you
+> have any thoughts about what it could/should have been doing differently?
+
+I would go for the small buffer *and* have an almost filled buffer when 
+I start playback, with at least two periods filled. You could also 
+consider changing buffer sizes when circumstances change.
+
+But this is IMO a grey zone of what is wrong and right. I believe we 
+could and should do things in PulseAudio as well to make it handle 
+almost-empty client buffers better, and to not send underrun reports 
+until we're sure all samples have been played back.
+
+> Anyway, I will do some more digging into PulseAudio (and try to get a
+> detailed log of what's happening).
+
+Somewhat simplified: protocol-native.c would be the most interesting 
+file for the client-PA connection, and alsa-sink.c would be the most 
+interesting file for the PA-hardware connection.
+IIRC, there is a DEBUG_TIMING conditional that might be interesting to 
+turn on, and several commented out logs in protocol-native.c as well.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
