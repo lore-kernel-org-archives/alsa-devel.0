@@ -1,149 +1,78 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH] ASoC: pandora: switch clock back to internal on stop
-Date: Mon, 20 Feb 2012 17:34:20 +0200
-Message-ID: <CANOLnOPCtPX5nOpDV-YCjVpv42kiHWsd3=0NcKaUKmH3wZSekA@mail.gmail.com>
-References: <1329604795-24509-1-git-send-email-notasas@gmail.com>
-	<20120219063005.GA4517@opensource.wolfsonmicro.com>
-	<CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
-	<4F4217EC.7080806@ti.com>
-	<CANOLnOPdDHimsiKFBVvDJcoaE2y9be=vzZj8hTQvbL2sOhgOgA@mail.gmail.com>
-	<4F424A1E.9000502@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: imx/mxs: remove redundant SND_PCM
+	selection
+Date: Mon, 20 Feb 2012 07:46:31 -0800
+Message-ID: <20120220154628.GC3258@opensource.wolfsonmicro.com>
+References: <1329721524-28394-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <4F424A1E.9000502@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5158256388654125317=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A67E524375
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 16:46:38 +0100 (CET)
+In-Reply-To: <1329721524-28394-1-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 20, 2012 at 3:26 PM, Peter Ujfalusi <peter.ujfalusi@ti.com>=
- wrote:
-> On 02/20/2012 12:50 PM, Grazvydas Ignotas wrote:
->> Sounds good, I can wait for this I guess.
->
-> I just wonder why not just switch to twl4030 master scenario for
-> pandora? I know that there are products out there using this scenario=
- (I
-> mean real consumer devices), and AFAIK they work pretty well.
-> What is the main reason to keep pandora in McBSP master mode? What is
-> the benefit for the platform?
 
-Pandora uses 256*fs clock for it's external DAC, which was added for
-improved audio quality (mcbsp2 is connected there instead of twl).
-twl4030 can only provide 256*fs clock in slave mode. So twl4030 is not
-used for playback, but is still used for audio in.
+--===============5158256388654125317==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ctP54qlpMx3WjD+/"
+Content-Disposition: inline
 
-Speaking of which, there is crazy amount of twl4030 audio controls
-available that are not relevant to pandora, since these things are not
-connected, confusing the users. I think there were plans to hide
-snd_soc_dapm_nc_pin() marked things, but that never materialized?
 
-> Can you send the per domain to suspend
-> during audio playback?
+--ctP54qlpMx3WjD+/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I suppose not, pm_debug counters are not increasing while audio is
-playing. Is that supposed to be possible?
+On Mon, Feb 20, 2012 at 03:05:24PM +0800, Shawn Guo wrote:
+> SND_PCM is already selected by SND_SOC, there is no need for
+> SND_IMX_SOC and SND_MXS_SOC to select it again.
+>=20
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 
->> Slightly off-topic: would you mind getting OSS emulation working on
->> OMAP? We talked about it some years back.. I'm still carrying this
->> hack in pandora tree:
->> http://git.openpandora.org/cgi-bin/gitweb.cgi?p=3Dpandora-kernel.git=
-;a=3Dcommitdiff;h=3D7717278f6e
->
-> Hrm, yes I remember. Was it so that the OSS emulation calls hw_params
-> several times, each with different parameter to configure, or somethi=
-ng?
+Applied, thanks.
 
-Yes, OSS has separate ioctl's for setting rate, channels, etc, each of
-which translates separate hw_params call, and twl4030 only accepts
-first one, so most things end up unconfigured. What's worse the
-program isn't even told some parameters were not set because there is
-no error returned.
+--ctP54qlpMx3WjD+/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> If you do not have duplex operation this might be OK to do, but there
-> are cases when we return -EINVAL if a parameter is not correct...
-> To be honest I have not used OSS emulation for quite a long time, and
-> systems tend to use PulseAudio or AudioFlinger nowdays.
-> If it is really important for you we can take a look, it might bring
-> enhancements for other users as well at the end.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-At least for now we are using kernel OSS emulation, so it would be
-nice to have it working. PulseAudio was problematic some time back,
-maybe it's good now, but it's hard to imagine adding another audio
-layer would not affect performance. Additional latency or CPU use is
-not good for a games console, even if it's small.
+iQIcBAEBAgAGBQJPQmq6AAoJEBus8iNuMP3dfVsP/1hXAk9flN+BmIEyIgJLVKCs
+rNAeawiPez/f654b02aW8k86xstZhdjo7rZYDtiexQZ34H3wVAohSTMjsvBn62Zz
+0EDss94szOqhgQm99PJ92uo293WKg0jhhspmFoVQRnNEg7TKDAsr4cCHieFzaIpa
+IvNZT8eHZGERQx9+06MjTZaE1g9ua8R9yDp4KA7G9N99s0t51UvkRAjCRArla09U
+IyRTwISpDQwWswLhy2RexAPNi2xNeV88ozpfMMzQ5pt0Um3zgq5aeUeZMtSS9Tqx
+huSq23Umd5Yz4avM5lnee2aCW8CnN38+gATa2o5F1wT3gqM8HNXhIztQLFRM8TGr
+I6JyNxMqizUSBtLkwnqgGxe2NotGeomXTKDy0ppAGmE4m0kbdgyp4Q5nv8vxoWUq
+i7t3Tu1gy3XKA8PqdlFSjz8cd47Tk8sWQBYhJDm8d2jRgBIpM08XIKSXZOXMpSq6
+nrgAN+mdUB9Me/4EU3pOCvD8fLchFaMUK9eo0SvGiRK3PTjP257qAF9JP3Wrz8ik
+92HNEbAHmntUjnT4nmGE/yuW3KMer5iULGucr53usyTLp0EzF88RmlGjot2hML3n
+bbdAMOPAyEhJqHA04go/tEJH3lBz8x2K7yXFPOT6Gm/H2jSxTFkPrU3NzbOlDVE4
+z1au+G0/AwoWw0aLST7U
+=YvrB
+-----END PGP SIGNATURE-----
 
-> We also have the same mechanism in place in omap-mcbsp.c (to not allo=
-w
-> reconfiguration of the mcbsp port) so 'fixing' twl4030 might not be
-> enough for you.
+--ctP54qlpMx3WjD+/--
 
-True, it seems first hw_params matches all others in most cases so it
-was not an issue.
+--===============5158256388654125317==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->> We have found in-kernel OSS emulation to have best compatibility and
->> performance, and the later is important for a games machine with an
->> aging SoC..
->
-> Is it still the case?
 
-Well at least for performance I think it still is, and pandora is
-stuck with OMAP3s at least for a while more.
-
->> The other issue with pandora on mainline is frequent buffer underflo=
-ws
->> just after the stream starts. Games tend to use tiny buffers with a
->> goal to have low audio latency, and this often ends up with endless
->> loop of stream start and underflow events. We used this hack on
->> earlier kernels (the comment is probably not entirely correct, and
->> fifo_samples should be multiplied by channels I guess):
->> http://git.openpandora.org/cgi-bin/gitweb.cgi?p=3Dpandora-kernel.git=
-;a=3Dcommitdiff;h=3Dd3ef3adfa
->
-> So we want to make sure that application written at least FIFO amount=
- of
-> data into the buffer before we start the McBSP/DMA, right?
-
-I think it should be at least 2x fifo as IIRC underflow condition is
-triggered when there is nothing left to DMA.
-
-Some retro console emulators work like this:
-while (1) {
-  emulate the 'guest' CPU for 1 video frame
-  generate 1 video frame's worth of audio data and send to host hardwar=
-e
-  draw video frame, read controls, etc
-  sleep if there is time left
-}
-
-So in this case host audio hardware is always kept very close to
-underflow condition, but has very low audio latency. This doesn't work
-well with current mainline.
-
-> Not sure if it is a valid thing to just override the start_threshold.
-> But if we do something like this it might be better to have support i=
-n
-> the core (ASoC, or even in ALSA)..
-
-Sure, that would work for us too.
-
->> This can of course be fixed in a program itself, but the idea was to
->> reduce effort needed to port things to pandora, and now I'll have to
->> be carrying this for compatibility, but I wonder how that looks from
->> mainline point of view.
->
-> We can try to figure out something, but I have a feeling that this wo=
-uld
-> be useful for other platforms as well.
-
-Sounds promising.
-
---=20
-Gra=C5=BEvydas
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--===============5158256388654125317==--
