@@ -1,18 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 0/3] Coefficient configuration support
-Date: Mon, 20 Feb 2012 09:06:13 +0000
-Message-ID: <1329728773.3782.1.camel@odin>
-References: <20120218004909.GA6712@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: How to trigger a widget?
+Date: Mon, 20 Feb 2012 10:07:57 +0100
+Message-ID: <4F420D6D.4050500@metafoo.de>
+References: <D618B7A80E26984A9E4E1FD204983C1AA88700@nasanexd01d.na.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
-	[74.125.149.246]) by alsa0.perex.cz (Postfix) with SMTP id 84FF4243CC
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 10:06:17 +0100 (CET)
-Received: by mail-wi0-f179.google.com with SMTP id hj6so3027051wib.38
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 01:06:15 -0800 (PST)
-In-Reply-To: <20120218004909.GA6712@opensource.wolfsonmicro.com>
+Received: from smtp-out-025.synserver.de (smtp-out-025.synserver.de
+	[212.40.185.25]) by alsa0.perex.cz (Postfix) with ESMTP id A4981246F0
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 10:06:23 +0100 (CET)
+In-Reply-To: <D618B7A80E26984A9E4E1FD204983C1AA88700@nasanexd01d.na.qualcomm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: "Wang, Kuirong" <kuirongw@quicinc.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-02-17 at 16:49 -0800, Mark Brown wrote:
-> This series is only compile tested as yet, I'll probably get a chance to
-> test it shortly - it should work out so hopefully the review can overlap
-> usefully with the testing.
+On 02/20/2012 08:13 AM, Wang, Kuirong wrote:
+> As I saw many examples to use the snd_soc_dapm_enable_pin() to trigger a particular widget. But I saw the widget has to be like a speaker, mic, lineout, etc. Could I use the snd_soc_dapm_enable_pin() to trigger any type of widget I want?  I tried to use it to trigger a supply widget, but I never see it works even I did snd_soc_dapm_sync() after the enable_pin.  Could someone provide some inputs?
 > 
-> Mark Brown (3):
->       ASoC: core: Add SND_SOC_BYTES control for coefficient blocks
->       ASoC: core: Add support for masking out parts of coefficient blocks
->       ASoC: wm5100: Add DRC coefficient configuration
+> Appreciated your time.
 > 
->  include/sound/soc.h       |   27 +++++++++++
->  sound/soc/codecs/wm5100.c |    2 +
->  sound/soc/soc-core.c      |  110 +++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 139 insertions(+), 0 deletions(-)
+> Thanks,
+> 
+> Kuirong Wang
 
-All
+Hi,
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+snd_soc_dapm_force_enable_pin is probably what you are looking for.
+
+- Lars
