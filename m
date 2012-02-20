@@ -1,41 +1,48 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Random process lockup on ARM board:
- alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
-Date: Mon, 20 Feb 2012 08:54:16 +0100
-Message-ID: <4F41FC28.1070605@ladisch.de>
-References: <1329393691.6830.20.camel@jonspc> <1329512682.29051.1.camel@jonspc>
-	<1329570128.6670.0.camel@jonspc> <4F400BBF.9020707@ladisch.de>
-	<1329603022.1089.57.camel@jonspc>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC 00/11]O MAP/ASoC: Move and merge McBSP driver under ASoC
+Date: Mon, 20 Feb 2012 10:04:05 +0200
+Message-ID: <4F41FE75.4070003@ti.com>
+References: <1329320246-1548-1-git-send-email-peter.ujfalusi@ti.com> <CANOLnONVm47DmMv8MdU1Y_Nx-387SZ5MBHwjO4cxkQ_caJ5dWA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id CE173103CAC
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 08:51:31 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id E30B820BF7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 02:51:29 -0500 (EST)
-In-Reply-To: <1329603022.1089.57.camel@jonspc>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: jon@jonshouse.co.uk
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <CANOLnONVm47DmMv8MdU1Y_Nx-387SZ5MBHwjO4cxkQ_caJ5dWA@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jonathan Andrews wrote:
-> I've tried building alsalib in many ways, at the moment its :
-> $ ./configure --target=arm-linux --host=i686-linux --enable-shared --disable-static --without-pthread
+Hi Gra=C5=BEvydas,
 
-Try adding --disable-ucm and --disable-python.
+On 02/18/2012 11:43 PM, Grazvydas Ignotas wrote:
+> On Wed, Feb 15, 2012 at 5:37 PM, Peter Ujfalusi <peter.ujfalusi@ti.co=
+m> wrote:
+>> Comments, testers are welcome...
+>=20
+> Tried these on current mainline and they break sound on pandora:
+> # aplay /dev/urandom
+> Playing raw data '/dev/urandom' : Unsigned 8 bit, Rate 8000 Hz, Mono
+> [   81.306304] omap-mcbsp: clks: could not clk_set_parent() to pad_fc=
+k
+> [   81.313110] ASoC omap3pandora: can't set cpu system clock
+> [   81.319244] asoc: machine hw_params failed
+> aplay: set_params:1022: Unable to install hw params:
+>=20
+> I've retried without these patches to confirm it works like that, and=
+ it did.
 
+Thanks for testing the series.
+The issue is that I forgot to remove the pm_runtime_put/get_sync calls
+from the moved mcbsp.c file.
+Can you manually remove these calls from sound/soc/omap/mcbsp.c ?
+It will fix the issue I believe.
+I will update the series.
 
-Regards,
-Clemens
+--=20
+P=C3=A9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
