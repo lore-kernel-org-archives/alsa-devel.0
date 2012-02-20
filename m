@@ -1,16 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: How to trigger a widget?
-Date: Mon, 20 Feb 2012 10:07:57 +0100
-Message-ID: <4F420D6D.4050500@metafoo.de>
-References: <D618B7A80E26984A9E4E1FD204983C1AA88700@nasanexd01d.na.qualcomm.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: io: Retrieve val_bytes from the
+	regmap API
+Date: Mon, 20 Feb 2012 09:06:22 +0000
+Message-ID: <1329728782.3782.3.camel@odin>
+References: <1329518062-6693-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-025.synserver.de (smtp-out-025.synserver.de
-	[212.40.185.25]) by alsa0.perex.cz (Postfix) with ESMTP id A4981246F0
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 10:06:23 +0100 (CET)
-In-Reply-To: <D618B7A80E26984A9E4E1FD204983C1AA88700@nasanexd01d.na.qualcomm.com>
+Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
+	[74.125.149.75]) by alsa0.perex.cz (Postfix) with SMTP id 8AE13243CC
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 10:06:25 +0100 (CET)
+Received: by mail-we0-f177.google.com with SMTP id a10so4633263wer.8
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 01:06:24 -0800 (PST)
+In-Reply-To: <1329518062-6693-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,21 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Wang, Kuirong" <kuirongw@quicinc.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 02/20/2012 08:13 AM, Wang, Kuirong wrote:
-> As I saw many examples to use the snd_soc_dapm_enable_pin() to trigger a particular widget. But I saw the widget has to be like a speaker, mic, lineout, etc. Could I use the snd_soc_dapm_enable_pin() to trigger any type of widget I want?  I tried to use it to trigger a supply widget, but I never see it works even I did snd_soc_dapm_sync() after the enable_pin.  Could someone provide some inputs?
+On Fri, 2012-02-17 at 14:34 -0800, Mark Brown wrote:
+> Allow us to build infrastructure which needs to know the size of a value
+> without requiring regmap based drivers to supply this information to both
+> ASoC and regmap by asking regmap for the value.
 > 
-> Appreciated your time.
-> 
-> Thanks,
-> 
-> Kuirong Wang
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Hi,
-
-snd_soc_dapm_force_enable_pin is probably what you are looking for.
-
-- Lars
+Acked-by: Liam Girdwood <lrg@ti.com>
