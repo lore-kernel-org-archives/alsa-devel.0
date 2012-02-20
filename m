@@ -1,86 +1,146 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: pandora: switch clock back to internal on stop
-Date: Mon, 20 Feb 2012 15:26:54 +0200
-Message-ID: <4F424A1E.9000502@ti.com>
-References: <1329604795-24509-1-git-send-email-notasas@gmail.com> <20120219063005.GA4517@opensource.wolfsonmicro.com> <CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com> <4F4217EC.7080806@ti.com> <CANOLnOPdDHimsiKFBVvDJcoaE2y9be=vzZj8hTQvbL2sOhgOgA@mail.gmail.com>
+Subject: [PATCH] ASoC: twl4030: Debug code cleanup
+Date: Mon, 20 Feb 2012 16:12:02 +0200
+Message-ID: <1329747122-20878-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <CANOLnOPdDHimsiKFBVvDJcoaE2y9be=vzZj8hTQvbL2sOhgOgA@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
+	[74.125.149.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B9652414D
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 15:12:21 +0100 (CET)
+Received: by lagy4 with SMTP id y4so3816146lag.25
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 06:12:05 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/20/2012 12:50 PM, Grazvydas Ignotas wrote:
-> Sounds good, I can wait for this I guess.
+Replace the printk(KERN_ERR* instances with dev_err in the driver.
+While we are here clean up some of the debug messages as well.
 
-I just wonder why not just switch to twl4030 master scenario for
-pandora? I know that there are products out there using this scenario (=
-I
-mean real consumer devices), and AFAIK they work pretty well.
-What is the main reason to keep pandora in McBSP master mode? What is
-the benefit for the platform? Can you send the per domain to suspend
-during audio playback?
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/codecs/twl4030.c |   33 +++++++++++++++++----------------
+ 1 files changed, 17 insertions(+), 16 deletions(-)
 
-> Slightly off-topic: would you mind getting OSS emulation working on
-> OMAP? We talked about it some years back.. I'm still carrying this
-> hack in pandora tree:
-> http://git.openpandora.org/cgi-bin/gitweb.cgi?p=3Dpandora-kernel.git;=
-a=3Dcommitdiff;h=3D7717278f6e
-
-Hrm, yes I remember. Was it so that the OSS emulation calls hw_params
-several times, each with different parameter to configure, or something=
-?
-
-If you do not have duplex operation this might be OK to do, but there
-are cases when we return -EINVAL if a parameter is not correct...
-To be honest I have not used OSS emulation for quite a long time, and
-systems tend to use PulseAudio or AudioFlinger nowdays.
-If it is really important for you we can take a look, it might bring
-enhancements for other users as well at the end.
-
-We also have the same mechanism in place in omap-mcbsp.c (to not allow
-reconfiguration of the mcbsp port) so 'fixing' twl4030 might not be
-enough for you.
-
-> We have found in-kernel OSS emulation to have best compatibility and
-> performance, and the later is important for a games machine with an
-> aging SoC..
-
-Is it still the case?
-
-> The other issue with pandora on mainline is frequent buffer underflow=
-s
-> just after the stream starts. Games tend to use tiny buffers with a
-> goal to have low audio latency, and this often ends up with endless
-> loop of stream start and underflow events. We used this hack on
-> earlier kernels (the comment is probably not entirely correct, and
-> fifo_samples should be multiplied by channels I guess):
-> http://git.openpandora.org/cgi-bin/gitweb.cgi?p=3Dpandora-kernel.git;=
-a=3Dcommitdiff;h=3Dd3ef3adfa
-
-So we want to make sure that application written at least FIFO amount o=
-f
-data into the buffer before we start the McBSP/DMA, right?
-Not sure if it is a valid thing to just override the start_threshold.
-But if we do something like this it might be better to have support in
-the core (ASoC, or even in ALSA)..
-
-> This can of course be fixed in a program itself, but the idea was to
-> reduce effort needed to port things to pandora, and now I'll have to
-> be carrying this for compatibility, but I wonder how that looks from
-> mainline point of view.
-
-We can try to figure out something, but I have a feeling that this woul=
-d
-be useful for other platforms as well.
-
---=20
-P=C3=A9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index a193f5f..df2dd19 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1002,8 +1002,8 @@ static int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned short mask, bitmask;
+ 
+ 	if (twl4030->configured) {
+-		printk(KERN_ERR "twl4030 operation mode cannot be "
+-			"changed on-the-fly\n");
++		dev_err(codec->dev,
++			"operation mode cannot be changed on-the-fly\n");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -1800,7 +1800,7 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
+ 		mode |= TWL4030_APLL_RATE_96000;
+ 		break;
+ 	default:
+-		printk(KERN_ERR "TWL4030 hw params: unknown rate %d\n",
++		dev_err(codec->dev, "%s: unknown rate %d\n", __func__,
+ 			params_rate(params));
+ 		return -EINVAL;
+ 	}
+@@ -1817,7 +1817,7 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
+ 		format |= TWL4030_DATA_WIDTH_32S_24W;
+ 		break;
+ 	default:
+-		printk(KERN_ERR "TWL4030 hw params: unknown format %d\n",
++		dev_err(codec->dev, "%s: unknown format %d\n", __func__,
+ 			params_format(params));
+ 		return -EINVAL;
+ 	}
+@@ -1867,13 +1867,13 @@ static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	case 38400000:
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "Unsupported APLL mclk: %u\n", freq);
++		dev_err(codec->dev, "Unsupported HFCLKIN: %u\n", freq);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if ((freq / 1000) != twl4030->sysclk) {
+ 		dev_err(codec->dev,
+-			"Mismatch in APLL mclk: %u (configured: %u)\n",
++			"Mismatch in HFCLKIN: %u (configured: %u)\n",
+ 			freq, twl4030->sysclk * 1000);
+ 		return -EINVAL;
+ 	}
+@@ -1983,9 +1983,9 @@ static int twl4030_voice_startup(struct snd_pcm_substream *substream,
+ 	 * not available.
+ 	 */
+ 	if (twl4030->sysclk != 26000) {
+-		dev_err(codec->dev, "The board is configured for %u Hz, while"
+-			"the Voice interface needs 26MHz APLL mclk\n",
+-			twl4030->sysclk * 1000);
++		dev_err(codec->dev,
++			"%s: HFCLKIN is %u KHz, voice interface needs 26MHz\n",
++			__func__, twl4030->sysclk);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1996,8 +1996,8 @@ static int twl4030_voice_startup(struct snd_pcm_substream *substream,
+ 		& TWL4030_OPT_MODE;
+ 
+ 	if (mode != TWL4030_OPTION_2) {
+-		printk(KERN_ERR "TWL4030 voice startup: "
+-			"the codec mode is not option2\n");
++		dev_err(codec->dev, "%s: the codec mode is not option2\n",
++			__func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -2038,7 +2038,7 @@ static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
+ 		mode |= TWL4030_SEL_16K;
+ 		break;
+ 	default:
+-		printk(KERN_ERR "TWL4030 voice hw params: unknown rate %d\n",
++		dev_err(codec->dev, "%s: unknown rate %d\n", __func__,
+ 			params_rate(params));
+ 		return -EINVAL;
+ 	}
+@@ -2067,13 +2067,14 @@ static int twl4030_voice_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (freq != 26000000) {
+-		dev_err(codec->dev, "Unsupported APLL mclk: %u, the Voice"
+-			"interface needs 26MHz APLL mclk\n", freq);
++		dev_err(codec->dev,
++			"%s: HFCLKIN is %u KHz, voice interface needs 26MHz\n",
++			__func__, freq / 1000);
+ 		return -EINVAL;
+ 	}
+ 	if ((freq / 1000) != twl4030->sysclk) {
+ 		dev_err(codec->dev,
+-			"Mismatch in APLL mclk: %u (configured: %u)\n",
++			"Mismatch in HFCLKIN: %u (configured: %u)\n",
+ 			freq, twl4030->sysclk * 1000);
+ 		return -EINVAL;
+ 	}
+@@ -2221,7 +2222,7 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
+ 
+ 	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
+ 	if (twl4030 == NULL) {
+-		printk("Can not allocate memroy\n");
++		dev_err(codec->dev, "Can not allocate memroy\n");
+ 		return -ENOMEM;
+ 	}
+ 	snd_soc_codec_set_drvdata(codec, twl4030);
+-- 
+1.7.8.4
