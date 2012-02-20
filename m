@@ -1,56 +1,50 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [RFC 00/11]O MAP/ASoC: Move and merge McBSP driver under ASoC
-Date: Mon, 20 Feb 2012 22:35:38 +0200
-Message-ID: <CANOLnOM9nJ-ukM6z6w7uv8obSc+JO-0EbcSotwNKqW6o7tZNCA@mail.gmail.com>
-References: <1329320246-1548-1-git-send-email-peter.ujfalusi@ti.com>
-	<CANOLnONVm47DmMv8MdU1Y_Nx-387SZ5MBHwjO4cxkQ_caJ5dWA@mail.gmail.com>
-	<4F41FE75.4070003@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: usb-audio: Correct way to do a mixer quirk?
+Date: Mon, 20 Feb 2012 22:40:25 +0100
+Message-ID: <4F42BDC9.4040605@ladisch.de>
+References: <alpine.LNX.2.01.1202192059040.7408@stax.localdomain>
+	<4F41FF5F.8040409@ladisch.de>
+	<alpine.LNX.2.01.1202201945150.10992@stax.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <4F41FE75.4070003@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id B46C0103DB4
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 22:41:06 +0100 (CET)
+Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id E2850211AC
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 16:41:03 -0500 (EST)
+In-Reply-To: <alpine.LNX.2.01.1202201945150.10992@stax.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Hills <mark@pogo.org.uk>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 20, 2012 at 10:04 AM, Peter Ujfalusi <peter.ujfalusi@ti.com=
-> wrote:
-> Hi Gra=C5=BEvydas,
->
-> On 02/18/2012 11:43 PM, Grazvydas Ignotas wrote:
->> On Wed, Feb 15, 2012 at 5:37 PM, Peter Ujfalusi <peter.ujfalusi@ti.c=
-om> wrote:
->>> Comments, testers are welcome...
+Mark Hills wrote:
+> On Mon, 20 Feb 2012, Clemens Ladisch wrote:
+>> Mark Hills wrote:
+>>> The Electrix Ebox-44 is a new USB interface, but the MIXER_UNIT descriptor
+>>> is broken and refers to a non-existing unit_id.
 >>
->> Tried these on current mainline and they break sound on pandora:
->> # aplay /dev/urandom
->> Playing raw data '/dev/urandom' : Unsigned 8 bit, Rate 8000 Hz, Mono
->> [ =C2=A0 81.306304] omap-mcbsp: clks: could not clk_set_parent() to =
-pad_fck
->> [ =C2=A0 81.313110] ASoC omap3pandora: can't set cpu system clock
->> [ =C2=A0 81.319244] asoc: machine hw_params failed
->> aplay: set_params:1022: Unable to install hw params:
->>
->> I've retried without these patches to confirm it works like that, an=
-d it did.
+>> I'd suggest to change the code to not abort if a unit doesn't exist.
 >
-> Thanks for testing the series.
-> The issue is that I forgot to remove the pm_runtime_put/get_sync call=
-s
-> from the moved mcbsp.c file.
-> Can you manually remove these calls from sound/soc/omap/mcbsp.c ?
-> It will fix the issue I believe.
+> It would seem a little strange to skip over the error for one specific
+> condition to accomodate a specific device -- when the rest of the code
+> does not generally do this?
 
-Yup that helped, playback and recording on OMAP3 pandora
-Tested-by: Grazvydas Ignotas <notasas@gmail.com>
+It's still possible to complain about the broken firmware, but there is
+no reason to prevent the user from accessing the PCM streams and all
+other mixer controls just because one descriptors happens to be wrong.
 
 
---=20
-Gra=C5=BEvydas
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Clemens
