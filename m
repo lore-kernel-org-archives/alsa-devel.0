@@ -1,43 +1,55 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Direct use of the DMA buffer?
-Date: Mon, 20 Feb 2012 10:25:57 +0100
-Message-ID: <4F4211A5.7050104@ivitera.com>
-References: <4F4181AF.1060303@ivitera.com> <4F420017.70508@ladisch.de>
-	<4F420694.6040902@ivitera.com> <4F4210A6.8010902@perex.cz>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: pandora: switch clock back to internal on stop
+Date: Mon, 20 Feb 2012 11:52:44 +0200
+Message-ID: <4F4217EC.7080806@ti.com>
+References: <1329604795-24509-1-git-send-email-notasas@gmail.com> <20120219063005.GA4517@opensource.wolfsonmicro.com> <CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id 98A79246EE
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2012 10:25:59 +0100 (CET)
-In-Reply-To: <4F4210A6.8010902@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 20.2.2012 10:21, Jaroslav Kysela napsal(a):
->>
->> Clemens, thanks a lot for the information. How does it work when the
->> alsa-lib chain contains plugins, such as plug, rate, etc.? I would
->> assume the application circumvents these.
-> 
-> Nope. The mmap commit mechanism was introduced to keep the plugin
-> interface functional. The direct mmap access to the DMA buffer is only
-> applied for the direct hw: devices. If a plugin is used inside alsa-lib,
-> the application talks to the plugin chain (it means that an intermediate
-> buffer for samples can be allocated to let things working).
-> 
+On 02/19/2012 05:52 PM, Grazvydas Ignotas wrote:
+>> Might be an idea to do this in the McBSP driver - have it do the swi=
+tch
+>> transparently, then flip back when the port is brought up again?
+>=20
+> Maybe, but I think pandora is the only one using external clock in
+> mainline
 
-Jaroslav, thanks a lot for the clarification.
+I have patch on top of the mcbsp merge series which allows users
+(developers) to switch between McBSP2 master/slave configuration on
+Beagle. It will have two PCM:
+0 is the current configuration (twl4030 master, mcbsp2 slave)
+1 is the same as with pandora (twl4030 slave, mcbsp2 master - CLKS pin
+is the source for the SRG).
+With this I can help to track down the suspend issue you see on Pandora=
+=2E
+I hope.
 
-Pavel.
+> and mcbsp currently doesn't track this state, just does a
+> register write.
+
+I was also thinking that this should be handled by the mcbsp driver.
+I'm really not sure why we need to do this - it might be clock/hwmod
+issue at the end.
+We could do this unconditionally when all streams has been stopped on
+the mcbsp port IMHO.
+
+> If you still prefer it on mcbsp side, I can do it
+> after Peter's mcbsp merge work is finished I guess.
+
+I'll wait for Janusz for OMAP1 results before I send the v2 series.
+So far so good: now the Pandora like configuration also works.
+
+--=20
+P=C3=A9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
