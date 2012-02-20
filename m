@@ -1,55 +1,30 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: pandora: switch clock back to internal on stop
-Date: Mon, 20 Feb 2012 11:52:44 +0200
-Message-ID: <4F4217EC.7080806@ti.com>
-References: <1329604795-24509-1-git-send-email-notasas@gmail.com> <20120219063005.GA4517@opensource.wolfsonmicro.com> <CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC 00/11]O MAP/ASoC: Move and merge McBSP driver under ASoC
+Date: Mon, 20 Feb 2012 11:15:26 +0100
+Message-ID: <2709954.pNx1BYjJOd@vclass>
+References: <1329320280-1621-1-git-send-email-peter.ujfalusi@ti.com> <CAPo=G1z6H+ZXd-cmYSpKXC-XNci7=iUz2he62ze9MyErkmUfOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <CANOLnOO=UMKJ1CKXKzP5LC_rttxWYRo2yMe9M7PtSL7eV1+GxA@mail.gmail.com>
+In-Reply-To: <CAPo=G1z6H+ZXd-cmYSpKXC-XNci7=iUz2he62ze9MyErkmUfOA@mail.gmail.com>
 Sender: linux-omap-owner@vger.kernel.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
+To: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/19/2012 05:52 PM, Grazvydas Ignotas wrote:
->> Might be an idea to do this in the McBSP driver - have it do the swi=
-tch
->> transparently, then flip back when the port is brought up again?
->=20
-> Maybe, but I think pandora is the only one using external clock in
-> mainline
+On Wednesday 15 of February 2012 17:56:15 Ujfalusi, Peter wrote:
+> Hi,
+> 
+> CC-ing Janusz, since he is the only one I know who have, and use OMAP1
+> with audio...
+> Janusz: if your time allows would you be able to test this series on
+> OMAP1 (it compiles...)?
 
-I have patch on top of the mcbsp merge series which allows users
-(developers) to switch between McBSP2 master/slave configuration on
-Beagle. It will have two PCM:
-0 is the current configuration (twl4030 master, mcbsp2 slave)
-1 is the same as with pandora (twl4030 slave, mcbsp2 master - CLKS pin
-is the source for the SRG).
-With this I can help to track down the suspend issue you see on Pandora=
-=2E
-I hope.
+for OMAP1:
 
-> and mcbsp currently doesn't track this state, just does a
-> register write.
+Tested-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-I was also thinking that this should be handled by the mcbsp driver.
-I'm really not sure why we need to do this - it might be clock/hwmod
-issue at the end.
-We could do this unconditionally when all streams has been stopped on
-the mcbsp port IMHO.
+Thanks,
+Janusz
 
-> If you still prefer it on mcbsp side, I can do it
-> after Peter's mcbsp merge work is finished I guess.
-
-I'll wait for Janusz for OMAP1 results before I send the v2 series.
-So far so good: now the Pandora like configuration also works.
-
---=20
-P=C3=A9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
