@@ -1,139 +1,74 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH] tea575x: fix HW seek
-Date: Tue, 21 Feb 2012 10:44:14 +0100
-Message-ID: <201202211044.14925.hverkuil@xs4all.nl>
-References: <201202181745.49819.linux@rainbow-software.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: twl4030: Debug code cleanup
+Date: Tue, 21 Feb 2012 09:59:27 +0000
+Message-ID: <20120221095926.GD3079@opensource.wolfsonmicro.com>
+References: <1329809660-22077-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201202181745.49819.linux@rainbow-software.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2375081911058071334=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 532512417B
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2012 10:59:31 +0100 (CET)
+In-Reply-To: <1329809660-22077-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday, February 18, 2012 17:45:45 Ondrej Zary wrote:
-> Fix HW seek in TEA575x to work properly:
->  - a delay must be present after search start and before first register read
->    or the seek does weird things
->  - when the search stops, the new frequency is not available immediately, we
->    must wait until it appears in the register (fortunately, we can clear the
->    frequency bits when starting the search as it starts at the frequency
->    currently set, not from the value written)
->  - sometimes, seek remains on the current frequency (or moves only a little),
->    so repeat it until it moves by at least 50 kHz
-> 
-> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> 
-> --- a/sound/i2c/other/tea575x-tuner.c
-> +++ b/sound/i2c/other/tea575x-tuner.c
-> @@ -89,7 +89,7 @@ static void snd_tea575x_write(struct snd_tea575x *tea, unsigned int val)
->  		tea->ops->set_pins(tea, 0);
->  }
->  
-> -static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
-> +static u32 snd_tea575x_read(struct snd_tea575x *tea)
->  {
->  	u16 l, rdata;
->  	u32 data = 0;
-> @@ -120,6 +120,27 @@ static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
->  	return data;
->  }
->  
-> +static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-> +{
-> +	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
-> +
-> +	if (freq == 0) {
-> +		tea->freq = 0;
 
-Wouldn't it be better to return -EBUSY in this case? VIDIOC_G_FREQUENCY
-should not return frequencies outside the valid frequency range. In this case
-returning -EBUSY seems to make more sense to me.
+--===============2375081911058071334==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9UV9rz0O2dU/yYYn"
+Content-Disposition: inline
 
-I'm proposing adding this patch:
 
-diff --git a/sound/i2c/other/tea575x-tuner.c b/sound/i2c/other/tea575x-tuner.c
-index 474bb81..02da22f 100644
---- a/sound/i2c/other/tea575x-tuner.c
-+++ b/sound/i2c/other/tea575x-tuner.c
-@@ -120,14 +120,12 @@ static u32 snd_tea575x_read(struct snd_tea575x *tea)
- 	return data;
- }
- 
--static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-+static int snd_tea575x_get_freq(struct snd_tea575x *tea)
- {
- 	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
- 
--	if (freq == 0) {
--		tea->freq = 0;
--		return;
--	}
-+	if (freq == 0)
-+		return -EBUSY;
- 
- 	/* freq *= 12.5 */
- 	freq *= 125;
-@@ -139,6 +137,7 @@ static void snd_tea575x_get_freq(struct snd_tea575x *tea)
- 		freq -= TEA575X_FMIF;
- 
- 	tea->freq = clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
-+	return 0;
- }
- 
- static void snd_tea575x_set_freq(struct snd_tea575x *tea)
-@@ -220,14 +219,15 @@ static int vidioc_g_frequency(struct file *file, void *priv,
- 					struct v4l2_frequency *f)
- {
- 	struct snd_tea575x *tea = video_drvdata(file);
-+	int ret = 0;
- 
- 	if (f->tuner != 0)
- 		return -EINVAL;
- 	f->type = V4L2_TUNER_RADIO;
- 	if (!tea->cannot_read_data)
--		snd_tea575x_get_freq(tea);
-+		ret = snd_tea575x_get_freq(tea);
- 	f->frequency = tea->freq;
--	return 0;
-+	return ret;
- }
- 
- static int vidioc_s_frequency(struct file *file, void *priv,
-@@ -250,11 +250,14 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
- 	struct snd_tea575x *tea = video_drvdata(file);
- 	int i, old_freq;
- 	unsigned long timeout;
-+	int ret;
- 
- 	if (tea->cannot_read_data)
- 		return -ENOTTY;
- 
--	snd_tea575x_get_freq(tea);
-+	ret = snd_tea575x_get_freq(tea);
-+	if (ret)
-+		return ret;
- 	old_freq = tea->freq;
- 	/* clear the frequency, HW will fill it in */
- 	tea->val &= ~TEA575X_BIT_FREQ_MASK;
-@@ -278,8 +281,8 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
- 			/* Found a frequency, wait until it can be read */
- 			for (i = 0; i < 100; i++) {
- 				msleep(10);
--				snd_tea575x_get_freq(tea);
--				if (tea->freq != 0) /* available */
-+				ret = snd_tea575x_get_freq(tea);
-+				if (ret == 0) /* available */
- 					break;
- 			}
- 			/* if we moved by less than 50 kHz, continue seeking */
+--9UV9rz0O2dU/yYYn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If you are OK with this, then I'll put everything together and make a final
-pull request.
+On Tue, Feb 21, 2012 at 09:34:20AM +0200, Peter Ujfalusi wrote:
+> Replace the printk(KERN_ERR* instances with dev_err in the driver.
+> While we are here clean up some of the debug messages as well.
 
-Regards,
+Applied, thanks.
 
-	Hans
+--9UV9rz0O2dU/yYYn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPQ2r3AAoJEBus8iNuMP3dBXMP/RtwR4j+hySXLAlcbfD4aFmm
+vIIbLYP5p2cfrUJYd0zO+wSr7xvie29AQLbPGZxsqtE+Nko+LaxliYTCQz2NEAcT
+tfxEtSQMjUjNOq2qQ1QBEg62qyZyHEKudsiiS7NBDJe3Ie2qg5ebptqEN/mLuKwy
+iBAbJFW/3LohSnHgKMEE66zK0HDtSK+0k56XiY362pDfbnYBcflBRR+enXD8vLPj
+Fui3CzCzRyY+ON4AShNSrt6RCXJez3+VLP6kv/AWH6bj0nicDZr5Qw5GwUtEeoxw
+Hac5LV3P8a0aqxIbdCvP2I7d6hH7NwovD67Lh4z6FBQnCSwY3ZZ56PFW/6msQjyQ
+Kj409uzKJBc8NQb4I/5lTDwn8KM4cKkxgZKV6muP0rC67WZr3PjqQ0mRn+3Aprly
+g6qJeX0jNTKrvHS5jPHQKSgjaQCPJ1ECqOfjGFKJ/pNtSD9Vw0hgP+yLC7YyyWzJ
+Iz4ijIEnhlA2aOcQysNDcxS3j9r8q641Lj+vne8Yce9mS08L8xW+sJMHK0Xu/xNy
+NI7NY1c1lnXwk3bH2ao0jrK9hVVrMxbZRC/9JqUnPhuYAdYQqhfi/zd5k6o5W4y/
+HsLWwbJuYphNg25lFSmFZ3vWcWc0f5hYIb20FyGncWGG8Zz41Usl42IVI9DcXKt5
+pyIMNqsa2QnwiyQnQwKf
+=YHIp
+-----END PGP SIGNATURE-----
+
+--9UV9rz0O2dU/yYYn--
+
+--===============2375081911058071334==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2375081911058071334==--
