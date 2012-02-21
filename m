@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8776: Add WM8775 device ID to the
-	WM8776
-Date: Tue, 21 Feb 2012 09:12:56 +0000
-Message-ID: <1329815576-20930-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_hubs: Convert headphone driver to
+	output driver widget
+Date: Tue, 21 Feb 2012 09:38:18 +0000
+Message-ID: <1329817098-6845-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 49133103DA5
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2012 10:13:00 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7D75924149
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2012 10:38:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +23,29 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The WM8775 is register compatible with the WM8776 so can be supported with
-the same driver though it is an ADC only part. Add the device ID to the
-WM8776 driver, further updates will be added in the future.
+Mostly for neatness, though it may help with sequencing in some
+situations.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8776.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm_hubs.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
-index 33e97d1..a19db5a 100644
---- a/sound/soc/codecs/wm8776.c
-+++ b/sound/soc/codecs/wm8776.c
-@@ -30,6 +30,11 @@
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 9742c66..82b7e9d 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -670,9 +670,8 @@ SND_SOC_DAPM_PGA("Right Output PGA", WM8993_POWER_MANAGEMENT_3, 6, 0, NULL, 0),
  
- #include "wm8776.h"
+ SND_SOC_DAPM_SUPPLY("Headphone Supply", SND_SOC_NOPM, 0, 0, hp_supply_event, 
+ 		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
+-SND_SOC_DAPM_PGA_E("Headphone PGA", SND_SOC_NOPM, 0, 0,
+-		   NULL, 0,
+-		   hp_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_OUT_DRV_E("Headphone PGA", SND_SOC_NOPM, 0, 0, NULL, 0,
++		       hp_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
  
-+enum wm8776_chip_type {
-+	WM8775 = 1,
-+	WM8776,
-+};
-+
- /* codec private data */
- struct wm8776_priv {
- 	enum snd_soc_control_type control_type;
-@@ -512,7 +517,8 @@ static __devexit int wm8776_i2c_remove(struct i2c_client *client)
- }
- 
- static const struct i2c_device_id wm8776_i2c_id[] = {
--	{ "wm8776", 0 },
-+	{ "wm8775", WM8775 },
-+	{ "wm8776", WM8776 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, wm8776_i2c_id);
+ SND_SOC_DAPM_MIXER("Earpiece Mixer", SND_SOC_NOPM, 0, 0,
+ 		   earpiece_mixer, ARRAY_SIZE(earpiece_mixer)),
 -- 
 1.7.9
