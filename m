@@ -1,113 +1,52 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] MFD/Input/ASoC: twl6040 kconfig fixes
-Date: Tue, 21 Feb 2012 12:46:11 +0200
-Message-ID: <1329821171-3769-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Enable headphone startup mode 1
+	for WM1811 and WM8958
+Date: Tue, 21 Feb 2012 10:51:34 +0000
+Message-ID: <1329821494-23133-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Return-path: <linux-next-owner@vger.kernel.org>
-Sender: linux-next-owner@vger.kernel.org
-To: Samuel Ortiz <sameo@linux.intel.com>, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Dmitry Torokhov <dtor@mail.ru>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BBC1324373
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2012 11:51:37 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-To avoid breaking x86_64 allmodconfig build the Kconfig files need to be
-changed.
-Change the dependency graph of the twl6040 stack.
+The latest recommendation for optimal performance.
 
-Stephen Rothwell wrote:
-> Hi Samuel,
->
-> After merging the mfd tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
->
-> drivers/built-in.o: In function `twl6040_driver_init':
-> twl6040-core.c:(.init.text+0xb147): undefined reference to `i2c_register_driver'
-> drivers/built-in.o: In function `twl6040_probe':
-> twl6040-core.c:(.devinit.text+0x7f22): undefined reference to `regmap_init_i2c'
-> drivers/built-in.o: In function `twl6040_driver_exit':
-> twl6040-core.c:(.exit.text+0x67a): undefined reference to `i2c_del_driver'
->
->
-> Caused by commit ded0df851077 ("mfd: Convert twl6040 to an i2c driver,
-> and separate it from twl core").
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
+ sound/soc/codecs/wm8994.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-Hi Stephen, Samuel,
-
-This patch will fix the build failure with x86_64 allmodconfig, and it will
-still work on the target platform.
-
-As a note: this series might not be going via the mfd tree at the end since
-some of the dependencies are going via sound tree. We are discussing the way
-forward.
-
-Regards,
-Peter
-
- drivers/input/misc/Kconfig |    2 +-
- drivers/mfd/Kconfig        |   11 +++++++++--
- sound/soc/codecs/Kconfig   |    3 +--
- 3 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 6a9ee24..9450d4c 100644
---- a/drivers/input/misc/Kconfig
-+++ b/drivers/input/misc/Kconfig
-@@ -368,7 +368,7 @@ config INPUT_TWL4030_VIBRA
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 19de7d5..aa16477 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3478,11 +3478,13 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
  
- config INPUT_TWL6040_VIBRA
- 	tristate "Support for TWL6040 Vibrator"
--	select TWL6040_CORE
-+	depends on TWL6040_CORE
- 	select INPUT_FF_MEMLESS
- 	help
- 	  This option enables support for TWL6040 Vibrator Driver.
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 0e48997..ea7c36f 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -266,10 +266,17 @@ config TWL6030_PWM
- 	  This is used to control charging LED brightness.
+ 	case WM8958:
+ 		wm8994->hubs.dcs_readback_mode = 1;
++		wm8994->hubs.hp_startup_mode = 1;
+ 		break;
  
- config TWL6040_CORE
--	bool
--	depends on I2C && GENERIC_HARDIRQS
-+	bool "Support for TWL6040 audio codec"
-+	depends on I2C=y && GENERIC_HARDIRQS
- 	select MFD_CORE
-+	select REGMAP_I2C
- 	default n
-+	help
-+	  Say yes here if you want support for Texas Instruments TWL6040 audio
-+	  codec.
-+	  This driver provides common support for accessing the device,
-+	  additional drivers must be enabled in order to use the
-+	  functionality of the device (audio, vibra).
+ 	case WM1811:
+ 		wm8994->hubs.dcs_readback_mode = 2;
+ 		wm8994->hubs.no_series_update = 1;
++		wm8994->hubs.hp_startup_mode = 1;
  
- config MFD_STMPE
- 	bool "Support STMicroelectronics STMPE"
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f1a1197..6b4d86a 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -56,7 +56,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_TPA6130A2 if I2C
- 	select SND_SOC_TLV320DAC33 if I2C
- 	select SND_SOC_TWL4030 if TWL4030_CORE
--	select SND_SOC_TWL6040 if I2C
-+	select SND_SOC_TWL6040 if TWL6040_CORE
- 	select SND_SOC_UDA134X
- 	select SND_SOC_UDA1380 if I2C
- 	select SND_SOC_WL1273 if MFD_WL1273_CORE
-@@ -274,7 +274,6 @@ config SND_SOC_TWL4030
- 	tristate
- 
- config SND_SOC_TWL6040
--	select TWL6040_CORE
- 	tristate
- 
- config SND_SOC_UDA134X
+ 		switch (wm8994->revision) {
+ 		case 0:
 -- 
-1.7.8.4
+1.7.9
