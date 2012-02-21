@@ -1,89 +1,113 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 0/3] MFD: twl6040: Conversion to i2c driver
-Date: Tue, 21 Feb 2012 12:33:07 +0200
-Message-ID: <4F4372E3.4050408@ti.com>
-References: <1328868018-24668-1-git-send-email-peter.ujfalusi@ti.com> <20120220194736.GN5387@sortiz-mobl>
+Subject: [PATCH] MFD/Input/ASoC: twl6040 kconfig fixes
+Date: Tue, 21 Feb 2012 12:46:11 +0200
+Message-ID: <1329821171-3769-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120220194736.GN5387@sortiz-mobl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: Tony Lindgren <tony@atomide.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dtor@mail.ru>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-next-owner@vger.kernel.org>
+Sender: linux-next-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Dmitry Torokhov <dtor@mail.ru>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Samuel,
+To avoid breaking x86_64 allmodconfig build the Kconfig files need to be
+changed.
+Change the dependency graph of the twl6040 stack.
 
-On 02/20/2012 09:47 PM, Samuel Ortiz wrote:
-> Hi Peter,
->=20
-> On Fri, Feb 10, 2012 at 12:00:15PM +0200, Peter Ujfalusi wrote:
->> Hello,
->>
->> Changes since v2:
->> - soc/codec/Kconfig: make twl6040 depend on I2C
->> - Regulator related patches has been removed (to be sent as separate=
- series)
-> I applied all 3 patches. Patch #2 did not apply cleanly, due to the f=
-act that
-> several struct twl4030_codec_data omap4panda.c references are not ups=
-tream
-> yet. This is my .rej:
+Stephen Rothwell wrote:
+> Hi Samuel,
+>
+> After merging the mfd tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+>
+> drivers/built-in.o: In function `twl6040_driver_init':
+> twl6040-core.c:(.init.text+0xb147): undefined reference to `i2c_register_driver'
+> drivers/built-in.o: In function `twl6040_probe':
+> twl6040-core.c:(.devinit.text+0x7f22): undefined reference to `regmap_init_i2c'
+> drivers/built-in.o: In function `twl6040_driver_exit':
+> twl6040-core.c:(.exit.text+0x67a): undefined reference to `i2c_del_driver'
+>
+>
+> Caused by commit ded0df851077 ("mfd: Convert twl6040 to an i2c driver,
+> and separate it from twl core").
 
-The Panda audio support is going via sound tree. It is in linux-next
-already for couple of weeks now. The reason you have this reject is tha=
-t
-you don't have the audio support for Panda series, and a such upstream
-does not have it either :( It is for 3.4 also.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
 
-> --- arch/arm/mach-omap2/board-omap4panda.c
-> +++ arch/arm/mach-omap2/board-omap4panda.c
-> @@ -278,7 +279,7 @@
->  	return 0;
->  }
-> =20
-> -static struct twl4030_codec_data twl6040_codec =3D {
-> +static struct twl6040_codec_data twl6040_codec =3D {
->  	/* single-step ramp for headset and handsfree */
->  	.hs_left_step	=3D 0x0f,
->  	.hs_right_step	=3D 0x0f,
-> @@ -286,17 +287,14 @@
->  	.hf_right_step	=3D 0x1d,
->  };
-> =20
-> -static struct twl4030_audio_data twl6040_audio =3D {
-> +static struct twl6040_platform_data twl6040_data =3D {
->  	.codec		=3D &twl6040_codec,
->  	.audpwron_gpio	=3D 127,
-> -	.naudint_irq	=3D OMAP44XX_IRQ_SYS_2N,
->  	.irq_base	=3D TWL6040_CODEC_IRQ_BASE,
->  };
-> =20
->  /* Panda board uses the common PMIC configuration */
-> -static struct twl4030_platform_data omap4_panda_twldata =3D {
-> -	.audio		=3D &twl6040_audio,
-> -};
-> +static struct twl4030_platform_data omap4_panda_twldata;
->=20
-> I'm not sure hwo we could handle that properly. Either by letting Ton=
-y
-> carrying this patchset, or by sending me the panda patch that adds th=
-ose
-> structures. As you prefer.
+Hi Stephen, Samuel,
 
-If Liam would take this series that would be probably the way forward.
-If he does not have objections.
-Liam: I can create a branch for you to pull from as soon as all other
-patch receives the needed acks...
+This patch will fix the build failure with x86_64 allmodconfig, and it will
+still work on the target platform.
 
-Samuel: if Liam agrees is it possible for you to drop the twl6040
-related patches from your for-next branch?
+As a note: this series might not be going via the mfd tree at the end since
+some of the dependencies are going via sound tree. We are discussing the way
+forward.
 
-Thank you,
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Peter
+
+ drivers/input/misc/Kconfig |    2 +-
+ drivers/mfd/Kconfig        |   11 +++++++++--
+ sound/soc/codecs/Kconfig   |    3 +--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+index 6a9ee24..9450d4c 100644
+--- a/drivers/input/misc/Kconfig
++++ b/drivers/input/misc/Kconfig
+@@ -368,7 +368,7 @@ config INPUT_TWL4030_VIBRA
+ 
+ config INPUT_TWL6040_VIBRA
+ 	tristate "Support for TWL6040 Vibrator"
+-	select TWL6040_CORE
++	depends on TWL6040_CORE
+ 	select INPUT_FF_MEMLESS
+ 	help
+ 	  This option enables support for TWL6040 Vibrator Driver.
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 0e48997..ea7c36f 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -266,10 +266,17 @@ config TWL6030_PWM
+ 	  This is used to control charging LED brightness.
+ 
+ config TWL6040_CORE
+-	bool
+-	depends on I2C && GENERIC_HARDIRQS
++	bool "Support for TWL6040 audio codec"
++	depends on I2C=y && GENERIC_HARDIRQS
+ 	select MFD_CORE
++	select REGMAP_I2C
+ 	default n
++	help
++	  Say yes here if you want support for Texas Instruments TWL6040 audio
++	  codec.
++	  This driver provides common support for accessing the device,
++	  additional drivers must be enabled in order to use the
++	  functionality of the device (audio, vibra).
+ 
+ config MFD_STMPE
+ 	bool "Support STMicroelectronics STMPE"
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f1a1197..6b4d86a 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -56,7 +56,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_TPA6130A2 if I2C
+ 	select SND_SOC_TLV320DAC33 if I2C
+ 	select SND_SOC_TWL4030 if TWL4030_CORE
+-	select SND_SOC_TWL6040 if I2C
++	select SND_SOC_TWL6040 if TWL6040_CORE
+ 	select SND_SOC_UDA134X
+ 	select SND_SOC_UDA1380 if I2C
+ 	select SND_SOC_WL1273 if MFD_WL1273_CORE
+@@ -274,7 +274,6 @@ config SND_SOC_TWL4030
+ 	tristate
+ 
+ config SND_SOC_TWL6040
+-	select TWL6040_CORE
+ 	tristate
+ 
+ config SND_SOC_UDA134X
+-- 
+1.7.8.4
