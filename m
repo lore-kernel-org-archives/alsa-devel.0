@@ -1,15 +1,18 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH v2 5/5] snd-usb-6fire: add analog input volume
-	control
-Date: Wed, 22 Feb 2012 14:07:56 +0100
-Message-ID: <20120222140756.18a9f8f492975e148e87f918@zoho.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH] ASoC: imx: move SND_SOC_AC97_BUS selection
+	down to machine driver
+Date: Wed, 22 Feb 2012 21:25:47 +0800
+Message-ID: <1329917147-24962-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id E4BE7103F46
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:08:00 +0100 (CET)
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8828103F18
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:12:29 +0100 (CET)
+Received: by yenm14 with SMTP id m14so1767yen.38
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 05:12:28 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,126 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a stereo volume control for analog input channel pair 1/2.
+SND_SOC_AC97_BUS is selected to enable the AC97 support in soc-core.
+Rather than selecting the option under SND_IMX_SOC, it's better to
+leave the selection to individual machine driver which knows if AC97
+support is needed or not.
 
-Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ sound/soc/imx/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff -Nur a/sound/usb/6fire/control.c b/sound/usb/6fire/control.c
---- a/sound/usb/6fire/control.c	2012-01-30 11:57:10.557379497 +0100
-+++ b/sound/usb/6fire/control.c	2012-01-30 11:56:47.260578549 +0100
-@@ -55,6 +55,7 @@
- static const u16 rates_6fire_vh[] = {0x11, 0x11, 0x10, 0x10, 0x00, 0x00};
- 
- static DECLARE_TLV_DB_MINMAX(tlv_output, -9000, 0);
-+static DECLARE_TLV_DB_MINMAX(tlv_input, -1500, 1500);
- 
- enum {
- 	DIGITAL_THRU_ONLY_SAMPLERATE = 3
-@@ -79,6 +80,17 @@
- 		comm_rt->write8(comm_rt, 0x12, 0x0e, ~rt->output_mute);
- }
- 
-+static void usb6fire_control_input_vol_update(struct control_runtime *rt)
-+{
-+	struct comm_runtime *comm_rt = rt->chip->comm;
-+	int i;
-+
-+	if (comm_rt)
-+		for (i = 0; i < 2; i++)
-+			comm_rt->write8(comm_rt, 0x12, 0x1c + i,
-+				rt->input_vol[i] & 0x3f);
-+}
-+
- static void usb6fire_control_line_phono_update(struct control_runtime *rt)
- {
- 	struct comm_runtime *comm_rt = rt->chip->comm;
-@@ -256,6 +268,48 @@
- 	return 0;
- }
- 
-+static int usb6fire_control_input_vol_info(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 30;
-+	return 0;
-+}
-+
-+static int usb6fire_control_input_vol_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
-+	int changed = 0;
-+
-+	if (rt->input_vol[0] != ucontrol->value.integer.value[0]) {
-+		rt->input_vol[0] = ucontrol->value.integer.value[0] - 15;
-+		changed = 1;
-+	}
-+	if (rt->input_vol[1] != ucontrol->value.integer.value[1]) {
-+		rt->input_vol[1] = ucontrol->value.integer.value[1] - 15;
-+		changed = 1;
-+	}
-+
-+	if (changed)
-+		usb6fire_control_input_vol_update(rt);
-+
-+	return changed;
-+}
-+
-+static int usb6fire_control_input_vol_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = rt->input_vol[0] + 15;
-+	ucontrol->value.integer.value[1] = rt->input_vol[1] + 15;
-+
-+	return 0;
-+}
-+
- static int usb6fire_control_line_phono_info(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_info *uinfo)
- {
-@@ -449,6 +503,17 @@
- 		.get = usb6fire_control_digital_thru_get,
- 		.put = usb6fire_control_digital_thru_put
- 	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog Capture Volume",
-+		.index = 0,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
-+		.info = usb6fire_control_input_vol_info,
-+		.get = usb6fire_control_input_vol_get,
-+		.put = usb6fire_control_input_vol_put,
-+		.tlv = { .p = tlv_input }
-+	},
- 	{}
- };
- 
-@@ -512,6 +577,7 @@
- 	usb6fire_control_line_phono_update(rt);
- 	usb6fire_control_output_vol_update(rt);
- 	usb6fire_control_output_mute_update(rt);
-+	usb6fire_control_input_vol_update(rt);
- 	usb6fire_control_streaming_update(rt);
- 
- 	ret = usb6fire_control_add_virtual(rt, chip->card,
-diff -Nur a/sound/usb/6fire/control.h b/sound/usb/6fire/control.h
---- a/sound/usb/6fire/control.h	2012-01-11 19:54:50.651190007 +0100
-+++ b/sound/usb/6fire/control.h	2012-02-05 12:28:10.314770911 +0100
-@@ -45,6 +45,7 @@
- 	bool usb_streaming;
- 	u8 output_vol[6];
- 	u8 output_mute;
-+	s8 input_vol[2];
- };
- 
- int __devinit usb6fire_control_init(struct sfire_chip *chip);
+diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
+index e89139f..7c4aa42 100644
+--- a/sound/soc/imx/Kconfig
++++ b/sound/soc/imx/Kconfig
+@@ -1,7 +1,6 @@
+ menuconfig SND_IMX_SOC
+ 	tristate "SoC Audio for Freescale i.MX CPUs"
+ 	depends on ARCH_MXC
+-	select SND_SOC_AC97_BUS
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the i.MX SSI interface.
+@@ -37,6 +36,7 @@ config SND_SOC_MX27VIS_AIC32X4
+ config SND_SOC_PHYCORE_AC97
+ 	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
+ 	depends on MACH_PCM043 || MACH_PCA100
++	select SND_SOC_AC97_BUS
+ 	select SND_SOC_WM9712
+ 	select SND_MXC_SOC_FIQ
+ 	help
+-- 
+1.7.5.4
