@@ -1,59 +1,32 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: How to trigger a widget?
-Date: Wed, 22 Feb 2012 09:28:01 +0200
-Message-ID: <4F449901.302@ti.com>
-References: <D618B7A80E26984A9E4E1FD204983C1AA88700@nasanexd01d.na.qualcomm.com>
-	<4F420D6D.4050500@metafoo.de>
-	<D618B7A80E26984A9E4E1FD204983C1AA8AAF4@nasanexd01d.na.qualcomm.com>
+Subject: Re: [PATCH v3 0/3] MFD: twl6040: Conversion to i2c driver
+Date: Wed, 22 Feb 2012 09:34:55 +0200
+Message-ID: <4F449A9F.1040907@ti.com>
+References: <1328868018-24668-1-git-send-email-peter.ujfalusi@ti.com> <20120220194736.GN5387@sortiz-mobl> <4F4372E3.4050408@ti.com> <20120221110533.GT5387@sortiz-mobl> <1329846755.20666.4.camel@odin> <20120221184427.GQ18185@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog121.obsmtp.com (na3sys009aog121.obsmtp.com
-	[74.125.149.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51B122454E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 08:27:57 +0100 (CET)
-Received: by lahc1 with SMTP id c1so9176168lah.20
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2012 23:27:54 -0800 (PST)
-In-Reply-To: <D618B7A80E26984A9E4E1FD204983C1AA8AAF4@nasanexd01d.na.qualcomm.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Wang, Kuirong" <kuirongw@quicinc.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120221184427.GQ18185@atomide.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Liam Girdwood <lrg@ti.com>, Samuel Ortiz <sameo@linux.intel.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dtor@mail.ru>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Tony,
 
-On 02/21/2012 07:09 AM, Wang, Kuirong wrote:
-> I have kcontrol to enable a function of codec on fly.  With or
-> without the function, it cannot impact the established audio routing.
-> So I created widget as a supply, as long as the audio path is
-> established, this supply widget is triggered. The supply widget has a
-> callback event function.  The kcontrol control has an event callback
-> function as well which calls the enable/disable pin to trigger the
-> widget callback event, so this particular function can be enabled or
-> disabled.
+On 02/21/2012 08:44 PM, Tony Lindgren wrote:
+> Yeah looks OK to me, acked that patch. Let me know if there are
+> others I should look.
 
-Would not it be simpler if you just enable/disable the feature in the
-kcontrol's set callback?
+I would appreciate if you could take a look at this series as well:
+TWL6040: Regulator support
+http://marc.info/?l=3Dlinux-omap&m=3D132947934522602&w=3D2
 
-Another way I would go is this:
+I have separated the twl6040 i2c driver conversion, and regulator
+support since they are dealing with different issues.
+If you know who should look at the drivers/regulator/twl-regulator.c,
+drivers/mfd/twl.c changes could you CC them as well?
 
-                  |-> (off) ---------|
-[Feature switch] -|                  |-> [next widget]
-                  |-> (on) -> [PGA] -|
-
-In the PGA you turn on/off the feature. If the switch changes it will
-not affect other items in the path, it will only make the PGA to turn
-on/off.
-
--- =
-
+Regards,
 P=E9ter
