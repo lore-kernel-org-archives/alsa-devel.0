@@ -1,19 +1,25 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/6] snd-usb endpoint rework, version 6
-Date: Wed, 22 Feb 2012 19:50:41 +0100
-Message-ID: <4F453901.8040201@gmail.com>
-References: <CAE-xCyPcVH-+JKg9m1oNy234LuFDXHSCPz3iaoWQ0Q02YV4JFw@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
+ reporting with core jack reporting
+Date: Wed, 22 Feb 2012 18:54:38 +0000
+Message-ID: <20120222183249.GB3265@opensource.wolfsonmicro.com>
+References: <20120210155003.GA11701@sirena.org.uk>
+	<4F35413F.9000701@canonical.com>
+	<20120210163946.GG6472@opensource.wolfsonmicro.com>
+	<s5hy5s625w8.wl%tiwai@suse.de>
+	<20120213154458.GB3494@opensource.wolfsonmicro.com>
+	<s5hwr7qzl6g.wl%tiwai@suse.de>
+	<20120213192309.GG3494@opensource.wolfsonmicro.com>
+	<s5hk43e24la.wl%tiwai@suse.de>
+	<20120222171843.GA3265@opensource.wolfsonmicro.com>
+	<s5hehtm22me.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============5683493512403193008=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 395A0104120
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 19:50:45 +0100 (CET)
-Received: by bkcjc3 with SMTP id jc3so421127bkc.38
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 10:50:45 -0800 (PST)
-In-Reply-To: <CAE-xCyPcVH-+JKg9m1oNy234LuFDXHSCPz3iaoWQ0Q02YV4JFw@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ADDA6104122
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 19:54:40 +0100 (CET)
+In-Reply-To: <s5hehtm22me.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +29,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 13.02.2012 21:41, Aur=E9lien Leblond wrote:
-> Hello everyone,
-> =
 
-> My laptop has been in reparation for a while and I just got it back
-> now, so I have been out of sync with any update on the snd-usb module,
-> the support of the M-Audio Fast Track Ultra, and I now need to
-> re-setup my laptop.
-> =
+--===============5683493512403193008==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
+Content-Disposition: inline
 
-> As far as I can see, the kernel 3.2.5 doesn't have the update of Alsa
-> 1.0.25, so the first thing I did was to compile those two separately
-> (compile first the kernel without any sound support, then compile and
-> install 1.0.25), but the midi was then not working on the M-Audio FTU,
-> the Roland UA-25Ex and my E-Mu USB keyboard. All modules are probed,
-> no messages in dmesg, but jack doesn't see any alsa midi driver.
-> In addition, I cannot make out if Daniel's changes are part of this
-> release of Alsa!
-> =
 
-> My next step was to get a git version of the kernel, add Takashi's
-> branch and Daniel's one on top of it (process I used to do 2 months
-> ago), but I get a conflicting error when pulling/merging Daniel's
-> patch, so I guess it is not in sync with the latest kernel anymore...
-> =
+--/e2eDi0V/xtL+Mc8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> So my questions are:
-> - Did I do something wrong with the kernel 3.2.5/alsa 1.0.25 that
-> broke the USB Midi or is it a bug? I ran through the mailing list but
-> couldn't see anything mentionned about USB Midi. As far as I can tell,
-> I have all the necessary modules.
-> - What is the status of Daniel's work on the snd-usb module? Again I
-> ran through the changelog of alsa 1.0.25 but couldn't make out if it
-> was integrated or not.
+On Wed, Feb 22, 2012 at 06:34:49PM +0100, Takashi Iwai wrote:
 
-Sorry for the silence on this topic. I've been distracted by work that
-isn't even remotely kernel related during the last weeks, so I lost
-track on this. I'll catch up again soon, and review the reports from
-around christmas last year, rebase the series and resubmit.
+> First of all, we don't agree yet which naming rule to be applied.
+> Since your patch assumes the case B, i.e. constant names corresponding
+> only to the key type (HEADPHONE, etc), it's incompatible with the
+> current implementation in HD-audio.
 
-Again, sorry for the delay.
+As I've *repeatedly* said the idea was to prefix the name once we'd got
+stuff merged into the same file (which means ripping out the HDA
+specific code) but if we're going to have to completely rework the ABI
+before you'll consider trying to fix things up in kernel then there's no
+point bothering.
 
-Daniel
+> In other words, if I merge your patch now, the only solution for
+> HD-audio side for the time being is to disable
+> CONFIG_SND_HDA_INPUT_JACK.  That's why I hesitate to merge it now.
+
+Well, that whole config option just shouldn't be there in the first
+place but that's another story...
+
+> And, it's why I prefer defining the naming rule at first, thus
+> refining the implementation not to conflict with the existing one.
+
+It seems like it's a bit late to worry about the naming scheme to that
+extent given that the existing ABI has already managed to get into one
+kernel release and looks like it's also going to get into 3.4 as well.
+
+Right now the only tractable fix I can see is to implement something
+approximating the HDA ABI in ASoC but that just makes things even worse
+=66rom a maintability point of view.
+
+--/e2eDi0V/xtL+Mc8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPRTaEAAoJEBus8iNuMP3dopMQAImNu6BZb9avdwMifZYpY/ml
+q4GCnADaB0J1MNChyB25IbdrnFBjJcCjwlFb5Obg2DOLX+A9igktNj7k2ROvkz0Q
+CN6goM1kNk6gxeXqILgGUqmllzyZu9kcmdGMWE0kywYzTGyIBlxou3DkwbeKM/k9
+2oBvlS9dYbHm5FYBj5MlLCOBtntqLAXdrHbymmaW4Km2+c0WMA7OCFJCJgoQvu5G
+/pufFfXerqPVWchUD9pIdzq1Hl7vWTLweIISVFu+t+eOxsYvvzCnAZuc7Mf9/nmn
+J2a7K4yG5SxiEi9tNwy7/455mbiySY3e3tPh30jjXMBPB7TJjcXnOUm4eL98kycI
+6lhGouUarhW0ccL7gVgbkbPNL86SbOf10WwyBW9FMkSFmklQv2zUDmM1FRhQbHe9
+brIFvO8761mWTeOxO2bv0ke241bpXyFiaDRPei0pyP9lH9rgQG27J9CZmbvXJL9a
+guhke1b81Ss3aUyjvH6jW+NnIcC1EM6E1KDPz3FHRfu5kSw3nvFpIQvv3UZUYMp3
++GaHD2GYejmSgN0v++Tng7CmLYsR1Nfn/bci98/8hhkHyS/Pckrk+n5IkAy3ixCx
+Sqq2Yh3J1P1b4VsDGpBQt4unLE3sCFtoFdDLYVuNgS8713DuOFfvH/0hmC2qZWhI
+XSNFCQPMFJ2aFxCG5ZUW
+=wRE7
+-----END PGP SIGNATURE-----
+
+--/e2eDi0V/xtL+Mc8--
+
+--===============5683493512403193008==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5683493512403193008==--
