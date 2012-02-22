@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/8] ASoC: dapm: Implement and instantiate
- DAI widgets
-Date: Wed, 22 Feb 2012 12:43:02 +0000
-Message-ID: <20120222124301.GA7340@opensource.wolfsonmicro.com>
-References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1329458170-22119-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1329468009.24656.15.camel@vkoul-udesk3>
-	<1329914154.24656.95.camel@vkoul-udesk3>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Wed, 22 Feb 2012 13:52:33 +0100
+Message-ID: <4F44E511.2040404@metafoo.de>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
+	<20120222100150.GW22562@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1063400972592603195=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79637103EA7
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 13:43:04 +0100 (CET)
-In-Reply-To: <1329914154.24656.95.camel@vkoul-udesk3>
+Received: from smtp-out-093.synserver.de (smtp-out-096.synserver.de
+	[212.40.185.96])
+	by alsa0.perex.cz (Postfix) with ESMTP id 95CB1103EDE
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 13:50:59 +0100 (CET)
+In-Reply-To: <20120222100150.GW22562@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,63 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Ryan Mallon <rmallon@gmail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 02/22/2012 11:01 AM, Russell King - ARM Linux wrote:
+> On Wed, Feb 22, 2012 at 10:49:08AM +0100, Lars-Peter Clausen wrote:
+>> This patch adds a set of functions which are intended to be used when
+>> implementing a dmaengine based sound PCM driver.
+> 
+> This isn't going to be usable on sa11x0 platforms, because we need to
+> know the struct device underlying the DMA device before we allocate
+> the buffers.
 
---===============1063400972592603195==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fUYQa+Pmc3FrFX/N"
-Content-Disposition: inline
+Which means the dma channel has to be requested before allocating the
+buffers. Which can be done. Not with the current code but it can be
+implemented on top of it.
 
+I had a look at your 'generic' dmaengine PCM driver patch. And it looks like
+you went to opposite way as I did in this patch. You implemented one driver
+which is supposed to work for all cases, while my patch provides a set of
+helper functions which can be used to implement a PCM driver. Your patch
+only supports non-cyclic transfers, mine only supports cyclic transfers.
 
---fUYQa+Pmc3FrFX/N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Your driver emulates cyclic transfers using non-cyclic transfers, in my
+opinion it is better to add such a emulation layer to the dmaengine core
+itself. This will allow other users to benefit from this as well and it
+doesn't have to be reimplemented in other subsystems/driver. Also users
+don't have to be updated if a dmaengine driver gets native support for
+cyclic transfers. But, well, the code exists and it is a step in the right
+direction so we should probably use it.
 
-On Wed, Feb 22, 2012 at 06:05:54PM +0530, Vinod Koul wrote:
-> On Fri, 2012-02-17 at 14:10 +0530, Vinod Koul wrote:
+I suppose we could rearrange the code so that we can share most of it
+between the cyclic and non-cyclic case. The non-cyclic case needs special
+handling everywhere, which can be made conditional.
 
-> > > Currently we only generate these for CODECs, mostly as I have no systems
-> > > with non-CODEC DAPM to integrate with. It should be a simple matter of
-> > > programming to add the additional hookup for these.
-
-> > If I understood right, then instead of creating AIF/ADCs for codec paths
-> > now we need to create the DAI widget for each path and associate that
-> > with the DAI, right.
-
-Wrong, these widgets are automatically generated.
-
---fUYQa+Pmc3FrFX/N
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPROK9AAoJEBus8iNuMP3dkuoP/iNhG93W+h8NCHk9KlICIuWg
-DpHcQmeZ9CI+lS1ht2H1vP8saSqs5IXcVgTgJ6I1b5vjby+Ayl2Q2yXIdgXjtuxq
-rO5GpG+uCNK7I75lBxm8B/aUisbj0hChGWm/Uq/vvI1Hf/unIuPYbwZcVJz3KwNe
-4e6fj6lqe8s3wlBG4mg8NAsUCycO2c4Viudobnw34q6t+mLUkWODvoPcxd57JTW1
-mcWulyz43GYzXDCo/He44cG/0ZpuxdC76KGp+m8R/DLT9wqnIUfrpFPhqU/V7af1
-7s/kyblmYwLq0o+bBvNmdmTWWj8LvTmO1xCt8ifUxxnzjaVvvM3S7cJZXF/pnFSQ
-+17ujxwFgvc4ExUY7hiuZLgcGJfCgXEpMyOJY5D4wa9LXWxNWyr6j/rG5Asm64ct
-8kvOnLlG668EgdQXqo0AlRrSbX7BsNIFSiyZbsajhTxqBuHHFJRnHCKZPhSdGT7Z
-xcoJBF1X4pwGYfObaj6GQYcGtsuKo/+/yfjNtOAMQR6lEt58RYSYMGYril7AFCsK
-A413vepxnGttZbo31vfx2JJC/NCJxf+adI4yG8L9VTI/0koU3L7b8aYiqTpJ1UbP
-ZijhMwPnLXNgROle5D5OL9lfjWT0G6VZoNJFJsz96R3BebPYSNjJ+5aMf1fAszbJ
-Qet5FwaFlUusjwW1GDd5
-=5bfD
------END PGP SIGNATURE-----
-
---fUYQa+Pmc3FrFX/N--
-
---===============1063400972592603195==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1063400972592603195==--
+- Lars
