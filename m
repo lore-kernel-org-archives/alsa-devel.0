@@ -1,18 +1,21 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
-Date: Wed, 22 Feb 2012 19:00:09 +0530
-Message-ID: <1329917409.24656.115.camel@vkoul-udesk3>
-References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
-	<1329904151-5927-5-git-send-email-lars@metafoo.de>
-	<20120222132107.GD7340@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 6/8] ASoC: dapm: Implement and instantiate
+ DAI widgets
+Date: Wed, 22 Feb 2012 13:29:12 +0000
+Message-ID: <20120222132912.GI7340@opensource.wolfsonmicro.com>
+References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1329458170-22119-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1329468009.24656.15.camel@vkoul-udesk3>
+	<1329914154.24656.95.camel@vkoul-udesk3>
+	<20120222124301.GA7340@opensource.wolfsonmicro.com>
+	<1329915673.24656.107.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7571345383767752953=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62A58103F70
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:28:44 +0100 (CET)
-In-Reply-To: <20120222132107.GD7340@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED5A6103FA4
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:29:13 +0100 (CET)
+In-Reply-To: <1329915673.24656.107.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-22 at 13:21 +0000, Mark Brown wrote:
-> On Wed, Feb 22, 2012 at 10:49:08AM +0100, Lars-Peter Clausen wrote:
-> > This patch adds a set of functions which are intended to be used when
-> > implementing a dmaengine based sound PCM driver.
-> 
-> Looks good - if you need to resend then:
-> 
-> > + * Note that this function will use private_data field of the substream's
-> > + * runtime. So it is not availabe to your pcm driver implementation. If you need
-> > + * to keep additional data attached to a substream use
-> > + * snd_dmaeinge_pcm_{set,get}_data.
-> 
-> there's a typo here but no need to resend just for that.
-> 
-> I'd like to see some review from both Morimoto-san as we should convert
-> fsi over to this too, Vinod I guess you're also pretty much happy given
-> your comments on the previous version?
-Sure,
-Acked-by :Vinod Koul <vinod.koul@linux.intel.com>
-> 
-> For the non-cyclic DMAs the idea of emulating at the dmaengine layer
-> does seem very sensible but if that's hard then having the code at the
-> ASoC level and pushing it down later seems fine.  We do have several
-> platforms with non-cyclic DMA so it's a general need.
-I think this should be pushed to dmaengine rather than in ASoC. That way
-ASoC can always request circular and we emulate the behavior in
-dmaengine for dmacs who don't support this
+
+--===============7571345383767752953==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="r4QXMf6/kyF/FvJJ"
+Content-Disposition: inline
 
 
--- 
-~Vinod
+--r4QXMf6/kyF/FvJJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 22, 2012 at 06:31:13PM +0530, Vinod Koul wrote:
+
+> So from a codec driver, how does these two get linked, who fills the
+> playback_widget pointer in dais?
+
+> For a codec which has two DAIs and I register two AIFs how will you fill
+> the respective dia widgets in the DAIs...
+
+The core initialises everything when it creates the widgets...
+
+--r4QXMf6/kyF/FvJJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPRO2dAAoJEBus8iNuMP3dGy8P/Akf3CbVMVUovaAcFE2R/qc2
+5S3d/+LK1Xh6pplali4fxmj3T9RmaYERLRwz1fdbmbn1T2R5EZSnL1sbu58Vl6e9
+taptXaNpdmDa8RIl7rsOlYeXCiuBAfCYV01Z7/h8p8VtFRjqlO498tDQACwtmkEK
+il313M9XY8xclYVJqEykFmuw3PCnhPrEJ85mmi7oGlKeedjCw4QPxz/4aFOfMqFq
+N8lhqDCo0uBVpb4PCtOL/AuNcAih69lrIPyBwwsi7Ii4Dd1eaSEXjS2P7wqDLHJ0
+enBuzRvowdrZ0ybWCUWGGg96inzVuRXe5VDAh+ogNPE6umWK29HV4xipv2hB1ka/
+iSwD7RBPuu/ewald2ur6xb+ATM3cUJei3lOcO8tjBv5WvSbnBEA3vSsC2FLaIExL
+sm560e8OCqkwCrmL3Eq+A7jQGfQdq+eqzzKERUdybygeKxxovag/ybRZhDhPJARV
+eUCyeKL0jDleEeXLvZEgBVWQxCaujpyrnfo/QjERQ97h0QwfPRYY4QnohOBZRDi8
+mNIn2RXRuIUpleyBEucDvLFzxLORTiHxUTR59Dh94a6n5zCKpp70Jt4MnRuQEWsz
+xz8WLRvkXQ5AzaO0710Uv4EiSjTPwcTfev4Cj1pNE0vOuNHojtJ4/8boOaYQxiFm
+VysWu0k/yTGeVy7nTSR3
+=Vaw3
+-----END PGP SIGNATURE-----
+
+--r4QXMf6/kyF/FvJJ--
+
+--===============7571345383767752953==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7571345383767752953==--
