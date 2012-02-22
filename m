@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
-Date: Wed, 22 Feb 2012 13:52:33 +0100
-Message-ID: <4F44E511.2040404@metafoo.de>
-References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
-	<1329904151-5927-5-git-send-email-lars@metafoo.de>
-	<20120222100150.GW22562@n2100.arm.linux.org.uk>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH 6/8] ASoC: dapm: Implement and instantiate
+ DAI widgets
+Date: Wed, 22 Feb 2012 18:31:13 +0530
+Message-ID: <1329915673.24656.107.camel@vkoul-udesk3>
+References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1329458170-22119-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1329468009.24656.15.camel@vkoul-udesk3>
+	<1329914154.24656.95.camel@vkoul-udesk3>
+	<20120222124301.GA7340@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-093.synserver.de (smtp-out-096.synserver.de
-	[212.40.185.96])
-	by alsa0.perex.cz (Postfix) with ESMTP id 95CB1103EDE
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 13:50:59 +0100 (CET)
-In-Reply-To: <20120222100150.GW22562@n2100.arm.linux.org.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42C21103EE1
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 13:59:49 +0100 (CET)
+In-Reply-To: <20120222124301.GA7340@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, Ryan Mallon <rmallon@gmail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/22/2012 11:01 AM, Russell King - ARM Linux wrote:
-> On Wed, Feb 22, 2012 at 10:49:08AM +0100, Lars-Peter Clausen wrote:
->> This patch adds a set of functions which are intended to be used when
->> implementing a dmaengine based sound PCM driver.
-> 
-> This isn't going to be usable on sa11x0 platforms, because we need to
-> know the struct device underlying the DMA device before we allocate
-> the buffers.
+On Wed, 2012-02-22 at 12:43 +0000, Mark Brown wrote:
+> Wrong, these widgets are automatically generated.
+Okay, looks like I got it completely wrong.
 
-Which means the dma channel has to be requested before allocating the
-buffers. Which can be done. Not with the current code but it can be
-implemented on top of it.
+>From the patche set I can see that now DAIs will have playback widget
+and capture widget which will be turned ON, And your changes show me
+that the AIF widgets you register in wm codec will now be treated as dai
+widgets.
+So from a codec driver, how does these two get linked, who fills the
+playback_widget pointer in dais?
 
-I had a look at your 'generic' dmaengine PCM driver patch. And it looks like
-you went to opposite way as I did in this patch. You implemented one driver
-which is supposed to work for all cases, while my patch provides a set of
-helper functions which can be used to implement a PCM driver. Your patch
-only supports non-cyclic transfers, mine only supports cyclic transfers.
+For a codec which has two DAIs and I register two AIFs how will you fill
+the respective dia widgets in the DAIs...
 
-Your driver emulates cyclic transfers using non-cyclic transfers, in my
-opinion it is better to add such a emulation layer to the dmaengine core
-itself. This will allow other users to benefit from this as well and it
-doesn't have to be reimplemented in other subsystems/driver. Also users
-don't have to be updated if a dmaengine driver gets native support for
-cyclic transfers. But, well, the code exists and it is a step in the right
-direction so we should probably use it.
-
-I suppose we could rearrange the code so that we can share most of it
-between the cyclic and non-cyclic case. The non-cyclic case needs special
-handling everywhere, which can be made conditional.
-
-- Lars
+-- 
+~Vinod
