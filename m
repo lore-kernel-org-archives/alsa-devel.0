@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/8] ASoC: dapm: Implement and instantiate
- DAI widgets
-Date: Wed, 22 Feb 2012 13:29:12 +0000
-Message-ID: <20120222132912.GI7340@opensource.wolfsonmicro.com>
-References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1329458170-22119-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1329468009.24656.15.camel@vkoul-udesk3>
-	<1329914154.24656.95.camel@vkoul-udesk3>
-	<20120222124301.GA7340@opensource.wolfsonmicro.com>
-	<1329915673.24656.107.camel@vkoul-udesk3>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Wed, 22 Feb 2012 13:30:37 +0000
+Message-ID: <20120222133037.GJ7340@opensource.wolfsonmicro.com>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
+	<20120222132107.GD7340@opensource.wolfsonmicro.com>
+	<1329917409.24656.115.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7571345383767752953=="
+Content-Type: multipart/mixed; boundary="===============1407370487431163008=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED5A6103FA4
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:29:13 +0100 (CET)
-In-Reply-To: <1329915673.24656.107.camel@vkoul-udesk3>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D49F103F8E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:30:39 +0100 (CET)
+In-Reply-To: <1329917409.24656.115.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,59 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7571345383767752953==
+--===============1407370487431163008==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="r4QXMf6/kyF/FvJJ"
+	protocol="application/pgp-signature"; boundary="mPTHnM80CEnHQ2WJ"
 Content-Disposition: inline
 
 
---r4QXMf6/kyF/FvJJ
+--mPTHnM80CEnHQ2WJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 22, 2012 at 06:31:13PM +0530, Vinod Koul wrote:
+On Wed, Feb 22, 2012 at 07:00:09PM +0530, Vinod Koul wrote:
+> On Wed, 2012-02-22 at 13:21 +0000, Mark Brown wrote:
 
-> So from a codec driver, how does these two get linked, who fills the
-> playback_widget pointer in dais?
+> > For the non-cyclic DMAs the idea of emulating at the dmaengine layer
+> > does seem very sensible but if that's hard then having the code at the
+> > ASoC level and pushing it down later seems fine.  We do have several
+> > platforms with non-cyclic DMA so it's a general need.
 
-> For a codec which has two DAIs and I register two AIFs how will you fill
-> the respective dia widgets in the DAIs...
+> I think this should be pushed to dmaengine rather than in ASoC. That way
+> ASoC can always request circular and we emulate the behavior in
+> dmaengine for dmacs who don't support this
 
-The core initialises everything when it creates the widgets...
+That's what I just said.  I'm just saying that if for some reason it's
+going to be difficult to implement I don't mind carrying code at the
+ASoC layer while that work is done.
 
---r4QXMf6/kyF/FvJJ
+--mPTHnM80CEnHQ2WJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPRO2dAAoJEBus8iNuMP3dGy8P/Akf3CbVMVUovaAcFE2R/qc2
-5S3d/+LK1Xh6pplali4fxmj3T9RmaYERLRwz1fdbmbn1T2R5EZSnL1sbu58Vl6e9
-taptXaNpdmDa8RIl7rsOlYeXCiuBAfCYV01Z7/h8p8VtFRjqlO498tDQACwtmkEK
-il313M9XY8xclYVJqEykFmuw3PCnhPrEJ85mmi7oGlKeedjCw4QPxz/4aFOfMqFq
-N8lhqDCo0uBVpb4PCtOL/AuNcAih69lrIPyBwwsi7Ii4Dd1eaSEXjS2P7wqDLHJ0
-enBuzRvowdrZ0ybWCUWGGg96inzVuRXe5VDAh+ogNPE6umWK29HV4xipv2hB1ka/
-iSwD7RBPuu/ewald2ur6xb+ATM3cUJei3lOcO8tjBv5WvSbnBEA3vSsC2FLaIExL
-sm560e8OCqkwCrmL3Eq+A7jQGfQdq+eqzzKERUdybygeKxxovag/ybRZhDhPJARV
-eUCyeKL0jDleEeXLvZEgBVWQxCaujpyrnfo/QjERQ97h0QwfPRYY4QnohOBZRDi8
-mNIn2RXRuIUpleyBEucDvLFzxLORTiHxUTR59Dh94a6n5zCKpp70Jt4MnRuQEWsz
-xz8WLRvkXQ5AzaO0710Uv4EiSjTPwcTfev4Cj1pNE0vOuNHojtJ4/8boOaYQxiFm
-VysWu0k/yTGeVy7nTSR3
-=Vaw3
+iQIcBAEBAgAGBQJPRO3zAAoJEBus8iNuMP3dDkwQAIfXld6ONYGhbQ4wtoNleAzd
+jrTfCm9ZP57FAgEUEaMIzhGKf94ubCHRebloowFskGh9pJhiW1447d6foHwG6RmM
+zoMWdgAmAg5aCVm56+rmF4Hq7vAG1IlVIIpNbmBYpsS53/e2QmwZvgt8zfmM+VCe
+qc1sju4WFxVOEiqXjZclaoeicf9SiWzCRk91krDMvHtFij6O29YZ5tJnAXyWK/B2
+3ZplNijXDqTPl0fcBfIA6zxDcHOy/jpfmNn5Pm5f+CZ7rC0TU61WTGFOaGQDiz6T
+tmmqntpVPNfw69z5kwpi0O1IpaLfYibiQXB/+pFKYH1+juvo03VsrAhGpGR5WqMm
+t2935iF1cSkJQ59zrogzNgVeIZEaKK/ue5hwYMYLaUeJ2RcPA0LoFacAxWKdPDMe
+D1i/YQ6oRrsnlJPt9i0p16g89yChGH6ihksPkzF/Bc1I9QPprhOx/xzLvXlh4I9t
+L9MCZjCcSSt/qhVRTmDbQApbNUX+qesdbn/MnX+DsqLPqjNYO33OiwHC6yuLEVY1
+UkvueyXbRvFYIguuvt9dfkOvFlf9EkBRW4/Aby79J+hvhJlAr2lF2s/IsJVQdMSc
+m8pC8VSpy5hyb+34XJogQM8PN+xISgS9UUaBdFNi4OgbDINvTutzzWhSWNF6q6Fs
+I+JwudBOB1XslVtuX9SH
+=MjTB
 -----END PGP SIGNATURE-----
 
---r4QXMf6/kyF/FvJJ--
+--mPTHnM80CEnHQ2WJ--
 
---===============7571345383767752953==
+--===============1407370487431163008==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7571345383767752953==--
+--===============1407370487431163008==--
