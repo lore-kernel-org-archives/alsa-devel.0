@@ -1,18 +1,16 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ASoC: imx: move SND_SOC_AC97_BUS selection
-	down to machine driver
-Date: Wed, 22 Feb 2012 21:25:47 +0800
-Message-ID: <1329917147-24962-1-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Wed, 22 Feb 2012 13:21:08 +0000
+Message-ID: <20120222132107.GD7340@opensource.wolfsonmicro.com>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3376287758337415046=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8828103F18
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:12:29 +0100 (CET)
-Received: by yenm14 with SMTP id m14so1767yen.38
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 05:12:28 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C7C6103EF2
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:21:10 +0100 (CET)
+In-Reply-To: <1329904151-5927-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-SND_SOC_AC97_BUS is selected to enable the AC97 support in soc-core.
-Rather than selecting the option under SND_IMX_SOC, it's better to
-leave the selection to individual machine driver which knows if AC97
-support is needed or not.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/imx/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+--===============3376287758337415046==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sXc4Kmr5FA7axrvy"
+Content-Disposition: inline
 
-diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
-index e89139f..7c4aa42 100644
---- a/sound/soc/imx/Kconfig
-+++ b/sound/soc/imx/Kconfig
-@@ -1,7 +1,6 @@
- menuconfig SND_IMX_SOC
- 	tristate "SoC Audio for Freescale i.MX CPUs"
- 	depends on ARCH_MXC
--	select SND_SOC_AC97_BUS
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the i.MX SSI interface.
-@@ -37,6 +36,7 @@ config SND_SOC_MX27VIS_AIC32X4
- config SND_SOC_PHYCORE_AC97
- 	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
- 	depends on MACH_PCM043 || MACH_PCA100
-+	select SND_SOC_AC97_BUS
- 	select SND_SOC_WM9712
- 	select SND_MXC_SOC_FIQ
- 	help
--- 
-1.7.5.4
+
+--sXc4Kmr5FA7axrvy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 22, 2012 at 10:49:08AM +0100, Lars-Peter Clausen wrote:
+> This patch adds a set of functions which are intended to be used when
+> implementing a dmaengine based sound PCM driver.
+
+Looks good - if you need to resend then:
+
+> + * Note that this function will use private_data field of the substream's
+> + * runtime. So it is not availabe to your pcm driver implementation. If you need
+> + * to keep additional data attached to a substream use
+> + * snd_dmaeinge_pcm_{set,get}_data.
+
+there's a typo here but no need to resend just for that.
+
+I'd like to see some review from both Morimoto-san as we should convert
+fsi over to this too, Vinod I guess you're also pretty much happy given
+your comments on the previous version?
+
+For the non-cyclic DMAs the idea of emulating at the dmaengine layer
+does seem very sensible but if that's hard then having the code at the
+ASoC level and pushing it down later seems fine.  We do have several
+platforms with non-cyclic DMA so it's a general need.
+
+--sXc4Kmr5FA7axrvy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPROu0AAoJEBus8iNuMP3dBkkP/RTtzUnSpDa6wxhwREAPqfHo
+emQ15BK8pGL3CzlWKZF2kt5Q8u3258YuDM3bTeRAkgPEeNafBbP+t44o5GAxlnzr
+ctmssA8MgfqipaugUR/ViUSN9IWBz6g2VHCaK4Z7ZYHGGluV5EHgJKAAKNrVKZTe
+O2JPf0WuBYWtpt9/UMohbq++BikauJ07gsDXBjeGq9USZpDLHH2xpV2jXeHGGsNU
+c/gGuCTTae7mjHr6u38XrML6FHjcoMycZif6EBedVs3fDJrhAP820pleW4BZFq1O
+89KO1aHVHzsj8ErxPsTnoIQyHYdN4kJSvVNzgUzQINZ26ULVFHG+TAXHptFbpjl3
+GItwRSXAcRCTrFrAi44uWMFxTr/S5gb3cLrqDw1ptJ/PRMXQ2Hh2ZN0BpiDwO2U/
+XqHuIQjyAMWK0SBun69X0T6jbemULY4dibe42EnTGjiHtQXlaKR8kCHB7//C8Ngc
+Dt817nJqv4hAtW9I5z7DvyBtDApJcyPtToWUrjvd2jwYFMnvoqjdA6MsYSuAlRXP
+e3bCxOl2sl8E8iHTMwghw8Zs6T3k3DU+rvv+YKxRcmrLYd6gzJ5knF6EyrRLL6us
+Qu0bkvVeoIeTT2VRr+vQC1yNStWgE5Z8Khu5W075gC1DU0tZnq9k7BbmowAfErcY
+1aoTBbp4S0i6/xO2jWan
+=Tw5E
+-----END PGP SIGNATURE-----
+
+--sXc4Kmr5FA7axrvy--
+
+--===============3376287758337415046==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3376287758337415046==--
