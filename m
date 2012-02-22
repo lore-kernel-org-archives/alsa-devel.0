@@ -1,15 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [RFC 0/7] ASoC: Introduce dmaengine pcm helper
-	functions
-Date: Wed, 22 Feb 2012 10:49:04 +0100
-Message-ID: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+Subject: [RFC 2/7] ASoC: imx-pcm: Request DMA channel early
+Date: Wed, 22 Feb 2012 10:49:06 +0100
+Message-ID: <1329904151-5927-3-git-send-email-lars@metafoo.de>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-087.synserver.de (smtp-out-093.synserver.de
-	[212.40.185.93]) by alsa0.perex.cz (Postfix) with ESMTP id 4104D24154
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 10:47:40 +0100 (CET)
+	[212.40.185.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1455103B34
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 10:47:43 +0100 (CET)
+In-Reply-To: <1329904151-5927-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,90 +25,154 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Mika Westerberg <mika.westerberg@iki.fi>, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Same series as send out yesterday (sans the cleanup patches which already have
-been applied), since I forgot to Cc alsa-devel. Sorry for the noice if you got
-the series twice.
+Request the DMA channel in the pcm open callback. This allows us to let open
+fail if there is no dma channel available.
 
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Tested-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ sound/soc/imx/imx-pcm-dma-mx2.c |   78 ++++++++++++++++-----------------------
+ 1 files changed, 32 insertions(+), 46 deletions(-)
 
-This patch series introduces a new set of helper functions for dmaengine based
-PCM drivers. Currently we have 6 different dmaengine based PCM drivers which are
-all more or less similar in structure, but all have also individual requirements
-which can't easily be generalized. So that's why this series does not introduce
-a generic dmaengine PCM driver but rather a set of helper functions which can be
-used to implement the common bits between such dmaengine based PCM drivers.
-
-The helper functions only provide infrastructure code for dmaengines which
-provide thed evice_prep_dma_cyclic. While it is possible to add support for
-dmaengine, which only provide device_prep_slave_sg, it is in my opinion a better
-idea to either implement the missing functionality in the dmaengine driver or
-provide a emulation layer for cyclic transfer within the dmaengine framework
-itself. This has the advantage that it is also available outside of ALSA.
-
-This series converts the three PCM drivers which already use the circular
-dmaengine prepare function. Since I don't have access to hardware using the
-converted drivers the patches have only been compile tested. But the helper
-functions introduced in this series have been runtime tested with a platform
-which is not upstream yet.
-
-The first two patches restructure the iMX and MXS drivers to request their DMA
-channel in the PCM open callback instead of the hwparams callback.  This is done
-to make their structure more similar to what it will be when using the helper
-functions and make the actual patch converting them to the new dmaengine PCM
-helper functions less intrusive. The next patch introduces the helper functions
-and the last three patches respectively convert the imx, mxs and ep39xx
-dmaengine based PCM drivers to use the new set of helper functions.
-
-The set of helper functions consists of a open, a close, a trigger and a pointer
-callback and also a function to convert hwparams to a dma_slave_config. The
-trigger and pointer callbacks can usually be used directly for the pcm_ops
-callbacks. The open callback wants to be called from a driver specific open
-function which may do some driver specific setup tasks and provide the helper
-open callback with a dma filter function. If the driver specific open functions
-allocates resources they need to be freed in a driver specific close function
-which has to call the helper close callback. If not the helper close callback
-can be assigned directly to the pcm_ops struct.
-
-If a driver needs to keep additional driver specific data around it can be done
-by using snd_dmaengine_pcm_{get,set}_data. Normally a driver should not require
-to keep additional data around, but all of the converted drivers need this,
-because of this horrible abusive pattern where the dma channels private field
-gets assigned configuration data in the filter callback. We should hopefully be
-able to get rid of this pattern with Guennadi Liakhovetski's patches[1], which
-add a slave configuration parameter to dma_request_channel, and with it the need
-for storing extra private data.
-
-While the DMA helper functions only use generic ALSA functions and nothing ASoC
-specific I've placed the, under ASoC for now since the only users are ASoC
-driver.
-
-- Lars
-
-[1] https://lkml.org/lkml/2012/2/1/227
-
-Lars-Peter Clausen (7):
-  ASoC: imx-ssi: Set dma data early
-  ASoC: imx-pcm: Request DMA channel early
-  ASoC: mxs-pcm: Request DMA channel early
-  ASoC: Add dmaengine PCM helper functions
-  ASoC: imx-pcm-dma: Use dmaengine PCM helper functions
-  ASoC: mxs-pcm: Use dmaengine PCM helper functions
-  ASoC: ep93xx-pcm: Use dmaengine PCM helper functions
-
- include/sound/dmaengine_pcm.h   |   49 +++++++
- sound/soc/Kconfig               |    3 +
- sound/soc/Makefile              |    3 +
- sound/soc/ep93xx/Kconfig        |    1 +
- sound/soc/ep93xx/ep93xx-pcm.c   |  148 +++-----------------
- sound/soc/imx/Kconfig           |    1 +
- sound/soc/imx/imx-pcm-dma-mx2.c |  196 ++++----------------------
- sound/soc/imx/imx-ssi.c         |   28 +++-
- sound/soc/mxs/Kconfig           |    1 +
- sound/soc/mxs/mxs-pcm.c         |  152 ++++-----------------
- sound/soc/mxs/mxs-pcm.h         |   12 --
- sound/soc/soc-dmaengine-pcm.c   |  287 +++++++++++++++++++++++++++++++++++++++
- 12 files changed, 443 insertions(+), 438 deletions(-)
- create mode 100644 include/sound/dmaengine_pcm.h
- create mode 100644 sound/soc/soc-dmaengine-pcm.c
-
+diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
+index ec13944..f974e61 100644
+--- a/sound/soc/imx/imx-pcm-dma-mx2.c
++++ b/sound/soc/imx/imx-pcm-dma-mx2.c
+@@ -65,17 +65,13 @@ static bool filter(struct dma_chan *chan, void *param)
+         return true;
+ }
+ 
+-static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
++static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct imx_pcm_dma_params *dma_params;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
+-	struct dma_slave_config slave_config;
+ 	dma_cap_mask_t mask;
+-	enum dma_slave_buswidth buswidth;
+-	int ret;
+ 
+ 	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 
+@@ -84,13 +80,29 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
+ 	iprtd->dma_data.dma_request = dma_params->dma;
+ 
+ 	/* Try to grab a DMA channel */
+-	if (!iprtd->dma_chan) {
+-		dma_cap_zero(mask);
+-		dma_cap_set(DMA_SLAVE, mask);
+-		iprtd->dma_chan = dma_request_channel(mask, filter, iprtd);
+-		if (!iprtd->dma_chan)
+-			return -EINVAL;
+-	}
++	dma_cap_zero(mask);
++	dma_cap_set(DMA_SLAVE, mask);
++	iprtd->dma_chan = dma_request_channel(mask, filter, iprtd);
++	if (!iprtd->dma_chan)
++		return -EINVAL;
++
++	return 0;
++}
++
++static int snd_imx_pcm_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
++	struct dma_chan *chan = iprtd->dma_chan;
++	struct imx_pcm_dma_params *dma_params;
++	struct dma_slave_config slave_config;
++	enum dma_slave_buswidth buswidth;
++	unsigned long dma_addr;
++	int ret;
++
++	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -116,29 +128,10 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
+ 		slave_config.src_maxburst = dma_params->burstsize;
+ 	}
+ 
+-	ret = dmaengine_slave_config(iprtd->dma_chan, &slave_config);
++	ret = dmaengine_slave_config(chan, &slave_config);
+ 	if (ret)
+ 		return ret;
+ 
+-	return 0;
+-}
+-
+-static int snd_imx_pcm_hw_params(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
+-	unsigned long dma_addr;
+-	struct dma_chan *chan;
+-	struct imx_pcm_dma_params *dma_params;
+-	int ret;
+-
+-	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	ret = imx_ssi_dma_alloc(substream, params);
+-	if (ret)
+-		return ret;
+-	chan = iprtd->dma_chan;
+ 
+ 	iprtd->periods = params_periods(params);
+ 	iprtd->period_bytes = params_period_bytes(params);
+@@ -164,19 +157,6 @@ static int snd_imx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int snd_imx_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
+-
+-	if (iprtd->dma_chan) {
+-		dma_release_channel(iprtd->dma_chan);
+-		iprtd->dma_chan = NULL;
+-	}
+-
+-	return 0;
+-}
+-
+ static int snd_imx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -251,6 +231,12 @@ static int snd_imx_open(struct snd_pcm_substream *substream)
+ 		return ret;
+ 	}
+ 
++	ret = imx_ssi_dma_alloc(substream);
++	if (ret < 0) {
++		kfree(iprtd);
++		return ret;
++	}
++
+ 	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
+ 
+ 	return 0;
+@@ -261,6 +247,7 @@ static int snd_imx_close(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
+ 
++	dma_release_channel(iprtd->dma_chan);
+ 	kfree(iprtd);
+ 
+ 	return 0;
+@@ -271,7 +258,6 @@ static struct snd_pcm_ops imx_pcm_ops = {
+ 	.close		= snd_imx_close,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= snd_imx_pcm_hw_params,
+-	.hw_free	= snd_imx_pcm_hw_free,
+ 	.trigger	= snd_imx_pcm_trigger,
+ 	.pointer	= snd_imx_pcm_pointer,
+ 	.mmap		= snd_imx_pcm_mmap,
 -- 
 1.7.9
