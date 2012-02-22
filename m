@@ -1,15 +1,15 @@
 From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH v3 4/5] snd-usb-6fire: add mute control for
-	analog outputs
-Date: Wed, 22 Feb 2012 15:21:23 +0100
-Message-ID: <20120222152123.16685409b42acba49558ca6d@zoho.com>
+Subject: [PATCH v3 5/5] snd-usb-6fire: add analog input volume
+	control
+Date: Wed, 22 Feb 2012 15:21:30 +0100
+Message-ID: <20120222152130.f2c496f3ecac03552b524c60@zoho.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0747310408D
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 15:21:27 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 36DF7104092
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 15:21:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,73 +23,86 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add a mute control for every analog output channel.
+Add a stereo volume control for analog input channel pair 1/2.
 
 Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
 
 diff -Nur a/sound/usb/6fire/control.c b/sound/usb/6fire/control.c
---- a/sound/usb/6fire/control.c	2012-02-22 15:02:08.594916052 +0100
-+++ b/sound/usb/6fire/control.c	2012-02-22 15:05:47.206526365 +0100
-@@ -74,6 +74,14 @@
- 			}
+--- a/sound/usb/6fire/control.c	2012-02-22 15:05:47.206526365 +0100
++++ b/sound/usb/6fire/control.c	2012-02-22 15:11:26.846504694 +0100
+@@ -55,6 +55,7 @@
+ static const u16 rates_6fire_vh[] = {0x11, 0x11, 0x10, 0x10, 0x00, 0x00};
+ 
+ static DECLARE_TLV_DB_MINMAX(tlv_output, -9000, 0);
++static DECLARE_TLV_DB_MINMAX(tlv_input, -1500, 1500);
+ 
+ enum {
+ 	DIGITAL_THRU_ONLY_SAMPLERATE = 3
+@@ -82,6 +83,20 @@
+ 		comm_rt->write8(comm_rt, 0x12, 0x0e, ~rt->output_mute);
  }
  
-+static void usb6fire_control_output_mute_update(struct control_runtime *rt)
++static void usb6fire_control_input_vol_update(struct control_runtime *rt)
 +{
 +	struct comm_runtime *comm_rt = rt->chip->comm;
++	int i;
 +
 +	if (comm_rt)
-+		comm_rt->write8(comm_rt, 0x12, 0x0e, ~rt->output_mute);
++		for (i = 0; i < 2; i++)
++			if (!(rt->ivol_updated & (1 << i))) {
++				comm_rt->write8(comm_rt, 0x12, 0x1c + i,
++					rt->input_vol[i] & 0x3f);
++				rt->ivol_updated |= 1 << i;
++			}
 +}
 +
  static void usb6fire_control_line_phono_update(struct control_runtime *rt)
  {
  	struct comm_runtime *comm_rt = rt->chip->comm;
-@@ -208,6 +216,51 @@
+@@ -261,6 +276,50 @@
  	return 0;
  }
  
-+static int usb6fire_control_output_mute_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int usb6fire_control_input_vol_info(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_info *uinfo)
 +{
-+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
-+	unsigned int ch = kcontrol->private_value;
-+	u8 old = rt->output_mute;
-+	u8 value = 0;
-+
-+	if (ch > 4) {
-+		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
-+		return -EINVAL;
-+	}
-+
-+	rt->output_mute &= ~(3 << ch);
-+	if (ucontrol->value.integer.value[0])
-+		value |= 1;
-+	if (ucontrol->value.integer.value[1])
-+		value |= 2;
-+	rt->output_mute |= value << ch;
-+
-+	if (rt->output_mute != old)
-+		usb6fire_control_output_mute_update(rt);
-+
-+	return rt->output_mute != old;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 2;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 30;
++	return 0;
 +}
 +
-+static int usb6fire_control_output_mute_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int usb6fire_control_input_vol_put(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
-+	unsigned int ch = kcontrol->private_value;
-+	u8 value = rt->output_mute >> ch;
++	int changed = 0;
 +
-+	if (ch > 4) {
-+		snd_printk(KERN_ERR PREFIX "Invalid channel in volume control.");
-+		return -EINVAL;
++	if (rt->input_vol[0] != ucontrol->value.integer.value[0]) {
++		rt->input_vol[0] = ucontrol->value.integer.value[0] - 15;
++		rt->ivol_updated &= ~(1 << 0);
++		changed = 1;
++	}
++	if (rt->input_vol[1] != ucontrol->value.integer.value[1]) {
++		rt->input_vol[1] = ucontrol->value.integer.value[1] - 15;
++		rt->ivol_updated &= ~(1 << 1);
++		changed = 1;
 +	}
 +
-+	ucontrol->value.integer.value[0] = 1 & value;
-+	value >>= 1;
-+	ucontrol->value.integer.value[1] = 1 & value;
++	if (changed)
++		usb6fire_control_input_vol_update(rt);
++
++	return changed;
++}
++
++static int usb6fire_control_input_vol_get(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.integer.value[0] = rt->input_vol[0] + 15;
++	ucontrol->value.integer.value[1] = rt->input_vol[1] + 15;
 +
 +	return 0;
 +}
@@ -97,77 +110,41 @@ diff -Nur a/sound/usb/6fire/control.c b/sound/usb/6fire/control.c
  static int usb6fire_control_line_phono_info(struct snd_kcontrol *kcontrol,
  		struct snd_ctl_elem_info *uinfo)
  {
-@@ -339,6 +392,40 @@
+@@ -454,6 +513,17 @@
+ 		.get = usb6fire_control_digital_thru_get,
+ 		.put = usb6fire_control_digital_thru_put
+ 	},
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Analog Capture Volume",
++		.index = 0,
++		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
++			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
++		.info = usb6fire_control_input_vol_info,
++		.get = usb6fire_control_input_vol_get,
++		.put = usb6fire_control_input_vol_put,
++		.tlv = { .p = tlv_input }
++	},
  	{}
  };
  
-+static struct __devinitdata snd_kcontrol_new mute_elements[] = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog Playback Switch",
-+		.index = 0,
-+		.private_value = 0,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = snd_ctl_boolean_stereo_info,
-+		.get = usb6fire_control_output_mute_get,
-+		.put = usb6fire_control_output_mute_put,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog Playback Switch",
-+		.index = 1,
-+		.private_value = 2,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = snd_ctl_boolean_stereo_info,
-+		.get = usb6fire_control_output_mute_get,
-+		.put = usb6fire_control_output_mute_put,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog Playback Switch",
-+		.index = 2,
-+		.private_value = 4,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = snd_ctl_boolean_stereo_info,
-+		.get = usb6fire_control_output_mute_get,
-+		.put = usb6fire_control_output_mute_put,
-+	},
-+	{}
-+};
-+
- static struct __devinitdata snd_kcontrol_new elements[] = {
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -430,13 +517,21 @@
- 	usb6fire_control_opt_coax_update(rt);
+@@ -518,6 +588,7 @@
  	usb6fire_control_line_phono_update(rt);
  	usb6fire_control_output_vol_update(rt);
-+	usb6fire_control_output_mute_update(rt);
+ 	usb6fire_control_output_mute_update(rt);
++	usb6fire_control_input_vol_update(rt);
  	usb6fire_control_streaming_update(rt);
  
  	ret = usb6fire_control_add_virtual(rt, chip->card,
- 		"Master Playback Volume", vol_elements);
- 	if (ret) {
-+		snd_printk(KERN_ERR PREFIX "cannot add control.\n");
- 		kfree(rt);
-+		return ret;
-+	}
-+	ret = usb6fire_control_add_virtual(rt, chip->card,
-+		"Master Playback Switch", mute_elements);
-+	if (ret) {
- 		snd_printk(KERN_ERR PREFIX "cannot add control.\n");
-+		kfree(rt);
- 		return ret;
- 	}
- 
 diff -Nur a/sound/usb/6fire/control.h b/sound/usb/6fire/control.h
---- a/sound/usb/6fire/control.h	2012-02-22 15:00:10.034785200 +0100
-+++ b/sound/usb/6fire/control.h	2012-02-22 15:03:44.370251101 +0100
-@@ -45,6 +45,7 @@
- 	bool usb_streaming;
+--- a/sound/usb/6fire/control.h	2012-02-22 15:03:44.370251101 +0100
++++ b/sound/usb/6fire/control.h	2012-02-22 15:10:05.055517247 +0100
+@@ -46,6 +46,8 @@
  	u8 output_vol[6];
  	u8 ovol_updated;
-+	u8 output_mute;
+ 	u8 output_mute;
++	s8 input_vol[2];
++	u8 ivol_updated;
  };
  
  int __devinit usb6fire_control_init(struct sfire_chip *chip);
