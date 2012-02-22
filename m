@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [RFC 3/7] ASoC: mxs-pcm: Request DMA channel early
-Date: Wed, 22 Feb 2012 10:49:07 +0100
-Message-ID: <1329904151-5927-4-git-send-email-lars@metafoo.de>
+Subject: [RFC 1/7] ASoC: imx-ssi: Set dma data early
+Date: Wed, 22 Feb 2012 10:49:05 +0100
+Message-ID: <1329904151-5927-2-git-send-email-lars@metafoo.de>
 References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-087.synserver.de (smtp-out-093.synserver.de
 	[212.40.185.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84934103B39
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 10:47:44 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D1998103B38
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 10:47:43 +0100 (CET)
 In-Reply-To: <1329904151-5927-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,91 +25,77 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Mika Westerberg <mika.westerberg@iki.fi>, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Request the DMA channel in the PCM open callback instead of the hwparams
-callback, this allows us to let open fail if no dma channel is available. This
-also fixes a bug where the channel will be requested multiple times if hwparams
-is called multiple times.
+Move the call to snd_soc_dai_set_dma_data from the hw_params callback to the
+startup callback. This allows us to use the dma data in the pcm driver's open
+callback.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Tested-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- sound/soc/mxs/mxs-pcm.c |   28 ++++++++--------------------
- 1 files changed, 8 insertions(+), 20 deletions(-)
+ sound/soc/imx/imx-ssi.c |   28 ++++++++++++++++++++--------
+ 1 files changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index 06c18ec..5b8c8d3 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -85,8 +85,7 @@ static bool filter(struct dma_chan *chan, void *param)
- 	return true;
- }
- 
--static int mxs_dma_alloc(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
-+static int mxs_dma_alloc(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -112,11 +111,7 @@ static int snd_mxs_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct mxs_pcm_runtime_data *iprtd = runtime->private_data;
- 	unsigned long dma_addr;
- 	struct dma_chan *chan;
--	int ret;
- 
--	ret = mxs_dma_alloc(substream, params);
--	if (ret)
--		return ret;
- 	chan = iprtd->dma_chan;
- 
- 	iprtd->periods = params_periods(params);
-@@ -143,19 +138,6 @@ static int snd_mxs_pcm_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+index 01d1f74..dbf43f5 100644
+--- a/sound/soc/imx/imx-ssi.c
++++ b/sound/soc/imx/imx-ssi.c
+@@ -233,6 +233,23 @@ static int imx_ssi_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
  	return 0;
  }
  
--static int snd_mxs_pcm_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct mxs_pcm_runtime_data *iprtd = runtime->private_data;
--
--	if (iprtd->dma_chan) {
--		dma_release_channel(iprtd->dma_chan);
--		iprtd->dma_chan = NULL;
--	}
--
--	return 0;
--}
--
- static int snd_mxs_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -208,6 +190,12 @@ static int snd_mxs_open(struct snd_pcm_substream *substream)
- 		return ret;
- 	}
- 
-+	ret = mxs_dma_alloc(substream);
-+	if (ret) {
-+		kfree(iprtd);
-+		return ret;
-+	}
++static int imx_ssi_startup(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *cpu_dai)
++{
++	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
++	struct imx_pcm_dma_params *dma_data;
 +
- 	snd_soc_set_runtime_hwparams(substream, &snd_mxs_hardware);
++	/* Tx/Rx config */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dma_data = &ssi->dma_params_tx;
++	else
++		dma_data = &ssi->dma_params_rx;
++
++	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
++
++	return 0;
++}
++
+ /*
+  * Should only be called when port is inactive (i.e. SSIEN = 0),
+  * although can be called multiple times by upper layers.
+@@ -242,23 +259,17 @@ static int imx_ssi_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *cpu_dai)
+ {
+ 	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
+-	struct imx_pcm_dma_params *dma_data;
+ 	u32 reg, sccr;
  
- 	return 0;
-@@ -218,6 +206,7 @@ static int snd_mxs_close(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct mxs_pcm_runtime_data *iprtd = runtime->private_data;
+ 	/* Tx/Rx config */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = SSI_STCCR;
+-		dma_data = &ssi->dma_params_tx;
+-	} else {
++	else
+ 		reg = SSI_SRCCR;
+-		dma_data = &ssi->dma_params_rx;
+-	}
  
-+	dma_release_channel(iprtd->dma_chan);
- 	kfree(iprtd);
+ 	if (ssi->flags & IMX_SSI_SYN)
+ 		reg = SSI_STCCR;
  
- 	return 0;
-@@ -239,7 +228,6 @@ static struct snd_pcm_ops mxs_pcm_ops = {
- 	.close		= snd_mxs_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= snd_mxs_pcm_hw_params,
--	.hw_free	= snd_mxs_pcm_hw_free,
- 	.trigger	= snd_mxs_pcm_trigger,
- 	.pointer	= snd_mxs_pcm_pointer,
- 	.mmap		= snd_mxs_pcm_mmap,
+-	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
+-
+ 	sccr = readl(ssi->base + reg) & ~SSI_STCCR_WL_MASK;
+ 
+ 	/* DAI data (word) size */
+@@ -343,6 +354,7 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ }
+ 
+ static const struct snd_soc_dai_ops imx_ssi_pcm_dai_ops = {
++	.startup	= imx_ssi_startup,
+ 	.hw_params	= imx_ssi_hw_params,
+ 	.set_fmt	= imx_ssi_set_dai_fmt,
+ 	.set_clkdiv	= imx_ssi_set_dai_clkdiv,
 -- 
 1.7.9
