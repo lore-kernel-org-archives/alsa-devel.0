@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 1/7] ASoC: imx-ssi: Set dma data early
-Date: Wed, 22 Feb 2012 13:22:22 +0000
-Message-ID: <20120222132222.GE7340@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 2/7] ASoC: imx-pcm: Request DMA channel early
+Date: Wed, 22 Feb 2012 13:22:37 +0000
+Message-ID: <20120222132236.GF7340@opensource.wolfsonmicro.com>
 References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
-	<1329904151-5927-2-git-send-email-lars@metafoo.de>
+	<1329904151-5927-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1224760192696847109=="
+Content-Type: multipart/mixed; boundary="===============4626766516385253404=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17D17103F31
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:22:25 +0100 (CET)
-In-Reply-To: <1329904151-5927-2-git-send-email-lars@metafoo.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9FBDA103F64
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:22:38 +0100 (CET)
+In-Reply-To: <1329904151-5927-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +25,51 @@ Cc: Vinod Koul <vinod.koul@linux.intel.com>, Russell King <linux@arm.linux.org.u
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1224760192696847109==
+--===============4626766516385253404==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7CZp05NP8/gJM8Cl"
+	protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
 Content-Disposition: inline
 
 
---7CZp05NP8/gJM8Cl
+--f61P+fpdnY2FZS1u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 22, 2012 at 10:49:05AM +0100, Lars-Peter Clausen wrote:
-> Move the call to snd_soc_dai_set_dma_data from the hw_params callback to the
-> startup callback. This allows us to use the dma data in the pcm driver's open
-> callback.
+On Wed, Feb 22, 2012 at 10:49:06AM +0100, Lars-Peter Clausen wrote:
+> Request the DMA channel in the pcm open callback. This allows us to let open
+> fail if there is no dma channel available.
 
 Applied, thanks.
 
---7CZp05NP8/gJM8Cl
+--f61P+fpdnY2FZS1u
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPROwDAAoJEBus8iNuMP3dAMQP/jE1EDJi3iakjNVsG3V1ZCxH
-azWLMsSOWs8rHWAYIIWBESpEZm+MjJXeAeIgGprMr+Is591FaDqxsRio2MH7N7GL
-/2k63Y3mkoJl/ct5CAhx3bN/8tg11VyT1Tzlcqb4r8Xic9hxjcGUiM50UozN3ht0
-ufaxuHEOzNCjM4SuUW752ZooimKu4miuZMQv2Yr7mfRjHBdE+OP+FuEFlSRbdCVC
-m1Y5xHLvsNj1734cbuQoGZPIgt4A6fSKQihJaYlRnGcgTmpWs11EMYhnCsecbXZA
-6Umeu/xePArQJE2afvdIYWr5ogJunAVIJBgK8TPDjB8AUeXkMLOCphhhGHm7kvC3
-xPlWta4JBcTTqMizGDVUlQ5A526a9kNF9eYZpjHDWVZS3X1A9ePVLHBkw4EtYPU+
-EEgxvU+uDecN2uRbVMFJ7MVSqLnrAetUIKH2eoRxOlEGI95G42ooiA+x3aXRA8uG
-GyNZXFJdmylcwntZIxuy7tV+g+IjkcRy9vAvLJFkHg1KsZLiTQbSpkeXUODd9pNK
-P70bAkoOM4toJZQAxMthj/CWEvCOsyLfTU+LMRsgLfs/jD/qWQJi2CPIyK7RQhQ/
-hVhMSnnbAIX7V1sUlzMuxNLeQAbZTCJTwSanjufLVqTd4GFepZVY6yBuEy48RZgJ
-JUncjNjrMV+MI0lU9jLm
-=C2Wn
+iQIcBAEBAgAGBQJPROwWAAoJEBus8iNuMP3dywoP/3NqhwPCU3DrtVfZkUJ2AXWA
+a4IgJnVMxUbPiyRzC2vGcW0aqwgEmCcNUykh8y0Lm06xNLKJL9OBfGezEPA27BW+
+Wz5rKv95AvxWpstXg2uH5tmQLC/nNXNYsLfnTQeRuxEf5WkDUxcRwTRmJt5YpDgc
+xLrj/4niOrqY+nu3HKgxjpDuwD7y7gC5e8d+fj9/J5/cv00YCmkzEOoEJRfFZdoF
+WsHetQIyal6M0EmKf5HRojGWFHbkYzR/3yoACGxI0u4kWv7wA+izJIXR+ul8Z/Xp
+1HNtPIZs+krpdfpbwHS4jqQgvzVVDOogXVQnSG3661E7wBbCAXqiZPGrD+933gCZ
+G4F1AWnCywImFls5Jm55o3VIBetROFHJCO4d2RCWSM+mENa6A3cSS4tvyVi3LQ8m
+gDASWIs2sS+fKOZxDzx8AQlUu/J4tTIpsZXFMLUIYdH9MYSRXZ6tcTXXhG5AEuLL
+GeVJ1CJy9fr4wHL2GmP+Jeb89MdqrIvDySXAHZUZSHmeifB9jad9WpslBddkV2eD
+yv9rAV/PV0ctvESvNABfC7a0CrqdNHtP7eSXRqguPAI0TJecafeVO6m/dqVckifE
+B698lsMSgOs6QfIR8b1MmKsG/rjHQaTvDN1w3cKkY6rrDeMeQNhAJ1DTuqRGzjh5
+gnxJ8siW9mJvF0CSyPr4
+=qqad
 -----END PGP SIGNATURE-----
 
---7CZp05NP8/gJM8Cl--
+--f61P+fpdnY2FZS1u--
 
---===============1224760192696847109==
+--===============4626766516385253404==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1224760192696847109==--
+--===============4626766516385253404==--
