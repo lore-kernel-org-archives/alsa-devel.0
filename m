@@ -1,20 +1,18 @@
-From: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [RFC 00/10] ASoC: Introduce dmaengine pcm helper
- functions
-Date: Wed, 22 Feb 2012 16:46:41 +0800
-Message-ID: <20120222084640.GI11087@shlinux2.ap.freescale.net>
-References: <1329842884-9757-1-git-send-email-lars@metafoo.de>
-	<20120222081908.GB21820@S2101-09.ap.freescale.net>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: v3.1.8: hda-intel broken
+Date: Wed, 22 Feb 2012 08:42:15 +0000
+Message-ID: <20120222084215.GP22562@n2100.arm.linux.org.uk>
+References: <20120221235807.GO22562@n2100.arm.linux.org.uk>
+	<s5hr4xn46ks.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BB83103A8C
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 09:38:53 +0100 (CET)
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id A2B88103A92
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 09:42:23 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20120222081908.GB21820@S2101-09.ap.freescale.net>
+In-Reply-To: <s5hr4xn46ks.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Mallon <rmallon@gmail.com>, Liam Girdwood <lrg@ti.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@linux.intel.com>, Ryan@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 22, 2012 at 04:19:10PM +0800, Shawn Guo wrote:
-> Nice consolidation ...
-> 
-> On Tue, Feb 21, 2012 at 05:47:54PM +0100, Lars-Peter Clausen wrote:
-> > This patch series introduces a new set of helper functions for dmaengine based
-> > PCM drivers. Currently we have 6 different dmaengine based PCM drivers which are
-> > all more or less similar in structure, but all have also individual requirements
-Correct.
-
-> > which can't easily be generalized. So that's why this series does not introduce
-> > a generic dmaengine PCM driver but rather a set of helper functions which can be
-> > used to implement the common bits between such dmaengine based PCM drivers.
+On Wed, Feb 22, 2012 at 09:26:27AM +0100, Takashi Iwai wrote:
+> At Tue, 21 Feb 2012 23:58:07 +0000,
+> Russell King - ARM Linux wrote:
 > > 
-I once had the same thinking about it...
-
-> I did not notice this patch on any list yet, so am not sure about
-> Russell's plan about it.  But it seems this series does not reach
-> alsa-devel list either. (forgot?)
+> > v3.1.8:
+> > 
+> > <4>[1641072.853409] WARNING: at sound/pci/hda/hda_codec.c:5152 snd_array_new+0x47/0x9b [snd_hda_codec]()
+> > <4>[1641072.853412] Hardware name: 2081CTO
+> > <4>[1641072.853413] BUG? (num >= 4096)
+> > <4>[1641072.853415] Modules linked in: lp cdc_ether usbnet mii cdc_acm cdc_wdm usblp ftdi_sio usbserial parport_jtag fuse joydev cpufreq_ondemand acpi_cpufreq mperf nf_conntrack_netbios_ns nf_conntrack_broadcast ip6t_REJECT nf_conntrack_ipv6 nf_defrag_ipv6 ip6table_filter ip6_tables ipv6 uinput snd_hda_codec_conexant snd_hda_intel snd_hda_codec snd_hwdep snd_seq snd_seq_device arc4 snd_pcm snd_timer r852 sm_common nand nand_ids nand_ecc mtd iwlagn mac80211 snd_page_alloc ppdev iTCO_wdt parport_pc cfg80211 iTCO_vendor_support i2c_i801 thinkpad_acpi rfkill e1000e snd soundcore parport pcspkr wmi microcode firewire_ohci sdhci_pci sdhci mmc_core firewire_core crc_itu_t yenta_socket i915 drm_kms_helper drm i2c_algo_bit i2c_core video [last unloaded: ftdi_sio]
+> > <4>[1641072.853459] Pid: 3089, comm: bash Tainted: G        W   3.1.8 #2
+> > <4>[1641072.853461] Call Trace:
+> > <4>[1641072.853466]  [<c04387eb>] warn_slowpath_common+0x6a/0x7f
+> > <4>[1641072.853472]  [<f861d5d0>] ? snd_array_new+0x47/0x9b [snd_hda_codec]
+> > <4>[1641072.853475]  [<c0438873>] warn_slowpath_fmt+0x2b/0x2f
+> > <4>[1641072.853481]  [<f861d5d0>] snd_array_new+0x47/0x9b [snd_hda_codec]
+> > <4>[1641072.853488]  [<f861d65c>] snd_hda_input_jack_add+0x38/0xa2 [snd_hda_codec]
+> > <4>[1641072.853493]  [<f872dcc4>] cxt5051_init+0x62/0xea [snd_hda_codec_conexant]
+> > <4>[1641072.853500]  [<f8621c51>] hda_call_codec_resume+0xa5/0xba [snd_hda_codec]
+> > <4>[1641072.853506]  [<f861f369>] snd_hda_power_up+0x46/0x5c [snd_hda_codec]
+> > <4>[1641072.853513]  [<f861f3b9>] codec_exec_verb+0x3a/0xc7 [snd_hda_codec]
+> > <4>[1641072.853519]  [<f861f482>] snd_hda_codec_write+0x3c/0x43 [snd_hda_codec]
+> > <4>[1641072.853526]  [<f861f4b9>] set_pincfg+0x30/0x45 [snd_hda_codec]
+> > <4>[1641072.853532]  [<f861f507>] restore_pincfgs+0x39/0x46 [snd_hda_codec]
+> > <4>[1641072.853539]  [<f861fa0a>] snd_hda_codec_free+0x6c/0x1f8 [snd_hda_codec]
+> > <4>[1641072.853545]  [<f861fbdb>] snd_hda_bus_free+0x45/0x7c [snd_hda_codec]
+> > <4>[1641072.853552]  [<f861fdb9>] snd_hda_bus_dev_free+0x17/0x19 [snd_hda_codec]<4>[1641072.853560]  [<f80979a4>] snd_device_free+0x91/0xde [snd]
+> > <4>[1641072.853566]  [<f8097c9c>] snd_device_free_all+0x68/0x80 [snd]
+> > <4>[1641072.853572]  [<f80936e3>] snd_card_do_free+0x4e/0xdf [snd]
+> > <4>[1641072.853577]  [<f8094160>] snd_card_free+0x89/0x94 [snd]
+> > <4>[1641072.853581]  [<c044fcee>] ? wake_up_bit+0x20/0x20
+> > <4>[1641072.853585]  [<f86ccddf>] azx_remove+0x13/0x1f [snd_hda_intel]
+> > <4>[1641072.853589]  [<c05de80d>] pci_device_remove+0x2c/0x74
+> > <4>[1641072.853593]  [<c066371d>] __device_release_driver+0x66/0x9c
+> > <4>[1641072.853596]  [<c0663770>] device_release_driver+0x1d/0x28
+> > <4>[1641072.853599]  [<c0662caf>] driver_unbind+0x4d/0x7b
+> > <4>[1641072.853601]  [<c0662c62>] ? store_drivers_probe+0x33/0x33
+> > <4>[1641072.853604]  [<c06627fb>] drv_attr_store+0x24/0x28
+> > <4>[1641072.853607]  [<c05263a6>] sysfs_write_file+0xb3/0xec
+> > <4>[1641072.853609]  [<c05262f3>] ? sysfs_poll+0x73/0x73
+> > <4>[1641072.853612]  [<c04df254>] vfs_write+0x87/0xde
+> > <4>[1641072.853615]  [<c04e678e>] ? path_put+0x1a/0x1d
+> > <4>[1641072.853617]  [<c04df428>] sys_write+0x40/0x62
+> > <4>[1641072.853621]  [<c07c751f>] sysenter_do_call+0x12/0x28
+> > <4>[1641072.853623] ---[ end trace 3d590d4bbb62d735 ]---
+> > 
+> > >From what I can see, this uses the suspend/resume methods on device open/
+> > close.  The suspend method does nothing apart from "shutting up pins".  The
+> > resume method adds new jacks via snd_array_new(), which eventually ends up
+> > getting (after many many days of uptime) to 4096 entries.  And then it
+> > starts exploding with warnings every so often, filling my screen from top
+> > to bottom with abrtd boxes warning me that my kernel is doing this.
 > 
-I'm also interested in this patch series.
-However, i can not see it in the alsa-dev list....
+> It looks like a problem in Conexant codec driver that tries to add the
+> input-jack entries in the init method.  The bug was probably triggered
+> since it's in the device free, i.e. the jack layer was already
+> released beforehand.  Actually there is no merit to call
+> snd_hda_input_jack_add() in the init callback.  It should be called
+> rather only once at the probing time.
+> 
+> A simple solution would be the patch like below.  Could you check
+> whether it fixes?
+> 
+> The patch is needed only up to 3.2, so it won't go to Linus tree with
+> Cc to stable like a normal fix.  I'm going to send a patch to stable
+> ML once after confirming that it works.
 
-
-Regards
-Dong Aisheng
+Note that it's taken about 20 days for the problem to show up in the
+first place, so confirming that it's fixed will similarly take a long
+time.
