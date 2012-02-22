@@ -1,15 +1,21 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH v3 5/5] snd-usb-6fire: add analog input volume
-	control
-Date: Wed, 22 Feb 2012 15:21:30 +0100
-Message-ID: <20120222152130.f2c496f3ecac03552b524c60@zoho.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Wed, 22 Feb 2012 14:22:36 +0000
+Message-ID: <20120222142236.GF22562@n2100.arm.linux.org.uk>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
+	<20120222132107.GD7340@opensource.wolfsonmicro.com>
+	<20120222133207.GD22562@n2100.arm.linux.org.uk>
+	<20120222133939.GK7340@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36DF7104092
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 15:21:35 +0100 (CET)
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id CDD3710407A
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 15:23:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20120222133939.GK7340@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,132 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a stereo volume control for analog input channel pair 1/2.
+On Wed, Feb 22, 2012 at 01:39:39PM +0000, Mark Brown wrote:
+> Well, Vinod seemed to also think that dmaengine ought to be able to cope
+> with emulating this and I really don't see why it shouldn't be.  It does
+> know the capabilities of the underlying driver and it gets to look at
+> all the calls going into the driver before the driver does.  If ASoC can
+> interpose itself I don't see why dmaengine can't.
 
-Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
+Have you ever looked at the DMA engine drivers?  It's a total mess.
+Even something as basic as the DMA engine driver assigning a cookie to
+the descriptor is implemented in each driver in their own unique way.
 
-diff -Nur a/sound/usb/6fire/control.c b/sound/usb/6fire/control.c
---- a/sound/usb/6fire/control.c	2012-02-22 15:05:47.206526365 +0100
-+++ b/sound/usb/6fire/control.c	2012-02-22 15:11:26.846504694 +0100
-@@ -55,6 +55,7 @@
- static const u16 rates_6fire_vh[] = {0x11, 0x11, 0x10, 0x10, 0x00, 0x00};
- 
- static DECLARE_TLV_DB_MINMAX(tlv_output, -9000, 0);
-+static DECLARE_TLV_DB_MINMAX(tlv_input, -1500, 1500);
- 
- enum {
- 	DIGITAL_THRU_ONLY_SAMPLERATE = 3
-@@ -82,6 +83,20 @@
- 		comm_rt->write8(comm_rt, 0x12, 0x0e, ~rt->output_mute);
- }
- 
-+static void usb6fire_control_input_vol_update(struct control_runtime *rt)
-+{
-+	struct comm_runtime *comm_rt = rt->chip->comm;
-+	int i;
-+
-+	if (comm_rt)
-+		for (i = 0; i < 2; i++)
-+			if (!(rt->ivol_updated & (1 << i))) {
-+				comm_rt->write8(comm_rt, 0x12, 0x1c + i,
-+					rt->input_vol[i] & 0x3f);
-+				rt->ivol_updated |= 1 << i;
-+			}
-+}
-+
- static void usb6fire_control_line_phono_update(struct control_runtime *rt)
- {
- 	struct comm_runtime *comm_rt = rt->chip->comm;
-@@ -261,6 +276,50 @@
- 	return 0;
- }
- 
-+static int usb6fire_control_input_vol_info(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 30;
-+	return 0;
-+}
-+
-+static int usb6fire_control_input_vol_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
-+	int changed = 0;
-+
-+	if (rt->input_vol[0] != ucontrol->value.integer.value[0]) {
-+		rt->input_vol[0] = ucontrol->value.integer.value[0] - 15;
-+		rt->ivol_updated &= ~(1 << 0);
-+		changed = 1;
-+	}
-+	if (rt->input_vol[1] != ucontrol->value.integer.value[1]) {
-+		rt->input_vol[1] = ucontrol->value.integer.value[1] - 15;
-+		rt->ivol_updated &= ~(1 << 1);
-+		changed = 1;
-+	}
-+
-+	if (changed)
-+		usb6fire_control_input_vol_update(rt);
-+
-+	return changed;
-+}
-+
-+static int usb6fire_control_input_vol_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct control_runtime *rt = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = rt->input_vol[0] + 15;
-+	ucontrol->value.integer.value[1] = rt->input_vol[1] + 15;
-+
-+	return 0;
-+}
-+
- static int usb6fire_control_line_phono_info(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_info *uinfo)
- {
-@@ -454,6 +513,17 @@
- 		.get = usb6fire_control_digital_thru_get,
- 		.put = usb6fire_control_digital_thru_put
- 	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog Capture Volume",
-+		.index = 0,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			SNDRV_CTL_ELEM_ACCESS_TLV_READ,
-+		.info = usb6fire_control_input_vol_info,
-+		.get = usb6fire_control_input_vol_get,
-+		.put = usb6fire_control_input_vol_put,
-+		.tlv = { .p = tlv_input }
-+	},
- 	{}
- };
- 
-@@ -518,6 +588,7 @@
- 	usb6fire_control_line_phono_update(rt);
- 	usb6fire_control_output_vol_update(rt);
- 	usb6fire_control_output_mute_update(rt);
-+	usb6fire_control_input_vol_update(rt);
- 	usb6fire_control_streaming_update(rt);
- 
- 	ret = usb6fire_control_add_virtual(rt, chip->card,
-diff -Nur a/sound/usb/6fire/control.h b/sound/usb/6fire/control.h
---- a/sound/usb/6fire/control.h	2012-02-22 15:03:44.370251101 +0100
-+++ b/sound/usb/6fire/control.h	2012-02-22 15:10:05.055517247 +0100
-@@ -46,6 +46,8 @@
- 	u8 output_vol[6];
- 	u8 ovol_updated;
- 	u8 output_mute;
-+	s8 input_vol[2];
-+	u8 ivol_updated;
- };
- 
- int __devinit usb6fire_control_init(struct sfire_chip *chip);
+Completion of DMA descriptors is a similar thing - every driver implements
+this in their own unique way.
+
+The only really common thing in the DMA engine drivers is that they all
+share the same API.  Nothing much more than that is shared.
+
+It's something I have been chipping away at for a while, trying to extract
+out common parts into a library, but it's really not that easy.
+
+So, there's no way in hell that I want to see any more stuff pushed down
+into the DMA engine drivers until we have a proper DMA engine library in
+place to stop all this idiotic code duplication throughout every driver.
+Especially if it means everyone will be implementing their own cyclic
+emulation in their individual drivers.
+
+And lets not forget that it's not just a question of "oh we can just queue
+up buffer after buffer".  Doing it properly for audio does need to ensure
+that the DMA engine driver is capable of getting the next buffer chained
+into the hardware before the previous buffer has completed, so the transfer
+continues across a buffer boundary without needing the intervention of an
+interrupt handler.  Otherwise you get glitches in the audio.
+
+So, there's a lot more here that DMA engine stuff needs to get fixed than
+just a simple "layer on top".
