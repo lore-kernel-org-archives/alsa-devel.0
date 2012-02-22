@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: imx: move SND_SOC_AC97_BUS selection
- down to machine driver
-Date: Wed, 22 Feb 2012 13:26:50 +0000
-Message-ID: <20120222132650.GH7340@opensource.wolfsonmicro.com>
-References: <1329917147-24962-1-git-send-email-shawn.guo@linaro.org>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Wed, 22 Feb 2012 19:00:09 +0530
+Message-ID: <1329917409.24656.115.camel@vkoul-udesk3>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
+	<20120222132107.GD7340@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4365981355952223578=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BE5D103F5E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:27:01 +0100 (CET)
-In-Reply-To: <1329917147-24962-1-git-send-email-shawn.guo@linaro.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62A58103F70
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:28:44 +0100 (CET)
+In-Reply-To: <20120222132107.GD7340@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,59 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4365981355952223578==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hAW+M2+FUO+onfmf"
-Content-Disposition: inline
-
-
---hAW+M2+FUO+onfmf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 22, 2012 at 09:25:47PM +0800, Shawn Guo wrote:
-> SND_SOC_AC97_BUS is selected to enable the AC97 support in soc-core.
-> Rather than selecting the option under SND_IMX_SOC, it's better to
-> leave the selection to individual machine driver which knows if AC97
-> support is needed or not.
-
-Can you please rebase this against for-3.4?  It doesn't apply right now,
-I didn't check what the conflict was.
-
---hAW+M2+FUO+onfmf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPRO0SAAoJEBus8iNuMP3dQygP/iyTXkavcr4mb0E4+yF/rmkp
-/tM3azVZRr0hjEHhUWwpfd+sA68kjdr3Moz62UQSszf/w1+EkCP30R8pem8BBwIZ
-7GHLKCunDRI7sLuxm8MaFq9gkYzeZIIPRPfkHW55YB84oSm3IZS0pO00CbPVrJzZ
-u6yIUI0NLTXY37sl30wBotC6IYtMnKYVYnNVisIc8TFSQG55BVCVAi3M8cJxmGDb
-dzdfBppjPX6pigCahgFPPBidys3+3L0qO7XxTdLjzzH9rEiP/cUdLsTiavMG3j0A
-UBqwkUmBda8IjLTnXtkCdxGXfuC9oqdaLS8Cb/CP8IiN9X39JyChLZZjoo98jQEw
-Te4QrCw5Oexx5rFgvmhIlk3QOuyZLV2Ca+8yRlubn1/8BE3dYFC0+amjt8MB1wWu
-fCmi1yXpW9nZwyfw6gcW2+YmWw6UYZX79hJY2BNok1X8oQAmWepHb6UoWD1LdSh5
-yl9qZ0Aabyd4IAl9eKT502VDTGCwlYGVWP9zRI27sf3XSnllKpPvayn8MXEgKXiV
-KIzPL/u+Ej8xakQvaARBf/tXXXZr1sXL0u+kldaT/FjM+wYZZyTLg/KMSHho2RDl
-iCl3W0kJcORZ2mrnqmg92OywmBz4LSgY4URlnz2SWl+FSVzdW0DpDCYywVX7wN/O
-pfDjWnc/xwLPbcAA4r0I
-=8w3F
------END PGP SIGNATURE-----
-
---hAW+M2+FUO+onfmf--
-
---===============4365981355952223578==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Wed, 2012-02-22 at 13:21 +0000, Mark Brown wrote:
+> On Wed, Feb 22, 2012 at 10:49:08AM +0100, Lars-Peter Clausen wrote:
+> > This patch adds a set of functions which are intended to be used when
+> > implementing a dmaengine based sound PCM driver.
+> 
+> Looks good - if you need to resend then:
+> 
+> > + * Note that this function will use private_data field of the substream's
+> > + * runtime. So it is not availabe to your pcm driver implementation. If you need
+> > + * to keep additional data attached to a substream use
+> > + * snd_dmaeinge_pcm_{set,get}_data.
+> 
+> there's a typo here but no need to resend just for that.
+> 
+> I'd like to see some review from both Morimoto-san as we should convert
+> fsi over to this too, Vinod I guess you're also pretty much happy given
+> your comments on the previous version?
+Sure,
+Acked-by :Vinod Koul <vinod.koul@linux.intel.com>
+> 
+> For the non-cyclic DMAs the idea of emulating at the dmaengine layer
+> does seem very sensible but if that's hard then having the code at the
+> ASoC level and pushing it down later seems fine.  We do have several
+> platforms with non-cyclic DMA so it's a general need.
+I think this should be pushed to dmaengine rather than in ASoC. That way
+ASoC can always request circular and we emulate the behavior in
+dmaengine for dmacs who don't support this
 
 
---===============4365981355952223578==--
+-- 
+~Vinod
