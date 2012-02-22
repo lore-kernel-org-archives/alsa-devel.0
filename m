@@ -1,152 +1,55 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH] tea575x: fix HW seek
-Date: Wed, 22 Feb 2012 09:35:28 +0100
-Message-ID: <201202220935.29155.linux@rainbow-software.org>
-References: <201202181745.49819.linux@rainbow-software.org> <201202211044.14925.hverkuil@xs4all.nl>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [RFC 00/10] ASoC: Introduce dmaengine pcm helper
+ functions
+Date: Wed, 22 Feb 2012 16:46:41 +0800
+Message-ID: <20120222084640.GI11087@shlinux2.ap.freescale.net>
+References: <1329842884-9757-1-git-send-email-lars@metafoo.de>
+	<20120222081908.GB21820@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201202211044.14925.hverkuil@xs4all.nl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5BB83103A8C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 09:38:53 +0100 (CET)
 Content-Disposition: inline
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20120222081908.GB21820@S2101-09.ap.freescale.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Mallon <rmallon@gmail.com>, Liam Girdwood <lrg@ti.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@linux.intel.com>, Ryan@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 21 February 2012, Hans Verkuil wrote:
-> On Saturday, February 18, 2012 17:45:45 Ondrej Zary wrote:
-> > Fix HW seek in TEA575x to work properly:
-> >  - a delay must be present after search start and before first register
-> > read or the seek does weird things
-> >  - when the search stops, the new frequency is not available immediately,
-> > we must wait until it appears in the register (fortunately, we can clear
-> > the frequency bits when starting the search as it starts at the frequency
-> > currently set, not from the value written)
-> >  - sometimes, seek remains on the current frequency (or moves only a
-> > little), so repeat it until it moves by at least 50 kHz
-> >
-> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> >
-> > --- a/sound/i2c/other/tea575x-tuner.c
-> > +++ b/sound/i2c/other/tea575x-tuner.c
-> > @@ -89,7 +89,7 @@ static void snd_tea575x_write(struct snd_tea575x *tea,
-> > unsigned int val) tea->ops->set_pins(tea, 0);
-> >  }
-> >
-> > -static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
-> > +static u32 snd_tea575x_read(struct snd_tea575x *tea)
-> >  {
-> >  	u16 l, rdata;
-> >  	u32 data = 0;
-> > @@ -120,6 +120,27 @@ static unsigned int snd_tea575x_read(struct
-> > snd_tea575x *tea) return data;
-> >  }
-> >
-> > +static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-> > +{
-> > +	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
-> > +
-> > +	if (freq == 0) {
-> > +		tea->freq = 0;
->
-> Wouldn't it be better to return -EBUSY in this case? VIDIOC_G_FREQUENCY
-> should not return frequencies outside the valid frequency range. In this
-> case returning -EBUSY seems to make more sense to me.
+On Wed, Feb 22, 2012 at 04:19:10PM +0800, Shawn Guo wrote:
+> Nice consolidation ...
+> 
+> On Tue, Feb 21, 2012 at 05:47:54PM +0100, Lars-Peter Clausen wrote:
+> > This patch series introduces a new set of helper functions for dmaengine based
+> > PCM drivers. Currently we have 6 different dmaengine based PCM drivers which are
+> > all more or less similar in structure, but all have also individual requirements
+Correct.
 
-The device returns zero frequency when the scan fails to find a frequency. 
-This is not an error, just an indication that "nothing" is tuned. So maybe we 
-can return some bogus frequency in vidioc_g_frequency (like FREQ_LO) in this 
-case (don't know if -EBUSY will break anything). But HW seek should get the 
-real one (i.e. zero when it's there).
+> > which can't easily be generalized. So that's why this series does not introduce
+> > a generic dmaengine PCM driver but rather a set of helper functions which can be
+> > used to implement the common bits between such dmaengine based PCM drivers.
+> > 
+I once had the same thinking about it...
 
-> I'm proposing adding this patch:
->
-> diff --git a/sound/i2c/other/tea575x-tuner.c
-> b/sound/i2c/other/tea575x-tuner.c index 474bb81..02da22f 100644
-> --- a/sound/i2c/other/tea575x-tuner.c
-> +++ b/sound/i2c/other/tea575x-tuner.c
-> @@ -120,14 +120,12 @@ static u32 snd_tea575x_read(struct snd_tea575x *tea)
->  	return data;
->  }
->
-> -static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-> +static int snd_tea575x_get_freq(struct snd_tea575x *tea)
->  {
->  	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
->
-> -	if (freq == 0) {
-> -		tea->freq = 0;
-> -		return;
-> -	}
-> +	if (freq == 0)
-> +		return -EBUSY;
->
->  	/* freq *= 12.5 */
->  	freq *= 125;
-> @@ -139,6 +137,7 @@ static void snd_tea575x_get_freq(struct snd_tea575x
-> *tea) freq -= TEA575X_FMIF;
->
->  	tea->freq = clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
-> +	return 0;
->  }
->
->  static void snd_tea575x_set_freq(struct snd_tea575x *tea)
-> @@ -220,14 +219,15 @@ static int vidioc_g_frequency(struct file *file, void
-> *priv, struct v4l2_frequency *f)
->  {
->  	struct snd_tea575x *tea = video_drvdata(file);
-> +	int ret = 0;
->
->  	if (f->tuner != 0)
->  		return -EINVAL;
->  	f->type = V4L2_TUNER_RADIO;
->  	if (!tea->cannot_read_data)
-> -		snd_tea575x_get_freq(tea);
-> +		ret = snd_tea575x_get_freq(tea);
->  	f->frequency = tea->freq;
-> -	return 0;
-> +	return ret;
->  }
->
->  static int vidioc_s_frequency(struct file *file, void *priv,
-> @@ -250,11 +250,14 @@ static int vidioc_s_hw_freq_seek(struct file *file,
-> void *fh, struct snd_tea575x *tea = video_drvdata(file);
->  	int i, old_freq;
->  	unsigned long timeout;
-> +	int ret;
->
->  	if (tea->cannot_read_data)
->  		return -ENOTTY;
->
-> -	snd_tea575x_get_freq(tea);
-> +	ret = snd_tea575x_get_freq(tea);
-> +	if (ret)
-> +		return ret;
->  	old_freq = tea->freq;
->  	/* clear the frequency, HW will fill it in */
->  	tea->val &= ~TEA575X_BIT_FREQ_MASK;
-> @@ -278,8 +281,8 @@ static int vidioc_s_hw_freq_seek(struct file *file,
-> void *fh, /* Found a frequency, wait until it can be read */
->  			for (i = 0; i < 100; i++) {
->  				msleep(10);
-> -				snd_tea575x_get_freq(tea);
-> -				if (tea->freq != 0) /* available */
-> +				ret = snd_tea575x_get_freq(tea);
-> +				if (ret == 0) /* available */
->  					break;
->  			}
->  			/* if we moved by less than 50 kHz, continue seeking */
->
-> If you are OK with this, then I'll put everything together and make a final
-> pull request.
->
-> Regards,
->
-> 	Hans
+> I did not notice this patch on any list yet, so am not sure about
+> Russell's plan about it.  But it seems this series does not reach
+> alsa-devel list either. (forgot?)
+> 
+I'm also interested in this patch series.
+However, i can not see it in the alsa-dev list....
 
 
-
--- 
-Ondrej Zary
+Regards
+Dong Aisheng
