@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 2/7] ASoC: imx-pcm: Request DMA channel early
-Date: Wed, 22 Feb 2012 13:22:37 +0000
-Message-ID: <20120222132236.GF7340@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 3/7] ASoC: mxs-pcm: Request DMA channel early
+Date: Wed, 22 Feb 2012 13:22:51 +0000
+Message-ID: <20120222132251.GG7340@opensource.wolfsonmicro.com>
 References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
-	<1329904151-5927-3-git-send-email-lars@metafoo.de>
+	<1329904151-5927-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4626766516385253404=="
+Content-Type: multipart/mixed; boundary="===============6005789517817281115=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9FBDA103F64
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:22:38 +0100 (CET)
-In-Reply-To: <1329904151-5927-3-git-send-email-lars@metafoo.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3649F103F64
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2012 14:22:53 +0100 (CET)
+In-Reply-To: <1329904151-5927-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +25,53 @@ Cc: Vinod Koul <vinod.koul@linux.intel.com>, Russell King <linux@arm.linux.org.u
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4626766516385253404==
+--===============6005789517817281115==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
+	protocol="application/pgp-signature"; boundary="/i8j2F0k9BYX4qLc"
 Content-Disposition: inline
 
 
---f61P+fpdnY2FZS1u
+--/i8j2F0k9BYX4qLc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 22, 2012 at 10:49:06AM +0100, Lars-Peter Clausen wrote:
-> Request the DMA channel in the pcm open callback. This allows us to let open
-> fail if there is no dma channel available.
+On Wed, Feb 22, 2012 at 10:49:07AM +0100, Lars-Peter Clausen wrote:
+> Request the DMA channel in the PCM open callback instead of the hwparams
+> callback, this allows us to let open fail if no dma channel is available. This
+> also fixes a bug where the channel will be requested multiple times if hwparams
+> is called multiple times.
 
 Applied, thanks.
 
---f61P+fpdnY2FZS1u
+--/i8j2F0k9BYX4qLc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPROwWAAoJEBus8iNuMP3dywoP/3NqhwPCU3DrtVfZkUJ2AXWA
-a4IgJnVMxUbPiyRzC2vGcW0aqwgEmCcNUykh8y0Lm06xNLKJL9OBfGezEPA27BW+
-Wz5rKv95AvxWpstXg2uH5tmQLC/nNXNYsLfnTQeRuxEf5WkDUxcRwTRmJt5YpDgc
-xLrj/4niOrqY+nu3HKgxjpDuwD7y7gC5e8d+fj9/J5/cv00YCmkzEOoEJRfFZdoF
-WsHetQIyal6M0EmKf5HRojGWFHbkYzR/3yoACGxI0u4kWv7wA+izJIXR+ul8Z/Xp
-1HNtPIZs+krpdfpbwHS4jqQgvzVVDOogXVQnSG3661E7wBbCAXqiZPGrD+933gCZ
-G4F1AWnCywImFls5Jm55o3VIBetROFHJCO4d2RCWSM+mENa6A3cSS4tvyVi3LQ8m
-gDASWIs2sS+fKOZxDzx8AQlUu/J4tTIpsZXFMLUIYdH9MYSRXZ6tcTXXhG5AEuLL
-GeVJ1CJy9fr4wHL2GmP+Jeb89MdqrIvDySXAHZUZSHmeifB9jad9WpslBddkV2eD
-yv9rAV/PV0ctvESvNABfC7a0CrqdNHtP7eSXRqguPAI0TJecafeVO6m/dqVckifE
-B698lsMSgOs6QfIR8b1MmKsG/rjHQaTvDN1w3cKkY6rrDeMeQNhAJ1DTuqRGzjh5
-gnxJ8siW9mJvF0CSyPr4
-=qqad
+iQIcBAEBAgAGBQJPROwkAAoJEBus8iNuMP3d7XYP/i/LFAE/yWLpJL5XwaOrCwRU
+dyvhPItX835bjRzS5byXRqumrW20qTLmu8FUh+F6PaM/O4yG8/70AmFT2+LZyPrv
+KG5il3GPnOI7hWIuSb0XjID2XjYBCCT9sYRUPzB0SmKpg8ToL/nj0hms5ycUHr3W
+kHWSd82C2hoGPMyd1bNoOYrmodtgG829koL01zAqLqa3GLuivOfmBDUB5zQzBD0i
+/lHLGyZVpx6SwC+kfurHnAadX/ctsR0KX11ZoIgKT58PW+LWVAseptxaONGkKCRh
+OKwVdG7hp60p8M9XehLAZPTCvrdm83BOzoQl1Y0zPZr6gg6qitw8tHop3KmieEJe
+7Nh4fWmoYB3/uUINoAO0KWHWxfL1CkRVtlX+33++QCD1ZRVHC020+Pa+Grw0nh/e
+9FhG8N8sjjgA3cf0AQ4LRfCXj08pcz8BnTkrCKS8USfyIJrllAFcT/2RUC1VNq2c
+5Yupkx22jDJAMVMcwCioIErmjnFPdDIRm8P5FWOkAIRqNroxly0+LndnU+gyvmpX
+fL5whwGJxwvwpn2madAJmqgSVC4H9YcvVpNTDVUG+8/GVROr/GsjkAI7jqGr1Y7n
+d4hl4PBkmtacK+xemySX65pd+JYNcwl5J7FK6UxZCbrItsxnrolRhIW3E6Ur0Jsb
+PnTEtFfzp0CbIU1fJXEJ
+=LGZx
 -----END PGP SIGNATURE-----
 
---f61P+fpdnY2FZS1u--
+--/i8j2F0k9BYX4qLc--
 
---===============4626766516385253404==
+--===============6005789517817281115==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4626766516385253404==--
+--===============6005789517817281115==--
