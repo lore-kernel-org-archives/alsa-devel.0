@@ -1,25 +1,16 @@
-From: Philip Spencer <pspencer@fields.utoronto.ca>
-Subject: Re: [PATCH] Wrong latency in pulseaudio plugin breaks
- Adobe Flash Player
-Date: Thu, 23 Feb 2012 10:18:35 -0500 (EST)
-Message-ID: <alpine.LFD.2.00.1202231008560.4520@lpc8.fields.utoronto.ca>
-References: <alpine.LFD.2.00.1202161015470.19707@lpc8.fields.utoronto.ca>
-	<4F3DAC41.4000602@canonical.com>
-	<alpine.LFD.2.00.1202162248280.21549@fields.fields.utoronto.ca>
-	<4F3E1A04.9080404@canonical.com>
-	<alpine.LFD.2.00.1202171351300.11808@lpc8.fields.utoronto.ca>
-	<4F42323E.1030204@canonical.com>
-	<alpine.LFD.2.00.1202222059170.29627@fields.fields.utoronto.ca>
-	<4F460055.2010508@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [Q] ASoC: What's the real meaning of
+	SND_SOC_DAIFMT_NB_NF?
+Date: Thu, 23 Feb 2012 15:19:34 +0000
+Message-ID: <20120223151934.GB4553@opensource.wolfsonmicro.com>
+References: <CACKLOr1sDSEFCiAsRO-vKrk7f+r=_Ex9irog1NKDmXn7LJFCDw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0071038620166011967=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fileserver.fields.utoronto.ca (fileserver.fields.utoronto.ca
-	[128.100.216.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A89C1041AD
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 16:18:39 +0100 (CET)
-In-Reply-To: <4F460055.2010508@ladisch.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FE131041AE
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 16:19:36 +0100 (CET)
+In-Reply-To: <CACKLOr1sDSEFCiAsRO-vKrk7f+r=_Ex9irog1NKDmXn7LJFCDw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,63 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>
+To: javier Martin <javier.martin@vista-silicon.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 23 Feb 2012, Clemens Ladisch wrote:
 
-> Philip Spencer wrote:
->>     3. What should happen?
->>
->>            (a) The call returns immediately, since there's lots of room
->>                in the buffer.
->>
->>            (b) The call returns after one I/O period's worth of data has
->>                been drained from the buffer.
->
-> (a)
->
->> If the correct answer is (a) (ALSA's current behaviour), then is there
->> any mechanism for an app to achieve (b) -- get woken up after one I/O
->> period's worth of data have been drained (other than just doing some
->> infinite loop of sleeping then checking snd_pcm_avail periodically)?
->
-> Adjust avail_min (but note that wakeups happen only at period
-> boundaries).
+--===============0071038620166011967==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3lcZGd9BuhuYXNfi"
+Content-Disposition: inline
 
-That won't work if using the pulseaudio plugin as the backend -- it'll 
-stop the first part of snd_pcm_wait from succeeding right away, but when 
-it moves on to snd_pcm_wait_nocheck the poll call will return right away, 
-because the pulseaudio plugin marks the file descriptor as ready whenever 
-there are more than buffer_attr.minreq bytes available in the buffer.
 
-Perhaps (though that won't help me, as I don't imagine I'll have any 
-success getting Flash Player developers to change anything!, but it may
-help any other similar app) that should be fixed in the pulseaudio plugin:
+--3lcZGd9BuhuYXNfi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   - Implement sw_params
+On Thu, Feb 23, 2012 at 01:40:40PM +0100, javier Martin wrote:
 
-   - When sw_params is called, check the avail_min value and record it
-      as a new field avail_min (and if it's different from the previous
-      recorded value and the stream is running, call update_active)
+> As I wasn't sure about the meaning of 'normal'  I've dug into the code
+> of some platforms to see what they do. What I've found, however, is
+> that it doesn't seem to be an agreement about it.
 
-   - In check_active, instead of "return wsize >= pcm->buffer_attr.minreq",
-       "return wsize >= pcm->avail_min". (Question: should
-       buffer_attr.minreq be changed too, or left alone?)
+It's whatever is standard for the given format - the Wolfson datasheets
+are a pretty good reference, they have clear diagrams.
 
-   - At the same time the start_threshold parameter could be implemented
-     too.
+> ALso, it seems that there is no possibility to specify different
+> configurations for RX and TX parts.
 
-I could whip up a patch for that if needed, although of course it won't 
-actually help my situation -- I may just have to be resigned to using
-non-live mode with about a 3/4 second latency for linux users.
+This is correct, if the configurations are different you're really
+looking at separate audio interfaces so should have multiple DAIs.
 
-Regards,
+--3lcZGd9BuhuYXNfi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Philip
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
---------------------------------------------+-------------------------------
-Philip Spencer  pspencer@fields.utoronto.ca | Director of Computing Services
-Room 336        (416)-348-9710  ext3036     | The Fields Institute for
-222 College St, Toronto ON M5T 3J1 Canada   | Research in Mathematical Sciences
+iQIcBAEBAgAGBQJPRlj/AAoJEBus8iNuMP3dBDwP/0G/WYBr6Q136I2bH3y+CAVD
+5l6w5NwZlTz77PxoL08xcpjAo4v3f2cHrfsqHbPmVorz88Bv/1ihclziG1/wY9hD
+Vibvfwg/O4FxC6OYBZo6+2tnOxundxLLiZcO1+o8NOE8KkHPZ2olCJNuqZcxjjnI
+qYdJajlWSrkwHP34tytmUnIxXAiftKxpFgyCTLdX2BbllTsCMdM6Cq1wrBN1WmR8
+AIqhT1TR4H2MvCGSbP3e7tsdKs3z3killOMeqGYveKmLqc5MB7/2Wqm7c65szli9
+4ThWyc8qu5DcjAXY803Z3ldufcOHUQcyuWN5IiRoLPmQdDcE+Mvdqf47x8TUmEVS
+bWASa7cO0H+oKqoKXZSlbiqAsEc8KzC0qB7Lhe7F092s1s1MibIL8krWmF5AnzDV
+pU47sOQ6+fgxiLXB4whoWeCLtvSjF2Ii3lhUhHBStEpZkGYJxIlBzC29LZbQUCWE
+BbAK+tN3KYME8flcP12Z183BwQDZBdNQEKIZhDDPzDtetDSSq0adkLBcAwboAFDs
+ENyWh6Slk0Slu9leoNrmwizqgbj9DTdfwbPFz0tqF8VcyQQPeVUQ7aCt51D6jou5
+K3UxIlu5Xsf1gHougAiABHWCvYYw0tJvkploc/PhNN+ZzqXdBJ6xFNSvvnwZsPcZ
+sJSfLwhjgmAA8NEXqfzf
+=Ah92
+-----END PGP SIGNATURE-----
+
+--3lcZGd9BuhuYXNfi--
+
+--===============0071038620166011967==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0071038620166011967==--
