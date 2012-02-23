@@ -1,23 +1,21 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH 6/8] ASoC: dapm: Implement and instantiate
- DAI widgets
-Date: Thu, 23 Feb 2012 12:20:03 +0530
-Message-ID: <1329979803.24656.125.camel@vkoul-udesk3>
-References: <1329458170-22119-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1329458170-22119-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1329468009.24656.15.camel@vkoul-udesk3>
-	<1329914154.24656.95.camel@vkoul-udesk3>
-	<20120222124301.GA7340@opensource.wolfsonmicro.com>
-	<1329915673.24656.107.camel@vkoul-udesk3>
-	<20120222132912.GI7340@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Thu, 23 Feb 2012 12:27:18 +0530
+Message-ID: <1329980238.24656.132.camel@vkoul-udesk3>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
+	<20120222132107.GD7340@opensource.wolfsonmicro.com>
+	<20120222133207.GD22562@n2100.arm.linux.org.uk>
+	<20120222133939.GK7340@opensource.wolfsonmicro.com>
+	<20120222142236.GF22562@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3F4D10402D
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 07:48:25 +0100 (CET)
-In-Reply-To: <20120222132912.GI7340@opensource.wolfsonmicro.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C558104044
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 07:55:42 +0100 (CET)
+In-Reply-To: <20120222142236.GF22562@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,29 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Mika Westerberg <mika.westerberg@iki.fi>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-22 at 13:29 +0000, Mark Brown wrote:
-> On Wed, Feb 22, 2012 at 06:31:13PM +0530, Vinod Koul wrote:
+On Wed, 2012-02-22 at 14:22 +0000, Russell King - ARM Linux wrote:
+> On Wed, Feb 22, 2012 at 01:39:39PM +0000, Mark Brown wrote:
+> > Well, Vinod seemed to also think that dmaengine ought to be able to cope
+> > with emulating this and I really don't see why it shouldn't be.  It does
+> > know the capabilities of the underlying driver and it gets to look at
+> > all the calls going into the driver before the driver does.  If ASoC can
+> > interpose itself I don't see why dmaengine can't.
 > 
-> > So from a codec driver, how does these two get linked, who fills the
-> > playback_widget pointer in dais?
+> Have you ever looked at the DMA engine drivers?  It's a total mess.
+> Even something as basic as the DMA engine driver assigning a cookie to
+> the descriptor is implemented in each driver in their own unique way.
 > 
-> > For a codec which has two DAIs and I register two AIFs how will you fill
-> > the respective dia widgets in the DAIs...
+> Completion of DMA descriptors is a similar thing - every driver implements
+> this in their own unique way.
 > 
-> The core initialises everything when it creates the widgets...
-Looks like I am completely on tangent here :(
+> The only really common thing in the DMA engine drivers is that they all
+> share the same API.  Nothing much more than that is shared.
+> 
+> It's something I have been chipping away at for a while, trying to extract
+> out common parts into a library, but it's really not that easy.
+> 
+> So, there's no way in hell that I want to see any more stuff pushed down
+> into the DMA engine drivers until we have a proper DMA engine library in
+> place to stop all this idiotic code duplication throughout every driver.
+> Especially if it means everyone will be implementing their own cyclic
+> emulation in their individual drivers.
+> 
+> And lets not forget that it's not just a question of "oh we can just queue
+> up buffer after buffer".  Doing it properly for audio does need to ensure
+> that the DMA engine driver is capable of getting the next buffer chained
+> into the hardware before the previous buffer has completed, so the transfer
+> continues across a buffer boundary without needing the intervention of an
+> interrupt handler.  Otherwise you get glitches in the audio.
+> 
+> So, there's a lot more here that DMA engine stuff needs to get fixed than
+> just a simple "layer on top".
+I would agree with Russell that some of dma drivers are messy, but then
+were also a victim of ambiguous API. Now at least we have a clear
+direction of what is expected out of dma driver and what is not. Except
+for channel mapping stuff, rest has a clarity.
 
-Sorry but I am not able to comprehend how the core created playback and
-capture widget in the dai, which would be now used to trigger the
-stream_event instead of stream name is being associated with DAPM map.
+So the new drivers and fixes now are going in the right direction
+(hopefully you will agree with me on this) and we are frankly in much
+better state then we were one year back.
 
-Earlier we would check the stream_name and find the widgets
-corresponding to this and power up, how exactly would it work now :)
+Said that, we still have lot of work to do to improve :)
+And I see this as another opportunity. Having a common library for these
+kind of common subsystem operations forces people to write proper driver
+and forces them to fix existing issue. Now, new support for DMAengine in
+asoc wont come without using this library and if it does work on a
+particular driver that is precondition for fixes as well.
 
+Similarly I would really love to see such libraries in other subsystems
+which would help us in making the usage of dmaengine and dmac standard
+and straight forward for users.
 
 -- 
 ~Vinod
