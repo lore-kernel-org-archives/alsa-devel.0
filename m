@@ -1,25 +1,17 @@
-From: Trent Piepho <tpiepho@gmail.com>
-Subject: Re: [PATCH 4/4] ASoC: fsl: make fsl_ssi driver
- compilable on ARM/IMX
-Date: Thu, 23 Feb 2012 14:01:20 -0500
-Message-ID: <CA+7tXigQ=R3-b0jiFJF3rmBRQS4RM77Z9Thq2pkE2yrs03NYWw@mail.gmail.com>
-References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
-	<1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
-	<1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
-	<4F465A33.3020208@ru.mvista.com> <4F465EE5.4010908@freescale.com>
-	<20120223165242.GB22562@n2100.arm.linux.org.uk>
-	<4F4671BB.7060409@freescale.com>
-	<20120223171407.GC22562@n2100.arm.linux.org.uk>
+From: Kevin Hilman <khilman@ti.com>
+Subject: HDA intel, wired headset w/mic, jack mic detect
+Date: Thu, 23 Feb 2012 11:09:20 -0800
+Message-ID: <87ehtlwen3.fsf@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 020AD24360
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 20:01:20 +0100 (CET)
-Received: by wera1 with SMTP id a1so1053678wer.38
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 11:01:20 -0800 (PST)
-In-Reply-To: <20120223171407.GC22562@n2100.arm.linux.org.uk>
+Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
+	[74.125.149.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 713202436C
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 20:09:22 +0100 (CET)
+Received: by mail-pz0-f51.google.com with SMTP id y9so1406669dad.10
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 11:09:07 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,31 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Sergei Shtylyov <sshtylyov@ru.mvista.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 23, 2012 at 12:14 PM, Russell King - ARM Linux
-<linux@arm.linux.org.uk> wrote:
-> On Thu, Feb 23, 2012 at 11:04:59AM -0600, Timur Tabi wrote:
->> Russell King - ARM Linux wrote:
->> We almost never use readl. =A0I see that it is used in some places, but
->> honestly I can't see how it can be valid. =A0For instance, the mpic driv=
-er
->> uses it in mpic_startup_ht_interrupt(). =A0I don't understand how that's
->> valid, since there's nothing preventing the readl() from happening
->> *before* the writeb.
->
-> That just sounds broken. =A0If readl() can happen before a writeb() issued
-> in program order, how do most of the PCI drivers work?
+Hello,
 
-I was under the impression that on powerpc io memory was mapped
-cache-inhibited and guarded, which provides most ordered, but not
-store to load ordering without an additional synchronization
-instruction.  See
-http://cache.freescale.com/files/32bit/doc/app_note/AN3441.pdf on page
-8.
+I'm trying to get a wired headset with a mic working on MacBookAir
+running v3.0 (3.0.0-13-generic from Ubuntu to be precise.)
 
-PCI adds some additional complexity, since the PCI device is not
-connected directly to the CPU.  One must consider the actions of the
-PCI host controller.
+It has Intel HDA audio[1] and everything works fine, including the
+built-in mic.  The only think I can't seem to get working is a headset
+w/mic.
+
+I know the HW for dynamic detect works because the mic is detected
+dynamically under OSX.  Is there some setting I need to tweak in order
+to enable the automatic mic detection?
+
+Thanks for any pointers,
+
+Kevin
+
+[1] $ cat /proc/asound/cards
+ 0 [PCH            ]: HDA-Intel - HDA Intel PCH
+                     HDA Intel PCH at 0xa0600000 irq 46
