@@ -1,15 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: i.MX SSI: Fix DSP_A format.
-Date: Thu, 23 Feb 2012 18:59:12 +0000
-Message-ID: <20120223185911.GB7245@opensource.wolfsonmicro.com>
-References: <1330008198-31142-1-git-send-email-javier.martin@vista-silicon.com>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: fsl: make fsl_ssi driver
+ compilable on ARM/IMX
+Date: Thu, 23 Feb 2012 14:01:20 -0500
+Message-ID: <CA+7tXigQ=R3-b0jiFJF3rmBRQS4RM77Z9Thq2pkE2yrs03NYWw@mail.gmail.com>
+References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
+	<4F465A33.3020208@ru.mvista.com> <4F465EE5.4010908@freescale.com>
+	<20120223165242.GB22562@n2100.arm.linux.org.uk>
+	<4F4671BB.7060409@freescale.com>
+	<20120223171407.GC22562@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9179235104749949291=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8645A24360
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 19:59:19 +0100 (CET)
-In-Reply-To: <1330008198-31142-1-git-send-email-javier.martin@vista-silicon.com>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 020AD24360
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 20:01:20 +0100 (CET)
+Received: by wera1 with SMTP id a1so1053678wer.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 11:01:20 -0800 (PST)
+In-Reply-To: <20120223171407.GC22562@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,57 +29,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Javier Martin <javier.martin@vista-silicon.com>
-Cc: axel.lin@gmail.com, alsa-devel@alsa-project.org, lrg@ti.com, s.hauer@pengutronix.de, w.sang@pengutronix.de
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, Sergei Shtylyov <sshtylyov@ru.mvista.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Feb 23, 2012 at 12:14 PM, Russell King - ARM Linux
+<linux@arm.linux.org.uk> wrote:
+> On Thu, Feb 23, 2012 at 11:04:59AM -0600, Timur Tabi wrote:
+>> Russell King - ARM Linux wrote:
+>> We almost never use readl. =A0I see that it is used in some places, but
+>> honestly I can't see how it can be valid. =A0For instance, the mpic driv=
+er
+>> uses it in mpic_startup_ht_interrupt(). =A0I don't understand how that's
+>> valid, since there's nothing preventing the readl() from happening
+>> *before* the writeb.
+>
+> That just sounds broken. =A0If readl() can happen before a writeb() issued
+> in program order, how do most of the PCI drivers work?
 
---===============9179235104749949291==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
-Content-Disposition: inline
+I was under the impression that on powerpc io memory was mapped
+cache-inhibited and guarded, which provides most ordered, but not
+store to load ordering without an additional synchronization
+instruction.  See
+http://cache.freescale.com/files/32bit/doc/app_note/AN3441.pdf on page
+8.
 
-
---EuxKj2iCbKjpUGkD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 23, 2012 at 03:43:18PM +0100, Javier Martin wrote:
-> According to i.MX27 Reference Manual (p 1593) TXBIT0 bit selects
-> whether the most significant or the less significant part of the
-> data word written to the FIFO is transmitted.
-
-Applied, thanks.
-
---EuxKj2iCbKjpUGkD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPRoxxAAoJEBus8iNuMP3dp7EP/1+GdoImAtkg8UH0BXTenJ5q
-Ujms7b9IkKF+FiJYz1Zxtkn8ab2DNXS9RQQcsKlmi61IkhjDdxL/OaW0eRY/wSmH
-plTDvLtUh6uptImS+wssdXLz3WhNlzpVdb2eo4yRXEqK0Vm0tudDg3l4FZi7Dzj5
-SQOaIHDlURGNvnGsoZRpm4gc46lwu+9PtomhjnQwlf+EztkFx9nBwqTLAgDogk4T
-u0fwBdc2o7c38DTtbbxZqnGNRzJa4FCLVBGq/qzFh9QWgxFdJYX5cRPq/UQA4+w8
-Tlcfg3K7irkIV5uesosbMvSCYBN0GqzVXIc24EbZ+4EufmukTcWuWR8P/OZkc3Mb
-bUOI5yefL5tlSbI50GTPp5MLO45hZO4BfbL9eQuP3lMP4pSP9H5NpLK/vySsDz2I
-sI4aGcIRX9OKw7rptjKQo3Zp3v4eQSwW0KFuQGEEK/msrGWKvC7XPa3ZZMJrqnr5
-8gNXnadaLc+9hd77wxo/836Tl1G6Mtl6lxPBJFtqA+Yjw/cs+UHN/nJTyoS7t9jn
-X7cDUJ7qNd8q89aLYmkFxIyFp5yyHJ4a7J0/i4v9sGdkCrxcBPLbDiTwxI3KNbJT
-RFF1P93Vw7HocJauf/Sx56RjP11jJoMimRY+RYWZm4s5niZiXLNTjhJO5RMSYzze
-XcRvZawJ+FOH78uHqU/h
-=11Ib
------END PGP SIGNATURE-----
-
---EuxKj2iCbKjpUGkD--
-
---===============9179235104749949291==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9179235104749949291==--
+PCI adds some additional complexity, since the PCI device is not
+connected directly to the CPU.  One must consider the actions of the
+PCI host controller.
