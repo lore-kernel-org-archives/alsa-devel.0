@@ -1,53 +1,62 @@
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: Re: [PATCH 4/4] ASoC: fsl: make fsl_ssi driver compilable on ARM/IMX
-Date: Thu, 23 Feb 2012 19:24:35 +0400
-Message-ID: <4F465A33.3020208@ru.mvista.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/4] ASoC: imx: add an explicit Kconfig
+ option for imx-ssi driver
+Date: Thu, 23 Feb 2012 09:40:00 -0600
+Message-ID: <4F465DD0.1020304@freescale.com>
 References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
- <1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
- <1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-2-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from AM1EHSOBE002.bigfish.com (am1ehsobe006.messaging.microsoft.com
+	[213.199.154.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD5AF1041CA
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 16:40:17 +0100 (CET)
+In-Reply-To: <1330008519-3584-2-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Shawn Guo wrote:
 
-On 23-02-2012 18:48, Shawn Guo wrote:
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 
-> Change PowerPC dependent IO accessors to architecture independent
-> ones, so that fsl_ssi driver can be built on both PowerPC and ARM/IMX.
+Since when do you work for Linaro?
 
-> Signed-off-by: Shawn Guo<shawn.guo@linaro.org>
 > ---
->   sound/soc/fsl/fsl_ssi.c |   75 ++++++++++++++++++++++++++++------------------
->   1 files changed, 46 insertions(+), 29 deletions(-)
+>  sound/soc/imx/Kconfig  |    7 +++++++
+>  sound/soc/imx/Makefile |    4 ++--
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
+> index 863a6b4..b9de8a8 100644
+> --- a/sound/soc/imx/Kconfig
+> +++ b/sound/soc/imx/Kconfig
+> @@ -8,6 +8,9 @@ menuconfig SND_IMX_SOC
+>  
+>  if SND_IMX_SOC
+>  
+> +config SND_SOC_IMX_SSI
+> +	tristate
+> +
 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 3e06696..32fc84b 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-[...]
-> @@ -145,7 +148,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
->   	   were interrupted for.  We mask it with the Interrupt Enable register
->   	   so that we only check for events that we're interested in.
->   	 */
-> -	sisr = in_be32(&ssi->sisr) & SIER_FLAGS;
-> +	sisr = readl(&ssi->sisr) & SIER_FLAGS;
+I was hoping to see sound/soc/imx disappear completely, and all IMX
+support move into sound/soc/fsl.  After all, i.MX is a Freescale name.
 
-    These functions are not equivalent concerning endianness. You should 
-probably have used readl_be() instead, else it won't work on PPC anymore.
+Anyway, I'm really glad to see this patchset, but I won't be able to
+devote much time to studying it until next week, at the earliest.
 
-WBR, Sergei
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
