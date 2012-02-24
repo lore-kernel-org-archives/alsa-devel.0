@@ -1,8 +1,8 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH 4/4] ASoC: fsl: make fsl_ssi driver
-	compilable on	ARM/IMX
-Date: Fri, 24 Feb 2012 22:35:12 +0000
-Message-ID: <20120224223512.GB15120@n2100.arm.linux.org.uk>
+	compilable on ARM/IMX
+Date: Fri, 24 Feb 2012 17:05:16 -0600
+Message-ID: <4F4817AC.7050406@freescale.com>
 References: <1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
 	<1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
 	<4F465A33.3020208@ru.mvista.com> <4F465EE5.4010908@freescale.com>
@@ -12,15 +12,15 @@ References: <1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
 	<4F480120.6080409@freescale.com>
 	<20120224215448.GA15120@n2100.arm.linux.org.uk>
 	<4F480871.9020206@freescale.com>
+	<20120224223512.GB15120@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 474B7103C52
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 23:35:28 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4F480871.9020206@freescale.com>
+Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe002.messaging.microsoft.com
+	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id EC3C0103C4E
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 00:05:34 +0100 (CET)
+In-Reply-To: <20120224223512.GB15120@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,39 +30,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Cc: alsa-devel@alsa-project.org, Sergei Shtylyov <sshtylyov@ru.mvista.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 24, 2012 at 04:00:17PM -0600, Timur Tabi wrote:
-> Russell King - ARM Linux wrote:
-> > BenH tells me that he'll accept patches which converts in_32be() to
-> > ioread32be(), as in_32be() is ancient PPC cruft that needs to die.
-> 
-> Where did he say this?  in_be32() (and its variants) are used EVERYWHERE
-> in PowerPC code.
+Russell King - ARM Linux wrote:
 
-It was actually Grant Likely who said it after Ben H said that drivers
-using in_be* is historical PPC stuff that needs fixing.
+> Ho hum.  So, what that's saying to me is that even implementing in_32be()
+> on ARM results in rubbish because it wouldn't be big endian there.
 
-> Also, keep in mind that on ARM, ioread32be() is probably wrong, because we
-> want to read the register as little-endian.  The SSI audio controller is
-> little-endian on i.MX chips and big-endian on PowerPC chip.  So we really
-> need a native-endian variant of ioread32be().  ioread32() is little-endian
-> on PowerPC, so we can't use that.
+Well, the "be" in in_be32() means to assume that 32-bit integer is stored
+in big-endian format, and to convert it to native format during the read.
+ An ARM implementation of in_be32() would include byte-swapping.
 
-Ho hum.  So, what that's saying to me is that even implementing in_32be()
-on ARM results in rubbish because it wouldn't be big endian there.
+> So are we heading towards driver specific sets of IO accessors? :-(  It
+> sounds like that's what it needs because of these different endian-ness
+> issues.
 
-So are we heading towards driver specific sets of IO accessors? :-(  It
-sounds like that's what it needs because of these different endian-ness
-issues.
+I'm surprised that ioread32() on PowerPC always does a little-endian read,
+but I'm guessing that was done for compatibility.  I don't know what to do
+about that.
 
-And lets not forget that we're talking just about this - there's also
-the issue of on-SoC devices on ARM now appearing behind PCI buses on
-x86, which would make those appear as LE.  I bet if any of those
-appearing on PPC would appear in BE mode.  So, 'native endian' doesn't
-work either.
+> And lets not forget that we're talking just about this - there's also
+> the issue of on-SoC devices on ARM now appearing behind PCI buses on
+> x86, which would make those appear as LE.  I bet if any of those
+> appearing on PPC would appear in BE mode.  So, 'native endian' doesn't
+> work either.
 
-So, I'm getting the feeling that something as simple as IO accessors are
-just a huge mountain of crap waiting to bite.
+I think PCI is a special-case on most PowerPC parts, in that the registers
+are still little-endian.  But I don't know how pervasive that is.  In
+fact, I think on some Freescale PowerPC SOCs, the PCI registers are
+little-endian, and other others they're big-endian.  You can see that in
+fsl_pci.c.
+
+> So, I'm getting the feeling that something as simple as IO accessors are
+> just a huge mountain of crap waiting to bite.
+
+Very few devices are shared between Freescale's PowerPC and ARM SOCs, so
+the impact is only a few drivers.  That's why it might be okay (for now)
+to have "dual" I/O accessors in specific drivers.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
