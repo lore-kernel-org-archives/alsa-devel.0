@@ -1,20 +1,15 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 6/6] ASoC: fsl: check property 'compatible' for
-	the machine name
-Date: Fri, 24 Feb 2012 22:09:41 +0800
-Message-ID: <1330092582-21180-7-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
+Date: Fri, 24 Feb 2012 14:02:01 +0000
+Message-ID: <20120224140200.GH5450@opensource.wolfsonmicro.com>
 References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
 	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0537559209176091978=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B3471042C8
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 14:56:51 +0100 (CET)
-Received: by mail-pw0-f51.google.com with SMTP id xa12so1045949pbc.38
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 05:56:51 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E9D210428C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 15:02:03 +0100 (CET)
 In-Reply-To: <1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,59 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-The fsl_ssi probe function detects the client machine name using model
-property of the device tree.  But it will not work for the ARM client
-machines which are to be added.  The model property is given as a
-descriptive string on all ARM device tree (arch/arm/boot/*.dts).
-Instead, the compatible property gives the machine name.
 
-It seems the fsl_ssi PowerPC users, machine mpc8610_hpcd and p1022ds,
-basically have the same thing in model and compatible properties.
-Detecting machine name using compatible property becomes a solution
-working for both PowerPC and ARM users of fsl_ssi.
+--===============0537559209176091978==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3VRmKSg17yJg2MZg"
+Content-Disposition: inline
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/fsl/fsl_ssi.c      |    6 +++---
- sound/soc/fsl/mpc8610_hpcd.c |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 32fc84b..ff570a6 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -733,12 +733,12 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Trigger the machine driver's probe function.  The platform driver
--	 * name of the machine driver is taken from the /model property of the
-+	 * name of the machine driver is taken from /compatible property of the
- 	 * device tree.  We also pass the address of the CPU DAI driver
- 	 * structure.
- 	 */
--	sprop = of_get_property(of_find_node_by_path("/"), "model", NULL);
--	/* Sometimes the model name has a "fsl," prefix, so we strip that. */
-+	sprop = of_get_property(of_find_node_by_path("/"), "compatible", NULL);
-+	/* Sometimes the compatible name has a "fsl," prefix, so we strip it. */
- 	p = strrchr(sprop, ',');
- 	if (p)
- 		sprop = p + 1;
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 7ead1e5..4195182 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -411,7 +411,7 @@ static struct platform_driver mpc8610_hpcd_driver = {
- 	.probe = mpc8610_hpcd_probe,
- 	.remove = __devexit_p(mpc8610_hpcd_remove),
- 	.driver = {
--		/* The name must match the 'model' property in the device tree,
-+		/* The name must match 'compatible' property in the device tree,
- 		 * in lowercase letters.
- 		 */
- 		.name = "snd-soc-mpc8610hpcd",
--- 
-1.7.5.4
+--3VRmKSg17yJg2MZg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Feb 24, 2012 at 10:09:35PM +0800, Shawn Guo wrote:
+> This is the third series towards reusing fsl_ssi driver on device tree
+> based IMX platforms.  It makes a few cleanups on existing PowerPC code
+> to ease the later addition of an IMX machine driver that works on
+> fsl_ssi.
+
+Please don't post new threads as followups to old threads, it makes
+things harder to follow in threaded mail readers.
+
+--3VRmKSg17yJg2MZg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPR5hNAAoJEBus8iNuMP3dEc8P/RPpZVB+GwWkJT7QPCPhKuvy
+xYoTBxlL679J+0ZxUIUf7nTXBAmw4we2LYR2eSh3aM9rtvUYyGLRvwhTR0Vs5XXQ
+yDtsuzcLUba4DtXfKoJx/uWPFUQ3IzQHbGBFFb0/09hbr7IlPJiKk5Yv+hAJ95BE
+qrju25aIYEte46GRzh5wMDtQ2lSH+VpdYg3cublUsqUEaHjQO/iE/mVyD78A6Phh
+m8pdZSBsoX853dfeLqtBkduka8++HihGGUVAKnSGQPlHDP8AWjRTQoDisBO7L7mL
+XhkxvtG5TrEsxBq9EFW9FaAgEaRyCaXleAMuxp3ljN/kvKhIEW5xLg2qsNBZHFRm
+5hmRoGTXNO4tJ3/S2c0CI0uzjsXcGy12FRB+Xl6hkCFXm+WBcZog38XDTY+90yup
+GUFj4SytHX0dk/t1w5GiqWscezJfz2yi17f1EXo2zIPe4nU5goPJcqp+MgLtmpQP
+T8mSdskaCGGTM3dugkBW153f1hsx+Xu90dX9VFaBpfkZRNyDjaP1mCajPw9QllDw
+3xhe5ngqBFlaLrgt2FuN0rqVap1lfsKJaxI6fQDW0NSOomioS5YJsTIaPdT6jC87
+B/ZeSvKV24iMNjq+lHHww4ZxmMGLsTdJr2VbRTeroAzSHBgT/DlG9DqMAj89+eH2
+5bH25XLXXZfWYhi53eCu
+=eIMq
+-----END PGP SIGNATURE-----
+
+--3VRmKSg17yJg2MZg--
+
+--===============0537559209176091978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0537559209176091978==--
