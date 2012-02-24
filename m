@@ -1,18 +1,22 @@
-From: =?UTF-8?B?MTA3?= <107@mail.ru>
-Subject: =?utf-8?q?=5BPATCH=5D_Sony_Vaio_with_stac9872?=
-Date: Fri, 24 Feb 2012 16:41:43 +0400
-Message-ID: <E1S0uT1-0000JE-FI.107-mail-ru@f35.mail.ru>
-Reply-To: =?UTF-8?B?MTA3?= <107@mail.ru>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem with "set_period_size"
+Date: Fri, 24 Feb 2012 14:01:18 +0100
+Message-ID: <4F478A1E.2040105@ladisch.de>
+References: <CAKjtJDWJSwoO982Hk5hK44khY5Jw=wMrW3QhrincvJ_iTLDGEg@mail.gmail.com>
+	<CAKjtJDVC2tZi8FLAo4ADZKr1iB5e0sX9t-jjPQF25F+R0NXBog@mail.gmail.com>
+	<4F465460.4020106@ladisch.de>
+	<CAKjtJDWJMAZA+ekTVmTc0vgg7Jo-3kc4uwSUPCz4KCocM5SRZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----EuH5x5fS-sJ7wybR4s4nSasbX:1330087303"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f35.mail.ru (f35.mail.ru [217.69.129.98])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C6CB104267
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 13:41:45 +0100 (CET)
-Received: from mail by f35.mail.ru with local (envelope-from <107@mail.ru>)
-	id 1S0uT1-0000JE-FI
-	for alsa-devel@alsa-project.org; Fri, 24 Feb 2012 16:41:43 +0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id A0CBA104271
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 13:58:42 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 94062206FF
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 07:58:39 -0500 (EST)
+In-Reply-To: <CAKjtJDWJMAZA+ekTVmTc0vgg7Jo-3kc4uwSUPCz4KCocM5SRZg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,70 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alicia Romero <alromor84@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Alicia Romero wrote:
+> I forgot to write that at the end I activate all the params using:
+>
+>     /* Activate the parameters */
+>     result = snd_pcm_hw_params (stream->pb_pcm, params);
+>     if (result < 0) {
 
-------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-
-SGVsbG8sIEkgaGF2ZSBubyBzb3VuZCBvbiBteSBTb255IFZhaW8gU1o0WFJOIGxhcHRvcCB3aXRo
-IG5ld2VzdCBrZXJuZWxzLgpTb3VuZDogaGRhLWludGVsLCBzaWdtYXRlbCAtIFNUQUM5ODcyCgpU
-byBzb2x2ZSB0aGlzIGlzc3VlIEkgbWFrZSB0aGlzIHBhdGNoIGZvciBzb3VuZC9wY2kvaGRhL3Bh
-dGNoX3NpZ21hdGVsLmM6CgotLS0gcGF0Y2hfc2lnbWF0ZWwuYy5iYWsgICAgICAgIDIwMTItMDIt
-MjMgMjE6MDE6MjguNTc3NTE1MzE3ICswNDAwCisrKyBwYXRjaF9zaWdtYXRlbC5jICAgIDIwMTIt
-MDItMjMgMjE6NTM6MjEuMDM1NjA1MjE2ICswNDAwCkBAIC02MzU3LDcgKzYzNTcsMTYgQEAKICAq
-LwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV92ZXJiIHN0YWM5ODcyX2NvcmVfaW5pdFtdID0g
-ewotICAgICAgIHsweDE1LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgxfSwgLyogbWljLXNl
-bDogMGEsMGQsMTQsMDIgKi8KKyAgICAgICB7MHgwYSwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9D
-T05UUk9MLCBQSU5fSFAgfSwgLyogSFAgPC0gMHgyICovCisgICAgICAgezB4MGYsIEFDX1ZFUkJf
-U0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX09VVCB9LCAvKiBTcGVha2VyIDwtIDB4NSAqLwor
-ICAgICAgIHsweDBkLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODAg
-fSwgLyogTWljPyAoPC0gMHgyKSAqLworICAgICAgIHsweDBlLCBBQ19WRVJCX1NFVF9QSU5fV0lE
-R0VUX0NPTlRST0wsIFBJTl9JTiB9LCAvKiBDRCAqLworICAgICAgIHsweDE0LCBBQ19WRVJCX1NF
-VF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODAgfSwgLyogTWljPyAqLworICAgICAgIHsw
-eDE1LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgyIC8qMHgxKi8gfSwgLyogbWljLXNlbDog
-MGEsMGQsMTQsMDIgKi8KKyAgICAgICB7MHgwMiwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwg
-QU1QX09VVF9NVVRFfSwgLyogSFAgKi8KKyAgICAgICB7MHgwNSwgQUNfVkVSQl9TRVRfQU1QX0dB
-SU5fTVVURSwgQU1QX09VVF9NVVRFfSwgLyogU3BlYWtlciAqLworICAgICAgIHsweDA5LCBBQ19W
-RVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgwKX0sIC8qIGNhcHR1cmUgc3cvdm9s
-IC0+IDB4OCAqLworICAgICAgIHsweDA3LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBf
-SU5fVU5NVVRFKDApfSwgLyogQ0QtaW4gLT4gMHg2ICovCiAgICAgICAgezB4MTUsIEFDX1ZFUkJf
-U0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfVU5NVVRFfSwgLyogTWljLWluIC0+IDB4OSAqLwog
-ICAgICAgIHt9CiB9OwoKCkNvbnN0YW50cyBnb3QgZnJvbSBvbGQga2VybmVsICgyLjYuMjIpLgpX
-aXRoIHRoaXMgcGF0Y2ggc291bmQgd29ya3MgZmluZS4gVGhhbmsgeW91LiA=
-
-------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303
-Content-Type: application/x-patch; name="=?UTF-8?B?cGF0Y2hfc2lnbWF0ZWwuYy52YWlvU1o0WFJOLnBhdGNo?="
-Content-Disposition: attachment
-Content-Transfer-Encoding: base64
-
-LS0tIHBhdGNoX3NpZ21hdGVsLmMuYmFrCTIwMTItMDItMjMgMjE6MDE6MjguNTc3NTE1MzE3ICsw
-NDAwCisrKyBwYXRjaF9zaWdtYXRlbC5jCTIwMTItMDItMjMgMjE6NTM6MjEuMDM1NjA1MjE2ICsw
-NDAwCkBAIC02MzU3LDcgKzYzNTcsMTYgQEAKICAqLwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhk
-YV92ZXJiIHN0YWM5ODcyX2NvcmVfaW5pdFtdID0gewotCXsweDE1LCBBQ19WRVJCX1NFVF9DT05O
-RUNUX1NFTCwgMHgxfSwgLyogbWljLXNlbDogMGEsMGQsMTQsMDIgKi8KKwl7MHgwYSwgQUNfVkVS
-Ql9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fSFAgfSwgLyogSFAgPC0gMHgyICovCisJezB4
-MGYsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX09VVCB9LCAvKiBTcGVha2Vy
-IDwtIDB4NSAqLworCXsweDBkLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9W
-UkVGODAgfSwgLyogTWljPyAoPC0gMHgyKSAqLworCXsweDBlLCBBQ19WRVJCX1NFVF9QSU5fV0lE
-R0VUX0NPTlRST0wsIFBJTl9JTiB9LCAvKiBDRCAqLworCXsweDE0LCBBQ19WRVJCX1NFVF9QSU5f
-V0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODAgfSwgLyogTWljPyAqLworCXsweDE1LCBBQ19WRVJC
-X1NFVF9DT05ORUNUX1NFTCwgMHgyIC8qMHgxKi8gfSwgLyogbWljLXNlbDogMGEsMGQsMTQsMDIg
-Ki8KKwl7MHgwMiwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFfSwgLyog
-SFAgKi8KKwl7MHgwNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFfSwg
-LyogU3BlYWtlciAqLworCXsweDA5LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5f
-TVVURSgwKX0sIC8qIGNhcHR1cmUgc3cvdm9sIC0+IDB4OCAqLworCXsweDA3LCBBQ19WRVJCX1NF
-VF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fVU5NVVRFKDApfSwgLyogQ0QtaW4gLT4gMHg2ICovCiAJ
-ezB4MTUsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfVU5NVVRFfSwgLyogTWlj
-LWluIC0+IDB4OSAqLwogCXt9CiB9Owo=
-
-------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+If set_period_size fails, params has not been changed.
 
 
-------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303--
+Regards,
+Clemens
