@@ -1,21 +1,16 @@
-From: "Wang, Kuirong" <kuirongw@quicinc.com>
-Subject: Re: How to trigger a widget?
-Date: Fri, 24 Feb 2012 04:57:40 +0000
-Message-ID: <D618B7A80E26984A9E4E1FD204983C1AA8F398@nasanexd01d.na.qualcomm.com>
-References: <D618B7A80E26984A9E4E1FD204983C1AA88700@nasanexd01d.na.qualcomm.com>
-	<4F420D6D.4050500@metafoo.de>
-	<D618B7A80E26984A9E4E1FD204983C1AA8AAF4@nasanexd01d.na.qualcomm.com>
-	<4F449901.302@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: HDA intel, wired headset w/mic, jack mic detect
+Date: Fri, 24 Feb 2012 07:25:19 +0100
+Message-ID: <4F472D4F.3000904@canonical.com>
+References: <87ehtlwen3.fsf@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
-	[199.106.114.254])
-	by alsa0.perex.cz (Postfix) with ESMTP id 155CF244AA
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 05:57:42 +0100 (CET)
-In-Reply-To: <4F449901.302@ti.com>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id CD4DD244C1
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 07:25:22 +0100 (CET)
+In-Reply-To: <87ehtlwen3.fsf@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,36 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+To: Kevin Hilman <khilman@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/21/2012 11:28 PM, Peter Ujfalusi  wrote:
->Would not it be simpler if you just enable/disable the feature in the kcon=
-trol's set callback?
+On 02/23/2012 08:09 PM, Kevin Hilman wrote:
+> Hello,
 >
->Another way I would go is this:
+> I'm trying to get a wired headset with a mic working on MacBookAir
+> running v3.0 (3.0.0-13-generic from Ubuntu to be precise.)
 >
->                  |-> (off) ---------|
->[Feature switch] -|                  |-> [next widget]
->                  |-> (on) -> [PGA] -|
+> It has Intel HDA audio[1] and everything works fine, including the
+> built-in mic.  The only think I can't seem to get working is a headset
+> w/mic.
 >
->In the PGA you turn on/off the feature. If the switch changes it will not =
-affect other items in the path, it will only make the PGA to turn on/off.
+> I know the HW for dynamic detect works because the mic is detected
+> dynamically under OSX.  Is there some setting I need to tweak in order
+> to enable the automatic mic detection?
 >
->--
->P=E9ter
+> Thanks for any pointers,
 
-Peter,
+Hi Kevin,
 
-I don't want to power on this circuit related to the feature if the audio s=
-tream is not playing so if I use the kcontrol callback function to do so, i=
-t could power up even the audio stream is not playing. =
+You can try upgrading your alsa version to the daily snapshot using this 
+method: https://wiki.ubuntu.com/Audio/UpgradingAlsa/DKMS
 
 
-I will try the way you suggested by using a switch. In the meanwhile, I wil=
-l check why the enable_pin doesn't work as expected in my system.
-
-Thanks!
-
-Kuirong
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
