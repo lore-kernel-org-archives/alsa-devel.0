@@ -1,26 +1,24 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 4/4] ASoC: fsl: make fsl_ssi driver
-	compilable on ARM/IMX
-Date: Fri, 24 Feb 2012 17:05:16 -0600
-Message-ID: <4F4817AC.7050406@freescale.com>
-References: <1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
-	<1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
-	<4F465A33.3020208@ru.mvista.com> <4F465EE5.4010908@freescale.com>
-	<20120223165242.GB22562@n2100.arm.linux.org.uk>
-	<4F4671BB.7060409@freescale.com>
-	<20120223171407.GC22562@n2100.arm.linux.org.uk>
-	<4F480120.6080409@freescale.com>
-	<20120224215448.GA15120@n2100.arm.linux.org.uk>
-	<4F480871.9020206@freescale.com>
-	<20120224223512.GB15120@n2100.arm.linux.org.uk>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
+Date: Sat, 25 Feb 2012 07:21:51 +0800
+Message-ID: <20120224232148.GA24268@S2101-09.ap.freescale.net>
+References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
+	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
+	<20120224140200.GH5450@opensource.wolfsonmicro.com>
+	<20120224142342.GA16659@S2101-09.ap.freescale.net>
+	<20120224141705.GJ5450@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe002.messaging.microsoft.com
-	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id EC3C0103C4E
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 00:05:34 +0100 (CET)
-In-Reply-To: <20120224223512.GB15120@n2100.arm.linux.org.uk>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0202E103C4E
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 00:08:10 +0100 (CET)
+Received: by dady9 with SMTP id y9so3305150dad.38
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 15:08:10 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120224141705.GJ5450@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,46 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Sergei Shtylyov <sshtylyov@ru.mvista.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Russell King - ARM Linux wrote:
+On Fri, Feb 24, 2012 at 02:17:06PM +0000, Mark Brown wrote:
+> On Fri, Feb 24, 2012 at 10:23:45PM +0800, Shawn Guo wrote:
+> > On Fri, Feb 24, 2012 at 02:02:01PM +0000, Mark Brown wrote:
+> 
+> > > Please don't post new threads as followups to old threads, it makes
+> > > things harder to follow in threaded mail readers.
+> 
+> > I did that because they are a big series, though some of the patches
+> > can be standalone.
+> 
+> That doesn't seem to be related to my point?  I'm asking you to not
+> reply to an old version of your patch series in order to post a new
+> version of it, just post the new version.
 
-> Ho hum.  So, what that's saying to me is that even implementing in_32be()
-> on ARM results in rubbish because it wouldn't be big endian there.
-
-Well, the "be" in in_be32() means to assume that 32-bit integer is stored
-in big-endian format, and to convert it to native format during the read.
- An ARM implementation of in_be32() would include byte-swapping.
-
-> So are we heading towards driver specific sets of IO accessors? :-(  It
-> sounds like that's what it needs because of these different endian-ness
-> issues.
-
-I'm surprised that ioread32() on PowerPC always does a little-endian read,
-but I'm guessing that was done for compatibility.  I don't know what to do
-about that.
-
-> And lets not forget that we're talking just about this - there's also
-> the issue of on-SoC devices on ARM now appearing behind PCI buses on
-> x86, which would make those appear as LE.  I bet if any of those
-> appearing on PPC would appear in BE mode.  So, 'native endian' doesn't
-> work either.
-
-I think PCI is a special-case on most PowerPC parts, in that the registers
-are still little-endian.  But I don't know how pervasive that is.  In
-fact, I think on some Freescale PowerPC SOCs, the PCI registers are
-little-endian, and other others they're big-endian.  You can see that in
-fsl_pci.c.
-
-> So, I'm getting the feeling that something as simple as IO accessors are
-> just a huge mountain of crap waiting to bite.
-
-Very few devices are shared between Freescale's PowerPC and ARM SOCs, so
-the impact is only a few drivers.  That's why it might be okay (for now)
-to have "dual" I/O accessors in specific drivers.
+This is the first version of this series.
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Regards,
+Shawn
