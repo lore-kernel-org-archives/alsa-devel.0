@@ -1,19 +1,18 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: usb-audio: Correct way to do a mixer quirk?
-Date: Fri, 24 Feb 2012 12:26:20 +0000 (GMT)
-Message-ID: <alpine.LNX.2.01.1202241221310.1855@stax.localdomain>
-References: <alpine.LNX.2.01.1202192059040.7408@stax.localdomain>
-	<4F41FF5F.8040409@ladisch.de>
-	<alpine.LNX.2.01.1202201945150.10992@stax.localdomain>
-	<4F42BDC9.4040605@ladisch.de>
+From: =?UTF-8?B?MTA3?= <107@mail.ru>
+Subject: =?utf-8?q?=5BPATCH=5D_Sony_Vaio_with_stac9872?=
+Date: Fri, 24 Feb 2012 16:41:43 +0400
+Message-ID: <E1S0uT1-0000JE-FI.107-mail-ru@f35.mail.ru>
+Reply-To: =?UTF-8?B?MTA3?= <107@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----EuH5x5fS-sJ7wybR4s4nSasbX:1330087303"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCBFB104266
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 13:26:26 +0100 (CET)
-In-Reply-To: <4F42BDC9.4040605@ladisch.de>
+Received: from f35.mail.ru (f35.mail.ru [217.69.129.98])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C6CB104267
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 13:41:45 +0100 (CET)
+Received: from mail by f35.mail.ru with local (envelope-from <107@mail.ru>)
+	id 1S0uT1-0000JE-FI
+	for alsa-devel@alsa-project.org; Fri, 24 Feb 2012 16:41:43 +0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 20 Feb 2012, Clemens Ladisch wrote:
 
-> Mark Hills wrote:
-> > On Mon, 20 Feb 2012, Clemens Ladisch wrote:
-> >> Mark Hills wrote:
-> >>> The Electrix Ebox-44 is a new USB interface, but the MIXER_UNIT descriptor
-> >>> is broken and refers to a non-existing unit_id.
-> >>
-> >> I'd suggest to change the code to not abort if a unit doesn't exist.
-> >
-> > It would seem a little strange to skip over the error for one specific
-> > condition to accomodate a specific device -- when the rest of the code
-> > does not generally do this?
-> 
-> It's still possible to complain about the broken firmware, but there is
-> no reason to prevent the user from accessing the PCM streams and all
-> other mixer controls just because one descriptors happens to be wrong.
+------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 
-The patch for this is relatively simple, I put it below for reference. The 
-device can then be used; audio streams and a mixer are available.
+SGVsbG8sIEkgaGF2ZSBubyBzb3VuZCBvbiBteSBTb255IFZhaW8gU1o0WFJOIGxhcHRvcCB3aXRo
+IG5ld2VzdCBrZXJuZWxzLgpTb3VuZDogaGRhLWludGVsLCBzaWdtYXRlbCAtIFNUQUM5ODcyCgpU
+byBzb2x2ZSB0aGlzIGlzc3VlIEkgbWFrZSB0aGlzIHBhdGNoIGZvciBzb3VuZC9wY2kvaGRhL3Bh
+dGNoX3NpZ21hdGVsLmM6CgotLS0gcGF0Y2hfc2lnbWF0ZWwuYy5iYWsgICAgICAgIDIwMTItMDIt
+MjMgMjE6MDE6MjguNTc3NTE1MzE3ICswNDAwCisrKyBwYXRjaF9zaWdtYXRlbC5jICAgIDIwMTIt
+MDItMjMgMjE6NTM6MjEuMDM1NjA1MjE2ICswNDAwCkBAIC02MzU3LDcgKzYzNTcsMTYgQEAKICAq
+LwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV92ZXJiIHN0YWM5ODcyX2NvcmVfaW5pdFtdID0g
+ewotICAgICAgIHsweDE1LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgxfSwgLyogbWljLXNl
+bDogMGEsMGQsMTQsMDIgKi8KKyAgICAgICB7MHgwYSwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9D
+T05UUk9MLCBQSU5fSFAgfSwgLyogSFAgPC0gMHgyICovCisgICAgICAgezB4MGYsIEFDX1ZFUkJf
+U0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX09VVCB9LCAvKiBTcGVha2VyIDwtIDB4NSAqLwor
+ICAgICAgIHsweDBkLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODAg
+fSwgLyogTWljPyAoPC0gMHgyKSAqLworICAgICAgIHsweDBlLCBBQ19WRVJCX1NFVF9QSU5fV0lE
+R0VUX0NPTlRST0wsIFBJTl9JTiB9LCAvKiBDRCAqLworICAgICAgIHsweDE0LCBBQ19WRVJCX1NF
+VF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODAgfSwgLyogTWljPyAqLworICAgICAgIHsw
+eDE1LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgyIC8qMHgxKi8gfSwgLyogbWljLXNlbDog
+MGEsMGQsMTQsMDIgKi8KKyAgICAgICB7MHgwMiwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwg
+QU1QX09VVF9NVVRFfSwgLyogSFAgKi8KKyAgICAgICB7MHgwNSwgQUNfVkVSQl9TRVRfQU1QX0dB
+SU5fTVVURSwgQU1QX09VVF9NVVRFfSwgLyogU3BlYWtlciAqLworICAgICAgIHsweDA5LCBBQ19W
+RVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgwKX0sIC8qIGNhcHR1cmUgc3cvdm9s
+IC0+IDB4OCAqLworICAgICAgIHsweDA3LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBf
+SU5fVU5NVVRFKDApfSwgLyogQ0QtaW4gLT4gMHg2ICovCiAgICAgICAgezB4MTUsIEFDX1ZFUkJf
+U0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfVU5NVVRFfSwgLyogTWljLWluIC0+IDB4OSAqLwog
+ICAgICAgIHt9CiB9OwoKCkNvbnN0YW50cyBnb3QgZnJvbSBvbGQga2VybmVsICgyLjYuMjIpLgpX
+aXRoIHRoaXMgcGF0Y2ggc291bmQgd29ya3MgZmluZS4gVGhhbmsgeW91LiA=
 
-But I'm not sure the resulting mixer is correct or complete so I'm in the 
-process of getting access to one of these devices -- will allow me to 
-check everything. I'll post more information when I have it.
+------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303
+Content-Type: application/x-patch; name="=?UTF-8?B?cGF0Y2hfc2lnbWF0ZWwuYy52YWlvU1o0WFJOLnBhdGNo?="
+Content-Disposition: attachment
+Content-Transfer-Encoding: base64
 
-Thanks
+LS0tIHBhdGNoX3NpZ21hdGVsLmMuYmFrCTIwMTItMDItMjMgMjE6MDE6MjguNTc3NTE1MzE3ICsw
+NDAwCisrKyBwYXRjaF9zaWdtYXRlbC5jCTIwMTItMDItMjMgMjE6NTM6MjEuMDM1NjA1MjE2ICsw
+NDAwCkBAIC02MzU3LDcgKzYzNTcsMTYgQEAKICAqLwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhk
+YV92ZXJiIHN0YWM5ODcyX2NvcmVfaW5pdFtdID0gewotCXsweDE1LCBBQ19WRVJCX1NFVF9DT05O
+RUNUX1NFTCwgMHgxfSwgLyogbWljLXNlbDogMGEsMGQsMTQsMDIgKi8KKwl7MHgwYSwgQUNfVkVS
+Ql9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fSFAgfSwgLyogSFAgPC0gMHgyICovCisJezB4
+MGYsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX09VVCB9LCAvKiBTcGVha2Vy
+IDwtIDB4NSAqLworCXsweDBkLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9W
+UkVGODAgfSwgLyogTWljPyAoPC0gMHgyKSAqLworCXsweDBlLCBBQ19WRVJCX1NFVF9QSU5fV0lE
+R0VUX0NPTlRST0wsIFBJTl9JTiB9LCAvKiBDRCAqLworCXsweDE0LCBBQ19WRVJCX1NFVF9QSU5f
+V0lER0VUX0NPTlRST0wsIFBJTl9WUkVGODAgfSwgLyogTWljPyAqLworCXsweDE1LCBBQ19WRVJC
+X1NFVF9DT05ORUNUX1NFTCwgMHgyIC8qMHgxKi8gfSwgLyogbWljLXNlbDogMGEsMGQsMTQsMDIg
+Ki8KKwl7MHgwMiwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFfSwgLyog
+SFAgKi8KKwl7MHgwNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFfSwg
+LyogU3BlYWtlciAqLworCXsweDA5LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5f
+TVVURSgwKX0sIC8qIGNhcHR1cmUgc3cvdm9sIC0+IDB4OCAqLworCXsweDA3LCBBQ19WRVJCX1NF
+VF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fVU5NVVRFKDApfSwgLyogQ0QtaW4gLT4gMHg2ICovCiAJ
+ezB4MTUsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9PVVRfVU5NVVRFfSwgLyogTWlj
+LWluIC0+IDB4OSAqLwogCXt9CiB9Owo=
 
--- 
-Mark
+------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
----
- sound/usb/mixer.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index ab23869..c374c72 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1388,7 +1388,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid, void *r
- 	for (pin = 0; pin < input_pins; pin++) {
- 		err = parse_audio_unit(state, desc->baSourceID[pin]);
- 		if (err < 0)
--			return err;
-+			continue;
- 		err = check_input_term(state, desc->baSourceID[pin], &iterm);
- 		if (err < 0)
- 			return err;
--- 
-1.7.4.4
+------EuH5x5fS-sJ7wybR4s4nSasbX:1330087303--
