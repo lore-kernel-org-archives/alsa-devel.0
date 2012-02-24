@@ -1,17 +1,24 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: Re: linux-next: Tree for Feb 24 (sound/usb/6fire)
-Date: Fri, 24 Feb 2012 21:34:22 +0100
-Message-ID: <20120224213422.3693943c2dad148b35e26d21@zoho.com>
-References: <20120224170548.a9a338d64712f06f1b39b7bd@canb.auug.org.au>
-	<4F47DBD4.4090803@xenotime.net>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 4/4] ASoC: fsl: make fsl_ssi driver
+	compilable on ARM/IMX
+Date: Fri, 24 Feb 2012 15:29:04 -0600
+Message-ID: <4F480120.6080409@freescale.com>
+References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-5-git-send-email-shawn.guo@linaro.org>
+	<4F465A33.3020208@ru.mvista.com> <4F465EE5.4010908@freescale.com>
+	<20120223165242.GB22562@n2100.arm.linux.org.uk>
+	<4F4671BB.7060409@freescale.com>
+	<20120223171407.GC22562@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19546103C48
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 21:34:29 +0100 (CET)
-In-Reply-To: <4F47DBD4.4090803@xenotime.net>
+Received: from VA3EHSOBE008.bigfish.com (va3ehsobe003.messaging.microsoft.com
+	[216.32.180.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B6AE103C55
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 22:29:24 +0100 (CET)
+In-Reply-To: <20120223171407.GC22562@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,52 +28,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Torsten@alsa-project.org, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, Schenk <torsten.schenk@zoho.com>, linux-next@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, Sergei Shtylyov <sshtylyov@ru.mvista.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 24 Feb 2012 10:49:56 -0800
-Randy Dunlap <rdunlap@xenotime.net> wrote:
-
-> On 02/23/2012 10:05 PM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Changes since 20120223:
+Russell King - ARM Linux wrote:
+>> > I'll have to ask around, because I'm sure I'm missing something.
+> If what you say is true, it means we have different semantics for the
+> same accessors on different architectures.  No wonder it's needing
+> drivers to gain ifdefs to select appropriate accessors.
 > 
-> 
-> on x86_64:
-> 
-> ERROR: "_snd_ctl_add_slave" [sound/usb/6fire/snd-usb-6fire.ko]
-> undefined! ERROR:
-> "snd_ctl_make_virtual_master" [sound/usb/6fire/snd-usb-6fire.ko]
-> undefined!
-> 
-> 
-> Full randconfig file is attached.
-> 
-> CONFIG_SND_VMASTER is not enabled.  Looks like this driver should
-> either depend on or select SND_VMASTER.
-> 
+> This needs sorting out properly.  It needs the semantics of readl() etc
+> to be fully defined, and all architectures to implement those semantics
+> rather than what they think would be appropriate for them.
 
-Sorry, I was unaware that this option needs to be selected.
-Patch is attached below that selects SND_VMASTER.
+So I asked around, and sure enough, my macro-fu was weak.  On PowerPC,
+readl() maps to in_le32().  Even though PowerPC is big-endian, some
+devices are little endian (e.g. PCI and some PICs).
 
-Regards,
-Torsten
+in_le32() is the byte-swapping version of in_be32().  Both functions have
+instruction order synchronization instructions in them.
 
+So replacing in_be32() with readl() will break on PowerPC.
 
-Select missing SND_VMASTER option in Kconfig.
-
-Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
-
-diff -Nur a/sound/usb/Kconfig b/sound/usb/Kconfig
---- a/sound/usb/Kconfig	2012-02-24 21:17:09.543884187 +0100
-+++ b/sound/usb/Kconfig	2012-02-24 21:19:16.160372882 +0100
-@@ -106,6 +106,7 @@
-         select BITREVERSE
-         select SND_RAWMIDI
-         select SND_PCM
-+        select SND_VMASTER
-         help
-           Say Y here to include support for TerraTec 6fire DMX USB interface.
- 
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
