@@ -1,171 +1,55 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH] tea575x: fix HW seek
-Date: Fri, 24 Feb 2012 10:00:01 +0100
-Message-ID: <201202241000.01922.hverkuil@xs4all.nl>
-References: <201202181745.49819.linux@rainbow-software.org> <201202211044.14925.hverkuil@xs4all.nl> <201202220935.29155.linux@rainbow-software.org>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [PATCH] hda - add id for Atom Cedar Trail HDMI
+	codec
+Date: Fri, 24 Feb 2012 17:22:47 +0800
+Message-ID: <20120224092247.GA29049@localhost>
+References: <20120223070744.GA5505@localhost>
+	<1329993105.3678.11.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201202220935.29155.linux@rainbow-software.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id F30E82451E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 10:22:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1329993105.3678.11.camel@mattotaupa>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Paul Menzel <paulepanter@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, February 22, 2012 09:35:28 Ondrej Zary wrote:
-> On Tuesday 21 February 2012, Hans Verkuil wrote:
-> > On Saturday, February 18, 2012 17:45:45 Ondrej Zary wrote:
-> > > Fix HW seek in TEA575x to work properly:
-> > >  - a delay must be present after search start and before first register
-> > > read or the seek does weird things
-> > >  - when the search stops, the new frequency is not available immediately,
-> > > we must wait until it appears in the register (fortunately, we can clear
-> > > the frequency bits when starting the search as it starts at the frequency
-> > > currently set, not from the value written)
-> > >  - sometimes, seek remains on the current frequency (or moves only a
-> > > little), so repeat it until it moves by at least 50 kHz
-> > >
-> > > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> > >
-> > > --- a/sound/i2c/other/tea575x-tuner.c
-> > > +++ b/sound/i2c/other/tea575x-tuner.c
-> > > @@ -89,7 +89,7 @@ static void snd_tea575x_write(struct snd_tea575x *tea,
-> > > unsigned int val) tea->ops->set_pins(tea, 0);
-> > >  }
-> > >
-> > > -static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
-> > > +static u32 snd_tea575x_read(struct snd_tea575x *tea)
-> > >  {
-> > >  	u16 l, rdata;
-> > >  	u32 data = 0;
-> > > @@ -120,6 +120,27 @@ static unsigned int snd_tea575x_read(struct
-> > > snd_tea575x *tea) return data;
-> > >  }
-> > >
-> > > +static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-> > > +{
-> > > +	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
-> > > +
-> > > +	if (freq == 0) {
-> > > +		tea->freq = 0;
-> >
-> > Wouldn't it be better to return -EBUSY in this case? VIDIOC_G_FREQUENCY
-> > should not return frequencies outside the valid frequency range. In this
-> > case returning -EBUSY seems to make more sense to me.
-> 
-> The device returns zero frequency when the scan fails to find a frequency. 
-> This is not an error, just an indication that "nothing" is tuned. So maybe we 
-> can return some bogus frequency in vidioc_g_frequency (like FREQ_LO) in this 
-> case (don't know if -EBUSY will break anything). But HW seek should get the 
-> real one (i.e. zero when it's there).
-
-How about the following patch? vidioc_g_frequency just returns the last set
-frequency and the hw_seek restores the original frequency if it can't find
-another channel.
-
-Also note that the check for < 50 kHz in hw_seek actually checked for < 500 kHz.
-I've fixed that, but I can't test it.
-
-Do you also know what happens at the boundaries of the frequency range? Does
-it wrap around, or do you get a timeout?
-
-Regards,
-
-	Hans
-
-diff --git a/sound/i2c/other/tea575x-tuner.c b/sound/i2c/other/tea575x-tuner.c
-index 474bb81..1bdf1f3 100644
---- a/sound/i2c/other/tea575x-tuner.c
-+++ b/sound/i2c/other/tea575x-tuner.c
-@@ -120,14 +120,12 @@ static u32 snd_tea575x_read(struct snd_tea575x *tea)
- 	return data;
- }
- 
--static void snd_tea575x_get_freq(struct snd_tea575x *tea)
-+static u32 snd_tea575x_get_freq(struct snd_tea575x *tea)
- {
- 	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
- 
--	if (freq == 0) {
--		tea->freq = 0;
--		return;
--	}
-+	if (freq == 0)
-+		return freq;
- 
- 	/* freq *= 12.5 */
- 	freq *= 125;
-@@ -138,7 +136,7 @@ static void snd_tea575x_get_freq(struct snd_tea575x *tea)
- 	else
- 		freq -= TEA575X_FMIF;
- 
--	tea->freq = clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
-+	return clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
- }
- 
- static void snd_tea575x_set_freq(struct snd_tea575x *tea)
-@@ -224,8 +222,6 @@ static int vidioc_g_frequency(struct file *file, void *priv,
- 	if (f->tuner != 0)
- 		return -EINVAL;
- 	f->type = V4L2_TUNER_RADIO;
--	if (!tea->cannot_read_data)
--		snd_tea575x_get_freq(tea);
- 	f->frequency = tea->freq;
- 	return 0;
- }
-@@ -248,14 +244,12 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
- 					struct v4l2_hw_freq_seek *a)
- {
- 	struct snd_tea575x *tea = video_drvdata(file);
--	int i, old_freq;
- 	unsigned long timeout;
-+	int i;
- 
- 	if (tea->cannot_read_data)
- 		return -ENOTTY;
- 
--	snd_tea575x_get_freq(tea);
--	old_freq = tea->freq;
- 	/* clear the frequency, HW will fill it in */
- 	tea->val &= ~TEA575X_BIT_FREQ_MASK;
- 	tea->val |= TEA575X_BIT_SEARCH;
-@@ -271,26 +265,33 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
- 		if (schedule_timeout_interruptible(msecs_to_jiffies(10))) {
- 			/* some signal arrived, stop search */
- 			tea->val &= ~TEA575X_BIT_SEARCH;
--			snd_tea575x_write(tea, tea->val);
-+			snd_tea575x_set_freq(tea);
- 			return -ERESTARTSYS;
- 		}
- 		if (!(snd_tea575x_read(tea) & TEA575X_BIT_SEARCH)) {
-+			u32 freq;
-+
- 			/* Found a frequency, wait until it can be read */
- 			for (i = 0; i < 100; i++) {
- 				msleep(10);
--				snd_tea575x_get_freq(tea);
--				if (tea->freq != 0) /* available */
-+				freq = snd_tea575x_get_freq(tea);
-+				if (freq) /* available */
- 					break;
- 			}
-+			if (freq == 0) /* shouldn't happen */
-+				break;
- 			/* if we moved by less than 50 kHz, continue seeking */
--			if (abs(old_freq - tea->freq) < 16 * 500) {
-+			if (abs(tea->freq - freq) < 16 * 50) {
- 				snd_tea575x_write(tea, tea->val);
- 				continue;
- 			}
-+			tea->freq = freq;
- 			tea->val &= ~TEA575X_BIT_SEARCH;
- 			return 0;
- 		}
- 	}
-+	tea->val &= ~TEA575X_BIT_SEARCH;
-+	snd_tea575x_set_freq(tea);
- 	return -ETIMEDOUT;
- }
- 
+RGVhciBQYXVsLAoKT24gVGh1LCBGZWIgMjMsIDIwMTIgYXQgMTE6MzE6NDVBTSArMDEwMCwgUGF1
+bCBNZW56ZWwgd3JvdGU6Cj4gRGVhciBGZW5nZ3VhbmcsCj4gCj4gCj4gQW0gRG9ubmVyc3RhZywg
+ZGVuIDIzLjAyLjIwMTIsIDE1OjA3ICswODAwIHNjaHJpZWIgV3UgRmVuZ2d1YW5nOgo+ID4gU2ln
+bmVkLW9mZi1ieTogV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcud3VAaW50ZWwuY29tPgo+IAo+IGFz
+IGFsd2F5cyBJIGFtIGNvbmZ1c2VkIHdoYXQgaXMgeW91ciBmaXJzdCBuYW1lIGFuZCB3aGF0IGlz
+IHRoZSBzdXJuYW1lLgoKU29ycnkgYWJvdXQgdGhhdC4uLiBJdCdzIHN1cmUgY29uZnVzaW5nLiBB
+Y2NvcmRpbmcgdG8KCmh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL0NoaW5lc2VfbmFtZSND
+aGluZXNlX25hbWVzX2luX0VuZ2xpc2gKCiJDaGluZXNlIHBlb3BsZSwgZXhjZXB0IGZvciB0aG9z
+ZSB0cmF2ZWxpbmcgb3IgbGl2aW5nIG91dHNpZGUgb2YKQ2hpbmEsIHJhcmVseSByZXZlcnNlIHRo
+ZWlyIG5hbWVzIHRvIHRoZSB3ZXN0ZXJuIG5hbWluZyBvcmRlciAoZ2l2ZW4KbmFtZSwgdGhlbiBm
+YW1pbHkgbmFtZSkuIFdlc3Rlcm4gcHVibGljYXRpb25zIHVzdWFsbHkgcHJlc2VydmUgdGhlCkNo
+aW5lc2UgbmFtaW5nIG9yZGVyLCB3aXRoIHRoZSBmYW1pbHkgbmFtZSBmaXJzdCwgZm9sbG93ZWQg
+YnkgdGhlCmdpdmVuIG5hbWUuIgoKSG93ZXZlciBpdCBkb2VzIGxvb2sgd29ydGh3aGlsZSB0byBm
+aXQgdGhlIHdlc3Rlcm4gb3JkZXIgaW4gRW5nbGlzaApzaW5jZSB0aGUgbWFqb3JpdHkgTEtNTCBy
+ZWFkZXJzIGFyZSBhY2N1c3RvbWVkIHRvIHRoYXQuIFRoZSBnb29kIG5ld3MKaXMsIHdoZXRoZXIg
+b3Igbm90ICJGZW5nZ3VhbmcgV3UiIG9yICJXdSBGZW5nZ3VhbmciIGlzIHVzZWQsIENoaW5lc2UK
+cGVvcGxlIGNhbiBhbHdheXMgcmVjb2duaXplICJXdSIgYXMgbXkgZmFtaWx5IG5hbWUsIGluc3Rh
+bnRseS4KCj4gSW50ZWwgZW1haWwgbWVzc2FnZXMgc2VlbSB0byBiZSA8JGZyaXN0bmFtZS4kbGFz
+dG5hbWVAaW50ZWwuY29tPi4gU28gaWYKPiBXdSBpcyB5b3VyIGxhc3QgbmFtZSB5b3Ugc2hvdWxk
+IHB1dCBhIMK7LMKrIGJlaGluZCBXdSBpbiB5b3VyIE11dHQKPiBjb25maWd1cmF0aW9uIGFuZCBh
+ZGFwdCB5b3VyIEdpdCBjb25maWd1cmF0aW9uIHdpdGggdGhlIGZvbGxvd2luZwo+IGNvbW1hbmQu
+Cj4gCj4gICAgIGdpdCBjb25maWcgLS1nbG9iYWwgdXNlci5uYW1lICJGZW5nZ3VhbmcgV3UiCgpE
+b25lLiBUaGFua3MgZm9yIHRoZSB0aXAhCgpGZW5nZ3VhbmcgV3UKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
