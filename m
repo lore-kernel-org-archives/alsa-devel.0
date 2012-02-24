@@ -1,47 +1,171 @@
-From: Paul Fertser <fercerpav@gmail.com>
-Subject: Re: [PATCH] Add default config for tegra-alc5632
-	(as	found on paz00)
-Date: Fri, 24 Feb 2012 12:43:47 +0400
-Message-ID: <20120224084346.GI22762@home.lan>
-References: <1328561498-19337-1-git-send-email-fercerpav@gmail.com>
-	<4F30BC18.3040102@nvidia.com>
-	<CALq1K=+brR4OgPzfANKTFDoD-8Pbm0WjwXH+ZzShHvkGg6ntwA@mail.gmail.com>
-	<20120207125404.GD11313@home.lan>
-	<20120207131339.GK3332@opensource.wolfsonmicro.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH] tea575x: fix HW seek
+Date: Fri, 24 Feb 2012 10:00:01 +0100
+Message-ID: <201202241000.01922.hverkuil@xs4all.nl>
+References: <201202181745.49819.linux@rainbow-software.org> <201202211044.14925.hverkuil@xs4all.nl> <201202220935.29155.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20120207131339.GK3332@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patch@alsa-project.org" <patch@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Marc Dietrich <marvin24@gmx.de>, Oliver Grawert <ogra@ubuntu.com>, Leon Romanovsky <leon@leon.nu>, Andrey Danin <danindrey@mail.ru>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201202220935.29155.linux@rainbow-software.org>
+Sender: linux-media-owner@vger.kernel.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Tue, Feb 07, 2012 at 01:13:39PM +0000, Mark Brown wrote:
-> On Tue, Feb 07, 2012 at 04:54:04PM +0400, Paul Fertser wrote:
-> > Mark, do you have some idea how to solve the issue at hand (having
-> > dmix on this netbook by default) better? Is quantity of maximum
-> > simultaneous playback/record PCM streams already queryable by the
-> > userspace? Somehow it happened that adding per-device config file was
-> > ok during all these years, is there a better way now?
+On Wednesday, February 22, 2012 09:35:28 Ondrej Zary wrote:
+> On Tuesday 21 February 2012, Hans Verkuil wrote:
+> > On Saturday, February 18, 2012 17:45:45 Ondrej Zary wrote:
+> > > Fix HW seek in TEA575x to work properly:
+> > >  - a delay must be present after search start and before first register
+> > > read or the seek does weird things
+> > >  - when the search stops, the new frequency is not available immediately,
+> > > we must wait until it appears in the register (fortunately, we can clear
+> > > the frequency bits when starting the search as it starts at the frequency
+> > > currently set, not from the value written)
+> > >  - sometimes, seek remains on the current frequency (or moves only a
+> > > little), so repeat it until it moves by at least 50 kHz
+> > >
+> > > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> > >
+> > > --- a/sound/i2c/other/tea575x-tuner.c
+> > > +++ b/sound/i2c/other/tea575x-tuner.c
+> > > @@ -89,7 +89,7 @@ static void snd_tea575x_write(struct snd_tea575x *tea,
+> > > unsigned int val) tea->ops->set_pins(tea, 0);
+> > >  }
+> > >
+> > > -static unsigned int snd_tea575x_read(struct snd_tea575x *tea)
+> > > +static u32 snd_tea575x_read(struct snd_tea575x *tea)
+> > >  {
+> > >  	u16 l, rdata;
+> > >  	u32 data = 0;
+> > > @@ -120,6 +120,27 @@ static unsigned int snd_tea575x_read(struct
+> > > snd_tea575x *tea) return data;
+> > >  }
+> > >
+> > > +static void snd_tea575x_get_freq(struct snd_tea575x *tea)
+> > > +{
+> > > +	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
+> > > +
+> > > +	if (freq == 0) {
+> > > +		tea->freq = 0;
+> >
+> > Wouldn't it be better to return -EBUSY in this case? VIDIOC_G_FREQUENCY
+> > should not return frequencies outside the valid frequency range. In this
+> > case returning -EBUSY seems to make more sense to me.
 > 
-> For almost all devices there's one stream supported in each direction,
-> if we were assuming any default that'd be it.
+> The device returns zero frequency when the scan fails to find a frequency. 
+> This is not an error, just an indication that "nothing" is tuned. So maybe we 
+> can return some bogus frequency in vidioc_g_frequency (like FREQ_LO) in this 
+> case (don't know if -EBUSY will break anything). But HW seek should get the 
+> real one (i.e. zero when it's there).
 
-Takashi, can you please provide some feedback on this thread?
+How about the following patch? vidioc_g_frequency just returns the last set
+frequency and the hw_seek restores the original frequency if it can't find
+another channel.
 
--- 
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
+Also note that the check for < 50 kHz in hw_seek actually checked for < 500 kHz.
+I've fixed that, but I can't test it.
+
+Do you also know what happens at the boundaries of the frequency range? Does
+it wrap around, or do you get a timeout?
+
+Regards,
+
+	Hans
+
+diff --git a/sound/i2c/other/tea575x-tuner.c b/sound/i2c/other/tea575x-tuner.c
+index 474bb81..1bdf1f3 100644
+--- a/sound/i2c/other/tea575x-tuner.c
++++ b/sound/i2c/other/tea575x-tuner.c
+@@ -120,14 +120,12 @@ static u32 snd_tea575x_read(struct snd_tea575x *tea)
+ 	return data;
+ }
+ 
+-static void snd_tea575x_get_freq(struct snd_tea575x *tea)
++static u32 snd_tea575x_get_freq(struct snd_tea575x *tea)
+ {
+ 	u32 freq = snd_tea575x_read(tea) & TEA575X_BIT_FREQ_MASK;
+ 
+-	if (freq == 0) {
+-		tea->freq = 0;
+-		return;
+-	}
++	if (freq == 0)
++		return freq;
+ 
+ 	/* freq *= 12.5 */
+ 	freq *= 125;
+@@ -138,7 +136,7 @@ static void snd_tea575x_get_freq(struct snd_tea575x *tea)
+ 	else
+ 		freq -= TEA575X_FMIF;
+ 
+-	tea->freq = clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
++	return clamp(freq * 16, FREQ_LO, FREQ_HI); /* from kHz */
+ }
+ 
+ static void snd_tea575x_set_freq(struct snd_tea575x *tea)
+@@ -224,8 +222,6 @@ static int vidioc_g_frequency(struct file *file, void *priv,
+ 	if (f->tuner != 0)
+ 		return -EINVAL;
+ 	f->type = V4L2_TUNER_RADIO;
+-	if (!tea->cannot_read_data)
+-		snd_tea575x_get_freq(tea);
+ 	f->frequency = tea->freq;
+ 	return 0;
+ }
+@@ -248,14 +244,12 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
+ 					struct v4l2_hw_freq_seek *a)
+ {
+ 	struct snd_tea575x *tea = video_drvdata(file);
+-	int i, old_freq;
+ 	unsigned long timeout;
++	int i;
+ 
+ 	if (tea->cannot_read_data)
+ 		return -ENOTTY;
+ 
+-	snd_tea575x_get_freq(tea);
+-	old_freq = tea->freq;
+ 	/* clear the frequency, HW will fill it in */
+ 	tea->val &= ~TEA575X_BIT_FREQ_MASK;
+ 	tea->val |= TEA575X_BIT_SEARCH;
+@@ -271,26 +265,33 @@ static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
+ 		if (schedule_timeout_interruptible(msecs_to_jiffies(10))) {
+ 			/* some signal arrived, stop search */
+ 			tea->val &= ~TEA575X_BIT_SEARCH;
+-			snd_tea575x_write(tea, tea->val);
++			snd_tea575x_set_freq(tea);
+ 			return -ERESTARTSYS;
+ 		}
+ 		if (!(snd_tea575x_read(tea) & TEA575X_BIT_SEARCH)) {
++			u32 freq;
++
+ 			/* Found a frequency, wait until it can be read */
+ 			for (i = 0; i < 100; i++) {
+ 				msleep(10);
+-				snd_tea575x_get_freq(tea);
+-				if (tea->freq != 0) /* available */
++				freq = snd_tea575x_get_freq(tea);
++				if (freq) /* available */
+ 					break;
+ 			}
++			if (freq == 0) /* shouldn't happen */
++				break;
+ 			/* if we moved by less than 50 kHz, continue seeking */
+-			if (abs(old_freq - tea->freq) < 16 * 500) {
++			if (abs(tea->freq - freq) < 16 * 50) {
+ 				snd_tea575x_write(tea, tea->val);
+ 				continue;
+ 			}
++			tea->freq = freq;
+ 			tea->val &= ~TEA575X_BIT_SEARCH;
+ 			return 0;
+ 		}
+ 	}
++	tea->val &= ~TEA575X_BIT_SEARCH;
++	snd_tea575x_set_freq(tea);
+ 	return -ETIMEDOUT;
+ }
+ 
