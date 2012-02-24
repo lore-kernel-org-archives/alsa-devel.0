@@ -1,16 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
-Date: Fri, 24 Feb 2012 14:02:01 +0000
-Message-ID: <20120224140200.GH5450@opensource.wolfsonmicro.com>
-References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [Q] ASoC: What's the real meaning of
+	SND_SOC_DAIFMT_NB_NF?
+Date: Fri, 24 Feb 2012 16:09:39 +0200
+Message-ID: <4F479A23.6010307@ti.com>
+References: <CACKLOr1sDSEFCiAsRO-vKrk7f+r=_Ex9irog1NKDmXn7LJFCDw@mail.gmail.com>
+	<20120223151934.GB4553@opensource.wolfsonmicro.com>
+	<CACKLOr23+DPp=XZ=RJEPgKYyvw3UOxkWR8xtzYG9Y9NWcicJSg@mail.gmail.com>
+	<20120223161446.GA7245@opensource.wolfsonmicro.com>
+	<CACKLOr10yUYpMSrebnLvMkc=XQLUXNDxwM+P6U8ysH_Xre3Tmw@mail.gmail.com>
+	<4F474B97.6020407@ti.com>
+	<CACKLOr14EHqGWcYCfLK0WXiVZsewDVyFPV2tpfYJK4tBZKMUXg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0537559209176091978=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E9D210428C
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 15:02:03 +0100 (CET)
-In-Reply-To: <1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id DAFD1104295
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 15:10:03 +0100 (CET)
+Received: by mail-lpp01m010-f45.google.com with SMTP id i5so3943984lah.18
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 06:09:43 -0800 (PST)
+In-Reply-To: <CACKLOr14EHqGWcYCfLK0WXiVZsewDVyFPV2tpfYJK4tBZKMUXg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,59 +30,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 02/24/2012 01:05 PM, javier Martin wrote:
+>> I don't think it is going to break. I would guess that the channels are
+>> swapped on these machines at the moment. If you correct the CPU dai
+>> driver the only thing that will happen is that the channels will jump in
+>> their correct place.
+> =
 
---===============0537559209176091978==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3VRmKSg17yJg2MZg"
-Content-Disposition: inline
+> That would be true for stereo. However, mono should not be working right =
+now.
 
+The notion of mono in I2S, Left/Right Justified formats is not really
+valid. They are stereo protocols by design. DSP_A/B is used with mono
+audio (which often referred as PCM).
+It is the responsibility of the codec/cpu drivers to interpret the
+standards correctly, and configure themselves accordingly. Take a look
+at the Wolfson codec documentation they are really good in this matter
+(what I2S, DSP/PCM, and other coding means in real life).
+You can look at the omap-mcbsp driver for an example, but configuring
+the FS/BC polarity in the format selection (without taking a look at the
+INV mask) does not seam to be correct.
 
---3VRmKSg17yJg2MZg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-- =
 
-On Fri, Feb 24, 2012 at 10:09:35PM +0800, Shawn Guo wrote:
-> This is the third series towards reusing fsl_ssi driver on device tree
-> based IMX platforms.  It makes a few cleanups on existing PowerPC code
-> to ease the later addition of an IMX machine driver that works on
-> fsl_ssi.
-
-Please don't post new threads as followups to old threads, it makes
-things harder to follow in threaded mail readers.
-
---3VRmKSg17yJg2MZg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPR5hNAAoJEBus8iNuMP3dEc8P/RPpZVB+GwWkJT7QPCPhKuvy
-xYoTBxlL679J+0ZxUIUf7nTXBAmw4we2LYR2eSh3aM9rtvUYyGLRvwhTR0Vs5XXQ
-yDtsuzcLUba4DtXfKoJx/uWPFUQ3IzQHbGBFFb0/09hbr7IlPJiKk5Yv+hAJ95BE
-qrju25aIYEte46GRzh5wMDtQ2lSH+VpdYg3cublUsqUEaHjQO/iE/mVyD78A6Phh
-m8pdZSBsoX853dfeLqtBkduka8++HihGGUVAKnSGQPlHDP8AWjRTQoDisBO7L7mL
-XhkxvtG5TrEsxBq9EFW9FaAgEaRyCaXleAMuxp3ljN/kvKhIEW5xLg2qsNBZHFRm
-5hmRoGTXNO4tJ3/S2c0CI0uzjsXcGy12FRB+Xl6hkCFXm+WBcZog38XDTY+90yup
-GUFj4SytHX0dk/t1w5GiqWscezJfz2yi17f1EXo2zIPe4nU5goPJcqp+MgLtmpQP
-T8mSdskaCGGTM3dugkBW153f1hsx+Xu90dX9VFaBpfkZRNyDjaP1mCajPw9QllDw
-3xhe5ngqBFlaLrgt2FuN0rqVap1lfsKJaxI6fQDW0NSOomioS5YJsTIaPdT6jC87
-B/ZeSvKV24iMNjq+lHHww4ZxmMGLsTdJr2VbRTeroAzSHBgT/DlG9DqMAj89+eH2
-5bH25XLXXZfWYhi53eCu
-=eIMq
------END PGP SIGNATURE-----
-
---3VRmKSg17yJg2MZg--
-
---===============0537559209176091978==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0537559209176091978==--
+P=E9ter
