@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/6] ASoC: fsl: check property 'compatible'
- for the machine name
-Date: Fri, 24 Feb 2012 14:12:07 +0000
-Message-ID: <20120224141207.GI5450@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
+Date: Fri, 24 Feb 2012 14:17:06 +0000
+Message-ID: <20120224141705.GJ5450@opensource.wolfsonmicro.com>
 References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
 	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-7-git-send-email-shawn.guo@linaro.org>
+	<20120224140200.GH5450@opensource.wolfsonmicro.com>
+	<20120224142342.GA16659@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8600684502241279663=="
+Content-Type: multipart/mixed; boundary="===============8913069723778992203=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A1FDE1042AE
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 15:12:09 +0100 (CET)
-In-Reply-To: <1330092582-21180-7-git-send-email-shawn.guo@linaro.org>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B9AE1042B5
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 15:17:08 +0100 (CET)
+In-Reply-To: <20120224142342.GA16659@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,59 +27,58 @@ Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-ar
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8600684502241279663==
+--===============8913069723778992203==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="itqfrb9Qq3wY07cp"
+	protocol="application/pgp-signature"; boundary="8jNwmpfkpox/fiJK"
 Content-Disposition: inline
 
 
---itqfrb9Qq3wY07cp
+--8jNwmpfkpox/fiJK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 24, 2012 at 10:09:41PM +0800, Shawn Guo wrote:
-> The fsl_ssi probe function detects the client machine name using model
-> property of the device tree.  But it will not work for the ARM client
-> machines which are to be added.  The model property is given as a
-> descriptive string on all ARM device tree (arch/arm/boot/*.dts).
-> Instead, the compatible property gives the machine name.
+On Fri, Feb 24, 2012 at 10:23:45PM +0800, Shawn Guo wrote:
+> On Fri, Feb 24, 2012 at 02:02:01PM +0000, Mark Brown wrote:
 
-The ARM machines really shouldn't be using the bindings that PowerPC is
-using for the machine as they conflate the machine driver with the SSI
-binding.  The idiom for new systems is that machine drivers should be
-first class devices in the device tree referencing the SSI and CODEC.
+> > Please don't post new threads as followups to old threads, it makes
+> > things harder to follow in threaded mail readers.
 
-The current bindings should be preserved for existing systems of course.
+> I did that because they are a big series, though some of the patches
+> can be standalone.
 
---itqfrb9Qq3wY07cp
+That doesn't seem to be related to my point?  I'm asking you to not
+reply to an old version of your patch series in order to post a new
+version of it, just post the new version.
+
+--8jNwmpfkpox/fiJK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPR5p5AAoJEBus8iNuMP3dCBIP/jKuuvK5WmoWE0rxLRIDMM4Y
-2nSAhdE5DycTNJetpCjQs0URkrCZB/KFNi/TEWB7q3QXEF3OVqOdi/+WLaFdjdCR
-3RWsJimIQ3aysQpOxgFqG2aNxX/gaXFPj1f0S7Zb6D8MeDMxIJywW62+jpMxhTZe
-cYMMq1nbb16Y5mMMNT3y9cQBD9c8TRR28Hmd/Wo2fd/A8Ze5xoCZr0hYO9bSqTON
-NTXtPGIJedt1RtQXvz94YvWnUsdMwajpF1POlQtxeYBjZQyBXuaRcEK8oTSWOsqK
-T6SYGAVX8WRaKBhxfXGQYUvCtRzfKOq+zVyJq+nRbzzKoWCuowzwc2rGUcLyEapZ
-3hBvlXI5NQQ2dnr4C5zADmuv6CixDivu5XV+GHJRlmif8zh+WQIr3sNAhdyYNE3C
-aBxOSVhjYq8KOPFxTI+DRSREr8LAbqsdhfWv1qHEPnSaQtRfCm5PpCx4cpqfzdNU
-q6b73ABnD3PFdIwyzZySaO+KZpBQr6bP70Z314G07SPInZClpMQpEcViMtz79IfM
-nZoIOON7CB9mK6dbURCmx5tb3kCygTjrNkx1f+/tIZ3irCSmA6ZiRtxr2cxTFrT4
-lF4SMU0EvSKJyHqyqbQyPYWVMGRogRJ6hSxNExbDcbDCXn2RSWS8gPilZHjJZTz6
-7YFy/JJq4ZFHT3/djKEp
-=8xcN
+iQIcBAEBAgAGBQJPR5vbAAoJEBus8iNuMP3dKlEQAJORgAA81JOPxKjdEczC9UGl
+i0IjmCwUqesLvMbC8eVicm9BubMl5HrMd+Jsl0ReZNg9Vairi2y0OwxaYIYr5W+I
+bGB/pIOn/6JrqGpd/XVBn676/2LYtNt9gu8x3IXUdAib2YexxQ4+XDUrD1tky8ub
+rXJs3YnA3knbrLXauQODRYCBht/toFDqeosNB3OusLqckOQDD+wKzH3CuSxOKlmL
+qLtBVWR8ZojjWhmSE/Ie7fr1Q4EpLui6KXcVN7d+MyPk1duuGhDfIQgbMYL2Bb0k
+IxOS92xC8tx4QRgkntldj1+ld0MshN3O6EOX5OFCGi6y/Z35eGH8pxe16n/Aiveq
+0wV5HBVP3vvnqwTQqfVjW63qFvz/3u2Pr0DCkOoOW1rI/FbRkwCLrHW1a0nd3LZc
+W3HYpmSC07HMphZWEoBSHxg4sK2jI1f5kU6qr6P6s3AlwiKXjX4NXNka7pVPyLmE
+yZGvSStMk94Dq8Im9VHLUEgfDePfIMOfN+rE4F6m1ALifY/5KwMo7sQgzqp4u9mL
+dlHkJskjBg2t4JUHAXkH/V+8LAuVKEh1ja5njOykdO6dnjQZzCH0vXG0RVAHqQ7v
+Y2iAk3n2YiBFS4qQBdIDaDAun9WahE3lX8tH7R/NKrdAW958Zg9kVb7ISD7bPAT0
+xfrQZTfsU8FHBAA/k0oH
+=cIEg
 -----END PGP SIGNATURE-----
 
---itqfrb9Qq3wY07cp--
+--8jNwmpfkpox/fiJK--
 
---===============8600684502241279663==
+--===============8913069723778992203==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8600684502241279663==--
+--===============8913069723778992203==--
