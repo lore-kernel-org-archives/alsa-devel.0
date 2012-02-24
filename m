@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 32/38] ALSA: hda/realtek - Remove the last
-	static quirks for ALC882
-Date: Fri, 24 Feb 2012 17:36:25 +0100
-Message-ID: <1330101391-8788-33-git-send-email-tiwai@suse.de>
+Subject: [PATCH 30/38] ALSA: hda/realtek - Drop all ALC880
+	static quirks
+Date: Fri, 24 Feb 2012 17:36:23 +0100
+Message-ID: <1330101391-8788-31-git-send-email-tiwai@suse.de>
 References: <1330101391-8788-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D31510B8C0
+	by alsa0.perex.cz (Postfix) with ESMTP id 5888A10431C
 	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 17:36:34 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id ABF8B92B66
+	by mx2.suse.de (Postfix) with ESMTP id 82BDF91B41
 	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 17:36:33 +0100 (CET)
 In-Reply-To: <1330101391-8788-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -29,198 +29,239 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Resitance is futile.  The remaining static model quirks for Apple
-machines with ALC882-compatible codecs are converted to the auto-parser
-now.  We can remove all alc*_quirks.c finally.
+Finally the all static quirks for ALC880 are converted to the
+auto-parser.  Since we are never sure whether the BIOS on so many old
+machines are really correct, the quirk table entries are copied as
+they are, but just providing the proper pin-config values
+accordingly.
+
+Since alc880_quirks.c is removed, alc882_quirks.c has to be adjusted
+slightly to be built again.  There might be some compile warnings due
+to the remaining alc882 quirks, but these shall be killed sooner or
+later, I don't care it much at this point.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c |  143 ++++++++++++++++++++++++++---------------
- 1 files changed, 92 insertions(+), 51 deletions(-)
+ sound/pci/hda/patch_realtek.c |  219 +++++++++++++++++++++++++++++++++--------
+ 1 files changed, 179 insertions(+), 40 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3c6f5b5..c5216b5 100644
+index fce31b0..4ac1e38 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -4808,21 +4808,6 @@ static const struct alc_model_fixup alc880_fixup_models[] = {
- 
- 
- /*
-- * board setups
-- */
--#ifdef CONFIG_SND_HDA_ENABLE_REALTEK_QUIRKS
--#define alc_board_config \
--	snd_hda_check_board_config
--#define alc_board_codec_sid_config \
--	snd_hda_check_board_codec_sid_config
--#include "alc_quirks.c"
--#else
--#define alc_board_config(codec, nums, models, tbl)	-1
--#define alc_board_codec_sid_config(codec, nums, models, tbl)	-1
--#define setup_preset(codec, x)	/* NOP */
--#endif
--
--/*
-  * OK, here we have finally the patch for ALC880
-  */
- static int patch_alc880(struct hda_codec *codec)
-@@ -5091,6 +5076,8 @@ enum {
- 	ALC882_FIXUP_EAPD,
- 	ALC883_FIXUP_EAPD,
- 	ALC883_FIXUP_ACER_EAPD,
-+	ALC882_FIXUP_GPIO1,
-+	ALC882_FIXUP_GPIO2,
- 	ALC882_FIXUP_GPIO3,
- 	ALC889_FIXUP_COEF,
- 	ALC882_FIXUP_ASUS_W2JC,
-@@ -5099,6 +5086,8 @@ enum {
- 	ALC882_FIXUP_ASPIRE_8930G_VERBS,
- 	ALC885_FIXUP_MACPRO_GPIO,
- 	ALC889_FIXUP_DAC_ROUTE,
-+	ALC889_FIXUP_MBP_VREF,
-+	ALC889_FIXUP_IMAC91_VREF,
+@@ -4451,6 +4451,15 @@ enum {
+ 	ALC880_FIXUP_UNIWILL,
+ 	ALC880_FIXUP_UNIWILL_DIG,
+ 	ALC880_FIXUP_Z71V,
++	ALC880_FIXUP_3ST_BASE,
++	ALC880_FIXUP_3ST,
++	ALC880_FIXUP_3ST_DIG,
++	ALC880_FIXUP_5ST_BASE,
++	ALC880_FIXUP_5ST,
++	ALC880_FIXUP_5ST_DIG,
++	ALC880_FIXUP_6ST_BASE,
++	ALC880_FIXUP_6ST,
++	ALC880_FIXUP_6ST_DIG,
  };
  
- static void alc889_fixup_coef(struct hda_codec *codec,
-@@ -5169,6 +5158,51 @@ static void alc889_fixup_dac_route(struct hda_codec *codec,
- 	}
- }
- 
-+/* Set VREF on HP pin */
-+static void alc889_fixup_mbp_vref(struct hda_codec *codec,
-+				  const struct alc_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	static hda_nid_t nids[2] = { 0x14, 0x15 };
-+	int i;
-+
-+	if (action != ALC_FIXUP_ACT_INIT)
-+		return;
-+	for (i = 0; i < ARRAY_SIZE(nids); i++) {
-+		unsigned int val = snd_hda_codec_get_pincfg(codec, nids[i]);
-+		if (get_defcfg_device(val) != AC_JACK_HP_OUT)
-+			continue;
-+		val = snd_hda_codec_read(codec, nids[i], 0,
-+					 AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		val |= AC_PINCTL_VREF_80;
-+		snd_hda_codec_write(codec, nids[i], 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL, val);
-+		spec->keep_vref_in_automute = 1;
-+		break;
-+	}
-+}
-+
-+/* Set VREF on speaker pins on imac91 */
-+static void alc889_fixup_imac91_vref(struct hda_codec *codec,
-+				     const struct alc_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	static hda_nid_t nids[2] = { 0x18, 0x1a };
-+	int i;
-+
-+	if (action != ALC_FIXUP_ACT_INIT)
-+		return;
-+	for (i = 0; i < ARRAY_SIZE(nids); i++) {
-+		unsigned int val;
-+		val = snd_hda_codec_read(codec, nids[i], 0,
-+					 AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		val |= AC_PINCTL_VREF_50;
-+		snd_hda_codec_write(codec, nids[i], 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL, val);
-+	}
-+	spec->keep_vref_in_automute = 1;
-+}
-+
- static const struct alc_fixup alc882_fixups[] = {
- 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
- 		.type = ALC_FIXUP_PINS,
-@@ -5247,6 +5281,14 @@ static const struct alc_fixup alc882_fixups[] = {
+ /* enable the volume-knob widget support on NID 0x21 */
+@@ -4603,6 +4612,114 @@ static const struct alc_fixup alc880_fixups[] = {
  			{ }
  		}
  	},
-+	[ALC882_FIXUP_GPIO1] = {
-+		.type = ALC_FIXUP_VERBS,
-+		.v.verbs = alc_gpio1_init_verbs,
++	[ALC880_FIXUP_3ST_BASE] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x14, 0x01014010 }, /* line-out */
++			{ 0x15, 0x411111f0 }, /* N/A */
++			{ 0x16, 0x411111f0 }, /* N/A */
++			{ 0x17, 0x411111f0 }, /* N/A */
++			{ 0x18, 0x01a19c30 }, /* mic-in */
++			{ 0x19, 0x0121411f }, /* HP */
++			{ 0x1a, 0x01813031 }, /* line-in */
++			{ 0x1b, 0x02a19c40 }, /* front-mic */
++			{ 0x1c, 0x411111f0 }, /* N/A */
++			{ 0x1d, 0x411111f0 }, /* N/A */
++			/* 0x1e is filled in below */
++			{ 0x1f, 0x411111f0 }, /* N/A */
++			{ }
++		}
 +	},
-+	[ALC882_FIXUP_GPIO2] = {
-+		.type = ALC_FIXUP_VERBS,
-+		.v.verbs = alc_gpio2_init_verbs,
-+	},
- 	[ALC882_FIXUP_GPIO3] = {
- 		.type = ALC_FIXUP_VERBS,
- 		.v.verbs = alc_gpio3_init_verbs,
-@@ -5320,6 +5362,18 @@ static const struct alc_fixup alc882_fixups[] = {
- 		.type = ALC_FIXUP_FUNC,
- 		.v.func = alc889_fixup_dac_route,
- 	},
-+	[ALC889_FIXUP_MBP_VREF] = {
-+		.type = ALC_FIXUP_FUNC,
-+		.v.func = alc889_fixup_mbp_vref,
++	[ALC880_FIXUP_3ST] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x1e, 0x411111f0 }, /* N/A */
++			{ }
++		},
 +		.chained = true,
-+		.chain_id = ALC882_FIXUP_GPIO1,
++		.chain_id = ALC880_FIXUP_3ST_BASE,
 +	},
-+	[ALC889_FIXUP_IMAC91_VREF] = {
-+		.type = ALC_FIXUP_FUNC,
-+		.v.func = alc889_fixup_imac91_vref,
++	[ALC880_FIXUP_3ST_DIG] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x1e, 0x0144111e }, /* SPDIF */
++			{ }
++		},
 +		.chained = true,
-+		.chain_id = ALC882_FIXUP_GPIO1,
++		.chain_id = ALC880_FIXUP_3ST_BASE,
++	},
++	[ALC880_FIXUP_5ST_BASE] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x14, 0x01014010 }, /* front */
++			{ 0x15, 0x411111f0 }, /* N/A */
++			{ 0x16, 0x01011411 }, /* CLFE */
++			{ 0x17, 0x01016412 }, /* surr */
++			{ 0x18, 0x01a19c30 }, /* mic-in */
++			{ 0x19, 0x0121411f }, /* HP */
++			{ 0x1a, 0x01813031 }, /* line-in */
++			{ 0x1b, 0x02a19c40 }, /* front-mic */
++			{ 0x1c, 0x411111f0 }, /* N/A */
++			{ 0x1d, 0x411111f0 }, /* N/A */
++			/* 0x1e is filled in below */
++			{ 0x1f, 0x411111f0 }, /* N/A */
++			{ }
++		}
++	},
++	[ALC880_FIXUP_5ST] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x1e, 0x411111f0 }, /* N/A */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC880_FIXUP_5ST_BASE,
++	},
++	[ALC880_FIXUP_5ST_DIG] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x1e, 0x0144111e }, /* SPDIF */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC880_FIXUP_5ST_BASE,
++	},
++	[ALC880_FIXUP_6ST_BASE] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x14, 0x01014010 }, /* front */
++			{ 0x15, 0x01016412 }, /* surr */
++			{ 0x16, 0x01011411 }, /* CLFE */
++			{ 0x17, 0x01012414 }, /* side */
++			{ 0x18, 0x01a19c30 }, /* mic-in */
++			{ 0x19, 0x02a19c40 }, /* front-mic */
++			{ 0x1a, 0x01813031 }, /* line-in */
++			{ 0x1b, 0x0121411f }, /* HP */
++			{ 0x1c, 0x411111f0 }, /* N/A */
++			{ 0x1d, 0x411111f0 }, /* N/A */
++			/* 0x1e is filled in below */
++			{ 0x1f, 0x411111f0 }, /* N/A */
++			{ }
++		}
++	},
++	[ALC880_FIXUP_6ST] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x1e, 0x411111f0 }, /* N/A */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC880_FIXUP_6ST_BASE,
++	},
++	[ALC880_FIXUP_6ST_DIG] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x1e, 0x0144111e }, /* SPDIF */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC880_FIXUP_6ST_BASE,
 +	},
  };
  
- static const struct snd_pci_quirk alc882_fixup_tbl[] = {
-@@ -5353,11 +5407,26 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x104d, 0x9047, "Sony Vaio TT", ALC889_FIXUP_VAIO_TT),
+ static const struct snd_pci_quirk alc880_fixup_tbl[] = {
+@@ -4625,6 +4742,60 @@ static const struct snd_pci_quirk alc880_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1854, 0x005f, "LG P1 Express", ALC880_FIXUP_LG),
+ 	SND_PCI_QUIRK(0x1854, 0x0068, "LG w1", ALC880_FIXUP_LG),
+ 	SND_PCI_QUIRK(0x19db, 0x4188, "TCL S700", ALC880_FIXUP_TCL_S700),
++
++	/* Below is the copied entries from alc880_quirks.c.
++	 * It's not quite sure whether BIOS sets the correct pin-config table
++	 * on these machines, thus they are kept to be compatible with
++	 * the old static quirks.  Once when it's confirmed to work without
++	 * these overrides, it'd be better to remove.
++	 */
++	SND_PCI_QUIRK(0x1019, 0xa880, "ECS", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x1019, 0xa884, "Acer APFV", ALC880_FIXUP_6ST),
++	SND_PCI_QUIRK(0x1025, 0x0070, "ULI", ALC880_FIXUP_3ST_DIG),
++	SND_PCI_QUIRK(0x1025, 0x0077, "ULI", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1025, 0x0078, "ULI", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1025, 0x0087, "ULI", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1025, 0xe309, "ULI", ALC880_FIXUP_3ST_DIG),
++	SND_PCI_QUIRK(0x1025, 0xe310, "ULI", ALC880_FIXUP_3ST),
++	SND_PCI_QUIRK(0x1039, 0x1234, NULL, ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x104d, 0x81a0, "Sony", ALC880_FIXUP_3ST),
++	SND_PCI_QUIRK(0x104d, 0x81d6, "Sony", ALC880_FIXUP_3ST),
++	SND_PCI_QUIRK(0x107b, 0x3032, "Gateway", ALC880_FIXUP_5ST),
++	SND_PCI_QUIRK(0x107b, 0x3033, "Gateway", ALC880_FIXUP_5ST),
++	SND_PCI_QUIRK(0x107b, 0x4039, "Gateway", ALC880_FIXUP_5ST),
++	SND_PCI_QUIRK(0x1297, 0xc790, "Shuttle ST20G5", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1458, 0xa102, "Gigabyte K8", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1462, 0x1150, "MSI", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1509, 0x925d, "FIC P4M", ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x1565, 0x8202, "Biostar", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x1695, 0x400d, "EPoX", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x1695, 0x4012, "EPox EP-5LDA", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x2668, 0x8086, NULL, ALC880_FIXUP_6ST_DIG), /* broken BIOS */
++	SND_PCI_QUIRK(0x8086, 0x2668, NULL, ALC880_FIXUP_6ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xa100, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xd400, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xd401, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xd402, "Intel mobo", ALC880_FIXUP_3ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xe224, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xe305, "Intel mobo", ALC880_FIXUP_3ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xe308, "Intel mobo", ALC880_FIXUP_3ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xe400, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xe401, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0x8086, 0xe402, "Intel mobo", ALC880_FIXUP_5ST_DIG),
++	/* default Intel */
++	SND_PCI_QUIRK_VENDOR(0x8086, "Intel mobo", ALC880_FIXUP_3ST),
++	SND_PCI_QUIRK(0xa0a0, 0x0560, "AOpen i915GMm-HFS", ALC880_FIXUP_5ST_DIG),
++	SND_PCI_QUIRK(0xe803, 0x1019, NULL, ALC880_FIXUP_6ST_DIG),
++	{}
++};
++
++static const struct alc_model_fixup alc880_fixup_models[] = {
++	{.id = ALC880_FIXUP_3ST, .name = "3stack"},
++	{.id = ALC880_FIXUP_3ST_DIG, .name = "3stack-digout"},
++	{.id = ALC880_FIXUP_5ST, .name = "5stack"},
++	{.id = ALC880_FIXUP_5ST_DIG, .name = "5stack-digout"},
++	{.id = ALC880_FIXUP_6ST, .name = "6stack"},
++	{.id = ALC880_FIXUP_6ST_DIG, .name = "6stack-digout"},
+ 	{}
+ };
  
- 	/* All Apple entries are in codec SSIDs */
-+	SND_PCI_QUIRK(0x106b, 0x00a0, "MacBookPro 3,1", ALC889_FIXUP_MBP_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x00a1, "Macbook", ALC889_FIXUP_MBP_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x00a4, "MacbookPro 4,1", ALC889_FIXUP_MBP_VREF),
- 	SND_PCI_QUIRK(0x106b, 0x0c00, "Mac Pro", ALC885_FIXUP_MACPRO_GPIO),
- 	SND_PCI_QUIRK(0x106b, 0x1000, "iMac 24", ALC885_FIXUP_MACPRO_GPIO),
- 	SND_PCI_QUIRK(0x106b, 0x2800, "AppleTV", ALC885_FIXUP_MACPRO_GPIO),
-+	SND_PCI_QUIRK(0x106b, 0x2c00, "MacbookPro rev3", ALC889_FIXUP_MBP_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x3000, "iMac", ALC889_FIXUP_MBP_VREF),
- 	SND_PCI_QUIRK(0x106b, 0x3200, "iMac 7,1 Aluminum", ALC882_FIXUP_EAPD),
-+	SND_PCI_QUIRK(0x106b, 0x3400, "MacBookAir 1,1", ALC889_FIXUP_MBP_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x3500, "MacBookAir 2,1", ALC889_FIXUP_MBP_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x3600, "Macbook 3,1", ALC889_FIXUP_MBP_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x3800, "MacbookPro 4,1", ALC889_FIXUP_MBP_VREF),
- 	SND_PCI_QUIRK(0x106b, 0x3e00, "iMac 24 Aluminum", ALC885_FIXUP_MACPRO_GPIO),
-+	SND_PCI_QUIRK(0x106b, 0x3f00, "Macbook 5,1", ALC889_FIXUP_IMAC91_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC889_FIXUP_IMAC91_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC889_FIXUP_IMAC91_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC889_FIXUP_IMAC91_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x4900, "iMac 9,1 Aluminum", ALC889_FIXUP_IMAC91_VREF),
-+	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_IMAC91_VREF),
- 
- 	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
-@@ -5382,14 +5451,10 @@ static int alc882_parse_auto_config(struct hda_codec *codec)
- 
+@@ -4647,14 +4818,9 @@ static const struct snd_pci_quirk alc880_fixup_tbl[] = {
  /*
+  * OK, here we have finally the patch for ALC880
   */
 -#ifdef CONFIG_SND_HDA_ENABLE_REALTEK_QUIRKS
--#include "alc882_quirks.c"
+-#include "alc880_quirks.c"
 -#endif
 -
- static int patch_alc882(struct hda_codec *codec)
+ static int patch_alc880(struct hda_codec *codec)
  {
  	struct alc_spec *spec;
--	int err, board_config;
-+	int err;
+-	int board_config;
+ 	int err;
  
  	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
- 	if (spec == NULL)
-@@ -5413,36 +5478,15 @@ static int patch_alc882(struct hda_codec *codec)
- 	if (err < 0)
- 		goto error;
+@@ -4666,38 +4832,14 @@ static int patch_alc880(struct hda_codec *codec)
+ 	spec->mixer_nid = 0x0b;
+ 	spec->need_dac_fix = 1;
  
--	board_config = alc_board_config(codec, ALC882_MODEL_LAST,
--					alc882_models, NULL);
--	if (board_config < 0)
--		board_config = alc_board_codec_sid_config(codec,
--			ALC882_MODEL_LAST, alc882_models, alc882_ssid_cfg_tbl);
--
+-	board_config = alc_board_config(codec, ALC880_MODEL_LAST,
+-					alc880_models, alc880_cfg_tbl);
 -	if (board_config < 0) {
 -		printk(KERN_INFO "hda_codec: %s: BIOS auto-probing.\n",
 -		       codec->chip_name);
@@ -228,33 +269,40 @@ index 3c6f5b5..c5216b5 100644
 -	}
 -
 -	if (board_config == ALC_MODEL_AUTO) {
--		alc_pick_fixup(codec, NULL, alc882_fixup_tbl, alc882_fixups);
+-		alc_pick_fixup(codec, NULL, alc880_fixup_tbl, alc880_fixups);
 -		alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
 -	}
-+	alc_pick_fixup(codec, NULL, alc882_fixup_tbl, alc882_fixups);
-+	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
- 
- 	alc_auto_parse_customize_define(codec);
- 
+-
 -	if (board_config == ALC_MODEL_AUTO) {
 -		/* automatic parse from the BIOS config */
--		err = alc882_parse_auto_config(codec);
+-		err = alc880_parse_auto_config(codec);
 -		if (err < 0)
 -			goto error;
+-#ifdef CONFIG_SND_HDA_ENABLE_REALTEK_QUIRKS
+-		else if (!err) {
+-			printk(KERN_INFO
+-			       "hda_codec: Cannot set up configuration "
+-			       "from BIOS.  Using 3-stack mode...\n");
+-			board_config = ALC880_3ST;
+-		}
+-#endif
 -	}
--
++	alc_pick_fixup(codec, alc880_fixup_models, alc880_fixup_tbl,
++		       alc880_fixups);
++	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
+ 
 -	if (board_config != ALC_MODEL_AUTO) {
--		setup_preset(codec, &alc882_presets[board_config]);
 -		spec->vmaster_nid = 0x0c;
+-		setup_preset(codec, &alc880_presets[board_config]);
 -	}
 +	/* automatic parse from the BIOS config */
-+	err = alc882_parse_auto_config(codec);
++	err = alc880_parse_auto_config(codec);
 +	if (err < 0)
 +		goto error;
  
  	if (!spec->no_analog && !spec->adc_nids) {
  		alc_auto_fill_adc_caps(codec);
-@@ -5461,10 +5505,7 @@ static int patch_alc882(struct hda_codec *codec)
+@@ -4716,10 +4858,7 @@ static int patch_alc880(struct hda_codec *codec)
  	}
  
  	codec->patch_ops = alc_patch_ops;
@@ -263,8 +311,8 @@ index 3c6f5b5..c5216b5 100644
 -	else
 -		codec->patch_ops.build_controls = __alc_build_controls;
 +	spec->init_hook = alc_auto_init_std;
- 
  #ifdef CONFIG_SND_HDA_POWER_SAVE
  	if (!spec->loopback.amplist)
+ 		spec->loopback.amplist = alc880_loopbacks;
 -- 
 1.7.9
