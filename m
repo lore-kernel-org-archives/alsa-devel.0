@@ -1,21 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: ALC892,
- Clevo P150HM: Input Source gets reset to "Mic" every resume
-Date: Fri, 24 Feb 2012 09:13:15 +0800
-Message-ID: <CAN8cciZfy6VfEFc4i8gZLvghdTiM5GVYS064gRWU-=5JtXLQeA@mail.gmail.com>
-References: <4EDA65A3.6090604@gmail.com>
-	<CAN8cciamS8VF+27CCvoriU6T1_NfjSNYTJG1iXDHeLqW==MW+A@mail.gmail.com>
-	<ji631h$sjt$1@dough.gmane.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/4] ASoC: imx: add an explicit Kconfig
+ option for imx-ssi driver
+Date: Fri, 24 Feb 2012 09:28:53 +0800
+Message-ID: <20120224012850.GA4441@S2101-09.ap.freescale.net>
+References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-1-git-send-email-shawn.guo@linaro.org>
+	<1330008519-3584-2-git-send-email-shawn.guo@linaro.org>
+	<4F465DD0.1020304@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1339C24348
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 02:13:18 +0100 (CET)
-Received: by wera1 with SMTP id a1so1229404wer.38
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 17:13:16 -0800 (PST)
-In-Reply-To: <ji631h$sjt$1@dough.gmane.org>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2475E24348
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2012 02:15:20 +0100 (CET)
+Received: by pbcxa12 with SMTP id xa12so374747pbc.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2012 17:15:20 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <4F465DD0.1020304@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,114 +27,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julian Sikorski <belegdol@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/2/24, Julian Sikorski <belegdol@gmail.com>:
-> W dniu 09.12.2011 14:32, Raymond Yau pisze:
->> 2011/12/4 Julian Sikorski <belegdol@gmail.com>:
->>> Hi,
->>>
->>> whenever I resume the machine, the Input Source would get changed back
->>> from "Internal Mic" to "Mic". This is a bit annoying, because pulseaudio
->>> is unaware of that change. As a result, everything looks fine in
->>> pavucontrol but no sound gets recorded. A quick look at alsamixer -c0
->>> revealed the problem. My alsa info:
->>>
->>> http://www.alsa-project.org/db/?f=c5776b615a5f3b9ae624e4250fb0c2b69118ce26
->>>
->>> This is unrelated to the other problems I have been reporting, since
->>> this happens on a mostly-stock Fedora 3.1.2 kernel (the patch I added
->>> deals with xhci, not alsa).
->>
->> The problem seem can be reproduced by using hda-emu,
->> it is init_capsrc_for_pin() and alc_auto_init_input_src() write value
->> to cache before snd_hda_codec_resume_app() from cache
->>
->>
->>> get 28
->> 28 Input Source:0
->> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Mic]
->>> set 28 1
->> send: NID=0x23, VERB=0x360(set_amp_gain_mute,I:L#0), PARM=0x80
->> send: NID=0x23, VERB=0x350(set_amp_gain_mute,I:R#0), PARM=0x80
->> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x0
->> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x0
->>> get 28
->> 28 Input Source:0
->> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Internal Mic]
->>
->> pm
->> ** SUSPENDING **
->> ...
->> ** RESUMING **
->> PM-Notified
->> ...
->> exec_init_verbs
->> ...
->>
->> init_capsrc_for_pin 18
->> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x0
->> receive: 0x0
->> send: NID=0x23, VERB=0xb00(get_amp_gain_mute,I:R#0), PARM=0x0
->> receive: 0x0
->> init capsrc for pin 19
->> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x1
->> receive: 0x80
->> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x0
->> send: NID=0x23, VERB=0xb00(get_amp_gain_mute,I:R#0), PARM=0x1
->> receive: 0x80
->> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x0
->> init capsrc for pin 1a
->> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x2
->> receive: 0x80
->> send: NID=0x23, VERB=0x362(set_amp_gain_mute,I:L#2), PARM=0x0
->>
->> alc_auto_init_input_src
->> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x80
->> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x80
->> send: NID=0x23, VERB=0x362(set_amp_gain_mute,I:L#2), PARM=0x80
->> send: NID=0x23, VERB=0x352(set_amp_gain_mute,I:R#2), PARM=0x80
->>
->> snd_hda_codec_resume_app
->> send: NID=0x23, VERB=0x363(set_amp_gain_mute,I:L#3), PARM=0x80
->> send: NID=0x23, VERB=0x353(set_amp_gain_mute,I:R#3), PARM=0x80
->> send: NID=0x23, VERB=0x364(set_amp_gain_mute,I:L#4), PARM=0x80
->> send: NID=0x23, VERB=0x354(set_amp_gain_mute,I:R#4), PARM=0x80
->> send: NID=0x23, VERB=0x365(set_amp_gain_mute,I:L#5), PARM=0x80
->> send: NID=0x23, VERB=0x355(set_amp_gain_mute,I:R#5), PARM=0x80
->> send: NID=0x23, VERB=0x366(set_amp_gain_mute,I:L#6), PARM=0x80
->> send: NID=0x23, VERB=0x356(set_amp_gain_mute,I:R#6), PARM=0x80
->> send: NID=0x23, VERB=0x367(set_amp_gain_mute,I:L#7), PARM=0x80
->> send: NID=0x23, VERB=0x357(set_amp_gain_mute,I:R#7), PARM=0x80
->> send: NID=0x23, VERB=0x368(set_amp_gain_mute,I:L#8), PARM=0x80
->> send: NID=0x23, VERB=0x358(set_amp_gain_mute,I:R#8), PARM=0x80
->> send: NID=0x23, VERB=0x369(set_amp_gain_mute,I:L#9), PARM=0x80
->> send: NID=0x23, VERB=0x359(set_amp_gain_mute,I:R#9), PARM=0x80
->> send: NID=0x23, VERB=0x36a(set_amp_gain_mute,I:L#10), PARM=0x80
->> send: NID=0x23, VERB=0x35a(set_amp_gain_mute,I:R#10), PARM=0x80
->> ...
->>
->>> get 28
->> 28 Input Source:0
->> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Mic]
-> The problem still exists in 3.2.7-1.fc16.x86_64 kernel, is there any
-> chance for a fix?
->
-> Julian
+On Thu, Feb 23, 2012 at 09:40:00AM -0600, Timur Tabi wrote:
+> Shawn Guo wrote:
+> 
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> 
+> Since when do you work for Linaro?
+> 
+Since one year ago, as Freescale assignee to Linaro.  So I'm still
+employed by Freescale.
 
-A dirty hack is to swap the order of the external mic and internal mic
-at the end of sort_autocfg_input_pins()
+> > ---
+> >  sound/soc/imx/Kconfig  |    7 +++++++
+> >  sound/soc/imx/Makefile |    4 ++--
+> >  2 files changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
+> > index 863a6b4..b9de8a8 100644
+> > --- a/sound/soc/imx/Kconfig
+> > +++ b/sound/soc/imx/Kconfig
+> > @@ -8,6 +8,9 @@ menuconfig SND_IMX_SOC
+> >  
+> >  if SND_IMX_SOC
+> >  
+> > +config SND_SOC_IMX_SSI
+> > +	tristate
+> > +
+> 
+> I was hoping to see sound/soc/imx disappear completely, and all IMX
+> support move into sound/soc/fsl.  After all, i.MX is a Freescale name.
+> 
+That's what I'm doing.  But to be clear, imx-ssi driver will still
+exist for all those non-DT i.MX platforms.  We are supporting DT for
+imx5 and imx6, but have not seen a plan to migrate all those old i.MX
+platforms to DT.
 
-
-+	if (cfg->num_inputs > 1) {
-+		struct auto_pin_cfg_item tmp;
-+		tmp = cfg->inputs[0];
-+		cfg->inputs[0] = cfg->inputs[1];
-+		cfg->inputs[1] = tmp;
-+	}
-
-
-25 Input Source:0
-ITEM: 0:Internal Mic, 1:Mic, 2:Line, VAL: [Internal Mic]
+-- 
+Regards,
+Shawn
