@@ -1,22 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/6] ASoC: fsl: check property 'compatible'
- for the machine name
-Date: Sat, 25 Feb 2012 13:27:06 +0000
-Message-ID: <20120225132705.GA3412@opensource.wolfsonmicro.com>
-References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-7-git-send-email-shawn.guo@linaro.org>
-	<20120224141207.GI5450@opensource.wolfsonmicro.com>
-	<20120225012845.GF24268@S2101-09.ap.freescale.net>
-	<20120225114227.GB3167@opensource.wolfsonmicro.com>
-	<20120225130943.GB25201@S2101-09.ap.freescale.net>
+Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
+Date: Sat, 25 Feb 2012 13:58:43 +0000
+Message-ID: <20120225135842.GB3412@opensource.wolfsonmicro.com>
+References: <20120224140200.GH5450@opensource.wolfsonmicro.com>
+	<20120224142342.GA16659@S2101-09.ap.freescale.net>
+	<20120224141705.GJ5450@opensource.wolfsonmicro.com>
+	<20120224232148.GA24268@S2101-09.ap.freescale.net>
+	<4F4819C4.5040709@freescale.com>
+	<20120225000319.GC24268@S2101-09.ap.freescale.net>
+	<4F483BB8.7030706@freescale.com>
+	<20120225101758.GJ22562@n2100.arm.linux.org.uk>
+	<20120225114414.GC3167@opensource.wolfsonmicro.com>
+	<20120225121217.GK22562@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7367500873402114493=="
+Content-Type: multipart/mixed; boundary="===============0790791387978364515=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04540103CE8
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 14:27:10 +0100 (CET)
-In-Reply-To: <20120225130943.GB25201@S2101-09.ap.freescale.net>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F382103CEC
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 14:58:48 +0100 (CET)
+In-Reply-To: <20120225121217.GK22562@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,97 +28,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7367500873402114493==
+--===============0790791387978364515==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
 Content-Disposition: inline
 
 
---RnlQjJ0d97Da+TV1
+--mojUlQ0s9EVzWg2t
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Feb 25, 2012 at 09:09:53PM +0800, Shawn Guo wrote:
+On Sat, Feb 25, 2012 at 12:12:17PM +0000, Russell King - ARM Linux wrote:
 
-> DT aware IMX platforms.  From his POV, one big reason of why imx-ssi
-> was created is that ARM/IMX did not support DT before while fsl_ssi was
-> born to support DT only.  Since ARM/IMX starts supporting DT, fsl_ssi
-> should be reused there.
+> Take a look at the diffstat, and you'll see that there's no way that it's
+> a "new version of the same patch set".  Tell me, how can the set of six
 
-No, that's not really a major reason - the big issue was more the lack
-of any support from Freescale for the i.MX in mainline at that time and
-the lack of any information on the similarities or differences between
-the IP implementations in the two processor families, there's quite a
-few quirks in the SSI register interface and it wasn't clear what was
-shared and what wasn't.  It was more important to get things working in
-mainline, the hope was that someone would come along later and merge if
-that was possible (which you're now doing!).
+Yeah, sorry - I misremembered the specific reason they were related when
+I replied to you.
 
-> I'm personally fine with either reusing fsl_ssi or adding DT support
-> into imx-ssi.  I do not see any problem with reusing fsl_ssi so far,
-> but I can quickly turn around to adding new binding for imx-ssi if
-> you are strong on this position.
+> And if you bother to read Shawn's reply to your question, you'll see that
+> the whole reason he grouped the two together is because they follow on
+> from each other.
 
-Nobody's suggesting that they don't get merged if they really are the
-same IP and can use the same code.  The device tree bindings are (and
-should be) a really small proportion of the code.
+No, I understand that the patch sets are related, like I say I had
+misremembered the relation when replying to you.
 
-> > Note that it's purely the bit where the machine driver is instantiated
-> > from the SSI (which is just one or two of several properties) that I'm
-> > talking about here, the bindings for the SSI itself look good.
+> So my point that you're not listening stands.
 
-> Hmm, there is no SSI binding property contributing to instantiating
-> the machine driver.  It looks /model property for the device name used
-> to instantiate the machine driver, which I personally think is fine.
+I am, what I'm asking is that people don't send new patch sets in reply
+to old ones even if they are related as while the thought is good in
+that case the software tends not to do a great job with it.  Either just
+mentioning things in the cover letter or resending the previous stuff as
+part of a new, combined series tends to work better.
 
-The CODEC binding for the machine driver is part of the SSI binding, and
-a mandatory one at that.  It looks like the code should be refactored to
-register the SSI unconditionally and then optionally also register a
-machine driver if there's a CODEC property present.  That way existing
-systems should continue to work fine with their current bindings and new
-ones can use the modern binding style.
-
-Just using the plain machine name can get a bit inconvenient when you
-get reference designs cloned which share the audio but differ in other
-ways - the nVidia WM8903 driver is a good example of this, there's a
-large number of boards that are definitely distinct boards but are very
-similar from an audio point of view.  You'd have to add all the
-machines to the machine driver compatible list.
-
---RnlQjJ0d97Da+TV1
+--mojUlQ0s9EVzWg2t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPSOGjAAoJEBus8iNuMP3dF6YP/1DCW4DoMa17qOiT2qBxQKQs
-Ydaq8dNRjffzrwf1HqUF88/v2ZdvZUNcpHq/u+/44qcysmiicjsUlSYSlz6oUEBm
-5Me0cHoK28upiZ53iFc1rBgoiPzpjQ3XLAx2eFSqdk7UaWPFbDwGmeCw9ZhS7gIc
-/TrvRtIl3o7ELKkfFI7vfhM3khlHYLKwHXcRyFJkYoLsi1L4jdCLHjrhHD3x/YsA
-fPXRM3hXdYYeaN6bG/jzKS3GV7peBpvCGccTq69sNguuJ451O8d4v283EiERry1C
-OB6Rtr0Up8Prwr87VgnBZBYiDDrdZoM3kOWDTxVORG8e4Vt03JwINR8zha+DUOnG
-jOIZQmsR2NGnHqiSP9SqTMjKPrQdyCPPIYTZJprSARqqONukc273GqfJ/SDA7rur
-OkPK6qB8tllNTphW3yWKyvBvCLV0MzlQq1oa2Tog+qr1Rl6WUEA6XVNJAnXdOoml
-to6x7zPOvVqkcu/zTwqC+Mtpito/mPG+uoPe5x8XL/tkQ4IxUZx0nZ4+C8Io7SwR
-zd2Rg1ymnfBxrY5TYyfFZcscUnBZTvSxiv403OctTg13MLTFbRc5sVuOmX8dpXDJ
-1VUlNCSzfJ1dmKzn+trwlRWNJ5/E4bUZrZ0gEzVUZSQW2zB9edj5/szvDqydydlv
-H8Tx6LkG0mZQDTe0FMZI
-=JX1a
+iQIcBAEBAgAGBQJPSOkMAAoJEBus8iNuMP3dheoP/j0pLZABgTgyT2VFK+fuC2uQ
+IDRXUXbUEeT4P5auzGx7Qd1CySEVbmxBEtQsPOz9P24Wq1McV0bzsTh/zl8LRdVa
+MPtdvXpZfDk/7RKfQgMraTeHkRUWoqGG7rlKkuDVsLEbs7+NGDGqFmkN1tf0fltJ
+BrF8ZggFJxXzWMCGK6Zmr6k+X6Lbc4gVy5BMjuuMp3RHuY1OxEsyIFsHDAhZCBxM
+qYAcyMmWmVjB5Ac4v7GLlG2z4d4MGd5/bm8MM9WGTjMjGmIJZ16oq21jtDPBqIu+
+55kz55OcIBpijtr0Nb3URE4mMSv4xBYROl81vFFSykpvgB9ootq10oFXQb96bLzK
+YtcOGbc2EYlDizPPHRY4e8Qu8BptQJ1tu7vkGBdEWuIaHCOSJlQN11H90oJ7NbN0
++DUy+IKaCsLBOotuWHWvUxWRA1miBXy+bCBrdwYVa9yvtDL2mR3cVHRsws/B2Jdi
+fBiv8EdCdl71YqPimoUBjNmSN2/ZmG81OBMgtLKGi4m7hww6wZcT8kOIWdJJj9rg
+Jj2y9YagqEFL5DM3VJTBLiFRS8yjiIsdVxShJzHn5uJkFiRz+getSAqEZyzbl3N9
+uS6kI8tKpP4ShO2YBQakRDA3gjBk5nP3SxbvxuNdX/AakttQahXXQja/UftzPKnq
+bFEdIiptCkOYH62/3KFG
+=oQqK
 -----END PGP SIGNATURE-----
 
---RnlQjJ0d97Da+TV1--
+--mojUlQ0s9EVzWg2t--
 
---===============7367500873402114493==
+--===============0790791387978364515==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7367500873402114493==--
+--===============0790791387978364515==--
