@@ -1,24 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
-Date: Sat, 25 Feb 2012 11:44:15 +0000
-Message-ID: <20120225114414.GC3167@opensource.wolfsonmicro.com>
-References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
-	<20120224140200.GH5450@opensource.wolfsonmicro.com>
-	<20120224142342.GA16659@S2101-09.ap.freescale.net>
-	<20120224141705.GJ5450@opensource.wolfsonmicro.com>
-	<20120224232148.GA24268@S2101-09.ap.freescale.net>
-	<4F4819C4.5040709@freescale.com>
-	<20120225000319.GC24268@S2101-09.ap.freescale.net>
-	<4F483BB8.7030706@freescale.com>
-	<20120225101758.GJ22562@n2100.arm.linux.org.uk>
+Subject: Re: Support new HDA codec
+Date: Sat, 25 Feb 2012 11:50:48 +0000
+Message-ID: <20120225115048.GD3167@opensource.wolfsonmicro.com>
+References: <AB277FB27524F74C87ACAFF84F2767490D5205C4E2@NTMBOX.central.cirsa.com>
+	<s5hehtkxma6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4732945596236627844=="
+Content-Type: multipart/mixed; boundary="===============1909503210756051661=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C250A24450
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 12:44:18 +0100 (CET)
-In-Reply-To: <20120225101758.GJ22562@n2100.arm.linux.org.uk>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB4B824462
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2012 12:50:51 +0100 (CET)
+In-Reply-To: <s5hehtkxma6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,77 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4732945596236627844==
+--===============1909503210756051661==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
+	protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
 Content-Disposition: inline
 
 
---E13BgyNx05feLLmH
+--k4f25fnPtRuIRUb3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 25, 2012 at 10:17:58AM +0000, Russell King - ARM Linux wrote:
-> On Sat, Feb 25, 2012 at 01:39:05AM +0000, Tabi Timur-B04825 wrote:
+On Fri, Feb 24, 2012 at 04:51:13PM +0100, Takashi Iwai wrote:
 
-> > That's not what Mark is talking about.  You somehow posted patch 0/6 as=
- a=20
-> > reply to the *previous* patchset, so the two patchsets were merged into=
-=20
-> > one email thread.
+> That being said, if nothing special is needed, the support of this
+> codec wouldn't be too difficult, I suppose.  But, sometimes codecs
+> need special vendor-specific verbs, and we can't know without the help
+> of vendors.
 
-> Sorry, you and Mark are not listening to Shawn.  Even worse, you're
-> telling Shawn that what he's trying to explain to you is not the point
-> when it is actually the whole point.
+It should be very standards confirming and not require any magic Wolfson
+specific verbs to use the functionality, a generic HDA driver should do
+fine with an appropriate setup from the BIOS.
 
-> The "[PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl" was posted as a
-> follow-up to "[PATCH 1/4] ASoC: imx: let SND_MXC_SOC_FIQ select FIQ".
-
-> So, the "*previous* patchset" _was_ "[PATCH 1/4] ASoC: imx: let
-> SND_MXC_SOC_FIQ select FIQ" and not some other random patch set.  That
-> is a fundamental fact, which can't be argued.  Anyone can verify it, and
-> it can be verified by checking the email headers.
-
-No, I get that it's a new version of the same patch set rather than a
-totally unrelated patch set that was followed up to - I'd still rather
-it weren't posted like that as the threading ends up being less helpful
-than is desirable.
-
---E13BgyNx05feLLmH
+--k4f25fnPtRuIRUb3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPSMmIAAoJEBus8iNuMP3dXNkP/Renf2XEFlN7U2N0vlbELFEp
-Az0CyzyhphEy46ArDFAP62vDTu4HfJ8HWkUK3xR2/Qppb9Q4CjsZLCHhS2cpyavz
-iz+uyG9gWGofm03/VOMj583cjaaNdXg/r20qV4coDZg4BPn8RgHmwCe3fUih2aRF
-999bpPYzW8LJWyBkZH8nO4HRXcxzAXePkiDN+KH36f/tBg/R/6Q72E8Rfrv7Fnm/
-5oM8OEsv0EL9/Mv853kpVHQB1KdNRg7n3NpnGt/Vxp1nxWQ+Qs5WxKpwuGYnuHkY
-i/V+th+MX3fQxQiXndC0PAY2+176AlYT5ZmuzBjR0rWi+/jQWd+orgq0VVdPfzXV
-dxoURW5MYqc1/liY9a+M3E6d8JmItw1NslHY18YmM4tyATa/rhQc6bMMT7LMZLCK
-tf6EZlV6/4jlZDU3D4sNRwMQmMLShzB+OyBQtoQ+lcWvS+oNONipz0vOQB/Ks6Aq
-t3Ned0SU6rDgHevzimDkAWCkWI2qku8u1mA1Tvg+GU6XzQF+QfefQkx5usNLNnm3
-eDCZ/VmRrF1DdJD8iURJfENRO3L+6vSggCUWNloQLlYgeCepiqdBO8oysR2DqCLD
-elRhOqH7U+Rj4uEX6qr6w7p/Yg0w8GB90KlShXeSBsvGNS/FwIHtCM3VOvkS6oVx
-UxW43/CAVXzMSXqXI/Ij
-=3VuJ
+iQIcBAEBAgAGBQJPSMsRAAoJEBus8iNuMP3dTwcP/RUu5RioKr6EfGiPWhMJd6t7
+cpO2OIUUT8d1/jpO1MUqutFFdqzG5/Kgo5MLeorJv9O9HA3094a64Wa0PIxotAMP
+p2yNdi6F1fLFM5+PM9cQ9Vyczzxam8fhY7W7uBUAvCu5/Kd21yBfTWenoyMlkVLa
+cownej09WPwBo6ST0qZholzkkTX6+ItHzBXDX2SGdAkf+uOfkNJAko01km+HfL9j
+GI/Jmh2opz21Klfc3pOCddrkxhZCnvNqeZfMQYbxFlW/YiTx4ojWLleA7KZPElG0
+hcoO6t6evWjUIb0j1XkmRYFjxpNdQ/Ga5SA7iHTtcv5iCzmOCzYBi+xHTq4YECBM
+RtjuOW25D9MSvBWrF4gpP4kXQiS8mG3AvMJ1sLYzvPNY0p17GJz9IzuT5G6XeKdB
+LJwULJdsBN0EwwcmWj9/U4l0L63sXKJW9R5gtLUYU0DWb1qlFzHfVc8r+p41wXcq
+iXa29YVM4A0ELt372sZx9v2rQnM2C7lyQJ0VUu1Lo8pbt8sPXa+I69ciRR6WfaYh
++u5jNrGI0HnqPRmB07hdErcdoiQ4hkKMXtvNpugoof/z5pueCF2RwXIjnUf8NbWa
+buGgRy9gRGkBF+aKSeiaH4O/jlLXDfV9DYkR7Nppq/Ywp2F8sKONgP5JPRAd6wG3
+ZynQUyefTfyyZP6fkNVT
+=H8ha
 -----END PGP SIGNATURE-----
 
---E13BgyNx05feLLmH--
+--k4f25fnPtRuIRUb3--
 
---===============4732945596236627844==
+--===============1909503210756051661==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4732945596236627844==--
+--===============1909503210756051661==--
