@@ -1,38 +1,39 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 0/9] imx patches when I enable imx6q sabrelite audio
-Date: Mon, 27 Feb 2012 15:59:02 +0800
-Message-ID: <20120227075858.GA31207@S2101-09.ap.freescale.net>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: Re: [RFC 7/7] ASoC: ep93xx-pcm: Use dmaengine PCM
+	helper functions
+Date: Mon, 27 Feb 2012 10:19:33 +0200
+Message-ID: <20120227081933.GA3868@mwesterb-mobl.ger.corp.intel.com>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-8-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2EA71245F8
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 09:20:22 +0100 (CET)
+Received: by laap9 with SMTP id p9so1682591laa.38
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 00:20:21 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Richard Zhao <richard.zhao@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, eric.miao@linaro.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org
+In-Reply-To: <1329904151-5927-8-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 02, 2012 at 10:11:59AM +0800, Richard Zhao wrote:
-> Changes in v2:
-> 
->  - change dt peroperty/label to lower case as much as possible
->    keep XXX-supply property upper case.
->  - convert audmux-v2 to platform device driver
->  - move audmux-v2 driver to sound/soc/imx
-> 
-> [PATCH v2 1/9] ARM: mxc: make imx_dma_is_general_purpose more
-> [PATCH v2 2/9] ARM: imx6q: add cko1 clock
-> [PATCH v2 3/9] ARM: dts: imx6q-sabrelite: add 2p5v and 3p3v
-> [PATCH v2 4/9] ARM: dts: imx6q-sabrelite: add sgtl5000 audio codec
+On Wed, Feb 22, 2012 at 10:49:11AM +0100, Lars-Peter Clausen wrote:
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-I applied patch 1 ~ 4.  Thanks.
+For some reason, this doesn't work on my ep93xx based Sim.One board. On
+playback with mpg123 when I press stop, it continues to play whatever was on
+the ring-buffer forever. Without the patches it works fine.
 
-Regards,
-Shawn
-
-> [PATCH v2 5/9] ARM: mxc: convert audmux-v2 to a platform driver
-> [PATCH v2 6/9] ARM: mx31ads: add audmux device
-> [PATCH v2 7/9] ARM: mxc: move audmux-v2 to sound/soc/imx
-> [PATCH v2 8/9] ASoC: imx: add dt support for audmux-v2
-> [PATCH v2 9/9] ARM: imx6q-sabrelite: add audmux support
+I'll try to find some time to debug this further.
