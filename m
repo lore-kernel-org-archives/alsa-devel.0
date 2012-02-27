@@ -1,20 +1,17 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/6] ASoC: fsl: correct get_dma_channel
-	parameter name
-Date: Mon, 27 Feb 2012 14:27:22 -0600
-Message-ID: <4F4BE72A.9030803@freescale.com>
+Subject: Re: [PATCH 0/6] ASoC: a few cleanups on sound/soc/fsl
+Date: Mon, 27 Feb 2012 14:28:43 -0600
+Message-ID: <4F4BE77B.2040802@freescale.com>
 References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
 	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-2-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE003.bigfish.com (am1ehsobe001.messaging.microsoft.com
-	[213.199.154.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A2C8246BF
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 21:27:35 +0100 (CET)
-In-Reply-To: <1330092582-21180-2-git-send-email-shawn.guo@linaro.org>
+Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe004.messaging.microsoft.com
+	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id 0A6F7103B51
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 21:28:55 +0100 (CET)
+In-Reply-To: <1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,13 +26,15 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 Shawn Guo wrote:
-> The second parameter of function get_dma_channel is actually a property
-> name rather than a compatible string, so rename it for less confusing.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
+> This is the third series towards reusing fsl_ssi driver on device tree
+> based IMX platforms.  It makes a few cleanups on existing PowerPC code
+> to ease the later addition of an IMX machine driver that works on
+> fsl_ssi.
 
-Acked-by: Timur Tabi <timur@freescale.com>
+These patches don't apply 100% cleanly, and there are some issues that
+need to be resolved, but I'll review each one and ACK those that I think
+are okay.  It would probably be better if none were applied until the
+whole patchset is okay, though.
 
 -- 
 Timur Tabi
