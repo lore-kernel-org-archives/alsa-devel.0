@@ -1,20 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 3/6] ASoC: Remove unnecessary -codec from
- cs4270 driver name
-Date: Mon, 27 Feb 2012 15:21:15 -0600
-Message-ID: <4F4BF3CB.7080100@freescale.com>
+Subject: Re: [PATCH 5/6] ASoC: fsl: use platform_device_id
+ table to match p1022_ds device
+Date: Mon, 27 Feb 2012 15:39:04 -0600
+Message-ID: <4F4BF7F8.8030008@freescale.com>
 References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
 	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-4-git-send-email-shawn.guo@linaro.org>
+	<1330092582-21180-6-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE005.bigfish.com (db3ehsobe006.messaging.microsoft.com
-	[213.199.154.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id B82BB103BA8
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 22:21:26 +0100 (CET)
-In-Reply-To: <1330092582-21180-4-git-send-email-shawn.guo@linaro.org>
+Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe002.messaging.microsoft.com
+	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id 42DB510391A
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 22:39:27 +0100 (CET)
+In-Reply-To: <1330092582-21180-6-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,14 +28,17 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 Shawn Guo wrote:
-> Similar to what commit 1e3ad57 (ASoC: Remove redundant -codec from
-> WM8776 driver name) does for wm8776 driver, this patch does the same
-> thing for cs4270 driver.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
 
-Acked-by: Timur Tabi <timur@freescale.com>
+> -
+> -	/*
+> -	 * Check if we're actually running on a P1022DS.  Older device trees
+> -	 * have a model of "fsl,P1022" and newer ones use "fsl,P1022DS", so we
+> -	 * need to support both.  The SSI driver uses that property to link to
+> -	 * the machine driver, so have to match it.
+> -	 */
+
+Please retain this paragraph somewhere.  It's important to explain why
+we're checking for both strings.
 
 -- 
 Timur Tabi
