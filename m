@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: DT: Update digital microphone
- binding documentation to PAZ00 board.
-Date: Tue, 28 Feb 2012 12:37:46 +0000
-Message-ID: <20120228123745.GH3683@opensource.wolfsonmicro.com>
-References: <1330370299-19329-1-git-send-email-leon@leon.nu>
+Subject: Re: [PATCH 1/2] ASoC: omap: mcbsp: Use uniform st_data
+ pointer initialization
+Date: Tue, 28 Feb 2012 12:40:08 +0000
+Message-ID: <20120228124007.GI3683@opensource.wolfsonmicro.com>
+References: <1330416452-7195-1-git-send-email-peter.ujfalusi@ti.com>
+	<1330416452-7195-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8077355435508995982=="
+Content-Type: multipart/mixed; boundary="===============2669277403204523659=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4A292103E8E
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 13:37:47 +0100 (CET)
-In-Reply-To: <1330370299-19329-1-git-send-email-leon@leon.nu>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C9B1C103E8E
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 13:40:10 +0100 (CET)
+In-Reply-To: <1330416452-7195-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8077355435508995982==
+--===============2669277403204523659==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nOM8ykUjac0mNN89"
+	protocol="application/pgp-signature"; boundary="xGGVyNQdqA79rdfn"
 Content-Disposition: inline
 
 
---nOM8ykUjac0mNN89
+--xGGVyNQdqA79rdfn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 27, 2012 at 09:18:19PM +0200, Leon Romanovsky wrote:
-> This patch updates device tree binding documentation to add digital microphone to PAZ00
-> board.
+On Tue, Feb 28, 2012 at 10:07:31AM +0200, Peter Ujfalusi wrote:
+> In this way we can save few lines, and have uniform way of initializing the
+> st_data in all functions.
 
-Applied, thanks.  Please word wrap your changelogs to less than 80
-columns.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---nOM8ykUjac0mNN89
+--xGGVyNQdqA79rdfn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPTMqTAAoJEBus8iNuMP3dYCoP/0Wjuti6INrCuXifzy4iujzF
-Bq1aXJSx6jsXvpbDR6WNradgbPHYkvQHLcornDt+YmSnEvOi6BTtEo1rotebtV0+
-fXg4CjwjnUldtm7W+Y7bkyRYswSyGU6XhVDfS7BpDy/TewdDQEKqdn/MsKZIMiU6
-bfTfzHsGMbpKhe7rNgAWwgB9xhlZaOFWsc8Fhqe0kE5eoAztPTuWLzmgp32ERXlJ
-F2wKHsIlPxBEciKA/CPEM+5knBQWWo2F+6mWF+ZXracjCsiTRb9ht58OnamrolvS
-URE7M30W1rJuDtemKME4CPOsL1d6AlwH/lLQUPTN2jFQPncEgjLmBspq8JW12iLJ
-vDTqN54z5O0EuvcOolMn33HjHtp1o9VSmPO3Ydx/pvOYmM5WXyztqIzFHGi147Gx
-NX4Y+PKn3p7gNxgN2eZ5iLRIlhGYAtKlVQHFcuaawfsijUiFh262hPTK1KtwJ7mj
-m7Airv3hgEcmmkkVFehTC0AV+clBZQY0kQXaY1iOP4kTlQFF5jsMlnjRzlkcwpF3
-ZzWEZKEt6AH4ipIK8M8GaZB76slMp5ptayrgm0JZWaWubNNoAUpelGjPvyIi8kNg
-A6R6YGHf94z9WiITvU0M8jcQLMNvlIWqaxbBsVnzN0BtZ/hpxyn3OHFJjZpjhnLh
-KJNIDxPf4j759FhPZNBo
-=95Rr
+iQIcBAEBAgAGBQJPTMryAAoJEBus8iNuMP3dmTAP/0zPRPDOWTLIvjy2TFyRp5oP
+315PBfxk1UaJGUeewqrOWfx0HD1cmBzIeE6VbeFsXcKuUI5Y/rvFHNvPupRIrojR
+xKNrnR17aF35AACZmeg4B9uNmrOBoPPSa/gTQd/W1PO8tKS4LPYDdy1U3CzaorcA
+MK7jWQvN/sdRralte6mZkpnROWhAT+UaKcJ0N5c07Cg7p3bIbCeVRPiB6pjMlYyd
+2z/Aclk0GGhGKE98rErLhj5K+S+gtNAPWgJU9zw8ZWCFg/xxZY2z3/RXMxdKFAHy
+SmaeTZ3Du/x2zyJhfXVCOAA5htVUXnWHuaVFuyVfDx3UKcAz4+t2VeRIJpqw3b06
+24tgxzJZ/e9AtDPoneH9dFSSP0Rirtrjbo1nqht0/F6j64lpdt8z+Z7Pg904/Iyl
+YxEBZxQHJ4U42w0SnsePAQcI0ZGYGAetxQrEVBbtndAlq2onu/M9U6OPtUPRQZml
+d0SZlzYzlq0ME8Io61ZyFjQIaLG/kSnwB2bEj7hIoc7bjftFqh5ZOLiT/HpP+CQd
+OVOB5Nc8ifSz0WDjhgnxge7Kgx6F6qpxpEHLFRekLhFJbppVICndm6ILI8r+LSgF
+rnqdyDmDOTnNx+VRU5OlHaLKAzFzcZv8xj3SgGeW4DcdimvmoD5uo/y3NixRc4F6
+1rLivKC4DuHHGmYdAMfD
+=d5jZ
 -----END PGP SIGNATURE-----
 
---nOM8ykUjac0mNN89--
+--xGGVyNQdqA79rdfn--
 
---===============8077355435508995982==
+--===============2669277403204523659==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8077355435508995982==--
+--===============2669277403204523659==--
