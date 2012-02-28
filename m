@@ -1,24 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: alsa usb audio class 2
-Date: Tue, 28 Feb 2012 10:02:44 +0100
-Message-ID: <4F4C9834.1000704@gmail.com>
-References: <CAD=zES=Q48Tw7qKUr6CNavgo078=qzGSDMs26VNToCg4jU86Kg@mail.gmail.com>
-	<s5h1upgs4je.wl%tiwai@suse.de>
-	<CAD=zES=rQsb+1q=-dtALx78j=YWJo-rnAfd+5ZmyFw_sS1AZmw@mail.gmail.com>
-	<s5hsjhwqod5.wl%tiwai@suse.de>
-	<CAD=zESkJWAaDVS29+Nr0aHr_zeX59nFPXxLrXD=sEGfU9eTPxA@mail.gmail.com>
-	<s5hobskqns8.wl%tiwai@suse.de>
-	<CAD=zESk77H3maWTTaNWTqiCTAoLa7yO=1ehoQMZq50_ZGW58Uw@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap3beagle: Add dai link for McBSP2
+ master configuration (CLKS source)
+Date: Tue, 28 Feb 2012 11:11:09 +0200
+Message-ID: <4F4C9A2D.1010807@ti.com>
+References: <1330415714-5136-1-git-send-email-peter.ujfalusi@ti.com>
+	<4F4C920A.4090606@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id BD5E324141
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 10:02:50 +0100 (CET)
-Received: by bkty7 with SMTP id y7so4288131bkt.38
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 01:02:50 -0800 (PST)
-In-Reply-To: <CAD=zESk77H3maWTTaNWTqiCTAoLa7yO=1ehoQMZq50_ZGW58Uw@mail.gmail.com>
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67]) by alsa0.perex.cz (Postfix) with ESMTP id 31012245A3
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 10:11:26 +0100 (CET)
+Received: by mail-lpp01m010-f50.google.com with SMTP id m13so5258797lah.9
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 01:11:12 -0800 (PST)
+In-Reply-To: <4F4C920A.4090606@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,19 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Markus Bollinger <bollinger@digigram.com>
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Steve Sakoman <steve@sakoman.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 28.02.2012 09:57, Markus Bollinger wrote:
-> OK, thank you Takashi.
-> I attached the log file of the 'lsusb -v' output
+On 02/28/2012 10:36 AM, Jarkko Nikula wrote:
+> Is this something that is better to stay in list archives not under
+> version control? This looks to me as a developer debug feature.
 
-Thanks for the dump. Are there any kernel messages that are generated
-when plugging in the device? Check with 'dmesg'.
+Good question...
+Right now I'm not sure if this patch has practical use at the moment.
+It does not hurt to be in the tree since the default PCM does not
+change. But it might confuse users.
+Either way is good for me.
 
-Also, from the dump I can see that some string descriptors are really
-broken in this device. Don't know if that causes your trouble though.
+-- =
 
-
-Daniel
+P=E9ter
