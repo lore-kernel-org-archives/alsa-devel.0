@@ -1,60 +1,166 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 00/38] Realtek HD-audio auto-parser
-Date: Tue, 28 Feb 2012 09:33:21 +0100
-Message-ID: <4F4C9151.6020205@canonical.com>
-References: <1330101391-8788-1-git-send-email-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v4 1/2] MFD: twl-core: Detach twl6040 from the pmic mfd driver
+Date: Tue, 28 Feb 2012 10:34:51 +0200
+Message-ID: <1330418092-12314-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1330418092-12314-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 0D7F624521
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 09:33:25 +0100 (CET)
-In-Reply-To: <1330101391-8788-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1330418092-12314-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Dmitry Torokhov <dtor@mail.ru>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/24/2012 05:35 PM, Takashi Iwai wrote:
-> Hi,
->
-> for 3.4 kernel, finally I got rid of all static quirks from HD-audio
-> Realtek codec parser.  This means that the all necessary quirks have
-> been converted to alc_fixup either the pin-config overrides, the
-> additional verbs, or the extra init functions.
->
-> Since some machines have really weird pin mappings, I introduced the
-> new mechanism in the parser to evaluate the best DAC->pin
-> connections, which is based on the badness calculation.  You won't
-> notice on most of machines but some machines that have fewer DACs than
-> necessary output pins will get different mappings by this change.
->
-> The whole changes can be seen in sound git tree topic/hda branch, as
-> usual.
->      git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->
-> Now it's merged to main branch, so the snapshot tarball contains
-> these changes, too.
->
-> The rest of the thread will contain the changes in patch_realtek.c.
-> It's just for refernces, and I omitted the other files.  For the
-> complete changes, take a look at the git tree.
+On OMAP4 platform audio has separate IC, it is no longer part
+of the pmic chip.
+Prevent twl-core to claim the 0x4b address, which belongs to
+the twl6040 audio IC.
 
-Hi Takashi,
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+---
+ drivers/mfd/twl-core.c |   58 +++++++++++++++++++++++++++--------------------
+ 1 files changed, 33 insertions(+), 25 deletions(-)
 
-I think this is a very good move. Unfortunately I don't have time to 
-review all 38 patches thoroughly, but if there is anything in particular 
-you would like a second pair of eyes on, let me know.
-
+diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
+index 8ce3959..9ac003a 100644
+--- a/drivers/mfd/twl-core.c
++++ b/drivers/mfd/twl-core.c
+@@ -115,8 +115,8 @@
+ #define twl_has_watchdog()        false
+ #endif
+ 
+-#if defined(CONFIG_MFD_TWL4030_AUDIO) || defined(CONFIG_MFD_TWL4030_AUDIO_MODULE) ||\
+-	defined(CONFIG_TWL6040_CORE) || defined(CONFIG_TWL6040_CORE_MODULE)
++#if defined(CONFIG_MFD_TWL4030_AUDIO) || \
++	defined(CONFIG_MFD_TWL4030_AUDIO_MODULE)
+ #define twl_has_codec()	true
+ #else
+ #define twl_has_codec()	false
+@@ -146,6 +146,7 @@
+ #define SUB_CHIP_ID1 1
+ #define SUB_CHIP_ID2 2
+ #define SUB_CHIP_ID3 3
++#define SUB_CHIP_ID_INVAL 0xff
+ 
+ #define TWL_MODULE_LAST TWL4030_MODULE_LAST
+ 
+@@ -317,7 +318,7 @@ static struct twl_mapping twl6030_map[] = {
+ 	 * so they continue to match the order in this table.
+ 	 */
+ 	{ SUB_CHIP_ID1, TWL6030_BASEADD_USB },
+-	{ SUB_CHIP_ID3, TWL6030_BASEADD_AUDIO },
++	{ SUB_CHIP_ID_INVAL, TWL6030_BASEADD_AUDIO },
+ 	{ SUB_CHIP_ID2, TWL6030_BASEADD_DIEID },
+ 	{ SUB_CHIP_ID2, TWL6030_BASEADD_RSV },
+ 	{ SUB_CHIP_ID1, TWL6030_BASEADD_PIH },
+@@ -379,6 +380,11 @@ int twl_i2c_write(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
+ 		return -EPERM;
+ 	}
+ 	sid = twl_map[mod_no].sid;
++	if (unlikely(sid == SUB_CHIP_ID_INVAL)) {
++		pr_err("%s: module %d is not part of the pmic\n",
++		       DRIVER_NAME, mod_no);
++		return -EINVAL;
++	}
+ 	twl = &twl_modules[sid];
+ 
+ 	mutex_lock(&twl->xfer_lock);
+@@ -436,6 +442,11 @@ int twl_i2c_read(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
+ 		return -EPERM;
+ 	}
+ 	sid = twl_map[mod_no].sid;
++	if (unlikely(sid == SUB_CHIP_ID_INVAL)) {
++		pr_err("%s: module %d is not part of the pmic\n",
++		       DRIVER_NAME, mod_no);
++		return -EINVAL;
++	}
+ 	twl = &twl_modules[sid];
+ 
+ 	mutex_lock(&twl->xfer_lock);
+@@ -836,15 +847,6 @@ add_children(struct twl4030_platform_data *pdata, unsigned long features)
+ 			return PTR_ERR(child);
+ 	}
+ 
+-	if (twl_has_codec() && pdata->audio && twl_class_is_6030()) {
+-		sub_chip_id = twl_map[TWL_MODULE_AUDIO_VOICE].sid;
+-		child = add_child(sub_chip_id, "twl6040",
+-				pdata->audio, sizeof(*pdata->audio),
+-				false, 0, 0);
+-		if (IS_ERR(child))
+-			return PTR_ERR(child);
+-	}
+-
+ 	/* twl4030 regulators */
+ 	if (twl_has_regulator() && twl_class_is_4030()) {
+ 		child = add_regulator(TWL4030_REG_VPLL1, pdata->vpll1,
+@@ -1165,18 +1167,21 @@ int twl6030_exit_irq(void);
+ 
+ static int twl_remove(struct i2c_client *client)
+ {
+-	unsigned i;
++	unsigned i, num_slaves;
+ 	int status;
+ 
+-	if (twl_class_is_4030())
++	if (twl_class_is_4030()) {
+ 		status = twl4030_exit_irq();
+-	else
++		num_slaves = TWL_NUM_SLAVES;
++	} else {
+ 		status = twl6030_exit_irq();
++		num_slaves = TWL_NUM_SLAVES - 1;
++	}
+ 
+ 	if (status < 0)
+ 		return status;
+ 
+-	for (i = 0; i < TWL_NUM_SLAVES; i++) {
++	for (i = 0; i < num_slaves; i++) {
+ 		struct twl_client	*twl = &twl_modules[i];
+ 
+ 		if (twl->client && twl->client != client)
+@@ -1192,7 +1197,7 @@ static int __devinit
+ twl_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ {
+ 	int				status;
+-	unsigned			i;
++	unsigned			i, num_slaves;
+ 	struct twl4030_platform_data	*pdata = client->dev.platform_data;
+ 	struct device_node		*node = client->dev.of_node;
+ 	u8 temp;
+@@ -1246,7 +1251,17 @@ twl_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ 		return -EBUSY;
+ 	}
+ 
+-	for (i = 0; i < TWL_NUM_SLAVES; i++) {
++	if ((id->driver_data) & TWL6030_CLASS) {
++		twl_id = TWL6030_CLASS_ID;
++		twl_map = &twl6030_map[0];
++		num_slaves = TWL_NUM_SLAVES - 1;
++	} else {
++		twl_id = TWL4030_CLASS_ID;
++		twl_map = &twl4030_map[0];
++		num_slaves = TWL_NUM_SLAVES;
++	}
++
++	for (i = 0; i < num_slaves; i++) {
+ 		struct twl_client	*twl = &twl_modules[i];
+ 
+ 		twl->address = client->addr + i;
+@@ -1265,13 +1280,6 @@ twl_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ 		mutex_init(&twl->xfer_lock);
+ 	}
+ 	inuse = true;
+-	if ((id->driver_data) & TWL6030_CLASS) {
+-		twl_id = TWL6030_CLASS_ID;
+-		twl_map = &twl6030_map[0];
+-	} else {
+-		twl_id = TWL4030_CLASS_ID;
+-		twl_map = &twl4030_map[0];
+-	}
+ 
+ 	/* setup clock framework */
+ 	clocks_init(&client->dev, pdata->clock);
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+1.7.8.4
