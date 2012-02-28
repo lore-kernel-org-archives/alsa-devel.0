@@ -1,25 +1,22 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 6/6] ASoC: fsl: check property 'compatible'
- for the machine name
-Date: Tue, 28 Feb 2012 11:13:11 +0800
-Message-ID: <20120228031308.GI13886@S2101-09.ap.freescale.net>
-References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
-	<1330092582-21180-7-git-send-email-shawn.guo@linaro.org>
-	<4F4BFB79.30801@freescale.com>
-	<20120228015012.GA13886@S2101-09.ap.freescale.net>
-	<4F4C3824.90306@freescale.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA : Au88x0 - Support 4 channels
+ playback when AC97 codec has SDAC bit ,
+ Reduce the number of playback devices of au8830 from 32 to 16
+Date: Tue, 28 Feb 2012 11:04:07 +0800
+Message-ID: <CAN8cciaFWivgF=OXA3GweG-OpRfEdesouD8+0TG03h6=tyrriw@mail.gmail.com>
+References: <CAN8cciY_uuOFEm-cyJ2owH51Zp_pdti=mFt1f00oEvQEKvAchw@mail.gmail.com>
+	<s5hsjjfanua.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2ABC8243E6
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 03:59:16 +0100 (CET)
-Received: by pbcxa12 with SMTP id xa12so4807799pbc.38
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 18:59:14 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <4F4C3824.90306@freescale.com>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDC2A243EA
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 04:04:07 +0100 (CET)
+Received: by wiax18 with SMTP id x18so51779wia.38
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2012 19:04:07 -0800 (PST)
+In-Reply-To: <s5hsjjfanua.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,25 +26,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 28, 2012 at 02:12:53AM +0000, Tabi Timur-B04825 wrote:
-> Shawn Guo wrote:
-> > Since I was asked by Mark to use new binding for new machine driver,
-> > I would drop this patch and keep PowerPC machine drivers working with
-> > /model property.
-> 
-> I think Mark is only concerned with not breaking compatibility with 
-> existing device trees.  Both the P1022 and MPC8610 device trees have had 
-> this compatible property.
-> 
-Are you saying that both older and new P1022 device trees have
-compatible = "fsl,P1022DS", so that changing to check /compatible
-could save the check on /model of P1022 device tree?  Otherwise,
-the check between "fsl,P1022" and "fsl,P1022DS" can not be saved.
+2012/1/16, Takashi Iwai <tiwai@suse.de>:
+> At Fri, 13 Jan 2012 18:47:45 +0800,
+> Raymond Yau wrote:
+>>
+>> [PATCH - ALSA 1/2] Au88x0 - Support 4 channels playback when AC97
+>> codecs has SDAC bit
+>>
+>> - Check SDAC bit of AC97 codec for supporting 4 channels playback.
+>>
+>>
+>> [PATCH - ALSA 2/2] Au88x0 - Reduce the number of playback subdevices
+>> of au8830 from 32 to 16
+>>
+>> - The maximum number of playback streams depend on the number of sample
+>>   rate conveters (16) and the number of DMA channels (32).
+>
+> Applied both patches.  Thanks.
+>
+>
 
--- 
-Regards,
-Shawn
+Does alsa require the driver to provide private_free for ac97_bus and ac97 ?
+
+There is a bug report
+
+snd_vortex_dev_free() BUG: unable to handle kernel NULL pointer
+
+https://bugzilla.redhat.com/show_bug.cgi?id=788978
+
+It seem that snd_ac97_bus() fail
+
+However  I cannot reproduce the bug in 2.6 kernel,
+
+Do 3.x kernel require mixer created after pcm devices ?
+
+
+:Call Trace:
+: [<ffffffff810dec3d>] __free_irq+0x17d/0x220
+: [<ffffffff810dee65>] free_irq+0x55/0xd0
+: [<ffffffffa04e2d64>] snd_vortex_dev_free+0x44/0x80 [snd_au8830]
+: [<ffffffffa01c0aa1>] snd_device_free+0x71/0x170 [snd]
+: [<ffffffffa01c0f51>] snd_device_free_all+0x61/0xb0 [snd]
+: [<ffffffffa01b9908>] snd_card_do_free+0x58/0x140 [snd]
+: [<ffffffffa01badf3>] snd_card_free+0xa3/0xc0 [snd]
+: [<ffffffffa0261b8f>] ? snd_ac97_bus+0xaf/0x130 [snd_ac97_codec]
+: [<ffffffffa04e6a9f>] snd_vortex_probe+0x1c40/0x1d09 [snd_au8830]
+: [<ffffffff812db37c>] local_pci_probe+0x5c/0xd0
+: [<ffffffff812dcc19>] pci_device_probe+0x109/0x130
+: [<ffffffff813932cc>] driver_probe_device+0x9c/0x300
+: [<ffffffff813935db>] __driver_attach+0xab/0xb0
+: [<ffffffff81393530>] ? driver_probe_device+0x300/0x300
+: [<ffffffff81393530>] ? driver_probe_device+0x300/0x300
+: [<ffffffff8139214c>] bus_for_each_dev+0x5c/0x90
+: [<ffffffff81392ede>] driver_attach+0x1e/0x20
+: [<ffffffff81392ae0>] bus_add_driver+0x1b0/0x2a0
+: [<ffffffffa04ed000>] ? 0xffffffffa04ecfff
+: [<ffffffff81393b36>] driver_register+0x76/0x140
+: [<ffffffff815e554d>] ? notifier_call_chain+0x4d/0x70
+: [<ffffffffa04ed000>] ? 0xffffffffa04ecfff
+: [<ffffffff812dc8f6>] __pci_register_driver+0x56/0xd0
+: [<ffffffff81041673>] ? set_memory_nx+0x43/0x50
+: [<ffffffffa04ed01e>] alsa_card_vortex_init+0x1e/0x1000 [snd_au8830]
+: [<ffffffff81002042>] do_one_initcall+0x42/0x180
+: [<ffffffff810ac970>] sys_init_module+0xc0/0x230
+: [<ffffffff815e9782>] system_call_fastpath+0x16/0x1b
