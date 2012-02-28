@@ -1,17 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 0/2] MFD: twl6040: Conversion to i2c driver
-Date: Tue, 28 Feb 2012 10:34:50 +0200
-Message-ID: <1330418092-12314-1-git-send-email-peter.ujfalusi@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 7/7] ASoC: ep93xx-pcm: Use dmaengine
+ PCM	helper functions
+Date: Tue, 28 Feb 2012 09:47:50 +0100
+Message-ID: <4F4C94B6.4050508@metafoo.de>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>	<1329904151-5927-8-git-send-email-lars@metafoo.de>	<20120227081933.GA3868@mwesterb-mobl.ger.corp.intel.com>	<4F4B442D.2050902@metafoo.de>
+	<20120227190159.GC3868@mwesterb-mobl.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
-	[74.125.149.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id F01592453F
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 09:38:38 +0100 (CET)
-Received: by lahl5 with SMTP id l5so6050921lah.1
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 00:38:36 -0800 (PST)
+Received: from smtp-out-161.synserver.de (smtp-out-182.synserver.de
+	[212.40.185.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 133A524554
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 09:46:04 +0100 (CET)
+In-Reply-To: <20120227190159.GC3868@mwesterb-mobl.ger.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org
+To: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On 02/27/2012 08:01 PM, Mika Westerberg wrote:
+> On Mon, Feb 27, 2012 at 09:51:57AM +0100, Lars-Peter Clausen wrote:
+>> On 02/27/2012 09:19 AM, Mika Westerberg wrote:
+>>> On Wed, Feb 22, 2012 at 10:49:11AM +0100, Lars-Peter Clausen wrote:
+>>>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>>>
+>>> For some reason, this doesn't work on my ep93xx based Sim.One board. On
+>>> playback with mpg123 when I press stop, it continues to play whatever w=
+as on
+>>> the ring-buffer forever. Without the patches it works fine.
+>>>
+>>> I'll try to find some time to debug this further.
+>>
+>> Hm, that=92s interesting. The original ep93xx pcm driver was almost iden=
+tical
+>> to what the common helper functions do. The only difference I can spot r=
+ight
+>> now is, that it doesn't call dma_issue_pending after submitting the
+>> descriptor. Could you try to comment out the dma_issue_pending in
+>> soc-dmaengine-pcm.c and test whether it makes a difference?
+> =
 
-Changes since v3:
-- Combined the main patch (conversion to i2c driver) with changes in Kconfig
-  files to avoid build breakage on other platforms
-- Added the received Acks from maintainers
+> I did try that but there was no effect, unfortunately.
+> =
 
-Samuel: is it possible for you to stop carrying the twl6040 changes you have at
-the moment in your for-next branch (can you drop the patches)?
-This series will make sure I will not brake x86_64 allmodconfig build.
-
-As we agreed this series will go via the audio tree (Liam) since it has
-dependency on earlier work of mine going through ASoC tree.
-
-Thank you.
-
-------
-Intro mail from the original series:
-
-This series will convert the twl6040 MFD driver to an i2c driver.
-Compared to older twl4030/5030/TPS the twl6040 is a standalone audio IC. It is
-better if the twl6040-core (and all of it's child devices) does not depend on
-the twl-core since it has nothing to with it.
-
-With this conversion the dependency on twl can be dropped from the twl6040
-driver stack (core, vibra, audio).
-
-Between the first and second patch the audio will not probe on OMAP4, but I felt
-it is better this way at least for the first RFC series to not have too big
-change within one patch. The two patch can be squashed together later if no
-objections.
+> However, I noticed that prtd->pos was never set to zero as it was in the
+> original ep93xx-pcm driver. With following addition to your patch, playba=
+ck
+> works fine.
+> =
 
 
-Regards,
-Peter
----
-Peter Ujfalusi (2):
-  MFD: twl-core: Detach twl6040 from the pmic mfd driver
-  MFD: twl6040: Convert to i2c driver, and separate it from twl core
+Ah, nice :)
 
- arch/arm/mach-omap2/board-4430sdp.c    |   12 ++--
- arch/arm/mach-omap2/board-generic.c    |    2 +-
- arch/arm/mach-omap2/board-omap4panda.c |   13 ++--
- arch/arm/mach-omap2/twl-common.c       |   37 +++++++++--
- arch/arm/mach-omap2/twl-common.h       |   10 +--
- drivers/input/misc/Kconfig             |    3 +-
- drivers/input/misc/twl6040-vibra.c     |    4 +-
- drivers/mfd/Kconfig                    |   11 +++-
- drivers/mfd/twl-core.c                 |   58 +++++++++-------
- drivers/mfd/twl6040-core.c             |  114 +++++++++++++++++++-------------
- include/linux/i2c/twl.h                |   12 ----
- include/linux/mfd/twl6040.h            |   27 ++++++++
- sound/soc/codecs/Kconfig               |    3 +-
- sound/soc/codecs/twl6040.c             |    3 +-
- sound/soc/omap/Kconfig                 |    2 +-
- 15 files changed, 192 insertions(+), 119 deletions(-)
+Thanks,
+- Lars
 
--- 
-1.7.8.4
+> diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+> index 0526cf8..4420b70 100644
+> --- a/sound/soc/soc-dmaengine-pcm.c
+> +++ b/sound/soc/soc-dmaengine-pcm.c
+> @@ -142,6 +142,7 @@ static int dmaengine_pcm_prepare_and_submit(struct sn=
+d_pcm_substream *substream)
+>  =
+
+>  	direction =3D snd_pcm_substream_to_dma_direction(substream);
+>  =
+
+> +	prtd->pos =3D 0;
+>  	desc =3D chan->device->device_prep_dma_cyclic(chan,
+>  		substream->runtime->dma_addr,
+>  		snd_pcm_lib_buffer_bytes(substream),
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
