@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: HDA intel, wired headset w/mic, jack mic detect
-Date: Tue, 28 Feb 2012 18:00:21 +0000
-Message-ID: <20120228180021.GC25472@sirena.org.uk>
-References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
-	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Add position_fix=4 (COMBO)
+	option
+Date: Tue, 28 Feb 2012 19:02:04 +0100
+Message-ID: <4F4D169C.40001@canonical.com>
+References: <s5hk437p4t5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB25D246CB
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 19:00:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id CAB5E246CE
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 19:02:07 +0100 (CET)
+In-Reply-To: <s5hk437p4t5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Hilman, Kevin" <khilman@ti.com>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, "Heasley, Seth" <seth.heasley@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 28, 2012 at 09:55:18AM -0800, Hilman, Kevin wrote:
-> On Thu, Feb 23, 2012 at 10:25 PM, David Henningsson
-> > On 02/23/2012 08:09 PM, Kevin Hilman wrote:
+On 02/28/2012 12:37 PM, Takashi Iwai wrote:
+> This patch adds a new position_fix option value, 4, as a combo mode
+> to use LPIB for playbacks and POSBUF for captures.  It's the way
+> recommended by Intel hardware guys.
 
-> >> I'm trying to get a wired headset with a mic working on MacBookAir
-> >> running v3.0 (3.0.0-13-generic from Ubuntu to be precise.)
+Interesting. More specifically, for what chips were this mode 
+recommended? There were none added with the patch.
 
-> > You can try upgrading your alsa version to the daily snapshot using this
-> > method: https://wiki.ubuntu.com/Audio/UpgradingAlsa/DKMS
-
-> It seems there's still a problem detecting that the headset also has a mic.
-
-David, FWIW this is one of the systems I'm thinking of when I say that
-headset is also an issue on HDA systems, not just for embedded devices.
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
