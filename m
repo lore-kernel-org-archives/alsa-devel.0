@@ -1,51 +1,77 @@
-From: Richard Zhao <richard.zhao@freescale.com>
-Subject: Re: [PATCH v2 0/9] imx patches when I enable imx6q sabrelite audio
-Date: Tue, 28 Feb 2012 20:07:28 +0800
-Message-ID: <20120228120728.GA3261@b20223-02.ap.freescale.net>
-References: <1328148728-32258-1-git-send-email-richard.zhao@linaro.org>
- <20120227075858.GA31207@S2101-09.ap.freescale.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/6] ASoC: fsl: correct get_dma_channel
+	parameter name
+Date: Tue, 28 Feb 2012 12:34:49 +0000
+Message-ID: <20120228123449.GE3683@opensource.wolfsonmicro.com>
+References: <1329979644-31046-1-git-send-email-shawn.guo@linaro.org>
+	<1330092582-21180-1-git-send-email-shawn.guo@linaro.org>
+	<1330092582-21180-2-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120227075858.GA31207@S2101-09.ap.freescale.net>
-Sender: linux-doc-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0088237818955974367=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1F75A103E6B
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2012 13:34:52 +0100 (CET)
+In-Reply-To: <1330092582-21180-2-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Richard Zhao <richard.zhao@linaro.org>, alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com, linux-doc@vger.kernel.org, eric.miao@linaro.org, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 27, 2012 at 03:59:02PM +0800, Shawn Guo wrote:
-> On Thu, Feb 02, 2012 at 10:11:59AM +0800, Richard Zhao wrote:
-> > Changes in v2:
-> > 
-> >  - change dt peroperty/label to lower case as much as possible
-> >    keep XXX-supply property upper case.
-> >  - convert audmux-v2 to platform device driver
-> >  - move audmux-v2 driver to sound/soc/imx
-> > 
-> > [PATCH v2 1/9] ARM: mxc: make imx_dma_is_general_purpose more
-> > [PATCH v2 2/9] ARM: imx6q: add cko1 clock
-> > [PATCH v2 3/9] ARM: dts: imx6q-sabrelite: add 2p5v and 3p3v
-> > [PATCH v2 4/9] ARM: dts: imx6q-sabrelite: add sgtl5000 audio codec
-> 
-> I applied patch 1 ~ 4.  Thanks.
-Thanks. I'll continue to work on other patches in this series after
-your audio work get it. and feel free to take any patch you need.
 
-Richard
-> 
-> Regards,
-> Shawn
-> 
-> > [PATCH v2 5/9] ARM: mxc: convert audmux-v2 to a platform driver
-> > [PATCH v2 6/9] ARM: mx31ads: add audmux device
-> > [PATCH v2 7/9] ARM: mxc: move audmux-v2 to sound/soc/imx
-> > [PATCH v2 8/9] ASoC: imx: add dt support for audmux-v2
-> > [PATCH v2 9/9] ARM: imx6q-sabrelite: add audmux support
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+--===============0088237818955974367==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BQPnanjtCNWHyqYD"
+Content-Disposition: inline
 
+
+--BQPnanjtCNWHyqYD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Feb 24, 2012 at 10:09:36PM +0800, Shawn Guo wrote:
+> The second parameter of function get_dma_channel is actually a property
+> name rather than a compatible string, so rename it for less confusing.
+
+Applied, thanks.
+
+--BQPnanjtCNWHyqYD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPTMnjAAoJEBus8iNuMP3dEwsQAJIdVYUJDtpGAcrHPwuXq7rT
+5ilsF5tGmHyIkUO3jlOn86soXWQhnAwxHt0Mw0CBw8afstLo8W6zMhK0W5HKXtCX
+ftv8LatzHfODcCwjntKCHrcA2/Hza99/CQTsdt8V4DwI72ST8TAWarxhJq7iybSx
+pfTHcBiSRnikUuAyOuwqutDM8SgfifRGYiuDSGowLsBZrMxVMUFqvF2jiUUjXkHN
+e9KvVuif95zZ6Qm0N/wnCxVkNiBW8nTWKhq229v5NSQt9Pjv/O80seethCyordDW
+GCPq8/GhyjJb9+ztQCOOyea75IQebid48CPNMy+eOB+jK0yCsLN5Wp/hPLgYjxYe
+wqsCjVMtAn0BHLzBcw3DWtdFNKIjuTylCTBjvhJ9dBYzG5fY+hZtYo0L8yHWDH6K
+kNKVVeMnKwdIl4tUhJndoEhlRQwp6dz9X3gx7ppS65kGe9/Aeb3ZtZjW56ZVm1ND
+NCO41rhRvGp5rPPJN2hA3b8mKUKWblda55JC6X/pTAKvEn1Etwmu3YDPZxaSVaOl
+oW28uJaoib5/Re/rrp/p+0gpfAi2Q9Texp7khGWuD3J0NUrPKgoaUeJKV8DS/Fsm
+AVTmSQZ9Ab+iBoS3eqVFwyK3glQWCO1EOPV85OOZ+sNJKQOq+nJ7JjYBa8+X7laP
+wUEN3VN91qyh4h0FaPH5
+=mVMH
+-----END PGP SIGNATURE-----
+
+--BQPnanjtCNWHyqYD--
+
+--===============0088237818955974367==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0088237818955974367==--
