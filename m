@@ -1,33 +1,83 @@
-From: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-Date: Wed, 29 Feb 2012 16:25:09 +0800
-Message-ID: <4F4DE0E5.8070808@freescale.com>
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>	 <4F4D9725.3090100@freescale.com> <1330502098.3545.78.camel@sauron.fi.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] Inverted internal mic
+Date: Wed, 29 Feb 2012 10:21:35 +0100
+Message-ID: <4F4DEE1F.8020002@canonical.com>
+References: <4F4C9714.1080307@canonical.com> <s5haa43ux7u.wl%tiwai@suse.de>
+	<4F4CA438.90103@canonical.com> <s5hvcmrp7ji.wl%tiwai@suse.de>
+	<4F4CD1AF.2050409@canonical.com> <s5hboojozx7.wl%tiwai@suse.de>
+	<4F4CE264.7040008@canonical.com> <s5hy5rnnfvz.wl%tiwai@suse.de>
+	<4F4D18C3.1020700@canonical.com> <s5h1upevj5u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1330502098.3545.78.camel@sauron.fi.intel.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "LW@KARO-electronics.de" <LW@KARO-electronics.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, "cjb@laptop.org" <cjb@laptop.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id DB588244FA
+	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 10:21:39 +0100 (CET)
+In-Reply-To: <s5h1upevj5u.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com, 903853@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Artem:
-> On Wed, 2012-02-29 at 11:10 +0800, Huang Shijie wrote:
->> Hi:
+On 02/28/2012 08:42 PM, Takashi Iwai wrote:
+> At Tue, 28 Feb 2012 19:11:15 +0100,
+> David Henningsson wrote:
 >>
->> ping.
-> Is this patch-set independent or requires something like gpma patches?
+>> On 02/28/2012 04:20 PM, Takashi Iwai wrote:
+>>>> I'm talking about recording an internal mic in *stereo*, as I just wrote
+>>>> below. Or don't you agree that is a valid and probably fairly common use
+>>>> case?
+>>>
+>>> Well, when you record it in stereo, and play it back, then you hear
+>>> the sound without problem.
+>>
+>> That could definitely be questioned: depending on the distance between
+>> speakers when you're finally playing it back, you might lose bass
+>> frequencies [1]. (That said, I'm not sure how much bass these mics pick
+>> up anyway.)
 >
-This patch set is independent, and it does not depend upon any other 
-patches.
+> Well, it might be, in the worst case.
+>
+>>> The problem happens only when you sum the
+>>> left and right signals into mono.  Thus, as long as the stream is
+>>> handled as stereo, it could be passed as is, although it's not
+>>> optimal.
+>>
+>> So the official recommendation is that summing left and right to make a
+>> mono signal, is to be considered an invalid operation?
+>
+> It's not invalid in general but invalid for this digital mic.  That's
+> the only point.  Thus, avoiding summing only for known bad devices is
+> also a way to go, IMO.  It'd work more or less stably.
+> OTOH, muting the right reduces the risk but it also has a problem of
+> the lower volume and the lack of right signal in stereo streams, both
+> of which aren't easily avoided.
+>
+> So we need to find some point of compromise...
 
-I will sent out the new GPMI patches (with DT enable) after this 
-patch-set is merged.
+Avoiding summing only for known bad devices and only when mixer is set 
+to capture Internal Mic, is a quite complex condition that would have to 
+implemented in not only PulseAudio, but every application using ALSA 
+directly. (Well, and wants to either sum, or to avoid loss of bass and 
+strange stereo effects.)
 
-thanks
+The lower volume problem is also an argument only if you want to sum the 
+signal; so in this case it's lower volume against a cancelled signal 
+altogether, in which case lower volume is better.
 
-BR
-Huang Shijie
+That leaves the lack of right signal in stereo streams, as a 
+disadvantage with the proposed solution. In which use cases do you think 
+this is a problem?
 
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
