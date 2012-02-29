@@ -1,97 +1,52 @@
-From: Kevin Hilman <khilman@ti.com>
-Subject: Re: HDA intel, wired headset w/mic, jack mic detect
-Date: Wed, 29 Feb 2012 11:08:13 -0800
-Message-ID: <87zkc1cvaa.fsf@ti.com>
-References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
-	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
-	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 03/10] ASoC: OMAP: McBSP: Consolidate plat/mcbsp.h
+ content
+Date: Wed, 29 Feb 2012 23:30:46 +0000
+Message-ID: <20120229233046.GF8295@opensource.wolfsonmicro.com>
+References: <1330414820-4641-1-git-send-email-peter.ujfalusi@ti.com>
+ <1330414820-4641-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
-	[74.125.149.69]) by alsa0.perex.cz (Postfix) with SMTP id 2F6DF104016
-	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 20:08:29 +0100 (CET)
-Received: by mail-pw0-f44.google.com with SMTP id wz17so3816141pbc.31
-	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 11:08:15 -0800 (PST)
-In-Reply-To: <CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
-	(Raymond Yau's message of "Wed, 29 Feb 2012 23:05:25 +0800")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VuQYccsttdhdIfIP"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1330414820-4641-4-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau <superquad.vortex2@gmail.com> writes:
 
-> Does your headset/mic has a TRRS (Tip, ring, ring, sleeve) connector
-> instead of TRS (Tip, ring, sleeve) connector ?
+--VuQYccsttdhdIfIP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes.  It's TRRS.
+On Tue, Feb 28, 2012 at 09:40:13AM +0200, Peter Ujfalusi wrote:
+> Move most of the content of the plat/mcbsp.h header file under
+> sound/soc/omap/ to help further cleanups.
 
-But below, I tried with a normal stero headset (no mic) which has a TRS
-connector too.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> You can use David's hda-jack-sense-test to find out any jack sense at
-> the node of External mic when you plug the headset , if not , you may
-> need to modify unsol event of  headphone to select the external mic ,
-> internal mic.
+--VuQYccsttdhdIfIP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Here are the results of hda-jack-sense-test
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-Nothing plugged in:
+iQIcBAEBAgAGBQJPTrUfAAoJEBus8iNuMP3dNjsP/REz+bRYA9ADpkpJrkWxPcu5
+TXzv6kQieVvsFmsRlcRAOp+ZmCNcwMjgFHNa28PlpuundMhNH4InmHJ4E3bJPk2/
+x0l+tqG6q7V4tY5v9Y27vgafctkF63ah2OpxEwz4UVmnAadhSbBBeKhe3uSEzVzN
++8OUSaAHANH4mfCjtQVGdQ0Zox/c6fAYct0Ivi9B7icyUZtxsCXuBYxiPnyNvEva
+PHsIVqvNIFpiwG8BqnZIJnunp0u9s5Cyl2h6CwiMJ6mBHjiG4XuJTd3iJ8hYmb6/
+8gdjAaYg7fXJsrQ3zT1cvsjhneZRbsYQFfEGRVcsUQ58+BWKOqxYUAP5JQzgrFXD
+fqxBMPhK3nv4uieGTF5uuWU+3EB+JfflnOo9tnT44GDxMCLjbdnP1dreTsoSzhO2
+QMH+4rdZlv0/GR4nUIrE2UyajvuvIeFMKi5eXoqNcIBjJFAfqWxnSNeT57dNdvXg
+AyfIl+tW6JdAsN8cD4sD1CUscwLUw+7720Q7Dc4Vhka2UIfrDb/IT28CH4U0Yb13
+Uqi8sJpFoI4MeyPPrUpHNY6xt8ah8IFPCtRmgtHcjG1eufFCQJAWeRV4Vz0oCFTv
+a7mRnhTq2IGAyn4RlzOzoxogR6Cnyc1vkWHT74EKnxDfTNunpc3AUciggMd6KKWt
+boxTDjThUest15nyYNjT
+=h1of
+-----END PGP SIGNATURE-----
 
-# hda-jack-sense-test -a
-Pin 0x09 (Green HP Out): present = No
-Pin 0x0a (Not connected): present = No
-Pin 0x0b (Internal Speaker): present = No
-Pin 0x0c (Not connected): present = No
-Pin 0x0d (Internal Mic): present = No
-Pin 0x0e (Not connected): present = No
-Pin 0x0f (Not connected): present = No
-Pin 0x10 (Not connected): present = No
-Pin 0x12 (Not connected): present = No
-Pin 0x15 (Not connected): present = No
-
-With regular stereo headphones with (*no* mic, TRS):
-
-# hda-jack-sense-test -a
-Pin 0x09 (Green HP Out): present = Yes
-Pin 0x0a (Not connected): present = No
-Pin 0x0b (Internal Speaker): present = No
-Pin 0x0c (Not connected): present = No
-Pin 0x0d (Internal Mic): present = No
-Pin 0x0e (Not connected): present = No
-Pin 0x0f (Not connected): present = No
-Pin 0x10 (Not connected): present = No
-Pin 0x12 (Not connected): present = No
-Pin 0x15 (Not connected): present = No
-
-Finally, plugging the headset w/mic (TRRS):
-
-root@eze:~# hda-jack-sense-test -a
-Pin 0x09 (Green HP Out): present = Yes
-Pin 0x0a (Not connected): present = No
-Pin 0x0b (Internal Speaker): present = No
-Pin 0x0c (Not connected): present = No
-Pin 0x0d (Internal Mic): present = No
-Pin 0x0e (Not connected): present = No
-Pin 0x0f (Not connected): present = No
-Pin 0x10 (Not connected): present = No
-Pin 0x12 (Not connected): present = No
-Pin 0x15 (Not connected): present = No
-
-As you can see, there's no detected difference between the TRS and TRRS
-headsets, which is the root of the problem.
-
-Since this is a MacBookAir, it dual-boots OSX, and the detection works
-just fine using the same headset under OSX.
-
-Kevin
+--VuQYccsttdhdIfIP--
