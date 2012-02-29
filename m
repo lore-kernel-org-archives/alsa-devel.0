@@ -1,15 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Make sure we don't have MICBIAS
-	on during jackdet mode
-Date: Wed, 29 Feb 2012 10:35:58 +0000
-Message-ID: <1330511758-5627-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] Inverted internal mic
+Date: Wed, 29 Feb 2012 11:45:40 +0100
+Message-ID: <4F4E01D4.9030505@canonical.com>
+References: <4F4C9714.1080307@canonical.com> <s5haa43ux7u.wl%tiwai@suse.de>
+	<4F4CA438.90103@canonical.com> <s5hvcmrp7ji.wl%tiwai@suse.de>
+	<4F4CD1AF.2050409@canonical.com> <s5hboojozx7.wl%tiwai@suse.de>
+	<4F4CE264.7040008@canonical.com> <s5hy5rnnfvz.wl%tiwai@suse.de>
+	<4F4D18C3.1020700@canonical.com> <s5h1upevj5u.wl%tiwai@suse.de>
+	<4F4DEE1F.8020002@canonical.com> <s5h62eqnetq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 74568103C15
-	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 11:36:05 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE091103C32
+	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 11:45:44 +0100 (CET)
+In-Reply-To: <s5h62eqnetq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,72 +26,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com, 903853@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   25 +++++++++++++------------
- 1 files changed, 13 insertions(+), 12 deletions(-)
+On 02/29/2012 10:56 AM, Takashi Iwai wrote:
+> At Wed, 29 Feb 2012 10:21:35 +0100,
+> David Henningsson wrote:
+>>
+>> On 02/28/2012 08:42 PM, Takashi Iwai wrote:
+>>> At Tue, 28 Feb 2012 19:11:15 +0100,
+>>> David Henningsson wrote:
+>>>>
+>>>> On 02/28/2012 04:20 PM, Takashi Iwai wrote:
+>>>>>> I'm talking about recording an internal mic in *stereo*, as I just wrote
+>>>>>> below. Or don't you agree that is a valid and probably fairly common use
+>>>>>> case?
+>>>>>
+>>>>> Well, when you record it in stereo, and play it back, then you hear
+>>>>> the sound without problem.
+>>>>
+>>>> That could definitely be questioned: depending on the distance between
+>>>> speakers when you're finally playing it back, you might lose bass
+>>>> frequencies [1]. (That said, I'm not sure how much bass these mics pick
+>>>> up anyway.)
+>>>
+>>> Well, it might be, in the worst case.
+>>>
+>>>>> The problem happens only when you sum the
+>>>>> left and right signals into mono.  Thus, as long as the stream is
+>>>>> handled as stereo, it could be passed as is, although it's not
+>>>>> optimal.
+>>>>
+>>>> So the official recommendation is that summing left and right to make a
+>>>> mono signal, is to be considered an invalid operation?
+>>>
+>>> It's not invalid in general but invalid for this digital mic.  That's
+>>> the only point.  Thus, avoiding summing only for known bad devices is
+>>> also a way to go, IMO.  It'd work more or less stably.
+>>> OTOH, muting the right reduces the risk but it also has a problem of
+>>> the lower volume and the lack of right signal in stereo streams, both
+>>> of which aren't easily avoided.
+>>>
+>>> So we need to find some point of compromise...
+>>
+>> Avoiding summing only for known bad devices and only when mixer is set
+>> to capture Internal Mic, is a quite complex condition that would have to
+>> implemented in not only PulseAudio, but every application using ALSA
+>> directly. (Well, and wants to either sum, or to avoid loss of bass and
+>> strange stereo effects.)
+>
+> As mentioned, ALSA-native "default" doesn't sum for mono signals.
+> It's not optimal for stereo, yeah, but better than summing blindly.
+>
+>> The lower volume problem is also an argument only if you want to sum the
+>> signal; so in this case it's lower volume against a cancelled signal
+>> altogether, in which case lower volume is better.
+>
+> Of course.  But my comparison is "pick up only left" vs "sum but
+> right-mute".  In the latter case, the lower volume happens also in
+> stereo streams (as a total volume), too.
+>
+>> That leaves the lack of right signal in stereo streams, as a
+>> disadvantage with the proposed solution. In which use cases do you think
+>> this is a problem?
+>
+> Honestly, I don't know.  It sounds really like a user's preference to
+> me.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 33bc718..691e897 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3170,9 +3170,6 @@ static void wm8958_default_micdet(u16 status, void *data)
- 			snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
- 					    WM8958_MICD_ENA, 0);
- 
--			wm1811_jackdet_set_mode(codec,
--						WM1811_JACKDET_MODE_JACK);
--
- 			if (wm8994->pdata->jd_ext_cap) {
- 				mutex_lock(&codec->mutex);
- 				snd_soc_dapm_disable_pin(&codec->dapm,
-@@ -3180,6 +3177,9 @@ static void wm8958_default_micdet(u16 status, void *data)
- 				snd_soc_dapm_sync(&codec->dapm);
- 				mutex_unlock(&codec->mutex);
- 			}
-+
-+			wm1811_jackdet_set_mode(codec,
-+						WM1811_JACKDET_MODE_JACK);
- 		}
- 	}
- 
-@@ -3235,23 +3235,24 @@ static irqreturn_t wm1811_jackdet_irq(int irq, void *data)
- 		snd_soc_update_bits(codec, WM8958_MICBIAS2,
- 				    WM8958_MICB2_DISCH, 0);
- 
--		/* If required for an external cap force MICBIAS on */
--		if (wm8994->pdata->jd_ext_cap) {
--			mutex_lock(&codec->mutex);
--			snd_soc_dapm_force_enable_pin(&codec->dapm,
--						      "MICBIAS2");
--			snd_soc_dapm_sync(&codec->dapm);
--			mutex_unlock(&codec->mutex);
--		}
--
- 		/*
- 		 * Start off measument of microphone impedence to find
- 		 * out what's actually there.
- 		 */
- 		wm8994->mic_detecting = true;
- 		wm1811_jackdet_set_mode(codec, WM1811_JACKDET_MODE_MIC);
-+
- 		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
- 				    WM8958_MICD_ENA, WM8958_MICD_ENA);
-+
-+		/* If required for an external cap force MICBIAS on */
-+		if (wm8994->pdata->jd_ext_cap) {
-+			mutex_lock(&codec->mutex);
-+			snd_soc_dapm_force_enable_pin(&codec->dapm,
-+						      "MICBIAS2");
-+			snd_soc_dapm_sync(&codec->dapm);
-+			mutex_unlock(&codec->mutex);
-+		}
- 	} else {
- 		dev_dbg(codec->dev, "Jack not detected\n");
- 
+Ok.
+
+> BTW, it'd be possible to give some offsets to the internal mic capture
+> volume to compensate the lack of a stream.
+
+Hmm...could you elaborate on this? What type of offsets are you 
+referring to?
+
+> Or, to make this behavior
+> selective via a mixer control.  In either way (especially the latter)
+> will make the code more complex.  So the question still remains: how
+> much compromise.
+
+
 -- 
-1.7.9.1
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
