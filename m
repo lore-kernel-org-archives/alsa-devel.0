@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Samsung: Update email id of the
-	author
-Date: Wed, 29 Feb 2012 23:38:41 +0000
-Message-ID: <20120229233841.GL8295@opensource.wolfsonmicro.com>
-References: <1330167276-2913-1-git-send-email-jassisinghbrar@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HDA intel, wired headset w/mic, jack mic detect
+Date: Thu, 1 Mar 2012 07:43:53 +0800
+Message-ID: <CAN8ccib90y8m0KLTYKe7Jz5sXVZFY=D7aUwm8vog3aZvZPHH0Q@mail.gmail.com>
+References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
+	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
+	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
+	<87zkc1cvaa.fsf@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6661457301959313434=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A3235103C52
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2012 00:38:43 +0100 (CET)
-In-Reply-To: <1330167276-2913-1-git-send-email-jassisinghbrar@gmail.com>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 096D0104056
+	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2012 00:43:54 +0100 (CET)
+Received: by wiax18 with SMTP id x18so1567513wia.38
+	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 15:43:53 -0800 (PST)
+In-Reply-To: <87zkc1cvaa.fsf@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +26,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaswinder Singh <jaswinder.singh@linaro.org>
-Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, Jaswinder Singh <jassisinghbrar@gmail.com>, lrg@ti.com
+To: Kevin Hilman <khilman@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2012/3/1, Kevin Hilman <khilman@ti.com>:
+> Raymond Yau <superquad.vortex2@gmail.com> writes:
+>
+>> Does your headset/mic has a TRRS (Tip, ring, ring, sleeve) connector
+>> instead of TRS (Tip, ring, sleeve) connector ?
+>
+> Yes.  It's TRRS.
+>
+> But below, I tried with a normal stero headset (no mic) which has a TRS
+> connector too.
+>
+>> You can use David's hda-jack-sense-test to find out any jack sense at
+>> the node of External mic when you plug the headset , if not , you may
+>> need to modify unsol event of  headphone to select the external mic ,
+>> internal mic.
+>
+> Here are the results of hda-jack-sense-test
+>
+> Nothing plugged in:
+>
+> # hda-jack-sense-test -a
+> Pin 0x09 (Green HP Out): present = No
+> Pin 0x0a (Not connected): present = No
+> Pin 0x0b (Internal Speaker): present = No
+> Pin 0x0c (Not connected): present = No
+> Pin 0x0d (Internal Mic): present = No
+> Pin 0x0e (Not connected): present = No
+> Pin 0x0f (Not connected): present = No
+> Pin 0x10 (Not connected): present = No
+> Pin 0x12 (Not connected): present = No
+> Pin 0x15 (Not connected): present = No
+>
+> With regular stereo headphones with (*no* mic, TRS):
+>
+> # hda-jack-sense-test -a
+> Pin 0x09 (Green HP Out): present = Yes
+> Pin 0x0a (Not connected): present = No
+> Pin 0x0b (Internal Speaker): present = No
+> Pin 0x0c (Not connected): present = No
+> Pin 0x0d (Internal Mic): present = No
+> Pin 0x0e (Not connected): present = No
+> Pin 0x0f (Not connected): present = No
+> Pin 0x10 (Not connected): present = No
+> Pin 0x12 (Not connected): present = No
+> Pin 0x15 (Not connected): present = No
+>
+> Finally, plugging the headset w/mic (TRRS):
+>
+> root@eze:~# hda-jack-sense-test -a
+> Pin 0x09 (Green HP Out): present = Yes
+> Pin 0x0a (Not connected): present = No
+> Pin 0x0b (Internal Speaker): present = No
+> Pin 0x0c (Not connected): present = No
+> Pin 0x0d (Internal Mic): present = No
+> Pin 0x0e (Not connected): present = No
+> Pin 0x0f (Not connected): present = No
+> Pin 0x10 (Not connected): present = No
+> Pin 0x12 (Not connected): present = No
+> Pin 0x15 (Not connected): present = No
+>
+> As you can see, there's no detected difference between the TRS and TRRS
+> headsets, which is the root of the problem.
 
---===============6661457301959313434==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Y+Z5jE7Arku/2GrR"
-Content-Disposition: inline
+can you post the output of alsa-info.sh ?
+
+In the codec info, do you find  Misc bit of pin defaults of the node
+[jack] Mic at Ext is set ? (i.e. Misc = NO_PRESENCE ) ?
+
+you need to add the mic select code to the unsolicited event of hp
+automute speaker
+
+    present =  snd_hda_jack_detect(codec, 0x9) ;
+    if (present)
+          select ext mic
+   else
+          select int mic
 
 
---Y+Z5jE7Arku/2GrR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Feb 25, 2012 at 04:24:36PM +0530, Jaswinder Singh wrote:
-> I moved on from a great employer and the email-id no longer exists.
-> Update email-id to a personal one, assuming I don't move on from
-> myself anytime soon. And when I do, people don't get the eulogies
-> bounced.
-
-Applied, thanks.
-
---Y+Z5jE7Arku/2GrR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPTrbwAAoJEBus8iNuMP3d3kUP/jyX8IqLiZ33iWjZfosNEq3C
-fNh21ypgdTfBpkAXy690Er+tWkkgatKiIp/M1VOJ/y5JrDT3+fKV0qlRi0rYPdqH
-hjMqnkqX+lT550XAe0kzr7I77aluQgXuAyidTd7KdH8nSDWLvMBeT7/7oBqKlrSa
-fkZiSJKFS5RT12cp/EI+MZq93wQ3caxSqp4sSrSUtk/HKfUFPCRWeT5HE5CcknB4
-9+nHM02BVsVhgkmSKCddOVHw0hQxKbhRvx0SIzhcGgZkG5BRtEgVjQz7xJ3TSQRO
-ucGlCv7LGqMbhXBaa2dPBtC59N2yJdMipJ0texKwY22aL8vOCWyO6LaZjEDAha+U
-VI3YHFR7jqW7gn6yIjK2+lFIo+TIxIivsHNd9Kxowo2NHjzOluYCH1Zth7GME3b8
-PM4k2coiR20nT/tb2eRtUagH/xiuxRKX3r4GEv2Zy8jC28HUdxXjX+pmHgFOv9d6
-Vig2sjIMNCiKnhSFd/mJMRPwqsa92tZ4nE60Ru0eWkBnLi5O0amNU6Shx+sPQPgj
-NkZzngkj81oIVEKxGEymIo60UI0wlwCgS5atNLBS3FT8IPPR1g3Yac2YIWIJw92h
-NWCOcF1BDk3n0rS5/7WKnzMUiV5LX/UuG9yJLCt+kiggs6ynXfkTzva+nEOTRtv9
-y8w7FyEekLHdVWH+6XmG
-=LvC5
------END PGP SIGNATURE-----
-
---Y+Z5jE7Arku/2GrR--
-
---===============6661457301959313434==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6661457301959313434==--
+>
+> Since this is a MacBookAir, it dual-boots OSX, and the detection works
+> just fine using the same headset under OSX.
