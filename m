@@ -1,14 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8996: Fix /RESET bounce ordering
-Date: Wed, 29 Feb 2012 17:45:58 +0000
-Message-ID: <1330537558-20879-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: HDA intel, wired headset w/mic, jack mic detect
+Date: Wed, 29 Feb 2012 11:08:13 -0800
+Message-ID: <87zkc1cvaa.fsf@ti.com>
+References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
+	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
+	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17A9F103C44
-	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 18:47:39 +0100 (CET)
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69]) by alsa0.perex.cz (Postfix) with SMTP id 2F6DF104016
+	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 20:08:29 +0100 (CET)
+Received: by mail-pw0-f44.google.com with SMTP id wz17so3816141pbc.31
+	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 11:08:15 -0800 (PST)
+In-Reply-To: <CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
+	(Raymond Yau's message of "Wed, 29 Feb 2012 23:05:25 +0800")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,30 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We want to leave the device out of rather than in reset.
+Raymond Yau <superquad.vortex2@gmail.com> writes:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> Does your headset/mic has a TRRS (Tip, ring, ring, sleeve) connector
+> instead of TRS (Tip, ring, sleeve) connector ?
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index c1c7ef0..9376b19 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -1719,8 +1719,8 @@ static bool wm8996_volatile_register(struct device *dev, unsigned int reg)
- static int wm8996_reset(struct wm8996_priv *wm8996)
- {
- 	if (wm8996->pdata.ldo_ena > 0) {
--		gpio_set_value_cansleep(wm8996->pdata.ldo_ena, 1);
- 		gpio_set_value_cansleep(wm8996->pdata.ldo_ena, 0);
-+		gpio_set_value_cansleep(wm8996->pdata.ldo_ena, 1);
- 		return 0;
- 	} else {
- 		return regmap_write(wm8996->regmap, WM8996_SOFTWARE_RESET,
--- 
-1.7.9.1
+Yes.  It's TRRS.
+
+But below, I tried with a normal stero headset (no mic) which has a TRS
+connector too.
+
+> You can use David's hda-jack-sense-test to find out any jack sense at
+> the node of External mic when you plug the headset , if not , you may
+> need to modify unsol event of  headphone to select the external mic ,
+> internal mic.
+
+Here are the results of hda-jack-sense-test
+
+Nothing plugged in:
+
+# hda-jack-sense-test -a
+Pin 0x09 (Green HP Out): present = No
+Pin 0x0a (Not connected): present = No
+Pin 0x0b (Internal Speaker): present = No
+Pin 0x0c (Not connected): present = No
+Pin 0x0d (Internal Mic): present = No
+Pin 0x0e (Not connected): present = No
+Pin 0x0f (Not connected): present = No
+Pin 0x10 (Not connected): present = No
+Pin 0x12 (Not connected): present = No
+Pin 0x15 (Not connected): present = No
+
+With regular stereo headphones with (*no* mic, TRS):
+
+# hda-jack-sense-test -a
+Pin 0x09 (Green HP Out): present = Yes
+Pin 0x0a (Not connected): present = No
+Pin 0x0b (Internal Speaker): present = No
+Pin 0x0c (Not connected): present = No
+Pin 0x0d (Internal Mic): present = No
+Pin 0x0e (Not connected): present = No
+Pin 0x0f (Not connected): present = No
+Pin 0x10 (Not connected): present = No
+Pin 0x12 (Not connected): present = No
+Pin 0x15 (Not connected): present = No
+
+Finally, plugging the headset w/mic (TRRS):
+
+root@eze:~# hda-jack-sense-test -a
+Pin 0x09 (Green HP Out): present = Yes
+Pin 0x0a (Not connected): present = No
+Pin 0x0b (Internal Speaker): present = No
+Pin 0x0c (Not connected): present = No
+Pin 0x0d (Internal Mic): present = No
+Pin 0x0e (Not connected): present = No
+Pin 0x0f (Not connected): present = No
+Pin 0x10 (Not connected): present = No
+Pin 0x12 (Not connected): present = No
+Pin 0x15 (Not connected): present = No
+
+As you can see, there's no detected difference between the TRS and TRRS
+headsets, which is the root of the problem.
+
+Since this is a MacBookAir, it dual-boots OSX, and the detection works
+just fine using the same headset under OSX.
+
+Kevin
