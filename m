@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Samsung: Merge two identical if-else
-	clauses
-Date: Wed, 29 Feb 2012 23:37:43 +0000
-Message-ID: <20120229233743.GK8295@opensource.wolfsonmicro.com>
-References: <1330168354-3197-1-git-send-email-jaswinder.singh@linaro.org>
+Subject: Re: [PATCH] ASoC: Samsung: Update email id of the
+	author
+Date: Wed, 29 Feb 2012 23:38:41 +0000
+Message-ID: <20120229233841.GL8295@opensource.wolfsonmicro.com>
+References: <1330167276-2913-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8180119151865357459=="
+Content-Type: multipart/mixed; boundary="===============6661457301959313434=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 92EC2104055
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2012 00:37:46 +0100 (CET)
-In-Reply-To: <1330168354-3197-1-git-send-email-jaswinder.singh@linaro.org>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A3235103C52
+	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2012 00:38:43 +0100 (CET)
+In-Reply-To: <1330167276-2913-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,55 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lrg@ti.com
+To: Jaswinder Singh <jaswinder.singh@linaro.org>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, Jaswinder Singh <jassisinghbrar@gmail.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8180119151865357459==
+--===============6661457301959313434==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="M9kwpIYUMbI/2cCx"
+	protocol="application/pgp-signature"; boundary="Y+Z5jE7Arku/2GrR"
 Content-Disposition: inline
 
 
---M9kwpIYUMbI/2cCx
+--Y+Z5jE7Arku/2GrR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Feb 25, 2012 at 04:42:34PM +0530, Jassi Brar wrote:
-> Saves two lines and a hell of a lot of embarrassment looking at the code.
+On Sat, Feb 25, 2012 at 04:24:36PM +0530, Jaswinder Singh wrote:
+> I moved on from a great employer and the email-id no longer exists.
+> Update email-id to a personal one, assuming I don't move on from
+> myself anytime soon. And when I do, people don't get the eulogies
+> bounced.
 
 Applied, thanks.
 
---M9kwpIYUMbI/2cCx
+--Y+Z5jE7Arku/2GrR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPTrbAAAoJEBus8iNuMP3drSsQAJ16HrYrJgRKR8g/dWnmATZ1
-GEvsWUhwjYjMiJPWAjuD/jzsT660j347qzHd7bdl5ZYYJVkhijYsTa0Mg+Z0Us/w
-KTAKB+9tKPUe8pTbw3+j4nZrrA6uAcXXySlA/3EJOcivD21iArU6jk2RgKAqq+mu
-1J5ebmVvJLEei6/KdDa0nWJr2cG2Bi4O+JS67B1Ust4T0lW58ZZCYqbLQ0YyyRgl
-m36AZ8uYlL2XwCN0TcWnVlXu8nyBD82Uf2Z/Hes7M5M/J+oNE8DG8O8tWc9GWCff
-+WvNhTtYwSpfCyF4XKDHx1PW0X0tfunTGz9iyhBZI1vl4bNRUoUVbuAhpoFyJjQL
-FvIGw/GmOKlvp4TVtqVABBsO+4Htpi7pwmf87hBEHG43/idV0znGe3JJxZmRuwEV
-73Zasm/aDmEEim7GF//4fryKU+PsIv73HgYfEsp845hW2z6l0UN6wcmpF/mYXmUF
-3cSqU7ARpqEqk3d38DeS2D0fqNWN1PSyee8XOOcHLbyXk+trzI3C4fl89Q5l5wRS
-liY2KaSTPjCIytIkOpbiwyDHY8bFnltVGxOuKZy72lyGxs3Woqga5CME1gaj5/vZ
-MMkXwQS+RbfNPsATwZ5Rx5+L3AhOtJBeAJx1Ab8RVEJSNdtJoZc1BgC31xtVwvzY
-va1DevArs8SKpoKKGT+8
-=VQhY
+iQIcBAEBAgAGBQJPTrbwAAoJEBus8iNuMP3d3kUP/jyX8IqLiZ33iWjZfosNEq3C
+fNh21ypgdTfBpkAXy690Er+tWkkgatKiIp/M1VOJ/y5JrDT3+fKV0qlRi0rYPdqH
+hjMqnkqX+lT550XAe0kzr7I77aluQgXuAyidTd7KdH8nSDWLvMBeT7/7oBqKlrSa
+fkZiSJKFS5RT12cp/EI+MZq93wQ3caxSqp4sSrSUtk/HKfUFPCRWeT5HE5CcknB4
+9+nHM02BVsVhgkmSKCddOVHw0hQxKbhRvx0SIzhcGgZkG5BRtEgVjQz7xJ3TSQRO
+ucGlCv7LGqMbhXBaa2dPBtC59N2yJdMipJ0texKwY22aL8vOCWyO6LaZjEDAha+U
+VI3YHFR7jqW7gn6yIjK2+lFIo+TIxIivsHNd9Kxowo2NHjzOluYCH1Zth7GME3b8
+PM4k2coiR20nT/tb2eRtUagH/xiuxRKX3r4GEv2Zy8jC28HUdxXjX+pmHgFOv9d6
+Vig2sjIMNCiKnhSFd/mJMRPwqsa92tZ4nE60Ru0eWkBnLi5O0amNU6Shx+sPQPgj
+NkZzngkj81oIVEKxGEymIo60UI0wlwCgS5atNLBS3FT8IPPR1g3Yac2YIWIJw92h
+NWCOcF1BDk3n0rS5/7WKnzMUiV5LX/UuG9yJLCt+kiggs6ynXfkTzva+nEOTRtv9
+y8w7FyEekLHdVWH+6XmG
+=LvC5
 -----END PGP SIGNATURE-----
 
---M9kwpIYUMbI/2cCx--
+--Y+Z5jE7Arku/2GrR--
 
---===============8180119151865357459==
+--===============6661457301959313434==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8180119151865357459==--
+--===============6661457301959313434==--
