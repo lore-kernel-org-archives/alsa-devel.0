@@ -1,143 +1,148 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HDA intel, wired headset w/mic, jack mic detect
-Date: Thu, 1 Mar 2012 13:56:21 +0800
-Message-ID: <CAN8cciayARuQGLH=DHsReH0sYbz92K3BPNhmNEqYmSjc6wUUVw@mail.gmail.com>
-References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
-	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
-	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
-	<87zkc1cvaa.fsf@ti.com>
-	<CAN8ccib90y8m0KLTYKe7Jz5sXVZFY=D7aUwm8vog3aZvZPHH0Q@mail.gmail.com>
-	<874nu99k9y.fsf@ti.com>
+From: Jan Prunk <janprunk@gmail.com>
+Subject: Bug#654799: Cranking sound coming out of speakers with the new 3.1 kernel
+Date: Thu, 1 Mar 2012 08:44:33 +0100
+Message-ID: <CALnoPX5-38i_JFVifgxCzGA+nA4UVpmcpxrgDwrH9ZfmzHyXLg@mail.gmail.com>
+References: <20120105205738.3851.59595.reportbug@vaio.prunk.si>
+ <20120105214103.GA8734@elie.hsd1.il.comcast.net> <CALnoPX5bLu7SHWRTAf09_PcYS_ogGeMprGj_K=KkZAjGJXsEXA@mail.gmail.com>
+ <CALnoPX5wFO7Wf6tTh5D8oHTyi2G+VzDceisFBTyagxdf1NviBQ@mail.gmail.com>
+ <20120113230400.GC7343@burratino> <CALnoPX69o_qALtbxyqd+QPx3VJ62RVAVPzHy-EbLUNSU=v_3pQ@mail.gmail.com>
+ <s5hwr77nf2z.wl%tiwai@suse.de>
+Reply-To: Jan Prunk <janprunk@gmail.com>, 654799@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30D0310393F
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2012 06:56:23 +0100 (CET)
-Received: by werg1 with SMTP id g1so126251wer.38
-	for <alsa-devel@alsa-project.org>; Wed, 29 Feb 2012 21:56:21 -0800 (PST)
-In-Reply-To: <874nu99k9y.fsf@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@ti.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.654799.B654799.133058790213029@bugs.debian.org>
+In-Reply-To: <s5hwr77nf2z.wl%tiwai@suse.de>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Nieder <jrnieder@gmail.com>, 654799@bugs.debian.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/3/1, Kevin Hilman <khilman@ti.com>:
-> Raymond Yau <superquad.vortex2@gmail.com> writes:
->
-> [...]
->
->>> As you can see, there's no detected difference between the TRS and TRRS
->>> headsets, which is the root of the problem.
+Hello !
+
+The sound has been stable for the last days without noises,
+after applying % amixer -c0 set "Auto-Mute Mode" "Disabled"
+
+It seems this has solved it, until further notice.
+You might want to keep the bug open for a while,
+so I can check with all the kernels (it works with latest).
+
+Kind regards,
+Jan
+
+On Tue, Feb 28, 2012 at 4:38 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 28 Feb 2012 16:16:48 +0100,
+> Jan Prunk wrote:
 >>
->> can you post the output of alsa-info.sh ?
+>> Hello !
+>>
+>> On Sat, Jan 14, 2012 at 12:04 AM, Jonathan Nieder <jrnieder@gmail.com> w=
+rote:
+>> > Hi again,
+>> >
+>> > Jan Prunk wrote:
+>> >
+>> >> I tried booting into 3.2.0-rc7-686-pae, but the crunching sound
+>> >> is still present, I am able to play music file properly, and
+>> >> crunching is in the background, and also while not processing
+>> >> any sounds, the crunching appears out of the speakers.
+>> >
+>> > Ok, thanks for testing. =C2=A0Please send a summary of this regression=
+ to
+>> > alsa-devel@alsa-project.org, cc-ing Takashi Iwai <tiwai@suse.de> and
+>> > either me or this bug log so we can track it.
+>> >
+>> > Be sure to mention:
+>> >
+>> > =C2=A0- steps to reproduce, what you expect versus what actually happe=
+ns,
+>> > =C2=A0 and how that indicates a bug
+>>
+>> The sound is ok in kernel version "3.0.0-1-686-pae" but on all newer
+>> versions there are sparkling/farting noises coming out of the speaker.
+>> The noise is not very loud, its barely noticeable, but its repetative
+>> and doesn't go away. And I think it happens while typing on the
+>> keyboard and a bit later, then it dissapears for a few seconds,
+>> or by the time that I type again.
+>>
+>> > =C2=A0- which kernel versions you tried, and what happens with each
+>> I tried running alsa-info.sh as a "user".
+>>
+>> I tried 3.0.0-1-686-pae here is the debug:
+>> http://www.alsa-project.org/db/?f=3Dc1149b6466b2068d79c7517a8b0808d8b5c2=
+6e6b
+>> ---
+>> Linux vaio 3.2.0-1-686-pae #1 SMP Fri Feb 17 06:27:21 UTC 2012 i686 GNU/=
+Linux
+>> ii =C2=A0linux-image-3.2.0-1-686-pae =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A03=
+.2.6-1
+>> http://www.alsa-project.org/db/?f=3Dfddbfbdc4fc44555a6dc851ecdc70760da6d=
+d840
+>> ---
+>> Linux vaio 3.2.0-rc7-686-pae #1 SMP Wed Dec 28 21:26:25 UTC 2011 i686 GN=
+U/Linux
+>> ii =C2=A0linux-image-3.2.0-rc7-686-pae =C2=A0 =C2=A0 =C2=A0 =C2=A03.2~rc=
+7-1~experimental.1
+>> http://www.alsa-project.org/db/?f=3D78c8919e87dd03294484f83b5f7ae44331b5=
+edfe
+>> Being booted into this version for 15 minutes, it seems to not make any =
+noises,
+>> but I will resubmit the info later if the noises will start to appear.
 >
-> below is the output when the headset w/mic is plugged in
+> 3.2.0-rc7 alsa-info shows that the headphone jack is plugged, thus the
+> speaker is muted. =C2=A0It's natural that the noise goes away in this
+> state.
 >
->> In the codec info, do you find  Misc bit of pin defaults of the node
->> [jack] Mic at Ext is set ? (i.e. Misc = NO_PRESENCE ) ?
+> Apart from that, I see no obvious problem in 3.2.0 output.
 >
-> I don't see any Mic at Ext, but I do see a 'Mic at Int' and it shows
-> NO_PRESENCE.
+> Does the problem still happen when you disable "Auto-Mute Mode" mixer
+> enum?
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0% amixer -c0 set "Auto-Mute Mode" "Disabled"
 >
-> Should I be seeing a 2 different Mics?  one for internal one for external?
-
-> Node 0x09 [Pin Complex] wcaps 0x410581: Stereo
->   Control: name="Headphone Jack", index=0, device=0
->   Pincap 0x0000001c: OUT HP Detect
->   Pin Default 0x012b4030: [Jack] HP Out at Ext Rear
->     Conn = Comb, Color = Green
->     DefAssociation = 0x3, Sequence = 0x0
->   Pin-ctls: 0xc0: OUT HP
->   Unsolicited: tag=01, enabled=1
->   Power states:  D0 D3 EPSS
->   Power: setting=D0, actual=D0
->   Delay: 1 samples
->   Connection: 1
->      0x02
-
-Headphone Conn=Combo
-but Pincap is OUTPUT only so it cannot be retasked as Input
-
-Does internal mic work or not ?
-
-It Int Mic is correct and 0x06 [Audio Input] is used ,
-
-ext mic may be at 0x0e
-
-you can use hda_analyzer to switch the connection at node 0x6 from 0x0d to 0x0e
-to test the external mic
-
-
-> Node 0x06 [Audio Input] wcaps 0x18051b: Stereo Amp-In
->   Control: name="Capture Switch", index=0, device=0
->   Control: name="Capture Volume", index=0, device=0
->   Device: name="Cirrus Analog", type="Audio", device=0
->   Amp-In caps: ofs=0x33, nsteps=0x3f, stepsize=0x03, mute=1
->   Amp-In vals:  [0x3f 0x3f] [0x3f 0x3f]
->   Converter: stream=0, channel=0
->   SDI-Select: 0
->   PCM:
->     rates [0x1f5]: 8000 16000 32000 44100 48000 88200 96000
->     bits [0x1e]: 16 20 24 32
->     formats [0x3]: PCM FLOAT
->   Power states:  D0 D3 EPSS
->   Power: setting=D0, actual=D0
->   Delay: 8 samples
->   Connection: 2
->      0x0d* 0x0e
-
->Node 0x0d [Pin Complex] wcaps 0x41048b: Stereo Amp-In
->  Control: name="Mic Capture Volume", index=0, device=0
->    ControlAmp: chs=3, dir=In, idx=0, ofs=0
->  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->  Amp-In vals:  [0x03 0x03]
->  Pincap 0x00001764: IN Detect Balanced
->    Vref caps: HIZ 50 GRD 80
->  Pin Default 0x90a00110: [Fixed] Mic at Int N/A
->    Conn = Unknown, Color = Unknown
->    DefAssociation = 0x1, Sequence = 0x0
->    Misc = NO_PRESENCE
->  Pin-ctls: 0x24: IN VREF_80
->  Unsolicited: tag=00, enabled=0
->  Power states:  D0 D3 EPSS
->  Power: setting=D0, actual=D0
->  Delay: 1 samples
-> Node 0x0e [Pin Complex] wcaps 0x41000b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00]
->   Pincap 0x00000020: IN
->   Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
->     Conn = Unknown, Color = Unknown
->     DefAssociation = 0xf, Sequence = 0x0
->   Pin-ctls: 0x00:
->   Delay: 1 samples
+> Also, try to pass algin_buffer_size=3D0 option to snd-hda-intel.
+> I don't expect much that this will influence, but at least, it's a
+> difference between 3.0 and 3.2.
+>
+>
+> Takashi
+>
+>
+>> > =C2=A0- alsa-info.sh output, as an attachment
+>> >
+>> > =C2=A0- if you can make a recording of the strange sound available
+>> > =C2=A0 somewhere online, that would be ideal
+>>
+>> Because the noise is barely heard, I would need to find a good mic.
+>> to be able to record it, but I could do that in the next bug submission.
+>>
+>> > =C2=A0- whether you are able to bisect or test patches if needed
+>>
+>> I might try that, if there are any manuals around how to do it,
+>> but my response might take some time.
+>>
+>> > [1] may have more hints.
+>> >
+>> > Thanks and good luck,
+>> > Jonathan
+>> >
+>> > [1] http://alsa-project.org/main/index.php/Help_To_Debug_Intel_HDA
+>>
+>> Kind regards,
+>> Jan Prunk
+>> --
+>> Jan Prunk=C2=A0=C2=A0 http://www.prunk.si
+>> 0x00E80E86=C2=A0 http://pgp.prunk.si
+>> http://AS50763.peeringdb.com
+>>
 
 
-There are also other possibilities 0xc and 0x12  if 0x05 is used
 
-
-Node 0x05 [Audio Input] wcaps 0x18051b: Stereo Amp-In
-  Amp-In caps: ofs=0x33, nsteps=0x3f, stepsize=0x03, mute=1
-  Amp-In vals:  [0xb3 0xb3] [0xb3 0xb3]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x1f5]: 8000 16000 32000 44100 48000 88200 96000
-    bits [0x1e]: 16 20 24 32
-    formats [0x3]: PCM FLOAT
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Delay: 8 samples
-  Connection: 2
-     0x0c* 0x12
+--=20
+Jan Prunk=C2=A0=C2=A0 http://www.prunk.si
+0x00E80E86=C2=A0 http://pgp.prunk.si
+http://AS50763.peeringdb.com
