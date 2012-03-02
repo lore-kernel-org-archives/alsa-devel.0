@@ -1,95 +1,102 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Fri, 2 Mar 2012 12:58:20 +0000
-Message-ID: <20120302125819.GE3230@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v5] sound/soc/lapis: add machine driver for
+ ML7213 Carrier Board
+Date: Fri, 2 Mar 2012 13:05:09 +0000
+Message-ID: <20120302130509.GF3230@opensource.wolfsonmicro.com>
 References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
- <20120229235147.GM8295@opensource.wolfsonmicro.com>
- <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
+	<1329976011-2251-3-git-send-email-tomoya.rohm@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="brEuL7wsLY8+TuWz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============9005702500415833997=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ECB9024409
+	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 14:05:12 +0100 (CET)
+In-Reply-To: <1329976011-2251-3-git-send-email-tomoya.rohm@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---brEuL7wsLY8+TuWz
-Content-Type: text/plain; charset=utf-8
+--===============9005702500415833997==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 02, 2012 at 05:16:04PM +0900, Tomoya MORINAGA wrote:
-> 2012=E5=B9=B43=E6=9C=881=E6=97=A58:51 Mark Brown <broonie@opensource.wolf=
-sonmicro.com>:
 
-> >> +static int ml26124_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
-> >> +                               int div_id, int div)
-> >> +{
-> >> +     struct snd_soc_codec *codec =3D codec_dai->codec;
+--eDB11BtaWSyaBkpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >> +     switch (div_id) {
-> >> +     case ML26124_MCLK:
-> >> +             ml26124_update_bits(codec, ML26124_CLK_CTL,
-> >> +                                   BIT(0) | BIT(1), div);
-> >> +             break;
+On Thu, Feb 23, 2012 at 02:46:51PM +0900, Tomoya MORINAGA wrote:
 
-> > Why can't the driver calculate this automatically given the MCLK?
+>  	  This option enables support for the AC Link Controllers in ML7213 IOH SoC.
+> +config SND_SOC_ML7213_MACHINE
+> +	tristate "ML7213 IOH ASoC machine driver"
+> +	select SND_SOC_ML7213_PLATFORM
+> +	help
+> +	  This is ASoC machine driver for ML7213 IOH
 
-> Sorry, I can't understand your saying.
-> Why does this driver need to calculate ?
-> I think this driver can use "div" value directly.
+This needs to depend on the CODEC as well, how have you tested?
 
-Why does the user have to set this divider by hand at all?  There's
-already a set_sysclk() function, just have the user specify the clock
-they're providing.
+You're also missing a blank line between this and the previous stanza.
 
-> >> +     ret =3D snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+> +	default:
+> +		pr_err("%s: Failed not support format\n", __func__);
+> +		return -EINVAL;
+> +		break;
 
-> > You're mixing regmap API usage and ASoC level I2C, this should be
-> > _REGMAP.
+return followed by break isn't entirely sensible.
 
-> Currently, it seems codec control via i2c works well.
-> Let me know why I should  use SND_SOC_REGMAP not _I2C.
+> +static struct platform_device *ioh_snd_device;
+> +
+> +
+> +static int __init ioh_i2s_init(void)
+> +{
+> +	int ret;
+> +	ioh_snd_device = platform_device_alloc("soc-audio", -1);
+> +	if (!ioh_snd_device)
+> +		return -ENOMEM;
 
-Have you checked what _I2C and _REGMAP do?
+Use snd_soc_register_card() and a real device.
 
-> >> +static int __init ml26124_modinit(void)
-> >> +{
-> >> +     int ret;
-> >> +
-> >> +     ret =3D i2c_add_driver(&ml26124_i2c_driver);
-> >> +     if (ret !=3D 0)
-
-> > module_i2c_driver().
-
-> Sorry, I can't understand your saying.
-
-Use module_i2c_driver().
-
---brEuL7wsLY8+TuWz
+--eDB11BtaWSyaBkpc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPUMPlAAoJEBus8iNuMP3dheIP/1v4aa8NKQM0Ad9vNHU2ImPP
-B1hDPCDC1BXOBHMDL9gx5fbf4aMprIss5fSM6yx9cbvXgQWe7mmUzOrqdXyXj2pW
-YhM8wbpT+T6n4X2PYopqd1eBQj2ukfFv7PW+fILZ454wwDgDdfeG/H1kiQOc1MbF
-T8YE9Dv+fpPBjAiGQRnF824NPOED8qdERxrBX8rfB001aDrSWTpoqcZu04ETz1d/
-oXWAebOAYFE+hDKgepLE3Xa/njbVpRHRH9N7zgxu3sI8x2zdQCjF2dWY9bnBx53A
-YW2+U6j9okitJa0PS/8HEAv/lk4ZkgRqrCz1nsCjE7DNoPWPWSwmDUj0LepH915d
-xaBbeR9hifQl++pm9WhqE/dg0kNQoz7IhJJsyxR1ZG3uAok0uDalfZXsYoVALL8m
-DC8RsIBSxnJaxrqrqyyJnZAjJQgegjYte54t64jqHuE8+vDV6Qy7eWOzJZV5y1kc
-AOLDJomEBFSOz8DGSIDc0Omm10R4VSy8YTOW5sOgcMNyW9Umv3OqkDbKyk3F+WBq
-Na2XAJ8dj79W6u+RBvu2XjkgYJ6EIX4eZki+xv3h8ru1SRk0Dt7p9IoQ/e5fnWYH
-okcG9j49GL0X/di6IbaIO2RI79LDMfPJi3IH1dN+x/A0V+/n7j3WZHiiBokBZr4k
-i8tUjdtU1LR1yODGh1ml
-=ciYL
+iQIcBAEBAgAGBQJPUMV8AAoJEBus8iNuMP3dxr0P/2ki+DkK5jq8Bc3havD9b4X0
+nbx4Gdv/y+G9hXM2Coe3y7SYwW0QUNFwbYvcSOJ7EPZQ5H5N4da/BC1EuMcmBoEZ
+zrKVwpqSiZ157m0Q/pvoqXQh8EnSlepjoI91rwRDKpIKPGOSpWZQW2D+AZ7GjCxr
+QLZnxxpvkFUot5OItPh+2S5stU+5QWZxXPRYSeg8EF4b+3LqnS7uLEtdCiiFSJY1
+SPqGz6TrEQ/oi0F6zvb0737moQTNkP95Zo4Xz54bmZQ30pBBxUE3dfmucyCUl8Cd
+estVPnSswPiSxubvSxYjLukCyTGK8zQVkGwknBcTKD0Zz9WRQPWQpfmGlLg41cfK
+Uny0n2A76xxFpR5aspDHpdJ7/OUz8ACCFa7KjGtfZ3P2S+Lh/IqMK2T+quwo2Of/
+yxUDdA592LZqhUSL67ow9YKI/tt/k2jGOZkVXb+xjmo8rndz8NsIkiA9z8cWoQTm
+KezAC7685iElsMhevNYgSgAHSeKR9g7A0RLMpLj0v17x+x4kQgeQagSZ+Efkl7vf
+AQnseFKSv4xHEJ88ZPgWeZ7vae1Ohfsf6iPn8dYU/5e3/jURptTlMJzF4SXsOl3j
+FEG4NByyeoYpUR4kFGDPawhs3Wygb4YlbY0bOOxtcFPn3ol28WwccufoiTviUN7D
+2kvGVQXC4AAu8GGRs0d+
+=+zo8
 -----END PGP SIGNATURE-----
 
---brEuL7wsLY8+TuWz--
+--eDB11BtaWSyaBkpc--
+
+--===============9005702500415833997==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9005702500415833997==--
