@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: core: Split the union for CODEC/platform
-	in the DAI
-Date: Fri,  2 Mar 2012 16:19:11 +0000
-Message-ID: <1330705151-8316-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core - cleanup platform debugfs on
+	probe failure.
+Date: Fri, 2 Mar 2012 16:20:46 +0000
+Message-ID: <20120302162045.GB6056@opensource.wolfsonmicro.com>
+References: <1330704824-29931-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2853706666840961077=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7716C2454E
-	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 17:19:14 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87A622454E
+	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 17:20:47 +0100 (CET)
+In-Reply-To: <1330704824-29931-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There's now core code which falls back to global CODEC operations for
-DAI calls that needs to be able to tell if it's dealing with a CPU or
-CODEC DAI and given the small number of DAIs in a typical system and
-overall memory usage pattern saving a pointer per DAI is really not
-worth the effort.
 
-Reported-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc-dai.h |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
+--===============2853706666840961077==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CdrF4e02JqNVZeln"
+Content-Disposition: inline
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index d474128..868f4b6 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -250,10 +250,9 @@ struct snd_soc_dai {
- 	unsigned int rate;
- 
- 	/* parent platform/codec */
--	union {
--		struct snd_soc_platform *platform;
--		struct snd_soc_codec *codec;
--	};
-+	struct snd_soc_platform *platform;
-+	struct snd_soc_codec *codec;
-+
- 	struct snd_soc_card *card;
- 
- 	struct list_head list;
--- 
-1.7.9.1
+
+--CdrF4e02JqNVZeln
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Mar 02, 2012 at 04:13:44PM +0000, Liam Girdwood wrote:
+> Make sure we cleanup the platform debugfs when probe fails.
+
+Applied, thanks.
+
+--CdrF4e02JqNVZeln
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPUPNUAAoJEBus8iNuMP3dWxQP/iGwwrKlj2nqnQLyoQEOShJt
+pJZ4kETV4/yJdGrsCWZvnBAi8DKmoLfKrUBCVBYUODP/WOovZhokJ0LIMMwRnwmb
+wx7rh6Tqwb6++kAss+vYKCWStrJoxhqhPmsCeuzmK2zYo3EhPLaKpLBZnl/9sy1u
+7fu+TD01dgc7/tYTdc38WLbvEq+XBh8PJ1tWG/L/IxnPZQQ745ADIhC44LB6bjqC
+zrnijFttoF1lx6MUr7srhQdyt92x3FeUdPnRn0S3FlNvstrwzlNOAv9h47yilRS0
+vnJZO3do/AdsFPXZqVXnWp4neRTqFv6seMoRJjlYd6CYoZ2xiKtqix9GcIiux9m8
+B8mfIKgpzgz201wSM1qnRg75f9vRDdLmMxO9wlamYwXmquKWuSXtxrNSdE7vVigy
+q3KZO92N329970uW+u3IClZHVdrYxdov48DjgBjEic+cMjb7g5iSoMaD5nyPhWoc
+QiTrccqg5FvAptdLNVdDtbrYTnmBB0dWuDP+nv5wWXxCaFAvGrcvTbX4YefaDklm
+hOj70qv1DVy0tNFgxte7g+S4AVei2GMM8Q4yPd8Oy3nZhbb4iCXO2nHtONci4Nuk
+aYbqW3WqO0upCUm1LKYuKJM5TSGAwpOYLtO4xqrQ0hP4nUXfDJX2hplSoNwQhXf3
+Otr5NJz2OUQrWXUwAT1s
+=8ahO
+-----END PGP SIGNATURE-----
+
+--CdrF4e02JqNVZeln--
+
+--===============2853706666840961077==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2853706666840961077==--
