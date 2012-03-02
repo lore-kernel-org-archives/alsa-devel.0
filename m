@@ -1,18 +1,15 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: core - cleanup platform debugfs on probe
-	failure.
-Date: Fri,  2 Mar 2012 16:13:44 +0000
-Message-ID: <1330704824-29931-1-git-send-email-lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: core: Split the union for CODEC/platform
+	in the DAI
+Date: Fri,  2 Mar 2012 16:19:11 +0000
+Message-ID: <1330705151-8316-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog118.obsmtp.com (na3sys009aog118.obsmtp.com
-	[74.125.149.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 399642451D
-	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 17:13:54 +0100 (CET)
-Received: by mail-we0-f180.google.com with SMTP id f3so1168774wer.25
-	for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2012 08:13:52 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7716C2454E
+	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 17:19:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make sure we cleanup the platform debugfs when probe fails.
+There's now core code which falls back to global CODEC operations for
+DAI calls that needs to be able to tell if it's dealing with a CPU or
+CODEC DAI and given the small number of DAIs in a typical system and
+overall memory usage pattern saving a pointer per DAI is really not
+worth the effort.
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
+Reported-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-core.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ include/sound/soc-dai.h |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1bdc67e..29dbbd7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1112,6 +1112,7 @@ static int soc_probe_platform(struct snd_soc_card *card,
- 	return 0;
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index d474128..868f4b6 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -250,10 +250,9 @@ struct snd_soc_dai {
+ 	unsigned int rate;
  
- err_probe:
-+	soc_cleanup_platform_debugfs(platform);
- 	module_put(platform->dev->driver->owner);
+ 	/* parent platform/codec */
+-	union {
+-		struct snd_soc_platform *platform;
+-		struct snd_soc_codec *codec;
+-	};
++	struct snd_soc_platform *platform;
++	struct snd_soc_codec *codec;
++
+ 	struct snd_soc_card *card;
  
- 	return ret;
+ 	struct list_head list;
 -- 
-1.7.5.4
+1.7.9.1
