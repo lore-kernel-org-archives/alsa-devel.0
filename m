@@ -1,91 +1,95 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ALSA: Integrate control based jack
- reporting with core jack reporting
-Date: Fri, 2 Mar 2012 11:45:30 +0000
-Message-ID: <20120302114530.GD3230@opensource.wolfsonmicro.com>
-References: <s5hhay89pq0.wl%tiwai@suse.de> <4F506816.1050201@canonical.com>
-	<s5hobsfsc9j.wl%tiwai@suse.de>
+Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
+Date: Fri, 2 Mar 2012 12:58:20 +0000
+Message-ID: <20120302125819.GE3230@opensource.wolfsonmicro.com>
+References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
+ <20120229235147.GM8295@opensource.wolfsonmicro.com>
+ <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8274196997222726906=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AF48224336
-	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 12:45:32 +0100 (CET)
-In-Reply-To: <s5hobsfsc9j.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="brEuL7wsLY8+TuWz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8274196997222726906==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sgneBHv3152wZ8jf"
-Content-Disposition: inline
-
-
---sgneBHv3152wZ8jf
-Content-Type: text/plain; charset=us-ascii
+--brEuL7wsLY8+TuWz
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 02, 2012 at 08:16:56AM +0100, Takashi Iwai wrote:
-> David Henningsson wrote:
+On Fri, Mar 02, 2012 at 05:16:04PM +0900, Tomoya MORINAGA wrote:
+> 2012=E5=B9=B43=E6=9C=881=E6=97=A58:51 Mark Brown <broonie@opensource.wolf=
+sonmicro.com>:
 
-> > Also, in the sound/soc there seem to be plenty of hits for 'Line Output=
-'=20
-> > which could be changed to 'Line Out', mostly for consistency. Something=
-=20
-> > for Mark?
+> >> +static int ml26124_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+> >> +                               int div_id, int div)
+> >> +{
+> >> +     struct snd_soc_codec *codec =3D codec_dai->codec;
 
-> I think we should standardize "Line Out" mixer control name at first,
-> e.g. updating the outdated ControlNames.txt document.
-> Anyway I'll leave ASoC part as is for now.
+> >> +     switch (div_id) {
+> >> +     case ML26124_MCLK:
+> >> +             ml26124_update_bits(codec, ML26124_CLK_CTL,
+> >> +                                   BIT(0) | BIT(1), div);
+> >> +             break;
 
-There's also a lot of LINEOUTn and so on.  I've no intention of worrying
-about this stuff too much for ASoC, the name based routing is mostly
-nonsensical there anyway and it's very common for the thing connected to
-the line output to actually be another thing such as a speaker so acting
-on the fact that it's a line output might be actively wrong at the user
-level.
+> > Why can't the driver calculate this automatically given the MCLK?
 
---sgneBHv3152wZ8jf
+> Sorry, I can't understand your saying.
+> Why does this driver need to calculate ?
+> I think this driver can use "div" value directly.
+
+Why does the user have to set this divider by hand at all?  There's
+already a set_sysclk() function, just have the user specify the clock
+they're providing.
+
+> >> +     ret =3D snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+
+> > You're mixing regmap API usage and ASoC level I2C, this should be
+> > _REGMAP.
+
+> Currently, it seems codec control via i2c works well.
+> Let me know why I should  use SND_SOC_REGMAP not _I2C.
+
+Have you checked what _I2C and _REGMAP do?
+
+> >> +static int __init ml26124_modinit(void)
+> >> +{
+> >> +     int ret;
+> >> +
+> >> +     ret =3D i2c_add_driver(&ml26124_i2c_driver);
+> >> +     if (ret !=3D 0)
+
+> > module_i2c_driver().
+
+> Sorry, I can't understand your saying.
+
+Use module_i2c_driver().
+
+--brEuL7wsLY8+TuWz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPULLTAAoJEBus8iNuMP3dq2YP/jLJzxI1/SYoUHVmDL//uerh
-jx7yMDE5zIJMklFSt2LqSEwrxk9wHsQPJaL4Sr8gtURcBFR10IxmK8mDl9JGHgrH
-6rarK4edTpszTk0rS+sPCp6M7Kb6b7V8qp9/9SCd3Zoq9GL1YxdZr/VLDbCYaScd
-t5a+Hie8W/xtiWbKXcBJesZ/+hdngA3Gh3Wje4aBGmDYPVQAW/+e4xNq2+Etf33f
-wgpDeHJVGNHIZIQzV/35R/0L6MGUrRBIaIbUfBTICF/KwTQzo5LTANWGwhVMaSew
-OII2PqROWFL1iP2RQVS7MWf8EZFGXzk3V4epe0ZEAv/8YS5BWOJEfcj/HdrrsrLZ
-jkOnTEYRXVC2bd9awws5g54YzqqsxOUFLe8Qok8EmrL2B5f0pWfsKB5d/NePQaAO
-eN/TU+23eTR7wZrYDkQPmIzvUq9SYgISko1EoGas//qM6z75/LH+mASkiNNhSlyD
-vzV97tFacpx770ggshJ3ucNvmuq3NaXqLJI10LRJhXpCUWSJDQ+SeCK6hTtb4sEA
-nMpWt26tQdIrLP81DUCLj12GgmPROQLQpWxdZIwtRnJO+4EoZLA7VS7lH/vszGx1
-6D2BlAwP0OdEA528H5OFKm0bNmVqPpKiaaT2G6ix/1ago7g0Q4aZkUUN25YssafM
-EvTupzjvqQnBqIY/O53v
-=FkLE
+iQIcBAEBAgAGBQJPUMPlAAoJEBus8iNuMP3dheIP/1v4aa8NKQM0Ad9vNHU2ImPP
+B1hDPCDC1BXOBHMDL9gx5fbf4aMprIss5fSM6yx9cbvXgQWe7mmUzOrqdXyXj2pW
+YhM8wbpT+T6n4X2PYopqd1eBQj2ukfFv7PW+fILZ454wwDgDdfeG/H1kiQOc1MbF
+T8YE9Dv+fpPBjAiGQRnF824NPOED8qdERxrBX8rfB001aDrSWTpoqcZu04ETz1d/
+oXWAebOAYFE+hDKgepLE3Xa/njbVpRHRH9N7zgxu3sI8x2zdQCjF2dWY9bnBx53A
+YW2+U6j9okitJa0PS/8HEAv/lk4ZkgRqrCz1nsCjE7DNoPWPWSwmDUj0LepH915d
+xaBbeR9hifQl++pm9WhqE/dg0kNQoz7IhJJsyxR1ZG3uAok0uDalfZXsYoVALL8m
+DC8RsIBSxnJaxrqrqyyJnZAjJQgegjYte54t64jqHuE8+vDV6Qy7eWOzJZV5y1kc
+AOLDJomEBFSOz8DGSIDc0Omm10R4VSy8YTOW5sOgcMNyW9Umv3OqkDbKyk3F+WBq
+Na2XAJ8dj79W6u+RBvu2XjkgYJ6EIX4eZki+xv3h8ru1SRk0Dt7p9IoQ/e5fnWYH
+okcG9j49GL0X/di6IbaIO2RI79LDMfPJi3IH1dN+x/A0V+/n7j3WZHiiBokBZr4k
+i8tUjdtU1LR1yODGh1ml
+=ciYL
 -----END PGP SIGNATURE-----
 
---sgneBHv3152wZ8jf--
-
---===============8274196997222726906==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8274196997222726906==--
+--brEuL7wsLY8+TuWz--
