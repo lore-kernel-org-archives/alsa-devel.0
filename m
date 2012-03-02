@@ -1,46 +1,40 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 00/10] OMAP/ASoC: Move and merge McBSP driver under
- ASoC
-Date: Fri, 02 Mar 2012 16:37:17 +0200
-Message-ID: <4F50DB1D.1090007@ti.com>
-References: <1330414820-4641-1-git-send-email-peter.ujfalusi@ti.com> <20120228104925.GA3683@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: core: Log a warning when machines
+	use soc-audio
+Date: Fri, 02 Mar 2012 15:55:07 +0000
+Message-ID: <1330703707.29333.0.camel@odin>
+References: <1330693693-23097-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120228104925.GA3683@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D30024517
+	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 16:55:22 +0100 (CET)
+Received: by mail-we0-f179.google.com with SMTP id g1so1276451wer.38
+	for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2012 07:55:09 -0800 (PST)
+In-Reply-To: <1330693693-23097-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Fri, 2012-03-02 at 13:08 +0000, Mark Brown wrote:
+> snd_soc_register_card() has been available and strongly preferred since
+> 2.6.38 but we're still seeing new drivers using it and the conversion rate
+> for older machines has been low. Help address both issues by logging a
+> warning when the soc-audio device probes.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
 
-On 02/28/2012 12:49 PM, Mark Brown wrote:
-> On Tue, Feb 28, 2012 at 09:40:10AM +0200, Peter Ujfalusi wrote:
->=20
->> NOTE: this series has been generated agains Takashi's topic/asoc bra=
-nch merged
->> with Mark's for-next branch since this series depends on changes in =
-Marks'
->> branch, but not yet pulled by Takashi (snd_soc_add_dai_controls impl=
-ementation
->> from Liam).
->=20
-> Never base *anything* off my for-next branch, it gets rebuilt regular=
-ly.
-
-Sorry it was my mistake. I have merged your for-3.4 branch with
-Takashi's topic/asoc to be able test the v2 series which dropped my
-version of snd_soc_add_dai_controls()
-
-Sometimes I use your for-next branch, but I'm not building on top of it
-since I have also noticed that it got rebuilt occasionally.
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Liam Girdwood <lrg@ti.com>
