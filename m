@@ -1,44 +1,96 @@
-From: Chris Ball <cjb@laptop.org>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-Date: Fri, 02 Mar 2012 15:50:25 -0500
-Message-ID: <m2mx7yn2we.fsf@bob.laptop.org>
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
-	<4F4D9725.3090100@freescale.com>
-	<1330502098.3545.78.camel@sauron.fi.intel.com>
-	<4F4DE0E5.8070808@freescale.com>
-	<1330516974.3545.104.camel@sauron.fi.intel.com>
-	<CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+From: pavel.hofman@ivitera.com
+Subject: [PATCH - ice1724 1/1] ALSA: ice1724 - constrain
+	runtime rates for locked internal rate
+Date: Fri,  2 Mar 2012 22:09:39 +0100
+Message-ID: <1330722579-6923-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
-	(Huang Shijie's message of "Wed, 29 Feb 2012 08:13:15 -0500")
-Sender: linux-mmc-owner@vger.kernel.org
-To: Huang Shijie <shijie8@gmail.com>
-Cc: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>, Huang Shijie <b32955@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "LW@KARO-electronics.de" <LW@karo-electronics.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-On Wed, Feb 29 2012, Huang Shijie wrote:
->> Pushed both to l2-mtd.git tree, thanks. I am worried that it touches
->> other subsystems like dma, sound, and mmc and there are no acks for
->> those. Would be nice to get them somehow.
->
-> I ever thought Vinod could accept this patch set.
->
-> To Vinod & Chris:
->       Could you give the ack to the first patch?
+The driver already defines control "Multi Track Rate Locking" which
+locks the card at current rate if switched to internal clock. This patch
+limits the runtime rates to this rate only, allowing proper reporting
+of the card capabilities, and e.g. automatic rate conversion by the plug
+plugin to the currently locked rate.
 
-Yes -- for the first patch:
+Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
-Acked-by: Chris Ball <cjb@laptop.org>
-
-(I think Shawn's ACK is sufficient for the second patch.)
-
-Thanks,
-
-- Chris.
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index 9236297..812d10e 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -1013,6 +1013,25 @@ static int set_rate_constraints(struct snd_ice1712 *ice,
+ 					  ice->hw_rates);
+ }
+ 
++/* if the card has the internal rate locked (is_pro_locked), limit runtime
++   hw rates to the current internal rate only.
++*/
++static void constrain_rate_if_locked(struct snd_pcm_substream *substream)
++{
++	struct snd_ice1712 *ice = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned int rate;
++	if (is_pro_rate_locked(ice)) {
++		rate = ice->get_rate(ice);
++		if (rate >= runtime->hw.rate_min
++		    && rate <= runtime->hw.rate_max) {
++			runtime->hw.rate_min = rate;
++			runtime->hw.rate_max = rate;
++		}
++	}
++}
++
++
+ /* multi-channel playback needs alignment 8x32bit regardless of the channels
+  * actually used
+  */
+@@ -1046,6 +1065,7 @@ static int snd_vt1724_playback_pro_open(struct snd_pcm_substream *substream)
+ 				   VT1724_BUFFER_ALIGN);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 				   VT1724_BUFFER_ALIGN);
++	constrain_rate_if_locked(substream);
+ 	if (ice->pro_open)
+ 		ice->pro_open(ice, substream);
+ 	return 0;
+@@ -1066,6 +1086,7 @@ static int snd_vt1724_capture_pro_open(struct snd_pcm_substream *substream)
+ 				   VT1724_BUFFER_ALIGN);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 				   VT1724_BUFFER_ALIGN);
++	constrain_rate_if_locked(substream);
+ 	if (ice->pro_open)
+ 		ice->pro_open(ice, substream);
+ 	return 0;
+@@ -1215,6 +1236,7 @@ static int snd_vt1724_playback_spdif_open(struct snd_pcm_substream *substream)
+ 				   VT1724_BUFFER_ALIGN);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 				   VT1724_BUFFER_ALIGN);
++	constrain_rate_if_locked(substream);
+ 	if (ice->spdif.ops.open)
+ 		ice->spdif.ops.open(ice, substream);
+ 	return 0;
+@@ -1251,6 +1273,7 @@ static int snd_vt1724_capture_spdif_open(struct snd_pcm_substream *substream)
+ 				   VT1724_BUFFER_ALIGN);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 				   VT1724_BUFFER_ALIGN);
++	constrain_rate_if_locked(substream);
+ 	if (ice->spdif.ops.open)
+ 		ice->spdif.ops.open(ice, substream);
+ 	return 0;
 -- 
-Chris Ball   <cjb@laptop.org>   <http://printf.net/>
-One Laptop Per Child
+1.7.0.4
