@@ -1,18 +1,22 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH 1/3] ASoC: core - Add card mutex locking
-	subclasses
-Date: Fri,  2 Mar 2012 18:11:10 +0000
-Message-ID: <1330711872-27436-1-git-send-email-lrg@ti.com>
+From: Julian Sikorski <belegdol@gmail.com>
+Subject: Re: ALC892,
+ Clevo P150HM: Input Source gets reset to "Mic" every resume
+Date: Fri, 02 Mar 2012 19:36:41 +0100
+Message-ID: <4F511339.8070309@gmail.com>
+References: <4EDA65A3.6090604@gmail.com>
+	<CAN8cciamS8VF+27CCvoriU6T1_NfjSNYTJG1iXDHeLqW==MW+A@mail.gmail.com>
+	<ji631h$sjt$1@dough.gmane.org> <s5h1upk4ldj.wl%tiwai@suse.de>
+	<4F4809E2.1040305@gmail.com> <s5hty2f2p6i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
-	[74.125.149.75])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5F30104110
-	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 19:12:58 +0100 (CET)
-Received: by mail-wi0-f178.google.com with SMTP id hi5so341852wib.37
-	for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2012 10:12:57 -0800 (PST)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B432C104119
+	for <alsa-devel@alsa-project.org>; Fri,  2 Mar 2012 19:36:45 +0100 (CET)
+Received: by wgbed3 with SMTP id ed3so1312292wgb.20
+	for <alsa-devel@alsa-project.org>; Fri, 02 Mar 2012 10:36:44 -0800 (PST)
+In-Reply-To: <s5hty2f2p6i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +26,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Greg KH <gregkh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is the first part of a change that is intended to improve
-ASoC locking protection for DAPM and PCM operations.
+W dniu 25.02.2012 11:16, Takashi Iwai pisze:
+> At Fri, 24 Feb 2012 23:06:26 +0100,
+> Julian Sikorski wrote:
+>>
+>> W dniu 24.02.2012 10:43, Takashi Iwai pisze:
+>>> At Thu, 23 Feb 2012 20:11:44 +0100,
+>>> Julian Sikorski wrote:
+>>>>
+>>>> W dniu 09.12.2011 14:32, Raymond Yau pisze:
+>>>>> 2011/12/4 Julian Sikorski <belegdol@gmail.com>:
+>>>>>> Hi,
+>>>>>>
+>>>>>> whenever I resume the machine, the Input Source would get changed back
+>>>>>> from "Internal Mic" to "Mic". This is a bit annoying, because pulseaudio
+>>>>>> is unaware of that change. As a result, everything looks fine in
+>>>>>> pavucontrol but no sound gets recorded. A quick look at alsamixer -c0
+>>>>>> revealed the problem. My alsa info:
+>>>>>>
+>>>>>> http://www.alsa-project.org/db/?f=c5776b615a5f3b9ae624e4250fb0c2b69118ce26
+>>>>>>
+>>>>>> This is unrelated to the other problems I have been reporting, since
+>>>>>> this happens on a mostly-stock Fedora 3.1.2 kernel (the patch I added
+>>>>>> deals with xhci, not alsa).
+>>>>>
+>>>>> The problem seem can be reproduced by using hda-emu,
+>>>>> it is init_capsrc_for_pin() and alc_auto_init_input_src() write value
+>>>>> to cache before snd_hda_codec_resume_app() from cache
+>>>>>
+>>>>>
+>>>>>> get 28
+>>>>> 28 Input Source:0
+>>>>> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Mic]
+>>>>>> set 28 1
+>>>>> send: NID=0x23, VERB=0x360(set_amp_gain_mute,I:L#0), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x350(set_amp_gain_mute,I:R#0), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x0
+>>>>> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x0
+>>>>>> get 28
+>>>>> 28 Input Source:0
+>>>>> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Internal Mic]
+>>>>>
+>>>>> pm
+>>>>> ** SUSPENDING **
+>>>>> ...
+>>>>> ** RESUMING **
+>>>>> PM-Notified
+>>>>> ...
+>>>>> exec_init_verbs
+>>>>> ...
+>>>>>
+>>>>> init_capsrc_for_pin 18
+>>>>> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x0
+>>>>> receive: 0x0
+>>>>> send: NID=0x23, VERB=0xb00(get_amp_gain_mute,I:R#0), PARM=0x0
+>>>>> receive: 0x0
+>>>>> init capsrc for pin 19
+>>>>> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x1
+>>>>> receive: 0x80
+>>>>> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x0
+>>>>> send: NID=0x23, VERB=0xb00(get_amp_gain_mute,I:R#0), PARM=0x1
+>>>>> receive: 0x80
+>>>>> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x0
+>>>>> init capsrc for pin 1a
+>>>>> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x2
+>>>>> receive: 0x80
+>>>>> send: NID=0x23, VERB=0x362(set_amp_gain_mute,I:L#2), PARM=0x0
+>>>>>
+>>>>> alc_auto_init_input_src
+>>>>> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x362(set_amp_gain_mute,I:L#2), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x352(set_amp_gain_mute,I:R#2), PARM=0x80
+>>>>>
+>>>>> snd_hda_codec_resume_app
+>>>>> send: NID=0x23, VERB=0x363(set_amp_gain_mute,I:L#3), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x353(set_amp_gain_mute,I:R#3), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x364(set_amp_gain_mute,I:L#4), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x354(set_amp_gain_mute,I:R#4), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x365(set_amp_gain_mute,I:L#5), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x355(set_amp_gain_mute,I:R#5), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x366(set_amp_gain_mute,I:L#6), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x356(set_amp_gain_mute,I:R#6), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x367(set_amp_gain_mute,I:L#7), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x357(set_amp_gain_mute,I:R#7), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x368(set_amp_gain_mute,I:L#8), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x358(set_amp_gain_mute,I:R#8), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x369(set_amp_gain_mute,I:L#9), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x359(set_amp_gain_mute,I:R#9), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x36a(set_amp_gain_mute,I:L#10), PARM=0x80
+>>>>> send: NID=0x23, VERB=0x35a(set_amp_gain_mute,I:R#10), PARM=0x80
+>>>>> ...
+>>>>>
+>>>>>> get 28
+>>>>> 28 Input Source:0
+>>>>> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Mic]
+>>>> The problem still exists in 3.2.7-1.fc16.x86_64 kernel, is there any
+>>>> chance for a fix?
+>>>
+>>> Does the patch below fix?
+>>>
+>>>
+>>> Takashi
+>>
+>> Yes, it seems so. I don't want to get ahead of myself, but two
+>> suspend-resume cycles have passed and inputs are at Internal Mic and
+>> Mic, as expected.
+> 
+> Thanks for checking.  I committed the fix to git tree, also Cc'ed to
+> stable.
+> 
+> 
+> Takashi
+I cannot seem to find this patch in the 3.2 stable tree, was it rejected?
 
-We currently use the codec->mutex for locking some DAPM operations.
-This can't guarantee correctness now with the recent multi-component
-and forth coming Dynamic PCM updates.
-
-This part of the series adds a mutex class for the soc_card mutex. The
-SND_SOC_CARD_CLASS_INIT class is used for card initialisation only whilst the
-SND_SOC_CARD_CLASS_PCM class is used for all the DAPM and forth coming Dynamic
-PCM operations. The new mutex classes are required otherwise we will see a false
-positive mutex deadlock warning between the card initialisation and the DAPM
-operations (something that would never deadlock in real life).
-
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- include/sound/soc.h  |    5 +++++
- sound/soc/soc-core.c |    2 +-
- 2 files changed, 6 insertions(+), 1 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 82bd773..f2b5ad1 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -288,6 +288,11 @@ enum snd_soc_pcm_subclass {
- 	SND_SOC_PCM_CLASS_BE	= 1,
- };
- 
-+enum snd_soc_card_subclass {
-+	SND_SOC_CARD_CLASS_INIT	= 0,
-+	SND_SOC_CARD_CLASS_PCM	= 1,
-+};
-+
- int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 			     int source, unsigned int freq, int dir);
- int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 29dbbd7..2038522 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1416,7 +1416,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 	struct snd_soc_dai_link *dai_link;
- 	int ret, i, order;
- 
--	mutex_lock(&card->mutex);
-+	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
- 
- 	if (card->instantiated) {
- 		mutex_unlock(&card->mutex);
--- 
-1.7.5.4
+Regards,
+Julian
