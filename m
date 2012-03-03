@@ -1,47 +1,169 @@
-From: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-Date: Sat, 3 Mar 2012 09:54:05 +0800
-Message-ID: <CAMiH66G54BCoMrSTqnXyJy=C8w4RqVkv_qvQosUHWj4qd+Xh=Q@mail.gmail.com>
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
- <4F4D9725.3090100@freescale.com>
- <1330502098.3545.78.camel@sauron.fi.intel.com>
- <4F4DE0E5.8070808@freescale.com>
- <1330516974.3545.104.camel@sauron.fi.intel.com>
- <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
- <m2mx7yn2we.fsf@bob.laptop.org>
+From: Julian Sikorski <belegdol@gmail.com>
+Subject: Re: ALC892,
+ Clevo P150HM: Input Source gets reset to "Mic" every resume
+Date: Sat, 03 Mar 2012 09:11:55 +0100
+Message-ID: <4F51D24B.9020908@gmail.com>
+References: <4EDA65A3.6090604@gmail.com>
+	<CAN8cciamS8VF+27CCvoriU6T1_NfjSNYTJG1iXDHeLqW==MW+A@mail.gmail.com>
+	<ji631h$sjt$1@dough.gmane.org> <s5h1upk4ldj.wl%tiwai@suse.de>
+	<4F4809E2.1040305@gmail.com> <s5hty2f2p6i.wl%tiwai@suse.de>
+	<4F51136C.6000107@gmail.com> <20120302184345.GA13598@kroah.com>
+	<4F514340.1010206@gmail.com> <20120302220859.GA24575@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <m2mx7yn2we.fsf@bob.laptop.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Chris Ball <cjb@laptop.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Huang Shijie <b32955@freescale.com>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy,
- Artem" <artem.bityutskiy@intel.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "LW@KARO-electronics.de" <LW@karo-electronics.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4084B104153
+	for <alsa-devel@alsa-project.org>; Sat,  3 Mar 2012 09:11:59 +0100 (CET)
+Received: by wiax18 with SMTP id x18so557802wia.38
+	for <alsa-devel@alsa-project.org>; Sat, 03 Mar 2012 00:11:57 -0800 (PST)
+In-Reply-To: <20120302220859.GA24575@kroah.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-aGksCgpPbiBTYXQsIE1hciAzLCAyMDEyIGF0IDQ6NTAgQU0sIENocmlzIEJhbGwgPGNqYkBsYXB0
-b3Aub3JnPiB3cm90ZToKPiBIaSwKPgo+IE9uIFdlZCwgRmViIDI5IDIwMTIsIEh1YW5nIFNoaWpp
-ZSB3cm90ZToKPj4+IFB1c2hlZCBib3RoIHRvIGwyLW10ZC5naXQgdHJlZSwgdGhhbmtzLiBJIGFt
-IHdvcnJpZWQgdGhhdCBpdCB0b3VjaGVzCj4+PiBvdGhlciBzdWJzeXN0ZW1zIGxpa2UgZG1hLCBz
-b3VuZCwgYW5kIG1tYyBhbmQgdGhlcmUgYXJlIG5vIGFja3MgZm9yCj4+PiB0aG9zZS4gV291bGQg
-YmUgbmljZSB0byBnZXQgdGhlbSBzb21laG93Lgo+Pgo+PiBJIGV2ZXIgdGhvdWdodCBWaW5vZCBj
-b3VsZCBhY2NlcHQgdGhpcyBwYXRjaCBzZXQuCj4+Cj4+IFRvIFZpbm9kICYgQ2hyaXM6Cj4+IMKg
-IMKgIMKgIENvdWxkIHlvdSBnaXZlIHRoZSBhY2sgdG8gdGhlIGZpcnN0IHBhdGNoPwo+Cj4gWWVz
-IC0tIGZvciB0aGUgZmlyc3QgcGF0Y2g6Cj4KPiBBY2tlZC1ieTogQ2hyaXMgQmFsbCA8Y2piQGxh
-cHRvcC5vcmc+Cj4KCnRoYW5rcyBhIGxvdC4KCkh1YW5nIFNoaWppZQoKCj4gKEkgdGhpbmsgU2hh
-d24ncyBBQ0sgaXMgc3VmZmljaWVudCBmb3IgdGhlIHNlY29uZCBwYXRjaC4pCj4KPiBUaGFua3Ms
-Cj4KPiAtIENocmlzLgo+IC0tCj4gQ2hyaXMgQmFsbCDCoCA8Y2piQGxhcHRvcC5vcmc+IMKgIDxo
-dHRwOi8vcHJpbnRmLm5ldC8+Cj4gT25lIExhcHRvcCBQZXIgQ2hpbGQKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGlu
-ZyBsaXN0CmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+W dniu 02.03.2012 23:08, Greg KH pisze:
+> On Fri, Mar 02, 2012 at 11:01:36PM +0100, Julian Sikorski wrote:
+>> W dniu 02.03.2012 19:43, Greg KH pisze:
+>>> On Fri, Mar 02, 2012 at 07:37:32PM +0100, Julian Sikorski wrote:
+>>>> W dniu 25.02.2012 11:16, Takashi Iwai pisze:
+>>>>> At Fri, 24 Feb 2012 23:06:26 +0100,
+>>>>> Julian Sikorski wrote:
+>>>>>>
+>>>>>> W dniu 24.02.2012 10:43, Takashi Iwai pisze:
+>>>>>>> At Thu, 23 Feb 2012 20:11:44 +0100,
+>>>>>>> Julian Sikorski wrote:
+>>>>>>>>
+>>>>>>>> W dniu 09.12.2011 14:32, Raymond Yau pisze:
+>>>>>>>>> 2011/12/4 Julian Sikorski <belegdol@gmail.com>:
+>>>>>>>>>> Hi,
+>>>>>>>>>>
+>>>>>>>>>> whenever I resume the machine, the Input Source would get changed back
+>>>>>>>>>> from "Internal Mic" to "Mic". This is a bit annoying, because pulseaudio
+>>>>>>>>>> is unaware of that change. As a result, everything looks fine in
+>>>>>>>>>> pavucontrol but no sound gets recorded. A quick look at alsamixer -c0
+>>>>>>>>>> revealed the problem. My alsa info:
+>>>>>>>>>>
+>>>>>>>>>> http://www.alsa-project.org/db/?f=c5776b615a5f3b9ae624e4250fb0c2b69118ce26
+>>>>>>>>>>
+>>>>>>>>>> This is unrelated to the other problems I have been reporting, since
+>>>>>>>>>> this happens on a mostly-stock Fedora 3.1.2 kernel (the patch I added
+>>>>>>>>>> deals with xhci, not alsa).
+>>>>>>>>>
+>>>>>>>>> The problem seem can be reproduced by using hda-emu,
+>>>>>>>>> it is init_capsrc_for_pin() and alc_auto_init_input_src() write value
+>>>>>>>>> to cache before snd_hda_codec_resume_app() from cache
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>> get 28
+>>>>>>>>> 28 Input Source:0
+>>>>>>>>> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Mic]
+>>>>>>>>>> set 28 1
+>>>>>>>>> send: NID=0x23, VERB=0x360(set_amp_gain_mute,I:L#0), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x350(set_amp_gain_mute,I:R#0), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x0
+>>>>>>>>> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x0
+>>>>>>>>>> get 28
+>>>>>>>>> 28 Input Source:0
+>>>>>>>>> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Internal Mic]
+>>>>>>>>>
+>>>>>>>>> pm
+>>>>>>>>> ** SUSPENDING **
+>>>>>>>>> ...
+>>>>>>>>> ** RESUMING **
+>>>>>>>>> PM-Notified
+>>>>>>>>> ...
+>>>>>>>>> exec_init_verbs
+>>>>>>>>> ...
+>>>>>>>>>
+>>>>>>>>> init_capsrc_for_pin 18
+>>>>>>>>> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x0
+>>>>>>>>> receive: 0x0
+>>>>>>>>> send: NID=0x23, VERB=0xb00(get_amp_gain_mute,I:R#0), PARM=0x0
+>>>>>>>>> receive: 0x0
+>>>>>>>>> init capsrc for pin 19
+>>>>>>>>> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x1
+>>>>>>>>> receive: 0x80
+>>>>>>>>> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x0
+>>>>>>>>> send: NID=0x23, VERB=0xb00(get_amp_gain_mute,I:R#0), PARM=0x1
+>>>>>>>>> receive: 0x80
+>>>>>>>>> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x0
+>>>>>>>>> init capsrc for pin 1a
+>>>>>>>>> send: NID=0x23, VERB=0xb20(get_amp_gain_mute,I:L#0), PARM=0x2
+>>>>>>>>> receive: 0x80
+>>>>>>>>> send: NID=0x23, VERB=0x362(set_amp_gain_mute,I:L#2), PARM=0x0
+>>>>>>>>>
+>>>>>>>>> alc_auto_init_input_src
+>>>>>>>>> send: NID=0x23, VERB=0x361(set_amp_gain_mute,I:L#1), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x351(set_amp_gain_mute,I:R#1), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x362(set_amp_gain_mute,I:L#2), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x352(set_amp_gain_mute,I:R#2), PARM=0x80
+>>>>>>>>>
+>>>>>>>>> snd_hda_codec_resume_app
+>>>>>>>>> send: NID=0x23, VERB=0x363(set_amp_gain_mute,I:L#3), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x353(set_amp_gain_mute,I:R#3), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x364(set_amp_gain_mute,I:L#4), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x354(set_amp_gain_mute,I:R#4), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x365(set_amp_gain_mute,I:L#5), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x355(set_amp_gain_mute,I:R#5), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x366(set_amp_gain_mute,I:L#6), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x356(set_amp_gain_mute,I:R#6), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x367(set_amp_gain_mute,I:L#7), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x357(set_amp_gain_mute,I:R#7), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x368(set_amp_gain_mute,I:L#8), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x358(set_amp_gain_mute,I:R#8), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x369(set_amp_gain_mute,I:L#9), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x359(set_amp_gain_mute,I:R#9), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x36a(set_amp_gain_mute,I:L#10), PARM=0x80
+>>>>>>>>> send: NID=0x23, VERB=0x35a(set_amp_gain_mute,I:R#10), PARM=0x80
+>>>>>>>>> ...
+>>>>>>>>>
+>>>>>>>>>> get 28
+>>>>>>>>> 28 Input Source:0
+>>>>>>>>> ITEM: 0:Mic, 1:Internal Mic, 2:Line, VAL: [Mic]
+>>>>>>>> The problem still exists in 3.2.7-1.fc16.x86_64 kernel, is there any
+>>>>>>>> chance for a fix?
+>>>>>>>
+>>>>>>> Does the patch below fix?
+>>>>>>>
+>>>>>>>
+>>>>>>> Takashi
+>>>>>>
+>>>>>> Yes, it seems so. I don't want to get ahead of myself, but two
+>>>>>> suspend-resume cycles have passed and inputs are at Internal Mic and
+>>>>>> Mic, as expected.
+>>>>>
+>>>>> Thanks for checking.  I committed the fix to git tree, also Cc'ed to
+>>>>> stable.
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>> I cannot seem to find this patch in the 3.2 stable tree, was it rejected?
+>>>
+>>> What is the git commit id of it in Linus's tree?
+>>
+>> Hmm, it does not seem to be in Linus' tree yet. It is in for-linus
+>> branch of sound tree under commit 068b9394 though.
+> 
+> Then there is nothing I can do about it at this point in time.
+> 
+> greg k-h
+Dear Greg,
+
+it seems the patch has been merged to the Linus' tree:
+
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=068b939431486f524438330b0848a8222e33d421
+
+Regards,
+Julian
