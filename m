@@ -1,7 +1,7 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 04/20] ARM: imx: convert audmux to a platform driver
-Date: Sat,  3 Mar 2012 23:19:45 +0800
-Message-ID: <1330788001-10158-5-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 06/20] ASoC: imx: rename audmux prefix mxc to imx
+Date: Sat,  3 Mar 2012 23:19:47 +0800
+Message-ID: <1330788001-10158-7-git-send-email-shawn.guo@linaro.org>
 References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,387 +18,376 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Richard Zhao <richard.zhao@linaro.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Richard Zhao <richard.zhao@linaro.org>
+It renames the legacy name mxc used in audmux function and macro
+to imx.
 
-It coverts audmux to a platform driver, so that it can be moved into
-sound/soc/imx and adopt device tree support later.
-
-Signed-off-by: Richard Zhao <richard.zhao@linaro.org>
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- arch/arm/mach-imx/eukrea_mbimx27-baseboard.c   |    7 ++
- arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c |    7 ++
- arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c |    7 ++
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c    |    7 ++
- arch/arm/mach-imx/mach-mx31ads.c               |    6 +
- arch/arm/mach-imx/mach-pca100.c                |    7 ++
- arch/arm/mach-imx/mach-pcm043.c                |    7 ++
- arch/arm/plat-mxc/audmux.c                     |  127 +++++++++++++++++-------
- 8 files changed, 140 insertions(+), 35 deletions(-)
+ sound/soc/imx/eukrea-tlv320.c   |   44 +++++++++++++++---------------
+ sound/soc/imx/imx-audmux.c      |   30 ++++++++++----------
+ sound/soc/imx/imx-audmux.h      |   58 +++++++++++++++++++-------------------
+ sound/soc/imx/mx27vis-aic32x4.c |   18 ++++++------
+ sound/soc/imx/phycore-ac97.c    |   40 +++++++++++++-------------
+ sound/soc/imx/wm1133-ev1.c      |   22 +++++++-------
+ 6 files changed, 106 insertions(+), 106 deletions(-)
 
-diff --git a/arch/arm/mach-imx/eukrea_mbimx27-baseboard.c b/arch/arm/mach-imx/eukrea_mbimx27-baseboard.c
-index 5f2f91d..11cd0a0 100644
---- a/arch/arm/mach-imx/eukrea_mbimx27-baseboard.c
-+++ b/arch/arm/mach-imx/eukrea_mbimx27-baseboard.c
-@@ -294,6 +294,10 @@ struct imx_ssi_platform_data eukrea_mbimx27_ssi_pdata __initconst = {
- 	.flags = IMX_SSI_DMA | IMX_SSI_USE_I2S_SLAVE,
- };
+diff --git a/sound/soc/imx/eukrea-tlv320.c b/sound/soc/imx/eukrea-tlv320.c
+index b375ed4..7d4475c 100644
+--- a/sound/soc/imx/eukrea-tlv320.c
++++ b/sound/soc/imx/eukrea-tlv320.c
+@@ -101,35 +101,35 @@ static int __init eukrea_tlv320_init(void)
+ 	int int_port = 0, ext_port;
  
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX27_AUDMUX_BASE_ADDR, SZ_4K),
-+};
-+
- /*
-  * system init for baseboard usage. Will be called by cpuimx27 init.
-  *
-@@ -317,6 +321,9 @@ void __init eukrea_mbimx27_baseboard_init(void)
- 	i2c_register_board_info(0, eukrea_mbimx27_i2c_devices,
- 				ARRAY_SIZE(eukrea_mbimx27_i2c_devices));
- 
-+	/* imx27 has the imx21 version audmux */
-+	imx_add_platform_device("imx21-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx27_add_imx_ssi(0, &eukrea_mbimx27_ssi_pdata);
- 
- #if defined(CONFIG_TOUCHSCREEN_ADS7846) \
-diff --git a/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c b/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c
-index 2cf603e..2797da8 100644
---- a/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c
-+++ b/arch/arm/mach-imx/eukrea_mbimxsd25-baseboard.c
-@@ -222,6 +222,10 @@ struct imx_ssi_platform_data eukrea_mbimxsd_ssi_pdata __initconst = {
- 	.flags = IMX_SSI_SYN | IMX_SSI_NET | IMX_SSI_USE_I2S_SLAVE,
- };
- 
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX25_AUDMUX_BASE_ADDR, SZ_16K),
-+};
-+
- static struct esdhc_platform_data sd1_pdata = {
- 	.cd_gpio = GPIO_SD1CD,
- 	.cd_type = ESDHC_CD_GPIO,
-@@ -242,6 +246,9 @@ void __init eukrea_mbimxsd25_baseboard_init(void)
- 
- 	imx25_add_imx_uart1(&uart_pdata);
- 	imx25_add_imx_fb(&eukrea_mximxsd_fb_pdata);
-+	/* imx25 has the imx31 version audmux */
-+	imx_add_platform_device("imx31-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx25_add_imx_ssi(0, &eukrea_mbimxsd_ssi_pdata);
- 
- 	imx25_add_flexcan1(NULL);
-diff --git a/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c b/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c
-index fd8bf8a..1878114 100644
---- a/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c
-+++ b/arch/arm/mach-imx/eukrea_mbimxsd35-baseboard.c
-@@ -233,6 +233,10 @@ struct imx_ssi_platform_data eukrea_mbimxsd_ssi_pdata __initconst = {
- 	.flags = IMX_SSI_SYN | IMX_SSI_NET | IMX_SSI_USE_I2S_SLAVE,
- };
- 
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX35_AUDMUX_BASE_ADDR, SZ_16K),
-+};
-+
- static struct esdhc_platform_data sd1_pdata = {
- 	.cd_gpio = GPIO_SD1CD,
- 	.cd_type = ESDHC_CD_GPIO,
-@@ -255,6 +259,9 @@ void __init eukrea_mbimxsd35_baseboard_init(void)
- 	imx35_add_ipu_core(&mx3_ipu_data);
- 	imx35_add_mx3_sdc_fb(&mx3fb_pdata);
- 
-+	/* imx35 has the imx31 version audmux */
-+	imx_add_platform_device("imx31-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx35_add_imx_ssi(0, &eukrea_mbimxsd_ssi_pdata);
- 
- 	imx35_add_flexcan1(NULL);
-diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-index c2766ae..8f03235 100644
---- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-+++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-@@ -240,6 +240,10 @@ static const struct imx_ssi_platform_data visstrim_m10_ssi_pdata __initconst = {
- 	.flags			= IMX_SSI_DMA | IMX_SSI_SYN,
- };
- 
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX27_AUDMUX_BASE_ADDR, SZ_4K),
-+};
-+
- static void __init visstrim_m10_board_init(void)
- {
- 	int ret;
-@@ -251,6 +255,9 @@ static void __init visstrim_m10_board_init(void)
- 	if (ret)
- 		pr_err("Failed to setup pins (%d)\n", ret);
- 
-+	/* imx27 has the imx21 version audmux */
-+	imx_add_platform_device("imx21-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx27_add_imx_ssi(0, &visstrim_m10_ssi_pdata);
- 	imx27_add_imx_uart0(&uart_pdata);
- 
-diff --git a/arch/arm/mach-imx/mach-mx31ads.c b/arch/arm/mach-imx/mach-mx31ads.c
-index 4917aab..f84bd46 100644
---- a/arch/arm/mach-imx/mach-mx31ads.c
-+++ b/arch/arm/mach-imx/mach-mx31ads.c
-@@ -486,8 +486,14 @@ static unsigned int ssi_pins[] = {
- 	MX31_PIN_STXD5__STXD5,
- };
- 
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX31_AUDMUX_BASE_ADDR, SZ_16K),
-+};
-+
- static void __init mxc_init_audio(void)
- {
-+	imx_add_platform_device("imx31-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx31_add_imx_ssi(0, NULL);
- 	mxc_iomux_setup_multiple_pins(ssi_pins, ARRAY_SIZE(ssi_pins), "ssi");
- }
-diff --git a/arch/arm/mach-imx/mach-pca100.c b/arch/arm/mach-imx/mach-pca100.c
-index 541152e..8a491b3 100644
---- a/arch/arm/mach-imx/mach-pca100.c
-+++ b/arch/arm/mach-imx/mach-pca100.c
-@@ -240,6 +240,10 @@ static const struct imx_ssi_platform_data pca100_ssi_pdata __initconst = {
- 	.flags			= IMX_SSI_USE_AC97,
- };
- 
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX27_AUDMUX_BASE_ADDR, SZ_4K),
-+};
-+
- static int pca100_sdhc2_init(struct device *dev, irq_handler_t detect_irq,
- 		void *data)
- {
-@@ -363,6 +367,9 @@ static void __init pca100_init(void)
- 	if (ret)
- 		printk(KERN_ERR "pca100: Failed to setup pins (%d)\n", ret);
- 
-+	/* imx27 has the imx21 version audmux */
-+	imx_add_platform_device("imx21-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx27_add_imx_ssi(0, &pca100_ssi_pdata);
- 
- 	imx27_add_imx_uart0(&uart_pdata);
-diff --git a/arch/arm/mach-imx/mach-pcm043.c b/arch/arm/mach-imx/mach-pcm043.c
-index 237474f..7d6a1e0 100644
---- a/arch/arm/mach-imx/mach-pcm043.c
-+++ b/arch/arm/mach-imx/mach-pcm043.c
-@@ -298,6 +298,10 @@ static const struct imx_ssi_platform_data pcm043_ssi_pdata __initconst = {
- 	.flags = IMX_SSI_USE_AC97,
- };
- 
-+static const struct resource audmux_res[] __initconst = {
-+	DEFINE_RES_MEM(MX35_AUDMUX_BASE_ADDR, SZ_16K),
-+};
-+
- static const struct mxc_nand_platform_data
- pcm037_nand_board_info __initconst = {
- 	.width = 1,
-@@ -367,6 +371,9 @@ static void __init pcm043_init(void)
- 
- 	imx35_add_imx_uart0(&uart_pdata);
- 	imx35_add_mxc_nand(&pcm037_nand_board_info);
-+	/* imx35 has the imx31 version audmux */
-+	imx_add_platform_device("imx31-audmux", 0, audmux_res,
-+				ARRAY_SIZE(audmux_res), NULL, 0);
- 	imx35_add_imx_ssi(0, &pcm043_ssi_pdata);
- 
- 	imx35_add_imx_uart1(&uart_pdata);
-diff --git a/arch/arm/plat-mxc/audmux.c b/arch/arm/plat-mxc/audmux.c
-index f6dc536..98f5656 100644
---- a/arch/arm/plat-mxc/audmux.c
-+++ b/arch/arm/plat-mxc/audmux.c
-@@ -1,4 +1,6 @@
- /*
-+ * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2012 Linaro Ltd.
-  * Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
-  *
-  * Initial development of this code was funded by
-@@ -15,14 +17,16 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/module.h>
--#include <linux/err.h>
--#include <linux/io.h>
- #include <linux/clk.h>
- #include <linux/debugfs.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <mach/audmux.h>
--#include <mach/hardware.h>
-+
-+#define DRIVER_NAME "imx-audmux"
- 
+ 	if (machine_is_eukrea_cpuimx27()) {
+-		mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+-			MXC_AUDMUX_V1_PCR_SYN |
+-			MXC_AUDMUX_V1_PCR_TFSDIR |
+-			MXC_AUDMUX_V1_PCR_TCLKDIR |
+-			MXC_AUDMUX_V1_PCR_RFSDIR |
+-			MXC_AUDMUX_V1_PCR_RCLKDIR |
+-			MXC_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
+-			MXC_AUDMUX_V1_PCR_RFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
+-			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4)
++		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
++			IMX_AUDMUX_V1_PCR_SYN |
++			IMX_AUDMUX_V1_PCR_TFSDIR |
++			IMX_AUDMUX_V1_PCR_TCLKDIR |
++			IMX_AUDMUX_V1_PCR_RFSDIR |
++			IMX_AUDMUX_V1_PCR_RCLKDIR |
++			IMX_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
++			IMX_AUDMUX_V1_PCR_RFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
++			IMX_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4)
+ 		);
+-		mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR3_SSI_PINS_4,
+-			MXC_AUDMUX_V1_PCR_SYN |
+-			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
++		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR3_SSI_PINS_4,
++			IMX_AUDMUX_V1_PCR_SYN |
++			IMX_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
+ 		);
+ 	} else if (machine_is_eukrea_cpuimx25sd() ||
+ 		   machine_is_eukrea_cpuimx35sd() ||
+ 		   machine_is_eukrea_cpuimx51sd()) {
+ 		ext_port = machine_is_eukrea_cpuimx25sd() ? 4 : 3;
+-		mxc_audmux_v2_configure_port(int_port,
+-			MXC_AUDMUX_V2_PTCR_SYN |
+-			MXC_AUDMUX_V2_PTCR_TFSDIR |
+-			MXC_AUDMUX_V2_PTCR_TFSEL(ext_port) |
+-			MXC_AUDMUX_V2_PTCR_TCLKDIR |
+-			MXC_AUDMUX_V2_PTCR_TCSEL(ext_port),
+-			MXC_AUDMUX_V2_PDCR_RXDSEL(ext_port)
++		imx_audmux_v2_configure_port(int_port,
++			IMX_AUDMUX_V2_PTCR_SYN |
++			IMX_AUDMUX_V2_PTCR_TFSDIR |
++			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
++			IMX_AUDMUX_V2_PTCR_TCLKDIR |
++			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port),
++			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port)
+ 		);
+-		mxc_audmux_v2_configure_port(ext_port,
+-			MXC_AUDMUX_V2_PTCR_SYN,
+-			MXC_AUDMUX_V2_PDCR_RXDSEL(int_port)
++		imx_audmux_v2_configure_port(ext_port,
++			IMX_AUDMUX_V2_PTCR_SYN,
++			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port)
+ 		);
+ 	} else {
+ 		/* return happy. We might run on a totally different machine */
+diff --git a/sound/soc/imx/imx-audmux.c b/sound/soc/imx/imx-audmux.c
+index e0d8c4b..d7bf154 100644
+--- a/sound/soc/imx/imx-audmux.c
++++ b/sound/soc/imx/imx-audmux.c
+@@ -32,8 +32,8 @@
  static struct clk *audmux_clk;
  static void __iomem *audmux_base;
-@@ -140,7 +144,7 @@ static const struct file_operations audmux_debugfs_fops = {
- 	.llseek = default_llseek,
- };
  
--static void audmux_debugfs_init(void)
-+static void __init audmux_debugfs_init(void)
- {
- 	int i;
- 	char buf[20];
-@@ -159,18 +163,48 @@ static void audmux_debugfs_init(void)
- 				   i);
- 	}
- }
-+
-+static void __exit audmux_debugfs_remove(void)
-+{
-+	debugfs_remove_recursive(audmux_debugfs_root);
-+}
- #else
- static inline void audmux_debugfs_init(void)
- {
- }
-+
-+static inline void audmux_debugfs_remove(void)
-+{
-+}
- #endif
+-#define MXC_AUDMUX_V2_PTCR(x)		((x) * 8)
+-#define MXC_AUDMUX_V2_PDCR(x)		((x) * 8 + 4)
++#define IMX_AUDMUX_V2_PTCR(x)		((x) * 8)
++#define IMX_AUDMUX_V2_PDCR(x)		((x) * 8 + 4)
  
-+enum imx_audmux_type {
-+	IMX21_AUDMUX,
-+	IMX31_AUDMUX,
-+} audmux_type;
-+
-+static struct platform_device_id imx_audmux_ids[] = {
-+	{
-+		.name = "imx21-audmux",
-+		.driver_data = IMX21_AUDMUX,
-+	}, {
-+		.name = "imx31-audmux",
-+		.driver_data = IMX31_AUDMUX,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+MODULE_DEVICE_TABLE(platform, imx_audmux_ids);
-+
- static unsigned char port_mapping[] = {
+ #ifdef CONFIG_DEBUG_FS
+ static struct dentry *audmux_debugfs_root;
+@@ -80,8 +80,8 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 	if (audmux_clk)
+ 		clk_enable(audmux_clk);
+ 
+-	ptcr = readl(audmux_base + MXC_AUDMUX_V2_PTCR(port));
+-	pdcr = readl(audmux_base + MXC_AUDMUX_V2_PDCR(port));
++	ptcr = readl(audmux_base + IMX_AUDMUX_V2_PTCR(port));
++	pdcr = readl(audmux_base + IMX_AUDMUX_V2_PDCR(port));
+ 
+ 	if (audmux_clk)
+ 		clk_disable(audmux_clk);
+@@ -89,7 +89,7 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 	ret = snprintf(buf, PAGE_SIZE, "PDCR: %08x\nPTCR: %08x\n",
+ 		       pdcr, ptcr);
+ 
+-	if (ptcr & MXC_AUDMUX_V2_PTCR_TFSDIR)
++	if (ptcr & IMX_AUDMUX_V2_PTCR_TFSDIR)
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 				"TxFS output from %s, ",
+ 				audmux_port_string((ptcr >> 27) & 0x7));
+@@ -97,7 +97,7 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 				"TxFS input, ");
+ 
+-	if (ptcr & MXC_AUDMUX_V2_PTCR_TCLKDIR)
++	if (ptcr & IMX_AUDMUX_V2_PTCR_TCLKDIR)
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 				"TxClk output from %s",
+ 				audmux_port_string((ptcr >> 22) & 0x7));
+@@ -107,11 +107,11 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 
+ 	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
+ 
+-	if (ptcr & MXC_AUDMUX_V2_PTCR_SYN) {
++	if (ptcr & IMX_AUDMUX_V2_PTCR_SYN) {
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 				"Port is symmetric");
+ 	} else {
+-		if (ptcr & MXC_AUDMUX_V2_PTCR_RFSDIR)
++		if (ptcr & IMX_AUDMUX_V2_PTCR_RFSDIR)
+ 			ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 					"RxFS output from %s, ",
+ 					audmux_port_string((ptcr >> 17) & 0x7));
+@@ -119,7 +119,7 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 			ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 					"RxFS input, ");
+ 
+-		if (ptcr & MXC_AUDMUX_V2_PTCR_RCLKDIR)
++		if (ptcr & IMX_AUDMUX_V2_PTCR_RCLKDIR)
+ 			ret += snprintf(buf + ret, PAGE_SIZE - ret,
+ 					"RxClk output from %s",
+ 					audmux_port_string((ptcr >> 12) & 0x7));
+@@ -201,7 +201,7 @@ static unsigned char port_mapping[] = {
  	0x0, 0x4, 0x8, 0x10, 0x14, 0x1c,
  };
  
- int mxc_audmux_v1_configure_port(unsigned int port, unsigned int pcr)
+-int mxc_audmux_v1_configure_port(unsigned int port, unsigned int pcr)
++int imx_audmux_v1_configure_port(unsigned int port, unsigned int pcr)
  {
-+	if (audmux_type != IMX21_AUDMUX)
-+		return -EINVAL;
-+
- 	if (!audmux_base)
- 		return -ENOSYS;
- 
-@@ -186,6 +220,9 @@ EXPORT_SYMBOL_GPL(mxc_audmux_v1_configure_port);
- int mxc_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
- 		unsigned int pdcr)
- {
-+	if (audmux_type != IMX31_AUDMUX)
-+		return -EINVAL;
-+
- 	if (!audmux_base)
- 		return -ENOSYS;
- 
-@@ -202,41 +239,61 @@ int mxc_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
- }
- EXPORT_SYMBOL_GPL(mxc_audmux_v2_configure_port);
- 
--static int mxc_audmux_init(void)
-+static int __init imx_audmux_probe(struct platform_device *pdev)
- {
--	int ret;
--	if (cpu_is_mx51()) {
--		audmux_base = MX51_IO_ADDRESS(MX51_AUDMUX_BASE_ADDR);
--	} else if (cpu_is_mx31()) {
--		audmux_base = MX31_IO_ADDRESS(MX31_AUDMUX_BASE_ADDR);
--	} else if (cpu_is_mx35()) {
--		audmux_clk = clk_get(NULL, "audmux");
--		if (IS_ERR(audmux_clk)) {
--			ret = PTR_ERR(audmux_clk);
--			printk(KERN_ERR "%s: cannot get clock: %d\n", __func__,
--					ret);
--			return ret;
--		}
--		audmux_base = MX35_IO_ADDRESS(MX35_AUDMUX_BASE_ADDR);
--	} else if (cpu_is_mx25()) {
--		audmux_clk = clk_get(NULL, "audmux");
--		if (IS_ERR(audmux_clk)) {
--			ret = PTR_ERR(audmux_clk);
--			printk(KERN_ERR "%s: cannot get clock: %d\n", __func__,
--					ret);
--			return ret;
--		}
--		audmux_base = MX25_IO_ADDRESS(MX25_AUDMUX_BASE_ADDR);
--	} else if (cpu_is_mx27()) {
--		audmux_base = MX27_IO_ADDRESS(MX27_AUDMUX_BASE_ADDR);
--	} else if (cpu_is_mx21()) {
--		audmux_base = MX21_IO_ADDRESS(MX21_AUDMUX_BASE_ADDR);
-+	struct resource *res;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	audmux_base = devm_request_and_ioremap(&pdev->dev, res);
-+	if (!audmux_base)
-+		return -EADDRNOTAVAIL;
-+
-+	audmux_clk = clk_get(&pdev->dev, "audmux");
-+	if (IS_ERR(audmux_clk)) {
-+		dev_dbg(&pdev->dev, "cannot get clock: %ld\n",
-+				PTR_ERR(audmux_clk));
-+		audmux_clk = NULL;
- 	}
- 
--	if (!cpu_is_mx2())
-+	audmux_type = pdev->id_entry->driver_data;
-+	if (audmux_type == IMX31_AUDMUX)
- 		audmux_debugfs_init();
+ 	if (audmux_type != IMX21_AUDMUX)
+ 		return -EINVAL;
+@@ -216,9 +216,9 @@ int mxc_audmux_v1_configure_port(unsigned int port, unsigned int pcr)
  
  	return 0;
  }
+-EXPORT_SYMBOL_GPL(mxc_audmux_v1_configure_port);
++EXPORT_SYMBOL_GPL(imx_audmux_v1_configure_port);
  
--postcore_initcall(mxc_audmux_init);
-+static int __exit imx_audmux_remove(struct platform_device *pdev)
-+{
-+	if (audmux_type == IMX31_AUDMUX)
-+		audmux_debugfs_remove();
-+	clk_put(audmux_clk);
+-int mxc_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
++int imx_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
+ 		unsigned int pdcr)
+ {
+ 	if (audmux_type != IMX31_AUDMUX)
+@@ -230,15 +230,15 @@ int mxc_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
+ 	if (audmux_clk)
+ 		clk_enable(audmux_clk);
+ 
+-	writel(ptcr, audmux_base + MXC_AUDMUX_V2_PTCR(port));
+-	writel(pdcr, audmux_base + MXC_AUDMUX_V2_PDCR(port));
++	writel(ptcr, audmux_base + IMX_AUDMUX_V2_PTCR(port));
++	writel(pdcr, audmux_base + IMX_AUDMUX_V2_PDCR(port));
+ 
+ 	if (audmux_clk)
+ 		clk_disable(audmux_clk);
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(mxc_audmux_v2_configure_port);
++EXPORT_SYMBOL_GPL(imx_audmux_v2_configure_port);
+ 
+ static int __init imx_audmux_probe(struct platform_device *pdev)
+ {
+diff --git a/sound/soc/imx/imx-audmux.h b/sound/soc/imx/imx-audmux.h
+index 5136d948..04ebbab 100644
+--- a/sound/soc/imx/imx-audmux.h
++++ b/sound/soc/imx/imx-audmux.h
+@@ -24,37 +24,37 @@
+ #define MX51_AUDMUX_PORT7		6
+ 
+ /* Register definitions for the i.MX21/27 Digital Audio Multiplexer */
+-#define MXC_AUDMUX_V1_PCR_INMMASK(x)	((x) & 0xff)
+-#define MXC_AUDMUX_V1_PCR_INMEN		(1 << 8)
+-#define MXC_AUDMUX_V1_PCR_TXRXEN	(1 << 10)
+-#define MXC_AUDMUX_V1_PCR_SYN		(1 << 12)
+-#define MXC_AUDMUX_V1_PCR_RXDSEL(x)	(((x) & 0x7) << 13)
+-#define MXC_AUDMUX_V1_PCR_RFCSEL(x)	(((x) & 0xf) << 20)
+-#define MXC_AUDMUX_V1_PCR_RCLKDIR	(1 << 24)
+-#define MXC_AUDMUX_V1_PCR_RFSDIR	(1 << 25)
+-#define MXC_AUDMUX_V1_PCR_TFCSEL(x)	(((x) & 0xf) << 26)
+-#define MXC_AUDMUX_V1_PCR_TCLKDIR	(1 << 30)
+-#define MXC_AUDMUX_V1_PCR_TFSDIR	(1 << 31)
++#define IMX_AUDMUX_V1_PCR_INMMASK(x)	((x) & 0xff)
++#define IMX_AUDMUX_V1_PCR_INMEN		(1 << 8)
++#define IMX_AUDMUX_V1_PCR_TXRXEN	(1 << 10)
++#define IMX_AUDMUX_V1_PCR_SYN		(1 << 12)
++#define IMX_AUDMUX_V1_PCR_RXDSEL(x)	(((x) & 0x7) << 13)
++#define IMX_AUDMUX_V1_PCR_RFCSEL(x)	(((x) & 0xf) << 20)
++#define IMX_AUDMUX_V1_PCR_RCLKDIR	(1 << 24)
++#define IMX_AUDMUX_V1_PCR_RFSDIR	(1 << 25)
++#define IMX_AUDMUX_V1_PCR_TFCSEL(x)	(((x) & 0xf) << 26)
++#define IMX_AUDMUX_V1_PCR_TCLKDIR	(1 << 30)
++#define IMX_AUDMUX_V1_PCR_TFSDIR	(1 << 31)
+ 
+ /* Register definitions for the i.MX25/31/35/51 Digital Audio Multiplexer */
+-#define MXC_AUDMUX_V2_PTCR_TFSDIR	(1 << 31)
+-#define MXC_AUDMUX_V2_PTCR_TFSEL(x)	(((x) & 0xf) << 27)
+-#define MXC_AUDMUX_V2_PTCR_TCLKDIR	(1 << 26)
+-#define MXC_AUDMUX_V2_PTCR_TCSEL(x)	(((x) & 0xf) << 22)
+-#define MXC_AUDMUX_V2_PTCR_RFSDIR	(1 << 21)
+-#define MXC_AUDMUX_V2_PTCR_RFSEL(x)	(((x) & 0xf) << 17)
+-#define MXC_AUDMUX_V2_PTCR_RCLKDIR	(1 << 16)
+-#define MXC_AUDMUX_V2_PTCR_RCSEL(x)	(((x) & 0xf) << 12)
+-#define MXC_AUDMUX_V2_PTCR_SYN		(1 << 11)
+-
+-#define MXC_AUDMUX_V2_PDCR_RXDSEL(x)	(((x) & 0x7) << 13)
+-#define MXC_AUDMUX_V2_PDCR_TXRXEN	(1 << 12)
+-#define MXC_AUDMUX_V2_PDCR_MODE(x)	(((x) & 0x3) << 8)
+-#define MXC_AUDMUX_V2_PDCR_INMMASK(x)	((x) & 0xff)
+-
+-int mxc_audmux_v1_configure_port(unsigned int port, unsigned int pcr);
+-
+-int mxc_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
++#define IMX_AUDMUX_V2_PTCR_TFSDIR	(1 << 31)
++#define IMX_AUDMUX_V2_PTCR_TFSEL(x)	(((x) & 0xf) << 27)
++#define IMX_AUDMUX_V2_PTCR_TCLKDIR	(1 << 26)
++#define IMX_AUDMUX_V2_PTCR_TCSEL(x)	(((x) & 0xf) << 22)
++#define IMX_AUDMUX_V2_PTCR_RFSDIR	(1 << 21)
++#define IMX_AUDMUX_V2_PTCR_RFSEL(x)	(((x) & 0xf) << 17)
++#define IMX_AUDMUX_V2_PTCR_RCLKDIR	(1 << 16)
++#define IMX_AUDMUX_V2_PTCR_RCSEL(x)	(((x) & 0xf) << 12)
++#define IMX_AUDMUX_V2_PTCR_SYN		(1 << 11)
 +
-+	return 0;
-+}
++#define IMX_AUDMUX_V2_PDCR_RXDSEL(x)	(((x) & 0x7) << 13)
++#define IMX_AUDMUX_V2_PDCR_TXRXEN	(1 << 12)
++#define IMX_AUDMUX_V2_PDCR_MODE(x)	(((x) & 0x3) << 8)
++#define IMX_AUDMUX_V2_PDCR_INMMASK(x)	((x) & 0xff)
 +
-+static struct platform_driver imx_audmux_driver = {
-+	.probe		= imx_audmux_probe,
-+	.remove		= __exit_p(imx_audmux_remove),
-+	.id_table	= imx_audmux_ids,
-+	.driver	= {
-+		.name	= DRIVER_NAME,
-+		.owner	= THIS_MODULE,
-+	}
-+};
++int imx_audmux_v1_configure_port(unsigned int port, unsigned int pcr);
 +
-+static int __init imx_audmux_init(void)
-+{
-+	return platform_driver_register(&imx_audmux_driver);
-+}
-+subsys_initcall(imx_audmux_init);
++int imx_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
+ 		unsigned int pdcr);
+ 
+ #endif /* __IMX_AUDMUX_H */
+diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
+index dbfad0f..976f857 100644
+--- a/sound/soc/imx/mx27vis-aic32x4.c
++++ b/sound/soc/imx/mx27vis-aic32x4.c
+@@ -207,16 +207,16 @@ static int __init mx27vis_aic32x4_init(void)
+ 	}
+ 
+ 	/* Connect SSI0 as clock slave to SSI1 external pins */
+-	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+-			MXC_AUDMUX_V1_PCR_SYN |
+-			MXC_AUDMUX_V1_PCR_TFSDIR |
+-			MXC_AUDMUX_V1_PCR_TCLKDIR |
+-			MXC_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1) |
+-			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1)
++	imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
++			IMX_AUDMUX_V1_PCR_SYN |
++			IMX_AUDMUX_V1_PCR_TFSDIR |
++			IMX_AUDMUX_V1_PCR_TCLKDIR |
++			IMX_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1) |
++			IMX_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1)
+ 	);
+-	mxc_audmux_v1_configure_port(MX27_AUDMUX_PPCR1_SSI_PINS_1,
+-			MXC_AUDMUX_V1_PCR_SYN |
+-			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
++	imx_audmux_v1_configure_port(MX27_AUDMUX_PPCR1_SSI_PINS_1,
++			IMX_AUDMUX_V1_PCR_SYN |
++			IMX_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
+ 	);
+ 
+ 	ret = mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
+diff --git a/sound/soc/imx/phycore-ac97.c b/sound/soc/imx/phycore-ac97.c
+index 7dab077..f8da6dd 100644
+--- a/sound/soc/imx/phycore-ac97.c
++++ b/sound/soc/imx/phycore-ac97.c
+@@ -53,27 +53,27 @@ static int __init imx_phycore_init(void)
+ 	int ret;
+ 
+ 	if (machine_is_pca100()) {
+-		mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+-			MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
+-			MXC_AUDMUX_V1_PCR_TFCSEL(3) |
+-			MXC_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
+-			MXC_AUDMUX_V1_PCR_RXDSEL(3));
+-		mxc_audmux_v1_configure_port(3,
+-			MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
+-			MXC_AUDMUX_V1_PCR_TFCSEL(0) |
+-			MXC_AUDMUX_V1_PCR_TFSDIR |
+-			MXC_AUDMUX_V1_PCR_RXDSEL(0));
++		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
++			IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
++			IMX_AUDMUX_V1_PCR_TFCSEL(3) |
++			IMX_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
++			IMX_AUDMUX_V1_PCR_RXDSEL(3));
++		imx_audmux_v1_configure_port(3,
++			IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
++			IMX_AUDMUX_V1_PCR_TFCSEL(0) |
++			IMX_AUDMUX_V1_PCR_TFSDIR |
++			IMX_AUDMUX_V1_PCR_RXDSEL(0));
+ 	} else if (machine_is_pcm043()) {
+-		mxc_audmux_v2_configure_port(3,
+-			MXC_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
+-			MXC_AUDMUX_V2_PTCR_TFSEL(0) |
+-			MXC_AUDMUX_V2_PTCR_TFSDIR,
+-			MXC_AUDMUX_V2_PDCR_RXDSEL(0));
+-		mxc_audmux_v2_configure_port(0,
+-			MXC_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
+-			MXC_AUDMUX_V2_PTCR_TCSEL(3) |
+-			MXC_AUDMUX_V2_PTCR_TCLKDIR, /* clock is output */
+-			MXC_AUDMUX_V2_PDCR_RXDSEL(3));
++		imx_audmux_v2_configure_port(3,
++			IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
++			IMX_AUDMUX_V2_PTCR_TFSEL(0) |
++			IMX_AUDMUX_V2_PTCR_TFSDIR,
++			IMX_AUDMUX_V2_PDCR_RXDSEL(0));
++		imx_audmux_v2_configure_port(0,
++			IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
++			IMX_AUDMUX_V2_PTCR_TCSEL(3) |
++			IMX_AUDMUX_V2_PTCR_TCLKDIR, /* clock is output */
++			IMX_AUDMUX_V2_PDCR_RXDSEL(3));
+ 	} else {
+ 		/* return happy. We might run on a totally different machine */
+ 		return 0;
+diff --git a/sound/soc/imx/wm1133-ev1.c b/sound/soc/imx/wm1133-ev1.c
+index 15056d6..fe54a69 100644
+--- a/sound/soc/imx/wm1133-ev1.c
++++ b/sound/soc/imx/wm1133-ev1.c
+@@ -267,17 +267,17 @@ static int __init wm1133_ev1_audio_init(void)
+ 	unsigned int ptcr, pdcr;
+ 
+ 	/* SSI0 mastered by port 5 */
+-	ptcr = MXC_AUDMUX_V2_PTCR_SYN |
+-		MXC_AUDMUX_V2_PTCR_TFSDIR |
+-		MXC_AUDMUX_V2_PTCR_TFSEL(MX31_AUDMUX_PORT5_SSI_PINS_5) |
+-		MXC_AUDMUX_V2_PTCR_TCLKDIR |
+-		MXC_AUDMUX_V2_PTCR_TCSEL(MX31_AUDMUX_PORT5_SSI_PINS_5);
+-	pdcr = MXC_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT5_SSI_PINS_5);
+-	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT1_SSI0, ptcr, pdcr);
+-
+-	ptcr = MXC_AUDMUX_V2_PTCR_SYN;
+-	pdcr = MXC_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT1_SSI0);
+-	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT5_SSI_PINS_5, ptcr, pdcr);
++	ptcr = IMX_AUDMUX_V2_PTCR_SYN |
++		IMX_AUDMUX_V2_PTCR_TFSDIR |
++		IMX_AUDMUX_V2_PTCR_TFSEL(MX31_AUDMUX_PORT5_SSI_PINS_5) |
++		IMX_AUDMUX_V2_PTCR_TCLKDIR |
++		IMX_AUDMUX_V2_PTCR_TCSEL(MX31_AUDMUX_PORT5_SSI_PINS_5);
++	pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT5_SSI_PINS_5);
++	imx_audmux_v2_configure_port(MX31_AUDMUX_PORT1_SSI0, ptcr, pdcr);
 +
-+static void __exit imx_audmux_exit(void)
-+{
-+	platform_driver_unregister(&imx_audmux_driver);
-+}
-+module_exit(imx_audmux_exit);
-+
-+MODULE_DESCRIPTION("Freescale i.MX AUDMUX driver");
-+MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRIVER_NAME);
++	ptcr = IMX_AUDMUX_V2_PTCR_SYN;
++	pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT1_SSI0);
++	imx_audmux_v2_configure_port(MX31_AUDMUX_PORT5_SSI_PINS_5, ptcr, pdcr);
+ 
+ 	wm1133_ev1_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!wm1133_ev1_snd_device)
 -- 
 1.7.5.4
