@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 07/20] ASoC: imx: move SND_SOC_AC97_BUS
- selection down to machine driver
-Date: Sun, 4 Mar 2012 13:34:43 +0000
-Message-ID: <20120304133442.GD3083@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 20/20] ASoC: fsl: add imx-sgtl5000 machine
+	driver
+Date: Sun, 4 Mar 2012 13:38:18 +0000
+Message-ID: <20120304133818.GE3083@opensource.wolfsonmicro.com>
 References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
-	<1330788001-10158-8-git-send-email-shawn.guo@linaro.org>
+	<1330788001-10158-21-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9201163783465440406=="
+Content-Type: multipart/mixed; boundary="===============1097450015369295131=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B0B7245A0
-	for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2012 14:34:45 +0100 (CET)
-In-Reply-To: <1330788001-10158-8-git-send-email-shawn.guo@linaro.org>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A43A7245A1
+	for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2012 14:38:21 +0100 (CET)
+In-Reply-To: <1330788001-10158-21-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +26,76 @@ Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-ar
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9201163783465440406==
+--===============1097450015369295131==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d01dLTUuW90fS44H"
+	protocol="application/pgp-signature"; boundary="sfyO1m2EN8ZOtJL6"
 Content-Disposition: inline
 
 
---d01dLTUuW90fS44H
+--sfyO1m2EN8ZOtJL6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 03, 2012 at 11:19:48PM +0800, Shawn Guo wrote:
-> SND_SOC_AC97_BUS is selected to enable the AC97 support in soc-core.
-> Rather than selecting the option under SND_IMX_SOC, it's better to
-> leave the selection to individual machine driver which knows if AC97
-> support is needed or not.
+On Sat, Mar 03, 2012 at 11:20:01PM +0800, Shawn Guo wrote:
 
-Applied.
+> +	ret =3D snd_soc_dai_set_fmt(rtd->codec_dai, SND_SOC_DAIFMT_I2S |
+> +						  SND_SOC_DAIFMT_NB_NF |
+> +						  SND_SOC_DAIFMT_CBM_CFM);
 
---d01dLTUuW90fS44H
+Initialise this from the card. =20
+
+Since none of the startup is dynamic it should all be done on DAI init
+rather than rerun each time audio is started.
+
+> +	/* Add soc-audio device */
+> +	data->soc_audio_pdev =3D platform_device_alloc("soc-audio", -1);
+> +	if (!data->soc_audio_pdev) {
+> +		ret =3D -ENOMEM;
+> +		goto err;
+> +	}
+
+No, use snd_soc_register_card().  soc-audio has been deprecated since
+2.6.38.
+
+> +static int __devexit imx_sgtl5000_remove(struct platform_device *pdev)
+> +{
+> +	struct imx_sgtl5000_data *data =3D dev_get_drvdata(&pdev->dev);
+> +
+> +	platform_device_unregister(data->pcm_audio_pdev);
+
+This looks like there's a problem with the bindings, why are you
+registering the DMA device from the card?
+
+--sfyO1m2EN8ZOtJL6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPU28SAAoJEBus8iNuMP3dqwcP/35OoiVHHS9J8cJ8X4MugK5O
-ksaLcA3I6209MrrwmO8gOs6AWDo0G20vmAbYj6mjGIJNGiRyG0Adga4NEW6iJ9qH
-Q2GH3Eunm95Cp2xuHMLMktpZbILIew/f+z5n5WlY3b+5XJHv4Hu6Zjy6c5tUM6/8
-FY2z1sVAFp21MevSwUCY0ONXQGeVEhXPpHUTnO4osnR3NsjtME3ENVHcGY5Wqx6n
-O8+Po5NZSXrxpvKyQyTiIE7ZIY5rPsIZwI2u76M71bYdG1p+shwMufd9ehARaFVt
-CPOjoRz1bJVeuV9/e+js3u91rWakbh+KK7/iXBEN262LOmnKRkcmfNoSRP1SxVRz
-cnNUj0u2w4ZulAQCssXbq9aN4/JXJZ8yLqPefM6x0p6mcWeEkYZp6d1lv71/WJbr
-F07wzCm7Qi1ixyiEfw0LRO4Y6VafsyeNLSuwL68815W7Eq0HFc2kTa3Qm8k6zKN/
-EWlNQUOSj/+KPEIW31iPk27WQfolUtyu10767klvx3JfwCd89jUhyBdoRBEypnUI
-kqQLuLKdnPOiccE3CdblCeVFRz7b53OsZd3NZeD9qv/KBMXPlQgWX+IhR0avvtj9
-NXh2j9xEFfN1a/drnrfqwfTi0fwixSdLOLXBZHyfrSajeiRLOSFr21BPgttxuhTE
-slGhYjgB4MKLgsNh1X2n
-=eJQU
+iQIcBAEBAgAGBQJPU3BDAAoJEBus8iNuMP3dm4MP/R/CpRCrJYJrxDYLJJQ2NrPf
+RmPy/P/Pf/9w+ZgA6LuMT8TMRBGivBEweeqBshr6fRHFENiwQJQCe+R1vhWxbdyF
+5JeLHPwjbahvSjLmLLs9wso9a4C9tp8mTB86Yb0Zo7iPXOkf1KyKKbRaIBfjIbDU
+HlALVxc8Hv2q62uwN27xMmN20RKPas4jfJE7HVmpxQCIc63aF4Ubz+Ebs4cH7q4s
+G57XezwBfgWVDBTXTuhHwXHmMMxG/2gk2seGruTMrgfbJR26OhR6dJ1n+XItthR0
+hPLgSHcUbOl3gTY+ETMJQtuFUX0plDlOy/Jfmz2SY8SOx/GO+dBpcl7XmVYBePzF
+eEzE+SSWU9Aa2Kwi/TODFhZNAtsF/QCht3SS6tqDh4QoafhbJOFfyW9IWryk3DWP
+LNdfLwRsVLS/uWaQLZjzGhOH9tD80MZspnEUNKEA3bTX09ALWVFac57ZJ1FjU4U/
+QW5qsDSboapsdI7YWXBzjvh5iG3lpqfKCR5LKvHoxjUAJrpBaVBWS3DpFBdUJM8k
+4fzxZ8MxuGrXuUNATsJoG8tkhLgXDWui415ww9k/jYltxYB0Qm1uavYu2DrNvTdT
+kkJScLOhk41yvGPH95b9yDgYc7sVhvEDkf6McoxfUCX2dh2EEPsM0p6rBmM3Xak5
+6rAcYrjK3SylexFc3Ul8
+=no6A
 -----END PGP SIGNATURE-----
 
---d01dLTUuW90fS44H--
+--sfyO1m2EN8ZOtJL6--
 
---===============9201163783465440406==
+--===============1097450015369295131==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9201163783465440406==--
+--===============1097450015369295131==--
