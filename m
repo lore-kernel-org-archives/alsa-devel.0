@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 09/20] ASoC: imx: separate imx-pcm bits
- from imx-ssi driver
-Date: Sun, 4 Mar 2012 13:41:35 +0000
-Message-ID: <20120304134135.GG3083@opensource.wolfsonmicro.com>
-References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
-	<1330788001-10158-10-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH 2/3] ASoC: dapm - Use card mutex for DAPM
+ ops instead of codec mutex.
+Date: Sun, 4 Mar 2012 14:09:40 +0000
+Message-ID: <20120304140939.GH3083@opensource.wolfsonmicro.com>
+References: <1330711872-27436-1-git-send-email-lrg@ti.com>
+	<1330711872-27436-2-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8496005326177782701=="
+Content-Type: multipart/mixed; boundary="===============8538825836329141943=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 47651245A1
-	for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2012 14:41:37 +0100 (CET)
-In-Reply-To: <1330788001-10158-10-git-send-email-shawn.guo@linaro.org>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8D5CF24624
+	for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2012 15:09:42 +0100 (CET)
+In-Reply-To: <1330711872-27436-2-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +21,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8496005326177782701==
+--===============8538825836329141943==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w/VI3ydZO+RcZ3Ux"
+	protocol="application/pgp-signature"; boundary="SdvjNjn6lL3tIsv0"
 Content-Disposition: inline
 
 
---w/VI3ydZO+RcZ3Ux
+--SdvjNjn6lL3tIsv0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 03, 2012 at 11:19:50PM +0800, Shawn Guo wrote:
-> Currently the imx-ssi.c[h] accommodates the imx-pcm common bits which
-> are shared between imx-pcm-dma-mx2 and imx-pcm-fiq drivers.  It assumes
-> that imx-pcm-dma-mx2 and imx-pcm-fiq will always be used together with
-> imx-ssi driver.  However this becomes untrue when we see that driver
-> sound/soc/fsl/fsl_ssi could possibly work with imx-pcm-dma-mx2 too.
+On Fri, Mar 02, 2012 at 06:11:11PM +0000, Liam Girdwood wrote:
 
-I was going to apply this and the next patch but they depend on the
-audmux stuff so they'll at least have to wait until that gets applied.
+Thanks for looking at this stuff, it's needed attention for a long time
+but it's never been a practical problem and it's always depressed me too
+much every time I've thought about looking at it myself.
 
---w/VI3ydZO+RcZ3Ux
+> This patch updates the DAPM operations that use the codec mutex to
+> now use the card mutex PCM subclass for all DAPM ops.
+
+Hrm, this makes "PCM" look misnamed...  should we have a DAPM context,
+or perhaps even just a separate lock for DAPM?  If we can have a
+separate lock that'd be good, it's usually much simpler (at least for
+me) to reason about multiple locks interacting than nesting on the same
+lock but it's not always reasonable to split the locks, like with the
+PCM stuff calling back into itself.
+
+It looks like we're also missing a lock in snd_soc_dapm_sync() here, we
+need to lock that as well as the updaters otherwise we might change the
+lists underneath the DAPM run which doesn't work so well.  I might've
+missed that, though (and currently we're not exactly 100% on taking that
+lock when we should).  That's why snd_soc_jack_report() has the CODEC
+mutex for example.
+
+We'll also need to make sure the locking for the register I/O is sorted,
+it's OK for the devices using regmap as that locks for us but currently
+anything using the ASoC level cache relies on the CODEC mutex being held
+for register I/O.  This isn't quite so risky as it was when we had the
+advanced caches since the data structure is just a plain array but
+writes may still go AWOL and that'd be a nightmare to debug.  I'm
+worrying that right now something is relying on the fact that DAPM takes
+the CODEC mutex to protect it.  But probably it's OK to fix that up
+separately I think, we've got plenty of problems there and either
+killing all the ASoC level caches or adding a new lock at the cache
+level seem like the way to go both of which are basically orthogonal to
+what's going on here.
+
+--SdvjNjn6lL3tIsv0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPU3EIAAoJEBus8iNuMP3dawEP/031l3IFsZG4/2dw9qoYtzIU
-2DwVmXEeDr4SxwU0fESq+lQifg8ANPsm+36n1C4JDykE5mNAwJ/8GOUFRu7q/blV
-JCH+p7on2COGjVp+ay//I6la3FmGL+zbHUxCQvFL7yPRv+ToaXMHIndgO4qLs/eq
-wdG3TxcFPNj7mQR5LR8cZqPm69IlvLkXvLm7ub+kehT/kYAEcTtNnemHtWMVcTUU
-+hMAVvROgotrKSMcuc+/qUVvOYvic8q3N+g3zKtOu3gmfpe1qfh43VbAv0TRW86v
-QGV1IcCD+C6sPIbXfPfw7IlAtPxKN5YF6FiabtQyovfz5hQirIPjcIv6xnUSvD9g
-LKaoUFWpitj99uoMr5g+9Y830FFnI6bkeh5sFZLns5+VU9yR/cAcmXNxoqc7yVfc
-8P5a6TXzwwpaxa38gXfgOyKZXce1/MKUYJOB0fXBFhoiy8VO998Qcn2L70lwFsSl
-i6ARa18PECe2bYnHEYm1VGiN6z2Q+zkxTHSd1Df4LxgoYg2TxMm6LP78QpJ3l/+b
-KPoUPzlWL+AEnif/++KPMtw8RoXW+9wVVIz07gvG8/LX5EKYuoCEAtJV/7JB6Ebs
-XG4cCnUec7PMiMcWCgka12al9ojmWwy5vjUfoE3jdQ1fSBNZAPdTof7J+vzyh+BA
-UZW0sa0Y8jRsLL1jtRZV
-=ctg0
+iQIcBAEBAgAGBQJPU3edAAoJEBus8iNuMP3d8k8P/jQymGkj4tXOmViiLADtNqOV
+9wQXj5wSid9z8J9E8w3ZRtVzJBdYJuPRDNPdCfvXWeKyd/3WVj3i68ousxNb7WdK
+WmpN1V0QGRU3lh2MyCbYSIM+ja1aA6WL9NX58d6jP6BGM+BF+SJaVyGKpKuTUuMN
+PO1bFRzBxYaUzt2pUtjrQcTqrvprCY8C7hL6NScdZbkz6FJPYoL9Jexrlcb2HgLd
+RqoUoHgY3CykJw0zfivxtXJub60+HJYcuoHMD7zfOWY7dGbaeVCMTFyAsW7nRQrY
+g1mOJwUDv09GWQM4qO228pgoUKojdsZQnnfd4b7quXfGzKNVpFuTcYSauBXgZC/N
+GbFgzwMHGztK0CHzYRR0nw4KK5JHs5++AQEIFcjEx3HDZS7q/mg6dfXwWQKZLSrs
+R/0Jpf/oYXTHHtjqZG7X64yVXZpoPtiUpyYSP4p+IE7MRcxkENzxHByK4UpnNCyO
+7L2X2vN7QlHN0eyQgNfHrxThusIMvxwbjexuTbcZUVQIWvH7hnx2E7FhgiRls9gZ
+BpwCGw7KFXJ2v51I9VZcKJK8B80xS1zK/jFSuQgsXC0omXMXIgnHKf5EOB5xIZuC
+8ZGPGicGjKb1iTUjokVKOxlHVvfteThR/H/kN1DflcWQR63ZyQPuf6mL0iS96kqY
+wpM26EGDqvd02yy1Qch4
+=09+T
 -----END PGP SIGNATURE-----
 
---w/VI3ydZO+RcZ3Ux--
+--SdvjNjn6lL3tIsv0--
 
---===============8496005326177782701==
+--===============8538825836329141943==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8496005326177782701==--
+--===============8538825836329141943==--
