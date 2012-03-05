@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 11/17] ASoC: fsl: create fsl_utils to
- accommodate the common functions
-Date: Mon, 5 Mar 2012 16:15:20 +0000
-Message-ID: <20120305161520.GT3224@opensource.wolfsonmicro.com>
-References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
-	<1330957865-19085-12-git-send-email-shawn.guo@linaro.org>
-	<20120305144920.GR3224@opensource.wolfsonmicro.com>
-	<4F54E065.8060905@freescale.com>
+Subject: Re: [PATCH 2/3] ASoC: dapm - Use card mutex for DAPM
+ ops instead of codec mutex.
+Date: Mon, 5 Mar 2012 16:45:33 +0000
+Message-ID: <20120305164532.GU3224@opensource.wolfsonmicro.com>
+References: <1330711872-27436-1-git-send-email-lrg@ti.com>
+	<1330711872-27436-2-git-send-email-lrg@ti.com>
+	<20120304140939.GH3083@opensource.wolfsonmicro.com>
+	<1330958882.4370.15.camel@odin>
+	<20120305152616.GS3224@opensource.wolfsonmicro.com>
+	<1330962910.4370.21.camel@odin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5210643355458912857=="
+Content-Type: multipart/mixed; boundary="===============4531340688226651225=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 428B324498
-	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 17:15:23 +0100 (CET)
-In-Reply-To: <4F54E065.8060905@freescale.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 556E2244A4
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 17:45:36 +0100 (CET)
+In-Reply-To: <1330962910.4370.21.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,67 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5210643355458912857==
+--===============4531340688226651225==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kbZGpL0ScFxCd8mt"
+	protocol="application/pgp-signature"; boundary="Q/AGl/UrDvkbRExF"
 Content-Disposition: inline
 
 
---kbZGpL0ScFxCd8mt
+--Q/AGl/UrDvkbRExF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 05, 2012 at 09:48:53AM -0600, Timur Tabi wrote:
-> Mark Brown wrote:
+On Mon, Mar 05, 2012 at 03:55:10PM +0000, Liam Girdwood wrote:
 
-> > This doesn't seem at all Freescale specific, it should be a generic
-> > helper, and in fact there already is one - the machine driver can set
-> > codec_of_node in the card structure to point to the device node and then
-> > the core should figure out binding to the device for you.  If it doesn't
-> > we should fix the core.
+> PCM ops and DAPM don't fight with each other, there is a dependency with
+> the snd_card->control_rwsem. The calling ordering is different for init
+> that it is for kcontrol updates that causes the warning below :-
 
-> Can we do that in another patch set, so that it doesn't hold up Shawn's
-> work?  All this patch does is move the code from one file to another, so
-> it's not like he's adding a feature incorrectly.
+control_rwsem isn't in mainline...
 
-Well, it shouldn't be much effort - instead of removing the code just
-delete it mostly - and there's other issues that need to be looked at
-anyway.  There's also the arch/arm stuff that needs review...
-
---kbZGpL0ScFxCd8mt
+--Q/AGl/UrDvkbRExF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPVOZ4AAoJEBus8iNuMP3dLMsP/0g+MV/mbm6DQpKlv2QIFgWf
-n2fyQOsTLpLLlrD3EQfWuHLm84v6hIEg0RYtE0Ui9qXn6N3fSbDivYVgHiAKA+gJ
-xfY/A9JCPwdNY48SvdCYb9sz0tOFUr5ZwTXlpoyBa5OB5soq+VPivI0TdVX8QmT8
-xePFBcBETQQv2dUsGLDGMxbEz3AacQGKxx7CDuwm7Sn31paClRTD/hWoHLdaiVta
-nfftqhLXymohgEMQaXqKbycy0pLVPbNK/J4fjUU3ZyTwbnW5WYjqKFYrq7Pfjmvt
-+9gkyvLB1NqbY+EiZY5mMDfAUJUlltC4d94NrPz9lGxLLZjNBjKdIu36tfHP26dK
-G/hjV6yCFaJf6q6/lYiQvvL8OBip8ZsE2qT1UpogUcSqxOBclNKGAVn67RYI/gMv
-F0/Cie855FbfMjCUc5slNklugHd85J/gUxR5YeuDqbqCAwD34QrnSb0aC4Y4dv5V
-yzSUYsVKbj4lCFqKvfmvKvQriSIabREpzX2ft+j+XaKWViBUagBTzYTWBN1RlZxl
-myfJctfKg5iouljLhOBdmPawTjBKUpTun2Zr0eYp0aiFbxW08O6LdD5rac1LiiGW
-d1lnRBdVYwl5O/V8D9QoOY4vP5qI0dAH/uszPUEMdQ0kah4MY1KjYYVyZQs7+qth
-DHnS+iKQooLo77Gn4hY0
-=IYwx
+iQIcBAEBAgAGBQJPVO2LAAoJEBus8iNuMP3dlq4P/0iuDEZd4rhx9aZT+WJRgqad
+H66I2GSeDE9tVxAZZzORVwG+if5ehXI2OFiozUsPjkmzho/qBMxyfIXS5sVE1LEN
++LuOWgz6wPEA220ddJhd3v7KO8LN06U03h2VWUH5MWxzEqTO9tAuX8nQ2N9a6z7R
+BQBm9zu59cRmWgXzjro7ZckGL3OwUdBus/BnvjbDlDahDbQ8YUHSexGcB5ONeO4G
+ACpzUXuPPhdqHiQFrCryNBs8uQyGVxvcgqcrUnsTqeRIuFNdAcIcS8hiPPY3Y8nu
+X+q/r3aIkZKQP05jJGuPFnLT2haJkbjnhF4eaa5pNEFZUnoxzSI3PZFAfev0Th0N
+dpKcrfh3kzCeFwgH8op/aD6j516Gi/+uYWbVoUSGyKuXTFtPho+xAaii6dVaIRcA
+4jPTAnej86a4b8cx0qlYSAKnPtsk6dM/2JWGjQSpVmez/HaiY6uB283I5T9ClfR+
+a3GWp9LVeq3m2XiqLOkQCONamd9H/Iyl2PKWt2lrs3ZOQDvZmW/gbBnE6yefZhiP
+PvkiOtW7wZgAnfOg3hUh65K6da1y632a1y+s5gIfFPvDX6bXPjHT7eRYGDngFxUd
+gNjnNn0TMu4BOTvOQ1Zke+zC+caBPaQP/o67h0+NeecEhgiD4Wzd9Au4nGCuE4qB
+k+NRBk+px06JLbyyft3Y
+=cNYF
 -----END PGP SIGNATURE-----
 
---kbZGpL0ScFxCd8mt--
+--Q/AGl/UrDvkbRExF--
 
---===============5210643355458912857==
+--===============4531340688226651225==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5210643355458912857==--
+--===============4531340688226651225==--
