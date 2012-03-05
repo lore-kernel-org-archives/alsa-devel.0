@@ -1,21 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: dapm - Use card mutex for DAPM
- ops instead of codec mutex.
-Date: Mon, 5 Mar 2012 16:45:33 +0000
-Message-ID: <20120305164532.GU3224@opensource.wolfsonmicro.com>
-References: <1330711872-27436-1-git-send-email-lrg@ti.com>
-	<1330711872-27436-2-git-send-email-lrg@ti.com>
-	<20120304140939.GH3083@opensource.wolfsonmicro.com>
-	<1330958882.4370.15.camel@odin>
-	<20120305152616.GS3224@opensource.wolfsonmicro.com>
-	<1330962910.4370.21.camel@odin>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH 20/20] ASoC: fsl: add imx-sgtl5000
+	machine	driver
+Date: Mon, 5 Mar 2012 08:55:22 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF17BE861C14@HQMAIL01.nvidia.com>
+References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
+	<1330788001-10158-21-git-send-email-shawn.guo@linaro.org>
+	<20120304133818.GE3083@opensource.wolfsonmicro.com>
+	<20120305080623.GD16232@S2101-09.ap.freescale.net>
+	<20120305115612.GB3224@opensource.wolfsonmicro.com>
+	<20120305130707.GF16232@S2101-09.ap.freescale.net>
+	<20120305131332.GM3224@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4531340688226651225=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 556E2244A4
-	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 17:45:36 +0100 (CET)
-In-Reply-To: <1330962910.4370.21.camel@odin>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 231ED1042E0
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 17:55:29 +0100 (CET)
+In-Reply-To: <20120305131332.GM3224@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,58 +28,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
+Mark Brown wrote at Monday, March 05, 2012 6:14 AM:
+> On Mon, Mar 05, 2012 at 09:07:09PM +0800, Shawn Guo wrote:
+> > On Mon, Mar 05, 2012 at 11:56:12AM +0000, Mark Brown wrote:
+> 
+> > > In that
+> > > case they should either both be using the same device or should have
+> > > some sort of parent/child/sibling relationship.
+> 
+> > Sorry, I do not understand it.  Can you elaborate it a little bit?
+> 
+> The DMA and SSI drivers should have some relationship with each other if
+> they're the same piece of hardware.  The machine driver certainly
+> shouldn't be creating either of them.
 
---===============4531340688226651225==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Q/AGl/UrDvkbRExF"
-Content-Disposition: inline
+Note that in Tegra's case, the DMA HW and the DAI (I2S/SPDIF) HW are
+entirely separate HW blocks and have entirely separate drivers. The DMA
+engine is generic and not audio specific, so has a node that instantiates
+just a standalone DMA device which has its own API. This doesn't
+instantiate any kind of ALSA PCM driver. It doesn't make sense to have a
+DT node to instantiate the ALSA PCM driver since the PCM driver is more
+of an API bridge to the real DMA HW, and certainly not an actual HW
+module. It doesn't make sense to have either the I2S or SPDIF DAI drivers
+instantiate the PCM driver, since they both share the same one. Hence,
+the machine driver instantiates the PCM driver.
 
+Perhaps our regular DMA module driver should expose both its custom
+interface for other clients, and register an ASoC PCM driver? That way
+we could remove the PCM device registration from the ASoC machine
+drivers.
 
---Q/AGl/UrDvkbRExF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > > Either way the machine
+> > > driver really shouldn't be involved in instantiating things, perhaps
+> > > arch/arm but not the audio machine driver.
+> 
+> > So you are saying neither what tegra_wm8903 and tegra_alc5632 are doing
+> > (registering pcm device in machine driver) nor what imx-ssi is doing
+> > (registering pcm device in DAI driver) is correct?  Can you please make
+> > it clear what's the right thing to do?
+> 
+> The above.
 
-On Mon, Mar 05, 2012 at 03:55:10PM +0000, Liam Girdwood wrote:
-
-> PCM ops and DAPM don't fight with each other, there is a dependency with
-> the snd_card->control_rwsem. The calling ordering is different for init
-> that it is for kcontrol updates that causes the warning below :-
-
-control_rwsem isn't in mainline...
-
---Q/AGl/UrDvkbRExF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPVO2LAAoJEBus8iNuMP3dlq4P/0iuDEZd4rhx9aZT+WJRgqad
-H66I2GSeDE9tVxAZZzORVwG+if5ehXI2OFiozUsPjkmzho/qBMxyfIXS5sVE1LEN
-+LuOWgz6wPEA220ddJhd3v7KO8LN06U03h2VWUH5MWxzEqTO9tAuX8nQ2N9a6z7R
-BQBm9zu59cRmWgXzjro7ZckGL3OwUdBus/BnvjbDlDahDbQ8YUHSexGcB5ONeO4G
-ACpzUXuPPhdqHiQFrCryNBs8uQyGVxvcgqcrUnsTqeRIuFNdAcIcS8hiPPY3Y8nu
-X+q/r3aIkZKQP05jJGuPFnLT2haJkbjnhF4eaa5pNEFZUnoxzSI3PZFAfev0Th0N
-dpKcrfh3kzCeFwgH8op/aD6j516Gi/+uYWbVoUSGyKuXTFtPho+xAaii6dVaIRcA
-4jPTAnej86a4b8cx0qlYSAKnPtsk6dM/2JWGjQSpVmez/HaiY6uB283I5T9ClfR+
-a3GWp9LVeq3m2XiqLOkQCONamd9H/Iyl2PKWt2lrs3ZOQDvZmW/gbBnE6yefZhiP
-PvkiOtW7wZgAnfOg3hUh65K6da1y632a1y+s5gIfFPvDX6bXPjHT7eRYGDngFxUd
-gNjnNn0TMu4BOTvOQ1Zke+zC+caBPaQP/o67h0+NeecEhgiD4Wzd9Au4nGCuE4qB
-k+NRBk+px06JLbyyft3Y
-=cNYF
------END PGP SIGNATURE-----
-
---Q/AGl/UrDvkbRExF--
-
---===============4531340688226651225==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4531340688226651225==--
+-- 
+nvpublic
