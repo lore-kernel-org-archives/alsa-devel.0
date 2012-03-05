@@ -1,16 +1,15 @@
 From: Matt Sealey <matt@genesi-usa.com>
-Subject: Re: [PATCH v2 01/17] ASoC: imx: move eukrea audmux call into ASoC
- machine driver
-Date: Mon, 5 Mar 2012 11:55:07 -0600
-Message-ID: <CAKGA1b=4X+ccQXjZVa1DYpRYC0NT0A9AqwgG-ApkzboRkC3sJg@mail.gmail.com>
+Subject: Re: [PATCH v2 17/17] ASoC: fsl: add imx-sgtl5000 machine driver
+Date: Mon, 5 Mar 2012 12:09:13 -0600
+Message-ID: <CAKGA1bn7y8xQn-o=8CZj5nwcvaBvHwxqM0Q2wzFAwJsSgi1sfA@mail.gmail.com>
 References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
- <1330957865-19085-2-git-send-email-shawn.guo@linaro.org>
- <20120305174612.GY3224@opensource.wolfsonmicro.com>
+ <1330957865-19085-18-git-send-email-shawn.guo@linaro.org>
+ <20120305174232.GA3852@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20120305174612.GY3224@opensource.wolfsonmicro.com>
+In-Reply-To: <20120305174232.GA3852@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -20,35 +19,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-How will this stand up to an machine audio fabric that, like
-imx-sgtl5000 going around BSPs and Linaro and so on since the dawn of
-time, supports multiple boards but very different audmux
-configurations? Is this just a stopgap until the DT properly describes
-it?
-
--- 
-Matt Sealey <matt@genesi-usa.com>
-Product Development Analyst, Genesi USA, Inc.
-
-
-
-On Mon, Mar 5, 2012 at 11:46 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Mar 05, 2012 at 10:30:49PM +0800, Shawn Guo wrote:
->> It moves eukrea audmux configuration call from board file into ASoC
->> machine driver eukrea-tlv320, so that it gets aligned wm1133-ev1 and
->> mx27vis-aic32x4, and more importantly it will ease the moving of audmux
->> into sound/soc/imx as a platform driver later.
->
-> Sascha, this and the second patch look totally uncontroversial - can we
-> just apply them now so we don't need to keep reviewing them?
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->
+VGhlcmUgaXMgaW4gdGhlIEJTUCBidXQgdGhlIEJTUCBkcml2ZXIgaXMgdHJ5aW5nIHRvIGJlIHdh
+eSB0b28gZmFuY3kKd2l0aCBJMlMgc2V0dGluZ3Mgb24gdGhlIGlteC1zc2kgZHJpdmVyIHlvdSB3
+cm90ZSAoaXQgd29ya3Mgd2VsbCBmb3IKQUM5NywgYnV0IGZvciBTU0kgaW4gSTJTIHNsYXZlIG1v
+ZGUgdGhlcmUgYXJlIHNvIG1hbnkgaGFja3MgdXBvbiBoYWNrcwoidGhleSIgaGF2ZSBwcmVzZW50
+ZWQsIGl0J2QgbmV2ZXIgbWFpbmxpbmUpCgpIYXZpbmcgdGhlIGNvZGVjIHByb3ZpZGUgY2xvY2tz
+IGluIHNsYXZlIG1vZGUgd29ya3MgZ3JlYXQgaW4gZnNsLXNzaQpiZWNhdXNlIGl0IGRvZXNuJ3Qg
+c2V0IHRoZSBjaGlwIHVwIGFueSBvdGhlciB3YXksIGJ1dCBJJ3ZlIGhhZCBzZXJpb3VzCnByb2Js
+ZW1zIGhlcmUgd2hlcmVieSBwbGF5aW5nIGJhY2sgYSA0OGtoeiwgMTYtYml0IGF1ZGlvIHN0cmVh
+bSBhbmQKcmVjb3JkaW5nIGluIEFOWVRISU5HIGVsc2Ugc2VlbXMgdG8gbWFrZSB0aGUgcGxheWJh
+Y2sgc3RyZWFtIHNsb3cKbW90aW9uLCBidXQgSSBjYW4ndCB0cmFjZSB3aGV0aGVyIGl0J3MgdGhl
+IFNTSSBjb25maWcgKHNlZW1zIHVubGlrZWx5CmFzIHRoZSBvbmx5IHZhbGlkIFNUWENDUiBiaXQg
+aW4gc2xhdmUgbW9kZSBpcyB0aGUgd29yZCBsZW5ndGgpIG9yIHRoZQpjb2RlYyBjb25maWcuIElu
+IHRoZW9yeSB0aGUgcGxheWJhY2sgYW5kIGNhcHR1cmUgc2hvdWxkIGJlIHNlcmlhbGl6ZWQKYnkg
+dGhlIGRyaXZlciwgdGhvdWdoLCByaWdodD8gSXQgd291bGRuJ3QgYmUgcG9zc2libGUgdG8gYmUg
+YSBzbGF2ZSB0bwp0aGUgY29kZWMgaWYgaXQgaGFkIHRvIHJ1biB0aGUgY2xvY2sgdHdvIGRpZmZl
+cmVudCByYXRlcyBhdCB0aGUgc2FtZQp0aW1lLi4gYXBwMSBzZW5kcyBhIHNhbXBsZSBidWZmZXIs
+IGNvZGVjIGRvZXMgZG1hLCBhcHAyIHJlcXVlc3RzCmNhcHR1cmUgYnVmZmVyLCBjb2RlYyBkb2Vz
+IGRtYSwgdGhleSBjYW4ndCBoYXBwZW4gYXQgdGhlIHNhbWUgdGltZSwKbWF5YmUgd2UgYXJlIG1p
+c3NpbmcgYW4gaW1wb3J0YW50IG11dGV4IG9yIHNwaW5sb2NrIGhlcmUgdGhhdCB3b3VsZAplbmZv
+cmNlIHRoaXMgYW5kIHN0b3AgdGhlIGNvbmZpZ3VyYXRpb24gY2hhbmdpbmcgbWlkLXN0cmVhbS4u
+IEknbSBmYXIKZnJvbSB0aGUgQUxTQSBleHBlcnQgdGhvdWdoKQoKSWYgYWRkaW5nIGNhcHR1cmUg
+c3VwcG9ydCBtZWFucyBoYXZpbmcgdG8gbWFrZSB0aGUgU1NJIGRyaXZlciB3b3JrIGluCkkyUyBt
+YXN0ZXIgbW9kZSBhbmQgZG8gdGhlIGxhYm9yaW91cyB3b3JrIG9mIGFjdHVhbGx5IGRpdmlkaW5n
+IHRoZSBTU0kKY2xvY2ssIGNvbmZpZ3VyaW5nIHRoZSBleHRlcm5hbCBQTEwgZXRjLiBzbyBpdCBj
+YW4gY2xvY2sgdGhlIGNvZGVjCmFwcHJvcHJpYXRlbHkgZm9yIHRoaXMgbW9kZSB0aGVuIHRoYXQn
+cyB3aGF0IHdpbGwgaGF2ZSB0byBiZSBkb25lLCBhbmQKSSBhZ3JlZSB3aXRoIFNhc2NoYSwgd2hh
+dGV2ZXIgdGhlIHNvbHV0aW9uIGl0IHNob3VsZCBiZSBzb21ldGhpbmcgdGhhdApnZXRzIGRvbmUg
+bm93IChub3QgbGVhc3QgYmVjYXVzZSBJIGtpbmQgb2Ygd2FudCBhdWRpbyBoZXJlLi4gOikgYWxv
+bmcKd2l0aCBxdWl0ZSBwb3NzaWJseSBhZGFwdGluZyB0aGUgY3VycmVudCBpbXgtc3NpIGRyaXZl
+ciAoYXMgb3Bwb3NlZCB0bwp0aGUgZnNsLXNzaSBkcml2ZXIpIHRvIGJlIGZzbC1zc2ktYWM5NyB2
+cyBmc2wtc3NpLWlteCBzbyB3ZSBoYXZlCmRlZGljYXRlZCBvcGVyYXRpb24gKHdoaWNoIHdpbGwg
+bWFrZSB0aGUgQUM5Ny9GSVEgc2VsZWN0IG11Y2ggZWFzaWVyCnRvIGRldGVybWluZSkuCgpXaGls
+ZSB3ZSdyZSBhdCBpdDsgZGlkIGFueW9uZSBwYXRjaCBhcmNoL2FybS9tYWNoLWlteC9zc2ktZmlx
+LlMgdG8gYmUKY29tcGlsZWQgaW4gLmFybSBtb2RlIHlldD8gSSBjYW4ndCBmaW5kIGl0IGluIGEg
+dHJlZSBvciB0aGUgbGlzdCBidXQgSQpjb3VsZCBiZSB3cm9uZy4gSSBhbSBzdXJlIHdlIG11dHVh
+bGx5IGFncmVlZCAob3IgYXQgbGVhc3QgUnVzc2VsbApkZWNpZGVkKSBvbiB0aGlzIHRvIGdldCB0
+aHVtYiBrZXJuZWxzIHRvIGJ1aWxkIGFnYWluIHNpbmNlIG5vbmUgb2YgdGhlCmRlcGVuZGVudCBw
+cm9jZXNzb3JzL2NvbmZpZyBzZWxlY3Rpb25zIGFyZSBNLXByb2ZpbGU/CgotLSAKTWF0dCBTZWFs
+ZXkgPG1hdHRAZ2VuZXNpLXVzYS5jb20+ClByb2R1Y3QgRGV2ZWxvcG1lbnQgQW5hbHlzdCwgR2Vu
+ZXNpIFVTQSwgSW5jLgoKCgpPbiBNb24sIE1hciA1LCAyMDEyIGF0IDExOjQyIEFNLCBTYXNjaGEg
+SGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+IHdyb3RlOgo+IE9uIE1vbiwgTWFyIDA1LCAy
+MDEyIGF0IDEwOjMxOjA1UE0gKzA4MDAsIFNoYXduIEd1byB3cm90ZToKPj4gVGhpcyBpcyB0aGUg
+aW5pdGlhbCBpbXgtc2d0bDUwMDAgbWFjaGluZSBkcml2ZXIgc3VwcG9ydCB3aXRoIG9ubHkKPj4g
+cGxheWJhY2sgZGFpIGxpbmsgaW1wbGVtZW50ZWQuIMKgTW9yZSBmZWF0dXJlcyBjYW4gYmUgYWRk
+ZWQgb24gdG9wCj4+IG9mIGl0IGxhdGVyLgo+Cj4gQXJlIHRoZXJlIHByb2JsZW1zIHdpdGggY2Fw
+dHVyaW5nPyBJdCBzaG91bGQgYmUgdHJpdmlhbCB0byBhZGQgYW5kCj4gaXQgd291bGQgYmUgbXVj
+aCBtb3JlIGNvbmZpZGVudCB0aGF0IHRoaXMgc2VyaWVzIGFzIGEgd2hvbGUgd29ya3MgYXMKPiBl
+eHBlY3RlZC4KPgo+IFNhc2NoYQo+Cj4gLS0KPiBQZW5ndXRyb25peCBlLksuIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHwgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgfAo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZS8gwqB8Cj4gUGVpbmVyIFN0
+ci4gNi04LCAzMTEzNyBIaWxkZXNoZWltLCBHZXJtYW55IHwgUGhvbmU6ICs0OS01MTIxLTIwNjkx
+Ny0wIMKgIMKgfAo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2IMKgIMKgIMKgIMKg
+IMKgIHwgRmF4OiDCoCArNDktNTEyMS0yMDY5MTctNTU1NSB8Cj4KPiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGxpbnV4LWFybS1rZXJuZWwgbWFpbGlu
+ZyBsaXN0Cj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2Vy
+bmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVs
+Cg==
