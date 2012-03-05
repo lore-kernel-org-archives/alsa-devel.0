@@ -1,19 +1,20 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3 1/3] ARM: OMAP1: ams-delta: set up
- regulator over modem reset GPIO pin
-Date: Mon, 5 Mar 2012 11:27:43 -0800
-Message-ID: <20120305192742.GK12083@atomide.com>
-References: <1330963512-20413-1-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1330963512-20413-2-git-send-email-jkrzyszt@tis.icnet.pl>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 01/17] ASoC: imx: move eukrea audmux
+ call into ASoC machine driver
+Date: Mon, 5 Mar 2012 20:27:59 +0100
+Message-ID: <20120305192759.GB3852@pengutronix.de>
+References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
+	<1330957865-19085-2-git-send-email-shawn.guo@linaro.org>
+	<20120305174612.GY3224@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 387632450F
-	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 20:27:55 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6EF9A104039
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 20:28:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1330963512-20413-2-git-send-email-jkrzyszt@tis.icnet.pl>
+In-Reply-To: <20120305174612.GY3224@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,51 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-* Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120305 07:35]:
-> The Amstrad Delta on-board latch2 bit named MODEM_NRESET, now available
-> as a GPIO pin AMS_DELTA_GPIO_PIN_NMODEM_RESET, is used to power up/down
-> (bring into/out of a reset state) two distinct on-board devices
-> simultaneously: the modem, and the voice codec. As a consequence, that
-> bit is, or can be, manipulated concurrently by two drivers, or their
-> platform provided hooks.
+On Mon, Mar 05, 2012 at 05:46:13PM +0000, Mark Brown wrote:
+> On Mon, Mar 05, 2012 at 10:30:49PM +0800, Shawn Guo wrote:
+> > It moves eukrea audmux configuration call from board file into ASoC
+> > machine driver eukrea-tlv320, so that it gets aligned wm1133-ev1 and
+> > mx27vis-aic32x4, and more importantly it will ease the moving of audmux
+> > into sound/soc/imx as a platform driver later.
 > 
-> Instead of updating those drivers to use the gpiolib API as a new method
-> of controlling the MODEM_NRESET pin state, like it was done to other
-> drivers accessing latch2 pins, and still being vulnerable to potential
-> concurrency conflicts, or trying to solve that sharing issue with a
-> custom piece of code, set up a fixed regulator device on top of that
-> GPIO pin, with the intention of updating both drivers to manipulate that
-> regulator, not the GPIO pin directly.
-> 
-> Before the ASoC driver is updated and the modem platform data expanded
-> with a power management callback for switching its power, the
-> ams_delta_latch_write() function, which still provides the old API for
-> accessing latch2 functionality from not updated drivers, is modified to
-> toggle the regulator instead of the MODEM_NRESET GPIO pin.  A helper
-> function provided for balancing the regulator enable/disable operations,
-> together with the consumer data needed for tracking the regulator state,
-> will be removed once the drivers are updated.
-> 
-> Depends on patch series "ARM: OMAP1: ams-delta: replace custom I/O with
-> GPIO".
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> ---
-> v2 -> v3 changes:
-> * fix section mismatch isue.
-> 
-> Changes against initial version:
-> * rename consumer setup elements to match their final, modem only
->   related purpose,
-> * initialize the regulator pointer and mutex before first use, then
->   omit testing that pointer against NULL value
+> Sascha, this and the second patch look totally uncontroversial - can we
+> just apply them now so we don't need to keep reviewing them?
 
-Thanks, applying all three into ams-delta branch.
+For patches 01-08 I can give my:
 
-Regards,
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Tony
+The rest I would like to test. Shawn, on what is this series based? It
+neither applies on v3.3-rc6 nor on arm-soc/for-next.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
