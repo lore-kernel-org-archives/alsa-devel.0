@@ -1,23 +1,20 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH 15/20] ASoC: fsl: make fsl_ssi driver
- compilable on ARM/IMX
-Date: Mon, 5 Mar 2012 12:28:52 +0000
-Message-ID: <4F54B183.4080607@freescale.com>
-References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
-	<1330788001-10158-16-git-send-email-shawn.guo@linaro.org>
-	<4F53F704.8080703@freescale.com>
-	<20120305073930.GC16232@S2101-09.ap.freescale.net>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: When closing the port
+ select PRCM source for CLKS signal
+Date: Mon, 05 Mar 2012 14:33:25 +0200
+Message-ID: <4F54B295.8090802@ti.com>
+References: <1330940332-16188-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120305115808.GD3224@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECC1F103FDA
-	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 13:29:04 +0100 (CET)
-In-Reply-To: <20120305073930.GC16232@S2101-09.ap.freescale.net>
-Content-Language: en-US
-Content-ID: <E341615F6DBEA749BC3592FF951CD478@mgd.freescale.com>
+Received: from psmtp.com (na3sys009aog132.obsmtp.com [74.125.149.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id D7331244CF
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 13:33:21 +0100 (CET)
+Received: by mail-lpp01m010-f41.google.com with SMTP id z14so6450206lag.14
+	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 04:33:19 -0800 (PST)
+In-Reply-To: <20120305115808.GD3224@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,17 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Shawn Guo wrote:
-> Yeah, it makes the diff neat.  However I would make it an inline
-> function which is easier to play.
+On 03/05/2012 01:58 PM, Mark Brown wrote:
+> though it'd be better if the driver could remember and restore the
+> setting when the device becomes active again so that machine drivers
+> don't need to.
 
-However you want to do it is fine with me, although I would use "u32 
-__iomem *addr" instead of "void __iomem *addr".
+Yes, this is my long term plan regarding to the clock selection.
+With this patch the omap3pandora can suspend after audio activity.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+-- =
+
+P=E9ter
