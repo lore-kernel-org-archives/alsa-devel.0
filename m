@@ -1,86 +1,73 @@
-From: Matt Sealey <matt@genesi-usa.com>
-Subject: Re: [PATCH v2 17/17] ASoC: fsl: add imx-sgtl5000 machine driver
-Date: Mon, 5 Mar 2012 12:09:13 -0600
-Message-ID: <CAKGA1bn7y8xQn-o=8CZj5nwcvaBvHwxqM0Q2wzFAwJsSgi1sfA@mail.gmail.com>
-References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
- <1330957865-19085-18-git-send-email-shawn.guo@linaro.org>
- <20120305174232.GA3852@pengutronix.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v3 1/3] ARM: OMAP1: ams-delta: set up
+ regulator over modem reset GPIO pin
+Date: Mon, 5 Mar 2012 11:27:43 -0800
+Message-ID: <20120305192742.GK12083@atomide.com>
+References: <1330963512-20413-1-git-send-email-jkrzyszt@tis.icnet.pl>
+	<1330963512-20413-2-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20120305174232.GA3852@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 387632450F
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 20:27:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1330963512-20413-2-git-send-email-jkrzyszt@tis.icnet.pl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlcmUgaXMgaW4gdGhlIEJTUCBidXQgdGhlIEJTUCBkcml2ZXIgaXMgdHJ5aW5nIHRvIGJlIHdh
-eSB0b28gZmFuY3kKd2l0aCBJMlMgc2V0dGluZ3Mgb24gdGhlIGlteC1zc2kgZHJpdmVyIHlvdSB3
-cm90ZSAoaXQgd29ya3Mgd2VsbCBmb3IKQUM5NywgYnV0IGZvciBTU0kgaW4gSTJTIHNsYXZlIG1v
-ZGUgdGhlcmUgYXJlIHNvIG1hbnkgaGFja3MgdXBvbiBoYWNrcwoidGhleSIgaGF2ZSBwcmVzZW50
-ZWQsIGl0J2QgbmV2ZXIgbWFpbmxpbmUpCgpIYXZpbmcgdGhlIGNvZGVjIHByb3ZpZGUgY2xvY2tz
-IGluIHNsYXZlIG1vZGUgd29ya3MgZ3JlYXQgaW4gZnNsLXNzaQpiZWNhdXNlIGl0IGRvZXNuJ3Qg
-c2V0IHRoZSBjaGlwIHVwIGFueSBvdGhlciB3YXksIGJ1dCBJJ3ZlIGhhZCBzZXJpb3VzCnByb2Js
-ZW1zIGhlcmUgd2hlcmVieSBwbGF5aW5nIGJhY2sgYSA0OGtoeiwgMTYtYml0IGF1ZGlvIHN0cmVh
-bSBhbmQKcmVjb3JkaW5nIGluIEFOWVRISU5HIGVsc2Ugc2VlbXMgdG8gbWFrZSB0aGUgcGxheWJh
-Y2sgc3RyZWFtIHNsb3cKbW90aW9uLCBidXQgSSBjYW4ndCB0cmFjZSB3aGV0aGVyIGl0J3MgdGhl
-IFNTSSBjb25maWcgKHNlZW1zIHVubGlrZWx5CmFzIHRoZSBvbmx5IHZhbGlkIFNUWENDUiBiaXQg
-aW4gc2xhdmUgbW9kZSBpcyB0aGUgd29yZCBsZW5ndGgpIG9yIHRoZQpjb2RlYyBjb25maWcuIElu
-IHRoZW9yeSB0aGUgcGxheWJhY2sgYW5kIGNhcHR1cmUgc2hvdWxkIGJlIHNlcmlhbGl6ZWQKYnkg
-dGhlIGRyaXZlciwgdGhvdWdoLCByaWdodD8gSXQgd291bGRuJ3QgYmUgcG9zc2libGUgdG8gYmUg
-YSBzbGF2ZSB0bwp0aGUgY29kZWMgaWYgaXQgaGFkIHRvIHJ1biB0aGUgY2xvY2sgdHdvIGRpZmZl
-cmVudCByYXRlcyBhdCB0aGUgc2FtZQp0aW1lLi4gYXBwMSBzZW5kcyBhIHNhbXBsZSBidWZmZXIs
-IGNvZGVjIGRvZXMgZG1hLCBhcHAyIHJlcXVlc3RzCmNhcHR1cmUgYnVmZmVyLCBjb2RlYyBkb2Vz
-IGRtYSwgdGhleSBjYW4ndCBoYXBwZW4gYXQgdGhlIHNhbWUgdGltZSwKbWF5YmUgd2UgYXJlIG1p
-c3NpbmcgYW4gaW1wb3J0YW50IG11dGV4IG9yIHNwaW5sb2NrIGhlcmUgdGhhdCB3b3VsZAplbmZv
-cmNlIHRoaXMgYW5kIHN0b3AgdGhlIGNvbmZpZ3VyYXRpb24gY2hhbmdpbmcgbWlkLXN0cmVhbS4u
-IEknbSBmYXIKZnJvbSB0aGUgQUxTQSBleHBlcnQgdGhvdWdoKQoKSWYgYWRkaW5nIGNhcHR1cmUg
-c3VwcG9ydCBtZWFucyBoYXZpbmcgdG8gbWFrZSB0aGUgU1NJIGRyaXZlciB3b3JrIGluCkkyUyBt
-YXN0ZXIgbW9kZSBhbmQgZG8gdGhlIGxhYm9yaW91cyB3b3JrIG9mIGFjdHVhbGx5IGRpdmlkaW5n
-IHRoZSBTU0kKY2xvY2ssIGNvbmZpZ3VyaW5nIHRoZSBleHRlcm5hbCBQTEwgZXRjLiBzbyBpdCBj
-YW4gY2xvY2sgdGhlIGNvZGVjCmFwcHJvcHJpYXRlbHkgZm9yIHRoaXMgbW9kZSB0aGVuIHRoYXQn
-cyB3aGF0IHdpbGwgaGF2ZSB0byBiZSBkb25lLCBhbmQKSSBhZ3JlZSB3aXRoIFNhc2NoYSwgd2hh
-dGV2ZXIgdGhlIHNvbHV0aW9uIGl0IHNob3VsZCBiZSBzb21ldGhpbmcgdGhhdApnZXRzIGRvbmUg
-bm93IChub3QgbGVhc3QgYmVjYXVzZSBJIGtpbmQgb2Ygd2FudCBhdWRpbyBoZXJlLi4gOikgYWxv
-bmcKd2l0aCBxdWl0ZSBwb3NzaWJseSBhZGFwdGluZyB0aGUgY3VycmVudCBpbXgtc3NpIGRyaXZl
-ciAoYXMgb3Bwb3NlZCB0bwp0aGUgZnNsLXNzaSBkcml2ZXIpIHRvIGJlIGZzbC1zc2ktYWM5NyB2
-cyBmc2wtc3NpLWlteCBzbyB3ZSBoYXZlCmRlZGljYXRlZCBvcGVyYXRpb24gKHdoaWNoIHdpbGwg
-bWFrZSB0aGUgQUM5Ny9GSVEgc2VsZWN0IG11Y2ggZWFzaWVyCnRvIGRldGVybWluZSkuCgpXaGls
-ZSB3ZSdyZSBhdCBpdDsgZGlkIGFueW9uZSBwYXRjaCBhcmNoL2FybS9tYWNoLWlteC9zc2ktZmlx
-LlMgdG8gYmUKY29tcGlsZWQgaW4gLmFybSBtb2RlIHlldD8gSSBjYW4ndCBmaW5kIGl0IGluIGEg
-dHJlZSBvciB0aGUgbGlzdCBidXQgSQpjb3VsZCBiZSB3cm9uZy4gSSBhbSBzdXJlIHdlIG11dHVh
-bGx5IGFncmVlZCAob3IgYXQgbGVhc3QgUnVzc2VsbApkZWNpZGVkKSBvbiB0aGlzIHRvIGdldCB0
-aHVtYiBrZXJuZWxzIHRvIGJ1aWxkIGFnYWluIHNpbmNlIG5vbmUgb2YgdGhlCmRlcGVuZGVudCBw
-cm9jZXNzb3JzL2NvbmZpZyBzZWxlY3Rpb25zIGFyZSBNLXByb2ZpbGU/CgotLSAKTWF0dCBTZWFs
-ZXkgPG1hdHRAZ2VuZXNpLXVzYS5jb20+ClByb2R1Y3QgRGV2ZWxvcG1lbnQgQW5hbHlzdCwgR2Vu
-ZXNpIFVTQSwgSW5jLgoKCgpPbiBNb24sIE1hciA1LCAyMDEyIGF0IDExOjQyIEFNLCBTYXNjaGEg
-SGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+IHdyb3RlOgo+IE9uIE1vbiwgTWFyIDA1LCAy
-MDEyIGF0IDEwOjMxOjA1UE0gKzA4MDAsIFNoYXduIEd1byB3cm90ZToKPj4gVGhpcyBpcyB0aGUg
-aW5pdGlhbCBpbXgtc2d0bDUwMDAgbWFjaGluZSBkcml2ZXIgc3VwcG9ydCB3aXRoIG9ubHkKPj4g
-cGxheWJhY2sgZGFpIGxpbmsgaW1wbGVtZW50ZWQuIMKgTW9yZSBmZWF0dXJlcyBjYW4gYmUgYWRk
-ZWQgb24gdG9wCj4+IG9mIGl0IGxhdGVyLgo+Cj4gQXJlIHRoZXJlIHByb2JsZW1zIHdpdGggY2Fw
-dHVyaW5nPyBJdCBzaG91bGQgYmUgdHJpdmlhbCB0byBhZGQgYW5kCj4gaXQgd291bGQgYmUgbXVj
-aCBtb3JlIGNvbmZpZGVudCB0aGF0IHRoaXMgc2VyaWVzIGFzIGEgd2hvbGUgd29ya3MgYXMKPiBl
-eHBlY3RlZC4KPgo+IFNhc2NoYQo+Cj4gLS0KPiBQZW5ndXRyb25peCBlLksuIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHwgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgfAo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZS8gwqB8Cj4gUGVpbmVyIFN0
-ci4gNi04LCAzMTEzNyBIaWxkZXNoZWltLCBHZXJtYW55IHwgUGhvbmU6ICs0OS01MTIxLTIwNjkx
-Ny0wIMKgIMKgfAo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2IMKgIMKgIMKgIMKg
-IMKgIHwgRmF4OiDCoCArNDktNTEyMS0yMDY5MTctNTU1NSB8Cj4KPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGxpbnV4LWFybS1rZXJuZWwgbWFpbGlu
-ZyBsaXN0Cj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2Vy
-bmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVs
-Cg==
+* Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120305 07:35]:
+> The Amstrad Delta on-board latch2 bit named MODEM_NRESET, now available
+> as a GPIO pin AMS_DELTA_GPIO_PIN_NMODEM_RESET, is used to power up/down
+> (bring into/out of a reset state) two distinct on-board devices
+> simultaneously: the modem, and the voice codec. As a consequence, that
+> bit is, or can be, manipulated concurrently by two drivers, or their
+> platform provided hooks.
+> 
+> Instead of updating those drivers to use the gpiolib API as a new method
+> of controlling the MODEM_NRESET pin state, like it was done to other
+> drivers accessing latch2 pins, and still being vulnerable to potential
+> concurrency conflicts, or trying to solve that sharing issue with a
+> custom piece of code, set up a fixed regulator device on top of that
+> GPIO pin, with the intention of updating both drivers to manipulate that
+> regulator, not the GPIO pin directly.
+> 
+> Before the ASoC driver is updated and the modem platform data expanded
+> with a power management callback for switching its power, the
+> ams_delta_latch_write() function, which still provides the old API for
+> accessing latch2 functionality from not updated drivers, is modified to
+> toggle the regulator instead of the MODEM_NRESET GPIO pin.  A helper
+> function provided for balancing the regulator enable/disable operations,
+> together with the consumer data needed for tracking the regulator state,
+> will be removed once the drivers are updated.
+> 
+> Depends on patch series "ARM: OMAP1: ams-delta: replace custom I/O with
+> GPIO".
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> ---
+> v2 -> v3 changes:
+> * fix section mismatch isue.
+> 
+> Changes against initial version:
+> * rename consumer setup elements to match their final, modem only
+>   related purpose,
+> * initialize the regulator pointer and mutex before first use, then
+>   omit testing that pointer against NULL value
+
+Thanks, applying all three into ams-delta branch.
+
+Regards,
+
+Tony
