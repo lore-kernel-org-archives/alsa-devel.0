@@ -1,19 +1,19 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v2 10/17] ASoC: imx: merge sound/soc/imx
- into sound/soc/fsl
-Date: Mon, 5 Mar 2012 18:39:10 +0100
-Message-ID: <20120305173910.GZ3852@pengutronix.de>
+Subject: Re: [PATCH v2 17/17] ASoC: fsl: add imx-sgtl5000
+	machine driver
+Date: Mon, 5 Mar 2012 18:42:32 +0100
+Message-ID: <20120305174232.GA3852@pengutronix.de>
 References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
-	<1330957865-19085-11-git-send-email-shawn.guo@linaro.org>
+	<1330957865-19085-18-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 1BD6D104020
-	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 18:39:13 +0100 (CET)
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 76C9C1043EF
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 18:42:33 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1330957865-19085-11-git-send-email-shawn.guo@linaro.org>
+In-Reply-To: <1330957865-19085-18-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,28 +27,14 @@ To: Shawn Guo <shawn.guo@linaro.org>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 05, 2012 at 10:30:58PM +0800, Shawn Guo wrote:
-> Freescale PowerPC and ARM/IMX families share the same SSI IP block.
-> The patch merges sound/soc/imx into sound/soc/fsl, so that the possible
-> code sharing and consolidation can happen.
-> 
-> This is a plain merge, except that menuconfig SND_POWERPC_SOC is added
-> in Kconfig for PowerPC platform as a correspondence to SND_IMX_SOC for
-> IMX platform.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  sound/soc/Kconfig                        |    1 -
->  sound/soc/Makefile                       |    1 -
->  sound/soc/fsl/Kconfig                    |   92 ++++++++++++++++++++++++++++++
->  sound/soc/fsl/Makefile                   |   22 +++++++
->  sound/soc/{imx => fsl}/eukrea-tlv320.c   |    2 +-
->  sound/soc/{imx => fsl}/imx-audmux.c      |    0
->  sound/soc/{imx => fsl}/imx-audmux.h      |    0
->  sound/soc/{imx => fsl}/imx-pcm-dma-mx2.c |    0
+On Mon, Mar 05, 2012 at 10:31:05PM +0800, Shawn Guo wrote:
+> This is the initial imx-sgtl5000 machine driver support with only
+> playback dai link implemented.  More features can be added on top
+> of it later.
 
-Maybe this is the right time to rename this file to something like
-imx-pcm-dma.c since it has nothing to do with mx2 anymore.
+Are there problems with capturing? It should be trivial to add and
+it would be much more confident that this series as a whole works as
+expected.
 
 Sascha
 
