@@ -1,21 +1,23 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 0/2] patch set about the MXS-DMA
-Date: Mon, 05 Mar 2012 10:17:10 +0530
-Message-ID: <1330922830.24656.137.camel@vkoul-udesk3>
-References: <1329373053-19494-1-git-send-email-b32955@freescale.com>
-	<4F4D9725.3090100@freescale.com>
-	<1330502098.3545.78.camel@sauron.fi.intel.com>
-	<4F4DE0E5.8070808@freescale.com>
-	<1330516974.3545.104.camel@sauron.fi.intel.com>
-	<CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 03/20] ARM: imx: merge audmux-v1 and
+	audmux-v2
+Date: Mon, 5 Mar 2012 15:33:47 +0800
+Message-ID: <20120305073345.GA16232@S2101-09.ap.freescale.net>
+References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
+	<1330788001-10158-4-git-send-email-shawn.guo@linaro.org>
+	<4F54072E.6040407@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 814DA103EC9
-	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 05:43:01 +0100 (CET)
-In-Reply-To: <CAMiH66HmV+58w36DGCt+e=ihTrYUwXf1Cur+678YX2GKcB1-jA@mail.gmail.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE8B4103EC4
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2012 08:19:24 +0100 (CET)
+Received: by iakh37 with SMTP id h37so5495325iak.38
+	for <alsa-devel@alsa-project.org>; Sun, 04 Mar 2012 23:19:22 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <4F54072E.6040407@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Huang Shijie <shijie8@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "cjb@laptop.org" <cjb@laptop.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Huang Shijie <b32955@freescale.com>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Bityutskiy, Artem" <artem.bityutskiy@intel.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "LW@KARO-electronics.de" <LW@karo-electronics.de>
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-02-29 at 08:13 -0500, Huang Shijie wrote:
-> Hi Artem:
+On Mon, Mar 05, 2012 at 12:22:07AM +0000, Tabi Timur-B04825 wrote:
+> Shawn Guo wrote:
+> > +static unsigned char port_mapping[] = {
+> > +	0x0, 0x4, 0x8, 0x10, 0x14, 0x1c,
+> > +};
 > 
-> On Wed, Feb 29, 2012 at 7:00 AM, Bityutskiy, Artem
-> <artem.bityutskiy@intel.com> wrote:
-> > On Wed, 2012-02-29 at 16:25 +0800, Huang Shijie wrote:
-> >> Hi Artem:
-> >> > On Wed, 2012-02-29 at 11:10 +0800, Huang Shijie wrote:
-> >> >> Hi:
-> >> >>
-> >> >> ping.
-> >> > Is this patch-set independent or requires something like gpma patches?
-> >> >
-> >> This patch set is independent, and it does not depend upon any other
-> >> patches.
-> >
-> > Pushed both to l2-mtd.git tree, thanks. I am worried that it touches
-> > other subsystems like dma, sound, and mmc and there are no acks for
-> > those. Would be nice to get them somehow.
-> >
+> May as well make this a 'const' array while you're at it.  And perhaps 
+> uint8_t is a better choice than "unsigned char".
 > 
-> I ever thought Vinod could accept this patch set.
-> 
-> To Vinod & Chris:
->       Could you give the ack to the first patch?
-Both,
-Acked-by: Vinod Koul <vinod.koul@linux.intel.com>
-Although the second patch overloads the dmaengine flags but for lack of
-any other suitable alternative, this looks okay...
-> 
-> Does the second patch need  extra acks beside Shawn's?
-> 
-> BR
-> Huang Shijie
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-
+Okay, will do.
 
 -- 
-~Vinod
+Regards,
+Shawn
