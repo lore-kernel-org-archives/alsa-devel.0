@@ -1,12 +1,24 @@
-From: pavel.hofman@ivitera.com
-Subject: [PATCH - aplay 1/1] aplay - option to dump HW
-	parameters
-Date: Mon,  5 Mar 2012 21:27:00 +0000
-Message-ID: <1330982820-4763-1-git-send-email-pavel.hofman@ivitera.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 01/17] ASoC: imx: move eukrea audmux
+ call into ASoC machine driver
+Date: Tue, 6 Mar 2012 07:45:33 +0800
+Message-ID: <20120305234531.GJ16232@S2101-09.ap.freescale.net>
+References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
+	<1330957865-19085-2-git-send-email-shawn.guo@linaro.org>
+	<20120305174612.GY3224@opensource.wolfsonmicro.com>
+	<20120305192759.GB3852@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C200E2417D
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 00:31:03 +0100 (CET)
+Received: by iakh37 with SMTP id h37so6623750iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 15:31:02 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120305192759.GB3852@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,98 +28,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pavel Hofman <pavel.hofman@ivitera.com>
+On Mon, Mar 05, 2012 at 08:27:59PM +0100, Sascha Hauer wrote:
+...
+> For patches 01-08 I can give my:
+> 
+> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+> 
+> The rest I would like to test. Shawn, on what is this series based? It
+> neither applies on v3.3-rc6 nor on arm-soc/for-next.
+> 
+As I intend to have the series go through Mark's tree, I based it on
+sound/for-next.
 
-Dumping HW parameters of the current device with snd_pcm_hw_params_dump,
-a new option --dump-hw-params added.
-
-Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
-
-diff --git a/aplay/aplay.1 b/aplay/aplay.1
-index 2acaed5..0195322 100644
---- a/aplay/aplay.1
-+++ b/aplay/aplay.1
-@@ -184,6 +184,13 @@ the month, %H hour, %M minute and %S second.  In addition, %v is
- the file number, starting at 1.  When this option is specified,
- intermediate directories for the output file are created automatically.
- This option has no effect if \-\-separate\-channels is specified.
-+.TP
-+\fI\-\-dump\-hw\-params\fP
-+Dump hw_params of the device preconfigured status to stderr. The dump
-+lists capabilities of the selected device such as supported formats,
-+sampling rates, numbers of channels, period and buffer bytes/sizes/times.
-+For raw device hw:X this option basically lists hardware capabilities of
-+the soundcard.
- 
- .SH SIGNALS
- When recording, SIGINT, SIGTERM and SIGABRT will close the output 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 73a9544..0633cbd 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -129,6 +129,7 @@ static int max_file_time = 0;
- static int use_strftime = 0;
- volatile static int recycle_capture_file = 0;
- static long term_c_lflag = -1;
-+static int dump_hw_params = 0;
- 
- static int fd = -1;
- static off64_t pbrec_count = LLONG_MAX, fdcount;
-@@ -223,7 +224,8 @@ _("Usage: %s [OPTION]... [FILE]...\n"
- "    --max-file-time=#   start another output file when the old file has recorded\n"
- "                        for this many seconds\n"
- "    --process-id-file   write the process ID here\n"
--"    --use-strftime      apply the strftime facility to the output file name\n")
-+"    --use-strftime      apply the strftime facility to the output file name\n"
-+"    --dump-hw-params    dump hw_params of the device\n")
- 		, command);
- 	printf(_("Recognized sample formats are:"));
- 	for (k = 0; k < SND_PCM_FORMAT_LAST; ++k) {
-@@ -416,7 +418,8 @@ enum {
- 	OPT_TEST_NOWAIT,
- 	OPT_MAX_FILE_TIME,
- 	OPT_PROCESS_ID_FILE,
--	OPT_USE_STRFTIME
-+	OPT_USE_STRFTIME,
-+	OPT_DUMP_HWPARAMS
- };
- 
- int main(int argc, char *argv[])
-@@ -461,6 +464,7 @@ int main(int argc, char *argv[])
- 		{"process-id-file", 1, 0, OPT_PROCESS_ID_FILE},
- 		{"use-strftime", 0, 0, OPT_USE_STRFTIME},
- 		{"interactive", 0, 0, 'i'},
-+		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
- 		{0, 0, 0, 0}
- 	};
- 	char *pcm_name = "default";
-@@ -662,6 +666,9 @@ int main(int argc, char *argv[])
- 		case OPT_USE_STRFTIME:
- 			use_strftime = 1;
- 			break;
-+		case OPT_DUMP_HWPARAMS:
-+			dump_hw_params = 1;
-+			break;
- 		default:
- 			fprintf(stderr, _("Try `%s --help' for more information.\n"), command);
- 			return 1;
-@@ -1059,6 +1066,13 @@ static void set_params(void)
- 		error(_("Broken configuration for this PCM: no configurations available"));
- 		prg_exit(EXIT_FAILURE);
- 	}
-+	if (dump_hw_params) {
-+		fprintf(stderr, _("HW Params of device \"%s\":\n"),
-+			snd_pcm_name(handle));
-+		fprintf(stderr, "--------------------\n");
-+		snd_pcm_hw_params_dump(params, log);
-+		fprintf(stderr, "--------------------\n");
-+	}
- 	if (mmap_flag) {
- 		snd_pcm_access_mask_t *mask = alloca(snd_pcm_access_mask_sizeof());
- 		snd_pcm_access_mask_none(mask);
 -- 
-1.7.0.4
+Regards,
+Shawn
