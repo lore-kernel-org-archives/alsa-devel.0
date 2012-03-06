@@ -1,54 +1,55 @@
-From: bvrn3r <raceburner@gmx.at>
-Subject: install problem
-Date: Tue, 6 Mar 2012 15:12:57 +0000 (UTC)
-Message-ID: <loom.20120306T161047-904@post.gmane.org>
-References: <f1c120255a37689163b27e945f1f0270@localhost>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Query about regmap SPI
+Date: Tue, 6 Mar 2012 16:30:12 +0000
+Message-ID: <20120306163012.GW19635@opensource.wolfsonmicro.com>
+References: <1331045140.32512.7.camel@matrix>
+ <1331046532.32512.35.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D2F7104545
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 17:10:05 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1S4wxf-0004Xz-68
-	for alsa-devel@alsa-project.org; Tue, 06 Mar 2012 17:10:03 +0100
-Received: from 95.0.97.38.dynamic.ttnet.com.tr
-	([95.0.97.38.dynamic.ttnet.com.tr])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 06 Mar 2012 17:10:03 +0100
-Received: from raceburner by 95.0.97.38.dynamic.ttnet.com.tr with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 06 Mar 2012 17:10:03 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="deIB9lj0KCspTQvI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1331046532.32512.35.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-hi andrew,
 
-I tried to install this patch but I always get this fail.
+--deIB9lj0KCspTQvI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-patching file sound/pci/hda/alc662_asus_nx5_quirks.c
-can't find file to patch at input line 117
-Perhaps you used the wrong -p or --strip option?
-The text leading up to this was:
---------------------------
-|diff --git a/sound/pci/hda/alc662_quirks.c b/sound/pci/hda/alc662_quirks.c
-|index e69a6ea..93fa802 100644
-|--- a/sound/pci/hda/alc662_quirks.c
-|+++ b/sound/pci/hda/alc662_quirks.c
---------------------------
-File to patch:
+On Tue, Mar 06, 2012 at 08:38:52PM +0530, Ashish Chavan wrote:
 
-so what can I do??????
+> I also think that there should be a way to handle this kind of stuff by
+> the framework. May I know if you have any plan to add this to regmap? or
+> should I come up with a patch to extend regmap to support this and
+> propose you?
 
-thx
+I have no need for it so I'm unlikely to work on it myself, if you were
+to send a patch that'd be great.
+
+--deIB9lj0KCspTQvI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPVjuNAAoJEBus8iNuMP3d13EQAJmSfZ84JQ8uWKIXECJVD6aD
+JKmYyxNdsHnZrHb1uQjqfUASMkHbkYSsMVMzywi+/HSOGI21iMyjSWMg/7xlQmtg
+nX6SZUNxV/t81Yq6GCwL1xjFZ02W/Gg96fEAmfupm78W5hi3h54Shx2Xh9jNGN9J
+/0vBGT7E+nUf3z0oGYP5qUNQInIw3JKRvISGzKMsshzQA8d9hgTPE1FDej3JNQNo
+oPjTW+Z50ccCfyN5JLVb19UMteA5p+v+IsBScBSRcwf5AausflTCRgZiIqwUdJo9
+4U0X9nLaTv4GYFO5fN6dxE7DEKVeLWt6mx0hq/MIsuCgMQgLQpBVtPUvbkmgraTu
+iphWrdzRDHXx99DaYKqGPnL+y+0klhGqYk2qKwOxsCQn9Fwpl640CZ4qORQEo/14
+QZ40BvMIiVA/aCgx4LQxRJzy2aMQ98tiC+T/7aA5P/bcZl6lSTYfbx3ae7Ce1yCc
+519M5N0CbTf+r35VEOE00TGDUcvWIT2pU5ax47HlOFwqo2MdmCbdxOAI4EmfM/U7
+FU2rSbn5SORnoQIHIK9P4+KY8Q5eeHf4iLkXy0ycQQj4G3doW0pTRHhAzeUhH5m9
+FffJk7/A5DDDrDOi5XZw7ExaGrsBS4f2E359vRL+RwOmgZ9i7CTPmhTGOU//Or0l
+f6Qxh6RD1uiS/xNdfMpN
+=jB32
+-----END PGP SIGNATURE-----
+
+--deIB9lj0KCspTQvI--
