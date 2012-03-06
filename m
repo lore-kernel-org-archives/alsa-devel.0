@@ -1,47 +1,147 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Tue, 6 Mar 2012 19:49:16 +0900
-Message-ID: <CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] sound/soc/lapis: add platform driver
+	for ML7213
+Date: Tue, 6 Mar 2012 11:52:47 +0000
+Message-ID: <20120306115246.GD19635@opensource.wolfsonmicro.com>
 References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120229235147.GM8295@opensource.wolfsonmicro.com>
-	<CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
-	<20120302125819.GE3230@opensource.wolfsonmicro.com>
-	<CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
-	<20120306100012.GC19635@opensource.wolfsonmicro.com>
+	<1329976011-2251-2-git-send-email-tomoya.rohm@gmail.com>
+	<20120302163915.GD6056@opensource.wolfsonmicro.com>
+	<CANKRQni8hPoHEsV2VecbgKBdfS5+rit0-jXzz_d8F_nY5-dN3g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120306100012.GC19635@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: multipart/mixed; boundary="===============7569071006507208219=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C54AE2433F
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 12:52:51 +0100 (CET)
+In-Reply-To: <CANKRQni8hPoHEsV2VecbgKBdfS5+rit0-jXzz_d8F_nY5-dN3g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 06, 2012　19:00 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> This is not the case.  As I have *REPEATEDLY* told you you should be
-> sumbitting code against current development versions of the subsystem.
-You are right. v3.3-rc6 uses it. sorry for inconvenience.
 
->> >> +static int ml26124_update_bits(struct snd_soc_codec *codec, unsigned short reg,
->> >> +                             unsigned int mask, unsigned int value)
->> > Why are you open coding this in your driver?  There is no point in
->> > replicating subsystem functionality.
->>
->> For ML26124 spec, it's necessary.
->> Because the codec's register read-address and write-address is not the same.
->> E.G.
->> Sampling Rate Register
->> R: offset=0
->> W: offset=1
->
-> This is not what the above prototype says, the above prototype has only
-> one register in it.  You need to make this *much* clearer for the
-> registers it's affecting.
-Sorry, I couldn't understand your saying / concern.
-Do you mean I shouldn't use ml26124_update_bits() but snd_soc_update_bits() ?
+--===============7569071006507208219==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0IvGJv3f9h+YhkrH"
+Content-Disposition: inline
 
-thanks,
--- 
-ROHM Co., Ltd.
-tomoya
+
+--0IvGJv3f9h+YhkrH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Mar 06, 2012 at 02:48:05PM +0900, Tomoya MORINAGA wrote:
+> 2012=E5=B9=B43=E6=9C=883=E6=97=A51:39 Mark Brown <broonie@opensource.wolf=
+sonmicro.com>:
+
+> > I just merged Lars-Peter's dmaengine library code which has been on the
+> > list for a week or so - this should be updated to use that next time
+> > it's posted.  That should save a lot of code from the driver and make
+> > sure it's following best practices for dmaengine use.
+
+> Sorry, we can't use this library.
+
+This sort of response really isn't on.  Do you have some reason for
+saying this?  Flat out refusing to do things with no reason is not
+useful.
+
+> >> +static struct ioh_i2s_data *i2s_data;
+> >> +static struct ioh_i2s_dma dmadata[MAX_I2S_CH];
+
+> > Why are these needed, aren't they dynamically allocated by the driver?
+
+> You mean ASoC driver can't use global variable ?
+
+In general no Linux driver should be using a global variable except for
+things like this.
+
+> >> +     case SNDRV_PCM_FORMAT_S32_LE:
+> >> +             byte =3D 24;
+> >> +             break;
+
+> > That looks wrong...  are you sure you don't support S24_LE or something?
+
+> This is correct.
+
+> Because maximum transmit size of ML7213's I2S hw is 24bit.
+
+Note we often lay out 24 bit audio in 32 bit blocks.
+
+> >> +static struct platform_driver ioh_i2s_driver_plat =3D {
+> >
+> >> +static struct platform_driver ioh_dai_driver_plat =3D {
+> >
+> >> +static int ioh_i2s_pci_probe(struct pci_dev *pdev,
+> >> +                          const struct pci_device_id *id)
+
+> > Why are you creating these platform devices?  I don't understand the
+> > function they serve.  The code handling them looks to have quite a few
+> > problems but I'm not clear they should be there in the first place.
+
+> if these platform devices aren't used, device detection doesn't work corr=
+ectly.
+> So, I added these.
+
+You've not actually mentioned the problem you were seeing...
+
+> >> +     rv =3D request_irq(pdev->irq, ioh_i2s_irq, IRQF_SHARED, "ml7213_=
+ioh",
+> >> +                      pdev);
+> >> +     if (rv !=3D 0) {
+> >> +             printk(KERN_ERR "Failed to allocate irq\n");
+> >> +             goto out_irq;
+> >> +     }
+
+> > Are you *sure* you're ready to handle interrupts at this point?
+
+> This is just registering interrupt handler.
+> As long as interrupt register is not enabled, the interrupt handler is
+> not called.
+> This is common request_irq description.
+> What's is your concern ?
+
+Apart from anything else you've got the interrupt requested as
+IRQF_SHARED so the interrupt could get called at any time.  It's also
+not clear that you've got the hardware in a known good state.
+
+--0IvGJv3f9h+YhkrH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPVfqBAAoJEBus8iNuMP3d8ZoP/RWLGgkvGTvC606+rtE3zHYZ
+hkDHCs7tHFAMEcrm71lvgIaImEoTsHM/68zjGOtTGppVGHNuD6w+EX3R6Cm+XlkY
+YL2WJRKvjth/GUoBUcFRQR2BCuIBMjzF61U4zdUlZhkGG85z3m5PzM3xeMDaWc7a
+bu+ksVgVR4pI1disaP2iPKEIhUMzm+b3Twqrh1wgoJMEwGEmM9w1eDZbv171+lC9
+4kaUT6zvGpfyA0IWBGKreBIVM56AOJOfaPa95qo5iwvd6vVxb2BoWuBh1AD94bvH
+rhNvxmcEqebldnLR+xBd3LoxIy5sLzAmLxvpIAIO1+sbYomOJbQbJltr4EZ4fJt/
+de9m6zToC+F4Crkp/0p6yXgeFCj2E1lc+OXddcOAVRtI8lrLfpNicr3yYd/dXPEm
+i582J5NHAlqWEAx+ah+9lQ5v0D1mmuGJjPOgxYRFw2rsq6KPg+bbdlLXF1FJd9f0
+EO8iVSQRh//eWVh2lbdysO77mfy5PoJUQoNglYsY6cDFKAcKqwjh62+djpkG4gv+
+jNBFXOAsvUtHGcnGxi9TsERewePaG56UYXIyTHTiW+pTpG2tZvshhUxZETPAxqAs
+Ma+6RcUl9GQ0NBTEZGUy6tO/K3FRpUBYBZleqP3aR7H6ClUYOufhYaemarnpDbaR
+G6gO3kUfarFwHjyyEo8x
+=l5Zf
+-----END PGP SIGNATURE-----
+
+--0IvGJv3f9h+YhkrH--
+
+--===============7569071006507208219==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7569071006507208219==--
