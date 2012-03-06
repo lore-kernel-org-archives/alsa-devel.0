@@ -1,98 +1,77 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Tue, 6 Mar 2012 10:00:12 +0000
-Message-ID: <20120306100012.GC19635@opensource.wolfsonmicro.com>
-References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
- <20120229235147.GM8295@opensource.wolfsonmicro.com>
- <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
- <20120302125819.GE3230@opensource.wolfsonmicro.com>
- <CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 15/20] ASoC: fsl: make fsl_ssi driver
+	compilable on	ARM/IMX
+Date: Tue, 6 Mar 2012 10:39:16 +0000
+Message-ID: <20120306103916.GE17370@n2100.arm.linux.org.uk>
+References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
+	<1330788001-10158-16-git-send-email-shawn.guo@linaro.org>
+	<4F53F704.8080703@freescale.com>
+	<20120304232817.GA13516@n2100.arm.linux.org.uk>
+	<4F53FBA1.8090200@freescale.com>
+	<20120305000411.GL7363@n2100.arm.linux.org.uk>
+	<4F54053F.9070502@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UFHRwCdBEJvubb2X"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 6BC1010397D
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 11:39:31 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+In-Reply-To: <4F54053F.9070502@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Mar 05, 2012 at 12:13:52AM +0000, Tabi Timur-B04825 wrote:
+> Russell King - ARM Linux wrote:
+> > On Sun, Mar 04, 2012 at 11:32:50PM +0000, Tabi Timur-B04825 wrote:
+> >> Russell King - ARM Linux wrote:
+> >>> Is the SCR shared between capture and playback?  In that case, what
+> >>> makes this read-modify-write thread safe?
+> >>
+> >> What's "SCR"?
+> >
+> > I assumed you knew the code you were commenting on.
+> >
+> >                  clrbits32(&ssi->scr, CCSR_SSI_SCR_SSIEN);
+> >
+> > The register these functions seem to be used on appears to be called
+> > 'SCR'.
+> 
+> Oh, I didn't know you were referencing a specific register on the part. 
+> There are multiple uses of clrsetbits_be32 (and its variants) in the function.
+> 
+> To answer your question: I was lead to believe that the individual ALSA 
+> callback functions are atomic.  So one thread should not be trying to 
+> start playback while another thread is simultaneously trying to stop it.
 
---UFHRwCdBEJvubb2X
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Atomic with respect to what though?  The substream?  The PCM?  All PCMs?
+Reading through the code, it turns out that the answer is the PCM, so
+calls into the low level driver are serialized by a per-PCM mutex.
 
-On Tue, Mar 06, 2012 at 12:03:20PM +0900, Tomoya MORINAGA wrote:
-> 2012=E5=B9=B43=E6=9C=882=E6=97=A521:58 Mark Brown <broonie@opensource.wol=
-fsonmicro.com>:
+However, this is not true of the trigger callback - the trigger callback
+does not take this mutex, but instead takes a spinlock (or two.)  Whether
+this is enough to stop the capture and playback substream triggers being
+called simultaneously seems to depend on whether the substreams are part
+of the same group (which they probably aren't.)
 
-> >> Let me know why I should  use SND_SOC_REGMAP not _I2C.
+So, in theory you could have the trigger method being called for the
+capture device while the playback device is in the middle of being opened.
+Luckily, for this case, the startup method only touches the hardware if
+its the first substream being opened, and shutdown only touches the
+hardware if its the last substream being closed.
 
-> > Have you checked what _I2C and _REGMAP do?
-
-> I've just checked it.
-> If SND_SOC_REGMAP is used, it seems there is no processing in it.
-
-This is not the case.
-
-> So, can I delete snd_soc_codec_set_cache_io ?
-
-No.
-
-> > Use module_i2c_driver().
-
-> I understand.
-
-> As a matter of interest, why can I use module_i2c_driver ?
-
-It is best practice.
-
-> There is no ASoC driver uses module_i2c_driver.
-
-This is not the case.  As I have *REPEATEDLY* told you you should be
-sumbitting code against current development versions of the subsystem.
-
-> >> +static int ml26124_update_bits(struct snd_soc_codec *codec, unsigned =
-short reg,
-> >> +                             unsigned int mask, unsigned int value)
-
-> > Why are you open coding this in your driver?  There is no point in
-> > replicating subsystem functionality.
-
-> For ML26124 spec, it's necessary.
-> Because the codec's register read-address and write-address is not the sa=
-me.
-> E.G.
-> Sampling Rate Register
-> R: offset=3D0
-> W: offset=3D1
-
-This is not what the above prototype says, the above prototype has only
-one register in it.  You need to make this *much* clearer for the
-registers it's affecting.
-
---UFHRwCdBEJvubb2X
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPVeAlAAoJEBus8iNuMP3dVssP/1uborFkcsdWswKgiBb8yHg5
-UkMaJbz9lKKxC6t4UC407uYpReHKpkToZJitULrmWeOPTKxZ2eiAOIinKdzNdT5L
-KX0Zw30+FaiEnwLzMTB9dnVKR8UdIndpB2i7283bHWnnnaxFNo1jvbMYCRbTVsTT
-Tjox/3SfMigPMC6WsZkQe2OD+WNkTr51lcULjA3YwJ/QineOZ4XHpCt9l2QUSgYW
-B4BD+taNconB5jjdwnQ1+tiO/JRS0tp/zq6iC+vsLWrB6Q0jz+P6FkFtBYV/iDJK
-e5aLNe7xn/OuBXlHcAplMiahCC6DD2VSjAacT2ri0Yo7LEZH4E2AQfO+fzHrQ+Et
-V9F+XvqUJASiB6TpzoeqedkjNhKnYz0HGAjHiBWWjeEGzVCCrdbbEHwCkjXn7bWK
-1S9pcv3gAgUnyx5yXd7PabmOM1sWZk/9K6IcM8tWiNaWpp9wojAhzZFU/Wayr2Nu
-vTerHSCPxlqp+73cbwRRSKvsjUdgsQdwkwzyywhLG7P/SAt8Pog4hpyaq8V+oRRT
-ZELFlmpxrqH6Ej3Ky/KW+1HZKXAISfTdQX8iAsPNScyvh4Jc00SYXfXVzUcXTGtl
-R84R28rfB1bA+Ze/MCGAQZ0E9gdIq6+hoWniNPVNnc9ESLFhXw9sP8VDqwzTlDYQ
-8Wtavpb8/NAH6dlW+2lp
-=8OSh
------END PGP SIGNATURE-----
-
---UFHRwCdBEJvubb2X--
+However, I'm left wondering whether two trigger callbacks, one for the
+playback substream and one for the capture substream could be called
+simultaneously on two different CPUs.  I see nothing which prevents
+this happening.
