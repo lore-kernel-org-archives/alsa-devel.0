@@ -1,56 +1,64 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add machine driver for ML7213 Carrier Board
-Date: Tue, 6 Mar 2012 14:49:24 +0900
-Message-ID: <CANKRQnhHo1P0cmxyfUAShTinWMv0B81d8v8f7M6Oj3Yx9807zg@mail.gmail.com>
-References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
-	<1329976011-2251-3-git-send-email-tomoya.rohm@gmail.com>
-	<20120302130509.GF3230@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 11/17] ASoC: fsl: create fsl_utils to
+ accommodate the common functions
+Date: Tue, 6 Mar 2012 14:27:45 +0800
+Message-ID: <20120306062742.GO16232@S2101-09.ap.freescale.net>
+References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
+	<1330957865-19085-12-git-send-email-shawn.guo@linaro.org>
+	<20120305144920.GR3224@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120302130509.GF3230@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBE072448E
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 07:13:14 +0100 (CET)
+Received: by iakh37 with SMTP id h37so7063276iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 22:13:13 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120305144920.GR3224@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-2012年3月2日22:05 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Thu, Feb 23, 2012 at 02:46:51PM +0900, Tomoya MORINAGA wrote:
->
->>         This option enables support for the AC Link Controllers in ML7213 IOH SoC.
->> +config SND_SOC_ML7213_MACHINE
->> +     tristate "ML7213 IOH ASoC machine driver"
->> +     select SND_SOC_ML7213_PLATFORM
->> +     help
->> +       This is ASoC machine driver for ML7213 IOH
->
-> This needs to depend on the CODEC as well, how have you tested?
-OK, will add this.
+On Mon, Mar 05, 2012 at 02:49:20PM +0000, Mark Brown wrote:
+> On Mon, Mar 05, 2012 at 10:30:59PM +0800, Shawn Guo wrote:
+> 
+> > +/**
+> > + * fsl_asoc_get_codec_dev_name - determine the dev_name for a codec node
+> > + *
+> > + * @np: pointer to the I2C device tree node
+> > + * @buf: buffer to be filled with the dev_name of the I2C device
+> > + * @len: the length of the buffer
+> > + *
+> > + * This function determines the dev_name for an I2C node.  This is the name
+> > + * that would be returned by dev_name() if this device_node were part of a
+> > + * 'struct device'  It's ugly and hackish, but it works.
+> > + *
+> > + * The dev_name for such devices include the bus number and I2C address. For
+> > + * example, "cs4270.0-004f".
+> > + */
+> > +int fsl_asoc_get_codec_dev_name(struct device_node *np, char *buf, size_t len)
+> 
+> This doesn't seem at all Freescale specific, it should be a generic
+> helper, and in fact there already is one - the machine driver can set
+> codec_of_node in the card structure to point to the device node and then
+> the core should figure out binding to the device for you.  If it doesn't
+> we should fix the core.
 
-When I test this, I selected "Build all ASoC ...." of Kconfig
+Yeah, the core support works, so will remove the function here and use
+the core support.
 
-> You're also missing a blank line between this and the previous stanza.
-Sorry, I can't understand your saying.
-
->
->> +static struct platform_device *ioh_snd_device;
->> +
->> +
->> +static int __init ioh_i2s_init(void)
->> +{
->> +     int ret;
->> +     ioh_snd_device = platform_device_alloc("soc-audio", -1);
->> +     if (!ioh_snd_device)
->> +             return -ENOMEM;
->
-> Use snd_soc_register_card() and a real device.
-OK.
-As a matter of interest, why do you recommend me to use
-snd_soc_register_card() ?
-At present, many ASoC drivers use platform_device_alloc.
-
-thanks,
 -- 
-ROHM Co., Ltd.
-tomoya
+Regards,
+Shawn
