@@ -1,49 +1,47 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 15/20] ASoC: fsl: make fsl_ssi driver
-	compilable on	ARM/IMX
-Date: Tue, 6 Mar 2012 10:40:15 +0000
-Message-ID: <20120306104015.GF17370@n2100.arm.linux.org.uk>
-References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
-	<1330788001-10158-16-git-send-email-shawn.guo@linaro.org>
-	<4F53F704.8080703@freescale.com>
-	<20120304232817.GA13516@n2100.arm.linux.org.uk>
-	<4F53FBA1.8090200@freescale.com>
-	<20120305000411.GL7363@n2100.arm.linux.org.uk>
-	<4F54053F.9070502@freescale.com>
-	<20120305002635.GA23798@opensource.wolfsonmicro.com>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
+Date: Tue, 6 Mar 2012 19:49:16 +0900
+Message-ID: <CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
+References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
+	<20120229235147.GM8295@opensource.wolfsonmicro.com>
+	<CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
+	<20120302125819.GE3230@opensource.wolfsonmicro.com>
+	<CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
+	<20120306100012.GC19635@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 70A861040C4
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 11:40:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20120305002635.GA23798@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120306100012.GC19635@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 05, 2012 at 12:26:36AM +0000, Mark Brown wrote:
-> On Mon, Mar 05, 2012 at 12:13:52AM +0000, Tabi Timur-B04825 wrote:
-> 
-> > To answer your question: I was lead to believe that the individual ALSA 
-> > callback functions are atomic.  So one thread should not be trying to 
-> > start playback while another thread is simultaneously trying to stop it.
-> 
-> That's correct, there's ALSA level locking.
+On Tue, Mar 06, 2012　19:00 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> This is not the case.  As I have *REPEATEDLY* told you you should be
+> sumbitting code against current development versions of the subsystem.
+You are right. v3.3-rc6 uses it. sorry for inconvenience.
 
-Please explain which lock prevents the capture substream trigger callback
-occuring simultaneously with a playback substream trigger callback on a
-SMP system.
+>> >> +static int ml26124_update_bits(struct snd_soc_codec *codec, unsigned short reg,
+>> >> +                             unsigned int mask, unsigned int value)
+>> > Why are you open coding this in your driver?  There is no point in
+>> > replicating subsystem functionality.
+>>
+>> For ML26124 spec, it's necessary.
+>> Because the codec's register read-address and write-address is not the same.
+>> E.G.
+>> Sampling Rate Register
+>> R: offset=0
+>> W: offset=1
+>
+> This is not what the above prototype says, the above prototype has only
+> one register in it.  You need to make this *much* clearer for the
+> registers it's affecting.
+Sorry, I couldn't understand your saying / concern.
+Do you mean I shouldn't use ml26124_update_bits() but snd_soc_update_bits() ?
 
-Thanks.
+thanks,
+-- 
+ROHM Co., Ltd.
+tomoya
