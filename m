@@ -1,56 +1,79 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Query about regmap SPI
-Date: Tue, 6 Mar 2012 19:59:37 +0000
-Message-ID: <20120306195936.GZ19635@opensource.wolfsonmicro.com>
-References: <1331045140.32512.7.camel@matrix>
- <1331046532.32512.35.camel@matrix>
- <20120306163012.GW19635@opensource.wolfsonmicro.com>
- <1331055252.2453.8.camel@matrix>
+Subject: Re: [PATCH 2/2] ASoC: DAPM - Make sure DAPM widget IO
+ ops hold the component mutex.
+Date: Tue, 6 Mar 2012 20:03:54 +0000
+Message-ID: <20120306200354.GB19635@opensource.wolfsonmicro.com>
+References: <1331057779-4630-1-git-send-email-lrg@ti.com>
+	<1331057779-4630-2-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m3EZO/+NOdcYnaJL"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1331055252.2453.8.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, lrg <lrg@ti.com>
+Content-Type: multipart/mixed; boundary="===============4495864488220297426=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD35E24402
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 21:03:55 +0100 (CET)
+In-Reply-To: <1331057779-4630-2-git-send-email-lrg@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---m3EZO/+NOdcYnaJL
+--===============4495864488220297426==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ri7MIv52hxsKkbzo"
+Content-Disposition: inline
+
+
+--ri7MIv52hxsKkbzo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 06, 2012 at 11:04:12PM +0530, Ashish Chavan wrote:
+On Tue, Mar 06, 2012 at 06:16:19PM +0000, Liam Girdwood wrote:
 
-> place to put this. BTW do you have any recommendation in terms of a good
-> way to achieve this. e.g. will it be useful and generic enough if we
-> introduce two more fields like read/write_flag_mask to indicate shifting
-> and use those fields before applying read/write_flag_masks?
+> +	if (w->codec)
+> +		mutex_lock(&w->codec->mutex);
 
-That sounds like a sensible approach.
+Actually for CODECs we don't need to hold the CODEC mutex for I/O if
+we've pushed the cache down into regmap - regmap does all the locking
+for us.  I'll send a followup patch.
 
---m3EZO/+NOdcYnaJL
+--ri7MIv52hxsKkbzo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPVmyBAAoJEBus8iNuMP3dcNYP/Ru+bZumIb7/gvUKj/lCMZyE
-YU3Bsmyupb7ooXkS5ezRSqn4sPVoqNMSTMn/ntsem+F6/OdKkJ0ahhtQX2quGLEp
-TSYJBfrAJekSlSP2Sg3gVCD/j0waZwbe1JRizttKvKBOb5EdAMHrNLhVLe/dJH80
-azyeqWZCVo+HKctvvugRqQureAXbh/1sm4nqVppwX0M/xAblpfX/MsQ/49+GP/dj
-Q34/99uxyGXLE08v0n9g6xHVOv7vQxtS15apvaBi8jDf6yaHaAcMQYcwkyRVHieS
-xFfuNjfNzz0BjSI+tzj3SuFjCdG6kYSfYef20DNPbTP9f+M/tgDikYNkWABeMVI4
-bJvm1/lxuVnsqvQU4a+TJDiSc5Wz/zuFGv/aIoi5vRQyuE3q6ROEEHst7fgZdnyE
-9Ae0iid+iWyt48T0NiU8E3ZyNiNbXv0K4S5JW/nTasdWcf4oY0gInjqsTVCEctab
-utCD3ZU7yqJncQETjPwgTLeFTqB0QgYY/4E18XQHH8stSZvJHVoH1y4hhRftit4X
-9riAzHHsp/pHY/l0LdndocdLPOJ3DCXCb0hX4NFJyg+jx0VL32MajCrSCB4IvaXi
-08Or8BUenq4dTrj3XSB2h2dKAZ3wujeFJeoT/8TkqJziUJRmC8P86gqziFGzIyu8
-sHst2UwUDRzlY5ntT49x
-=WOWY
+iQIcBAEBAgAGBQJPVm2jAAoJEBus8iNuMP3d4aIP/A8+sJGG/zAklzsALSOORLQM
+Bv0gscNJkWrWxZ7wGA5F04XK6CDoR36jkxc7esyoXaH6eeQiufDcAzYQgdEy09dU
+9JApVnGGk71awJE26tnQT/0NxROLYgoVoQ1DmR4t89ryhg4Izsj6xUOFxhjk/NmO
+Kwp7cJstu7Ixq89i7bL6j96aDim05M2tM40ije4cK/upqr6FHTDhmGx+j8HiCusm
+ATOC9AcFvmroCbuSQIPrFF/QwFq9HkF9yUnwG9BR+m1cyJDwHYzWsQcPz80OzJ8v
+Y23PiG7P6BB1NcefN3tq1JSlyaP/gEQviAjlBXgRLKUyHU25gQKThoV5Jk8WrUYF
+GUOD1oAzOxk+CTtHqYRJyra5oP5L8vPegcXQ4ICaFVDh/johO+eb6LZIWv7U+JyY
+mL/RUDRQ5vCAYL6797jGE6hCXq56YRL8iiYVLrIoGuan/ROe1um5YQxniCWhVXlN
+JjCtkrI8C7t6j9tXF/oTDyKFaVUQvtDbxEPUE22BzVhLiyXIdcRtZ/gbjvXk6yaG
+2Hej6kEBytzW1TiGbB/G11rWOZwJgACyGAr2Yi+y5e/sKxt+s5N5QYgpEtoYSCO3
+BtttjZr+O5lS1W9Y56CSQKCG+PdaQmjsZpCzS53KEBO7lBOSK1K+/1yyPGj6XZt/
+BUZc9Rxrn/YTyvx3j6ea
+=rVqy
 -----END PGP SIGNATURE-----
 
---m3EZO/+NOdcYnaJL--
+--ri7MIv52hxsKkbzo--
+
+--===============4495864488220297426==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4495864488220297426==--
