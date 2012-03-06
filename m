@@ -1,18 +1,23 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Add missing regmap_init_i2c in
-	wm8804_i2c_probe
-Date: Tue, 06 Mar 2012 15:06:53 +0800
-Message-ID: <1331017613.11182.1.camel@phoenix>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 17/17] ASoC: fsl: add imx-sgtl5000
+	machine driver
+Date: Tue, 6 Mar 2012 15:39:02 +0800
+Message-ID: <20120306073900.GP16232@S2101-09.ap.freescale.net>
+References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
+	<1330957865-19085-18-git-send-email-shawn.guo@linaro.org>
+	<20120305144601.GQ3224@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f49.google.com (mail-pz0-f49.google.com
-	[209.85.210.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27703103C68
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 08:07:04 +0100 (CET)
-Received: by dakp5 with SMTP id p5so6566398dak.8
-	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 23:07:01 -0800 (PST)
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE8B010409E
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 08:24:30 +0100 (CET)
+Received: by iakh37 with SMTP id h37so7122869iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 23:24:30 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120305144601.GQ3224@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +27,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-commit 891271c "ASoC: Convert wm8804 to direct regmap API usage"
-only converts wm8804_spi_probe to use regmap_init_spi.
+On Mon, Mar 05, 2012 at 02:46:01PM +0000, Mark Brown wrote:
+> On Mon, Mar 05, 2012 at 10:31:05PM +0800, Shawn Guo wrote:
+> 
+> > +	ret = snd_soc_dai_set_fmt(rtd->codec_dai, SND_SOC_DAIFMT_I2S |
+> > +						  SND_SOC_DAIFMT_NB_NF |
+> > +						  SND_SOC_DAIFMT_CBM_CFM);
+> > +	if (ret) {
+> > +		dev_err(dev, "could not set codec driver audio format\n");
+> > +		return ret;
+> > +	}
+> 
+> This you can just set in the card struct, no need for explicit code at
+> all.
+> 
+Yes, I just tried.  It also works but a little bit differently.  We
+only set_fmt for codec_dai here, while ASoC core will set_fmt for both
+codec_dai and cpu_dai if dai_link->dai_fmt is set.  However, the
+fsl_ssi does not provide .set_fmt implementation, and consequently we
+will see error message below, which does not impact functionality
+though.
 
-This patch adds missing regmap_init_i2c in wm8804_i2c_probe.
+  fsl-ssi-dai 83fcc000.ssi: Failed to set DAI format: -22
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8804.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+I hope we keep the code as it is now and improve later when fsl_ssi
+gets improved.
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 7ee8dcf..6bd1b76 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -755,6 +755,12 @@ static __devinit int wm8804_i2c_probe(struct i2c_client *i2c,
- 	if (!wm8804)
- 		return -ENOMEM;
- 
-+	wm8804->regmap = regmap_init_i2c(i2c, &wm8804_regmap_config);
-+	if (IS_ERR(wm8804->regmap)) {
-+		ret = PTR_ERR(wm8804->regmap);
-+		return ret;
-+	}
-+
- 	i2c_set_clientdata(i2c, wm8804);
- 
- 	ret = snd_soc_register_codec(&i2c->dev,
+> > +	ret = of_property_read_u32(np, "fsl,mux-int-port", &int_port);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
+> > +		return -EINVAL;
+> > +	}
+> > +	ret = of_property_read_u32(np, "fsl,mux-ext-port", &ext_port);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
+> > +		return -EINVAL;
+> > +	}
+> 
+> It seems very odd to have namespacing on the individual property names.
+> Why are you doing that?  The properties are already defined in terms of
+> the device binding.  Though everyone else is doing it so not really a
+> problem.
+> 
+The general device tree binding practice is we'd better have a vendor
+prefix on the property name, if the property applies on specific vendor
+drivers instead of common ones across different vendors.
+
+> > +	/*
+> > +	 * The port numbering in the hardware manual starts at 1, while
+> > +	 * the audmux API expects it starts at 0.
+> > +	 */
+> > +	int_port--;
+> > +	ext_port--;
+> 
+> Should have error checking somewhere to make sure that the user
+> remembered this.
+> 
+Because different i.MX SoC may have different internal and external
+port number, I do not think of a way to check that.  And I would not
+worry about it that much, since all the hardware documents number the
+port from 1, while device tree user/author will have to look at those
+documents for the data.
+
+> > +	imx_audmux_v2_configure_port(int_port,
+> > +			IMX_AUDMUX_V2_PTCR_SYN |
+> > +			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
+> > +			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
+> > +			IMX_AUDMUX_V2_PTCR_TFSDIR |
+> > +			IMX_AUDMUX_V2_PTCR_TCLKDIR,
+> > +			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
+> 
+> I'm not sure we've really gained much from converting to a platform
+> driver given that the device just registers something globally...
+
+Converting audmux to a platform driver does not change anything about
+that.  It makes device tree support easier, and gets the audmux users
+(imx machine drivers) stay away from including <mach/audmux.h>.
+
 -- 
-1.7.5.4
+Regards,
+Shawn
