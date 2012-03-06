@@ -1,85 +1,62 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Tue, 6 Mar 2012 12:03:20 +0900
-Message-ID: <CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
-References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120229235147.GM8295@opensource.wolfsonmicro.com>
-	<CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
-	<20120302125819.GE3230@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 10/17] ASoC: imx: merge sound/soc/imx
+ into sound/soc/fsl
+Date: Tue, 6 Mar 2012 13:46:49 +0800
+Message-ID: <20120306054648.GN16232@S2101-09.ap.freescale.net>
+References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
+	<1330957865-19085-11-git-send-email-shawn.guo@linaro.org>
+	<20120305173910.GZ3852@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120302125819.GE3230@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CED0F24488
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 06:32:18 +0100 (CET)
+Received: by iakh37 with SMTP id h37so7029742iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 21:32:16 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120305173910.GZ3852@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2012年3月2日21:58 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->> >> +static int ml26124_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
->> >> +                               int div_id, int div)
->> >> +{
->> >> +     struct snd_soc_codec *codec = codec_dai->codec;
->
->> >> +     switch (div_id) {
->> >> +     case ML26124_MCLK:
->> >> +             ml26124_update_bits(codec, ML26124_CLK_CTL,
->> >> +                                   BIT(0) | BIT(1), div);
->> >> +             break;
->
->> > Why can't the driver calculate this automatically given the MCLK?
->
->> Sorry, I can't understand your saying.
->> Why does this driver need to calculate ?
->> I think this driver can use "div" value directly.
->
-> Why does the user have to set this divider by hand at all?  There's
-> already a set_sysclk() function, just have the user specify the clock
-> they're providing.
-I see.
-This processing will move to set_sysclk()
+On Mon, Mar 05, 2012 at 06:39:10PM +0100, Sascha Hauer wrote:
+> On Mon, Mar 05, 2012 at 10:30:58PM +0800, Shawn Guo wrote:
+> > Freescale PowerPC and ARM/IMX families share the same SSI IP block.
+> > The patch merges sound/soc/imx into sound/soc/fsl, so that the possible
+> > code sharing and consolidation can happen.
+> > 
+> > This is a plain merge, except that menuconfig SND_POWERPC_SOC is added
+> > in Kconfig for PowerPC platform as a correspondence to SND_IMX_SOC for
+> > IMX platform.
+> > 
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > ---
+> >  sound/soc/Kconfig                        |    1 -
+> >  sound/soc/Makefile                       |    1 -
+> >  sound/soc/fsl/Kconfig                    |   92 ++++++++++++++++++++++++++++++
+> >  sound/soc/fsl/Makefile                   |   22 +++++++
+> >  sound/soc/{imx => fsl}/eukrea-tlv320.c   |    2 +-
+> >  sound/soc/{imx => fsl}/imx-audmux.c      |    0
+> >  sound/soc/{imx => fsl}/imx-audmux.h      |    0
+> >  sound/soc/{imx => fsl}/imx-pcm-dma-mx2.c |    0
+> 
+> Maybe this is the right time to rename this file to something like
+> imx-pcm-dma.c since it has nothing to do with mx2 anymore.
+> 
+Ok, will change it in the next post.
 
->> >> +     ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
->> > You're mixing regmap API usage and ASoC level I2C, this should be
->> > _REGMAP.
->> Currently, it seems codec control via i2c works well.
->> Let me know why I should  use SND_SOC_REGMAP not _I2C.
-> Have you checked what _I2C and _REGMAP do?
-I've just checked it.
-If SND_SOC_REGMAP is used, it seems there is no processing in it.
-So, can I delete snd_soc_codec_set_cache_io ?
-
->
->> >> +static int __init ml26124_modinit(void)
->> >> +{
->> >> +     int ret;
->> >> +
->> >> +     ret = i2c_add_driver(&ml26124_i2c_driver);
->> >> +     if (ret != 0)
->
->> > module_i2c_driver().
->
->> Sorry, I can't understand your saying.
->
-> Use module_i2c_driver().
-I understand.
-As a matter of interest, why can I use module_i2c_driver ?
-There is no ASoC driver uses module_i2c_driver.
-
->> +static int ml26124_update_bits(struct snd_soc_codec *codec, unsigned short reg,
->> +                             unsigned int mask, unsigned int value)
->
-> Why are you open coding this in your driver?  There is no point in
-> replicating subsystem functionality.
-For ML26124 spec, it's necessary.
-Because the codec's register read-address and write-address is not the same.
-E.G.
-Sampling Rate Register
-R: offset=0
-W: offset=1
-
-thanks,
 -- 
-ROHM Co., Ltd.
-tomoya
+Regards,
+Shawn
