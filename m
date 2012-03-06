@@ -1,70 +1,48 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/2] ASoC: OMAP: Build config cleanup for McBSP
-Date: Fri,  9 Mar 2012 10:51:18 +0200
-Message-ID: <1331283078-14846-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1331283078-14846-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1331283078-14846-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Grazvydas Ignotas <notasas@gmail.com>
+From: Ashish Chavan <ashish.chavan@gmail.com>
+Subject: Query about regmap SPI
+Date: Tue, 6 Mar 2012 12:53:51 +0500
+Message-ID: <CAH4H7mPZtJqwYN=ZMp1N9MP0GM0hZhnW+5z1V2-ZwqYba9jAWQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6BB8104071
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 08:53:52 +0100 (CET)
+Received: by qcha6 with SMTP id a6so2189751qch.38
+	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2012 23:53:51 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The McBSP driver stack has been moved, and rewritten resulting a single
-driver - selected by CONFIG_SND_OMAP_SOC_MCBSP. There is no longer need to
-have CONFIG_OMAP_MCBSP anymore.
+Hi,
+  I am planning to add SPI support for da7210 codec driver. SPI for this
+codec has slightly different format than others. It has 8 bit register
+address and 8 bit data. Out of 8 bits of register address, one bit (i.e.
+LSB) is used to indicate read or write. Value of 1 at LSB denotes READ
+while value of 0 at LSB denotes write operation.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/Kconfig  |    6 ------
- sound/soc/omap/Makefile |    3 +--
- 2 files changed, 1 insertions(+), 8 deletions(-)
+Thus in order for SPI READ to work correctly, the register address need
+to be left shifted by one and then ORed with 0x1. In the same way for
+SPI WRITE to work correctly, it need to be left shifted by one.
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 4bb7802..deafbfa 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -5,13 +5,8 @@ config SND_OMAP_SOC
- config SND_OMAP_SOC_DMIC
- 	tristate
- 
--config OMAP_MCBSP
--	tristate
--	depends on ARCH_OMAP
--
- config SND_OMAP_SOC_MCBSP
- 	tristate
--	select OMAP_MCBSP
- 
- config SND_OMAP_SOC_MCPDM
- 	tristate
-@@ -31,7 +26,6 @@ config SND_OMAP_SOC_N810
- config SND_OMAP_SOC_RX51
- 	tristate "SoC Audio support for Nokia RX-51"
- 	depends on SND_OMAP_SOC && MACH_NOKIA_RX51
--	select OMAP_MCBSP
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_TPA6130A2
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 9f8fbd5..1d656bc 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -1,13 +1,12 @@
- # OMAP Platform Support
- snd-soc-omap-objs := omap-pcm.o
- snd-soc-omap-dmic-objs := omap-dmic.o
--snd-soc-omap-mcbsp-objs := omap-mcbsp.o
-+snd-soc-omap-mcbsp-objs := omap-mcbsp.o mcbsp.o
- snd-soc-omap-mcpdm-objs := omap-mcpdm.o
- snd-soc-omap-hdmi-objs := omap-hdmi.o
- 
- obj-$(CONFIG_SND_OMAP_SOC) += snd-soc-omap.o
- obj-$(CONFIG_SND_OMAP_SOC_DMIC) += snd-soc-omap-dmic.o
--obj-$(CONFIG_OMAP_MCBSP) += mcbsp.o
- obj-$(CONFIG_SND_OMAP_SOC_MCBSP) += snd-soc-omap-mcbsp.o
- obj-$(CONFIG_SND_OMAP_SOC_MCPDM) += snd-soc-omap-mcpdm.o
- obj-$(CONFIG_SND_OMAP_SOC_HDMI) += snd-soc-omap-hdmi.o
--- 
-1.7.8.5
+I have gone though the regmap sources and found that ORing can be
+achieved by setting correct read_flag_mask. But I couldn't find anything
+by which I can tell regmap core to shift the register address before
+ORing it with read_flag_mask. Am I missing anything here?
 
+Is there any other way to achieve this using regmap? The only other way
+I can think of is providing a wrapper function to read and write in
+codec driver and doing the shifting job inside that wrapper.
+
+TIA!
