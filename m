@@ -1,21 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 17/17] ASoC: fsl: add imx-sgtl5000
-	machine driver
-Date: Tue, 6 Mar 2012 13:35:07 +0000
-Message-ID: <20120306133506.GU19635@opensource.wolfsonmicro.com>
-References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
-	<1330957865-19085-18-git-send-email-shawn.guo@linaro.org>
-	<20120305144601.GQ3224@opensource.wolfsonmicro.com>
-	<20120306073900.GP16232@S2101-09.ap.freescale.net>
-	<20120306120247.GF19635@opensource.wolfsonmicro.com>
-	<20120306133416.GQ16232@S2101-09.ap.freescale.net>
+Subject: Re: [PATCH 15/20] ASoC: fsl: make fsl_ssi driver
+ compilable on ARM/IMX
+Date: Tue, 6 Mar 2012 13:38:18 +0000
+Message-ID: <20120306133818.GV19635@opensource.wolfsonmicro.com>
+References: <20120304232817.GA13516@n2100.arm.linux.org.uk>
+	<4F53FBA1.8090200@freescale.com>
+	<20120305000411.GL7363@n2100.arm.linux.org.uk>
+	<4F54053F.9070502@freescale.com>
+	<20120305002635.GA23798@opensource.wolfsonmicro.com>
+	<20120306104015.GF17370@n2100.arm.linux.org.uk>
+	<20120306120646.GH19635@opensource.wolfsonmicro.com>
+	<20120306122516.GH17370@n2100.arm.linux.org.uk>
+	<20120306123322.GP19635@opensource.wolfsonmicro.com>
+	<s5h4nu17tdn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4521079745365070342=="
+Content-Type: multipart/mixed; boundary="===============6252493064875695906=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DDABB103C80
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 14:35:10 +0100 (CET)
-In-Reply-To: <20120306133416.GQ16232@S2101-09.ap.freescale.net>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85C63103CA7
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 14:38:20 +0100 (CET)
+In-Reply-To: <s5h4nu17tdn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,151 +29,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Sascha Hauer <s.hauer@pengutronix.de>, Tabi Timur-B04825 <B04825@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4521079745365070342==
+--===============6252493064875695906==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="geqNt1NAoYRYy2Pr"
+	protocol="application/pgp-signature"; boundary="thwsKKN5whlRGe6j"
 Content-Disposition: inline
 
 
---geqNt1NAoYRYy2Pr
+--thwsKKN5whlRGe6j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 06, 2012 at 09:34:18PM +0800, Shawn Guo wrote:
-> On Tue, Mar 06, 2012 at 12:02:47PM +0000, Mark Brown wrote:
+On Tue, Mar 06, 2012 at 02:26:28PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+> > On Tue, Mar 06, 2012 at 12:25:16PM +0000, Russell King - ARM Linux wrote:
 
-> > No, we should fix the core to work better in this case - not having a
-> > DAI operation is perfectly normal and should be supported.
+> > whenever you need to call back into the ALSA APIs.  Though of course I'm
+> > pretty sure there's a bunch of uniprocessor assumptions through the body
+> > of driver code anyway...
 
-> So something like this?
+> Not that much actually.  On the contrary, because of the current
+> design allowing concurrent accesses, many codes have been written
+> rather in too complex and messy ways.  It could have been much
+> simplified if we didn't consider the concurrent accesses to each
+> substream.
 
-> @@ -1536,12 +1536,8 @@ static void snd_soc_instantiate_card(struct snd_so=
-c_card *card)
+Right, but I'm fairly sure that at least some of the driver code is
+relying on uniprocessor assumptions for what it's doing - there's a
+bunch of things that can't happen on unipocessor that can happen on
+SMP (or preempting) systems.
 
-> -                       if (ret !=3D 0)
-> -                               dev_warn(card->rtd[i].cpu_dai->dev,
-> -                                        "Failed to set DAI format: %d\n",
-> -                                        ret);
-
-It should still complain but it should check to see if there was an
-actual set_fmt op and only complain then, probably we should change all
-the noop error codes for the accessor functions to be -ENOTSUPP or
-something and then change the check here to look for ret !=3D 0 && ret !=3D
-ENOTSUPP.
-
-> > There's nothing generic about this device, it only applies to a specific
-> > combination of things and in so far as it applies to those the
-> > properties are generic - any board combining i.MX and this CODEC is
-> > going to have an audmux.
-
-> Since you agreed it's not really a problem, I would like to do what
-> everyone else is doing.
-
-Well, "everyone else" in this context is only Tegra right now so there's
-a case for nipping this in the bud too :)
-
-> > In that case the audmux code should be validating the arguments.
-
-> What we can check is only where the number starts and probably where
-> it ends.  That requires audmux driver have the ranges of internal port
-> and external port for each i.MX SoC encoded.  For DT case, we may have
-> the ranges defined in device tree, while for non-DT case, we then need
-> to introduce platform_data to pass that piece of data.  In the end,
-> this check does not guarantee the correctness, and developers have to
-> give the correct port number.  So is it really worth it?
-
-It does seem concerning and error prone that there's two different
-numbering schemes for the audmux APIs.
-
-> > OTOH the in kernel API uses a different numbering and if the user is
-> > porting their existing code over to device tree...
-
-> Whoever is porting the code will need to look at the audmux binding
-> document, where we have a big note regarding this.
-
-If there's one universal truth about system integrators it's that they
-always read the documentation and don't ever just copy things from an
-example and tweak it till it works.  :)
-
-> > It's not actually fixed anything in the APIs though
-
-> I'm not fixing the APIs.  Instead, I'm adding device tree support for
-> audmux driver, while converting it to platform driver make that easy.
-
-I know, that's kind of the problem.  You've moved the device
-registration to the device model but not done anything on the top level
-to ensure that we actually managed to do so.
-
-> > and we've now also got a race in the driver probes=20
-> > since the audmux now need to come up via
-> > the device model instead of just being there
-
-> The race is solved by having audmux device registered in a
-> subsys_initcall.
-
-And hoping that it does actually get registered and successfully
-loads and that it doesn't get built as a module which could get set up
-in a different order, plus the edge cases where users actively unbind
-the driver from the device.
-
-> > - we could try to configure
-> > the audmux with no platform driver bound.
-
-> Before this series, the audmux is configured with no platform driver
-> bound.  I'm confused here.  Are you saying we are moving to a wrong
-> direction?
-
-Previously just building the code was enough, it'd unconditionally
-initialise itself in early init and we were fine.  Now there's a bunch
-of different ways in which someone could break things since we're using
-the device model so we need to make sure we work with those.
-
-> > We should really have the
-> > audmux as at least an aux_dev in the card to make sure it's there.
-
-> I do not understand how aux_dev can help here.  Being a device encoded
-> in device tree, audmux device should have been created by DT core, and
-> all we need to do is registering the audmux driver to get it bound to
-> audmux device.
-
-None of that stuff does anything to ensure that the audmux is present
-before the card comes up.
-
---geqNt1NAoYRYy2Pr
+--thwsKKN5whlRGe6j
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPVhKEAAoJEBus8iNuMP3d4KUP/R8t8iZttyhK8yMJc2ZRDrrI
-/5L8ZE9abPcAUbVabzY429rUgF5bZWtSKKffFv7gzcivDtzVgaLtoLJe5XYz1ybp
-wi9jWAUz2vtMfCXL2EfmWaF0LvEa1WcMwvSrc9KDGYohhlQQ0bKOG+CJgXDbWfA/
-h5jsTqkwCljIvwPTiVwLdOUNmuDHcbltLYrEIFTl6l/J6lvqqhPuu2J1IlJ/8dbO
-ZXEWxl2H+8xzUTYDWiHmXKq2yM8kbCpKBCg7+PPOWTVPYfa1IxEBj8XaxjnvFcXW
-g7mb9BkdjM26naRim8l6N436yq8wERg7y0qt3j957sMwUq4WbjSwlMzNIrjNzE/E
-z2w2oPr6X+c4IrsROYXo9f1q+hsb0oIBWu7pRr8oBJfpz8unZyhU4OO6VjsDd9pa
-NfRFuds6teqhMXOu6ZDIO1uywbofbt+QuERY2/2Al1kczlSe4QlIQjLMGGK8NIfF
-NyNscEc9v5abK11tjn//tiebdBRnnvtvnm0W5jObsV2zmzAOUOtZfQCxCMGktDHk
-qrWnP0txS63lwi7RhhB48nRcnI8wRH0U1O8JfAZGv85YwAeDDf3NKgqxCvF8IKHO
-CVOqV83TuaPolKgqmtMJonQANHuTYesw34LJeZi3Y5CndT/LAlOuurXMyZYlJorT
-0gqY/XBy1uDO5+Ca0icu
-=sU1U
+iQIcBAEBAgAGBQJPVhNEAAoJEBus8iNuMP3drNAP+wUzPadUcjVqw88JSn2ZTNJ1
+Xr5YFCzRO42kk821cWnLDQJ1Rf1gBWuc6AmgO0uj/LgnDxWGGEyY59T9xCVTxxw+
+ZLQZAJKcTuLcnO9yCs4C8DMudJPQoNYqJP7xMewCc3Fjimsbeor05o2xp2qotSRr
+5eA09J7YhaDH8Xww1X5f+7harWXsHPzuR49d71I9w7anJsTKnuU/6MRpsvqqSGFO
+ntz7itA0imTC3I7/MG+QKxFb+hfYNFdn5uuAcsONd+037hMIG9uJ4xfLTpN0jw75
+g+DnwkejV7qq7+9vtOCpGEokqERtINjPXbdJk2qeo45WS6ABZTxStv5JuuTq45cV
+E1vRZE5RXItwKAEThBuJgA/m8M59ft7U2BcHRPb9blsvNvXWT0Yp/WYQjHpwEnI5
+6oAElrw1HzzPPlQh6kBHYA0tAjfsj1zZ4G5oHPQc5pm5XvFksUL7ns/kpAHYQ6Ac
+z7ZBCsavFYwEOmolyav/rolO0cio9MMmS7hJwgLIU0RueNl00ANmCPte/oMDQorh
+zMdMf+UycP13FU/7NeVNs3cWaepftPVu14R4CVoIimQhgSfJsXtVUVWeUOHJLF/5
+JLLzpDERmtEHCnnJMPq9zjh2OKQnJ6XliHKzuzvTgf9xoOlCHfi8FNC7fGeHDUGw
+ZcDN48mKjOPHFVvz5bk3
+=+JrM
 -----END PGP SIGNATURE-----
 
---geqNt1NAoYRYy2Pr--
+--thwsKKN5whlRGe6j--
 
---===============4521079745365070342==
+--===============6252493064875695906==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4521079745365070342==--
+--===============6252493064875695906==--
