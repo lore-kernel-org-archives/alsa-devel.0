@@ -1,25 +1,33 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 20/20] ASoC: fsl: add imx-sgtl5000 machine
- driver
-Date: Tue, 6 Mar 2012 20:11:53 +0000
-Message-ID: <20120306201153.GF19635@opensource.wolfsonmicro.com>
-References: <1330788001-10158-1-git-send-email-shawn.guo@linaro.org>
-	<1330788001-10158-21-git-send-email-shawn.guo@linaro.org>
-	<20120304133818.GE3083@opensource.wolfsonmicro.com>
-	<20120305080623.GD16232@S2101-09.ap.freescale.net>
-	<20120305115612.GB3224@opensource.wolfsonmicro.com>
-	<20120305130707.GF16232@S2101-09.ap.freescale.net>
-	<20120305131332.GM3224@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF17BE861C14@HQMAIL01.nvidia.com>
-	<20120305170317.GV3224@opensource.wolfsonmicro.com>
-	<4F565528.1090505@wwwdotorg.org>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: HDA intel, wired headset w/mic, jack mic detect
+Date: Tue, 06 Mar 2012 12:25:12 -0800
+Message-ID: <87399lfpef.fsf@ti.com>
+References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
+	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
+	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
+	<87zkc1cvaa.fsf@ti.com>
+	<CAN8ccib90y8m0KLTYKe7Jz5sXVZFY=D7aUwm8vog3aZvZPHH0Q@mail.gmail.com>
+	<874nu99k9y.fsf@ti.com>
+	<CAN8cciayARuQGLH=DHsReH0sYbz92K3BPNhmNEqYmSjc6wUUVw@mail.gmail.com>
+	<87d38wfag6.fsf@ti.com>
+	<CAN8cciaB6-GUvsPS8+bpftLb7BaawdpCsgY3Z7R9H+XdkJ8LNA@mail.gmail.com>
+	<87booesssh.fsf@ti.com>
+	<CAN8ccibbw109Sxb_X_ZKVO4GnpVUfbEyK0yyM8g90g8K8v4Jtw@mail.gmail.com>
+	<87zkbvne5k.fsf@ti.com>
+	<CAN8cciaEKB2Gf3n6NWFkoJmk=kuH6nNHJYLqQtoRiiPmfLcFcw@mail.gmail.com>
+	<s5h62eiqlcn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4314617223342483564=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 73C7124418
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 21:11:55 +0100 (CET)
-In-Reply-To: <4F565528.1090505@wwwdotorg.org>
+Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
+	[74.125.149.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90F6F24141
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2012 21:25:29 +0100 (CET)
+Received: by mail-iy0-f178.google.com with SMTP id l21so8095878iak.9
+	for <alsa-devel@alsa-project.org>; Tue, 06 Mar 2012 12:25:14 -0800 (PST)
+In-Reply-To: <s5h62eiqlcn.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
+	06 Mar 2012 07:44:56 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,68 +37,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4314617223342483564==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LsnByradU3Ze6UwI"
-Content-Disposition: inline
-
-
---LsnByradU3Ze6UwI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 06, 2012 at 11:19:20AM -0700, Stephen Warren wrote:
-
-> > In this case (and probably in the i.MX case, at a guess the structure is
-> > the same) I'd just have the DAI drivers kick off registration of the
-> > ASoC DMA stuff, it's all part of the ASoC driver for the hardware reall=
-y.
->=20
-> How would that work when there are multiple DAIs, e.g. on a system with
-> 2 I2S and 1 SPDIF DAI and they all want to register the PCM driver? I
-> guess I could just add some utility function in the PCM driver file to
-> ensure that the platform device only gets created once, and probably
-> would also need to refcount it for when the DAIs get unloaded etc.
-
-You could just create a DMA device per DAI since it's just a wrapper,
-you shouldn't even need to allocate a new struct device but just use the
-DAI device when registering the ASoC DMA driver.
-
---LsnByradU3Ze6UwI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPVm+BAAoJEBus8iNuMP3dKSsP+warZ2x59m4FvG1kvD8YZJs6
-+YDAlfg9WuE5XuKCCChZdetMarlLxLg2pZ/lm9k44G/T+975JP0vAhF/pYgSXIbv
-rfe0lJLmjAZb8OFvgcDPgIN7GoN5rDGhrbdS5emOPIhNkawPzxN+4T+rO/+my0bj
-zqOLy/ZQ+WMsGU183fB0TrJxgPEMlpAPYdQjn91jipLxXFoLTDYZprRgoycBqVXT
-UoPu8pMw3hkfx4glCZOgkDNauq1ZhJg1GzEGpW9CXYLAQ3N2SmReesLReTfA+fIh
-HW94XI3RxFbo3zkhmRwlviQfUmhFaOg0DOr6RLRC4xUMSntyW6eJ10rw9Pb9+MOz
-nu84QPsEDGvJcKf7l4XoVtxQ7KW93z0hzF/A9miXdWQt9GATOexvOTQTv/vzJznC
-jtbV+rUjqGVWmfjkLDZHxoL0Sg7KipkJLTZU6q8O0YM451AcqK/SfK4L4jzvy/vN
-Uai9G+Adid4a2XPn1AQkA2KJdKnfjFfyWR7bq0G0YoJBwaQJ2/GyPHnojwYqgJWv
-nU1g4mKQj0ckzhLjUTsaHKtoFca64PJ/nPBcG7tajRcCMSjGmdi0SwunISvbxMfE
-IzktBISWOnnYy8Qk0kiNDXG0vI+iSWLTFSSN6EUWlwZNFVRIQB7ozo6D6aieMFyM
-kA6kJeWd6yFxuj/6ViAV
-=NDPR
------END PGP SIGNATURE-----
-
---LsnByradU3Ze6UwI--
-
---===============4314617223342483564==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4314617223342483564==--
+VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cml0ZXM6Cgo+IEF0IFR1ZSwgNiBNYXIgMjAx
+MiAwOToyODoxMiArMDgwMCwKPiBSYXltb25kIFlhdSB3cm90ZToKPj4gCj4+IDIwMTIvMy82LCBL
+ZXZpbiBIaWxtYW4gPGtoaWxtYW5AdGkuY29tPjoKPj4gPiBSYXltb25kIFlhdSA8c3VwZXJxdWFk
+LnZvcnRleDJAZ21haWwuY29tPiB3cml0ZXM6Cj4+ID4KPj4gPj4gMjAxMi8zLzMsIEtldmluIEhp
+bG1hbiA8a2hpbG1hbkB0aS5jb20+Ogo+PiA+Pj4gUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0
+ZXgyQGdtYWlsLmNvbT4gd3JpdGVzOgo+PiA+Pj4KPj4gPj4+PiAyMDEyLzMvMiwgS2V2aW4gSGls
+bWFuIDxraGlsbWFuQHRpLmNvbT46Cj4+ID4+Pj4KPj4gPj4+Pgo+PiA+Pj4+Pj4gRG9lcyB5b3Vy
+IGhlYWRzZXQvbWljIGhhcyBhIFRSUlMgKFRpcCwgcmluZywgcmluZywgc2xlZXZlKSBjb25uZWN0
+b3IKPj4gPj4+Pj4+IGluc3RlYWQgb2YgVFJTIChUaXAsIHJpbmcsIHNsZWV2ZSkgY29ubmVjdG9y
+ID8KPj4gPj4+Pgo+PiA+Pj4+PiBZZXMuICBJdCdzIFRSUlMuCj4+ID4+Pj4KPj4gPj4+PiBEb2Vz
+IGl0IG1lYW4gdGhhdCB0aGUgaGVhZHNldC9taWMgaXMgYSBtb25vIG1pYyA/Cj4+ID4+Pj4KPj4g
+Pj4+PiBJcyB0aGUgaW50ZXJuYWwgbWljIG1vbm8gb3Igc3RlcmVvID8KPj4gPj4+Cj4+ID4+PiBJ
+IGJlbGlldmUgaXQncyBtb25vLiAgQmFzZWQgb24gdnVtZXRlciBhY3Rpdml0eSwgYW5kIHRoZSBm
+YWN0IHRoYXQKPj4gPj4+IGNoYW5naW5nIG9ubHkgb25lIHNsaWRlciBpbiBoZGFfYW5hbHl6ZXIg
+aXMgbmVlZGVkIHRvIHF1aWV0L211dGUgdGhlCj4+ID4+PiBtaWMuCj4+ID4+Pgo+PiA+Pgo+PiA+
+PiBOb3Qgc3VyZSBhbnkgZGlmZmVyZW5jZSBiZXR3ZWVuIGNzNDIwNiBhbmQgY3M0MjA3Cj4+ID4+
+Cj4+ID4+IEl0IHNlZW0gdGhhdCB5b3UgY2FuIHNlbGVjdCBBREMxIGFuZCBBREMyIGNoYW5uZWwg
+bW9kZSBpbiBjczQyMDcKPj4gPgo+PiA+PiDigJgwMOKAmWIgLSBBREMyIGxlZnQgY2hhbm5lbCBp
+cyBtYXBwZWQgdG8gSERBIGxlZnQKPj4gPj4gY2hhbm5lbCBhbmQgQURDMiByaWdodCBjaGFubmVs
+IGlzIG1hcHBlZCBIREEKPj4gPj4gcmlnaHQgY2hhbm5lbCAobm9ybWFsIG1vZGUpLgo+PiA+PiDi
+gJgwMeKAmWIgLSBBREMyIGxlZnQgY2hhbm5lbCBpcyBtYXBwZWQgdG8gYm90aCBIREEKPj4gPj4g
+bGVmdCBhbmQgcmlnaHQgY2hhbm5lbHMuIEFEQzIgcmlnaHQgY2hhbm5lbCBpcwo+PiA+PiBkaXNj
+YXJkZWQgKG1vbm8gbW9kZSkuCj4+ID4+IOKAmDEw4oCZYiAtIEFEQzIgcmlnaHQgY2hhbm5lbCBp
+cyBtYXBwZWQgdG8gYm90aAo+PiA+PiBIREEgbGVmdCBhbmQgcmlnaHQgY2hhbm5lbHMuIEFEQzIg
+bGVmdCBjaGFubmVsIGlzCj4+ID4+IGRpc2NhcmRlZCAoYWx0ZXJuYXRlIG1vbm8gbW9kZSkuCj4+
+ID4+IOKAmDEx4oCZYiAtIEFEQzIgbGVmdCBjaGFubmVsIGlzIG1hcHBlZCB0byBIREEgcmlnaHQK
+Pj4gPj4gY2hhbm5lbCBhbmQgQURDMiByaWdodCBjaGFubmVsIGlzIG1hcHBlZCB0bwo+PiA+PiBI
+REEgbGVmdCBjaGFubmVsIChjaGFubmVsIHN3YXAgbW9kZSkuCj4+ID4KPj4gPiBEbyBhbnkgb2Yg
+dGhlIGhkYSB0b29scyBhbGxvdyBtZSB0byB0d2VhayB0aGlzIGZyb20gdXNlcnNwYWNlPwo+PiA+
+Cj4+ID4KPj4gCj4+IHlvdSBzaG91bGQgYXNrIFRha2Fyc2hpIGFzIGhlIGFkZGVkIHRoaXMgcGF0
+Y2gsIGhlIG1heSBrbm93IHdoZXRoZXIKPj4gY3M0MjA2IHN1cHBvcnQgdGhlIGFib3ZlIGZlYXR1
+cmUKPj4gCj4+IGh0dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJuZWwvZ2l0L3Rpd2Fp
+L3NvdW5kLmdpdDthPWNvbW1pdGRpZmY7aD00MGMyMGZhMDVhMjk3NjY1NjVmNTZlZGUxN2QwZmZh
+NTM5ZTFjOWE5O2hwPWVhMzU5MjliODg2OTc1YTI0MDY2MGIzYmE2YzYxODI2NzYxNzMxYWQKPgo+
+IFlvdSBjYW4gcGxheSB3aXRoIGhkYS1lbXUgdG8gc2VuZCB2ZW5kb3Itc3BlY2lmaWMgQ09FRiwg
+YXMgZm91bmQgaW4KPiB0aGUgY29tbWl0IGFib3ZlLiAgQnV0IGl0J3MgYXQgeW91ciBvd24gcmlz
+azsgdGhlIHBhdGNoIEkgbWFkZSBpcyBqdXN0Cj4gYSB0cmFuc2xhdGlvbiBmcm9tIG90aGVyIGlu
+Zm9ybWF0aW9uIEkndmUgZ290IGZyb20gQ2lycnVzIGF0IHRoYXQKPiB0aW1lLgoKVW5mb3J0dW5h
+dGVseSwgSSdtIG5vdCByZWFsbHkgZmFtaWxpYXIgd2l0aCBhdWRpbyBjb2RlY3MsIGFuZCBhbSBm
+aW5kaW5nCnRoYXQgdW5kZXJzYW5kaW5nIHRoZSB2ZXJicyBhbmQgYW5kIHNlbmRpbmcgdGhlIHJp
+Z2h0IG9uZXMgd2l0aCB0aGUKcmlnaHQgY29lZiAoYW5kIGZpbmRpbmcgb3V0IHdoYXQgd2FzIGFj
+dHVhbGx5IHdyaXR0ZW4pIHNlZW1zIHRvIGJlIGEgYml0Cm91dCBvZiBteSBsZWFndWUuCgpJZiBz
+b21lb25lIGNhbiBzdWdnZXN0IHdoYXQgdG8gdHJ5IHdpdGggaGRhLWVtdSwgSSdtIHdpbGxpbmcs
+IGJ1dApvdGhlcndpc2UgSSBndWVzcyBJIGhhdmUgdG8gb3B0IGZvciBhbiBleHRlcm5hbCBVU0Ig
+YXVkaW8gYWRhcGF0ZXIgZm9yCnRoZSBoZWFkc2V0LiA6KAoKS2V2aW4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
