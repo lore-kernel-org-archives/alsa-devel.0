@@ -1,160 +1,71 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: core: Add support for DAI driver DAI
-	widgets.
-Date: Wed,  7 Mar 2012 11:47:42 +0000
-Message-ID: <1331120862-16161-2-git-send-email-lrg@ti.com>
-References: <1331120862-16161-1-git-send-email-lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
+Date: Wed, 7 Mar 2012 11:48:11 +0000
+Message-ID: <20120307114811.GF3107@opensource.wolfsonmicro.com>
+References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
+ <20120229235147.GM8295@opensource.wolfsonmicro.com>
+ <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
+ <20120302125819.GE3230@opensource.wolfsonmicro.com>
+ <CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
+ <20120306100012.GC19635@opensource.wolfsonmicro.com>
+ <CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
+ <20120306121222.GK19635@opensource.wolfsonmicro.com>
+ <CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
-	[74.125.149.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3191910B90D
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 12:47:51 +0100 (CET)
-Received: by mail-we0-f181.google.com with SMTP id m13so4254901wer.12
-	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2012 03:47:49 -0800 (PST)
-In-Reply-To: <1331120862-16161-1-git-send-email-lrg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yZnyZsPjQYjG7xG7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Automatically create DAI widgets for DAI drivers. This allows us to connect
-CPU DAIs into the DAPM graph. The widgets use the DAI driver dev name with
-a "Playback" or "Capture" suffix.
 
-i.e. "mcbsp.1 Playback"
+--yZnyZsPjQYjG7xG7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also add a snd_soc_dai member to snd_soc_widget so that we dont have to
-use the widget private data.
+On Wed, Mar 07, 2012 at 11:16:50AM +0900, Tomoya MORINAGA wrote:
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- include/sound/soc-dapm.h |    1 +
- sound/soc/soc-dapm.c     |   56 +++++++++++++++++++++++++++-------------------
- 2 files changed, 34 insertions(+), 23 deletions(-)
+> If possible, I want to use framework features. However, I judged it is
+> not possible.
+> Let me confirm again.
+> As I said before, all ML26124 registers need to be accessed by
+> different address when read and write.
+> Like below
+> R       W
+> $00h $01h Sampling setting
+> $02h $03h PLL setting
+> ...
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 6727384..8cd3c74 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -482,6 +482,7 @@ struct snd_soc_dapm_widget {
- 	const char *sname;	/* stream name */
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_platform *platform;
-+	struct snd_soc_dai *dai;
- 	struct list_head list;
- 	struct snd_soc_dapm_context *dapm;
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5c83b83..d15a703 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -44,6 +44,7 @@
- 
- #include <trace/events/asoc.h>
- 
-+#define NAME_SIZE	32
- #define DAPM_UPDATE_STAT(widget, val) widget->dapm->card->dapm_stats.val++;
- 
- /* dapm power sequences - make this per codec in the future */
-@@ -2911,6 +2912,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- {
- 	struct snd_soc_dapm_widget template;
- 	struct snd_soc_dapm_widget *w;
-+	char name[NAME_SIZE];
- 
- 	WARN_ON(dapm->dev != dai->dev);
- 
-@@ -2918,41 +2920,49 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 	template.reg = SND_SOC_NOPM;
- 
- 	if (dai->driver->playback.stream_name) {
--		template.id = snd_soc_dapm_dai;
- 		template.name = dai->driver->playback.stream_name;
- 		template.sname = dai->driver->playback.stream_name;
-+	} else {
-+		snprintf(name, NAME_SIZE, "%s %s", dev_name(dai->dev), "Playback");
-+		template.name = name;
-+		template.sname = name;
-+	}
- 
--		dev_dbg(dai->dev, "adding %s widget\n",
--			template.name);
-+	template.id = snd_soc_dapm_dai;
-+	dev_dbg(dai->dev, "adding %s widget\n",
-+		template.name);
- 
--		w = snd_soc_dapm_new_control(dapm, &template);
--		if (!w) {
--			dev_err(dapm->dev, "Failed to create %s widget\n",
--				dai->driver->playback.stream_name);
--		}
--
--		w->priv = dai;
--		dai->playback_widget = w;
-+	w = snd_soc_dapm_new_control(dapm, &template);
-+	if (!w) {
-+		dev_err(dapm->dev, "Failed to create %s widget\n",
-+			dai->driver->playback.stream_name);
- 	}
- 
-+	dai->playback_widget = w;
-+	w->dai = dai;
-+
- 	if (dai->driver->capture.stream_name) {
--		template.id = snd_soc_dapm_dai;
- 		template.name = dai->driver->capture.stream_name;
- 		template.sname = dai->driver->capture.stream_name;
-+	} else {
-+		snprintf(name, NAME_SIZE, "%s %s", dev_name(dai->dev), "Capture");
-+		template.name = name;
-+		template.sname = name;
-+	}
-+	template.id = snd_soc_dapm_dai;
- 
--		dev_dbg(dai->dev, "adding %s widget\n",
--			template.name);
-+	dev_dbg(dai->dev, "adding %s widget\n",
-+		template.name);
- 
--		w = snd_soc_dapm_new_control(dapm, &template);
--		if (!w) {
--			dev_err(dapm->dev, "Failed to create %s widget\n",
--				dai->driver->capture.stream_name);
--		}
--
--		w->priv = dai;
--		dai->capture_widget = w;
-+	w = snd_soc_dapm_new_control(dapm, &template);
-+	if (!w) {
-+		dev_err(dapm->dev, "Failed to create %s widget\n",
-+			dai->driver->capture.stream_name);
- 	}
- 
-+	dai->capture_widget = w;
-+	w->dai = dai;
-+
- 	return 0;
- }
- 
-@@ -2969,7 +2979,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 		if (dai_w->id != snd_soc_dapm_dai)
- 			continue;
- 
--		dai = dai_w->priv;
-+		dai = dai_w->dai;
- 
- 		/* ...find all widgets with the same stream and link them */
- 		list_for_each_entry(w, &card->widgets, list) {
--- 
-1.7.5.4
+> Even so, can I use framework features ?
+
+No, in which case (to repeat what I said previously) you need to make
+the code *much* clearer so the reader can understand what it is doing
+and why it's having to open code this stuff.
+
+--yZnyZsPjQYjG7xG7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPV0r1AAoJEBus8iNuMP3dCJgP/iUhXHbBtDolB1kbZFedlcCV
+gn2KsR9hS83o5pdCxN4W3uiq2crghU+qjOvgnVXTda+adbvf9g0CkSJsZbU2NtTA
+lBuVZ1/hwghEmoQnnR2W5fG9iH6DMqNvmCreLutYAO4YIbKSJQ3+7iUk5OsXPq/+
+5pLMoOr4vZkskxOalcHJHa4zOnziyYP7QlKy8H3xjm4RtqrNwYWplgRThdeEV/mC
+SOX/oycMmYQyAecydsspz2Q40N2eBCaxG+ShlT8PmPJaxdMh9kKY8qVBW681bc7L
+KvkC+vgXG90txof9L+Cmw+Wy/k/jG48InVdkVdw1ikRDDAN2YRsc6gZYZDrnNAwG
+GHY85pFt2gLGG3yn00jfFNt9VesvoEhSoIX0l9+KmlCXhzlRGeJuMPNpHxC+hbiQ
+bEKr0R2ZVHZmCkNYw46NAlqqZsI3wSpgJ0dNCMibuNMbM/GJQ2lJeHfk3l6cKF7R
+zp05cuDWjKSSuOJKR1cIKjv+0p/z8Erz/aK5z7h/EKOap3Z6Qhflt40+Z3VJUswf
+lToz/ro1c0VFANYvR7nxGmIy/t+0ZTVapyQQO9flihOnY/2SjCtuppWFRh6Tp94i
+g5qkCjyycWX+GD1iSFOOCex6yjJEJjg3z2RrTMEPRxO3y9qH3C5b7u7MnTWbRZJP
+lpII2OiNePLDO/qDq0M+
+=tuK2
+-----END PGP SIGNATURE-----
+
+--yZnyZsPjQYjG7xG7--
