@@ -1,15 +1,15 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
 Subject: [PATCH] ASoC: imx: imx-audmux: Fix section mismatch
-Date: Wed, 7 Mar 2012 15:18:46 -0300
-Message-ID: <1331144326-32153-1-git-send-email-fabio.estevam@freescale.com>
+Date: Wed, 7 Mar 2012 15:19:57 -0300
+Message-ID: <1331144397-32196-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from am1outboundpool.messaging.microsoft.com
-	(am1ehsobe005.messaging.microsoft.com [213.199.154.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id 599B110410D
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 19:19:09 +0100 (CET)
+	(am1ehsobe001.messaging.microsoft.com [213.199.154.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8719610410D
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 19:20:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,7 +20,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, s.hauer@pengutronix.de, richard.zhao@linaro.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, richard.zhao@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 Fix the following section mismatch warning:
