@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
-Date: Wed, 7 Mar 2012 11:42:18 +0000
-Message-ID: <20120307114217.GD3107@opensource.wolfsonmicro.com>
-References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
-	<1329904151-5927-5-git-send-email-lars@metafoo.de>
-	<20120302135959.GG3230@opensource.wolfsonmicro.com>
-	<4F54B1F2.70508@metafoo.de>
-	<20120305124141.GJ3224@opensource.wolfsonmicro.com>
-	<87zkbtnt31.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v3] sound/soc/lapis: add platform driver
+	for ML7213
+Date: Wed, 7 Mar 2012 11:46:32 +0000
+Message-ID: <20120307114631.GE3107@opensource.wolfsonmicro.com>
+References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
+	<1329976011-2251-2-git-send-email-tomoya.rohm@gmail.com>
+	<20120302163915.GD6056@opensource.wolfsonmicro.com>
+	<CANKRQni8hPoHEsV2VecbgKBdfS5+rit0-jXzz_d8F_nY5-dN3g@mail.gmail.com>
+	<20120306115246.GD19635@opensource.wolfsonmicro.com>
+	<CANKRQngg+8LJvb-+Byv6XPqqWFyCU1U+-hppuxo_=CM1qLUF_Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2310419658705085509=="
+Content-Type: multipart/mixed; boundary="===============0985961970210033399=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC1471045C4
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 12:42:19 +0100 (CET)
-In-Reply-To: <87zkbtnt31.wl%kuninori.morimoto.gx@renesas.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54F09244BB
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 12:46:34 +0100 (CET)
+In-Reply-To: <CANKRQngg+8LJvb-+Byv6XPqqWFyCU1U+-hppuxo_=CM1qLUF_Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +25,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vinod.koul@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Mika Westerberg <mika.westerberg@iki.fi>, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2310419658705085509==
+--===============0985961970210033399==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u5E4XgoOPWr4PD9E"
+	protocol="application/pgp-signature"; boundary="SxgehGEc6vB0cZwN"
 Content-Disposition: inline
 
 
---u5E4XgoOPWr4PD9E
-Content-Type: text/plain; charset=us-ascii
+--SxgehGEc6vB0cZwN
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 06, 2012 at 04:38:30PM -0800, Kuninori Morimoto wrote:
+On Wed, Mar 07, 2012 at 10:30:05AM +0900, Tomoya MORINAGA wrote:
+> On Tue, Mar 6, 2012 at 8:52 PM, Mark Brown
 
-> And yes, it doesn't use cyclic dma transfer since I don't know how to use it :)
+> >> if these platform devices aren't used, device detection doesn't work c=
+orrectly.
+> >> So, I added these.
 
-> I forgot detail, but I used sound/soc/sh/siu_pcm.c and sound/soc/txx9/txx9aclc.c
-> as sample code when I created FSI DMAEngine support.
+> > You've not actually mentioned the problem you were seeing...
 
-> If ASoC layer supports dmaengine helper functions, I can switch to it by my incremental patch.
+> I saw mapping problem between machine driver and platform driver.
+> e.g.  cpu_dai_name "ml7213ioh"
 
-OK, great - if the hardware supports cyclic mode then I guess the best
-thing is to enable that in dmaengine then switch over to using the new
-library once that's merged (unless someone comes along and implements
-cyclic emulation support first).
+You've still not explained the problem you're seeing but this sounds
+like something that should work.  Please address the
 
---u5E4XgoOPWr4PD9E
+> > Apart from anything else you've got the interrupt requested as
+> > IRQF_SHARED so the interrupt could get called at any time. =A0It's also
+> > not clear that you've got the hardware in a known good state.
+
+> Do you mean request_irq should move to somewhere, like open() or
+> hw_params() or ... ?
+
+You need to do enough hardware and software initialisation prior to
+requesting the interrupt to ensure that if an interrupt does happen it
+won't cause any ill effects.  Checks in the interrupt handler to make
+sure things like the ALSA layer stuff have been set up can also be used
+to make the interrupt handler safer.
+
+--SxgehGEc6vB0cZwN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPV0mTAAoJEBus8iNuMP3dygsP/ibZYOmIQA5e/YTxpS7HDPiu
-pqrkwPPeVlooyDwmsb8GJZ5dO857F6M/AkrGXHUfHB4mmuCCswzNjFWi96R5Sms6
-aSGID0AvHirlKU5gIuvcIj3ZA3XTdxIDXhJzit/trgtBk/gBhP3DXOpQL+RIrNCR
-/zv71QXKunay8YGhHMaDeVpLgkVhe9xKYuexFjioQZ2x4Qe3p9r5CzsH6W+f/lbf
-D71CxT3NqoHZhPnE8xx0+iWlDnO2chRk64I2oXIG4oGHSunWBhvObqJjW+0NW76a
-6xTTQWRGYcMwX1MknGzd/rXdK+QaSHSd6kuuNu24HtijBsopbl08WLPj9Zj5vzv+
-8QE6tNJ/nBvhIcv8NqYZqvhrdjvIbKgrex1PUie7qubB23GaS3zIurOJD0AOzzsm
-fGBMNq/ZTISLfDLGEWrG95N6qQBRPMC3P2gusSjO73V9DmqmUIlSij1d936X4Zq0
-2S2WvUMxYSTyir6XnO8Hlblrchre3xWJLw+vHxkIVCc56kxHD6nVZ2SRL+NDPejw
-M+MFq0XzUoWq1Yk6BfDfER5MBwKF7mMR6I+nd90SUdb09vFAJukCNZ+JplHVp3Zu
-e22gXLdjQ8iJU3cFSCdHU92qgJwS3YvnQ1NtqQOiofHoi25u3125wwd9n2uVYfp/
-JwkBgU2TfcpDlBqFg1BF
-=tivR
+iQIcBAEBAgAGBQJPV0qQAAoJEBus8iNuMP3d9kcP/2yo8o1Xczs+p5ql8OHX3G+X
+hTuK8IljSTK44DJKoNPxwhet5qJml05OjqZEH3sjb5VSCG029tfgHJiZ8ga/wL1D
++vga8M/y8y8Lmo3PJ1IFZ/wpSXJMiWQxKBMOfMdLsFs2K9WWzXwo+OHdfSGG4GSs
+U7rjBFIXtwaLxNWKYIphG4M+CV0Fg6ibwtTsy9vrYA0+F9+taC0N+n8k2ZhLYBgy
+Y/8RP87Ay0iqC+kkPKakR9gdkdstXYCj2kymzOd9sKomt9lyuBuuN0wu4CZjuSEg
+LeIS3IVXncx30qONI4wy/iBMWFTNqeXLAje5MRSAPvuCdEsHloB5L8LZD2VP+3Fl
++B3JdOhd3KdXl7UoO2+AZsI+wJASzXcFrXbt+ykvwEJv0ewY/LFItKfhlqWpQfES
+AO/a22I8RlVO5T3f8bTdXWJegMKlkLQUcYebFJ5O4vTbYUENJHY2PCTf3xiy/BMK
+riVPbb1Bz6utin+fbFZsP8DG/iZcu7bgnYzH2LAl9mJYv8WzEeJojLzYApyq72Ky
+Mew58cyQ8EANMSfscw/ApNnpfeZMjbJtP5xdrxYN1t03YRxP6/OrRxC9tQ2/xysc
+Q8izVNXhgl1MBGoY7pXgj2Y1RBNkGCUZl+rluuzsMrcX6zyRtMWSCCfRgxjeKxeL
+nVJNfg0x8UMz4j4m8I88
+=BC/K
 -----END PGP SIGNATURE-----
 
---u5E4XgoOPWr4PD9E--
+--SxgehGEc6vB0cZwN--
 
---===============2310419658705085509==
+--===============0985961970210033399==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2310419658705085509==--
+--===============0985961970210033399==--
