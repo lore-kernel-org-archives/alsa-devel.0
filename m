@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap McBSP: Clear rx_irq at probe
-	time for OMAP4
-Date: Wed, 7 Mar 2012 11:40:12 +0000
-Message-ID: <20120307113938.GC3107@opensource.wolfsonmicro.com>
-References: <1331111839-14778-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [RFC 4/7] ASoC: Add dmaengine PCM helper functions
+Date: Wed, 7 Mar 2012 11:42:18 +0000
+Message-ID: <20120307114217.GD3107@opensource.wolfsonmicro.com>
+References: <1329904151-5927-1-git-send-email-lars@metafoo.de>
+	<1329904151-5927-5-git-send-email-lars@metafoo.de>
+	<20120302135959.GG3230@opensource.wolfsonmicro.com>
+	<4F54B1F2.70508@metafoo.de>
+	<20120305124141.GJ3224@opensource.wolfsonmicro.com>
+	<87zkbtnt31.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5665946850640186287=="
+Content-Type: multipart/mixed; boundary="===============2310419658705085509=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5BD301045B2
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 12:40:14 +0100 (CET)
-In-Reply-To: <1331111839-14778-1-git-send-email-peter.ujfalusi@ti.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC1471045C4
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 12:42:19 +0100 (CET)
+In-Reply-To: <87zkbtnt31.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vinod.koul@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Mika Westerberg <mika.westerberg@iki.fi>, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5665946850640186287==
+--===============2310419658705085509==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fOHHtNG4YXGJ0yqR"
+	protocol="application/pgp-signature"; boundary="u5E4XgoOPWr4PD9E"
 Content-Disposition: inline
 
 
---fOHHtNG4YXGJ0yqR
+--u5E4XgoOPWr4PD9E
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 07, 2012 at 11:17:19AM +0200, Peter Ujfalusi wrote:
-> On OMAP4 we have one interrupt line per McBSP port.
-> At proble time tx, and rx irq value will be -ENXIO,
-> and only the tx irq will get corrected.
+On Tue, Mar 06, 2012 at 04:38:30PM -0800, Kuninori Morimoto wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> And yes, it doesn't use cyclic dma transfer since I don't know how to use it :)
 
---fOHHtNG4YXGJ0yqR
+> I forgot detail, but I used sound/soc/sh/siu_pcm.c and sound/soc/txx9/txx9aclc.c
+> as sample code when I created FSI DMAEngine support.
+
+> If ASoC layer supports dmaengine helper functions, I can switch to it by my incremental patch.
+
+OK, great - if the hardware supports cyclic mode then I guess the best
+thing is to enable that in dmaengine then switch over to using the new
+library once that's merged (unless someone comes along and implements
+cyclic emulation support first).
+
+--u5E4XgoOPWr4PD9E
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPV0kNAAoJEBus8iNuMP3dGL8P/AkHsGk5bi6hT8QY55csVZ6w
-++bpjP2x17RgZYKp4g3oHhgzODKnKpcZ3EIAn9C3jnKPkLUiho+rSU9WwejqHoBa
-xYiR6vROOoLyU9Q8JOvpUJVjmGwFuyYBVYKtOYoRZvFKaUsoAaXvfskRO8eenOmd
-ZF7kzJAtYNAv1DDNp8Fwqz4PXG91e+OY8E2zviIk8v1JMbeIGzyFnQpkRUefiEWJ
-265ackrdqKveEukNhuR1aeC544k2khalepLjTCGFu4yOexV/a3mhmhrATxXeV/zD
-UKlkcBFlxBLmAykmb+EoVW1XKtiVB4sjXTphECU61xvf6pPStEdnl4mL7PqFO5RI
-DpF4uRHlW/YpAfd0IRJMCyuFctnN26uqcLoq0mxArJTs/AOxFQCduIfbr970lAnm
-yr2gTFCRo6EFe0UmK5/7b2wei0+GVDZpyZSm4Yntn4E9hCGnx0s5R9VXeMZpSro4
-ZRMSI0lf3C/d4IoMjjC3lBKzKCSvTG3YK/cR0m03OHZrIRWiWOx2qPOEKpu4H323
-/K7R5ziytsFo2yuyrLVEuNCfa5wZB1QyuGmn68jDItY3ENVDTUAqx4mkl2+bLtAQ
-Z4Ljn2TuNQK/QD8YhIW89eYZf3xCz1G3r3PYxmZmjud29D32iZUfpDaLWuEsLTVN
-5X7iafF3KvOTOZSEUc/b
-=cXwj
+iQIcBAEBAgAGBQJPV0mTAAoJEBus8iNuMP3dygsP/ibZYOmIQA5e/YTxpS7HDPiu
+pqrkwPPeVlooyDwmsb8GJZ5dO857F6M/AkrGXHUfHB4mmuCCswzNjFWi96R5Sms6
+aSGID0AvHirlKU5gIuvcIj3ZA3XTdxIDXhJzit/trgtBk/gBhP3DXOpQL+RIrNCR
+/zv71QXKunay8YGhHMaDeVpLgkVhe9xKYuexFjioQZ2x4Qe3p9r5CzsH6W+f/lbf
+D71CxT3NqoHZhPnE8xx0+iWlDnO2chRk64I2oXIG4oGHSunWBhvObqJjW+0NW76a
+6xTTQWRGYcMwX1MknGzd/rXdK+QaSHSd6kuuNu24HtijBsopbl08WLPj9Zj5vzv+
+8QE6tNJ/nBvhIcv8NqYZqvhrdjvIbKgrex1PUie7qubB23GaS3zIurOJD0AOzzsm
+fGBMNq/ZTISLfDLGEWrG95N6qQBRPMC3P2gusSjO73V9DmqmUIlSij1d936X4Zq0
+2S2WvUMxYSTyir6XnO8Hlblrchre3xWJLw+vHxkIVCc56kxHD6nVZ2SRL+NDPejw
+M+MFq0XzUoWq1Yk6BfDfER5MBwKF7mMR6I+nd90SUdb09vFAJukCNZ+JplHVp3Zu
+e22gXLdjQ8iJU3cFSCdHU92qgJwS3YvnQ1NtqQOiofHoi25u3125wwd9n2uVYfp/
+JwkBgU2TfcpDlBqFg1BF
+=tivR
 -----END PGP SIGNATURE-----
 
---fOHHtNG4YXGJ0yqR--
+--u5E4XgoOPWr4PD9E--
 
---===============5665946850640186287==
+--===============2310419658705085509==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5665946850640186287==--
+--===============2310419658705085509==--
