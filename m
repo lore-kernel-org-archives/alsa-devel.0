@@ -1,22 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: DAPM - Make sure DAPM widget IO
- ops hold the component mutex.
-Date: Wed, 07 Mar 2012 10:11:01 +0000
-Message-ID: <1331115061.3829.11.camel@odin>
-References: <1331057779-4630-1-git-send-email-lrg@ti.com>
-	<1331057779-4630-2-git-send-email-lrg@ti.com>
-	<20120306200354.GB19635@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] USB-Audio: Disable "Logitech USB Headset"
+	iec958 device
+Date: Wed,  7 Mar 2012 11:23:04 +0100
+Message-ID: <1331115784-3541-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog124.obsmtp.com (na3sys009aog124.obsmtp.com
-	[74.125.149.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF9F01040B3
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 11:11:20 +0100 (CET)
-Received: by wico1 with SMTP id o1so3110527wic.40
-	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2012 02:11:04 -0800 (PST)
-In-Reply-To: <20120306200354.GB19635@opensource.wolfsonmicro.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 465F01045B6
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 11:23:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: clemens@ladish.de, 940145@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-03-06 at 20:03 +0000, Mark Brown wrote:
-> On Tue, Mar 06, 2012 at 06:16:19PM +0000, Liam Girdwood wrote:
-> 
-> > +	if (w->codec)
-> > +		mutex_lock(&w->codec->mutex);
-> 
-> Actually for CODECs we don't need to hold the CODEC mutex for I/O if
-> we've pushed the cache down into regmap - regmap does all the locking
-> for us.  I'll send a followup patch.
+Because Logitech USB Headsets do not have any digital devices,
+prevent them from being opened. This simplifies probing the
+device in PulseAudio.
 
-I know, but this patch did check for regmap usage in
-soc_widget_update_bits_locked(). With your fix we are doing the regmap
-test twice.
+BugLink: https://bugs.launchpad.net/bugs/940145
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
 
-Liam
+I did not get any responses to my "digital profile" mail sent to alsa-devel
+Feb 24th, but it seems the easiest workaround is the below patch for alsa-lib.
+Alsa-info at:
+https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/940145/+attachment/2778111/+files/alsa-info.txt.xWdouSRV4Z
+
+ src/conf/cards/USB-Audio.conf |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
+index 0726c34..f488284 100644
+--- a/src/conf/cards/USB-Audio.conf
++++ b/src/conf/cards/USB-Audio.conf
+@@ -36,6 +36,8 @@ USB-Audio.pcm.surround40_type {
+ # number for the iec958 device can be changed here.
+ USB-Audio.pcm.iec958_device {
+ 	# "NoiseBlaster 3000" 42
++	# Make sure we can't open this device digitally, because it does not exist
++	"Logitech USB Headset" 999 
+ }
+ 
+ 
+-- 
+1.7.9
