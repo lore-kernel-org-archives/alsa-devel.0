@@ -1,71 +1,87 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Wed, 7 Mar 2012 11:48:11 +0000
-Message-ID: <20120307114811.GF3107@opensource.wolfsonmicro.com>
-References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
- <20120229235147.GM8295@opensource.wolfsonmicro.com>
- <CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
- <20120302125819.GE3230@opensource.wolfsonmicro.com>
- <CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
- <20120306100012.GC19635@opensource.wolfsonmicro.com>
- <CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
- <20120306121222.GK19635@opensource.wolfsonmicro.com>
- <CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: DAPM - Use dev_warn for debugfs
+	warning message.
+Date: Wed, 7 Mar 2012 12:07:42 +0000
+Message-ID: <20120307120741.GG3107@opensource.wolfsonmicro.com>
+References: <1331057605-4542-1-git-send-email-lrg@ti.com>
+	<20120306200810.GC19635@opensource.wolfsonmicro.com>
+	<1331113730.3829.7.camel@odin>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yZnyZsPjQYjG7xG7"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: multipart/mixed; boundary="===============7005536077559171787=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A662B10B915
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 13:07:44 +0100 (CET)
+In-Reply-To: <1331113730.3829.7.camel@odin>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---yZnyZsPjQYjG7xG7
+--===============7005536077559171787==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
+Content-Disposition: inline
+
+
+--U3BNvdZEnlJXqmh+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 07, 2012 at 11:16:50AM +0900, Tomoya MORINAGA wrote:
+On Wed, Mar 07, 2012 at 09:48:50AM +0000, Liam Girdwood wrote:
 
-> If possible, I want to use framework features. However, I judged it is
-> not possible.
-> Let me confirm again.
-> As I said before, all ML26124 registers need to be accessed by
-> different address when read and write.
-> Like below
-> R       W
-> $00h $01h Sampling setting
-> $02h $03h PLL setting
-> ...
+> Historically since 2005 the ASoC patch subject prefix has never been in
+> any fixed style. My personal preference is the same as Takashi's for
 
-> Even so, can I use framework features ?
+Yeah, it's mostly sprung up in the past year or so.
 
-No, in which case (to repeat what I said previously) you need to make
-the code *much* clearer so the reader can understand what it is doing
-and why it's having to open code this stuff.
+> HDA, but I've no problems changing a - to a :. Lets make it more
+> official now and have :-
 
---yZnyZsPjQYjG7xG7
+> ASoC: thing: change
+
+OK.  I've not been bothering for people who were only using plain ASoC:,
+I mostly just mentioned it because you'd picked a different standard for
+your commits to what everyone else had chosen.
+
+--U3BNvdZEnlJXqmh+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPV0r1AAoJEBus8iNuMP3dCJgP/iUhXHbBtDolB1kbZFedlcCV
-gn2KsR9hS83o5pdCxN4W3uiq2crghU+qjOvgnVXTda+adbvf9g0CkSJsZbU2NtTA
-lBuVZ1/hwghEmoQnnR2W5fG9iH6DMqNvmCreLutYAO4YIbKSJQ3+7iUk5OsXPq/+
-5pLMoOr4vZkskxOalcHJHa4zOnziyYP7QlKy8H3xjm4RtqrNwYWplgRThdeEV/mC
-SOX/oycMmYQyAecydsspz2Q40N2eBCaxG+ShlT8PmPJaxdMh9kKY8qVBW681bc7L
-KvkC+vgXG90txof9L+Cmw+Wy/k/jG48InVdkVdw1ikRDDAN2YRsc6gZYZDrnNAwG
-GHY85pFt2gLGG3yn00jfFNt9VesvoEhSoIX0l9+KmlCXhzlRGeJuMPNpHxC+hbiQ
-bEKr0R2ZVHZmCkNYw46NAlqqZsI3wSpgJ0dNCMibuNMbM/GJQ2lJeHfk3l6cKF7R
-zp05cuDWjKSSuOJKR1cIKjv+0p/z8Erz/aK5z7h/EKOap3Z6Qhflt40+Z3VJUswf
-lToz/ro1c0VFANYvR7nxGmIy/t+0ZTVapyQQO9flihOnY/2SjCtuppWFRh6Tp94i
-g5qkCjyycWX+GD1iSFOOCex6yjJEJjg3z2RrTMEPRxO3y9qH3C5b7u7MnTWbRZJP
-lpII2OiNePLDO/qDq0M+
-=tuK2
+iQIcBAEBAgAGBQJPV0+GAAoJEBus8iNuMP3dlJ4P/jo0iyEfA49S8ex64NjAOVAw
+/I3WXTJ3rfach8LaRoGoQCLAYMPCtMJzQ6u9P/0hhheaqA/piWr7ZDZp8dGIVGml
+4Y7me5/6gqW2ZpRI0efjmAZwEv99YrZ133RYV8lXnZiYZ9CYZwqK+979qJ3f92Ek
+ZYYxgwgeUHkTyc0p6ewYGHOZ6CVGcmTteRQOx3oDOaq2yxRUSsc1nT5NiyTG48d3
+6ByopisGTSFPktTabj0oddJRAx+a/ZGrq4swizQWZeGMXgiSGFJhDMb6XHs0x+lo
+srWEGWNZfrgml3cKD/f1jhx7nxb8dce+GYOUY698vf0Gs54mwCKi8qGzuf20TBBH
+8XRzov64p+f9xANsPtOy4lOr/1976AixJGarydkYJga+Xg8Yb0FLnMHzbx8dTIhy
+qJUXJKrL0zkHCjfqSZDI59xQ839WPaMdrPC+H/5grTI2lEQypULHOb9YJwFIdIIt
+V4xRtaJ0Le8LOSrBekqPMiOShalfr2KHwBtJKRGW09FxXcOzKy1/fnbQHzjDpQbM
+0Y5qSv9pq8BGqmwXM1eTCbN9POU+wppDnxL4/gQ5S66PaxDZH14KgEtxioKut69k
+7rGyNC7G6FTi8alZJApnABk3LZJwbNut5rK9SD8lXnVk875CJ85PZQhuzdK5Qf1Q
+driyVv0VrLSGjh3PwUjw
+=oeqC
 -----END PGP SIGNATURE-----
 
---yZnyZsPjQYjG7xG7--
+--U3BNvdZEnlJXqmh+--
+
+--===============7005536077559171787==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7005536077559171787==--
