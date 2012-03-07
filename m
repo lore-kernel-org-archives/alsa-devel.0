@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: DAPM - Use dev_warn for debugfs
-	warning message.
-Date: Wed, 7 Mar 2012 12:07:42 +0000
-Message-ID: <20120307120741.GG3107@opensource.wolfsonmicro.com>
-References: <1331057605-4542-1-git-send-email-lrg@ti.com>
-	<20120306200810.GC19635@opensource.wolfsonmicro.com>
-	<1331113730.3829.7.camel@odin>
+From: Nitin PAI <nitinmpai@gmail.com>
+Subject: ASOC - Codecs : Renaming of spdif_tranceiver.c
+Date: Wed, 7 Mar 2012 17:48:33 +0530
+Message-ID: <CAJDSjBjmDLvMgyw1y=QkMPu7rJBRZzSZje+P7-hdBugxpj3YxQ@mail.gmail.com>
+References: <CAJDSjBikNPj_EExz_XojUOT0c4ip8MG3kEf+dzbcW1s_73SbeA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7005536077559171787=="
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A662B10B915
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 13:07:44 +0100 (CET)
-In-Reply-To: <1331113730.3829.7.camel@odin>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26ACA1045E2
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 13:18:35 +0100 (CET)
+Received: by yhnn12 with SMTP id n12so2903193yhn.38
+	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2012 04:18:34 -0800 (PST)
+In-Reply-To: <CAJDSjBikNPj_EExz_XojUOT0c4ip8MG3kEf+dzbcW1s_73SbeA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,66 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+CCing the maintainers to get attention.
 
---===============7005536077559171787==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
-Content-Disposition: inline
-
-
---U3BNvdZEnlJXqmh+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Mar 07, 2012 at 09:48:50AM +0000, Liam Girdwood wrote:
-
-> Historically since 2005 the ASoC patch subject prefix has never been in
-> any fixed style. My personal preference is the same as Takashi's for
-
-Yeah, it's mostly sprung up in the past year or so.
-
-> HDA, but I've no problems changing a - to a :. Lets make it more
-> official now and have :-
-
-> ASoC: thing: change
-
-OK.  I've not been bothering for people who were only using plain ASoC:,
-I mostly just mentioned it because you'd picked a different standard for
-your commits to what everyone else had chosen.
-
---U3BNvdZEnlJXqmh+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPV0+GAAoJEBus8iNuMP3dlJ4P/jo0iyEfA49S8ex64NjAOVAw
-/I3WXTJ3rfach8LaRoGoQCLAYMPCtMJzQ6u9P/0hhheaqA/piWr7ZDZp8dGIVGml
-4Y7me5/6gqW2ZpRI0efjmAZwEv99YrZ133RYV8lXnZiYZ9CYZwqK+979qJ3f92Ek
-ZYYxgwgeUHkTyc0p6ewYGHOZ6CVGcmTteRQOx3oDOaq2yxRUSsc1nT5NiyTG48d3
-6ByopisGTSFPktTabj0oddJRAx+a/ZGrq4swizQWZeGMXgiSGFJhDMb6XHs0x+lo
-srWEGWNZfrgml3cKD/f1jhx7nxb8dce+GYOUY698vf0Gs54mwCKi8qGzuf20TBBH
-8XRzov64p+f9xANsPtOy4lOr/1976AixJGarydkYJga+Xg8Yb0FLnMHzbx8dTIhy
-qJUXJKrL0zkHCjfqSZDI59xQ839WPaMdrPC+H/5grTI2lEQypULHOb9YJwFIdIIt
-V4xRtaJ0Le8LOSrBekqPMiOShalfr2KHwBtJKRGW09FxXcOzKy1/fnbQHzjDpQbM
-0Y5qSv9pq8BGqmwXM1eTCbN9POU+wppDnxL4/gQ5S66PaxDZH14KgEtxioKut69k
-7rGyNC7G6FTi8alZJApnABk3LZJwbNut5rK9SD8lXnVk875CJ85PZQhuzdK5Qf1Q
-driyVv0VrLSGjh3PwUjw
-=oeqC
------END PGP SIGNATURE-----
-
---U3BNvdZEnlJXqmh+--
-
---===============7005536077559171787==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---------- Forwarded message ----------
+From: Nitin PAI <nitinmpai@gmail.com>
+Date: Wed, Mar 7, 2012 at 12:15 PM
+Subject: ASOC - Codecs : Renaming of spdif_tranceiver.c
+To: alsa-devel@alsa-project.org
+Cc: swarren@nvidia.com
 
 
---===============7005536077559171787==--
+Hi,
+
+In my project I am feeling of need to have generic_codec.  This will
+provide the required codec_dais for the usecases like
+
+-HDMI/SPDIF where there is no codec involved.
+-For audio over MOST, where CPLD/glue logic is used
+-For complex audio DSPs connected which will be mostly programmed in the
+user-space.
+-SOC manufactures who would like to ship their drivers without having to
+know what will be the final codec that will be present in the system.
+
+Currently there is spdif_tranceiver.c which serves the purpose for spdif,
+but using this for other usecases will create confusion while shipping the
+code.
+
+What is the best way to carry forward?
+
+1) Use spdif_tranceiver.c for all the purpose.
+disadvantage:  this will create more confusion while shipping.
+
+2)Deprecate spdif_transciever.c and call it generic_codec. Change the dai
+names and the function names.
+
+3)Create another generic_codec.c and keep the spdif_transceiver.c and
+deprecate the latter in next version.
+
+4) Any other ideas ?
+
+Thanks,
+Nitin
+
+
+
+-- =
+
+=93Karmanya vadhikaraste ma phaleshu kadachana Ma karma-phala-hetur bhu ma =
+te
+sango stav karmani=94           -  Krishna
