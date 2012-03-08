@@ -1,19 +1,19 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v3 02/11] ASoC: fsl: separate SSI and DMA
-	Kconfig options
-Date: Fri,  9 Mar 2012 00:59:41 +0800
-Message-ID: <1331225990-27308-3-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH v3 04/11] ASoC: fsl: rename imx-pcm Kconfig
+	options and filename
+Date: Fri,  9 Mar 2012 00:59:43 +0800
+Message-ID: <1331225990-27308-5-git-send-email-shawn.guo@linaro.org>
 References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10933104174
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 18:00:20 +0100 (CET)
-Received: by mail-yx0-f179.google.com with SMTP id l1so366842yen.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 09:00:20 -0800 (PST)
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C99C31041A4
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 18:00:31 +0100 (CET)
+Received: by mail-iy0-f179.google.com with SMTP id h37so1105395iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 09:00:31 -0800 (PST)
 In-Reply-To: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,70 +28,90 @@ To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The fsl_ssi driver will possibly be shared between Freescale PowerPC
-and ARM/IMX families, so give it a separate Kconfig option.  Then
-fsl_ssi driver can possibly be selected independently from selecting
-PowerPC DMA based PCM driver.
+Rename a couple of imx-pcm Kconfig options and filename to get them
+well named and less confusing.
 
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- sound/soc/fsl/Kconfig  |   15 +++++++++------
- sound/soc/fsl/Makefile |    3 ++-
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ sound/soc/fsl/Kconfig                              |   12 ++++++------
+ sound/soc/fsl/Makefile                             |    4 ++--
+ sound/soc/fsl/{imx-pcm-dma-mx2.c => imx-pcm-dma.c} |    0
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+ rename sound/soc/fsl/{imx-pcm-dma-mx2.c => imx-pcm-dma.c} (100%)
 
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index d754d34..ca693b2 100644
+index 19856a0..e3f7509 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -1,10 +1,11 @@
- config SND_MPC52xx_DMA
+@@ -97,12 +97,12 @@ config SND_SOC_IMX_SSI
+ config SND_SOC_IMX_PCM
  	tristate
  
--# ASoC platform support for the Freescale PowerPC SOCs that have an SSI and
--# an Elo DMA controller, such as the MPC8610 and P1022.  You will still need to
--# select a platform driver and a codec driver.
--config SND_SOC_POWERPC_SSI
-+config SND_SOC_FSL_SSI
-+	tristate
-+	depends on FSL_SOC
-+
-+config SND_SOC_POWERPC_DMA
+-config SND_MXC_SOC_FIQ
++config SND_SOC_IMX_PCM_FIQ
  	tristate
- 	depends on FSL_SOC
+ 	select FIQ
+ 	select SND_SOC_IMX_PCM
  
-@@ -12,7 +13,8 @@ config SND_SOC_MPC8610_HPCD
- 	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
- 	# I2C is necessary for the CS4270 driver
- 	depends on MPC8610_HPCD && I2C
--	select SND_SOC_POWERPC_SSI
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_POWERPC_DMA
- 	select SND_SOC_CS4270
- 	select SND_SOC_CS4270_VD33_ERRATA
- 	default y if MPC8610_HPCD
-@@ -23,7 +25,8 @@ config SND_SOC_P1022_DS
- 	tristate "ALSA SoC support for the Freescale P1022 DS board"
- 	# I2C is necessary for the WM8776 driver
- 	depends on P1022_DS && I2C
--	select SND_SOC_POWERPC_SSI
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_POWERPC_DMA
- 	select SND_SOC_WM8776
- 	default y if P1022_DS
+-config SND_MXC_SOC_MX2
++config SND_SOC_IMX_PCM_DMA
+ 	tristate
+ 	select SND_SOC_DMAENGINE_PCM
+ 	select SND_SOC_IMX_PCM
+@@ -114,7 +114,7 @@ config SND_MXC_SOC_WM1133_EV1
+ 	tristate "Audio on the the i.MX31ADS with WM1133-EV1 fitted"
+ 	depends on MACH_MX31ADS_WM1133_EV1 && EXPERIMENTAL
+ 	select SND_SOC_WM8350
+-	select SND_MXC_SOC_FIQ
++	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
+ 	help
+@@ -125,7 +125,7 @@ config SND_SOC_MX27VIS_AIC32X4
+ 	tristate "SoC audio support for Visstrim M10 boards"
+ 	depends on MACH_IMX27_VISSTRIM_M10 && I2C
+ 	select SND_SOC_TLV320AIC32X4
+-	select SND_MXC_SOC_MX2
++	select SND_SOC_IMX_PCM_DMA
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
+ 	help
+@@ -137,7 +137,7 @@ config SND_SOC_PHYCORE_AC97
+ 	depends on MACH_PCM043 || MACH_PCA100
+ 	select SND_SOC_AC97_BUS
+ 	select SND_SOC_WM9712
+-	select SND_MXC_SOC_FIQ
++	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
+ 	help
+@@ -152,7 +152,7 @@ config SND_SOC_EUKREA_TLV320
+ 		|| MACH_EUKREA_MBIMXSD51_BASEBOARD
+ 	depends on I2C
+ 	select SND_SOC_TLV320AIC23
+-	select SND_MXC_SOC_FIQ
++	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
  	help
 diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index b4a38c0..95d483f 100644
+index 36c257f..f031409 100644
 --- a/sound/soc/fsl/Makefile
 +++ b/sound/soc/fsl/Makefile
-@@ -9,7 +9,8 @@ obj-$(CONFIG_SND_SOC_P1022_DS) += snd-soc-p1022-ds.o
- # Freescale PowerPC SSI/DMA Platform Support
- snd-soc-fsl-ssi-objs := fsl_ssi.o
- snd-soc-fsl-dma-objs := fsl_dma.o
--obj-$(CONFIG_SND_SOC_POWERPC_SSI) += snd-soc-fsl-ssi.o snd-soc-fsl-dma.o
-+obj-$(CONFIG_SND_SOC_FSL_SSI) += snd-soc-fsl-ssi.o
-+obj-$(CONFIG_SND_SOC_POWERPC_DMA) += snd-soc-fsl-dma.o
+@@ -30,8 +30,8 @@ obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
  
- # MPC5200 Platform Support
- obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
+ obj-$(CONFIG_SND_SOC_IMX_PCM) += snd-soc-imx-pcm.o
+ snd-soc-imx-pcm-y := imx-pcm.o
+-snd-soc-imx-pcm-$(CONFIG_SND_MXC_SOC_FIQ) += imx-pcm-fiq.o
+-snd-soc-imx-pcm-$(CONFIG_SND_MXC_SOC_MX2) += imx-pcm-dma-mx2.o
++snd-soc-imx-pcm-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm-fiq.o
++snd-soc-imx-pcm-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm-dma.o
+ 
+ # i.MX Machine Support
+ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
+diff --git a/sound/soc/fsl/imx-pcm-dma-mx2.c b/sound/soc/fsl/imx-pcm-dma.c
+similarity index 100%
+rename from sound/soc/fsl/imx-pcm-dma-mx2.c
+rename to sound/soc/fsl/imx-pcm-dma.c
 -- 
 1.7.5.4
