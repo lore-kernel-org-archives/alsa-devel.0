@@ -1,20 +1,20 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: [PATCH 3/3] ASoC: omap-mcbsp: make minimum period size
-	larger than FIFO
-Date: Fri,  9 Mar 2012 01:19:17 +0200
-Message-ID: <1331248757-3408-4-git-send-email-notasas@gmail.com>
-References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC] ymfpci - re-enable legacy audio after
+	suspend resume
+Date: Fri, 9 Mar 2012 07:28:26 +0800
+Message-ID: <CAN8ccia-mdoS4w5FHN_0tPnuCzfi2HaDb4nhZ3TdvV-8OezBvA@mail.gmail.com>
+References: <CAN8ccibfK6Cpho5F5vk8jq_gbZQKp4_C3bMcZ6Ef4c+TU2=EBQ@mail.gmail.com>
+	<s5h399jpohv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9112B10BB88
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 00:19:33 +0100 (CET)
-Received: by werg1 with SMTP id g1so789854wer.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 15:19:32 -0800 (PST)
-In-Reply-To: <1331248757-3408-1-git-send-email-notasas@gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DAB3810BB40
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 00:28:26 +0100 (CET)
+Received: by wgbed3 with SMTP id ed3so783755wgb.20
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 15:28:26 -0800 (PST)
+In-Reply-To: <s5h399jpohv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +24,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-With a program operating in minimum sized periods, first write
-will cause a transfer that will fill mcbsp FIFO quickly, and there
-will be no more data to DMA before program manages to do another
-write. As the core considers this as underflow condition, we may
-get many underflows at the start.
-Increase minimum period size by half to deal with this problem.
+2012/3/8, Takashi Iwai <tiwai@suse.de>:
+> At Thu, 8 Mar 2012 12:12:33 +0800,
+> Raymond Yau wrote:
+>>
+>> Since the Legacy Audio Control register is reset to default after
+>> suspend resume cycle
+>>
+>> need to enable the Legacy Audio Control Bit in order to use OPL3 FM Synth
+>>
+>> however it is still need to use sbiload  instrument loader to reload
+>> the instruments
+>
+> Isn't it better to save and restore these PCI registers like below?
+> It still doesn't solve the lost instrument problem, though.
+>
 
-Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
----
- sound/soc/omap/omap-mcbsp.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+I only use std.o3 and drums.o3
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index b9d1272..b373a0b 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -108,6 +108,17 @@ static int omap_mcbsp_hwrule_min_period_size(struct snd_pcm_hw_params *params,
- 	size = mcbsp->pdata->buffer_size;
- 
- 	frames.min = size / channels->min;
-+
-+	/*
-+	 * If period is not larger than FIFO, it may be transfered faster than
-+	 * program operating in period sizes is able to send 2 periods, so
-+	 * underrun condition can be triggered at the beginning of stream.
-+	 * This is because underrun is triggered as soon as DMA has no more
-+	 * data to send, and we get this from the start if period is too small.
-+	 * To deal with this, set period larger than FIFO size.
-+	 */
-+	frames.min = frames.min + frames.min / 2;
-+
- 	frames.integer = 1;
- 	return snd_interval_refine(period_size, &frames);
- }
--- 
-1.7.0.4
+It seem that the playback of midi using aplaymidi can resume playback
+after suspend with my ymf724f
+
+so it seem that there is no need to reload the instrument with your patch
+
+>
+> ---
+> diff --git a/include/sound/ymfpci.h b/include/sound/ymfpci.h
+> index 444cd6b..1e35b16 100644
+> --- a/include/sound/ymfpci.h
+> +++ b/include/sound/ymfpci.h
+> @@ -366,6 +366,8 @@ struct snd_ymfpci {
+>  #ifdef CONFIG_PM
+>  	u32 *saved_regs;
+>  	u32 saved_ydsxgr_mode;
+> +	u16 saved_saved_dsxg_legacy;
+> +	u16 saved_saved_dsxg_elegacy;
+
+
+Should be saved_dsxg_legacy and save_dsxg_elegacy.
+How can this change back port to 2.6 kernel ?
+
+
+>  #endif
+>  };
+>
+> diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
+> index 12a9a2b..a8159b81 100644
+> --- a/sound/pci/ymfpci/ymfpci_main.c
+> +++ b/sound/pci/ymfpci/ymfpci_main.c
+> @@ -2317,6 +2317,10 @@ int snd_ymfpci_suspend(struct pci_dev *pci,
+> pm_message_t state)
+>  	for (i = 0; i < YDSXGR_NUM_SAVED_REGS; i++)
+>  		chip->saved_regs[i] = snd_ymfpci_readl(chip, saved_regs_index[i]);
+>  	chip->saved_ydsxgr_mode = snd_ymfpci_readl(chip, YDSXGR_MODE);
+> +	pci_read_config_word(chip->pci, PCIR_DSXG_LEGACY,
+> +			     &chip->saved_dsxg_legacy);
+> +	pci_read_config_word(chip->pci, PCIR_DSXG_ELEGACY,
+> +			     &chip->saved_dsxg_elegacy);
+>  	snd_ymfpci_writel(chip, YDSXGR_NATIVEDACOUTVOL, 0);
+>  	snd_ymfpci_writel(chip, YDSXGR_BUF441OUTVOL, 0);
+>  	snd_ymfpci_disable_dsp(chip);
+> @@ -2351,6 +2355,11 @@ int snd_ymfpci_resume(struct pci_dev *pci)
+>
+>  	snd_ac97_resume(chip->ac97);
+>
+> +	pci_write_config_word(chip->pci, PCIR_DSXG_LEGACY,
+> +			      chip->saved_dsxg_legacy);
+> +	pci_write_config_word(chip->pci, PCIR_DSXG_ELEGACY,
+> +			      chip->saved_dsxg_elegacy);
+> +
+>  	/* start hw again */
+>  	if (chip->start_count > 0) {
+>  		spin_lock_irq(&chip->reg_lock);
+>
+>
