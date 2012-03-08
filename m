@@ -1,15 +1,14 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH] ASoC: imx: imx-audmux: Fix section mismatch
-Date: Wed, 7 Mar 2012 15:19:57 -0300
-Message-ID: <1331144397-32196-1-git-send-email-fabio.estevam@freescale.com>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: [PATCH] ASoC: add more sample rate for pxa-ssp
+Date: Thu,  8 Mar 2012 10:02:36 +0800
+Message-ID: <1331172156-27358-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
-	(am1ehsobe001.messaging.microsoft.com [213.199.154.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8719610410D
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2012 19:20:48 +0100 (CET)
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67]) by alsa0.perex.cz (Postfix) with SMTP id B80DB104130
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 03:03:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,63 +18,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, richard.zhao@linaro.org
+To: broonie@opensource.wolfsonmicro.com, perex@perex.cz, lrg@ti.com, haojian.zhuang@marvell.com, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: Qiao Zhou <zhouqiao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the following section mismatch warning:
+add more sample rate for pxa-ssp, which are supported, such as 32KHz,
+64KHz.
 
-WARNING: vmlinux.o(.data+0x35be8): Section mismatch in reference from the variable imx_audmux_driver to the function .init.text:imx_audmux_probe()
-The variable imx_audmux_driver references
-the function __init imx_audmux_probe()
-If the reference is valid then annotate the
-variable with __init* or __refdata (see linux/init.h) or name the variable:
-*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
 ---
- sound/soc/imx/imx-audmux.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/pxa/pxa-ssp.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/imx/imx-audmux.c b/sound/soc/imx/imx-audmux.c
-index ef425ad..601df80 100644
---- a/sound/soc/imx/imx-audmux.c
-+++ b/sound/soc/imx/imx-audmux.c
-@@ -167,7 +167,7 @@ static void __init audmux_debugfs_init(void)
- 	}
- }
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index a57cfbc..a16df0f 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -764,7 +764,8 @@ static int pxa_ssp_remove(struct snd_soc_dai *dai)
  
--static void __exit audmux_debugfs_remove(void)
-+static void __devexit audmux_debugfs_remove(void)
- {
- 	debugfs_remove_recursive(audmux_debugfs_root);
- }
-@@ -249,7 +249,7 @@ int imx_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
- }
- EXPORT_SYMBOL_GPL(imx_audmux_v2_configure_port);
+ #define PXA_SSP_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+ 			  SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |	\
+-			  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |	\
++			  SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |	\
++			  SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |	\
+ 			  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
  
--static int __init imx_audmux_probe(struct platform_device *pdev)
-+static int __devinit imx_audmux_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
- 	const struct of_device_id *of_id =
-@@ -276,7 +276,7 @@ static int __init imx_audmux_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int __exit imx_audmux_remove(struct platform_device *pdev)
-+static int __devexit imx_audmux_remove(struct platform_device *pdev)
- {
- 	if (audmux_type == IMX31_AUDMUX)
- 		audmux_debugfs_remove();
-@@ -287,7 +287,7 @@ static int __exit imx_audmux_remove(struct platform_device *pdev)
- 
- static struct platform_driver imx_audmux_driver = {
- 	.probe		= imx_audmux_probe,
--	.remove		= __exit_p(imx_audmux_remove),
-+	.remove		= __devexit_p(imx_audmux_remove),
- 	.id_table	= imx_audmux_ids,
- 	.driver	= {
- 		.name	= DRIVER_NAME,
+ #define PXA_SSP_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
 -- 
-1.7.1
+1.7.4.1
