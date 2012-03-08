@@ -1,17 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 01/11] ASoC: core: missing set_fmt
- should not be complaint
-Date: Thu, 8 Mar 2012 18:24:28 +0000
-Message-ID: <20120308182427.GA3638@opensource.wolfsonmicro.com>
-References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
-	<1331225990-27308-2-git-send-email-shawn.guo@linaro.org>
+From: Jonathan Andrews <jon@jonshouse.co.uk>
+Subject: Re: Random process lockup on ARM board:
+ alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
+Date: Thu, 08 Mar 2012 19:05:49 +0000
+Message-ID: <1331233549.2772.5.camel@jonspc>
+References: <1329393691.6830.20.camel@jonspc>
+	<1329512682.29051.1.camel@jonspc> <1329570128.6670.0.camel@jonspc>
+	<4F400BBF.9020707@ladisch.de> <1329603022.1089.57.camel@jonspc>
+	<4F41FC28.1070605@ladisch.de> <1329926198.22918.10.camel@jonspc>
+	<4F45167A.6080706@ladisch.de> <1329933773.24266.44.camel@jonspc>
+	<4F58736F.6010500@ladisch.de> <1331199625.22455.7.camel@jonspc>
+	<4F588213.2030600@ladisch.de> <1331203724.22455.44.camel@jonspc>
+	<4F589B58.6090203@ladisch.de> <1331214439.27232.12.camel@jonspc>
+	<4F58C394.3020200@ladisch.de> <1331219690.30002.13.camel@jonspc>
+	<s5h8vjbyuly.wl%tiwai@suse.de>
+Reply-To: jon@jonshouse.co.uk
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7301579757981544713=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B8A622415E
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 19:24:29 +0100 (CET)
-In-Reply-To: <1331225990-27308-2-git-send-email-shawn.guo@linaro.org>
+Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A37E24133
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 20:05:48 +0100 (CET)
+In-Reply-To: <s5h8vjbyuly.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +31,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2012-03-08 at 16:34 +0100, Takashi Iwai wrote:
+> At Thu, 08 Mar 2012 15:14:50 +0000,
+> Jonathan Andrews wrote:
+> > 
+> > On Thu, 2012-03-08 at 15:35 +0100, Clemens Ladisch wrote:
+> > > Jonathan Andrews wrote:
+> > > > Getting closer, alsalib now builds without the need for pthreads but
+> > > > seems to insist on dlopen dlclose even in static lib ?
+> > > 
+> > > Add --without-libdl.
+> > > 
+Using the static libasound without pthreads now.
 
---===============7301579757981544713==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="41bjdpi19TcwJlr2"
-Content-Disposition: inline
+Process still stalls in same way:
 
+ARM / # strace -p 408
+Process 408 attached - interrupt to quit
+futex(0x15a684, FUTEX_WAIT, 2, NULL
+^C <unfinished ...>
+Process 408 detached
 
---41bjdpi19TcwJlr2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Mar 09, 2012 at 12:59:40AM +0800, Shawn Guo wrote:
-> Not having a DAI link set_fmt operation is perfectly normal and
-> should not be complaint.
-
-Applied, thanks.  I'll wait for Timur's review on the rest before
-applying.
-
---41bjdpi19TcwJlr2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPWPlAAAoJEBus8iNuMP3dBJQP/i0WEsFr0O5ld0gf2/o4aJuJ
-++wdAM7rK5FYDnZ28Xm6zydFrwMHZ/jd5sPSGQDqf4l9XKnMYMoGCIdu0yMFrlbm
-dXGaiZF/kNVSO09l+llHjst4gOyCydSR4S0tZWCPQ7/AkggsKMlbe8Qyv7jDVD9y
-F3E95OYa5S9ONzZN7+lxUZftXw79ImqXIrvhogHxIZsnfUKWpz8o6Wt98OCNNoFY
-kGgzCcEzMWLd0ArW4nx0RmhQxizf6x3djUIQ3qGNcR7HH+aVCtnX+4UpC2ugdeOf
-ARZLAv5Lhq9YaBGKECrw/84N1zfmCxZi9yz+UZSgCcU/WMdpR5FKIWvOAe/5rLLb
-gLudNE9DU8umDyj2RWTVjKoDT3F3GLP1Un2irnVD2MGyvtaknEs8KgKm9FnQf0Lh
-681oQfEuhinj615U3W4Cz9G3h/81Jb0ZZRaILnOszDQDTQOHE14lzFNmIxm6O9iV
-VfuRMVzE+JNrv9qJTV/3augsuuc+/1KltTEWkQnnxmznsSS+j3oG3LATn/Xqcq6P
-AKvhRmpHsSBRNSSIQt/z7OPFJfaU+SKwG6N2P+T1WdAw4QofRvBCXuH+r3elByAp
-yfUEBE2L5uPIKTq+QWuu9quFdpqIosA6b59bYp4bwgHQNL69LkW3A1NuzGzIig/F
-g/XmazDg/egCCJ3KlxUP
-=LnIe
------END PGP SIGNATURE-----
-
---41bjdpi19TcwJlr2--
-
---===============7301579757981544713==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Took 3 hours 1 min to stall. It was decoding 8 udp audio streams, a
+second tx process reading from the same sound device was also running.
 
 
---===============7301579757981544713==--
+An strace of a stall (intel this time) is here.  Its 2GB and on a slow
+link (sorry).
+http://www.jonshouse.co.uk/download/a_stop.txt
+
+futex(0xae5320, FUTEX_WAIT_PRIVATE, 2, NULL) = ? ERESTARTSYS (To be
+restarted)
+--- SIGINT (Interrupt) @ 0 (0) ---
+
+The futex address 0xae5320 occurs only once at the end of the text file
+so I have no idea what sets it up.
+
+Thanks,
+Jon
