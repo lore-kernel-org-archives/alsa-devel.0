@@ -1,23 +1,22 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 09/17] ASoC: fsl: separate SSI and DMA
-	Kconfig options
-Date: Thu, 8 Mar 2012 21:08:35 +0800
-Message-ID: <20120308130832.GD2499@S2101-09.ap.freescale.net>
+Subject: Re: [PATCH v2 00/17] ASoC: add imx-sgtl5000 machine
+ driver working with fsl_ssi
+Date: Thu, 8 Mar 2012 21:11:19 +0800
+Message-ID: <20120308131117.GE2499@S2101-09.ap.freescale.net>
 References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
-	<1330957865-19085-10-git-send-email-shawn.guo@linaro.org>
-	<4F57C30D.3000101@freescale.com>
+	<4F57ECC7.1040100@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2122810BAA2
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 14:08:51 +0100 (CET)
-Received: by iakh37 with SMTP id h37so810906iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 05:08:51 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FA9110BAB1
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 14:11:31 +0100 (CET)
+Received: by iakh37 with SMTP id h37so814414iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 05:11:31 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <4F57C30D.3000101@freescale.com>
+In-Reply-To: <4F57ECC7.1040100@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +30,23 @@ To: Timur Tabi <timur@freescale.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 07, 2012 at 02:20:29PM -0600, Timur Tabi wrote:
+On Wed, Mar 07, 2012 at 05:18:31PM -0600, Timur Tabi wrote:
 > Shawn Guo wrote:
-> > The fsl_ssi driver will possibly be shared between Freescale PowerPC
-> > and ARM/IMX families, so give it a separate Kconfig option.  Then
-> > fsl_ssi driver can possibly be selected independently from selecting
-> > PowerPC DMA based PCM driver.
+> > Changes since v1:
+> >  * Address comments from Mark, Timur, and Sascha (Thanks for review).
+> >  * Drop patches that have been applied by Mark.
 > 
-> This patch is going to require an update to the defconfigs, because by
-> default, it sets audio as disabled.
+> I've tested this patchset, and after adding the changes that I pointed out
+> in my previous email, audio still works on the P1022DS and MPC8610HPCD.
 > 
-I guess you meant the next patch (#10) require an update, since
-SND_POWERPC_SOC is introduced in that patch.
+Thanks a lot, Timur.
 
+> Therefore:
+> 
+> Acked-by: Timur Tabi <timur@freescale.com>
+> 
+What are the patches I can apply your ack?  Or every one in this series?
+
+-- 
 Regards,
 Shawn
-
-> menuconfig SND_POWERPC_SOC
-> 	tristate "SoC Audio for Freescale PowerPC CPUs"
-> 	depends on FSL_SOC
-> 	help
-> 	  Say Y or M if you want to add support for codecs attached to
-> 	  the PowerPC CPUs.
-> 
-> The P1022DS uses mpc85xx_smp_defconfig and mpc85xx_defconfig.  The
-> MPC8610HPCD uses mpc8610_hpcd_defconfig.
