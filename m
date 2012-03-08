@@ -1,25 +1,22 @@
-From: Jonathan Andrews <jon@jonshouse.co.uk>
-Subject: Re: Random process lockup on ARM board:
- alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
-Date: Thu, 08 Mar 2012 13:47:19 +0000
-Message-ID: <1331214439.27232.12.camel@jonspc>
-References: <1329393691.6830.20.camel@jonspc>
-	<1329512682.29051.1.camel@jonspc> <1329570128.6670.0.camel@jonspc>
-	<4F400BBF.9020707@ladisch.de> <1329603022.1089.57.camel@jonspc>
-	<4F41FC28.1070605@ladisch.de> <1329926198.22918.10.camel@jonspc>
-	<4F45167A.6080706@ladisch.de> <1329933773.24266.44.camel@jonspc>
-	<4F58736F.6010500@ladisch.de> <1331199625.22455.7.camel@jonspc>
-	<4F588213.2030600@ladisch.de> <1331203724.22455.44.camel@jonspc>
-	<4F589B58.6090203@ladisch.de>
-Reply-To: jon@jonshouse.co.uk
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: When closing the port
+ select PRCM source for CLKS signal
+Date: Thu, 8 Mar 2012 16:00:35 +0200
+Message-ID: <CANOLnONyWVZSBuu703R=ymEc49EVr2VMtfV9VmWi_Xf6eCGwPA@mail.gmail.com>
+References: <1330940332-16188-1-git-send-email-peter.ujfalusi@ti.com>
+	<CANOLnOOzXycmiESekOz4s305KFV0SPLSJHQ5M2aFgBVwY-dJmQ@mail.gmail.com>
+	<4F5608EC.9070406@ti.com> <1331045048.16239.1.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AE8810BA87
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 14:47:21 +0100 (CET)
-In-Reply-To: <4F589B58.6090203@ladisch.de>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 390BB10BAAC
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 15:00:38 +0100 (CET)
+Received: by iakh37 with SMTP id h37so876807iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 06:00:36 -0800 (PST)
+In-Reply-To: <1331045048.16239.1.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,54 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-03-08 at 12:43 +0100, Clemens Ladisch wrote:
-> Jonathan Andrews wrote:
-> > On Thu, 2012-03-08 at 10:55 +0100, Clemens Ladisch wrote:
-> >> Jonathan Andrews wrote:
-> >>> I'm using this script to build both static and dynamic versions of the
-> >>> alsalib. Can you check the configure arguments are correct.
-> >>
-> >> They look correct.
-> >
-> > Tried to compile my application, still fails asking for pthreads.
-> 
-> The configure.in file contains the patch, but the generated configure
-> script does not have it (although its time stamp is newer).
-> Please ensure that you've run autoconf (although make should do this
-> automatically).
-> 
-> 
-
-Getting closer, alsalib now builds without the need for pthreads but
-seems to insist on dlopen dlclose even in static lib ?
-
-
-Compiling udp-many-way-audio-rx.c                        -> udp-many-way-audio-rx_alsa_arms (static)
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(pcm_dshare.o): In function `snd_pcm_dshare_sync_ptr':
-pcm_dshare.c:(.text+0x6a4): warning: Warning: snd_pcm_hwsync() is deprecated, consider to use snd_pcm_avail()
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(pcm_direct.o): In function `snd1_pcm_direct_parse_open_conf':
-pcm_direct.c:(.text+0x58c8): warning: Using 'getgrnam' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(pcm_shm.o): In function `_snd_pcm_shm_open':
-pcm_shm.c:(.text+0x27dc): warning: Using 'gethostbyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(dlmisc.o): In function `snd_dlopen':
-dlmisc.c:(.text+0x38): undefined reference to `dlopen'
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(dlmisc.o): In function `snd_dlclose':
-dlmisc.c:(.text+0x90): undefined reference to `dlclose'
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(dlmisc.o): In function `snd_dlsym_verify':
-dlmisc.c:(.text+0x190): undefined reference to `dlsym'
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(dlmisc.o): In function `snd_dlsym':
-dlmisc.c:(.text+0x2f8): undefined reference to `dlsym'
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(pcm_ladspa.o): In function `snd_pcm_ladspa_free_plugins':
-pcm_ladspa.c:(.text+0x3cc): undefined reference to `dlclose'
-/usr/lib/gcc/arm-linux-gnueabi/4.3.2/../../../../arm-linux-gnueabi/lib/libasound.a(pcm_ladspa.o): In function `snd_pcm_ladspa_check_file':
-pcm_ladspa.c:(.text+0x41c4): undefined reference to `dlopen'
-pcm_ladspa.c:(.text+0x41e4): undefined reference to `dlsym'
-pcm_ladspa.c:(.text+0x4250): undefined reference to `dlclose'
-pcm_ladspa.c:(.text+0x4344): undefined reference to `dlclose'
-pcm_ladspa.c:(.text+0x43b0): undefined reference to `dlclose'
-collect2: ld returned 1 exit status
-~                                                 
+T24gVHVlLCBNYXIgNiwgMjAxMiBhdCA0OjQ0IFBNLCBMaWFtIEdpcmR3b29kIDxscmdAdGkuY29t
+PiB3cm90ZToKPiBJJ3ZlIG5vdyBhcHBsaWVkIHRoZXNlIHBhdGNoZXMgb24gdG9wIG9mIG15IGZv
+ci0zLjQuCgpJIHB1bGxlZCB0aGVzZSBvbiB0b3Agb2YgdG9kYXkncyBsaW51eC1uZXh0IGFuZCBp
+dCBkb2Vzbid0IGJ1aWxkIGFzIGEgbW9kdWxlOgoKICBCdWlsZGluZyBtb2R1bGVzLCBzdGFnZSAy
+LgogIE1PRFBPU1QgMzYgbW9kdWxlcwpFUlJPUjogIm9tYXBfbWNic3Bfc3RhcnQiIFtzb3VuZC9z
+b2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKRVJST1I6ICJvbWFwX21j
+YnNwX2dldF90eF9kZWxheSIKW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10g
+dW5kZWZpbmVkIQpFUlJPUjogIm9tYXBfc3RfZGlzYWJsZSIgW3NvdW5kL3NvYy9vbWFwL3NuZC1z
+b2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXBfbWNic3BfaW5pdCIgW3Nv
+dW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjogIm9t
+YXBfc3Rfc2V0X2NoZ2FpbiIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10g
+dW5kZWZpbmVkIQpFUlJPUjogIm9tYXBfbWNic3Bfc2V0X3J4X3RocmVzaG9sZCIKW3NvdW5kL3Nv
+Yy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXBfc3Rf
+Z2V0X2NoZ2FpbiIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZp
+bmVkIQpFUlJPUjogIm9tYXBfbWNic3BfZnJlZSIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21h
+cC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXAyX21jYnNwX3NldF9jbGtzX3NyYyIK
+W3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjog
+Im9tYXBfc3RfaXNfZW5hYmxlZCIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5r
+b10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXBfbWNic3Bfc3RvcCIgW3NvdW5kL3NvYy9vbWFwL3Nu
+ZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXAyX21jYnNwMV9tdXhf
+ZnNyX3NyYyIKW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVk
+IQpFUlJPUjogIm9tYXBfbWNic3BfcmVxdWVzdCIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21h
+cC1tY2JzcC5rb10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXAyX21jYnNwMV9tdXhfY2xrcl9zcmMi
+Cltzb3VuZC9zb2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKRVJST1I6
+ICJvbWFwX21jYnNwX2NvbmZpZyIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5r
+b10gdW5kZWZpbmVkIQpFUlJPUjogIm9tYXBfbWNic3BfZ2V0X3J4X2RlbGF5Igpbc291bmQvc29j
+L29tYXAvc25kLXNvYy1vbWFwLW1jYnNwLmtvXSB1bmRlZmluZWQhCkVSUk9SOiAib21hcF9tY2Jz
+cF9zZXRfdHhfdGhyZXNob2xkIgpbc291bmQvc29jL29tYXAvc25kLXNvYy1vbWFwLW1jYnNwLmtv
+XSB1bmRlZmluZWQhCkVSUk9SOiAib21hcF9tY2JzcF9zeXNmc19yZW1vdmUiCltzb3VuZC9zb2Mv
+b21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKRVJST1I6ICJvbWFwX3N0X2Vu
+YWJsZSIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQoK
+Ci0tIApHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
