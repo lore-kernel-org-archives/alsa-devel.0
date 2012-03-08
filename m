@@ -1,29 +1,17 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS
-	Semiconductor ML26124
-Date: Thu, 8 Mar 2012 11:24:36 +0900
-Message-ID: <CANKRQnh2JqhZBYLP=U_isgthh2pFT89_qBeypda1ciUJzoRXYw@mail.gmail.com>
-References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120229235147.GM8295@opensource.wolfsonmicro.com>
-	<CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
-	<20120302125819.GE3230@opensource.wolfsonmicro.com>
-	<CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
-	<20120306100012.GC19635@opensource.wolfsonmicro.com>
-	<CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
-	<20120306121222.GK19635@opensource.wolfsonmicro.com>
-	<CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
-	<20120307114811.GF3107@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [RFC] ymfpci - re-enable legacy audio after suspend
+	resume
+Date: Thu, 8 Mar 2012 12:12:33 +0800
+Message-ID: <CAN8ccibfK6Cpho5F5vk8jq_gbZQKp4_C3bMcZ6Ef4c+TU2=EBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=0016e6dd989642c4a104bab37c6b
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 757F910B951
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 03:24:38 +0100 (CET)
-Received: by pbcwy12 with SMTP id wy12so1348367pbc.38
-	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2012 18:24:36 -0800 (PST)
-In-Reply-To: <20120307114811.GF3107@opensource.wolfsonmicro.com>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A8842414E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 05:12:34 +0100 (CET)
+Received: by wiax18 with SMTP id x18so43634wia.38
+	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2012 20:12:33 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,35 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 7, 2012 at 8:48 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
->> If possible, I want to use framework features. However, I judged it is
->> not possible.
->> Let me confirm again.
->> As I said before, all ML26124 registers need to be accessed by
->> different address when read and write.
->> Like below
->> R =A0 =A0 =A0 W
->> $00h $01h Sampling setting
->> $02h $03h PLL setting
->> ...
->> Even so, can I use framework features ?
-> No, in which case (to repeat what I said previously) you need to make
-> the code *much* clearer so the reader can understand what it is doing
-> and why it's having to open code this stuff.
+--0016e6dd989642c4a104bab37c6b
+Content-Type: text/plain; charset=UTF-8
 
-I understand you agree to use ml26124_update_bits(), right ?
-If so, do you mean that I should just add explanation (like as I
-explained before)
-why the function() is necessary to above prototype of ml26124_update_bits()=
- ?
+Since the Legacy Audio Control register is reset to default after
+suspend resume cycle
 
-thanks.
--- =
+need to enable the Legacy Audio Control Bit in order to use OPL3 FM Synth
 
-ROHM Co., Ltd.
-tomoya
+however it is still need to use sbiload  instrument loader to reload
+the instruments
+
+--0016e6dd989642c4a104bab37c6b
+Content-Type: application/octet-stream;
+	name="ymfpci_reenable_legacy_audio.patch"
+Content-Disposition: attachment;
+	filename="ymfpci_reenable_legacy_audio.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: file0
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS95bWZwY2kveW1mcGNpX21haW4uYyBiL3NvdW5kL3BjaS95
+bWZwY2kveW1mcGNpX21haW4uYwppbmRleCAxMmE5YTJiLi44MzkyNmU2IDEwMDY0NAotLS0gYS9z
+b3VuZC9wY2kveW1mcGNpL3ltZnBjaV9tYWluLmMKKysrIGIvc291bmQvcGNpL3ltZnBjaS95bWZw
+Y2lfbWFpbi5jCkBAIC0yMzU4LDYgKzIzNTgsMTMgQEAgaW50IHNuZF95bWZwY2lfcmVzdW1lKHN0
+cnVjdCBwY2lfZGV2ICpwY2kpCiAJCWNoaXAtPmFjdGl2ZV9iYW5rID0gc25kX3ltZnBjaV9yZWFk
+bChjaGlwLCBZRFNYR1JfQ1RSTFNFTEVDVCk7CiAJCXNwaW5fdW5sb2NrX2lycSgmY2hpcC0+cmVn
+X2xvY2spOwogCX0KKwkKKwlpZiAoY2hpcC0+Zm1fcmVzKSB7CisJCXBjaV9yZWFkX2NvbmZpZ193
+b3JkKHBjaSwgUENJUl9EU1hHX0xFR0FDWSwgJmxlZ2FjeV9jdHJsKTsKKwkJbGVnYWN5X2N0cmwg
+Jj0gfllNRlBDSV9MRUdBQ1lfTEFEOworCQlwY2lfd3JpdGVfY29uZmlnX3dvcmQocGNpLCBQQ0lS
+X0RTWEdfTEVHQUNZLCBsZWdhY3lfY3RybCk7CisJfQorCiAJc25kX3Bvd2VyX2NoYW5nZV9zdGF0
+ZShjYXJkLCBTTkRSVl9DVExfUE9XRVJfRDApOwogCXJldHVybiAwOwogfQo=
+--0016e6dd989642c4a104bab37c6b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--0016e6dd989642c4a104bab37c6b--
