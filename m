@@ -1,21 +1,25 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: dapm: Add API call to query valid
-	DAPM paths.
-Date: Thu, 08 Mar 2012 11:42:30 +0000
-Message-ID: <1331206950.3782.5.camel@odin>
-References: <1331142952-6502-1-git-send-email-lrg@ti.com>
-	<20120307191547.GX3107@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS
+	Semiconductor ML26124
+Date: Thu, 8 Mar 2012 11:47:22 +0000
+Message-ID: <20120308114704.GH3638@opensource.wolfsonmicro.com>
+References: <20120229235147.GM8295@opensource.wolfsonmicro.com>
+	<CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
+	<20120302125819.GE3230@opensource.wolfsonmicro.com>
+	<CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
+	<20120306100012.GC19635@opensource.wolfsonmicro.com>
+	<CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
+	<20120306121222.GK19635@opensource.wolfsonmicro.com>
+	<CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
+	<20120307114811.GF3107@opensource.wolfsonmicro.com>
+	<CANKRQnh2JqhZBYLP=U_isgthh2pFT89_qBeypda1ciUJzoRXYw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4894786755228161979=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
-	[74.125.149.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DB4E10B9FA
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 12:42:33 +0100 (CET)
-Received: by mail-ww0-f51.google.com with SMTP id ed3so255480wgb.20
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 03:42:32 -0800 (PST)
-In-Reply-To: <20120307191547.GX3107@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C51E210BA25
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 12:47:24 +0100 (CET)
+In-Reply-To: <CANKRQnh2JqhZBYLP=U_isgthh2pFT89_qBeypda1ciUJzoRXYw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,57 +29,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-03-07 at 19:15 +0000, Mark Brown wrote:
-> On Wed, Mar 07, 2012 at 05:55:52PM +0000, Liam Girdwood wrote:
-> 
-> > +struct snd_soc_dapm_widget_list;
-> 
-> I might be blind but I think the hunk that actually declares the widget
-> list got dropped from the header...  probably in some other part of the
-> series you haven't pushed out yet?
 
-I had to double check myself to be sure and Stephen added it a while
-back :-
+--===============4894786755228161979==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/8E7gjuj425jZz9t"
+Content-Disposition: inline
 
-fafd2176f72148e83c64a1f818ff33fceed83d08
 
-> 
-> > +		dev_vdbg(widget->dapm->dev," %c : %s -> %s -> %s\n",
-> > +			path->sink && path->connect ? '*' : ' ',
-> > +			widget->name, path->name, path->sink->name);
-> > +
-> 
-> This and the input user look like good candidates for a tracepoint, it's
-> probably pretty useful to have them around and more accessible than vdbg
-> is.  It's the sort of information people often look for, and it's real
-> time unlike the debugfs picture which isn't capturing stuff when DAPM is
-> looking at it.
-> 
-> > +	dapm_reset(card);
-> 
-> This function isn't in mainline, another patch series reordering thing I
-> expect.  
+--/8E7gjuj425jZz9t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It's in 6c120e19fa587710d80757a6e364961a017fb6c3
+On Thu, Mar 08, 2012 at 11:24:36AM +0900, Tomoya MORINAGA wrote:
 
-> It does also look like we need some locking somewhere along the
-> line here (even if the only thing here is a big scary comment saying the
-> relevant locks need to be held).
+> If so, do you mean that I should just add explanation (like as I
+> explained before)
+> why the function() is necessary to above prototype of ml26124_update_bits() ?
 
-Oh yeah, this was post the mutex patches and got missed. 
+Probably also make the interface clearer about the fact that it operates
+on multiple registers too.
 
-> 
-> > +	dev_dbg(dai->dev, "%s: found %d paths\n",
-> > +			stream ? "capture" : "playback", paths);
-> 
-> Tracepoint again?  Much less clear for this one.  I do think we should
-> be dumping the stats we've been collecting for the neighbour walks, very
-> useful if performance blows up again.
+--/8E7gjuj425jZz9t
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Yep, Tracepoint it is then.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-Liam
+iQIcBAEBAgAGBQJPWJw/AAoJEBus8iNuMP3dcr8QAIDRwdcF+a2ufcQuEs+Znh9e
+YIq9UK2AjuNKOv7UMXU8qLdDbNVX+nbQ63hGoYGAgBcdBEK2CrfTKug2Zlzki+Bb
+meiox6CvTQGwBonPnkgFERb6G2NKL8BcxJlgCfI4lfmzGIZve+rqfEJD7U0LssT5
+AybI97a7nPLQfodZbkscSga1LU9uf1ksIYeGLUHiwdpwdtkJxtY/6DStBsNOXmz5
+aWpfIl2aIcZG4qfPVXUMnRr/sCGDZos0dgdBcBK7aYvMrvrGRCrc4gFtQOm81TRp
+/d45Zm6H08U5EpxcNJSSSgjJ31lpmNyJAS3HjLwaTg2cuF+SHCuqNnAafsw1Nwiw
+RqlXYFr5Rl0f3ANQG2t17MkeoL70P2BCYqGm7lzb0Ott/wKkrTvLGt99ax2pm27C
+GPvczdQnneLGhQZIHfdMOgLaL0+6gZPyh5ta/lXj7xlY58aNaJNcDY5ELCWWhZag
+k1BJOrBfdoZ+3zFCdFxtqVxwguc7cvbIZqSA6GaE9ZMHGq51IH7l2SROx3EiGbTc
+zO1lMkHkrUY9ybAKi8gNFtKwRz/1nwh6PrjU6QECTYcYsTZgrbiHmbfaT6vUKJpO
+reasi4phDvAXw8zkCzGBnP4iwCepcrnTWE6dXJI/YM/U4pxeZYv7kl/06fRGRPf1
+KIiXrjEG1nr7RDxukqjE
+=0MFD
+-----END PGP SIGNATURE-----
+
+--/8E7gjuj425jZz9t--
+
+--===============4894786755228161979==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4894786755228161979==--
