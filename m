@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8996: Remove separate output stage
-	enable step
-Date: Thu,  8 Mar 2012 16:49:00 +0000
-Message-ID: <1331225340-2655-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v3 00/11] ASoC: add imx-sgtl5000 machine driver
+	working with fsl_ssi
+Date: Fri,  9 Mar 2012 00:59:39 +0800
+Message-ID: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8BCF24450
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 17:49:03 +0100 (CET)
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD05A2445A
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 18:00:09 +0100 (CET)
+Received: by iakh37 with SMTP id h37so1105395iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 09:00:08 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,125 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Marginally improve performance during startup.
+I believe I have addressed all the outstanding comments and requests
+reviewers put on previous versions.  So, hopefully this will be the
+last iteration of the series.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |   31 ++++++++++++-------------------
- 1 files changed, 12 insertions(+), 19 deletions(-)
+The current sound/for-next branch seems broken for me, and I have not
+tracking the problem down.  But the series works good on SHA below.
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index dd94cd0..a1cfffb 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -890,8 +890,8 @@ static void wm8996_seq_notifier(struct snd_soc_dapm_context *dapm,
- 		val = 0;
- 		mask = 0;
- 		if (wm8996->hpout_pending & HPOUT1L) {
--			val |= WM8996_HPOUT1L_RMV_SHORT;
--			mask |= WM8996_HPOUT1L_RMV_SHORT;
-+			val |= WM8996_HPOUT1L_RMV_SHORT | WM8996_HPOUT1L_OUTP;
-+			mask |= WM8996_HPOUT1L_RMV_SHORT | WM8996_HPOUT1L_OUTP;
- 		} else {
- 			mask |= WM8996_HPOUT1L_RMV_SHORT |
- 				WM8996_HPOUT1L_OUTP |
-@@ -899,8 +899,8 @@ static void wm8996_seq_notifier(struct snd_soc_dapm_context *dapm,
- 		}
- 
- 		if (wm8996->hpout_pending & HPOUT1R) {
--			val |= WM8996_HPOUT1R_RMV_SHORT;
--			mask |= WM8996_HPOUT1R_RMV_SHORT;
-+			val |= WM8996_HPOUT1R_RMV_SHORT | WM8996_HPOUT1R_OUTP;
-+			mask |= WM8996_HPOUT1R_RMV_SHORT | WM8996_HPOUT1R_OUTP;
- 		} else {
- 			mask |= WM8996_HPOUT1R_RMV_SHORT |
- 				WM8996_HPOUT1R_OUTP |
-@@ -912,8 +912,8 @@ static void wm8996_seq_notifier(struct snd_soc_dapm_context *dapm,
- 		val = 0;
- 		mask = 0;
- 		if (wm8996->hpout_pending & HPOUT2L) {
--			val |= WM8996_HPOUT2L_RMV_SHORT;
--			mask |= WM8996_HPOUT2L_RMV_SHORT;
-+			val |= WM8996_HPOUT2L_RMV_SHORT | WM8996_HPOUT2L_OUTP;
-+			mask |= WM8996_HPOUT2L_RMV_SHORT | WM8996_HPOUT2L_OUTP;
- 		} else {
- 			mask |= WM8996_HPOUT2L_RMV_SHORT |
- 				WM8996_HPOUT2L_OUTP |
-@@ -921,8 +921,8 @@ static void wm8996_seq_notifier(struct snd_soc_dapm_context *dapm,
- 		}
- 
- 		if (wm8996->hpout_pending & HPOUT2R) {
--			val |= WM8996_HPOUT2R_RMV_SHORT;
--			mask |= WM8996_HPOUT2R_RMV_SHORT;
-+			val |= WM8996_HPOUT2R_RMV_SHORT | WM8996_HPOUT2R_OUTP;
-+			mask |= WM8996_HPOUT2R_RMV_SHORT | WM8996_HPOUT2R_OUTP;
- 		} else {
- 			mask |= WM8996_HPOUT2R_RMV_SHORT |
- 				WM8996_HPOUT2R_OUTP |
-@@ -1214,7 +1214,6 @@ SND_SOC_DAPM_PGA_S("HPOUT2L PGA", 0, WM8996_POWER_MANAGEMENT_1, 7, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT2L_DLY", 1, WM8996_ANALOGUE_HP_2, 5, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT2L_DCS", 2, WM8996_DC_SERVO_1, 2, 0, dcs_start,
- 		   SND_SOC_DAPM_POST_PMU),
--SND_SOC_DAPM_PGA_S("HPOUT2L_OUTP", 3, WM8996_ANALOGUE_HP_2, 6, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT2L_RMV_SHORT", 3, SND_SOC_NOPM, HPOUT2L, 0,
- 		   rmv_short_event,
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-@@ -1223,7 +1222,6 @@ SND_SOC_DAPM_PGA_S("HPOUT2R PGA", 0, WM8996_POWER_MANAGEMENT_1, 6, 0,NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT2R_DLY", 1, WM8996_ANALOGUE_HP_2, 1, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT2R_DCS", 2, WM8996_DC_SERVO_1, 3, 0, dcs_start,
- 		   SND_SOC_DAPM_POST_PMU),
--SND_SOC_DAPM_PGA_S("HPOUT2R_OUTP", 3, WM8996_ANALOGUE_HP_2, 2, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT2R_RMV_SHORT", 3, SND_SOC_NOPM, HPOUT2R, 0,
- 		   rmv_short_event,
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-@@ -1232,7 +1230,6 @@ SND_SOC_DAPM_PGA_S("HPOUT1L PGA", 0, WM8996_POWER_MANAGEMENT_1, 5, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT1L_DLY", 1, WM8996_ANALOGUE_HP_1, 5, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT1L_DCS", 2, WM8996_DC_SERVO_1, 0, 0, dcs_start,
- 		   SND_SOC_DAPM_POST_PMU),
--SND_SOC_DAPM_PGA_S("HPOUT1L_OUTP", 3, WM8996_ANALOGUE_HP_1, 6, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPOUT1L_RMV_SHORT", 3, SND_SOC_NOPM, HPOUT1L, 0,
- 		   rmv_short_event,
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-@@ -1434,32 +1431,28 @@ static const struct snd_soc_dapm_route wm8996_dapm_routes[] = {
- 	{ "HPOUT2L PGA", NULL, "DAC2L" },
- 	{ "HPOUT2L_DLY", NULL, "HPOUT2L PGA" },
- 	{ "HPOUT2L_DCS", NULL, "HPOUT2L_DLY" },
--	{ "HPOUT2L_OUTP", NULL, "HPOUT2L_DCS" },
--	{ "HPOUT2L_RMV_SHORT", NULL, "HPOUT2L_OUTP" },
-+	{ "HPOUT2L_RMV_SHORT", NULL, "HPOUT2L_DCS" },
- 
- 	{ "HPOUT2R PGA", NULL, "Charge Pump" },
- 	{ "HPOUT2R PGA", NULL, "Bandgap" },
- 	{ "HPOUT2R PGA", NULL, "DAC2R" },
- 	{ "HPOUT2R_DLY", NULL, "HPOUT2R PGA" },
- 	{ "HPOUT2R_DCS", NULL, "HPOUT2R_DLY" },
--	{ "HPOUT2R_OUTP", NULL, "HPOUT2R_DCS" },
--	{ "HPOUT2R_RMV_SHORT", NULL, "HPOUT2R_OUTP" },
-+	{ "HPOUT2R_RMV_SHORT", NULL, "HPOUT2R_DCS" },
- 
- 	{ "HPOUT1L PGA", NULL, "Charge Pump" },
- 	{ "HPOUT1L PGA", NULL, "Bandgap" },
- 	{ "HPOUT1L PGA", NULL, "DAC1L" },
- 	{ "HPOUT1L_DLY", NULL, "HPOUT1L PGA" },
- 	{ "HPOUT1L_DCS", NULL, "HPOUT1L_DLY" },
--	{ "HPOUT1L_OUTP", NULL, "HPOUT1L_DCS" },
--	{ "HPOUT1L_RMV_SHORT", NULL, "HPOUT1L_OUTP" },
-+	{ "HPOUT1L_RMV_SHORT", NULL, "HPOUT1L_DCS" },
- 
- 	{ "HPOUT1R PGA", NULL, "Charge Pump" },
- 	{ "HPOUT1R PGA", NULL, "Bandgap" },
- 	{ "HPOUT1R PGA", NULL, "DAC1R" },
- 	{ "HPOUT1R_DLY", NULL, "HPOUT1R PGA" },
- 	{ "HPOUT1R_DCS", NULL, "HPOUT1R_DLY" },
--	{ "HPOUT1R_OUTP", NULL, "HPOUT1R_DCS" },
--	{ "HPOUT1R_RMV_SHORT", NULL, "HPOUT1R_OUTP" },
-+	{ "HPOUT1R_RMV_SHORT", NULL, "HPOUT1R_DCS" },
- 
- 	{ "HPOUT2L", NULL, "HPOUT2L_RMV_SHORT" },
- 	{ "HPOUT2R", NULL, "HPOUT2R_RMV_SHORT" },
--- 
-1.7.9.1
+  3030763 (Merge tag 'asoc-3.4' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into topic/asoc)
+
+Timur,
+
+I did not pick up you Ack-by tag, because there are some changes since
+v2 you will need to take another look and have the testing, I guess.
+
+Regards,
+Shawn
+
+Shawn Guo (11):
+      ASoC: core: missing set_fmt should not be complaint
+      ASoC: fsl: separate SSI and DMA Kconfig options
+      ASoC: imx: merge sound/soc/imx into sound/soc/fsl
+      ASoC: fsl: rename imx-pcm Kconfig options and filename
+      ASoC: fsl: create fsl_utils to accommodate the common functions
+      ASoC: fsl: remove helper fsl_asoc_get_codec_dev_name
+      ASoC: fsl: check property 'compatible' for the machine name
+      ASoC: fsl: make fsl_ssi driver compilable on ARM/IMX
+      ASoC: fsl: remove the fatal error checking on codec-handle
+      ASoC: fsl: let fsl_ssi work with imx pcm and machine drivers
+      ASoC: fsl: add imx-sgtl5000 machine driver
+
+ .../bindings/sound/imx-audio-sgtl5000.txt          |   24 +++
+ arch/powerpc/configs/86xx/mpc8610_hpcd_defconfig   |    1 +
+ arch/powerpc/configs/mpc85xx_defconfig             |    1 +
+ arch/powerpc/configs/mpc85xx_smp_defconfig         |    1 +
+ sound/soc/Kconfig                                  |    1 -
+ sound/soc/Makefile                                 |    1 -
+ sound/soc/fsl/Kconfig                              |  124 ++++++++++++-
+ sound/soc/fsl/Makefile                             |   29 +++-
+ sound/soc/{imx => fsl}/eukrea-tlv320.c             |    2 +-
+ sound/soc/fsl/fsl_ssi.c                            |  146 ++++++++++++----
+ sound/soc/fsl/fsl_utils.c                          |   91 ++++++++++
+ sound/soc/fsl/fsl_utils.h                          |   26 +++
+ sound/soc/{imx => fsl}/imx-audmux.c                |    0
+ sound/soc/{imx => fsl}/imx-audmux.h                |    0
+ .../{imx/imx-pcm-dma-mx2.c => fsl/imx-pcm-dma.c}   |    0
+ sound/soc/{imx => fsl}/imx-pcm-fiq.c               |    0
+ sound/soc/{imx => fsl}/imx-pcm.c                   |    0
+ sound/soc/{imx => fsl}/imx-pcm.h                   |    0
+ sound/soc/fsl/imx-sgtl5000.c                       |  177 ++++++++++++++++++
+ sound/soc/{imx => fsl}/imx-ssi.c                   |    2 +-
+ sound/soc/{imx => fsl}/imx-ssi.h                   |    0
+ sound/soc/fsl/mpc8610_hpcd.c                       |  168 ++----------------
+ sound/soc/{imx => fsl}/mx27vis-aic32x4.c           |    0
+ sound/soc/fsl/p1022_ds.c                           |  190 ++------------------
+ sound/soc/{imx => fsl}/phycore-ac97.c              |    0
+ sound/soc/{imx => fsl}/wm1133-ev1.c                |    0
+ sound/soc/imx/Kconfig                              |   79 --------
+ sound/soc/imx/Makefile                             |   22 ---
+ sound/soc/soc-core.c                               |   11 +-
+ 29 files changed, 616 insertions(+), 480 deletions(-)
