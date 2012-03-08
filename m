@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: add more sample rate for pxa-ssp
-Date: Thu, 8 Mar 2012 18:22:34 +0000
-Message-ID: <20120308182233.GZ3638@opensource.wolfsonmicro.com>
-References: <1331172156-27358-1-git-send-email-zhouqiao@marvell.com>
+Subject: Re: [PATCH v3 01/11] ASoC: core: missing set_fmt
+ should not be complaint
+Date: Thu, 8 Mar 2012 18:24:28 +0000
+Message-ID: <20120308182427.GA3638@opensource.wolfsonmicro.com>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-2-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5310953496268747644=="
+Content-Type: multipart/mixed; boundary="===============7301579757981544713=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63AE92415F
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 19:22:35 +0100 (CET)
-In-Reply-To: <1331172156-27358-1-git-send-email-zhouqiao@marvell.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B8A622415E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 19:24:29 +0100 (CET)
+In-Reply-To: <1331225990-27308-2-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: tiwai@suse.de, haojian.zhuang@marvell.com, alsa-devel@alsa-project.org, lrg@ti.com
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5310953496268747644==
+--===============7301579757981544713==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4NxgPrvSrIDR5b4"
+	protocol="application/pgp-signature"; boundary="41bjdpi19TcwJlr2"
 Content-Disposition: inline
 
 
---T4NxgPrvSrIDR5b4
+--41bjdpi19TcwJlr2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 08, 2012 at 10:02:36AM +0800, Qiao Zhou wrote:
-> add more sample rate for pxa-ssp, which are supported, such as 32KHz,
-> 64KHz.
+On Fri, Mar 09, 2012 at 12:59:40AM +0800, Shawn Guo wrote:
+> Not having a DAI link set_fmt operation is perfectly normal and
+> should not be complaint.
 
-Applied, thanks.
+Applied, thanks.  I'll wait for Timur's review on the rest before
+applying.
 
---T4NxgPrvSrIDR5b4
+--41bjdpi19TcwJlr2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPWPjjAAoJEBus8iNuMP3dep8QAJb8g37TAZQIp4X1u0x73vdY
-FmppwcwWAfK2HWhNN1KH4sMUCYLciBXzf1vOy3HZFvg/uIiyWw0c4Wiu2mepGE6f
-uDkEvRh4vo/pfLxuhY/VpbY2nk1fOkP95W4gx58Yl5PGa4DA743577Cc/fRsoLqZ
-Ndp7+4clSXtk1gNtYp3kCaARmcQp/IpCwtMnoOH4GM+9Pc5enYnwQ7gXqRQNzGWg
-WbuquQK++9ZySe37MaOTPhujfwJ2tdEF8iLvL4NyCCLVkdc9aA8OQpGMtCmtKWTg
-PQzmMy1sL0skQPMVzjlmkpASEvg/zZp5GNe4jP47XYJfneL/7XnddwksCg3xUkRE
-peogIUG49UyqJuUZWzlzI5bvb9fkIEOolZNEvej7Rl6OoEFNNB9k9/c9i5cj0QSL
-4OB3dnFdA0mwmlCR2ZAYX3Ot9LnObUlAa1LRo3cCzuGYc3RFgGZLan1inz1n1V6D
-3T0WOhsP0rYBJRgkFpUFMCOJW7nYXxa5oyqYj8y97a9e1z/DABMd37GCXDI8xrJV
-XUaXTjFW/VowVLadfkJ6KlUJRjuxfUYjkrRYZ6WJllEx2ZwvINFNsLumVHGOiuKE
-LaNiF/+cH/LQ1YqnuVqybJr7q/+NmO6+ElUcqACt4UFU5IrcQjB8Gb6YV6BYjE6y
-0egu5pua7oC/EbE4WQ6H
-=GLlD
+iQIcBAEBAgAGBQJPWPlAAAoJEBus8iNuMP3dBJQP/i0WEsFr0O5ld0gf2/o4aJuJ
+++wdAM7rK5FYDnZ28Xm6zydFrwMHZ/jd5sPSGQDqf4l9XKnMYMoGCIdu0yMFrlbm
+dXGaiZF/kNVSO09l+llHjst4gOyCydSR4S0tZWCPQ7/AkggsKMlbe8Qyv7jDVD9y
+F3E95OYa5S9ONzZN7+lxUZftXw79ImqXIrvhogHxIZsnfUKWpz8o6Wt98OCNNoFY
+kGgzCcEzMWLd0ArW4nx0RmhQxizf6x3djUIQ3qGNcR7HH+aVCtnX+4UpC2ugdeOf
+ARZLAv5Lhq9YaBGKECrw/84N1zfmCxZi9yz+UZSgCcU/WMdpR5FKIWvOAe/5rLLb
+gLudNE9DU8umDyj2RWTVjKoDT3F3GLP1Un2irnVD2MGyvtaknEs8KgKm9FnQf0Lh
+681oQfEuhinj615U3W4Cz9G3h/81Jb0ZZRaILnOszDQDTQOHE14lzFNmIxm6O9iV
+VfuRMVzE+JNrv9qJTV/3augsuuc+/1KltTEWkQnnxmznsSS+j3oG3LATn/Xqcq6P
+AKvhRmpHsSBRNSSIQt/z7OPFJfaU+SKwG6N2P+T1WdAw4QofRvBCXuH+r3elByAp
+yfUEBE2L5uPIKTq+QWuu9quFdpqIosA6b59bYp4bwgHQNL69LkW3A1NuzGzIig/F
+g/XmazDg/egCCJ3KlxUP
+=LnIe
 -----END PGP SIGNATURE-----
 
---T4NxgPrvSrIDR5b4--
+--41bjdpi19TcwJlr2--
 
---===============5310953496268747644==
+--===============7301579757981544713==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5310953496268747644==--
+--===============7301579757981544713==--
