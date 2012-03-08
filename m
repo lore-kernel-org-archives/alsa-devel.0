@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Add API call to query valid
-	DAPM paths.
-Date: Thu, 8 Mar 2012 12:05:54 +0000
-Message-ID: <20120308120554.GL3638@opensource.wolfsonmicro.com>
-References: <1331142952-6502-1-git-send-email-lrg@ti.com>
-	<20120307191547.GX3107@opensource.wolfsonmicro.com>
-	<1331206950.3782.5.camel@odin>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: core: Add support for DAI driver DAI
+	widgets.
+Date: Thu, 08 Mar 2012 12:07:00 +0000
+Message-ID: <1331208420.3782.17.camel@odin>
+References: <1331120862-16161-1-git-send-email-lrg@ti.com>
+	<1331120862-16161-2-git-send-email-lrg@ti.com>
+	<20120307203722.GL3107@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3333029842707710469=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54CB010BA57
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 13:05:56 +0100 (CET)
-In-Reply-To: <1331206950.3782.5.camel@odin>
+Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
+	[74.125.149.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8080C10BA5E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 13:07:04 +0100 (CET)
+Received: by mail-we0-f176.google.com with SMTP id c1so322233wer.7
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 04:07:02 -0800 (PST)
+In-Reply-To: <20120307203722.GL3107@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,77 +26,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2012-03-07 at 20:37 +0000, Mark Brown wrote:
+> On Wed, Mar 07, 2012 at 11:47:42AM +0000, Liam Girdwood wrote:
+> 
+> > Automatically create DAI widgets for DAI drivers. This allows us to connect
+> > CPU DAIs into the DAPM graph. The widgets use the DAI driver dev name with
+> > a "Playback" or "Capture" suffix.
+> 
+> So what this is doing is the above which is really about synthesising a
+> name for streams where the driver didn't provide one.  This isn't
+> specific to CPU DAIs, it'll apply just as well to CODEC DAIs that don't
+> specify a per stream name for whatever reason.  
 
---===============3333029842707710469==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lbQeYSs6J2ITmUo7"
-Content-Disposition: inline
+yes, but it's more about creating a DAPM DAI widget for DAIs that are
+not named by their drivers. 
+
+> 
+> > Also add a snd_soc_dai member to snd_soc_widget so that we dont have to
+> > use the widget private data.
+> 
+> If we're going to do that I think we should just drop the private data
+> field, this is exactly the sort of stuff it was added for.  Currently
+> it's only used by DAIs and regulator supplies.
+> 
+
+ok, we could add a regulator * in place of the void * in a separate
+patch
+
+> > +#define NAME_SIZE	32
+> 
+> 32 bytes is enough for everyone!  :P  Actually it should be so no real
+> problem.
+> 
+> >  	if (dai->driver->playback.stream_name) {
+> > -		template.id = snd_soc_dapm_dai;
+> >  		template.name = dai->driver->playback.stream_name;
+> >  		template.sname = dai->driver->playback.stream_name;
+> > +	} else {
+> > +		snprintf(name, NAME_SIZE, "%s %s", dev_name(dai->dev), "Playback");
+> > +		template.name = name;
+> > +		template.sname = name;
+> > +	}
+> 
+> Isn't this going to get complicated to use when building up the DAPM
+> routes?  The device is going to need to know its own dev_name() to
+> supply a table of routes which would mean you'd have to dynamically
+> create the routing table (or just specify a name and skip the whole
+> thing I guess).  
+
+I'm not needing to dynamically create the table, it all works as
+before :-
+
+	/* Connections between twl6040 and ABE */
+	{"Headset Playback", NULL, "PDM_DL1"},
+	{"Handsfree Playback", NULL, "PDM_DL2"},
+	{"Vibra Playback", NULL, "PDM_VIB"},
+	{"PDM_UL1", NULL, "PDM Capture"},
+
+	/* Bluetooth <--> ABE*/
+	{"omap-mcbsp-dai.0 Playback", NULL, "BT_VX_DL"},
+	{"BT_VX_UL", NULL, "omap-mcbsp-dai.0 Capture"},
+
+This is the machine driver DAPM table. Here we are connecting the DAI
+widgets for twl6040 (using existing DAI widget codec code) to the ABE
+and the ABE to the Bluetooth device (using this patch).
+
+This does give us DAPM loopback support for codec<->codec as we will get
+a widget event for this DAI link.
+
+> 
+> Could we not just use plain old "Playback" and "Capture" here?  We could
+> then use the name_prefix mechanism which we've got to support multiple
+> CODECs with the CPU side stuff as well, that will then take care of the
+> DAPM routes in the same way it does for the CODECs - it'd allow them to
+> use simple data tables with no dev_name in them which seems like a win.
+> We'd want to supply a default name_prefix for CPU DAIs but that seems
+> OK.
+
+The intention here was for CPU DAIs only, the assumption was that the
+codecs would have a DAPM mapping to DAI or DAC/ADC by default. I can
+certainly change this to ignore the codec DAIs and leave them as is ?
+
+> 
+> This would also ensure that this mechanism works for multi-CODEC systems
+> which I've got a horrible feeling are going to run into trouble at some
+> point soon for the same reason you're adding in the dev_names here.
 
 
---lbQeYSs6J2ITmUo7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 08, 2012 at 11:42:30AM +0000, Liam Girdwood wrote:
-> On Wed, 2012-03-07 at 19:15 +0000, Mark Brown wrote:
-
-> > I might be blind but I think the hunk that actually declares the widget
-> > list got dropped from the header...  probably in some other part of the
-> > series you haven't pushed out yet?
-
-> I had to double check myself to be sure and Stephen added it a while
-> back :-
-
-> fafd2176f72148e83c64a1f818ff33fceed83d08
-
-Oh, sorry about that - I didn't check the actual code for that one as I
-saw you adding the forward declaration and normally we're fairly good
-about always adding those so I figured it was a missing diff hunk.
-
-> > > +	dapm_reset(card);
-
-> > This function isn't in mainline, another patch series reordering thing I
-> > expect. =20
-
-> It's in 6c120e19fa587710d80757a6e364961a017fb6c3
-
-This one I definitely did check, must've been on a separate branch and
-didn't notice properly.
-
---lbQeYSs6J2ITmUo7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPWKCbAAoJEBus8iNuMP3dm0IQAIdLALiR7EFziV9KlNIfGyq8
-eejKOzfgmPdWVNlJ8tGx7BEpWFnO1EXKhcfSxlBUbNL8gFI3TXXP649HDkkDqkA2
-LnKbgZ29il9Bt1PU6EaawsEOl/ZVl1GwKkalMMuTILj+WS/j+abgvG3306szpRW8
-6pEzCLpoiBVATPPoWPOkmYFRZFGoFYiL+7feZngQ2M6uVHp5ixoIe8mY8BjJll9x
-9o9waib0ZDX+oOw+SrC3yXTdRR4Lc0vwKuoaMcvTSMdkhw5DfegeKDTA0A+UYOMX
-vENBN+XvQQXE5VQlz1JLERNZALoLWcNO/VZdKDf27ZmquKjfZz5INsBSCYiOCt3L
-CIDzB1Sy2BiFTG5PZ63MmsGhsvgEFxMDT0yDCqwaARcsnefYCgd571TMK+/azXny
-vZZ2yY7j7SfmeF+5TqwzZoi00VQ3iF3dvGUniBFhsclmW4xSNgaK00SRPwZgm0pD
-5dwIla/CZDfcsynztFvVHnmvIsEPGSzY+MR2dRLqOkbllKDbCtRLYG+DESvED52o
-r3MMZoLeeB1p94Frx3EI3GTen/40v4Qx4IcGHjaoa9yG4+TwCxARpJ0qm7cP37kd
-wu2ATQgbTINz4ynM0dkhlBY8F4C7Myk/DOpStxQDMeT8RKRilpLCb7/9qm5sd+0n
-9XfR1oKvIvgpj+VvqKEa
-=2G4o
------END PGP SIGNATURE-----
-
---lbQeYSs6J2ITmUo7--
-
---===============3333029842707710469==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3333029842707710469==--
+Liam
