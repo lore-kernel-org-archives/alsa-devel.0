@@ -1,24 +1,23 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 Subject: Re: [PATCH v2 00/17] ASoC: add imx-sgtl5000 machine
  driver working with fsl_ssi
-Date: Thu, 8 Mar 2012 12:36:18 +0000
-Message-ID: <4F58A7C0.4070603@freescale.com>
+Date: Thu, 8 Mar 2012 20:37:41 +0800
+Message-ID: <20120308123739.GC2499@S2101-09.ap.freescale.net>
 References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
-	<4F57CDAC.9030604@freescale.com>
-	<20120307210833.GO3107@opensource.wolfsonmicro.com>
-	<4F57E924.4050208@freescale.com>
-	<20120308123307.GB2499@S2101-09.ap.freescale.net>
+	<4F57ECC7.1040100@freescale.com>
+	<20120308120207.GJ3638@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AF4210BA66
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 13:36:24 +0100 (CET)
-In-Reply-To: <20120308123307.GB2499@S2101-09.ap.freescale.net>
-Content-Language: en-US
-Content-ID: <5C1AE0020D746D4BA54D35DB15908F7D@mgd.freescale.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 153FE10BA70
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 13:37:53 +0100 (CET)
+Received: by iakh37 with SMTP id h37so768951iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 04:37:53 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20120308120207.GJ3638@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,18 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Shawn Guo wrote:
->> >  Shawn, I'd make the change myself, but I don't want to step on your toes
->> >  while doing it.  Do you want to make it yourself?
+On Thu, Mar 08, 2012 at 12:02:07PM +0000, Mark Brown wrote:
+> On Wed, Mar 07, 2012 at 05:18:31PM -0600, Timur Tabi wrote:
+> 
+> > I've tested this patchset, and after adding the changes that I pointed out
+> > in my previous email, audio still works on the P1022DS and MPC8610HPCD.
+> 
+> > Therefore:
+> 
+> > Acked-by: Timur Tabi <timur@freescale.com>
+> 
+> Excellent, it's great to see the SSI drivers merged!  Shawn, could you
+> please resend the unapplied patches with all the relevant acks collected
+> and tweaks that people requested just to make sure I've got everything.
+> 
+Sure.  I got interrupted from the work during the past 2 days, but I'm
+resuming it now.
 
-> I'd prefer you do it too.
+> I know Sascha wanted some slightly larger changes to the new card driver
+> so if you want to hold off on that until you've done the updates that's
+> fine but it'd be good to get all the other stuff merging the drivers
+> together for 3.4 if we can.
 
-Ok.
+That's my goal too.
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Regards,
+Shawn
