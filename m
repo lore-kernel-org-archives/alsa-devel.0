@@ -1,27 +1,19 @@
-From: Jonathan Andrews <jon@jonshouse.co.uk>
-Subject: Re: Random process lockup on ARM board:
- alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
-Date: Thu, 08 Mar 2012 19:05:49 +0000
-Message-ID: <1331233549.2772.5.camel@jonspc>
-References: <1329393691.6830.20.camel@jonspc>
-	<1329512682.29051.1.camel@jonspc> <1329570128.6670.0.camel@jonspc>
-	<4F400BBF.9020707@ladisch.de> <1329603022.1089.57.camel@jonspc>
-	<4F41FC28.1070605@ladisch.de> <1329926198.22918.10.camel@jonspc>
-	<4F45167A.6080706@ladisch.de> <1329933773.24266.44.camel@jonspc>
-	<4F58736F.6010500@ladisch.de> <1331199625.22455.7.camel@jonspc>
-	<4F588213.2030600@ladisch.de> <1331203724.22455.44.camel@jonspc>
-	<4F589B58.6090203@ladisch.de> <1331214439.27232.12.camel@jonspc>
-	<4F58C394.3020200@ladisch.de> <1331219690.30002.13.camel@jonspc>
-	<s5h8vjbyuly.wl%tiwai@suse.de>
-Reply-To: jon@jonshouse.co.uk
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v3 10/11] ASoC: fsl: let fsl_ssi work with
+ imx pcm and machine drivers
+Date: Thu, 8 Mar 2012 20:15:26 +0100
+Message-ID: <20120308191526.GQ3852@pengutronix.de>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-11-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.jonshouse.co.uk (unknown [91.84.151.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A37E24133
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 20:05:48 +0100 (CET)
-In-Reply-To: <s5h8vjbyuly.wl%tiwai@suse.de>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 40FD424150
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 20:15:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1331225990-27308-11-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,45 +23,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-03-08 at 16:34 +0100, Takashi Iwai wrote:
-> At Thu, 08 Mar 2012 15:14:50 +0000,
-> Jonathan Andrews wrote:
-> > 
-> > On Thu, 2012-03-08 at 15:35 +0100, Clemens Ladisch wrote:
-> > > Jonathan Andrews wrote:
-> > > > Getting closer, alsalib now builds without the need for pthreads but
-> > > > seems to insist on dlopen dlclose even in static lib ?
-> > > 
-> > > Add --without-libdl.
-> > > 
-Using the static libasound without pthreads now.
+On Fri, Mar 09, 2012 at 12:59:49AM +0800, Shawn Guo wrote:
+> Makes necessary changes on fsl_ssi to let it work with imx pcm and
+> machine drivers.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  sound/soc/fsl/fsl_ssi.c |   67 +++++++++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 67 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index e5903cb..c251ee9 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -29,6 +29,7 @@
+>  #include <sound/soc.h>
+>  
+>  #include "fsl_ssi.h"
+> +#include "imx-pcm.h"
+>  
+>  #ifdef PPC
+>  #define read_ssi(addr)			 in_be32(addr)
+> @@ -119,6 +120,11 @@ struct fsl_ssi_private {
+>  	struct device_attribute dev_attr;
+>  	struct platform_device *pdev;
+>  
+> +	int ssi_on_imx;
+> +	struct platform_device *imx_pcm_pdev;
+> +	struct imx_pcm_dma_params dma_params_tx;
+> +	struct imx_pcm_dma_params dma_params_rx;
+> +
+>  	struct {
+>  		unsigned int rfrc;
+>  		unsigned int tfrc;
+> @@ -416,6 +422,12 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+>  		ssi_private->second_stream = substream;
+>  	}
+>  
+> +	if (ssi_private->ssi_on_imx)
+> +		snd_soc_dai_set_dma_data(dai, substream,
+> +			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+> +				&ssi_private->dma_params_tx :
+> +				&ssi_private->dma_params_rx);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -709,6 +721,38 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
+>                  /* Older 8610 DTs didn't have the fifo-depth property */
+>  		ssi_private->fifo_depth = 8;
+>  
+> +	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx1-ssi")) {
+> +		u32 dma_events[2];
+> +		ssi_private->ssi_on_imx = 1;
+> +		/*
+> +		 * FIXME: The dma burst size must equal to ssi watermark
+> +		 * setting on imx.  We have burstsize be "fifo_depth - 2"
+> +		 * here because "fifo_depth - 2" rather than fifo_depth is
+> +		 * being written into watermark register in fsl_ssi_startup().
+> +		 * Is this something needs to be fixed for PowerPC?
+> +		 */
+> +		ssi_private->dma_params_tx.burstsize =
+> +			ssi_private->fifo_depth - 2;
+> +		ssi_private->dma_params_rx.burstsize =
+> +			ssi_private->fifo_depth - 2;
+> +		ssi_private->dma_params_tx.dma_addr =
+> +			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, stx0);
+> +		ssi_private->dma_params_rx.dma_addr =
+> +			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, srx0);
+> +		/*
+> +		 * TODO: This is a temporary solution and should be changed
+> +		 * to use generic DMA binding later when the helplers get in.
+> +		 */
+> +		ret = of_property_read_u32_array(pdev->dev.of_node,
+> +					"fsl,ssi-dma-events", dma_events, 2);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "could not get dma events\n");
+> +			goto error_irq;
+> +		}
+> +		ssi_private->dma_params_tx.dma = dma_events[0];
+> +		ssi_private->dma_params_rx.dma = dma_events[1];
+> +	}
+> +
+>  	/* Initialize the the device_attribute structure */
+>  	dev_attr = &ssi_private->dev_attr;
+>  	sysfs_attr_init(&dev_attr->attr);
+> @@ -732,6 +776,24 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
+>  		goto error_dev;
+>  	}
+>  
+> +	/*
+> +	 * In case of imx, the machine driver uses new binding which does
+> +	 * not require SSI driver to trigger machine driver's probe, but
+> +	 * the pcm device needs to be registered here.
+> +	 */
+> +	if (ssi_private->ssi_on_imx) {
+> +		ssi_private->imx_pcm_pdev =
+> +			platform_device_register_simple("imx-pcm-audio",
+> +							-1, NULL, 0);
+> +		if (IS_ERR(ssi_private->imx_pcm_pdev)) {
+> +			ret = PTR_ERR(ssi_private->imx_pcm_pdev);
+> +			goto error_dev;
+> +		} else {
+> +			/* success for imx */
+> +			return 0;
+> +		}
+> +	}
+> +
+>  	/* Trigger the machine driver's probe function.  The platform driver
+>  	 * name of the machine driver is taken from /compatible property of the
+>  	 * device tree.  We also pass the address of the CPU DAI driver
+> @@ -757,6 +819,8 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
+>  
+>  error_dai:
+>  	snd_soc_unregister_dai(&pdev->dev);
+> +	if (ssi_private->ssi_on_imx)
+> +		platform_device_unregister(ssi_private->imx_pcm_pdev);
+>  
+>  error_dev:
+>  	dev_set_drvdata(&pdev->dev, NULL);
+> @@ -783,6 +847,8 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+>  
+>  	platform_device_unregister(ssi_private->pdev);
+>  	snd_soc_unregister_dai(&pdev->dev);
+> +	if (ssi_private->ssi_on_imx)
+> +		platform_device_unregister(ssi_private->imx_pcm_pdev);
+>  	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
+>  
+>  	free_irq(ssi_private->irq, ssi_private);
+> @@ -796,6 +862,7 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+>  
+>  static const struct of_device_id fsl_ssi_ids[] = {
+>  	{ .compatible = "fsl,mpc8610-ssi", },
+> +	{ .compatible = "fsl,imx1-ssi", },
 
-Process still stalls in same way:
+imx1 seems wrong here. The register layout has changed significantly between
+i.MX1 and i.MX21.
 
-ARM / # strace -p 408
-Process 408 attached - interrupt to quit
-futex(0x15a684, FUTEX_WAIT, 2, NULL
-^C <unfinished ...>
-Process 408 detached
+Sascha
 
-Took 3 hours 1 min to stall. It was decoding 8 udp audio streams, a
-second tx process reading from the same sound device was also running.
-
-
-An strace of a stall (intel this time) is here.  Its 2GB and on a slow
-link (sorry).
-http://www.jonshouse.co.uk/download/a_stop.txt
-
-futex(0xae5320, FUTEX_WAIT_PRIVATE, 2, NULL) = ? ERESTARTSYS (To be
-restarted)
---- SIGINT (Interrupt) @ 0 (0) ---
-
-The futex address 0xae5320 occurs only once at the end of the text file
-so I have no idea what sets it up.
-
-Thanks,
-Jon
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
