@@ -1,20 +1,15 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v3 11/11] ASoC: fsl: add imx-sgtl5000 machine
-	driver
-Date: Fri,  9 Mar 2012 00:59:50 +0800
-Message-ID: <1331225990-27308-12-git-send-email-shawn.guo@linaro.org>
-References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: da7210: Update for using I2C regmap
+Date: Thu, 8 Mar 2012 18:22:13 +0000
+Message-ID: <20120308182212.GY3638@opensource.wolfsonmicro.com>
+References: <1331213696.17383.7.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8698246970876159267=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC88810BB56
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 18:01:08 +0100 (CET)
-Received: by mail-iy0-f179.google.com with SMTP id h37so1105395iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 09:01:08 -0800 (PST)
-In-Reply-To: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7680B2415E
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 19:22:16 +0100 (CET)
+In-Reply-To: <1331213696.17383.7.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,271 +19,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is the initial imx-sgtl5000 machine driver support.  It's a device
-tree only machine driver working with fsl_ssi driver.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- .../bindings/sound/imx-audio-sgtl5000.txt          |   24 +++
- sound/soc/fsl/Kconfig                              |   12 ++
- sound/soc/fsl/Makefile                             |    2 +
- sound/soc/fsl/imx-sgtl5000.c                       |  177 ++++++++++++++++++++
- 4 files changed, 215 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt
- create mode 100644 sound/soc/fsl/imx-sgtl5000.c
+--===============8698246970876159267==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yKkvi6mMqAM+MlBZ"
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt b/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt
-new file mode 100644
-index 0000000..421a374
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt
-@@ -0,0 +1,24 @@
-+Freescale i.MX audio complex with SGTL5000 codec
-+
-+Required properties:
-+- compatible : "fsl,imx-audio-sgtl5000"
-+- model : The user-visible name of this sound complex
-+- ssi-controller : The phandle of the i.MX SSI controller
-+- audio-codec : The phandle of the SGTL5000 audio codec
-+- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX)
-+- mux-ext-port : The external port of the i.MX audio muxer
-+
-+Note: The AUDMUX port numbering should start at 1, which is consistent with
-+hardware manual.
-+
-+Example:
-+
-+sound {
-+	compatible = "fsl,imx51-babbage-sgtl5000",
-+		     "fsl,imx-audio-sgtl5000";
-+	model = "imx51-babbage-sgtl5000";
-+	ssi-controller = <&ssi1>;
-+	audio-codec = <&sgtl5000>;
-+	mux-int-port = <1>;
-+	mux-ext-port = <3>;
-+};
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 535ee73..aa14fc9 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -164,4 +164,16 @@ config SND_SOC_EUKREA_TLV320
- 	  Enable I2S based access to the TLV320AIC23B codec attached
- 	  to the SSI interface
- 
-+config SND_SOC_IMX_SGTL5000
-+	tristate "SoC Audio support for i.MX boards with sgtl5000"
-+	depends on OF && I2C
-+	select SND_SOC_SGTL5000
-+	select SND_SOC_IMX_PCM_DMA
-+	select SND_SOC_IMX_AUDMUX
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_FSL_UTILS
-+	help
-+	  Say Y if you want to add support for SoC audio on an i.MX board with
-+	  a sgtl5000 codec.
-+
- endif # SND_IMX_SOC
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index fbdbed0..638d385 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -40,8 +40,10 @@ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
- snd-soc-phycore-ac97-objs := phycore-ac97.o
- snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
-+snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
- obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
-+obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-new file mode 100644
-index 0000000..3786b61
---- /dev/null
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -0,0 +1,177 @@
-+/*
-+ * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2012 Linaro Ltd.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <sound/soc.h>
-+
-+#include "../codecs/sgtl5000.h"
-+#include "imx-audmux.h"
-+
-+#define DAI_NAME_SIZE	32
-+
-+struct imx_sgtl5000_data {
-+	struct snd_soc_dai_link dai;
-+	struct snd_soc_card card;
-+	char codec_dai_name[DAI_NAME_SIZE];
-+	char platform_name[DAI_NAME_SIZE];
-+	unsigned int clk_frequency;
-+};
-+
-+static int imx_sgtl5000_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct imx_sgtl5000_data *data = container_of(rtd->card,
-+					struct imx_sgtl5000_data, card);
-+	struct device *dev = rtd->card->dev;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, SGTL5000_SYSCLK,
-+				     data->clk_frequency, SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(dev, "could not set codec driver clock params\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __devinit imx_sgtl5000_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *ssi_np, *codec_np;
-+	struct platform_device *ssi_pdev;
-+	struct imx_sgtl5000_data *data;
-+	int int_port, ext_port;
-+	int ret;
-+
-+	ret = of_property_read_u32(np, "mux-int-port", &int_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
-+		return ret;
-+	}
-+	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * The port numbering in the hardware manual starts at 1, while
-+	 * the audmux API expects it starts at 0.
-+	 */
-+	int_port--;
-+	ext_port--;
-+	ret = imx_audmux_v2_configure_port(int_port,
-+			IMX_AUDMUX_V2_PTCR_SYN |
-+			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TFSDIR |
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux internal port setup failed\n");
-+		return ret;
-+	}
-+	imx_audmux_v2_configure_port(ext_port,
-+			IMX_AUDMUX_V2_PTCR_SYN |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(int_port),
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux external port setup failed\n");
-+		return ret;
-+	}
-+
-+	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
-+	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-+	if (!ssi_np || !codec_np) {
-+		dev_err(&pdev->dev, "phandle missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	ssi_pdev = of_find_device_by_node(ssi_np);
-+	if (!ssi_pdev) {
-+		dev_err(&pdev->dev, "failed to find SSI platform device\n");
-+		return -EINVAL;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u32(codec_np, "clock-frequency",
-+				   &data->clk_frequency);
-+	if (ret) {
-+		dev_err(&pdev->dev, "clock-frequency missing or invalid\n");
-+		return ret;
-+	}
-+
-+	data->dai.name = "HiFi";
-+	data->dai.stream_name = "HiFi";
-+	data->dai.codec_dai_name = "sgtl5000";
-+	data->dai.codec_of_node = codec_np;
-+	data->dai.cpu_dai_name = dev_name(&ssi_pdev->dev);
-+	data->dai.platform_name = "imx-pcm-audio";
-+	data->dai.init = &imx_sgtl5000_dai_init;
-+	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			    SND_SOC_DAIFMT_CBM_CFM;
-+
-+	data->card.dev = &pdev->dev;
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		return ret;
-+	data->card.num_links = 1;
-+	data->card.dai_link = &data->dai;
-+
-+	ret = snd_soc_register_card(&data->card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	platform_set_drvdata(pdev, data);
-+	of_node_put(ssi_np);
-+	of_node_put(codec_np);
-+
-+	return 0;
-+}
-+
-+static int __devexit imx_sgtl5000_remove(struct platform_device *pdev)
-+{
-+	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(&data->card);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id imx_sgtl5000_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-sgtl5000", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_sgtl5000_dt_ids);
-+
-+static struct platform_driver imx_sgtl5000_driver = {
-+	.driver = {
-+		.name = "imx-sgtl5000",
-+		.owner = THIS_MODULE,
-+		.of_match_table = imx_sgtl5000_dt_ids,
-+	},
-+	.probe = imx_sgtl5000_probe,
-+	.remove = __devexit_p(imx_sgtl5000_remove),
-+};
-+module_platform_driver(imx_sgtl5000_driver);
-+
-+MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
-+MODULE_DESCRIPTION("Freescale i.MX SGTL5000 ASoC machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-sgtl5000");
--- 
-1.7.5.4
+
+--yKkvi6mMqAM+MlBZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 08, 2012 at 07:04:56PM +0530, Ashish Chavan wrote:
+> Current DA7210 driver has I2C support using older register cache
+> methods. This patch updates it for latest regmap framework.
+
+I've applied this but please fix the minor issues below incrementally.
+
+> +static struct reg_default da7210_reg_defaults[] = {
+> +	{ 0x00, 0x00 },
+
+If any of these registers don't exist they should be removed from the
+defaults table, looking at the register defines in the header the
+registers between 0x2c and 0x83 should be removed along with register 0.
+
+Similarly, registers that are volatile should not have defaults
+specified.
+
+> +	/* unlock */
+> +	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x8B);
+> +	regmap_write(da7210->regmap, DA7210_A_TEST_UNLOCK,	0xB4);
+> +	regmap_write(da7210->regmap, DA7210_A_PLL1,		0x01);
+> +	regmap_write(da7210->regmap, DA7210_A_CP_MODE,		0x7C);
+> +	/* re-lock */
+> +	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x00);
+> +	regmap_write(da7210->regmap, DA7210_A_TEST_UNLOCK,	0x00);
+
+This sequence should be changed to use a regmap patch.  This will fix an
+issue you currently have with suspend and resume where the updates are
+not reapplied if the device is powered off over suspend.
+
+--yKkvi6mMqAM+MlBZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPWPhRAAoJEBus8iNuMP3dV8QP/jj7LNlOZ2sbg8cg0wXqU5B/
+C4Ge8cxbFY/+5Mlu9ADp9+Ceu9ggxjIfL0eRMpxFESNH8hTUYTi/Vu0iWQPKeAyc
+zXmi4SXaYoFSt6qwPz5DwIFwXAKjCXQ9qyf1BNFdixxr4e+Z1ch4upy1zZOVRO90
+zAUEiK1G1hi0ZKj4p5ImOiWlZ2XRhM/Vkmx3rDRqiSYyA8Q/UbPPsP2dxBywZ//f
+3CMyIbLs6j8K3iVgwA91OAj4+wD5m/OVh6+0xBOSa0nNdCQtGKRB053rXOqyeZ1E
+b7ZAbEQBRLnMW3edSVkQ7XqfNVAksN7ma/Lp7UB+zAE9hO6hzDq3ntnl9dX2LSDS
+pzCweywyi1xYfopS/BKB5nV0bJN/JaIz3zW7zLET5ybV5kTIfFiDo4vk4G0iRnm7
+dcVaerSNCagGPWyn0ZQtJPRFYit7Wmqm91v66xo1FkEqWZa3p+KtjwO9OtN6iukB
+SK/KtGIjE9TnFiXnQjibW8HhdgPYIq7/9uAwgljwlfAh5MirIv+lLwXCcucyDC7C
+/aySRxcdJv0Z3BfstLPqVe+tZ6HrqaWe2nv5S5irq3yHNYpEslnWZ0QWm+a+XQ8w
+GIdtityen8OASz66IihhNG/7kJdMVpWb30XN0ySnNtbPmn8kAle2ArtVmPcZIiY+
+b0l6l2mlEXzDQMZf+SCS
+=qnIU
+-----END PGP SIGNATURE-----
+
+--yKkvi6mMqAM+MlBZ--
+
+--===============8698246970876159267==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8698246970876159267==--
