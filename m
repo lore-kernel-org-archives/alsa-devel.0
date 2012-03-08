@@ -1,45 +1,71 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 0/3] ARM/ASoC: OMAP McBSP: Correct CLKR/FSR source selection
-Date: Thu,  8 Mar 2012 11:22:14 +0200
-Message-ID: <1331198537-13469-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 2/3] ARM/ASoC: OMAP McBSP: Move remainig defines from arch to ASoC header
+Date: Thu,  8 Mar 2012 11:22:16 +0200
+Message-ID: <1331198537-13469-3-git-send-email-peter.ujfalusi@ti.com>
+References: <1331198537-13469-1-git-send-email-peter.ujfalusi@ti.com>
 Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1331198537-13469-1-git-send-email-peter.ujfalusi@ti.com>
 Sender: linux-omap-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
 Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Clock signal muxing, and functional clock related defines are only needed
+in ASoC drivers.
 
-Changes since v1:
-- Adapted to the moved mcbsp code which helped to reduce the number of patches
-  from 5 to 3.
-- Clock selection related defines moved from arch to ASoC header.
-
-No change in functionality otherwise.
-
-This series fixes the CLKR/FSR mux selection (on McBSP ports with 6 pin setup).
-OMAP2/3 has 6 pin setup on McBSP1 port while OMAP4 has the 6 pin setup on McBSP4
-port.
-Add support for OMAP4 CLKR/FSR source selection, and simplify the ASoC part of
-CLK mux configuration.
-
-This series should go via ASoC with the rest of McBSP changes.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 ---
-Peter Ujfalusi (3):
-  ARM: OMAP2+: McBSP: Correct CLKR/FSR clock source mux configuration
-  ARM/ASoC: OMAP McBSP: Move remainig defines from arch to ASoC header
-  ASoC: omap-mcbsp: Single function CLKR/FSR source mux configuration
+ arch/arm/plat-omap/include/plat/mcbsp.h |   12 ------------
+ sound/soc/omap/mcbsp.h                  |   12 ++++++++++++
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
- arch/arm/mach-omap2/mcbsp.c             |   46 ++++++++++++++++++++++++++++-
- arch/arm/plat-omap/include/plat/mcbsp.h |   12 --------
- sound/soc/omap/mcbsp.c                  |   48 ++++++++++++++----------------
- sound/soc/omap/mcbsp.h                  |   13 +++++++-
- sound/soc/omap/omap-mcbsp.c             |    8 ++--
- 5 files changed, 81 insertions(+), 46 deletions(-)
-
+diff --git a/arch/arm/plat-omap/include/plat/mcbsp.h b/arch/arm/plat-omap/include/plat/mcbsp.h
+index 8eb9b0e..1881412 100644
+--- a/arch/arm/plat-omap/include/plat/mcbsp.h
++++ b/arch/arm/plat-omap/include/plat/mcbsp.h
+@@ -31,18 +31,6 @@
+ #define MCBSP_CONFIG_TYPE3	0x3
+ #define MCBSP_CONFIG_TYPE4	0x4
+ 
+-/* CLKR signal muxing options */
+-#define CLKR_SRC_CLKR		0
+-#define CLKR_SRC_CLKX		1
+-
+-/* FSR signal muxing options */
+-#define FSR_SRC_FSR		0
+-#define FSR_SRC_FSX		1
+-
+-/* McBSP functional clock sources */
+-#define MCBSP_CLKS_PRCM_SRC	0
+-#define MCBSP_CLKS_PAD_SRC	1
+-
+ /* Platform specific configuration */
+ struct omap_mcbsp_ops {
+ 	void (*request)(unsigned int);
+diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
+index a5518d7..acc9470 100644
+--- a/sound/soc/omap/mcbsp.h
++++ b/sound/soc/omap/mcbsp.h
+@@ -230,6 +230,18 @@ enum {
+ #define XRDYEN			BIT(10)
+ #define XEMPTYEOFEN		BIT(14)
+ 
++/* CLKR signal muxing options */
++#define CLKR_SRC_CLKR		0
++#define CLKR_SRC_CLKX		1
++
++/* FSR signal muxing options */
++#define FSR_SRC_FSR		0
++#define FSR_SRC_FSX		1
++
++/* McBSP functional clock sources */
++#define MCBSP_CLKS_PRCM_SRC	0
++#define MCBSP_CLKS_PAD_SRC	1
++
+ /* we don't do multichannel for now */
+ struct omap_mcbsp_reg_cfg {
+ 	u16 spcr2;
 -- 
 1.7.8.5
 
