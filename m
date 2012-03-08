@@ -1,20 +1,18 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: When closing the port
- select PRCM source for CLKS signal
-Date: Fri, 9 Mar 2012 00:48:59 +0200
-Message-ID: <CANOLnOOf0xHkfD4QgSr17Pa=ByyXj+2zTj0aQE1=sEA3Q7L+ow@mail.gmail.com>
-References: <1330940332-16188-1-git-send-email-peter.ujfalusi@ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC] Initialize volumes of HD-audio slave ctls
+Date: Fri, 9 Mar 2012 07:04:23 +0800
+Message-ID: <CAN8cciZNJvo_60b3icNT61+oy9n1U0Qy33u+T98OexPKwrL__A@mail.gmail.com>
+References: <s5haa3ryuxb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB303103AAE
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 23:49:01 +0100 (CET)
-Received: by iakh37 with SMTP id h37so1571151iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 14:48:59 -0800 (PST)
-In-Reply-To: <1330940332-16188-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1F2C1041B5
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 00:04:23 +0100 (CET)
+Received: by wgbed3 with SMTP id ed3so769525wgb.20
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 15:04:23 -0800 (PST)
+In-Reply-To: <s5haa3ryuxb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgNSwgMjAxMiBhdCAxMTozOCBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
-ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gSWYgZXh0ZXJuYWwgc291cmNlIGZvciB0aGUgQ0xLUyBz
-aWduYWwgc2VsZWN0aW9uIGtlcHQgYWZ0ZXIgdGhlIHBvcnQgaXMgbm8KPiBsb25nZXIgaW4gdXNl
-IHRoZSBzeXN0ZW0gbWlnaHQgcmVmdXNlIHRvIGdvIHN1c3BlbmQuCj4gVGhlcmUgaXMgYWxzbyBh
-IGNoYW5jZSB0aGF0IHRoZSBleHRlcm5hbCBjbG9jayBpcyBub3QgcnVubmluZyB3aGVuIG5leHQK
-PiB0aW1lIHRoZSBNY0JTUCBwb3J0IGlzIHN0YXJ0ZWQgd2hpY2ggY2FuIHJlc3VsdCBlcnJvcnMg
-d2hlbiB3ZSB0cnkgdG8KPiBhY2Nlc3MgTWNCU1AgcmVnaXN0ZXJzLgo+IFJlc2V0IHRoZSBDTEtT
-IHNvdXJjZSBiYWNrIHRvIFBSQ00gc291cmNlIHVuY29uZGl0aW9uYWxseS4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+CgpUZXN0ZWQtYnk6
-IEdyYXp2eWRhcyBJZ25vdGFzIDxub3Rhc2FzQGdtYWlsLmNvbT4KCj4gLS0tCj4gwqBzb3VuZC9z
-b2Mvb21hcC9tY2JzcC5jIHwgwqAgMTAgKysrKysrKysrKwo+IMKgMSBmaWxlcyBjaGFuZ2VkLCAx
-MCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9vbWFwL21jYnNwLmMgYi9zb3VuZC9zb2Mvb21hcC9tY2JzcC5jCj4gaW5kZXggZDcxNjc5My4u
-MjFkYmIwNSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mvb21hcC9tY2JzcC5jCj4gKysrIGIvc291
-bmQvc29jL29tYXAvbWNic3AuYwo+IEBAIC01NDgsNiArNTQ4LDE2IEBAIHZvaWQgb21hcF9tY2Jz
-cF9mcmVlKHN0cnVjdCBvbWFwX21jYnNwICptY2JzcCkKPgo+IMKgIMKgIMKgIMKgcmVnX2NhY2hl
-ID0gbWNic3AtPnJlZ19jYWNoZTsKPgo+ICsgwqAgwqAgwqAgLyoKPiArIMKgIMKgIMKgIMKgKiBT
-ZWxlY3QgQ0xLUyBzb3VyY2UgZnJvbSBpbnRlcm5hbCBzb3VyY2UgdW5jb25kaXRpb25hbGx5IGJl
-Zm9yZQo+ICsgwqAgwqAgwqAgwqAqIG1hcmtpbmcgdGhlIE1jQlNQIHBvcnQgYXMgZnJlZS4KPiAr
-IMKgIMKgIMKgIMKgKiBJZiB0aGUgZXh0ZXJuYWwgY2xvY2sgc291cmNlIHZpYSBNQ0JTUF9DTEtT
-IHBpbiBoYXMgYmVlbiBzZWxlY3RlZCB0aGUKPiArIMKgIMKgIMKgIMKgKiBzeXN0ZW0gd2lsbCBy
-ZWZ1c2UgdG8gZW50ZXIgaWRsZSBpZiB0aGUgQ0xLUyBwaW4gc291cmNlIGlzIG5vdCByZXNldAo+
-ICsgwqAgwqAgwqAgwqAqIGJhY2sgdG8gaW50ZXJuYWwgc291cmNlLgo+ICsgwqAgwqAgwqAgwqAq
-Lwo+ICsgwqAgwqAgwqAgaWYgKCFjcHVfY2xhc3NfaXNfb21hcDEoKSkKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIG9tYXAyX21jYnNwX3NldF9jbGtzX3NyYyhtY2JzcCwgTUNCU1BfQ0xLU19QUkNN
-X1NSQyk7Cj4gKwo+IMKgIMKgIMKgIMKgc3Bpbl9sb2NrKCZtY2JzcC0+bG9jayk7Cj4gwqAgwqAg
-wqAgwqBpZiAobWNic3AtPmZyZWUpCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBkZXZfZXJyKG1j
-YnNwLT5kZXYsICJNY0JTUCVkIHdhcyBub3QgcmVzZXJ2ZWRcbiIsIG1jYnNwLT5pZCk7Cj4gLS0K
-PiAxLjcuOC41Cj4KCi0tIApHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+2012/3/8, Takashi Iwai <tiwai@suse.de>:
+> Hi,
+>
+> the patch below is an attempt to initialize the volume / mutes of
+> slave controls (such as "Headphone", "Speaker") with vmaster in
+> HD-audio, so that the sound can come out only by changing the master
+> volume/mute.
+>
+> We have thought that such initializations could be done well in
+> alsactl init, but it seems that not everyone installs the latest and
+> greatest alsactl, and there is always a risk that any new controls may
+> be added before alsactl is updated and released.  Since the master
+> volume is set muted, the risk by this change should be low.
+>
+> patch_cirrus.c still doesn't support this because it's handling
+> vmaster by itself, but it can be fixed later, too.
+>
+> If anyone has a concern by this, please let me know.
+>
+
+Can you explain the dB calculation of the volume controls when there
+is a "virtual master" ?
+
+The Documentation only mention that all the slaves must have the same dB range
+
+There are codecs which only have "Headphone switch" but no "Headphone Volume"
+(e.g. alc660) and some 4 channels codecs still not implemented (e.g.
+ad1984 and ad1884) "Headphone Volume" control by using the extra DAC
