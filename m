@@ -1,13 +1,21 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/1] ALSA: hdspm - Provide ioctl_compat
-Date: Thu,  8 Mar 2012 15:38:04 +0100
-Message-ID: <1331217484-4206-2-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1331217484-4206-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [PATCH v2 00/17] ASoC: add imx-sgtl5000 machine
+ driver working with fsl_ssi
+Date: Thu, 8 Mar 2012 14:45:12 +0000
+Message-ID: <23552818-7136-47DD-A817-CB0EF5C805EF@freescale.com>
+References: <1330957865-19085-1-git-send-email-shawn.guo@linaro.org>
+	<4F57ECC7.1040100@freescale.com>,
+	<20120308131117.GE2499@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1331217484-4206-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from tx2outboundpool.messaging.microsoft.com
+	(tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id AB25810BA9D
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 15:45:32 +0100 (CET)
+In-Reply-To: <20120308131117.GE2499@S2101-09.ap.freescale.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,27 +25,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_hdspm uses its own ioctls to acquire config- and status information.
-Expose the corresponding ioctl handler via ioctl_compat, so that 32bit
-applications can use it on 64bit kernels.
+On Mar 8, 2012, at 7:11 AM, "Shawn Guo" <shawn.guo@linaro.org> wrote:
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+> What are the patches I can apply your ack?  Or every one in this series?
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 942cbe6..603cfc5 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6345,6 +6345,7 @@ static int __devinit snd_hdspm_create_hwdep(struct snd_card *card,
- 
- 	hw->ops.open = snd_hdspm_hwdep_dummy_op;
- 	hw->ops.ioctl = snd_hdspm_hwdep_ioctl;
-+	hw->ops.ioctl_compat = snd_hdspm_hwdep_ioctl;
- 	hw->ops.release = snd_hdspm_hwdep_dummy_op;
- 
- 	return 0;
--- 
-1.7.9.1
+The whole series. I didn't test individual patches, so I don't know if any one of them is bad by itself.
