@@ -1,19 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
- checking on codec-handle
-Date: Thu, 8 Mar 2012 14:50:21 -0600
-Message-ID: <4F591B8D.8090705@freescale.com>
+Subject: Re: [PATCH v3 07/11] ASoC: fsl: check property
+ 'compatible' for the machine name
+Date: Thu, 8 Mar 2012 14:50:47 -0600
+Message-ID: <4F591BA7.2050602@freescale.com>
 References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
-	<1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-8-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id D9E301041F8
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 21:50:34 +0100 (CET)
-In-Reply-To: <1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
+	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F41310BB90
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 21:50:57 +0100 (CET)
+In-Reply-To: <1331225990-27308-8-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +28,15 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 Shawn Guo wrote:
-> As Documentation/devicetree/bindings/powerpc/fsl/ssi.txt documented,
-> codec-handle is an optional property, so missing it should not be a
-> fatal error.]
+> Check /compatible rather than /model to determine the machine name.
+> The p1022ds older device trees get a different /model from the new
+> ones, while /compatible is consistent there, so checking /compatible
+> will save the bother of detecting older p1022ds device trees.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
 
-It's optional in the sense that if your SSI is not connected to anything,
-then you don't need to specify the codec handle.  If the SSI is connected
-to a codec, then the SSI node needs to point to it.
-
-> More importantly, the imx machine drivers to be added working with
-> fsl_ssi will not have this property, as they use new ASoC machine
-> driver binding mechanism.
-
-I want to see that binding documented in Documentation/devicetree/bindings
-first.
+Acked-by: Timur Tabi <timur@freescale.com>
 
 -- 
 Timur Tabi
