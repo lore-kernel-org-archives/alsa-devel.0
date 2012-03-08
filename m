@@ -1,23 +1,27 @@
-From: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: When closing the port
- select PRCM source for CLKS signal
-Date: Thu, 8 Mar 2012 16:30:13 +0200
-Message-ID: <CAPo=G1yK2-JVDp9Dq46WQBXuLUpWw4NXHy2FmBXS4QOo5VbVwA@mail.gmail.com>
-References: <1330940332-16188-1-git-send-email-peter.ujfalusi@ti.com>
-	<CANOLnOOzXycmiESekOz4s305KFV0SPLSJHQ5M2aFgBVwY-dJmQ@mail.gmail.com>
-	<4F5608EC.9070406@ti.com> <1331045048.16239.1.camel@odin>
-	<CANOLnONyWVZSBuu703R=ymEc49EVr2VMtfV9VmWi_Xf6eCGwPA@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Random process lockup on ARM board:
+ alsa-lib-1.0.25, FUTEX_WAIT_PRIVATE
+Date: Thu, 08 Mar 2012 15:35:00 +0100
+Message-ID: <4F58C394.3020200@ladisch.de>
+References: <1329393691.6830.20.camel@jonspc> <1329512682.29051.1.camel@jonspc>
+	<1329570128.6670.0.camel@jonspc> <4F400BBF.9020707@ladisch.de>
+	<1329603022.1089.57.camel@jonspc> <4F41FC28.1070605@ladisch.de>
+	<1329926198.22918.10.camel@jonspc> <4F45167A.6080706@ladisch.de>
+	<1329933773.24266.44.camel@jonspc>
+	<4F58736F.6010500@ladisch.de> <1331199625.22455.7.camel@jonspc>
+	<4F588213.2030600@ladisch.de> <1331203724.22455.44.camel@jonspc>
+	<4F589B58.6090203@ladisch.de> <1331214439.27232.12.camel@jonspc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76])
-	by alsa0.perex.cz (Postfix) with ESMTP id D230010BA78
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 15:30:19 +0100 (CET)
-Received: by mail-iy0-f181.google.com with SMTP id o28so868212iao.26
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 06:30:13 -0800 (PST)
-In-Reply-To: <CANOLnONyWVZSBuu703R=ymEc49EVr2VMtfV9VmWi_Xf6eCGwPA@mail.gmail.com>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 4526810BA92
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 15:31:46 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id A3FEB20D28
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 09:31:42 -0500 (EST)
+In-Reply-To: <1331214439.27232.12.camel@jonspc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,47 +31,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: jon@jonshouse.co.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBUaHUsIE1hciA4LCAyMDEyIGF0IDQ6MDAgUE0sIEdyYXp2eWRhcyBJZ25vdGFzIDxu
-b3Rhc2FzQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVHVlLCBNYXIgNiwgMjAxMiBhdCA0OjQ0IFBN
-LCBMaWFtIEdpcmR3b29kIDxscmdAdGkuY29tPiB3cm90ZToKPj4gSSd2ZSBub3cgYXBwbGllZCB0
-aGVzZSBwYXRjaGVzIG9uIHRvcCBvZiBteSBmb3ItMy40Lgo+Cj4gSSBwdWxsZWQgdGhlc2Ugb24g
-dG9wIG9mIHRvZGF5J3MgbGludXgtbmV4dCBhbmQgaXQgZG9lc24ndCBidWlsZCBhcyBhIG1vZHVs
-ZToKCk9wcHMuIEkgaGF2ZSBub3QgdHJpZWQgaXQgYXMgYSBtb2R1bGUuLi4KVGhlcmUgc2VhbXMg
-dG8gYmUgYW4gaXNzdWUgd2l0aCB0aGUgS2NvbmZpZy9NYWtlZmlsZSBjaGFuZ2UuClRoYW5rcyBm
-b3IgcmVwb3J0aW5nIGl0LCBJJ2xsIGZpeCBpdC4KCi0tIApQw6l0ZXIKCj4KPiDCoEJ1aWxkaW5n
-IG1vZHVsZXMsIHN0YWdlIDIuCj4gwqBNT0RQT1NUIDM2IG1vZHVsZXMKPiBFUlJPUjogIm9tYXBf
-bWNic3Bfc3RhcnQiIFtzb3VuZC9zb2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVm
-aW5lZCEKPiBFUlJPUjogIm9tYXBfbWNic3BfZ2V0X3R4X2RlbGF5Igo+IFtzb3VuZC9zb2Mvb21h
-cC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKPiBFUlJPUjogIm9tYXBfc3RfZGlz
-YWJsZSIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQo+
-IEVSUk9SOiAib21hcF9tY2JzcF9pbml0IiBbc291bmQvc29jL29tYXAvc25kLXNvYy1vbWFwLW1j
-YnNwLmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJvbWFwX3N0X3NldF9jaGdhaW4iIFtzb3VuZC9z
-b2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKPiBFUlJPUjogIm9tYXBf
-bWNic3Bfc2V0X3J4X3RocmVzaG9sZCIKPiBbc291bmQvc29jL29tYXAvc25kLXNvYy1vbWFwLW1j
-YnNwLmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJvbWFwX3N0X2dldF9jaGdhaW4iIFtzb3VuZC9z
-b2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKPiBFUlJPUjogIm9tYXBf
-bWNic3BfZnJlZSIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZp
-bmVkIQo+IEVSUk9SOiAib21hcDJfbWNic3Bfc2V0X2Nsa3Nfc3JjIgo+IFtzb3VuZC9zb2Mvb21h
-cC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKPiBFUlJPUjogIm9tYXBfc3RfaXNf
-ZW5hYmxlZCIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVk
-IQo+IEVSUk9SOiAib21hcF9tY2JzcF9zdG9wIiBbc291bmQvc29jL29tYXAvc25kLXNvYy1vbWFw
-LW1jYnNwLmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJvbWFwMl9tY2JzcDFfbXV4X2Zzcl9zcmMi
-Cj4gW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQo+IEVS
-Uk9SOiAib21hcF9tY2JzcF9yZXF1ZXN0IiBbc291bmQvc29jL29tYXAvc25kLXNvYy1vbWFwLW1j
-YnNwLmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJvbWFwMl9tY2JzcDFfbXV4X2Nsa3Jfc3JjIgo+
-IFtzb3VuZC9zb2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Aua29dIHVuZGVmaW5lZCEKPiBFUlJP
-UjogIm9tYXBfbWNic3BfY29uZmlnIiBbc291bmQvc29jL29tYXAvc25kLXNvYy1vbWFwLW1jYnNw
-LmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJvbWFwX21jYnNwX2dldF9yeF9kZWxheSIKPiBbc291
-bmQvc29jL29tYXAvc25kLXNvYy1vbWFwLW1jYnNwLmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJv
-bWFwX21jYnNwX3NldF90eF90aHJlc2hvbGQiCj4gW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21h
-cC1tY2JzcC5rb10gdW5kZWZpbmVkIQo+IEVSUk9SOiAib21hcF9tY2JzcF9zeXNmc19yZW1vdmUi
-Cj4gW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC1tY2JzcC5rb10gdW5kZWZpbmVkIQo+IEVS
-Uk9SOiAib21hcF9zdF9lbmFibGUiIFtzb3VuZC9zb2Mvb21hcC9zbmQtc29jLW9tYXAtbWNic3Au
-a29dIHVuZGVmaW5lZCEKPgo+Cj4gLS0KPiBHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Jonathan Andrews wrote:
+> Getting closer, alsalib now builds without the need for pthreads but
+> seems to insist on dlopen dlclose even in static lib ?
+
+Add --without-libdl.
+
+
+Regards,
+Clemens
