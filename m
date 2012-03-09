@@ -1,22 +1,21 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: fix
 	snd_pcm_hw_rule_add arguments
-Date: Fri, 09 Mar 2012 14:01:32 +0200
-Message-ID: <4F59F11C.2060107@ti.com>
+Date: Fri, 09 Mar 2012 14:02:00 +0200
+Message-ID: <4F59F138.30909@ti.com>
 References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
 	<1331248757-3408-2-git-send-email-notasas@gmail.com>
-	<4F59D6A3.7020904@ti.com>
-	<CANOLnOOiWV+Oxb_9PvsnDsY7oAMTFJzzLWZ53hj2yY6aTGZR6g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from psmtp.com (na3sys009aog136.obsmtp.com [74.125.149.85])
-	by alsa0.perex.cz (Postfix) with ESMTP id 700DA10B9DA
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:01:49 +0100 (CET)
-Received: by mail-lpp01m010-f41.google.com with SMTP id z14so2142997lag.14
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 04:01:36 -0800 (PST)
-In-Reply-To: <CANOLnOOiWV+Oxb_9PvsnDsY7oAMTFJzzLWZ53hj2yY6aTGZR6g@mail.gmail.com>
+Received: from na3sys009amx259.postini.com (na3sys009aog130.obsmtp.com
+	[74.125.149.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id B010410BA33
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:02:04 +0100 (CET)
+Received: by mail-lpp01m010-f54.google.com with SMTP id v3so1949003lag.41
+	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 04:02:03 -0800 (PST)
+In-Reply-To: <1331248757-3408-2-git-send-email-notasas@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,18 +29,12 @@ To: Grazvydas Ignotas <notasas@gmail.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/09/2012 12:45 PM, Grazvydas Ignotas wrote:
-> That's all fine, but the argument order is wrong, take a look at
-> snd_pcm_hw_rule_add definition:
-> =
+On 03/09/2012 01:19 AM, Grazvydas Ignotas wrote:
+> We are setting SNDRV_PCM_HW_PARAM_BUFFER_SIZE based on
+> SNDRV_PCM_HW_PARAM_CHANNELS, not vice versa. This bug didn't
+> have much impact because the rules are evaluated multiple times
+> by the core, and intended value got set eventually.
+> 
+> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
 
-> /**
->  * snd_pcm_hw_rule_add - add the hw-constraint rule
->  * @var: the variable to evaluate
->  * @dep: the dependent variables
-
-True.
-
--- =
-
-P=E9ter
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
