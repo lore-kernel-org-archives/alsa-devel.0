@@ -1,172 +1,80 @@
-From: Adam Lee <adam8157@gmail.com>
-Subject: Bug#663090: [alsa-devel] amixer: convert percentage into db wrongly
-Date: Fri, 9 Mar 2012 18:06:17 +0800
-Message-ID: <20120309100617.GH2130@adam-station.nay.redhat.com>
-References: <20120308123632.GA8920@adam-laptop>
- <20120308163001.GA2991@samweis.home.lxtec.de>
- <s5h399jyrc5.wl%tiwai@suse.de>
- <20120309042247.GE2130@adam-station.nay.redhat.com>
- <s5haa3qnup0.wl%tiwai@suse.de>
- <20120309090717.GG2130@adam-station.nay.redhat.com>
- <s5hty1ym898.wl%tiwai@suse.de>
-Reply-To: Adam Lee <adam8157@gmail.com>, 663090@bugs.debian.org
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: fix
+	snd_pcm_hw_rule_add arguments
+Date: Fri, 9 Mar 2012 12:45:24 +0200
+Message-ID: <CANOLnOOiWV+Oxb_9PvsnDsY7oAMTFJzzLWZ53hj2yY6aTGZR6g@mail.gmail.com>
+References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
+	<1331248757-3408-2-git-send-email-notasas@gmail.com>
+	<4F59D6A3.7020904@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.663090.B663090.133128764025104@bugs.debian.org>
-Content-Disposition: inline
-In-Reply-To: <s5hty1ym898.wl%tiwai@suse.de>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Elimar Riesebieter <riesebie@lxtec.de>, 663090@bugs.debian.org, alsa-devel@alsa-project.org, Vincent Cheng <Vincentc1208@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09F45103ACF
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 11:45:25 +0100 (CET)
+Received: by iakh37 with SMTP id h37so2383905iak.38
+	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 02:45:24 -0800 (PST)
+In-Reply-To: <4F59D6A3.7020904@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 09, 2012 at 10:30:27AM +0100, Takashi Iwai wrote:
-> At Fri, 9 Mar 2012 17:07:17 +0800,
-> Adam Lee wrote:
-> > 
-> > On Fri, Mar 09, 2012 at 07:40:27AM +0100, Takashi Iwai wrote:
-> > > At Fri, 9 Mar 2012 12:22:47 +0800,
-> > > Adam Lee wrote:
-> > > > 
-> > > > Add Vincent in cc, because conky read amixer's result.
-> > > > 
-> > > > On Thu, Mar 08, 2012 at 05:45:14PM +0100, Takashi Iwai wrote:
-> > > > > > * Adam Lee <adam8157@gmail.com> [2012-03-08 20:36 +0800]:
-> > > > > > 
-> > > > > > Package: alsa-utils
-> > > > > > Version: 1.0.25-1
-> > > > > > Severity: important
-> > > > > > 
-> > > > > > 
-> > > > > > db is not linear, but amixer believe it is.
-> > > > > > 
-> > > > > > "amixer get Master" says "Limits: Playback 0 - 74", then everytime I run
-> > > > > > "amixer -q sset Master 10%-", there is 8db dec.
-> > > > > > 
-> > > > > > For example, at first Master is 100% and 0db, both alsamixer and amixer
-> > > > > > think it is, and after I run "amixer -q sset Master 10%-", both
-> > > > > > alsamixer and amixer says Master is -8.00db, but alsamixer says it is
-> > > > > > 72%, amixer says it is 89%.
-> > > > > > 
-> > > > > > alsamixer is right, amixer calc and set wrongly.
-> > > > > 
-> > > > > No, both are correct.  You are dreaming too much on the world unified
-> > > > > percentage representation :)
-> > > > > 
-> > > > > The percentage in amixer has nothing to do with dB level.
-> > > > > It's just the percentage of the raw value range of that mixer
-> > > > > element.  Thus showing 89% is correct.  It's 10% down from 100%
-> > > > > (1% is because of the resolution of the raw values).
-> > > > > 
-> > > > > Now, alsamixer shows the percentage in a different way.  It's
-> > > > > explained well in the source code (alsamixer/volume_mapping.c), but
-> > > > > not mentioned in the man page, unfortunately.
-> > > > > 
-> > > > >  * The mapping is designed so that the position in the interval is proportional
-> > > > >  * to the volume as a human ear would perceive it (i.e., the position is the
-> > > > >  * cubic root of the linear sample multiplication factor).  For controls with
-> > > > >  * a small range (24 dB or less), the mapping is linear in the dB values so
-> > > > >  * that each step has the same size visually.  Only for controls without dB
-> > > > >  * information, a linear mapping of the hardware volume register values is used
-> > > > >  * (this is the same algorithm as used in the old alsamixer).
-> > > > > 
-> > > > > The percentage representation in alsamixer corresponds to this
-> > > > > mapping, thus it's neither dB nor linear percent.
-> > > > > 
-> > > > 
-> > > > Hi, Takashi
-> > > > 
-> > > > Thank you for replying. But I still insist this is a bug. Three
-> > > > questions:
-> > > > 
-> > > > 1, several months ago, it's OK, both amixer and alsamixer use the human
-> > > > mapping(0-10% and 90%-100% are the same change by a human ear), why not
-> > > > now?
-> > > 
-> > > amixer hasn't been changed until yet.  It handles either in raw values
-> > > or in dB.  No human-ear mapping at all.  It's never changed since
-> > > years, and won't be changed.  If the volume mapping would be
-> > > implemented to amixer in future, it must be only optional.
-> > > 
-> > > Only the recent alsamixer introduced the volume mapping to visualize
-> > > the volumes reasonably.
-> > > 
-> > 
-> > OK, thank you. Maybe an optional will make everyone happy.
-> > 
-> > > > 2, conky(Vincent, I mean ${mixer}), some other software, lot of user's
-> > > > scripts use amixer to set or get volume, expecting the human mapping,
-> > > > why change the behavior?
-> > > 
-> > > You must be smoking something bad.  The behavior of amixer hasn't been
-> > > changed.
-> > > 
-> > 
-> > I figured out a reason probably, when the limits range is wide, like
-> > 0-65536, amixer's mapping and alsamixer's human-ear mapping are close.
-> > 
-> > If I remember right, my hardware's limits was 0-65536, but it becomes
-> > 0-74 after I run "alsactl init", but unfortunately, I don't know how to
-> > modify it back.
-> > 
-> > > > 3, alsamixer and amixer use the same dB value, why there is difference
-> > > > in percentage? If alsa-utils developer think the human mapping sucks,
-> > > > why you guys still use it in alsamixer? There is no "both correct", the
-> > > > difference confuses user...
-> > > 
-> > > That's true.  alsamixer should have stopped showing the stupid
-> > > percentage.
-> > > 
-> > > The biggest understand is that people (including you) think there is
-> > > an absolutely perfect percentage definition for the sound level.  It's
-> > > an illusion.
-> > > 
-> > 
-> > I don't expect an absolutely perfect percentage definition. I want a
-> > human-ear mapping, which alsamixer does well, 100% is about as ten times
-> > loud as 10%.
-> 
-> How did you measure _quantitatively_ it's exactly ten times louder?
-> And you think 50% is ten times loud as 5% volume, 10% is ten times
-> loud as 1%?  Things aren't so easy, unfortunately.
-> 
-> > But amixer doesn't work like that, amixer's 100% is about
-> > as *one hundred times* as amixer's 10%.
-> 
-> Yes, this is what's amixer expected to behave.  It's a value just
-> representing the percentage of a "raw value" of the mixer element.
-> It never says it's corresponding to any practical volume.  This is the
-> misunderstanding first of all.
-> 
-> For example, I guess in your 64k case, the raw value is even not in dB
-> unit but it's a linear volume.  amixer doesn't care.  10% means only
-> the 6553 of 65536.  That's all.  So simple.
-> (In addition, amixer can handle dB, e.g. amixer set Master +10dB or
->  such.  But it's not suitable for percentage unit because dB level
->  can't be represented in the absolute percent volume -- what is 10% in
->  dB?)
-> 
-> > Maybe it is beautiful, and alsamixer's human-ear mapping is stupid in
-> > the sound science universe. But as a common user, I don't think so. And
-> > I don't know how you guys put up with it :(
-> 
-> No, you misunderstand what I wrote.  alsamixer's mapping is really an
-> improvement.  That's why it was implemented recently.  But if it shows
-> a different number, user may wonder, just like you did.  If you didn't
-> see a number, you didn't notice the difference :)
-> 
-> But amixer wasn't changed.  amixer is a tool to manipulate raw
-> values.  Of course, it'd be also nice to implement the same percentage
-> expression, but as already mentioned, it should be activated only via
-> an option.  The default behavior of amixer must not be changed for
-> compatibility reason.
-> 
-
-OK.
-
-Looking forward to the option, if your time and other capacity allow :)
+T24gRnJpLCBNYXIgOSwgMjAxMiBhdCAxMjowOCBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDMvMDkvMjAxMiAwMToxOSBBTSwgR3JhenZ5ZGFz
+IElnbm90YXMgd3JvdGU6Cj4+IFdlIGFyZSBzZXR0aW5nIFNORFJWX1BDTV9IV19QQVJBTV9CVUZG
+RVJfU0laRSBiYXNlZCBvbgo+PiBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsIG5vdCB2aWNl
+IHZlcnNhLgo+Cj4gVGhlIGludGVudGlvbiBpcyB0byBzZXQgdGhlIGJ1ZmZlciBzaXplIGJhc2Vk
+IG9uIHRoZSBjaGFubmVscyBoZXJlLgo+IFRoaXMgaXMgbmVlZGVkIGJlY2F1c2Ugb2YgdGhlIE1j
+QlNQIGludGVybmFsIEZJRk8gb3BlcmF0aW9uLgo+IEl0IGlzIHdvcmQgYmFzZWQuIEFzIGV4YW1w
+bGUgb24gTWNCU1AyIGhhcyAxMjgwIHdvcmQgRklGTy4KPiBJbiBtb25vIHN0cmVhbSBpdCBpcyAx
+MjgwIHNhbXBsZSBsb25nLgo+IEluIHN0ZXJlbyBpdCBpcyA2NDAgKHN0ZXJlbykgc2FtcGxlIGxv
+bmcuCj4gSW4gZm91ciBjaGFubmVsIG1vZGUgaXQgaXMgMzIwICg0IGNoYW5uZWwpIHNhbXBsZSBs
+b25nLgoKVGhhdCdzIGFsbCBmaW5lLCBidXQgdGhlIGFyZ3VtZW50IG9yZGVyIGlzIHdyb25nLCB0
+YWtlIGEgbG9vayBhdApzbmRfcGNtX2h3X3J1bGVfYWRkIGRlZmluaXRpb246CgovKioKICogc25k
+X3BjbV9od19ydWxlX2FkZCAtIGFkZCB0aGUgaHctY29uc3RyYWludCBydWxlCiAqIEB2YXI6IHRo
+ZSB2YXJpYWJsZSB0byBldmFsdWF0ZQogKiBAZGVwOiB0aGUgZGVwZW5kZW50IHZhcmlhYmxlcwpp
+bnQgc25kX3BjbV9od19ydWxlX2FkZChzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lLCB1
+bnNpZ25lZCBpbnQgY29uZCwKICAgICAgICAgICAgICAgICAgICAgICAgaW50IHZhciwKICAgICAg
+ICAgICAgICAgICAgICAgICAgc25kX3BjbV9od19ydWxlX2Z1bmNfdCBmdW5jLCB2b2lkICpwcml2
+YXRlLAogICAgICAgICAgICAgICAgICAgICAgICBpbnQgZGVwLCAuLi4pCgpTbyB2YXIgc2hvdWxk
+IGJlIFNORFJWX1BDTV9IV19QQVJBTV9CVUZGRVJfU0laRSwgZGVwClNORFJWX1BDTV9IV19QQVJB
+TV9DSEFOTkVMUywgYnV0IGl0IGlzIHRoZSBvcHBvc2l0ZSBub3cuCgo+Cj4+IFRoaXMgYnVnIGRp
+ZG4ndAo+PiBoYXZlIG11Y2ggaW1wYWN0IGJlY2F1c2UgdGhlIHJ1bGVzIGFyZSBldmFsdWF0ZWQg
+bXVsdGlwbGUgdGltZXMKPj4gYnkgdGhlIGNvcmUsIGFuZCBpbnRlbmRlZCB2YWx1ZSBnb3Qgc2V0
+IGV2ZW50dWFsbHkuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEdyYXp2eWRhcyBJZ25vdGFzIDxub3Rh
+c2FzQGdtYWlsLmNvbT4KPj4gLS0tCj4+IMKgc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jIHwg
+wqAgwqA0ICsrLS0KPj4gwqAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
+dGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYyBi
+L3NvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYwo+PiBpbmRleCAxMGViNjQ1Li4yMDczNjVjIDEw
+MDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFwLW1jYnNwLmMKPj4gKysrIGIvc291bmQv
+c29jL29tYXAvb21hcC1tY2JzcC5jCj4+IEBAIC0xNDIsMTAgKzE0MiwxMCBAQCBzdGF0aWMgaW50
+IG9tYXBfbWNic3BfZGFpX3N0YXJ0dXAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
+YW0sCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgICogc21hbGxlciBidWZmZXIgdGhhbiB0aGUgRklG
+TyBzaXplIHRvIGF2b2lkIHVuZGVycnVucwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCAqLwo+PiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCBzbmRfcGNtX2h3X3J1bGVfYWRkKHN1YnN0cmVhbS0+cnVudGlt
+ZSwgMCwKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0hXX1BBUkFNX0JVRkZFUl9TSVpF
+LAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBv
+bWFwX21jYnNwX2h3cnVsZV9taW5fYnVmZmVyc2l6ZSwKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgbWNic3AsCj4+IC0gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0hXX1BBUkFNX0JVRkZF
+Ul9TSVpFLCAtMSk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgU05EUlZfUENNX0hXX1BBUkFNX0NIQU5ORUxTLCAtMSk7Cj4+Cj4+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIC8qIE1ha2Ugc3VyZSwgdGhhdCB0aGUgcGVyaW9kIHNpemUgaXMgYWx3YXlz
+IGV2ZW4gKi8KPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgc25kX3BjbV9od19jb25zdHJhaW50X3N0
+ZXAoc3Vic3RyZWFtLT5ydW50aW1lLCAwLAo+CgotLSAKR3Jhxb52eWRhcwpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
