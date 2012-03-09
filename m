@@ -1,50 +1,92 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: da7210: Remove extra registers from
- defaults list
-Date: Fri, 9 Mar 2012 12:36:07 +0000
-Message-ID: <20120309123606.GT3273@opensource.wolfsonmicro.com>
-References: <1331281290.30539.15.camel@matrix>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: make minimum period
+ size larger than FIFO
+Date: Fri, 09 Mar 2012 14:42:05 +0200
+Message-ID: <4F59FA9D.8070009@ti.com>
+References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
+	<1331248757-3408-4-git-send-email-notasas@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="80Ds8Z/hZmemMosa"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1331281290.30539.15.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from psmtp.com (na3sys009aog133.obsmtp.com [74.125.149.82])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF9E110B990
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:42:25 +0100 (CET)
+Received: by lahj13 with SMTP id j13so1598250lah.19
+	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 04:42:08 -0800 (PST)
+In-Reply-To: <1331248757-3408-4-git-send-email-notasas@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/09/2012 01:19 AM, Grazvydas Ignotas wrote:
+> With a program operating in minimum sized periods, first write
+> will cause a transfer that will fill mcbsp FIFO quickly, and there
+> will be no more data to DMA before program manages to do another
+> write. As the core considers this as underflow condition, we may
+> get many underflows at the start.
+> Increase minimum period size by half to deal with this problem.
 
---80Ds8Z/hZmemMosa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Not entirely sure about the last two patch...
+The implications will be big for existing user space since we are going
+to limit the period size in this way (on OMAP3 McBSP2):
+48K stereo: 20ms min
+44.1K stereo: 21.768ms min
+8K stereo: 120ms min
+8K mono: 240ms min
 
-On Fri, Mar 09, 2012 at 01:51:30PM +0530, Ashish Chavan wrote:
-> This patch removes following registers from reg map defaults,
+As I recall n900 (+ MeeGo) uses 5ms period sizes in call cases on McBSP2.
 
-Applied, thanks.
+So I'm a bit reluctant to ack these (it is not an issue on other McBSP
+ports, and on OMAP4, but OMAP3 McBSP2 is problematic IMHO).
 
---80Ds8Z/hZmemMosa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Jarkko: What do you think?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+If this is a real issue in Pandora, could it be solved with adding
+/etc/asound.conf to the filesystem, and limit the period size via that?
 
-iQIcBAEBAgAGBQJPWfkvAAoJEBus8iNuMP3dPKMP/RgnbYFT2Le7sWWB8spekrKe
-K4mTj8MoYi1vjcdlU3r6qjsuzCcW41wdOLv5nHIiRI494jSx1LGuMUmHskSV/jUE
-XLt+YnNWe/6rnTTORpzS/ba5oq2rDJ3/ec0w7hnTcPKCFW+2jhIOJVNijJMC4hIz
-Hy0W41UEYA7QM1Ox3r83SrGOzZ7TZmGC1q7A0Fb1zowpZdWX8zVvsIeCipWZYn1c
-yqL0lTeTjGSw8EYCWdJVb1Gf2kJczaQ4+cFUJ99t8CDe9Y7gaml58bWcqYCToVK8
-cAkVqDFXQUHBBnyAUZh968doakoKtzYDgqt3enXoICLwrqCA9k9W7Pg9BCxqegOv
-RSZTOzbE1ZKmvdDf1CbTcszeGenHeFJ6DTtbyyVNBX/ZTDkcZAptys8xDNUaAyQY
-zEIueS64SJTf9emBVEYItfctsjBhRKDXgrM/LqEYunsWqLjpi+ptftog3LK8Je6H
-3PG8q7zTcPkqfY+EDYutBbH3jOZlFx3qXE3af6KmZViUOo/h8QK+JlzcGBOYDa0R
-F+/1wlZ74rffy/hvY92uxeCl3CXzaWpz8RVhtKUk66yYa0SD54F2oGnE16Yda83D
-qsX02Mxh4tt5Hk9uRUHD5l1nGbPJKEdyK8f8rlVGl4KR23uBaH1KuSzdIGR4QKV/
-CTeV/A7d9vFIIJXE/UYr
-=/idQ
------END PGP SIGNATURE-----
+-- =
 
---80Ds8Z/hZmemMosa--
+P=E9ter
+
+> =
+
+> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+> ---
+>  sound/soc/omap/omap-mcbsp.c |   11 +++++++++++
+>  1 files changed, 11 insertions(+), 0 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index b9d1272..b373a0b 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -108,6 +108,17 @@ static int omap_mcbsp_hwrule_min_period_size(struct =
+snd_pcm_hw_params *params,
+>  	size =3D mcbsp->pdata->buffer_size;
+>  =
+
+>  	frames.min =3D size / channels->min;
+> +
+> +	/*
+> +	 * If period is not larger than FIFO, it may be transfered faster than
+> +	 * program operating in period sizes is able to send 2 periods, so
+> +	 * underrun condition can be triggered at the beginning of stream.
+> +	 * This is because underrun is triggered as soon as DMA has no more
+> +	 * data to send, and we get this from the start if period is too small.
+> +	 * To deal with this, set period larger than FIFO size.
+> +	 */
+> +	frames.min =3D frames.min + frames.min / 2;
+> +
+>  	frames.integer =3D 1;
+>  	return snd_interval_refine(period_size, &frames);
+>  }
