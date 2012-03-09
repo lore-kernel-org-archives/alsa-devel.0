@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
- checking on codec-handle
-Date: Fri, 9 Mar 2012 11:55:44 +0000
-Message-ID: <20120309115540.GE3273@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 00/11] ASoC: add imx-sgtl5000 machine
+ driver working with fsl_ssi
+Date: Fri, 9 Mar 2012 11:59:59 +0000
+Message-ID: <20120309115956.GF3273@opensource.wolfsonmicro.com>
 References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
-	<1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
-	<4F591B8D.8090705@freescale.com>
+	<4F5910EE.8090408@freescale.com>
+	<20120309011914.GF2499@S2101-09.ap.freescale.net>
+	<4F5966DC.6090201@freescale.com>
+	<20120309071347.GM2499@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2137836380242901034=="
+Content-Type: multipart/mixed; boundary="===============0837324951358409368=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 74E3910B98E
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 12:55:57 +0100 (CET)
-In-Reply-To: <4F591B8D.8090705@freescale.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A193910B9DA
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:00:09 +0100 (CET)
+In-Reply-To: <20120309071347.GM2499@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,62 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2137836380242901034==
+--===============0837324951358409368==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u5E4XgoOPWr4PD9E"
+	protocol="application/pgp-signature"; boundary="SxgehGEc6vB0cZwN"
 Content-Disposition: inline
 
 
---u5E4XgoOPWr4PD9E
+--SxgehGEc6vB0cZwN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 08, 2012 at 02:50:21PM -0600, Timur Tabi wrote:
-> Shawn Guo wrote:
+On Fri, Mar 09, 2012 at 03:13:49PM +0800, Shawn Guo wrote:
 
-> > More importantly, the imx machine drivers to be added working with
-> > fsl_ssi will not have this property, as they use new ASoC machine
-> > driver binding mechanism.
+> My bisect tells that the offending commit is:
 
-> I want to see that binding documented in Documentation/devicetree/bindings
-> first.
+>   96acc35 (ASoC: DAPM: Make sure DAPM widget IO ops hold the component mutex)
 
-That binding will generally be per machine driver.
+> But I do not understand why yet.
 
---u5E4XgoOPWr4PD9E
+It'll be deadlocking somewhere I expect - turning on the soft lockup
+detector will probably make it obvious.
+
+--SxgehGEc6vB0cZwN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPWe+2AAoJEBus8iNuMP3d/L0P/jzbcl6EACr5lMFFfdOOg883
-Ep2OdqUzTgZTXRH/nFvhakywZazmmcmq08FFApW2i7OCpILkYgJsst1u9FCQ+dvb
-EHmxt4vjPz2WxAtjMcOLq6XLlXXXojpeYrYhQyLkD3sp2TavubniSe8ybc3kqbm8
-GwkFi6sSdaVmTtKk//5mQR0gwjvE8grRv8Md6zTwhIewut7DC/3z6FrNN4/k7tHs
-FtH1eOxYM+5yEPfRrva+nD8DeebXh5cEbQGxcQMNN6VJKJz+9aqwWf/wRi28b68a
-XMBN8qip29bCD8Q6oP8k7OQxW6dHICqIeJNUxxsHVVognrLOeILWZm61UgBmyZ9+
-QsiRqMftJ1MxmpmJ7nYzjiWweorjzXq4FNNQocx2YKUt4eqZdJ98ozU+KD/bd2uv
-tNwIq4EHbxnfUxxeFXKmLMb5AU93bzQQDSl/422UBYBvAuRgjiNf4GJdjZb+Douo
-B781cSX1WZ1tyZ5xyjB8I2IeUM0Cap+XCRJSpKs3WvuWgDWBuTq5GbAlWcVYDRfa
-pMFh4fMJKN5zqZI2OlqvsOKtBYYm0kE8TUiEZZ5YVP2j8C9SoWqUs+qAD7Dy4Qw4
-Fn/yYWtz7oQCk2+fHR3XiCiTwOl1889dJ5KZuE5/zZWy0mnj1kcebPVeePyYDWKy
-F0VXcJQDVZdwCIEwOWWV
-=o4N5
+iQIcBAEBAgAGBQJPWfCnAAoJEBus8iNuMP3dL7EP/3MyuHj250Eg+WReWcuCBQr5
+TbnfMq5EPylcnyxUZVRptA7rfWS1LL1O1HL/gbdUUxaXofvZnuMSSwoY3mQBNacj
+eR3s2uLJoYCZXNPDKp0GAbW0BezTD3vY2I1a+oWOlA4saBSvOFYPN4dPBKnt3fUF
+i+3r5XZNqIEIMI6ujaNlBhv3Rq3ZJshpms5wZSlo+H3Ir1ULaEgs3yoFDPTTRfge
+brB07gNWvMZUdtduuvoGGTWS9DngzdfNNcZHb0meeqMMlCSPjHaiucth/Y8cRixV
+Nh93/SbOCMnWvIkvyRlZp1dtbPUuzBoO00jqRrz9E99speYCv2TzAezyeA0Hg/cR
+byjdXrJ1/IpVtg8M8Z84D3gydlMISIJYpthuKkJQKzq+DFbZ/Awu5C14uYtR8QGA
+M+t1OzPcaJ0T9jAfLoPBC67j+Bc1Alcw6SHngkSp+DGCJE9Q1CwHZCkt7Nmwi0dH
+IJVG0ciIcWWm4OlbgsVRrlwNvkaXPPU6I/LTpmNNEsK1jpeFgcAB0U1Cd2YvM1FS
+8yzbEuThVspSXbJlZ+aKE4RI1BhsHnpxdlZVWoRoNJhqW0VsQ1rbKKrlTzKkgZGN
+UN7z+xzVo8ANbE7iFYVpuQXPNhPDytMa0qmUgrB4uDg5aLEw2WQYYuu2GXgl3zkQ
+3WsD+jpGCrn8gvn4jxoH
+=mx3B
 -----END PGP SIGNATURE-----
 
---u5E4XgoOPWr4PD9E--
+--SxgehGEc6vB0cZwN--
 
---===============2137836380242901034==
+--===============0837324951358409368==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2137836380242901034==--
+--===============0837324951358409368==--
