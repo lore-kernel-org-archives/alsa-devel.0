@@ -1,90 +1,70 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: make minimum period
- size larger than FIFO
-Date: Fri, 9 Mar 2012 23:07:00 +0200
-Message-ID: <CANOLnOPZ+bMy8FyAJ0s6QSz1NMEZjgjX_ZXDkT+dFU3q8vefgg@mail.gmail.com>
-References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
-	<1331248757-3408-4-git-send-email-notasas@gmail.com>
-	<4F59FA9D.8070009@ti.com>
-	<CANOLnOM+9M2BTXasnAUqFyYAg03LE0TD266ArYDyxfRsY26QsQ@mail.gmail.com>
-	<4F5A08B3.8080705@ti.com>
+From: Jordi Mallach <jordi@debian.org>
+Subject: Bug#663090: [Pkg-alsa-devel] Bug#663090: [alsa-devel] amixer: convert percentage into db wrongly
+Date: Fri, 9 Mar 2012 22:48:14 +0100
+Message-ID: <20120309214814.GA11406@aigua.oskuro.net>
+References: <20120308123632.GA8920@adam-laptop>
+ <20120308163001.GA2991@samweis.home.lxtec.de>
+ <s5h399jyrc5.wl%tiwai@suse.de>
+ <20120309042247.GE2130@adam-station.nay.redhat.com>
+ <s5haa3qnup0.wl%tiwai@suse.de>
+ <20120309090717.GG2130@adam-station.nay.redhat.com>
+ <s5hty1ym898.wl%tiwai@suse.de>
+ <20120309100617.GH2130@adam-station.nay.redhat.com>
+ <s5hmx7qxb40.wl%tiwai@suse.de>
+Reply-To: Jordi Mallach <jordi@debian.org>, 663090@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4EA52103D74
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 22:07:01 +0100 (CET)
-Received: by werg1 with SMTP id g1so1516425wer.38
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 13:07:01 -0800 (PST)
-In-Reply-To: <4F5A08B3.8080705@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.663090.B663090.13313297085455@bugs.debian.org>
+Content-Disposition: inline
+In-Reply-To: <s5hmx7qxb40.wl%tiwai@suse.de>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: Takashi Iwai <tiwai@suse.de>, 663090@bugs.debian.org
+Cc: Adam Lee <adam8157@gmail.com>, Vincent Cheng <Vincentc1208@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXIgOSwgMjAxMiBhdCAzOjQyIFBNLCBQZXRlciBVamZhbHVzaSA8cGV0ZXIudWpm
-YWx1c2lAdGkuY29tPiB3cm90ZToKPiBPbiAwMy8wOS8yMDEyIDAzOjI1IFBNLCBHcmF6dnlkYXMg
-SWdub3RhcyB3cm90ZToKPj4gSSB3b3VsZCBndWVzcyB0aGV5IGFyZSB1c2luZyBzb21ldGhpbmcg
-bGFyZ2VyLCBhdCBsZWFzdCBsYXJnZXIgd3JpdGUKPj4gcXVhbnRpdGllcyB3aXRoIHRoaXMga2lu
-ZCBvZiBwZXJpb2QsIG90aGVyd2lzZSBpdCB3b3VsZCBrZWVwCj4+IG92ZXJmbG93aW5nIHRoZXJl
-IHRvby4KPgo+IFRoZXkgYXJlIHVzaW5nIFB1bHNlQXVkaW8gYXMgd2l0aCBNYWVtbW8gKHRoZSBw
-cm9kdWN0IHNvZnR3YXJlKS4KPgo+Pj4gU28gSSdtIGEgYml0IHJlbHVjdGFudCB0byBhY2sgdGhl
-c2UgKGl0IGlzIG5vdCBhbiBpc3N1ZSBvbiBvdGhlciBNY0JTUAo+Pj4gcG9ydHMsIGFuZCBvbiBP
-TUFQNCwgYnV0IE9NQVAzIE1jQlNQMiBpcyBwcm9ibGVtYXRpYyBJTUhPKS4KPj4KPj4gTWF5YmUg
-d2UgY291bGQgdXNlIE1DQlNQTFBfVEhSU0gyX1JFRyBYVEhSRVNIT0xEIHRvIGFydGlmaWNpYWxs
-eSBsaW1pdAo+PiBNQ0JTUDIgZmlmbyBkZXB0aD8KPgo+IEl0IGlzIG5vdCBwb3NzaWJsZS4gVGhl
-IE1jQlNQIEZJRk8vc0RNQSBpbXBsZW1lbnRhdGlvbiAoaW4gSFcpIGRvZXMgbm90Cj4gYWxsb3cg
-aXQsIHVuZm9ydHVuYXRlbHkuCj4gV2UgYXJlIHVzaW5nIHRoZSBUaHJlc2hvbGQgc2V0dGluZ3Mg
-aW4gZG1hX29wX21vZGUgPT0gdGhyZXNob2xkOgo+IGVjaG8gdGhyZXNob2xkID4gL3N5cy9kZXZp
-Y2VzL3BsYXRmb3JtL29tYXAvb21hcC1tY2JzcC4yL2RtYV9vcF9tb2RlCj4KPiBJdCBpcyBnb29k
-IGZvciBhY2hpZXZpbmcgbG92ZXIgcG93ZXIgY29uc3VtcHRpb24gZHVyaW5nIGF1ZGlvIGFjdGl2
-aXR5LgoKTWF5YmUgZW5hYmxlIGl0IGJ5IGRlZmF1bHQgdGhlbj8KCj4+PiBKYXJra286IFdoYXQg
-ZG8geW91IHRoaW5rPwo+Pj4KPj4+IElmIHRoaXMgaXMgYSByZWFsIGlzc3VlIGluIFBhbmRvcmEs
-IGNvdWxkIGl0IGJlIHNvbHZlZCB3aXRoIGFkZGluZwo+Pj4gL2V0Yy9hc291bmQuY29uZiB0byB0
-aGUgZmlsZXN5c3RlbSwgYW5kIGxpbWl0IHRoZSBwZXJpb2Qgc2l6ZSB2aWEgdGhhdD8KPj4KPj4g
-V2UgYXJlIGFscmVhZHkgZG9pbmcgdGhhdCwgaG93ZXZlciB3ZSBlbmNvdXJhZ2UgcGVvcGxlIHRv
-IGluc3RhbGwKPj4gdGhlaXIgb3duIGRpc3Ryb3Mgb24gcGFuZG9yYSwgYW5kIG5vdyB0aGV5IGhh
-dmUgdG8gZHJhZyB3aG9sZSBBTFNBCj4+IGNvbmZpZ3VyYXRpb24gZm9yIHRoaW5ncyB0byB3b3Jr
-LiBJTUhPIGRldmljZSBkcml2ZXIgbGlrZSB0aGlzIG11c3QgYmUKPj4gYWJsZSB0byB3b3JrIHdp
-dGhvdXQgYW55IHNwZWNpYWwgdXNlcnNwYWNlIGNvbmZpZ3VyYXRpb24uCj4KPiBXZSBoYXZlIHR3
-byBpc3N1ZXMgaGVyZToKPiBpZiB5b3UgYXJlIHVzaW5nIHRoZSBlbGVtZW50IG1vZGUgKGRtYV9v
-cF9tb2RlKSB5b3UgbWlnaHQgd2FudCB0byBoYXZlCj4gYmlnZ2VyIHBlcmlvZCBzaXplIHRoYW4g
-dGhlIEZJRk8gc2l6ZS4gSG93ZXZlciBpZiB5b3UgYXJlIHVzaW5nIHRoZQo+IHRocmVzaG9sZCBt
-b2RlIHlvdSB3aWxsIGJlIGZpbmUgd2l0aCBhIHBlcmlvZCBzaXplIGJldHdlZW4gZmlmb19zaXpl
-LzIsCj4gYW5kIGZpZm9fc2l6ZS4KClRocmVzaG9sZCBtb2RlIGRvZXNuJ3Qgc2VlbSB0byBoZWxw
-LCBJIHN0aWxsIG5lZWQgdG8gZ28gb3ZlciBGSUZPCnNpemUuIEZyb20gd2hhdCBJIGNhbiBzZWUg
-aW4gdGhlIGNvZGUgaXQncyBzZXR0aW5nIHRoZSB0aHJlc2hvbGQgdG8KcGVyaW9kIHNpemUsIHNv
-IEkgc3RpbGwgZ2V0IHVuZGVyZmxvdyBjb25kaXRpb24gYWZ0ZXIgZmlyc3Qgd3JpdGUsIGFzCmZp
-cnN0IHdyaXRlIGdvZXMgdG8gRklGTywgRE1BIHNob3dzIHRoYXQgaXQgaGFzIG5vdGhpbmcgbGVm
-dCB0byBzZW5kCmFmdGVyIGZpcnN0IHdyaXRlIGZpbmlzaGVzLgoKSSBiZXQgUHVsc2VBdWRpbyBp
-cyBzZXR0aW5nIHN0YXJ0IHRocmVzaG9sZCB0byBzb21ldGhpbmcgd2F5IGFib3ZlCkZJRk8gc2l6
-ZSwgd2hpY2ggbWFrZXMgaXQgd29yayBoZXJlLiBIb3dldmVyIHlvdSBjYW4ndCBleHBlY3QgdGhh
-dApmcm9tIGV2ZXJ5IHByb2dyYW0gdGhhdCB1c2VzIEFMU0EgZGlyZWN0bHkuLgoKPiBJbiB0aHJl
-c2hvbGQgbW9kZSB3ZSBhcmUgc2VuZGluZyB0aGUgZGF0YSB0byBNY0JTUCBGSUZPIGluIGJ1cnN0
-cywgYW5kCj4gdGhlIGJ1cnN0IHNpemUgaXMgdGhlIHNhbWUgYXMgdGhlIE1jQlNQIHRocmVzaG9s
-ZCBjb25maWcuIFRoZSBNY0JTUCB3aWxsCj4gcmVxdWVzdCBuZXcgYnVyc3Qgd2hlbiB0aGVyZSBp
-cyBmcmVlIHNwYWNlIGZvciB0aGUgbmV4dCBidXJzdCBpbiB0aGUKPiBGSUZPLiBTbyB3ZSBjYW4g
-ZmlsbCB0aGUgRklGTyB0byAzLzQgZm9yIGV4YW1wbGUsIGFuZCB0aGUgbmV4dCBidXJzdAo+IHdp
-bGwgaGFwcGVuIHdoZW4gdGhlIEZJRk8gcmVhY2hlcyAxLzQgZmlsbCBsZXZlbC4KClRoYXQgd291
-bGQgd29yayBpZiBJIGRpZCBmaXJzdCB3cml0ZSBsYXJnZXIgdGhhbiBwZXJpb2QgKHdoZW4gaXQn
-cwpiZWxvdyBGSUZPIHNpemUpIG9yIHNldCBsYXJnZSBlbm91Z2ggc3RhcnRfdGhyZXNob2xkLgpI
-b3dldmVyIGlmIHlvdSBsb29rIGF0IGFsc2FsaWIgc2FtcGxlcywgdGhleSBhbHdheXMgd3JpdGUg
-aW4gcGVyaW9kCnNpemUgcXVhbnRpdGllcywgc28gaXQncyBub3Qgc3VycHJpc2luZyBvdGhlciBw
-cm9ncmFtcyBkbyB0aGF0IHRvbwooYWxzYWxpYiBzYW1wbGVzIHdvcmsgaGVyZSB0aG91Z2ggYXMg
-dGhleSBkbyBzZXQgaGlnaCBzdGFydAp0aHJlc2hvbGQpLgoKPgo+IFlvdSBtaWdodCB3YW50IHRv
-IHRyeSB0aGlzIGFzIHdlbGwgdG8gbG92ZXIgdGhlIHBlcmlvZF9zaXplIGNvbnN0cmFpbnQuCj4K
-PiBCdXQgbGV0J3Mgd2FpdCBmb3IgSmFya2tvJ3MgdGFrZSBvbiB0aGlzLgo+Cj4gLS0KPiBQw6l0
-ZXIKCi0tIApHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey Takashi,
+
+On Fri, Mar 09, 2012 at 12:33:19PM +0100, Takashi Iwai wrote:
+> The implementation isn't too hard.  I wrote a quick patch now as below.
+> It became bigger than I thought since it contains many clean-ups that
+> are needed to adapt the mapped volume.
+>=20
+> With the patch, amixer shows and reads the percent value with -M
+> option just like in alsamixer.
+
+I see this isn't in git.a-p.org yet. If you are considering adding it for
+1.0.26, I'll cherry-pick it to make Adam's life easier. :)
+
+Indeed, quite a big patch. Thanks for that!
+
+Jordi
+--=20
+Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
+jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
+GnuPG public key information available at http://oskuro.net/
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAk9aep4ACgkQJYSUupF6Il6uqgCdFLEC/iE1HKp68pke6CaWl0Ql
+YFcAnj0OBoAr8tejo97hBOOIEUqjeJy3
+=qlUP
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
