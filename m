@@ -1,48 +1,143 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: [PATCH] ASoC: add more sample rate for pxa-ssp
-Date: Thu,  8 Mar 2012 10:02:36 +0800
-Message-ID: <1331172156-27358-1-git-send-email-zhouqiao@marvell.com>
+From: Adam Lee <adam8157@gmail.com>
+Subject: Bug#663090: [alsa-devel] amixer: convert percentage into db wrongly
+Date: Fri, 9 Mar 2012 17:07:17 +0800
+Message-ID: <20120309090717.GG2130@adam-station.nay.redhat.com>
+References: <20120308123632.GA8920@adam-laptop>
+ <20120308163001.GA2991@samweis.home.lxtec.de>
+ <s5h399jyrc5.wl%tiwai@suse.de>
+ <20120309042247.GE2130@adam-station.nay.redhat.com>
+ <s5haa3qnup0.wl%tiwai@suse.de>
+Reply-To: Adam Lee <adam8157@gmail.com>, 663090@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
-	[74.125.149.67]) by alsa0.perex.cz (Postfix) with SMTP id B80DB104130
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2012 03:03:44 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, perex@perex.cz, lrg@ti.com, haojian.zhuang@marvell.com, tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: Qiao Zhou <zhouqiao@marvell.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.663090.B663090.13312840711099@bugs.debian.org>
+Content-Disposition: inline
+In-Reply-To: <s5haa3qnup0.wl%tiwai@suse.de>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Elimar Riesebieter <riesebie@lxtec.de>, 663090@bugs.debian.org, alsa-devel@alsa-project.org, Vincent Cheng <Vincentc1208@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-add more sample rate for pxa-ssp, which are supported, such as 32KHz,
-64KHz.
+On Fri, Mar 09, 2012 at 07:40:27AM +0100, Takashi Iwai wrote:
+> At Fri, 9 Mar 2012 12:22:47 +0800,
+> Adam Lee wrote:
+> > 
+> > Add Vincent in cc, because conky read amixer's result.
+> > 
+> > On Thu, Mar 08, 2012 at 05:45:14PM +0100, Takashi Iwai wrote:
+> > > > * Adam Lee <adam8157@gmail.com> [2012-03-08 20:36 +0800]:
+> > > > 
+> > > > Package: alsa-utils
+> > > > Version: 1.0.25-1
+> > > > Severity: important
+> > > > 
+> > > > 
+> > > > db is not linear, but amixer believe it is.
+> > > > 
+> > > > "amixer get Master" says "Limits: Playback 0 - 74", then everytime I run
+> > > > "amixer -q sset Master 10%-", there is 8db dec.
+> > > > 
+> > > > For example, at first Master is 100% and 0db, both alsamixer and amixer
+> > > > think it is, and after I run "amixer -q sset Master 10%-", both
+> > > > alsamixer and amixer says Master is -8.00db, but alsamixer says it is
+> > > > 72%, amixer says it is 89%.
+> > > > 
+> > > > alsamixer is right, amixer calc and set wrongly.
+> > > 
+> > > No, both are correct.  You are dreaming too much on the world unified
+> > > percentage representation :)
+> > > 
+> > > The percentage in amixer has nothing to do with dB level.
+> > > It's just the percentage of the raw value range of that mixer
+> > > element.  Thus showing 89% is correct.  It's 10% down from 100%
+> > > (1% is because of the resolution of the raw values).
+> > > 
+> > > Now, alsamixer shows the percentage in a different way.  It's
+> > > explained well in the source code (alsamixer/volume_mapping.c), but
+> > > not mentioned in the man page, unfortunately.
+> > > 
+> > >  * The mapping is designed so that the position in the interval is proportional
+> > >  * to the volume as a human ear would perceive it (i.e., the position is the
+> > >  * cubic root of the linear sample multiplication factor).  For controls with
+> > >  * a small range (24 dB or less), the mapping is linear in the dB values so
+> > >  * that each step has the same size visually.  Only for controls without dB
+> > >  * information, a linear mapping of the hardware volume register values is used
+> > >  * (this is the same algorithm as used in the old alsamixer).
+> > > 
+> > > The percentage representation in alsamixer corresponds to this
+> > > mapping, thus it's neither dB nor linear percent.
+> > > 
+> > 
+> > Hi, Takashi
+> > 
+> > Thank you for replying. But I still insist this is a bug. Three
+> > questions:
+> > 
+> > 1, several months ago, it's OK, both amixer and alsamixer use the human
+> > mapping(0-10% and 90%-100% are the same change by a human ear), why not
+> > now?
+> 
+> amixer hasn't been changed until yet.  It handles either in raw values
+> or in dB.  No human-ear mapping at all.  It's never changed since
+> years, and won't be changed.  If the volume mapping would be
+> implemented to amixer in future, it must be only optional.
+> 
+> Only the recent alsamixer introduced the volume mapping to visualize
+> the volumes reasonably.
+> 
 
-Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
----
- sound/soc/pxa/pxa-ssp.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+OK, thank you. Maybe an optional will make everyone happy.
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index a57cfbc..a16df0f 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -764,7 +764,8 @@ static int pxa_ssp_remove(struct snd_soc_dai *dai)
- 
- #define PXA_SSP_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
- 			  SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |	\
--			  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |	\
-+			  SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |	\
-+			  SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |	\
- 			  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
- 
- #define PXA_SSP_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
--- 
-1.7.4.1
+> > 2, conky(Vincent, I mean ${mixer}), some other software, lot of user's
+> > scripts use amixer to set or get volume, expecting the human mapping,
+> > why change the behavior?
+> 
+> You must be smoking something bad.  The behavior of amixer hasn't been
+> changed.
+> 
+
+I figured out a reason probably, when the limits range is wide, like
+0-65536, amixer's mapping and alsamixer's human-ear mapping are close.
+
+If I remember right, my hardware's limits was 0-65536, but it becomes
+0-74 after I run "alsactl init", but unfortunately, I don't know how to
+modify it back.
+
+> > 3, alsamixer and amixer use the same dB value, why there is difference
+> > in percentage? If alsa-utils developer think the human mapping sucks,
+> > why you guys still use it in alsamixer? There is no "both correct", the
+> > difference confuses user...
+> 
+> That's true.  alsamixer should have stopped showing the stupid
+> percentage.
+> 
+> The biggest understand is that people (including you) think there is
+> an absolutely perfect percentage definition for the sound level.  It's
+> an illusion.
+> 
+
+I don't expect an absolutely perfect percentage definition. I want a
+human-ear mapping, which alsamixer does well, 100% is about as ten times
+loud as 10%. But amixer doesn't work like that, amixer's 100% is about
+as *one hundred times* as amixer's 10%.
+
+Maybe it is beautiful, and alsamixer's human-ear mapping is stupid in
+the sound science universe. But as a common user, I don't think so. And
+I don't know how you guys put up with it :(
+
+> > IMO: Any, any human says 10% plus, she or he definitely wants the human
+> > mapping. Maybe you developing guys think there is nothing wrong now, but
+> > how about think it from the perspective of user?
+> > 
+> > Please consider about fixing it, at least discuss it in alsa-utils mail
+> > list, thank you.
+> 
+> There is no such ML...
+>
+
+OK, thank you all the same.
