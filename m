@@ -1,22 +1,16 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: fix
-	snd_pcm_hw_rule_add arguments
-Date: Fri, 9 Mar 2012 12:45:24 +0200
-Message-ID: <CANOLnOOiWV+Oxb_9PvsnDsY7oAMTFJzzLWZ53hj2yY6aTGZR6g@mail.gmail.com>
-References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
-	<1331248757-3408-2-git-send-email-notasas@gmail.com>
-	<4F59D6A3.7020904@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH v2] USB-Audio: Blacklist iec958 for some USB
+	devices
+Date: Fri,  9 Mar 2012 11:46:06 +0100
+Message-ID: <1331289966-3979-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09F45103ACF
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 11:45:25 +0100 (CET)
-Received: by iakh37 with SMTP id h37so2383905iak.38
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 02:45:24 -0800 (PST)
-In-Reply-To: <4F59D6A3.7020904@ti.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3DD39104115
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 11:46:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Andy Whitcroft <andy.whitcroft@canonical.com>, tiwai@suse.de, clemens@ladisch.de, Raymond Yau <superquad.vortex2@gmail.com>, 940145@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXIgOSwgMjAxMiBhdCAxMjowOCBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
-ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDMvMDkvMjAxMiAwMToxOSBBTSwgR3JhenZ5ZGFz
-IElnbm90YXMgd3JvdGU6Cj4+IFdlIGFyZSBzZXR0aW5nIFNORFJWX1BDTV9IV19QQVJBTV9CVUZG
-RVJfU0laRSBiYXNlZCBvbgo+PiBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsIG5vdCB2aWNl
-IHZlcnNhLgo+Cj4gVGhlIGludGVudGlvbiBpcyB0byBzZXQgdGhlIGJ1ZmZlciBzaXplIGJhc2Vk
-IG9uIHRoZSBjaGFubmVscyBoZXJlLgo+IFRoaXMgaXMgbmVlZGVkIGJlY2F1c2Ugb2YgdGhlIE1j
-QlNQIGludGVybmFsIEZJRk8gb3BlcmF0aW9uLgo+IEl0IGlzIHdvcmQgYmFzZWQuIEFzIGV4YW1w
-bGUgb24gTWNCU1AyIGhhcyAxMjgwIHdvcmQgRklGTy4KPiBJbiBtb25vIHN0cmVhbSBpdCBpcyAx
-MjgwIHNhbXBsZSBsb25nLgo+IEluIHN0ZXJlbyBpdCBpcyA2NDAgKHN0ZXJlbykgc2FtcGxlIGxv
-bmcuCj4gSW4gZm91ciBjaGFubmVsIG1vZGUgaXQgaXMgMzIwICg0IGNoYW5uZWwpIHNhbXBsZSBs
-b25nLgoKVGhhdCdzIGFsbCBmaW5lLCBidXQgdGhlIGFyZ3VtZW50IG9yZGVyIGlzIHdyb25nLCB0
-YWtlIGEgbG9vayBhdApzbmRfcGNtX2h3X3J1bGVfYWRkIGRlZmluaXRpb246CgovKioKICogc25k
-X3BjbV9od19ydWxlX2FkZCAtIGFkZCB0aGUgaHctY29uc3RyYWludCBydWxlCiAqIEB2YXI6IHRo
-ZSB2YXJpYWJsZSB0byBldmFsdWF0ZQogKiBAZGVwOiB0aGUgZGVwZW5kZW50IHZhcmlhYmxlcwpp
-bnQgc25kX3BjbV9od19ydWxlX2FkZChzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lLCB1
-bnNpZ25lZCBpbnQgY29uZCwKICAgICAgICAgICAgICAgICAgICAgICAgaW50IHZhciwKICAgICAg
-ICAgICAgICAgICAgICAgICAgc25kX3BjbV9od19ydWxlX2Z1bmNfdCBmdW5jLCB2b2lkICpwcml2
-YXRlLAogICAgICAgICAgICAgICAgICAgICAgICBpbnQgZGVwLCAuLi4pCgpTbyB2YXIgc2hvdWxk
-IGJlIFNORFJWX1BDTV9IV19QQVJBTV9CVUZGRVJfU0laRSwgZGVwClNORFJWX1BDTV9IV19QQVJB
-TV9DSEFOTkVMUywgYnV0IGl0IGlzIHRoZSBvcHBvc2l0ZSBub3cuCgo+Cj4+IFRoaXMgYnVnIGRp
-ZG4ndAo+PiBoYXZlIG11Y2ggaW1wYWN0IGJlY2F1c2UgdGhlIHJ1bGVzIGFyZSBldmFsdWF0ZWQg
-bXVsdGlwbGUgdGltZXMKPj4gYnkgdGhlIGNvcmUsIGFuZCBpbnRlbmRlZCB2YWx1ZSBnb3Qgc2V0
-IGV2ZW50dWFsbHkuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEdyYXp2eWRhcyBJZ25vdGFzIDxub3Rh
-c2FzQGdtYWlsLmNvbT4KPj4gLS0tCj4+IMKgc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jIHwg
-wqAgwqA0ICsrLS0KPj4gwqAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
-dGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYyBi
-L3NvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYwo+PiBpbmRleCAxMGViNjQ1Li4yMDczNjVjIDEw
-MDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFwLW1jYnNwLmMKPj4gKysrIGIvc291bmQv
-c29jL29tYXAvb21hcC1tY2JzcC5jCj4+IEBAIC0xNDIsMTAgKzE0MiwxMCBAQCBzdGF0aWMgaW50
-IG9tYXBfbWNic3BfZGFpX3N0YXJ0dXAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
-YW0sCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgICogc21hbGxlciBidWZmZXIgdGhhbiB0aGUgRklG
-TyBzaXplIHRvIGF2b2lkIHVuZGVycnVucwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCAqLwo+PiDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCBzbmRfcGNtX2h3X3J1bGVfYWRkKHN1YnN0cmVhbS0+cnVudGlt
-ZSwgMCwKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0hXX1BBUkFNX0JVRkZFUl9TSVpF
-LAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBv
-bWFwX21jYnNwX2h3cnVsZV9taW5fYnVmZmVyc2l6ZSwKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgbWNic3AsCj4+IC0gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0hXX1BBUkFNX0JVRkZF
-Ul9TSVpFLCAtMSk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgU05EUlZfUENNX0hXX1BBUkFNX0NIQU5ORUxTLCAtMSk7Cj4+Cj4+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIC8qIE1ha2Ugc3VyZSwgdGhhdCB0aGUgcGVyaW9kIHNpemUgaXMgYWx3YXlz
-IGV2ZW4gKi8KPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgc25kX3BjbV9od19jb25zdHJhaW50X3N0
-ZXAoc3Vic3RyZWFtLT5ydW50aW1lLCAwLAo+CgotLSAKR3Jhxb52eWRhcwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Some common USB devices are analog only, so prevent the digital
+devices from being opened. This simplifies probing the device
+in PulseAudio.
+
+I have a "Logitech USB Headset" myself, the "Logitech Web Camera"
+was reported by Raymond Yau, and the "Blue Snowball" was reported by
+Andy Whitcroft.
+
+Cc: Andy Whitcroft <andy.whitcroft@canonical.com>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>
+BugLink: https://bugs.launchpad.net/bugs/940145
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/conf/cards/USB-Audio.conf |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
+index 0726c34..d7c121e 100644
+--- a/src/conf/cards/USB-Audio.conf
++++ b/src/conf/cards/USB-Audio.conf
+@@ -36,6 +36,11 @@ USB-Audio.pcm.surround40_type {
+ # number for the iec958 device can be changed here.
+ USB-Audio.pcm.iec958_device {
+ 	# "NoiseBlaster 3000" 42
++
++	# The below don't have digital in/out, so prevent them from being opened.
++	"Logitech USB Headset" 999
++	"Logitech Web Camera" 999
++	"Blue Snowball" 999
+ }
+ 
+ 
+-- 
+1.7.9
