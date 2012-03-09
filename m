@@ -1,12 +1,19 @@
 From: =?utf-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: [PATCH 0/4] mc13783 sound support
-Date: Fri,  9 Mar 2012 15:55:12 +0100
-Message-ID: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
-Content-Type: multipart/mixed; boundary="===============0450966018382750254=="
+Subject: [PATCH 4/4] imx31pdk: Add sound support
+Date: Fri,  9 Mar 2012 15:55:16 +0100
+Message-ID: <1331304916-4724-5-git-send-email-philippe.retornaz@epfl.ch>
+References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
-	by alsa0.perex.cz (Postfix) with SMTP id 44734103BBB
+	by alsa0.perex.cz (Postfix) with SMTP id 51AAF10462A
 	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 16:01:02 +0100 (CET)
+In-Reply-To: <1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +27,64 @@ To: linux-arm-kernel@lists.infradead.org
 Cc: alsa-devel@alsa-project.org, juergen.lambrecht@gmail.com, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, =?utf-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
---===============0450966018382750254==
-
-Hello
-
-This is patchset enable sound support on boards with mc13783 codec.
-The first patch adds the codec driver. It's Sascha's code ported to the
-current kernel with some minors additions.
-The second patch adds a generic SoC platform driver for imx3 boards with
-mc13783 codecs.
-The last two patches enable the sound on the mx31moboard boards and on 
-mx31pdk_3ds boards.
-
-This patchset has been tested on mx31moboard and mx31pdk_3ds.
-
-It is based on a 3.3-rc6 kernel. I know there are some patches which change
-how audmux is handled on i.Mx processor but they are not yet merged so
-I prefer to post this patchset based on a known tree than to add another
-dependency. If the audmux change is merged I will rebase this patchset.
-
-Small note: If you want to test this, make sure you use redboot as bootloader
-or that you have the patch i.MX 35/5 AIPS Setup applied.
-
-
-Philippe Rétornaz (3):
-  Add imx3sound sound support.
-  mx31moboard: Add ssi configuration
-  imx31pdk: Add sound support
-
-Sascha Hauer (1):
-  add a mc13783 codec driver
-
- arch/arm/mach-imx/Kconfig            |    2 +
- arch/arm/mach-imx/mach-mx31_3ds.c    |   40 ++-
- arch/arm/mach-imx/mach-mx31moboard.c |   37 ++-
- drivers/mfd/mc13xxx-core.c           |    3 +-
- include/linux/mfd/mc13xxx.h          |   11 +
- sound/soc/codecs/Kconfig             |    4 +
- sound/soc/codecs/Makefile            |    2 +
- sound/soc/codecs/mc13783.c           | 1036 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/mc13783.h           |   30 +
- sound/soc/imx/Kconfig                |   10 +
- sound/soc/imx/Makefile               |    2 +
- sound/soc/imx/imx3sound-mc13783.c    |  141 +++++
- 12 files changed, 1315 insertions(+), 3 deletions(-)
- create mode 100644 sound/soc/codecs/mc13783.c
- create mode 100644 sound/soc/codecs/mc13783.h
- create mode 100644 sound/soc/imx/imx3sound-mc13783.c
-
-
---===============0450966018382750254==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0450966018382750254==--
+ClNpZ25lZC1vZmYtYnk6IFBoaWxpcHBlIFLDqXRvcm5heiA8cGhpbGlwcGUucmV0b3JuYXpAZXBm
+bC5jaD4KLS0tCiBhcmNoL2FybS9tYWNoLWlteC9LY29uZmlnICAgICAgICAgfCAgICAxICsKIGFy
+Y2gvYXJtL21hY2gtaW14L21hY2gtbXgzMV8zZHMuYyB8ICAgNDAgKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrLQogMiBmaWxlcyBjaGFuZ2VkLCA0MCBpbnNlcnRpb25zKCspLCAx
+IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtaW14L0tjb25maWcgYi9h
+cmNoL2FybS9tYWNoLWlteC9LY29uZmlnCmluZGV4IDJjNjBmNjMuLjYxMDg0ZjIgMTAwNjQ0Ci0t
+LSBhL2FyY2gvYXJtL21hY2gtaW14L0tjb25maWcKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgvS2Nv
+bmZpZwpAQCAtNDY4LDYgKzQ2OCw3IEBAIGNvbmZpZyBNQUNIX01YMzFfM0RTCiAJc2VsZWN0IElN
+WF9IQVZFX1BMQVRGT1JNX0lNWDJfV0RUCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWF9J
+MkMKIAlzZWxlY3QgSU1YX0hBVkVfUExBVEZPUk1fSU1YX0tFWVBBRAorCXNlbGVjdCBJTVhfSEFW
+RV9QTEFURk9STV9JTVhfU1NJCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWF9VQVJUCiAJ
+c2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lQVV9DT1JFCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRG
+T1JNX01YQ19FSENJCmRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLWlteC9tYWNoLW14MzFfM2Rz
+LmMgYi9hcmNoL2FybS9tYWNoLWlteC9tYWNoLW14MzFfM2RzLmMKaW5kZXggNGQxYWFiMS4uYTAw
+ZWZkYSAxMDA2NDQKLS0tIGEvYXJjaC9hcm0vbWFjaC1pbXgvbWFjaC1teDMxXzNkcy5jCisrKyBi
+L2FyY2gvYXJtL21hY2gtaW14L21hY2gtbXgzMV8zZHMuYwpAQCAtNDEsNiArNDEsOCBAQAogI2lu
+Y2x1ZGUgPG1hY2gvaW9tdXgtbXgzLmg+CiAjaW5jbHVkZSA8bWFjaC8zZHNfZGVidWdib2FyZC5o
+PgogI2luY2x1ZGUgPG1hY2gvdWxwaS5oPgorI2luY2x1ZGUgPG1hY2gvYXVkbXV4Lmg+CisjaW5j
+bHVkZSA8bWFjaC9zc2kuaD4KIAogI2luY2x1ZGUgImRldmljZXMtaW14MzEuaCIKIApAQCAtMTU2
+LDYgKzE1OCwxMSBAQCBzdGF0aWMgaW50IG14MzFfM2RzX3BpbnNbXSA9IHsKIAlNWDMxX1BJTl9D
+U0lfVlNZTkNfX0NTSV9WU1lOQywKIAlNWDMxX1BJTl9DU0lfRDVfX0dQSU8zXzUsIC8qIENNT1Mg
+UFdETiAqLwogCUlPTVVYX01PREUoTVgzMV9QSU5fUklfRFRFMSwgSU9NVVhfQ09ORklHX0dQSU8p
+LCAvKiBDTU9TIHJlc2V0ICovCisJLyogU1NJICovCisJTVgzMV9QSU5fU1RYRDRfX1NUWEQ0LAor
+CU1YMzFfUElOX1NSWEQ0X19TUlhENCwKKwlNWDMxX1BJTl9TQ0s0X19TQ0s0LAorCU1YMzFfUElO
+X1NGUzRfX1NGUzQsCiB9OwogCiAvKgpAQCAtNDg4LDEyICs0OTUsMjMgQEAgc3RhdGljIHN0cnVj
+dCBtYzEzeHh4X3JlZ3VsYXRvcl9pbml0X2RhdGEgbXgzMV8zZHNfcmVndWxhdG9yc1tdID0gewog
+fTsKIAogLyogTUMxMzc4MyAqLworc3RhdGljIHN0cnVjdCBtYzEzeHh4X2NvZGVjX3BsYXRmb3Jt
+X2RhdGEgbXgzMXBka19jb2RlYyA9IHsKKwkuZGFjX3NzaV9wb3J0ID0gTUMxMzc4M19TU0kxX1BP
+UlQsCisJLmFkY19zc2lfcG9ydCA9IE1DMTM3ODNfU1NJMV9QT1JULAorfTsKKwogc3RhdGljIHN0
+cnVjdCBtYzEzeHh4X3BsYXRmb3JtX2RhdGEgbWMxMzc4M19wZGF0YSA9IHsKIAkucmVndWxhdG9y
+cyA9IHsKIAkJLnJlZ3VsYXRvcnMgPSBteDMxXzNkc19yZWd1bGF0b3JzLAogCQkubnVtX3JlZ3Vs
+YXRvcnMgPSBBUlJBWV9TSVpFKG14MzFfM2RzX3JlZ3VsYXRvcnMpLAogCX0sCi0JLmZsYWdzICA9
+IE1DMTNYWFhfVVNFX1RPVUNIU0NSRUVOIHwgTUMxM1hYWF9VU0VfUlRDLAorCS5jb2RlYyA9ICZt
+eDMxcGRrX2NvZGVjLAorCS5mbGFncyAgPSBNQzEzWFhYX1VTRV9UT1VDSFNDUkVFTiB8IE1DMTNY
+WFhfVVNFX1JUQyB8CisJCU1DMTNYWFhfVVNFX0NPREVDLAorfTsKKworc3RhdGljIHN0cnVjdCBp
+bXhfc3NpX3BsYXRmb3JtX2RhdGEgbXgzMXBka19zc2lfcGRhdGEgPSB7CisJLmZsYWdzID0gSU1Y
+X1NTSV9ETUEgfCBJTVhfU1NJX05FVCwKIH07CiAKIC8qIFNQSSAqLwpAQCAtNjk0LDYgKzcxMiwy
+NCBAQCBzdGF0aWMgdm9pZCBfX2luaXQgbXgzMV8zZHNfaW5pdCh2b2lkKQogCW14Y19pb211eF9z
+ZXR1cF9tdWx0aXBsZV9waW5zKG14MzFfM2RzX3BpbnMsIEFSUkFZX1NJWkUobXgzMV8zZHNfcGlu
+cyksCiAJCQkJICAgICAgIm14MzFfM2RzIik7CiAKKwlteGNfYXVkbXV4X3YyX2NvbmZpZ3VyZV9w
+b3J0KE1YMzFfQVVETVVYX1BPUlQ0X1NTSV9QSU5TXzQsCisJCU1YQ19BVURNVVhfVjJfUFRDUl9T
+WU4sCisJCU1YQ19BVURNVVhfVjJfUERDUl9SWERTRUwoTVgzMV9BVURNVVhfUE9SVDFfU1NJMCkg
+fAorCQlNWENfQVVETVVYX1YyX1BEQ1JfTU9ERSgxKSB8CisJCU1YQ19BVURNVVhfVjJfUERDUl9J
+Tk1NQVNLKDB4ZmMpKTsKKworCW14Y19hdWRtdXhfdjJfY29uZmlndXJlX3BvcnQoTVgzMV9BVURN
+VVhfUE9SVDFfU1NJMCwKKwkJTVhDX0FVRE1VWF9WMl9QVENSX1NZTiB8CisJCU1YQ19BVURNVVhf
+VjJfUFRDUl9URlNESVIgfAorCQlNWENfQVVETVVYX1YyX1BUQ1JfVEZTRUwoTVgzMV9BVURNVVhf
+UE9SVDRfU1NJX1BJTlNfNCkgfAorCQlNWENfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8CisJCU1Y
+Q19BVURNVVhfVjJfUFRDUl9UQ1NFTChNWDMxX0FVRE1VWF9QT1JUNF9TU0lfUElOU180KSB8CisJ
+CU1YQ19BVURNVVhfVjJfUFRDUl9SRlNESVIgfAorCQlNWENfQVVETVVYX1YyX1BUQ1JfUkZTRUwo
+TVgzMV9BVURNVVhfUE9SVDRfU1NJX1BJTlNfNCkgfAorCQlNWENfQVVETVVYX1YyX1BUQ1JfUkNM
+S0RJUiB8CisJCU1YQ19BVURNVVhfVjJfUFRDUl9SQ1NFTChNWDMxX0FVRE1VWF9QT1JUNF9TU0lf
+UElOU180KSwKKwkJTVhDX0FVRE1VWF9WMl9QRENSX1JYRFNFTChNWDMxX0FVRE1VWF9QT1JUNF9T
+U0lfUElOU180KSk7CisKIAlpbXgzMV9hZGRfaW14X3VhcnQwKCZ1YXJ0X3BkYXRhKTsKIAlpbXgz
+MV9hZGRfbXhjX25hbmQoJm14MzFfM2RzX25hbmRfYm9hcmRfaW5mbyk7CiAKQEAgLTc0MSw2ICs3
+NzcsOCBAQCBzdGF0aWMgdm9pZCBfX2luaXQgbXgzMV8zZHNfaW5pdCh2b2lkKQogCX0KIAogCW14
+MzFfM2RzX2luaXRfY2FtZXJhKCk7CisKKwlpbXgzMV9hZGRfaW14X3NzaSgwLCAmbXgzMXBka19z
+c2lfcGRhdGEpOwogfQogCiBzdGF0aWMgdm9pZCBfX2luaXQgbXgzMV8zZHNfdGltZXJfaW5pdCh2
+b2lkKQotLSAKMS42LjMuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
