@@ -1,20 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH v2] USB-Audio: Blacklist iec958 for some
- USB devices
-Date: Fri, 09 Mar 2012 13:48:19 +0100
-Message-ID: <4F59FC13.3090606@canonical.com>
-References: <1331289966-3979-1-git-send-email-david.henningsson@canonical.com>
-	<s5hlinaxaxe.wl%tiwai@suse.de>
-	<CAN8cciZrbmH=9a=mMu5Kyv2ZWaasW-syBfpFQtqpkpLKZ6BtDA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: core: Rename card mutex subclass
+ to better align with usage.
+Date: Fri, 9 Mar 2012 12:48:37 +0000
+Message-ID: <20120309124836.GX3273@opensource.wolfsonmicro.com>
+References: <1331294528-27350-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1980861041586700657=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0805B10B990
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:48:21 +0100 (CET)
-In-Reply-To: <CAN8cciZrbmH=9a=mMu5Kyv2ZWaasW-syBfpFQtqpkpLKZ6BtDA@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EE07410BC81
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:48:38 +0100 (CET)
+In-Reply-To: <1331294528-27350-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,65 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/09/2012 12:52 PM, Raymond Yau wrote:
-> 2012/3/9, Takashi Iwai<tiwai@suse.de>:
->> At Fri,  9 Mar 2012 11:46:06 +0100,
->> David Henningsson wrote:
->>>
->>> Some common USB devices are analog only, so prevent the digital
->>> devices from being opened. This simplifies probing the device
->>> in PulseAudio.
->>>
->>> I have a "Logitech USB Headset" myself, the "Logitech Web Camera"
->>> was reported by Raymond Yau, and the "Blue Snowball" was reported by
->>> Andy Whitcroft.
->>>
->>> Cc: Andy Whitcroft<andy.whitcroft@canonical.com>
->>> Cc: Raymond Yau<superquad.vortex2@gmail.com>
->>> BugLink: https://bugs.launchpad.net/bugs/940145
->>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
->>
->> Thanks, applied now.
->>
->>
->> Takashi
->>
->>> ---
->>>   src/conf/cards/USB-Audio.conf |    5 +++++
->>>   1 files changed, 5 insertions(+), 0 deletions(-)
->>>
->>> diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
->>> index 0726c34..d7c121e 100644
->>> --- a/src/conf/cards/USB-Audio.conf
->>> +++ b/src/conf/cards/USB-Audio.conf
->>> @@ -36,6 +36,11 @@ USB-Audio.pcm.surround40_type {
->>>   # number for the iec958 device can be changed here.
->>>   USB-Audio.pcm.iec958_device {
->>>   	# "NoiseBlaster 3000" 42
->>> +
->>> +	# The below don't have digital in/out, so prevent them from being
->>> opened.
->>> +	"Logitech USB Headset" 999
->>> +	"Logitech Web Camera" 999
->>> +	"Blue Snowball" 999
->>>   }
->>>
->
-> How do the blacklist work ? since there is no "Logitect Web Camera" in
-> lsusb info
->
-> My  QuickCam Communicate Deluxe only support mono, so it is unlikely
-> for pulseaudio to open for digital capture
 
-Sorry, maybe I misunderstood you then - could you give me the contents 
-of "/proc/asound/cards" please?
+--===============1980861041586700657==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="je0mZywpqEo4t1RU"
+Content-Disposition: inline
 
 
+--je0mZywpqEo4t1RU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+On Fri, Mar 09, 2012 at 12:02:07PM +0000, Liam Girdwood wrote:
+> Change SND_SOC_CARD_CLASS_PCM to SND_SOC_CARD_CLASS_RUNTIME to better
+> describe all uses for this mutex subclass and align with DAPM too.
+
+Applied both, thanks.
+
+--je0mZywpqEo4t1RU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPWfv+AAoJEBus8iNuMP3dEZYP/RalcIfZA2VFKbOP3RrlJ2x9
+5DWlFj7oFmNGSbpJZ6An2F9ma1rumM9F9YYl3A3ZUmxH7iWnFfl8EC05n+vtlBS4
+Iu4dcz1j7mutaW/rR+KMoNDjDE2eWvliXc7f2E0hII+/LmSlIPwMTbJho7IOlmVY
+WcTdSB95oKIAKVD47Iim1mXzp2V3N3R3F00Rwltzf9TKRX3r+izs1jInY5tWu1hv
+r0gF4QhqOYNqmqqV7wRSkEqvfqkQKQ0FsbWTg9IqIKSyNbgn9DJHtSFbSWq4UiUZ
+jVUJ+VyA2dnqikTmYJ7LZdc+RnNPaNmO9NUj55oUJZey4WHX3P6zwbxBb/uTJFaT
+m5A3Xf0ulCeJNFWFAD85L83klNu+nL/ei4+yKld1icSMdz/DT8eJCgXXhn9hejrG
+HQPLCA7k9l+DIjgPOj4+5xeAZ+WEIFXd+ygSLI2YRSMMCewgy4MSe0GoKYo9J9N1
+7hxEHW2rYygUgxPUxLSd1w3pNtRPOUlH834FW0clQIRxqTFCYSMxp4r084EIiZOr
+mjBq2q57RoAy9S2ednKOli4NLLEOO0B3H07qGdtVoCUZZ0wB3wAcz1wBh5Koa2c0
+zDL/vlMz/ELV0uQ8evO3vVMn0WCtYOGQvnnHtpQST3GXRN7tNM/cI+RgRhhCb9vM
+jFbNxaNVJ66zeERnwfwQ
+=USBw
+-----END PGP SIGNATURE-----
+
+--je0mZywpqEo4t1RU--
+
+--===============1980861041586700657==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1980861041586700657==--
