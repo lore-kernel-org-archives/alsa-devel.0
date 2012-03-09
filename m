@@ -1,20 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH 2/2] ASoC: dapm: Rename dapm mutex subclass to
-	better match usage.
-Date: Fri,  9 Mar 2012 12:02:08 +0000
-Message-ID: <1331294528-27350-2-git-send-email-lrg@ti.com>
-References: <1331294528-27350-1-git-send-email-lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 00/11] ASoC: add imx-sgtl5000 machine
+ driver working with fsl_ssi
+Date: Fri, 9 Mar 2012 12:12:38 +0000
+Message-ID: <20120309121237.GG3273@opensource.wolfsonmicro.com>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<4F5910EE.8090408@freescale.com>
+	<20120309011914.GF2499@S2101-09.ap.freescale.net>
+	<4F5966DC.6090201@freescale.com>
+	<20120309071347.GM2499@S2101-09.ap.freescale.net>
+	<CAAQ0ZWQHm+SZgDA6x93=Q9CxAqz6uVu1F2UPBc=zafrhT71D1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2666428099574427948=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
-	[74.125.149.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9885B10BB54
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:02:21 +0100 (CET)
-Received: by wibhn6 with SMTP id hn6so322482wib.14
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 04:02:19 -0800 (PST)
-In-Reply-To: <1331294528-27350-1-git-send-email-lrg@ti.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F319C10B990
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:12:41 +0100 (CET)
+In-Reply-To: <CAAQ0ZWQHm+SZgDA6x93=Q9CxAqz6uVu1F2UPBc=zafrhT71D1Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,127 +25,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Shawn Guo <shawn.guo@linaro.org>, lrg@ti.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rename SND_SOC_DAPM_CLASS_PCM to SND_SOC_DAPM_CLASS_RUNTIME to
-better match the usage and align with card mutex too.
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- include/sound/soc-dapm.h |    4 ++--
- sound/soc/soc-dapm.c     |   20 ++++++++++----------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+--===============2666428099574427948==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yZnyZsPjQYjG7xG7"
+Content-Disposition: inline
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index a4ae018..1beb28d 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -432,8 +432,8 @@ enum snd_soc_dapm_type {
- };
- 
- enum snd_soc_dapm_subclass {
--	SND_SOC_DAPM_CLASS_INIT	= 0,
--	SND_SOC_DAPM_CLASS_PCM	= 1,
-+	SND_SOC_DAPM_CLASS_INIT		= 0,
-+	SND_SOC_DAPM_CLASS_RUNTIME	= 1,
- };
- 
- /*
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a58427b..e5aa65a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1787,7 +1787,7 @@ int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 	struct snd_soc_card *card = widget->dapm->card;
- 	int ret;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	ret = soc_dapm_mux_update_power(widget, kcontrol, mux, e);
- 	mutex_unlock(&card->dapm_mutex);
- 	return ret;
-@@ -1831,7 +1831,7 @@ int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 	struct snd_soc_card *card = widget->dapm->card;
- 	int ret;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	ret = soc_dapm_mixer_update_power(widget, kcontrol, connect);
- 	mutex_unlock(&card->dapm_mutex);
- 	return ret;
-@@ -2004,7 +2004,7 @@ int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
- 	if (!dapm->card || !dapm->card->instantiated)
- 		return 0;
- 
--	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	ret = dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP);
- 	mutex_unlock(&dapm->card->dapm_mutex);
- 	return ret;
-@@ -2423,7 +2423,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 		/* old connection must be powered down */
- 		connect = invert ? 1 : 0;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
- 	change = snd_soc_test_bits(widget->codec, reg, mask, val);
- 	if (change) {
-@@ -2515,7 +2515,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 		mask |= (bitmask - 1) << e->shift_r;
- 	}
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
- 	change = snd_soc_test_bits(widget->codec, e->reg, mask, val);
- 	if (change) {
-@@ -2584,7 +2584,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
- 	if (ucontrol->value.enumerated.item[0] >= e->max)
- 		return -EINVAL;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
- 	change = widget->value != ucontrol->value.enumerated.item[0];
- 	if (change) {
-@@ -2681,7 +2681,7 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
- 		mask |= e->mask << e->shift_r;
- 	}
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
- 	change = snd_soc_test_bits(widget->codec, e->reg, mask, val);
- 	if (change) {
-@@ -2740,7 +2740,7 @@ int snd_soc_dapm_get_pin_switch(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
- 	ucontrol->value.integer.value[0] =
- 		snd_soc_dapm_get_pin_status(&card->dapm, pin);
-@@ -2763,7 +2763,7 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
- 	if (ucontrol->value.integer.value[0])
- 		snd_soc_dapm_enable_pin(&card->dapm, pin);
-@@ -3082,7 +3082,7 @@ void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- {
- 	struct snd_soc_card *card = rtd->card;
- 
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_PCM);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	soc_dapm_stream_event(rtd, stream, event);
- 	mutex_unlock(&card->dapm_mutex);
- }
--- 
-1.7.5.4
+
+--yZnyZsPjQYjG7xG7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Mar 09, 2012 at 03:28:22PM +0800, Shawn Guo wrote:
+> On 9 March 2012 15:13, Shawn Guo <shawn.guo@linaro.org> wrote:
+> > On Fri, Mar 09, 2012 at 02:11:41AM +0000, Tabi Timur-B04825 wrote:
+> >> Shawn Guo wrote:
+> >> > Are you testing the patch set on top of the SHA below, which I
+> >> > mentioned in the cover letter?
+> >> >
+> >> > =A0 =A03030763 (Merge tag 'asoc-3.4' of git://git.kernel.org/pub/scm=
+/linux/kernel/git/broonie/sound into topic/asoc)
+
+Adding Liam who I just noticed isn't on the CCs.
+
+> >> It appears the problem is with for-3.4 itself. =A0I'm running git-bise=
+ct now
+> >> to narrow it down.
+> >>
+> > My bisect tells that the offending commit is:
+> >
+> > =A096acc35 (ASoC: DAPM: Make sure DAPM widget IO ops hold the component=
+ mutex)
+> >
+> > But I do not understand why yet.
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [ INFO: possible recursive locking detected ]
+> 3.3.0-rc4+ #159 Not tainted
+> ---------------------------------------------
+> aplay/395 is trying to acquire lock:
+>  (&codec->mutex){+.+...}, at: [<802f7414>] soc_widget_update_bits_locked+=
+0x88/0x
+> 1a0
+>=20
+> but task is already holding lock:
+>  (&codec->mutex){+.+...}, at: [<802f9df4>] snd_soc_dapm_stream_event+0x38=
+/0xc0
+
+Ick, right.  We need to create that separate I/O mutex I think...
+Perhaps we should punt the locking change until 3.5 too, there's no
+non-CODEC DAPM in 3.4?
+
+--yZnyZsPjQYjG7xG7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPWfOuAAoJEBus8iNuMP3dQBsP/AvbLVB/80r6sNLjAM/A3PiO
+RSM+Q/n0104jArkwfi5osnMOvNpXvVojvENJRcO79i8fvdf/MjtjiWWQlIpfK8G/
+pdKvU1ToFpqxQhfjG/UffhRroGlXR/KKrpKzQAkG3o2lrZZvjdvE28CVxhku305i
+XZD0/UdC7Ex6jv4DctgSYs2BUuvO30JjDo+Ms3fgZgAVMRfuAqiQubPQY8Dk2UcY
+J0Cz6orNWbVGuyEA9SRMfvZRCjxRqtNdX6Hg2bN1eMhDnL8qnZCoP30RbhA+LWEl
+Rjwe/BuV3iiY+f1mC4i/D/gaut/HEVRrlvStQXRoLaKgsnM+kU66SV0w3YfbMuI6
+e5CxWnp+GIuaZRzHDJROrDR9sQ9Pfk3HW4gfKxD/mHm2+7LQwROIRaBxKi3pf02B
+LIZCd7/P/X0N8x6na02/F1nYFoWhn86fYJV+4aZ7KqGT5ZJelGvnguTwQBQfSO71
+q/cbYz2x2JYWp1A2XStyei90VNY5pB0X53A/70Nb668oBn9Q28MPaMjGSr7CfDjh
+ZEbkHqVYIaH/2O+Cg2y/Hs9y7V8H+B7d72HEkmyoj+oTwgOlsw7Eugs63/GnLQXc
+NapCxbaOHpanJI+c+HTeljRev32GXY85Q9L40BYNNCyZf5qNQwBnDnMQFrol8vcz
+rTHa5NE/AbsF6lsNmKwk
+=Dlxl
+-----END PGP SIGNATURE-----
+
+--yZnyZsPjQYjG7xG7--
+
+--===============2666428099574427948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2666428099574427948==--
