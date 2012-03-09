@@ -1,49 +1,93 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH v3 08/11] ASoC: fsl: make fsl_ssi driver
- compilable on ARM/IMX
-Date: Fri, 9 Mar 2012 04:03:19 +0000
-Message-ID: <4F598106.30300@freescale.com>
-References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
-	<1331225990-27308-9-git-send-email-shawn.guo@linaro.org>
-	<4F5912D0.2090800@freescale.com>
-	<20120309012653.GG2499@S2101-09.ap.freescale.net>
-	<4F596674.5030405@freescale.com>
-	<20120309032128.GK2499@S2101-09.ap.freescale.net>
+From: Adam Lee <adam8157@gmail.com>
+Subject: Bug#663090: [alsa-devel] amixer: convert percentage into db wrongly
+Date: Fri, 9 Mar 2012 12:22:47 +0800
+Message-ID: <20120309042247.GE2130@adam-station.nay.redhat.com>
+References: <20120308123632.GA8920@adam-laptop>
+ <20120308163001.GA2991@samweis.home.lxtec.de>
+ <s5h399jyrc5.wl%tiwai@suse.de>
+Reply-To: Adam Lee <adam8157@gmail.com>, 663090@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
-	(db3ehsobe003.messaging.microsoft.com [213.199.154.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A4EA1041BA
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 05:03:28 +0100 (CET)
-In-Reply-To: <20120309032128.GK2499@S2101-09.ap.freescale.net>
-Content-Language: en-US
-Content-ID: <54E98CD0DF0C0C4A8EB68528E40DC826@mgd.freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.663090.B663090.133126700325453@bugs.debian.org>
+Content-Disposition: inline
+In-Reply-To: <s5h399jyrc5.wl%tiwai@suse.de>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Elimar Riesebieter <riesebie@lxtec.de>, 663090@bugs.debian.org, alsa-devel@alsa-project.org, control@bugs.debian.org, Vincent Cheng <Vincentc1208@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Shawn Guo wrote:
-> On Fri, Mar 09, 2012 at 02:09:57AM +0000, Tabi Timur-B04825 wrote:
->> >  That's the general idea, but I think it needs more study.  I don't
->> >  consider this to be a bug that needs to be fixed ASAP, since it's never
->> >  been an actual problem so far.  For instance, do we need to protect
->> >  between hw_params and _trigger?
->> >
-> Ok, I will leave it to you with a big "FIXME" comment then.
+Add Vincent in cc, because conky read amixer's result.
 
-Ok.
+On Thu, Mar 08, 2012 at 05:45:14PM +0100, Takashi Iwai wrote:
+> > * Adam Lee <adam8157@gmail.com> [2012-03-08 20:36 +0800]:
+> > 
+> > Package: alsa-utils
+> > Version: 1.0.25-1
+> > Severity: important
+> > 
+> > 
+> > db is not linear, but amixer believe it is.
+> > 
+> > "amixer get Master" says "Limits: Playback 0 - 74", then everytime I run
+> > "amixer -q sset Master 10%-", there is 8db dec.
+> > 
+> > For example, at first Master is 100% and 0db, both alsamixer and amixer
+> > think it is, and after I run "amixer -q sset Master 10%-", both
+> > alsamixer and amixer says Master is -8.00db, but alsamixer says it is
+> > 72%, amixer says it is 89%.
+> > 
+> > alsamixer is right, amixer calc and set wrongly.
+> 
+> No, both are correct.  You are dreaming too much on the world unified
+> percentage representation :)
+> 
+> The percentage in amixer has nothing to do with dB level.
+> It's just the percentage of the raw value range of that mixer
+> element.  Thus showing 89% is correct.  It's 10% down from 100%
+> (1% is because of the resolution of the raw values).
+> 
+> Now, alsamixer shows the percentage in a different way.  It's
+> explained well in the source code (alsamixer/volume_mapping.c), but
+> not mentioned in the man page, unfortunately.
+> 
+>  * The mapping is designed so that the position in the interval is proportional
+>  * to the volume as a human ear would perceive it (i.e., the position is the
+>  * cubic root of the linear sample multiplication factor).  For controls with
+>  * a small range (24 dB or less), the mapping is linear in the dB values so
+>  * that each step has the same size visually.  Only for controls without dB
+>  * information, a linear mapping of the hardware volume register values is used
+>  * (this is the same algorithm as used in the old alsamixer).
+> 
+> The percentage representation in alsamixer corresponds to this
+> mapping, thus it's neither dB nor linear percent.
+> 
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Hi, Takashi
+
+Thank you for replying. But I still insist this is a bug. Three
+questions:
+
+1, several months ago, it's OK, both amixer and alsamixer use the human
+mapping(0-10% and 90%-100% are the same change by a human ear), why not
+now?
+
+2, conky(Vincent, I mean ${mixer}), some other software, lot of user's
+scripts use amixer to set or get volume, expecting the human mapping,
+why change the behavior?
+
+3, alsamixer and amixer use the same dB value, why there is difference
+in percentage? If alsa-utils developer think the human mapping sucks,
+why you guys still use it in alsamixer? There is no "both correct", the
+difference confuses user...
+
+IMO: Any, any human says 10% plus, she or he definitely wants the human
+mapping. Maybe you developing guys think there is nothing wrong now, but
+how about think it from the perspective of user?
+
+Please consider about fixing it, at least discuss it in alsa-utils mail
+list, thank you.
