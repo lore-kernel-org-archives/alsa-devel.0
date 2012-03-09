@@ -1,107 +1,111 @@
-From: Adam Lee <adam8157@gmail.com>
-Subject: Bug#663090: [alsa-devel] amixer: convert percentage into db wrongly
-Date: Fri, 9 Mar 2012 12:47:40 +0800
-Message-ID: <20120309044740.GF2130@adam-station.nay.redhat.com>
-References: <20120308123632.GA8920@adam-laptop>
- <20120308163001.GA2991@samweis.home.lxtec.de>
- <s5h399jyrc5.wl%tiwai@suse.de>
- <20120309042247.GE2130@adam-station.nay.redhat.com>
-Reply-To: Adam Lee <adam8157@gmail.com>, 663090@bugs.debian.org
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3 10/11] ASoC: fsl: let fsl_ssi work with
+ imx pcm and machine drivers
+Date: Fri, 9 Mar 2012 13:00:59 +0800
+Message-ID: <20120309050057.GL2499@S2101-09.ap.freescale.net>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-11-git-send-email-shawn.guo@linaro.org>
+	<4F591A69.9060401@freescale.com>
+	<20120309031909.GJ2499@S2101-09.ap.freescale.net>
+	<4F5980DE.9050002@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.663090.B663090.13312684942349@bugs.debian.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-tul01m020-f179.google.com (mail-tul01m020-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0AF86104256
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 06:01:09 +0100 (CET)
+Received: by obbup3 with SMTP id up3so1705082obb.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 21:01:07 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20120309042247.GE2130@adam-station.nay.redhat.com>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Elimar Riesebieter <riesebie@lxtec.de>, 663090@bugs.debian.org, alsa-devel@alsa-project.org, Vincent Cheng <Vincentc1208@gmail.com>
+In-Reply-To: <4F5980DE.9050002@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 09, 2012 at 12:22:47PM +0800, Adam Lee wrote:
-> Add Vincent in cc, because conky read amixer's result.
+On Fri, Mar 09, 2012 at 04:02:40AM +0000, Tabi Timur-B04825 wrote:
+> Shawn Guo wrote:
 > 
-> On Thu, Mar 08, 2012 at 05:45:14PM +0100, Takashi Iwai wrote:
-> > > * Adam Lee <adam8157@gmail.com> [2012-03-08 20:36 +0800]:
-> > > 
-> > > Package: alsa-utils
-> > > Version: 1.0.25-1
-> > > Severity: important
-> > > 
-> > > 
-> > > db is not linear, but amixer believe it is.
-> > > 
-> > > "amixer get Master" says "Limits: Playback 0 - 74", then everytime I run
-> > > "amixer -q sset Master 10%-", there is 8db dec.
-> > > 
-> > > For example, at first Master is 100% and 0db, both alsamixer and amixer
-> > > think it is, and after I run "amixer -q sset Master 10%-", both
-> > > alsamixer and amixer says Master is -8.00db, but alsamixer says it is
-> > > 72%, amixer says it is 89%.
-> > > 
-> > > alsamixer is right, amixer calc and set wrongly.
-> > 
-> > No, both are correct.  You are dreaming too much on the world unified
-> > percentage representation :)
-> > 
-> > The percentage in amixer has nothing to do with dB level.
-> > It's just the percentage of the raw value range of that mixer
-> > element.  Thus showing 89% is correct.  It's 10% down from 100%
-> > (1% is because of the resolution of the raw values).
-> > 
-> > Now, alsamixer shows the percentage in a different way.  It's
-> > explained well in the source code (alsamixer/volume_mapping.c), but
-> > not mentioned in the man page, unfortunately.
-> > 
-> >  * The mapping is designed so that the position in the interval is proportional
-> >  * to the volume as a human ear would perceive it (i.e., the position is the
-> >  * cubic root of the linear sample multiplication factor).  For controls with
-> >  * a small range (24 dB or less), the mapping is linear in the dB values so
-> >  * that each step has the same size visually.  Only for controls without dB
-> >  * information, a linear mapping of the hardware volume register values is used
-> >  * (this is the same algorithm as used in the old alsamixer).
-> > 
-> > The percentage representation in alsamixer corresponds to this
-> > mapping, thus it's neither dB nor linear percent.
-> > 
+> > Ok, got you.  We used to set fifo_depth on imx-ssi not the value given
+> > by hardware manual, but the one already tuned.
 > 
-> Hi, Takashi
+> What do you mean by "already tuned".  Tuned by whom?
 > 
-> Thank you for replying. But I still insist this is a bug. Three
-> questions:
-> 
-> 1, several months ago, it's OK, both amixer and alsamixer use the human
-> mapping(0-10% and 90%-100% are the same change by a human ear), why not
-> now?
-> 
-> 2, conky(Vincent, I mean ${mixer}), some other software, lot of user's
-> scripts use amixer to set or get volume, expecting the human mapping,
-> why change the behavior?
-> 
-> 3, alsamixer and amixer use the same dB value, why there is difference
-> in percentage? If alsa-utils developer think the human mapping sucks,
-> why you guys still use it in alsamixer? There is no "both correct", the
-> difference confuses user...
-> 
-> IMO: Any, any human says 10% plus, she or he definitely wants the human
-> mapping. Maybe you developing guys think there is nothing wrong now, but
-> how about think it from the perspective of user?
-> 
-> Please consider about fixing it, at least discuss it in alsa-utils mail
-> list, thank you.
+For example, we have SSI fifo depth 15 on i.MX51 design.  Instead of
+having fifo_depth as 15 and then writing 15 - 2 into burstsize and
+watermark, we used to have fifo_depth as 13, and then burstsize and
+watermark can just be fifo_depth.
 
-Sorry for including control@bugs.debian.org in cc. Please remove it when
-you reply.
+I agree that fsl_ssi does the right thing, having fifo_depth be the
+hardware value.
 
-And additional info:
+> >>> +		 */
+> >>> +		ssi_private->dma_params_tx.burstsize =
+> >>> +			ssi_private->fifo_depth - 2;
+> >>> +		ssi_private->dma_params_rx.burstsize =
+> >>> +			ssi_private->fifo_depth - 2;
+> >>> +		ssi_private->dma_params_tx.dma_addr =
+> >>> +			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, stx0);
+> >>> +		ssi_private->dma_params_rx.dma_addr =
+> >>> +			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, srx0);
+> >>
+> >> So I'm a little confused by this new binding.  I went through a lot of
+> >> work to remove DMA-specific data from the SSI driver, and here you are
+> >> adding a bunch of it back.  What you're doing here -- I'm doing it in the
+> >> DMA driver where it belongs.
+> >
+> > I'm not sure these all belong to DMA driver.  These are all
+> > configurations/parameters of SSI, which are related to DMA though.
+> > I see fsl_dma are handling these, but I do not fully agree with that,
+> > because we end up with fsl_dma driver accessing SSI node and
+> > "struct ccsr_ssi" which should be SSI private data.
+> 
+> Well, the SSI needs to tell the DMA driver how to program itself.  On 
+> PowerPC, the DMA's burst size is based on the SSI's FIFO depth.  You're 
+> effectively doing what I already do, except you do more work in the SSI 
+> driver.
+> 
+> I understand that we need to support old and new bindings, but I already 
+> created an infrastructure that supports passing SSI information to the DMA 
+> driver.
 
-I was searching some alternative way to control my volume, but I failed,
-every script, evert widget uses "amixer set channel xx%(+/-)", like:
-http://awesome.naquadah.org/wiki/Volume_control_and_display
+I do not see an infrastructure, but that fsl_dma driver accesses SSI
+private data structure.  Instead, snd_soc_dai_set[get]_dma_data looks
+more like an infrastructure to me.
 
-This means "we user want the human mapping, it works well before. and we
-wrote tons of scripts using amixer and expecting human mapping".
+> It seems that the above code is different only for the sake of 
+> being different, not because it's better.
+> 
+> This is not really an i.MX vs. PowerPC issue, which is why I'm not sure 
+> this change belong in this patchset.
+> 
+Without this change, fsl_ssi can not work with imx-pcm-dma.  I do not
+understand how it can possibly not belong in this patchset?
+
+> > Secondly, this is the way that how imx-ssi and imx-pcm-dma works and
+> > interacts.  If we want to move these stuff into imx-pcm-dma, we need
+> > a good story to convince imx-ssi users that why it's better than what
+> > they currently do.
+> 
+> I don't understand that.  You're already rewriting these drivers.  Who 
+> else needs to be convinced?
+> 
+As I told before, even now we have fsl_ssi working for DT based IMX
+platforms, imx5 and imx6, imx-ssi will still exist for those non-DT
+IMX, like imx21, imx25, imx27, imx31, imx35.  That said, imx-pcm-dma
+will need to work with both fsl_ssi and imx-ssi.  Moving those stuff
+into imx-pcm-dma will require significant changes on imx-ssi too.
+
+-- 
+Regards,
+Shawn
