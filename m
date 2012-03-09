@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: fix
-	snd_pcm_hw_rule_add arguments
-Date: Fri, 9 Mar 2012 12:19:06 +0000
-Message-ID: <20120309121906.GI3273@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: omap-mcbsp: place size constrain
+ on period, not buffer
+Date: Fri, 9 Mar 2012 12:19:34 +0000
+Message-ID: <20120309121933.GJ3273@opensource.wolfsonmicro.com>
 References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
-	<1331248757-3408-2-git-send-email-notasas@gmail.com>
+	<1331248757-3408-3-git-send-email-notasas@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3989950947003106946=="
+Content-Type: multipart/mixed; boundary="===============6137120239840359972=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8872010B9A8
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:19:11 +0100 (CET)
-In-Reply-To: <1331248757-3408-2-git-send-email-notasas@gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DBD1910BBD0
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 13:19:36 +0100 (CET)
+In-Reply-To: <1331248757-3408-3-git-send-email-notasas@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +26,53 @@ Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Gi
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3989950947003106946==
+--===============6137120239840359972==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ev7mvGV+3JQuI2Eo"
+	protocol="application/pgp-signature"; boundary="ZG+WKzXzVby2T9Ro"
 Content-Disposition: inline
 
 
---ev7mvGV+3JQuI2Eo
+--ZG+WKzXzVby2T9Ro
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 09, 2012 at 01:19:15AM +0200, Grazvydas Ignotas wrote:
-> We are setting SNDRV_PCM_HW_PARAM_BUFFER_SIZE based on
-> SNDRV_PCM_HW_PARAM_CHANNELS, not vice versa. This bug didn't
-> have much impact because the rules are evaluated multiple times
-> by the core, and intended value got set eventually.
+On Fri, Mar 09, 2012 at 01:19:16AM +0200, Grazvydas Ignotas wrote:
+> Placing a constraint on buffer size is not enough, programs are
+> still free to use periods that are smaller than FIFO, which causes
+> transmit underflows as soon as the stream starts if program operates
+> in period-sized writes, ending up in endless loop of underruns.
 
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---ev7mvGV+3JQuI2Eo
+--ZG+WKzXzVby2T9Ro
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPWfUzAAoJEBus8iNuMP3dJycP/1FLPwpyNp1RMb4BkusTti+I
-4yZrX83BUEY/T042KiGxz5ewOxCLQx0zpFTb6Nm4NaOTcyfyE/VpKzUt0aWx0V79
-NZfFq6S3GjIKaESvv4X1GrHDIjHFP2FyTvWjPaJa7TL61mW62KeDc37WxMDdNmW/
-FSEnJKIFfTrFggmF4R7DRvhZ/WWv8JYucIsR5NQLlKP7ZNDX5x4zewhDk29oCJXz
-YUPibjVIRZB47gRGcG2zgQwCUCbRnJdAovrle0yP3AbPVP1jPhJDSB+R4r1hXCz0
-kXz5lVgnRyRzF/Q2EvbiYQu0iIJn0e15wAEho7fwRmJHYyD8zy6lDlQpgyktLewZ
-QYqNWqbKzP/aECDn2rmiUBDfuWdgkd+Rm/A0lyQf1WWyXpOxabMMLB+q4igvll65
-QlE/7sLP8moC/LHuvk4tNXT5s6aY3JTlEAGsImLXcP90bRYRYP4h/50GqjS7YBeQ
-T3031YgsDZ4s7iF6rP8eoltEyjwVJcHssGSL6vRTzlqb5uvvc/cZjBdT0y59iXId
-oA9piqZlqXC870aSEtpnF9xMonIoT1MmOa9ZBkG/Y5RY02tXZEdOHCpJ/keZ4oqk
-54GOUsi3L1s2TeQrc6vmhq4WYL0dOJE9bIU1+F1LJoN1nC7kAypgkoQ0kHj62+tg
-XdTQ244uif+bC6Yii/bt
-=AGsv
+iQIcBAEBAgAGBQJPWfVPAAoJEBus8iNuMP3dPYQP/3suRFYYdX+xPkjP+iDPb+z2
+SvFOIXZ+J9ELpi8LUyO9dVYmfI4uJCSVZ+DCIihBwa+Kp5IahODLVlUPCGfzLuio
+GmhDK6sd/WhNA/K17jUW9POvUC+8/mIkH20SB+kDhvdGAbLEswfVuC/kzjlHYTm7
+EIFotYiq3yYco6DxGOYhshTZG2T19EvElNLn5hfSHB0zOCeNthdfEHBE6E5eo7Vb
+PKcrDOJecDtjzC2zo7gb++SCnsfCrlXrXdi6ZAQFHlTk5Ingl0MYITm2FMs57J81
+TY5CrreGYWMg7+IeJ78RPOCow2KE+YPuYuhgS2pbmUTJw+AQkeoBDJQCTfqgbzTE
+vjeGZU/nezCiou9L/qGZtId/1u0FNaw8NZUSDbyDQnLZnQCyXs+1LIqLvXrEalBQ
+TSQKW5WWIt1rrwG+N2rsrqKB2pHHMkL8boFzSc6aMBijYHdCW36QQzAK2n/xbqu+
+4OmIo+PgkoCzhWvVHE4K/GFkfaoS1lWslRV2Oz2bPe3om0ETVBBB82z0KUGJvwsa
+S7srdS+S2fJPN5nAzy6wSsH7fpbMUzekh8jpdabB82WLPlkku26wbHeULJgd2FrX
+a+aSqPftLAHS2Q01NWQLwP0iJ8aOPqhhCTwpxqSlsS8T9VeJElthGwmXqQnWI5C2
+vp7SYzfn4rdRy5b8aj9W
+=P0oJ
 -----END PGP SIGNATURE-----
 
---ev7mvGV+3JQuI2Eo--
+--ZG+WKzXzVby2T9Ro--
 
---===============3989950947003106946==
+--===============6137120239840359972==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3989950947003106946==--
+--===============6137120239840359972==--
