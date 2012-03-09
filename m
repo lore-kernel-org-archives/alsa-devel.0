@@ -1,21 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2] USB-Audio: Blacklist iec958 for some
-	USB devices
-Date: Fri, 9 Mar 2012 19:52:41 +0800
-Message-ID: <CAN8cciZrbmH=9a=mMu5Kyv2ZWaasW-syBfpFQtqpkpLKZ6BtDA@mail.gmail.com>
-References: <1331289966-3979-1-git-send-email-david.henningsson@canonical.com>
-	<s5hlinaxaxe.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 08/11] ASoC: fsl: make fsl_ssi driver
+ compilable on ARM/IMX
+Date: Fri, 9 Mar 2012 11:53:31 +0000
+Message-ID: <20120309115327.GD3273@opensource.wolfsonmicro.com>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-9-git-send-email-shawn.guo@linaro.org>
+	<4F5912D0.2090800@freescale.com>
+	<20120309012653.GG2499@S2101-09.ap.freescale.net>
+	<4F596674.5030405@freescale.com>
+	<20120309032128.GK2499@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7465223995883640238=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
-	[209.85.212.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1EC84104274
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 12:52:42 +0100 (CET)
-Received: by wibhq7 with SMTP id hq7so320564wib.2
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 03:52:41 -0800 (PST)
-In-Reply-To: <s5hlinaxaxe.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9E84710B967
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 12:53:41 +0100 (CET)
+In-Reply-To: <20120309032128.GK2499@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-2012/3/9, Takashi Iwai <tiwai@suse.de>:
-> At Fri,  9 Mar 2012 11:46:06 +0100,
-> David Henningsson wrote:
->>
->> Some common USB devices are analog only, so prevent the digital
->> devices from being opened. This simplifies probing the device
->> in PulseAudio.
->>
->> I have a "Logitech USB Headset" myself, the "Logitech Web Camera"
->> was reported by Raymond Yau, and the "Blue Snowball" was reported by
->> Andy Whitcroft.
->>
->> Cc: Andy Whitcroft <andy.whitcroft@canonical.com>
->> Cc: Raymond Yau <superquad.vortex2@gmail.com>
->> BugLink: https://bugs.launchpad.net/bugs/940145
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->
-> Thanks, applied now.
->
->
-> Takashi
->
->> ---
->>  src/conf/cards/USB-Audio.conf |    5 +++++
->>  1 files changed, 5 insertions(+), 0 deletions(-)
->>
->> diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
->> index 0726c34..d7c121e 100644
->> --- a/src/conf/cards/USB-Audio.conf
->> +++ b/src/conf/cards/USB-Audio.conf
->> @@ -36,6 +36,11 @@ USB-Audio.pcm.surround40_type {
->>  # number for the iec958 device can be changed here.
->>  USB-Audio.pcm.iec958_device {
->>  	# "NoiseBlaster 3000" 42
->> +
->> +	# The below don't have digital in/out, so prevent them from being
->> opened.
->> +	"Logitech USB Headset" 999
->> +	"Logitech Web Camera" 999
->> +	"Blue Snowball" 999
->>  }
->>
 
-How do the blacklist work ? since there is no "Logitect Web Camera" in
-lsusb info
+--===============7465223995883640238==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fOHHtNG4YXGJ0yqR"
+Content-Disposition: inline
 
-My  QuickCam Communicate Deluxe only support mono, so it is unlikely
-for pulseaudio to open for digital capture
+
+--fOHHtNG4YXGJ0yqR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Mar 09, 2012 at 11:21:31AM +0800, Shawn Guo wrote:
+> On Fri, Mar 09, 2012 at 02:09:57AM +0000, Tabi Timur-B04825 wrote:
+
+> > That's the general idea, but I think it needs more study.  I don't=20
+> > consider this to be a bug that needs to be fixed ASAP, since it's never=
+=20
+> > been an actual problem so far.  For instance, do we need to protect=20
+> > between hw_params and _trigger?
+
+Yes, the capture and playback streams may run in parallel.
+
+> Ok, I will leave it to you with a big "FIXME" comment then.
+
+You probably just need a read/modify/write function to do the locking in
+the style of update_bits().
+
+--fOHHtNG4YXGJ0yqR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPWe8rAAoJEBus8iNuMP3dstMP/2T6/VAqQ4erWkeryPFRJNL8
+b5WoNpe0+hAHTYbuGpCRIUyWURtOPKhM4Ei2l00MKXfIsB/7ZHoaxBao/bfh1hDH
+Vq50Wyzkwl5f++Y4JD8HN2ot30HyYqgAQEPHeUITV2sfZQHnrEGPyDclTLxSFWhp
+9QI/l69Gt2hpKySWqCzHDNr06fguxPPNq0zg+7zj7XXOaDATldf3mb6AO3RM6mie
+Ip9h/x/r39x+RERFCn18XFpGg2E72r4BLORkN/ndLAKqxIEmFei/BXvp5PmXbJvD
+eRS9ZBj4LGQOkmBit7IjsiQmwgY0xtgXei35Ekqg8831wVv1YPoDDok3V0Obz9xJ
+NlN0uVcQlS76CyiLUvU7UiFvYm6oUCXr04ViXq9JRpEByLM7y8BmM3dc1ZkPWxlK
+7/Owf44S/Tc4bMxsBQ28gN4GQMVc6QTETHyf9sE3p9v9X2y2fEUHalMkgOtQHUSI
+RVEJZ6Y7IzOg3iv2fwdOtrxLwuxsBBVcY3ruWZZpWZkoq8/rNj6O/IWXLdmP+CiX
+5vjKEiQ4smOP6MLlZ+NWioNhA4JEINoQHx1Lp/xeOZ227JksQhnDNggv5dTinxS8
+DzXD6SdZyYni+DxWd/O4LqX7HaJzsj0vMM8eb/oEtURfBa2B6QCYrdUym+fcvr6m
+oNIGNvRmbHog6xVtIWdY
+=ATIs
+-----END PGP SIGNATURE-----
+
+--fOHHtNG4YXGJ0yqR--
+
+--===============7465223995883640238==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7465223995883640238==--
