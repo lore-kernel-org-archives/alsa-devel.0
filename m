@@ -1,17 +1,12 @@
 From: =?utf-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: [PATCH 2/4] Add imx3sound sound support.
-Date: Fri,  9 Mar 2012 15:55:14 +0100
-Message-ID: <1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
-References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Subject: [PATCH 0/4] mc13783 sound support
+Date: Fri,  9 Mar 2012 15:55:12 +0100
+Message-ID: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
+Content-Type: multipart/mixed; boundary="===============0450966018382750254=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
-	by alsa0.perex.cz (Postfix) with SMTP id B2023243E9
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 16:01:01 +0100 (CET)
-In-Reply-To: <1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
+	by alsa0.perex.cz (Postfix) with SMTP id 44734103BBB
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 16:01:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,105 +20,60 @@ To: linux-arm-kernel@lists.infradead.org
 Cc: alsa-devel@alsa-project.org, juergen.lambrecht@gmail.com, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, =?utf-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-U2V2ZXJhbCBib2FyZHMgYXJlIHVzaW5nIHRoZSBtYzEzNzgzIGNvZGVjIHdpdGggdGhlIHNhbWUK
-Y29uZmlndXJhdGlvbi4gUHJvdmlkZSBhbiB1bmlxdWUgYXNvYyBwbGF0Zm9ybSBkcml2ZXIgZm9y
-IGl0LgoKU2lnbmVkLW9mZi1ieTogUGhpbGlwcGUgUsOpdG9ybmF6IDxwaGlsaXBwZS5yZXRvcm5h
-ekBlcGZsLmNoPgotLS0KIHNvdW5kL3NvYy9pbXgvS2NvbmZpZyAgICAgICAgICAgICB8ICAgMTAg
-KysrCiBzb3VuZC9zb2MvaW14L01ha2VmaWxlICAgICAgICAgICAgfCAgICAyICsKIHNvdW5kL3Nv
-Yy9pbXgvaW14M3NvdW5kLW1jMTM3ODMuYyB8ICAxNDEgKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCAxNTMgaW5zZXJ0aW9ucygrKSwgMCBkZWxl
-dGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvaW14L2lteDNzb3VuZC1tYzEz
-NzgzLmMKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW14L0tjb25maWcgYi9zb3VuZC9zb2MvaW14
-L0tjb25maWcKaW5kZXggNzM4MzkxNy4uMjQ0YTVmZSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2lt
-eC9LY29uZmlnCisrKyBiL3NvdW5kL3NvYy9pbXgvS2NvbmZpZwpAQCAtNTcsNCArNTcsMTQgQEAg
-Y29uZmlnIFNORF9TT0NfRVVLUkVBX1RMVjMyMAogCSAgRW5hYmxlIEkyUyBiYXNlZCBhY2Nlc3Mg
-dG8gdGhlIFRMVjMyMEFJQzIzQiBjb2RlYyBhdHRhY2hlZAogCSAgdG8gdGhlIFNTSSBpbnRlcmZh
-Y2UKIAorY29uZmlnIFNORF9TT0NfSU1YM1NPVU5EX01DMTM3ODMKKwl0cmlzdGF0ZSAiU29DIEF1
-ZGlvIHN1cHBvcnQgZm9yIGlteDMxIHdpdGggTUMxMzc4MyBjb2RlY3MiCisJZGVwZW5kcyBvbiBJ
-TVhfU0RNQQorCXNlbGVjdCBTTkRfTVhDX1NPQ19TU0kKKwlzZWxlY3QgU05EX1NPQ19NQzEzNzgz
-CisJc2VsZWN0IFNORF9NWENfU09DX01YMgorCWhlbHAKKwkJU2F5IFkgaWYgeW91IHdhbnQgdG8g
-YWRkIHN1cHBvcnQgZm9yIFNvQyBhdWRpbyBvbiBteDMxbW9ib2FyZAorCQlhbmQgaW14MzFwZGtf
-M2RzIGJvYXJkcyB1c2luZyBhIE1DMTM3ODMgQ29kZWMuCisKIGVuZGlmCSMgU05EX0lNWF9TT0MK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvTWFrZWZpbGUgYi9zb3VuZC9zb2MvaW14L01ha2Vm
-aWxlCmluZGV4IGQ2ZDYwOWIuLjc0MmZkMzUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9pbXgvTWFr
-ZWZpbGUKKysrIGIvc291bmQvc29jL2lteC9NYWtlZmlsZQpAQCAtMTIsOCArMTIsMTAgQEAgc25k
-LXNvYy1ldWtyZWEtdGx2MzIwLW9ianMgOj0gZXVrcmVhLXRsdjMyMC5vCiBzbmQtc29jLXBoeWNv
-cmUtYWM5Ny1vYmpzIDo9IHBoeWNvcmUtYWM5Ny5vCiBzbmQtc29jLW14Mjd2aXMtYWljMzJ4NC1v
-YmpzIDo9IG14Mjd2aXMtYWljMzJ4NC5vCiBzbmQtc29jLXdtMTEzMy1ldjEtb2JqcyA6PSB3bTEx
-MzMtZXYxLm8KK3NuZC1zb2MtaW14M3NvdW5kLW1jMTM3ODMtb2JqcyA6PSBpbXgzc291bmQtbWMx
-Mzc4My5vCiAKIG9iai0kKENPTkZJR19TTkRfU09DX0VVS1JFQV9UTFYzMjApICs9IHNuZC1zb2Mt
-ZXVrcmVhLXRsdjMyMC5vCiBvYmotJChDT05GSUdfU05EX1NPQ19QSFlDT1JFX0FDOTcpICs9IHNu
-ZC1zb2MtcGh5Y29yZS1hYzk3Lm8KIG9iai0kKENPTkZJR19TTkRfU09DX01YMjdWSVNfQUlDMzJY
-NCkgKz0gc25kLXNvYy1teDI3dmlzLWFpYzMyeDQubwogb2JqLSQoQ09ORklHX1NORF9NWENfU09D
-X1dNMTEzM19FVjEpICs9IHNuZC1zb2Mtd20xMTMzLWV2MS5vCitvYmotJChDT05GSUdfU05EX1NP
-Q19JTVgzU09VTkRfTUMxMzc4MykgKz0gc25kLXNvYy1pbXgzc291bmQtbWMxMzc4My5vCmRpZmYg
-LS1naXQgYS9zb3VuZC9zb2MvaW14L2lteDNzb3VuZC1tYzEzNzgzLmMgYi9zb3VuZC9zb2MvaW14
-L2lteDNzb3VuZC1tYzEzNzgzLmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4u
-YjExZTQ1NQotLS0gL2Rldi9udWxsCisrKyBiL3NvdW5kL3NvYy9pbXgvaW14M3NvdW5kLW1jMTM3
-ODMuYwpAQCAtMCwwICsxLDE0MSBAQAorLyoKKyAqIGlteDNzb3VuZC1tYzEzNzgzLmMgIC0tICBT
-b0MgYXVkaW8gZm9yIGlteDMxXzNkcyBiYXNlZCBib2FyZHMKKyAqCisgKiBDb3B5cmlnaHQgMjAx
-MiBQaGlsaXBwZSBSZXRvcm5heiwgPHBoaWxpcHBlLnJldG9ybmF6QGVwZmwuY2g+CisgKgorICog
-SGVhdmx5IGJhc2VkIG9uIHBoeWNvcmUtbWMxMzc4MzoKKyAqIENvcHlyaWdodCAyMDA5IFNhc2No
-YSBIYXVlciwgUGVuZ3V0cm9uaXggPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+CisgKgorICogIFRo
-aXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSAgaXQgYW5k
-L29yIG1vZGlmeSBpdAorICogIHVuZGVyICB0aGUgdGVybXMgb2YgIHRoZSBHTlUgR2VuZXJhbCAg
-UHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5IHRoZQorICogIEZyZWUgU29mdHdhcmUgRm91
-bmRhdGlvbjsgIGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlICBMaWNlbnNlLCBvciAoYXQgeW91cgor
-ICogIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisgKgorICovCisKKyNpbmNsdWRlIDxsaW51
-eC9tb2R1bGUuaD4KKyNpbmNsdWRlIDxsaW51eC9tb2R1bGVwYXJhbS5oPgorI2luY2x1ZGUgPGxp
-bnV4L2RldmljZS5oPgorI2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4KKyNpbmNsdWRlIDxzb3VuZC9w
-Y20uaD4KKyNpbmNsdWRlIDxzb3VuZC9zb2MuaD4KKyNpbmNsdWRlIDxzb3VuZC9zb2MtZGFwbS5o
-PgorI2luY2x1ZGUgPGFzbS9tYWNoLXR5cGVzLmg+CisKKyNpbmNsdWRlICIuLi9jb2RlY3MvbWMx
-Mzc4My5oIgorI2luY2x1ZGUgImlteC1zc2kuaCIKKworc3RhdGljIHN0cnVjdCBzbmRfc29jX2Nh
-cmQgaW14M3NvdW5kOworCisjZGVmaW5lIEZNVF9TU0kgKFNORF9TT0NfREFJRk1UX0RTUF9BIHwg
-U05EX1NPQ19EQUlGTVRfTkJfTkYgfCBcCisJCVNORF9TT0NfREFJRk1UX0NCTV9DRk0pCisKK3N0
-YXRpYyBpbnQgaW14M3NvdW5kX2hpZmlfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
-bSAqc3Vic3RyZWFtLAorCXN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFyYW1zKQoreworCXN0
-cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQgPSBzdWJzdHJlYW0tPnByaXZhdGVfZGF0YTsK
-KwlzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWkgPSBydGQtPmNwdV9kYWk7CisJc3RydWN0IHNu
-ZF9zb2NfZGFpICpjb2RlY19kYWkgPSBydGQtPmNvZGVjX2RhaTsKKwlpbnQgcmV0OworCisJcmV0
-ID0gc25kX3NvY19kYWlfc2V0X2ZtdChjb2RlY19kYWksIEZNVF9TU0kpOworCWlmIChyZXQpCisJ
-CXJldHVybiByZXQ7CisKKwlyZXQgPSBzbmRfc29jX2RhaV9zZXRfZm10KGNwdV9kYWksIEZNVF9T
-U0kpOworCWlmIChyZXQpCisJCXJldHVybiByZXQ7CisKKwlyZXQgPSBzbmRfc29jX2RhaV9zZXRf
-dGRtX3Nsb3QoY29kZWNfZGFpLCAweGZmZmZmZmZjLCAweGZmZmZmZmZjLCA0LCAxNik7CisJaWYg
-KHJldCkKKwkJcmV0dXJuIHJldDsKKworCXJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29k
-ZWNfZGFpLCBNQzEzNzgzX0NMS19DTElBLCAyNjAwMDAwMCwgMCk7CisJaWYgKHJldCkKKwkJcmV0
-dXJuIHJldDsKKworCXJldCA9IHNuZF9zb2NfZGFpX3NldF90ZG1fc2xvdChjcHVfZGFpLCAweDAs
-IDB4ZmZmZmZmZmMsIDIsIDE2KTsKKwlpZiAocmV0KQorCQlyZXR1cm4gcmV0OworCisJcmV0dXJu
-IDA7Cit9CisKK3N0YXRpYyBpbnQgaW14M3NvdW5kX2hpZmlfaHdfZnJlZShzdHJ1Y3Qgc25kX3Bj
-bV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKK3sKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIHN0cnVj
-dCBzbmRfc29jX29wcyBpbXgzc291bmRfaGlmaV9vcHMgPSB7CisJLmh3X3BhcmFtcyA9IGlteDNz
-b3VuZF9oaWZpX2h3X3BhcmFtcywKKwkuaHdfZnJlZSA9IGlteDNzb3VuZF9oaWZpX2h3X2ZyZWUs
-Cit9OworCitzdGF0aWMgaW50IGlteDNzb3VuZF9wcm9iZShzdHJ1Y3Qgc25kX3NvY19jYXJkICpk
-ZXYpCit7CisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgaW14M3NvdW5kX3JlbW92ZShzdHJ1
-Y3Qgc25kX3NvY19jYXJkICpkZXYpCit7CisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBzdHJ1Y3Qg
-c25kX3NvY19kYWlfbGluayBpbXgzc291bmRfZGFpX21jMTM3ODNbXSA9IHsKKwl7CisJCS5uYW1l
-ID0gIk1DMTM3ODMiLAorCQkuc3RyZWFtX25hbWUJID0gIlNvdW5kIiwKKwkJLmNvZGVjX2RhaV9u
-YW1lCSA9ICJtYzEzNzgzLWhpZmkiLAorCQkuY29kZWNfbmFtZQkgPSAibWMxMzc4My1jb2RlYyIs
-CisJCS5jcHVfZGFpX25hbWUJID0gImlteC1zc2kuMCIsCisJCS5wbGF0Zm9ybV9uYW1lCSA9ICJp
-bXgtcGNtLWF1ZGlvLjAiLAorCQkub3BzCQkgPSAmaW14M3NvdW5kX2hpZmlfb3BzLAorCQkuc3lt
-bWV0cmljX3JhdGVzID0gMSwKKwl9LAorfTsKKworc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQg
-aW14M3NvdW5kID0geworCS5uYW1lCQk9ICJpbXgzc291bmQiLAorCS5wcm9iZQkJPSBpbXgzc291
-bmRfcHJvYmUsCisJLnJlbW92ZQkJPSBpbXgzc291bmRfcmVtb3ZlLAorCS5kYWlfbGluawk9IGlt
-eDNzb3VuZF9kYWlfbWMxMzc4MywKKwkubnVtX2xpbmtzCT0gQVJSQVlfU0laRShpbXgzc291bmRf
-ZGFpX21jMTM3ODMpLAorfTsKKworc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKmlteDNz
-b3VuZF9zbmRfZGV2aWNlOworCitzdGF0aWMgaW50IF9faW5pdCBpbXgzc291bmRfaW5pdCh2b2lk
-KQoreworCWludCByZXQ7CisKKwlpZiAoIShtYWNoaW5lX2lzX214MzFtb2JvYXJkKCkgfHwgbWFj
-aGluZV9pc19teDMxXzNkcygpKSkKKwkJLyogcmV0dXJuIGhhcHB5LiBXZSBtaWdodCBydW4gb24g
-YSB0b3RhbGx5IGRpZmZlcmVudCBtYWNoaW5lICovCisJCXJldHVybiAwOworCisJaW14M3NvdW5k
-X3NuZF9kZXZpY2UgPSBwbGF0Zm9ybV9kZXZpY2VfYWxsb2MoInNvYy1hdWRpbyIsIC0xKTsKKwlp
-ZiAoIWlteDNzb3VuZF9zbmRfZGV2aWNlKQorCQlyZXR1cm4gLUVOT01FTTsKKworCXBsYXRmb3Jt
-X3NldF9kcnZkYXRhKGlteDNzb3VuZF9zbmRfZGV2aWNlLCAmaW14M3NvdW5kKTsKKwlyZXQgPSBw
-bGF0Zm9ybV9kZXZpY2VfYWRkKGlteDNzb3VuZF9zbmRfZGV2aWNlKTsKKworCWlmIChyZXQpIHsK
-KwkJcHJpbnRrKEtFUk5fRVJSICJBU29DOiBQbGF0Zm9ybSBkZXZpY2UgYWxsb2NhdGlvbiBmYWls
-ZWRcbiIpOworCQlwbGF0Zm9ybV9kZXZpY2VfcHV0KGlteDNzb3VuZF9zbmRfZGV2aWNlKTsKKwl9
-CisKKwlyZXR1cm4gcmV0OworfQorCitzdGF0aWMgdm9pZCBfX2V4aXQgaW14M3NvdW5kX2V4aXQo
-dm9pZCkKK3sKKwlwbGF0Zm9ybV9kZXZpY2VfdW5yZWdpc3RlcihpbXgzc291bmRfc25kX2Rldmlj
-ZSk7Cit9CisKK2xhdGVfaW5pdGNhbGwoaW14M3NvdW5kX2luaXQpOworbW9kdWxlX2V4aXQoaW14
-M3NvdW5kX2V4aXQpOworCitNT0RVTEVfQVVUSE9SKCJTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVu
-Z3V0cm9uaXguZGU+Iik7CitNT0RVTEVfQVVUSE9SKCJQaGlsaXBwZSBSZXRvcm5heiA8cGhpbGlw
-cGUucmV0b3JuYXpAZXBmbC5jaCIpOworTU9EVUxFX0RFU0NSSVBUSU9OKCJteDMxbW9ib2FyZCAm
-IG14MzFfM2RzIEFMU0EgU29DIGRyaXZlciIpOworTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOwotLSAK
-MS42LjMuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+--===============0450966018382750254==
+
+Hello
+
+This is patchset enable sound support on boards with mc13783 codec.
+The first patch adds the codec driver. It's Sascha's code ported to the
+current kernel with some minors additions.
+The second patch adds a generic SoC platform driver for imx3 boards with
+mc13783 codecs.
+The last two patches enable the sound on the mx31moboard boards and on 
+mx31pdk_3ds boards.
+
+This patchset has been tested on mx31moboard and mx31pdk_3ds.
+
+It is based on a 3.3-rc6 kernel. I know there are some patches which change
+how audmux is handled on i.Mx processor but they are not yet merged so
+I prefer to post this patchset based on a known tree than to add another
+dependency. If the audmux change is merged I will rebase this patchset.
+
+Small note: If you want to test this, make sure you use redboot as bootloader
+or that you have the patch i.MX 35/5 AIPS Setup applied.
+
+
+Philippe Rétornaz (3):
+  Add imx3sound sound support.
+  mx31moboard: Add ssi configuration
+  imx31pdk: Add sound support
+
+Sascha Hauer (1):
+  add a mc13783 codec driver
+
+ arch/arm/mach-imx/Kconfig            |    2 +
+ arch/arm/mach-imx/mach-mx31_3ds.c    |   40 ++-
+ arch/arm/mach-imx/mach-mx31moboard.c |   37 ++-
+ drivers/mfd/mc13xxx-core.c           |    3 +-
+ include/linux/mfd/mc13xxx.h          |   11 +
+ sound/soc/codecs/Kconfig             |    4 +
+ sound/soc/codecs/Makefile            |    2 +
+ sound/soc/codecs/mc13783.c           | 1036 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/mc13783.h           |   30 +
+ sound/soc/imx/Kconfig                |   10 +
+ sound/soc/imx/Makefile               |    2 +
+ sound/soc/imx/imx3sound-mc13783.c    |  141 +++++
+ 12 files changed, 1315 insertions(+), 3 deletions(-)
+ create mode 100644 sound/soc/codecs/mc13783.c
+ create mode 100644 sound/soc/codecs/mc13783.h
+ create mode 100644 sound/soc/imx/imx3sound-mc13783.c
+
+
+--===============0450966018382750254==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0450966018382750254==--
