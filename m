@@ -1,19 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] Initialize volumes of HD-audio slave ctls
-Date: Fri, 9 Mar 2012 11:13:38 +0800
-Message-ID: <CAN8ccibTiaJtz5=zaSvw3srroe4zj7Y2EabpKnuCaDOvLaGQmg@mail.gmail.com>
-References: <s5haa3ryuxb.wl%tiwai@suse.de>
-	<4F594709.6090303@canonical.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3 10/11] ASoC: fsl: let fsl_ssi work with
+ imx pcm and machine drivers
+Date: Fri, 9 Mar 2012 11:19:11 +0800
+Message-ID: <20120309031909.GJ2499@S2101-09.ap.freescale.net>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-11-git-send-email-shawn.guo@linaro.org>
+	<4F591A69.9060401@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 365BB24398
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 04:13:40 +0100 (CET)
-Received: by wgbed3 with SMTP id ed3so876614wgb.20
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 19:13:38 -0800 (PST)
-In-Reply-To: <4F594709.6090303@canonical.com>
+Received: from mail-tul01m020-f179.google.com (mail-tul01m020-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70E4E103A31
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 04:19:20 +0100 (CET)
+Received: by obbup3 with SMTP id up3so1605140obb.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 19:19:19 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <4F591A69.9060401@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,125 +27,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/3/9, David Henningsson <david.henningsson@canonical.com>:
-> On 03/08/2012 04:27 PM, Takashi Iwai wrote:
+On Thu, Mar 08, 2012 at 02:45:29PM -0600, Timur Tabi wrote:
+> Shawn Guo wrote:
+> 
+> > +	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx1-ssi")) {
+> 
+> I wonder if the i.MX code should be protected by an #ifdef.  There's no
+> point in compiling this code on PowerPC.
+> 
+I'm not really fond of #ifdef.  The i.MX code is not that much after
+all.
 
->> diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
->> index 9771b07..f450f2a 100644
->> --- a/sound/pci/hda/patch_analog.c
->> +++ b/sound/pci/hda/patch_analog.c
->> @@ -82,6 +82,7 @@ struct ad198x_spec {
->>   	unsigned int inv_jack_detect: 1;/* inverted jack-detection */
->>   	unsigned int inv_eapd: 1;	/* inverted EAPD implementation */
->>   	unsigned int analog_beep: 1;	/* analog beep input present */
->> +	unsigned int avoid_init_slave_vol:1;
->>
->>   #ifdef CONFIG_SND_HDA_POWER_SAVE
->>   	struct hda_loopback_check loopback;
->> @@ -223,11 +224,12 @@ static int ad198x_build_controls(struct hda_codec
->> *codec)
->>   		unsigned int vmaster_tlv[4];
->>   		snd_hda_set_vmaster_tlv(codec, spec->vmaster_nid,
->>   					HDA_OUTPUT, vmaster_tlv);
->> -		err = snd_hda_add_vmaster(codec, "Master Playback Volume",
->> +		err = __snd_hda_add_vmaster(codec, "Master Playback Volume",
->>   					  vmaster_tlv,
->>   					  (spec->slave_vols ?
->>   					   spec->slave_vols : ad_slave_pfxs),
->> -					  "Playback Volume");
->> +					  "Playback Volume",
->> +					  !spec->avoid_init_slave_vol);
->>   		if (err<  0)
->>   			return err;
->>   	}
->> @@ -3604,6 +3606,7 @@ static int patch_ad1884(struct hda_codec *codec)
->>   	spec->vmaster_nid = 0x04;
->>   	/* we need to cover all playback volumes */
->>   	spec->slave_vols = ad1884_slave_vols;
->> +	spec->avoid_init_slave_vol = 1;
->>
->>   	codec->patch_ops = ad198x_patch_ops;
->>
+> > +		/*
+> > +		 * FIXME: The dma burst size must equal to ssi watermark
+> > +		 * setting on imx.  We have burstsize be "fifo_depth - 2"
+> > +		 * here because "fifo_depth - 2" rather than fifo_depth is
+> > +		 * being written into watermark register in fsl_ssi_startup().
+> > +		 * Is this something needs to be fixed for PowerPC?
+> 
+> Setting the watermark to fifo_depth-2 allows the SSI to continue storing
+> data into the FIFO (during capture) in the case the DMA engine isn't fast
+> enough.  I don't want the FIFO to be completely full before we start the DMA.
+> 
+> For playback, it's the same thing.  I can't be sure the FIFO is completely
+> empty when it's time to DMA more data.
+> 
+Ok, got you.  We used to set fifo_depth on imx-ssi not the value given
+by hardware manual, but the one already tuned.
 
-https://bugs.launchpad.net/alsa-driver/+bug/526201
+So all we need is to encode the hardware value in device tree property
+"fsl,fifo-depth", and it just works.  I will remove this "FIXME". 
 
-https://bugzilla.novell.com/show_bug.cgi?id=595544
+> > +		 */
+> > +		ssi_private->dma_params_tx.burstsize =
+> > +			ssi_private->fifo_depth - 2;
+> > +		ssi_private->dma_params_rx.burstsize =
+> > +			ssi_private->fifo_depth - 2;
+> > +		ssi_private->dma_params_tx.dma_addr =
+> > +			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, stx0);
+> > +		ssi_private->dma_params_rx.dma_addr =
+> > +			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, srx0);
+> 
+> So I'm a little confused by this new binding.  I went through a lot of
+> work to remove DMA-specific data from the SSI driver, and here you are
+> adding a bunch of it back.  What you're doing here -- I'm doing it in the
+> DMA driver where it belongs.
 
-Some HP desktops seem have internal speaker connected to mono port
+I'm not sure these all belong to DMA driver.  These are all
+configurations/parameters of SSI, which are related to DMA though.
+I see fsl_dma are handling these, but I do not fully agree with that,
+because we end up with fsl_dma driver accessing SSI node and
+"struct ccsr_ssi" which should be SSI private data.
 
-, line out at rear panel and HP at front panel
+Secondly, this is the way that how imx-ssi and imx-pcm-dma works and
+interacts.  If we want to move these stuff into imx-pcm-dma, we need
+a good story to convince imx-ssi users that why it's better than what
+they currently do.
 
+> 
+> > +		/*
+> > +		 * TODO: This is a temporary solution and should be changed
+> > +		 * to use generic DMA binding later when the helplers get in.
+> > +		 */
+> > +		ret = of_property_read_u32_array(pdev->dev.of_node,
+> > +					"fsl,ssi-dma-events", dma_events, 2);
+> > +		if (ret) {
+> > +			dev_err(&pdev->dev, "could not get dma events\n");
+> > +			goto error_irq;
+> > +		}
+> > +		ssi_private->dma_params_tx.dma = dma_events[0];
+> > +		ssi_private->dma_params_rx.dma = dma_events[1];
+> 
+> of_property_read_u32_array seems overkill for just two integers.
+> 
+Hmm, I do not think so.
 
+Device tree maintainers created helpers of_property_read_u32 and
+of_property_read_u32_array to ease the user and make the operation
+less error prone.  Looking at the of_property_read_u32 implementation,
+it's even calling into of_property_read_u32_array.  So I do not think
+it's overkill for reading two integers in any way.
 
-Node 0x11 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000001f: OUT HP Detect Trigger ImpSense
-  Pin Default 0x02211030: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x3, Sequence = 0x0
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x07
-Node 0x12 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Front Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001001f: OUT HP EAPD Detect Trigger ImpSense
-  EAPD 0x0:
-  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D3
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x0a
-Node 0x13 [Pin Complex] wcaps 0x40050c: Mono Amp-Out
-  Control: name="Mono Playback Volume", index=0, device=0
-    ControlAmp: chs=1, dir=Out, idx=0, ofs=0
-  Control: name="Mono Playback Switch", index=0, device=0
-    ControlAmp: chs=1, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x00010010: OUT EAPD
-  EAPD 0x0:
-  Pin Default 0x99131150: [Fixed] Speaker at Int ATAPI
-    Conn = ATAPI, Color = Black
-    DefAssociation = 0x5, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Power states:  D0 D3
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x1f
+static inline int of_property_read_u32(const struct device_node *np,
+                                       const char *propname,
+                                       u32 *out_value)
+{
+        return of_property_read_u32_array(np, propname, out_value, 1);
+}
 
+> ssi_private->dma_params_tx.dma = be32_to_cpu(prop[0]);
+> ssi_private->dma_params_rx.dma = be32_to_cpu(prop[1]);
+> 
 
-DAC0 is not used and there is amp at node 0x13
-dB range of volume control node 0x13 is different from node 0x03 and 0x04
-
-
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Converter: stream=0, channel=0
-  Power states:  D0 D3
-  Power: setting=D0, actual=D0
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Control: name="PCM Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="AD198x Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1a 0x1a]
-  Converter: stream=0, channel=0
-  Power states:  D0 D3
-  Power: setting=D0, actual=D0
+-- 
+Regards,
+Shawn
