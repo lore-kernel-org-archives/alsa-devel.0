@@ -1,24 +1,16 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v3 00/11] ASoC: add imx-sgtl5000 machine
- driver working with fsl_ssi
-Date: Fri, 9 Mar 2012 15:28:22 +0800
-Message-ID: <CAAQ0ZWQHm+SZgDA6x93=Q9CxAqz6uVu1F2UPBc=zafrhT71D1Q@mail.gmail.com>
-References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
-	<4F5910EE.8090408@freescale.com>
-	<20120309011914.GF2499@S2101-09.ap.freescale.net>
-	<4F5966DC.6090201@freescale.com>
-	<20120309071347.GM2499@S2101-09.ap.freescale.net>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: [PATCH] ASoC: da7210: Remove extra registers from
+ defaults list
+Date: Fri, 9 Mar 2012 13:51:30 +0530
+Message-ID: <1331281290.30539.15.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEACB10BBB0
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 08:28:23 +0100 (CET)
-Received: by laap9 with SMTP id p9so1435944laa.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2012 23:28:22 -0800 (PST)
-In-Reply-To: <20120309071347.GM2499@S2101-09.ap.freescale.net>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7545E10BBC5
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2012 09:09:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,45 +20,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 9 March 2012 15:13, Shawn Guo <shawn.guo@linaro.org> wrote:
-> On Fri, Mar 09, 2012 at 02:11:41AM +0000, Tabi Timur-B04825 wrote:
->> Shawn Guo wrote:
->> > Are you testing the patch set on top of the SHA below, which I
->> > mentioned in the cover letter?
->> >
->> > =A0 =A03030763 (Merge tag 'asoc-3.4' of git://git.kernel.org/pub/scm/l=
-inux/kernel/git/broonie/sound into topic/asoc)
->> >
->> > I see the similar problem on the following SHA with my testing on
->> > imx-sgtl5000.
->> >
->> > =A0 =A01a8feca (Merge branch 'for-3.4' into asoc-next)
->>
->> It appears the problem is with for-3.4 itself. =A0I'm running git-bisect=
- now
->> to narrow it down.
->>
-> My bisect tells that the offending commit is:
->
-> =A096acc35 (ASoC: DAPM: Make sure DAPM widget IO ops hold the component m=
-utex)
->
-> But I do not understand why yet.
+This patch removes following registers from reg map defaults,
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[ INFO: possible recursive locking detected ]
-3.3.0-rc4+ #159 Not tainted
----------------------------------------------
-aplay/395 is trying to acquire lock:
- (&codec->mutex){+.+...}, at: [<802f7414>] soc_widget_update_bits_locked+0x=
-88/0x
-1a0
+- Registers which are currently not used by driver
+- Non existing registers
+- Volatile registers
 
-but task is already holding lock:
- (&codec->mutex){+.+...}, at: [<802f9df4>] snd_soc_dapm_stream_event+0x38/0=
-xc0
+Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Signed-off-by: David Dajun Chen <dchen@diasemi.com>
+---
+ sound/soc/codecs/da7210.c |   88 ---------------------------------------------
+ 1 files changed, 0 insertions(+), 88 deletions(-)
+
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 0c23f19..7843711 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -631,9 +631,7 @@ struct da7210_priv {
+ };
+ 
+ static struct reg_default da7210_reg_defaults[] = {
+-	{ 0x00, 0x00 },
+ 	{ 0x01, 0x11 },
+-	{ 0x02, 0x00 },
+ 	{ 0x03, 0x00 },
+ 	{ 0x04, 0x00 },
+ 	{ 0x05, 0x00 },
+@@ -676,92 +674,6 @@ static struct reg_default da7210_reg_defaults[] = {
+ 	{ 0x2a, 0x00 },
+ 	{ 0x2b, 0x30 },
+ 	{ 0x2c, 0x2A },
+-	{ 0x2d, 0x00 },
+-	{ 0x2e, 0x40 },
+-	{ 0x2f, 0x00 },
+-	{ 0x30, 0x40 },
+-	{ 0x31, 0x00 },
+-	{ 0x32, 0x40 },
+-	{ 0x33, 0x00 },
+-	{ 0x34, 0x40 },
+-	{ 0x35, 0x00 },
+-	{ 0x36, 0x40 },
+-	{ 0x37, 0x00 },
+-	{ 0x38, 0x40 },
+-	{ 0x39, 0x00 },
+-	{ 0x3a, 0x40 },
+-	{ 0x3b, 0x00 },
+-	{ 0x3c, 0x40 },
+-	{ 0x3d, 0x00 },
+-	{ 0x3e, 0x00 },
+-	{ 0x3f, 0x00 },
+-	{ 0x40, 0x00 },
+-	{ 0x41, 0x00 },
+-	{ 0x42, 0x00 },
+-	{ 0x43, 0x00 },
+-	{ 0x44, 0x00 },
+-	{ 0x45, 0x00 },
+-	{ 0x46, 0x00 },
+-	{ 0x47, 0x00 },
+-	{ 0x48, 0x00 },
+-	{ 0x49, 0x00 },
+-	{ 0x4a, 0x00 },
+-	{ 0x4b, 0x00 },
+-	{ 0x4c, 0x00 },
+-	{ 0x4d, 0x00 },
+-	{ 0x4e, 0x00 },
+-	{ 0x4f, 0x00 },
+-	{ 0x50, 0x00 },
+-	{ 0x51, 0x00 },
+-	{ 0x52, 0x00 },
+-	{ 0x53, 0x00 },
+-	{ 0x54, 0x00 },
+-	{ 0x55, 0x00 },
+-	{ 0x56, 0x00 },
+-	{ 0x57, 0x00 },
+-	{ 0x58, 0x00 },
+-	{ 0x59, 0x00 },
+-	{ 0x5a, 0x00 },
+-	{ 0x5b, 0x00 },
+-	{ 0x5c, 0x00 },
+-	{ 0x5d, 0x00 },
+-	{ 0x5e, 0x00 },
+-	{ 0x5f, 0x00 },
+-	{ 0x60, 0x00 },
+-	{ 0x61, 0x00 },
+-	{ 0x62, 0x00 },
+-	{ 0x63, 0x00 },
+-	{ 0x64, 0x00 },
+-	{ 0x65, 0x00 },
+-	{ 0x66, 0x00 },
+-	{ 0x67, 0x00 },
+-	{ 0x68, 0x00 },
+-	{ 0x69, 0x00 },
+-	{ 0x6a, 0x00 },
+-	{ 0x6b, 0x00 },
+-	{ 0x6c, 0x00 },
+-	{ 0x6d, 0x00 },
+-	{ 0x6e, 0x00 },
+-	{ 0x6f, 0x00 },
+-	{ 0x70, 0x00 },
+-	{ 0x71, 0x00 },
+-	{ 0x72, 0x00 },
+-	{ 0x73, 0x00 },
+-	{ 0x74, 0x00 },
+-	{ 0x75, 0x00 },
+-	{ 0x76, 0x00 },
+-	{ 0x77, 0x00 },
+-	{ 0x78, 0x00 },
+-	{ 0x79, 0x00 },
+-	{ 0x7a, 0x00 },
+-	{ 0x7b, 0x00 },
+-	{ 0x7c, 0x00 },
+-	{ 0x7d, 0x54 },
+-	{ 0x7e, 0x54 },
+-	{ 0x7f, 0x00 },
+-	{ 0x80, 0x00 },
+-	{ 0x81, 0x00 },
+-	{ 0x82, 0x2c },
+ 	{ 0x83, 0x00 },
+ 	{ 0x84, 0x00 },
+ 	{ 0x85, 0x00 },
+
+-- 
+1.7.1
