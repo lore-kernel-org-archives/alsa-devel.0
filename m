@@ -1,70 +1,86 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Bug#663090: [Pkg-alsa-devel] Bug#663090: [alsa-devel] amixer: convert percentage into db wrongly
-Date: Fri, 9 Mar 2012 22:48:14 +0100
-Message-ID: <20120309214814.GA11406@aigua.oskuro.net>
-References: <20120308123632.GA8920@adam-laptop>
- <20120308163001.GA2991@samweis.home.lxtec.de>
- <s5h399jyrc5.wl%tiwai@suse.de>
- <20120309042247.GE2130@adam-station.nay.redhat.com>
- <s5haa3qnup0.wl%tiwai@suse.de>
- <20120309090717.GG2130@adam-station.nay.redhat.com>
- <s5hty1ym898.wl%tiwai@suse.de>
- <20120309100617.GH2130@adam-station.nay.redhat.com>
- <s5hmx7qxb40.wl%tiwai@suse.de>
-Reply-To: Jordi Mallach <jordi@debian.org>, 663090@bugs.debian.org
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] USB-Audio: Fixup card name for Logitech
+	web camera
+Date: Sat, 10 Mar 2012 08:47:14 +0800
+Message-ID: <CAN8ccibdhRiAZ5Lzb06Nv_RYvO-hn3zcmm6xL2KvWmJAVUzkQw@mail.gmail.com>
+References: <1331298364-12791-1-git-send-email-david.henningsson@canonical.com>
+	<s5hboo5yl2m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.663090.B663090.13313297085455@bugs.debian.org>
-Content-Disposition: inline
-In-Reply-To: <s5hmx7qxb40.wl%tiwai@suse.de>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Takashi Iwai <tiwai@suse.de>, 663090@bugs.debian.org
-Cc: Adam Lee <adam8157@gmail.com>, Vincent Cheng <Vincentc1208@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A2EB2447C
+	for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2012 01:47:16 +0100 (CET)
+Received: by wibhn6 with SMTP id hn6so941333wib.2
+	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 16:47:14 -0800 (PST)
+In-Reply-To: <s5hboo5yl2m.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+2012/3/9, Takashi Iwai <tiwai@suse.de>:
+> At Fri,  9 Mar 2012 14:06:04 +0100,
+> David Henningsson wrote:
+>>
+>> Reported-by: Raymond Yau <superquad.vortex2@gmail.com>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>
+> OK, applied.
+>
+>
+> Takashi
+>
+>> ---
+>>  src/conf/cards/USB-Audio.conf |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
+>> index d7c121e..966172f 100644
+>> --- a/src/conf/cards/USB-Audio.conf
+>> +++ b/src/conf/cards/USB-Audio.conf
+>> @@ -39,7 +39,7 @@ USB-Audio.pcm.iec958_device {
+>>
+>>  	# The below don't have digital in/out, so prevent them from being
+>> opened.
+>>  	"Logitech USB Headset" 999
+>> -	"Logitech Web Camera" 999
+>> +	"USB Device 0x46d:0x992" 999
+>>  	"Blue Snowball" 999
+>>  }
+>>
+>> --
+>> 1.7.9
+>>
+>
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have already replied that the black list does not work since arecord
+can still open iec958
+and David expect the patch will make pulseaudio cannot open ice958
 
-Hey Takashi,
 
-On Fri, Mar 09, 2012 at 12:33:19PM +0100, Takashi Iwai wrote:
-> The implementation isn't too hard.  I wrote a quick patch now as below.
-> It became bigger than I thought since it contains many clean-ups that
-> are needed to adapt the mapped volume.
->=20
-> With the patch, amixer shows and reads the percent value with -M
-> option just like in alsamixer.
+arecord -L
 
-I see this isn't in git.a-p.org yet. If you are considering adding it for
-1.0.26, I'll cherry-pick it to make Adam's life easier. :)
+iec958:CARD=U0x46d0x992,DEV=0
+    USB Device 0x46d:0x992, USB Audio
+    IEC958 (S/PDIF) Digital Audio Output
 
-Indeed, quite a big patch. Thanks for that!
 
-Jordi
---=20
-Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
-jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
-GnuPG public key information available at http://oskuro.net/
 
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+$ arecord -D iec958:2 -f dat /dev/null
+Recording WAVE '/dev/null' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+arecord: set_params:1101: Channels count non available
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAk9aep4ACgkQJYSUupF6Il6uqgCdFLEC/iE1HKp68pke6CaWl0Ql
-YFcAnj0OBoAr8tejo97hBOOIEUqjeJy3
-=qlUP
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
+$ arecord -D iec958:CARD=U0x46d0x992 -f dat /dev/null
+Recording WAVE '/dev/null' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+arecord: set_params:1101: Channels count non available
