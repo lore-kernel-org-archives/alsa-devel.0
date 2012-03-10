@@ -1,24 +1,30 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Port C Out selector ,
- Port E Out selector of ad1988 and ad1988_3stack_dac_nids
-Date: Sat, 10 Mar 2012 09:50:58 +0800
-Message-ID: <CAN8cciaHNbHhcq9k3C9jxShpY51JFga-AqkmAfrGtEtqei+Dhg@mail.gmail.com>
-References: <CAN8cciYcxG0tyrz-_eX35Nfk=3MT4K2f18fV3=8EyUTD==0B9Q@mail.gmail.com>
-	<s5hipott3e2.wl%tiwai@suse.de>
-	<CAN8cciYz7a52ZqVS8y72FkhWDFFZixpmFT-Esr8Q5jCmqim7yw@mail.gmail.com>
-	<CAN8ccib9a+159ECp8JBraXYn9rqLU9QRw7jdngqhe1ryM3qU3Q@mail.gmail.com>
-	<s5hvcsnz28c.wl%tiwai@suse.de>
+From: Henning Thielemann <alsa@henning-thielemann.de>
+Subject: sending a sequencer event to a delayed queue
+Date: Sat, 10 Mar 2012 19:20:30 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1203101859280.16157@anubis.informatik.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
-	[209.85.212.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id EC33F244CA
-	for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2012 02:50:58 +0100 (CET)
-Received: by wibhm17 with SMTP id hm17so1039392wib.2
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2012 17:50:58 -0800 (PST)
-In-Reply-To: <s5hvcsnz28c.wl%tiwai@suse.de>
+Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
+	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 14B9F244F8
+	for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2012 19:21:23 +0100 (CET)
+Received: from mserv3.urz.uni-halle.de ([141.48.3.161])
+	by mlucom18.urz.uni-halle.de with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.77) id 1S6Qux-0002qm-D0 for <alsa-devel@alsa-project.org>
+	; Sat, 10 Mar 2012 19:21:23 +0100
+Received: from hermes.informatik.uni-halle.de ([141.48.9.46])
+	by mail.uni-halle.de
+	(Sun Java(tm) System Messaging Server 6.3-15.01 (built Mar 21 2011;
+	32bit)) with ESMTP id <0M0O00BNCLM6OIC0@mail.uni-halle.de> for
+	alsa-devel@alsa-project.org; Sat, 10 Mar 2012 19:20:30 +0100 (CET)
+Received: from anubis.informatik.uni-halle.de
+	(anubis.informatik.uni-halle.de [141.48.165.107])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)	by hermes.informatik.uni-halle.de
+	(Postfix)
+	with ESMTPS id 905374E3268F	for <alsa-devel@alsa-project.org>; Sat,
+	10 Mar 2012 19:20:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,140 +34,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/20, Takashi Iwai <tiwai@suse.de>:
-> At Tue, 20 Sep 2011 20:46:47 +0800,
-> Raymond Yau wrote:
->>
->> 2011/9/17 Raymond Yau <superquad.vortex2@gmail.com>:
->> > 2011/9/16 Takashi Iwai <tiwai@suse.de>:
->> >> At Fri, 16 Sep 2011 11:59:54 +0800,
->> >> Raymond Yau wrote:
->> >>>
->> >>> 2011/9/12 Takashi Iwai <tiwai@suse.de>:
->> >>> > At Wed, 31 Aug 2011 11:21:00 +0800,
->> >>> > Raymond Yau wrote:
->> >>> >>
->> >>>
->> >>> while testing the headphone volume control ,
->> >>>
->> >>> I discover that the "Port C Out selector" and "Port E Out Selector"
->> >>> (i.e. node 0x31 and 0x32 ) by commit in patch_anlog.c
->> >>>
->> >>> fd66e0d0591dd12eb0bea1e9f3aa194bb93cebbd
->> >>>
->> >>>
->> >>>
->> >>>  * AD1988
->> >>>  *
->> >>>  * Output pins and routes
->> >>>  *
->> >>>  *        Pin               Mix     Sel     DAC
->> >>>  * port-A 0x11 (mute/hp) <- 0x22 <- 0x37 <- 03/04/06
->> >>>  * port-B 0x14 (mute/hp) <- 0x2b <- 0x30 <- 03/04/06
->> >>>  * port-C 0x15 (mute)    <- 0x2c <- 0x31 <- 05/0a
->> >>>  * port-D 0x12 (mute/hp) <- 0x29         <- 04
->> >>>  * port-E 0x17 (mute/hp) <- 0x26 <- 0x32 <- 05/0a
->> >>>
->> >>>
->> >>>
->> >>> The connection list of node 0x31 and 0x32 are different from datasheet
->> >>>
->> >>>
->> >>> Table 10. Audio Widget
->> >>>
->> >>> 31                           Audio selector Selects DAC_2 and DAC_4
->> >>> for PORT-C
->> >>>      PORT-E Out Selector
->> >>> 32                           Audio selector Selects DAC_2 and DAC_4
->> >>> for PORT-E
->> >>>      PORT-C In Selector
->> >>>
->> >>>
->> >>>
->> >>> Codec: Analog Devices AD1988
->> >>> Address: 0
->> >>> AFG Function Id: 0x1 (unsol 0)
->> >>> Vendor Id: 0x11d41988
->> >>> Subsystem Id: 0x104381e1
->> >>> Revision Id: 0x100400
->> >>>
->> >>>
->> >>> Node 0x31 [Audio Selector] wcaps 0x300101: Stereo
->> >>>   Connection: 2
->> >>>      0x04* 0x0a
->> >>> Node 0x32 [Audio Selector] wcaps 0x300101: Stereo
->> >>>   Connection: 2
->> >>>      0x05* 0x04
->> >>>
->> >>>
->> >>>
->> >>> is the following patch based on real hardware ?
->> >>>
->> >
->> > http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=fd66e0d0591dd12eb0bea1e9f3aa194bb93cebbd
->> >
->> > Thu, 17 Nov 2005 14:31:34 +0000 (15:31 +0100)
->> > Add AD1988 codec support to hda-codec driver.
->> >
->> >
->> > http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=f8c7c7b8dd2828b42c1230c6b0235e7d1dcf57e5;hp=d32410b1095cf93e8e31f8919de46f496d7b3ce0
->> >
->> > Thu, 24 Nov 2005 15:17:20 +0000 (16:17 +0100)]
->> > Fixed the swapped surround/CLFE on 3stack mode of AD1988.
->> >
->> >
->> > hda-emu codecs/ad1988a -m "3stack"
->> > route -a 0x15
->> >
->> > Out[0a] -x Sel[31] -- Mix[2c] -> Pin[15]
->> > Out[04] -> Sel[31] -- Mix[2c] -> Pin[15]
->> >
->> > route -a 0x17
->> >
->> > Out[04] -> Sel[32] -- Mix[26] -> Pin[17]
->> > Out[05] -x Sel[32] -- Mix[26] -> Pin[17]
->> >
->>
->> In simple word,
->>
->> surround51 does not work with 3stack model since the above route in
->> hda-emu indicate that blue jack and pink jack are connected to DAC1
->> (node 0x4)
->
-> Oh, care to create a fix patch? :)
->
->
-> thanks,
->
-> Takashi
->
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5087
+Unfortunately the ALSA doc does not say, what happens if I send an event 
+to a queue that is not running. I expected that the event is being 
+delivered once the queue is started. But it seems that instead the event 
+is dropped. What is the reason for that behaviour?
 
-SergeyR replied that the patch work with his Asus M2N
-
-ad1988_3stack_surround51.patch  2011-09-30 12:33
+  What I want to do is the following: I have a program that computes a 
+sequence of events in real-time. Since computation of an event requires 
+varying amount of time, I want to add a latency in order to get a 
+correctly timed output. To this end I set up two queues: One queue 
+triggers computation of events via Echo messages and the other queue 
+delivers the computed events. I want to use the same time stamps for both 
+queues and just start the queues with a delay between them.
+  Why is it not possible to use one queue and add latency manually to the 
+timestamps? Because the user of the program shall be able to halt the 
+computation. Thus the computation must be halted first and the delivery of 
+events must be halted later. I cannot achieve this with one queue and a 
+queue_stop command.
+  Now the problem is: When my program starts it computes the first event 
+and sends it to the second (delayed) queue. But since this queue is 
+started only after a delay, it is not yet running and thus my event is not 
+delayed, but lost. :-( How to solve that problem? Is there a proposed way 
+to manage latency in ALSA sequencing?
 
 
-However does the following patch has any side effect for motherboard
-with 3 audio jacks ?
-
-seem the blue jack and pink jack are retasked to wrong output channels
-
-
-8fa7ab48acb636d24669dab291807b487dfb2804
-
-26 Oct 2011
-
-ALSA: hda - Fix surround/CLFE headphone and speaker pins order
-
-When 5.1 or more headphone or speaker pins are provided, the parser still
-takes as is without fixing the order of channel mapping, which leads in
-the unexpected strange channel order by surround outputs.
-
-This patch fixes the issue by applying the same fix-up not only to
-line_out_pins[] but also hp_pins[] and speaker_pins[].
+Regards,
+Henning
