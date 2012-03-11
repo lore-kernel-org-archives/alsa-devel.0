@@ -1,18 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] ASoC: mx27vis-aic32x4: Convert it to
-	platform driver
-Date: Sun, 11 Mar 2012 17:57:03 -0300
-Message-ID: <1331499423-9761-1-git-send-email-festevam@gmail.com>
+From: Henning Thielemann <alsa@henning-thielemann.de>
+Subject: Re: sending a sequencer event to a delayed queue
+Date: Sun, 11 Mar 2012 22:08:47 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1203112200370.12766@anubis.informatik.uni-halle.de>
+References: <alpine.DEB.2.00.1203101859280.16157@anubis.informatik.uni-halle.de>
+	<4F5BBECF.8020506@ladisch.de> <4F5CC7AB.3030300@henning-thielemann.de>
+	<4F5D0DC5.7090908@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E38D224579
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 21:57:15 +0100 (CET)
-Received: by ghbg19 with SMTP id g19so2060269ghb.38
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 13:57:15 -0700 (PDT)
+Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
+	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id E264B24556
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 22:08:57 +0100 (CET)
+In-reply-to: <4F5D0DC5.7090908@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,104 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, javier.martin@vista-silicon.com, kernel@pengutronix.de
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert mx27vis-aic32x4 to platform driver.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Fix MODULE_ALIAS
-- Rename it to mx27vis
+On Sun, 11 Mar 2012, Clemens Ladisch wrote:
 
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c |    1 +
- sound/soc/imx/mx27vis-aic32x4.c             |   40 ++++++++++++++-------------
- 2 files changed, 22 insertions(+), 19 deletions(-)
+> Yes; whether an event is delivered depends only on its scheduled time,
+> not whether the queue is running.
 
-diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-index 0a1643c..ed6023f 100644
---- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-+++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-@@ -397,6 +397,7 @@ static void __init visstrim_m10_board_init(void)
- 				      &iclink_tvp5150, sizeof(iclink_tvp5150));
- 	gpio_led_register_device(0, &visstrim_m10_led_data);
- 	visstrim_camera_init();
-+	imx_add_platform_device("mx27vis", 0, NULL, 0, NULL, 0);
- }
- 
- static void __init visstrim_m10_timer_init(void)
-diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
-index 976f857..2554397 100644
---- a/sound/soc/imx/mx27vis-aic32x4.c
-+++ b/sound/soc/imx/mx27vis-aic32x4.c
-@@ -188,22 +188,15 @@ static struct snd_soc_card mx27vis_aic32x4 = {
- 	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
- };
- 
--static struct platform_device *mx27vis_aic32x4_snd_device;
--
--static int __init mx27vis_aic32x4_init(void)
-+static int __devinit mx27vis_aic32x4_probe(struct platform_device *pdev)
- {
- 	int ret;
- 
--	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!mx27vis_aic32x4_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(mx27vis_aic32x4_snd_device, &mx27vis_aic32x4);
--	ret = platform_device_add(mx27vis_aic32x4_snd_device);
--
-+	ret = snd_soc_register_card(&mx27vis_aic32x4);
- 	if (ret) {
--		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
--		platform_device_put(mx27vis_aic32x4_snd_device);
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+			ret);
-+		return ret;
- 	}
- 
- 	/* Connect SSI0 as clock slave to SSI1 external pins */
-@@ -221,22 +214,31 @@ static int __init mx27vis_aic32x4_init(void)
- 
- 	ret = mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
- 			ARRAY_SIZE(mx27vis_amp_pins), "MX27VIS_AMP");
--	if (ret) {
-+	if (ret)
- 		printk(KERN_ERR "ASoC: unable to setup gpios\n");
--		platform_device_put(mx27vis_aic32x4_snd_device);
--	}
- 
- 	return ret;
- }
- 
--static void __exit mx27vis_aic32x4_exit(void)
-+static int __devexit mx27vis_aic32x4_remove(struct platform_device *pdev)
- {
--	platform_device_unregister(mx27vis_aic32x4_snd_device);
-+	snd_soc_unregister_card(&mx27vis_aic32x4);
-+
-+	return 0;
- }
- 
--module_init(mx27vis_aic32x4_init);
--module_exit(mx27vis_aic32x4_exit);
-+static struct platform_driver mx27vis_aic32x4_audio_driver = {
-+	.driver = {
-+		.name = "mx27vis",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = mx27vis_aic32x4_probe,
-+	.remove = __devexit_p(mx27vis_aic32x4_remove),
-+};
-+
-+module_platform_driver(mx27vis_aic32x4_audio_driver);
- 
- MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");
- MODULE_DESCRIPTION("ALSA SoC AIC32X4 mx27 visstrim");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:mx27vis");
--- 
-1.7.1
+That is, if the queue time is zero and the event time is zero, then the 
+event is sent, independent of whether the queue is running or not. Right?
+
+This is good to know and good to be documented. Is this documented 
+somewhere and if not how could I document it myself? I remember there is 
+an ALSA wiki ...
+
+
+>> If I choose a time larger than 0, say 1ns or 1s, then the
+>> event is not delivered at all.
+>
+> Starting a queue also clears it.  (This is done explicitly in the code,
+> so I guess this is a feature.)
+
+Should be certainly documented somehow. So maybe, 'CONTINUE' is the 
+solution.
+
+> I'd suggest to use one queue for both kinds of events, and to add the
+> delay to the scheduled time.  To remove certain events, use
+> snd_seq_remove_events().
+
+I'll think about that.
+
+
+Since we are at documentation. seq.h states:
+
+#define SND_SEQ_PORT_CAP_SYNC_READ	(1<<2)	/**< allow read subscriptions */
+#define SND_SEQ_PORT_CAP_SYNC_WRITE	(1<<3)	/**< allow write subscriptions */
+
+...
+
+#define SND_SEQ_PORT_CAP_SUBS_READ	(1<<5)	/**< allow read subscription */
+#define SND_SEQ_PORT_CAP_SUBS_WRITE	(1<<6)	/**< allow write subscription */
+
+
+So are the comments for SYNC_READ and SYNC_WRITE correct?
