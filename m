@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] Add imx3sound sound support.
-Date: Sun, 11 Mar 2012 11:40:15 +0000
-Message-ID: <20120311114014.GB3233@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] mx31moboard: Add ssi configuration
+Date: Sun, 11 Mar 2012 11:41:04 +0000
+Message-ID: <20120311114104.GC3233@opensource.wolfsonmicro.com>
 References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
 	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
 	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8677814796286158484=="
+Content-Type: multipart/mixed; boundary="===============8159186316946377795=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8824E2433F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 12:40:17 +0100 (CET)
-In-Reply-To: <1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3184D2433F
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 12:41:07 +0100 (CET)
+In-Reply-To: <1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,61 +27,55 @@ Cc: juergen.lambrecht@gmail.com, s.hauer@pengutronix.de, festevam@gmail.com, als
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8677814796286158484==
+--===============8159186316946377795==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4bRzO86E/ozDv8r1"
+	protocol="application/pgp-signature"; boundary="Qbvjkv9qwOGw/5Fx"
 Content-Disposition: inline
 
 
---4bRzO86E/ozDv8r1
+--Qbvjkv9qwOGw/5Fx
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 09, 2012 at 03:55:14PM +0100, Philippe R=E9tornaz wrote:
+On Fri, Mar 09, 2012 at 03:55:15PM +0100, Philippe R=E9tornaz wrote:
 
-> +static int imx3sound_hifi_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +	return 0;
-> +}
+> +	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT1_SSI0,
+> +		MXC_AUDMUX_V2_PTCR_SYN |
+> +		MXC_AUDMUX_V2_PTCR_TFSDIR |
 
-Remove all empty functions.
+This will need to be rebased off current code, the audmux has been moved
+into sound/soc.
 
-> +	imx3sound_snd_device =3D platform_device_alloc("soc-audio", -1);
-> +	if (!imx3sound_snd_device)
-> +		return -ENOMEM;
-
-No soc-audio usage, use snd_soc_register_card() from a platform device.
-
---4bRzO86E/ozDv8r1
+--Qbvjkv9qwOGw/5Fx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPXI8XAAoJEBus8iNuMP3dJcgP/06/PO/Aj8/wty473dp/7lpc
-OXG8uMqle2mPrDHJTK5xqHSqt+pyo3SvunkFTvId+XfErRXSgR2ePtJT9ux8IEPn
-2rtlp0avMonisXwEXPtcnfDfuhNmmY0nRvjXEfAIA5UlgDRURbysz5LzoFiEc8FJ
-QqGOwqPvwISPqaL3oHfCxkrb9uMfV6zK7IKthUkGRl36amRIv6ceDzeq+UdzwmUL
-QrpYmf1cuYodAGFyO19s4SJEMV734k8+BER424sHzNyQnWj7Yjwr3wezmsyfsY08
-YbnLRyzgfMm37RQk+4MJgY0uZhLCl3IvJeKxO+Bhn4vuHrk54trr48NT8ZgGHEt3
-VWv2w5umntyzqX/QbbHZluL01g8L7YQNZQ0tNMrJQBsCp5CSMC2PblLQgkQv/sF/
-q7YardHgOVDDoPq+MLgogp+GGmq0TYIoGYEJZL+INMEYy1l7r9EU2RrfpllWm+FX
-QfeuNWoxQ097LqRfRbaqv6s/2LN0b/LGuHrR9GrkaiKihAtPqDteQe7el7tQ07vv
-t2m8qDJ13q9mYiR8jShYo+nhihdW3GApK3l/6LgXW+bPnjvCHzXgGkZ84Ympd2EL
-JtapXq+Pw7U69RBo9LewnZeTUdMkENNpMxmtRCf5HjmbyjvWXfhbMb9Pi1EmBASf
-v/QygnhRcRAK7e6mZbn5
-=DrDc
+iQIbBAEBAgAGBQJPXI9KAAoJEBus8iNuMP3dgCoP9R1CmdPZ7RKVzaRiwlIBpOh/
+6ZU//fMnuDK3aB9YKStBh63mPITQWZ+u5MKHsArm3dnln8Z824u9VCIpoqqMfiaj
+vWcq7ZbK1l2G9OSJpXfOQt2J5mvPWx/ryUhcBMYLptQ676Ss0Vmxm8fC75Cl78pN
+Up6U2rBU73Y8KWfb9xEgkVWZmZ5DPK7oyE90vO/GhNu/72wxQkv7ymUeNonJXWHi
+M765M/CDmr/CcDnTBwUQHb/sr63sp/IbWQssEE6xbhLIR7lJ4FpYbxC5UO21z8D8
+oXDj202S5/NhyIfZceSv1SRj7ZCVkKX6lb847DdPuL+L7Bp/FsdeCk53FxxwtDGL
+DeJwNmpHJZJf0pSinuYmnrXBuCkopJ5wY6bvRdPqdj63fscTtMYRu3zSyDoqEU01
+aCGREScmKT1ubM7YJDCM2+qmRfIik2oM54YsWEfJ0wCcxi9gIadL9P1qQjTLm38X
+RGtIaf0YvqLA/5yN9+0nR7CfRzKzqvLYcNzmli2eVMavv7Uldf9icbekQoKRITpj
+Vwnxijukn3F/X5xTNkehqxOQkFu/kvBvrO/zPmH9rvyU9jDkCG0O7HT8XIJ2D8D2
+J6fuEtSpumK1Uxr7OzwFl0c4z4Gp/ND4yAprecLLLZmdCuwLadrihHZE4Vn4cnMO
+N1l0FSBn0dQDM47LrL0=
+=uxd2
 -----END PGP SIGNATURE-----
 
---4bRzO86E/ozDv8r1--
+--Qbvjkv9qwOGw/5Fx--
 
---===============8677814796286158484==
+--===============8159186316946377795==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8677814796286158484==--
+--===============8159186316946377795==--
