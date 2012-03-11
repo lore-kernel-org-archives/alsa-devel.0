@@ -1,18 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: mx27vis-aic32x4: Make sure we are
-	running on the correct machine
-Date: Sun, 11 Mar 2012 11:53:54 -0300
-Message-ID: <1331477634-18616-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH 2/4] Add imx3sound sound support.
+Date: Sun, 11 Mar 2012 11:59:40 -0300
+Message-ID: <CAOMZO5DP4P9Lq-gH_NNtDxwf8DxVAVg9MWHKr1E3RoexOgNYnQ@mail.gmail.com>
+References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9237A2435F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 15:54:05 +0100 (CET)
-Received: by yenl1 with SMTP id l1so1944339yen.38
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 07:54:04 -0700 (PDT)
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9530E24361
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 15:59:42 +0100 (CET)
+Received: by eeke50 with SMTP id e50so713344eek.38
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 07:59:40 -0700 (PDT)
+In-Reply-To: <1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, javier.martin@vista-silicon.com, kernel@pengutronix.de
+To: =?UTF-8?Q?Philippe_R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, juergen.lambrecht@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Only register mx27vis-aic32x4 if we are running on a imx27_visstrim_m10.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/imx/mx27vis-aic32x4.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
-index 976f857..c982bc8 100644
---- a/sound/soc/imx/mx27vis-aic32x4.c
-+++ b/sound/soc/imx/mx27vis-aic32x4.c
-@@ -194,6 +194,9 @@ static int __init mx27vis_aic32x4_init(void)
- {
- 	int ret;
- 
-+	if (!machine_is_imx27_visstrim_m10())
-+		return 0;
-+
- 	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
- 	if (!mx27vis_aic32x4_snd_device)
- 		return -ENOMEM;
--- 
-1.7.1
+T24gRnJpLCBNYXIgOSwgMjAxMiBhdCAxMTo1NSBBTSwgUGhpbGlwcGUgUsOpdG9ybmF6CjxwaGls
+aXBwZS5yZXRvcm5hekBlcGZsLmNoPiB3cm90ZToKCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL3Nv
+dW5kL3NvYy9pbXgvaW14M3NvdW5kLW1jMTM3ODMuYwo+IEBAIC0wLDAgKzEsMTQxIEBACj4gKy8q
+Cj4gKyAqIGlteDNzb3VuZC1tYzEzNzgzLmMgwqAtLSDCoFNvQyBhdWRpbyBmb3IgaW14MzFfM2Rz
+IGJhc2VkIGJvYXJkcwoKUGxlYXNlIHJlbmFtZSB0aGlzIGZpbGUgdG8gICJpbXgtbWMxMzc4My5j
+Ii4KCm14MjdwZGsgYm9hcmQgYWxzbyBoYXMgYSBtYzEzNzgzIGFuZCB3aWxsIHVzZSB0aGlzIGZp
+bGUuCgpJdCBpcyBub3QgcmVzdHJpY3RlZCB0byBteDMgYm9hcmRzLgoKVGhhbmtzLAoKRmFiaW8g
+RXN0ZXZhbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
