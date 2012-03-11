@@ -1,22 +1,17 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: make minimum period
- size larger than FIFO
-Date: Sun, 11 Mar 2012 19:39:04 +0200
-Message-ID: <1331487544.3326.27.camel@puukko.homenet-68>
-References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
-	<1331248757-3408-4-git-send-email-notasas@gmail.com>
-	<4F59FA9D.8070009@ti.com>
-	<CANOLnOM+9M2BTXasnAUqFyYAg03LE0TD266ArYDyxfRsY26QsQ@mail.gmail.com>
-	<4F5A08B3.8080705@ti.com>
-	<CANOLnOPZ+bMy8FyAJ0s6QSz1NMEZjgjX_ZXDkT+dFU3q8vefgg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: mx27vis-aic32x4: Make sure we are
+ running on the correct machine
+Date: Sun, 11 Mar 2012 18:47:17 +0000
+Message-ID: <20120311184716.GA3171@opensource.wolfsonmicro.com>
+References: <1331477634-18616-1-git-send-email-festevam@gmail.com>
+	<CAOMZO5BshX+2PNweT=fCaatGjs1=cwpSG6AtZazGs5LK4eEs7Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5328791035000280151=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C0A024482
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 18:36:43 +0100 (CET)
-In-Reply-To: <CANOLnOPZ+bMy8FyAJ0s6QSz1NMEZjgjX_ZXDkT+dFU3q8vefgg@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E8E9244DE
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 19:47:20 +0100 (CET)
+In-Reply-To: <CAOMZO5BshX+2PNweT=fCaatGjs1=cwpSG6AtZazGs5LK4eEs7Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, javier.martin@vista-silicon.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-03-09 at 23:07 +0200, Grazvydas Ignotas wrote:
-> On Fri, Mar 9, 2012 at 3:42 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
-> > On 03/09/2012 03:25 PM, Grazvydas Ignotas wrote:
-> >>> If this is a real issue in Pandora, could it be solved with adding
-> >>> /etc/asound.conf to the filesystem, and limit the period size via that?
-> >>
-> >> We are already doing that, however we encourage people to install
-> >> their own distros on pandora, and now they have to drag whole ALSA
-> >> configuration for things to work. IMHO device driver like this must be
-> >> able to work without any special userspace configuration.
-> >
-I agree. What's the use case where the problem shows up? Or actually hw
-parameters in that use case so can it be repeated using plain
-aplay/arecord?
 
-> > We have two issues here:
-> > if you are using the element mode (dma_op_mode) you might want to have
-> > bigger period size than the FIFO size. However if you are using the
-> > threshold mode you will be fine with a period size between fifo_size/2,
-> > and fifo_size.
-> 
-> Threshold mode doesn't seem to help, I still need to go over FIFO
-> size. From what I can see in the code it's setting the threshold to
-> period size, so I still get underflow condition after first write, as
-> first write goes to FIFO, DMA shows that it has nothing left to send
-> after first write finishes.
-> 
-Period size smaller than FIFO size has used to work in element mode too
-but I think I have always used in my tests multiple periods. What I'm
-thinking if we have a boundary condition with 2-3 periods and where
-buffer size is near FIFO size.
+--===============5328791035000280151==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+Content-Disposition: inline
 
-I think instead of limiting minimum period size to FIFO size we should
-find that boundary condition. Like if min buffer > FIFO + 1 period or
-something like that in order to keep possible to use small periods.
 
--- 
-Jarkko
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Mar 11, 2012 at 12:43:56PM -0300, Fabio Estevam wrote:
+
+> Or maybe should I use snd_soc_register_card instead and get rid of the
+> machine_is_xxx check?
+
+Yes, please.
+
+--J/dobhs11T7y2rNN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPXPMsAAoJEBus8iNuMP3dB24P/RHIlhM85WZUeZOhrRN83OTS
+BXwW7pfeLd+QlNBcaDShD6gRc21Sd6WeOvIs07pYizCqo1PXJQrqEFaQU4EUjX1T
+6C/jA/uS1xaGZEcHcu0w/Sl6hMnUU0ekIt6KxL79CgC9LTrN4KB2xO1ygCMDCdD7
+Y/ldGZSBhHbnsTVHxRm1SLYCB3Wnwt6vjHEO2qRHo+LhtdA1MNgaY/ZU+IUljq2L
+Pv6XCGx/VC7Zo0iXq/WAbnxkcPowEmgBU9D/uqALCW6Ht/YXhPpyWkPsc5NncUkv
+x2ktpmVN8WnhoBb/VFKLuAUwZaUqRP9lgLOgaDYuSlcI54jxaqgiZMqhI3K3jkQc
+umdBn03lUX7Ym4XHaLeLeY9oONs2ap7LkoizdS6GIqAjaeWibRLDvsYwJxuHiEt5
+4Ndqzq7hv1XUs9+2XCkJtD+/6VugTwTS4nr+6kQB6SGD+AAZ2yMJQe5/C84REA0H
+nHCmPdN3CgpuVyVPmfVosQk216nf13e8fVNFX86ImawwXhcNH707B/EHEmU8LHEZ
+IBV1vCHo2OPPkW/AyMtoIq23xS5UW7qjV5KuqKC17IbeEi39gT84VqZhBCmilR2E
+6HN3y+M2UkrpBckL4S6QXCzq0V1wjcqhz+yzCBOdNdt4SHp1QNy87vto2SsJBlV3
+OijOPmbjFcW2jueulV8k
+=DFWN
+-----END PGP SIGNATURE-----
+
+--J/dobhs11T7y2rNN--
+
+--===============5328791035000280151==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5328791035000280151==--
