@@ -1,20 +1,22 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] Initialize volumes of HD-audio slave ctls
-Date: Sun, 11 Mar 2012 08:57:33 +0800
-Message-ID: <CAN8ccian-zVTgyuMYCB6ouAcMitrCNbDhq96Rc=BgvTEjeNvkg@mail.gmail.com>
-References: <s5haa3ryuxb.wl%tiwai@suse.de>
-	<CAN8cciZNJvo_60b3icNT61+oy9n1U0Qy33u+T98OexPKwrL__A@mail.gmail.com>
-	<s5h8vjanuk0.wl%tiwai@suse.de>
+Subject: Re: how to enumerate useful ALSA devices?
+Date: Sun, 11 Mar 2012 11:01:24 +0800
+Message-ID: <CAN8cciaTgUXi-UObCxdD4+jQkV2js0E5d-J13-Eq+h4UecGQYA@mail.gmail.com>
+References: <20120104194956.GB9868@foghorn.codeweavers.com>
+	<4F04BAF8.6010701@iki.fi> <4F04C1CA.7070000@iki.fi>
+	<CAN8ccibZTviHienALPBhzLT+a5Tmy+J60-Ds_3c0LmtKtfG2mA@mail.gmail.com>
+	<4F064228.9040300@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 5D8892439C
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 01:57:34 +0100 (CET)
-Received: by werg1 with SMTP id g1so2288921wer.38
-	for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2012 16:57:34 -0800 (PST)
-In-Reply-To: <s5h8vjanuk0.wl%tiwai@suse.de>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+	[209.85.212.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id E29C62440F
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 04:01:24 +0100 (CET)
+Received: by wibhq7 with SMTP id hq7so1762860wib.2
+	for <alsa-devel@alsa-project.org>; Sat, 10 Mar 2012 19:01:24 -0800 (PST)
+In-Reply-To: <4F064228.9040300@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/3/9, Takashi Iwai <tiwai@suse.de>:
-> At Fri, 9 Mar 2012 07:04:23 +0800,
-> Raymond Yau wrote:
+2012/1/6, Anssi Hannula <anssi.hannula@iki.fi>:
+> On 06.01.2012 01:06, Raymond Yau wrote:
+>> 2012/1/5, Anssi Hannula <anssi.hannula@iki.fi>:
+>>> On 04.01.2012 22:47, Anssi Hannula wrote:
+>>>> On 04.01.2012 21:49, Andrew Eikum wrote:
+>>>
+>>>>> So I'm really stuck here. Where am I supposed to get a list of devices
+>>>>> that I can present to the user, including their Bluetooth devices and
+>>>>> virtual devices from asound.conf?
+>>>>
+>>>> I guess the preferred one is 'snd_device_name_hint()', but I don't
+>>>> really know if the caller is supposed to then handle surroundXX stuff
+>>>> themself.
+>>>
+>>> Reading your last reply made me realize that I forgot that when
+>>> pulseaudio is not configured, there is also the "default:CARD=foo"
+>>> device listed (which you noticed), so I guess one could just ignore
+>>> entries beginning with "front:" or "surround(40|41|50|51|71):", since
+>>> one can just use "default" instead of them.
+>>>
 >>
->> 2012/3/8, Takashi Iwai <tiwai@suse.de>:
->> > Hi,
->> >
->> > the patch below is an attempt to initialize the volume / mutes of
->> > slave controls (such as "Headphone", "Speaker") with vmaster in
->> > HD-audio, so that the sound can come out only by changing the master
->> > volume/mute.
->> >
->> > We have thought that such initializations could be done well in
->> > alsactl init, but it seems that not everyone installs the latest and
->> > greatest alsactl, and there is always a risk that any new controls may
->> > be added before alsactl is updated and released.  Since the master
->> > volume is set muted, the risk by this change should be low.
->> >
->> > patch_cirrus.c still doesn't support this because it's handling
->> > vmaster by itself, but it can be fixed later, too.
->> >
->> > If anyone has a concern by this, please let me know.
->> >
+>> No , this won't work for emu10k1 and ca0106
 >>
->> Can you explain the dB calculation of the volume controls when there
->> is a "virtual master" ?
+>> snd-emu10k1 require "front", "surround40","surround51" and
+>> "surround71"  which use "multi" plugin of "front" , "rear" , "clfe" or
+>> "side" devices
 >>
->> The Documentation only mention that all the slaves must have the same dB
->> range
+>> you can play stereo stream to "rear" device
 >
-> Well, more exactly, it'd work if the volume step is the same and the
-> volume range of the first slave covers the all range.
+> Ah, thanks for the correction.
 >
 >
 
-patch_analog.c current only use DAC1
+The use of "surround51" is not limited to emu10k1, some ac97 codec
+which support smart51 or Universal Jacks need to switch "channel mode"
+to 6ch when the motherboards have 3 audio jacks
 
-Is there any reason not to use DAC0 for ad1884 and ad1984 ?
-
-This allow a separate volume control for "Headphone" and "Speaker"
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5548
