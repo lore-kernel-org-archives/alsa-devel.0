@@ -1,24 +1,22 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH 2/2] ASoC: DAPM - Make sure DAPM widget IO
- ops hold the component mutex.
-Date: Sun, 11 Mar 2012 13:58:59 +0000
-Message-ID: <4F5CAFA2.4000002@freescale.com>
-References: <1331057779-4630-1-git-send-email-lrg@ti.com>
-	<1331057779-4630-2-git-send-email-lrg@ti.com>
-	<CAOZdJXUy-hCOEk6beBrjv16iknsMWTHc+AxSyw-L8-hLEXQYSw@mail.gmail.com>
-	<1331316853.3789.4.camel@odin> <4F5A55DE.8020609@freescale.com>
-	<20120311125558.GG3233@opensource.wolfsonmicro.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 3/4] mx31moboard: Add ssi configuration
+Date: Sun, 11 Mar 2012 11:13:54 -0300
+Message-ID: <CAOMZO5Ao2u71AixumSUgG8BbqL_BPYw-yKjkmZOj0ygkqLRdtw@mail.gmail.com>
+References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
+	<20120311114104.GC3233@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
-	(am1ehsobe005.messaging.microsoft.com [213.199.154.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id F325F2439F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 14:59:06 +0100 (CET)
-In-Reply-To: <20120311125558.GG3233@opensource.wolfsonmicro.com>
-Content-Language: en-US
-Content-ID: <5B4AF0BFA2743449A34EA276D473F590@mgd.freescale.com>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 784B8243BB
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 15:13:56 +0100 (CET)
+Received: by eeke50 with SMTP id e50so709462eek.38
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 07:13:54 -0700 (PDT)
+In-Reply-To: <20120311114104.GC3233@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,19 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+Cc: =?UTF-8?Q?Philippe_R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, s.hauer@pengutronix.de, juergen.lambrecht@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> I wonder if PowerPC mutexes are
-> less forgiving here?
-
-I'm still debugging this (although I have higher priority tasks to worry 
-about, unfortunately), but it appears that the mutex is already taken when 
-that code is executed.  Unfortunately, I have been unable to figure out 
-where.  One second the 'count' value is 1, and then it suddenly becomes 
-'0', and then mutex_lock() is called.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+UGhpbGlwcGUsCgoyMDEyLzMvMTEgTWFyayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZz
+b25taWNyby5jb20+Ogo+IE9uIEZyaSwgTWFyIDA5LCAyMDEyIGF0IDAzOjU1OjE1UE0gKzAxMDAs
+IFBoaWxpcHBlIFLDqXRvcm5heiB3cm90ZToKPgo+PiArIMKgIMKgIG14Y19hdWRtdXhfdjJfY29u
+ZmlndXJlX3BvcnQoTVgzMV9BVURNVVhfUE9SVDFfU1NJMCwKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
+oCBNWENfQVVETVVYX1YyX1BUQ1JfU1lOIHwKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBNWENfQVVE
+TVVYX1YyX1BUQ1JfVEZTRElSIHwKPgo+IFRoaXMgd2lsbCBuZWVkIHRvIGJlIHJlYmFzZWQgb2Zm
+IGN1cnJlbnQgY29kZSwgdGhlIGF1ZG11eCBoYXMgYmVlbiBtb3ZlZAo+IGludG8gc291bmQvc29j
+LgoKWW91IGNhbiB1c2UgbGludXgtbmV4dCB0cmVlIGFzIGl0IGFscmVhZHkgY29udGFpbnMgdGhl
+IHJlY2VudCBhdWRtdXggY2hhbmdlcy4KClRoYW5rcywKCkZhYmlvIEVzdGV2YW0KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
