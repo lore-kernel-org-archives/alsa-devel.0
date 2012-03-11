@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/4] mx31moboard: Add ssi configuration
-Date: Sun, 11 Mar 2012 11:41:04 +0000
-Message-ID: <20120311114104.GC3233@opensource.wolfsonmicro.com>
-References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
+Subject: Re: [PATCH 2/2] ASoC: DAPM - Make sure DAPM widget IO
+ ops hold the component mutex.
+Date: Sun, 11 Mar 2012 12:55:59 +0000
+Message-ID: <20120311125558.GG3233@opensource.wolfsonmicro.com>
+References: <1331057779-4630-1-git-send-email-lrg@ti.com>
+	<1331057779-4630-2-git-send-email-lrg@ti.com>
+	<CAOZdJXUy-hCOEk6beBrjv16iknsMWTHc+AxSyw-L8-hLEXQYSw@mail.gmail.com>
+	<1331316853.3789.4.camel@odin> <4F5A55DE.8020609@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8159186316946377795=="
+Content-Type: multipart/mixed; boundary="===============2509418867870542995=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3184D2433F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 12:41:07 +0100 (CET)
-In-Reply-To: <1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4194D2414A
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 13:56:03 +0100 (CET)
+In-Reply-To: <4F5A55DE.8020609@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Cc: juergen.lambrecht@gmail.com, s.hauer@pengutronix.de, festevam@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Timur Tabi <b04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8159186316946377795==
+--===============2509418867870542995==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qbvjkv9qwOGw/5Fx"
+	protocol="application/pgp-signature"; boundary="iJXiJc/TAIT2rh2r"
 Content-Disposition: inline
 
 
---Qbvjkv9qwOGw/5Fx
-Content-Type: text/plain; charset=iso-8859-1
+--iJXiJc/TAIT2rh2r
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 09, 2012 at 03:55:15PM +0100, Philippe R=E9tornaz wrote:
+On Fri, Mar 09, 2012 at 01:11:26PM -0600, Timur Tabi wrote:
+> Liam Girdwood wrote:
 
-> +	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT1_SSI0,
-> +		MXC_AUDMUX_V2_PTCR_SYN |
-> +		MXC_AUDMUX_V2_PTCR_TFSDIR |
+> > Can you switch on the mutex debugging kernel config here.  I've just had
+> > a quick look and the WM8776 and its not holding the codec mutex or
+> > calling snd_soc_update_bits_locked() so it must deadlock via another
+> > path.
 
-This will need to be rebased off current code, the audmux has been moved
-into sound/soc.
+> Enabling the debug options didn't reveal anything, unfortunately.
 
---Qbvjkv9qwOGw/5Fx
+The major difference between your two boards is that CS4270 doesn't use
+DAPM while WM8776 does.  Though if one of them were going to break I'd
+really expect it to be the CS4270, obviously non-DAPM CODECs are a real
+corner case (to the point where I think you're the only active user of
+such a device) and certainly all Liam's TI reference systems have DAPM
+CODECs so this is really surprising...  I wonder if PowerPC mutexes are
+less forgiving here?
+
+--iJXiJc/TAIT2rh2r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIbBAEBAgAGBQJPXI9KAAoJEBus8iNuMP3dgCoP9R1CmdPZ7RKVzaRiwlIBpOh/
-6ZU//fMnuDK3aB9YKStBh63mPITQWZ+u5MKHsArm3dnln8Z824u9VCIpoqqMfiaj
-vWcq7ZbK1l2G9OSJpXfOQt2J5mvPWx/ryUhcBMYLptQ676Ss0Vmxm8fC75Cl78pN
-Up6U2rBU73Y8KWfb9xEgkVWZmZ5DPK7oyE90vO/GhNu/72wxQkv7ymUeNonJXWHi
-M765M/CDmr/CcDnTBwUQHb/sr63sp/IbWQssEE6xbhLIR7lJ4FpYbxC5UO21z8D8
-oXDj202S5/NhyIfZceSv1SRj7ZCVkKX6lb847DdPuL+L7Bp/FsdeCk53FxxwtDGL
-DeJwNmpHJZJf0pSinuYmnrXBuCkopJ5wY6bvRdPqdj63fscTtMYRu3zSyDoqEU01
-aCGREScmKT1ubM7YJDCM2+qmRfIik2oM54YsWEfJ0wCcxi9gIadL9P1qQjTLm38X
-RGtIaf0YvqLA/5yN9+0nR7CfRzKzqvLYcNzmli2eVMavv7Uldf9icbekQoKRITpj
-Vwnxijukn3F/X5xTNkehqxOQkFu/kvBvrO/zPmH9rvyU9jDkCG0O7HT8XIJ2D8D2
-J6fuEtSpumK1Uxr7OzwFl0c4z4Gp/ND4yAprecLLLZmdCuwLadrihHZE4Vn4cnMO
-N1l0FSBn0dQDM47LrL0=
-=uxd2
+iQIcBAEBAgAGBQJPXKDYAAoJEBus8iNuMP3d8zYP/3ZDBJe+Fwq77oH4bCQpQve7
+ds9WImaJXFhQv+8C6lotsfPzv28DrR1ig3JXr9vx2HjojVNXyEI5y/DUYJXyJT4X
+C+DdhAlW/uJnStkAXQeLlEATgtTf9zLJ6tzYodFgBEn3O3jKf7x3cKtvhfAh5Oub
+xiBXhXLcg4aqJ31wBIBEmyRN+CaIVYmUzcz/vslzZRtUo435uTK53Etg33OMfqoG
+iua5kNXUqygwWix9mJedpGafGVjNfyqoVYAWDiB7dTf/C31Fk8EcB3AVktvi+ux5
+042TfiWj+tUbZWp1YvFXghEfCkKo8liFsD+8BR9rWW9Br5x3CkRyTnmRMIaoRNCX
+o8MqdFCbIm9zQisc0wn5He3OAMoG0MJVNVAwNHzKpiKZUttj38qFWL88sySQP6mR
+W+SPVUUwFy8GZhu8r1MuYCdiLk9O+GhIpPu+nQMhYQQclSh66/XcfSN4unHGbpUG
+Q9vqHSHPgVROcpOc3f3Fxd/LWwm3e/OAN7xJhMLiS/h3GSj9EW53TCltD+HemBTv
+7d50uOb5T7QS+e8iOBwm5uz7A/g9G9o13jIG/qR2V/71v66WlsEdq5JelTUZyDrc
+5HgfgRT8buE9qck+aOH7DpmstA4lEdVOVdHSED448fq7Ce9zRap/SNAMXNlHQr8a
+0JklmywR0s17Ny8xBbOv
+=a4FO
 -----END PGP SIGNATURE-----
 
---Qbvjkv9qwOGw/5Fx--
+--iJXiJc/TAIT2rh2r--
 
---===============8159186316946377795==
+--===============2509418867870542995==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8159186316946377795==--
+--===============2509418867870542995==--
