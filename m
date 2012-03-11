@@ -1,22 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 3/4] mx31moboard: Add ssi configuration
-Date: Sun, 11 Mar 2012 11:13:54 -0300
-Message-ID: <CAOMZO5Ao2u71AixumSUgG8BbqL_BPYw-yKjkmZOj0ygkqLRdtw@mail.gmail.com>
-References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-4-git-send-email-philippe.retornaz@epfl.ch>
-	<20120311114104.GC3233@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: mx27vis-aic32x4: Make sure we are
+	running on the correct machine
+Date: Sun, 11 Mar 2012 11:53:54 -0300
+Message-ID: <1331477634-18616-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 784B8243BB
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 15:13:56 +0100 (CET)
-Received: by eeke50 with SMTP id e50so709462eek.38
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 07:13:54 -0700 (PDT)
-In-Reply-To: <20120311114104.GC3233@opensource.wolfsonmicro.com>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9237A2435F
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 15:54:05 +0100 (CET)
+Received: by yenl1 with SMTP id l1so1944339yen.38
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 07:54:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: =?UTF-8?Q?Philippe_R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, s.hauer@pengutronix.de, juergen.lambrecht@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, javier.martin@vista-silicon.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-UGhpbGlwcGUsCgoyMDEyLzMvMTEgTWFyayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZz
-b25taWNyby5jb20+Ogo+IE9uIEZyaSwgTWFyIDA5LCAyMDEyIGF0IDAzOjU1OjE1UE0gKzAxMDAs
-IFBoaWxpcHBlIFLDqXRvcm5heiB3cm90ZToKPgo+PiArIMKgIMKgIG14Y19hdWRtdXhfdjJfY29u
-ZmlndXJlX3BvcnQoTVgzMV9BVURNVVhfUE9SVDFfU1NJMCwKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCBNWENfQVVETVVYX1YyX1BUQ1JfU1lOIHwKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBNWENfQVVE
-TVVYX1YyX1BUQ1JfVEZTRElSIHwKPgo+IFRoaXMgd2lsbCBuZWVkIHRvIGJlIHJlYmFzZWQgb2Zm
-IGN1cnJlbnQgY29kZSwgdGhlIGF1ZG11eCBoYXMgYmVlbiBtb3ZlZAo+IGludG8gc291bmQvc29j
-LgoKWW91IGNhbiB1c2UgbGludXgtbmV4dCB0cmVlIGFzIGl0IGFscmVhZHkgY29udGFpbnMgdGhl
-IHJlY2VudCBhdWRtdXggY2hhbmdlcy4KClRoYW5rcywKCkZhYmlvIEVzdGV2YW0KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Only register mx27vis-aic32x4 if we are running on a imx27_visstrim_m10.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/imx/mx27vis-aic32x4.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
+index 976f857..c982bc8 100644
+--- a/sound/soc/imx/mx27vis-aic32x4.c
++++ b/sound/soc/imx/mx27vis-aic32x4.c
+@@ -194,6 +194,9 @@ static int __init mx27vis_aic32x4_init(void)
+ {
+ 	int ret;
+ 
++	if (!machine_is_imx27_visstrim_m10())
++		return 0;
++
+ 	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!mx27vis_aic32x4_snd_device)
+ 		return -ENOMEM;
+-- 
+1.7.1
