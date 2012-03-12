@@ -1,18 +1,25 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC] [PATCH 0/5] Add vmaster hook for HD-audio
- mute-LED controls
-Date: Mon, 12 Mar 2012 15:57:35 +0100
-Message-ID: <4F5E0EDF.1090402@canonical.com>
-References: <1331562530-16044-1-git-send-email-tiwai@suse.de>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH v2] ASoC: mx27vis-aic32x4: Convert it to
+	platform driver
+Date: Mon, 12 Mar 2012 16:05:50 +0100
+Message-ID: <CACKLOr09dAaRohcUwU8nQkC+vaid86um+3w=cEUb2MDbfe3uXw@mail.gmail.com>
+References: <1331499423-9761-1-git-send-email-festevam@gmail.com>
+	<CACKLOr2j-Apnno+-h6B6Rax2-H7ZTuQ=RzyeyB7pOsqJ=xUJuA@mail.gmail.com>
+	<CAOMZO5BkK0m8vhH8i1x2f049YUT0_4OOiOXrGL5pPUzMo9p8xA@mail.gmail.com>
+	<CACKLOr0x3cGGLc7vF4gyP1XCBSJkOR1S3P2eYuuhJZ+EmX8zPQ@mail.gmail.com>
+	<CAOMZO5C4w151sFUGzawwcnhApe4bvrQ5wLKXcBBaq_qUBG=61A@mail.gmail.com>
+	<CAOMZO5AGJn6Z6O3_=nQ8mz2YJ9twntPsTe41vH13exQsceA1wg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id E8C881040DB
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 15:57:41 +0100 (CET)
-In-Reply-To: <1331562530-16044-1-git-send-email-tiwai@suse.de>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C40E2412E
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 16:05:52 +0100 (CET)
+Received: by iakh37 with SMTP id h37so7686258iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 08:05:50 -0700 (PDT)
+In-Reply-To: <CAOMZO5AGJn6Z6O3_=nQ8mz2YJ9twntPsTe41vH13exQsceA1wg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +29,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On 03/12/2012 03:28 PM, Takashi Iwai wrote:
-> This is yet another hack for HD-audio.  Currently the mute-LED is
-> controlled via abusing the powerstatus check callback for power-saving
-> feature.  Thus the mute-LED won't be enabled when user didn't build the
-> driver with CONFIG_SND_HDA_POWER_SAVE=y.  With this patchset, the driver
-> will refer to only Master switch to follow the mute-LED status.
+On 12 March 2012 14:29, Fabio Estevam <festevam@gmail.com> wrote:
+> On 3/12/12, Fabio Estevam <festevam@gmail.com> wrote:
+>> On 3/12/12, javier Martin <javier.martin@vista-silicon.com> wrote:
+>>
+>>> Could you please provide a git repository and a branch for me to test
+>>> this patch?
+>>
+>> Please apply this patch against linux-next git tree.
 >
-> The first patch is to add a hook to vmaster control.  It's simple and
-> small.  The rest are implementations of hooks and replacements of the
-> existing codes with the vmaster hook.  The last patch is the addition of
-> the mute-EAPD support on Conexant codec.  This was one of the major
-> reason I wanted to implement before 3.4, since it's the biggest missing
-> piece in Conexant auto-parser.
+> You also need this patch:
+> http://comments.gmane.org/gmane.linux.drivers.video-input-infrastructure/45617
 >
-> I've checked quickly on a few machines.  The patches are found in my
-> sound-unstable tree topic/cxt-fix branch, too.
->    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git topic/cxt-fix
+> Otherwise linux-next does not build for mx27.
 >
-> Let me know if you see any problems with this patchset.
+> Regards,
+>
+> Fabio Estevam
 
-I'm not really happy with it. Or rather, it does not solve my problem. 
-I've heard people say "hmm, when I mute the internal speakers or 
-headphones, the mute LED is lit, but not when I mute HDMI, what's the 
-logic in that?". (And since HDMI might very well be on a separate card, 
-checking all different codecs won't help.)
+I get the following error when testing your patch in linux-next  master:
 
-I believe you need to make the mute LED (and mic mute LED, if present) 
-controllable by userspace. If you like it the way it is, I'm okay with 
-making a kcontrol that has "On", "Off" and "Follow master mute" with the 
-last one being the default.
+
+ASoC: Platform device allocation failed
+mx27vis mx27vis.0: snd_soc_register_card failed (-22)
+mx27vis: probe of mx27vis.0 failed with error -22
+ALSA device list:
+  No soundcards found.
+
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
