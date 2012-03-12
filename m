@@ -1,26 +1,20 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: make minimum period
- size larger than FIFO
-Date: Mon, 12 Mar 2012 14:05:55 +0200
-Message-ID: <CANOLnONZTBTOYLjj=Fs5rA1MX0vq2tGrr67UVmHPugykfBoUZw@mail.gmail.com>
-References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
-	<1331248757-3408-4-git-send-email-notasas@gmail.com>
-	<4F59FA9D.8070009@ti.com>
-	<CANOLnOM+9M2BTXasnAUqFyYAg03LE0TD266ArYDyxfRsY26QsQ@mail.gmail.com>
-	<4F5A08B3.8080705@ti.com>
-	<CANOLnOPZ+bMy8FyAJ0s6QSz1NMEZjgjX_ZXDkT+dFU3q8vefgg@mail.gmail.com>
-	<1331487544.3326.27.camel@puukko.homenet-68>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Export functions for
+ threshold configuration
+Date: Mon, 12 Mar 2012 12:10:30 +0000
+Message-ID: <1331554230.13303.14.camel@odin>
+References: <1331550064-28349-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120312115954.GF3110@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE5CA103F3A
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 13:05:55 +0100 (CET)
-Received: by werg1 with SMTP id g1so3309795wer.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 05:05:55 -0700 (PDT)
-In-Reply-To: <1331487544.3326.27.camel@puukko.homenet-68>
+Received: from psmtp.com (na3sys009aog134.obsmtp.com [74.125.149.83])
+	by alsa0.perex.cz (Postfix) with ESMTP id 338B7103F60
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 13:10:46 +0100 (CET)
+Received: by werj55 with SMTP id j55so4115408wer.14
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 05:10:32 -0700 (PDT)
+In-Reply-To: <20120312115954.GF3110@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,57 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBNYXIgMTEsIDIwMTIgYXQgNzozOSBQTSwgSmFya2tvIE5pa3VsYSA8amFya2tvLm5p
-a3VsYUBiaXRtZXIuY29tPiB3cm90ZToKPiBPbiBGcmksIDIwMTItMDMtMDkgYXQgMjM6MDcgKzAy
-MDAsIEdyYXp2eWRhcyBJZ25vdGFzIHdyb3RlOgo+PiBPbiBGcmksIE1hciA5LCAyMDEyIGF0IDM6
-NDIgUE0sIFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+IHdyb3RlOgo+PiA+
-IE9uIDAzLzA5LzIwMTIgMDM6MjUgUE0sIEdyYXp2eWRhcyBJZ25vdGFzIHdyb3RlOgo+PiA+Pj4g
-SWYgdGhpcyBpcyBhIHJlYWwgaXNzdWUgaW4gUGFuZG9yYSwgY291bGQgaXQgYmUgc29sdmVkIHdp
-dGggYWRkaW5nCj4+ID4+PiAvZXRjL2Fzb3VuZC5jb25mIHRvIHRoZSBmaWxlc3lzdGVtLCBhbmQg
-bGltaXQgdGhlIHBlcmlvZCBzaXplIHZpYSB0aGF0Pwo+PiA+Pgo+PiA+PiBXZSBhcmUgYWxyZWFk
-eSBkb2luZyB0aGF0LCBob3dldmVyIHdlIGVuY291cmFnZSBwZW9wbGUgdG8gaW5zdGFsbAo+PiA+
-PiB0aGVpciBvd24gZGlzdHJvcyBvbiBwYW5kb3JhLCBhbmQgbm93IHRoZXkgaGF2ZSB0byBkcmFn
-IHdob2xlIEFMU0EKPj4gPj4gY29uZmlndXJhdGlvbiBmb3IgdGhpbmdzIHRvIHdvcmsuIElNSE8g
-ZGV2aWNlIGRyaXZlciBsaWtlIHRoaXMgbXVzdCBiZQo+PiA+PiBhYmxlIHRvIHdvcmsgd2l0aG91
-dCBhbnkgc3BlY2lhbCB1c2Vyc3BhY2UgY29uZmlndXJhdGlvbi4KPj4gPgo+IEkgYWdyZWUuIFdo
-YXQncyB0aGUgdXNlIGNhc2Ugd2hlcmUgdGhlIHByb2JsZW0gc2hvd3MgdXA/CgpXaGVuIGFsc2Eg
-cHJvZ3JhbSBkb2Vzbid0IHNldCBoaWdoIGVub3VnaCBzdGFydF90aHJlc2hvbGQgYW5kIHBlcmlv
-ZApzaXplLCBvciB3aGVuIHVzaW5nIE9TUyB3aXRoIHNtYWxsZXIgcGVyaW9kIChzdGFydF90aHJl
-c2hvbGQgaXMgcGVyaW9kCnNpemUgdGhlcmUpLgoKPiBPciBhY3R1YWxseSBodwo+IHBhcmFtZXRl
-cnMgaW4gdGhhdCB1c2UgY2FzZSBzbyBjYW4gaXQgYmUgcmVwZWF0ZWQgdXNpbmcgcGxhaW4KPiBh
-cGxheS9hcmVjb3JkPwoKYXBsYXkgLUQgaHc6MCAtZiBzMTZfbGUgLWMgMiAtLXBlcmlvZC1zaXpl
-PTUxMiAtLXN0YXJ0LWRlbGF5PTUwMDAwIC9kZXYvdXJhbmRvbQoKbm90ZSB0aGF0IHRoaXMgd2ls
-bCBvbmx5IHNob3cgcHJvYmxlbXMgb24gT01BUDMgTWNCU1AyIGR1ZSB0byBpdCdzIGxvbmcgRklG
-Ty4KCj4+ID4gV2UgaGF2ZSB0d28gaXNzdWVzIGhlcmU6Cj4+ID4gaWYgeW91IGFyZSB1c2luZyB0
-aGUgZWxlbWVudCBtb2RlIChkbWFfb3BfbW9kZSkgeW91IG1pZ2h0IHdhbnQgdG8gaGF2ZQo+PiA+
-IGJpZ2dlciBwZXJpb2Qgc2l6ZSB0aGFuIHRoZSBGSUZPIHNpemUuIEhvd2V2ZXIgaWYgeW91IGFy
-ZSB1c2luZyB0aGUKPj4gPiB0aHJlc2hvbGQgbW9kZSB5b3Ugd2lsbCBiZSBmaW5lIHdpdGggYSBw
-ZXJpb2Qgc2l6ZSBiZXR3ZWVuIGZpZm9fc2l6ZS8yLAo+PiA+IGFuZCBmaWZvX3NpemUuCj4+Cj4+
-IFRocmVzaG9sZCBtb2RlIGRvZXNuJ3Qgc2VlbSB0byBoZWxwLCBJIHN0aWxsIG5lZWQgdG8gZ28g
-b3ZlciBGSUZPCj4+IHNpemUuIEZyb20gd2hhdCBJIGNhbiBzZWUgaW4gdGhlIGNvZGUgaXQncyBz
-ZXR0aW5nIHRoZSB0aHJlc2hvbGQgdG8KPj4gcGVyaW9kIHNpemUsIHNvIEkgc3RpbGwgZ2V0IHVu
-ZGVyZmxvdyBjb25kaXRpb24gYWZ0ZXIgZmlyc3Qgd3JpdGUsIGFzCj4+IGZpcnN0IHdyaXRlIGdv
-ZXMgdG8gRklGTywgRE1BIHNob3dzIHRoYXQgaXQgaGFzIG5vdGhpbmcgbGVmdCB0byBzZW5kCj4+
-IGFmdGVyIGZpcnN0IHdyaXRlIGZpbmlzaGVzLgo+Pgo+IFBlcmlvZCBzaXplIHNtYWxsZXIgdGhh
-biBGSUZPIHNpemUgaGFzIHVzZWQgdG8gd29yayBpbiBlbGVtZW50IG1vZGUgdG9vCj4gYnV0IEkg
-dGhpbmsgSSBoYXZlIGFsd2F5cyB1c2VkIGluIG15IHRlc3RzIG11bHRpcGxlIHBlcmlvZHMuIFdo
-YXQgSSdtCj4gdGhpbmtpbmcgaWYgd2UgaGF2ZSBhIGJvdW5kYXJ5IGNvbmRpdGlvbiB3aXRoIDIt
-MyBwZXJpb2RzIGFuZCB3aGVyZQo+IGJ1ZmZlciBzaXplIGlzIG5lYXIgRklGTyBzaXplLgoKSSdt
-IG5vdCBzdXJlIHdoYXQgYm91bmRhcnkgbWVhbnMgaW4gQUxTQSwgYnV0IEFTb0MgbmV2ZXIgdG91
-Y2hlcyBpdCBvcgpzdGFydF90aHJlc2hvbGQuCgo+IEkgdGhpbmsgaW5zdGVhZCBvZiBsaW1pdGlu
-ZyBtaW5pbXVtIHBlcmlvZCBzaXplIHRvIEZJRk8gc2l6ZSB3ZSBzaG91bGQKPiBmaW5kIHRoYXQg
-Ym91bmRhcnkgY29uZGl0aW9uLiBMaWtlIGlmIG1pbiBidWZmZXIgPiBGSUZPICsgMSBwZXJpb2Qg
-b3IKPiBzb21ldGhpbmcgbGlrZSB0aGF0IGluIG9yZGVyIHRvIGtlZXAgcG9zc2libGUgdG8gdXNl
-IHNtYWxsIHBlcmlvZHMuCgpJIHdhcyB0ZXN0aW5nIHNvbWUgaGFja3MgdGhhdCBmb3JjZSBydW50
-aW1lLT5zdGFydF90aHJlc2hvbGQgdG8gYSBiaXQKYWJvdmUgRklGTyBzaXplIHdpdGggZ29vZCBy
-ZXN1bHRzLCBob3dldmVyIG5vbmUgb2YgQVNvQyBjb2RlIGV2ZXIKdG91Y2hlcyBpdCwgc28gSSBn
-dWVzcyBpdCBjb3VsZCBiZSBjb25zaWRlcmVkIHdyb25nIHRoaW5nIHRvIGRvLCBidXQKaXQgd29y
-a3Mgd2l0aCBldmVyeXRoaW5nIEkgdGVzdGVkIHNvIGZhciwgaW5jbHVkaW5nIE9TUyBlbXVsYXRp
-b24uCgoKLS0gCkdyYcW+dnlkYXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+On Mon, 2012-03-12 at 11:59 +0000, Mark Brown wrote:
+> On Mon, Mar 12, 2012 at 01:01:04PM +0200, Peter Ujfalusi wrote:
+> > ABE has certain requirements towards the FIFO configuration in McBSP.
+> > Make it posssible to configure the McBSP FIFO threshold from outside of
+> > the McBSP driver stack.
+> 
+> You should always submit things like this along with the changes which
+> use them, it's much easier to see if they're sensible when the users are
+> there.  Without seeing how this is used it's hard to tell if this is
+> sensible or if it should be abstracted in some way and we don't want to
+> have half of the bodges sitting around if we end up doing things a
+> different way.
+
+I agree, but in this case the ABE series will be huge. We're trying to
+break this into smaller and more digestible chunks rather than a massive
+series. 
+
+The commit message here should have been more descriptive and described
+the ABE use case.
+
+Liam
