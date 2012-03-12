@@ -1,18 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v3] ASoC: mx27vis-aic32x4: Convert it to
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: mx27vis-aic32x4: Convert it to
 	platform driver
-Date: Mon, 12 Mar 2012 17:37:30 -0300
-Message-ID: <1331584650-19014-1-git-send-email-festevam@gmail.com>
+Date: Mon, 12 Mar 2012 21:05:50 +0000
+Message-ID: <20120312210550.GC30146@opensource.wolfsonmicro.com>
+References: <1331584650-19014-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4596754614778721998=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2193243FA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 21:37:43 +0100 (CET)
-Received: by yenl1 with SMTP id l1so3144289yen.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 13:37:42 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 420E410410B
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 22:05:53 +0100 (CET)
+In-Reply-To: <1331584650-19014-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,108 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, javier.martin@vista-silicon.com, kernel@pengutronix.de
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, javier.martin@vista-silicon.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Convert mx27vis-aic32x4 to platform driver.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-Tested-by: Javier Martin <javier.martin@vista-silicon.com>
----
-Changes since v2:
-- Add missing initialization of mx27vis_aic32x4.dev
-- Add Tested-by line
-Changes since v1:
-- Fix MODULE_ALIAS
-- Rename it to mx27vis
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c |    1 +
- sound/soc/imx/mx27vis-aic32x4.c             |   41 ++++++++++++++------------
- 2 files changed, 23 insertions(+), 19 deletions(-)
+--===============4596754614778721998==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XWOWbaMNXpFDWE00"
+Content-Disposition: inline
 
-diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-index 0a1643c..ed6023f 100644
---- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-+++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-@@ -397,6 +397,7 @@ static void __init visstrim_m10_board_init(void)
- 				      &iclink_tvp5150, sizeof(iclink_tvp5150));
- 	gpio_led_register_device(0, &visstrim_m10_led_data);
- 	visstrim_camera_init();
-+	imx_add_platform_device("mx27vis", 0, NULL, 0, NULL, 0);
- }
- 
- static void __init visstrim_m10_timer_init(void)
-diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
-index 976f857..f6d04ad 100644
---- a/sound/soc/imx/mx27vis-aic32x4.c
-+++ b/sound/soc/imx/mx27vis-aic32x4.c
-@@ -188,22 +188,16 @@ static struct snd_soc_card mx27vis_aic32x4 = {
- 	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
- };
- 
--static struct platform_device *mx27vis_aic32x4_snd_device;
--
--static int __init mx27vis_aic32x4_init(void)
-+static int __devinit mx27vis_aic32x4_probe(struct platform_device *pdev)
- {
- 	int ret;
- 
--	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!mx27vis_aic32x4_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(mx27vis_aic32x4_snd_device, &mx27vis_aic32x4);
--	ret = platform_device_add(mx27vis_aic32x4_snd_device);
--
-+	mx27vis_aic32x4.dev = &pdev->dev;
-+	ret = snd_soc_register_card(&mx27vis_aic32x4);
- 	if (ret) {
--		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
--		platform_device_put(mx27vis_aic32x4_snd_device);
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+			ret);
-+		return ret;
- 	}
- 
- 	/* Connect SSI0 as clock slave to SSI1 external pins */
-@@ -221,22 +215,31 @@ static int __init mx27vis_aic32x4_init(void)
- 
- 	ret = mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
- 			ARRAY_SIZE(mx27vis_amp_pins), "MX27VIS_AMP");
--	if (ret) {
-+	if (ret)
- 		printk(KERN_ERR "ASoC: unable to setup gpios\n");
--		platform_device_put(mx27vis_aic32x4_snd_device);
--	}
- 
- 	return ret;
- }
- 
--static void __exit mx27vis_aic32x4_exit(void)
-+static int __devexit mx27vis_aic32x4_remove(struct platform_device *pdev)
- {
--	platform_device_unregister(mx27vis_aic32x4_snd_device);
-+	snd_soc_unregister_card(&mx27vis_aic32x4);
-+
-+	return 0;
- }
- 
--module_init(mx27vis_aic32x4_init);
--module_exit(mx27vis_aic32x4_exit);
-+static struct platform_driver mx27vis_aic32x4_audio_driver = {
-+	.driver = {
-+		.name = "mx27vis",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = mx27vis_aic32x4_probe,
-+	.remove = __devexit_p(mx27vis_aic32x4_remove),
-+};
-+
-+module_platform_driver(mx27vis_aic32x4_audio_driver);
- 
- MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");
- MODULE_DESCRIPTION("ALSA SoC AIC32X4 mx27 visstrim");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:mx27vis");
--- 
-1.7.1
+
+--XWOWbaMNXpFDWE00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 12, 2012 at 05:37:30PM -0300, Fabio Estevam wrote:
+> Convert mx27vis-aic32x4 to platform driver.
+
+This doesn't apply against current ASoC, there's some conflicting
+arch/arm changes.  Please rebase against my for-3.4 - the conflicts
+should be trivially resolvable by Linus when he pulls.
+
+--XWOWbaMNXpFDWE00
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPXmTvAAoJEBus8iNuMP3dg/AP/3yussKDrIFQyAIglXohvJE2
+SDD0cTwmseolIC37Drk8Qhag7sgpojQSRkv/2RAiSHDSDH8GdSKqQMCPR+18kz/b
++AAd2w2uWEbo2K2bdFvDrSE+rrFVPZTkdkUKf8H4Y3J8mmlMRCb+shE/P4APUG+S
+8TkmlI3btTwq3lr6QO0mNgJBPeHThf/d7KNG8pTNggw6qn/p6I/nG0k9HK/RVGfQ
+KMLBu3mBfsYBgGrPNcHIY8dQ0wDurdK43f2UfLsjx0YKK8q+PqY9ryOe7bxbXgOK
+NvtrE1mLmnlmII8skrdnw0Qte0xgtClvsy8PwYE6H3ZZ05xWEYUozi9ND3IqCMOm
+nl+rnbZ0/HuFV2ucIzrCPAEXuSLMbyQKxw3SkClku+WzMK9eDEhKvwt4pEcpSiN7
+VsLTfNb2kjWlgxLMbd11/HRXPso30Nbwn4sBH5niSMZA/LrbkqLjltokszFJcBMo
+Q000BwR5nC3Nx40tZ8dBpNBFXvb68v+vt2AxZZyNRoDtACoYq6i9Aq/mMG6nTsOV
+jXbo3/VXlAkMw9Il0xgxNUQN0aqiLBfDgAzOpBftFAfwneB8PpNmcivH7I4dUUvG
+3EeGAd6pHkO0nLoflrW9m5DEs/0XJIuyLLt6sEsjzsVKfpWhxEaHRIZBTsV6bwtQ
+xBcoNx21Xkxxn1lsqZqJ
+=5R51
+-----END PGP SIGNATURE-----
+
+--XWOWbaMNXpFDWE00--
+
+--===============4596754614778721998==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4596754614778721998==--
