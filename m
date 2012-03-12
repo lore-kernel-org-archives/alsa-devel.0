@@ -1,11 +1,18 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [GIT PULL] ASoC: Updates for 3.4
-Date: Mon, 12 Mar 2012 11:49:36 +0000
-Message-ID: <1331552976.13303.10.camel@odin>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v4] ASoC: add imx-sgtl5000 machine driver
+	working with fsl_ssi
+Date: Mon, 12 Mar 2012 19:58:47 +0800
+Message-ID: <1331553537-19789-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF569103F24
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 12:58:49 +0100 (CET)
+Received: by iakh37 with SMTP id h37so7438983iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 04:58:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,86 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@vger.kernel.org>
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mainly Peter's McBSP move from arch/ to sound/ and updates this time.
-
-Thanks
-
-Liam
+Changes since v3:
+ * Change imx compatible to "fsl,imx21-ssi"
+ * Leave locking issue as a FIXME for Timur to sort out separately
 
 ---
+Shawn Guo (10):
+      ASoC: fsl: separate SSI and DMA Kconfig options
+      ASoC: imx: merge sound/soc/imx into sound/soc/fsl
+      ASoC: fsl: rename imx-pcm Kconfig options and filename
+      ASoC: fsl: create fsl_utils to accommodate the common functions
+      ASoC: fsl: remove helper fsl_asoc_get_codec_dev_name
+      ASoC: fsl: check property 'compatible' for the machine name
+      ASoC: fsl: make fsl_ssi driver compilable on ARM/IMX
+      ASoC: fsl: remove the fatal error checking on codec-handle
+      ASoC: fsl: let fsl_ssi work with imx pcm and machine drivers
+      ASoC: fsl: add imx-sgtl5000 machine driver
 
-
-The following changes since commit 303076342b8a30aa98f8a53b539155d0b81ff0c3:
-
-  Merge tag 'asoc-3.4' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into topic/asoc (2012-03-06 14:04:16 +0100)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc.git for-3.4
-
-Grazvydas Ignotas (1):
-      ASoC: omap-mcbsp: fix snd_pcm_hw_rule_add arguments
-
-Peter Ujfalusi (22):
-      OMAP4: panda: Correct cpu version check for 4430
-      ARM: OMAP: mcbsp: Convert core driver to proper platform driver
-      OMAP: mcbsp: Move core driver under sound/soc/omap
-      ASoC: OMAP: McBSP: Consolidate plat/mcbsp.h content
-      ASoC: omap-mcbsp: Create a single driver for McBSP
-      ARM: OMAP: Do not register omap-mcbsp-dai device
-      ASoC: OMAP: mcbsp.h: Clean up bit definitions
-      ASoC: OMAP McBSP: Remove redundant accessors
-      ASoC: omap-mcbsp: Cleanup of module probe/remove code
-      ASoC: omap-mcbsp: Merge the omap_mcbsp_data into omap_mcbsp structure
-      ASoC: omap-mcbsp: Simplify DMA configuration
-      ASoC: omap: mcbsp: Use uniform st_data pointer initialization
-      ASoC: omap: mcbsp: Remove redundant checks for the st_data pointer
-      ASoC: omap-mcbsp: Configure wakeup in later phase
-      ASoC: omap-mcbsp: When closing the port select PRCM source for CLKS signal
-      ASoC: omap McBSP: Clear rx_irq at probe time for OMAP4
-      ARM: OMAP2+: McBSP: Correct CLKR/FSR clock source mux configuration
-      ARM/ASoC: OMAP McBSP: Move remainig defines from arch to ASoC header
-      ASoC: omap-mcbsp: Single function CLKR/FSR source mux configuration
-      ASoC: omap-mcbsp: Correct clock muxing for CLKR/FSR signals
-      ARM: OMAP: Remove CONFIG_OMAP_MCBSP references
-      ASoC: OMAP: Build config cleanup for McBSP
-
- arch/arm/mach-omap1/Kconfig                    |    3 -
- arch/arm/mach-omap1/Makefile                   |    4 +-
- arch/arm/mach-omap1/devices.c                  |    9 -
- arch/arm/mach-omap1/mcbsp.c                    |   14 +-
- arch/arm/mach-omap2/Makefile                   |    4 +-
- arch/arm/mach-omap2/board-omap4panda.c         |    2 +-
- arch/arm/mach-omap2/devices.c                  |   22 -
- arch/arm/mach-omap2/mcbsp.c                    |   54 ++-
- arch/arm/plat-omap/Kconfig                     |    8 -
- arch/arm/plat-omap/Makefile                    |    2 -
- arch/arm/plat-omap/include/plat/mcbsp.h        |  333 --------------
- sound/soc/omap/Kconfig                         |    2 -
- sound/soc/omap/Makefile                        |    2 +-
- sound/soc/omap/am3517evm.c                     |    2 +-
- sound/soc/omap/ams-delta.c                     |    2 +-
- sound/soc/omap/igep0020.c                      |    2 +-
- {arch/arm/plat-omap => sound/soc/omap}/mcbsp.c |  549 +++++-------------------
- sound/soc/omap/mcbsp.h                         |  346 +++++++++++++++
- sound/soc/omap/n810.c                          |    2 +-
- sound/soc/omap/omap-mcbsp.c                    |  321 ++++++++-------
- sound/soc/omap/omap-mcbsp.h                    |    2 +-
- sound/soc/omap/omap-pcm.h                      |    2 +
- sound/soc/omap/omap3beagle.c                   |    2 +-
- sound/soc/omap/omap3evm.c                      |    2 +-
- sound/soc/omap/omap3pandora.c                  |    4 +-
- sound/soc/omap/osk5912.c                       |    2 +-
- sound/soc/omap/overo.c                         |    2 +-
- sound/soc/omap/rx51.c                          |    4 +-
- sound/soc/omap/sdp3430.c                       |    4 +-
- sound/soc/omap/zoom2.c                         |    4 +-
- 30 files changed, 706 insertions(+), 1005 deletions(-)
- rename {arch/arm/plat-omap => sound/soc/omap}/mcbsp.c (66%)
- create mode 100644 sound/soc/omap/mcbsp.h
-
-
+ .../bindings/sound/imx-audio-sgtl5000.txt          |   24 +++
+ arch/powerpc/configs/86xx/mpc8610_hpcd_defconfig   |    1 +
+ arch/powerpc/configs/mpc85xx_defconfig             |    1 +
+ arch/powerpc/configs/mpc85xx_smp_defconfig         |    1 +
+ sound/soc/Kconfig                                  |    1 -
+ sound/soc/Makefile                                 |    1 -
+ sound/soc/fsl/Kconfig                              |  124 ++++++++++++-
+ sound/soc/fsl/Makefile                             |   29 +++-
+ sound/soc/{imx => fsl}/eukrea-tlv320.c             |    2 +-
+ sound/soc/fsl/fsl_ssi.c                            |  140 +++++++++++----
+ sound/soc/fsl/fsl_utils.c                          |   91 ++++++++++
+ sound/soc/fsl/fsl_utils.h                          |   26 +++
+ sound/soc/{imx => fsl}/imx-audmux.c                |    0
+ sound/soc/{imx => fsl}/imx-audmux.h                |    0
+ .../{imx/imx-pcm-dma-mx2.c => fsl/imx-pcm-dma.c}   |    0
+ sound/soc/{imx => fsl}/imx-pcm-fiq.c               |    0
+ sound/soc/{imx => fsl}/imx-pcm.c                   |    0
+ sound/soc/{imx => fsl}/imx-pcm.h                   |    0
+ sound/soc/fsl/imx-sgtl5000.c                       |  177 ++++++++++++++++++
+ sound/soc/{imx => fsl}/imx-ssi.c                   |    2 +-
+ sound/soc/{imx => fsl}/imx-ssi.h                   |    0
+ sound/soc/fsl/mpc8610_hpcd.c                       |  168 ++----------------
+ sound/soc/{imx => fsl}/mx27vis-aic32x4.c           |    0
+ sound/soc/fsl/p1022_ds.c                           |  190 ++------------------
+ sound/soc/{imx => fsl}/phycore-ac97.c              |    0
+ sound/soc/{imx => fsl}/wm1133-ev1.c                |    0
+ sound/soc/imx/Kconfig                              |   79 --------
+ sound/soc/imx/Makefile                             |   22 ---
+ 28 files changed, 604 insertions(+), 475 deletions(-)
