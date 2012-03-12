@@ -1,18 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Export functions for
- threshold configuration
-Date: Mon, 12 Mar 2012 12:17:33 +0000
-Message-ID: <20120312121733.GH3110@opensource.wolfsonmicro.com>
-References: <1331550064-28349-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120312115954.GF3110@opensource.wolfsonmicro.com>
-	<1331554230.13303.14.camel@odin>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: make minimum period
+ size larger than FIFO
+Date: Mon, 12 Mar 2012 14:41:24 +0200
+Message-ID: <4F5DEEF4.4050409@ti.com>
+References: <1331248757-3408-1-git-send-email-notasas@gmail.com>
+	<1331248757-3408-4-git-send-email-notasas@gmail.com>
+	<4F59FA9D.8070009@ti.com>
+	<CANOLnOM+9M2BTXasnAUqFyYAg03LE0TD266ArYDyxfRsY26QsQ@mail.gmail.com>
+	<4F5A08B3.8080705@ti.com>
+	<CANOLnOPZ+bMy8FyAJ0s6QSz1NMEZjgjX_ZXDkT+dFU3q8vefgg@mail.gmail.com>
+	<1331487544.3326.27.camel@puukko.homenet-68>
+	<CANOLnONZTBTOYLjj=Fs5rA1MX0vq2tGrr67UVmHPugykfBoUZw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2216089829043013188=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B60A7103F9F
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 13:17:35 +0100 (CET)
-In-Reply-To: <1331554230.13303.14.camel@odin>
+Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
+	[74.125.149.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AA10103F4F
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 13:41:44 +0100 (CET)
+Received: by mail-lpp01m010-f42.google.com with SMTP id l5so8456446lah.1
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 05:41:28 -0700 (PDT)
+In-Reply-To: <CANOLnONZTBTOYLjj=Fs5rA1MX0vq2tGrr67UVmHPugykfBoUZw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,65 +31,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2216089829043013188==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JI+G0+mN8WmwPnOn"
-Content-Disposition: inline
-
-
---JI+G0+mN8WmwPnOn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 12, 2012 at 12:10:30PM +0000, Liam Girdwood wrote:
-
-> I agree, but in this case the ABE series will be huge. We're trying to
-> break this into smaller and more digestible chunks rather than a massive
-> series.=20
-
-> The commit message here should have been more descriptive and described
-> the ABE use case.
-
-Yeah, or just mix this in with whatever part of the series needs the
-export (indeed it might make sense to add the export and the user in the
-same commit).  Splitting the series up a bit is good but this is going
-to the other extreme!
-
---JI+G0+mN8WmwPnOn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPXelUAAoJEBus8iNuMP3d1EwP/iJO5NsSRwUp6BkjaEFIp527
-Z7JGWVEh5GZSOmXaTFHRoABji65Ob0RGtu6OyiliWMI6Qf/oxMrTmKhZiHqoBhC/
-+oikkuDY1vKjDON/+MP8IzlAf61aTCE224XXTqBvOxFTP8fG7x/SpdMdPG60HWyy
-IeY0fUBmG/tafqV8cPjNrrq1vE2jzrTPYvZyZujOE9zstowzp+Gr+FypjAl3e48j
-+M7ngyKq5RS6D0VC81kD2I8gXegJkkSUnc1s74bFn+OcN08vy9uOW22h0osdRIO5
-bFITS0ZsY2lnmH7FkGIjP3BoZZ5TTtXqLnkw9ZkpC/7DZNlpTeF42oatZ9/j5vdq
-Xkf5E7npW91EIhEPPrPSRrQdE+QrsFbT2/fDPHifSsmRtpmh2TKR6b3WVt9eMCS+
-ikR0DdJ1ZHcj0BzTiKiVh55TlAza4r0GtKCpoIbr3mJSP4PPTjX0TDqsLZKOcZxF
-ihGpDroYhLvYQ89/eULGx0okZoj6yL519YyszuNfN2P/k9//B8RiV64sud6DEwaq
-3jA2vk4kzxtkzvoa4MQE0z5V/mdLlD6zFWsnlzN9loYckowrAEk7FmB3iJOAnzj1
-ljFzrOxIYRmthwAvYmUG+xRFrAqr1ndcHF8YsxCPvQEQEXgjkfxk4dLM/mEdZ4CA
-uFO5EYGicrb/oUhtl3j2
-=p48d
------END PGP SIGNATURE-----
-
---JI+G0+mN8WmwPnOn--
-
---===============2216089829043013188==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2216089829043013188==--
+T24gMDMvMTIvMjAxMiAwMjowNSBQTSwgR3JhenZ5ZGFzIElnbm90YXMgd3JvdGU6Cj4gYXBsYXkg
+LUQgaHc6MCAtZiBzMTZfbGUgLWMgMiAtLXBlcmlvZC1zaXplPTUxMiAtLXN0YXJ0LWRlbGF5PTUw
+MDAwIC9kZXYvdXJhbmRvbQo+IAo+IG5vdGUgdGhhdCB0aGlzIHdpbGwgb25seSBzaG93IHByb2Js
+ZW1zIG9uIE9NQVAzIE1jQlNQMiBkdWUgdG8gaXQncyBsb25nIEZJRk8uCgpUaGVyZSdzIHNvbWV0
+aGluZyBlbHNlIGhlcmUgc2luY2U6CmFwbGF5IC1EIGh3OjAgLWZzMTZfbGUgLWMyIC0tcGVyaW9k
+LXNpemU9MzIwIC0tYnVmZmVyLXNpemU9OTcyIFwKLS1zdGFydC1kZWxheT04MTAwMCAtdiAvZGV2
+L3VyYW5kb20KCldvcmtzIGNvcnJlY3RseSwgaG93ZXZlcgphcGxheSAtRCBodzowIC1mczE2X2xl
+IC1jMiAtLXBlcmlvZC1zaXplPTMyNCAtLWJ1ZmZlci1zaXplPTk3MiBcCi0tc3RhcnQtZGVsYXk9
+ODEwMDAgLXYgL2Rldi91cmFuZG9tCgpwcm9kdWNlcyB1bmRlcnJ1bnMuCkluIGJvdGggY2FzZXMg
+dGhlIHN0YXJ0X3RocmVzaG9sZCBpcyBzZXQgdG8gNjQ4ICg2NDAgaXMgdGhlIEZJRk8gTWNCU1Ay
+CnNpemUpLiBCb3RoIHNob3VsZCBiZSBmaW5lLCBidXQgcGVyaW9kX3NpemU9MzI0IHVuZGVycnVu
+cy4KClNvIHRoZSBpc3N1ZSBpcyBub3QgdGhhdCBzaW1wbGUgYXMgaXQgc2VhbXMuLi4KCi0tIApQ
+w6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
