@@ -1,21 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ALSA: hda - Add EAPD control to Conexnat
-	auto-parser
-Date: Mon, 12 Mar 2012 15:28:50 +0100
-Message-ID: <1331562530-16044-6-git-send-email-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC] [PATCH 0/5] Add vmaster hook for HD-audio
+ mute-LED controls
+Date: Mon, 12 Mar 2012 15:57:35 +0100
+Message-ID: <4F5E0EDF.1090402@canonical.com>
 References: <1331562530-16044-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D02310426F
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 15:30:02 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id CDFCB934B2
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 15:30:01 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8C881040DB
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 15:57:41 +0100 (CET)
 In-Reply-To: <1331562530-16044-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,113 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Added the vmaster hook for controlling EAPD dynamically to Conexant
-auto-parser.  When the Master is muted, EAPDs are turned off as well.
-This will fix the missing mute-LED control on some machines in
-addition to the more power-saving in the auto-parser mode.
+On 03/12/2012 03:28 PM, Takashi Iwai wrote:
+> This is yet another hack for HD-audio.  Currently the mute-LED is
+> controlled via abusing the powerstatus check callback for power-saving
+> feature.  Thus the mute-LED won't be enabled when user didn't build the
+> driver with CONFIG_SND_HDA_POWER_SAVE=y.  With this patchset, the driver
+> will refer to only Master switch to follow the mute-LED status.
+>
+> The first patch is to add a hook to vmaster control.  It's simple and
+> small.  The rest are implementations of hooks and replacements of the
+> existing codes with the vmaster hook.  The last patch is the addition of
+> the mute-EAPD support on Conexant codec.  This was one of the major
+> reason I wanted to implement before 3.4, since it's the biggest missing
+> piece in Conexant auto-parser.
+>
+> I've checked quickly on a few machines.  The patches are found in my
+> sound-unstable tree topic/cxt-fix branch, too.
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git topic/cxt-fix
+>
+> Let me know if you see any problems with this patchset.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_conexant.c |   36 ++++++++++++++++++++++++++++++++----
- 1 file changed, 32 insertions(+), 4 deletions(-)
+I'm not really happy with it. Or rather, it does not solve my problem. 
+I've heard people say "hmm, when I mute the internal speakers or 
+headphones, the mute LED is lit, but not when I mute HDMI, what's the 
+logic in that?". (And since HDMI might very well be on a separate card, 
+checking all different codecs won't help.)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 5a56fda..f1c9aed 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -70,6 +70,8 @@ struct conexant_spec {
- 	const struct snd_kcontrol_new *mixers[5];
- 	int num_mixers;
- 	hda_nid_t vmaster_nid;
-+	struct snd_kcontrol *vmaster_sw_kctl;
-+	void (*vmaster_hook)(struct snd_kcontrol *, int);
- 
- 	const struct hda_verb *init_verbs[5];	/* initialization verbs
- 						 * don't forget NULL
-@@ -513,9 +515,10 @@ static int conexant_build_controls(struct hda_codec *codec)
- 	}
- 	if (spec->vmaster_nid &&
- 	    !snd_hda_find_mixer_ctl(codec, "Master Playback Switch")) {
--		err = snd_hda_add_vmaster(codec, "Master Playback Switch",
--					  NULL, slave_pfxs,
--					  "Playback Switch");
-+		err = __snd_hda_add_vmaster(codec, "Master Playback Switch",
-+					    NULL, slave_pfxs,
-+					    "Playback Switch", true,
-+					    &spec->vmaster_sw_kctl);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -3975,6 +3978,19 @@ static void clear_unsol_on_unused_pins(struct hda_codec *codec)
- 	}
- }
- 
-+/* turn on/off EAPD according to Master switch */
-+static void cx_auto_vmaster_hook(void *private_data, int enabled)
-+{
-+	struct hda_codec *codec = private_data;
-+	struct conexant_spec *spec = codec->spec;
-+
-+	if (enabled && spec->pin_eapd_ctrls) {
-+		cx_auto_update_speakers(codec);
-+		return;
-+	}
-+	cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, enabled);
-+}
-+
- static void cx_auto_init_output(struct hda_codec *codec)
- {
- 	struct conexant_spec *spec = codec->spec;
-@@ -4079,11 +4095,13 @@ static void cx_auto_init_digital(struct hda_codec *codec)
- 
- static int cx_auto_init(struct hda_codec *codec)
- {
-+	struct conexant_spec *spec = codec->spec;
- 	/*snd_hda_sequence_write(codec, cx_auto_init_verbs);*/
- 	cx_auto_init_output(codec);
- 	cx_auto_init_input(codec);
- 	cx_auto_init_digital(codec);
- 	snd_hda_jack_report_sync(codec);
-+	snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
- 	return 0;
- }
- 
-@@ -4329,6 +4347,11 @@ static int cx_auto_build_controls(struct hda_codec *codec)
- 	err = snd_hda_jack_add_kctls(codec, &spec->autocfg);
- 	if (err < 0)
- 		return err;
-+	if (spec->vmaster_hook && spec->vmaster_sw_kctl) {
-+		snd_ctl_add_vmaster_hook(spec->vmaster_sw_kctl,
-+					 spec->vmaster_hook, codec);
-+		snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
-+	}
- 	return 0;
- }
- 
-@@ -4353,7 +4376,6 @@ static int cx_auto_search_adcs(struct hda_codec *codec)
- 	return 0;
- }
- 
--
- static const struct hda_codec_ops cx_auto_patch_ops = {
- 	.build_controls = cx_auto_build_controls,
- 	.build_pcms = conexant_build_pcms,
-@@ -4455,6 +4477,12 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 
- 	apply_pin_fixup(codec, cxt_fixups, cxt_pincfg_tbl);
- 
-+	/* add EAPD vmaster hook to all HP machines */
-+	/* NOTE: this should be applied via fixup once when the generic
-+	 *       fixup code is merged to hda_codec.c
-+	 */
-+	spec->vmaster_hook = cx_auto_vmaster_hook;
-+
- 	err = cx_auto_search_adcs(codec);
- 	if (err < 0)
- 		return err;
+I believe you need to make the mute LED (and mic mute LED, if present) 
+controllable by userspace. If you like it the way it is, I'm okay with 
+making a kcontrol that has "On", "Off" and "Follow master mute" with the 
+last one being the default.
+
 -- 
-1.7.9.2
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
