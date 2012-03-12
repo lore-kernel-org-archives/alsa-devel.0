@@ -1,18 +1,23 @@
-From: Philippe =?ISO-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: Re: [PATCH 2/4] Add imx3sound sound support.
-Date: Mon, 12 Mar 2012 09:11:50 +0100
-Message-ID: <4989193.ghnyrmjmJD@laptop>
-References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
-	<1331304916-4724-3-git-send-email-philippe.retornaz@epfl.ch>
-	<CAOMZO5DP4P9Lq-gH_NNtDxwf8DxVAVg9MWHKr1E3RoexOgNYnQ@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: sending a sequencer event to a delayed queue
+Date: Mon, 12 Mar 2012 09:21:14 +0100
+Message-ID: <4F5DB1FA.9030802@ladisch.de>
+References: <alpine.DEB.2.00.1203101859280.16157@anubis.informatik.uni-halle.de>
+	<4F5BBECF.8020506@ladisch.de>
+	<4F5CC7AB.3030300@henning-thielemann.de>
+	<4F5D0DC5.7090908@ladisch.de>
+	<alpine.DEB.2.00.1203112200370.12766@anubis.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
-	by alsa0.perex.cz (Postfix) with SMTP id 21F112435E
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 09:11:57 +0100 (CET)
-In-Reply-To: <CAOMZO5DP4P9Lq-gH_NNtDxwf8DxVAVg9MWHKr1E3RoexOgNYnQ@mail.gmail.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 18FDC2435C
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 09:18:10 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 67768211F9
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 04:18:02 -0400 (EDT)
+In-Reply-To: <alpine.DEB.2.00.1203112200370.12766@anubis.informatik.uni-halle.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +27,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, juergen.lambrecht@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Henning Thielemann <alsa@henning-thielemann.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Le dimanche 11 mars 2012 11:59:40 Fabio Estevam a =E9crit :
-> On Fri, Mar 9, 2012 at 11:55 AM, Philippe R=E9tornaz
-> =
+Henning Thielemann wrote:
+> On Sun, 11 Mar 2012, Clemens Ladisch wrote:
+>> Yes; whether an event is delivered depends only on its scheduled time,
+>> not whether the queue is running.
+>
+> That is, if the queue time is zero and the event time is zero, then
+> the event is sent, independent of whether the queue is running or not.
 
-> <philippe.retornaz@epfl.ch> wrote:
-> > --- /dev/null
-> > +++ b/sound/soc/imx/imx3sound-mc13783.c
-> > @@ -0,0 +1,141 @@
-> > +/*
-> > + * imx3sound-mc13783.c  --  SoC audio for imx31_3ds based boards
-> =
+Yes.
 
-> Please rename this file to  "imx-mc13783.c".
-> =
+> Since we are at documentation. seq.h states:
+>
+> #define SND_SEQ_PORT_CAP_SYNC_READ    (1<<2)    /**< allow read subscriptions */
+> #define SND_SEQ_PORT_CAP_SYNC_WRITE    (1<<3)    /**< allow write subscriptions */
+> ...
+> #define SND_SEQ_PORT_CAP_SUBS_READ    (1<<5)    /**< allow read subscription */
+> #define SND_SEQ_PORT_CAP_SUBS_WRITE    (1<<6)    /**< allow write subscription */
+>
+> So are the comments for SYNC_READ and SYNC_WRITE correct?
 
-> mx27pdk board also has a mc13783 and will use this file.
-> =
+No, they should say "obsolete; no effect".
 
-> It is not restricted to mx3 boards.
 
-Ok, will do.
-
-Thanks,
-
-Philippe
+Regards,
+Clemens
