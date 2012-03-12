@@ -1,39 +1,396 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Triple implementation of WM8766 and quadruple WM8776!
-Date: Mon, 12 Mar 2012 22:40:54 +0100
-Message-ID: <201203122241.12234.linux@rainbow-software.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC] [PATCH 0/5] Add vmaster hook for HD-audio
+ mute-LED controls
+Date: Mon, 12 Mar 2012 23:12:12 +0100
+Message-ID: <4F5E74BC.5020209@canonical.com>
+References: <1331562530-16044-1-git-send-email-tiwai@suse.de>
+	<4F5E0EDF.1090402@canonical.com> <s5hy5r53li9.wl%tiwai@suse.de>
+	<s5hty1t3ixx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id B134710412C
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 23:12:14 +0100 (CET)
+In-Reply-To: <s5hty1t3ixx.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I'm trying do implement support for Philips PSC724 Ultimate Edge card, which 
-is based on VT1722 + WM8776 + WM8766 chips. Found that the best file to base 
-my work on is sound/pci/ice1712/se.c (as SE-200PCI card contains both WM8776 
-and WM8766 chips).
+On 03/12/2012 05:03 PM, Takashi Iwai wrote:
+> At Mon, 12 Mar 2012 16:08:14 +0100,
+> Takashi Iwai wrote:
+>>
+>> At Mon, 12 Mar 2012 15:57:35 +0100,
+>> David Henningsson wrote:
+>>>
+>>> On 03/12/2012 03:28 PM, Takashi Iwai wrote:
+>>>> This is yet another hack for HD-audio.  Currently the mute-LED is
+>>>> controlled via abusing the powerstatus check callback for power-saving
+>>>> feature.  Thus the mute-LED won't be enabled when user didn't build the
+>>>> driver with CONFIG_SND_HDA_POWER_SAVE=y.  With this patchset, the driver
+>>>> will refer to only Master switch to follow the mute-LED status.
+>>>>
+>>>> The first patch is to add a hook to vmaster control.  It's simple and
+>>>> small.  The rest are implementations of hooks and replacements of the
+>>>> existing codes with the vmaster hook.  The last patch is the addition of
+>>>> the mute-EAPD support on Conexant codec.  This was one of the major
+>>>> reason I wanted to implement before 3.4, since it's the biggest missing
+>>>> piece in Conexant auto-parser.
+>>>>
+>>>> I've checked quickly on a few machines.  The patches are found in my
+>>>> sound-unstable tree topic/cxt-fix branch, too.
+>>>>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git topic/cxt-fix
+>>>>
+>>>> Let me know if you see any problems with this patchset.
+>>>
+>>> I'm not really happy with it. Or rather, it does not solve my problem.
+>>> I've heard people say "hmm, when I mute the internal speakers or
+>>> headphones, the mute LED is lit, but not when I mute HDMI, what's the
+>>> logic in that?". (And since HDMI might very well be on a separate card,
+>>> checking all different codecs won't help.)
+>>>
+>>> I believe you need to make the mute LED (and mic mute LED, if present)
+>>> controllable by userspace. If you like it the way it is, I'm okay with
+>>> making a kcontrol that has "On", "Off" and "Follow master mute" with the
+>>> last one being the default.
+>>
+>> It's a good point.  Note that the patch isn't meant to solve such
+>> problems at all.  It's rather a clean-up and improvement of the
+>> current code.  In the current code, Conexant auto-paresr doesn't
+>> provide _any_ mute LED control.  With this patch, it provides, at
+>> least, the compatible mute LED control like other static quirks.
+>> In other words, this is a regression fix.
+>>
+>> About the user-space mute-LED: I'm fine to add an enum to change the
+>> mute-LED behavior.  But also remember that this isn't always easy
+>> because the mute-LED and EAPD might be bound together in the hardware
+>> level (at least for Conexant).  Thus it'd be possible that the speaker
+>> is suddenly turned on when you connect an HDMI if the mute-LED is
+>> controlled individually.
+>
+> Below is a quick implementation.  Does it look OK for you?
+> It's applied on the top of the previous series.
 
-While doing this, found that there are three implementations of WM8766 codec 
-control, two of them in the same driver(!):
-sound/pci/ice1712/se.c
-sound/pci/ice1712/prodigy_hifi.c
-sound/pci/oxygen/xonar_wm87x6.c (+sound/pci/oxygen/wm8766.h)
+It looks very good to me, thanks! I guess we'll need mic mute LED's 
+also, but that can come later. Maybe it's just those Thinkpads who have 
+mic mute LEDs now anyway, and maybe they do that through ACPI...
 
-And WM8776 status is even worse, there are four implementations, again two 
-being in the same driver:
-sound/pci/ice1712/se.c
-sound/pci/ice1712/maya44.c
-sound/pci/oxygen/xonar_wm87x6.c (+sound/pci/oxygen/wm8776.h)
-sound/soc/codecs/wm8776.c (this one being official and stand-alone module but 
-it does not seem to be usable as a part of sound card driver)
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> From: Takashi Iwai<tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Add "Mute-LED Mode" enum control
+>
+> Create snd_hda_add_vmaster_hook() and snd_hda_sync_vmaster_hook()
+> helper functions to handle the mute-LED in vmaster hook more
+> commonly.  In the former function, a new enum control "Mute-LED Mode"
+> is added.  This provides user to choose whether the mute-LED should be
+> turned on/off explicitly or to follow the master-mute status.
+>
+> Signed-off-by: Takashi Iwai<tiwai@suse.de>
+Reviewed-by: David Henningsson <david.henningsson@canonical.com>
 
-My code would enlarge both of these lists and I don't like that. What to do?
+> ---
+>   sound/pci/hda/hda_codec.c      |   94 ++++++++++++++++++++++++++++++++++++++++
+>   sound/pci/hda/hda_local.h      |   21 +++++++++
+>   sound/pci/hda/patch_conexant.c |   17 ++++----
+>   sound/pci/hda/patch_realtek.c  |   12 +++--
+>   sound/pci/hda/patch_sigmatel.c |   13 +++---
+>   5 files changed, 135 insertions(+), 22 deletions(-)
+>
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index b79ee34..b981ea9 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -2450,6 +2450,100 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
+>   }
+>   EXPORT_SYMBOL_HDA(__snd_hda_add_vmaster);
+>
+> +/*
+> + * mute-LED control using vmaster
+> + */
+> +static int vmaster_mute_mode_info(struct snd_kcontrol *kcontrol,
+> +				  struct snd_ctl_elem_info *uinfo)
+> +{
+> +	static const char * const texts[] = {
+> +		"Off", "On", "Follow Master"
+> +	};
+> +	unsigned int index;
+> +
+> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+> +	uinfo->count = 1;
+> +	uinfo->value.enumerated.items = 3;
+> +	index = uinfo->value.enumerated.item;
+> +	if (index>= 3)
+> +		index = 2;
+> +	strcpy(uinfo->value.enumerated.name, texts[index]);
+> +	return 0;
+> +}
+> +
+> +static int vmaster_mute_mode_get(struct snd_kcontrol *kcontrol,
+> +				 struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct hda_vmaster_mute_hook *hook = snd_kcontrol_chip(kcontrol);
+> +	ucontrol->value.enumerated.item[0] = hook->mute_mode;
+> +	return 0;
+> +}
+> +
+> +static int vmaster_mute_mode_put(struct snd_kcontrol *kcontrol,
+> +				 struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct hda_vmaster_mute_hook *hook = snd_kcontrol_chip(kcontrol);
+> +	unsigned int old_mode = hook->mute_mode;
+> +
+> +	hook->mute_mode = ucontrol->value.enumerated.item[0];
+> +	if (hook->mute_mode>  HDA_VMUTE_FOLLOW_MASTER)
+> +		hook->mute_mode = HDA_VMUTE_FOLLOW_MASTER;
+> +	if (old_mode == hook->mute_mode)
+> +		return 0;
+> +	snd_hda_sync_vmaster_hook(hook);
+> +	return 1;
+> +}
+> +
+> +static struct snd_kcontrol_new vmaster_mute_mode = {
+> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> +	.name = "Mute-LED Mode",
+> +	.info = vmaster_mute_mode_info,
+> +	.get = vmaster_mute_mode_get,
+> +	.put = vmaster_mute_mode_put,
+> +};
+> +
+> +/*
+> + * Add a mute-LED hook with the given vmaster switch kctl
+> + * "Mute-LED Mode" control is automatically created and associated with
+> + * the given hook.
+> + */
+> +int snd_hda_add_vmaster_hook(struct hda_codec *codec,
+> +			     struct hda_vmaster_mute_hook *hook)
+> +{
+> +	struct snd_kcontrol *kctl;
+> +
+> +	if (!hook->hook || !hook->sw_kctl)
+> +		return 0;
+> +	snd_ctl_add_vmaster_hook(hook->sw_kctl, hook->hook, codec);
+> +	hook->codec = codec;
+> +	hook->mute_mode = HDA_VMUTE_FOLLOW_MASTER;
+> +	kctl = snd_ctl_new1(&vmaster_mute_mode, hook);
+> +	if (!kctl)
+> +		return -ENOMEM;
+> +	return snd_hda_ctl_add(codec, 0, kctl);
+> +}
+> +EXPORT_SYMBOL_HDA(snd_hda_add_vmaster_hook);
+> +
+> +/*
+> + * Call the hook with the current value for synchronization
+> + * Should be called in init callback
+> + */
+> +void snd_hda_sync_vmaster_hook(struct hda_vmaster_mute_hook *hook)
+> +{
+> +	if (!hook->hook || !hook->codec)
+> +		return;
+> +	switch (hook->mute_mode) {
+> +	case HDA_VMUTE_FOLLOW_MASTER:
+> +		snd_ctl_sync_vmaster_hook(hook->sw_kctl);
+> +		break;
+> +	default:
+> +		hook->hook(hook->codec, hook->mute_mode);
+> +		break;
+> +	}
+> +}
+> +EXPORT_SYMBOL_HDA(snd_hda_sync_vmaster_hook);
+> +
+> +
+>   /**
+>    * snd_hda_mixer_amp_switch_info - Info callback for a standard AMP mixer switch
+>    *
+> diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+> index c3ee4ed..3f82ab6 100644
+> --- a/sound/pci/hda/hda_local.h
+> +++ b/sound/pci/hda/hda_local.h
+> @@ -147,6 +147,27 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
+>   	__snd_hda_add_vmaster(codec, name, tlv, slaves, suffix, true, NULL)
+>   int snd_hda_codec_reset(struct hda_codec *codec);
+>
+> +enum {
+> +	HDA_VMUTE_OFF,
+> +	HDA_VMUTE_ON,
+> +	HDA_VMUTE_FOLLOW_MASTER,
+> +};
+> +
+> +struct hda_vmaster_mute_hook {
+> +	/* below two fields must be filled by the caller of
+> +	 * snd_hda_add_vmaster_hook() beforehand
+> +	 */
+> +	struct snd_kcontrol *sw_kctl;
+> +	void (*hook)(void *, int);
+> +	/* below are initialized automatically */
+> +	unsigned int mute_mode; /* HDA_VMUTE_XXX */
+> +	struct hda_codec *codec;
+> +};
+> +
+> +int snd_hda_add_vmaster_hook(struct hda_codec *codec,
+> +			     struct hda_vmaster_mute_hook *hook);
+> +void snd_hda_sync_vmaster_hook(struct hda_vmaster_mute_hook *hook);
+> +
+>   /* amp value bits */
+>   #define HDA_AMP_MUTE	0x80
+>   #define HDA_AMP_UNMUTE	0x00
+> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+> index f1c9aed..a21a485 100644
+> --- a/sound/pci/hda/patch_conexant.c
+> +++ b/sound/pci/hda/patch_conexant.c
+> @@ -70,8 +70,7 @@ struct conexant_spec {
+>   	const struct snd_kcontrol_new *mixers[5];
+>   	int num_mixers;
+>   	hda_nid_t vmaster_nid;
+> -	struct snd_kcontrol *vmaster_sw_kctl;
+> -	void (*vmaster_hook)(struct snd_kcontrol *, int);
+> +	struct hda_vmaster_mute_hook vmaster_mute;
+>
+>   	const struct hda_verb *init_verbs[5];	/* initialization verbs
+>   						 * don't forget NULL
+> @@ -518,7 +517,7 @@ static int conexant_build_controls(struct hda_codec *codec)
+>   		err = __snd_hda_add_vmaster(codec, "Master Playback Switch",
+>   					    NULL, slave_pfxs,
+>   					    "Playback Switch", true,
+> -					&spec->vmaster_sw_kctl);
+> +					&spec->vmaster_mute.sw_kctl);
+>   		if (err<  0)
+>   			return err;
+>   	}
+> @@ -4101,7 +4100,7 @@ static int cx_auto_init(struct hda_codec *codec)
+>   	cx_auto_init_input(codec);
+>   	cx_auto_init_digital(codec);
+>   	snd_hda_jack_report_sync(codec);
+> -	snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
+> +	snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
+>   	return 0;
+>   }
+>
+> @@ -4347,10 +4346,10 @@ static int cx_auto_build_controls(struct hda_codec *codec)
+>   	err = snd_hda_jack_add_kctls(codec,&spec->autocfg);
+>   	if (err<  0)
+>   		return err;
+> -	if (spec->vmaster_hook&&  spec->vmaster_sw_kctl) {
+> -		snd_ctl_add_vmaster_hook(spec->vmaster_sw_kctl,
+> -					 spec->vmaster_hook, codec);
+> -		snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
+> +	if (spec->vmaster_mute.hook&&  spec->vmaster_mute.sw_kctl) {
+> +		err = snd_hda_add_vmaster_hook(codec,&spec->vmaster_mute);
+> +		if (err<  0)
+> +			return err;
+>   	}
+>   	return 0;
+>   }
+> @@ -4481,7 +4480,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
+>   	/* NOTE: this should be applied via fixup once when the generic
+>   	 *       fixup code is merged to hda_codec.c
+>   	 */
+> -	spec->vmaster_hook = cx_auto_vmaster_hook;
+> +	spec->vmaster_mute.hook = cx_auto_vmaster_hook;
+>
+>   	err = cx_auto_search_adcs(codec);
+>   	if (err<  0)
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 9015472..b69d2fe 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -198,7 +198,7 @@ struct alc_spec {
+>
+>   	/* for virtual master */
+>   	hda_nid_t vmaster_nid;
+> -	struct snd_kcontrol *vmaster_sw_kctl;
+> +	struct hda_vmaster_mute_hook vmaster_mute;
+>   #ifdef CONFIG_SND_HDA_POWER_SAVE
+>   	struct hda_loopback_check loopback;
+>   	int num_loopbacks;
+> @@ -1960,7 +1960,7 @@ static int __alc_build_controls(struct hda_codec *codec)
+>   		err = __snd_hda_add_vmaster(codec, "Master Playback Switch",
+>   					    NULL, alc_slave_pfxs,
+>   					    "Playback Switch",
+> -					    true,&spec->vmaster_sw_kctl);
+> +					    true,&spec->vmaster_mute.sw_kctl);
+>   		if (err<  0)
+>   			return err;
+>   	}
+> @@ -5894,13 +5894,11 @@ static void alc269_fixup_mic2_mute(struct hda_codec *codec,
+>   	struct alc_spec *spec = codec->spec;
+>   	switch (action) {
+>   	case ALC_FIXUP_ACT_BUILD:
+> -		if (!spec->vmaster_sw_kctl)
+> -			return;
+> -		snd_ctl_add_vmaster_hook(spec->vmaster_sw_kctl,
+> -					 alc269_fixup_mic2_mute_hook, codec);
+> +		spec->vmaster_mute.hook = alc269_fixup_mic2_mute_hook;
+> +		snd_hda_add_vmaster_hook(codec,&spec->vmaster_mute);
+>   		/* fallthru */
+>   	case ALC_FIXUP_ACT_INIT:
+> -		snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
+> +		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
+>   		break;
+>   	}
+>   }
+> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+> index 6e92649..cd04e29 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -311,7 +311,7 @@ struct sigmatel_spec {
+>   	unsigned auto_dmic_cnt;
+>   	hda_nid_t auto_dmic_nids[MAX_DMICS_NUM];
+>
+> -	struct snd_kcontrol *vmaster_sw_kctl;
+> +	struct hda_vmaster_mute_hook vmaster_mute;
+>   };
+>
+>   static const hda_nid_t stac9200_adc_nids[1] = {
+> @@ -1160,14 +1160,15 @@ static int stac92xx_build_controls(struct hda_codec *codec)
+>   	err = __snd_hda_add_vmaster(codec, "Master Playback Switch",
+>   				    NULL, slave_pfxs,
+>   				    "Playback Switch", true,
+> -				&spec->vmaster_sw_kctl);
+> +				&spec->vmaster_mute.sw_kctl);
+>   	if (err<  0)
+>   		return err;
+>
+>   	if (spec->gpio_led) {
+> -		snd_ctl_add_vmaster_hook(spec->vmaster_sw_kctl,
+> -					 stac92xx_vmaster_hook, codec);
+> -		snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
+> +		spec->vmaster_mute.hook = stac92xx_vmaster_hook;
+> +		err = snd_hda_add_vmaster_hook(codec,&spec->vmaster_mute);
+> +		if (err<  0)
+> +			return err;
+>   	}
+>
+>   	if (spec->aloopback_ctl&&
+> @@ -4432,7 +4433,7 @@ static int stac92xx_init(struct hda_codec *codec)
+>   	snd_hda_jack_report_sync(codec);
+>
+>   	/* sync mute LED */
+> -	snd_ctl_sync_vmaster_hook(spec->vmaster_sw_kctl);
+> +	snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
+>   	if (spec->dac_list)
+>   		stac92xx_power_down(codec);
+>   	return 0;
+
+
 
 -- 
-Ondrej Zary
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
