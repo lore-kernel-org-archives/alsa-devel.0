@@ -1,22 +1,11 @@
-From: javier Martin <javier.martin@vista-silicon.com>
-Subject: Re: [PATCH v2] ASoC: mx27vis-aic32x4: Convert it to
-	platform driver
-Date: Mon, 12 Mar 2012 12:41:27 +0100
-Message-ID: <CACKLOr0x3cGGLc7vF4gyP1XCBSJkOR1S3P2eYuuhJZ+EmX8zPQ@mail.gmail.com>
-References: <1331499423-9761-1-git-send-email-festevam@gmail.com>
-	<CACKLOr2j-Apnno+-h6B6Rax2-H7ZTuQ=RzyeyB7pOsqJ=xUJuA@mail.gmail.com>
-	<CAOMZO5BkK0m8vhH8i1x2f049YUT0_4OOiOXrGL5pPUzMo9p8xA@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [GIT PULL] ASoC: Updates for 3.4
+Date: Mon, 12 Mar 2012 11:49:36 +0000
+Message-ID: <1331552976.13303.10.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3830103EEA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 12:41:30 +0100 (CET)
-Received: by iakh37 with SMTP id h37so7418500iak.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 04:41:29 -0700 (PDT)
-In-Reply-To: <CAOMZO5BkK0m8vhH8i1x2f049YUT0_4OOiOXrGL5pPUzMo9p8xA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +15,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kernel@pengutronix.de
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
+Mainly Peter's McBSP move from arch/ to sound/ and updates this time.
 
-On 12 March 2012 12:11, Fabio Estevam <festevam@gmail.com> wrote:
-> Hi Javier.
->
-> On Mon, Mar 12, 2012 at 5:03 AM, javier Martin
-> <javier.martin@vista-silicon.com> wrote:
->>
->> I agree with the patch. However, I think another patch, which
->> registers this platform device for the visstrim_m10 board file
->> (http://lxr.linux.no/#linux+v3.2.9/arch/arm/mach-imx/mach-imx27_visstrim=
-_m10.c)
->> should be applied at the same time. Otherwise, audio would stop
->> working on this platform and that would be a regression.
->
-> The first hunk of this patch does register the audio device inside
-> arch/arm/mach-imx/mach-imx27_visstrim_m10.c:
->
-> diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-> b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-> index 0a1643c..ed6023f 100644
-> --- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-> +++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-> @@ -397,6 +397,7 @@ static void __init visstrim_m10_board_init(void)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 &=
-iclink_tvp5150, sizeof(iclink_tvp5150));
-> =A0 =A0 =A0 gpio_led_register_device(0, &visstrim_m10_led_data);
-> =A0 =A0 =A0 visstrim_camera_init();
-> + =A0 =A0 =A0 imx_add_platform_device("mx27vis", 0, NULL, 0, NULL, 0);
-> =A0}
->
-> Did I miss anything?
+Thanks
 
-Sorry, I missed it, it was quite early in the morning...
+Liam
 
-Could you please provide a git repository and a branch for me to test
-this patch?
+---
 
-Regards.
--- =
 
-Javier Martin
-Vista Silicon S.L.
-CDTUC - FASE C - Oficina S-345
-Avda de los Castros s/n
-39005- Santander. Cantabria. Spain
-+34 942 25 32 60
-www.vista-silicon.com
+The following changes since commit 303076342b8a30aa98f8a53b539155d0b81ff0c3:
+
+  Merge tag 'asoc-3.4' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into topic/asoc (2012-03-06 14:04:16 +0100)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc.git for-3.4
+
+Grazvydas Ignotas (1):
+      ASoC: omap-mcbsp: fix snd_pcm_hw_rule_add arguments
+
+Peter Ujfalusi (22):
+      OMAP4: panda: Correct cpu version check for 4430
+      ARM: OMAP: mcbsp: Convert core driver to proper platform driver
+      OMAP: mcbsp: Move core driver under sound/soc/omap
+      ASoC: OMAP: McBSP: Consolidate plat/mcbsp.h content
+      ASoC: omap-mcbsp: Create a single driver for McBSP
+      ARM: OMAP: Do not register omap-mcbsp-dai device
+      ASoC: OMAP: mcbsp.h: Clean up bit definitions
+      ASoC: OMAP McBSP: Remove redundant accessors
+      ASoC: omap-mcbsp: Cleanup of module probe/remove code
+      ASoC: omap-mcbsp: Merge the omap_mcbsp_data into omap_mcbsp structure
+      ASoC: omap-mcbsp: Simplify DMA configuration
+      ASoC: omap: mcbsp: Use uniform st_data pointer initialization
+      ASoC: omap: mcbsp: Remove redundant checks for the st_data pointer
+      ASoC: omap-mcbsp: Configure wakeup in later phase
+      ASoC: omap-mcbsp: When closing the port select PRCM source for CLKS signal
+      ASoC: omap McBSP: Clear rx_irq at probe time for OMAP4
+      ARM: OMAP2+: McBSP: Correct CLKR/FSR clock source mux configuration
+      ARM/ASoC: OMAP McBSP: Move remainig defines from arch to ASoC header
+      ASoC: omap-mcbsp: Single function CLKR/FSR source mux configuration
+      ASoC: omap-mcbsp: Correct clock muxing for CLKR/FSR signals
+      ARM: OMAP: Remove CONFIG_OMAP_MCBSP references
+      ASoC: OMAP: Build config cleanup for McBSP
+
+ arch/arm/mach-omap1/Kconfig                    |    3 -
+ arch/arm/mach-omap1/Makefile                   |    4 +-
+ arch/arm/mach-omap1/devices.c                  |    9 -
+ arch/arm/mach-omap1/mcbsp.c                    |   14 +-
+ arch/arm/mach-omap2/Makefile                   |    4 +-
+ arch/arm/mach-omap2/board-omap4panda.c         |    2 +-
+ arch/arm/mach-omap2/devices.c                  |   22 -
+ arch/arm/mach-omap2/mcbsp.c                    |   54 ++-
+ arch/arm/plat-omap/Kconfig                     |    8 -
+ arch/arm/plat-omap/Makefile                    |    2 -
+ arch/arm/plat-omap/include/plat/mcbsp.h        |  333 --------------
+ sound/soc/omap/Kconfig                         |    2 -
+ sound/soc/omap/Makefile                        |    2 +-
+ sound/soc/omap/am3517evm.c                     |    2 +-
+ sound/soc/omap/ams-delta.c                     |    2 +-
+ sound/soc/omap/igep0020.c                      |    2 +-
+ {arch/arm/plat-omap => sound/soc/omap}/mcbsp.c |  549 +++++-------------------
+ sound/soc/omap/mcbsp.h                         |  346 +++++++++++++++
+ sound/soc/omap/n810.c                          |    2 +-
+ sound/soc/omap/omap-mcbsp.c                    |  321 ++++++++-------
+ sound/soc/omap/omap-mcbsp.h                    |    2 +-
+ sound/soc/omap/omap-pcm.h                      |    2 +
+ sound/soc/omap/omap3beagle.c                   |    2 +-
+ sound/soc/omap/omap3evm.c                      |    2 +-
+ sound/soc/omap/omap3pandora.c                  |    4 +-
+ sound/soc/omap/osk5912.c                       |    2 +-
+ sound/soc/omap/overo.c                         |    2 +-
+ sound/soc/omap/rx51.c                          |    4 +-
+ sound/soc/omap/sdp3430.c                       |    4 +-
+ sound/soc/omap/zoom2.c                         |    4 +-
+ 30 files changed, 706 insertions(+), 1005 deletions(-)
+ rename {arch/arm/plat-omap => sound/soc/omap}/mcbsp.c (66%)
+ create mode 100644 sound/soc/omap/mcbsp.h
+
+
