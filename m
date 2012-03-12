@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: DAPM - Make sure DAPM widget IO
- ops hold the component mutex.
-Date: Mon, 12 Mar 2012 10:42:15 +0000
-Message-ID: <20120312104205.GA3110@opensource.wolfsonmicro.com>
-References: <1331057779-4630-1-git-send-email-lrg@ti.com>
-	<1331057779-4630-2-git-send-email-lrg@ti.com>
-	<CAOZdJXUy-hCOEk6beBrjv16iknsMWTHc+AxSyw-L8-hLEXQYSw@mail.gmail.com>
-	<1331316853.3789.4.camel@odin> <4F5A55DE.8020609@freescale.com>
-	<20120311125558.GG3233@opensource.wolfsonmicro.com>
-	<20120312091206.GA19513@S2101-09.ap.freescale.net>
-	<1331544472.13303.2.camel@odin>
+Subject: Re: [PATCH 1/4] add a mc13783 codec driver
+Date: Mon, 12 Mar 2012 10:58:53 +0000
+Message-ID: <20120312105852.GE3110@opensource.wolfsonmicro.com>
+References: <1331304916-4724-1-git-send-email-philippe.retornaz@epfl.ch>
+	<1331304916-4724-2-git-send-email-philippe.retornaz@epfl.ch>
+	<20120311113848.GA3233@opensource.wolfsonmicro.com>
+	<1496586.ebXd01ibP4@laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8965957248594316418=="
+Content-Type: multipart/mixed; boundary="===============0597820271175290471=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20D7124462
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 11:42:19 +0100 (CET)
-In-Reply-To: <1331544472.13303.2.camel@odin>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0D9B24474
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 11:58:54 +0100 (CET)
+In-Reply-To: <1496586.ebXd01ibP4@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,63 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <b04825@freescale.com>
+To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: juergen.lambrecht@gmail.com, s.hauer@pengutronix.de, festevam@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8965957248594316418==
+--===============0597820271175290471==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+	protocol="application/pgp-signature"; boundary="jKBxcB1XkHIR0Eqt"
 Content-Disposition: inline
 
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
+--jKBxcB1XkHIR0Eqt
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 12, 2012 at 09:27:52AM +0000, Liam Girdwood wrote:
+On Mon, Mar 12, 2012 at 09:11:08AM +0100, Philippe R=E9tornaz wrote:
 
-> snd_soc_dapm_stream_event() should not hold the codec mutex here.
-> Something is out of sync between my branch and Mark's, maybe I've missed
-> something out on a recent patch.
+> Thank you for this detailed review. I will redo the patch based on your=
+=20
+> comments. I had a quick look at DAPM (dapm.txt in asoc documentation), bu=
+t is=20
+> there any good "reference" implementation which is in the kernel where I =
+could=20
+> have a look ?=20
 
-Summarising IRC discussion for the list: you identified that the issue
-is that the CODEC locking change actually depends on some of the later
-locking changes in your branch which didn't get in for 3.4.  Therefore
-we agreed that I'll revert this change for 3.4 (nothing actually uses
-it yet in 3.4) as suggested further up the thread and reapply them for
-3.5 with the other changes that they need.
+Pretty much all ASoC drivers use DAPM and there's really not much
+variation in quality in terms of how they do so, it's mostly an either
+it works or doesn't thing.  Just look for something maintained that you
+can follow and/or which is fairly close to your hardware.
 
---HcAYCG3uE/tztfnV
+--jKBxcB1XkHIR0Eqt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPXdLyAAoJEBus8iNuMP3drdEP/1J0ShElOnM2DNHPx19zyCVY
-7pK7wBGKlkChoPNLL2JVpa3/4DXnQKzrYXSnIxiVxLbyu6V8dszP3p7t5ONN4kSE
-7XejS2E1lJcGpCDNbvO3FcyRtN7PdjkBOyXFGQJyP1LzZnmpf36RjBu38BGUZzYr
-KkbGaCCLdCQ+/4W0zlaJxKTlQtjn03XuVOWBdImGIiFkNg4CQy2to3H0u+yl6Fo3
-k9BTEJ8LsNRxPJtZdTkfxnYAp16zZhJ5dkBkwE0BA/MkNmDW5INRr43VMZiccETy
-yjxRu2PQhiel+0NKFa3ANiPGPWIZ8aT1DpV6gYeSClap8EJBQ3X3RB5J+Evmc33/
-qRwu11Jc8KF7vTqjBqfqfh56Rya7bL/qSEhwhu73YUtsbzKQqCYPVZo2AYnJQJqR
-1xn+GSdtMVrzDWnGrh49gtb4vq4Fsh9SJ129Btb/vwNOVVgI2tHtwcc+l3IXkwrk
-FcjvvRjeMVsV+m3XkmBjxdIy+YF5waU2qIOybvWT6xzNXfXTzVUZCI7jUSCB80MH
-78SdIh4GztC8LMFDnpjVCHLhE4JzcazrGxvrMf9o7oisgu+KGWUcMDtbk6UCC6g+
-a9NGqCJMzue8SNWkh4a183jPbgVKtAo2eUy6bWwme1B/IOTSJ4PdGEJXTBUr2F6f
-/kWsD9tZLjW27p9IBQ1h
-=iCw4
+iQIcBAEBAgAGBQJPXdbmAAoJEBus8iNuMP3dh0sP/jgD5ygsIuLIMof/AM498/Dl
+eZuGEUPlr19HeePP7gyEGurKdAW7Y64TRvhn6WjIDcy0B8rHL5UwvebbcayOfZMg
+DVqf51cBoACHDfmeoeSx68e6JpLiNSJGpBsVM+DOMDXcB59FEHpGFVi34k4asIic
+kIh0hw4gAdAvBJzzlUXjOVmxgZs5xfSlqccaS4CLCPlVdxPayw/j0+ycibOBCLXG
+4+eXV23mUpbt1OlnnPoVyLIuj39n+ldFC8m2RlnLLhCbCvFXaniZg9zWKDBpBiH0
+zbl1yD7agmQqeFoVlw+6o2AVUGAldSDZWU397TbK08uY5ISggsW6TJDmIq8UTgo4
+gORrp6ntse168tjlu3D194czR9CmXvoGWewZmCQgls47e4XgSencR23VImjU/oka
+qqeCgQANkOoR8p5ay0Qbq3oXO1ezowvYj0AhNtbdRVIGvmHzrZLgyVTDj118dX4+
+9p+3Yji96nlXgxUf3IKn93vMuMNqE5N0Fqao8ZaYI3dPEn9734qCiFqrj5WaSBsi
+HM+2AbB+5wxXoHu+JESIJLEmKi5r8V1rTD0sRacE3JGlQ5NwQeUmSCHFFUF1cCV4
+5WqeA3pVWxprULRCpfnsQRae0i1waFEYmQI1DcHS92OigGz/pexN7sZtB1QBuGiG
+5Rlvhi6zqjBLEJKOmC/s
+=lK3i
 -----END PGP SIGNATURE-----
 
---HcAYCG3uE/tztfnV--
+--jKBxcB1XkHIR0Eqt--
 
---===============8965957248594316418==
+--===============0597820271175290471==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8965957248594316418==--
+--===============0597820271175290471==--
