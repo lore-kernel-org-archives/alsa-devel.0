@@ -1,19 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] Initialize volumes of HD-audio slave ctls
-Date: Mon, 12 Mar 2012 10:35:30 +0800
-Message-ID: <CAN8cciYAvq8G_G9ARVFHi3PvxoXo5KucwbuQwujDSs-dpn6b1Q@mail.gmail.com>
-References: <s5haa3ryuxb.wl%tiwai@suse.de> <4F594709.6090303@canonical.com>
-	<s5h7gyuntea.wl%tiwai@suse.de>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH v2] ASoC: mx27vis-aic32x4: Convert it to
+	platform driver
+Date: Mon, 12 Mar 2012 09:03:19 +0100
+Message-ID: <CACKLOr2j-Apnno+-h6B6Rax2-H7ZTuQ=RzyeyB7pOsqJ=xUJuA@mail.gmail.com>
+References: <1331499423-9761-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 4D40624681
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 03:35:31 +0100 (CET)
-Received: by werg1 with SMTP id g1so2956782wer.38
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2012 19:35:30 -0700 (PDT)
-In-Reply-To: <s5h7gyuntea.wl%tiwai@suse.de>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BA8324348
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 09:03:20 +0100 (CET)
+Received: by iakh37 with SMTP id h37so7145247iak.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 01:03:19 -0700 (PDT)
+In-Reply-To: <1331499423-9761-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,108 +24,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-2012/3/9, Takashi Iwai <tiwai@suse.de>:
-> At Fri, 09 Mar 2012 00:55:53 +0100,
-> David Henningsson wrote:
->>
->> On 03/08/2012 04:27 PM, Takashi Iwai wrote:
->> > Hi,
->> >
->> > the patch below is an attempt to initialize the volume / mutes of
->> > slave controls (such as "Headphone", "Speaker") with vmaster in
->> > HD-audio, so that the sound can come out only by changing the master
->> > volume/mute.
->> >
->> > We have thought that such initializations could be done well in
->> > alsactl init, but it seems that not everyone installs the latest and
->> > greatest alsactl, and there is always a risk that any new controls may
->> > be added before alsactl is updated and released.  Since the master
->> > volume is set muted, the risk by this change should be low.
->> >
->> > patch_cirrus.c still doesn't support this because it's handling
->> > vmaster by itself, but it can be fixed later, too.
->> >
->> > If anyone has a concern by this, please let me know.
->>
->> I think it is good to initialise the volume controls to a sane value in
->> general. I guess the risk of causing unnecessary pops is possible, but
->> not common.
->
-> Actually this doesn't initialize the all volumes to "sane" values.  As
-> mentioned, Master is still zero/muted.  Only slaves are raised so that
-> you don't need to adjust two or more volumes but only master for
-> getting some sound.
->
-> The reason I wrote it is because of a likely happening scenario:
-> I modify the driver to support individual speaker and headphone
-> volumes from a single volume.  Then people without proper alsactl init
-> setup would get both controls muted.  And they complain.
->
->> I'm a little surprised by the implementation though; partly because the
->> functions added to hda_codec.c does not seem to be HDA specific, partly
->> by the need to mess around with set_fs. I trust you to know what you're
->> doing w r t to the set_fs stuff, but maybe it would be more elegant if
->> these functions could be in the core and either using, or together with,
->> other functions that need to do set_fs to read/write TLV information?
->
-> The volume initialization is a very sensitive topic.  It's really
-> depending on the hardware which value to be set.  In the case of
-> vmaster, it's relatively easy.  At least, the slave output volumes can
-> be set to 0dB just to follow the master volume.
->
-> Then I thought of implementing it in the common vmaster code, but
-> found that it's not so trivial.  The vmaster slaves may contain also
-> input volumes like line-in.  Raising such a control automatically is
-> obviously wrong.  Thus the selection of slaves must be selective.
-> Also the handling of dB TLV would be more complicated when we allow
-> all dB TLV types, to be more generic.  That's why I decided to start
-> from the HD-audio specific code.
->
-> About set_fs: yes, it's ugly and I want to get rid of it, too.
-> Currently it's needed because the TLV callback is supposed to handle
-> the user-space pointer directly.  Handling the user-space pointer
-> allows us to access to a large data without too much copying.
->
-> OTOH, it's true that the direct access would be easier for the
-> lowlevel driver no matter with our without set_fs.  Since the TLV data
-> size is limited (practically in 4kB or such), we may pass it to
-> kmalloc'ed buffer and let the core copying to user-space.  It's not so
-> frequently accessed type, anyway.
->
-> So, both your points are correct.  They are to be improved in future.
->
->> Another thought is whether you need to do snd_ctl_notify or if that is
->> handled automatically inside kctl->put. Or if you're just counting on
->> nobody to listen at that point.
->
-> It's done in the build_controls, so it's far before the device
-> registration.  Even if it's called in reconfigure, it's guaranteed
-> that the device is free of access.
->
+Hi Fabio,
 
-The main reason for ad1984 is the thinkpad model have "PCM Playback
-Volume" , "Headphone Playback Switch" and "Speaker Playback Switch"
+On 11 March 2012 21:57, Fabio Estevam <festevam@gmail.com> wrote:
+> Convert mx27vis-aic32x4 to platform driver.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - Fix MODULE_ALIAS
+> - Rename it to mx27vis
+>
+> =A0arch/arm/mach-imx/mach-imx27_visstrim_m10.c | =A0 =A01 +
+> =A0sound/soc/imx/mx27vis-aic32x4.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 40 +++++=
++++++++++-------------
+> =A02 files changed, 22 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-=
+imx/mach-imx27_visstrim_m10.c
+> index 0a1643c..ed6023f 100644
+> --- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
+> +++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
+> @@ -397,6 +397,7 @@ static void __init visstrim_m10_board_init(void)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0&iclink_tvp5150, sizeof(iclink_tvp5150));
+> =A0 =A0 =A0 =A0gpio_led_register_device(0, &visstrim_m10_led_data);
+> =A0 =A0 =A0 =A0visstrim_camera_init();
+> + =A0 =A0 =A0 imx_add_platform_device("mx27vis", 0, NULL, 0, NULL, 0);
+> =A0}
+>
+> =A0static void __init visstrim_m10_timer_init(void)
+> diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic3=
+2x4.c
+> index 976f857..2554397 100644
+> --- a/sound/soc/imx/mx27vis-aic32x4.c
+> +++ b/sound/soc/imx/mx27vis-aic32x4.c
+> @@ -188,22 +188,15 @@ static struct snd_soc_card mx27vis_aic32x4 =3D {
+> =A0 =A0 =A0 =A0.num_dapm_routes =3D ARRAY_SIZE(aic32x4_dapm_routes),
+> =A0};
+>
+> -static struct platform_device *mx27vis_aic32x4_snd_device;
+> -
+> -static int __init mx27vis_aic32x4_init(void)
+> +static int __devinit mx27vis_aic32x4_probe(struct platform_device *pdev)
+> =A0{
+> =A0 =A0 =A0 =A0int ret;
+>
+> - =A0 =A0 =A0 mx27vis_aic32x4_snd_device =3D platform_device_alloc("soc-a=
+udio", -1);
+> - =A0 =A0 =A0 if (!mx27vis_aic32x4_snd_device)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
+> -
+> - =A0 =A0 =A0 platform_set_drvdata(mx27vis_aic32x4_snd_device, &mx27vis_a=
+ic32x4);
+> - =A0 =A0 =A0 ret =3D platform_device_add(mx27vis_aic32x4_snd_device);
+> -
+> + =A0 =A0 =A0 ret =3D snd_soc_register_card(&mx27vis_aic32x4);
+> =A0 =A0 =A0 =A0if (ret) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "ASoC: Platform device allo=
+cation failed\n");
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 platform_device_put(mx27vis_aic32x4_snd_dev=
+ice);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "snd_soc_register_card =
+failed (%d)\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0/* Connect SSI0 as clock slave to SSI1 external pins */
+> @@ -221,22 +214,31 @@ static int __init mx27vis_aic32x4_init(void)
+>
+> =A0 =A0 =A0 =A0ret =3D mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ARRAY_SIZE(mx27vis_amp_pin=
+s), "MX27VIS_AMP");
+> - =A0 =A0 =A0 if (ret) {
+> + =A0 =A0 =A0 if (ret)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printk(KERN_ERR "ASoC: unable to setup gpi=
+os\n");
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 platform_device_put(mx27vis_aic32x4_snd_dev=
+ice);
+> - =A0 =A0 =A0 }
+>
+> =A0 =A0 =A0 =A0return ret;
+> =A0}
+>
+> -static void __exit mx27vis_aic32x4_exit(void)
+> +static int __devexit mx27vis_aic32x4_remove(struct platform_device *pdev)
+> =A0{
+> - =A0 =A0 =A0 platform_device_unregister(mx27vis_aic32x4_snd_device);
+> + =A0 =A0 =A0 snd_soc_unregister_card(&mx27vis_aic32x4);
+> +
+> + =A0 =A0 =A0 return 0;
+> =A0}
+>
+> -module_init(mx27vis_aic32x4_init);
+> -module_exit(mx27vis_aic32x4_exit);
+> +static struct platform_driver mx27vis_aic32x4_audio_driver =3D {
+> + =A0 =A0 =A0 .driver =3D {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .name =3D "mx27vis",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .owner =3D THIS_MODULE,
+> + =A0 =A0 =A0 },
+> + =A0 =A0 =A0 .probe =3D mx27vis_aic32x4_probe,
+> + =A0 =A0 =A0 .remove =3D __devexit_p(mx27vis_aic32x4_remove),
+> +};
+> +
+> +module_platform_driver(mx27vis_aic32x4_audio_driver);
+>
+> =A0MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");
+> =A0MODULE_DESCRIPTION("ALSA SoC AIC32X4 mx27 visstrim");
+> =A0MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:mx27vis");
+> --
 
+I agree with the patch. However, I think another patch, which
+registers this platform device for the visstrim_m10 board file
+(http://lxr.linux.no/#linux+v3.2.9/arch/arm/mach-imx/mach-imx27_visstrim_m1=
+0.c)
+should be applied at the same time. Otherwise, audio would stop
+working on this platform and that would be a regression.
 
+Regards.
+-- =
 
-static const struct snd_kcontrol_new ad1984_thinkpad_mixers[] = {
-	HDA_CODEC_VOLUME("PCM Playback Volume", 0x04, 0x0, HDA_OUTPUT),
-	/* HDA_CODEC_VOLUME_IDX("PCM Playback Volume", 1, 0x03, 0x0, HDA_OUTPUT), */
-	HDA_CODEC_MUTE("Headphone Playback Switch", 0x11, 0x0, HDA_OUTPUT),
-	HDA_CODEC_MUTE("Speaker Playback Switch", 0x12, 0x0, HDA_OUTPUT),
-
-The fix in ubuntu is just turn the switch on
-
-+
-+ # AD1984 -- Thinkpad T61/X61
-+ switch_control "Speaker" on
-+ switch_control "Headphone" on
-
-https://bugs.launchpad.net/ubuntu/+source/alsa-utils/+bug/190393
-
-
-I think the proper way is to let HP use DAC0 and Speaker use DAC1
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
