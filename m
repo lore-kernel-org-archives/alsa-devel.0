@@ -1,19 +1,19 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v4 06/10] ASoC: fsl: check property
-	'compatible' for the machine name
-Date: Mon, 12 Mar 2012 19:58:53 +0800
-Message-ID: <1331553537-19789-7-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH v4 08/10] ASoC: fsl: remove the fatal error
+	checking on codec-handle
+Date: Mon, 12 Mar 2012 19:58:55 +0800
+Message-ID: <1331553537-19789-9-git-send-email-shawn.guo@linaro.org>
 References: <1331553537-19789-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF4EF103F71
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 12:59:21 +0100 (CET)
-Received: by mail-iy0-f179.google.com with SMTP id h37so7438983iak.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 04:59:21 -0700 (PDT)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED6C1103FDA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 12:59:32 +0100 (CET)
+Received: by yhnn12 with SMTP id n12so2511497yhn.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 04:59:32 -0700 (PDT)
 In-Reply-To: <1331553537-19789-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,100 +28,35 @@ To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Check /compatible rather than /model to determine the machine name.
-The p1022ds older device trees get a different /model from the new
-ones, while /compatible is consistent there, so checking /compatible
-will save the bother of detecting older p1022ds device trees.
+As Documentation/devicetree/bindings/powerpc/fsl/ssi.txt documented,
+codec-handle is an optional property, so missing it should not be a
+fatal error.
+
+More importantly, the imx machine drivers to be added working with
+fsl_ssi will not have this property, as they use new ASoC machine
+driver binding mechanism.
 
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- sound/soc/fsl/fsl_ssi.c      |    6 +++---
- sound/soc/fsl/mpc8610_hpcd.c |    2 +-
- sound/soc/fsl/p1022_ds.c     |   32 +++++---------------------------
- 3 files changed, 9 insertions(+), 31 deletions(-)
+ sound/soc/fsl/fsl_ssi.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 3e06696..2eb407f 100644
+index db9a734..0192c02 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -716,12 +716,12 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 	}
+@@ -642,12 +642,6 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
+ 	if (!of_device_is_available(np))
+ 		return -ENODEV;
  
- 	/* Trigger the machine driver's probe function.  The platform driver
--	 * name of the machine driver is taken from the /model property of the
-+	 * name of the machine driver is taken from /compatible property of the
- 	 * device tree.  We also pass the address of the CPU DAI driver
- 	 * structure.
- 	 */
--	sprop = of_get_property(of_find_node_by_path("/"), "model", NULL);
--	/* Sometimes the model name has a "fsl," prefix, so we strip that. */
-+	sprop = of_get_property(of_find_node_by_path("/"), "compatible", NULL);
-+	/* Sometimes the compatible name has a "fsl," prefix, so we strip it. */
- 	p = strrchr(sprop, ',');
- 	if (p)
- 		sprop = p + 1;
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 354b753..8fdc430 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -402,7 +402,7 @@ static struct platform_driver mpc8610_hpcd_driver = {
- 	.probe = mpc8610_hpcd_probe,
- 	.remove = __devexit_p(mpc8610_hpcd_remove),
- 	.driver = {
--		/* The name must match the 'model' property in the device tree,
-+		/* The name must match 'compatible' property in the device tree,
- 		 * in lowercase letters.
- 		 */
- 		.name = "snd-soc-mpc8610hpcd",
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index e87cb41..0f42f31 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -403,6 +403,11 @@ static struct platform_driver p1022_ds_driver = {
- 	.probe = p1022_ds_probe,
- 	.remove = __devexit_p(p1022_ds_remove),
- 	.driver = {
-+		/*
-+		 * The name must match 'compatible' property in the device tree,
-+		 * in lowercase letters.
-+		 */
-+		.name = "snd-soc-p1022ds",
- 		.owner = THIS_MODULE,
- 	},
- };
-@@ -416,33 +421,6 @@ static int __init p1022_ds_init(void)
- {
- 	struct device_node *guts_np;
- 	struct resource res;
--	const char *sprop;
--
--	/*
--	 * Check if we're actually running on a P1022DS.  Older device trees
--	 * have a model of "fsl,P1022" and newer ones use "fsl,P1022DS", so we
--	 * need to support both.  The SSI driver uses that property to link to
--	 * the machine driver, so have to match it.
--	 */
--	sprop = of_get_property(of_find_node_by_path("/"), "model", NULL);
--	if (!sprop) {
--		pr_err("snd-soc-p1022ds: missing /model node");
+-	/* Check for a codec-handle property. */
+-	if (!of_get_property(np, "codec-handle", NULL)) {
+-		dev_err(&pdev->dev, "missing codec-handle property\n");
 -		return -ENODEV;
 -	}
 -
--	pr_debug("snd-soc-p1022ds: board model name is %s\n", sprop);
--
--	/*
--	 * The name of this board, taken from the device tree.  Normally, this is a*
--	 * fixed string, but some P1022DS device trees have a /model property of
--	 * "fsl,P1022", and others have "fsl,P1022DS".
--	 */
--	if (strcasecmp(sprop, "fsl,p1022ds") == 0)
--		p1022_ds_driver.driver.name = "snd-soc-p1022ds";
--	else if (strcasecmp(sprop, "fsl,p1022") == 0)
--		p1022_ds_driver.driver.name = "snd-soc-p1022";
--	else
--		return -ENODEV;
- 
- 	/* Get the physical address of the global utilities registers */
- 	guts_np = of_find_compatible_node(NULL, NULL, "fsl,p1022-guts");
+ 	/* We only support the SSI in "I2S Slave" mode */
+ 	sprop = of_get_property(np, "fsl,mode", NULL);
+ 	if (!sprop || strcmp(sprop, "i2s-slave")) {
 -- 
 1.7.5.4
