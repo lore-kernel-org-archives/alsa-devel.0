@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: dmaengine_pcm: Reset pointer
- position when starting a stream
-Date: Mon, 12 Mar 2012 19:04:23 +0000
-Message-ID: <20120312190423.GA30146@opensource.wolfsonmicro.com>
-References: <1330952535-30614-1-git-send-email-lars@metafoo.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v3] ASoC: mx27vis-aic32x4: Convert it to
+	platform driver
+Date: Mon, 12 Mar 2012 17:37:30 -0300
+Message-ID: <1331584650-19014-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6489642268769500667=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E7EBE243F0
-	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 20:04:30 +0100 (CET)
-In-Reply-To: <1330952535-30614-1-git-send-email-lars@metafoo.de>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2193243FA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 21:37:43 +0100 (CET)
+Received: by yenl1 with SMTP id l1so3144289yen.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Mar 2012 13:37:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +22,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mika Westerberg <mika.westerberg@iki.fi>, Vinod Koul <vinod.koul@linux.intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, javier.martin@vista-silicon.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+Convert mx27vis-aic32x4 to platform driver.
 
---===============6489642268769500667==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
-Content-Disposition: inline
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Tested-by: Javier Martin <javier.martin@vista-silicon.com>
+---
+Changes since v2:
+- Add missing initialization of mx27vis_aic32x4.dev
+- Add Tested-by line
+Changes since v1:
+- Fix MODULE_ALIAS
+- Rename it to mx27vis
+ arch/arm/mach-imx/mach-imx27_visstrim_m10.c |    1 +
+ sound/soc/imx/mx27vis-aic32x4.c             |   41 ++++++++++++++------------
+ 2 files changed, 23 insertions(+), 19 deletions(-)
 
-
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 05, 2012 at 02:02:14PM +0100, Lars-Peter Clausen wrote:
-> From: Mika Westerberg <mika.westerberg@iki.fi>
->=20
-> Otherwise a wrong position will be reported after restarting a stream and=
- the
-> first few samples might be skipped.
-
-Applied both, thanks.
-
---J2SCkAp4GZ/dPZZf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPXkinAAoJEBus8iNuMP3d3csP/2v9+6IzFL6WaMsuaiUM9vo5
-YkEDxl1qPvWPgCJxuydWSBRQPPjr3/GMkTXclqffgw/BQKJI7mYLSO0QBQynivgd
-GfnWsjBp5VNBiakbxM6n8FmmlcFZWL0N/bSUjig4W0qTpOQJJfISRdmzcOXqh5Os
-Q8xkkQiNuYNgPtzc216ru+G+OSgBlnEtofegr/CptVPdcD3cc3Lgibi+gg8mtVNL
-P0ddhjAynjJWYAC6aY65Y1q8Ds0oPNEZS9+r4QF8xxWXc/OCsoxJ8WRJKKuXHQl/
-xIy4KnwWquS7cP6+9cC1WrtaEUywLHQ2+dHRlgud/SwUkMSW1hghRB99CDY/jPPI
-zDgxPDkQEwfPeBBTt74p1A2cixBxyWcFg/lCM7jIVJ9pUZqocbDKDrI8ZOTYSZs+
-JTPZdWkGkNLkGBUisrWSaM6O5VQky7g10l3odb6EMT5CKM9tBmTsuGssJ3QO6GaB
-hISTC3/13K0dHSn0TMNf1M/59LSNDmgnv69cw/gv9bBghrwRY2918G3RgVfvuV19
-j6bMcQc4e7mR/mwgFD2Eo4/OtTpb/1iqrg0/xyy8wud/ldjPvtwSX8O+/5V6w5o1
-cB/DAxBqPdhUQMI4spBhVKwVBPKpxoth6KC3ReGiCoFzGkld35UeRTL6jynAGXuY
-c8n4rz4Q4/B+9QkcWIDP
-=dVaK
------END PGP SIGNATURE-----
-
---J2SCkAp4GZ/dPZZf--
-
---===============6489642268769500667==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6489642268769500667==--
+diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
+index 0a1643c..ed6023f 100644
+--- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
++++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
+@@ -397,6 +397,7 @@ static void __init visstrim_m10_board_init(void)
+ 				      &iclink_tvp5150, sizeof(iclink_tvp5150));
+ 	gpio_led_register_device(0, &visstrim_m10_led_data);
+ 	visstrim_camera_init();
++	imx_add_platform_device("mx27vis", 0, NULL, 0, NULL, 0);
+ }
+ 
+ static void __init visstrim_m10_timer_init(void)
+diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
+index 976f857..f6d04ad 100644
+--- a/sound/soc/imx/mx27vis-aic32x4.c
++++ b/sound/soc/imx/mx27vis-aic32x4.c
+@@ -188,22 +188,16 @@ static struct snd_soc_card mx27vis_aic32x4 = {
+ 	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
+ };
+ 
+-static struct platform_device *mx27vis_aic32x4_snd_device;
+-
+-static int __init mx27vis_aic32x4_init(void)
++static int __devinit mx27vis_aic32x4_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 
+-	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!mx27vis_aic32x4_snd_device)
+-		return -ENOMEM;
+-
+-	platform_set_drvdata(mx27vis_aic32x4_snd_device, &mx27vis_aic32x4);
+-	ret = platform_device_add(mx27vis_aic32x4_snd_device);
+-
++	mx27vis_aic32x4.dev = &pdev->dev;
++	ret = snd_soc_register_card(&mx27vis_aic32x4);
+ 	if (ret) {
+-		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
+-		platform_device_put(mx27vis_aic32x4_snd_device);
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
++			ret);
++		return ret;
+ 	}
+ 
+ 	/* Connect SSI0 as clock slave to SSI1 external pins */
+@@ -221,22 +215,31 @@ static int __init mx27vis_aic32x4_init(void)
+ 
+ 	ret = mxc_gpio_setup_multiple_pins(mx27vis_amp_pins,
+ 			ARRAY_SIZE(mx27vis_amp_pins), "MX27VIS_AMP");
+-	if (ret) {
++	if (ret)
+ 		printk(KERN_ERR "ASoC: unable to setup gpios\n");
+-		platform_device_put(mx27vis_aic32x4_snd_device);
+-	}
+ 
+ 	return ret;
+ }
+ 
+-static void __exit mx27vis_aic32x4_exit(void)
++static int __devexit mx27vis_aic32x4_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(mx27vis_aic32x4_snd_device);
++	snd_soc_unregister_card(&mx27vis_aic32x4);
++
++	return 0;
+ }
+ 
+-module_init(mx27vis_aic32x4_init);
+-module_exit(mx27vis_aic32x4_exit);
++static struct platform_driver mx27vis_aic32x4_audio_driver = {
++	.driver = {
++		.name = "mx27vis",
++		.owner = THIS_MODULE,
++	},
++	.probe = mx27vis_aic32x4_probe,
++	.remove = __devexit_p(mx27vis_aic32x4_remove),
++};
++
++module_platform_driver(mx27vis_aic32x4_audio_driver);
+ 
+ MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");
+ MODULE_DESCRIPTION("ALSA SoC AIC32X4 mx27 visstrim");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:mx27vis");
+-- 
+1.7.1
