@@ -1,14 +1,19 @@
-From: Rhyland Klein <rklein@nvidia.com>
-Subject: [PATCH] ASoC: max98095: add jack detection
-Date: Tue, 13 Mar 2012 12:44:08 -0700
-Message-ID: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Clean up of PCM spinlocks
+Date: Tue, 13 Mar 2012 20:50:00 +0100
+Message-ID: <4F5FA4E8.4040705@perex.cz>
+References: <s5hboo03h01.wl%tiwai@suse.de> <4F5F588B.40107@perex.cz>
+	<s5hpqcg1r6g.wl%tiwai@suse.de> <4F5F64D4.5080206@perex.cz>
+	<s5hlin41q58.wl%tiwai@suse.de> <4F5F6BDF.5030601@perex.cz>
+	<s5hhaxs1o7k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4252E24429
-	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 20:43:18 +0100 (CET)
+Received: from mail1.perex.cz (unknown [77.48.224.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 449D72442D
+	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 20:49:58 +0100 (CET)
+In-Reply-To: <s5hhaxs1o7k.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,331 +23,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: Peter Hsiang <cdefgab1288@gmail.com>, Rhyland Klein <rklein@nvidia.com>, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This change adds the logic to support using the jack detect mechanism built
-in to the codec to detect both when a jack was inserted and what type of
-jack is present.
+Date 13.3.2012 17:05, Takashi Iwai wrote:
+> At Tue, 13 Mar 2012 16:46:39 +0100,
+> Jaroslav Kysela wrote:
+>>
+>> Date 13.3.2012 16:23, Takashi Iwai wrote:
+>>> At Tue, 13 Mar 2012 16:16:36 +0100,
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> Date 13.3.2012 16:00, Takashi Iwai wrote:
+>>>>> At Tue, 13 Mar 2012 15:24:11 +0100,
+>>>>> Jaroslav Kysela wrote:
+>>>>>>
+>>>>>> Date 13.3.2012 11:57, Takashi Iwai wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> below is a patch I posted to LKML as the follow up for the lockdep
+>>>>>>> report from Dave Jones.  It's a resurrected patch from what I worked
+>>>>>>> on quite ago.  Although this fix is suboptimal, I see no better way.
+>>>>>>>
+>>>>>>> If this looks OK, I'm going to queue it as a 3.4 material.
+>>>>>>>
+>>>>>>>
+>>>>>>> thanks,
+>>>>>>>
+>>>>>>> Takashi
+>>>>>>>
+>>>>>>> ===
+>>>>>>>
+>>>>>>> From: Takashi Iwai <tiwai@suse.de>
+>>>>>>> Subject: [PATCH] ALSA: pcm - Simplify linked PCM substream spinlocks
+>>>>>>>
+>>>>>>> The spinlocks held for PCM substreams have been always messy.  For the
+>>>>>>> better concurrent accessibility, we took always the substream's lock
+>>>>>>> first.  When substreams are linked, we need a group-wide lock, but
+>>>>>>> this should be applied outside substream's lock.  So, we unlock the
+>>>>>>> substream's lock first, then do locks twice.
+>>>>>>>
+>>>>>>> This scheme is known to be problematic with lockdep.  Maybe because
+>>>>>>> the nested lock isn't marked properly, and partly because the lock and
+>>>>>>> unlock sequences are different (A/B -> A/B).
+>>>>>>>
+>>>>>>> This patch tries to simplify the scheme.  Instead of holding the
+>>>>>>> substream's lock, we take the group lock always at first.  A drawback
+>>>>>>> of this is that the access to the individual substream in a same group
+>>>>>>> won't be allowed any longer.  But, the code looks much easier, and
+>>>>>>> likely less buggy.
+>>>>>>
+>>>>>> What do you mean by this? I noticed that you switched the behaviour for
+>>>>>> the stream_lock():
+>>>>>>
+>>>>>> 1) self_group spinlock is used for single (non-linked) stream
+>>>>>>    - same as before
+>>>>>> 2) group.lock spinlock is used for the linked streams
+>>>>>>    - the self_group spinlock is used only in the group action
+>>>>>>      - the question is why? it seems useless, the
+>>>>>>        stream_lock() functions use the allocated group.lock
+>>>>>
+>>>>> Oh yeah, right, this is utterly useless!
+>>>>> I just thought of the mutex case, but in this case, the lock is
+>>>>> avoided anyway.
+>>>>>
+>>>>>> I don't think that this patch will work in the way we expect.
+>>>>>>
+>>>>>> I believe we should use only group.lock spinlock for the linked streams
+>>>>>> without using the self_group spinlock to make locking work like this:
+>>>>>>
+>>>>>> stream_lock(current)
+>>>>>> group_action(current) {
+>>>>>>   for s from all_group_substreams {
+>>>>>>     if (s != current)
+>>>>>>       stream_lock(s);
+>>>>>>   }
+>>>>>>   .... job ....
+>>>>>>   .... group substreams unlock ....
+>>>>>> }
+>>>>>> stream_unlock(current)
+>>>>>
+>>>>> Well, if we think of a single lock, the code would be much
+>>>>> simplified than above.
+>>>>>
+>>>>> The reviewsed patch is below.  I left the single-stream version as is
+>>>>> since it's used explicitly in the drain() -- the drain action is
+>>>>> applied to each substream although it's linked.
+>>>>
+>>>> I meant use group->lock in the group_action, see patch bellow.
+>>>
+>>> Hmm, I don't think this works.  From linked stream members,
+>>> group->lock points to the very same lock instance.  So,
+>>> snd_pcm_action_group() would dead-lock the same lock with your code.
+>>
+>> I see. The problem is that the concurrent but linked streams can take
+>> different first locks for the group locking:
+>>
+>> time 0		 time 1
+>> --------------------------------
+>> lock stream 0 -> group lock
+>> lock stream 1 -> group lock
+>>
+>> In this case the condition current != s is not enough. I think that we
+>> have to strictly separate situations when the group lock can be
+>> activated and use different locking scheme there - for example using a
+>> master lock per linked substreams.
+> 
+> In my revised patch, group->lock is actually the master lock of the
+> group.  This is the only lock applied to the substream.
+> 
+> When a stream is linked, it's done in the global write_lock to
+> guarantee that stream is unlocked.  Then group->lock is replaced with
+> a real group lock from self_group.lock.  So, there is no race among
+> this move.
+> 
+>> It seems to me that your proposed patch just removes the spinlocks for
+>> linked substreams which can cause inconsistencies for these streams.
+> 
+> Not really.  It just uses a single lock for linked streams.  There are
+> no longer stream locks once when the stream is linked.
+> 
+> This is of course a drawback -- it disallows the concurrent access to
+> linked stream members in some operations.  How this is regarded as a
+> serious drawback, is a question of operation styles.  If any apps are
+> accessing many streams as a linked stream in realtime manner, and
+> access to each without mmap, then the performance may be worsen.  But,
+> this scenario is rather pretty rare, I guess.
+> 
+>> Or just a quick idea - what about to track the the group action
+>> collisions? We can use a spinlock protected counter and serialize these
+>> requests in another way (if counter is above one - the CPU should wait
+>> until it becomes one).
+> 
+> Well...  this sounds way too complex, I'm afraid.
 
-This change also supports the use of an external mechanism for headphone
-detection. If this mechanism exists, when the max98095_jack_detect function
-is called, the hp_jack is simply passed NULL.
+I tried to think about it more. I think that the spinlock reorder is at
+the wrong code position. What about the code bellow. I believe, it
+should guarantee the consistent locking scheme (although the first
+substream lock will stay outside of the group->lock, but it should not
+be an issue).
 
-This change supports both simple headphones, powered headphones, microphones
-and headsets with both headphones and a mic.
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 25ed9fe..758a7c0 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -711,10 +711,12 @@ static int snd_pcm_action_group(struct action_ops
+*ops,
+ 	struct snd_pcm_substream *s1;
+ 	int res = 0;
 
-Signed-off-by: Rhyland Klein <rklein@nvidia.com>
----
- include/sound/max98095.h    |    7 ++
- sound/soc/codecs/max98095.c |  166 ++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/max98095.h |   22 ++++++
- 3 files changed, 194 insertions(+), 1 deletions(-)
-
-diff --git a/include/sound/max98095.h b/include/sound/max98095.h
-index 7513a42..7d0fb09 100644
---- a/include/sound/max98095.h
-+++ b/include/sound/max98095.h
-@@ -49,6 +49,13 @@ struct max98095_pdata {
- 	 */
- 	unsigned int digmic_left_mode:1;
- 	unsigned int digmic_right_mode:1;
-+
-+	/* Pin5 is the mechanical method of sensing jack insertion
-+	 * but it is something that might not be supported.
-+	 * 0 = PIN5 not supported
-+	 * 1 = PIN5 supported
-+	 */
-+	int jack_detect_pin5en:1;
- };
- 
- #endif
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 0bb511a..fc7a335 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -24,6 +24,7 @@
- #include <linux/slab.h>
- #include <asm/div64.h>
- #include <sound/max98095.h>
-+#include <sound/jack.h>
- #include "max98095.h"
- 
- enum max98095_type {
-@@ -51,6 +52,9 @@ struct max98095_priv {
- 	u8 lin_state;
- 	unsigned int mic1pre;
- 	unsigned int mic2pre;
-+	int irq;
-+	struct snd_soc_jack *headphone_jack;
-+	struct snd_soc_jack *mic_jack;
- };
- 
- static const u8 max98095_reg_def[M98095_REG_CNT] = {
-@@ -2173,9 +2177,135 @@ static void max98095_handle_pdata(struct snd_soc_codec *codec)
- 		max98095_handle_bq_pdata(codec);
- }
- 
-+static int max98095_report_jack(struct snd_soc_codec *codec)
-+{
-+	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int value;
-+	int hp_report = 0;
-+	int mic_report = 0;
-+
-+	/* Read the Jack Status Register */
-+	value = snd_soc_read(codec, M98095_007_JACK_AUTO_STS);
-+
-+	/* If ddone is not set, then detection isn't finished yet */
-+	if ((value & M98095_DDONE) == 0)
-+		return -EINVAL;
-+
-+	/* if hp, check its bit, and if set, clear it */
-+	if ((value & M98095_HP_IN || value & M98095_LO_IN) &&
-+		max98095->headphone_jack)
-+		hp_report |= SND_JACK_HEADPHONE;
-+
-+	/* if mic, check its bit, and if set, clear it */
-+	if ((value & M98095_MIC_IN) && max98095->mic_jack)
-+		mic_report |= SND_JACK_MICROPHONE;
-+
-+	if (max98095->headphone_jack == max98095->mic_jack)
-+		snd_soc_jack_report(max98095->headphone_jack,
-+					hp_report | mic_report,
-+					SND_JACK_HEADSET);
-+	else {
-+		if (max98095->headphone_jack)
-+			snd_soc_jack_report(max98095->headphone_jack,
-+					hp_report, SND_JACK_HEADPHONE);
-+		if (max98095->mic_jack)
-+			snd_soc_jack_report(max98095->mic_jack,
-+					mic_report, SND_JACK_MICROPHONE);
-+	}
-+
-+	return 0;
-+}
-+
-+static irqreturn_t max98095_jack_handler(int irq, void *data)
-+{
-+	struct snd_soc_codec *codec = data;
-+	int ret;
-+
-+	ret = max98095_report_jack(codec);
-+
-+	return ret ? IRQ_NONE : IRQ_HANDLED;
-+
-+}
-+
-+int max98095_jack_detect_enable(struct snd_soc_codec *codec)
-+{
-+	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0;
-+	int detect_enable = M98095_JDEN;
-+
-+	if (max98095->pdata->jack_detect_pin5en)
-+		detect_enable |= M98095_PIN5EN;
-+
-+	/* configure jack detection: slew is calculated as 4 * (delay + 1)
-+	 * The default is 24 (0x18) to get 100ms delay.
-+	 */
-+	ret = snd_soc_write(codec, M98095_08E_JACK_DC_SLEW,
-+				M98095_DEFAULT_SLEW_DELAY);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to cfg auto detect %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* configure auto detection to be enabled */
-+	ret = snd_soc_write(codec, M98095_089_JACK_DET_AUTO, detect_enable);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to cfg auto detect %d\n", ret);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+int max98095_jack_detect_disable(struct snd_soc_codec *codec)
-+{
-+	int ret = 0;
-+
-+	/* configure auto detection to be disabled */
-+	ret = snd_soc_write(codec, M98095_089_JACK_DET_AUTO, 0x0);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to cfg auto detect %d\n", ret);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+int max98095_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack)
-+{
-+	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0;
-+
-+	max98095->headphone_jack = hp_jack;
-+	max98095->mic_jack = mic_jack;
-+
-+	/* only progress if we have at least 1 jack pointer */
-+	if (!hp_jack && !mic_jack)
-+		return -EINVAL;
-+
-+	max98095_jack_detect_enable(codec);
-+
-+	/* enable interrupts for headphone jack detection */
-+	ret = snd_soc_update_bits(codec, M98095_013_JACK_INT_EN,
-+		M98095_IDDONE, M98095_IDDONE);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to cfg jack irqs %d\n", ret);
-+		return ret;
-+	}
-+
-+	max98095_report_jack(codec);
-+	return 0;
-+}
-+
- #ifdef CONFIG_PM
- static int max98095_suspend(struct snd_soc_codec *codec)
- {
-+	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (max98095->headphone_jack || max98095->mic_jack)
-+		max98095_jack_detect_disable(codec);
-+
-+	disable_irq(max98095->irq);
- 	max98095_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	return 0;
-@@ -2183,8 +2313,16 @@ static int max98095_suspend(struct snd_soc_codec *codec)
- 
- static int max98095_resume(struct snd_soc_codec *codec)
- {
-+	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
-+
- 	max98095_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
-+	if (max98095->headphone_jack || max98095->mic_jack) {
-+		max98095_jack_detect_enable(codec);
-+		max98095_report_jack(codec);
-+	}
-+	enable_irq(max98095->irq);
-+
- 	return 0;
- }
- #else
-@@ -2266,11 +2404,23 @@ static int max98095_probe(struct snd_soc_codec *codec)
- 	max98095->mic1pre = 0;
- 	max98095->mic2pre = 0;
- 
-+	if (max98095->irq) {
-+		/* register an audio interrupt */
-+		ret = request_threaded_irq(max98095->irq, NULL,
-+			max98095_jack_handler,
-+			IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
-+			"max98095", codec);
-+		if (ret) {
-+			dev_err(codec->dev, "Failed to request IRQ: %d\n", ret);
-+			goto err_access;
++	spin_lock(&substream->group->lock);
+ 	snd_pcm_group_for_each_entry(s, substream) {
+-		if (do_lock && s != substream)
+-			spin_lock_nested(&s->self_group.lock,
+-					 SINGLE_DEPTH_NESTING);
++		if (do_lock && s != substream) {
++			while (!spin_trylock(&s->self_group.lock))
++				/* nothing */ ;
 +		}
-+	}
-+
- 	ret = snd_soc_read(codec, M98095_0FF_REV_ID);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failure reading hardware revision: %d\n",
- 			ret);
--		goto err_access;
-+		goto err_irq;
+ 		res = ops->pre_action(s, state);
+ 		if (res < 0)
+ 			goto _unlock;
+@@ -746,6 +748,7 @@ static int snd_pcm_action_group(struct action_ops *ops,
+ 				break;
+ 		}
  	}
- 	dev_info(codec->dev, "Hardware revision: %c\n", ret - 0x40 + 'A');
- 
-@@ -2306,14 +2456,27 @@ static int max98095_probe(struct snd_soc_codec *codec)
- 
- 	max98095_add_widgets(codec);
- 
-+	return 0;
-+
-+err_irq:
-+	if (max98095->irq)
-+		free_irq(max98095->irq, codec);
- err_access:
- 	return ret;
++	spin_unlock(&substream->group->lock);
+ 	return res;
  }
- 
- static int max98095_remove(struct snd_soc_codec *codec)
- {
-+	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
-+
- 	max98095_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
-+	if (max98095->headphone_jack || max98095->mic_jack)
-+		max98095_jack_detect_disable(codec);
-+
-+	if (max98095->irq)
-+		free_irq(max98095->irq, codec);
-+
- 	return 0;
+
+@@ -779,13 +782,7 @@ static int snd_pcm_action(struct action_ops *ops,
+ 	int res;
+
+ 	if (snd_pcm_stream_linked(substream)) {
+-		if (!spin_trylock(&substream->group->lock)) {
+-			spin_unlock(&substream->self_group.lock);
+-			spin_lock(&substream->group->lock);
+-			spin_lock(&substream->self_group.lock);
+-		}
+-		res = snd_pcm_action_group(ops, substream, state, 1);
+-		spin_unlock(&substream->group->lock);
++		res = snd_pcm_action_group(ops, substream, state);
+ 	} else {
+ 		res = snd_pcm_action_single(ops, substream, state);
+ 	}
+@@ -802,17 +799,7 @@ static int snd_pcm_action_lock_irq(struct
+action_ops *ops,
+ 	int res;
+
+ 	read_lock_irq(&snd_pcm_link_rwlock);
+-	if (snd_pcm_stream_linked(substream)) {
+-		spin_lock(&substream->group->lock);
+-		spin_lock(&substream->self_group.lock);
+-		res = snd_pcm_action_group(ops, substream, state, 1);
+-		spin_unlock(&substream->self_group.lock);
+-		spin_unlock(&substream->group->lock);
+-	} else {
+-		spin_lock(&substream->self_group.lock);
+-		res = snd_pcm_action_single(ops, substream, state);
+-		spin_unlock(&substream->self_group.lock);
+-	}
++	res = snd_pcm_action(ops, substream, state);
+ 	read_unlock_irq(&snd_pcm_link_rwlock);
+ 	return res;
  }
- 
-@@ -2348,6 +2511,7 @@ static int max98095_i2c_probe(struct i2c_client *i2c,
- 	max98095->devtype = id->driver_data;
- 	i2c_set_clientdata(i2c, max98095);
- 	max98095->pdata = i2c->dev.platform_data;
-+	max98095->irq = i2c->irq;
- 
- 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_max98095,
- 				     max98095_dai, ARRAY_SIZE(max98095_dai));
-diff --git a/sound/soc/codecs/max98095.h b/sound/soc/codecs/max98095.h
-index 891584a..2ebbe4e 100644
---- a/sound/soc/codecs/max98095.h
-+++ b/sound/soc/codecs/max98095.h
-@@ -175,11 +175,23 @@
- 
- /* MAX98095 Registers Bit Fields */
- 
-+/* M98095_007_JACK_AUTO_STS */
-+	#define M98095_MIC_IN			(1<<3)
-+	#define M98095_LO_IN			(1<<5)
-+	#define M98095_HP_IN			(1<<6)
-+	#define M98095_DDONE			(1<<7)
-+
- /* M98095_00F_HOST_CFG */
- 	#define M98095_SEG                      (1<<0)
- 	#define M98095_XTEN                     (1<<1)
- 	#define M98095_MDLLEN                   (1<<2)
- 
-+/* M98095_013_JACK_INT_EN */
-+	#define M98095_IMIC_IN			(1<<3)
-+	#define M98095_ILO_IN			(1<<5)
-+	#define M98095_IHP_IN			(1<<6)
-+	#define M98095_IDDONE			(1<<7)
-+
- /* M98095_027_DAI1_CLKMODE, M98095_031_DAI2_CLKMODE, M98095_03B_DAI3_CLKMODE */
- 	#define M98095_CLKMODE_MASK             0xFF
- 
-@@ -255,6 +267,10 @@
- 	#define M98095_EQ2EN                    (1<<1)
- 	#define M98095_EQ1EN                    (1<<0)
- 
-+/* M98095_089_JACK_DET_AUTO */
-+	#define M98095_PIN5EN			(1<<2)
-+	#define M98095_JDEN			(1<<7)
-+
- /* M98095_090_PWR_EN_IN */
- 	#define M98095_INEN                     (1<<7)
- 	#define M98095_MB2EN                    (1<<3)
-@@ -296,4 +312,10 @@
- #define M98095_174_DAI1_BQ_BASE             0x74
- #define M98095_17E_DAI2_BQ_BASE             0x7E
- 
-+/* Default Delay used in Slew Rate Calculation for Jack detection */
-+#define M98095_DEFAULT_SLEW_DELAY		0x18
-+
-+extern int max98095_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack);
-+
- #endif
+
+
+				Jaroslav
+
 -- 
-1.7.3.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
