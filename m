@@ -1,38 +1,51 @@
-From: Rhyland Klein <rklein@nvidia.com>
-Subject: Re: [PATCH] ASoC: max98095: add jack detection
-Date: Tue, 13 Mar 2012 15:18:17 -0700
-Message-ID: <1331677097.9410.8.camel@rklein-linux>
-References: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
-	 <20120313221235.GJ3177@opensource.wolfsonmicro.com>
+From: Henning Thielemann <alsa@henning-thielemann.de>
+Subject: Re: sending a sequencer event to a delayed queue
+Date: Tue, 13 Mar 2012 23:33:07 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1203132322120.5893@anubis.informatik.uni-halle.de>
+References: <alpine.DEB.2.00.1203101859280.16157@anubis.informatik.uni-halle.de>
+	<4F5BBECF.8020506@ladisch.de> <4F5CC7AB.3030300@henning-thielemann.de>
+	<4F5D0DC5.7090908@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120313221235.GJ3177@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Hsiang <cdefgab1288@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
+	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 546BC104232
+	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 23:33:11 +0100 (CET)
+In-reply-to: <4F5D0DC5.7090908@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-03-13 at 15:12 -0700, Mark Brown wrote:
-> * PGP Signed by an unknown key
-> 
-> On Tue, Mar 13, 2012 at 12:44:08PM -0700, Rhyland Klein wrote:
-> > This change adds the logic to support using the jack detect mechanism built
-> > in to the codec to detect both when a jack was inserted and what type of
-> > jack is present.
-> 
-> You send another identically titled patch of roughly the same size a
-> few minutes ago - what's the difference between the two or is it just a
-> resend?
 
-Sorry, they are the same. I hadn't subscribed to the alsa-devel mailing
-list and so the first one I sent got as non-subscriber sent email. I
-canceled the outstanding notice waiting for approval, and resent once I
-subscribed to the mailing list.
+On Sun, 11 Mar 2012, Clemens Ladisch wrote:
 
--rhyland
+> I'd suggest to use one queue for both kinds of events, and to add the
+> delay to the scheduled time.  To remove certain events, use
+> snd_seq_remove_events().
 
-> 
-> * Unknown Key
-> * 0x6E30FDDD
+In order to understand how snd_seq_remove_events works, I looked into its 
+source code ... I wondered why I can set the queue as condition with 
+snd_seq_remove_events_set_queue but there is no flag that enables queue 
+matching and actually the queue is not checked in remove_match, as far as 
+I can see.
+
+I have another question: Is snd_seq_remove_events atomic, that is, if some 
+events have the same time stamp, is it guaranteed that they are removed 
+all or none at all? Are events still delivered while removing? Or is there 
+a possibility to check what I actually removed? I also thought about using 
+snd_seq_extract_output, but I am concerned about removing events while 
+events are delivered.
+
+
+Regards,
+Henning
