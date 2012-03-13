@@ -1,98 +1,74 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: max98095: add jack detection
-Date: Tue, 13 Mar 2012 23:09:39 +0000
-Message-ID: <20120313230939.GO3177@opensource.wolfsonmicro.com>
-References: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
+Subject: Re: [PATCH v4] ASoC: mx27vis-aic32x4: Convert it to
+	platform driver
+Date: Tue, 13 Mar 2012 23:10:28 +0000
+Message-ID: <20120313231028.GP3177@opensource.wolfsonmicro.com>
+References: <1331592529-15544-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1HuzLmPZrG5RH6bG"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rhyland Klein <rklein@nvidia.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Peter Hsiang <cdefgab1288@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0865152498028390700=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14EF410442E
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 00:10:30 +0100 (CET)
+In-Reply-To: <1331592529-15544-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, javier.martin@vista-silicon.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 
---1HuzLmPZrG5RH6bG
+--===============0865152498028390700==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="96dIhm/ZjrNld+BP"
+Content-Disposition: inline
+
+
+--96dIhm/ZjrNld+BP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 13, 2012 at 12:44:08PM -0700, Rhyland Klein wrote:
+On Mon, Mar 12, 2012 at 07:48:49PM -0300, Fabio Estevam wrote:
+> Convert mx27vis-aic32x4 to platform driver.
 
-> This change adds the logic to support using the jack detect mechanism built
-> in to the codec to detect both when a jack was inserted and what type of
-> jack is present.
+Applied, thanks.
 
-This looks mostly good, a few things below.
-
-> @@ -51,6 +52,9 @@ struct max98095_priv {
->  	u8 lin_state;
->  	unsigned int mic1pre;
->  	unsigned int mic2pre;
-> +	int irq;
-
-You can just get the irq from the I2C device.
-
-> +	if (max98095->headphone_jack == max98095->mic_jack)
-> +		snd_soc_jack_report(max98095->headphone_jack,
-> +					hp_report | mic_report,
-> +					SND_JACK_HEADSET);
-> +	else {
-
-Braces on both sides of the if for clarity.
-
-> +static irqreturn_t max98095_jack_handler(int irq, void *data)
-> +{
-> +	struct snd_soc_codec *codec = data;
-> +	int ret;
-> +
-> +	ret = max98095_report_jack(codec);
-> +
-> +	return ret ? IRQ_NONE : IRQ_HANDLED;
-
-There is no point in having a separate function here, this function has
-no contents.  Just inline it.  Please also avoid the use of the ternery
-operator.
-
-> +	/* configure jack detection: slew is calculated as 4 * (delay + 1)
-> +	 * The default is 24 (0x18) to get 100ms delay.
-> +	 */
-> +	ret = snd_soc_write(codec, M98095_08E_JACK_DC_SLEW,
-> +				M98095_DEFAULT_SLEW_DELAY);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to cfg auto detect %d\n", ret);
-> +		return ret;
-> +	}
-
-Platform data?
-
-> +	enable_irq(max98095->irq);
-
-You shouldn't be fiddling around with enable_irq() and disable_irq().
-Why are you doing this?
-
---1HuzLmPZrG5RH6bG
+--96dIhm/ZjrNld+BP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPX9OtAAoJEBus8iNuMP3deCQP/RN1o6j/vjrZf43Y/Nw/iik9
-ja5uoUWE7K3AoF0gqIeEm2Qk7RI1lUiKPQiAMGXppJvSlMDr+2kWWJiKejxhGU5W
-GLkfDiUAHvfXT4m4r+GPYwTdQPyJF5kX3uQUEd13jEQHz2Mbq/I5646n1d5EQ2T0
-KVnCQGlIutqYj1p+j6eHTKS2u8fRwuw1WMJoJr03+VS3b3Uw9C2wu82LmvNN8O0x
-GMyiIhwwH/xwNasSeYzO85RKkB8nnmvNWhLK1oZKo6Wux6YWs+iKaBV0E+ZpXheV
-sjmvfLnoTXyycZjPxL6Xq6JJAba9yTKermG0kTK/BnFWbEh6FtFHsTE0ejPARjqg
-u25+CvtyzHAP0MVUlvgqbWw21fEN0VhtCdQiUCqkw5vnXEQJh4YOwE96gBHdl4Gh
-/1ZP5f1Wdbh2xIOLBmGzZCiGl1wM/oaegheNXje6h5u39iD6fc6wxKnCQz7a8moV
-jHRxH7o8n8Qs5rSfalXb/HY2P2on5gN3EvcowGftRIgBxbEISei/S9z5h0jUfRY4
-kMEPg7YYfmDvLr8V/yVViTLGiJBOZ9yeiT3yNMU3Q7C5R+kAN7iFK5yxnS+qwX4W
-uVJur8sLOJk2ymWxbKcfQU5WRG34mHA3UI6cBxVr5CdAL7ChuAbGNIY6s/ntqqQi
-wg28OGVf233EG78bk4bD
-=fepc
+iQIcBAEBAgAGBQJPX9PdAAoJEBus8iNuMP3dug8P/jJULRksZBx6GWvrPX2izpJ1
+zxjQ7ru4Q2coot2QSC4HIIhz4DHD+dDJMECY7TALheYcrkvz9Lt3R45+EG8O/lkd
+NOvCnnzKzhJjSgh9iUKSC2FG3nKuQ30MVBEs1fYDKDk9LVRbcx3Js1fTTwEmELJQ
+Scl9uBrLveCUTL8B7fpy3pIapcDnQNXp29WemM0Obshs2Ao+qDKaRm8al3Klp2mc
+qy6yii0c7TMvnfjWflBniVXI1wtRq3DXU9HwfKIep34DQczCYY4LHFoxTwIF0zbW
+exz1+t6/Gq+iPsvo1osKteiAJermY8PW1wq3YjaGwyq7Ud1t1c10vAeNvWnv6OHG
+OUkmjRWGXuXP0GkvxHOEylWCcepLLE0OHDj3wtCvwr2k8Z05ghxnL66reeCdql5z
+G9/Kv8Chx55XuSPh8hTb2+PwEr4eFHN9ki5+t/HtxjnT4xRlAso6jjOh3oa6qvr3
+wbpM/ff3h1kloplXcYww9CNtuWmtsEynreJueUj5z5v+Nu1gPx6/xayJoxciNYR6
+Z2GAhtWN8662mNVAEb6ZjfNQfd5TMAhXhxqAGDSQLsbk2s7wv2dWUmkO9C7gO46G
+DbLiZSpFek61rfuJ2j20xYu5WQ3K06r2u3oS8elu6wjPU6uRXPsfXLB4rH24jPjf
+Y6FGNBGJlZNVkduZBMbl
+=XXr/
 -----END PGP SIGNATURE-----
 
---1HuzLmPZrG5RH6bG--
+--96dIhm/ZjrNld+BP--
+
+--===============0865152498028390700==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0865152498028390700==--
