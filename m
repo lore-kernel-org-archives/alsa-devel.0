@@ -1,30 +1,16 @@
-From: Henning Thielemann <alsa@henning-thielemann.de>
-Subject: snd_seq_parse_address matching prefix
-Date: Tue, 13 Mar 2012 23:46:52 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1203132333121.5893@anubis.informatik.uni-halle.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 14/16] ASoC: Ux500: Add platform-driver
+Date: Tue, 13 Mar 2012 22:48:41 +0000
+Message-ID: <20120313224840.GM3177@opensource.wolfsonmicro.com>
+References: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
+	<1331651503-16917-15-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7576268331985248019=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
-	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 0707E103A6E
-	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 23:46:56 +0100 (CET)
-Received: from mserv3.urz.uni-halle.de ([141.48.3.161])
-	by mlucom18.urz.uni-halle.de with esmtps (TLSv1:RC4-MD5:128)
-	(Exim 4.77) id 1S7aUZ-0006Wp-Kl for <alsa-devel@alsa-project.org>
-	; Tue, 13 Mar 2012 23:46:55 +0100
-Received: from hermes.informatik.uni-halle.de ([141.48.9.46])
-	by mail.uni-halle.de
-	(Sun Java(tm) System Messaging Server 6.3-15.01 (built Mar 21 2011;
-	32bit)) with ESMTP id <0M0U00GW1HY58R60@mail.uni-halle.de> for
-	alsa-devel@alsa-project.org; Tue, 13 Mar 2012 23:46:53 +0100 (CET)
-Received: from anubis.informatik.uni-halle.de
-	(anubis.informatik.uni-halle.de [141.48.165.107])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)	by hermes.informatik.uni-halle.de
-	(Postfix)
-	with ESMTPS id 425A64E321DE	for <alsa-devel@alsa-project.org>; Tue,
-	13 Mar 2012 23:46:53 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42475104416
+	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 23:48:43 +0100 (CET)
+In-Reply-To: <1331651503-16917-15-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,28 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-snd_seq_parse_address(seq, addr, "foo") does not look for a client named 
-"foo" but for a client with prefix "foo". I always found this to be a 
-feature, not a bug, although it is not documented. Is this behavior 
-intended? If yes, how to cope with the case where one client's name is the
-prefix of another one? E.g. let the clients be
+--===============7576268331985248019==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="O8/n5iBOhiUtMkxf"
+Content-Disposition: inline
 
-"foobar"
-"foo"
 
-(in this order)
-then parsing "foo" will return the client address of "foobar", not that of 
-"foo". Even more there is no prefix that will select "foo", but not 
-"foobar".
-  Sorting the clients with respect to increasing name lengths and then 
-searching for matching prefixes in the sorted list would solve that 
-problem.
+--O8/n5iBOhiUtMkxf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Currently it's only a theoretical problem but if that behavior is intended 
-it should at least be documented. Using snd_seq_query_next_client everyone 
-can write his own parse_address. We should only know about the theoretical 
-problem.
+On Tue, Mar 13, 2012 at 04:11:41PM +0100, Ola Lilja wrote:
+
+> +static const char *stream_str(struct snd_pcm_substream *substream)
+> +{
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		return "Playback";
+> +	else
+> +		return "Capture";
+> +}
+
+You know how I was mentioning that this isn't at all driver specific...
+
+> +	cdesc = dma_dev->device_prep_dma_cyclic(ux500_pcm_data->pipeid, dma_addr,
+> +						period_cnt * period_len, period_len,
+> +						direction);
+
+You're using dmaengine here it seems.  Please refactor to use the
+dmaengine helper library that was recently contributed by Lars-Peter -
+it should save a bunch of code and make rolling out dmaengine framework
+improvements much easier.
+
+--O8/n5iBOhiUtMkxf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIbBAEBAgAGBQJPX87BAAoJEBus8iNuMP3dpwkP9iJY0S0nuj0+gLseIJCoju1j
+lHQfSCN6U9SPHq6/fYRiuNdgM0YEfLzX38eBQEp1y8n/3x06RucgCetRvBbh8dM7
+LOkZNaW9/39ZZGRB2E+QVEltcdNTWmkG+Q7qZH+jV9lDebWZPpTZ8EfAnqQY9vIU
+E+Wu9a7D5lIfoPT3DxoEbaGo8xWI8xtjHcV5Ro6BlsfcVRWhUjPdBBw58l/47DA2
+ZuVCA1Wl9pCEb0X/RFgSHFQCT+GQzBoxFRYUwrEPxsOT/Y+es/UlM56XTg39W3i4
+U73/Lxw4GFxC2A92bUQk1FItgXpajJ/jBn55iCq3WDXKH0waKrlPxwJJr34yvWxC
+f6Tj2x9/wG7SfwS+Z1rerXBlTUbigh+yWh67c6f3FCxi2NDfaZFoMtFT+dEhllpf
+DZRACBamBVHjdwAPDy57eGs6QsvS5lzVIdDHBKFdjiqkkuCA8Yqthv/Z01rTCLSE
+Y8DV9DQpErrcVZFksShy9JjxIbQQwsDYN3y6MjI121xapAcf8Syqf2uwO2Fnn/R7
+ajYpzhRmn2TtH3SjrpNOiiaJDc4O4Nghyv+WtfumqcK8rWWAPQZVY4c8YFrb/6wy
+0wqSahJYrvre/tEs0Q5pVuWwgPuVUMejT1B9+rQdahnbccws9M6Jh0Np/DptIzuF
+a9lBgmtEziB4dsfqgkA=
+=4gfA
+-----END PGP SIGNATURE-----
+
+--O8/n5iBOhiUtMkxf--
+
+--===============7576268331985248019==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7576268331985248019==--
