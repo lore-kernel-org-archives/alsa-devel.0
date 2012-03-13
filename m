@@ -1,15 +1,15 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 08/16] ARM: ux500: Add DMA-channels for MSP
-Date: Tue, 13 Mar 2012 16:11:35 +0100
-Message-ID: <1331651503-16917-9-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 05/16] ASoC: core: Add strobe control
+Date: Tue, 13 Mar 2012 16:11:32 +0100
+Message-ID: <1331651503-16917-6-git-send-email-ola.o.lilja@stericsson.com>
 References: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
-	[207.126.144.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA71010435A
+Received: from eu1sys200aog115.obsmtp.com (eu1sys200aog115.obsmtp.com
+	[207.126.144.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9D0F10437E
 	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 16:12:47 +0100 (CET)
 In-Reply-To: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -22,53 +22,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add DMA-channels for MSP0, MSP1, MSP2 and MSP3.
+From: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 
-Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
+Added support for a control that strobes a bit in
+a register to high then back to low (or the inverse).
+
+This is typically useful for hardware that requires
+strobing a singe bit to trigger some functionality
+and where exposing the bit in a normal enum control
+would require the user to first manually set then
+again unset the bit again for the strobe to trigger.
+
+Get/put accessors added.
+
+snd_soc_get_enum_strobe
+snd_soc_put_enum_strobe
+
+Also a generic convenience macros added.
+
+SOC_ENUM_STROBE
+
+And a macro for declaration of the enum.
+
+SOC_ENUM_STROBE_DECL
+
+Signed-off-by: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 ---
- arch/arm/mach-ux500/devices-db8500.c        |    6 ++++++
- arch/arm/mach-ux500/include/mach/hardware.h |    2 ++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+ include/sound/soc.h  |   11 +++++++++
+ sound/soc/soc-core.c |   58 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/mach-ux500/devices-db8500.c b/arch/arm/mach-ux500/devices-db8500.c
-index a7c6cdc..6e66d37 100644
---- a/arch/arm/mach-ux500/devices-db8500.c
-+++ b/arch/arm/mach-ux500/devices-db8500.c
-@@ -101,6 +101,9 @@ static const dma_addr_t dma40_tx_map[DB8500_DMA_NR_DEV] = {
- 	[DB8500_DMA_DEV41_SD_MM3_TX] = -1,
- 	[DB8500_DMA_DEV42_SD_MM4_TX] = -1,
- 	[DB8500_DMA_DEV43_SD_MM5_TX] = -1,
-+	[DB8500_DMA_DEV14_MSP2_TX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV30_MSP1_TX] = U8500_MSP1_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV31_MSP0_TX_SLIM0_CH0_TX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
- };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 0437c12..a5e782c 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -209,6 +209,11 @@
+ 	.rcount = 8, .count = xcount, \
+ 	.min = xmin, .max = xmax, .invert = xinvert})
  
- /* Mapping between source event lines and physical device address */
-@@ -133,6 +136,9 @@ static const dma_addr_t dma40_rx_map[DB8500_DMA_NR_DEV] = {
- 	[DB8500_DMA_DEV41_SD_MM3_RX] = -1,
- 	[DB8500_DMA_DEV42_SD_MM4_RX] = -1,
- 	[DB8500_DMA_DEV43_SD_MM5_RX] = -1,
-+	[DB8500_DMA_DEV14_MSP2_RX] = U8500_MSP2_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV30_MSP3_RX] = U8500_MSP3_BASE + MSP_TX_RX_REG_OFFSET,
-+	[DB8500_DMA_DEV31_MSP0_RX_SLIM0_CH0_RX] = U8500_MSP0_BASE + MSP_TX_RX_REG_OFFSET,
- };
- 
- /* Reserved event lines for memcpy only */
-diff --git a/arch/arm/mach-ux500/include/mach/hardware.h b/arch/arm/mach-ux500/include/mach/hardware.h
-index b6ba26a..d93d6db 100644
---- a/arch/arm/mach-ux500/include/mach/hardware.h
-+++ b/arch/arm/mach-ux500/include/mach/hardware.h
-@@ -30,6 +30,8 @@
- #include <mach/db8500-regs.h>
- #include <mach/db5500-regs.h>
- 
-+#define MSP_TX_RX_REG_OFFSET	0
++#define SOC_ENUM_STROBE(xname, xenum) \
++	SOC_ENUM_EXT(xname, xenum, \
++	snd_soc_get_enum_strobe, \
++	snd_soc_put_enum_strobe)
 +
- #ifndef __ASSEMBLY__
+ /*
+  * Simplified versions of above macros, declaring a struct and calculating
+  * ARRAY_SIZE internally
+@@ -225,6 +230,8 @@
+ 							ARRAY_SIZE(xtexts), xtexts, xvalues)
+ #define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
+ 	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
++#define SOC_ENUM_STROBE_DECL(name, xreg, xbit, xinvert, xtexts) \
++	struct soc_enum name = SOC_ENUM_DOUBLE(xreg, xbit, xinvert, 2, xtexts)
  
- #include <mach/id.h>
+ /*
+  * Component probe and remove ordering levels for components with runtime
+@@ -442,6 +449,10 @@ int snd_soc_get_m1r_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_put_m1r_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_get_enum_strobe(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_put_enum_strobe(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol);
+ 
+ /**
+  * struct snd_soc_reg_access - Describes whether a given register is
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16d071e..3a5e519 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2822,6 +2822,64 @@ int snd_soc_put_m1r_sx(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_soc_put_m1r_sx);
+ 
+ /**
++ * snd_soc_get_enum_strobe - enum strobe get callback
++ * @kcontrol: mixer control
++ * @ucontrol: control element information
++ *
++ * Callback get the value of an enum strobe mixer control.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_get_enum_strobe(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = e->reg;
++	unsigned int bit = e->shift_l;
++	unsigned int invert = e->shift_r != 0;
++	unsigned int value = snd_soc_read(codec, reg) & (1 << bit);
++
++	if (bit != 0 && value != 0)
++		value = value >> bit;
++	ucontrol->value.enumerated.item[0] = value ^ invert;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_get_enum_strobe);
++
++/**
++ * snd_soc_put_enum_strobe - enum strobe put callback
++ * @kcontrol: mixer control
++ * @ucontrol: control element information
++ *
++ * Callback strobe a register bit to high then low (or the inverse)
++ * in one pass of a single mixer enum control.
++ *
++ * Returns 1 for success.
++ */
++int snd_soc_put_enum_strobe(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = e->reg;
++	unsigned int bit = e->shift_l;
++	unsigned int invert = e->shift_r != 0;
++	unsigned int strobe = ucontrol->value.enumerated.item[0] != 0;
++	unsigned int clr_mask = (strobe ^ invert) ? 0 : (1 << bit);
++	unsigned int set_mask = (strobe ^ invert) ? (1 << bit) : 0;
++	int err;
++
++	err = snd_soc_update_bits_locked(codec, reg, clr_mask, set_mask);
++	if (err < 0)
++		return err;
++	err = snd_soc_update_bits_locked(codec, reg, set_mask, clr_mask);
++	return err;
++}
++EXPORT_SYMBOL_GPL(snd_soc_put_enum_strobe);
++
++/**
+  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+  * @dai: DAI
+  * @clk_id: DAI specific clock ID
 -- 
 1.7.8.3
