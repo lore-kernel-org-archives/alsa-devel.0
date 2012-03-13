@@ -1,190 +1,98 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 16/16] ASoC: Ux500: Add machine-driver
-Date: Tue, 13 Mar 2012 23:03:54 +0000
-Message-ID: <20120313230353.GN3177@opensource.wolfsonmicro.com>
-References: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
-	<1331651503-16917-17-git-send-email-ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH] ASoC: max98095: add jack detection
+Date: Tue, 13 Mar 2012 23:09:39 +0000
+Message-ID: <20120313230939.GO3177@opensource.wolfsonmicro.com>
+References: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7861935410018601727=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D47D1041C0
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 00:03:58 +0100 (CET)
-In-Reply-To: <1331651503-16917-17-git-send-email-ola.o.lilja@stericsson.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1HuzLmPZrG5RH6bG"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rhyland Klein <rklein@nvidia.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Peter Hsiang <cdefgab1288@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7861935410018601727==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dp9QYJgVRVEW2bsm"
-Content-Disposition: inline
-
-
---dp9QYJgVRVEW2bsm
+--1HuzLmPZrG5RH6bG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 13, 2012 at 04:11:43PM +0100, Ola Lilja wrote:
+On Tue, Mar 13, 2012 at 12:44:08PM -0700, Rhyland Klein wrote:
 
-> +config SND_SOC_UX500_AB8500
-> +	bool "Codec/Machine - AB8500 (MSA)"
+> This change adds the logic to support using the jack detect mechanism built
+> in to the codec to detect both when a jack was inserted and what type of
+> jack is present.
 
-Wny non-modular?
+This looks mostly good, a few things below.
 
-> +	depends on SND_SOC_UX500_MSP_I2S && SND_SOC_UX500_PLATFORM && AB8500_CORE && AB8500_GPADC
+> @@ -51,6 +52,9 @@ struct max98095_priv {
+>  	u8 lin_state;
+>  	unsigned int mic1pre;
+>  	unsigned int mic2pre;
+> +	int irq;
 
-Word wrapping and this should select pretty much all of this with the
-possible exception of the MFD core.
+You can just get the irq from the I2C device.
 
-> +ifdef CONFIG_SND_SOC_UX500_AB8500
-> +snd-soc-ux500-machine-objs += ux500_ab8500.o
-> +endif
+> +	if (max98095->headphone_jack == max98095->mic_jack)
+> +		snd_soc_jack_report(max98095->headphone_jack,
+> +					hp_report | mic_report,
+> +					SND_JACK_HEADSET);
+> +	else {
 
-Again, why are you doing this non-idiomatic stuff?
+Braces on both sides of the if for clarity.
 
-> +/* Create dummy devices for platform drivers */
-
-> +static struct platform_device ux500_pcm = {
-> +		.name = "ux500-pcm",
-> +		.id = 0,
-> +		.dev = {
-> +			.platform_data = NULL,
-> +		},
-> +};
-
-The SoC or CPU side drivers should be taking care of stuff like this.
-
-> +/* Define the whole U8500 soundcard, linking platform to the codec-drivers  */
-> +struct snd_soc_dai_link u8500_dai_links[] = {
-> +	#ifdef CONFIG_SND_SOC_UX500_AB8500
-
-What's this ifdef doing...?  It looks very, very suspicous.
-
-> +	{
-> +	.name = "ab8500_0",
-
-Your indentation is also fairly broken here.
-
-> +	pdev = platform_device_alloc("soc-audio", -1);
-> +	if (!pdev)
-> +		return -ENOMEM;
-
-No, probe using the normal device model and register using
-snd_soc_register_card().
-
-> +++ b/sound/soc/ux500/ux500_ab8500.c
-
-The fact that you've got multiple files for a machine driver is
-worrying...
-
-> +/* ANC States */
-> +static const char * const enum_anc_state[] = {
-> +	"Unconfigured",
-> +	"Apply FIR and IIR",
-> +	"FIR and IIR are configured",
-> +	"Apply FIR",
-> +	"FIR is configured",
-> +	"Apply IIR",
-> +	"IIR is configured"
-> +};
-
-Why is this not part of the CODEC driver?  What makes this machine
-specific?
-
-> +/* Regulators */
-> +enum regulator_idx {
-> +	REGULATOR_AUDIO,
-> +	REGULATOR_DMIC,
-> +	REGULATOR_AMIC1,
-> +	REGULATOR_AMIC2
-> +};
-> +static struct regulator_bulk_data reg_info[4] = {
-> +	{	.consumer = NULL, .supply = "V-AUD"	},
-> +	{	.consumer = NULL, .supply = "V-DMIC"	},
-> +	{	.consumer = NULL, .supply = "V-AMIC1"	},
-> +	{	.consumer = NULL, .supply = "V-AMIC2"	}
-> +};
-> +static bool reg_enabled[4] =  {
-> +	false,
-> +	false,
-> +	false,
-> +	false
-> +};
-> +static int reg_claim[4];
-> +enum amic_idx { AMIC_1A, AMIC_1B, AMIC_2 };
-> +struct amic_conf {
-> +	enum regulator_idx reg_id;
-> +	bool enabled;
-> +	char *name;
-
-I have no idea what this code is intended to do but it looks *extremely*
-confused, it's especially surprising given that your CODEC makes no use
-of regulators even for basic power.
-
-> +static int enable_regulator(struct device *dev, enum regulator_idx idx)
+> +static irqreturn_t max98095_jack_handler(int irq, void *data)
 > +{
+> +	struct snd_soc_codec *codec = data;
+> +	int ret;
+> +
+> +	ret = max98095_report_jack(codec);
+> +
+> +	return ret ? IRQ_NONE : IRQ_HANDLED;
 
-You appear to be defining some sort of subsystem on top of the regulator
-API here but I'm not sure what it's intended to do or why you're doing
-it...
+There is no point in having a separate function here, this function has
+no contents.  Just inline it.  Please also avoid the use of the ternery
+operator.
 
-> +static const struct snd_soc_dapm_widget ux500_ab8500_dapm_widgets[] = {
-> +	SND_SOC_DAPM_SUPPLY("AUDIO Regulator",
-> +			SND_SOC_NOPM, 0, 0, dapm_audioreg_event,
-> +			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-
-DAPM has native support for regulator supplies.
-
-> +	/* Enable gpio.1-clock (needed by DSP in burst mode) */
-> +	ret = clk_enable(clk_ptr_gpio1);
-> +	if (ret) {
-> +		dev_err(dev, "%s: ERROR: clk_enable(gpio.1) failed (ret = %d)!",
-> +			__func__, ret);
+> +	/* configure jack detection: slew is calculated as 4 * (delay + 1)
+> +	 * The default is 24 (0x18) to get 100ms delay.
+> +	 */
+> +	ret = snd_soc_write(codec, M98095_08E_JACK_DC_SLEW,
+> +				M98095_DEFAULT_SLEW_DELAY);
+> +	if (ret < 0) {
+> +		dev_err(codec->dev, "Failed to cfg auto detect %d\n", ret);
 > +		return ret;
 > +	}
 
-Why can't the DSP figure out that it needs to enable the clock?
+Platform data?
 
---dp9QYJgVRVEW2bsm
+> +	enable_irq(max98095->irq);
+
+You shouldn't be fiddling around with enable_irq() and disable_irq().
+Why are you doing this?
+
+--1HuzLmPZrG5RH6bG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPX9I4AAoJEBus8iNuMP3dcvEQAI9cfaF26h6sg5E4xLRs9YNZ
-Gqor8uNne9Rgv1WtIrcNMcLupqht+KHu/r0V2B5kORkP/CMbCY7RkaRd9xXI4zQb
-Yq6U4O0Mac8b6F5HCRO0K+gv6lg+CGDq1c28hQo/ncsAb+XtpFS8ZAQVUM2vTXet
-fP6Vj7s51zqVF2r+lZZ8I70qtMWVF7NLTr1mjq8boqP7XOmKuYkDa7EKRsNmVAt1
-IRxOBgf9+edv2Pu2/kUvG2eq38NXA/JAhbh8ZYBYbPifjcChDeu3D8vQ6jQIeThH
-zX8a+1FP9/CKFQ9DKuT3E04cv6OWVSocYL5sU7Hyk+NDay3UkbFsXh4FOdIBdHVT
-wqC5oHg2YDa0zjtQ1YCj/I4nkVEIDISYlETkoJFVAmda9F+HHQajfGsGAfh2sq2q
-WkUBeU3tjweCeIojkcBxibfasV1L3V1ZNouEtHRvheDVPHnZM5NjABBlp4CdZO1o
-x25mlQCJFx0/Y2Ag7/B7GWP9WlCQB3vTbL0mmLeax+ED9knly8FcgVWOOI+wxYO8
-urahOHa8CuxOFY5rmcG6UX+QshxSKC/LfgS+5bb8MUpckaukuu4O4CJdFwTyuGuQ
-+2rG7Sp4jz5PnIIm/m/O/YSYYHzKKPTA4svKNyvxJFjzCWjVWXpSTQjLiIe6CH41
-hb7BPOnCHGCNUSxet18K
-=by9T
+iQIcBAEBAgAGBQJPX9OtAAoJEBus8iNuMP3deCQP/RN1o6j/vjrZf43Y/Nw/iik9
+ja5uoUWE7K3AoF0gqIeEm2Qk7RI1lUiKPQiAMGXppJvSlMDr+2kWWJiKejxhGU5W
+GLkfDiUAHvfXT4m4r+GPYwTdQPyJF5kX3uQUEd13jEQHz2Mbq/I5646n1d5EQ2T0
+KVnCQGlIutqYj1p+j6eHTKS2u8fRwuw1WMJoJr03+VS3b3Uw9C2wu82LmvNN8O0x
+GMyiIhwwH/xwNasSeYzO85RKkB8nnmvNWhLK1oZKo6Wux6YWs+iKaBV0E+ZpXheV
+sjmvfLnoTXyycZjPxL6Xq6JJAba9yTKermG0kTK/BnFWbEh6FtFHsTE0ejPARjqg
+u25+CvtyzHAP0MVUlvgqbWw21fEN0VhtCdQiUCqkw5vnXEQJh4YOwE96gBHdl4Gh
+/1ZP5f1Wdbh2xIOLBmGzZCiGl1wM/oaegheNXje6h5u39iD6fc6wxKnCQz7a8moV
+jHRxH7o8n8Qs5rSfalXb/HY2P2on5gN3EvcowGftRIgBxbEISei/S9z5h0jUfRY4
+kMEPg7YYfmDvLr8V/yVViTLGiJBOZ9yeiT3yNMU3Q7C5R+kAN7iFK5yxnS+qwX4W
+uVJur8sLOJk2ymWxbKcfQU5WRG34mHA3UI6cBxVr5CdAL7ChuAbGNIY6s/ntqqQi
+wg28OGVf233EG78bk4bD
+=fepc
 -----END PGP SIGNATURE-----
 
---dp9QYJgVRVEW2bsm--
-
---===============7861935410018601727==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7861935410018601727==--
+--1HuzLmPZrG5RH6bG--
