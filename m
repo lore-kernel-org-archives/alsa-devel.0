@@ -1,13 +1,25 @@
 From: Rhyland Klein <rklein@nvidia.com>
 Subject: [PATCH] ASoC: max98095: add jack detection
-Date: Tue, 13 Mar 2012 12:40:18 -0700
-Message-ID: <1331667618-8040-1-git-send-email-rklein@nvidia.com>
+Date: Tue, 13 Mar 2012 12:44:08 -0700
+Message-ID: <1331667848-8168-1-git-send-email-rklein@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4252E24429
+	for <alsa-devel@alsa-project.org>; Tue, 13 Mar 2012 20:43:18 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: Peter Hsiang <cdefgab1288@gmail.com>, linux-kernel@vger.kernel.org, Rhyland Klein <rklein@nvidia.com>
+Cc: Peter Hsiang <cdefgab1288@gmail.com>, Rhyland Klein <rklein@nvidia.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 This change adds the logic to support using the jack detect mechanism built
