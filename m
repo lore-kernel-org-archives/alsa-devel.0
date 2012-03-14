@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ALSA: pcm: Constify the list in
-	snd_pcm_hw_constraint_list
-Date: Wed, 14 Mar 2012 19:48:43 +0000
-Message-ID: <1331754523-13173-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Henning Thielemann <alsa@henning-thielemann.de>
+Subject: Re: sending a sequencer event to a delayed queue
+Date: Wed, 14 Mar 2012 21:01:12 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1203142046430.26232@anubis.informatik.uni-halle.de>
+References: <alpine.DEB.2.00.1203101859280.16157@anubis.informatik.uni-halle.de>
+	<4F5BBECF.8020506@ladisch.de> <4F5CC7AB.3030300@henning-thielemann.de>
+	<4F5D0DC5.7090908@ladisch.de>
+	<alpine.DEB.2.00.1203112200370.12766@anubis.informatik.uni-halle.de>
+	<4F5DB1FA.9030802@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E4575103B2F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 20:48:47 +0100 (CET)
+Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
+	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id DB395103B50
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 21:01:15 +0100 (CET)
+In-reply-to: <4F5DB1FA.9030802@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Allows the constraint lists to be declared const by drivers which seems
-reasonable; there's plenty of other constification we could do if we were
-being complete but this was easy and quick.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/pcm.h  |    5 +++--
- sound/core/pcm_lib.c |    3 ++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+On Mon, 12 Mar 2012, Clemens Ladisch wrote:
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 1d58d79..0d11128 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -264,7 +264,7 @@ struct snd_pcm_hw_constraint_ratdens {
- 
- struct snd_pcm_hw_constraint_list {
- 	unsigned int count;
--	unsigned int *list;
-+	const unsigned int *list;
- 	unsigned int mask;
- };
- 
-@@ -785,7 +785,8 @@ void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interva
- 			  unsigned int k, struct snd_interval *c);
- void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
- 			  const struct snd_interval *b, struct snd_interval *c);
--int snd_interval_list(struct snd_interval *i, unsigned int count, unsigned int *list, unsigned int mask);
-+int snd_interval_list(struct snd_interval *i, unsigned int count,
-+		      const unsigned int *list, unsigned int mask);
- int snd_interval_ratnum(struct snd_interval *i,
- 			unsigned int rats_count, struct snd_ratnum *rats,
- 			unsigned int *nump, unsigned int *denp);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 3420bd3..4d18941 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1029,7 +1029,8 @@ static int snd_interval_ratden(struct snd_interval *i,
-  *
-  * Returns non-zero if the value is changed, zero if not changed.
-  */
--int snd_interval_list(struct snd_interval *i, unsigned int count, unsigned int *list, unsigned int mask)
-+int snd_interval_list(struct snd_interval *i, unsigned int count,
-+		      const unsigned int *list, unsigned int mask)
- {
-         unsigned int k;
- 	struct snd_interval list_range;
--- 
-1.7.9.1
+> Henning Thielemann wrote:
+>> On Sun, 11 Mar 2012, Clemens Ladisch wrote:
+>>> Yes; whether an event is delivered depends only on its scheduled time,
+>>> not whether the queue is running.
+>>
+>> That is, if the queue time is zero and the event time is zero, then
+>> the event is sent, independent of whether the queue is running or not.
+>
+> Yes.
+
+Ok, I had an idea of how to solve my problem. I want to halt the queue and 
+send all messages immediately that are still in the queue. To this end I 
+think I could just increase the queue time.
+
+Thus I did a test whether this will work. I did the following:
+
+output note-on event with timestamp 1s
+output note-off event with timestamp 2s
+control_queue SND_SEQ_EVENT_SETPOS_TIME 3s
+drain
+
+Nothing happens.
+
+I continue the queue after increasing the time:
+
+output note-on event with timestamp 1s
+output note-off event with timestamp 2s
+control_queue SND_SEQ_EVENT_SETPOS_TIME 3s
+control_queue SND_SEQ_EVENT_CONTINUE
+drain
+
+Now the note events are scheduled at 1s and 2s as if the SETPOS_TIME 
+control was ignored.
+
+Then I continued the queue before increasing the time:
+
+output note-on event with timestamp 1s
+output note-off event with timestamp 2s
+control_queue SND_SEQ_EVENT_CONTINUE
+control_queue SND_SEQ_EVENT_SETPOS_TIME 3s
+drain
+
+Now the events arrive instantly. This is the behavior I want to have.
+
+It looks like SETPOS_TIME is ignored if the queue is halted. Is this 
+correct?
