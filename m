@@ -1,14 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: wm8996: Add 44.1kHz support
-Date: Wed, 14 Mar 2012 20:36:33 +0000
-Message-ID: <1331757394-27488-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: speyside: Constrain the CPU link to
+	8kHz based rates
+Date: Wed, 14 Mar 2012 20:36:34 +0000
+Message-ID: <1331757394-27488-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1331757394-27488-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BBB3103B5E
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 21:36:38 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4D21103B8E
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 21:36:41 +0100 (CET)
+In-Reply-To: <1331757394-27488-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,72 +25,55 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The WM8996 specification has been updated to specify 44.1kHz as a supported
-sample rate. Update the driver to accept this configuration.
+While the CODEC now supports other rates we're only clocking it for 8kHz
+based rates. In future we'll probably want to take advantage of the extra
+flexibility but this ensures userspace doesn't use the wrong rates for now.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8996.c |   19 ++++++++++---------
- 1 files changed, 10 insertions(+), 9 deletions(-)
+ sound/soc/samsung/speyside.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 40a124c..1fd6354 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -1914,7 +1914,7 @@ static int wm8996_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index ce5af12..fafffd9 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -126,6 +126,28 @@ static void speyside_set_polarity(struct snd_soc_codec *codec,
+ 	snd_soc_dapm_sync(&codec->dapm);
+ }
+ 
++static const unsigned int speyside_cpu_constraints[] = {
++	8000, 16000, 32000, 48000,
++};
++
++static struct snd_pcm_hw_constraint_list speyside_cpu_constraints_list = {
++	.count	= ARRAY_SIZE(speyside_cpu_constraints),
++	.list	= speyside_cpu_constraints,
++};
++
++static int speyside_cpu_startup(struct snd_pcm_substream *substream)
++{
++	snd_pcm_hw_constraint_list(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_RATE,
++				   &speyside_cpu_constraints_list);
++
++	return 0;
++}
++
++static struct snd_soc_ops speyside_cpu_ops = {
++	.startup = speyside_cpu_startup,
++};
++
+ static int speyside_wm8996_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
--	int bits, i, bclk_rate;
-+	int bits, i, bclk_rate, best;
- 	int aifdata = 0;
- 	int lrclk = 0;
- 	int dsp = 0;
-@@ -1963,14 +1963,11 @@ static int wm8996_hw_params(struct snd_pcm_substream *substream,
- 		return bits;
- 	aifdata |= (bits << WM8996_AIF1TX_WL_SHIFT) | bits;
- 
-+	best = 0;
- 	for (i = 0; i < ARRAY_SIZE(dsp_divs); i++) {
--		if (dsp_divs[i] == params_rate(params))
--			break;
--	}
--	if (i == ARRAY_SIZE(dsp_divs)) {
--		dev_err(codec->dev, "Unsupported sample rate %dHz\n",
--			params_rate(params));
--		return -EINVAL;
-+		if (abs(dsp_divs[i] - params_rate(params)) <
-+		    abs(dsp_divs[best] - params_rate(params)))
-+			best = i;
- 	}
- 	dsp |= i << dsp_shift;
- 
-@@ -2030,13 +2027,16 @@ static int wm8996_set_sysclk(struct snd_soc_dai *dai,
- 	}
- 
- 	switch (wm8996->sysclk) {
-+	case 5644800:
- 	case 6144000:
- 		snd_soc_update_bits(codec, WM8996_AIF_RATE,
- 				    WM8996_SYSCLK_RATE, 0);
- 		break;
-+	case 22579200:
- 	case 24576000:
- 		ratediv = WM8996_SYSCLK_DIV;
- 		wm8996->sysclk /= 2;
-+	case 11289600:
- 	case 12288000:
- 		snd_soc_update_bits(codec, WM8996_AIF_RATE,
- 				    WM8996_SYSCLK_RATE, WM8996_SYSCLK_RATE);
-@@ -3060,7 +3060,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8996 = {
- };
- 
- #define WM8996_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
--		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
-+		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-+		      SNDRV_PCM_RATE_48000)
- #define WM8996_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
- 			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |\
- 			SNDRV_PCM_FMTBIT_S32_LE)
+ 	struct snd_soc_dai *dai = rtd->codec_dai;
+@@ -183,6 +205,7 @@ static struct snd_soc_dai_link speyside_dai[] = {
+ 		.init = speyside_wm8996_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBM_CFM,
++		.ops = &speyside_cpu_ops,
+ 	},
+ 	{
+ 		.name = "Baseband",
 -- 
 1.7.9.1
