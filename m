@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v7] sound/soc/codecs: add LAPIS
-	Semiconductor ML26124
-Date: Wed, 14 Mar 2012 14:39:41 +0000
-Message-ID: <20120314143941.GS3133@opensource.wolfsonmicro.com>
-References: <20120308114704.GH3638@opensource.wolfsonmicro.com>
-	<1331275026-31651-1-git-send-email-tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v6] sound/soc/lapis: add machine driver for
+ ML7213 Carrier Board
+Date: Wed, 14 Mar 2012 14:45:24 +0000
+Message-ID: <20120314144524.GT3133@opensource.wolfsonmicro.com>
+References: <CANKRQngTNWMGswq3weD1s8O4irVEz+DCr1vzi2gnWaQcoq5SEw@mail.gmail.com>
+	<1331275091-31700-1-git-send-email-tomoya.rohm@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8071654064004396566=="
+Content-Type: multipart/mixed; boundary="===============8361269685937376683=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B88910451F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 15:39:44 +0100 (CET)
-In-Reply-To: <1331275026-31651-1-git-send-email-tomoya.rohm@gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 68CCB104556
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 15:45:26 +0100 (CET)
+In-Reply-To: <1331275091-31700-1-git-send-email-tomoya.rohm@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,110 +26,63 @@ Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8071654064004396566==
+--===============8361269685937376683==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FiqEyLLt06qkB6ow"
+	protocol="application/pgp-signature"; boundary="9hshNW4m6zn79FF/"
 Content-Disposition: inline
 
 
---FiqEyLLt06qkB6ow
+--9hshNW4m6zn79FF/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 09, 2012 at 03:37:06PM +0900, Tomoya MORINAGA wrote:
+On Fri, Mar 09, 2012 at 03:38:11PM +0900, Tomoya MORINAGA wrote:
 
-A substantial improvement on previous versions but there's still a few
-issues, though they're now fairly small.
-
-> +	/* SAI configuration */
-> +	if (priv->channels == 1) {
-> +		ml26124_update_bits(codec, ML26124_SAI_TRANS_CTL, mask,
-> +				ML26124_SAI_NO_DELAY | ML26124_SAI_FRAME_SYNC);
-> +		ml26124_update_bits(codec, ML26124_SAI_RCV_CTL, mask,
-> +				ML26124_SAI_NO_DELAY | ML26124_SAI_FRAME_SYNC);
-> +	} else {
-> +		ml26124_update_bits(codec, ML26124_SAI_TRANS_CTL, mask,
-> +				    ML26124_SAI_NO_DELAY);
-> +		ml26124_update_bits(codec, ML26124_SAI_RCV_CTL, mask,
-> +				    ML26124_SAI_NO_DELAY);
-> +	}
-
-What happens if the system switches between 1 channel mode and
-multi-channel mode at runtime?  It looks like _SYNC will never be
-cleared.
-
-> +static int ml26124_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-> +		int clk_id, unsigned int freq, int dir)
-> +{
-> +	struct snd_soc_codec *codec = codec_dai->codec;
-> +	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
+> +	/* set codec DAI configuration */
+> +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+> +				 SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+> +	if (ret < 0)
+> +		return ret;
 > +
-> +	switch (clk_id) {
-> +	case ML26124_USE_PLL:
-> +		ml26124_update_bits(codec, ML26124_CLK_CTL,
-> +				    BIT(0) | BIT(1), 0);
-> +		break;
-> +	case ML26124_USE_MCLKI_256FS:
-> +		ml26124_update_bits(codec, ML26124_CLK_CTL,
-> +				    BIT(0) | BIT(1), 1);
-> +		break;
-> +	case ML26124_USE_MCLKI_512FS:
-> +		ml26124_update_bits(codec, ML26124_CLK_CTL,
-> +				    BIT(0) | BIT(1), 2);
-> +		break;
-> +	case ML26124_USE_MCLKI_1024FS:
-> +		ml26124_update_bits(codec, ML26124_CLK_CTL,
-> +				    BIT(0) | BIT(1), 3);
-> +		break;
+> +	/* set cpu DAI configuration */
+> +	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+> +				 SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
 
-Why not just specify the MCLK rate and then calculate the division based
-on the sample rate?
+This looks very broken, you're setting the two ends of the link to
+different configurations.  If this is needed it should be documented why.
 
-> +	switch (freq) {
-> +	case 12288000:
-> +		priv->mclk = freq;
-> +		break;
+Also, this should be set in the dai_link structure as data rather than
+set each time.
 
-This is especially true given that only one MCLK rate is supported.
-
-> +	case SND_SOC_BIAS_STANDBY:
-> +		/* VMID ON */
-> +		ml26124_update_bits(codec, ML26124_PW_REF_PW_MNG,
-> +				    ML26124_VMID, ML26124_VMID);
-> +		msleep(500);
-
-This will sleep for 500ms when powering down which probably isn't what's
-desired...
-
---FiqEyLLt06qkB6ow
+--9hshNW4m6zn79FF/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPYK2gAAoJEBus8iNuMP3dTDgP/RWxIoDMU6EztdH16x/Jo8y3
-2+e35xSKCJsAwTPHaRJJBXvs+LxJShJId8bwaZKqrN9F/vidunJFI80w/Qc8SISj
-WJPJUHoqyIpxhLDc2onT5XofPtfs6f3870vl1TxKET1qYBxEdxhguoU7krzqngtu
-l9UFFfy4LiJ7oaDRoz9DcW51Pfv4oQoFKaNRNFn/oof0e+owXTMPCNk/RAZtT+sB
-7r+okH7XM41GRwDrA5vrJTSVOh78Eil0dFXF8UeQELxAKafwxWbhs4HCJR1MyfPx
-EJhTcqhFNieA50JkE7rO2jJyJTbc2cAr5x/QC9Z/+JDCYZgQVHadfYb4JDQDt0SX
-Cne2lw5gxSqg3iQkJDZTnJnzOh640qXLbyDRITTyZvrYXHXbuKJuVg8BeMpvFrXU
-2CuABkFZGNV0WAW3hM6LQKEU8DmMUPUP6SHlchGpBec2/qPzyoCgHbXZK0MrPAxw
-Q8zWErKv75crPdMEbAK6e+NN1vFLK8S+31Osa+PBKEEYolPW9lwYUH0p/6xwTDSK
-1nPfd6ezPBXDRZ2KJvSRHJOT4Ipw1+JNDhMKBIdq2ZFXLvrxQcPDaPs7tw6TvRq7
-tT1NllHiWz5b6EeLOufMxoh0L4+Ka2sg7+W6Fb6ULIF4LVRIWFi15YbYIIxyFvMg
-kB39YtgI0QgGxy6Eae9C
-=tjfB
+iQIcBAEBAgAGBQJPYK6XAAoJEBus8iNuMP3dUegP/3c584uB/C3MMpEFcdB/Oy5g
+xl77tzaYuGQTXH5yLVa9MCntKG+pmO1gL1AG1VHb+jiFdhNeuBv8omIyWLFkkCV0
+rTW74+EQ2e0+vcGEZUOT4Y8sNxRZHrFFLJQSWNaAZflt9I9ydm6HliZuBpvt6hEW
+wJwJbgU0BOLX+7B8MGbAEcGbEdpyr+NIy2zAqdwiIdmZf5RhxFVJCKJimwbCeePC
+c17Al0KV2aCqrM35Xs6pz10aLikKGi0W837JY6mpOn3dqR6ssTrxLDJ1wm84E11e
+dtYzP5FM6NQVID0WgJY2GZ1Um5T1YmkAHEgTSjLDckPBU+EyNBqLUA7F4OplBcfV
+IN2Jn12kE5KtoIBkc2hfdPOI9KQV5cnSg4lt2iUUY8GUKcF9PVlES/0WkAzrBKJO
+xHfzidH1Gmgz4rIqAxiqe8Z/e2lvmJVaawfxyOwceEMaU74dkhq5BWTcTk8gFVRv
+rZnUJq+HUq/5gooh1IQsVWHxkhtcYVFuVCy3M0pqjRuGbqBPnaD6NT8hR/XASLVp
++3eU+Mb/e8evCk4i0Ap6SEtx2q9F3ir2jA/TbeHzLU4N8ws6QReQyZ0iRSb70uze
+wyztsD5ayIf2MZBUdmFAG48kCmfu+W8juQYXiaBRqrY+chz/mfrR0FsIGQ8d21b7
+q22nO63zEAnO5x6PSn8R
+=z388
 -----END PGP SIGNATURE-----
 
---FiqEyLLt06qkB6ow--
+--9hshNW4m6zn79FF/--
 
---===============8071654064004396566==
+--===============8361269685937376683==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8071654064004396566==--
+--===============8361269685937376683==--
