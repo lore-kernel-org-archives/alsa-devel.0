@@ -1,16 +1,21 @@
-From: Henning Thielemann <alsa@henning-thielemann.de>
-Subject: Re: snd_seq_parse_address matching prefix
-Date: Wed, 14 Mar 2012 11:48:05 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1203141147080.18589@anubis.informatik.uni-halle.de>
-References: <alpine.DEB.2.00.1203132333121.5893@anubis.informatik.uni-halle.de>
-	<s5hfwdblk37.wl%tiwai@suse.de>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 14/16] ASoC: Ux500: Add platform-driver
+Date: Wed, 14 Mar 2012 11:50:28 +0100
+Message-ID: <CACRpkdZdZpB+hP1sz-p11Tm=bgS4VjfKWnEJDezHZ7n-kHEU_A@mail.gmail.com>
+References: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
+	<1331651503-16917-15-git-send-email-ola.o.lilja@stericsson.com>
+	<20120313224840.GM3177@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Boundary_(ID_dx9C1B7C1/q4+60DSLXJdQ)"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
-	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 482391044BB
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 11:48:09 +0100 (CET)
-In-reply-to: <s5hfwdblk37.wl%tiwai@suse.de>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 566351044BF
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 11:50:29 +0100 (CET)
+Received: by ggni2 with SMTP id i2so1671216ggn.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 03:50:28 -0700 (PDT)
+In-Reply-To: <20120313224840.GM3177@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,59 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Mar 13, 2012 at 11:48 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
 
---Boundary_(ID_dx9C1B7C1/q4+60DSLXJdQ)
-Content-type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Content-transfer-encoding: 7BIT
+>> + =A0 =A0 cdesc =3D dma_dev->device_prep_dma_cyclic(ux500_pcm_data->pipe=
+id, dma_addr,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 period_cnt * period_len, period_len,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 direction);
+>
+> You're using dmaengine here it seems. =A0Please refactor to use the
+> dmaengine helper library that was recently contributed by Lars-Peter -
+> it should save a bunch of code and make rolling out dmaengine framework
+> improvements much easier.
 
+That stuff is not even in linux-next so I don't know it it will even be
+in v3.4. But let's see.
 
-On Wed, 14 Mar 2012, Takashi Iwai wrote:
-
-> Care to send a patch for the updated document?
-
-attached is a proposal
-
---Boundary_(ID_dx9C1B7C1/q4+60DSLXJdQ)
-Content-id: <alpine.DEB.2.00.1203141148050.18589@anubis.informatik.uni-halle.de>
-Content-type: TEXT/x-diff; name=parse_address.diff
-Content-transfer-encoding: 7BIT
-Content-disposition: attachment; filename=parse_address.diff
-Content-description: 
-
---- alsa-lib-1.0.22/src/seq/seqmid.c	2009-12-16 16:18:51.000000000 +0100
-+++ alsa-lib-1.0.22-patched/src/seq/seqmid.c	2012-03-14 11:43:06.000000000 +0100
-@@ -378,9 +378,18 @@
-  * \return 0 on success or negative error code
-  *
-  * This function parses the sequencer client and port numbers from the given string.
-- * The client and port tokes are separated by either colon or period, e.g. 128:1.
-+ * The client and port tokens are separated by either colon or period, e.g. 128:1.
-  * When \a seq is not NULL, the function accepts also a client name not only
-  * digit numbers.
-+ * Actually \a arg need to be only a prefix of the wanted client.
-+ * That is, if a client named "Foobar XXL Master 2012" with number 128 is available,
-+ * then parsing "Foobar" will return the address 128:0.
-+ * However parsing is biased towards small client numbers,
-+ * thus if also a client named "Foobar" with number 129 exists,
-+ * then parsing will still yield address 128:0 and not 129:0.
-+ * If you want be able to access all clients by prefixes
-+ * then you must write your own parser that checks for matching client names
-+ * in the order of increasing name lengths.
-  */
- int snd_seq_parse_address(snd_seq_t *seq, snd_seq_addr_t *addr, const char *arg)
- {
-
---Boundary_(ID_dx9C1B7C1/q4+60DSLXJdQ)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---Boundary_(ID_dx9C1B7C1/q4+60DSLXJdQ)--
+Yours,
+Linus Walleij
