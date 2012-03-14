@@ -1,21 +1,14 @@
-From: Henning Thielemann <alsa@henning-thielemann.de>
-Subject: Re: sending a sequencer event to a delayed queue
-Date: Wed, 14 Mar 2012 21:22:41 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1203142118210.26232@anubis.informatik.uni-halle.de>
-References: <alpine.DEB.2.00.1203101859280.16157@anubis.informatik.uni-halle.de>
-	<4F5BBECF.8020506@ladisch.de> <4F5CC7AB.3030300@henning-thielemann.de>
-	<4F5D0DC5.7090908@ladisch.de>
-	<alpine.DEB.2.00.1203112200370.12766@anubis.informatik.uni-halle.de>
-	<4F5DB1FA.9030802@ladisch.de>
-	<alpine.DEB.2.00.1203142046430.26232@anubis.informatik.uni-halle.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: wm8996: Add 44.1kHz support
+Date: Wed, 14 Mar 2012 20:36:33 +0000
+Message-ID: <1331757394-27488-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
-	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 08C0D103B78
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 21:22:44 +0100 (CET)
-In-reply-to: <alpine.DEB.2.00.1203142046430.26232@anubis.informatik.uni-halle.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BBB3103B5E
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 21:36:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +18,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+The WM8996 specification has been updated to specify 44.1kHz as a supported
+sample rate. Update the driver to accept this configuration.
 
-I get interesting result if I print the queue time using
-snd_seq_queue_status_get_real_time.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |   19 ++++++++++---------
+ 1 files changed, 10 insertions(+), 9 deletions(-)
 
-
-On Wed, 14 Mar 2012, Henning Thielemann wrote:
-
-> Ok, I had an idea of how to solve my problem. I want to halt the queue and 
-> send all messages immediately that are still in the queue. To this end I 
-> think I could just increase the queue time.
->
-> Thus I did a test whether this will work. I did the following:
->
-> output note-on event with timestamp 1s
-> output note-off event with timestamp 2s
-> control_queue SND_SEQ_EVENT_SETPOS_TIME 3s
-> drain
->
-> Nothing happens.
-
-
-Queue time is exactly 3s after drain.
-
-
-> I continue the queue after increasing the time:
->
-> output note-on event with timestamp 1s
-> output note-off event with timestamp 2s
-> control_queue SND_SEQ_EVENT_SETPOS_TIME 3s
-> control_queue SND_SEQ_EVENT_CONTINUE
-> drain
->
-> Now the note events are scheduled at 1s and 2s as if the SETPOS_TIME control 
-> was ignored.
-
-
-Queue time is some microseconds larger than 0.
-
-
-That is, SETPOS_TIME seems to successfully alter the time, but then 
-CONTINUE seems to reset the time. Is this a bug or a feature?
-
-SETPOS_TIME does not emit events that become older than queue time. Is it 
-a bug or a feature?
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 40a124c..1fd6354 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -1914,7 +1914,7 @@ static int wm8996_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
+-	int bits, i, bclk_rate;
++	int bits, i, bclk_rate, best;
+ 	int aifdata = 0;
+ 	int lrclk = 0;
+ 	int dsp = 0;
+@@ -1963,14 +1963,11 @@ static int wm8996_hw_params(struct snd_pcm_substream *substream,
+ 		return bits;
+ 	aifdata |= (bits << WM8996_AIF1TX_WL_SHIFT) | bits;
+ 
++	best = 0;
+ 	for (i = 0; i < ARRAY_SIZE(dsp_divs); i++) {
+-		if (dsp_divs[i] == params_rate(params))
+-			break;
+-	}
+-	if (i == ARRAY_SIZE(dsp_divs)) {
+-		dev_err(codec->dev, "Unsupported sample rate %dHz\n",
+-			params_rate(params));
+-		return -EINVAL;
++		if (abs(dsp_divs[i] - params_rate(params)) <
++		    abs(dsp_divs[best] - params_rate(params)))
++			best = i;
+ 	}
+ 	dsp |= i << dsp_shift;
+ 
+@@ -2030,13 +2027,16 @@ static int wm8996_set_sysclk(struct snd_soc_dai *dai,
+ 	}
+ 
+ 	switch (wm8996->sysclk) {
++	case 5644800:
+ 	case 6144000:
+ 		snd_soc_update_bits(codec, WM8996_AIF_RATE,
+ 				    WM8996_SYSCLK_RATE, 0);
+ 		break;
++	case 22579200:
+ 	case 24576000:
+ 		ratediv = WM8996_SYSCLK_DIV;
+ 		wm8996->sysclk /= 2;
++	case 11289600:
+ 	case 12288000:
+ 		snd_soc_update_bits(codec, WM8996_AIF_RATE,
+ 				    WM8996_SYSCLK_RATE, WM8996_SYSCLK_RATE);
+@@ -3060,7 +3060,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8996 = {
+ };
+ 
+ #define WM8996_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+-		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
++		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
++		      SNDRV_PCM_RATE_48000)
+ #define WM8996_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
+ 			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |\
+ 			SNDRV_PCM_FMTBIT_S32_LE)
+-- 
+1.7.9.1
