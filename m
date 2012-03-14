@@ -1,13 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.4
-Date: Wed, 14 Mar 2012 14:07:14 +0000
-Message-ID: <20120314140713.GM3133@opensource.wolfsonmicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Clean up of PCM spinlocks
+Date: Wed, 14 Mar 2012 15:20:07 +0100
+Message-ID: <4F60A917.6080709@perex.cz>
+References: <s5hboo03h01.wl%tiwai@suse.de> <4F5F588B.40107@perex.cz>
+	<s5hpqcg1r6g.wl%tiwai@suse.de> <4F5F64D4.5080206@perex.cz>
+	<s5hlin41q58.wl%tiwai@suse.de> <4F5F6BDF.5030601@perex.cz>
+	<s5hhaxs1o7k.wl%tiwai@suse.de> <4F5FA4E8.4040705@perex.cz>
+	<s5hvcm8l05u.wl%tiwai@suse.de> <4F606B3C.7010402@perex.cz>
+	<s5h1uov1l3o.wl%tiwai@suse.de> <4F60880B.6010302@perex.cz>
+	<s5hr4wvz4dh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5406229850700579130=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E5A5103AE6
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 15:07:16 +0100 (CET)
+Received: from mail1.perex.cz (unknown [77.48.224.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id F08B610419B
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 15:20:06 +0100 (CET)
+In-Reply-To: <s5hr4wvz4dh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,124 +27,257 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Date 14.3.2012 14:41, Takashi Iwai wrote:
+> At Wed, 14 Mar 2012 12:59:07 +0100,
+> Jaroslav Kysela wrote:
+>>
+>> Date 14.3.2012 12:24, Takashi Iwai wrote:
+>>> At Wed, 14 Mar 2012 10:56:12 +0100,
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> Date 13.3.2012 21:24, Takashi Iwai wrote:
+>>>>> At Tue, 13 Mar 2012 20:50:00 +0100,
+>>>>> Jaroslav Kysela wrote:
+>>>>>>
+>>>>>> Date 13.3.2012 17:05, Takashi Iwai wrote:
+>>>>>>> At Tue, 13 Mar 2012 16:46:39 +0100,
+>>>>>>> Jaroslav Kysela wrote:
+>>>>>>>>
+>>>>>>>> Date 13.3.2012 16:23, Takashi Iwai wrote:
+>>>>>>>>> At Tue, 13 Mar 2012 16:16:36 +0100,
+>>>>>>>>> Jaroslav Kysela wrote:
+>>>>>>>>>>
+>>>>>>>>>> Date 13.3.2012 16:00, Takashi Iwai wrote:
+>>>>>>>>>>> At Tue, 13 Mar 2012 15:24:11 +0100,
+>>>>>>>>>>> Jaroslav Kysela wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> Date 13.3.2012 11:57, Takashi Iwai wrote:
+>>>>>>>>>>>>> Hi,
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> below is a patch I posted to LKML as the follow up for the lockdep
+>>>>>>>>>>>>> report from Dave Jones.  It's a resurrected patch from what I worked
+>>>>>>>>>>>>> on quite ago.  Although this fix is suboptimal, I see no better way.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> If this looks OK, I'm going to queue it as a 3.4 material.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> thanks,
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Takashi
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> ===
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> From: Takashi Iwai <tiwai@suse.de>
+>>>>>>>>>>>>> Subject: [PATCH] ALSA: pcm - Simplify linked PCM substream spinlocks
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> The spinlocks held for PCM substreams have been always messy.  For the
+>>>>>>>>>>>>> better concurrent accessibility, we took always the substream's lock
+>>>>>>>>>>>>> first.  When substreams are linked, we need a group-wide lock, but
+>>>>>>>>>>>>> this should be applied outside substream's lock.  So, we unlock the
+>>>>>>>>>>>>> substream's lock first, then do locks twice.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> This scheme is known to be problematic with lockdep.  Maybe because
+>>>>>>>>>>>>> the nested lock isn't marked properly, and partly because the lock and
+>>>>>>>>>>>>> unlock sequences are different (A/B -> A/B).
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> This patch tries to simplify the scheme.  Instead of holding the
+>>>>>>>>>>>>> substream's lock, we take the group lock always at first.  A drawback
+>>>>>>>>>>>>> of this is that the access to the individual substream in a same group
+>>>>>>>>>>>>> won't be allowed any longer.  But, the code looks much easier, and
+>>>>>>>>>>>>> likely less buggy.
+>>>>>>>>>>>>
+>>>>>>>>>>>> What do you mean by this? I noticed that you switched the behaviour for
+>>>>>>>>>>>> the stream_lock():
+>>>>>>>>>>>>
+>>>>>>>>>>>> 1) self_group spinlock is used for single (non-linked) stream
+>>>>>>>>>>>>    - same as before
+>>>>>>>>>>>> 2) group.lock spinlock is used for the linked streams
+>>>>>>>>>>>>    - the self_group spinlock is used only in the group action
+>>>>>>>>>>>>      - the question is why? it seems useless, the
+>>>>>>>>>>>>        stream_lock() functions use the allocated group.lock
+>>>>>>>>>>>
+>>>>>>>>>>> Oh yeah, right, this is utterly useless!
+>>>>>>>>>>> I just thought of the mutex case, but in this case, the lock is
+>>>>>>>>>>> avoided anyway.
+>>>>>>>>>>>
+>>>>>>>>>>>> I don't think that this patch will work in the way we expect.
+>>>>>>>>>>>>
+>>>>>>>>>>>> I believe we should use only group.lock spinlock for the linked streams
+>>>>>>>>>>>> without using the self_group spinlock to make locking work like this:
+>>>>>>>>>>>>
+>>>>>>>>>>>> stream_lock(current)
+>>>>>>>>>>>> group_action(current) {
+>>>>>>>>>>>>   for s from all_group_substreams {
+>>>>>>>>>>>>     if (s != current)
+>>>>>>>>>>>>       stream_lock(s);
+>>>>>>>>>>>>   }
+>>>>>>>>>>>>   .... job ....
+>>>>>>>>>>>>   .... group substreams unlock ....
+>>>>>>>>>>>> }
+>>>>>>>>>>>> stream_unlock(current)
+>>>>>>>>>>>
+>>>>>>>>>>> Well, if we think of a single lock, the code would be much
+>>>>>>>>>>> simplified than above.
+>>>>>>>>>>>
+>>>>>>>>>>> The reviewsed patch is below.  I left the single-stream version as is
+>>>>>>>>>>> since it's used explicitly in the drain() -- the drain action is
+>>>>>>>>>>> applied to each substream although it's linked.
+>>>>>>>>>>
+>>>>>>>>>> I meant use group->lock in the group_action, see patch bellow.
+>>>>>>>>>
+>>>>>>>>> Hmm, I don't think this works.  From linked stream members,
+>>>>>>>>> group->lock points to the very same lock instance.  So,
+>>>>>>>>> snd_pcm_action_group() would dead-lock the same lock with your code.
+>>>>>>>>
+>>>>>>>> I see. The problem is that the concurrent but linked streams can take
+>>>>>>>> different first locks for the group locking:
+>>>>>>>>
+>>>>>>>> time 0		 time 1
+>>>>>>>> --------------------------------
+>>>>>>>> lock stream 0 -> group lock
+>>>>>>>> lock stream 1 -> group lock
+>>>>>>>>
+>>>>>>>> In this case the condition current != s is not enough. I think that we
+>>>>>>>> have to strictly separate situations when the group lock can be
+>>>>>>>> activated and use different locking scheme there - for example using a
+>>>>>>>> master lock per linked substreams.
+>>>>>>>
+>>>>>>> In my revised patch, group->lock is actually the master lock of the
+>>>>>>> group.  This is the only lock applied to the substream.
+>>>>>>>
+>>>>>>> When a stream is linked, it's done in the global write_lock to
+>>>>>>> guarantee that stream is unlocked.  Then group->lock is replaced with
+>>>>>>> a real group lock from self_group.lock.  So, there is no race among
+>>>>>>> this move.
+>>>>>>>
+>>>>>>>> It seems to me that your proposed patch just removes the spinlocks for
+>>>>>>>> linked substreams which can cause inconsistencies for these streams.
+>>>>>>>
+>>>>>>> Not really.  It just uses a single lock for linked streams.  There are
+>>>>>>> no longer stream locks once when the stream is linked.
+>>>>>>>
+>>>>>>> This is of course a drawback -- it disallows the concurrent access to
+>>>>>>> linked stream members in some operations.  How this is regarded as a
+>>>>>>> serious drawback, is a question of operation styles.  If any apps are
+>>>>>>> accessing many streams as a linked stream in realtime manner, and
+>>>>>>> access to each without mmap, then the performance may be worsen.  But,
+>>>>>>> this scenario is rather pretty rare, I guess.
+>>>>>>>
+>>>>>>>> Or just a quick idea - what about to track the the group action
+>>>>>>>> collisions? We can use a spinlock protected counter and serialize these
+>>>>>>>> requests in another way (if counter is above one - the CPU should wait
+>>>>>>>> until it becomes one).
+>>>>>>>
+>>>>>>> Well...  this sounds way too complex, I'm afraid.
+>>>>>>
+>>>>>> I tried to think about it more. I think that the spinlock reorder is at
+>>>>>> the wrong code position. What about the code bellow. I believe, it
+>>>>>> should guarantee the consistent locking scheme (although the first
+>>>>>> substream lock will stay outside of the group->lock, but it should not
+>>>>>> be an issue).
+>>>>>
+>>>>> Unfortunately it doesn't work neither.  It's the way of thinking I've
+>>>>> traced, too.
+>>>>>
+>>>>> snd_pcm_action() could be called in the context where the stream lock
+>>>>> has been already held, e.g. at stopping the stream from the interrupt
+>>>>> handler.  Thus you can't take the group lock over it.
+>>>>
+>>>> Agreed. We must use the "master" lock or "per-substream" lock. Mixing of
+>>>> these locks results in an ugly locking scheme.
+>>>>
+>>>>> The re-locking in the current code (unlock first then two locks) is a
+>>>>> compromise.  It actually works well in practice.  But the difference
+>>>>> of lock and unlock sequences is confusing, and the way of checking the
+>>>>> double-lock via spin_trylock() is too tricky.
+>>>>
+>>>> I think that spin_trylock() can help, but we should really use it in a
+>>>> different way than before. I think that I finally created a way to use
+>>>> the per-substream locks and serialize locking of all those locks for a
+>>>> group operation. Please, review the patch bellow.
+>>>
+>>> Sorry but it's way too complex.  Most of the additional code is a
+>>> specially open-coded spinlock.  Is really worth to add more tricks?
+>>>
+>>> I would accept such optimizations only if the concurrent access of a
+>>> huge amount of linked streams were a realistic scenario.  But it's
+>>> rather unrelaistic.  If the concurrency is no big issue from practical
+>>> POV, we should move on rather toward simplification, IMO.
+>>>
+>>> And, above all, I'm wondering whether allowing the concurrent access
+>>> to linked streams is really safe.  Imagine if both streams are trying
+>>> to change to different states at the same time.  For the consistency,
+>>> a single lock approach sounds much safer.
+>>
+>> This should be assured by the PCM code (it calls the group action when
+>> the state is changed, so all streams are locked at this moment).
+> 
+> But how?  Suppose streams A and B are being accessed concurrently
+> and trying to change the state at the same time but differently.
+> At beginning, the locks held by both are only the self_group.locks.
+> Then at snd_pcm_action_group(), it acquires the group lock.  If A
+> takes the group lock, B is spinning.  With your latest patch, A tries
+> the lock of B, and it can't take, thus it continues.  It will change
+> the state of all linked streams (including B) to state A'.  After
+> finishing snd_pcm_action() of stream A, now snd_pcm_action() of B
+> begins and changes it to state B' again, or get an error.
+> 
+> In this scenario, both A and B should have taken the group lock from
+> the beginning.
+> 
+>> I can see the improvements when the application polls for the stream
+>> positions (for example to synchronize them) and when it uses small
+>> period sizes (many interrupts) for multiple substreams. In this case,
+>> the position updates for substreams can be executed in a parallel way.
+> 
+> Right.  There can be some methods that can be done in parallel.
+> But the stuff including state changes are basically difficult to
+> handle in parallel.
+> 
+>> I hoped to solve the bottleneck you mentioned in your patch. Of course,
+>> if you take ~30 lines (without comments and next 10 lines are curly
+>> brackets) of code as too way complex, our discussion is finished. The
+>> nice thing on my patch is that the lock serialization code is only at
+>> one place, easy to verify and commented (comments may be improved) for
+>> reviewers.
+>>
+>> My next point is, if we allow a "global" lock, we will not take care
+>> about the possible concurrency in future, which is not so good.
+> 
+> Yeah, that's a drawback.  OTOH, the handling of the state of linked
+> streams must be done globally among all linked streams.  And the lock
+> of the each substream assumes that the state change doesn't happen
+> during it, but it's not true when we don't protect via a global lock.
+> 
+> So, maybe we should think things separately: the actions that need a
+> global lock obviously (i.e. involving with the state change) and the
+> actions that can be easily parallelized.  If we want to provide finer
+> locks, use another substream-wise lock for the latter action and use
+> the group lock for the former action (and eventually lock the
+> subststem one in group lock).
 
---===============5406229850700579130==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="F7w+4yMapWozG0Ib"
-Content-Disposition: inline
+The question is, if it's not simpler to use my scheme and verify/add the
+recovery paths after the possible group call. My code guarantees, that
+the state is not modified when the group action finishes (until the
+substream lock is released). So, we can just do new current state /
+error value checking after these calls. A quick look to the code shows
+that almost all group action calls ends with the lock release, so I
+think that a comment (notifying that the state can be changed) for the
+group action functions should be enough.
 
+Another possibility is to not do any serialization, just use one atomic
+counter, and return an error to caller when a concurrent access occurs.
+The caller can decide what to do - it may even to release the lock and
+retry the whole operation.
 
---F7w+4yMapWozG0Ib
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I also think that the group lock might be acquired uselessly in many cases.
 
-The following changes since commit 303076342b8a30aa98f8a53b539155d0b81ff0c3:
+					Jaroslav
 
-  Merge tag 'asoc-3.4' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into topic/asoc (2012-03-06 14:04:16 +0100)
-
-are available in the git repository at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.4
-
-for you to fetch changes up to 5ec65ee589fdaca7298b6303fd74ad6c121a8f38:
-
-  ASoC: mx27vis-aic32x4: Convert it to platform driver (2012-03-13 23:09:59 +0000)
-
-----------------------------------------------------------------
-Linus decided to go for another week so here's a few more updates - a
-mixed bag here, a few minor diagnostic tweaks, some driver enhancements
-and the dmaengine conversion for ep93xx drivers which was tested a while
-ago and just waiting for a signoff.
-----------------------------------------------------------------
-
-Ashish Chavan (2):
-      ASoC: da7210: Update for using I2C regmap
-      ASoC: da7210: Remove extra registers from defaults list
-
-Fabio Estevam (2):
-      ASoC: imx: imx-audmux: Fix section mismatch
-      ASoC: mx27vis-aic32x4: Convert it to platform driver
-
-Lars-Peter Clausen (1):
-      ASoC: ep93xx-pcm: Use dmaengine PCM helper functions
-
-Liam Girdwood (3):
-      ASoC: dapm: Use dev_warn for debugfs warning message
-      ASoC: core: Add platform component mutex
-      ASoC: DAPM: Make sure DAPM widget IO ops hold the component mutex
-
-Mark Brown (5):
-      ASoC: dapm: Only lock CODEC for I/O if not using regmap
-      ASoC: wm8996: Remove some volatile regisers from the defaults table
-      ASoC: wm8996: Remove separate output stage enable step
-      ASoC: Revert widget I/O locking for 3.4
-      ASoC: wm8994: Prevent ABBA deadlock with CODEC and accdet mutexes
-
-Mika Westerberg (1):
-      ASoC: dmaengine_pcm: Reset pointer position when starting a stream
-
-Qiao Zhou (1):
-      ASoC: add more sample rate for pxa-ssp
-
-Shawn Guo (2):
-      ASoC: core: missing set_fmt should not be complaint
-      ASoC: fsl: check property 'compatible' for the machine name
-
-Stephen Warren (1):
-      ASoC: tegra: Remove unused variable
-
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c |    1 +
- include/sound/soc.h                         |    1 +
- sound/soc/codecs/da7210.c                   |  146 +++++++++++++++++++-------
- sound/soc/codecs/wm8994.c                   |   69 ++++++-------
- sound/soc/codecs/wm8996.c                   |   34 ++----
- sound/soc/ep93xx/Kconfig                    |    1 +
- sound/soc/ep93xx/ep93xx-pcm.c               |  148 ++++-----------------------
- sound/soc/fsl/fsl_ssi.c                     |    6 +-
- sound/soc/fsl/mpc8610_hpcd.c                |    2 +-
- sound/soc/fsl/p1022_ds.c                    |   32 +-----
- sound/soc/imx/imx-audmux.c                  |    8 +-
- sound/soc/imx/mx27vis-aic32x4.c             |   41 ++++----
- sound/soc/pxa/pxa-ssp.c                     |    3 +-
- sound/soc/soc-core.c                        |   12 ++-
- sound/soc/soc-dapm.c                        |    2 +-
- sound/soc/soc-dmaengine-pcm.c               |    1 +
- sound/soc/tegra/tegra_alc5632.c             |    1 -
- 17 files changed, 225 insertions(+), 283 deletions(-)
-
---F7w+4yMapWozG0Ib
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPYKYLAAoJEBus8iNuMP3dJVkP/04hLylrWFI9MgRZ4I9Fp7wb
-2/EBot8tYpsoXxpNyOSOf8506pdNMX2AVbD6FBYxBzi/LydkUlb85KW7dIPe9v42
-qesrcMtRI5NC2T5U9dZXn3E1jZNA49tvfCcb1Mdwe8do8ct7j+BIBTLcvHSDVr93
-YfT7Y/DaxPbqU369hjpbiKL6EUynoP1CTnzM7bQs7z2YaMmNzrGX+gWrv1N0Brvh
-0oF/TY631wGTG1AGmDoLGifi5chsk0VoqdVZE6jiCdmwEP18fg8CgE1M0dItsv5O
-PimsLjFeUBK4wsBOYJH0jHrctICT0y8MSxCMdyTU4R7Y5a1nYmwq/p6bsuolNJPR
-1pfiw1a8ST6lKtoHUcOkbRRjaKDuppyS3qkGLO9MM1iqjpr20i4l1+sqw1J49mBY
-JCmvrJ3yhGUjvSXC+xi9/UkTF7JkJJOpXHd2ik0Wl5DRH6FlyKPMBQf1YV5MgFNf
-GeBsMjA5R0BL1jw4BRbmWXjeCrEuRJ2wyshAd7hFBYBaHJDAxn2qwL3WXMNK+pke
-Bid1CuNKAGD0lYqYVJ2jj9EkRXkOsPhAeoS4izJDUvn0lFdaKN4enCnJv/ME94eG
-9CvyHk8H4Lpvp2xcUGdnCZSWUZgOYnyimg8i15+j8J1q/as8S4YxIcmF3mI25Jxl
-8pgii9DUZdF0nIHM5TSw
-=BweP
------END PGP SIGNATURE-----
-
---F7w+4yMapWozG0Ib--
-
---===============5406229850700579130==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5406229850700579130==--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
