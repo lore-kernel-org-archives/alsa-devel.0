@@ -1,22 +1,15 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 10/16] arm: ux500: Add support for MSP
-	I2S-devices
-Date: Wed, 14 Mar 2012 10:39:03 +0100
-Message-ID: <CACRpkdaO7LByWy3HyoOnio6O9d6nKO-g0UNGEaNujcpXVJ+LsQ@mail.gmail.com>
-References: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
-	<1331651503-16917-11-git-send-email-ola.o.lilja@stericsson.com>
-	<20120313214034.GH3177@opensource.wolfsonmicro.com>
+From: "Bensaid, Selma" <selma.bensaid@intel.com>
+Subject: dsp-soc: question regarding dsp_add_new_paths
+Date: Wed, 14 Mar 2012 09:44:39 +0000
+Message-ID: <0C7253583EA2C6438B99011C1263ACEE18ACBF00@IRSMSX102.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC16D1041E0
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 10:39:05 +0100 (CET)
-Received: by ghbg19 with SMTP id g19so1595725ghb.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 02:39:03 -0700 (PDT)
-In-Reply-To: <20120313214034.GH3177@opensource.wolfsonmicro.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DC1224406
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 10:46:54 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 13, 2012 at 10:40 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Mar 13, 2012 at 04:11:37PM +0100, Ola Lilja wrote:
->
->> =A0arch/arm/mach-ux500/board-mop500-msp.c | =A0194 +++++++++++++++++++++=
-+++++++++++
->> =A0arch/arm/mach-ux500/board-mop500.c =A0 =A0 | =A0 =A07 +-
->> =A0arch/arm/mach-ux500/board-mop500.h =A0 =A0 | =A0 =A01 +
->
-> Perhaps this is somehow idiomatic for the port but why is this in what
-> looks like a board specific rather than SoC specific file?
+Hi,
 
-Basically because it includes GPIO's which are board-specific.
+I'm reversing the dsp-soc code and I have a question regarding the function dsp_add_new_paths:
 
-But with some cleverness I guess it'd be possible to split just
-the board-dependent stuff (i.e. GPIO) to board-mop500-msp.c
-and all SoC-specific stuff into say cpu-db8500-msp.c or
-even cpu-dbx500-msp.c if it's generic across all families
-of DBx500.
+- Why do you check if (be->dai_link->dynamic) when looking for the FE AIF_IN/OUT, in my comprehension the for FE the dai_link->dynamic = 1?
+- For both loops used to find out the FE and BE why do you check the be->dai_link->dynamicsince in the snd_soc_dapm_get_aif loops over all card widget?
 
-FOr short term, since the midterm plan is to use device tree
-for the whole shebang (I guess).
+Thanks in advance for your answer.
 
-Yours,
-Linus Walleij
+Selma.
+ 
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
