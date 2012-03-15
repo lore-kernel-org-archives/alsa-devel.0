@@ -1,19 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6] sound/soc/lapis: add machine driver for
- ML7213 Carrier Board
-Date: Thu, 15 Mar 2012 10:50:49 +0000
-Message-ID: <20120315105048.GF3138@opensource.wolfsonmicro.com>
-References: <CANKRQngTNWMGswq3weD1s8O4irVEz+DCr1vzi2gnWaQcoq5SEw@mail.gmail.com>
-	<1331275091-31700-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120314144524.GT3133@opensource.wolfsonmicro.com>
-	<CANKRQni-8w+2p6=ZisQ+GXhGpNmYhesKfTHfOjWGGrQrhvTFGA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] ASoC: omap-mcbsp: dma_op_mode changes
+Date: Thu, 15 Mar 2012 12:22:57 +0000
+Message-ID: <20120315122256.GI3138@opensource.wolfsonmicro.com>
+References: <1331807834-25675-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4819534668559569036=="
+Content-Type: multipart/mixed; boundary="===============0443905042404635408=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D99271045D5
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 11:50:50 +0100 (CET)
-In-Reply-To: <CANKRQni-8w+2p6=ZisQ+GXhGpNmYhesKfTHfOjWGGrQrhvTFGA@mail.gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DD67A103E93
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 13:23:00 +0100 (CET)
+In-Reply-To: <1331807834-25675-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4819534668559569036==
+--===============0443905042404635408==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AH+kv8CCoFf6qPuz"
+	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
 Content-Disposition: inline
 
 
---AH+kv8CCoFf6qPuz
+--CNfT9TXqV7nd4cfk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 15, 2012 at 01:50:48PM +0900, Tomoya MORINAGA wrote:
+On Thu, Mar 15, 2012 at 12:37:12PM +0200, Peter Ujfalusi wrote:
+> Hello,
+>=20
+> Removing the frame dm_op_mode, and using packet mode in element mode on
+> OMAP3+ to transfer 1 sample at the time between the McBSP FIFO and memory.
 
-> OK.
-> codec is slave, i2s controller is master.
-> So, I'll use SND_SOC_DAIFMT_CBS_CFM.
+Both
 
-That means "Codec bit clock master frame clock slave".  Are you sure
-that's what you want?
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---AH+kv8CCoFf6qPuz
+--CNfT9TXqV7nd4cfk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPYcl+AAoJEBus8iNuMP3dYWYP/R0XF2NYB0ME/pbTIyd1h48K
-ExVRJUv8T2Q6wGde5AvEnq8OCedT/Qw+i5irMGD/uPClKByKJ6xbfehtiYLQcVmC
-RmB9elMiy38mopJSvkcG0fTx8mJEX9fSYFH5eP4UaqG4w7bsOe2GRQsxcvqnoLgW
-yA17ViKthIHnXAWN/pUti0DGdAxtTnntUHHfCEP6RB1Hy7OaXaPrMORuIFxJs5fH
-y+PVjRJWPGWmR/FWGigGpYzaNKcAvd6l3EW3Bb4Uo7eU8Lp5W/TSslbV74IJBrYw
-zfAZpFtFMuTiEKBiwc7OyDotwnST81X/mJSD9UWLxcReX+JTm4ywWS0rDBHEtoxu
-Iz9nq3rPzzk2ivRWMirXbhcKiuYQe6+pJYp6HcaLg99QGNxVQhDZin1eDsOkoUaX
-G1oWyj5bytXLpxdFY4S4pEs9BtgdvtFrXYVI7iU9BSyErmesOeynmyDN4E0gz7yH
-pEKYgeO8uvWCHU9coUl9uhIsatdxkN4b/JCLFmu+5YqkHJHr5jxoamRPu3sre1d9
-k/e3nOQeT2EZYZCFzp5gHakqUp9p6XZx+eAC1NIrLa7StlXU32r0cb/oSXUpTuOa
-FOP0wjZpCb07YXVt4JGvWxlRVmUlhXlOgvRpzBh2L1YwkhlLuwDW/CfJumwG6cC1
-MyvpD/b+0rtfIYUrWVom
-=bKfV
+iQIcBAEBAgAGBQJPYd8aAAoJEBus8iNuMP3dCyQP+wW8jFtnk3eZB1bwQgXUHFGW
+/6dzzw7lwRHoleHQ2mQgXo2+HYHvAfkbgwMzyAr0iF/OiTukBa1e3dZVK29xOGUg
+b4xKrQ9DNTrwj0FzEoXHdSLJc11zOKA1fFsGAlbVD30DOqxWXM8ntCGxGOloQn6V
+CAc8SK4MHXL6vreOtst2e+ul60Syg/bHOmXR24F3G2RU0jojruTAVu5mEWmIKLYY
+mM6QUjTch5Foxi8ekRj7V/9rRu0hIE6nj325/ew9scMzvk0Z68U9mCiaEDKYFuGq
+baOETSjMHvf9xo2JcZjXVyT1VGnUAOLbAhPZ1IWkPvZiQXN9/LLBL+LpdfB9FcVs
+jvvb8JgfYAvkHddt8GgmxhLk137R5PPGLUNMlIjOMnzSj9JkCTrbcTrQppnH6LJk
+/W6x831dh+1BMeE5PD//cvqWgNfKXBeCnKzwd+3Q/P8Da4f0NKCDlmD/G9t0lVUT
+T46Oww55R+Votrpv/H/EGNKUx6viqK0ZxJQX12EwWm4PPJJOcmGx1pjV5sq97mxE
+bQuwCJLrOm/Wqtynqe4JcDNou1/6cs2vltQytUQwYrvjxgXzQQzcufTzI6cdOU8C
+E1Ky0kZNytlpCOMTc/yIWpZ9zcpB3n+xm/J3rGHVZ2G+yJPebYOtoWLih1Huz7QQ
+SMGsC0raIqaVMxmBpSoY
+=jU+W
 -----END PGP SIGNATURE-----
 
---AH+kv8CCoFf6qPuz--
+--CNfT9TXqV7nd4cfk--
 
---===============4819534668559569036==
+--===============0443905042404635408==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4819534668559569036==--
+--===============0443905042404635408==--
