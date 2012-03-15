@@ -1,8 +1,8 @@
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Tabi Timur-B04825 <B04825@freescale.com>
 Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
  checking on codec-handle
-Date: Thu, 15 Mar 2012 21:02:58 +0800
-Message-ID: <20120315130253.GA6065@S2101-09.ap.freescale.net>
+Date: Thu, 15 Mar 2012 13:37:06 +0000
+Message-ID: <4F61F080.4090800@freescale.com>
 References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
 	<1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
 	<4F591B8D.8090705@freescale.com>
@@ -12,18 +12,18 @@ References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
 	<4F6008FA.3040805@freescale.com>
 	<20120314122723.GC3133@opensource.wolfsonmicro.com>
 	<4F612319.50302@freescale.com>
+	<20120315130253.GA6065@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC4C31045E5
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 14:02:35 +0100 (CET)
-Received: by iakh37 with SMTP id h37so4371221iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 06:02:34 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <4F612319.50302@freescale.com>
+Received: from tx2outboundpool.messaging.microsoft.com
+	(tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32C181045FC
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 14:37:21 +0100 (CET)
+In-Reply-To: <20120315130253.GA6065@S2101-09.ap.freescale.net>
+Content-Language: en-US
+Content-ID: <584A05D6E759FD42ACD5241272761C7B@mgd.freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,114 +33,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <b04825@freescale.com>
+To: Shawn Guo <shawn.guo@linaro.org>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 14, 2012 at 06:00:41PM -0500, Timur Tabi wrote:
-> Mark Brown wrote:
-> 
-> > All of which is exactly the same as for any other device and essentially
-> > irrelevant to how we define the bindings for the cards.
-> 
-> So using imx-audio-sgtl5000.txt as an example, you're saying that if I
-> have two SSIs, I should do this in my device tree:
-> 
-> sound1 {
-> 	compatible = "fsl,imx51-babbage-sgtl5000",
-> 		     "fsl,imx-audio-sgtl5000";
-> 	model = "imx51-babbage-sgtl5000";
-> 	ssi-controller = <&ssi1>;
-> 	audio-codec = <&sgtl5000_1>;
-> 	mux-int-port = <1>;
-> 	mux-ext-port = <3>;
-> };
-> 
+Shawn Guo wrote:
+
+> Are you putting an example that has two sgtl5000 codecs connected to
+> SSI1 and SSI2 on a particular board?
+
+No, this is just a theoretical example.
+
+> I have never seen a real case for such setup.  Have you actually seen?
+> I do not even see the need to use two SSI controllers for all imx
+> platforms I have seen.
+
+The PowerPC MPC8610 has two SSIs, and I have a hacked up board that has 
+both connected to two CS4270s.  This is how I tested multiple SSI support 
+in my driver.
+
+Since my driver supports any number of SSIs, I expect any changes to it to 
+continue that support.
+
+> The real case I have seen is imx28 saif driver, which has to use two
+> saif controllers connected to one sgtl5000 to support full-duplex.
+> I would expect something like below for that machine driver.
+>
 > sound2 {
-> 	compatible = "fsl,imx51-babbage-sgtl5000",
-> 		     "fsl,imx-audio-sgtl5000";
-> 	model = "imx51-babbage-sgtl5000";
-> 	ssi-controller = <&ssi2>;
-> 	audio-codec = <&sgtl5000_2>;
-> 	mux-int-port = <1>;
-> 	mux-ext-port = <3>;
+> 	compatible = "fsl,imx28-evk-sgtl5000",
+> 		     "fsl,mxs-audio-sgtl5000";
+> 	model = "imx28-evk-sgtl5000";
+> 	saif-controller =<&saif1,&saif2>;
 > };
-> 
-Are you putting an example that has two sgtl5000 codecs connected to
-SSI1 and SSI2 on a particular board?
+>
+> We can have that controller property be a phandle array in the binding.
 
-I have never seen a real case for such setup.  Have you actually seen?
-I do not even see the need to use two SSI controllers for all imx
-platforms I have seen.
+I can see how this style of binding would make it easier to support an 
+N-to-M mapping of controllers to codecs.  However, this is not a concern 
+for the SSI driver.
 
-The real case I have seen is imx28 saif driver, which has to use two
-saif controllers connected to one sgtl5000 to support full-duplex.
-I would expect something like below for that machine driver.
+> I thought you have agreed that we can go for new binding for imx
+> machine drivers per the discussion you and Mark had on the first
+> version of the series.  That's why I changed to use the new binding
+> in v2, and you even had given your ack tag on v2.  Now you are
+> suddenly against that so strongly.  I really do not understand why.
+> Can you share your concern regarding to that?  What's the problem
+> with imx using new binding exactly?
 
-sound2 {
-	compatible = "fsl,imx28-evk-sgtl5000",
-		     "fsl,mxs-audio-sgtl5000";
-	model = "imx28-evk-sgtl5000";
-	saif-controller = <&saif1, &saif2>;
-};
+I admit I may have been too hasty in giving that ACK, because I did not 
+take the time to study the binding.  I figured that the new binding was 
+superior to what I came up with years ago.
 
-We can have that controller property be a phandle array in the binding.
+Now that I've studied the binding, I no longer believe that.  I don't 
+understand what's so wonderful about the new binding that my driver has to 
+support it *and* the old binding.  I think it would be easier if i.MX uses 
+the original binding.
 
-> >>> The biggest improvement is that the SoC binding knows nothing about the
-> >>> card binding at all, cards are completely separate and are free to
-> >>> define any binding they choose using any number of on-SoC and off-SoC
-> >>> devices.
-> > 
-> >> Ok, I don't understand that at all.
-> > 
-> > Do you have some questions about the above?  What is it that you find
-> > unclear?   
-> 
-> What's the difference between an "SoC binding" and a "card binding"?
-> 
-I guess "SoC binding" means the binding for fsl_ssi while "card
-binding" means the binding for imx-sgtl5000 in this particular case.
+>> I still don't understand why
+>> the binding that I invented for the SSI driver isn't good enough for i.MX.
+>
+> I guess Mark had made it clear that having "codec-handle" encoded in
+> ssi node is not as good as what new binding does, having it encoded
+> in "audio complex" node.
 
-> > We've been through this *repeatedly*, including in the message you're
-> > replying to, and we're still going back to square one every time you
-> > decide to start talking about device tree again.  This is frustrating
-> > in the extreme.
-> 
-> I'm sorry you're frustrated, but so am I.
+Even if the new binding is "better", I do not see how it's SOOOOO much 
+better that my driver has to support it.  The drawback in supporting both 
+is the added complexity.
 
-And, so am I :(
+>> Why can't we keep the same binding on i.MX,
+>> to keep the code simpler?
+>
+> I hardly agree with that.  The PowerPC binding will require:
+>
+> 1. fsl_ssi's probe function needs to trigger machine driver's probe
+> 2. machine driver needs to find ssi's node to access codec-handle
+>
+> which actually makes it complexer than the new binding.
 
-I thought you have agreed that we can go for new binding for imx
-machine drivers per the discussion you and Mark had on the first
-version of the series.  That's why I changed to use the new binding
-in v2, and you even had given your ack tag on v2.  Now you are
-suddenly against that so strongly.  I really do not understand why.
-Can you share your concern regarding to that?  What's the problem
-with imx using new binding exactly?
+But the driver already does this!  No one's asking you to add the code to 
+perform these tasks.  Just use the existing code.
 
-> I still don't understand why
-> the binding that I invented for the SSI driver isn't good enough for i.MX.
+> Anyway, either way works, and I have tried both.  But unfortunately
+> I still have not made everyone happy.  Are we going to make the series
+> miss the v3.4 merge window just because of this argument, which does
+> not make much point to me at all.
 
-I guess Mark had made it clear that having "codec-handle" encoded in
-ssi node is not as good as what new binding does, having it encoded
-in "audio complex" node.
-
->  The binding and the code was documented and approved a long time ago.
-> Why can't we keep the same binding on i.MX,
-> to keep the code simpler?
-
-I hardly agree with that.  The PowerPC binding will require:
-
-1. fsl_ssi's probe function needs to trigger machine driver's probe
-2. machine driver needs to find ssi's node to access codec-handle
-
-which actually makes it complexer than the new binding.
-
-Anyway, either way works, and I have tried both.  But unfortunately
-I still have not made everyone happy.  Are we going to make the series
-miss the v3.4 merge window just because of this argument, which does
-not make much point to me at all.
+I can respect that concern, but at the same time, I still have to push for 
+what I believe makes the most sense.
 
 -- 
-Regards,
-Shawn
+Timur Tabi
+Linux kernel developer at Freescale
