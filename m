@@ -1,21 +1,31 @@
 From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v7] sound/soc/codecs: add LAPIS
+Subject: Re: [PATCH v6] sound/soc/codecs: add LAPIS
 	Semiconductor ML26124
-Date: Thu, 15 Mar 2012 13:51:07 +0900
-Message-ID: <CANKRQnhxAW-tXB3jbwctWRRTZJLrmPUfS2DfRXug=inQVW5OZw@mail.gmail.com>
-References: <20120308114704.GH3638@opensource.wolfsonmicro.com>
-	<1331275026-31651-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120314143941.GS3133@opensource.wolfsonmicro.com>
+Date: Thu, 15 Mar 2012 15:29:31 +0900
+Message-ID: <CANKRQnjhe2F-1OeQvcXZQEckOtkFnHD-8BoADQ6nN=x1xTZSWg@mail.gmail.com>
+References: <1329976011-2251-1-git-send-email-tomoya.rohm@gmail.com>
+	<20120229235147.GM8295@opensource.wolfsonmicro.com>
+	<CANKRQngOkGTPM9AWEaHoaNQCyN65B_ESB24ctcT_DiEen050fg@mail.gmail.com>
+	<20120302125819.GE3230@opensource.wolfsonmicro.com>
+	<CANKRQngoDf_U8U7txG0AT1TKmSeq2FfqwjWD7EEiLROWzn+f5Q@mail.gmail.com>
+	<20120306100012.GC19635@opensource.wolfsonmicro.com>
+	<CANKRQniUnEPawXZHcPH9kG0hDiaZ-eJ_vOQrCefB0ntCu98D6g@mail.gmail.com>
+	<20120306121222.GK19635@opensource.wolfsonmicro.com>
+	<CANKRQnjFB8G5iRKZLQok+qnQrPXf7vcRGto_OyL+1=VNBTnetw@mail.gmail.com>
+	<20120307114811.GF3107@opensource.wolfsonmicro.com>
+	<CANKRQnh2JqhZBYLP=U_isgthh2pFT89_qBeypda1ciUJzoRXYw@mail.gmail.com>
+	<4F60D804.30804@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f50.google.com (mail-pz0-f50.google.com
-	[209.85.210.50]) by alsa0.perex.cz (Postfix) with ESMTP id B8A2624509
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 05:51:08 +0100 (CET)
-Received: by dakn40 with SMTP id n40so4269096dak.9
-	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 21:51:07 -0700 (PDT)
-In-Reply-To: <20120314143941.GS3133@opensource.wolfsonmicro.com>
+	[209.85.210.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8120103D37
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 07:29:32 +0100 (CET)
+Received: by dakn40 with SMTP id n40so4407072dak.9
+	for <alsa-devel@alsa-project.org>; Wed, 14 Mar 2012 23:29:31 -0700 (PDT)
+In-Reply-To: <4F60D804.30804@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,92 +35,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, yong.y.wang@intel.com, linux-kernel@vger.kernel.org, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, yong.y.wang@intel.com, linux-kernel@vger.kernel.org, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 14, 2012 at 11:39 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Mar 09, 2012 at 03:37:06PM +0900, Tomoya MORINAGA wrote:
->> + =A0 =A0 /* SAI configuration */
->> + =A0 =A0 if (priv->channels =3D=3D 1) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_SAI_TRANS_C=
-TL, mask,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ML26124_SAI_NO=
-_DELAY | ML26124_SAI_FRAME_SYNC);
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_SAI_RCV_CTL=
-, mask,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ML26124_SAI_NO=
-_DELAY | ML26124_SAI_FRAME_SYNC);
->> + =A0 =A0 } else {
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_SAI_TRANS_C=
-TL, mask,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ML2612=
-4_SAI_NO_DELAY);
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_SAI_RCV_CTL=
-, mask,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ML2612=
-4_SAI_NO_DELAY);
->> + =A0 =A0 }
+On Thu, Mar 15, 2012 at 2:40 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> If this is for all registers, how does stuff like DAPM work, which uses the
+> framework internal update_bits function?
 >
-> What happens if the system switches between 1 channel mode and
-> multi-channel mode at runtime? =A0It looks like _SYNC will never be
-> cleared.
+> If it's the case that the write address is always read address + 1 you can
+> still use the framework if you set write_flag_mask to 0x01 in your regmap
+> config. In my opinion it even makes sense to shift all the register numbers
+> to the left by one and use a 7/9 instead of a 8/8 addr/reg layout. This will
+> reduce the amount of memory wasted due to holes in the register cache.
 
-Sorry,  'priv->channels =3D=3D 1' means for telephone codec.
-However, we don't support this function.
-So, I'll delete these lines.
+Thank you for your information.
+I've just been investigating these.
+I also found ASoC core access i2c driver via snd_soc_update_bits or others.
+As a result, write register address is the same as read's.
 
->> +static int ml26124_set_dai_sysclk(struct snd_soc_dai *codec_dai,
->> + =A0 =A0 =A0 =A0 =A0 =A0 int clk_id, unsigned int freq, int dir)
->> +{
->> + =A0 =A0 struct snd_soc_codec *codec =3D codec_dai->codec;
->> + =A0 =A0 struct ml26124_priv *priv =3D snd_soc_codec_get_drvdata(codec);
->> +
->> + =A0 =A0 switch (clk_id) {
->> + =A0 =A0 case ML26124_USE_PLL:
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_CLK_CTL,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BIT(0)=
- | BIT(1), 0);
->> + =A0 =A0 =A0 =A0 =A0 =A0 break;
->> + =A0 =A0 case ML26124_USE_MCLKI_256FS:
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_CLK_CTL,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BIT(0)=
- | BIT(1), 1);
->> + =A0 =A0 =A0 =A0 =A0 =A0 break;
->> + =A0 =A0 case ML26124_USE_MCLKI_512FS:
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_CLK_CTL,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BIT(0)=
- | BIT(1), 2);
->> + =A0 =A0 =A0 =A0 =A0 =A0 break;
->> + =A0 =A0 case ML26124_USE_MCLKI_1024FS:
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_CLK_CTL,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BIT(0)=
- | BIT(1), 3);
->> + =A0 =A0 =A0 =A0 =A0 =A0 break;
->
-> Why not just specify the MCLK rate and then calculate the division based
-> on the sample rate?
+I'll try to implement these.
 
-OK, I'll do like your saying.
+BTW, currently, by settting ML26124 codec with fixed value,
+I've confirmed both playback and capture work well.
 
->
->> + =A0 =A0 case SND_SOC_BIAS_STANDBY:
->> + =A0 =A0 =A0 =A0 =A0 =A0 /* VMID ON */
->> + =A0 =A0 =A0 =A0 =A0 =A0 ml26124_update_bits(codec, ML26124_PW_REF_PW_M=
-NG,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ML2612=
-4_VMID, ML26124_VMID);
->> + =A0 =A0 =A0 =A0 =A0 =A0 msleep(500);
->
-> This will sleep for 500ms when powering down which probably isn't what's
-> desired...
-
-I'll Move into "if (codec->dapm.bias_level =3D=3D SND_SOC_BIAS_OFF)" condit=
-ion.
-
-thanks.
--- =
-
+thanks
+-- 
 ROHM Co., Ltd.
 tomoya
