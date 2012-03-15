@@ -1,18 +1,20 @@
-From: Philipp Zabel <philipp.zabel@gmail.com>
-Subject: [PATCH] ASoC: pxa2xx-i2s: Add
-	clk_prepare/clk_unprepare calls
-Date: Thu, 15 Mar 2012 19:16:12 +0100
-Message-ID: <1331835372.14662.8.camel@flow>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: ASoC:Question rate constraint between the dais
+Date: Thu, 15 Mar 2012 17:28:13 -0400
+Message-ID: <CA+7tXijgsT3uitVa-=VLmKY2ubQpgff0hkKjA5jz6QCFp9_PiA@mail.gmail.com>
+References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
+	<20120315175310.GR3138@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CDA0104614
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 19:16:17 +0100 (CET)
-Received: by eaak11 with SMTP id k11so1843805eaa.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 11:16:14 -0700 (PDT)
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+	[209.85.212.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0613624402
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 22:28:13 +0100 (CET)
+Received: by wibhq7 with SMTP id hq7so7849504wib.2
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 14:28:13 -0700 (PDT)
+In-Reply-To: <20120315175310.GR3138@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: MarkBrown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Ramesh Babu <ramesh.babu@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds clk_prepare/clk_unprepare calls to the pxa2xx-i2s
-driver by using the helper functions clk_prepare_enable and
-clk_disable_unprepare.
+On Thu, Mar 15, 2012 at 1:53 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Thu, Mar 15, 2012 at 03:23:04PM +0530, Ramesh Babu wrote:
+>> I need to make sure that all simultaneous playback and capture (across t=
+he
+>> all dai_links) needs to be of same frequency family.
+>> If the sampling frequency of =A0a new request is different from ongoing
+>> playback/capture, then it needs to be rejected.
+>
+>> How do I handle it in machine driver?
+>
+> Why do you need to do this in the machine driver? =A0Such a constraint
+> sounds like it's coming from one of the chips in the system rather than
+> from the machine itself so it'd seem sensible for the chip itself to
+> impose the constraint so that other machines don't need to replicate the
+> code.
+>
+> See wm8988 for an example of adding sample rate constraints, obviously
+> you can change the criteria dynamically.
 
-Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: Haojian Zhuang <haojian.zhuang@marvell.com>
-Cc: Eric Miao <eric.y.miao@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/pxa/pxa2xx-i2s.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+There is a race when the constraints change dynamically.  See the
+fsl_ssi.c driver and the sample size constraint in synchronous mode.
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 609abd5..453b092 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -165,7 +165,7 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct pxa2xx_pcm_dma_params *dma_data;
- 
- 	BUG_ON(IS_ERR(clk_i2s));
--	clk_enable(clk_i2s);
-+	clk_prepare_enable(clk_i2s);
- 	clk_ena = 1;
- 	pxa_i2s_wait();
- 
-@@ -258,7 +258,7 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream,
- 		SACR0 &= ~SACR0_ENB;
- 		pxa_i2s_wait();
- 		if (clk_ena) {
--			clk_disable(clk_i2s);
-+			clk_disable_unprepare(clk_i2s);
- 			clk_ena = 0;
- 		}
- 	}
--- 
-1.7.9.1
+Say you have two substreams that must be at the same rate.  The first
+pcm substream opens, gets a constraint based on current conditions.
+If no other substreams are initialized, then this is a range of sample
+rates.  Now a second substream opens, before the first is initialized,
+and gets the same constraints of a range of sample rates.  The second
+stream initializes and starts.  This means the first substream must
+now be constrained to be the same sample rate as the second.  But
+those constraints were set when the first stream opened.  There's no
+way to change them now.
