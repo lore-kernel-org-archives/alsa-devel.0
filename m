@@ -1,15 +1,35 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC:Question rate constraint between the dais
-Date: Thu, 15 Mar 2012 17:53:11 +0000
-Message-ID: <20120315175310.GR3138@opensource.wolfsonmicro.com>
-References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: HDA intel, wired headset w/mic, jack mic detect
+Date: Thu, 15 Mar 2012 11:03:03 -0700
+Message-ID: <87bonxbv3c.fsf@ti.com>
+References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
+	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
+	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
+	<87zkc1cvaa.fsf@ti.com>
+	<CAN8ccib90y8m0KLTYKe7Jz5sXVZFY=D7aUwm8vog3aZvZPHH0Q@mail.gmail.com>
+	<874nu99k9y.fsf@ti.com>
+	<CAN8cciayARuQGLH=DHsReH0sYbz92K3BPNhmNEqYmSjc6wUUVw@mail.gmail.com>
+	<87d38wfag6.fsf@ti.com>
+	<CAN8cciaB6-GUvsPS8+bpftLb7BaawdpCsgY3Z7R9H+XdkJ8LNA@mail.gmail.com>
+	<87booesssh.fsf@ti.com>
+	<CAN8ccibbw109Sxb_X_ZKVO4GnpVUfbEyK0yyM8g90g8K8v4Jtw@mail.gmail.com>
+	<87zkbvne5k.fsf@ti.com>
+	<CAN8cciaEKB2Gf3n6NWFkoJmk=kuH6nNHJYLqQtoRiiPmfLcFcw@mail.gmail.com>
+	<s5h62eiqlcn.wl%tiwai@suse.de> <87399lfpef.fsf@ti.com>
+	<s5h1up5qxmc.wl%tiwai@suse.de> <87ipid4rvv.fsf@ti.com>
+	<CAN8cciZqB3oVVGMS4=RBSGZH+nSJAZoUT_a8hFu=pBnNJ3gwfw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5729138346813195529=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C680810461B
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 18:53:16 +0100 (CET)
-In-Reply-To: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
+Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
+	[74.125.149.76])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88346104641
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 19:03:04 +0100 (CET)
+Received: by mail-gx0-f178.google.com with SMTP id o1so4108821ggn.37
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 11:02:50 -0700 (PDT)
+In-Reply-To: <CAN8cciZqB3oVVGMS4=RBSGZH+nSJAZoUT_a8hFu=pBnNJ3gwfw@mail.gmail.com>
+	(Raymond Yau's message of "Wed, 14 Mar 2012 08:50:53 +0800")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +39,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ramesh Babu <ramesh.babu@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Raymond Yau <superquad.vortex2@gmail.com> writes:
 
---===============5729138346813195529==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rKoHqF+aPLVth8b2"
-Content-Disposition: inline
+> 2012/3/10, Kevin Hilman <khilman@ti.com>:
+>>
+>> Ah, that's a little easier to tinker with for the uninformed like me. :)
+>>
+>> Using that, it seems that the above registers work on my coded (cs4206)
+>> too.  I was able to determine that the built-in mic is ADC2 right
+>> channel, and can at least make the built-in mic switch from the right to
+>> left (swap channel mode)
+>>
+>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_COEF_INDEX 2
+>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_PROC_COEF 0x180a
+>>
+>> or make the right channel go to both HDA channels (mono mode):
+>>
+>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_COEF_INDEX 2
+>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_PROC_COEF 0x100a
+>>
+>> However, I still can't figure out where the headset mic is and how to
+>> enable it.
+>>
+>> Here's what I think I know (c.f. alsa-info.sh  output below)
+>>
+>
+> do you mean that you cannot record mono using sysdefault  which use a
+> route to copy left channel channel to both if the internal mic is at
+> the right channel?
+>
+> arecord --vumeter=mono -c 1 -f S16_LE -r 48000 -Dsysdefault /dev/null
 
+Not sure exactly what you mean by sysdefault, but trying that fails:
 
---rKoHqF+aPLVth8b2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+$ arecord --vumeter=mono -c 1 -f S16_LE -r 48000 -Dsysdefault /dev/null
+ALSA lib pcm.c:2212:(snd_pcm_open_noupdate) Unknown PCM sysdefault
+arecord: main:660: audio open error: No such file or directory
 
-On Thu, Mar 15, 2012 at 03:23:04PM +0530, Ramesh Babu wrote:
-
-> I need to make sure that all simultaneous playback and capture (across the
-> all dai_links) needs to be of same frequency family.
-> If the sampling frequency of  a new request is different from ongoing
-> playback/capture, then it needs to be rejected.
-
-> How do I handle it in machine driver?
-
-Why do you need to do this in the machine driver?  Such a constraint
-sounds like it's coming from one of the chips in the system rather than
-=66rom the machine itself so it'd seem sensible for the chip itself to
-impose the constraint so that other machines don't need to replicate the
-code.
-
-See wm8988 for an example of adding sample rate constraints, obviously
-you can change the criteria dynamically.
-
---rKoHqF+aPLVth8b2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPYix2AAoJEBus8iNuMP3df+UP/3ES5AXXOKOu7iNMmreco3f6
-2aTCAeXywueDrDYErZswuB0NHZwtbPdt0u44pbk+hV96GYDyNJd9jHwbiU6Ed8tK
-63N6WT50hzMQV6FWrEiMzNMMIjKQIG/zD559HLDLoI+7VjXb8jedTGgHluLqlzFo
-vRjDPWwsq6JprRYBwb4teva+swO5H8a+s2eWiskOCto7qtT7hA+ANj166UnCXlkk
-/xcRzPf6g745qyESfgSaSpKERERBUxpG9PvW4AuNlV7PY66d7k6w2fOwfj/Wbs28
-c3l42rlspeq4VdazMzGL02xE9OvNJN9N7Zb8V8qSDZ8Hoo/6asZoFtBcmfiNVyiL
-8Yu391y3cH5Mpts6siwiMFmzpl8rgznwBrg/2yNwUHXId3Qsk3sKz4X2Uy/YYjM4
-Wj+HU6sgqqAjvHawp6wdwqCPyqKstZqyRmL8/J/PkWIym9ahrkq4q0aLbhrsiJmT
-MpcPPLixE8Eaj2BU+dA53CvqgfV8Nhwzadzr9TlbVqJJxtJrz94Fk9pLAc7cgnPO
-yoSswNbTlmcJNOA1ftu/+hTseIdpFxVvEV0tTpWrxe/dVnO+AuK58ieC3EWPwBnL
-c2jn98pUoCpkIfHl0KtuX98CQZqQksri5w/B6XL4zfbKIjh7+ie4UVdDGfCo0R9a
-KeW1DleVGiAQSkmk39N9
-=3VUd
------END PGP SIGNATURE-----
-
---rKoHqF+aPLVth8b2--
-
---===============5729138346813195529==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5729138346813195529==--
+Kevin
