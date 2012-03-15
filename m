@@ -1,25 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <b04825@freescale.com>
 Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
  checking on codec-handle
-Date: Thu, 15 Mar 2012 16:24:13 +0000
-Message-ID: <20120315162413.GO3138@opensource.wolfsonmicro.com>
-References: <4F5FD706.8040209@freescale.com>
+Date: Thu, 15 Mar 2012 11:44:16 -0500
+Message-ID: <4F621C60.5090700@freescale.com>
+References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
+	<1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
+	<4F591B8D.8090705@freescale.com>
+	<20120309013216.GH2499@S2101-09.ap.freescale.net>
+	<4F5FD706.8040209@freescale.com>
 	<20120313234638.GY3177@opensource.wolfsonmicro.com>
 	<4F6008FA.3040805@freescale.com>
 	<20120314122723.GC3133@opensource.wolfsonmicro.com>
 	<4F612319.50302@freescale.com>
-	<20120315130253.GA6065@S2101-09.ap.freescale.net>
-	<4F61F080.4090800@freescale.com>
-	<20120315142115.GB6065@S2101-09.ap.freescale.net>
-	<CA+7tXig6=gz8utcnV8qUs6=JnwEz8+tqc-57v-xNcYcK_AAHXw@mail.gmail.com>
-	<CA+7tXiiJyLAm1ytyqQYgbJ_roUtXwxqhFWKEBk+4jY_HV5V8Zg@mail.gmail.com>
+	<20120315142702.GL3138@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5948226693756794378=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8796710465A
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 17:24:18 +0100 (CET)
-In-Reply-To: <CA+7tXiiJyLAm1ytyqQYgbJ_roUtXwxqhFWKEBk+4jY_HV5V8Zg@mail.gmail.com>
+Received: from va3outboundpool.messaging.microsoft.com
+	(va3ehsobe004.messaging.microsoft.com [216.32.180.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BCF424142
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 17:44:43 +0100 (CET)
+In-Reply-To: <20120315142702.GL3138@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,83 +31,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <tpiepho@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Tabi Timur-B04825 <B04825@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+Mark Brown wrote:
+> On Wed, Mar 14, 2012 at 06:00:41PM -0500, Timur Tabi wrote:
+>> Mark Brown wrote:
+> 
+>> So using imx-audio-sgtl5000.txt as an example, you're saying that if I
+>> have two SSIs, I should do this in my device tree:
+> 
+>> sound1 {
+>> };
+> 
+>> sound2 {
+>> };
+> 
+> That's a totally sensible option if you've got two unrelated audio
+> subsystems on your board for some reason.  If you've got a system where
+> that's not applicable and the two devices are related in some way then
+> you'd define a new sound card binding that reflects that.
 
---===============5948226693756794378==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qi3SIpffvxS/TM8d"
-Content-Disposition: inline
+Well, the two SSIs are related only in that they're the same kind of
+device.  But SSI1 connected to CS4270_1 is completely independent from
+SSI2 connected to CS4270_2.
 
+So I guess that means that we'd have two soundX {} top-level nodes.
 
---qi3SIpffvxS/TM8d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The SoC is the bit of silicon with the CPU and other devices on it like
+> the DMA controller and SSI or whatever ports.  The card is the PCB this
+> has been soldered down onto.
 
-On Thu, Mar 15, 2012 at 11:57:52AM -0400, Trent Piepho wrote:
+Well, I asked about the difference between the soc BINDING and the card
+BINDING.  On PowerPC, at least, there's no distinct binding for either.
+For example, I2C devices are on the PCB, but they're listed as child nodes
+of the I2C controller, which is on the SoC.
 
-> which caused text window in gmail to become deselected, which caused a
-> subsequent enter to send the email rather than creating a new line.
+> The problem with your binding has always been, and continues to be, that
+> it's based on the idea that there's one CODEC per SSI and that the CODEC
+> is a simple appendage of that SSI.  There's no real real binding for the
+> machine driver, it's just silently created by a single SSI port.  Really
+> there's nothing new with this issue, there's always been this absence of
+> a representation for the machine distinct from the individual devices it
+> is built up from.
+> 
+> This means that when you get systems which have auxiliary devices (like
+> most of the Wolfson reference boards which have a power amplifier for
+> the sub speaker not connected to an SSI port) or that need to set up
+> things like complex accessory detection mechanisms there's no real place
+> in your binding to support those systems.  Things like the configuration
+> of the input and output connections which the nVidia WM8903 drivers are
+> able to do over multiple boards are another example.
 
-> For esai, would you add something like:
->     esai-controller = <&esai1>;
->     esai-audio-codec = <&sgtl5000_3>;
+Ok, fair enough.  I understand that my binding has no way of specifying
+board-specific properties, or anything that isn't directly related to the
+SSI, codec, or DMA controller.
 
-> That seems rather ugly to me.
+However, I don't like the way this is being represented as a PowerPC vs.
+ARM issue, because that's just not correct.  It's an "old binding" vs "new
+binding" issue.  For example:
 
-None of these examples seem particularly to reflect realistic audio
-hardware; they're more describing a board with multiple distinct audio
-subsystems on it than a single card.  Remember that nothing at all is
-fixed about how the card binding works internally, the card driver is
-free to pick any binding that makes sense for the systems it supports.
-Shoehorning every possible card into the same binding is definitely a
-really bad idea.
++	/*
++	 * In case of imx, the machine driver uses new binding which does
++	 * not require SSI driver to trigger machine driver's probe, but
++	 * the pcm device needs to be registered here.
++	 */
++	if (ssi_private->ssi_on_imx) {
++		ssi_private->imx_pcm_pdev =
++			platform_device_register_simple("imx-pcm-audio",
 
-> It seems to me in most device bindings where one piece of hardware is
-> attached to another, than the one upstream has in its binding a
-> phandle to the one downstream.  But here we have a third binding with
-> two lists of devices and an implied link between devices in
-> corresponding positions in the lists.  Does any other device binding
-> work like that?
-
-There's no upstream and downstream here, really.  But like I say none of
-this looks like realistic hardware anyway.
-
-*Please* go and read the previous discussions of audio bindings for
-SoCs, while it's more understandable with people who haven't been
-involved before its still tiresome to have to go back to square one.
-
---qi3SIpffvxS/TM8d
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPYhenAAoJEBus8iNuMP3dDMMP/3+Ipi2ABHZWoqGyL8A1RPfv
-BxWfZC5R/8+eUsBzHKNpnkko516wmlIVKW7B7RM3Kpw2M92Mj7idy7+L55RyPWCS
-VlX7OF40cIqrBw3IsfD++HKJZEBQNRiRHMR0zOi8PT5OH7FhOotoivA1uBCZv8pm
-63Dw+iS2LRClFhB5+uir4/YuBJtKiUFYBmlFmtFRwXu1fOPVlAoFUb+jnuoKAH+O
-k/BzVYPD62GXZmbQovVnyDO3eqivPoEBmws/LUypg7tZo4AZLQ7/wJVYjMSmiIdC
-wtn5/ZcJ5yi7P30c9r4eDEemmnJofoxz/Z1pw7t2XJb4br5ayyZ6euwnL5syjMxc
-4ARBrGjuaNfNlw9A4YBPx6/hgnzB0jjnw9v6qONtiEdMaOxu7D/r4H7/mPy/g8yJ
-T8SjcYx14iebHnDzUJsLG24QR/lWaaBQFT4xCXH24NKfsl7jz5i4buG6ua6+iyxT
-rmg5eUWRQhtc4eaG9+3ejfXLLXkbFEddmtPm/mQUaW7NmnO8QDefEOKTwuplu/fN
-dTgS+K0CoQwnFvnCQUTIOalX0vh3TgwDV/TO5Wlvqov8S42FAD6E8ZsTubJB2l7e
-cms1H1z/ALWdGfZs5upLp16BWlfliJnVHMVsXzweUVoDpKM3lTvlZR1gpgt4sfQa
-Ktr/a0k2wH4+UrMcioti
-=5zHp
------END PGP SIGNATURE-----
-
---qi3SIpffvxS/TM8d--
-
---===============5948226693756794378==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5948226693756794378==--
+This prohibits me from using the new binding on any future PowerPC parts,
+because it clearly says "iMX" on everything.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
