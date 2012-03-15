@@ -1,20 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/2] ASoC: omap-mcbsp: Remove unused FRAME
-	dma_op_mode
-Date: Thu, 15 Mar 2012 12:37:14 +0200
-Message-ID: <1331807834-25675-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1331807834-25675-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 0/2] ASoC: omap-mcbsp: dma_op_mode changes
+Date: Thu, 15 Mar 2012 12:37:12 +0200
+Message-ID: <1331807834-25675-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 175E01045D3
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 11:37:29 +0100 (CET)
-Received: by lahl5 with SMTP id l5so2497031lah.29
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 03:37:27 -0700 (PDT)
-In-Reply-To: <1331807834-25675-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from na3sys009aog122.obsmtp.com (na3sys009aog122.obsmtp.com
+	[74.125.149.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 52E351045F1
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 11:37:42 +0100 (CET)
+Received: by mail-lpp01m010-f51.google.com with SMTP id p9so2305787laa.10
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 03:37:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,52 +25,22 @@ To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-The frame dma_op_mode has never been used, and it is just creating
-confusion for users/developers.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Removing the frame dm_op_mode, and using packet mode in element mode on
+OMAP3+ to transfer 1 sample at the time between the McBSP FIFO and memory.
+
+Regards,
+Peter
 ---
+Peter Ujfalusi (2):
+  ASoC: omap-mcbsp: Use DMA packet mode for non mono streams on OMAP3+
+  ASoC: omap-mcbsp: Remove unused FRAME dma_op_mode
+
  sound/soc/omap/mcbsp.c      |    2 +-
  sound/soc/omap/mcbsp.h      |    1 -
- sound/soc/omap/omap-mcbsp.c |    1 -
- 3 files changed, 1 insertions(+), 3 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |   31 +++++++++++++++++--------------
+ 3 files changed, 18 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-index e5f4444..ec6832c 100644
---- a/sound/soc/omap/mcbsp.c
-+++ b/sound/soc/omap/mcbsp.c
-@@ -754,7 +754,7 @@ THRESHOLD_PROP_BUILDER(max_tx_thres);
- THRESHOLD_PROP_BUILDER(max_rx_thres);
- 
- static const char *dma_op_modes[] = {
--	"element", "threshold", "frame",
-+	"element", "threshold",
- };
- 
- static ssize_t dma_op_mode_show(struct device *dev,
-diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
-index a944fcc..179a822 100644
---- a/sound/soc/omap/mcbsp.h
-+++ b/sound/soc/omap/mcbsp.h
-@@ -217,7 +217,6 @@ enum {
- /********************** McBSP DMA operating modes **************************/
- #define MCBSP_DMA_MODE_ELEMENT		0
- #define MCBSP_DMA_MODE_THRESHOLD	1
--#define MCBSP_DMA_MODE_FRAME		2
- 
- /********************** McBSP WAKEUPEN bit definitions *********************/
- #define RSYNCERREN		BIT(0)
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 418dc3c..27144a6 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -245,7 +245,6 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	if (mcbsp->pdata->buffer_size) {
- 		dma_data->set_threshold = omap_mcbsp_set_threshold;
--		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
- 		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD) {
- 			int period_words, max_thrsh;
- 
 -- 
 1.7.8.5
