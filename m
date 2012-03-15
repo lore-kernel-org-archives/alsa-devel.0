@@ -1,10 +1,9 @@
 From: Timur Tabi <b04825@freescale.com>
 Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
  checking on codec-handle
-Date: Thu, 15 Mar 2012 11:44:16 -0500
-Message-ID: <4F621C60.5090700@freescale.com>
-References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
-	<1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
+Date: Thu, 15 Mar 2012 11:47:05 -0500
+Message-ID: <4F621D09.2080806@freescale.com>
+References: <1331225990-27308-10-git-send-email-shawn.guo@linaro.org>
 	<4F591B8D.8090705@freescale.com>
 	<20120309013216.GH2499@S2101-09.ap.freescale.net>
 	<4F5FD706.8040209@freescale.com>
@@ -12,16 +11,18 @@ References: <1331225990-27308-1-git-send-email-shawn.guo@linaro.org>
 	<4F6008FA.3040805@freescale.com>
 	<20120314122723.GC3133@opensource.wolfsonmicro.com>
 	<4F612319.50302@freescale.com>
-	<20120315142702.GL3138@opensource.wolfsonmicro.com>
+	<20120315130253.GA6065@S2101-09.ap.freescale.net>
+	<4F61F080.4090800@freescale.com>
+	<20120315142115.GB6065@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
-	(va3ehsobe004.messaging.microsoft.com [216.32.180.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BCF424142
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 17:44:43 +0100 (CET)
-In-Reply-To: <20120315142702.GL3138@opensource.wolfsonmicro.com>
+Received: from db3outboundpool.messaging.microsoft.com
+	(db3ehsobe001.messaging.microsoft.com [213.199.154.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50CDB2414D
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 17:47:51 +0100 (CET)
+In-Reply-To: <20120315142115.GB6065@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,78 +32,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Wed, Mar 14, 2012 at 06:00:41PM -0500, Timur Tabi wrote:
->> Mark Brown wrote:
-> 
->> So using imx-audio-sgtl5000.txt as an example, you're saying that if I
->> have two SSIs, I should do this in my device tree:
-> 
->> sound1 {
->> };
-> 
->> sound2 {
->> };
-> 
-> That's a totally sensible option if you've got two unrelated audio
-> subsystems on your board for some reason.  If you've got a system where
-> that's not applicable and the two devices are related in some way then
-> you'd define a new sound card binding that reflects that.
+Shawn Guo wrote:
+> sound {
+>       compatible = "fsl,imx51-babbage-sgtl5000",
+>                    "fsl,imx-audio-sgtl5000";
+>       model = "imx51-babbage-sgtl5000";
+>       ssi-controller = <&ssi1, &ssi2>;
+>       audio-codec = <&sgtl5000_1, &sgtl5000_2>;
+>       mux-int-port = <1>;
+>       mux-ext-port = <3>;
+> };
 
-Well, the two SSIs are related only in that they're the same kind of
-device.  But SSI1 connected to CS4270_1 is completely independent from
-SSI2 connected to CS4270_2.
+Based on Mark's other email, I would rather see this:
 
-So I guess that means that we'd have two soundX {} top-level nodes.
+sound1 {
+      compatible = "fsl,imx51-babbage-sgtl5000",
+                   "fsl,imx-audio-sgtl5000";
+      model = "imx51-babbage-sgtl5000";
+      ssi-controller = <&ssi1>;
+      audio-codec = <&sgtl5000_1>;
+      mux-int-port = <1>;
+      mux-ext-port = <3>;
+};
 
-> The SoC is the bit of silicon with the CPU and other devices on it like
-> the DMA controller and SSI or whatever ports.  The card is the PCB this
-> has been soldered down onto.
+sound2 {
+      compatible = "fsl,imx51-babbage-sgtl5000",
+                   "fsl,imx-audio-sgtl5000";
+      model = "imx51-babbage-sgtl5000";
+      ssi-controller = <&ssi2>;
+      audio-codec = <&sgtl5000_2>;
+      mux-int-port = <1>;
+      mux-ext-port = <3>;
+};
 
-Well, I asked about the difference between the soc BINDING and the card
-BINDING.  On PowerPC, at least, there's no distinct binding for either.
-For example, I2C devices are on the PCB, but they're listed as child nodes
-of the I2C controller, which is on the SoC.
+(ignoring for the moment that I have no idea what the mux-xxx-port values
+in sound2 should be)
 
-> The problem with your binding has always been, and continues to be, that
-> it's based on the idea that there's one CODEC per SSI and that the CODEC
-> is a simple appendage of that SSI.  There's no real real binding for the
-> machine driver, it's just silently created by a single SSI port.  Really
-> there's nothing new with this issue, there's always been this absence of
-> a representation for the machine distinct from the individual devices it
-> is built up from.
-> 
-> This means that when you get systems which have auxiliary devices (like
-> most of the Wolfson reference boards which have a power amplifier for
-> the sub speaker not connected to an SSI port) or that need to set up
-> things like complex accessory detection mechanisms there's no real place
-> in your binding to support those systems.  Things like the configuration
-> of the input and output connections which the nVidia WM8903 drivers are
-> able to do over multiple boards are another example.
+This makes it clear that ssi1 connects only to sgtl5000_1.
 
-Ok, fair enough.  I understand that my binding has no way of specifying
-board-specific properties, or anything that isn't directly related to the
-SSI, codec, or DMA controller.
+If you're okay with this, then please update the documentation accordingly.
 
-However, I don't like the way this is being represented as a PowerPC vs.
-ARM issue, because that's just not correct.  It's an "old binding" vs "new
-binding" issue.  For example:
-
-+	/*
-+	 * In case of imx, the machine driver uses new binding which does
-+	 * not require SSI driver to trigger machine driver's probe, but
-+	 * the pcm device needs to be registered here.
-+	 */
-+	if (ssi_private->ssi_on_imx) {
-+		ssi_private->imx_pcm_pdev =
-+			platform_device_register_simple("imx-pcm-audio",
-
-This prohibits me from using the new binding on any future PowerPC parts,
-because it clearly says "iMX" on everything.
 -- 
 Timur Tabi
 Linux kernel developer at Freescale
