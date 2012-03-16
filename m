@@ -1,18 +1,29 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC:Question rate constraint between the dais
-Date: Fri, 16 Mar 2012 21:00:12 +0100
-Message-ID: <4F639BCC.2050703@metafoo.de>
-References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>	<20120315175310.GR3138@opensource.wolfsonmicro.com>	<CA+7tXijgsT3uitVa-=VLmKY2ubQpgff0hkKjA5jz6QCFp9_PiA@mail.gmail.com>
-	<20120316192513.GJ3158@opensource.wolfsonmicro.com>
+From: "Christian Esken (KDE)" <esken@kde.org>
+Subject: Re: amixer shows capability "penum" on every Simple
+ mixer	control
+Date: Fri, 16 Mar 2012 21:18:22 +0100
+Message-ID: <1331929102.4795.18.camel@linux-lfdh>
+References: <2e03711055eba5b923f1983b3e7d6f1a@barbarenland.de>
+	<s5h1uown7ze.wl%tiwai@suse.de> <s5h1uow39ul.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F76D243A2
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:59:53 +0100 (CET)
-In-Reply-To: <20120316192513.GJ3158@opensource.wolfsonmicro.com>
+Received: from mail-in-18.arcor-online.net (mail-in-18.arcor-online.net
+	[151.189.21.58]) by alsa0.perex.cz (Postfix) with ESMTP id 373D5243B3
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:18 +0100 (CET)
+Received: from mail-in-12-z2.arcor-online.net (mail-in-12-z2.arcor-online.net
+	[151.189.8.29]) by mx.arcor.de (Postfix) with ESMTP id C5B5B3DC485
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:17 +0100 (CET)
+Received: from mail-in-10.arcor-online.net (mail-in-10.arcor-online.net
+	[151.189.21.50])
+	by mail-in-12-z2.arcor-online.net (Postfix) with ESMTP id B64641DF1AA
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:17 +0100 (CET)
+Received: from [192.168.2.111] (dslb-092-072-202-042.pools.arcor-ip.net
+	[92.72.202.42])
+	by mail-in-10.arcor-online.net (Postfix) with ESMTPS id 8CEA22D6D35
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:17 +0100 (CET)
+In-Reply-To: <s5h1uow39ul.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +33,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ramesh Babu <ramesh.babu@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Trent Piepho <tpiepho@gmail.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/16/2012 08:25 PM, Mark Brown wrote:
-> On Thu, Mar 15, 2012 at 05:28:13PM -0400, Trent Piepho wrote:
+Am Dienstag, den 13.03.2012, 14:32 +0100 schrieb Takashi Iwai:
+> At Tue, 13 Mar 2012 10:52:21 +0100,
+> Takashi Iwai wrote:
+> > 
+> > At Mon, 12 Mar 2012 22:09:35 +0100,
+> > Christian Esken (KDE) wrote:
+> > > 
+> > >  Hello,
+> > > 
+> > >  when I run amixer it shows the capability "penum" on nearly every 
+> > >  Simple mixer control.
+> > >  I posted the bug report 
+> > >  https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5496 , but 
+> > >  Raymond asked me to report it on this mailing list ("as it is related to 
+> > >  this patch 6d511eefa05878abee9f8b9145697230de605200 Implements support 
+> > >  for capture/playback enums.").
+> > > 
+> > >  I posted  details for the following two examples in 
+> > >  https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5496 :
+> > > 
+> > >  1) "Creative X-Fi" does not have any Enum's. alsamixer does not show 
+> > >  Enums's. amixer lists "penum" for ALL Simple mixer controls.
+> > > 
+> > >  2) "HDA ATI SB" has no penum's, only 3 cenum's. alsamixer shows it 
+> > >  correctly, but amixer disagrees and shows penum for NEARLY ALL Simple 
+> > >  mixer controls (except for those with cpability "cenum").
+> > > 
+> > > 
+> > >  I found this as I received several bug reports for KMix with "absurd" 
+> > >  amixer output. I could perceive from those bug report that the bug is 
+> > >  affecting a lot (or all?) sound cards.
+> > 
+> > Looks like a bug in alsa mixer abstraction, indeed.
+> > Will take a look at it later.
 > 
->> There is a race when the constraints change dynamically.  See the
->> fsl_ssi.c driver and the sample size constraint in synchronous mode.
-> 
-> This is just a limitation of the ALSA ABI - there's nothing we can do
-> about it without changing the userspace interface so we just have to
-> live with it and error out if an application ever manages to hit the
-> race and pick something incompatible with other active streams (note
-> that the symmetric rates support has a dev_warn() complaining about
-> hitting the race).
+> I committed the fix to git tree now.  The fix patch is below.
 > 
 
-I think the real problem with this is, that currently a userspace application
-will usually exit with an error when such a race occurs, while it should be
-possible to just restart the enumeration process and try with another format.
+I compiled and installed the alsa-lib from git, and the existing old
+executable (1.0.24.2 from openSUSE 12.1) now shows the correct values. I
+also tested with amixer from git, and it also works for me.
 
-So I'm wondering if we can make it easier for userspace to detect that the
-constraints have changed and it may retry with other parameters? E.g. return a
-special error code in such a case.
+Thanks for the quick fix.
 
-- Lars
+   Christian
