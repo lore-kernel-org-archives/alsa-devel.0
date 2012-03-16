@@ -1,21 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6] sound/soc/lapis: add machine driver for
- ML7213 Carrier Board
-Date: Fri, 16 Mar 2012 19:06:56 +0000
-Message-ID: <20120316190654.GF3158@opensource.wolfsonmicro.com>
-References: <CANKRQngTNWMGswq3weD1s8O4irVEz+DCr1vzi2gnWaQcoq5SEw@mail.gmail.com>
-	<1331275091-31700-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120314144524.GT3133@opensource.wolfsonmicro.com>
-	<CANKRQni-8w+2p6=ZisQ+GXhGpNmYhesKfTHfOjWGGrQrhvTFGA@mail.gmail.com>
-	<20120315105048.GF3138@opensource.wolfsonmicro.com>
-	<CANKRQnhg21hjKjSOtDwbfK9shNsdcEu-aiSs1zVGNtAdaHdMHw@mail.gmail.com>
+Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
+ checking on codec-handle
+Date: Fri, 16 Mar 2012 19:18:12 +0000
+Message-ID: <20120316191809.GG3158@opensource.wolfsonmicro.com>
+References: <20120313234638.GY3177@opensource.wolfsonmicro.com>
+	<4F6008FA.3040805@freescale.com>
+	<20120314122723.GC3133@opensource.wolfsonmicro.com>
+	<4F612319.50302@freescale.com>
+	<20120315142702.GL3138@opensource.wolfsonmicro.com>
+	<4F621C60.5090700@freescale.com>
+	<20120316020111.GE6065@S2101-09.ap.freescale.net>
+	<4F62A06C.5000304@freescale.com>
+	<20120316025219.GB7632@S2101-09.ap.freescale.net>
+	<4F62B941.5010306@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6573503669449344786=="
+Content-Type: multipart/mixed; boundary="===============2842150151040061068=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CF1B52412D
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:07:01 +0100 (CET)
-In-Reply-To: <CANKRQnhg21hjKjSOtDwbfK9shNsdcEu-aiSs1zVGNtAdaHdMHw@mail.gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4AFCA2434F
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:18:16 +0100 (CET)
+In-Reply-To: <4F62B941.5010306@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +29,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, srwarren@nvidia.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6573503669449344786==
+--===============2842150151040061068==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9ADF8FXzFeE7X4jE"
+	protocol="application/pgp-signature"; boundary="doKZ0ri6bHmN2Q5y"
 Content-Disposition: inline
 
 
---9ADF8FXzFeE7X4jE
-Content-Type: text/plain; charset=iso-8859-1
+--doKZ0ri6bHmN2Q5y
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 16, 2012 at 01:07:03PM +0900, Tomoya MORINAGA wrote:
-> On Thu, Mar 15, 2012 at 7:50 PM, Mark Brown
+On Fri, Mar 16, 2012 at 03:53:39AM +0000, Tabi Timur-B04825 wrote:
 
-> > That means "Codec bit clock master frame clock slave". =A0Are you sure
-> > that's what you want?
+> might be a way to general the call to platform_device_register_simple.=20
+> Maybe we could put "imx-pcm-audio" in the device tree?
 
-> Let me clarify the above.
-> Does the above "frame clock" mean "data line" of I2S?
-> If yes, I should have used 'SND_SOC_DAIFMT_CBS_CFS'.
+We might end up doing that but as this adaption of the DMA controller to
+the audio stack isn't really hardware so much as an implementation
+detail of the audio stack it'd be nice to come up with some neater way
+of doing it, ideally not involving the platform device at all.
 
-No, it means the clock which runs at sample rate (usually called the
-frame clock or LRCLK).
+I'm starting to think we should have a framework thing that lets DAI
+drivers say they're a combined DMA/DAI driver for cases like this where
+there is a generic DMA device that's being shared by lots of different
+subsystems.  It's a common situation and it makes the device registration
+clearer.  Adding Stephen Warren as he was thinking about this stuff in
+the context of the nVidia drivers.
 
---9ADF8FXzFeE7X4jE
+--doKZ0ri6bHmN2Q5y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPY48dAAoJEBus8iNuMP3d9n8P/34cYlobXtbmis18gU/qEomo
-u6wcyrAERpY1dDAHRxN9Sr+aAyxD2UGiETLYIucSpWXYXj1AX3UPT0c5zNyxSgRn
-VGO6Dso4bfGe6K26OHTk9WisXD0q/lyprlxYAT8j8HyIfm3cuvt4pqdBHw5WP41b
-I7R9ZQqv0mgjolt75WT3b8vzWCBWOo5/SG66fUePPDYswInh7USNMotdFLx7Iouh
-TlthySeg1CtrqiDRXN0TVlAuZW7ERuThicOlmqh5V8/euALt3WX1LCuuHKuvWavM
-fWxfcM0Y+719BxwdgE0W1bTaV+dIrm50G0hXaC9KveBandKycjIqlFV0GJsSfgLm
-AGEy4TbzYTsh7b92ZfN8cXx99yvw2dLe309jfwBtOZRfpRGC5NL1Q7+huPm8XqPs
-9LyjBPHtDiCiPg0S0joX4/OUAbSLuBM4SuWdvBfBd0lZwH05KYc7hQ6Mk1o+yjpN
-2p9d63CgzQ2NAl9dZLK8GHSp9QqhihKX8bDfxgh3twUNo2d/3NpeOZA9c9bf4ole
-Jt5AZF6aGf0yL5qCbwH77gEzWasqWQGw/jF4oNHSDjtFp6c3sRy9Kj4t8OcokLoB
-PdcLOInvuXelo8BusNP/7ihTNhfkIijO5mNwOjCX1gwQLuER6KkyU2D74h0c6z5H
-PMzIL3W8d+SdT9b3CUCn
-=JnYb
+iQIcBAEBAgAGBQJPY5HqAAoJEBus8iNuMP3doOcP/2AJi84lntsZ5uDdrjNNoRxV
+j/BYGhTLvhk5YZYyGjGm8xPskd8NGx9T1j0/MNAMFnE5bDWP4tThL9WMQwh/7o3S
+fGPFzEFZu1LWvtZv9FB7xg0wVkZxHH5HWZSqUb+R/KEULbjXkOTFAuAzdCPQArR5
+42eQGu7x2Jm831mOBmARchja9LWowFhZ1LYvHbP3jtTlIQtZffavqy1KD/xxwj9y
+Rq1ZbFcyCADcK4G/4KDar4bWgLXlyynsBsRBV/rGxOHzZdNrYU/+Jatd9v9nGPZE
+DDbpY7lAN87mgZdCFTQcMzWT72rjBW2hfntBGKA10GZ2cjHgRILDuh5S5zdBquQl
+u6SXdSvh4uAXnkVN0NGp7pQCs+N4XSHUoKZXNf610cfR2KW9vox5tz+1etoYFzYN
+7iztS7EKmNJc7jkq48njZQoc7HP7aB20tNn6gDWsVxu1D7ByW3t8psl6kJldcEZ8
+fezdkWFoWIO4A4lFbgB5jR4+CPQjpt0rilIgiKcgyOoB0z61ymor9e2QHmNki0TP
+noY+B83oC9n5QEvaUqLmVhaSa6EQ19G8xgcV6bOykoUGnKyJfZRPXILhtlKb5+da
+3DTDIMLsZx820asyUjsHTvY5NcRpPFvSYT/h2SrdklaYh4ttpRrtd6RyRrHcNoyX
+6hEKpAuWXEzjcX5zBmLB
+=sqU7
 -----END PGP SIGNATURE-----
 
---9ADF8FXzFeE7X4jE--
+--doKZ0ri6bHmN2Q5y--
 
---===============6573503669449344786==
+--===============2842150151040061068==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6573503669449344786==--
+--===============2842150151040061068==--
