@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Samsung: Added to support mono
-	recording
-Date: Fri, 16 Mar 2012 19:01:38 +0000
-Message-ID: <20120316190136.GC3158@opensource.wolfsonmicro.com>
-References: <0c1f01cd033f$bc35fc50$34a1f4f0$@com>
+Subject: Re: [PATCH] ASoC: Add MICBIAS routing information for
+	WM8904
+Date: Fri, 16 Mar 2012 19:04:53 +0000
+Message-ID: <20120316190450.GE3158@opensource.wolfsonmicro.com>
+References: <1331888098-28717-1-git-send-email-hong.xu@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1484215196723111014=="
+Content-Type: multipart/mixed; boundary="===============6905613046981446891=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 081AB2433F
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:01:41 +0100 (CET)
-In-Reply-To: <0c1f01cd033f$bc35fc50$34a1f4f0$@com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2AA624336
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:04:56 +0100 (CET)
+In-Reply-To: <1331888098-28717-1-git-send-email-hong.xu@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, sbkim01@gmail.com, 'Liam Girdwood' <lrg@ti.com>, sangsu4u.park@samsung.com
+To: Hong Xu <hong.xu@atmel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1484215196723111014==
+--===============6905613046981446891==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
+	protocol="application/pgp-signature"; boundary="ZInfyf7laFu/Kiw7"
 Content-Disposition: inline
 
 
---L6iaP+gRLNZHKoI4
+--ZInfyf7laFu/Kiw7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 16, 2012 at 03:40:53PM +0900, Sangbeom Kim wrote:
-> From: Sangsu Park <sangsu4u.park@samsung.com>
->=20
-> The dma size will be changed by requested number of
-> channel(mono/stereo) from platform. For mono recording,
-> channels_min value should be 1.
+On Fri, Mar 16, 2012 at 04:54:58PM +0800, Hong Xu wrote:
 
-Applied, thanks.
+>  static const struct snd_soc_dapm_route adc_intercon[] = {
+> +	{ "MICBIAS", NULL, "IN1L" },
+> +	{ "MICBIAS", NULL, "IN1R" },
+> +
+> +	{ "Left Capture Mux", NULL, "MICBIAS" },
+> +	{ "Right Capture Mux", NULL, "MICBIAS" },
+> +	{ "Left Capture Inverting Mux", NULL, "MICBIAS" },
+> +	{ "Right Capture Inverting Mux", NULL, "MICBIAS" },
+> +
 
---L6iaP+gRLNZHKoI4
+No, this is not something that the CODEC driver should do - the machine
+driver should add connections for MICBIAS as this is something that's
+determined by the board design.  The board could for example use some or
+all of the inputs as simple line inputs (no bias needed), or it could
+use an external MICBIAS for some reason.
+
+--ZInfyf7laFu/Kiw7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPY44JAAoJEBus8iNuMP3dUFEP/jF7GRFscK/r2fjw53X/cuB/
-q1ghqzz+WP6p+M7cNI0aREoYNd321YEOOCDfp0U3dJNrtKPGY6BVetbUczCpGP2+
-/L1dz/v3dQiGti+YJF0AFQoIzm3dnXr/dp5fJ0mmIihdPnHMO6GWYDuTbqbgsZCu
-CryereXzrzR3qpaIGvA5JbXbg8I8LmKmkx4jjW/c3dj3EMmPmC4NFQR7Jjvdn3TX
-H23IYou0Z/E3Ir46fCqs2d2HiQ4Pb5f4zvdWZX40nljUEHU8J5r3gt53Eyc3ZPFu
-bvZbVtsJNZnkHrV5J4aiYL0mdA3rN5iNgtjX3fJSel4j2AFDESOL9UTNLnIlXkXm
-j6h4sK8NAbidNfFBSrFxF8+f540YH8MEp1Jz9G+N71ffOWOXDalgVpoWSbi5aQa3
-If5/nF+Pn6fva1kr/3GxzfoQeYP8vB4J/TzL8EuRaQ0ELKjdj5AcyG+fBj2TFpSm
-mH9+VgKVymQp3YwkM4Vr6/qu5984Js6BFFm4nGbACSMYnEliq0paJqd5WyGS/2xG
-B5Wc/kRhigN5AY9RBdhGjzzey0c70t86D/F3GfyqToHJDk7wNDfQCU5pSTPsAkX5
-6gbZJlDRMqmPE2Lg8Y0AMZKKDzmarI0OvZ6pOlHdDYtVLRGJ9XpWq9lkmwtJmK66
-Lqg8GFJNsS7KFazaOJa3
-=HIST
+iQIcBAEBAgAGBQJPY47EAAoJEBus8iNuMP3dsG0P/2weRqyB7nsXKsxK1EnO5TwG
+UU7Kkr1QKdPmFdHQTwhIqbh3z0R6nnVJKQxZFMc4XefhVz3NMfDr81uJEf9hP1l9
+NNL4IaQygQOKo2Y5lK3AlMz0Q1L6P8VarR0zNXPSvdjfRVPl4TMILMPp53vdY1O6
+bf+NF01rdRNPa9ms+V6bgt/J3jdvpIGOEqNWqEKoDpaE73DwDtoT8vO4bPJJpBL3
+I6VDGVI2riMbQd14cYVaqIQ0+JyA0LAOANxPyL1unQ+q5INb4MLIyKbkeaFTdBSB
+AJh5nLCcYptPImjXIIR5Acbe01YEKZbM+F7fAj+sLgTeKncHYDtYBbs3+tl8mGvl
+A1NCIAD4dPOR8XK5xvwWViZnauI4bZlUd1VQjNWCkl9G2PIjeCf9MCwYEgzKRAHC
+QEf6bDY5Ul88LxmGKQ4meHtdbJ9ymBO7/JlpRLkXkWnECt6KbC2vrsr962rMZYoV
+g9iijU3UrubDdHFF2OfJSCWgY3kR4sY32xtVL0es/YXrv5nJT9yCaWKudGEkhgOS
+Nbw8fG5LKnpO5llNeF5OeNKrnFq3PLxlx8c7veancb2BzlxDpUno15iwzQVwsN4s
+VXChyWN0CrXLFGuxweWiDX8dP+Gu2rTupozTUnslX74F/Or6PbENWb7C3c8SuYok
+tgPYSn3qumTyY1bmjfVs
+=wdzz
 -----END PGP SIGNATURE-----
 
---L6iaP+gRLNZHKoI4--
+--ZInfyf7laFu/Kiw7--
 
---===============1484215196723111014==
+--===============6905613046981446891==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1484215196723111014==--
+--===============6905613046981446891==--
