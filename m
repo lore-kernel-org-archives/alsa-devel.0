@@ -1,34 +1,30 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HDA intel, wired headset w/mic, jack mic detect
-Date: Fri, 16 Mar 2012 07:57:19 +0800
-Message-ID: <CAN8cciYAvhKx5bL15tb4iVinVY+=K-Rspgud9O5mkAnHy0U=ew@mail.gmail.com>
-References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
-	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
-	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
-	<87zkc1cvaa.fsf@ti.com>
-	<CAN8ccib90y8m0KLTYKe7Jz5sXVZFY=D7aUwm8vog3aZvZPHH0Q@mail.gmail.com>
-	<874nu99k9y.fsf@ti.com>
-	<CAN8cciayARuQGLH=DHsReH0sYbz92K3BPNhmNEqYmSjc6wUUVw@mail.gmail.com>
-	<87d38wfag6.fsf@ti.com>
-	<CAN8cciaB6-GUvsPS8+bpftLb7BaawdpCsgY3Z7R9H+XdkJ8LNA@mail.gmail.com>
-	<87booesssh.fsf@ti.com>
-	<CAN8ccibbw109Sxb_X_ZKVO4GnpVUfbEyK0yyM8g90g8K8v4Jtw@mail.gmail.com>
-	<87zkbvne5k.fsf@ti.com>
-	<CAN8cciaEKB2Gf3n6NWFkoJmk=kuH6nNHJYLqQtoRiiPmfLcFcw@mail.gmail.com>
-	<s5h62eiqlcn.wl%tiwai@suse.de> <87399lfpef.fsf@ti.com>
-	<s5h1up5qxmc.wl%tiwai@suse.de> <87ipid4rvv.fsf@ti.com>
-	<CAN8cciZqB3oVVGMS4=RBSGZH+nSJAZoUT_a8hFu=pBnNJ3gwfw@mail.gmail.com>
-	<87bonxbv3c.fsf@ti.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
+ checking on codec-handle
+Date: Fri, 16 Mar 2012 09:27:13 +0800
+Message-ID: <20120316012711.GD6065@S2101-09.ap.freescale.net>
+References: <20120309013216.GH2499@S2101-09.ap.freescale.net>
+	<4F5FD706.8040209@freescale.com>
+	<20120313234638.GY3177@opensource.wolfsonmicro.com>
+	<4F6008FA.3040805@freescale.com>
+	<20120314122723.GC3133@opensource.wolfsonmicro.com>
+	<4F612319.50302@freescale.com>
+	<20120315130253.GA6065@S2101-09.ap.freescale.net>
+	<4F61F080.4090800@freescale.com>
+	<20120315142115.GB6065@S2101-09.ap.freescale.net>
+	<4F621D09.2080806@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CB4DE2417B
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 00:57:20 +0100 (CET)
-Received: by werg1 with SMTP id g1so3640900wer.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 16:57:19 -0700 (PDT)
-In-Reply-To: <87bonxbv3c.fsf@ti.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9A95244A3
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 02:26:50 +0100 (CET)
+Received: by iakh37 with SMTP id h37so5277128iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 18:26:44 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <4F621D09.2080806@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,69 +34,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <b04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-2012/3/16, Kevin Hilman <khilman@ti.com>:
-> Raymond Yau <superquad.vortex2@gmail.com> writes:
->
->> 2012/3/10, Kevin Hilman <khilman@ti.com>:
->>>
->>> Ah, that's a little easier to tinker with for the uninformed like me. :)
->>>
->>> Using that, it seems that the above registers work on my coded (cs4206)
->>> too.  I was able to determine that the built-in mic is ADC2 right
->>> channel, and can at least make the built-in mic switch from the right to
->>> left (swap channel mode)
->>>
->>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_COEF_INDEX 2
->>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_PROC_COEF 0x180a
->>>
->>> or make the right channel go to both HDA channels (mono mode):
->>>
->>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_COEF_INDEX 2
->>>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_PROC_COEF 0x100a
->>>
->>> However, I still can't figure out where the headset mic is and how to
->>> enable it.
->>>
->>> Here's what I think I know (c.f. alsa-info.sh  output below)
->>>
->>
->> do you mean that you cannot record mono using sysdefault  which use a
->> route to copy left channel channel to both if the internal mic is at
->> the right channel?
->>
->> arecord --vumeter=mono -c 1 -f S16_LE -r 48000 -Dsysdefault /dev/null
->
-> Not sure exactly what you mean by sysdefault, but trying that fails:
->
-> $ arecord --vumeter=mono -c 1 -f S16_LE -r 48000 -Dsysdefault /dev/null
-> ALSA lib pcm.c:2212:(snd_pcm_open_noupdate) Unknown PCM sysdefault
-> arecord: main:660: audio open error: No such file or directory
->
-> Kevin
->
+On Thu, Mar 15, 2012 at 11:47:05AM -0500, Timur Tabi wrote:
+> Shawn Guo wrote:
+> > sound {
+> >       compatible = "fsl,imx51-babbage-sgtl5000",
+> >                    "fsl,imx-audio-sgtl5000";
+> >       model = "imx51-babbage-sgtl5000";
+> >       ssi-controller = <&ssi1, &ssi2>;
+> >       audio-codec = <&sgtl5000_1, &sgtl5000_2>;
+> >       mux-int-port = <1>;
+> >       mux-ext-port = <3>;
+> > };
+> 
+> Based on Mark's other email, I would rather see this:
+> 
+> sound1 {
+>       compatible = "fsl,imx51-babbage-sgtl5000",
+>                    "fsl,imx-audio-sgtl5000";
+>       model = "imx51-babbage-sgtl5000";
+>       ssi-controller = <&ssi1>;
+>       audio-codec = <&sgtl5000_1>;
+>       mux-int-port = <1>;
+>       mux-ext-port = <3>;
+> };
+> 
+> sound2 {
+>       compatible = "fsl,imx51-babbage-sgtl5000",
+>                    "fsl,imx-audio-sgtl5000";
+>       model = "imx51-babbage-sgtl5000";
+>       ssi-controller = <&ssi2>;
+>       audio-codec = <&sgtl5000_2>;
+>       mux-int-port = <1>;
+>       mux-ext-port = <3>;
+> };
+> 
+> (ignoring for the moment that I have no idea what the mux-xxx-port values
+> in sound2 should be)
+> 
+> This makes it clear that ssi1 connects only to sgtl5000_1.
+> 
+> If you're okay with this, then please update the documentation accordingly.
+> 
+Hmm, Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt
+is the binding document specifically for imx-sgtl5000 driver rather
+than for all fsl_ssi based machine drivers.  Since I have never seen
+and doubt will ever see the setup that two SSIs connect to two
+sgtl5000 codecs on any imx board, I do not see much point to update
+the documentation for that.
 
+If this is indeed a practical setup for PowerPC, it can be documented
+in the binding for PowerPC machine driver when there is future PowerPC
+machine drivers adopting the new binding.
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=e6f990e5c9be5cac6f36924d20a75d0f69d27297
-
-
-
- pcm.default cards.pcm.default
-+pcm.sysdefault cards.pcm.default
- pcm.front cards.pcm.front
-
-
-
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/conf/cards/HDA-Intel.conf
-
-HDA-Intel.pcm.default
-
-
-  capture.pcm {
-
-
-                 # to avoid possible phase inversions with digital mics
-                 route_policy copy
+-- 
+Regards,
+Shawn
