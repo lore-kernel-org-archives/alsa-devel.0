@@ -1,23 +1,16 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH v5 8/8] ASoC: fsl: add imx-sgtl5000 machine
- driver
-Date: Fri, 16 Mar 2012 16:31:20 -0500
-Message-ID: <4F63B128.7040705@freescale.com>
-References: <1331888204-27058-1-git-send-email-shawn.guo@linaro.org>
-	<1331888204-27058-9-git-send-email-shawn.guo@linaro.org>
-	<CA+7tXihmfBQCgvuY0rx5v4w-bcwYK+7kP9v29w36N-Rc9KSQ+A@mail.gmail.com>
-	<20120316111814.GA7860@S2101-09.ap.freescale.net>
-	<20120316192110.GH3158@opensource.wolfsonmicro.com>
-	<CA+7tXih-omxaDq6dSKBeOaZ7YRWDVSQnMY=eJZ0-YumOBG=oCA@mail.gmail.com>
+Subject: [PATCH] ASoC: fsl: p1022ds: tell the WM8776 codec
+	driver that it's the master
+Date: Fri, 16 Mar 2012 16:32:52 -0500
+Message-ID: <1331933572-20658-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from va3outboundpool.messaging.microsoft.com
-	(va3ehsobe010.messaging.microsoft.com [216.32.180.30])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8991243EF
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 22:31:28 +0100 (CET)
-In-Reply-To: <CA+7tXih-omxaDq6dSKBeOaZ7YRWDVSQnMY=eJZ0-YumOBG=oCA@mail.gmail.com>
+	(va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 086F0243F5
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 22:33:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,24 +20,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <tpiepho@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, shawn.guo@linaro.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Trent Piepho wrote:
-> The ESAI and SSI hardware are totally different.  SSI gives you a
-> playback and a record stream in an I2S, or I2S like, interface.  A
-> stream is mono or stereo. ESAI has IIRC up to six output and four
-> inputs streams.  Each stream is in parallel on the same clock, and can
-> have one or more channels. 
+The WM8776 codec driver requires the machine driver to set one of the
+SND_SOC_DAIFMT_CBx_xxx values.  The P1022DS machine driver should be setting
+SND_SOC_DAIFMT_CBM_CFM, but since that value was zero, no one noticed.
 
-Are these channels on the same wire in a time-division multiplexing, or on
-six different wires?  If it's a TDM, then the SSI can actually do this
-using "network mode", but I don't enable that in the driver, since it's
-not really I2S compliant.
+Commit 75d9ac46 ("ASoC: Allow DAI formats to be specified in the
+dai_link"), however, changed the value of SND_SOC_DAIFMT_CBM_CFM from zero
+to a non-zero value, which means that it now needs to be specifically set
+by the machine driver.
 
-Well, this point is not really relevant to the discussion.
+We also set SND_SOC_DAIFMT_NB_NF, for the same reason.
 
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+
+This patch should be applied on top of Shawn's patchset "[PATCH v5] ASoC: add
+imx-sgtl5000 machine driver working with fsl_ssi", but it may also need to
+be back-ported to kernel 3.3.
+
+ sound/soc/fsl/p1022_ds.c |   24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
+index 0f42f31..2022985 100644
+--- a/sound/soc/fsl/p1022_ds.c
++++ b/sound/soc/fsl/p1022_ds.c
+@@ -255,7 +255,8 @@ static int p1022_ds_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (strcasecmp(sprop, "i2s-slave") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_I2S;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
+ 
+@@ -272,31 +273,38 @@ static int p1022_ds_probe(struct platform_device *pdev)
+ 		}
+ 		mdata->clk_frequency = be32_to_cpup(iprop);
+ 	} else if (strcasecmp(sprop, "i2s-master") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_I2S;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+ 	} else if (strcasecmp(sprop, "lj-slave") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_LEFT_J;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBM_CFM;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
+ 	} else if (strcasecmp(sprop, "lj-master") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_LEFT_J;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBS_CFS;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+ 	} else if (strcasecmp(sprop, "rj-slave") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_RIGHT_J;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBM_CFM;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
+ 	} else if (strcasecmp(sprop, "rj-master") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_RIGHT_J;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBS_CFS;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+ 	} else if (strcasecmp(sprop, "ac97-slave") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_AC97;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBM_CFM;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
+ 	} else if (strcasecmp(sprop, "ac97-master") == 0) {
+-		mdata->dai_format = SND_SOC_DAIFMT_AC97;
++		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBS_CFS;
+ 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+ 	} else {
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+1.7.10.rc1.8.ga99c5.dirty
