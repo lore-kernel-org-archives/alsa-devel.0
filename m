@@ -1,29 +1,23 @@
-From: "Christian Esken (KDE)" <esken@kde.org>
-Subject: Re: amixer shows capability "penum" on every Simple
- mixer	control
-Date: Fri, 16 Mar 2012 21:18:22 +0100
-Message-ID: <1331929102.4795.18.camel@linux-lfdh>
-References: <2e03711055eba5b923f1983b3e7d6f1a@barbarenland.de>
-	<s5h1uown7ze.wl%tiwai@suse.de> <s5h1uow39ul.wl%tiwai@suse.de>
+From: =?euc-kr?B?seixucH4?= <kgene.kim@samsung.com>
+Subject: Re: [PATCH 2/2] ARM: S3C64XX: Hook up supply for
+ WM8994 LDOs on Littlemill
+Date: Fri, 16 Mar 2012 20:38:17 +0000 (GMT)
+Message-ID: <20504781.213431331930295393.JavaMail.weblogic@epml23>
+Reply-To: kgene.kim@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-in-18.arcor-online.net (mail-in-18.arcor-online.net
-	[151.189.21.58]) by alsa0.perex.cz (Postfix) with ESMTP id 373D5243B3
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:18 +0100 (CET)
-Received: from mail-in-12-z2.arcor-online.net (mail-in-12-z2.arcor-online.net
-	[151.189.8.29]) by mx.arcor.de (Postfix) with ESMTP id C5B5B3DC485
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:17 +0100 (CET)
-Received: from mail-in-10.arcor-online.net (mail-in-10.arcor-online.net
-	[151.189.21.50])
-	by mail-in-12-z2.arcor-online.net (Postfix) with ESMTP id B64641DF1AA
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:17 +0100 (CET)
-Received: from [192.168.2.111] (dslb-092-072-202-042.pools.arcor-ip.net
-	[92.72.202.42])
-	by mail-in-10.arcor-online.net (Postfix) with ESMTPS id 8CEA22D6D35
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:18:17 +0100 (CET)
-In-Reply-To: <s5h1uow39ul.wl%tiwai@suse.de>
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88E10243B5
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 21:38:21 +0100 (CET)
+Received: from epcpsbge1.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0M0Z002QAVZSMZ40@mailout3.samsung.com> for
+	alsa-devel@alsa-project.org; Sat, 17 Mar 2012 05:38:17 +0900 (KST)
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,51 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag, den 13.03.2012, 14:32 +0100 schrieb Takashi Iwai:
-> At Tue, 13 Mar 2012 10:52:21 +0100,
-> Takashi Iwai wrote:
-> > 
-> > At Mon, 12 Mar 2012 22:09:35 +0100,
-> > Christian Esken (KDE) wrote:
-> > > 
-> > >  Hello,
-> > > 
-> > >  when I run amixer it shows the capability "penum" on nearly every 
-> > >  Simple mixer control.
-> > >  I posted the bug report 
-> > >  https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5496 , but 
-> > >  Raymond asked me to report it on this mailing list ("as it is related to 
-> > >  this patch 6d511eefa05878abee9f8b9145697230de605200 Implements support 
-> > >  for capture/playback enums.").
-> > > 
-> > >  I posted  details for the following two examples in 
-> > >  https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5496 :
-> > > 
-> > >  1) "Creative X-Fi" does not have any Enum's. alsamixer does not show 
-> > >  Enums's. amixer lists "penum" for ALL Simple mixer controls.
-> > > 
-> > >  2) "HDA ATI SB" has no penum's, only 3 cenum's. alsamixer shows it 
-> > >  correctly, but amixer disagrees and shows penum for NEARLY ALL Simple 
-> > >  mixer controls (except for those with cpability "cenum").
-> > > 
-> > > 
-> > >  I found this as I received several bug reports for KMix with "absurd" 
-> > >  amixer output. I could perceive from those bug report that the bug is 
-> > >  affecting a lot (or all?) sound cards.
-> > 
-> > Looks like a bug in alsa mixer abstraction, indeed.
-> > Will take a look at it later.
-> 
-> I committed the fix to git tree now.  The fix patch is below.
-> 
+Samuel Ortiz wrote:
+> Hi Mark, Kukjin
+>
+> On Thu, Mar 08, 2012 at 11:55:07AM +0000, Mark Brown wrote:
+>> Signed-off-by: Mark Brown 
+>> ---
+>> 
+>> Kukjin, are you OK with this going via the MFD tree?  It depends on the
+>> previous change.
+> I'm taking this one for now, unless Kukjin objects to it.
 
-I compiled and installed the alsa-lib from git, and the existing old
-executable (1.0.24.2 from openSUSE 12.1) now shows the correct values. I
-also tested with amixer from git, and it also works for me.
+Yeah, looks ok to me, if you need my ack on this, feel free to add it.
 
-Thanks for the quick fix.
+Acked-by: Kukjin Kim <kgene.kim@samsung.com>
 
-   Christian
+Thanks.
+
+Best regards,
+Kgene.
+
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
