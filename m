@@ -1,8 +1,8 @@
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Tabi Timur-B04825 <B04825@freescale.com>
 Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
  checking on codec-handle
-Date: Fri, 16 Mar 2012 12:14:33 +0800
-Message-ID: <20120316041428.GA7772@S2101-09.ap.freescale.net>
+Date: Fri, 16 Mar 2012 04:17:02 +0000
+Message-ID: <4F62BEBC.9040203@freescale.com>
 References: <20120314122723.GC3133@opensource.wolfsonmicro.com>
 	<4F612319.50302@freescale.com>
 	<20120315142702.GL3138@opensource.wolfsonmicro.com>
@@ -13,18 +13,18 @@ References: <20120314122723.GC3133@opensource.wolfsonmicro.com>
 	<4F62B729.2090902@freescale.com>
 	<20120316035254.GF6065@S2101-09.ap.freescale.net>
 	<4F62BCBE.7030806@freescale.com>
+	<20120316041428.GA7772@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EFC3E1046ED
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 05:14:02 +0100 (CET)
-Received: by iakh37 with SMTP id h37so5464851iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 21:14:02 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <4F62BCBE.7030806@freescale.com>
+Received: from db3outboundpool.messaging.microsoft.com
+	(db3ehsobe004.messaging.microsoft.com [213.199.154.142])
+	by alsa0.perex.cz (Postfix) with ESMTP id 033D91046FF
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 05:17:12 +0100 (CET)
+In-Reply-To: <20120316041428.GA7772@S2101-09.ap.freescale.net>
+Content-Language: en-US
+Content-ID: <7927C4EE4CB9C749B4125E4741B1D697@mgd.freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,25 +34,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
+To: Shawn Guo <shawn.guo@linaro.org>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 16, 2012 at 04:08:32AM +0000, Tabi Timur-B04825 wrote:
-> Shawn Guo wrote:
-> > But it's instantiated as a dmaengine device backed by dmaengine driver
-> > drivers/dma/imx-dma.c.  "imx-pcm-audio" will just be an ASoC dmaengine
-> > client using dmaengine API.
-> 
-> So you don't have the equivalent of sound/soc/fsl_dma.c?  Don't you need 
-> to program the DMA controller specifically for audio?  There's no way I 
-> could use drivers/dma/fsldma.c for audio.
-> 
-I need to program the DMA controller for audio.  But that's done through
-generic dmaengine API with audio specific parameters passed in.  That's
-pretty much what all snd_imx_pcm_hw_params (sound/soc/fsl/imx-pcm-dma.c)
-does there.
+Shawn Guo wrote:
+> I need to program the DMA controller for audio.  But that's done through
+> generic dmaengine API with audio specific parameters passed in.  That's
+> pretty much what all snd_imx_pcm_hw_params (sound/soc/fsl/imx-pcm-dma.c)
+> does there.
+
+Interesting.  I'll have to check that out.
 
 -- 
-Regards,
-Shawn
+Timur Tabi
+Linux kernel developer at Freescale
