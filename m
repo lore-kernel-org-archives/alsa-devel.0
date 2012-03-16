@@ -1,30 +1,24 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
- checking on codec-handle
-Date: Fri, 16 Mar 2012 12:05:11 +0800
-Message-ID: <20120316040509.GA7758@S2101-09.ap.freescale.net>
-References: <20120313234638.GY3177@opensource.wolfsonmicro.com>
-	<4F6008FA.3040805@freescale.com>
-	<20120314122723.GC3133@opensource.wolfsonmicro.com>
-	<4F612319.50302@freescale.com>
-	<20120315142702.GL3138@opensource.wolfsonmicro.com>
-	<4F621C60.5090700@freescale.com>
-	<20120316020111.GE6065@S2101-09.ap.freescale.net>
-	<4F62A06C.5000304@freescale.com>
-	<20120316025219.GB7632@S2101-09.ap.freescale.net>
-	<4F62B941.5010306@freescale.com>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v6] sound/soc/lapis: add machine driver for
+	ML7213 Carrier Board
+Date: Fri, 16 Mar 2012 13:07:03 +0900
+Message-ID: <CANKRQnhg21hjKjSOtDwbfK9shNsdcEu-aiSs1zVGNtAdaHdMHw@mail.gmail.com>
+References: <CANKRQngTNWMGswq3weD1s8O4irVEz+DCr1vzi2gnWaQcoq5SEw@mail.gmail.com>
+	<1331275091-31700-1-git-send-email-tomoya.rohm@gmail.com>
+	<20120314144524.GT3133@opensource.wolfsonmicro.com>
+	<CANKRQni-8w+2p6=ZisQ+GXhGpNmYhesKfTHfOjWGGrQrhvTFGA@mail.gmail.com>
+	<20120315105048.GF3138@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12E9024417
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 05:04:45 +0100 (CET)
-Received: by iakh37 with SMTP id h37so5454533iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 21:04:44 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <4F62B941.5010306@freescale.com>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EFF641046CE
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 05:07:04 +0100 (CET)
+Received: by dady9 with SMTP id y9so6407729dad.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 21:07:04 -0700 (PDT)
+In-Reply-To: <20120315105048.GF3138@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,72 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 16, 2012 at 03:53:39AM +0000, Tabi Timur-B04825 wrote:
-> Shawn Guo wrote:
-> > So something like this?
-> >
-> >          /*
-> >           * If codec-handle property is missing from SSI node, we assume
-> >           * that the machine driver uses new binding which does not require
-> >           * SSI driver to trigger machine driver's probe.
-> >           */
-> >          if (!of_get_property(np, "codec-handle", NULL)) {
-> >                  if (ssi_private->ssi_on_imx) {
-> >                          ssi_private->imx_pcm_pdev =
-> >                                  platform_device_register_simple("imx-pcm-audio",
-> >                                                                  -1, NULL, 0);
-> >                          if (IS_ERR(ssi_private->imx_pcm_pdev)) {
-> >                                  ret = PTR_ERR(ssi_private->imx_pcm_pdev);
-> >                                  goto error_dev;
-> >                          }
-> >                  }
-> >                  /* success for new binding case */
-> >                  return 0;
-> >          }
-> >
-> > It does not reduce any reference to "imx" actually.  If you think it's
-> > worth another iteration of the series, I will post v5 for it.
-> 
-> I had something more like this in mind:
-> 
->          /*
->           * If codec-handle property is missing from SSI node, we assume
->           * that the machine driver uses new binding which does not require
->           * SSI driver to trigger machine driver's probe.
->           */
->          if (!of_get_property(np, "codec-handle", NULL))
-> 		ssi_private->new_binding = true;
-> 
-> 
-> 	if (ssi_private->ssi_on_imx) {
->                  ssi_private->imx_pcm_pdev =
->                  	platform_device_register_simple("imx-pcm-audio",
->                                                                  -1, NULL, 0);
->                          if (IS_ERR(ssi_private->imx_pcm_pdev)) {
->                                  ret = PTR_ERR(ssi_private->imx_pcm_pdev);
->                                  goto error_dev;
->                          }
->                  }
->                  /* success for new binding case */
->                  return 0;
->          }
-> 
-> Well, it's not perfect, but the idea is that we keep track of new vs. old 
-> binding separately from imx vs. powerpc.
+On Thu, Mar 15, 2012 at 7:50 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Thu, Mar 15, 2012 at 01:50:48PM +0900, Tomoya MORINAGA wrote:
+>
+>> OK.
+>> codec is slave, i2s controller is master.
+>> So, I'll use SND_SOC_DAIFMT_CBS_CFM.
+>
+> That means "Codec bit clock master frame clock slave". =A0Are you sure
+> that's what you want?
 
-Fine with me.
+Let me clarify the above.
+Does the above "frame clock" mean "data line" of I2S?
+If yes, I should have used 'SND_SOC_DAIFMT_CBS_CFS'.
 
-> Although I'm thinking there 
-> might be a way to general the call to platform_device_register_simple. 
-> Maybe we could put "imx-pcm-audio" in the device tree?
-> 
-It seems a little bit abuse of device tree to me.  My first choice was
-to do that in imx-sgtl5000 machine driver.  But Mark disagrees.
+thanks.
+-- =
 
--- 
-Regards,
-Shawn
+ROHM Co., Ltd.
+tomoya
