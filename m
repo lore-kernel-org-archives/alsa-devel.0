@@ -1,17 +1,30 @@
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-Subject: [PATCH] aplay/arecord: option to treat any xrun as
-	fatal
-Date: Thu, 15 Mar 2012 23:51:02 -0400
-Message-ID: <1331869862-10227-1-git-send-email-bengardiner@nanometrics.ca>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
+ checking on codec-handle
+Date: Fri, 16 Mar 2012 11:53:05 +0800
+Message-ID: <20120316035254.GF6065@S2101-09.ap.freescale.net>
+References: <20120313234638.GY3177@opensource.wolfsonmicro.com>
+	<4F6008FA.3040805@freescale.com>
+	<20120314122723.GC3133@opensource.wolfsonmicro.com>
+	<4F612319.50302@freescale.com>
+	<20120315142702.GL3138@opensource.wolfsonmicro.com>
+	<4F621C60.5090700@freescale.com>
+	<20120316020111.GE6065@S2101-09.ap.freescale.net>
+	<4F62A06C.5000304@freescale.com>
+	<20120316022345.GA7632@S2101-09.ap.freescale.net>
+	<4F62B729.2090902@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from psmtp.com (na3sys009aog138.obsmtp.com [74.125.149.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 425C310467E
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 04:51:30 +0100 (CET)
-Received: by mail-iy0-f175.google.com with SMTP id g37so5842017iaa.34
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 20:51:27 -0700 (PDT)
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id F090410467E
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 04:52:38 +0100 (CET)
+Received: by iakh37 with SMTP id h37so5441034iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 20:52:38 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <4F62B729.2090902@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,92 +34,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
----
- aplay/aplay.1 |    4 ++++
- aplay/aplay.c |   17 +++++++++++++++--
- 2 files changed, 19 insertions(+), 2 deletions(-)
+On Fri, Mar 16, 2012 at 03:44:43AM +0000, Tabi Timur-B04825 wrote:
+> Shawn Guo wrote:
+> >> >
+> > Something like "fsl-pcm-audio", but different from "fsl-pcm-audio"
+> > will be instantiated as a hardware block by device tree,
+> > "imx-pcm-audio" is pretty much like a ASoC wrapper for calling
+> > dmaengine driver.  So there is no hardware block presenting this
+> > "device" in device tree, and we need to instantiate it from cpu DAI
+> > driver as Mark suggested.
+> 
+> Wait, is this the DMA controller?  Because on PowerPC, we have device tree 
+> nodes for the DMA controller.  Why don't you have one on i.MX?
+> 
+We do have a DMA controller node for IMX.
 
-diff --git a/aplay/aplay.1 b/aplay/aplay.1
-index 0195322..bf9b53e 100644
---- a/aplay/aplay.1
-+++ b/aplay/aplay.1
-@@ -191,6 +191,10 @@ lists capabilities of the selected device such as supported formats,
- sampling rates, numbers of channels, period and buffer bytes/sizes/times.
- For raw device hw:X this option basically lists hardware capabilities of
- the soundcard.
-+.TP
-+\fI\-\-fatal\-errors\fP
-+Disables recovery attempts when errors (e.g. xrun) are encountered; the
-+aplay process instead aborts immediately.
- 
- .SH SIGNALS
- When recording, SIGINT, SIGTERM and SIGABRT will close the output 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 0633cbd..1ce34c4 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -115,6 +115,7 @@ static int stop_delay = 0;
- static int monotonic = 0;
- static int interactive = 0;
- static int can_pause = 0;
-+static int fatal_errors = 0;
- static int verbose = 0;
- static int vumeter = VUMETER_NONE;
- static int buffer_pos = 0;
-@@ -225,7 +226,8 @@ _("Usage: %s [OPTION]... [FILE]...\n"
- "                        for this many seconds\n"
- "    --process-id-file   write the process ID here\n"
- "    --use-strftime      apply the strftime facility to the output file name\n"
--"    --dump-hw-params    dump hw_params of the device\n")
-+"    --dump-hw-params    dump hw_params of the device\n"
-+"    --fatal-errors      treat all errors as fatal\n")
- 		, command);
- 	printf(_("Recognized sample formats are:"));
- 	for (k = 0; k < SND_PCM_FORMAT_LAST; ++k) {
-@@ -419,7 +421,8 @@ enum {
- 	OPT_MAX_FILE_TIME,
- 	OPT_PROCESS_ID_FILE,
- 	OPT_USE_STRFTIME,
--	OPT_DUMP_HWPARAMS
-+	OPT_DUMP_HWPARAMS,
-+	OPT_FATAL_ERRORS,
- };
- 
- int main(int argc, char *argv[])
-@@ -465,6 +468,7 @@ int main(int argc, char *argv[])
- 		{"use-strftime", 0, 0, OPT_USE_STRFTIME},
- 		{"interactive", 0, 0, 'i'},
- 		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
-+		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
- 		{0, 0, 0, 0}
- 	};
- 	char *pcm_name = "default";
-@@ -669,6 +673,9 @@ int main(int argc, char *argv[])
- 		case OPT_DUMP_HWPARAMS:
- 			dump_hw_params = 1;
- 			break;
-+		case OPT_FATAL_ERRORS:
-+			fatal_errors = 1;
-+			break;
- 		default:
- 			fprintf(stderr, _("Try `%s --help' for more information.\n"), command);
- 			return 1;
-@@ -1350,6 +1357,12 @@ static void xrun(void)
- 		prg_exit(EXIT_FAILURE);
- 	}
- 	if (snd_pcm_status_get_state(status) == SND_PCM_STATE_XRUN) {
-+		if (fatal_errors) {
-+			error(_("fatal %s: %s"),
-+					stream == SND_PCM_STREAM_PLAYBACK ? _("underrun") : _("overrun"),
-+					snd_strerror(res));
-+			prg_exit(EXIT_FAILURE);
-+		}
- 		if (monotonic) {
- #ifdef HAVE_CLOCK_GETTIME
- 			struct timespec now, diff, tstamp;
+	sdma@83fb0000 {
+		compatible = "fsl,imx51-sdma", "fsl,imx35-sdma";
+		reg = <0x83fb0000 0x4000>;
+		interrupts = <6>;
+	};
+
+But it's instantiated as a dmaengine device backed by dmaengine driver
+drivers/dma/imx-dma.c.  "imx-pcm-audio" will just be an ASoC dmaengine
+client using dmaengine API.
+
 -- 
-1.7.4.1
+Regards,
+Shawn
