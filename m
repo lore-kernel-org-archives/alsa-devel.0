@@ -1,24 +1,30 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v6] sound/soc/lapis: add machine driver for
-	ML7213 Carrier Board
-Date: Fri, 16 Mar 2012 13:07:03 +0900
-Message-ID: <CANKRQnhg21hjKjSOtDwbfK9shNsdcEu-aiSs1zVGNtAdaHdMHw@mail.gmail.com>
-References: <CANKRQngTNWMGswq3weD1s8O4irVEz+DCr1vzi2gnWaQcoq5SEw@mail.gmail.com>
-	<1331275091-31700-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120314144524.GT3133@opensource.wolfsonmicro.com>
-	<CANKRQni-8w+2p6=ZisQ+GXhGpNmYhesKfTHfOjWGGrQrhvTFGA@mail.gmail.com>
-	<20120315105048.GF3138@opensource.wolfsonmicro.com>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error
+ checking on codec-handle
+Date: Fri, 16 Mar 2012 04:08:32 +0000
+Message-ID: <4F62BCBE.7030806@freescale.com>
+References: <20120313234638.GY3177@opensource.wolfsonmicro.com>
+	<4F6008FA.3040805@freescale.com>
+	<20120314122723.GC3133@opensource.wolfsonmicro.com>
+	<4F612319.50302@freescale.com>
+	<20120315142702.GL3138@opensource.wolfsonmicro.com>
+	<4F621C60.5090700@freescale.com>
+	<20120316020111.GE6065@S2101-09.ap.freescale.net>
+	<4F62A06C.5000304@freescale.com>
+	<20120316022345.GA7632@S2101-09.ap.freescale.net>
+	<4F62B729.2090902@freescale.com>
+	<20120316035254.GF6065@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EFF641046CE
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 05:07:04 +0100 (CET)
-Received: by dady9 with SMTP id y9so6407729dad.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2012 21:07:04 -0700 (PDT)
-In-Reply-To: <20120315105048.GF3138@opensource.wolfsonmicro.com>
+Received: from db3outboundpool.messaging.microsoft.com
+	(db3ehsobe006.messaging.microsoft.com [213.199.154.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76C5C1046E7
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 05:08:38 +0100 (CET)
+In-Reply-To: <20120316035254.GF6065@S2101-09.ap.freescale.net>
+Content-Language: en-US
+Content-ID: <D4FF696000A69E4D947611FBA0CA1534@mgd.freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +34,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 15, 2012 at 7:50 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Mar 15, 2012 at 01:50:48PM +0900, Tomoya MORINAGA wrote:
->
->> OK.
->> codec is slave, i2s controller is master.
->> So, I'll use SND_SOC_DAIFMT_CBS_CFM.
->
-> That means "Codec bit clock master frame clock slave". =A0Are you sure
-> that's what you want?
+Shawn Guo wrote:
+> But it's instantiated as a dmaengine device backed by dmaengine driver
+> drivers/dma/imx-dma.c.  "imx-pcm-audio" will just be an ASoC dmaengine
+> client using dmaengine API.
 
-Let me clarify the above.
-Does the above "frame clock" mean "data line" of I2S?
-If yes, I should have used 'SND_SOC_DAIFMT_CBS_CFS'.
+So you don't have the equivalent of sound/soc/fsl_dma.c?  Don't you need 
+to program the DMA controller specifically for audio?  There's no way I 
+could use drivers/dma/fsldma.c for audio.
 
-thanks.
--- =
-
-ROHM Co., Ltd.
-tomoya
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
