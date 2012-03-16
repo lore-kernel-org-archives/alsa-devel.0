@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5 8/8] ASoC: fsl: add imx-sgtl5000 machine
- driver
-Date: Fri, 16 Mar 2012 19:21:12 +0000
-Message-ID: <20120316192110.GH3158@opensource.wolfsonmicro.com>
-References: <1331888204-27058-1-git-send-email-shawn.guo@linaro.org>
-	<1331888204-27058-9-git-send-email-shawn.guo@linaro.org>
-	<CA+7tXihmfBQCgvuY0rx5v4w-bcwYK+7kP9v29w36N-Rc9KSQ+A@mail.gmail.com>
-	<20120316111814.GA7860@S2101-09.ap.freescale.net>
+Subject: Re: ASoC:Question rate constraint between the dais
+Date: Fri, 16 Mar 2012 19:22:33 +0000
+Message-ID: <20120316192231.GI3158@opensource.wolfsonmicro.com>
+References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
+	<20120315175310.GR3138@opensource.wolfsonmicro.com>
+	<9DF50024A2F6A5439EBFE2E74F4E9198055254@BGSMSX101.gar.corp.intel.com>
+	<4F63105E.3080705@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3476400400236566638=="
+Content-Type: multipart/mixed; boundary="===============7961976359082445172=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A93432434F
-	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:21:18 +0100 (CET)
-In-Reply-To: <20120316111814.GA7860@S2101-09.ap.freescale.net>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8E402434F
+	for <alsa-devel@alsa-project.org>; Fri, 16 Mar 2012 20:22:37 +0100 (CET)
+In-Reply-To: <4F63105E.3080705@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,64 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Trent Piepho <tpiepho@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@freescale.com>
+To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com, Ramesh Babu <ramesh.babu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3476400400236566638==
+--===============7961976359082445172==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/Gk0KcsbyUMelFU1"
+	protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
 Content-Disposition: inline
 
 
---/Gk0KcsbyUMelFU1
+--J+eNKFoVC4T1DV3f
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 16, 2012 at 07:18:18PM +0800, Shawn Guo wrote:
+On Fri, Mar 16, 2012 at 03:35:18PM +0530, Omair Mohammed Abdullah wrote:
 
-> Maybe having "fsl,imx-audio-xxx" for machine drivers backed by SSI,
-> and "fsl,imx-esai-audio-xxx" for the ones backed by ESAI?
+> You are right to say that it is not a machine constraint but a codec
+> constraint. The problem is that if a DAI (say the "SN95031 Headset
+> DAI") is opened with a 44.1 khz rate, then another DAI (say "SN95031
+> Voice") is opened with a 48 khz rate, then we need to reject the
+> second open because the codec cannot support both rates at the same
+> time.
 
-Alternatively if the SSI and ESAI devices are compatible enough at the
-ASoC API level (or can be identified by the driver just by looking at
-the DAI that's referenced without too much pain) the CPU DAI could just
-be linked to either type of DAI (probably with a more generic name for
-the property).
+> Is there any way to do this with constraint_lists? The way it is
+> done in the wm8988 driver does not apply here because there it is a
+> single DAI.
 
-But either way works fine, and obviously you're going to end up with
-more complex systems which use a completely custom binding anyway.
+There's a way to do this, and it's the way that the WM8988 driver is
+doing it - obviously you'll have different criteria for choosing
+constraints but the actual application of the constraints is going to be
+done in the same way.
 
---/Gk0KcsbyUMelFU1
+--J+eNKFoVC4T1DV3f
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPY5KMAAoJEBus8iNuMP3d6OUP/2l5zrgRDR3uar2GhYX0sOSd
-TLnspJVg4ypxeyAERPsInzprnuXuuJLUguIn5zIqTZx2UvbGwF1nZ9+wZ9uZibUs
-vwSJuwWMs/j6lq6DKV9U2ON8+X7dPLTP5FKNkimOI050WY5oqSH39J3xfOXjJof5
-6a1/R4I+1oJ9vrExTHo/nkZ/XeQ5aua0hpT9lBUmRQoHXOfzbjnDUHYFVDDjc8Ah
-DF1VOFnrddBsv1jeeMIL44rwjKiRoJ2fzA9LO+1mKzQ8habQLQsvd3lj8bjHcZzU
-4lpzG1zPyMsLXf31vw6hbBqmFpD8rdsv/2Gk3zQ32lNHw8eMCICch2FGwrjPj7RS
-B/hTFCtiGO+Sq76qDyr5FXtxmExuvUgPI0j8q03LZYFsBgLl6b6R0Yf3lamg3USC
-1mhKx5du3DSoT+Tp/b49umKulfQvbor2owdZcsXcHcQjOiq95iDtij9XwwH/7n8o
-Xz8GvPiERiv4UtzCiSpZ+uFpbP21G2S5+H+Pm2vepGuByG4L5e1S80zOZ5SA15Nc
-hcOe+STmdlEn/5IvyBP07Q8wOa0RVNe5qrE5YcZrKDWiwO4z8MCQ6UOmfiH4+7aL
-P8ySZoYaTq3nFLI9rEXQ4zf6ny7zw+II8xAUZ6LPiPGVMxupCK9xEDpzEr3KL3vK
-nb8WDOBrLDN5DKtBzFr5
-=l3vg
+iQIcBAEBAgAGBQJPY5LuAAoJEBus8iNuMP3daCkP/3NguSmiklwMqjesw6iObXGg
+olWTLyswKQNnsocfwQoOsEjspU5I6wj2KEC3i+LJkH9rupznxghKEkQc0pq3g4YJ
+WdONkHeZ6Neip8NLCs/uCpnHM8hEqh5+Ripwh6Pjdbbm5u/Obk1NAFkWdjbFYtRJ
+egP99/9nC4UZc4o1fpQSJnecxGFoXrlnuvIOX1h9es91PVzi14bsHqweQHDk9Fkt
+/61Ih1g+v8YVx9t473/VL029GzQkFsWT2OtVDtoawkPLG8WqytfXgGudshouUzNW
+z5VSuUCcyYKRp9gadFPZty3LKnxNTCu++6sKPbErVCOZzEZJ7wuJRHytp7d0Ela3
+WKEOHoltdvi8p+7DQgfsNK6T8Nf6tUx+p/mNASwIJHa/a8AWj15M1eJ0VsJHY5ec
+KSxLTip7zOhie1l+CiBNBvZ9ZbeFpqVYbzKOs2NVfKaWCZdd4Bzas+2dgsD2kLdB
+5I4andLi9dULt4nTYcNZ4iFs1YZFK+WKznAPSBa2Way/Mna60GeAgu4ZPa+Ek9KI
+U3VN7gPkkcp1wALKTq5UCBRri7foeOovI5RJnlcTGiH3W9VCxlFAAoGMJ2Ro+vQt
+1UWW25uwVjTqpos6D8kbyl/fjsBtUND3enjU64/T7uCKBpeO+Qp5R2esptLdblXh
+OTZPUlVf40O1QdFvyErB
+=hyzC
 -----END PGP SIGNATURE-----
 
---/Gk0KcsbyUMelFU1--
+--J+eNKFoVC4T1DV3f--
 
---===============3476400400236566638==
+--===============7961976359082445172==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3476400400236566638==--
+--===============7961976359082445172==--
