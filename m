@@ -1,95 +1,77 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 09/11] ASoC: fsl: remove the fatal error checking on
- codec-handle
-Date: Sat, 17 Mar 2012 21:42:52 +0000
-Message-ID: <20120317214252.GF3315@opensource.wolfsonmicro.com>
-References: <20120313234638.GY3177@opensource.wolfsonmicro.com>
- <4F6008FA.3040805@freescale.com>
- <20120314122723.GC3133@opensource.wolfsonmicro.com>
- <4F612319.50302@freescale.com>
- <20120315130253.GA6065@S2101-09.ap.freescale.net>
- <4F61F080.4090800@freescale.com>
- <20120315142115.GB6065@S2101-09.ap.freescale.net>
- <4F621D09.2080806@freescale.com>
- <20120316012711.GD6065@S2101-09.ap.freescale.net>
- <4F629D71.3050102@freescale.com>
+Subject: Re: [PATCH] ASoC: pxa2xx-i2s: Add
+	clk_prepare/clk_unprepare calls
+Date: Sat, 17 Mar 2012 21:44:12 +0000
+Message-ID: <20120317214412.GG3315@opensource.wolfsonmicro.com>
+References: <1331835372.14662.8.camel@flow>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5395700714028699265=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <4F629D71.3050102@freescale.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============2694331388512201643=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6A155103F11
+	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2012 22:44:14 +0100 (CET)
+In-Reply-To: <1331835372.14662.8.camel@flow>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5395700714028699265==
+--===============2694331388512201643==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GLp9dJVi+aaipsRk"
+	protocol="application/pgp-signature"; boundary="GUPx2O/K0ibUojHx"
 Content-Disposition: inline
 
 
---GLp9dJVi+aaipsRk
+--GUPx2O/K0ibUojHx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 16, 2012 at 01:55:01AM +0000, Tabi Timur-B04825 wrote:
+On Thu, Mar 15, 2012 at 07:16:12PM +0100, Philipp Zabel wrote:
+> This patch adds clk_prepare/clk_unprepare calls to the pxa2xx-i2s
+> driver by using the helper functions clk_prepare_enable and
+> clk_disable_unprepare.
 
-> I'm just concerned that if there's no standard way to create bindings for=
-=20
-> machine drivers, we're going to end up with some kind of mess down the ro=
-ad.
+Applied, thanks.  There's probably a reasonable case for a coccinelle
+based conversion over the tree as a whole here...
 
-I think that we'll be able to deal with that by adding helpers for
-common cases (as has already started to happen with some of the nVidia
-inspired changes like the auto_nc_pins() stuff) - approach the problem
-by extracting the good practice and putting it into helpers to encourage
-use.  Fortunately machine drivers are by their nature system specific so
-so if they are messed up they impact a limited subset of systems.
-
---GLp9dJVi+aaipsRk
+--GUPx2O/K0ibUojHx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPZQU8AAoJEBus8iNuMP3dVZ4P/jBjT9yXcxpGnCjqeIv+4zjr
-9Gaf+IJvcHurOJFlSUJV2AeZGOY5ZQnprO/0xMy+Vub5dcso0XtTRv6LN6j4r6Sp
-+0jsFuzHPMAXJmVjrOvWYSvB+tf63K5vGzmFvB8H4/4RSAlVOYXFkETaQfhmYLcu
-3skiQk7ShI/DTxou9k8m3lTiC5wehBZ/ZevI2EsoJW3Cktd8KnzqtpL4k/YrR+os
-uyt9RIEZ8mG2W2+Kb+n500plWcmyX375UDhLc50iwNo/LpMuR8P1IgXu0HxjITUX
-JXbBW7s15tsLBfYSQJnx/0dNHSm7UP7yfcDFq+WdGi7GjRSMoHiUWh09Y3nstU7R
-vBQKDZeKG8VtUZje/nz907COXZn2tHgaEn7IixBV/Th5MkxUxVHIEZ5JnyMI55e6
-FNC0+eEdM4l42eQ5JWLUEUV6BUSO4YjDLo+tXceZr0yHn5mfKWPdSDL7FvunjsuQ
-uLOscp9LH40v7BgOhqVASThkfxI0JDhSBX+7QWINpCrh3DosFvnaDv/lwiJUTuDp
-h9cYabGIwwgwJ3eq5rQfnWd+a9j2a/A2WCcLwI1jx/gUpwiC8M9+jrznnlnHQw2E
-bRgrAmNQZkbFMe9/Fol4FgF5zYumdET0fFOJ1jwbvertsIQTJmCgX3PPzF8jmXNx
-s0vOfpGC9RuponVXzT4H
-=yWL8
+iQIcBAEBAgAGBQJPZQWcAAoJEBus8iNuMP3d5iMQAIhE3zdutdwZCcKSsbTZ7N8h
+2WsBNyufT1XxP/OfOBVFCewxieHs1kcy3czcrW8rkFlA9McAE+N4o0y6+7yOWGCG
+5tA2cPbUY87mrKItkDPkBMeJO6DjDdFNuIXYI0jNh+BiNj227MUlTporglc2Qb6I
+QUhQXiciu+6XZQtaLYD8X7eBYso0IBDkx30ijEPmopwV1BeOTA06scDCvO7edIB4
+TondTHeHLr0Ab8u32c0DZLH8xsrlMpPxiip56Gi1/IJPPj2Gsjj4wtYez595y0wW
+doLelWHCdiNk/x7lS0usdyoqkN2p5IUlffWafnd77EQWTs3FVpyN31Edy21a9oQX
+BHTbFprBwlU2ndS8XKEHcgo1yc2V5B5pd6ij8/OheruYqTpf+l5BrYEJF24Q2R3T
+HpfPRifkumZLALby8UDOkC/ZmCvWa86RhL7etPsspXCh7GvB1+n0SbnuhefrsSP7
+/jToN5giZYrwqUtrZRrkDBXN3ppXQJ9F9aMksgVc+hACyoanNoj74q+CQx9HECqX
+i/pplpA5MlzmYNoVzQJuccYRJvF2+s9DaWx5IZe97+qI+DSGp9mmAj+gVEimWbRp
+6vd1gPqx6gw3JNhdR5CIv6AeoPHmZLW8Ys+ranxjaP3x4fgA3zUCK2EQwwzBwB7T
+Xg7/2Kmjc0FYppIpQAXJ
+=x5+z
 -----END PGP SIGNATURE-----
 
---GLp9dJVi+aaipsRk--
+--GUPx2O/K0ibUojHx--
 
-
---===============5395700714028699265==
+--===============2694331388512201643==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5395700714028699265==--
+--===============2694331388512201643==--
