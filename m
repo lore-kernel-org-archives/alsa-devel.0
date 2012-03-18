@@ -1,17 +1,26 @@
-From: David Alexander <lidxv0n@gmail.com>
-Subject: trying to get an eleven rack to work
-Date: Sat, 17 Mar 2012 19:17:41 -0400
-Message-ID: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: ASoC:Question rate constraint between the dais
+Date: Sun, 18 Mar 2012 11:52:01 +0530
+Message-ID: <CABb+yY1-tG9Mj9D13Kj3-M9ykEndwWijR8NOG8-TA-5Y+-jxUA@mail.gmail.com>
+References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
+	<20120315175310.GR3138@opensource.wolfsonmicro.com>
+	<9DF50024A2F6A5439EBFE2E74F4E9198055254@BGSMSX101.gar.corp.intel.com>
+	<4F63105E.3080705@linux.intel.com>
+	<20120316192231.GI3158@opensource.wolfsonmicro.com>
+	<CA+7tXigaxPdkBGfciWgJx2PnZHPKftgWdXxYREOBYUiXW7aA=g@mail.gmail.com>
+	<20120317114856.GN3158@opensource.wolfsonmicro.com>
+	<CA+7tXiheVO6FAypZU-yRuT=Cg3iPAgHeQOmVpZ_zJF_T5JdORw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E5F32103F93
-	for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2012 00:17:42 +0100 (CET)
-Received: by iakh37 with SMTP id h37so8190201iak.38
-	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2012 16:17:41 -0700 (PDT)
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3DAB103FAE
+	for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2012 07:22:01 +0100 (CET)
+Received: by bkwj10 with SMTP id j10so3864262bkw.38
+	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2012 23:22:01 -0700 (PDT)
+In-Reply-To: <CA+7tXiheVO6FAypZU-yRuT=Cg3iPAgHeQOmVpZ_zJF_T5JdORw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,308 +30,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Trent Piepho <tpiepho@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>, Ramesh Babu <ramesh.babu@intel.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
-
-I bought and would like to get an eleven rack interface to work.  It
-is a usb gutiar amp emulator/audio interface.  It is a avid/digi
-device that normal uses asio vendor specific drivers.
-
-When I plug it under Linux I get the following:
-
-ls -l /proc/asound/card1
-total 0
--r--r--r-- 1 root root 0 2012-03-17 18:57 id
--r--r--r-- 1 root root 0 2012-03-17 18:57 midi0
--r--r--r-- 1 root root 0 2012-03-17 18:57 usbbus
--r--r--r-- 1 root root 0 2012-03-17 18:57 usbid
-
-lsusb -v for the device returns:
-
-Bus 001 Device 003: ID 0dba:b011
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  idVendor           0x0dba
-  idProduct          0xb011
-  bcdDevice           20.01
-  iManufacturer           1 Digidesign
-  iProduct                2 Eleven Rack
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          419
-bNumInterfaces          5
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower              100mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       254 Application Specific Interface
-      bInterfaceSubClass      1 Device Firmware Update
-      bInterfaceProtocol      0
-      iInterface              3 Eleven Rack DFU
-      Device Firmware Upgrade Interface Descriptor:
-        bLength                             7
-        bDescriptorType                    33
-        bmAttributes                        1
-          Will Not Detach
-Manifestation Intolerant
-          Upload Unsupported
-          Download Supported
-        wDetachTimeout                   2000 milliseconds
-        wTransferSize                    1032 bytes
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         1
-      bInterfaceCount         4
-      bFunctionClass        255 Vendor Specific Class
-      bFunctionSubClass       0
-      bFunctionProtocol      32
-      iFunction               2 Eleven Rack
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1
-      bInterfaceProtocol     32
-      iInterface              2 Eleven Rack
-      ** UNRECOGNIZED:  09 24 01 00 02 0a ae 00 01
-      ** UNRECOGNIZED:  11 24 02 00 01 01 00 80 06 00 00 00 00 00 00 00 00
-      ** UNRECOGNIZED:  0c 24 03 03 01 06 00 40 80 00 00 00
-      ** UNRECOGNIZED:  11 24 02 02 01 06 00 80 08 00 00 00 00 00 00 00 00
-      ** UNRECOGNIZED:  0c 24 03 01 01 01 00 41 80 00 00 00
-      ** UNRECOGNIZED:  10 24 09 20 ff ff 01 00 06 00 00 00 00 00 01 00
-      ** UNRECOGNIZED:  1a 24 04 40 02 20 02 06 00 00 00 00 00 00 00
-00 00 0c 30 c3 0c 30 c3 00 00 00
-      ** UNRECOGNIZED:  16 24 04 41 01 02 08 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00
-      ** UNRECOGNIZED:  0a 24 0b 80 03 81 82 83 03 00
-      ** UNRECOGNIZED:  08 24 0a 81 03 03 00 00
-      ** UNRECOGNIZED:  08 24 0a 82 00 05 00 00
-      ** UNRECOGNIZED:  08 24 0a 83 00 05 00 00
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
- bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      3 MIDI Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      MIDIStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           67
-      MIDIStreaming Interface Descriptor:
-        bLength                 6
-        bDescriptorType        36
-        bDescriptorSubtype      2 (MIDI_IN_JACK)
-        bJackType               1 Embedded
-        bJackID                 1
-        iJack                   4 Rig
-      MIDIStreaming Interface Descriptor:
-        bLength                 6
-bDescriptorType        36
-        bDescriptorSubtype      2 (MIDI_IN_JACK)
-        bJackType               2 External
-        bJackID                 2
-        iJack                   0
-      MIDIStreaming Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (MIDI_OUT_JACK)
-        bJackType               1 Embedded
-        bJackID                 3
-        bNrInputPins            1
-        baSourceID( 0)          2
-        BaSourcePin( 0)         1
-        iJack                   4 Rig
-      MIDIStreaming Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (MIDI_OUT_JACK)
-        bJackType               2 External
-        bJackID                 4
-
-bNrInputPins            1
-        baSourceID( 0)          1
-        BaSourcePin( 0)         1
-        iJack                   0
-      MIDIStreaming Interface Descriptor:
-        bLength                 6
-        bDescriptorType        36
-        bDescriptorSubtype      2 (MIDI_IN_JACK)
-        bJackType               1 Embedded
-        bJackID                 5
-        iJack                   5 External
-      MIDIStreaming Interface Descriptor:
-        bLength                 6
-        bDescriptorType        36
-        bDescriptorSubtype      2 (MIDI_IN_JACK)
-        bJackType               2 External
-        bJackID                 6
-        iJack                   0
-      MIDIStreaming Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-bDescriptorSubtype      3 (MIDI_OUT_JACK)
-        bJackType               1 Embedded
-        bJackID                 7
-        bNrInputPins            1
-        baSourceID( 0)          6
-        BaSourcePin( 0)         1
-        iJack                   5 External
-      MIDIStreaming Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (MIDI_OUT_JACK)
-        bJackType               2 External
-        bJackID                 8
-        bNrInputPins            1
-        baSourceID( 0)          5
-        BaSourcePin( 0)         1
-        iJack                   0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-        MIDIStreaming Endpoint Descriptor:
-          bLength                 6
-          bDescriptorType        37
-          bDescriptorSubtype      1 (GENERAL)
-          bNumEmbMIDIJack         2
-          baAssocJackID( 0)       1
-          baAssocJackID( 1)       5
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-        MIDIStreaming Endpoint Descriptor:
-          bLength                 6
-          bDescriptorType        37
-          bDescriptorSubtype      1 (GENERAL)
-          bNumEmbMIDIJack         2
-          baAssocJackID( 0)       3
-          baAssocJackID( 1)       7
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol     32
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol     32
-      iInterface              0
-      ** UNRECOGNIZED:  10 24 01 00 00 01 01 00 00 00 06 00 00 00 00 00
-      ** UNRECOGNIZED:  06 24 02 01 04 20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x01a0  1x 416 bytes
-        bInterval               1
-    Interface Descriptor:
-bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol     32
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol     32
-      iInterface              0
-      ** UNRECOGNIZED:  10 24 01 01 00 01 01 00 00 00 08 00 00 00 00 00
-      ** UNRECOGNIZED:  06 24 02 01 04 20
-Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x01a0  1x 416 bytes
-        bInterval               1
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x0001
-  Self Powered
-
-
-I am completely new to this, but if someone can point me in the right
-direction...I would appreciate it,    I have just started trying to
-learn about this and my limited understanding is that it would require
-some additional coding in the quirks code for the snd-usb-audio
-driver.   How can I determine what the quirks are?  Does there exist
-any documentation or how-tos that I can look for on this?  Any help or
-suggestions are appreciated.
-
-sincerely,
-David Alexander
+T24gU3VuLCBNYXIgMTgsIDIwMTIgYXQgMToxOSBBTSwgVHJlbnQgUGllcGhvIDx0cGllcGhvQGdt
+YWlsLmNvbT4gd3JvdGU6Cj4+Cj4+ID4gPiBUaGVyZSdzIGEgd2F5IHRvIGRvIHRoaXMsIGFuZCBp
+dCdzIHRoZSB3YXkgdGhhdCB0aGUgV004OTg4IGRyaXZlciBpcwo+PiA+ID4gZG9pbmcgaXQgLSBv
+YnZpb3VzbHkgeW91J2xsIGhhdmUgZGlmZmVyZW50IGNyaXRlcmlhIGZvciBjaG9vc2luZwo+PiA+
+ID4gY29uc3RyYWludHMgYnV0IHRoZSBhY3R1YWwgYXBwbGljYXRpb24gb2YgdGhlIGNvbnN0cmFp
+bnRzIGlzIGdvaW5nIHRvIGJlCj4+ID4gPiBkb25lIGluIHRoZSBzYW1lIHdheS4KPj4KPj4gPiBT
+aW5jZSB0aGUgY29uc3RyYWludCBpcyBiYXNlZCBvbiB0aGUgY3VycmVudCBjb25maWd1cmF0aW9u
+IG9mIGFub3RoZXIKPj4gPiBEQUksIHRoZSB0d28gREFJcyBuZWVkIHNvbWUgd2F5IHRvIHF1ZXJ5
+IGVhY2ggb3RoZXIncyBwYXJhbWV0ZXJzLiDCoFRoZQo+Pgo+PiBTaW5jZSB0aGV5J3JlIGJvdGgg
+cHJvdmlkZWQgYnkgdGhlIHNhbWUgZHJpdmVyIHRoaXMgaXMgdHJpdmlhbC4KPgo+IEl0J3Mgbm90
+IHRoYXQgdHJpdmlhbCB3aXRoIHRoZSBzdWItc3RyZWFtcyBpbiBxdWVzdGlvbiBhcmVuJ3QgaW4g
+dGhlCj4gc2FtZSBpbnN0YW5jZSBvZiB0aGUgZHJpdmVyLCBlLmcuIHBsYXliYWNrIGFuZCByZWNv
+cmQuwqAgU2F5IHlvdSBoYWQKPiB0d28gV004OTg4IGNvZGVjcywgaG93IGRvZXMgb25lIGNvZGVj
+IGdldCBhIGhhbmRsZSB0byB0aGUgb3RoZXI/Cj4KQSBDT0RFQyBpcyBjb25zdHJhaW5lZCBvbmx5
+IGJ5IGl0cyBvd24sIG5vdCBieSBpdHMgYW5vdGhlciBpbnN0YW5jZS4KSWYgeW91ciBtYWNoaW5l
+IHJvdXRlcyByZWxhdGVkIHNpZ25hbHMgdG8gdHdvIGluc3RhbmNlcyBvZiB0aGUgQ09ERUMsCnRo
+ZW4geW91IGhhdmUgY29uc3RyYWludHMgYXQgbWFjaGluZSBsZXZlbCwgc3RpbGwgbm90IGF0IGNv
+ZGVjIGxldmVsLgpTbyB5b3VyIG1hY2hpbmUgZHJpdmVyIHNob3VsZCBrZWVwIHRyYWNrIG9mIHRo
+ZSBmaXJzdCBhY3RpdmUgY29kZWMncwpjb25maWd1cmF0aW9uIGFuZCBpbXBvc2UgdGhhdCBvbiBk
+YWlzIG9mIHRoZSBvdGhlciBhcyByZXF1ZXN0cyBjb21lLgpJZiBhY3R1YWxseSB5b3VyIG1hY2hp
+bmUgZG9lc24ndCBpbXBvc2UgYW55IHN1Y2ggY29uc3RyYWludCwgaXQgYmVjb21lcwphIHBvbGlj
+eSwgd2hpY2ggc2hvdWxkIGJlIGltcG9zZWQgZnJvbSB1c2VyLXNwYWNlLgoKSW1wbGVtZW50YXRp
+b24gd2lzZSwgbWF5YmUgdHdvIHRpZ2h0bHkgY291cGxlZCBkYWlzIGF0IG1hY2hpbmUgbGV2ZWws
+CmNvdWxkIGJlIHJlcHJlc2VudGVkIGFzIG9uZSB2aXJ0dWFsIGRhaSB3aXRoIGluZGVwZW5kZW50
+IHZpcnR1YWwgJ211dGUnCnN3aXRjaGVzIGZvciBlYWNoIHBoeXNpY2FsIHBhdGg/CgpJIGZpbmQg
+aXQgc28gb2J2aW91cywgc28gcGVyaGFwcyBJIGFtIG92ZXJsb29raW5nIHNvbWV0aGluZyA6RAoK
+LWoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
