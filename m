@@ -1,16 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] [v3] powerpc/8xxx: remove 85xx/86xx
-	restrictions from fsl_guts.h
-Date: Mon, 19 Mar 2012 11:06:39 -0500
-Message-ID: <1332173199-25877-1-git-send-email-timur@freescale.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: ASoC:Question rate constraint between the dais
+Date: Mon, 19 Mar 2012 16:12:42 +0000
+Message-ID: <CAAMvbhEoMYzgEwYo-461DDCps8UYBpUdRoNeFb4-e2b9Lyttvg@mail.gmail.com>
+References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BD2F104149
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:06:53 +0100 (CET)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B80E6104172
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:12:43 +0100 (CET)
+Received: by ghbg19 with SMTP id g19so5761699ghb.38
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 09:12:42 -0700 (PDT)
+In-Reply-To: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,224 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: galak@kernel.crashing.org, broonie@opensource.wolfsonmicro.com, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: Ramesh Babu <ramesh.babu@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Remove the check for CONFIG_PPC_85xx and CONFIG_PPC_86xx from fsl_guts.h.
-The check was originally intended to allow the same header file to
-be used on 85xx and 86xx systems, even though the Global Utilities
-register could be different.  It turns out that they're not actually
-different, and so the check is not necessary.  In addition, neither
-macro is defined for 64-bit e5500 kernels, so that causes a build
-break.
-
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
-
-The ASoC part of this patch applies cleanly to the ASoC for-3.4 branch,
-so this patch should not cause any merge conflicts if carried on the
-PowerPC branch, so I suggest that Kumar pick this up for 3.4 (it fixes a
-potential 64-bit book-e build break), with an ACK from Mark. 
-
- arch/powerpc/include/asm/fsl_guts.h        |   26 +++++---------------------
- arch/powerpc/platforms/85xx/mpc85xx_mds.c  |    2 +-
- arch/powerpc/platforms/85xx/mpc85xx_rdb.c  |    2 +-
- arch/powerpc/platforms/85xx/p1022_ds.c     |    4 ++--
- arch/powerpc/platforms/86xx/mpc8610_hpcd.c |    2 +-
- sound/soc/fsl/mpc8610_hpcd.c               |    8 ++++----
- sound/soc/fsl/p1022_ds.c                   |   10 +++++-----
- 7 files changed, 19 insertions(+), 35 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/fsl_guts.h b/arch/powerpc/include/asm/fsl_guts.h
-index ce04530..aa4c488 100644
---- a/arch/powerpc/include/asm/fsl_guts.h
-+++ b/arch/powerpc/include/asm/fsl_guts.h
-@@ -16,15 +16,6 @@
- #define __ASM_POWERPC_FSL_GUTS_H__
- #ifdef __KERNEL__
- 
--/*
-- * These #ifdefs are safe because it's not possible to build a kernel that
-- * runs on e500 and e600 cores.
-- */
--
--#if !defined(CONFIG_PPC_85xx) && !defined(CONFIG_PPC_86xx)
--#error Only 85xx and 86xx SOCs are supported
--#endif
--
- /**
-  * Global Utility Registers.
-  *
-@@ -36,11 +27,7 @@
-  * different names.  In these cases, one name is chosen to avoid extraneous
-  * #ifdefs.
-  */
--#ifdef CONFIG_PPC_85xx
--struct ccsr_guts_85xx {
--#else
--struct ccsr_guts_86xx {
--#endif
-+struct ccsr_guts {
- 	__be32	porpllsr;	/* 0x.0000 - POR PLL Ratio Status Register */
- 	__be32	porbmsr;	/* 0x.0004 - POR Boot Mode Status Register */
- 	__be32	porimpscr;	/* 0x.0008 - POR I/O Impedance Status and Control Register */
-@@ -77,11 +64,8 @@ struct ccsr_guts_86xx {
- 	u8	res0a8[0xb0 - 0xa8];
- 	__be32	rstcr;		/* 0x.00b0 - Reset Control Register */
- 	u8	res0b4[0xc0 - 0xb4];
--#ifdef CONFIG_PPC_85xx
--	__be32  iovselsr;	/* 0x.00c0 - I/O voltage select status register */
--#else
--	__be32	elbcvselcr;	/* 0x.00c0 - eLBC Voltage Select Ctrl Reg */
--#endif
-+	__be32  iovselsr;	/* 0x.00c0 - I/O voltage select status register
-+					     Called 'elbcvselcr' on 86xx SOCs */
- 	u8	res0c4[0x224 - 0xc4];
- 	__be32  iodelay1;	/* 0x.0224 - IO delay control register 1 */
- 	__be32  iodelay2;	/* 0x.0228 - IO delay control register 2 */
-@@ -136,7 +120,7 @@ struct ccsr_guts_86xx {
-  * ch: The channel on the DMA controller (0, 1, 2, or 3)
-  * device: The device to set as the source (CCSR_GUTS_DMACR_DEV_xx)
-  */
--static inline void guts_set_dmacr(struct ccsr_guts_86xx __iomem *guts,
-+static inline void guts_set_dmacr(struct ccsr_guts __iomem *guts,
- 	unsigned int co, unsigned int ch, unsigned int device)
- {
- 	unsigned int shift = 16 + (8 * (1 - co) + 2 * (3 - ch));
-@@ -172,7 +156,7 @@ static inline void guts_set_dmacr(struct ccsr_guts_86xx __iomem *guts,
-  * ch: The channel on the DMA controller (0, 1, 2, or 3)
-  * value: the new value for the bit (0 or 1)
-  */
--static inline void guts_set_pmuxcr_dma(struct ccsr_guts_86xx __iomem *guts,
-+static inline void guts_set_pmuxcr_dma(struct ccsr_guts __iomem *guts,
- 	unsigned int co, unsigned int ch, unsigned int value)
- {
- 	if ((ch == 0) || (ch == 3)) {
-diff --git a/arch/powerpc/platforms/85xx/mpc85xx_mds.c b/arch/powerpc/platforms/85xx/mpc85xx_mds.c
-index f33662b..e82f06f 100644
---- a/arch/powerpc/platforms/85xx/mpc85xx_mds.c
-+++ b/arch/powerpc/platforms/85xx/mpc85xx_mds.c
-@@ -271,7 +271,7 @@ static void __init mpc85xx_mds_qe_init(void)
- 
- 	if (machine_is(p1021_mds)) {
- 
--		struct ccsr_guts_85xx __iomem *guts;
-+		struct ccsr_guts __iomem *guts;
- 
- 		np = of_find_node_by_name(NULL, "global-utilities");
- 		if (np) {
-diff --git a/arch/powerpc/platforms/85xx/mpc85xx_rdb.c b/arch/powerpc/platforms/85xx/mpc85xx_rdb.c
-index db214cd..1a66c3d 100644
---- a/arch/powerpc/platforms/85xx/mpc85xx_rdb.c
-+++ b/arch/powerpc/platforms/85xx/mpc85xx_rdb.c
-@@ -128,7 +128,7 @@ static void __init mpc85xx_rdb_setup_arch(void)
- #if defined(CONFIG_UCC_GETH) || defined(CONFIG_SERIAL_QE)
- 	if (machine_is(p1025_rdb)) {
- 
--		struct ccsr_guts_85xx __iomem *guts;
-+		struct ccsr_guts __iomem *guts;
- 
- 		np = of_find_node_by_name(NULL, "global-utilities");
- 		if (np) {
-diff --git a/arch/powerpc/platforms/85xx/p1022_ds.c b/arch/powerpc/platforms/85xx/p1022_ds.c
-index 0fe88e3..e74b7cd 100644
---- a/arch/powerpc/platforms/85xx/p1022_ds.c
-+++ b/arch/powerpc/platforms/85xx/p1022_ds.c
-@@ -150,7 +150,7 @@ static void p1022ds_set_monitor_port(enum fsl_diu_monitor_port port)
- {
- 	struct device_node *guts_node;
- 	struct device_node *indirect_node = NULL;
--	struct ccsr_guts_85xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 	u8 __iomem *lbc_lcs0_ba = NULL;
- 	u8 __iomem *lbc_lcs1_ba = NULL;
- 	u8 b;
-@@ -269,7 +269,7 @@ exit:
- void p1022ds_set_pixel_clock(unsigned int pixclock)
- {
- 	struct device_node *guts_np = NULL;
--	struct ccsr_guts_85xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 	unsigned long freq;
- 	u64 temp;
- 	u32 pxclk;
-diff --git a/arch/powerpc/platforms/86xx/mpc8610_hpcd.c b/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
-index 13fa9a6..b8b1f33 100644
---- a/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
-+++ b/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
-@@ -226,7 +226,7 @@ void mpc8610hpcd_set_monitor_port(enum fsl_diu_monitor_port port)
- void mpc8610hpcd_set_pixel_clock(unsigned int pixclock)
- {
- 	struct device_node *guts_np = NULL;
--	struct ccsr_guts_86xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 	unsigned long freq;
- 	u64 temp;
- 	u32 pxclk;
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 0ea4a5a..1f4c3b7 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -58,9 +58,9 @@ static int mpc8610_hpcd_machine_probe(struct snd_soc_card *card)
- {
- 	struct mpc8610_hpcd_data *machine_data =
- 		container_of(card, struct mpc8610_hpcd_data, card);
--	struct ccsr_guts_86xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 
--	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_86xx));
-+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
- 	if (!guts) {
- 		dev_err(card->dev, "could not map global utilities\n");
- 		return -ENOMEM;
-@@ -142,9 +142,9 @@ static int mpc8610_hpcd_machine_remove(struct snd_soc_card *card)
- {
- 	struct mpc8610_hpcd_data *machine_data =
- 		container_of(card, struct mpc8610_hpcd_data, card);
--	struct ccsr_guts_86xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 
--	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_86xx));
-+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
- 	if (!guts) {
- 		dev_err(card->dev, "could not map global utilities\n");
- 		return -ENOMEM;
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index a5d4e80..d0dee59 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -46,7 +46,7 @@
-  * ch: The channel on the DMA controller (0, 1, 2, or 3)
-  * device: The device to set as the target (CCSR_GUTS_DMUXCR_xxx)
-  */
--static inline void guts_set_dmuxcr(struct ccsr_guts_85xx __iomem *guts,
-+static inline void guts_set_dmuxcr(struct ccsr_guts __iomem *guts,
- 	unsigned int co, unsigned int ch, unsigned int device)
- {
- 	unsigned int shift = 16 + (8 * (1 - co) + 2 * (3 - ch));
-@@ -90,9 +90,9 @@ static int p1022_ds_machine_probe(struct snd_soc_card *card)
- {
- 	struct machine_data *mdata =
- 		container_of(card, struct machine_data, card);
--	struct ccsr_guts_85xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 
--	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_85xx));
-+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
- 	if (!guts) {
- 		dev_err(card->dev, "could not map global utilities\n");
- 		return -ENOMEM;
-@@ -164,9 +164,9 @@ static int p1022_ds_machine_remove(struct snd_soc_card *card)
- {
- 	struct machine_data *mdata =
- 		container_of(card, struct machine_data, card);
--	struct ccsr_guts_85xx __iomem *guts;
-+	struct ccsr_guts __iomem *guts;
- 
--	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_85xx));
-+	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
- 	if (!guts) {
- 		dev_err(card->dev, "could not map global utilities\n");
- 		return -ENOMEM;
--- 
-1.7.10.rc1.8.ga99c5.dirty
+T24gMTUgTWFyY2ggMjAxMiAwOTo1MywgUmFtZXNoIEJhYnUgPHJhbWVzaC5iYWJ1QGxpbnV4Lmlu
+dGVsLmNvbT4gd3JvdGU6Cj4gSGkKPgo+IEkgd291bGQgbGlrZSB0byB1bmRlcnN0YW5kIGhvdyB0
+byBoYW5kbGUgdGhlIGRpZmZlcmVudCBzYW1wbGluZyByYXRlcwo+IGJldHdlZW4gZGFpcy4KPgo+
+IEkgbmVlZCB0byBtYWtlIHN1cmUgdGhhdCBhbGwgc2ltdWx0YW5lb3VzIHBsYXliYWNrIGFuZCBj
+YXB0dXJlIChhY3Jvc3MgdGhlCj4gYWxsIGRhaV9saW5rcykgbmVlZHMgdG8gYmUgb2Ygc2FtZSBm
+cmVxdWVuY3kgZmFtaWx5Lgo+IElmIHRoZSBzYW1wbGluZyBmcmVxdWVuY3kgb2YgwqBhIG5ldyBy
+ZXF1ZXN0IGlzIGRpZmZlcmVudCBmcm9tIG9uZ29pbmcKPiBwbGF5YmFjay9jYXB0dXJlLCB0aGVu
+IGl0IG5lZWRzIHRvIGJlIHJlamVjdGVkLgo+Cj4gSG93IGRvIEkgaGFuZGxlIGl0IGluIG1hY2hp
+bmUgZHJpdmVyPwo+CgpBIG1vcmUgZGV0ZXJtaW5pc3RpYyBtZXRob2QgdG8gZG8gdGhpcyB3b3Vs
+ZCBiZSBoYXZlIGEgbWl4ZXIgc2V0dGluZwp0byBzZWxlY3QgdGhlIHNhbXBsZSByYXRlIG9uIGEg
+Y2FyZCB3aWRlIGJhc2VzLgpUaGVuIGFsbCBhcHBsaWNhdGlvbnMgd2lsbCBvbmx5IGhhdmUgb25l
+IHNhbXBsZSByYXRlIHRvIGNob29zZSBmcm9tLgpGWUk6IEFsbCBFTVUgc291bmQgY2FyZHMgZG8g
+aXQgdGhpcyB3YXkuCklmIHRoZSB1c2VyIHdpc2hlcyB0byBjaGFuZ2UgdGhlIHNhbXBsZSByYXRl
+LCB0aGV5IGNsb3NlIGRvd24gYWxsIHRoZQphcHBsaWNhdGlvbnMgdXNpbmcgdGhlIG9sZCByYXRl
+LCBjaGFuZ2UgdGhlIG1peGVyIHNldHRpbmcsIGFuZCB0aGVuCnN0YXJ0IHRoZSBhcHBzIHVwIGF0
+IHRoZSBuZXcgcmF0ZS4KVGhlbiBhcHBsaWNhdGlvbnMgdGhhdCB3aXNoIHRvIHVzZSBkaWZmZXJl
+bnQgc2FtcGxlIHJhdGVzLCB3aWxsIG5lZWQKdG8gcHJvdmlkZSBhIHNhbXBsZSByYXRlIGNvbnZl
+cnNpb24gZnVuY3Rpb24uCkEgbWFqb3JpdHkgb2YgdGhlIHNvdW5kIGNhcmRzIG91dCB0aGVyZSBk
+byA0OEtIeiB3ZWxsLCBidXQgbm90IHNvIHdlbGwKb24gb3RoZXIgcmF0ZXMsIHNvIGRlZmF1bHRp
+bmcgdG8gNDhLSHogaXMgcHJvYmFibHkgdGhlIGJlc3QgY2hvaWNlLgpJIGtub3cgcHVsc2VhdWRp
+byBmYWxscyBvdmVyIGhvcGVsZXNzbHkgaWYgaXQgaXMgc2V0IHRvIDQ0LjFLSHogYW5kCnNvbWUg
+VVNCIHdlYiBjYW0gY2FuIG9ubHkgZG8gNDhLSHogZm9yIHRoZSBNSUMuClNldHRpbmcgZXZlcnl0
+aGluZyB0byA0OEtIeiBjdXJlcyBhIGxvdCBvZiBwcm9ibGVtcy4KT25lIG9mIHRoZSBtb3N0IGRp
+ZmZpY3VsdCB0aGluZ3MgaXMgZ2V0dGluZyA0NC4xS0h6IE1QM3MgZXRjLgpyZXNhbXBsZWQgdG8g
+NDhLSHosIGJ1dCBtb3N0IE1QMyBwbGF5aW5nIGFwcHMgc3VwcG9ydCBnb29kIHJlc2FtcGxlcnMK
+c28gdGhleSBjYW4gc3RpbGwgdGFsayB0byBwdWxzZWF1ZGlvIGF0IDQ4S0h6LgoKS2luZCBSZWdh
+cmRzCgpKYW1lcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
