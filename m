@@ -1,18 +1,18 @@
-From: Stefano Panella <stefano.panella@citrix.com>
-Subject: paravirtualized alsa  kernel driver for XEN
-Date: Mon, 19 Mar 2012 17:15:21 +0000
-Message-ID: <4F6769A9.6090200@citrix.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC: cs4270: Check that we can enable
+ regulators on resume
+Date: Mon, 19 Mar 2012 12:46:24 -0500
+Message-ID: <4F6770F0.70002@freescale.com>
+References: <1332173777-9786-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SMTP.EU.CITRIX.COM (smtp.ctxuk.citrix.com [62.200.22.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E7C51041B0
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 18:06:04 +0100 (CET)
-Received: from stefanop.cam.xci-test.com ([10.80.248.120])	by
-	norwich.cam.xci-test.com with esmtp (Exim 4.72)	(envelope-from
-	<stefano.panella@citrix.com>)	id 1S9g1w-0002SO-JU	for
-	alsa-devel@alsa-project.org; Mon, 19 Mar 2012 17:06:00 +0000
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03139103AFD
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 18:46:33 +0100 (CET)
+In-Reply-To: <1332173777-9786-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Mark Brown wrote:
+> It's possible that the regulator enable will fail and if it does we may
+> as well just give up with trying to bring the rest of the device up and
+> report the original error.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
 
-I am Stefano Panella, I am new to the list and I would like to take the 
-opportunity to ask some questions since I am trying to write a 
-paravirtualized alsa driver for XEN.
+  CC      sound/soc/codecs/cs4270.o
+/home/b04825/git/alsa.guts/sound/soc/codecs/cs4270.c: In function
+'cs4270_soc_resume':
+/home/b04825/git/alsa.guts/sound/soc/codecs/cs4270.c:605:2: error: 'ret'
+undeclared (first use in this function)
+/home/b04825/git/alsa.guts/sound/soc/codecs/cs4270.c:605:2: note: each
+undeclared identifier is reported only once for each function it appears in
 
-If all goes well I would also like to upstream it on linux.
+When I add 'int ret;', it compiles and works.  Note, however, that I have
+no regular support on this board, so I don't know what I'm really testing.
 
-I have been reading the documentation on "Writing an ALSA Driver" and I 
-am still not completely clear on the meaning of the "pointer" callback 
-in the pcm operations.
 
-The description say:
+On a side note, 'reg' should be an 'unsigned int', not an 'int'.
 
-"This callback is called when the PCM middle layer inquires the current 
-hardware position on the buffer."
-
-My question are:
-
-1) In case of a playback stream, is the pointer referring to wich sample 
-is currently playing on the DAC or to which is it the last frame read by 
-the HW from the alsa memory buffer?
-
-2) What does the pointer mean in case of a capture stream? Is it the 
-position of the current frame on the ADC or is the latest frame written 
-into the alsa buffer?
-
-3) in case it is the frame on the DAC/ADC, what happens if the callback 
-does not return the real DAC/ADC frame position but an approximate 
-value, let say rounded to 64 frames only?
-
-4) is there any test I could run to check I have implemented correctly 
-the "pointer" callback? Or any application which would need very high 
-"pointer" precision like frame precision?
-
-Thanks very much in advance,
-
-Stefano
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
