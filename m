@@ -1,89 +1,105 @@
 From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: [PATCH v8] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Mon, 19 Mar 2012 20:59:28 +0900
-Message-ID: <1332158368-14786-1-git-send-email-tomoya.rohm@gmail.com>
-References: <20120317215202.GI3315@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120317215202.GI3315@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v5] sound/soc/lapis: add platform driver for
+	ML7213
+Date: Mon, 19 Mar 2012 21:00:59 +0900
+Message-ID: <1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
+References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 875D2243FE
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 13:00:53 +0100 (CET)
+Received: by dady9 with SMTP id y9so11698401dad.38
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 05:00:52 -0700 (PDT)
+In-Reply-To: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, lars@metafoo.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com, Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Tomoya MORINAGA <tomoya.rohm@gmail.com>, kok.howg.ewe@intel.com, qi.wang@intel.com, joel.clark@intel.com, yong.y.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-ML26124-01HB/ML26124-02GD is 16bit monaural audio CODEC which has high
-resistance to voltage noise. On chip regulator realizes power supply rejection
-ratio be over 90dB so more than 50dB is improved than ever. ML26124-01HB/
-ML26124-02GD can deliver stable audio performance without being affected by noise
-from the power supply circuit and peripheral components. The chip also includes
-a composite video signal output, which can be applied to various portable device
- requirements. The ML26124 is realized these functions into very small package
-the size is only 2.56mm x 2.46mm therefore can be construct high quality sound
-system easily.
-ML26124-01HB is 25pin WCSP package; ML26124-02GD is 32pin WQFN package.
+This driver is for LAPIS Semiconductor ML7213 IOH I2S.
 
 Signed-off-by: Tomoya MORINAGA <tomoya.rohm@gmail.com>
 ---
-v8
+v5
  - Modify codec master/slave setting
- - Modify interconnection/dapm setting
- - Use snd_soc_update_bits not ml26124_update_bits which is delted
- - Change Regmap setting (Add .write_flag_mask = 0x01)
+ - Fix DMA setting some issues
+ - FIX I2S setting some issues
 ---
- sound/soc/codecs/Kconfig   |    4 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/ml26124.c |  681 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ml26124.h |  184 ++++++++++++
- 4 files changed, 871 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/ml26124.c
- create mode 100644 sound/soc/codecs/ml26124.h
+ sound/soc/Kconfig                |    1 +
+ sound/soc/Makefile               |    1 +
+ sound/soc/lapis/Kconfig          |    4 +
+ sound/soc/lapis/Makefile         |    4 +
+ sound/soc/lapis/ioh_i2s.h        |   39 ++
+ sound/soc/lapis/ml7213ioh-plat.c | 1388 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/lapis/ml7213ioh-plat.h |  381 +++++++++++
+ 7 files changed, 1818 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/lapis/Kconfig
+ create mode 100644 sound/soc/lapis/Makefile
+ create mode 100644 sound/soc/lapis/ioh_i2s.h
+ create mode 100644 sound/soc/lapis/ml7213ioh-plat.c
+ create mode 100644 sound/soc/lapis/ml7213ioh-plat.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 6508e8b..e314a66 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -42,6 +42,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9768 if I2C
- 	select SND_SOC_MAX9877 if I2C
-+	select SND_SOC_ML26124 if I2C
- 	select SND_SOC_PCM3008
- 	select SND_SOC_RT5631 if I2C
- 	select SND_SOC_SGTL5000 if I2C
-@@ -436,5 +437,8 @@ config SND_SOC_MAX9768
- config SND_SOC_MAX9877
- 	tristate
- 
-+config SND_SOC_ML26124
-+	tristate
-+
- config SND_SOC_TPA6130A2
- 	tristate
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 6662eb0..9108ee9 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -29,6 +29,7 @@ snd-soc-max9768-objs := max9768.o
- snd-soc-max98088-objs := max98088.o
- snd-soc-max98095-objs := max98095.o
- snd-soc-max9850-objs := max9850.o
-+snd-soc-ml26124-objs := ml26124.o
- snd-soc-pcm3008-objs := pcm3008.o
- snd-soc-rt5631-objs := rt5631.o
- snd-soc-sgtl5000-objs := sgtl5000.o
-@@ -135,6 +136,7 @@ obj-$(CONFIG_SND_SOC_MAX9768)	+= snd-soc-max9768.o
- obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
-+obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
- obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
- obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
-diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 91c9855..97d0d33 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -37,6 +37,7 @@ source "sound/soc/ep93xx/Kconfig"
+ source "sound/soc/fsl/Kconfig"
+ source "sound/soc/imx/Kconfig"
+ source "sound/soc/jz4740/Kconfig"
++source "sound/soc/lapis/Kconfig"
+ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 2feaf37..1f266ee 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_SND_SOC)	+= ep93xx/
+ obj-$(CONFIG_SND_SOC)	+= fsl/
+ obj-$(CONFIG_SND_SOC)   += imx/
+ obj-$(CONFIG_SND_SOC)	+= jz4740/
++obj-$(CONFIG_SND_SOC)	+= lapis/
+ obj-$(CONFIG_SND_SOC)	+= mid-x86/
+ obj-$(CONFIG_SND_SOC)	+= mxs/
+ obj-$(CONFIG_SND_SOC)	+= nuc900/
+diff --git a/sound/soc/lapis/Kconfig b/sound/soc/lapis/Kconfig
 new file mode 100644
-index 0000000..22cb5bf
+index 0000000..551e385
 --- /dev/null
-+++ b/sound/soc/codecs/ml26124.c
-@@ -0,0 +1,681 @@
++++ b/sound/soc/lapis/Kconfig
+@@ -0,0 +1,4 @@
++config SND_SOC_ML7213_PLATFORM
++	tristate "ML7213 IOH ASoC platform driver"
++	help
++	  This option enables support for the AC Link Controllers in ML7213 IOH SoC.
+diff --git a/sound/soc/lapis/Makefile b/sound/soc/lapis/Makefile
+new file mode 100644
+index 0000000..aba1630
+--- /dev/null
++++ b/sound/soc/lapis/Makefile
+@@ -0,0 +1,4 @@
++# Platform
++snd-soc-ml7213-plat-objs := ml7213ioh-plat.o
++
++obj-$(CONFIG_SND_SOC_ML7213_PLATFORM) += snd-soc-ml7213-plat.o
+diff --git a/sound/soc/lapis/ioh_i2s.h b/sound/soc/lapis/ioh_i2s.h
+new file mode 100644
+index 0000000..9f19f70
+--- /dev/null
++++ b/sound/soc/lapis/ioh_i2s.h
+@@ -0,0 +1,39 @@
 +/*
 + * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
 + *
@@ -101,676 +117,1428 @@ index 0000000..22cb5bf
 + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
 + */
 +
++#ifndef ML7213_IOH_I2S
++#define ML7213_IOH_I2S
++
++enum ioh_bclkfs {
++	ML7213IOH_BCLKFS0 = 0,
++	ML7213IOH_BCLKFS1,
++	ML7213IOH_BCLKFS2,
++	ML7213IOH_BCLKFS3,
++	ML7213IOH_BCLKFS4,
++	ML7213IOH_BCLKFS5,
++};
++
++enum ioh_mclkfs {
++	ML7213IOH_MCLKFS0 = 6,
++	ML7213IOH_MCLKFS1,
++	ML7213IOH_MCLKFS2,
++	ML7213IOH_MCLKFS3,
++	ML7213IOH_MCLKFS4,
++	ML7213IOH_MCLKFS5,
++};
++
++#endif
+diff --git a/sound/soc/lapis/ml7213ioh-plat.c b/sound/soc/lapis/ml7213ioh-plat.c
+new file mode 100644
+index 0000000..7b93b2b
+--- /dev/null
++++ b/sound/soc/lapis/ml7213ioh-plat.c
+@@ -0,0 +1,1388 @@
++/*
++ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
++ */
 +#include <linux/module.h>
-+#include <linux/moduleparam.h>
 +#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
-+#include <linux/slab.h>
 +#include <linux/platform_device.h>
-+#include <linux/regmap.h>
++#include <linux/scatterlist.h>
++#include <linux/slab.h>
++#include <linux/delay.h>
++#include <linux/pci.h>
++#include <linux/clk.h>
++#include <linux/dma-mapping.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include "ml26124.h"
++#include <sound/initval.h>
 +
-+#define DVOL_CTL_DVMUTE_ON		BIT(4)	/* Digital volume MUTE On */
-+#define DVOL_CTL_DVMUTE_OFF		0	/* Digital volume MUTE Off */
-+#define ML26124_SAI_NO_DELAY	BIT(1)
-+#define ML26124_SAI_FRAME_SYNC	(BIT(5) | BIT(0)) /* For mono (Telecodec) */
-+#define ML26134_CACHESIZE 212
-+#define ML26124_VMID	BIT(1)
-+#define ML26124_RATES (SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_32000 |\
-+		       SNDRV_PCM_RATE_48000)
-+#define ML26124_FORMATS (SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE |\
-+			 SNDRV_PCM_FMTBIT_S32_LE)
-+#define ML26124_NUM_REGISTER ML26134_CACHESIZE
++#include "ioh_i2s.h"
++#include "ml7213ioh-plat.h"
 +
-+struct ml26124_priv {
-+	u32 mclk;
-+	u32 rate;
-+	struct regmap *regmap;
-+	int clk_in;
-+	struct snd_pcm_substream *substream;
-+};
++static struct ioh_i2s_data *i2s_data;
++static struct ioh_i2s_dma *dmadata;
 +
-+struct clk_coeff {
-+	u32 mclk;
-+	u32 rate;
-+	u8 pllnl;
-+	u8 pllnh;
-+	u8 pllml;
-+	u8 pllmh;
-+	u8 plldiv;
-+};
-+
-+/* ML26124 configuration */
-+static const DECLARE_TLV_DB_SCALE(digital_tlv, -7150, 50, 0);
-+
-+static const DECLARE_TLV_DB_SCALE(alclvl, -2250, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(mingain, -1200, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(maxgain, -675, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(boost_vol, -1200, 75, 0);
-+static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
-+
-+static const char * const ml26124_companding[] = {"16bit PCM", "u-law",
-+						  "A-law"};
-+
-+static const struct soc_enum ml26124_adc_companding_enum
-+	= SOC_ENUM_SINGLE(ML26124_SAI_TRANS_CTL, 6, 3, ml26124_companding);
-+
-+static const struct soc_enum ml26124_dac_companding_enum
-+	= SOC_ENUM_SINGLE(ML26124_SAI_RCV_CTL, 6, 3, ml26124_companding);
-+
-+static const struct snd_kcontrol_new ml26124_snd_controls[] = {
-+	SOC_SINGLE_TLV("Capture Digital Volume", ML26124_RECORD_DIG_VOL, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("Playback Digital Volume", ML26124_PLBAK_DIG_VOL, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("Digital Boost Volume", ML26124_DIGI_BOOST_VOL, 0,
-+			0x3f, 0, boost_vol),
-+	SOC_SINGLE_TLV("EQ Band0 Volume", ML26124_EQ_GAIN_BRAND0, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("EQ Band1 Volume", ML26124_EQ_GAIN_BRAND1, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("EQ Band2 Volume", ML26124_EQ_GAIN_BRAND2, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("EQ Band3 Volume", ML26124_EQ_GAIN_BRAND3, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("EQ Band4 Volume", ML26124_EQ_GAIN_BRAND4, 0,
-+			0xff, 1, digital_tlv),
-+	SOC_SINGLE_TLV("ALC Target Level", ML26124_ALC_TARGET_LEV, 0,
-+			0xf, 1, alclvl),
-+	SOC_SINGLE_TLV("ALC Min Input Volume", ML26124_ALC_MAXMIN_GAIN, 0,
-+			7, 0, mingain),
-+	SOC_SINGLE_TLV("ALC Max Input Volume", ML26124_ALC_MAXMIN_GAIN, 4,
-+			7, 1, maxgain),
-+	SOC_SINGLE_TLV("Playback Limiter Min Input Volume",
-+			ML26124_PL_MAXMIN_GAIN, 0, 7, 0, mingain),
-+	SOC_SINGLE_TLV("Playback Limiter Max Input Volume",
-+			ML26124_PL_MAXMIN_GAIN, 4, 7, 1, maxgain),
-+	SOC_SINGLE_TLV("Playback Boost Volume", ML26124_PLYBAK_BOST_VOL, 0,
-+			0x3f, 0, boost_vol),
-+	SOC_SINGLE("DC High Pass Filter Switch", ML26124_FILTER_EN, 0, 1, 0),
-+	SOC_SINGLE("Noise High Pass Filter Switch", ML26124_FILTER_EN, 1, 1, 0),
-+	SOC_SINGLE("ZC Switch", ML26124_PW_ZCCMP_PW_MNG, 1,
-+		    1, 0),
-+	SOC_SINGLE("EQ Band0 Switch", ML26124_FILTER_EN, 2, 1, 0),
-+	SOC_SINGLE("EQ Band1 Switch", ML26124_FILTER_EN, 3, 1, 0),
-+	SOC_SINGLE("EQ Band2 Switch", ML26124_FILTER_EN, 4, 1, 0),
-+	SOC_SINGLE("EQ Band3 Switch", ML26124_FILTER_EN, 5, 1, 0),
-+	SOC_SINGLE("EQ Band4 Switch", ML26124_FILTER_EN, 6, 1, 0),
-+	SOC_SINGLE("Play Limiter", ML26124_DVOL_CTL, 0, 1, 0),
-+	SOC_SINGLE("Capture Limiter", ML26124_DVOL_CTL, 1, 1, 0),
-+	SOC_SINGLE("Digital Volume Fade Switch", ML26124_DVOL_CTL, 3, 1, 0),
-+	SOC_SINGLE("Digital Switch", ML26124_DVOL_CTL, 4, 1, 0),
-+	SOC_ENUM("DAC Companding", ml26124_dac_companding_enum),
-+	SOC_ENUM("ADC Companding", ml26124_adc_companding_enum),
-+};
-+
-+static const struct snd_kcontrol_new ml26124_output_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", ML26124_SPK_AMP_OUT, 1, 1, 0),
-+	SOC_DAPM_SINGLE("Line in loopback Switch", ML26124_SPK_AMP_OUT, 3, 1,
-+			 0),
-+	SOC_DAPM_SINGLE("PGA Switch", ML26124_SPK_AMP_OUT, 5, 1, 0),
-+};
-+
-+/* Input mux */
-+static const char * const ml26124_input_select[] = {"Analog MIC SingleEnded in",
-+				"Digital MIC in", "Analog MIC Differential in"};
-+
-+static const struct soc_enum ml26124_insel_enum =
-+	SOC_ENUM_SINGLE(ML26124_MIC_IF_CTL, 0, 3, ml26124_input_select);
-+
-+static const struct snd_kcontrol_new ml26124_input_mux_controls =
-+	SOC_DAPM_ENUM("Input Select", ml26124_insel_enum);
-+
-+static const struct snd_kcontrol_new ml26124_line_control =
-+	SOC_DAPM_SINGLE("Switch", ML26124_PW_LOUT_PW_MNG, 1, 1, 0);
-+
-+static const struct snd_soc_dapm_widget ml26124_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("MCLKEN", ML26124_CLK_EN, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLLEN", ML26124_CLK_EN, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLLOE", ML26124_CLK_EN, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS", ML26124_PW_REF_PW_MNG, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Output Mixer", SND_SOC_NOPM, 0, 0,
-+			   &ml26124_output_mixer_controls[0],
-+			   ARRAY_SIZE(ml26124_output_mixer_controls)),
-+	SND_SOC_DAPM_DAC("DAC", "Playback", ML26124_PW_DAC_PW_MNG, 1, 0),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", ML26124_PW_IN_PW_MNG, 1, 0),
-+	SND_SOC_DAPM_PGA("PGA", ML26124_PW_IN_PW_MNG, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
-+			  &ml26124_input_mux_controls),
-+	SND_SOC_DAPM_SWITCH("Line Out Enable", SND_SOC_NOPM, 0, 0,
-+			     &ml26124_line_control),
-+	SND_SOC_DAPM_INPUT("MDIN"),
-+	SND_SOC_DAPM_INPUT("MIN"),
-+	SND_SOC_DAPM_INPUT("LIN"),
-+	SND_SOC_DAPM_OUTPUT("SPOUT"),
-+	SND_SOC_DAPM_OUTPUT("LOUT"),
-+};
-+
-+static const struct snd_soc_dapm_route ml26124_intercon[] = {
-+	/* Supply */
-+	{"DAC", NULL, "MCLKEN"},
-+	{"ADC", NULL, "MCLKEN"},
-+	{"DAC", NULL, "PLLEN"},
-+	{"ADC", NULL, "PLLEN"},
-+	{"DAC", NULL, "PLLOE"},
-+	{"ADC", NULL, "PLLOE"},
-+
-+	/* output mixer */
-+	{"Output Mixer", "DAC Switch", "DAC"},
-+	{"Output Mixer", "Line in loopback Switch", "LIN"},
-+
-+	/* outputs */
-+	{"LOUT", NULL, "Output Mixer"},
-+	{"SPOUT", NULL, "Output Mixer"},
-+	{"Line Out Enable", NULL, "LOUT"},
-+
-+	/* input */
-+	{"ADC", NULL, "Input Mux"},
-+	{"Input Mux", "Analog MIC SingleEnded in", "PGA"},
-+	{"Input Mux", "Analog MIC Differential in", "PGA"},
-+	{"PGA", NULL, "MIN"},
-+};
-+
-+/* PLLOutputFreq(Hz) = InputMclkFreq(Hz) * PLLM / (PLLN * PLLDIV) */
-+static const struct clk_coeff coeff_div[] = {
-+	{12288000, 16000, 0xc, 0x0, 0x20, 0x0, 0x4},
-+	{12288000, 32000, 0xc, 0x0, 0x20, 0x0, 0x4},
-+	{12288000, 48000, 0xc, 0x0, 0x30, 0x0, 0x4},
-+};
-+
-+static struct reg_default ml26124_reg[] = {
-+	/* CLOCK control Register */
-+	{0x00, 0x00 },	/* Sampling Rate */
-+	{0x02, 0x00},	/* PLL NL */
-+	{0x04, 0x00},	/* PLLNH */
-+	{0x06, 0x00},	/* PLLML */
-+	{0x08, 0x00},	/* MLLMH */
-+	{0x0a, 0x00},	/* PLLDIV */
-+	{0x0c, 0x00},	/* Clock Enable */
-+	{0x0e, 0x00},	/* CLK Input/Output Control */
-+
-+	/* System Control Register */
-+	{0x10, 0x00},	/* Software RESET */
-+	{0x12, 0x00},	/* Record/Playback Run */
-+	{0x14, 0x00},	/* Mic Input/Output control */
-+
-+	/* Power Management Register */
-+	{0x20, 0x00},	/* Reference Power Management */
-+	{0x22, 0x00},	/* Input Power Management */
-+	{0x24, 0x00},	/* DAC Power Management */
-+	{0x26, 0x00},	/* SP-AMP Power Management */
-+	{0x28, 0x00},	/* LINEOUT Power Management */
-+	{0x2a, 0x00},	/* VIDEO Power Management */
-+	{0x2e, 0x00},	/* AC-CMP Power Management */
-+
-+	/* Analog reference Control Register */
-+	{0x30, 0x04},	/* MICBIAS Voltage Control */
-+
-+	/* Input/Output Amplifier Control Register */
-+	{0x32, 0x10},	/* MIC Input Volume */
-+	{0x38, 0x00},	/* Mic Boost Volume */
-+	{0x3a, 0x33},	/* Speaker AMP Volume */
-+	{0x48, 0x00},	/* AMP Volume Control Function Enable */
-+	{0x4a, 0x00},	/* Amplifier Volume Fader Control */
-+
-+	/* Analog Path Control Register */
-+	{0x54, 0x00},	/* Speaker AMP Output Control */
-+	{0x5a, 0x00},	/* Mic IF Control */
-+	{0xe8, 0x01},	/* Mic Select Control */
-+
-+	/* Audio Interface Control Register */
-+	{0x60, 0x00},	/* SAI-Trans Control */
-+	{0x62, 0x00},	/* SAI-Receive Control */
-+	{0x64, 0x00},	/* SAI Mode select */
-+
-+	/* DSP Control Register */
-+	{0x66, 0x01},	/* Filter Func Enable */
-+	{0x68, 0x00},	/* Volume Control Func Enable */
-+	{0x6A, 0x00},	/* Mixer & Volume Control*/
-+	{0x6C, 0xff},	/* Record Digital Volume */
-+	{0x70, 0xff},	/* Playback Digital Volume */
-+	{0x72, 0x10},	/* Digital Boost Volume */
-+	{0x74, 0xe7},	/* EQ gain Band0 */
-+	{0x76, 0xe7},	/* EQ gain Band1 */
-+	{0x78, 0xe7},	/* EQ gain Band2 */
-+	{0x7A, 0xe7},	/* EQ gain Band3 */
-+	{0x7C, 0xe7},	/* EQ gain Band4 */
-+	{0x7E, 0x00},	/* HPF2 CutOff*/
-+	{0x80, 0x00},	/* EQ Band0 Coef0L */
-+	{0x82, 0x00},	/* EQ Band0 Coef0H */
-+	{0x84, 0x00},	/* EQ Band0 Coef0L */
-+	{0x86, 0x00},	/* EQ Band0 Coef0H */
-+	{0x88, 0x00},	/* EQ Band1 Coef0L */
-+	{0x8A, 0x00},	/* EQ Band1 Coef0H */
-+	{0x8C, 0x00},	/* EQ Band1 Coef0L */
-+	{0x8E, 0x00},	/* EQ Band1 Coef0H */
-+	{0x90, 0x00},	/* EQ Band2 Coef0L */
-+	{0x92, 0x00},	/* EQ Band2 Coef0H */
-+	{0x94, 0x00},	/* EQ Band2 Coef0L */
-+	{0x96, 0x00},	/* EQ Band2 Coef0H */
-+	{0x98, 0x00},	/* EQ Band3 Coef0L */
-+	{0x9A, 0x00},	/* EQ Band3 Coef0H */
-+	{0x9C, 0x00},	/* EQ Band3 Coef0L */
-+	{0x9E, 0x00},	/* EQ Band3 Coef0H */
-+	{0xA0, 0x00},	/* EQ Band4 Coef0L */
-+	{0xA2, 0x00},	/* EQ Band4 Coef0H */
-+	{0xA4, 0x00},	/* EQ Band4 Coef0L */
-+	{0xA6, 0x00},	/* EQ Band4 Coef0H */
-+
-+	/* ALC Control Register */
-+	{0xb0, 0x00},	/* ALC Mode */
-+	{0xb2, 0x02},	/* ALC Attack Time */
-+	{0xb4, 0x03},	/* ALC Decay Time */
-+	{0xb6, 0x00},	/* ALC Hold Time */
-+	{0xb8, 0x0b},	/* ALC Target Level */
-+	{0xba, 0x70},	/* ALC Max/Min Gain */
-+	{0xbc, 0x00},	/* Noise Gate Threshold */
-+	{0xbe, 0x00},	/* ALC ZeroCross TimeOut */
-+
-+	/* Playback Limiter Control Register */
-+	{0xc0, 0x04},	/* PL Attack Time */
-+	{0xc2, 0x05},	/* PL Decay Time */
-+	{0xc4, 0x0d},	/* PL Target Level */
-+	{0xc6, 0x70},	/* PL Max/Min Gain */
-+	{0xc8, 0x10},	/* Playback Boost Volume */
-+	{0xca, 0x00},	/* PL ZeroCross TimeOut */
-+
-+	/* Video Amplifier Control Register */
-+	{0xd0, 0x01},	/* VIDEO AMP Gain Control */
-+	{0xd2, 0x01},	/* VIDEO AMP Setup 1 */
-+	{0xd4, 0x01},	/* VIDEO AMP Control2 */
-+};
-+
-+/* Get sampling rate value of sampling rate setting register (0x0) */
-+static inline int get_srate(int rate)
++/* I2S HAL (Hardware Abstruction Layer) */
++static void ioh_i2s_reset(int ch)
 +{
-+	int srate;
++	iowrite32(1 << ch, i2s_data->iobase + I2SSRST_OFFSET);
++	iowrite32(0, i2s_data->iobase + I2SSRST_OFFSET);
++}
 +
-+	switch (rate) {
-+	case 16000:
-+		srate = 3;
++static void ioh_i2s_enable_interrupts(int ch, int dir)
++{
++	unsigned int intr_lines = 0;
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		intr_lines = 1 << (I2S_IMASK_RX_BIT_START + ch);
 +		break;
-+	case 32000:
-+		srate = 6;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		intr_lines = 1 << (I2S_IMASK_TX_BIT_START + ch);
 +		break;
-+	case 48000:
-+		srate = 8;
++	}
++
++	/* enable interrupts for specified channel */
++	iowrite32(intr_lines, i2s_data->iobase + I2SIMASKCLR_OFFSET);
++}
++
++static void ioh_i2s_disable_interrupts(int ch, int dir)
++{
++	unsigned int intr_lines;
++
++	intr_lines = ioread32(i2s_data->iobase + I2SIMASK_OFFSET);
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		intr_lines |= 1 << (I2S_IMASK_RX_BIT_START + ch);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		intr_lines |= 1 << (I2S_IMASK_TX_BIT_START + ch);
++		break;
++	}
++
++	/* Mask the specific interrupt bits */
++	iowrite32(intr_lines, i2s_data->iobase + I2SIMASK_OFFSET);
++}
++
++#define IOH_FIFO_CLR	0
++#define IOH_FIFO_RUN	1
++
++static void ioh_i2s_ctrl_fifo(int ch, int dir, int ctrl)
++{
++	int offset = ch * 0x800;
++	u32 val;
++	u32 reg_addr = 0;
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		reg_addr = I2SFIFOCRX_OFFSET;
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		reg_addr = I2SFIFOCTX_OFFSET;
++		break;
++	}
++
++	val = ioread32(i2s_data->iobase + reg_addr + offset);
++	if (ctrl)
++		val |= I2S_FIFO_TX_RUN;
++	else
++		val |= I2S_FIFO_TX_FCLR;
++
++	iowrite32(val, i2s_data->iobase + reg_addr + offset);
++}
++
++/* Clear interrupt status */
++static void ioh_i2s_clear_sts_ir(int ch, int dir)
++{
++	int offset = ch * 0x800;
++	u32 reg_addr = 0;
++	u32 val = 0;
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		reg_addr = I2SISTRX_OFFSET;
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		reg_addr = I2SISTTX_OFFSET;
++		break;
++	}
++	val = ioread32(i2s_data->iobase + reg_addr + offset) & 0xf;
++	if (val)
++		iowrite32(val, i2s_data->iobase + reg_addr + offset);
++}
++
++static void ioh_i2s_clear_dma_mask(int ch, int dir)
++{
++	u32 val = 0;
++	u32 mask = 0;
++	u32 reg_addr = 0;
++	int offset = ch * 0x800;
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		reg_addr = I2SMSKRX_OFFSET;
++		mask = RX_BIT_DMAMSK;
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		reg_addr = I2SMSKTX_OFFSET;
++		mask = TX_BIT_DMAMSK;
++		break;
++	}
++
++	val = ioread32(i2s_data->iobase + reg_addr + offset);
++	val &= ~mask; /* Enable Tx DMA Request */
++
++	iowrite32(val, i2s_data->iobase + reg_addr + offset);
++}
++
++#define IOH_DIS_IRQ		0
++#define IOH_EN_IRQ		1
++
++static void ioh_i2s_irq_ctrl(int ch, int dir, int ctrl)
++{
++	u32 val;
++	int offset = ch * 0x800;
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		val = ioread32(i2s_data->iobase + I2SMSKRX_OFFSET + offset);
++		if (ctrl) {
++			val &= ~RX_BIT_AFIMSK; /* Enable Almost empty IR */
++			val &= ~RX_BIT_FIMSK; /* Enable Empty IR */
++		} else {
++			val |= RX_BIT_AFIMSK; /* Disble Almost full IR */
++			val |= RX_BIT_FIMSK; /* Disble full IR */
++		}
++		iowrite32(val, i2s_data->iobase + I2SMSKRX_OFFSET + offset);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		val = ioread32(i2s_data->iobase + I2SMSKTX_OFFSET + offset);
++		if (ctrl) {
++			val &= ~TX_BIT_AEIMSK; /* Enable Almost empty IR */
++			val &= ~TX_BIT_EIMSK; /* Enable Empty IR */
++		} else {
++			val |= TX_BIT_AEIMSK; /* Disble Almost empty IR */
++			val |= TX_BIT_EIMSK; /* Disble Empty IR */
++		}
++		iowrite32(val, i2s_data->iobase + I2SMSKTX_OFFSET + offset);
++		break;
++	}
++
++}
++
++/* Linux standard DMA functions */
++static bool ioh_dma_filter(struct dma_chan *chan, void *slave)
++{
++	struct pch_dma_slave *param = slave;
++
++	if ((chan->chan_id == param->chan_id) && (param->dma_dev ==
++						  chan->device->dev)) {
++		chan->private = param;
++		return true;
++	} else {
++		return false;
++	}
++}
++
++int ioh_request_dma_channel(
++		   int ch, struct ioh_i2s_dma *ioh, enum dma_data_direction dir)
++{
++	dma_cap_mask_t mask;
++	struct dma_chan *chan;
++	struct pci_dev *dma_dev;
++	dma_cap_zero(mask);
++	dma_cap_set(DMA_SLAVE, mask);
++
++	dma_dev = pci_get_bus_and_slot(2, PCI_DEVFN(0, 1)); /* Get DMA's dev
++								information */
++
++	switch (dir) {
++	case DMA_FROM_DEVICE:
++		ioh->param_rx.width = ioh->dma_rx_width;
++		ioh->param_rx.dma_dev = &dma_dev->dev;
++		ioh->param_rx.chan_id = ch * 2 + 1; /* ch Rx=1,3,...11 */
++		ioh->param_rx.rx_reg = (dma_addr_t)(i2s_data->mapbase +
++					ch * 0x800 + I2SDRRXMIRROR_OFFSET);
++		chan = dma_request_channel(mask, ioh_dma_filter,
++					   &ioh->param_rx);
++		if (chan == NULL) {
++			dev_err(i2s_data->dev, "Failed dma_request_channel for"
++				" I2S %d\n", ch);
++			return -ENOMEM;
++		}
++		ioh->chan_rx = chan;
++		break;
++	case DMA_TO_DEVICE:
++		ioh->param_tx.width = ioh->dma_tx_width;
++		ioh->param_tx.dma_dev = &dma_dev->dev;
++		ioh->param_tx.chan_id = ch * 2; /* DMA ch Tx=0,2,...10 */
++
++		ioh->param_tx.tx_reg = (dma_addr_t)(i2s_data->mapbase +
++					ch * 0x800 + I2SDRTXMIRROR_OFFSET);
++
++		chan = dma_request_channel(mask, ioh_dma_filter,
++					   &ioh->param_tx);
++		if (chan == NULL) {
++			dev_err(i2s_data->dev, "Failed dma_request_channel for"
++				" I2S %d\n", ch);
++			return -ENOMEM;
++		}
++		ioh->chan_tx = chan;
 +		break;
 +	default:
++		dev_err(i2s_data->dev, "Invalid direction (%d)\n", dir);
 +		return -EINVAL;
 +	}
-+	return srate;
++
++	return 0;
 +}
 +
-+static inline int get_coeff(int mclk, int rate)
++static void ioh_i2s_configure_i2s_regs(int ch, int dir)
++{
++	int offset = ch * 0x800;
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		/* Rx register */
++		iowrite32(I2S_AFULL_THRESH / 2,
++		i2s_data->iobase + I2SAFRX_OFFSET + offset);
++		iowrite32(ML7213_I2SAERX_DEFAULT,
++			  i2s_data->iobase + I2SAERX_OFFSET + offset);
++		iowrite32(ML7213_I2SMSKRX_DEFAULT,
++			  i2s_data->iobase + I2SMSKRX_OFFSET + offset);
++		iowrite32(ML7213_I2SISTRX_DEFAULT,
++			  i2s_data->iobase + I2SISTRX_OFFSET + offset);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		iowrite32(0, i2s_data->iobase + I2SAFTX_OFFSET + offset);
++		iowrite32(I2S_AEMPTY_THRESH / 2,
++		i2s_data->iobase + I2SAETX_OFFSET + offset);
++		iowrite32(ML7213_I2SMSKTX_DEFAULT,
++			  i2s_data->iobase + I2SMSKTX_OFFSET + offset);
++		iowrite32(ML7213_I2SISTTX_DEFAULT,
++			  i2s_data->iobase + I2SISTTX_OFFSET + offset);
++		break;
++	}
++}
++
++static void i2s_dma_rx_complete(void *arg)
++{
++	struct ioh_i2s_dma *ioh = (struct ioh_i2s_dma *)arg;
++	struct ml7213i2s_runtime_data *ioh_rtd =
++				ioh->rx_substream->runtime->private_data;
++
++	pr_debug("%s in rx_cur_period=%d\n", __func__, ioh->rx_cur_period);
++
++	if (ioh_rtd->rx_stop) {
++		pr_debug("%s stopped. return.\n", __func__);
++		return;
++	}
++
++	ioh->rx_cur_period++;
++	if (ioh->rx_cur_period == ioh->rx_buf_frags)
++		ioh->rx_cur_period = 0;
++
++	async_tx_ack(ioh->desc_rx);
++	if (ioh->rx_substream)
++		snd_pcm_period_elapsed(ioh->rx_substream);
++	ioh_i2s_irq_ctrl(ioh->number, SNDRV_PCM_STREAM_CAPTURE, IOH_EN_IRQ);
++}
++
++static void i2s_dma_tx_complete(void *arg)
++{
++	struct ioh_i2s_dma *ioh = (struct ioh_i2s_dma *)arg;
++	struct ml7213i2s_runtime_data *ioh_rtd =
++				ioh->tx_substream->runtime->private_data;
++
++	if (ioh_rtd->tx_stop) {
++		pr_debug("%s stopped. return.\n", __func__);
++		return;
++	}
++
++	ioh->tx_cur_period++;
++	if (ioh->tx_cur_period == ioh->tx_buf_frags)
++		ioh->tx_cur_period = 0;
++
++	async_tx_ack(ioh->desc_tx);
++
++	if (ioh->tx_substream)
++		snd_pcm_period_elapsed(ioh->tx_substream);
++
++	ioh_i2s_irq_ctrl(ioh->number, SNDRV_PCM_STREAM_PLAYBACK, IOH_EN_IRQ);
++}
++
++static void i2s_dma_rx_start(struct ioh_i2s_dma *ioh, char *buff)
++{
++	struct dma_async_tx_descriptor *desc;
++	int rx_size;
++	int rx_num;
++	int i;
++	struct scatterlist *sg;
++
++	rx_size = I2S_AFULL_THRESH * ioh->dma_rx_unit;
++
++	/* The number of scatter list (Franction area is not used) */
++	if (ioh->rx_period_bytes % rx_size)
++		/* rx_num = The number of scatter list */
++		rx_num = ioh->rx_period_bytes / rx_size + 1;
++	else
++		rx_num = ioh->rx_period_bytes / rx_size;
++
++	dev_dbg(i2s_data->dev, "%s: rx: scatter_num=%d scatter_size=%d\n",
++		__func__, rx_num, rx_size);
++
++	ioh->sg_rx_p =
++	       kzalloc(sizeof(struct scatterlist) * rx_num, GFP_ATOMIC);
++
++	sg = ioh->sg_rx_p;
++
++	sg_init_table(sg, rx_num); /* Initialize SG table */
++	for (i = 0; i < rx_num; i++, sg++) {
++		sg_set_page(sg,  virt_to_page(buff), rx_size, rx_size * i);
++		sg_dma_len(sg) = rx_size / ioh->dma_rx_unit;
++		sg_dma_address(sg) = ioh->rx_physical_addr + sg->offset;
++	}
++	ioh->rx_nent = rx_num;
++
++	dma_sync_sg_for_device(i2s_data->dev, ioh->sg_rx_p, ioh->rx_nent,
++			       DMA_FROM_DEVICE);
++
++	sg = ioh->sg_rx_p;
++
++	desc = ioh->chan_rx->device->device_prep_slave_sg(ioh->chan_rx,
++			sg, rx_num, DMA_FROM_DEVICE,
++			DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++	if (!desc) {
++		dev_err(i2s_data->dev, "%s:device_prep_slave_sg Failed\n",
++			__func__);
++		return;
++	}
++	ioh_i2s_irq_ctrl(ioh->number, SNDRV_PCM_STREAM_CAPTURE, IOH_DIS_IRQ);
++
++	ioh->desc_rx = desc;
++
++	desc->callback = i2s_dma_rx_complete;
++	desc->callback_param = ioh;
++
++	desc->tx_submit(desc);
++}
++
++static void i2s_dma_tx_start(struct ioh_i2s_dma *ioh, char *buff)
++{
++	struct dma_async_tx_descriptor *desc;
++	int tx_size;
++	int tx_num;
++	int i;
++	struct scatterlist *sg;
++
++	tx_size = I2S_AEMPTY_THRESH * ioh->dma_tx_unit;
++	if (ioh->tx_period_bytes % tx_size)
++		/* tx_num = The number of scatter list */
++		tx_num = ioh->tx_period_bytes / tx_size + 1;
++	else
++		tx_num = ioh->tx_period_bytes / tx_size;
++
++	dev_dbg(i2s_data->dev, "%s: tx: scatter_num=%d scatter_size=%d\n",
++		__func__, tx_num, tx_size);
++
++	ioh->sg_tx_p =
++	       kzalloc(sizeof(struct scatterlist) * tx_num, GFP_ATOMIC);
++
++	sg = ioh->sg_tx_p;
++	sg_init_table(sg, tx_num); /* Initialize SG table */
++
++	for (i = 0; i < tx_num; i++, sg++) {
++		sg_set_page(sg,  virt_to_page(buff), tx_size, tx_size * i);
++		sg_dma_len(sg) = tx_size / ioh->dma_tx_unit;
++		sg_dma_address(sg) = ioh->tx_physical_addr + sg->offset;
++	}
++	ioh->tx_nent = tx_num;
++
++	dma_sync_sg_for_device(i2s_data->dev, ioh->sg_tx_p, ioh->tx_nent,
++			       DMA_TO_DEVICE);
++
++	sg = ioh->sg_tx_p;
++
++	desc = ioh->chan_tx->device->device_prep_slave_sg(ioh->chan_tx,
++					sg, tx_num, DMA_TO_DEVICE,
++					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++	if (!desc) {
++		dev_err(i2s_data->dev, "%s:device_prep_slave_sg Failed\n",
++			__func__);
++		return;
++	}
++
++	ioh_i2s_irq_ctrl(ioh->number, SNDRV_PCM_STREAM_PLAYBACK, IOH_DIS_IRQ);
++
++	ioh->desc_tx = desc;
++
++	desc->callback = i2s_dma_tx_complete;
++	desc->callback_param = ioh;
++	desc->tx_submit(desc);
++}
++
++static void ioh_release_dma_channel(int ch, int dir)
++{
++	struct ioh_i2s_dma *ioh;
++
++	ioh = &dmadata[ch];
++
++	switch (dir) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		dma_sync_sg_for_cpu(i2s_data->dev, ioh->sg_rx_p, ioh->rx_nent,
++				    DMA_FROM_DEVICE);
++
++		if (ioh->chan_rx) {
++			ioh->chan_rx->device->device_control(ioh->chan_rx,
++							     DMA_TERMINATE_ALL,
++							     0);
++			dma_release_channel(ioh->chan_rx);
++			ioh->chan_rx = NULL;
++		}
++
++		kfree(ioh->sg_rx_p);
++		ioh->rx_buf_dma = 0;
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		dma_sync_sg_for_cpu(i2s_data->dev, ioh->sg_tx_p, ioh->tx_nent,
++				    DMA_TO_DEVICE);
++
++		if (ioh->chan_tx) {
++			ioh->chan_tx->device->device_control(ioh->chan_tx,
++							     DMA_TERMINATE_ALL,
++							     0);
++			dma_release_channel(ioh->chan_tx);
++			ioh->chan_tx = NULL;
++		}
++		kfree(ioh->sg_tx_p);
++		ioh->tx_buf_dma = 0;
++		break;
++	}
++}
++
++void ioh_i2s_event(u32 idisp, int ch)
++{
++	unsigned long flags;
++	unsigned int status;
++	char *buff;
++	int offset = ch * 0x800;
++	struct ioh_i2s_dma *ioh = &dmadata[ch];
++	struct ml7213i2s_runtime_data *ioh_rtd;
++
++	spin_lock_irqsave(&i2s_data->tx_lock, flags);
++
++	if (idisp & BIT(ch + 16)) {
++		dev_dbg(i2s_data->dev, "Rx%d interrupt occures\n", ch);
++		ioh_rtd = ioh->rx_substream->runtime->private_data;
++		buff = ioh->rx_dma_addr +
++				      ioh->rx_cur_period * ioh->rx_period_bytes;
++		status = ioread32(i2s_data->iobase + I2SISTRX_OFFSET + offset);
++
++		if (status & I2S_RX_FINT)
++			dev_dbg(i2s_data->dev, "%s:I2S%d overrun occurs\n",
++				__func__, ch);
++		if (status & I2S_RX_AFINT)
++			if (!ioh_rtd->rx_stop)
++				i2s_dma_rx_start(ioh, buff);
++
++		/*Clear the interrupt status */
++		iowrite32(status, i2s_data->iobase + I2SISTRX_OFFSET + offset);
++	}
++
++	if (idisp & BIT(ch)) {
++		dev_dbg(i2s_data->dev, "Tx%d interrupt occures\n", ch);
++		ioh_rtd = ioh->tx_substream->runtime->private_data;
++		buff = ioh->tx_dma_addr +
++				      ioh->tx_cur_period * ioh->tx_period_bytes;
++
++		status = ioread32(i2s_data->iobase + I2SISTTX_OFFSET + offset);
++		if (status & I2S_TX_EINT)
++			dev_dbg(i2s_data->dev, "%s:I2S%d under flow occurs\n",
++				__func__, ch);
++		if (status & I2S_TX_AEINT)
++			if (!ioh_rtd->tx_stop)
++				i2s_dma_tx_start(ioh, buff);
++
++		/*Clear the interrupt status */
++		iowrite32(status, i2s_data->iobase + I2SISTTX_OFFSET + offset);
++	}
++	spin_unlock_irqrestore(&i2s_data->tx_lock, flags);
++	return;
++}
++
++static irqreturn_t ioh_i2s_irq(int irq, void *data)
 +{
 +	int i;
++	u32 idisp;
 +
-+	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
-+		if (coeff_div[i].rate == rate && coeff_div[i].mclk == mclk)
-+			return i;
-+	}
-+	return -EINVAL;
++	idisp = ioread32(i2s_data->iobase + I2SIDISP_OFFSET);
++	for (i = 0; i < MAX_I2S_CH; i++)
++		ioh_i2s_event(idisp, i);
++
++	return IRQ_HANDLED;
 +}
 +
-+static int ml26124_hw_params(struct snd_pcm_substream *substream,
++static int snd_card_ml7213i2s_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct ml7213i2s_runtime_data *ioh_rtd;
++
++	ioh_rtd = kzalloc(sizeof(*ioh_rtd), GFP_KERNEL);
++	if (ioh_rtd == NULL)
++		return -ENOMEM;
++
++	runtime->private_data = ioh_rtd;
++	runtime->hw = ml7213i2s_pcm_hw;
++
++	/* makes the infrastructure responsible for freeing dma */
++	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	snd_soc_set_runtime_hwparams(substream, &ml7213i2s_pcm_hw);
++
++	spin_lock_init(&ioh_rtd->lock);
++	return 0;
++}
++
++static int snd_card_ml7213i2s_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int ch;
++
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		ch = dmadata[substream->number].mapped_rx_ch;
++		ioh_release_dma_channel(ch, SNDRV_PCM_STREAM_CAPTURE);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		ch = dmadata[substream->number].mapped_tx_ch;
++		ioh_release_dma_channel(ch, SNDRV_PCM_STREAM_PLAYBACK);
++		break;
++	}
++
++	kfree(runtime->private_data);
++
++	return 0;
++}
++
++static int snd_card_ml7213i2s_hw_params(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct ml7213i2s_runtime_data *ioh_rtd = runtime->private_data;
++	struct ioh_i2s_dma *dma =
++			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++	int err;
++	int ch;
++
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		ioh_rtd->rx_dma = dma;
++		ch = dmadata[substream->number].mapped_rx_ch;
++		err = ioh_request_dma_channel(ch, &dmadata[ch],
++					      DMA_FROM_DEVICE);
++		if (err)
++			return err;
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		ioh_rtd->tx_dma = dma;
++		ch = dmadata[substream->number].mapped_tx_ch;
++		err = ioh_request_dma_channel(ch, &dmadata[ch],
++					      DMA_TO_DEVICE);
++		if (err)
++			return err;
++		break;
++	}
++
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++	runtime->dma_bytes = params_buffer_bytes(hw_params);
++
++	return snd_pcm_lib_malloc_pages(substream,
++					params_buffer_bytes(hw_params));
++}
++
++static int snd_card_ml7213i2s_hw_free(struct snd_pcm_substream *substream)
++{
++	struct ml7213i2s_runtime_data *ioh_rtd;
++	ioh_rtd = substream->runtime->private_data;
++
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		ioh_rtd->rx_dma = NULL;
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		ioh_rtd->tx_dma = NULL;
++		break;
++	}
++	snd_pcm_set_runtime_buffer(substream, NULL);
++
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static int snd_card_ml7213i2s_pcm_trigger
++				(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct ml7213i2s_runtime_data *ioh_rtd = runtime->private_data;
++	int err = 0;
++	unsigned long flags;
++	int ch;
++	struct ioh_i2s_dma *ioh;
++
++	spin_lock_irqsave(&ioh_rtd->lock, flags);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		switch (substream->stream) {
++		case SNDRV_PCM_STREAM_CAPTURE:
++			ioh_rtd->rx_stop = 0;
++			ch = dmadata[substream->number].mapped_rx_ch;
++			pr_debug("%s Capture start.(ch=%d)\n", __func__, ch);
++			ioh = &dmadata[ch];
++			ioh->rx_substream = substream;
++
++			ioh_i2s_configure_i2s_regs(ch,
++						   SNDRV_PCM_STREAM_CAPTURE);
++			ioh_i2s_ctrl_fifo(ch, SNDRV_PCM_STREAM_CAPTURE,
++					  IOH_FIFO_CLR);
++			ioh_i2s_clear_sts_ir(ch, SNDRV_PCM_STREAM_CAPTURE);
++			ioh_i2s_irq_ctrl(ch, SNDRV_PCM_STREAM_CAPTURE,
++					 IOH_EN_IRQ);
++			ioh_i2s_ctrl_fifo(ch, SNDRV_PCM_STREAM_CAPTURE,
++					  IOH_FIFO_RUN);
++			ioh_i2s_clear_dma_mask(ch, SNDRV_PCM_STREAM_CAPTURE);
++			ioh_i2s_enable_interrupts(ch, SNDRV_PCM_STREAM_CAPTURE);
++			break;
++		case SNDRV_PCM_STREAM_PLAYBACK:
++			if (!ioh_rtd)
++				return -1;
++			if (!substream)
++				return -1;
++			ioh_rtd->tx_stop = 0;
++			ch = dmadata[substream->number].mapped_tx_ch;
++			pr_debug("%s Playback start.(ch=%d)\n", __func__, ch);
++			ioh = &dmadata[ch];
++			ioh->tx_substream = substream;
++
++			ioh_i2s_configure_i2s_regs(ch,
++						   SNDRV_PCM_STREAM_PLAYBACK);
++			ioh_i2s_ctrl_fifo(ch, SNDRV_PCM_STREAM_PLAYBACK,
++					  IOH_FIFO_CLR);
++			ioh_i2s_clear_sts_ir(ch, SNDRV_PCM_STREAM_PLAYBACK);
++			ioh_i2s_irq_ctrl(ch, SNDRV_PCM_STREAM_PLAYBACK,
++					 IOH_EN_IRQ);
++			ioh_i2s_ctrl_fifo(ch, SNDRV_PCM_STREAM_PLAYBACK,
++					  IOH_FIFO_RUN);
++			ioh_i2s_clear_dma_mask(ch, SNDRV_PCM_STREAM_PLAYBACK);
++			ioh_i2s_enable_interrupts(ch,
++						  SNDRV_PCM_STREAM_PLAYBACK);
++			break;
++		}
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		switch (substream->stream) {
++		case SNDRV_PCM_STREAM_CAPTURE:
++			ioh_rtd->rx_stop = 1;
++			ch = dmadata[substream->number].mapped_rx_ch;
++			pr_debug("%s Capture stop.(ch=%d)\n", __func__, ch);
++			ioh_i2s_disable_interrupts(ch,
++						   SNDRV_PCM_STREAM_CAPTURE);
++			ioh_i2s_irq_ctrl(ch, SNDRV_PCM_STREAM_CAPTURE,
++					 IOH_DIS_IRQ);
++			ioh_i2s_clear_sts_ir(ch, SNDRV_PCM_STREAM_CAPTURE);
++			ioh_i2s_ctrl_fifo(ch, SNDRV_PCM_STREAM_CAPTURE,
++					  IOH_FIFO_CLR);
++			break;
++		case SNDRV_PCM_STREAM_PLAYBACK:
++			ioh_rtd->tx_stop = 1;
++			ch = dmadata[substream->number].mapped_tx_ch;
++			pr_debug("%s Playback stop.(ch=%d)\n", __func__, ch);
++			ioh_i2s_disable_interrupts(ch,
++						   SNDRV_PCM_STREAM_PLAYBACK);
++			ioh_i2s_irq_ctrl(ch, SNDRV_PCM_STREAM_PLAYBACK,
++					 IOH_DIS_IRQ);
++			ioh_i2s_clear_sts_ir(ch, SNDRV_PCM_STREAM_PLAYBACK);
++			ioh_i2s_ctrl_fifo(ch, SNDRV_PCM_STREAM_PLAYBACK,
++					  IOH_FIFO_CLR);
++			break;
++		}
++		break;
++	default:
++		err = -EINVAL;
++		break;
++	}
++
++	spin_unlock_irqrestore(&ioh_rtd->lock, flags);
++
++	return err;
++}
++
++static int snd_card_ml7213i2s_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct ml7213i2s_runtime_data *ioh_rtd = runtime->private_data;
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		ioh_rtd->rx_dma->rx_cur_period = 0;
++		ioh_rtd->rx_dma->rx_dma_addr = runtime->dma_area;
++		ioh_rtd->rx_dma->rx_physical_addr = runtime->dma_addr;
++		ioh_rtd->rx_dma->rx_buffer_bytes =
++					    snd_pcm_lib_buffer_bytes(substream);
++		ioh_rtd->rx_dma->rx_period_bytes =
++					    snd_pcm_lib_period_bytes(substream);
++		ioh_rtd->rx_dma->rx_buf_frags =
++					ioh_rtd->rx_dma->rx_buffer_bytes /
++					ioh_rtd->rx_dma->rx_period_bytes;
++		pr_debug("%s:Capture:buffbytes=%ld periodbytes=%ld frags=%d\n",
++		      __func__, ioh_rtd->rx_dma->rx_buffer_bytes,
++		      ioh_rtd->rx_dma->rx_period_bytes,
++		      ioh_rtd->rx_dma->rx_buf_frags);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		ioh_rtd->tx_dma->tx_cur_period = 0;
++		ioh_rtd->tx_dma->tx_dma_addr = runtime->dma_area;
++		ioh_rtd->tx_dma->tx_physical_addr = runtime->dma_addr;
++		ioh_rtd->tx_dma->tx_buffer_bytes =
++					    snd_pcm_lib_buffer_bytes(substream);
++		ioh_rtd->tx_dma->tx_period_bytes =
++					    snd_pcm_lib_period_bytes(substream);
++		ioh_rtd->tx_dma->tx_buf_frags =
++					ioh_rtd->tx_dma->tx_buffer_bytes /
++					ioh_rtd->tx_dma->tx_period_bytes;
++		pr_debug("%s:Playback:buffbytes=%ld periodbytes=%ld frags=%d\n",
++		      __func__, ioh_rtd->tx_dma->tx_buffer_bytes,
++		      ioh_rtd->tx_dma->tx_period_bytes,
++		      ioh_rtd->tx_dma->tx_buf_frags);
++		break;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t
++snd_card_ml7213i2s_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct ml7213i2s_runtime_data *ioh_rtd =
++					substream->runtime->private_data;
++	unsigned long offset = 0;
++
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		offset = ioh_rtd->rx_dma->rx_cur_period *
++			 ioh_rtd->rx_dma->rx_period_bytes;
++		pr_debug("%s:Capture:offset=0x%lx\n",
++			 __func__, offset);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		offset = ioh_rtd->tx_dma->tx_cur_period *
++			 ioh_rtd->tx_dma->tx_period_bytes;
++		pr_debug("%s:Playback:offset=0x%lx\n",
++			__func__, offset);
++		break;
++	}
++
++	return bytes_to_frames(substream->runtime, offset);
++}
++
++static struct snd_pcm_ops snd_card_ml7213i2s_ops = {
++	.open =			snd_card_ml7213i2s_open,
++	.close =		snd_card_ml7213i2s_close,
++	.ioctl =		snd_pcm_lib_ioctl,
++	.hw_params =		snd_card_ml7213i2s_hw_params,
++	.hw_free =		snd_card_ml7213i2s_hw_free,
++	.prepare =		snd_card_ml7213i2s_pcm_prepare,
++	.trigger =		snd_card_ml7213i2s_pcm_trigger,
++	.pointer =		snd_card_ml7213i2s_pcm_pointer,
++};
++
++static u64 idma_mask = DMA_BIT_MASK(32);
++static int ml7213ioh_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_card *card = rtd->card->snd_card;
++	struct snd_pcm *pcm = rtd->pcm;
++	int ret = 0;
++
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &idma_mask;
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
++
++	snd_pcm_lib_preallocate_pages_for_all(
++		pcm, SNDRV_DMA_TYPE_CONTINUOUS,
++		snd_dma_continuous_data(GFP_KERNEL),
++		0, 64 * 128 * 4 * 64);
++
++	ret = request_irq(i2s_data->pdev->irq, ioh_i2s_irq, IRQF_SHARED,
++			  "ml7213_ioh", i2s_data->pdev);
++	if (ret != 0)
++		printk(KERN_ERR "Failed to allocate irq\n");
++
++	return ret;
++}
++
++static void ml7213ioh_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++	int stream;
++
++	free_irq(i2s_data->pdev->irq, i2s_data->pdev);
++
++	for (stream = 0; stream < 2; stream++) {
++		substream = pcm->streams[stream].substream;
++		if (!substream)
++			continue;
++		buf = &substream->dma_buffer;
++		if (!buf->area)
++			continue;
++		buf->area = NULL;
++	}
++}
++
++static struct snd_soc_platform_driver ml7213ioh_soc_platform = {
++	.pcm_new	= ml7213ioh_pcm_new,
++	.pcm_free	= ml7213ioh_pcm_free,
++	.ops		= &snd_card_ml7213i2s_ops,
++};
++
++/* DAI functions */
++static int ml7213i2s_dai_hw_params(struct snd_pcm_substream *substream,
 +			    struct snd_pcm_hw_params *hw_params,
 +			    struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int i = get_coeff(priv->mclk, params_rate(hw_params));
++	int ch;
++	int byte;
++	unsigned int clk;
++	u32 i2sclkcnt;
++	u32 bclkfs = 0;
++	u32 mclkfs = 0;
++	u32 dabit;
++	int offset;
++	u32 i2scnt;
++	int dma_size;
++	void *iobase = i2s_data->iobase;
 +
-+	priv->substream = substream;
-+	priv->rate = params_rate(hw_params);
++	switch (params_format(hw_params)) {
++	case SNDRV_PCM_FORMAT_U8:
++		byte = 1;
++		bclkfs = IOH_BCLKFS_32FS;
++		dma_size = PCH_DMA_WIDTH_1_BYTE;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		byte = 2;
++		bclkfs = IOH_BCLKFS_32FS;
++		dma_size = PCH_DMA_WIDTH_2_BYTES;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		byte = 4;
++		bclkfs = IOH_BCLKFS_64FS;
++		dma_size = PCH_DMA_WIDTH_4_BYTES;
++		break;
++	default:
++		pr_err("%s: Failed not support format\n", __func__);
++		return -EINVAL;
++	}
 +
-+	if (priv->clk_in) {
-+		switch (priv->mclk / params_rate(hw_params)) {
-+		case 256:
-+			snd_soc_update_bits(codec, ML26124_CLK_CTL,
-+					    BIT(0) | BIT(1), 1);
-+			break;
-+		case 512:
-+			snd_soc_update_bits(codec, ML26124_CLK_CTL,
-+					    BIT(0) | BIT(1), 2);
-+			break;
-+		case 1024:
-+			snd_soc_update_bits(codec, ML26124_CLK_CTL,
-+					    BIT(0) | BIT(1), 3);
-+			break;
-+		default:
-+			dev_err(codec->dev, "Unsupported MCLKI\n");
-+			break;
-+		}
-+	} else {
-+		snd_soc_update_bits(codec, ML26124_CLK_CTL,
-+				    BIT(0) | BIT(1), 0);
++	switch (byte) {
++	case 1:
++		dabit = 0;
++		break;
++	case 2:
++		dabit = 2 << I2S_DABIT_START;
++		break;
++	case 4:
++		dabit = 5 << I2S_DABIT_START; /* 24-bit transfer */
++		break;
++	}
++
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		ch = dmadata[substream->number].mapped_rx_ch;
++		dmadata[ch].dma_rx_unit = byte;
++		dmadata[ch].dma_rx_width = dma_size;
++		offset = ch * 0x800;
++		i2scnt = ioread32(iobase + offset + I2SCNTRX_OFFSET);
++		if (dabit)
++			i2scnt |= dabit;
++		else
++			i2scnt &= ~(BIT(8) | BIT(9) | BIT(10));
++		iowrite32(i2scnt, iobase + offset + I2SCNTRX_OFFSET);
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		ch = dmadata[substream->number].mapped_tx_ch;
++		dmadata[ch].dma_tx_unit = byte;
++		dmadata[ch].dma_tx_width = dma_size;
++		offset = ch * 0x800;
++		i2scnt = ioread32(iobase + offset + I2SCNTTX_OFFSET);
++		if (dabit)
++			i2scnt |= dabit;
++		else
++			i2scnt &= ~(BIT(8) | BIT(9) | BIT(10));
++		iowrite32(i2scnt, iobase + offset + I2SCNTTX_OFFSET);
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
 +	switch (params_rate(hw_params)) {
 +	case 16000:
-+		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf,
-+				    get_srate(params_rate(hw_params)));
-+		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff,
-+				    coeff_div[i].pllnl);
-+		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1,
-+				    coeff_div[i].pllnh);
-+		snd_soc_update_bits(codec, ML26124_PLLML, 0xff,
-+				    coeff_div[i].pllml);
-+		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f,
-+				    coeff_div[i].pllmh);
-+		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f,
-+				    coeff_div[i].plldiv);
-+		break;
 +	case 32000:
-+		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf,
-+				    get_srate(params_rate(hw_params)));
-+		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff,
-+				    coeff_div[i].pllnl);
-+		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1,
-+				    coeff_div[i].pllnh);
-+		snd_soc_update_bits(codec, ML26124_PLLML, 0xff,
-+				    coeff_div[i].pllml);
-+		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f,
-+				    coeff_div[i].pllmh);
-+		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f,
-+				    coeff_div[i].plldiv);
-+		break;
 +	case 48000:
-+		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf,
-+				    get_srate(params_rate(hw_params)));
-+		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff,
-+				    coeff_div[i].pllnl);
-+		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1,
-+				    coeff_div[i].pllnh);
-+		snd_soc_update_bits(codec, ML26124_PLLML, 0xff,
-+				    coeff_div[i].pllml);
-+		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f,
-+				    coeff_div[i].pllmh);
-+		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f,
-+				    coeff_div[i].plldiv);
++		clk = 12288000;
 +		break;
 +	default:
-+		pr_err("%s:this rate is no support for ml26124\n", __func__);
++		pr_err("%s: Failed not support rate\n", __func__);
 +		return -EINVAL;
 +	}
 +
-+	return 0;
-+}
-+
-+static int ml26124_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (priv->substream->stream) {
-+	case SNDRV_PCM_STREAM_CAPTURE:
-+		snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, BIT(0), 1);
++	switch (clk / params_rate(hw_params)) {
++	case 64:
++		mclkfs = 0;
 +		break;
-+	case SNDRV_PCM_STREAM_PLAYBACK:
-+		snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, BIT(1), 2);
++	case 128:
++		mclkfs = 1;
 +		break;
++	case 192:
++		mclkfs = 2;
++		break;
++	case 256:
++		mclkfs = 3;
++		break;
++	case 384:
++		mclkfs = 4;
++		break;
++	case 512:
++		mclkfs = 5;
++		break;
++	case 768:
++		mclkfs = 6;
++		break;
++	case 1024:
++		mclkfs = 7;
++		break;
++	default:
++		pr_err("%s: Failed not support mclkfs\n", __func__);
++		return -EINVAL;
 +	}
 +
-+	if (mute)
-+		snd_soc_update_bits(codec, ML26124_DVOL_CTL, BIT(4),
-+				    DVOL_CTL_DVMUTE_ON);
-+	else
-+		snd_soc_update_bits(codec, ML26124_DVOL_CTL, BIT(4),
-+				    DVOL_CTL_DVMUTE_OFF);
++	pr_debug("%s: bclkfs=%d mclkfs=%dFS dabit=%d\n", __func__,
++		bclkfs, clk / params_rate(hw_params), dabit);
++	i2sclkcnt = ioread32(i2s_data->iobase + I2SCLKCNT0_OFFSET + 0x10 * ch);
++	i2sclkcnt &= ~I2S_MCLKFS_MASK;
++	i2sclkcnt &= ~I2S_BCLKFS_MASK;
++	i2sclkcnt |= bclkfs << I2SCLKCNT_BCLKFS_OFFSET;
++	i2sclkcnt |= mclkfs << I2SCLKCNT_MCLKFS_OFFSET;
++	iowrite32(i2sclkcnt, iobase + I2SCLKCNT0_OFFSET + 0x10 * ch);
++
++	snd_soc_dai_set_dma_data(dai, substream, &dmadata[ch]);
 +
 +	return 0;
 +}
 +
-+static int ml26124_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+		unsigned int fmt)
++static int ml7213i2s_dai_set_dai_fmt(struct snd_soc_dai *dai,
++				     unsigned int fmt)
 +{
-+	unsigned char mode;
-+	struct snd_soc_codec *codec = codec_dai->codec;
++	u32 cmn_reg[MAX_I2S_CH];
++	u32 tx_reg[MAX_I2S_CH];
++	u32 rx_reg[MAX_I2S_CH];
++	int i;
++	int offset = 0;
++	void *iobase = i2s_data->iobase;
 +
 +	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		mode = 1;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		mode = 0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, ML26124_SAI_MODE_SEL, BIT(0), mode);
++	for (i = 0; i < MAX_I2S_CH; i++, offset = i * 0x800) {
++		cmn_reg[i] = ioread32(iobase + I2SCLKCNT0_OFFSET + 0x10 * i);
++		tx_reg[i] = ioread32(iobase + offset + I2SCNTTX_OFFSET);
++		rx_reg[i] = ioread32(iobase + offset + I2SCNTRX_OFFSET);
 +
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* clock inversion */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ml26124_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (clk_id) {
-+	case ML26124_USE_PLLOUT:
-+		priv->clk_in = ML26124_USE_PLLOUT;
-+		break;
-+	case ML26124_USE_MCLKI:
-+		priv->clk_in = ML26124_USE_MCLKI;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	priv->mclk = freq;
-+
-+	return 0;
-+}
-+
-+static int ml26124_set_bias_level(struct snd_soc_codec *codec,
-+		enum snd_soc_bias_level level)
-+{
-+	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		snd_soc_update_bits(codec, ML26124_PW_SPAMP_PW_MNG,
-+				    ML26124_R26_MASK, ML26124_BLT_PREAMP_ON);
-+		msleep(100);
-+		snd_soc_update_bits(codec, ML26124_PW_SPAMP_PW_MNG,
-+				    ML26124_R26_MASK,
-+				    ML26124_MICBEN_ON | ML26124_BLT_ALL_ON);
-+		break;
-+	case SND_SOC_BIAS_PREPARE:
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+		/* VMID ON */
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+			snd_soc_update_bits(codec, ML26124_PW_REF_PW_MNG,
-+					    ML26124_VMID, ML26124_VMID);
-+			msleep(500);
-+			regcache_sync(priv->regmap);
++		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++		case SND_SOC_DAIFMT_CBS_CFS:
++			cmn_reg[i] |= I2SCLKCNT_MSSEL;
++			break;
++		case SND_SOC_DAIFMT_CBM_CFM:
++			cmn_reg[i] &= ~I2SCLKCNT_MSSEL;
++			break;
++		default:
++			return -EINVAL;
 +		}
-+		break;
-+	case SND_SOC_BIAS_OFF:
-+		/* VMID OFF */
-+		snd_soc_update_bits(codec, ML26124_PW_REF_PW_MNG,
-+				    ML26124_VMID, 0);
-+		break;
++
++		/* interface format */
++		switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++		case SND_SOC_DAIFMT_I2S:
++			cmn_reg[i] |= ML7213I2S_LRCLK_FMT_I2S;
++			tx_reg[i] &= ~ML7213I2S_TX_I2S | ~ML7213I2S_TX_DLY |\
++				  ~ML7213I2S_TX_MSB_LSB |\
++				  ~ML7213I2S_TX_LR_POL | ~ML7213I2S_TX_AFT;
++			rx_reg[i] &= ~ML7213I2S_RX_I2S | ~ML7213I2S_RX_DLY |\
++				  ~ML7213I2S_RX_MSB_LSB |\
++				  ~ML7213I2S_RX_LR_POL | ~ML7213I2S_RX_AFT;
++			break;
++		default:
++			return -EINVAL;
++		}
++
++		/* clock inversion */
++		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++		case SND_SOC_DAIFMT_NB_NF:
++			cmn_reg[i] &= ~ML7213I2S_BCLKPOL;
++			break;
++		case SND_SOC_DAIFMT_IB_NF:
++			cmn_reg[i] |= ML7213I2S_BCLKPOL;
++			break;
++		default:
++			return -EINVAL;
++		}
++
++		iowrite32(cmn_reg[i], iobase + I2SCLKCNT0_OFFSET + 0x10 * i);
++		iowrite32(tx_reg[i], iobase + offset + I2SCNTTX_OFFSET);
++		iowrite32(rx_reg[i], iobase + offset + I2SCNTRX_OFFSET);
 +	}
-+	codec->dapm.bias_level = level;
++
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops ml26124_dai_ops = {
-+	.hw_params	= ml26124_hw_params,
-+	.digital_mute	= ml26124_mute,
-+	.set_fmt	= ml26124_set_dai_fmt,
-+	.set_sysclk	= ml26124_set_dai_sysclk,
-+};
++static int ml7213i2s_dai_set_dai_sysclk(struct snd_soc_dai *dai,
++					int clk_id, unsigned int freq, int dir)
++{
++	u32 reg[MAX_I2S_CH];
++	void *iobase = i2s_data->iobase;
++	int i;
 +
-+static struct snd_soc_dai_driver ml26124_dai = {
-+	.name = "ml26124-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = ML26124_RATES,
-+		.formats = ML26124_FORMATS,},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = ML26124_RATES,
-+		.formats = ML26124_FORMATS,},
-+	.ops = &ml26124_dai_ops,
-+	.symmetric_rates = 1,
-+};
++	for (i = 0; i < MAX_I2S_CH; i++) {
++		reg[i] = ioread32(iobase + I2SCLKCNT0_OFFSET + 0x10 * i);
++		if (clk_id == IOH_MASTERCLKSEL_MCLK)
++			reg[i] &= ~ML7213I2S_MASTER_CLK_SEL;
++		else if (clk_id == IOH_MASTERCLKSEL_MLBCLK)
++			reg[i] |= ML7213I2S_MASTER_CLK_SEL;
++		iowrite32(reg[i], iobase + I2SCLKCNT0_OFFSET + 0x10 * i);
++	}
++
++	return 0;
++}
++
++static int ml7213i2s_dai_set_channel_map(struct snd_soc_dai *dai,
++		unsigned int tx_num, unsigned int *tx_slot,
++		unsigned int rx_num, unsigned int *rx_slot)
++{
++	int i;
++	unsigned int slot;
++	unsigned int tx_mapped = 0, rx_mapped = 0;
++
++	if ((tx_num > MAX_I2S_CH) || (rx_num > MAX_I2S_CH))
++		return -EINVAL;
++
++	for (i = 0; i < tx_num; i++) {
++		slot = tx_slot[i];
++		if ((slot < MAX_I2S_CH) &&
++				(!(tx_mapped & (1 << slot)))) {
++			dmadata[i].mapped_tx_ch = slot;
++			tx_mapped |= 1 << slot;
++		} else
++			return -EINVAL;
++	}
++
++	for (i = 0; i < rx_num; i++) {
++		slot = rx_slot[i];
++		if ((slot < MAX_I2S_CH) &&
++				(!(rx_mapped & (1 << slot)))) {
++			dmadata[i].mapped_rx_ch = slot;
++			rx_mapped |= 1 << slot;
++		} else
++			return -EINVAL;
++	}
++
++	return 0;
++}
 +
 +#ifdef CONFIG_PM
-+static int ml26124_suspend(struct snd_soc_codec *codec)
++static int ml7213i2s_soc_suspend(struct snd_soc_dai *cpu_dai)
 +{
-+	ml26124_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	int i;
++	void *iobase;
++	struct ioh_i2s_pm_ch_reg *save;
++	struct ioh_i2s_pm_ch_reg_cmn *save_cmn;
++	int offset;
++
++	iobase = i2s_data->iobase;
++	for (i = 0, offset = 0; i < MAX_I2S_CH; i++, offset = i * 0x800) {
++		save = &i2s_data->ch_reg_save[i];
++
++		save->i2sdrtx = ioread32(iobase + offset + I2SDRTX_OFFSET);
++		save->i2scnttx = ioread32(iobase + offset + I2SCNTTX_OFFSET);
++		save->i2sfifoctx =
++				ioread32(iobase + offset + I2SFIFOCTX_OFFSET);
++		save->i2saftx = ioread32(iobase + offset + I2SAFTX_OFFSET);
++		save->i2saetx = ioread32(iobase + offset + I2SAETX_OFFSET);
++		save->i2smsktx = ioread32(iobase + offset + I2SMSKTX_OFFSET);
++		save->i2sisttx = ioread32(iobase + offset + I2SISTTX_OFFSET);
++
++		save->i2scntrx = ioread32(iobase + offset + I2SCNTRX_OFFSET);
++		save->i2sfifocrx =
++				ioread32(iobase + offset + I2SFIFOCRX_OFFSET);
++		save->i2safrx = ioread32(iobase + offset + I2SAFRX_OFFSET);
++		save->i2saerx = ioread32(iobase + offset + I2SAERX_OFFSET);
++		save->i2smskrx = ioread32(iobase + offset + I2SMSKRX_OFFSET);
++		save->i2sistrx = ioread32(iobase + offset + I2SISTRX_OFFSET);
++	}
++
++	save_cmn = &i2s_data->cmn_reg_save;
++	for (i = 0; i < MAX_I2S_CH; i++) {
++		save_cmn->i2sclkcnt[i] =
++		ioread32(i2s_data->iobase + I2SCLKCNT0_OFFSET + 0x10 * i);
++	}
++	save_cmn->i2simask = ioread32(i2s_data->iobase + I2SIMASK_OFFSET);
 +
 +	return 0;
 +}
 +
-+static int ml26124_resume(struct snd_soc_codec *codec)
++static int ml7213i2s_soc_resume(struct snd_soc_dai *cpu_dai)
 +{
-+	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	int i;
++	void *iobase;
++	struct ioh_i2s_pm_ch_reg *save;
++	int offset;
++
++	iobase = i2s_data->iobase;
++	save = &i2s_data->ch_reg_save[0];
++	for (i = 0, offset = 0; i < MAX_I2S_CH; i++, offset = i * 0x800) {
++		iowrite32(save->i2sdrtx, iobase + offset + I2SDRTX_OFFSET);
++		iowrite32(save->i2scnttx, iobase + offset + I2SCNTTX_OFFSET);
++		iowrite32(save->i2sfifoctx,
++			  iobase + offset + I2SFIFOCTX_OFFSET);
++		iowrite32(save->i2saftx, iobase + offset + I2SAFTX_OFFSET);
++		iowrite32(save->i2saetx, iobase + offset + I2SAETX_OFFSET);
++		iowrite32(save->i2smsktx, iobase + offset + I2SMSKTX_OFFSET);
++		iowrite32(save->i2sisttx, iobase + offset + I2SISTTX_OFFSET);
++
++		iowrite32(save->i2scntrx, iobase + offset + I2SCNTRX_OFFSET);
++		iowrite32(save->i2sfifocrx,
++			  iobase + offset + I2SFIFOCRX_OFFSET);
++		iowrite32(save->i2safrx, iobase + offset + I2SAFRX_OFFSET);
++		iowrite32(save->i2saerx, iobase + offset + I2SAERX_OFFSET);
++		iowrite32(save->i2smskrx, iobase + offset + I2SMSKRX_OFFSET);
++		iowrite32(save->i2sistrx, iobase + offset + I2SISTRX_OFFSET);
++	}
++
++	for (i = 0; i < MAX_I2S_CH; i++) {
++		iowrite32(i2s_data->cmn_reg_save.i2sclkcnt[i],
++			 i2s_data->iobase + I2SCLKCNT0_OFFSET + 0x10 * i);
++	}
++
++	iowrite32(i2s_data->cmn_reg_save.i2simask,
++		  i2s_data->iobase + I2SIMASK_OFFSET);
 +
 +	return 0;
 +}
 +#else
-+#define ml26124_suspend NULL
-+#define ml26124_resume NULL
++#define ml7213i2s_soc_suspend NULL
++#define ml7213i2s_soc_resume NULL
 +#endif
 +
-+static int ml26124_probe(struct snd_soc_codec *codec)
-+{
-+	int ret;
-+	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	codec->control_data = priv->regmap;
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Software Reset */
-+	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
-+	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 0);
-+
-+	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_ml26124 = {
-+	.probe =	ml26124_probe,
-+	.suspend =	ml26124_suspend,
-+	.resume =	ml26124_resume,
-+	.set_bias_level = ml26124_set_bias_level,
-+	.dapm_widgets = ml26124_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(ml26124_dapm_widgets),
-+	.dapm_routes = ml26124_intercon,
-+	.num_dapm_routes = ARRAY_SIZE(ml26124_intercon),
-+	.controls = ml26124_snd_controls,
-+	.num_controls = ARRAY_SIZE(ml26124_snd_controls),
++static const struct snd_soc_dai_ops ml7213i2s_dai_ops = {
++	.hw_params	= ml7213i2s_dai_hw_params,
++	.set_fmt	= ml7213i2s_dai_set_dai_fmt,
++	.set_sysclk	= ml7213i2s_dai_set_dai_sysclk,
++	.set_channel_map	= ml7213i2s_dai_set_channel_map,
 +};
 +
-+static const struct regmap_config ml26124_i2c_regmap = {
-+	.val_bits = 8,
-+	.reg_bits = 8,
-+	.max_register = ML26124_NUM_REGISTER,
-+	.reg_defaults = ml26124_reg,
-+	.num_reg_defaults = ARRAY_SIZE(ml26124_reg),
-+	.cache_type = REGCACHE_RBTREE,
-+	.write_flag_mask = 0x01,
-+};
-+
-+static __devinit int ml26124_i2c_probe(struct i2c_client *i2c,
-+				      const struct i2c_device_id *id)
-+{
-+	struct ml26124_priv *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, priv);
-+
-+	priv->regmap = regmap_init_i2c(i2c, &ml26124_i2c_regmap);
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
-+		dev_err(&i2c->dev, "regmap_init_i2c() failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_ml26124, &ml26124_dai, 1);
-+}
-+
-+static __devexit int ml26124_i2c_remove(struct i2c_client *client)
-+{
-+	struct ml26124_priv *priv = i2c_get_clientdata(client);
-+
-+	snd_soc_unregister_codec(&client->dev);
-+	regmap_exit(priv->regmap);
-+	return 0;
-+}
-+
-+static const struct i2c_device_id ml26124_i2c_id[] = {
-+	{ "ml26124", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, ml26124_i2c_id);
-+
-+static struct i2c_driver ml26124_i2c_driver = {
-+	.driver = {
-+		.name = "ml26124",
-+		.owner = THIS_MODULE,
++static struct snd_soc_dai_driver ml7213i2s_dai_data = {
++	.playback = {
++		.channels_min = USE_CHANNELS_MIN,
++		.channels_max = USE_CHANNELS_MAX,
++		.rates = ML7213_I2S_RATES,
++		.formats = SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE |\
++			   SNDRV_PCM_FMTBIT_S32_LE,
 +	},
-+	.probe = ml26124_i2c_probe,
-+	.remove = __devexit_p(ml26124_i2c_remove),
-+	.id_table = ml26124_i2c_id,
++	.capture = {
++		.channels_min = USE_CHANNELS_MIN,
++		.channels_max = USE_CHANNELS_MAX,
++		.rates = ML7213_I2S_RATES,
++		.formats = SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE |\
++			   SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.ops = &ml7213i2s_dai_ops,
++	.suspend = ml7213i2s_soc_suspend,
++	.resume = ml7213i2s_soc_resume,
 +};
 +
-+module_i2c_driver(ml26124_i2c_driver);
++/* PCI functions */
++DEFINE_PCI_DEVICE_TABLE(ioh_pci_tbl) = {
++	{
++		.vendor = PCI_VENDOR_ID_ROHM,
++		.device = PCI_DEVICE_ID_ML7213_I2S,
++		.subvendor = PCI_ANY_ID,
++		.subdevice = PCI_ANY_ID,
++	},
++	{0,}
++};
++
++static int ioh_i2s_pci_probe(struct pci_dev *pdev,
++			     const struct pci_device_id *id)
++{
++	int rv = 0;
++	void __iomem *tbl;
++	unsigned int mapbase;
++	int i;
++
++	rv = pci_enable_device(pdev);
++	if (rv)
++		goto enable_device;
++
++	tbl = pci_iomap(pdev, 1, 0);
++	if (!tbl) {
++		rv = -ENOMEM;
++		printk(KERN_ERR "pci_iomap failed\n");
++		goto out_ipmap;
++	}
++
++	mapbase = pci_resource_start(pdev, 1);
++	if (!mapbase) {
++		rv = -ENOMEM;
++		printk(KERN_ERR "pci_resource_start failed\n");
++		goto out_pci_resource;
++	}
++
++	i2s_data = devm_kzalloc(&pdev->dev, sizeof(*i2s_data), GFP_KERNEL);
++	if (!i2s_data) {
++		dev_err(&pdev->dev, "Can't allocate i2s_data\n");
++		rv = -ENOMEM;
++		goto out_kzalloc_data;
++	}
++
++	dmadata = devm_kzalloc(&pdev->dev,
++			       sizeof(*dmadata) * MAX_I2S_CH, GFP_KERNEL);
++	if (!dmadata) {
++		dev_err(&pdev->dev, "Can't allocate dmadata\n");
++		rv = -ENOMEM;
++		goto out_kzalloc_dma;
++	}
++
++	i2s_data->dev = &pdev->dev;
++	i2s_data->pdev = pdev;
++	i2s_data->iobase = tbl;
++	i2s_data->mapbase = mapbase;
++	spin_lock_init(&i2s_data->tx_lock);
++
++	dev_set_name(&pdev->dev, "%s", "ml7213ioh");
++	rv = snd_soc_register_dai(&pdev->dev, &ml7213i2s_dai_data);
++	if (rv < 0) {
++		printk(KERN_ERR "Failed to snd_soc_register_dai\n");
++		goto out_register_dai;
++	}
++
++	dev_set_name(&pdev->dev, "%s", "ml7213-i2s-audio");
++	rv = snd_soc_register_platform(&pdev->dev, &ml7213ioh_soc_platform);
++	if (rv < 0) {
++		printk(KERN_ERR "Failed to snd_soc_register_platform\n");
++		goto out_soc_register_plat;
++	}
++
++	for (i = 0; i < MAX_I2S_CH; i++)
++		dmadata[i].number = i;
++
++	return 0;
++
++out_soc_register_plat:
++	snd_soc_unregister_dai(&pdev->dev);
++out_register_dai:
++out_kzalloc_dma:
++out_kzalloc_data:
++out_pci_resource:
++	pci_iounmap(pdev, i2s_data->iobase);
++out_ipmap:
++	pci_disable_device(pdev);
++enable_device:
++
++	return rv;
++}
++
++static void ioh_i2s_pci_remove(struct pci_dev *pdev)
++{
++	int i;
++
++	for (i = 0; i < MAX_I2S_CH; i++)
++		ioh_i2s_reset(i);
++
++	snd_soc_unregister_platform(&pdev->dev);
++	snd_soc_unregister_dai(&pdev->dev);
++	pci_iounmap(pdev, i2s_data->iobase);
++	pci_disable_device(pdev);
++}
++
++static int ioh_i2s_pci_suspend(struct pci_dev *pdev, pm_message_t state)
++{
++	int ret;
++
++	ret = pci_save_state(pdev);
++	if (ret) {
++		dev_err(&pdev->dev,
++			" %s -pci_save_state returns %d\n", __func__, ret);
++		return ret;
++	}
++	pci_enable_wake(pdev, PCI_D3hot, 0);
++	pci_disable_device(pdev);
++	pci_set_power_state(pdev, pci_choose_state(pdev, state));
++
++	return 0;
++}
++
++static int ioh_i2s_pci_resume(struct pci_dev *pdev)
++{
++	int ret;
++
++	pci_set_power_state(pdev, PCI_D0);
++	pci_restore_state(pdev);
++	ret = pci_enable_device(pdev);
++	if (ret) {
++		dev_err(&pdev->dev,
++		"%s-pci_enable_device failed(ret=%d) ", __func__, ret);
++		return ret;
++	}
++
++	pci_enable_wake(pdev, PCI_D3hot, 0);
++
++	return 0;
++}
++
++static struct pci_driver ioh_i2s_driver = {
++	.name = DRV_NAME,
++	.probe = ioh_i2s_pci_probe,
++	.remove = __devexit_p(ioh_i2s_pci_remove),
++	.id_table = ioh_pci_tbl,
++#ifdef CONFIG_PM
++	.suspend = ioh_i2s_pci_suspend,
++	.resume = ioh_i2s_pci_resume,
++#endif
++};
++
++static int __init ioh_plat_init(void)
++{
++	return pci_register_driver(&ioh_i2s_driver);
++}
++
++static void __exit ioh_i2s_cleanup(void)
++{
++	pci_unregister_driver(&ioh_i2s_driver);
++}
++
++module_init(ioh_plat_init);
++module_exit(ioh_i2s_cleanup);
 +
 +MODULE_AUTHOR("Tomoya MORINAGA <tomoya.rohm@gmail.com>");
-+MODULE_DESCRIPTION("LAPIS Semiconductor ML26124 ALSA SoC codec driver");
++MODULE_DESCRIPTION("LAPIS Semiconductor ML7213 IOH ALSA SoC platform driver");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ml26124.h b/sound/soc/codecs/ml26124.h
+diff --git a/sound/soc/lapis/ml7213ioh-plat.h b/sound/soc/lapis/ml7213ioh-plat.h
 new file mode 100644
-index 0000000..5ea0cbb
+index 0000000..88495d7
 --- /dev/null
-+++ b/sound/soc/codecs/ml26124.h
-@@ -0,0 +1,184 @@
++++ b/sound/soc/lapis/ml7213ioh-plat.h
+@@ -0,0 +1,381 @@
 +/*
 + * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
 + *
@@ -788,172 +1556,369 @@ index 0000000..5ea0cbb
 + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
 + */
 +
-+#ifndef ML26124_H
-+#define ML26124_H
++#ifndef ML7213IOH_PLAT_H
++#define ML7213IOH_PLAT_H
 +
-+/* Clock Control Register */
-+#define ML26124_SMPLING_RATE		0x00
-+#define ML26124_PLLNL			0x02
-+#define ML26124_PLLNH			0x04
-+#define ML26124_PLLML			0x06
-+#define ML26124_PLLMH			0x08
-+#define ML26124_PLLDIV			0x0a
-+#define ML26124_CLK_EN			0x0c
-+#define ML26124_CLK_CTL			0x0e
++#include <linux/interrupt.h>
++#include <linux/pch_dma.h>
 +
-+/* System Control Register */
-+#define ML26124_SW_RST			0x10
-+#define ML26124_REC_PLYBAK_RUN		0x12
-+#define ML26124_MIC_TIM			0x14
++#define DRV_NAME "ml7213ioh-i2s-pci"
++#define PCI_VENDOR_ID_ROHM	0X10DB
++#define PCI_DEVICE_ID_ML7213_I2S	0X8033
 +
-+/* Power Mnagement Register */
-+#define ML26124_PW_REF_PW_MNG		0x20
-+#define ML26124_PW_IN_PW_MNG		0x22
-+#define ML26124_PW_DAC_PW_MNG		0x24
-+#define ML26124_PW_SPAMP_PW_MNG		0x26
-+#define ML26124_PW_LOUT_PW_MNG		0x28
-+#define ML26124_PW_VOUT_PW_MNG		0x2a
-+#define ML26124_PW_ZCCMP_PW_MNG		0x2e
++#define I2SCLKCNT_MSSEL		BIT(0)
++#define ML7213I2S_BCLKPOL	BIT(1)
++#define ML7213I2S_LRCLK_FMT	(BIT(4) | BIT(5))
++#define ML7213I2S_LRCLK_FMT_I2S	BIT(4)
 +
-+/* Analog Reference Control Register */
-+#define ML26124_PW_MICBIAS_VOL		0x30
++#define ML7213I2S_TX_I2S	BIT(0)
++#define ML7213I2S_TX_DLY	BIT(12)
++#define ML7213I2S_TX_MSB_LSB	BIT(13)
++#define ML7213I2S_TX_LR_POL	BIT(14)
++#define ML7213I2S_TX_AFT	BIT(15)
++#define ML7213I2S_RX_I2S	BIT(0)
++#define ML7213I2S_RX_DLY	BIT(12)
++#define ML7213I2S_RX_MSB_LSB	BIT(13)
++#define ML7213I2S_RX_LR_POL	BIT(14)
++#define ML7213I2S_RX_AFT	BIT(15)
++#define ML7213I2S_MASTER_CLK_SEL	BIT(2)
 +
-+/* Input/Output Amplifier Control Register */
-+#define ML26124_PW_MIC_IN_VOL		0x32
-+#define ML26124_PW_MIC_BOST_VOL		0x38
-+#define ML26124_PW_SPK_AMP_VOL		0x3a
-+#define ML26124_PW_AMP_VOL_FUNC		0x48
-+#define ML26124_PW_AMP_VOL_FADE		0x4a
++#define ML7213_I2S_RATES \
++	(SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
 +
-+/* Analog Path Control Register */
-+#define ML26124_SPK_AMP_OUT		0x54
-+#define ML26124_MIC_IF_CTL		0x5a
-+#define ML26124_MIC_SELECT		0xe8
++/* ioh_bclkfs_t */
++#define	IOH_BCLKFS_8FS		0
++#define	IOH_BCLKFS_16FS		1
++#define	IOH_BCLKFS_32FS		2
++#define	IOH_BCLKFS_64FS		3
 +
-+/* Audio Interface Control Register */
-+#define ML26124_SAI_TRANS_CTL		0x60
-+#define ML26124_SAI_RCV_CTL		0x62
-+#define ML26124_SAI_MODE_SEL		0x64
++#define	I2SCLKCNT_MCLKFS_OFFSET		(8)
++#define	I2SCLKCNT_BCLKFS_OFFSET		(12)
 +
-+/* DSP Control Register */
-+#define ML26124_FILTER_EN		0x66
-+#define ML26124_DVOL_CTL		0x68
-+#define ML26124_MIXER_VOL_CTL		0x6a
-+#define ML26124_RECORD_DIG_VOL		0x6c
-+#define ML26124_PLBAK_DIG_VOL		0x70
-+#define ML26124_DIGI_BOOST_VOL		0x72
-+#define ML26124_EQ_GAIN_BRAND0		0x74
-+#define ML26124_EQ_GAIN_BRAND1		0x76
-+#define ML26124_EQ_GAIN_BRAND2		0x78
-+#define ML26124_EQ_GAIN_BRAND3		0x7a
-+#define ML26124_EQ_GAIN_BRAND4		0x7c
-+#define ML26124_HPF2_CUTOFF		0x7e
-+#define ML26124_EQBRAND0_F0L		0x80
-+#define ML26124_EQBRAND0_F0H		0x82
-+#define ML26124_EQBRAND0_F1L		0x84
-+#define ML26124_EQBRAND0_F1H		0x86
-+#define ML26124_EQBRAND1_F0L		0x88
-+#define ML26124_EQBRAND1_F0H		0x8a
-+#define ML26124_EQBRAND1_F1L		0x8c
-+#define ML26124_EQBRAND1_F1H		0x8e
-+#define ML26124_EQBRAND2_F0L		0x90
-+#define ML26124_EQBRAND2_F0H		0x92
-+#define ML26124_EQBRAND2_F1L		0x94
-+#define ML26124_EQBRAND2_F1H		0x96
-+#define ML26124_EQBRAND3_F0L		0x98
-+#define ML26124_EQBRAND3_F0H		0x9a
-+#define ML26124_EQBRAND3_F1L		0x9c
-+#define ML26124_EQBRAND3_F1H		0x9e
-+#define ML26124_EQBRAND4_F0L		0xa0
-+#define ML26124_EQBRAND4_F0H		0xa2
-+#define ML26124_EQBRAND4_F1L		0xa4
-+#define ML26124_EQBRAND4_F1H		0xa6
++#define I2SCLKCNT0_OFFSET	0x3000
++#define I2SCLKCNT1_OFFSET	0x3010
++#define I2SCLKCNT2_OFFSET	0x3020
++#define I2SCLKCNT3_OFFSET	0x3030
++#define I2SCLKCNT4_OFFSET	0x3040
++#define I2SCLKCNT5_OFFSET	0x3050
++#define I2SISTATUS_OFFSET	0x3080
++#define I2SIDISP_OFFSET		0x3084
++#define I2SIMASK_OFFSET		0x3088
++#define I2SIMASKCLR_OFFSET	0x308C
++#define I2SSRST_OFFSET		0x3FFC
++#define I2SDRTX_OFFSET		0x0
++#define I2SCNTTX_OFFSET		0x4
++#define I2SFIFOCTX_OFFSET	0x8
++#define I2SAFTX_OFFSET		0xC
++#define I2SAETX_OFFSET		0x10
++#define I2SMSKTX_OFFSET		0x14
++#define I2SISTTX_OFFSET		0x18
++#define I2SMONTX_OFFSET		0x1C
++#define I2SDRRX_OFFSET		0x20
++#define I2SCNTRX_OFFSET		0x24
++#define I2SFIFOCRX_OFFSET	0x28
++#define I2SAFRX_OFFSET		0x2C
++#define I2SAERX_OFFSET		0x30
++#define I2SMSKRX_OFFSET		0x34
++#define I2SISTRX_OFFSET		0x38
++#define I2SMONRX_OFFSET		0x3C
++#define FIRST_TX_OFFSET		0x0
++#define FIRST_RX_OFFSET		0x0
 +
-+/* ALC Control Register */
-+#define ML26124_ALC_MODE		0xb0
-+#define ML26124_ALC_ATTACK_TIM		0xb2
-+#define ML26124_ALC_DECAY_TIM		0xb4
-+#define ML26124_ALC_HOLD_TIM		0xb6
-+#define ML26124_ALC_TARGET_LEV		0xb8
-+#define ML26124_ALC_MAXMIN_GAIN		0xba
-+#define ML26124_NOIS_GATE_THRSH		0xbc
-+#define ML26124_ALC_ZERO_TIMOUT		0xbe
++#define I2SDRTXMIRROR_OFFSET	0x100
++#define I2SDRRXMIRROR_OFFSET	0x400
 +
-+/* Playback Limiter Control Register */
-+#define ML26124_PL_ATTACKTIME		0xc0
-+#define ML26124_PL_DECAYTIME		0xc2
-+#define ML26124_PL_TARGETTIME		0xc4
-+#define ML26124_PL_MAXMIN_GAIN		0xc6
-+#define ML26124_PLYBAK_BOST_VOL		0xc8
-+#define ML26124_PL_0CROSS_TIMOUT	0xca
++#define I2S_ALL_INTERRUPT_BITS	0x3F003F
++#define I2S_IDISP_BITS		0x3F003F
++#define I2S_IDISP_TX_BITS	0x00003F
++#define I2S_IDISP_RX_BITS	0x3F0000
++#define TX_BIT_FIMSK	0x1	/*Fifo full interrupt mask bit*/
++#define TX_BIT_AFIMSK	0x2	/*Fifo Almost full interrupt mask bit*/
++#define TX_BIT_EIMSK	0x4	/*Fifo empty interrupt mask bit*/
++#define TX_BIT_AEIMSK	0x8	/*Fifo Almost empty interrupt mask bit*/
++#define TX_BIT_DMAMSK	0x10	/*Masks DMA*/
++#define TX_BIT_DMATC	0x100
++#define I2S_TX_ALL_INTR_MASK_BITS (TX_BIT_FIMSK | TX_BIT_AFIMSK | TX_BIT_EIMSK \
++							| TX_BIT_AEIMSK)
++#define I2S_TX_NORMAL_INTR_MASK_BITS (TX_BIT_FIMSK | TX_BIT_AFIMSK)
++#define RX_BIT_FIMSK	0x1	/*Fifo full interrupt mask bit*/
++#define RX_BIT_AFIMSK	0x2	/*Fifo Almost full interrupt mask bit*/
++#define RX_BIT_EIMSK	0x4	/*Fifo empty interrupt mask bit*/
++#define RX_BIT_AEIMSK	0x8	/*Fifo Almost empty interrupt mask bit*/
++#define RX_BIT_DMAMSK	0x10	/*Masks DMA*/
++#define RX_BIT_DMATC	0x100
++#define I2S_RX_ALL_INTR_MASK_BITS (RX_BIT_FIMSK | RX_BIT_AFIMSK | RX_BIT_EIMSK \
++							| RX_BIT_AEIMSK)
++#define I2S_RX_NORMAL_INTR_MASK_BITS (RX_BIT_EIMSK | RX_BIT_AEIMSK)
++#define I2S_TX_FINT	0x1	/*Full Interrupt*/
++#define I2S_TX_AFINT	0x2	/*Almost full interrupt*/
++#define I2S_TX_EINT	0x4	/*Empty interrupt*/
++#define I2S_TX_AEINT	0x8	/*Almost empty interrupt*/
++#define I2S_RX_FINT	0x1	/*Full Interrupt*/
++#define I2S_RX_AFINT	0x2	/*Almost full interrupt*/
++#define I2S_RX_EINT	0x4	/*Empty interrupt*/
++#define I2S_RX_AEINT	0x8	/*Almost empty interrupt*/
 +
-+/* Video Amplifer Control Register */
-+#define ML26124_VIDEO_AMP_GAIN_CTL	0xd0
-+#define ML26124_VIDEO_AMP_SETUP1	0xd2
-+#define ML26124_VIDEO_AMP_CTL2		0xd4
++#define I2S_FIFO_TX_FCLR	BIT(0)
++#define I2S_FIFO_TX_RUN		BIT(4)
++#define I2S_FIFO_RX_FCLR	BIT(0)
++#define I2S_FIFO_RX_RUN		BIT(4)
 +
-+/* Clock select for machine driver */
-+#define ML26124_USE_PLL			0
-+#define ML26124_USE_MCLKI_256FS		1
-+#define ML26124_USE_MCLKI_512FS		2
-+#define ML26124_USE_MCLKI_1024FS	3
++#define FIFO_CTRL_BIT_TX_RUN	0x10
++#define FIFO_CTRL_BIT_RX_RUN	0x10
++#define I2S_CNT_BIT_TEL		0x1
++#define I2S_IMASK_TX_BIT_START	0
++#define I2S_IMASK_RX_BIT_START	16
 +
-+/* Register Mask */
-+#define ML26124_R0_MASK	0xf
-+#define ML26124_R2_MASK	0xff
-+#define ML26124_R4_MASK	0x1
-+#define ML26124_R6_MASK	0xf
-+#define ML26124_R8_MASK	0x3f
-+#define ML26124_Ra_MASK	0x1f
-+#define ML26124_Rc_MASK	0x1f
-+#define ML26124_Re_MASK	0x7
-+#define ML26124_R10_MASK	0x1
-+#define ML26124_R12_MASK	0x17
-+#define ML26124_R14_MASK	0x3f
-+#define ML26124_R20_MASK	0x47
-+#define ML26124_R22_MASK	0xa
-+#define ML26124_R24_MASK	0x2
-+#define ML26124_R26_MASK	0x1f
-+#define ML26124_R28_MASK	0x2
-+#define ML26124_R2a_MASK	0x2
-+#define ML26124_R2e_MASK	0x2
-+#define ML26124_R30_MASK	0x7
-+#define ML26124_R32_MASK	0x3f
-+#define ML26124_R38_MASK	0x38
-+#define ML26124_R3a_MASK	0x3f
-+#define ML26124_R48_MASK	0x3
-+#define ML26124_R4a_MASK	0x7
-+#define ML26124_R54_MASK	0x2a
-+#define ML26124_R5a_MASK	0x3
-+#define ML26124_Re8_MASK	0x3
-+#define ML26124_R60_MASK	0xff
-+#define ML26124_R62_MASK	0xff
-+#define ML26124_R64_MASK	0x1
-+#define ML26124_R66_MASK	0xff
-+#define ML26124_R68_MASK	0x3b
-+#define ML26124_R6a_MASK	0xf3
-+#define ML26124_R6c_MASK	0xff
-+#define ML26124_R70_MASK	0xff
++#define I2S_DABIT_START	8
 +
-+#define ML26124_MCLKEN		BIT(0)
-+#define ML26124_PLLEN		BIT(1)
-+#define ML26124_PLLOE		BIT(2)
-+#define ML26124_MCLKOE		BIT(3)
++#define I2S_MCLKFS_MASK		(BIT(8) | BIT(9) | BIT(10))
++#define I2S_BCLKFS_MASK		(BIT(12) | BIT(13))
 +
-+#define ML26124_BLT_ALL_ON	0x1f
-+#define ML26124_BLT_PREAMP_ON	0x13
++/* DMA processing */
++#define	PERIOD_POS_MAX		I2S_DMA_SG_NUM
++#define	PERIOD_LEN		(I2S_AFULL_THRESH * PERIOD_POS_MAX)
 +
-+#define ML26124_MICBEN_ON	BIT(2)
++#define	SUPPORT_FORMAT		(SNDRV_PCM_FMTBIT_U8 | \
++				 SNDRV_PCM_FMTBIT_S16_LE | \
++				 SNDRV_PCM_FMTBIT_S32_LE)
++#define	MAX_PERIOD_SIZE		(PERIOD_LEN * 4)
 +
-+enum ml26124_regs {
-+	ML26124_MCLK = 0,
++#define USE_CHANNELS_MIN	1
++#define USE_CHANNELS_MAX	2
++#define	MAX_I2S_CH		6		/*I2S0 ~ I2S5*/
++#define USE_PERIODS_MIN		(I2S_DMA_SG_MAX)
++#define USE_PERIODS_MAX		(I2S_DMA_SG_MAX)
++
++#define I2S_AEMPTY_THRESH	64	/* Almost  Empty Threshold */
++#define I2S_AFULL_THRESH	64	/* Almost  Full Threshold */
++
++#define	I2S_DMA_SG_NUM		(128)
++#define	I2S_DMA_SG_MAX		(64)
++
++#define	IOH_MSSEL_MASTER	1
++
++#define ML7213_I2SAERX_DEFAULT	0x1f
++#define ML7213_I2SMSKRX_DEFAULT	0x1f
++#define ML7213_I2SISTRX_DEFAULT	0xC
++
++#define ML7213_I2SMSKTX_DEFAULT	0x1f
++#define ML7213_I2SISTTX_DEFAULT	0xC
++
++enum ioh_i2s_fifo_type {
++	IOH_FIFO_32 = 4,
++	IOH_FIFO_16 = 2,
++	IOH_FIFO_8 = 1,
 +};
 +
-+enum ml26124_clk_in {
-+	ML26124_USE_PLLOUT = 0,
-+	ML26124_USE_MCLKI,
++enum ioh_i2s_status {
++	IOH_EOK = 0,
++	IOH_EDONE = 1,
++	IOH_EUNDERRUN = 2,
++	IOH_EOVERRUN = 3,
++	IOH_EFRAMESYNC = 4,
 +};
 +
++enum ioh_bclkpol_t {
++	ioh_BCLKPOL_FALLING = 0,
++	ioh_BCLKPOL_RISING,
++};
++
++enum ioh_masterclksel_t {
++	IOH_MASTERCLKSEL_MCLK = 0,
++	IOH_MASTERCLKSEL_MLBCLK,
++};
++
++enum ioh_lrckfmt_t {
++	IOH_LRCLKFMT_I2S = 1,
++	IOH_LRCLKFMT_LONGFRAME,
++	IOH_LRCLKFMT_SHORTFRAME,
++};
++
++enum ioh_mclkfs_t {
++	IOH_MCLKFS_64FS = 0,
++	IOH_MCLKFS_128FS,
++	IOH_MCLKFS_192FS,
++	IOH_MCLKFS_256FS,
++	IOH_MCLKFS_384FS,
++	IOH_MCLKFS_512FS,
++	IOH_MCLKFS_768FS,
++	IOH_MCLKFS_1024FS,
++};
++
++enum ioh_dlyoff_t {
++	IOH_DLYOFF_DLY_ON = 0,		/* date delat on */
++	IOH_DLYOFF_DLY_OFF,		/* date delat off */
++};
++
++enum ioh_lrpol_t {
++	IOH_LRPOL_NO_INVERT = 0,	/* Low of LRCLK is L data.
++					   High of LRCLK is R data. */
++	IOH_LRPOL_INVERT,		/* Low of LRCLK is R data.
++					   High of LRCLK is L data. */
++};
++
++enum ioh_aft_t {
++	IOH_AFR_FRONT = 0,
++	IOH_AFR_BACK,
++};
++
++struct ml7213i2s_runtime_data {
++	spinlock_t lock;
++	int tx_stop;
++	int rx_stop;
++	struct ioh_i2s_dma *rx_dma;
++	struct ioh_i2s_dma *tx_dma;
++};
++
++struct ioh_i2s_pm_ch_reg {
++	u32 i2sdrtx;	/* Tx: data register */
++	u32 i2scnttx; /* Tx: control register */
++	u32 i2sfifoctx;	/* Tx: FIFO control register */
++	u32 i2saftx;	/* Tx: almost full threshold setting */
++	u32 i2saetx;	/* Tx: almost empty threshold setting */
++	u32 i2smsktx;	/* Tx: interrupt mask settings */
++	u32 i2sisttx;	/* Tx: for acknowledging interrupts */
++	u32 i2scntrx;	/* Rx: control register */
++	u32 i2sfifocrx; /* Rx: FIFO control register */
++	u32 i2safrx;	/* Rx: almost full threshold setting */
++	u32 i2saerx;	/* Rx: almost empty threshold setting */
++	u32 i2smskrx;	/* Rx: interrupt mask settings */
++	u32 i2sistrx;	/* Rx: for acknowledging interrupts */
++};
++
++struct ioh_i2s_pm_ch_reg_cmn {
++	u32 i2sclkcnt[MAX_I2S_CH];	/*clock control register(ch0~5) */
++	u32 i2simask;		/*interrupt mask */
++};
++
++struct ioh_i2s_data {
++	struct device *dev;
++	void *iobase;
++	unsigned int mapbase;
++	spinlock_t tx_lock;
++	struct ioh_i2s_pm_ch_reg_cmn cmn_reg_save;
++	struct ioh_i2s_pm_ch_reg ch_reg_save[MAX_I2S_CH];
++	struct pci_dev *pdev;
++};
++
++struct ioh_i2s_dma {
++	/* Transmit side DMA */
++	struct scatterlist	*sg_tx_p;
++	struct scatterlist	*sg_rx_p;
++
++	int tx_num;	/* The number of sent sg */
++	int rx_num;	/* The number of sent sg */
++
++	struct dma_chan			*chan_tx;
++	struct dma_chan			*chan_rx;
++
++	int rx_nent;	/* The number of rx scatter list */
++	int tx_nent;	/* The number of tx scatter list */
++
++	struct dma_async_tx_descriptor	*desc_tx;
++	struct dma_async_tx_descriptor	*desc_rx;
++
++	dma_addr_t			tx_buf_dma;
++	dma_addr_t			rx_buf_dma;
++
++	struct pch_dma_slave		param_tx;
++	struct pch_dma_slave		param_rx;
++
++	int dma_tx_unit; /* 1Byte of 2Byte or 4Byte */
++	int dma_rx_unit; /* 1Byte of 2Byte or 4Byte */
++	int dma_tx_width;
++	int dma_rx_width;
++
++	struct snd_pcm_substream *tx_substream;
++	struct snd_pcm_substream *rx_substream;
++
++	int number;
++
++	int mapped_tx_ch;
++	int mapped_rx_ch;
++
++	unsigned char *rx_dma_addr;
++	dma_addr_t rx_physical_addr;
++	unsigned long rx_buffer_bytes;
++	unsigned long rx_period_bytes;
++
++	unsigned char *tx_dma_addr;
++	dma_addr_t tx_physical_addr;
++	unsigned long tx_buffer_bytes;
++	unsigned long tx_period_bytes;
++
++
++	int rx_buf_frags;
++	int tx_buf_frags;
++
++	int tx_cur_period;
++	int rx_cur_period;
++};
++
++struct ml7213i2s_dai {
++	struct snd_soc_dai_driver dai;
++	struct device	*dev;
++	void *iobase;
++	u32 freq;
++};
++
++struct ioh_i2s_config_common_reg {
++	u32 i2sclkcnt;	/*clock control register(ch0~5) */
++	u32 i2sistatus;	/*interrupt status */
++	u32 i2sidisp;		/*active interrupts */
++	u32 i2simask;		/*interrupt mask */
++	u32 i2simaskclr;	/*interrupt mask clear */
++};
++
++struct ioh_i2s_config_tx_reg {
++	u32 i2sdrtx;	/*data register */
++	u32 i2scnttx; /*control register */
++	u32 i2sfifoctx;	/*FIFO control register */
++	u32 i2saftx;	/*almost full threshold setting */
++	u32 i2saetx;	/*almost empty threshold setting */
++	u32 i2smsktx;	/*interrupt mask settings */
++	u32 i2sisttx;	/*for acknowledging interrupts */
++	u32 i2smontx;	/*monitor register */
++};
++
++struct ioh_i2s_config_rx_reg {
++	u32 i2sdrrx;	/* data register */
++	u32 i2scntrx;	/* control register */
++	u32 i2sfifocrx;/* FIFO control register */
++	u32 i2safrx;	/* almost full threshold setting */
++	u32 i2saerx;	/* almost empty threshold setting */
++	u32 i2smskrx;	/* interrupt mask settings */
++	u32 i2sistrx;	/* for acknowledging interrupts */
++	u32 i2smonrx;	/* monitor register */
++};
++
++struct ioh_i2s_config_reg {
++	/* The common register settings */
++	struct ioh_i2s_config_common_reg cmn;
++
++	/* TX channel settings */
++	struct ioh_i2s_config_tx_reg tx;
++
++	/* RX channel settings */
++	struct ioh_i2s_config_rx_reg rx;
++};
++
++static struct snd_pcm_hardware ml7213i2s_pcm_hw = {
++	.info =			(SNDRV_PCM_INFO_MMAP |
++				 SNDRV_PCM_INFO_INTERLEAVED |
++				 SNDRV_PCM_INFO_RESUME |
++				 SNDRV_PCM_INFO_MMAP_VALID),
++	.formats =		SUPPORT_FORMAT,
++	.channels_min =	1,
++	.channels_max =	2,
++	.buffer_bytes_max =	64 * 128 * 4 * 64,
++	.period_bytes_min =	64 * 4,
++	.period_bytes_max =	4 * 1024,
++	.periods_min =	64,
++	.periods_max =	64,
++	.fifo_size =		0,
++};
 +#endif
 -- 
 1.7.7.6
