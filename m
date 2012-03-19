@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] [v3] powerpc/8xxx: remove 85xx/86xx
- restrictions from fsl_guts.h
-Date: Mon, 19 Mar 2012 16:37:42 +0000
-Message-ID: <20120319163742.GE5132@opensource.wolfsonmicro.com>
-References: <1332173199-25877-1-git-send-email-timur@freescale.com>
+From: Stefano Panella <stefano.panella@citrix.com>
+Subject: paravirtualized alsa  kernel driver for XEN
+Date: Mon, 19 Mar 2012 17:15:21 +0000
+Message-ID: <4F6769A9.6090200@citrix.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6686498954237425176=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C85A1041AF
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:37:44 +0100 (CET)
-In-Reply-To: <1332173199-25877-1-git-send-email-timur@freescale.com>
+Received: from SMTP.EU.CITRIX.COM (smtp.ctxuk.citrix.com [62.200.22.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E7C51041B0
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 18:06:04 +0100 (CET)
+Received: from stefanop.cam.xci-test.com ([10.80.248.120])	by
+	norwich.cam.xci-test.com with esmtp (Exim 4.72)	(envelope-from
+	<stefano.panella@citrix.com>)	id 1S9g1w-0002SO-JU	for
+	alsa-devel@alsa-project.org; Mon, 19 Mar 2012 17:06:00 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, galak@kernel.crashing.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============6686498954237425176==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ytoMbUMiTKPMT3hY"
-Content-Disposition: inline
+I am Stefano Panella, I am new to the list and I would like to take the 
+opportunity to ask some questions since I am trying to write a 
+paravirtualized alsa driver for XEN.
 
+If all goes well I would also like to upstream it on linux.
 
---ytoMbUMiTKPMT3hY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have been reading the documentation on "Writing an ALSA Driver" and I 
+am still not completely clear on the meaning of the "pointer" callback 
+in the pcm operations.
 
-On Mon, Mar 19, 2012 at 11:06:39AM -0500, Timur Tabi wrote:
-> Remove the check for CONFIG_PPC_85xx and CONFIG_PPC_86xx from fsl_guts.h.
-> The check was originally intended to allow the same header file to
-> be used on 85xx and 86xx systems, even though the Global Utilities
-> register could be different.  It turns out that they're not actually
-> different, and so the check is not necessary.  In addition, neither
-> macro is defined for 64-bit e5500 kernels, so that causes a build
-> break.
+The description say:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+"This callback is called when the PCM middle layer inquires the current 
+hardware position on the buffer."
 
---ytoMbUMiTKPMT3hY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+My question are:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+1) In case of a playback stream, is the pointer referring to wich sample 
+is currently playing on the DAC or to which is it the last frame read by 
+the HW from the alsa memory buffer?
 
-iQIcBAEBAgAGBQJPZ2DPAAoJEBus8iNuMP3dai8P/1ww1tYX9L6JQlzxQL7ULSHS
-Y6vjfzMENU1zTMNkXOSlX+vhC93BSpBmhiBkR5stlTaYwwzuxH/L+b8+RuY3Q70g
-3ZcK5b2roTmB2sWvdcXzIbP59uw9Njo1u5Huit1YDCsrU/Z/cFk9vDXcLDgLuXyF
-4T3fyzBXv5TwlKB5g+0kGd+RE1RDw0e4Jmk0c335NvdLz/aG9sEpb6J109Ze3xBf
-BApOXSTpUimvw69P4q32aapE3fmaahtD86eT1fosmJGbUCI9jNVTsovIOECzhigX
-w6ttTooXnoaz2SWScqliL4EWhimb5s0cVLJ3NXRkpcfQGFXXxmQoO8MEv7I72KHH
-6fyXH0JNfoyUjpJfuskHt+/o/JLXcBbFZGy6o7UKqHx6VmEunW6AyXsdQeptVZ/d
-dCjHNvWlh2ZGqQj4l2/w/s+q8M6186nVHhWsWNO4Fsaf2JeGJPpAm1w7XW+ccp3Q
-aHS4KGjH6FrRTCusuQfuAjFLFyfNSbMkZyWVrBc37u2++wUGhVSrPIm+UO8w2Mto
-i7XFbNHv/9Szh5KEjwCFmMMSCZi5qqZ1LBBsfqT3IW5zTUNE02v4Z/vAfHsJlBCa
-2NOH0dpT+K4g5/a1HHBJgloUNl0xM3s7C8Y5GPwfuWcJCVim+oH0KQPAz/8rVlFu
-PlBCZH6/8WgleS7qRRbp
-=+kSB
------END PGP SIGNATURE-----
+2) What does the pointer mean in case of a capture stream? Is it the 
+position of the current frame on the ADC or is the latest frame written 
+into the alsa buffer?
 
---ytoMbUMiTKPMT3hY--
+3) in case it is the frame on the DAC/ADC, what happens if the callback 
+does not return the real DAC/ADC frame position but an approximate 
+value, let say rounded to 64 frames only?
 
---===============6686498954237425176==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+4) is there any test I could run to check I have implemented correctly 
+the "pointer" callback? Or any application which would need very high 
+"pointer" precision like frame precision?
 
+Thanks very much in advance,
 
---===============6686498954237425176==--
+Stefano
