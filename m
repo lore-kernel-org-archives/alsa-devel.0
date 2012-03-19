@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC:Question rate constraint between the dais
-Date: Mon, 19 Mar 2012 16:32:39 +0000
-Message-ID: <20120319163239.GD5132@opensource.wolfsonmicro.com>
-References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
-	<CAAMvbhEoMYzgEwYo-461DDCps8UYBpUdRoNeFb4-e2b9Lyttvg@mail.gmail.com>
+Subject: Re: [PATCH] [v3] powerpc/8xxx: remove 85xx/86xx
+ restrictions from fsl_guts.h
+Date: Mon, 19 Mar 2012 16:37:42 +0000
+Message-ID: <20120319163742.GE5132@opensource.wolfsonmicro.com>
+References: <1332173199-25877-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4504680282369028194=="
+Content-Type: multipart/mixed; boundary="===============6686498954237425176=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 831C010419F
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:32:42 +0100 (CET)
-In-Reply-To: <CAAMvbhEoMYzgEwYo-461DDCps8UYBpUdRoNeFb4-e2b9Lyttvg@mail.gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C85A1041AF
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:37:44 +0100 (CET)
+In-Reply-To: <1332173199-25877-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,66 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Ramesh Babu <ramesh.babu@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, galak@kernel.crashing.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4504680282369028194==
+--===============6686498954237425176==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jCrbxBqMcLqd4mOl"
+	protocol="application/pgp-signature"; boundary="ytoMbUMiTKPMT3hY"
 Content-Disposition: inline
 
 
---jCrbxBqMcLqd4mOl
+--ytoMbUMiTKPMT3hY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 19, 2012 at 04:12:42PM +0000, James Courtier-Dutton wrote:
+On Mon, Mar 19, 2012 at 11:06:39AM -0500, Timur Tabi wrote:
+> Remove the check for CONFIG_PPC_85xx and CONFIG_PPC_86xx from fsl_guts.h.
+> The check was originally intended to allow the same header file to
+> be used on 85xx and 86xx systems, even though the Global Utilities
+> register could be different.  It turns out that they're not actually
+> different, and so the check is not necessary.  In addition, neither
+> macro is defined for 64-bit e5500 kernels, so that causes a build
+> break.
 
-> A majority of the sound cards out there do 48KHz well, but not so well
-> on other rates, so defaulting to 48KHz is probably the best choice.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-This really isn't so true in the embedded space, there's a few systems
-that only do 48kHz to the AP but generally if there's a fixed sample
-rate it'll usually be 44.1kHz and otherwise the rates will be flexible.
-
-> One of the most difficult things is getting 44.1KHz MP3s etc.
-> resampled to 48KHz, but most MP3 playing apps support good resamplers
-> so they can still talk to pulseaudio at 48KHz.
-
-Again, not so true for embedded and burning power on resampling tends
-not to make people happy.
-
---jCrbxBqMcLqd4mOl
+--ytoMbUMiTKPMT3hY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPZ1+FAAoJEBus8iNuMP3dT3IQAIR0oA0P0tEhiO5WY+w/9Gcf
-vfI1IL/YOvpDas7x4Pg6M4dJbTInCCeFsKJEkFzQoOnAdhHuEnF5geXhU/+GZv+l
-HATzwdvZ4fA4g0K0VeY3PuQz/C6167nfVMNdxEDWS/UzD7OH42Kz4/a/Awn9CtIi
-wfULSJeHIpYxAE3Mx9FBs7KUtuJ6hbGkw9u9tYD0BwXE1ewZ2YzzpojjxSKTf40g
-tI0Lu9MQIhlB8m9fVOWjp2p2Myh6/gunsTRsl9I9yv9LDgYYsjddOV5wvrZvLNus
-Ueb+GFvoPdffe4GTuTIBpKhBPHyNYzUQe+oMUGBp4mkSCKIdXSRctqc7k4MnaTWz
-MKEz9FX3HsLfzEWTARCkwmpbQ4KlXNsG94Tl8ew1IWOzp9scYU4mJWqhZfXW2X8V
-Oo3+pY8XcLUunV4xmDKb5T7NJc5J9WJcT//Qpkt08wlSoSuINcfjXtbsqSbpSKIj
-4T//vaJrjiIz0J8wi9IsjxCAQ5v50o4/BiyQKJ7fwzkq7RKU57OAOr1RuirEcUAI
-TwJ/HCwt9X8MOJ8KEzR83gfIhyqbnJDZHyS/14OjRBQWOnRdv3FAUTPR3A7PlQut
-hExkycFLJvK6Qhi1SoNcKMUCCPNoAnKehSr+OYNA4ZWedFee9T5fUfUylmlpIe1v
-j6vHp2Htb9jjTfjH0Cgk
-=oXHd
+iQIcBAEBAgAGBQJPZ2DPAAoJEBus8iNuMP3dai8P/1ww1tYX9L6JQlzxQL7ULSHS
+Y6vjfzMENU1zTMNkXOSlX+vhC93BSpBmhiBkR5stlTaYwwzuxH/L+b8+RuY3Q70g
+3ZcK5b2roTmB2sWvdcXzIbP59uw9Njo1u5Huit1YDCsrU/Z/cFk9vDXcLDgLuXyF
+4T3fyzBXv5TwlKB5g+0kGd+RE1RDw0e4Jmk0c335NvdLz/aG9sEpb6J109Ze3xBf
+BApOXSTpUimvw69P4q32aapE3fmaahtD86eT1fosmJGbUCI9jNVTsovIOECzhigX
+w6ttTooXnoaz2SWScqliL4EWhimb5s0cVLJ3NXRkpcfQGFXXxmQoO8MEv7I72KHH
+6fyXH0JNfoyUjpJfuskHt+/o/JLXcBbFZGy6o7UKqHx6VmEunW6AyXsdQeptVZ/d
+dCjHNvWlh2ZGqQj4l2/w/s+q8M6186nVHhWsWNO4Fsaf2JeGJPpAm1w7XW+ccp3Q
+aHS4KGjH6FrRTCusuQfuAjFLFyfNSbMkZyWVrBc37u2++wUGhVSrPIm+UO8w2Mto
+i7XFbNHv/9Szh5KEjwCFmMMSCZi5qqZ1LBBsfqT3IW5zTUNE02v4Z/vAfHsJlBCa
+2NOH0dpT+K4g5/a1HHBJgloUNl0xM3s7C8Y5GPwfuWcJCVim+oH0KQPAz/8rVlFu
+PlBCZH6/8WgleS7qRRbp
+=+kSB
 -----END PGP SIGNATURE-----
 
---jCrbxBqMcLqd4mOl--
+--ytoMbUMiTKPMT3hY--
 
---===============4504680282369028194==
+--===============6686498954237425176==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4504680282369028194==--
+--===============6686498954237425176==--
