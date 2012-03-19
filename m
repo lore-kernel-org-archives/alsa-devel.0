@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: cs4270: Check that we can enable
-	regulators on resume
-Date: Mon, 19 Mar 2012 16:16:17 +0000
-Message-ID: <1332173777-9786-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC:Question rate constraint between the dais
+Date: Mon, 19 Mar 2012 16:32:39 +0000
+Message-ID: <20120319163239.GD5132@opensource.wolfsonmicro.com>
+References: <64362.10.252.27.21.1331805184.squirrel@linux.intel.com>
+	<CAAMvbhEoMYzgEwYo-461DDCps8UYBpUdRoNeFb4-e2b9Lyttvg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4504680282369028194=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66328104172
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:16:20 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 831C010419F
+	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 17:32:42 +0100 (CET)
+In-Reply-To: <CAAMvbhEoMYzgEwYo-461DDCps8UYBpUdRoNeFb4-e2b9Lyttvg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,35 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: Ramesh Babu <ramesh.babu@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's possible that the regulator enable will fail and if it does we may
-as well just give up with trying to bring the rest of the device up and
-report the original error.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/cs4270.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+--===============4504680282369028194==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jCrbxBqMcLqd4mOl"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 1d672f5..15df950 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -602,8 +602,10 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
- 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
- 	int reg;
- 
--	regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
--			      cs4270->supplies);
-+	ret = regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
-+				    cs4270->supplies);
-+	if (ret != 0)
-+		return ret;
- 
- 	/* In case the device was put to hard reset during sleep, we need to
- 	 * wait 500ns here before any I2C communication. */
--- 
-1.7.9.1
+
+--jCrbxBqMcLqd4mOl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 19, 2012 at 04:12:42PM +0000, James Courtier-Dutton wrote:
+
+> A majority of the sound cards out there do 48KHz well, but not so well
+> on other rates, so defaulting to 48KHz is probably the best choice.
+
+This really isn't so true in the embedded space, there's a few systems
+that only do 48kHz to the AP but generally if there's a fixed sample
+rate it'll usually be 44.1kHz and otherwise the rates will be flexible.
+
+> One of the most difficult things is getting 44.1KHz MP3s etc.
+> resampled to 48KHz, but most MP3 playing apps support good resamplers
+> so they can still talk to pulseaudio at 48KHz.
+
+Again, not so true for embedded and burning power on resampling tends
+not to make people happy.
+
+--jCrbxBqMcLqd4mOl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPZ1+FAAoJEBus8iNuMP3dT3IQAIR0oA0P0tEhiO5WY+w/9Gcf
+vfI1IL/YOvpDas7x4Pg6M4dJbTInCCeFsKJEkFzQoOnAdhHuEnF5geXhU/+GZv+l
+HATzwdvZ4fA4g0K0VeY3PuQz/C6167nfVMNdxEDWS/UzD7OH42Kz4/a/Awn9CtIi
+wfULSJeHIpYxAE3Mx9FBs7KUtuJ6hbGkw9u9tYD0BwXE1ewZ2YzzpojjxSKTf40g
+tI0Lu9MQIhlB8m9fVOWjp2p2Myh6/gunsTRsl9I9yv9LDgYYsjddOV5wvrZvLNus
+Ueb+GFvoPdffe4GTuTIBpKhBPHyNYzUQe+oMUGBp4mkSCKIdXSRctqc7k4MnaTWz
+MKEz9FX3HsLfzEWTARCkwmpbQ4KlXNsG94Tl8ew1IWOzp9scYU4mJWqhZfXW2X8V
+Oo3+pY8XcLUunV4xmDKb5T7NJc5J9WJcT//Qpkt08wlSoSuINcfjXtbsqSbpSKIj
+4T//vaJrjiIz0J8wi9IsjxCAQ5v50o4/BiyQKJ7fwzkq7RKU57OAOr1RuirEcUAI
+TwJ/HCwt9X8MOJ8KEzR83gfIhyqbnJDZHyS/14OjRBQWOnRdv3FAUTPR3A7PlQut
+hExkycFLJvK6Qhi1SoNcKMUCCPNoAnKehSr+OYNA4ZWedFee9T5fUfUylmlpIe1v
+j6vHp2Htb9jjTfjH0Cgk
+=oXHd
+-----END PGP SIGNATURE-----
+
+--jCrbxBqMcLqd4mOl--
+
+--===============4504680282369028194==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4504680282369028194==--
