@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: paravirtualized alsa  kernel driver for XEN
-Date: Tue, 20 Mar 2012 10:52:10 +0100
-Message-ID: <4F68534A.70203@canonical.com>
-References: <4F6769A9.6090200@citrix.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/3] ASoC: omap-mcbsp: Constraint handling
+	changes
+Date: Tue, 20 Mar 2012 13:13:38 +0200
+Message-ID: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 6E2DF245F4
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 10:52:12 +0100 (CET)
-In-Reply-To: <4F6769A9.6090200@citrix.com>
+Received: from psmtp.com (na3sys009aog135.obsmtp.com [74.125.149.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id D36D924616
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:13:56 +0100 (CET)
+Received: by mail-lb0-f176.google.com with SMTP id m11so5777143lbo.21
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 04:13:54 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,70 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stefano Panella <stefano.panella@citrix.com>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Grazvydas Ignotas <notasas@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/19/2012 06:15 PM, Stefano Panella wrote:
-> Hi,
->
-> I am Stefano Panella, I am new to the list and I would like to take the
-> opportunity to ask some questions since I am trying to write a
-> paravirtualized alsa driver for XEN.
->
-> If all goes well I would also like to upstream it on linux.
->
-> I have been reading the documentation on "Writing an ALSA Driver" and I
-> am still not completely clear on the meaning of the "pointer" callback
-> in the pcm operations.
->
-> The description say:
->
-> "This callback is called when the PCM middle layer inquires the current
-> hardware position on the buffer."
->
-> My question are:
->
-> 1) In case of a playback stream, is the pointer referring to wich sample
-> is currently playing on the DAC or to which is it the last frame read by
-> the HW from the alsa memory buffer?
->
-> 2) What does the pointer mean in case of a capture stream? Is it the
-> position of the current frame on the ADC or is the latest frame written
-> into the alsa buffer?
+Hello,
 
-I'd say that for both, it is being used by applications to know what 
-memory they can read from or write to. But other people here might know 
-better.
+This series will add the following changes:
+1. We do not need to place buffer size constraint in case of a capture stream.
 
-> 3) in case it is the frame on the DAC/ADC, what happens if the callback
-> does not return the real DAC/ADC frame position but an approximate
-> value, let say rounded to 64 frames only?
+2. Grazvydas Ignotas <notasas@gmail.com> reported that on Pandora they have
+issues with legacy applications (and OSS emulation) when they open the playback
+with small period size (smaller than the FIFO size). Since these legacy
+applications can not be fixed (and it is not feasible), this series will provide
+a solution to overcome with the underruns at the stream start.
 
-For the JACK sound server, I think it only needs to be as accurate as 
-the period (i e if you have 4 periods with 64 samples each, you need to 
-be able to return 0, 64, 128 and 192).
+With the introduction of the new sysfs file (period_protection) the user can
+request the driver to place the constraint to the period size instead of the
+buffer size.
+With the period_protection one can specify the number of samples they want to
+have as protection in period size constraint over the McBSP FIFO size.
 
-For PulseAudio it's worse. The worse granularity, the more difficult for 
-PulseAudio to have low-latency operation. PulseAudio also 
-rewinds/rewrites the buffer occasionally and uses the pointer to know 
-from when it should start rewriting.
+As an example:
+OMAP3, McBSP2, stereo stream.
+the FIFO is 640 samples long.
+period_protection = 1 will ensure that the period size is minimum of 641 samples
+long.
 
-> 4) is there any test I could run to check I have implemented correctly
-> the "pointer" callback? Or any application which would need very high
-> "pointer" precision like frame precision?
+With the test code from Grazvydas Ignotas:
+http://notaz.gp2x.de/misc/alsa_period_test.c
 
-PulseAudio has an alsa-time-test application that relies heavily on the 
-pointer callback being accurate. It's only for playback and I've never 
-used it myself so I'm not completely sure about how to interpret the 
-numbers.
+I don't see underrun issues with period_protection = 1 on BeagleBoard.
 
-In general, I believe PulseAudio (especially with timer-scheduling mode 
-enabled) stress tests the driver quite hard and as such it is sometimes 
-being used as a measure to see if the audio driver is successful. :-)
+Regards,
+Peter
+---
+Peter Ujfalusi (3):
+  ASoC: omap-mcbsp: buffer size constraint only applies to playback
+    stream
+  ASoC: omap-mcbsp: Restructure omap_mcbsp_dai_startup code
+  ASoC: omap-mcbsp: Add period size protection mode
 
-Hopefully this provides some initial insights.
+ sound/soc/omap/mcbsp.c      |    2 +
+ sound/soc/omap/mcbsp.h      |    1 +
+ sound/soc/omap/omap-mcbsp.c |   71 ++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 60 insertions(+), 14 deletions(-)
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+1.7.8.5
