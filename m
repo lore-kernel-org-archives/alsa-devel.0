@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v7] sound/soc/lapis: add machine driver for
- ML7213 Carrier Board
-Date: Mon, 19 Mar 2012 19:21:01 +0000
-Message-ID: <20120319192101.GG12384@opensource.wolfsonmicro.com>
-References: <CANKRQni1k4hv40j0hTzVMdS9aFccM7xRrHis0-cFuBvSZe+9CA@mail.gmail.com>
-	<1332158525-14968-1-git-send-email-tomoya.rohm@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: paravirtualized alsa  kernel driver for XEN
+Date: Tue, 20 Mar 2012 10:52:10 +0100
+Message-ID: <4F68534A.70203@canonical.com>
+References: <4F6769A9.6090200@citrix.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7227553120722746791=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DC6162414F
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2012 20:21:04 +0100 (CET)
-In-Reply-To: <1332158525-14968-1-git-send-email-tomoya.rohm@gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 6E2DF245F4
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 10:52:12 +0100 (CET)
+In-Reply-To: <4F6769A9.6090200@citrix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,83 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Stefano Panella <stefano.panella@citrix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 03/19/2012 06:15 PM, Stefano Panella wrote:
+> Hi,
+>
+> I am Stefano Panella, I am new to the list and I would like to take the
+> opportunity to ask some questions since I am trying to write a
+> paravirtualized alsa driver for XEN.
+>
+> If all goes well I would also like to upstream it on linux.
+>
+> I have been reading the documentation on "Writing an ALSA Driver" and I
+> am still not completely clear on the meaning of the "pointer" callback
+> in the pcm operations.
+>
+> The description say:
+>
+> "This callback is called when the PCM middle layer inquires the current
+> hardware position on the buffer."
+>
+> My question are:
+>
+> 1) In case of a playback stream, is the pointer referring to wich sample
+> is currently playing on the DAC or to which is it the last frame read by
+> the HW from the alsa memory buffer?
+>
+> 2) What does the pointer mean in case of a capture stream? Is it the
+> position of the current frame on the ADC or is the latest frame written
+> into the alsa buffer?
 
---===============7227553120722746791==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WlEyl6ow+jlIgNUh"
-Content-Disposition: inline
+I'd say that for both, it is being used by applications to know what 
+memory they can read from or write to. But other people here might know 
+better.
 
+> 3) in case it is the frame on the DAC/ADC, what happens if the callback
+> does not return the real DAC/ADC frame position but an approximate
+> value, let say rounded to 64 frames only?
 
---WlEyl6ow+jlIgNUh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For the JACK sound server, I think it only needs to be as accurate as 
+the period (i e if you have 4 periods with 64 samples each, you need to 
+be able to return 0, 64, 128 and 192).
 
-On Mon, Mar 19, 2012 at 09:02:05PM +0900, Tomoya MORINAGA wrote:
+For PulseAudio it's worse. The worse granularity, the more difficult for 
+PulseAudio to have low-latency operation. PulseAudio also 
+rewinds/rewrites the buffer occasionally and uses the pointer to know 
+from when it should start rewriting.
 
-> +static int ml7213_hw_params(struct snd_pcm_substream *substream,
-> +			    struct snd_pcm_hw_params *hw_params)
-> +{
+> 4) is there any test I could run to check I have implemented correctly
+> the "pointer" callback? Or any application which would need very high
+> "pointer" precision like frame precision?
 
-> +	default:
-> +		pr_err("%s: Failed not support format\n", __func__);
-> +		return -EINVAL;
-> +		break;
+PulseAudio has an alsa-time-test application that relies heavily on the 
+pointer callback being accurate. It's only for playback and I've never 
+used it myself so I'm not completely sure about how to interpret the 
+numbers.
 
-No need for the break.
+In general, I believe PulseAudio (especially with timer-scheduling mode 
+enabled) stress tests the driver quite hard and as such it is sometimes 
+being used as a measure to see if the audio driver is successful. :-)
 
-> +	snd_soc_dapm_enable_pin(dapm, "Speaker");
-> +	snd_soc_dapm_enable_pin(dapm, "AnalogMIC");
-> +	snd_soc_dapm_enable_pin(dapm, "MICBIAS");
+Hopefully this provides some initial insights.
 
-Why are you doing thiS?  You never disable these things so if this were
-needed you may as well do it on init, but since the default state is
-enabled anyway this shouldn't be doing anytihng.
-
-> +static int __init lapis_ml7213_ml26124_init(void)
-> +{
-> +	return platform_driver_register(&snd_ml7213crb_driver);
-> +}
-> +module_init(lapis_ml7213_ml26124_init);
-
-module_platform_driver().
-
-> +MODULE_ALIAS("platform: lapis-ml7213ioh-CRB");
-
-No space after the colon.
-
---WlEyl6ow+jlIgNUh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPZ4b5AAoJEBus8iNuMP3d9TAP/3tTjXTNH3mm2E+4SE/KKIKd
-A8QZJ0BzlW/uXFbxzgaYyn45dOsS+pY6T6lUFrfdZSXjJDzsC9h39eBCoMKSK4XS
-Jrp5xf73cbJYOkQAm47nSC4K0pIoaNZwrmXfdKGtjzb+024MOPniQBAqF3z9LZyN
-XhXWSu9zYAx9sNdMg0FGmPAbP1VVeVoLbxJ9BD9UXYYyAzKEsJhyO/M3opcp4iyw
-5YOGfbJWK5O52TAPLBnVGSKQwfhF+mhawebYkO1jrGXYLI/mTF0UepI6hzwqvW5g
-1tDUP2b6Q6S1YLVxMpxrmB6NTq4mrHjOkHLUHO6+BBs7/fqrITQhtO9O1vEWlzgE
-XwhTXFQwugkbRBKjN9souV6s/zxE+3JbDNrMpZDGmZs22+lehY8ganmc2QjzijuI
-PPcDYYM72bOYyKDMG3uB/UgApDZ08UBS1KcWh4xV0tHqp34LmTojfwj7ZnVofGmk
-gZHrwcJF1j5/0coXVc8zF2VPs8lbTNt/nb7WqakzOgb+VhMPzmulcgv8lZJy6Mn7
-GSnh60Vbl77ge/jcYSdDmnofidNLbvo107Zn/24W9VpzZdjKTazE5aI3kJBaB04j
-ZclqPeEAam0RZFoluAybyDtIewxXb6EBfKIRmgaYNCdQQid7BmLNsTspv8EEQDOB
-p5LHth+5/iJiu6WFVp0O
-=APYd
------END PGP SIGNATURE-----
-
---WlEyl6ow+jlIgNUh--
-
---===============7227553120722746791==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7227553120722746791==--
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
