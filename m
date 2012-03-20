@@ -1,35 +1,18 @@
-From: Kevin Hilman <khilman@ti.com>
-Subject: Re: HDA intel, wired headset w/mic, jack mic detect
-Date: Tue, 20 Mar 2012 11:14:57 -0700
-Message-ID: <87k42fyw9q.fsf@ti.com>
-References: <87ehtlwen3.fsf@ti.com> <4F472D4F.3000904@canonical.com>
-	<CALyTGODsDRToe7efiHoVecvQ2JAYVj+G1Rv+upf2tBDDjPpzCg@mail.gmail.com>
-	<CAN8cciZm2s-1Y69cohepoNNYsyBq4qQzyvbkXF2K4aDspfVtGQ@mail.gmail.com>
-	<87zkc1cvaa.fsf@ti.com>
-	<CAN8ccib90y8m0KLTYKe7Jz5sXVZFY=D7aUwm8vog3aZvZPHH0Q@mail.gmail.com>
-	<874nu99k9y.fsf@ti.com>
-	<CAN8cciayARuQGLH=DHsReH0sYbz92K3BPNhmNEqYmSjc6wUUVw@mail.gmail.com>
-	<87d38wfag6.fsf@ti.com>
-	<CAN8cciaB6-GUvsPS8+bpftLb7BaawdpCsgY3Z7R9H+XdkJ8LNA@mail.gmail.com>
-	<87booesssh.fsf@ti.com>
-	<CAN8ccibbw109Sxb_X_ZKVO4GnpVUfbEyK0yyM8g90g8K8v4Jtw@mail.gmail.com>
-	<87zkbvne5k.fsf@ti.com>
-	<CAN8cciaEKB2Gf3n6NWFkoJmk=kuH6nNHJYLqQtoRiiPmfLcFcw@mail.gmail.com>
-	<s5h62eiqlcn.wl%tiwai@suse.de> <87399lfpef.fsf@ti.com>
-	<s5h1up5qxmc.wl%tiwai@suse.de> <87ipid4rvv.fsf@ti.com>
-	<CAN8cciZqB3oVVGMS4=RBSGZH+nSJAZoUT_a8hFu=pBnNJ3gwfw@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
+	protection mode
+Date: Tue, 20 Mar 2012 21:20:56 +0200
+Message-ID: <4F68D898.5080606@bitmer.com>
+References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>	<4F68AE51.808@bitmer.com>
+	<CANOLnOMqK5-yWoEA=1x2a4-OQYy8xvBUwY_RVdqHeaz4TxL3eQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
-	[74.125.149.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id C375B243DA
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 19:15:03 +0100 (CET)
-Received: by mail-pz0-f45.google.com with SMTP id p14so389604dad.18
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 11:15:00 -0700 (PDT)
-In-Reply-To: <CAN8cciZqB3oVVGMS4=RBSGZH+nSJAZoUT_a8hFu=pBnNJ3gwfw@mail.gmail.com>
-	(Raymond Yau's message of "Wed, 14 Mar 2012 08:50:53 +0800")
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1A91104371
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 20:21:01 +0100 (CET)
+In-Reply-To: <CANOLnOMqK5-yWoEA=1x2a4-OQYy8xvBUwY_RVdqHeaz4TxL3eQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,43 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau <superquad.vortex2@gmail.com> writes:
+On 03/20/2012 06:42 PM, Grazvydas Ignotas wrote:
+> This is what we have in pandora tree now:
+> http://git.openpandora.org/cgi-bin/gitweb.cgi?p=pandora-kernel.git;a=commitdiff;h=d494977441ac8f99d094b5e03398cb33a14e832a
+> Seems to work well for everything here.
+> 
+To me this looks more like a correct fix. At quick test I got single
+xrun when starting up but not endless loop of them. Maybe need to tune a
+bit with CONFIG_SND_PCM_XRUN_DEBUG=y.
 
-> 2012/3/10, Kevin Hilman <khilman@ti.com>:
->>
->> Ah, that's a little easier to tinker with for the uninformed like me. :)
->>
->> Using that, it seems that the above registers work on my coded (cs4206)
->> too.  I was able to determine that the built-in mic is ADC2 right
->> channel, and can at least make the built-in mic switch from the right to
->> left (swap channel mode)
->>
->>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_COEF_INDEX 2
->>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_PROC_COEF 0x180a
->>
->> or make the right channel go to both HDA channels (mono mode):
->>
->>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_COEF_INDEX 2
->>     sudo hda-verb /dev/snd/hwC0D0 0x11 SET_PROC_COEF 0x100a
->>
->> However, I still can't figure out where the headset mic is and how to
->> enable it.
->>
->> Here's what I think I know (c.f. alsa-info.sh  output below)
->>
->
-> do you mean that you cannot record mono using sysdefault  which use a
-> route to copy left channel channel to both if the internal mic is at
-> the right channel?
->
-> arecord --vumeter=mono -c 1 -f S16_LE -r 48000 -Dsysdefault /dev/null
+As a reference here are the test cases from you and Peter:
 
-That is correct.
+Nok:
+aplay -D hw:0 -f s16_le -c 2 --period-size=512 --start-delay=50000
+/dev/urandom
 
-Using this command, I cannot record mono using the internal mic.
+Ok:
+aplay -D hw:0 -fs16_le -c2 --period-size=320 --buffer-size=972 \
+--start-delay=81000 -v /dev/urandom
 
-Kevin
+Nok:
+aplay -D hw:0 -fs16_le -c2 --period-size=324 --buffer-size=972 \
+--start-delay=81000 -v /dev/urandom
+
+-- 
+Jarkko
