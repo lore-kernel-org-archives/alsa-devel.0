@@ -1,17 +1,16 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH 3/8] sound:asoc: Add support for SPEAr ASoC pcm
-	layer.
-Date: Tue, 20 Mar 2012 17:03:47 +0530
-Message-ID: <45c0240f9e6f9632a28c3ad17fd8132254815295.1332242166.git.rajeev-dlh.kumar@st.com>
+Subject: [PATCH 4/8] sound:asoc:spdif_in: Add spdif IN support
+Date: Tue, 20 Mar 2012 17:03:48 +0530
+Message-ID: <568712727a6488bb0c16cf9031fa498059974e6e.1332242166.git.rajeev-dlh.kumar@st.com>
 References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
-	[207.126.144.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id C8883104239
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:50 +0100 (CET)
+Received: from eu1sys200aog101.obsmtp.com (eu1sys200aog101.obsmtp.com
+	[207.126.144.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5B9510423A
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:52 +0100 (CET)
 In-Reply-To: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,523 +22,397 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, spear-devel@list.st.com, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
+Cc: Vipin Kumar <Vipin.kumar@st.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, spear-devel@list.st.com, Vipin Kumar <vipin.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch add support for the SPEAr ASoC pcm layer in ASoC framework.
+From: Vipin Kumar <vipin.kumar@st.com>
+
+This patch implements the spdif IN driver for ST peripheral
 
 Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Signed-off-by: Vipin Kumar <Vipin.kumar@st.com>
 ---
- sound/soc/spear/spear_pcm.c |  460 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/spear/spear_pcm.h |   33 +++
- 2 files changed, 493 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/spear/spear_pcm.c
- create mode 100644 sound/soc/spear/spear_pcm.h
+ sound/soc/spear/spdif_in.c      |  304 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/spdif_in_regs.h |   60 ++++++++
+ 2 files changed, 364 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/spear/spdif_in.c
+ create mode 100644 sound/soc/spear/spdif_in_regs.h
 
-diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
+diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
 new file mode 100644
-index 0000000..3693fde
+index 0000000..9a7b3b8
 --- /dev/null
-+++ b/sound/soc/spear/spear_pcm.c
-@@ -0,0 +1,460 @@
++++ b/sound/soc/spear/spdif_in.c
+@@ -0,0 +1,304 @@
 +/*
-+ * ALSA PCM interface for ST SPEAr Processors
-+ *
-+ * sound/soc/spear/spear_pcm.c
++ * ALSA SoC SPDIF In Audio Layer for spear processors
 + *
 + * Copyright (C) 2012 ST Microelectronics
-+ * Rajeev Kumar<rajeev-dlh.kumar@st.com>
++ * Vipin Kumar <vipin.kumar@st.com>
 + *
 + * This file is licensed under the terms of the GNU General Public
 + * License version 2. This program is licensed "as is" without any
 + * warranty of any kind, whether express or implied.
 + */
 +
-+#include <linux/module.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/export.h>
 +#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/io.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
 +#include <linux/platform_device.h>
-+#include <linux/scatterlist.h>
-+#include <linux/slab.h>
 +#include <linux/spear_dma.h>
-+#include <sound/core.h>
 +#include <sound/pcm.h>
++#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include "spear_pcm.h"
++#include <mach/spdif.h>
++#include "spdif_in_regs.h"
 +
-+struct snd_pcm_hardware spear_pcm_hardware = {
-+	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-+		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-+	.buffer_bytes_max = 16 * 1024, /* max buffer size */
-+	.period_bytes_min = 2 * 1024, /* 1 msec data minimum period size */
-+	.period_bytes_max = 2 * 1024, /* maximum period size */
-+	.periods_min = 1, /* min # periods */
-+	.periods_max = 8, /* max # of periods */
-+	.fifo_size = 0, /* fifo size in bytes */
++struct spdif_in_params {
++	u32 format;
 +};
 +
-+static void pcm_dma_complete(void *arg);
++struct spdif_in_dev {
++	struct clk *clk;
++	struct dma_data dma_params;
++	struct spdif_in_params saved_params;
++	void *io_base;
++	void (*reset_perip)(void);
++	int irq;
++};
 +
-+static int spear_pcm_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
++static void spdif_in_configure(struct spdif_in_dev *host)
 +{
-+	int ret = snd_pcm_lib_malloc_pages(substream,
-+					params_buffer_bytes(params));
-+	if (ret < 0)
-+		return ret;
++	u32 ctrl = SPDIF_IN_PRTYEN | SPDIF_IN_STATEN | SPDIF_IN_USREN |
++		SPDIF_IN_VALEN | SPDIF_IN_BLKEN;
++	ctrl |= SPDIF_MODE_16BIT | SPDIF_FIFO_THRES_16;
 +
++	writel(ctrl, host->io_base + SPDIF_IN_CTRL);
++	writel(0xF, host->io_base + SPDIF_IN_IRQ_MASK);
++}
++
++static int spdif_in_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *cpu_dai)
++{
++	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)&host->dma_params);
 +	return 0;
 +}
 +
-+static int spear_pcm_hw_free(struct snd_pcm_substream *substream)
++static void spdif_in_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
 +{
-+	return snd_pcm_lib_free_pages(substream);
-+}
++	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(dai);
 +
-+static int spear_pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct spear_runtime_data *prtd = runtime->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&prtd->lock, flags);
-+	prtd->dma_addr = runtime->dma_addr;
-+
-+	prtd->buf_index = 0;
-+	prtd->dmacount = 0;
-+	prtd->xfer_len = snd_pcm_lib_period_bytes(substream);
-+	prtd->xfer_cnt = snd_pcm_lib_buffer_bytes(substream) / prtd->xfer_len;
-+
-+	spin_unlock_irqrestore(&prtd->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int start_dma(struct spear_runtime_data *prtd)
-+{
-+	struct dma_slave_config conf = {
-+		.device_fc = false,
-+	};
-+
-+	struct dma_chan *chan;
-+	struct dma_async_tx_descriptor *desc;
-+	struct scatterlist sg;
-+	enum dma_data_direction direction;
-+	dma_addr_t addr;
-+	struct snd_soc_pcm_runtime *rtd = prtd->substream->private_data;
-+	struct dma_data *dma_data =
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, prtd->substream);
-+	addr = prtd->dma_addr + prtd->buf_index * prtd->xfer_len;
-+	if (prtd->substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		chan = prtd->dma_chan[0];
-+		direction = DMA_TO_DEVICE;
-+		conf.dst_addr = dma_data->addr;
-+	} else {
-+		chan = prtd->dma_chan[1];
-+		direction = DMA_FROM_DEVICE;
-+		conf.src_addr = dma_data->addr;
-+	}
-+
-+	conf.src_maxburst = dma_data->max_burst;
-+	conf.dst_maxburst = dma_data->max_burst;
-+	conf.src_addr_width = dma_data->addr_width;
-+	conf.dst_addr_width = dma_data->addr_width;
-+
-+	/* Prepare sg's */
-+	sg_init_table(&sg, 1);
-+	sg_set_page(&sg, pfn_to_page(PFN_DOWN(addr)), prtd->xfer_len,
-+			addr & (PAGE_SIZE - 1));
-+	sg_dma_address(&sg) = addr;
-+
-+	conf.direction = direction;
-+	dmaengine_slave_config(chan, &conf);
-+
-+	desc = chan->device->device_prep_slave_sg(chan, &sg, 1, direction,
-+			DMA_PREP_INTERRUPT);
-+	if (!desc) {
-+		dev_err(&chan->dev->device, "cannot prepare slave dma\n");
-+		return -EAGAIN;
-+	}
-+
-+	desc->callback = pcm_dma_complete;
-+	desc->callback_param = prtd;
-+	desc->tx_submit(desc);
-+
-+	return 0;
-+}
-+
-+static void pcm_dma_xfer(struct spear_runtime_data *prtd,
-+		bool from_callback)
-+{
-+	struct snd_pcm_substream *substream = prtd->substream;
-+	struct dma_chan *chan;
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&prtd->lock, flags);
-+	if (!prtd->pcm_running) {
-+		spin_unlock_irqrestore(&prtd->lock, flags);
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
 +		return;
-+	}
 +
-+	BUG_ON(prtd->dmacount >= prtd->xfer_cnt);
-+
-+	while (prtd->dmacount < prtd->xfer_cnt) {
-+
-+		ret = start_dma(prtd);
-+		if (ret) {
-+			spin_unlock_irqrestore(&prtd->lock, flags);
-+			return;
-+		}
-+
-+		prtd->dmacount++;
-+		prtd->buf_index++;
-+
-+		/* Set to zero, if crosses buffer size */
-+		prtd->buf_index %= prtd->xfer_cnt;
-+
-+		/* Inform framework that a transfer is finished */
-+		if (from_callback) {
-+			spin_unlock_irqrestore(&prtd->lock, flags);
-+			snd_pcm_period_elapsed(substream);
-+			spin_lock_irqsave(&prtd->lock, flags);
-+		}
-+	}
-+	spin_unlock_irqrestore(&prtd->lock, flags);
-+
-+	/* Issue pending should be called after locks */
-+	if (prtd->substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		chan = prtd->dma_chan[0];
-+	else
-+		chan = prtd->dma_chan[1];
-+
-+	chan->device->device_issue_pending(chan);
++	writel(0x0, host->io_base + SPDIF_IN_IRQ_MASK);
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
 +}
 +
-+static void pcm_dma_complete(void *arg)
++static void spdif_in_format(struct spdif_in_dev *host, u32 format)
 +{
-+	struct spear_runtime_data *prtd = arg;
-+	unsigned long flags;
++	u32 ctrl = readl(host->io_base + SPDIF_IN_CTRL);
 +
-+	spin_lock_irqsave(&prtd->lock, flags);
-+	prtd->dmacount--;
-+	spin_unlock_irqrestore(&prtd->lock, flags);
++	switch (format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		ctrl |= SPDIF_XTRACT_16BIT;
++		break;
 +
-+	if (prtd->pcm_running)
-+		pcm_dma_xfer(prtd, true);
++	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE:
++		ctrl &= ~SPDIF_XTRACT_16BIT;
++		break;
++	}
++
++	writel(ctrl, host->io_base + SPDIF_IN_CTRL);
 +}
 +
-+static int spear_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int spdif_in_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params,
++		struct snd_soc_dai *dai)
 +{
-+	struct spear_runtime_data *prtd = substream->runtime->private_data;
-+	struct dma_chan *chan;
-+	unsigned long flags;
++	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(dai);
++	u32 format;
++
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	format = params_format(params);
++	host->saved_params.format = format;
++
++	return 0;
++}
++
++static int spdif_in_trigger(struct snd_pcm_substream *substream, int cmd,
++		struct snd_soc_dai *dai)
++{
++	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(dai);
++	u32 ctrl;
 +	int ret = 0;
 +
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
 +	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		spin_lock_irqsave(&prtd->lock, flags);
-+		/* Go to last successfully transferred index + 1 */
-+		prtd->buf_index += prtd->xfer_cnt - prtd->dmacount;
-+		prtd->buf_index %= prtd->xfer_cnt;
-+		prtd->dmacount = 0;
-+		spin_unlock_irqrestore(&prtd->lock, flags);
 +	case SNDRV_PCM_TRIGGER_START:
-+		spin_lock_irqsave(&prtd->lock, flags);
-+		prtd->pcm_running = true;
-+		spin_unlock_irqrestore(&prtd->lock, flags);
-+		pcm_dma_xfer(prtd, false);
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		clk_enable(host->clk);
++		spdif_in_configure(host);
++		spdif_in_format(host, host->saved_params.format);
++
++		ctrl = readl(host->io_base + SPDIF_IN_CTRL);
++		ctrl |= SPDIF_IN_SAMPLE | SPDIF_IN_ENB;
++		writel(ctrl, host->io_base + SPDIF_IN_CTRL);
++		writel(0xF, host->io_base + SPDIF_IN_IRQ_MASK);
 +		break;
++
 +	case SNDRV_PCM_TRIGGER_STOP:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		spin_lock_irqsave(&prtd->lock, flags);
-+		prtd->pcm_running = false;
-+		spin_unlock_irqrestore(&prtd->lock, flags);
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			chan = prtd->dma_chan[0];
-+		else
-+			chan = prtd->dma_chan[1];
-+
-+		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
-+		break;
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ctrl = readl(host->io_base + SPDIF_IN_CTRL);
++		ctrl &= ~(SPDIF_IN_SAMPLE | SPDIF_IN_ENB);
++		writel(ctrl, host->io_base + SPDIF_IN_CTRL);
++		writel(0x0, host->io_base + SPDIF_IN_IRQ_MASK);
++
++		if (host->reset_perip)
++			host->reset_perip();
++		clk_disable(host->clk);
 +		break;
++
 +	default:
 +		ret = -EINVAL;
++		break;
 +	}
-+
 +	return ret;
 +}
 +
-+static snd_pcm_uframes_t
-+spear_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct spear_runtime_data *prtd = substream->runtime->private_data;
-+
-+	return bytes_to_frames(substream->runtime, prtd->buf_index *
-+			prtd->xfer_len);
-+}
-+
-+static int pcm_alloc_dma_chan(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct spear_runtime_data *prtd = substream->runtime->private_data;
-+
-+	int stream = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? 0 : 1;
-+	struct dma_data *dma_data =
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	prtd->dma_chan[stream] = dma_request_channel(prtd->smask,
-+			dma_data->filter, dma_data->data);
-+	if (!prtd->dma_chan[stream])
-+		return -EAGAIN;
-+
-+	return 0;
-+}
-+
-+static void pcm_dma_free_chan(struct snd_pcm_substream *substream)
-+{
-+	struct spear_runtime_data *prtd = substream->runtime->private_data;
-+	struct dma_chan *chan;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		chan = prtd->dma_chan[0];
-+	else
-+		chan = prtd->dma_chan[1];
-+
-+	chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
-+	dma_release_channel(chan);
-+}
-+
-+static int spear_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct spear_runtime_data *prtd;
-+	int ret;
-+
-+	ret = snd_soc_set_runtime_hwparams(substream, &spear_pcm_hardware);
-+	if (ret)
-+		return ret;
-+
-+	/* ensure that buffer size is a multiple of period size */
-+	ret = snd_pcm_hw_constraint_integer(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		return ret;
-+
-+	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
-+	if (!prtd)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&prtd->lock);
-+	substream->runtime->private_data = prtd;
-+	prtd->substream = substream;
-+	dma_cap_zero(prtd->smask);
-+	dma_cap_set(DMA_SLAVE, prtd->smask);
-+
-+	ret = pcm_alloc_dma_chan(substream);
-+	if (ret) {
-+		dev_err(substream->pcm->card->dev,
-+				"pcm:Failed to get dma channels\n");
-+		kfree(prtd);
-+	}
-+
-+	return 0;
-+}
-+
-+static int spear_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct spear_runtime_data *prtd = substream->runtime->private_data;
-+
-+	pcm_dma_free_chan(substream);
-+	kfree(prtd);
-+
-+	return 0;
-+}
-+
-+static int spear_pcm_mmap(struct snd_pcm_substream *substream,
-+		struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+			runtime->dma_area, runtime->dma_addr,
-+			runtime->dma_bytes);
-+}
-+
-+static struct snd_pcm_ops spear_pcm_ops = {
-+	.open		= spear_pcm_open,
-+	.close		= spear_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= spear_pcm_hw_params,
-+	.hw_free	= spear_pcm_hw_free,
-+	.prepare	= spear_pcm_prepare,
-+	.trigger	= spear_pcm_trigger,
-+	.pointer	= spear_pcm_pointer,
-+	.mmap		= spear_pcm_mmap,
++static struct snd_soc_dai_ops spdif_in_dai_ops = {
++	.startup	= spdif_in_startup,
++	.shutdown	= spdif_in_shutdown,
++	.trigger	= spdif_in_trigger,
++	.hw_params	= spdif_in_hw_params,
 +};
 +
-+static int
-+spear_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream,
-+		size_t size)
-+{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
-+
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+			&buf->addr, GFP_KERNEL);
-+	if (!buf->area)
-+		return -ENOMEM;
-+
-+	dev_info(buf->dev.dev,
-+			" preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
-+			(void *)buf->area, (void *)buf->addr, size);
-+
-+	buf->bytes = size;
-+	return 0;
-+}
-+
-+static void spear_pcm_free(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
-+
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf && !buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
-+}
-+
-+static u64 spear_pcm_dmamask = DMA_BIT_MASK(32);
-+
-+static int spear_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_card *card = rtd->card->snd_card;
-+	struct snd_soc_dai *dai = rtd->cpu_dai;
-+	struct snd_pcm *pcm = rtd->pcm;
-+	int ret;
-+
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &spear_pcm_dmamask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
-+
-+	if (dai->driver->playback.channels_min) {
-+		ret = spear_pcm_preallocate_dma_buffer(pcm,
-+				SNDRV_PCM_STREAM_PLAYBACK,
-+				spear_pcm_hardware.buffer_bytes_max);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (dai->driver->capture.channels_min) {
-+		ret = spear_pcm_preallocate_dma_buffer(pcm,
-+				SNDRV_PCM_STREAM_CAPTURE,
-+				spear_pcm_hardware.buffer_bytes_max);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+struct snd_soc_platform_driver spear_soc_platform = {
-+	.ops		=	&spear_pcm_ops,
-+	.pcm_new	=	spear_pcm_new,
-+	.pcm_free	=	spear_pcm_free,
-+};
-+
-+static int __devinit spear_soc_platform_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_platform(&pdev->dev, &spear_soc_platform);
-+}
-+
-+static int __devexit spear_soc_platform_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver spear_pcm_driver = {
-+	.driver = {
-+		.name = "spear-pcm-audio",
-+		.owner = THIS_MODULE,
++struct snd_soc_dai_driver spdif_in_dai = {
++	.capture = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 | \
++				 SNDRV_PCM_RATE_192000),
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | \
++			   SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE,
 +	},
-+
-+	.probe = spear_soc_platform_probe,
-+	.remove = __devexit_p(spear_soc_platform_remove),
++	.ops = &spdif_in_dai_ops,
 +};
-+static int __init snd_spear_pcm_init(void)
-+{
-+	return platform_driver_register(&spear_pcm_driver);
-+}
-+module_init(snd_spear_pcm_init);
 +
-+static void __exit snd_spear_pcm_exit(void)
++static irqreturn_t spdif_in_irq(int irq, void *arg)
 +{
-+	platform_driver_unregister(&spear_pcm_driver);
-+}
-+module_exit(snd_spear_pcm_exit);
++	struct spdif_in_dev *host = (struct spdif_in_dev *)arg;
 +
-+MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
-+MODULE_DESCRIPTION("SPEAr PCM DMA module");
++	u32 irq_status = readl(host->io_base + SPDIF_IN_IRQ);
++
++	if (!irq_status)
++		return IRQ_NONE;
++
++	if (irq_status & SPDIF_IRQ_FIFOWRITE)
++		pr_err("spdif in: fifo write error\n");
++	if (irq_status & SPDIF_IRQ_EMPTYFIFOREAD)
++		pr_err("spdif in: empty fifo read error\n");
++	if (irq_status & SPDIF_IRQ_FIFOFULL)
++		pr_err("spdif in: fifo full error\n");
++	if (irq_status & SPDIF_IRQ_OUTOFRANGE)
++		pr_err("spdif in: out of range error\n");
++
++	writel(0, host->io_base + SPDIF_IN_IRQ);
++
++	return IRQ_HANDLED;
++}
++
++static int spdif_in_probe(struct platform_device *pdev)
++{
++	struct spdif_in_dev *host;
++	struct spdif_platform_data *pdata;
++	struct resource *res, *res_fifo;
++	int ret;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
++
++	res_fifo = platform_get_resource(pdev, IORESOURCE_IO, 0);
++	if (!res_fifo)
++		return -EINVAL;
++
++	if (!devm_request_mem_region(&pdev->dev, res->start,
++				resource_size(res), pdev->name)) {
++		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
++		return -ENOENT;
++	}
++
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
++	if (!host) {
++		dev_warn(&pdev->dev, "kzalloc fail\n");
++		return -ENOMEM;
++	}
++
++	host->io_base = devm_ioremap(&pdev->dev, res->start,
++				resource_size(res));
++	if (!host->io_base) {
++		dev_warn(&pdev->dev, "ioremap failed\n");
++		return -ENOMEM;
++	}
++
++	host->irq = platform_get_irq(pdev, 0);
++	if (host->irq < 0)
++		return -EINVAL;
++
++	host->clk = clk_get(&pdev->dev, NULL);
++	if (IS_ERR(host->clk))
++		return PTR_ERR(host->clk);
++
++	pdata = dev_get_platdata(&pdev->dev);
++
++	host->dma_params.data = pdata->dma_params;
++	host->dma_params.addr = res_fifo->start;
++	host->dma_params.max_burst = 16;
++	host->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	host->dma_params.filter = pdata->filter;
++	host->reset_perip = pdata->reset_perip;
++
++	dev_set_drvdata(&pdev->dev, host);
++
++	ret = devm_request_irq(&pdev->dev, host->irq, spdif_in_irq, 0,
++			"spdif-in", host);
++	if (ret) {
++		clk_put(host->clk);
++		dev_warn(&pdev->dev, "request_irq failed\n");
++		return ret;
++	}
++
++	ret = snd_soc_register_dai(&pdev->dev, &spdif_in_dai);
++	if (ret != 0) {
++		clk_put(host->clk);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int spdif_in_remove(struct platform_device *pdev)
++{
++	struct spdif_in_dev *host = dev_get_drvdata(&pdev->dev);
++
++	snd_soc_unregister_dai(&pdev->dev);
++	dev_set_drvdata(&pdev->dev, NULL);
++
++	clk_put(host->clk);
++
++	return 0;
++}
++
++#define SPDIF_IN_DEV_PM_OPS NULL
++
++static struct platform_driver spdif_in_driver = {
++	.probe		= spdif_in_probe,
++	.remove		= spdif_in_remove,
++	.driver		= {
++		.name	= "spdif-in",
++		.owner	= THIS_MODULE,
++		.pm	= SPDIF_IN_DEV_PM_OPS,
++	},
++};
++
++static int __init spdif_in_init(void)
++{
++	return platform_driver_register(&spdif_in_driver);
++}
++module_init(spdif_in_init);
++
++static void __exit spdif_in_exit(void)
++{
++	platform_driver_unregister(&spdif_in_driver);
++}
++module_exit(spdif_in_exit);
++
++MODULE_AUTHOR("Vipin Kumar <vipin.kumar@st.com>");
++MODULE_DESCRIPTION("SPEAr SPDIF IN SoC Interface");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:spear_pcm");
-diff --git a/sound/soc/spear/spear_pcm.h b/sound/soc/spear/spear_pcm.h
+diff --git a/sound/soc/spear/spdif_in_regs.h b/sound/soc/spear/spdif_in_regs.h
 new file mode 100644
-index 0000000..07a7b3d
+index 0000000..69f3816
 --- /dev/null
-+++ b/sound/soc/spear/spear_pcm.h
-@@ -0,0 +1,33 @@
++++ b/sound/soc/spear/spdif_in_regs.h
+@@ -0,0 +1,60 @@
 +/*
-+ * ALSA PCM interface for ST SPEAr Processors
++ * SPEAr SPDIF IN controller header file
 + *
-+ * sound/soc/spear/spear_pcm.h
++ * Copyright (ST) 2012 Vipin Kumar (vipin.kumar@st.com)
 + *
-+ * Copyright (C) 2012 ST Microelectronics
-+ * Rajeev Kumar<rajeev-dlh.kumar@st.com>
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
 + *
-+ * This file is licensed under the terms of the GNU General Public
-+ * License version 2. This program is licensed "as is" without any
-+ * warranty of any kind, whether express or implied.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 + */
 +
-+#ifndef SPEAR_PCM_H
-+#define SPEAR_PCM_H
++#ifndef SPDIF_IN_REGS_H
++#define SPDIF_IN_REGS_H
 +
-+struct spear_runtime_data {
-+	struct dma_chan *dma_chan[2];
-+	spinlock_t lock;
-+	struct snd_pcm_substream *substream;
-+	dma_addr_t dma_addr;
++#define SPDIF_IN_CTRL		0x00
++	#define SPDIF_IN_PRTYEN		(1 << 20)
++	#define SPDIF_IN_STATEN		(1 << 19)
++	#define SPDIF_IN_USREN		(1 << 18)
++	#define SPDIF_IN_VALEN		(1 << 17)
++	#define SPDIF_IN_BLKEN		(1 << 16)
 +
-+	/* DMA related mask */
-+	dma_cap_mask_t smask;
++	#define SPDIF_MODE_24BIT	(8 << 12)
++	#define SPDIF_MODE_23BIT	(7 << 12)
++	#define SPDIF_MODE_22BIT	(6 << 12)
++	#define SPDIF_MODE_21BIT	(5 << 12)
++	#define SPDIF_MODE_20BIT	(4 << 12)
++	#define SPDIF_MODE_19BIT	(3 << 12)
++	#define SPDIF_MODE_18BIT	(2 << 12)
++	#define SPDIF_MODE_17BIT	(1 << 12)
++	#define SPDIF_MODE_16BIT	(0 << 12)
++	#define SPDIF_MODE_MASK		(0x0F << 12)
 +
-+	/* For Keeping track of buffers */
-+	unsigned long xfer_len;	/* Data transfered by one transfer */
-+	int xfer_cnt; /* Total number of transfers to be done */
-+	int buf_index; /* Current buffer count */
-+	int dmacount; /* No. of DMA transfer ongoing */
-+	bool pcm_running; /* Current state of pcm, true if running */
-+};
-+#endif /* end of pcm header file */
++	#define SPDIF_IN_VALID		(1 << 11)
++	#define SPDIF_IN_SAMPLE		(1 << 10)
++	#define SPDIF_DATA_SWAP		(1 << 9)
++	#define SPDIF_IN_ENB		(1 << 8)
++	#define SPDIF_DATA_REVERT	(1 << 7)
++	#define SPDIF_XTRACT_16BIT	(1 << 6)
++	#define SPDIF_FIFO_THRES_16	(16 << 0)
++
++#define SPDIF_IN_IRQ_MASK	0x04
++#define SPDIF_IN_IRQ		0x08
++	#define SPDIF_IRQ_FIFOWRITE	(1 << 0)
++	#define SPDIF_IRQ_EMPTYFIFOREAD	(1 << 1)
++	#define SPDIF_IRQ_FIFOFULL	(1 << 2)
++	#define SPDIF_IRQ_OUTOFRANGE	(1 << 3)
++
++#define SPDIF_IN_STA		0x0C
++	#define SPDIF_IN_LOCK		(0x1 << 0)
++
++#endif /* SPDIF_IN_REGS_H */
 -- 
 1.7.2.2
