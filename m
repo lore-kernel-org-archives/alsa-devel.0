@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/8] sound:asoc: Add support for SPEAr ASoC
-	pcm layer.
-Date: Tue, 20 Mar 2012 15:50:37 +0000
-Message-ID: <20120320155036.GF3445@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/8] sound:asoc:spdif_in: Add spdif IN
+	support
+Date: Tue, 20 Mar 2012 15:55:27 +0000
+Message-ID: <20120320155526.GG3445@opensource.wolfsonmicro.com>
 References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
-	<45c0240f9e6f9632a28c3ad17fd8132254815295.1332242166.git.rajeev-dlh.kumar@st.com>
+	<568712727a6488bb0c16cf9031fa498059974e6e.1332242166.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4804861404348058116=="
+Content-Type: multipart/mixed; boundary="===============8662838102416147331=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 835571042B8
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 16:50:43 +0100 (CET)
-In-Reply-To: <45c0240f9e6f9632a28c3ad17fd8132254815295.1332242166.git.rajeev-dlh.kumar@st.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9AB6C1042D2
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 16:55:31 +0100 (CET)
+In-Reply-To: <568712727a6488bb0c16cf9031fa498059974e6e.1332242166.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +22,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, spear-devel@list.st.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, spear-devel@list.st.com, Vipin Kumar <vipin.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4804861404348058116==
+--===============8662838102416147331==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pql/uPZNXIm1JCle"
+	protocol="application/pgp-signature"; boundary="vSsTm1kUtxIHoa7M"
 Content-Disposition: inline
 
 
---Pql/uPZNXIm1JCle
+--vSsTm1kUtxIHoa7M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 20, 2012 at 05:03:47PM +0530, Rajeev Kumar wrote:
-> This patch add support for the SPEAr ASoC pcm layer in ASoC framework.
+On Tue, Mar 20, 2012 at 05:03:48PM +0530, Rajeev Kumar wrote:
 
-This should really be rewritten in terms of the dmaengine helper library
-which Lars-Peter contributed for 3.4.  It looks like you're not using
-cyclic mode here which is currently a requirement for the library - if
-your hardware doesn't have cyclic support then that'll need to be added.
+This looks good, a few minor things but almost good to go.
 
-We've already got too many independant implementations of an ALSA to
-dmaengine mapping, we should be cutting down on the amount of code as
-much as possible in order to avoid code duplication and make sure that
-we're able to roll out good practice and new features as easily as
-possible.
+> This patch implements the spdif IN driver for ST peripheral
 
---Pql/uPZNXIm1JCle
+S/PDIF.
+
+> +	if (irq_status & SPDIF_IRQ_FIFOWRITE)
+> +		pr_err("spdif in: fifo write error\n");
+> +	if (irq_status & SPDIF_IRQ_EMPTYFIFOREAD)
+> +		pr_err("spdif in: empty fifo read error\n");
+> +	if (irq_status & SPDIF_IRQ_FIFOFULL)
+> +		pr_err("spdif in: fifo full error\n");
+> +	if (irq_status & SPDIF_IRQ_OUTOFRANGE)
+> +		pr_err("spdif in: out of range error\n");
+
+dev_err().
+
+> +	if (!devm_request_mem_region(&pdev->dev, res->start,
+> +				resource_size(res), pdev->name)) {
+> +		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
+> +		return -ENOENT;
+> +	}
+> +
+> +	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+> +	if (!host) {
+> +		dev_warn(&pdev->dev, "kzalloc fail\n");
+> +		return -ENOMEM;
+> +	}
+
+Good to see this - this is the sort of stuff I was looking for in the
+I2S driver.
+
+> +	host->clk = clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(host->clk))
+> +		return PTR_ERR(host->clk);
+
+> +	pdata = dev_get_platdata(&pdev->dev);
+
+Should really be error checking in case you didn't get your platform
+data.
+
+> +	ret = devm_request_irq(&pdev->dev, host->irq, spdif_in_irq, 0,
+> +			"spdif-in", host);
+> +	if (ret) {
+
+I'm really not enthused about the idea of using devm_request_irq() here
+- what steps are you taking to make sure that the IRQ can't possibly
+fire after you've started tearing down the device.  In general it's
+relatively hard to use devm_request_irq() safely.
+
+> +#define SPDIF_IN_DEV_PM_OPS NULL
+
+Just remove this if it's unconditionally empty.
+
+> +static int __init spdif_in_init(void)
+
+module_platform_driver().
+
+--vSsTm1kUtxIHoa7M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPaKdFAAoJEBus8iNuMP3dMEEP/0WPPEIWZCErMgascYFbd407
-squm5FfAH9U8UwYhCWNjVFJ6yCI0tQePdhoMXg0eYrW82xZrxDSHCSH4/HAkXiAL
-XThE6IeAjcVyTCVjMncGD2dQOkEPJOFq1VYiOLBwcLk0mT0xU7y0G2+hM6jPL319
-Vnocbmpd3pzuYbSk2aUMwHWNvH5Hfsadh/CiCCud826qfCzeZJMQsv8p1EhgZ173
-/M4qHLBVphW6B2vxtyLdGSpLZLonmd4urJEQpo8B64F6uVLOaxYK3X/tee6v8x3e
-fPRWj72xvwdS+9DIUJQ51eUlybkBG835lqBNzEXFUmc2mbPOt4Gdo48UHhi1SLGc
-wocMc0VZx/6H9yG+Ds7Pt5wJibPXYQDR/Gy+/8dfTjf0Ge3gI3g1NNtmeueMtQeJ
-06jmaJvX+iuL7etj09So5Js/un0TZtlEYd5qHPwSVmteDAg9zEv7DmhiDlAJZ7+h
-44nujrsTpYDJLJ9Zl2dcbgxNIdpzYzbabg8S5KCfo26QVRxz9et2dcaw94yaJ3K4
-V+l0zMP+oRSjPUq7xocdwEg2Z7g6H/DmlmoAMieyCK+Dpjtznrx4IP786nPj70nP
-Rwd2/HisWMpvkoiMi6eSRV+noWSuUMAFzGj+393dwgVc4OozSO5BBx/afroOTD24
-LDkF0kk4MLoRmUmXa007
-=XjgI
+iQIcBAEBAgAGBQJPaKhnAAoJEBus8iNuMP3dxfIP/jih9EW68QTrYmjdVaWsF/wE
+4gh6ZuV1CUqiYCKztxp65OnnQQaWEgmVWdbf0ADwR2Aicb2TiRYvBj41cvOV7JWZ
+hst/5v4mnW2pTZ41Hd8v++8rdTRWU4iqofDqa1TNI+DJp0T6GZVcakLUUBwOcq+g
+wYKaxZcW2fnjJRX3Ayo8BppR54uwWQYWicoVWA2TJ1TXJmeFxIzKSlS/3Ow+NM1E
+OIENtEQgIAtVXtP7nYmYg5ChAqYsyVloAWdQMXGsVjyqmigzVvd0GcvmlbKnMzT5
+PE/4CxFdIKa1IL9aX3dVL8BjAPYL5TpM1K4a7dtGLFOR4hG9HO5IQA6S/4Yjcm2c
+8EP2GyzC9jp0+GMZRnMeoVfJmz2qLX+1UK/HL+xMGQh0A1S6c6s8zg1fF2ghaklc
+f0ZqE4/u2pqxMeqBX9uVehtB7OXt4dZa2910jpwKvQXdTyiPGL2ZK+PyLhr6TgOX
+gSuiUszykNQ+Jol2xH10VRlAqRlprvKQ/PJcwBOT7Flc96+kbftK1ogIaLhrnur5
+TTFYT/pHSJrjgN3cZ33EIKbLcZ9C5JEflXJGhsMxQRKWHv6tvf65054wj4aTGgva
+8j6GGEv4tF0tdVkw/bav3f+jn3ppIN3AtS0CoIR+r7TxXffVih7xPnJYXGsyCJlt
+Re5xIk5lCoaqZzqbR6x8
+=BaiF
 -----END PGP SIGNATURE-----
 
---Pql/uPZNXIm1JCle--
+--vSsTm1kUtxIHoa7M--
 
---===============4804861404348058116==
+--===============8662838102416147331==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4804861404348058116==--
+--===============8662838102416147331==--
