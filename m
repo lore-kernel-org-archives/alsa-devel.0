@@ -1,24 +1,18 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
-	protection mode
-Date: Tue, 20 Mar 2012 19:27:02 +0200
-Message-ID: <CANOLnONkvk63ABDN_mX2g79EKMgfk0H71CRLaUmXSrwa55+C7A@mail.gmail.com>
-References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
-	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>
-	<20120320160154.GI3445@opensource.wolfsonmicro.com>
-	<CANOLnOPjqbeEbSDUHokkGRUa7KwJ-+hAczWSmQ3LEccCh9-c7w@mail.gmail.com>
-	<20120320170444.GA6938@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/8] sound:asoc: Add support for STA529
+ Audio Codec
+Date: Tue, 20 Mar 2012 18:57:06 +0100
+Message-ID: <4F68C4F2.5000805@metafoo.de>
+References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
+	<a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D2A22415F
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 18:27:05 +0100 (CET)
-Received: by iakh37 with SMTP id h37so296733iak.38
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 10:27:02 -0700 (PDT)
-In-Reply-To: <20120320170444.GA6938@opensource.wolfsonmicro.com>
+Received: from smtp-out-008.synserver.de (smtp-out-008.synserver.de
+	[212.40.185.8]) by alsa0.perex.cz (Postfix) with ESMTP id 529AD24386
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 18:54:56 +0100 (CET)
+In-Reply-To: <a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,33 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: alsa-devel@alsa-project.org, spear-devel@list.st.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBNYXIgMjAsIDIwMTIgYXQgNzowNCBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgTWFyIDIwLCAyMDEyIGF0
-IDA2OjE1OjM0UE0gKzAyMDAsIEdyYXp2eWRhcyBJZ25vdGFzIHdyb3RlOgo+PiBPbiBUdWUsIE1h
-ciAyMCwgMjAxMiBhdCA2OjAxIFBNLCBNYXJrIEJyb3duCj4KPj4gPiB0aG91Z2ggdGhpcyBzaG91
-bGQgcHJvYmFibHkgaGF2ZSB0aGUgbm90ZSBhYm91dCB3b3JraW5nIGFyb3VuZCBicm9rZW4KPj4g
-PiBhcHBsaWNhdGlvbnMgZnJvbSB0aGUgY292ZXIgbGV0dGVyIGluIHRoZSBjaGFuZ2Vsb2cgYXMg
-d2l0aCB0aGUKPj4gPiBjaGFuZ2Vsb2cgYWxvbmUgaXQncyByZWFsbHkgbm90IGFwcGFyZW50IHdo
-eSB3ZSdyZSBkb2luZyB0aGlzIGhlcmUgYXMgYQo+PiA+IGRyaXZlciBzcGVjaWZpYyB0aGluZy4K
-Pgo+PiBJIHdvdWxkbid0IHJlYWxseSBjYWxsIHRoZW0gYnJva2VuLCBpdCdzIGVub3VnaCB0byBz
-ZXQgcGVyaW9kIHNpemUgdG8KPj4gNTEyIHdpdGggc21hbGxlciBzdGFydF90aHJlc2hvbGQgKHNv
-bWV0aGluZyBsaWtlIDUwbXMpIHRvIGhhdmUKPj4gcHJvYmxlbXMsIHRob3NlIHBhcmFtZXRlcnMg
-YXJlIHBlcmZlY3RseSB2YWxpZCBmb3IgYSBwcm9ncmFtIHRyeWluZyB0bwo+PiBhY2hpZXZlIGxv
-dyBsYXRlbmN5Lgo+Cj4gSWYgdGhleSBjYW4ndCBjb3BlIHdpdGggdGhlIHBhcmFtZXRlcnMgdGhl
-eSd2ZSBzZXQgSSdkIGNhbGwgdGhlbSBicm9rZW4sCj4gdGhleSBzaG91bGQndmUgYXNrZWQgZm9y
-IG1vcmUgc2Vuc2libGUgcGFyYW1ldGVycy4KCkhvdyBpcyB0aGUgcHJvZ3JhbSBzdXBwb3NlZCB0
-byBrbm93IHRob3NlIHBhcmFtZXRlcnMgYXJlIGludmFsaWQgZm9yCnRoaXMgaGFyZHdhcmU/IEl0
-IGNvdWxkIG1heWJlIGRldGVjdCB1bmRlcmZsb3dzIGFuZCBpbmNyZWFzZSBwZXJpb2QKdW50aWwg
-dW5kZXJmbG93cyBzdG9wLCBidXQgdGhlcmUgbWlnaHQgYmUgb3RoZXIgcmVhc29ucyBmb3IgdW5k
-ZXJmbG93cwpsaWtlIGhpZ2ggc3lzdGVtIGxvYWQuIE9yIGRvIHlvdSBtZWFuIHNldHRpbmcgdXAg
-c29tZSBwZXJpb2Qgc2l6ZSBhbmQKZG9pbmcgd3JpdGVzIG9mIHRoYXQgcGVyaW9kIHNpemUgaXMg
-bm90IHZhbGlkIHRoaW5nIHRvIGRvPyBDdXJyZW50bHksCm5vIG1hdHRlciBob3cgZmFzdCB0aGUg
-d3JpdGVzIGNvbWUsIHRoZXJlIGlzIGFuIHVuZGVyZmxvdyBhZnRlciBmaXJzdAp3cml0ZSBpbiB0
-aGVzZSBjb25kaXRpb25zLgoKCi0tIApHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 03/20/2012 12:33 PM, Rajeev Kumar wrote:
+> +static const char *interface_mode_text[] = { "slave", "master"};
+
+Master/slave mode should be configured using the set_dai_fmt callback.
+
+> +
+> +static struct snd_soc_dai_ops sta529_dai_ops = {
+
+const
+
+> +	.hw_params	=	sta529_hw_params,
+> +	.set_fmt	=	sta529_set_dai_fmt,
+> +	.digital_mute	=	sta529_mute,
+> +};
+> +
+> +/* power down chip */
+> +static int sta529_remove(struct snd_soc_codec *codec)
+> +{
+> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sta529_suspend(struct snd_soc_codec *codec, pm_message_t state)
+
+The suspend callback doesn't take the state parameter anymore.
+
+> +{
+> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sta529_resume(struct snd_soc_codec *codec)
+> +{
+> +	snd_soc_cache_sync(codec);
+> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
+> +
+> +	return 0;
+> +}
+> +
+> +struct snd_soc_codec_driver soc_codec_dev_sta529 = {
+
+A better name is be sta520_codec_driver
+[...]
+> +
+> +static int sta529_i2c_remove(struct i2c_client *client)
+__devexit
+> +{
+> +	snd_soc_unregister_codec(&client->dev);
+> +	kfree(i2c_get_clientdata(client));
+> +	return 0;
+> +}
+river");
+> +MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
+> +MODULE_LICENSE("GPL");
