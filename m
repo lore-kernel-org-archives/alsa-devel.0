@@ -1,17 +1,17 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH 2/8] sound:asoc: Add support for synopsys i2s
-	controller as per ASoC framework.
-Date: Tue, 20 Mar 2012 17:03:46 +0530
-Message-ID: <7692a51789abe38e7066a582d8329dc93b8eced3.1332242166.git.rajeev-dlh.kumar@st.com>
+Subject: [PATCH 3/8] sound:asoc: Add support for SPEAr ASoC pcm
+	layer.
+Date: Tue, 20 Mar 2012 17:03:47 +0530
+Message-ID: <45c0240f9e6f9632a28c3ad17fd8132254815295.1332242166.git.rajeev-dlh.kumar@st.com>
 References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
-	[207.126.144.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5A8010414F
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:49 +0100 (CET)
+Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
+	[207.126.144.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8883104239
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:50 +0100 (CET)
 In-Reply-To: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,700 +26,520 @@ To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, spear-devel@list.st.com, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch add support for synopsys I2S controller as per the ASoC framework.
+This patch add support for the SPEAr ASoC pcm layer in ASoC framework.
 
 Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 ---
- include/linux/designware_i2s.h   |   63 ++++
- sound/soc/spear/designware_i2s.c |  610 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 673 insertions(+), 0 deletions(-)
- create mode 100644 include/linux/designware_i2s.h
- create mode 100644 sound/soc/spear/designware_i2s.c
+ sound/soc/spear/spear_pcm.c |  460 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/spear_pcm.h |   33 +++
+ 2 files changed, 493 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/spear/spear_pcm.c
+ create mode 100644 sound/soc/spear/spear_pcm.h
 
-diff --git a/include/linux/designware_i2s.h b/include/linux/designware_i2s.h
+diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
 new file mode 100644
-index 0000000..5433b06
+index 0000000..3693fde
 --- /dev/null
-+++ b/include/linux/designware_i2s.h
-@@ -0,0 +1,63 @@
++++ b/sound/soc/spear/spear_pcm.c
+@@ -0,0 +1,460 @@
 +/*
-+* linux/designware_i2s.h
-+*
-+* Copyright (ST) 2011 Rajeev Kumar (rajeev-dlh.kumar@st.com)
-+*
-+* This program is free software; you can redistribute it and/or modify
-+* it under the terms of the GNU General Public License as published by
-+* the Free Software Foundation; either version 2 of the License, or
-+* (at your option) any later version.
-+*
-+* This program is distributed in the hope that it will be useful,
-+* but WITHOUT ANY WARRANTY; without even the implied warranty of
-+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+* GNU General Public License for more details.
-+*
-+* You should have received a copy of the GNU General Public License
-+* along with this program; if not, write to the Free Software
-+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-+*
-+*/
-+
-+#ifndef DESIGNWARE_I2S_H
-+#define DESIGNWARE_I2S_H
-+
-+#include <linux/dmaengine.h>
-+#include <linux/types.h>
-+
-+/*
-+ * struct i2s_clk_config_data - represent i2s clk configuration data
-+ * @chan_nr: number of channel
-+ * @data_width: number of bits per sample (8/16/24/32 bit)
-+ * @sample_rate: sampling frequency (8Khz, 16Khz, 32Khz, 44Khz, 48Khz)
-+ */
-+struct i2s_clk_config_data {
-+	int chan_nr;
-+	u32 data_width;
-+	u32 sample_rate;
-+};
-+
-+struct i2s_platform_data {
-+	#define PLAY	(1 << 0)
-+	#define RECORD	(1 << 1)
-+	unsigned int cap;
-+	int channel;
-+	u8 swidth;
-+	u32 snd_rates;
-+
-+	void *play_dma_data;
-+	void *capture_dma_data;
-+	bool (*filter)(struct dma_chan *chan, void *slave);
-+	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
-+};
-+
-+/* I2S DMA registers */
-+#define I2S_RXDMA		0x01C0
-+#define I2S_TXDMA		0x01C8
-+
-+#define TWO_CHANNEL_SUPPORT	2	/* up to 2.0 */
-+#define FOUR_CHANNEL_SUPPORT	4	/* up to 3.1 */
-+#define SIX_CHANNEL_SUPPORT	6	/* up to 5.1 */
-+#define EIGHT_CHANNEL_SUPPORT	8	/* up to 7.1 */
-+
-+#endif /* DESIGNWARE_I2S_H */
-diff --git a/sound/soc/spear/designware_i2s.c b/sound/soc/spear/designware_i2s.c
-new file mode 100644
-index 0000000..ca83c49
---- /dev/null
-+++ b/sound/soc/spear/designware_i2s.c
-@@ -0,0 +1,610 @@
-+/*
-+ * ALSA SoC I2S Audio Layer for ST SPEAr processors
++ * ALSA PCM interface for ST SPEAr Processors
 + *
-+ * sound/soc/spear/designware_i2s.c
++ * sound/soc/spear/spear_pcm.c
 + *
 + * Copyright (C) 2012 ST Microelectronics
-+ * Rajeev Kumar <rajeev-dlh.kumar@st.com>
++ * Rajeev Kumar<rajeev-dlh.kumar@st.com>
 + *
 + * This file is licensed under the terms of the GNU General Public
 + * License version 2. This program is licensed "as is" without any
 + * warranty of any kind, whether express or implied.
 + */
 +
-+#include <linux/clk.h>
-+#include <linux/designware_i2s.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/interrupt.h>
 +#include <linux/module.h>
++#include <linux/dmaengine.h>
++#include <linux/dma-mapping.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/scatterlist.h>
 +#include <linux/slab.h>
 +#include <linux/spear_dma.h>
++#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
++#include "spear_pcm.h"
 +
-+/* common register for all channel */
-+#define IER		0x000
-+#define IRER		0x004
-+#define ITER		0x008
-+#define CER		0x00C
-+#define CCR		0x010
-+#define RXFFR		0x014
-+#define TXFFR		0x018
-+
-+/* I2STxRxRegisters for all channels */
-+#define LRBR_LTHR(x)	(0x40 * x + 0x020)
-+#define RRBR_RTHR(x)	(0x40 * x + 0x024)
-+#define RER(x)		(0x40 * x + 0x028)
-+#define TER(x)		(0x40 * x + 0x02C)
-+#define RCR(x)		(0x40 * x + 0x030)
-+#define TCR(x)		(0x40 * x + 0x034)
-+#define ISR(x)		(0x40 * x + 0x038)
-+#define IMR(x)		(0x40 * x + 0x03C)
-+#define ROR(x)		(0x40 * x + 0x040)
-+#define TOR(x)		(0x40 * x + 0x044)
-+#define RFCR(x)		(0x40 * x + 0x048)
-+#define TFCR(x)		(0x40 * x + 0x04C)
-+#define RFF(x)		(0x40 * x + 0x050)
-+#define TFF(x)		(0x40 * x + 0x054)
-+
-+/* I2SCOMPRegisters */
-+#define I2S_COMP_PARAM_2	0x01F0
-+#define I2S_COMP_PARAM_1	0x01F4
-+#define I2S_COMP_VERSION	0x01F8
-+#define I2S_COMP_TYPE		0x01FC
-+
-+#define DESIGNWARE_I2S_FORMAT	SNDRV_PCM_FMTBIT_S16_LE
-+#define MAX_CHANNEL_NUM		8
-+#define MIN_CHANNEL_NUM		2
-+
-+struct dw_i2s_dev {
-+	void __iomem *i2s_base;
-+	struct resource *res;
-+	struct clk *clk;
-+	int active;
-+	int play_irq;
-+	int max_channel;
-+	int capture_irq;
-+	unsigned int capability;
-+	struct device *dev;
-+	struct snd_soc_dai_driver *dai_driver;
-+
-+	/* data related to DMA transfers b/w i2s and DMAC */
-+	u8 swidth;
-+	u8 ccr;
-+	u8 xfer_resolution;
-+	struct dma_data play_dma_data;
-+	struct dma_data capture_dma_data;
-+	struct i2s_clk_config_data config;
-+	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
++struct snd_pcm_hardware spear_pcm_hardware = {
++	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.buffer_bytes_max = 16 * 1024, /* max buffer size */
++	.period_bytes_min = 2 * 1024, /* 1 msec data minimum period size */
++	.period_bytes_max = 2 * 1024, /* maximum period size */
++	.periods_min = 1, /* min # periods */
++	.periods_max = 8, /* max # of periods */
++	.fifo_size = 0, /* fifo size in bytes */
 +};
 +
-+static inline void i2s_write_reg(void *io_base, int reg, u32 val)
++static void pcm_dma_complete(void *arg);
++
++static int spear_pcm_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
 +{
-+	writel(val, io_base + reg);
++	int ret = snd_pcm_lib_malloc_pages(substream,
++					params_buffer_bytes(params));
++	if (ret < 0)
++		return ret;
++
++	return 0;
 +}
 +
-+static inline u32 i2s_read_reg(void *io_base, int reg)
++static int spear_pcm_hw_free(struct snd_pcm_substream *substream)
 +{
-+	return readl(io_base + reg);
++	return snd_pcm_lib_free_pages(substream);
 +}
 +
-+static inline void
-+i2s_config_channel(struct dw_i2s_dev *dev, u32 ch, u32 stream, u32 cr)
++static int spear_pcm_prepare(struct snd_pcm_substream *substream)
 +{
-+	u32 irq;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct spear_runtime_data *prtd = runtime->private_data;
++	unsigned long flags;
 +
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		i2s_write_reg(dev->i2s_base, TCR(ch), dev->xfer_resolution);
-+		i2s_write_reg(dev->i2s_base, TFCR(ch), 0x02);
-+		irq = i2s_read_reg(dev->i2s_base, IMR(ch));
-+		i2s_write_reg(dev->i2s_base, IMR(ch), irq & ~0x30);
-+		i2s_write_reg(dev->i2s_base, TER(ch), 1);
++	spin_lock_irqsave(&prtd->lock, flags);
++	prtd->dma_addr = runtime->dma_addr;
++
++	prtd->buf_index = 0;
++	prtd->dmacount = 0;
++	prtd->xfer_len = snd_pcm_lib_period_bytes(substream);
++	prtd->xfer_cnt = snd_pcm_lib_buffer_bytes(substream) / prtd->xfer_len;
++
++	spin_unlock_irqrestore(&prtd->lock, flags);
++
++	return 0;
++}
++
++static int start_dma(struct spear_runtime_data *prtd)
++{
++	struct dma_slave_config conf = {
++		.device_fc = false,
++	};
++
++	struct dma_chan *chan;
++	struct dma_async_tx_descriptor *desc;
++	struct scatterlist sg;
++	enum dma_data_direction direction;
++	dma_addr_t addr;
++	struct snd_soc_pcm_runtime *rtd = prtd->substream->private_data;
++	struct dma_data *dma_data =
++		snd_soc_dai_get_dma_data(rtd->cpu_dai, prtd->substream);
++	addr = prtd->dma_addr + prtd->buf_index * prtd->xfer_len;
++	if (prtd->substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		chan = prtd->dma_chan[0];
++		direction = DMA_TO_DEVICE;
++		conf.dst_addr = dma_data->addr;
 +	} else {
-+		i2s_write_reg(dev->i2s_base, RCR(ch), dev->xfer_resolution);
-+		i2s_write_reg(dev->i2s_base, RFCR(ch), 0x07);
-+		irq = i2s_read_reg(dev->i2s_base, IMR(ch));
-+		i2s_write_reg(dev->i2s_base, IMR(ch), irq & ~0x03);
-+		i2s_write_reg(dev->i2s_base, RER(ch), 1);
++		chan = prtd->dma_chan[1];
++		direction = DMA_FROM_DEVICE;
++		conf.src_addr = dma_data->addr;
 +	}
++
++	conf.src_maxburst = dma_data->max_burst;
++	conf.dst_maxburst = dma_data->max_burst;
++	conf.src_addr_width = dma_data->addr_width;
++	conf.dst_addr_width = dma_data->addr_width;
++
++	/* Prepare sg's */
++	sg_init_table(&sg, 1);
++	sg_set_page(&sg, pfn_to_page(PFN_DOWN(addr)), prtd->xfer_len,
++			addr & (PAGE_SIZE - 1));
++	sg_dma_address(&sg) = addr;
++
++	conf.direction = direction;
++	dmaengine_slave_config(chan, &conf);
++
++	desc = chan->device->device_prep_slave_sg(chan, &sg, 1, direction,
++			DMA_PREP_INTERRUPT);
++	if (!desc) {
++		dev_err(&chan->dev->device, "cannot prepare slave dma\n");
++		return -EAGAIN;
++	}
++
++	desc->callback = pcm_dma_complete;
++	desc->callback_param = prtd;
++	desc->tx_submit(desc);
++
++	return 0;
 +}
 +
-+static inline void
-+i2s_disable_channels(struct dw_i2s_dev *dev, u32 stream)
++static void pcm_dma_xfer(struct spear_runtime_data *prtd,
++		bool from_callback)
 +{
-+	u32 i = 0;
++	struct snd_pcm_substream *substream = prtd->substream;
++	struct dma_chan *chan;
++	unsigned long flags;
++	int ret;
 +
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		for (i = 0; i < 4; i++)
-+			i2s_write_reg(dev->i2s_base, TER(i), 0);
-+	} else {
-+		for (i = 0; i < 4; i++)
-+			i2s_write_reg(dev->i2s_base, RER(i), 0);
-+	}
-+}
-+
-+static inline void
-+i2s_clear_irqs(struct dw_i2s_dev *dev, u32 stream)
-+{
-+	u32 i = 0;
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		for (i = 0; i < 4; i++)
-+			i2s_write_reg(dev->i2s_base, TOR(i), 0);
-+	} else {
-+		for (i = 0; i < 4; i++)
-+			i2s_write_reg(dev->i2s_base, ROR(i), 0);
-+	}
-+}
-+
-+void i2s_start(struct dw_i2s_dev *dev, struct snd_pcm_substream *substream)
-+{
-+
-+	i2s_write_reg(dev->i2s_base, IER, 1);
-+	i2s_disable_channels(dev, substream->stream);
-+
-+	switch (dev->max_channel) {
-+	case EIGHT_CHANNEL_SUPPORT:
-+		i2s_config_channel(dev, 3, substream->stream, 0x5);
-+	case SIX_CHANNEL_SUPPORT:
-+		i2s_config_channel(dev, 2, substream->stream, 0x5);
-+	case FOUR_CHANNEL_SUPPORT:
-+		i2s_config_channel(dev, 1, substream->stream, 0x5);
-+	case TWO_CHANNEL_SUPPORT:
-+		i2s_config_channel(dev, 0, substream->stream, 0x2);
-+		break;
-+	default:
-+		dev_err(dev->dev, "channel not supported\n");
++	spin_lock_irqsave(&prtd->lock, flags);
++	if (!prtd->pcm_running) {
++		spin_unlock_irqrestore(&prtd->lock, flags);
++		return;
 +	}
 +
-+	i2s_write_reg(dev->i2s_base, CCR, dev->ccr);
++	BUG_ON(prtd->dmacount >= prtd->xfer_cnt);
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		i2s_write_reg(dev->i2s_base, ITER, 1);
++	while (prtd->dmacount < prtd->xfer_cnt) {
++
++		ret = start_dma(prtd);
++		if (ret) {
++			spin_unlock_irqrestore(&prtd->lock, flags);
++			return;
++		}
++
++		prtd->dmacount++;
++		prtd->buf_index++;
++
++		/* Set to zero, if crosses buffer size */
++		prtd->buf_index %= prtd->xfer_cnt;
++
++		/* Inform framework that a transfer is finished */
++		if (from_callback) {
++			spin_unlock_irqrestore(&prtd->lock, flags);
++			snd_pcm_period_elapsed(substream);
++			spin_lock_irqsave(&prtd->lock, flags);
++		}
++	}
++	spin_unlock_irqrestore(&prtd->lock, flags);
++
++	/* Issue pending should be called after locks */
++	if (prtd->substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		chan = prtd->dma_chan[0];
 +	else
-+		i2s_write_reg(dev->i2s_base, IRER, 1);
++		chan = prtd->dma_chan[1];
 +
-+	i2s_write_reg(dev->i2s_base, CER, 1);
++	chan->device->device_issue_pending(chan);
 +}
 +
-+static void
-+i2s_stop(struct dw_i2s_dev *dev, struct snd_pcm_substream *substream)
++static void pcm_dma_complete(void *arg)
 +{
-+	u32 i = 0, irq;
++	struct spear_runtime_data *prtd = arg;
++	unsigned long flags;
 +
-+	i2s_clear_irqs(dev, substream->stream);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		i2s_write_reg(dev->i2s_base, ITER, 0);
++	spin_lock_irqsave(&prtd->lock, flags);
++	prtd->dmacount--;
++	spin_unlock_irqrestore(&prtd->lock, flags);
 +
-+		for (i = 0; i < 4; i++) {
-+			irq = i2s_read_reg(dev->i2s_base, IMR(i));
-+			i2s_write_reg(dev->i2s_base, IMR(i), irq | 0x30);
-+		}
-+	} else {
-+		i2s_write_reg(dev->i2s_base, IRER, 0);
-+
-+		for (i = 0; i < 4; i++) {
-+			irq = i2s_read_reg(dev->i2s_base, IMR(i));
-+			i2s_write_reg(dev->i2s_base, IMR(i), irq | 0x03);
-+		}
-+	}
-+
-+	if (!dev->active) {
-+		i2s_write_reg(dev->i2s_base, CER, 0);
-+		i2s_write_reg(dev->i2s_base, IER, 0);
-+	}
++	if (prtd->pcm_running)
++		pcm_dma_xfer(prtd, true);
 +}
 +
-+static irqreturn_t dw_i2s_play_irq(int irq, void *_dev)
++static int spear_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 +{
-+	struct dw_i2s_dev *dev = (struct dw_i2s_dev *)_dev;
-+	u32 ch0, ch1;
-+
-+	/* check for the tx data overrun condition */
-+	ch0 = i2s_read_reg(dev->i2s_base, ISR(0)) & 0x20;
-+	ch1 = i2s_read_reg(dev->i2s_base, ISR(1)) & 0x20;
-+	if (ch0 || ch1) {
-+		/* disable i2s block */
-+		i2s_write_reg(dev->i2s_base, IER, 0);
-+
-+		/* disable tx block */
-+		i2s_write_reg(dev->i2s_base, ITER, 0);
-+
-+		/* flush all the tx fifo */
-+		i2s_write_reg(dev->i2s_base, TXFFR, 1);
-+
-+		/* clear tx data overrun interrupt */
-+		i2s_clear_irqs(dev, SNDRV_PCM_STREAM_PLAYBACK);
-+
-+		/* enable rx block */
-+		i2s_write_reg(dev->i2s_base, ITER, 1);
-+
-+		/* enable i2s block */
-+		i2s_write_reg(dev->i2s_base, IER, 1);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t dw_i2s_capture_irq(int irq, void *_dev)
-+{
-+	struct dw_i2s_dev *dev = (struct dw_i2s_dev *)_dev;
-+	u32 ch0, ch1;
-+
-+	/* check for the rx data overrun condition */
-+	ch0 = i2s_read_reg(dev->i2s_base, ISR(0)) & 0x02;
-+	ch1 = i2s_read_reg(dev->i2s_base, ISR(1)) & 0x02;
-+	if (ch0 || ch1) {
-+		/* disable i2s block */
-+		i2s_write_reg(dev->i2s_base, IER, 0);
-+
-+		/* disable rx block */
-+		i2s_write_reg(dev->i2s_base, IRER, 0);
-+
-+		/* flush all the rx fifo */
-+		i2s_write_reg(dev->i2s_base, RXFFR, 1);
-+
-+		/* clear rx data overrun interrupt */
-+		i2s_clear_irqs(dev, SNDRV_PCM_STREAM_CAPTURE);
-+
-+		/* enable rx block */
-+		i2s_write_reg(dev->i2s_base, IRER, 1);
-+
-+		/* enable i2s block */
-+		i2s_write_reg(dev->i2s_base, IER, 1);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int
-+dw_i2s_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *cpu_dai)
-+{
-+	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct dma_data *dma_data = NULL;
-+
-+	if (!(dev->capability & RECORD) &&
-+			(substream->stream == SNDRV_PCM_STREAM_CAPTURE))
-+		return -EINVAL;
-+
-+	if (!(dev->capability & PLAY) &&
-+			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK))
-+		return -EINVAL;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = &dev->play_dma_data;
-+	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		dma_data = &dev->capture_dma_data;
-+
-+	snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)dma_data);
-+
-+	return 0;
-+}
-+
-+static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct i2s_clk_config_data *config = &dev->config;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		config->data_width = 16;
-+		dev->ccr = 0x00;
-+		dev->xfer_resolution = 0x02;
-+		break;
-+
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		config->data_width = 24;
-+		dev->ccr = 0x08;
-+		dev->xfer_resolution = 0x04;
-+		break;
-+
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		config->data_width = 32;
-+		dev->ccr = 0x10;
-+		dev->xfer_resolution = 0x05;
-+		break;
-+
-+	default:
-+		dev_err(dev->dev, "designware-i2s: unsuppted PCM fmt");
-+		return -EINVAL;
-+	}
-+
-+	config->sample_rate = params_rate(params);
-+	dev->max_channel = config->chan_nr = params_channels(params);
-+
-+	if (dev->i2s_clk_cfg) {
-+		if (dev->i2s_clk_cfg(config)) {
-+			dev_err(dev->dev, "runtime audio clk config fail\n");
-+			if (cpu_dai->driver->ops->trigger) {
-+				int ret =
-+					cpu_dai->driver->ops->trigger(substream,
-+							SNDRV_PCM_TRIGGER_STOP,
-+							cpu_dai);
-+				if (ret < 0) {
-+					dev_err(dev->dev,
-+							"trigger stop fail\n");
-+					return ret;
-+				}
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void
-+dw_i2s_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	snd_soc_dai_set_dma_data(dai, substream, NULL);
-+}
-+
-+static int
-+dw_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
-+		struct snd_soc_dai *dai)
-+{
-+	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++	struct spear_runtime_data *prtd = substream->runtime->private_data;
++	struct dma_chan *chan;
++	unsigned long flags;
 +	int ret = 0;
 +
 +	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		dev->active++;
-+		i2s_start(dev, substream);
++		spin_lock_irqsave(&prtd->lock, flags);
++		/* Go to last successfully transferred index + 1 */
++		prtd->buf_index += prtd->xfer_cnt - prtd->dmacount;
++		prtd->buf_index %= prtd->xfer_cnt;
++		prtd->dmacount = 0;
++		spin_unlock_irqrestore(&prtd->lock, flags);
++	case SNDRV_PCM_TRIGGER_START:
++		spin_lock_irqsave(&prtd->lock, flags);
++		prtd->pcm_running = true;
++		spin_unlock_irqrestore(&prtd->lock, flags);
++		pcm_dma_xfer(prtd, false);
 +		break;
-+
 +	case SNDRV_PCM_TRIGGER_STOP:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
++		spin_lock_irqsave(&prtd->lock, flags);
++		prtd->pcm_running = false;
++		spin_unlock_irqrestore(&prtd->lock, flags);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			chan = prtd->dma_chan[0];
++		else
++			chan = prtd->dma_chan[1];
++
++		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
++		break;
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		dev->active--;
-+		i2s_stop(dev, substream);
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 +		break;
 +	default:
 +		ret = -EINVAL;
-+		break;
 +	}
++
 +	return ret;
 +}
 +
-+static struct snd_soc_dai_ops dw_i2s_dai_ops = {
-+	.startup	= dw_i2s_startup,
-+	.shutdown	= dw_i2s_shutdown,
-+	.hw_params	= dw_i2s_hw_params,
-+	.trigger	= dw_i2s_trigger,
-+};
-+
-+#ifdef CONFIG_PM
-+
-+static int dw_i2s_suspend(struct device *dev)
++static snd_pcm_uframes_t
++spear_pcm_pointer(struct snd_pcm_substream *substream)
 +{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct dw_i2s_dev *i2s_dev = dev_get_drvdata(&pdev->dev);
++	struct spear_runtime_data *prtd = substream->runtime->private_data;
 +
-+	clk_disable(i2s_dev->clk);
++	return bytes_to_frames(substream->runtime, prtd->buf_index *
++			prtd->xfer_len);
++}
++
++static int pcm_alloc_dma_chan(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct spear_runtime_data *prtd = substream->runtime->private_data;
++
++	int stream = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? 0 : 1;
++	struct dma_data *dma_data =
++		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++
++	prtd->dma_chan[stream] = dma_request_channel(prtd->smask,
++			dma_data->filter, dma_data->data);
++	if (!prtd->dma_chan[stream])
++		return -EAGAIN;
++
 +	return 0;
 +}
 +
-+static int dw_i2s_resume(struct device *dev)
++static void pcm_dma_free_chan(struct snd_pcm_substream *substream)
 +{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct dw_i2s_dev *i2s_dev = dev_get_drvdata(&pdev->dev);
++	struct spear_runtime_data *prtd = substream->runtime->private_data;
++	struct dma_chan *chan;
 +
-+	clk_enable(i2s_dev->clk);
-+	return 0;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		chan = prtd->dma_chan[0];
++	else
++		chan = prtd->dma_chan[1];
++
++	chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
++	dma_release_channel(chan);
 +}
 +
-+static const struct dev_pm_ops dw_i2s_dev_pm_ops = {
-+	.suspend = dw_i2s_suspend,
-+	.resume = dw_i2s_resume,
-+};
-+
-+#define I2S_DW_DEV_PM_OPS (&dw_i2s_dev_pm_ops)
-+#else
-+#define I2S_DW_DEV_PM_OPS NULL
-+#endif
-+
-+static int
-+dw_i2s_probe(struct platform_device *pdev)
++static int spear_pcm_open(struct snd_pcm_substream *substream)
 +{
-+	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
-+	struct dw_i2s_dev *dev;
-+	struct resource *res;
++	struct spear_runtime_data *prtd;
 +	int ret;
-+	unsigned int cap;
-+	struct snd_soc_dai_driver *dw_i2s_dai;
 +
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "Invalid platform data\n");
-+		return -EINVAL;
-+	}
++	ret = snd_soc_set_runtime_hwparams(substream, &spear_pcm_hardware);
++	if (ret)
++		return ret;
 +
-+	cap = pdata->cap;
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "no i2s resource defined\n");
-+		return -ENODEV;
-+	}
-+
-+	if (!request_mem_region(res->start, resource_size(res), pdev->name)) {
-+		dev_err(&pdev->dev, "i2s region already claimed\n");
-+		return -EBUSY;
-+	}
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-+	if (!dev) {
-+		ret = -ENOMEM;
-+		goto err_release_mem_region;
-+	}
-+
-+	dev->res = res;
-+	dev->max_channel = pdata->channel;
-+	dev->capability = cap;
-+	dev->swidth = pdata->swidth;
-+	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
-+
-+	/* Set DMA slaves info */
-+
-+	dev->play_dma_data.data = pdata->play_dma_data;
-+	dev->capture_dma_data.data = pdata->capture_dma_data;
-+	dev->play_dma_data.addr = res->start + I2S_TXDMA;
-+	dev->capture_dma_data.addr = res->start + I2S_RXDMA;
-+	dev->play_dma_data.max_burst = 16;
-+	dev->capture_dma_data.max_burst = 16;
-+	dev->play_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+	dev->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+	dev->play_dma_data.filter = pdata->filter;
-+	dev->capture_dma_data.filter = pdata->filter;
-+
-+	dev->clk = clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(dev->clk)) {
-+		ret = PTR_ERR(dev->clk);
-+		goto err_kfree;
-+	}
-+
-+	ret = clk_enable(dev->clk);
++	/* ensure that buffer size is a multiple of period size */
++	ret = snd_pcm_hw_constraint_integer(substream->runtime,
++			SNDRV_PCM_HW_PARAM_PERIODS);
 +	if (ret < 0)
-+		goto err_clk_put;
++		return ret;
 +
-+	dev->i2s_base = ioremap(res->start, resource_size(res));
-+	if (!dev->i2s_base) {
-+		dev_err(&pdev->dev, "ioremap fail for i2s_region\n");
-+		ret = -ENOMEM;
-+		goto err_clk_disable;
-+	}
++	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
++	if (!prtd)
++		return -ENOMEM;
 +
-+	dw_i2s_dai = kzalloc(sizeof(*dw_i2s_dai), GFP_KERNEL);
-+	if (!dw_i2s_dai) {
-+		dev_err(&pdev->dev, "mem allocation failed for dai driver\n");
-+		ret = -ENOMEM;
-+		goto err_soc_dai_driver;
-+	}
++	spin_lock_init(&prtd->lock);
++	substream->runtime->private_data = prtd;
++	prtd->substream = substream;
++	dma_cap_zero(prtd->smask);
++	dma_cap_set(DMA_SLAVE, prtd->smask);
 +
-+	if (cap & PLAY) {
-+		dev_dbg(&pdev->dev, " SPEAr: play supported\n");
-+		dev->play_irq = platform_get_irq_byname(pdev, "play_irq");
-+		if (dev->play_irq < 0)
-+			dev_warn(&pdev->dev, "play irq not defined\n");
-+		else {
-+			ret = request_irq(dev->play_irq, dw_i2s_play_irq, 0,
-+					"dw-i2s-play", dev);
-+			if (ret) {
-+				dev_err(&pdev->dev,
-+						"Can't register play irq\n");
-+				goto err_play_irq;
-+			}
-+		}
-+
-+		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
-+		dw_i2s_dai->playback.channels_max = dev->max_channel;
-+		dw_i2s_dai->playback.rates = pdata->snd_rates;
-+		dw_i2s_dai->playback.formats = DESIGNWARE_I2S_FORMAT;
-+	}
-+
-+	if (cap & RECORD) {
-+		dev_dbg(&pdev->dev, "SPEAr: record supported\n");
-+		dev->capture_irq = platform_get_irq_byname(pdev, "record_irq");
-+		if (dev->capture_irq < 0)
-+			dev_warn(&pdev->dev, "record irq not defined\n");
-+		else {
-+			ret = request_irq(dev->capture_irq, dw_i2s_capture_irq,
-+					0, "dw-i2s-rec", dev);
-+			if (ret) {
-+				dev_err(&pdev->dev,
-+						"Can't register capture irq\n");
-+				goto err_capture_irq;
-+			}
-+		}
-+
-+		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
-+		dw_i2s_dai->capture.channels_max = dev->max_channel;
-+		dw_i2s_dai->capture.rates = pdata->snd_rates;
-+		dw_i2s_dai->capture.formats = DESIGNWARE_I2S_FORMAT;
-+	}
-+
-+	dw_i2s_dai->ops = &dw_i2s_dai_ops,
-+
-+	dev->dev = &pdev->dev;
-+	dev->dai_driver = dw_i2s_dai;
-+	dev_set_drvdata(&pdev->dev, dev);
-+	ret = snd_soc_register_dai(&pdev->dev, dw_i2s_dai);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "not able to register dai\n");
-+		goto err_set_drvdata;
++	ret = pcm_alloc_dma_chan(substream);
++	if (ret) {
++		dev_err(substream->pcm->card->dev,
++				"pcm:Failed to get dma channels\n");
++		kfree(prtd);
 +	}
 +
 +	return 0;
-+
-+err_set_drvdata:
-+	dev_set_drvdata(&pdev->dev, NULL);
-+	free_irq(dev->capture_irq, pdev);
-+err_capture_irq:
-+	free_irq(dev->play_irq, pdev);
-+err_play_irq:
-+	kfree(dw_i2s_dai);
-+err_soc_dai_driver:
-+	iounmap(dev->i2s_base);
-+err_clk_disable:
-+	clk_disable(dev->clk);
-+err_clk_put:
-+	clk_put(dev->clk);
-+err_kfree:
-+	kfree(dev);
-+err_release_mem_region:
-+	release_mem_region(res->start, resource_size(res));
-+	return ret;
 +}
 +
-+static int
-+dw_i2s_remove(struct platform_device *pdev)
++static int spear_pcm_close(struct snd_pcm_substream *substream)
 +{
-+	struct dw_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
++	struct spear_runtime_data *prtd = substream->runtime->private_data;
 +
-+	snd_soc_unregister_dai(&pdev->dev);
-+
-+	if (dev->play_irq)
-+		free_irq(dev->play_irq, dev);
-+
-+	if (dev->capture_irq)
-+		free_irq(dev->capture_irq, dev);
-+
-+	iounmap(dev->i2s_base);
-+	clk_disable(dev->clk);
-+	clk_put(dev->clk);
-+	kfree(dev->dai_driver);
-+	kfree(dev);
-+	release_mem_region(dev->res->start, resource_size(dev->res));
++	pcm_dma_free_chan(substream);
++	kfree(prtd);
 +
 +	return 0;
 +}
 +
-+static struct platform_driver dw_i2s_driver = {
-+	.probe		= dw_i2s_probe,
-+	.remove		= dw_i2s_remove,
-+	.driver		= {
-+		.name	= "designware-i2s",
-+		.owner	= THIS_MODULE,
-+		.pm	= I2S_DW_DEV_PM_OPS,
-+	},
++static int spear_pcm_mmap(struct snd_pcm_substream *substream,
++		struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
++			runtime->dma_area, runtime->dma_addr,
++			runtime->dma_bytes);
++}
++
++static struct snd_pcm_ops spear_pcm_ops = {
++	.open		= spear_pcm_open,
++	.close		= spear_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= spear_pcm_hw_params,
++	.hw_free	= spear_pcm_hw_free,
++	.prepare	= spear_pcm_prepare,
++	.trigger	= spear_pcm_trigger,
++	.pointer	= spear_pcm_pointer,
++	.mmap		= spear_pcm_mmap,
 +};
 +
-+static int __init dw_i2s_init(void)
++static int
++spear_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream,
++		size_t size)
 +{
-+	return platform_driver_register(&dw_i2s_driver);
-+}
-+module_init(dw_i2s_init);
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
 +
-+static void __exit dw_i2s_exit(void)
-+{
-+	platform_driver_unregister(&dw_i2s_driver);
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++
++	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
++			&buf->addr, GFP_KERNEL);
++	if (!buf->area)
++		return -ENOMEM;
++
++	dev_info(buf->dev.dev,
++			" preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
++			(void *)buf->area, (void *)buf->addr, size);
++
++	buf->bytes = size;
++	return 0;
 +}
-+module_exit(dw_i2s_exit);
++
++static void spear_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++	int stream;
++
++	for (stream = 0; stream < 2; stream++) {
++		substream = pcm->streams[stream].substream;
++		if (!substream)
++			continue;
++
++		buf = &substream->dma_buffer;
++		if (!buf && !buf->area)
++			continue;
++
++		dma_free_writecombine(pcm->card->dev, buf->bytes,
++				buf->area, buf->addr);
++		buf->area = NULL;
++	}
++}
++
++static u64 spear_pcm_dmamask = DMA_BIT_MASK(32);
++
++static int spear_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_card *card = rtd->card->snd_card;
++	struct snd_soc_dai *dai = rtd->cpu_dai;
++	struct snd_pcm *pcm = rtd->pcm;
++	int ret;
++
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &spear_pcm_dmamask;
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
++
++	if (dai->driver->playback.channels_min) {
++		ret = spear_pcm_preallocate_dma_buffer(pcm,
++				SNDRV_PCM_STREAM_PLAYBACK,
++				spear_pcm_hardware.buffer_bytes_max);
++		if (ret)
++			return ret;
++	}
++
++	if (dai->driver->capture.channels_min) {
++		ret = spear_pcm_preallocate_dma_buffer(pcm,
++				SNDRV_PCM_STREAM_CAPTURE,
++				spear_pcm_hardware.buffer_bytes_max);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++struct snd_soc_platform_driver spear_soc_platform = {
++	.ops		=	&spear_pcm_ops,
++	.pcm_new	=	spear_pcm_new,
++	.pcm_free	=	spear_pcm_free,
++};
++
++static int __devinit spear_soc_platform_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_platform(&pdev->dev, &spear_soc_platform);
++}
++
++static int __devexit spear_soc_platform_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_platform(&pdev->dev);
++
++	return 0;
++}
++
++static struct platform_driver spear_pcm_driver = {
++	.driver = {
++		.name = "spear-pcm-audio",
++		.owner = THIS_MODULE,
++	},
++
++	.probe = spear_soc_platform_probe,
++	.remove = __devexit_p(spear_soc_platform_remove),
++};
++static int __init snd_spear_pcm_init(void)
++{
++	return platform_driver_register(&spear_pcm_driver);
++}
++module_init(snd_spear_pcm_init);
++
++static void __exit snd_spear_pcm_exit(void)
++{
++	platform_driver_unregister(&spear_pcm_driver);
++}
++module_exit(snd_spear_pcm_exit);
 +
 +MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
-+MODULE_DESCRIPTION("DESIGNWARE I2S SoC Interface");
++MODULE_DESCRIPTION("SPEAr PCM DMA module");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:designware_i2s");
++MODULE_ALIAS("platform:spear_pcm");
+diff --git a/sound/soc/spear/spear_pcm.h b/sound/soc/spear/spear_pcm.h
+new file mode 100644
+index 0000000..07a7b3d
+--- /dev/null
++++ b/sound/soc/spear/spear_pcm.h
+@@ -0,0 +1,33 @@
++/*
++ * ALSA PCM interface for ST SPEAr Processors
++ *
++ * sound/soc/spear/spear_pcm.h
++ *
++ * Copyright (C) 2012 ST Microelectronics
++ * Rajeev Kumar<rajeev-dlh.kumar@st.com>
++ *
++ * This file is licensed under the terms of the GNU General Public
++ * License version 2. This program is licensed "as is" without any
++ * warranty of any kind, whether express or implied.
++ */
++
++#ifndef SPEAR_PCM_H
++#define SPEAR_PCM_H
++
++struct spear_runtime_data {
++	struct dma_chan *dma_chan[2];
++	spinlock_t lock;
++	struct snd_pcm_substream *substream;
++	dma_addr_t dma_addr;
++
++	/* DMA related mask */
++	dma_cap_mask_t smask;
++
++	/* For Keeping track of buffers */
++	unsigned long xfer_len;	/* Data transfered by one transfer */
++	int xfer_cnt; /* Total number of transfers to be done */
++	int buf_index; /* Current buffer count */
++	int dmacount; /* No. of DMA transfer ongoing */
++	bool pcm_running; /* Current state of pcm, true if running */
++};
++#endif /* end of pcm header file */
 -- 
 1.7.2.2
