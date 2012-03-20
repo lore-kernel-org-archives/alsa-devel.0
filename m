@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: buffer size
- constraint only applies to playback stream
-Date: Tue, 20 Mar 2012 15:26:51 +0000
-Message-ID: <20120320152649.GC3445@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: omap-mcbsp: Restructure
+ omap_mcbsp_dai_startup code
+Date: Tue, 20 Mar 2012 15:27:26 +0000
+Message-ID: <20120320152724.GD3445@opensource.wolfsonmicro.com>
 References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
-	<1332242021-7494-2-git-send-email-peter.ujfalusi@ti.com>
+	<1332242021-7494-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5165532435502361353=="
+Content-Type: multipart/mixed; boundary="===============8615505358309882544=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0B5A910426F
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 16:26:54 +0100 (CET)
-In-Reply-To: <1332242021-7494-2-git-send-email-peter.ujfalusi@ti.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 759E4104277
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 16:27:29 +0100 (CET)
+In-Reply-To: <1332242021-7494-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +26,50 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jark
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5165532435502361353==
+--===============8615505358309882544==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dkEUBIird37B8yKS"
+	protocol="application/pgp-signature"; boundary="cHMo6Wbp1wrKhbfi"
 Content-Disposition: inline
 
 
---dkEUBIird37B8yKS
+--cHMo6Wbp1wrKhbfi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 20, 2012 at 01:13:39PM +0200, Peter Ujfalusi wrote:
-> In capture stream the buffer size does not need to be constrained to be
-> bigger then the McBSP FIFO.
-> In capture the FIFO content is taken out in period length burst, this
-> enusres that the FIFO is not going to overflow.
+On Tue, Mar 20, 2012 at 01:13:40PM +0200, Peter Ujfalusi wrote:
+> To facilitate the period_protection feature coming up.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.comm>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---dkEUBIird37B8yKS
+--cHMo6Wbp1wrKhbfi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPaKGlAAoJEBus8iNuMP3dddQP/RDciKrxMe7dJTtQTS6DI8T7
-zw8O3vGncsSVK9ui7F5wSCNETdAKm1laBwQaXIx4Pe62hb+IqOMtMawq5DGmoZDY
-XrKg/w6/gBgjoNYugYXE+uYh9dEnNbBSb/4ow6rqSPX1FqWsdkV/tLiZy80gjUTd
-FQbY+Pkt1XJfuJbWypXVxPVDdQEtffhnlO08cE9Yg+ryMZGZ0Aq9Uogk3DqoeR0n
-dBegvTowIyA/SO09d+QnwExWoxZpCrY6ovZfcrYqZd2DJqxkZjfpcFsIanybw9CT
-OTYSCnKB6E+5AZulJioekf0/DXPlOCcokZYeVjrV828nqWH0LRiOcE11x96NFke/
-kNpt7/p2XWhmWo9prNcAPuGTGgdmsnmx1xfbRaRCdJUvLmLgM9mWEe1QLC04Na2R
-oMnKxQHV6l8sHPhnE/5MPwJltKn+TW2U2VNP9qMAMy37n8JwSZ39bAAMlSMxCF2N
-KxF8yiv0yEwt3L/mYJNtoBatrR2//qS+Vo9ebK2Fa3i9hBBseTE1FECma1jCjhC0
-3n7jFCjD5vN0m5mIwm0fUeoiH9HTjNp60c/lldC+qutMWK9JxIRC41yWJibTYec1
-vu8ACTzBiwM4AeccX+8XOsi+DaUZFsQgyopGTSx1G/D9riD50V6ESuaNs8v/g/wE
-7/3bFmMZxWGm+Za8SR9m
-=AB+3
+iQIcBAEBAgAGBQJPaKHMAAoJEBus8iNuMP3dILkP/jYOOStnKNXZgHhGPaselyis
+wxImQUbtLU14DLNH8prk/ZmMX/3GhL2r9bgC0LNctUkfxhZ0tIysBpntmb6zrvXN
+99iChYKUc3FiR05HuHToUDuugsdYbj/7vpaqma6HrolUCucn0gltWqgVL8NuLqy8
+wM6zna+4xJN0qMxNmJHIqGF01k9dCVKroM9VK/LHEpWdzGjin7Y/eavwugn5do2k
+5EWoIPtVHeAdWQGccguS9A+oy+7ziajvuzwVtioYCCuTU2lNC39dvGvxK+N6KC/o
+Jy5xmtp6wl3Z2qPtlSct7sPTtwic4AGwG/1H2d3BiTS8jZKNMDZHFdbwbXpNYgEr
+1eB7Fez8CdkZH0FJQEwwbLuZR+K5+uowZoOS0YqeQ+S9Dl1MsfdUlSBo8W647de+
+oCtpIJc2RmyfdARuddXBG+hhpA3o0xHxI+tc14TVaWNSw7DZGDfR+p6rgWyzThEw
+xWDTazERqY80KCBIf4/2nBKbzotJfhis+0lAcABVmRJlpMGfR+NsBiylTg5IRGyZ
+uWCL7zOr8S899/JMlOS4J3RwQ1ttECf1SFD0di4oXeCyUiRyeW1RQB8GtzpWtS2+
+Y2ZZByIzEF7LKwkKGypurmZJ1fFvZvYHpbIyN8owKbO3Cw8sUpTj5j+RRMoDdxmU
+9RU0nrooeP7gNHTip0c8
+=kdRD
 -----END PGP SIGNATURE-----
 
---dkEUBIird37B8yKS--
+--cHMo6Wbp1wrKhbfi--
 
---===============5165532435502361353==
+--===============8615505358309882544==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5165532435502361353==--
+--===============8615505358309882544==--
