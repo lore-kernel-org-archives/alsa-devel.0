@@ -1,19 +1,22 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: buffer size
- constraint only applies to playback stream
-Date: Tue, 20 Mar 2012 18:34:24 +0200
-Message-ID: <4F68B190.7010009@bitmer.com>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
+	protection mode
+Date: Tue, 20 Mar 2012 18:42:57 +0200
+Message-ID: <CANOLnOMqK5-yWoEA=1x2a4-OQYy8xvBUwY_RVdqHeaz4TxL3eQ@mail.gmail.com>
 References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
-	<1332242021-7494-2-git-send-email-peter.ujfalusi@ti.com>
-	<20120320152649.GC3445@opensource.wolfsonmicro.com>
+	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>
+	<4F68AE51.808@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id C00DF104323
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 17:34:33 +0100 (CET)
-In-Reply-To: <20120320152649.GC3445@opensource.wolfsonmicro.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04CF72412E
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 17:42:59 +0100 (CET)
+Received: by iakh37 with SMTP id h37so243587iak.38
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 09:42:57 -0700 (PDT)
+In-Reply-To: <4F68AE51.808@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/20/2012 05:26 PM, Mark Brown wrote:
-> On Tue, Mar 20, 2012 at 01:13:39PM +0200, Peter Ujfalusi wrote:
->> In capture stream the buffer size does not need to be constrained to be
->> bigger then the McBSP FIFO.
->> In capture the FIFO content is taken out in period length burst, this
->> enusres that the FIFO is not going to overflow.
-> 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.comm>
-
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+T24gVHVlLCBNYXIgMjAsIDIwMTIgYXQgNjoyMCBQTSwgSmFya2tvIE5pa3VsYSA8amFya2tvLm5p
+a3VsYUBiaXRtZXIuY29tPiB3cm90ZToKPiBPbiAwMy8yMC8yMDEyIDAxOjEzIFBNLCBQZXRlciBV
+amZhbHVzaSB3cm90ZToKPj4gQ2VydGFpbiBhcHBsaWNhdGlvbiBjYW4gZXhwZXJpZW5jZSB1bmRl
+cnJ1biByaWdodCBhZnRlciB0aGUgcGxheWJhY2sgc3RhcnQuCj4+IFRoaXMgaXMgY2F1c2VkIGJ5
+IHRoZSBNY0JTUCBGSUZPL3NETUEgaW50ZWdyYXRpb246Cj4+IFRoZSBzRE1BIHdpbGwgcHVzaCBz
+YW1wbGVzIHRvIHRoZSBGSUZPIHRpbGwgaXQgaGFzIHRocmVzaG9sZCBhbW91bnQgb2YgZnJlZQo+
+PiBzbG90cyBhdmFpbGFibGUgaW4gdGhlIEZJRk8uIElmIHRoZSBhcHBsaWNhdGlvbiBwaWNrcyBw
+ZXJpb2Qgc2l6ZSB3aGljaCBpcwo+PiBzbWFsbGVyIHRoYW4gdGhlIEZJRk8gc2l6ZSwgYW5kIGl0
+IGRpZCBub3QgcHJlcGFyZWQgbXVsdGlwbGUgcGVyaW9kcywgb3IKPj4gaXQgZGlkIG5vdCBzZXQg
+dGhlIHN0YXJ0X3RocmVzaG9sZCBmb3IgdGhlIHN0cmVhbSB0byBjb3ZlciB0aGUgRklGTyBzaXpl
+Cj4+IHRoZSBodyBwb2ludGVyIHdpbGwgbW92ZSBmb3J3YXJkLCB3aGljaCBpcyBjYXVzaW5nIHRo
+ZSB1bmRlcnJ1bi4KPj4KPj4gQWRkIGEgc3lzZnMgZW50cnkgZm9yIE1jQlNQIHBvcnRzOiBwZXJp
+b2RfcHJvdGVjdGlvbi4KPj4gSWYgdGhpcyBwcm9wZXJ0eSBpcyBzZXQgdGhlIGRyaXZlciB3aWxs
+IHBsYWNlIHRoZSBjb25zdHJhaW50IGFnYWlucyB0aGUKPj4gcGVyaW9kIHNpemUsIGFuZCBub3Qg
+Zm9yIHRoZSBidWZmZXIgc2l6ZS4gVG8gZW5zdXJlIHRoYXQgd2UgZG8gbm90IGhpdAo+PiB1bmRl
+cnJ1biwgdGhlIHBlcmlvZCBzaXplIGNvbnN0cmFpbnQgd2lsbCBiZSBpbmNyZWFzZWQgd2l0aCB0
+aGUgcmVxdWVzdGVkCj4+IG51bWJlciBvZiBmcmFtZXMgKHRoZSBwZXJpb2Qgc2l6ZSB3aWxsIGJl
+IEZJRk8gc2l6ZSArIHBlcmlvZF9wcm90ZWN0aW9uKS4KPj4KPj4gQXMgZGVmYXVsdCB0aGUgcGVy
+aW9kX3Byb3RlY3Rpb24gaXMgZGlzYWJsZWQuCj4+Cj4gSSBkb24ndCB0aGluayB0aGlzIGlzIGdv
+aW5nIHRvIHNvbHZlIHRoZSBhY3R1YWwgcHJvYmxlbSBoZXJlIHdoZXJlCj4gY3VzdG9tIGFzb3Vu
+ZC5jb25mIHdhcyByZXF1aXJlZC4gSU1ITyBjdXN0b20gc3lzZnMgaXMgZXZlbiB3b3JzZSBvcHRp
+b24KPiBhbmQgdmVyeSBoYXJkIHRvIHJlbW92ZSBhZnRlcndhcmRzLiBBbmQgZGVmYXVsdGluZyB0
+aGlzIG5ldyBzZXR0aW5nIGZvcgo+IFBhbmRvcmEgbWlnaHQgYnJlYWsgZS5nLiBNRVIgb3IgTWVl
+R28gb24gTjkwMC4KPgo+IEkgZGlkbid0IGNoZWNrIHRoaXMgYnV0IHdvdWxkIGl0IGJlIHBvc3Np
+YmxlIHRvIGVpdGhlciBwdXQgcmVzdHJpY3Rpb24KPiB0byBzdGFydC1kZWxheSAoSSB0aGluayBH
+cmF6dnlkYXMgc2FpZCBoZSBoYXMgZXhwZXJpbWVudGFsIGNvZGUgZm9yCj4gdGhhdD8pIG9yIG1h
+a2Ugc3VyZSB0aGF0IG1pbmltdW0gYnVmZmVyIHNpemUgbXVzdCBiZSBoaWdoZXIgdGhhbiBGSUZP
+ICsKPiAxIHBlcmlvZCAob3Igc29tZXRoaW5nIGxpa2UgdGhhdCk/CgpUaGlzIGlzIHdoYXQgd2Ug
+aGF2ZSBpbiBwYW5kb3JhIHRyZWUgbm93OgpodHRwOi8vZ2l0Lm9wZW5wYW5kb3JhLm9yZy9jZ2kt
+YmluL2dpdHdlYi5jZ2k/cD1wYW5kb3JhLWtlcm5lbC5naXQ7YT1jb21taXRkaWZmO2g9ZDQ5NDk3
+NzQ0MWFjOGY5OWQwOTRiNWUwMzM5OGNiMzNhMTRlODMyYQpTZWVtcyB0byB3b3JrIHdlbGwgZm9y
+IGV2ZXJ5dGhpbmcgaGVyZS4KCi0tIApHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
