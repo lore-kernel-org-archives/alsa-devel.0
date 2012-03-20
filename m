@@ -1,18 +1,24 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/8] sound:asoc: Add support for STA529
- Audio Codec
-Date: Tue, 20 Mar 2012 18:57:06 +0100
-Message-ID: <4F68C4F2.5000805@metafoo.de>
-References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
-	<a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
+ protection mode
+Date: Tue, 20 Mar 2012 14:07:52 -0400
+Message-ID: <CA+7tXii62Z8NH7jMhi8XRONHd9c4E0HC7edUB-HB=8ckcE8q7Q@mail.gmail.com>
+References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
+	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>
+	<20120320160154.GI3445@opensource.wolfsonmicro.com>
+	<CANOLnOPjqbeEbSDUHokkGRUa7KwJ-+hAczWSmQ3LEccCh9-c7w@mail.gmail.com>
+	<20120320170444.GA6938@opensource.wolfsonmicro.com>
+	<CANOLnONkvk63ABDN_mX2g79EKMgfk0H71CRLaUmXSrwa55+C7A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-008.synserver.de (smtp-out-008.synserver.de
-	[212.40.185.8]) by alsa0.perex.cz (Postfix) with ESMTP id 529AD24386
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 18:54:56 +0100 (CET)
-In-Reply-To: <a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83223243A8
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 19:07:54 +0100 (CET)
+Received: by wgbed3 with SMTP id ed3so142395wgb.20
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 11:07:53 -0700 (PDT)
+In-Reply-To: <CANOLnONkvk63ABDN_mX2g79EKMgfk0H71CRLaUmXSrwa55+C7A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +28,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: alsa-devel@alsa-project.org, spear-devel@list.st.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/20/2012 12:33 PM, Rajeev Kumar wrote:
-> +static const char *interface_mode_text[] = { "slave", "master"};
+On Tue, Mar 20, 2012 at 1:27 PM, Grazvydas Ignotas <notasas@gmail.com> wrote:
+> On Tue, Mar 20, 2012 at 7:04 PM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>> On Tue, Mar 20, 2012 at 06:15:34PM +0200, Grazvydas Ignotas wrote:
+>>> On Tue, Mar 20, 2012 at 6:01 PM, Mark Brown
+>>
+>>> > though this should probably have the note about working around broken
+>>> > applications from the cover letter in the changelog as with the
+>>> > changelog alone it's really not apparent why we're doing this here as a
+>>> > driver specific thing.
+>>
+>>> I wouldn't really call them broken, it's enough to set period size to
+>>> 512 with smaller start_threshold (something like 50ms) to have
+>>> problems, those parameters are perfectly valid for a program trying to
+>>> achieve low latency.
+>>
+>> If they can't cope with the parameters they've set I'd call them broken,
+>> they should've asked for more sensible parameters.
 
-Master/slave mode should be configured using the set_dai_fmt callback.
-
-> +
-> +static struct snd_soc_dai_ops sta529_dai_ops = {
-
-const
-
-> +	.hw_params	=	sta529_hw_params,
-> +	.set_fmt	=	sta529_set_dai_fmt,
-> +	.digital_mute	=	sta529_mute,
-> +};
-> +
-> +/* power down chip */
-> +static int sta529_remove(struct snd_soc_codec *codec)
-> +{
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sta529_suspend(struct snd_soc_codec *codec, pm_message_t state)
-
-The suspend callback doesn't take the state parameter anymore.
-
-> +{
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sta529_resume(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_cache_sync(codec);
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> +
-> +	return 0;
-> +}
-> +
-> +struct snd_soc_codec_driver soc_codec_dev_sta529 = {
-
-A better name is be sta520_codec_driver
-[...]
-> +
-> +static int sta529_i2c_remove(struct i2c_client *client)
-__devexit
-> +{
-> +	snd_soc_unregister_codec(&client->dev);
-> +	kfree(i2c_get_clientdata(client));
-> +	return 0;
-> +}
-river");
-> +MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
-> +MODULE_LICENSE("GPL");
+It sounds like the problem happens if an application sets
+start_threshold to something less than the FIFO size.  E.g., set
+start_threshold to 50ms, app writes 50 ms to stream, gets an instant
+underrun when the sDMA quickly reads > 50 ms of audio as it fills the
+FIFO.  Doesn't seem like the app is broken to expect that after
+writing 50 ms of audio it has almost 50 ms to write more before an
+underrun.
