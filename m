@@ -1,16 +1,16 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH 1/8] sound:asoc: Add support for STA529 Audio
-	Codec
-Date: Tue, 20 Mar 2012 17:03:45 +0530
-Message-ID: <a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
+Subject: [PATCH 2/8] sound:asoc: Add support for synopsys i2s
+	controller as per ASoC framework.
+Date: Tue, 20 Mar 2012 17:03:46 +0530
+Message-ID: <7692a51789abe38e7066a582d8329dc93b8eced3.1332242166.git.rajeev-dlh.kumar@st.com>
 References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog101.obsmtp.com (eu1sys200aog101.obsmtp.com
-	[207.126.144.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D2E4A103BA8
+Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
+	[207.126.144.131])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5A8010414F
 	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:49 +0100 (CET)
 In-Reply-To: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,71 +26,95 @@ To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, spear-devel@list.st.com, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the support for STA529 audio codec.
-Details of the audio codec can be seen here:
-http://www.st.com/internet/imag_video/product/159187.jsp
+This patch add support for synopsys I2S controller as per the ASoC framework.
 
 Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 ---
- sound/soc/codecs/Kconfig  |    5 +
- sound/soc/codecs/Makefile |    2 +
- sound/soc/codecs/sta529.c |  414 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 421 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/sta529.c
+ include/linux/designware_i2s.h   |   63 ++++
+ sound/soc/spear/designware_i2s.c |  610 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 673 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/designware_i2s.h
+ create mode 100644 sound/soc/spear/designware_i2s.c
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 59d8efa..2c003d1 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -49,6 +49,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_SPDIF
- 	select SND_SOC_SSM2602 if SND_SOC_I2C_AND_SPI
- 	select SND_SOC_STA32X if I2C
-+	select SND_SOC_STA529 if I2C
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
- 	select SND_SOC_TLV320AIC23 if I2C
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
-@@ -252,6 +253,10 @@ config SND_SOC_SSM2602
- config SND_SOC_STA32X
- 	tristate
- 
-+config SND_SOC_STA529
-+	tristate
-+	depends on I2C
-+
- config SND_SOC_STAC9766
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 0c0e6ce..a0e43cd 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -39,6 +39,7 @@ snd-soc-sn95031-objs := sn95031.o
- snd-soc-spdif-objs := spdif_transciever.o spdif_receiver.o
- snd-soc-ssm2602-objs := ssm2602.o
- snd-soc-sta32x-objs := sta32x.o
-+snd-soc-sta529-objs := sta529.o
- snd-soc-stac9766-objs := stac9766.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic26-objs := tlv320aic26.o
-@@ -143,6 +144,7 @@ obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
- obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
- obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
- obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
-+obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
- obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+diff --git a/include/linux/designware_i2s.h b/include/linux/designware_i2s.h
 new file mode 100644
-index 0000000..1294947
+index 0000000..5433b06
 --- /dev/null
-+++ b/sound/soc/codecs/sta529.c
-@@ -0,0 +1,414 @@
++++ b/include/linux/designware_i2s.h
+@@ -0,0 +1,63 @@
 +/*
-+ * ASoC codec driver for spear platform
++* linux/designware_i2s.h
++*
++* Copyright (ST) 2011 Rajeev Kumar (rajeev-dlh.kumar@st.com)
++*
++* This program is free software; you can redistribute it and/or modify
++* it under the terms of the GNU General Public License as published by
++* the Free Software Foundation; either version 2 of the License, or
++* (at your option) any later version.
++*
++* This program is distributed in the hope that it will be useful,
++* but WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++* GNU General Public License for more details.
++*
++* You should have received a copy of the GNU General Public License
++* along with this program; if not, write to the Free Software
++* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++*
++*/
++
++#ifndef DESIGNWARE_I2S_H
++#define DESIGNWARE_I2S_H
++
++#include <linux/dmaengine.h>
++#include <linux/types.h>
++
++/*
++ * struct i2s_clk_config_data - represent i2s clk configuration data
++ * @chan_nr: number of channel
++ * @data_width: number of bits per sample (8/16/24/32 bit)
++ * @sample_rate: sampling frequency (8Khz, 16Khz, 32Khz, 44Khz, 48Khz)
++ */
++struct i2s_clk_config_data {
++	int chan_nr;
++	u32 data_width;
++	u32 sample_rate;
++};
++
++struct i2s_platform_data {
++	#define PLAY	(1 << 0)
++	#define RECORD	(1 << 1)
++	unsigned int cap;
++	int channel;
++	u8 swidth;
++	u32 snd_rates;
++
++	void *play_dma_data;
++	void *capture_dma_data;
++	bool (*filter)(struct dma_chan *chan, void *slave);
++	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
++};
++
++/* I2S DMA registers */
++#define I2S_RXDMA		0x01C0
++#define I2S_TXDMA		0x01C8
++
++#define TWO_CHANNEL_SUPPORT	2	/* up to 2.0 */
++#define FOUR_CHANNEL_SUPPORT	4	/* up to 3.1 */
++#define SIX_CHANNEL_SUPPORT	6	/* up to 5.1 */
++#define EIGHT_CHANNEL_SUPPORT	8	/* up to 7.1 */
++
++#endif /* DESIGNWARE_I2S_H */
+diff --git a/sound/soc/spear/designware_i2s.c b/sound/soc/spear/designware_i2s.c
+new file mode 100644
+index 0000000..ca83c49
+--- /dev/null
++++ b/sound/soc/spear/designware_i2s.c
+@@ -0,0 +1,610 @@
++/*
++ * ALSA SoC I2S Audio Layer for ST SPEAr processors
 + *
-+ * sound/soc/codecs/sta529.c -- spear ALSA Soc codec driver
++ * sound/soc/spear/designware_i2s.c
 + *
 + * Copyright (C) 2012 ST Microelectronics
 + * Rajeev Kumar <rajeev-dlh.kumar@st.com>
@@ -101,405 +125,601 @@ index 0000000..1294947
 + */
 +
 +#include <linux/clk.h>
-+#include <linux/delay.h>
++#include <linux/designware_i2s.h>
++#include <linux/device.h>
 +#include <linux/init.h>
-+#include <linux/i2c.h>
 +#include <linux/io.h>
++#include <linux/interrupt.h>
 +#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm.h>
 +#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
++#include <linux/spear_dma.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
 +
-+/* STA529 Register offsets */
-+#define	 STA529_FFXCFG0		0x00
-+#define	 STA529_FFXCFG1		0x01
-+#define	 STA529_MVOL		0x02
-+#define	 STA529_LVOL		0x03
-+#define	 STA529_RVOL		0x04
-+#define	 STA529_TTF0		0x05
-+#define	 STA529_TTF1		0x06
-+#define	 STA529_TTP0		0x07
-+#define	 STA529_TTP1		0x08
-+#define	 STA529_S2PCFG0		0x0A
-+#define	 STA529_S2PCFG1		0x0B
-+#define	 STA529_P2SCFG0		0x0C
-+#define	 STA529_P2SCFG1		0x0D
-+#define	 STA529_PLLCFG0		0x14
-+#define	 STA529_PLLCFG1		0x15
-+#define	 STA529_PLLCFG2		0x16
-+#define	 STA529_PLLCFG3		0x17
-+#define	 STA529_PLLPFE		0x18
-+#define	 STA529_PLLST		0x19
-+#define	 STA529_ADCCFG		0x1E /*mic_select*/
-+#define	 STA529_CKOCFG		0x1F
-+#define	 STA529_MISC		0x20
-+#define	 STA529_PADST0		0x21
-+#define	 STA529_PADST1		0x22
-+#define	 STA529_FFXST		0x23
-+#define	 STA529_PWMIN1		0x2D
-+#define	 STA529_PWMIN2		0x2E
-+#define	 STA529_POWST		0x32
++/* common register for all channel */
++#define IER		0x000
++#define IRER		0x004
++#define ITER		0x008
++#define CER		0x00C
++#define CCR		0x010
++#define RXFFR		0x014
++#define TXFFR		0x018
 +
-+#define STA529_CACHEREGNUM	0x33 /*total num of reg. in sta529*/
++/* I2STxRxRegisters for all channels */
++#define LRBR_LTHR(x)	(0x40 * x + 0x020)
++#define RRBR_RTHR(x)	(0x40 * x + 0x024)
++#define RER(x)		(0x40 * x + 0x028)
++#define TER(x)		(0x40 * x + 0x02C)
++#define RCR(x)		(0x40 * x + 0x030)
++#define TCR(x)		(0x40 * x + 0x034)
++#define ISR(x)		(0x40 * x + 0x038)
++#define IMR(x)		(0x40 * x + 0x03C)
++#define ROR(x)		(0x40 * x + 0x040)
++#define TOR(x)		(0x40 * x + 0x044)
++#define RFCR(x)		(0x40 * x + 0x048)
++#define TFCR(x)		(0x40 * x + 0x04C)
++#define RFF(x)		(0x40 * x + 0x050)
++#define TFF(x)		(0x40 * x + 0x054)
 +
-+#define STA529_RATES		(SNDRV_PCM_RATE_8000 | \
-+				SNDRV_PCM_RATE_11025 | \
-+				SNDRV_PCM_RATE_16000 | \
-+				SNDRV_PCM_RATE_22050 | \
-+				SNDRV_PCM_RATE_32000 | \
-+				SNDRV_PCM_RATE_44100 | \
-+				SNDRV_PCM_RATE_48000)
++/* I2SCOMPRegisters */
++#define I2S_COMP_PARAM_2	0x01F0
++#define I2S_COMP_PARAM_1	0x01F4
++#define I2S_COMP_VERSION	0x01F8
++#define I2S_COMP_TYPE		0x01FC
 +
-+#define STA529_FORMAT		SNDRV_PCM_FMTBIT_S16_LE
-+#define	S2PC_VALUE		0x98
-+#define CLOCK_OUT		0x60
-+#define LEFT_J_DATA_FORMAT	0x10
-+#define I2S_DATA_FORMAT		0x12
-+#define RIGHT_J_DATA_FORMAT	0x14
-+#define CODEC_MUTE_VAL		0x80
++#define DESIGNWARE_I2S_FORMAT	SNDRV_PCM_FMTBIT_S16_LE
++#define MAX_CHANNEL_NUM		8
++#define MIN_CHANNEL_NUM		2
 +
-+#define POWER_CNTLMSAK		0x40
-+#define POWER_STDBY		0x40
-+#define FFX_MASK		0x80
-+#define FFX_OFF			0x80
-+#define POWER_UP		0x00
++struct dw_i2s_dev {
++	void __iomem *i2s_base;
++	struct resource *res;
++	struct clk *clk;
++	int active;
++	int play_irq;
++	int max_channel;
++	int capture_irq;
++	unsigned int capability;
++	struct device *dev;
++	struct snd_soc_dai_driver *dai_driver;
 +
-+static const u8 sta529_reg[STA529_CACHEREGNUM] = {
-+	0x35, 0xc8, 0x50, 0x00,
-+	0x00, 0x00, 0x02, 0x00,
-+	0x02, 0x05, 0xb2, 0x41,
-+	0x92, 0x41, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x80, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0xD2, 0x40,
-+	0x21, 0xef, 0x04, 0x06,
-+	0x41, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00, 0x00, 0x00,
-+	0x00, 0x00,
++	/* data related to DMA transfers b/w i2s and DMAC */
++	u8 swidth;
++	u8 ccr;
++	u8 xfer_resolution;
++	struct dma_data play_dma_data;
++	struct dma_data capture_dma_data;
++	struct i2s_clk_config_data config;
++	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
 +};
 +
-+struct sta529 {
-+	unsigned int sysclk;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
-+};
-+
-+static const char *pwm_mode_text[] = { "binary", "headphone", "ternary",
-+	"phase-shift"};
-+static const char *interface_mode_text[] = { "slave", "master"};
-+
-+static const struct soc_enum pwm_src_enum =
-+SOC_ENUM_SINGLE(STA529_FFXCFG1, 4, 4, pwm_mode_text);
-+
-+static const struct soc_enum mode_src_enum =
-+SOC_ENUM_SINGLE(STA529_P2SCFG0, 0, 2, interface_mode_text);
-+
-+static const struct snd_kcontrol_new sta529_new_snd_controls[] = {
-+	SOC_ENUM("PWM Select", pwm_src_enum),
-+	SOC_ENUM("MODE Select", mode_src_enum),
-+};
-+
-+static const DECLARE_TLV_DB_SCALE(out_gain_tlv, -9150, 50, 0);
-+static const DECLARE_TLV_DB_SCALE(master_vol_tlv, -12750, 50, 0);
-+
-+static const struct snd_kcontrol_new sta529_snd_controls[] = {
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume", STA529_LVOL, STA529_RVOL, 0,
-+			127, 0, out_gain_tlv),
-+	SOC_SINGLE_TLV("Master Playback Volume", STA529_MVOL, 0, 127, 1,
-+			master_vol_tlv),
-+};
-+
-+static int
-+sta529_set_bias_level(struct snd_soc_codec *codec,
-+		enum snd_soc_bias_level level)
++static inline void i2s_write_reg(void *io_base, int reg, u32 val)
 +{
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+	case SND_SOC_BIAS_PREPARE:
-+		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
-+				POWER_UP);
-+		snd_soc_update_bits(codec, STA529_MISC, 1, 0x01);
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+	case SND_SOC_BIAS_OFF:
-+		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
-+				POWER_STDBY);
-+		/* Making FFX output to zero */
-+		snd_soc_update_bits(codec, STA529_FFXCFG0, FFX_MASK,
-+				FFX_OFF);
-+		snd_soc_update_bits(codec, STA529_MISC, 1, 0x00);
-+
-+		break;
-+	}
-+
-+	/*
-+	 * store the label for powers down audio subsystem for suspend.This is
-+	 * used by soc core layer
-+	 */
-+	codec->dapm.bias_level = level;
-+	return 0;
-+
++	writel(val, io_base + reg);
 +}
 +
-+static int sta529_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct snd_soc_dai *dai)
++static inline u32 i2s_read_reg(void *io_base, int reg)
 +{
++	return readl(io_base + reg);
++}
++
++static inline void
++i2s_config_channel(struct dw_i2s_dev *dev, u32 ch, u32 stream, u32 cr)
++{
++	u32 irq;
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		i2s_write_reg(dev->i2s_base, TCR(ch), dev->xfer_resolution);
++		i2s_write_reg(dev->i2s_base, TFCR(ch), 0x02);
++		irq = i2s_read_reg(dev->i2s_base, IMR(ch));
++		i2s_write_reg(dev->i2s_base, IMR(ch), irq & ~0x30);
++		i2s_write_reg(dev->i2s_base, TER(ch), 1);
++	} else {
++		i2s_write_reg(dev->i2s_base, RCR(ch), dev->xfer_resolution);
++		i2s_write_reg(dev->i2s_base, RFCR(ch), 0x07);
++		irq = i2s_read_reg(dev->i2s_base, IMR(ch));
++		i2s_write_reg(dev->i2s_base, IMR(ch), irq & ~0x03);
++		i2s_write_reg(dev->i2s_base, RER(ch), 1);
++	}
++}
++
++static inline void
++i2s_disable_channels(struct dw_i2s_dev *dev, u32 stream)
++{
++	u32 i = 0;
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		for (i = 0; i < 4; i++)
++			i2s_write_reg(dev->i2s_base, TER(i), 0);
++	} else {
++		for (i = 0; i < 4; i++)
++			i2s_write_reg(dev->i2s_base, RER(i), 0);
++	}
++}
++
++static inline void
++i2s_clear_irqs(struct dw_i2s_dev *dev, u32 stream)
++{
++	u32 i = 0;
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		for (i = 0; i < 4; i++)
++			i2s_write_reg(dev->i2s_base, TOR(i), 0);
++	} else {
++		for (i = 0; i < 4; i++)
++			i2s_write_reg(dev->i2s_base, ROR(i), 0);
++	}
++}
++
++void i2s_start(struct dw_i2s_dev *dev, struct snd_pcm_substream *substream)
++{
++
++	i2s_write_reg(dev->i2s_base, IER, 1);
++	i2s_disable_channels(dev, substream->stream);
++
++	switch (dev->max_channel) {
++	case EIGHT_CHANNEL_SUPPORT:
++		i2s_config_channel(dev, 3, substream->stream, 0x5);
++	case SIX_CHANNEL_SUPPORT:
++		i2s_config_channel(dev, 2, substream->stream, 0x5);
++	case FOUR_CHANNEL_SUPPORT:
++		i2s_config_channel(dev, 1, substream->stream, 0x5);
++	case TWO_CHANNEL_SUPPORT:
++		i2s_config_channel(dev, 0, substream->stream, 0x2);
++		break;
++	default:
++		dev_err(dev->dev, "channel not supported\n");
++	}
++
++	i2s_write_reg(dev->i2s_base, CCR, dev->ccr);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		i2s_write_reg(dev->i2s_base, ITER, 1);
++	else
++		i2s_write_reg(dev->i2s_base, IRER, 1);
++
++	i2s_write_reg(dev->i2s_base, CER, 1);
++}
++
++static void
++i2s_stop(struct dw_i2s_dev *dev, struct snd_pcm_substream *substream)
++{
++	u32 i = 0, irq;
++
++	i2s_clear_irqs(dev, substream->stream);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		i2s_write_reg(dev->i2s_base, ITER, 0);
++
++		for (i = 0; i < 4; i++) {
++			irq = i2s_read_reg(dev->i2s_base, IMR(i));
++			i2s_write_reg(dev->i2s_base, IMR(i), irq | 0x30);
++		}
++	} else {
++		i2s_write_reg(dev->i2s_base, IRER, 0);
++
++		for (i = 0; i < 4; i++) {
++			irq = i2s_read_reg(dev->i2s_base, IMR(i));
++			i2s_write_reg(dev->i2s_base, IMR(i), irq | 0x03);
++		}
++	}
++
++	if (!dev->active) {
++		i2s_write_reg(dev->i2s_base, CER, 0);
++		i2s_write_reg(dev->i2s_base, IER, 0);
++	}
++}
++
++static irqreturn_t dw_i2s_play_irq(int irq, void *_dev)
++{
++	struct dw_i2s_dev *dev = (struct dw_i2s_dev *)_dev;
++	u32 ch0, ch1;
++
++	/* check for the tx data overrun condition */
++	ch0 = i2s_read_reg(dev->i2s_base, ISR(0)) & 0x20;
++	ch1 = i2s_read_reg(dev->i2s_base, ISR(1)) & 0x20;
++	if (ch0 || ch1) {
++		/* disable i2s block */
++		i2s_write_reg(dev->i2s_base, IER, 0);
++
++		/* disable tx block */
++		i2s_write_reg(dev->i2s_base, ITER, 0);
++
++		/* flush all the tx fifo */
++		i2s_write_reg(dev->i2s_base, TXFFR, 1);
++
++		/* clear tx data overrun interrupt */
++		i2s_clear_irqs(dev, SNDRV_PCM_STREAM_PLAYBACK);
++
++		/* enable rx block */
++		i2s_write_reg(dev->i2s_base, ITER, 1);
++
++		/* enable i2s block */
++		i2s_write_reg(dev->i2s_base, IER, 1);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t dw_i2s_capture_irq(int irq, void *_dev)
++{
++	struct dw_i2s_dev *dev = (struct dw_i2s_dev *)_dev;
++	u32 ch0, ch1;
++
++	/* check for the rx data overrun condition */
++	ch0 = i2s_read_reg(dev->i2s_base, ISR(0)) & 0x02;
++	ch1 = i2s_read_reg(dev->i2s_base, ISR(1)) & 0x02;
++	if (ch0 || ch1) {
++		/* disable i2s block */
++		i2s_write_reg(dev->i2s_base, IER, 0);
++
++		/* disable rx block */
++		i2s_write_reg(dev->i2s_base, IRER, 0);
++
++		/* flush all the rx fifo */
++		i2s_write_reg(dev->i2s_base, RXFFR, 1);
++
++		/* clear rx data overrun interrupt */
++		i2s_clear_irqs(dev, SNDRV_PCM_STREAM_CAPTURE);
++
++		/* enable rx block */
++		i2s_write_reg(dev->i2s_base, IRER, 1);
++
++		/* enable i2s block */
++		i2s_write_reg(dev->i2s_base, IER, 1);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int
++dw_i2s_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *cpu_dai)
++{
++	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
++	struct dma_data *dma_data = NULL;
++
++	if (!(dev->capability & RECORD) &&
++			(substream->stream == SNDRV_PCM_STREAM_CAPTURE))
++		return -EINVAL;
++
++	if (!(dev->capability & PLAY) &&
++			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK))
++		return -EINVAL;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dma_data = &dev->play_dma_data;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		dma_data = &dev->capture_dma_data;
++
++	snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)dma_data);
++
++	return 0;
++}
++
++static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++	struct i2s_clk_config_data *config = &dev->config;
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int pdata, play_freq_val, record_freq_val;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 +
 +	switch (params_format(params)) {
 +	case SNDRV_PCM_FORMAT_S16_LE:
-+		pdata = 1;
++		config->data_width = 16;
++		dev->ccr = 0x00;
++		dev->xfer_resolution = 0x02;
 +		break;
++
 +	case SNDRV_PCM_FORMAT_S24_LE:
-+		pdata = 2;
++		config->data_width = 24;
++		dev->ccr = 0x08;
++		dev->xfer_resolution = 0x04;
 +		break;
++
 +	case SNDRV_PCM_FORMAT_S32_LE:
-+		pdata = 3;
-+		break;
-+	}
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 11025:
-+		play_freq_val = 0;
-+		record_freq_val = 2;
-+		break;
-+	case 16000:
-+	case 22050:
-+		play_freq_val = 1;
-+		record_freq_val = 0;
++		config->data_width = 32;
++		dev->ccr = 0x10;
++		dev->xfer_resolution = 0x05;
 +		break;
 +
-+	case 32000:
-+	case 44100:
-+	case 48000:
-+		play_freq_val = 2;
-+		record_freq_val = 0;
-+		break;
 +	default:
-+		printk(KERN_WARNING, "bad rate\n");
++		dev_err(dev->dev, "designware-i2s: unsuppted PCM fmt");
 +		return -EINVAL;
 +	}
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		snd_soc_update_bits(codec, STA529_S2PCFG1, 0xC0, (pdata << 6));
-+		snd_soc_update_bits(codec, STA529_MISC, 0x0C,
-+				(play_freq_val << 4));
-+	} else {
-+		snd_soc_update_bits(codec, STA529_P2SCFG1, 0xC0, (pdata << 6));
-+		snd_soc_update_bits(codec, STA529_MISC, 0x0C,
-+				(record_freq_val << 2));
++	config->sample_rate = params_rate(params);
++	dev->max_channel = config->chan_nr = params_channels(params);
 +
++	if (dev->i2s_clk_cfg) {
++		if (dev->i2s_clk_cfg(config)) {
++			dev_err(dev->dev, "runtime audio clk config fail\n");
++			if (cpu_dai->driver->ops->trigger) {
++				int ret =
++					cpu_dai->driver->ops->trigger(substream,
++							SNDRV_PCM_TRIGGER_STOP,
++							cpu_dai);
++				if (ret < 0) {
++					dev_err(dev->dev,
++							"trigger stop fail\n");
++					return ret;
++				}
++			}
++		}
 +	}
 +
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
-+	mdelay(10);
-+
 +	return 0;
 +}
 +
-+static int sta529_mute(struct snd_soc_dai *dai, int mute)
++static void
++dw_i2s_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	u8 mute_reg = snd_soc_read(codec, STA529_FFXCFG0) & ~CODEC_MUTE_VAL;
-+
-+	if (mute)
-+		mute_reg |= CODEC_MUTE_VAL;
-+
-+	snd_soc_update_bits(codec, STA529_FFXCFG0, 0x80, 00);
-+
-+	return 0;
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
 +}
 +
-+static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
++static int
++dw_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
++		struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u8 mode = 0;
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		mode = LEFT_J_DATA_FORMAT;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		mode = I2S_DATA_FORMAT;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		mode = RIGHT_J_DATA_FORMAT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	mode |= 0x20;
-+	snd_soc_update_bits(codec, STA529_S2PCFG0, 0xE0, mode);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops sta529_dai_ops = {
-+	.hw_params	=	sta529_hw_params,
-+	.set_fmt	=	sta529_set_dai_fmt,
-+	.digital_mute	=	sta529_mute,
-+};
-+
-+static struct snd_soc_dai_driver sta529_dai = {
-+	.name = "sta529-audio",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = STA529_RATES,
-+		.formats = STA529_FORMAT,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = STA529_RATES,
-+		.formats = STA529_FORMAT,
-+	},
-+	.ops	= &sta529_dai_ops,
-+};
-+
-+static int sta529_probe(struct snd_soc_codec *codec)
-+{
-+	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, sta529->control_type);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	snd_soc_add_controls(codec, sta529_snd_controls,
-+			ARRAY_SIZE(sta529_snd_controls));
-+
-+	snd_soc_add_controls(codec, sta529_new_snd_controls,
-+			ARRAY_SIZE(sta529_new_snd_controls));
-+	return 0;
-+}
-+
-+/* power down chip */
-+static int sta529_remove(struct snd_soc_codec *codec)
-+{
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+
-+	return 0;
-+}
-+
-+static int sta529_suspend(struct snd_soc_codec *codec, pm_message_t state)
-+{
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+
-+	return 0;
-+}
-+
-+static int sta529_resume(struct snd_soc_codec *codec)
-+{
-+	snd_soc_cache_sync(codec);
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_codec_driver soc_codec_dev_sta529 = {
-+	.probe = sta529_probe,
-+	.remove = sta529_remove,
-+	.set_bias_level = sta529_set_bias_level,
-+	.suspend = sta529_suspend,
-+	.resume = sta529_resume,
-+	.reg_cache_size = STA529_CACHEREGNUM,
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = sta529_reg,
-+
-+};
-+
-+static __devinit int sta529_i2c_probe(struct i2c_client *i2c,
-+		const struct i2c_device_id *id)
-+{
-+	struct sta529 *sta529;
-+	int ret;
-+
-+	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-+		return -EINVAL;
-+
-+	sta529 = kzalloc(sizeof(struct sta529), GFP_KERNEL);
-+	if (sta529 == NULL)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, sta529);
-+	sta529->control_data = i2c;
-+	sta529->control_type = SND_SOC_I2C;
-+
-+	ret = snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_sta529, &sta529_dai, 1);
-+	if (ret < 0)
-+		kfree(sta529);
-+	return ret;
-+}
-+
-+static int sta529_i2c_remove(struct i2c_client *client)
-+{
-+	snd_soc_unregister_codec(&client->dev);
-+	kfree(i2c_get_clientdata(client));
-+	return 0;
-+}
-+
-+static const struct i2c_device_id sta529_i2c_id[] = {
-+	{ "sta529", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, sta529_i2c_id);
-+
-+static struct i2c_driver sta529_i2c_driver = {
-+	.driver = {
-+		.name = "sta529",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe		= sta529_i2c_probe,
-+	.remove		= __devexit_p(sta529_i2c_remove),
-+	.id_table	= sta529_i2c_id,
-+};
-+
-+static int __init sta529_modinit(void)
-+{
++	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
 +	int ret = 0;
 +
-+	ret = i2c_add_driver(&sta529_i2c_driver);
-+	if (ret != 0)
-+		printk(KERN_ERR "Failed to reg sta529 I2C driver: %d\n", ret);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		dev->active++;
++		i2s_start(dev, substream);
++		break;
 +
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		dev->active--;
++		i2s_stop(dev, substream);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
 +	return ret;
-+
 +}
-+module_init(sta529_modinit);
 +
-+static void __exit sta529_exit(void)
++static struct snd_soc_dai_ops dw_i2s_dai_ops = {
++	.startup	= dw_i2s_startup,
++	.shutdown	= dw_i2s_shutdown,
++	.hw_params	= dw_i2s_hw_params,
++	.trigger	= dw_i2s_trigger,
++};
++
++#ifdef CONFIG_PM
++
++static int dw_i2s_suspend(struct device *dev)
 +{
-+	i2c_del_driver(&sta529_i2c_driver);
-+}
-+module_exit(sta529_exit);
++	struct platform_device *pdev = to_platform_device(dev);
++	struct dw_i2s_dev *i2s_dev = dev_get_drvdata(&pdev->dev);
 +
-+MODULE_DESCRIPTION("ASoC STA529 codec driver");
++	clk_disable(i2s_dev->clk);
++	return 0;
++}
++
++static int dw_i2s_resume(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct dw_i2s_dev *i2s_dev = dev_get_drvdata(&pdev->dev);
++
++	clk_enable(i2s_dev->clk);
++	return 0;
++}
++
++static const struct dev_pm_ops dw_i2s_dev_pm_ops = {
++	.suspend = dw_i2s_suspend,
++	.resume = dw_i2s_resume,
++};
++
++#define I2S_DW_DEV_PM_OPS (&dw_i2s_dev_pm_ops)
++#else
++#define I2S_DW_DEV_PM_OPS NULL
++#endif
++
++static int
++dw_i2s_probe(struct platform_device *pdev)
++{
++	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
++	struct dw_i2s_dev *dev;
++	struct resource *res;
++	int ret;
++	unsigned int cap;
++	struct snd_soc_dai_driver *dw_i2s_dai;
++
++	if (!pdata) {
++		dev_err(&pdev->dev, "Invalid platform data\n");
++		return -EINVAL;
++	}
++
++	cap = pdata->cap;
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "no i2s resource defined\n");
++		return -ENODEV;
++	}
++
++	if (!request_mem_region(res->start, resource_size(res), pdev->name)) {
++		dev_err(&pdev->dev, "i2s region already claimed\n");
++		return -EBUSY;
++	}
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev) {
++		ret = -ENOMEM;
++		goto err_release_mem_region;
++	}
++
++	dev->res = res;
++	dev->max_channel = pdata->channel;
++	dev->capability = cap;
++	dev->swidth = pdata->swidth;
++	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
++
++	/* Set DMA slaves info */
++
++	dev->play_dma_data.data = pdata->play_dma_data;
++	dev->capture_dma_data.data = pdata->capture_dma_data;
++	dev->play_dma_data.addr = res->start + I2S_TXDMA;
++	dev->capture_dma_data.addr = res->start + I2S_RXDMA;
++	dev->play_dma_data.max_burst = 16;
++	dev->capture_dma_data.max_burst = 16;
++	dev->play_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	dev->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	dev->play_dma_data.filter = pdata->filter;
++	dev->capture_dma_data.filter = pdata->filter;
++
++	dev->clk = clk_get(&pdev->dev, NULL);
++	if (IS_ERR(dev->clk)) {
++		ret = PTR_ERR(dev->clk);
++		goto err_kfree;
++	}
++
++	ret = clk_enable(dev->clk);
++	if (ret < 0)
++		goto err_clk_put;
++
++	dev->i2s_base = ioremap(res->start, resource_size(res));
++	if (!dev->i2s_base) {
++		dev_err(&pdev->dev, "ioremap fail for i2s_region\n");
++		ret = -ENOMEM;
++		goto err_clk_disable;
++	}
++
++	dw_i2s_dai = kzalloc(sizeof(*dw_i2s_dai), GFP_KERNEL);
++	if (!dw_i2s_dai) {
++		dev_err(&pdev->dev, "mem allocation failed for dai driver\n");
++		ret = -ENOMEM;
++		goto err_soc_dai_driver;
++	}
++
++	if (cap & PLAY) {
++		dev_dbg(&pdev->dev, " SPEAr: play supported\n");
++		dev->play_irq = platform_get_irq_byname(pdev, "play_irq");
++		if (dev->play_irq < 0)
++			dev_warn(&pdev->dev, "play irq not defined\n");
++		else {
++			ret = request_irq(dev->play_irq, dw_i2s_play_irq, 0,
++					"dw-i2s-play", dev);
++			if (ret) {
++				dev_err(&pdev->dev,
++						"Can't register play irq\n");
++				goto err_play_irq;
++			}
++		}
++
++		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
++		dw_i2s_dai->playback.channels_max = dev->max_channel;
++		dw_i2s_dai->playback.rates = pdata->snd_rates;
++		dw_i2s_dai->playback.formats = DESIGNWARE_I2S_FORMAT;
++	}
++
++	if (cap & RECORD) {
++		dev_dbg(&pdev->dev, "SPEAr: record supported\n");
++		dev->capture_irq = platform_get_irq_byname(pdev, "record_irq");
++		if (dev->capture_irq < 0)
++			dev_warn(&pdev->dev, "record irq not defined\n");
++		else {
++			ret = request_irq(dev->capture_irq, dw_i2s_capture_irq,
++					0, "dw-i2s-rec", dev);
++			if (ret) {
++				dev_err(&pdev->dev,
++						"Can't register capture irq\n");
++				goto err_capture_irq;
++			}
++		}
++
++		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
++		dw_i2s_dai->capture.channels_max = dev->max_channel;
++		dw_i2s_dai->capture.rates = pdata->snd_rates;
++		dw_i2s_dai->capture.formats = DESIGNWARE_I2S_FORMAT;
++	}
++
++	dw_i2s_dai->ops = &dw_i2s_dai_ops,
++
++	dev->dev = &pdev->dev;
++	dev->dai_driver = dw_i2s_dai;
++	dev_set_drvdata(&pdev->dev, dev);
++	ret = snd_soc_register_dai(&pdev->dev, dw_i2s_dai);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "not able to register dai\n");
++		goto err_set_drvdata;
++	}
++
++	return 0;
++
++err_set_drvdata:
++	dev_set_drvdata(&pdev->dev, NULL);
++	free_irq(dev->capture_irq, pdev);
++err_capture_irq:
++	free_irq(dev->play_irq, pdev);
++err_play_irq:
++	kfree(dw_i2s_dai);
++err_soc_dai_driver:
++	iounmap(dev->i2s_base);
++err_clk_disable:
++	clk_disable(dev->clk);
++err_clk_put:
++	clk_put(dev->clk);
++err_kfree:
++	kfree(dev);
++err_release_mem_region:
++	release_mem_region(res->start, resource_size(res));
++	return ret;
++}
++
++static int
++dw_i2s_remove(struct platform_device *pdev)
++{
++	struct dw_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
++
++	snd_soc_unregister_dai(&pdev->dev);
++
++	if (dev->play_irq)
++		free_irq(dev->play_irq, dev);
++
++	if (dev->capture_irq)
++		free_irq(dev->capture_irq, dev);
++
++	iounmap(dev->i2s_base);
++	clk_disable(dev->clk);
++	clk_put(dev->clk);
++	kfree(dev->dai_driver);
++	kfree(dev);
++	release_mem_region(dev->res->start, resource_size(dev->res));
++
++	return 0;
++}
++
++static struct platform_driver dw_i2s_driver = {
++	.probe		= dw_i2s_probe,
++	.remove		= dw_i2s_remove,
++	.driver		= {
++		.name	= "designware-i2s",
++		.owner	= THIS_MODULE,
++		.pm	= I2S_DW_DEV_PM_OPS,
++	},
++};
++
++static int __init dw_i2s_init(void)
++{
++	return platform_driver_register(&dw_i2s_driver);
++}
++module_init(dw_i2s_init);
++
++static void __exit dw_i2s_exit(void)
++{
++	platform_driver_unregister(&dw_i2s_driver);
++}
++module_exit(dw_i2s_exit);
++
 +MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
++MODULE_DESCRIPTION("DESIGNWARE I2S SoC Interface");
 +MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:designware_i2s");
 -- 
 1.7.2.2
