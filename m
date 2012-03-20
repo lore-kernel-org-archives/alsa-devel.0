@@ -1,17 +1,17 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH 8/8] sound:asoc: Update Kconfig and
-	Makefile(sound/soc/) to support SPEAr audio
-Date: Tue, 20 Mar 2012 17:03:52 +0530
-Message-ID: <74835cc5bcd6d99d8b923d21ff9a8d1af2b34c0e.1332242166.git.rajeev-dlh.kumar@st.com>
+Subject: [PATCH 7/8] sound:asoc: Add Kconfig and Makefile to
+	support SPEAr audio driver
+Date: Tue, 20 Mar 2012 17:03:51 +0530
+Message-ID: <23b293a002accaad0119a68286f1650aac400cdc.1332242166.git.rajeev-dlh.kumar@st.com>
 References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog108.obsmtp.com (eu1sys200aog108.obsmtp.com
-	[207.126.144.125])
-	by alsa0.perex.cz (Postfix) with ESMTP id D67A8104255
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:59 +0100 (CET)
+Received: from eu1sys200aog102.obsmtp.com (eu1sys200aog102.obsmtp.com
+	[207.126.144.113])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AE11104250
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 12:34:58 +0100 (CET)
 In-Reply-To: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,37 +26,89 @@ To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, spear-devel@list.st.com, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch update Kconfig and Makefile present in soc directory to
-support SPEAr.
+This patch add Kconfig and Makefile to support SPEAr Audio driver
 
 Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 ---
- sound/soc/Kconfig  |    1 +
- sound/soc/Makefile |    1 +
- 2 files changed, 2 insertions(+), 0 deletions(-)
+ sound/soc/spear/Kconfig  |   46 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/Makefile |   16 ++++++++++++++++
+ 2 files changed, 62 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/spear/Kconfig
+ create mode 100644 sound/soc/spear/Makefile
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 35e662d..3860465 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -43,6 +43,7 @@ source "sound/soc/pxa/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/s6000/Kconfig"
- source "sound/soc/sh/Kconfig"
-+source "sound/soc/spear/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- 
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 9ea8ac8..238da08 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -20,5 +20,6 @@ obj-$(CONFIG_SND_SOC)	+= pxa/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= s6000/
- obj-$(CONFIG_SND_SOC)	+= sh/
-+obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
+diff --git a/sound/soc/spear/Kconfig b/sound/soc/spear/Kconfig
+new file mode 100644
+index 0000000..4ab9154
+--- /dev/null
++++ b/sound/soc/spear/Kconfig
+@@ -0,0 +1,46 @@
++config SND_SOC_SPEAR_EVM
++	tristate "SoC Audio support for SPEAr EVM"
++	select SND_SOC_DESIGNWARE_I2S
++	select SND_SOC_STA529
++	select SND_SOC_SPEAR_PCM
++	help
++	 Say Y if you want to add support for SoC audio on SPEAr
++	 platform
++
++config SND_SOC_SPEAR1340_EVM
++	tristate "SoC Audio support for SPEAr1340 EVM"
++	select SND_SOC_DESIGNWARE_I2S
++	select SND_SOC_STA529
++	select SND_SOC_SPEAR_SPDIF_OUT
++	select SND_SOC_SPEAR_SPDIF_IN
++	select SND_SOC_SPDIF
++	select SND_SOC_SPEAR_PCM
++	help
++	 Say Y if you want to add support for SoC audio on SPEAr1340
++	 platform
++
++config SND_SOC_SPEAR_PCM
++	tristate "SoC Audio for the ST chip"
++	depends on SND_SOC_DESIGNWARE_I2S || SND_SOC_SPEAR_SPDIF_OUT || \
++		SND_SOC_SPEAR_SPDIF_IN
++	help
++	 Say Y or M if you want to add support for any of the audio
++	 controllers (I2S/SPDIF). You will also need to select
++	 the audio interface codecs to support below.
++
++config SND_SOC_DESIGNWARE_I2S
++	tristate "Synopsys I2S Device Driver"
++	help
++	 Say Y or M if you want to add support for I2S driver for
++	 Synopsys desigwnware I2S device. The device supports upto
++	 maximum of 8 channels each for play, record or both.
++
++config SND_SOC_SPEAR_SPDIF_OUT
++	tristate "SPEAr SPDIF Out Device Driver"
++	help
++	 Say Y or M if you want to add support for SPDIF OUT driver.
++
++config SND_SOC_SPEAR_SPDIF_IN
++	tristate "SPEAr SPDIF IN Device Driver"
++	help
++	 Say Y or M if you want to add support for SPDIF IN driver.
+diff --git a/sound/soc/spear/Makefile b/sound/soc/spear/Makefile
+new file mode 100644
+index 0000000..bc49e75
+--- /dev/null
++++ b/sound/soc/spear/Makefile
+@@ -0,0 +1,16 @@
++# SPEAr Platform Support
++snd-soc-pcm-objs := spear_pcm.o
++snd-soc-i2s-objs := designware_i2s.o
++snd-soc-spdif-in-objs := spdif_in.o
++snd-soc-spdif-out-objs := spdif_out.o
++
++obj-$(CONFIG_SND_SOC_SPEAR_PCM) += snd-soc-pcm.o
++obj-$(CONFIG_SND_SOC_DESIGNWARE_I2S) += snd-soc-i2s.o
++obj-$(CONFIG_SND_SOC_SPEAR_SPDIF_IN) += snd-soc-spdif-in.o
++obj-$(CONFIG_SND_SOC_SPEAR_SPDIF_OUT) += snd-soc-spdif-out.o
++
++# SPEAr Machine Support
++snd-soc-evb-objs := spear_evb.o
++
++obj-$(CONFIG_SND_SOC_SPEAR_EVM) += snd-soc-evb.o
++obj-$(CONFIG_SND_SOC_SPEAR1340_EVM) += snd-soc-evb.o
 -- 
 1.7.2.2
