@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v8] sound/soc/lapis: add machine driver for
- ML7213 Carrier Board
-Date: Wed, 21 Mar 2012 16:11:49 +0000
-Message-ID: <20120321161148.GG3226@opensource.wolfsonmicro.com>
-References: <1332292517-3411-1-git-send-email-tomoya.rohm@gmail.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH] ASoC: da7210: Add support for spi regmap
+Date: Wed, 21 Mar 2012 22:11:20 +0530
+Message-ID: <1332348080.21744.26.camel@matrix>
+References: <1332345170.21744.10.camel@matrix>
+	<20120321155635.GE3226@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6273176882001586621=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E7F410448F
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 17:11:50 +0100 (CET)
-In-Reply-To: <1332292517-3411-1-git-send-email-tomoya.rohm@gmail.com>
+Received: from am1outboundpool.messaging.microsoft.com
+	(am1ehsobe002.messaging.microsoft.com [213.199.154.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9313210449F
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 17:29:51 +0100 (CET)
+In-Reply-To: <20120321155635.GE3226@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,66 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: alsa-devel@alsa-project.org, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2012-03-21 at 15:56 +0000, Mark Brown wrote:
+> On Wed, Mar 21, 2012 at 09:22:50PM +0530, Ashish Chavan wrote:
+> 
+> > +#if defined(CONFIG_SPI_MASTER)
+> > +	/* Dummy read to give two pulses over nCS */
+> > +	regmap_read(da7210->regmap, DA7210_STATUS, &val);
+> > +	regmap_read(da7210->regmap, DA7210_STATUS, &val);
+> > +	regmap_read(da7210->regmap, DA7210_STATUS, &val);
+> > +#endif
+> 
+> This ifdef stuff should all be runtime configured based on the bus type,
+> unless the cost of the reads is considered immaterial in which case it
+> should be unconditional.
+> 
 
---===============6273176882001586621==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nhYGnrYv1PEJ5gA2"
-Content-Disposition: inline
+OK, will make it runtime.
 
+> > +#if defined(CONFIG_SPI_MASTER)
+> > +	snd_soc_write(codec, 0x00, 0x80);
+> > +#endif
+> 
+> Hrm?
 
---nhYGnrYv1PEJ5gA2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is writing to page register. SPI register space is divided in to
+two pages. Registers from 0x01 to 0x80 fall in to first page. If we want
+to write to any register above 0x80, first we need to set page register
+with PAGE1. May be I should put comments to make it obvious.
 
-On Wed, Mar 21, 2012 at 10:15:17AM +0900, Tomoya MORINAGA wrote:
+> 
+> >  	/* unlock */
+> >  	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x8B);
+> > @@ -1035,6 +1056,10 @@ static int da7210_probe(struct snd_soc_codec *codec)
+> >  	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x00);
+> >  	regmap_write(da7210->regmap, DA7210_A_TEST_UNLOCK,	0x00);
+> 
+> I also note that you've not yet updated this to use a regmap patch as
+> was previously requested.
 
-> This machine driver is for
-> LAPIS Semiconductor ML7213 Carrier Board + ML26124 Reference Board
+Actually I don't have enough details about the problem that you
+mentioned with this. I am waiting for inputs from some body else. Can
+you please elaborate the problem if you have details? so that I can
+correct it.
 
-This looks good but obviously needs the platform before it can be
-merged.  One fairly minor thing:
+> 
+> > +#if defined(CONFIG_SPI_MASTER)
+> > +static int __devinit da7210_spi_probe(struct spi_device *spi)
+> > +{
+> > +	struct da7210_priv *da7210;
+> > +	int ret;
+> > +
+> > +	da7210 = kzalloc(sizeof(struct da7210_priv), GFP_KERNEL);
+> > +	if (!da7210)
+> > +		return -ENOMEM;
+> 
+> devm_kzalloc().
 
-> +	mclkfs = clk / params_rate(hw_params);
-
-> +		bclkfs = 32;
-
-You no longer use either mclkfs or bclkfs so you could just delete the
-code that calculates them - the DAI drivers will work this stuff out for
-you now so the machine driver doesn't need to.
-
---nhYGnrYv1PEJ5gA2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPaf2/AAoJEBus8iNuMP3dZ8UQAJ6hVNFoEAi3IELDXPXoQ/RU
-lsNbZezgKUPNqI6WhIt6tYWfndCqS+M12qBFUXx3m8eo9FIsgVlt+NwLC1N07ZYI
-pw2RbLT0/AXDJlPQ/NDG03EJf0CbmD4j5VIgidnB4hEGCDdveJKw0GQHBKOWSsXQ
-SbW9MnGJASG+7HC9GLnMrmMwr68rJefLlkApIi7X03kJyp8LaVVUbcUatjfe4eCk
-rfKWpsSsNBGm+uZmdZtkRbII1UdInHQ3Pol8Q/yBfcLnMKOOrERwIV0lrGqPHSfl
-2wesMhhDgPf+NH7s+49fXg8q75J9I3P81526r+JhZ2PkHBAY/rg711S9SXx2j3ge
-jIubUfqDoqPlawTAHn9uLXsV+7seyiFVyrtNyrkc+q6N3+qoqbxODRhcBnIEOHhf
-Ldtt0d1Ad4F188M97csiVEXnWNCUrPOlh7/4nj1uIdFmcerZ6uSqKfSS/3kdY/Ru
-cHHaDTW95DSyzNl5x2i9x3WJSMCXku9s/cezA48+KTEhPGRSTp8FqBtia7PgjspD
-0Lv2DDTTfeeskLFcXgRtWHeRBZxY0HZneYaL/XQzuP8hiO9X8FgUWDvnndgpLR3y
-Z64Kutlk41hSSx0h5mSiBoppgtVIsLF6++aYbBX9VcJ9oXz60e0+1R2sIiSNYsVn
-lrEV7mAQ8XCT6wrVr1fC
-=jnuo
------END PGP SIGNATURE-----
-
---nhYGnrYv1PEJ5gA2--
-
---===============6273176882001586621==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6273176882001586621==--
+OK for this and rest of all comments. I will take care of them in next
+submission soon.
