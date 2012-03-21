@@ -1,25 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
-	protection mode
-Date: Wed, 21 Mar 2012 11:46:12 +0200
-Message-ID: <4F69A364.6050206@ti.com>
-References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
-	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>
-	<4F68AE51.808@bitmer.com> <4F698B56.6030502@ti.com>
-	<4F69920B.4010701@bitmer.com>
-	<20120321084051.GA9342@opensource.wolfsonmicro.com>
-	<4F699C5E.6070905@ti.com> <4F69A08B.5080100@bitmer.com>
+From: Stefano Panella <stefano.panella@citrix.com>
+Subject: Re: paravirtualized alsa  kernel driver for XEN
+Date: Wed, 21 Mar 2012 10:11:07 +0000
+Message-ID: <4F69A93B.4020707@citrix.com>
+References: <4F6769A9.6090200@citrix.com> <4F68534A.70203@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
-	[74.125.149.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 796E724335
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 10:46:30 +0100 (CET)
-Received: by lahi5 with SMTP id i5so652996lah.25
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 02:46:15 -0700 (PDT)
-In-Reply-To: <4F69A08B.5080100@bitmer.com>
+Received: from SMTP.EU.CITRIX.COM (smtp.ctxuk.citrix.com [62.200.22.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id 21E6924520
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 11:01:47 +0100 (CET)
+In-Reply-To: <4F68534A.70203@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,35 +20,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/21/2012 11:34 AM, Jarkko Nikula wrote:
-> On 03/21/2012 11:16 AM, Peter Ujfalusi wrote:
->> Agreed. Let's drop this patch, and try to figure out something which can
->> be used by other platforms as well.
+Hi,
+
+Thanks very much for your quick, detailed and useful response.
+
+On 20/03/12 09:52, David Henningsson wrote:
+> On 03/19/2012 06:15 PM, Stefano Panella wrote:
+>> Hi,
 >>
->> I would keep the first two patch in this series..
+>> I am Stefano Panella, I am new to the list and I would like to take the
+>> opportunity to ask some questions since I am trying to write a
+>> paravirtualized alsa driver for XEN.
 >>
-> I acked already 1/3 but 2/3 needs commit log update and change below
-> looks suspicious for omap1 and 2.
+>> If all goes well I would also like to upstream it on linux.
+>>
+>> I have been reading the documentation on "Writing an ALSA Driver" and I
+>> am still not completely clear on the meaning of the "pointer" callback
+>> in the pcm operations.
+>>
+>> The description say:
+>>
+>> "This callback is called when the PCM middle layer inquires the current
+>> hardware position on the buffer."
+>>
+>> My question are:
+>>
+>> 1) In case of a playback stream, is the pointer referring to wich sample
+>> is currently playing on the DAC or to which is it the last frame read by
+>> the HW from the alsa memory buffer?
+>>
+>> 2) What does the pointer mean in case of a capture stream? Is it the
+>> position of the current frame on the ADC or is the latest frame written
+>> into the alsa buffer?
+>
+> I'd say that for both, it is being used by applications to know what
+> memory they can read from or write to. But other people here might know
+> better.
+>
+>> 3) in case it is the frame on the DAC/ADC, what happens if the callback
+>> does not return the real DAC/ADC frame position but an approximate
+>> value, let say rounded to 64 frames only?
+>
+> For the JACK sound server, I think it only needs to be as accurate as
+> the period (i e if you have 4 periods with 64 samples each, you need to
+> be able to return 0, 64, 128 and 192).
+>
+> For PulseAudio it's worse. The worse granularity, the more difficult for
+> PulseAudio to have low-latency operation. PulseAudio also
+> rewinds/rewrites the buffer occasionally and uses the pointer to know
+> from when it should start rewriting.
+>
+>> 4) is there any test I could run to check I have implemented correctly
+>> the "pointer" callback? Or any application which would need very high
+>> "pointer" precision like frame precision?
+>
+> PulseAudio has an alsa-time-test application that relies heavily on the
+> pointer callback being accurate. It's only for playback and I've never
+> used it myself so I'm not completely sure about how to interpret the
+> numbers.
+I will try this for sure.
+>
+> In general, I believe PulseAudio (especially with timer-scheduling mode
+> enabled) stress tests the driver quite hard and as such it is sometimes
+> being used as a measure to see if the audio driver is successful. :-)
+>
+> Hopefully this provides some initial insights.
+Yes
+>
 
-True, I'll update the commit log for patch 2.
+I will let you know how this work is progressing
 
-> @@ -120,6 +120,9 @@ static int omap_mcbsp_dai_startup(struct
-> snd_pcm_substream *substream,
->  	if (!cpu_dai->active)
->  		err =3D omap_mcbsp_request(mcbsp);
-> =
+Thanks again,
 
-> +	if (!mcbsp->pdata->buffer_size)
-> +		return err;
-
-We only need to set the constraints on OMAP versions which have FIFO. If
-buffer_size is 0 we can just return without going forward.
-It removes one level of nested code in the function.
-
--- =
-
-P=E9ter
+Stefano
