@@ -1,189 +1,100 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH] ASoC: da7210: Add support for spi regmap
-Date: Wed, 21 Mar 2012 21:22:50 +0530
-Message-ID: <1332345170.21744.10.camel@matrix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: da7210: Add support for spi regmap
+Date: Wed, 21 Mar 2012 15:56:35 +0000
+Message-ID: <20120321155635.GE3226@opensource.wolfsonmicro.com>
+References: <1332345170.21744.10.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
-	(va3ehsobe001.messaging.microsoft.com [216.32.180.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FABB2457E
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 16:41:43 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kA1LkgxZ0NN7Mz3A"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1332345170.21744.10.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for spi regmap feature to existing da7210
-driver.
 
-Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Signed-off-by: David Dajun Chen <dchen@diasemi.com>
----
- sound/soc/codecs/da7210.c |   90 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 90 insertions(+), 0 deletions(-)
+--kA1LkgxZ0NN7Mz3A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 7843711..0f13fc4 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -17,6 +17,7 @@
- 
- #include <linux/delay.h>
- #include <linux/i2c.h>
-+#include <linux/spi/spi.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -905,6 +906,9 @@ static int da7210_probe(struct snd_soc_codec *codec)
- {
- 	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
-+#if defined(CONFIG_SPI_MASTER)
-+	unsigned int val;
-+#endif
- 
- 	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
- 
-@@ -927,10 +931,23 @@ static int da7210_probe(struct snd_soc_codec *codec)
- 	 *      DA7210_PLL_DIV3 :: DA7210_MCLK_RANGExxx
- 	 */
- 
-+#if defined(CONFIG_SPI_MASTER)
-+	/* Dummy read to give two pulses over nCS */
-+	regmap_read(da7210->regmap, DA7210_STATUS, &val);
-+	regmap_read(da7210->regmap, DA7210_STATUS, &val);
-+	regmap_read(da7210->regmap, DA7210_STATUS, &val);
-+#endif
-+
- 	/*
- 	 * make sure that DA7210 use bypass mode before start up
- 	 */
- 	snd_soc_write(codec, DA7210_STARTUP1, 0);
-+
-+#if defined(CONFIG_SPI_MASTER)
-+	/* Dummy read to complete last write operation */
-+	regmap_read(da7210->regmap, DA7210_STATUS, &val);
-+#endif
-+
- 	snd_soc_write(codec, DA7210_PLL_DIV3,
- 		     DA7210_MCLK_RANGE_10_20_MHZ | DA7210_PLL_BYP);
- 
-@@ -1025,6 +1042,10 @@ static int da7210_probe(struct snd_soc_codec *codec)
- 		     DA7210_MCLK_RANGE_10_20_MHZ | DA7210_PLL_BYP);
- 	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_EN, DA7210_PLL_EN);
- 
-+#if defined(CONFIG_SPI_MASTER)
-+	snd_soc_write(codec, 0x00, 0x80);
-+#endif
-+
- 	/* As suggested by Dialog */
- 	/* unlock */
- 	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x8B);
-@@ -1035,6 +1056,10 @@ static int da7210_probe(struct snd_soc_codec *codec)
- 	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x00);
- 	regmap_write(da7210->regmap, DA7210_A_TEST_UNLOCK,	0x00);
- 
-+#if defined(CONFIG_SPI_MASTER)
-+	snd_soc_write(codec, 0x00, 0x00);
-+#endif
-+
- 	/* Activate all enabled subsystem */
- 	snd_soc_write(codec, DA7210_STARTUP1, DA7210_SC_MST_EN);
- 
-@@ -1128,12 +1153,74 @@ static struct i2c_driver da7210_i2c_driver = {
- };
- #endif
- 
-+#if defined(CONFIG_SPI_MASTER)
-+static int __devinit da7210_spi_probe(struct spi_device *spi)
-+{
-+	struct da7210_priv *da7210;
-+	int ret;
-+
-+	da7210 = kzalloc(sizeof(struct da7210_priv), GFP_KERNEL);
-+	if (!da7210)
-+		return -ENOMEM;
-+
-+	spi_set_drvdata(spi, da7210);
-+
-+	da7210_regmap.read_flag_mask = 0x01;
-+	da7210_regmap.write_flag_mask = 0x00;
-+	da7210->regmap = regmap_init_spi(spi, &da7210_regmap);
-+	if (IS_ERR(da7210->regmap)) {
-+		ret = PTR_ERR(da7210->regmap);
-+		dev_err(&spi->dev, "Failed to register regmap: %d\n", ret);
-+		goto err_alloc;
-+	}
-+
-+	ret =  snd_soc_register_codec(&spi->dev,
-+			&soc_codec_dev_da7210, &da7210_dai, 1);
-+	if (ret < 0)
-+		goto err_regmap;
-+
-+	return ret;
-+
-+err_regmap:
-+	regmap_exit(da7210->regmap);
-+err_alloc:
-+	kfree(da7210);
-+
-+	return ret;
-+}
-+
-+static int __devexit da7210_spi_remove(struct spi_device *spi)
-+{
-+	struct da7210_priv *da7210 = spi_get_drvdata(spi);
-+	snd_soc_unregister_codec(&spi->dev);
-+	regmap_exit(da7210->regmap);
-+	kfree(da7210);
-+	return 0;
-+}
-+
-+static struct spi_driver da7210_spi_driver = {
-+	.driver = {
-+		.name = "da7210-codec",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = da7210_spi_probe,
-+	.remove = __devexit_p(da7210_spi_remove)
-+};
-+#endif
-+
- static int __init da7210_modinit(void)
- {
- 	int ret = 0;
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	ret = i2c_add_driver(&da7210_i2c_driver);
- #endif
-+#if defined(CONFIG_SPI_MASTER)
-+	ret = spi_register_driver(&da7210_spi_driver);
-+	if (ret) {
-+		printk(KERN_ERR "Failed to register da7210 SPI driver: %d\n",
-+		       ret);
-+	}
-+#endif
- 	return ret;
- }
- module_init(da7210_modinit);
-@@ -1143,6 +1230,9 @@ static void __exit da7210_exit(void)
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&da7210_i2c_driver);
- #endif
-+#if defined(CONFIG_SPI_MASTER)
-+	spi_unregister_driver(&da7210_spi_driver);
-+#endif
- }
- module_exit(da7210_exit);
- 
--- 
-1.7.1
+On Wed, Mar 21, 2012 at 09:22:50PM +0530, Ashish Chavan wrote:
+
+> +#if defined(CONFIG_SPI_MASTER)
+> +	/* Dummy read to give two pulses over nCS */
+> +	regmap_read(da7210->regmap, DA7210_STATUS, &val);
+> +	regmap_read(da7210->regmap, DA7210_STATUS, &val);
+> +	regmap_read(da7210->regmap, DA7210_STATUS, &val);
+> +#endif
+
+This ifdef stuff should all be runtime configured based on the bus type,
+unless the cost of the reads is considered immaterial in which case it
+should be unconditional.
+
+> +#if defined(CONFIG_SPI_MASTER)
+> +	snd_soc_write(codec, 0x00, 0x80);
+> +#endif
+
+Hrm?
+
+>  	/* unlock */
+>  	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x8B);
+> @@ -1035,6 +1056,10 @@ static int da7210_probe(struct snd_soc_codec *codec)
+>  	regmap_write(da7210->regmap, DA7210_A_HID_UNLOCK,	0x00);
+>  	regmap_write(da7210->regmap, DA7210_A_TEST_UNLOCK,	0x00);
+
+I also note that you've not yet updated this to use a regmap patch as
+was previously requested.
+
+> +#if defined(CONFIG_SPI_MASTER)
+> +static int __devinit da7210_spi_probe(struct spi_device *spi)
+> +{
+> +	struct da7210_priv *da7210;
+> +	int ret;
+> +
+> +	da7210 = kzalloc(sizeof(struct da7210_priv), GFP_KERNEL);
+> +	if (!da7210)
+> +		return -ENOMEM;
+
+devm_kzalloc().
+
+> +	da7210_regmap.read_flag_mask = 0x01;
+> +	da7210_regmap.write_flag_mask = 0x00;
+
+Just have a second, static, regmap variable.  The regmap should be
+declared const.
+
+> +	da7210->regmap = regmap_init_spi(spi, &da7210_regmap);
+
+devm_regmap_init_spi() (will come in in the merge window).
+
+> +static struct spi_driver da7210_spi_driver = {
+> +	.driver = {
+> +		.name = "da7210-codec",
+
+No -codec.
+
+--kA1LkgxZ0NN7Mz3A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPafosAAoJEBus8iNuMP3dD8IP/33tE8Trbvwiq1TQVyd4DBUZ
+KrRux/vH7nR42sKUx6mtDILRzslfeqDgUbVQCrukCHUcSVBxsi9bue4N+9L+2+P4
+XL+5CtKA5R25gGwjxLZbFrBpgu2IR5er1zwu0njP7FeUI+K46uSQyiC+sQsX+k72
+FCCL0GsXZxbcJiNw1WTT6qJrmRr0KN5zYLHVgbDPyO+j3tL0Yvz6KLgpaxW4A1hL
+Tt+tC8LmI04pVt9gsRqrXzwwjzC2j0f1fejLCwxcokgRa2t0lHYkjjtchSKVnqLY
+XJaL7Rs6yZokcM/70sF3kIg2XYFt1o2tkb5Rc3IvDpMA2xcbmFogWLj0lOcn7aVG
+6gx5NGyjg3Ot7Sxnbqp3EiD7SfAPxZtuX1T6sqkShDWYUbGVFRQLO3jj+KfpEBLt
+IBadUr4oII/qHTyAzDJn9/CHXssIpGwZCgQkuqfsPqsMp9aaU2dyHOXcfLKGlVjw
+SJruYWVfEYS9dUu5wZKlI/7SCbmpQdlQBRiLrsMVaaewkjK6RKFHaRmB9iZmagWm
+Pf6/O+XdJ4ouimHQggoS+y4RcrnFPBOuB2amj9bB5hGmWquaHLunLa27lQT6muDA
+kVSB6Jg9ysnDxfQzIayIV1s0u6QQVZI1qzWADyt8gcWBP2rVFxbjGYGFovQnj9Br
+FhW8Ut5n9Pkr55kpbyIW
+=UZgT
+-----END PGP SIGNATURE-----
+
+--kA1LkgxZ0NN7Mz3A--
