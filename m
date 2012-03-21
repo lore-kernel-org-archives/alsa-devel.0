@@ -1,20 +1,17 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH] ASoC: da7210: Add support for spi regmap
-Date: Wed, 21 Mar 2012 22:35:53 +0530
-Message-ID: <1332349553.21744.33.camel@matrix>
-References: <1332345170.21744.10.camel@matrix>
-	<20120321155635.GE3226@opensource.wolfsonmicro.com>
-	<1332348080.21744.26.camel@matrix>
-	<20120321163811.GH3226@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
+From: Kumar Gala <galak@kernel.crashing.org>
+Subject: Re: [PATCH] [v3] powerpc/8xxx: remove 85xx/86xx
+	restrictions from fsl_guts.h
+Date: Wed, 21 Mar 2012 12:22:12 -0500
+Message-ID: <7B496830-BF31-451E-9BE6-BB2FEE9B5BD0@kernel.crashing.org>
+References: <1332173199-25877-1-git-send-email-timur@freescale.com>
+Mime-Version: 1.0 (Apple Message framework v1257)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
-	(va3ehsobe002.messaging.microsoft.com [216.32.180.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FB631044A4
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 17:54:06 +0100 (CET)
-In-Reply-To: <20120321163811.GH3226@opensource.wolfsonmicro.com>
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C9CC24141
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 18:22:18 +0100 (CET)
+In-Reply-To: <1332173199-25877-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
-> > Actually I don't have enough details about the problem that you
-> > mentioned with this. I am waiting for inputs from some body else. Can
-> 
-> ...and didn't bother asking any questions so it's unlikely anyone will
-> say anything...
+On Mar 19, 2012, at 11:06 AM, Timur Tabi wrote:
 
-No, actually it's not like that. You mentioned that the sequence should
-be changed, which will fix an issue that the driver has with suspend and
-resume. I asked other users of this driver about the issue and waiting
-for their feedback. I just wanted to have clear picture about the issue
-before I commit any change there. Just to make sure that only changing
-of sequence is enough or some thing extra need to be done.
-
+> Remove the check for CONFIG_PPC_85xx and CONFIG_PPC_86xx from fsl_guts.h.
+> The check was originally intended to allow the same header file to
+> be used on 85xx and 86xx systems, even though the Global Utilities
+> register could be different.  It turns out that they're not actually
+> different, and so the check is not necessary.  In addition, neither
+> macro is defined for 64-bit e5500 kernels, so that causes a build
+> break.
 > 
-> > you please elaborate the problem if you have details? so that I can
-> > correct it.
+> Signed-off-by: Timur Tabi <timur@freescale.com>
+> ---
 > 
-> What is unclear in the previous feedback?  You should be converting this
-> to use a regmap patch...
+> The ASoC part of this patch applies cleanly to the ASoC for-3.4 branch,
+> so this patch should not cause any merge conflicts if carried on the
+> PowerPC branch, so I suggest that Kumar pick this up for 3.4 (it fixes a
+> potential 64-bit book-e build break), with an ACK from Mark. 
+> 
+> arch/powerpc/include/asm/fsl_guts.h        |   26 +++++---------------------
+> arch/powerpc/platforms/85xx/mpc85xx_mds.c  |    2 +-
+> arch/powerpc/platforms/85xx/mpc85xx_rdb.c  |    2 +-
+> arch/powerpc/platforms/85xx/p1022_ds.c     |    4 ++--
+> arch/powerpc/platforms/86xx/mpc8610_hpcd.c |    2 +-
+> sound/soc/fsl/mpc8610_hpcd.c               |    8 ++++----
+> sound/soc/fsl/p1022_ds.c                   |   10 +++++-----
+> 7 files changed, 19 insertions(+), 35 deletions(-)
 
-OK, thanks!
+applied
+
+- k
