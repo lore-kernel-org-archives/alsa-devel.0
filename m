@@ -1,248 +1,211 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: [PATCH v8] sound/soc/lapis: add machine driver for
-	ML7213 Carrier Board
-Date: Wed, 21 Mar 2012 10:15:17 +0900
-Message-ID: <1332292517-3411-1-git-send-email-tomoya.rohm@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0A4D1043BB
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 02:15:16 +0100 (CET)
-Received: by dady9 with SMTP id y9so868071dad.38
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2012 18:15:15 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Tomoya MORINAGA <tomoya.rohm@gmail.com>, kok.howg.ewe@intel.com, qi.wang@intel.com, joel.clark@intel.com, yong.y.wang@intel.com
+From: Rob Herring <robherring2@gmail.com>
+Subject: [PATCH 2/2] ARM: pxa: use commom IOMEM definiton
+Date: Tue, 20 Mar 2012 21:15:49 -0500
+Message-ID: <1332296149-28110-2-git-send-email-robherring2@gmail.com>
+References: <4F68CD9C.3090001@windriver.com>
+ <1332296149-28110-1-git-send-email-robherring2@gmail.com>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <1332296149-28110-1-git-send-email-robherring2@gmail.com>
+Sender: linux-next-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Nicolas Pitre <nico@fluxnic.net>, linux-next@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@marvell.com>, Alessandro Zummo <a.zummo@towertech.it>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, rtc-linux@googlegroups.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This machine driver is for
-LAPIS Semiconductor ML7213 Carrier Board + ML26124 Reference Board
+From: Rob Herring <rob.herring@calxeda.com>
 
-Signed-off-by: Tomoya MORINAGA <tomoya.rohm@gmail.com>
----
-v8
- - Delete redundant break
- - Use module_platform_driver
- - Delete redundant 'space'
- - Delete snd_soc_dapm_enable_pin()s
----
- sound/soc/lapis/Kconfig             |    7 ++
- sound/soc/lapis/Makefile            |    2 +
- sound/soc/lapis/ml7213ioh-machine.c |  169 +++++++++++++++++++++++++++++++++++
- 3 files changed, 178 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/lapis/ml7213ioh-machine.c
+pxa was missed in the moving of IOMEM to a common defintion, so lots of
+IOMEM redefined warnings were introduced. So remove pxa IOMEM definition
+and fix all the fallout.
 
-diff --git a/sound/soc/lapis/Kconfig b/sound/soc/lapis/Kconfig
-index 551e385..9bc1b4d 100644
---- a/sound/soc/lapis/Kconfig
-+++ b/sound/soc/lapis/Kconfig
-@@ -2,3 +2,10 @@ config SND_SOC_ML7213_PLATFORM
- 	tristate "ML7213 IOH ASoC platform driver"
- 	help
- 	  This option enables support for the AC Link Controllers in ML7213 IOH SoC.
-+
-+config SND_SOC_ML7213_MACHINE
-+	tristate "ML7213 IOH ASoC machine driver"
-+	select SND_SOC_ML7213_PLATFORM
-+	select SND_SOC_ML26124
-+	help
-+	  This is ASoC machine driver for ML7213 IOH
-diff --git a/sound/soc/lapis/Makefile b/sound/soc/lapis/Makefile
-index aba1630..7ec4bea 100644
---- a/sound/soc/lapis/Makefile
-+++ b/sound/soc/lapis/Makefile
-@@ -1,4 +1,6 @@
- # Platform
-+snd-soc-ml7213-machine-objs := ml7213ioh-machine.o
- snd-soc-ml7213-plat-objs := ml7213ioh-plat.o
+Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Rob Herring <rob.herring@calxeda.com>
+Cc: Eric Miao <eric.y.miao@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Haojian Zhuang <haojian.zhuang@marvell.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: rtc-linux@googlegroups.com
+Cc: alsa-devel@alsa-project.org
+---
+ arch/arm/mach-pxa/clock-pxa2xx.c          |    1 +
+ arch/arm/mach-pxa/corgi_pm.c              |    1 +
+ arch/arm/mach-pxa/cpufreq-pxa3xx.c        |    1 +
+ arch/arm/mach-pxa/include/mach/hardware.h |    2 --
+ arch/arm/mach-pxa/mfp-pxa2xx.c            |    1 +
+ arch/arm/mach-pxa/pxa2xx.c                |    1 +
+ arch/arm/mach-pxa/pxa300.c                |    1 +
+ arch/arm/mach-pxa/pxa320.c                |    1 +
+ arch/arm/mach-pxa/sharpsl_pm.c            |    1 +
+ drivers/rtc/rtc-sa1100.c                  |    1 +
+ sound/arm/pxa2xx-ac97-lib.c               |    1 +
+ sound/arm/pxa2xx-ac97.c                   |    1 +
+ sound/soc/pxa/pxa2xx-ac97.c               |    1 +
+ 13 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/clock-pxa2xx.c b/arch/arm/mach-pxa/clock-pxa2xx.c
+index 1d5859d..9ee2ad6 100644
+--- a/arch/arm/mach-pxa/clock-pxa2xx.c
++++ b/arch/arm/mach-pxa/clock-pxa2xx.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/syscore_ops.h>
  
- obj-$(CONFIG_SND_SOC_ML7213_PLATFORM) += snd-soc-ml7213-plat.o
-+obj-$(CONFIG_SND_SOC_ML7213_MACHINE) += snd-soc-ml7213-machine.o
-diff --git a/sound/soc/lapis/ml7213ioh-machine.c b/sound/soc/lapis/ml7213ioh-machine.c
-new file mode 100644
-index 0000000..14f83d2
---- /dev/null
-+++ b/sound/soc/lapis/ml7213ioh-machine.c
-@@ -0,0 +1,169 @@
-+/*
-+ * ml7213ioh-machine.c -- SoC Audio for LAPIS Semiconductor ML7213 IOH CRB
-+ *
-+ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2 of the License.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
-+ */
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+#include <linux/i2c.h>
-+#include "../codecs/ml26124.h"
-+#include "ioh_i2s.h"
-+
-+static const struct snd_soc_dapm_widget ml7213_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_LINE("LINEOUT", NULL),
-+	SND_SOC_DAPM_LINE("LINEIN", NULL),
-+	SND_SOC_DAPM_MIC("AnalogMIC", NULL),
-+	SND_SOC_DAPM_MIC("DigitalMIC", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route ml7213_routes[] = {
-+	{"Speaker", NULL, "SPOUT"},
-+	{"LINEOUT", NULL, "LOUT"},
-+	{"AnalogMIC", NULL, "MICBIAS"},
-+	{"MIN", NULL, "AnalogMIC"},
-+	{"MDIN", NULL, "DigitalMIC"},
-+	{"MIN", NULL, "LINEIN"},
-+};
-+
-+static int ml7213_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *hw_params)
-+{
-+	int bclkfs;
-+	int mclkfs;
-+	unsigned int clk;
-+	int ret;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned int channel_map[] = {5, 0, 1, 2, 3, 4};
-+
-+	/* set cpu DAI channel mapping */
-+	ret = snd_soc_dai_set_channel_map(cpu_dai, ARRAY_SIZE(channel_map),
-+		channel_map, ARRAY_SIZE(channel_map), channel_map);
-+	if (ret < 0)
-+		return ret;
-+
-+	switch (params_rate(hw_params)) {
-+	case 16000:
-+	case 32000:
-+	case 48000:
-+		clk = 12288000;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	mclkfs = clk / params_rate(hw_params);
-+
-+	switch (params_format(hw_params)) {
-+	case SNDRV_PCM_FORMAT_U8:
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		bclkfs = 32;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		bclkfs = 64;
-+		break;
-+	default:
-+		pr_err("%s: Failed not support format\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, ML26124_USE_PLLOUT, clk,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+				 SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+				 SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops ml7213_ops = {
-+	.hw_params = ml7213_hw_params,
-+};
-+
-+static struct snd_soc_dai_link ml7213crb_dai = {
-+	.name = "ml26124",
-+	.stream_name = "ML26124",
-+	.cpu_dai_name = "ml7213ioh",
-+	.codec_dai_name = "ml26124-hifi",
-+	.platform_name	= "ml7213-i2s-audio",
-+	.codec_name	= "ml26124.1-001a",
-+	.ops = &ml7213_ops,
-+};
-+
-+static struct snd_soc_card ml7213crb_card = {
-+	.name		= "LAPIS Semiconductor ML7213CRB",
-+	.dai_link	= &ml7213crb_dai,
-+	.num_links	= 1,
-+	.dapm_widgets	= ml7213_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(ml7213_dapm_widgets),
-+	.dapm_routes	= ml7213_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(ml7213_routes),
-+};
-+
-+static int __devinit lapis_ml7213_ml26124_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ml7213crb_card.dev = &pdev->dev;
-+	ret = snd_soc_register_card(&ml7213crb_card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __devexit lapis_ml7213_ml26124_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_card(&ml7213crb_card);
-+	platform_set_drvdata(pdev, NULL);
-+	return 0;
-+}
-+
-+static struct platform_driver snd_ml7213crb_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "lapis-ml7213ioh-CRB",
-+	},
-+	.probe = lapis_ml7213_ml26124_probe,
-+	.remove = __devexit_p(lapis_ml7213_ml26124_remove),
-+};
-+
-+module_platform_driver(snd_ml7213crb_driver);
-+
-+MODULE_AUTHOR("Tomoya MORINAGA <tomoya.rohm@gmail.com>");
-+MODULE_DESCRIPTION("LAPIS Semiconductor ML7213 IOH ALSA SoC machine driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:lapis-ml7213ioh-CRB");
+ #include <mach/pxa2xx-regs.h>
+diff --git a/arch/arm/mach-pxa/corgi_pm.c b/arch/arm/mach-pxa/corgi_pm.c
+index 39e265c..048c429 100644
+--- a/arch/arm/mach-pxa/corgi_pm.c
++++ b/arch/arm/mach-pxa/corgi_pm.c
+@@ -19,6 +19,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+ #include <linux/apm-emulation.h>
++#include <linux/io.h>
+ 
+ #include <asm/irq.h>
+ #include <asm/mach-types.h>
+diff --git a/arch/arm/mach-pxa/cpufreq-pxa3xx.c b/arch/arm/mach-pxa/cpufreq-pxa3xx.c
+index 88fbec0..b85b4ab 100644
+--- a/arch/arm/mach-pxa/cpufreq-pxa3xx.c
++++ b/arch/arm/mach-pxa/cpufreq-pxa3xx.c
+@@ -15,6 +15,7 @@
+ #include <linux/init.h>
+ #include <linux/cpufreq.h>
+ #include <linux/slab.h>
++#include <linux/io.h>
+ 
+ #include <mach/pxa3xx-regs.h>
+ 
+diff --git a/arch/arm/mach-pxa/include/mach/hardware.h b/arch/arm/mach-pxa/include/mach/hardware.h
+index 54b64ea..56d92e5 100644
+--- a/arch/arm/mach-pxa/include/mach/hardware.h
++++ b/arch/arm/mach-pxa/include/mach/hardware.h
+@@ -40,7 +40,6 @@
+ #define io_p2v(x) IOMEM(0xf2000000 + ((x) & 0x01ffffff) + (((x) & 0x1c000000) >> 1))
+ 
+ #ifndef __ASSEMBLY__
+-# define IOMEM(x) ((void __iomem *)(x))
+ # define __REG(x)	(*((volatile u32 __iomem *)io_p2v(x)))
+ 
+ /* With indexed regs we don't want to feed the index through io_p2v()
+@@ -52,7 +51,6 @@
+ 
+ #else
+ 
+-# define IOMEM(x)	x 
+ # define __REG(x)	io_p2v(x)
+ # define __PREG(x)	io_v2p(x)
+ 
+diff --git a/arch/arm/mach-pxa/mfp-pxa2xx.c b/arch/arm/mach-pxa/mfp-pxa2xx.c
+index f147755..b029562 100644
+--- a/arch/arm/mach-pxa/mfp-pxa2xx.c
++++ b/arch/arm/mach-pxa/mfp-pxa2xx.c
+@@ -17,6 +17,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/syscore_ops.h>
+ 
+ #include <mach/pxa2xx-regs.h>
+diff --git a/arch/arm/mach-pxa/pxa2xx.c b/arch/arm/mach-pxa/pxa2xx.c
+index 8682704..f8ec854 100644
+--- a/arch/arm/mach-pxa/pxa2xx.c
++++ b/arch/arm/mach-pxa/pxa2xx.c
+@@ -13,6 +13,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
++#include <linux/io.h>
+ 
+ #include <mach/hardware.h>
+ #include <mach/pxa2xx-regs.h>
+diff --git a/arch/arm/mach-pxa/pxa300.c b/arch/arm/mach-pxa/pxa300.c
+index 40bb165..17cbc0c 100644
+--- a/arch/arm/mach-pxa/pxa300.c
++++ b/arch/arm/mach-pxa/pxa300.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/platform_device.h>
++#include <linux/io.h>
+ 
+ #include <mach/pxa300.h>
+ 
+diff --git a/arch/arm/mach-pxa/pxa320.c b/arch/arm/mach-pxa/pxa320.c
+index 8d614ec..6dc99d4 100644
+--- a/arch/arm/mach-pxa/pxa320.c
++++ b/arch/arm/mach-pxa/pxa320.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/platform_device.h>
++#include <linux/io.h>
+ 
+ #include <mach/pxa320.h>
+ 
+diff --git a/arch/arm/mach-pxa/sharpsl_pm.c b/arch/arm/mach-pxa/sharpsl_pm.c
+index 8d5168d..6d3b39f 100644
+--- a/arch/arm/mach-pxa/sharpsl_pm.c
++++ b/arch/arm/mach-pxa/sharpsl_pm.c
+@@ -24,6 +24,7 @@
+ #include <linux/leds.h>
+ #include <linux/suspend.h>
+ #include <linux/gpio.h>
++#include <linux/io.h>
+ 
+ #include <asm/mach-types.h>
+ #include <mach/pm.h>
+diff --git a/drivers/rtc/rtc-sa1100.c b/drivers/rtc/rtc-sa1100.c
+index cb9a585..398ab7a 100644
+--- a/drivers/rtc/rtc-sa1100.c
++++ b/drivers/rtc/rtc-sa1100.c
+@@ -30,6 +30,7 @@
+ #include <linux/string.h>
+ #include <linux/pm.h>
+ #include <linux/bitops.h>
++#include <linux/io.h>
+ 
+ #include <mach/hardware.h>
+ #include <asm/irq.h>
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index d1aa421..d760371 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -17,6 +17,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
++#include <linux/io.h>
+ 
+ #include <sound/ac97_codec.h>
+ #include <sound/pxa2xx-lib.h>
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 3a39626..afef72c 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 837ff34..b4bfd97 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
 -- 
-1.7.7.6
+1.7.5.4
