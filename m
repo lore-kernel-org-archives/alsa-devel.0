@@ -1,21 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
-	protection mode
-Date: Wed, 21 Mar 2012 10:03:34 +0200
-Message-ID: <4F698B56.6030502@ti.com>
+ protection mode
+Date: Wed, 21 Mar 2012 10:13:32 +0200
+Message-ID: <4F698DAC.7060503@bitmer.com>
 References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
 	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>
 	<4F68AE51.808@bitmer.com>
+	<CANOLnOMqK5-yWoEA=1x2a4-OQYy8xvBUwY_RVdqHeaz4TxL3eQ@mail.gmail.com>
+	<4F68D898.5080606@bitmer.com>
+	<CA+7tXigvqY19SPCajY2awV9rJRkTh33H8cO+FZ+Un0uK1f9voA@mail.gmail.com>
+	<4F698A02.1070306@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from psmtp.com (na3sys009aog131.obsmtp.com [74.125.149.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1723E1043E2
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 09:03:44 +0100 (CET)
-Received: by mail-lb0-f171.google.com with SMTP id ge1so730886lbb.30
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 01:03:37 -0700 (PDT)
-In-Reply-To: <4F68AE51.808@bitmer.com>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8880244ED
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 09:13:35 +0100 (CET)
+In-Reply-To: <4F698A02.1070306@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,58 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Trent Piepho <tpiepho@gmail.com>, Grazvydas Ignotas <notasas@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/20/2012 06:20 PM, Jarkko Nikula wrote:
-> On 03/20/2012 01:13 PM, Peter Ujfalusi wrote:
->> Certain application can experience underrun right after the playback sta=
-rt.
->> This is caused by the McBSP FIFO/sDMA integration:
->> The sDMA will push samples to the FIFO till it has threshold amount of f=
-ree
->> slots available in the FIFO. If the application picks period size which =
-is
->> smaller than the FIFO size, and it did not prepared multiple periods, or
->> it did not set the start_threshold for the stream to cover the FIFO size
->> the hw pointer will move forward, which is causing the underrun.
+On 03/21/2012 09:57 AM, Peter Ujfalusi wrote:
+> On 03/20/2012 09:47 PM, Trent Piepho wrote:
+>>> To me this looks more like a correct fix. At quick test I got single
+>>> xrun when starting up but not endless loop of them. Maybe need to tune a
+>>> bit with CONFIG_SND_PCM_XRUN_DEBUG=y.
 >>
->> Add a sysfs entry for McBSP ports: period_protection.
->> If this property is set the driver will place the constraint agains the
->> period size, and not for the buffer size. To ensure that we do not hit
->> underrun, the period size constraint will be increased with the requested
->> number of frames (the period size will be FIFO size + period_protection).
->>
->> As default the period_protection is disabled.
->>
-> I don't think this is going to solve the actual problem here where
-> custom asound.conf was required.
+>> Does the ALSA API allow the driver to change start_threshold in the
+>> prepare function?  It seems what is needed is a minimum
+>> start_threshold constraint, but there aren't constaints for sw_params.
+> 
+> I did as well looked at the start_threshold, and came to the same
+> conclusion. It is sw_param, and the driver should not modify it.
+> The OSS emulation layer sets the start_threshold to 1, most application
+> sets the start threshold to the size of the buffer. Some legacy
+> application might not care about this at all. Others might want specific
+> threshold to start the actual playback.
+> 
+Oh yes. I guess start_threshold is not even known yet when we are ruling
+the buffer size so we cannot use it as a source for alternative rules?
 
-I also suggested to use custom asound.conf. For Pandora it does exist,
-but the argument was that it need to be specifically created/copied to
-any new OS being ported to the HW.
-
-> IMHO custom sysfs is even worse option and very hard to remove afterwards.
-
-Well, for system integration's point of view I would prefer the sysfs
-file. If this is needed by the distribution/use case it can be enabled,
-disabled in runtime. In my view it poses less hassle for distributions.
-
-> And defaulting this new setting for Pandora might break e.g. MER or MeeGo=
- on N900.
-
-I would not default this behavior for the exact same reasons. It was
-planed to be optional.
-
-> I didn't check this but would it be possible to either put restriction
-> to start-delay (I think Grazvydas said he has experimental code for
-> that?) or make sure that minimum buffer size must be higher than FIFO +
-> 1 period (or something like that)?
-
-The start_threshold is sw_param, driver should not touch it. In fact it
-is way above the driver layer.
-
--- =
-
-P=E9ter
+-- 
+Jarkko
