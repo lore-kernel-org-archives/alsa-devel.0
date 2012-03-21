@@ -1,15 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question: PCM short and long sync formats
-Date: Wed, 21 Mar 2012 11:51:46 +0000
-Message-ID: <20120321115146.GC3226@opensource.wolfsonmicro.com>
-References: <4F69ABB0.2000706@linux.intel.com>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Add period size
+	protection mode
+Date: Wed, 21 Mar 2012 13:55:24 +0200
+Message-ID: <CANOLnOMoeykvt2LiiD3fV1MMixpE6Y+orJc9T1CmdaoyN8O2Pg@mail.gmail.com>
+References: <1332242021-7494-1-git-send-email-peter.ujfalusi@ti.com>
+	<1332242021-7494-4-git-send-email-peter.ujfalusi@ti.com>
+	<20120320160154.GI3445@opensource.wolfsonmicro.com>
+	<CANOLnOPjqbeEbSDUHokkGRUa7KwJ-+hAczWSmQ3LEccCh9-c7w@mail.gmail.com>
+	<4F699003.9070806@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0477184680810505624=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CEEDB24569
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 12:51:48 +0100 (CET)
-In-Reply-To: <4F69ABB0.2000706@linux.intel.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67C9B2456B
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 12:55:25 +0100 (CET)
+Received: by iakh37 with SMTP id h37so1528248iak.38
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2012 04:55:24 -0700 (PDT)
+In-Reply-To: <4F699003.9070806@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,59 +28,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0477184680810505624==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VywGB/WGlW4DM4P8"
-Content-Disposition: inline
-
-
---VywGB/WGlW4DM4P8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Mar 21, 2012 at 03:51:36PM +0530, Omair Mohammed Abdullah wrote:
-
-> I was looking for PCM short frame sync and PCM long frame sync, but
-> they are not present in soc-dai.h (FORMAT_MASK). Is there a way to
-> derive them from other formats or should I just add them?
-
-What do you mean when you say "PCM short frame sync" and "PCM long
-frame sync"?
-
---VywGB/WGlW4DM4P8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPacDMAAoJEBus8iNuMP3dVyUQAJJU2/4V8DYfjUtyPrXHbWeq
-Lw4AypLrwDiG/HvyyPJYLJOueadpjczyzNUdRJ9j24MB8IxtAKBrgbmlDUKdzMXq
-Kjspomggs80LcspUv1UI+h+izmnzmXjYKqhbYpxsh70ws5pT0ubOcLolzrUSwUdW
-smWxpOjYdr82zBqK52z1D4OOy5cRxM20lboli0LutxZpzDIfYGvIj2pFCHo+spmm
-4uqDONf0vZhO1E+BvsbAVS3PS8Xavm0NS+05h89FbmbbNkQV7A8CRE+vo8EvJwoV
-e89OzmDlM1VyQwcr8fP6Z5b2xzdA6sgyE8t7BmqK9QvqQxt7zMouGdAGJmqtMHen
-09YVWjcOi+QWjtH3xNdXCHPQkk+7JUvkZqYAp2ZzzmzUrCCH6ozCM74uu14g9dD9
-obgKR7FMBs2LgqfX4h+0M3jWGRtwZkNHcmOl7Do5rQ/HEBiBF63s5zdTWJqP+NOW
-dj0exC4Lh+bPNUwTDyu95Rz9Porg/vXb3oNIxeNciwo4sXjMllQoRDxSCvRHZ1mf
-zVWxN0JAVXzbXHgbJyNXuP06oEQsy/9OMbdX/F41G0WoI/MkwPyrXymHr45b8T16
-rglFXQRkEbarQ7SVNhkHpxnS/8hjpvd9p1wbUAD1wsDH6rdNj/CDBQjEYOQQiory
-b8m35Z4dBObaKFDddB6Y
-=x+pp
------END PGP SIGNATURE-----
-
---VywGB/WGlW4DM4P8--
-
---===============0477184680810505624==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0477184680810505624==--
+T24gV2VkLCBNYXIgMjEsIDIwMTIgYXQgMTA6MjMgQU0sIFBldGVyIFVqZmFsdXNpIDxwZXRlci51
+amZhbHVzaUB0aS5jb20+IHdyb3RlOgo+IE9uIDAzLzIwLzIwMTIgMDY6MTUgUE0sIEdyYXp2eWRh
+cyBJZ25vdGFzIHdyb3RlOgo+PiBJIHdvdWxkbid0IHJlYWxseSBjYWxsIHRoZW0gYnJva2VuLCBp
+dCdzIGVub3VnaCB0byBzZXQgcGVyaW9kIHNpemUgdG8KPj4gNTEyIHdpdGggc21hbGxlciBzdGFy
+dF90aHJlc2hvbGQgKHNvbWV0aGluZyBsaWtlIDUwbXMpIHRvIGhhdmUKPj4gcHJvYmxlbXMsIHRo
+b3NlIHBhcmFtZXRlcnMgYXJlIHBlcmZlY3RseSB2YWxpZCBmb3IgYSBwcm9ncmFtIHRyeWluZyB0
+bwo+PiBhY2hpZXZlIGxvdyBsYXRlbmN5Lgo+Cj4gV2hlcmUgdGhpcyA1MG1zIGNvbWVzIGZyb20/
+Cj4gVGhlIE1jQlNQMiBGSUZPIGxlbmd0aCBpczoKPiA0OEtIei9tb25vOiDCoCDCoCAyNi42Nm1z
+Cj4gNDhLSHovc3RlcmVvOiDCoCAxMy4zM21zCj4gNDQuMUtIei9tb25vOiDCoCAyOS4wMm1zCj4g
+NDQuMUtIei9zdGVyZW86IDE0LjUxbXMKPiA4S2h6L21vbm86IMKgIMKgIMKgMTYwbXMKPiA4S2h6
+L3N0ZXJlbzogwqAgwqA4MG1zCj4KPiBEb2VzIFBhbmRvcmEgdXNlcyA4S2h6PwoKTm9wZSwgNTBt
+cys4a0h6IHdhcyBqdXN0IHRvIGlsbHVzdHJhdGUgdGhlIHByb2JsZW0gZWFzaWVyLiAyMi80NGtI
+egphcmUgdXNlZCBtb3N0IG9mdGVuLCBzb21lIGdhbWVzIHRoYXQgdGVuZCB0byBzZXQgbG93IHRo
+cmVzaG9sZHMgYW5kCk9TUyBlbXVsYXRpb24gYXJlIG9uZXMgd2l0aCBwcm9ibGVtcy4KCj4gVGhl
+IHNhbWUgdGhpbmcgYXBwbGllcyB0byB0aGUgc3RhcnRfdGhyZXNob2xkIGFzIHRvIHRoZSBwZXJp
+b2Qgc2l6ZS4gSXQKPiBoYXMgdG8gYmUgYmlnZ2VyIHRoYW4gdGhlIEZJRk8gc2l6ZS4KPgo+PiBJ
+dCdzIGEgc2hhbWUgdGhpcyBzdGlsbCB3b24ndCB3b3JrIG91dC1vZi10aGUgYm94LCBidXQgYXQg
+bGVhc3QgdGhlcmUKPj4gd2lsbCBiZSBzb21lIHNvbHV0aW9uLgo+Cj4gRGVmYXVsdGluZyB0aGlz
+IGJlaGF2aW9yIHdvdWxkIGJyZWFrIG90aGVyIGRpc3RyaWJ1dGlvbnMgZm9yIE9NQVAKPiBwbGF0
+Zm9ybXMuIEkga25vdywgUGFuZG9yYSBpcyBiaXR0ZW4gYnkgdGhpcywgYnV0IE1lZUdvLCB1YnVu
+dHUsIExpbmFybwo+IGlzIGZpbmUgKGFzIGZhciBhcyBJIGtub3cpLgoKSSB3b25kZXIgYWJvdXQg
+dGhhdCwgaWYgdGhleSBhcmUgYWxyZWFkeSBvayB0aGV5IG11c3QgYmUgdXNpbmcgbGFyZ2VyCnBl
+cmlvZC9zdGFydF90aHJlc2hvbGQgYW55d2F5IGFuZCBzaG91bGQgbm90IGJlIGFmZmVjdGVkPwoK
+Ci0tIApHcmHFvnZ5ZGFzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
