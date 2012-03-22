@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/16] ASoC: core: Add 8bit multi reg
-	control accessors
-Date: Thu, 22 Mar 2012 17:02:42 +0000
-Message-ID: <20120322170242.GM3091@opensource.wolfsonmicro.com>
+From: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
+Subject: Re: [PATCH 05/16] ASoC: core: Add strobe control
+Date: Thu, 22 Mar 2012 18:09:22 +0100
+Message-ID: <4F6B5CC2.60605@stericsson.com>
 References: <1331651503-16917-2-git-send-email-ola.o.lilja@stericsson.com>
-	<1331651503-16917-3-git-send-email-ola.o.lilja@stericsson.com>
-	<20120313212512.GD3177@opensource.wolfsonmicro.com>
-	<4F6B5A41.9020107@stericsson.com>
+	<1331651503-16917-6-git-send-email-ola.o.lilja@stericsson.com>
+	<20120313213356.GE3177@opensource.wolfsonmicro.com>
+	<4F6B5136.5040208@stericsson.com>
+	<20120322163352.GL3091@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0239435419122292746=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F44E10442C
-	for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2012 18:02:44 +0100 (CET)
-In-Reply-To: <4F6B5A41.9020107@stericsson.com>
+Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
+	[207.126.144.131])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD6DF10442C
+	for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2012 18:09:50 +0100 (CET)
+In-Reply-To: <20120322163352.GL3091@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,63 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Ola LILJA2 <ola.o.lilja@stericsson.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 2012-03-22 17:33, Mark Brown wrote:
 
---===============0239435419122292746==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L/bWm/e7/ricERqM"
-Content-Disposition: inline
-
-
---L/bWm/e7/ricERqM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 22, 2012 at 05:58:41PM +0100, Kristoffer KARLSSON wrote:
-
-> We do have several controls composed by chunks of 8-bit registers that both are
-> contiguous and supports reading back in our hardware and I guess that this
-> might not be such an unusual setup for other hardwares either, which would make
-> for a useful generic control I believe.
-
-> Do you agree that such a control type could be an useful generic one in the
-> framework?
-
-It should support registers of any size, not just 8 bit registers, but
-otherwise yes.
-
---L/bWm/e7/ricERqM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPa1r8AAoJEBus8iNuMP3d1gYP/RHpl9bJG4Z9q1hr4oV4c47l
-ANUMKQbptNH7hOz10Raqug4Pu/Ehf3T3Quycqr+Do0TOHkrNNyZxpL7VRMRmYMml
-xIXh6s6NM5sSFePBQVZ9S69g44oowh6nejnDXUlIBmviSMtAh3ClN3a8Sapyu6P/
-tDch0oV9OpL3wBMNtC3MoqPOOsEs1LYC9OPSKoC4OuiGyxZkRDUhKQcsyY+/juLR
-72sxN9eXJptquUd6TZnM5ReQO3u6XwvDwZemQlpIsqTfqv5HlbdgOhnO5okL0nVO
-7+gI7DEwGsO2rqj0QX0ODSLeaYtjcLagksMEzxh5Cs91+soFxpbkm5UNLZ9WvTL8
-x4/LapqpfhHWuKDaQ8PK2df4VHblu+1Di40R56AG1y8UYLKJYGhpek5BBzJEppAc
-Rbd/0o0oSQIWPktQpmobv/PoT9M751Hcuint2O9kOb6aVF2gqYGJ8J3GYClBXEtw
-y0uBs++Qy5ziekG/z9GzMM34juuIC6IQE1aYLwQjqoZW3Mnu1BzGTfnLvY8lMapx
-tjF+mR3k0oVVJ06FxlKld46OnvfCQ+hSyGhcmtlLecpFKrvsIrLoeETSuBCf56q6
-kmh45SI1XjVcBh3mOlQzQoK03l3txFOd1f9x7s/5sypAi1ymfxHps7OC17UngPyA
-kEdbZWDd3LA1OOYohYlQ
-=kXPS
------END PGP SIGNATURE-----
-
---L/bWm/e7/ricERqM--
-
---===============0239435419122292746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> On Thu, Mar 22, 2012 at 05:20:06PM +0100, Kristoffer KARLSSON wrote:
+>> On 2012-03-13 22:33, Mark Brown wrote:
+>>> On Tue, Mar 13, 2012 at 04:11:32PM +0100, Ola Lilja wrote:
+> 
+>>> Based on this description it's hard to see why this control is patterned
+>>> after an enum - why would we have an enumerated control to bounce a
+>>> single register bit on then off?
+> 
+>> I originally chose to pattern this control after an enum since enum controls
+>> would allow for exposing such intuitive textual information to the client about
+>> the state of the control for this type of use case.
+> 
+> But if this is a strobe control it has no state, you do a write to
+> generate a strobe but the strobe lasts for no meaningful time so isn't
+> observable.
 
 
---===============0239435419122292746==--
+You are correct. The state would not be the most important thing since normally
+there be only one client accessing the card in this very short period of time
+like you said. However the allowing for a way to expose a strobe "action"
+control would. So do you think it should be modeled after a SOC_SINGLE_EXT
+instead or how would you prefer that a strobe "action" control be implemented?
