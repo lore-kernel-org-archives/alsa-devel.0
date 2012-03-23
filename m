@@ -1,98 +1,86 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 1/8] sound:asoc: Add support for STA529
- Audio Codec
-Date: Fri, 23 Mar 2012 14:50:54 +0530
-Message-ID: <4F6C4076.2000901@st.com>
-References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
-	<a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
-	<20120320152547.GB3445@opensource.wolfsonmicro.com>
-	<4F6BF138.8000705@st.com> <4F6C3D5C.8050509@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog113.obsmtp.com (eu1sys200aog113.obsmtp.com
-	[207.126.144.135])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD6A9103F5E
-	for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2012 10:42:05 +0100 (CET)
-In-Reply-To: <4F6C3D5C.8050509@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, spear-devel <spear-devel@list.st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+From: Alexandre Bounine <alexandre.bounine@idt.com>
+Subject: [PATCH linux-next] dmaengine: add context parameter fixups
+Date: Fri, 23 Mar 2012 10:00:42 -0400
+Message-ID: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: paul.gortmaker@windriver.com, vinod.koul@intel.com, dan.j.williams@intel.com
+Cc: Alexandre Bounine <alexandre.bounine@idt.com>, samuel@sortiz.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, netdev@vger.kernel.org, fabio.estevam@freescale.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Clausen,
+This patch fixes drivers that use device_prep_slave_sg() and
+device_prep_dma_cyclic() interfaces and have been missed during the initial
+release of interface changing patches.
 
-On 3/23/2012 2:37 PM, Lars-Peter Clausen wrote:
->
->>>> +static const char *pwm_mode_text[] = { "binary", "headphone", "ternary",
->>>> +	"phase-shift"};
->>>> +static const char *interface_mode_text[] = { "slave", "master"};
->>>
->>> ALSA controls always use capitalisation.
->>>
->>
->> you mean to say
->> static const char *interface_mode_text[] = { "SLAVE", "MASTER"}
->>
->
-> No, only the first letter upper case.
->
->>
->>>> +	sta529_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
->>>> +	mdelay(10);
->>>
->>> Absolutely no - why are you doing this?
->>>
->>
->> In probe I am putting codec in standby mode. so to come out of this
->> sta529_set_bias_level(codec, SND_SOC_BIAS_PREPARE) is called. Since
->> there are some transition time between STANDBY and ON/PREAPRE, so a
->> delay is introduced in the code.
->
+This patch is based on linux-next-20120322 code tree.
+See https://lkml.org/lkml/2012/3/22/339 for build failure report.
 
-Actually I was hoping for the same but not able to locate the code.
-Ok, I will made the changes.
+Signed-off-by: Alexandre Bounine <alexandre.bounine@idt.com>
+Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
+ drivers/dma/sa11x0-dma.c      |    2 +-
+ drivers/net/irda/sa1100_ir.c  |    2 +-
+ sound/soc/sh/fsi.c            |    7 +++----
+ sound/soc/soc-dmaengine-pcm.c |    2 +-
+ 4 files changed, 6 insertions(+), 7 deletions(-)
 
-> The framework will take care of taking the CODEC out of standby mode when it
-> is required, so you shouldn't need it here. Also, if the delay is required
-> put it into the set_bias_level function.
->
->>
->>>> +static int sta529_mute(struct snd_soc_dai *dai, int mute)
->>>> +{
->>>> +	struct snd_soc_codec *codec = dai->codec;
->>>> +
->>>> +	u8 mute_reg = snd_soc_read(codec, STA529_FFXCFG0)&   ~CODEC_MUTE_VAL;
->>>> +
->>>> +	if (mute)
->>>> +		mute_reg |= CODEC_MUTE_VAL;
->>>> +
->>>> +	snd_soc_update_bits(codec, STA529_FFXCFG0, 0x80, 00);
->>>
->>> You're always setting the same value here...
->>>
->>
->> Oops, it should be
->> snd_soc_update_bits(codec, STA529_FFXCFG0, 0x80, mute_reg);
->
-> If you use snd_soc_update_bits, you don't have to read the register first.
->
-
-Ok
-
-Best Regards
-Rajeev
-
->
->
-> .
->
+diff --git a/drivers/dma/sa11x0-dma.c b/drivers/dma/sa11x0-dma.c
+index 16a6b48..ec78cce 100644
+--- a/drivers/dma/sa11x0-dma.c
++++ b/drivers/dma/sa11x0-dma.c
+@@ -585,7 +585,7 @@ static dma_cookie_t sa11x0_dma_tx_submit(struct dma_async_tx_descriptor *tx)
+ 
+ static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
+ 	struct dma_chan *chan, struct scatterlist *sg, unsigned int sglen,
+-	enum dma_transfer_direction dir, unsigned long flags)
++	enum dma_transfer_direction dir, unsigned long flags, void *context)
+ {
+ 	struct sa11x0_dma_chan *c = to_sa11x0_dma_chan(chan);
+ 	struct sa11x0_dma_desc *txd;
+diff --git a/drivers/net/irda/sa1100_ir.c b/drivers/net/irda/sa1100_ir.c
+index a0d1913..e250675 100644
+--- a/drivers/net/irda/sa1100_ir.c
++++ b/drivers/net/irda/sa1100_ir.c
+@@ -147,7 +147,7 @@ static void sa1100_irda_dma_start(struct sa1100_buf *buf,
+ 	struct dma_async_tx_descriptor *desc;
+ 	struct dma_chan *chan = buf->chan;
+ 
+-	desc = chan->device->device_prep_slave_sg(chan, &buf->sg, 1, dir,
++	desc = dmaengine_prep_slave_sg(chan, &buf->sg, 1, dir,
+ 			DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+ 	if (desc) {
+ 		desc->callback = cb;
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 378cc5b..9e730ad 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1001,11 +1001,10 @@ static void fsi_dma_do_tasklet(unsigned long data)
+ 	sg_dma_address(&sg) = buf;
+ 	sg_dma_len(&sg) = len;
+ 
+-	desc = chan->device->device_prep_slave_sg(chan, &sg, 1, dir,
+-						  DMA_PREP_INTERRUPT |
+-						  DMA_CTRL_ACK);
++	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir,
++					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+ 	if (!desc) {
+-		dev_err(dai->dev, "device_prep_slave_sg() fail\n");
++		dev_err(dai->dev, "dmaengine_prep_slave_sg() fail\n");
+ 		return;
+ 	}
+ 
+diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+index 4420b70..4756952 100644
+--- a/sound/soc/soc-dmaengine-pcm.c
++++ b/sound/soc/soc-dmaengine-pcm.c
+@@ -143,7 +143,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+ 	direction = snd_pcm_substream_to_dma_direction(substream);
+ 
+ 	prtd->pos = 0;
+-	desc = chan->device->device_prep_dma_cyclic(chan,
++	desc = dmaengine_prep_dma_cyclic(chan,
+ 		substream->runtime->dma_addr,
+ 		snd_pcm_lib_buffer_bytes(substream),
+ 		snd_pcm_lib_period_bytes(substream), direction);
+-- 
+1.7.8.4
