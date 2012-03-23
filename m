@@ -1,20 +1,20 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 1/8] sound:asoc: Add support for STA529
- Audio Codec
-Date: Fri, 23 Mar 2012 09:30:38 +0530
-Message-ID: <4F6BF566.8070908@st.com>
-References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
-	<a5a4d4490442b863f6ef916f74f068e2303b382b.1332242166.git.rajeev-dlh.kumar@st.com>
-	<4F68C4F2.5000805@metafoo.de>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: trying to get an eleven rack to work
+Date: Fri, 23 Mar 2012 16:57:11 +1100
+Message-ID: <CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+	<4F6883F9.4010405@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog108.obsmtp.com (eu1sys200aog108.obsmtp.com
-	[207.126.144.125])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2ACFA24340
-	for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2012 05:01:55 +0100 (CET)
-In-Reply-To: <4F68C4F2.5000805@metafoo.de>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 00559243D0
+	for <alsa-devel@alsa-project.org>; Fri, 23 Mar 2012 06:57:11 +0100 (CET)
+Received: by wibhn6 with SMTP id hn6so1321330wib.2
+	for <alsa-devel@alsa-project.org>; Thu, 22 Mar 2012 22:57:11 -0700 (PDT)
+In-Reply-To: <4F6883F9.4010405@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,89 +24,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, spear-devel <spear-devel@list.st.com>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, David Alexander <lidxv0n@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Lars,
+[snip]
 
-On 3/20/2012 11:27 PM, Lars-Peter Clausen wrote:
-> On 03/20/2012 12:33 PM, Rajeev Kumar wrote:
->> +static const char *interface_mode_text[] = { "slave", "master"};
->
-> Master/slave mode should be configured using the set_dai_fmt callback.
->
-You mean to say with the help of clock direction. I think you can do it 
-in either way.
-By this,  I am giving full control to user for the selection.
+Clemens/Daniel,
 
->> +
->> +static struct snd_soc_dai_ops sta529_dai_ops = {
->
-> const
->
+Does this seem more complete given that DFU and Midi are Class compliant
 
-Ok,
+my guess at the interface purposes from David's post are:
 
->> +	.hw_params	=	sta529_hw_params,
->> +	.set_fmt	=	sta529_set_dai_fmt,
->> +	.digital_mute	=	sta529_mute,
->> +};
->> +
->> +/* power down chip */
->> +static int sta529_remove(struct snd_soc_codec *codec)
->> +{
->> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
->> +
->> +	return 0;
->> +}
->> +
->> +static int sta529_suspend(struct snd_soc_codec *codec, pm_message_t state)
->
-> The suspend callback doesn't take the state parameter anymore.
->
+Interface 0 is a DFU firmware upgrade // looks usb class compliant.
+Interface 1 is really custom (perhaps some sort of custom
+control/management thing tho I would of thought they'd use midi sysex for
+that)
+Interface 2 is the midi  //looks 100% standards compliant (works?)
+Interface 3 looks like maybe a usb mixer without a descriptor? but that's a
+guess.
+Interface 4 is potentially usb2 audio output // looks similar to the
+maudioi fast track isosyncronous outputs
+Interface 5 is potentially usb2 audio input. // ""
 
-Oops,
+So that all said.
 
->> +{
->> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
->> +
->> +	return 0;
->> +}
->> +
->> +static int sta529_resume(struct snd_soc_codec *codec)
->> +{
->> +	snd_soc_cache_sync(codec);
->> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
->> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
->> +
->> +	return 0;
->> +}
->> +
->> +struct snd_soc_codec_driver soc_codec_dev_sta529 = {
->
-> A better name is be sta520_codec_driver
+can USB_DEVICE_VENDOR_SPEC deal with out of order compliant/quirked
+interfaces or only sequencial??
 
-Ok,
+Would this look more like it using USB_DEVICE_VENDOR_SPEC?
 
-> [...]
->> +
->> +static int sta529_i2c_remove(struct i2c_client *client)
-> __devexit
->> +{
->> +	snd_soc_unregister_codec(&client->dev);
->> +	kfree(i2c_get_clientdata(client));
->> +	return 0;
->> +}
-> river");
+USB_DEVICE_VENDOR_SPEC(0x0dba, 0xb011),
+       .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+               .vendor_name = "Digidesign",
+               .product_name = "Eleven Rack",
+               .ifnum = QUIRK_ANY_INTERFACE,
+               .type = QUIRK_COMPOSITE,
+               .data = & (const struct snd_usb_audio_quirk[]) {
+                       {
+                               .ifnum = 1,
+                               .type = QUIRK_IGNORE_INTERFACE
+                       },
 
-This comment is not clear to me , please explain.
+                       {
+                               .ifnum = 3,
+                               .type = QUIRK_AUDIO_STANDARD_MIXER
+                       },
+                       {
+                               .ifnum = 4,
+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
+                       },
+                       {
+                               .ifnum = 5,
+                               .type = QUIRK_AUDIO_STANDARD_INTERFACE
+                       },
+                       {
+                               .ifnum = -1
+                       }
+               }
+       }
+}
 
-Best Regards
-Rajeev
+Will a quirk with no usbid work (assuming david didn't edit what clemens
+posted) ?
 
->> +MODULE_AUTHOR("Rajeev Kumar<rajeev-dlh.kumar@st.com>");
->> +MODULE_LICENSE("GPL");
->
-> .
->
+My gut feeling is that the mixer is missing all the endpoint and route
+stuff so we'll need to build a model of the mixer by sniffing the usb.
+
+Grant.
