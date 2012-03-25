@@ -1,48 +1,250 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH linux-next] dmaengine: add context
-	parameter fixups
-Date: Sat, 24 Mar 2012 12:23:03 -0300
-Message-ID: <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
-References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v2] ARM: pxa: use common IOMEM definition
+Date: Sun, 25 Mar 2012 08:47:44 +0100
+Message-ID: <20120325074744.GB5611@n2100.arm.linux.org.uk>
+References: <1332296149-28110-2-git-send-email-robherring2@gmail.com>
+ <1332423761-27205-1-git-send-email-robherring2@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8E5C103A87
-	for <alsa-devel@alsa-project.org>; Sat, 24 Mar 2012 16:21:28 +0100 (CET)
-Received: by eaak11 with SMTP id k11so1077821eaa.38
-	for <alsa-devel@alsa-project.org>; Sat, 24 Mar 2012 08:23:03 -0700 (PDT)
-In-Reply-To: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexandre Bounine <alexandre.bounine@idt.com>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, samuel@sortiz.org, vinod.koul@intel.com, netdev@vger.kernel.org, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, paul.gortmaker@windriver.com, linux-next@vger.kernel.org, tiwai@suse.de, dan.j.williams@intel.com, lrg@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1332423761-27205-1-git-send-email-robherring2@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Rob Herring <robherring2@gmail.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, rtc-linux@googlegroups.com, Nicolas Pitre <nico@fluxnic.net>, Takashi Iwai <tiwai@suse.de>, Haojian Zhuang <haojian.zhuang@marvell.com>, Rob Herring <rob.herring@calxeda.com>, Jaroslav Kysela <perex@perex.cz>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-next@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXIgMjMsIDIwMTIgYXQgMTE6MDAgQU0sIEFsZXhhbmRyZSBCb3VuaW5lCjxhbGV4
-YW5kcmUuYm91bmluZUBpZHQuY29tPiB3cm90ZToKPiBUaGlzIHBhdGNoIGZpeGVzIGRyaXZlcnMg
-dGhhdCB1c2UgZGV2aWNlX3ByZXBfc2xhdmVfc2coKSBhbmQKPiBkZXZpY2VfcHJlcF9kbWFfY3lj
-bGljKCkgaW50ZXJmYWNlcyBhbmQgaGF2ZSBiZWVuIG1pc3NlZCBkdXJpbmcgdGhlIGluaXRpYWwK
-PiByZWxlYXNlIG9mIGludGVyZmFjZSBjaGFuZ2luZyBwYXRjaGVzLgo+Cj4gVGhpcyBwYXRjaCBp
-cyBiYXNlZCBvbiBsaW51eC1uZXh0LTIwMTIwMzIyIGNvZGUgdHJlZS4KPiBTZWUgaHR0cHM6Ly9s
-a21sLm9yZy9sa21sLzIwMTIvMy8yMi8zMzkgZm9yIGJ1aWxkIGZhaWx1cmUgcmVwb3J0Lgo+Cj4g
-U2lnbmVkLW9mZi1ieTogQWxleGFuZHJlIEJvdW5pbmUgPGFsZXhhbmRyZS5ib3VuaW5lQGlkdC5j
-b20+Cj4gUmVwb3J0ZWQtYnk6IFBhdWwgR29ydG1ha2VyIDxwYXVsLmdvcnRtYWtlckB3aW5kcml2
-ZXIuY29tPgo+IC0tLQo+IMKgZHJpdmVycy9kbWEvc2ExMXgwLWRtYS5jIMKgIMKgIMKgfCDCoCDC
-oDIgKy0KPiDCoGRyaXZlcnMvbmV0L2lyZGEvc2ExMTAwX2lyLmMgwqB8IMKgIMKgMiArLQo+IMKg
-c291bmQvc29jL3NoL2ZzaS5jIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDCoDcgKysrLS0tLQo+IMKg
-c291bmQvc29jL3NvYy1kbWFlbmdpbmUtcGNtLmMgfCDCoCDCoDIgKy0KCkkgaGF2ZSBhbHJlYWR5
-IHRha2VuIGNhcmUgb2Ygc291bmQvc29jL3NvYy1kbWFlbmdpbmUtcGNtLmM6Cmh0dHA6Ly9wZXJt
-YWxpbmsuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmFsc2EuZGV2ZWwvOTYyMTUKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+What's happening about this and your other patch for PXA?  PXA is
+currently broken in arm-soc, and has been for the past week.  See
+http://www.arm.linux.org.uk/developer/build/
+
+On Thu, Mar 22, 2012 at 08:42:41AM -0500, Rob Herring wrote:
+> From: Rob Herring <rob.herring@calxeda.com>
+> 
+> pxa was missed in the moving of IOMEM to a common definition, so lots of
+> IOMEM redefined warnings were introduced. So remove pxa IOMEM definition
+> and fix all the fallout.
+> 
+> Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Signed-off-by: Rob Herring <rob.herring@calxeda.com>
+> Cc: Eric Miao <eric.y.miao@gmail.com>
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Haojian Zhuang <haojian.zhuang@marvell.com>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: rtc-linux@googlegroups.com
+> Cc: alsa-devel@alsa-project.org
+> ---
+> v2:
+> - fix my commit msg typos
+> - add fix for sa1100_wdt.c
+> 
+> I plan to send this fix thru the arm-soc tree.
+> 
+> Rob
+> 
+>  arch/arm/mach-pxa/clock-pxa2xx.c          |    1 +
+>  arch/arm/mach-pxa/corgi_pm.c              |    1 +
+>  arch/arm/mach-pxa/cpufreq-pxa3xx.c        |    1 +
+>  arch/arm/mach-pxa/include/mach/hardware.h |    2 --
+>  arch/arm/mach-pxa/mfp-pxa2xx.c            |    1 +
+>  arch/arm/mach-pxa/pxa2xx.c                |    1 +
+>  arch/arm/mach-pxa/pxa300.c                |    1 +
+>  arch/arm/mach-pxa/pxa320.c                |    1 +
+>  arch/arm/mach-pxa/sharpsl_pm.c            |    1 +
+>  drivers/rtc/rtc-sa1100.c                  |    1 +
+>  drivers/watchdog/sa1100_wdt.c             |    1 +
+>  sound/arm/pxa2xx-ac97-lib.c               |    1 +
+>  sound/arm/pxa2xx-ac97.c                   |    1 +
+>  sound/soc/pxa/pxa2xx-ac97.c               |    1 +
+>  14 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/mach-pxa/clock-pxa2xx.c b/arch/arm/mach-pxa/clock-pxa2xx.c
+> index 1d5859d..9ee2ad6 100644
+> --- a/arch/arm/mach-pxa/clock-pxa2xx.c
+> +++ b/arch/arm/mach-pxa/clock-pxa2xx.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+> +#include <linux/io.h>
+>  #include <linux/syscore_ops.h>
+>  
+>  #include <mach/pxa2xx-regs.h>
+> diff --git a/arch/arm/mach-pxa/corgi_pm.c b/arch/arm/mach-pxa/corgi_pm.c
+> index 39e265c..048c429 100644
+> --- a/arch/arm/mach-pxa/corgi_pm.c
+> +++ b/arch/arm/mach-pxa/corgi_pm.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/apm-emulation.h>
+> +#include <linux/io.h>
+>  
+>  #include <asm/irq.h>
+>  #include <asm/mach-types.h>
+> diff --git a/arch/arm/mach-pxa/cpufreq-pxa3xx.c b/arch/arm/mach-pxa/cpufreq-pxa3xx.c
+> index 88fbec0..b85b4ab 100644
+> --- a/arch/arm/mach-pxa/cpufreq-pxa3xx.c
+> +++ b/arch/arm/mach-pxa/cpufreq-pxa3xx.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/init.h>
+>  #include <linux/cpufreq.h>
+>  #include <linux/slab.h>
+> +#include <linux/io.h>
+>  
+>  #include <mach/pxa3xx-regs.h>
+>  
+> diff --git a/arch/arm/mach-pxa/include/mach/hardware.h b/arch/arm/mach-pxa/include/mach/hardware.h
+> index 54b64ea..56d92e5 100644
+> --- a/arch/arm/mach-pxa/include/mach/hardware.h
+> +++ b/arch/arm/mach-pxa/include/mach/hardware.h
+> @@ -40,7 +40,6 @@
+>  #define io_p2v(x) IOMEM(0xf2000000 + ((x) & 0x01ffffff) + (((x) & 0x1c000000) >> 1))
+>  
+>  #ifndef __ASSEMBLY__
+> -# define IOMEM(x) ((void __iomem *)(x))
+>  # define __REG(x)	(*((volatile u32 __iomem *)io_p2v(x)))
+>  
+>  /* With indexed regs we don't want to feed the index through io_p2v()
+> @@ -52,7 +51,6 @@
+>  
+>  #else
+>  
+> -# define IOMEM(x)	x 
+>  # define __REG(x)	io_p2v(x)
+>  # define __PREG(x)	io_v2p(x)
+>  
+> diff --git a/arch/arm/mach-pxa/mfp-pxa2xx.c b/arch/arm/mach-pxa/mfp-pxa2xx.c
+> index f147755..b029562 100644
+> --- a/arch/arm/mach-pxa/mfp-pxa2xx.c
+> +++ b/arch/arm/mach-pxa/mfp-pxa2xx.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+> +#include <linux/io.h>
+>  #include <linux/syscore_ops.h>
+>  
+>  #include <mach/pxa2xx-regs.h>
+> diff --git a/arch/arm/mach-pxa/pxa2xx.c b/arch/arm/mach-pxa/pxa2xx.c
+> index 8682704..f8ec854 100644
+> --- a/arch/arm/mach-pxa/pxa2xx.c
+> +++ b/arch/arm/mach-pxa/pxa2xx.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/device.h>
+> +#include <linux/io.h>
+>  
+>  #include <mach/hardware.h>
+>  #include <mach/pxa2xx-regs.h>
+> diff --git a/arch/arm/mach-pxa/pxa300.c b/arch/arm/mach-pxa/pxa300.c
+> index 40bb165..17cbc0c 100644
+> --- a/arch/arm/mach-pxa/pxa300.c
+> +++ b/arch/arm/mach-pxa/pxa300.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/io.h>
+>  
+>  #include <mach/pxa300.h>
+>  
+> diff --git a/arch/arm/mach-pxa/pxa320.c b/arch/arm/mach-pxa/pxa320.c
+> index 8d614ec..6dc99d4 100644
+> --- a/arch/arm/mach-pxa/pxa320.c
+> +++ b/arch/arm/mach-pxa/pxa320.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/io.h>
+>  
+>  #include <mach/pxa320.h>
+>  
+> diff --git a/arch/arm/mach-pxa/sharpsl_pm.c b/arch/arm/mach-pxa/sharpsl_pm.c
+> index 8d5168d..6d3b39f 100644
+> --- a/arch/arm/mach-pxa/sharpsl_pm.c
+> +++ b/arch/arm/mach-pxa/sharpsl_pm.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/leds.h>
+>  #include <linux/suspend.h>
+>  #include <linux/gpio.h>
+> +#include <linux/io.h>
+>  
+>  #include <asm/mach-types.h>
+>  #include <mach/pm.h>
+> diff --git a/drivers/rtc/rtc-sa1100.c b/drivers/rtc/rtc-sa1100.c
+> index cb9a585..398ab7a 100644
+> --- a/drivers/rtc/rtc-sa1100.c
+> +++ b/drivers/rtc/rtc-sa1100.c
+> @@ -30,6 +30,7 @@
+>  #include <linux/string.h>
+>  #include <linux/pm.h>
+>  #include <linux/bitops.h>
+> +#include <linux/io.h>
+>  
+>  #include <mach/hardware.h>
+>  #include <asm/irq.h>
+> diff --git a/drivers/watchdog/sa1100_wdt.c b/drivers/watchdog/sa1100_wdt.c
+> index 0162454..a3ff321 100644
+> --- a/drivers/watchdog/sa1100_wdt.c
+> +++ b/drivers/watchdog/sa1100_wdt.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/miscdevice.h>
+>  #include <linux/watchdog.h>
+>  #include <linux/init.h>
+> +#include <linux/io.h>
+>  #include <linux/bitops.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/timex.h>
+> diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+> index d1aa421..d760371 100644
+> --- a/sound/arm/pxa2xx-ac97-lib.c
+> +++ b/sound/arm/pxa2xx-ac97-lib.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/module.h>
+> +#include <linux/io.h>
+>  
+>  #include <sound/ac97_codec.h>
+>  #include <sound/pxa2xx-lib.h>
+> diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+> index 3a39626..afef72c 100644
+> --- a/sound/arm/pxa2xx-ac97.c
+> +++ b/sound/arm/pxa2xx-ac97.c
+> @@ -11,6 +11,7 @@
+>   */
+>  
+>  #include <linux/init.h>
+> +#include <linux/io.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  
+> diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+> index 837ff34..b4bfd97 100644
+> --- a/sound/soc/pxa/pxa2xx-ac97.c
+> +++ b/sound/soc/pxa/pxa2xx-ac97.c
+> @@ -11,6 +11,7 @@
+>   */
+>  
+>  #include <linux/init.h>
+> +#include <linux/io.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  
+> -- 
+> 1.7.5.4
+> 
