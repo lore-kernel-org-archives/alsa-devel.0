@@ -1,48 +1,59 @@
-From: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Subject: Re: Question: PCM short and long sync formats
-Date: Mon, 26 Mar 2012 14:36:53 +0530
-Message-ID: <4F7031AD.3090202@linux.intel.com>
-References: <4F69ABB0.2000706@linux.intel.com>
-	<20120321115146.GC3226@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH linux-next] dmaengine: add context parameter fixups
+Date: Mon, 26 Mar 2012 10:42:01 +0100
+Message-ID: <20120326094200.GA3098@opensource.wolfsonmicro.com>
+References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
+ <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
+ <1332740082.19804.15.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id D02E2103D57
-	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Mar 2012 11:04:33 +0200 (CEST)
-In-Reply-To: <20120321115146.GC3226@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
+Return-path: <linux-next-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1332740082.19804.15.camel@vkoul-udesk3>
+Sender: linux-next-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Fabio Estevam <festevam@gmail.com>, Alexandre Bounine <alexandre.bounine@idt.com>, paul.gortmaker@windriver.com, dan.j.williams@intel.com, samuel@sortiz.org, lrg@ti.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, netdev@vger.kernel.org, fabio.estevam@freescale.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 21 March 2012 05:21 PM, Mark Brown wrote:
-> On Wed, Mar 21, 2012 at 03:51:36PM +0530, Omair Mohammed Abdullah wrote:
->
->> I was looking for PCM short frame sync and PCM long frame sync, but
->> they are not present in soc-dai.h (FORMAT_MASK). Is there a way to
->> derive them from other formats or should I just add them?
->
-> What do you mean when you say "PCM short frame sync" and "PCM long
-> frame sync"?
 
-Sorry for the late reply, I was away.
+--d6Gm4EdcadzBjdND
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What I mean by short/long frame sync is: the frame sync lasts for 1 
-bit/1 word wide.
+On Mon, Mar 26, 2012 at 11:04:42AM +0530, Vinod Koul wrote:
+> On Sat, 2012-03-24 at 12:23 -0300, Fabio Estevam wrote:
 
-Eg.: For short frame sync, we get a frame sync signal for 1 clock before 
-the first bit on the RX/TX.
+> > http://permalink.gmane.org/gmane.linux.alsa.devel/96215
 
-It is different from I2S mode where the frame sync is inverted and the 
-transition starts 1 clock before the bits and lasts till bit 1.
+> And this seems to be linux-next.
+
+> Mark, Is this part of the sound updates that went to Linus?
+
+No, not yet - it was only sent after the merge window.  Quite why nobody
+managed to notice it before then I don't know.  It'll go to him soon, or
+at least to Takashi, but don't know if it'll make -rc1 or not.
+
+--d6Gm4EdcadzBjdND
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPcDnfAAoJEBus8iNuMP3dXY4QAJrg3zNc+uF7lg//SBvDus1G
+OjRrNx7rVxe1Ot0KYNvDY9q7iH7/lVJi28pBjHftfKN0RoTpEiCGkWmmOD2SnnGT
+bWSm6qt7Iv2JO5lWViBvwQLPoNRuAyRYJkHbxPMkCKca9mZzuBVXHX1anuvRkvzh
+A3lHlBvDS6YUZsxEJ1J/L/twyxOA9Jub9lE5djcceLQflBRc5vwyIbkySj4terhk
+nkA1UTCqp7kKVxq4XJXIwWeJfIgbKl4heetWh8EWib+KZcPCh/7SKK48rUrcrU9u
+DxUGK+hLiUU+icVvs4YaT/IJe0ipsOOp5SXpv3BJE78McJePDp+doLnMBHosdwMx
+ITBtZMb98ijtdtj7DwcBUOsLaFK3+GzaGAk7oF1SeOmyWEM5VQQnj/TAapmmadRn
+yfoL4mkZaUl0q5PPBwmtjG0KLUiD6XlxsnZwRiZgfMq3WFHn8WtyPaI9zUWQ0OLu
+BRFocGVLqZnorB/TwGyTCnWZNBpR9/FnW/kO87IT8a5zL1XJZBQAwiARXy2vO6YU
+uHhTGQ1VOnylOO3rZK8xYuVFALebvxyCDuVsuRGGgAXoW65rC3/f0d5F5ko4GD3v
+P7cqhWoXE1su5VXpuAS+ItVEvavepf4m5RE/dQZYUsweWoDoeN5RvMVYU8zBn1qR
+pc9+KSCCMi55EluTGRN7
+=/Am0
+-----END PGP SIGNATURE-----
+
+--d6Gm4EdcadzBjdND--
