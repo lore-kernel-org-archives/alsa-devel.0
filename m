@@ -1,25 +1,20 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH linux-next] dmaengine: add context
-	parameter fixups
-Date: Mon, 26 Mar 2012 16:37:57 +0530
-Message-ID: <1332760077.19804.98.camel@vkoul-udesk3>
-References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
-	<CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
-	<1332740082.19804.15.camel@vkoul-udesk3>
-	<20120326094200.GA3098@opensource.wolfsonmicro.com>
-	<1332755670.19804.91.camel@vkoul-udesk3>
-	<20120326103354.GD3098@opensource.wolfsonmicro.com>
-	<1332758906.19804.97.camel@vkoul-udesk3>
-	<20120326110149.GL3098@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/8] sound:asoc: Add support for synopsys
+ i2s controller as per ASoC framework.
+Date: Mon, 26 Mar 2012 12:10:55 +0100
+Message-ID: <20120326111055.GM3098@opensource.wolfsonmicro.com>
+References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
+	<7692a51789abe38e7066a582d8329dc93b8eced3.1332242166.git.rajeev-dlh.kumar@st.com>
+	<20120320154420.GE3445@opensource.wolfsonmicro.com>
+	<4F7030DA.2090009@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5437354701849730294=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id BCE24248EB
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4BFF5248EF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Mar 2012 13:03:36 +0200 (CEST)
-In-Reply-To: <20120326110149.GL3098@opensource.wolfsonmicro.com>
+	Mon, 26 Mar 2012 13:09:22 +0200 (CEST)
+In-Reply-To: <4F7030DA.2090009@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +24,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, samuel@sortiz.org, paul.gortmaker@windriver.com, tiwai@suse.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Alexandre Bounine <alexandre.bounine@idt.com>, linux-next@vger.kernel.org, dan.j.williams@intel.com, Fabio Estevam <festevam@gmail.com>, lrg@ti.com
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, spear-devel <spear-devel@list.st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-03-26 at 12:01 +0100, Mark Brown wrote:
-> On Mon, Mar 26, 2012 at 04:18:26PM +0530, Vinod Koul wrote:
-> 
-> > But we don't want the clients to use this additional parameter or be
-> > exposed to it if not required. Every client is expected to use the
-> > dmaengine wrappers for prepare and not invoke .device_ callbacks.
-> 
-> Are those wrappers present in what's gone to Linus' tree, and can
-> someone please send a patch to convert to using them?
 
-Yes that are already there :-)
+--===============5437354701849730294==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="P9KQiUGMzYCFwWCN"
+Content-Disposition: inline
 
-I will send sound specific update now
 
--- 
-~Vinod
+--P9KQiUGMzYCFwWCN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 26, 2012 at 02:33:22PM +0530, Rajeev kumar wrote:
+> On 3/20/2012 9:14 PM, Mark Brown wrote:
+> >On Tue, Mar 20, 2012 at 05:03:46PM +0530, Rajeev Kumar wrote:
+
+> >>+		if (dev->i2s_clk_cfg(config)) {
+> >>+			dev_err(dev->dev, "runtime audio clk config fail\n");
+> >>+			if (cpu_dai->driver->ops->trigger) {
+> >>+				int ret =
+> >>+					cpu_dai->driver->ops->trigger(substream,
+> >>+							SNDRV_PCM_TRIGGER_STOP,
+> >>+							cpu_dai);
+> >>+				if (ret<  0) {
+> >>+					dev_err(dev->dev,
+> >>+							"trigger stop fail\n");
+> >>+					return ret;
+> >>+				}
+> >>+			}
+
+> >No, return an error if you encounter an error!
+
+> You need not to stop controller in case clock fail ?
+
+Let the upper layers worry about that.  Don't randomly change the state
+of the controller without them knowing about it.
+
+
+--P9KQiUGMzYCFwWCN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPcE52AAoJEBus8iNuMP3dbgwP/2xh/VjXWQXKhUyh++7HmjfL
+i1dCMhA1AqpSm50mdqhkhvOxFmBpPJ0TXi9p6L4UIXpn7h956P2C6bfhVT2v105X
+7loqfbGLBaS2299i4mKnZEpy5H5vzLgsVCCtmLrvNF5q8Knj2frAlQE6sFXZ1/O+
+rNfd5S8T20MTHhK8EeFM33PXXDIIeShJYOs7nJhjUM66O5UaqRt69jiWrFWcjknV
+jIiftAO6fBgpSrgMVN7HmVMbw4lqEGFuJffxov79eIb66rgRt4ilA7v/kYblyXjX
+eoLyDwfLydixJZaJgLJvnnPOB6TG2eN3GsUjtF/PQ2X3yccgyfHEIsCH/YcEOkSW
+HU47+9t1uM4ENpeezcsp7SACMQPnaE6Smqp/W6jkmCPzFn0xXJNKV05JhGibLsCq
+v7sFy9eQxLMslcxzluYe+C14mQ+n25gmrrS5Tktgp/fGWTVVcKNRS+9XI9UclLMb
+S9kVSRfXuW9QmLBYh9ST0i7dQPo6KpEsGtmX668U81xnBUVBwHxrXDSllpO8Bmbb
+xUkdI+gmr+f/fzy7q97YdqoDma+wwn0VtBaKtTC4nB9T5kl0oHP1j84QefTmZSou
+fOLwBHOW8zFSIzXqiGgGw6WeqGyDZ2VPG09EvHjaUImSQSOQ1bKIQQK4x2WOM2gp
+wZ2ZhkkctXOkhRsJQGXM
+=rLxU
+-----END PGP SIGNATURE-----
+
+--P9KQiUGMzYCFwWCN--
+
+--===============5437354701849730294==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5437354701849730294==--
