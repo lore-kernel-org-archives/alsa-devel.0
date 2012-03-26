@@ -1,32 +1,154 @@
-From: Rune <runozo@gmail.com>
-Subject: Electronix Ebox 44 quirk?
-Date: Mon, 26 Mar 2012 23:46:55 +0200
-Message-ID: <CAGBaoAiCtG48BKWzzD1AMXD42Byit+2oCdPMkzcSz9pcKC3xyg@mail.gmail.com>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: [PATCH] ASoC: ep93xx-ac97: use devm_* helpers to cleanup probe
+Date: Mon, 26 Mar 2012 16:00:08 -0700
+Message-ID: <201203261600.09454.hartleys@visionengravers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D406E1040C2
-	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Mar 2012 23:45:22 +0200 (CEST)
-Received: by ghbg19 with SMTP id g19so4496870ghb.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2012 14:46:55 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, mika.westerberg@iki.fi, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Any news about the quirk for this bogus device?
-I read about some one which was very close to the solution..
+Use the devm_* helpers to cleanup the probe routine. This also eliminates
+having to carry the mem and irq values in the private data for the remove.
 
-Thank you all,
-Rune
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.de>
+
+
+---
+
+diff --git a/sound/soc/ep93xx/ep93xx-ac97.c b/sound/soc/ep93xx/ep93xx-ac97.c
+index 0678637..bdffab3 100644
+--- a/sound/soc/ep93xx/ep93xx-ac97.c
++++ b/sound/soc/ep93xx/ep93xx-ac97.c
+@@ -87,17 +87,13 @@
+  * struct ep93xx_ac97_info - EP93xx AC97 controller info structure
+  * @lock: mutex serializing access to the bus (slot 1 & 2 ops)
+  * @dev: pointer to the platform device dev structure
+- * @mem: physical memory resource for the registers
+  * @regs: mapped AC97 controller registers
+- * @irq: AC97 interrupt number
+  * @done: bus ops wait here for an interrupt
+  */
+ struct ep93xx_ac97_info {
+ 	struct mutex		lock;
+ 	struct device		*dev;
+-	struct resource		*mem;
+ 	void __iomem		*regs;
+-	int			irq;
+ 	struct completion	done;
+ };
+ 
+@@ -359,66 +355,50 @@ static struct snd_soc_dai_driver ep93xx_ac97_dai = {
+ static int __devinit ep93xx_ac97_probe(struct platform_device *pdev)
+ {
+ 	struct ep93xx_ac97_info *info;
++	struct resource *res;
++	unsigned int irq;
+ 	int ret;
+ 
+-	info = kzalloc(sizeof(struct ep93xx_ac97_info), GFP_KERNEL);
++	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	dev_set_drvdata(&pdev->dev, info);
+-
+-	mutex_init(&info->lock);
+-	init_completion(&info->done);
+-	info->dev = &pdev->dev;
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -ENODEV;
+ 
+-	info->mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!info->mem) {
+-		ret = -ENXIO;
+-		goto fail_free_info;
+-	}
++	info->regs = devm_request_and_ioremap(&pdev->dev, res);
++	if (!info->regs)
++		return -ENXIO;
+ 
+-	info->irq = platform_get_irq(pdev, 0);
+-	if (!info->irq) {
+-		ret = -ENXIO;
+-		goto fail_free_info;
+-	}
++	irq = platform_get_irq(pdev, 0);
++	if (!irq)
++		return -ENODEV;
+ 
+-	if (!request_mem_region(info->mem->start, resource_size(info->mem),
+-				pdev->name)) {
+-		ret = -EBUSY;
+-		goto fail_free_info;
+-	}
++	ret = devm_request_irq(&pdev->dev, irq, ep93xx_ac97_interrupt,
++			       IRQF_TRIGGER_HIGH, pdev->name, info);
++	if (ret)
++		goto fail;
+ 
+-	info->regs = ioremap(info->mem->start, resource_size(info->mem));
+-	if (!info->regs) {
+-		ret = -ENOMEM;
+-		goto fail_release_mem;
+-	}
++	dev_set_drvdata(&pdev->dev, info);
+ 
+-	ret = request_irq(info->irq, ep93xx_ac97_interrupt, IRQF_TRIGGER_HIGH,
+-			  pdev->name, info);
+-	if (ret)
+-		goto fail_unmap_mem;
++	mutex_init(&info->lock);
++	init_completion(&info->done);
++	info->dev = &pdev->dev;
+ 
+ 	ep93xx_ac97_info = info;
+ 	platform_set_drvdata(pdev, info);
+ 
+ 	ret = snd_soc_register_dai(&pdev->dev, &ep93xx_ac97_dai);
+ 	if (ret)
+-		goto fail_free_irq;
++		goto fail;
+ 
+ 	return 0;
+ 
+-fail_free_irq:
++fail:
+ 	platform_set_drvdata(pdev, NULL);
+-	free_irq(info->irq, info);
+-fail_unmap_mem:
+-	iounmap(info->regs);
+-fail_release_mem:
+-	release_mem_region(info->mem->start, resource_size(info->mem));
+-fail_free_info:
+-	kfree(info);
+-
++	ep93xx_ac97_info = NULL;
++	dev_set_drvdata(&pdev->dev, NULL);
+ 	return ret;
+ }
+ 
+@@ -431,11 +411,9 @@ static int __devexit ep93xx_ac97_remove(struct platform_device *pdev)
+ 	/* disable the AC97 controller */
+ 	ep93xx_ac97_write_reg(info, AC97GCR, 0);
+ 
+-	free_irq(info->irq, info);
+-	iounmap(info->regs);
+-	release_mem_region(info->mem->start, resource_size(info->mem));
+ 	platform_set_drvdata(pdev, NULL);
+-	kfree(info);
++	ep93xx_ac97_info = NULL;
++	dev_set_drvdata(&pdev->dev, NULL);
+ 
+ 	return 0;
+ }
