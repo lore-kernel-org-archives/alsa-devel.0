@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question: PCM short and long sync formats
-Date: Mon, 26 Mar 2012 14:33:05 +0100
-Message-ID: <20120326133305.GR3098@opensource.wolfsonmicro.com>
-References: <4F69ABB0.2000706@linux.intel.com>
-	<20120321115146.GC3226@opensource.wolfsonmicro.com>
-	<4F7031AD.3090202@linux.intel.com>
-	<20120326102650.GC3098@opensource.wolfsonmicro.com>
-	<4F705BF3.5080905@linux.intel.com>
-	<20120326120853.GP3098@opensource.wolfsonmicro.com>
-	<4F706F47.2090306@linux.intel.com>
+From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
+Subject: How to cross compile the alsa ?
+Date: Mon, 26 Mar 2012 17:15:26 +0200
+Message-ID: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4370813343356562740=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77E24249DF
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B74424A6E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Mar 2012 15:31:31 +0200 (CEST)
-In-Reply-To: <4F706F47.2090306@linux.intel.com>
+	Mon, 26 Mar 2012 17:13:53 +0200 (CEST)
+Received: by qcha6 with SMTP id a6so3352562qch.38
+	for <alsa-devel@alsa-project.org>; Mon, 26 Mar 2012 08:15:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,64 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
---===============4370813343356562740==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nQUlLD2FJeKEtFpv"
-Content-Disposition: inline
+I need you help not to understant how cross compile alsa with
+arm-gp2x-linux. I downloaded alsa-lib-1.0.17 and alsa-utils-1.0.17
+last week
 
+Step to step, because I don't know if I will forget any step.
 
---nQUlLD2FJeKEtFpv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Once I descrompressed in /home/dam:
 
-On Mon, Mar 26, 2012 at 06:59:43PM +0530, Omair Mohammed Abdullah wrote:
-> On Monday 26 March 2012 05:38 PM, Mark Brown wrote:
+tar -xvfj alsa-lib-1.0.17.tar.bz2
+tar -xvfj alsa-utils-1.0.17.tar.bz2
 
-> >Sorry, that's not really clarifying things.  It looks like "long frame
-> >sync" is just I2S but presumably there's some difference?
+Then to descompress I went to directory alsa-lib... and I put in
+directory, the next line:
 
-> Yes, in I2S mode, according to the spec I have, the frame sync leads
-> the MSB of the data by 1 bit clock cycle. Whereas the 'long frame
-> sync' mode starts with the MSB of the data.
+# CC=arm-gp2x-linux ./configure --host=i686.linux --target=arm-linux
+#make
+#make install
 
-This is probably left justified mode but I'm really not clear what
-your question is here.  Please ask a *specific* question, with reference
-to what you find unclear in the code.
+When it finish I copy all include from alsa-lib-1.0.17 in my directory
+/usr/arm-gp2x-linux/include.
 
---nQUlLD2FJeKEtFpv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+After I did:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+#arm-gp2x-linux -o micro micro.c -lasound
 
-iQIcBAEBAgAGBQJPcG/uAAoJEBus8iNuMP3db8MP/35eviDDChiQltWK2xkj7I3H
-w3uezI7vNAMXEKWHkAtynlAa9H9Uoqp652Sl99H/e2kGvIxHsLTQrdl3eLo5o2h7
-7gh+IBBB9ynSbg9MILuV5z9Dn0e+zalfGFLWQ3TXLseWtwd1IjRU6HN+pomhLr9M
-MsTvYRt6LPzapIN80fq/BIHUZ1ltAEBxHSLjWAE5+dfmKBaqSbrITTh8fuAKq1+i
-nfS9lE6Fn2H1AxMIXtNd+Nh5hWmVF7pm/MWmPKNhRIJF1T5voaJYX5U165LoeT7f
-oWYB9td6YwyQMgTohPKztJxzvaWjJUUbK4YPyFg37je7xTrviUrSrbWIftqEm+tO
-Y3/iKTrN2ML69/JX3MhBTEe9B3uAtNr8owQGAp3BrKlz8EMTWN+rWaUp66MLBS/n
-J+IriwIm6ysj41UMb96/S8Y+dnj5D1Tvuj1Qldg4YmQWrU+/4y6qnRfbrLs/H8Tl
-m2GbjFmQUzdWplQzolb4Mn5GP1KoULgakEzhVICI28n6IwIIQ3+prF67tlvMCFUr
-UWCVuC81IQRaiH/zNWxA8fWNltk4hk+Nt+e2ohajDRryYdmoZ3gCeq8cpW/rwinf
-t3WklAJihHA3H+I8EzD+H7we81xFpb+ucAPII3qprOz9ZzxDKKfTcZleBZPwjhUM
-4+Qtxwtpj4s+NTLXMwDn
-=Qxxx
------END PGP SIGNATURE-----
-
---nQUlLD2FJeKEtFpv--
-
---===============4370813343356562740==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4370813343356562740==--
+But it say that can't find -lasound and ld returned 1 exit status.
+What I did bad do? Can you put step to step, please?
