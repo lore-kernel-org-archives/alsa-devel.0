@@ -1,40 +1,93 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH linux-next] dmaengine: add context parameter fixups
-Date: Mon, 26 Mar 2012 15:24:30 +0530
-Message-ID: <1332755670.19804.91.camel@vkoul-udesk3>
-References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
-	 <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
-	 <1332740082.19804.15.camel@vkoul-udesk3>
-	 <20120326094200.GA3098@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Question: PCM short and long sync formats
+Date: Mon, 26 Mar 2012 11:26:50 +0100
+Message-ID: <20120326102650.GC3098@opensource.wolfsonmicro.com>
+References: <4F69ABB0.2000706@linux.intel.com>
+	<20120321115146.GC3226@opensource.wolfsonmicro.com>
+	<4F7031AD.3090202@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20120326094200.GA3098@opensource.wolfsonmicro.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <festevam@gmail.com>, Alexandre Bounine <alexandre.bounine@idt.com>, paul.gortmaker@windriver.com, dan.j.williams@intel.com, samuel@sortiz.org, lrg@ti.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, netdev@vger.kernel.org, fabio.estevam@freescale.com, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============4206835774177617744=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 501F0248D4
+	for <alsa-devel@alsa-project.org>;
+	Mon, 26 Mar 2012 12:25:18 +0200 (CEST)
+In-Reply-To: <4F7031AD.3090202@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-03-26 at 10:42 +0100, Mark Brown wrote:
-> On Mon, Mar 26, 2012 at 11:04:42AM +0530, Vinod Koul wrote:
-> > On Sat, 2012-03-24 at 12:23 -0300, Fabio Estevam wrote:
-> 
-> > > http://permalink.gmane.org/gmane.linux.alsa.devel/96215
-> 
-> > And this seems to be linux-next.
-> 
-> > Mark, Is this part of the sound updates that went to Linus?
-> 
-> No, not yet - it was only sent after the merge window.  Quite why nobody
-> managed to notice it before then I don't know.  It'll go to him soon, or
-> at least to Takashi, but don't know if it'll make -rc1 or not.
-I should have noticed that sound needs update as well  :(
 
-Now either I drop these from 3.4 or merge Linus's tree and apply
-Alexandre's fix (as that is the right fix rather than one in asoc tree)
-And since this was required for RIO patches which are still WIP, I think
-I am leaning towards former.
+--===============4206835774177617744==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="raC6veAxrt5nqIoY"
+Content-Disposition: inline
 
--- 
-~Vinod
+
+--raC6veAxrt5nqIoY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Mar 26, 2012 at 02:36:53PM +0530, Omair Mohammed Abdullah wrote:
+> On Wednesday 21 March 2012 05:21 PM, Mark Brown wrote:
+
+> >What do you mean when you say "PCM short frame sync" and "PCM long
+> >frame sync"?
+
+> Sorry for the late reply, I was away.
+
+> What I mean by short/long frame sync is: the frame sync lasts for 1
+> bit/1 word wide.
+
+> Eg.: For short frame sync, we get a frame sync signal for 1 clock
+> before the first bit on the RX/TX.
+
+> It is different from I2S mode where the frame sync is inverted and
+> the transition starts 1 clock before the bits and lasts till bit 1.
+
+I'm sorry but I still have no idea what you're talking about.  You've
+described PCM mode but not explained what "short frame sync" and "long
+frame sync" mode are. =20
+
+--raC6veAxrt5nqIoY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPcEMLAAoJEBus8iNuMP3dEfIP/3flf9OIggc2Dv2ghNMW2Cza
+FPuExuNAS1lN5AlFVYAS9c7iZaSXfCDhKSWtxL6uyo4Ic41Lsn2Zkzi672yxFwHk
+7mk6If6T2bncAazoDSdw+n5g7yh+SMT8+HCdIqrUHz75CV7A7TmOWXBi6XEg94+Z
+Jkh41m1H8jAS4M0ev8mfqST4wA0Evf02+uanjmSI9y77UVtM/wQtM0RaYgOr69vu
+078IDv/XbYEkvyzusR9jde4GCgC18g4seehCL54crWKPNOOUZXNVTOYr1mKjokM1
+fCe4Xrypinnf3hmKVPeHhZ+k/PwN2z9FHGrt1Cg0yapifL4/enFeJASgtZuNuu7R
+XKLcVpZ9NvqarngiWEQkf6Fsuz9LiOY5Vru0TE2kAl50d0uZi39sy0oFZfjtdrFN
+EwfE1FFkhR+Jhu5yGF5ROxjTWfs4vQgtnjh6hrkK7PN0gG/zN9OTEdbVfqfwW4J0
+nBeUI5Am3dOWPY8YZ6Enh03IInUSpo4BswoY4f1ebY6D6tqLuAnrEpz1BIEnoHCq
+qVu1XlbZi5AKVnd5GPsOu7w2SEe2yc+vEdIHDBhLLYQDjiKJREe6SxAET7VjB3DM
+oI9Z60397EbqxsJSBE0oCOi7qA6f4QjHKAXystr+oc+09ku2QrgB8mre/jWfluLt
+1HuhXA8unerppxpk/SEP
+=GNqe
+-----END PGP SIGNATURE-----
+
+--raC6veAxrt5nqIoY--
+
+--===============4206835774177617744==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4206835774177617744==--
