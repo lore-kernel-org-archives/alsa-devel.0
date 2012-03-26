@@ -1,93 +1,63 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question: PCM short and long sync formats
-Date: Mon, 26 Mar 2012 11:26:50 +0100
-Message-ID: <20120326102650.GC3098@opensource.wolfsonmicro.com>
-References: <4F69ABB0.2000706@linux.intel.com>
-	<20120321115146.GC3226@opensource.wolfsonmicro.com>
-	<4F7031AD.3090202@linux.intel.com>
+Subject: Re: [PATCH linux-next] dmaengine: add context parameter fixups
+Date: Mon, 26 Mar 2012 11:33:55 +0100
+Message-ID: <20120326103354.GD3098@opensource.wolfsonmicro.com>
+References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
+ <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
+ <1332740082.19804.15.camel@vkoul-udesk3>
+ <20120326094200.GA3098@opensource.wolfsonmicro.com>
+ <1332755670.19804.91.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4206835774177617744=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 501F0248D4
-	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Mar 2012 12:25:18 +0200 (CEST)
-In-Reply-To: <4F7031AD.3090202@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="q9KOos5vDmpwPx9o"
+Return-path: <linux-next-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1332755670.19804.91.camel@vkoul-udesk3>
+Sender: linux-next-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Fabio Estevam <festevam@gmail.com>, Alexandre Bounine <alexandre.bounine@idt.com>, paul.gortmaker@windriver.com, dan.j.williams@intel.com, samuel@sortiz.org, lrg@ti.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, netdev@vger.kernel.org, fabio.estevam@freescale.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4206835774177617744==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="raC6veAxrt5nqIoY"
-Content-Disposition: inline
-
-
---raC6veAxrt5nqIoY
+--q9KOos5vDmpwPx9o
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 26, 2012 at 02:36:53PM +0530, Omair Mohammed Abdullah wrote:
-> On Wednesday 21 March 2012 05:21 PM, Mark Brown wrote:
+On Mon, Mar 26, 2012 at 03:24:30PM +0530, Vinod Koul wrote:
 
-> >What do you mean when you say "PCM short frame sync" and "PCM long
-> >frame sync"?
+> Now either I drop these from 3.4 or merge Linus's tree and apply
+> Alexandre's fix (as that is the right fix rather than one in asoc tree)
+> And since this was required for RIO patches which are still WIP, I think
+> I am leaning towards former.
 
-> Sorry for the late reply, I was away.
+Gah, WTF is going on here?  Has this API change not been sent to Linus
+already, and what is wrong with the changes which Fabio sent?  I've
+already applied Fabio's change on the understanding that this API change
+done and dusted.
 
-> What I mean by short/long frame sync is: the frame sync lasts for 1
-> bit/1 word wide.
+It seems better to do a minimal fix at this point rather than churning
+things again...
 
-> Eg.: For short frame sync, we get a frame sync signal for 1 clock
-> before the first bit on the RX/TX.
-
-> It is different from I2S mode where the frame sync is inverted and
-> the transition starts 1 clock before the bits and lasts till bit 1.
-
-I'm sorry but I still have no idea what you're talking about.  You've
-described PCM mode but not explained what "short frame sync" and "long
-frame sync" mode are. =20
-
---raC6veAxrt5nqIoY
+--q9KOos5vDmpwPx9o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPcEMLAAoJEBus8iNuMP3dEfIP/3flf9OIggc2Dv2ghNMW2Cza
-FPuExuNAS1lN5AlFVYAS9c7iZaSXfCDhKSWtxL6uyo4Ic41Lsn2Zkzi672yxFwHk
-7mk6If6T2bncAazoDSdw+n5g7yh+SMT8+HCdIqrUHz75CV7A7TmOWXBi6XEg94+Z
-Jkh41m1H8jAS4M0ev8mfqST4wA0Evf02+uanjmSI9y77UVtM/wQtM0RaYgOr69vu
-078IDv/XbYEkvyzusR9jde4GCgC18g4seehCL54crWKPNOOUZXNVTOYr1mKjokM1
-fCe4Xrypinnf3hmKVPeHhZ+k/PwN2z9FHGrt1Cg0yapifL4/enFeJASgtZuNuu7R
-XKLcVpZ9NvqarngiWEQkf6Fsuz9LiOY5Vru0TE2kAl50d0uZi39sy0oFZfjtdrFN
-EwfE1FFkhR+Jhu5yGF5ROxjTWfs4vQgtnjh6hrkK7PN0gG/zN9OTEdbVfqfwW4J0
-nBeUI5Am3dOWPY8YZ6Enh03IInUSpo4BswoY4f1ebY6D6tqLuAnrEpz1BIEnoHCq
-qVu1XlbZi5AKVnd5GPsOu7w2SEe2yc+vEdIHDBhLLYQDjiKJREe6SxAET7VjB3DM
-oI9Z60397EbqxsJSBE0oCOi7qA6f4QjHKAXystr+oc+09ku2QrgB8mre/jWfluLt
-1HuhXA8unerppxpk/SEP
-=GNqe
+iQIcBAEBAgAGBQJPcEYBAAoJEBus8iNuMP3dvIEQAIGpSA1r/3J24HpN5VCXzmV0
+akMfoEPivJrcVMhp7tBTQukXoPan8HCvoFkvEDcqO6dkuwQoPxCE6ADYs/5WGwS0
+LQ9oeUNo+hMq/bZhODewkfifzzcwIfz3AenP43QJw4i9VDrD5iaXGil6IO/2iM+G
+/moGmblgyZ4Cax7jxf+/uddrEm5+05hF1KgDhvK14iw1iz8cGC4rKHXtAuynO7Ok
+O6Aok+uj9QpyS45NwdSE/3iMgXR2D0t4Z1PMPhMe3fn3txQV9jXkpt0EV0sQ8j4j
+N6Uy48ILDwgWFA7d6aWgJ2ELdfHlrcmiYG1/m85sAi5fe/xdzUzezyHHKcCwDFPr
+TNmgoJWbYAx/jFqstIAUGYpXoz+6jvYIrOXWXGIBeGaETNM3Ryed5q20G0WOa6cA
+QmOyR3pNTbw8k/T2amgO25emTFKlTZfbcGcAB26VHFrYg39n6N4EitzqWca/tUjQ
+WupjaGw984q9IlNp/4lpZjbeS7vLM50YbBVcC0aP32XBnAMxswUZLaQEQImVgPiY
+yKabsoCFoYOuo6h8GtI/x5N39HJAchMQMSSZO6y7NmIbpcES2xq/Q7LUZMzOierH
+b2/V/b3rsm/Vp8Lj5vluxgT3Y6Tm/s4Lwa2P55qYLFzORqDsOWtOc9dospClipgF
+P3TB4R/mS/jsw2n+xQT+
+=Y5TF
 -----END PGP SIGNATURE-----
 
---raC6veAxrt5nqIoY--
-
---===============4206835774177617744==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4206835774177617744==--
+--q9KOos5vDmpwPx9o--
