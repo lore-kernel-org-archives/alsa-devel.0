@@ -1,59 +1,40 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
 Subject: Re: [PATCH linux-next] dmaengine: add context parameter fixups
-Date: Mon, 26 Mar 2012 10:42:01 +0100
-Message-ID: <20120326094200.GA3098@opensource.wolfsonmicro.com>
+Date: Mon, 26 Mar 2012 15:24:30 +0530
+Message-ID: <1332755670.19804.91.camel@vkoul-udesk3>
 References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
- <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
- <1332740082.19804.15.camel@vkoul-udesk3>
+	 <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
+	 <1332740082.19804.15.camel@vkoul-udesk3>
+	 <20120326094200.GA3098@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-next-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1332740082.19804.15.camel@vkoul-udesk3>
+In-Reply-To: <20120326094200.GA3098@opensource.wolfsonmicro.com>
 Sender: linux-next-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Fabio Estevam <festevam@gmail.com>, Alexandre Bounine <alexandre.bounine@idt.com>, paul.gortmaker@windriver.com, dan.j.williams@intel.com, samuel@sortiz.org, lrg@ti.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, netdev@vger.kernel.org, fabio.estevam@freescale.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2012-03-26 at 10:42 +0100, Mark Brown wrote:
+> On Mon, Mar 26, 2012 at 11:04:42AM +0530, Vinod Koul wrote:
+> > On Sat, 2012-03-24 at 12:23 -0300, Fabio Estevam wrote:
+> 
+> > > http://permalink.gmane.org/gmane.linux.alsa.devel/96215
+> 
+> > And this seems to be linux-next.
+> 
+> > Mark, Is this part of the sound updates that went to Linus?
+> 
+> No, not yet - it was only sent after the merge window.  Quite why nobody
+> managed to notice it before then I don't know.  It'll go to him soon, or
+> at least to Takashi, but don't know if it'll make -rc1 or not.
+I should have noticed that sound needs update as well  :(
 
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Now either I drop these from 3.4 or merge Linus's tree and apply
+Alexandre's fix (as that is the right fix rather than one in asoc tree)
+And since this was required for RIO patches which are still WIP, I think
+I am leaning towards former.
 
-On Mon, Mar 26, 2012 at 11:04:42AM +0530, Vinod Koul wrote:
-> On Sat, 2012-03-24 at 12:23 -0300, Fabio Estevam wrote:
-
-> > http://permalink.gmane.org/gmane.linux.alsa.devel/96215
-
-> And this seems to be linux-next.
-
-> Mark, Is this part of the sound updates that went to Linus?
-
-No, not yet - it was only sent after the merge window.  Quite why nobody
-managed to notice it before then I don't know.  It'll go to him soon, or
-at least to Takashi, but don't know if it'll make -rc1 or not.
-
---d6Gm4EdcadzBjdND
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPcDnfAAoJEBus8iNuMP3dXY4QAJrg3zNc+uF7lg//SBvDus1G
-OjRrNx7rVxe1Ot0KYNvDY9q7iH7/lVJi28pBjHftfKN0RoTpEiCGkWmmOD2SnnGT
-bWSm6qt7Iv2JO5lWViBvwQLPoNRuAyRYJkHbxPMkCKca9mZzuBVXHX1anuvRkvzh
-A3lHlBvDS6YUZsxEJ1J/L/twyxOA9Jub9lE5djcceLQflBRc5vwyIbkySj4terhk
-nkA1UTCqp7kKVxq4XJXIwWeJfIgbKl4heetWh8EWib+KZcPCh/7SKK48rUrcrU9u
-DxUGK+hLiUU+icVvs4YaT/IJe0ipsOOp5SXpv3BJE78McJePDp+doLnMBHosdwMx
-ITBtZMb98ijtdtj7DwcBUOsLaFK3+GzaGAk7oF1SeOmyWEM5VQQnj/TAapmmadRn
-yfoL4mkZaUl0q5PPBwmtjG0KLUiD6XlxsnZwRiZgfMq3WFHn8WtyPaI9zUWQ0OLu
-BRFocGVLqZnorB/TwGyTCnWZNBpR9/FnW/kO87IT8a5zL1XJZBQAwiARXy2vO6YU
-uHhTGQ1VOnylOO3rZK8xYuVFALebvxyCDuVsuRGGgAXoW65rC3/f0d5F5ko4GD3v
-P7cqhWoXE1su5VXpuAS+ItVEvavepf4m5RE/dQZYUsweWoDoeN5RvMVYU8zBn1qR
-pc9+KSCCMi55EluTGRN7
-=/Am0
------END PGP SIGNATURE-----
-
---d6Gm4EdcadzBjdND--
+-- 
+~Vinod
