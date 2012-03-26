@@ -1,86 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question: PCM short and long sync formats
-Date: Mon, 26 Mar 2012 13:08:53 +0100
-Message-ID: <20120326120853.GP3098@opensource.wolfsonmicro.com>
-References: <4F69ABB0.2000706@linux.intel.com>
-	<20120321115146.GC3226@opensource.wolfsonmicro.com>
-	<4F7031AD.3090202@linux.intel.com>
-	<20120326102650.GC3098@opensource.wolfsonmicro.com>
-	<4F705BF3.5080905@linux.intel.com>
+From: "Bounine, Alexandre" <Alexandre.Bounine@idt.com>
+Subject: RE: [PATCH linux-next] dmaengine: add context parameter fixups
+Date: Mon, 26 Mar 2012 13:14:09 +0000
+Message-ID: <8D983423E7EDF846BB3056827B8CC5D101384B@corpmail1.na.ads.idt.com>
+References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
+	 <CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
+	 <1332740082.19804.15.camel@vkoul-udesk3>
+	 <20120326094200.GA3098@opensource.wolfsonmicro.com>
+ <1332755670.19804.91.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5728969209372000634=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CEE322490D
-	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Mar 2012 14:07:19 +0200 (CEST)
-In-Reply-To: <4F705BF3.5080905@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1332755670.19804.91.camel@vkoul-udesk3>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <festevam@gmail.com>, "paul.gortmaker@windriver.com" <paul.gortmaker@windriver.com>, "dan.j.williams@intel.com" <dan.j.williams@intel.com>, "samuel@sortiz.org" <samuel@sortiz.org>, "lrg@ti.com" <lrg@ti.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5728969209372000634==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="N5iGxCIPT7YMRg16"
-Content-Disposition: inline
-
-
---N5iGxCIPT7YMRg16
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 26, 2012 at 05:37:15PM +0530, Omair Mohammed Abdullah wrote:
-> On Monday 26 March 2012 03:56 PM, Mark Brown wrote:
-
-> >I'm sorry but I still have no idea what you're talking about.  You've
-> >described PCM mode but not explained what "short frame sync" and "long
-> >frame sync" mode are.
-
-> This diagram may explain things better:
-> http://picpaste.com/pcm_fs-7dBlrkuW.png
-
-Sorry, that's not really clarifying things.  It looks like "long frame
-sync" is just I2S but presumably there's some difference?
-
---N5iGxCIPT7YMRg16
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPcFxMAAoJEBus8iNuMP3d3NoP/R0sm1MbrSB2jD1UCw1JvVWL
-3jIck45s7lqwSNqzrnzXziHuZ3SCBrHzR08tzDsd2hkfPwS/UBooo5+5o++3sOsX
-B0cL0Z20ujksk6oq0X9rpUmh9kCD9vWaoR1DPFRu22RZW+QmwsJ6z3Mwfu3cN8JT
-dfXxQcfTIk8aQgpRvnfvcGXTVLfG2h+cxLPWsaBtZwP6TyxUeNnK5wrkDqeAMdjS
-DXMvgtgqnmSV9n+AYbUOQzR6Lf2z8+kWgyL7+9PbYYBdyW6ltWaL3wzsEHv1K7K/
-XeLfrN/qcrPVUQ68LU2IWNXbHQkMwzk70nerD0PBOtHlz0uSQC9GK9CXQe22KOtz
-dTwRUGprj3uTjU+M/CITWeD1parGOvFEU53kqFJkbobU+/JZHgZgcScrj5bpY2Dc
-hV2YGL5K+hrzSIdlini2P3m+uiqQZSbbnsBU9gzF5Hb1V1rANVPG3oC3XzJ5PNZP
-WDQ6E+DaUqhvZmW8BfC12jyo1zxQvLr/Fv9QSSmn5kuph3DPYAIFTH9+RRpUtuDc
-DtmwkCTm8rMmtPnkeeKGIIMTCppDAjDmPmEiMSF591yTi0NIESEwFSpXStPVC3aw
-qCLF6yWV4HPVGhuwgdhRxevqAdtWA9Wd6fq6TDYFnJQA/2zBf9NPD/3XVEd2fHrI
-DZz1XXNeQHZ0gf26LxtI
-=U1h+
------END PGP SIGNATURE-----
-
---N5iGxCIPT7YMRg16--
-
---===============5728969209372000634==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5728969209372000634==--
+T24gTW9uLCBNYXJjaCAyNiwgMjAxMiBhdCA1OjU1IEFNLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBT
+dWJqZWN0OiBSZTogW1BBVENIIGxpbnV4LW5leHRdIGRtYWVuZ2luZTogYWRkIGNvbnRleHQgcGFy
+YW1ldGVyIGZpeHVwcw0KPiANCj4gT24gTW9uLCAyMDEyLTAzLTI2IGF0IDEwOjQyICswMTAwLCBN
+YXJrIEJyb3duIHdyb3RlOg0KPiA+IE9uIE1vbiwgTWFyIDI2LCAyMDEyIGF0IDExOjA0OjQyQU0g
+KzA1MzAsIFZpbm9kIEtvdWwgd3JvdGU6DQo+ID4gPiBPbiBTYXQsIDIwMTItMDMtMjQgYXQgMTI6
+MjMgLTAzMDAsIEZhYmlvIEVzdGV2YW0gd3JvdGU6DQo+ID4NCj4gPiA+ID4gaHR0cDovL3Blcm1h
+bGluay5nbWFuZS5vcmcvZ21hbmUubGludXguYWxzYS5kZXZlbC85NjIxNQ0KPiA+DQo+ID4gPiBB
+bmQgdGhpcyBzZWVtcyB0byBiZSBsaW51eC1uZXh0Lg0KPiA+DQo+ID4gPiBNYXJrLCBJcyB0aGlz
+IHBhcnQgb2YgdGhlIHNvdW5kIHVwZGF0ZXMgdGhhdCB3ZW50IHRvIExpbnVzPw0KPiA+DQo+ID4g
+Tm8sIG5vdCB5ZXQgLSBpdCB3YXMgb25seSBzZW50IGFmdGVyIHRoZSBtZXJnZSB3aW5kb3cuICBR
+dWl0ZSB3aHkNCj4gbm9ib2R5DQo+ID4gbWFuYWdlZCB0byBub3RpY2UgaXQgYmVmb3JlIHRoZW4g
+SSBkb24ndCBrbm93LiAgSXQnbGwgZ28gdG8gaGltIHNvb24sDQo+IG9yDQo+ID4gYXQgbGVhc3Qg
+dG8gVGFrYXNoaSwgYnV0IGRvbid0IGtub3cgaWYgaXQnbGwgbWFrZSAtcmMxIG9yIG5vdC4NCj4g
+SSBzaG91bGQgaGF2ZSBub3RpY2VkIHRoYXQgc291bmQgbmVlZHMgdXBkYXRlIGFzIHdlbGwgIDoo
+DQo+IA0KPiBOb3cgZWl0aGVyIEkgZHJvcCB0aGVzZSBmcm9tIDMuNCBvciBtZXJnZSBMaW51cydz
+IHRyZWUgYW5kIGFwcGx5DQo+IEFsZXhhbmRyZSdzIGZpeCAoYXMgdGhhdCBpcyB0aGUgcmlnaHQg
+Zml4IHJhdGhlciB0aGFuIG9uZSBpbiBhc29jIHRyZWUpDQo+IEFuZCBzaW5jZSB0aGlzIHdhcyBy
+ZXF1aXJlZCBmb3IgUklPIHBhdGNoZXMgd2hpY2ggYXJlIHN0aWxsIFdJUCwgSQ0KPiB0aGluaw0K
+PiBJIGFtIGxlYW5pbmcgdG93YXJkcyBmb3JtZXIuDQo+IA0KDQpJIGRvIG5vdCBzZWUgYW55IHNl
+bnNlIGluIGRyb3BwaW5nIHRoZXNlIEFQSSBjaGFuZ2VzIG5vdy4NClNvbWUgYXVkaW8gZmlsZXMg
+aGF2ZSBiZWVuIG1pc3NlZCBmb3JtIHRoZSBvcmlnaW5hbCBwYXRjaCBiZWNhdXNlIEkgZGlkDQpu
+b3QgaGF2ZSB0aGVtIGluIHRoZSBjb2RlIHRyZWUgd2hlbiBwYXRjaCB3YXMgYnVpbHQuDQpGb3Ig
+dGhvc2Ugd2hvIHdhcyBub3QgaW4gdGhlIGxpc3QgZm9yIG9yaWdpbmFsIHBhdGNoZXMgaGVyZSBp
+cyBhIGxpbmsgdG8NCnRoZSBwYXRjaCBkZXRhaWxzOiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAx
+Mi8zLzgvMzczDQoNCklmIHdlIGRyb3AgdGhlIEFQSSBjaGFuZ2VzIG5vdyB3ZSB3aWxsIG5lZWQg
+cmVkbyB0aGVzZSBjaGFuZ2VzIGFnYWluIGxhdGVyLg0KV2UgYWxyZWFkeSBkcmFnZ2VkIHRoZXNl
+IGNoYW5nZXMgbG9uZyBlbm91Z2ggc2luY2Ugb3JpZ2luYWwgZGlzY3Vzc2lvbiBpbiBPY3RvYmVy
+Lg0KSSB3aWxsIHNlbmQgbmV3IGlubGluZSB3cmFwcGVyIGZvciBSYXBpZElPIHRvZGF5LiANCg0K
+QWxleC4NCg0KDQo=
