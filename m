@@ -1,39 +1,54 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH] ASoC: dmaengine_pcm: use dmaengine cyclic wrapper
-Date: Mon, 26 Mar 2012 17:28:08 +0530
-Message-ID: <1332763088-18964-1-git-send-email-vinod.koul@linux.intel.com>
-Return-path: <linux-next-owner@vger.kernel.org>
-Sender: linux-next-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-next@vger.kernel.org
-Cc: broonie@opensource.wolfsonmicro.com, paul.gortmaker@windriver.com, fabio.estevam@freescale.com, Alexandre.Bounine@idt.com, Vinod Koul <vinod.koul@linux.intel.com>
+From: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
+Subject: Re: Question: PCM short and long sync formats
+Date: Mon, 26 Mar 2012 17:37:15 +0530
+Message-ID: <4F705BF3.5080905@linux.intel.com>
+References: <4F69ABB0.2000706@linux.intel.com>
+	<20120321115146.GC3226@opensource.wolfsonmicro.com>
+	<4F7031AD.3090202@linux.intel.com>
+	<20120326102650.GC3098@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E3822490A
+	for <alsa-devel@alsa-project.org>;
+	Mon, 26 Mar 2012 14:04:56 +0200 (CEST)
+In-Reply-To: <20120326102650.GC3098@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-commit 4a163c82 added extra parameter to device_prep_dma_cyclic
-this is not required if we use the wrapper over cyclic API.
+On Monday 26 March 2012 03:56 PM, Mark Brown wrote:
+> On Mon, Mar 26, 2012 at 02:36:53PM +0530, Omair Mohammed Abdullah wrote:
+>> On Wednesday 21 March 2012 05:21 PM, Mark Brown wrote:
+>
+>>> What do you mean when you say "PCM short frame sync" and "PCM long
+>>> frame sync"?
+>
+>> Sorry for the late reply, I was away.
+>
+>> What I mean by short/long frame sync is: the frame sync lasts for 1
+>> bit/1 word wide.
+>
+>> Eg.: For short frame sync, we get a frame sync signal for 1 clock
+>> before the first bit on the RX/TX.
+>
+>> It is different from I2S mode where the frame sync is inverted and
+>> the transition starts 1 clock before the bits and lasts till bit 1.
+>
+> I'm sorry but I still have no idea what you're talking about.  You've
+> described PCM mode but not explained what "short frame sync" and "long
+> frame sync" mode are.
 
-This is split from Alexedre's patch
-
-Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
----
- sound/soc/soc-dmaengine-pcm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
-index 76c038b..4756952 100644
---- a/sound/soc/soc-dmaengine-pcm.c
-+++ b/sound/soc/soc-dmaengine-pcm.c
-@@ -143,10 +143,10 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
- 	direction = snd_pcm_substream_to_dma_direction(substream);
- 
- 	prtd->pos = 0;
--	desc = chan->device->device_prep_dma_cyclic(chan,
-+	desc = dmaengine_prep_dma_cyclic(chan,
- 		substream->runtime->dma_addr,
- 		snd_pcm_lib_buffer_bytes(substream),
--		snd_pcm_lib_period_bytes(substream), direction, NULL);
-+		snd_pcm_lib_period_bytes(substream), direction);
- 
- 	if (!desc)
- 		return -ENOMEM;
--- 
-1.7.0.4
+This diagram may explain things better:
+http://picpaste.com/pcm_fs-7dBlrkuW.png
