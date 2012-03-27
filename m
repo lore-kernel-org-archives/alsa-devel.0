@@ -1,25 +1,20 @@
-From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
-Subject: Re: How to cross compile the alsa ?
-Date: Tue, 27 Mar 2012 09:39:33 +0200
-Message-ID: <CAC-Zu+6Pb9jjT3-9iTwkQtwRpSd+A6-hsdoBTYFB28vATFbsGA@mail.gmail.com>
-References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
-	<4F708A5C.3060406@ladisch.de>
-	<CAC-Zu+4RUevh0biAWOJu6niCLpHdtzW-esY3B+X7vxi193AujQ@mail.gmail.com>
-	<4F70CE4A.2020001@ladisch.de>
-	<CAC-Zu+5N0cjZiGxsptnD165KJFUW9YOi3YVBKSZStAC4Yphwng@mail.gmail.com>
-	<CAC-Zu+6+G=ceyy_r863a_f2e__nroNP=RVHaPvYscgYJyk3-Mg@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Added PCM short and long frame sync
+ formats
+Date: Tue, 27 Mar 2012 09:33:01 +0200
+Message-ID: <4F716D2D.50502@metafoo.de>
+References: <20120326133305.GR3098@opensource.wolfsonmicro.com>	<1332819135-5416-1-git-send-email-omair.m.abdullah@linux.intel.com>
+	<4F71353A.9020704@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
-	[209.85.216.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38133104171
+Received: from smtp-out-057.synserver.de (smtp-out-058.synserver.de
+	[212.40.185.58])
+	by alsa0.perex.cz (Postfix) with ESMTP id 406E2104191
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Mar 2012 09:37:59 +0200 (CEST)
-Received: by qadc14 with SMTP id c14so2900499qad.17
-	for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2012 00:39:33 -0700 (PDT)
-In-Reply-To: <CAC-Zu+6+G=ceyy_r863a_f2e__nroNP=RVHaPvYscgYJyk3-Mg@mail.gmail.com>
+	Tue, 27 Mar 2012 09:41:32 +0200 (CEST)
+In-Reply-To: <4F71353A.9020704@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,64 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi again :-P
-
-Ok!! thanks for you, I finish to cross compile xDDDDD, but another
-problem I need compile with parameter -static, but when put this line:
-
-#arm-gp2x-linux -static -lasound -o micro micro.c
-
-It returned :
-
-Can't find -lasound
- collect2:ld returned 1 exit status
-
-How cross compile statically alsa, please??, arg it's a handicap it
-
-2012/3/27 D=E1maso L=F3pez <dlopezsk@gmail.com>:
-> Hi again Clemens,
->
-> I look differents files in tmp/blah ,thanks, I think that alonely copy
-> lib/*.*, libasound.la. so ,etc in my directory
-> /usr/arm-gp2x-linux/lib/*.*
->
-> Is OK? or I copy all files in my directory? ainx :)
->
-> 2012/3/27 D=E1maso L=F3pez <dlopezsk@gmail.com>:
->> Hi,
+On 03/27/2012 05:34 AM, Omair Mohammed Abdullah wrote:
+> On Tuesday 27 March 2012 09:02 AM, Omair Mohammed Abdullah wrote:
+>> The PCM short frame sync sends a short (1 clock length) sync signal before the
+>> MSB of data. The PCM long frame sync sends a 1 word length sync signal along
+>> with the data.
 >>
->> But when I run make or make install ,the procedure is nok, it says:
+>> Signed-off-by: Omair Mohammed Abdullah<omair.m.abdullah@linux.intel.com>
+>> ---
+>>   include/sound/soc-dai.h |    2 ++
+>>   1 files changed, 2 insertions(+), 0 deletions(-)
 >>
->> pcm/.libs/libpcm.a(atomic.o) couldn't read symbols:File in wrong format
->> collectt2:ld returned 1 exit status
->> make[2]:[libasound.la] error 1
->> to exit of directory /home/dam/alsa-lib.../src
->> make[1]: [all-recursive] error 1
->> to exit of directory /home/dam/alsa-lib.../src
->> make [all-recursive] error 1
+>> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+>> index c429f24..dc94b25 100644
+>> --- a/include/sound/soc-dai.h
+>> +++ b/include/sound/soc-dai.h
+>> @@ -32,6 +32,8 @@ struct snd_soc_dapm_widget;
+>>   #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
+>>   #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
+>>   #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
+>> +#define SND_SOC_DAIFMT_SHORT_SYNC	8 /* FRM for 1 clock before MSB */
+>> +#define SND_SOC_DAIFMT_LONG_SYNC	9 /* FRM for 1 word starting with MSB */
 >>
->> Are there modify any file to configure?? because of be able to motive
->> there are create nothing =A0and it's bad
->>
->> 2012/3/26 Clemens Ladisch <clemens@ladisch.de>:
->>> D=E1maso L=F3pez wrote:
->>>> Thanks for you response, but I don't find /root/of/target, where's
->>>> this route? I've installed a Fedora on Virtual Machine and host is a
->>>> Windows XP
->>>>
->>>> Another question is:
->>>>
->>>> Have I do this line "make install DESTDIR=3D..." on directory
->>>> /home/dam/lsa-lib-1.0.17 ?
->>>
->>> Run
->>> =A0 =A0 =A0 =A0make install DESTDIR=3D/tmp/blah
->>> then look in there to find out which files you need.
->>>
->>>
->>> Regards,
->>> Clemens
+>>   /* left and right justified also known as MSB and LSB respectively */
+>>   #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
+> 
+> What I am looking for is something like this. But 
+> SND_SOC_DAIFMT_SHORT_SYNC might be the same as SND_SOC_DAIFMT_DSP_A.
+
+Yes it is. And if you really only have two slots your long sync is
+SND_SOC_DAIFMT_LEFT_J, but with the bit clock inverted.
