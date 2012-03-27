@@ -1,21 +1,23 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: M-audio fasttrack pro, input device index
-Date: Tue, 27 Mar 2012 08:40:36 +0200
-Message-ID: <4F7160E4.8030506@canonical.com>
+From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
+Subject: Re: How to cross compile the alsa ?
+Date: Tue, 27 Mar 2012 09:07:59 +0200
+Message-ID: <CAC-Zu+5N0cjZiGxsptnD165KJFUW9YOi3YVBKSZStAC4Yphwng@mail.gmail.com>
+References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
+	<4F708A5C.3060406@ladisch.de>
+	<CAC-Zu+4RUevh0biAWOJu6niCLpHdtzW-esY3B+X7vxi193AujQ@mail.gmail.com>
+	<4F70CE4A.2020001@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EBE7104139
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+	[209.85.216.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D0B0104139
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Mar 2012 08:39:04 +0200 (CEST)
-Received: from hd9483857.selulk5.dyn.perspektivbredband.net ([217.72.56.87]
-	helo=[192.168.8.102]) by youngberry.canonical.com with esmtpsa
-	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.71)
-	(envelope-from <david.henningsson@canonical.com>) id 1SCQ57-0004DY-5W
-	for alsa-devel@alsa-project.org; Tue, 27 Mar 2012 06:40:37 +0000
+	Tue, 27 Mar 2012 09:06:26 +0200 (CEST)
+Received: by qadc14 with SMTP id c14so2889465qad.17
+	for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2012 00:07:59 -0700 (PDT)
+In-Reply-To: <4F70CE4A.2020001@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-M-Audio fasttrack pro has two stereo outputs and one stereo input. It 
-looks like the input sometimes shows up at device 0 and sometimes at 
-device 1. I e, a device string would sometimes be hw:1,0,0 and sometimes 
-hw:1,1,0. (Assuming the card index is 1)
+But when I run make or make install ,the procedure is nok, it says:
 
-Do we know if there is a reason behind this behaviour, or should we just 
-try both device strings?
+pcm/.libs/libpcm.a(atomic.o) couldn't read symbols:File in wrong format
+collectt2:ld returned 1 exit status
+make[2]:[libasound.la] error 1
+to exit of directory /home/dam/alsa-lib.../src
+make[1]: [all-recursive] error 1
+to exit of directory /home/dam/alsa-lib.../src
+make [all-recursive] error 1
 
-I don't have this device myself, so I don't know if it's consistent 
-given a specific physical device, if it differs between kernel versions, 
-or anything else. I've just seen both.
+Are there modify any file to configure?? because of be able to motive
+there are create nothing  and it's bad
 
-Example alsa-info: 
-https://launchpadlibrarian.net/45386782/alsa-info.txt.5TIcWGnRjL
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+2012/3/26 Clemens Ladisch <clemens@ladisch.de>:
+> D=E1maso L=F3pez wrote:
+>> Thanks for you response, but I don't find /root/of/target, where's
+>> this route? I've installed a Fedora on Virtual Machine and host is a
+>> Windows XP
+>>
+>> Another question is:
+>>
+>> Have I do this line "make install DESTDIR=3D..." on directory
+>> /home/dam/lsa-lib-1.0.17 ?
+>
+> Run
+> =A0 =A0 =A0 =A0make install DESTDIR=3D/tmp/blah
+> then look in there to find out which files you need.
+>
+>
+> Regards,
+> Clemens
