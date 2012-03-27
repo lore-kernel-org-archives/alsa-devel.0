@@ -1,7 +1,7 @@
-From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: How to cross compile the alsa ?
-Date: Tue, 27 Mar 2012 13:47:51 +0200
-Message-ID: <CAC-Zu+7Goe2ROEzSNE1CwmQS-i5n=BMTGc1wQk9J4ay3pAUyBQ@mail.gmail.com>
+Date: Tue, 27 Mar 2012 13:00:15 +0200
+Message-ID: <4F719DBF.2060507@ladisch.de>
 References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
 	<4F708A5C.3060406@ladisch.de>
 	<CAC-Zu+4RUevh0biAWOJu6niCLpHdtzW-esY3B+X7vxi193AujQ@mail.gmail.com>
@@ -13,21 +13,18 @@ References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
 	<CAC-Zu+7ZyJuVRriEW84p4K+TpfmcZo1fRXkDCiQ2AK66kp9r3Q@mail.gmail.com>
 	<CAC-Zu+4O8uG=hHHrPaO4mKJatpVbHZqVsBi9vyfMAzRTc3DYWQ@mail.gmail.com>
 	<CAC-Zu+55WZfGze3Jk0QNimu+S7jWT1_eDbOs+yVeQOC33PEfzQ@mail.gmail.com>
-	<4F719DBF.2060507@ladisch.de>
-	<CAC-Zu+55ShwctKwN3bH=efTS_kuPTz_mvo2DVqfoXWhCmpmWqQ@mail.gmail.com>
-	<4F71A70A.5050200@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1233824339
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0C00E243FD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Mar 2012 13:47:50 +0200 (CEST)
-Received: by qcha6 with SMTP id a6so3923744qch.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2012 04:47:51 -0700 (PDT)
-In-Reply-To: <4F71A70A.5050200@ladisch.de>
+	Tue, 27 Mar 2012 13:52:39 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id C371A212C4
+	for <alsa-devel@alsa-project.org>; Tue, 27 Mar 2012 06:56:53 -0400 (EDT)
+In-Reply-To: <CAC-Zu+55WZfGze3Jk0QNimu+S7jWT1_eDbOs+yVeQOC33PEfzQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,58 +34,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: =?windows-1252?Q?D=E1maso_L=F3pez?= <dlopezsk@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The error messages are:
+D=E1maso L=F3pez wrote:
+> Hi?
 
-# arm-gp2x-linux-gcc -o micro micro.c -lasound -static
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(conf.o):
-In function `snd_config_update_free_global':
-/home/dam/alsa-lib-1.0.17/src/conf.c:3142: undefined reference to
-`pthread_mutex_lock'
-/home/dam/alsa-lib-1.0.17/src/conf.c:3151: undefined reference to
-`pthread_mutex_unlock'
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(conf.o):
-In function `snd_config_update':
-/home/dam/alsa-lib-1.0.17/src/conf.c:3109: undefined reference to
-`pthread_mutex_lock'
-/home/dam/alsa-lib-1.0.17/src/conf.c:3113: undefined reference to
-`pthread_mutex_unlock'
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(dlmisc.o):
-In function `snd_dlsym_verify':
-/home/dam/alsa-lib-1.0.17/src/dlmisc.c:115: undefined reference to `dlsym'
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(dlmisc.o):
-In function `snd_dlsym':
-/home/dam/alsa-lib-1.0.17/src/dlmisc.c:161: undefined reference to `dlsym'
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(dlmisc.o):
-In function `snd_dlclose':
-/home/dam/alsa-lib-1.0.17/src/dlmisc.c:85: undefined reference to `dlclose'
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(dlmisc.o):
-In function `snd_dlopen':
-/home/dam/alsa-lib-1.0.17/src/dlmisc.c:64: undefined reference to `dlopen'
-/home/dam/alsa-lib-1.0.17/src/dlmisc.c:58: undefined reference to `dladdr'
-collect2: ld returned 1 exit status
+We apologize for the delay.  Those responsible have been sacked.
 
-I repeat that think all copy to generate when I did make install
-DESTDIR=3D/tmp/blah, and compile --enable-static=3Dyes
+> You look this file jpeg that I send us
 
-On folder arm-gp2x-linux/lib
+You forgot the wooden table:
+http://thedailywtf.com/Articles/Web_0_0x2e_1.aspx
+
+> #arm-gp2x-linux -static -lasound -o micro micro.c
+
+You have to add all the other libraries that libasound depends
+on, such as libdl and libpthread.
 
 
-2012/3/27 Clemens Ladisch <clemens@ladisch.de>:
-> D=E1maso L=F3pez wrote:
->> Ok, I've all files, but to be continued fail
->
-> And what error message is it now?
->
->
-> Regards,
-> Clemens
+Regards,
+Clemens
