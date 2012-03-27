@@ -1,19 +1,23 @@
-From: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Added PCM short and long frame sync
-	formats
-Date: Tue, 27 Mar 2012 09:04:18 +0530
-Message-ID: <4F71353A.9020704@linux.intel.com>
-References: <20120326133305.GR3098@opensource.wolfsonmicro.com>
-	<1332819135-5416-1-git-send-email-omair.m.abdullah@linux.intel.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 2/8] sound:asoc: Add support for synopsys
+ i2s controller as per ASoC framework.
+Date: Tue, 27 Mar 2012 09:21:12 +0530
+Message-ID: <4F713930.2090900@st.com>
+References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
+	<7692a51789abe38e7066a582d8329dc93b8eced3.1332242166.git.rajeev-dlh.kumar@st.com>
+	<20120320154420.GE3445@opensource.wolfsonmicro.com>
+	<4F7030DA.2090009@st.com>
+	<20120326111055.GM3098@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80A43104135
+Received: from eu1sys200aog102.obsmtp.com (eu1sys200aog102.obsmtp.com
+	[207.126.144.113])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AAC3104139
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Mar 2012 05:31:58 +0200 (CEST)
-In-Reply-To: <1332819135-5416-1-git-send-email-omair.m.abdullah@linux.intel.com>
+	Tue, 27 Mar 2012 05:50:41 +0200 (CEST)
+In-Reply-To: <20120326111055.GM3098@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, spear-devel <spear-devel@list.st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 27 March 2012 09:02 AM, Omair Mohammed Abdullah wrote:
-> The PCM short frame sync sends a short (1 clock length) sync signal before the
-> MSB of data. The PCM long frame sync sends a 1 word length sync signal along
-> with the data.
->
-> Signed-off-by: Omair Mohammed Abdullah<omair.m.abdullah@linux.intel.com>
-> ---
->   include/sound/soc-dai.h |    2 ++
->   1 files changed, 2 insertions(+), 0 deletions(-)
->
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index c429f24..dc94b25 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -32,6 +32,8 @@ struct snd_soc_dapm_widget;
->   #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
->   #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
->   #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
-> +#define SND_SOC_DAIFMT_SHORT_SYNC	8 /* FRM for 1 clock before MSB */
-> +#define SND_SOC_DAIFMT_LONG_SYNC	9 /* FRM for 1 word starting with MSB */
->
->   /* left and right justified also known as MSB and LSB respectively */
->   #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
+Hello Mark,
 
-What I am looking for is something like this. But 
-SND_SOC_DAIFMT_SHORT_SYNC might be the same as SND_SOC_DAIFMT_DSP_A.
+On 3/26/2012 4:40 PM, Mark Brown wrote:
+> On Mon, Mar 26, 2012 at 02:33:22PM +0530, Rajeev kumar wrote:
+>> On 3/20/2012 9:14 PM, Mark Brown wrote:
+>>> On Tue, Mar 20, 2012 at 05:03:46PM +0530, Rajeev Kumar wrote:
+>
+>>>> +		if (dev->i2s_clk_cfg(config)) {
+>>>> +			dev_err(dev->dev, "runtime audio clk config fail\n");
+>>>> +			if (cpu_dai->driver->ops->trigger) {
+>>>> +				int ret =
+>>>> +					cpu_dai->driver->ops->trigger(substream,
+>>>> +							SNDRV_PCM_TRIGGER_STOP,
+>>>> +							cpu_dai);
+>>>> +				if (ret<   0) {
+>>>> +					dev_err(dev->dev,
+>>>> +							"trigger stop fail\n");
+>>>> +					return ret;
+>>>> +				}
+>>>> +			}
+>
+>>> No, return an error if you encounter an error!
+>
+>> You need not to stop controller in case clock fail ?
+>
+> Let the upper layers worry about that.  Don't randomly change the state
+> of the controller without them knowing about it.
+>
+
+Ok
+
+Best Regards
+Rajeev
