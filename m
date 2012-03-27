@@ -1,20 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Added PCM short and long frame sync
- formats
-Date: Tue, 27 Mar 2012 09:33:01 +0200
-Message-ID: <4F716D2D.50502@metafoo.de>
-References: <20120326133305.GR3098@opensource.wolfsonmicro.com>	<1332819135-5416-1-git-send-email-omair.m.abdullah@linux.intel.com>
-	<4F71353A.9020704@linux.intel.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 4/8] sound:asoc:spdif_in: Add spdif IN
+	support
+Date: Tue, 27 Mar 2012 14:55:44 +0530
+Message-ID: <4F718798.40408@st.com>
+References: <cover.1332242166.git.rajeev-dlh.kumar@st.com>
+	<568712727a6488bb0c16cf9031fa498059974e6e.1332242166.git.rajeev-dlh.kumar@st.com>
+	<20120320155526.GG3445@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-057.synserver.de (smtp-out-058.synserver.de
-	[212.40.185.58])
-	by alsa0.perex.cz (Postfix) with ESMTP id 406E2104191
+Received: from eu1sys200aog101.obsmtp.com (eu1sys200aog101.obsmtp.com
+	[207.126.144.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id A0D90104183
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Mar 2012 09:41:32 +0200 (CEST)
-In-Reply-To: <4F71353A.9020704@linux.intel.com>
+	Tue, 27 Mar 2012 11:25:23 +0200 (CEST)
+In-Reply-To: <20120320155526.GG3445@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, spear-devel <spear-devel@list.st.com>, Vipin KUMAR <vipin.kumar@st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/27/2012 05:34 AM, Omair Mohammed Abdullah wrote:
-> On Tuesday 27 March 2012 09:02 AM, Omair Mohammed Abdullah wrote:
->> The PCM short frame sync sends a short (1 clock length) sync signal before the
->> MSB of data. The PCM long frame sync sends a 1 word length sync signal along
->> with the data.
->>
->> Signed-off-by: Omair Mohammed Abdullah<omair.m.abdullah@linux.intel.com>
->> ---
->>   include/sound/soc-dai.h |    2 ++
->>   1 files changed, 2 insertions(+), 0 deletions(-)
->>
->> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->> index c429f24..dc94b25 100644
->> --- a/include/sound/soc-dai.h
->> +++ b/include/sound/soc-dai.h
->> @@ -32,6 +32,8 @@ struct snd_soc_dapm_widget;
->>   #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
->>   #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
->>   #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
->> +#define SND_SOC_DAIFMT_SHORT_SYNC	8 /* FRM for 1 clock before MSB */
->> +#define SND_SOC_DAIFMT_LONG_SYNC	9 /* FRM for 1 word starting with MSB */
->>
->>   /* left and right justified also known as MSB and LSB respectively */
->>   #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
-> 
-> What I am looking for is something like this. But 
-> SND_SOC_DAIFMT_SHORT_SYNC might be the same as SND_SOC_DAIFMT_DSP_A.
+Hello Mark,
 
-Yes it is. And if you really only have two slots your long sync is
-SND_SOC_DAIFMT_LEFT_J, but with the bit clock inverted.
+On 3/20/2012 9:25 PM, Mark Brown wrote:
+> On Tue, Mar 20, 2012 at 05:03:48PM +0530, Rajeev Kumar wrote:
+>
+> This looks good, a few minor things but almost good to go.
+>
+>> This patch implements the spdif IN driver for ST peripheral
+>
+> S/PDIF.
+>
+
+Ok,
+
+
+>> +	if (irq_status&  SPDIF_IRQ_FIFOWRITE)
+>> +		pr_err("spdif in: fifo write error\n");
+>> +	if (irq_status&  SPDIF_IRQ_EMPTYFIFOREAD)
+>> +		pr_err("spdif in: empty fifo read error\n");
+>> +	if (irq_status&  SPDIF_IRQ_FIFOFULL)
+>> +		pr_err("spdif in: fifo full error\n");
+>> +	if (irq_status&  SPDIF_IRQ_OUTOFRANGE)
+>> +		pr_err("spdif in: out of range error\n");
+>
+> dev_err().
+>
+
+Ok
+
+>> +	if (!devm_request_mem_region(&pdev->dev, res->start,
+>> +				resource_size(res), pdev->name)) {
+>> +		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
+>> +		return -ENOENT;
+>> +	}
+>> +
+>> +	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+>> +	if (!host) {
+>> +		dev_warn(&pdev->dev, "kzalloc fail\n");
+>> +		return -ENOMEM;
+>> +	}
+>
+> Good to see this - this is the sort of stuff I was looking for in the
+> I2S driver.
+>
+
+Will follow this in I2S driver.
+
+>> +	host->clk = clk_get(&pdev->dev, NULL);
+>> +	if (IS_ERR(host->clk))
+>> +		return PTR_ERR(host->clk);
+>
+>> +	pdata = dev_get_platdata(&pdev->dev);
+>
+> Should really be error checking in case you didn't get your platform
+> data.
+>
+
+Agreed,
+
+>> +	ret = devm_request_irq(&pdev->dev, host->irq, spdif_in_irq, 0,
+>> +			"spdif-in", host);
+>> +	if (ret) {
+>
+> I'm really not enthused about the idea of using devm_request_irq() here
+> - what steps are you taking to make sure that the IRQ can't possibly
+> fire after you've started tearing down the device.  In general it's
+> relatively hard to use devm_request_irq() safely.
+>
+
+Disabling interrupt in remove will insure that interrupt will not fire 
+after tearing down the device.
+
+
+>> +#define SPDIF_IN_DEV_PM_OPS NULL
+>
+> Just remove this if it's unconditionally empty.
+>
+
+OK,
+
+Best Regards
+Rajeev
+
+>> +static int __init spdif_in_init(void)
+>
+> module_platform_driver().
