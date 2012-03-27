@@ -1,130 +1,52 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: [PATCH] ASoC: ep93xx-i2s: use devm_* helpers to cleanup probe
-Date: Mon, 26 Mar 2012 16:00:17 -0700
-Message-ID: <201203261600.17787.hartleys@visionengravers.com>
+From: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
+Subject: [PATCH] ASoC: Added PCM short and long frame sync
+	formats
+Date: Tue, 27 Mar 2012 09:02:15 +0530
+Message-ID: <1332819135-5416-1-git-send-email-omair.m.abdullah@linux.intel.com>
+References: <20120326133305.GR3098@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Kernel <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@alsa-project.org, mika.westerberg@iki.fi, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, vinod.koul@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A390103E57
+	for <alsa-devel@alsa-project.org>;
+	Tue, 27 Mar 2012 05:29:59 +0200 (CEST)
+In-Reply-To: <20120326133305.GR3098@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the devm_* helpers to cleanup the probe routine. This also eliminates
-having to carry the mem value in the private data for the remove.
+The PCM short frame sync sends a short (1 clock length) sync signal before the
+MSB of data. The PCM long frame sync sends a 1 word length sync signal along
+with the data.
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-CC: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>
-
+Signed-off-by: Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
 ---
+ include/sound/soc-dai.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
-index f7a6234..8df8f6d 100644
---- a/sound/soc/ep93xx/ep93xx-i2s.c
-+++ b/sound/soc/ep93xx/ep93xx-i2s.c
-@@ -63,7 +63,6 @@ struct ep93xx_i2s_info {
- 	struct clk			*sclk;
- 	struct clk			*lrclk;
- 	struct ep93xx_pcm_dma_params	*dma_params;
--	struct resource			*mem;
- 	void __iomem			*regs;
- };
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index c429f24..dc94b25 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -32,6 +32,8 @@ struct snd_soc_dapm_widget;
+ #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
+ #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
+ #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
++#define SND_SOC_DAIFMT_SHORT_SYNC	8 /* FRM for 1 clock before MSB */
++#define SND_SOC_DAIFMT_LONG_SYNC	9 /* FRM for 1 word starting with MSB */
  
-@@ -373,38 +372,22 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int err;
- 
--	info = kzalloc(sizeof(struct ep93xx_i2s_info), GFP_KERNEL);
--	if (!info) {
--		err = -ENOMEM;
--		goto fail;
--	}
--
--	dev_set_drvdata(&pdev->dev, info);
--	info->dma_params = ep93xx_i2s_dma_params;
-+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		err = -ENODEV;
--		goto fail_free_info;
--	}
-+	if (!res)
-+		return -ENODEV;
- 
--	info->mem = request_mem_region(res->start, resource_size(res),
--				       pdev->name);
--	if (!info->mem) {
--		err = -EBUSY;
--		goto fail_free_info;
--	}
--
--	info->regs = ioremap(info->mem->start, resource_size(info->mem));
--	if (!info->regs) {
--		err = -ENXIO;
--		goto fail_release_mem;
--	}
-+	info->regs = devm_request_and_ioremap(&pdev->dev, res);
-+	if (!info->regs)
-+		return -ENXIO;
- 
- 	info->mclk = clk_get(&pdev->dev, "mclk");
- 	if (IS_ERR(info->mclk)) {
- 		err = PTR_ERR(info->mclk);
--		goto fail_unmap_mem;
-+		goto fail;
- 	}
- 
- 	info->sclk = clk_get(&pdev->dev, "sclk");
-@@ -419,6 +402,9 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
- 		goto fail_put_sclk;
- 	}
- 
-+	dev_set_drvdata(&pdev->dev, info);
-+	info->dma_params = ep93xx_i2s_dma_params;
-+
- 	err = snd_soc_register_dai(&pdev->dev, &ep93xx_i2s_dai);
- 	if (err)
- 		goto fail_put_lrclk;
-@@ -426,17 +412,12 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
- 	return 0;
- 
- fail_put_lrclk:
-+	dev_set_drvdata(&pdev->dev, NULL);
- 	clk_put(info->lrclk);
- fail_put_sclk:
- 	clk_put(info->sclk);
- fail_put_mclk:
- 	clk_put(info->mclk);
--fail_unmap_mem:
--	iounmap(info->regs);
--fail_release_mem:
--	release_mem_region(info->mem->start, resource_size(info->mem));
--fail_free_info:
--	kfree(info);
- fail:
- 	return err;
- }
-@@ -446,12 +427,10 @@ static int __devexit ep93xx_i2s_remove(struct platform_device *pdev)
- 	struct ep93xx_i2s_info *info = dev_get_drvdata(&pdev->dev);
- 
- 	snd_soc_unregister_dai(&pdev->dev);
-+	dev_set_drvdata(&pdev->dev, NULL);
- 	clk_put(info->lrclk);
- 	clk_put(info->sclk);
- 	clk_put(info->mclk);
--	iounmap(info->regs);
--	release_mem_region(info->mem->start, resource_size(info->mem));
--	kfree(info);
- 	return 0;
- }
- 
+ /* left and right justified also known as MSB and LSB respectively */
+ #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
+-- 
+1.7.4.1
