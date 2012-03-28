@@ -1,32 +1,34 @@
-From: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: fix power on/off of MIC bias
-Date: Wed, 28 Mar 2012 17:05:58 +0800
-Message-ID: <20120328090558.GA31596@zzm-ubuntu>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: fix power on/off of MIC
+ bias
+Date: Wed, 28 Mar 2012 17:58:58 +0800
+Message-ID: <20120328095857.GA29787@shlinux2.ap.freescale.net>
 References: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id B261D243F6
+	for <alsa-devel@alsa-project.org>;
+	Wed, 28 Mar 2012 11:47:55 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lionel Xu <Lionel.Xu@freescale.com>, linux-arm-kernel@lists.infradead.org
+Cc: Zeng@alsa-project.org, alsa-devel@alsa-project.org, Lionel Xu <Lionel.Xu@freescale.com>, Brown <broonie@opensource.wolfsonmicro.com>, Mark@alsa-project.org, Zhaoming <zengzm.kernel@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-It is OK to me, Thanks.
-
-Acked-by: Zeng Zhaoming <zengzm.kernel@gmail.com>
-
-On Wed 2012-03-28 15:30:33, Shawn Guo wrote:
+On Wed, Mar 28, 2012 at 03:30:33PM +0800, Shawn Guo wrote:
 > From: Lionel Xu <Lionel.Xu@freescale.com>
 > 
 > There is no sound in the recorded wav, to enable recording, the VAG
@@ -51,6 +53,12 @@ On Wed 2012-03-28 15:30:33, Shawn Guo wrote:
 > +
 > +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
 > +				SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+Only enable SGTL5000_VAG_POWERUP for mic bias_event may not be sufficient.
+IIRC for line-in record, we also need to enable VAG_POWER.
+Will verify it later when i'm free.
+
+Regards
+Dong Aisheng
 >  		break;
 >  
 >  	case SND_SOC_DAPM_PRE_PMD:
@@ -85,3 +93,10 @@ On Wed 2012-03-28 15:30:33, Shawn Guo wrote:
 >  	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
 > -- 
 > 1.7.4.1
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
