@@ -1,21 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH linux-next] dmaengine: add context
-	parameter fixups
-Date: Wed, 28 Mar 2012 16:51:06 +0100
-Message-ID: <20120328155106.GY3232@opensource.wolfsonmicro.com>
-References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
-	<CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
-	<1332740082.19804.15.camel@vkoul-udesk3>
-	<20120326094200.GA3098@opensource.wolfsonmicro.com>
-	<s5hwr64wx0p.wl%tiwai@suse.de>
+From: David Alexander <lidxv0n@gmail.com>
+Subject: Re: trying to get an eleven rack to work
+Date: Wed, 28 Mar 2012 12:53:36 -0400
+Message-ID: <CAOyn=DEumKD5yUPrBbqmqTB-6DuQgb0WEA5qYiRYK1peEM-nnA@mail.gmail.com>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+	<4F6883F9.4010405@ladisch.de>
+	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
+	<4F718114.5020602@ladisch.de>
+	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0057334213141686048=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E28124371
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9C2D243A7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Mar 2012 17:51:08 +0200 (CEST)
-In-Reply-To: <s5hwr64wx0p.wl%tiwai@suse.de>
+	Wed, 28 Mar 2012 18:53:39 +0200 (CEST)
+Received: by yenl1 with SMTP id l1so919114yen.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 09:53:37 -0700 (PDT)
+In-Reply-To: <CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +28,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: fabio.estevam@freescale.com, Vinod Koul <vinod.koul@linux.intel.com>, samuel@sortiz.org, alsa-devel@alsa-project.org, paul.gortmaker@windriver.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Alexandre Bounine <alexandre.bounine@idt.com>, linux-next@vger.kernel.org, dan.j.williams@intel.com, Fabio Estevam <festevam@gmail.com>, lrg@ti.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+---------- Forwarded message ----------
+From: "David Alexander" <lidxv0n@gmail.com>
+Date: Mar 27, 2012 10:45 PM
+Subject: Re: [alsa-devel] trying to get an eleven rack to work
+To: "Clemens Ladisch" <clemens@ladisch.de>
 
---===============0057334213141686048==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="t4k3FX2BKM3OLyzG"
-Content-Disposition: inline
+Grant & Clemens,
 
-
---t4k3FX2BKM3OLyzG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Mar 28, 2012 at 05:44:22PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > No, not yet - it was only sent after the merge window.  Quite why nobody
-> > managed to notice it before then I don't know.  It'll go to him soon, or
-> > at least to Takashi, but don't know if it'll make -rc1 or not.
-
-> How is the situation now?
-
-> FYI, I'm going to send a pull request to Linus tomorrow or on Friday.
-> If anything needed to be merged in rc1, it must be there in time.
-
-It's in my tree, I didn't see an enormous rush to get it in TBH.
-
---t4k3FX2BKM3OLyzG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPczNCAAoJEBus8iNuMP3dq1kP/2fx+sTM6QZ1T8IcQRd+8HtY
-c5GajFfOH+nOH2IPD2pd4Bn0Z4povKjxq6Lss6AaHS9ePs2JCYLCwR7+5InBHelr
-eu3hrkSFnXnGmlQrhi84FN0zgpn0+Sbu70W0gLCAIzbmubMLpQR8J2ZRrh2pYZgl
-Ou2K+Gmt0On5bijnwiOlpWGN5Vie0VmA9eTjuSay5Ohb58Rg/suxrRztmTeuX8aU
-9D5AOxAbwag/5CKB2xbmln2lupHn/EyNqTM9FKrSnsHvR2NYIw61ZxAF/izCDakD
-CMIMQNsV7tGShjmI9tG2XCJw/39xw0wcUf7D22Bq09lObiEf+NOHJ4ex+91tKwP5
-xx69Ub9zMDjt8Q/2h433mUVbId4nQupd7uZX1/VH4iWAnlxtsHdPsdwSFZjVSp+l
-psTfKMurryiNe3VhGx1nWlNv4gofiGWRJcAvQfFgJ1pqJcTUQPIePlBv1ol17Hws
-GIHF80Mj7BvLLjFerGqS7gvozAC+Z07pDUChR0ttr95cXETfO22rcpCWX20rnA8O
-5RMXghGRGPC5OvW4QHWalZoybbipSyxRzVF6K9EAJN8dKi4xBw3TtCewHo9q7Yau
-KyccnxcvME5DgZoeNdE4DTdyHxojY3cJbaMUxKTxvRCs4KfCErOXaoIl45hWcp4Y
-sKi4RpCEhAkCpKyRtT3j
-=DSFu
------END PGP SIGNATURE-----
-
---t4k3FX2BKM3OLyzG--
-
---===============0057334213141686048==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sorry for the delay in getting the dev box set up.   Here are the
+errors listed from the
+syslog with the suggested additions to quirks-table.h implemented:
 
 
---===============0057334213141686048==--
+kernel: [   74.128035] usb 2-4: new high speed USB device number 2
+using ehci_hcd
+mtp-probe: checking bus 2, device 2:
+"/sys/devices/pci0000:00/0000:00:1d.7/usb2/2-4"
+mtp-probe: bus: 2, device: 2 was not an MTP device
+
+kernel: [   74.634592] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type
+0x09
+kernel: [   74.634606] snd-usb-audio: probe of 2-4:1.0 failed with error -5
+kernel: [   74.635228] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type
+0x09
+kernel: [   74.635246] snd-usb-audio: probe of 2-4:1.1 failed with error -5
+kernel: [   74.635717] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type
+0x09
+kernel: [   74.635732] snd-usb-audio: probe of 2-4:1.2 failed with error -5
+kernel: [   74.636515] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type
+0x09
+kernel: [   74.636529] snd-usb-audio: probe of 2-4:1.3 failed with error -5
+kernel: [   74.636973] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type
+0x09
+kernel: [   74.636986] snd-usb-audio: probe of 2-4:1.4 failed with error -5
+kernel: [   74.637027] usbcore: registered new interface driver
+snd-usb-audio
+
+
+Thank you,
+David
+
+
+
+On Tue, Mar 27, 2012 at 4:57 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Grant Diffey wrote:
+>> my guess at the interface purposes from David's post are:
+>>
+>> Interface 1 is really custom (perhaps some sort of custom
+control/management thing tho I would of thought they'd use midi sysex for
+that)
+>
+> It's an audio control interface, just marked as vendor-specific.
+>
+>> Interface 3 looks like maybe a usb mixer without a descriptor? but
+that's a guess.
+>
+> Interface 3 is audio output.
+>
+>> Interface 4 is potentially usb2 audio output // looks similar to the
+maudioi fast track isosyncronous outputs
+>
+> Interface 4 is audio input, it has only an input endpoint.
+>
+>> Interface 5 is potentially usb2 audio input. // ""
+>
+> There is no interface 5.
+>
+>> can USB_DEVICE_VENDOR_SPEC deal with out of order compliant/quirked
+interfaces or only sequencial??
+>
+> The one has nothing to do with the other.
+>
+>
+> Regards,
+> Clemens
