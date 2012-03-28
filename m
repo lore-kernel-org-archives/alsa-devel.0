@@ -1,118 +1,88 @@
-From: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: fix power on/off of MIC bias
-Date: Wed, 28 Mar 2012 18:11:17 +0800
-Message-ID: <20120328101117.GA2940@zzm-ubuntu>
-References: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
- <7FE21149F4667147B645348EC605788514EDFF@039-SN2MPN1-011.039d.mgd.msft.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Samsung: fix DMA interface for
+	s3c2442 boards
+Date: Wed, 28 Mar 2012 12:04:25 +0100
+Message-ID: <20120328110424.GK3232@opensource.wolfsonmicro.com>
+References: <1332887869-3527-1-git-send-email-GNUtoo@no-log.org>
+	<1332887869-3527-2-git-send-email-GNUtoo@no-log.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <7FE21149F4667147B645348EC605788514EDFF@039-SN2MPN1-011.039d.mgd.msft.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "Zeng@alsa-project.org" <Zeng@alsa-project.org>, Xu Lionel-R63889 <R63889@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============8514058227659167936=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A08AE244B2
+	for <alsa-devel@alsa-project.org>;
+	Wed, 28 Mar 2012 13:04:51 +0200 (CEST)
+In-Reply-To: <1332887869-3527-2-git-send-email-GNUtoo@no-log.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed 2012-03-28 09:52:15, Dong Aisheng-B29396 wrote:
-> > -----Original Message-----
-> > From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> > bounces@alsa-project.org] On Behalf Of Shawn Guo
-> > Sent: Wednesday, March 28, 2012 3:31 PM
-> > To: alsa-devel@alsa-project.org
-> > Cc: Xu Lionel-R63889; Mark Brown; Zeng@alsa-project.org; Zhaoming; Shawn
-> > Guo; Xu Lionel-R63889; linux-arm-kernel@lists.infradead.org
-> > Subject: [alsa-devel] [PATCH] ASoC: sgtl5000: fix power on/off of MIC
-> > bias
-> > 
-> > From: Lionel Xu <Lionel.Xu@freescale.com>
-> > 
-> > There is no sound in the recorded wav, to enable recording, the VAG
-> > should be powered up, and the mic bias resistor should be set up with
-> > proper value.
-> > 
-> > Signed-off-by: Lionel Xu <lionel.xu@freescale.com>
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > Cc: Zeng Zhaoming <zengzm.kernel@gmail.com>
-> > ---
-> >  sound/soc/codecs/sgtl5000.c |   14 +++++++++++---
-> >  1 files changed, 11 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-> > index d192626..a24299c 100644
-> > --- a/sound/soc/codecs/sgtl5000.c
-> > +++ b/sound/soc/codecs/sgtl5000.c
-> > @@ -132,11 +132,18 @@ static int mic_bias_event(struct
-> > snd_soc_dapm_widget *w,
-> >  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
-> >  				SGTL5000_BIAS_R_MASK,
-> >  				SGTL5000_BIAS_R_4k << SGTL5000_BIAS_R_SHIFT);
-> > +
-> > +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
-> > +				SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
-> Did you test line-in record?
-> IIRC for line-in record, it may also need VAG_POWER up.
-> Then only enable VAG_POWER for mic_bias_event may not be sufficient.
-> Will verify it latter when I'm free.
-> 
-Yes, if mic bias needs VAG powerup, LINE-IN capture has the same issue.
-But I remember Line-out test passed in mx28, it there any defect I ignored?
 
-Thanks.
-Zeng Zhaoming
+--===============8514058227659167936==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sU4rRG038CsJurvk"
+Content-Disposition: inline
 
-> Regards
-> Dong Aisheng
-> 
-> >  		break;
-> > 
-> >  	case SND_SOC_DAPM_PRE_PMD:
-> >  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
-> > -				SGTL5000_BIAS_R_MASK, 0);
-> > +				SGTL5000_BIAS_R_MASK,
-> > +				SGTL5000_BIAS_R_off << SGTL5000_BIAS_R_SHIFT);
-> > +
-> > +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
-> > +				SGTL5000_VAG_POWERUP, 0);
-> >  		break;
-> >  	}
-> >  	return 0;
-> > @@ -197,7 +204,7 @@ static const struct snd_soc_dapm_widget
-> > sgtl5000_dapm_widgets[] = {
-> >  	SND_SOC_DAPM_OUTPUT("HP_OUT"),
-> >  	SND_SOC_DAPM_OUTPUT("LINE_OUT"),
-> > 
-> > -	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0,
-> > +	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SND_SOC_NOPM, 0, 0,
-> >  				mic_bias_event,
-> >  				SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-> > 
-> > @@ -229,7 +236,8 @@ static const struct snd_soc_dapm_widget
-> > sgtl5000_dapm_widgets[] = {
-> >  /* routes for sgtl5000 */
-> >  static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
-> >  	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
-> > -	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
-> > +	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
-> > +	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux
-> > */
-> > 
-> >  	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
-> >  	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
-> > --
-> > 1.7.4.1
-> > 
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--sU4rRG038CsJurvk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Mar 28, 2012 at 12:37:49AM +0200, Denis 'GNUtoo' Carikli wrote:
+> Without this fix playing a wav file that said "incomming call"
+>   resulted in the following beeing played: "in-in-in-co-co-co-mi-mi-mi...=
+".
+>=20
+> This commit was tested on the GTA02 Machine.
+>=20
+> The problem was introduced by commit 344b4c48887a443f7478fc7047d1397b2082=
+1ed3
+>   (ASoC: Samsung: Update DMA interface)
+
+Please provide some analysis of what change this patch makes and why
+it's needed.  As Sangbeom says I'd expect this will break other
+platforms, it looks like something that ought to be fixed in the s3c24xx
+DMA layer.
+
+--sU4rRG038CsJurvk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPcvAxAAoJEBus8iNuMP3dufEP/A8XwRLEkv1o/3YdCbG0rpZA
+bTV0SWYQJ/tcRH4kQzQp6U25y2qpcoHf6/2RWqp5rQSoRrN/EhhamszDSpCvD65x
+fIWXZ4B9G5u9T587JEGdR64EYSrcX2aQvQ0D3vET1Id+LpIvYxOJME8vlfsn85k6
+aJhrvc9BqE9vaH2j22nkNT41xUj2uPE3xqKqfRiyK+t+GB5vjwjMp7nUgOdbv8XL
+ouoGe67wM0C7y6Td0xhUO05Fq3vDi2g2fua4RxNx+PiOBSr44Ka/1x8+ZTJNMK0A
+RCs1MUty8wp0rt5EwxGBhbtoF4XduJlLkSrNhpxzhv2J2RFrM2vXtGi9prh6/bpu
+qkJH9rjMHmWhuWRdHO+lce6DZDe48e+1C+x9AX7krtHfsr+uv9vc/3QnK/WdI68G
+ca+h2ce0hc0sLIyfdekNchadZEPgEsIF08s+eETY1d0AL36HzTBPaI2S2rHeFQkj
+ez+uzLSaMUC2SVvA9J1eIlUUnL6vBjkQhzG0CeJhZzBHwPNrmjJzPjS7m+awZ5yq
+EB6NsAm+J4/GLFOoLoQl7ucQ8eYvLChUAACnCKkTkePXIIj/9C1AIKfsNR1cs4Vk
+l23Kr24T294cA9iUxhpaWfIs27XAoxb5XV5wD1kRyogphtXAWRS5m7g5l+bMZGfC
+U0Nbsl7eaCBD63AXUeSX
+=1hyd
+-----END PGP SIGNATURE-----
+
+--sU4rRG038CsJurvk--
+
+--===============8514058227659167936==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8514058227659167936==--
