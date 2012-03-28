@@ -1,62 +1,87 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: Re: [PATCH] ASoC: Samsung: fix DMA interface for
-	s3c2442	boards
-Date: Wed, 28 Mar 2012 17:40:48 +0900
-Message-ID: <028001cd0cbe$796d05c0$6c471140$@com>
-References: <1332887869-3527-1-git-send-email-GNUtoo@no-log.org>
-	<1332887869-3527-2-git-send-email-GNUtoo@no-log.org>
+From: Zeng Zhaoming <zengzm.kernel@gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: fix power on/off of MIC bias
+Date: Wed, 28 Mar 2012 17:05:58 +0800
+Message-ID: <20120328090558.GA31596@zzm-ubuntu>
+References: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7DD98103EAB
-	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Mar 2012 10:40:39 +0200 (CEST)
-Received: from epcpsbgm1.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0M1L003EB6RHA8U0@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 28 Mar 2012 17:40:36 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.118.225])
-	by mmp1.samsung.com (Oracle Communications Messaging Exchange Server
-	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
-	<0M1L002FE6ROY701@mmp1.samsung.com>
-	for alsa-devel@alsa-project.org; Wed, 28 Mar 2012 17:40:36 +0900 (KST)
-In-reply-to: <1332887869-3527-2-git-send-email-GNUtoo@no-log.org>
-Content-language: ko
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Denis 'GNUtoo' Carikli' <GNUtoo@no-log.org>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: 'Sangbeom Kim' <sbkim73@samsung.com>, alsa-devel@alsa-project.org, boojin.kim@samsung.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lionel Xu <Lionel.Xu@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 28, 2012 at 07:38 AM , Denis 'GNUtoo' Carikli wrote:
-> Subject: [alsa-devel] [PATCH] ASoC: Samsung: fix DMA interface for s3c2442 boards
-> 
-> Without this fix playing a wav file that said "incomming call"
->   resulted in the following beeing played: "in-in-in-co-co-co-mi-mi-mi...".
-> 
-> This commit was tested on the GTA02 Machine.
-> 
-> The problem was introduced by commit 344b4c48887a443f7478fc7047d1397b20821ed3
->   (ASoC: Samsung: Update DMA interface)
+It is OK to me, Thanks.
 
-Hi, Denis,
-As you know, Boojin Kim had modified PL330 dma related code in the last sep.
-http://lists.infradead.org/pipermail/linux-arm-kernel/2011-September/063682.html
-It just affect pl330 dma operation.
-If not, problem can be happened.
-Anyway, I will check all dma operation.
-I have included Boojin Kim on this mail-loop.
+Acked-by: Zeng Zhaoming <zengzm.kernel@gmail.com>
 
-Thanks,
-Sangbeom.
+On Wed 2012-03-28 15:30:33, Shawn Guo wrote:
+> From: Lionel Xu <Lionel.Xu@freescale.com>
+> 
+> There is no sound in the recorded wav, to enable recording, the VAG
+> should be powered up, and the mic bias resistor should be set up with
+> proper value.
+> 
+> Signed-off-by: Lionel Xu <lionel.xu@freescale.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Zeng Zhaoming <zengzm.kernel@gmail.com>
+> ---
+>  sound/soc/codecs/sgtl5000.c |   14 +++++++++++---
+>  1 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+> index d192626..a24299c 100644
+> --- a/sound/soc/codecs/sgtl5000.c
+> +++ b/sound/soc/codecs/sgtl5000.c
+> @@ -132,11 +132,18 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+>  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+>  				SGTL5000_BIAS_R_MASK,
+>  				SGTL5000_BIAS_R_4k << SGTL5000_BIAS_R_SHIFT);
+> +
+> +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+> +				SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+>  		break;
+>  
+>  	case SND_SOC_DAPM_PRE_PMD:
+>  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+> -				SGTL5000_BIAS_R_MASK, 0);
+> +				SGTL5000_BIAS_R_MASK,
+> +				SGTL5000_BIAS_R_off << SGTL5000_BIAS_R_SHIFT);
+> +
+> +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+> +				SGTL5000_VAG_POWERUP, 0);
+>  		break;
+>  	}
+>  	return 0;
+> @@ -197,7 +204,7 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+>  	SND_SOC_DAPM_OUTPUT("HP_OUT"),
+>  	SND_SOC_DAPM_OUTPUT("LINE_OUT"),
+>  
+> -	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0,
+> +	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SND_SOC_NOPM, 0, 0,
+>  				mic_bias_event,
+>  				SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+>  
+> @@ -229,7 +236,8 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+>  /* routes for sgtl5000 */
+>  static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
+>  	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
+> -	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
+> +	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
+> +	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux */
+>  
+>  	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
+>  	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
+> -- 
+> 1.7.4.1
