@@ -1,38 +1,21 @@
-From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
-Subject: Re: How to cross compile the alsa ?
-Date: Wed, 28 Mar 2012 17:49:00 +0200
-Message-ID: <CAC-Zu+6S49pR0P_s1k8nLdJHE3pnrkWnhk4fqWOTNxHOCFsAtg@mail.gmail.com>
-References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
-	<4F708A5C.3060406@ladisch.de>
-	<CAC-Zu+4RUevh0biAWOJu6niCLpHdtzW-esY3B+X7vxi193AujQ@mail.gmail.com>
-	<4F70CE4A.2020001@ladisch.de>
-	<CAC-Zu+5N0cjZiGxsptnD165KJFUW9YOi3YVBKSZStAC4Yphwng@mail.gmail.com>
-	<CAC-Zu+6+G=ceyy_r863a_f2e__nroNP=RVHaPvYscgYJyk3-Mg@mail.gmail.com>
-	<CAC-Zu+6Pb9jjT3-9iTwkQtwRpSd+A6-hsdoBTYFB28vATFbsGA@mail.gmail.com>
-	<4F718047.2090405@ladisch.de>
-	<CAC-Zu+7ZyJuVRriEW84p4K+TpfmcZo1fRXkDCiQ2AK66kp9r3Q@mail.gmail.com>
-	<CAC-Zu+4O8uG=hHHrPaO4mKJatpVbHZqVsBi9vyfMAzRTc3DYWQ@mail.gmail.com>
-	<CAC-Zu+55WZfGze3Jk0QNimu+S7jWT1_eDbOs+yVeQOC33PEfzQ@mail.gmail.com>
-	<4F719DBF.2060507@ladisch.de>
-	<CAC-Zu+55ShwctKwN3bH=efTS_kuPTz_mvo2DVqfoXWhCmpmWqQ@mail.gmail.com>
-	<4F71A70A.5050200@ladisch.de>
-	<CAC-Zu+7Goe2ROEzSNE1CwmQS-i5n=BMTGc1wQk9J4ay3pAUyBQ@mail.gmail.com>
-	<4F71B479.5010408@ladisch.de>
-	<CAC-Zu+5OYptjci2+tcoKQq8GZo94bEAqQoxqD0zrmqDYCjcfvQ@mail.gmail.com>
-	<CAC-Zu+47SrCzFM_bLDYfahJFXRbxwsboy-Cf5ZM42oSoFXjZ=w@mail.gmail.com>
-	<CAC-Zu+4WXgJB-7zcgJ2c6k90rEdVWAjXc1dKh+iKwi5VuPQumQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH linux-next] dmaengine: add context
+	parameter fixups
+Date: Wed, 28 Mar 2012 16:51:06 +0100
+Message-ID: <20120328155106.GY3232@opensource.wolfsonmicro.com>
+References: <1332511242-30241-1-git-send-email-alexandre.bounine@idt.com>
+	<CAOMZO5B-Zutv-xwqLCAgNMO8A3Kyg4uWqS41koo-yoS4mGB1TQ@mail.gmail.com>
+	<1332740082.19804.15.camel@vkoul-udesk3>
+	<20120326094200.GA3098@opensource.wolfsonmicro.com>
+	<s5hwr64wx0p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0057334213141686048=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 460B024371
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E28124371
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Mar 2012 17:49:01 +0200 (CEST)
-Received: by wibhn6 with SMTP id hn6so902169wib.2
-	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 08:49:00 -0700 (PDT)
-In-Reply-To: <CAC-Zu+4WXgJB-7zcgJ2c6k90rEdVWAjXc1dKh+iKwi5VuPQumQ@mail.gmail.com>
+	Wed, 28 Mar 2012 17:51:08 +0200 (CEST)
+In-Reply-To: <s5hwr64wx0p.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -42,75 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: fabio.estevam@freescale.com, Vinod Koul <vinod.koul@linux.intel.com>, samuel@sortiz.org, alsa-devel@alsa-project.org, paul.gortmaker@windriver.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Alexandre Bounine <alexandre.bounine@idt.com>, linux-next@vger.kernel.org, dan.j.williams@intel.com, Fabio Estevam <festevam@gmail.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-HI? Any answer? please, I'm in a loop and not to exit
 
-2012/3/28 D=E1maso L=F3pez <dlopezsk@gmail.com>:
-> Hi Clemens and friends,
->
-> I've some problem referents with alsa and get volume from mircophone:
->
-> 1.- When to compile the file ,returned these lines.Could be problem to ke=
-ep?
->
-> arm-gp2x-linux-gcc -o micro micro.c -lasound -static -lpthread -ldl -lm -=
-lrt
-> /usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasoun=
-d.a(dlmisc.o):
-> In function `snd_dlopen':
-> /home/dam/alsa-lib-1.0.17/src/dlmisc.c:64: warning: Using 'dlopen' in
-> statically linked applications requires at runtime the shared
-> libraries from the glibc version used for linking
->
-> 2.- The previous to say, despite being a warning can create executable
-> file. But when return:
->
-> ALSA lib conf.c:3009:(snd_config_update_r) Cannot access file
-> /usr/share/alsa/alsa.conf
-> ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL default
-> Ret -2
-> Mic volume is -1
->
-> I'm sorpress because not exist this file, but the route /usr/share/
-> has others folders differents of alsa, Does it change the route?
->
-> 2012/3/27 D=E1maso L=F3pez <dlopezsk@gmail.com>:
->> Hi again,
->>
->> Another question, how I can get the volume of the microphone real=3D
->> dynamic? I like getting volume of the micro, to change volume of
->> speakers.
->>
->> I don't know if I will explain .
->>
->> 2012/3/27 D=E1maso L=F3pez <dlopezsk@gmail.com>:
->>> Hi Clemens,
->>>
->>> I added 2 parameters and return:
->>>
->>> # arm-gp2x-linux-gcc -o microphone microphone.c -lasound -static -ldl -=
-lpthread
->>>
->>> /usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libaso=
-und.a(dlmisc.o):
->>> In function `snd_dlopen':
->>>
->>> /home/dam/alsa-lib-1.0.17/src/dlmisc.c:64: warning: Using 'dlopen' in
->>> statically linked applications requires at runtime the shared
->>> libraries from the glibc version used for linking
->>>
->>>
->>>
->>>
->>> 2012/3/27 Clemens Ladisch <clemens@ladisch.de>:
->>>> D=E1maso L=F3pez wrote:
->>>>> # arm-gp2x-linux-gcc -o micro micro.c -lasound -static
->>>>
->>>> You still do not have -ldl and -lpthread.
->>>>
->>>>
->>>> Regards,
->>>> Clemens
+--===============0057334213141686048==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="t4k3FX2BKM3OLyzG"
+Content-Disposition: inline
+
+
+--t4k3FX2BKM3OLyzG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 28, 2012 at 05:44:22PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > No, not yet - it was only sent after the merge window.  Quite why nobody
+> > managed to notice it before then I don't know.  It'll go to him soon, or
+> > at least to Takashi, but don't know if it'll make -rc1 or not.
+
+> How is the situation now?
+
+> FYI, I'm going to send a pull request to Linus tomorrow or on Friday.
+> If anything needed to be merged in rc1, it must be there in time.
+
+It's in my tree, I didn't see an enormous rush to get it in TBH.
+
+--t4k3FX2BKM3OLyzG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPczNCAAoJEBus8iNuMP3dq1kP/2fx+sTM6QZ1T8IcQRd+8HtY
+c5GajFfOH+nOH2IPD2pd4Bn0Z4povKjxq6Lss6AaHS9ePs2JCYLCwR7+5InBHelr
+eu3hrkSFnXnGmlQrhi84FN0zgpn0+Sbu70W0gLCAIzbmubMLpQR8J2ZRrh2pYZgl
+Ou2K+Gmt0On5bijnwiOlpWGN5Vie0VmA9eTjuSay5Ohb58Rg/suxrRztmTeuX8aU
+9D5AOxAbwag/5CKB2xbmln2lupHn/EyNqTM9FKrSnsHvR2NYIw61ZxAF/izCDakD
+CMIMQNsV7tGShjmI9tG2XCJw/39xw0wcUf7D22Bq09lObiEf+NOHJ4ex+91tKwP5
+xx69Ub9zMDjt8Q/2h433mUVbId4nQupd7uZX1/VH4iWAnlxtsHdPsdwSFZjVSp+l
+psTfKMurryiNe3VhGx1nWlNv4gofiGWRJcAvQfFgJ1pqJcTUQPIePlBv1ol17Hws
+GIHF80Mj7BvLLjFerGqS7gvozAC+Z07pDUChR0ttr95cXETfO22rcpCWX20rnA8O
+5RMXghGRGPC5OvW4QHWalZoybbipSyxRzVF6K9EAJN8dKi4xBw3TtCewHo9q7Yau
+KyccnxcvME5DgZoeNdE4DTdyHxojY3cJbaMUxKTxvRCs4KfCErOXaoIl45hWcp4Y
+sKi4RpCEhAkCpKyRtT3j
+=DSFu
+-----END PGP SIGNATURE-----
+
+--t4k3FX2BKM3OLyzG--
+
+--===============0057334213141686048==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0057334213141686048==--
