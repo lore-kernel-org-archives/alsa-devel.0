@@ -1,110 +1,130 @@
-From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
-Subject: Re: How to cross compile the alsa ?
-Date: Wed, 28 Mar 2012 13:08:19 +0200
-Message-ID: <CAC-Zu+4WXgJB-7zcgJ2c6k90rEdVWAjXc1dKh+iKwi5VuPQumQ@mail.gmail.com>
-References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
-	<4F708A5C.3060406@ladisch.de>
-	<CAC-Zu+4RUevh0biAWOJu6niCLpHdtzW-esY3B+X7vxi193AujQ@mail.gmail.com>
-	<4F70CE4A.2020001@ladisch.de>
-	<CAC-Zu+5N0cjZiGxsptnD165KJFUW9YOi3YVBKSZStAC4Yphwng@mail.gmail.com>
-	<CAC-Zu+6+G=ceyy_r863a_f2e__nroNP=RVHaPvYscgYJyk3-Mg@mail.gmail.com>
-	<CAC-Zu+6Pb9jjT3-9iTwkQtwRpSd+A6-hsdoBTYFB28vATFbsGA@mail.gmail.com>
-	<4F718047.2090405@ladisch.de>
-	<CAC-Zu+7ZyJuVRriEW84p4K+TpfmcZo1fRXkDCiQ2AK66kp9r3Q@mail.gmail.com>
-	<CAC-Zu+4O8uG=hHHrPaO4mKJatpVbHZqVsBi9vyfMAzRTc3DYWQ@mail.gmail.com>
-	<CAC-Zu+55WZfGze3Jk0QNimu+S7jWT1_eDbOs+yVeQOC33PEfzQ@mail.gmail.com>
-	<4F719DBF.2060507@ladisch.de>
-	<CAC-Zu+55ShwctKwN3bH=efTS_kuPTz_mvo2DVqfoXWhCmpmWqQ@mail.gmail.com>
-	<4F71A70A.5050200@ladisch.de>
-	<CAC-Zu+7Goe2ROEzSNE1CwmQS-i5n=BMTGc1wQk9J4ay3pAUyBQ@mail.gmail.com>
-	<4F71B479.5010408@ladisch.de>
-	<CAC-Zu+5OYptjci2+tcoKQq8GZo94bEAqQoxqD0zrmqDYCjcfvQ@mail.gmail.com>
-	<CAC-Zu+47SrCzFM_bLDYfahJFXRbxwsboy-Cf5ZM42oSoFXjZ=w@mail.gmail.com>
+From: Xu Lionel-R63889 <R63889@freescale.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: sgtl5000: fix power on/off of MIC bias
+Date: Wed, 28 Mar 2012 11:17:13 +0000
+Message-ID: <1134DBD29ABD7C45BA97B9951E61EC9007DF10@039-SN2MPN1-011.039d.mgd.msft.net>
+References: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
+ <7FE21149F4667147B645348EC605788514EDFF@039-SN2MPN1-011.039d.mgd.msft.net>
+ <20120328101117.GA2940@zzm-ubuntu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C6A1103F4B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Mar 2012 13:08:20 +0200 (CEST)
-Received: by qcha6 with SMTP id a6so569521qch.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 04:08:19 -0700 (PDT)
-In-Reply-To: <CAC-Zu+47SrCzFM_bLDYfahJFXRbxwsboy-Cf5ZM42oSoFXjZ=w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20120328101117.GA2940@zzm-ubuntu>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Zeng Zhaoming <zengzm.kernel@gmail.com>, Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "Zeng@alsa-project.org" <Zeng@alsa-project.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens and friends,
+Yes, theoretically it should be added to line-in record too, 
+I check the mx53smd board just now, found the line-in port is connected to a connector,
+I am afraid we did not check the line-in record before. 
 
-I've some problem referents with alsa and get volume from mircophone:
+-----Original Message-----
+From: Zeng Zhaoming [mailto:zengzm.kernel@gmail.com] 
+Sent: Wednesday, March 28, 2012 6:11 PM
+To: Dong Aisheng-B29396
+Cc: Shawn Guo; alsa-devel@alsa-project.org; Xu Lionel-R63889; Mark Brown; Zeng@alsa-project.org; linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: fix power on/off of MIC bias
 
-1.- When to compile the file ,returned these lines.Could be problem to keep?
+On Wed 2012-03-28 09:52:15, Dong Aisheng-B29396 wrote:
+> > -----Original Message-----
+> > From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel- 
+> > bounces@alsa-project.org] On Behalf Of Shawn Guo
+> > Sent: Wednesday, March 28, 2012 3:31 PM
+> > To: alsa-devel@alsa-project.org
+> > Cc: Xu Lionel-R63889; Mark Brown; Zeng@alsa-project.org; Zhaoming; 
+> > Shawn Guo; Xu Lionel-R63889; linux-arm-kernel@lists.infradead.org
+> > Subject: [alsa-devel] [PATCH] ASoC: sgtl5000: fix power on/off of 
+> > MIC bias
+> > 
+> > From: Lionel Xu <Lionel.Xu@freescale.com>
+> > 
+> > There is no sound in the recorded wav, to enable recording, the VAG 
+> > should be powered up, and the mic bias resistor should be set up 
+> > with proper value.
+> > 
+> > Signed-off-by: Lionel Xu <lionel.xu@freescale.com>
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > Cc: Zeng Zhaoming <zengzm.kernel@gmail.com>
+> > ---
+> >  sound/soc/codecs/sgtl5000.c |   14 +++++++++++---
+> >  1 files changed, 11 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/sound/soc/codecs/sgtl5000.c 
+> > b/sound/soc/codecs/sgtl5000.c index d192626..a24299c 100644
+> > --- a/sound/soc/codecs/sgtl5000.c
+> > +++ b/sound/soc/codecs/sgtl5000.c
+> > @@ -132,11 +132,18 @@ static int mic_bias_event(struct 
+> > snd_soc_dapm_widget *w,
+> >  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+> >  				SGTL5000_BIAS_R_MASK,
+> >  				SGTL5000_BIAS_R_4k << SGTL5000_BIAS_R_SHIFT);
+> > +
+> > +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+> > +				SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+> Did you test line-in record?
+> IIRC for line-in record, it may also need VAG_POWER up.
+> Then only enable VAG_POWER for mic_bias_event may not be sufficient.
+> Will verify it latter when I'm free.
+> 
+Yes, if mic bias needs VAG powerup, LINE-IN capture has the same issue.
+But I remember Line-out test passed in mx28, it there any defect I ignored?
 
-arm-gp2x-linux-gcc -o micro micro.c -lasound -static -lpthread -ldl -lm -lrt
-/usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasound.=
-a(dlmisc.o):
-In function `snd_dlopen':
-/home/dam/alsa-lib-1.0.17/src/dlmisc.c:64: warning: Using 'dlopen' in
-statically linked applications requires at runtime the shared
-libraries from the glibc version used for linking
+Thanks.
+Zeng Zhaoming
 
-2.- The previous to say, despite being a warning can create executable
-file. But when return:
-
-ALSA lib conf.c:3009:(snd_config_update_r) Cannot access file
-/usr/share/alsa/alsa.conf
-ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL default
-Ret -2
-Mic volume is -1
-
-I'm sorpress because not exist this file, but the route /usr/share/
-has others folders differents of alsa, Does it change the route?
-
-2012/3/27 D=E1maso L=F3pez <dlopezsk@gmail.com>:
-> Hi again,
->
-> Another question, how I can get the volume of the microphone real=3D
-> dynamic? I like getting volume of the micro, to change volume of
-> speakers.
->
-> I don't know if I will explain .
->
-> 2012/3/27 D=E1maso L=F3pez <dlopezsk@gmail.com>:
->> Hi Clemens,
->>
->> I added 2 parameters and return:
->>
->> # arm-gp2x-linux-gcc -o microphone microphone.c -lasound -static -ldl -l=
-pthread
->>
->> /usr/lib/gcc/arm-gp2x-linux/4.1.2/../../../../arm-gp2x-linux/lib/libasou=
-nd.a(dlmisc.o):
->> In function `snd_dlopen':
->>
->> /home/dam/alsa-lib-1.0.17/src/dlmisc.c:64: warning: Using 'dlopen' in
->> statically linked applications requires at runtime the shared
->> libraries from the glibc version used for linking
->>
->>
->>
->>
->> 2012/3/27 Clemens Ladisch <clemens@ladisch.de>:
->>> D=E1maso L=F3pez wrote:
->>>> # arm-gp2x-linux-gcc -o micro micro.c -lasound -static
->>>
->>> You still do not have -ldl and -lpthread.
->>>
->>>
->>> Regards,
->>> Clemens
+> Regards
+> Dong Aisheng
+> 
+> >  		break;
+> > 
+> >  	case SND_SOC_DAPM_PRE_PMD:
+> >  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+> > -				SGTL5000_BIAS_R_MASK, 0);
+> > +				SGTL5000_BIAS_R_MASK,
+> > +				SGTL5000_BIAS_R_off << SGTL5000_BIAS_R_SHIFT);
+> > +
+> > +		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+> > +				SGTL5000_VAG_POWERUP, 0);
+> >  		break;
+> >  	}
+> >  	return 0;
+> > @@ -197,7 +204,7 @@ static const struct snd_soc_dapm_widget 
+> > sgtl5000_dapm_widgets[] = {
+> >  	SND_SOC_DAPM_OUTPUT("HP_OUT"),
+> >  	SND_SOC_DAPM_OUTPUT("LINE_OUT"),
+> > 
+> > -	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0,
+> > +	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SND_SOC_NOPM, 0, 0,
+> >  				mic_bias_event,
+> >  				SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+> > 
+> > @@ -229,7 +236,8 @@ static const struct snd_soc_dapm_widget 
+> > sgtl5000_dapm_widgets[] = {
+> >  /* routes for sgtl5000 */
+> >  static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
+> >  	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
+> > -	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
+> > +	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
+> > +	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux
+> > */
+> > 
+> >  	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
+> >  	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
+> > --
+> > 1.7.4.1
+> > 
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
