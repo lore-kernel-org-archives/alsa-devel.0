@@ -1,17 +1,16 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: asihpi - fix return type of
-	hpios_locked_mem_alloc()
-Date: Wed, 28 Mar 2012 09:57:02 +0300
-Message-ID: <20120328065702.GA9113@elgon.mountain>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH] ASoC: sgtl5000: fix power on/off of MIC bias
+Date: Wed, 28 Mar 2012 15:30:33 +0800
+Message-ID: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7F31103EC5
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF89324466
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Mar 2012 08:57:28 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 28 Mar 2012 09:13:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Lionel Xu <Lionel.Xu@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Zeng@alsa-project.org, Zhaoming <zengzm.kernel@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, Lionel Xu <lionel.xu@freescale.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This function returns zero or -ENOMEM, but because it's type is u16, the
--ENOMEM gets changed to 65524.  None of the callers care, but lets fix
-it anyway as a cleanup.
+From: Lionel Xu <Lionel.Xu@freescale.com>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+There is no sound in the recorded wav, to enable recording, the VAG
+should be powered up, and the mic bias resistor should be set up with
+proper value.
 
-diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
-index 4cc315d..8c63200 100644
---- a/sound/pci/asihpi/hpi_internal.h
-+++ b/sound/pci/asihpi/hpi_internal.h
-@@ -42,7 +42,7 @@ On error *pLockedMemHandle marked invalid, non-zero returned.
- If this function succeeds, then HpiOs_LockedMem_GetVirtAddr() and
- HpiOs_LockedMem_GetPyhsAddr() will always succed on the returned handle.
- */
--u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_locked_mem_handle,
-+int hpios_locked_mem_alloc(struct consistent_dma_area *p_locked_mem_handle,
- 							   /**< memory handle */
- 	u32 size, /**< Size in bytes to allocate */
- 	struct pci_dev *p_os_reference
-diff --git a/sound/pci/asihpi/hpios.c b/sound/pci/asihpi/hpios.c
-index 2d7d1c2..87f4385 100644
---- a/sound/pci/asihpi/hpios.c
-+++ b/sound/pci/asihpi/hpios.c
-@@ -43,7 +43,7 @@ void hpios_delay_micro_seconds(u32 num_micro_sec)
+Signed-off-by: Lionel Xu <lionel.xu@freescale.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Cc: Zeng Zhaoming <zengzm.kernel@gmail.com>
+---
+ sound/soc/codecs/sgtl5000.c |   14 +++++++++++---
+ 1 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index d192626..a24299c 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -132,11 +132,18 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+ 				SGTL5000_BIAS_R_MASK,
+ 				SGTL5000_BIAS_R_4k << SGTL5000_BIAS_R_SHIFT);
++
++		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
++				SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+ 		break;
  
- On error, return -ENOMEM, and *pMemArea.size = 0
- */
--u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
-+int hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
- 	struct pci_dev *pdev)
- {
- 	/*?? any benefit in using managed dmam_alloc_coherent? */
+ 	case SND_SOC_DAPM_PRE_PMD:
+ 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+-				SGTL5000_BIAS_R_MASK, 0);
++				SGTL5000_BIAS_R_MASK,
++				SGTL5000_BIAS_R_off << SGTL5000_BIAS_R_SHIFT);
++
++		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
++				SGTL5000_VAG_POWERUP, 0);
+ 		break;
+ 	}
+ 	return 0;
+@@ -197,7 +204,7 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("HP_OUT"),
+ 	SND_SOC_DAPM_OUTPUT("LINE_OUT"),
+ 
+-	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0,
++	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SND_SOC_NOPM, 0, 0,
+ 				mic_bias_event,
+ 				SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+ 
+@@ -229,7 +236,8 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+ /* routes for sgtl5000 */
+ static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
+ 	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
+-	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
++	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
++	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux */
+ 
+ 	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
+ 	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
+-- 
+1.7.4.1
