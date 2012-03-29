@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: Enable VAG when DAC/ADC up
-Date: Thu, 29 Mar 2012 13:11:00 +0100
-Message-ID: <20120329121100.GP3668@opensource.wolfsonmicro.com>
-References: <1333000305-27280-1-git-send-email-shawn.guo@linaro.org>
-	<20120329111605.GK3668@opensource.wolfsonmicro.com>
-	<20120329120933.GA27740@zzm-ubuntu>
+From: madhukesh s <madhukeshs@gmail.com>
+Subject: Setting up the alsa configuration from scratch on imx
+Date: Thu, 29 Mar 2012 12:27:41 +0000
+Message-ID: <CADT92ybh0+g9s6a4ETd2cD8+fE2EO7ycLAxfOw71J70cv_6-EA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1589247541167480586=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E2A19104415
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50849104417
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 14:11:01 +0200 (CEST)
-In-Reply-To: <20120329120933.GA27740@zzm-ubuntu>
+	Thu, 29 Mar 2012 14:27:42 +0200 (CEST)
+Received: by laap9 with SMTP id p9so2509035laa.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 05:27:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi All,
 
---===============1589247541167480586==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pleSNuEbvnUYtMxG"
-Content-Disposition: inline
+I am in an unfortunate position of developing ALSA kernel modules
+separately(as a kernel build) and populating the necessary files to a
+filesystem. I am able to install all the ALSA modules on the board I am
+working on successfully. Can someone point me to how to start with the
+configuration part on the board to populate /proc and /dev entries?
 
+My config(as per the alsa diagnostic script) is:
 
---pleSNuEbvnUYtMxG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+upload=true&script=true&cardinfo=
+!!################################
+!!ALSA Information Script v 0.4.60
+!!################################
+!!Script ran on: Fri Mar  2 01:17:47 UTC 2012
 
-On Thu, Mar 29, 2012 at 08:09:33PM +0800, Zeng Zhaoming wrote:
-> On Thu 2012-03-29 12:16:05, Mark Brown wrote:
+!!Linux Distribution
+!!------------------
 
-> > > +	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
-> > > +	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux */
+!!DMI Information
+!!---------------
 
-> > This should be in the machine driver.
+Manufacturer:
+Product Name:
+Product Version:
 
-> This "Mic Bias" is codec internal controller, Machine code should not
-> touch this.
+!!Kernel Information
+!!------------------
 
-What is it actually doing?  Calling it "Mic Bias" if it's not a bias
-source for microphones is horribly confusing.
+Kernel release:    2.6.38.8+
+Operating System:  GNU/Linux
+Architecture:      armv7l
+Processor:         unknown
+SMP Enabled:       No
 
---pleSNuEbvnUYtMxG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+!!ALSA Version
+!!------------
+Driver version:     1.0.23
+Library version:
+Utilities version:  1.0.24.2
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+!!Loaded ALSA modules
+!!-------------------
 
-iQIcBAEBAgAGBQJPdFFOAAoJEBus8iNuMP3dGzcP/RqAMtHCK6LOJDFy12sDTLZH
-HrdA7ZS+ofsNNXqdXs+/lMl0YLdQ2x3yqVlUnyikR2ZJemBg851ePDwLe/Vfp4vS
-zDP+qBOvJd/9M+oMQoTvCRhF+ATRch9Kjqg/9sURFtiM2y4S9JgpmkcIbjUCw9GI
-12Og67rzBEj62e4ozzDzxeniqzqgDd8RWCeoLMNEeRqOVIShdPsOp/8u0CEtk0dd
-YUsfV4UF1Um12AEVgRGBKNHNZQsra29irkEI+cdPtVMGDmVw1k9uJLT/GU0HLjWR
-yFrWKZJAahZuQcJm833wmEp0Dma6reRuETPk3U1ojU22nsk+MxU77HL/IyOLVUE2
-2WmHcA+p0tn7I7/WoXWaQQpu8JHWAkq2ejDM3f5A7L2EbbJeClLoE0KWKqhMDFpp
-Kg9a3kRu3QOrGOdaDBn6Ykgy74vl4eOl7mJgswAwoaqHRf+RkKnrQmOCjlOyj/TI
-QJrRKvhX7aA8mhbDK1L2ZCLdXFiyKLpGp0tw/Xp5rwjNODHaJI9xszRV4UpsD61p
-fE0tOYyTuy1lTeIPHyvbiVihE04hPruCBjU4cxWw9KJPsw18BhWAEYY8SupGBAjB
-Pfs1bSXiE9Hwc40t41DGEDjAFjycFNyJJ31lLhTsTUHb59w++2YN41s296wH2jX5
-oa52VZLjmtXaOZnSWglb
-=e71P
------END PGP SIGNATURE-----
+!!Sound Servers on this system
+!!----------------------------
+No sound servers found.
 
---pleSNuEbvnUYtMxG--
+!!Soundcards recognised by ALSA
+!!-----------------------------
+--- no soundcards ---
 
---===============1589247541167480586==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+!!PCI Soundcards installed in the system
+!!--------------------------------------
 
+!!Advanced information - PCI Vendor/Device/Subsystem ID's
+!!--------------------------------------------------------
 
---===============1589247541167480586==--
+!!Loaded sound module options
+!!--------------------------
+
+!!ALSA Device nodes
+!!-----------------
+crw-rw---- 1 root audio 116, 33 Mar  2 00:01 /dev/snd/timer
+
+!!Aplay/Arecord output
+!!------------
+APLAY
+aplay: device_list:240: no soundcards found...
+
+ARECORD
+arecord: device_list:240: no soundcards found...
+
+!!Amixer output
+!!-------------
+
+!!Alsactl output
+!!-------------
+--startcollapse--
+--endcollapse--
+
+!!All Loaded Modules
+!!------------------
+Module
+snd_soc_imx_sgtl5000
+snd_soc_core
+snd_pcm
+snd_timer
+snd
+snd_page_alloc
+ac97_bus
+
+!!ALSA/HDA dmesg
+!!------------------
+udevd (1296): /proc/1296/oom_adj is deprecated, please use
+/proc/1296/oom_score_adj instead.
+Cirrus Logic CS42888 ALSA SoC Codec Driver
+i2c-core: driver [cs42888] using legacy suspend method
+
+Thanks,
+Maas
