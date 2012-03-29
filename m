@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: enable ssi clock in probe
-	function
-Date: Thu, 29 Mar 2012 12:29:49 +0100
-Message-ID: <20120329112949.GM3668@opensource.wolfsonmicro.com>
-References: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
+Subject: ASoC updates for 3.4
+Date: Thu, 29 Mar 2012 13:08:43 +0100
+Message-ID: <20120329120842.GO3668@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3431910330160071492=="
+Content-Type: multipart/mixed; boundary="===============5729519766713066309=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42763104405
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D670103B6F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 13:29:52 +0200 (CEST)
-In-Reply-To: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
+	Thu, 29 Mar 2012 14:08:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +18,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3431910330160071492==
+--===============5729519766713066309==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rpGc+ACYPE+RMC+Z"
+	protocol="application/pgp-signature"; boundary="L5nTHegdhbHhzmSD"
 Content-Disposition: inline
 
 
---rpGc+ACYPE+RMC+Z
+--L5nTHegdhbHhzmSD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 29, 2012 at 10:53:41AM +0800, Shawn Guo wrote:
-> For power saving, most IMX platform initilization code turns off
-> modules' clock, and expects driver turn on clock as needed.
+The following changes since commit 22f8d055350066b4a87de4adea8c5213cac54534:
 
-Applied, thanks (though checking return codes would be nice). =20
+  ASoC: wm8994: Provide VMID mode control and fix default sequence (2012-03-19 19:08:17 +0000)
 
-Ideally you'd be able to enable the clocks only when needed at runtime
-though the power savings would doubtless be very small, pm_runtime
-callbacks might be helpful.  Having the clocks present on PowerPC (even
-if just dummy) so we don't have the conditional code would also be nice.
+are available in the git repository at:
 
---rpGc+ACYPE+RMC+Z
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.4
+
+for you to fetch changes up to 41ba6b711a40b83a877ae8242a4b3e692de91f97:
+
+  ASoC: dmaengine_pcm: use dmaengine cyclic wrapper (2012-03-26 18:28:11 +0100)
+
+Not sure where your current ASoC branch is - topic/asoc and fix/asoc are
+both behind Linus' tree (which is what this pull request was generated
+against).
+
+----------------------------------------------------------------
+ASoC: A few more updates for 3.4
+
+The cleanup of the dmaengine parameter messup and a tweak to some
+callibration values for WM1811.
+
+----------------------------------------------------------------
+Fabio Estevam (1):
+      ASoC: Add extra parameter to device_prep_dma_cyclic
+
+Mark Brown (1):
+      ASoC: wm8994: Update WM8994 DCS calibration
+
+Vinod Koul (1):
+      ASoC: dmaengine_pcm: use dmaengine cyclic wrapper
+
+ sound/soc/codecs/wm8994.c     |    2 +-
+ sound/soc/soc-dmaengine-pcm.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--L5nTHegdhbHhzmSD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPdEebAAoJEBus8iNuMP3dvw4P/3wJGOxmHdchMuIx/zqGHWTy
-TNeDjGwGDFccNM1nxUaPvPMsQYHrgneqroCoI891D1Hd0HekE0NlFI1N0UC5rHAy
-rsUiCMUhkWajjrqClX6tz+kimE06qQVKyjSVJNkmMIBail3yZBF1lh+jAGAS+fFp
-NqRFyJyZ0T4NWuBqhaonffolx3xgwAVPtXW08GZzpA+qie/x+NHTvIq9l/xWVpDe
-CJVpNoL/Rmj/LC1XyXJGTJK6duq86B/Zao0KYAI9LMS604neaf3vjAHMht/mgX2D
-Liv001y4lcUNt1X6YD3EpAf3lvyaNzObGZknhuPEZFCahdcr3PviIC8wOgIxjzeL
-/cq6AURkNhFxSzQ/Et/cH9KtaY1rIVfTtufi3phR7e3tXI3n9tL5YkJ0L2n6DL5w
-pw3AjGWniD5E/lzvWaV5GMn4EMIC4G6sX+Uga6YlDhPQg50sCpbYKMbl5xUAEa5E
-ezQ5cjZ6cGJGoFARi8NAv1mtUAEsn4F8HxGykJ3u4rYbLy9MRbjpSbz1HVeaiovS
-hIweDydOOM2YJw26j6h/1rYac1QMWgUM08qMqq3UfKVp93U/JM3PNDODO7iWTF3g
-fkb6yFL7PgcleZYN+daaYPmqeMQ9kR8wouFZN20pfBmLH37mFP0s0k0bI1t16MHF
-cTQEpeeLsaGOb/RMjULv
-=uOi7
+iQIcBAEBAgAGBQJPdFDCAAoJEBus8iNuMP3ddBIP/iPeVExJt+IFo6dv+vMfKrba
+ceWKLyQ3OsEdxHnAdAiFesbxKp9WpYi10qoxqxH1E+xJ2WTbz6UEudrDtFdpp3Bg
+gl7khZe6/cOJl5WTTqJSLJfU7NV7erP2j5z0QSUa3DSYJ5WZhDyB3psHFbCueei4
+t/agj/dL2z6QRBtsglex2wl1ydauxiFHlCebYBBxKPJf5TpqfuOWjOBifpHhkDFm
+G3On1y2rE2N7cf10pCico3LQq/d6iC7+CZ3mJczH+svvfPq+dQMO5Zf0grP6NglG
+ULgwMbjt1UbDGIVHgENtiMCsW0aiumW/QYMI7bN7BSoD8krd6RLhpd4J1OxrsM64
+eTeC2ZzH13nvHPlrU/y+PIpjzrITClUeQtHjAs0tFthzumzWB4MOENo/f20FYmZ7
+zpP7NXirYEAYLo/x1P37qwtuv39STDtd7hqmOuGRCJj1rnIa7xKjFIjROEXvDzPq
+1DttmxOX34fyDi5G7xk/NVVV5H8Wu8d16Q/ktcbeHcSHt5vVh6cmOPRjqC/siii4
+xvkz99nrjMlKeNqCVVTY8U5/TBNuxcAfRoustNTdVwJgnQjduzT0HNFQtKJr2gaU
+pRu3MDRhtQJyp7ElKyoVi0vV/txarlY8J867d/a6XPXeLlt9gJpbw/RzykO7PhTq
+IkUuxUOS8DlRv7gAp9Sq
+=eELC
 -----END PGP SIGNATURE-----
 
---rpGc+ACYPE+RMC+Z--
+--L5nTHegdhbHhzmSD--
 
---===============3431910330160071492==
+--===============5729519766713066309==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3431910330160071492==--
+--===============5729519766713066309==--
