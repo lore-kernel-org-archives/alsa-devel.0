@@ -1,30 +1,16 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: WM8994 playback delay
-Date: Thu, 29 Mar 2012 08:02:29 +0900
-Message-ID: <031201cd0d36$d9b78310$8d268930$@com>
-References: <1332964426-8480-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1332964426-8480-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: gsantosh@codeaurora.org
+Subject: ASoC:Question on strict sequence followed for trigger
+Date: Wed, 28 Mar 2012 17:25:14 -0700 (PDT)
+Message-ID: <1ea6fbaaca7ffeaa7b7325f18fe4e959.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B85924472
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7440B2448B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 01:02:21 +0200 (CEST)
-Received: from epcpsbgm2.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0M1M00L56ANJNG80@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 29 Mar 2012 08:02:16 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.118.225])
-	by mmp1.samsung.com (Oracle Communications Messaging Exchange Server
-	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
-	<0M1M00MF9ANS9V70@mmp1.samsung.com>
-	for alsa-devel@alsa-project.org; Thu, 29 Mar 2012 08:02:16 +0900 (KST)
-In-reply-to: <1332964426-8480-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-Content-language: ko
+	Thu, 29 Mar 2012 02:25:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,23 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, sbkim01@gmail.com, sangsu4u.park@samsung.com, 'Liam Girdwood' <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Mark,
+Hi All,
 
-Currently, We are developing SMDK with Exynos5250 and  WM8994 on 3.3-rc6.
-We try to enable CONFIG_PM_RUNTIME and on/off control of power domain.
-But It has playback delay in the first playback.(3~4sec and 6/10times)
+I see there is a strict sequence followed for trigger callback to codec
+dai, platform dai and cpu dai.
+In the below function of soc-core .
+int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd);
 
-In that time, Log maessage is 
-'wm8994-codec wm8994-codec: Timed out waiting for DC Servo 300'
-wait_for_dc_servo() function generate above message on sound/soc/codecs/wm_hubs.c
+In some scenarios we may require the sequence to be the other case to make
+sure the underlying DSP / codec is configured and triggered properly. I
+have a requirement that this sequence has to be
+1)        Codec_dai
+2)        Cpu_dai
+3)        Platform dai
 
-After removing wait_for_dc_servo for testing, playback delay is disappeared.
-So, Could you please explain the  purporse of wait_for_dc_servo()?
-If wait_for_dc_servo() is removed, What kind of problem can be happened?
+Will this call sequence can be changed or there is no room to change this
+sequence.
 
-Thanks,
-Sangbeom.
+Regards,
+Santosh M G.
