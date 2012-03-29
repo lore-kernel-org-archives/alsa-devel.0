@@ -1,18 +1,20 @@
-From: Dong Aisheng <aisheng.dong@freescale.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 Subject: Re: [PATCH 1/2] ASoC: sgtl5000: Convert mic bias to a
- supply widget
-Date: Thu, 29 Mar 2012 11:40:46 +0800
-Message-ID: <20120329034045.GB29787@shlinux2.ap.freescale.net>
+	supply widget
+Date: Thu, 29 Mar 2012 13:24:13 +0800
+Message-ID: <20120329052410.GA19506@S2101-09.ap.freescale.net>
 References: <1332964426-8480-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
-	(am1ehsobe005.messaging.microsoft.com [213.199.154.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC18D24352
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 555F3243A8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 05:29:41 +0200 (CEST)
+	Thu, 29 Mar 2012 07:24:19 +0200 (CEST)
+Received: by iakh37 with SMTP id h37so2641730iak.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 22:24:17 -0700 (PDT)
 Content-Disposition: inline
 In-Reply-To: <1332964426-8480-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,7 +27,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam@alsa-project.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, Girdwood <lrg@ti.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 On Wed, Mar 28, 2012 at 08:53:45PM +0100, Mark Brown wrote:
@@ -51,17 +53,18 @@ On Wed, Mar 28, 2012 at 08:53:45PM +0100, Mark Brown wrote:
 > +			    mic_bias_event,
 > +			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
 >  
->  	SND_SOC_DAPM_PGA_E("HP", SGTL5000_CHIP_ANA_POWER, 4, 0, NULL, 0,
->  			small_pop_event,
-> -- 
-> 1.7.9.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
+It breaks my capture testing.
 
-Regards
-Dong Aisheng
+I'm not sure these two macros are equivalent, since they have different
+.id assignment.  To quickly confirm the problem, I have the capture
+back to work with the following change.
+
+ #define SND_SOC_DAPM_SUPPLY(wname, wreg, wshift, winvert, wevent, wflags) \
+-{      .id = snd_soc_dapm_supply, .name = wname, .reg = wreg,  \
++{      .id = snd_soc_dapm_micbias, .name = wname, .reg = wreg, \
+        .shift = wshift, .invert = winvert, .event = wevent, \
+        .event_flags = wflags}
+
+-- 
+Regards,
+Shawn
