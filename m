@@ -1,18 +1,20 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ASoC: fsl: enable ssi clock in probe function
-Date: Thu, 29 Mar 2012 10:53:41 +0800
-Message-ID: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: sgtl5000: Convert mic bias to a
+ supply widget
+Date: Thu, 29 Mar 2012 11:40:46 +0800
+Message-ID: <20120329034045.GB29787@shlinux2.ap.freescale.net>
+References: <1332964426-8480-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E4FA324469
+Received: from am1outboundpool.messaging.microsoft.com
+	(am1ehsobe005.messaging.microsoft.com [213.199.154.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC18D24352
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 04:54:03 +0200 (CEST)
-Received: by iakh37 with SMTP id h37so2477582iak.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 19:54:02 -0700 (PDT)
+	Thu, 29 Mar 2012 05:29:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1332964426-8480-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,88 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam@alsa-project.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-For power saving, most IMX platform initilization code turns off
-modules' clock, and expects driver turn on clock as needed.
+On Wed, Mar 28, 2012 at 08:53:45PM +0100, Mark Brown wrote:
+> No current users and it's the last user of MICBIAS_E().
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/sgtl5000.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+> index d192626..77beb6d 100644
+> --- a/sound/soc/codecs/sgtl5000.c
+> +++ b/sound/soc/codecs/sgtl5000.c
+> @@ -197,9 +197,9 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+>  	SND_SOC_DAPM_OUTPUT("HP_OUT"),
+>  	SND_SOC_DAPM_OUTPUT("LINE_OUT"),
+>  
+> -	SND_SOC_DAPM_MICBIAS_E("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0,
+> -				mic_bias_event,
+> -				SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+> +	SND_SOC_DAPM_SUPPLY("Mic Bias", SGTL5000_CHIP_MIC_CTRL, 8, 0,
+> +			    mic_bias_event,
+> +			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+>  
+>  	SND_SOC_DAPM_PGA_E("HP", SGTL5000_CHIP_ANA_POWER, 4, 0, NULL, 0,
+>  			small_pop_event,
+> -- 
+> 1.7.9.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/fsl/fsl_ssi.c |   24 ++++++++++++++++++++++--
- 1 files changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 4f76b5d..4ed2afd 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -14,6 +14,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
-+#include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-@@ -119,6 +120,7 @@ struct fsl_ssi_private {
- 
- 	bool new_binding;
- 	bool ssi_on_imx;
-+	struct clk *clk;
- 	struct platform_device *imx_pcm_pdev;
- 	struct imx_pcm_dma_params dma_params_tx;
- 	struct imx_pcm_dma_params dma_params_rx;
-@@ -722,6 +724,15 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
- 		u32 dma_events[2];
- 		ssi_private->ssi_on_imx = true;
-+
-+		ssi_private->clk = clk_get(&pdev->dev, NULL);
-+		if (IS_ERR(ssi_private->clk)) {
-+			ret = PTR_ERR(ssi_private->clk);
-+			dev_err(&pdev->dev, "could not get clock: %d\n", ret);
-+			goto error_irq;
-+		}
-+		clk_prepare_enable(ssi_private->clk);
-+
- 		/*
- 		 * We have burstsize be "fifo_depth - 2" to match the SSI
- 		 * watermark setting in fsl_ssi_startup().
-@@ -742,7 +753,7 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 					"fsl,ssi-dma-events", dma_events, 2);
- 		if (ret) {
- 			dev_err(&pdev->dev, "could not get dma events\n");
--			goto error_irq;
-+			goto error_clk;
- 		}
- 		ssi_private->dma_params_tx.dma = dma_events[0];
- 		ssi_private->dma_params_rx.dma = dma_events[1];
-@@ -830,6 +841,12 @@ error_dev:
- 	dev_set_drvdata(&pdev->dev, NULL);
- 	device_remove_file(&pdev->dev, dev_attr);
- 
-+error_clk:
-+	if (ssi_private->ssi_on_imx) {
-+		clk_disable_unprepare(ssi_private->clk);
-+		clk_put(ssi_private->clk);
-+	}
-+
- error_irq:
- 	free_irq(ssi_private->irq, ssi_private);
- 
-@@ -851,8 +868,11 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 
- 	if (!ssi_private->new_binding)
- 		platform_device_unregister(ssi_private->pdev);
--	if (ssi_private->ssi_on_imx)
-+	if (ssi_private->ssi_on_imx) {
- 		platform_device_unregister(ssi_private->imx_pcm_pdev);
-+		clk_disable_unprepare(ssi_private->clk);
-+		clk_put(ssi_private->clk);
-+	}
- 	snd_soc_unregister_dai(&pdev->dev);
- 	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
- 
--- 
-1.7.5.4
+Regards
+Dong Aisheng
