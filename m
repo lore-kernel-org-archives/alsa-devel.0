@@ -1,22 +1,21 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: fix power on/off of MIC
-	bias
-Date: Thu, 29 Mar 2012 13:56:06 +0800
-Message-ID: <20120329055604.GB19506@S2101-09.ap.freescale.net>
-References: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ASoC:Question on strict sequence followed for
+	trigger
+Date: Thu, 29 Mar 2012 08:49:37 +0200
+Message-ID: <4F740601.8080907@ladisch.de>
+References: <1ea6fbaaca7ffeaa7b7325f18fe4e959.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFA14104319
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id BF97E104353
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 07:56:13 +0200 (CEST)
-Received: by iakh37 with SMTP id h37so2675183iak.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 22:56:12 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
+	Thu, 29 Mar 2012 08:46:24 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.mail.srv.osa [10.202.2.41])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 3E29F20BDB
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 02:46:18 -0400 (EDT)
+In-Reply-To: <1ea6fbaaca7ffeaa7b7325f18fe4e959.squirrel@www.codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lionel Xu <Lionel.Xu@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: gsantosh@codeaurora.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 28, 2012 at 03:30:33PM +0800, Shawn Guo wrote:
-> From: Lionel Xu <Lionel.Xu@freescale.com>
-> 
-> There is no sound in the recorded wav, to enable recording, the VAG
-> should be powered up, and the mic bias resistor should be set up with
-> proper value.
-> 
-> Signed-off-by: Lionel Xu <lionel.xu@freescale.com>
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> Cc: Zeng Zhaoming <zengzm.kernel@gmail.com>
+gsantosh@codeaurora.org wrote:
+> I see there is a strict sequence followed for trigger callback to codec
+> dai, platform dai and cpu dai.
+> In the below function of soc-core .
+> int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd);
+>
+> In some scenarios we may require the sequence to be the other case to make
+> sure the underlying DSP / codec is configured and triggered properly.
 
-Mark, I just send a patch authored by Zeng Zhaoming, which fixes the
-problem in a more sensible way.  So please ignore this one.
+The trigger callback should do nothing but actually start the stream.
+(In the ideal case, this would be setting one bit in a register of the
+DMA controller.)
 
--- 
+Any configuration should be done in hw_params.
+
+
 Regards,
-Shawn
+Clemens
