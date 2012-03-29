@@ -1,23 +1,16 @@
-From: linux@audioscience.com
-Subject: [PATCH] ALSA: asihpi - fix return value of
-	hpios_locked_mem_alloc()
-Date: Fri, 30 Mar 2012 09:52:25 +1300
-Message-ID: <1333054345-1416-1-git-send-email-linux@audioscience.com>
-References: <s5hk424t1h9.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: submiting an asoc-core patch with codec updates
+Date: Thu, 29 Mar 2012 22:24:04 +0100
+Message-ID: <20120329212403.GA4153@opensource.wolfsonmicro.com>
+References: <alpine.DEB.2.02.1203291421530.21413@heelrod.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9053242168298213166=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB1B8104547
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B839104547
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 22:52:41 +0200 (CEST)
-Received: from mxin3-orange.clear.net.nz
-	(lb2-srcnat.clear.net.nz [203.97.32.237])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0M1N001FNZB7MR20@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 30 Mar 2012 09:52:38 +1300 (NZDT)
-In-reply-to: <s5hk424t1h9.wl%tiwai@suse.de>
+	Thu, 29 Mar 2012 23:24:07 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1203291421530.21413@heelrod.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,80 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Make this function consistent with others in this module by
-returning 1 for error, instead of -ENOMEM
-(reverts function signature change from a938fb1e)
+--===============9053242168298213166==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
 
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
----
- sound/pci/asihpi/hpi_internal.h |    4 ++--
- sound/pci/asihpi/hpios.c        |   10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
-index 8c63200..bc86cb7 100644
---- a/sound/pci/asihpi/hpi_internal.h
-+++ b/sound/pci/asihpi/hpi_internal.h
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2012  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-@@ -42,7 +42,7 @@ On error *pLockedMemHandle marked invalid, non-zero returned.
- If this function succeeds, then HpiOs_LockedMem_GetVirtAddr() and
- HpiOs_LockedMem_GetPyhsAddr() will always succed on the returned handle.
- */
--int hpios_locked_mem_alloc(struct consistent_dma_area *p_locked_mem_handle,
-+u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_locked_mem_handle,
- 							   /**< memory handle */
- 	u32 size, /**< Size in bytes to allocate */
- 	struct pci_dev *p_os_reference
-diff --git a/sound/pci/asihpi/hpios.c b/sound/pci/asihpi/hpios.c
-index 87f4385..5ef4fe9 100644
---- a/sound/pci/asihpi/hpios.c
-+++ b/sound/pci/asihpi/hpios.c
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2012  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-@@ -39,11 +39,11 @@ void hpios_delay_micro_seconds(u32 num_micro_sec)
- 
- }
- 
--/** Allocated an area of locked memory for bus master DMA operations.
-+/** Allocate an area of locked memory for bus master DMA operations.
- 
--On error, return -ENOMEM, and *pMemArea.size = 0
-+If allocation fails, return 1, and *pMemArea.size = 0
- */
--int hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
-+u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
- 	struct pci_dev *pdev)
- {
- 	/*?? any benefit in using managed dmam_alloc_coherent? */
-@@ -62,7 +62,7 @@ int hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
- 		HPI_DEBUG_LOG(WARNING,
- 			"failed to allocate %d bytes locked memory\n", size);
- 		p_mem_area->size = 0;
--		return -ENOMEM;
-+		return 1;
- 	}
- }
- 
--- 
-1.7.0.4
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 29, 2012 at 02:23:59PM -0500, Brian Austin wrote:
+> I would like to submit a patch that adds some new macros for TLV in
+> ASoC. this patch requires changes in 2 codecs (CS42L51,CS42L73).
+
+> Should I submit just the asoc-core patch then follow up with the
+> codec patches or just submit as a series?
+
+If the core patch doesn't break the build of the CODECs (eg, it
+introduces a new API) either way is fine, it doesn't matter much so long
+as it's clear that the core patch needs to be applied first.  If the
+core patch does break the build (eg, it changes an existing API) then
+all the changes need to be part of a single patch.
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPdNLrAAoJEBus8iNuMP3dRqcP/3BjAMEEV41AV6UHvWvWme4i
+MoguAM2XnJtCtp3eNmWeuFWqnXny3RH2QSZpV9L0wIf6acT2zSVj9eYGlYJjn7j/
+5LcAWWWsKdlnPixDMIIDXdW6YWoNixmnr1Y9AqOn7zuurQCtN/MAcOm4a2ixqiHU
+YUmCXF+mlbD4RkWg/we+aOK0cfY4ZIzqHWOrhrHM3oGDKnl7Bkk/NEMIhQkQqx39
+J5D3YKS06I7Eilk9D41pJ/Hdc/M4qJrkmk06aSuuHQpzQsfa/Jhb95CJJqZZmMCU
+LORKWSJe6oLMbI8RJDaNx7zgFJ4k0lPaxWgTnunEQCAvLjJE6edIsyxc4qg+d13c
+TtL16YDOIBQu/VDrluR8R1f5t52g9qTNrUgj9s3STzkBYsmgc7tahSBLyLe2Gm5e
+WTP++XwmzVq4/QHlXohfoMpNTiQ4LffY8SD5JQV+cj0nud+08JyBReAplGxIXvkE
+F6OOPB0THP9e1XwobyVqIQfE7jR2Iumj7rQGBpbrW7A+mLrRtEqKi5VVV42arGAV
+4KY7fQzaxftoGT/IVbFicxBQ+kn8F9QZ53K+JOj4IDqL5JZ19UtLSr8XSau/4uCf
+Lzi0s+tHUNB9XCfs0K9lS2tjlQebM+KTrz5FCzbLwas/LuyvvO7hQKpTwgsKUnlC
+/JP4A1xRnxIcVBvk9Uo/
+=aybL
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
+
+--===============9053242168298213166==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9053242168298213166==--
