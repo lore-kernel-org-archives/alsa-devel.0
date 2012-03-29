@@ -1,14 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.4
-Date: Thu, 29 Mar 2012 13:08:43 +0100
-Message-ID: <20120329120842.GO3668@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Enable VAG when DAC/ADC up
+Date: Thu, 29 Mar 2012 13:11:00 +0100
+Message-ID: <20120329121100.GP3668@opensource.wolfsonmicro.com>
+References: <1333000305-27280-1-git-send-email-shawn.guo@linaro.org>
+	<20120329111605.GK3668@opensource.wolfsonmicro.com>
+	<20120329120933.GA27740@zzm-ubuntu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5729519766713066309=="
+Content-Type: multipart/mixed; boundary="===============1589247541167480586=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D670103B6F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E2A19104415
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 14:08:46 +0200 (CEST)
+	Thu, 29 Mar 2012 14:11:01 +0200 (CEST)
+In-Reply-To: <20120329120933.GA27740@zzm-ubuntu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,86 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Zeng Zhaoming <zengzm.kernel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5729519766713066309==
+--===============1589247541167480586==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L5nTHegdhbHhzmSD"
+	protocol="application/pgp-signature"; boundary="pleSNuEbvnUYtMxG"
 Content-Disposition: inline
 
 
---L5nTHegdhbHhzmSD
+--pleSNuEbvnUYtMxG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 22f8d055350066b4a87de4adea8c5213cac54534:
+On Thu, Mar 29, 2012 at 08:09:33PM +0800, Zeng Zhaoming wrote:
+> On Thu 2012-03-29 12:16:05, Mark Brown wrote:
 
-  ASoC: wm8994: Provide VMID mode control and fix default sequence (2012-03-19 19:08:17 +0000)
+> > > +	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
+> > > +	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux */
 
-are available in the git repository at:
+> > This should be in the machine driver.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.4
+> This "Mic Bias" is codec internal controller, Machine code should not
+> touch this.
 
-for you to fetch changes up to 41ba6b711a40b83a877ae8242a4b3e692de91f97:
+What is it actually doing?  Calling it "Mic Bias" if it's not a bias
+source for microphones is horribly confusing.
 
-  ASoC: dmaengine_pcm: use dmaengine cyclic wrapper (2012-03-26 18:28:11 +0100)
-
-Not sure where your current ASoC branch is - topic/asoc and fix/asoc are
-both behind Linus' tree (which is what this pull request was generated
-against).
-
-----------------------------------------------------------------
-ASoC: A few more updates for 3.4
-
-The cleanup of the dmaengine parameter messup and a tweak to some
-callibration values for WM1811.
-
-----------------------------------------------------------------
-Fabio Estevam (1):
-      ASoC: Add extra parameter to device_prep_dma_cyclic
-
-Mark Brown (1):
-      ASoC: wm8994: Update WM8994 DCS calibration
-
-Vinod Koul (1):
-      ASoC: dmaengine_pcm: use dmaengine cyclic wrapper
-
- sound/soc/codecs/wm8994.c     |    2 +-
- sound/soc/soc-dmaengine-pcm.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
---L5nTHegdhbHhzmSD
+--pleSNuEbvnUYtMxG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPdFDCAAoJEBus8iNuMP3ddBIP/iPeVExJt+IFo6dv+vMfKrba
-ceWKLyQ3OsEdxHnAdAiFesbxKp9WpYi10qoxqxH1E+xJ2WTbz6UEudrDtFdpp3Bg
-gl7khZe6/cOJl5WTTqJSLJfU7NV7erP2j5z0QSUa3DSYJ5WZhDyB3psHFbCueei4
-t/agj/dL2z6QRBtsglex2wl1ydauxiFHlCebYBBxKPJf5TpqfuOWjOBifpHhkDFm
-G3On1y2rE2N7cf10pCico3LQq/d6iC7+CZ3mJczH+svvfPq+dQMO5Zf0grP6NglG
-ULgwMbjt1UbDGIVHgENtiMCsW0aiumW/QYMI7bN7BSoD8krd6RLhpd4J1OxrsM64
-eTeC2ZzH13nvHPlrU/y+PIpjzrITClUeQtHjAs0tFthzumzWB4MOENo/f20FYmZ7
-zpP7NXirYEAYLo/x1P37qwtuv39STDtd7hqmOuGRCJj1rnIa7xKjFIjROEXvDzPq
-1DttmxOX34fyDi5G7xk/NVVV5H8Wu8d16Q/ktcbeHcSHt5vVh6cmOPRjqC/siii4
-xvkz99nrjMlKeNqCVVTY8U5/TBNuxcAfRoustNTdVwJgnQjduzT0HNFQtKJr2gaU
-pRu3MDRhtQJyp7ElKyoVi0vV/txarlY8J867d/a6XPXeLlt9gJpbw/RzykO7PhTq
-IkUuxUOS8DlRv7gAp9Sq
-=eELC
+iQIcBAEBAgAGBQJPdFFOAAoJEBus8iNuMP3dGzcP/RqAMtHCK6LOJDFy12sDTLZH
+HrdA7ZS+ofsNNXqdXs+/lMl0YLdQ2x3yqVlUnyikR2ZJemBg851ePDwLe/Vfp4vS
+zDP+qBOvJd/9M+oMQoTvCRhF+ATRch9Kjqg/9sURFtiM2y4S9JgpmkcIbjUCw9GI
+12Og67rzBEj62e4ozzDzxeniqzqgDd8RWCeoLMNEeRqOVIShdPsOp/8u0CEtk0dd
+YUsfV4UF1Um12AEVgRGBKNHNZQsra29irkEI+cdPtVMGDmVw1k9uJLT/GU0HLjWR
+yFrWKZJAahZuQcJm833wmEp0Dma6reRuETPk3U1ojU22nsk+MxU77HL/IyOLVUE2
+2WmHcA+p0tn7I7/WoXWaQQpu8JHWAkq2ejDM3f5A7L2EbbJeClLoE0KWKqhMDFpp
+Kg9a3kRu3QOrGOdaDBn6Ykgy74vl4eOl7mJgswAwoaqHRf+RkKnrQmOCjlOyj/TI
+QJrRKvhX7aA8mhbDK1L2ZCLdXFiyKLpGp0tw/Xp5rwjNODHaJI9xszRV4UpsD61p
+fE0tOYyTuy1lTeIPHyvbiVihE04hPruCBjU4cxWw9KJPsw18BhWAEYY8SupGBAjB
+Pfs1bSXiE9Hwc40t41DGEDjAFjycFNyJJ31lLhTsTUHb59w++2YN41s296wH2jX5
+oa52VZLjmtXaOZnSWglb
+=e71P
 -----END PGP SIGNATURE-----
 
---L5nTHegdhbHhzmSD--
+--pleSNuEbvnUYtMxG--
 
---===============5729519766713066309==
+--===============1589247541167480586==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5729519766713066309==--
+--===============1589247541167480586==--
