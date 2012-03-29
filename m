@@ -1,9 +1,8 @@
-From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: How to cross compile the alsa ?
-Date: Thu, 29 Mar 2012 09:24:48 +0200
-Message-ID: <CAC-Zu+5pyC9=yYH=CsbY5v_3uEoicwuvka3FoC_rfy==Gz+GdA@mail.gmail.com>
+Date: Thu, 29 Mar 2012 12:11:20 +0200
+Message-ID: <4F743548.2030500@ladisch.de>
 References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
-	<CAC-Zu+6+G=ceyy_r863a_f2e__nroNP=RVHaPvYscgYJyk3-Mg@mail.gmail.com>
 	<CAC-Zu+6Pb9jjT3-9iTwkQtwRpSd+A6-hsdoBTYFB28vATFbsGA@mail.gmail.com>
 	<4F718047.2090405@ladisch.de>
 	<CAC-Zu+7ZyJuVRriEW84p4K+TpfmcZo1fRXkDCiQ2AK66kp9r3Q@mail.gmail.com>
@@ -19,18 +18,19 @@ References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
 	<CAC-Zu+4WXgJB-7zcgJ2c6k90rEdVWAjXc1dKh+iKwi5VuPQumQ@mail.gmail.com>
 	<CAC-Zu+6S49pR0P_s1k8nLdJHE3pnrkWnhk4fqWOTNxHOCFsAtg@mail.gmail.com>
 	<4F74073E.5090300@ladisch.de>
+	<CAC-Zu+5pyC9=yYH=CsbY5v_3uEoicwuvka3FoC_rfy==Gz+GdA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 492B2104385
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8FDFB10438F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 09:24:50 +0200 (CEST)
-Received: by qaea16 with SMTP id a16so161367qae.17
-	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 00:24:48 -0700 (PDT)
-In-Reply-To: <4F74073E.5090300@ladisch.de>
+	Thu, 29 Mar 2012 12:08:04 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 7999120C3E
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 06:08:01 -0400 (EDT)
+In-Reply-To: <CAC-Zu+5pyC9=yYH=CsbY5v_3uEoicwuvka3FoC_rfy==Gz+GdA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,51 +40,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: =?ISO-8859-1?Q?D=E1maso_L=F3pez?= <dlopezsk@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Clemens, no problem .
+D=E1maso L=F3pez wrote:
+> But not affect this warning?
 
-But not affect this warning? It can affect how can to fix it? And you
-know how I can get the volume that enters the microphone at the time?
+Unless you're trying to use a plugin not in alsa-lib.
+
+> It can affect how can to fix it?
+
+Don't compile statically.
+
+> And you know how I can get the volume that enters the microphone at the t=
+ime?
+
+The volume of the mixer control or the volume of the audio signal?
 
 
-
-2012/3/29 Clemens Ladisch <clemens@ladisch.de>:
-> D=E1maso L=F3pez wrote:
->> HI? Any answer? please, I'm in a loop and not to exit
->
-> We apologize again for the delay. =A0Those responsible for sacking the
-> people who have just been sacked have been sacked.
->
->>> I've some problem referents with alsa and get volume from mircophone:
->>>
->>> 1.- When to compile the file ,returned these lines.Could be problem to =
-keep?
->>>
->>> warning: Using 'dlopen' in statically linked applications requires at r=
-untime the shared
->>> libraries from the glibc version used for linking
->
-> This message means exactly what it says.
->
->>> 2.- The previous to say, despite being a warning can create executable
->>> file. But when return:
->>>
->>> ALSA lib conf.c:3009:(snd_config_update_r) Cannot access file /usr/shar=
-e/alsa/alsa.conf
->>> ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL default
->>>
->>> I'm sorpress because not exist this file
->
-> So you didn't copy this directory to the target system?
-> (With the earlier install command, it would be at /tmp/blah/usr/share/als=
-a.)
->
-> Please note that _all_ files installed by 'make install' are needed for
-> either compiling/linking or at runtime.
->
->
-> Regards,
-> Clemens
+Regards,
+Clemens
