@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: enable ssi clock in probe
-	function
-Date: Thu, 29 Mar 2012 17:30:59 +0100
-Message-ID: <20120329163059.GW3668@opensource.wolfsonmicro.com>
-References: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
-	<20120329112949.GM3668@opensource.wolfsonmicro.com>
-	<4F748751.3020300@freescale.com>
-	<20120329160916.GG19506@S2101-09.ap.freescale.net>
-	<4F748C8E.1010702@freescale.com>
+Subject: Re: ASoC updates for 3.4
+Date: Thu, 29 Mar 2012 17:35:42 +0100
+Message-ID: <20120329163542.GX3668@opensource.wolfsonmicro.com>
+References: <20120329120842.GO3668@opensource.wolfsonmicro.com>
+	<s5hhax7tmya.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6377898897315764412=="
+Content-Type: multipart/mixed; boundary="===============6276996060626445037=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42F83104527
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8130310452A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 18:31:01 +0200 (CEST)
-In-Reply-To: <4F748C8E.1010702@freescale.com>
+	Thu, 29 Mar 2012 18:35:45 +0200 (CEST)
+In-Reply-To: <s5hhax7tmya.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,62 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6377898897315764412==
+--===============6276996060626445037==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qf/2YuBwNTyt+peV"
+	protocol="application/pgp-signature"; boundary="K5z5w9fsx/Hrkgg3"
 Content-Disposition: inline
 
 
---Qf/2YuBwNTyt+peV
+--K5z5w9fsx/Hrkgg3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 29, 2012 at 11:23:42AM -0500, Timur Tabi wrote:
+On Thu, Mar 29, 2012 at 06:02:21PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> I do have one question though.  I don't know much about the clock layer.
-> When you do this:
+> > Not sure where your current ASoC branch is - topic/asoc and fix/asoc are
+> > both behind Linus' tree (which is what this pull request was generated
+> > against).
 
-> 	ssi_private->clk = clk_get(&pdev->dev, NULL);
+> Oh, sorry I forgot to update these branches.
+> Currently all ASoC stuff is merged in for-linus branch.
+> I pulled and synced all branches now.
 
-> What clock are you getting?
+Oh, good - part of the reason I held off on pushing was that every time
+I looked there were way more changes than I remembered doing in the diff
+so I needed to take time to figure out where they were coming from.
 
-The default clock - personally I much prefer always naming the clocks
-even if there's one of them but more people seem to prefer this style.
-
---Qf/2YuBwNTyt+peV
+--K5z5w9fsx/Hrkgg3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPdI49AAoJEBus8iNuMP3dUy4P/1m4r5DRRAUSgHHgfJ1S63U7
-lNcgE9XxlaFOPF/uVbebp6SimDB770SlA+V/KGkWm8vf01OUAW4voZItRTUNSTUm
-mnHjCtsB1VyiVqZ4t4iO5KWkOkqKYKwefQPyV089RyZrQnxmpYVeADv7QO31GlzO
-ppl+EhxSiYJa4BqAkhiV/ja8cSUC65LPnMwm+gsrriuu+mN9NIjA5DAmPJ1y2nlN
-CJM5byJtQL4imXWR6b4FqdjQyxB/QbK7TfMzXNlIc3Yyrdly/8A+BK4HnqJRW69B
-s8ZYNLyKISUl8TH07vdEvvpbThzZG6ibP+HErgH7lYOg6tBAWyMwg2V3tw6JbKod
-b18R93wXsu0rwdzTW0LGqApsANxN4piP1vGwLD/+0+ln26oLhHhytx5gfDPitLDq
-7qQu3afmewhBZgNYOlYvJFhOpDZe1p0yYMwRem92HJgwLDDSNvgMXtHdt6l3PqNO
-y6UQ3eZqgFaLJbPzWrxNmmxBpWKUwgfCNo6Mdg7mzTcN2AMr2YuhoVKgiugpFYJs
-wZjRh02Ie80hVMdFgSxoYR0MpnPua+8OseSnDwG3Cf6sFji/xwYqjnpRMUx8t2m1
-F0wS2j0+rXLaW27cMq695f1BKqnNfc0MgocEdZBvL+IXMmyd6UjdL/Ivq94Zk5Ix
-SOr6uLpoHJ7fI1XWNLwn
-=kOOK
+iQIcBAEBAgAGBQJPdI9HAAoJEBus8iNuMP3dgYwP/jLgx98QY35xEQOgUS/GJr+l
+uWznHNGE5SFxOsrd2iNdWvAkwkk8a9/IQIV4YRtqAhY+iqmGbu9MjOQQPwuqEaTO
+Fh+6hsuui3OAw1WYMuyZK+vaEBVmztveh139OfL/JYJCuaEU3qKz9lvCOwDM+REr
+KWdNsQoVFFVkkLN9swLl/tDZJas2AtAIzZsKXYA3vULLB6lOcsRbKnZn92CZQgYg
+DZsN7S0fX7mEmMSwX+33UMd+PVOBF4bY1zOEh12T/B8rMO7FxS6FYEw6vfRIQ/QS
+bOGmr12k3NfCSDN1c5HfVnys1CbaFoGylkPLo0Nga3ioZ9u4F1tDmDntilD60nN8
+vnpswsAc8AEzwvD6ceJupqanWyMwCt0bKmXv2U6Ch/N1hIBBhjswVhZx8kjqdDOo
+aVB9yN+5x7iQydiu+kwt+kR7jZWwZSHXNT3nhUEzD4Fl53zxVQZ804LSrbCsfD7/
+cp5mgRU9b75c6+dG5EySe0NceIEs+InaVvXB7fcH0y6zp7xCQAnyk0hsICV4+LkN
+1X7M3F+xV6LzKUC6o+e99vegpYz9Tl9TpJcTnm1M5Uy6nINnmefIZ64F3rgqVItH
+l9lo3LxP9vaYA7/5ajhkDlVckLkRTXspnJq5aARoOVGiyrkHFjsoRUyC7TlX5FqD
+XtrwecwtrA38e4wC9IV6
+=OGpJ
 -----END PGP SIGNATURE-----
 
---Qf/2YuBwNTyt+peV--
+--K5z5w9fsx/Hrkgg3--
 
---===============6377898897315764412==
+--===============6276996060626445037==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6377898897315764412==--
+--===============6276996060626445037==--
