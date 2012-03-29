@@ -1,7 +1,7 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
 Subject: Re: How to cross compile the alsa ?
-Date: Thu, 29 Mar 2012 12:11:20 +0200
-Message-ID: <4F743548.2030500@ladisch.de>
+Date: Thu, 29 Mar 2012 12:35:15 +0200
+Message-ID: <CAC-Zu+4kjWXqyW+eMDNe7vCEh7SmH-8z=WkE=71S3JPBqajn9Q@mail.gmail.com>
 References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
 	<CAC-Zu+6Pb9jjT3-9iTwkQtwRpSd+A6-hsdoBTYFB28vATFbsGA@mail.gmail.com>
 	<4F718047.2090405@ladisch.de>
@@ -19,18 +19,19 @@ References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
 	<CAC-Zu+6S49pR0P_s1k8nLdJHE3pnrkWnhk4fqWOTNxHOCFsAtg@mail.gmail.com>
 	<4F74073E.5090300@ladisch.de>
 	<CAC-Zu+5pyC9=yYH=CsbY5v_3uEoicwuvka3FoC_rfy==Gz+GdA@mail.gmail.com>
+	<4F743548.2030500@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8FDFB10438F
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08D5210439E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 12:08:04 +0200 (CEST)
-Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 7999120C3E
-	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 06:08:01 -0400 (EDT)
-In-Reply-To: <CAC-Zu+5pyC9=yYH=CsbY5v_3uEoicwuvka3FoC_rfy==Gz+GdA@mail.gmail.com>
+	Thu, 29 Mar 2012 12:35:17 +0200 (CEST)
+Received: by qcha6 with SMTP id a6so1268255qch.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 03:35:15 -0700 (PDT)
+In-Reply-To: <4F743548.2030500@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,24 +41,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?D=E1maso_L=F3pez?= <dlopezsk@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-D=E1maso L=F3pez wrote:
-> But not affect this warning?
+Ok!, I'm trying to use another ,with library <sys/soundcard.h> and
+until question that you ask .I think need to the volume of the audio
+signal.
 
-Unless you're trying to use a plugin not in alsa-lib.
+Because the audio gets to a microphone and I need to get this volume.
+I don't know very explain :)
 
-> It can affect how can to fix it?
-
-Don't compile statically.
-
-> And you know how I can get the volume that enters the microphone at the t=
-ime?
-
-The volume of the mixer control or the volume of the audio signal?
-
-
-Regards,
-Clemens
+2012/3/29 Clemens Ladisch <clemens@ladisch.de>:
+> D=E1maso L=F3pez wrote:
+>> But not affect this warning?
+>
+> Unless you're trying to use a plugin not in alsa-lib.
+>
+>> It can affect how can to fix it?
+>
+> Don't compile statically.
+>
+>> And you know how I can get the volume that enters the microphone at the =
+time?
+>
+> The volume of the mixer control or the volume of the audio signal?
+>
+>
+> Regards,
+> Clemens
