@@ -1,16 +1,23 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC] Fix internal mic for Lenovo Ideapad U300s
-Date: Thu, 29 Mar 2012 22:48:20 +0200
-Message-ID: <1333054100-8069-1-git-send-email-david.henningsson@canonical.com>
+From: linux@audioscience.com
+Subject: [PATCH] ALSA: asihpi - fix return value of
+	hpios_locked_mem_alloc()
+Date: Fri, 30 Mar 2012 09:52:25 +1300
+Message-ID: <1333054345-1416-1-git-send-email-linux@audioscience.com>
+References: <s5hk424t1h9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDABA104539
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id AB1B8104547
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 22:48:24 +0200 (CEST)
+	Thu, 29 Mar 2012 22:52:41 +0200 (CEST)
+Received: from mxin3-orange.clear.net.nz
+	(lb2-srcnat.clear.net.nz [203.97.32.237])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0M1N001FNZB7MR20@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 30 Mar 2012 09:52:38 +1300 (NZDT)
+In-reply-to: <s5hk424t1h9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,170 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: tiwai@suse.de
+Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-The internal mic input is phase inverted on one channel.
-To avoid people in userspace summing the channels together
-and get zero result, use a separate mixer control for the
-inverted channel.
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-BugLink: https://bugs.launchpad.net/bugs/903853
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Make this function consistent with others in this module by
+returning 1 for error, instead of -ENOMEM
+(reverts function signature change from a938fb1e)
+
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
+ sound/pci/asihpi/hpi_internal.h |    4 ++--
+ sound/pci/asihpi/hpios.c        |   10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-Inverted Internal Mic, take 2.
-
-I refined my idea a little. By calling the left channel "Internal Mic"
-and the right channel "Inverted Internal Mic", we're giving the user a choice
-whether to activate it or keeping it muted.
-
-For PulseAudio, the quick fix is just to make sure the "Inverted Internal Mic"
-control is muted. If we in the long run want to actually handle this and swap 
-the phase around, we now also have a reasonable indicator if we should do this, 
-by checking if the "Inverted Internal Mic" control exists.
-
-For the ALSA init DB (i e, should the "Inverted Internal Mic" be initially muted?)
-that is no big deal for me, since this will be overwritten by PulseAudio later
-anyway. 
-
-I'm also open for better names than "Inverted Internal Mic" if you have any.
-
-As with the previous version, this is a draft version of the patch, and could be
-done slightly more elegant I guess.
-
-What do you say?
-
- sound/pci/hda/patch_conexant.c |   45 +++++++++++++++++++++++++++++----------
- 1 files changed, 33 insertions(+), 12 deletions(-)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index e6eafb1..cd3859b 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -142,6 +142,7 @@ struct conexant_spec {
- 	unsigned int asus:1;
- 	unsigned int pin_eapd_ctrls:1;
- 	unsigned int single_adc_amp:1;
-+	unsigned int fixup_stereo_dmic:1;
+diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
+index 8c63200..bc86cb7 100644
+--- a/sound/pci/asihpi/hpi_internal.h
++++ b/sound/pci/asihpi/hpi_internal.h
+@@ -1,7 +1,7 @@
+ /******************************************************************************
  
- 	unsigned int adc_switching:1;
+     AudioScience HPI driver
+-    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
++    Copyright (C) 1997-2012  AudioScience Inc. <support@audioscience.com>
  
-@@ -4107,9 +4108,9 @@ static int cx_auto_init(struct hda_codec *codec)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of version 2 of the GNU General Public License as
+@@ -42,7 +42,7 @@ On error *pLockedMemHandle marked invalid, non-zero returned.
+ If this function succeeds, then HpiOs_LockedMem_GetVirtAddr() and
+ HpiOs_LockedMem_GetPyhsAddr() will always succed on the returned handle.
+ */
+-int hpios_locked_mem_alloc(struct consistent_dma_area *p_locked_mem_handle,
++u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_locked_mem_handle,
+ 							   /**< memory handle */
+ 	u32 size, /**< Size in bytes to allocate */
+ 	struct pci_dev *p_os_reference
+diff --git a/sound/pci/asihpi/hpios.c b/sound/pci/asihpi/hpios.c
+index 87f4385..5ef4fe9 100644
+--- a/sound/pci/asihpi/hpios.c
++++ b/sound/pci/asihpi/hpios.c
+@@ -1,7 +1,7 @@
+ /******************************************************************************
  
- static int cx_auto_add_volume_idx(struct hda_codec *codec, const char *basename,
- 			      const char *dir, int cidx,
--			      hda_nid_t nid, int hda_dir, int amp_idx)
-+			      hda_nid_t nid, int hda_dir, int amp_idx, int chs)
+     AudioScience HPI driver
+-    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
++    Copyright (C) 1997-2012  AudioScience Inc. <support@audioscience.com>
+ 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of version 2 of the GNU General Public License as
+@@ -39,11 +39,11 @@ void hpios_delay_micro_seconds(u32 num_micro_sec)
+ 
+ }
+ 
+-/** Allocated an area of locked memory for bus master DMA operations.
++/** Allocate an area of locked memory for bus master DMA operations.
+ 
+-On error, return -ENOMEM, and *pMemArea.size = 0
++If allocation fails, return 1, and *pMemArea.size = 0
+ */
+-int hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
++u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
+ 	struct pci_dev *pdev)
  {
--	static char name[32];
-+	static char name[44];
- 	static struct snd_kcontrol_new knew[] = {
- 		HDA_CODEC_VOLUME(name, 0, 0, 0),
- 		HDA_CODEC_MUTE(name, 0, 0, 0),
-@@ -4119,7 +4120,7 @@ static int cx_auto_add_volume_idx(struct hda_codec *codec, const char *basename,
- 
- 	for (i = 0; i < 2; i++) {
- 		struct snd_kcontrol *kctl;
--		knew[i].private_value = HDA_COMPOSE_AMP_VAL(nid, 3, amp_idx,
-+		knew[i].private_value = HDA_COMPOSE_AMP_VAL(nid, chs, amp_idx,
- 							    hda_dir);
- 		knew[i].subdevice = HDA_SUBDEV_AMP_FLAG;
- 		knew[i].index = cidx;
-@@ -4138,7 +4139,7 @@ static int cx_auto_add_volume_idx(struct hda_codec *codec, const char *basename,
- }
- 
- #define cx_auto_add_volume(codec, str, dir, cidx, nid, hda_dir)		\
--	cx_auto_add_volume_idx(codec, str, dir, cidx, nid, hda_dir, 0)
-+	cx_auto_add_volume_idx(codec, str, dir, cidx, nid, hda_dir, 0, 3)
- 
- #define cx_auto_add_pb_volume(codec, nid, str, idx)			\
- 	cx_auto_add_volume(codec, str, " Playback", idx, nid, HDA_OUTPUT)
-@@ -4216,14 +4217,24 @@ static int cx_auto_add_capture_volume(struct hda_codec *codec, hda_nid_t nid,
- 	int i;
- 
- 	for (i = 0; i < spec->num_adc_nids; i++) {
-+		int chs = 3;
- 		hda_nid_t adc_nid = spec->adc_nids[i];
- 		int idx = get_input_connection(codec, adc_nid, nid);
- 		if (idx < 0)
- 			continue;
- 		if (spec->single_adc_amp)
- 			idx = 0;
-+
-+		if (spec->fixup_stereo_dmic && (strcmp("Internal Mic", label) == 0)) {
-+			/* Make two independent kcontrols */
-+		        int err = cx_auto_add_volume_idx(codec, "Inverted Internal Mic", pfx,
-+					      cidx, adc_nid, HDA_INPUT, idx, 2);
-+			if (err < 0)
-+				return err;
-+			chs = 1;
-+		}
- 		return cx_auto_add_volume_idx(codec, label, pfx,
--					      cidx, adc_nid, HDA_INPUT, idx);
-+					      cidx, adc_nid, HDA_INPUT, idx, chs);
+ 	/*?? any benefit in using managed dmam_alloc_coherent? */
+@@ -62,7 +62,7 @@ int hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
+ 		HPI_DEBUG_LOG(WARNING,
+ 			"failed to allocate %d bytes locked memory\n", size);
+ 		p_mem_area->size = 0;
+-		return -ENOMEM;
++		return 1;
  	}
- 	return 0;
- }
-@@ -4405,22 +4416,30 @@ static void apply_pincfg(struct hda_codec *codec, const struct cxt_pincfg *cfg)
- 
  }
  
--static void apply_pin_fixup(struct hda_codec *codec,
-+enum {
-+	CXT_PINCFG_LENOVO_X200,
-+	CXT_FIXUP_STEREO_DMIC,
-+};
-+
-+static void apply_fixup(struct hda_codec *codec,
- 			    const struct snd_pci_quirk *quirk,
- 			    const struct cxt_pincfg **table)
- {
-+	struct conexant_spec *spec = codec->spec;
-+
- 	quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
--	if (quirk) {
-+	if (quirk && table[quirk->value]) {
- 		snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
- 			    quirk->name);
- 		apply_pincfg(codec, table[quirk->value]);
- 	}
-+	if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
-+		snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
-+			    quirk->name);
-+		spec->fixup_stereo_dmic = 1;
-+	}
- }
- 
--enum {
--	CXT_PINCFG_LENOVO_X200,
--};
--
- static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
- 	{ 0x16, 0x042140ff }, /* HP (seq# overridden) */
- 	{ 0x17, 0x21a11000 }, /* dock-mic */
-@@ -4431,10 +4450,12 @@ static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
- 
- static const struct cxt_pincfg *cxt_pincfg_tbl[] = {
- 	[CXT_PINCFG_LENOVO_X200] = cxt_pincfg_lenovo_x200,
-+	[CXT_FIXUP_STEREO_DMIC] = NULL,
- };
- 
- static const struct snd_pci_quirk cxt_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo X200", CXT_PINCFG_LENOVO_X200),
-+	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	{}
- };
- 
-@@ -4477,7 +4498,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 		break;
- 	}
- 
--	apply_pin_fixup(codec, cxt_fixups, cxt_pincfg_tbl);
-+	apply_fixup(codec, cxt_fixups, cxt_pincfg_tbl);
- 
- 	/* Show mute-led control only on HP laptops
- 	 * This is a sort of white-list: on HP laptops, EAPD corresponds
 -- 
-1.7.9.1
+1.7.0.4
