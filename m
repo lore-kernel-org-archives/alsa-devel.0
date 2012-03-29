@@ -1,24 +1,36 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: trying to get an eleven rack to work
-Date: Thu, 29 Mar 2012 09:08:26 +0200
-Message-ID: <4F740A6A.3030608@ladisch.de>
-References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
-	<4F6883F9.4010405@ladisch.de>
-	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
-	<4F718114.5020602@ladisch.de>
-	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
+From: =?ISO-8859-1?B?ROFtYXNvIEzzcGV6?= <dlopezsk@gmail.com>
+Subject: Re: How to cross compile the alsa ?
+Date: Thu, 29 Mar 2012 09:24:48 +0200
+Message-ID: <CAC-Zu+5pyC9=yYH=CsbY5v_3uEoicwuvka3FoC_rfy==Gz+GdA@mail.gmail.com>
+References: <CAC-Zu+6S4WNnqBf1fjbHAQnXwSOEOPQ4UQGBmd15jsZCvL_UHA@mail.gmail.com>
+	<CAC-Zu+6+G=ceyy_r863a_f2e__nroNP=RVHaPvYscgYJyk3-Mg@mail.gmail.com>
+	<CAC-Zu+6Pb9jjT3-9iTwkQtwRpSd+A6-hsdoBTYFB28vATFbsGA@mail.gmail.com>
+	<4F718047.2090405@ladisch.de>
+	<CAC-Zu+7ZyJuVRriEW84p4K+TpfmcZo1fRXkDCiQ2AK66kp9r3Q@mail.gmail.com>
+	<CAC-Zu+4O8uG=hHHrPaO4mKJatpVbHZqVsBi9vyfMAzRTc3DYWQ@mail.gmail.com>
+	<CAC-Zu+55WZfGze3Jk0QNimu+S7jWT1_eDbOs+yVeQOC33PEfzQ@mail.gmail.com>
+	<4F719DBF.2060507@ladisch.de>
+	<CAC-Zu+55ShwctKwN3bH=efTS_kuPTz_mvo2DVqfoXWhCmpmWqQ@mail.gmail.com>
+	<4F71A70A.5050200@ladisch.de>
+	<CAC-Zu+7Goe2ROEzSNE1CwmQS-i5n=BMTGc1wQk9J4ay3pAUyBQ@mail.gmail.com>
+	<4F71B479.5010408@ladisch.de>
+	<CAC-Zu+5OYptjci2+tcoKQq8GZo94bEAqQoxqD0zrmqDYCjcfvQ@mail.gmail.com>
+	<CAC-Zu+47SrCzFM_bLDYfahJFXRbxwsboy-Cf5ZM42oSoFXjZ=w@mail.gmail.com>
+	<CAC-Zu+4WXgJB-7zcgJ2c6k90rEdVWAjXc1dKh+iKwi5VuPQumQ@mail.gmail.com>
+	<CAC-Zu+6S49pR0P_s1k8nLdJHE3pnrkWnhk4fqWOTNxHOCFsAtg@mail.gmail.com>
+	<4F74073E.5090300@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7804D10436E
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+	[209.85.216.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 492B2104385
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 09:05:09 +0200 (CEST)
-Received: from compute2.internal (compute2.nyi.mail.srv.osa [10.202.2.42])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 0583921232
-	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 03:05:07 -0400 (EDT)
-In-Reply-To: <CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
+	Thu, 29 Mar 2012 09:24:50 +0200 (CEST)
+Received: by qaea16 with SMTP id a16so161367qae.17
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 00:24:48 -0700 (PDT)
+In-Reply-To: <4F74073E.5090300@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,30 +40,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Alexander <lidxv0n@gmail.com>, Daniel Mack <daniel@zonque.org>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-David Alexander wrote:
-> kernel: [   74.128035] usb 2-4: new high speed USB device number 2
-> kernel: [   74.634592] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
-> kernel: [   74.634606] snd-usb-audio: probe of 2-4:1.0 failed with error -5
+Thanks Clemens, no problem .
 
-0x09 is UAC2's EXTENSION_UNIT, which should not be a reason for failing.
-Please try the patch below.
+But not affect this warning? It can affect how can to fix it? And you
+know how I can get the volume that enters the microphone at the time?
 
 
-Regards,
-Clemens
 
-
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1926,7 +1926,7 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 			return parse_audio_processing_unit(state, unitid, p1);
- 	default:
- 		snd_printk(KERN_ERR "usbaudio: unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
--		return -EINVAL;
-+		return 0;
- 	}
- }
+2012/3/29 Clemens Ladisch <clemens@ladisch.de>:
+> D=E1maso L=F3pez wrote:
+>> HI? Any answer? please, I'm in a loop and not to exit
+>
+> We apologize again for the delay. =A0Those responsible for sacking the
+> people who have just been sacked have been sacked.
+>
+>>> I've some problem referents with alsa and get volume from mircophone:
+>>>
+>>> 1.- When to compile the file ,returned these lines.Could be problem to =
+keep?
+>>>
+>>> warning: Using 'dlopen' in statically linked applications requires at r=
+untime the shared
+>>> libraries from the glibc version used for linking
+>
+> This message means exactly what it says.
+>
+>>> 2.- The previous to say, despite being a warning can create executable
+>>> file. But when return:
+>>>
+>>> ALSA lib conf.c:3009:(snd_config_update_r) Cannot access file /usr/shar=
+e/alsa/alsa.conf
+>>> ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL default
+>>>
+>>> I'm sorpress because not exist this file
+>
+> So you didn't copy this directory to the target system?
+> (With the earlier install command, it would be at /tmp/blah/usr/share/als=
+a.)
+>
+> Please note that _all_ files installed by 'make install' are needed for
+> either compiling/linking or at runtime.
+>
+>
+> Regards,
+> Clemens
