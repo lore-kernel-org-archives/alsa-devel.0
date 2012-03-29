@@ -1,21 +1,22 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] ALSA: asihpi - fix return type of
- hpios_locked_mem_alloc()
-Date: Thu, 29 Mar 2012 08:56:28 +0300
-Message-ID: <20120329055628.GB3289@mwanda>
-References: <20120328065702.GA9113@elgon.mountain>
-	<s5hiphoyemc.wl%tiwai@suse.de> <4F7385F8.4050004@audioscience.com>
-	<s5hk424t1h9.wl%tiwai@suse.de>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: fix power on/off of MIC
+	bias
+Date: Thu, 29 Mar 2012 13:56:06 +0800
+Message-ID: <20120329055604.GB19506@S2101-09.ap.freescale.net>
+References: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D462104319
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFA14104319
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 07:54:36 +0200 (CEST)
+	Thu, 29 Mar 2012 07:56:13 +0200 (CEST)
+Received: by iakh37 with SMTP id h37so2675183iak.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Mar 2012 22:56:12 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <s5hk424t1h9.wl%tiwai@suse.de>
+In-Reply-To: <1332919833-9641-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Lionel Xu <Lionel.Xu@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm obviously in favour of using standard error codes where ever
-possible.  But when I'm writing a change like this, then I do look
-at the surrounding context because there are places the use custom
-error codes (SCSI is an example).  In this case, I was confused
-because there aren't any other error codes in this file, and also
-the comment says that it should return -ENOMEM.
+On Wed, Mar 28, 2012 at 03:30:33PM +0800, Shawn Guo wrote:
+> From: Lionel Xu <Lionel.Xu@freescale.com>
+> 
+> There is no sound in the recorded wav, to enable recording, the VAG
+> should be powered up, and the mic bias resistor should be set up with
+> proper value.
+> 
+> Signed-off-by: Lionel Xu <lionel.xu@freescale.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Zeng Zhaoming <zengzm.kernel@gmail.com>
 
-regards,
-dan carpenter
+Mark, I just send a patch authored by Zeng Zhaoming, which fixes the
+problem in a more sensible way.  So please ignore this one.
+
+-- 
+Regards,
+Shawn
