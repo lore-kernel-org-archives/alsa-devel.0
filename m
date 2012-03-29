@@ -1,18 +1,31 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl: add audio routing for
-	imx-sgtl5000
-Date: Thu, 29 Mar 2012 22:35:23 +0100
-Message-ID: <20120329213522.GD4153@opensource.wolfsonmicro.com>
-References: <1333037583-23582-1-git-send-email-shawn.guo@linaro.org>
-	<1333037583-23582-2-git-send-email-shawn.guo@linaro.org>
+From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Subject: [PATCH] alsa-lib/tlv: fix handling of raw value ranges
+Date: Fri, 30 Mar 2012 01:05:59 +0200 (CEST)
+Message-ID: <bf360596-9a77-4441-bf58-09ed92891e19@zose-store-12>
+References: <a995c693-9d0b-4572-af9c-85e3deebf37c@zose-store-12>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1616363496927169819=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D78C810457B
+Received: from zose-mta11.web4all.fr (zose-mta11.web4all.fr [178.33.204.87])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0D2D10455D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 23:35:26 +0200 (CEST)
-In-Reply-To: <1333037583-23582-2-git-send-email-shawn.guo@linaro.org>
+	Fri, 30 Mar 2012 01:03:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by zose-mta11.web4all.fr (Postfix) with ESMTP id A07CC46009
+	for <alsa-devel@alsa-project.org>;
+	Fri, 30 Mar 2012 01:02:40 +0200 (CEST)
+Received: from zose-mta11.web4all.fr ([127.0.0.1])
+	by localhost (zose-mta11.web4all.fr [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id z4N95JjSTpFN for <alsa-devel@alsa-project.org>;
+	Fri, 30 Mar 2012 01:02:40 +0200 (CEST)
+Received: from zose-store12.web4all.fr (zose-store12.web4all.fr
+	[178.33.204.49])
+	by zose-mta11.web4all.fr (Postfix) with ESMTP id CB35E46018
+	for <alsa-devel@alsa-project.org>;
+	Fri, 30 Mar 2012 01:02:39 +0200 (CEST)
+In-Reply-To: <a995c693-9d0b-4572-af9c-85e3deebf37c@zose-store-12>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +35,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1616363496927169819==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GyRA7555PLgSTuth"
-Content-Disposition: inline
-
-
---GyRA7555PLgSTuth
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Mar 30, 2012 at 12:13:03AM +0800, Shawn Guo wrote:
-> Add DAPM widgets and audio routing support for imx-sgtl5000 machine
-> driver.
->=20
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-
-Applied, thanks.  Good to see that the code Stephen provided is working
-for you guys too.
-
---GyRA7555PLgSTuth
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPdNVgAAoJEBus8iNuMP3d3NAP/Ar4ZUkeyg3E7plqjNywkvpa
-6taRB/MCDspBsqBOqm+3japweXhJ6TqQmPMfPsXeeg8b6xytt+Qtnv3K3h+LHf6V
-LUtc/CUEuZT77jtfYfMlCqzuy64LUAFQxmSmGfzqbQ8291k3i1cGewvQBu30Nxpn
-acW4jhqLOPUhmQbHWWKOf1/4kYr+nd3Jy11msdoRFty07ikc6R6qjNUmCzp8HHl3
-JWOE6ZrA6qaWfG/ri8pRJzIv5f7PEhS7d0x+hi0UdE0jq0yiIfAM92d+0M5BGdST
-mlvmtYEAVDdgmuH+dtpoYgr+WhT7U7pxRajtGFyZjbT4sStVYFQMAs0PmHh3ukYP
-Y1BHqCA3h2EoPS6PvyLquVGajRpuvEI79Fh09wgzR9T5cHj2OS1zqTIAU4cV6EXu
-jaLpDHWaL9K3g7OfFJLIucPLvY7zEiPB52rM7UejLyF0Rm+TuAqX/y/Ag5Etciqs
-aZtco4V4nR5jXZM3cQZ4nMGqcNeDI83klWLmlZFNG+3f7KDWp3cXpcuImt+OsngY
-lj0M1PO+/Kzx0bW5ujoKAPpIm/MLPg2bZZe5rbfJOTKQ99iHfMROa3CL7hyZ4uUG
-Z6OotOKZc2YxUO35e5QDCBMxUiE33yoL0LHktGZTtGxyNT7H/wioICosO/HUaIGZ
-xiTduFBMDXLv4ZAmbpI3
-=tcK9
------END PGP SIGNATURE-----
-
---GyRA7555PLgSTuth--
-
---===============1616363496927169819==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1616363496927169819==--
+SW4gY2FzZSBvZiBhIFRMViBkQiByYW5nZSB3aXRoIGFsbCBpdGVtcyBoYXZpbmcgcmF3IHZhbHVl
+IHJhbmdlcyBzdHJpY3RseSB3aXRoaW4KdGhlIG1haW4gcmF3IHZhbHVlIHJhbmdlIHJlcG9ydGVk
+IGJ5IHRoZSBkcml2ZXIsIHNuZF90bHZfY29udmVydF9mcm9tX2RCKCkKcmV0dXJuZWQgb25lIG9m
+IHRoZSBtYWluIHJhdyByYW5nZSBib3VuZGFyaWVzLCB3aGljaCB3YXMgb3V0c2lkZSBhbGwgZEIg
+cmFuZ2UKaXRlbXMuCgpFLmcuOgpzdGF0aWMgY29uc3QgdW5zaWduZWQgaW50IGJkMzc1M3hfdm9s
+X2ZhZGVyX2dhaW5fYXR0X3RsdltdID0gewoJVExWX0RCX1JBTkdFX0hFQUQoMiksCgkwLCAwLCBU
+TFZfREJfU0NBTEVfSVRFTShUTFZfREJfR0FJTl9NVVRFLCAwLCAxKSwKCTQ4LCAxNDIsIFRMVl9E
+Ql9TQ0FMRV9JVEVNKC03OTAwLCAxMDAsIDApLAp9OwoJU09DX1NJTkdMRV9UTFYoIk1haW4gVm9s
+dW1lIiwKCQkgICAgICAgQkQzNzUzWF9WT0xfR0FJTiwKCQkgICAgICAgMCwgMjU1LCAxLCBiZDM3
+NTN4X3ZvbF9mYWRlcl9nYWluX2F0dF90bHYpLAoKc25kX3Rsdl9jb252ZXJ0X2Zyb21fZEIodGx2
+LCAwLCAyNTUsIDE1MDAsICZ2YWx1ZSwgMSkgcmV0dXJuZWQgMjU1IGluc3RlYWQgb2YKdGhlIGV4
+cGVjdGVkIDE0Mi4KCm9yOgpzdGF0aWMgY29uc3QgdW5zaWduZWQgaW50IG1heDk4NTBfdGx2W10g
+PSB7CglUTFZfREJfUkFOR0VfSEVBRCg0KSwKCTB4MTgsIDB4MWYsIFRMVl9EQl9TQ0FMRV9JVEVN
+KC03NDUwLCA0MDAsIDApLAoJMHgyMCwgMHgzMywgVExWX0RCX1NDQUxFX0lURU0oLTQxNTAsIDIw
+MCwgMCksCgkweDM0LCAweDM3LCBUTFZfREJfU0NBTEVfSVRFTSgtMTUwLCAxMDAsIDApLAoJMHgz
+OCwgMHgzZiwgVExWX0RCX1NDQUxFX0lURU0oMjUwLCA1MCwgMCksCn07ClNPQ19TSU5HTEVfVExW
+KCJIZWFkcGhvbmUgVm9sdW1lIiwgTUFYOTg1MF9WT0xVTUUsIDAsIDB4M2YsIDEsIG1heDk4NTBf
+dGx2KSwKCnNuZF90bHZfY29udmVydF9mcm9tX2RCKHRsdiwgMCwgMHgzZiwgLTc0NTAsICZ2YWx1
+ZSwgMCkgcmV0dXJuZWQgMCBpbnN0ZWFkIG9mCnRoZSBleHBlY3RlZCAweDE4LgoKU2lnbmVkLW9m
+Zi1ieTogQmVub8OudCBUaMOpYmF1ZGVhdSA8YmVub2l0LnRoZWJhdWRlYXVAYWR2YW5zZWUuY29t
+PgoKLS0tIGFsc2EtbGliL3NyYy9jb250cm9sL3Rsdi5jCisrKyBhbHNhLWxpYi9zcmMvY29udHJv
+bC90bHYuYwpAQCAtMjkxLDQxICsyOTEsMzcgQEAgaW50IHNuZF90bHZfY29udmVydF9mcm9tX2RC
+KHVuc2lnbmVkIGludAogewogCXN3aXRjaCAodGx2WzBdKSB7CiAJY2FzZSBTTkRfQ1RMX1RMVlRf
+REJfUkFOR0U6IHsKLQkJbG9uZyBkYm1pbiwgZGJtYXgsIHByZXZfcmFuZ2VtYXg7CisJCWxvbmcg
+ZGJtaW4sIGRibWF4LCBwcmV2X3N1Ym1heDsKIAkJdW5zaWduZWQgaW50IHBvcywgbGVuOwogCQls
+ZW4gPSBpbnRfaW5kZXgodGx2WzFdKTsKLQkJaWYgKGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkK
+LQkJCXJldHVybiAtRUlOVkFMOwotCQlpZiAoc25kX3Rsdl9nZXRfZEJfcmFuZ2UodGx2LCByYW5n
+ZW1pbiwgcmFuZ2VtYXgsCi0JCQkJCSAmZGJtaW4sICZkYm1heCkpCisJCWlmIChsZW4gPCA2IHx8
+IGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKIAkJCXJldHVybiAtRUlOVkFMOwotCQlpZiAoZGJf
+Z2FpbiA8PSBkYm1pbikgewotCQkJKnZhbHVlID0gcmFuZ2VtaW47Ci0JCQlyZXR1cm4gMDsKLQkJ
+fSBlbHNlIGlmIChkYl9nYWluID49IGRibWF4KSB7Ci0JCQkqdmFsdWUgPSByYW5nZW1heDsKLQkJ
+CXJldHVybiAwOwotCQl9CiAJCXBvcyA9IDI7Ci0JCXByZXZfcmFuZ2VtYXggPSAwOwotCQl3aGls
+ZSAocG9zICsgNCA8PSBsZW4pIHsKLQkJCXJhbmdlbWluID0gKGludCl0bHZbcG9zXTsKLQkJCXJh
+bmdlbWF4ID0gKGludCl0bHZbcG9zICsgMV07CisJCXByZXZfc3VibWF4ID0gMDsKKwkJZG8gewor
+CQkJbG9uZyBzdWJtaW4sIHN1Ym1heDsKKwkJCXN1Ym1pbiA9IChpbnQpdGx2W3Bvc107CisJCQlz
+dWJtYXggPSAoaW50KXRsdltwb3MgKyAxXTsKKwkJCWlmIChyYW5nZW1heCA8IHN1Ym1heCkKKwkJ
+CQlzdWJtYXggPSByYW5nZW1heDsKIAkJCWlmICghc25kX3Rsdl9nZXRfZEJfcmFuZ2UodGx2ICsg
+cG9zICsgMiwKLQkJCQkJCSAgcmFuZ2VtaW4sIHJhbmdlbWF4LAorCQkJCQkJICBzdWJtaW4sIHN1
+Ym1heCwKIAkJCQkJCSAgJmRibWluLCAmZGJtYXgpICYmCiAJCQkgICAgZGJfZ2FpbiA+PSBkYm1p
+biAmJiBkYl9nYWluIDw9IGRibWF4KQogCQkJCXJldHVybiBzbmRfdGx2X2NvbnZlcnRfZnJvbV9k
+Qih0bHYgKyBwb3MgKyAyLAotCQkJCQkJCSAgICAgICByYW5nZW1pbiwgcmFuZ2VtYXgsCisJCQkJ
+CQkJICAgICAgIHN1Ym1pbiwgc3VibWF4LAogCQkJCQkJCSAgICAgICBkYl9nYWluLCB2YWx1ZSwg
+eGRpcik7CiAJCQllbHNlIGlmIChkYl9nYWluIDwgZGJtaW4pIHsKLQkJCQkqdmFsdWUgPSB4ZGly
+ID8gcmFuZ2VtaW4gOiBwcmV2X3JhbmdlbWF4OworCQkJCSp2YWx1ZSA9IHhkaXIgfHwgcG9zID09
+IDIgPyBzdWJtaW4gOiBwcmV2X3N1Ym1heDsKIAkJCQlyZXR1cm4gMDsKIAkJCX0KLQkJCXByZXZf
+cmFuZ2VtYXggPSByYW5nZW1heDsKKwkJCXByZXZfc3VibWF4ID0gc3VibWF4OworCQkJaWYgKHJh
+bmdlbWF4ID09IHN1Ym1heCkKKwkJCQlicmVhazsKIAkJCXBvcyArPSBpbnRfaW5kZXgodGx2W3Bv
+cyArIDNdKSArIDQ7Ci0JCX0KLQkJcmV0dXJuIC1FSU5WQUw7CisJCX0gd2hpbGUgKHBvcyArIDQg
+PD0gbGVuKTsKKwkJKnZhbHVlID0gcHJldl9zdWJtYXg7CisJCXJldHVybiAwOwogCX0KIAljYXNl
+IFNORF9DVExfVExWVF9EQl9TQ0FMRTogewogCQlpbnQgbWluLCBzdGVwLCBtYXg7Cl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
