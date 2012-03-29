@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: submiting an asoc-core patch with codec updates
-Date: Thu, 29 Mar 2012 22:24:04 +0100
-Message-ID: <20120329212403.GA4153@opensource.wolfsonmicro.com>
-References: <alpine.DEB.2.02.1203291421530.21413@heelrod.ad.cirrus.com>
+Subject: Re: [PATCH v5] ASoC: Support TI LM49453 Audio driver
+Date: Thu, 29 Mar 2012 22:30:16 +0100
+Message-ID: <20120329213016.GB4153@opensource.wolfsonmicro.com>
+References: <290463D19D2E064191F1F96ECA480A89434B1A69FD@EXMAIL02.scwf.nsc.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9053242168298213166=="
+Content-Type: multipart/mixed; boundary="===============7189733281273717145=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B839104547
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23B1C104548
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 23:24:07 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1203291421530.21413@heelrod.ad.cirrus.com>
+	Thu, 29 Mar 2012 23:30:19 +0200 (CEST)
+In-Reply-To: <290463D19D2E064191F1F96ECA480A89434B1A69FD@EXMAIL02.scwf.nsc.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,63 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org
+To: "Reddy, MR Swami" <MR.Swami.Reddy@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9053242168298213166==
+--===============7189733281273717145==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+	protocol="application/pgp-signature"; boundary="uQr8t48UFsdbeI+V"
 Content-Disposition: inline
 
 
---ZPt4rx8FFjLCG7dd
+--uQr8t48UFsdbeI+V
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 29, 2012 at 02:23:59PM -0500, Brian Austin wrote:
-> I would like to submit a patch that adds some new macros for TLV in
-> ASoC. this patch requires changes in 2 codecs (CS42L51,CS42L73).
+On Thu, Mar 29, 2012 at 07:21:13AM -0700, Reddy, MR Swami wrote:
+>=20
+> ASoC: Support TI LM49453 Audio driver
+>=20
+> The LM49453 is a high performance audio subsystem that supports both anal=
+og and
+> digital audio functions. It includes a high quality stereo DAC, a high qu=
+ality
+> stereo ADC, stereo line level outputs, stereo Class D haptic drivers, ste=
+reo
+> class D loudspeaker amplifiers, class D earpiece amplifier and stereo cla=
+ss G
+> headphone amplifier with microphone detection capability.
 
-> Should I submit just the asoc-core patch then follow up with the
-> codec patches or just submit as a series?
+This basically looks good and I was going to apply it but unfortunately
+it looks like your mailer corrupted the patch and replaced all tabs with
+spaces so the tools don't understand it - can you please check and
+resend?  If you're really stuck try an attachment but ideally not.  A
+personal account might also work (all the Marvell people used to use
+gmail for submitting patches for similar reasons).
 
-If the core patch doesn't break the build of the CODECs (eg, it
-introduces a new API) either way is fine, it doesn't matter much so long
-as it's clear that the core patch needs to be applied first.  If the
-core patch does break the build (eg, it changes an existing API) then
-all the changes need to be part of a single patch.
+Some other TI people can probably help you out here, I know a lot of
+them have been through similar hassle setting up the mail system there.
 
---ZPt4rx8FFjLCG7dd
+--uQr8t48UFsdbeI+V
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPdNLrAAoJEBus8iNuMP3dRqcP/3BjAMEEV41AV6UHvWvWme4i
-MoguAM2XnJtCtp3eNmWeuFWqnXny3RH2QSZpV9L0wIf6acT2zSVj9eYGlYJjn7j/
-5LcAWWWsKdlnPixDMIIDXdW6YWoNixmnr1Y9AqOn7zuurQCtN/MAcOm4a2ixqiHU
-YUmCXF+mlbD4RkWg/we+aOK0cfY4ZIzqHWOrhrHM3oGDKnl7Bkk/NEMIhQkQqx39
-J5D3YKS06I7Eilk9D41pJ/Hdc/M4qJrkmk06aSuuHQpzQsfa/Jhb95CJJqZZmMCU
-LORKWSJe6oLMbI8RJDaNx7zgFJ4k0lPaxWgTnunEQCAvLjJE6edIsyxc4qg+d13c
-TtL16YDOIBQu/VDrluR8R1f5t52g9qTNrUgj9s3STzkBYsmgc7tahSBLyLe2Gm5e
-WTP++XwmzVq4/QHlXohfoMpNTiQ4LffY8SD5JQV+cj0nud+08JyBReAplGxIXvkE
-F6OOPB0THP9e1XwobyVqIQfE7jR2Iumj7rQGBpbrW7A+mLrRtEqKi5VVV42arGAV
-4KY7fQzaxftoGT/IVbFicxBQ+kn8F9QZ53K+JOj4IDqL5JZ19UtLSr8XSau/4uCf
-Lzi0s+tHUNB9XCfs0K9lS2tjlQebM+KTrz5FCzbLwas/LuyvvO7hQKpTwgsKUnlC
-/JP4A1xRnxIcVBvk9Uo/
-=aybL
+iQIcBAEBAgAGBQJPdNRYAAoJEBus8iNuMP3dgXQP+gNKEiZzE7rmA6OMrbvtLun0
+udWGq5WCMJHd9LmEzWWxRjY8eUCdXx6zMYmqLK5XoIy+VPY0FrnNa5Oc+XLfp2VD
+GuT6R9XVVW9H3qYIDdlH4Quc6VWeKSSaV2Mw8g2R63ZCLoH+o5y1zWOkEdtznr50
+7N1YS35HGBL5v2dCO04Ht+RTmr628/3EorA0nhvY7J+Dx0luK0wFvGf6AkEyKhK3
+u0Yb4lhAKFuch+zaXYnDF4yO2KHjSY3+QncGz+1E/jMjivBAmO5aDussCIsfYxhj
+q5IZCTifxXZlRWplKdo8B+JHYPp7Fm/2PI+/JS/jWKf7fEMdb42qgU85FInayTAM
+RA8R9j5ExgGSnwChAs9fKVZ6XDnuW3WKvZTYNpmvNxRxx69EcU7QMcQCuX4cEcul
+/VXKAlsYa4fuTG3uoVyMLmVCWEPyFg875r3yPk+EZMy+IR9TRD4iBAe86T7UfXG3
+Py8165Cs4rBvfNb2hW7bVX8JIpgeQcEqthOeOtLLCiThrnlgXOW7+W8p456koMu0
+ieVIqs+0OphTBz2FWTrBxolfIYEBiO999rFD1jGZeH7qvLnzP+NXqY9USliAcUU0
+EYmKyXW32R7MjtyDp11JEPVbIwgw42KkV2SDiwNTvzQrIn6YUAyI5YyWdMiywiWQ
+UiV8we7E8e+CwfaipoBW
+=qloD
 -----END PGP SIGNATURE-----
 
---ZPt4rx8FFjLCG7dd--
+--uQr8t48UFsdbeI+V--
 
---===============9053242168298213166==
+--===============7189733281273717145==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9053242168298213166==--
+--===============7189733281273717145==--
