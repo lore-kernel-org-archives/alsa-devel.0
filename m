@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: sgtl5000: Enable VAG when DAC/ADC up
-Date: Thu, 29 Mar 2012 11:58:32 +0100
-Message-ID: <20120329105831.GC3668@opensource.wolfsonmicro.com>
+Date: Thu, 29 Mar 2012 12:16:05 +0100
+Message-ID: <20120329111605.GK3668@opensource.wolfsonmicro.com>
 References: <1333000305-27280-1-git-send-email-shawn.guo@linaro.org>
-	<20120329071700.GA18127@zzm-ubuntu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3593698460334706638=="
+Content-Type: multipart/mixed; boundary="===============5300905099514721159=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E3F291043C6
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 39FE41043D2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Mar 2012 12:58:33 +0200 (CEST)
-In-Reply-To: <20120329071700.GA18127@zzm-ubuntu>
+	Thu, 29 Mar 2012 13:16:08 +0200 (CEST)
+In-Reply-To: <1333000305-27280-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,65 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Zeng Zhaoming <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3593698460334706638==
+--===============5300905099514721159==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HG+GLK89HZ1zG0kk"
+	protocol="application/pgp-signature"; boundary="P7Tqkd/m/Jnohiaz"
 Content-Disposition: inline
 
 
---HG+GLK89HZ1zG0kk
+--P7Tqkd/m/Jnohiaz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 29, 2012 at 03:17:00PM +0800, Zeng Zhaoming wrote:
+On Thu, Mar 29, 2012 at 01:51:45PM +0800, Shawn Guo wrote:
 
-> So the code should be:
-> +      {"MIC_IN", NULL, "Mic Bias},	       /* mic bias --> mic_in */
->        {"Capture Mux", "MIC_IN", "MIC_IN"},    /* mic_in --> adc_mux */
-> -+     {"Mic Bias", NULL, "MIC_IN"},           /* mic_in --> mic bias */
-> -+     {"Capture Mux", "MIC_IN", "Mic Bias"},  /* mic bias --> adc_mux */
+> +	SND_SOC_DAPM_ADC_E("ADC", "Capture", SGTL5000_CHIP_ANA_POWER, 1, 0,
+> +			power_vag_event,
+> +			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+> +	SND_SOC_DAPM_DAC_E("DAC", "Playback", SGTL5000_CHIP_ANA_POWER, 3, 0,
+> +			power_vag_event,
+> +			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 
-> and platform code
-> +      {"Mic Bias", NULL, "MIC"},
-> -      {"MIC_IN", NULL, "MIC"},
+What would be more idiomatic here would be to make VAG a supply widget
+and then connect it to DAC and ADC rather than have the event on both -
+It looks like with your current code simultaneous playback and capture
+will break, you'll run through the power sequences twice and if you stop
+one stream it'll power down the other.
 
-No, the bias should be a supply for the microphone - ensuring that this
-happens is the whole point of the patch I sent the other day.
+> +	{"Mic Bias", NULL, "MIC_IN"},		/* mic_in --> mic bias */
+> +	{"Capture Mux", "MIC_IN", "Mic Bias"},	/* mic bias --> adc_mux */
 
---HG+GLK89HZ1zG0kk
+This should be in the machine driver.
+
+--P7Tqkd/m/Jnohiaz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPdEBRAAoJEBus8iNuMP3dK4wQAITb/o4Q2AoWQ6FkgUgiiGmG
-x1SONV8SDRpAb/TNMU2BdDFYCGCkLITQ8zNQgdc5Zmgxn0KMoxSJ+mjjlhyeicjm
-zW1XmF+JxPRtIjysBxXVnTbQA5dIqdeU762dKLiwFsygJeuu11H2pAgjdiQWtWEw
-HIHjR0Nd1sThB5z+zIBnSu36v0SqtkfVB35xQFsjAMXOSHcypUzs6aZIZEDC5JNC
-fbreAdhM61awsJgc0wfYeljcVkUFSll5m3WZ3tUOLkQpx8d48ope9BGcwtkElIuU
-0lBeQyXMt9dYQJl+aQMHyyyhpoZ4CVDtlfcA9YTK4XErFyV8AoDoRY5a7UDAErHq
-iBGp+hwuu/kVaDxbiNnZnnwTT8trUJdr58Bame3pcaDbIXIghIYyNyLzvToXAkdv
-zlRWvt0icjOLZHQu6nfPOwltnpv43YtjxFEhw76WPXx02LOj7gZ9ktKNn2sG7Ixt
-RLu0LKqdG7JeF7+YuA5yVzFi2QmUx/4Cql2rlNJ3j3i/gS+rGWBIcxGEU6MHwPBY
-vUb/ZHTAQbEEa4DwHcbP3x4n0i26x2tQHbYhoHKX6QMfPcneIKRzfkKFXIE0r4Rk
-65zazr6d0e707F4UMkGvCPUtNFXHPDUhnQ6U4jmAARwHEfWZ9lVcFHd8ULd2WkrV
-oG75QKZlETBPx9TgbtnR
-=6O5i
+iQIcBAEBAgAGBQJPdERuAAoJEBus8iNuMP3dLHwP/0Ux/iqHzISjrS35JUF6Z/vb
+Ag82i8KkmU8lUHxqukXJpI5UP3/HvBmn3YWSgwMIZU2rdRzpXO122p+0kWIgFzDf
+5s4iXzlRN3x0Ht/enRi0z+agncWAMkONCnery90kRzevjRQPl98CI599hIVrUIFs
+y2FqHG8hrid0JkwIJ8gTrSzfzYLMCjqqdigsELT3jy/symgbszT3FPeBj3U+GY5K
+e2cSfB531s/xyWHrSEQKvsehaHjK3HNYL8+1u0PpnC/tMP/VwNzK+Meo9OVjHFGg
+xJ4DXkryz1J+SsriBzi39Uko+wMMGWQHPbO7X+g1wBbysMXK29q8ElbphkTBKytQ
+Wtjoa83NNva/xsB4MubhgIy9p4dhve9FZBBqlUJwkh/rVrHDVywekqZOuUuDYIhN
+Xnilr3NAP12xFIQnrF7z5GRGf4gIDw8BK7uAWVJe9OYHY5qzgRsTey8nFeGA8TzF
+g1fl7UP/egloDbgU010zvcpHNE7z2bp4qTnlJ2yJB47mCRF7zP4ffepSrEVdLtJD
+LJVLh84OoAX3bdiVlM3n61rFraTswaQkseDrTMd/x9XuvmF9KmWKPZsphRW2PzuE
+H1PmZ64JwOFTTeGbc622tBcreuSLlycxRutxoBaB3m8kQf205/3qL3GXnfMCZP8m
+dJyZPiB+lyhMaxxb4Tjg
+=DFZR
 -----END PGP SIGNATURE-----
 
---HG+GLK89HZ1zG0kk--
+--P7Tqkd/m/Jnohiaz--
 
---===============3593698460334706638==
+--===============5300905099514721159==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3593698460334706638==--
+--===============5300905099514721159==--
