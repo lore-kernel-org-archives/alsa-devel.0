@@ -1,26 +1,18 @@
-From: David Alexander <lidxv0n@gmail.com>
-Subject: Re: trying to get an eleven rack to work
-Date: Fri, 30 Mar 2012 13:27:05 -0400
-Message-ID: <CAOyn=DGXcm+0RfuNj5G+BvgrwofpO6TROsKRLiekNxW8FUupFg@mail.gmail.com>
-References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
-	<4F6883F9.4010405@ladisch.de>
-	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
-	<4F718114.5020602@ladisch.de>
-	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
-	<4F740A6A.3030608@ladisch.de>
-	<CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: lsusb -v for AKAI's new EIE pro interface
+Date: Sat, 31 Mar 2012 09:03:31 +1100
+Message-ID: <CACckToWdWZQFiFS_2GkjR=_0=TDdVApDxfwB0c_3HJ4bvjCejw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id F11E22437C
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86611104610
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 19:27:06 +0200 (CEST)
-Received: by ggni2 with SMTP id i2so535083ggn.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 10:27:05 -0700 (PDT)
-In-Reply-To: <CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
+	Sat, 31 Mar 2012 00:03:32 +0200 (CEST)
+Received: by werg1 with SMTP id g1so648883wer.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 15:03:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,97 +22,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Grant,
+So device is 4 in 4 out with inserts and midi
 
-You had mentioned something about the end point for the mixer.  I have
-found this information from the trace I had performed:
+Composite with 2 interfaces. I can't tell if they're independent midi and
+audio or more essoteric
 
->From a dispatch urb_function_get_descriptor_from_device message under
-the fid_USBPORT_Endpoint_Descriptor:
-
-fid_bLength 7
-fid_bDescriptortype 5
-fid_bEndpointAddress 0
-fid_bmAttributes 0
-fid_wMaxPacketSize 64
-fid_bInterval 0
-
-Is this what you were asking about, and does it help us?
-
-thanks,
-David
+anyone want to take a punt?
 
 
 
-On Thu, Mar 29, 2012 at 10:02 AM, David Alexander <lidxv0n@gmail.com> wrote:
-> Here is what I am getting after having changed the line in mixer.c:
->
-> [ =A0 92.284035] usb 2-4: new high speed USB device number 2 using ehci_h=
-cd
-> [ =A0 92.815354] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
-> [ =A0 92.815382] snd-usb-audio: probe of 2-4:1.0 failed with error -5
-> [ =A0 92.816352] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
-> [ =A0 92.816372] snd-usb-audio: probe of 2-4:1.1 failed with error -5
-> [ =A0 92.816966] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
-> [ =A0 92.816980] snd-usb-audio: probe of 2-4:1.2 failed with error -5
-> [ =A0 92.817960] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
-> [ =A0 92.817972] snd-usb-audio: probe of 2-4:1.3 failed with error -5
-> [ =A0 92.818587] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
-> [ =A0 92.818598] snd-usb-audio: probe of 2-4:1.4 failed with error -5
-> [ =A0 92.818638] usbcore: registered new interface driver snd-usb-audio
->
->
-> I noticed that I am not getting an entry under /proc/asound that I had
-> before. =A0Before I got an entry called "Rack" with a sym link to card1:
->
-> /proc/asound$ ls -l
-> total 0
-> dr-xr-xr-x 5 root root 0 2012-03-29 09:52 card0
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 cards
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 devices
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 hwdep
-> lrwxrwxrwx 1 root root 5 2012-03-29 10:01 Intel -> card0
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 modules
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 pcm
-> dr-xr-xr-x 2 root root 0 2012-03-29 10:01 seq
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 timers
-> -r--r--r-- 1 root root 0 2012-03-29 10:01 version
->
->
-> Thank you,
-> David
->
-> On Thu, Mar 29, 2012 at 3:08 AM, Clemens Ladisch <clemens@ladisch.de> wro=
-te:
->> David Alexander wrote:
->>> kernel: [ =A0 74.128035] usb 2-4: new high speed USB device number 2
->>> kernel: [ =A0 74.634592] ALSA mixer.c:1938 usbaudio: unit 32: unexpecte=
-d type 0x09
->>> kernel: [ =A0 74.634606] snd-usb-audio: probe of 2-4:1.0 failed with er=
-ror -5
->>
->> 0x09 is UAC2's EXTENSION_UNIT, which should not be a reason for failing.
->> Please try the patch below.
->>
->>
->> Regards,
->> Clemens
->>
->>
->> --- a/sound/usb/mixer.c
->> +++ b/sound/usb/mixer.c
->> @@ -1926,7 +1926,7 @@ static int parse_audio_unit(struct mixer_build *st=
-ate, int unitid)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return parse_audio_proces=
-sing_unit(state, unitid, p1);
->> =A0 =A0 =A0 =A0default:
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_printk(KERN_ERR "usbaudio: unit %u: u=
-nexpected type 0x%02x\n", unitid, p1[2]);
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
->> =A0 =A0 =A0 =A0}
->> =A0}
->>
+   1. Bus 001 Device 012: ID 09e8:0010 AKAI  Professional M.I. Corp.
+   2. Device Descriptor:
+   3.   bLength                18
+   4.   bDescriptorType         1
+   5.   bcdUSB               2.00
+   6.   bDeviceClass          255 Vendor Specific Class
+   7.   bDeviceSubClass       255 Vendor Specific Subclass
+   8.   bDeviceProtocol       255 Vendor Specific Protocol
+   9.   bMaxPacketSize0        64
+   10.   idVendor           0x09e8 AKAI  Professional M.I. Corp.
+   11.   idProduct          0x0010
+   12.   bcdDevice            2.00
+   13.   iManufacturer           1
+   14.   iProduct                2
+   15.   iSerial                 3
+   16.   bNumConfigurations      1
+   17.   Configuration Descriptor:
+   18.     bLength                 9
+   19.     bDescriptorType         2
+   20.     wTotalLength           80
+   21.     bNumInterfaces          2
+   22.     bConfigurationValue     1
+   23.     iConfiguration          0
+   24.     bmAttributes         0x40
+   25.       (Missing must-be-set bit!)
+   26.       Self Powered
+   27.     MaxPower                0mA
+   28.     Interface Descriptor:
+   29.       bLength                 9
+   30.       bDescriptorType         4
+   31.       bInterfaceNumber        0
+   32.       bAlternateSetting       0
+   33.       bNumEndpoints           0
+   34.       bInterfaceClass       255 Vendor Specific Class
+   35.       bInterfaceSubClass      0
+   36.       bInterfaceProtocol      0
+   37.       iInterface              0
+   38.     Interface Descriptor:
+   39.       bLength                 9
+   40.       bDescriptorType         4
+   41.       bInterfaceNumber        0
+   42.       bAlternateSetting       1
+   43.       bNumEndpoints           3
+   44.       bInterfaceClass       255 Vendor Specific Class
+   45.       bInterfaceSubClass      0
+   46.       bInterfaceProtocol      0
+   47.       iInterface              0
+   48.       Endpoint Descriptor:
+   49.         bLength                 7
+   50.         bDescriptorType         5
+   51.         bEndpointAddress     0x02  EP 2 OUT
+   52.         bmAttributes            5
+   53.           Transfer Type            Isochronous
+   54.           Synch Type               Asynchronous
+   55.           Usage Type               Data
+   56.         wMaxPacketSize     0x009c  1x 156 bytes
+   57.         bInterval               1
+   58.       Endpoint Descriptor:
+   59.         bLength                 7
+   60.         bDescriptorType         5
+   61.         bEndpointAddress     0x83  EP 3 IN
+   62.         bmAttributes            2
+   63.           Transfer Type            Bulk
+   64.           Synch Type               None
+   65.           Usage Type               Data
+   66.         wMaxPacketSize     0x0200  1x 512 bytes
+   67.         bInterval               4
+   68.       Endpoint Descriptor:
+   69.         bLength                 7
+   70.         bDescriptorType         5
+   71.         bEndpointAddress     0x04  EP 4 OUT
+   72.         bmAttributes            2
+   73.           Transfer Type            Bulk
+   74.           Synch Type               None
+   75.           Usage Type               Data
+   76.         wMaxPacketSize     0x0200  1x 512 bytes
+   77.         bInterval               4
+   78.     Interface Descriptor:
+   79.       bLength                 9
+   80.       bDescriptorType         4
+   81.       bInterfaceNumber        1
+   82.       bAlternateSetting       0
+   83.       bNumEndpoints           0
+   84.       bInterfaceClass       255 Vendor Specific Class
+   85.       bInterfaceSubClass      0
+   86.       bInterfaceProtocol      0
+   87.       iInterface              0
+   88.     Interface Descriptor:
+   89.       bLength                 9
+   90.       bDescriptorType         4
+   91.       bInterfaceNumber        1
+   92.       bAlternateSetting       1
+   93.       bNumEndpoints           2
+   94.       bInterfaceClass       255 Vendor Specific Class
+   95.       bInterfaceSubClass      0
+   96.       bInterfaceProtocol      0
+   97.       iInterface              0
+   98.       Endpoint Descriptor:
+   99.         bLength                 7
+   100.         bDescriptorType         5
+   101.         bEndpointAddress     0x81  EP 1 IN
+   102.         bmAttributes            5
+   103.           Transfer Type            Isochronous
+   104.           Synch Type               Asynchronous
+   105.           Usage Type               Data
+   106.         wMaxPacketSize     0x0040  1x 64 bytes
+   107.         bInterval               4
+   108.       Endpoint Descriptor:
+   109.         bLength                 7
+   110.         bDescriptorType         5
+   111.         bEndpointAddress     0x86  EP 6 IN
+   112.         bmAttributes            2
+   113.           Transfer Type            Bulk
+   114.           Synch Type               None
+   115.           Usage Type               Data
+   116.         wMaxPacketSize     0x0200  1x 512 bytes
+   117.         bInterval               1
+   118. Device Status:     0x9000
+   119.   (Bus Powered)
