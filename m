@@ -1,19 +1,26 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] powerpc: select PPC_CLOCK unconditionally for
-	FSL_SOC
-Date: Fri, 30 Mar 2012 13:38:56 +0800
-Message-ID: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: fsl: enable ssi clock in probe
+	function
+Date: Fri, 30 Mar 2012 13:55:53 +0800
+Message-ID: <20120330055543.GH19506@S2101-09.ap.freescale.net>
+References: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
+	<20120329112949.GM3668@opensource.wolfsonmicro.com>
+	<4F748751.3020300@freescale.com>
+	<20120329160916.GG19506@S2101-09.ap.freescale.net>
+	<4F748C8E.1010702@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
 	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97BDA2432E
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BFA22433B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 07:39:03 +0200 (CEST)
-Received: by iakh37 with SMTP id h37so513570iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 22:39:01 -0700 (PDT)
+	Fri, 30 Mar 2012 07:55:56 +0200 (CEST)
+Received: by iakh37 with SMTP id h37so532049iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 22:55:53 -0700 (PDT)
+In-Reply-To: <4F748C8E.1010702@freescale.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +30,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linuxppc-dev@lists.ozlabs.org
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Freescale PowerPC SoCs share a number of IP blocks with Freescale
-ARM/IMX SoCs, FlexCAN, SSI, FEC, eSDHC, USB, etc.  There are some
-effort consolidating those drivers to make them work for both
-architectures.
+On Thu, Mar 29, 2012 at 11:23:42AM -0500, Timur Tabi wrote:
+> Shawn Guo wrote:
+> > d18b63ab0b04af1bad01e59a96b88fc8cda08752
+> > ASoC: core: Use driver core probe deferral
+> 
+> That fixed it, but the SHA in my repository is
+> 97883ef0a8f61fbd5fb8242980f6998290d1dd95
+> 
+> Anyway, I just want to say that for-3.5 still works on PowerPC.
+> 
+I guess you only meant mpc85xx_defconfig (and mpc85xx_smp_defconfig).
+I sent the patch after compile-testing for mpc85xx_defconfig, and
+took it for granted that mpc8610_hpcd_defconfig will also compile.
+But I just discovered that PPC_CLOCK is not enabled for
+mpc8610_hpcd_defconfig, so it fails on the final link.
 
-One outstanding difference between two architectures is ARM/IMX will
-turn off module clocks during platform initialization for power saving
-and expects drivers manage clocks using clk API, while PowerPC
-mostly does not do that, and thus does not always build in clk API.
+I just sent a patch proposing to fix it by always building in PPC_CLOCK
+for FSL_SOC.
 
-Listing all those driver Kconfig options in "select PPC_CLOCK if" seems
-not scalable for long term maintenance, and could easily introduce
-Kconfig recursive dependency.  This patch chooses to select PPC_CLOCK
-unconditionally for FSL_SOC to always build clk API for PowerPC in.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- arch/powerpc/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index feab3ba..63fa7fb 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -661,7 +661,7 @@ config SBUS
- config FSL_SOC
- 	bool
- 	select HAVE_CAN_FLEXCAN if NET && CAN
--	select PPC_CLOCK if CAN_FLEXCAN
-+	select PPC_CLOCK
- 
- config FSL_PCI
-  	bool
 -- 
-1.7.5.4
+Regards,
+Shawn
