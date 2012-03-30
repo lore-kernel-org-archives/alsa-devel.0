@@ -1,18 +1,16 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v5] ASoC: Support TI LM49453 Audio driver
-Date: Fri, 30 Mar 2012 15:21:04 +0530
-Message-ID: <1333101064.1820.130.camel@vkoul-udesk3>
-References: <290463D19D2E064191F1F96ECA480A89434B1A69FD@EXMAIL02.scwf.nsc.com>
-	<20120329213016.GB4153@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Don't bother lowering clock
+	dividers inside idle AIFs
+Date: Fri, 30 Mar 2012 11:22:25 +0100
+Message-ID: <1333102945-24753-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18B9E2442A
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D3BC24437
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 11:48:35 +0200 (CEST)
-In-Reply-To: <20120329213016.GB4153@opensource.wolfsonmicro.com>
+	Fri, 30 Mar 2012 12:22:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Reddy,
-	MR Swami" <MR.Swami.Reddy@ti.com>, "Girdwood, Liam" <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-03-29 at 22:30 +0100, Mark Brown wrote:
-> On Thu, Mar 29, 2012 at 07:21:13AM -0700, Reddy, MR Swami wrote:
-> > 
-> > ASoC: Support TI LM49453 Audio driver
-> > 
-> > The LM49453 is a high performance audio subsystem that supports both analog and
-> > digital audio functions. It includes a high quality stereo DAC, a high quality
-> > stereo ADC, stereo line level outputs, stereo Class D haptic drivers, stereo
-> > class D loudspeaker amplifiers, class D earpiece amplifier and stereo class G
-> > headphone amplifier with microphone detection capability.
-> 
-> This basically looks good and I was going to apply it but unfortunately
-> it looks like your mailer corrupted the patch and replaced all tabs with
-> spaces so the tools don't understand it - can you please check and
-> resend?  If you're really stuck try an attachment but ideally not.  A
-> personal account might also work (all the Marvell people used to use
-> gmail for submitting patches for similar reasons).
-> 
-> Some other TI people can probably help you out here, I know a lot of
-> them have been through similar hassle setting up the mail system there.
-I didn't seem to get this email :( And don't seem to find it in archives
-as well.
+This increases the chances we'll manage to hit a partially configured
+state on restart and the power savings are extremely small.
 
-Swami: can you repost please after splitting your patch
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   29 -----------------------------
+ 1 files changed, 0 insertions(+), 29 deletions(-)
 
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index ea68c14..5c83505 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2626,33 +2626,6 @@ static int wm8994_aif3_hw_params(struct snd_pcm_substream *substream,
+ 	return snd_soc_update_bits(codec, aif1_reg, WM8994_AIF1_WL_MASK, aif1);
+ }
+ 
+-static void wm8994_aif_shutdown(struct snd_pcm_substream *substream,
+-				struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-	int rate_reg = 0;
+-
+-	switch (dai->id) {
+-	case 1:
+-		rate_reg = WM8994_AIF1_RATE;
+-		break;
+-	case 2:
+-		rate_reg = WM8994_AIF2_RATE;
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	/* If the DAI is idle then configure the divider tree for the
+-	 * lowest output rate to save a little power if the clock is
+-	 * still active (eg, because it is system clock).
+-	 */
+-	if (rate_reg && !dai->playback_active && !dai->capture_active)
+-		snd_soc_update_bits(codec, rate_reg,
+-				    WM8994_AIF1_SR_MASK |
+-				    WM8994_AIF1CLK_RATE_MASK, 0x9);
+-}
+-
+ static int wm8994_aif_mute(struct snd_soc_dai *codec_dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+@@ -2750,7 +2723,6 @@ static const struct snd_soc_dai_ops wm8994_aif1_dai_ops = {
+ 	.set_sysclk	= wm8994_set_dai_sysclk,
+ 	.set_fmt	= wm8994_set_dai_fmt,
+ 	.hw_params	= wm8994_hw_params,
+-	.shutdown	= wm8994_aif_shutdown,
+ 	.digital_mute	= wm8994_aif_mute,
+ 	.set_pll	= wm8994_set_fll,
+ 	.set_tristate	= wm8994_set_tristate,
+@@ -2760,7 +2732,6 @@ static const struct snd_soc_dai_ops wm8994_aif2_dai_ops = {
+ 	.set_sysclk	= wm8994_set_dai_sysclk,
+ 	.set_fmt	= wm8994_set_dai_fmt,
+ 	.hw_params	= wm8994_hw_params,
+-	.shutdown	= wm8994_aif_shutdown,
+ 	.digital_mute   = wm8994_aif_mute,
+ 	.set_pll	= wm8994_set_fll,
+ 	.set_tristate	= wm8994_set_tristate,
 -- 
-~Vinod
+1.7.9.1
