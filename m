@@ -1,21 +1,24 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw value
- ranges
-Date: Fri, 30 Mar 2012 14:38:02 +0200
-Message-ID: <4F75A92A.3030406@ladisch.de>
-References: <3f0367dc-8bd2-4342-99b5-9397ea4189b7@zose-store-12>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl: enable ssi clock in probe
+	function
+Date: Fri, 30 Mar 2012 08:03:28 -0500
+Message-ID: <4F75AF20.6080009@freescale.com>
+References: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
+	<20120329112949.GM3668@opensource.wolfsonmicro.com>
+	<4F748751.3020300@freescale.com>
+	<20120329160916.GG19506@S2101-09.ap.freescale.net>
+	<4F748C8E.1010702@freescale.com>
+	<20120330055543.GH19506@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 5E642103FBE
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id F391C10443F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 14:34:48 +0200 (CEST)
-Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 2B20020D5E
-	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 08:34:45 -0400 (EDT)
-In-Reply-To: <3f0367dc-8bd2-4342-99b5-9397ea4189b7@zose-store-12>
+	Fri, 30 Mar 2012 15:03:46 +0200 (CEST)
+In-Reply-To: <20120330055543.GH19506@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?QmVub8OudCBUaMOpYmF1ZGVhdQ==?= <benoit.thebaudeau@advansee.com>
-Cc: alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-QmVub8OudCBUaMOpYmF1ZGVhdSB3cm90ZToKPiBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4+IEJl
-bm/DrnQgVGjDqWJhdWRlYXUgd3JvdGU6Cj4+PiBJbiBjYXNlIG9mIGEgVExWIGRCIHJhbmdlIHdp
-dGggYWxsIGl0ZW1zIGhhdmluZyByYXcgdmFsdWUgcmFuZ2VzIHN0cmljdGx5IHdpdGhpbgo+Pj4g
-dGhlIG1haW4gcmF3IHZhbHVlIHJhbmdlIHJlcG9ydGVkIGJ5IHRoZSBkcml2ZXIsIHNuZF90bHZf
-Y29udmVydF9mcm9tX2RCKCkKPj4+IHJldHVybmVkIG9uZSBvZiB0aGUgbWFpbiByYXcgcmFuZ2Ug
-Ym91bmRhcmllcywgd2hpY2ggd2FzIG91dHNpZGUKPj4+IGFsbCBkQiByYW5nZSBpdGVtcy4KPj4K
-Pj4gQnV0IHRoZSBtYWluIHJhdyByYW5nZSBib3VuZGFyaWVzIF9hcmVfIHZhbGlkIHZhbHVlcy4K
-Pgo+IE5vdCBhbHdheXMuIEZvciBpbnN0YW5jZSwgaWYgYSBjb2RlYyByZWdpc3RlciBoYXMgdGhl
-IGZvbGxvd2luZyB2b2x1bWUgdmFsdWVzOgo+IDB4MDAgdG8gMHgyMDogcHJvaGliaXRlZAo+IDB4
-MjEgdG8gMHg0MDogc29tZSBkQiB2YWx1ZXMKPiAweDQxIHRvIDB4NjA6IHByb2hpYml0ZWQKPiAw
-eDYxIHRvIDB4ZmY6IHNvbWUgZEIgdmFsdWVzCj4KPiB0aGVuIHRoZSBrZXJuZWwgZHJpdmVyIHdp
-bGwgdXNlIHRoZSBleGlzdGluZyBTT0NfU0lOR0xFX1RMViBtYWNybywgd2hpY2gsIGxpa2UKPiBt
-b3N0IFRMViBtYWNyb3MsIGF1dG9tYXRpY2FsbHkgc2V0cyBtaW4gdG8gMC4gVGhlIGRyaXZlciB0
-aGVuIHJlbGllcyBvbiB0aGUKPiBhc3NvY2lhdGVkIFRMViByYW5nZSBkZXNjcmlwdGlvbiB0byBm
-aWx0ZXIgb3V0IGludmFsaWQgcmF3IHZhbHVlcy4KCkFsbCByYXcgdmFsdWVzIGRlc2NyaWJlZCBi
-eSB0aGUgLmluZm8gY2FsbGJhY2ssIHJldHVybmVkIGJ5IHRoZSAuZ2V0CmNhbGxiYWNrLCBhbmQg
-ZXNwZWNpYWxseSBhY2NlcHRlZCBieSB0aGUgLnB1dCBjYWxsYmFjaywgYXJlIHZhbGlkLgoKVGhl
-IFRMViBpbmZvcm1hdGlvbiBqdXN0IF9kZXNjcmliZXNfIHZhbHVlcywgaXQgY2Fubm90IF9yZXN0
-cmljdF8gdGhlbS4KCklmIGEgcmVnaXN0ZXIgaGFzIGludmFsaWQgdmFsdWVzLCB0aGUgZHJpdmVy
-IG11c3Qgc29tZWhvdyBtYXAgYmV0d2VlbgpyYXcgY29udHJvbCB2YWx1ZXMgYW5kIHZhbGlkIHJl
-Z2lzdGVyIHZhbHVlcy4KCj4+PiBzdGF0aWMgY29uc3QgdW5zaWduZWQgaW50IGJkMzc1M3hfdm9s
-X2ZhZGVyX2dhaW5fYXR0X3RsdltdID0gewo+Pj4gCVRMVl9EQl9SQU5HRV9IRUFEKDIpLAo+Pj4g
-CTAsIDAsIFRMVl9EQl9TQ0FMRV9JVEVNKFRMVl9EQl9HQUlOX01VVEUsIDAsIDEpLAo+Pj4gCTQ4
-LCAxNDIsIFRMVl9EQl9TQ0FMRV9JVEVNKC03OTAwLCAxMDAsIDApLAo+Pj4gfTsKPj4+IAlTT0Nf
-U0lOR0xFX1RMViguLi4gMCwgMjU1LCAxLCBiZDM3NTN4X3ZvbF9mYWRlcl9nYWluX2F0dF90bHYp
-LAo+Pj4KPj4+IHNuZF90bHZfY29udmVydF9mcm9tX2RCKHRsdiwgMCwgMjU1LCAxNTAwLCAmdmFs
-dWUsIDEpIHJldHVybmVkIDI1NQo+Pj4gaW5zdGVhZCBvZiB0aGUgZXhwZWN0ZWQgMTQyLgo+Pgo+
-PiBCdXQgdGhlcmUgaXMgbm8gZ3VhcmFudGVlIHRoYXQgdGhpcyBtaXhlciBjb250cm9sIHdpbGwg
-aGF2ZSBvbmx5IG9uZSBvZgo+PiB0aG9zZSB2YWx1ZXMgaW4gdGhlIFRMVidzIHJhbmdlLgo+Cj4g
-V2hhdCBkbyB5b3UgbWVhbj8KCkl0IF9pc18gcG9zc2libGUgdG8gaGF2ZSByYXcgdmFsdWVzIDEu
-LjQ3IGFuZCAxNDMuLjI1NSAoYW5kCmNvbnZlcnRfdG9fZEIgd2lsbCBmYWlsIGZvciB0aG9zZSku
-Cgo+PiBBcyBmb3IgdGhlIHBhdGNoLCB3aGlsZSBJJ20gbm90IHN1cmUgd2hldGhlciBpdCBpcyBu
-ZWVkZWQgYXQgYWxsLCBJIGFsc28KPj4gZG9uJ3QgcXVpdGUgdW5kZXJzdGFuZCB0aGUgcmVhc29u
-IGZvciBhbGwgdGhlIGNoYW5nZXMuCj4+Cj4+PiAtLS0gYWxzYS1saWIvc3JjL2NvbnRyb2wvdGx2
-LmMKPj4+ICsrKyBhbHNhLWxpYi9zcmMvY29udHJvbC90bHYuYwo+Pj4gQEAgLTI5MSw0MSArMjkx
-LDM3IEBAIGludCBzbmRfdGx2X2NvbnZlcnRfZnJvbV9kQih1bnNpZ25lZCBpbnQKPj4+ICB7Cj4+
-PiAgCXN3aXRjaCAodGx2WzBdKSB7Cj4+PiAgCWNhc2UgU05EX0NUTF9UTFZUX0RCX1JBTkdFOiB7
-Cj4+PiArCQlsb25nIGRibWluLCBkYm1heCwgcHJldl9zdWJtYXg7Cj4+PiAgCQl1bnNpZ25lZCBp
-bnQgcG9zLCBsZW47Cj4+PiAgCQlsZW4gPSBpbnRfaW5kZXgodGx2WzFdKTsKPj4+ICsJCWlmIChs
-ZW4gPCA2IHx8IGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKPj4+ICAJCQlyZXR1cm4gLUVJTlZB
-TDsKPj4+ICAJCXBvcyA9IDI7Cj4+PiArCQlwcmV2X3N1Ym1heCA9IDA7Cj4+PiArCQlkbyB7Cj4+
-Cj4+IFdoeSBpcyB0aGlzIG5vdCBhIHdoaWxlIGxvb3A/Cj4KPiBCZWNhdXNlIHRoZSBhZGRlZCAi
-aWYgKGxlbiA8IDYiIG1ha2VzIGl0IHBvaW50bGVzcy4KClRoZW4gd2h5IGRpZCB5b3UgYWRkIHRo
-ZSBsZW48NiBjaGVjaz8gIFRoaXMgaXMsIGluIGVmZmVjdCwganVzdCB0aGUgc2FtZQphcyB0aGUg
-b2xkIHdoaWxlIGNvbmRpdGlvbi4KCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Shawn Guo wrote:
+> I guess you only meant mpc85xx_defconfig (and mpc85xx_smp_defconfig).
+> I sent the patch after compile-testing for mpc85xx_defconfig, and
+> took it for granted that mpc8610_hpcd_defconfig will also compile.
+> But I just discovered that PPC_CLOCK is not enabled for
+> mpc8610_hpcd_defconfig, so it fails on the final link.
+
+Argh.  I was thinking about testing mpc8610 as well, but I thought, "Hey,
+p1022ds works, why bother testing the 8610?  Why would it fail?"
+
+> I just sent a patch proposing to fix it by always building in PPC_CLOCK
+> for FSL_SOC.
+
+You'll need to get Kumar Gala's ACK on that one, but if only the 8610 is
+broken, then I don't think he'll like it.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
