@@ -1,18 +1,26 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw
-	value	ranges
-Date: Fri, 30 Mar 2012 18:15:16 +0200 (CEST)
-Message-ID: <463216e2-3e8d-4597-91da-bbda1144848c@zose-store-12>
-References: <s5hk422qek0.wl%tiwai@suse.de>
+From: David Alexander <lidxv0n@gmail.com>
+Subject: Re: trying to get an eleven rack to work
+Date: Fri, 30 Mar 2012 13:27:05 -0400
+Message-ID: <CAOyn=DGXcm+0RfuNj5G+BvgrwofpO6TROsKRLiekNxW8FUupFg@mail.gmail.com>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+	<4F6883F9.4010405@ladisch.de>
+	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
+	<4F718114.5020602@ladisch.de>
+	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
+	<4F740A6A.3030608@ladisch.de>
+	<CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta15.web4all.fr (zose-mta15.web4all.fr [176.31.217.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0C852412D
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id F11E22437C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 18:12:17 +0200 (CEST)
-In-Reply-To: <s5hk422qek0.wl%tiwai@suse.de>
+	Fri, 30 Mar 2012 19:27:06 +0200 (CEST)
+Received: by ggni2 with SMTP id i2so535083ggn.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 10:27:05 -0700 (PDT)
+In-Reply-To: <CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +30,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEJlbm/DrnQgVGjDqWJhdWRlYXUgd3JvdGU6Cj4gPgo+ID4g
-Q2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+ID4gPiBJJ2xsIHNlZSBpZiBJIGNhbiBjb2JibGUgdG9n
-ZXRoZXIgc29tZSBUTFYgY2hlY2tpbmcgY29kZSAuLi4KPiA+Cj4gPiBHcmVhdC4KPiA+Cj4gPiA+
-ID4gQmVjYXVzZSBpdCdzIHVzZWxlc3MgdG8gd2FpdCB1bnRpbCB0aGUgZW5kIG9mIHRoZSBsb29w
-IHRvCj4gPiA+ID4gcmV0dXJuCj4gPiA+ID4gLUVJTlZBTCwKPiA+ID4KPiA+ID4gSXQgaXMgbm90
-IG5lY2Vzc2FyeSB0byBvcHRpbWl6ZSBmb3IgZXJyb3IgY2FzZXMuCj4gPgo+ID4gSXQncyBub3Qg
-YW4gb3B0aW1pemF0aW9uLCBidXQgYSBzaW1wbGlmaWNhdGlvbi4gT3RoZXJ3aXNlLCBwb3MKPiA+
-IHdvdWxkIGhhdmUgdG8gYmUKPiA+IHRlc3RlZCBhZ2FpbiBhZnRlciB0aGUgbG9vcCB0byBkaWZm
-ZXJlbnRpYXRlIHRoZSBsb29wLXNraXBwZWQgY2FzZQo+ID4gZnJvbSB0aGUKPiA+IGF0LWxlYXN0
-LW9uZS1sb29wLWl0ZXJhdGlvbiBjYXNlcyB0byByZXR1cm4gZWl0aGVyIC1FSU5WQUwgb3IgdGhl
-Cj4gPiBwcmV2IHN1Ym1heC4KPgo+IFVubGVzcyBpdCdzIHJlYWxseSBhIGhvdCBwYXRoLCBzdWNo
-IGEgbWljcm8tb3B0aW1pemF0aW9uIGRvZXNuJ3QgZ2l2ZQo+IG11Y2ggdmFsdWUuCj4KPiBSYXRo
-ZXIgYmV0dGVyIHRvIGtlZXAgdGhlIHN0YW5kYXJkIHN0eWxlIHRoYXQgbWFrZXMgcGVvcGxlIGVh
-c2llciB0bwo+IHJlYWQgdGhlIGNvZGUuICBBIGRvLXdoaWxlIGxvb3Agd2l0aCBhIGxhcmdlIGJs
-b2NrIGlzIHVzdWFsbHkgbGVzcwo+IHJlYWRhYmxlIHRoYW4gYSBub3JtYWwgd2hpbGUgbG9vcC4K
-ClRoZW4sIHRoZSBwYXRjaCBiZWNvbWVzOgoKLS0tIGFsc2EtbGliL3NyYy9jb250cm9sL3Rsdi5j
-CisrKyBhbHNhLWxpYi9zcmMvY29udHJvbC90bHYuYwpAQCAtMjkxLDQxICsyOTEsMzcgQEAgaW50
-IHNuZF90bHZfY29udmVydF9mcm9tX2RCKHVuc2lnbmVkIGludAogewogCXN3aXRjaCAodGx2WzBd
-KSB7CiAJY2FzZSBTTkRfQ1RMX1RMVlRfREJfUkFOR0U6IHsKLQkJbG9uZyBkYm1pbiwgZGJtYXgs
-IHByZXZfcmFuZ2VtYXg7CisJCWxvbmcgZGJtaW4sIGRibWF4LCBwcmV2X3N1Ym1heDsKIAkJdW5z
-aWduZWQgaW50IHBvcywgbGVuOwogCQlsZW4gPSBpbnRfaW5kZXgodGx2WzFdKTsKLQkJaWYgKGxl
-biA+IE1BWF9UTFZfUkFOR0VfU0laRSkKLQkJCXJldHVybiAtRUlOVkFMOwotCQlpZiAoc25kX3Rs
-dl9nZXRfZEJfcmFuZ2UodGx2LCByYW5nZW1pbiwgcmFuZ2VtYXgsCi0JCQkJCSAmZGJtaW4sICZk
-Ym1heCkpCisJCWlmIChsZW4gPCA2IHx8IGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKIAkJCXJl
-dHVybiAtRUlOVkFMOwotCQlpZiAoZGJfZ2FpbiA8PSBkYm1pbikgewotCQkJKnZhbHVlID0gcmFu
-Z2VtaW47Ci0JCQlyZXR1cm4gMDsKLQkJfSBlbHNlIGlmIChkYl9nYWluID49IGRibWF4KSB7Ci0J
-CQkqdmFsdWUgPSByYW5nZW1heDsKLQkJCXJldHVybiAwOwotCQl9CiAJCXBvcyA9IDI7Ci0JCXBy
-ZXZfcmFuZ2VtYXggPSAwOworCQlwcmV2X3N1Ym1heCA9IDA7CiAJCXdoaWxlIChwb3MgKyA0IDw9
-IGxlbikgewotCQkJcmFuZ2VtaW4gPSAoaW50KXRsdltwb3NdOwotCQkJcmFuZ2VtYXggPSAoaW50
-KXRsdltwb3MgKyAxXTsKKwkJCWxvbmcgc3VibWluLCBzdWJtYXg7CisJCQlzdWJtaW4gPSAoaW50
-KXRsdltwb3NdOworCQkJc3VibWF4ID0gKGludCl0bHZbcG9zICsgMV07CisJCQlpZiAocmFuZ2Vt
-YXggPCBzdWJtYXgpCisJCQkJc3VibWF4ID0gcmFuZ2VtYXg7CiAJCQlpZiAoIXNuZF90bHZfZ2V0
-X2RCX3JhbmdlKHRsdiArIHBvcyArIDIsCi0JCQkJCQkgIHJhbmdlbWluLCByYW5nZW1heCwKKwkJ
-CQkJCSAgc3VibWluLCBzdWJtYXgsCiAJCQkJCQkgICZkYm1pbiwgJmRibWF4KSAmJgogCQkJICAg
-IGRiX2dhaW4gPj0gZGJtaW4gJiYgZGJfZ2FpbiA8PSBkYm1heCkKIAkJCQlyZXR1cm4gc25kX3Rs
-dl9jb252ZXJ0X2Zyb21fZEIodGx2ICsgcG9zICsgMiwKLQkJCQkJCQkgICAgICAgcmFuZ2VtaW4s
-IHJhbmdlbWF4LAorCQkJCQkJCSAgICAgICBzdWJtaW4sIHN1Ym1heCwKIAkJCQkJCQkgICAgICAg
-ZGJfZ2FpbiwgdmFsdWUsIHhkaXIpOwogCQkJZWxzZSBpZiAoZGJfZ2FpbiA8IGRibWluKSB7Ci0J
-CQkJKnZhbHVlID0geGRpciA/IHJhbmdlbWluIDogcHJldl9yYW5nZW1heDsKKwkJCQkqdmFsdWUg
-PSB4ZGlyIHx8IHBvcyA9PSAyID8gc3VibWluIDogcHJldl9zdWJtYXg7CiAJCQkJcmV0dXJuIDA7
-CiAJCQl9Ci0JCQlwcmV2X3JhbmdlbWF4ID0gcmFuZ2VtYXg7CisJCQlwcmV2X3N1Ym1heCA9IHN1
-Ym1heDsKKwkJCWlmIChyYW5nZW1heCA9PSBzdWJtYXgpCisJCQkJYnJlYWs7CiAJCQlwb3MgKz0g
-aW50X2luZGV4KHRsdltwb3MgKyAzXSkgKyA0OwogCQl9Ci0JCXJldHVybiAtRUlOVkFMOworCQkq
-dmFsdWUgPSBwcmV2X3N1Ym1heDsKKwkJcmV0dXJuIDA7CiAJfQogCWNhc2UgU05EX0NUTF9UTFZU
-X0RCX1NDQUxFOiB7CiAJCWludCBtaW4sIHN0ZXAsIG1heDsKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Grant,
+
+You had mentioned something about the end point for the mixer.  I have
+found this information from the trace I had performed:
+
+>From a dispatch urb_function_get_descriptor_from_device message under
+the fid_USBPORT_Endpoint_Descriptor:
+
+fid_bLength 7
+fid_bDescriptortype 5
+fid_bEndpointAddress 0
+fid_bmAttributes 0
+fid_wMaxPacketSize 64
+fid_bInterval 0
+
+Is this what you were asking about, and does it help us?
+
+thanks,
+David
+
+
+
+On Thu, Mar 29, 2012 at 10:02 AM, David Alexander <lidxv0n@gmail.com> wrote:
+> Here is what I am getting after having changed the line in mixer.c:
+>
+> [ =A0 92.284035] usb 2-4: new high speed USB device number 2 using ehci_h=
+cd
+> [ =A0 92.815354] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+> [ =A0 92.815382] snd-usb-audio: probe of 2-4:1.0 failed with error -5
+> [ =A0 92.816352] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+> [ =A0 92.816372] snd-usb-audio: probe of 2-4:1.1 failed with error -5
+> [ =A0 92.816966] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+> [ =A0 92.816980] snd-usb-audio: probe of 2-4:1.2 failed with error -5
+> [ =A0 92.817960] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+> [ =A0 92.817972] snd-usb-audio: probe of 2-4:1.3 failed with error -5
+> [ =A0 92.818587] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+> [ =A0 92.818598] snd-usb-audio: probe of 2-4:1.4 failed with error -5
+> [ =A0 92.818638] usbcore: registered new interface driver snd-usb-audio
+>
+>
+> I noticed that I am not getting an entry under /proc/asound that I had
+> before. =A0Before I got an entry called "Rack" with a sym link to card1:
+>
+> /proc/asound$ ls -l
+> total 0
+> dr-xr-xr-x 5 root root 0 2012-03-29 09:52 card0
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 cards
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 devices
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 hwdep
+> lrwxrwxrwx 1 root root 5 2012-03-29 10:01 Intel -> card0
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 modules
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 pcm
+> dr-xr-xr-x 2 root root 0 2012-03-29 10:01 seq
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 timers
+> -r--r--r-- 1 root root 0 2012-03-29 10:01 version
+>
+>
+> Thank you,
+> David
+>
+> On Thu, Mar 29, 2012 at 3:08 AM, Clemens Ladisch <clemens@ladisch.de> wro=
+te:
+>> David Alexander wrote:
+>>> kernel: [ =A0 74.128035] usb 2-4: new high speed USB device number 2
+>>> kernel: [ =A0 74.634592] ALSA mixer.c:1938 usbaudio: unit 32: unexpecte=
+d type 0x09
+>>> kernel: [ =A0 74.634606] snd-usb-audio: probe of 2-4:1.0 failed with er=
+ror -5
+>>
+>> 0x09 is UAC2's EXTENSION_UNIT, which should not be a reason for failing.
+>> Please try the patch below.
+>>
+>>
+>> Regards,
+>> Clemens
+>>
+>>
+>> --- a/sound/usb/mixer.c
+>> +++ b/sound/usb/mixer.c
+>> @@ -1926,7 +1926,7 @@ static int parse_audio_unit(struct mixer_build *st=
+ate, int unitid)
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return parse_audio_proces=
+sing_unit(state, unitid, p1);
+>> =A0 =A0 =A0 =A0default:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_printk(KERN_ERR "usbaudio: unit %u: u=
+nexpected type 0x%02x\n", unitid, p1[2]);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+>> =A0 =A0 =A0 =A0}
+>> =A0}
+>>
