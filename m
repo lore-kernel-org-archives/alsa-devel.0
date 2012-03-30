@@ -1,26 +1,21 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: fsl: enable ssi clock in probe
-	function
-Date: Fri, 30 Mar 2012 13:55:53 +0800
-Message-ID: <20120330055543.GH19506@S2101-09.ap.freescale.net>
-References: <1332989621-5211-1-git-send-email-shawn.guo@linaro.org>
-	<20120329112949.GM3668@opensource.wolfsonmicro.com>
-	<4F748751.3020300@freescale.com>
-	<20120329160916.GG19506@S2101-09.ap.freescale.net>
-	<4F748C8E.1010702@freescale.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: How to Tx/Rx data via TDM/I2S interface of Intel
+ HD Audio controller without a CODEC attached?
+Date: Fri, 30 Mar 2012 09:40:16 +0200
+Message-ID: <4F756360.6020407@ladisch.de>
+References: <934D8D6A4B048048942509C4D57C8A400A845BA6@ORSMSX103.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BFA22433B
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 60C22243BC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 07:55:56 +0200 (CEST)
-Received: by iakh37 with SMTP id h37so532049iak.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 22:55:53 -0700 (PDT)
-In-Reply-To: <4F748C8E.1010702@freescale.com>
-Content-Disposition: inline
+	Fri, 30 Mar 2012 09:37:00 +0200 (CEST)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id CD3B62080F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 03:36:58 -0400 (EDT)
+In-Reply-To: <934D8D6A4B048048942509C4D57C8A400A845BA6@ORSMSX103.amr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,29 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: "Couch, Kelly J" <kelly.j.couch@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 29, 2012 at 11:23:42AM -0500, Timur Tabi wrote:
-> Shawn Guo wrote:
-> > d18b63ab0b04af1bad01e59a96b88fc8cda08752
-> > ASoC: core: Use driver core probe deferral
-> 
-> That fixed it, but the SHA in my repository is
-> 97883ef0a8f61fbd5fb8242980f6998290d1dd95
-> 
-> Anyway, I just want to say that for-3.5 still works on PowerPC.
-> 
-I guess you only meant mpc85xx_defconfig (and mpc85xx_smp_defconfig).
-I sent the patch after compile-testing for mpc85xx_defconfig, and
-took it for granted that mpc8610_hpcd_defconfig will also compile.
-But I just discovered that PPC_CLOCK is not enabled for
-mpc8610_hpcd_defconfig, so it fails on the final link.
+Couch, Kelly J wrote:
+> I'm designing software for a specific test application that will
+> utilize an Intel HD audio controller.  I must verify the functionality
+> of several sets of TDM audio signals (CK, FS, TXD, RXD) from the Intel
+> HD Audio controller.  In this scenario, the Intel HD Audio controller
+> is NOT connected directly to a CODEC, but to a header.   My proposal
+> is to connect these signals directly to an FPGA, using it to loopback
+> the data (in various permutations of loopback to channels) to verify
+> each of the signals.
 
-I just sent a patch proposing to fix it by always building in PPC_CLOCK
-for FSL_SOC.
+Let's see what the spec says:
+| SDO =96 Serial Data Out: [...] Data is double pumped =96 i.e., the
+| controller drives data onto SDO, and codecs sample data present on
+| SDO with respect to every edge of BCLK.  [...]
+| SDI =96 Serial Data In: [...] Data is single pumped; codecs drive SDI
+| and the controller samples SDI with respect to the rising edge of
+| BCLK.
 
--- 
+Oh, and outbound and inbound frames use a different format.
+
+I guess this why you're using an FPGA instead of a wire?  :)
+
+> Because the FPGA will be in place of a real CODEC device, I'm
+> concerned with how the software side of this approach will work?
+
+The ALSA driver tries to detect the capabilities of the codec(s).
+You would have to replace all codec read accesses with hardcoded values
+that describe a virtual codec with a suitable widget topology.
+
+
 Regards,
-Shawn
+Clemens
