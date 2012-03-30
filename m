@@ -1,22 +1,19 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 1/2] ASoC: sgtl5000: Enable VAG when
-	DAC/ADC up
-Date: Fri, 30 Mar 2012 12:12:35 +0800
-Message-ID: <CAAQ0ZWRPzWUeBV34H81t0ymN2sncaZ8PeX2Nv_owNaAjfgpxig@mail.gmail.com>
-References: <1333037583-23582-1-git-send-email-shawn.guo@linaro.org>
-	<20120329213243.GC4153@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: fsl: remove redundant Kconfig option
+	SND_SOC_FSL_SSI
+Date: Fri, 30 Mar 2012 12:31:31 +0800
+Message-ID: <1333081892-8808-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id ACA1310455D
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 461E910B93D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 06:12:37 +0200 (CEST)
-Received: by laap9 with SMTP id p9so275231laa.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 21:12:35 -0700 (PDT)
-In-Reply-To: <20120329213243.GC4153@opensource.wolfsonmicro.com>
+	Fri, 30 Mar 2012 06:31:37 +0200 (CEST)
+Received: by iakh37 with SMTP id h37so441725iak.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Mar 2012 21:31:36 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Zeng Zhaoming <zengzm.kernel@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 30 March 2012 05:32, Mark Brown <broonie@opensource.wolfsonmicro.com> wr=
-ote:
-> On Fri, Mar 30, 2012 at 12:13:02AM +0800, Shawn Guo wrote:
->> From: Zeng Zhaoming <zengzm.kernel@gmail.com>
->>
->> As manual described, VAG is an internal voltage reference of DAC/ADC,
->> So enabled it before DAC/ADC up.
->
-> Applied, thanks. =A0I applied it for 3.4 since it's basically a bug fix,
-> please check that the patch got applied correctly.
+While commit 606d620 (ASoC: imx: merge sound/soc/imx into sound/soc/fsl)
+adds SND_SOC_FSL_SSI outside "menuconfig SND_POWERPC_SOC" to make it
+visible for both PowerPC and ARM/IMX, it forgot removing the one inside
+"menuconfig SND_POWERPC_SOC".
 
-Yes, it looks correct to me.
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ sound/soc/fsl/Kconfig |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-Regards,
-Shawn
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index aa14fc9..d23d612 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -16,10 +16,6 @@ if SND_POWERPC_SOC
+ config SND_MPC52xx_DMA
+ 	tristate
+ 
+-config SND_SOC_FSL_SSI
+-	tristate
+-	depends on FSL_SOC
+-
+ config SND_SOC_POWERPC_DMA
+ 	tristate
+ 	depends on FSL_SOC
+-- 
+1.7.5.4
