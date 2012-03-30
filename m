@@ -1,21 +1,21 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to Tx/Rx data via TDM/I2S interface of Intel
- HD Audio controller without a CODEC attached?
-Date: Fri, 30 Mar 2012 09:40:16 +0200
-Message-ID: <4F756360.6020407@ladisch.de>
-References: <934D8D6A4B048048942509C4D57C8A400A845BA6@ORSMSX103.amr.corp.intel.com>
+Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw value
+ ranges
+Date: Fri, 30 Mar 2012 10:37:37 +0200
+Message-ID: <4F7570D1.2060809@ladisch.de>
+References: <bf360596-9a77-4441-bf58-09ed92891e19@zose-store-12>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 60C22243BC
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A04E2243E6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Mar 2012 09:37:00 +0200 (CEST)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id CD3B62080F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 03:36:58 -0400 (EDT)
-In-Reply-To: <934D8D6A4B048048942509C4D57C8A400A845BA6@ORSMSX103.amr.corp.intel.com>
+	Fri, 30 Mar 2012 10:34:23 +0200 (CEST)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 6960620A56
+	for <alsa-devel@alsa-project.org>; Fri, 30 Mar 2012 04:34:21 -0400 (EDT)
+In-Reply-To: <bf360596-9a77-4441-bf58-09ed92891e19@zose-store-12>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Couch, Kelly J" <kelly.j.couch@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?UTF-8?B?QmVub8OudCBUaMOpYmF1ZGVhdQ==?= <benoit.thebaudeau@advansee.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Couch, Kelly J wrote:
-> I'm designing software for a specific test application that will
-> utilize an Intel HD audio controller.  I must verify the functionality
-> of several sets of TDM audio signals (CK, FS, TXD, RXD) from the Intel
-> HD Audio controller.  In this scenario, the Intel HD Audio controller
-> is NOT connected directly to a CODEC, but to a header.   My proposal
-> is to connect these signals directly to an FPGA, using it to loopback
-> the data (in various permutations of loopback to channels) to verify
-> each of the signals.
-
-Let's see what the spec says:
-| SDO =96 Serial Data Out: [...] Data is double pumped =96 i.e., the
-| controller drives data onto SDO, and codecs sample data present on
-| SDO with respect to every edge of BCLK.  [...]
-| SDI =96 Serial Data In: [...] Data is single pumped; codecs drive SDI
-| and the controller samples SDI with respect to the rising edge of
-| BCLK.
-
-Oh, and outbound and inbound frames use a different format.
-
-I guess this why you're using an FPGA instead of a wire?  :)
-
-> Because the FPGA will be in place of a real CODEC device, I'm
-> concerned with how the software side of this approach will work?
-
-The ALSA driver tries to detect the capabilities of the codec(s).
-You would have to replace all codec read accesses with hardcoded values
-that describe a virtual codec with a suitable widget topology.
-
-
-Regards,
-Clemens
+QmVub8OudCBUaMOpYmF1ZGVhdSB3cm90ZToKPiBJbiBjYXNlIG9mIGEgVExWIGRCIHJhbmdlIHdp
+dGggYWxsIGl0ZW1zIGhhdmluZyByYXcgdmFsdWUgcmFuZ2VzIHN0cmljdGx5IHdpdGhpbgo+IHRo
+ZSBtYWluIHJhdyB2YWx1ZSByYW5nZSByZXBvcnRlZCBieSB0aGUgZHJpdmVyLCBzbmRfdGx2X2Nv
+bnZlcnRfZnJvbV9kQigpCj4gcmV0dXJuZWQgb25lIG9mIHRoZSBtYWluIHJhdyByYW5nZSBib3Vu
+ZGFyaWVzLCB3aGljaCB3YXMgb3V0c2lkZSBhbGwgZEIgcmFuZ2UKPiBpdGVtcy4KCkJ1dCB0aGUg
+bWFpbiByYXcgcmFuZ2UgYm91bmRhcmllcyBfYXJlXyB2YWxpZCB2YWx1ZXMuCgpJIGd1ZXNzIHRo
+ZSBwcm9ibGVtIHlvdSBhY3R1YWxseSBoYXZlIGlzIHRoYXQgY29udmVydF90b19kQiBkb2VzIG5v
+dAp3b3JrIHdpdGggdGhlc2UgcmF3IHZhbHVlcz8KCj4gc3RhdGljIGNvbnN0IHVuc2lnbmVkIGlu
+dCBiZDM3NTN4X3ZvbF9mYWRlcl9nYWluX2F0dF90bHZbXSA9IHsKPiAJVExWX0RCX1JBTkdFX0hF
+QUQoMiksCj4gCTAsIDAsIFRMVl9EQl9TQ0FMRV9JVEVNKFRMVl9EQl9HQUlOX01VVEUsIDAsIDEp
+LAo+IAk0OCwgMTQyLCBUTFZfREJfU0NBTEVfSVRFTSgtNzkwMCwgMTAwLCAwKSwKPiB9Owo+IAlT
+T0NfU0lOR0xFX1RMVigiTWFpbiBWb2x1bWUiLAo+IAkJICAgICAgIEJEMzc1M1hfVk9MX0dBSU4s
+Cj4gCQkgICAgICAgMCwgMjU1LCAxLCBiZDM3NTN4X3ZvbF9mYWRlcl9nYWluX2F0dF90bHYpLAo+
+Cj4gc25kX3Rsdl9jb252ZXJ0X2Zyb21fZEIodGx2LCAwLCAyNTUsIDE1MDAsICZ2YWx1ZSwgMSkg
+cmV0dXJuZWQgMjU1IGluc3RlYWQgb2YKPiB0aGUgZXhwZWN0ZWQgMTQyLgoKQnV0IHRoZXJlIGlz
+IG5vIGd1YXJhbnRlZSB0aGF0IHRoaXMgbWl4ZXIgY29udHJvbCB3aWxsIGhhdmUgb25seSBvbmUg
+b2YKdGhvc2UgdmFsdWVzIGluIHRoZSBUTFYncyByYW5nZS4gIEZ1cnRoZXJtb3JlLCBjb252ZXJ0
+X3RvX2RCIHdpbGwgc3RpbGwKZmFpbCBmb3IgYW55IHJhdyB2YWx1ZSAxLi40Ny4KClRoaXMgVExW
+IGlzIGp1c3QgaW5jb21wbGV0ZS4gIFBsZWFzZSByZXBvcnQgdGhpcyBidWcgdG8gdGhlIGRyaXZl
+cidzCmF1dGhvci4KCkFzIGZvciB0aGUgcGF0Y2gsIHdoaWxlIEknbSBub3Qgc3VyZSB3aGV0aGVy
+IGl0IGlzIG5lZWRlZCBhdCBhbGwsIEkgYWxzbwpkb24ndCBxdWl0ZSB1bmRlcnN0YW5kIHRoZSBy
+ZWFzb24gZm9yIGFsbCB0aGUgY2hhbmdlcy4KCj4gLS0tIGFsc2EtbGliL3NyYy9jb250cm9sL3Rs
+di5jCj4gKysrIGFsc2EtbGliL3NyYy9jb250cm9sL3Rsdi5jCj4gQEAgLTI5MSw0MSArMjkxLDM3
+IEBAIGludCBzbmRfdGx2X2NvbnZlcnRfZnJvbV9kQih1bnNpZ25lZCBpbnQKPiAgewo+ICAJc3dp
+dGNoICh0bHZbMF0pIHsKPiAgCWNhc2UgU05EX0NUTF9UTFZUX0RCX1JBTkdFOiB7Cj4gKwkJbG9u
+ZyBkYm1pbiwgZGJtYXgsIHByZXZfc3VibWF4Owo+ICAJCXVuc2lnbmVkIGludCBwb3MsIGxlbjsK
+PiAgCQlsZW4gPSBpbnRfaW5kZXgodGx2WzFdKTsKPiArCQlpZiAobGVuIDwgNiB8fCBsZW4gPiBN
+QVhfVExWX1JBTkdFX1NJWkUpCj4gIAkJCXJldHVybiAtRUlOVkFMOwo+ICAJCXBvcyA9IDI7Cj4g
+KwkJcHJldl9zdWJtYXggPSAwOwo+ICsJCWRvIHsKCldoeSBpcyB0aGlzIG5vdCBhIHdoaWxlIGxv
+b3A/Cgo+ICsJCQlsb25nIHN1Ym1pbiwgc3VibWF4Owo+ICsJCQlzdWJtaW4gPSAoaW50KXRsdltw
+b3NdOwo+ICsJCQlzdWJtYXggPSAoaW50KXRsdltwb3MgKyAxXTsKPiArCQkJaWYgKHJhbmdlbWF4
+IDwgc3VibWF4KQo+ICsJCQkJc3VibWF4ID0gcmFuZ2VtYXg7CgpXaHkgaXMgdGhpcyBjaGVjayBu
+ZWVkZWQ/ICBBbnkgd2h5IG5vdCByZXR1cm4gLUVJTlZBTD8KCj4gIAkJCWlmICghc25kX3Rsdl9n
+ZXRfZEJfcmFuZ2UodGx2ICsgcG9zICsgMiwKPiArCQkJCQkJICBzdWJtaW4sIHN1Ym1heCwKPiAg
+CQkJCQkJICAmZGJtaW4sICZkYm1heCkgJiYKPiAgCQkJICAgIGRiX2dhaW4gPj0gZGJtaW4gJiYg
+ZGJfZ2FpbiA8PSBkYm1heCkKPiAgCQkJCXJldHVybiBzbmRfdGx2X2NvbnZlcnRfZnJvbV9kQih0
+bHYgKyBwb3MgKyAyLAo+ICsJCQkJCQkJICAgICAgIHN1Ym1pbiwgc3VibWF4LAo+ICAJCQkJCQkJ
+ICAgICAgIGRiX2dhaW4sIHZhbHVlLCB4ZGlyKTsKPiAgCQkJZWxzZSBpZiAoZGJfZ2FpbiA8IGRi
+bWluKSB7Cj4gKwkJCQkqdmFsdWUgPSB4ZGlyIHx8IHBvcyA9PSAyID8gc3VibWluIDogcHJldl9z
+dWJtYXg7Cj4gIAkJCQlyZXR1cm4gMDsKPiAgCQkJfQo+ICsJCQlwcmV2X3N1Ym1heCA9IHN1Ym1h
+eDsKPiArCQkJaWYgKHJhbmdlbWF4ID09IHN1Ym1heCkKPiArCQkJCWJyZWFrOwoKV2h5IHRoaXMg
+Y2hlY2s/Cgo+ICAJCQlwb3MgKz0gaW50X2luZGV4KHRsdltwb3MgKyAzXSkgKyA0Owo+ICsJCX0g
+d2hpbGUgKHBvcyArIDQgPD0gbGVuKTsKPiArCQkqdmFsdWUgPSBwcmV2X3N1Ym1heDsKPiArCQly
+ZXR1cm4gMDsKPiAgCX0KCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
