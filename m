@@ -1,64 +1,58 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH 4/5] ARM: dt: tegra30.dtsi: Add audio-related nodes
-Date: Fri, 30 Mar 2012 17:11:36 -0600
-Message-ID: <1333149097-17894-5-git-send-email-swarren@wwwdotorg.org>
-References: <1333149097-17894-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1333149097-17894-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH 1/1] ASoC: soc-dmaengine-pcm: fix compile error
+	since dma api is changed
+Date: Sat, 31 Mar 2012 20:37:48 +0800
+Message-ID: <1333197468-3263-1-git-send-email-b29396@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from am1outboundpool.messaging.microsoft.com
+	(am1ehsobe002.messaging.microsoft.com [213.199.154.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D92F244E4
+	for <alsa-devel@alsa-project.org>;
+	Sat, 31 Mar 2012 14:26:53 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Dong Aisheng <dong.aisheng@linaro.org>
 
-Add nodes for the Tegra30 AHUB and I2S controllers.
+The following compiling error is caused by the API device_prep_dma_cyclic
+is changed. Using dmaengine_prep_dma_cyclic to fix it.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+sound/soc/soc-dmaengine-pcm.c: In function 'dmaengine_pcm_prepare_and_submit':
+sound/soc/soc-dmaengine-pcm.c:149: error: too few arguments to function 'chan->device->device_prep_dma_cyclic'
+make[2]: *** [sound/soc/soc-dmaengine-pcm.o] Error 1
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
+
+Signed-off-by: Dong Aisheng <dong.aisheng@linaro.org>
 ---
- arch/arm/boot/dts/tegra30.dtsi |   32 ++++++++++++++++++++++++++++++++
- 1 files changed, 32 insertions(+), 0 deletions(-)
+ sound/soc/soc-dmaengine-pcm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 62a7b39..9956791 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -183,4 +183,36 @@
- 		reg = < 0x70000868 0xd0     /* Pad control registers */
- 			0x70003000 0x3e0 >; /* Mux registers */
- 	};
-+
-+	ahub@70080000 {
-+		compatible = "nvidia,tegra30-ahub";
-+		reg = <0x70080000 0x80 0x70080200 0x100>;
-+		interrupts = < 0 103 0x04 >;
-+		nvidia,dma-request-selector = <&apbdma 1>;
-+	};
-+
-+	tegra_i2s0: i2s@70080300 {
-+		compatible = "nvidia,tegra30-i2s";
-+		reg = <0x70080300 0x100>;
-+	};
-+
-+	tegra_i2s1: i2s@70080400 {
-+		compatible = "nvidia,tegra30-i2s";
-+		reg = <0x70080400 0x100>;
-+	};
-+
-+	tegra_i2s2: i2s@70080500 {
-+		compatible = "nvidia,tegra30-i2s";
-+		reg = <0x70080500 0x100>;
-+	};
-+
-+	tegra_i2s3: i2s@70080600 {
-+		compatible = "nvidia,tegra30-i2s";
-+		reg = <0x70080600 0x100>;
-+	};
-+
-+	tegra_i2s4: i2s@70080700 {
-+		compatible = "nvidia,tegra30-i2s";
-+		reg = <0x70080700 0x100>;
-+	};
- };
+diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+index 4420b70..4756952 100644
+--- a/sound/soc/soc-dmaengine-pcm.c
++++ b/sound/soc/soc-dmaengine-pcm.c
+@@ -143,7 +143,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+ 	direction = snd_pcm_substream_to_dma_direction(substream);
+ 
+ 	prtd->pos = 0;
+-	desc = chan->device->device_prep_dma_cyclic(chan,
++	desc = dmaengine_prep_dma_cyclic(chan,
+ 		substream->runtime->dma_addr,
+ 		snd_pcm_lib_buffer_bytes(substream),
+ 		snd_pcm_lib_period_bytes(substream), direction);
 -- 
 1.7.0.4
