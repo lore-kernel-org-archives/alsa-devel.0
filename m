@@ -1,20 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 13/17] ASoC: tegra: set a sensible initial
-	clock rate
-Date: Sun, 1 Apr 2012 11:36:29 +0100
-Message-ID: <20120401103629.GF3153@opensource.wolfsonmicro.com>
-References: <1333148852-17806-1-git-send-email-swarren@wwwdotorg.org>
-	<1333148852-17806-14-git-send-email-swarren@wwwdotorg.org>
-	<20120331201754.GM5012@opensource.wolfsonmicro.com>
-	<4F77B856.2050708@wwwdotorg.org>
+From: Ziv Haziz <ziv.haziz@dspg.com>
+Subject: loading mixer control values from a different file
+	when opening an device
+Date: Sun, 1 Apr 2012 15:31:39 +0000 (UTC)
+Message-ID: <loom.20120401T171938-797@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7723810822637106746=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46445104144
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id C40652444C
 	for <alsa-devel@alsa-project.org>;
-	Sun,  1 Apr 2012 12:36:31 +0200 (CEST)
-In-Reply-To: <4F77B856.2050708@wwwdotorg.org>
+	Sun,  1 Apr 2012 17:35:05 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SEMo3-0007nX-HI
+	for alsa-devel@alsa-project.org; Sun, 01 Apr 2012 17:35:04 +0200
+Received: from proxy29.messagelabs.net ([85.158.138.21])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 01 Apr 2012 17:35:03 +0200
+Received: from ziv.haziz by proxy29.messagelabs.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 01 Apr 2012 17:35:03 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,65 +30,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi All,
+i'm using asound.conf file to define several devices 
+where each one is configuring 
+my sound device differently
+changing route, setting different volumes and etc)
 
---===============7723810822637106746==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/aVve/J9H4Wl5yVO"
-Content-Disposition: inline
+i would have like to load setting 
+from a different file only when accessing the a 
+specific device - something like this:
 
-
---/aVve/J9H4Wl5yVO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Mar 31, 2012 at 08:07:18PM -0600, Stephen Warren wrote:
-> On 03/31/2012 02:17 PM, Mark Brown wrote:
-
-> > Applied, though 48kHz is a somewhat surprising choice for the default
-> > CPU audio rate - the overwhelming majority of audio played winds up
-> > being 44.1kHz.  Still, it's just going to get changed as required.
-
-> I may as well change this to be consistent with the Tegra-side patch. I
-> note you said "applied", but I don't actually see it in your kernel.org
-> repo.
-
-It was there, probably forgot to push it out last night.  But I just
-dropped it since you're about to replace it and I just rebased onto
--rc1.
-
---/aVve/J9H4Wl5yVO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPeC+cAAoJEBus8iNuMP3dz8kP+gMSv5gw/PEcsOIUMVd65kH+
-3EEFOIp1r5pHy5fz8fBPPf3S3nP22KS0xD936eJiuM8meQzsz2scJNi4Iwl/XDw+
-ysjK2udmrtIPI6PpMAT1XTV4Q41l8RAWuqcu1/+cF3adsKWmVYwWsebi2BHkdcTu
-OywC5WQ7jv+pRm1zKzymwRAkc7Ln9BQ/nDg5vDorZgOZQfdrkTB4+eJsjRbT421c
-yAzMRPfs85VwsyELymCJdO0/gzMy9cpEQtYRfCB49kGMc0p15HGun9s6A4KUkz2C
-4mT8ucMfP1vdN7p7suRygsz3HO1Xo5iNVTbxgmQUuA/duIbhcHqMXEFdCo+qpuwp
-8TW6cty9hGF0pTBq1EunRS+2fdNMXCpRkq5FAq6ivjRX9m1Dm0nJnhLeZ6povRw6
-GgVgxBzUp7Febtn5qWJ3cxoBgsetIcxa2mRlNwr3DgFCrhr/94nqdeVt86NyyceD
-aDGo5fTvWossqcVjh/R/+EFN2sRqnD43V+iSCIP6WIaxuY+sKCMcK4y3sx8eq38k
-NwA+HkB7k5vo2lcelpSBrv/kyr5vs5YfeALhm6Z123eKUKbbf+fcsV5ETjZmpVSA
-xuzPt48j9RYzrhMKcN/u0VTe9clNprd+Id+1sZoIaLuddSWrhIHtXj/wa7LbjqFQ
-MFFPbA5bGa67NFcTjfzt
-=rt+V
------END PGP SIGNATURE-----
-
---/aVve/J9H4Wl5yVO--
-
---===============7723810822637106746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+pcm.MyDevice {
+  type hooks
+  slave.pcm {
+    type hw
+    device 0
+  }
 
 
---===============7723810822637106746==--
+  <i would like to place here something which
+ will "func load" from another file>
+
+  hooks.0 {
+    type ctl_elems
+    hook_args [
+
+      ]
+
+}
+
+so when someone will playback MyDevice it 
+will call also hooks from the other file
+
+but i can't make it work, tried to use the alsa.conf
+as example - any example will be highly appreciated
