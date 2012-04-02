@@ -1,17 +1,21 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: snd-usb-audio probe problem (Teac UD-H01)
-Date: Mon, 02 Apr 2012 09:44:32 +0200
-Message-ID: <4F7958E0.3010807@ivitera.com>
-References: <4F774ABE.6070905@circa.be>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: loading mixer control values from a different file
+ when opening an device
+Date: Mon, 02 Apr 2012 10:01:47 +0200
+Message-ID: <4F795CEB.4090203@ladisch.de>
+References: <loom.20120401T171938-797@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
-	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id E4556243B5
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7F44D243BD
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Apr 2012 09:44:25 +0200 (CEST)
-In-Reply-To: <4F774ABE.6070905@circa.be>
+	Mon,  2 Apr 2012 09:58:20 +0200 (CEST)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 2385F21880
+	for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2012 03:58:24 -0400 (EDT)
+In-Reply-To: <loom.20120401T171938-797@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: bEN <ml_all@circa.be>
+To: Ziv Haziz <ziv.haziz@dspg.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 31.3.2012 20:19, bEN napsal(a):
-> Hi all,
-> 
-> the new USB DAC from Teac seems detected as 'Human Interface Device'
-> instead of 'Audio'. Despite the fact it is based on a standard USB Audio
-> class v2 controller (Tenor 8802).
-> 
-> Below is dmesg and lsusb outputs.
-> 
+Ziv Haziz wrote:
+> i would have like to load setting
+> from a different file only when accessing the a
+> specific device - something like this:
+>
+> pcm.MyDevice {
+>   type hooks
+>   slave.pcm {
+>     type hw
+>     device 0
+>   }
+>
+>   <i would like to place here something which
+>  will "func load" from another file>
+>
+>   hooks.0 {
+>     type ctl_elems
+>     hook_args [
+>
+>       ]
+>
+> }
 
-Hi, the lsusb shows both HID interface (button?) and audio interface
-beneath.
+The "hooks" PCM plugin is something completely separate
+from the global "@hooks" mechanism.
 
-Pavel.
+You can include configuration files directly:
+http://www.alsa-project.org/alsa-doc/alsa-lib/conf.html#conf_include
+
+What is the actual problem you're trying to solve?
+
+
+Regards,
+Clemens
