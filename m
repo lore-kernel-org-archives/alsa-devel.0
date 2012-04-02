@@ -1,80 +1,80 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 14/17] ASoC: tegra: add tegra30-ahub driver
-Date: Mon, 2 Apr 2012 23:04:33 +0100
-Message-ID: <20120402220432.GH3160@opensource.wolfsonmicro.com>
-References: <1333148852-17806-1-git-send-email-swarren@wwwdotorg.org>
- <1333148852-17806-15-git-send-email-swarren@wwwdotorg.org>
- <20120331201433.GL5012@opensource.wolfsonmicro.com>
- <4F77B7CA.3020803@wwwdotorg.org>
- <20120401103117.GD3153@opensource.wolfsonmicro.com>
- <4F79E198.1080606@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: MAINTAINERS: Add maintainer for TI
+ LM49453 Audio codec driver
+Date: Mon, 2 Apr 2012 23:09:03 +0100
+Message-ID: <20120402220902.GI3160@opensource.wolfsonmicro.com>
+References: <1333377151-26872-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JI+G0+mN8WmwPnOn"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <4F79E198.1080606-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============0890436558796201288=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7F280243BA
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Apr 2012 00:08:58 +0200 (CEST)
+In-Reply-To: <1333377151-26872-1-git-send-email-MR.Swami.Reddy@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: MR.Swami.Reddy@ti.com
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---JI+G0+mN8WmwPnOn
-Content-Type: text/plain; charset=us-ascii
+--===============0890436558796201288==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TA4f0niHM6tHt3xR"
 Content-Disposition: inline
 
-On Mon, Apr 02, 2012 at 11:27:52AM -0600, Stephen Warren wrote:
-> On 04/01/2012 04:31 AM, Mark Brown wrote:
 
-> > Yes, exactly - allocate the resources in the platform driver probes,
-> > register with ASoC and then only touch the hardware when ASoC tells you
-> > the whole card is ready.
+--TA4f0niHM6tHt3xR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Thinking about this more, I guess the AHUB driver should be a bus
-> driver; in HW, it implements a register bus and the I2S, SPDIF, and DAM
-> devices' registers are accessed through that bus. That would solve the
-> probing order issues in a way that's much more directly modeled on the
-> hardware. Relying on the separate pdev and ASoC probes for the child
-> devices seems a little bit like relying on an implementation detail.
+On Mon, Apr 02, 2012 at 08:02:31PM +0530, MR.Swami.Reddy@ti.com wrote:
+> From: M R Swami Reddy <mr.swami.reddy@ti.com>
+>=20
+> I will be supporting the TI LM49453 audio driver and also a few new TI co=
+dec
+> drivers, that are currently in development and will be upstreamed shortly.
 
-> Does this sound like a good idea to you?
+Applied, thanks.
 
-Yeah, I'd actually written "mfd" in one of the earlier drafts of my
-original mail but then deleted it as I figured it'd already be that way
-if it could be supported :/
-
-> The thing that makes me shy away from this is when our downstream
-> kernels want to pick up v3.5, and perhaps don't want to use DT
-> exclusively yet, how would they do the same bus/child thing with
-> platform devices in board files? Perhaps they don't need to, and can
-> just register the AHUB pdev first, and child devices later, and ignore
-> the bus' existence.
-
-You can happily specify parent/child relationships with static
-registrations, just set the parent pointers appropriately and ensure
-things get registered in the right order.
-
---JI+G0+mN8WmwPnOn
+--TA4f0niHM6tHt3xR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPeiJbAAoJEBus8iNuMP3dZL0P/0DH2UxIVApoXDzQqwe3WoUp
-wny4bjKH8TI2BCC9A1bB7bK5oakDUXkCQ2AIHs/kLXMDa+xcCU6TCoCiKzEh9XKh
-SWpEcV2Wlo7zrQBSgcOcJPGKz5zu/Uvp2BfiMulX0tX9JMKUle6E86KadvZuHbJ/
-Mbq6vIqPxB3bTJjEa/pXmeyziSye8MTk8H9QcXUG0JfKjB3u1qhx+3a98SzyhfZW
-o48uuFRbiFmZ63/zrlLDWkiNYOjAlEd9EQJReCFTHUC5c7zqA+SwlegXB7v2/FwD
-HSFwWRleb4D0jobyZJeSGaCDupQcbfIeAV+BGwXHR1BsmUqEbl0xpP1YJrx6AOMZ
-i19yqOqDiWklw6lkC0ebRFZRMvHagfrInBbK85jchXU7jrvSifRVMToGozl8XvpY
-Qy3ii3Ox62ECZxE+GywOZlbPs4o8oXv6AJxuRlSLdtadVdmWsIQ6XgSKRyeUiDLy
-RAYktvhWc0e8pkWri33zyL/5tfjs94AQjrLzhpDIFzoKqNajQVKS+5G15VSYl1Vh
-TONxsoNj2wuq70kyLAsnTWibMPbmsDj4O2Bu0ZxvfaYQUzo/kcR/LM998R989s+p
-m/+vSEt0TQhT2CFt0cy0AYcCuAfID9Qhl8KoqqdCek1/DWtCuTjfc2J4CvGQ6x5l
-KgwIMdGqjUjbwl0yvyP6
-=zTyP
+iQIcBAEBAgAGBQJPeiNtAAoJEBus8iNuMP3dS90P/1jhyE+WvK3yUjfow85ielTF
+f3Nii7mC9QXupPCj67HPj24Mm58JdL6CxQHo2IrI2pnMbwDSzWGBrt6YVjaKYTV/
+E7hdUqbxk97E+30hlpNqHfoEwOzc9NPkvcTg4QIqAtmoHQecIH8zsItDbPf1dOpu
+nc0lIcBH13nPmQibjgMOMB80K9bAxnO3kZ/YNfkgGmJhw8PWGpTXQvpumt0x4ouR
+n+ZwSKxApnERkDMzT929qkE3Sl0iDSa1/jy2F7bYuCk9HpeAZSO0gdSPQkQwjpxS
+GQcWm5eDiOZylm7Xk1FKstsRw7GmmNt9LSzm5Q4R/cqxzrNggzQKEgl896VzuyDV
+OaElf+D6Wa83RdxubMdWZoATKUOGGXrWQr70bLnsIdLiwQAniUZ5SsO0Lj1J3weN
+QQxccGqX3K3zUNPRbW76fXkFzsw3/hGkAcSUjIsHY7Cz48w2Ybe3b8brSEtI3PDq
+Xuofa7yRCoTbgTaHHoegJdmAdXIvMKxCRl4b94+hv9eZWHR/cReQ71M/wI08/cqu
+djbK+2oy8EAyfvuC61Hl6WmGhVdgE+ayf8hvdaL29xy6GliE3ygZk9e6+r9UC+yQ
+2RjLgc4NpPJvhwqCPrHSVizEj5iZ1/hSC0+IuEDb3aziXIFFqUw4EwSek9U6pv2N
+TH6+eRp8rEj93+1wd+fC
+=LN7d
 -----END PGP SIGNATURE-----
 
---JI+G0+mN8WmwPnOn--
+--TA4f0niHM6tHt3xR--
+
+--===============0890436558796201288==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0890436558796201288==--
