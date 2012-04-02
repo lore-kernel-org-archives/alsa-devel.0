@@ -1,63 +1,60 @@
-From: Rhyland Klein <rklein@nvidia.com>
-Subject: Re: [PATCH] ASoC: max98095: Fix build failure
-Date: Mon, 02 Apr 2012 11:06:17 -0700
-Message-ID: <1333389977.24034.15.camel@rklein-linux>
-References: <1333375391-17049-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 12/17] ASoC: tegra: utils: add support for Tegra30 devices
+Date: Mon, 2 Apr 2012 22:30:44 +0100
+Message-ID: <20120402213043.GC3160@opensource.wolfsonmicro.com>
+References: <1333148852-17806-1-git-send-email-swarren@wwwdotorg.org>
+ <1333148852-17806-13-git-send-email-swarren@wwwdotorg.org>
+ <20120331202015.GN5012@opensource.wolfsonmicro.com>
+ <4F77B5F8.8080205@wwwdotorg.org>
+ <20120401102814.GC3153@opensource.wolfsonmicro.com>
+ <4F79E584.7080904@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2088124555
-	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Apr 2012 20:06:09 +0200 (CEST)
-In-Reply-To: <1333375391-17049-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="V88s5gaDVPzZ0KCq"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <4F79E584.7080904-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-04-02 at 07:03 -0700, Mark Brown wrote:
-> sound/soc/codecs/max98095.c: In function 'max98095_jack_detect_enable':
-> sound/soc/codecs/max98095.c:2229:14: error: 'struct max98095_priv' has no member named 'jack_detect_delay'
-> sound/soc/codecs/max98095.c:2230:18: error: 'struct max98095_priv' has no member named 'jack_detect_delay'
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/max98095.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-> index 0752840..35179e2 100644
-> --- a/sound/soc/codecs/max98095.c
-> +++ b/sound/soc/codecs/max98095.c
-> @@ -2226,8 +2226,8 @@ int max98095_jack_detect_enable(struct snd_soc_codec *codec)
->  	if (max98095->pdata->jack_detect_pin5en)
->  		detect_enable |= M98095_PIN5EN;
->  
-> -	if (max98095->jack_detect_delay)
-> -		slew = max98095->jack_detect_delay;
-> +	if (max98095->pdata->jack_detect_delay)
-> +		slew = max98095->pdata->jack_detect_delay;
->  
->  	ret = snd_soc_write(codec, M98095_08E_JACK_DC_SLEW, slew);
->  	if (ret < 0) {
 
-Acked-by Rhyland Klein <rklein@nvidia.com>
+--V88s5gaDVPzZ0KCq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, Apr 02, 2012 at 11:44:36AM -0600, Stephen Warren wrote:
 
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+> I guess the utility code can just call of_machine_is_compatible() during
+> probe, and so not require the machine driver to pass the value in. That
+> doesn't feel /too/ gross, and avoids having to export any new soc_is()
+> or similar APIs for Tegra.
+
+> Does that seem reasonable to you?
+
+I guess, yes.
+
+--V88s5gaDVPzZ0KCq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPehp9AAoJEBus8iNuMP3dvc0P/A4q3WwNv8QFYxDksjhns+3W
+ZE0RqsSmAipxXJrZUg0B3RN6yoCdyWZ4aL3sRFfXnGHGQvTI3ktJ38tvf+Uv5pUr
+zSTjF2QL4EvjZz+GU6NHMJiivKAhaJPN9fcFN8GlPKBUSS3+PhrbBkMkH8AkGbkH
+Y/WqFf3hSuB1vkNr7/UPVo8XzLqmphPHIlctSuu+ZArWNHj980X0ryUnWKuXEaPi
+jkFTii5uwWQVETjAgmUH8s4JUZ4HxRCdOgJpU33jJ4xDHtx/aKGlyBiX0Gr4yvR7
+4v/rpYXKy/SN1byfeLNCB5sz5SyHHPwr1wgi/1b/0AfpTZiEOc91TLwMoEJlPKuo
+2E+FrPfavk5pIlo42AvXplm+T6zRthJ3JawUSpX7sCGRJIvRJL+a0NwEbBCKAEQk
+fk0Me6D4Hr8tsNc90665XUCgKpWew5sOLfIfno1HFZn2UP6wq1pfHbW6+PWQk0Q7
+K3OJZu7rk7gTJVlkM5Arh7arie1/ZdPauetwDzdEE3IAhvpYle16hYH3EPJosHw5
+/fHuCwSS4FtM2molYqdizh+8z5sdf6sivbvNOe7+jZ+jRLRGxnnfKg4F4WcvVKjR
+fkhwMHhJMr/Yib04UWzZSxgbHNlxNmhNsCHHUQsgmxaHoGfUmaqovUUT3+d4UWA3
+qOtpQw7/gh4cUfsvz55O
+=f74z
+-----END PGP SIGNATURE-----
+
+--V88s5gaDVPzZ0KCq--
