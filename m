@@ -1,21 +1,20 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: loading mixer control values from a different file
- when opening an device
-Date: Mon, 02 Apr 2012 10:01:47 +0200
-Message-ID: <4F795CEB.4090203@ladisch.de>
-References: <loom.20120401T171938-797@post.gmane.org>
+Subject: Re: lsusb -v for AKAI's new EIE pro interface
+Date: Mon, 02 Apr 2012 10:04:53 +0200
+Message-ID: <4F795DA5.1070006@ladisch.de>
+References: <CACckToWdWZQFiFS_2GkjR=_0=TDdVApDxfwB0c_3HJ4bvjCejw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7F44D243BD
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E403F243BD
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Apr 2012 09:58:20 +0200 (CEST)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 2385F21880
-	for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2012 03:58:24 -0400 (EDT)
-In-Reply-To: <loom.20120401T171938-797@post.gmane.org>
+	Mon,  2 Apr 2012 10:01:15 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 640462192F
+	for <alsa-devel@alsa-project.org>; Mon,  2 Apr 2012 04:01:23 -0400 (EDT)
+In-Reply-To: <CACckToWdWZQFiFS_2GkjR=_0=TDdVApDxfwB0c_3HJ4bvjCejw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,40 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ziv Haziz <ziv.haziz@dspg.com>
-Cc: alsa-devel@alsa-project.org
+To: Grant Diffey <gdiffey@gmail.com>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ziv Haziz wrote:
-> i would have like to load setting
-> from a different file only when accessing the a
-> specific device - something like this:
+Grant Diffey wrote:
+> So device is 4 in 4 out with inserts and midi
 >
-> pcm.MyDevice {
->   type hooks
->   slave.pcm {
->     type hw
->     device 0
->   }
+> Composite with 2 interfaces. I can't tell if they're independent midi and
+> audio or more essoteric
 >
->   <i would like to place here something which
->  will "func load" from another file>
+> anyone want to take a punt?
 >
->   hooks.0 {
->     type ctl_elems
->     hook_args [
->
->       ]
->
-> }
+>    6.   bDeviceClass          255 Vendor Specific Class
+>    7.   bDeviceSubClass       255 Vendor Specific Subclass
+>    8.   bDeviceProtocol       255 Vendor Specific Protocol
 
-The "hooks" PCM plugin is something completely separate
-from the global "@hooks" mechanism.
+So far, so bad.
 
-You can include configuration files directly:
-http://www.alsa-project.org/alsa-doc/alsa-lib/conf.html#conf_include
+>    38.     Interface Descriptor:
+>    51.         bEndpointAddress     0x02  EP 2 OUT
+>    53.           Transfer Type            Isochronous
+>    61.         bEndpointAddress     0x83  EP 3 IN
+>    63.           Transfer Type            Bulk
+>    71.         bEndpointAddress     0x04  EP 4 OUT
+>    73.           Transfer Type            Bulk
 
-What is the actual problem you're trying to solve?
+Using bulk endpoints in an interface also used for isochronous
+transfers is not supported by the current driver.
 
 
 Regards,
