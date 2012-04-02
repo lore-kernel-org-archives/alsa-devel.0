@@ -1,53 +1,161 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 12/17] ASoC: tegra: utils: add support for Tegra30 devices
-Date: Mon, 02 Apr 2012 11:44:36 -0600
-Message-ID: <4F79E584.7080904@wwwdotorg.org>
-References: <1333148852-17806-1-git-send-email-swarren@wwwdotorg.org> <1333148852-17806-13-git-send-email-swarren@wwwdotorg.org> <20120331202015.GN5012@opensource.wolfsonmicro.com> <4F77B5F8.8080205@wwwdotorg.org> <20120401102814.GC3153@opensource.wolfsonmicro.com>
+From: David Alexander <lidxv0n@gmail.com>
+Subject: Re: trying to get an eleven rack to work
+Date: Mon, 2 Apr 2012 13:50:18 -0400
+Message-ID: <CAOyn=DGw0U572nKkEsGQ-KoZ_CfBsYbu5vBzxmZ+1Kjwu0d6_w@mail.gmail.com>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+	<4F6883F9.4010405@ladisch.de>
+	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
+	<4F718114.5020602@ladisch.de>
+	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
+	<4F740A6A.3030608@ladisch.de>
+	<CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
+	<CAOyn=DGXcm+0RfuNj5G+BvgrwofpO6TROsKRLiekNxW8FUupFg@mail.gmail.com>
+	<CACckToX-kqDyM6sFW_9in64cgO5RQekA-J=EEHSXxgsxEuMk=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20120401102814.GC3153-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id C7CA62453B
+	for <alsa-devel@alsa-project.org>;
+	Mon,  2 Apr 2012 19:50:12 +0200 (CEST)
+Received: by yhnn12 with SMTP id n12so1412926yhn.38
+	for <alsa-devel@alsa-project.org>; Mon, 02 Apr 2012 10:50:19 -0700 (PDT)
+In-Reply-To: <CACckToX-kqDyM6sFW_9in64cgO5RQekA-J=EEHSXxgsxEuMk=Q@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grant Diffey <gdiffey@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/01/2012 04:28 AM, Mark Brown wrote:
-> On Sat, Mar 31, 2012 at 07:57:12PM -0600, Stephen Warren wrote:
->> On 03/31/2012 02:20 PM, Mark Brown wrote:
->>> On Fri, Mar 30, 2012 at 05:07:27PM -0600, Stephen Warren wrote:
-> 
->>>> -	ret = tegra_asoc_utils_init(&alc5632->util_data, &pdev->dev);
->>>> + ret = tegra_asoc_utils_init(&alc5632->util_data, + 
->>>> TEGRA_ASOC_UTILS_SOC_TEGRA20, &pdev->dev);
-> 
->>> Would it not be more sensible to do cpu_is_() calls in the utils 
->>> code rather than have the board say?  It'd possibly also end up 
->>> looking nicer in the code and may mean the compiler can figure out 
->>> not to include cases that can't be taken in the current build.
-> 
->> We had floated the idea of adding cpu_is_*() (Well, soc_is_*()) macros
->> for Tegra in the past, and received the message that was a bad idea;
->> things should instead be driven by compatible flag values or similar.
-> 
-> Or look at the binding, or something.  Having the machine drivers need
-> to translate the bindings into these defines just feels clunky.
+Grant,
 
-I guess the utility code can just call of_machine_is_compatible() during
-probe, and so not require the machine driver to pass the value in. That
-doesn't feel /too/ gross, and avoids having to export any new soc_is()
-or similar APIs for Tegra.
+I had an entry using the USB_DEVICE which is very similar to the one
+you suggested.  I changed it over to the USB_DEVICE_VENDOR_SPEC you
+had listed.
 
-Does that seem reasonable to you?
+I am getting:
 
-In the longer run, I suspect the clock naming differences that are keyed
-off this flag to be handled by clock properties in DT, but that relies
-on common clock bindings being in place first. I'm not sure if it makes
-sense to put the PLL rate information into the DT too, or not.
+[   60.952067] usb 2-4: new high speed USB device number 2 using ehci_hcd
+[   61.468413] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+[   61.468433] snd-usb-audio: probe of 2-4:1.1 failed with error -5
+[   61.469257] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+[   61.469266] snd-usb-audio: probe of 2-4:1.3 failed with error -5
+[   61.469280] ALSA mixer.c:1938 usbaudio: unit 32: unexpected type 0x09
+[   61.469285] snd-usb-audio: probe of 2-4:1.4 failed with error -5
+[   61.469305] usbcore: registered new interface driver snd-usb-audio
 
->> See http://www.spinics.net/lists/linux-tegra/msg02250.html. That said,
->> I see many cpu_is_*() calls in arch/arm, so perhaps we should revisit
->> this.
-> 
-> Many of those might get some pushback in this day and age.
+and I have entries in /proc/asound as before:
+
+ls -l
+total 0
+-r--r--r-- 1 root root 0 2012-04-02 13:47 id
+-r--r--r-- 1 root root 0 2012-04-02 13:47 midi0
+-r--r--r-- 1 root root 0 2012-04-02 13:47 usbbus
+-r--r--r-- 1 root root 0 2012-04-02 13:47 usbid
+
+Those entries had disappeared after making the changed to mixer.c.
+
+It didn't seem to be the magic bullet though, as I need some sort of
+pcm entries to be created?   What is the difference between the
+usb_device and usb_device_vendor_spec?   Any other ideas?
+
+thanks,
+David
+
+On Fri, Mar 30, 2012 at 5:02 PM, Grant Diffey <gdiffey@gmail.com> wrote:
+>
+> On Sat, Mar 31, 2012 at 4:27 AM, David Alexander <lidxv0n@gmail.com> wrot=
+e:
+>>
+>> Grant,
+>>
+>> You had mentioned something about the end point for the mixer. =A0I have
+>> found this information from the trace I had performed:
+>>
+>> From a dispatch urb_function_get_descriptor_from_device message under
+>> the fid_USBPORT_Endpoint_Descriptor:
+>>
+>> fid_bLength 7
+>> fid_bDescriptortype 5
+>> fid_bEndpointAddress 0
+>> fid_bmAttributes 0
+>> fid_wMaxPacketSize 64
+>> fid_bInterval 0
+>>
+>> Is this what you were asking about, and does it help us?
+>>
+>> thanks,
+>> David
+>>
+>>
+>>
+>
+> What does the quirk look like that you have now? because what I wrote was
+> wrong.
+>
+> it seems I can't count to 5 :)
+>
+> so based on what Clemens said and me re-reading the interface descriptor
+>
+> Interface 0 is dfu upload
+> Interface 1 is a mixer
+>
+> Interface 2 is the midi
+> Interface 3 is audio output
+> Interface 4 is audio Input and provides clock data for output
+>
+> 0 and 2 were previously recognised so do not need to be quirked.
+>
+> so I think this is what the quirk should look like:
+>
+>
+> USB_DEVICE_VENDOR_SPEC(0x0dba, 0xb011),
+>
+> =A0 =A0 =A0 =A0.driver_info =3D (unsigned long) & (const struct snd_usb_a=
+udio_quirk) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.vendor_name =3D "Digidesign",
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.product_name =3D "Eleven Rack",
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 .ifnum =3D QUIRK_ANY_INTERFACE,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.type =3D QUIRK_COMPOSITE,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.data =3D & (const struct snd_usb_audio_qu=
+irk[]) {
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0{
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.ifnum =3D=
+ 1,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.type =3D =
+QUIRK_AUDIO_STANDARD_MIXER
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0},
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0{
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.ifnum =3D=
+ 3,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.type =3D =
+QUIRK_AUDIO_STANDARD_INTERFACE
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0},
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0{
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.ifnum =3D=
+ 4,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.type =3D =
+QUIRK_AUDIO_STANDARD_INTERFACE
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0},
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0{
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.ifnum =3D=
+ -1
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0}
+> }
+>
+> is that similar to what you have?
+>
+> Grant.
+>
