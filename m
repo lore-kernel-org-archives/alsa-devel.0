@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: max98095: Fix build failure
-Date: Mon,  2 Apr 2012 15:03:11 +0100
-Message-ID: <1333375391-17049-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: <MR.Swami.Reddy@ti.com>
+Subject: [PATCH] ASoC: MAINTAINERS: Add maintainer for TI
+	LM49453 Audio codec driver
+Date: Mon, 2 Apr 2012 20:02:31 +0530
+Message-ID: <1333377151-26872-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 918D5244DC
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23FC42433A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Apr 2012 16:03:08 +0200 (CEST)
+	Mon,  2 Apr 2012 16:31:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rhyland Klein <rklein@nvidia.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: alsa-devel@alsa-project.org, M R Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/codecs/max98095.c: In function 'max98095_jack_detect_enable':
-sound/soc/codecs/max98095.c:2229:14: error: 'struct max98095_priv' has no member named 'jack_detect_delay'
-sound/soc/codecs/max98095.c:2230:18: error: 'struct max98095_priv' has no member named 'jack_detect_delay'
+From: M R Swami Reddy <mr.swami.reddy@ti.com>
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+I will be supporting the TI LM49453 audio driver and also a few new TI codec
+drivers, that are currently in development and will be upstreamed shortly.
+
+Signed-off-by: M R Swami Reddy <mr.swami.reddy@ti.com>
 ---
- sound/soc/codecs/max98095.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 0752840..35179e2 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -2226,8 +2226,8 @@ int max98095_jack_detect_enable(struct snd_soc_codec *codec)
- 	if (max98095->pdata->jack_detect_pin5en)
- 		detect_enable |= M98095_PIN5EN;
+ MAINTAINERS |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index eecf344..cc9e035 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6664,6 +6664,12 @@ 
  
--	if (max98095->jack_detect_delay)
--		slew = max98095->jack_detect_delay;
-+	if (max98095->pdata->jack_detect_delay)
-+		slew = max98095->pdata->jack_detect_delay;
- 
- 	ret = snd_soc_write(codec, M98095_08E_JACK_DC_SLEW, slew);
- 	if (ret < 0) {
--- 
-1.7.9.1
++TI LM49xxx FAMILY ASoC CODEC DRIVERS
++M:	M R Swami Reddy <mr.swami.reddy@ti.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	sound/soc/codecs/lm49453*
++
+ TI TWL4030 SERIES SOC CODEC DRIVER
+ M:	Peter Ujfalusi <peter.ujfalusi@ti.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
