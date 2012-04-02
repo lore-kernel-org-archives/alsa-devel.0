@@ -1,63 +1,53 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 04/17] ASoC: tegra: add description to a couple Kconfig
- options
-Date: Mon, 2 Apr 2012 17:37:18 +0100
-Message-ID: <20120402163718.GE15197@opensource.wolfsonmicro.com>
-References: <1333148852-17806-1-git-send-email-swarren@wwwdotorg.org>
- <1333148852-17806-5-git-send-email-swarren@wwwdotorg.org>
- <20120331194848.GG5012@opensource.wolfsonmicro.com>
- <4F79D49F.9000000@wwwdotorg.org>
+From: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+Subject: Re: Rawmidi vs. /dev/snd/*
+Date: Mon, 2 Apr 2012 10:02:15 -0700
+Message-ID: <95AF842A4173430D8AE58F407A47467A@PAULD>
+References: <4F7995F2.9040508@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="a+b56+3nqLzpiR9O"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <4F79D49F.9000000-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from elasmtp-galgo.atl.sa.earthlink.net
+	(elasmtp-galgo.atl.sa.earthlink.net [209.86.89.61])
+	by alsa0.perex.cz (Postfix) with ESMTP id A949424374
+	for <alsa-devel@alsa-project.org>;
+	Mon,  2 Apr 2012 19:01:53 +0200 (CEST)
+In-Reply-To: <4F7995F2.9040508@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "'Gabriel M. Beddingfield'" <gabrbedd@gmail.com>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> From: Gabriel M. Beddingfield [mailto:gabrbedd@gmail.com] 
+> 
+> It would be a good idea for you to check out the alsa-lib sources and 
+> snoop around in the src/rawmidi/ folder.
+> 
+> In reality, only one file descriptor is returned by 
+> snd_rawmidi_poll_descriptors().  However, the API returns an array so 
+> that it can expand in the future without having to recompile programs 
+> linked to the library.
+> 
+> Yes, the ALSA documentation sucks.  But I assure you that if 
+> you try to 
+> use the raw kernel interface... the documentation is worse. :-)
 
---a+b56+3nqLzpiR9O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Since ALSA is big an complicated, and since my embedded system will probably
+be based on SALSA, I downloaded that source, which is comparatively simple
+(hence the S, I guess). It makes it clear what's going on: the RawMidi
+handle already contains a pollfd for its internal use, and
+snd_rawmidi_poll_descriptors makes that available to the app.
 
-On Mon, Apr 02, 2012 at 10:32:31AM -0600, Stephen Warren wrote:
+Thanks for your time.
 
-> When doing that, I figured why hide those options, even if they're
-> typically auto-selected? Perhaps some out-of-tree ASoC machine driver
-> needs those modules built.
+-- 
 
-I've never seen anyone actually build out of tree ASoC modules, everyone
-always patches their machine drivers into their kernel.
-
-> Still, I can go either way; do you want me to drop this, and remove the
-> equivalent descriptions from the Tegra30 patches?
-
-Drop them (or fix all other platforms to have descriptions but my
-preference is to drop).
-
---a+b56+3nqLzpiR9O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPedU7AAoJEBus8iNuMP3dkKQP/RRLWpKNHp13G95GtLsxJTCF
-Ok+SXJrSkN3Vgde256FMnd2V4796TBlm+Q9kaFPvhb0SWP629k6p/NqKbYm/yPPf
-CixwtGHRqmaC9Amntb1KUIPqlQFaywXrheeLLga31d8y+fsZCYnkTd01yAppjrQn
-U7u4/RhFqzfydNzbMbSdIPmyySKA1ddbiR37go19Y4K2xG1ZiHjXejtXWuED4D9U
-AslnoJn6KpQ5kQnI497TZFF1jazMuuOCwykzaNzw6UZIVZK09oILIbJjzSsXzE//
-p3gg9oEWMe0/4NdzsGkIZRplhIFrzuUBUDSeviwOzh8q+w4BGckQZ570QrBD/3C2
-eVfO+q0b1+LNkIOYVE54f+LX4sJpgHmdOBxFEbzcr4Qd0h9AIg79J+axAHzniYsR
-iZqB/pbyj3Oydx1RGOquqmKmuWCtIXIwAqlQEVFXmzG7Oe2lo1CzYJ5njniXAM40
-Wpa1zzkqKtviysQyEOPps7aBOInuwL+hUGaMG6NbexDFE3sp8UIV9FsyJDwSsTTL
-zoOO8ypPfsLng2kYIYy2bj9GmXxs6TtwXbjxbbqYK/tFme08fvd9/8rXWnvEXyiB
-W2ZMpVEnQ62oAupw6oDO1m4RJYcZB1SGOiHMBkdq2BKfGAMS1yy504y66SqI26Hk
-npDRyWfuQye20FIS5v3F
-=JiDO
------END PGP SIGNATURE-----
-
---a+b56+3nqLzpiR9O--
+Ciao,               Paul D. DeRocco
+Paul                mailto:pderocco@ix.netcom.com 
