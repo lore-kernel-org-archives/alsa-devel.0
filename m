@@ -1,15 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] Fix internal mic for Lenovo Ideapad U300s
-Date: Mon,  2 Apr 2012 15:40:27 +0200
-Message-ID: <1333374027-11740-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: max98095: Fix build failure
+Date: Mon,  2 Apr 2012 15:03:11 +0100
+Message-ID: <1333375391-17049-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id B1491244B6
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 918D5244DC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Apr 2012 15:40:25 +0200 (CEST)
+	Mon,  2 Apr 2012 16:03:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,206 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 903853@bugs.launchpad.net
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Rhyland Klein <rklein@nvidia.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The internal mic input is phase inverted on one channel.
-To avoid people in userspace summing the channels together
-and get zero result, use a separate mixer control for the
-inverted channel.
+sound/soc/codecs/max98095.c: In function 'max98095_jack_detect_enable':
+sound/soc/codecs/max98095.c:2229:14: error: 'struct max98095_priv' has no member named 'jack_detect_delay'
+sound/soc/codecs/max98095.c:2230:18: error: 'struct max98095_priv' has no member named 'jack_detect_delay'
 
-BugLink: https://bugs.launchpad.net/bugs/903853
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/pci/hda/patch_conexant.c |   88 ++++++++++++++++++++++++++++++++++------
- 1 files changed, 75 insertions(+), 13 deletions(-)
+ sound/soc/codecs/max98095.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index e6eafb1..c18e3b1 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -142,6 +142,7 @@ struct conexant_spec {
- 	unsigned int asus:1;
- 	unsigned int pin_eapd_ctrls:1;
- 	unsigned int single_adc_amp:1;
-+	unsigned int fixup_stereo_dmic:1;
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 0752840..35179e2 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -2226,8 +2226,8 @@ int max98095_jack_detect_enable(struct snd_soc_codec *codec)
+ 	if (max98095->pdata->jack_detect_pin5en)
+ 		detect_enable |= M98095_PIN5EN;
  
- 	unsigned int adc_switching:1;
+-	if (max98095->jack_detect_delay)
+-		slew = max98095->jack_detect_delay;
++	if (max98095->pdata->jack_detect_delay)
++		slew = max98095->pdata->jack_detect_delay;
  
-@@ -4107,9 +4108,9 @@ static int cx_auto_init(struct hda_codec *codec)
- 
- static int cx_auto_add_volume_idx(struct hda_codec *codec, const char *basename,
- 			      const char *dir, int cidx,
--			      hda_nid_t nid, int hda_dir, int amp_idx)
-+			      hda_nid_t nid, int hda_dir, int amp_idx, int chs)
- {
--	static char name[32];
-+	static char name[44];
- 	static struct snd_kcontrol_new knew[] = {
- 		HDA_CODEC_VOLUME(name, 0, 0, 0),
- 		HDA_CODEC_MUTE(name, 0, 0, 0),
-@@ -4119,7 +4120,7 @@ static int cx_auto_add_volume_idx(struct hda_codec *codec, const char *basename,
- 
- 	for (i = 0; i < 2; i++) {
- 		struct snd_kcontrol *kctl;
--		knew[i].private_value = HDA_COMPOSE_AMP_VAL(nid, 3, amp_idx,
-+		knew[i].private_value = HDA_COMPOSE_AMP_VAL(nid, chs, amp_idx,
- 							    hda_dir);
- 		knew[i].subdevice = HDA_SUBDEV_AMP_FLAG;
- 		knew[i].index = cidx;
-@@ -4138,7 +4139,7 @@ static int cx_auto_add_volume_idx(struct hda_codec *codec, const char *basename,
- }
- 
- #define cx_auto_add_volume(codec, str, dir, cidx, nid, hda_dir)		\
--	cx_auto_add_volume_idx(codec, str, dir, cidx, nid, hda_dir, 0)
-+	cx_auto_add_volume_idx(codec, str, dir, cidx, nid, hda_dir, 0, 3)
- 
- #define cx_auto_add_pb_volume(codec, nid, str, idx)			\
- 	cx_auto_add_volume(codec, str, " Playback", idx, nid, HDA_OUTPUT)
-@@ -4208,6 +4209,36 @@ static int cx_auto_build_output_controls(struct hda_codec *codec)
- 	return 0;
- }
- 
-+/* Returns zero if this is a normal stereo channel, and non-zero if it should
-+   be split in two independent channels.
-+   dest_label must be at least 44 characters. */
-+static int cx_auto_get_rightch_label(struct hda_codec *codec, const char *label,
-+				     char *dest_label, int nid)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	int i;
-+
-+	if (!spec->fixup_stereo_dmic)
-+		return 0;
-+
-+	for (i = 0; i < AUTO_CFG_MAX_INS; i++) {
-+		int def_conf;
-+		if (spec->autocfg.inputs[i].pin != nid)
-+			continue;
-+
-+		if (spec->autocfg.inputs[i].type != AUTO_PIN_MIC)
-+			return 0;
-+		def_conf = snd_hda_codec_get_pincfg(codec, nid);
-+		if (snd_hda_get_input_pin_attr(def_conf) != INPUT_PIN_ATTR_INT)
-+			return 0;
-+
-+		/* Finally found the inverted internal mic! */
-+		snprintf(dest_label, 44, "Inverted %s", label);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
- static int cx_auto_add_capture_volume(struct hda_codec *codec, hda_nid_t nid,
- 				      const char *label, const char *pfx,
- 				      int cidx)
-@@ -4216,14 +4247,25 @@ static int cx_auto_add_capture_volume(struct hda_codec *codec, hda_nid_t nid,
- 	int i;
- 
- 	for (i = 0; i < spec->num_adc_nids; i++) {
-+		char rightch_label[44];
- 		hda_nid_t adc_nid = spec->adc_nids[i];
- 		int idx = get_input_connection(codec, adc_nid, nid);
- 		if (idx < 0)
- 			continue;
- 		if (spec->single_adc_amp)
- 			idx = 0;
-+
-+		if (cx_auto_get_rightch_label(codec, label, rightch_label, nid)) {
-+			/* Make two independent kcontrols for left and right */
-+			int err = cx_auto_add_volume_idx(codec, label, pfx,
-+					      cidx, adc_nid, HDA_INPUT, idx, 1);
-+			if (err < 0)
-+				return err;
-+			return cx_auto_add_volume_idx(codec, rightch_label, pfx,
-+						      cidx, adc_nid, HDA_INPUT, idx, 2);
-+		}
- 		return cx_auto_add_volume_idx(codec, label, pfx,
--					      cidx, adc_nid, HDA_INPUT, idx);
-+					      cidx, adc_nid, HDA_INPUT, idx, 3);
- 	}
- 	return 0;
- }
-@@ -4236,9 +4278,19 @@ static int cx_auto_add_boost_volume(struct hda_codec *codec, int idx,
- 	int i, con;
- 
- 	nid = spec->imux_info[idx].pin;
--	if (get_wcaps(codec, nid) & AC_WCAP_IN_AMP)
-+	if (get_wcaps(codec, nid) & AC_WCAP_IN_AMP) {
-+		char rightch_label[44];
-+		if (cx_auto_get_rightch_label(codec, label, rightch_label, nid)) {
-+			int err = cx_auto_add_volume_idx(codec, label, " Boost",
-+							 cidx, nid, HDA_INPUT, 0, 1);
-+			if (err < 0)
-+				return err;
-+			return cx_auto_add_volume_idx(codec, rightch_label, " Boost",
-+						      cidx, nid, HDA_INPUT, 0, 2);
-+		}
- 		return cx_auto_add_volume(codec, label, " Boost", cidx,
- 					  nid, HDA_INPUT);
-+	}
- 	con = __select_input_connection(codec, spec->imux_info[idx].adc, nid,
- 					&mux, false, 0);
- 	if (con < 0)
-@@ -4405,22 +4457,30 @@ static void apply_pincfg(struct hda_codec *codec, const struct cxt_pincfg *cfg)
- 
- }
- 
--static void apply_pin_fixup(struct hda_codec *codec,
-+enum {
-+	CXT_PINCFG_LENOVO_X200,
-+	CXT_FIXUP_STEREO_DMIC,
-+};
-+
-+static void apply_fixup(struct hda_codec *codec,
- 			    const struct snd_pci_quirk *quirk,
- 			    const struct cxt_pincfg **table)
- {
-+	struct conexant_spec *spec = codec->spec;
-+
- 	quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
--	if (quirk) {
-+	if (quirk && table[quirk->value]) {
- 		snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
- 			    quirk->name);
- 		apply_pincfg(codec, table[quirk->value]);
- 	}
-+	if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
-+		snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
-+			    quirk->name);
-+		spec->fixup_stereo_dmic = 1;
-+	}
- }
- 
--enum {
--	CXT_PINCFG_LENOVO_X200,
--};
--
- static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
- 	{ 0x16, 0x042140ff }, /* HP (seq# overridden) */
- 	{ 0x17, 0x21a11000 }, /* dock-mic */
-@@ -4431,10 +4491,12 @@ static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
- 
- static const struct cxt_pincfg *cxt_pincfg_tbl[] = {
- 	[CXT_PINCFG_LENOVO_X200] = cxt_pincfg_lenovo_x200,
-+	[CXT_FIXUP_STEREO_DMIC] = NULL,
- };
- 
- static const struct snd_pci_quirk cxt_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo X200", CXT_PINCFG_LENOVO_X200),
-+	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	{}
- };
- 
-@@ -4477,7 +4539,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 		break;
- 	}
- 
--	apply_pin_fixup(codec, cxt_fixups, cxt_pincfg_tbl);
-+	apply_fixup(codec, cxt_fixups, cxt_pincfg_tbl);
- 
- 	/* Show mute-led control only on HP laptops
- 	 * This is a sort of white-list: on HP laptops, EAPD corresponds
+ 	ret = snd_soc_write(codec, M98095_08E_JACK_DC_SLEW, slew);
+ 	if (ret < 0) {
 -- 
 1.7.9.1
