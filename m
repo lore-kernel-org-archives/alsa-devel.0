@@ -1,20 +1,20 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH 1/1] ASoC: soc-dmaengine-pcm: fix compile
- error	since dma api is changed
-Date: Mon, 02 Apr 2012 09:20:04 +0530
-Message-ID: <1333338604.1610.0.camel@vkoul-udesk3>
-References: <1333197468-3263-1-git-send-email-b29396@freescale.com>
-	<4F76EB8D.2060200@metafoo.de>
-	<7FE21149F4667147B645348EC6057885153794@039-SN2MPN1-011.039d.mgd.msft.net>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: Rawmidi vs. /dev/snd/*
+Date: Mon, 02 Apr 2012 00:21:29 -0500
+Message-ID: <4F793759.4050006@gmail.com>
+References: <7F5048EEC8BC46EE9D6306291A92F3EC@PAULD>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id D182D24602
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A25EC24630
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Apr 2012 05:47:27 +0200 (CEST)
-In-Reply-To: <7FE21149F4667147B645348EC6057885153794@039-SN2MPN1-011.039d.mgd.msft.net>
+	Mon,  2 Apr 2012 07:21:31 +0200 (CEST)
+Received: by obbef5 with SMTP id ef5so1023754obb.38
+	for <alsa-devel@alsa-project.org>; Sun, 01 Apr 2012 22:21:37 -0700 (PDT)
+In-Reply-To: <7F5048EEC8BC46EE9D6306291A92F3EC@PAULD>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2012-03-31 at 12:39 +0000, Dong Aisheng-B29396 wrote:
-> > > sound/soc/soc-dmaengine-pcm.c: In function
-> > 'dmaengine_pcm_prepare_and_submit':
-> > > sound/soc/soc-dmaengine-pcm.c:149: error: too few arguments to
-> function
-> > 'chan->device->device_prep_dma_cyclic'
-> > > make[2]: *** [sound/soc/soc-dmaengine-pcm.o] Error 1
-> > > make[1]: *** [sound/soc] Error 2
-> > > make: *** [sound] Error 2
-> > >
-> > 
-> > Hi,
-> > 
-> > There is already a fix for this in Mark's for-3.4 branch.
-> Okay, thanks for reminder.
-> I missed to check Mark's tree.
-> 
-This fix is there in rc1
+On 04/01/2012 01:25 AM, Paul D. DeRocco wrote:
+> In writing an embedded app that will be the only thing talking to MIDI, and
+> in which I don't need any timing or routing capability, is there any reason
+> to use ALSA Rawmidi, as opposed to merely reading and writing the device via
+> the file system? Which is the lower-level, and therefore most efficient,
+> interface? I'm leaning toward the latter, because I already know how to use
+> poll() to wait for incoming data on multiple input devices, but I don't see
+> how to do that via Rawmidi.
+>
 
--- 
-~Vinod
+ALSA Rawmidi is the same as doing read/write operations on the file 
+system.  Rawmidi is a very thin, low-level interface to 
+/dev/snd/midiCxDx.  There is no performance advantage of using one 
+approach over the other because they are the same thing.
+
+You're probably better off using the API because it's likely to help you 
+avoid mistakes and it gives you easier access to the kernel ioctl() calls.
+
+You can use snd_rawmidi_poll_descriptors() to access the raw file 
+descriptors for the midi device so that you can add to your other 
+polling descriptors.
+
+-gabriel
