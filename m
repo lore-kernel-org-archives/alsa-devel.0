@@ -1,17 +1,21 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH v2] ASoC: core: Initialize err for
-	snd_soc_put_volsw_sx
-Date: Tue, 3 Apr 2012 11:33:50 -0500
-Message-ID: <1333470830-27137-1-git-send-email-brian.austin@cirrus.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: trying to get an eleven rack to work
+Date: Tue, 03 Apr 2012 21:20:38 +0200
+Message-ID: <4F7B4D86.8080508@ladisch.de>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>	<4F6883F9.4010405@ladisch.de>	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>	<4F718114.5020602@ladisch.de>	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>	<4F740A6A.3030608@ladisch.de>	<CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>	<CAOyn=DGXcm+0RfuNj5G+BvgrwofpO6TROsKRLiekNxW8FUupFg@mail.gmail.com>	<CACckToX-kqDyM6sFW_9in64cgO5RQekA-J=EEHSXxgsxEuMk=Q@mail.gmail.com>	<CAOyn=DGw0U572nKkEsGQ-KoZ_CfBsYbu5vBzxmZ+1Kjwu0d6_w@mail.gmail.com>
+	<CAOyn=DF7+dfizJsxJUkwsbZsV-sO9LwbhJbp7s7o2v24Rc2Yqg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
-	(db3ehsobe004.messaging.microsoft.com [213.199.154.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE3C410427D
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9DC25103B49
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Apr 2012 18:34:47 +0200 (CEST)
+	Tue,  3 Apr 2012 21:20:49 +0200 (CEST)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 0C02521759
+	for <alsa-devel@alsa-project.org>; Tue,  3 Apr 2012 15:20:48 -0400 (EDT)
+In-Reply-To: <CAOyn=DF7+dfizJsxJUkwsbZsV-sO9LwbhJbp7s7o2v24Rc2Yqg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Brian Austin <brian.austin@cirrus.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: David Alexander <lidxv0n@gmail.com>
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-c291bmQvc29jL3NvYy1jb3JlLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9zb2NfcHV0X3ZvbHN3X3N4
-4oCZOgpzb3VuZC9zb2Mvc29jLWNvcmUuYzoyNjAwOiB3YXJuaW5nOiDigJhlcnLigJkgbWF5IGJl
-IHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uCgpTaWduZWQtb2ZmLWJ5OiBCcmlh
-biBBdXN0aW4gPGJyaWFuLmF1c3RpbkBjaXJydXMuY29tPgotLS0KIHNvdW5kL3NvYy9zb2MtY29y
-ZS5jIHwgICAgMiArLQogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRp
-b25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1jb3JlLmMgYi9zb3VuZC9zb2Mvc29j
-LWNvcmUuYwppbmRleCA3YjFhNGZkLi5hNjkyMmJjIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc29j
-LWNvcmUuYworKysgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwpAQCAtMjU4Niw3ICsyNTg2LDcgQEAg
-aW50IHNuZF9zb2NfcHV0X3ZvbHN3X3N4KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAog
-CWludCBtYXggPSBtYy0+bWF4OwogCWludCBtaW4gPSBtYy0+bWluOwogCWludCBtYXNrID0gKDEg
-PDwgKGZscyhtaW4gKyBtYXgpIC0gMSkpIC0gMTsKLQlpbnQgZXJyOworCWludCBlcnIgPSAwOwog
-CXVuc2lnbmVkIHNob3J0IHZhbCwgdmFsX21hc2ssIHZhbDIgPSAwOwogCiAJdmFsX21hc2sgPSBt
-YXNrIDw8IHNoaWZ0OwotLSAKMS43LjkuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+David Alexander wrote:
+> I have come across some code written for another device by the same
+> company for another product (Digidesign MBox 2).
+
+The Mbox 2 uses a vendor-specific protocol; your device does not.
+
+The Eleven Rack would work with the USB Audio 2.0 support of the Linux
+driver, except that some parts of the USB Audio 2.0 specification are
+not implemented.
+
+
+Regards,
+Clemens
