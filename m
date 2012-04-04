@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl: remove redundant Kconfig
- option SND_SOC_FSL_SSI
-Date: Wed, 4 Apr 2012 12:34:33 +0100
-Message-ID: <20120404113432.GB9693@opensource.wolfsonmicro.com>
-References: <1333081892-8808-1-git-send-email-shawn.guo@linaro.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] powerpc: select PPC_CLOCK unconditionally
+	for FSL_SOC
+Date: Wed, 4 Apr 2012 21:32:50 +0800
+Message-ID: <20120404133246.GA25168@S2101-09.ap.freescale.net>
+References: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6618098542536928457=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4B07F103E68
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35A1D24608
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Apr 2012 13:34:41 +0200 (CEST)
-In-Reply-To: <1333081892-8808-1-git-send-email-shawn.guo@linaro.org>
+	Wed,  4 Apr 2012 15:32:24 +0200 (CEST)
+Received: by iakh37 with SMTP id h37so355107iak.38
+	for <alsa-devel@alsa-project.org>; Wed, 04 Apr 2012 06:32:22 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +26,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: Kumar Gala <galak@kernel.crashing.org>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
+Kumar,
 
---===============6618098542536928457==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
-Content-Disposition: inline
+Gentle ping ...
 
+Regards,
+Shawn
 
---24zk1gE8NUlDmwG9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Mar 30, 2012 at 12:31:31PM +0800, Shawn Guo wrote:
-> While commit 606d620 (ASoC: imx: merge sound/soc/imx into sound/soc/fsl)
-> adds SND_SOC_FSL_SSI outside "menuconfig SND_POWERPC_SOC" to make it
-> visible for both PowerPC and ARM/IMX, it forgot removing the one inside
-> "menuconfig SND_POWERPC_SOC".
-
-Applied both, thanks.
-
---24zk1gE8NUlDmwG9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPfDG7AAoJEBus8iNuMP3dnxoP/1/ODhfR2dMU6sv0XcaabK4E
-FshhmiMoswlRgHLQPz35GltySzyhqS/nljPw9EaSydFfx7xzWbvggTuSwuwgRXd0
-ojVYOrNHSAtoVKpkhn70K/9PSV7O+9ATrOLM1KiiS8D+9enDHmxN5Qls8/xCBdfv
-aOA8Txb+GIG+6tzaT8qK5pdn1XRL+v1qzHTrDg7hxQDV2lbva8HTVYTFFzZeQ/1f
-4Ha36nulXJv/NJRvXlwe9wN7lYMvcJPLoyt2dofYu1C0ZWkSMSNcLGOsMF1Wj0eN
-1c9I04UjKgQypGTEwqcNpLy3/JxNszWVakTxWxbtaXxRPkH+jeKNLJYCcUJ1j/no
-9TzQZoJO1nO5RYJGPqfhayrjBJURjmHyf/JNwx2oRzeCNBLOGHdmnG7vC4xAYWcO
-+z3CudXGB/OAhd5aS4uYwhPcFgBXwxHUlvo9nkrvcsuz9+dP1FAnsekwFZW39lgI
-kavWG90ScRkAMYljRielna+YohS+m5PhUOuICCB33/860rJfcFGSk3Tagrfomboc
-Kr1BExKinjHRLz5O9S30gHjTGSwKCl5XSWK97ejMHDltO1dhoQwc3k/Cj39i11AA
-crwJIvigzLRh1FK4MgTIEXvwWi4yFvG+gjks2WFK2TW7FbrOaa32/Yc2oeQI2vnm
-kryAuhzARY/GJ4qX0rik
-=LNx2
------END PGP SIGNATURE-----
-
---24zk1gE8NUlDmwG9--
-
---===============6618098542536928457==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6618098542536928457==--
+On Fri, Mar 30, 2012 at 01:38:56PM +0800, Shawn Guo wrote:
+> Freescale PowerPC SoCs share a number of IP blocks with Freescale
+> ARM/IMX SoCs, FlexCAN, SSI, FEC, eSDHC, USB, etc.  There are some
+> effort consolidating those drivers to make them work for both
+> architectures.
+> 
+> One outstanding difference between two architectures is ARM/IMX will
+> turn off module clocks during platform initialization for power saving
+> and expects drivers manage clocks using clk API, while PowerPC
+> mostly does not do that, and thus does not always build in clk API.
+> 
+> Listing all those driver Kconfig options in "select PPC_CLOCK if" seems
+> not scalable for long term maintenance, and could easily introduce
+> Kconfig recursive dependency.  This patch chooses to select PPC_CLOCK
+> unconditionally for FSL_SOC to always build clk API for PowerPC in.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  arch/powerpc/Kconfig |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index feab3ba..63fa7fb 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -661,7 +661,7 @@ config SBUS
+>  config FSL_SOC
+>  	bool
+>  	select HAVE_CAN_FLEXCAN if NET && CAN
+> -	select PPC_CLOCK if CAN_FLEXCAN
+> +	select PPC_CLOCK
+>  
+>  config FSL_PCI
+>   	bool
+> -- 
+> 1.7.5.4
+> 
