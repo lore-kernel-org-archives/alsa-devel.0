@@ -1,22 +1,32 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] powerpc: select PPC_CLOCK unconditionally
-	for FSL_SOC
-Date: Wed, 4 Apr 2012 21:32:50 +0800
-Message-ID: <20120404133246.GA25168@S2101-09.ap.freescale.net>
-References: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: trying to get an eleven rack to work
+Date: Wed, 04 Apr 2012 15:49:51 +0200
+Message-ID: <4F7C517F.60005@ladisch.de>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+	<4F6883F9.4010405@ladisch.de>
+	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
+	<4F718114.5020602@ladisch.de>
+	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
+	<4F740A6A.3030608@ladisch.de>
+	<CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
+	<CAOyn=DGXcm+0RfuNj5G+BvgrwofpO6TROsKRLiekNxW8FUupFg@mail.gmail.com>
+	<CACckToX-kqDyM6sFW_9in64cgO5RQekA-J=EEHSXxgsxEuMk=Q@mail.gmail.com>
+	<CAOyn=DGw0U572nKkEsGQ-KoZ_CfBsYbu5vBzxmZ+1Kjwu0d6_w@mail.gmail.com>
+	<CAOyn=DF7+dfizJsxJUkwsbZsV-sO9LwbhJbp7s7o2v24Rc2Yqg@mail.gmail.com>
+	<4F7B4D86.8080508@ladisch.de>
+	<CAOyn=DEajHGkSwCZPGTWU3UUyAQLij6_UzBOJxvWujJQk6OLqg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35A1D24608
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9C03C246A3
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Apr 2012 15:32:24 +0200 (CEST)
-Received: by iakh37 with SMTP id h37so355107iak.38
-	for <alsa-devel@alsa-project.org>; Wed, 04 Apr 2012 06:32:22 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
+	Wed,  4 Apr 2012 15:46:20 +0200 (CEST)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 0921A211D1
+	for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2012 09:46:17 -0400 (EDT)
+In-Reply-To: <CAOyn=DEajHGkSwCZPGTWU3UUyAQLij6_UzBOJxvWujJQk6OLqg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +36,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@freescale.com>
+To: David Alexander <lidxv0n@gmail.com>
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Kumar,
+David Alexander wrote:
+> is it a case of waiting until the backend infrastructure is in place?
 
-Gentle ping ...
+Yes.
+
 
 Regards,
-Shawn
-
-On Fri, Mar 30, 2012 at 01:38:56PM +0800, Shawn Guo wrote:
-> Freescale PowerPC SoCs share a number of IP blocks with Freescale
-> ARM/IMX SoCs, FlexCAN, SSI, FEC, eSDHC, USB, etc.  There are some
-> effort consolidating those drivers to make them work for both
-> architectures.
-> 
-> One outstanding difference between two architectures is ARM/IMX will
-> turn off module clocks during platform initialization for power saving
-> and expects drivers manage clocks using clk API, while PowerPC
-> mostly does not do that, and thus does not always build in clk API.
-> 
-> Listing all those driver Kconfig options in "select PPC_CLOCK if" seems
-> not scalable for long term maintenance, and could easily introduce
-> Kconfig recursive dependency.  This patch chooses to select PPC_CLOCK
-> unconditionally for FSL_SOC to always build clk API for PowerPC in.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  arch/powerpc/Kconfig |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index feab3ba..63fa7fb 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -661,7 +661,7 @@ config SBUS
->  config FSL_SOC
->  	bool
->  	select HAVE_CAN_FLEXCAN if NET && CAN
-> -	select PPC_CLOCK if CAN_FLEXCAN
-> +	select PPC_CLOCK
->  
->  config FSL_PCI
->   	bool
-> -- 
-> 1.7.5.4
-> 
+Clemens
