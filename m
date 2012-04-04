@@ -1,17 +1,20 @@
-From: Monty Montgomery <xiphmont@gmail.com>
-Subject: UHCI dropped audio samples / DMA starvation fix
-Date: Wed, 4 Apr 2012 15:43:10 -0400
-Message-ID: <CACrD=+9OSMrf1ghQdvQ7xP7gpXUvT2jkgNh+1qQ5Efem7wsZaA@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: UHCI dropped audio samples / DMA starvation fix
+Date: Wed, 04 Apr 2012 22:54:34 +0200
+Message-ID: <4F7CB50A.5090701@ladisch.de>
+References: <CACrD=+9OSMrf1ghQdvQ7xP7gpXUvT2jkgNh+1qQ5Efem7wsZaA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1220424746
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 057FB24761
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Apr 2012 21:43:12 +0200 (CEST)
-Received: by laap9 with SMTP id p9so724639laa.38
-	for <alsa-devel@alsa-project.org>; Wed, 04 Apr 2012 12:43:10 -0700 (PDT)
+	Wed,  4 Apr 2012 22:54:44 +0200 (CEST)
+Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id CF211217F6
+	for <alsa-devel@alsa-project.org>; Wed,  4 Apr 2012 16:54:41 -0400 (EDT)
+In-Reply-To: <CACrD=+9OSMrf1ghQdvQ7xP7gpXUvT2jkgNh+1qQ5Efem7wsZaA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Clemens Ladisch <clemens@ladisch.de>
+To: Monty Montgomery <xiphmont@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Clemens and Takashi (and list),
+Monty Montgomery wrote:
+> UHCI overlaps sending on the USB bus with DMAing the data from memory.
+> It does not have all the data it needs to transmit a complete packet
+> before it begins doing so.  If the data it needs is in a dirty cache
+> line on a CPU, the flush triggers after DMA is already started; the
+> UHCI host controller has to wait for the flush before accessing it,
 
-I've been living with USB audio dropping partial frames on UHCI
-controllers for quite a few years.  I've finally found the cause
-(DMA starvation) and have a lightweight fix.
+I've heard that the latest Intel architecture allows DMA to and from(?)
+the L3 cache.
 
-problem summary:
+> and if the flush happens too late, UHCI aborts the packet.  This is
+> happening regularly on all the UHCI controllers I've tried thusfar.
+>
+> My guess is that this issue never attracted much attention because a)
+> every one knows isoch transfers are 'unreliable'
 
-Playback (but not capture) on UHCI controllers randomly loses samples;
-they are skipped completely during playback.  This happens anywhere
-from a few times a second to once an hour or so. These are not ALSA
-underruns; the UHCI host controller itself is reporting hard DMA
-starvation errors. ALSA ignores these error and continues as if nothing
-happened, and the UHCI linux driver does not log this error anywhere.
+FireWire controllers show how this is done: read entire packets into a
+FIFO, and do this several frames before sending.  (Whether that works in
+practice depends on how big the FIFO is, and if the FIFO is shared with
+asynchronous packets to be transmitted.)
 
-UHCI overlaps sending on the USB bus with DMAing the data from memory.
-It does not have all the data it needs to transmit a complete packet
-before it begins doing so.  If the data it needs is in a dirty cache
-line on a CPU, the flush triggers after DMA is already started; the
-UHCI host controller has to wait for the flush before accessing it,
-and if the flush happens too late, UHCI aborts the packet.  This is
-happening regularly on all the UHCI controllers I've tried thusfar.
+I've never heard of a USB controller being advertized as having a big
+FIFO.
 
-My guess is that this issue never attracted much attention because a)
-every one knows isoch transfers are 'unreliable' and b) other transfer
-types automatically retry so they eventually succeed without any
-obvious sign that something went wrong (and they're usually smaller
-than one cacheline and so unaffected anyway).
+The UHCI spec says:
+| The Host Controller processes the schedule one entry at a time (this
+| discussion does not preclude prefetching of schedule entries).
+but then:
+| The Host Controller fetches the next entry from the Frame List when
+| the millisecond allotted to the current frame expires.
 
-Fix:
+... so it is not actually possible to prefetch packets in a useful way.
 
-The fix for usbaudio is dead easy.  Call:
+The EHCI spec does not mention prefetching; the v1.1 addendum ("Energy-
+efficient extensions") defines a mechanism to allow prefetching, but
+this is not support by Linux.
 
-clflush_cache_range(urb->transfer_buffer, urb->transfer_buffer_length);
+> The fix for usbaudio is dead easy.  Call:
+>
+> clflush_cache_range(urb->transfer_buffer, urb->transfer_buffer_length);
 
-as the last step of prepare_playback_urb() and
-prepare_nodata_playback_urb().  This completely corrects the DMA
-starvation behavior on my machines here.
+... if you happen to be on an x86 architecture ...
 
-Note that the clflush_cache_range() has nothing to do with
-maintaining coherency.  The call is only to force the flush ahead of
-time to avoid the fatal latency spikes from on-demand flushes
-when DMA is already running.
+> as the last step of prepare_playback_urb() and
+> prepare_nodata_playback_urb().  This completely corrects the DMA
+> starvation behavior on my machines here.
+>
+> Note that the clflush_cache_range() has nothing to do with
+> maintaining coherency.
 
-The drawback to this fix is that it's in one high level driver (ALSA
-USB audio) instead of inside UHCI where it really belongs.
-Unfortunately, the URB abstraction gives us no reliable way to do it
-in the HCD, because other drivers don't necessarily pass a valid
-CPU-side buffer address when using URB_NO_TRANSFER_DMA_MAP.
+And this is the problem with portability; all the portable functions in
+<asm/cacheflush.h> are NOPs on cache-coherent architectures.
 
-Should I whip up some patches for usb audio for 2.6.x and 3.3.x and
-leave it at that, or should we discuss a bit more 'why isn't the
-kernel doing this for us?'
+It might be possible to define a new function like
+flush_coherent_dcache_range_for_faster_dma().  Maybe this should be
+called from into usb_hcd_map_urb_for_dma() or from the arch
+implementation of dma_map_*() for DMA_TO_DEVICE.  For the latter, this
+might be implemented as a new DMA attribute.
 
-Monty
+> Unfortunately, the URB abstraction gives us no reliable way to do it
+> in the HCD, because other drivers don't necessarily pass a valid
+> CPU-side buffer address when using URB_NO_TRANSFER_DMA_MAP.
+
+But the USB API requires this (any HCD might use PIO or use its own
+double-buffering scheme).
+
+> Should I whip up some patches for usb audio for 2.6.x and 3.3.x
+
+It easily fixes an actual problem, so yes, it's definitely stable-worthy.
+
+
+Regards,
+Clemens
