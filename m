@@ -1,17 +1,32 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix warning due to the
- lack of REGULATOR_CHANGE_VOLTAGE
-Date: Wed, 4 Apr 2012 00:51:31 +0100
-Message-ID: <20120403235129.GE11910@opensource.wolfsonmicro.com>
-References: <1333487120-13500-1-git-send-email-festevam@gmail.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: trying to get an eleven rack to work
+Date: Wed, 4 Apr 2012 14:33:10 +1000
+Message-ID: <CACckToWXKYxmwd9aAqwU7kSr9caBRQVfv0Qcy=LtYuuMz5+zEA@mail.gmail.com>
+References: <CAOyn=DH_BCQh-DksiLGQnQw1kq0eNNH+Zi7KdRdX5=uot9x2Eg@mail.gmail.com>
+	<4F6883F9.4010405@ladisch.de>
+	<CACckToUeX7oJmQ9NeRLGecxOxWaLpxbZDnNWA0+t5+XxFvf+FQ@mail.gmail.com>
+	<4F718114.5020602@ladisch.de>
+	<CAOyn=DFig0m1zFRWyTE6Neimrcy12PPAoNL8BdFVaAUrYEYbGw@mail.gmail.com>
+	<4F740A6A.3030608@ladisch.de>
+	<CAOyn=DGYAr5kCPTRcf=QN8ypMZy3SWpN--zvKBevWcr4Tnqr_w@mail.gmail.com>
+	<CAOyn=DGXcm+0RfuNj5G+BvgrwofpO6TROsKRLiekNxW8FUupFg@mail.gmail.com>
+	<CACckToX-kqDyM6sFW_9in64cgO5RQekA-J=EEHSXxgsxEuMk=Q@mail.gmail.com>
+	<CAOyn=DGw0U572nKkEsGQ-KoZ_CfBsYbu5vBzxmZ+1Kjwu0d6_w@mail.gmail.com>
+	<CAOyn=DF7+dfizJsxJUkwsbZsV-sO9LwbhJbp7s7o2v24Rc2Yqg@mail.gmail.com>
+	<4F7B4D86.8080508@ladisch.de>
+	<CAOyn=DEajHGkSwCZPGTWU3UUyAQLij6_UzBOJxvWujJQk6OLqg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0513732758964226211=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 88DFF2438C
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+	[209.85.212.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C6AE104350
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Apr 2012 01:51:35 +0200 (CEST)
-In-Reply-To: <1333487120-13500-1-git-send-email-festevam@gmail.com>
+	Wed,  4 Apr 2012 06:33:12 +0200 (CEST)
+Received: by wibhm17 with SMTP id hm17so147490wib.2
+	for <alsa-devel@alsa-project.org>; Tue, 03 Apr 2012 21:33:10 -0700 (PDT)
+In-Reply-To: <CAOyn=DEajHGkSwCZPGTWU3UUyAQLij6_UzBOJxvWujJQk6OLqg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +36,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, kernel@pengutronix.de
+To: David Alexander <lidxv0n@gmail.com>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
+David,
 
---===============0513732758964226211==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XuV1QlJbYrcVoo+x"
-Content-Disposition: inline
+Can you please paste the current quirk definition you're using from
+quirk-table.h ?
 
+from what I understand it should work. like get sound in/out playback
+syncronisation is likely to be bad due to snd-usb-audio not supporting
+implicit feedback.
 
---XuV1QlJbYrcVoo+x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 03, 2012 at 06:05:20PM -0300, Fabio Estevam wrote:
-> Fix the following warning during kernel boot:
->=20
-> 0-000a: 850 <--> 1600 mV at 1200 mV normal=20
-> 0-000a: Voltage range but no REGULATOR_CHANGE_VOLTAGE
-
-Applied, thanks.
-
---XuV1QlJbYrcVoo+x
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPe4zoAAoJEBus8iNuMP3dmP4QAIth7epxtc5QMWh7VY05aeYY
-HsPk7RbAohQFt6RzctXZPqu8kvrNtDCFK5KKiFeSXx1a3cZXfXl8PnUTduzb9hY5
-6u7EQinHXOhiUxG4BcKtqyJL9O+3qfjFJMQcDGLDz8oU+2gfNzxLXUd4N0jux8pX
-KDlF2sBR6zyvVIMnfRdt7/dzfBn6iCAItp5elxAEfMRNKwFEA6BiQ4SUbI4rSnbk
-MpONpTP+J77+zlFu/53ynPNdyz9AjVBATBMJ0BNKuOUfA1Q01dLvYrLVRgmFsSrf
-LUTu3PgKLz1w9xycWuJWQOL1EP5TCdUHwoI72Wjac1kLGWsiUsChdjPHIeGIzbYe
-1REjOmNxgIgM6yBHC+2by2aPOkKG7J9qy1YDX7wZsudlaS6cBecL/+4t29NmHObb
-1dJTxDH4XCLI6K2yDvwZ6NlG0X6ameNlrmBrVu/7WcSdelBlFlMG0DIBoZspAfrJ
-AuFJl5kq3YLla5hSAQGYpPErHfJSIu2Vt2izFTcSWP0crtFelOutJH7Le6S9B4Xx
-FShdbDb5MMH1tKiNRkD46b5SEZdTQmVFnmCoYY0T8NlBI/0TK9wsFEavzw5Ht8xW
-20rrMZQ7Ig9P9tqhkyIoFLMtvX4iCN44PovV65+v2Xu8ogh5ly5Zfy/v1zHYCsrL
-UstTs0uKYuhcVI/AOWAK
-=HiHU
------END PGP SIGNATURE-----
-
---XuV1QlJbYrcVoo+x--
-
---===============0513732758964226211==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Grant.
 
 
---===============0513732758964226211==--
+On Wed, Apr 4, 2012 at 5:37 AM, David Alexander <lidxv0n@gmail.com> wrote:
+
+> Clemens,
+>
+> Thank you for the clarification.   Since we've tried the entries in
+> the quirks-table.h and the change to mixer.c, and
+> its still not working...have we went as far as we can until the other
+> parts of the specification are implemented?
+>
+> Is there anything else device related that I can do, or is it a case
+> of waiting until the backend infrastructure is in place?
+>
+> thank you,
+> David
+>
+> On Tue, Apr 3, 2012 at 3:20 PM, Clemens Ladisch <clemens@ladisch.de>
+> wrote:
+> > David Alexander wrote:
+> >> I have come across some code written for another device by the same
+> >> company for another product (Digidesign MBox 2).
+> >
+> > The Mbox 2 uses a vendor-specific protocol; your device does not.
+> >
+> > The Eleven Rack would work with the USB Audio 2.0 support of the Linux
+> > driver, except that some parts of the USB Audio 2.0 specification are
+> > not implemented.
+> >
+> >
+> > Regards,
+> > Clemens
+>
