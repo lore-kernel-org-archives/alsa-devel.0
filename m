@@ -1,18 +1,16 @@
-From: Jarek <jarek@poczta.srv.pl>
-Subject: Re: Alsa soc UDA1380 - no duplex
-Date: Thu, 05 Apr 2012 09:52:49 +0200
-Message-ID: <1333612369.9929.19.camel@tower.local>
-References: <1333445641.7330.59.camel@jlap2.macro.local>
-	<CA+E=qVfpt-m73SaTE92ASNNLVwE+Q0DNYC-2Z8v26CZ=Ukpp_A@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: ak4642: fixup: mute needs +1 step
+Date: Thu, 5 Apr 2012 11:10:29 +0100
+Message-ID: <20120405101028.GI3129@opensource.wolfsonmicro.com>
+References: <87ty0y4rrm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7583790058960284470=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.srv.pl (mail.srv.pl [217.17.32.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CE9910445A
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C8B69246C6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Apr 2012 09:54:01 +0200 (CEST)
-In-Reply-To: <CA+E=qVfpt-m73SaTE92ASNNLVwE+Q0DNYC-2Z8v26CZ=Ukpp_A@mail.gmail.com>
+	Thu,  5 Apr 2012 12:10:33 +0200 (CEST)
+In-Reply-To: <87ty0y4rrm.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dnia 2012-04-03, wto o godzinie 18:09 +0300, Vasily Khoruzhick pisze:
 
-> Probably it's lpc313x limitation (CPU DAI does not support duplex?)
+--===============7583790058960284470==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BghK6+krpKHjj+jk"
+Content-Disposition: inline
 
-Do you know how to check if this is hardware limitation ? I have
-reviewed documentation and from my point of view it should work.
-http://ics.nxp.com/products/lpc3000/datasheet/lpc3130.lpc3131.pdf
 
-> Anyway, looks like its code is not upstreamed.
+--BghK6+krpKHjj+jk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes, I didn't notice before, that all code comes from this patch (for
-kernel 3.2):
+On Wed, Apr 04, 2012 at 11:28:01PM -0700, Kuninori Morimoto wrote:
+> ak4642 out_tlv is +12.0dB to -115.0 dB, and it supports mute.
+> But current settings didn't care +1 step for mute.
+> This patch adds it
 
-http://www.lpclinux.com/pub/Forums/ForumLPC313x0055/lpc.tar.gz
-> 
-> >        The other question is why there are two drivers to the same device.
-> 
-> AFAIK there's only one driver for uda1380 codec.
+Applied, thanks.
 
-I've found separete folders for samsung and lpc in sound/soc/ and I
-suspected that there are two separate drivers. As I understand now,
-there is only separate intermediary layer. The files in those folders
-are quite different, so I don't know how to compare them, to find the
-difference.
-In mean time. I have received the following respone from lpclinux:
-=====
-As I understand,it is the SW limitation limitation because of which we
-can not use playback & capture feature simultaneously. The audio driver
-code is based on ALSA framework available in sound/soc/lpc313x. Please
-give it a try & let us know about the results
-=====
-I'll be glad, if can take a look at this code.
- or just give me some direction.
+--BghK6+krpKHjj+jk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPfW9mAAoJEBus8iNuMP3dU/8P/RXMtvifdAimiq7knTZqYbze
+DHLKT30BGHICgRNCU8TqiqmzW+XYrjBSxt7vUGQzgr1FNumFuiA/f2e6Bqm3dkOB
+mUFn7EVWpgDPi7P/pzSyZhQ4oIv1v80SmEziI168AJOoxl45qEYuTBTkb1pXJjG8
+jjR3DRoQTSsIqsIfE6j7ZYbb9tbSFrp+7iADx/H3va0fyJARsBUqk/A354s4YGPI
+N0SEQxAKt72sPAEd3mEOlbhALBMcXlyYUegFKAf1oVQHKe9maXjNrma4Sz6cfPhS
+oYeSLvqiOXL+WtywT5LYCUNGxEwlCfAgYhQTCoZaKVUB03ganErsAAnldf+82KPe
+FTH5cUq21w3KNOaQOO5DlIdBDULlfFZg9o8fofGtYcEHRygnH8pBsWL5SDkwjjDW
+/R9B1Dk8ez09EjmofQy9Wc4vkB4XBMAaYJZDhlnk7+dO1DLh5P9QRHhn+RMRTrvv
+I3R/LAHgFiOm3zaRQYJ2uwgCbMIo5SNEpOaufYcAqM3Z6V1VQxf2L33Xmx5eJ7Z4
+sqBQdfyQsuJlNTG0FER2rsfJcg9CUxuSYCPfX3jGwkx+Pl9+Rz/oNP1MY43UFue8
+TVHiGJWSNrz80CK5fLJeT3JpmiMvI85MtF/PpC3RnHlSw5O86AqmKQTYREi3ZyzW
+RV8QJ93xBXPmf/ZzTEc3
+=1QQ5
+-----END PGP SIGNATURE-----
+
+--BghK6+krpKHjj+jk--
+
+--===============7583790058960284470==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7583790058960284470==--
