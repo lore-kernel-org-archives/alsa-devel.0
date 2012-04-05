@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: ak4642: fixup: mute needs +1 step
-Date: Thu, 5 Apr 2012 11:10:29 +0100
-Message-ID: <20120405101028.GI3129@opensource.wolfsonmicro.com>
-References: <87ty0y4rrm.wl%kuninori.morimoto.gx@renesas.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: imx-audmux: Fix ssi port numbers in
+	sysfs
+Date: Thu,  5 Apr 2012 09:45:51 -0300
+Message-ID: <1333629952-18243-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7583790058960284470=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C8B69246C6
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8D951247C9
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Apr 2012 12:10:33 +0200 (CEST)
-In-Reply-To: <87ty0y4rrm.wl%kuninori.morimoto.gx@renesas.com>
+	Thu,  5 Apr 2012 14:46:05 +0200 (CEST)
+Received: by yhnn12 with SMTP id n12so661389yhn.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 Apr 2012 05:46:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: joancarles@fqingenieria.es, Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+Doing a 'cat /sys/kernel/debug/audmux/ssi7' causes the following oops to be printed by the kernel:
 
---===============7583790058960284470==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BghK6+krpKHjj+jk"
-Content-Disposition: inline
+Uhandled fault: external abort on non-linefetch (0x008) at 0xf53b003c
+Internal error: : 8 [#1] PREEMPT
+Modules linked in:
+CPU: 0    Not tainted  (3.3.0-00033-gecc726e-dirty #307)
+PC is at audmux_read_file+0x68/0x2f4
+LR is at clk_enable+0x3c/0x48
+pc : [<c001b8c8>]   lr : [<c00190a0>]    psr: a0000013
+sp : c3ad3f38  ip : c30a4000  fp : 00000003
+r10: 00001000  r9 : be83fb00  r8 : c3ad3f80
+r7 : c3ad3f80  r6 : 00000007  r5 : 00031010  r4 : c30a5000
+r3 : f53b0000  r2 : 0000003c  r1 : 380fa100  r0 : c068dda0
+Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 0005317f  Table: 83034000  DAC: 00000015
+Process cat (pid: 1042, stack limit = 0xc3ad2270)
+Stack: (0xc3ad3f38 to 0xc3ad4000)
+3f20:                                                      c3139180 00000000
+3f40: c3bc6500 00001000 be83fb00 c3ad3f80 00001000 c3ad2000 00000000 c0095f3c
+3f60: 00000003 c3bc6508 c3bc6500 be83fb00 00000000 00000000 00001000 c0096010
+3f80: 00000000 00000000 b6fe2050 00000000 00001000 be83fb00 00000003 00000003
+3fa0: c000eb88 c000e9e0 00001000 be83fb00 00000003 be83fb00 00001000 00000000
+3fc0: 00001000 be83fb00 00000003 00000003 00000001 00000001 00000000 00000003
+3fe0: 000bec8c be83fae0 0000f808 b6ea8d5c 60000010 00000003 7dff7ede 749bedf1
+[<c001b8c8>] (audmux_read_file+0x68/0x2f4) from [<c0095f3c>] (vfs_read+0xb0/0x144)
+[<c0095f3c>] (vfs_read+0xb0/0x144) from [<c0096010>] (sys_read+0x40/0x70)
+[<c0096010>] (sys_read+0x40/0x70) from [<c000e9e0>] (ret_fast_syscall+0x0/0x2c)
+Code: e1a02186 e2822004 e3500000 e7935186 (e7937002)
+---[ end trace 4d046e31309023de ]---
 
+Fix the ssi port numbers in sysfs to fix this problem.
 
---BghK6+krpKHjj+jk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reported-by: Joan Carles <joancarles@fqingenieria.es>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/imx-audmux.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-On Wed, Apr 04, 2012 at 11:28:01PM -0700, Kuninori Morimoto wrote:
-> ak4642 out_tlv is +12.0dB to -115.0 dB, and it supports mute.
-> But current settings didn't care +1 step for mute.
-> This patch adds it
-
-Applied, thanks.
-
---BghK6+krpKHjj+jk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPfW9mAAoJEBus8iNuMP3dU/8P/RXMtvifdAimiq7knTZqYbze
-DHLKT30BGHICgRNCU8TqiqmzW+XYrjBSxt7vUGQzgr1FNumFuiA/f2e6Bqm3dkOB
-mUFn7EVWpgDPi7P/pzSyZhQ4oIv1v80SmEziI168AJOoxl45qEYuTBTkb1pXJjG8
-jjR3DRoQTSsIqsIfE6j7ZYbb9tbSFrp+7iADx/H3va0fyJARsBUqk/A354s4YGPI
-N0SEQxAKt72sPAEd3mEOlbhALBMcXlyYUegFKAf1oVQHKe9maXjNrma4Sz6cfPhS
-oYeSLvqiOXL+WtywT5LYCUNGxEwlCfAgYhQTCoZaKVUB03ganErsAAnldf+82KPe
-FTH5cUq21w3KNOaQOO5DlIdBDULlfFZg9o8fofGtYcEHRygnH8pBsWL5SDkwjjDW
-/R9B1Dk8ez09EjmofQy9Wc4vkB4XBMAaYJZDhlnk7+dO1DLh5P9QRHhn+RMRTrvv
-I3R/LAHgFiOm3zaRQYJ2uwgCbMIo5SNEpOaufYcAqM3Z6V1VQxf2L33Xmx5eJ7Z4
-sqBQdfyQsuJlNTG0FER2rsfJcg9CUxuSYCPfX3jGwkx+Pl9+Rz/oNP1MY43UFue8
-TVHiGJWSNrz80CK5fLJeT3JpmiMvI85MtF/PpC3RnHlSw5O86AqmKQTYREi3ZyzW
-RV8QJ93xBXPmf/ZzTEc3
-=1QQ5
------END PGP SIGNATURE-----
-
---BghK6+krpKHjj+jk--
-
---===============7583790058960284470==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7583790058960284470==--
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 1765a19..d467a1b 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -152,7 +152,7 @@ static void __init audmux_debugfs_init(void)
+ 		return;
+ 	}
+ 
+-	for (i = 1; i < 8; i++) {
++	for (i = 0; i < MX31_AUDMUX_PORT6_SSI_PINS_6 + 1; i++) {
+ 		snprintf(buf, sizeof(buf), "ssi%d", i);
+ 		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
+ 					 (void *)i, &audmux_debugfs_fops))
+-- 
+1.7.1
