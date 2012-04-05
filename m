@@ -1,7 +1,8 @@
 From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Subject: [PATCH 5/6] sound/pci/hda: CX20549 doesn't need pin_amp_workaround.
-Date: Thu, 05 Apr 2012 15:30:35 +0200
-Message-ID: <1333632635.4159.15.camel@localhost>
+Subject: [PATCH 4/6] sound/pci/hda: Remove CD control from model=benq for
+ CX20549
+Date: Thu, 05 Apr 2012 15:30:25 +0200
+Message-ID: <1333632625.4159.14.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
@@ -10,27 +11,33 @@ Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-CX20549 (ctx5045) doesn't accept data on index 1 for output pins,
-as shown in the following hda-var transaction:
-
-  $ hda-verb /dev/snd/hwC0D0 0x10 set_amp_gain 0xb126
-  nid = 0x10, verb = 0x300, param = 0xb126
-  value = 0x0
-  $ hda-verb /dev/snd/hwC0D0 0x10 get_amp_gain 0x8001
-  nid = 0x10, verb = 0xb00, param = 0x8001
-  value = 0x0
+The ID used for detection of the BenQ R55E actually identifies the
+Quana TW3 ODM design, which is also used for the Gigabyte W551 laptop
+series. Schematics on the internet clearly indicate that the "Port C"
+(analog input connected to record source #4 and mixer input #4) is
+unconnected.
 
 diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 8d7a977..3ab7b25 100644
+index bd7e7ce..8d7a977 100644
 --- a/sound/pci/hda/patch_conexant.c
 +++ b/sound/pci/hda/patch_conexant.c
-@@ -1087,7 +1087,6 @@ static int patch_cxt5045(struct hda_codec *codec)
- 	if (!spec)
- 		return -ENOMEM;
- 	codec->spec = spec;
--	codec->pin_amp_workaround = 1;
+@@ -695,7 +695,6 @@ static const struct hda_input_mux cxt5045_capture_source = {
+ static const struct hda_input_mux cxt5045_capture_source_benq = {
+ 	.num_items = 5,
+ 	.items = {
+-		{ "CD",     0x4 },
+ 		{ "Internal Mic", 0x1 },
+ 		{ "Mic", 0x2 },
+ 		{ "Line In", 0x3 },
+@@ -820,9 +819,6 @@ static const struct snd_kcontrol_new cxt5045_mixers[] = {
+ };
  
- 	spec->multiout.max_channels = 2;
- 	spec->multiout.num_dacs = ARRAY_SIZE(cxt5045_dac_nids);
+ static const struct snd_kcontrol_new cxt5045_benq_mixers[] = {
+-	HDA_CODEC_VOLUME("CD Playback Volume", 0x17, 0x4, HDA_INPUT),
+-	HDA_CODEC_MUTE("CD Playback Switch", 0x17, 0x4, HDA_INPUT),
+-
+ 	HDA_CODEC_VOLUME("Line In Playback Volume", 0x17, 0x3, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Line In Playback Switch", 0x17, 0x3, HDA_INPUT),
+ 
 -- 
 1.7.9.1
