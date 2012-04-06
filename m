@@ -1,15 +1,16 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH] ASoC: tegra: use devm_ APIs in SPDIF driver
-Date: Fri,  6 Apr 2012 11:14:04 -0600
-Message-ID: <1333732444-9872-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH V2] ASoC: tegra: utils: add support for Tegra30
+	devices
+Date: Fri,  6 Apr 2012 11:15:55 -0600
+Message-ID: <1333732555-9934-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE8F11041B1
+	by alsa0.perex.cz (Postfix) with ESMTP id CEFD21041B1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Apr 2012 19:14:11 +0200 (CEST)
+	Fri,  6 Apr 2012 19:16:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,116 +26,133 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stephen Warren <swarren@nvidia.com>
 
-The devm_ APIs remove the need to manually clean up allocations,
-thus removing some code.
+Tegra30 has some additional clocks that need to be manipulated, names
+some clocks differently, runs PLLs at different base rates, etc. The
+utility code needs to handle this.
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
-This patch is ordered after the header re-order/cleanup patch that I just
-posted. This only affects context (well, actually just line numbers).
+v2: Determine Tegra version internally to the utility code, rather than
+requiring each ASoC machine driver be updated to pass in this information.
 
- sound/soc/tegra/tegra20_spdif.c |   33 ++++++++++-----------------------
- 1 files changed, 10 insertions(+), 23 deletions(-)
+ sound/soc/tegra/tegra_asoc_utils.c |   29 ++++++++++++++++++++++++-----
+ sound/soc/tegra/tegra_asoc_utils.h |    9 +++++++--
+ 2 files changed, 31 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 00a2d33..ef5d49e 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -245,11 +245,12 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	struct resource *mem, *memregion, *dmareq;
- 	int ret;
+diff --git a/sound/soc/tegra/tegra_asoc_utils.c b/sound/soc/tegra/tegra_asoc_utils.c
+index f8428e4..f59e8b5 100644
+--- a/sound/soc/tegra/tegra_asoc_utils.c
++++ b/sound/soc/tegra/tegra_asoc_utils.c
+@@ -2,7 +2,7 @@
+  * tegra_asoc_utils.c - Harmony machine ASoC driver
+  *
+  * Author: Stephen Warren <swarren@nvidia.com>
+- * Copyright (C) 2010 - NVIDIA, Inc.
++ * Copyright (C) 2010,2012 - NVIDIA, Inc.
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -25,6 +25,7 @@
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/of.h>
  
--	spdif = kzalloc(sizeof(struct tegra20_spdif), GFP_KERNEL);
-+	spdif = devm_kzalloc(&pdev->dev, sizeof(struct tegra20_spdif),
-+			     GFP_KERNEL);
- 	if (!spdif) {
- 		dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
- 		ret = -ENOMEM;
--		goto exit;
-+		goto err;
- 	}
- 	dev_set_drvdata(&pdev->dev, spdif);
+ #include "tegra_asoc_utils.h"
  
-@@ -257,7 +258,7 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	if (IS_ERR(spdif->clk_spdif_out)) {
- 		pr_err("Can't retrieve spdif clock\n");
- 		ret = PTR_ERR(spdif->clk_spdif_out);
--		goto err_free;
-+		goto err;
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -274,19 +275,19 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 		goto err_clk_put;
- 	}
- 
--	memregion = request_mem_region(mem->start, resource_size(mem),
--					DRV_NAME);
-+	memregion = devm_request_mem_region(&pdev->dev, mem->start,
-+					    resource_size(mem), DRV_NAME);
- 	if (!memregion) {
- 		dev_err(&pdev->dev, "Memory region already claimed\n");
- 		ret = -EBUSY;
- 		goto err_clk_put;
- 	}
- 
--	spdif->regs = ioremap(mem->start, resource_size(mem));
-+	spdif->regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
- 	if (!spdif->regs) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
- 		ret = -ENOMEM;
--		goto err_release;
-+		goto err_clk_put;
+@@ -40,7 +41,10 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+ 	case 22050:
+ 	case 44100:
+ 	case 88200:
+-		new_baseclock = 56448000;
++		if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA20)
++			new_baseclock = 56448000;
++		else
++			new_baseclock = 564480000;
+ 		break;
+ 	case 8000:
+ 	case 16000:
+@@ -48,7 +52,10 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+ 	case 48000:
+ 	case 64000:
+ 	case 96000:
+-		new_baseclock = 73728000;
++		if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA20)
++			new_baseclock = 73728000;
++		else
++			new_baseclock = 552960000;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -78,7 +85,7 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+ 		return err;
  	}
  
- 	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
-@@ -298,7 +299,7 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
- 		ret = -ENOMEM;
--		goto err_unmap;
-+		goto err_clk_put;
+-	/* Don't set cdev1 rate; its locked to pll_a_out0 */
++	/* Don't set cdev1/extern1 rate; it's locked to pll_a_out0 */
+ 
+ 	err = clk_enable(data->clk_pll_a);
+ 	if (err) {
+@@ -112,6 +119,15 @@ int tegra_asoc_utils_init(struct tegra_asoc_utils_data *data,
+ 
+ 	data->dev = dev;
+ 
++	if (!of_have_populated_dt())
++		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA20;
++	else if (of_machine_is_compatible("nvidia,tegra20"))
++		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA20;
++	else if (of_machine_is_compatible("nvidia,tegra30"))
++		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA30;
++	else
++		return -EINVAL;
++
+ 	data->clk_pll_a = clk_get_sys(NULL, "pll_a");
+ 	if (IS_ERR(data->clk_pll_a)) {
+ 		dev_err(data->dev, "Can't retrieve clk pll_a\n");
+@@ -126,7 +142,10 @@ int tegra_asoc_utils_init(struct tegra_asoc_utils_data *data,
+ 		goto err_put_pll_a;
  	}
  
- 	ret = tegra_pcm_platform_register(&pdev->dev);
-@@ -313,37 +314,23 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
+-	data->clk_cdev1 = clk_get_sys(NULL, "cdev1");
++	if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA20)
++		data->clk_cdev1 = clk_get_sys(NULL, "cdev1");
++	else
++		data->clk_cdev1 = clk_get_sys("extern1", NULL);
+ 	if (IS_ERR(data->clk_cdev1)) {
+ 		dev_err(data->dev, "Can't retrieve clk cdev1\n");
+ 		ret = PTR_ERR(data->clk_cdev1);
+diff --git a/sound/soc/tegra/tegra_asoc_utils.h b/sound/soc/tegra/tegra_asoc_utils.h
+index 4818195..44db1db 100644
+--- a/sound/soc/tegra/tegra_asoc_utils.h
++++ b/sound/soc/tegra/tegra_asoc_utils.h
+@@ -2,7 +2,7 @@
+  * tegra_asoc_utils.h - Definitions for Tegra DAS driver
+  *
+  * Author: Stephen Warren <swarren@nvidia.com>
+- * Copyright (C) 2010 - NVIDIA, Inc.
++ * Copyright (C) 2010,2012 - NVIDIA, Inc.
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -26,8 +26,14 @@
+ struct clk;
+ struct device;
  
- err_unregister_dai:
- 	snd_soc_unregister_dai(&pdev->dev);
--err_unmap:
--	iounmap(spdif->regs);
--err_release:
--	release_mem_region(mem->start, resource_size(mem));
- err_clk_put:
- 	clk_put(spdif->clk_spdif_out);
--err_free:
--	kfree(spdif);
--exit:
-+err:
- 	return ret;
- }
++enum tegra_asoc_utils_soc {
++	TEGRA_ASOC_UTILS_SOC_TEGRA20,
++	TEGRA_ASOC_UTILS_SOC_TEGRA30,
++};
++
+ struct tegra_asoc_utils_data {
+ 	struct device *dev;
++	enum tegra_asoc_utils_soc soc;
+ 	struct clk *clk_pll_a;
+ 	struct clk *clk_pll_a_out0;
+ 	struct clk *clk_cdev1;
+@@ -42,4 +48,3 @@ int tegra_asoc_utils_init(struct tegra_asoc_utils_data *data,
+ void tegra_asoc_utils_fini(struct tegra_asoc_utils_data *data);
  
- static int __devexit tegra20_spdif_platform_remove(struct platform_device *pdev)
- {
- 	struct tegra20_spdif *spdif = dev_get_drvdata(&pdev->dev);
--	struct resource *res;
- 
- 	tegra_pcm_platform_unregister(&pdev->dev);
- 	snd_soc_unregister_dai(&pdev->dev);
- 
- 	tegra20_spdif_debug_remove(spdif);
- 
--	iounmap(spdif->regs);
+ #endif
 -
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
- 	clk_put(spdif->clk_spdif_out);
- 
--	kfree(spdif);
--
- 	return 0;
- }
- 
 -- 
 1.7.0.4
