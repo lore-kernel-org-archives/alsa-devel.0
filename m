@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: JZ4740: Replaced comma operators
-	with semicolons.
-Date: Fri, 6 Apr 2012 18:24:41 +0100
-Message-ID: <20120406172440.GJ19424@opensource.wolfsonmicro.com>
-References: <1333732587-13428-1-git-send-email-maarten@treewalker.org>
+Subject: Re: [PATCH V2] ASoC: tegra: set a sensible initial
+	clock rate
+Date: Fri, 6 Apr 2012 18:26:16 +0100
+Message-ID: <20120406172615.GK19424@opensource.wolfsonmicro.com>
+References: <1333732696-10015-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6408330020991185720=="
+Content-Type: multipart/mixed; boundary="===============1905481125774629132=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F4232104526
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3940B104524
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Apr 2012 19:24:42 +0200 (CEST)
-In-Reply-To: <1333732587-13428-1-git-send-email-maarten@treewalker.org>
+	Fri,  6 Apr 2012 19:26:18 +0200 (CEST)
+In-Reply-To: <1333732696-10015-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Maarten ter Huurne <maarten@treewalker.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6408330020991185720==
+--===============1905481125774629132==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KZLWU/9q3evlN4nQ"
+	protocol="application/pgp-signature"; boundary="6TC23+W66xmFESAX"
 Content-Disposition: inline
 
 
---KZLWU/9q3evlN4nQ
+--6TC23+W66xmFESAX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 06, 2012 at 07:16:27PM +0200, Maarten ter Huurne wrote:
-> They were harmless but also unnecessary, probably a leftover from earlier code.
+On Fri, Apr 06, 2012 at 11:18:16AM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
+>=20
+> Initialize the audio clock tree appropriately for some reasonable rate.
+> This makes sure the PLLs etc. are actually programmed to something
+> reasonable when the audio driver is loaded.
 
 Applied, thanks.
 
---KZLWU/9q3evlN4nQ
+--6TC23+W66xmFESAX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPfybQAAoJEBus8iNuMP3daMgP/AtYUtfZLUNr1Wuge7MllbI2
-5T0vz1o9gPq+GIKB7jlBRYISo2sPEWIl0zuT9Xvu5aobpnkpgv3He/aNHKFjKTR0
-e+8kd0rTnpMv2ydBIuLnw6q5t/a13kjwHt8DnS9pKJfc40DlR1b8J0zTMv7Y1cuj
-F3ZYsxIw/Ao0XrpPuYc2NYACQsBHrBP8V1Dv3cTrbqPKbNwDG1cfSYBgtObH91GI
-Jx2W8OqXhBlEyMudKKmjg1Wpcsa7Rqrkcv3l9qDBy87dv+5ZXWqiAAUoMd5RMxx6
-oLe0qSQ8VGZJf3SdlCdQPuE/PWC8qS6rc5QfnJ0cRupxTEobuxn6szwu08OXRdXI
-+dKa4WBpuxLq8A6G9u1s/GdiYNjS2Kxz1pwSg3lXI9sxFR1gDSnQwPpI5eCJTonE
-eL03tXu9HH3k7CALARuQE3UaEnYY10wiv+/aBwW1lARRVAjaB4g0huEPXohFlpNH
-C9ZlOlxsokp11Ea7xQlrROofUVI+KPsoTCDvVx1ltI8aWStg3Gr5BcDAyZ2RvnFn
-jQ2SQhZ0XXH8n48g9cGKV8j4YVwEyp0/QtkLg1+VCogZIKclpqpZaZyn584n8adT
-ojKrwXill6o1RyjPEcsZ1mquUu6+OLZFAAiNgQgpEzVguk9Kz5QylccmkyyJ2Eom
-UnY9TeGELpueh1VEgK0V
-=ZPtW
+iQIcBAEBAgAGBQJPfycDAAoJEBus8iNuMP3duAUQAJacSjpzxfW16Tlye0VROJLX
+NNsAxWIRe7I09vTEbE2HlM8fD2LTlJIeKCdtBhyGvPoEO4eFfURVWMT35n7HTHPM
+UDy4rm1V7wlpMGyiH8lYo0wPH86SKoE8PtzyNBcvodF0kr+Q/IN9tQAR+01sU4iH
++0KB1q6caRmPqt5/lSt9BkK+TcrBkhz2Z/lmAsSfBDUzmICV6kDwagcZDWcWFg1Q
+lWDSNAqewdhVJhSghmoJnTn+je45wlc1lCcwtGbh7uxp8jz0rv3XRLMtxFv5JTRR
+AlhShCs41Iex8d/a756iatPtiNLWJWSXGK9llx2M8osWzlWrYV6oErxAuDEKaccn
+eUJO3rkzVSP2E5x0XicK15DI9+QAVHCrLsxQEyKuvwtgQivqT/X9dtNnbiSyE6jx
+GwO+hhbOQVY/3WqRRXTMZVMODWHF5Kx9vveQ57ETBzqZW7YYAr4xDbyWfGHz0tvZ
+nfwa7UZNQ9v4babtSLreGe1PNAiOMZ3kOef1KwCeGIMV3F3uW+VwHNlRLMeHHe6z
+HjLRSW2Zfjpehz28LIw/jETt8RULeZs77LdZr5ckCl7gEl71w6vKta8Q8RRQGafM
+RS3/LtJE1ul/IuBYR2QYxIU/AAtHX31LwIisYgdUUqXbeUxrCVIkwD5AamlHTmez
+1ADS6KYiSVa1kwXyoEEr
+=iB+K
 -----END PGP SIGNATURE-----
 
---KZLWU/9q3evlN4nQ--
+--6TC23+W66xmFESAX--
 
---===============6408330020991185720==
+--===============1905481125774629132==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6408330020991185720==--
+--===============1905481125774629132==--
