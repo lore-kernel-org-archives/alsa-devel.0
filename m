@@ -1,15 +1,15 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH] ASoC: tegra: sort includes, remove mach/iomap.h
-Date: Fri,  6 Apr 2012 11:12:25 -0600
-Message-ID: <1333732345-9826-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: tegra: use devm_ APIs in SPDIF driver
+Date: Fri,  6 Apr 2012 11:14:04 -0600
+Message-ID: <1333732444-9872-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id DAE8F244B8
+	by alsa0.perex.cz (Postfix) with ESMTP id CE8F11041B1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Apr 2012 19:12:33 +0200 (CEST)
+	Fri,  6 Apr 2012 19:14:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,92 +25,116 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stephen Warren <swarren@nvidia.com>
 
+The devm_ APIs remove the need to manually clean up allocations,
+thus removing some code.
+
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/tegra/tegra20_das.c   |    5 ++---
- sound/soc/tegra/tegra20_i2s.c   |    7 +++----
- sound/soc/tegra/tegra20_spdif.c |    5 ++---
- sound/soc/tegra/tegra_pcm.c     |    2 +-
- 4 files changed, 8 insertions(+), 11 deletions(-)
+This patch is ordered after the header re-order/cleanup patch that I just
+posted. This only affects context (well, actually just line numbers).
 
-diff --git a/sound/soc/tegra/tegra20_das.c b/sound/soc/tegra/tegra20_das.c
-index 486d7b2..812696d 100644
---- a/sound/soc/tegra/tegra20_das.c
-+++ b/sound/soc/tegra/tegra20_das.c
-@@ -20,14 +20,13 @@
-  *
-  */
- 
--#include <linux/module.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/seq_file.h>
- #include <linux/slab.h>
--#include <linux/io.h>
--#include <mach/iomap.h>
- #include <sound/soc.h>
- #include "tegra20_das.h"
- 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 878798c..9427f36 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -29,15 +29,14 @@
-  */
- 
- #include <linux/clk.h>
--#include <linux/module.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/seq_file.h>
- #include <linux/slab.h>
--#include <linux/io.h>
--#include <linux/of.h>
--#include <mach/iomap.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
+ sound/soc/tegra/tegra20_spdif.c |   33 ++++++++++-----------------------
+ 1 files changed, 10 insertions(+), 23 deletions(-)
+
 diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 052bff8..00a2d33 100644
+index 00a2d33..ef5d49e 100644
 --- a/sound/soc/tegra/tegra20_spdif.c
 +++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -21,14 +21,13 @@
-  */
+@@ -245,11 +245,12 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	struct resource *mem, *memregion, *dmareq;
+ 	int ret;
  
- #include <linux/clk.h>
--#include <linux/module.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/seq_file.h>
- #include <linux/slab.h>
--#include <linux/io.h>
--#include <mach/iomap.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
-index 476b8ac..127348d 100644
---- a/sound/soc/tegra/tegra_pcm.c
-+++ b/sound/soc/tegra/tegra_pcm.c
-@@ -29,8 +29,8 @@
-  *
-  */
+-	spdif = kzalloc(sizeof(struct tegra20_spdif), GFP_KERNEL);
++	spdif = devm_kzalloc(&pdev->dev, sizeof(struct tegra20_spdif),
++			     GFP_KERNEL);
+ 	if (!spdif) {
+ 		dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
+ 		ret = -ENOMEM;
+-		goto exit;
++		goto err;
+ 	}
+ 	dev_set_drvdata(&pdev->dev, spdif);
  
--#include <linux/module.h>
- #include <linux/dma-mapping.h>
-+#include <linux/module.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
+@@ -257,7 +258,7 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	if (IS_ERR(spdif->clk_spdif_out)) {
+ 		pr_err("Can't retrieve spdif clock\n");
+ 		ret = PTR_ERR(spdif->clk_spdif_out);
+-		goto err_free;
++		goto err;
+ 	}
+ 
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -274,19 +275,19 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 		goto err_clk_put;
+ 	}
+ 
+-	memregion = request_mem_region(mem->start, resource_size(mem),
+-					DRV_NAME);
++	memregion = devm_request_mem_region(&pdev->dev, mem->start,
++					    resource_size(mem), DRV_NAME);
+ 	if (!memregion) {
+ 		dev_err(&pdev->dev, "Memory region already claimed\n");
+ 		ret = -EBUSY;
+ 		goto err_clk_put;
+ 	}
+ 
+-	spdif->regs = ioremap(mem->start, resource_size(mem));
++	spdif->regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
+ 	if (!spdif->regs) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+ 		ret = -ENOMEM;
+-		goto err_release;
++		goto err_clk_put;
+ 	}
+ 
+ 	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
+@@ -298,7 +299,7 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+ 		ret = -ENOMEM;
+-		goto err_unmap;
++		goto err_clk_put;
+ 	}
+ 
+ 	ret = tegra_pcm_platform_register(&pdev->dev);
+@@ -313,37 +314,23 @@ static __devinit int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 
+ err_unregister_dai:
+ 	snd_soc_unregister_dai(&pdev->dev);
+-err_unmap:
+-	iounmap(spdif->regs);
+-err_release:
+-	release_mem_region(mem->start, resource_size(mem));
+ err_clk_put:
+ 	clk_put(spdif->clk_spdif_out);
+-err_free:
+-	kfree(spdif);
+-exit:
++err:
+ 	return ret;
+ }
+ 
+ static int __devexit tegra20_spdif_platform_remove(struct platform_device *pdev)
+ {
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(&pdev->dev);
+-	struct resource *res;
+ 
+ 	tegra_pcm_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	tegra20_spdif_debug_remove(spdif);
+ 
+-	iounmap(spdif->regs);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(res->start, resource_size(res));
+-
+ 	clk_put(spdif->clk_spdif_out);
+ 
+-	kfree(spdif);
+-
+ 	return 0;
+ }
+ 
 -- 
 1.7.0.4
