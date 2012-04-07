@@ -1,16 +1,18 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: USB audio devices on Audio 4DJ and similar
-Date: Fri, 6 Apr 2012 22:09:21 +0100
-Message-ID: <201204062209.21564.gineera@aspect135.co.uk>
+From: madhukesh s <madhukeshs@gmail.com>
+Subject: sgtl5000 module install fails during instantiation for
+	i.MX53 QSB
+Date: Sat, 7 Apr 2012 12:02:59 +0530
+Message-ID: <CADT92yYuO1Kcany5HkpoeqxR4OneeN576sErwxGrer_fuFMbRw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip02ir2.opaltelecom.net (out1.ip02ir2.opaltelecom.net
-	[62.24.128.238]) by alsa0.perex.cz (Postfix) with ESMTP id 82352244DA
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9C72B2414E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Apr 2012 23:08:31 +0200 (CEST)
-Content-Disposition: inline
+	Sat,  7 Apr 2012 08:33:02 +0200 (CEST)
+Received: by laap9 with SMTP id p9so2593352laa.38
+	for <alsa-devel@alsa-project.org>; Fri, 06 Apr 2012 23:32:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel and Alsa folks,
+Hi,
 
-At present I am involved with resolving some issues that have arisen from 
-people using the Audio 4DJ interface with Portaudio, and I hoped it would be 
-OK to check a few Alsa details with you?  Unfortunately I have limited 
-experience of USB audio.
+On insmod'ing alsa modules for i.MX53 QSB, I get the following error:
 
-Apparently the 4 audio inputs/outputs appear as 2 stereo sub-devices on the 
-first device, rather than a single 4-channel device - is this correct?
+root@freescale-qsb:/lib/modules/2.6.38.8+# modprobe snd-soc-sgtl5000
+snd_soc_instantiate_card:Entry
+snd_soc_instantiate_card:Entry
+soc_probe_dai_link:Entry
+soc_probe_codec: Probing for card sgtl5000-audio
+sgtl5000_enable_regulators:Entry
+_regulator_get: devname = 1-000a
+sgtl5000 1-000a: regulator_bulk_get [for (null)]: Failed to get supply
+'VDDA': -19
+sgtl5000_enable_regulators: regulator_bulk_get err!!!
+print_constraints: 1-000a: 1200 mV normal
+_regulator_get: devname = 1-000a
+sgtl5000 1-000a: regulator_bulk_get [for (null)]: Failed to get supply
+'VDDA': -19
+sgtl5000 1-000a: Failed to request supplies:1 -19
+sgtl5000 1-000a: asoc: failed to probe CODEC sgtl5000.1-000a: -19
+asoc: failed to probe codec sgtl5000.1-000a
+asoc: failed to instantiate card sgtl5000-audio: -19
 
-Assuming that is correct, does that arise as a result of the intrinsic nature 
-of the interface, or is it by developer choice in the driver (for example so 
-that it can be opened as 2 stereo streams)?   Is there (or could there be) a 
-way to change this, eg by module option or udev rule?  I notice in the source
-    #define CHANNELS_PER_STREAM  2
+On adding more printks, I realize that "_regulator_get" function is
+failing(not able to find supply VDDA).
 
-Is there a way at present that the device can be accessed as a single 
-4-channel stream other than by creating a custom ~asoundrc with a pcm 
-definition using 'multi' to join the 2 stereo streams?
+The statically built module gives no such errors. Can someone give some
+info on this?
 
-I don't see any USB audio units having files in /usr/share/alsa/cards; is it 
-not relevant, not normally necessary or something no-one has got round to 
-writing?
-
-I appreciate any clarification you can bring.
-
-Regards
-
-Alan
+Regards,
+maas
