@@ -1,8 +1,8 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/5 v3] ASoC: sh: fsi: use simple-card instead
-	of fsi-da7210
-Date: Sun, 08 Apr 2012 21:19:25 -0700 (PDT)
-Message-ID: <87k41p7d12.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 5/5 v3] ASoC: sh: fsi: select simple-card on
+	Kconfig
+Date: Sun, 08 Apr 2012 21:20:08 -0700 (PDT)
+Message-ID: <87iph97czv.wl%kuninori.morimoto.gx@renesas.com>
 References: <874nt2aphw.wl%kuninori.morimoto.gx@renesas.com>
 	<87zkashytm.wl%kuninori.morimoto.gx@renesas.com>
 	<87y5qchyqj.wl%kuninori.morimoto.gx@renesas.com>
@@ -14,11 +14,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1F37E2440F
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9A9052440F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Apr 2012 06:19:25 +0200 (CEST)
-Received: by mail-pb0-f51.google.com with SMTP id wy12so6139108pbc.38
-	for <alsa-devel@alsa-project.org>; Sun, 08 Apr 2012 21:19:25 -0700 (PDT)
+	Mon,  9 Apr 2012 06:20:09 +0200 (CEST)
+Received: by pbcwy12 with SMTP id wy12so6140053pbc.38
+	for <alsa-devel@alsa-project.org>; Sun, 08 Apr 2012 21:20:08 -0700 (PDT)
 In-Reply-To: <87pqbh7dbt.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,207 +33,29 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Rafael <rjw@sisk.pl>, Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch uses simple-card driver instead of fsi-da7210 on each board.
-To select DA7210 driver, each boards select it on Kconfig.
-
-This patch removes fsi-da7210 driver which is no longer needed
+Current SuperH FSI require simple-card driver as sound card.
+This patch select it on Kconfig when FSI was selected.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
 v2 -> v3
 
- - based on simple-card
+- based on simple-card
 
- arch/sh/boards/Kconfig               |    1 +
- arch/sh/boards/mach-ecovec24/setup.c |   26 +++++++++++
- sound/soc/sh/Kconfig                 |    8 ---
- sound/soc/sh/Makefile                |    2 -
- sound/soc/sh/fsi-da7210.c            |   81 ----------------------------------
- 5 files changed, 27 insertions(+), 91 deletions(-)
- delete mode 100644 sound/soc/sh/fsi-da7210.c
+ sound/soc/sh/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/arch/sh/boards/Kconfig b/arch/sh/boards/Kconfig
-index 0da49f3b..c0241bd 100644
---- a/arch/sh/boards/Kconfig
-+++ b/arch/sh/boards/Kconfig
-@@ -224,6 +224,7 @@ config SH_ECOVEC
- 	bool "EcoVec"
- 	depends on CPU_SUBTYPE_SH7724
- 	select ARCH_REQUIRE_GPIOLIB
-+	select SND_SOC_DA7210 if SND_SIMPLE_CARD
- 	help
- 	  Renesas "R0P7724LC0011/21RL (EcoVec)" support.
- 
-diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-ecovec24/setup.c
-index d12fe9d..299a40a 100644
---- a/arch/sh/boards/mach-ecovec24/setup.c
-+++ b/arch/sh/boards/mach-ecovec24/setup.c
-@@ -32,6 +32,7 @@
- #include <linux/videodev2.h>
- #include <video/sh_mobile_lcdc.h>
- #include <sound/sh_fsi.h>
-+#include <sound/simple_card.h>
- #include <media/sh_mobile_ceu.h>
- #include <media/soc_camera.h>
- #include <media/tw9910.h>
-@@ -809,6 +810,30 @@ static struct platform_device fsi_device = {
- 	},
- };
- 
-+static struct asoc_simple_dai_init_info fsi_da7210_init_info = {
-+	.fmt		= SND_SOC_DAIFMT_I2S,
-+	.codec_daifmt	= SND_SOC_DAIFMT_CBM_CFM,
-+	.cpu_daifmt	= SND_SOC_DAIFMT_CBS_CFS,
-+};
-+
-+static struct asoc_simple_card_info fsi_da7210_info = {
-+	.name		= "DA7210",
-+	.card		= "FSIB-DA7210",
-+	.cpu_dai	= "fsib-dai",
-+	.codec		= "da7210.0-001a",
-+	.platform	= "sh_fsi.0",
-+	.codec_dai	= "da7210-hifi",
-+	.init		= &fsi_da7210_init_info,
-+};
-+
-+static struct platform_device fsi_da7210_device = {
-+	.name	= "asoc-simple-card",
-+	.dev	= {
-+		.platform_data	= &fsi_da7210_info,
-+	},
-+};
-+
-+
- /* IrDA */
- static struct resource irda_resources[] = {
- 	[0] = {
-@@ -945,6 +970,7 @@ static struct platform_device *ecovec_devices[] __initdata = {
- 	&camera_devices[1],
- 	&camera_devices[2],
- 	&fsi_device,
-+	&fsi_da7210_device,
- 	&irda_device,
- 	&vou_device,
- #if defined(CONFIG_MMC_SH_MMCIF) || defined(CONFIG_MMC_SH_MMCIF_MODULE)
 diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 9ef49c8..c9fdf63 100644
+index c9fdf63..6bcb116 100644
 --- a/sound/soc/sh/Kconfig
 +++ b/sound/soc/sh/Kconfig
-@@ -46,14 +46,6 @@ config SND_SH7760_AC97
- 	  This option enables generic sound support for the first
- 	  AC97 unit of the SH7760.
+@@ -22,6 +22,7 @@ config SND_SOC_SH4_SSI
  
--config SND_FSI_DA7210
--	tristate "FSI-DA7210 sound support"
--	depends on SND_SOC_SH4_FSI && I2C
--	select SND_SOC_DA7210
--	help
--	  This option enables generic sound support for the
--	  FSI - DA7210 unit
--
- config SND_SIU_MIGOR
- 	tristate "SIU sound support on Migo-R"
- 	depends on SH_MIGOR
-diff --git a/sound/soc/sh/Makefile b/sound/soc/sh/Makefile
-index f37fc3a..849b387 100644
---- a/sound/soc/sh/Makefile
-+++ b/sound/soc/sh/Makefile
-@@ -14,9 +14,7 @@ obj-$(CONFIG_SND_SOC_SH4_SIU)	+= snd-soc-siu.o
+ config SND_SOC_SH4_FSI
+ 	tristate "SH4 FSI support"
++	select SND_SIMPLE_CARD
+ 	help
+ 	  This option enables FSI sound support
  
- ## boards
- snd-soc-sh7760-ac97-objs	:= sh7760-ac97.o
--snd-soc-fsi-da7210-objs		:= fsi-da7210.o
- snd-soc-migor-objs		:= migor.o
- 
- obj-$(CONFIG_SND_SH7760_AC97)	+= snd-soc-sh7760-ac97.o
--obj-$(CONFIG_SND_FSI_DA7210)	+= snd-soc-fsi-da7210.o
- obj-$(CONFIG_SND_SIU_MIGOR)	+= snd-soc-migor.o
-diff --git a/sound/soc/sh/fsi-da7210.c b/sound/soc/sh/fsi-da7210.c
-deleted file mode 100644
-index 1dd3354..0000000
---- a/sound/soc/sh/fsi-da7210.c
-+++ /dev/null
-@@ -1,81 +0,0 @@
--/*
-- * fsi-da7210.c
-- *
-- * Copyright (C) 2009 Renesas Solutions Corp.
-- * Kuninori Morimoto <morimoto.kuninori@renesas.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/sh_fsi.h>
--
--static int fsi_da7210_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_dai *codec = rtd->codec_dai;
--	struct snd_soc_dai *cpu = rtd->cpu_dai;
--	int ret;
--
--	ret = snd_soc_dai_set_fmt(codec,
--				   SND_SOC_DAIFMT_I2S |
--				   SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_fmt(cpu, SND_SOC_DAIFMT_I2S |
--				       SND_SOC_DAIFMT_CBS_CFS);
--
--	return ret;
--}
--
--static struct snd_soc_dai_link fsi_da7210_dai = {
--	.name		= "DA7210",
--	.stream_name	= "DA7210",
--	.cpu_dai_name	= "fsib-dai", /* FSI B */
--	.codec_dai_name	= "da7210-hifi",
--	.platform_name	= "sh_fsi.0",
--	.codec_name	= "da7210-codec.0-001a",
--	.init		= fsi_da7210_init,
--};
--
--static struct snd_soc_card fsi_soc_card = {
--	.name		= "FSI-DA7210",
--	.owner		= THIS_MODULE,
--	.dai_link	= &fsi_da7210_dai,
--	.num_links	= 1,
--};
--
--static struct platform_device *fsi_da7210_snd_device;
--
--static int __init fsi_da7210_sound_init(void)
--{
--	int ret;
--
--	fsi_da7210_snd_device = platform_device_alloc("soc-audio", FSI_PORT_B);
--	if (!fsi_da7210_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(fsi_da7210_snd_device, &fsi_soc_card);
--	ret = platform_device_add(fsi_da7210_snd_device);
--	if (ret)
--		platform_device_put(fsi_da7210_snd_device);
--
--	return ret;
--}
--
--static void __exit fsi_da7210_sound_exit(void)
--{
--	platform_device_unregister(fsi_da7210_snd_device);
--}
--
--module_init(fsi_da7210_sound_init);
--module_exit(fsi_da7210_sound_exit);
--
--/* Module information */
--MODULE_DESCRIPTION("ALSA SoC FSI DA2710");
--MODULE_AUTHOR("Kuninori Morimoto <morimoto.kuninori@renesas.com>");
--MODULE_LICENSE("GPL");
 -- 
 1.7.5.4
