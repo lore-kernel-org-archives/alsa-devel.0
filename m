@@ -1,55 +1,57 @@
-From: Michael Witten <mfwitten@gmail.com>
-Subject: Re: [PATCH][Trivial] Delete trailing whitespace from sound/soc/codecs/wm8994.c
-Date: Mon, 9 Apr 2012 20:07:27 +0000
-Message-ID: <CAMOZ1BtS_3qxG1ZY5enQRMxKG9rvDbNxvy--D3yQOnPPwsBJhA@mail.gmail.com>
-References: <alpine.LNX.2.00.1204090038270.11747@swampdragon.chaosbits.net>
- <alpine.LNX.2.00.1204090201160.24006@pobox.suse.cz> <CAMOZ1BtxNhHxfbYfY+as7jpWHLO2P1QwCW_QpZbmQM+0xf1T=w@mail.gmail.com>
- <alpine.LNX.2.00.1204090228060.24006@pobox.suse.cz>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH 23/26] ALSA: riptide: remove redundant NULL
+ test before release_firmware()
+Date: Mon, 9 Apr 2012 22:52:10 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1204092241550.14420@swampdragon.chaosbits.net>
+References: <alpine.LNX.2.00.1204092157340.13925@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1204090228060.24006@pobox.suse.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiri Kosina <jkosina@suse.cz>
-Cc: Jesper Juhl <jj@chaosbits.net>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
+	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id 3DCC624560
+	for <alsa-devel@alsa-project.org>;
+	Mon,  9 Apr 2012 22:52:11 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.1204092157340.13925@swampdragon.chaosbits.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, trivial@kernel.org, Takashi Iwai <tiwai@suse.de>, Rusty Russell <rusty@rustcorp.com.au>, Clemens Ladisch <clemens@ladisch.de>, Paul Gortmaker <paul.gortmaker@windriver.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 9, 2012 at 00:29, Jiri Kosina <jkosina@suse.cz> wrote:
-> On Mon, 9 Apr 2012, Michael Witten wrote:
->
->> >> While reading through sound/soc/codecs/wm8994.c I noticed a fair
->> >> amount of trailing whitespace. This patch gets rid of it.
->> >>
->> >> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
->> >
->> > Jesper,
->> >
->> > is it really worth it? The code should have been fixed before merg=
-ing,
->> > yes, but once it's there, such fixups tend to only make people ang=
-ry
->> > (because they have to do unnecessary extra steps during git blame)=
-=2E
->>
->> If I may interject, I assume you mean that nobody wants to see the
->> fact that somebody simply changed whitespace. However, the text of
->> `git help blame' suggests that the `-w' flag obviates the issue:
->>
->> =C2=A0 Ignore whitespace when comparing the parent's
->> =C2=A0 version and the child=E2=80=99s to find where the lines
->> =C2=A0 came from.
->>
->> Of course, I've never used it, so I may be mistaken in my
->> interpretation.
->
-> That indeed does what it should do, but as it's not git default, then
-> quitting git blame and reruning it with '-w' seems to be equally anno=
-ying
-> to quitting git blame and reruning it with 'particular_commit~1"
+release_firmware() deals gracefully with NULL pointers, no need to check first.
 
-It seems to me that something must be terribly wrong with our tools
-and workflows whenever an improvement (for which the main work has
-already been done, no less) is turned down.
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ sound/pci/riptide/riptide.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Perhaps that `-w' option should become the default.
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index 0481d94..cbeb3f7 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -1837,8 +1837,7 @@ static int snd_riptide_free(struct snd_riptide *chip)
+ 	}
+ 	if (chip->irq >= 0)
+ 		free_irq(chip->irq, chip);
+-	if (chip->fw_entry)
+-		release_firmware(chip->fw_entry);
++	release_firmware(chip->fw_entry);
+ 	release_and_free_resource(chip->res_port);
+ 	kfree(chip);
+ 	return 0;
+-- 
+1.7.10
+
+
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
