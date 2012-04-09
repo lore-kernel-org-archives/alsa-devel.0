@@ -1,54 +1,24 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH RESEND] ASoC: Fix setting aif_val in lm49453_set_dai_fmt
-Date: Mon, 09 Apr 2012 19:48:44 +0800
-Message-ID: <1333972124.2569.3.camel@phoenix>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] alsa: hide HDMI/ELD printks unless in debug kernels
+Date: Mon, 09 Apr 2012 09:12:44 -0600
+Message-ID: <4F82FC6C.1090501@wwwdotorg.org>
+References: <20120409021517.GA14618@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120409021517.GA14618@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: M R Swami Reddy <mr.swami.reddy@ti.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Nick Bowler <nbowler@elliptictech.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Keith Packard <keithp@keithp.com>
 List-Id: alsa-devel@alsa-project.org
 
-CBS/CBM/CFS/CFM settings are controlled by BIT[3:4] of 0x60h
+On 04/08/2012 08:15 PM, Fengguang Wu wrote:
+> These trivial messages will show up repeatedly on hot plug as well as
+> video mode changes, which could be annoying.
+> 
+> Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 
-for example, for SND_SOC_DAIFMT_CBS_CFS: what we want is to clear both BIT[3:4].
-
-aif_val = ~LM49453_AUDIO_PORT1_BASIC_CLK_MS | ~LM49453_AUDIO_PORT1_BASIC_SYNC_MS;
-actually set both bits.
-
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
-Seems the my mail failed to reach alsa mailing list.
-I resend to LKML instead.
-
-Axel
- sound/soc/codecs/lm49453.c |    8 ++------
- 1 files changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 744063d..a25e80a 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -1185,16 +1185,12 @@ static int lm49453_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
--		aif_val = ~LM49453_AUDIO_PORT1_BASIC_CLK_MS |
--			~LM49453_AUDIO_PORT1_BASIC_SYNC_MS;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFM:
--		aif_val = ~LM49453_AUDIO_PORT1_BASIC_CLK_MS |
--			LM49453_AUDIO_PORT1_BASIC_SYNC_MS;
-+		aif_val = LM49453_AUDIO_PORT1_BASIC_SYNC_MS;
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFS:
--		aif_val = LM49453_AUDIO_PORT1_BASIC_CLK_MS |
--			~LM49453_AUDIO_PORT1_BASIC_SYNC_MS;
-+		aif_val = LM49453_AUDIO_PORT1_BASIC_CLK_MS;
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		aif_val = LM49453_AUDIO_PORT1_BASIC_CLK_MS |
--- 
-1.7.5.4
+Those messages are very useful for end-users to diagnose problems with
+HDMI audio. Is there a way to make the messages dynamic, so users can
+get them if they want, without recompiling their kernel?
