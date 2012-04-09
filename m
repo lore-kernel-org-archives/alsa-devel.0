@@ -1,7 +1,8 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/5 v3] ASoC: add generic simple-card support
-Date: Sun, 08 Apr 2012 21:17:50 -0700 (PDT)
-Message-ID: <87obr17d3o.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 2/5 v3] ASoC: sh: fsi: use simple-card instead
+	of fsi-ak4642
+Date: Sun, 08 Apr 2012 21:18:28 -0700 (PDT)
+Message-ID: <87mx6l7d2n.wl%kuninori.morimoto.gx@renesas.com>
 References: <874nt2aphw.wl%kuninori.morimoto.gx@renesas.com>
 	<87zkashytm.wl%kuninori.morimoto.gx@renesas.com>
 	<87y5qchyqj.wl%kuninori.morimoto.gx@renesas.com>
@@ -13,11 +14,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f50.google.com (mail-pz0-f50.google.com
-	[209.85.210.50]) by alsa0.perex.cz (Postfix) with ESMTP id 4D7D224407
+	[209.85.210.50]) by alsa0.perex.cz (Postfix) with ESMTP id 247BC24407
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Apr 2012 06:17:52 +0200 (CEST)
-Received: by dakh32 with SMTP id h32so5296574dak.9
-	for <alsa-devel@alsa-project.org>; Sun, 08 Apr 2012 21:17:51 -0700 (PDT)
+	Mon,  9 Apr 2012 06:18:29 +0200 (CEST)
+Received: by dakh32 with SMTP id h32so5297110dak.9
+	for <alsa-devel@alsa-project.org>; Sun, 08 Apr 2012 21:18:29 -0700 (PDT)
 In-Reply-To: <87pqbh7dbt.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,235 +33,355 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Rafael <rjw@sisk.pl>, Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Current ASoC requires card.c file to each platforms in order to
-specifies its CPU and Codecs pair.
-But the differences between these were only value/strings of setting.
-In order to reduce duplicate driver, this patch adds generic/simple-card.
+This patch uses simple-card driver instead of fsi-ak4642 on each board.
+To select AK4642 driver, each boards select it on Kconfig.
+
+This patch removes fsi-ak4642 driver which is no longer needed
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
 v2 -> v3
 
- - fsi-common-codec -> simple-card
- - I added struct asoc_simple_init_info because
-   whether using snd_link.init is depend on platform
+ - based on simple-card
 
- include/sound/simple_card.h     |   38 +++++++++++++
- sound/soc/Kconfig               |    3 +
- sound/soc/Makefile              |    1 +
- sound/soc/generic/Kconfig       |    4 ++
- sound/soc/generic/Makefile      |    3 +
- sound/soc/generic/simple-card.c |  114 +++++++++++++++++++++++++++++++++++++++
- 6 files changed, 163 insertions(+), 0 deletions(-)
- create mode 100644 include/sound/simple_card.h
- create mode 100644 sound/soc/generic/Kconfig
- create mode 100644 sound/soc/generic/Makefile
- create mode 100644 sound/soc/generic/simple-card.c
+ arch/arm/mach-shmobile/Kconfig          |    2 +
+ arch/arm/mach-shmobile/board-ap4evb.c   |   15 ++++-
+ arch/arm/mach-shmobile/board-mackerel.c |   15 ++++-
+ arch/sh/boards/Kconfig                  |    1 +
+ arch/sh/boards/mach-se/7724/setup.c     |   15 ++++-
+ include/sound/sh_fsi.h                  |   12 ----
+ sound/soc/sh/Kconfig                    |    8 --
+ sound/soc/sh/Makefile                   |    2 -
+ sound/soc/sh/fsi-ak4642.c               |  108 -------------------------------
+ 9 files changed, 39 insertions(+), 139 deletions(-)
+ delete mode 100644 sound/soc/sh/fsi-ak4642.c
 
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-new file mode 100644
-index 0000000..4b62b8d
---- /dev/null
-+++ b/include/sound/simple_card.h
-@@ -0,0 +1,38 @@
-+/*
-+ * ASoC simple sound card support
-+ *
-+ * Copyright (C) 2012 Renesas Solutions Corp.
-+ * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __SIMPLE_CARD_H
-+#define __SIMPLE_CARD_H
-+
-+#include <sound/soc.h>
-+
-+struct asoc_simple_dai_init_info {
-+	unsigned int fmt;
-+	unsigned int cpu_daifmt;
-+	unsigned int codec_daifmt;
-+	unsigned int sysclk;
-+};
-+
-+struct asoc_simple_card_info {
-+	const char *name;
-+	const char *card;
-+	const char *cpu_dai;
-+	const char *codec;
-+	const char *platform;
-+	const char *codec_dai;
-+	struct asoc_simple_dai_init_info *init; /* for snd_link.init */
-+
-+	/* used in simple-card.c */
-+	struct snd_soc_dai_link snd_link;
-+	struct snd_soc_card snd_card;
-+};
-+
-+#endif /* __SIMPLE_CARD_H */
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 0f85f6d..a7df779 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -51,5 +51,8 @@ source "sound/soc/txx9/Kconfig"
- # Supported codecs
- source "sound/soc/codecs/Kconfig"
+diff --git a/arch/arm/mach-shmobile/Kconfig b/arch/arm/mach-shmobile/Kconfig
+index 34560ca..2cda0c2 100644
+--- a/arch/arm/mach-shmobile/Kconfig
++++ b/arch/arm/mach-shmobile/Kconfig
+@@ -58,6 +58,7 @@ config MACH_AP4EVB
+ 	depends on ARCH_SH7372
+ 	select ARCH_REQUIRE_GPIOLIB
+ 	select SH_LCD_MIPI_DSI
++	select SND_SOC_AK4642 if SND_SIMPLE_CARD
  
-+# generic frame-work
-+source "sound/soc/generic/Kconfig"
-+
- endif	# SND_SOC
+ choice
+ 	prompt "AP4EVB LCD panel selection"
+@@ -82,6 +83,7 @@ config MACH_MACKEREL
+ 	bool "mackerel board"
+ 	depends on ARCH_SH7372
+ 	select ARCH_REQUIRE_GPIOLIB
++	select SND_SOC_AK4642 if SND_SIMPLE_CARD
  
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 363dfd6..3ca760e 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -24,3 +24,4 @@ obj-$(CONFIG_SND_SOC)	+= s6000/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
-+obj-$(CONFIG_SND_SOC)	+= generic/
-diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-new file mode 100644
-index 0000000..610f612
---- /dev/null
-+++ b/sound/soc/generic/Kconfig
-@@ -0,0 +1,4 @@
-+config SND_SIMPLE_CARD
-+	tristate "ASoC Simple sound card support"
-+	help
-+	  This option enables generic simple sound card support
-diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-new file mode 100644
-index 0000000..9c3b246
---- /dev/null
-+++ b/sound/soc/generic/Makefile
-@@ -0,0 +1,3 @@
-+snd-soc-simple-card-objs	:= simple-card.o
-+
-+obj-$(CONFIG_SND_SIMPLE_CARD)	+= snd-soc-simple-card.o
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-new file mode 100644
-index 0000000..b4b4cab
---- /dev/null
-+++ b/sound/soc/generic/simple-card.c
-@@ -0,0 +1,114 @@
-+/*
-+ * ASoC simple sound card support
-+ *
-+ * Copyright (C) 2012 Renesas Solutions Corp.
-+ * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
+ config MACH_KOTA2
+ 	bool "KOTA2 board"
+diff --git a/arch/arm/mach-shmobile/board-ap4evb.c b/arch/arm/mach-shmobile/board-ap4evb.c
+index b56dde2..b397512 100644
+--- a/arch/arm/mach-shmobile/board-ap4evb.c
++++ b/arch/arm/mach-shmobile/board-ap4evb.c
+@@ -50,6 +50,7 @@
+ #include <media/soc_camera.h>
+ 
+ #include <sound/sh_fsi.h>
 +#include <sound/simple_card.h>
-+
-+#define asoc_simple_get_card_info(p) \
-+	container_of(p->dai_link, struct asoc_simple_card_info, snd_link)
-+
-+static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct asoc_simple_card_info *cinfo = asoc_simple_get_card_info(rtd);
-+	struct asoc_simple_dai_init_info *iinfo = cinfo->init;
-+	struct snd_soc_dai *codec = rtd->codec_dai;
-+	struct snd_soc_dai *cpu = rtd->cpu_dai;
-+	unsigned int cpu_daifmt = iinfo->fmt | iinfo->cpu_daifmt;
-+	unsigned int codec_daifmt = iinfo->fmt | iinfo->codec_daifmt;
-+	int ret;
-+
-+	if (codec_daifmt) {
-+		ret = snd_soc_dai_set_fmt(codec, codec_daifmt);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	if (iinfo->sysclk) {
-+		ret = snd_soc_dai_set_sysclk(codec, 0, iinfo->sysclk, 0);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	if (cpu_daifmt) {
-+		ret = snd_soc_dai_set_fmt(cpu, cpu_daifmt);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int asoc_simple_card_probe(struct platform_device *pdev)
-+{
-+	struct asoc_simple_card_info *cinfo = pdev->dev.platform_data;
-+
-+	if (!cinfo) {
-+		dev_err(&pdev->dev, "no info for asoc-simple-card\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!cinfo->name	||
-+	    !cinfo->card	||
-+	    !cinfo->cpu_dai	||
-+	    !cinfo->codec	||
-+	    !cinfo->platform	||
-+	    !cinfo->codec_dai) {
-+		dev_err(&pdev->dev, "insufficient asoc_simple_card_info settings\n");
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * init snd_soc_dai_link
-+	 */
-+	cinfo->snd_link.name		= cinfo->name;
-+	cinfo->snd_link.stream_name	= cinfo->name;
-+	cinfo->snd_link.cpu_dai_name	= cinfo->cpu_dai;
-+	cinfo->snd_link.platform_name	= cinfo->platform;
-+	cinfo->snd_link.codec_name	= cinfo->codec;
-+	cinfo->snd_link.codec_dai_name	= cinfo->codec_dai;
-+
-+	/* enable snd_link.init if cinfo has settings */
-+	if (cinfo->init)
-+		cinfo->snd_link.init	= asoc_simple_card_dai_init;
-+
-+	/*
-+	 * init snd_soc_card
-+	 */
-+	cinfo->snd_card.name		= cinfo->card;
-+	cinfo->snd_card.owner		= THIS_MODULE;
-+	cinfo->snd_card.dai_link	= &cinfo->snd_link;
-+	cinfo->snd_card.num_links	= 1;
-+	cinfo->snd_card.dev		= &pdev->dev;
-+
-+	return snd_soc_register_card(&cinfo->snd_card);
-+}
-+
-+static int asoc_simple_card_remove(struct platform_device *pdev)
-+{
-+	struct asoc_simple_card_info *cinfo = pdev->dev.platform_data;
-+
-+	return snd_soc_unregister_card(&cinfo->snd_card);
-+}
-+
-+static struct platform_driver asoc_simple_card = {
-+	.driver = {
-+		.name	= "asoc-simple-card",
-+	},
-+	.probe		= asoc_simple_card_probe,
-+	.remove		= asoc_simple_card_remove,
+ 
+ #include <video/sh_mobile_hdmi.h>
+ #include <video/sh_mobile_lcdc.h>
+@@ -785,17 +786,25 @@ static struct platform_device fsi_device = {
+ 	},
+ };
+ 
+-static struct fsi_ak4642_info fsi2_ak4643_info = {
++static struct asoc_simple_dai_init_info fsi2_ak4643_init_info = {
++	.fmt		= SND_SOC_DAIFMT_LEFT_J,
++	.codec_daifmt	= SND_SOC_DAIFMT_CBM_CFM,
++	.cpu_daifmt	= SND_SOC_DAIFMT_CBS_CFS,
++	.sysclk		= 11289600,
 +};
 +
-+module_platform_driver(asoc_simple_card);
++static struct asoc_simple_card_info fsi2_ak4643_info = {
+ 	.name		= "AK4643",
+ 	.card		= "FSI2A-AK4643",
+ 	.cpu_dai	= "fsia-dai",
+ 	.codec		= "ak4642-codec.0-0013",
+ 	.platform	= "sh_fsi2",
+-	.id		= FSI_PORT_A,
++	.codec_dai	= "ak4642-hifi",
++	.init		= &fsi2_ak4643_init_info,
+ };
+ 
+ static struct platform_device fsi_ak4643_device = {
+-	.name	= "fsi-ak4642-audio",
++	.name	= "asoc-simple-card",
+ 	.dev	= {
+ 		.platform_data	= &fsi2_ak4643_info,
+ 	},
+diff --git a/arch/arm/mach-shmobile/board-mackerel.c b/arch/arm/mach-shmobile/board-mackerel.c
+index f49e28a..4a46138 100644
+--- a/arch/arm/mach-shmobile/board-mackerel.c
++++ b/arch/arm/mach-shmobile/board-mackerel.c
+@@ -53,6 +53,7 @@
+ #include <media/soc_camera.h>
+ #include <media/soc_camera_platform.h>
+ #include <sound/sh_fsi.h>
++#include <sound/simple_card.h>
+ 
+ #include <mach/common.h>
+ #include <mach/irqs.h>
+@@ -941,17 +942,25 @@ static struct platform_device fsi_device = {
+ 	},
+ };
+ 
+-static struct fsi_ak4642_info fsi2_ak4643_info = {
++static struct asoc_simple_dai_init_info fsi2_ak4643_init_info = {
++	.fmt		= SND_SOC_DAIFMT_LEFT_J,
++	.codec_daifmt	= SND_SOC_DAIFMT_CBM_CFM,
++	.cpu_daifmt	= SND_SOC_DAIFMT_CBS_CFS,
++	.sysclk		= 11289600,
++};
 +
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("ASoC Simple Sound Card");
-+MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
++static struct asoc_simple_card_info fsi2_ak4643_info = {
+ 	.name		= "AK4643",
+ 	.card		= "FSI2A-AK4643",
+ 	.cpu_dai	= "fsia-dai",
+ 	.codec		= "ak4642-codec.0-0013",
+ 	.platform	= "sh_fsi2",
+-	.id		= FSI_PORT_A,
++	.codec_dai	= "ak4642-hifi",
++	.init		= &fsi2_ak4643_init_info,
+ };
+ 
+ static struct platform_device fsi_ak4643_device = {
+-	.name	= "fsi-ak4642-audio",
++	.name	= "asoc-simple-card",
+ 	.dev	= {
+ 		.platform_data	= &fsi2_ak4643_info,
+ 	},
+diff --git a/arch/sh/boards/Kconfig b/arch/sh/boards/Kconfig
+index d893411..0da49f3b 100644
+--- a/arch/sh/boards/Kconfig
++++ b/arch/sh/boards/Kconfig
+@@ -54,6 +54,7 @@ config SH_7724_SOLUTION_ENGINE
+ 	select SOLUTION_ENGINE
+ 	depends on CPU_SUBTYPE_SH7724
+ 	select ARCH_REQUIRE_GPIOLIB
++	select SND_SOC_AK4642 if SND_SIMPLE_CARD
+ 	help
+ 	  Select 7724 SolutionEngine if configuring for a Hitachi SH7724
+ 	  evaluation board.
+diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se/7724/setup.c
+index c540b16..5cc5ed4 100644
+--- a/arch/sh/boards/mach-se/7724/setup.c
++++ b/arch/sh/boards/mach-se/7724/setup.c
+@@ -28,6 +28,7 @@
+ #include <video/sh_mobile_lcdc.h>
+ #include <media/sh_mobile_ceu.h>
+ #include <sound/sh_fsi.h>
++#include <sound/simple_card.h>
+ #include <asm/io.h>
+ #include <asm/heartbeat.h>
+ #include <asm/clock.h>
+@@ -304,17 +305,25 @@ static struct platform_device fsi_device = {
+ 	},
+ };
+ 
+-static struct fsi_ak4642_info fsi_ak4642_info = {
++static struct asoc_simple_dai_init_info fsi2_ak4642_init_info = {
++	.fmt		= SND_SOC_DAIFMT_LEFT_J,
++	.codec_daifmt	= SND_SOC_DAIFMT_CBM_CFM,
++	.cpu_daifmt	= SND_SOC_DAIFMT_CBS_CFS,
++	.sysclk		= 11289600,
++};
++
++static struct asoc_simple_card_info fsi_ak4642_info = {
+ 	.name		= "AK4642",
+ 	.card		= "FSIA-AK4642",
+ 	.cpu_dai	= "fsia-dai",
+ 	.codec		= "ak4642-codec.0-0012",
+ 	.platform	= "sh_fsi.0",
+-	.id		= FSI_PORT_A,
++	.codec_dai	= "ak4642-hifi",
++	.init		= &fsi2_ak4642_init_info,
+ };
+ 
+ static struct platform_device fsi_ak4642_device = {
+-	.name	= "fsi-ak4642-audio",
++	.name	= "asoc-simple-card",
+ 	.dev	= {
+ 		.platform_data	= &fsi_ak4642_info,
+ 	},
+diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
+index b457e87..956e30e 100644
+--- a/include/sound/sh_fsi.h
++++ b/include/sound/sh_fsi.h
+@@ -84,16 +84,4 @@ struct sh_fsi_platform_info {
+ 	struct sh_fsi_port_info port_b;
+ };
+ 
+-/*
+- * for fsi-ak4642
+- */
+-struct fsi_ak4642_info {
+-	const char *name;
+-	const char *card;
+-	const char *cpu_dai;
+-	const char *codec;
+-	const char *platform;
+-	int id;
+-};
+-
+ #endif /* __SOUND_FSI_H */
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index d8e06a6..c68b90b 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -46,14 +46,6 @@ config SND_SH7760_AC97
+ 	  This option enables generic sound support for the first
+ 	  AC97 unit of the SH7760.
+ 
+-config SND_FSI_AK4642
+-	tristate "FSI-AK4642 sound support"
+-	depends on SND_SOC_SH4_FSI && I2C
+-	select SND_SOC_AK4642
+-	help
+-	  This option enables generic sound support for the
+-	  FSI - AK4642 unit
+-
+ config SND_FSI_DA7210
+ 	tristate "FSI-DA7210 sound support"
+ 	depends on SND_SOC_SH4_FSI && I2C
+diff --git a/sound/soc/sh/Makefile b/sound/soc/sh/Makefile
+index 94476d4..01808cd 100644
+--- a/sound/soc/sh/Makefile
++++ b/sound/soc/sh/Makefile
+@@ -14,13 +14,11 @@ obj-$(CONFIG_SND_SOC_SH4_SIU)	+= snd-soc-siu.o
+ 
+ ## boards
+ snd-soc-sh7760-ac97-objs	:= sh7760-ac97.o
+-snd-soc-fsi-ak4642-objs		:= fsi-ak4642.o
+ snd-soc-fsi-da7210-objs		:= fsi-da7210.o
+ snd-soc-fsi-hdmi-objs		:= fsi-hdmi.o
+ snd-soc-migor-objs		:= migor.o
+ 
+ obj-$(CONFIG_SND_SH7760_AC97)	+= snd-soc-sh7760-ac97.o
+-obj-$(CONFIG_SND_FSI_AK4642)	+= snd-soc-fsi-ak4642.o
+ obj-$(CONFIG_SND_FSI_DA7210)	+= snd-soc-fsi-da7210.o
+ obj-$(CONFIG_SND_FSI_HDMI)	+= snd-soc-fsi-hdmi.o
+ obj-$(CONFIG_SND_SIU_MIGOR)	+= snd-soc-migor.o
+diff --git a/sound/soc/sh/fsi-ak4642.c b/sound/soc/sh/fsi-ak4642.c
+deleted file mode 100644
+index 97f540a..0000000
+--- a/sound/soc/sh/fsi-ak4642.c
++++ /dev/null
+@@ -1,108 +0,0 @@
+-/*
+- * FSI-AK464x sound support for ms7724se
+- *
+- * Copyright (C) 2009 Renesas Solutions Corp.
+- * Kuninori Morimoto <morimoto.kuninori@renesas.com>
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- */
+-
+-#include <linux/platform_device.h>
+-#include <linux/module.h>
+-#include <sound/sh_fsi.h>
+-
+-struct fsi_ak4642_data {
+-	const char *name;
+-	const char *card;
+-	const char *cpu_dai;
+-	const char *codec;
+-	const char *platform;
+-	int id;
+-};
+-
+-static int fsi_ak4642_dai_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_dai *codec = rtd->codec_dai;
+-	struct snd_soc_dai *cpu = rtd->cpu_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_fmt(codec, SND_SOC_DAIFMT_LEFT_J |
+-					 SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_sysclk(codec, 0, 11289600, 0);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_fmt(cpu, SND_SOC_DAIFMT_LEFT_J |
+-				       SND_SOC_DAIFMT_CBS_CFS);
+-
+-	return ret;
+-}
+-
+-static struct snd_soc_dai_link fsi_dai_link = {
+-	.codec_dai_name	= "ak4642-hifi",
+-	.init		= fsi_ak4642_dai_init,
+-};
+-
+-static struct snd_soc_card fsi_soc_card  = {
+-	.owner		= THIS_MODULE,
+-	.dai_link	= &fsi_dai_link,
+-	.num_links	= 1,
+-};
+-
+-static struct platform_device *fsi_snd_device;
+-
+-static int fsi_ak4642_probe(struct platform_device *pdev)
+-{
+-	int ret = -ENOMEM;
+-	struct fsi_ak4642_info *pinfo = pdev->dev.platform_data;
+-
+-	if (!pinfo) {
+-		dev_err(&pdev->dev, "no info for fsi ak4642\n");
+-		goto out;
+-	}
+-
+-	fsi_snd_device = platform_device_alloc("soc-audio", pinfo->id);
+-	if (!fsi_snd_device)
+-		goto out;
+-
+-	fsi_dai_link.name		= pinfo->name;
+-	fsi_dai_link.stream_name	= pinfo->name;
+-	fsi_dai_link.cpu_dai_name	= pinfo->cpu_dai;
+-	fsi_dai_link.platform_name	= pinfo->platform;
+-	fsi_dai_link.codec_name		= pinfo->codec;
+-	fsi_soc_card.name		= pinfo->card;
+-
+-	platform_set_drvdata(fsi_snd_device, &fsi_soc_card);
+-	ret = platform_device_add(fsi_snd_device);
+-
+-	if (ret)
+-		platform_device_put(fsi_snd_device);
+-
+-out:
+-	return ret;
+-}
+-
+-static int fsi_ak4642_remove(struct platform_device *pdev)
+-{
+-	platform_device_unregister(fsi_snd_device);
+-	return 0;
+-}
+-
+-static struct platform_driver fsi_ak4642 = {
+-	.driver = {
+-		.name	= "fsi-ak4642-audio",
+-	},
+-	.probe		= fsi_ak4642_probe,
+-	.remove		= fsi_ak4642_remove,
+-};
+-
+-module_platform_driver(fsi_ak4642);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("Generic SH4 FSI-AK4642 sound card");
+-MODULE_AUTHOR("Kuninori Morimoto <morimoto.kuninori@renesas.com>");
 -- 
 1.7.5.4
