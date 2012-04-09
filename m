@@ -1,16 +1,19 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: [RFC 1/2] snd-usb-audio: Skip un-parseable mixer units
-	instead of erroring
-Date: Mon,  9 Apr 2012 19:39:36 +0100
-Message-ID: <1333996777-24938-1-git-send-email-mark@pogo.org.uk>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: Re: [PATCH][Trivial] Delete trailing whitespace from
+ sound/soc/codecs/wm8994.c
+Date: Mon, 9 Apr 2012 21:12:25 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1204092109370.13925@swampdragon.chaosbits.net>
+References: <alpine.LNX.2.00.1204090038270.11747@swampdragon.chaosbits.net>
+	<20120409103928.GB3182@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37190244FF
+Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
+	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id 7C52E24516
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Apr 2012 20:39:41 +0200 (CEST)
+	Mon,  9 Apr 2012 21:12:26 +0200 (CEST)
+In-Reply-To: <20120409103928.GB3182@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, trivial@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Some interfaces reference endpoints which do not exists. To
-accomodate these, do not fail completely, but skip over them.
+On Mon, 9 Apr 2012, Mark Brown wrote:
 
-This allows the Electrix Ebox-44 with earlier firmware to be
-detected and used for audio.
+> On Mon, Apr 09, 2012 at 12:40:32AM +0200, Jesper Juhl wrote:
+> > While reading through sound/soc/codecs/wm8994.c I noticed a fair
+> > amount of trailing whitespace. This patch gets rid of it.
+> 
+> Please try to make sure your changelog lines up with the subsysetem -
+> this is especially important with trivial patches.
+> 
+Arrgh, sorry about that. I always forget (although not intentionally) to 
+check if there's some special convention for a given subsystem :-(
 
-Signed-off-by: Mark Hills <mark@pogo.org.uk>
----
- sound/usb/mixer.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+I guess this would have been better:
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index ab23869..c374c72 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1388,7 +1388,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid, void *r
- 	for (pin = 0; pin < input_pins; pin++) {
- 		err = parse_audio_unit(state, desc->baSourceID[pin]);
- 		if (err < 0)
--			return err;
-+			continue;
- 		err = check_input_term(state, desc->baSourceID[pin], &iterm);
- 		if (err < 0)
- 			return err;
+ASoC: wm8994: Delete trailing whitespace
+
+
 -- 
-1.7.4.4
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
