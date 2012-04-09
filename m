@@ -1,60 +1,52 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] sound/oss/msnd_pinnacle.c: add vfrees
-Date: Mon,  9 Apr 2012 10:16:32 +0200
-Message-ID: <1333959392-18933-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH][Trivial] Delete trailing whitespace from
+ sound/soc/codecs/wm8994.c
+Date: Mon, 9 Apr 2012 11:39:29 +0100
+Message-ID: <20120409103928.GB3182@opensource.wolfsonmicro.com>
+References: <alpine.LNX.2.00.1204090038270.11747@swampdragon.chaosbits.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sm4nu43k4a2Rpi4c"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1204090038270.11747@swampdragon.chaosbits.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Veliath <andrewtv@usa.net>
-Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: trivial@kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-At the point of this error-handling code, HAVE_DSPCODEH may be undefined,
-so free INITCODE and PERMCODE as done elsewhere.  A jump and label are
-introduced to avoid code duplication.
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+On Mon, Apr 09, 2012 at 12:40:32AM +0200, Jesper Juhl wrote:
+> While reading through sound/soc/codecs/wm8994.c I noticed a fair
+> amount of trailing whitespace. This patch gets rid of it.
 
----
- sound/oss/msnd_pinnacle.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Please try to make sure your changelog lines up with the subsysetem -
+this is especially important with trivial patches.
 
-diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
-index 2c79d60..536c4c0 100644
---- a/sound/oss/msnd_pinnacle.c
-+++ b/sound/oss/msnd_pinnacle.c
-@@ -1294,6 +1294,8 @@ static int __init calibrate_adc(WORD srate)
- 
- static int upload_dsp_code(void)
- {
-+	int ret = 0;
-+
- 	msnd_outb(HPBLKSEL_0, dev.io + HP_BLKS);
- #ifndef HAVE_DSPCODEH
- 	INITCODESIZE = mod_firmware_load(INITCODEFILE, &INITCODE);
-@@ -1312,7 +1314,8 @@ static int upload_dsp_code(void)
- 	memcpy_toio(dev.base, PERMCODE, PERMCODESIZE);
- 	if (msnd_upload_host(&dev, INITCODE, INITCODESIZE) < 0) {
- 		printk(KERN_WARNING LOGNAME ": Error uploading to DSP\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto out;
- 	}
- #ifdef HAVE_DSPCODEH
- 	printk(KERN_INFO LOGNAME ": DSP firmware uploaded (resident)\n");
-@@ -1320,12 +1323,13 @@ static int upload_dsp_code(void)
- 	printk(KERN_INFO LOGNAME ": DSP firmware uploaded\n");
- #endif
- 
-+out:
- #ifndef HAVE_DSPCODEH
- 	vfree(INITCODE);
- 	vfree(PERMCODE);
- #endif
- 
--	return 0;
-+	return ret;
- }
- 
- #ifdef MSND_CLASSIC
+--sm4nu43k4a2Rpi4c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPgrw2AAoJEBus8iNuMP3dr4sP/2zrfqzT6jFxEJ5nzdu/Dali
+FIPLZaajvinDH+dF3GFZH7eSkFI008rfp43Tr/Wnn8sO3P2zXrZV5lpNr21uMyxh
+UnSMMSLdvHRj1QHaBM5aRHm+FPrFOgNSgNX6jqV6Mx5zJYDzP2y6N+82eiMrEBbx
+YFZYadrpxkf0uQvfigAcgWUaFjNSe97woSbYZgiKByoY+rdeSaCn8d+8u43jL+ud
+s9KPbNs2He2hepVcxpq49y8sCaFTrAx5U8mQw1zNf6Ji8t2FmsL972wmNo9GziGd
+a6N7faA1XXEq9Yf/+KhuWct2HXB27RPvqyxYXp7SjY/TED7J77/exx/iuFGQWNu1
+IYSyAK5CIsyW1884DvTKutaSQ891jJ+4TBOYa6Fs1TL8VF0AarpsglHh1PLdQiq7
+xEb6DSWBsk6w7MRoVw6jiH4DGmdtQWo0bLvGRPB95r7WdtuRti5Rx+3j1VtqTdTx
+MX+yT8KEwMnVzdrc/ydJWxtWyXXXq74U+RJa94F9uWUIPPjxWvNqMOEZbFY6Lt4X
+zTvH068hoCzKm9FygsK6bDwol7hEG1BGtJW6YjEwc9WbfP7BqJ869sCy6Xxdn6PA
+MRfheNFa2vkv4f2zur5PaTSXCEqeWr+WntdBaL8qcVmS7WcSwyM7LqbXUxmTHiHD
++F82FXg36n20XuGd7hYy
+=Z6uM
+-----END PGP SIGNATURE-----
+
+--sm4nu43k4a2Rpi4c--
