@@ -1,24 +1,155 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] alsa: hide HDMI/ELD printks unless in debug kernels
-Date: Mon, 09 Apr 2012 09:12:44 -0600
-Message-ID: <4F82FC6C.1090501@wwwdotorg.org>
-References: <20120409021517.GA14618@localhost>
+From: Mark Hills <mark@pogo.org.uk>
+Subject: [RFC 2/2] snd-usb-audio: Replace mixer for Electrix
+	Ebox-44
+Date: Mon,  9 Apr 2012 19:39:37 +0100
+Message-ID: <1333996777-24938-2-git-send-email-mark@pogo.org.uk>
+References: <1333996777-24938-1-git-send-email-mark@pogo.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120409021517.GA14618@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fengguang Wu <fengguang.wu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Nick Bowler <nbowler@elliptictech.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Keith Packard <keithp@keithp.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35E2A244E6
+	for <alsa-devel@alsa-project.org>;
+	Mon,  9 Apr 2012 20:39:41 +0200 (CEST)
+In-Reply-To: <1333996777-24938-1-git-send-email-mark@pogo.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/08/2012 08:15 PM, Fengguang Wu wrote:
-> These trivial messages will show up repeatedly on hot plug as well as
-> video mode changes, which could be annoying.
-> 
-> Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+The mixer units from the firmware are corrupt, and even where they
+are valid they presents mono controls as L and R channels of
+stereo.
 
-Those messages are very useful for end-users to diagnose problems with
-HDMI audio. Is there a way to make the messages dynamic, so users can
-get them if they want, without recompiling their kernel?
+Signed-off-by: Mark Hills <mark@pogo.org.uk>
+---
+ sound/usb/mixer_maps.c   |   13 +++++++++
+ sound/usb/mixer_quirks.c |   67 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 80 insertions(+), 0 deletions(-)
+
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index f1324c4..41daaa2 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -288,6 +288,15 @@ static struct usbmix_name_map scratch_live_map[] = {
+ 	{ 0 } /* terminator */
+ };
+ 
++static struct usbmix_name_map ebox44_map[] = {
++	{ 4, NULL }, /* FU */
++	{ 6, NULL }, /* MU */
++	{ 7, NULL }, /* FU */
++	{ 10, NULL }, /* FU */
++	{ 11, NULL }, /* MU */
++	{ 0 }
++};
++
+ /* "Gamesurround Muse Pocket LT" looks same like "Sound Blaster MP3+"
+  *  most importand difference is SU[8], it should be set to "Capture Source"
+  *  to make alsamixer and PA working properly.
+@@ -371,6 +380,10 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.map = scratch_live_map,
+ 		.ignore_ctl_error = 1,
+ 	},
++	{
++		.id = USB_ID(0x200c, 0x1018),
++		.map = ebox44_map,
++	},
+ 	{ 0 } /* terminator */
+ };
+ 
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ab125ee..e2072ed 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -557,6 +557,69 @@ static int snd_maudio_ftu_create_mixer(struct usb_mixer_interface *mixer)
+ 	return 0;
+ }
+ 
++static int snd_ebox44_create_ctl(struct usb_mixer_interface *mixer,
++				int unitid, int control, int cmask,
++				int val_type, const char *name)
++{
++	struct usb_mixer_elem_info *cval;
++	struct snd_kcontrol *kctl;
++
++	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
++	if (!cval)
++		return -ENOMEM;
++
++	cval->id = unitid;
++	cval->mixer = mixer;
++
++	cval->val_type = val_type;
++	cval->channels = 1;
++	cval->control = control;
++	cval->cmask = cmask;
++
++	/* Volume controls will override these values */
++	cval->min = 0;
++	cval->max = 1;
++	cval->res = 0;
++
++	cval->dBmin = 0;
++	cval->dBmax = 0;
++
++	kctl = snd_ctl_new1(snd_usb_feature_unit_ctl, cval);
++	if (!kctl) {
++		kfree(cval);
++		return -ENOMEM;
++	}
++
++	snprintf(kctl->id.name, sizeof(kctl->id.name), name);
++	kctl->private_free = usb_mixer_elem_free;
++	return snd_usb_mixer_add_control(mixer, kctl);
++}
++
++/*
++ * Create mixer for Electrix Ebox-44
++ *
++ * The mixer units from this device are corrupt, and even where they
++ * are valid they presents mono controls as L and R channels of
++ * stereo. So we create a good mixer in code.
++ */
++
++static int snd_ebox44_create_mixer(struct usb_mixer_interface *mixer)
++{
++	snd_ebox44_create_ctl(mixer, 4, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Headphone Playback Switch");
++	snd_ebox44_create_ctl(mixer, 4, 2, 0x1, USB_MIXER_S16, "Headphone A Mix Playback Volume");
++	snd_ebox44_create_ctl(mixer, 4, 2, 0x2, USB_MIXER_S16, "Headphone B Mix Playback Volume");
++
++	snd_ebox44_create_ctl(mixer, 7, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Output Playback Switch");
++	snd_ebox44_create_ctl(mixer, 7, 2, 0x1, USB_MIXER_S16, "Output A Playback Volume");
++	snd_ebox44_create_ctl(mixer, 7, 2, 0x2, USB_MIXER_S16, "Output B Playback Volume");
++
++	snd_ebox44_create_ctl(mixer, 10, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Input Capture Switch");
++	snd_ebox44_create_ctl(mixer, 10, 2, 0x1, USB_MIXER_S16, "Input A Capture Volume");
++	snd_ebox44_create_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16, "Input B Capture Volume");
++
++	return 0;
++}
++
+ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ 			       unsigned char samplerate_id)
+ {
+@@ -619,6 +682,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 				snd_nativeinstruments_ta10_mixers,
+ 				ARRAY_SIZE(snd_nativeinstruments_ta10_mixers));
+ 		break;
++
++	case USB_ID(0x200c, 0x1018): /* Electrix Ebox-44 */
++		err = snd_ebox44_create_mixer(mixer);
++		break;
+ 	}
+ 
+ 	return err;
+-- 
+1.7.4.4
