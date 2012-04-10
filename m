@@ -1,19 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: ALSA: hda - Fix internal mic for Lenovo Ideapad
-	U300s
-Date: Tue, 10 Apr 2012 11:47:56 +0200
-Message-ID: <4F8401CC.8040106@canonical.com>
-References: <20120410083732.GA26832@elgon.mountain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 24/26] ASoC: wm8994: Don't test for NULL
+ before release_firmware()
+Date: Tue, 10 Apr 2012 11:08:13 +0100
+Message-ID: <20120410100813.GG7499@opensource.wolfsonmicro.com>
+References: <alpine.LNX.2.00.1204092157340.13925@swampdragon.chaosbits.net>
+	<alpine.LNX.2.00.1204092243450.14420@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0825558134722000025=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C851104176
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B6E31041C3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Apr 2012 11:47:56 +0200 (CEST)
-In-Reply-To: <20120410083732.GA26832@elgon.mountain>
+	Tue, 10 Apr 2012 12:08:16 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.1204092243450.14420@swampdragon.chaosbits.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, trivial@kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/10/2012 10:37 AM, Dan Carpenter wrote:
-> Hello David Henningsson,
->
-> This is a semi-automatic email about new static checker warnings.
->
-> The patch 18dcd3044e4c: "ALSA: hda - Fix internal mic for Lenovo
-> Ideapad U300s" from Apr 2, 2012, leads to the following Smatch
-> complaint:
->
-> sound/pci/hda/patch_conexant.c:4449 apply_fixup()
-> 	 error: we previously assumed 'quirk' could be null (see line 4444)
 
-Thanks for spotting - will provide patch shortly.
+--===============0825558134722000025==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gm5TwAJMO0F2iVRz"
+Content-Disposition: inline
 
 
->
-> sound/pci/hda/patch_conexant.c
->    4443		quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
->    4444		if (quirk&&  table[quirk->value]) {
->                      ^^^^^
-> Old check.
->
->    4445			snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
->    4446				    quirk->name);
->    4447			apply_pincfg(codec, table[quirk->value]);
->    4448		}
->    4449		if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
->                      ^^^^^^^^^^^^
-> New unchecked dereference.
->
->    4450			snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
->    4451				    quirk->name);
->
-> regards,
-> dan carpenter
->
+--gm5TwAJMO0F2iVRz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Apr 09, 2012 at 10:52:19PM +0200, Jesper Juhl wrote:
+> release_firmware() does its own NULL ptr testing, it's redundant to
+> also test before calling it.
+
+Applied, thanks.
+
+--gm5TwAJMO0F2iVRz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPhAaGAAoJEBus8iNuMP3dXnwP/1ednHaejrBF4X8LF2n7qRZu
+7Uz3FQm27n7/nAkH0FNJmA3KSAfYjdWEWEUZHh5o0W4pDhUJnuJRRedhLfDmzFAI
+xZT67q0lP1icrSG6qqTYTF7bX6YIX3TMywTtEYUgSeDyKrY6hJ7IdSQTGa3RMeAW
+uqjxXcXwhu63Hj9BZyUJzuAL7nKHWguRMlwXxS+bRoWA9CHvW9nW7Vmz1jr7Geiw
+ZdZ25JwQ+LRHk+SAmKZhlbhecmNnnBCgNXInHOfF8hAw4V+JMER6GpalMsDUNUKQ
+Mz1546GRwUStCqaILyGwAUakgBUSa28yIdRwp5CRTW6YtGAYrIt0F9xsDuMQb0WM
+0VTLeyRWaCJKBlLjhnGUxlzpBAusB2DP1p4/oGkOzYB9UiA8ZduMttUmBJvycTY1
+SeKx9ye/u9In+oxYP10DuT+TXBa5RYj9hTlGF6O66Kv6aZyMTl09Gx5jgq2NEQe/
+Oiz9Q3JkWBWDbiJYu/ciXIq385Mk8JiwOJE+5abNqbx5PLxIgtvPE4XAzRrvEo/v
+HVd8xpYE7OYgeleX31tmlOKl4o1sthNMWD6vfsMvtyHIKPBxDP9mf0kGjQTA/kf2
+MlAotlLZe1eFg5/NFQxrifQvvS2NBp3fPxu3P6WNZkPUhenQuQkeBkebFWm6LYZH
+A1WQuPnOA5i650y4Jd1X
+=dUeq
+-----END PGP SIGNATURE-----
+
+--gm5TwAJMO0F2iVRz--
+
+--===============0825558134722000025==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+--===============0825558134722000025==--
