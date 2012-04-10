@@ -1,62 +1,57 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH][Trivial] Delete trailing whitespace from
- sound/soc/codecs/wm8994.c
-Date: Tue, 10 Apr 2012 09:12:00 +0100
-Message-ID: <20120410081159.GA3149@opensource.wolfsonmicro.com>
-References: <alpine.LNX.2.00.1204090038270.11747@swampdragon.chaosbits.net>
- <20120409103928.GB3182@opensource.wolfsonmicro.com>
- <alpine.LNX.2.00.1204092109370.13925@swampdragon.chaosbits.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ALSA: hda - Fix internal mic for Lenovo Ideapad
+	U300s
+Date: Tue, 10 Apr 2012 11:37:32 +0300
+Message-ID: <20120410083732.GA26832@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
+	by alsa0.perex.cz (Postfix) with ESMTP id 580F124543
+	for <alsa-devel@alsa-project.org>;
+	Tue, 10 Apr 2012 10:37:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1204092109370.13925@swampdragon.chaosbits.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: trivial@kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: david.henningsson@canonical.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello David Henningsson,
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a semi-automatic email about new static checker warnings.
 
-On Mon, Apr 09, 2012 at 09:12:25PM +0200, Jesper Juhl wrote:
+The patch 18dcd3044e4c: "ALSA: hda - Fix internal mic for Lenovo 
+Ideapad U300s" from Apr 2, 2012, leads to the following Smatch 
+complaint:
 
-> Arrgh, sorry about that. I always forget (although not intentionally) to=
-=20
-> check if there's some special convention for a given subsystem :-(
+sound/pci/hda/patch_conexant.c:4449 apply_fixup()
+	 error: we previously assumed 'quirk' could be null (see line 4444)
 
-Well, generally everything has some prefix that it usually uses.
+sound/pci/hda/patch_conexant.c
+  4443		quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
+  4444		if (quirk && table[quirk->value]) {
+                    ^^^^^
+Old check.
 
-> I guess this would have been better:
+  4445			snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
+  4446				    quirk->name);
+  4447			apply_pincfg(codec, table[quirk->value]);
+  4448		}
+  4449		if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
+                    ^^^^^^^^^^^^
+New unchecked dereference.
 
-> ASoC: wm8994: Delete trailing whitespace
+  4450			snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
+  4451				    quirk->name);
 
-Yes.
-
---Nq2Wo0NMKNjxTN9z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPg+s4AAoJEBus8iNuMP3duHQP/iWElN3Ke8X1dyK03prVwsCL
-Flj/T//LfWTf4PFNAKIcUnmATAdGpzfe60S8HMBNyqpe3DCl8f4noFEN5+KC7bN3
-ojhPU3b7g4ERN5QZX6fSW7n42znN7Ar58DR2AUd03XcNSLWSOV0b2It6zY4va5CQ
-1D3XZnDLfmLxi/ulfNHqS/SwGaSAem5qrZ/NBGKdW0nZYMBYvbnHwbTcsyk2p6wa
-lMdM/CJQRhKKGtOZOu2GucvtOyZxIw4epQ20DBWTQTbqxiKvJKSHI4+SCcUBP1tw
-R0/Cd3vxdheozKBMjB9OHv3lV3dqmrl9v+F5rKvDxdQ/kx91Sz4HJ6N5N5+fpMXd
-ZiCNxpJ0DgVzrq8GjGqHlYLtzqqDBavKTq9+XZilbdZKFuYSWNok9OifvZVbvwJH
-v2Emb6sFj8pG8BbnWvcYmS7Qf58zq+et1mU6TmxswubbudO54VCJCbbTSQENXC7a
-I1XdWzLaE8F1sxt/7zUdVLQMomgqzOv1X3xthsqJJS6fG34z9eScCDQZXb9duOdH
-BacP6wMI7oTJDI0JPdbzWihrDWtU7sKlDSOFp5bAE7lUAdQuFKzbYvtDKNECs8vS
-/RNqhQadQaanJuX5HMbkb5QFLokJ0sCONlxqsQ48BXIYO8Z35/Pf5mlSEsFXKP4s
-xeEIZutNqoKDGlnFDK+O
-=lX6U
------END PGP SIGNATURE-----
-
---Nq2Wo0NMKNjxTN9z--
+regards,
+dan carpenter
