@@ -1,17 +1,20 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ALSA: hda - Fix internal mic for Lenovo Ideapad
-	U300s
-Date: Tue, 10 Apr 2012 11:37:32 +0300
-Message-ID: <20120410083732.GA26832@elgon.mountain>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [PATCH] alsa: hide HDMI/ELD printks unless in
+	debug kernels
+Date: Tue, 10 Apr 2012 17:00:35 +0800
+Message-ID: <20120410090035.GA24518@localhost>
+References: <20120409021517.GA14618@localhost> <4F82FC6C.1090501@wwwdotorg.org>
+	<s5hty0sunif.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id 580F124543
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AC182455F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Apr 2012 10:37:43 +0200 (CEST)
+	Tue, 10 Apr 2012 11:05:43 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hty0sunif.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +24,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: david.henningsson@canonical.com
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Keith Packard <keithp@keithp.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Nick Bowler <nbowler@elliptictech.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello David Henningsson,
-
-This is a semi-automatic email about new static checker warnings.
-
-The patch 18dcd3044e4c: "ALSA: hda - Fix internal mic for Lenovo 
-Ideapad U300s" from Apr 2, 2012, leads to the following Smatch 
-complaint:
-
-sound/pci/hda/patch_conexant.c:4449 apply_fixup()
-	 error: we previously assumed 'quirk' could be null (see line 4444)
-
-sound/pci/hda/patch_conexant.c
-  4443		quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
-  4444		if (quirk && table[quirk->value]) {
-                    ^^^^^
-Old check.
-
-  4445			snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
-  4446				    quirk->name);
-  4447			apply_pincfg(codec, table[quirk->value]);
-  4448		}
-  4449		if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
-                    ^^^^^^^^^^^^
-New unchecked dereference.
-
-  4450			snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
-  4451				    quirk->name);
-
-regards,
-dan carpenter
+T24gVHVlLCBBcHIgMTAsIDIwMTIgYXQgMDg6MDg6NTZBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEF0IE1vbiwgMDkgQXByIDIwMTIgMDk6MTI6NDQgLTA2MDAsCj4gU3RlcGhlbiBXYXJy
+ZW4gd3JvdGU6Cj4gPiAKPiA+IE9uIDA0LzA4LzIwMTIgMDg6MTUgUE0sIEZlbmdndWFuZyBXdSB3
+cm90ZToKPiA+ID4gVGhlc2UgdHJpdmlhbCBtZXNzYWdlcyB3aWxsIHNob3cgdXAgcmVwZWF0ZWRs
+eSBvbiBob3QgcGx1ZyBhcyB3ZWxsIGFzCj4gPiA+IHZpZGVvIG1vZGUgY2hhbmdlcywgd2hpY2gg
+Y291bGQgYmUgYW5ub3lpbmcuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBXdSBGZW5nZ3Vh
+bmcgPGZlbmdndWFuZy53dUBpbnRlbC5jb20+Cj4gPiAKPiA+IFRob3NlIG1lc3NhZ2VzIGFyZSB2
+ZXJ5IHVzZWZ1bCBmb3IgZW5kLXVzZXJzIHRvIGRpYWdub3NlIHByb2JsZW1zIHdpdGgKPiA+IEhE
+TUkgYXVkaW8uIElzIHRoZXJlIGEgd2F5IHRvIG1ha2UgdGhlIG1lc3NhZ2VzIGR5bmFtaWMsIHNv
+IHVzZXJzIGNhbgo+ID4gZ2V0IHRoZW0gaWYgdGhleSB3YW50LCB3aXRob3V0IHJlY29tcGlsaW5n
+IHRoZWlyIGtlcm5lbD8KPiAKPiBXZSBjYW4gZGVmaW5lIGEgbmV3IG1hY3JvIGxpa2UgYmVsb3cs
+IGFkZCBjYWxsIGxpa2UgX3NuZF9wcmludGQoMiwKPiAuLi4uKSBpbnN0ZWFkIG9mIHNuZF9wcmlu
+dGQoKS4KPiAoWWVzLCB0aGUgbnVtYmVyIDIgY2FuIGJlIHJlcGxhY2VkIGJldHRlciBpbiBhbiBl
+bnVtLCB0b28uKQo+IAo+IEluIGZ1dHVyZSwgd2Ugc2hvdWxkIG1vdmUgdG8gdGhlIHN0YW5kYXJk
+IGR5bmFtaWNfcHJpbnRrLCBidXQgYSBwYXRjaAo+IGxpa2UgdGhpcyB3b3VsZCBiZSBhIGdvb2Qg
+Y29tcHJvbWlzZSBmb3IgbWVyZ2luZyB0byAzLjQga2VybmVsLCBJTU8uCgpPSy4gSG93IGFib3V0
+IHRoaXM/CgpTdWJqZWN0OiBhbHNhOiBoaWRlIEhETUkvRUxEIHByaW50a3MgdW5sZXNzIHNuZC5k
+ZWJ1Zz0yCkRhdGU6IEZyaSBOb3YgMTEgMTk6MDk6MzYgQ1NUIDIwMTEKCkFsc28gcmVtb3ZlIHR3
+byB3YXJuaW5ncyB3aGVuIENPTkZJR19TTkRfREVCVUcgaXMgbm90IHNldDoKCnNvdW5kL3BjaS9o
+ZGEvcGF0Y2hfaGRtaS5jOiBJbiBmdW5jdGlvbiDigJhoZG1pX2ludHJpbnNpY19ldmVudOKAmToK
+c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmM6NzYxOjY6IHdhcm5pbmc6IHVudXNlZCB2YXJpYWJs
+ZSDigJhlbGR24oCZIFstV3VudXNlZC12YXJpYWJsZV0Kc291bmQvcGNpL2hkYS9wYXRjaF9oZG1p
+LmM6NzYwOjY6IHdhcm5pbmc6IHVudXNlZCB2YXJpYWJsZSDigJhwZOKAmSBbLVd1bnVzZWQtdmFy
+aWFibGVdCgpTaWduZWQtb2ZmLWJ5OiBXdSBGZW5nZ3VhbmcgPGZlbmdndWFuZy53dUBpbnRlbC5j
+b20+Ci0tLQogaW5jbHVkZS9zb3VuZC9jb3JlLmggICAgICAgfCAgIDEwICsrKysrKysrKysKIHNv
+dW5kL3BjaS9oZGEvaGRhX2VsZC5jICAgIHwgICAgNiArKystLS0KIHNvdW5kL3BjaS9oZGEvcGF0
+Y2hfaGRtaS5jIHwgICAgOSArKysrLS0tLS0KIDMgZmlsZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9u
+cygrKSwgOCBkZWxldGlvbnMoLSkKCi0tLSBsaW51eC5vcmlnL3NvdW5kL3BjaS9oZGEvaGRhX2Vs
+ZC5jCTIwMTItMDQtMTAgMTY6NTE6MDAuNzM3NzA3ODUzICswODAwCisrKyBsaW51eC9zb3VuZC9w
+Y2kvaGRhL2hkYV9lbGQuYwkyMDEyLTA0LTEwIDE2OjUxOjA4LjEwNTcwODAyOSArMDgwMApAQCAt
+NDE4LDcgKzQxOCw3IEBAIHN0YXRpYyB2b2lkIGhkbWlfc2hvd19zaG9ydF9hdWRpb19kZXNjKHMK
+IAllbHNlCiAJCWJ1ZjJbMF0gPSAnXDAnOwogCi0JcHJpbnRrKEtFUk5fSU5GTyAiSERNSTogc3Vw
+cG9ydHMgY29kaW5nIHR5cGUgJXM6IgorCV9zbmRfcHJpbnRkKFNORF9QUl9WRVJCT1NFLCAiSERN
+STogc3VwcG9ydHMgY29kaW5nIHR5cGUgJXM6IgogCQkJIiBjaGFubmVscyA9ICVkLCByYXRlcyA9
+JXMlc1xuIiwKIAkJCWNlYV9hdWRpb19jb2RpbmdfdHlwZV9uYW1lc1thLT5mb3JtYXRdLAogCQkJ
+YS0+Y2hhbm5lbHMsCkBAIC00NDIsMTQgKzQ0MiwxNCBAQCB2b2lkIHNuZF9oZG1pX3Nob3dfZWxk
+KHN0cnVjdCBoZG1pX2VsZCAqCiB7CiAJaW50IGk7CiAKLQlwcmludGsoS0VSTl9JTkZPICJIRE1J
+OiBkZXRlY3RlZCBtb25pdG9yICVzIGF0IGNvbm5lY3Rpb24gdHlwZSAlc1xuIiwKKwlfc25kX3By
+aW50ZChTTkRfUFJfVkVSQk9TRSwgIkhETUk6IGRldGVjdGVkIG1vbml0b3IgJXMgYXQgY29ubmVj
+dGlvbiB0eXBlICVzXG4iLAogCQkJZS0+bW9uaXRvcl9uYW1lLAogCQkJZWxkX2Nvbm5lY3Rpb25f
+dHlwZV9uYW1lc1tlLT5jb25uX3R5cGVdKTsKIAogCWlmIChlLT5zcGtfYWxsb2MpIHsKIAkJY2hh
+ciBidWZbU05EX1BSSU5UX0NIQU5ORUxfQUxMT0NBVElPTl9BRFZJU0VEX0JVRlNJWkVdOwogCQlz
+bmRfcHJpbnRfY2hhbm5lbF9hbGxvY2F0aW9uKGUtPnNwa19hbGxvYywgYnVmLCBzaXplb2YoYnVm
+KSk7Ci0JCXByaW50ayhLRVJOX0lORk8gIkhETUk6IGF2YWlsYWJsZSBzcGVha2Vyczolc1xuIiwg
+YnVmKTsKKwkJX3NuZF9wcmludGQoU05EX1BSX1ZFUkJPU0UsICJIRE1JOiBhdmFpbGFibGUgc3Bl
+YWtlcnM6JXNcbiIsIGJ1Zik7CiAJfQogCiAJZm9yIChpID0gMDsgaSA8IGUtPnNhZF9jb3VudDsg
+aSsrKQotLS0gbGludXgub3JpZy9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwkyMDEyLTA0LTEw
+IDE2OjUxOjAwLjc0NTcwNzg1NCArMDgwMAorKysgbGludXgvc291bmQvcGNpL2hkYS9wYXRjaF9o
+ZG1pLmMJMjAxMi0wNC0xMCAxNjo1NTozNS44MTM3MTQzOTEgKzA4MDAKQEAgLTc1Nyw4ICs3NTcs
+NiBAQCBzdGF0aWMgdm9pZCBoZG1pX2ludHJpbnNpY19ldmVudChzdHJ1Y3QKIAlzdHJ1Y3QgaGRt
+aV9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CiAJaW50IHRhZyA9IHJlcyA+PiBBQ19VTlNPTF9S
+RVNfVEFHX1NISUZUOwogCWludCBwaW5fbmlkOwotCWludCBwZCA9ICEhKHJlcyAmIEFDX1VOU09M
+X1JFU19QRCk7Ci0JaW50IGVsZHYgPSAhIShyZXMgJiBBQ19VTlNPTF9SRVNfRUxEVik7CiAJaW50
+IHBpbl9pZHg7CiAJc3RydWN0IGhkYV9qYWNrX3RibCAqamFjazsKIApAQCAtNzY4LDkgKzc2Niwx
+MCBAQCBzdGF0aWMgdm9pZCBoZG1pX2ludHJpbnNpY19ldmVudChzdHJ1Y3QKIAlwaW5fbmlkID0g
+amFjay0+bmlkOwogCWphY2stPmphY2tfZGlydHkgPSAxOwogCi0JcHJpbnRrKEtFUk5fSU5GTwor
+CV9zbmRfcHJpbnRkKFNORF9QUl9WRVJCT1NFLAogCQkiSERNSSBob3QgcGx1ZyBldmVudDogQ29k
+ZWM9JWQgUGluPSVkIFByZXNlbmNlX0RldGVjdD0lZCBFTERfVmFsaWQ9JWRcbiIsCi0JCWNvZGVj
+LT5hZGRyLCBwaW5fbmlkLCBwZCwgZWxkdik7CisJCWNvZGVjLT5hZGRyLCBwaW5fbmlkLAorCQkh
+IShyZXMgJiBBQ19VTlNPTF9SRVNfUEQpLCAhIShyZXMgJiBBQ19VTlNPTF9SRVNfRUxEVikpOwog
+CiAJcGluX2lkeCA9IHBpbl9uaWRfdG9fcGluX2luZGV4KHNwZWMsIHBpbl9uaWQpOwogCWlmIChw
+aW5faWR4IDwgMCkKQEAgLTk5Miw3ICs5OTEsNyBAQCBzdGF0aWMgdm9pZCBoZG1pX3ByZXNlbnRf
+c2Vuc2Uoc3RydWN0IGhkCiAJaWYgKGVsZC0+bW9uaXRvcl9wcmVzZW50KQogCQllbGRfdmFsaWQJ
+PSAhIShwcmVzZW50ICYgQUNfUElOU0VOU0VfRUxEVik7CiAKLQlwcmludGsoS0VSTl9JTkZPCisJ
+X3NuZF9wcmludGQoU05EX1BSX1ZFUkJPU0UsCiAJCSJIRE1JIHN0YXR1czogQ29kZWM9JWQgUGlu
+PSVkIFByZXNlbmNlX0RldGVjdD0lZCBFTERfVmFsaWQ9JWRcbiIsCiAJCWNvZGVjLT5hZGRyLCBw
+aW5fbmlkLCBlbGQtPm1vbml0b3JfcHJlc2VudCwgZWxkX3ZhbGlkKTsKIAotLS0gbGludXgub3Jp
+Zy9pbmNsdWRlL3NvdW5kL2NvcmUuaAkyMDEyLTA0LTEwIDE2OjUxOjAwLjc1NzcwNzg1NCArMDgw
+MAorKysgbGludXgvaW5jbHVkZS9zb3VuZC9jb3JlLmgJMjAxMi0wNC0xMCAxNjo1MTowOC4xMDU3
+MDgwMjkgKzA4MDAKQEAgLTMyNSw2ICszMjUsMTMgQEAgdm9pZCByZWxlYXNlX2FuZF9mcmVlX3Jl
+c291cmNlKHN0cnVjdCByZQogCiAvKiAtLS0gKi8KIAorLyogc291bmQgcHJpbnRrIGRlYnVnIGxl
+dmVscyAqLworZW51bSB7CisJU05EX1BSX0FMV0FZUywKKwlTTkRfUFJfREVCVUcsCisJU05EX1BS
+X1ZFUkJPU0UsCit9OworCiAjaWYgZGVmaW5lZChDT05GSUdfU05EX0RFQlVHKSB8fCBkZWZpbmVk
+KENPTkZJR19TTkRfVkVSQk9TRV9QUklOVEspCiBfX3ByaW50Zig0LCA1KQogdm9pZCBfX3NuZF9w
+cmludGsodW5zaWduZWQgaW50IGxldmVsLCBjb25zdCBjaGFyICpmaWxlLCBpbnQgbGluZSwKQEAg
+LTM1NCw2ICszNjEsOCBAQCB2b2lkIF9fc25kX3ByaW50ayh1bnNpZ25lZCBpbnQgbGV2ZWwsIGNv
+CiAgKi8KICNkZWZpbmUgc25kX3ByaW50ZChmbXQsIGFyZ3MuLi4pIFwKIAlfX3NuZF9wcmludGso
+MSwgX19GSUxFX18sIF9fTElORV9fLCBmbXQsICMjYXJncykKKyNkZWZpbmUgX3NuZF9wcmludGQo
+bGV2ZWwsIGZtdCwgYXJncy4uLikgXAorCV9fc25kX3ByaW50ayhsZXZlbCwgX19GSUxFX18sIF9f
+TElORV9fLCBmbXQsICMjYXJncykKIAogLyoqCiAgKiBzbmRfQlVHIC0gZ2l2ZSBhIEJVRyB3YXJu
+aW5nIG1lc3NhZ2UgYW5kIHN0YWNrIHRyYWNlCkBAIC0zODMsNiArMzkyLDcgQEAgdm9pZCBfX3Nu
+ZF9wcmludGsodW5zaWduZWQgaW50IGxldmVsLCBjbwogI2Vsc2UgLyogIUNPTkZJR19TTkRfREVC
+VUcgKi8KIAogI2RlZmluZSBzbmRfcHJpbnRkKGZtdCwgYXJncy4uLikJZG8geyB9IHdoaWxlICgw
+KQorI2RlZmluZSBfc25kX3ByaW50ZChsZXZlbCwgZm10LCBhcmdzLi4uKSBkbyB7IH0gd2hpbGUg
+KDApCiAjZGVmaW5lIHNuZF9CVUcoKQkJCWRvIHsgfSB3aGlsZSAoMCkKIHN0YXRpYyBpbmxpbmUg
+aW50IF9fc25kX2J1Z19vbihpbnQgY29uZCkKIHsKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
