@@ -1,18 +1,19 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH V2 3/3] ASoC: tegra: add Kconfig and Makefile
-	support for Tegra30
-Date: Tue, 10 Apr 2012 16:32:01 -0600
-Message-ID: <1334097121-18897-3-git-send-email-swarren@wwwdotorg.org>
-References: <1334097121-18897-1-git-send-email-swarren@wwwdotorg.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: ac97: Fix build due to removal of
+	'runtime' definition
+Date: Tue, 10 Apr 2012 19:38:23 -0300
+Message-ID: <1334097504-14729-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBCB3104028
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AEF9104028
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Apr 2012 00:32:14 +0200 (CEST)
-In-Reply-To: <1334097121-18897-1-git-send-email-swarren@wwwdotorg.org>
+	Wed, 11 Apr 2012 00:38:38 +0200 (CEST)
+Received: by yenl1 with SMTP id l1so229656yen.38
+	for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2012 15:38:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,83 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
+Fix the following build error:
 
-This adds Kconfig options for the Tegra30 AHUB and I2S controller, and
-updates the Tegra+WM8903 machine driver Kconfig to select those.
+sound/soc/codecs/ac97.c: In function 'ac97_prepare':
+sound/soc/codecs/ac97.c:33: error: 'runtime' undeclared (first use in this function)
 
-Includes a squashed bugfix from Sumit Bhattacharya <sumitb@nvidia.com>
+This was caused by commit e6968a (ASoC: codecs: Remove rtd->codec usage from CODEC drivers),
+which removed the 'struct snd_pcm_runtime *runtime = substream->runtime' definition.
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
-v2: Drop Kconfig short descriptions from Tegra30 AHUB and I2S variables;
-they don't need to be user-visible, since they're selected by ASoC
-machine drivers.
----
- sound/soc/tegra/Kconfig  |   18 ++++++++++++++++++
- sound/soc/tegra/Makefile |    4 ++++
- 2 files changed, 22 insertions(+), 0 deletions(-)
+ sound/soc/codecs/ac97.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index d70fe94..5331c61 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -31,6 +31,23 @@ config SND_SOC_TEGRA20_SPDIF
- 	  You will also need to select the individual machine drivers to support
- 	  below.
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index a99a1b3..2023c74 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -30,7 +30,7 @@ static int ac97_prepare(struct snd_pcm_substream *substream,
  
-+config SND_SOC_TEGRA30_AHUB
-+	tristate
-+	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-+	help
-+	  Say Y or M if you want to add support for the Tegra20 AHUB module.
-+	  You will also need to select the individual machine drivers to
-+	  support below.
-+
-+config SND_SOC_TEGRA30_I2S
-+	tristate
-+	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-+	select SND_SOC_TEGRA30_AHUB
-+	help
-+	  Say Y or M if you want to add support for codecs attached to the
-+	  Tegra30 I2S interface. You will also need to select the individual
-+	  machine drivers to support below.
-+
- config MACH_HAS_SND_SOC_TEGRA_WM8903
- 	bool
- 	help
-@@ -43,6 +60,7 @@ config SND_SOC_TEGRA_WM8903
- 	depends on SND_SOC_TEGRA && I2C
- 	depends on MACH_HAS_SND_SOC_TEGRA_WM8903
- 	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
-+	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_WM8903
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-index 4726b90..98704b4 100644
---- a/sound/soc/tegra/Makefile
-+++ b/sound/soc/tegra/Makefile
-@@ -4,12 +4,16 @@ snd-soc-tegra-utils-objs += tegra_asoc_utils.o
- snd-soc-tegra20-das-objs := tegra20_das.o
- snd-soc-tegra20-i2s-objs := tegra20_i2s.o
- snd-soc-tegra20-spdif-objs := tegra20_spdif.o
-+snd-soc-tegra30-ahub-objs := tegra30_ahub.o
-+snd-soc-tegra30-i2s-objs := tegra30_i2s.o
+ 	int reg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+ 		  AC97_PCM_FRONT_DAC_RATE : AC97_PCM_LR_ADC_RATE;
+-	return snd_ac97_set_rate(codec->ac97, reg, runtime->rate);
++	return snd_ac97_set_rate(codec->ac97, reg, substream->runtime->rate);
+ }
  
- obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-pcm.o
- obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-utils.o
- obj-$(CONFIG_SND_SOC_TEGRA20_DAS) += snd-soc-tegra20-das.o
- obj-$(CONFIG_SND_SOC_TEGRA20_I2S) += snd-soc-tegra20-i2s.o
- obj-$(CONFIG_SND_SOC_TEGRA20_SPDIF) += snd-soc-tegra20-spdif.o
-+obj-$(CONFIG_SND_SOC_TEGRA30_AHUB) += snd-soc-tegra30-ahub.o
-+obj-$(CONFIG_SND_SOC_TEGRA30_I2S) += snd-soc-tegra30-i2s.o
- 
- # Tegra machine Support
- snd-soc-tegra-wm8903-objs := tegra_wm8903.o
+ #define STD_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
 -- 
-1.7.0.4
+1.7.1
