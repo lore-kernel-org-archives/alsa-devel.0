@@ -1,57 +1,116 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 2/2] ASoC: wm9705: Fix build due to removal of
-	'runtime' definition
-Date: Tue, 10 Apr 2012 19:38:24 -0300
-Message-ID: <1334097504-14729-2-git-send-email-festevam@gmail.com>
-References: <1334097504-14729-1-git-send-email-festevam@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99490104028
-	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Apr 2012 00:38:40 +0200 (CEST)
-Received: by mail-yx0-f179.google.com with SMTP id l1so229656yen.38
-	for <alsa-devel@alsa-project.org>; Tue, 10 Apr 2012 15:38:40 -0700 (PDT)
-In-Reply-To: <1334097504-14729-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH V2 5/5] ARM: dt: tegra cardhu: basic audio support
+Date: Tue, 10 Apr 2012 17:19:40 -0600
+Message-ID: <1334099980-19527-5-git-send-email-swarren@wwwdotorg.org>
+References: <1334099980-19527-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1334099980-19527-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/codecs/wm9705.c: In function 'ac97_prepare':
-sound/soc/codecs/wm9705.c:251: error: 'runtime' undeclared (first use in this function)
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-This was caused by commit e6968a (ASoC: codecs: Remove rtd->codec usage from CODEC drivers),
-which removed the 'struct snd_pcm_runtime *runtime = substream->runtime' definition.
+Add WM8903 codec nodes, and top-level sound complex node for basic
+analog audio over headset jack and internal speakers.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 ---
- sound/soc/codecs/wm9705.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+v2:
+* Adjust sound node compatible value; s/tegra30/tegra/. The requirement
+  to specifically version this is removed due to the Tegra ASoC utilities
+  code internally determining the chip version.
+* Move I2S nodes inside AHUB node, since it's the bus that contains them.
+---
+ arch/arm/boot/dts/tegra-cardhu.dts |   63 ++++++++++++++++++++++++++++++++++++
+ 1 files changed, 63 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 7c09593..e8e782a 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -248,7 +248,7 @@ static int ac97_prepare(struct snd_pcm_substream *substream,
- 	else
- 		reg = AC97_PCM_LR_ADC_RATE;
+diff --git a/arch/arm/boot/dts/tegra-cardhu.dts b/arch/arm/boot/dts/tegra-cardhu.dts
+index 0a9f34a..ab8d901 100644
+--- a/arch/arm/boot/dts/tegra-cardhu.dts
++++ b/arch/arm/boot/dts/tegra-cardhu.dts
+@@ -51,6 +51,15 @@
+ 				nvidia,pull = <2>;
+ 				nvidia,tristate = <0>;
+ 			};
++			dap2_fs_pa2 {
++				nvidia,pins =	"dap2_fs_pa2",
++						"dap2_sclk_pa3",
++						"dap2_din_pa4",
++						"dap2_dout_pa5";
++				nvidia,function = "i2s1";
++				nvidia,pull = <0>;
++				nvidia,tristate = <0>;
++			};
+ 		};
+ 	};
  
--	return ac97_write(codec, reg, runtime->rate);
-+	return ac97_write(codec, reg, substream->runtime->rate);
- }
+@@ -92,6 +101,20 @@
  
- #define WM9705_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | \
+ 	i2c@7000d000 {
+ 		clock-frequency = <100000>;
++
++		wm8903: wm8903@1a {
++			compatible = "wlf,wm8903";
++			reg = <0x1a>;
++			interrupt-parent = <&gpio>;
++			interrupts = <179 0x04>; /* gpio PW3 */
++
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			micdet-cfg = <0>;
++			micdet-delay = <100>;
++			gpio-cfg = <0xffffffff 0xffffffff 0 0xffffffff 0xffffffff>;
++		};
+ 	};
+ 
+ 	sdhci@78000000 {
+@@ -111,4 +134,44 @@
+ 	sdhci@78000400 {
+ 		support-8bit;
+ 	};
++
++	ahub@70080000 {
++		i2s@70080300 {
++			status = "disable";
++		};
++
++		i2s@70080500 {
++			status = "disable";
++		};
++
++		i2s@70080600 {
++			status = "disable";
++		};
++
++		i2s@70080700 {
++			status = "disable";
++		};
++	};
++
++	sound {
++		compatible = "nvidia,tegra-audio-wm8903-cardhu",
++			     "nvidia,tegra-audio-wm8903";
++		nvidia,model = "NVIDIA Tegra Cardhu";
++
++		nvidia,audio-routing =
++			"Headphone Jack", "HPOUTR",
++			"Headphone Jack", "HPOUTL",
++			"Int Spk", "ROP",
++			"Int Spk", "RON",
++			"Int Spk", "LOP",
++			"Int Spk", "LON",
++			"Mic Jack", "MICBIAS",
++			"IN1L", "Mic Jack";
++
++		nvidia,i2s-controller = <&tegra_i2s1>;
++		nvidia,audio-codec = <&wm8903>;
++
++		nvidia,spkr-en-gpios = <&wm8903 2 0>;
++		nvidia,hp-det-gpios = <&gpio 178 0>; /* gpio PW2 */
++	};
+ };
 -- 
-1.7.1
+1.7.0.4
