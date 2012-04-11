@@ -1,19 +1,23 @@
-From: Stefano Panella <stefano.panella@citrix.com>
-Subject: Re: paravirtualized alsa kernel driver for XEN
-Date: Wed, 11 Apr 2012 18:08:30 +0100
-Message-ID: <4F85BA8E.3080805@citrix.com>
-References: <4F6769A9.6090200@citrix.com> <4F6881B6.2020903@ladisch.de>
-	<4F69AA8B.3080409@citrix.com> <4F69D9B4.9000909@ladisch.de>
-	<4F6B0B86.20603@citrix.com> <4F6B1665.6070402@ladisch.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: USB audio devices on Audio 4DJ and similar
+Date: Wed, 11 Apr 2012 19:10:52 +0200
+Message-ID: <4F85BB1C.20903@gmail.com>
+References: <201204062209.21564.gineera@aspect135.co.uk>
+	<201204111159.18537.gineera@aspect135.co.uk>
+	<4F85A083.2020302@gmail.com>
+	<201204111800.11300.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SMTP.EU.CITRIX.COM (smtp.eu.citrix.com [62.200.22.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2375F104159
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E886E104148
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Apr 2012 18:59:19 +0200 (CEST)
-In-Reply-To: <4F6B1665.6070402@ladisch.de>
+	Wed, 11 Apr 2012 19:10:58 +0200 (CEST)
+Received: by bkwj10 with SMTP id j10so936587bkw.38
+	for <alsa-devel@alsa-project.org>; Wed, 11 Apr 2012 10:10:58 -0700 (PDT)
+In-Reply-To: <201204111800.11300.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,113 +27,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Alan,
 
-On 22/03/12 12:09, Clemens Ladisch wrote:
-> Stefano Panella wrote:
->> The backend in dom0 is a userspace process using portaudio on top of alsa.
->> The process is running in realtime priority and is calling a callback to
->> feed data every 64 frames.
->> In the callback I copy 64 frames from the shared pages to the portaudio
->> buffer and update the HW pointer in an other shared page accordingly.
->
-> If PortAudio requires to use a callback, this is the only algorithm
-> that you can implement.
->
->> Would it be possible to run the backend in dom0 kernel space and to use
->> my shared pages from the alsa-driver in the VM as real pages for the HW?
->
-> No, the buffer pages are always under the control of and allocated by
-> the actual driver (some devices might have special requirements, or do
-> not support mmap at all).
->
-> If the actual driver support mmap, you would have to map these dom0
-> pages into the VM, and I guess this is not possible. (?)
->
->
-> As far as I can see, you have two options:
->
-> 1) Stay with the current algorithm.  You get an additional latency
->     corresponding to dom0's buffer size, and your process is forced to
->     wake up every 64 frames (or whatever PortAudio is configured for).
->
-> 2) Replace PortAudio with ALSA in the backend, and implement the copy
->     callback in your driver.  Any call of snd_pcm_write*() in the VM will
->     result in one or more calls to your driver's copy(), which should end
->     up as a call to snd_pcm_write*() in dom0.  (Using the copy callback
->     also implies that the driver does not support mmap.)
->
->
-I am now switching to write the backend using alsa + dmix + dsnoop 
-directley since I did not manage to get information about precise timing 
-in .
+On 11.04.2012 19:00, Alan Horstmann wrote:
+> On Wednesday 11 April 2012 16:17, Daniel Mack wrote:
+>> On 11.04.2012 12:59, Alan Horstmann wrote:
+>>> These are essentially issues in the way Portaudio interfaces; I am not
+>>> suggesting driver bugs etc, but in summary:
+>>>
+>>> a) The Audio 4DJ uses fixed _BE format, almost uniquely AFAICT from
+>>> grepping driver source tree.  Portaudio at present requests formats in
+>>> the host platform endianness - so on a x86 PC an acceptable format is not
+>>> available from the 'hw' device.  Users seem reluctant to use 'plughw'.
+>>
+>> Erm. Class compliant USB cards speak _LE formats only, and I'm not aware
+>> of any hardware that is able to switch endianess on a run-time
+>> configuration base.
+> 
+> Are you referring to USB cards?  It looked to me like several PCI cards listed 
+> _BE and _LE variants of some formats in the driver?
 
-I would like echo cancellation to work in the guest but I am getting a 
-bit lost and I am not certain anymore which would be the best approch.
+Might be that there is hardware out there that lets the driver stack
+choose the audio format, but you can't rely on it. And from a hardware
+engineer's perspective, this is probably not easy to do in hardware, as
+the streaming code is likely implemented in programmable logic that is
+not that versatile.
 
-I have available for sure:
+>> From what I know, PortAudio is just a thin layer on top of ALSA and
+>> other sound APIs to ease the pain of cross-platform development of audio
+>> applications, right? What's wrong with letting ALSA convert the samples
+>> for you then?
+> 
+> That has been my perspective too, to use 'plughw' but some audio users believe 
+> the plug layer will necessarily give worse latency etc, and always want to 
+> get "as close as possible to the hardware".
 
-1) a set of shared pages, used for:
-- playback buffer
-- capture buffer
-- general purpose commands/events/flags
+Understood. But then you would at least need to take care for endianess
+format conversions and maybe even zero-padding in PortAudio.
 
-2) a way to send notification from the backend resulting in an interrupt 
-in the guest pv alsa kernel driver.
-- I use it at the moment to send a period interrupt
+>> Ok, I see your problem, but certainly, PortAudio is the place to get
+>> this fixed, not the driver.
+> 
+> Yes, but listing all subdevices does have it's own problems, as some cards 
+> have large numbers of them, for some reason.
 
-3) a way to have a callback executed in the backend code triggered from 
-the guest alsa driver, like as I use for:
--prepare
--trigger
--open
--close
+The problem is probably which substreams to export to the user-API. But
+the PortAudio core should certainly be capable of handling subdevices.
 
-My question is now:
+>> So clearly, the issues you're seeing are due to missing features in
+>> PortAudio, and it should be fairly easy to add them there.
+> 
+> Well, I don't think it will be easy in fact, due to the constraints of a 
+> multi-platform API that is largely shaped by platforms other than Alsa, but 
+> it should be resolved in Portaudio, one way or another.
+> 
+> Thanks for your assistance,
 
-To make echo cancellation work in the guest the guest needs to know 
-exactly which sample in the buffer is going in and out, right?
-
-How can I design my alsa backend userspace program and the pv alsa 
-kernel driver for the guest to do this?
-
-Is there any echo cancellation test program to check pv alsa driver in 
-the guest + backend alsa app in dom0 are working well without douing a 
-skype call every time?
-
-What would be very critical in the guest pv alsa driver?
-- Should the first audio sample be played/captured right after the 
-trigger or it can happen at later time (runtime->delay maybe could be 
-setted)?
-- should the pointer callback reflect the sample being currently 
-played/captured?
-- what should the pointer callback return in case of a fixed delay in 
-playback and capture?
-- do I need an interrupt every period triggered from the backend or can 
-I use the hrtimer as in the dummy sound card example?
--in order to only use the copy callback, and remove mmap support, what 
-should I do?
+No problem :) Let me know if I can help any further.
 
 
-On the backend application side:
-- how using dmix, dsnoop, asym plugins affects sample position accuracy 
-using snd_pcm_delay, snd_pcm_avail, snd_pcm_status_get_delay ?
-- how could I be woken up exactly every period using dmix, dsnoop, asym 
-plugins?
-
-Sorry for these many questions but I have been doing experiments so far 
-and all is working well but echo cancellation and I would like to know 
-if I completely misunderstood something.
-
-Thanks for all your patience,
-
-Regards,
-
-Stefano
-
-> Regards,
-> Clemens
+Daniel
