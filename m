@@ -1,15 +1,16 @@
 From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] ASoC: cs42l73: don't use negative array index
-Date: Thu, 12 Apr 2012 21:54:34 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1204122152340.7553@swampdragon.chaosbits.net>
+Subject: [PATCH] ALSA: hda/realtek - Fix mem leak (and rid us
+ of trailing whitespace).
+Date: Thu, 12 Apr 2012 22:11:25 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1204122209560.7553@swampdragon.chaosbits.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from swampdragon.chaosbits.net (swampdragon.chaosbits.net
-	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id 236732458F
+	[90.184.90.115]) by alsa0.perex.cz (Postfix) with ESMTP id A02E32459F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Apr 2012 21:54:36 +0200 (CEST)
+	Thu, 12 Apr 2012 22:11:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,35 +21,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: brian.austin@cirrus.com, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@linux.intel.com>, joe@nucleusys.com, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Kailang Yang <kailang@realtek.com.tw>, PeiSen Hou <pshou@realtek.com.tw>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-If cs42l73_get_mclkx_coeff() returns < 0 (which it can) in
-sound/soc/codecs/cs42l73.c::cs42l73_set_mclk(), then we'll be using
-the (negative) return value as array index on the very next line of
-code - that's bad.
+In sound/pci/hda/patch_realtek.c::alc_auto_fill_dac_nids(), in the
+'for (;;)' loop, if the 'badness' value returned from
+fill_and_eval_dacs() is negative, then we'll return from the function
+without freeing the memory we allocated for 'best_cfg', thus leaking.
+Fix the leak by kfree()'ing the memory when badness is negative.
 
-Catch the negative return value and propagate it to the caller (which
-checks for it) and things are a bit more sane :-)
+While I was there I also noticed some trailing whitespace in the
+function that I removed (along with all other trailing whitespace in
+the file) - it didn't seem worth-while to do that as two patches, so I
+hope it's OK that I just did it all as one patch.
 
 Signed-off-by: Jesper Juhl <jj@chaosbits.net>
 ---
- sound/soc/codecs/cs42l73.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 78979b3..07c44b7 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -929,6 +929,8 @@ static int cs42l73_set_mclk(struct snd_soc_dai *dai, unsigned int freq)
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9917e55..c5e1a1a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3398,8 +3398,10 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+ 	for (;;) {
+ 		badness = fill_and_eval_dacs(codec, fill_hardwired,
+ 					     fill_mio_first);
+-		if (badness < 0)
++		if (badness < 0) {
++			kfree(best_cfg);
+ 			return badness;
++		}
+ 		debug_badness("==> lo_type=%d, wired=%d, mio=%d, badness=0x%x\n",
+ 			      cfg->line_out_type, fill_hardwired, fill_mio_first,
+ 			      badness);
+@@ -3434,7 +3436,7 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+ 			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
+ 			fill_hardwired = true;
+ 			continue;
+-		} 
++		}
+ 		if (cfg->hp_outs > 0 &&
+ 		    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
+ 			cfg->speaker_outs = cfg->line_outs;
+@@ -3448,7 +3450,7 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+ 			cfg->line_out_type = AUTO_PIN_HP_OUT;
+ 			fill_hardwired = true;
+ 			continue;
+-		} 
++		}
+ 		break;
+ 	}
  
- 	/* MCLKX -> MCLK */
- 	mclkx_coeff = cs42l73_get_mclkx_coeff(freq);
-+	if (mclkx_coeff < 0)
-+		return mclkx_coeff;
+@@ -4423,7 +4425,7 @@ static int alc_parse_auto_config(struct hda_codec *codec,
+ static int alc880_parse_auto_config(struct hda_codec *codec)
+ {
+ 	static const hda_nid_t alc880_ignore[] = { 0x1d, 0 };
+-	static const hda_nid_t alc880_ssids[] = { 0x15, 0x1b, 0x14, 0 }; 
++	static const hda_nid_t alc880_ssids[] = { 0x15, 0x1b, 0x14, 0 };
+ 	return alc_parse_auto_config(codec, alc880_ignore, alc880_ssids);
+ }
  
- 	mclk = cs42l73_mclkx_coeffs[mclkx_coeff].mclkx /
- 		cs42l73_mclkx_coeffs[mclkx_coeff].ratio;
+@@ -6079,7 +6081,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	 * Basically the device should work as is without the fixup table.
+ 	 * If BIOS doesn't give a proper info, enable the corresponding
+ 	 * fixup entry.
+-	 */ 
++	 */
+ 	SND_PCI_QUIRK(0x1043, 0x8330, "ASUS Eeepc P703 P900A",
+ 		      ALC269_FIXUP_AMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1013, "ASUS N61Da", ALC269_FIXUP_AMIC),
+@@ -6296,7 +6298,7 @@ static void alc_fixup_no_jack_detect(struct hda_codec *codec,
+ {
+ 	if (action == ALC_FIXUP_ACT_PRE_PROBE)
+ 		codec->no_jack_detect = 1;
+-}	
++}
+ 
+ static const struct alc_fixup alc861_fixups[] = {
+ 	[ALC861_FIXUP_FSC_AMILO_PI1505] = {
+@@ -6714,7 +6716,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	 * Basically the device should work as is without the fixup table.
+ 	 * If BIOS doesn't give a proper info, enable the corresponding
+ 	 * fixup entry.
+-	 */ 
++	 */
+ 	SND_PCI_QUIRK(0x1043, 0x1000, "ASUS N50Vm", ALC662_FIXUP_ASUS_MODE1),
+ 	SND_PCI_QUIRK(0x1043, 0x1092, "ASUS NB", ALC662_FIXUP_ASUS_MODE3),
+ 	SND_PCI_QUIRK(0x1043, 0x1173, "ASUS K73Jn", ALC662_FIXUP_ASUS_MODE1),
 -- 
 1.7.10
 
