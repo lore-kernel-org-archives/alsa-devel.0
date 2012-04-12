@@ -1,59 +1,38 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: dapm: Ensure power gets managed for line
-	widgets
-Date: Thu, 12 Apr 2012 17:30:06 +0100
-Message-ID: <1334248206-17959-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Josh Boyer <jwboyer@redhat.com>
+Subject: [PATCH] ALSA: hda/realtek - Add quirk for Mac Pro 5,1 machines
+Date: Thu, 12 Apr 2012 13:55:36 -0400
+Message-ID: <20120412175536.GB25425@zod.bos.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6588124375
-	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Apr 2012 18:30:09 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Gabriel Somlo <somlo@cmu.edu>, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
-Line widgets had not been included in either the power up or power down
-sequences so if a widget had an event associated with it that event would
-never be run. Fix this minimally by adding them to the sequences, we
-should probably be doing away with the specific widget types as they all
-have the same priority anyway.
+A user reported that setting model=imac24 used to allow sound to work on their
+Mac Pro 5,1 machine.  Commit 5671087ffa "Move ALC885 macpro and imac24 models
+to auto-parser" removed this model option.  All Mac machines are now explicitly
+handled with a quirk and the auto-parser.  This adds a quirk for the device
+found on the Mac Pro 5,1 machines.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+This (partially) fixes https://bugzilla.redhat.com/show_bug.cgi?id=808559
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 922e693..1cde549 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -68,6 +68,7 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_out_drv] = 10,
- 	[snd_soc_dapm_hp] = 10,
- 	[snd_soc_dapm_spk] = 10,
-+	[snd_soc_dapm_line] = 10,
- 	[snd_soc_dapm_post] = 11,
- };
- 
-@@ -76,6 +77,7 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_adc] = 1,
- 	[snd_soc_dapm_hp] = 2,
- 	[snd_soc_dapm_spk] = 2,
-+	[snd_soc_dapm_line] = 2,
- 	[snd_soc_dapm_out_drv] = 2,
- 	[snd_soc_dapm_pga] = 4,
- 	[snd_soc_dapm_mixer_named_ctl] = 5,
+Reported-by: Gabriel Somlo <somlo@cmu.edu>
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9917e55..1e0eea8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5371,6 +5371,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x106b, 0x00a1, "Macbook", ALC889_FIXUP_MBP_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x00a4, "MacbookPro 4,1", ALC889_FIXUP_MBP_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x0c00, "Mac Pro", ALC885_FIXUP_MACPRO_GPIO),
++	SND_PCI_QUIRK(0x106b, 0x4200,  "Mac Pro 5,1", ALC885_FIXUP_MACPRO_GPIO),
+ 	SND_PCI_QUIRK(0x106b, 0x1000, "iMac 24", ALC885_FIXUP_MACPRO_GPIO),
+ 	SND_PCI_QUIRK(0x106b, 0x2800, "AppleTV", ALC885_FIXUP_MACPRO_GPIO),
+ 	SND_PCI_QUIRK(0x106b, 0x2c00, "MacbookPro rev3", ALC889_FIXUP_MBP_VREF),
 -- 
-1.7.9.1
+1.7.7.6
