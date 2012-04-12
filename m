@@ -1,16 +1,27 @@
-From: "Max Klein" <mein_name@ist-einmalig.de>
-Subject: High CPU usage when recording on TI DM6446 using ASoC
-	AIC33
-Date: Thu, 12 Apr 2012 12:41:13 +0200
-Message-ID: <20120412104113.49710@gmx.net>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/6] snd-usb endpoint rework, version 6
+Date: Thu, 12 Apr 2012 13:45:59 +0200
+Message-ID: <4F86C077.50900@gmail.com>
+References: <1324656947-23169-1-git-send-email-zonque@gmail.com>
+	<4EFDC32B.10808@gmail.com>
+	<CAFz=ag7_qzPJq44havp=EbFVKud5VvKaOLJk0i0dM43X3urp9Q@mail.gmail.com>
+	<CAFz=ag6pqhfOvxv_ScbxJFs6OEZt18GM+Dgs1KWQMG7mdZO21g@mail.gmail.com>
+	<CACckToXJAJxGo-LSM3X-q=6Vo=-KzuE2Om9bgFiDnWPFNWmnSQ@mail.gmail.com>
+	<4F8336CA.9060809@gmail.com>
+	<CAFz=ag5SPYk4fycCjK9WR82Rx1oOxWFCwaND+eZhk=KD03DRZQ@mail.gmail.com>
+	<4F859E85.5010509@gmail.com>
+	<CAFz=ag5XTqckLnX=He8SX=Z7SouzU6EX-x1Tufw0W8PC_kYAhA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id 5C6CC243FD
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E56342417D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Apr 2012 12:41:14 +0200 (CEST)
+	Thu, 12 Apr 2012 13:46:02 +0200 (CEST)
+Received: by bkwj10 with SMTP id j10so1549717bkw.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 Apr 2012 04:46:02 -0700 (PDT)
+In-Reply-To: <CAFz=ag5XTqckLnX=He8SX=Z7SouzU6EX-x1Tufw0W8PC_kYAhA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,37 +31,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am having a problem with high CPU usage (>90%) on TI DM6446 (ARM926 core) with TI TLV320AIC33 audio codec. When using the command "gst-launch -v alsasrc ! mulawenc ! rtppcmupay ! fakesink silent=true" the CPU usage raises to 97% after a while (e.g. after 38s) and drops to 0% again later (e.g. after next 78s). To check if the alsasrc element of GStreamer is the problem, I used "arecord -r 8000 -c 1 -f S16_LE --period-time=10000 --buffer-time=200000 > /dev/null" for comparison, and I also could see a similar problem: after some (more) seconds the CPU usage raises to >90% and drops to 0% afterwards again (but it stays at >90% for only ca. 33s ). I just monitored the problem with top and vmstat - vmstat log for arecord example can be seen at http://pastebin.com/H3LRtyPg
+On 12.04.2012 11:05, Felix Homann wrote:
+> Hi,
+> 
+> 2012/4/11 Daniel Mack <zonque@gmail.com>:
+>> Just refreshed my tree and the combined patch (gist). Could you give it
+>> another shot?
+> 
+> I've just tested the new version and have not found any issues. Great
+> work! Thank you very much!
 
-When using the gstreamer command (especially alsasrc), a different latency-time and buffer-time has influence to the cpu usage (e.g. when using "gst-launch -v alsasrc latency-time=20000 buffer-time=400000 ! mulawenc ! rtppcmupay ! fakesink silent=true" CPU usage raised to 49% after a while, when using "gst-launch -v alsasrc latency-time=40000 buffer-time=800000 ! mulawenc ! rtppcmupay ! fakesink silent=true" CPU usage raised to 25% after a while...)
+Good news indeed. As Grant is also signalling green light, I'll post
+version 7 of the patch series now.
 
-I guess it could be a problem somewhere in the ALSA driver, but before trying to patch the driver to the latest version I would go for sure that this would help...I have seen a lot of commits in AIC33 git tree, but I guess its not that easy to update my kernel to the latest alsa-kernel version???
+> BTW, didn't you have a patch for switching to an external clock source
+> on the FTUs? Maybe it would be useful for me to clean up the dirty
+> hack I've got somewhere for the effects controls. (Don't hurry, it
+> will take me a couple of weeks anyway due to time constraints)
 
-1. Can someone confirm such a behaviour on DM6446 EVM?
-2. Does someone have a clue how to identify and solve the problem? 
-3. Would it be possible to update "just" the ALSA part in my Kernel do test the latest ASoC driver for DaVinci/AIC33?
-
-I am looking forward for any help!
+Can't find it right now. But that should be comparatively easy to do in
+a subsequent patch.
 
 
---
-Information about used versions:
-
-> I am using DM6446 with TI AIC33 Audio Codec running at vendor-specific 2.6.27 kernel (based on http://gitorious.org/linux-davinci/linux-davinci/trees/v2.6.27-davinci1 with ALSA driver patched to cb6e2063697e91ca6983f9fe6958d20469b43641 from alsa-kernel [2008-11-18] tree)
-
-> Advanced Linux Sound Architecture Driver Version 1.0.17.
-> ASoC version 0.13.2
-> AIC3X Audio Codec 0.2
-> asoc: aic3x <-> davinci-i2s mapping ok
-> ALSA device list:
->   #0: DaVinci EVM (aic3x)
-
-> Version of GStreamer 0.10.25 (also tested with 0.10.35 - the same problem)
-
-> ALSA library in user space is 1.0.19 (extracted from libasound.so)
--- 
-NEU: FreePhone 3-fach-Flat mit kostenlosem Smartphone!                                  
-Jetzt informieren: http://mobile.1und1.de/?ac=OM.PW.PW003K20328T7073a
+Thanks,
+Daniel
