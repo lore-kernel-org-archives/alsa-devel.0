@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: da7210: Add support for PLL and SRM
-Date: Fri, 13 Apr 2012 10:30:12 +0100
-Message-ID: <20120413093012.GK3168@opensource.wolfsonmicro.com>
-References: <1334122120.3991.13.camel@matrix>
+Subject: Re: [PATCH V2 1/3] ASoC: tegra: add tegra30-ahub driver
+Date: Fri, 13 Apr 2012 11:17:48 +0100
+Message-ID: <20120413101748.GO3168@opensource.wolfsonmicro.com>
+References: <1334097121-18897-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3901285428167572474=="
+Content-Type: multipart/mixed; boundary="===============8132413369279932072=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6059324397
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85278243D0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Apr 2012 11:30:15 +0200 (CEST)
-In-Reply-To: <1334122120.3991.13.camel@matrix>
+	Fri, 13 Apr 2012 12:17:51 +0200 (CEST)
+In-Reply-To: <1334097121-18897-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,80 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3901285428167572474==
+--===============8132413369279932072==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LQ77YLfPrO/qF/pM"
+	protocol="application/pgp-signature"; boundary="GPOl6LAGMgeiWDic"
 Content-Disposition: inline
 
 
---LQ77YLfPrO/qF/pM
+--GPOl6LAGMgeiWDic
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 11, 2012 at 10:58:40AM +0530, Ashish Chavan wrote:
+On Tue, Apr 10, 2012 at 04:31:59PM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
+>=20
+> The AHUB (Audio Hub) is a mux/crossbar which links all audio-related
+> devices except the HDA controller on Tegra30. The devices include the
+> DMA FIFOs, DAM (Digital Audio Mixers), I2S controllers, and SPDIF
+> controller. Audio data may be routed between these devices in various
+> combinations as required by board design/application.
 
-> +/* PLL dividers table */
-> +static const struct pll_div da7210_pll_div[] = {
-> +	/* for MASTER mode, fs = 44.1Khz */
-> +	{ 12000000, 0xE8, 0x6C, 0x2, },		/* MCLK=12Mhz */
-> +	{ 13000000, 0xDF, 0x28, 0xC, },		/* MCLK=13Mhz */
-> +	{ 13500000, 0xDB, 0x0A, 0xD, },		/* MCLK=13.5Mhz */
-> +	{ 14400000, 0xD4, 0x5A, 0x2, },		/* MCLK=14.4Mhz */
-> +	{ 19200000, 0xBB, 0x43, 0x9, },		/* MCLK=19.2Mhz */
-> +	{ 19680000, 0xB9, 0x6D, 0xA, },		/* MCLK=19.68Mhz */
-> +	{ 19800000, 0xB8, 0xFB, 0xB, },		/* MCLK=19.8Mhz */
-> +	/* for MASTER mode, fs = 48Khz */
-> +	{ 12000000, 0xF3, 0x12, 0x7, },		/* MCLK=12Mhz */
+Applied all, thanks.  I'd have been slightly happier if we'd had the
+machine driver to show how this is used but there's enough plans to
+continue updating the code anyway so it doesn't seem like a big deal.
 
-This *still* has magic number problems.
-
-> +	if (da7210->master) {
-> +		/* In PLL master mode, use master mode PLL dividers */
-> +		switch (fout) {
-> +		case 2822400:
-> +			row_idx = MASTER_2822400_DIV_OFFSET;
-> +			break;
-> +		case 3072000:
-> +			row_idx = MASTER_3072000_DIV_OFFSET;
-> +			break;
-
-These defines now need to be kept in sync with the table and are going
-to be *very* painful to review.
-
---LQ77YLfPrO/qF/pM
+--GPOl6LAGMgeiWDic
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPh/IdAAoJEBus8iNuMP3dvlAP/RKBeQUgUQ8tKXI6tTrVvbMN
-WuyH4ow1dykipoTKll+KJENFv7RroqaJGYfcbq4ExPOdk8+Zy12AbGUILVsBV+yt
-uQR/Iixet1wjWXWYseinl61wQh0iYppVHOZVnJUZnaHt+c9bILbmmT5h37EvBchI
-ai6MI4QrX42cWp2OFjglagkEdLquDICqrhykY+Nh0eD6RwdoPpyaLVhzE2J+oUFJ
-iswQEO8LNf/bzdMimCEw4Jvwv0X1feyWIrdBFYqrZUMlwGpJZN4PdbfOvvULHrkh
-sKG0aZRGspj/Xm0BbIqYVnylAH7l5Hn5D0VEH9nxjFv9KUacuOkoAcWzj3kmBdNJ
-KqBa2REBiT8e0h7JnWXfeKtQZvVobiWNHbV6fB3ROKN8ToAZGV4lngaBC5VIloTF
-Uo3Y7Whs53gyBWKGEt8ICBoEaG7GlESUi7LTg2cGeFEtUuQvEUSRSNTTIaqJX3qQ
-7aqRnMY/9OS/0c3NRnj0V/uUH3k/RlVyjxwirbf0CP3Iu6ezN4Hbx2OLzAEwp9jB
-XGMKhFfeURmWvGgNXPdD9+1SnG+Embe/iIJE7NJuIWIBp60ocunOB8cxREmX/laO
-439H9c8n7cbd9iWL1T9vL7EiYiHQNmZ/AVkmFCtedv9ufgB/7CNVgIdDbuUU6Hv+
-RKxQPZKqwRr/uR5oCdUi
-=EIze
+iQIcBAEBAgAGBQJPh/z3AAoJEBus8iNuMP3df3AP/3m36ce1O1kkFWMAM/nCATuB
+SlUPi4F5hn83ub2NmDQxvWlecoNavo7w2/MH6x2/F/Dvbq8mdAQpJWohpvOUBdtm
+rJg+PlpDhjxh1uRFerwyW4BI7QCApNDNuu4uIGlL0StMbyqm9JOrXl25nrA8DqUU
+nSUO3+3qDsOv1ROiOl04b9MCN8bL99hfRKSlaThgyO981dj6bNseGlzrii58rtyR
+Ue3g/qcJDttMfg7kpt9tIh34ieWmJxNJPzCBss5ERddqarWVpjaZtNUCCuYA2499
+KIa2MlGmYr+QjsR1z22bF/MyxATjogm7yr2/35Q1GXMlcJOgMUIdonskaZ7Prr7r
+QBYHFRMK0wdG9zAc/VfR1Anx1B8vb5LcvBiLgGkVpd5Xdm7FhPqu9hKYeBUYCtwt
+u9bY3A1JJoeImL3fhEg/HT4CE77aTYh8KCNhWY8yYQVkwRN5pk/Heqkql1GKWuZd
+5PetkJEPLI34Jk/sL5mh9/UogyHmYH9AytL/vRCE7rcu2U+xwPPMMwUId41PkdCA
+zZ7ObmWlyeTQN9D5N+rVzykPbONWTTtwzCz3VXWNYUOrfxu7THxGJcTi+7689OE0
+b5L/6pm+k0DiCT9X/bV4OtaR+JCb3GHTRnaASW48KZvgitkQmEOtvtXIVzyN9wzc
+mNdRS4rGzr40j5k6hYMY
+=Q59b
 -----END PGP SIGNATURE-----
 
---LQ77YLfPrO/qF/pM--
+--GPOl6LAGMgeiWDic--
 
---===============3901285428167572474==
+--===============8132413369279932072==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3901285428167572474==--
+--===============8132413369279932072==--
