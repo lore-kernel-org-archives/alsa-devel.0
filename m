@@ -1,20 +1,24 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/6] snd-usb endpoint rework, version 7
-Date: Fri, 13 Apr 2012 22:19:07 +0200
-Message-ID: <4F888A3B.3090705@gmail.com>
-References: <1334231475-20980-1-git-send-email-zonque@gmail.com>
-	<s5hhawoqhc1.wl%tiwai@suse.de> <s5hty0nph7j.wl%tiwai@suse.de>
+From: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH V2 4/5] ARM: dt: tegra30.dtsi: Add
+	audio-related nodes
+Date: Fri, 13 Apr 2012 13:59:29 -0700
+Message-ID: <CAOesGMiVPLRMo6OnLpr0wk4VPPVcgjqbsi3T=D5zHGb1EYrmYw@mail.gmail.com>
+References: <1334099980-19527-1-git-send-email-swarren@wwwdotorg.org>
+	<1334099980-19527-4-git-send-email-swarren@wwwdotorg.org>
+	<CAOesGMhDDenRK_GeR=jWJbcoacRMUPnjFu5w4DCyUWC=CadnbA@mail.gmail.com>
+	<4F851673.6030000@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id CC27D24152
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1369D24337
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Apr 2012 22:19:13 +0200 (CEST)
-Received: by bkwj10 with SMTP id j10so2793198bkw.38
-	for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2012 13:19:13 -0700 (PDT)
-In-Reply-To: <s5hty0nph7j.wl%tiwai@suse.de>
+	Fri, 13 Apr 2012 22:59:30 +0200 (CEST)
+Received: by ggni2 with SMTP id i2so1990436ggn.38
+	for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2012 13:59:30 -0700 (PDT)
+In-Reply-To: <4F851673.6030000@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +28,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: blablack@gmail.com, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com, linuxaudio@showlabor.de
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Colin Cross <ccross@android.com>, linux-tegra@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13.04.2012 21:25, Takashi Iwai wrote:
-> At Fri, 13 Apr 2012 08:25:02 +0200,
-> Takashi Iwai wrote:
+On Tue, Apr 10, 2012 at 10:28 PM, Stephen Warren <swarren@wwwdotorg.org> wr=
+ote:
+> On 04/10/2012 10:27 PM, Olof Johansson wrote:
+> ...
+>> On Tue, Apr 10, 2012 at 4:19 PM, Stephen Warren <swarren@wwwdotorg.org> =
+wrote:
+>>> From: Stephen Warren <swarren@nvidia.com>
+>>>
+>>> Add nodes for the Tegra30 AHUB and I2S controllers.
+> ...
+>>> diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30=
+.dtsi
+> ...
+>>> + =A0 =A0 =A0 ahub@70080000 {
 >>
->> At Thu, 12 Apr 2012 13:51:09 +0200,
->> Daniel Mack wrote:
->>>
->>> Here's the 7th iteration of patches that reimplement the streaming logic of
->>> the ALSA USB audio driver.
->>>
->>> There were some bugs reportes by Felix and Grant, which have been resolved.
->>>
->>> More testing is definitely important, but maybe the code will get a wider
->>> test coverage when merged to the development tree?
+>> No need for unit address here since there's only one node with this
+>> name -- "ahub {" =A0is sufficient.
+>
+> Is there actually a benefit from leaving it out though?
+
+Just like there's no benefit from including it. :)
+
+So, either way is OK but I think we're a little too eager to always
+include them on ARM compared to what powerpc does. No big deal though.
+>
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 compatible =3D "nvidia,tegra30-ahub";
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <0x70080000 0x200 0x70080200 0x10=
+0>;
 >>
->> I'm going to merge the patches to sound git tree later today.
-> 
-> I applied all patches to topic/usb-endpoint branch of sound git tree.
-> Then I found a few issues and fixed up in that branch.
-> Please check it later.
+>> Why not just use 0x70080000 0x300?
+>
+> The register space is logically divided into two chunks; the first for
+> the DMA FIFOs and the second for the AHUB routing registers. Future
+> chips may change the relative positions and sizes of these two chunks,
+> hence I figured it was best to model them independently even though
+> they're contiguous in Tegra30.
 
-They all look reasonable to me. Thanks!
+Makes perfect sense, thanks for the motivation.
 
 
-Daniel
+-Olof
