@@ -1,81 +1,41 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 2/4] ASoC: convert Tegra20 I2S driver to
-	regmap
-Date: Fri, 13 Apr 2012 18:30:12 +0100
-Message-ID: <20120413173012.GZ3168@opensource.wolfsonmicro.com>
-References: <1334337819-23665-1-git-send-email-swarren@wwwdotorg.org>
-	<1334337819-23665-2-git-send-email-swarren@wwwdotorg.org>
+From: Josh Boyer <jwboyer@redhat.com>
+Subject: Re: Thinkpad hda regression in 3.3
+Date: Fri, 13 Apr 2012 14:08:14 -0400
+Message-ID: <20120413180814.GG25425@zod.bos.redhat.com>
+References: <20120413124306.GC25425@zod.bos.redhat.com>
+ <s5hpqbbvkzo.wl%tiwai@suse.de>
+ <s5hk41jty24.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2181065514727596274=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90B0E1044BD
-	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Apr 2012 19:30:15 +0200 (CEST)
-In-Reply-To: <1334337819-23665-2-git-send-email-swarren@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hk41jty24.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Apr 13, 2012 at 06:07:47PM +0200, Takashi Iwai wrote:
+> At Fri, 13 Apr 2012 15:07:07 +0200,
+> Takashi Iwai wrote:
+> (snip)
+> > If the above seem work (again, make sure that you adjust the mixer
+> > mutes and levels), I'll make kernel patches to add these fixups
+> > statically in the driver so that it works without extra patching.
+> 
+> Looking through alsa-info.sh outputs from various ThinkPad models I've
+> gathered, it seems that we can use the same pin setups for all.
 
---===============2181065514727596274==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UNifc18z8z6e1QHx"
-Content-Disposition: inline
+We had a user try the alsa-tp-dock patch on an X201 and it didn't seem
+to work for them.  See bug
+https://bugzilla.redhat.com/show_bug.cgi?id=806217
 
+Perhaps the [codec] section isn't set properly for their configuration?
+The alsa-info for their machine is in comment #9 of the bug.
 
---UNifc18z8z6e1QHx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Below is a test patch for 3.3 kernel.  (Note that it'd give a merge
+> conflict for 3.4 kernel.)
 
-On Fri, Apr 13, 2012 at 11:23:37AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
-> ---
-> v2: Split into separate patch
+OK, I'll do a scratch build with this and get people to test.
 
-Can you regenerate these against for-3.5 please?
-
---UNifc18z8z6e1QHx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPiGKeAAoJEBus8iNuMP3d8+wP/220zzC8aIY9d7eb8K69Br9O
-v/psrWJjWLofWBBl6vV6aAv3DNX1axlnfABduV9kQDQogk+cf4A6J3e/wCtxZyxa
-pAN8Kpd3sYM+K5XBGEcypFo1MkbtSxf3Bmgw3uLUtS+mcjbRog0be7GUHHIKba5N
-iw9+Fi0wDnDQXmqAM7DgPSM9+3dkhInM531ADIJUecEgb1l7G8a7uB2xolZ1S2kH
-PeezjJbjL4tTYoul2wUd/qCj5yO7rnNxTblxcnGOhiIoaBra9oAkvPK+7Tn/jlBd
-ptSeC5Fkj9FAK52ERwt/4DeS0fiaVNL40Tg8qDp0Nt3KHDTvyrj87x5WDkiyEtze
-aiy/lYh4EKy75xRm/MO4GkQiTLgj6WyDSMkW57hstu2yDNuFs+Q6EnLWBc/p71Sv
-zxAu/6cBV5mtyulLbW028Os7VjHshR16r8HEIw09OKLqM+Vw8ikFG8y2sfqqZIw/
-8QfBJJcO0+qzcc1WTLEotDadlZx8x/WPLXtQUT5m+GT/b8tKohJl36w6ToaZBEKs
-q+GiJJQnkjUspFwWZOJO5fvA+um8X/ENfNdjeYkKcyn4DrpLsclh4U0NXiNrTebc
-sbzaJvxxem1UmyFKuvXrEY3/9x+oHPPLPChoqLMPmUOzNBUzRXqIlEhDxXuShqfr
-8y03FlogjlTUE6DIEzD7
-=MsN6
------END PGP SIGNATURE-----
-
---UNifc18z8z6e1QHx--
-
---===============2181065514727596274==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2181065514727596274==--
+josh
