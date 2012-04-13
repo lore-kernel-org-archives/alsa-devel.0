@@ -1,85 +1,70 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [GIT PULL] hda-jack-retask
-Date: Fri, 13 Apr 2012 13:49:24 +0200
-Message-ID: <4F8812C4.3070307@canonical.com>
+From: Josh Boyer <jwboyer@redhat.com>
+Subject: Thinkpad hda regression in 3.3
+Date: Fri, 13 Apr 2012 08:43:06 -0400
+Message-ID: <20120413124306.GC25425@zod.bos.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 6F1072417B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Apr 2012 13:49:24 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
-It was a while since Takashi suggested I would try to upstream my 
-hda-jack-retask program into alsa-tools, but with Ubuntu 12.04 into 
-final freeze I finally got some headroom to do so.
+Hi Takashi and Jaroslav,
 
-The program requires gtk3 to compile, and uses policykit (pkexec) as a 
-run-time dependency to ask for root privileges where needed. I wasn't 
-entirely sure where to document this in the best way, as the README file 
-is primarily used for end-user documentation.
+We've had a number of bugs reported about sound not working correctly on
+various models of Thinkpad machines in the 3.3 kernel.  I've listed them
+below.
 
-Also, for the integration stuff with the rest of the programs 
-(gitcompile, autotools etc), I have mostly copy-pasted what I found in 
-the echomixer program. I also tested by modfying a debian package to do 
-a test build with this new program included, and it seemed to install 
-files in the right places, so I hope all is correct in that regard as well.
+I looked through the commits and found:
 
-Enjoy!
+    commit 29c5fbbcfefba5225a6783683c46c39e10877703:
 
-The following changes since commit a680841d4a2a142981d2038e9af0a07abc74c5d7:
+    ALSA: HDA: Use model=auto for Thinkpad T510
 
-   alsa-tools: hwmixvolume - update README for au88x0 (2012-03-13 
-10:49:20 +0100)
+    The user reports that model=auto works fine for him. Using
+    model=auto bring in new features such as jack detection notification
+    to userspace.
 
-are available in the git repository at:
-   git://kernel.ubuntu.com/diwic/alsa-tools.git hda-jack-retask
+I did a local build here with that comment reverted and so far most of
+the people reported their sound to be working again.  The trivial revert
+patch is below in case you want it.
 
-David Henningsson (2):
-       hdajackretask: Add new program for easy retask of hda pin nodes
-       hdajackretask: Use autotools
+It seems there are multiple models that have PCI ID 17aa:215e and using
+model=auto does not work for them all.  It particularly messes with
+machines using a docking station for some reason.
 
-  Makefile                          |    2 +-
-  hdajackretask/AUTHORS             |    1 +
-  hdajackretask/ChangeLog           |    1 +
-  hdajackretask/Makefile.am         |   20 ++
-  hdajackretask/NEWS                |    1 +
-  hdajackretask/README              |   52 +++
-  hdajackretask/apply-changes.c     |  285 +++++++++++++++++
-  hdajackretask/apply-changes.h     |   15 +
-  hdajackretask/configure.in        |   10 +
-  hdajackretask/gitcompile          |   30 ++
-  hdajackretask/main-gtk.c          |  523 +++++++++++++++++++++++++++++++
-  hdajackretask/sysfs-pin-configs.c |  626 
-+++++++++++++++++++++++++++++++++++++
-  hdajackretask/sysfs-pin-configs.h |   63 ++++
-  13 files changed, 1628 insertions(+), 1 deletions(-)
-  create mode 100644 hdajackretask/AUTHORS
-  create mode 100644 hdajackretask/ChangeLog
-  create mode 100644 hdajackretask/Makefile.am
-  create mode 100644 hdajackretask/NEWS
-  create mode 100644 hdajackretask/README
-  create mode 100644 hdajackretask/apply-changes.c
-  create mode 100644 hdajackretask/apply-changes.h
-  create mode 100644 hdajackretask/configure.in
-  create mode 100755 hdajackretask/gitcompile
-  create mode 100644 hdajackretask/main-gtk.c
-  create mode 100644 hdajackretask/sysfs-pin-configs.c
-  create mode 100644 hdajackretask/sysfs-pin-configs.h
+Aside from just reverting the above commit, do you have other thoughts
+on how to fix this?
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+josh
+
+https://bugzilla.redhat.com/show_bug.cgi?id=808559
+https://bugzilla.redhat.com/show_bug.cgi?id=806217
+https://bugzilla.redhat.com/show_bug.cgi?id=810697
+
+-----
+
+From: Josh Boyer <jwboyer@redhat.com>
+Subject: [PATCH] ALSA: hda - Use model=thinkpad for PCI ID 17aa:215e
+
+Commit 29c5fb "ALSA: HDA: Use model=auto for Thinkpad T510" switched to
+using model=auto for PCI ID 17aa:215e, however that breaks sound on a
+number of thinkpads.  Change this back to using model=thinkpad for now.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+
+---
+
+--- linux-3.3.noarch.orig/sound/pci/hda/patch_conexant.c
++++ linux-3.3.noarch/sound/pci/hda/patch_conexant.c
+@@ -3027,7 +3027,7 @@ static const struct snd_pci_quirk cxt506
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
+-	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo T510", CXT5066_AUTO),
++	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo T510", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x21cf, "Lenovo T520 & W520", CXT5066_AUTO),
+ 	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT5066_THINKPAD),
