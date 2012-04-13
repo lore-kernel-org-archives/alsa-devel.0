@@ -1,27 +1,18 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: [PATCH 0/6] snd-usb endpoint rework, version 7
-Date: Fri, 13 Apr 2012 16:49:19 +0200
-Message-ID: <CAFz=ag5jNAAXapWvKQdeHBtuKhD+AUai6a4HxE3aauHZbwWMGg@mail.gmail.com>
-References: <1334231475-20980-1-git-send-email-zonque@gmail.com>
-	<CACckToUX5iLjbdtjsEFOPk1uBw63EBROe=bj9qokaczB6P5LrQ@mail.gmail.com>
-	<CACckToU+zq2jrPFRJmYGA05REtfPkRjf05JqiGY+bSyDkk=p+w@mail.gmail.com>
-	<4F87C587.9000101@gmail.com>
-	<CAFz=ag7_Yj_VkfW9HWnB1=y6s+rFVJZ_VK06-jZ70U_k=Y_Ksw@mail.gmail.com>
-	<s5haa2gqdc4.wl%tiwai@suse.de>
-	<CAFz=ag7qsXvCu7wNrb70au3b9cFkBhmsi5xTKsH7ArDib_sYUA@mail.gmail.com>
-	<s5h4nsnvhua.wl%tiwai@suse.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH V2 1/3] ASoC: tegra: add tegra30-ahub driver
+Date: Fri, 13 Apr 2012 09:54:17 -0600
+Message-ID: <4F884C29.9060307@wwwdotorg.org>
+References: <1334097121-18897-1-git-send-email-swarren@wwwdotorg.org>
+	<20120413101748.GO3168@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0AF8F24466
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 027B0244B0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Apr 2012 16:49:20 +0200 (CEST)
-Received: by yenl1 with SMTP id l1so1749047yen.38
-	for <alsa-devel@alsa-project.org>; Fri, 13 Apr 2012 07:49:19 -0700 (PDT)
-In-Reply-To: <s5h4nsnvhua.wl%tiwai@suse.de>
+	Fri, 13 Apr 2012 17:54:24 +0200 (CEST)
+In-Reply-To: <20120413101748.GO3168@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,14 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, clemens@ladisch.de, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+On 04/13/2012 04:17 AM, Mark Brown wrote:
+> On Tue, Apr 10, 2012 at 04:31:59PM -0600, Stephen Warren wrote:
+>> From: Stephen Warren <swarren@nvidia.com>
+>>
+>> The AHUB (Audio Hub) is a mux/crossbar which links all audio-related
+>> devices except the HDA controller on Tegra30. The devices include the
+>> DMA FIFOs, DAM (Digital Audio Mixers), I2S controllers, and SPDIF
+>> controller. Audio data may be routed between these devices in various
+>> combinations as required by board design/application.
+> 
+> Applied all, thanks.  I'd have been slightly happier if we'd had the
+> machine driver to show how this is used but there's enough plans to
+> continue updating the code anyway so it doesn't seem like a big deal.
 
-Am 13.04.2012 16:15 schrieb "Takashi Iwai" <tiwai@suse.de>:
-> It's a bug of the device :)
+Thanks.
 
-actually the device  doesn't claim to be standard compliant. I guess  we
-can't call it a bug of the device  then.
+The existing tegra_wm8903.c machine driver works fine with these Tegra30
+modules, so there is a machine driver in place. Or, were you referring
+to something more advanced that exposed the AHUB's routing capabilities?
+
+BTW, you'll notice that the AHUB driver uses the same REG_IN_ARRAY macro
+as I used in the Tegra20 DAS driver's regmap rework earlier. I'd like to
+just use the same macro in both places for consistency. Are you OK with
+the DAS driver based on that, or do you still want me to rework the
+macro in the DAS driver since the use-case is a little simpler there?
+
+Thanks again.
