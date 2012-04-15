@@ -1,19 +1,18 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: [PATCH 1/2] snd-usb-audio: Skip un-parseable mixer
- units instead of erroring
-Date: Sat, 14 Apr 2012 21:38:42 +0100 (BST)
-Message-ID: <alpine.LNX.2.01.1204142030330.31138@stax.localdomain>
-References: <1334420364-30700-1-git-send-email-mark@pogo.org.uk>
-	<s5hk41ip15p.wl%tiwai@suse.de>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [RFC/PATCH] control_external: Add ability to specify
+	TLV data.
+Date: Sat, 14 Apr 2012 19:36:26 -0700
+Message-ID: <1334457386-31647-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F05724521
+Received: from mail-qa0-f73.google.com (mail-qa0-f73.google.com
+	[209.85.216.73]) by alsa0.perex.cz (Postfix) with ESMTP id 7EF07247AA
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Apr 2012 22:38:45 +0200 (CEST)
-In-Reply-To: <s5hk41ip15p.wl%tiwai@suse.de>
+	Sun, 15 Apr 2012 04:37:44 +0200 (CEST)
+Received: by qafk30 with SMTP id k30so510391qaf.2
+	for <alsa-devel@alsa-project.org>; Sat, 14 Apr 2012 19:37:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +22,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 14 Apr 2012, Takashi Iwai wrote:
+Allow external control plugins to provide TLV data.  This allows
+user-space pcms to specify dB ranges for controls.
 
-> At Sat, 14 Apr 2012 17:19:23 +0100,
-> Mark Hills wrote:
-> > 
-> > Some interfaces reference endpoints which do not exists. To
-> > accomodate these, do not fail completely, but skip over them.
-> > 
-> > This allows the Electrix Ebox-44 with earlier firmware to be
-> > detected and used for audio.
-> 
-> Does the driver warn something?  Ignoring silently doesn't sound
-> right...
+This follows the same model as the ALSA drivers for accessing the
+data.  The code is based on that implementation.  The control can
+provide static data or a callback.  The data is accessed or modified
+in the new snd_ctl_ext_elem_tlv callback.
 
-Yes, parse_audio_unit already reports the error. Though I didn't do an 
-exhaustive check for all cases.
+Rev bump the protocol version to enable checking if an external
+control supports TLV.
 
-The suggestion to do this came from Clemens (see thread "usb-audio: 
-Correct way to do a mixer quirk?"). Originally I was hoping to just quirk 
-this for the specific device, but the rest of the driver does also seem to 
-be fairly tolerant of errors if it means more devices can be used.
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ include/control_external.h |   17 +++++++++++++++-
+ src/control/control_ext.c  |   46 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 1 deletions(-)
 
-> 
-> Takashi
-> 
-> > 
-> > Signed-off-by: Mark Hills <mark@pogo.org.uk>
-> > ---
-> >  sound/usb/mixer.c |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
-> > 
-> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> > index ab23869..c374c72 100644
-> > --- a/sound/usb/mixer.c
-> > +++ b/sound/usb/mixer.c
-> > @@ -1388,7 +1388,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid, void *r
-> >  	for (pin = 0; pin < input_pins; pin++) {
-> >  		err = parse_audio_unit(state, desc->baSourceID[pin]);
-> >  		if (err < 0)
-> > -			return err;
-> > +			continue;
-> >  		err = check_input_term(state, desc->baSourceID[pin], &iterm);
-> >  		if (err < 0)
-> >  			return err;
-> > -- 
-> > 1.7.4.4
-> > 
-> 
-
+diff --git a/include/control_external.h b/include/control_external.h
+index 7c066cf..5392ea6 100644
+--- a/include/control_external.h
++++ b/include/control_external.h
+@@ -60,13 +60,16 @@ typedef struct snd_ctl_ext snd_ctl_ext_t;
+ typedef struct snd_ctl_ext_callback snd_ctl_ext_callback_t;
+ /** Key to access a control pointer */
+ typedef unsigned long snd_ctl_ext_key_t;
++/** Callback to handle TLV commands. */
++typedef int (snd_ctl_ext_tlv_rw_t)(snd_ctl_ext_t *ext, snd_ctl_ext_key_t key, int op_flag, unsigned int numid,
++				   unsigned int *tlv, unsigned int tlv_size);
+ 
+ /*
+  * Protocol version
+  */
+ #define SND_CTL_EXT_VERSION_MAJOR	1	/**< Protocol major version */
+ #define SND_CTL_EXT_VERSION_MINOR	0	/**< Protocol minor version */
+-#define SND_CTL_EXT_VERSION_TINY	0	/**< Protocol tiny version */
++#define SND_CTL_EXT_VERSION_TINY	1	/**< Protocol tiny version */
+ /**
+  * external plugin protocol version
+  */
+@@ -122,6 +125,13 @@ struct snd_ctl_ext {
+ 	 * control handle filled by #snd_ctl_ext_create()
+ 	 */
+ 	snd_ctl_t *handle;
++	/**
++	 * optional TLV data for the control.
++	 */
++	union {
++		snd_ctl_ext_tlv_rw_t *c;
++		const unsigned int *p;
++	} tlv;
+ 
+ 	int nonblock;			/**< non-block mode; read-only */
+ 	int subscribed;			/**< events subscribed; read-only */
+@@ -245,7 +255,12 @@ typedef enum snd_ctl_ext_access {
+ 	SND_CTL_EXT_ACCESS_WRITE = (1<<1),
+ 	SND_CTL_EXT_ACCESS_READWRITE = (3<<0),
+ 	SND_CTL_EXT_ACCESS_VOLATILE = (1<<2),
++	SND_CTL_EXT_ACCESS_TLV_READ = (1<<4),
++	SND_CTL_EXT_ACCESS_TLV_WRITE = (1<<5),
++	SND_CTL_EXT_ACCESS_TLV_READWRITE = (3<<4),
++	SND_CTL_EXT_ACCESS_TLV_COMMAND = (1<<6),
+ 	SND_CTL_EXT_ACCESS_INACTIVE = (1<<8),
++	SND_CTL_EXT_ACCESS_TLV_CALLBACK = (1<<28),
+ } snd_ctl_ext_access_t;
+ 
+ /**
+diff --git a/src/control/control_ext.c b/src/control/control_ext.c
+index e20d4f3..0a0b397 100644
+--- a/src/control/control_ext.c
++++ b/src/control/control_ext.c
+@@ -324,6 +324,51 @@ static int snd_ctl_ext_elem_unlock(snd_ctl_t *handle ATTRIBUTE_UNUSED,
+ 	return -ENXIO;
+ }
+ 
++static int snd_ctl_ext_elem_tlv(snd_ctl_t *handle, int op_flag,
++				unsigned int numid,
++				unsigned int *tlv, unsigned int tlv_size)
++{
++	snd_ctl_ext_t *ext = handle->private_data;
++	snd_ctl_ext_key_t key;
++	int type, ret;
++	unsigned int access, count, len;
++	snd_ctl_elem_id_t id;
++
++	/* we don't support TLV on protocol ver 1.0.0 or earlier */
++	if (ext->version < SNDRV_PROTOCOL_VERSION(1, 0, 0))
++		return -ENXIO;
++
++	snd_ctl_elem_id_clear(&id);
++	if (numid > 0) {
++		ext->callback->elem_list(ext, numid - 1, &id);
++		id.numid = numid;
++	} else
++		id.numid = 0;
++	key = ext->callback->find_elem(ext, &id);
++
++	if (key == SND_CTL_EXT_KEY_NOT_FOUND)
++		return -ENOENT;
++	ret = ext->callback->get_attribute(ext, key, &type, &access, &count);
++	if (ret < 0)
++		return ret;
++
++	if ((op_flag == 0 && (access & SND_CTL_EXT_ACCESS_TLV_READ) == 0) ||
++	    (op_flag > 0 && (access & SND_CTL_EXT_ACCESS_TLV_WRITE) == 0) ||
++	    (op_flag < 0 && (access & SND_CTL_EXT_ACCESS_TLV_COMMAND) == 0))
++		return -ENXIO;
++	if (access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++		return ext->tlv.c(ext, key, op_flag, numid, tlv, tlv_size);
++	} else {
++		if (op_flag)
++			return -ENXIO;
++		len = ext->tlv.p[1] + 2 * sizeof(unsigned int);
++		if (tlv_size < len)
++			return -ENOMEM;
++		memcpy(tlv, ext->tlv.p, len);
++		return 0;
++	}
++}
++
+ static int snd_ctl_ext_next_device(snd_ctl_t *handle ATTRIBUTE_UNUSED,
+ 				   int *device ATTRIBUTE_UNUSED)
+ {
+@@ -429,6 +474,7 @@ static const snd_ctl_ops_t snd_ctl_ext_ops = {
+ 	.element_write = snd_ctl_ext_elem_write,
+ 	.element_lock = snd_ctl_ext_elem_lock,
+ 	.element_unlock = snd_ctl_ext_elem_unlock,
++	.element_tlv = snd_ctl_ext_elem_tlv,
+ 	.hwdep_next_device = snd_ctl_ext_next_device,
+ 	.hwdep_info = snd_ctl_ext_hwdep_info,
+ 	.pcm_next_device = snd_ctl_ext_next_device,
 -- 
-Mark
+1.7.9.rc0
