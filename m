@@ -1,18 +1,16 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [RFC/PATCH] control_external: Add ability to specify
-	TLV data.
-Date: Sat, 14 Apr 2012 19:36:26 -0700
-Message-ID: <1334457386-31647-1-git-send-email-dgreid@chromium.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [patch] ASoC: dapm: release lock on error paths
+Date: Sun, 15 Apr 2012 10:47:21 +0100
+Message-ID: <20120415094721.GA3806@opensource.wolfsonmicro.com>
+References: <20120413192543.GC18505@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6264952044304253389=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f73.google.com (mail-qa0-f73.google.com
-	[209.85.216.73]) by alsa0.perex.cz (Postfix) with ESMTP id 7EF07247AA
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33A88247F5
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Apr 2012 04:37:44 +0200 (CEST)
-Received: by qafk30 with SMTP id k30so510391qaf.2
-	for <alsa-devel@alsa-project.org>; Sat, 14 Apr 2012 19:37:43 -0700 (PDT)
+	Sun, 15 Apr 2012 11:47:25 +0200 (CEST)
+In-Reply-To: <20120413192543.GC18505@elgon.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,139 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, clemens@ladisch.de
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allow external control plugins to provide TLV data.  This allows
-user-space pcms to specify dB ranges for controls.
 
-This follows the same model as the ALSA drivers for accessing the
-data.  The code is based on that implementation.  The control can
-provide static data or a callback.  The data is accessed or modified
-in the new snd_ctl_ext_elem_tlv callback.
+--===============6264952044304253389==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
+Content-Disposition: inline
 
-Rev bump the protocol version to enable checking if an external
-control supports TLV.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- include/control_external.h |   17 +++++++++++++++-
- src/control/control_ext.c  |   46 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+), 1 deletions(-)
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/control_external.h b/include/control_external.h
-index 7c066cf..5392ea6 100644
---- a/include/control_external.h
-+++ b/include/control_external.h
-@@ -60,13 +60,16 @@ typedef struct snd_ctl_ext snd_ctl_ext_t;
- typedef struct snd_ctl_ext_callback snd_ctl_ext_callback_t;
- /** Key to access a control pointer */
- typedef unsigned long snd_ctl_ext_key_t;
-+/** Callback to handle TLV commands. */
-+typedef int (snd_ctl_ext_tlv_rw_t)(snd_ctl_ext_t *ext, snd_ctl_ext_key_t key, int op_flag, unsigned int numid,
-+				   unsigned int *tlv, unsigned int tlv_size);
- 
- /*
-  * Protocol version
-  */
- #define SND_CTL_EXT_VERSION_MAJOR	1	/**< Protocol major version */
- #define SND_CTL_EXT_VERSION_MINOR	0	/**< Protocol minor version */
--#define SND_CTL_EXT_VERSION_TINY	0	/**< Protocol tiny version */
-+#define SND_CTL_EXT_VERSION_TINY	1	/**< Protocol tiny version */
- /**
-  * external plugin protocol version
-  */
-@@ -122,6 +125,13 @@ struct snd_ctl_ext {
- 	 * control handle filled by #snd_ctl_ext_create()
- 	 */
- 	snd_ctl_t *handle;
-+	/**
-+	 * optional TLV data for the control.
-+	 */
-+	union {
-+		snd_ctl_ext_tlv_rw_t *c;
-+		const unsigned int *p;
-+	} tlv;
- 
- 	int nonblock;			/**< non-block mode; read-only */
- 	int subscribed;			/**< events subscribed; read-only */
-@@ -245,7 +255,12 @@ typedef enum snd_ctl_ext_access {
- 	SND_CTL_EXT_ACCESS_WRITE = (1<<1),
- 	SND_CTL_EXT_ACCESS_READWRITE = (3<<0),
- 	SND_CTL_EXT_ACCESS_VOLATILE = (1<<2),
-+	SND_CTL_EXT_ACCESS_TLV_READ = (1<<4),
-+	SND_CTL_EXT_ACCESS_TLV_WRITE = (1<<5),
-+	SND_CTL_EXT_ACCESS_TLV_READWRITE = (3<<4),
-+	SND_CTL_EXT_ACCESS_TLV_COMMAND = (1<<6),
- 	SND_CTL_EXT_ACCESS_INACTIVE = (1<<8),
-+	SND_CTL_EXT_ACCESS_TLV_CALLBACK = (1<<28),
- } snd_ctl_ext_access_t;
- 
- /**
-diff --git a/src/control/control_ext.c b/src/control/control_ext.c
-index e20d4f3..0a0b397 100644
---- a/src/control/control_ext.c
-+++ b/src/control/control_ext.c
-@@ -324,6 +324,51 @@ static int snd_ctl_ext_elem_unlock(snd_ctl_t *handle ATTRIBUTE_UNUSED,
- 	return -ENXIO;
- }
- 
-+static int snd_ctl_ext_elem_tlv(snd_ctl_t *handle, int op_flag,
-+				unsigned int numid,
-+				unsigned int *tlv, unsigned int tlv_size)
-+{
-+	snd_ctl_ext_t *ext = handle->private_data;
-+	snd_ctl_ext_key_t key;
-+	int type, ret;
-+	unsigned int access, count, len;
-+	snd_ctl_elem_id_t id;
-+
-+	/* we don't support TLV on protocol ver 1.0.0 or earlier */
-+	if (ext->version < SNDRV_PROTOCOL_VERSION(1, 0, 0))
-+		return -ENXIO;
-+
-+	snd_ctl_elem_id_clear(&id);
-+	if (numid > 0) {
-+		ext->callback->elem_list(ext, numid - 1, &id);
-+		id.numid = numid;
-+	} else
-+		id.numid = 0;
-+	key = ext->callback->find_elem(ext, &id);
-+
-+	if (key == SND_CTL_EXT_KEY_NOT_FOUND)
-+		return -ENOENT;
-+	ret = ext->callback->get_attribute(ext, key, &type, &access, &count);
-+	if (ret < 0)
-+		return ret;
-+
-+	if ((op_flag == 0 && (access & SND_CTL_EXT_ACCESS_TLV_READ) == 0) ||
-+	    (op_flag > 0 && (access & SND_CTL_EXT_ACCESS_TLV_WRITE) == 0) ||
-+	    (op_flag < 0 && (access & SND_CTL_EXT_ACCESS_TLV_COMMAND) == 0))
-+		return -ENXIO;
-+	if (access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
-+		return ext->tlv.c(ext, key, op_flag, numid, tlv, tlv_size);
-+	} else {
-+		if (op_flag)
-+			return -ENXIO;
-+		len = ext->tlv.p[1] + 2 * sizeof(unsigned int);
-+		if (tlv_size < len)
-+			return -ENOMEM;
-+		memcpy(tlv, ext->tlv.p, len);
-+		return 0;
-+	}
-+}
-+
- static int snd_ctl_ext_next_device(snd_ctl_t *handle ATTRIBUTE_UNUSED,
- 				   int *device ATTRIBUTE_UNUSED)
- {
-@@ -429,6 +474,7 @@ static const snd_ctl_ops_t snd_ctl_ext_ops = {
- 	.element_write = snd_ctl_ext_elem_write,
- 	.element_lock = snd_ctl_ext_elem_lock,
- 	.element_unlock = snd_ctl_ext_elem_unlock,
-+	.element_tlv = snd_ctl_ext_elem_tlv,
- 	.hwdep_next_device = snd_ctl_ext_next_device,
- 	.hwdep_info = snd_ctl_ext_hwdep_info,
- 	.pcm_next_device = snd_ctl_ext_next_device,
--- 
-1.7.9.rc0
+On Fri, Apr 13, 2012 at 10:25:43PM +0300, Dan Carpenter wrote:
+> We added locking here but there were a couple error paths where we
+> forgot to drop the lock before returning.
+
+Applied, thanks.
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPipkQAAoJEBus8iNuMP3dkrcP/RUNludJq6NZ+TcVi7YLG75R
+9AlBDoOE48ZSRSf2AsYqFjr1/o4w3iKwvCiBa/+MLzUeRA/Sx9NAbWennRVGBs3b
+2IC4rnAz3g6+ozpTzexPzPxJwlCsqKdefs9A5CWNELmVcWV+tuMkIK9zIDZqVpcK
+YsMt4NX10ZTYE3/laM/CRO0Fe0lOX06TtMlfi7Q1Q9JrcBCCyQnN/1Lao3P+ZXfv
+bNZvKAuFrGSQgNZO/wiXD8wRsyOaj7FzTKvNtLJwiZUsUglpg4hMQlhkF5zlBKQL
+e8AtbQbgPooWDMYG0za8qI0YDnCqtbICfVMXrPVVIBGsGHlasFZi+gM4uiSVEkOT
+DLBKxB0HFMC4fNLM5+XtAyc7k/JBae4gn9TNjoxeSjdNuMNlkiDCplov8SQ0ho2V
+C+VYkWRyf8b/FtCLOoxGLUe96EBIhIKlyCYKD0ArMJkCmSWep3rKNSJ0lm8fkAIC
+tpJ5VsBZibq32xfz/CGcpbY3JM0ECtulPtgiIKD0jRRFXK/XjvVvL+jN7ry5RJZO
+vEpE3eqhhWiPTwX69/hHapsvDnOraoNUHDlA51/xQYHfN5CfWP73h9HLqgEZFFDC
+wrBx7XnOdv7eTRVcQ5osjJPdyBtAekGdr+0onc3dkwePMHSV6unOnrUdNhCGuF+E
+UjPiPJxaM8M+Fe3LzG9K
+=TMHC
+-----END PGP SIGNATURE-----
+
+--ZGiS0Q5IWpPtfppv--
+
+--===============6264952044304253389==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6264952044304253389==--
