@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: da7210: Add support for PLL and SRM
-Date: Mon, 16 Apr 2012 13:59:31 +0100
-Message-ID: <20120416125930.GB3219@opensource.wolfsonmicro.com>
-References: <1334122120.3991.13.camel@matrix>
-	<20120413093012.GK3168@opensource.wolfsonmicro.com>
-	<1334578993.26734.6.camel@matrix>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Fast Track Ultra mixer - opinions anyone?
+Date: Mon, 16 Apr 2012 15:10:25 +0200
+Message-ID: <4F8C1A41.2080807@ladisch.de>
+References: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0432482725610115042=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C3976243D1
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CD0A5243DC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 14:59:36 +0200 (CEST)
-In-Reply-To: <1334578993.26734.6.camel@matrix>
+	Mon, 16 Apr 2012 15:07:13 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 810F920ADE
+	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 09:07:12 -0400 (EDT)
+In-Reply-To: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,78 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Takashi Iwai <tiwai@suse.de>, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Felix Homann wrote:
+> IMO, the effect section on the FTUs really sucks. I can't believe that
+> anybody can really use it in a reasonable way. So should we really add
+> another 40 controls to the mixer which can cause a lot of pain when
+> misadjusted (i.e. anything else but 0)?
+>
+> For those reasons I would prefer not to put effect support in the
+> kernel. What do you think?
 
---===============0432482725610115042==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rJwd6BRFiFCcLxzm"
-Content-Disposition: inline
+If you want to be able to use these effects at all, there must be _some_
+way to access the controls.
 
+Generic mixer programs like alsamixer are not really suitable for
+complex devices; you'd need to write a custom mixer.
 
---rJwd6BRFiFCcLxzm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If you want to prevent the controls from showing up in alsamixer, set
+their .iface to SNDRV_CTL_ELEM_IFACE_CARD instead of _MIXER.  (But if
+these controls don't show up in alsamixer, you wouldn't be able to reset
+them if they are misadjusted ...)
 
-On Mon, Apr 16, 2012 at 05:53:13PM +0530, Ashish Chavan wrote:
-> On Fri, 2012-04-13 at 10:30 +0100, Mark Brown wrote:
-> > On Wed, Apr 11, 2012 at 10:58:40AM +0530, Ashish Chavan wrote:
+> Currently alsamixer does not report any dB changes when you change a
+> control value.
 
-> > > +	/* for MASTER mode, fs =3D 48Khz */
-> > > +	{ 12000000, 0xF3, 0x12, 0x7, },		/* MCLK=3D12Mhz */
-
-> > This *still* has magic number problems.
-
-> OK, will replace frequency values with defines. That is what you are
-> pointing, right?
-
-No!  As with *all* the other times you've submitted this you're relying
-on magic array indexes to find stuff in the table which I've *repeatedly*=
-=20
-pointed out is terrible for readability and maintainability.  It's very
-disappointing to see the same problem coming back repeatedly.
-
-> > These defines now need to be kept in sync with the table and are going
-> > to be *very* painful to review.
-
-> Yes, these defines need to be kept in sync with the table. Can you
-> suggest any other, preferred way to do this?
-
-Yes.  For example, you could use the same technique you're using for the
-frequencies.
-
---rJwd6BRFiFCcLxzm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjBSmAAoJEBus8iNuMP3dXpwP/AnQdA3Em1GXCYVfeduIv0vd
-jUe1KoovXw5+/Zwoz72EaUG05/Z+rTQe1+EWDIvInK7B90GaT9MYteWaejbtlxai
-Cea/93S/F9IxtR+yaKlcNePFkzoOWs/fpapWr9hl2qcFotmjpXdU/2cQ9Z2vRawe
-5fQ1aLMRMS9018PRxNB6bIwl613WOVmnj9rOZLnxlq5SM2nRzvHyJQlPwdilZA7a
-SbHLTM7xC6NSrWvQyNoVzJ18SftKBiixNCGiiCI2zMd4WE9XI7cXDE+QhxUuEB6v
-cWWy8EobHuP7JkIv6Y19Tr0lp9n+hOFqwRTOg+2RhfTGhHz2Y8DkYTLREfgH8rOu
-gKpw1fFyCSz/nln7sltmI+alMJe4L4ZCH3/f0xowL++fo74npWNR8sTDar1TOQ4+
-PmTJRoEsMGgOxcAGSVUlDMirBAixETV36QfqfBz3JmK4/WJYJMaEEM5Cv6Bbx26y
-HWTbu6y5PY2EFxEUCO1aCIF4MuNCkqUMW9c0gA/WzqY9nEmrGesdzQt7keK8Hjpe
-LgksNnBtTAdvPTs/bah8C18d1NqESHrptWwCHxJkO5rsAIVpcHC5s1Gm69gdkoTL
-w1du0+sBA6tuwVYk9jF9XG6lUf1wQapM4itXlB+dltoATEi8jWZQWv6nFVRiFqCo
-p2f2uY2KlanoPo2uw1ty
-=R63J
------END PGP SIGNATURE-----
-
---rJwd6BRFiFCcLxzm--
-
---===============0432482725610115042==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Set the TLV.  For standard controls, the code reads the values from
+the USB descriptors, but for control you create by hand, you have to
+create these, too.
 
 
---===============0432482725610115042==--
+Regards,
+Clemens
