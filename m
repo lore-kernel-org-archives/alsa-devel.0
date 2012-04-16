@@ -1,22 +1,19 @@
-From: Grant Diffey <gdiffey@gmail.com>
-Subject: Re: [PATCH 0/6] snd-usb endpoint rework, version 7
-Date: Mon, 16 Apr 2012 22:00:27 +1000
-Message-ID: <CACckToX_cuWoZ_7qZ=fq9myakuLQ4NMvJLUH2ku1AZ7MaKmHYQ@mail.gmail.com>
-References: <1334231475-20980-1-git-send-email-zonque@gmail.com>
-	<CACckToUX5iLjbdtjsEFOPk1uBw63EBROe=bj9qokaczB6P5LrQ@mail.gmail.com>
-	<CACckToU+zq2jrPFRJmYGA05REtfPkRjf05JqiGY+bSyDkk=p+w@mail.gmail.com>
-	<4F87C587.9000101@gmail.com> <s5hiph4qhep.wl%tiwai@suse.de>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH] ASoC: da7210: Add support for PLL and SRM
+Date: Mon, 16 Apr 2012 17:53:13 +0530
+Message-ID: <1334578993.26734.6.camel@matrix>
+References: <1334122120.3991.13.camel@matrix>
+	<20120413093012.GK3168@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B4DC42436C
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BEB724374
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 14:00:27 +0200 (CEST)
-Received: by werg1 with SMTP id g1so3398159wer.38
-	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 05:00:27 -0700 (PDT)
-In-Reply-To: <s5hiph4qhep.wl%tiwai@suse.de>
+	Mon, 16 Apr 2012 14:12:10 +0200 (CEST)
+In-Reply-To: <20120413093012.GK3168@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,35 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: blablack@gmail.com, alsa-devel@alsa-project.org, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > What about alsactl? Set the mixers once, then call "alsactl store". Does
-> > that help?
->
->
-Yes it does. however.. nothing in userspace calls alsactl restore on device
-hotplug.
+On Fri, 2012-04-13 at 10:30 +0100, Mark Brown wrote:
+> On Wed, Apr 11, 2012 at 10:58:40AM +0530, Ashish Chavan wrote:
+> 
+> > +/* PLL dividers table */
+> > +static const struct pll_div da7210_pll_div[] = {
+> > +	/* for MASTER mode, fs = 44.1Khz */
+> > +	{ 12000000, 0xE8, 0x6C, 0x2, },		/* MCLK=12Mhz */
+> > +	{ 13000000, 0xDF, 0x28, 0xC, },		/* MCLK=13Mhz */
+> > +	{ 13500000, 0xDB, 0x0A, 0xD, },		/* MCLK=13.5Mhz */
+> > +	{ 14400000, 0xD4, 0x5A, 0x2, },		/* MCLK=14.4Mhz */
+> > +	{ 19200000, 0xBB, 0x43, 0x9, },		/* MCLK=19.2Mhz */
+> > +	{ 19680000, 0xB9, 0x6D, 0xA, },		/* MCLK=19.68Mhz */
+> > +	{ 19800000, 0xB8, 0xFB, 0xB, },		/* MCLK=19.8Mhz */
+> > +	/* for MASTER mode, fs = 48Khz */
+> > +	{ 12000000, 0xF3, 0x12, 0x7, },		/* MCLK=12Mhz */
+> 
+> This *still* has magic number problems.
+> 
 
-is this a udev/distribution problem or alsa's problem?
+OK, will replace frequency values with defines. That is what you are
+pointing, right?
 
+> > +	if (da7210->master) {
+> > +		/* In PLL master mode, use master mode PLL dividers */
+> > +		switch (fout) {
+> > +		case 2822400:
+> > +			row_idx = MASTER_2822400_DIV_OFFSET;
+> > +			break;
+> > +		case 3072000:
+> > +			row_idx = MASTER_3072000_DIV_OFFSET;
+> > +			break;
+> 
+> These defines now need to be kept in sync with the table and are going
+> to be *very* painful to review.
 
+Yes, these defines need to be kept in sync with the table. Can you
+suggest any other, preferred way to do this?
 
-> Basically "alsactl init" then "alsactl restore" should initialize to
-> a sane state.  But in the case of usb-audio, many things are still
-> missing.
->
-> The usb-audio driver doesn't initialize the mixer states unlike other
-> drivers, and alsactl init seems assuming that the mixers are all muted
-> / cleared when it's called.  So, partly a problem of alsactl init.
->
->
->
-So alsactl store Ultra after setting all the controls and then running
-alsactl restore works..
-
-BUT.. I'm still stuck with a very similar problem in that nothing seems to
-call alsaclt restore when the device is hotplugged.
-
-Grant.
+Thanks!
