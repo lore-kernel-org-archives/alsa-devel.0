@@ -1,55 +1,42 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: [PATCH for 3.4] MFD: twl6040: Convert to i2c driver, and
- separate it from twl core
-Date: Mon, 16 Apr 2012 16:46:23 +0200
-Message-ID: <20120416144623.GD24130@sortiz-mobl>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH for 3.4] MFD: twl6040: Convert to i2c
+ driver, and separate it from twl core
+Date: Mon, 16 Apr 2012 17:55:20 +0300
+Message-ID: <4F8C32D8.7060405@ti.com>
 References: <1333443411-23056-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120416144623.GD24130@sortiz-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1333443411-23056-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+	[74.125.149.71]) by alsa0.perex.cz (Postfix) with ESMTP id 00FB22444C
+	for <alsa-devel@alsa-project.org>;
+	Mon, 16 Apr 2012 16:54:57 +0200 (CEST)
+Received: by lbon10 with SMTP id n10so2866202lbo.30
+	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 07:54:54 -0700 (PDT)
+In-Reply-To: <20120416144623.GD24130@sortiz-mobl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+Hi Samuel,
 
-On Tue, Apr 03, 2012 at 11:56:51AM +0300, Peter Ujfalusi wrote:
-> Complete the separation of the twl6040 from the twl core since
-> it is a separate chip, not part of the twl6030 PMIC.
-> 
-> Make the needed Kconfig changes for the depending drivers at the same time to
-> avoid breaking the kernel build (vibra, ASoC components).
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Reviewed-by: Mark Brown <broonie@opensource.wolfsonicro.com>
-> Acked-by: Tony Lindgren <tony@atomide.com>
-> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-> Acked-by: Dmitry Torokhov <dtor@mail.ru>
-> ---
-> 
-> Hi Samuel, Tony, Liam,
-> 
-> Due to some cross tree issues 3.4-rc1 have big regression in OMAP4 audio:
-> The twl6040 mfd driver (and codec, vibra) is no longer probe since the twl-core
-> now did not create the platform device for it. This means we do not have audio
-> working in rc1.
-> This patch meant to follow the twl-core change (to not probe the twll6040 as
-> platform device), but there were some glitch in the logistics so this patch is
-> not in 3.4-rc1.
-> 
-> I have forward ported it on top of 3.4-rc1, and you can also find the patch in:
-> git@gitorious.org:omap-audio/linux-audio.git peter/upstream/for-3.4-rc2
-> 
-> Can someone take this patch further to be included in 3.4-rc2?
-Applied to my for-linus branch. I'll send a pull request this week, so I
-expect it to make it to rc4.
+On 04/16/2012 05:46 PM, Samuel Ortiz wrote:
+> Applied to my for-linus branch. I'll send a pull request this week, so I
+> expect it to make it to rc4.
 
-Cheers,
-Samuel.
+Thank you!
 
--- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+-- =
+
+P=E9ter
