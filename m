@@ -1,20 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Fast Track Ultra mixer - opinions anyone?
-Date: Mon, 16 Apr 2012 15:10:25 +0200
-Message-ID: <4F8C1A41.2080807@ladisch.de>
-References: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH] ASoC: da7210: Add support for PLL and SRM
+Date: Mon, 16 Apr 2012 19:12:30 +0530
+Message-ID: <1334583750.26734.15.camel@matrix>
+References: <1334122120.3991.13.camel@matrix>
+	<20120413093012.GK3168@opensource.wolfsonmicro.com>
+	<1334578993.26734.6.camel@matrix>
+	<20120416125930.GB3219@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CD0A5243DC
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D95924413
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 15:07:13 +0200 (CEST)
-Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 810F920ADE
-	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 09:07:12 -0400 (EDT)
-In-Reply-To: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
+	Mon, 16 Apr 2012 15:31:04 +0200 (CEST)
+In-Reply-To: <20120416125930.GB3219@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: Takashi Iwai <tiwai@suse.de>, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Felix Homann wrote:
-> IMO, the effect section on the FTUs really sucks. I can't believe that
-> anybody can really use it in a reasonable way. So should we really add
-> another 40 controls to the mixer which can cause a lot of pain when
-> misadjusted (i.e. anything else but 0)?
->
-> For those reasons I would prefer not to put effect support in the
-> kernel. What do you think?
+On Mon, 2012-04-16 at 13:59 +0100, Mark Brown wrote:
+> On Mon, Apr 16, 2012 at 05:53:13PM +0530, Ashish Chavan wrote:
+> > On Fri, 2012-04-13 at 10:30 +0100, Mark Brown wrote:
+> > > On Wed, Apr 11, 2012 at 10:58:40AM +0530, Ashish Chavan wrote:
+> 
+> > > > +	/* for MASTER mode, fs = 48Khz */
+> > > > +	{ 12000000, 0xF3, 0x12, 0x7, },		/* MCLK=12Mhz */
+> 
+> > > This *still* has magic number problems.
+> 
+> > OK, will replace frequency values with defines. That is what you are
+> > pointing, right?
+> 
+> No!  As with *all* the other times you've submitted this you're relying
+> on magic array indexes to find stuff in the table which I've *repeatedly* 
+> pointed out is terrible for readability and maintainability.  It's very
+> disappointing to see the same problem coming back repeatedly.
+> 
 
-If you want to be able to use these effects at all, there must be _some_
-way to access the controls.
+Thanks for bearing with me Mark. But the only other way I can think is
+to make the *extra* info like master/slave and fs a part of array itself
+and then search through the array to get required divisors. In this
+case, every time I need to search through entire array to pick up
+correct divisors. Wouldn't that be inefficient, especially when the
+array indexes are fixed? Or the readability/maintainability of that
+would outweigh slight performance overhead?
 
-Generic mixer programs like alsamixer are not really suitable for
-complex devices; you'd need to write a custom mixer.
-
-If you want to prevent the controls from showing up in alsamixer, set
-their .iface to SNDRV_CTL_ELEM_IFACE_CARD instead of _MIXER.  (But if
-these controls don't show up in alsamixer, you wouldn't be able to reset
-them if they are misadjusted ...)
-
-> Currently alsamixer does not report any dB changes when you change a
-> control value.
-
-Set the TLV.  For standard controls, the code reads the values from
-the USB descriptors, but for control you create by hand, you have to
-create these, too.
-
-
-Regards,
-Clemens
+> > > These defines now need to be kept in sync with the table and are going
+> > > to be *very* painful to review.
+> 
+> > Yes, these defines need to be kept in sync with the table. Can you
+> > suggest any other, preferred way to do this?
+> 
+> Yes.  For example, you could use the same technique you're using for the
+> frequencies.
