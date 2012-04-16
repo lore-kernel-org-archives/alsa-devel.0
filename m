@@ -1,18 +1,22 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: system suspend and live audio streams
-Date: Mon, 16 Apr 2012 19:10:44 +0300
-Message-ID: <4F8C4484.5000605@bitmer.com>
-References: <CANOLnON2pL5tF2pDHzZ+UEBhtTG1cUmonv5pvs3SrwdtWxcJUw@mail.gmail.com>
-	<4F8B1EF3.9040802@bitmer.com> <4F8BF729.20906@ti.com>
+From: Uros Vampl <mobile.leecher@gmail.com>
+Subject: Re: No sound on Quanta KN1 with kernel 3.4
+Date: Mon, 16 Apr 2012 19:56:09 +0200
+Message-ID: <20120416175609.GA22954@zverina>
+References: <20120414171029.GA740@zanic_kista> <s5hiph2p132.wl%tiwai@suse.de>
+	<20120414205209.GA1041@zanic_kista> <s5hbomrsrc1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5C6E104128
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+	[209.85.212.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42981244DC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 18:11:48 +0200 (CEST)
-In-Reply-To: <4F8BF729.20906@ti.com>
+	Mon, 16 Apr 2012 19:56:09 +0200 (CEST)
+Received: by wibhm17 with SMTP id hm17so286wib.2
+	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 10:56:09 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <s5hbomrsrc1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Grazvydas Ignotas <notasas@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/16/2012 01:40 PM, Peter Ujfalusi wrote:
-> Because we need to write registers (configure McPBSP).
-> 
->> I don't know immediately does this require any major changes for McBSP
->> register access that are done in function calls before omap_mcbsp_start
->> (IRCC hwmod might set already ICLK gating for register access) but some
->> code is needed to deal with McBSP register cache restore (due OMAP
->> OFFMODE that might be hit) and most probably for McBSP FIFO draining as
->> well.
-> 
-I meant above if hwmod has already set ICLK so (was it autogating?) that
-manual enable/disable cycle for ICLK may not be needed for register
-access if clock is automatically gated. I have vague memory that I saw
-something like this in hwmod for some block but I'm not sure about this.
-
-But that reminds me that did we have some use-case where FCLK was needed
-during register access?
-
-> What we need to do is to have proper register store/restore for McBSP to
-> support suspend during audio activity. But. Even with that if the McBSP
-> is hitting OFF mode we will loose the McBSP FIFO content (invalidated).
-> This means we are going to have missing samples. Probably the user will
-> not going to notice it, but it is going to happen.
-
-For register store/restore there is already much implemented thanks to
-Janusz's register cache workaround for OMAP1510 :-)
-
-For FIFO I was thinking, if possible, to drain it out before going to
-suspend.
-
--- 
-Jarkko
+T24gMTYuMDQuMTIgMTY6MDcsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBDb3VsZCB5b3UgdHJ5IHRo
+ZSBwYXRjaCBiZWxvdz8KPiAKPiBBbHNvLCB3aGljaCBvdXRwdXQgaXMgbWlzc2luZz8gIElzIGl0
+IGEgc3BlYWtlciBvdXRwdXQgb3IgYSBsaW5lLW91dAo+IGphY2s/ICBCYXNpY2FsbHkgaXQncyBh
+IGJ1ZyBvZiBCSU9TIHRoYXQgZG9lc24ndCBnaXZlIHRoZSBwcm9wZXIKPiBhc3NvY2lhdGlvbiBu
+dW1iZXIgZm9yIHRoZSBjb3JyZXNwb25kaW5nIHBpbiAweDBmLiAgVGhlIHBhdGNoIGlzIGp1c3QK
+PiB0byBtYWtlIGxlc3MgcmVzdHJpY3RpdmUuCj4gCj4gQnV0LCBpZiBpdCdzIGEgbGFwdG9wLCB0
+aGUgY29ycmVzcG9uZGluZyBwaW4gaXMgbGlrZWx5IGEgc3BlYWtlcgo+IG91dHB1dCwgc28gaXQn
+ZCBiZSBiZXR0ZXIgdG8gZml4IHRoZSBwaW4tZGVmYXVsdCB2YWx1ZSBpdHNlbGYgdmlhCj4gcGlu
+Zml4IHRhYmxlLgoKCkl0J3MgYSBsYXB0b3AuIFRoZXJlJ3Mgbm8gc291bmQsIG5vdCBmcm9tIGlu
+dGVybmFsIHNwZWFrZXJzLCBub3QgZnJvbSAKaGVhZHBob25lIG91dC4gVGhlcmUgaXMgYSBtaWxk
+IGNyYWNrbGluZyBzb3VuZCB3aGVuIHRoZSBtb2R1bGUgaXMgCmxvYWRlZCwgYnV0IHRoYXQncyBp
+dC4gVGhlIHBhdGNoIGRvZXMgbm90IGNoYW5nZSB0aGluZ3MuCgpSZWdhcmRzLApVcm/FoQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
