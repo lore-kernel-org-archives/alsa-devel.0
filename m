@@ -1,19 +1,19 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH] ASoC: da7210: Add support for PLL and SRM
-Date: Mon, 16 Apr 2012 17:53:13 +0530
-Message-ID: <1334578993.26734.6.camel@matrix>
-References: <1334122120.3991.13.camel@matrix>
-	<20120413093012.GK3168@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: system suspend and live audio streams
+Date: Mon, 16 Apr 2012 13:24:27 +0100
+Message-ID: <20120416122426.GA6253@sirena.org.uk>
+References: <CANOLnON2pL5tF2pDHzZ+UEBhtTG1cUmonv5pvs3SrwdtWxcJUw@mail.gmail.com>
+	<4F8B1EF3.9040802@bitmer.com> <4F8BF729.20906@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0BEB724374
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09FD824385
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 14:12:10 +0200 (CEST)
-In-Reply-To: <20120413093012.GK3168@opensource.wolfsonmicro.com>
+	Mon, 16 Apr 2012 14:24:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4F8BF729.20906@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Grazvydas Ignotas <notasas@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-04-13 at 10:30 +0100, Mark Brown wrote:
-> On Wed, Apr 11, 2012 at 10:58:40AM +0530, Ashish Chavan wrote:
-> 
-> > +/* PLL dividers table */
-> > +static const struct pll_div da7210_pll_div[] = {
-> > +	/* for MASTER mode, fs = 44.1Khz */
-> > +	{ 12000000, 0xE8, 0x6C, 0x2, },		/* MCLK=12Mhz */
-> > +	{ 13000000, 0xDF, 0x28, 0xC, },		/* MCLK=13Mhz */
-> > +	{ 13500000, 0xDB, 0x0A, 0xD, },		/* MCLK=13.5Mhz */
-> > +	{ 14400000, 0xD4, 0x5A, 0x2, },		/* MCLK=14.4Mhz */
-> > +	{ 19200000, 0xBB, 0x43, 0x9, },		/* MCLK=19.2Mhz */
-> > +	{ 19680000, 0xB9, 0x6D, 0xA, },		/* MCLK=19.68Mhz */
-> > +	{ 19800000, 0xB8, 0xFB, 0xB, },		/* MCLK=19.8Mhz */
-> > +	/* for MASTER mode, fs = 48Khz */
-> > +	{ 12000000, 0xF3, 0x12, 0x7, },		/* MCLK=12Mhz */
-> 
-> This *still* has magic number problems.
-> 
+On Mon, Apr 16, 2012 at 01:40:41PM +0300, Peter Ujfalusi wrote:
 
-OK, will replace frequency values with defines. That is what you are
-pointing, right?
+> What we need to do is to have proper register store/restore for McBSP to
+> support suspend during audio activity. But. Even with that if the McBSP
+> is hitting OFF mode we will loose the McBSP FIFO content (invalidated).
+> This means we are going to have missing samples. Probably the user will
+> not going to notice it, but it is going to happen.
 
-> > +	if (da7210->master) {
-> > +		/* In PLL master mode, use master mode PLL dividers */
-> > +		switch (fout) {
-> > +		case 2822400:
-> > +			row_idx = MASTER_2822400_DIV_OFFSET;
-> > +			break;
-> > +		case 3072000:
-> > +			row_idx = MASTER_3072000_DIV_OFFSET;
-> > +			break;
-> 
-> These defines now need to be kept in sync with the table and are going
-> to be *very* painful to review.
+> I'm sure this issue present on other platforms as well. The pm_runtime
+> is handled by the core, we should have suspend/resume checked in ASoC
+> core, if there's an issue we need to fix it. After that the McBSP
+> store/restore need to be implemented.
 
-Yes, these defines need to be kept in sync with the table. Can you
-suggest any other, preferred way to do this?
+If the driver is using runtime PM and needs to ensure that a reference
+is held outside of audio streaming then it should be taking care of
+holding a reference itself.
 
-Thanks!
+Tegra is now handling this using the regmap cache infrastructure to make
+the device powerdown transparent.
