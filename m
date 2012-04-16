@@ -1,21 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH for 3.4] MFD: twl6040: Convert to i2c
- driver, and separate it from twl core
-Date: Mon, 16 Apr 2012 17:55:20 +0300
-Message-ID: <4F8C32D8.7060405@ti.com>
-References: <1333443411-23056-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120416144623.GD24130@sortiz-mobl>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: core: Support transparent
+	CODEC<->CODEC DAI links
+Date: Mon, 16 Apr 2012 15:59:38 +0100
+Message-ID: <1334588378.2255.1.camel@odin>
+References: <1334342704-21495-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
-	[74.125.149.71]) by alsa0.perex.cz (Postfix) with ESMTP id 00FB22444C
+Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
+	[74.125.149.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BFE91041A4
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 16:54:57 +0200 (CEST)
-Received: by lbon10 with SMTP id n10so2866202lbo.30
-	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 07:54:54 -0700 (PDT)
-In-Reply-To: <20120416144623.GD24130@sortiz-mobl>
+	Mon, 16 Apr 2012 16:59:44 +0200 (CEST)
+Received: by wibhr17 with SMTP id hr17so4736570wib.10
+	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 07:59:40 -0700 (PDT)
+In-Reply-To: <1334342704-21495-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Samuel,
+On Fri, 2012-04-13 at 19:45 +0100, Mark Brown wrote:
 
-On 04/16/2012 05:46 PM, Samuel Ortiz wrote:
-> Applied to my for-linus branch. I'll send a pull request this week, so I
-> expect it to make it to rc4.
+> +
+> +	/* We only support a single source and sink, pick the first */
+> +	source_p = list_first_entry(&w->sources, struct snd_soc_dapm_path,
+> +				    list_sink);
+> +	sink_p = list_first_entry(&w->sinks, struct snd_soc_dapm_path,
+> +				  list_source);
+> +
 
-Thank you!
+I assume the intention here is to have a graph like
 
--- =
+some widget --> DAI widget -> DAI link widget -> DAI widget --> some
+widget ?
 
-P=E9ter
+Acked-by: Liam Girdwood <lrg@ti.com>
