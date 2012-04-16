@@ -1,19 +1,18 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+From: Grant Diffey <gdiffey@gmail.com>
 Subject: Re: Fast Track Ultra mixer - opinions anyone?
-Date: Mon, 16 Apr 2012 12:06:23 +0100
-Message-ID: <CAE-xCyO1hrewRg8mV8VsfHA+oNG1mLzCRRmocFgo4A+RNAMVzQ@mail.gmail.com>
+Date: Mon, 16 Apr 2012 21:11:52 +1000
+Message-ID: <CACckToVQ6Gm5th91-vyPugSGAPuWp9ZDDdZLqGerHWT==apHRQ@mail.gmail.com>
 References: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C734104094
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10418104094
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 13:06:24 +0200 (CEST)
-Received: by vcbf11 with SMTP id f11so3486707vcb.38
-	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 04:06:23 -0700 (PDT)
+	Mon, 16 Apr 2012 13:11:53 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so3729871wgb.20
+	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 04:11:52 -0700 (PDT)
 In-Reply-To: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,9 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Felix Homann <linuxaudio@showlabor.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 16, 2012 at 8:38 PM, Felix Homann <linuxaudio@showlabor.de>wrote:
+
+> re-sending to everyone...
+>
+> [SNIP]
+>
 > ** Effects **
 >
 > Essentially, with the attached patch you can control everything but
@@ -42,27 +47,39 @@ List-Id: alsa-devel@alsa-project.org
 >
 > For those reasons I would prefer not to put effect support in the
 > kernel. What do you think?
+>
 
-What if they are activated somehow, and a user would loke to turn them off?
+Nope it absolutely should be supported to fully support the device.
 
-You're completely right, the effects on this soundcard are useless,
-but let say they have been turn on in a Windows session, would the FTU
-turn them back off at reboot, or would they still be on?
+They're for monitoring if used as intended... ie: when doing hardware based
+monitoring.
+
+>
+> ** dB values **
+>
+> Currently alsamixer does not report any dB changes when you change a
+> control value. I  don't know how to fix it. Anyone else?
+>
+>
+What does dB value mean in this context given there's a hardware volume
+knob on the device? is it just the db difference or is supposed to be some
+sort of dBm absolute output level
+
+the specs say that the output at the rear of the device is +10 dBm balanced
+and +1.8dBu unbalanced
+
+and the headphones are 0dBm into 32 ohms
+
 
 > ** Naming scheme again **
 >
 > Once again, is everyone pleased with the current naming scheme?
 >
+>
+> I think it's ok. I still think we need some better tools. but with 16*8
+controls now and another 4x8 for effects + effect select and misc controls
+like clock select I think some better ui is necessary.
 
-The naming scheme is indeed very confusing, but what other solution is
-there? I used the FTU mixer under Windows and it is as confusing :)
-I'm not sure the problem is with the naming convention though, but
-more what the Alsa mixers look like... Gamix used to be perfect for
-the FTU with all the controls in a grid, it was very clear how the
-levels were setup... Unfortunately it's not maintained anymore, even
-in Ubuntu...
-
-
-So that's my 2 cents...
-
-Aur=E9lien
+>
+>
+>
