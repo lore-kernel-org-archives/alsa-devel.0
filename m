@@ -1,21 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: system suspend and live audio streams
-Date: Mon, 16 Apr 2012 13:40:41 +0300
-Message-ID: <4F8BF729.20906@ti.com>
-References: <CANOLnON2pL5tF2pDHzZ+UEBhtTG1cUmonv5pvs3SrwdtWxcJUw@mail.gmail.com>
-	<4F8B1EF3.9040802@bitmer.com>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Subject: Re: Fast Track Ultra mixer - opinions anyone?
+Date: Mon, 16 Apr 2012 12:06:23 +0100
+Message-ID: <CAE-xCyO1hrewRg8mV8VsfHA+oNG1mLzCRRmocFgo4A+RNAMVzQ@mail.gmail.com>
+References: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
-	[74.125.149.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id C225224346
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C734104094
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Apr 2012 12:40:18 +0200 (CEST)
-Received: by lbao2 with SMTP id o2so774681lba.23
-	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 03:40:15 -0700 (PDT)
-In-Reply-To: <4F8B1EF3.9040802@bitmer.com>
+	Mon, 16 Apr 2012 13:06:24 +0200 (CEST)
+Received: by vcbf11 with SMTP id f11so3486707vcb.38
+	for <alsa-devel@alsa-project.org>; Mon, 16 Apr 2012 04:06:23 -0700 (PDT)
+In-Reply-To: <CAFz=ag4SmifT2jVE-NqcWXg_+go_WYD06c9ZM0HtC1KHKg7k6Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Grazvydas Ignotas <notasas@gmail.com>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwNC8xNS8yMDEyIDEwOjE4IFBNLCBKYXJra28gTmlrdWxhIHdyb3RlOgo+IE9uIDA0
-LzE0LzIwMTIgMDY6NDAgUE0sIEdyYXp2eWRhcyBJZ25vdGFzIHdyb3RlOgo+PiBIaSwKPj4KPj4g
-Q3VycmVudGx5IG9uIE9NQVAgdGhlIHN5c3RlbSBmYWlscyB0byBzdXNwZW5kIHByb3Blcmx5IGlm
-IHRoZXJlIGFyZQo+PiBhdWRpbyBzdHJlYW1zIGFjdGl2ZSAoUEVSIGFuZCBDT1JFIGRvbid0IGVu
-dGVyIGxvdyBwb3dlciBzdGF0ZXMpLiBJCj4+IHdvbmRlciBpZiB0aGlzIGlzIGV4cGVjdGVkIHRv
-IGJlIGhhbmRsZWQgYnkgdGhlIGRyaXZlciBhbmQgY2FuIGJlCj4+IGNvbnNpZGVyZWQgYSBidWcs
-IG9yIGlzIGl0IGF1ZGlvIGRhZW1vbidzL3N5c3RlbSdzIHJlc3BvbnNpYmlsaXR5IHRvCj4+IHN0
-b3AgYWxsIGF1ZGlvIHN0cmVhbXMgYmVmb3JlIGtlcm5lbCB0byBpcyBhc2tlZCB0byBzdGFydCBz
-dXNwZW5kaW5nPwoKRGlkIHRoZSBzdXNwZW5kL3Jlc3VtZSB3b3JrZWQgaW4gdGhlIHBhc3QgZHVy
-aW5nIGF1ZGlvIGFjdGl2aXR5PwoKPj4KPiBIbW0uLiB0aGlzIGlzIGFjdHVhbGx5IHNvbWV0aGlu
-ZyB3aGljaCBpcyBub3QgaW1wbGVtZW50ZWQuCj4gCj4gQmVmb3JlIGFyY2gvYXJtL3BsYXQtb21h
-cC9tY2JzcDogb21hcF9tY2JzcF9yZXF1ZXN0IHVzZWQgdG8gZW5hYmxlCj4gY2xvY2tzIGFuZCBr
-ZWVwIHRoZW0gYWN0aXZlIHVudGlsIG9tYXBfbWNic3BfZnJlZS4gSS5lLgo+IG9tYXBfbWNic3Bf
-c3RvcC9fc3RhcnQgd2hpY2ggYXJlIGNhbGxlZCBkdXJpbmcgc3VzcGVuZC1yZXN1bWUgY3ljbGUK
-PiBkb24ndCBjaGFuZ2UgdGhlIGNsb2NrIHN0YXRlLgo+IAo+IEkgZG9uJ3QgYWN0dWFsbHkgcmVt
-ZW1iZXIgd2h5IGl0IHVzZWQgdG8gYmUgc28uIE1pZ2h0IGJlIHJlbGF0ZWQgdG8gU1BJCj4gbW9k
-ZSB1c2Ugb24gT01BUDE/CgpXZSBuZWVkIHRvIGhhdmUgdGhlIGNsb2NrcyBlbmFibGVkIGluIG9y
-ZGVyIHRvIGNoYW5nZSBNY0JTUCByZWdpc3RlcnMuCldlIGRvIHJlZ2lzdGVyIHdyaXRlcyBpbiBz
-ZXZlcmFsIHBsYWNlcyBhZnRlciBzdGFydHVwIChwcmVwYXJlLApod19wYXJhbXMsIGNsb2NrIGNv
-bmZpZ3VyYXRpb24pLgoKPiBCdXQgYXMgbm93IHRoZSBTUEkgc3VwcG9ydCBpcyBkcm9wcGVkIChu
-byB1c2VycyBhbmQgbm90IHN1cHBvcnRlZCBpbgo+IGxhdGVyIG9tYXBzKSBhbmQgbWNic3AgaXMg
-bWVyZ2VkIHdpdGggb21hcC1tY2JzcCAobm8gb3RoZXIgdXNlcnMgdGhhbgo+IGF1ZGlvKSBJIGRv
-bid0IHNlZSB3aHkgdGhlIGNsb2NrcyAob3IgcnVudGltZSBwbSkgc2hvdWxkIGJlIGFjdGl2ZQo+
-IGJlZm9yZSBvbWFwX21jYnNwX3N0YXJ0LgoKQmVjYXVzZSB3ZSBuZWVkIHRvIHdyaXRlIHJlZ2lz
-dGVycyAoY29uZmlndXJlIE1jUEJTUCkuCgo+IEkgZG9uJ3Qga25vdyBpbW1lZGlhdGVseSBkb2Vz
-IHRoaXMgcmVxdWlyZSBhbnkgbWFqb3IgY2hhbmdlcyBmb3IgTWNCU1AKPiByZWdpc3RlciBhY2Nl
-c3MgdGhhdCBhcmUgZG9uZSBpbiBmdW5jdGlvbiBjYWxscyBiZWZvcmUgb21hcF9tY2JzcF9zdGFy
-dAo+IChJUkNDIGh3bW9kIG1pZ2h0IHNldCBhbHJlYWR5IElDTEsgZ2F0aW5nIGZvciByZWdpc3Rl
-ciBhY2Nlc3MpIGJ1dCBzb21lCj4gY29kZSBpcyBuZWVkZWQgdG8gZGVhbCB3aXRoIE1jQlNQIHJl
-Z2lzdGVyIGNhY2hlIHJlc3RvcmUgKGR1ZSBPTUFQCj4gT0ZGTU9ERSB0aGF0IG1pZ2h0IGJlIGhp
-dCkgYW5kIG1vc3QgcHJvYmFibHkgZm9yIE1jQlNQIEZJRk8gZHJhaW5pbmcgYXMKPiB3ZWxsLgoK
-V2hhdCB3ZSBuZWVkIHRvIGRvIGlzIHRvIGhhdmUgcHJvcGVyIHJlZ2lzdGVyIHN0b3JlL3Jlc3Rv
-cmUgZm9yIE1jQlNQIHRvCnN1cHBvcnQgc3VzcGVuZCBkdXJpbmcgYXVkaW8gYWN0aXZpdHkuIEJ1
-dC4gRXZlbiB3aXRoIHRoYXQgaWYgdGhlIE1jQlNQCmlzIGhpdHRpbmcgT0ZGIG1vZGUgd2Ugd2ls
-bCBsb29zZSB0aGUgTWNCU1AgRklGTyBjb250ZW50IChpbnZhbGlkYXRlZCkuClRoaXMgbWVhbnMg
-d2UgYXJlIGdvaW5nIHRvIGhhdmUgbWlzc2luZyBzYW1wbGVzLiBQcm9iYWJseSB0aGUgdXNlciB3
-aWxsCm5vdCBnb2luZyB0byBub3RpY2UgaXQsIGJ1dCBpdCBpcyBnb2luZyB0byBoYXBwZW4uCkkn
-bSBzdXJlIHRoaXMgaXNzdWUgcHJlc2VudCBvbiBvdGhlciBwbGF0Zm9ybXMgYXMgd2VsbC4gVGhl
-IHBtX3J1bnRpbWUKaXMgaGFuZGxlZCBieSB0aGUgY29yZSwgd2Ugc2hvdWxkIGhhdmUgc3VzcGVu
-ZC9yZXN1bWUgY2hlY2tlZCBpbiBBU29DCmNvcmUsIGlmIHRoZXJlJ3MgYW4gaXNzdWUgd2UgbmVl
-ZCB0byBmaXggaXQuIEFmdGVyIHRoYXQgdGhlIE1jQlNQCnN0b3JlL3Jlc3RvcmUgbmVlZCB0byBi
-ZSBpbXBsZW1lbnRlZC4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+> ** Effects **
+>
+> Essentially, with the attached patch you can control everything but
+> the effect program. The switch should not be too hard to implement.
+> But before I put any more work on it I would like to ask wether it
+> makes sense at all.
+>
+> IMO, the effect section on the FTUs really sucks. I can't believe that
+> anybody can really use it in a reasonable way. So should we really add
+> another 40 controls to the mixer which can cause a lot of pain when
+> misadjusted (i.e. anything else but 0)?
+>
+> For those reasons I would prefer not to put effect support in the
+> kernel. What do you think?
+
+What if they are activated somehow, and a user would loke to turn them off?
+
+You're completely right, the effects on this soundcard are useless,
+but let say they have been turn on in a Windows session, would the FTU
+turn them back off at reboot, or would they still be on?
+
+> ** Naming scheme again **
+>
+> Once again, is everyone pleased with the current naming scheme?
+>
+
+The naming scheme is indeed very confusing, but what other solution is
+there? I used the FTU mixer under Windows and it is as confusing :)
+I'm not sure the problem is with the naming convention though, but
+more what the Alsa mixers look like... Gamix used to be perfect for
+the FTU with all the controls in a grid, it was very clear how the
+levels were setup... Unfortunately it's not maintained anymore, even
+in Ubuntu...
+
+
+So that's my 2 cents...
+
+Aur=E9lien
