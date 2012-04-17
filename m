@@ -1,50 +1,78 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: da7210: Minor update for PLL and
- SRM
-Date: Tue, 17 Apr 2012 20:53:13 +0100
-Message-ID: <20120417195312.GY6652@opensource.wolfsonmicro.com>
-References: <1334677064.13279.16.camel@matrix>
+Subject: [PATCH] ASoC: wm8994: Keep AIF3 tristated when not in
+	use
+Date: Tue, 17 Apr 2012 21:04:24 +0100
+Message-ID: <1334693065-26579-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DVXvgjZtTc9TWCEb"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1334677064.13279.16.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8306F24141
+	for <alsa-devel@alsa-project.org>;
+	Tue, 17 Apr 2012 22:04:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Since AIF3 shares clock signals with other audio interfaces in order to
+ensure it doesn't drive undesirable clocks we need to tristate it. Rather
+than forcing the machine driver to do so have the driver do this.
 
---DVXvgjZtTc9TWCEb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-On Tue, Apr 17, 2012 at 09:07:44PM +0530, Ashish Chavan wrote:
-> This patch converts multiple if conditions in to single if with "&&"s.
-
-Applied, thanks.
-
---DVXvgjZtTc9TWCEb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjcoYAAoJEBus8iNuMP3dMN8P/3nWPxcyhj25GIQNmjXFO1OT
-M40k7K2O7i6YRkTrb9RYWEyTemy3kDWk/aGGjvVGv+8fkJakEAneMYo7jyb41lEE
-L4QQkGyiWGb352+yRxQFC0n0wSmHU5qcUYKW1PQc8wCxVZFPQ3/xGw63Eo8xUB1O
-SzYWci3o4yGBr3o3C/3KUwihvPCkkwLTKpegXk6jhOsF8XJCXILkC92wxUejwaPV
-1mwzn24s5PfCCIVofjvWx3VIRAhY1eAujSjEmgBsj/LsBbszC8LSlMcQSCZKK8r2
-0m0Q/4m70FHDM5wcjim4gR6JxsK7PQSOvxqljF8OferIiMssVFn4smpO2jRmE3l5
-ToI67YKSE4FWi0aUum1UkRo70McmYM2CazyWqPbFxbNBJWvvNIU9ysI84jkeF7nC
-kujlXRZzlDsqAXg3oHU2sqNo4Uz8gZKuyqoK10fvULDtCmfC+YwZjbrLUiTOfkQN
-0PgTbW2i+RxdlbE/j45jVzn/8rgPvw/bs6NdtNLjO1h1SnbPpwqFwDEDtdQ1p7Sf
-OGnvneYHH1/7KGIxeSvcTnP8nWHf/M8ICkfqJph13HUIl4TsLAPChPnVCyL1gFk4
-0jdPFX0GSsyKwUOxNFkc7cyhWdSLIbEfPpCnec9rZPcSzX/uawhbqeN5VmKy7lmO
-0TlsKjmNjmrFmz0CnByP
-=Hk1u
------END PGP SIGNATURE-----
-
---DVXvgjZtTc9TWCEb--
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 36c338f..35c8a2a 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1735,6 +1735,7 @@ SND_SOC_DAPM_MUX("AIF3ADC Mux", SND_SOC_NOPM, 0, 0, &wm8994_aif3adc_mux),
+ };
+ 
+ static const struct snd_soc_dapm_widget wm8958_dapm_widgets[] = {
++SND_SOC_DAPM_SUPPLY("AIF3", WM8994_POWER_MANAGEMENT_6, 5, 1, NULL, 0),
+ SND_SOC_DAPM_MUX("Mono PCM Out Mux", SND_SOC_NOPM, 0, 0, &mono_pcm_out_mux),
+ SND_SOC_DAPM_MUX("AIF2DACL Mux", SND_SOC_NOPM, 0, 0, &aif2dacl_src_mux),
+ SND_SOC_DAPM_MUX("AIF2DACR Mux", SND_SOC_NOPM, 0, 0, &aif2dacr_src_mux),
+@@ -1975,6 +1976,9 @@ static const struct snd_soc_dapm_route wm8958_intercon[] = {
+ 	{ "AIF2DACR Mux", "AIF2", "AIF2DAC Mux" },
+ 	{ "AIF2DACR Mux", "AIF3", "AIF3DACDAT" },
+ 
++	{ "AIF3DACDAT", NULL, "AIF3" },
++	{ "AIF3ADCDAT", NULL, "AIF3" },
++
+ 	{ "Mono PCM Out Mux", "AIF2ADCL", "AIF2ADCL" },
+ 	{ "Mono PCM Out Mux", "AIF2ADCR", "AIF2ADCR" },
+ 
+@@ -2845,10 +2849,6 @@ static int wm8994_set_tristate(struct snd_soc_dai *codec_dai, int tristate)
+ 		reg = WM8994_AIF2_MASTER_SLAVE;
+ 		mask = WM8994_AIF2_TRI;
+ 		break;
+-	case 3:
+-		reg = WM8994_POWER_MANAGEMENT_6;
+-		mask = WM8994_AIF3_TRI;
+-		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -2901,7 +2901,6 @@ static const struct snd_soc_dai_ops wm8994_aif2_dai_ops = {
+ 
+ static const struct snd_soc_dai_ops wm8994_aif3_dai_ops = {
+ 	.hw_params	= wm8994_aif3_hw_params,
+-	.set_tristate	= wm8994_set_tristate,
+ };
+ 
+ static struct snd_soc_dai_driver wm8994_dai[] = {
+-- 
+1.7.10
