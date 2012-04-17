@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add support for CS42L52 Codec
-Date: Tue, 17 Apr 2012 17:32:42 +0100
-Message-ID: <20120417163241.GQ6652@opensource.wolfsonmicro.com>
-References: <1334609938-11671-1-git-send-email-brian.austin@cirrus.com>
-	<20120417111359.GB6652@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1204171040350.16471@heelrod.ad.cirrus.com>
-	<20120417160703.GO6652@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1204171123200.16471@heelrod.ad.cirrus.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [PATCH 2/4] Add Wolfson Microelectronics WM8766
+	codec ALSA driver
+Date: Tue, 17 Apr 2012 18:35:32 +0200
+Message-ID: <201204171835.38252.linux@rainbow-software.org>
+References: <1334611118-10301-1-git-send-email-linux@rainbow-software.org>
+	<1334611118-10301-3-git-send-email-linux@rainbow-software.org>
+	<20120417145929.GA22575@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4663013870285369563=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A8CD104359
+Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AE42104359
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Apr 2012 18:32:45 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1204171123200.16471@heelrod.ad.cirrus.com>
+	Tue, 17 Apr 2012 18:36:00 +0200 (CEST)
+In-Reply-To: <20120417145929.GA22575@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: mbizon@freebox.fr, alsa-devel@alsa-project.org, lrg@ti.com, joe@nucleusys.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 17 April 2012 16:59:29 Mark Brown wrote:
+> On Mon, Apr 16, 2012 at 11:18:36PM +0200, Ondrej Zary wrote:
+> > Needed by Philips PSC724 subdriver. The code does not contain any
+> > card-specific bits so it can be used by any other ALSA driver.
+> >
+> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+>
+> Please CC me (and ideally all of patches@opensource.wolfsonmicro.com)
+> on any drivers for Wolfson devices.  It's not like we're secretive!
+>
+> > ---
+> >  include/sound/wm8766.h   |  160 ++++++++++++++++++++
+> >  sound/i2c/other/Makefile |    3 +-
+> >  sound/i2c/other/wm8766.c |  374
+> > ++++++++++++++++++++++++++++++++++++++++++++++
+>
+> No, this should be supported in ASoC - anything adding new code in
+> sound/i2c is *deeply* suspicious.
 
---===============4663013870285369563==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SvyA5ywaG/v2A5dH"
-Content-Disposition: inline
+I agree that sound/i2c is wrong. I worked on tea575x-tuner before which lives 
+in this directory too - but it's neither an I2C device nor a sound chip...
+There should probably be something like sound/codecs instead that could be 
+used by any sound card drivers.
 
+> > +struct snd_wm8766_ops {
+> > +	void (*write)(struct snd_wm8766 *wm, u16 addr, u16 data);
+> > +};
+>
+> You should in general use regmap rather than open coding register I/O
+> for I2C devices.
 
---SvyA5ywaG/v2A5dH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+regmap seems like an overkill here. It requires the i2c bus to be registered 
+in the kernel i2c subsystem (which is not in the case of ice1712).
 
-On Tue, Apr 17, 2012 at 11:25:42AM -0500, Brian Austin wrote:
+> > +void snd_wm8766_init(struct snd_wm8766 *wm);
+> > +void snd_wm8766_set_if(struct snd_wm8766 *wm, u16 dac);
+> > +void snd_wm8766_set_master_mode(struct snd_wm8766 *wm, u16 mode);
+> > +void snd_wm8766_set_power(struct snd_wm8766 *wm, u16 power);
+> > +void snd_wm8766_volume_restore(struct snd_wm8766 *wm);
+> > +int snd_wm8766_build_controls(struct snd_wm8766 *wm);
+>
+> I've not yet looked at the rest of the code but this looks awfully like
+> you've just invented a minimal version of the ASoC interfaces...
 
-> I can move the Codec Power bit into PREPARE.  As for the Charge
-> Pump, since it is only required for ADC, I can move it into an event
-> for the ADC DAPM Widget.  Make sense?
+The _set functions are just simple register writes - the caller needs to know 
+what to write there (only _set_if is used by psc724).
 
-I'd suggest making the charge pump a _SUPPLY widget instead - that'll be
-less code - but yes.
-
---SvyA5ywaG/v2A5dH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjZr/AAoJEBus8iNuMP3d1d4P/1eWrGF151J62M6TMEU6kB7a
-pqdNh8sG5GnbLmjmlnoIlYS9grYbOolDcELN8kLxHTRkKvHDx3I8hr/rU1o55zD7
-iqPjLHs5K6OisplgNXK9tDf71Gm11bqyLyCwSuerUPrUTY0IOTtC2hWTiqOADAhS
-z+jU1BBzltYTHORBOPgcX44cfZUmTm1T7kPbDVB0BzyBdJOANdSbUS6uGjRJoC2H
-dIr4kfpdyCZX+XW1kkH2aPFeRvQiSqMcgRXA+QngMzhj4L+gqDR9clrf+AL2y+LN
-Gnr6zWeG4L4JySIsrwVjKcVLNf1A+/SKQOSxOmb9vOUS2s52flDlAKMc0CEeUraP
-y6kvIInXuuVlVow2XcM5RzsqxGeKlNvRTPI0iTrFe7YBPnu3enBMPD22h7dSZ5ZD
-wcTmDlfrAIH3UXlIOFc5Pw8lq72tHGSNycgwG0xjRK/sPSRjU8t14PF8I8z41o2o
-qkUcyMrJDJWJJWXePgq5aa7vxNN4bamuwJnU3sQnbPjR9DqWZD/enQg0LYSs7OBt
-4DzrbLW3Y/acDS9auzgJDSIsLZa7ov340mVKuS5XR0/s9g0py+js5q7f0WGwmyqE
-gn0Tpy1Mp63HaxDX6GxE2aVzyq5ampXawSCmYQnLHS+E15wPTA3ZCWYTxdc0O6kY
-LhGo74CN8XnEvc/V30VP
-=ZTvn
------END PGP SIGNATURE-----
-
---SvyA5ywaG/v2A5dH--
-
---===============4663013870285369563==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4663013870285369563==--
+-- 
+Ondrej Zary
