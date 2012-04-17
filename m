@@ -1,55 +1,74 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: core: Fix card RTD count for deferred
-	probe.
-Date: Tue, 17 Apr 2012 18:00:11 +0100
-Message-ID: <1334682011-29411-1-git-send-email-lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 3/4] Add Wolfson Microelectronics WM8776
+ codec ALSA driver
+Date: Tue, 17 Apr 2012 18:04:31 +0100
+Message-ID: <20120417170431.GT6652@opensource.wolfsonmicro.com>
+References: <1334611118-10301-1-git-send-email-linux@rainbow-software.org>
+ <1334611118-10301-4-git-send-email-linux@rainbow-software.org>
+ <20120417150234.GB22575@sirena.org.uk>
+ <201204171813.44044.linux@rainbow-software.org>
+ <20120417161820.GP6652@opensource.wolfsonmicro.com>
+ <s5hlilupbe5.wl%tiwai@suse.de>
+ <20120417165005.GR6652@opensource.wolfsonmicro.com>
+ <s5hbomqpafy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog131.obsmtp.com (na3sys009aog131.obsmtp.com
-	[74.125.149.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6EF44104382
-	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Apr 2012 19:00:25 +0200 (CEST)
-Received: by wgbge7 with SMTP id ge7so5338923wgb.28
-	for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2012 10:00:22 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xPLL5cPndR2UZ7Mw"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hbomqpafy.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ondrej Zary <linux@rainbow-software.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently we increment the number of RTD's per card during the DAI link
-bind. This can cause an incorrect RTD count when we cannot find a component
-and defer the probe (and hence perform the DAI link bind for the card again).
 
-Fix the count so that it is cleared before every card registration
-and bind attempt.
+--xPLL5cPndR2UZ7Mw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- sound/soc/soc-core.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+On Tue, Apr 17, 2012 at 06:52:49PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 5d308e9..20e55531 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3155,6 +3155,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 				 GFP_KERNEL);
- 	if (card->rtd == NULL)
- 		return -ENOMEM;
-+	card->num_rtd = 0;
- 	card->rtd_aux = &card->rtd[card->num_links];
- 
- 	for (i = 0; i < card->num_links; i++)
--- 
-1.7.5.4
+> > This isn't just adding something into a specific driver which fails at
+> > abstraction, it's adding generic code.  If it were adding something to
+> > the ice17xx driver then that'd be one thing but look at the subject line
+> > and location of the file...  this stuff should be buried inside the
+> > driver if it's too painful to make the driver sane.
+
+> The codes in sound/i2c are mostly oly for ice1712/ice1724 drivers
+> after all...  They could be used by others, but I don't think there
+> will be any more at this point.
+
+If they're specific to that driver we should make them specific to that
+driver and make sure the pain is confined there.  We really don't want
+to end up going back to the bad old days of having to do per-CPU/card
+drivers for CODECs because nobody had thought to abstract this stuff,
+that just makes everyone miserable.
+
+Looking at these commits I'd not expect anyone to figure out that this
+isn't how we want or expect people to add generic CODEC drivers.
+
+--xPLL5cPndR2UZ7Mw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPjaIuAAoJEBus8iNuMP3d48AP/jGK/OvRzQgA71eqKsvprJ9+
++9O4/49CopQDpwdQgAbWjlAa6pSXN1SB6TDZV4XK3UpA+UO25AbVrPyqSahvwf4V
+vFkkMfA2tA1KfvAcgan4sD4s6wtM/eTqJwpVxWucHTwvEoJA7Z/esNdQ5wWFgCSH
+J77w705fsw+PgTjIlTgwfgEtAVL1fvETQdjaOfOHFWk8WQ6Bpm0zpGqQSwYFpnsi
+2PSknBROMHfC70E6FGvIc8CxL4e2Ztz3+f7oC/eDbNsUfaFHhK4eHRNvhVX9se78
+GXHLbukLfulxAexHuph33NcmCYvnrwkqS3tjsebptLHMxfEr6eozCPBQmAXkBPU0
+Cy9O4nO2Bw8ImZsVsLgpPAZk2aKXKK1sL/jOpIDttn4UtH1EfOh1ci4j0TqFOauJ
+WBwkn2QBmXrA2ZNNLoYibB5wKgX6dKefZyxljQmhmvsCel1RRRLb2JF8ULPBlpLs
+gp0pAU0ymzK27LMA/nIFZ8m6qHwj5r3D/itPEVovDvtBrOss620A6ZduYBIAlacB
+F5ATM5GO8wcUHBK1Kw0F0Ziwi7PJfHI9sEb60B4ozpiYhSV03SpxccilrGfIHnkY
+cCi2rYBCnHIehJ9Eb/PrPEHhzMOyOtTWXXHN9OnvItdselVjUADQrTeCmVUki51G
+n0Bp5QdTpM8QGCh1G7Mb
+=+2oo
+-----END PGP SIGNATURE-----
+
+--xPLL5cPndR2UZ7Mw--
