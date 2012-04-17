@@ -1,23 +1,50 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH -next] soc: fix printk format in soc-dapm.c
-Date: Mon, 16 Apr 2012 19:52:04 -0300
-Message-ID: <CAOMZO5BXn=LpEpyzcYqn=dSYhO2orBLwYD=XStFPqVhtr5S-6Q@mail.gmail.com>
-References: <20120416161121.261ba4e7e38989173accfb16@canb.auug.org.au>
-	<4F8CC0E9.3010407@xenotime.net>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsamonitor on SunOS
+Date: Tue, 17 Apr 2012 09:25:30 +0200
+Message-ID: <4F8D1AEA.4060802@ladisch.de>
+References: <CAHymeZozhxD5uUBUsK0x7QzHdh-t3_ZTghwQTWEtp6kWeKwr7A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <4F8CC0E9.3010407@xenotime.net>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 3CC4A24365
+	for <alsa-devel@alsa-project.org>;
+	Tue, 17 Apr 2012 09:22:20 +0200 (CEST)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 2405122CDA
+	for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2012 03:22:19 -0400 (EDT)
+In-Reply-To: <CAHymeZozhxD5uUBUsK0x7QzHdh-t3_ZTghwQTWEtp6kWeKwr7A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: james pruett <gpscruise@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 16, 2012 at 10:01 PM, Randy Dunlap <rdunlap@xenotime.net> wrote:
-> From: Randy Dunlap <rdunlap@xenotime.net>
->
-> Fix printk format warning for 'formats':
->
-> sound/soc/soc-dapm.c:2913:5: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'u64'
+james pruett wrote:
+> I love the alsamonitor look and feel.
 
-I have sent a fix for this earlier today and Mark has already applied it.
+I assume you mean alsamixer?
+
+> I want to port it to my SunOS box.
+> Q: Is there a Hello World I might try first to see if the colors, etc work?
+
+ncurses has demo programs.
+
+> Q: what visual toolkit/gizmo is alsamonitor based upon?
+
+alsamixer is based on curses with the panel and menu libraries; the actual
+toolkit is written by hand (widget.c, textbox.c, etc.) and isn't very
+generic:
+http://git.alsa-project.org/?p=alsa-utils.git;a=tree;f=alsamixer;hb=HEAD
+
+
+Regards,
+Clemens
