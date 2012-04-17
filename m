@@ -1,20 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsamonitor on SunOS
-Date: Tue, 17 Apr 2012 09:25:30 +0200
-Message-ID: <4F8D1AEA.4060802@ladisch.de>
-References: <CAHymeZozhxD5uUBUsK0x7QzHdh-t3_ZTghwQTWEtp6kWeKwr7A@mail.gmail.com>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: system suspend and live audio streams
+Date: Tue, 17 Apr 2012 13:21:56 +0300
+Message-ID: <CANOLnOPjbG4navm2tKxuWwYPbMCAp6EnSOZ84XCZi-LipYKy8A@mail.gmail.com>
+References: <CANOLnON2pL5tF2pDHzZ+UEBhtTG1cUmonv5pvs3SrwdtWxcJUw@mail.gmail.com>
+	<4F8B1EF3.9040802@bitmer.com> <4F8BF729.20906@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 3CC4A24365
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 64C8D24482
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Apr 2012 09:22:20 +0200 (CEST)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 2405122CDA
-	for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2012 03:22:19 -0400 (EDT)
-In-Reply-To: <CAHymeZozhxD5uUBUsK0x7QzHdh-t3_ZTghwQTWEtp6kWeKwr7A@mail.gmail.com>
+	Tue, 17 Apr 2012 12:50:33 +0200 (CEST)
+Received: by yhnn12 with SMTP id n12so3087385yhn.38
+	for <alsa-devel@alsa-project.org>; Tue, 17 Apr 2012 03:50:32 -0700 (PDT)
+In-Reply-To: <4F8BF729.20906@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: james pruett <gpscruise@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-james pruett wrote:
-> I love the alsamonitor look and feel.
-
-I assume you mean alsamixer?
-
-> I want to port it to my SunOS box.
-> Q: Is there a Hello World I might try first to see if the colors, etc work?
-
-ncurses has demo programs.
-
-> Q: what visual toolkit/gizmo is alsamonitor based upon?
-
-alsamixer is based on curses with the panel and menu libraries; the actual
-toolkit is written by hand (widget.c, textbox.c, etc.) and isn't very
-generic:
-http://git.alsa-project.org/?p=alsa-utils.git;a=tree;f=alsamixer;hb=HEAD
-
-
-Regards,
-Clemens
+T24gTW9uLCBBcHIgMTYsIDIwMTIgYXQgMTo0MCBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDQvMTUvMjAxMiAxMDoxOCBQTSwgSmFya2tvIE5p
+a3VsYSB3cm90ZToKPj4gT24gMDQvMTQvMjAxMiAwNjo0MCBQTSwgR3JhenZ5ZGFzIElnbm90YXMg
+d3JvdGU6Cj4+PiBIaSwKPj4+Cj4+PiBDdXJyZW50bHkgb24gT01BUCB0aGUgc3lzdGVtIGZhaWxz
+IHRvIHN1c3BlbmQgcHJvcGVybHkgaWYgdGhlcmUgYXJlCj4+PiBhdWRpbyBzdHJlYW1zIGFjdGl2
+ZSAoUEVSIGFuZCBDT1JFIGRvbid0IGVudGVyIGxvdyBwb3dlciBzdGF0ZXMpLiBJCj4+PiB3b25k
+ZXIgaWYgdGhpcyBpcyBleHBlY3RlZCB0byBiZSBoYW5kbGVkIGJ5IHRoZSBkcml2ZXIgYW5kIGNh
+biBiZQo+Pj4gY29uc2lkZXJlZCBhIGJ1Zywgb3IgaXMgaXQgYXVkaW8gZGFlbW9uJ3Mvc3lzdGVt
+J3MgcmVzcG9uc2liaWxpdHkgdG8KPj4+IHN0b3AgYWxsIGF1ZGlvIHN0cmVhbXMgYmVmb3JlIGtl
+cm5lbCB0byBpcyBhc2tlZCB0byBzdGFydCBzdXNwZW5kaW5nPwo+Cj4gRGlkIHRoZSBzdXNwZW5k
+L3Jlc3VtZSB3b3JrZWQgaW4gdGhlIHBhc3QgZHVyaW5nIGF1ZGlvIGFjdGl2aXR5PwoKSSBkb24n
+dCB0aGluayBzby4KCj4+IEkgZG9uJ3Qga25vdyBpbW1lZGlhdGVseSBkb2VzIHRoaXMgcmVxdWly
+ZSBhbnkgbWFqb3IgY2hhbmdlcyBmb3IgTWNCU1AKPj4gcmVnaXN0ZXIgYWNjZXNzIHRoYXQgYXJl
+IGRvbmUgaW4gZnVuY3Rpb24gY2FsbHMgYmVmb3JlIG9tYXBfbWNic3Bfc3RhcnQKPj4gKElSQ0Mg
+aHdtb2QgbWlnaHQgc2V0IGFscmVhZHkgSUNMSyBnYXRpbmcgZm9yIHJlZ2lzdGVyIGFjY2Vzcykg
+YnV0IHNvbWUKPj4gY29kZSBpcyBuZWVkZWQgdG8gZGVhbCB3aXRoIE1jQlNQIHJlZ2lzdGVyIGNh
+Y2hlIHJlc3RvcmUgKGR1ZSBPTUFQCj4+IE9GRk1PREUgdGhhdCBtaWdodCBiZSBoaXQpIGFuZCBt
+b3N0IHByb2JhYmx5IGZvciBNY0JTUCBGSUZPIGRyYWluaW5nIGFzCj4+IHdlbGwuCj4KPiBXaGF0
+IHdlIG5lZWQgdG8gZG8gaXMgdG8gaGF2ZSBwcm9wZXIgcmVnaXN0ZXIgc3RvcmUvcmVzdG9yZSBm
+b3IgTWNCU1AgdG8KPiBzdXBwb3J0IHN1c3BlbmQgZHVyaW5nIGF1ZGlvIGFjdGl2aXR5LiBCdXQu
+IEV2ZW4gd2l0aCB0aGF0IGlmIHRoZSBNY0JTUAo+IGlzIGhpdHRpbmcgT0ZGIG1vZGUgd2Ugd2ls
+bCBsb29zZSB0aGUgTWNCU1AgRklGTyBjb250ZW50IChpbnZhbGlkYXRlZCkuCj4gVGhpcyBtZWFu
+cyB3ZSBhcmUgZ29pbmcgdG8gaGF2ZSBtaXNzaW5nIHNhbXBsZXMuIFByb2JhYmx5IHRoZSB1c2Vy
+IHdpbGwKPiBub3QgZ29pbmcgdG8gbm90aWNlIGl0LCBidXQgaXQgaXMgZ29pbmcgdG8gaGFwcGVu
+LgoKQ291bGQgd2UgbWF5YmUgZmlyc3QgZ2V0IGl0IHdvcmtpbmcgd2l0aCBSRVQgKEkgdGhpbmsg
+aXQncyBjdXJyZW50bHkKZGVmYXVsdCBmb3Igc3VzcGVuZCB0byBSQU0pLCB3aGVyZSByZWdpc3Rl
+ciBjb250ZW50cyBhcmUgbm90IGxvc3QKQUZBSUs/IFdoYXQgbmVlZHMgdG8gYmUgZG9uZSB0aGVy
+ZSwgdHJhbnNtaXR0ZXIgc3RvcHBlZCBhbmQgY2xvY2tzCmRpc2FibGVkIEkgZ3Vlc3MsIGFueXRo
+aW5nIGVsc2U/IEkgd29uZGVyIGlmIG9uZ29pbmcgRE1BIG5lZWRzIHRvIGJlCmhhbmRsZWQgc29t
+ZWhvdyB0b28uCkZvciBvdXIgdXNlIGNhc2UgRklGTyBsb3NzLCBpZiBpdCBoYXBwZW5zLCBzaG91
+bGRuJ3QgYmUgYSBiaWcgZGVhbC4KCgotLSAKR3Jhxb52eWRhcwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
