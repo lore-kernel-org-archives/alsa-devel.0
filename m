@@ -1,58 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: da7210: Add support for PLL and SRM
-Date: Tue, 17 Apr 2012 14:43:52 +0100
-Message-ID: <20120417134351.GD6652@opensource.wolfsonmicro.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v2] ASoC: da7210: Add support for PLL and
+ SRM
+Date: Tue, 17 Apr 2012 19:51:00 +0530
+Message-ID: <1334672460.13279.3.camel@matrix>
 References: <1334666046.32225.8.camel@matrix>
+	<20120417134351.GD6652@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UoPmpPX/dBe4BELn"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1334666046.32225.8.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db3outboundpool.messaging.microsoft.com
+	(db3ehsobe004.messaging.microsoft.com [213.199.154.142])
+	by alsa0.perex.cz (Postfix) with ESMTP id 656B724542
+	for <alsa-devel@alsa-project.org>;
+	Tue, 17 Apr 2012 16:09:19 +0200 (CEST)
+In-Reply-To: <20120417134351.GD6652@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2012-04-17 at 14:43 +0100, Mark Brown wrote:
+> On Tue, Apr 17, 2012 at 06:04:06PM +0530, Ashish Chavan wrote:
+> 
+> > +	/* Search pll div array for correct divisors */
+> > +	for (cnt = 0; cnt < ARRAY_SIZE(da7210_pll_div); cnt++) {
+> > +		/* check fref */
+> > +		if (fref == da7210_pll_div[cnt].fref) {
+> > +			/* check mode */
+> > +			 if (da7210->master ==  da7210_pll_div[cnt].mode) {
+> > +				/* check fout */
+> > +				if (fout == da7210_pll_div[cnt].fout) {
+> 
+> I've applied but this would be a lot clearer if it were writen as a
+> single if statement with &&s.
 
---UoPmpPX/dBe4BELn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Apr 17, 2012 at 06:04:06PM +0530, Ashish Chavan wrote:
-
-> +	/* Search pll div array for correct divisors */
-> +	for (cnt = 0; cnt < ARRAY_SIZE(da7210_pll_div); cnt++) {
-> +		/* check fref */
-> +		if (fref == da7210_pll_div[cnt].fref) {
-> +			/* check mode */
-> +			 if (da7210->master ==  da7210_pll_div[cnt].mode) {
-> +				/* check fout */
-> +				if (fout == da7210_pll_div[cnt].fout) {
-
-I've applied but this would be a lot clearer if it were writen as a
-single if statement with &&s.
-
---UoPmpPX/dBe4BELn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjXOMAAoJEBus8iNuMP3dVYsQAIehPFi1mxlT8OW4FLq/amDY
-8ax23R33vJlD48134rsbsVqYTgI7vXxmTCfNKTYgHYUkjdglHqqyQFSr+AJpxvF1
-9P1+yEGnSPTlu0jFcbURwyZTDq1+Lq2Hdf3o+feQ5z/NvsyUhDr3iRnqdzK6zpsW
-cmdYDpjHOCcqUCeZYPsLFzYG/wLk4Rgnm0bQyVCF49vMVFboxRiEBw+CfeUEznUY
-vIF/YSXwCI1hoi5ML95nzfHW0VOpgLgIS7vos/ZohQ5iV7mKyp6a+S6MEy+SMEAv
-6r6qsciqBmWozq7rEXhFscRTRJRKjVFUpZNcrBadIHPEuW21mNG3nfEIAphzuT8i
-9cfK1Wc1CTAcR4+hAAkKEeFTypW0024GnW5p2fJLLryuT5mt8flCbhYv9rdcEblo
-w/Jq0ppVFbUMwpVkj6QnK+m4J7o10j8CKpHHpGBKFYdOaIY5zmF2m2kQ2Bhm+UaZ
-ngA8EXSJiQMI9TOPHckB0wHOuT4fVz/FL2sEWjWkK1sZm8rXgCt3BBx75PVoSAPL
-J4n/BBwCfhElekdoqP7nPEfDR0TqS5nXqLuuU6ldbLEWF2fvBHoErFiDErbrbhAQ
-PGTYDOFQHGvTNumsg156XcunrjF8RLsduqIWpJq3cP7kzNgzS+fAVCZeHJVuVOhP
-F64dk4uDidDcL2fUJXUO
-=7obX
------END PGP SIGNATURE-----
-
---UoPmpPX/dBe4BELn--
+Actually I implemented it like that first. But then realized that
+because of the 80 chars limit and long conditions, readability was
+hampered. Let me submit a patch to convert it to single if, if that is
+preferred way of doing it.
