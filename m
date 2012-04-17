@@ -1,16 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Keep AIF3 tristated when not in
-	use
-Date: Tue, 17 Apr 2012 21:04:24 +0100
-Message-ID: <1334693065-26579-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: [PATCH 3/4] Add Wolfson Microelectronics WM8776
+ codec ALSA driver
+Date: Tue, 17 Apr 2012 22:16:01 +0200
+Message-ID: <4F8DCF81.4080508@ivitera.com>
+References: <1334611118-10301-1-git-send-email-linux@rainbow-software.org>
+	<20120417170431.GT6652@opensource.wolfsonmicro.com>
+	<s5h3982p71g.wl%tiwai@suse.de>
+	<201204172015.14582.linux@rainbow-software.org>
+	<20120417182204.GV6652@opensource.wolfsonmicro.com>
+	<s5hwr5enpau.wl%tiwai@suse.de>
+	<20120417194341.GX6652@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8306F24141
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id C197D24330
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Apr 2012 22:04:28 +0200 (CEST)
+	Tue, 17 Apr 2012 22:16:16 +0200 (CEST)
+In-Reply-To: <20120417194341.GX6652@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,59 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since AIF3 shares clock signals with other audio interfaces in order to
-ensure it doesn't drive undesirable clocks we need to tristate it. Rather
-than forcing the machine driver to do so have the driver do this.
+Dne 17.4.2012 21:43, Mark Brown napsal(a):
+>
+> That's the case in the PC world but obviously this is exactly how
+> essentially all embedded systems are built up.  It needs to be very
+> clear that this is just legacy code for these old PC sound cards and
+> nothing else, nothing about either the directory naming or the changelog
+> here suggests that this is anything other than the standard way to add
+> support for new CODECs to ALSA.
+>
+> We usually have to go through a loop of "you need to use the frameworks"
+> with new vendors, we need to make the process of figuring out what they
+> should do as simple as we can.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Mark, I have always viewed alsa drivers as split to two parts
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 36c338f..35c8a2a 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1735,6 +1735,7 @@ SND_SOC_DAPM_MUX("AIF3ADC Mux", SND_SOC_NOPM, 0, 0, &wm8994_aif3adc_mux),
- };
- 
- static const struct snd_soc_dapm_widget wm8958_dapm_widgets[] = {
-+SND_SOC_DAPM_SUPPLY("AIF3", WM8994_POWER_MANAGEMENT_6, 5, 1, NULL, 0),
- SND_SOC_DAPM_MUX("Mono PCM Out Mux", SND_SOC_NOPM, 0, 0, &mono_pcm_out_mux),
- SND_SOC_DAPM_MUX("AIF2DACL Mux", SND_SOC_NOPM, 0, 0, &aif2dacl_src_mux),
- SND_SOC_DAPM_MUX("AIF2DACR Mux", SND_SOC_NOPM, 0, 0, &aif2dacr_src_mux),
-@@ -1975,6 +1976,9 @@ static const struct snd_soc_dapm_route wm8958_intercon[] = {
- 	{ "AIF2DACR Mux", "AIF2", "AIF2DAC Mux" },
- 	{ "AIF2DACR Mux", "AIF3", "AIF3DACDAT" },
- 
-+	{ "AIF3DACDAT", NULL, "AIF3" },
-+	{ "AIF3ADCDAT", NULL, "AIF3" },
-+
- 	{ "Mono PCM Out Mux", "AIF2ADCL", "AIF2ADCL" },
- 	{ "Mono PCM Out Mux", "AIF2ADCR", "AIF2ADCR" },
- 
-@@ -2845,10 +2849,6 @@ static int wm8994_set_tristate(struct snd_soc_dai *codec_dai, int tristate)
- 		reg = WM8994_AIF2_MASTER_SLAVE;
- 		mask = WM8994_AIF2_TRI;
- 		break;
--	case 3:
--		reg = WM8994_POWER_MANAGEMENT_6;
--		mask = WM8994_AIF3_TRI;
--		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -2901,7 +2901,6 @@ static const struct snd_soc_dai_ops wm8994_aif2_dai_ops = {
- 
- static const struct snd_soc_dai_ops wm8994_aif3_dai_ops = {
- 	.hw_params	= wm8994_aif3_hw_params,
--	.set_tristate	= wm8994_set_tristate,
- };
- 
- static struct snd_soc_dai_driver wm8994_dai[] = {
--- 
-1.7.10
+1. the "PC world" where mostly individual often amateur developers post 
+patches improving support of the hardware they own.
+
+2. the ASoC world of embedded solutions, where mostly vendors contribute 
+patches for the hardware they produce. All ASoC posts are prefixed by 
+ASoC and I have always viewed them as something I do not have to care 
+about when fixing and developing stuff for PCI.
+
+Even the until recently highly active intel-hda section does not use any 
+of the ASoC infrastructure. If you read the ASoC documentation 
+http://alsa-project.org/main/index.php/ASoC, it would not occur to me I 
+should be using asoc codecs infrastructure for ice1724 card.
+
+If you want these independent contributors to start using the kernel 
+infrastructure common in the ASoC "tree", please tell them clearly on 
+the alsa-project.org website, at best directly at 
+http://alsa-project.org/main/index.php/Developer_Zone
+
+Working hard on series of patches and being met with cold attitude as 
+for not adhering to ASoC standards (quoting the alsa-project.org: "The 
+overall project goal of the ALSA System on Chip (ASoC) layer is to 
+provide better ALSA support for embedded system on chip procesors") the 
+developer had no idea he was supposed to follow is not really 
+motivating. And I think every helpful hand and brain counts here.
+
+I can understand the very active ASoC subproject is defining current 
+standards for the rest of alsa tree but please tell the currently valid 
+rules to all the developers.
+
+Thanks a lot for understanding,
+
+Pavel.
