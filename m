@@ -1,72 +1,42 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH v2] ASoC: da7210: Minor update for PLL and SRM
-Date: Tue, 17 Apr 2012 21:07:44 +0530
-Message-ID: <1334677064.13279.16.camel@matrix>
+From: Rob Landley <rob@landley.net>
+Subject: Re: [PATCH] [Trivial] Documentation: Add newline at end-of-file to
+ files lacking one
+Date: Tue, 17 Apr 2012 10:41:33 -0500
+Message-ID: <4F8D8F2D.7030704@landley.net>
+References: <alpine.LNX.2.00.1204162329190.21898@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
-	(va3ehsobe006.messaging.microsoft.com [216.32.180.16])
-	by alsa0.perex.cz (Postfix) with ESMTP id 956E310425A
-	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Apr 2012 17:27:21 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1204162329190.21898@swampdragon.chaosbits.net>
+Sender: linux-doc-owner@vger.kernel.org
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@xenotime.net>, trivial@kernel.org, kjsisson@bellsouth.net, Ben Dooks <ben-linux@fluff.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Ben Dooks <ben@simtec.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Andy Lutomirski <luto@mit.edu>, "H. Peter Anvin" <hpa@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Josua Dietze <digidietze@draisberghof.de>, Andiry Xu <andiry.xu@amd.com>, Matthew Garrett <mjg@redhat.com>, Sarah Sharp <sarah.a.sharp@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Mike Frysinger <vapier@gentoo.org>, Michael Hennerich <michael.hennerich@analog.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch converts multiple if conditions in to single if with "&&"s.
+On 04/16/2012 04:35 PM, Jesper Juhl wrote:
+> This patch simply adds a newline character at end-of-file to those
+> files in Documentation/ that currently lack one.
+> 
+> This is done for a few different reasons:
+> 
+> A) It's rather annoying when you do "cat some_file.txt" that your
+>    prompt/cursor ends up at the end of the last line of output rather
+>    than on a new line.
+> 
+> B) Some tools that process files line-by-line may get confused by the
+>    lack of a newline on the last line.
+> 
+> C) The "\ No newline at end of file" line in diffs annoys me for some
+>    reason.
+> 
+> So, let's just add the missing newline once and for all.
+> 
+> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
 
-Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Signed-off-by: David Dajun Chen <dchen@diasemi.com>
----
-Changes since v1:
-Aligned '(' s for the branches
----
- sound/soc/codecs/da7210.c |   22 +++++++++-------------
- 1 files changed, 9 insertions(+), 13 deletions(-)
+Acked-by: Rob Landley <rob@landley.net>
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index cf4063b..d5fdf17 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -992,19 +992,15 @@ static int da7210_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 
- 	/* Search pll div array for correct divisors */
- 	for (cnt = 0; cnt < ARRAY_SIZE(da7210_pll_div); cnt++) {
--		/* check fref */
--		if (fref == da7210_pll_div[cnt].fref) {
--			/* check mode */
--			 if (da7210->master ==  da7210_pll_div[cnt].mode) {
--				/* check fout */
--				if (fout == da7210_pll_div[cnt].fout) {
--					/* all match, pick up divisors */
--					pll_div1 = da7210_pll_div[cnt].div1;
--					pll_div2 = da7210_pll_div[cnt].div2;
--					pll_div3 = da7210_pll_div[cnt].div3;
--					break;
--				}
--			}
-+		/* check fref, mode  and fout */
-+		if ((fref == da7210_pll_div[cnt].fref) &&
-+		    (da7210->master ==  da7210_pll_div[cnt].mode) &&
-+		    (fout == da7210_pll_div[cnt].fout)) {
-+			/* all match, pick up divisors */
-+			pll_div1 = da7210_pll_div[cnt].div1;
-+			pll_div2 = da7210_pll_div[cnt].div2;
-+			pll_div3 = da7210_pll_div[cnt].div3;
-+			break;
- 		}
- 	}
- 	if (cnt >= ARRAY_SIZE(da7210_pll_div))
+Rob
 -- 
-1.7.1
+GNU/Linux isn't: Linux=GPLv2, GNU=GPLv3+, they can't share code.
+Either it's "mere aggregation", or a license violation.  Pick one.
