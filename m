@@ -1,53 +1,63 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: da7210: Minor update for PLL and SRM
-Date: Tue, 17 Apr 2012 15:56:18 +0100
-Message-ID: <20120417145618.GL6652@opensource.wolfsonmicro.com>
-References: <1334674858.13279.9.camel@matrix>
+Subject: Re: [PATCH 2/4] Add Wolfson Microelectronics WM8766
+ codec ALSA driver
+Date: Tue, 17 Apr 2012 15:59:29 +0100
+Message-ID: <20120417145929.GA22575@sirena.org.uk>
+References: <1334611118-10301-1-git-send-email-linux@rainbow-software.org>
+	<1334611118-10301-3-git-send-email-linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Jbyekxk18hnEXT0m"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 241F310419F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 17 Apr 2012 16:59:31 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1334674858.13279.9.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <1334611118-10301-3-git-send-email-linux@rainbow-software.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 16, 2012 at 11:18:36PM +0200, Ondrej Zary wrote:
+> Needed by Philips PSC724 subdriver. The code does not contain any
+> card-specific bits so it can be used by any other ALSA driver.
+> 
+> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
---Jbyekxk18hnEXT0m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Please CC me (and ideally all of patches@opensource.wolfsonmicro.com)
+on any drivers for Wolfson devices.  It's not like we're secretive!
 
-On Tue, Apr 17, 2012 at 08:30:58PM +0530, Ashish Chavan wrote:
+> ---
+>  include/sound/wm8766.h   |  160 ++++++++++++++++++++
+>  sound/i2c/other/Makefile |    3 +-
+>  sound/i2c/other/wm8766.c |  374 ++++++++++++++++++++++++++++++++++++++++++++++
 
-> +		if ((fref == da7210_pll_div[cnt].fref) &&
-> +			(da7210->master ==  da7210_pll_div[cnt].mode) &&
-> +			(fout == da7210_pll_div[cnt].fout)) {
+No, this should be supported in ASoC - anything adding new code in
+sound/i2c is *deeply* suspicious.
 
-Since this is just a coding style thing how about lining up the (s for
-the branches?
+> +struct snd_wm8766_ops {
+> +	void (*write)(struct snd_wm8766 *wm, u16 addr, u16 data);
+> +};
 
---Jbyekxk18hnEXT0m
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+You should in general use regmap rather than open coding register I/O
+for I2C devices.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+> +void snd_wm8766_init(struct snd_wm8766 *wm);
+> +void snd_wm8766_set_if(struct snd_wm8766 *wm, u16 dac);
+> +void snd_wm8766_set_master_mode(struct snd_wm8766 *wm, u16 mode);
+> +void snd_wm8766_set_power(struct snd_wm8766 *wm, u16 power);
+> +void snd_wm8766_volume_restore(struct snd_wm8766 *wm);
+> +int snd_wm8766_build_controls(struct snd_wm8766 *wm);
 
-iQIcBAEBAgAGBQJPjYMqAAoJEBus8iNuMP3d9WQP/ROahhIRDH41PaaWuAgzqrnH
-akfSkbUcYvZIaJ4vyDDFnEQ7u/+EZ/tGujzDyjSey8cmaVSW7e17B3F7+1nifapO
-F+USacLjy483Rg3fZASPON00gjdNzkFulL9Ysl4g4LQWUq6E1H7yzXyY/Pn2L1Tl
-liBrH1RPqs+ShT0hgVnRFtVLWAHpULMBNuAGNzcF8YAsQgP1eyYp2wlw8+zpD3Oq
-incD2ljbbfUklCvjFAjH5LeHumen461yCPfW/HBFuGzNMMEkRT78SaaKy6NyTKEa
-qG05TAXC77XScBpk8k499J8gUGmyY6H4oDjOmPzo58Pnpg96/I7jpzvAjjVl7jVb
-k2i3j87QDsyFZh1Q8+DTpNnDVSJkTQgaRVwuFuvc1oYsH6A2Nep9cuFj6FY9dl1G
-XVTikSWyJKhhYOYAPefPw+iqPInLk2cWsDlBIa0wMgS+nZhyKCToLjPRt8/L5kfL
-W/ZTKpolTQ5PqwC3g9vWM0zaEL9/N2PzKLgI8HjM3jnoN7thOaOTkK9xX9nW4IK2
-CwmmmddcM9quQuFGLL4mxlQhFUHP+DZQjczGb70cM4AKjkn39Z8kGf6SSqnKJwUo
-BuMX1aYyDcURg7sUCRR+EGcbH8e1tTa4rf/G1vVyIkHyliAQ7wLg4Ok6o+k86rBT
-oHKVOegkdKLnZ1tydxhz
-=mI6S
------END PGP SIGNATURE-----
-
---Jbyekxk18hnEXT0m--
+I've not yet looked at the rest of the code but this looks awfully like
+you've just invented a minimal version of the ASoC interfaces...
