@@ -1,94 +1,133 @@
-From: Benedikt Bergenthal <benedikt@kdrennert.de>
-Subject: [PATCH 32/33] Sound: USB: card.c : Fixed various style errors
-Date: Wed, 18 Apr 2012 16:12:12 +0200
-Message-ID: <1334758333-4906-1-git-send-email-benedikt@kdrennert.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz
-Cc: tiwai@suse.de, zonque@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Benedikt Bergenthal <benedikt@kdrennert.de>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [PATCH] configure.in: look for ncurses pkg-config first
+Date: Wed, 18 Apr 2012 10:25:54 -0400
+Message-ID: <1334759154-22302-1-git-send-email-vapier@gentoo.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC15B243AC
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Apr 2012 16:25:09 +0200 (CEST)
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 6FD781B4012
+	for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2012 14:25:06 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fixed Various style issues from checkpath
+Newer ncurses installs pkg-config files, and these are much easier
+to manage when cross-compiling, so default to searching for those.
+If they can't be found, we fall back to the existing xxx-config.
 
-Signed-off-by: Benedikt Bergenthal <benedikt@kdrennert.de>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/usb/card.c |   18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ configure.in |   64 +++++++++++++++++++++++++++++++++++++--------------------
+ 1 files changed, 41 insertions(+), 23 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 4a7be7b..a2f7cc1 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -186,7 +186,7 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
- 		return -EINVAL;
- 	}
+diff --git a/configure.in b/configure.in
+index 2208a95..9404df0 100644
+--- a/configure.in
++++ b/configure.in
+@@ -29,6 +29,7 @@ AC_PROG_INSTALL
+ AC_PROG_MKDIR_P
+ AC_PROG_LN_S
+ AC_PROG_SED
++PKG_PROG_PKG_CONFIG
+ AM_PATH_ALSA(1.0.24)
+ AC_CHECK_FUNC([snd_ctl_elem_add_enumerated],
+ 	      , [AC_ERROR([No user enum control support in alsa-lib])])
+@@ -130,34 +131,52 @@ if test x$alsamixer = xtrue; then
+   NCURSESLIBSUFFIX=""
+   CURSES_NLS="no"
+   if test "$curseslib" = "ncursesw" -o \( "$curseslib" = "auto" -a "$USE_NLS" = "yes" \); then
+-    AC_CHECK_PROG([ncursesw5_config], [ncursesw5-config], [yes])
+-    if test "$ncursesw5_config" = "yes"; then
+-      CURSESINC="<ncurses.h>"
+-      CURSESLIB=`ncursesw5-config --libs`
+-      CURSESLIBDIR=`ncursesw5-config --libdir`
+-      CURSES_CFLAGS=`ncursesw5-config --cflags`
+-      curseslib="ncursesw"
+-    else
+-      AC_CHECK_LIB(ncursesw, initscr,
+-                 [ CURSESINC='<ncurses.h>'; CURSESLIB='-lncursesw'; curseslib="ncursesw"])
+-    fi
++    dnl First try out pkg-config, then fall back to old config scripts.
++    PKG_CHECK_MODULES([NCURSESW], [ncursesw], [
++        CURSESINC="<ncurses.h>"
++        CURSESLIB="${NCURSESW_LIBS}"
++        CURSESLIBDIR=
++        CURSES_CFLAGS="${NCURSESW_CFLAGS}"
++        curseslib="ncursesw"
++      ], [
++        AC_CHECK_PROG([ncursesw5_config], [ncursesw5-config], [yes])
++        if test "$ncursesw5_config" = "yes"; then
++          CURSESINC="<ncurses.h>"
++          CURSESLIB=`ncursesw5-config --libs`
++          CURSESLIBDIR=`ncursesw5-config --libdir`
++          CURSES_CFLAGS=`ncursesw5-config --cflags`
++          curseslib="ncursesw"
++        else
++          AC_CHECK_LIB(ncursesw, initscr,
++                     [ CURSESINC='<ncurses.h>'; CURSESLIB='-lncursesw'; curseslib="ncursesw"])
++        fi
++      ])
+     if test -n "$CURSESINC"; then
+       NCURSESLIBSUFFIX="w"
+       CURSES_NLS="yes"
+     fi
+   fi
+   if test "$curseslib" = "ncurses" -o "$curseslib" = "auto"; then
+-    AC_CHECK_PROG([ncurses5_config], [ncurses5-config], [yes])
+-    if test "$ncurses5_config" = "yes"; then
+-      CURSESINC="<ncurses.h>"
+-      CURSESLIB=`ncurses5-config --libs`
+-      CURSESLIBDIR=`ncurses5-config --libdir`
+-      CURSES_CFLAGS=`ncurses5-config --cflags`
+-      curseslib="ncurses"
+-    else
+-      AC_CHECK_LIB(ncurses, initscr,
+-                 [ CURSESINC='<ncurses.h>'; CURSESLIB='-lncurses'; curseslib="ncurses"])
+-    fi
++    dnl First try out pkg-config, then fall back to old config scripts.
++    PKG_CHECK_MODULES([NCURSES], [ncurses], [
++        CURSESINC="<ncurses.h>"
++        CURSESLIB="${NCURSES_LIBS}"
++        CURSESLIBDIR=
++        CURSES_CFLAGS="${NCURSES_CFLAGS}"
++        curseslib="ncurses"
++      ], [
++        AC_CHECK_PROG([ncurses5_config], [ncurses5-config], [yes])
++        if test "$ncurses5_config" = "yes"; then
++          CURSESINC="<ncurses.h>"
++          CURSESLIB=`ncurses5-config --libs`
++          CURSESLIBDIR=`ncurses5-config --libdir`
++          CURSES_CFLAGS=`ncurses5-config --cflags`
++          curseslib="ncurses"
++        else
++          AC_CHECK_LIB(ncurses, initscr,
++                     [ CURSESINC='<ncurses.h>'; CURSESLIB='-lncurses'; curseslib="ncurses"])
++        fi
++      ])
+   fi
+   if test "$curseslib" = "curses" -o "$curseslib" = "auto"; then
+     AC_CHECK_LIB(curses, initscr,
+@@ -287,7 +306,6 @@ SAVE_UTIL_VERSION
+ AC_SUBST(LIBRT)
  
--	if (! snd_usb_parse_audio_interface(chip, interface)) {
-+	if (!snd_usb_parse_audio_interface(chip, interface)) {
- 		usb_set_interface(dev, interface, 0); /* reset the current interface */
- 		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
- 		return -EINVAL;
-@@ -331,7 +331,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
- 	}
- 
- 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (! chip) {
-+	if (!chip) {
- 		snd_card_free(card);
- 		return -ENOMEM;
- 	}
-@@ -351,7 +351,8 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
- 	INIT_LIST_HEAD(&chip->midi_list);
- 	INIT_LIST_HEAD(&chip->mixer_list);
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_usb_audio_free(chip);
- 		snd_card_free(card);
- 		return err;
-@@ -474,12 +475,12 @@ snd_usb_audio_probe(struct usb_device *dev,
- 			break;
- 		}
- 	}
--	if (! chip) {
-+	if (!chip) {
- 		/* it's a fresh one.
- 		 * now look for an empty slot and create a new card instance
- 		 */
- 		for (i = 0; i < SNDRV_CARDS; i++)
--			if (enable[i] && ! usb_chip[i] &&
-+			if (enable[i] && !usb_chip[i] &&
- 			    (vid[i] == -1 || vid[i] == USB_ID_VENDOR(id)) &&
- 			    (pid[i] == -1 || pid[i] == USB_ID_PRODUCT(id))) {
- 				if (snd_usb_audio_create(dev, i, quirk, &chip) < 0) {
-@@ -507,7 +508,8 @@ snd_usb_audio_probe(struct usb_device *dev,
- 	err = 1; /* continue */
- 	if (quirk && quirk->ifnum != QUIRK_NO_INTERFACE) {
- 		/* need some special handlings */
--		if ((err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk)) < 0)
-+		err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk);
-+		if (err < 0)
- 			goto __error;
- 	}
- 
-@@ -639,7 +641,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 				as = list_entry(p, struct snd_usb_stream, list);
- 				snd_pcm_suspend_all(as->pcm);
- 			}
-- 		}
-+		}
- 	} else {
- 		/*
- 		 * otherwise we keep the rest of the system in the dark
-@@ -687,7 +689,7 @@ err_out:
- #define usb_audio_resume	NULL
- #endif		/* CONFIG_PM */
- 
--static struct usb_device_id usb_audio_ids [] = {
-+static struct usb_device_id usb_audio_ids[] = {
- #include "quirks-table.h"
-     { .match_flags = (USB_DEVICE_ID_MATCH_INT_CLASS | USB_DEVICE_ID_MATCH_INT_SUBCLASS),
-       .bInterfaceClass = USB_CLASS_AUDIO,
+ dnl Check for systemd
+-PKG_PROG_PKG_CONFIG
+ AC_ARG_WITH([systemdsystemunitdir],
+         AS_HELP_STRING([--with-systemdsystemunitdir=DIR], [Directory for systemd service files]),
+         [], [with_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)])
 -- 
-1.7.9.5
+1.7.8.5
