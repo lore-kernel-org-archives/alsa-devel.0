@@ -1,26 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/4] Add Wolfson Microelectronics WM8776
- codec ALSA driver
-Date: Wed, 18 Apr 2012 11:34:30 +0100
-Message-ID: <20120418103430.GG3021@opensource.wolfsonmicro.com>
-References: <20120417170431.GT6652@opensource.wolfsonmicro.com>
-	<s5h3982p71g.wl%tiwai@suse.de>
-	<201204172015.14582.linux@rainbow-software.org>
-	<20120417182204.GV6652@opensource.wolfsonmicro.com>
-	<s5hwr5enpau.wl%tiwai@suse.de>
-	<20120417194341.GX6652@opensource.wolfsonmicro.com>
-	<4F8DCF81.4080508@ivitera.com>
-	<20120417212914.GZ6652@opensource.wolfsonmicro.com>
-	<20120418090620.GA21844@sirena.org.uk>
-	<4F8E88E9.4060007@ivitera.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH v2] ASoC: dapm - Add API call to query valid
+	DAPM paths.
+Date: Wed, 18 Apr 2012 11:41:11 +0100
+Message-ID: <1334745671-29949-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1724732248474356315=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E6752434E
+Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
+	[74.125.149.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1953F2435F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Apr 2012 12:34:33 +0200 (CEST)
-In-Reply-To: <4F8E88E9.4060007@ivitera.com>
+	Wed, 18 Apr 2012 12:42:06 +0200 (CEST)
+Received: by wgbds11 with SMTP id ds11so467642wgb.3
+	for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2012 03:42:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,101 +23,349 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+In preparation for ASoC DSP support.
 
---===============1724732248474356315==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oOB74oR0WcNeq9Zb"
-Content-Disposition: inline
+Add a DAPM API call to determine whether a DAPM audio path is valid between
+source and sink widgets. This also takes into account all kcontrol mux and mixer
+settings in between the source and sink widgets to validate the audio path.
 
+This will be used by the DSP core to determine the runtime DAI mappings
+between FE and BE DAIs in order to run PCM operations.
 
---oOB74oR0WcNeq9Zb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Liam Girdwood <lrg@ti.com>
+---
+Changes since V1:-
+ Now uses new DAPM mutex.
+ Tracepoint used for path debug.
 
-On Wed, Apr 18, 2012 at 11:27:05AM +0200, Pavel Hofman wrote:
-> Dne 18.4.2012 11:06, Mark Brown napsal(a):
+ include/sound/soc-dapm.h    |    5 ++
+ include/trace/events/asoc.h |   80 ++++++++++++++++++++++++++++
+ sound/soc/soc-dapm.c        |  122 +++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 197 insertions(+), 10 deletions(-)
 
-> > BTW, this probably deserves picking up a bit more: there's really no
-> > distinction between commercial and non-commercial contributors, if
-> > anything I'd say that on average the hobbyist contributors tend to be
-> > working to a higher standard on average.
-
-> Mark, my whole point is most nonASoC alsa developers have no idea they
-> are supposed to use stuff in the asoc subdir for the drivers outside of
-> the asoc subtree. And I guess they mostly do not follow mailinglist
-> messages prefixed ASoC either.
-
-You're not engaging with my core point here - the simple fact that
-there is an existing driver for the device ought to be enough of a clue
-to allow someone to figure out that there's a problem here.  This
-doesn't really need understanding of the code.
-
-> If sound/asoc/codecs was in sound/codecs, they would certainly take a
-> look. But right now to them asoc really feels like a separate world.
-
-To be honest if you're at the point where you're familiar enough with
-development to be ignoring bits of the tree you don't normally work on
-then not noticing the duplicate driver is in many ways even more
-surprising.
-
-If we're going to reorganise the tree then there's a whole bunch of
-other things that could usefully be cleaned up like moving to drivers/
-and cleaning up all the legacy embedded platforms.  This wouldn't be a
-bad thing, I'm sure it's actually been discussed before.  I'd expect
-we'd probably still end up with all these devices grouped together
-though as organising by subframework does seem sensible, the issue is
-more that we've got some things that are duplicating effort.
-
-In fact I'm actually tempted to create a legacy subdirectory as a first
-step...
-
-> I understand you would like to change that (or IOW - it would be
-> beneficial to whole alsa to change that), very good. That is why I am
-> talking about some guidelines for the non-asoc developers. I cannot
-> write them, I am one of those having lived in the old-ages dark so far :)
-
-Well, it's pretty simple really - anything where the audio CODEC is a
-distinct piece of hardware connected with I2S or similar format
-interfaces ought to be using ASoC.
-
-Aside from legacy drivers like this, and the few in media/ it's really
-where we're at already.  We do from time to time get vendors trying to
-submit their own custom stacks but they get just the same sort of
-pushback for exactly the same reason.
-
---oOB74oR0WcNeq9Zb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjpivAAoJEBus8iNuMP3dtS0QAJkSkHUXT40ytlJ+PCD5/Zmx
-9WoZN07Nh/Ex0PVPD47qD16hu4x/fQ/OVgfNxawKfn8FC3zMOORvTMm3xGF3Ak0o
-9/MSwhPeqbUMkKJzWybWFFaQuctQsnZLPVE56va+Rq8Xj5KQoIanBhvwpDnF8jpy
-+2OBnp/UbpsNlvEFJjro1Xm4L+bpQ+pR4ZsVbewNlshjvuCfH71hcSe0pCloRXFd
-Kjo3tM380kbXzvsZENh5G1/gkfI+1968gSdKVcB0YFa3exN6Ghrowb+weneB0a6+
-0ojtwad1JLw34pbD1Aed0vIY7OnA5oTnbCE/TVHlufSbnSPaeGkgb3a5z3shl/yu
-2Xjs956zApsqOI7lh5JrtJWzQ0srO1fQ/JzSiv47cMxN2hVlqO1tUupFW0UJz848
-setmEcfuRH7WYyNyBeBYN1ZkfxtO0P0ZF1HimfACtS6HXDX5NAVlnBgeNTRdqFr5
-atqwTnyogXWY6CvzmNLMdbX4zitUeBVdv2J1AKhl+NYzGjoETApGtezNpkn/Bxn2
-6FXZ0x+Z8PWAMibrW8Ok23bh+AW+7i0Tmz+Wi3RcQltpjEmjyB9FWidnEU21/PMs
-8VtS9IXMvvuDerqK0DiBz5RCHqCn2YI6h/S1WQ3WQXMgCJpW45BSr9KlU7RlFOxH
-nux1HUVd6m1zIzuSgj6t
-=1tHC
------END PGP SIGNATURE-----
-
---oOB74oR0WcNeq9Zb--
-
---===============1724732248474356315==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1724732248474356315==--
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index bea0c86..e3833d9 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -321,6 +321,7 @@ struct snd_soc_dapm_pin;
+ struct snd_soc_dapm_route;
+ struct snd_soc_dapm_context;
+ struct regulator;
++struct snd_soc_dapm_widget_list;
+ 
+ int dapm_reg_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+@@ -403,6 +404,10 @@ void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec);
+ /* Mostly internal - should not normally be used */
+ void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
+ 
++/* dapm path query */
++int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
++	struct snd_soc_dapm_widget_list **list);
++
+ /* dapm widget types */
+ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_input = 0,		/* input pin */
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index ab26f8a..6d8efb1 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -7,6 +7,8 @@
+ #include <linux/ktime.h>
+ #include <linux/tracepoint.h>
+ 
++#define DAPM_DIRECT "(direct)"
++
+ struct snd_soc_jack;
+ struct snd_soc_codec;
+ struct snd_soc_platform;
+@@ -241,6 +243,84 @@ TRACE_EVENT(snd_soc_dapm_walk_done,
+ 		  (int)__entry->path_checks, (int)__entry->neighbour_checks)
+ );
+ 
++TRACE_EVENT(snd_soc_dapm_output_path,
++
++	TP_PROTO(struct snd_soc_dapm_widget *widget,
++		struct snd_soc_dapm_path *path),
++
++	TP_ARGS(widget, path),
++
++	TP_STRUCT__entry(
++		__string(	wname,	widget->name		)
++		__string(	pname,	path->name ? path->name : DAPM_DIRECT)
++		__string(	psname,	path->sink->name	)
++		__field(	int,	path_sink		)
++		__field(	int,	path_connect		)
++	),
++
++	TP_fast_assign(
++		__assign_str(wname, widget->name);
++		__assign_str(pname, path->name ? path->name : DAPM_DIRECT);
++		__assign_str(psname, path->sink->name);
++		__entry->path_connect = path->connect;
++		__entry->path_sink = (int)path->sink;
++	),
++
++	TP_printk("%c%s -> %s -> %s\n",
++		(int) __entry->path_sink &&
++		(int) __entry->path_connect ? '*' : ' ',
++		__get_str(wname), __get_str(pname), __get_str(psname))
++);
++
++TRACE_EVENT(snd_soc_dapm_input_path,
++
++	TP_PROTO(struct snd_soc_dapm_widget *widget,
++		struct snd_soc_dapm_path *path),
++
++	TP_ARGS(widget, path),
++
++	TP_STRUCT__entry(
++		__string(	wname,	widget->name		)
++		__string(	pname,	path->name ? path->name : DAPM_DIRECT)
++		__string(	psname,	path->source->name	)
++		__field(	int,	path_source		)
++		__field(	int,	path_connect		)
++	),
++
++	TP_fast_assign(
++		__assign_str(wname, widget->name);
++		__assign_str(pname, path->name ? path->name : DAPM_DIRECT);
++		__assign_str(psname, path->source->name);
++		__entry->path_connect = path->connect;
++		__entry->path_source = (int)path->source;
++	),
++
++	TP_printk("%c%s <- %s <- %s\n",
++		(int) __entry->path_source &&
++		(int) __entry->path_connect ? '*' : ' ',
++		__get_str(wname), __get_str(pname), __get_str(psname))
++);
++
++TRACE_EVENT(snd_soc_dapm_connected,
++
++	TP_PROTO(int paths, int stream),
++
++	TP_ARGS(paths, stream),
++
++	TP_STRUCT__entry(
++		__field(	int,	paths		)
++		__field(	int,	stream		)
++	),
++
++	TP_fast_assign(
++		__entry->paths = paths;
++		__entry->stream = stream;
++	),
++
++	TP_printk("%s: found %d paths\n",
++		__entry->stream ? "capture" : "playback", __entry->paths)
++);
++
+ TRACE_EVENT(snd_soc_jack_irq,
+ 
+ 	TP_PROTO(const char *name),
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index d7ee73a..214323f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -705,11 +705,51 @@ static int snd_soc_dapm_suspend_check(struct snd_soc_dapm_widget *widget)
+ 	}
+ }
+ 
++/* add widget to list if it's not already in the list */
++static int dapm_list_add_widget(struct snd_soc_dapm_widget_list **list,
++	struct snd_soc_dapm_widget *w)
++{
++	struct snd_soc_dapm_widget_list *wlist;
++	int wlistsize, wlistentries, i;
++
++	if (*list == NULL)
++		return -EINVAL;
++
++	wlist = *list;
++
++	/* is this widget already in the list */
++	for (i = 0; i < wlist->num_widgets; i++) {
++		if (wlist->widgets[i] == w)
++			return 0;
++	}
++
++	/* allocate some new space */
++	wlistentries = wlist->num_widgets + 1;
++	wlistsize = sizeof(struct snd_soc_dapm_widget_list) +
++			wlistentries * sizeof(struct snd_soc_dapm_widget *);
++	*list = krealloc(wlist, wlistsize, GFP_KERNEL);
++	if (*list == NULL) {
++		dev_err(w->dapm->dev, "can't allocate widget list for %s\n",
++			w->name);
++		return -ENOMEM;
++	}
++	wlist = *list;
++
++	/* insert the widget */
++	dev_dbg(w->dapm->dev, "added %s in widget list pos %d\n",
++			w->name, wlist->num_widgets);
++
++	wlist->widgets[wlist->num_widgets] = w;
++	wlist->num_widgets++;
++	return 1;
++}
++
+ /*
+  * Recursively check for a completed path to an active or physically connected
+  * output widget. Returns number of complete paths.
+  */
+-static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
++static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
++	struct snd_soc_dapm_widget_list **list)
+ {
+ 	struct snd_soc_dapm_path *path;
+ 	int con = 0;
+@@ -765,9 +805,23 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
+ 		if (path->walked)
+ 			continue;
+ 
++		trace_snd_soc_dapm_output_path(widget, path);
++
+ 		if (path->sink && path->connect) {
+ 			path->walked = 1;
+-			con += is_connected_output_ep(path->sink);
++
++			/* do we need to add this widget to the list ? */
++			if (list) {
++				int err;
++				err = dapm_list_add_widget(list, path->sink);
++				if (err < 0) {
++					dev_err(widget->dapm->dev, "could not add widget %s\n",
++						widget->name);
++					return con;
++				}
++			}
++
++			con += is_connected_output_ep(path->sink, list);
+ 		}
+ 	}
+ 
+@@ -780,7 +834,8 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
+  * Recursively check for a completed path to an active or physically connected
+  * input widget. Returns number of complete paths.
+  */
+-static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
++static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
++	struct snd_soc_dapm_widget_list **list)
+ {
+ 	struct snd_soc_dapm_path *path;
+ 	int con = 0;
+@@ -848,9 +903,23 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
+ 		if (path->walked)
+ 			continue;
+ 
++		trace_snd_soc_dapm_input_path(widget, path);
++
+ 		if (path->source && path->connect) {
+ 			path->walked = 1;
+-			con += is_connected_input_ep(path->source);
++
++			/* do we need to add this widget to the list ? */
++			if (list) {
++				int err;
++				err = dapm_list_add_widget(list, path->sink);
++				if (err < 0) {
++					dev_err(widget->dapm->dev, "could not add widget %s\n",
++						widget->name);
++					return con;
++				}
++			}
++
++			con += is_connected_input_ep(path->source, list);
+ 		}
+ 	}
+ 
+@@ -859,6 +928,39 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
+ 	return con;
+ }
+ 
++/**
++ * snd_soc_dapm_get_connected_widgets - query audio path and it's widgets.
++ * @dai: the soc DAI.
++ * @stream: stream direction.
++ * @list: list of active widgets for this stream.
++ *
++ * Queries DAPM graph as to whether an valid audio stream path exists for
++ * the initial stream specified by name. This takes into account
++ * current mixer and mux kcontrol settings. Creates list of valid widgets.
++ *
++ * Returns the number of valid paths or negative error.
++ */
++int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
++	struct snd_soc_dapm_widget_list **list)
++{
++	struct snd_soc_card *card = dai->card;
++	int paths;
++
++	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
++	dapm_reset(card);
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		paths = is_connected_output_ep(dai->playback_widget, list);
++	else
++		paths = is_connected_input_ep(dai->playback_widget, list);
++
++	trace_snd_soc_dapm_connected(paths, stream);
++	dapm_clear_walk(&card->dapm);
++	mutex_unlock(&card->dapm_mutex);
++
++	return paths;
++}
++
+ /*
+  * Handler for generic register modifier widget.
+  */
+@@ -915,9 +1017,9 @@ static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
+ 
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+-	in = is_connected_input_ep(w);
++	in = is_connected_input_ep(w, NULL);
+ 	dapm_clear_walk(w->dapm);
+-	out = is_connected_output_ep(w);
++	out = is_connected_output_ep(w, NULL);
+ 	dapm_clear_walk(w->dapm);
+ 	return out != 0 && in != 0;
+ }
+@@ -940,7 +1042,7 @@ static int dapm_adc_check_power(struct snd_soc_dapm_widget *w)
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+ 	if (w->active) {
+-		in = is_connected_input_ep(w);
++		in = is_connected_input_ep(w, NULL);
+ 		dapm_clear_walk(w->dapm);
+ 		return in != 0;
+ 	} else {
+@@ -956,7 +1058,7 @@ static int dapm_dac_check_power(struct snd_soc_dapm_widget *w)
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+ 	if (w->active) {
+-		out = is_connected_output_ep(w);
++		out = is_connected_output_ep(w, NULL);
+ 		dapm_clear_walk(w->dapm);
+ 		return out != 0;
+ 	} else {
+@@ -1558,9 +1660,9 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	in = is_connected_input_ep(w);
++	in = is_connected_input_ep(w, NULL);
+ 	dapm_clear_walk(w->dapm);
+-	out = is_connected_output_ep(w);
++	out = is_connected_output_ep(w, NULL);
+ 	dapm_clear_walk(w->dapm);
+ 
+ 	ret = snprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
+-- 
+1.7.5.4
