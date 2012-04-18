@@ -1,17 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: dapm - Add API call to query
-	valid DAPM paths.
-Date: Wed, 18 Apr 2012 18:23:18 +0100
-Message-ID: <20120418172318.GF3099@opensource.wolfsonmicro.com>
-References: <1334745671-29949-1-git-send-email-lrg@ti.com>
+From: Uros Vampl <mobile.leecher@gmail.com>
+Subject: Re: No sound on Quanta KN1 with kernel 3.4
+Date: Wed, 18 Apr 2012 19:33:35 +0200
+Message-ID: <20120418173335.GA27697@zverina>
+References: <20120416175609.GA22954@zverina> <s5h62czpjhu.wl%tiwai@suse.de>
+	<s5hfwc1o46s.wl%tiwai@suse.de> <20120418095545.GA26678@zverina>
+	<s5hmx6949oi.wl%tiwai@suse.de> <s5h8vht49fp.wl%tiwai@suse.de>
+	<20120418113655.GA26938@zverina> <s5hbompdyl0.wl%tiwai@suse.de>
+	<20120418162527.GA27483@zverina> <s5hlilt6lgo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1809564007480569499=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 859FA244AF
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C77A12452D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Apr 2012 19:23:20 +0200 (CEST)
-In-Reply-To: <1334745671-29949-1-git-send-email-lrg@ti.com>
+	Wed, 18 Apr 2012 19:33:33 +0200 (CEST)
+Received: by wibhn6 with SMTP id hn6so737213wib.2
+	for <alsa-devel@alsa-project.org>; Wed, 18 Apr 2012 10:33:33 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <s5hlilt6lgo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,63 +29,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1809564007480569499==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6v9BRtpmy+umdQlo"
-Content-Disposition: inline
-
-
---6v9BRtpmy+umdQlo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Apr 18, 2012 at 11:41:11AM +0100, Liam Girdwood wrote:
-> In preparation for ASoC DSP support.
->=20
-> Add a DAPM API call to determine whether a DAPM audio path is valid betwe=
-en
-> source and sink widgets. This also takes into account all kcontrol mux an=
-d mixer
-> settings in between the source and sink widgets to validate the audio pat=
-h.
-
-Applied, thanks.
-
---6v9BRtpmy+umdQlo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjvh9AAoJEBus8iNuMP3dXRkQAJTy8sd0IKkvEERV1tDTf+G5
-AiLFMhptIMewCyQIxs9JG4N24zox4xzfzilNJYGHBb7Ul22NzwooU8bMsx099jOf
-6vzzUk82lZa3KCBi3wWTg7rwy8N+5R1zpKf0wRefQ7lzK825CqIu4/o3ZFvTXOz6
-Gj142LSlsuUn1496LQkwdKllb2g4nHKEhki2+0EeLkCKuBx7ka8pL3rW3rrmpg3x
-yZyBIJFAjodr/OpPJuWT+yPDoqhKJkGiTi5Son7Z+L0vMIB39JTGUfNUCNYMZy9+
-wkK2ksO+hcvsAv9tNlbIimERjQuNRT1+JtifnDyLRbyICd5heSxblrbu7o47KRYL
-5nKqol9rXHHueZMyzct50dx4+JIvQRJ+zWMwCPqOQmaz1TfWxmLfcoXiMqsBKdtz
-9hs2+/gZPSNxIufdrbpTZkIdDjz0WEERnKzc8srdAMNF5vKPHU9c49vJm+RLn+cU
-qysSHtrE643uS89yWWPkW4o7LXF25fJXhnEW/PtcbQHnc3VnI3h7x8NgY02IZDLJ
-SNtUBNV/sF9lpb1o/E5cV1LyHafaLgZgyQW6ImYWnYQkFvmrMp0U7KMZM06upFvA
-h2QIzOVtpVevO0QtYEN5pud4Udeo84WWocUUizrwjQPSUxabwF3c9j7NgQN1jqtR
-iyuxOawYSQYaRME3JNgF
-=5bt3
------END PGP SIGNATURE-----
-
---6v9BRtpmy+umdQlo--
-
---===============1809564007480569499==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1809564007480569499==--
+T24gMTguMDQuMTIgMTg6NDEsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBaCwgZG9lcyBpdCBhZmZl
+Y3QgYm90aD8KPiBXaGF0IGhhcHBlbnMgaWYgeW91IGNoYW5nZSB0aGUgcGluIDB4MTA/ICBEb2Vz
+IGl0IGFmZmVjdCB0aGUgaGVhZHBob25lCj4gb3Igc3BlYWtlciBvdXRwdXQ/CgpQaW4gMHgwZiBh
+ZmZlY3RzIGJvdGguIFBpbiAweDEwIGFmZmVjdHMgbmVpdGhlci4KCj4gRG9lcyB0aGUgaGVhZHBo
+b25lIG91dHB1dCB3b3JrIHdpdGggMy40IGtlcm5lbCBhdCBhbGw/CgpOby4gSSBhbHdheXMgdGVz
+dGVkIGJvdGggc3BlYWtlcnMgYW5kIGhlYWRwaG9uZXMgd2l0aCBlYWNoIHBhdGNoIChhbmQgCndp
+dGhvdXQgcGF0Y2hlcykuIFRoZXJlIHdhcyBuZXZlciBhbnkgc291bmQgZnJvbSBlaXRoZXIgb2Yg
+dGhlIHR3by4KCj4gQWxzbywganVzdCB0byBiZSBzdXJlLCB0cnkgdGhlIHBhdGNoIGJlbG93IGlu
+IGFkZGl0aW9uIHRvIGFub3RoZXIuCj4gVGhpcyB3aWxsIGRpc2FibGUgdGhlIENPRUYgc2V0dXAs
+IGFuZCBpdCB3YXNuJ3QgYXBwbGllZCB0byBwcmV2aW91cwo+IG1vZGVscy4KClRoaXMgcGF0Y2gg
+ZG9lcyB0aGUgdHJpY2shIEZpcnN0IEkgdHJpZWQgaXQgd2l0aCB0aGUgcGF0Y2ggdGhhdCBkZWxl
+dGVzIAp0d28gbGluZXMgZnJvbSBoZGFfY29kZWMuYywgd29ya2VkIGFscmVhZHksIGJ1dCB0aGVy
+ZSB3YXMgbm8gU3BlYWtlciAKY29udHJvbC4gVGhlbiBJIGluc3RlYWQgdHJpZWQgd2l0aCB0aGUg
+cGF0Y2ggdGhhdCBzZXRzIHBpbiAweDBmLiBTb3VuZCAKd29ya3MgYW5kIEkgaGF2ZSBhIFNwZWFr
+ZXIgY29udHJvbC4gSW50ZXJlc3RpbmcgdGhpbmcgdGhvdWdoLCB0aGUgCkhlYWRwaG9uZSBjb250
+cm9sIGRvZXMgbm90aGluZyBhbmQgdGhlIFNwZWFrZXIgY29udHJvbCBhZmZlY3RzIGJvdGggCnNw
+ZWFrZXJzIGFuZCBoZWFkcGhvbmVzLiBNYXliZSBwaW4gMHgxMCBpcyBib2d1cyB0b28uCgpBbHNv
+IGludGVyZXN0aW5nLCB0aGUgQXV0by1NdXRlIGNvbnRyb2wgZG9lcyBub3RoaW5nLiBObyBtYXR0
+ZXIgd2hhdCAKaXQncyBzZXQgdG8sIHdoZW4gSSBwbHVnIGluIGhlYWRwaG9uZXMgdGhlIHNwZWFr
+ZXJzIGdvIHNpbGVudC4gSXQgc2VlbXMgCnRoZSBtYWNoaW5lIGhhcyBoYXJkd2FyZSBhdXRvLW11
+dGUgaGFuZGxpbmcuCgpUaGFuayB5b3UgZm9yIHlvdXIgd29yaywgSSBub3cgaGF2ZSBzb3VuZCBh
+Z2FpbiEKClJlZ2FyZHMsClVyb8WhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
