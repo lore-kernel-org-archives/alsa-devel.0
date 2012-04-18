@@ -1,45 +1,48 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: [PATCH] sound: fix core/vmaster.c kernel-doc warning
-Date: Tue, 17 Apr 2012 17:03:42 -0700
-Message-ID: <4F8E04DE.1030302@xenotime.net>
+From: Josh Boyer <jwboyer@redhat.com>
+Subject: Re: Thinkpad hda regression in 3.3
+Date: Tue, 17 Apr 2012 20:23:36 -0400
+Message-ID: <20120418002336.GK19507@zod.bos.redhat.com>
+References: <20120413124306.GC25425@zod.bos.redhat.com>
+ <s5hpqbbvkzo.wl%tiwai@suse.de>
+ <s5hk41jty24.wl%tiwai@suse.de>
+ <20120413180814.GG25425@zod.bos.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy5-pub.bluehost.com (oproxy5-pub.bluehost.com
-	[67.222.38.55]) by alsa0.perex.cz (Postfix) with SMTP id EC9B224548
-	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Apr 2012 02:03:10 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120413180814.GG25425@zod.bos.redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org, kevin@scrye.com, cwickert@fedoraproject.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Randy Dunlap <rdunlap@xenotime.net>
+On Fri, Apr 13, 2012 at 02:08:14PM -0400, Josh Boyer wrote:
+> On Fri, Apr 13, 2012 at 06:07:47PM +0200, Takashi Iwai wrote:
+> > At Fri, 13 Apr 2012 15:07:07 +0200,
+> > Takashi Iwai wrote:
+> > (snip)
+> > > If the above seem work (again, make sure that you adjust the mixer
+> > > mutes and levels), I'll make kernel patches to add these fixups
+> > > statically in the driver so that it works without extra patching.
+> > 
+> > Looking through alsa-info.sh outputs from various ThinkPad models I've
+> > gathered, it seems that we can use the same pin setups for all.
+> 
+> We had a user try the alsa-tp-dock patch on an X201 and it didn't seem
+> to work for them.  See bug
+> https://bugzilla.redhat.com/show_bug.cgi?id=806217
+> 
+> Perhaps the [codec] section isn't set properly for their configuration?
+> The alsa-info for their machine is in comment #9 of the bug.
+> 
+> > Below is a test patch for 3.3 kernel.  (Note that it'd give a merge
+> > conflict for 3.4 kernel.)
+> 
+> OK, I'll do a scratch build with this and get people to test.
 
-Fix kernel-doc warning in sound/core/vmaster.c:
+I built your patch in a scratch kernel and have at least one user with a
+t510 laptop report success.  Christoph reported the mixers showing up,
+but it wasn't clear to me if his sound actually worked on the x201.
+I've CC'd both users (Kevin t510, Christoph x201 in a dock).
 
-Warning(sound/core/vmaster.c:429): No description found for parameter 'private_data'
-
-Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
----
- sound/core/vmaster.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- lnx-34-rc3.orig/sound/core/vmaster.c
-+++ lnx-34-rc3/sound/core/vmaster.c
-@@ -419,6 +419,7 @@ EXPORT_SYMBOL(snd_ctl_make_virtual_maste
-  * snd_ctl_add_vmaster_hook - Add a hook to a vmaster control
-  * @kcontrol: vmaster kctl element
-  * @hook: the hook function
-+ * @private_data: the private_data pointer to be saved
-  *
-  * Adds the given hook to the vmaster control element so that it's called
-  * at each time when the value is changed.
+josh
