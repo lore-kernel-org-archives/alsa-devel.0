@@ -1,68 +1,72 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH forward] ASoC: fsi: update for dmaengine prep_slave_sg
- fallout.
-Date: Wed, 18 Apr 2012 10:06:36 +0100
-Message-ID: <20120418090636.GD3021@opensource.wolfsonmicro.com>
-References: <20120330082058.GE26543@linux-sh.org>
- <8762dj9fa4.wl%kuninori.morimoto.gx@renesas.com>
- <87sjg45h50.wl%kuninori.morimoto.gx@renesas.com>
- <20120416082702.GC3238@opensource.wolfsonmicro.com>
- <20120416121044.GD7368@linux-sh.org>
- <20120416121724.GA3219@opensource.wolfsonmicro.com>
- <87r4vl4wk2.wl%kuninori.morimoto.gx@renesas.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: [PATCH 3/4] Add Wolfson Microelectronics WM8776
+ codec ALSA driver
+Date: Wed, 18 Apr 2012 11:27:05 +0200
+Message-ID: <4F8E88E9.4060007@ivitera.com>
+References: <1334611118-10301-1-git-send-email-linux@rainbow-software.org>
+	<20120417170431.GT6652@opensource.wolfsonmicro.com>
+	<s5h3982p71g.wl%tiwai@suse.de>
+	<201204172015.14582.linux@rainbow-software.org>
+	<20120417182204.GV6652@opensource.wolfsonmicro.com>
+	<s5hwr5enpau.wl%tiwai@suse.de>
+	<20120417194341.GX6652@opensource.wolfsonmicro.com>
+	<4F8DCF81.4080508@ivitera.com>
+	<20120417212914.GZ6652@opensource.wolfsonmicro.com>
+	<20120418090620.GA21844@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87r4vl4wk2.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: kuninori.morimoto.gx@renesas.com
-Cc: Paul Mundt <lethal@linux-sh.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+	[84.242.75.189]) by alsa0.perex.cz (Postfix) with ESMTP id BE1DB24490
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Apr 2012 11:27:32 +0200 (CEST)
+In-Reply-To: <20120418090620.GA21844@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dne 18.4.2012 11:06, Mark Brown napsal(a):
+> On Tue, Apr 17, 2012 at 10:29:15PM +0100, Mark Brown wrote:
+>> On Tue, Apr 17, 2012 at 10:16:01PM +0200, Pavel Hofman wrote:
+> 
+>>> Working hard on series of patches and being met with cold attitude
+>>> as for not adhering to ASoC standards (quoting the alsa-project.org:
+> 
+>> It's really the fact that it's not using ASoC, it's the fact that patch
+> 
+> s/really/really not/
+> 
+>>> If you want these independent contributors to start using the kernel
+>>> infrastructure common in the ASoC "tree", please tell them clearly on
+> 
+> BTW, this probably deserves picking up a bit more: there's really no
+> distinction between commercial and non-commercial contributors, if
+> anything I'd say that on average the hobbyist contributors tend to be
+> working to a higher standard on average.
 
---2iBwrppp/7QCDedR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Mark, my whole point is most nonASoC alsa developers have no idea they
+are supposed to use stuff in the asoc subdir for the drivers outside of
+the asoc subtree. And I guess they mostly do not follow mailinglist
+messages prefixed ASoC either.
 
-On Tue, Apr 17, 2012 at 07:13:04PM -0700, kuninori.morimoto.gx@renesas.com =
-wrote:
->=20
-> Signed-off-by: Paul Mundt <lethal@linux-sh.org>
-> Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> Nothing happened on ALSA ML.
-> So I forward this patch.
-> I added my Acked-by on it.
+If sound/asoc/codecs was in sound/codecs, they would certainly take a
+look. But right now to them asoc really feels like a separate world.
 
-I've applied this since I can see Paul's original version in the archive
-but when forwarding patches for someone else you should sign off rather
-than ack the patch - signoff is mostly a statement saying "I know this
-is OK legally" and so everyone who forwards the patch is supposed to add
-one.
+I understand you would like to change that (or IOW - it would be
+beneficial to whole alsa to change that), very good. That is why I am
+talking about some guidelines for the non-asoc developers. I cannot
+write them, I am one of those having lived in the old-ages dark so far :)
 
---2iBwrppp/7QCDedR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks a lot,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPjoP6AAoJEBus8iNuMP3doMsQAJwWF5zogXBeKBRCcRv8PKPf
-hN49MhdkET/v9j3ompQQRQrtu2lmHEsd77wIAE6er7Q8O4txiRsSW89H/DF6LUHT
-k35zLi4cA8rFoiGRTiw2eGmM+CgToFYVBvvcHAB/wfw6zTDa6eSYvQBE4SoKF16i
-S/EQboofvT1bQwdTDaJvrQnJFHUe17KcdPdFVr5ur0+8iETWYnVeewajbdap1DYB
-ovQC29OVzkLNHMJVQDxUEZhYAFsqvddskRcGA1uVHW67CKxzbuCVURGb8uGL1lWm
-rMeBFc/DM7x+s73D4eWhfp2eevotq60U6XZmei55TNaQNYqnn0ato4+dmyKfdH/f
-w1mjOCEudzwX/jxFaVibCId6pDoqChi9odONQdaQ9UQhOKBmazxXKRfKB/U8mhTj
-NIoNxc8tMC5iKekxgQLJd/94ZyK7V771t7NHJZp3wq8VBAziF1Vl5B92Ew40YQrw
-FOQG2kbfrLbC4SzyzWU9UA0YsOU8O+0TN+lHpWni7SMPgSIruzMtpxxWTCduTbM3
-fP/K7uyaQHEWCUaRtDPJ2JHNceyPEunYJwPQSp+fT27FYPX/xAimVnZYUtINqEMJ
-s1UZ9QuvuF1hJMwNmIzJfR8S1H4Zwrn0CXmLJk1A2R47k5tgCJGQ/lbU1UUPMTsp
-cZvB4NUM/s1duDlm644N
-=H8F2
------END PGP SIGNATURE-----
-
---2iBwrppp/7QCDedR--
+Pavel.
