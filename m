@@ -1,48 +1,77 @@
-From: Josh Boyer <jwboyer@redhat.com>
-Subject: Re: Thinkpad hda regression in 3.3
-Date: Tue, 17 Apr 2012 20:23:36 -0400
-Message-ID: <20120418002336.GK19507@zod.bos.redhat.com>
-References: <20120413124306.GC25425@zod.bos.redhat.com>
- <s5hpqbbvkzo.wl%tiwai@suse.de>
- <s5hk41jty24.wl%tiwai@suse.de>
- <20120413180814.GG25425@zod.bos.redhat.com>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: [PATCH 1/3] ARM: OMAP: devices: Register platform devices for HDMI audio
+Date: Tue, 17 Apr 2012 19:40:44 -0500
+Message-ID: <1334709646-8468-2-git-send-email-ricardo.neri@ti.com>
+References: <1334709646-8468-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120413180814.GG25425@zod.bos.redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-team@fedoraproject.org, kevin@scrye.com, cwickert@fedoraproject.org
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1334709646-8468-1-git-send-email-ricardo.neri@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: tony@atomide.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: s-guiriec@ti.com, peter.ujfalusi@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 13, 2012 at 02:08:14PM -0400, Josh Boyer wrote:
-> On Fri, Apr 13, 2012 at 06:07:47PM +0200, Takashi Iwai wrote:
-> > At Fri, 13 Apr 2012 15:07:07 +0200,
-> > Takashi Iwai wrote:
-> > (snip)
-> > > If the above seem work (again, make sure that you adjust the mixer
-> > > mutes and levels), I'll make kernel patches to add these fixups
-> > > statically in the driver so that it works without extra patching.
-> > 
-> > Looking through alsa-info.sh outputs from various ThinkPad models I've
-> > gathered, it seems that we can use the same pin setups for all.
-> 
-> We had a user try the alsa-tp-dock patch on an X201 and it didn't seem
-> to work for them.  See bug
-> https://bugzilla.redhat.com/show_bug.cgi?id=806217
-> 
-> Perhaps the [codec] section isn't set properly for their configuration?
-> The alsa-info for their machine is in comment #9 of the bug.
-> 
-> > Below is a test patch for 3.3 kernel.  (Note that it'd give a merge
-> > conflict for 3.4 kernel.)
-> 
-> OK, I'll do a scratch build with this and get people to test.
+Add platform registration for the devices HDMI audio support. The
+omap-hdmi-audio-dai platform device is to be used by the ASoC HDMI
+CPU DAI driver. The omap-hdmi-audio platform device is to be used
+by the ASoC HDMI machine driver that links together the ASOC CPU DAI,
+ASoC plaform and ASoC codec drivers.
 
-I built your patch in a scratch kernel and have at least one user with a
-t510 laptop report success.  Christoph reported the mixers showing up,
-but it wasn't clear to me if his sound actually worked on the x201.
-I've CC'd both users (Kevin t510, Christoph x201 in a dock).
+Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
+---
+ arch/arm/mach-omap2/devices.c |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
 
-josh
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index e433603..17dacef 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -355,6 +355,36 @@ static void __init omap_init_dmic(void)
+ static inline void omap_init_dmic(void) {}
+ #endif
+ 
++#if defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI) || \
++		defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI_MODULE)
++
++static struct platform_device omap_hdmi_audio = {
++	.name	= "omap-hdmi-audio",
++	.id	= -1,
++};
++
++static void __init omap_init_hdmi_audio(void)
++{
++	struct omap_hwmod *oh;
++	struct platform_device *pdev;
++
++	oh = omap_hwmod_lookup("dss_hdmi");
++	if (!oh) {
++		printk(KERN_ERR "Could not look up dss_hdmi hw_mod\n");
++		return;
++	}
++
++	pdev = omap_device_build("omap-hdmi-audio-dai",
++		-1, oh, NULL, 0, NULL, 0, 0);
++	WARN(IS_ERR(pdev),
++	     "Can't build omap_device for omap-hdmi-audio-dai.\n");
++
++	platform_device_register(&omap_hdmi_audio);
++}
++#else
++static inline void omap_init_hdmi_audio(void) {}
++#endif
++
+ #if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MODULE)
+ 
+ #include <plat/mcspi.h>
+@@ -704,6 +734,7 @@ static int __init omap2_init_devices(void)
+ 	omap_init_mcpdm();
+ 	omap_init_dmic();
+ 	omap_init_camera();
++	omap_init_hdmi_audio();
+ 	omap_init_mbox();
+ 	omap_init_mcspi();
+ 	omap_init_pmu();
+-- 
+1.7.5.4
+
