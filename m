@@ -1,19 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [english 100%] Re:  Steinberg CMC
-Date: Thu, 19 Apr 2012 19:02:36 +0200
-Message-ID: <4F90452C.4000909@ladisch.de>
-References: <3DADBEB76B314C5EAC8F789321D691E7@nanhstxbtkmyli>
-	<4F902D1E.2040604@ladisch.de>
-	<7746C177000D4267B9F6B2F01F8D7128@nanhstxbtkmyli>
+Subject: Re: ALSA: Updating Sample Rates in
+	sound/core/pcm_native.c
+Date: Thu, 19 Apr 2012 19:06:25 +0200
+Message-ID: <4F904611.4090308@ladisch.de>
+References: <CAEA5kntdSeg+DVwLPtsDiM5Rr3e+AUqYug=S6MacobZSpjXJtQ@mail.gmail.com>	<cad6079b-5d00-49f1-bdec-6e0be5ddce94@email.android.com>	<843008328967385249@unknownmsgid>	<4F902B74.7070603@ladisch.de>
+	<CAEA5knsd3NtVCCdufvWm1C6rqLkB2vwarpQVu_TTUw7U5i_JGA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 45F4A246B0
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id BE276104501
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Apr 2012 19:02:50 +0200 (CEST)
-In-Reply-To: <7746C177000D4267B9F6B2F01F8D7128@nanhstxbtkmyli>
+	Thu, 19 Apr 2012 19:06:36 +0200 (CEST)
+In-Reply-To: <CAEA5knsd3NtVCCdufvWm1C6rqLkB2vwarpQVu_TTUw7U5i_JGA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick <patrick.pub@nerim.net>
+To: Jeremy Torres <jeremy.torres@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Patrick wrote:
-> Probably 1062 1063 1064 are the CMC- FD PD and QC but in which order?
+Jeremy Torres wrote:
+> Thanks for the quick reply!  So, I followed Takashi's advice and added
+> the constraint list for the new sample rates and no longer changed
+> pcm.h/pcm_native.c.  I can record/play at the new sample rates;
+> however, ALSA is performing rate conversion.  For example, to run at
+> 144K, the slave is configured to run 192K, even though my hardware can
+> be configured to support 144K.
 
-The important information is the ID.
-The name can be read from the device's descriptors; this parameter is there
-just to allow overriding it.
+This sounds like a bug in the driver.
 
-> I understand the patch is trivial it is three lines to add. But I need to
-> get the development version to submit it. Otherwise if in the meantime the
-> 105f and the 1066 are entered, my patch will return an error.
->
-> ... or can the maintainers do it?
-
-Such conflicts would be trivial to resolve.
+Unfortunately, my crystal ball is out of order, so you have to actually
+show the source code for me to be able to help you.
 
 
 Regards,
