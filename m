@@ -1,21 +1,19 @@
-From: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-pcm: Free dma buffers in case
-	of error.
-Date: Thu, 19 Apr 2012 19:00:55 +0300
-Message-ID: <CAPo=G1yqVDj1u3_d28MzE1POaJcvi3e2VVh3i5EqmJuwgWWWkQ@mail.gmail.com>
-References: <1334795870-5726-1-git-send-email-oleg.matcovschi@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [english 100%] Re:  Steinberg CMC
+Date: Thu, 19 Apr 2012 19:02:36 +0200
+Message-ID: <4F90452C.4000909@ladisch.de>
+References: <3DADBEB76B314C5EAC8F789321D691E7@nanhstxbtkmyli>
+	<4F902D1E.2040604@ladisch.de>
+	<7746C177000D4267B9F6B2F01F8D7128@nanhstxbtkmyli>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog129.obsmtp.com (na3sys009aog129.obsmtp.com
-	[74.125.149.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id A915E24669
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 45F4A246B0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Apr 2012 18:00:57 +0200 (CEST)
-Received: by iaeh11 with SMTP id h11so12988521iae.15
-	for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2012 09:00:55 -0700 (PDT)
-In-Reply-To: <1334795870-5726-1-git-send-email-oleg.matcovschi@ti.com>
+	Thu, 19 Apr 2012 19:02:50 +0200 (CEST)
+In-Reply-To: <7746C177000D4267B9F6B2F01F8D7128@nanhstxbtkmyli>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Oleg Matcovschi <oleg.matcovschi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Patrick <patrick.pub@nerim.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Patrick wrote:
+> Probably 1062 1063 1064 are the CMC- FD PD and QC but in which order?
 
-On Thu, Apr 19, 2012 at 3:37 AM, Oleg Matcovschi <oleg.matcovschi@ti.com> w=
-rote:
-> Signed-off-by: Oleg Matcovschi <oleg.matcovschi@ti.com>
-> ---
-> =A0sound/soc/omap/omap-pcm.c | =A0 =A04 ++++
-> =A01 files changed, 4 insertions(+), 0 deletions(-)
+The important information is the ID.
+The name can be read from the device's descriptors; this parameter is there
+just to allow overriding it.
+
+> I understand the patch is trivial it is three lines to add. But I need to
+> get the development version to submit it. Otherwise if in the meantime the
+> 105f and the 1066 are entered, my patch will return an error.
 >
-> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-> index a2a464f..380a5bd 100644
-> --- a/sound/soc/omap/omap-pcm.c
-> +++ b/sound/soc/omap/omap-pcm.c
-> @@ -414,6 +414,10 @@ static int omap_pcm_new(struct snd_soc_pcm_runtime *=
-rtd)
-> =A0 =A0 =A0 =A0}
->
-> =A0out:
-> + =A0 =A0 =A0 /* free preallocated buffers in case of error */
-> + =A0 =A0 =A0 if (ret)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_pcm_free_dma_buffers(pcm);
-> +
+> ... or can the maintainers do it?
 
-If the playback preallocation fails, or if only capture is supported
-on the dai link
-this is not needed.
-It only applies if we have both playback and capture streams and the capture
-preallocation fails.
-Luckily the omap_pcm_free_dma_buffers() has internal checks for these cases=
-...
+Such conflicts would be trivial to resolve.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+Regards,
+Clemens
