@@ -1,18 +1,16 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Fast Track Ultra (8R): Sync source switch
-Date: Fri, 20 Apr 2012 10:49:22 +0200
-Message-ID: <CAFz=ag6Lqfu1+Pzm++Auc8gfuWaUVDHZEtQQitjeVu7=62DYUw@mail.gmail.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: [PATCH 0/8] Third edition of Ux500 ASoC-driver
+Date: Fri, 20 Apr 2012 11:31:30 +0200
+Message-ID: <1334914290-27297-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
-	[209.85.217.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D115103D27
+Received: from eu1sys200aog104.obsmtp.com (eu1sys200aog104.obsmtp.com
+	[207.126.144.117])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24369103F40
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2012 10:49:24 +0200 (CEST)
-Received: by lban1 with SMTP id n1so3730793lba.38
-	for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2012 01:49:22 -0700 (PDT)
+	Fri, 20 Apr 2012 11:32:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,48 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is the third version and since last version there has
+been alot of rewriting and improvments. All according to
+the comments of Mark.
+Highlights:
+- Moved all regulator and clock-code from machine into codec.
+- Using DMA-engine PCM-interface.
+- Removed all virtual enum-switches to pin-switches.
+- Cleaned up I2S-abstraction and rearranged it in a better way.
+- Moved device-initialization into mach-tree.
 
-I've taken a look again at the usbmon logs I posted some years ago.
+Kristoffer KARLSSON (2):
+  ASoC: core: Add signed multi register control
+  ASoC: core: Add strobe control
 
-It seems that by switching the sync source you essentially tell the
-FTU to use a different altsetting for iface 2:
+Ola Lilja (6):
+  ASoC: core: Add debug-print helper function
+  arm: ux500: Add support for MSP I2S-devices
+  ASoC: Ux500: Add MSP I2S-driver
+  ASoC: Ux500: Add platform-driver
+  ASoC: codecs: Add AB8500 codec-driver
+  ASoC: Ux500: Add machine-driver
 
-Switching  "Sync Source" from "Internal" to "External" (see last line):
+ arch/arm/mach-ux500/Makefile           |    3 +-
+ arch/arm/mach-ux500/board-mop500-msp.c |  250 +++
+ arch/arm/mach-ux500/board-mop500-msp.h |   14 +
+ arch/arm/mach-ux500/board-mop500.c     |    4 +
+ arch/arm/mach-ux500/clock.c            |    8 +-
+ arch/arm/mach-ux500/devices-db8500.h   |   10 -
+ arch/arm/mach-ux500/include/mach/msp.h |   29 +
+ include/sound/soc.h                    |   31 +-
+ sound/soc/Kconfig                      |    1 +
+ sound/soc/Makefile                     |    1 +
+ sound/soc/codecs/Kconfig               |    4 +
+ sound/soc/codecs/Makefile              |    3 +
+ sound/soc/codecs/ab8500-codec.c        | 3028 ++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ab8500-codec.h        |  603 +++++++
+ sound/soc/soc-core.c                   |  181 ++
+ sound/soc/soc-pcm.c                    |    9 +
+ sound/soc/ux500/Kconfig                |   34 +
+ sound/soc/ux500/Makefile               |   11 +
+ sound/soc/ux500/u8500.c                |  118 ++
+ sound/soc/ux500/ux500_ab8500.c         |  225 +++
+ sound/soc/ux500/ux500_ab8500.h         |   21 +
+ sound/soc/ux500/ux500_msp_dai.c        |  876 +++++++++
+ sound/soc/ux500/ux500_msp_dai.h        |   80 +
+ sound/soc/ux500/ux500_msp_i2s.c        |  742 ++++++++
+ sound/soc/ux500/ux500_msp_i2s.h        |  553 ++++++
+ sound/soc/ux500/ux500_pcm.c            |  332 ++++
+ sound/soc/ux500/ux500_pcm.h            |   42 +
+ 27 files changed, 7198 insertions(+), 15 deletions(-)
+ create mode 100644 arch/arm/mach-ux500/board-mop500-msp.c
+ create mode 100644 arch/arm/mach-ux500/board-mop500-msp.h
+ create mode 100644 arch/arm/mach-ux500/include/mach/msp.h
+ create mode 100644 sound/soc/codecs/ab8500-codec.c
+ create mode 100644 sound/soc/codecs/ab8500-codec.h
+ create mode 100644 sound/soc/ux500/Kconfig
+ create mode 100644 sound/soc/ux500/Makefile
+ create mode 100644 sound/soc/ux500/u8500.c
+ create mode 100644 sound/soc/ux500/ux500_ab8500.c
+ create mode 100644 sound/soc/ux500/ux500_ab8500.h
+ create mode 100644 sound/soc/ux500/ux500_msp_dai.c
+ create mode 100644 sound/soc/ux500/ux500_msp_dai.h
+ create mode 100644 sound/soc/ux500/ux500_msp_i2s.c
+ create mode 100644 sound/soc/ux500/ux500_msp_i2s.h
+ create mode 100644 sound/soc/ux500/ux500_pcm.c
+ create mode 100644 sound/soc/ux500/ux500_pcm.h
 
-         ffff8800662a60c0 3325542111 S Co:1:006:0 s 01 0b 0000 0001 0000 0
-         ffff8800662a60c0 3325543386 C Co:1:006:0 0 0
-         ffff88009159e740 3325594872 S Co:1:006:0 s 01 0b 0000 0002 0000 0
-         ffff88009159e740 3325596263 C Co:1:006:0 0 0
-         ffff8800a00d0900 3325633405 S Co:1:006:0 s 01 0b 0001 0001 0000 0
-         ffff8800a00d0900 3325633637 C Co:1:006:0 0 0
-         ffff88009159e440 3325644251 S Co:1:006:0 s 01 0b 0002 0002 0000 0
-
-Switching "Sync Source" from "External" to "Internal" (see last line):
-
-     ffff8800a00d0480 3349133460 S Co:1:006:0 s 01 0b 0000 0001 0000 0
-     ffff8800a00d0480 3349134696 C Co:1:006:0 0 0
-     ffff88009159e740 3349186489 S Co:1:006:0 s 01 0b 0000 0002 0000 0
-     ffff88009159e740 3349187696 C Co:1:006:0 0 0
-     ffff88009159e440 3349239544 S Co:1:006:0 s 01 0b 0001 0001 0000 0
-     ffff88009159e440 3349239823 C Co:1:006:0 0 0
-     ffff8800a00d0900 3349255385 S Co:1:006:0 s 01 0b 0001 0002 0000 0
-
-
-If I haven't missed something we can achieve this by adding a quirk
-hook to either find_format() or set_format() in pcm.c.
-
-Daniel, can you think of a generic way to do this?
-
-(Note to all: can't test anything on this topic because I don't have a
-S/PDIF device here.)
-
-BTW, has anybody tested the mixer patch I posted a couple of days ago?
-
-Regards,
-
-Felix
+-- 
+1.7.8.3
