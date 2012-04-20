@@ -1,25 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: M-Audio FastTrack C400
-Date: Fri, 20 Apr 2012 09:54:17 +0200
-Message-ID: <4F911629.5090704@gmail.com>
-References: <4F8D63F4.1040208@rauros.net>
-	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
-	<4F8DF29B.9090907@rauros.net>
-	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
-	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
-	<4F8FD2A7.60700@ladisch.de>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Fast Track Ultra (8R): Sync source switch
+Date: Fri, 20 Apr 2012 10:49:22 +0200
+Message-ID: <CAFz=ag6Lqfu1+Pzm++Auc8gfuWaUVDHZEtQQitjeVu7=62DYUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA8B6103F40
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+	[209.85.217.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D115103D27
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2012 10:10:45 +0200 (CEST)
-Received: by bkwj10 with SMTP id j10so7577220bkw.38
-	for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2012 01:10:45 -0700 (PDT)
-In-Reply-To: <4F8FD2A7.60700@ladisch.de>
+	Fri, 20 Apr 2012 10:49:24 +0200 (CEST)
+Received: by lban1 with SMTP id n1so3730793lba.38
+	for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2012 01:49:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,26 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Grant Diffey <gdiffey@gmail.com>, chris-alsa@rauros.net, alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/19/2012 10:53 AM, Clemens Ladisch wrote:
-> Chris Cavey wrote:
->>  snd-usb-audio: probe of 1-1:1.1 failed with error -5
->>  snd-usb-audio: probe of 1-1:1.2 failed with error -5
->>  snd-usb-audio: probe of 1-1:1.3 failed with error -5
-> 
-> Are there no other messages immediately before this?
-> 
-> Daniel, are there places where the code aborts without
-> print an error message?
+Hi,
 
-Yes, there are in fact some. -5 means -EIO, and the module probe will
-fail with this error code in case snd_usb_audio_probe() returns NULL.
-Chris, can you trace this functions in sound/usb/card.c and see where it
-bails?
+I've taken a look again at the usbmon logs I posted some years ago.
+
+It seems that by switching the sync source you essentially tell the
+FTU to use a different altsetting for iface 2:
+
+Switching  "Sync Source" from "Internal" to "External" (see last line):
+
+         ffff8800662a60c0 3325542111 S Co:1:006:0 s 01 0b 0000 0001 0000 0
+         ffff8800662a60c0 3325543386 C Co:1:006:0 0 0
+         ffff88009159e740 3325594872 S Co:1:006:0 s 01 0b 0000 0002 0000 0
+         ffff88009159e740 3325596263 C Co:1:006:0 0 0
+         ffff8800a00d0900 3325633405 S Co:1:006:0 s 01 0b 0001 0001 0000 0
+         ffff8800a00d0900 3325633637 C Co:1:006:0 0 0
+         ffff88009159e440 3325644251 S Co:1:006:0 s 01 0b 0002 0002 0000 0
+
+Switching "Sync Source" from "External" to "Internal" (see last line):
+
+     ffff8800a00d0480 3349133460 S Co:1:006:0 s 01 0b 0000 0001 0000 0
+     ffff8800a00d0480 3349134696 C Co:1:006:0 0 0
+     ffff88009159e740 3349186489 S Co:1:006:0 s 01 0b 0000 0002 0000 0
+     ffff88009159e740 3349187696 C Co:1:006:0 0 0
+     ffff88009159e440 3349239544 S Co:1:006:0 s 01 0b 0001 0001 0000 0
+     ffff88009159e440 3349239823 C Co:1:006:0 0 0
+     ffff8800a00d0900 3349255385 S Co:1:006:0 s 01 0b 0001 0002 0000 0
 
 
+If I haven't missed something we can achieve this by adding a quirk
+hook to either find_format() or set_format() in pcm.c.
 
-Daniel
+Daniel, can you think of a generic way to do this?
+
+(Note to all: can't test anything on this topic because I don't have a
+S/PDIF device here.)
+
+BTW, has anybody tested the mixer patch I posted a couple of days ago?
+
+Regards,
+
+Felix
