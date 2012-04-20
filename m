@@ -1,17 +1,16 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 1/8] ASoC: core: Add signed multi register
-	control
-Date: Fri, 20 Apr 2012 11:32:13 +0200
-Message-ID: <1334914333-27335-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 2/8] ASoC: core: Add strobe control
+Date: Fri, 20 Apr 2012 11:32:44 +0200
+Message-ID: <1334914364-27373-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
-	[207.126.144.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57D52103F90
+Received: from eu1sys200aog117.obsmtp.com (eu1sys200aog117.obsmtp.com
+	[207.126.144.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79C2210B95A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2012 11:32:40 +0200 (CEST)
+	Fri, 20 Apr 2012 11:32:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,198 +26,125 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 
-Added control type that can span multiple consecutive codec registers
-forming a single signed value in a MSB/LSB manner.
-The control dynamically adjusts to the register word size configured
-in driver.
+Added support for a control that strobes a bit in
+a register to high then back to low (or the inverse).
+
+This is typically useful for hardware that requires
+strobing a singe bit to trigger some functionality
+and where exposing the bit in a normal single control
+would require the user to first manually set then
+again unset the bit again for the strobe to trigger.
 
 Added convenience macro.
 
-SOC_SINGLE_XR_SX
+SOC_SINGLE_STROBE
 
 Added accessor implementations.
 
-snd_soc_info_xr_sx
-snd_soc_get_xr_sx
-snd_soc_put_xr_sx
+snd_soc_get_strobe
+snd_soc_put_strobe
 
 Signed-off-by: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 ---
- include/sound/soc.h  |   22 +++++++++-
- sound/soc/soc-core.c |  118 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 139 insertions(+), 1 deletions(-)
+ include/sound/soc.h  |    8 ++++++
+ sound/soc/soc-core.c |   63 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 71 insertions(+), 0 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 2ebf787..8888adc 100644
+index 8888adc..bda0cd2 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -200,6 +200,15 @@
- 		{.base = xbase, .num_regs = xregs,	      \
- 		 .mask = xmask }) }
+@@ -209,6 +209,10 @@
+ 		{.regbase = xregbase, .regcount = xregcount, .nbits = xnbits, \
+ 		.invert = xinvert, .min = xmin, .max = xmax} }
  
-+#define SOC_SINGLE_XR_SX(xname, xregbase, xregcount, xnbits, \
-+		xmin, xmax, xinvert) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
-+	.info = snd_soc_info_xr_sx, .get = snd_soc_get_xr_sx, \
-+	.put = snd_soc_put_xr_sx, \
-+	.private_value = (unsigned long)&(struct soc_mreg_control) \
-+		{.regbase = xregbase, .regcount = xregcount, .nbits = xnbits, \
-+		.invert = xinvert, .min = xmin, .max = xmax} }
++#define SOC_SINGLE_STROBE(xname, xreg, xshift, xinvert) \
++	SOC_SINGLE_EXT(xname, xreg, xshift, 1, xinvert, \
++		snd_soc_get_strobe, snd_soc_put_strobe)
 +
  /*
   * Simplified versions of above macros, declaring a struct and calculating
   * ARRAY_SIZE internally
-@@ -433,7 +442,12 @@ int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol);
- int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol);
--
-+int snd_soc_info_xr_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo);
-+int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
+@@ -448,6 +452,10 @@ int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_get_strobe(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol);
-+int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
++int snd_soc_put_strobe(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol);
  
  /**
   * struct snd_soc_reg_access - Describes whether a given register is
-@@ -916,6 +930,12 @@ struct soc_bytes {
- 	u32 mask;
- };
- 
-+/* multi register control */
-+struct soc_mreg_control {
-+	long min, max;
-+	unsigned int regbase, regcount, nbits, invert;
-+};
-+
- /* enumerated kcontrol */
- struct soc_enum {
- 	unsigned short reg;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e19c24a..7fc7294b 100644
+index 7fc7294b..e9c5850 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2848,6 +2848,124 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- EXPORT_SYMBOL_GPL(snd_soc_bytes_put);
+@@ -2966,6 +2966,69 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_soc_put_xr_sx);
  
  /**
-+ * snd_soc_info_xr_sx - signed multi register info callback
-+ * @kcontrol: mreg control
-+ * @uinfo: control element information
++ * snd_soc_get_strobe - strobe get callback
++ * @kcontrol: mixer control
++ * @ucontrol: control element information
 + *
-+ * Callback to provide information of a control that can
-+ * span multiple codec registers which together
-+ * forms a single signed value in a MSB/LSB manner.
++ * Callback get the value of a strobe mixer control.
 + *
 + * Returns 0 for success.
 + */
-+int snd_soc_info_xr_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
++int snd_soc_get_strobe(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct soc_mreg_control *mc =
-+		(struct soc_mreg_control *)kcontrol->private_value;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = mc->min;
-+	uinfo->value.integer.max = mc->max;
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = mc->reg;
++	unsigned int shift = mc->shift;
++	unsigned int mask = 1 << shift;
++	unsigned int invert = mc->invert != 0;
++	unsigned int val = snd_soc_read(codec, reg) & mask;
++
++	if (shift != 0 && val != 0)
++		val = val >> shift;
++	ucontrol->value.enumerated.item[0] = val ^ invert;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_info_xr_sx);
++EXPORT_SYMBOL_GPL(snd_soc_get_strobe);
 +
 +/**
-+ * snd_soc_get_xr_sx - signed multi register get callback
-+ * @kcontrol: mreg control
++ * snd_soc_put_strobe - strobe put callback
++ * @kcontrol: mixer control
 + * @ucontrol: control element information
 + *
-+ * Callback to get the value of a control that can span
-+ * multiple codec registers which together forms a single
-+ * signed value in a MSB/LSB manner. The control supports
-+ * specifying total no of bits used to allow for bitfields
-+ * across the multiple codec registers.
++ * Callback strobe a register bit to high then low (or the inverse)
++ * in one pass of a single mixer enum control.
 + *
-+ * Returns 0 for success.
++ * Returns 1 for success.
 + */
-+int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
++int snd_soc_put_strobe(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct soc_mreg_control *mc =
-+		(struct soc_mreg_control *)kcontrol->private_value;
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
 +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int regbase = mc->regbase;
-+	unsigned int regcount = mc->regcount;
-+	unsigned int regwshift = codec->driver->reg_word_size * BITS_PER_BYTE;
-+	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int invert = mc->invert;
-+	unsigned long mask = (1UL<<mc->nbits)-1;
-+	long min = mc->min;
-+	long max = mc->max;
-+	long val = 0;
-+	unsigned long regval;
-+	unsigned int i;
-+
-+	for (i = 0; i < regcount; i++) {
-+		regval = snd_soc_read(codec, regbase+i) & regwmask;
-+		val |= regval << (regwshift*(regcount-i-1));
-+	}
-+	val &= mask;
-+	if (min < 0 && val > max)
-+		val |= ~mask;
-+	if (invert)
-+		val = max - val;
-+	ucontrol->value.integer.value[0] = val;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_xr_sx);
-+
-+/**
-+ * snd_soc_put_xr_sx - signed multi register get callback
-+ * @kcontrol: mreg control
-+ * @ucontrol: control element information
-+ *
-+ * Callback to set the value of a control that can span
-+ * multiple codec registers which together forms a single
-+ * signed value in a MSB/LSB manner. The control supports
-+ * specifying total no of bits used to allow for bitfields
-+ * across the multiple codec registers.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mreg_control *mc =
-+		(struct soc_mreg_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int regbase = mc->regbase;
-+	unsigned int regcount = mc->regcount;
-+	unsigned int regwshift = codec->driver->reg_word_size * BITS_PER_BYTE;
-+	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int invert = mc->invert;
-+	unsigned long mask = (1UL<<mc->nbits)-1;
-+	long min = mc->min;
-+	long max = mc->max;
-+	long val = ucontrol->value.integer.value[0];
-+	unsigned int i, regval, regmask;
++	unsigned int reg = mc->reg;
++	unsigned int shift = mc->shift;
++	unsigned int mask = 1 << shift;
++	unsigned int invert = mc->invert != 0;
++	unsigned int strobe = ucontrol->value.enumerated.item[0] != 0;
++	unsigned int val1 = (strobe ^ invert) ? mask : 0;
++	unsigned int val2 = (strobe ^ invert) ? 0 : mask;
 +	int err;
 +
-+	if (invert)
-+		val = max - val;
-+	val &= mask;
-+	for (i = 0; i < regcount; i++) {
-+		regval = (val >> (regwshift*(regcount-i-1))) & regwmask;
-+		regmask = (mask >> (regwshift*(regcount-i-1))) & regwmask;
-+		err = snd_soc_update_bits_locked(codec, regbase+i,
-+				regmask, regval);
-+		if (err < 0)
-+			return err;
-+	}
++	err = snd_soc_update_bits_locked(codec, reg, mask, val1);
++	if (err < 0)
++		return err;
 +
-+	return 0;
++	err = snd_soc_update_bits_locked(codec, reg, mask, val2);
++	return err;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_put_xr_sx);
++EXPORT_SYMBOL_GPL(snd_soc_put_strobe);
 +
 +/**
   * snd_soc_dai_set_sysclk - configure DAI system or master clock.
