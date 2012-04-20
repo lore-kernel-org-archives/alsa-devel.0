@@ -1,16 +1,16 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 6/8] ASoC: Ux500: Add platform-driver
-Date: Fri, 20 Apr 2012 11:33:14 +0200
-Message-ID: <1334914394-27518-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 8/8] ASoC: Ux500: Add machine-driver
+Date: Fri, 20 Apr 2012 11:33:29 +0200
+Message-ID: <1334914409-27592-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog110.obsmtp.com (eu1sys200aog110.obsmtp.com
-	[207.126.144.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A13110B975
+Received: from eu1sys200aog115.obsmtp.com (eu1sys200aog115.obsmtp.com
+	[207.126.144.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5EF5B104567
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2012 11:33:25 +0200 (CEST)
+	Fri, 20 Apr 2012 11:33:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,66 +24,61 @@ To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add platform-driver handling all DMA-activities.
+Add machine-driver for ST-Ericsson U8500 platform, including
+support for the AB8500-codec.
 
 Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
 ---
- sound/soc/ux500/Kconfig     |    9 +-
- sound/soc/ux500/Makefile    |    7 +-
- sound/soc/ux500/ux500_pcm.c |  332 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/ux500/ux500_pcm.h |   42 ++++++
- 4 files changed, 387 insertions(+), 3 deletions(-)
- create mode 100644 sound/soc/ux500/ux500_pcm.c
- create mode 100644 sound/soc/ux500/ux500_pcm.h
+ sound/soc/ux500/Kconfig        |   11 ++
+ sound/soc/ux500/Makefile       |    3 +
+ sound/soc/ux500/u8500.c        |  118 +++++++++++++++++++++
+ sound/soc/ux500/ux500_ab8500.c |  225 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/ux500/ux500_ab8500.h |   21 ++++
+ 5 files changed, 378 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/ux500/u8500.c
+ create mode 100644 sound/soc/ux500/ux500_ab8500.c
+ create mode 100644 sound/soc/ux500/ux500_ab8500.h
 
 diff --git a/sound/soc/ux500/Kconfig b/sound/soc/ux500/Kconfig
-index be33409..59da6ce 100644
+index 59da6ce..85031b0 100644
 --- a/sound/soc/ux500/Kconfig
 +++ b/sound/soc/ux500/Kconfig
-@@ -8,9 +8,16 @@ menuconfig SND_SOC_UX500
- 		Say Y if you want to enable ASoC-support for
- 		any of the Ux500 platforms (e.g. U8500).
- 
--config SND_SOC_UX500_MSP_I2S
-+config SND_SOC_UX500_PLAT_MSP_I2S
- 	tristate "Platform - MSP (I2S)"
- 	depends on SND_SOC_UX500
+@@ -21,3 +21,14 @@ config SND_SOC_UX500_PLAT_DMA
  	help
- 		Say Y if you want to enable the Ux500 MSP I2S-driver.
+ 		Say Y if you want to enable the Ux500 platform-driver.
  
-+config SND_SOC_UX500_PLAT_DMA
-+	tristate "Platform - DB8500 (DMA)"
-+	depends on SND_SOC_UX500
-+	select SND_SOC_DMAENGINE_PCM
++config SND_SOC_UX500_AB8500
++	tristate "Codec/Machine - AB8500 (MSA)"
++	depends on AB8500_CORE && AB8500_GPADC && SND_SOC_UX500
++	select SND_SOC_AB8500_CODEC
++	select SND_SOC_UX500_PLAT_MSP_I2S
++	select SND_SOC_UX500_PLAT_DMA
 +	help
-+		Say Y if you want to enable the Ux500 platform-driver.
++		Select this to enable the Ux500 machine-driver
++		and the AB8500 codec-driver. It will also enable the platform-driver
++		Ux500.
 +
 diff --git a/sound/soc/ux500/Makefile b/sound/soc/ux500/Makefile
-index 6ffef5c..2e742b1 100644
+index 2e742b1..50b7c42 100644
 --- a/sound/soc/ux500/Makefile
 +++ b/sound/soc/ux500/Makefile
-@@ -1,5 +1,8 @@
- # Ux500 Platform Support
+@@ -6,3 +6,6 @@ obj-$(CONFIG_SND_SOC_UX500_PLAT_MSP_I2S) += snd-soc-ux500-plat-msp-i2s.o
+ snd-soc-ux500-plat-dma-objs := ux500_pcm.o
+ obj-$(CONFIG_SND_SOC_UX500_PLAT_DMA) += snd-soc-ux500-plat-dma.o
  
--snd-soc-ux500-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
--obj-$(CONFIG_SND_SOC_UX500_MSP_I2S) += snd-soc-ux500-msp-i2s.o
-+snd-soc-ux500-plat-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
-+obj-$(CONFIG_SND_SOC_UX500_PLAT_MSP_I2S) += snd-soc-ux500-plat-msp-i2s.o
++snd-soc-ux500-mach-objs := u8500.o ux500_ab8500.o
++obj-$(CONFIG_SND_SOC_UX500_AB8500) += snd-soc-ux500-mach.o
 +
-+snd-soc-ux500-plat-dma-objs := ux500_pcm.o
-+obj-$(CONFIG_SND_SOC_UX500_PLAT_DMA) += snd-soc-ux500-plat-dma.o
- 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+diff --git a/sound/soc/ux500/u8500.c b/sound/soc/ux500/u8500.c
 new file mode 100644
-index 0000000..62bcf02
+index 0000000..33348f7
 --- /dev/null
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -0,0 +1,332 @@
++++ b/sound/soc/ux500/u8500.c
+@@ -0,0 +1,118 @@
 +/*
 + * Copyright (C) ST-Ericsson SA 2012
 + *
-+ * Author: Ola Lilja <ola.o.lilja@stericsson.com>,
-+ *         Roger Nilsson <roger.xr.nilsson@stericsson.com>
++ * Author: Ola Lilja (ola.o.lilja@stericsson.com)
 + *         for ST-Ericsson.
 + *
 + * License terms:
@@ -93,335 +88,122 @@ index 0000000..62bcf02
 + * by the Free Software Foundation.
 + */
 +
-+#include <asm/page.h>
++#include <asm/mach-types.h>
 +
 +#include <linux/module.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
-+#include <linux/slab.h>
++#include <linux/io.h>
++#include <linux/spi/spi.h>
 +
-+#include <plat/ste_dma40.h>
-+
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/dmaengine_pcm.h>
++#include <sound/initval.h>
 +
-+#include "ux500_msp_i2s.h"
 +#include "ux500_pcm.h"
++#include "ux500_msp_dai.h"
 +
-+static struct snd_pcm_hardware ux500_pcm_hw_playback = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_RESUME |
-+		SNDRV_PCM_INFO_PAUSE,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+		SNDRV_PCM_FMTBIT_U16_LE |
-+		SNDRV_PCM_FMTBIT_S16_BE |
-+		SNDRV_PCM_FMTBIT_U16_BE,
-+	.rates = SNDRV_PCM_RATE_KNOT,
-+	.rate_min = UX500_PLATFORM_MIN_RATE_PLAYBACK,
-+	.rate_max = UX500_PLATFORM_MAX_RATE_PLAYBACK,
-+	.channels_min = UX500_PLATFORM_MIN_CHANNELS,
-+	.channels_max = UX500_PLATFORM_MAX_CHANNELS,
-+	.buffer_bytes_max = UX500_PLATFORM_BUFFER_BYTES_MAX,
-+	.period_bytes_min = UX500_PLATFORM_PERIODS_BYTES_MIN,
-+	.period_bytes_max = UX500_PLATFORM_PERIODS_BYTES_MAX,
-+	.periods_min = UX500_PLATFORM_PERIODS_MIN,
-+	.periods_max = UX500_PLATFORM_PERIODS_MAX,
-+};
++#ifdef CONFIG_SND_SOC_UX500_AB8500
++#include <ux500_ab8500.h>
++#endif
 +
-+static struct snd_pcm_hardware ux500_pcm_hw_capture = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_RESUME |
-+		SNDRV_PCM_INFO_PAUSE,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+		SNDRV_PCM_FMTBIT_U16_LE |
-+		SNDRV_PCM_FMTBIT_S16_BE |
-+		SNDRV_PCM_FMTBIT_U16_BE,
-+	.rates = SNDRV_PCM_RATE_KNOT,
-+	.rate_min = UX500_PLATFORM_MIN_RATE_CAPTURE,
-+	.rate_max = UX500_PLATFORM_MAX_RATE_CAPTURE,
-+	.channels_min = UX500_PLATFORM_MIN_CHANNELS,
-+	.channels_max = UX500_PLATFORM_MAX_CHANNELS,
-+	.buffer_bytes_max = UX500_PLATFORM_BUFFER_BYTES_MAX,
-+	.period_bytes_min = UX500_PLATFORM_PERIODS_BYTES_MIN,
-+	.period_bytes_max = UX500_PLATFORM_PERIODS_BYTES_MAX,
-+	.periods_min = UX500_PLATFORM_PERIODS_MIN,
-+	.periods_max = UX500_PLATFORM_PERIODS_MAX,
-+};
-+
-+static void ux500_pcm_dma_hw_free(struct device *dev,
-+				struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_dma_buffer *buf = runtime->dma_buffer_p;
-+
-+	if (runtime->dma_area == NULL)
-+		return;
-+
-+	if (buf != &substream->dma_buffer) {
-+		dma_free_coherent(buf->dev.dev, buf->bytes, buf->area,
-+				buf->addr);
-+		kfree(runtime->dma_buffer_p);
-+	}
-+
-+	snd_pcm_set_runtime_buffer(substream, NULL);
-+}
-+
-+static int ux500_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	int stream_id = substream->pstr->stream;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct ux500_pcm *ux500_pcm_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *dai = rtd->cpu_dai;
-+	struct device *dev = dai->dev;
-+	int ret;
-+	struct ux500_msp_dma_params *dma_params;
-+	u16 per_data_width, mem_data_width;
-+	struct stedma40_chan_cfg *dma_cfg;
-+
-+	dev_dbg(dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
-+		snd_soc_stream_str(substream));
-+
-+	dev_dbg(dev, "%s: Set runtime hwparams.\n", __func__);
-+	if (stream_id == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_set_runtime_hwparams(substream,
-+					&ux500_pcm_hw_playback);
-+	else
-+		snd_soc_set_runtime_hwparams(substream,
-+					&ux500_pcm_hw_capture);
-+
-+	/* ensure that buffer size is a multiple of period size */
-+	ret = snd_pcm_hw_constraint_integer(runtime,
-+					SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: Error: snd_pcm_hw_constraints failed (%d)\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	dev_dbg(dev, "%s: Init runtime private data.\n", __func__);
-+	ux500_pcm_data = kzalloc(sizeof(struct ux500_pcm), GFP_KERNEL);
-+	if (ux500_pcm_data == NULL)
-+		return -ENOMEM;
-+	ux500_pcm_data->msp_id = dai->id;
-+
-+	runtime->private_data = ux500_pcm_data;
-+
-+	dev_dbg(dev, "%s: Set hw-struct for %s.\n", __func__,
-+		snd_soc_stream_str(substream));
-+	runtime->hw = (stream_id == SNDRV_PCM_STREAM_PLAYBACK) ?
-+		ux500_pcm_hw_playback : ux500_pcm_hw_capture;
-+
-+	mem_data_width = STEDMA40_HALFWORD_WIDTH;
-+
-+	dma_params = snd_soc_dai_get_dma_data(dai, substream);
-+	switch (dma_params->data_size) {
-+	case 32:
-+		per_data_width = STEDMA40_WORD_WIDTH;
-+		break;
-+	case 16:
-+		per_data_width = STEDMA40_HALFWORD_WIDTH;
-+		break;
-+	case 8:
-+		per_data_width = STEDMA40_BYTE_WIDTH;
-+		break;
-+	default:
-+		per_data_width = STEDMA40_WORD_WIDTH;
-+		dev_warn(rtd->platform->dev,
-+			"%s: Unknown data-size (%d)! Assuming 32 bits.\n",
-+			__func__, dma_params->data_size);
-+	}
-+
-+	dma_cfg = dma_params->dma_cfg;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		dma_cfg->src_info.data_width = mem_data_width;
-+		dma_cfg->dst_info.data_width = per_data_width;
-+	} else {
-+		dma_cfg->src_info.data_width = per_data_width;
-+		dma_cfg->dst_info.data_width = mem_data_width;
-+	}
-+
-+
-+	ret = snd_dmaengine_pcm_open(substream, stedma40_filter, dma_cfg);
-+	if (ret) {
-+		dev_dbg(dai->dev,
-+			"%s: ERROR: snd_dmaengine_pcm_open failed (%d)!\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	snd_dmaengine_pcm_set_data(substream, dma_cfg);
-+
-+	return 0;
-+}
-+
-+static int ux500_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *dai = rtd->cpu_dai;
-+	struct ux500_pcm *ux500_pcm_data = substream->runtime->private_data;
-+
-+	dev_dbg(dai->dev, "%s: Enter\n", __func__);
-+
-+	snd_dmaengine_pcm_close(substream);
-+
-+	kfree(ux500_pcm_data);
-+
-+	return 0;
-+}
-+
-+static int ux500_pcm_hw_params(struct snd_pcm_substream *substream,
-+			struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_dma_buffer *buf = runtime->dma_buffer_p;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int ret = 0;
-+	int size;
-+
-+	dev_dbg(rtd->platform->dev, "%s: Enter\n", __func__);
-+
-+	size = params_buffer_bytes(hw_params);
-+
-+	if (buf) {
-+		if (buf->bytes >= size)
-+			goto out;
-+		ux500_pcm_dma_hw_free(NULL, substream);
-+	}
-+
-+	if (substream->dma_buffer.area != NULL &&
-+		substream->dma_buffer.bytes >= size) {
-+		buf = &substream->dma_buffer;
-+	} else {
-+		buf = kmalloc(sizeof(struct snd_dma_buffer), GFP_KERNEL);
-+		if (!buf)
-+			goto nomem;
-+
-+		buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+		buf->dev.dev = NULL;
-+		buf->area = dma_alloc_coherent(NULL, size, &buf->addr,
-+					GFP_KERNEL);
-+		buf->bytes = size;
-+		buf->private_data = NULL;
-+
-+		if (!buf->area)
-+			goto free;
-+	}
-+	snd_pcm_set_runtime_buffer(substream, buf);
-+	ret = 1;
-+ out:
-+	runtime->dma_bytes = size;
-+	return ret;
-+
-+ free:
-+	kfree(buf);
-+ nomem:
-+	return -ENOMEM;
-+}
-+
-+static int ux500_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	dev_dbg(rtd->platform->dev, "%s: Enter\n", __func__);
-+
-+	ux500_pcm_dma_hw_free(NULL, substream);
-+
-+	return 0;
-+}
-+
-+static int ux500_pcm_mmap(struct snd_pcm_substream *substream,
-+			struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	dev_dbg(rtd->platform->dev, "%s: Enter.\n", __func__);
-+
-+	return dma_mmap_coherent(NULL, vma, runtime->dma_area,
-+				runtime->dma_addr, runtime->dma_bytes);
-+}
-+
-+static struct snd_pcm_ops ux500_pcm_ops = {
-+	.open		= ux500_pcm_open,
-+	.close		= ux500_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= ux500_pcm_hw_params,
-+	.hw_free	= ux500_pcm_hw_free,
-+	.trigger	= snd_dmaengine_pcm_trigger,
-+	.pointer	= snd_dmaengine_pcm_pointer,
-+	.mmap		= ux500_pcm_mmap
-+};
-+
-+int ux500_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_pcm *pcm = rtd->pcm;
-+
-+	dev_dbg(rtd->platform->dev, "%s: Enter.\n", __func__);
-+
-+	pcm->info_flags = 0;
-+	strcpy(pcm->name, "UX500_PCM");
-+	dev_dbg(rtd->platform->dev, "%s: PCM-name: %s\n", __func__, pcm->name);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_platform_driver ux500_pcm_soc_drv = {
-+	.ops		= &ux500_pcm_ops,
-+	.pcm_new        = ux500_pcm_new,
-+};
-+
-+static int __devexit ux500_pcm_drv_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = snd_soc_register_platform(&pdev->dev, &ux500_pcm_soc_drv);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev,
-+			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
-+			__func__, pdev->name, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __devinit ux500_pcm_drv_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver ux500_pcm_driver = {
-+	.driver = {
-+		.name = "ux500-pcm",
-+		.owner = THIS_MODULE,
++/* Define the whole U8500 soundcard, linking platform to the codec-drivers  */
++struct snd_soc_dai_link u8500_dai_links[] = {
++	#ifdef CONFIG_SND_SOC_UX500_AB8500
++	{
++		.name = "ab8500_0",
++		.stream_name = "ab8500_0",
++		.cpu_dai_name = "ux500-msp-i2s.1",
++		.codec_dai_name = "ab8500-codec-dai.0",
++		.platform_name = "ux500-pcm.0",
++		.codec_name = "ab8500-codec.0",
++		.init = ux500_ab8500_machine_init,
++		.ops = ux500_ab8500_ops,
 +	},
-+
-+	.probe = ux500_pcm_drv_probe,
-+	.remove = __devexit_p(ux500_pcm_drv_remove),
++	{
++		.name = "ab8500_1",
++		.stream_name = "ab8500_1",
++		.cpu_dai_name = "ux500-msp-i2s.3",
++		.codec_dai_name = "ab8500-codec-dai.1",
++		.platform_name = "ux500-pcm.0",
++		.codec_name = "ab8500-codec.0",
++		.init = NULL,
++		.ops = ux500_ab8500_ops,
++	},
++	#endif
 +};
-+module_platform_driver(ux500_pcm_driver);
 +
-+MODULE_LICENSE("GPLv2");
++static struct snd_soc_card u8500_card = {
++	.name = "U8500-card",
++	.probe = NULL,
++	.dai_link = u8500_dai_links,
++	.num_links = ARRAY_SIZE(u8500_dai_links),
++};
 +
-diff --git a/sound/soc/ux500/ux500_pcm.h b/sound/soc/ux500/ux500_pcm.h
++
++
++
++static int __devinit u8500_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	pr_debug("%s: Enter.\n", __func__);
++
++	u8500_card.dev = &pdev->dev;
++
++	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
++		__func__, u8500_card.name);
++	platform_set_drvdata(pdev, &u8500_card);
++
++	snd_soc_card_set_drvdata(&u8500_card, NULL);
++
++	dev_dbg(&pdev->dev, "%s: Card %s: num_links = %d\n",
++		__func__, u8500_card.name, u8500_card.num_links);
++	dev_dbg(&pdev->dev, "%s: Card %s: DAI-link 0: name = %s\n",
++		__func__, u8500_card.name, u8500_card.dai_link[0].name);
++	dev_dbg(&pdev->dev, "%s: Card %s: DAI-link 0: stream_name = %s\n",
++		__func__, u8500_card.name, u8500_card.dai_link[0].stream_name);
++
++	ret = snd_soc_register_card(&u8500_card);
++	if (ret)
++		dev_err(&pdev->dev, "Error: snd_soc_register_card failed (%d)!\n",
++			ret);
++
++	return ret;
++}
++
++static int __devexit u8500_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *u8500_card = platform_get_drvdata(pdev);
++
++	pr_debug("%s: Enter.\n", __func__);
++
++	snd_soc_unregister_card(u8500_card);
++	platform_set_drvdata(pdev, NULL);
++
++	return 0;
++}
++
++static struct platform_driver snd_soc_u8500_driver = {
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = "snd-soc-u8500",
++	},
++	.probe = u8500_probe,
++	.remove = __devexit_p(u8500_remove),
++};
++
++module_platform_driver(snd_soc_u8500_driver);
++
++
+diff --git a/sound/soc/ux500/ux500_ab8500.c b/sound/soc/ux500/ux500_ab8500.c
 new file mode 100644
-index 0000000..19d766a
+index 0000000..e4b8c5a
 --- /dev/null
-+++ b/sound/soc/ux500/ux500_pcm.h
-@@ -0,0 +1,42 @@
++++ b/sound/soc/ux500/ux500_ab8500.c
+@@ -0,0 +1,225 @@
 +/*
 + * Copyright (C) ST-Ericsson SA 2012
 + *
 + * Author: Ola Lilja <ola.o.lilja@stericsson.com>,
-+ *         Roger Nilsson <roger.xr.nilsson@stericsson.com>
++ *         Kristoffer Karlsson <kristoffer.karlsson@stericsson.com>
 + *         for ST-Ericsson.
 + *
 + * License terms:
@@ -430,33 +212,243 @@ index 0000000..19d766a
 + * it under the terms of the GNU General Public License version 2 as published
 + * by the Free Software Foundation.
 + */
-+#ifndef UX500_PCM_H
-+#define UX500_PCM_H
 +
-+#include <asm/page.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/io.h>
 +
-+#include <linux/workqueue.h>
++#include <mach/hardware.h>
 +
-+#define UX500_PLATFORM_MIN_RATE_PLAYBACK 8000
-+#define UX500_PLATFORM_MAX_RATE_PLAYBACK 48000
-+#define UX500_PLATFORM_MIN_RATE_CAPTURE	8000
-+#define UX500_PLATFORM_MAX_RATE_CAPTURE	48000
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/jack.h>
++#include <sound/pcm_params.h>
 +
-+#define UX500_PLATFORM_MIN_CHANNELS 1
-+#define UX500_PLATFORM_MAX_CHANNELS 8
++#include "ux500_pcm.h"
++#include "ux500_msp_dai.h"
++#include "../codecs/ab8500-codec.h"
 +
-+#define UX500_PLATFORM_PERIODS_BYTES_MIN	128
-+#define UX500_PLATFORM_PERIODS_BYTES_MAX	(64 * PAGE_SIZE)
-+#define UX500_PLATFORM_PERIODS_MIN		2
-+#define UX500_PLATFORM_PERIODS_MAX		48
-+#define UX500_PLATFORM_BUFFER_BYTES_MAX		(2048 * PAGE_SIZE)
++#define TX_SLOT_MONO	0x0008
++#define TX_SLOT_STEREO	0x000a
++#define RX_SLOT_MONO	0x0001
++#define RX_SLOT_STEREO	0x0003
++#define TX_SLOT_8CH	0x00FF
++#define RX_SLOT_8CH	0x00FF
 +
-+extern struct snd_soc_platform ux500_soc_platform;
++#define DEF_TX_SLOTS	TX_SLOT_STEREO
++#define DEF_RX_SLOTS	RX_SLOT_MONO
 +
-+struct ux500_pcm {
-+	int msp_id;
-+	int stream_id;
++#define DRIVERMODE_NORMAL	0
++#define DRIVERMODE_CODEC_ONLY	1
++
++/* Slot configuration */
++static unsigned int tx_slots = DEF_TX_SLOTS;
++static unsigned int rx_slots = DEF_RX_SLOTS;
++
++static struct snd_kcontrol_new ux500_ab8500_ctrls[] = {
++	SOC_DAPM_PIN_SWITCH("Headset Left"),
++	SOC_DAPM_PIN_SWITCH("Headset Right"),
++	SOC_DAPM_PIN_SWITCH("Earpiece"),
++	SOC_DAPM_PIN_SWITCH("Speaker Left"),
++	SOC_DAPM_PIN_SWITCH("Speaker Right"),
++	SOC_DAPM_PIN_SWITCH("LineOut Left"),
++	SOC_DAPM_PIN_SWITCH("LineOut Right"),
++	SOC_DAPM_PIN_SWITCH("Vibra 1"),
++	SOC_DAPM_PIN_SWITCH("Vibra 2"),
++	SOC_DAPM_PIN_SWITCH("Mic 1"),
++	SOC_DAPM_PIN_SWITCH("Mic 2"),
++	SOC_DAPM_PIN_SWITCH("LineIn Left"),
++	SOC_DAPM_PIN_SWITCH("LineIn Right"),
++	SOC_DAPM_PIN_SWITCH("DMic 1"),
++	SOC_DAPM_PIN_SWITCH("DMic 2"),
++	SOC_DAPM_PIN_SWITCH("DMic 3"),
++	SOC_DAPM_PIN_SWITCH("DMic 4"),
++	SOC_DAPM_PIN_SWITCH("DMic 5"),
++	SOC_DAPM_PIN_SWITCH("DMic 6"),
 +};
++
++/* ASoC */
++
++void ux500_ab8500_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->card->dev;
++
++	dev_dbg(dev, "%s: Enter\n", __func__);
++
++	/* Reset slots configuration to default(s) */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		tx_slots = DEF_TX_SLOTS;
++	else
++		rx_slots = DEF_RX_SLOTS;
++}
++
++int ux500_ab8500_hw_params(struct snd_pcm_substream *substream,
++			struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct device *dev = rtd->card->dev;
++	unsigned int fmt, fmt_if1;
++	int channels, ret = 0, slots, slot_width, driver_mode;
++	bool is_playback;
++
++	dev_dbg(dev, "%s: Enter\n", __func__);
++
++	dev_dbg(dev, "%s: substream->pcm->name = %s\n"
++		"substream->pcm->id = %s.\n"
++		"substream->name = %s.\n"
++		"substream->number = %d.\n",
++		__func__,
++		substream->pcm->name,
++		substream->pcm->id,
++		substream->name,
++		substream->number);
++
++	channels = params_channels(params);
++
++	/* Setup codec depending on driver-mode */
++	driver_mode = (channels == 8) ?
++		DRIVERMODE_CODEC_ONLY : DRIVERMODE_NORMAL;
++	dev_dbg(dev, "%s: Driver-mode: %s.\n", __func__,
++		(driver_mode == DRIVERMODE_NORMAL) ? "NORMAL" : "CODEC_ONLY");
++
++	ab8500_audio_set_bit_delay(codec_dai, 1);
++
++	if (driver_mode == DRIVERMODE_NORMAL) {
++		ab8500_audio_set_word_length(codec_dai, 16);
++		fmt = SND_SOC_DAIFMT_DSP_A |
++			SND_SOC_DAIFMT_CBM_CFM |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CONT;
++	} else {
++		ab8500_audio_set_word_length(codec_dai, 20);
++		fmt = SND_SOC_DAIFMT_DSP_A |
++			SND_SOC_DAIFMT_CBM_CFM |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_GATED;
++	}
++
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
++	if (ret < 0) {
++		dev_err(dev, "%s: ERROR: snd_soc_dai_set_fmt failed "
++			"for codec_dai (ret = %d)!\n", __func__, ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret < 0) {
++		dev_err(dev, "%s: ERROR: snd_soc_dai_set_fmt failed "
++			"for cpu_dai (ret = %d)!\n", __func__, ret);
++		return ret;
++	}
++
++	/* Setup TDM-slots */
++
++	is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
++	switch (channels) {
++	case 1:
++		slots = 16;
++		slot_width = 16;
++		tx_slots = (is_playback) ? TX_SLOT_MONO : 0;
++		rx_slots = (is_playback) ? 0 : RX_SLOT_MONO;
++		break;
++	case 2:
++		slots = 16;
++		slot_width = 16;
++		tx_slots = (is_playback) ? TX_SLOT_STEREO : 0;
++		rx_slots = (is_playback) ? 0 : RX_SLOT_STEREO;
++		break;
++	case 8:
++		slots = 16;
++		slot_width = 16;
++		tx_slots = (is_playback) ? TX_SLOT_8CH : 0;
++		rx_slots = (is_playback) ? 0 : RX_SLOT_8CH;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	dev_dbg(dev, "%s: CPU-DAI TDM: TX=0x%04X RX=0x%04x\n", __func__,
++		tx_slots, rx_slots);
++	ret = snd_soc_dai_set_tdm_slot(cpu_dai, tx_slots, rx_slots, slots, slot_width);
++	if (ret)
++		return ret;
++
++	dev_dbg(dev, "%s: CODEC-DAI TDM: TX=0x%04X RX=0x%04x\n", __func__,
++		tx_slots, rx_slots);
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, tx_slots, rx_slots, slots, slot_width);
++	if (ret)
++		return ret;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		dev_dbg(dev, "%s: Setup IF1 for FM-radio.\n", __func__);
++		fmt_if1 = SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_I2S;
++		ret = ab8500_audio_setup_if1(codec_dai->codec, fmt_if1, 16, 1);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++struct snd_soc_ops ux500_ab8500_ops[] = {
++	{
++		.hw_params = ux500_ab8500_hw_params,
++		.shutdown = ux500_ab8500_shutdown,
++	}
++};
++
++int ux500_ab8500_machine_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_codec *codec = rtd->codec;
++	struct device *dev = rtd->card->dev;
++	int status;
++
++	dev_dbg(dev, "%s Enter.\n", __func__);
++
++	/* Add controls */
++	status = snd_soc_add_codec_controls(codec, ux500_ab8500_ctrls,
++			ARRAY_SIZE(ux500_ab8500_ctrls));
++	if (status < 0) {
++		pr_err("%s: failed to add machine-controls (%d).\n",
++				__func__, status);
++		return status;
++	}
++
++	status = snd_soc_dapm_enable_pin(&codec->dapm, "Headset Left");
++	status |= snd_soc_dapm_enable_pin(&codec->dapm, "Headset Right");
++
++	return status;
++}
++
+diff --git a/sound/soc/ux500/ux500_ab8500.h b/sound/soc/ux500/ux500_ab8500.h
+new file mode 100644
+index 0000000..76ec1e6
+--- /dev/null
++++ b/sound/soc/ux500/ux500_ab8500.h
+@@ -0,0 +1,21 @@
++/*
++ * Copyright (C) ST-Ericsson SA 2012
++ *
++ * Author: Ola Lilja <ola.o.lilja@stericsson.com>
++ *         for ST-Ericsson.
++ *
++ * License terms:
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++
++#ifndef UX500_AB8500_H
++#define UX500_AB8500_H
++
++extern struct snd_soc_ops ux500_ab8500_ops[];
++
++int ux500_ab8500_machine_init(struct snd_soc_pcm_runtime *runtime);
 +
 +#endif
 -- 
