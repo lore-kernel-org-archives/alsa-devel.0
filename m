@@ -1,26 +1,24 @@
-From: Grant Diffey <gdiffey@gmail.com>
-Subject: Re: M-Audio FastTrack C400
-Date: Sat, 21 Apr 2012 19:19:00 +1000
-Message-ID: <CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
-References: <4F8D63F4.1040208@rauros.net>
-	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
-	<4F8DF29B.9090907@rauros.net>
-	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
-	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
-	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
-	<4F920D73.7070309@rauros.net>
-	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+From: Guillaume Clement <gclement@baobob.org>
+Subject: [snd-usb-audio] frequent "delay: estimated xxx,
+	actual yyy" messages
+Date: Sat, 21 Apr 2012 12:22:48 +0200
+Message-ID: <3172169.OcqrdKakkS@siegfried>
+Reply-To: gclement@baobob.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C8DD248DE
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
+	[217.70.183.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF2BE248C9
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Apr 2012 11:19:01 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so7517780wgb.20
-	for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2012 02:19:00 -0700 (PDT)
-In-Reply-To: <CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+	Sat, 21 Apr 2012 12:23:16 +0200 (CEST)
+Received: from siegfried.localnet (unknown
+	[IPv6:2a01:e35:8b3b:6a90:224:1dff:fe73:2eb4])
+	(Authenticated sender: tortuxm@baobob.org)
+	by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E26C0A809E
+	for <alsa-devel@alsa-project.org>;
+	Sat, 21 Apr 2012 12:23:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,35 +28,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel@alsa-project.org, chris-alsa@rauros.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> >(channels = 2, ifnum = 2).
->
-> Why do you use channels=2. As fas as I can tell the device has 6
-> channels. Try that.
->
->
-> > Except I can't get it to play anything (figure it would all be too good
-> > to be true)
-> >
-> > $ speaker-test -Dfront:C400
-> > speaker-test 1.0.25
-> >
-> > Playback device is front:C400
-> > Stream parameters are 48000Hz, S16_LE, 1 channels
-> > Using 16 octaves of pink noise
-> > Sample format not available for playback: Invalid argument
-> > Setting of hwparams failed: Invalid argument
-> >
->
-> The device probably supports only S24_3LE audio. At least that's what
-> you tell Alsa with the FTU quirk. Try to play something through the
-> corresponding hw device or use Jack or convert some audio file to
-> S24_3LE and play through aplay etc...
->
->
-that's a good point
+Hello,
 
-try speaker-test -D plughw:C400
+I am using an USB soundcard (ID : 046d:0a24 : Logitech Speaker Lapdesk N550).
+
+During playback, I have frequent messages like these :
+
+delay: estimated 795, actual 662
+delay: estimated 133, actual 0
+delay: estimated 751, actual 662
+delay: estimated 89, actual 0
+
+
+When those messages appear, I am hearing some "cracks" from the soundcard.
+
+
+I've tried to make some research on this, I only found some messages that hint 
+about some interrupt problems. I'm not using any closed source driver and I 
+can reproduce the issue with any computer running Linux.
+
+
+On interesting thing to notice is that it happens only when the CPU is near 
+idle. To workaround the problem, I can just do something like : 
+
+nice -n 20 dd if=/dev/zero of=/dev/null bs=1k count=500G
+
+
+This would keep my CPU busy and I have no more messages nor cracks.
+
+
+
+
+This does not seem to be a recent regression since I've experienced this since 
+I bought the lapdesk in december or so. I am still experiencing this issue 
+with the latest rc (linux-3.4rc3 at the moment)
+
+I tried using different .asoundrc setups, tried to install pulseaudio (usually 
+I'm using bare alsa) and still experience the problem.
+
+
+Below is some information that might help locating the problem. I can make 
+some test if needed and even code if I have some information on where the 
+problem might me located.
+
+
+
+
+
+
+Note: those commands are typed during playback.
+
+$ cat /proc/asound/N550/stream0 
+Logitech, Inc. Logitech Speaker Lapdesk N550 at usb-0000:00:1d.0-2, full speed 
+: USB Audio
+
+Playback:
+  Status: Running
+    Interface = 1
+    Altset = 1
+    URBs = 2 [ 20 20 ]
+    Packet Size = 200
+    Momentary freq = 44100 Hz (0x2c.199a)
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ADAPTIVE)
+    Rates: 44100, 48000
+
+$ cat /proc/asound/N550/pcm0p/info 
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: USB Audio
+name: USB Audio
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 0
+
+$ cat /proc/asound/N550/pcm0p/sub0/hw_params 
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 44100 (44100/1)
+period_size: 5513
+buffer_size: 22050
+
+
+$ cat /proc/asound/N550/pcm0p/sub0/info 
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: USB Audio
+name: USB Audio
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 0
+
+
+$ cat /proc/asound/N550/pcm0p/sub0/status 
+state: RUNNING
+owner_pid   : 1210
+trigger_time: 3264.436419606
+tstamp      : 3302.883104696
+delay       : 20904
+avail       : 2646
+avail_max   : 21026
+-----
+hw_ptr      : 1695160
+appl_ptr    : 1714564
+
+
+$ cat /proc/asound/N550/pcm0p/sub0/sw_params 
+tstamp_mode: NONE
+period_step: 1
+avail_min: 5513
+start_threshold: 16537
+stop_threshold: 22050
+silence_threshold: 0
+silence_size: 0
+boundary: 1445068800
