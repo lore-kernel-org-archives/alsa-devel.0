@@ -1,24 +1,16 @@
-From: Guillaume Clement <gclement@baobob.org>
-Subject: [snd-usb-audio] frequent "delay: estimated xxx,
-	actual yyy" messages
-Date: Sat, 21 Apr 2012 12:22:48 +0200
-Message-ID: <3172169.OcqrdKakkS@siegfried>
-Reply-To: gclement@baobob.org
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: snd-usb: remove refactorization
+	left-overs
+Date: Sat, 21 Apr 2012 13:52:12 +0200
+Message-ID: <1335009132-17346-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
-	[217.70.183.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF2BE248C9
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id C69BC24904
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Apr 2012 12:23:16 +0200 (CEST)
-Received: from siegfried.localnet (unknown
-	[IPv6:2a01:e35:8b3b:6a90:224:1dff:fe73:2eb4])
-	(Authenticated sender: tortuxm@baobob.org)
-	by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E26C0A809E
-	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Apr 2012 12:23:14 +0200 (CEST)
+	Sat, 21 Apr 2012 13:52:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,132 +21,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Drop some struct members and definitions that became obsolete during
+the refactorization of the driver.
 
-I am using an USB soundcard (ID : 046d:0a24 : Logitech Speaker Lapdesk N550).
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/usb/card.h |   13 -------------
+ sound/usb/proc.c |    6 +-----
+ 2 files changed, 1 insertions(+), 18 deletions(-)
 
-During playback, I have frequent messages like these :
-
-delay: estimated 795, actual 662
-delay: estimated 133, actual 0
-delay: estimated 751, actual 662
-delay: estimated 89, actual 0
-
-
-When those messages appear, I am hearing some "cracks" from the soundcard.
-
-
-I've tried to make some research on this, I only found some messages that hint 
-about some interrupt problems. I'm not using any closed source driver and I 
-can reproduce the issue with any computer running Linux.
-
-
-On interesting thing to notice is that it happens only when the CPU is near 
-idle. To workaround the problem, I can just do something like : 
-
-nice -n 20 dd if=/dev/zero of=/dev/null bs=1k count=500G
-
-
-This would keep my CPU busy and I have no more messages nor cracks.
-
-
-
-
-This does not seem to be a recent regression since I've experienced this since 
-I bought the lapdesk in december or so. I am still experiencing this issue 
-with the latest rc (linux-3.4rc3 at the moment)
-
-I tried using different .asoundrc setups, tried to install pulseaudio (usually 
-I'm using bare alsa) and still experience the problem.
-
-
-Below is some information that might help locating the problem. I can make 
-some test if needed and even code if I have some information on where the 
-problem might me located.
-
-
-
-
-
-
-Note: those commands are typed during playback.
-
-$ cat /proc/asound/N550/stream0 
-Logitech, Inc. Logitech Speaker Lapdesk N550 at usb-0000:00:1d.0-2, full speed 
-: USB Audio
-
-Playback:
-  Status: Running
-    Interface = 1
-    Altset = 1
-    URBs = 2 [ 20 20 ]
-    Packet Size = 200
-    Momentary freq = 44100 Hz (0x2c.199a)
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 44100, 48000
-
-$ cat /proc/asound/N550/pcm0p/info 
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: USB Audio
-name: USB Audio
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
-$ cat /proc/asound/N550/pcm0p/sub0/hw_params 
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 5513
-buffer_size: 22050
-
-
-$ cat /proc/asound/N550/pcm0p/sub0/info 
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: USB Audio
-name: USB Audio
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
-
-$ cat /proc/asound/N550/pcm0p/sub0/status 
-state: RUNNING
-owner_pid   : 1210
-trigger_time: 3264.436419606
-tstamp      : 3302.883104696
-delay       : 20904
-avail       : 2646
-avail_max   : 21026
------
-hw_ptr      : 1695160
-appl_ptr    : 1714564
-
-
-$ cat /proc/asound/N550/pcm0p/sub0/sw_params 
-tstamp_mode: NONE
-period_step: 1
-avail_min: 5513
-start_threshold: 16537
-stop_threshold: 22050
-silence_threshold: 0
-silence_size: 0
-boundary: 1445068800
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 77d2eec..0d37238 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -43,13 +43,6 @@ struct snd_urb_ctx {
+ 	struct list_head ready_list;
+ };
+ 
+-struct snd_urb_ops {
+-	int (*prepare)(struct snd_usb_substream *subs, struct snd_pcm_runtime *runtime, struct urb *u);
+-	int (*retire)(struct snd_usb_substream *subs, struct snd_pcm_runtime *runtime, struct urb *u);
+-	int (*prepare_sync)(struct snd_usb_substream *subs, struct snd_pcm_runtime *runtime, struct urb *u);
+-	int (*retire_sync)(struct snd_usb_substream *subs, struct snd_pcm_runtime *runtime, struct urb *u);
+-};
+-
+ struct snd_usb_endpoint {
+ 	struct snd_usb_audio *chip;
+ 
+@@ -125,11 +118,6 @@ struct snd_usb_substream {
+ 	unsigned long active_mask;	/* bitmask of active urbs */
+ 	unsigned long unlink_mask;	/* bitmask of unlinked urbs */
+ 
+-	unsigned int nurbs;			/* # urbs */
+-	struct snd_urb_ctx dataurb[MAX_URBS];	/* data urb table */
+-	struct snd_urb_ctx syncurb[SYNC_URBS];	/* sync urb table */
+-	char *syncbuf;				/* sync buffer for all sync URBs */
+-	dma_addr_t sync_dma;			/* DMA address of syncbuf */
+ 	/* data and sync endpoints for this stream */
+ 	struct snd_usb_endpoint *data_endpoint;
+ 	struct snd_usb_endpoint *sync_endpoint;
+@@ -141,7 +129,6 @@ struct snd_usb_substream {
+ 	struct snd_pcm_hw_constraint_list rate_list;	/* limited rates */
+ 	spinlock_t lock;
+ 
+-	struct snd_urb_ops ops;		/* callbacks (must be filled at init) */
+ 	int last_frame_number;          /* stored frame number */
+ 	int last_delay;                 /* stored delay */
+ };
+diff --git a/sound/usb/proc.c b/sound/usb/proc.c
+index 06e23d8..ebc1a5b 100644
+--- a/sound/usb/proc.c
++++ b/sound/usb/proc.c
+@@ -25,6 +25,7 @@
+ #include "usbaudio.h"
+ #include "helper.h"
+ #include "card.h"
++#include "endpoint.h"
+ #include "proc.h"
+ 
+ /* convert our full speed USB rate into sampling rate in Hz */
+@@ -137,14 +138,9 @@ static void proc_dump_ep_status(struct snd_usb_substream *subs,
+ static void proc_dump_substream_status(struct snd_usb_substream *subs, struct snd_info_buffer *buffer)
+ {
+ 	if (subs->running) {
+-		unsigned int i;
+ 		snd_iprintf(buffer, "  Status: Running\n");
+ 		snd_iprintf(buffer, "    Interface = %d\n", subs->interface);
+ 		snd_iprintf(buffer, "    Altset = %d\n", subs->altset_idx);
+-		snd_iprintf(buffer, "    URBs = %d [ ", subs->nurbs);
+-		for (i = 0; i < subs->nurbs; i++)
+-			snd_iprintf(buffer, "%d ", subs->dataurb[i].packets);
+-		snd_iprintf(buffer, "]\n");
+ 		proc_dump_ep_status(subs, subs->data_endpoint, buffer);
+ 		proc_dump_ep_status(subs, subs->sync_endpoint, buffer);
+ 	} else {
+-- 
+1.7.5.4
