@@ -1,31 +1,20 @@
-From: Chris Cavey <chris-alsa@rauros.net>
-Subject: Re: M-Audio FastTrack C400
-Date: Sat, 21 Apr 2012 12:07:37 -0400
-Message-ID: <4F92DB49.8040502@rauros.net>
-References: <4F8D63F4.1040208@rauros.net>
-	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
-	<4F8DF29B.9090907@rauros.net>
-	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
-	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
-	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
-	<4F920D73.7070309@rauros.net>
-	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
-	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
-Reply-To: chris-alsa@rauros.net
+From: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+Subject: Playback underrun recovery
+Date: Sat, 21 Apr 2012 14:12:20 -0700
+Message-ID: <FB1A4815959E42EF9F7B4F3A48E8E129@PAULD>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vms173001pub.verizon.net (vms173001pub.verizon.net
-	[206.46.173.1]) by alsa0.perex.cz (Postfix) with ESMTP id 8848224958
+Received: from elasmtp-scoter.atl.sa.earthlink.net
+	(elasmtp-scoter.atl.sa.earthlink.net [209.86.89.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id E924724378
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Apr 2012 18:08:18 +0200 (CEST)
-Received: from rauros.net ([unknown] [74.107.69.179])
-	by vms173001.mailsrvcs.net
-	(Sun Java(tm) System Messaging Server 7u2-7.02 32bit (built Apr 16
-	2009)) with ESMTPA id <0M2U00L7A7GU4L92@vms173001.mailsrvcs.net> for
-	alsa-devel@alsa-project.org; Sat, 21 Apr 2012 11:07:43 -0500 (CDT)
-In-reply-to: <CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+	Sat, 21 Apr 2012 23:12:30 +0200 (CEST)
+Received: from [76.89.179.141] (helo=PAULD)
+	by elasmtp-scoter.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+	(envelope-from <pderocco@ix.netcom.com>) id 1SLhbZ-0001ZZ-Gs
+	for alsa-devel@alsa-project.org; Sat, 21 Apr 2012 17:12:29 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,55 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-speaker-test plughw:C400 got me further but complains still
+I've got a synth program outputting directly to the main hw PCM device, with
+no intervening plugins. It uses about 75-80% of the time on one core, so it
+normally doesn't underrun. Once in a while, other burdens on the system
+trigger an underrun, and my program never recovers. My buffer contains two
+periods of 256 stereo frames (with 32-bit samples), which at 96KHz comes out
+to a little over 5.3ms total. When it fails, its CPU usage goes up to 100%
+on that core, and it spits out bursts of 5.3ms of audio (two full periods,
+not one), with about 4ms of silence between them. My top level code consists
+of a loop that generates one period at a time:
 
-Setting of hwparams failed: Invalid argument
+    int buf[512];
 
- From the manual:
+    while (true) {
+        generate_samples(buf, 256); // generate 256 stereo frames
+        if (snd_pcm_writei(h, buf, 256) < 0)
+            snd_pcm_prepare(h);
+    }
 
-2 analog mono inputs, 1 stereo SPDIF gives a total 4 inputs
-4 analog mono outputs, 1 stereo SPDIF gives a total 6 outputs
+The funny thing is that if I break to the debugger and then restart, I get
+exactly one underrun as you would expect, and then it recovers. What could
+cause it to get into a state where it fails every other time around the
+loop, and then sucks up milliseconds of CPU time before it gets going again,
+thus guaranteeing another underrun?
 
-Does SPDIF factor into channels?
+-- 
 
-I noticed, the endpoint attributes are slightly different that the FTU. 
-Could this be an issue? I'm also guessing that the mixer lacking 
-channels is probably an issue. I wonder if the some the FTU mixer 
-"workarounds" may fit.
-
-On 4/21/2012 5:19 AM, Grant Diffey wrote:
->>> (channels = 2, ifnum = 2).
->>
->> Why do you use channels=2. As fas as I can tell the device has 6
->> channels. Try that.
->>
->>
->>> Except I can't get it to play anything (figure it would all be too good
->>> to be true)
->>>
->>> $ speaker-test -Dfront:C400
->>> speaker-test 1.0.25
->>>
->>> Playback device is front:C400
->>> Stream parameters are 48000Hz, S16_LE, 1 channels
->>> Using 16 octaves of pink noise
->>> Sample format not available for playback: Invalid argument
->>> Setting of hwparams failed: Invalid argument
->>>
->>
->> The device probably supports only S24_3LE audio. At least that's what
->> you tell Alsa with the FTU quirk. Try to play something through the
->> corresponding hw device or use Jack or convert some audio file to
->> S24_3LE and play through aplay etc...
->>
->>
-> that's a good point
->
-> try speaker-test -D plughw:C400
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Ciao,               Paul D. DeRocco
+Paul                mailto:pderocco@ix.netcom.com 
