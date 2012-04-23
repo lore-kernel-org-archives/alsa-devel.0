@@ -1,16 +1,16 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: [PATCH 1/7] Unify M-Audio Fast Track Ultra and
- Ebox-44 mixer quirks.
-Date: Mon, 23 Apr 2012 19:43:09 +0100 (BST)
-Message-ID: <alpine.LNX.2.01.1204231939570.20159@stax.localdomain>
-References: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
-	<1335191857-6725-2-git-send-email-linuxaudio@showlabor.de>
-	<s5hipgq5vz3.wl%tiwai@suse.de>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: [PATCH 1/5] Unify M-Audio Fast Track Ultra and
+	Ebox-44 mixer quirks.
+Date: Mon, 23 Apr 2012 20:46:45 +0200
+Message-ID: <CAFz=ag6OJBotLqvUw3aAR4SJ8=NUHVE=AetuEUYAsF6u2=pqgg@mail.gmail.com>
+References: <1335205467-12650-1-git-send-email-linuxaudio@showlabor.de>
+	<1335205467-12650-2-git-send-email-linuxaudio@showlabor.de>
+	<alpine.LNX.2.01.1204231932580.20159@stax.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hipgq5vz3.wl%tiwai@suse.de>
+In-Reply-To: <alpine.LNX.2.01.1204231932580.20159@stax.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,62 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Mark Hills <mark@pogo.org.uk>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Apr 2012, Takashi Iwai wrote:
+Hi Mark,
 
-> At Mon, 23 Apr 2012 16:37:31 +0200, Felix Homann wrote:
-[...]
-> >  /*
-> >   * Create mixer for Electrix Ebox-44
-> >   *
-> > @@ -605,17 +636,26 @@ static int snd_ebox44_create_ctl(struct usb_mixer_interface *mixer,
-> >  
-> >  static int snd_ebox44_create_mixer(struct usb_mixer_interface *mixer)
-> >  {
-> > -	snd_ebox44_create_ctl(mixer, 4, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Headphone Playback Switch");
-> > -	snd_ebox44_create_ctl(mixer, 4, 2, 0x1, USB_MIXER_S16, "Headphone A Mix Playback Volume");
-> > -	snd_ebox44_create_ctl(mixer, 4, 2, 0x2, USB_MIXER_S16, "Headphone B Mix Playback Volume");
-> > -
-> > -	snd_ebox44_create_ctl(mixer, 7, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Output Playback Switch");
-> > -	snd_ebox44_create_ctl(mixer, 7, 2, 0x1, USB_MIXER_S16, "Output A Playback Volume");
-> > -	snd_ebox44_create_ctl(mixer, 7, 2, 0x2, USB_MIXER_S16, "Output B Playback Volume");
-> > -
-> > -	snd_ebox44_create_ctl(mixer, 10, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Input Capture Switch");
-> > -	snd_ebox44_create_ctl(mixer, 10, 2, 0x1, USB_MIXER_S16, "Input A Capture Volume");
-> > -	snd_ebox44_create_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16, "Input B Capture Volume");
-> > +	snd_create_std_mono_ctl(mixer, 4, 1, 0x0, USB_MIXER_INV_BOOLEAN,
-> > +				"Headphone Playback Switch", NULL);
-> > +	snd_create_std_mono_ctl(mixer, 4, 2, 0x1, USB_MIXER_S16,
-> > +				"Headphone A Mix Playback Volume", NULL);
-> > +	snd_create_std_mono_ctl(mixer, 4, 2, 0x2, USB_MIXER_S16,
-> > +				"Headphone B Mix Playback Volume", NULL);
-> > +
-> > +	snd_create_std_mono_ctl(mixer, 7, 1, 0x0, USB_MIXER_INV_BOOLEAN,
-> > +				"Output Playback Switch", NULL);
-> > +	snd_create_std_mono_ctl(mixer, 7, 2, 0x1, USB_MIXER_S16,
-> > +				"Output A Playback Volume", NULL);
-> > +	snd_create_std_mono_ctl(mixer, 7, 2, 0x2, USB_MIXER_S16,
-> > +				"Output B Playback Volume", NULL);
-> > +
-> > +	snd_create_std_mono_ctl(mixer, 10, 1, 0x0, USB_MIXER_INV_BOOLEAN,
-> > +				"Input Capture Switch", NULL);
-> > +	snd_create_std_mono_ctl(mixer, 10, 2, 0x1, USB_MIXER_S16,
-> > +				"Input A Capture Volume", NULL);
-> > +	snd_create_std_mono_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16,
-> > +				"Input B Capture Volume", NULL);
-> 
-> It would be safer to check the error of each call, but then it'd be
-> better to make a table and loop over it.  You can create a new patch
-> for that.
+2012/4/23 Mark Hills <mark@pogo.org.uk>:
+> When implementing the Ebox44 quirk, I found I needed this. The min and max
+> would be automatically completed for the S16 values, but not for the mute
+> buttons, so I defaulted to the range required for the BOOLEAN.
 
-I can do this, if somebody can tell me how best to handle the error. If 
-snd_ebox44_create_ctl fails andI return an error code, I become 
-responsible for un-winding the previous creations?
+thanks for answering and sorry for my cc'ing you in so many iterations
+of my patch set.
+We leave it as it is then until someone has a need for other defaults.
 
-Thanks
+Regards,
 
--- 
-Mark
+Felix
