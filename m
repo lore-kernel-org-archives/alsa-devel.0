@@ -1,8 +1,8 @@
 From: Felix Homann <linuxaudio@showlabor.de>
-Subject: [PATCH 4/7] Rename Fast Track Ultra mixer quirk
-	functions
-Date: Mon, 23 Apr 2012 16:37:34 +0200
-Message-ID: <1335191857-6725-5-git-send-email-linuxaudio@showlabor.de>
+Subject: [PATCH 3/7] Add TLV to M-Audio Fast Track Ultra
+	controls
+Date: Mon, 23 Apr 2012 16:37:33 +0200
+Message-ID: <1335191857-6725-4-git-send-email-linuxaudio@showlabor.de>
 References: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,46 +22,31 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>, mark@pogo.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-This is in preparation for more FTU controls to come. Should help keeping names
-a bit shorter.
+This adds db gain information to M-Audio Fast Track Ultra (8R) devices.
 
 Signed-off-by: Felix Homann <linuxaudio@showlabor.de>
 
 diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index afb5cdb..6e4f51c 100644
+index 22a1f7b..afb5cdb 100644
 --- a/sound/usb/mixer_quirks.c
 +++ b/sound/usb/mixer_quirks.c
-@@ -576,7 +576,7 @@ static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
- /* M-Audio FastTrack Ultra quirks */
- 
- /* Create a volume control for FTU devices*/
--static int snd_maudio_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
-+static int snd_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
- {
- 	char name[64];
- 	unsigned int control, cmask;
-@@ -614,11 +614,11 @@ static int snd_maudio_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
- 	return 0;
- }
- 
--static int snd_maudio_ftu_create_mixer(struct usb_mixer_interface *mixer)
-+static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)
- {
- 	int err;
- 
--	err = snd_maudio_ftu_create_volume_ctls(mixer);
-+	err = snd_ftu_create_volume_ctls(mixer);
- 	if (err < 0)
- 		return err;
- 
-@@ -703,7 +703,7 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 
- 	case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra */
- 	case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
--		err = snd_maudio_ftu_create_mixer(mixer);
-+		err = snd_ftu_create_mixer(mixer);
- 		break;
- 
- 	case USB_ID(0x0b05, 0x1739):
+@@ -594,7 +594,7 @@ static int snd_maudio_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
+ 				in  + 1, out + 1);
+ 			err = snd_create_std_mono_ctl(mixer, id, control,
+ 							cmask, val_type, name,
+-							NULL);
++							&snd_usb_mixer_vol_tlv);
+ 			if (err < 0)
+ 				return err;
+ 		}
+@@ -605,7 +605,7 @@ static int snd_maudio_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
+ 				in - 7, out + 1);
+ 			err = snd_create_std_mono_ctl(mixer, id, control,
+ 							cmask, val_type, name,
+-							NULL);
++							&snd_usb_mixer_vol_tlv);
+ 			if (err < 0)
+ 				return err;
+ 		}
 -- 
 1.7.5.4
