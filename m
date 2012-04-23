@@ -1,17 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/8] ASoC: core: Add debug-print helper
-	function
-Date: Mon, 23 Apr 2012 19:03:15 +0100
-Message-ID: <20120423180315.GS8318@opensource.wolfsonmicro.com>
-References: <1334914372-27409-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix x86_64 build warning.
+Date: Mon, 23 Apr 2012 17:10:41 +0100
+Message-ID: <20120423161040.GP8318@opensource.wolfsonmicro.com>
+References: <1335173475-5536-1-git-send-email-lrg@ti.com>
+	<20120423121646.GE8318@opensource.wolfsonmicro.com>
+	<1335183754.31825.109.camel@vkoul-udesk3>
+	<20120423122844.GN8318@opensource.wolfsonmicro.com>
+	<s5hbomi5unn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1392200599376346713=="
+Content-Type: multipart/mixed; boundary="===============4450619397667763093=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5F1D243B3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7353A243B6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2012 20:03:17 +0200 (CEST)
-In-Reply-To: <1334914372-27409-1-git-send-email-ola.o.lilja@stericsson.com>
+	Mon, 23 Apr 2012 20:06:04 +0200 (CEST)
+In-Reply-To: <s5hbomi5unn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1392200599376346713==
+--===============4450619397667763093==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="80Ds8Z/hZmemMosa"
+	protocol="application/pgp-signature"; boundary="90KBcPA0h13nTGdQ"
 Content-Disposition: inline
 
 
---80Ds8Z/hZmemMosa
+--90KBcPA0h13nTGdQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 20, 2012 at 11:32:52AM +0200, Ola Lilja wrote:
+On Mon, Apr 23, 2012 at 05:34:36PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> +/* Get a string naming the direction of a stream */
-> +const char *snd_soc_stream_str(struct snd_pcm_substream *substream)
-> +{
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		return "Playback";
-> +	else
-> +		return "Capture";
-> +}
+> > We should do though we don't currently - see the recent discussion about
+> > the ice drivers.  There are some PC sound cards (mostly high end or old
+> > ones, or tuner cards) which have a setup like ASoC where there's a CODEC
+> > on an I2C bus and a "platform" which in this case is a PCI type device.
+> > At a high level they look the same as embedded hardware with several
+> > chips glued together in software.
 
-This should be added to the ALSA core, there's nothing ASoC specific
-about it.
+> Right.  In near future, we'd need to move up/down some ASoC code
+> pieces into ALSA core so that people won't misunderstand.
 
---80Ds8Z/hZmemMosa
+I think from a code structure point of view we're probably mostly fine
+as is (in that ASoC is sitting in parallel with more integrated sound
+card architectures) - except for DAPM mostly ASoC is just thin wrappers
+for the core which split things up for multiple devices.  We'd need to
+deal with that layering somehow if we were merging stuff in.
+
+--90KBcPA0h13nTGdQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPlZlbAAoJEBus8iNuMP3dLc8P+wR82hFkrT9vgabiqoWsa7jR
-b0s6yAMyPZAb+vPfrA7bYjfreVlGfzEU+t2d9e7Exq9SRlov+0VYEJ+Kr7ZxwbJ/
-LPuB/hGL06jUC+s3kOZ/05msxcEEkBY8133bx9uuyb3mtXDjaGqpp7Cp+SwObKiH
-lh71i/EE6jXguVH0KSIPo8rf99RZyyweAQ0aqjngQ3czLvgdDxIsIwpjCS+83Wpe
-oBPmotiiR22OVqzfnf4fctD57v76BBzRY1zCqXKGBtpw5NA414hlHKaGaU9MssrZ
-N0DZBZGm157UiOXN3gqeZ6erqeHHo30HnkTz4E5XEpzSA8NdksP1/udddL2f9gFh
-DSDl+9pRZ1h5XKpXKO6wwCqh29A6nEBoJSR2hxgzuFti28ZlInIXvzk6QRKyckMH
-9hLaye9/Ei+9EbQxMXFnw9RgMl/zoPOwpHzuMZ/JdmQ/uYt835QSpfBFRd1J6I8n
-B17B+a/yBH7rsltvT/FrJN1h7vqKO1XdkHFqiQtMYIy6m8TGWMknjZvQfUp+f3tV
-NAl1pDBwGeVOu4l8rMwo7N5Fb8uIa1poZrYKd5lCWIG/aer770MeP2NcvLKruzik
-X7HO4aaC8V7rX0jnsJ5MHRJxd1hm+fGH1Kzghf7tuVOtzqTldTDk5+3I1E269Hn4
-tmymDxo6Sa9CZCcivBQe
-=4Vxb
+iQIcBAEBAgAGBQJPlX75AAoJEBus8iNuMP3daZEP/3ENAORYPXbF3bhqQOfZvP4E
+M50FJ2X/E/FVM2XJGX9q7M2gD5VjRZU6+qoWLyjsCai6oLDGh1/krYCWKEBzV7Qz
+oNvzpb0LJxt5mdsZcCF2azPXuw+Ct2G/X/GuPH/5iE/7c3G6xHfyBNo8VGbT2Zws
+rwI5aHotM+s2wadYkfZ4rsqNNBYTUqjT5F4RQ2uNrsHjDOiottMlmOdZfHPTQOxM
+Gb6E47Cri5xsGMyeHBvkuU/LK3ecPQPk1T+S8t5yPkFtC9dEYTZ+Okmd5jUHxl3M
+pfWkIuvRjW7a+bmkUgfb3ZgrcNEAfUMAIZTPY5T3heXs0WrAs165Pfh2zlLE581u
+cHv9UKwo6PNRnofWUYZ87x7+8/c6Kjxr8OL/rZWOpcgctfl0gdQ1kqminc+HHJCK
+eJg1qKkXywU2KE+SzcmZNwV9v9lVvV+76aE3URiLMGrBX80mfJssvkkYj67TFt9Z
+kCL3mnH5017twcxTM/ACSrtT79hI2jRXuinqGJY+UQcK28EfhEjQbADbY3YwlF3T
+Hw0+BxqxXMlgobdWEtf/IV+hK/O0wOfY7APzYDZPyQQeOCHRfjxHfkrGBA+FT1wB
+Pr8sn4V2PZ29btdgw9GQ/UGdQFOH4bDXNFkOU2R9qrDIgcZeJCL9cs6U/NluiJR3
+HjcTJjTVutfkiGFt+7E1
+=3Uzi
 -----END PGP SIGNATURE-----
 
---80Ds8Z/hZmemMosa--
+--90KBcPA0h13nTGdQ--
 
---===============1392200599376346713==
+--===============4450619397667763093==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1392200599376346713==--
+--===============4450619397667763093==--
