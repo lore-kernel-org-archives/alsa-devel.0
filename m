@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/8] ASoC: core: Add signed multi register
-	control
-Date: Mon, 23 Apr 2012 20:07:57 +0100
-Message-ID: <20120423190757.GY8318@opensource.wolfsonmicro.com>
-References: <1334914333-27335-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 2/8] ASoC: core: Add strobe control
+Date: Mon, 23 Apr 2012 20:13:02 +0100
+Message-ID: <20120423191302.GZ8318@opensource.wolfsonmicro.com>
+References: <1334914364-27373-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0813064882099580420=="
+Content-Type: multipart/mixed; boundary="===============0168405914751977309=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2709D104359
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8EEF8104359
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2012 21:08:02 +0200 (CEST)
-In-Reply-To: <1334914333-27335-1-git-send-email-ola.o.lilja@stericsson.com>
+	Mon, 23 Apr 2012 21:13:06 +0200 (CEST)
+In-Reply-To: <1334914364-27373-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,54 +25,65 @@ Cc: alsa-devel@alsa-project.org, Kristoffer KARLSSON <kristoffer.karlsson@steric
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0813064882099580420==
+--===============0168405914751977309==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R9baxdNnpTjJ7oIU"
+	protocol="application/pgp-signature"; boundary="yrEcvySKR+fOA8iz"
 Content-Disposition: inline
 
 
---R9baxdNnpTjJ7oIU
+--yrEcvySKR+fOA8iz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 20, 2012 at 11:32:13AM +0200, Ola Lilja wrote:
+On Fri, Apr 20, 2012 at 11:32:44AM +0200, Ola Lilja wrote:
 > From: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 >=20
-> Added control type that can span multiple consecutive codec registers
-> forming a single signed value in a MSB/LSB manner.
+> Added support for a control that strobes a bit in
+> a register to high then back to low (or the inverse).
 
-Applied, thanks - this is much cleaner!
+I've applied this but...
 
---R9baxdNnpTjJ7oIU
+> +	unsigned int val =3D snd_soc_read(codec, reg) & mask;
+> +
+> +	if (shift !=3D 0 && val !=3D 0)
+> +		val =3D val >> shift;
+> +	ucontrol->value.enumerated.item[0] =3D val ^ invert;
+
+=2E..it seems weird that the code actually reads back the enumeration
+status, even if we're in the middle of strobing it should be a very
+brief, transitory, status which it isn't really worth going to the
+effort of reporting.
+
+--yrEcvySKR+fOA8iz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPlag0AAoJEBus8iNuMP3dSz4QAI+OzXraL0lJz9MVtYBpc1qz
-7mnDX0NK5er8487NQgIXdN/K8mvKJx3UV3cRWDKR5369WeI06h3EZJNk3JcD1YqZ
-5p23PN3bOkoQEyVC0WYbksF/5ST2MusKo5/a/gR3R4dVIvj6tJ2fcUTf7YtV04rV
-wk9GXlnY37I2DVHvRFRDKU3dCqEpfklkFBGYyIVc73wNmkqV7Z1EZJ7VpiVwR6qg
-Vtemah1JX0bv86JdeDYb6ybtL8LedYE/muQCuB9BROU9zPZzKgmcTf7r6nH5J+tp
-nzTtJXOSwAnvdPSlfrU9OsjARVka8iQyAM1BEqRnkFKaam63O3pClrFxteGtmWol
-WX2L7ik/9SQCfdTgnZMz35UmK9kpYjtS+G7+q8wbT+CH5KyQQ51sYTWaUezqnelJ
-nqveEBYMk6KD6t4V3YrJh5rjrOI5jusZZRkMHuFi6rnFwKhHbY0C8p+dyhhQvJBA
-XlL6pFDHE6KTRFO2ce+q2CwZu9YUfNxluSD6BSYQxxOAS5OxlEY4KSvunvHiD2IU
-sAV0fJXD3T6hPlXrtgPLxpj6wiXp4LLRIP+74dwZS34wZIj6n5Juz4ImxeYe6X0p
-e+7kvJLvhLai4abulul3R8C2u54El2uR0DUZSgEysIVusw3di6ccrIkwrarBHDY/
-uUfduRaleQDuHpoU7X5x
-=MxdL
+iQIcBAEBAgAGBQJPlamqAAoJEBus8iNuMP3dr4wP/3fOkJHog+TjmpeakSQncQHW
+4b+Fs81QalK+kRe+VFco3g2Yv3AgyDhHHopy+d17bNVY6TRGfnzkRej4QZ8HVHAa
+I0bLM+T7ZDDqjCIrlR1Sh4b1o7ccJy+MVDlzVgJ75kb73184/H9yaaYJTKCD5Y64
+fXhC+K9lrF/KhPtK7iX5laXmQfvwwvEwDB7zm6fHi9Pkkwu67w64scl1UMQrVP7C
+LunCZiQixYCHQFZJ8oPTmL4gwAnSkRqJfGESPBv9nkx9iCxBvvK4QcuRm+CF+KeG
+JL4g+pMwn5Mzzy8xBziwFmYhNoIaldhU3/RR7L3HvwALqFRft27SoYd3hHng6pOD
+cexvD7X7yhRoTJqGNAauLmCXLWuYsYs1jFgbNCtTwp58yYeVBiL9/q6W9FZe6sd1
+6pW2rRoflMsxoq7Ka4QO/6FVJoej+8bjHB6SGk1LCVTvlBzfzhW8lnwMImAZZ6I9
+qinrbBHkmRZmpKkmqj2WLBimJ5CjpqHOR2psytvno2Z8SVTgHm6FVEBKi/SktTRg
+aMGSHtUwlmqLwI3A1Sm5Axuu5EO8Ud4jbpEVnpttYbE1+Nt7yWC7Lbk0z9e4eUZp
+b1nISqYpCuEe5evXiWHGdiFctRsR7uVVtGCB078SFNyJi+BLp1JVs2ynfHq0uTf7
+cJbQV+R+J1cog1+Kja+r
+=qK/Q
 -----END PGP SIGNATURE-----
 
---R9baxdNnpTjJ7oIU--
+--yrEcvySKR+fOA8iz--
 
---===============0813064882099580420==
+--===============0168405914751977309==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0813064882099580420==--
+--===============0168405914751977309==--
