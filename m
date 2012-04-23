@@ -1,14 +1,16 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: [PATCH 5/5] M-Audio Fast Track Ultra: Add effect
-	controls
-Date: Mon, 23 Apr 2012 20:24:27 +0200
-Message-ID: <1335205467-12650-6-git-send-email-linuxaudio@showlabor.de>
-References: <1335205467-12650-1-git-send-email-linuxaudio@showlabor.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/8] ASoC: Ux500: Add MSP I2S-driver
+Date: Mon, 23 Apr 2012 19:29:11 +0100
+Message-ID: <20120423182911.GU8318@opensource.wolfsonmicro.com>
+References: <1334914386-27482-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5510973762952119992=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1335205467-12650-1-git-send-email-linuxaudio@showlabor.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FE1C103EFC
+	for <alsa-devel@alsa-project.org>;
+	Mon, 23 Apr 2012 20:29:14 +0200 (CEST)
+In-Reply-To: <1334914386-27482-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,368 +20,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>, mark@pogo.org.uk
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds controls for the effects section on the FTU devices.
-Some of these controls need volume quirks. They are added to
-mixer.c.
 
-Signed-off-by: Felix Homann <linuxaudio@showlabor.de>
+--===============5510973762952119992==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YnIutncTLXsDZs5t"
+Content-Disposition: inline
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index bb56f53..195b6d2 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -770,6 +770,24 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 				  struct snd_kcontrol *kctl)
- {
- 	switch (cval->mixer->chip->usb_id) {
-+	case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
-+	case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra */
-+		if ((strcmp(kctl->id.name, "Effect Duration") == 0)) {
-+			snd_printk(KERN_INFO
-+				"usb-audio: set quirk for FTU Effect Duration\n");
-+			cval->min = 0x0000;
-+			cval->max = 0x7f00;
-+			cval->res = 0x0100;
-+			break;
-+		}
-+		if (strcmp(kctl->id.name, "Effect Volume") == 0 ||
-+			strcmp(kctl->id.name, "Effect Feedback Volume") == 0) {
-+			snd_printk(KERN_INFO
-+				"usb-audio: set quirks for FTU Effect Feedback/Volume\n");
-+			cval->min = 0x00;
-+			cval->max = 0x7f;
-+			break;
-+		}
- 	case USB_ID(0x0471, 0x0101):
- 	case USB_ID(0x0471, 0x0104):
- 	case USB_ID(0x0471, 0x0105):
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 534e81e..21f2519 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -574,6 +574,186 @@ static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
- }
- 
- /* M-Audio FastTrack Ultra quirks */
-+/* FTU Effect switch */
-+struct snd_ftu_eff_switch_priv_val {
-+	struct usb_mixer_interface *mixer;
-+	int cached_value;
-+	int is_cached;
-+};
-+
-+static int snd_ftu_eff_switch_info(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *texts[8] = {"Room 1",
-+				       "Room 2",
-+				       "Room 3",
-+				       "Hall 1",
-+				       "Hall 2",
-+				       "Plate",
-+				       "Delay",
-+				       "Echo"
-+	};
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = 8;
-+	if (uinfo->value.enumerated.item > 7)
-+		uinfo->value.enumerated.item = 7;
-+	strcpy(uinfo->value.enumerated.name,
-+		texts[uinfo->value.enumerated.item]);
-+
-+	return 0;
-+}
-+
-+static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_audio *chip;
-+	struct usb_mixer_interface *mixer;
-+	struct snd_ftu_eff_switch_priv_val *pval;
-+	int err;
-+	unsigned char value[2];
-+
-+	const int id = 6;
-+	const int validx = 1;
-+	const int val_len = 2;
-+
-+	value[0] = 0x00;
-+	value[1] = 0x00;
-+
-+	pval = (struct snd_ftu_eff_switch_priv_val *)
-+		kctl->private_value;
-+
-+	if (pval->is_cached) {
-+		ucontrol->value.enumerated.item[0] = pval->cached_value;
-+		return 0;
-+	}
-+
-+	mixer = (struct usb_mixer_interface *) pval->mixer;
-+	if (snd_BUG_ON(!mixer))
-+		return -EINVAL;
-+
-+	chip = (struct snd_usb_audio *) mixer->chip;
-+	if (snd_BUG_ON(!chip))
-+		return -EINVAL;
-+
-+
-+	err = snd_usb_ctl_msg(chip->dev,
-+			usb_rcvctrlpipe(chip->dev, 0), UAC_GET_CUR,
-+			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+			validx << 8, snd_usb_ctrl_intf(chip) | (id << 8),
-+			value, val_len);
-+	if (err < 0)
-+		return err;
-+
-+	ucontrol->value.enumerated.item[0] = value[0];
-+	pval->cached_value = value[0];
-+	pval->is_cached = 1;
-+
-+	return 0;
-+}
-+
-+static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_audio *chip;
-+	struct snd_ftu_eff_switch_priv_val *pval;
-+
-+	struct usb_mixer_interface *mixer;
-+	int changed, cur_val, err, new_val;
-+	unsigned char value[2];
-+
-+
-+	const int id = 6;
-+	const int validx = 1;
-+	const int val_len = 2;
-+
-+	changed = 0;
-+
-+	pval = (struct snd_ftu_eff_switch_priv_val *)
-+		kctl->private_value;
-+	cur_val = pval->cached_value;
-+	new_val = ucontrol->value.enumerated.item[0];
-+
-+	mixer = (struct usb_mixer_interface *) pval->mixer;
-+	if (snd_BUG_ON(!mixer))
-+		return -EINVAL;
-+
-+	chip = (struct snd_usb_audio *) mixer->chip;
-+	if (snd_BUG_ON(!chip))
-+		return -EINVAL;
-+
-+	if (!pval->is_cached) {
-+		/* Read current value */
-+		err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), UAC_GET_CUR,
-+				USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+				validx << 8, snd_usb_ctrl_intf(chip) | (id << 8),
-+				value, val_len);
-+		if (err < 0)
-+			return err;
-+
-+		cur_val = value[0];
-+		pval->cached_value = cur_val;
-+		pval->is_cached = 1;
-+	}
-+	/* update value if needed */
-+	if (cur_val != new_val) {
-+		value[0] = new_val;
-+		value[1] = 0;
-+		err = snd_usb_ctl_msg(chip->dev,
-+				usb_sndctrlpipe(chip->dev, 0), UAC_SET_CUR,
-+				USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-+				validx << 8, snd_usb_ctrl_intf(chip) | (id << 8),
-+				value, val_len);
-+		if (err < 0)
-+			return err;
-+
-+		pval->cached_value = new_val;
-+		pval->is_cached = 1;
-+		changed = 1;
-+	}
-+
-+	return changed;
-+}
-+
-+static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer)
-+{
-+	static struct snd_kcontrol_new template = {
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Effect Program Switch",
-+		.index = 0,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = snd_ftu_eff_switch_info,
-+		.get = snd_ftu_eff_switch_get,
-+		.put = snd_ftu_eff_switch_put
-+	};
-+
-+	int err;
-+	struct snd_kcontrol *kctl;
-+	struct snd_ftu_eff_switch_priv_val *pval;
-+
-+	pval = kzalloc(sizeof(*pval), GFP_KERNEL);
-+	if (!pval)
-+		return -ENOMEM;
-+
-+	pval->cached_value = 0;
-+	pval->is_cached = 0;
-+	pval->mixer = mixer;
-+
-+	template.private_value = (unsigned long) pval;
-+	kctl = snd_ctl_new1(&template, mixer->chip);
-+	if (!kctl) {
-+		kfree(pval);
-+		return -ENOMEM;
-+	}
-+
-+	err = snd_ctl_add(mixer->chip->card, kctl);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
- 
- /* Create volume controls for FTU devices*/
- static int snd_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
-@@ -614,6 +794,102 @@ static int snd_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
- 	return 0;
- }
- 
-+/* This control needs a volume quirk, see mixer.c */
-+static int snd_ftu_create_effect_volume_ctl(struct usb_mixer_interface *mixer)
-+{
-+	static const char name[] = "Effect Volume";
-+	const unsigned int id = 6;
-+	const int val_type = USB_MIXER_U8;
-+	const unsigned int control = 2;
-+	const unsigned int cmask = 0;
-+
-+	return snd_create_std_mono_ctl(mixer, id, control, cmask, val_type,
-+					name, snd_usb_mixer_vol_tlv);
-+}
-+
-+/* This control needs a volume quirk, see mixer.c */
-+static int snd_ftu_create_effect_duration_ctl(struct usb_mixer_interface *mixer)
-+{
-+	static const char name[] = "Effect Duration";
-+	const unsigned int id = 6;
-+	const int val_type = USB_MIXER_S16;
-+	const unsigned int control = 3;
-+	const unsigned int cmask = 0;
-+
-+	return snd_create_std_mono_ctl(mixer, id, control, cmask, val_type,
-+					name, snd_usb_mixer_vol_tlv);
-+}
-+
-+/* This control needs a volume quirk, see mixer.c */
-+static int snd_ftu_create_effect_feedback_ctl(struct usb_mixer_interface *mixer)
-+{
-+	static const char name[] = "Effect Feedback Volume";
-+	const unsigned int id = 6;
-+	const int val_type = USB_MIXER_U8;
-+	const unsigned int control = 4;
-+	const unsigned int cmask = 0;
-+
-+	return snd_create_std_mono_ctl(mixer, id, control, cmask, val_type,
-+					name, NULL);
-+}
-+
-+static int snd_ftu_create_effect_return_ctls(struct usb_mixer_interface *mixer)
-+{
-+	unsigned int cmask;
-+	int err, ch;
-+	char name[48];
-+
-+	const unsigned int id = 7;
-+	const int val_type = USB_MIXER_S16;
-+	const unsigned int control = 7;
-+
-+	for (ch = 0; ch < 4; ++ch) {
-+		cmask = 1 << ch;
-+		snprintf(name, sizeof(name),
-+			"Effect Return %d Volume", ch + 1);
-+		err = snd_create_std_mono_ctl(mixer, id, control,
-+						cmask, val_type, name,
-+						snd_usb_mixer_vol_tlv);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int snd_ftu_create_effect_send_ctls(struct usb_mixer_interface *mixer)
-+{
-+	unsigned int  cmask;
-+	int err, ch;
-+	char name[48];
-+
-+	const unsigned int id = 5;
-+	const int val_type = USB_MIXER_S16;
-+	const unsigned int control = 9;
-+
-+	for (ch = 0; ch < 8; ++ch) {
-+		cmask = 1 << ch;
-+		snprintf(name, sizeof(name),
-+			"Effect Send AIn%d Volume", ch + 1);
-+		err = snd_create_std_mono_ctl(mixer, id, control, cmask,
-+						val_type, name,
-+						snd_usb_mixer_vol_tlv);
-+		if (err < 0)
-+			return err;
-+	}
-+	for (ch = 8; ch < 16; ++ch) {
-+		cmask = 1 << ch;
-+		snprintf(name, sizeof(name),
-+			"Effect Send DIn%d Volume", ch - 7);
-+		err = snd_create_std_mono_ctl(mixer, id, control, cmask,
-+						val_type, name,
-+						snd_usb_mixer_vol_tlv);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)
- {
- 	int err;
-@@ -622,6 +898,29 @@ static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)
- 	if (err < 0)
- 		return err;
- 
-+	err = snd_ftu_create_effect_switch(mixer);
-+	if (err < 0)
-+		return err;
-+	err = snd_ftu_create_effect_volume_ctl(mixer);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_ftu_create_effect_duration_ctl(mixer);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_ftu_create_effect_feedback_ctl(mixer);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_ftu_create_effect_return_ctls(mixer);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_ftu_create_effect_send_ctls(mixer);
-+	if (err < 0)
-+		return err;
-+
- 	return 0;
- }
- 
--- 
-1.7.5.4
+
+--YnIutncTLXsDZs5t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 20, 2012 at 11:33:06AM +0200, Ola Lilja wrote:
+
+> Add driver for running I2S with the MSP-block.
+
+This depends on the change for the debug print function.  Otherwise
+there's a bunch of relatively minor stuff but overall this looks
+generally good.
+
+> +static int ux500_msp_dai_startup(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	int ret = 0;
+> +	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
+> +
+> +	dev_dbg(dai->dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
+> +		snd_soc_stream_str(substream));
+> +
+> +	/* Don't enable regulator if it's MSP1/3 */
+
+Why not?
+
+> +static void ux500_msp_dai_shutdown(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+
+> +	if (drvdata->reg_enabled) {
+> +		ret = regulator_disable(drvdata->reg_vape);
+> +		if (ret < 0)
+> +			dev_err(dai->dev,
+> +				"%s: ERROR: Failed to disable regulator (%d)!\n",
+> +				__func__, ret);
+> +		drvdata->reg_enabled = 0;
+> +	}
+
+This looks like the driver is going to get confused with bidirectional
+audio - if one direction stops then it'll turn the regulator off.
+
+> +	/* Don't enable regulator if it's MSP1/3 */
+> +	if (!drvdata->reg_enabled && (drvdata->msp->id != MSP_1_I2S_CONTROLLER)
+> +		&& (drvdata->msp->id != MSP_3_I2S_CONTROLLER)) {
+
+This seems confused, you're enabling in multiple places...
+
+> +static int ux500_msp_dai_hw_params(struct snd_pcm_substream *substream,
+> +				struct snd_pcm_hw_params *params,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	unsigned int mask, slots_active;
+> +	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
+> +
+> +	dev_dbg(dai->dev, "%s: MSP %d (%s): Enter.\n",
+> +			__func__, dai->id, snd_soc_stream_str(substream));
+> +
+> +	switch (drvdata->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		if (params_channels(params) != 2) {
+> +			dev_err(dai->dev,
+> +				"%s: Error: I2S requires ch = 2 (ch = %d)!\n",
+> +				__func__, params_channels(params));
+> +			return -EINVAL;
+> +		}
+
+Should really set up constraints for this, though in principle format
+can change at runtime (though it rarely does).  Perhaps we should do
+something special if the configuration happens on init...
+
+> +		if (params_channels(params) != slots_active) {
+> +			dev_err(dai->dev,
+> +				"%s: Error: Channels to slots mismatch (ch = %d, slots = %d)!\n",
+> +				__func__, params_channels(params),
+> +				slots_active);
+> +			return -EINVAL;
+> +		}
+
+Similarly here.
+
+> +	drvdata->reg_vape = regulator_get(NULL, "v-ape");
+> +	if (IS_ERR(drvdata->reg_vape)) {
+
+No, this should be using the struct device.  Regulators should always
+be requested in the context of their consumer.  You could use
+devm_regulator_get() too (there's a clock one too, but only in -next).
+
+> +	ret = ux500_msp_i2s_init_msp(pdev, &drvdata->msp, platform_data);
+> +	if (!drvdata->msp) {
+
+Should be no need to cast away from void.
+
+> +
+> +	ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
+> +	devm_kfree(&pdev->dev, drvdata);
+
+You're missing the point of devm_ here! :)
+
+--YnIutncTLXsDZs5t
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPlZ9xAAoJEBus8iNuMP3dITMP/2UExl8puO1E4LYAqoBmw6Z2
+8NicdQ8u5WMYgntmFuUWS/OzX9D0X7BX3vvNt+qaoRpacvXjtsen9vU0DuLkVVwx
+UoZP1edcmNpRjKKMvUQ/gF2SyicKGDvz5zAZu53jEtQNY2IUven8B83XmpKFTTBO
+jU8hQqbVlicLbcFlNIu68BhaEcH7L60yxZVhJbIluuoIBPh5UZukuaW1TvfJgBfU
+IiZasbBU4oSDBf9dQJSt5JnOMrAIHBY5UIJKi8hm7gGarNdhjv5fNTQ8VkRKy9eC
+CybBNxXCEnmyUh6B6+ge9UppNuX9+8VIjuspyNNJncUU5PA/u1HsVLkI1H8etL7S
+B4Llqc48y0lTnDUf0FxLMI6CTed29Rl0rwG9pBBb4XYRKQNYHkLVge8BJmeF7S4W
+N/4FpRutmWj+BnTw4a10hyDKdnBtm8emOp0wwEWsAahwEWCpKUTtqrcobg+kxkhb
+iEXzyCLtAJ9MZoOWZ/zolEcK+2iLER2ZTxUMn8ST4gBC4YVVwgpIr7xuHx9+80zT
+AuE6xqVTMIABb45IPzauhhgYPyxpdnMhg8c9EmVOcbjp8lEZOFtVobLnNJ6W2/JA
+NFi/NtA5nnozDBQUzcW2cmROPjRKkUoPdksBMmdn8GuNialzawJ5iF6Bv3Onl/oG
+xXRlsTQyLBTgGQaJxF/R
+=PNgs
+-----END PGP SIGNATURE-----
+
+--YnIutncTLXsDZs5t--
+
+--===============5510973762952119992==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5510973762952119992==--
