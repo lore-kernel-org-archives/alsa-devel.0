@@ -1,15 +1,16 @@
 From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: [PATCH 1/5] Unify M-Audio Fast Track Ultra and
+Subject: Re: [PATCH 1/7] Unify M-Audio Fast Track Ultra and
  Ebox-44 mixer quirks.
-Date: Mon, 23 Apr 2012 19:36:06 +0100 (BST)
-Message-ID: <alpine.LNX.2.01.1204231932580.20159@stax.localdomain>
-References: <1335205467-12650-1-git-send-email-linuxaudio@showlabor.de>
-	<1335205467-12650-2-git-send-email-linuxaudio@showlabor.de>
+Date: Mon, 23 Apr 2012 19:43:09 +0100 (BST)
+Message-ID: <alpine.LNX.2.01.1204231939570.20159@stax.localdomain>
+References: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
+	<1335191857-6725-2-git-send-email-linuxaudio@showlabor.de>
+	<s5hipgq5vz3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1335205467-12650-2-git-send-email-linuxaudio@showlabor.de>
+In-Reply-To: <s5hipgq5vz3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,65 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Apr 2012, Felix Homann wrote:
+On Mon, 23 Apr 2012, Takashi Iwai wrote:
 
-> +/* This function allows for the creation of standard UAC controls.
-> + * See the quirks for M-Audio FTUs or Ebox-44.
-> + * If you don't want to set a TLV callback pass NULL.
-> + * 
-> + * Since there doesn't seem to be a devices that needs a multichannel
-> + * version, we keep it mono for simplicity.
-> + */
-> +static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
-> +				unsigned int unitid,
-> +				unsigned int control,
-> +				unsigned int cmask,
-> +				int val_type,
-> +				const char *name,
-> +				snd_kcontrol_tlv_rw_t *tlv_callback)
-> +{
-> +	int err;
-> +	struct usb_mixer_elem_info *cval;
-> +	struct snd_kcontrol *kctl;
-> +
-> +	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
-> +	if (!cval)
-> +		return -ENOMEM;
-> +
-> +	cval->id = unitid;
-> +	cval->mixer = mixer;
-> +	cval->val_type = val_type;
-> +	cval->channels = 1;
-> +	cval->control = control;
-> +	cval->cmask = cmask;
-> +
-> +	/* FIXME: Do we need this?
-> +	 * The following values are for compatibility with
-> +	 * Ebox-44 mixer.
-> +	 * But the corresponding ebox-44 function says:
-> +	 *    "Volume controls will override these values"
-> +	 * 
-> +	 * These values don't have any effect at all for
-> +	 * M-Audio FTUs.
-> +	 * So I think, we can safely omit the range settings here.
-> +	 */
-> +	cval->min = 0;
-> +	cval->max = 1;
-> +	cval->res = 0;
-> +	cval->dBmin = 0;
-> +	cval->dBmax = 0;
+> At Mon, 23 Apr 2012 16:37:31 +0200, Felix Homann wrote:
+[...]
+> >  /*
+> >   * Create mixer for Electrix Ebox-44
+> >   *
+> > @@ -605,17 +636,26 @@ static int snd_ebox44_create_ctl(struct usb_mixer_interface *mixer,
+> >  
+> >  static int snd_ebox44_create_mixer(struct usb_mixer_interface *mixer)
+> >  {
+> > -	snd_ebox44_create_ctl(mixer, 4, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Headphone Playback Switch");
+> > -	snd_ebox44_create_ctl(mixer, 4, 2, 0x1, USB_MIXER_S16, "Headphone A Mix Playback Volume");
+> > -	snd_ebox44_create_ctl(mixer, 4, 2, 0x2, USB_MIXER_S16, "Headphone B Mix Playback Volume");
+> > -
+> > -	snd_ebox44_create_ctl(mixer, 7, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Output Playback Switch");
+> > -	snd_ebox44_create_ctl(mixer, 7, 2, 0x1, USB_MIXER_S16, "Output A Playback Volume");
+> > -	snd_ebox44_create_ctl(mixer, 7, 2, 0x2, USB_MIXER_S16, "Output B Playback Volume");
+> > -
+> > -	snd_ebox44_create_ctl(mixer, 10, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Input Capture Switch");
+> > -	snd_ebox44_create_ctl(mixer, 10, 2, 0x1, USB_MIXER_S16, "Input A Capture Volume");
+> > -	snd_ebox44_create_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16, "Input B Capture Volume");
+> > +	snd_create_std_mono_ctl(mixer, 4, 1, 0x0, USB_MIXER_INV_BOOLEAN,
+> > +				"Headphone Playback Switch", NULL);
+> > +	snd_create_std_mono_ctl(mixer, 4, 2, 0x1, USB_MIXER_S16,
+> > +				"Headphone A Mix Playback Volume", NULL);
+> > +	snd_create_std_mono_ctl(mixer, 4, 2, 0x2, USB_MIXER_S16,
+> > +				"Headphone B Mix Playback Volume", NULL);
+> > +
+> > +	snd_create_std_mono_ctl(mixer, 7, 1, 0x0, USB_MIXER_INV_BOOLEAN,
+> > +				"Output Playback Switch", NULL);
+> > +	snd_create_std_mono_ctl(mixer, 7, 2, 0x1, USB_MIXER_S16,
+> > +				"Output A Playback Volume", NULL);
+> > +	snd_create_std_mono_ctl(mixer, 7, 2, 0x2, USB_MIXER_S16,
+> > +				"Output B Playback Volume", NULL);
+> > +
+> > +	snd_create_std_mono_ctl(mixer, 10, 1, 0x0, USB_MIXER_INV_BOOLEAN,
+> > +				"Input Capture Switch", NULL);
+> > +	snd_create_std_mono_ctl(mixer, 10, 2, 0x1, USB_MIXER_S16,
+> > +				"Input A Capture Volume", NULL);
+> > +	snd_create_std_mono_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16,
+> > +				"Input B Capture Volume", NULL);
+> 
+> It would be safer to check the error of each call, but then it'd be
+> better to make a table and loop over it.  You can create a new patch
+> for that.
 
-When implementing the Ebox44 quirk, I found I needed this. The min and max 
-would be automatically completed for the S16 values, but not for the mute 
-buttons, so I defaulted to the range required for the BOOLEAN.
+I can do this, if somebody can tell me how best to handle the error. If 
+snd_ebox44_create_ctl fails andI return an error code, I become 
+responsible for un-winding the previous creations?
 
-I was really hoping some one would explain this when I RFC'd the patch. 
-But at that time the code was not part of some general-purpose function so 
-it wasn't really an issue.
+Thanks
 
 -- 
 Mark
