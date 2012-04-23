@@ -1,7 +1,8 @@
 From: Felix Homann <linuxaudio@showlabor.de>
-Subject: [PATCH 2/7] Rename and export mixer_vol_tlv
-Date: Mon, 23 Apr 2012 16:37:32 +0200
-Message-ID: <1335191857-6725-3-git-send-email-linuxaudio@showlabor.de>
+Subject: [PATCH 4/7] Rename Fast Track Ultra mixer quirk
+	functions
+Date: Mon, 23 Apr 2012 16:37:34 +0200
+Message-ID: <1335191857-6725-5-git-send-email-linuxaudio@showlabor.de>
 References: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,44 +22,46 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>, mark@pogo.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Rename mixer_vol_tlv to snd_usb_mixer_vol_tlv and export it to make
-it reuseable in mixer_quirks.c.
+This is in preparation for more FTU controls to come. Should help keeping names
+a bit shorter.
 
 Signed-off-by: Felix Homann <linuxaudio@showlabor.de>
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index c374c72..bb56f53 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -486,7 +486,7 @@ static int set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
- /*
-  * TLV callback for mixer volume controls
-  */
--static int mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
-+int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 			 unsigned int size, unsigned int __user *_tlv)
- {
- 	struct usb_mixer_elem_info *cval = kcontrol->private_data;
-@@ -1158,7 +1158,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 		if (control == UAC_FU_VOLUME) {
- 			check_mapped_dB(map, cval);
- 			if (cval->dBmin < cval->dBmax || !cval->initialized) {
--				kctl->tlv.c = mixer_vol_tlv;
-+				kctl->tlv.c = snd_usb_mixer_vol_tlv;
- 				kctl->vd[0].access |= 
- 					SNDRV_CTL_ELEM_ACCESS_TLV_READ |
- 					SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK;
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index 81b2d8a..a7f3d45 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -68,4 +68,7 @@ int snd_usb_mixer_activate(struct usb_mixer_interface *mixer);
- int snd_usb_mixer_add_control(struct usb_mixer_interface *mixer,
- 			      struct snd_kcontrol *kctl);
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index afb5cdb..6e4f51c 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -576,7 +576,7 @@ static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
+ /* M-Audio FastTrack Ultra quirks */
  
-+int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
-+			  unsigned int size, unsigned int __user *_tlv);
-+
- #endif /* __USBMIXER_H */
+ /* Create a volume control for FTU devices*/
+-static int snd_maudio_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
++static int snd_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
+ {
+ 	char name[64];
+ 	unsigned int control, cmask;
+@@ -614,11 +614,11 @@ static int snd_maudio_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)
+ 	return 0;
+ }
+ 
+-static int snd_maudio_ftu_create_mixer(struct usb_mixer_interface *mixer)
++static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)
+ {
+ 	int err;
+ 
+-	err = snd_maudio_ftu_create_volume_ctls(mixer);
++	err = snd_ftu_create_volume_ctls(mixer);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -703,7 +703,7 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 
+ 	case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra */
+ 	case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+-		err = snd_maudio_ftu_create_mixer(mixer);
++		err = snd_ftu_create_mixer(mixer);
+ 		break;
+ 
+ 	case USB_ID(0x0b05, 0x1739):
 -- 
 1.7.5.4
