@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.4
-Date: Mon, 23 Apr 2012 17:28:57 +0100
-Message-ID: <20120423162857.GQ8318@opensource.wolfsonmicro.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: [PATCH 1/7] Unify M-Audio Fast Track Ultra and
+	Ebox-44 mixer quirks.
+Date: Mon, 23 Apr 2012 18:00:03 +0200
+Message-ID: <CAFz=ag5PzRJ1eaV819kBtmnfGpM_b+xKBwHaNidd7wxBtK4vMQ@mail.gmail.com>
+References: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
+	<1335191857-6725-2-git-send-email-linuxaudio@showlabor.de>
+	<s5hipgq5vz3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0849849105414553972=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EE26243C3
-	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2012 19:26:05 +0200 (CEST)
+In-Reply-To: <s5hipgq5vz3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,90 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, mark@pogo.org.uk
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0849849105414553972==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="chReQkDOePndSGWY"
-Content-Disposition: inline
+2012/4/23 Takashi Iwai <tiwai@suse.de>:
+> At Mon, 23 Apr 2012 16:37:31 +0200,
+> Felix Homann wrote:
+>>
+>> + =A0 =A0 /* set TLV */
+>> + =A0 =A0 if (!tlv_callback) {
+>
+> I guess you want without !, no?
 
-
---chReQkDOePndSGWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-The following changes since commit 8abe05c6eb358967f16bce8a02c88d57c82cfbd6:
-
-  ASoC: tegra: fix i2s compilation when !CONFIG_DEBUG_FS (2012-04-06 12:28:49 +0100)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.4
-
-for you to fetch changes up to 1a38336b8611a04f0a624330c1f815421f4bf5f4:
-
-  ASoC: wm8994: Improve sequencing of AIF channel enables (2012-04-23 12:55:52 +0100)
-
-----------------------------------------------------------------
-ASoC: updates for 3.4
-
-Slightly larger than normal - the DAPM fix is a "this should always have
-worked" type of thing which is very clear and should have no impact on
-systems that don't need it.  The WM8994 fix is driver specific but
-pretty important for that driver.
-
-----------------------------------------------------------------
-Jesper Juhl (1):
-      ASoC: cs42l73: don't use negative array index
-
-Liam Girdwood (1):
-      ASoC: core: Fix card RTD count for deferred probe.
-
-Mark Brown (2):
-      ASoC: dapm: Ensure power gets managed for line widgets
-      ASoC: wm8994: Improve sequencing of AIF channel enables
-
-Paul Mundt (1):
-      ASoC: fsi: update for dmaengine prep_slave_sg fallout.
-
- sound/soc/codecs/cs42l73.c |    2 +
- sound/soc/codecs/wm8994.c  |  276 +++++++++++++++++++++++++++++++++++---------
- sound/soc/sh/fsi.c         |    7 +-
- sound/soc/soc-core.c       |    1 +
- sound/soc/soc-dapm.c       |    2 +
- 5 files changed, 230 insertions(+), 58 deletions(-)
-
---chReQkDOePndSGWY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPlYMYAAoJEBus8iNuMP3dZeQQAIM/keC6XgT/kJTLIPDmedgU
-0zpMf11kTEFztn7eO03Ys6amgXATk2EgUcnpbTvOoomW9rrgLPDw2tfVcWGrbruS
-BnFJfC1ZKO5cC4io9Pr1iNgxp/UZm4gdV02XxsNM82msJdWEWLDN1eIzLFBeSPCW
-6jYfEOmltmI/SYiKCZEiOUdytskpnKt43fTNHQg/1sb/UgJvAoCa1rRXWO/gAtte
-Nvg2ZrCGRFSVT86lr4ttOl0uvYcy9jMzuhkUTVtRV1A1NCFUB+ZgnVbGSmH+Zt7W
-cwJoku1sVpANlKthDnUajQdc1aiWQywaWvGzJ2m8yDL+s/GEV0wKfp/AAmU6AgKC
-4h4O3HOsgyfYTe+ftfQv33IK1v+yTFv66KJFEUtI6ZetOfOoulLabHGmtY8AE7rX
-qQ+pQcDsF3PYdPIk8omJ0VlIyI8NMi+pGAvxstmN/wgowIzTTqxvfDvecEzSmK40
-Z3pLkXQ4CgQWEVOlGRbzQdIdQV0pU4zmfFxsH2dz35LNr6gdkrqGicwu3fdjENxY
-CjG4hsxXD0cn1RaK38ULm+DtSUP+YX7HoBC4+q4UnkpvMcAb+z+oSAUrPodKPRFY
-JXJWDFTMVe7eXp3Lk5Yy4rOxV839uIOuqPkBVBPOKiVOM8Fe2Vy3Uss7FUqviJZ6
-9wd0mm6XjlgS6z1Ddx21
-=pYAy
------END PGP SIGNATURE-----
-
---chReQkDOePndSGWY--
-
---===============0849849105414553972==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+you're absolutely right.
 
 
---===============0849849105414553972==--
+>> + =A0 =A0 snd_create_std_mono_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "Input B Captu=
+re Volume", NULL);
+>
+> It would be safer to check the error of each call, but then it'd be
+> better to make a table and loop over it. =A0You can create a new patch
+> for that.
+
+Please, tell Mark Hills. It's his patch you applied a couple of days
+ago. I just renamed the functions and added the 'NULL' at the end of
+the calls.
+
+Regards,
+
+Felix
