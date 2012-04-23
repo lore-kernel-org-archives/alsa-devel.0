@@ -1,15 +1,12 @@
-From: jarek <jarek@poczta.srv.pl>
-Subject: wm9713 problem
-Date: Mon, 23 Apr 2012 14:44:40 +0200
-Message-ID: <1335185080.29833.61.camel@jlap2.macro.local>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: [PATCH 0/7] Alsa: snd-usb: Improve M-Audio Fast Track
+	Ultra mixer - v2
+Date: Mon, 23 Apr 2012 16:37:30 +0200
+Message-ID: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.srv.pl (mail.srv.pl [217.17.32.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49A1A24561
-	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2012 14:44:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +16,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>, mark@pogo.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-	I've problem with ARM board with WM9713 codec. I have very simple test
-application, which reads samples with snd_pcm_readi and then writes them
-with snd_pcm_writei.
-I've tested this on few PC-s and it works fine. However on FirendlyARM
-tiny6410 it hangs after few seconds on call to snd_pcm_readi.
-What is more funny If I'm writing samples with 0 (silence), reading
-works fine. It hangs only if I'm writing non-silence.
-If I break program with Ctrl+C, I can see in dmesg:
+This is the second try on a series of patches that improves the mixer
+for Fast Track Ultra (8R) devices by
 
-s3c64xx_dma_stop: channel still active.
+       * adding TLV to existing controls
+       * adding new controls for the effect section.
 
-and audio driver is not working any more. I need to restart board to
-make it working.
+It unifies the control creation for FTU and Ebox-44 devices.
 
-What it can be ? Where to look for problem ?
-The kernel is 2.6.38 PREEMPT
+Mark, could you please look at mixer_quirks.c. Do we really need the range settings
+in snd_create_std_mono_ctl()? BTW, you might like to add some TLV callback to the
+Ebox-44 controls as well.
 
-best regards
-Jarek
+I hope I sorted Takashis issues out this time.
+
+Regards,
+
+Felix
+
+
+Felix Homann (7):
+  Unify M-Audio Fast Track Ultra and Ebox-44 mixer quirks.
+  Rename and export mixer_vol_tlv
+  Add TLV to M-Audio Fast Track Ultra controls
+  Rename Fast Track Ultra mixer quirk functions
+  Update comment for M-Audio FTU quirk
+  M-Audio Fast Track Ultra: Add effect program switch
+  M-Audio Fast Track Ultra: Add effect controls
+
+ sound/usb/mixer.c        |   22 ++-
+ sound/usb/mixer.h        |    3 +
+ sound/usb/mixer_quirks.c |  472 +++++++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 429 insertions(+), 68 deletions(-)
+
+-- 
+1.7.5.4
