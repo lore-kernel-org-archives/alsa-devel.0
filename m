@@ -1,16 +1,18 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: [PATCH 1/7] Unify M-Audio Fast Track Ultra and
-	Ebox-44 mixer quirks.
-Date: Mon, 23 Apr 2012 18:00:03 +0200
-Message-ID: <CAFz=ag5PzRJ1eaV819kBtmnfGpM_b+xKBwHaNidd7wxBtK4vMQ@mail.gmail.com>
-References: <1335191857-6725-1-git-send-email-linuxaudio@showlabor.de>
-	<1335191857-6725-2-git-send-email-linuxaudio@showlabor.de>
-	<s5hipgq5vz3.wl%tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [snd-usb-audio] frequent "delay: estimated xxx,
+ actual yyy" messages
+Date: Mon, 23 Apr 2012 12:43:11 -0500
+Message-ID: <4F9594AF.4090902@linux.intel.com>
+References: <3172169.OcqrdKakkS@siegfried>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hipgq5vz3.wl%tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8AB724345
+	for <alsa-devel@alsa-project.org>;
+	Mon, 23 Apr 2012 19:43:26 +0200 (CEST)
+In-Reply-To: <3172169.OcqrdKakkS@siegfried>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, mark@pogo.org.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-2012/4/23 Takashi Iwai <tiwai@suse.de>:
-> At Mon, 23 Apr 2012 16:37:31 +0200,
-> Felix Homann wrote:
->>
->> + =A0 =A0 /* set TLV */
->> + =A0 =A0 if (!tlv_callback) {
+On 4/21/2012 5:22 AM, Guillaume Clement wrote:
+> Hello,
 >
-> I guess you want without !, no?
-
-you're absolutely right.
-
-
->> + =A0 =A0 snd_create_std_mono_ctl(mixer, 10, 2, 0x2, USB_MIXER_S16,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "Input B Captu=
-re Volume", NULL);
+> I am using an USB soundcard (ID : 046d:0a24 : Logitech Speaker Lapdesk N550).
 >
-> It would be safer to check the error of each call, but then it'd be
-> better to make a table and loop over it. =A0You can create a new patch
-> for that.
-
-Please, tell Mark Hills. It's his patch you applied a couple of days
-ago. I just renamed the functions and added the 'NULL' at the end of
-the calls.
-
-Regards,
-
-Felix
+> During playback, I have frequent messages like these :
+>
+> delay: estimated 795, actual 662
+> delay: estimated 133, actual 0
+> delay: estimated 751, actual 662
+> delay: estimated 89, actual 0
+>
+>
+> When those messages appear, I am hearing some "cracks" from the soundcard.
+>
+>
+> I've tried to make some research on this, I only found some messages that hint
+> about some interrupt problems. I'm not using any closed source driver and I
+> can reproduce the issue with any computer running Linux.
+>
+>
+> On interesting thing to notice is that it happens only when the CPU is near
+> idle. To workaround the problem, I can just do something like :
+>
+> nice -n 20 dd if=/dev/zero of=/dev/null bs=1k count=500G
+>
+>
+> This would keep my CPU busy and I have no more messages nor cracks.
+I'm the one who introduced this warning when I added support for a 
+better delay estimate based on the frame counter instead of bytes 
+submitted (back in September 2011). When writing new data the estimate 
+using the frame counter and the byte count should be identical, but this 
+message shows something goes wrong.
+Somehow I don't understand how a more precise delay would cause such 
+errors. The delay is only important for pulseaudio, it shouldn't affect 
+plain vanilla alsa. You could try and reverse the patch to see if this 
+improves anything? If not, you have another problem in your setup...
+-Pierre
