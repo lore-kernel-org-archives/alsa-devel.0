@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/8] ASoC: Ux500: Add MSP I2S-driver
-Date: Mon, 23 Apr 2012 19:29:11 +0100
-Message-ID: <20120423182911.GU8318@opensource.wolfsonmicro.com>
-References: <1334914386-27482-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 6/8] ASoC: Ux500: Add platform-driver
+Date: Mon, 23 Apr 2012 19:31:40 +0100
+Message-ID: <20120423183140.GV8318@opensource.wolfsonmicro.com>
+References: <1334914394-27518-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5510973762952119992=="
+Content-Type: multipart/mixed; boundary="===============4495906957340221162=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FE1C103EFC
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DA0041042BF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2012 20:29:14 +0200 (CEST)
-In-Reply-To: <1334914386-27482-1-git-send-email-ola.o.lilja@stericsson.com>
+	Mon, 23 Apr 2012 20:31:42 +0200 (CEST)
+In-Reply-To: <1334914394-27518-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,139 +25,71 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linu
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5510973762952119992==
+--===============4495906957340221162==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YnIutncTLXsDZs5t"
+	protocol="application/pgp-signature"; boundary="pEAjBjStGYT6H+Py"
 Content-Disposition: inline
 
 
---YnIutncTLXsDZs5t
+--pEAjBjStGYT6H+Py
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 20, 2012 at 11:33:06AM +0200, Ola Lilja wrote:
+On Fri, Apr 20, 2012 at 11:33:14AM +0200, Ola Lilja wrote:
+> Add platform-driver handling all DMA-activities.
 
-> Add driver for running I2S with the MSP-block.
+Overall this looks really good, but it depends on the stream print thing
+as well.  There's a few very nitpicky issues also:
 
-This depends on the change for the debug print function.  Otherwise
-there's a bunch of relatively minor stuff but overall this looks
-generally good.
+> -config SND_SOC_UX500_MSP_I2S
+> +config SND_SOC_UX500_PLAT_MSP_I2S
 
-> +static int ux500_msp_dai_startup(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	int ret = 0;
-> +	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
-> +
-> +	dev_dbg(dai->dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
-> +		snd_soc_stream_str(substream));
-> +
-> +	/* Don't enable regulator if it's MSP1/3 */
+Should be in the previous patch.
 
-Why not?
+> -snd-soc-ux500-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
+> -obj-$(CONFIG_SND_SOC_UX500_MSP_I2S) += snd-soc-ux500-msp-i2s.o
+> +snd-soc-ux500-plat-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
+> +obj-$(CONFIG_SND_SOC_UX500_PLAT_MSP_I2S) += snd-soc-ux500-plat-msp-i2s.o
 
-> +static void ux500_msp_dai_shutdown(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
+Likewise.
 
-> +	if (drvdata->reg_enabled) {
-> +		ret = regulator_disable(drvdata->reg_vape);
-> +		if (ret < 0)
-> +			dev_err(dai->dev,
-> +				"%s: ERROR: Failed to disable regulator (%d)!\n",
-> +				__func__, ret);
-> +		drvdata->reg_enabled = 0;
-> +	}
+> +	dev_dbg(dev, "%s: Init runtime private data.\n", __func__);
+> +	ux500_pcm_data = kzalloc(sizeof(struct ux500_pcm), GFP_KERNEL);
+> +	if (ux500_pcm_data == NULL)
+> +		return -ENOMEM;
+> +	ux500_pcm_data->msp_id = dai->id;
 
-This looks like the driver is going to get confused with bidirectional
-audio - if one direction stops then it'll turn the regulator off.
+devm_kzalloc()?
 
-> +	/* Don't enable regulator if it's MSP1/3 */
-> +	if (!drvdata->reg_enabled && (drvdata->msp->id != MSP_1_I2S_CONTROLLER)
-> +		&& (drvdata->msp->id != MSP_3_I2S_CONTROLLER)) {
-
-This seems confused, you're enabling in multiple places...
-
-> +static int ux500_msp_dai_hw_params(struct snd_pcm_substream *substream,
-> +				struct snd_pcm_hw_params *params,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	unsigned int mask, slots_active;
-> +	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
-> +
-> +	dev_dbg(dai->dev, "%s: MSP %d (%s): Enter.\n",
-> +			__func__, dai->id, snd_soc_stream_str(substream));
-> +
-> +	switch (drvdata->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_I2S:
-> +		if (params_channels(params) != 2) {
-> +			dev_err(dai->dev,
-> +				"%s: Error: I2S requires ch = 2 (ch = %d)!\n",
-> +				__func__, params_channels(params));
-> +			return -EINVAL;
-> +		}
-
-Should really set up constraints for this, though in principle format
-can change at runtime (though it rarely does).  Perhaps we should do
-something special if the configuration happens on init...
-
-> +		if (params_channels(params) != slots_active) {
-> +			dev_err(dai->dev,
-> +				"%s: Error: Channels to slots mismatch (ch = %d, slots = %d)!\n",
-> +				__func__, params_channels(params),
-> +				slots_active);
-> +			return -EINVAL;
-> +		}
-
-Similarly here.
-
-> +	drvdata->reg_vape = regulator_get(NULL, "v-ape");
-> +	if (IS_ERR(drvdata->reg_vape)) {
-
-No, this should be using the struct device.  Regulators should always
-be requested in the context of their consumer.  You could use
-devm_regulator_get() too (there's a clock one too, but only in -next).
-
-> +	ret = ux500_msp_i2s_init_msp(pdev, &drvdata->msp, platform_data);
-> +	if (!drvdata->msp) {
-
-Should be no need to cast away from void.
-
-> +
-> +	ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
-> +	devm_kfree(&pdev->dev, drvdata);
-
-You're missing the point of devm_ here! :)
-
---YnIutncTLXsDZs5t
+--pEAjBjStGYT6H+Py
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPlZ9xAAoJEBus8iNuMP3dITMP/2UExl8puO1E4LYAqoBmw6Z2
-8NicdQ8u5WMYgntmFuUWS/OzX9D0X7BX3vvNt+qaoRpacvXjtsen9vU0DuLkVVwx
-UoZP1edcmNpRjKKMvUQ/gF2SyicKGDvz5zAZu53jEtQNY2IUven8B83XmpKFTTBO
-jU8hQqbVlicLbcFlNIu68BhaEcH7L60yxZVhJbIluuoIBPh5UZukuaW1TvfJgBfU
-IiZasbBU4oSDBf9dQJSt5JnOMrAIHBY5UIJKi8hm7gGarNdhjv5fNTQ8VkRKy9eC
-CybBNxXCEnmyUh6B6+ge9UppNuX9+8VIjuspyNNJncUU5PA/u1HsVLkI1H8etL7S
-B4Llqc48y0lTnDUf0FxLMI6CTed29Rl0rwG9pBBb4XYRKQNYHkLVge8BJmeF7S4W
-N/4FpRutmWj+BnTw4a10hyDKdnBtm8emOp0wwEWsAahwEWCpKUTtqrcobg+kxkhb
-iEXzyCLtAJ9MZoOWZ/zolEcK+2iLER2ZTxUMn8ST4gBC4YVVwgpIr7xuHx9+80zT
-AuE6xqVTMIABb45IPzauhhgYPyxpdnMhg8c9EmVOcbjp8lEZOFtVobLnNJ6W2/JA
-NFi/NtA5nnozDBQUzcW2cmROPjRKkUoPdksBMmdn8GuNialzawJ5iF6Bv3Onl/oG
-xXRlsTQyLBTgGQaJxF/R
-=PNgs
+iQIcBAEBAgAGBQJPlaAGAAoJEBus8iNuMP3diCsP/R/CdHPDzRFykWr8N88RAbqE
+1QrSOsI7kdSUwg99p/sYlzsdU8z4P4w5nFkqTXYj6wIFN2J8iGaW3wm/YHGxkaqB
+2k1COU09rF6p4CAqqfdD6e1lEZowrb8kujTC9twCI+ZLZfG8Wf5QXJcCayFXiw4+
+thbWMIh/Y9IKJQr4M0JipSYcUQvLDrhL9A7uWyt/9mS/7ECCyKe2yPuvdId/OwK9
+EkTe5p6QpKlKRqsjzHn9k/yKh2uwTuDbLYaV9IGBnV7mgXmHvq6sPfvY5n6heESC
+F76weuykXn93S0Scgrn/YJinTYS6wnVLTVivP/iFaV3365v2MQMs10Jz0tNrZ5qF
+BRiCogFNc6LzoWlCHkZwzP5m5sQ69phv7WBfYU42WiQ6+rBe/Es78Mb+RJ8iiLGm
+ZKl0KI0DEugf1CXVV4rWqh9mQqfA8BPt01UU1xfdF5pmrakU8YYBZHpz0/R47Dbo
+dlLgZZ9ZIz2sa4+oxM5TXZyNTzTYfSzDqusRtQrthd7lc/npPguRkfeoxrO3gPFt
+qyWNb14Jv8S5+czPJ0liiL8HQwuNHqSJCqb4FqmKCNmn3P6kkSlGNvLJKlDSFA7M
+VDUlNyF+CpnMM8Z19tzBM1eCQUsONQjFnfN4uHeS1CwquTJUBF6LuRX/wL3MUBr9
+LgULqyMjwoHGg9jkVeU5
+=xCu5
 -----END PGP SIGNATURE-----
 
---YnIutncTLXsDZs5t--
+--pEAjBjStGYT6H+Py--
 
---===============5510973762952119992==
+--===============4495906957340221162==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5510973762952119992==--
+--===============4495906957340221162==--
