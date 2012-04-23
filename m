@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/8] ASoC: Ux500: Add platform-driver
-Date: Mon, 23 Apr 2012 19:31:40 +0100
-Message-ID: <20120423183140.GV8318@opensource.wolfsonmicro.com>
-References: <1334914394-27518-1-git-send-email-ola.o.lilja@stericsson.com>
+From: Mark Hills <mark@pogo.org.uk>
+Subject: Re: [PATCH 1/5] Unify M-Audio Fast Track Ultra and
+ Ebox-44 mixer quirks.
+Date: Mon, 23 Apr 2012 19:36:06 +0100 (BST)
+Message-ID: <alpine.LNX.2.01.1204231932580.20159@stax.localdomain>
+References: <1335205467-12650-1-git-send-email-linuxaudio@showlabor.de>
+	<1335205467-12650-2-git-send-email-linuxaudio@showlabor.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4495906957340221162=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DA0041042BF
-	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2012 20:31:42 +0200 (CEST)
-In-Reply-To: <1334914394-27518-1-git-send-email-ola.o.lilja@stericsson.com>
+In-Reply-To: <1335205467-12650-2-git-send-email-linuxaudio@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,76 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 23 Apr 2012, Felix Homann wrote:
 
---===============4495906957340221162==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pEAjBjStGYT6H+Py"
-Content-Disposition: inline
-
-
---pEAjBjStGYT6H+Py
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 20, 2012 at 11:33:14AM +0200, Ola Lilja wrote:
-> Add platform-driver handling all DMA-activities.
-
-Overall this looks really good, but it depends on the stream print thing
-as well.  There's a few very nitpicky issues also:
-
-> -config SND_SOC_UX500_MSP_I2S
-> +config SND_SOC_UX500_PLAT_MSP_I2S
-
-Should be in the previous patch.
-
-> -snd-soc-ux500-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
-> -obj-$(CONFIG_SND_SOC_UX500_MSP_I2S) += snd-soc-ux500-msp-i2s.o
-> +snd-soc-ux500-plat-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
-> +obj-$(CONFIG_SND_SOC_UX500_PLAT_MSP_I2S) += snd-soc-ux500-plat-msp-i2s.o
-
-Likewise.
-
-> +	dev_dbg(dev, "%s: Init runtime private data.\n", __func__);
-> +	ux500_pcm_data = kzalloc(sizeof(struct ux500_pcm), GFP_KERNEL);
-> +	if (ux500_pcm_data == NULL)
+> +/* This function allows for the creation of standard UAC controls.
+> + * See the quirks for M-Audio FTUs or Ebox-44.
+> + * If you don't want to set a TLV callback pass NULL.
+> + * 
+> + * Since there doesn't seem to be a devices that needs a multichannel
+> + * version, we keep it mono for simplicity.
+> + */
+> +static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
+> +				unsigned int unitid,
+> +				unsigned int control,
+> +				unsigned int cmask,
+> +				int val_type,
+> +				const char *name,
+> +				snd_kcontrol_tlv_rw_t *tlv_callback)
+> +{
+> +	int err;
+> +	struct usb_mixer_elem_info *cval;
+> +	struct snd_kcontrol *kctl;
+> +
+> +	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+> +	if (!cval)
 > +		return -ENOMEM;
-> +	ux500_pcm_data->msp_id = dai->id;
+> +
+> +	cval->id = unitid;
+> +	cval->mixer = mixer;
+> +	cval->val_type = val_type;
+> +	cval->channels = 1;
+> +	cval->control = control;
+> +	cval->cmask = cmask;
+> +
+> +	/* FIXME: Do we need this?
+> +	 * The following values are for compatibility with
+> +	 * Ebox-44 mixer.
+> +	 * But the corresponding ebox-44 function says:
+> +	 *    "Volume controls will override these values"
+> +	 * 
+> +	 * These values don't have any effect at all for
+> +	 * M-Audio FTUs.
+> +	 * So I think, we can safely omit the range settings here.
+> +	 */
+> +	cval->min = 0;
+> +	cval->max = 1;
+> +	cval->res = 0;
+> +	cval->dBmin = 0;
+> +	cval->dBmax = 0;
 
-devm_kzalloc()?
+When implementing the Ebox44 quirk, I found I needed this. The min and max 
+would be automatically completed for the S16 values, but not for the mute 
+buttons, so I defaulted to the range required for the BOOLEAN.
 
---pEAjBjStGYT6H+Py
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I was really hoping some one would explain this when I RFC'd the patch. 
+But at that time the code was not part of some general-purpose function so 
+it wasn't really an issue.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPlaAGAAoJEBus8iNuMP3diCsP/R/CdHPDzRFykWr8N88RAbqE
-1QrSOsI7kdSUwg99p/sYlzsdU8z4P4w5nFkqTXYj6wIFN2J8iGaW3wm/YHGxkaqB
-2k1COU09rF6p4CAqqfdD6e1lEZowrb8kujTC9twCI+ZLZfG8Wf5QXJcCayFXiw4+
-thbWMIh/Y9IKJQr4M0JipSYcUQvLDrhL9A7uWyt/9mS/7ECCyKe2yPuvdId/OwK9
-EkTe5p6QpKlKRqsjzHn9k/yKh2uwTuDbLYaV9IGBnV7mgXmHvq6sPfvY5n6heESC
-F76weuykXn93S0Scgrn/YJinTYS6wnVLTVivP/iFaV3365v2MQMs10Jz0tNrZ5qF
-BRiCogFNc6LzoWlCHkZwzP5m5sQ69phv7WBfYU42WiQ6+rBe/Es78Mb+RJ8iiLGm
-ZKl0KI0DEugf1CXVV4rWqh9mQqfA8BPt01UU1xfdF5pmrakU8YYBZHpz0/R47Dbo
-dlLgZZ9ZIz2sa4+oxM5TXZyNTzTYfSzDqusRtQrthd7lc/npPguRkfeoxrO3gPFt
-qyWNb14Jv8S5+czPJ0liiL8HQwuNHqSJCqb4FqmKCNmn3P6kkSlGNvLJKlDSFA7M
-VDUlNyF+CpnMM8Z19tzBM1eCQUsONQjFnfN4uHeS1CwquTJUBF6LuRX/wL3MUBr9
-LgULqyMjwoHGg9jkVeU5
-=xCu5
------END PGP SIGNATURE-----
-
---pEAjBjStGYT6H+Py--
-
---===============4495906957340221162==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4495906957340221162==--
+-- 
+Mark
