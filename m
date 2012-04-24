@@ -1,19 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [snd-usb-audio] frequent "delay: estimated xxx,
- actual yyy" messages
-Date: Tue, 24 Apr 2012 15:59:15 +0200
-Message-ID: <4F96B1B3.1060606@ladisch.de>
-References: <3172169.OcqrdKakkS@siegfried> <4F9594AF.4090902@linux.intel.com>
-	<1383683.z6YHnxXImd@siegfried>
+Subject: Re: Playback underrun recovery
+Date: Tue, 24 Apr 2012 16:04:51 +0200
+Message-ID: <4F96B303.2090008@ladisch.de>
+References: <FB1A4815959E42EF9F7B4F3A48E8E129@PAULD>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id A50E8243B0
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 94E72243B5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Apr 2012 15:55:24 +0200 (CEST)
-In-Reply-To: <1383683.z6YHnxXImd@siegfried>
+	Tue, 24 Apr 2012 16:00:59 +0200 (CEST)
+In-Reply-To: <FB1A4815959E42EF9F7B4F3A48E8E129@PAULD>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guillaume Clement <gclement@baobob.org>
-Cc: alsa-devel@alsa-project.org
+To: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Guillaume Clement wrote:
-> Could the delay not be the cause, but a side effect ?
+Paul D. DeRocco wrote:
+> I've got a synth program outputting directly to the main hw PCM device, with
+> no intervening plugins. It uses about 75-80% of the time on one core, so it
+> normally doesn't underrun. Once in a while, other burdens on the system
+> trigger an underrun, and my program never recovers. My buffer contains two
+> periods of 256 stereo frames (with 32-bit samples), which at 96KHz comes out
+> to a little over 5.3ms total. When it fails, its CPU usage goes up to 100%
+> on that core, and it spits out bursts of 5.3ms of audio (two full periods,
+> not one), with about 4ms of silence between them.
 
-Yes, that's probable.  It might be possible that some interrupt got
-delayed too much, or that packets were completed in wrong order.
+When a PCM device is (re)started, the buffer is initially empty, so you
+need more CPU to fill it.
 
-> Do you have any idea why keeping my CPU busy removes the problem ?
+What is your start threshold?
 
-I'd guess that an idle CPU needs a longer time to wake up.
-What CPU and what CPU frequency governor are you using?
+> My top level code consists of a loop that generates one period at a time:
+>
+>     while (true) {
+>         generate_samples(buf, 256); // generate 256 stereo frames
+>         if (snd_pcm_writei(h, buf, 256) < 0)
+>             snd_pcm_prepare(h);
+>     }
+
+Is this the actual code?  You should check if snd_pcm_writei() returns
+that less than 256 frames have been written, and you should use
+snd_pcm_recover(), and you should that one's return value, too.
 
 
 Regards,
