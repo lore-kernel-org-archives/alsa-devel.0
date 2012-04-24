@@ -1,59 +1,75 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] ASoC: sh: fsi: Build proble in 3.4-rc4
-Date: Tue, 24 Apr 2012 11:57:43 +0100
-Message-ID: <20120424105742.GB12063@opensource.wolfsonmicro.com>
-References: <201204230001.41270.rjw@sisk.pl>
- <87fwbv9v47.wl%kuninori.morimoto.gx@renesas.com>
- <201204232202.58584.rjw@sisk.pl>
+Subject: Re: [PATCH 1/1] ASoC: Core: check
+	of_property_count_strings failure
+Date: Tue, 24 Apr 2012 12:08:29 +0100
+Message-ID: <20120424110829.GD12063@opensource.wolfsonmicro.com>
+References: <1335252283-27750-1-git-send-email-richard.zhao@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201204232202.58584.rjw@sisk.pl>
-Sender: linux-sh-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@sisk.pl>
-Cc: kuninori.morimoto.gx@renesas.com, linux-sh@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Magnus Damm <magnus.damm@gmail.com>, Paul Mundt <lethal@linux-sh.org>, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/mixed; boundary="===============8586175319000380835=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D40701044B1
+	for <alsa-devel@alsa-project.org>;
+	Tue, 24 Apr 2012 13:08:31 +0200 (CEST)
+In-Reply-To: <1335252283-27750-1-git-send-email-richard.zhao@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Richard Zhao <richard.zhao@freescale.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---xXmbgvnjoT4axfJE
+--===============8586175319000380835==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J5MfuwkIyy7RmF4Q"
+Content-Disposition: inline
+
+
+--J5MfuwkIyy7RmF4Q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 23, 2012 at 10:02:58PM +0200, Rafael J. Wysocki wrote:
-> On Monday, April 23, 2012, kuninori.morimoto.gx@renesas.com wrote:
+On Tue, Apr 24, 2012 at 03:24:43PM +0800, Richard Zhao wrote:
+> Signed-off-by: Richard Zhao <richard.zhao@freescale.com>
 
-> > Thank you about this patch.
-> > But this issue was solved by below patch on Mark's/for-3.4 branch
+Applied, thanks (and sent to stable too).
 
-> OK, thanks.
-
-The patch should make -rc5 - there was some miscommunication about which
-tree it'd be applies on when it was originally posted (I'd thought Paul
-had already applied it) and then I was very busy and didn't get round to
-sending a pull request in time for -rc4.
-
---xXmbgvnjoT4axfJE
+--J5MfuwkIyy7RmF4Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPlocfAAoJEBus8iNuMP3dq3gP/2y1TZZbTNHAA1muTRtPGAJp
-djDDTfeMj/BSAEDUE1IE5k44OdvON0+m1pUVVQVAdlLsS7sBcqr/gIgvhp5aQL/F
-WYMmlWNp2IL4p/hUf6ONIS00AqL7pQKzMbfF5NdO4bBaC6zKVBK26JP6+kDWhwFs
-3xtXFP7WeERzM5FjtWzrgk8Ifw5HaaZoIozv/JbuJlTcHSjgA1uKtoY6K3G/I47V
-9UbST3rjxfRz8buU+y22fVPgoP77xIKqJGbPuFHq6HAVWL//pCaoueUTcckmci/V
-bEGj3L1O7mccg+mnM2DYnR2AQQcb1CxsZeCCkXoH+fqtFGCYgOvr6d990JF4bqmr
-mnUqrLLApRNI/T1J6WOCSYoXaNj76fb1m6W76lfBLFFDggYsZOGvCHRm2Xmt9VME
-gqXXpATsP1FgpXXoF0JPT5XhvNii/mIAFl1uKnkukYJVC4ZxLTLNqFsIBAAQh9qY
-ybU1wSKuccELaYO+6Gxpr6u/05J5LSiC8JNi5fala8prRReXtCbpqIS6IT0RzJwi
-5yd3BqDKMYN48RHeYKbROKPYDUg22dCDECag0YcR3Y1zVvYycmpBb3cIZTBcT+NW
-xJQYQ/RoJd6DguoZOT7MbEL3xfAPSr2J7MORduQVPNe6qIiFhonWB5j1Ll7wGntj
-JYRFKbrajFWaJgLxM4zH
-=QL1t
+iQIcBAEBAgAGBQJPlommAAoJEBus8iNuMP3dCgQP/A1A2Vk6Rq6TW0hG6RVzXfVT
+IFpxCU3PuXV3CqcGnHuhcyR+AUvyygymfcCajFEr7nT1ueSQ1rz7u29+VlTLKQLd
+M3FP4a+IFG2QMcS8oYbQN6jVFIKA4Gf8POPnnVbqAGmalTzlwpL045/RDYy4VR3r
+NllLsAVhAIsUiBQ6g0SCVHAyYvq+nXqVGbfydqocI74ofuN6DyFMqzwnH7ofAaQ7
+Qt9JC9QmA7O/y/OZNqorqU2vdPWMR+O/kRFv2UAauyHCrBl7/pgFXZld7oAy8jXf
+ZRSYSAGoBUlXdMeKyYLj2rQfDxWs79YNv/zRBHhBsoI/HdTDej5N6GjUJW3fh+/F
+L8pDTAC2+QOWqyJWc2RGv/+9OxUm1zXDPEpVGb9h/zziMzC6B/www+vEkVdY+z9Z
+cOBD/zOI1QzEUqysld1aTu5V+YHe6WwN9BZKSkuXIy0bBpzpBu6gdw0++NZnKBDr
+0rOSjPZVtJzJBX1dN7xZqZ+gSdvsR7YvRQg/hn/e43SNKugYfukptwD7OccO+tNY
+5x2Fvr0GMZjrM5IQIGReqxn7iKbsSoMgEECiSQKjyZgxhnMDXKR1IYqon0UFFH3G
+ODarVuhaKbDTg9qBE/DtoFATRCR8osh1i/ifz71rWCVBNtgmGvg09MXq1xjNnFdB
+oTpNNfRwIRkufbGUTfVI
+=dfUN
 -----END PGP SIGNATURE-----
 
---xXmbgvnjoT4axfJE--
+--J5MfuwkIyy7RmF4Q--
+
+--===============8586175319000380835==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8586175319000380835==--
