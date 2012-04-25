@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: SSM2602: Add sysclk based rate
-	constraints
-Date: Wed, 25 Apr 2012 11:29:07 +0100
-Message-ID: <20120425102907.GL3195@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/3] ASoC: SSM2602: Remove driver specific
+	version
+Date: Wed, 25 Apr 2012 11:42:47 +0200
+Message-ID: <1335346968-6086-2-git-send-email-lars@metafoo.de>
 References: <1335346968-6086-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5823896222374157697=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BE55E104879
+Received: from smtp-out-098.synserver.de (smtp-out-102.synserver.de
+	[212.40.185.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id A749F104842
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Apr 2012 12:29:08 +0200 (CEST)
+	Wed, 25 Apr 2012 11:40:25 +0200 (CEST)
 In-Reply-To: <1335346968-6086-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,56 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+We have never really updated that version number and probably never will, so
+just remove it.
 
---===============5823896222374157697==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7l042bGvurpep9Wg"
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ssm2602.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
-
---7l042bGvurpep9Wg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 25, 2012 at 11:42:46AM +0200, Lars-Peter Clausen wrote:
-> Not all advertised rates are available for all sysclk frequencies. Add
-> additional sysclk based rate constraints.
-
-Applied all, thanks.
-
---7l042bGvurpep9Wg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPl9HXAAoJEBus8iNuMP3dJtAQAJe9FO5mE3JCrSQ9JQXLQGeH
-BShN5KizUtSVxqHZzO9GosuIvsDEGGUgR0og8G2XuXJBr7acEQoqcZDO5bOoVejk
-OrpB9q26U49BXG0uJY7a/DOeiT8MA8zFmc7YFVLU57a9SN4Dvc0VMDkutRJeObm7
-IZxjoUugOra2ZZ2TQiavyp+aPjvcERFavLQUtcOxZD+m7IwQV3iXKJHXnnk1qlQ1
-qvvg6HMaqjQ2Qtui5qOP2zR+Ix4SFh/B/ywZUk9uFwm6GHdZ80EX7+J34RV9Rd5/
-zSWB+Ndzy8xiSpfasjEb/hMUSlNKOIbB+rZdJW+VbsfweDby4f3z8R+7BEF1nfLC
-zFBLvV5qRlKkQAysWnx0awfLCL9YMc2k/lmZ0tn7UBxICg4X1fCLS/hvBQZ+fLQa
-HRgKstEQ2uhgMTI/DBVRk5QwxWapMGf4vreu6Tnn3RPGooHsCNNFni3eNGjrEC9B
-d9taHSO+5aJby517YCG90vRx/w1zwWFXGAqA0m0H0a9e4go1wQk/KtzqIvg/Chtu
-1iIzwhQ7QZQA6jmd4rcuPAHVEotnMiHBeYCgdQurkLXsb1PaJFEbgAQgMalNOHmm
-kOaf3TjgCQJTIgp45szgfRZ9VVsilrqH/WDVA1c8/mpA7Z8tVsu94InsP5w5tx3P
-3FsF5B+ryWdyhMLb1Jdh
-=kAL7
------END PGP SIGNATURE-----
-
---7l042bGvurpep9Wg--
-
---===============5823896222374157697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5823896222374157697==--
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index dcedd74..aef8a49 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -43,8 +43,6 @@
+ 
+ #include "ssm2602.h"
+ 
+-#define SSM2602_VERSION "0.1"
+-
+ enum ssm2602_type {
+ 	SSM2602,
+ 	SSM2604,
+@@ -608,8 +606,6 @@ static int ssm260x_probe(struct snd_soc_codec *codec)
+ 	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+-	pr_info("ssm2602 Audio Codec %s", SSM2602_VERSION);
+-
+ 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, ssm2602->control_type);
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-- 
+1.7.9.5
