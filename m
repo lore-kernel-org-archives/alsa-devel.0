@@ -1,22 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/5] ASoC: dpcm: Add Dynamic PCM core
-	operations.
-Date: Thu, 26 Apr 2012 18:04:04 +0100
-Message-ID: <1335459844.4950.3.camel@odin>
-References: <1335352373-5237-1-git-send-email-lrg@ti.com>
-	<20120426165459.GN3207@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: bf5xx-ssm2602: Set DAI format
+Date: Wed, 25 Apr 2012 11:17:06 +0100
+Message-ID: <20120425101706.GJ3195@opensource.wolfsonmicro.com>
+References: <1335346188-29823-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1705783361669255078=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
-	[74.125.149.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 254D010BBA6
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A652A10486C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 19:04:07 +0200 (CEST)
-Received: by wibhj6 with SMTP id hj6so4755641wib.7
-	for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2012 10:04:05 -0700 (PDT)
-In-Reply-To: <20120426165459.GN3207@opensource.wolfsonmicro.com>
+	Wed, 25 Apr 2012 12:17:08 +0200 (CEST)
+In-Reply-To: <1335346188-29823-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,31 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-04-26 at 17:54 +0100, Mark Brown wrote:
-> On Wed, Apr 25, 2012 at 12:12:49PM +0100, Liam Girdwood wrote:
-> > The Dynamic PCM core allows digital audio data to be dynamically
-> > routed between different ALSA PCMs and DAI links on SoC CPUs with
-> > on chip DSP devices. e.g. audio data could be played on pcm:0,0 and
-> > routed to any (or all) SoC DAI links.
-> 
-> I've applied all these now - after recovering from the shock of seeing
-> them! :)
-> 
 
-Ah yes, it did take along time ! I'm doing less support now so any other
-new stuff should be faster now :)
+--===============1705783361669255078==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
+Content-Disposition: inline
 
-> I think we need to have a look at/think about the no_pcm flag, partly
-> just in relation to the CODEC<->CODEC code as that's also figuring out
-> that there's no PCM but it does it just by checking that there's no DMA
-> driver specified.  But I'm not sure what the best thing to do is here
-> without seeing a machine driver or two.
 
-Ok, yes - lets look at that. We should have machine updates ready to
-upstream soon with ABE.
+--/qIPZgKzMPM+y5U5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Liam 
+On Wed, Apr 25, 2012 at 11:29:47AM +0200, Lars-Peter Clausen wrote:
+> Commit 980b0bc69 ("ASoC: blackfin: Use dai_fmt") converted the blackfin ASoC
+> machine drivers to use the dai_links dai_fmt field to setup their DAI format.
+> For the bf5xx-ssm2602 the commit removed the manual call to snd_soc_dai_set_fmt,
+> but missed to set the dai_links dai_fmt field.
+
+Applied, thanks.
+
+--/qIPZgKzMPM+y5U5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPl875AAoJEBus8iNuMP3dLdIQAJqedC2GCitvMX9RzV5u3dlM
+Alh7mkhNEGDiGeJbkODh5fi8VT2ROTFalFm1ONz+BStYCnMX3S8ohISXS7Zfnu4i
+kTLO22/xQ7824xdVHqeLUMS0+J6tAhRYo5cMsbEY+ZN3DvIvzByDzmsUo0dtN99J
+rgy4H/62ISYOBDhYu8ogbM9xSjAZ2zpQnKtByAFk5F4LgZKmQAjR6BCi4rrltqFt
+YIAkuI98eTYcjF83FqCjdNtugYJ2BYBwsTcDOkIXppp/BgMdpyU/QtjENIVKbPSd
+icV5aFZA/6NiCqUvULGpfuN9uZCrdb4h1/F6a3ToL98WuVNoMiG2FjheArDm1Pow
+Tm3ElLkDc895iA5rW5GSLtfyqzTg9eUFUrHPgXK6Hycd7A3JCRynWUJWuWLSGmn+
+RdVOodF3R8lOwb7+DknsOep79KsDaDEKV5CEru1E2RzxLCjy0rE01qLgoQN2dl+5
+793e7N3UH8SF8Y84p4h0h8Q5ziB/W1/N2oUyYlxd0uA40nK7y5FWrRfMWjxV1DXS
+NpX7x9AOuOCTPgrb/W8OWw/DleqjDv5pj8b/ttZTh6NIzZIBEffSii+YrvETAKjK
+uNf54fGTAzMS67kU9D6MUVsGI+BnAgrKDW++PYrGmk+DRi/HzlDHz6sAdUXnQ2vU
+7X5m8t7NxuG3Q1OKSPYn
+=FsNU
+-----END PGP SIGNATURE-----
+
+--/qIPZgKzMPM+y5U5--
+
+--===============1705783361669255078==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1705783361669255078==--
