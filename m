@@ -1,39 +1,34 @@
-From: Amit Nagal <helloin.amit-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: snd_usb_hardware definition
-Date: Wed, 25 Apr 2012 14:34:16 +0530
-Message-ID: <CA+F9FsBp+f_nLCRLKBRstU7Ke=naSrnTNjKME9dhwUjvXt0arQ@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH v2] ASoC: omap-pcm: Free dma buffers in case of error.
+Date: Wed, 25 Apr 2012 17:18:45 +0100
+Message-ID: <1335370725.29563.0.camel@odin>
+References: <1335319322-22336-1-git-send-email-oleg.matcovschi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1335319322-22336-1-git-send-email-oleg.matcovschi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Oleg Matcovschi <oleg.matcovschi@ti.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi ,
+On Tue, 2012-04-24 at 19:02 -0700, Oleg Matcovschi wrote:
+> Change-Id: I4ba9de0de4681332539246ccc5e11a7a8fb32e79
+> Signed-off-by: Oleg Matcovschi <oleg.matcovschi@ti.com>
+> ---
+> v1:
+>  initial revision
+> v2:
+>  resending patch including maintainers
+> 
+>  sound/soc/omap/omap-pcm.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
 
-In H/W Descriptor snd_usb_hardware (sound/usb/pcm.c) , the following
-values are used :
+Now applied for 3.4 with change ID removed.
 
-static struct snd_pcm_hardware snd_usb_hardware =
-{
-         ....
-        .buffer_bytes_max =     1024 * 1024,
-        .period_bytes_min =     64,
-        .period_bytes_max =     512 * 1024,
-        .periods_min =          2,
-        .periods_max =          1024,
-};
+Thanks
 
+Liam
 
-can i be guided what criterion is used to set the values of above
-fields ( periods_min, periods_max , period_bytes_min ,
-period_bytes_max , buffer_bytes_max)
-as defined above for a snd usb h/w .
-
-Regards
-Amit Nagal
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
