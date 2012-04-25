@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work,
-	"Capture Volume" inverted
-Date: Thu, 26 Apr 2012 12:27:26 +0100
-Message-ID: <20120426112726.GF3207@opensource.wolfsonmicro.com>
-References: <1335384469.14096.203.camel@mars>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: SSM2602: Add sysclk based rate
+	constraints
+Date: Wed, 25 Apr 2012 11:42:46 +0200
+Message-ID: <1335346968-6086-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1395991140368776021=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37F5710BA62
+Received: from smtp-out-098.synserver.de (smtp-out-102.synserver.de
+	[212.40.185.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19AC6104841
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 13:27:29 +0200 (CEST)
-In-Reply-To: <1335384469.14096.203.camel@mars>
+	Wed, 25 Apr 2012 11:40:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,90 +21,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christoph Fritz <chf.fritz@googlemail.com>
-Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Not all advertised rates are available for all sysclk frequencies. Add
+additional sysclk based rate constraints.
 
---===============1395991140368776021==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gneEPciiIl/aKvOT"
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ssm2602.c |   38 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 34 insertions(+), 4 deletions(-)
 
-
---gneEPciiIl/aKvOT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 25, 2012 at 10:07:49PM +0200, Christoph Fritz wrote:
-
-> # amixer sset "Mic Select Source" 'Mic 2'
-> Simple mixer control 'Mic Select Source',0
->   Capabilities: enum
->   Items: 'Mic 1' 'Differential' 'Mic 2' 'Stereo'
->   Item0: 'Mic 1'
-
-Nothing springing to mind here, can you see logging for the register
-writes?
-
-> When I tested arecord for line-in, the "Capture Slide" in alsamixer was
-> wrongly inverted.
-> in sound/soc/codecs/wm9712.c:
->        SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 1),
-> should get:
->        SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 0),
-> If you want I can send a patch in.
-
-Yes, please.  In general this is always a good thing to do if you spot
-an error in the code.
-
-> Since patch "ASoC: Sync initial widget state with hardware"
-> (commitid: b66a70d5e9929f3b0df5a7177bba75652d2f4c3e) the mic capture doesn't
-> work. The MICBIAS bit from the "Power Management" Register are alway 1 (disabled).
-> So that the captering works the active status must be set to 1, at the right time.
-> That this works the stream name must be set.
-
-This analysis seems a bit confused - how does changing the initial state
-affect the dynamic changes at runtime?
-
->  #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
-> -{	.id = snd_soc_dapm_micbias, .name = wname, .reg = wreg, .shift = wshift, \
-> +{	.id = snd_soc_dapm_micbias, .name = wname, .sname = \
-> +	"Mic Bias HiFi Capture", .reg = wreg, .shift = wshift, \
-
-This isn't right, the mic bias clearly shouldn't be associated with a
-stream as you can do capture without microphone (eg, from a line input)
-and you can have a bypass path with no capture.
-
---gneEPciiIl/aKvOT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPmTDZAAoJEBus8iNuMP3dSLEP/3zMoEgp8/U3/w9kXNfA+93C
-V3aF0Q1MgasfeZpJF1qm8k/N7ZB/mV0ISTsG7eyOH5IFJje9U6yHRe0h6UN1Y5Fp
-4e4wEM2CB7HKvAUfBlpC8/f3Z2yfJr6yQTLGWk688MfqNE/TZ5og1oeYj0l/06In
-KMR99edjzOvfxthsJr0pOOa4WcwpBvvHgKonrtcCI+VVaXH9PaUZFLEwiHrav7zo
-4XPVp1f6wr2eO0T12MTD9PZL7Oc5CZh5sS3nEOl7FhoGemsGpqYghmcW/AP+egEK
-RwzzuK3tcZqF2nJ6f0isC0L9FopyJwYGspkcS4Hp30bdzSABxUD3EFH339o0EA6R
-/V+8lvDz+hxKBEzTIls9qDpKo+X/3zV6C2l/AGk/Z6CPkXOR8wjBmVja8pTWZ8li
-Hyhhji7/wUte7zluGVKMKzbLhCax8HI8yf3cedMFz/ZSp2PgLEjkWruZrsMHad3B
-ZTL+4Me1zhP/8+7l2HasjmtU1HrRLfV26vH7pbmZOrIOoOWjBrs4mkAoEjUHZOFL
-0nmYbO0VuWdkj1hjbTLAaVwMuhHH28Le7SEcO3XzpB7viV7jIjwlqzKJIc4ajRti
-Cu39sbOycfk5be/EBcME54d6624qiP3fwtYzDtzkMe04ntJWPjHlI5meWMwWfGCT
-1e4FMxrVrlVz36tXub9j
-=heux
------END PGP SIGNATURE-----
-
---gneEPciiIl/aKvOT--
-
---===============1395991140368776021==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1395991140368776021==--
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 4c94fd2..dcedd74 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -53,6 +53,7 @@ enum ssm2602_type {
+ /* codec private data */
+ struct ssm2602_priv {
+ 	unsigned int sysclk;
++	struct snd_pcm_hw_constraint_list *sysclk_constraints;
+ 	enum snd_soc_control_type control_type;
+ 	struct snd_pcm_substream *master_substream;
+ 	struct snd_pcm_substream *slave_substream;
+@@ -195,6 +196,24 @@ static const struct snd_soc_dapm_route ssm2604_routes[] = {
+ 	{"ADC", NULL, "Line Input"},
+ };
+ 
++static const unsigned int ssm2602_rates_12288000[] = {
++	8000, 32000, 48000, 96000,
++};
++
++static struct snd_pcm_hw_constraint_list ssm2602_constraints_12288000 = {
++	.list = ssm2602_rates_12288000,
++	.count = ARRAY_SIZE(ssm2602_rates_12288000),
++};
++
++static const unsigned int ssm2602_rates_11289600[] = {
++	8000, 44100, 88200,
++};
++
++static struct snd_pcm_hw_constraint_list ssm2602_constraints_11289600 = {
++	.list = ssm2602_rates_11289600,
++	.count = ARRAY_SIZE(ssm2602_rates_11289600),
++};
++
+ struct ssm2602_coeff {
+ 	u32 mclk;
+ 	u32 rate;
+@@ -320,6 +339,12 @@ static int ssm2602_startup(struct snd_pcm_substream *substream,
+ 	} else
+ 		ssm2602->master_substream = substream;
+ 
++	if (ssm2602->sysclk_constraints) {
++		snd_pcm_hw_constraint_list(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_RATE,
++				   ssm2602->sysclk_constraints);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -361,16 +386,21 @@ static int ssm2602_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 			return -EINVAL;
+ 
+ 		switch (freq) {
+-		case 11289600:
+-		case 12000000:
+ 		case 12288000:
+-		case 16934400:
+ 		case 18432000:
+-			ssm2602->sysclk = freq;
++			ssm2602->sysclk_constraints = &ssm2602_constraints_12288000;
++			break;
++		case 11289600:
++		case 16934400:
++			ssm2602->sysclk_constraints = &ssm2602_constraints_11289600;
++			break;
++		case 12000000:
++			ssm2602->sysclk_constraints = NULL;
+ 			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
++		ssm2602->sysclk = freq;
+ 	} else {
+ 		unsigned int mask;
+ 
+-- 
+1.7.9.5
