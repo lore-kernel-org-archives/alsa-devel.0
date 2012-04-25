@@ -1,18 +1,21 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: mxs-saif: Use devm_clk_get()
-Date: Thu, 26 Apr 2012 01:33:22 -0300
-Message-ID: <1335414802-4972-1-git-send-email-festevam@gmail.com>
+From: Guillaume Clement <gclement@baobob.org>
+Subject: Re: [snd-usb-audio] frequent "delay: estimated xxx,
+	actual yyy" messages
+Date: Wed, 25 Apr 2012 20:06:57 +0200
+Message-ID: <1376468.6QcoDNaDHT@siegfried>
+References: <3172169.OcqrdKakkS@siegfried> <1383683.z6YHnxXImd@siegfried>
+	<4F96B1B3.1060606@ladisch.de>
+Reply-To: Guillaume Clement <gclement@baobob.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9ABEA104B85
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
+	[217.70.183.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FF5A104A13
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 06:33:32 +0200 (CEST)
-Received: by yenl1 with SMTP id l1so723108yen.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2012 21:33:31 -0700 (PDT)
+	Wed, 25 Apr 2012 20:07:05 +0200 (CEST)
+In-Reply-To: <4F96B1B3.1060606@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,101 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Using devm_clk_get() can make the error handling path easier.
+Le mardi 24 avril 2012 15:59:15 vous avez =E9crit :
+> Guillaume Clement wrote:
+> > Could the delay not be the cause, but a side effect ?
+> =
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/mxs/mxs-saif.c |   20 +++++++-------------
- 1 files changed, 7 insertions(+), 13 deletions(-)
+> Yes, that's probable.  It might be possible that some interrupt got
+> delayed too much, or that packets were completed in wrong order.
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 53f4fd8..bfc1f9e 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -650,7 +650,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		saif->master_id = saif->id;
- 	}
- 
--	saif->clk = clk_get(&pdev->dev, NULL);
-+	saif->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(saif->clk)) {
- 		ret = PTR_ERR(saif->clk);
- 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
-@@ -663,16 +663,14 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
- 	if (!saif->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENODEV;
--		goto failed_get_resource;
-+		return -ENODEV;
- 	}
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmares) {
--		ret = -ENODEV;
- 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
- 			ret);
--		goto failed_get_resource;
-+		return -ENODEV;
- 	}
- 	saif->dma_param.chan_num = dmares->start;
- 
-@@ -681,7 +679,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		ret = saif->irq;
- 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
- 			ret);
--		goto failed_get_resource;
-+		return saif->irq;
- 	}
- 
- 	saif->dev = &pdev->dev;
-@@ -689,15 +687,14 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 			       "mxs-saif", saif);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to request irq\n");
--		goto failed_get_resource;
-+		return ret;
- 	}
- 
- 	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
- 	if (saif->dma_param.chan_irq < 0) {
--		ret = saif->dma_param.chan_irq;
- 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
- 			ret);
--		goto failed_get_resource;
-+		return saif->dma_param.chan_irq;
- 	}
- 
- 	platform_set_drvdata(pdev, saif);
-@@ -705,7 +702,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
- 	if (ret) {
- 		dev_err(&pdev->dev, "register DAI failed\n");
--		goto failed_get_resource;
-+		return ret;
- 	}
- 
- 	saif->soc_platform_pdev = platform_device_alloc(
-@@ -728,8 +725,6 @@ failed_pdev_add:
- 	platform_device_put(saif->soc_platform_pdev);
- failed_pdev_alloc:
- 	snd_soc_unregister_dai(&pdev->dev);
--failed_get_resource:
--	clk_put(saif->clk);
- 
- 	return ret;
- }
-@@ -740,7 +735,6 @@ static int __devexit mxs_saif_remove(struct platform_device *pdev)
- 
- 	platform_device_unregister(saif->soc_platform_pdev);
- 	snd_soc_unregister_dai(&pdev->dev);
--	clk_put(saif->clk);
- 
- 	return 0;
- }
--- 
-1.7.1
+I've noticed that using the touchpad triggers the issues, even in console m=
+ode =
+
+when I don't start X. Some other factors seem to trigger it, like some =
+
+graphical operations or hard disk usage (but again, only when the CPU is lo=
+w =
+
+usage).
+
+I forgot to mention that my integrated soundcard does not have this issue. =
+I =
+
+deactivated the integrated soundcard  in the BIOS and that didn't help.
+
+> =
+
+> > Do you have any idea why keeping my CPU busy removes the problem ?
+> =
+
+> I'd guess that an idle CPU needs a longer time to wake up.
+> What CPU and what CPU frequency governor are you using?
+
+
+On my laptop, I've got an Atom Z520 @ 1.33GHz. I was using the ondemand =
+
+governor. I switched to performance, with no effect.
+
+I tried to disable as many modules as possible (even my graphics card, wifi=
+, =
+
+touchscreen) with no luck so far.
+
+I tried again on several of my other computers and I could not reproduce th=
+e =
+
+problem, even on another netbook. It's quite weird becaues I thought I =
+
+reproduced it with several hardware back in December, but I guess I was =
+
+mistaken, sorry about that. =
