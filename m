@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2] ASoC: bf5xx-ssm2602: Setup sysclock in init
-	callback
-Date: Wed, 25 Apr 2012 11:34:54 +0200
-Message-ID: <1335346494-30781-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: bf5xx-ssm2602: Setup sysclock in
+	init callback
+Date: Wed, 25 Apr 2012 11:20:53 +0100
+Message-ID: <20120425102053.GK3195@opensource.wolfsonmicro.com>
 References: <1335346188-29823-2-git-send-email-lars@metafoo.>
+	<1335346494-30781-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1906896400169331952=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-093.synserver.de (smtp-out-100.synserver.de
-	[212.40.185.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F72710483C
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8448810486D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Apr 2012 11:32:24 +0200 (CEST)
-In-Reply-To: <1335346188-29823-2-git-send-email-lars@metafoo.>
+	Wed, 25 Apr 2012 12:20:54 +0200 (CEST)
+In-Reply-To: <1335346494-30781-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,95 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The sysclock is fixed, so just set it up once in the init callback instead of
-setting it repeatably in the hw_params callback.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-Since v1:
-* Fix duplicate use of bf5xx_ssm2602_init function name. Sorry, I amended the
-  wrong commit before sending out v1...
+--===============1906896400169331952==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vk/v8fjDPiDepTtA"
+Content-Disposition: inline
 
----
- sound/soc/blackfin/bf5xx-ssm2602.c |   37 ++++--------------------------------
- 1 file changed, 4 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
-index b39ad35..7dbeef1 100644
---- a/sound/soc/blackfin/bf5xx-ssm2602.c
-+++ b/sound/soc/blackfin/bf5xx-ssm2602.c
-@@ -44,16 +44,8 @@
- 
- static struct snd_soc_card bf5xx_ssm2602;
- 
--static int bf5xx_ssm2602_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
-+static int bf5xx_ssm2602_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int clk = 0;
--	int ret = 0;
--
--	pr_debug("%s rate %d format %x\n", __func__, params_rate(params),
--		params_format(params));
- 	/*
- 	 * If you are using a crystal source which frequency is not 12MHz
- 	 * then modify the below case statement with frequency of the crystal.
-@@ -61,31 +53,10 @@ static int bf5xx_ssm2602_hw_params(struct snd_pcm_substream *substream,
- 	 * If you are using the SPORT to generate clocking then this is
- 	 * where to do it.
- 	 */
--
--	switch (params_rate(params)) {
--	case 8000:
--	case 16000:
--	case 48000:
--	case 96000:
--	case 11025:
--	case 22050:
--	case 44100:
--		clk = 12000000;
--		break;
--	}
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, SSM2602_SYSCLK, clk,
-+	return snd_soc_dai_set_sysclk(rtd->codec_dai, SSM2602_SYSCLK, 12000000,
- 		SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
- }
- 
--static struct snd_soc_ops bf5xx_ssm2602_ops = {
--	.hw_params = bf5xx_ssm2602_hw_params,
--};
--
- /* CODEC is master for BCLK and LRC in this configuration. */
- #define BF5XX_SSM2602_DAIFMT (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
- 				SND_SOC_DAIFMT_CBM_CFM)
-@@ -98,7 +69,7 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
- 		.codec_dai_name = "ssm2602-hifi",
- 		.platform_name = "bfin-i2s-pcm-audio",
- 		.codec_name = "ssm2602.0-001b",
--		.ops = &bf5xx_ssm2602_ops,
-+		.init = bf5xx_ssm2602_dai_init,
- 		.dai_fmt = BF5XX_SSM2602_DAIFMT,
- 	},
- 	{
-@@ -108,7 +79,7 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
- 		.codec_dai_name = "ssm2602-hifi",
- 		.platform_name = "bfin-i2s-pcm-audio",
- 		.codec_name = "ssm2602.0-001b",
--		.ops = &bf5xx_ssm2602_ops,
-+		.init = bf5xx_ssm2602_dai_init,
- 		.dai_fmt = BF5XX_SSM2602_DAIFMT,
- 	},
- };
--- 
-1.7.9.5
+--vk/v8fjDPiDepTtA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Apr 25, 2012 at 11:34:54AM +0200, Lars-Peter Clausen wrote:
+> The sysclock is fixed, so just set it up once in the init callback instea=
+d of
+> setting it repeatably in the hw_params callback.
+>=20
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+
+Applied, thanks.  I had to do a bit of fixup to apply for 3.5 as it
+depends on your previous 3.4 only patch but the conflicts are trivial so
+it should all work out fine.  I'll merge things up when the DAI format
+patch has propagated into an -rc.
+
+This feels like it should be a framework feature, though we might want
+to punt on that for a while in the hope that we'll be able to start
+using the clock framework for more and more of this stuff.
+
+--vk/v8fjDPiDepTtA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPl8/+AAoJEBus8iNuMP3duWQP/itJTnT8fUD2rSpqBIv/LAdy
+0kCMsGBCpz6nnvCzD/grzaZJ6dxfzbLVmvFyfK5w+xcd6GlCjDld4ad5CH9arUUL
+STSNZDNOG3brsWXDi0L/Lk7LUD+SVQvlY0P2ooT+Fmj89y3FGHJ2e2pfD3IErf3q
+UdfZ8wTY3uzYwCGICrLK0wZZJog4gycvSTCB+JR/nJ1igS03k6TR/6DYhIj0Z8Ml
+tX2lU7VQnMbuRf95i/TJPvdHgHszTV+x3gcbBM1jcfS9qzQPPkgdSrfV89vnoXwS
+9v1+SwkYh84XK7uz2SDJ+y7HB5pinCovNfJWSCi98dLiuWKL56gv0fnPJm0v6k5t
+lia9BeL65uz0TojTYvGRfFqRHx6oJ3dggg4pxn7a8JyZqcM4f7yQfyYtOWyI9xHe
+xWMEGKdw+3JPEUBbcoUiaL2WY2TNwAOp4zWUMl2JUaaL6n8YnqxIMj/ReVEV7wa1
+hgt/OXklt2glgGkXinCgBthDmt1Z/6mQ+obyPxbK4LO1Xo1QnEHck4VqLNKT1HX9
+nbQ1gpp0ccJ9Ibk1ZqJ9N+O5SoNwUaXQlxELiZ9fzIC7yhkdxRt3eWNrRp7MHFTS
+tjOq/EfgkQrCGbUfe4lOGxfYyCl5Y4G9PWkWiQRztMphzFWpmidhdY1KLI4HtwPd
+fgyuJ3XzVgPaC4GJP4fo
+=AywG
+-----END PGP SIGNATURE-----
+
+--vk/v8fjDPiDepTtA--
+
+--===============1906896400169331952==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1906896400169331952==--
