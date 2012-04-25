@@ -1,16 +1,36 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: wm8994: Tune debounce rates for jack
-	detect mode
-Date: Thu, 26 Apr 2012 17:25:07 +0100
-Message-ID: <1335457509-31442-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Karsten Wiese <fzu@wemgehoertderstaat.de>
+Subject: [PATCH] usx2yloader: make fxload work without
+	deprecated usbfs
+Date: Wed, 25 Apr 2012 12:25:04 +0200
+Message-ID: <201204251225.05230.fzu@wemgehoertderstaat.de>
+References: <201101040120.38492.fzu@wemgehoertderstaat.de>
+	<201112300142.01658.fzu@wemgehoertderstaat.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2B7C310BB86
+Received: from mout2.freenet.de (mout2.freenet.de [195.4.92.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9026104876
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 18:25:16 +0200 (CEST)
+	Wed, 25 Apr 2012 12:27:29 +0200 (CEST)
+Received: from [195.4.92.142] (helo=mjail2.freenet.de)
+	by mout2.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port
+	25) (Exim 4.76 #1) id 1SMzRZ-0003c7-20
+	for alsa-devel@alsa-project.org; Wed, 25 Apr 2012 12:27:29 +0200
+Received: from localhost ([::1]:40584 helo=mjail2.freenet.de)
+	by mjail2.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (Exim
+	4.76 #1) id 1SMzRY-0006C9-UW
+	for alsa-devel@alsa-project.org; Wed, 25 Apr 2012 12:27:29 +0200
+Received: from [195.4.92.21] (port=60924 helo=11.mx.freenet.de)
+	by mjail2.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (Exim
+	4.76 #1) id 1SMzPF-0005Ih-KT
+	for alsa-devel@alsa-project.org; Wed, 25 Apr 2012 12:25:05 +0200
+Received: from p5dd50a10.dip0.t-ipconnect.de ([93.213.10.16]:63896
+	helo=a64.localdomain)
+	by 11.mx.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port
+	25) (Exim 4.76 #1) id 1SMzPF-0004wB-EW
+	for alsa-devel@alsa-project.org; Wed, 25 Apr 2012 12:25:05 +0200
+In-Reply-To: <201112300142.01658.fzu@wemgehoertderstaat.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +40,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use a slightly larger debounce when identifying accessory type and a
-slightly smaller one when detecting buttons in response to user feedback
-from large scale testing.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Use $DEVNAME instead of $DEVICE in script tascam_fw.
+
+Signed-off-by: Karsten Wiese <fzuuzf@googlemail.com>
 ---
- sound/soc/codecs/wm8994.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ usx2yloader/tascam_fw.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 9d50e76..9754904 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -70,8 +70,8 @@ static const struct wm8958_micd_rate micdet_rates[] = {
- static const struct wm8958_micd_rate jackdet_rates[] = {
- 	{ 32768,       true,  0, 1 },
- 	{ 32768,       false, 0, 1 },
--	{ 44100 * 256, true,  7, 10 },
--	{ 44100 * 256, false, 7, 10 },
-+	{ 44100 * 256, true,  10, 10 },
-+	{ 44100 * 256, false, 7, 8 },
- };
+diff --git a/usx2yloader/tascam_fw.in b/usx2yloader/tascam_fw.in
+index 14bbc6c..d3145e3 100644
+--- a/usx2yloader/tascam_fw.in
++++ b/usx2yloader/tascam_fw.in
+@@ -53,8 +53,8 @@ if [ ! -x $LOADER ]; then
+ fi
  
- static void wm8958_micd_set_rate(struct snd_soc_codec *codec)
-@@ -3481,6 +3481,8 @@ static irqreturn_t wm1811_jackdet_irq(int irq, void *data)
- 	if (present) {
- 		dev_dbg(codec->dev, "Jack detected\n");
+ if [ -x /usr/bin/logger ]; then
+-	/usr/bin/logger -t $0 "load $FIRMWARE for $PRODUCT to $DEVICE"
++	/usr/bin/logger -t $0 "load $FIRMWARE for $PRODUCT to $DEVNAME"
+ fi
+-$LOADER $FLAGS -s $LOADERFIRMWARE -I $FIRMWARE
++$LOADER $FLAGS -s $LOADERFIRMWARE -I $FIRMWARE -D $DEVNAME
  
-+		wm8958_micd_set_rate(codec);
-+
- 		snd_soc_update_bits(codec, WM8958_MICBIAS2,
- 				    WM8958_MICB2_DISCH, 0);
- 
+ exit 0
 -- 
-1.7.10
+1.7.7.6
