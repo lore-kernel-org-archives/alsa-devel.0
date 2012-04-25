@@ -1,89 +1,92 @@
-From: Richard Zhao <richard.zhao-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 09/11] ARM: imx6q: add ssi1 clk_lookup
-Date: Mon, 30 Apr 2012 10:01:46 +0800
-Message-ID: <20120430020143.GA1857@richard-laptop>
-References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
- <1335510185-7906-10-git-send-email-richard.zhao@freescale.com>
- <20120427080412.GW17184@pengutronix.de>
- <20120427091055.GP28063@b20223-02.ap.freescale.net>
- <20120427092529.GA20478@pengutronix.de>
+From: Ulrik Kjems <ulrikkjems@yahoo.dk>
+Subject: Writing an ASoC codec driver for Beaglebone McASP
+Date: Wed, 25 Apr 2012 14:20:41 +0100 (BST)
+Message-ID: <1335360041.4047.YahooMailNeo@web132406.mail.ird.yahoo.com>
+Reply-To: Ulrik Kjems <ulrikkjems@yahoo.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20120427092529.GA20478-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm7-vm0.bullet.mail.ird.yahoo.com
+	(nm7-vm0.bullet.mail.ird.yahoo.com [77.238.189.222])
+	by alsa0.perex.cz (Postfix) with SMTP id 90D8F104933
+	for <alsa-devel@alsa-project.org>;
+	Wed, 25 Apr 2012 15:20:42 +0200 (CEST)
+References: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 27, 2012 at 11:25:29AM +0200, Sascha Hauer wrote:
-> On Fri, Apr 27, 2012 at 05:10:56PM +0800, Richard Zhao wrote:
-> > On Fri, Apr 27, 2012 at 10:04:12AM +0200, Sascha Hauer wrote:
-> > > On Fri, Apr 27, 2012 at 03:03:03PM +0800, Richard Zhao wrote:
-> > > > It's used by audio drivers.
-> > > > 
-> > > > Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> > > > ---
-> > > >  arch/arm/mach-imx/clk-imx6q.c |    1 +
-> > > >  1 files changed, 1 insertions(+), 0 deletions(-)
-> > > > 
-> > > > diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
-> > > > index f40a35d..9a03dcc 100644
-> > > > --- a/arch/arm/mach-imx/clk-imx6q.c
-> > > > +++ b/arch/arm/mach-imx/clk-imx6q.c
-> > > > @@ -418,6 +418,7 @@ int __init mx6q_clocks_init(void)
-> > > >  	clk_register_clkdev(clk[sdma], NULL, "20ec000.sdma");
-> > > >  	clk_register_clkdev(clk[dummy], NULL, "20bc000.wdog");
-> > > >  	clk_register_clkdev(clk[dummy], NULL, "20c0000.wdog");
-> > > > +	clk_register_clkdev(clk[ssi1], NULL, "2028000.ssi");
-> > > 
-> > > The ssi clock needs a general cleanup on all i.MX just like I cleaned up
-> > > the other units. The SSI unit has at least a register clock and a baud
-> > > clock. What the driver requests and enables is the register clock.
-> > > 
-> > > The baud clock is currently unused and is needed only for master mode
-> > > (which is not implemented in the ssi driver)
-> > Are you sure for that? If I don't enable clk[ssi1], the ssi will not
-> > work.
-> > 
-> > > 
-> > > So where we want to come to is:
-> > > 
-> > > 	clk_register_clkdev(clk[ipg], "ipg", "2028000.ssi");
-> > ssi don't have ipg gate. We can let it always on for imx6q.
-> 
-> Can you please ask your IC guys for clarification?
-> 
-> For example on i.MX5 we have a ssi ipg clock and a ssi serial clock.
-> Both can be gated with two individual gate bits.
-> 
-> The i.MX6 datasheet (and also several other i.MX datasheets) is quite
-> nebulous. The i.MX6 has only one gate bit for each SSI unit, but
-> it's not clear if this bit actually gates both the ipg and serial
-> clock or only one of them.
-You're right. ipg and serial clocks share the same gate. How do we
-handle it? I think it's not the only one and won't be last one.
-> 
-> My general idea is that each unit in the SoC has different input clocks.
-> In the driver we need to clk_get() the input clocks. If a given SoC has
-> no software control over some of the devices input clocks, then we need
-> to provide a dummy for this, because other SoCs have control over the
-> clock.
-Great.
+I am working on connecting audio from the beaglebone McASP to a codec on an=
+ eval board, supporting a general TDM format. I know for sure the setup is =
+viable because I have the system running in a bare-metal configuration usin=
+g Starterware. I want to make it work under Linux ALSA/ASoC. I am willing t=
+o share the source code if anyone is interested in working on this as well.
 
-Thanks
-Richard
-> 
-> Sascha
-> 
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+To do this I need to configure/write a driver for ALSA/ASoC, and my goal is=
+ to be able to perform multi-channel sound capture and playback using ALSA.
+
+The current kernel (3.2.14) davinci platform driver (davinci-evm.c) apparan=
+tly supports TI's AM3358 EVM board, which uses the same ARM3358 Sitara proc=
+essor as the Beaglebone. The EVM board uses a similar (but not identical) M=
+cASP config (and a TLV320AIC3x codec, I believe).
+
+When booting the kernel on the Beaglebone the ALSA driver fails to register=
+ with the McASP. =
+
+I can see in soc-core.c around line 825 that four client devices must be fo=
+und: codec, codec_dai, platform, and platform_dai. By modifying sound/soc/d=
+avinci/davinci-evm.c to reflect the fact that for beaglebone McASP 0 is bei=
+ng used (as opposed to the EVM board where mcasp 1 is in use), I can make t=
+he platform register:
+
+static struct snd_soc_dai_link am335x_evm_dai =3D {
+=A0=A0=A0 .name =3D "TLV320AIC3X",
+=A0=A0=A0 .stream_name =3D "AIC3X",
+=A0=A0=A0 //=A0=A0=A0 .cpu_dai_name =3D "davinci-mcasp.1",=A0=A0 =
+
+=A0=A0=A0 .cpu_dai_name =3D "davinci-mcasp.0",=A0 // <<<<<<<Changed
+=A0=A0=A0 .codec_dai_name =3D "tlv320aic3x-hifi",
+=A0=A0=A0 .codec_name =3D "tlv320aic3x-codec.1-001b",
+=A0=A0=A0 .platform_name =3D "davinci-pcm-audio",
+=A0=A0=A0 .init =3D evm_aic3x_init,
+=A0=A0=A0 .ops =3D &evm_ops,
+};
+
+Now, all I need is for the codec to register. If I look at /sys/kernel/debu=
+g/asoc/ I can see the davinci platform now (the above change enables this)
+
+~# cat /sys/kernel/debug/asoc/platforms =
+
+davinci-pcm-audio
+~# cat /sys/kernel/debug/asoc/dais=A0=A0=A0=A0=A0 =
+
+davinci-mcasp.0
+~# cat /sys/kernel/debug/asoc/codecs=A0=A0=A0=A0=A0 # No codecs!
+~#
+
+Of course, I dont have the codec tlv320aic3x-hifi on my system,- but for no=
+w I would be happy configuring my codec manually (as I said its on an eval =
+board with a config software tool I can use in place of I2C) so that I coul=
+d get sound through the system. =
+
+So my question is, how do I go about convincing ALSA that its OK not to hav=
+e the codec? =
+
+
+Is there a generic codec I could use as a starting point (e.g. setting code=
+c_dai_name in the above struct to something else)?
+
+I dont understand the kernel code well enough to see why and how the kernel=
+ can detect the absence of the TLV codec above - I dont seem to be getting =
+any calls to any of the functions inside sound/soc/codecs/tlv320aic3x.c exc=
+ept aic3x_modinit(void) - how on earth does the system know the codec is no=
+t there ?
