@@ -1,16 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: dapm: Dynamically move CODEC<->CODEC
-	params off stack
-Date: Thu, 26 Apr 2012 19:13:11 +0100
-Message-ID: <1335463991-29110-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work,
+	"Capture Volume" inverted
+Date: Thu, 26 Apr 2012 18:20:10 +0100
+Message-ID: <20120426172010.GP3207@opensource.wolfsonmicro.com>
+References: <1335384469.14096.203.camel@mars>
+	<20120426112726.GF3207@opensource.wolfsonmicro.com>
+	<1335448142.20000.40.camel@mars>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8497331967879153415=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4A1F10BBE5
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2524A10BBB2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 20:13:14 +0200 (CEST)
+	Thu, 26 Apr 2012 19:20:13 +0200 (CEST)
+In-Reply-To: <1335448142.20000.40.camel@mars>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,112 +23,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Christoph Fritz <chf.fritz@googlemail.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Reduce our stack consumption by moving the params off the stack, they
-are reasonably large and might be an issue on platforms with small stacks.
 
-Reported-by: Liam Girdwood <lrg@ti.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+--===============8497331967879153415==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QAdlk5ze2izLk3Ap"
+Content-Disposition: inline
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 75b3ad6..522032e 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2987,7 +2987,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_dai *source, *sink;
- 	const struct snd_soc_pcm_stream *config = w->params;
- 	struct snd_pcm_substream substream;
--	struct snd_pcm_hw_params params;
-+	struct snd_pcm_hw_params *params = NULL;
- 	u64 fmt;
- 	int ret;
- 
-@@ -3017,17 +3017,21 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	}
- 
- 	/* Currently very limited parameter selection */
--	memset(&params, 0, sizeof(params));
--	snd_mask_set(hw_param_mask(&params, SNDRV_PCM_HW_PARAM_FORMAT), fmt);
-+	params = kzalloc(sizeof(*params), GFP_KERNEL);
-+	if (!params) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	snd_mask_set(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT), fmt);
- 
--	hw_param_interval(&params, SNDRV_PCM_HW_PARAM_RATE)->min =
-+	hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE)->min =
- 		config->rate_min;
--	hw_param_interval(&params, SNDRV_PCM_HW_PARAM_RATE)->max =
-+	hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE)->max =
- 		config->rate_max;
- 
--	hw_param_interval(&params, SNDRV_PCM_HW_PARAM_CHANNELS)->min
-+	hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS)->min
- 		= config->channels_min;
--	hw_param_interval(&params, SNDRV_PCM_HW_PARAM_CHANNELS)->max
-+	hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS)->max
- 		= config->channels_max;
- 
- 	memset(&substream, 0, sizeof(substream));
-@@ -3037,22 +3041,22 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		if (source->driver->ops && source->driver->ops->hw_params) {
- 			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
- 			ret = source->driver->ops->hw_params(&substream,
--							     &params, source);
-+							     params, source);
- 			if (ret != 0) {
- 				dev_err(source->dev,
- 					"hw_params() failed: %d\n", ret);
--				return ret;
-+				goto out;
- 			}
- 		}
- 
- 		if (sink->driver->ops && sink->driver->ops->hw_params) {
- 			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
--			ret = sink->driver->ops->hw_params(&substream, &params,
-+			ret = sink->driver->ops->hw_params(&substream, params,
- 							   sink);
- 			if (ret != 0) {
- 				dev_err(sink->dev,
- 					"hw_params() failed: %d\n", ret);
--				return ret;
-+				goto out;
- 			}
- 		}
- 		break;
-@@ -3061,12 +3065,14 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		ret = snd_soc_dai_digital_mute(sink, 0);
- 		if (ret != 0 && ret != -ENOTSUPP)
- 			dev_warn(sink->dev, "Failed to unmute: %d\n", ret);
-+		ret = 0;
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
- 		ret = snd_soc_dai_digital_mute(sink, 1);
- 		if (ret != 0 && ret != -ENOTSUPP)
- 			dev_warn(sink->dev, "Failed to mute: %d\n", ret);
-+		ret = 0;
- 		break;
- 
- 	default:
-@@ -3074,7 +3080,9 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		return -EINVAL;
- 	}
- 
--	return 0;
-+out:
-+	kfree(params);
-+	return ret;
- }
- 
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
--- 
-1.7.10
+
+--QAdlk5ze2izLk3Ap
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Apr 26, 2012 at 03:49:02PM +0200, Christoph Fritz wrote:
+
+> I added some printks into ac97_write() "sound/soc/codecs/wm9712.c" and
+> when I do for example change "Item: Mic Boost [dB gain: 20.00] " I get
+> this:
+
+>  write  eh 8000  [6808]
+>  write  eh 8000  [6888]
+
+> but when I try to change "Mic Select Source" or "Item: Differential
+> Source", nothing happens here.
+
+Odd.  Can you see the write actually happening on the bus?
+
+> Why is wm9712_enum[0] never used?
+
+I rather imagine it's just a simple case of the feature having being
+missed when the driver was implemented.
+
+> Is "SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel)," correct? Because of
+> the ">> 1" shift in ac97_write() ?
+
+What makes you think it might not be correct?
+
+--QAdlk5ze2izLk3Ap
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPmYPCAAoJEBus8iNuMP3d06QP/2vBQrzvQMNej3qLwHz2vuAZ
+msR1sIn5LhK5steNGB8HgZ0aTfb1HgXHP/Kol1JgIXEkuZiY0shwntjxPEY8yYf5
+Ibs+eznGYV4YN+XUlJyfSK/GGpRKZKqYk2SgoBNaGuSTS8wQsfCplJjWq51vMqrS
+ZzpBliwolsh3nLr6NBjPx+fr072lVlKTUVUBbXOPVuHV06adu5J6YfhW+SOUr1In
+XH/Yo3egoLq3NrUQ+1cQ4+8HUsU9iG1ejMgMqo0lP4N6tER4aCrjNv4OY4JiSxfW
+hshaT/BFCwI5G4ZF2OSVhPZqLeruoznVNzuCppZEyRA6BfKeTCN0InoMUxFQZcxX
+GSEWjt+f3QCZ8AelR/h96VnUQHFDFazsTcEueqrE6gaQIH2BKHQwQspQOkqh14rR
+enOeJyCc5Pa/x67iZ25c2uzrwqchzt6n+OUkncROGWoy9StF7bxPOCydgDKn/Fui
+dQtIu/xIjkrL5GNh0/Yi8VgzgAMmSfemMmmLl4V9aHLy/UCIqNv9nxZjqyvJI7IE
+2fbDc0KRq09h2/0SnV2KSSZAyY6qNRSeM0qtyqUibYkA5Obu+y98Ail68I+oKssr
+Aapp2nBUwk7Ly/ebFSixSQKeRKRJzz64olt0SlD77+CtuVC07qq+RT1+M3dSzgSi
+Lg0wT6HR1fUTlOCZuXB3
+=Bz8J
+-----END PGP SIGNATURE-----
+
+--QAdlk5ze2izLk3Ap--
+
+--===============8497331967879153415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8497331967879153415==--
