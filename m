@@ -1,18 +1,22 @@
-From: Ulrik Kjems <ulrikkjems@yahoo.dk>
-Subject: Writing an ASoC codec driver for Beaglebone McASP
-Date: Wed, 25 Apr 2012 14:20:41 +0100 (BST)
-Message-ID: <1335360041.4047.YahooMailNeo@web132406.mail.ird.yahoo.com>
-Reply-To: Ulrik Kjems <ulrikkjems@yahoo.dk>
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work,
+ "Capture Volume" inverted
+Date: Thu, 26 Apr 2012 15:49:02 +0200
+Message-ID: <1335448142.20000.40.camel@mars>
+References: <1335384469.14096.203.camel@mars>
+	<20120426112726.GF3207@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm7-vm0.bullet.mail.ird.yahoo.com
-	(nm7-vm0.bullet.mail.ird.yahoo.com [77.238.189.222])
-	by alsa0.perex.cz (Postfix) with SMTP id 90D8F104933
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+	[209.85.217.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED1CC10BAEA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Apr 2012 15:20:42 +0200 (CEST)
-References: 
+	Thu, 26 Apr 2012 15:49:06 +0200 (CEST)
+Received: by lban1 with SMTP id n1so908093lba.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2012 06:49:06 -0700 (PDT)
+In-Reply-To: <20120426112726.GF3207@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,71 +26,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-I am working on connecting audio from the beaglebone McASP to a codec on an=
- eval board, supporting a general TDM format. I know for sure the setup is =
-viable because I have the system running in a bare-metal configuration usin=
-g Starterware. I want to make it work under Linux ALSA/ASoC. I am willing t=
-o share the source code if anyone is interested in working on this as well.
+On Thu, 2012-04-26 at 12:27 +0100, Mark Brown wrote:
+> On Wed, Apr 25, 2012 at 10:07:49PM +0200, Christoph Fritz wrote:
+> 
+> > # amixer sset "Mic Select Source" 'Mic 2'
+> > Simple mixer control 'Mic Select Source',0
+> >   Capabilities: enum
+> >   Items: 'Mic 1' 'Differential' 'Mic 2' 'Stereo'
+> >   Item0: 'Mic 1'
+> 
+> Nothing springing to mind here, can you see logging for the register
+> writes?
 
-To do this I need to configure/write a driver for ALSA/ASoC, and my goal is=
- to be able to perform multi-channel sound capture and playback using ALSA.
+I added some printks into ac97_write() "sound/soc/codecs/wm9712.c" and
+when I do for example change "Item: Mic Boost [dB gain: 20.00] " I get
+this:
 
-The current kernel (3.2.14) davinci platform driver (davinci-evm.c) apparan=
-tly supports TI's AM3358 EVM board, which uses the same ARM3358 Sitara proc=
-essor as the Beaglebone. The EVM board uses a similar (but not identical) M=
-cASP config (and a TLV320AIC3x codec, I believe).
+ write  eh 8000  [6808]
+ write  eh 8000  [6888]
 
-When booting the kernel on the Beaglebone the ALSA driver fails to register=
- with the McASP. =
+but when I try to change "Mic Select Source" or "Item: Differential
+Source", nothing happens here.
 
-I can see in soc-core.c around line 825 that four client devices must be fo=
-und: codec, codec_dai, platform, and platform_dai. By modifying sound/soc/d=
-avinci/davinci-evm.c to reflect the fact that for beaglebone McASP 0 is bei=
-ng used (as opposed to the EVM board where mcasp 1 is in use), I can make t=
-he platform register:
+And in "sound/soc/codecs/wm9712.c":
 
-static struct snd_soc_dai_link am335x_evm_dai =3D {
-=A0=A0=A0 .name =3D "TLV320AIC3X",
-=A0=A0=A0 .stream_name =3D "AIC3X",
-=A0=A0=A0 //=A0=A0=A0 .cpu_dai_name =3D "davinci-mcasp.1",=A0=A0 =
-
-=A0=A0=A0 .cpu_dai_name =3D "davinci-mcasp.0",=A0 // <<<<<<<Changed
-=A0=A0=A0 .codec_dai_name =3D "tlv320aic3x-hifi",
-=A0=A0=A0 .codec_name =3D "tlv320aic3x-codec.1-001b",
-=A0=A0=A0 .platform_name =3D "davinci-pcm-audio",
-=A0=A0=A0 .init =3D evm_aic3x_init,
-=A0=A0=A0 .ops =3D &evm_ops,
+static const struct soc_enum wm9712_enum[] = {
+SOC_ENUM_SINGLE(AC97_PCI_SVID, 14, 4, wm9712_alc_select),
+SOC_ENUM_SINGLE(AC97_VIDEO, 12, 4, wm9712_alc_mux),
+SOC_ENUM_SINGLE(AC97_AUX, 9, 4, wm9712_out3_src),
+SOC_ENUM_SINGLE(AC97_AUX, 8, 2, wm9712_spk_src),
+SOC_ENUM_SINGLE(AC97_REC_SEL, 12, 4, wm9712_rec_adc),
+SOC_ENUM_SINGLE(AC97_MASTER_TONE, 15, 2, wm9712_base),
+SOC_ENUM_DOUBLE(AC97_REC_GAIN, 14, 6, 2, wm9712_rec_gain),
+SOC_ENUM_SINGLE(AC97_MIC, 5, 4, wm9712_mic),
+SOC_ENUM_SINGLE(AC97_REC_SEL, 8, 8, wm9712_rec_sel),
+SOC_ENUM_SINGLE(AC97_REC_SEL, 0, 8, wm9712_rec_sel),
+SOC_ENUM_SINGLE(AC97_PCI_SVID, 5, 2, wm9712_ng_type),
+SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel),
 };
 
-Now, all I need is for the codec to register. If I look at /sys/kernel/debu=
-g/asoc/ I can see the davinci platform now (the above change enables this)
+Why is wm9712_enum[0] never used?
 
-~# cat /sys/kernel/debug/asoc/platforms =
-
-davinci-pcm-audio
-~# cat /sys/kernel/debug/asoc/dais=A0=A0=A0=A0=A0 =
-
-davinci-mcasp.0
-~# cat /sys/kernel/debug/asoc/codecs=A0=A0=A0=A0=A0 # No codecs!
-~#
-
-Of course, I dont have the codec tlv320aic3x-hifi on my system,- but for no=
-w I would be happy configuring my codec manually (as I said its on an eval =
-board with a config software tool I can use in place of I2C) so that I coul=
-d get sound through the system. =
-
-So my question is, how do I go about convincing ALSA that its OK not to hav=
-e the codec? =
+Is "SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel)," correct? Because of
+the ">> 1" shift in ac97_write() ?
 
 
-Is there a generic codec I could use as a starting point (e.g. setting code=
-c_dai_name in the above struct to something else)?
+Thanks,
+ -- Christoph
 
-I dont understand the kernel code well enough to see why and how the kernel=
- can detect the absence of the TLV codec above - I dont seem to be getting =
-any calls to any of the functions inside sound/soc/codecs/tlv320aic3x.c exc=
-ept aic3x_modinit(void) - how on earth does the system know the codec is no=
-t there ?
+
+> 
+> > When I tested arecord for line-in, the "Capture Slide" in alsamixer
+was
+> > wrongly inverted.
+> > in sound/soc/codecs/wm9712.c:
+> >        SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 1),
+> > should get:
+> >        SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 0),
+> > If you want I can send a patch in.
+> 
+> Yes, please.  In general this is always a good thing to do if you spot
+> an error in the code.
+> 
+> > Since patch "ASoC: Sync initial widget state with hardware"
+> > (commitid: b66a70d5e9929f3b0df5a7177bba75652d2f4c3e) the mic capture
+doesn't
+> > work. The MICBIAS bit from the "Power Management" Register are alway
+1 (disabled).
+> > So that the captering works the active status must be set to 1, at
+the right time.
+> > That this works the stream name must be set.
+> 
+> This analysis seems a bit confused - how does changing the initial
+state
+> affect the dynamic changes at runtime?
+> 
+> >  #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
+> > -{  .id = snd_soc_dapm_micbias, .name = wname, .reg = wreg, .shift =
+wshift, \
+> > +{  .id = snd_soc_dapm_micbias, .name = wname, .sname = \
+> > +   "Mic Bias HiFi Capture", .reg = wreg, .shift = wshift, \
+> 
+> This isn't right, the mic bias clearly shouldn't be associated with a
+> stream as you can do capture without microphone (eg, from a line
+input)
+> and you can have a bypass path with no capture.
