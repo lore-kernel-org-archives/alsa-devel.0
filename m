@@ -1,16 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: bf5xx-ssm2602: Set DAI format
-Date: Wed, 25 Apr 2012 11:29:47 +0200
-Message-ID: <1335346188-29823-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: dpcm: Add Dynamic PCM core
+	operations.
+Date: Thu, 26 Apr 2012 17:54:59 +0100
+Message-ID: <20120426165459.GN3207@opensource.wolfsonmicro.com>
+References: <1335352373-5237-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5471182628353353156=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-093.synserver.de (smtp-out-100.synserver.de
-	[212.40.185.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 882D6104837
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5668F10BB9D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Apr 2012 11:27:32 +0200 (CEST)
+	Thu, 26 Apr 2012 18:55:01 +0200 (CEST)
+In-Reply-To: <1335352373-5237-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,43 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 980b0bc69 ("ASoC: blackfin: Use dai_fmt") converted the blackfin ASoC
-machine drivers to use the dai_links dai_fmt field to setup their DAI format.
-For the bf5xx-ssm2602 the commit removed the manual call to snd_soc_dai_set_fmt,
-but missed to set the dai_links dai_fmt field.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+--===============5471182628353353156==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KCXyoJ//PRyfzsc9"
+Content-Disposition: inline
 
----
-The commit that introduced the problem is only in 3.4-rc
 
----
- sound/soc/blackfin/bf5xx-ssm2602.c |    2 ++
- 1 file changed, 2 insertions(+)
+--KCXyoJ//PRyfzsc9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
-index df3ac73..b39ad35 100644
---- a/sound/soc/blackfin/bf5xx-ssm2602.c
-+++ b/sound/soc/blackfin/bf5xx-ssm2602.c
-@@ -99,6 +99,7 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
- 		.platform_name = "bfin-i2s-pcm-audio",
- 		.codec_name = "ssm2602.0-001b",
- 		.ops = &bf5xx_ssm2602_ops,
-+		.dai_fmt = BF5XX_SSM2602_DAIFMT,
- 	},
- 	{
- 		.name = "ssm2602",
-@@ -108,6 +109,7 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai[] = {
- 		.platform_name = "bfin-i2s-pcm-audio",
- 		.codec_name = "ssm2602.0-001b",
- 		.ops = &bf5xx_ssm2602_ops,
-+		.dai_fmt = BF5XX_SSM2602_DAIFMT,
- 	},
- };
- 
--- 
-1.7.9.5
+On Wed, Apr 25, 2012 at 12:12:49PM +0100, Liam Girdwood wrote:
+> The Dynamic PCM core allows digital audio data to be dynamically
+> routed between different ALSA PCMs and DAI links on SoC CPUs with
+> on chip DSP devices. e.g. audio data could be played on pcm:0,0 and
+> routed to any (or all) SoC DAI links.
+
+I've applied all these now - after recovering from the shock of seeing
+them! :)
+
+I think we need to have a look at/think about the no_pcm flag, partly
+just in relation to the CODEC<->CODEC code as that's also figuring out
+that there's no PCM but it does it just by checking that there's no DMA
+driver specified.  But I'm not sure what the best thing to do is here
+without seeing a machine driver or two.
+
+--KCXyoJ//PRyfzsc9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPmX3bAAoJEBus8iNuMP3d3jsP/1LeHZ/bRBZ7slWAvzqL5DMg
+kX8/LeAal81yWnvGzpCKMMeEftFkNKPQYaj170rk2ZhHWJqW2hNUVWxDZiXYHt39
+OVzVW2ZcNUfTHtfG5b7hF/cmPqR08FZmnPC2N3Mt47ri01duS3+el/6/+rJFZjeY
+oZmOy3+49wkJOLURiwVidpxJqN3kYTXsThrbC7+XtF71eXlv02WZX3gdIHLrwmlS
+7MgLAC3enn5ljT9yIY0BVJpo+ccPKM1wG0iRjdU5dVKj1Fhnyi+IZnxQIG/KvGYT
+fVj4gqWRPj+uIjITHNbzYIRqwxDQVsadywWLu3frdkXALbhUKjecKXTLLYli0q3d
+5D5QCmgi5Hh1t5d8MISE5Hvh+VlR1K90WYhPsPyNRJVgCVNo64INiYAJJzS5MHF7
+xO72KRYfHdcedRHbh1gsHdxDyFwFQyqRKybFsr0sjc3HIZZ3RU9XJ5/8XE8OB1p7
+GDH1M3CuyDvkcJoUGWH+pAc9ZZe1DdLXWdQFyGVTrDYhE/1ZR0S7licrE2iKooPW
+kBJIpc3vp4xAceejel+gyvj+cSwiljle06ES2N7wQo5gd6XtWzDqyUzNfr06bBrR
+1kB0In83w4H3zqu5WUVALCvvNWeRNVxlI2VWNk9hkZSGFYlLKdDl6lrpEaN/LGbO
+p063egeH+p6t5QNDsw9z
+=Yq1P
+-----END PGP SIGNATURE-----
+
+--KCXyoJ//PRyfzsc9--
+
+--===============5471182628353353156==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5471182628353353156==--
