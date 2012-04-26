@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: dpcm: Add Dynamic PCM core
-	operations.
-Date: Thu, 26 Apr 2012 17:54:59 +0100
-Message-ID: <20120426165459.GN3207@opensource.wolfsonmicro.com>
-References: <1335352373-5237-1-git-send-email-lrg@ti.com>
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work,
+ "Capture Volume" inverted
+Date: Thu, 26 Apr 2012 23:11:33 +0200
+Message-ID: <1335474693.3628.26.camel@lovely>
+References: <1335384469.14096.203.camel@mars>
+	<20120426112726.GF3207@opensource.wolfsonmicro.com>
+	<1335448142.20000.40.camel@mars>
+	<20120426172010.GP3207@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5471182628353353156=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5668F10BB9D
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+	[209.85.217.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCF6710BC4D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 18:55:01 +0200 (CEST)
-In-Reply-To: <1335352373-5237-1-git-send-email-lrg@ti.com>
+	Thu, 26 Apr 2012 23:11:40 +0200 (CEST)
+Received: by lban1 with SMTP id n1so41898lba.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2012 14:11:40 -0700 (PDT)
+In-Reply-To: <20120426172010.GP3207@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,65 +28,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2012-04-26 at 18:20 +0100, Mark Brown wrote:
+> On Thu, Apr 26, 2012 at 03:49:02PM +0200, Christoph Fritz wrote:
+> 
+> > I added some printks into ac97_write() "sound/soc/codecs/wm9712.c" and
+> > when I do for example change "Item: Mic Boost [dB gain: 20.00] " I get
+> > this:
+> 
+> >  write  eh 8000  [6808]
+> >  write  eh 8000  [6888]
+> 
+> > but when I try to change "Mic Select Source" or "Item: Differential
+> > Source", nothing happens here.
+> 
+> Odd.  Can you see the write actually happening on the bus?
+> 
 
---===============5471182628353353156==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KCXyoJ//PRyfzsc9"
-Content-Disposition: inline
-
-
---KCXyoJ//PRyfzsc9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 25, 2012 at 12:12:49PM +0100, Liam Girdwood wrote:
-> The Dynamic PCM core allows digital audio data to be dynamically
-> routed between different ALSA PCMs and DAI links on SoC CPUs with
-> on chip DSP devices. e.g. audio data could be played on pcm:0,0 and
-> routed to any (or all) SoC DAI links.
-
-I've applied all these now - after recovering from the shock of seeing
-them! :)
-
-I think we need to have a look at/think about the no_pcm flag, partly
-just in relation to the CODEC<->CODEC code as that's also figuring out
-that there's no PCM but it does it just by checking that there's no DMA
-driver specified.  But I'm not sure what the best thing to do is here
-without seeing a machine driver or two.
-
---KCXyoJ//PRyfzsc9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPmX3bAAoJEBus8iNuMP3d3jsP/1LeHZ/bRBZ7slWAvzqL5DMg
-kX8/LeAal81yWnvGzpCKMMeEftFkNKPQYaj170rk2ZhHWJqW2hNUVWxDZiXYHt39
-OVzVW2ZcNUfTHtfG5b7hF/cmPqR08FZmnPC2N3Mt47ri01duS3+el/6/+rJFZjeY
-oZmOy3+49wkJOLURiwVidpxJqN3kYTXsThrbC7+XtF71eXlv02WZX3gdIHLrwmlS
-7MgLAC3enn5ljT9yIY0BVJpo+ccPKM1wG0iRjdU5dVKj1Fhnyi+IZnxQIG/KvGYT
-fVj4gqWRPj+uIjITHNbzYIRqwxDQVsadywWLu3frdkXALbhUKjecKXTLLYli0q3d
-5D5QCmgi5Hh1t5d8MISE5Hvh+VlR1K90WYhPsPyNRJVgCVNo64INiYAJJzS5MHF7
-xO72KRYfHdcedRHbh1gsHdxDyFwFQyqRKybFsr0sjc3HIZZ3RU9XJ5/8XE8OB1p7
-GDH1M3CuyDvkcJoUGWH+pAc9ZZe1DdLXWdQFyGVTrDYhE/1ZR0S7licrE2iKooPW
-kBJIpc3vp4xAceejel+gyvj+cSwiljle06ES2N7wQo5gd6XtWzDqyUzNfr06bBrR
-1kB0In83w4H3zqu5WUVALCvvNWeRNVxlI2VWNk9hkZSGFYlLKdDl6lrpEaN/LGbO
-p063egeH+p6t5QNDsw9z
-=Yq1P
------END PGP SIGNATURE-----
-
---KCXyoJ//PRyfzsc9--
-
---===============5471182628353353156==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Not at the moment, I'll dig into this tomorrow.
 
 
---===============5471182628353353156==--
+> > Why is wm9712_enum[0] never used?
+> 
+> I rather imagine it's just a simple case of the feature having being
+> missed when the driver was implemented.
+> 
+> > Is "SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel)," correct? Because of
+> > the ">> 1" shift in ac97_write() ?
+> 
+> What makes you think it might not be correct?
+> 
+
+ac97_write() doesn't get called when I try to change "Item: Differential Source".
+
+Thanks,
+ -- Christoph
