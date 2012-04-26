@@ -1,50 +1,55 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH 0/3] ARM: OMAP: Add platform devices for ASoC HDMI drivers
-Date: Wed, 25 Apr 2012 18:29:24 -0500
-Message-ID: <4F9888D4.5090207@ti.com>
-References: <1334709646-8468-1-git-send-email-ricardo.neri@ti.com>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: imx sgtl5000:BUG: scheduling while atomic:
+ speaker-test/1225/0x00000003
+Date: Thu, 26 Apr 2012 10:33:21 +0800
+Message-ID: <20120426023319.GC28063@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1334709646-8468-1-git-send-email-ricardo.neri@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: tony@atomide.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, s-guiriec@ti.com, peter.ujfalusi@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tony,
+[   13.901890] eth0: no IPv6 routers present
+[   70.295079] BUG: scheduling while atomic: speaker-test/1225/0x00000003
+[   70.304293] Modules linked in:
+[   70.310389] [<c0015a68>] (unwind_backtrace+0x0/0xec) from [<c0585810>] (dump_stack+0x20/0x24)
+[   70.310421] [<c0585810>] (dump_stack+0x20/0x24) from [<c0585f6c>] (__schedule_bug+0x54/0x60)
+[   70.310452] [<c0585f6c>] (__schedule_bug+0x54/0x60) from [<c058db64>] (__schedule+0x84/0x748)
+[   70.310476] [<c058db64>] (__schedule+0x84/0x748) from [<c058e310>] (schedule+0x8c/0x90)
+[   70.310500] [<c058e310>] (schedule+0x8c/0x90) from [<c058c504>] (schedule_timeout+0x2fc/0x35c)
+[   70.310541] [<c058c504>] (schedule_timeout+0x2fc/0x35c) from [<c058d970>] (wait_for_common+0xd8/0x16c)
+[   70.310567] [<c058d970>] (wait_for_common+0xd8/0x16c) from [<c058da44>] (wait_for_completion_timeout+0x1c/0x20)
+[   70.310604] [<c058da44>] (wait_for_completion_timeout+0x1c/0x20) from [<c03352bc>] (sdma_run_channel+0x70/0x8c)
+[   70.310634] [<c03352bc>] (sdma_run_channel+0x70/0x8c) from [<c0335614>] (sdma_load_context+0x188/0x19c)
+[   70.310661] [<c0335614>] (sdma_load_context+0x188/0x19c) from [<c0335688>] (sdma_prep_dma_cyclic+0x60/0x1a8)
+[   70.310694] [<c0335688>] (sdma_prep_dma_cyclic+0x60/0x1a8) from [<c04760f4>] (snd_dmaengine_pcm_trigger+0xa0/0x134)
+[   70.310729] [<c04760f4>] (snd_dmaengine_pcm_trigger+0xa0/0x134) from [<c0483e68>] (soc_pcm_trigger+0x74/0xb0)
+[   70.310770] [<c0483e68>] (soc_pcm_trigger+0x74/0xb0) from [<c046e670>] (snd_pcm_do_start+0x34/0x40)
+[   70.310797] [<c046e670>] (snd_pcm_do_start+0x34/0x40) from [<c046e288>] (snd_pcm_action_single+0x48/0x74)
+[   70.310823] [<c046e288>] (snd_pcm_action_single+0x48/0x74) from [<c046e334>] (snd_pcm_action+0x80/0x8c)
+[   70.310850] [<c046e334>] (snd_pcm_action+0x80/0x8c) from [<c04707f0>] (snd_pcm_start+0x24/0x2c)
+[   70.310877] [<c04707f0>] (snd_pcm_start+0x24/0x2c) from [<c0474058>] (snd_pcm_lib_write1+0x2a8/0x340)
+[   70.310900] [<c0474058>] (snd_pcm_lib_write1+0x2a8/0x340) from [<c04741d0>] (snd_pcm_lib_write+0x70/0x7c)
+[   70.311007] [<c04741d0>] (snd_pcm_lib_write+0x70/0x7c) from [<c04703f8>] (snd_pcm_playback_ioctl1+0x114/0x428)
+[   70.311038] [<c04703f8>] (snd_pcm_playback_ioctl1+0x114/0x428) from [<c0470744>] (snd_pcm_playback_ioctl+0x38/0x44)
+[   70.311077] [<c0470744>] (snd_pcm_playback_ioctl+0x38/0x44) from [<c0107234>] (do_vfs_ioctl+0x4f4/0x568)
+[   70.311105] [<c0107234>] (do_vfs_ioctl+0x4f4/0x568) from [<c0107308>] (sys_ioctl+0x60/0x84)
+[   70.311138] [<c0107308>] (sys_ioctl+0x60/0x84) from [<c000df40>] (ret_fast_syscall+0x0/0x30)
+[   80.301928] ALSA sound/core/pcm_lib.c:1853 playback write error (DMA or IRQ trouble?)
 
-I was wondering if you've had the time to take a look at these patches.
 
-Thanks!
+kernel: 3.4rc3 with ASoC/for-next and some my patches.
 
-Ricardo
-On 04/17/2012 07:40 PM, Ricardo Neri wrote:
-> This set of patches is intended to add the platform devices for the ASoC
-> HDMI drivers when not using device tree. For this, I took an approach similar
-> to DMIC and McPDM by creating a dedicated functions to create the devices.
->
-> I included the device for the CPU DAI driver, omap-hdmi-audio-dai, and the
-> device for the machine driver, omap-hdmi-audio, in devices.c to reflect the
-> fact that any OMAP4 (and OMAP5 in the future) has HDMI IP. I put the device
-> for the codec in the board file to reflect the fact that not necessarily all
-> the boards with OMAP4/5 have the HDMI output wired.
->
-> Best regards
->
-> Ricardo
->
-> Ricardo Neri (3):
->    ARM: OMAP: devices: Register platform devices for HDMI audio
->    ARM: OMAP4: board-4430sdp: Register platform device for HDMI audio
->      codec
->    ARM: OMAP4: board-omap4panda: Register platform device for HDMI audio
->      codec
->
->   arch/arm/mach-omap2/board-4430sdp.c    |    6 ++++++
->   arch/arm/mach-omap2/board-omap4panda.c |    6 ++++++
->   arch/arm/mach-omap2/devices.c          |   31 +++++++++++++++++++++++++++++++
->   3 files changed, 43 insertions(+), 0 deletions(-)
->
-
+Thanks
+Richard
