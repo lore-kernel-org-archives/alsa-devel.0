@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: SSM2602: Remove driver specific
-	version
-Date: Wed, 25 Apr 2012 11:42:47 +0200
-Message-ID: <1335346968-6086-2-git-send-email-lars@metafoo.de>
-References: <1335346968-6086-1-git-send-email-lars@metafoo.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: dapm: Move CODEC<->CODEC params off
+	stack
+Date: Fri, 27 Apr 2012 10:02:04 +0100
+Message-ID: <1335517324.4150.0.camel@odin>
+References: <1335471551-12100-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-098.synserver.de (smtp-out-102.synserver.de
-	[212.40.185.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id A749F104842
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+	[74.125.149.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7008210BE45
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Apr 2012 11:40:25 +0200 (CEST)
-In-Reply-To: <1335346968-6086-1-git-send-email-lars@metafoo.de>
+	Fri, 27 Apr 2012 11:02:14 +0200 (CEST)
+Received: by wibhj13 with SMTP id hj13so314973wib.6
+	for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2012 02:02:06 -0700 (PDT)
+In-Reply-To: <1335471551-12100-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We have never really updated that version number and probably never will, so
-just remove it.
+On Thu, 2012-04-26 at 21:19 +0100, Mark Brown wrote:
+> Reduce our stack consumption by moving the params off the stack, they
+> are reasonably large and might be an issue on platforms with small stacks.
+> 
+> Reported-by: Liam Girdwood <lrg@ti.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-dapm.c |   32 ++++++++++++++++++++------------
+>  1 file changed, 20 insertions(+), 12 deletions(-)
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/ssm2602.c |    4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index dcedd74..aef8a49 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -43,8 +43,6 @@
- 
- #include "ssm2602.h"
- 
--#define SSM2602_VERSION "0.1"
--
- enum ssm2602_type {
- 	SSM2602,
- 	SSM2604,
-@@ -608,8 +606,6 @@ static int ssm260x_probe(struct snd_soc_codec *codec)
- 	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
- 
--	pr_info("ssm2602 Audio Codec %s", SSM2602_VERSION);
--
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, ssm2602->control_type);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
--- 
-1.7.9.5
+Acked-by: Liam Girdwood <lrg@ti.com>
