@@ -1,53 +1,79 @@
-From: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: Re: [PATCH 01/11] dma: imx-sdma: make channel0 operations atomic
-Date: Fri, 27 Apr 2012 21:25:39 +0800
-Message-ID: <20120427132538.GU28063@b20223-02.ap.freescale.net>
-References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
- <1335510185-7906-2-git-send-email-richard.zhao@freescale.com>
- <20378.25703.527491.719116@ipc1.ka-ro>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: Add support for CS42L52 Codec
+Date: Fri, 27 Apr 2012 08:44:24 -0500
+Message-ID: <alpine.DEB.2.02.1204270837060.11753@heelrod.ad.cirrus.com>
+References: <1334609938-11671-1-git-send-email-brian.austin@cirrus.com>
+	<20120417111359.GB6652@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20378.25703.527491.719116-VjFSrY7JcPWvSplVBqRQBQ@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C97C243B7
+	for <alsa-devel@alsa-project.org>;
+	Fri, 27 Apr 2012 15:45:00 +0200 (CEST)
+In-Reply-To: <20120417111359.GB6652@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: mbizon@freebox.fr, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, joe@nucleusys.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 27, 2012 at 11:18:31AM +0200, Lothar Wa=DFmann wrote:
-> Hi,
->=20
-> Richard Zhao writes:
-> > device_prep_dma_cyclic may be call in audio trigger function which =
-is
-> > atomic context, so we make it atomic too.
-> >=20
-> >  - change channel0 lock to spinlock.
-> >  - Use polling to wait for channel0 finish running.
-> >=20
-> > Signed-off-by: Lothar Wa=DFmann <LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org>
-> >
-> Actually I didn't sign off the patch that I posted, because I wanted
-> to wait for more comments first.
-I send it out with slight modifications because the series highly
-depend on it. Will you take it over or let me put it in next version?
-Both are ok to me.
+>> +static const char * const beep_pitch_text[] = {
+>> +	"C4", "C5", "D5", "E5", "F5", "G5", "A5", "B5",
+>> +	"C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7"
+>> +};
+>> +
+>> +static const struct soc_enum beep_pitch_enum =
+>> +	SOC_ENUM_SINGLE(CS42L52_BEEP_FREQ, 4,
+>> +		ARRAY_SIZE(beep_pitch_text), beep_pitch_text);
+>> +
+>> +static const char * const beep_ontime_text[] = {
+>> +	"86 ms", "430 ms", "780 ms", "1.20 s", "1.50 s",
+>> +	"1.80 s", "2.20 s", "2.50 s", "2.80 s", "3.20 s",
+>> +	"3.50 s", "3.80 s", "4.20 s", "4.50 s", "4.80 s", "5.20 s"
+>> +};
+>> +
+>> +static const struct soc_enum beep_ontime_enum =
+>> +	SOC_ENUM_SINGLE(CS42L52_BEEP_FREQ, 0,
+>> +		ARRAY_SIZE(beep_ontime_text), beep_ontime_text);
+>> +
+>> +static const char * const beep_offtime_text[] = {
+>> +	"1.23 s", "2.58 s", "3.90 s", "5.20 s",
+>> +	"6.60 s", "8.05 s", "9.35 s", "10.80 s"
+>> +};
+>> +
+>> +static const struct soc_enum beep_offtime_enum =
+>> +	SOC_ENUM_SINGLE(CS42L52_BEEP_VOL, 5,
+>> +		ARRAY_SIZE(beep_offtime_text), beep_offtime_text);
+>> +
+>> +static const char * const beep_config_text[] = {
+>> +	"Off", "Single", "Multiple", "Continuous"
+>> +};
+>> +
+>> +static const struct soc_enum beep_config_enum =
+>> +	SOC_ENUM_SINGLE(CS42L52_BEEP_TONE_CTL, 6,
+>> +		ARRAY_SIZE(beep_config_text), beep_config_text);
+>> +
+>> +static const char * const beep_bass_text[] = {
+>> +	"50 Hz", "100 Hz", "200 Hz", "250 Hz"
+>> +};
+>
+> All this beep stuff is really supposed to go through the input
+> subsystem, or at least have the hookup in there to trigger it.
+>
 
-Thanks
-Richard
->=20
->=20
-> Lothar Wa=DFmann
-> --=20
-> ___________________________________________________________
->=20
-> Ka-Ro electronics GmbH | Pascalstra=DFe 22 | D - 52076 Aachen
-> Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-> Gesch=E4ftsf=FChrer: Matthias Kaussen
-> Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
->=20
-> www.karo-electronics.de | info-AvR2QvxeiV7DiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org
-> ___________________________________________________________
->=20
+I have added basic functionality of the Beep to the input subsystem but 
+have a few questions regarding the extra configs. I just used the same 
+interface as the WM8962.
+
+Would it be OK to keep the configurable parts of the Beep as Kcontrols? 
+Maybe even Platform data?
