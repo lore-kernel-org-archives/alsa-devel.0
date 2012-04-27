@@ -1,18 +1,30 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 03/11] ASoC: fsl: add sgtl5000 clock
- support for imx-sgtl5000
-Date: Fri, 27 Apr 2012 18:44:58 +0100
-Message-ID: <20120427174457.GO18260@opensource.wolfsonmicro.com>
-References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
-	<1335510185-7906-4-git-send-email-richard.zhao@freescale.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Distorted jackd output on Macbooks
+Date: Fri, 27 Apr 2012 21:13:48 +0200
+Message-ID: <4F9AEFEC.4070509@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8311003011852362744=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA7951046B4
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A48610454A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2012 19:45:00 +0200 (CEST)
-In-Reply-To: <1335510185-7906-4-git-send-email-richard.zhao@freescale.com>
+	Fri, 27 Apr 2012 21:13:49 +0200 (CEST)
+Received: from localhost (ltw.loris.tv [127.0.0.1])
+	by ltw.loris.tv (Postfix) with ESMTP id 0DF59648D9
+	for <alsa-devel@alsa-project.org>;
+	Fri, 27 Apr 2012 21:13:49 +0200 (CEST)
+Received: from ltw.loris.tv ([127.0.0.1])
+	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id KkIdPniS-dz7 for <alsa-devel@alsa-project.org>;
+	Fri, 27 Apr 2012 21:13:48 +0200 (CEST)
+Received: from [IPv6:2001:638:906:2:e269:95ff:fe88:796b]
+	(foh.inf-ra.uni-jena.de [IPv6:2001:638:906:2:e269:95ff:fe88:796b])
+	(using TLSv1 with cipher AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by ltw.loris.tv (Postfix) with ESMTPSA id 5BEE1648D8
+	for <alsa-devel@alsa-project.org>;
+	Fri, 27 Apr 2012 21:13:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,59 +34,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Zhao <richard.zhao@freescale.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, w.sang@pengutronix.de, Richard Zhao <richard.zhao@linaro.org>, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, shawn.guo@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
---===============8311003011852362744==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E+IgQzR66AIOcbjA"
-Content-Disposition: inline
+JFTR, we've seen users that report distorted sound on their macbooks
+when using jackd.
 
+The workaround is to force 16-bit output:
 
---E+IgQzR66AIOcbjA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    http://jackaudio.org/macbook_distortion
 
-On Fri, Apr 27, 2012 at 03:02:57PM +0800, Richard Zhao wrote:
-> From: Richard Zhao <richard.zhao@linaro.org>
->=20
-> It tries to clk_get the clock. And if it failed, it assumes the clock
-> by default enabled.
+Chip in question was the Cirrus Logic CS4206. We don't know yet which of
+the formats (32/24) is broken, maybe only one, maybe both.
 
-Applied, thanks.
+I happen to have a spare MacBookPro around, but I won't have time to
+look into that myself anytime soon.
 
---E+IgQzR66AIOcbjA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPmtsEAAoJEBus8iNuMP3d0I4P/2QGr3LdS2HVRqsCVpjZWb62
-3l9hSCPW/B15tVlFikBqsi5UBKCmiRNARhy1IaUyUIa906aKYLokA8Q5CZbok13B
-kjkFxWGcYX1Wt+HfqVk2hZm2ydoBzALZGG6/H6RFBH+z+V6vcaH4nfKT0n3/90WG
-Mvnsb9uUwNjRS2HBtZKyYP1OzFtcihDQLVTKveZpFc4VydycqaNK6DLBbLhyYmFq
-GAGh9/cTrNEEBRN4MbdaVc0PcdmV6fsY+vCCWK3eAf4odVmepqnT/Z3+Ib7J+ucn
-srueSLtZmVEb7Ou81Ygg0bXd/xhIicMtLzyT9TGR8sDdHsyt3YL9yT8fxedHF27k
-+iT6SgBkXSnaP0nbagBrR/ZtBUDORqzshG0cLnpZEDZ/85xrbiRpJPUCfoJ9HBFe
-gM34KaNVlcBEPLF20+fgaFOYr4gCpRbu/ozOfhePZfW3bS/vMjKX9jULg35UOlGL
-xIZZuWhxPNC08xzQ/mdNkqadgOMo2M8fSyAEMIBhjk/Z+rHP3ez0LgO6PtC0FMe9
-XZ6b7aygJ6b4X0GPs8xofBte66WLgW2efNMKVJ0ZRH/mfTde0F7IN16CI6Fqwkf5
-DAz7c+dn6Afi4fZqk5yaEIx0i1/7+e5tJew65Nhoz0oyrV34AAJfsFQX+ztVs2Vc
-q8pjCI+AvHnZfE3n3yCy
-=/4JG
------END PGP SIGNATURE-----
-
---E+IgQzR66AIOcbjA--
-
---===============8311003011852362744==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+If somebody else has such a device and wants to give it a whirl, feel
+free to go ahead. ;)
 
 
---===============8311003011852362744==--
+Cheers
