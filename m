@@ -1,19 +1,23 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: Add support for CS42L52 Codec
-Date: Fri, 27 Apr 2012 08:44:24 -0500
-Message-ID: <alpine.DEB.2.02.1204270837060.11753@heelrod.ad.cirrus.com>
-References: <1334609938-11671-1-git-send-email-brian.austin@cirrus.com>
-	<20120417111359.GB6652@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work,
+	"Capture Volume" inverted
+Date: Fri, 27 Apr 2012 14:46:39 +0100
+Message-ID: <20120427134638.GI18260@opensource.wolfsonmicro.com>
+References: <1335384469.14096.203.camel@mars>
+	<20120426112726.GF3207@opensource.wolfsonmicro.com>
+	<1335448142.20000.40.camel@mars>
+	<20120426172010.GP3207@opensource.wolfsonmicro.com>
+	<1335474693.3628.26.camel@lovely>
+	<20120426213745.GA18260@opensource.wolfsonmicro.com>
+	<1335513602.3504.4.camel@mars>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5285045811757043025=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C97C243B7
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C378243B7
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2012 15:45:00 +0200 (CEST)
-In-Reply-To: <20120417111359.GB6652@opensource.wolfsonmicro.com>
+	Fri, 27 Apr 2012 15:46:41 +0200 (CEST)
+In-Reply-To: <1335513602.3504.4.camel@mars>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +27,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: mbizon@freebox.fr, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, joe@nucleusys.com, lrg@ti.com
+To: Christoph Fritz <chf.fritz@googlemail.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
->> +static const char * const beep_pitch_text[] = {
->> +	"C4", "C5", "D5", "E5", "F5", "G5", "A5", "B5",
->> +	"C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7"
->> +};
->> +
->> +static const struct soc_enum beep_pitch_enum =
->> +	SOC_ENUM_SINGLE(CS42L52_BEEP_FREQ, 4,
->> +		ARRAY_SIZE(beep_pitch_text), beep_pitch_text);
->> +
->> +static const char * const beep_ontime_text[] = {
->> +	"86 ms", "430 ms", "780 ms", "1.20 s", "1.50 s",
->> +	"1.80 s", "2.20 s", "2.50 s", "2.80 s", "3.20 s",
->> +	"3.50 s", "3.80 s", "4.20 s", "4.50 s", "4.80 s", "5.20 s"
->> +};
->> +
->> +static const struct soc_enum beep_ontime_enum =
->> +	SOC_ENUM_SINGLE(CS42L52_BEEP_FREQ, 0,
->> +		ARRAY_SIZE(beep_ontime_text), beep_ontime_text);
->> +
->> +static const char * const beep_offtime_text[] = {
->> +	"1.23 s", "2.58 s", "3.90 s", "5.20 s",
->> +	"6.60 s", "8.05 s", "9.35 s", "10.80 s"
->> +};
->> +
->> +static const struct soc_enum beep_offtime_enum =
->> +	SOC_ENUM_SINGLE(CS42L52_BEEP_VOL, 5,
->> +		ARRAY_SIZE(beep_offtime_text), beep_offtime_text);
->> +
->> +static const char * const beep_config_text[] = {
->> +	"Off", "Single", "Multiple", "Continuous"
->> +};
->> +
->> +static const struct soc_enum beep_config_enum =
->> +	SOC_ENUM_SINGLE(CS42L52_BEEP_TONE_CTL, 6,
->> +		ARRAY_SIZE(beep_config_text), beep_config_text);
->> +
->> +static const char * const beep_bass_text[] = {
->> +	"50 Hz", "100 Hz", "200 Hz", "250 Hz"
->> +};
->
-> All this beep stuff is really supposed to go through the input
-> subsystem, or at least have the hookup in there to trigger it.
->
 
-I have added basic functionality of the Beep to the input subsystem but 
-have a few questions regarding the extra configs. I just used the same 
-interface as the WM8962.
+--===============5285045811757043025==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+PbGPm1eXpwOoWkI"
+Content-Disposition: inline
 
-Would it be OK to keep the configurable parts of the Beep as Kcontrols? 
-Maybe even Platform data?
+
+--+PbGPm1eXpwOoWkI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 27, 2012 at 10:00:02AM +0200, Christoph Fritz wrote:
+> On Thu, 2012-04-26 at 22:37 +0100, Mark Brown wrote:
+
+> >   The write will be suppresed if the register contents don't
+> > change which looks like what you're seeing here -=20
+
+> Can you imagine why the registers don't change?
+
+I can't immediately think of any reason, no - I'd step through or
+annotate the code and have a look.
+
+--+PbGPm1eXpwOoWkI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPmqGuAAoJEBus8iNuMP3dfjEP/3psgN1KmB/QfHWrOxj0lZ2b
+jMK4dLKmJEi04Y2gtQQ5KxUtjOtAgoOajmJTVbDP9IS4DdYNmOtOGtNlFmyGD0/T
+QdU6zCyCFNK80tc29OTgcpHBtaiZyGvfwzGkd2XmIhFnrlBE8KoS/WIhA+K/NTqh
+zsl1H+MFxPOgTExfIwzJaXKlVsS6GOPyfALHWVakOK1UaAzT6nFezyBDc/F+l9/M
+/nI0vQHJNMPD7Na8fxx2n3wAdLGshbKNx2rYnPfkHv9+8wtOPj4nxNATCpksqzVD
+fQ+xw02knX05DjviqHKQL2zCoOkGSQAx2J36sT/wLxLaMuZ2c44BNOMkKP+CM1yN
+uZjCkyUlUuWa+kgtfiFo2JosOHNL/DEE4T21LOAIXKVSvKiUQqnhlRwzODkEWd3l
+3Wq93NxFgWTa6+QwTVGxHEkPV32zhaopUNbqqyIFU/6WL7BcPTAApwp6A4vjvoI1
+wvLXgzy9YHvfO1DfkfUccWRy2632AiCl84kiVLz5t4mIZZzfQPOg0aaNfk8pF9QI
+870uEoyDunsIgxyivNToiIsqVSVSS0oUk47jX+JFEkROjdKw/y2DuEyUWlg/Sn1D
+2jT33tXi9f04kk6OoKdMZyHsOEGX5VXBkotpQ4b8s0APfU0cj9XebMF+G1Mo36RN
+BkIvFAjsS+BPxtFl2Y3p
+=B6PX
+-----END PGP SIGNATURE-----
+
+--+PbGPm1eXpwOoWkI--
+
+--===============5285045811757043025==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5285045811757043025==--
