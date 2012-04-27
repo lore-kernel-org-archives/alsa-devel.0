@@ -1,24 +1,20 @@
-From: Christoph Fritz <chf.fritz@googlemail.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work,
- "Capture Volume" inverted
-Date: Thu, 26 Apr 2012 23:11:33 +0200
-Message-ID: <1335474693.3628.26.camel@lovely>
-References: <1335384469.14096.203.camel@mars>
-	<20120426112726.GF3207@opensource.wolfsonmicro.com>
-	<1335448142.20000.40.camel@mars>
-	<20120426172010.GP3207@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: Required/preferred multichannel order for ALSA
+Date: Fri, 27 Apr 2012 10:21:37 +0100
+Message-ID: <1335518497.4150.6.camel@odin>
+References: <4F99BF45.4020909@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
-	[209.85.217.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BCF6710BC4D
+Received: from na3sys009aog129.obsmtp.com (na3sys009aog129.obsmtp.com
+	[74.125.149.142])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A72E10BE54
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2012 23:11:40 +0200 (CEST)
-Received: by lban1 with SMTP id n1so41898lba.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2012 14:11:40 -0700 (PDT)
-In-Reply-To: <20120426172010.GP3207@opensource.wolfsonmicro.com>
+	Fri, 27 Apr 2012 11:21:42 +0200 (CEST)
+Received: by werb10 with SMTP id b10so488695wer.17
+	for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2012 02:21:39 -0700 (PDT)
+In-Reply-To: <4F99BF45.4020909@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,41 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: "Castaneda Gonzalez, Axel" <x0055901@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Guiriec,
+	Sebastien" <s-guiriec@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-04-26 at 18:20 +0100, Mark Brown wrote:
-> On Thu, Apr 26, 2012 at 03:49:02PM +0200, Christoph Fritz wrote:
+On Thu, 2012-04-26 at 16:33 -0500, Ricardo Neri wrote:
+> Hi Takashi, list,
 > 
-> > I added some printks into ac97_write() "sound/soc/codecs/wm9712.c" and
-> > when I do for example change "Item: Mic Boost [dB gain: 20.00] " I get
-> > this:
+> I am implementing multichannel support for HDMI on Texas Instruments' 
+> OMAP4. I would like to know if ALSA mandates a specific channel order or 
+> has a preferred one.
 > 
-> >  write  eh 8000  [6808]
-> >  write  eh 8000  [6888]
+> I tried to find some guidance in alsa-lib or in the alsa driver. All I 
+> could find is the order described in speaker-test: 
+> FL/FR/RL/RR/C/LFE/SL/SR. This order seems to be in use due to historical 
+> reasons [1]. It was also mentioned that an API to set/get the channel 
+> mapping was going to be implemented [2]; I tried to find it without 
+> success. As [1] and [2] are very old posts, I was wondering if the 
+> situation has changed.
 > 
-> > but when I try to change "Mic Select Source" or "Item: Differential
-> > Source", nothing happens here.
+> My question arises from the fact that HDMI audio uses the channel 
+> ordering defined in CEA-861 section 6.6.2, which is different from what 
+> speaker-test expects. This also different from the order that SMPTE 320M 
+> specifies. OMAP4 is able to alter the channel mapping, so I could match 
+> what ALSA expects if such required/preferred order exists.
 > 
-> Odd.  Can you see the write actually happening on the bus?
+> Thanks in advance for your comments.
 > 
+> Ricardo
+> 
+> 
+> [1].http://www.spinics.net/lists/alsa-devel/msg24444.html
+> [2].http://www.spinics.net/lists/alsa-devel/msg24495.html
 
-Not at the moment, I'll dig into this tomorrow.
+A lot of hardware now can remap channels to suit the use case so it
+would probably be good to have an ALSA API to get/set the mappings.
 
+This seems like it would be a good subject for the BoF.
 
-> > Why is wm9712_enum[0] never used?
-> 
-> I rather imagine it's just a simple case of the feature having being
-> missed when the driver was implemented.
-> 
-> > Is "SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel)," correct? Because of
-> > the ">> 1" shift in ac97_write() ?
-> 
-> What makes you think it might not be correct?
-> 
-
-ac97_write() doesn't get called when I try to change "Item: Differential Source".
-
-Thanks,
- -- Christoph
+Liam
