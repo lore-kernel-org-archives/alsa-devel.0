@@ -1,17 +1,20 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH] ASoC: da7210: Minor bugfix for non pll slave
- mode
-Date: Fri, 27 Apr 2012 16:44:04 +0530
-Message-ID: <1335525244.22171.16.camel@matrix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 7/8] ASoC: codecs: Add AB8500 codec-driver
+Date: Fri, 27 Apr 2012 12:11:24 +0100
+Message-ID: <20120427111123.GD18260@opensource.wolfsonmicro.com>
+References: <1334914402-27554-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120423185936.GW8318@opensource.wolfsonmicro.com>
+	<4F9A649E.4000300@stericsson.com>
+	<20120427093516.GB18260@opensource.wolfsonmicro.com>
+	<4F9A7B03.5040802@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1100971463518805329=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DCDA24383
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C95B2439C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2012 13:02:12 +0200 (CEST)
+	Fri, 27 Apr 2012 13:11:26 +0200 (CEST)
+In-Reply-To: <4F9A7B03.5040802@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +24,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes a bug discovered during testing of non pll slave mode.
-Due to the bug chip was not getting correctly configured and as a result
-there was no sound output while playback. After applying this patch,
-both pll and non pll modes work fine.
 
-Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Signed-off-by: David Dajun Chen <dchen@diasemi.com>
----
- sound/soc/codecs/da7210.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+--===============1100971463518805329==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/unnNtmY43mpUSKx"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index f92d1f7..10f52ff 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -1159,8 +1159,9 @@ static int da7210_probe(struct snd_soc_codec *codec)
- 	/* Enable Aux2 */
- 	snd_soc_write(codec, DA7210_AUX2, DA7210_AUX2_EN);
- 
--	/* Set PLL Master clock range 10-20 MHz */
--	snd_soc_write(codec, DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ);
-+	/* Set PLL Master clock range 10-20 MHz, enable PLL bypass */
-+	snd_soc_write(codec, DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ |
-+					      DA7210_PLL_BYP);
- 
- 	/* Diable PLL and bypass it */
- 	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
-@@ -1191,8 +1192,8 @@ static struct reg_default da7210_regmap_i2c_patch[] = {
- 
- 	/* System controller master disable */
- 	{ DA7210_STARTUP1, 0x00 },
--	/* make sure that DA7210 use bypass mode before start up */
--	{ DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ | DA7210_PLL_BYP },
-+	/* Set PLL Master clock range 10-20 MHz */
-+	{ DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ },
- 
- 	/* to unlock */
- 	{ DA7210_A_HID_UNLOCK, 0x8B},
-@@ -1290,8 +1291,8 @@ static struct reg_default da7210_regmap_spi_patch[] = {
- 
- 	/* System controller master disable */
- 	{ DA7210_STARTUP1, 0x00 },
--	/* make sure that DA7210 use bypass mode before start up */
--	{ DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ | DA7210_PLL_BYP },
-+	/* Set PLL Master clock range 10-20 MHz */
-+	{ DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ },
- 
- 	/* to set PAGE1 of SPI register space */
- 	{ DA7210_PAGE_CONTROL, 0x80 },
--- 
-1.7.1
+
+--/unnNtmY43mpUSKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 27, 2012 at 12:54:59PM +0200, Ola Lilja wrote:
+> On 04/27/2012 11:35 AM, Mark Brown wrote:
+
+> > What are these regulators?  Are they internal PGA supplies or are they
+> > microphone biases?
+
+> These are mic-biases.
+
+OK, then why aren't they hooked up in the board anyway (probably fixed to
+a specific configuration there, though there are some use cases for
+changing)?  This is what other CODEC drivers do with their MICBIASes...
+
+> > Normally the clocking control is under the control of the machine driver
+> > and if the machine driver wants to offer any options to userspace it'd
+> > provide its own control - usually there's way more stuff going on here
+> > than just selecting a source and much more coordination needed with the
+> > drivers involved.
+
+> Yes, we are only selecting what clock to request to the clock-driver-code, which
+> then does its magic and taking decisions related to the whole platform.
+> More specifically, in my context (that is audio) we will act upon being in
+> voicecall or not, and in these cases requesting these two different clocks. By
+> design this request comes from audio-code in userspace down to the audio-driver
+> in the kernel. The clock-code will then turn of the clock not needed by us
+> (audio) or any other party.
+
+So what one would expect there would be that the machine driver would
+figure things out - usually for something like the voice call case the
+machine driver would be doing something like switching to the voice call
+clock when the baseband DAI comes up.
+
+--/unnNtmY43mpUSKx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPmn6+AAoJEBus8iNuMP3dGyAP/1dLpISDsSYB2ktwVOxy5PGu
+53uHiCEFovvT778E36A6b+X6p8MZhiMAyhGIagR33Lx80A1bp9ODXpCNUk543j4B
+btXouuVofoNjs/HXmvXu1VaaK7o1Z/HZAE0OjUyLUwCU0QWDpXSSMzCB4xu4cqn5
+CZJ0qiP/w53IsGdRIWah6wzIXcVS8Lg2k/v4Ue5b5ieA32OcG/xIIHPavR+LtV1J
+RgaM1Nvs56tcskkzwtqUc05WVZuJhEowpBN3xBMe51th3652kFqycQ5Gr3JI/y4H
+AJP37AjOH3szhoaPP6qpbwsRcMZg6j32lzA8BgjfrPFP0YuFXG6ClbcIBn6WtIax
+Xp1VeQw9m5ovCyHoJjqJP0VAjqIsFfukdGC6fig+7C7unPQ/tqzsFm8PV4Rrzho9
+RUVxnKMoKtBnsTAw6Vbt+PuK1gonkor+R81RXyh6izw5iekUXHcpbT6Ost18a1ik
+Gewpga58MmSIWPFZXsxf0e+7tAlRLqI4zKP3d9Eci6/6IXjLbtMoUi36jdrLVP2S
+bvu+oAbMgMdsRNqkzfFgATerQxDFJpIPjbeEK9CnBsn4Zzc6cFLgmz0VcksATa6h
+SP7bJ0MNuEmfUFr/8dsXEbNmzRnW2FCZex2hXnvJ3eJ2C6/mNKicCgd34Cq+stmE
+AJExqvhJpfJNw1D+gxzx
+=nOeN
+-----END PGP SIGNATURE-----
+
+--/unnNtmY43mpUSKx--
+
+--===============1100971463518805329==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1100971463518805329==--
