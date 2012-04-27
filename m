@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 7/8] ASoC: codecs: Add AB8500 codec-driver
-Date: Fri, 27 Apr 2012 12:11:24 +0100
-Message-ID: <20120427111123.GD18260@opensource.wolfsonmicro.com>
-References: <1334914402-27554-1-git-send-email-ola.o.lilja@stericsson.com>
-	<20120423185936.GW8318@opensource.wolfsonmicro.com>
-	<4F9A649E.4000300@stericsson.com>
-	<20120427093516.GB18260@opensource.wolfsonmicro.com>
-	<4F9A7B03.5040802@stericsson.com>
+Subject: Re: [PATCH 8/8] ASoC: Ux500: Add machine-driver
+Date: Fri, 27 Apr 2012 12:15:23 +0100
+Message-ID: <20120427111523.GE18260@opensource.wolfsonmicro.com>
+References: <1334914409-27592-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120423190508.GX8318@opensource.wolfsonmicro.com>
+	<4F9A7BFA.7000507@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1100971463518805329=="
+Content-Type: multipart/mixed; boundary="===============4042957467191840881=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C95B2439C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DC180243A2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2012 13:11:26 +0200 (CEST)
-In-Reply-To: <4F9A7B03.5040802@stericsson.com>
+	Fri, 27 Apr 2012 13:15:25 +0200 (CEST)
+In-Reply-To: <4F9A7BFA.7000507@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,76 +27,75 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1100971463518805329==
+--===============4042957467191840881==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/unnNtmY43mpUSKx"
+	protocol="application/pgp-signature"; boundary="OZkY3AIuv2LYvjdk"
 Content-Disposition: inline
 
 
---/unnNtmY43mpUSKx
+--OZkY3AIuv2LYvjdk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 27, 2012 at 12:54:59PM +0200, Ola Lilja wrote:
-> On 04/27/2012 11:35 AM, Mark Brown wrote:
+On Fri, Apr 27, 2012 at 12:59:06PM +0200, Ola Lilja wrote:
 
-> > What are these regulators?  Are they internal PGA supplies or are they
-> > microphone biases?
+> We will add more codecs to be matched up the same machine-driver and I found it
+> useful to have this split. It just separates the callbacks related to each codec
+> added in the dai-link-struct. I would like to keep this division if that is OK.
 
-> These are mic-biases.
+No, I really don't see any value at all in it.  The machine drivers
+aren't actually sharing anything visible and the effect of what you're
+doing is to make the selection of machine a compile time one instead of
+a runtime one.
 
-OK, then why aren't they hooked up in the board anyway (probably fixed to
-a specific configuration there, though there are some use cases for
-changing)?  This is what other CODEC drivers do with their MICBIASes...
+> >> +	/* Setup codec depending on driver-mode */
+> >> +	driver_mode = (channels == 8) ?
+> >> +		DRIVERMODE_CODEC_ONLY : DRIVERMODE_NORMAL;
+> >> +	dev_dbg(dev, "%s: Driver-mode: %s.\n", __func__,
+> >> +		(driver_mode == DRIVERMODE_NORMAL) ? "NORMAL" : "CODEC_ONLY");
+> >> +
+> >> +	ab8500_audio_set_bit_delay(codec_dai, 1);
 
-> > Normally the clocking control is under the control of the machine driver
-> > and if the machine driver wants to offer any options to userspace it'd
-> > provide its own control - usually there's way more stuff going on here
-> > than just selecting a source and much more coordination needed with the
-> > drivers involved.
+> > What's this configuring?  I didn't notice it on the CODEC driver as the
+> > function wasn't exported IIRC.
 
-> Yes, we are only selecting what clock to request to the clock-driver-code, which
-> then does its magic and taking decisions related to the whole platform.
-> More specifically, in my context (that is audio) we will act upon being in
-> voicecall or not, and in these cases requesting these two different clocks. By
-> design this request comes from audio-code in userspace down to the audio-driver
-> in the kernel. The clock-code will then turn of the clock not needed by us
-> (audio) or any other party.
+> The bit delay is the number of bit-clocks from the framesync to the first data-bit.
+> For the AB8500-chip it is set by the bit AB8500_DIGIFCONF2_IF0DEL.
+> I would have put this in the set_dai_fmt but I have not found a bit that is
+> controlling this.
 
-So what one would expect there would be that the machine driver would
-figure things out - usually for something like the voice call case the
-machine driver would be doing something like switching to the voice call
-clock when the baseband DAI comes up.
+But what are you actually tying to do with this?  It sounds rather like
+you're selecting between DSP A and B modes...
 
---/unnNtmY43mpUSKx
+--OZkY3AIuv2LYvjdk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPmn6+AAoJEBus8iNuMP3dGyAP/1dLpISDsSYB2ktwVOxy5PGu
-53uHiCEFovvT778E36A6b+X6p8MZhiMAyhGIagR33Lx80A1bp9ODXpCNUk543j4B
-btXouuVofoNjs/HXmvXu1VaaK7o1Z/HZAE0OjUyLUwCU0QWDpXSSMzCB4xu4cqn5
-CZJ0qiP/w53IsGdRIWah6wzIXcVS8Lg2k/v4Ue5b5ieA32OcG/xIIHPavR+LtV1J
-RgaM1Nvs56tcskkzwtqUc05WVZuJhEowpBN3xBMe51th3652kFqycQ5Gr3JI/y4H
-AJP37AjOH3szhoaPP6qpbwsRcMZg6j32lzA8BgjfrPFP0YuFXG6ClbcIBn6WtIax
-Xp1VeQw9m5ovCyHoJjqJP0VAjqIsFfukdGC6fig+7C7unPQ/tqzsFm8PV4Rrzho9
-RUVxnKMoKtBnsTAw6Vbt+PuK1gonkor+R81RXyh6izw5iekUXHcpbT6Ost18a1ik
-Gewpga58MmSIWPFZXsxf0e+7tAlRLqI4zKP3d9Eci6/6IXjLbtMoUi36jdrLVP2S
-bvu+oAbMgMdsRNqkzfFgATerQxDFJpIPjbeEK9CnBsn4Zzc6cFLgmz0VcksATa6h
-SP7bJ0MNuEmfUFr/8dsXEbNmzRnW2FCZex2hXnvJ3eJ2C6/mNKicCgd34Cq+stmE
-AJExqvhJpfJNw1D+gxzx
-=nOeN
+iQIcBAEBAgAGBQJPmn+yAAoJEBus8iNuMP3de8YP/AiBg3+Ye/3kQ7UbaXK9bg1j
+XjJblQ1xgim59R9R8rloHq8H5hptehyTHOwM19XQaQu+q4rzXUaBP9SMToqjspFI
+cEfVnLHVRIxWMVamJV5ET4VJ7lx+H99CjhLm0WegYwybN5ODERMgg/f7sFvmv02/
+k8k9wdWBVo3N+aOFhZJSpRld7RFu6YdWh2+kc7kYBRMBJhR/dknJvn5n4bYQoQde
+1Qj2/L4mxDsLjPipIsEbRtqHMnE9n7rB+5Pq7f7tZQiqQhaWo4CDqKeu/tYgw2gE
+IBQ2KES2cB65AAcgwyTAd1bhjsYddTE171y5T1WLJ4TkpYV4Xs+LHQbpaeoZ850L
+FvgwX2KxlYpAaSL/sQh5NMQabrRmbmaK0OmMORbtZV0dSGB66H1/UKDlDZOGdY8+
+hX6ztPAd91m7bLrrFJFCrtN4Z4ziEnfCgynUulXwsY4o0P3FbJQlNlQMbHJ3Lvj5
+kv+HfWrktC5yZMda5fTHxmV7PI5fvH9Qsa4tCDMFkjzCGQe7X9wltdn5I/m/tPX6
+QSDeb0XpHFWQOu9mdqkC9ox0+OR1dWGTtiArAqcKBw7qlTOX7FmwXVoOclAaofMc
+iLg95zwTVWfzSuk4n7MdKtopta7khzczIVU6kBX8miavxLMGWIAAU9LkurO0G91h
+BfZwLARC0xwlvORRZWp8
+=e1Mz
 -----END PGP SIGNATURE-----
 
---/unnNtmY43mpUSKx--
+--OZkY3AIuv2LYvjdk--
 
---===============1100971463518805329==
+--===============4042957467191840881==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1100971463518805329==--
+--===============4042957467191840881==--
