@@ -1,78 +1,56 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add support for CS42L52 Codec
-Date: Fri, 27 Apr 2012 14:48:38 +0100
-Message-ID: <20120427134838.GJ18260@opensource.wolfsonmicro.com>
-References: <1334609938-11671-1-git-send-email-brian.austin@cirrus.com>
-	<20120417111359.GB6652@opensource.wolfsonmicro.com>
-	<alpine.DEB.2.02.1204270837060.11753@heelrod.ad.cirrus.com>
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org>
+Subject: Re: [PATCH 01/11] dma: imx-sdma: make channel0 operations atomic
+Date: Fri, 27 Apr 2012 17:13:28 +0200
+Message-ID: <20378.47000.131486.237752@ipc1.ka-ro>
+References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
+	<1335510185-7906-2-git-send-email-richard.zhao@freescale.com>
+	<20378.25703.527491.719116@ipc1.ka-ro>
+	<20120427132538.GU28063@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4390995622902043987=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7C98324150
-	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2012 15:48:42 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1204270837060.11753@heelrod.ad.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: mbizon@freebox.fr, alsa-devel@alsa-project.org, lrg@ti.com, joe@nucleusys.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20120427132538.GU28063-iWYTGMXpHj9ITqJhDdzsOjpauB2SiJktrE5yTffgRl4@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============4390995622902043987==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5me2qT3T17SWzdxI"
-Content-Disposition: inline
-
-
---5me2qT3T17SWzdxI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 27, 2012 at 08:44:24AM -0500, Brian Austin wrote:
-
-> Would it be OK to keep the configurable parts of the Beep as
-> Kcontrols? Maybe even Platform data?
-
-Yes, either way seems fine.
-
---5me2qT3T17SWzdxI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPmqNnAAoJEBus8iNuMP3dES4P/iHZONmqyfa3c4taAOsdCjiI
-PSAuG8UzQOEt/7iC2icIkn7bSUcPX9ZZvse2xCnNVxFENQ4dZPQ3iLMiQYOKMjAE
-ssFB7OIC8eGg12UPwYG73cKo1JHdkfBOY6hyyxCrm5x9e8dJn87jDxW+rSJidqA+
-TTJFsIgPFhD3lRYYwT1UfotC2y5LxSx9Xpts526PNdjhc9AowKh9BM9Dtn8+iBDm
-T8gzHhip7znGyvuAS1OGQ8Zk384eH1gPsniH21UB/D0atRr99phyYrReXlpHXvZg
-0eE5F2dgoxvGHF3rw1roaIx0AAtOcZveWgsXcakR9+Vtf4HfRhbIHndAqHE0Kkk9
-jxApCt5qTc8H0l21sgwYOwwN26VNpUGKyHnUzx6fIfTE6qs7C1+8i6Bdi5Ue/A69
-tT87ezYSUktQ5j88avsvpB87IeEG/TcEM6ldVpmZP3/GTsjK4HFvOTP7WErjLmEt
-iDmS2Uq1cfbfQYD3wcB/76EoF4wXh74SVxnecnbhIcxivV2tDXt0mBfWxQkffzcg
-3liSw4n0+HKmPkqxTUASgLjVeJhlx/JG5ez9ClcOU4Lf8GiMHGdFdonq+nY7XV4R
-oUyjYaDvnc/emJ+85bjeN09sUfsTamKWW4XoWfVCuYv9aphIibvrdo1p8kTZrHI4
-NQQMkbtiDwf7u2lKCXPt
-=tgph
------END PGP SIGNATURE-----
-
---5me2qT3T17SWzdxI--
-
---===============4390995622902043987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Richard Zhao writes:
+> On Fri, Apr 27, 2012 at 11:18:31AM +0200, Lothar Wa=C3=9Fmann wrote:
+> > Hi,
+> >=20
+> > Richard Zhao writes:
+> > > device_prep_dma_cyclic may be call in audio trigger function whic=
+h is
+> > > atomic context, so we make it atomic too.
+> > >=20
+> > >  - change channel0 lock to spinlock.
+> > >  - Use polling to wait for channel0 finish running.
+> > >=20
+> > > Signed-off-by: Lothar Wa=C3=9Fmann <LW-bxm8fMRDkQLDiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org>
+> > >
+> > Actually I didn't sign off the patch that I posted, because I wante=
+d
+> > to wait for more comments first.
+> I send it out with slight modifications because the series highly
+> depend on it. Will you take it over or let me put it in next version?
+> Both are ok to me.
+>=20
+I think you should keep it as part of your sound patches and I will
+test your final version on our hardware.
 
 
---===============4390995622902043987==--
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info-AvR2QvxeiV7DiMYJYoSAnRvVK+yQ3ZXh@public.gmane.org
+___________________________________________________________
