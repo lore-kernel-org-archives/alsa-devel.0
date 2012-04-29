@@ -1,31 +1,18 @@
-From: Chris Cavey <chris-alsa@rauros.net>
-Subject: Re: M-Audio FastTrack C400
-Date: Sat, 28 Apr 2012 23:09:11 -0400
-Message-ID: <4F9CB0D7.5060401@rauros.net>
-References: <4F8D63F4.1040208@rauros.net>
-	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
-	<4F8DF29B.9090907@rauros.net>
-	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
-	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
-	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
-	<4F920D73.7070309@rauros.net>
-	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
-	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
-Reply-To: chris-alsa@rauros.net
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: Re: Required/preferred multichannel order for ALSA
+Date: Sat, 28 Apr 2012 22:23:36 -0500
+Message-ID: <4F9CB438.6050002@ti.com>
+References: <4F99BF45.4020909@ti.com> <1335518497.4150.6.camel@odin>
+	<s5hobqdweyg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vms173011pub.verizon.net (vms173011pub.verizon.net
-	[206.46.173.11]) by alsa0.perex.cz (Postfix) with ESMTP id 30585247E1
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64C29247FC
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Apr 2012 05:09:24 +0200 (CEST)
-Received: from rauros.net ([unknown] [74.107.69.179])
-	by vms173011.mailsrvcs.net
-	(Sun Java(tm) System Messaging Server 7u2-7.02 32bit (built Apr 16
-	2009)) with ESMTPA id <0M38006F40RC2F30@vms173011.mailsrvcs.net> for
-	alsa-devel@alsa-project.org; Sat, 28 Apr 2012 22:09:13 -0500 (CDT)
-In-reply-to: <CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+	Sun, 29 Apr 2012 05:23:43 +0200 (CEST)
+In-Reply-To: <s5hobqdweyg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,79 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Castaneda Gonzalez, Axel" <x0055901@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ujfalusi <peter.ujfalusi@ti.com>, "Guiriec,  Sebastien" <s-guiriec@ti.com>, Peter@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-I did some more digging on the mixer setup of the C400 using 
-usbmon+tcpdump+wireshark. I'm happy to provide binary captures if it helps.
+Thanks to everyone for replying!
+On 04/27/2012 07:12 AM, Takashi Iwai wrote:
+> At Fri, 27 Apr 2012 10:21:37 +0100,
+> Liam Girdwood wrote:
+>>
+>> On Thu, 2012-04-26 at 16:33 -0500, Ricardo Neri wrote:
+>>> Hi Takashi, list,
+>>>
+>>> I am implementing multichannel support for HDMI on Texas Instruments'
+>>> OMAP4. I would like to know if ALSA mandates a specific channel order or
+>>> has a preferred one.
+>>>
+>>> I tried to find some guidance in alsa-lib or in the alsa driver. All I
+>>> could find is the order described in speaker-test:
+>>> FL/FR/RL/RR/C/LFE/SL/SR. This order seems to be in use due to historical
+>>> reasons [1]. It was also mentioned that an API to set/get the channel
+>>> mapping was going to be implemented [2]; I tried to find it without
+>>> success. As [1] and [2] are very old posts, I was wondering if the
+>>> situation has changed.
+>>>
+>>> My question arises from the fact that HDMI audio uses the channel
+>>> ordering defined in CEA-861 section 6.6.2, which is different from what
+>>> speaker-test expects. This also different from the order that SMPTE 320M
+>>> specifies. OMAP4 is able to alter the channel mapping, so I could match
+>>> what ALSA expects if such required/preferred order exists.
+>>>
+>>> Thanks in advance for your comments.
+>>>
+>>> Ricardo
+>>>
+>>>
+>>> [1].http://www.spinics.net/lists/alsa-devel/msg24444.html
+>>> [2].http://www.spinics.net/lists/alsa-devel/msg24495.html
+>>
+>> A lot of hardware now can remap channels to suit the use case so it
+>> would probably be good to have an ALSA API to get/set the mappings.
+>>
+>> This seems like it would be a good subject for the BoF.
+>
+> Yes.  As I added to LPC 2012 wiki page, it's a topic I'd like to
+> discuss in the audio microconf, too.  It's a long-standing issue,
+> not only for embedded devices but also PCs, especially with HDMI/DP.
+>
+> Actually I've had a few different (partial) implementations, but
+> nothing was so convincing yet.
+>
+> BTW, for the time being, the remapping itself is done in alsa-lib
+> route plugin.  This works when the driver is unique and supports
+> only a single configuration.  Then you can define the routing table
+> beforehand.  Take a look at alsa-lib/src/conf/cards/*.conf based on
+> old AC97 codecs.
 
-I adjusted volume on each channel under and arrived at the following. 
-Best to consult the C400 manual for screenshots of the interface.
+Thanks for the advice! I could remap the channels succesfully with the 
+alsa-lib route plugin. It increased the CPU usage when using 
+speaker-test, though; from 2% to ~5%, according to top. I guess this is 
+acceptable for now.
+>
+> OTOH, if the driver is generic (e.g. HD-audio) and supports different
+> configurations, it doesn't work so easily.  A more generic API is
+> mandatory in such a case.
 
-The values listed correspond to the wValue in the URB block. The wIndex 
-for all is 16385. Looks like two bytes for values.
+Maybe I can statically remap the channels in the driver to align with 
+speaker-test and post in omappedia how to remap if someone needs to. 
+This in case their HDMI sinks supports a different HDMI layout.
 
-Treat this as CSV in any editor and you'll see my table. Omitted numbers 
-are sequential based on the other numbers in the row. Out 1-6 are the 
-software returns, In 1-4 being the hardware inputs. The top row are the 
-6 outputs. For each output it would appears that the routed signal is 
-always manipulated in (stereo) pairs - ex. Adjusting volume on software 
-return 1 (Out 1) for Analog1/2 will adjust volume on 0x0100 AND 0x0101.
+Thanks!
 
-,A1-2 (1),A1-2 (2),A3-4 (3),A3-4 (4),SP (L),SP (R)
-Out 1,0x0100,0x0101,,,,0x0105
-Out 2,0x0106,0x0107,,,,0x010b
-Out 3,0x010c,0x010d,,,,
-Out 4,0x0112,0x0113,,,,0x0117
-Out 5,0x0118,0x0119,,,,0x011d
-Out 6,0x011e,0x011f,,,,0x0123
-In 1,0x0124,0x0125,0x0126,0x0127,0x0128,0x0129
-In 2,0x012a,0x12b,0x012c,0x012d,0x012e,0x012f
-In 3,0x0130,0x0131,,,,0x0135
-In 4,0x0136,0x0137,,,,0x013b
-
-Also captured some sample rate adjustment values
-
-wValue = 0x0100 (always)
-wIndex = 33025
-
-values in the data for the sample rates
-0x00770100 => 96000
-0x44ac0000 => 44100
-0x80bb0000 => 48000
-0x88580100 => 88200
-
-On 4/21/2012 5:19 AM, Grant Diffey wrote:
->
->      >(channels = 2, ifnum = 2).
->
->     Why do you use channels=2. As fas as I can tell the device has 6
->     channels. Try that.
+Ricardo
 >
 >
->      > Except I can't get it to play anything (figure it would all be
->     too good
->      > to be true)
->      >
->      > $ speaker-test -Dfront:C400
->      > speaker-test 1.0.25
->      >
->      > Playback device is front:C400
->      > Stream parameters are 48000Hz, S16_LE, 1 channels
->      > Using 16 octaves of pink noise
->      > Sample format not available for playback: Invalid argument
->      > Setting of hwparams failed: Invalid argument
->      >
->
->     The device probably supports only S24_3LE audio. At least that's what
->     you tell Alsa with the FTU quirk. Try to play something through the
->     corresponding hw device or use Jack or convert some audio file to
->     S24_3LE and play through aplay etc...
->
->
-> that's a good point
->
-> try speaker-test -D plughw:C400
->
->
+> Takashi
