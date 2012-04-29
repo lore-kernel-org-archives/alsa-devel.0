@@ -1,25 +1,31 @@
-From: Jeremy Torres <jeremy.torres@gmail.com>
-Subject: Re: ALSA: Updating Sample Rates in
-	sound/core/pcm_native.c
-Date: Fri, 27 Apr 2012 16:54:40 -0400
-Message-ID: <CAEA5kntEX0-8ywo5SPJAO_WwXkf3Y0VMr1jCTG1nDhUAG4q+dw@mail.gmail.com>
-References: <CAEA5kntdSeg+DVwLPtsDiM5Rr3e+AUqYug=S6MacobZSpjXJtQ@mail.gmail.com>
-	<cad6079b-5d00-49f1-bdec-6e0be5ddce94@email.android.com>
-	<843008328967385249@unknownmsgid> <4F902B74.7070603@ladisch.de>
-	<CAEA5knsd3NtVCCdufvWm1C6rqLkB2vwarpQVu_TTUw7U5i_JGA@mail.gmail.com>
-	<4F904611.4090308@ladisch.de>
+From: Chris Cavey <chris-alsa@rauros.net>
+Subject: Re: M-Audio FastTrack C400
+Date: Sat, 28 Apr 2012 23:09:11 -0400
+Message-ID: <4F9CB0D7.5060401@rauros.net>
+References: <4F8D63F4.1040208@rauros.net>
+	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
+	<4F8DF29B.9090907@rauros.net>
+	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
+	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
+	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
+	<4F920D73.7070309@rauros.net>
+	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+Reply-To: chris-alsa@rauros.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 773C210403D
+Received: from vms173011pub.verizon.net (vms173011pub.verizon.net
+	[206.46.173.11]) by alsa0.perex.cz (Postfix) with ESMTP id 30585247E1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2012 22:54:41 +0200 (CEST)
-Received: by yenl1 with SMTP id l1so766905yen.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2012 13:54:40 -0700 (PDT)
-In-Reply-To: <4F904611.4090308@ladisch.de>
+	Sun, 29 Apr 2012 05:09:24 +0200 (CEST)
+Received: from rauros.net ([unknown] [74.107.69.179])
+	by vms173011.mailsrvcs.net
+	(Sun Java(tm) System Messaging Server 7u2-7.02 32bit (built Apr 16
+	2009)) with ESMTPA id <0M38006F40RC2F30@vms173011.mailsrvcs.net> for
+	alsa-devel@alsa-project.org; Sat, 28 Apr 2012 22:09:13 -0500 (CDT)
+In-reply-to: <CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,106 +35,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Grant Diffey <gdiffey@gmail.com>
+Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
+I did some more digging on the mixer setup of the C400 using 
+usbmon+tcpdump+wireshark. I'm happy to provide binary captures if it helps.
 
-Per your request, the following is the source code I've changed in an
-attempt to get additional sample rates that my hardware CODEC can
-natively support.
+I adjusted volume on each channel under and arrived at the following. 
+Best to consult the C400 manual for screenshots of the interface.
 
-The intent is to use the "hardware" device only (no "plug") with NO
-rate conversion for the new sample rates (e.g., 144Khz).  Currently,
-if I attempt to use 144Khz, the hardware "slave" samples at 192K, and
-ALSA rate converts to 144Khz.
+The values listed correspond to the wValue in the URB block. The wIndex 
+for all is 16385. Looks like two bytes for values.
 
->From linux-2.6.31/sound/soc/davinci/davinci-pcm.c:
+Treat this as CSV in any editor and you'll see my table. Omitted numbers 
+are sequential based on the other numbers in the row. Out 1-6 are the 
+software returns, In 1-4 being the hardware inputs. The top row are the 
+6 outputs. For each output it would appears that the routed signal is 
+always manipulated in (stereo) pairs - ex. Adjusting volume on software 
+return 1 (Out 1) for Analog1/2 will adjust volume on 0x0100 AND 0x0101.
 
-static struct snd_pcm_hardware davinci_pcm_hardware =3D {
-	.info =3D (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-		 SNDRV_PCM_INFO_PAUSE),
-	.formats =3D (SNDRV_PCM_FMTBIT_S16_LE),
-	.rates =3D (SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT),
-	.rate_min =3D 7200,  // Changed to support new rate
-	.rate_max =3D 192000,
-	.channels_min =3D 1,//2,
-	.channels_max =3D 2,
-	.buffer_bytes_max =3D 256 * 1024,
-	.period_bytes_min =3D 32,
-	.period_bytes_max =3D 8 * 1024,
-	.periods_min =3D 16,
-	.periods_max =3D 255,
-	.fifo_size =3D 0,
-};
+,A1-2 (1),A1-2 (2),A3-4 (3),A3-4 (4),SP (L),SP (R)
+Out 1,0x0100,0x0101,,,,0x0105
+Out 2,0x0106,0x0107,,,,0x010b
+Out 3,0x010c,0x010d,,,,
+Out 4,0x0112,0x0113,,,,0x0117
+Out 5,0x0118,0x0119,,,,0x011d
+Out 6,0x011e,0x011f,,,,0x0123
+In 1,0x0124,0x0125,0x0126,0x0127,0x0128,0x0129
+In 2,0x012a,0x12b,0x012c,0x012d,0x012e,0x012f
+In 3,0x0130,0x0131,,,,0x0135
+In 4,0x0136,0x0137,,,,0x013b
 
-// ADDED: to support rates not defined in sound/pcm.h
-static unsigned int rates[] =3D { 7200, 8000, 9600, 12000, 16000, 44100,
-48000, 64000,
-                                96000, 128000, 144000, 192000 };
-static struct snd_pcm_hw_constraint_list constraints_rates =3D {
-          .count =3D ARRAY_SIZE(rates),
-          .list =3D rates,
-          .mask =3D 0,
-  };
+Also captured some sample rate adjustment values
 
-static int davinci_pcm_open(struct snd_pcm_substream *substream)
-{
-	struct snd_pcm_runtime *runtime =3D substream->runtime;
-	struct davinci_runtime_data *prtd;
-	int ret =3D 0;
+wValue = 0x0100 (always)
+wIndex = 33025
 
-	snd_soc_set_runtime_hwparams(substream, &davinci_pcm_hardware);
+values in the data for the sample rates
+0x00770100 => 96000
+0x44ac0000 => 44100
+0x80bb0000 => 48000
+0x88580100 => 88200
 
-	// ADDED: to support rates not supported in sound/pcm.h
-
-	ret =3D snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-					  &constraints_rates);
-	if (ret < 0)
-	  {
-	    printk(KERN_ERR "ERROR: unable to set HW constraint list!\n");
-	    return -1;
-	  }
-
-	prtd =3D kzalloc(sizeof(struct davinci_runtime_data), GFP_KERNEL);
-	if (prtd =3D=3D NULL)
-		return -ENOMEM;
-
-	spin_lock_init(&prtd->lock);
-
-	runtime->private_data =3D prtd;
-
-	ret =3D davinci_pcm_dma_request(substream);
-	if (ret) {
-		printk(KERN_ERR "davinci_pcm: Failed to get dma channels\n");
-		kfree(prtd);
-	}
-	=
-
-	return ret;
-}
-
-
-
-Thanks,
-Jeremy
-
-On Thu, Apr 19, 2012 at 1:06 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Jeremy Torres wrote:
->> Thanks for the quick reply! =A0So, I followed Takashi's advice and added
->> the constraint list for the new sample rates and no longer changed
->> pcm.h/pcm_native.c. =A0I can record/play at the new sample rates;
->> however, ALSA is performing rate conversion. =A0For example, to run at
->> 144K, the slave is configured to run 192K, even though my hardware can
->> be configured to support 144K.
+On 4/21/2012 5:19 AM, Grant Diffey wrote:
 >
-> This sounds like a bug in the driver.
+>      >(channels = 2, ifnum = 2).
 >
-> Unfortunately, my crystal ball is out of order, so you have to actually
-> show the source code for me to be able to help you.
+>     Why do you use channels=2. As fas as I can tell the device has 6
+>     channels. Try that.
 >
 >
-> Regards,
-> Clemens
+>      > Except I can't get it to play anything (figure it would all be
+>     too good
+>      > to be true)
+>      >
+>      > $ speaker-test -Dfront:C400
+>      > speaker-test 1.0.25
+>      >
+>      > Playback device is front:C400
+>      > Stream parameters are 48000Hz, S16_LE, 1 channels
+>      > Using 16 octaves of pink noise
+>      > Sample format not available for playback: Invalid argument
+>      > Setting of hwparams failed: Invalid argument
+>      >
+>
+>     The device probably supports only S24_3LE audio. At least that's what
+>     you tell Alsa with the FTU quirk. Try to play something through the
+>     corresponding hw device or use Jack or convert some audio file to
+>     S24_3LE and play through aplay etc...
+>
+>
+> that's a good point
+>
+> try speaker-test -D plughw:C400
+>
+>
