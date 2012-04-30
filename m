@@ -1,15 +1,21 @@
-From: =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
-Subject: [PATCH] ASoC: tlv312aic23: unbreak resume
-Date: Sun, 29 Apr 2012 17:37:57 +0200
-Message-ID: <1335713877-7921-1-git-send-email-eric@eukrea.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 8/8] ASoC: Ux500: Add machine-driver
+Date: Mon, 30 Apr 2012 10:26:30 +0200
+Message-ID: <4F9E4CB6.7090606@stericsson.com>
+References: <1334914409-27592-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120423190508.GX8318@opensource.wolfsonmicro.com>
+	<4F9A7BFA.7000507@stericsson.com>
+	<20120427111523.GE18260@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68A7F2461F
+Received: from eu1sys200aog101.obsmtp.com (eu1sys200aog101.obsmtp.com
+	[207.126.144.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8C582437A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Apr 2012 17:38:04 +0200 (CEST)
+	Mon, 30 Apr 2012 10:26:38 +0200 (CEST)
+In-Reply-To: <20120427111523.GE18260@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,36 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: axel.lin@gmail.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-KiBjb21taXQgZjlkZmJmOSAiQVNvQzogdGx2MzIwYWljMjM6IGNvbnZlcnQgdG8gc29jLWNhY2hl
-IiBsZWFkcyB0bwphIGJ1ZyBwcmV2ZW50aW5nIHJlc3VtZW9mIHRoZSBjb2RlYyBhcyByZWdtYXAg
-ZXhwZWN0cyBhIDkgYml0cyBkYXRhCnJlZ2lzdGVyIGJ1dCAweEZGRkYgaXMgcGFzc2VkIGluIHRs
-djMyMGFpYzIzX3NldF9iaWFzX2xldmVsIGFuZCB0aGlzCnZhbHVlcyBnZXRzIGNhY2hlZCBwcmV2
-ZW50aW5nIGFueSB3cml0ZSB0byB0aGUgVExWMzIwQUlDMjNfUFdSCnJlZ2lzdGVyIGFzIHRoZSBm
-aW5hbCB2YWx1ZSBwcm9kdWNlZCBieSByZWdtYXAgaXMgKHJlZ2lzdGVyIDw8IDkpIHzCoHZhbHVl
-CgoqIHRoaXMgcGF0Y2ggc29sdmVzIHRoZSBwcm9ibGVtIGJ5IG9ubHkgd29ya2luZyBvbiB0aGUg
-OSBiaXRzIHRoZQpyZWdpc3RlciBjb250YWlucy4KClNpZ25lZC1vZmYtYnk6IEVyaWMgQsOpbmFy
-ZCA8ZXJpY0BldWtyZWEuY29tPgotLS0KIHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMjMuYyB8
-ICAgIDQgKystLQogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
-KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMyMy5jIGIvc291bmQv
-c29jL2NvZGVjcy90bHYzMjBhaWMyMy5jCmluZGV4IGRmYTQxYTkuLmU3ZGU5MTEgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljMjMuYworKysgYi9zb3VuZC9zb2MvY29kZWNz
-L3RsdjMyMGFpYzIzLmMKQEAgLTQ3Miw3ICs0NzIsNyBAQCBzdGF0aWMgaW50IHRsdjMyMGFpYzIz
-X3NldF9kYWlfc3lzY2xrKHN0cnVjdCBzbmRfc29jX2RhaSAqY29kZWNfZGFpLAogc3RhdGljIGlu
-dCB0bHYzMjBhaWMyM19zZXRfYmlhc19sZXZlbChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMs
-CiAJCQkJICAgICAgZW51bSBzbmRfc29jX2JpYXNfbGV2ZWwgbGV2ZWwpCiB7Ci0JdTE2IHJlZyA9
-IHNuZF9zb2NfcmVhZChjb2RlYywgVExWMzIwQUlDMjNfUFdSKSAmIDB4ZmY3ZjsKKwl1MTYgcmVn
-ID0gc25kX3NvY19yZWFkKGNvZGVjLCBUTFYzMjBBSUMyM19QV1IpICYgMHgxN2Y7CiAKIAlzd2l0
-Y2ggKGxldmVsKSB7CiAJY2FzZSBTTkRfU09DX0JJQVNfT046CkBAIC00OTEsNyArNDkxLDcgQEAg
-c3RhdGljIGludCB0bHYzMjBhaWMyM19zZXRfYmlhc19sZXZlbChzdHJ1Y3Qgc25kX3NvY19jb2Rl
-YyAqY29kZWMsCiAJY2FzZSBTTkRfU09DX0JJQVNfT0ZGOgogCQkvKiBldmVyeXRoaW5nIG9mZiwg
-ZGFjIG11dGUsIGluYWN0aXZlICovCiAJCXNuZF9zb2Nfd3JpdGUoY29kZWMsIFRMVjMyMEFJQzIz
-X0FDVElWRSwgMHgwKTsKLQkJc25kX3NvY193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCAw
-eGZmZmYpOworCQlzbmRfc29jX3dyaXRlKGNvZGVjLCBUTFYzMjBBSUMyM19QV1IsIDB4MWZmKTsK
-IAkJYnJlYWs7CiAJfQogCWNvZGVjLT5kYXBtLmJpYXNfbGV2ZWwgPSBsZXZlbDsKLS0gCjEuNy43
-LjYKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 04/27/2012 01:15 PM, Mark Brown wrote:
+
+> On Fri, Apr 27, 2012 at 12:59:06PM +0200, Ola Lilja wrote:
+> 
+>> We will add more codecs to be matched up the same machine-driver and I found it
+>> useful to have this split. It just separates the callbacks related to each codec
+>> added in the dai-link-struct. I would like to keep this division if that is OK.
+> 
+> No, I really don't see any value at all in it.  The machine drivers
+> aren't actually sharing anything visible and the effect of what you're
+> doing is to make the selection of machine a compile time one instead of
+> a runtime one.
+
+
+No, that is a misunderstanding. We are just dividing the machine-driver file
+into one main-file and then calling functions from other ones. It is not
+affecting the framework in any way. We just want to divide the code in a way we
+find useful. One file calling functions from another one. I don't see how that
+can be a problem.
+
+> 
+>> >> +	/* Setup codec depending on driver-mode */
+>> >> +	driver_mode = (channels == 8) ?
+>> >> +		DRIVERMODE_CODEC_ONLY : DRIVERMODE_NORMAL;
+>> >> +	dev_dbg(dev, "%s: Driver-mode: %s.\n", __func__,
+>> >> +		(driver_mode == DRIVERMODE_NORMAL) ? "NORMAL" : "CODEC_ONLY");
+>> >> +
+>> >> +	ab8500_audio_set_bit_delay(codec_dai, 1);
+> 
+>> > What's this configuring?  I didn't notice it on the CODEC driver as the
+>> > function wasn't exported IIRC.
+> 
+>> The bit delay is the number of bit-clocks from the framesync to the first data-bit.
+>> For the AB8500-chip it is set by the bit AB8500_DIGIFCONF2_IF0DEL.
+>> I would have put this in the set_dai_fmt but I have not found a bit that is
+>> controlling this.
+> 
+> But what are you actually tying to do with this?  It sounds rather like
+> you're selecting between DSP A and B modes...
+
+
+Yes, I've moved this into the DSP A/B selection for the platform-DAI. I will do
+the same for the codec-DAI.
