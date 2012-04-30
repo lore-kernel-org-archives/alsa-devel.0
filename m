@@ -1,77 +1,89 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: dpcm: Add debugFS support for DPCM
-Date: Sun, 29 Apr 2012 16:51:25 +0300
-Message-ID: <20120429135125.GA19737@elgon.mountain>
+From: Richard Zhao <richard.zhao-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 09/11] ARM: imx6q: add ssi1 clk_lookup
+Date: Mon, 30 Apr 2012 10:01:46 +0800
+Message-ID: <20120430020143.GA1857@richard-laptop>
+References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
+ <1335510185-7906-10-git-send-email-richard.zhao@freescale.com>
+ <20120427080412.GW17184@pengutronix.de>
+ <20120427091055.GP28063@b20223-02.ap.freescale.net>
+ <20120427092529.GA20478@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A044103B5C
-	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Apr 2012 15:51:33 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: lrg@ti.com
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20120427092529.GA20478-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Liam Girdwood,
+On Fri, Apr 27, 2012 at 11:25:29AM +0200, Sascha Hauer wrote:
+> On Fri, Apr 27, 2012 at 05:10:56PM +0800, Richard Zhao wrote:
+> > On Fri, Apr 27, 2012 at 10:04:12AM +0200, Sascha Hauer wrote:
+> > > On Fri, Apr 27, 2012 at 03:03:03PM +0800, Richard Zhao wrote:
+> > > > It's used by audio drivers.
+> > > > 
+> > > > Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+> > > > ---
+> > > >  arch/arm/mach-imx/clk-imx6q.c |    1 +
+> > > >  1 files changed, 1 insertions(+), 0 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
+> > > > index f40a35d..9a03dcc 100644
+> > > > --- a/arch/arm/mach-imx/clk-imx6q.c
+> > > > +++ b/arch/arm/mach-imx/clk-imx6q.c
+> > > > @@ -418,6 +418,7 @@ int __init mx6q_clocks_init(void)
+> > > >  	clk_register_clkdev(clk[sdma], NULL, "20ec000.sdma");
+> > > >  	clk_register_clkdev(clk[dummy], NULL, "20bc000.wdog");
+> > > >  	clk_register_clkdev(clk[dummy], NULL, "20c0000.wdog");
+> > > > +	clk_register_clkdev(clk[ssi1], NULL, "2028000.ssi");
+> > > 
+> > > The ssi clock needs a general cleanup on all i.MX just like I cleaned up
+> > > the other units. The SSI unit has at least a register clock and a baud
+> > > clock. What the driver requests and enables is the register clock.
+> > > 
+> > > The baud clock is currently unused and is needed only for master mode
+> > > (which is not implemented in the ssi driver)
+> > Are you sure for that? If I don't enable clk[ssi1], the ssi will not
+> > work.
+> > 
+> > > 
+> > > So where we want to come to is:
+> > > 
+> > > 	clk_register_clkdev(clk[ipg], "ipg", "2028000.ssi");
+> > ssi don't have ipg gate. We can let it always on for imx6q.
+> 
+> Can you please ask your IC guys for clarification?
+> 
+> For example on i.MX5 we have a ssi ipg clock and a ssi serial clock.
+> Both can be gated with two individual gate bits.
+> 
+> The i.MX6 datasheet (and also several other i.MX datasheets) is quite
+> nebulous. The i.MX6 has only one gate bit for each SSI unit, but
+> it's not clear if this bit actually gates both the ipg and serial
+> clock or only one of them.
+You're right. ipg and serial clocks share the same gate. How do we
+handle it? I think it's not the only one and won't be last one.
+> 
+> My general idea is that each unit in the SoC has different input clocks.
+> In the driver we need to clk_get() the input clocks. If a given SoC has
+> no software control over some of the devices input clocks, then we need
+> to provide a dummy for this, because other SoCs have control over the
+> clock.
+Great.
 
-The patch f86dcef87b77: "ASoC: dpcm: Add debugFS support for DPCM" 
-from Apr 25, 2012, leads to the following Smatch warning:
-sound/soc/soc-core.c:1221 soc_post_component_init()
-	 error: potential null derefence 'dai_link'.
-
-
-  1143  static int soc_post_component_init(struct snd_soc_card *card,
-  1144                                     struct snd_soc_codec *codec,
-  1145                                     int num, int dailess)
-  1146  {
-  1147          struct snd_soc_dai_link *dai_link = NULL;
-  1148          struct snd_soc_aux_dev *aux_dev = NULL;
-  1149          struct snd_soc_pcm_runtime *rtd;
-  1150          const char *temp, *name;
-  1151          int ret = 0;
-  1152  
-  1153          if (!dailess) {
-  1154                  dai_link = &card->dai_link[num];
-                        ^^^^^^^^
-dai_link is only set sometimes; it depends on dailess.
-
-  1155                  rtd = &card->rtd[num];
-  1156                  name = dai_link->name;
-  1157          } else {
-  1158                  aux_dev = &card->aux_dev[num];
-  1159                  rtd = &card->rtd_aux[num];
-  1160                  name = aux_dev->name;
-  1161          }
-
-[snip]
-
-  1219  #ifdef CONFIG_DEBUG_FS
-  1220          /* add DPCM sysfs entries */
-  1221          if (!dai_link->dynamic)
-                     ^^^^^^^^^^
-Smatch complains about this.
-
-  1222                  goto out;
-  1223  
-  1224          ret = soc_dpcm_debugfs_add(rtd);
-  1225          if (ret < 0)
-  1226                  dev_err(rtd->dev, "asoc: failed to add dpcm sysfs entries: %d\n", ret);
-  1227  
-  1228  out:
-  1229  #endif
-
-
-regards,
-dan carpenter
+Thanks
+Richard
+> 
+> Sascha
+> 
+> -- 
+> Pengutronix e.K.                           |                             |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
