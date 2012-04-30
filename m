@@ -1,50 +1,52 @@
-From: Heiko =?utf-8?q?St=C3=BCbner?= <heiko@sntech.de>
-Subject: [PATCH] s3c2412-i2s: Fix dai registration
-Date: Mon, 30 Apr 2012 13:17:21 +0200
-Message-ID: <201204301317.21519.heiko@sntech.de>
+From: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH 09/11] ARM: imx6q: add ssi1 clk_lookup
+Date: Mon, 30 Apr 2012 14:18:57 +0200
+Message-ID: <20120430121857.GL4141@pengutronix.de>
+References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
+ <1335510185-7906-10-git-send-email-richard.zhao@freescale.com>
+ <20120427080412.GW17184@pengutronix.de>
+ <20120427091055.GP28063@b20223-02.ap.freescale.net>
+ <20120427092529.GA20478@pengutronix.de>
+ <20120430020143.GA1857@richard-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s15407518.onlinehome-server.info
-	(s15407518.onlinehome-server.info [82.165.136.167])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9092B244A8
-	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Apr 2012 13:17:30 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: sbkim73@samsung.com, lrg@ti.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20120430020143.GA1857@richard-laptop>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <richard.zhao-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-As s3c2412-i2s is using the s3c_i2sv2 it should call the more specialised
-s3c_i2sv2_register_dai instead of simply calling snd_soc_register_dai.
+On Mon, Apr 30, 2012 at 10:01:46AM +0800, Richard Zhao wrote:
+> > > > 
+> > > > 	clk_register_clkdev(clk[ipg], "ipg", "2028000.ssi");
+> > > ssi don't have ipg gate. We can let it always on for imx6q.
+> > 
+> > Can you please ask your IC guys for clarification?
+> > 
+> > For example on i.MX5 we have a ssi ipg clock and a ssi serial clock.
+> > Both can be gated with two individual gate bits.
+> > 
+> > The i.MX6 datasheet (and also several other i.MX datasheets) is quite
+> > nebulous. The i.MX6 has only one gate bit for each SSI unit, but
+> > it's not clear if this bit actually gates both the ipg and serial
+> > clock or only one of them.
+> You're right. ipg and serial clocks share the same gate. How do we
+> handle it? I think it's not the only one and won't be last one.
 
-Without this call the snd_soc_dai_ops structure isn't initialised correctly.
+We don't have support for a single gate gating two clocks right now and
+I don't know how this fits into the clock framework.
+We could pretend that only the ipg clock is gateable because this is
+needed anyway when the SSI unit is used.
 
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
----
- sound/soc/samsung/s3c2412-i2s.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+It seems we need a proper solution for this later.
 
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 7218507..79fbeea 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -166,7 +166,7 @@ static struct snd_soc_dai_driver s3c2412_i2s_dai = {
- 
- static __devinit int s3c2412_iis_dev_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_dai(&pdev->dev, &s3c2412_i2s_dai);
-+	return s3c_i2sv2_register_dai(&pdev->dev, -1, &s3c2412_i2s_dai);
- }
- 
- static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
+Sascha
+
+
 -- 
-1.7.5.4
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
