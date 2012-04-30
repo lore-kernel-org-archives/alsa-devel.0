@@ -1,20 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: ASoC: dpcm: Add debugFS support for DPCM
-Date: Mon, 30 Apr 2012 11:05:07 +0100
-Message-ID: <1335780307.6161.0.camel@odin>
-References: <20120429135125.GA19737@elgon.mountain>
+Subject: [PATCH] ASoC: core: Fix dai_link dereference.
+Date: Mon, 30 Apr 2012 11:05:30 +0100
+Message-ID: <1335780330-1157-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
-	[74.125.149.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3C26104066
+Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
+	[74.125.149.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43DB2243BF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Apr 2012 12:05:11 +0200 (CEST)
-Received: by werm13 with SMTP id m13so2060383wer.40
-	for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2012 03:05:09 -0700 (PDT)
-In-Reply-To: <20120429135125.GA19737@elgon.mountain>
+	Mon, 30 Apr 2012 12:05:41 +0200 (CEST)
+Received: by werg1 with SMTP id g1so1717060wer.38
+	for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2012 03:05:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2012-04-29 at 16:51 +0300, Dan Carpenter wrote:
-> Hello Liam Girdwood,
-> 
-> The patch f86dcef87b77: "ASoC: dpcm: Add debugFS support for DPCM" 
-> from Apr 25, 2012, leads to the following Smatch warning:
-> sound/soc/soc-core.c:1221 soc_post_component_init()
-> 	 error: potential null derefence 'dai_link'.
-> 
+We should check dailess before dereferencing.
 
-Fix sent to list.
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Liam Girdwood <lrg@ti.com>
+---
+ sound/soc/soc-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
-
-Liam
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9bdfef4..7f1e012 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1218,7 +1218,7 @@ static int soc_post_component_init(struct snd_soc_card *card,
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 	/* add DPCM sysfs entries */
+-	if (!dai_link->dynamic)
++	if (!dailess && !dai_link->dynamic)
+ 		goto out;
+ 
+ 	ret = soc_dpcm_debugfs_add(rtd);
+-- 
+1.7.9.5
