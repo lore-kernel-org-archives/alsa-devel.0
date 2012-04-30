@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: wm8350: Remove check for clocks in
-	trigger()
-Date: Mon, 30 Apr 2012 22:53:13 +0100
-Message-ID: <1335822795-4720-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1335822795-4720-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: wm8350: Don't use locally allocated
+	codec struct
+Date: Mon, 30 Apr 2012 22:53:12 +0100
+Message-ID: <1335822795-4720-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C83B810419C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB0E41041E0
 	for <alsa-devel@alsa-project.org>;
 	Mon, 30 Apr 2012 23:53:22 +0200 (CEST)
-In-Reply-To: <1335822795-4720-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,79 +24,71 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is now very standard behaviour for CODECs so shouldn't be device
-specific and we shouldn't really be trying to peer into the register
-cache from atomic context anyway.
+The core allocates the live copies, we shouldn't try to duplicate it and
+were buggy trying to do so as we were using uninitialised data for the
+control data.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8350.c |   40 ----------------------------------------
- 1 file changed, 40 deletions(-)
+ sound/soc/codecs/wm8350.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index aa12c6b..840380d 100644
+index 8c4c959..aa12c6b 100644
 --- a/sound/soc/codecs/wm8350.c
 +++ b/sound/soc/codecs/wm8350.c
-@@ -71,13 +71,6 @@ struct wm8350_data {
- 	int fll_freq_in;
+@@ -60,7 +60,7 @@ struct wm8350_jack_data {
  };
  
--static unsigned int wm8350_codec_cache_read(struct snd_soc_codec *codec,
--					    unsigned int reg)
--{
--	struct wm8350 *wm8350 = codec->control_data;
--	return wm8350->reg_cache[reg];
--}
--
- static unsigned int wm8350_codec_read(struct snd_soc_codec *codec,
- 				      unsigned int reg)
+ struct wm8350_data {
+-	struct snd_soc_codec codec;
++	struct wm8350 *wm8350;
+ 	struct wm8350_output out1;
+ 	struct wm8350_output out2;
+ 	struct wm8350_jack_data hpl;
+@@ -1309,7 +1309,7 @@ static void wm8350_hp_work(struct wm8350_data *priv,
+ 			   struct wm8350_jack_data *jack,
+ 			   u16 mask)
  {
-@@ -929,38 +922,6 @@ static int wm8350_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
+-	struct wm8350 *wm8350 = priv->codec.control_data;
++	struct wm8350 *wm8350 = priv->wm8350;
+ 	u16 reg;
+ 	int report;
  
--static int wm8350_pcm_trigger(struct snd_pcm_substream *substream,
--			      int cmd, struct snd_soc_dai *codec_dai)
--{
--	struct snd_soc_codec *codec = codec_dai->codec;
--	int master = wm8350_codec_cache_read(codec, WM8350_AI_DAC_CONTROL) &
--	    WM8350_BCLK_MSTR;
--	int enabled = 0;
--
--	/* Check that the DACs or ADCs are enabled since they are
--	 * required for LRC in master mode. The DACs or ADCs need a
--	 * valid audio path i.e. pin -> ADC or DAC -> pin before
--	 * the LRC will be enabled in master mode. */
--	if (!master || cmd != SNDRV_PCM_TRIGGER_START)
--		return 0;
--
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		enabled = wm8350_codec_cache_read(codec, WM8350_POWER_MGMT_4) &
--		    (WM8350_ADCR_ENA | WM8350_ADCL_ENA);
--	} else {
--		enabled = wm8350_codec_cache_read(codec, WM8350_POWER_MGMT_4) &
--		    (WM8350_DACR_ENA | WM8350_DACL_ENA);
--	}
--
--	if (!enabled) {
--		dev_err(codec->dev,
--		       "%s: invalid audio path - no clocks available\n",
--		       __func__);
--		return -EINVAL;
--	}
--	return 0;
--}
--
- static int wm8350_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *codec_dai)
-@@ -1491,7 +1452,6 @@ EXPORT_SYMBOL_GPL(wm8350_mic_jack_detect);
- static const struct snd_soc_dai_ops wm8350_dai_ops = {
- 	 .hw_params	= wm8350_pcm_hw_params,
- 	 .digital_mute	= wm8350_mute,
--	 .trigger	= wm8350_pcm_trigger,
- 	 .set_fmt	= wm8350_set_dai_fmt,
- 	 .set_sysclk	= wm8350_set_dai_sysclk,
- 	 .set_pll	= wm8350_set_fll,
+@@ -1342,7 +1342,7 @@ static void wm8350_hpr_work(struct work_struct *work)
+ static irqreturn_t wm8350_hp_jack_handler(int irq, void *data)
+ {
+ 	struct wm8350_data *priv = data;
+-	struct wm8350 *wm8350 = priv->codec.control_data;
++	struct wm8350 *wm8350 = priv->wm8350;
+ 	struct wm8350_jack_data *jack = NULL;
+ 
+ 	switch (irq - wm8350->irq_base) {
+@@ -1427,7 +1427,7 @@ EXPORT_SYMBOL_GPL(wm8350_hp_jack_detect);
+ static irqreturn_t wm8350_mic_handler(int irq, void *data)
+ {
+ 	struct wm8350_data *priv = data;
+-	struct wm8350 *wm8350 = priv->codec.control_data;
++	struct wm8350 *wm8350 = priv->wm8350;
+ 	u16 reg;
+ 	int report = 0;
+ 
+@@ -1536,6 +1536,8 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 		return -ENOMEM;
+ 	snd_soc_codec_set_drvdata(codec, priv);
+ 
++	priv->wm8350 = wm8350;
++
+ 	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
+ 		priv->supplies[i].supply = supply_names[i];
+ 
+@@ -1544,7 +1546,6 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 	if (ret != 0)
+ 		return ret;
+ 
+-	wm8350->codec.codec = codec;
+ 	codec->control_data = wm8350;
+ 
+ 	/* Put the codec into reset if it wasn't already */
 -- 
 1.7.10
