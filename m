@@ -1,20 +1,16 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l52: Remove duplicate module
-	exit code
-Date: Mon, 30 Apr 2012 11:08:42 +0000
-Message-ID: <0B44ECC9-2DEA-4C85-9070-1D893326071E@cirrus.com>
-References: <1335780850-2902-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Heiko =?utf-8?q?St=C3=BCbner?= <heiko@sntech.de>
+Subject: [PATCH] s3c2412-i2s: Fix dai registration
+Date: Mon, 30 Apr 2012 13:17:21 +0200
+Message-ID: <201204301317.21519.heiko@sntech.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
-	(db3ehsobe005.messaging.microsoft.com [213.199.154.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06DDF24483
+Received: from s15407518.onlinehome-server.info
+	(s15407518.onlinehome-server.info [82.165.136.167])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9092B244A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Apr 2012 13:08:54 +0200 (CEST)
-In-Reply-To: <1335780850-2902-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Content-Language: en-US
+	Mon, 30 Apr 2012 13:17:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "joe@nucleusys.com" <joe@nucleusys.com>, Liam Girdwood <lrg@ti.com>
+To: sbkim73@samsung.com, lrg@ti.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+As s3c2412-i2s is using the s3c_i2sv2 it should call the more specialised
+s3c_i2sv2_register_dai instead of simply calling snd_soc_register_dai.
 
+Without this call the snd_soc_dai_ops structure isn't initialised correctly.
 
-On Apr 30, 2012, at 5:14 AM, "Mark Brown" <broonie@opensource.wolfsonmicro.com> wrote:
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+---
+ sound/soc/samsung/s3c2412-i2s.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> In the conversion to module_init_i2c() the original open coded module
-> exit function was left. 
-
-Thanks Mark,
-
-Brian
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 7218507..79fbeea 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -166,7 +166,7 @@ static struct snd_soc_dai_driver s3c2412_i2s_dai = {
+ 
+ static __devinit int s3c2412_iis_dev_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_dai(&pdev->dev, &s3c2412_i2s_dai);
++	return s3c_i2sv2_register_dai(&pdev->dev, -1, &s3c2412_i2s_dai);
+ }
+ 
+ static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
+-- 
+1.7.5.4
