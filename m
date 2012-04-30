@@ -1,23 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work,
-	"Capture Volume" inverted
-Date: Mon, 30 Apr 2012 22:43:33 +0100
-Message-ID: <20120430214332.GA4414@opensource.wolfsonmicro.com>
-References: <1335384469.14096.203.camel@mars>
-	<20120426112726.GF3207@opensource.wolfsonmicro.com>
-	<1335448142.20000.40.camel@mars>
-	<20120426172010.GP3207@opensource.wolfsonmicro.com>
-	<1335474693.3628.26.camel@lovely>
-	<20120426213745.GA18260@opensource.wolfsonmicro.com>
-	<20120430192258.GA15188@local>
+Subject: [PATCH 2/4] ASoC: wm8350: Remove check for clocks in
+	trigger()
+Date: Mon, 30 Apr 2012 22:53:13 +0100
+Message-ID: <1335822795-4720-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1335822795-4720-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2456381400202943817=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2587C10419C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C83B810419C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Apr 2012 23:43:36 +0200 (CEST)
-In-Reply-To: <20120430192258.GA15188@local>
+	Mon, 30 Apr 2012 23:53:22 +0200 (CEST)
+In-Reply-To: <1335822795-4720-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,72 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Hans J. Koch" <hjk@hansjkoch.de>
-Cc: Christoph Fritz <chf.fritz@googlemail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+This is now very standard behaviour for CODECs so shouldn't be device
+specific and we shouldn't really be trying to peer into the register
+cache from atomic context anyway.
 
---===============2456381400202943817==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8350.c |   40 ----------------------------------------
+ 1 file changed, 40 deletions(-)
 
-
---7AUc2qLy4jB3hD7Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Apr 30, 2012 at 09:40:55PM +0200, Hans J. Koch wrote:
-> On Thu, Apr 26, 2012 at 10:37:45PM +0100, Mark Brown wrote:
-> > On Thu, Apr 26, 2012 at 11:11:33PM +0200, Christoph Fritz wrote:
-
-> > > ac97_write() doesn't get called when I try to change "Item: Differential Source".
-
-> > Oh, right - you're not actually seeing any attempt to write.  There
-> > won't be anything on the bus, then.  Still, why are you identifying the
-> > shift there?  The write will be suppresed if the register contents don't
-> > change which looks like what you're seeing here - though I can't see
-> [...]
-
-> I overlooked that one. What kind of horror show is that? It's definetly wrong
-> to make any assumptions about hardware register contents. A low-level write
-> function always has to write the given value to the given register. Everything
-> else, like suppressing a write because you _think_ a register hasn't changed,
-> will sooner or later lead to hard-to-find errors.
-
-> Any performance optimizations have to take place on the highest possible level.
-
-I'm not entirely sure you've looked at the code here...
-
---7AUc2qLy4jB3hD7Z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPnwdoAAoJEBus8iNuMP3dUf4P/0m6rc5yippg6mymHfcp39HV
-kRJiCZiYLvND10E+0Ivckm5E128ykh03tXQLHWywMjhZuM+fo0ICujb/wjfVZhCD
-0UEjEwHXercx3eH1QbhTiiy/fydaRbHYQVGx565YYF5zUOIeYVYkfaJM8Rp//a0W
-Y9HRuXMl54967oVaLmXygoK9LzVLwW0qK3ds494Ooy24M6a2JKWSKSyumCEs6aBc
-Wg58YFMqrZt//mHdnmmQgEsqQ+um6XjsklXVbBGT8Yotr3UtK0IUpxvfB0NFYQRv
-mZNMrL48WpJ9x3TGGELXAJGLtouRSHd6M9zXD7uoKbVVGNRQyMsY5MHmwEWitBZ+
-yjzacVhCfAjsOz1aqap0AhFmNxl7DO6rCS1oGMpT1qO7hROcVvKB/BPOKxK8NCr5
-oblGr5feUj4/NY/i4PIRb08DZ04pul675phwytTJ9ibYqo7YOKnFNa7HOa6ZB3JU
-O8VdkUwbP7risyRoQfVI0UtOf3F9k6h7x52Vtidym3b9IqyBIbaacPIxAPUP+b3U
-enQmeCGI7x/kNnFm4TCcmEiNQ9ybRyiSn0yI3x4zJfMrfCvttf1Oo2OJxzlh1EG5
-QzFGRQjLbl5Bboly/kq3NvMtHhkJujrltBx2Z8dQchL71NbTkqSqGur5zfKjBQq+
-p1SDGT8hGW6xYb0+/eRA
-=EJQx
------END PGP SIGNATURE-----
-
---7AUc2qLy4jB3hD7Z--
-
---===============2456381400202943817==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2456381400202943817==--
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index aa12c6b..840380d 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -71,13 +71,6 @@ struct wm8350_data {
+ 	int fll_freq_in;
+ };
+ 
+-static unsigned int wm8350_codec_cache_read(struct snd_soc_codec *codec,
+-					    unsigned int reg)
+-{
+-	struct wm8350 *wm8350 = codec->control_data;
+-	return wm8350->reg_cache[reg];
+-}
+-
+ static unsigned int wm8350_codec_read(struct snd_soc_codec *codec,
+ 				      unsigned int reg)
+ {
+@@ -929,38 +922,6 @@ static int wm8350_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static int wm8350_pcm_trigger(struct snd_pcm_substream *substream,
+-			      int cmd, struct snd_soc_dai *codec_dai)
+-{
+-	struct snd_soc_codec *codec = codec_dai->codec;
+-	int master = wm8350_codec_cache_read(codec, WM8350_AI_DAC_CONTROL) &
+-	    WM8350_BCLK_MSTR;
+-	int enabled = 0;
+-
+-	/* Check that the DACs or ADCs are enabled since they are
+-	 * required for LRC in master mode. The DACs or ADCs need a
+-	 * valid audio path i.e. pin -> ADC or DAC -> pin before
+-	 * the LRC will be enabled in master mode. */
+-	if (!master || cmd != SNDRV_PCM_TRIGGER_START)
+-		return 0;
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+-		enabled = wm8350_codec_cache_read(codec, WM8350_POWER_MGMT_4) &
+-		    (WM8350_ADCR_ENA | WM8350_ADCL_ENA);
+-	} else {
+-		enabled = wm8350_codec_cache_read(codec, WM8350_POWER_MGMT_4) &
+-		    (WM8350_DACR_ENA | WM8350_DACL_ENA);
+-	}
+-
+-	if (!enabled) {
+-		dev_err(codec->dev,
+-		       "%s: invalid audio path - no clocks available\n",
+-		       __func__);
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+-
+ static int wm8350_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *codec_dai)
+@@ -1491,7 +1452,6 @@ EXPORT_SYMBOL_GPL(wm8350_mic_jack_detect);
+ static const struct snd_soc_dai_ops wm8350_dai_ops = {
+ 	 .hw_params	= wm8350_pcm_hw_params,
+ 	 .digital_mute	= wm8350_mute,
+-	 .trigger	= wm8350_pcm_trigger,
+ 	 .set_fmt	= wm8350_set_dai_fmt,
+ 	 .set_sysclk	= wm8350_set_dai_sysclk,
+ 	 .set_pll	= wm8350_set_fll,
+-- 
+1.7.10
