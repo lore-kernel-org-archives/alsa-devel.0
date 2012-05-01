@@ -1,25 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work,
-	"Capture Volume" inverted
-Date: Tue, 1 May 2012 18:12:07 +0100
-Message-ID: <20120501171207.GC4089@opensource.wolfsonmicro.com>
-References: <1335384469.14096.203.camel@mars>
-	<20120426112726.GF3207@opensource.wolfsonmicro.com>
-	<1335448142.20000.40.camel@mars>
-	<20120426172010.GP3207@opensource.wolfsonmicro.com>
-	<1335474693.3628.26.camel@lovely>
-	<20120426213745.GA18260@opensource.wolfsonmicro.com>
-	<20120430192258.GA15188@local>
-	<20120430214332.GA4414@opensource.wolfsonmicro.com>
-	<20120430234458.GB15188@local>
+Subject: [PATCH] ASoC: wm_hubs: Cache multiple DCS offsets
+Date: Tue,  1 May 2012 19:19:55 +0100
+Message-ID: <1335896395-7630-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0829895531965303939=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B5A6E243FE
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 41B7B1042DB
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 May 2012 19:12:10 +0200 (CEST)
-In-Reply-To: <20120430234458.GB15188@local>
+	Tue,  1 May 2012 20:20:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,64 +19,159 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Hans J. Koch" <hjk@hansjkoch.de>
-Cc: Christoph Fritz <chf.fritz@googlemail.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Rather than invalidating the cached DCS value every time the headphone
+gain changes store multiple values, indexed by gain. This allows the
+optimisation we get from the cache to take effect more often.
 
---===============0829895531965303939==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_hubs.c |   74 ++++++++++++++++++++++++++++++++++++++------
+ sound/soc/codecs/wm_hubs.h |    3 +-
+ 2 files changed, 67 insertions(+), 10 deletions(-)
 
-
---4jXrM3lyYWu4nBt5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 01, 2012 at 01:44:58AM +0200, Hans J. Koch wrote:
-> On Mon, Apr 30, 2012 at 10:43:33PM +0100, Mark Brown wrote:
-
-> > I'm not entirely sure you've looked at the code here...
-
-> Oh yes, sorry. I got distracted by your mentioning of the suppressed writes.
-> Actually, we have suppressed reads. ac97_read() does a "return cache[reg];"
-> for most registers, assuming the hardware register cannot change after a
-> ac97_write(). That might or might not be true, to me it looks dangerous.
-
-The driver knows exactly which registers are volatile and takes
-advantage of this - this is entirely idiomatic for devices like this and
-not really that hard to get right.
-
---4jXrM3lyYWu4nBt5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPoBiUAAoJEBus8iNuMP3dS4AP/iYVxyWnje6hkYLKSggnUKFF
-hFG2LZmI20ce1cwqVuwsPbaD+rDXZzSKt8PET9Gw1MVOuW/2ZXRUcDcXRfG3Cbq1
-VHGRjwxvCFmwMww6vHbsdj5wJoiL0/4gyldTkHC6e2kFv+4f4Rkx9A5vuGApFkmM
-RESBOFKIsmw5ntg247Z33GP0TqWV0VAv7cmN85VHalXSMh6Gt4O4CaJZM2j59xfH
-okUaMo6lwCENYoXppKUvT/WhMVVznsEZ3VuNmPfP848XEkPb0qbdCPmb7IC3grUa
-Tgvh4F2Lc9OZbMywJRdIro2VgUlGSjKfBUwQ6d5U4MU4GuHlEYhhTuJikwQLK1sZ
-Q5OnhfGPMPj1dADScBRjShZBGtRFzidmGUvt/T1oJCySKbRnQ96l/inDHhQAfEIE
-AR0/MHIBjM4nh1GQzqShNq5Plfr4sMsx5TH0iQyuhdLQkbmLogw6uBrJozOUFC9y
-QYg2AJ+vr3vJR0EQ2ICfRZiH1BYN+JHPTjgGcCp11xe0gu9bZC19XspKOGATEVJr
-heY5GRh1/rc3pEHnKacHwp1LjxTWKP2jBQ9Sr7HQXsI8xz7qhUDJzhFDW1lF3Y/W
-B+fWYwCSnvxxOZ+hV68xLltLG98gyU99fTfRh875+VVBxvXu3hOajbMgQUQWEJm3
-R1X0i7mOldWxI9DhAx2+
-=myzW
------END PGP SIGNATURE-----
-
---4jXrM3lyYWu4nBt5--
-
---===============0829895531965303939==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0829895531965303939==--
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 8a29843..dfe957a 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -143,12 +143,69 @@ static bool wm_hubs_dac_hp_direct(struct snd_soc_codec *codec)
+ 	return true;
+ }
+ 
++struct wm_hubs_dcs_cache {
++	struct list_head list;
++	unsigned int left;
++	unsigned int right;
++	u16 dcs_cfg;
++};
++
++static bool wm_hubs_dcs_cache_get(struct snd_soc_codec *codec,
++				  struct wm_hubs_dcs_cache **entry)
++{
++	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
++	struct wm_hubs_dcs_cache *cache;
++	unsigned int left, right;
++
++	left = snd_soc_read(codec, WM8993_LEFT_OUTPUT_VOLUME);
++	left &= WM8993_HPOUT1L_VOL_MASK;
++
++	right = snd_soc_read(codec, WM8993_RIGHT_OUTPUT_VOLUME);
++	right &= WM8993_HPOUT1R_VOL_MASK;
++
++	list_for_each_entry(cache, &hubs->dcs_cache, list) {
++		if (cache->left != left || cache->right != right)
++			continue;
++
++		*entry = cache;
++		return true;
++	}
++
++	return false;
++}
++
++static void wm_hubs_dcs_cache_set(struct snd_soc_codec *codec, u16 dcs_cfg)
++{
++	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
++	struct wm_hubs_dcs_cache *cache;
++
++	if (hubs->no_cache_dac_hp_direct)
++		return;
++
++	cache = devm_kzalloc(codec->dev, sizeof(*cache), GFP_KERNEL);
++	if (!cache) {
++		dev_err(codec->dev, "Failed to allocate DCS cache entry\n");
++		return;
++	}
++
++	cache->left = snd_soc_read(codec, WM8993_LEFT_OUTPUT_VOLUME);
++	cache->left &= WM8993_HPOUT1L_VOL_MASK;
++
++	cache->right = snd_soc_read(codec, WM8993_RIGHT_OUTPUT_VOLUME);
++	cache->right &= WM8993_HPOUT1R_VOL_MASK;
++
++	cache->dcs_cfg = dcs_cfg;
++
++	list_add_tail(&cache->list, &hubs->dcs_cache);
++}
++
+ /*
+  * Startup calibration of the DC servo
+  */
+ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ {
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
++	struct wm_hubs_dcs_cache *cache;
+ 	s8 offset;
+ 	u16 reg, reg_l, reg_r, dcs_cfg, dcs_reg;
+ 
+@@ -163,10 +220,11 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 
+ 	/* If we're using a digital only path and have a previously
+ 	 * callibrated DC servo offset stored then use that. */
+-	if (wm_hubs_dac_hp_direct(codec) && hubs->dac_hp_direct_dcs) {
+-		dev_dbg(codec->dev, "Using cached DC servo offset %x\n",
+-			hubs->dac_hp_direct_dcs);
+-		snd_soc_write(codec, dcs_reg, hubs->dac_hp_direct_dcs);
++	if (wm_hubs_dac_hp_direct(codec) &&
++	    wm_hubs_dcs_cache_get(codec, &cache)) {
++		dev_dbg(codec->dev, "Using cached DCS offset %x for %d,%d\n",
++			cache->dcs_cfg, cache->left, cache->right);
++		snd_soc_write(codec, dcs_reg, cache->dcs_cfg);
+ 		wait_for_dc_servo(codec,
+ 				  WM8993_DCS_TRIG_DAC_WR_0 |
+ 				  WM8993_DCS_TRIG_DAC_WR_1);
+@@ -241,8 +299,8 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 
+ 	/* Save the callibrated offset if we're in class W mode and
+ 	 * therefore don't have any analogue signal mixed in. */
+-	if (wm_hubs_dac_hp_direct(codec) && !hubs->no_cache_dac_hp_direct)
+-		hubs->dac_hp_direct_dcs = dcs_cfg;
++	if (wm_hubs_dac_hp_direct(codec))
++		wm_hubs_dcs_cache_set(codec, dcs_cfg);
+ }
+ 
+ /*
+@@ -257,9 +315,6 @@ static int wm8993_put_dc_servo(struct snd_kcontrol *kcontrol,
+ 
+ 	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ 
+-	/* Updating the analogue gains invalidates the DC servo cache */
+-	hubs->dac_hp_direct_dcs = 0;
+-
+ 	/* If we're applying an offset correction then updating the
+ 	 * callibration would be likely to introduce further offsets. */
+ 	if (hubs->dcs_codes_l || hubs->dcs_codes_r || hubs->no_series_update)
+@@ -1057,6 +1112,7 @@ int wm_hubs_add_analogue_routes(struct snd_soc_codec *codec,
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
++	INIT_LIST_HEAD(&hubs->dcs_cache);
+ 	init_completion(&hubs->dcs_done);
+ 
+ 	snd_soc_dapm_add_routes(dapm, analogue_routes,
+diff --git a/sound/soc/codecs/wm_hubs.h b/sound/soc/codecs/wm_hubs.h
+index 71861fc..da2dc89 100644
+--- a/sound/soc/codecs/wm_hubs.h
++++ b/sound/soc/codecs/wm_hubs.h
+@@ -16,6 +16,7 @@
+ 
+ #include <linux/completion.h>
+ #include <linux/interrupt.h>
++#include <linux/list.h>
+ #include <sound/control.h>
+ 
+ struct snd_soc_codec;
+@@ -32,7 +33,7 @@ struct wm_hubs_data {
+ 	int no_series_update;
+ 
+ 	bool no_cache_dac_hp_direct;
+-	u16 dac_hp_direct_dcs;
++	struct list_head dcs_cache;
+ 	bool (*check_class_w_digital)(struct snd_soc_codec *);
+ 
+ 	bool lineout1_se;
+-- 
+1.7.10
