@@ -1,50 +1,74 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 10/11] ARM: imx6q_sabrelite: clkdev_add cko1
- for sgtl5000
-Date: Wed, 2 May 2012 11:37:13 +0800
-Message-ID: <20120502033711.GW2194@S2101-09.ap.freescale.net>
-References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
- <1335510185-7906-11-git-send-email-richard.zhao@freescale.com>
- <20120501124706.GF2194@S2101-09.ap.freescale.net>
- <20120501233939.GO2194@S2101-09.ap.freescale.net>
- <CAOMZO5Ab5pYuOY4oLbkOc+SeeT6itKOMJu+zzodFOJaW5h+RuQ@mail.gmail.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 8/8] ASoC: Ux500: Add machine-driver
+Date: Wed, 2 May 2012 10:10:31 +0200
+Message-ID: <4FA0EBF7.2090903@stericsson.com>
+References: <1334914409-27592-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120423190508.GX8318@opensource.wolfsonmicro.com>
+	<4F9A7BFA.7000507@stericsson.com>
+	<20120427111523.GE18260@opensource.wolfsonmicro.com>
+	<4F9E4CB6.7090606@stericsson.com>
+	<20120430100452.GE3170@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5Ab5pYuOY4oLbkOc+SeeT6itKOMJu+zzodFOJaW5h+RuQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog119.obsmtp.com (eu1sys200aog119.obsmtp.com
+	[207.126.144.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67D42243D2
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 May 2012 10:10:39 +0200 (CEST)
+In-Reply-To: <20120430100452.GE3170@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 01, 2012 at 11:47:55PM -0300, Fabio Estevam wrote:
-> On Tue, May 1, 2012 at 8:39 PM, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org> wrot=
-e:
-> > On Tue, May 01, 2012 at 08:47:10PM +0800, Shawn Guo wrote:
-> >> > + =A0 clk_register_clkdev(cko1, NULL, "0-000a");
-> >>
-> >> This dev_id looks a little strange to me. =A0I understand that's t=
-he
-> >> consequence of having sgtl5000 clock managed in ASoC machine drive=
-r
-> >> imx-sgtl5000.
-> >>
-> > Just realised it's not the case. =A0But shouldn't the name look lik=
-e
-> > "sgtl5000.0-000a"?
->=20
-> Since this is common code, we should not hardcode the I2C bus as the
-> codec can be connected in a I2C bus different of 0.
+On 04/30/2012 12:04 PM, Mark Brown wrote:
 
-No, it's not.  It's a sabrelite specific lookup which is done in
-imx6q_sabrelite_init, while imx6q_cko1_setup needs a better naming,
-as what I already commented.
+> On Mon, Apr 30, 2012 at 10:26:30AM +0200, Ola Lilja wrote:
+>> On 04/27/2012 01:15 PM, Mark Brown wrote:
+> 
+>> > No, I really don't see any value at all in it.  The machine drivers
+>> > aren't actually sharing anything visible and the effect of what you're
+>> > doing is to make the selection of machine a compile time one instead of
+>> > a runtime one.
+> 
+>> No, that is a misunderstanding. We are just dividing the machine-driver file
+>> into one main-file and then calling functions from other ones. It is not
+>> affecting the framework in any way. We just want to divide the code in a way we
+>> find useful. One file calling functions from another one. I don't see how that
+>> can be a problem.
+> 
+> The code I'm referring to is this:
+> 
+> | +#ifdef CONFIG_SND_SOC_UX500_AB8500
+> | +#include <ux500_ab8500.h>
+> | +#endif
+> | +
+> | +/* Define the whole U8500 soundcard, linking platform to the codec-drivers  */
+> | +struct snd_soc_dai_link u8500_dai_links[] = {
+> | +       #ifdef CONFIG_SND_SOC_UX500_AB8500
+> | +       {
+> | +               .name = "ab8500_0",
+> | +               .stream_name = "ab8500_0",
+> 
+> which is definitely compile time.  It's not the factoring stuff out,
+> it's the way it's been done.  Library code like Tegra uses isn't a
+> problem but this sort of arrangement does cause problems.
 
-In the end, this type of board specific clock lookup should really
-go into device tree.
 
---=20
-Regards,
-Shawn
+OK, the thought with this was to be able to activate/deactivate the individual
+codec-drivers since we have several separate codecs on our Ux500-platform (Note
+that in this patch-set there is not patches for the other two codec-drivers).
+Since we already knows at compile-time if any of these three codecs are present
+we did it this ways, being able to add them separately in menuconfig.
+How could we solve this? All three codec-drivers has dependancies to other stuff
+being activated in menuconfig.
