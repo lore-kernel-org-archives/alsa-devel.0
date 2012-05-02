@@ -1,43 +1,30 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: core: Allow DAIs to specify a
-	base address
-Date: Wed, 02 May 2012 15:06:37 +0100
-Message-ID: <1335967597.4722.0.camel@odin>
-References: <1335899068-22645-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 09/11] ARM: imx6q: add ssi1 clk_lookup
+Date: Wed, 2 May 2012 22:34:17 +0800
+Message-ID: <20120502143413.GE2194@S2101-09.ap.freescale.net>
+References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
+ <1335510185-7906-10-git-send-email-richard.zhao@freescale.com>
+ <20120427080412.GW17184@pengutronix.de>
+ <20120427091055.GP28063@b20223-02.ap.freescale.net>
+ <20120427092529.GA20478@pengutronix.de>
+ <20120430020143.GA1857@richard-laptop>
+ <20120430121857.GL4141@pengutronix.de>
+ <20120502103440.GA2982@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog122.obsmtp.com (na3sys009aog122.obsmtp.com
-	[74.125.149.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id C519624150
-	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2012 16:06:44 +0200 (CEST)
-Received: by wibhm17 with SMTP id hm17so3894717wib.0
-	for <alsa-devel@alsa-project.org>; Wed, 02 May 2012 07:06:40 -0700 (PDT)
-In-Reply-To: <1335899068-22645-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20120502103440.GA2982-iWYTGMXpHj9ITqJhDdzsOjpauB2SiJktrE5yTffgRl4@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Richard Zhao <richard.zhao-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-05-01 at 20:04 +0100, Mark Brown wrote:
-> Devices with many DAIs are becoming more and more common, and generally
-> the more modern devices have consistent register layouts between DAIs.
-> Rather than have drivers open code lookups based on the DAI ID or cause
-> uglification in UI by having register addresses for IDs provide a base
-> address field they can use.
+On Wed, May 02, 2012 at 06:34:41PM +0800, Richard Zhao wrote:
+> Shawn, will you add clk ssi_ipg?
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Ok, will do after Sascha's clk series gets settled on arm-soc tree.
 
-Both
-
-Acked-by: Liam Girdwood <lrg@ti.com>
+-- 
+Regards,
+Shawn
