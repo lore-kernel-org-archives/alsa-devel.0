@@ -1,14 +1,30 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.4
-Date: Wed, 2 May 2012 10:30:23 +0100
-Message-ID: <20120502093022.GA5722@opensource.wolfsonmicro.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: M-Audio FastTrack C400
+Date: Wed, 2 May 2012 12:05:45 +0200
+Message-ID: <CAFz=ag5HWp-BW4ZyymR7F60ahtzttyoBk6ZwdSRVKBXepHyn1w@mail.gmail.com>
+References: <4F8D63F4.1040208@rauros.net>
+	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
+	<4F8DF29B.9090907@rauros.net>
+	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
+	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
+	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
+	<4F920D73.7070309@rauros.net>
+	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+	<4F9CB0D7.5060401@rauros.net>
+	<CAFz=ag6tVjD6hANk2e6sH8hcrbJi6SdqYJNy2U-nkArBV5DVfQ@mail.gmail.com>
+	<4F9D4291.6060803@rauros.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1776321999495615424=="
+Content-Type: multipart/mixed; boundary=20cf3056423db5082504bf0ad40b
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3512E1043FA
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27C19104429
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2012 11:30:25 +0200 (CEST)
+	Wed,  2 May 2012 12:05:47 +0200 (CEST)
+Received: by ghbg19 with SMTP id g19so518204ghb.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 May 2012 03:05:46 -0700 (PDT)
+In-Reply-To: <4F9D4291.6060803@rauros.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,100 +34,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: chris-alsa@rauros.net
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--20cf3056423db5082504bf0ad40b
+Content-Type: text/plain; charset=ISO-8859-1
 
---===============1776321999495615424==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
-Content-Disposition: inline
+Hi,
 
+thanks for the usbmon logs.
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here's small patch for mixer_quirks.c that might get you *some*
+controls (should be 16 controls). I could not even try to compile this
+at the moment so it might be completely broken ;-)
 
-The following changes since commit 1a38336b8611a04f0a624330c1f815421f4bf5f4:
+If you don't hear any sound it would still be a success if you can
+actually control the controls. Please, also take a look at usbmon
+output (grep Co) and see if we really match the corresponding Windows
+messages.
 
-  ASoC: wm8994: Improve sequencing of AIF channel enables (2012-04-23 12:55=
-:52 +0100)
+Due to the flat layout of the mixer we can't get more controls within
+the current quirk without a couple of deeper changes in mixer.c. I'm
+hesitating to do something like this without knowing if it's actually
+needed *and* sufficient.
 
-are available in the git repository at:
+Hence, could you please send usbmon logs of the effect controls.
+Again, I'm only interested in the "Co" lines.
+(If the effect controls extend the flat layout we need to write our
+own get/set functions anyway and there was no need for dealing with
+mixer.c)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc=
--3.4
+Regards,
 
-for you to fetch changes up to 06412088ce98f745405b8f65cfc51ddd6b842bbf:
+Felix
 
-  ASoC: s3c2412-i2s: Fix dai registration (2012-04-30 23:45:25 +0100)
+--20cf3056423db5082504bf0ad40b
+Content-Type: application/octet-stream; name="c400_test.diff"
+Content-Disposition: attachment; filename="c400_test.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h1q7xnfg0
 
-----------------------------------------------------------------
-ASoC: Updates for 3.4
-
-Nothing terribly exciting here, a bunch of small and simple fixes
-scattered around the place.
-
-----------------------------------------------------------------
-Eric B=E9nard (1):
-      ASoC: tlv312aic23: unbreak resume
-
-Fabio Estevam (1):
-      ASoC: dt: sgtl5000.txt: Add description for 'reg' field
-
-Heiko St=FCbner (1):
-      ASoC: s3c2412-i2s: Fix dai registration
-
-Lars-Peter Clausen (1):
-      ASoC: bf5xx-ssm2602: Set DAI format
-
-Mark Brown (2):
-      ASoC: wm_hubs: Make sure we don't disable differential line outputs
-      ASoC: wm8350: Don't use locally allocated codec struct
-
-Richard Zhao (1):
-      ASoC: core: check of_property_count_strings failure
-
- Documentation/devicetree/bindings/sound/sgtl5000.txt |    2 ++
- sound/soc/blackfin/bf5xx-ssm2602.c                   |    2 ++
- sound/soc/codecs/tlv320aic23.c                       |    4 ++--
- sound/soc/codecs/wm8350.c                            |   11 ++++++-----
- sound/soc/codecs/wm_hubs.c                           |   15 +++++++++------
- sound/soc/samsung/s3c2412-i2s.c                      |    2 +-
- sound/soc/soc-core.c                                 |    6 +++---
- 7 files changed, 25 insertions(+), 17 deletions(-)
-
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPoP6fAAoJEBus8iNuMP3dBzsP/3cVO4ItK9CDk43gHkHBVHD8
-1y7ErtxKc1bmg5VzyR0ItiG41VkvTz6qmeEkVD43o90QOwQf797rM5WetA9ASM/Y
-6/yeOK4C5LRX8Pasq7KqlOv6UWoAT8XlcL1Hi8STQHHUPrHj8Z17R53Jk9CftzF0
-8Rv3RoD4AmFUn7bSP6R7ELlqw81TiYNCp2UwG3M3KUVVX0eQ3y+p+oK73dLJPpiv
-7wl+2F/67V0IwcRQ4w8bauphFXqjijzgzrKXeMVcb4KmQDKtVPp8QB2C8iQI5ANG
-ynkKkcHLr8raH0bLW0PxBvRVqfRvJvoiol+KgjNUQN+FUMvN3CHXUN3S0+oj4Lv5
-/DnlKwU7Az9TVe2rusbAlnBbG61Ascwrf16m+1GYWcM6yPqvlzsdEDEgFXYLDwut
-eljYQAJtvqp62rmN9Kk9KFLaODY/lUxR5z83qiSVlxew4zNvVDmRqJ9PDjtUpus0
-sWGcwP6TEbMDbfP/3UPpGyH3Wd5Y2QlLMSL+xmXlRlP2P57CYE7pMPNVMRDwZ05g
-174CDuv7AEFYm0/k/1yTGb9PJnfgIMQFPznH2x8pLndK0KOkt8gHAzRn04OPDKou
-i6QOQuIcpW0qNDA0AgsCswDtRIeDBBvM64KejdvQ1GgvSpnEPooikdOpKms6yQ2+
-gUWeZJZyvWo1kvum3wqr
-=shOz
------END PGP SIGNATURE-----
-
---9jxsPFA5p3P2qPhR--
-
---===============1776321999495615424==
+ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlcl9xdWlya3MuYyBiL3NvdW5kL3VzYi9taXhlcl9x
+dWlya3MuYwppbmRleCAxMjEyNWNhLi4yYmE0YTI4IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvbWl4
+ZXJfcXVpcmtzLmMKKysrIGIvc291bmQvdXNiL21peGVyX3F1aXJrcy5jCkBAIC05MjUsNiArOTI1
+LDUyIEBAIHN0YXRpYyBpbnQgc25kX2Z0dV9jcmVhdGVfbWl4ZXIoc3RydWN0IHVzYl9taXhlcl9p
+bnRlcmZhY2UgKm1peGVyKQogfQogCiAKKy8qIFRyeSB0byBjcmVhdGUgbWl4ZXIgY29udHJvbHMg
+Zm9yIE0tQXVkaW8gQzQwMCAqLworc3RhdGljIGludCBzbmRfYzQwMF9jcmVhdGVfdm9sX2N0bHMo
+c3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyKQoreworCWNoYXIgbmFtZVs2NF07CisJ
+dW5zaWduZWQgaW50IGNvbnRyb2wsIGNtYXNrOworCWludCBpbiwgb3V0LCBlcnI7CisKKwljb25z
+dCB1bnNpZ25lZCBpbnQgaWQgPSAweDQwOworCWNvbnN0IGludCB2YWxfdHlwZSA9IFVTQl9NSVhF
+Ul9TMTY7CisJY29uc3QgY29udHJvbCA9IDE7CisKKwlmb3IgKGluID0gMDsgaW4gPCAxMDsgaW4r
+KykgeworCQlmb3IgKG91dCA9IDA7IG91dCA8IDY7IG91dCsrKSB7CisJCQkvKiBHaXZlIGl0IGEg
+bmFtZSAqLworCQkJaWYoaW4gPCA2KSB7CisJCQkJc25wcmludGYobmFtZSwgc2l6ZW9mKG5hbWUp
+LAorCQkJCQkiREluJWQgLSBPdXQlZCBQbGF5YmFjayBWb2x1bWUiLAorCQkJCQlpbiArIDEsIG91
+dCArIDEpOworCQkJfSBlbHNlIHsKKwkJCQlzbnByaW50ZihuYW1lLCBzaXplb2YobmFtZSksCisJ
+CQkJCSJBSW4lZCAtIE91dCVkIFBsYXliYWNrIFZvbHVtZSIsCisJCQkJCWluIC0gNiwgb3V0ICsg
+MSk7CQkJCQorCQkJfQorCQkJLyogQ3JlYXRlIGFzIG1hbnkgY29udHJvbHMgYXMgcG9zc2libGUg
+YS50Lm0uICovCisJCQlpZiAoaW4gKiA2ICsgb3V0IDwgTUFYX0NIQU5ORUxTIHsKKwkJCQljbWFz
+ayA9IDEgPDwgKGluICogNiArIG91dCk7CisJCQkJZXJyID0gc25kX2NyZWF0ZV9zdGRfbW9ub19j
+dGwobWl4ZXIsIGlkLCBjb250cm9sLAorCQkJCQkJCWNtYXNrLCB2YWxfdHlwZSwgbmFtZSwKKwkJ
+CQkJCQkmc25kX3VzYl9taXhlcl92b2xfdGx2KTsKKwkJCQlpZiAoZXJyIDwgMCkKKwkJCQkJcmV0
+dXJuIGVycjsKKwkJCX0KKwkJfQorCX0KKworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IHNu
+ZF9jNDAwX2NyZWF0ZV9taXhlcihzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIpCit7
+CisJaW50IGVyciA9IDA7CisJZXJyID0gc25kX2M0MDBfY3JlYXRlX3ZvbF9jdGxzKG1peGVyKTsK
+KworCXJldHVybiBlcnI7Cit9CisKIC8qCiAgKiBDcmVhdGUgbWl4ZXIgZm9yIEVsZWN0cml4IEVi
+b3gtNDQKICAqCkBAIC0xMDI1LDYgKzEwNzEsMTAgQEAgaW50IHNuZF91c2JfbWl4ZXJfYXBwbHlf
+Y3JlYXRlX3F1aXJrKHN0cnVjdCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlcikKIAkJZXJyID0g
+c25kX2Z0dV9jcmVhdGVfbWl4ZXIobWl4ZXIpOwogCQlicmVhazsKIAorCWNhc2UgVVNCX0lEKDB4
+MDc2MywgMHgyMDMwKTogLyogTS1BdWRpbyBDNDAwICovCisJCWVyciA9IHNuZF9jNDAwX2NyZWF0
+ZV9taXhlcihtaXhlcik7CisJCWJyZWFrOworCiAJY2FzZSBVU0JfSUQoMHgwYjA1LCAweDE3Mzkp
+OgogCWNhc2UgVVNCX0lEKDB4MGIwNSwgMHgxNzQzKToKIAkJZXJyID0gc25kX3hvbmFyX3UxX2Nv
+bnRyb2xzX2NyZWF0ZShtaXhlcik7Cg==
+--20cf3056423db5082504bf0ad40b
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1776321999495615424==--
+--20cf3056423db5082504bf0ad40b--
