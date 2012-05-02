@@ -1,17 +1,21 @@
-From: liufc <liufc10@gmail.com>
-Subject: HDA driver without interrupt
-Date: Wed, 02 May 2012 20:54:41 +0800
-Message-ID: <4FA12E91.8050804@gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: core: Allow DAIs to specify a
+	base address
+Date: Wed, 02 May 2012 15:06:37 +0100
+Message-ID: <1335967597.4722.0.camel@odin>
+References: <1335899068-22645-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1E4A824330
+Received: from na3sys009aog122.obsmtp.com (na3sys009aog122.obsmtp.com
+	[74.125.149.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id C519624150
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2012 14:54:46 +0200 (CEST)
-Received: by pbbrp16 with SMTP id rp16so1335815pbb.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 May 2012 05:54:45 -0700 (PDT)
+	Wed,  2 May 2012 16:06:44 +0200 (CEST)
+Received: by wibhm17 with SMTP id hm17so3894717wib.0
+	for <alsa-devel@alsa-project.org>; Wed, 02 May 2012 07:06:40 -0700 (PDT)
+In-Reply-To: <1335899068-22645-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,10 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,I'm trying to implement an alsa driver based on the Intel HDA 
-driver.However due to some hardware defects,I'm not able to use 
-interrupt.So I wonder whether there is a way to do the job without the 
-help of interrupt.Can anyone give me a suggestion?
+On Tue, 2012-05-01 at 20:04 +0100, Mark Brown wrote:
+> Devices with many DAIs are becoming more and more common, and generally
+> the more modern devices have consistent register layouts between DAIs.
+> Rather than have drivers open code lookups based on the DAI ID or cause
+> uglification in UI by having register addresses for IDs provide a base
+> address field they can use.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+Both
+
+Acked-by: Liam Girdwood <lrg@ti.com>
