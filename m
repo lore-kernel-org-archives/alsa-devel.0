@@ -1,116 +1,59 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: M-Audio FastTrack C400
-Date: Wed, 2 May 2012 12:05:45 +0200
-Message-ID: <CAFz=ag5HWp-BW4ZyymR7F60ahtzttyoBk6ZwdSRVKBXepHyn1w@mail.gmail.com>
-References: <4F8D63F4.1040208@rauros.net>
-	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
-	<4F8DF29B.9090907@rauros.net>
-	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
-	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
-	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
-	<4F920D73.7070309@rauros.net>
-	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
-	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
-	<4F9CB0D7.5060401@rauros.net>
-	<CAFz=ag6tVjD6hANk2e6sH8hcrbJi6SdqYJNy2U-nkArBV5DVfQ@mail.gmail.com>
-	<4F9D4291.6060803@rauros.net>
+From: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: Re: [PATCH 09/11] ARM: imx6q: add ssi1 clk_lookup
+Date: Wed, 2 May 2012 18:34:41 +0800
+Message-ID: <20120502103440.GA2982@b20223-02.ap.freescale.net>
+References: <1335510185-7906-1-git-send-email-richard.zhao@freescale.com>
+ <1335510185-7906-10-git-send-email-richard.zhao@freescale.com>
+ <20120427080412.GW17184@pengutronix.de>
+ <20120427091055.GP28063@b20223-02.ap.freescale.net>
+ <20120427092529.GA20478@pengutronix.de>
+ <20120430020143.GA1857@richard-laptop>
+ <20120430121857.GL4141@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=20cf3056423db5082504bf0ad40b
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27C19104429
-	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2012 12:05:47 +0200 (CEST)
-Received: by ghbg19 with SMTP id g19so518204ghb.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 May 2012 03:05:46 -0700 (PDT)
-In-Reply-To: <4F9D4291.6060803@rauros.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: chris-alsa@rauros.net
-Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20120430121857.GL4141-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Richard Zhao <richard.zhao-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---20cf3056423db5082504bf0ad40b
-Content-Type: text/plain; charset=ISO-8859-1
+On Mon, Apr 30, 2012 at 02:18:57PM +0200, Sascha Hauer wrote:
+> On Mon, Apr 30, 2012 at 10:01:46AM +0800, Richard Zhao wrote:
+> > > > > 
+> > > > > 	clk_register_clkdev(clk[ipg], "ipg", "2028000.ssi");
+> > > > ssi don't have ipg gate. We can let it always on for imx6q.
+> > > 
+> > > Can you please ask your IC guys for clarification?
+> > > 
+> > > For example on i.MX5 we have a ssi ipg clock and a ssi serial clock.
+> > > Both can be gated with two individual gate bits.
+> > > 
+> > > The i.MX6 datasheet (and also several other i.MX datasheets) is quite
+> > > nebulous. The i.MX6 has only one gate bit for each SSI unit, but
+> > > it's not clear if this bit actually gates both the ipg and serial
+> > > clock or only one of them.
+> > You're right. ipg and serial clocks share the same gate. How do we
+> > handle it? I think it's not the only one and won't be last one.
+> 
+> We don't have support for a single gate gating two clocks right now and
+> I don't know how this fits into the clock framework.
+> We could pretend that only the ipg clock is gateable because this is
+> needed anyway when the SSI unit is used.
+Shawn, will you add clk ssi_ipg?
 
-Hi,
-
-thanks for the usbmon logs.
-
-Here's small patch for mixer_quirks.c that might get you *some*
-controls (should be 16 controls). I could not even try to compile this
-at the moment so it might be completely broken ;-)
-
-If you don't hear any sound it would still be a success if you can
-actually control the controls. Please, also take a look at usbmon
-output (grep Co) and see if we really match the corresponding Windows
-messages.
-
-Due to the flat layout of the mixer we can't get more controls within
-the current quirk without a couple of deeper changes in mixer.c. I'm
-hesitating to do something like this without knowing if it's actually
-needed *and* sufficient.
-
-Hence, could you please send usbmon logs of the effect controls.
-Again, I'm only interested in the "Co" lines.
-(If the effect controls extend the flat layout we need to write our
-own get/set functions anyway and there was no need for dealing with
-mixer.c)
-
-Regards,
-
-Felix
-
---20cf3056423db5082504bf0ad40b
-Content-Type: application/octet-stream; name="c400_test.diff"
-Content-Disposition: attachment; filename="c400_test.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h1q7xnfg0
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlcl9xdWlya3MuYyBiL3NvdW5kL3VzYi9taXhlcl9x
-dWlya3MuYwppbmRleCAxMjEyNWNhLi4yYmE0YTI4IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvbWl4
-ZXJfcXVpcmtzLmMKKysrIGIvc291bmQvdXNiL21peGVyX3F1aXJrcy5jCkBAIC05MjUsNiArOTI1
-LDUyIEBAIHN0YXRpYyBpbnQgc25kX2Z0dV9jcmVhdGVfbWl4ZXIoc3RydWN0IHVzYl9taXhlcl9p
-bnRlcmZhY2UgKm1peGVyKQogfQogCiAKKy8qIFRyeSB0byBjcmVhdGUgbWl4ZXIgY29udHJvbHMg
-Zm9yIE0tQXVkaW8gQzQwMCAqLworc3RhdGljIGludCBzbmRfYzQwMF9jcmVhdGVfdm9sX2N0bHMo
-c3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyKQoreworCWNoYXIgbmFtZVs2NF07CisJ
-dW5zaWduZWQgaW50IGNvbnRyb2wsIGNtYXNrOworCWludCBpbiwgb3V0LCBlcnI7CisKKwljb25z
-dCB1bnNpZ25lZCBpbnQgaWQgPSAweDQwOworCWNvbnN0IGludCB2YWxfdHlwZSA9IFVTQl9NSVhF
-Ul9TMTY7CisJY29uc3QgY29udHJvbCA9IDE7CisKKwlmb3IgKGluID0gMDsgaW4gPCAxMDsgaW4r
-KykgeworCQlmb3IgKG91dCA9IDA7IG91dCA8IDY7IG91dCsrKSB7CisJCQkvKiBHaXZlIGl0IGEg
-bmFtZSAqLworCQkJaWYoaW4gPCA2KSB7CisJCQkJc25wcmludGYobmFtZSwgc2l6ZW9mKG5hbWUp
-LAorCQkJCQkiREluJWQgLSBPdXQlZCBQbGF5YmFjayBWb2x1bWUiLAorCQkJCQlpbiArIDEsIG91
-dCArIDEpOworCQkJfSBlbHNlIHsKKwkJCQlzbnByaW50ZihuYW1lLCBzaXplb2YobmFtZSksCisJ
-CQkJCSJBSW4lZCAtIE91dCVkIFBsYXliYWNrIFZvbHVtZSIsCisJCQkJCWluIC0gNiwgb3V0ICsg
-MSk7CQkJCQorCQkJfQorCQkJLyogQ3JlYXRlIGFzIG1hbnkgY29udHJvbHMgYXMgcG9zc2libGUg
-YS50Lm0uICovCisJCQlpZiAoaW4gKiA2ICsgb3V0IDwgTUFYX0NIQU5ORUxTIHsKKwkJCQljbWFz
-ayA9IDEgPDwgKGluICogNiArIG91dCk7CisJCQkJZXJyID0gc25kX2NyZWF0ZV9zdGRfbW9ub19j
-dGwobWl4ZXIsIGlkLCBjb250cm9sLAorCQkJCQkJCWNtYXNrLCB2YWxfdHlwZSwgbmFtZSwKKwkJ
-CQkJCQkmc25kX3VzYl9taXhlcl92b2xfdGx2KTsKKwkJCQlpZiAoZXJyIDwgMCkKKwkJCQkJcmV0
-dXJuIGVycjsKKwkJCX0KKwkJfQorCX0KKworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IHNu
-ZF9jNDAwX2NyZWF0ZV9taXhlcihzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIpCit7
-CisJaW50IGVyciA9IDA7CisJZXJyID0gc25kX2M0MDBfY3JlYXRlX3ZvbF9jdGxzKG1peGVyKTsK
-KworCXJldHVybiBlcnI7Cit9CisKIC8qCiAgKiBDcmVhdGUgbWl4ZXIgZm9yIEVsZWN0cml4IEVi
-b3gtNDQKICAqCkBAIC0xMDI1LDYgKzEwNzEsMTAgQEAgaW50IHNuZF91c2JfbWl4ZXJfYXBwbHlf
-Y3JlYXRlX3F1aXJrKHN0cnVjdCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlcikKIAkJZXJyID0g
-c25kX2Z0dV9jcmVhdGVfbWl4ZXIobWl4ZXIpOwogCQlicmVhazsKIAorCWNhc2UgVVNCX0lEKDB4
-MDc2MywgMHgyMDMwKTogLyogTS1BdWRpbyBDNDAwICovCisJCWVyciA9IHNuZF9jNDAwX2NyZWF0
-ZV9taXhlcihtaXhlcik7CisJCWJyZWFrOworCiAJY2FzZSBVU0JfSUQoMHgwYjA1LCAweDE3Mzkp
-OgogCWNhc2UgVVNCX0lEKDB4MGIwNSwgMHgxNzQzKToKIAkJZXJyID0gc25kX3hvbmFyX3UxX2Nv
-bnRyb2xzX2NyZWF0ZShtaXhlcik7Cg==
---20cf3056423db5082504bf0ad40b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---20cf3056423db5082504bf0ad40b--
+Thanks
+Richard
+> 
+> It seems we need a proper solution for this later.
+> 
+> Sascha
+> 
+> 
+> -- 
+> Pengutronix e.K.                           |                             |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
