@@ -1,20 +1,27 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Fast Track Ultra latency and new streaming logic.
-Date: Wed, 02 May 2012 10:41:39 +0200
-Message-ID: <4FA0F343.3060702@gmail.com>
-References: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 8/8] ASoC: Ux500: Add machine-driver
+Date: Wed, 2 May 2012 10:59:53 +0200
+Message-ID: <4FA0F789.20708@stericsson.com>
+References: <1334914409-27592-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120423190508.GX8318@opensource.wolfsonmicro.com>
+	<4F9A7BFA.7000507@stericsson.com>
+	<20120427111523.GE18260@opensource.wolfsonmicro.com>
+	<4F9E4CB6.7090606@stericsson.com>
+	<20120430100452.GE3170@opensource.wolfsonmicro.com>
+	<4FA0EBF7.2090903@stericsson.com>
+	<20120502081709.GA4075@opensource.wolfsonmicro.com>
+	<4FA0F008.4020108@stericsson.com>
+	<20120502084104.GB4075@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A9A81043DC
+Received: from eu1sys200aog117.obsmtp.com (eu1sys200aog117.obsmtp.com
+	[207.126.144.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6F1A1043E6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2012 10:41:49 +0200 (CEST)
-Received: by bkcjg15 with SMTP id jg15so240883bkc.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 May 2012 01:41:49 -0700 (PDT)
-In-Reply-To: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
+	Wed,  2 May 2012 11:00:16 +0200 (CEST)
+In-Reply-To: <20120502084104.GB4075@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +31,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01.05.2012 02:18, Grant Diffey wrote:
-> In continuing my personal habit of looking gift horses in the mouth...
+On 05/02/2012 10:41 AM, Mark Brown wrote:
 
-Testing is much appreciated :)
-
-> I can't seem to get below 512frames in flight (2 256sample frames or 4
-> 128 or 8 64's) without consistant overruns.
+> On Wed, May 02, 2012 at 10:27:52AM +0200, Ola Lilja wrote:
 > 
-> I have a feeling that the pcm <-> urb layer is buffering until a urb is
-> max urbsize from a quick look at the code does this seem like the right
-> track?
-
-No, it doesn't. The implicit feedback streaming model waits for capture
-urbs to arrive and then sends back an urb with the same amount of data
-for playback. Hence, the number of bytes per playback urb is defined by
-the device and the stream it sends to the host.
-
-> This leads to rather high latencies (22ms+) or is this conclusion bogus?
-
-The urb length can't possibly lead to such latencies. With a sample
-frequency of 44100 Hz and a stereo stream @16bit, we're dealing with a
-data rate of 176400 bytes/s. Even with max urbsizes of 512 bytes, an urb
-can only hold ~2,9ms of audio data. With more streams, higher sample
-rates or deeper samples, this number is declining. So this can't be the
-reason.
-
-Also, I doubt that the rewrite of the streaming code is to blame for
-what you're seeing, as it just changed the logical view on internal
-structures. The streaming behaviour itself should remain the same.
-
-What you could do, though, is disabling the FTU quirk in
-sound/usb/pcm.c:set_format(). That should in theory restore the old
-streaming logic. Does that change anything?
+>> I'm actually no fan of ifdefs, but let's say that the HDMI-driver is not
+>> activated in menuconfig. This would lead to the point where the ASoC-driver
+>> cannot be activated at all, although there is two codecs in the driver which
+>> could have been used fine.
+>> If this is the way forwards then I'll rewrite it this way.
+> 
+> The actual CODECs are supposed to be selected by the machine driver
+> anyway so there should be no possibility of them not being there.
 
 
-Daniel
+Yes, but the codec-driver has dependency to another driver. For AB8500
+codec-driver it needs the MFD-driver. This AB8500-core driver can be deselected
+in menuconfig and then our whole ASoC-driver will be unavailable, even though
+the other two codec-drivers actually could be used.
