@@ -1,20 +1,16 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Fast Track Ultra latency and new streaming logic.
-Date: Thu, 3 May 2012 10:39:29 +0200
-Message-ID: <CAFz=ag5d8PFYoA2KsWKMZ+yX=1gLQmGWx7wFn1cTVf4CW_jDiA@mail.gmail.com>
-References: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: [PATCH] ASoC: da7210: Minor improvements and a bugfix
+Date: Thu, 3 May 2012 19:27:52 +0530
+Message-ID: <1336053472.29584.16.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0DAC10405F
+Received: from va3outboundpool.messaging.microsoft.com
+	(va3ehsobe005.messaging.microsoft.com [216.32.180.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id B949D10405F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 May 2012 10:39:29 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so1668464yhn.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 May 2012 01:39:29 -0700 (PDT)
-In-Reply-To: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
+	Thu,  3 May 2012 15:46:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,51 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch improves playback quality for few sample rates like 8000 and
+11025 Hz. 
 
+This also fixes an issue observed during testing of pll slave mode. Due
+to the issue, on some rare occasions there was no sound output for first
+time playback after system boot, though all subsequent playbacks were
+fine. It was mainly because of the sequence in which SRM bit was
+enabled.
 
-2012/5/1 Grant Diffey <gdiffey@gmail.com>:
-> I can't seem to get below 512frames in flight (2 256sample frames or 4 128
-> or 8 64's) without consistant overruns.
+Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Signed-off-by: David Dajun Chen <dchen@diasemi.com>
+---
+ sound/soc/codecs/da7210.c |   28 +++++++++++++++-------------
+ 1 files changed, 15 insertions(+), 13 deletions(-)
 
-at least at 44.1 and 48 kHz I can get it to run without consistent
-xruns with 3 periods/buffer and 128 frames/period.
-For 88.2 and 96 kHz I need to go to 4 periods/buffer. Less than 128
-frames/period lead to consistent xruns no matter how many
-periods/buffer I use.
-
-I've been using a kernel freshly cloned from Tiwai's git with the
-latest rt patch on a rather slow laptop. I've switched to Fedora on
-that machine a couple of days ago so I don't know yet if my system
-settings are properly adjusted for Jack, yet.
-
-> This leads to rather high latencies (22ms+) or is this conclusion bogus?
-
-Yes, I guess that this conclusion is bogus.
-
-First, even at 44.1 kHz I think that you rather get 11.6 ms latency
-(512/44.1). At 96 kHz this reduces to 5.3 ms.
-
-I've even done some measurements using jack_iodelay. At 96 kHz I get a
-total round trip latency of 17.5 ms. According to the jack_iodelay
-manpage this corresponds (if I get it right) to an hardware
-input/output latency of the device of ~584 frames (6.1 ms).
-
-This would lead to the (maybe bogus) conclusion that we have a total
-output latency of 11.4 ms.
-
-By the way, if you're using jack2 you would probably want to start it
-in synchronous mode (with the -S option ). Otherwise you get an
-implicit extra period/buffer. (I guess you already know that.)
-
-@Daniel: I could not find any difference between my latest
-"old-streaming-logic" kernel and my latest "new-streaming-logic"
-kernel.
-
-Regards,
-
-Felix
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 10f52ff..af5db70 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -850,8 +850,19 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
+ 	if (da7210->mclk_rate && (da7210->mclk_rate != sysclk)) {
+ 		/* PLL mode, disable PLL bypass */
+ 		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, 0);
++
++		if (!da7210->master) {
++			/* PLL slave mode, also enable SRM */
++			snd_soc_update_bits(codec, DA7210_PLL,
++						   (DA7210_MCLK_SRM_EN |
++						    DA7210_MCLK_DET_EN),
++						   (DA7210_MCLK_SRM_EN |
++						    DA7210_MCLK_DET_EN));
++		}
+ 	} else {
+-		/* PLL bypass mode, enable PLL bypass */
++		/* PLL bypass mode, enable PLL bypass and Auto Detection */
++		snd_soc_update_bits(codec, DA7210_PLL, DA7210_MCLK_DET_EN,
++						       DA7210_MCLK_DET_EN);
+ 		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP,
+ 							    DA7210_PLL_BYP);
+ 	}
+@@ -1014,18 +1025,9 @@ static int da7210_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	snd_soc_update_bits(codec, DA7210_PLL_DIV3,
+ 				   DA7210_PLL_DIV_L_MASK, pll_div3);
+ 
+-	if (da7210->master) {
+-		/* In master mode, no need to enable SRM */
+-		snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_EN,
+-						       DA7210_PLL_EN);
+-	} else {
+-		/* In slave mode, enable SRM and PLL */
+-		snd_soc_update_bits(codec, DA7210_PLL,
+-				   (DA7210_PLL_EN | DA7210_MCLK_SRM_EN |
+-						     DA7210_MCLK_DET_EN),
+-				   (DA7210_PLL_EN | DA7210_MCLK_SRM_EN |
+-						    DA7210_MCLK_DET_EN));
+-	}
++	/* Enable PLL */
++	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_EN, DA7210_PLL_EN);
++
+ 	/* Enable active mode */
+ 	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN,
+ 						    DA7210_SC_MST_EN);
+-- 
+1.7.1
