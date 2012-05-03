@@ -1,20 +1,17 @@
-From: Felix Homann <linuxaudio@showlabor.de>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Fast Track Ultra latency and new streaming logic.
-Date: Thu, 3 May 2012 16:03:38 +0200
-Message-ID: <CAFz=ag6d+zcHrNhxKwaTHQYb04GJEKDXjowz4NhXtERAV-zjag@mail.gmail.com>
+Date: Thu, 03 May 2012 16:13:16 +0200
+Message-ID: <4FA2927C.1010501@ladisch.de>
 References: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
 	<CAFz=ag5d8PFYoA2KsWKMZ+yX=1gLQmGWx7wFn1cTVf4CW_jDiA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABCC8104450
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 4DCA6104472
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 May 2012 16:03:39 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so1926551yhn.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 May 2012 07:03:38 -0700 (PDT)
+	Thu,  3 May 2012 16:09:11 +0200 (CEST)
 In-Reply-To: <CAFz=ag5d8PFYoA2KsWKMZ+yX=1gLQmGWx7wFn1cTVf4CW_jDiA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,31 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some more observations:
+Felix Homann wrote:
+> I've even done some measurements using jack_iodelay. At 96 kHz I get a
+> total round trip latency of 17.5 ms. According to the jack_iodelay
+> manpage this corresponds (if I get it right) to an hardware
+> input/output latency of the device of ~584 frames (6.1 ms).
 
-I've measured the latency on the same machine running Windows 7 using
-Centrance's latency test utility (http://centrance.com/downloads/ltu/)
-and got much better results than under Linux. That's a bit
-disappointing...
+USB playback also adds further latency by queueing the packets; the
+number of packets can be seen under "URBs" in /proc/asound/card?/stream0.
+(There are 1000/8000 packets per second at full/high speed.)
 
-I don't know if these latencies come xrun-free since I don't know how
-to detect xruns on Windows. On the other hand, telling Jack not to
-complain about xruns from Alsa (softmode) I can get down to 64
-frames/period and 2 periods/buffer without any noticable glitches or
-crackles (playing a sine test tone). Maybe the Windows driver just
-doesn't complain either?
-
-Nevertheless, I'm a bit surprised that just starting Jack without any
-clients will result in a flood of xruns at small buffer sizes. Is
-there anything we can do about it? Is this to be expected? Is this a
-flaw in Alsa, Jack or the USB stack? Is there a way to debug these
-xruns?
-
-Any suggestions?
 
 Regards,
-Felix
+Clemens
