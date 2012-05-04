@@ -1,18 +1,40 @@
-From: Daniel Drake <dsd@laptop.org>
-Subject: Diagnosing why DAPM config is not correctly applied
-Date: Fri, 4 May 2012 15:11:01 -0600
-Message-ID: <CAMLZHHQUbJYQeZZmaZAhPq9iAV1FczY=JTR6aKM3MkFaZri6Bw@mail.gmail.com>
+From: Chris Cavey <chris-alsa@rauros.net>
+Subject: Re: M-Audio FastTrack C400
+Date: Fri, 04 May 2012 18:42:49 -0400
+Message-ID: <4FA45B69.5010608@rauros.net>
+References: <4F8D63F4.1040208@rauros.net>
+	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
+	<4F8DF29B.9090907@rauros.net>
+	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
+	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
+	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
+	<4F920D73.7070309@rauros.net>
+	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+	<4F9CB0D7.5060401@rauros.net>
+	<CAFz=ag6tVjD6hANk2e6sH8hcrbJi6SdqYJNy2U-nkArBV5DVfQ@mail.gmail.com>
+	<4F9D4291.6060803@rauros.net>
+	<CAFz=ag5HWp-BW4ZyymR7F60ahtzttyoBk6ZwdSRVKBXepHyn1w@mail.gmail.com>
+	<4FA19CAC.7070704@rauros.net>
+	<CAFz=ag624FsOhyRSKY=cO5+fZtLhCKMsox4_HhFooor_B5OQ8g@mail.gmail.com>
+	<4FA36114.2030305@rauros.net>
+	<CAFz=ag5iwFf7DtfE8sucZWSNq14DZM7enwER5m_M=9=9Do9J7w@mail.gmail.com>
+Reply-To: chris-alsa@rauros.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A504103E81
+Received: from vms173017pub.verizon.net (vms173017pub.verizon.net
+	[206.46.173.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F88F103F3B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2012 23:11:03 +0200 (CEST)
-Received: by pbbrp16 with SMTP id rp16so5609636pbb.38
-	for <alsa-devel@alsa-project.org>; Fri, 04 May 2012 14:11:01 -0700 (PDT)
+	Sat,  5 May 2012 00:43:33 +0200 (CEST)
+Received: from rauros.net ([unknown] [74.107.69.179])
+	by vms173017.mailsrvcs.net
+	(Sun Java(tm) System Messaging Server 7u2-7.02 32bit (built Apr 16
+	2009)) with ESMTPA id <0M3I005F5SFEAIC1@vms173017.mailsrvcs.net> for
+	alsa-devel@alsa-project.org; Fri, 04 May 2012 17:42:51 -0500 (CDT)
+In-reply-to: <CAFz=ag5iwFf7DtfE8sucZWSNq14DZM7enwER5m_M=9=9Do9J7w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,289 +44,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: flove@realtek.com, Saadia Husain Baloch <saadia@laptop.org>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+No change. According to usbmon looks like no matter what channel I 
+adjust, the clock ctl is always being adjusted as if the wrong wIndex 
+gets selected. The clock wIndex is 0x8001 but the mixer volume is 
+0x4001. The wValue looks correct (first mixer, according to my docs, 
+should be 0x0100). I'm going to trace down the rabbit hole to learn how 
+wValue/wIndex is derived from the mixer controls.
 
-I'm working with Linux 3.3 and the soc/codecs/rt5631.c driver in an
-OLPC XO-1.75 laptop.
-We are only getting silence when playing back sound.
-
-I have added in some debug messages in soc-io.c and enabled DEBUG and
-VERBOSE_DEBUG in soc-dapm.c.
-
-Here are boot messages:
-http://dev.laptop.org/~dsd/20120504/boot.log
-
-At time X in the above log, I start "speaker-test -c 2 -t wav" and
-leave it running for the remainder of this test.
-
-Here is the "amixer" output at this point:
-http://dev.laptop.org/~dsd/20120504/amixer-initial.txt
-
-speaker-test seems happy but no audio can be heard :(
-
-However, I have found that the following tweak to the sound controls
-will fix the left channel:
-
-  # amixer sset 'Left SPKVOL Mux' 'Vmid'
-  # amixer sset 'Left SPKVOL Mux' 'SPKMIXL'
-
-Note that the original value was SPKMIXL (see initial amixer output)
-so this should have had no effect. However, the result is that sound
-is now heard through the left channel. (A very similar sound control
-change will fix the right channel too)
-
-While running these commands, the following kernel messages appear:
-
-(amixer sset 'Left SPKVOL Mux' 'Vmid')
- read c = 0
- read c = 0
- read 10 = 606
- read 10 = 606
- read c = 0
- read c = 0
- read a = 0
- read a = 0
- read 6 = a080
- read 1e = 88c0
- read 1e = 88c0
- read 1e = 88c0
- read 1e = 88c0
- read 6 = a080
- read 20 = 88c0
- read 20 = 88c0
- read 20 = 88c0
- read 20 = 88c0
- read 24 = 3000
- read 24 = 3000
- read 24 = 3000
- read 24 = 3000
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 2c = 0
- read 2c = 0
- read 4 = c0c0
- read 6 = a080
- read 2 = 4040
- read 22 = 7700
- read 22 = 7700
- read e = 0
- read 22 = 7700
- read 22 = 7700
- read e = 0
- read 2c = 0
- read 6 = a080
- read 26 = 8404
- read 26 = 8404
- read 26 = 8404
- read 2a = 6c00
- read 2a = 6c00
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 2 = 4040
- read 2 = 4040
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 4 = c0c0
- read 6 = a080
- read 2 = 4040
- read 40 = 4e00
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 2c = 0
- read 2a = 6c00
- read 2a = 6c00
- read 2c = 0
- read 2a = 6c00
- read 2a = 6c00
- read 2 = 4040
- read 2 = 4040
- read 2 = 4040
- read 2 = 4040
- read 2 = 4040
- read 2 = 4040
- read 2 = 4040
- read 2 = 4040
- rt5631 0-001a: Marking Vmid dirty due to mux connection
- rt5631 0-001a: Marking Left SPKVOL Mux dirty due to mux change
- read 2 = 4040
- write 2 = 40 (cached)
- read 2 = 40
-
-
-(amixer sset 'Left SPKVOL Mux' 'SPKMIXL')
- read c = 0
- read c = 0
- read 10 = 606
- read 10 = 606
- read c = 0
- read c = 0
- read a = 0
- read a = 0
- read 6 = a080
- read 1e = 88c0
- read 1e = 88c0
- read 1e = 88c0
- read 1e = 88c0
- read 6 = a080
- read 20 = 88c0
- read 20 = 88c0
- read 20 = 88c0
- read 20 = 88c0
- read 24 = 3000
- read 24 = 3000
- read 24 = 3000
- read 24 = 3000
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 4 = c0c0
- read 2c = 0
- read 2c = 0
- read 4 = c0c0
- read 6 = a080
- read 2 = 40
- read 22 = 7700
- read 22 = 7700
- read e = 0
- read 22 = 7700
- read 22 = 7700
- read e = 0
- read 2c = 0
- read 6 = a080
- read 26 = 8404
- read 26 = 8404
- read 26 = 8404
- read 2a = 6c00
- read 2a = 6c00
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1a = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 1c = dfc0
- read 2 = 40
- read 2 = 40
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 14 = b0b0
- read 4 = c0c0
- read 6 = a080
- read 2 = 40
- read 40 = 4e00
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 28 = d8d8
- read 2c = 0
- read 2a = 6c00
- read 2a = 6c00
- read 2c = 0
- read 2a = 6c00
- read 2a = 6c00
- read 2 = 40
- read 2 = 40
- read 2 = 40
- read 2 = 40
- read 2 = 40
- read 2 = 40
- read 2 = 40
- read 2 = 40
- rt5631 0-001a: Marking Vmid dirty due to mux disconnection
- rt5631 0-001a: Marking SPKMIXL Mixer dirty due to mux connection
- rt5631 0-001a: Marking Left SPKVOL Mux dirty due to mux change
- rt5631 0-001a: Marking Left DAC dirty due to peer state change
- rt5631 0-001a: Marking Left DAC To Mixer dirty due to peer state change
- rt5631 0-001a: Marking DAC REF dirty due to peer state change
- rt5631 0-001a: Marking I2S dirty due to peer state change
- rt5631 0-001a: Marking PLL1 dirty due to peer state change
- rt5631 0-001a: Marking Left DAC_HP dirty due to peer state change
- rt5631 0-001a: Marking OUTMIXL Mixer dirty due to peer state change
- read 1a = dfc0
- read 28 = d8d8
- read 42 = 0
- read 42 = 0
- read 42 = 0
- read 42 = 0
- read 2 = 40
- write 2 = 4040 (cached)
- read 3a = 1000
- write 3a = 90c0 (cached)
- read 3a = 90c0
- write 3a = 92c0 (cached)
- read 3b = c
- write 3b = 200c (cached)
- read 2 = 4040
-
-So, changing these settings in a way that should have no effect seems
-to kick DAPM into applying quite a different config from the one
-initially applied. In particular, the register value register 0x3a
-(RT5631_PWR_MANAG_ADD1) is quite different from the one applied
-earlier, and I think this is the key to having playback working.
-
-I've spent some time trying to get my head around the dapm code and
-see whats happening here, without much luck. If someone more
-experienced here could take a quick look at these messages and the
-dapm routes in rt5631.c for anything obvious, it would be much
-appreciated. Further debugging tips welcome too.
-
-Thanks,
-Daniel
+I'll keep tinkering. At some point I should probably just buy you a 
+C400, probably easier.
