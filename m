@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Call for propsals: Audio micro-conf at LPC 2012
- San Diego
-Date: Fri, 4 May 2012 16:27:23 +0100
-Message-ID: <20120504152723.GA30130@sirena.org.uk>
-References: <s5hhaw6tvfn.wl%tiwai@suse.de>
+From: Andre Schramm <andre.schramm@iosono-sound.com>
+Subject: [PATCH 1/1] ALSA: hdsp - Provide ioctl_compat
+Date: Fri,  4 May 2012 19:35:52 +0200
+Message-ID: <1336152952-21309-2-git-send-email-andre.schramm@iosono-sound.com>
+References: <1336152952-21309-1-git-send-email-andre.schramm@iosono-sound.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B83F103B63
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14EDF103E5D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2012 17:27:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hhaw6tvfn.wl%tiwai@suse.de>
+	Fri,  4 May 2012 19:36:15 +0200 (CEST)
+In-Reply-To: <1336152952-21309-1-git-send-email-andre.schramm@iosono-sound.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, Andreas Graefe <andreas.graefe@iosono-sound.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 26, 2012 at 04:33:00PM +0200, Takashi Iwai wrote:
-> The Wiki page is found at
->     http://wiki.linuxplumbersconf.org/2012:audio
+snd_hdsp uses its own ioctls to acquire config- and status information.
+Expose the corresponding ioctl handler via ioctl_compat, so that 32bit applications can use it on 64bit kernels.
 
-> The items listed there are rough ideas popping up during a mail
-> thread.
+Signed-off-by: Andre Schramm <andre.schramm@iosono-sound.com>
 
-> If you have interest and want to give a talk or discussions, don't
-> hesitate to submit your proposal.  Please mail to
-> submissions@linuxplumbersconf.org, as described in the page below:
->     http://www.linuxplumbersconf.org/2012/2012-lpc-call-for-proposals-take-2/
-> 
-
-> The deadline for submission is 11:59 PDT on May 1, 2012.  So, it's
-> pretty little time left.  Sorry for the late announce...
-
-This deadline has since been extended to the 15th so there's still time
-to submit if you want to!
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index 5cc31a4..0d6930c 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -5170,6 +5170,7 @@ static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
+ 	strcpy(hw->name, "HDSP hwdep interface");
+ 
+ 	hw->ops.ioctl = snd_hdsp_hwdep_ioctl;
++	hw->ops.ioctl_compat = snd_hdsp_hwdep_ioctl;
+ 
+ 	return 0;
+ }
+-- 
+1.7.1
