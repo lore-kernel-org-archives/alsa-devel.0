@@ -1,28 +1,19 @@
-From: Christoph Fritz <chf.fritz@googlemail.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work,
-	"Capture Volume" inverted
-Date: Fri, 4 May 2012 15:28:45 +0200
-Message-ID: <20120504132845.GA24245@lovely.krouter>
-References: <1335384469.14096.203.camel@mars>
-	<20120426112726.GF3207@opensource.wolfsonmicro.com>
-	<1335448142.20000.40.camel@mars>
-	<20120426172010.GP3207@opensource.wolfsonmicro.com>
-	<1335474693.3628.26.camel@lovely>
-	<20120426213745.GA18260@opensource.wolfsonmicro.com>
-	<1335513602.3504.4.camel@mars>
-	<20120427134638.GI18260@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Call for propsals: Audio micro-conf at LPC 2012
+ San Diego
+Date: Fri, 4 May 2012 16:27:23 +0100
+Message-ID: <20120504152723.GA30130@sirena.org.uk>
+References: <s5hhaw6tvfn.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 29D9F246DC
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B83F103B63
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2012 15:28:52 +0200 (CEST)
-Received: by werh12 with SMTP id h12so1351319wer.38
-	for <alsa-devel@alsa-project.org>; Fri, 04 May 2012 06:28:51 -0700 (PDT)
+	Fri,  4 May 2012 17:27:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120427134638.GI18260@opensource.wolfsonmicro.com>
+In-Reply-To: <s5hhaw6tvfn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,36 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 27, 2012 at 02:46:39PM +0100, Mark Brown wrote:
-> On Fri, Apr 27, 2012 at 10:00:02AM +0200, Christoph Fritz wrote:
-> > On Thu, 2012-04-26 at 22:37 +0100, Mark Brown wrote:
+On Thu, Apr 26, 2012 at 04:33:00PM +0200, Takashi Iwai wrote:
+> The Wiki page is found at
+>     http://wiki.linuxplumbersconf.org/2012:audio
+
+> The items listed there are rough ideas popping up during a mail
+> thread.
+
+> If you have interest and want to give a talk or discussions, don't
+> hesitate to submit your proposal.  Please mail to
+> submissions@linuxplumbersconf.org, as described in the page below:
+>     http://www.linuxplumbersconf.org/2012/2012-lpc-call-for-proposals-take-2/
 > 
-> > >   The write will be suppresed if the register contents don't
-> > > change which looks like what you're seeing here - 
-> 
-> > Can you imagine why the registers don't change?
-> 
-> I can't immediately think of any reason, no - I'd step through or
-> annotate the code and have a look.
 
-I'm still on.
+> The deadline for submission is 11:59 PDT on May 1, 2012.  So, it's
+> pretty little time left.  Sorry for the late announce...
 
-And while testing WM9712 its touchpad interface, connecting a 800x600
-display (instead of the default 640x480 one) results in a gone sound and
-input-device - pretty queer:
-
-WM9711/WM9712 SoC Audio Codec 0.4
-asoc: platform pcm constructor failed
-asoc: can't create pcm HiFi
-asoc: failed to instantiate card PhyCORE-ac97-audio: -12
-
-I have to admit that I used this time a 3.2 kernel. I'll test with
-current later these days.
-
-
-Thanks,
- -- Christoph
+This deadline has since been extended to the 15th so there's still time
+to submit if you want to!
