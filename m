@@ -1,33 +1,16 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: M-Audio FastTrack C400
-Date: Fri, 4 May 2012 10:26:26 +0200
-Message-ID: <CAFz=ag5iwFf7DtfE8sucZWSNq14DZM7enwER5m_M=9=9Do9J7w@mail.gmail.com>
-References: <4F8D63F4.1040208@rauros.net>
-	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
-	<4F8DF29B.9090907@rauros.net>
-	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
-	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
-	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
-	<4F920D73.7070309@rauros.net>
-	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
-	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
-	<4F9CB0D7.5060401@rauros.net>
-	<CAFz=ag6tVjD6hANk2e6sH8hcrbJi6SdqYJNy2U-nkArBV5DVfQ@mail.gmail.com>
-	<4F9D4291.6060803@rauros.net>
-	<CAFz=ag5HWp-BW4ZyymR7F60ahtzttyoBk6ZwdSRVKBXepHyn1w@mail.gmail.com>
-	<4FA19CAC.7070704@rauros.net>
-	<CAFz=ag624FsOhyRSKY=cO5+fZtLhCKMsox4_HhFooor_B5OQ8g@mail.gmail.com>
-	<4FA36114.2030305@rauros.net>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Lessen CPU usage when waiting for
+	chip to respond
+Date: Fri,  4 May 2012 11:05:55 +0200
+Message-ID: <1336122355-6017-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=20cf302d4c5c357bff04bf31ad99
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id D84392460B
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 838E22462A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2012 10:26:27 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so2740406yhn.38
-	for <alsa-devel@alsa-project.org>; Fri, 04 May 2012 01:26:27 -0700 (PDT)
-In-Reply-To: <4FA36114.2030305@rauros.net>
+	Fri,  4 May 2012 11:05:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,62 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: chris-alsa@rauros.net
-Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
+To: arun.raghavan@collabora.co.uk
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
---20cf302d4c5c357bff04bf31ad99
-Content-Type: text/plain; charset=ISO-8859-1
+When an IRQ for some reason gets lost, we wait up to a second using
+udelay, which is CPU intensive. This patch improves the situation by
+waiting about 30 ms in the CPU intensive mode, then stepping down to
+using msleep(2) instead. In essence, we trade some granularity in
+exchange for less CPU consumption when the waiting time is a bit longer.
 
-Hi,
+As a result, PulseAudio should no longer be killed by the kernel
+for taking up to much RT-prio CPU time. At least not for *this* reason.
 
-2012/5/4 Chris Cavey <chris-alsa@rauros.net>:
-> Attached are logs from win7 vm unplug/replug and my ubuntu 12.04 dev vm with
-> alsa mods.
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Great!
+Hi Arun,
 
+Can you check if this patch resolves your problem with PulseAudio getting
+killed by the kernel? If so, we should apply it to the kernel, perhaps even
+to stable.
 
->
-> I've also included a patch of my current set of modifications
->
-
-Thanks.
-
-Could you please try if the attached patch changes anything?
-
-Regards,
-Felix
-
---20cf302d4c5c357bff04bf31ad99
-Content-Type: application/octet-stream; name="c400_force_uac1.diff"
-Content-Disposition: attachment; filename="c400_force_uac1.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h1szbal03
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKaW5kZXgg
-M2Q3MDI0NS4uNzBkZjJmOSAxMDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVyLmMKKysrIGIvc291
-bmQvdXNiL21peGVyLmMKQEAgLTM2OSw3ICszNjksOCBAQCBlcnJvcjoKIAogc3RhdGljIGludCBn
-ZXRfY3RsX3ZhbHVlKHN0cnVjdCB1c2JfbWl4ZXJfZWxlbV9pbmZvICpjdmFsLCBpbnQgcmVxdWVz
-dCwgaW50IHZhbGlkeCwgaW50ICp2YWx1ZV9yZXQpCiB7Ci0JcmV0dXJuIChjdmFsLT5taXhlci0+
-cHJvdG9jb2wgPT0gVUFDX1ZFUlNJT05fMSkgPworCXJldHVybiAoY3ZhbC0+bWl4ZXItPnByb3Rv
-Y29sID09IFVBQ19WRVJTSU9OXzEgfHwgCisJCWN2YWwtPm1peGVyLT5jaGlwLT51c2JfaWQgPT0g
-VVNCX0lEKDB4MDc2MywgMHgyMDMwKSkgPwogCQlnZXRfY3RsX3ZhbHVlX3YxKGN2YWwsIHJlcXVl
-c3QsIHZhbGlkeCwgdmFsdWVfcmV0KSA6CiAJCWdldF9jdGxfdmFsdWVfdjIoY3ZhbCwgcmVxdWVz
-dCwgdmFsaWR4LCB2YWx1ZV9yZXQpOwogfQpAQCAtNDE5LDcgKzQyMCw4IEBAIGludCBzbmRfdXNi
-X21peGVyX3NldF9jdGxfdmFsdWUoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWwsCiAJ
-dW5zaWduZWQgY2hhciBidWZbMl07CiAJaW50IHZhbF9sZW4sIGVyciwgdGltZW91dCA9IDEwOwog
-Ci0JaWYgKGN2YWwtPm1peGVyLT5wcm90b2NvbCA9PSBVQUNfVkVSU0lPTl8xKSB7CisJaWYgKGN2
-YWwtPm1peGVyLT5wcm90b2NvbCA9PSBVQUNfVkVSU0lPTl8xIHx8IAorCQljdmFsLT5taXhlci0+
-Y2hpcC0+dXNiX2lkID09IFVTQl9JRCgweDA3NjMsIDB4MjAzMCkpIHsKIAkJdmFsX2xlbiA9IGN2
-YWwtPnZhbF90eXBlID49IFVTQl9NSVhFUl9TMTYgPyAyIDogMTsKIAl9IGVsc2UgeyAvKiBVQUNf
-VkVSU0lPTl8yICovCiAJCS8qIGF1ZGlvIGNsYXNzIHYyIGNvbnRyb2xzIGFyZSBhbHdheXMgMiBi
-eXRlcyBpbiBzaXplICovCg==
---20cf302d4c5c357bff04bf31ad99
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+// David
 
 
---20cf302d4c5c357bff04bf31ad99--
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 7b6a823..0e7c3f1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -783,11 +783,13 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+ {
+ 	struct azx *chip = bus->private_data;
+ 	unsigned long timeout;
++	unsigned long loopcounter;
+ 	int do_poll = 0;
+ 
+  again:
+ 	timeout = jiffies + msecs_to_jiffies(1000);
+-	for (;;) {
++	
++	for (loopcounter = 0;; loopcounter++) {
+ 		if (chip->polling_mode || do_poll) {
+ 			spin_lock_irq(&chip->reg_lock);
+ 			azx_update_rirb(chip);
+@@ -803,7 +805,7 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+ 		}
+ 		if (time_after(jiffies, timeout))
+ 			break;
+-		if (bus->needs_damn_long_delay)
++		if (bus->needs_damn_long_delay || loopcounter > 3000)
+ 			msleep(2); /* temporary workaround */
+ 		else {
+ 			udelay(10);
+-- 
+1.7.9.5
