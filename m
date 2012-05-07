@@ -1,17 +1,29 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: twl6040: Remove HS/HF gain ramp
-	feature
-Date: Mon, 7 May 2012 18:27:32 +0100
-Message-ID: <20120507172732.GP17002@opensource.wolfsonmicro.com>
-References: <1336133840-12330-1-git-send-email-peter.ujfalusi@ti.com>
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work,
+	"Capture Volume" inverted
+Date: Mon, 7 May 2012 23:55:06 +0200
+Message-ID: <20120507215506.GA5063@lovely.krouter>
+References: <1335384469.14096.203.camel@mars>
+	<20120426112726.GF3207@opensource.wolfsonmicro.com>
+	<1335448142.20000.40.camel@mars>
+	<20120426172010.GP3207@opensource.wolfsonmicro.com>
+	<1335474693.3628.26.camel@lovely>
+	<20120426213745.GA18260@opensource.wolfsonmicro.com>
+	<1335513602.3504.4.camel@mars>
+	<20120427134638.GI18260@opensource.wolfsonmicro.com>
+	<20120504132845.GA24245@lovely.krouter>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7910592622496332558=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 29421103F94
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3119024509
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 May 2012 19:27:35 +0200 (CEST)
-In-Reply-To: <1336133840-12330-1-git-send-email-peter.ujfalusi@ti.com>
+	Mon,  7 May 2012 23:55:13 +0200 (CEST)
+Received: by bkcjg15 with SMTP id jg15so4431187bkc.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 May 2012 14:55:12 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20120504132845.GA24245@lovely.krouter>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +33,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, May 04, 2012 at 03:28:45PM +0200, Christoph Fritz wrote:
+> On Fri, Apr 27, 2012 at 02:46:39PM +0100, Mark Brown wrote:
+> > On Fri, Apr 27, 2012 at 10:00:02AM +0200, Christoph Fritz wrote:
+> > > On Thu, 2012-04-26 at 22:37 +0100, Mark Brown wrote:
+> > 
+> > > >   The write will be suppresed if the register contents don't
+> > > > change which looks like what you're seeing here - 
+> > 
+> > > Can you imagine why the registers don't change?
+> > 
+> > I can't immediately think of any reason, no - I'd step through or
+> > annotate the code and have a look.
+> 
+> I'm still on.
+> 
+> And while testing WM9712 its touchpad interface, connecting a 800x600
+> display (instead of the default 640x480 one) results in a gone sound and
+> input-device - pretty queer:
+> 
+> WM9711/WM9712 SoC Audio Codec 0.4
+> asoc: platform pcm constructor failed
+> asoc: can't create pcm HiFi
+> asoc: failed to instantiate card PhyCORE-ac97-audio: -12
+> 
+> I have to admit that I used this time a 3.2 kernel. I'll test with
+> current later these days.
 
---===============7910592622496332558==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RtGa12sjXv8gVUZO"
-Content-Disposition: inline
+Same behaviour with 3.4.0-rc6:
 
+Framebuffer driver mx3fb configured for a 800x600 display:
 
---RtGa12sjXv8gVUZO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 04, 2012 at 03:17:20PM +0300, Peter Ujfalusi wrote:
-> None of the machines uses the gain ramp possibility for HS/HF.
-> This code path is mostly unused and it does not reduces the pop
-> noise on the output (it alters it to sound a bit different).
-> The preferred method to reduce pop noise is to use ABE.
-
-...to implement gain changes?
-
-Applied, thanks.
-
---RtGa12sjXv8gVUZO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPqAX8AAoJEBus8iNuMP3d5GQP/3X/f0pSivWjM9iTDD+Me8v0
-n2G0IB0nZjp9relvYDHtsLsCnLZgWsNUGTU2jstqvhdx/zxhv2mnpoFZZc24c+la
-FmEelOpE/9xBZFi1wSYkfx0d/p0bVJUSiAMu+Y7HyWLkHVHxyDzhbLe4A/EWW73Q
-UnvX5XGwsnXry35J+9wbtmgMhK7MZCRyt72ap4u2/vqTPP09KJPJXun0RbjOMtoK
-PsFWW5T2UNaOn+B3A5f7HpF/KJqS5bVzgKKhKSjf9s//Adan2Cv9YIfbiryYE3s2
-3TIstkhvtptqMZOVNpf9dDuXMOc+t+PBVsFsDD217DwErTAkDRwP7dqxdHBw75VD
-wX0hLbnEawz1hHbUixtrSv+QKA957SxDLu4chiNjkficVALD4J9QpbZ8fIioO7+z
-7JT14OzIvQh1pyblU5w0wF/y+u2nAPTSFiQbi9MoGWscvkkZALwfnmcvXYrWIIWb
-xfsXyGU0iTRlEql7rbnQqUCOXdzc/b2JldbIu0XWRQ7DvwCahQm9/INpwVk8WMzX
-VRLBhNSejlP/MlfwXjpFEIkAeYeUrRpQDM8FPTY+o37uIQi4vaQVeieTbZXoW+I6
-AT2E8hpfmhrO22o788nYh/gCZb3RNmVyiGzWsu5pw46VAFVLfzfNWxlCZdFw8Qtm
-BGNrK7bn0SQy9nQT8g2u
-=481G
------END PGP SIGNATURE-----
-
---RtGa12sjXv8gVUZO--
-
---===============7910592622496332558==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  soc-audio soc-audio: ASoC machine PhyCORE-ac97-audio should use snd_soc_register_card()
+  asoc: platform pcm constructor failed
+  asoc: can't create pcm HiFi :-12
+  asoc: failed to instantiate card PhyCORE-ac97-audio: -12
 
 
---===============7910592622496332558==--
+mx3fb configured for a 640x480 display:
+  soc-audio soc-audio: ASoC machine PhyCORE-ac97-audio should use
+  snd_soc_register_card()
+  asoc: wm9712-hifi <-> imx-ssi.0 mapping ok
+
+ 
+Thanks,
+ -- Christoph
