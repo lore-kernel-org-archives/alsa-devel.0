@@ -1,15 +1,17 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [PATCH 1/1] ALSA: hdsp - Provide ioctl_compat
-Date: Mon, 7 May 2012 18:55:04 +0200
-Message-ID: <20120507165504.GY6396@ltw.loris.tv>
-References: <1336152952-21309-1-git-send-email-andre.schramm@iosono-sound.com>
-	<1336409571-13371-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: twl6040: Remove HS/HF gain ramp
+	feature
+Date: Mon, 7 May 2012 18:27:32 +0100
+Message-ID: <20120507172732.GP17002@opensource.wolfsonmicro.com>
+References: <1336133840-12330-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7910592622496332558=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <1336409571-13371-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 29421103F94
+	for <alsa-devel@alsa-project.org>;
+	Mon,  7 May 2012 19:27:35 +0200 (CEST)
+In-Reply-To: <1336133840-12330-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,27 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Andre Schramm <andre.schramm@iosono-sound.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 07, 2012 at 06:52:51PM +0200, Adrian Knoth wrote:
 
-> From: Andre Schramm <andre.schramm@iosono-sound.com>
-> 
-> snd_hdsp uses its own ioctls to acquire config- and status information.
-> Expose the corresponding ioctl handler via ioctl_compat, so that 32bit applications can use it on 64bit kernels.
-> 
-> Signed-off-by: Andre Schramm <andre.schramm@iosono-sound.com>
-> Reviewed-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-> Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-
-The last line wasn't supposed to be there, feel free to drop it.
-
-Sorry for the noise, copy&paste error.
+--===============7910592622496332558==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RtGa12sjXv8gVUZO"
+Content-Disposition: inline
 
 
-Mea culpa
+--RtGa12sjXv8gVUZO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+On Fri, May 04, 2012 at 03:17:20PM +0300, Peter Ujfalusi wrote:
+> None of the machines uses the gain ramp possibility for HS/HF.
+> This code path is mostly unused and it does not reduces the pop
+> noise on the output (it alters it to sound a bit different).
+> The preferred method to reduce pop noise is to use ABE.
+
+...to implement gain changes?
+
+Applied, thanks.
+
+--RtGa12sjXv8gVUZO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPqAX8AAoJEBus8iNuMP3d5GQP/3X/f0pSivWjM9iTDD+Me8v0
+n2G0IB0nZjp9relvYDHtsLsCnLZgWsNUGTU2jstqvhdx/zxhv2mnpoFZZc24c+la
+FmEelOpE/9xBZFi1wSYkfx0d/p0bVJUSiAMu+Y7HyWLkHVHxyDzhbLe4A/EWW73Q
+UnvX5XGwsnXry35J+9wbtmgMhK7MZCRyt72ap4u2/vqTPP09KJPJXun0RbjOMtoK
+PsFWW5T2UNaOn+B3A5f7HpF/KJqS5bVzgKKhKSjf9s//Adan2Cv9YIfbiryYE3s2
+3TIstkhvtptqMZOVNpf9dDuXMOc+t+PBVsFsDD217DwErTAkDRwP7dqxdHBw75VD
+wX0hLbnEawz1hHbUixtrSv+QKA957SxDLu4chiNjkficVALD4J9QpbZ8fIioO7+z
+7JT14OzIvQh1pyblU5w0wF/y+u2nAPTSFiQbi9MoGWscvkkZALwfnmcvXYrWIIWb
+xfsXyGU0iTRlEql7rbnQqUCOXdzc/b2JldbIu0XWRQ7DvwCahQm9/INpwVk8WMzX
+VRLBhNSejlP/MlfwXjpFEIkAeYeUrRpQDM8FPTY+o37uIQi4vaQVeieTbZXoW+I6
+AT2E8hpfmhrO22o788nYh/gCZb3RNmVyiGzWsu5pw46VAFVLfzfNWxlCZdFw8Qtm
+BGNrK7bn0SQy9nQT8g2u
+=481G
+-----END PGP SIGNATURE-----
+
+--RtGa12sjXv8gVUZO--
+
+--===============7910592622496332558==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7910592622496332558==--
