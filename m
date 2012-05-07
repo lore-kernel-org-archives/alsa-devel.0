@@ -1,66 +1,83 @@
-From: Adam Nielsen <a.nielsen@shikadi.net>
-Subject: snd-hda-intel+dmix: Disabling power save doesn't work
-Date: Mon, 07 May 2012 12:19:37 +1000
-Message-ID: <jo7bfq$oeu$1@dough.gmane.org>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [alsa-devel] [PATCH RESEND 0/9] Enable pinctrl support for
+ mach-mxs
+Date: Mon, 7 May 2012 15:14:00 +0800
+Message-ID: <20120507071400.GB23607@shlinux2.ap.freescale.net>
+References: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96504104174
-	for <alsa-devel@alsa-project.org>;
-	Mon,  7 May 2012 04:30:04 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SRDi7-0006jw-RI
-	for alsa-devel@alsa-project.org; Mon, 07 May 2012 04:30:03 +0200
-Received: from 124-170-95-13.dyn.iinet.net.au ([124.170.95.13])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 07 May 2012 04:30:03 +0200
-Received: from a.nielsen by 124-170-95-13.dyn.iinet.net.au with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 07 May 2012 04:30:03 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-serial-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+Sender: linux-serial-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org, Chris Ball <cjb@laptop.org>, Arnd Bergmann <arnd@arndb.de>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Olof Johansson <olof@lixom.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Mon, May 07, 2012 at 09:16:05AM +0800, Shawn Guo wrote:
+> [Resend to have subsystem lists Cc-ed]
+> 
+> With pinctrl-mxs driver (DT only) applied on pinctrl tree, the mxs
+> device tree conversion can start basing on that support.  This series
+> adopts pinctrl support for mxs device drivers with a dummy pinctrl
+> state provided for non-DT boot, so that the pinctrl call in the device
+> drivers will be bypassed for non-DT probe while it starts working for
+> DT probe.
+> 
+> To ease the merge process, I would like to ask Arnd and Olof to pull
+> pinctrl tree as a dependency in arm-soc and have this series go through
+> arm-soc.
+> 
+As IMX, basically i'd prefer to add pinctrl states in dts file at the
+same time within the patch or using a separate patch to add them before
+this series to avoid breaking the exist platforms.
 
-I'm trying to hunt down a bug in either dmix or the snd-hda-intel module and 
-I'm hoping someone can give me some pointers.
+However i noted that for mxs, most drivers here are still not dt capable,
+so it may be ok to not add their pinctrl state at this time.
 
-When I am playing audio and I pause playback, the codec goes into power save 
-and stops generating a SPDIF signal.  My amplifier then displays a 'signal 
-lost' message.  This is quite annoying as it takes a few seconds to sync when 
-the signal returns (during which time I can't hear the audio being played), so 
-I set "powersave=0" to disable this behaviour.
+But for the patch "serial: amba-pl011: adopt pinctrl support" since it is
+dt capable, so with this patch applied, the mx28 dt boot will fail.
+Maybe we should at least add pinctrl states for amba-pl011 first.
 
-This works as expected when stopping playback, but if I only *pause* playback 
-then the signal drops almost exactly one second later, no matter what 
-"powersave" is set to.  So of course then resuming playback means I lose a 
-couple of seconds of audio while the amplifier re-syncs to the SPDIF signal.
+> Regards,
+> Shawn
+> 
+> Shawn Guo (9):
+>   ARM: mxs: enable pinctrl dummy states
+>   serial: amba-pl011: adopt pinctrl support
+BTW, will this one break other platforms using this driver?
 
-Setting powersave to other values only affects the time before going into 
-powersave mode after playback has stopped.  It has no effect on whether power 
-saving is activated while paused.
+>   serial: mxs-auart: adopt pinctrl support
+>   mmc: mxs-mmc: adopt pinctrl support
+>   mtd: nand: gpmi: adopt pinctrl support
+>   i2c: mxs: adopt pinctrl support
+>   ASoC: mxs-saif: adopt pinctrl support
+>   video: mxsfb: adopt pinctrl support
+>   ARM: mxs: enable pinctrl support
+> 
+>  arch/arm/Kconfig                        |    1 +
+>  arch/arm/mach-mxs/Kconfig               |    2 ++
+>  arch/arm/mach-mxs/include/mach/common.h |    2 ++
+>  arch/arm/mach-mxs/mach-apx4devkit.c     |    2 ++
+>  arch/arm/mach-mxs/mach-m28evk.c         |    2 ++
+>  arch/arm/mach-mxs/mach-mx23evk.c        |    2 ++
+>  arch/arm/mach-mxs/mach-mx28evk.c        |    2 ++
+>  arch/arm/mach-mxs/mach-stmp378x_devb.c  |    2 ++
+>  arch/arm/mach-mxs/mach-tx28.c           |    2 ++
+>  arch/arm/mach-mxs/mm.c                  |   11 +++++++++++
+>  drivers/i2c/busses/i2c-mxs.c            |    6 ++++++
+>  drivers/mmc/host/mxs-mmc.c              |    8 ++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c  |    9 +++++++++
+>  drivers/tty/serial/amba-pl011.c         |    8 ++++++++
+>  drivers/tty/serial/mxs-auart.c          |    8 ++++++++
+>  drivers/video/mxsfb.c                   |    9 +++++++++
+>  sound/soc/mxs/mxs-saif.c                |    8 ++++++++
+>  17 files changed, 84 insertions(+), 0 deletions(-)
+> 
+> -- 
+> 1.7.5.4
+> 
 
-The problem happens with any audio program (e.g. mplayer and xmms2.)  Setting 
-"powersave=0" means the SPDIF signal keeps going when stopping playback, but 
-it still drops after one second when pausing playback.
+Regards
+Dong Aisheng
 
-It doesn't happen if I use hw:0,1 as the output device (the SPDIF signal keeps 
-going, even when paused) but as soon as I change the output device to dmix 
-then the signal drops whenever the audio is paused.
-
-Is there any way to stop this behaviour and make dmix honour the module setting?
-
-Thanks,
-Adam.
