@@ -1,15 +1,16 @@
-From: "Max Klein" <TobSnyder@gmx.de>
-Subject: echo-cancellation plugin advice?
-Date: Mon, 07 May 2012 16:15:06 +0200
-Message-ID: <20120507141506.67270@gmx.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ALSA: jack: Update documention to reflect
+	other userspace interfaces
+Date: Mon,  7 May 2012 17:10:21 +0100
+Message-ID: <1336407021-31117-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id 1FA6224381
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 13CF72442C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 May 2012 16:15:09 +0200 (CEST)
+	Mon,  7 May 2012 18:10:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,19 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-> Well, asym wouldn't be the answer.  Basically you'll need to open two
-> slave PCMs in one plugin.  So, it's no simple filter-type plugin.
-> It's doable, but not easy as it sounds, I guess.
+Since this is a generic API which should support any userspace interface
+for reporting jacks update the documentation a little to make that a bit
+clearer.
 
-Takashi, can you please further explain why asym is not the solution and what you see as a problem? I am also trying to figure out if it would be possible to create such a plugin for ALSA? I am still searching for some good starting points on how to write an ALSA plugin...
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/core/jack.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Jean-Marc Valin (http://lists.linuxaudio.org/pipermail/linux-audio-dev/2005-June/012454.html) already released his work as part of speex but as far I know there is no plugin that has been made out of it?
-
-Thanks for any hint!
-
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index 471e1e3..a06b165 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -155,7 +155,7 @@ EXPORT_SYMBOL(snd_jack_new);
+  * @jack:   The jack to configure
+  * @parent: The device to set as parent for the jack.
+  *
+- * Set the parent for the jack input device in the device tree.  This
++ * Set the parent for the jack devices in the device tree.  This
+  * function is only valid prior to registration of the jack.  If no
+  * parent is configured then the parent device will be the sound card.
+  */
+@@ -179,6 +179,9 @@ EXPORT_SYMBOL(snd_jack_set_parent);
+  * mapping is provided but keys are enabled in the jack type then
+  * BTN_n numeric buttons will be reported.
+  *
++ * If jacks are not reporting via the input API this call will have no
++ * effect.
++ *
+  * Note that this is intended to be use by simple devices with small
+  * numbers of keys that can be reported.  It is also possible to
+  * access the input device directly - devices with complex input
 -- 
-NEU: FreePhone 3-fach-Flat mit kostenlosem Smartphone!                                  
-Jetzt informieren: http://mobile.1und1.de/?ac=OM.PW.PW003K20328T7073a
+1.7.10
