@@ -1,17 +1,18 @@
-From: Christian Melki <christian.melki@ericsson.com>
-Subject: [PATCH]: sound/usb/mixer.c: Volume quirks compare
- empty string kctl->id.name.
-Date: Mon, 7 May 2012 09:51:29 +0200
-Message-ID: <1346E68D3A5B2043907CF4BF466383411A080EFFAB@ESESSCMS0353.eemea.ericsson.se>
-Mime-Version: 1.0
+From: James Milne <jamesm@filmlight.ltd.uk>
+Subject: Re: Issue with RME HDSPe AIO latency
+Date: Mon, 7 May 2012 18:02:41 +0100
+Message-ID: <26969FEF-0021-4DD1-B9E9-50419CD411F2@filmlight.ltd.uk>
+References: <966796f1b91b7bc3fee7ce5b7779be75@filmlight.ltd.uk>
+	<4FA7F92B.8090107@drcomp.erfurt.thur.de>
+Mime-Version: 1.0 (1.0)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw1.ericsson.se (mailgw1.ericsson.se [193.180.251.45])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22CF6243BF
+Received: from b.mx.filmlight.ltd.uk (b.mx.filmlight.ltd.uk [77.107.81.251])
+	by alsa0.perex.cz (Postfix) with SMTP id 1D3E524464
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 May 2012 09:51:31 +0200 (CEST)
-Content-Language: en-US
+	Mon,  7 May 2012 19:02:26 +0200 (CEST)
+In-Reply-To: <4FA7F92B.8090107@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "clemens@ladisch.de" <clemens@ladisch.de>, "zonque@gmail.com" <zonque@gmail.com>
+To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > Hi,
-> > 
-> > Sorry to mail you directly. But I have tried to mail several times to 
-> > the mailing list but I don't get through. Everything checks out fine, 
-> > no html etc, other mailing lists work fine, but not alsa devel.
-> > Anyway, could you please have a look at this?
+Hi Adrian,
+
+Thanks for the reply. In the end it transpired our code was always trying to keep the buffers full, but that meant it was 16384 samples ahead of the hardware pointer. There was another bug which meant this delay wasn't taken into account when filling the buffers.
+
+I've changed it to keep the delay to a minimum by using snd_pcm_update_avail() to calculate how full the buffers are and only update them once they cross a certain threshold. This works fine.
+
+Cheers
+James Milne
+FilmLight Ltd
+
+On 7 May 2012, at 17:32, Adrian Knoth <adi@drcomp.erfurt.thur.de> wrote:
+
+> On 04/30/2012 06:03 PM, jamesm wrote:
 > 
-> Could you resend the patch but just add me, Clemens and Daniel to Cc, so that it reaches to main developers for usb-audio?  Even if we take your patch as is, it'd be needed to be applicable via git-am.
+>> Hello all,
+> 
+> Hi!
+> 
+>> The latest hdspm driver code from alsa and kernel.org indicates that
+>> the HDSPe AIO card has a fixed buffer size of 16384. I've chosen a
+>> period size of 1024, which gives me 16 periods.
+> 
+> Exactly.
+> 
+>> The issue I have is that whenever I play audio through the hdspm
+>> driver, the delay between the hw pointer and sw pointer is always close
+>> to the maximum buffer size (approx 16000). This leaves me with a large
+>> delay between writing data into the PCM and it coming out of the card.
+>> I'd like this to be between 1024 and 2048, I could probably crank the
+>> period down further to 512.
+> 
+> I suggest to try jackd1 and see if you can achieve the desired latency.
+> There's a tool jack_iodelay that helps you to measure the round trip
+> latency.
+> 
+> If it works, have a look at the code in drivers/alsa/ how jackd
+> configures the device.
+> 
+> I don't know what happened in alsa-lib between 1.0.17 and 1.0.25 wrt to
+> PCM streams, so if in doubt, update that library, too, maybe on a
+> different system if you don't want to touch your RHEL-5.5 installation.
+> 
+>> Does anyone have any suggestions as to why the hdspm driver hw pointer
+>> is not following the application pointer more closely?
+> 
+> The hw pointer is the hw pointer, it's the hardware, not the driver.
+> The hardware just cycles through its 16k sample buffer, so it's up to
+> the software (read: alsa-lib and/or application) to write to the
+> appropriate address.
+> 
+> It works just fine here on my RayDAT (also has a 16k sample buffer) down
+> to 32 samples per period via the MMAP interface.
 > 
 > 
-> thanks,
+> Cheers
 > 
-> Takashi
-
-Hi.
-
-I noticied that volume quirks in usb-audio did not get applied.
-This is because kctl->id.name gets built properly _after_ calling the quirk adjustments.
-My solution is a bit ugly, but check_mapped_dB needs the adjustment before getting called.
-I split the call over the switch. If someone feels like writing something cleaner, please feel free.
-This works for me atleast.
-
-Regards,
-Christian Melki
-
-Signed-off-by: Christian Melki <christian.melki@ericsson.se>
----
-
-diff -urN linux-3.3.2.orig/sound/usb/mixer.c linux-3.3.2/sound/usb/mixer.c
---- linux-3.3.2.orig//sound/usb/mixer.c	2012-04-30 09:08:29.000000000 +0200
-+++ linux-3.3.2/sound/usb/mixer.c	2012-04-30 09:46:28.000000000 +0200
-@@ -1121,9 +1121,6 @@
- 		len = snd_usb_copy_string_desc(state, nameid,
- 				kctl->id.name, sizeof(kctl->id.name));
- 
--	/* get min/max values */
--	get_min_max_with_quirks(cval, 0, kctl);
--
- 	switch (control) {
- 	case UAC_FU_MUTE:
- 	case UAC_FU_VOLUME:
-@@ -1155,6 +1152,7 @@
- 		}
- 		append_ctl_name(kctl, control == UAC_FU_MUTE ?
- 				" Switch" : " Volume");
-+		get_min_max_with_quirks(cval, 0, kctl);
- 		if (control == UAC_FU_VOLUME) {
- 			check_mapped_dB(map, cval);
- 			if (cval->dBmin < cval->dBmax || !cval->initialized) {
-@@ -1170,6 +1168,7 @@
- 		if (! len)
- 			strlcpy(kctl->id.name, audio_feature_info[control-1].name,
- 				sizeof(kctl->id.name));
-+		get_min_max_with_quirks(cval, 0, kctl);
- 		break;
- 	}
- 
