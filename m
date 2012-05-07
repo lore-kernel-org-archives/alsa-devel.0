@@ -1,11 +1,17 @@
-From: Jerome Carretero <cJ@zougloub.eu>
-Subject: [PATCH 1/1] aplay: print vu-meter to stderr, not stdout
-Date: Sat,  5 May 2012 23:10:01 -0400
-Message-ID: <1336273801-17170-1-git-send-email-cJ@zougloub.eu>
+From: Christian Melki <christian.melki@ericsson.com>
+Subject: [PATCH]: sound/usb/mixer.c: Volume quirks compare
+ empty string kctl->id.name.
+Date: Mon, 7 May 2012 09:51:29 +0200
+Message-ID: <1346E68D3A5B2043907CF4BF466383411A080EFFAB@ESESSCMS0353.eemea.ericsson.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw1.ericsson.se (mailgw1.ericsson.se [193.180.251.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22CF6243BF
+	for <alsa-devel@alsa-project.org>;
+	Mon,  7 May 2012 09:51:31 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,63 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Jerome Carretero <cJ@zougloub.eu>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "clemens@ladisch.de" <clemens@ladisch.de>, "zonque@gmail.com" <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It allows showing the vu-meter while recording to stdout, eg:
+> > Hi,
+> > 
+> > Sorry to mail you directly. But I have tried to mail several times to 
+> > the mailing list but I don't get through. Everything checks out fine, 
+> > no html etc, other mailing lists work fine, but not alsa devel.
+> > Anyway, could you please have a look at this?
+> 
+> Could you resend the patch but just add me, Clemens and Daniel to Cc, so that it reaches to main developers for usb-audio?  Even if we take your patch as is, it'd be needed to be applicable via git-am.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-   aplay -C -V stereo | oggenc - > out.ogg
+Hi.
 
-Signed-off-by: Jerome Carretero <cJ@zougloub.eu>
+I noticied that volume quirks in usb-audio did not get applied.
+This is because kctl->id.name gets built properly _after_ calling the quirk adjustments.
+My solution is a bit ugly, but check_mapped_dB needs the adjustment before getting called.
+I split the call over the switch. If someone feels like writing something cleaner, please feel free.
+This works for me atleast.
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 1ce34c4..8462484 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -1453,9 +1453,9 @@ static void print_vu_meter_mono(int perc, int maxperc)
- 		sprintf(line + val, "| MAX");
- 	else
- 		sprintf(line + val, "| %02i%%", maxperc);
--	fputs(line, stdout);
-+	fputs(line, stderr);
- 	if (perc > 100)
--		printf(_(" !clip  "));
-+		fprintf(stderr, _(" !clip  "));
- }
+Regards,
+Christian Melki
+
+Signed-off-by: Christian Melki <christian.melki@ericsson.se>
+---
+
+diff -urN linux-3.3.2.orig/sound/usb/mixer.c linux-3.3.2/sound/usb/mixer.c
+--- linux-3.3.2.orig//sound/usb/mixer.c	2012-04-30 09:08:29.000000000 +0200
++++ linux-3.3.2/sound/usb/mixer.c	2012-04-30 09:46:28.000000000 +0200
+@@ -1121,9 +1121,6 @@
+ 		len = snd_usb_copy_string_desc(state, nameid,
+ 				kctl->id.name, sizeof(kctl->id.name));
  
- static void print_vu_meter_stereo(int *perc, int *maxperc)
-@@ -1493,7 +1493,7 @@ static void print_vu_meter_stereo(int *perc, int *maxperc)
- 			memcpy(line + bar_length, tmp, 3);
+-	/* get min/max values */
+-	get_min_max_with_quirks(cval, 0, kctl);
+-
+ 	switch (control) {
+ 	case UAC_FU_MUTE:
+ 	case UAC_FU_VOLUME:
+@@ -1155,6 +1152,7 @@
+ 		}
+ 		append_ctl_name(kctl, control == UAC_FU_MUTE ?
+ 				" Switch" : " Volume");
++		get_min_max_with_quirks(cval, 0, kctl);
+ 		if (control == UAC_FU_VOLUME) {
+ 			check_mapped_dB(map, cval);
+ 			if (cval->dBmin < cval->dBmax || !cval->initialized) {
+@@ -1170,6 +1168,7 @@
+ 		if (! len)
+ 			strlcpy(kctl->id.name, audio_feature_info[control-1].name,
+ 				sizeof(kctl->id.name));
++		get_min_max_with_quirks(cval, 0, kctl);
+ 		break;
  	}
- 	line[bar_length * 2 + 6 + 2] = 0;
--	fputs(line, stdout);
-+	fputs(line, stderr);
- }
  
- static void print_vu_meter(signed int *perc, signed int *maxperc)
-@@ -1631,9 +1631,9 @@ static void compute_max_peak(u_char *data, size_t count)
- 			if (perc[c] > maxperc[c])
- 				maxperc[c] = perc[c];
- 
--		putchar('\r');
-+		putc('\r', stderr);
- 		print_vu_meter(perc, maxperc);
--		fflush(stdout);
-+		fflush(stderr);
- 	}
- 	else if(verbose==3) {
- 		printf(_("Max peak (%li samples): 0x%08x "), (long)ocount, max_peak[0]);
-@@ -1642,8 +1642,8 @@ static void compute_max_peak(u_char *data, size_t count)
- 				putchar('#');
- 			else
- 				putchar(' ');
--		printf(" %i%%\n", perc[0]);
--		fflush(stdout);
-+		fprintf(stderr, " %i%%\n", perc[0]);
-+		fflush(stderr);
- 	}
- }
- 
--- 
-1.7.10
