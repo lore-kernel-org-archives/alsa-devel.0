@@ -1,21 +1,25 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH RESEND 7/9] ASoC: mxs-saif: adopt pinctrl
-	support
-Date: Mon,  7 May 2012 09:16:12 +0800
-Message-ID: <1336353374-28939-8-git-send-email-shawn.guo@linaro.org>
-References: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+From: Adam Nielsen <a.nielsen@shikadi.net>
+Subject: snd-hda-intel+dmix: Disabling power save doesn't work
+Date: Mon, 07 May 2012 12:19:37 +1000
+Message-ID: <jo7bfq$oeu$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2761104159
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 96504104174
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 May 2012 03:16:58 +0200 (CEST)
-Received: by pbbrp16 with SMTP id rp16so8111574pbb.38
-	for <alsa-devel@alsa-project.org>; Sun, 06 May 2012 18:16:57 -0700 (PDT)
-In-Reply-To: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+	Mon,  7 May 2012 04:30:04 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SRDi7-0006jw-RI
+	for alsa-devel@alsa-project.org; Mon, 07 May 2012 04:30:03 +0200
+Received: from 124-170-95-13.dyn.iinet.net.au ([124.170.95.13])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 07 May 2012 04:30:03 +0200
+Received: from a.nielsen by 124-170-95-13.dyn.iinet.net.au with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 07 May 2012 04:30:03 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +29,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cc: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/mxs/mxs-saif.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+Hi all,
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 53f4fd8..7fd224b 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -25,6 +25,7 @@
- #include <linux/delay.h>
- #include <linux/time.h>
- #include <linux/fsl/mxs-dma.h>
-+#include <linux/pinctrl/consumer.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -625,6 +626,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	struct resource *iores, *dmares;
- 	struct mxs_saif *saif;
- 	struct mxs_saif_platform_data *pdata;
-+	struct pinctrl *pinctrl;
- 	int ret = 0;
- 
- 	if (pdev->id >= ARRAY_SIZE(mxs_saif))
-@@ -650,6 +652,12 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		saif->master_id = saif->id;
- 	}
- 
-+	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-+	if (IS_ERR(pinctrl)) {
-+		ret = PTR_ERR(pinctrl);
-+		return ret;
-+	}
-+
- 	saif->clk = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(saif->clk)) {
- 		ret = PTR_ERR(saif->clk);
--- 
-1.7.5.4
+I'm trying to hunt down a bug in either dmix or the snd-hda-intel module and 
+I'm hoping someone can give me some pointers.
+
+When I am playing audio and I pause playback, the codec goes into power save 
+and stops generating a SPDIF signal.  My amplifier then displays a 'signal 
+lost' message.  This is quite annoying as it takes a few seconds to sync when 
+the signal returns (during which time I can't hear the audio being played), so 
+I set "powersave=0" to disable this behaviour.
+
+This works as expected when stopping playback, but if I only *pause* playback 
+then the signal drops almost exactly one second later, no matter what 
+"powersave" is set to.  So of course then resuming playback means I lose a 
+couple of seconds of audio while the amplifier re-syncs to the SPDIF signal.
+
+Setting powersave to other values only affects the time before going into 
+powersave mode after playback has stopped.  It has no effect on whether power 
+saving is activated while paused.
+
+The problem happens with any audio program (e.g. mplayer and xmms2.)  Setting 
+"powersave=0" means the SPDIF signal keeps going when stopping playback, but 
+it still drops after one second when pausing playback.
+
+It doesn't happen if I use hw:0,1 as the output device (the SPDIF signal keeps 
+going, even when paused) but as soon as I change the output device to dmix 
+then the signal drops whenever the audio is paused.
+
+Is there any way to stop this behaviour and make dmix honour the module setting?
+
+Thanks,
+Adam.
