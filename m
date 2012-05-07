@@ -1,76 +1,78 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v2 14/14] OMAPDSS: HDMI: Implement DSS driver interface
- for audio
-Date: Mon, 07 May 2012 14:43:06 +0300
-Message-ID: <1336390986.2667.8.camel@deskari>
-References: <1336095848-6923-1-git-send-email-ricardo.neri@ti.com>
-	 <1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH RESEND 7/9] ASoC: mxs-saif: adopt pinctrl
+	support
+Date: Mon, 7 May 2012 13:04:20 +0100
+Message-ID: <20120507120419.GC17002@opensource.wolfsonmicro.com>
+References: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+	<1336353374-28939-8-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-T8XEqQRkVahlSC0Ti6vQ"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: mythripk@ti.com, s-chereau@ti.com, x0055901@ti.com, vaibhav.bedia@ti.com, s-guiriec@ti.com, lrg@ti.com, peter.ujfalusi@ti.com, agraf@suse.de, research@ottomaneng.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2010685203169294355=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C53D124337
+	for <alsa-devel@alsa-project.org>;
+	Mon,  7 May 2012 14:04:22 +0200 (CEST)
+In-Reply-To: <1336353374-28939-8-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-T8XEqQRkVahlSC0Ti6vQ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Thu, 2012-05-03 at 20:44 -0500, Ricardo Neri wrote:
-> Implement the DSS device driver audio support interface in the HDMI
-> panel driver and generic driver. The implementation relies on the
-> IP-specific functions that are defined at DSS probe time.
->=20
-> At the moment, a hardirq-safe spinlock is used to protect the audio
-> functions. This is because such functions might be called while
-> holding a lock (this especially true for audio_start/stop). For the
-> rest of the audio functions, a mutex could be used in the future as
-> the enablement of resources might take too much time.
-
-The series looks good, except locking. Granted, the locking in omapdss
-is a bit bad generally also, but here I think it's a bit more broken.
-
-For example, hdmi_panel.c:hdmi_panel_audio_supported() takes the audio
-lock, and then uses variables like dssdev->state, and the hdmi video
-mode. However, the video functions do not use audio lock, so effectively
-the lock doesn't protect at all.
-
-I'm not sure how to fix it, though. I think this shows the shortcomings
-of the current locking strategy (or lack of =3D). What if the audio
-functions that can sleep would take the hdmi panel's mutex, and also the
-audio spinlock? That would at least fix some of the cases.
-
- Tomi
+--===============2010685203169294355==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
+Content-Disposition: inline
 
 
---=-T8XEqQRkVahlSC0Ti6vQ
+--vOmOzSkFvhd7u8Ms
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 07, 2012 at 09:16:12AM +0800, Shawn Guo wrote:
+> Cc: alsa-devel@alsa-project.org
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+--vOmOzSkFvhd7u8Ms
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJPp7VKAAoJEPo9qoy8lh71KnkQAK6rBU9QVL3YfiU/+KOBfNq9
-3EKNuJSpEdpScCDlUUTimLZNihXQ9Soj60JfG3zCSe2Dx1AAMcuLqExWpROnsDvB
-lR1PnI4kUOSKMP+UX8OCM4e4tvKnXRs5FLrOROHeshJpCJmhdJISnpCubEKCHGTG
-8MSiI4ja5lOC+Hxba1XMM6lT3WPJ15iC3Nj/ZxW5VMiyOBvSNnMdFpmFCSpmL8Mv
-4y2fc/xgvKg8uhHrKMVs19QW3w+mOk0T7JXYN2ry/orDygMTq9VizU5OVwVfF7AC
-u9cFiFJ/8boV9YPMqu97Bd2ZxpjGACiCRH3zXnbyU4MlWqR06mctfe+O7uzONec1
-d5O2WlVfys6SokzVWsyBqXpI6pOc/olgaD8iZ3tQqYa1EDQcyjgG9wWyuxsUUnw/
-MBCZPMq+iqZOyAHRI0F48o7RCntiZLQqhAuC/+hmLAaOYxDmGpvTj/NQ1xb+Bw8O
-Q3X/BML0BkoJiZDVKOe/RUYI77NVsT75zLPCaSOW9/TNqCU99HVyen/yWadPkQg1
-qE/9pumrpm8+E77yleN2I0DLwHKk6nRHhiHVd6dYfoLWtPGIU2MN7OzypXOPCc8E
-aYo8lchkT1VeYL1koZqhvstd5Mv+Q7Wq2ya+t4+HaBu1szFUIO0sFG5+OTKANRfq
-09mwsLh1wFAWm6x48dkZ
-=zznh
+iQIcBAEBAgAGBQJPp7o7AAoJEBus8iNuMP3dByAP/iE5A4ud6zCxzYJnyshJ4246
+H28BvBgLOc5E07pgN3/tjjPL1/r6AKdtZCU1SVcQLz63tQuAPqy1HMpHRzohSujN
+hcD4HLOy7TDouRrMfzRkz4RIPN99A058P5I9o+46L97Q94wCShjdfmWWqlxbukv3
+yBhvWKIoZ+PdL4cX/eDEUFnHekhxJ4dgc/0lKAq+o5lW977oznJbMPY1HXo3drG6
+k7+aH382VZk57sAcSdmJ6ILNc4MW9nMWWMUWDUTDTb2CHLNp2MOsn8ShT8PUPF9S
+exVTf8QSAAo62MqL/ZaLdFg8nVrs5WuufGYWeqO/w0Bt6LLYEI8OUdObMaBAZEw6
+vygVOZ7L9SjluKNfsz/Y62BzAZE9yuyU3C3VMC16ejSak34CmMKeEFf4J0cggDmo
+uqcbQkw11WiNum2fPIWJl6bv4S/eR0e+VmfZFJsnubpGm5Z5eOLxrBaanCVnQWHI
+GpbYLmx/XmY+b261L3KpOeCrMO0NPY100KVBv4pkgZBEMQ6qERAL6dgZXkHQqgVc
+WdavtflJd4H9fTipBA0bSW2ps3W8FwbEjAG4tYCmIYg6m3Yd6D036x4neF5oCN02
+BEItdrvZ+/sfRZyGKmUSDDBMY3d4Mk01QyTbkRqwLqCrsiN7YxDusGIjz3FOAGjF
+kzbAj7B5r36FxqHfaxZ6
+=N5P3
 -----END PGP SIGNATURE-----
 
---=-T8XEqQRkVahlSC0Ti6vQ--
+--vOmOzSkFvhd7u8Ms--
 
+--===============2010685203169294355==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2010685203169294355==--
