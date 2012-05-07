@@ -1,59 +1,73 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH RESEND 0/9] Enable pinctrl support for mach-mxs
-Date: Mon,  7 May 2012 09:16:05 +0800
-Message-ID: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
-Return-path: <linux-serial-owner@vger.kernel.org>
-Sender: linux-serial-owner@vger.kernel.org
+Subject: [PATCH RESEND 7/9] ASoC: mxs-saif: adopt pinctrl
+	support
+Date: Mon,  7 May 2012 09:16:12 +0800
+Message-ID: <1336353374-28939-8-git-send-email-shawn.guo@linaro.org>
+References: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2761104159
+	for <alsa-devel@alsa-project.org>;
+	Mon,  7 May 2012 03:16:58 +0200 (CEST)
+Received: by pbbrp16 with SMTP id rp16so8111574pbb.38
+	for <alsa-devel@alsa-project.org>; Sun, 06 May 2012 18:16:57 -0700 (PDT)
+In-Reply-To: <1336353374-28939-1-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Shawn Guo <shawn.guo@linaro.org>, linux-fbdev@vger.kernel.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-i2c@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-mmc@vger.kernel.org, Chris Ball <cjb@laptop.org>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-[Resend to have subsystem lists Cc-ed]
+Cc: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ sound/soc/mxs/mxs-saif.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
-With pinctrl-mxs driver (DT only) applied on pinctrl tree, the mxs
-device tree conversion can start basing on that support.  This series
-adopts pinctrl support for mxs device drivers with a dummy pinctrl
-state provided for non-DT boot, so that the pinctrl call in the device
-drivers will be bypassed for non-DT probe while it starts working for
-DT probe.
-
-To ease the merge process, I would like to ask Arnd and Olof to pull
-pinctrl tree as a dependency in arm-soc and have this series go through
-arm-soc.
-
-Regards,
-Shawn
-
-Shawn Guo (9):
-  ARM: mxs: enable pinctrl dummy states
-  serial: amba-pl011: adopt pinctrl support
-  serial: mxs-auart: adopt pinctrl support
-  mmc: mxs-mmc: adopt pinctrl support
-  mtd: nand: gpmi: adopt pinctrl support
-  i2c: mxs: adopt pinctrl support
-  ASoC: mxs-saif: adopt pinctrl support
-  video: mxsfb: adopt pinctrl support
-  ARM: mxs: enable pinctrl support
-
- arch/arm/Kconfig                        |    1 +
- arch/arm/mach-mxs/Kconfig               |    2 ++
- arch/arm/mach-mxs/include/mach/common.h |    2 ++
- arch/arm/mach-mxs/mach-apx4devkit.c     |    2 ++
- arch/arm/mach-mxs/mach-m28evk.c         |    2 ++
- arch/arm/mach-mxs/mach-mx23evk.c        |    2 ++
- arch/arm/mach-mxs/mach-mx28evk.c        |    2 ++
- arch/arm/mach-mxs/mach-stmp378x_devb.c  |    2 ++
- arch/arm/mach-mxs/mach-tx28.c           |    2 ++
- arch/arm/mach-mxs/mm.c                  |   11 +++++++++++
- drivers/i2c/busses/i2c-mxs.c            |    6 ++++++
- drivers/mmc/host/mxs-mmc.c              |    8 ++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c  |    9 +++++++++
- drivers/tty/serial/amba-pl011.c         |    8 ++++++++
- drivers/tty/serial/mxs-auart.c          |    8 ++++++++
- drivers/video/mxsfb.c                   |    9 +++++++++
- sound/soc/mxs/mxs-saif.c                |    8 ++++++++
- 17 files changed, 84 insertions(+), 0 deletions(-)
-
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 53f4fd8..7fd224b 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -25,6 +25,7 @@
+ #include <linux/delay.h>
+ #include <linux/time.h>
+ #include <linux/fsl/mxs-dma.h>
++#include <linux/pinctrl/consumer.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -625,6 +626,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	struct resource *iores, *dmares;
+ 	struct mxs_saif *saif;
+ 	struct mxs_saif_platform_data *pdata;
++	struct pinctrl *pinctrl;
+ 	int ret = 0;
+ 
+ 	if (pdev->id >= ARRAY_SIZE(mxs_saif))
+@@ -650,6 +652,12 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		saif->master_id = saif->id;
+ 	}
+ 
++	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
++	if (IS_ERR(pinctrl)) {
++		ret = PTR_ERR(pinctrl);
++		return ret;
++	}
++
+ 	saif->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(saif->clk)) {
+ 		ret = PTR_ERR(saif->clk);
 -- 
 1.7.5.4
-
