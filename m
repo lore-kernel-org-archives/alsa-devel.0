@@ -1,15 +1,30 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: lowland: Support digital link for WM9081
-Date: Tue,  8 May 2012 11:16:38 +0100
-Message-ID: <1336472198-16444-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work,
+	"Capture Volume" inverted
+Date: Tue, 8 May 2012 12:29:47 +0200
+Message-ID: <20120508102947.GA8226@lovely.krouter>
+References: <1335384469.14096.203.camel@mars>
+	<20120426112726.GF3207@opensource.wolfsonmicro.com>
+	<1335448142.20000.40.camel@mars>
+	<20120426172010.GP3207@opensource.wolfsonmicro.com>
+	<1335474693.3628.26.camel@lovely>
+	<20120426213745.GA18260@opensource.wolfsonmicro.com>
+	<1335513602.3504.4.camel@mars>
+	<20120427134638.GI18260@opensource.wolfsonmicro.com>
+	<20120504132845.GA24245@lovely.krouter>
+	<20120507215506.GA5063@lovely.krouter>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D59F42414C
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 73A232417D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 12:20:31 +0200 (CEST)
+	Tue,  8 May 2012 12:29:53 +0200 (CEST)
+Received: by bkcjg15 with SMTP id jg15so4806311bkc.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 May 2012 03:29:53 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20120507215506.GA5063@lovely.krouter>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,85 +34,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The WM9081 on Lowland is connected to AIF3 on the WM5100.
+On Mon, May 07, 2012 at 11:55:06PM +0200, Christoph Fritz wrote:
+> On Fri, May 04, 2012 at 03:28:45PM +0200, Christoph Fritz wrote:
+> > On Fri, Apr 27, 2012 at 02:46:39PM +0100, Mark Brown wrote:
+> > > On Fri, Apr 27, 2012 at 10:00:02AM +0200, Christoph Fritz wrote:
+> > > > On Thu, 2012-04-26 at 22:37 +0100, Mark Brown wrote:
+> > > 
+> > > > >   The write will be suppresed if the register contents don't
+> > > > > change which looks like what you're seeing here - 
+> > > 
+> > > > Can you imagine why the registers don't change?
+> > > 
+> > > I can't immediately think of any reason, no - I'd step through or
+> > > annotate the code and have a look.
+> > 
+> > I'm still on.
+> > 
+> > And while testing WM9712 its touchpad interface, connecting a 800x600
+> > display (instead of the default 640x480 one) results in a gone sound and
+> > input-device - pretty queer:
+> > 
+> > WM9711/WM9712 SoC Audio Codec 0.4
+> > asoc: platform pcm constructor failed
+> > asoc: can't create pcm HiFi
+> > asoc: failed to instantiate card PhyCORE-ac97-audio: -12
+> > 
+> > I have to admit that I used this time a 3.2 kernel. I'll test with
+> > current later these days.
+> 
+> Same behaviour with 3.4.0-rc6:
+> 
+> Framebuffer driver mx3fb configured for a 800x600 display:
+> 
+>   soc-audio soc-audio: ASoC machine PhyCORE-ac97-audio should use snd_soc_register_card()
+>   asoc: platform pcm constructor failed
+>   asoc: can't create pcm HiFi :-12
+>   asoc: failed to instantiate card PhyCORE-ac97-audio: -12
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/samsung/lowland.c |   42 +++++++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+When I do decrease from 800x600 to 800x594, wm9712 works. 
 
-diff --git a/sound/soc/samsung/lowland.c b/sound/soc/samsung/lowland.c
-index 6cac1e9..6abf341 100644
---- a/sound/soc/samsung/lowland.c
-+++ b/sound/soc/samsung/lowland.c
-@@ -74,6 +74,25 @@ static int lowland_wm5100_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
-+static int lowland_wm9081_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	snd_soc_dapm_nc_pin(&codec->dapm, "LINEOUT");
-+
-+	/* At any time the WM9081 is active it will have this clock */
-+	return snd_soc_codec_set_sysclk(codec, WM9081_SYSCLK_MCLK, 0,
-+					CLKOUT_RATE, 0);
-+}
-+
-+static const struct snd_soc_pcm_stream sub_params = {
-+	.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+	.rate_min = 44100,
-+	.rate_max = 44100,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+};
-+
- static struct snd_soc_dai_link lowland_dai[] = {
- 	{
- 		.name = "CPU",
-@@ -96,21 +115,16 @@ static struct snd_soc_dai_link lowland_dai[] = {
- 				SND_SOC_DAIFMT_CBM_CFM,
- 		.ignore_suspend = 1,
- 	},
--};
--
--static int lowland_wm9081_init(struct snd_soc_dapm_context *dapm)
--{
--	snd_soc_dapm_nc_pin(dapm, "LINEOUT");
--
--	/* At any time the WM9081 is active it will have this clock */
--	return snd_soc_codec_set_sysclk(dapm->codec, WM9081_SYSCLK_MCLK, 0,
--					CLKOUT_RATE, 0);
--}
--
--static struct snd_soc_aux_dev lowland_aux_dev[] = {
- 	{
--		.name = "wm9081",
-+		.name = "Sub Speaker",
-+		.stream_name = "Sub Speaker",
-+		.cpu_dai_name = "wm5100-aif3",
-+		.codec_dai_name = "wm9081-hifi",
- 		.codec_name = "wm9081.1-006c",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+				SND_SOC_DAIFMT_CBM_CFM,
-+		.ignore_suspend = 1,
-+		.params = &sub_params,
- 		.init = lowland_wm9081_init,
- 	},
- };
-@@ -155,8 +169,6 @@ static struct snd_soc_card lowland = {
- 	.owner = THIS_MODULE,
- 	.dai_link = lowland_dai,
- 	.num_links = ARRAY_SIZE(lowland_dai),
--	.aux_dev = lowland_aux_dev,
--	.num_aux_devs = ARRAY_SIZE(lowland_aux_dev),
- 	.codec_conf = lowland_codec_conf,
- 	.num_configs = ARRAY_SIZE(lowland_codec_conf),
- 
--- 
-1.7.10
+Any ideas?
+
+> 
+> 
+> mx3fb configured for a 640x480 display:
+>   soc-audio soc-audio: ASoC machine PhyCORE-ac97-audio should use
+>   snd_soc_register_card()
+>   asoc: wm9712-hifi <-> imx-ssi.0 mapping ok
+> 
+>  
+> Thanks,
+>  -- Christoph
