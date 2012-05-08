@@ -1,17 +1,17 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 02/11] ASoC: core: Add method
-	snd_soc_dapm_get_regulator_status
-Date: Tue, 8 May 2012 15:56:32 +0200
-Message-ID: <1336485392-27113-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 04/11] ASoC: core: Add signed multi register
+	control
+Date: Tue, 8 May 2012 15:56:47 +0200
+Message-ID: <1336485407-27186-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
-	[207.126.144.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4194E24470
+Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
+	[207.126.144.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78EB6244BF
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 15:56:41 +0200 (CEST)
+	Tue,  8 May 2012 15:56:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +22,207 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add method to get the status of a regulator supply widget.
+From: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 
-Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
+Added control type that can span multiple consecutive codec registers
+forming a single signed value in a MSB/LSB manner.
+The control dynamically adjusts to the register word size configured
+in driver.
+
+Added convenience macro.
+
+SOC_SINGLE_XR_SX
+
+Added accessor implementations.
+
+snd_soc_info_xr_sx
+snd_soc_get_xr_sx
+snd_soc_put_xr_sx
+
+Signed-off-by: Kristoffer KARLSSON <kristoffer.karlsson@stericsson.com>
 ---
- include/sound/soc-dapm.h |    3 +++
- sound/soc/soc-dapm.c     |   23 +++++++++++++++++++++++
- 2 files changed, 26 insertions(+), 0 deletions(-)
+ include/sound/soc.h  |   22 +++++++++-
+ sound/soc/soc-core.c |  118 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 139 insertions(+), 1 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 8da3c24..1649ef2 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -399,6 +399,9 @@ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- 				const char *pin);
- void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 2ebf787..8888adc 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -200,6 +200,15 @@
+ 		{.base = xbase, .num_regs = xregs,	      \
+ 		 .mask = xmask }) }
  
-+int snd_soc_dapm_get_regulator_status(struct snd_soc_dapm_context *dapm,
-+				const char *pin);
++#define SOC_SINGLE_XR_SX(xname, xregbase, xregcount, xnbits, \
++		xmin, xmax, xinvert) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
++	.info = snd_soc_info_xr_sx, .get = snd_soc_get_xr_sx, \
++	.put = snd_soc_put_xr_sx, \
++	.private_value = (unsigned long)&(struct soc_mreg_control) \
++		{.regbase = xregbase, .regcount = xregcount, .nbits = xnbits, \
++		.invert = xinvert, .min = xmin, .max = xmax} }
 +
- /* Mostly internal - should not normally be used */
- void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5cbd2d7..b6c9df5 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3092,6 +3092,29 @@ int snd_soc_dapm_get_pin_status(struct snd_soc_dapm_context *dapm,
- EXPORT_SYMBOL_GPL(snd_soc_dapm_get_pin_status);
+ /*
+  * Simplified versions of above macros, declaring a struct and calculating
+  * ARRAY_SIZE internally
+@@ -433,7 +442,12 @@ int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
+ 		      struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+ 		      struct snd_ctl_elem_value *ucontrol);
+-
++int snd_soc_info_xr_sx(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo);
++int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol);
  
  /**
-+ * snd_soc_dapm_get_regulator_status - get regulator supply status
-+ * @dapm: DAPM context
-+ * @pin: Regulator supply name
+  * struct snd_soc_reg_access - Describes whether a given register is
+@@ -916,6 +930,12 @@ struct soc_bytes {
+ 	u32 mask;
+ };
+ 
++/* multi register control */
++struct soc_mreg_control {
++	long min, max;
++	unsigned int regbase, regcount, nbits, invert;
++};
++
+ /* enumerated kcontrol */
+ struct soc_enum {
+ 	unsigned short reg;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e19c24a..7fc7294b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2848,6 +2848,124 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_soc_bytes_put);
+ 
+ /**
++ * snd_soc_info_xr_sx - signed multi register info callback
++ * @kcontrol: mreg control
++ * @uinfo: control element information
 + *
-+ * Get regulator supply status - Enabled or disabled.
++ * Callback to provide information of a control that can
++ * span multiple codec registers which together
++ * forms a single signed value in a MSB/LSB manner.
 + *
-+ * Returns -1 for failure.
-+ * Returns 0 if disabled.
-+ * Returns 1 if enabled.
++ * Returns 0 for success.
 + */
-+int snd_soc_dapm_get_regulator_status(struct snd_soc_dapm_context *dapm,
-+				const char *pin)
++int snd_soc_info_xr_sx(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo)
 +{
-+	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
++	struct soc_mreg_control *mc =
++		(struct soc_mreg_control *)kcontrol->private_value;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = mc->min;
++	uinfo->value.integer.max = mc->max;
 +
-+	if (!w)
-+		return -1;
-+
-+	return regulator_is_enabled((struct regulator *)w->priv);
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_get_regulator_status);
++EXPORT_SYMBOL_GPL(snd_soc_info_xr_sx);
 +
 +/**
-  * snd_soc_dapm_ignore_suspend - ignore suspend status for DAPM endpoint
-  * @dapm: DAPM context
-  * @pin: audio signal pin endpoint (or start point)
++ * snd_soc_get_xr_sx - signed multi register get callback
++ * @kcontrol: mreg control
++ * @ucontrol: control element information
++ *
++ * Callback to get the value of a control that can span
++ * multiple codec registers which together forms a single
++ * signed value in a MSB/LSB manner. The control supports
++ * specifying total no of bits used to allow for bitfields
++ * across the multiple codec registers.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mreg_control *mc =
++		(struct soc_mreg_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int regbase = mc->regbase;
++	unsigned int regcount = mc->regcount;
++	unsigned int regwshift = codec->driver->reg_word_size * BITS_PER_BYTE;
++	unsigned int regwmask = (1<<regwshift)-1;
++	unsigned int invert = mc->invert;
++	unsigned long mask = (1UL<<mc->nbits)-1;
++	long min = mc->min;
++	long max = mc->max;
++	long val = 0;
++	unsigned long regval;
++	unsigned int i;
++
++	for (i = 0; i < regcount; i++) {
++		regval = snd_soc_read(codec, regbase+i) & regwmask;
++		val |= regval << (regwshift*(regcount-i-1));
++	}
++	val &= mask;
++	if (min < 0 && val > max)
++		val |= ~mask;
++	if (invert)
++		val = max - val;
++	ucontrol->value.integer.value[0] = val;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_get_xr_sx);
++
++/**
++ * snd_soc_put_xr_sx - signed multi register get callback
++ * @kcontrol: mreg control
++ * @ucontrol: control element information
++ *
++ * Callback to set the value of a control that can span
++ * multiple codec registers which together forms a single
++ * signed value in a MSB/LSB manner. The control supports
++ * specifying total no of bits used to allow for bitfields
++ * across the multiple codec registers.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mreg_control *mc =
++		(struct soc_mreg_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int regbase = mc->regbase;
++	unsigned int regcount = mc->regcount;
++	unsigned int regwshift = codec->driver->reg_word_size * BITS_PER_BYTE;
++	unsigned int regwmask = (1<<regwshift)-1;
++	unsigned int invert = mc->invert;
++	unsigned long mask = (1UL<<mc->nbits)-1;
++	long min = mc->min;
++	long max = mc->max;
++	long val = ucontrol->value.integer.value[0];
++	unsigned int i, regval, regmask;
++	int err;
++
++	if (invert)
++		val = max - val;
++	val &= mask;
++	for (i = 0; i < regcount; i++) {
++		regval = (val >> (regwshift*(regcount-i-1))) & regwmask;
++		regmask = (mask >> (regwshift*(regcount-i-1))) & regwmask;
++		err = snd_soc_update_bits_locked(codec, regbase+i,
++				regmask, regval);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_put_xr_sx);
++
++/**
+  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+  * @dai: DAI
+  * @clk_id: DAI specific clock ID
 -- 
 1.7.8.3
