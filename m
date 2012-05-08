@@ -1,18 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: dmic codec: Support for DT
-Date: Tue,  8 May 2012 14:55:57 +0300
-Message-ID: <1336478157-27526-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: omap-mcpdm: Add device tree bindings
+Date: Tue,  8 May 2012 14:58:32 +0300
+Message-ID: <1336478312-27595-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
-	[74.125.149.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id 446AA2439A
+Received: from na3sys009aog136.obsmtp.com (na3sys009aog136.obsmtp.com
+	[74.125.149.85]) by alsa0.perex.cz (Postfix) with ESMTP id A8FF8243A2
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 13:56:05 +0200 (CEST)
-Received: by lahj13 with SMTP id j13so1047888lah.11
-	for <alsa-devel@alsa-project.org>; Tue, 08 May 2012 04:56:02 -0700 (PDT)
+	Tue,  8 May 2012 13:58:34 +0200 (CEST)
+Received: by lahm15 with SMTP id m15so1629475lah.9
+	for <alsa-devel@alsa-project.org>; Tue, 08 May 2012 04:58:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,63 +25,67 @@ To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add bindings to be able to probe the dmic codec driver via device tree.
-The device tree entry of a machine driver can use phandle to provide
-the device node for it's dai link structure.
+Device tree support for OMAP4+ McPDM cpu dai driver.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- .../devicetree/bindings/sound/dmic-codec.txt       |   18 ++++++++++++++++++
- sound/soc/codecs/dmic.c                            |    6 ++++++
- 2 files changed, 24 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/dmic-codec.txt
+ .../devicetree/bindings/sound/omap-mcpdm.txt       |   17 +++++++++++++++++
+ sound/soc/omap/omap-mcpdm.c                        |    8 ++++++++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/dmic-codec.txt b/Documentation/devicetree/bindings/sound/dmic-codec.txt
+diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
 new file mode 100644
-index 0000000..f23f2e3
+index 0000000..58b0e31
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/dmic-codec.txt
-@@ -0,0 +1,18 @@
-+Generic platform independent codec driver to represent digital microphones
-+
-+The dmic codec driver basically a dummy driver which exports the needed hooks
-+to be used with digital microphone interfaces.
++++ b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+@@ -0,0 +1,17 @@
++* Texas Instruments OMAP4+ McPDM
 +
 +Required properties:
-+- compatible : Must be "generic,dmic-codec";
++- compatible: "ti,omap4-mcpdm"
++- ti,hwmods: Name of the hwmod associated to the McPDM
 +
 +Example:
 +
-+dmic_codec: dmic_codec@0 { /* generic DMIC codec */
-+	compatible = "generic,dmic-codec";
++mcpdm: mcpdm@40132000 {
++	compatible = "ti,omap4-mcpdm";
++	ti,hwmods = "mcpdm";
 +};
 +
 +sound { /* ASoC machine dirver */
 +	...
-+	dai-link,codec = <&dmic_codec>;
++	dai-link,dai = <&mcpdm>;
 +};
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index 3e929f0..90e92f5 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -78,12 +78,18 @@ static int __devexit dmic_dev_remove(struct platform_device *pdev)
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 3970556..59d47ab 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -33,6 +33,7 @@
+ #include <linux/irq.h>
+ #include <linux/slab.h>
+ #include <linux/pm_runtime.h>
++#include <linux/of_device.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -507,10 +508,17 @@ static int __devexit asoc_mcpdm_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static const struct of_device_id dmic_of_match[] = {
-+	{.compatible = "generic,dmic-codec", },
-+	{ },
++static const struct of_device_id omap_mcpdm_of_match[] = {
++	{ .compatible = "ti,omap4-mcpdm", },
++	{ }
 +};
-+MODULE_DEVICE_TABLE(of, dmic_of_match);
- MODULE_ALIAS("platform:dmic-codec");
- 
- static struct platform_driver dmic_driver = {
++MODULE_DEVICE_TABLE(of, omap_mcpdm_of_match);
++
+ static struct platform_driver asoc_mcpdm_driver = {
  	.driver = {
- 		.name = "dmic-codec",
- 		.owner = THIS_MODULE,
-+		.of_match_table = dmic_of_match,
+ 		.name	= "omap-mcpdm",
+ 		.owner	= THIS_MODULE,
++		.of_match_table = omap_mcpdm_of_match,
  	},
- 	.probe = dmic_dev_probe,
- 	.remove = __devexit_p(dmic_dev_remove),
+ 
+ 	.probe	= asoc_mcpdm_probe,
 -- 
 1.7.8.6
