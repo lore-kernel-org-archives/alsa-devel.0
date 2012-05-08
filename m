@@ -1,21 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/3] ASoC: alc5632: Convert to
-	devm_regmap_init_i2c()
-Date: Tue, 08 May 2012 23:44:55 +0800
-Message-ID: <1336491895.14361.3.camel@phoenix>
-References: <1336491743.14361.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: omap-abe-twl6040: Keep only one
+ snd_soc_dai_link structure
+Date: Tue, 8 May 2012 16:52:55 +0100
+Message-ID: <20120508155255.GB15893@opensource.wolfsonmicro.com>
+References: <1336479314-27766-1-git-send-email-peter.ujfalusi@ti.com>
+	<1336479314-27766-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4998253075074874457=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3FA21044B8
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C568104589
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 17:45:04 +0200 (CEST)
-Received: by dajt11 with SMTP id t11so3331249daj.38
-	for <alsa-devel@alsa-project.org>; Tue, 08 May 2012 08:45:03 -0700 (PDT)
-In-Reply-To: <1336491743.14361.1.camel@phoenix>
+	Tue,  8 May 2012 17:53:02 +0200 (CEST)
+In-Reply-To: <1336479314-27766-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,68 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Andrey Danin <danindrey@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Leon Romanovsky <leon@leon.nu>, Liam Girdwood <lrg@ti.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/alc5632.c |    8 +-------
- 1 files changed, 1 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index b29a53b..7dd0242 100644
---- a/sound/soc/codecs/alc5632.c
-+++ b/sound/soc/codecs/alc5632.c
-@@ -1130,7 +1130,7 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
- 
- 	i2c_set_clientdata(client, alc5632);
- 
--	alc5632->regmap = regmap_init_i2c(client, &alc5632_regmap);
-+	alc5632->regmap = devm_regmap_init_i2c(client, &alc5632_regmap);
- 	if (IS_ERR(alc5632->regmap)) {
- 		ret = PTR_ERR(alc5632->regmap);
- 		dev_err(&client->dev, "regmap_init() failed: %d\n", ret);
-@@ -1142,7 +1142,6 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
- 	if (ret1 != 0 || ret2 != 0) {
- 		dev_err(&client->dev,
- 		"Failed to read chip ID: ret1=%d, ret2=%d\n", ret1, ret2);
--		regmap_exit(alc5632->regmap);
- 		return -EIO;
- 	}
- 
-@@ -1151,14 +1150,12 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
- 	if ((vid1 != 0x10EC) || (vid2 != id->driver_data)) {
- 		dev_err(&client->dev,
- 		"Device is not a ALC5632: VID1=0x%x, VID2=0x%x\n", vid1, vid2);
--		regmap_exit(alc5632->regmap);
- 		return -EINVAL;
- 	}
- 
- 	ret = alc5632_reset(alc5632->regmap);
- 	if (ret < 0) {
- 		dev_err(&client->dev, "Failed to issue reset\n");
--		regmap_exit(alc5632->regmap);
- 		return ret;
- 	}
- 
-@@ -1176,7 +1173,6 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
- 
- 	if (ret < 0) {
- 		dev_err(&client->dev, "Failed to register codec: %d\n", ret);
--		regmap_exit(alc5632->regmap);
- 		return ret;
- 	}
- 
-@@ -1185,9 +1181,7 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
- 
- static __devexit int alc5632_i2c_remove(struct i2c_client *client)
- {
--	struct alc5632_priv *alc5632 = i2c_get_clientdata(client);
- 	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(alc5632->regmap);
- 	return 0;
- }
- 
--- 
-1.7.5.4
+--===============4998253075074874457==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sKosZo66cxuwvnFI"
+Content-Disposition: inline
+
+
+--sKosZo66cxuwvnFI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 08, 2012 at 03:15:11PM +0300, Peter Ujfalusi wrote:
+> There is no need to have two snd_soc_dai_link structure for the two setup
+> the machine driver supports.
+> We can just tell core to register only the first link if the DMIC link is
+> not in use on the device.
+
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+--sKosZo66cxuwvnFI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPqUElAAoJEBus8iNuMP3d1DsP/iFgKKEBDEFMHBYWjmEG9FtJ
+nyvJyEEsukmYxijubREuW2F0EYufOi9UCgpVYhfj9vIjcRsJamiGHuZPMBVeKxTV
+CdSi9v98KDBIHvjCr5wwlHqqkX0jeOZenBwU/29BVnrTrshk2E58VPcIm0FWWWgT
+JyuunKqNRbnRu0LL6kffZoAKbcHjs9V30EsNSp9H7oNlwNGHDaBX6ql5GLwOqo+L
+Zjc1+2bXz52BzK9vIxNYDmLWJ1Dm2ns1ZfuLCICsy5njynuAE3Bn6BaHWEoGgk81
+ySXkG5MT41j/1Uo5IlHqRrhZn3zlDKRsCBMGfFjr3hIgddOrIrqtZBmeHZ5xBM8G
++qL3yvpECMiGwUHA1R/2Zc3SaAINNZtb6OHT61Su+Dzq0gD+23oFQ1L/JIdPQpNI
+wr0gyHCk+mDdqHpqj+0+KoiLby1SBvXGgV6ICCt/hFCgfpZwVqTdQcL4W1bGKzX6
+jeo18VwM44p9oeWRTtUiGeAgft1rM+Ewti8XU2vc7cd/fVUOyX6zdJC88hI34cc8
+OhfzAA38Pq3FMq27hxuC95liPLWJ/dPcHTcoJLUTnwiTbvid0Zr/hPBzK4vv6ByP
+xiSKtONvPU6RgQpoVfhXPRScJIB6b7GqhMkuUiLD32rubdyPaRpdUbRoZmXP5QLu
+KsLa2TRbgLpAsFR/X2Fl
+=KHn5
+-----END PGP SIGNATURE-----
+
+--sKosZo66cxuwvnFI--
+
+--===============4998253075074874457==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4998253075074874457==--
