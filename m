@@ -1,17 +1,17 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 03/11] ASoC: core: Add widget
-	SND_SOC_DAPM_CLOCK_SUPPLY
-Date: Tue, 8 May 2012 15:56:40 +0200
-Message-ID: <1336485400-27150-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 07/11] arm: ux500: Add audio-related
+	platform-data
+Date: Tue, 8 May 2012 15:57:08 +0200
+Message-ID: <1336485428-27296-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog105.obsmtp.com (eu1sys200aog105.obsmtp.com
-	[207.126.144.119])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78401244BB
+Received: from eu1sys200aog117.obsmtp.com (eu1sys200aog117.obsmtp.com
+	[207.126.144.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7FE0910440B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 15:56:52 +0200 (CEST)
+	Tue,  8 May 2012 15:57:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,216 +25,390 @@ To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Adds a supply-widget variant for connection to the clock-framework.
-This widget-type corresponds to the variant for regulators.
+This patch adds audio-related platform-data like hardwired settings
+for microphones and common-mode voltage for the earpiece.
+There is also some refactoring of the msp/audio-files.
 
 Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
 ---
- include/sound/soc-dapm.h |    9 +++++++
- sound/soc/soc-dapm.c     |   59 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+), 0 deletions(-)
+ arch/arm/mach-ux500/Makefile                       |    3 +-
+ arch/arm/mach-ux500/board-mop500-audio.c           |   58 +++++++++++++++
+ arch/arm/mach-ux500/board-mop500-msp.c             |   76 ++++++-------------
+ arch/arm/mach-ux500/board-mop500.c                 |    5 +-
+ arch/arm/mach-ux500/board-mop500.h                 |    2 +
+ .../mach-ux500/include/mach/board-mop500-audio.h   |   52 +++++++++++++
+ .../arm/mach-ux500/include/mach/board-mop500-msp.h |   32 ++++++++
+ 7 files changed, 174 insertions(+), 54 deletions(-)
+ create mode 100644 arch/arm/mach-ux500/board-mop500-audio.c
+ create mode 100644 arch/arm/mach-ux500/include/mach/board-mop500-audio.h
+ create mode 100644 arch/arm/mach-ux500/include/mach/board-mop500-msp.h
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 1649ef2..0e7ab1e 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -248,6 +248,10 @@ struct device;
- {	.id = snd_soc_dapm_regulator_supply, .name = wname, \
- 	.reg = SND_SOC_NOPM, .shift = wdelay, .event = dapm_regulator_event, \
- 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
-+#define SND_SOC_DAPM_CLOCK_SUPPLY(wname, is_sys) \
-+{	.id = snd_soc_dapm_clock_supply, .name = wname, \
-+	.reg = SND_SOC_NOPM, .shift = is_sys , .event = dapm_clock_event, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
- 
- /* dapm kcontrol types */
- #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
-@@ -329,6 +333,8 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event);
-+int dapm_clock_event(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol, int event);
- 
- /* dapm controls */
- int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
-@@ -401,6 +407,8 @@ void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec);
- 
- int snd_soc_dapm_get_regulator_status(struct snd_soc_dapm_context *dapm,
- 				const char *pin);
-+int snd_soc_dapm_get_power_status(struct snd_soc_dapm_context *dapm,
-+				const char *pin);
- 
- /* Mostly internal - should not normally be used */
- void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
-@@ -429,6 +437,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
- 	snd_soc_dapm_supply,		/* power/clock supply */
- 	snd_soc_dapm_regulator_supply,	/* external regulator */
-+	snd_soc_dapm_clock_supply,	/* external clock */
- 	snd_soc_dapm_aif_in,		/* audio interface input */
- 	snd_soc_dapm_aif_out,		/* audio interface output */
- 	snd_soc_dapm_siggen,		/* signal generator */
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b6c9df5..8649c1f 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -35,6 +35,7 @@
- #include <linux/debugfs.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/clk.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -51,6 +52,7 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_pre] = 0,
- 	[snd_soc_dapm_supply] = 1,
- 	[snd_soc_dapm_regulator_supply] = 1,
-+	[snd_soc_dapm_clock_supply] = 1,
- 	[snd_soc_dapm_micbias] = 2,
- 	[snd_soc_dapm_dai] = 3,
- 	[snd_soc_dapm_aif_in] = 3,
-@@ -88,6 +90,7 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_aif_in] = 10,
- 	[snd_soc_dapm_aif_out] = 10,
- 	[snd_soc_dapm_dai] = 10,
-+	[snd_soc_dapm_clock_supply] = 11,
- 	[snd_soc_dapm_regulator_supply] = 11,
- 	[snd_soc_dapm_supply] = 11,
- 	[snd_soc_dapm_post] = 12,
-@@ -365,6 +368,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 	case snd_soc_dapm_vmid:
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 	case snd_soc_dapm_aif_in:
- 	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_dai:
-@@ -697,6 +701,7 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
- 	switch (widget->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		return 0;
- 	default:
- 		break;
-@@ -768,6 +773,7 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
- 	switch (widget->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		return 0;
- 	default:
- 		break;
-@@ -857,6 +863,21 @@ EXPORT_SYMBOL_GPL(dapm_reg_event);
- /*
-  * Handler for regulator supply widget.
-  */
-+int dapm_clock_event(struct snd_soc_dapm_widget *w,
-+		   struct snd_kcontrol *kcontrol, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		return clk_enable(w->priv);
-+	else {
-+		clk_disable(w->priv);
-+		return 0;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(dapm_clock_event);
-+
+diff --git a/arch/arm/mach-ux500/Makefile b/arch/arm/mach-ux500/Makefile
+index 11729bc..f97cee8 100644
+--- a/arch/arm/mach-ux500/Makefile
++++ b/arch/arm/mach-ux500/Makefile
+@@ -12,7 +12,8 @@ obj-$(CONFIG_MACH_MOP500)	+= board-mop500.o board-mop500-sdi.o \
+ 				board-mop500-uib.o board-mop500-stuib.o \
+ 				board-mop500-u8500uib.o \
+ 				board-mop500-pins.o \
+-				board-mop500-msp.o
++				board-mop500-msp.o \
++				board-mop500-audio.o
+ obj-$(CONFIG_MACH_U5500)	+= board-u5500.o board-u5500-sdi.o
+ obj-$(CONFIG_SMP)		+= platsmp.o headsmp.o
+ obj-$(CONFIG_HOTPLUG_CPU)	+= hotplug.o
+diff --git a/arch/arm/mach-ux500/board-mop500-audio.c b/arch/arm/mach-ux500/board-mop500-audio.c
+new file mode 100644
+index 0000000..e50b6a9
+--- /dev/null
++++ b/arch/arm/mach-ux500/board-mop500-audio.c
+@@ -0,0 +1,58 @@
 +/*
-+ * Handler for clock supply widget.
-+ */
- int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event)
- {
-@@ -1355,6 +1376,7 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 	switch (w->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		/* Supplies can't affect their outputs, only their inputs */
- 		break;
- 	default:
-@@ -1457,6 +1479,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 				break;
- 			case snd_soc_dapm_supply:
- 			case snd_soc_dapm_regulator_supply:
-+			case snd_soc_dapm_clock_supply:
- 			case snd_soc_dapm_micbias:
- 				if (d->target_bias_level < SND_SOC_BIAS_STANDBY)
- 					d->target_bias_level = SND_SOC_BIAS_STANDBY;
-@@ -1809,6 +1832,7 @@ static ssize_t dapm_widget_show(struct device *dev,
- 		case snd_soc_dapm_mixer_named_ctl:
- 		case snd_soc_dapm_supply:
- 		case snd_soc_dapm_regulator_supply:
-+		case snd_soc_dapm_clock_supply:
- 			if (w->name)
- 				count += sprintf(buf + count, "%s: %s\n",
- 					w->name, w->power ? "On":"Off");
-@@ -2050,6 +2074,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	case snd_soc_dapm_post:
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 	case snd_soc_dapm_aif_in:
- 	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_dai:
-@@ -2723,6 +2748,16 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 			return NULL;
- 		}
- 		break;
-+	case snd_soc_dapm_clock_supply:
-+		w->priv = (w->shift) ? clk_get_sys(w->name, NULL) :
-+				clk_get(dapm->dev, w->name);
-+		if (IS_ERR(w->priv)) {
-+			ret = PTR_ERR(w->priv);
-+			dev_err(dapm->dev, "Failed to request %s: %d\n",
-+				w->name, ret);
-+			return NULL;
-+		}
-+		break;
- 	default:
- 		break;
- 	}
-@@ -2773,6 +2808,7 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 		break;
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		w->power_check = dapm_supply_check_power;
- 		break;
- 	case snd_soc_dapm_dai:
-@@ -3114,6 +3150,29 @@ int snd_soc_dapm_get_regulator_status(struct snd_soc_dapm_context *dapm,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_get_regulator_status);
- 
-+ /**
-+ * snd_soc_dapm_get_power_status - get widget power status
-+ * @dapm: DAPM context
-+ * @pin: Widget name
++ * Copyright (C) ST-Ericsson SA 2012
 + *
-+ * Get widget power status - Enabled or disabled.
++ * Author: Ola Lilja <ola.o.lilja@stericsson.com>
++ *         for ST-Ericsson.
 + *
-+ * Returns -1 for failure.
-+ * Returns 0 if disabled.
-+ * Returns 1 if enabled.
++ * License terms:
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
 + */
-+int snd_soc_dapm_get_power_status(struct snd_soc_dapm_context *dapm,
-+				const char *pin)
++
++#include <linux/platform_device.h>
++
++#include <mach/board-mop500-audio.h>
++
++static struct mop500_audio_platform_data mop500_audio_pdata = {
++	.amics =  {
++		.mic1_type = AMIC_TYPE_DIFFERENTIAL,
++		.mic2_type = AMIC_TYPE_DIFFERENTIAL,
++		.mic1a_micbias = AMIC_MICBIAS_VAMIC1,
++		.mic1b_micbias = AMIC_MICBIAS_VAMIC1,
++		.mic2_micbias = AMIC_MICBIAS_VAMIC2
++	},
++	.ear_cmv = EAR_CMV_0_95V
++};
++
++/* Platform device for MOP500 audio-parts */
++static struct platform_device mop500_audio = {
++	.name = "snd-soc-mop500",
++	.id = 0,
++	.dev = {
++		.platform_data = &mop500_audio_pdata,
++	},
++};
++
++/* Platform device for Ux500-PCM */
++static struct platform_device ux500_pcm = {
++	.name = "ux500-pcm",
++	.id = 0,
++	.dev = {
++		.platform_data = NULL,
++	},
++};
++
++int mop500_audio_init(struct device *parent)
 +{
-+	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
++	int ret;
 +
-+	if (!w)
-+		return -1;
++	pr_info("%s: Register platform-device 'snd-soc-mop500'.\n", __func__);
++	ret = platform_device_register(&mop500_audio);
 +
-+	return w->power;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_get_power_status);
++	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
++	ret |= platform_device_register(&ux500_pcm);
 +
- /**
-  * snd_soc_dapm_ignore_suspend - ignore suspend status for DAPM endpoint
-  * @dapm: DAPM context
++	return ret;
++};
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
+index c8f6300..2354bd0 100644
+--- a/arch/arm/mach-ux500/board-mop500-msp.c
++++ b/arch/arm/mach-ux500/board-mop500-msp.c
+@@ -5,21 +5,16 @@
+  */
+ 
+ #include <linux/platform_device.h>
+-#include <linux/init.h>
+ #include <linux/gpio.h>
+-#include <plat/gpio-nomadik.h>
+ 
++#include <plat/gpio-nomadik.h>
+ #include <plat/pincfg.h>
+ #include <plat/ste_dma40.h>
+ 
+-#include <mach/devices.h>
+ #include <ste-dma40-db8500.h>
+-#include <mach/hardware.h>
+-#include <mach/irqs.h>
+-#include <mach/msp.h>
+ 
+-#include "board-mop500.h"
+-#include "devices-db8500.h"
++#include <mach/board-mop500-msp.h>
++
+ #include "pins-db8500.h"
+ 
+ /* MSP1/3 Tx/Rx usage protection */
+@@ -100,7 +95,7 @@ static struct stedma40_chan_cfg msp0_dma_tx = {
+ 	/* data_width is set during configuration */
+ };
+ 
+-static struct msp_i2s_platform_data msp0_platform_data = {
++static struct msp_i2s_platform_data msp0_pdata = {
+ 	.id = MSP_I2S_0,
+ 	.msp_i2s_dma_rx = &msp0_dma_rx,
+ 	.msp_i2s_dma_tx = &msp0_dma_tx,
+@@ -132,7 +127,7 @@ static struct stedma40_chan_cfg msp1_dma_tx = {
+ 	/* data_width is set during configuration */
+ };
+ 
+-static struct msp_i2s_platform_data msp1_platform_data = {
++static struct msp_i2s_platform_data msp1_pdata = {
+ 	.id = MSP_I2S_1,
+ 	.msp_i2s_dma_rx = NULL,
+ 	.msp_i2s_dma_tx = &msp1_dma_tx,
+@@ -170,7 +165,7 @@ static struct stedma40_chan_cfg msp2_dma_tx = {
+ 	/* data_width is set during configuration */
+ };
+ 
+-static int db8500_add_msp_i2s(struct device *parent, int id,
++static int mop500_msp_register_device(struct device *parent, int id,
+ 			resource_size_t base, int irq,
+ 			struct msp_i2s_platform_data *pdata)
+ {
+@@ -180,46 +175,28 @@ static int db8500_add_msp_i2s(struct device *parent, int id,
+ 		DEFINE_RES_IRQ(irq),
+ 	};
+ 
+-	pr_info("Register platform-device 'ux500-msp-i2s', id %d, irq %d\n",
+-		id, irq);
++	pr_info("%s: Register platform-device 'ux500-msp-i2s', id %d, irq %d\n",
++		__func__, id, irq);
+ 	pdev = platform_device_register_resndata(parent, "ux500-msp-i2s", id,
+ 						res, ARRAY_SIZE(res),
+ 						pdata, sizeof(*pdata));
+ 	if (!pdev) {
+-		pr_err("Failed to register platform-device 'ux500-msp-i2s.%d'!\n",
+-			id);
++		pr_err("%s: Failed to register platform-device 'ux500-msp-i2s.%d'!\n",
++			__func__, id);
+ 		return -EIO;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-/* Platform device for ASoC U8500 machine */
+-static struct platform_device snd_soc_u8500 = {
+-		.name = "snd-soc-u8500",
+-		.id = 0,
+-		.dev = {
+-			.platform_data = NULL,
+-		},
+-};
+-
+-/* Platform device for Ux500-PCM */
+-static struct platform_device ux500_pcm = {
+-		.name = "ux500-pcm",
+-		.id = 0,
+-		.dev = {
+-			.platform_data = NULL,
+-		},
+-};
+-
+-static struct msp_i2s_platform_data msp2_platform_data = {
++static struct msp_i2s_platform_data msp2_pdata = {
+ 	.id = MSP_I2S_2,
+ 	.msp_i2s_dma_rx = &msp2_dma_rx,
+ 	.msp_i2s_dma_tx = &msp2_dma_tx,
+ };
+ 
+-static struct msp_i2s_platform_data msp3_platform_data = {
+-	.id		= MSP_I2S_3,
++static struct msp_i2s_platform_data msp3_pdata = {
++	.id = MSP_I2S_3,
+ 	.msp_i2s_dma_rx	= &msp1_dma_rx,
+ 	.msp_i2s_dma_tx	= NULL,
+ 	.msp_i2s_init = msp13_i2s_init,
+@@ -230,21 +207,16 @@ int mop500_msp_init(struct device *parent)
+ {
+ 	int ret;
+ 
+-	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
+-	platform_device_register(&snd_soc_u8500);
+-
+-	pr_info("Initialize MSP I2S-devices.\n");
+-	ret = db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
+-				&msp0_platform_data);
+-	ret |= db8500_add_msp_i2s(parent, 1, U8500_MSP1_BASE, IRQ_DB8500_MSP1,
+-				&msp1_platform_data);
+-	ret |= db8500_add_msp_i2s(parent, 2, U8500_MSP2_BASE, IRQ_DB8500_MSP2,
+-				&msp2_platform_data);
+-	ret |= db8500_add_msp_i2s(parent, 3, U8500_MSP3_BASE, IRQ_DB8500_MSP1,
+-				&msp3_platform_data);
+-
+-	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
+-	platform_device_register(&ux500_pcm);
++	pr_info("%s: Initialize MSP I2S-devices.\n", __func__);
++	ret = mop500_msp_register_device(parent, 0, U8500_MSP0_BASE,
++				IRQ_DB8500_MSP0, &msp0_pdata);
++	ret |= mop500_msp_register_device(parent, 1, U8500_MSP1_BASE,
++				IRQ_DB8500_MSP1, &msp1_pdata);
++	ret |= mop500_msp_register_device(parent, 2, U8500_MSP2_BASE,
++				IRQ_DB8500_MSP2, &msp2_pdata);
++	ret |= mop500_msp_register_device(parent, 3, U8500_MSP3_BASE,
++				IRQ_DB8500_MSP1, &msp3_pdata);
+ 
+ 	return ret;
+-}
++};
++
+diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
+index 4cbed08..3d975df 100644
+--- a/arch/arm/mach-ux500/board-mop500.c
++++ b/arch/arm/mach-ux500/board-mop500.c
+@@ -53,7 +53,7 @@
+ #include "devices-db8500.h"
+ #include "board-mop500.h"
+ #include "board-mop500-regulators.h"
+-#include "board-mop500-msp.h"
++
+ 
+ static struct gpio_led snowball_led_array[] = {
+ 	{
+@@ -633,6 +633,7 @@ static void __init mop500_init_machine(void)
+ 	mop500_sdi_init(parent);
+ 	mop500_spi_init(parent);
+ 	mop500_msp_init(parent);
++	mop500_audio_init(parent);
+ 	mop500_uart_init(parent);
+ 
+ 	i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+@@ -665,6 +666,7 @@ static void __init snowball_init_machine(void)
+ 	snowball_sdi_init(parent);
+ 	mop500_spi_init(parent);
+ 	mop500_msp_init(parent);
++	mop500_audio_init(parent);
+ 	mop500_uart_init(parent);
+ 
+ 	i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+@@ -703,6 +705,7 @@ static void __init hrefv60_init_machine(void)
+ 	hrefv60_sdi_init(parent);
+ 	mop500_spi_init(parent);
+ 	mop500_msp_init(parent);
++	mop500_audio_init(parent);
+ 	mop500_uart_init(parent);
+ 
+ 	i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+diff --git a/arch/arm/mach-ux500/board-mop500.h b/arch/arm/mach-ux500/board-mop500.h
+index fdcfa87..a5e1ccb 100644
+--- a/arch/arm/mach-ux500/board-mop500.h
++++ b/arch/arm/mach-ux500/board-mop500.h
+@@ -84,6 +84,8 @@ void __init mop500_stuib_init(void);
+ void __init mop500_pins_init(void);
+ void __init hrefv60_pins_init(void);
+ void __init snowball_pins_init(void);
++int mop500_msp_init(struct device *parent);
++int mop500_audio_init(struct device *parent);
+ 
+ void mop500_uib_i2c_add(int busnum, struct i2c_board_info *info,
+ 		unsigned n);
+diff --git a/arch/arm/mach-ux500/include/mach/board-mop500-audio.h b/arch/arm/mach-ux500/include/mach/board-mop500-audio.h
+new file mode 100644
+index 0000000..15ffea6
+--- /dev/null
++++ b/arch/arm/mach-ux500/include/mach/board-mop500-audio.h
+@@ -0,0 +1,52 @@
++/*
++ * Copyright (C) ST-Ericsson SA 2012
++ *
++ * Author: Ola Lilja <ola.o.lilja@stericsson.com>
++ *         for ST-Ericsson.
++ *
++ * License terms:
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++
++#ifndef __BOARD_MOP500_AUDIO_H_
++#define __BOARD_MOP500_AUDIO_H_
++
++/* Mic-types */
++enum amic_type {
++	AMIC_TYPE_SINGLE_ENDED,
++	AMIC_TYPE_DIFFERENTIAL
++};
++
++/* Mic-biases */
++enum amic_micbias {
++	AMIC_MICBIAS_VAMIC1,
++	AMIC_MICBIAS_VAMIC2
++};
++
++/* Bias-voltage */
++enum ear_cm_voltage {
++	EAR_CMV_0_95V,
++	EAR_CMV_1_10V,
++	EAR_CMV_1_27V,
++	EAR_CMV_1_58V
++};
++
++/* Analog microphone settings */
++struct amic_settings {
++	enum amic_type mic1_type;
++	enum amic_type mic2_type;
++	enum amic_micbias mic1a_micbias;
++	enum amic_micbias mic1b_micbias;
++	enum amic_micbias mic2_micbias;
++};
++
++/* Platform data structure for the audio-parts of the MOP500 */
++struct mop500_audio_platform_data {
++	struct amic_settings amics;
++	enum ear_cm_voltage ear_cmv;
++};
++
++#endif
+diff --git a/arch/arm/mach-ux500/include/mach/board-mop500-msp.h b/arch/arm/mach-ux500/include/mach/board-mop500-msp.h
+new file mode 100644
+index 0000000..3c096b2
+--- /dev/null
++++ b/arch/arm/mach-ux500/include/mach/board-mop500-msp.h
+@@ -0,0 +1,32 @@
++/*
++ * Copyright (C) ST-Ericsson SA 2010
++ *
++ * Author: Rabin Vincent <rabin.vincent@stericsson.com> for ST-Ericsson
++ * License terms: GNU General Public License (GPL), version 2.
++ */
++
++
++#ifndef __BOARD_MOP500_MSP_H_
++#define __BOARD_MOP500_MSP_H_
++
++#include <plat/ste_dma40.h>
++
++enum msp_i2s_id {
++	MSP_I2S_0 = 0,
++	MSP_I2S_1,
++	MSP_I2S_2,
++	MSP_I2S_3,
++};
++
++/* Platform data structure for a MSP I2S-device */
++struct msp_i2s_platform_data {
++	enum msp_i2s_id id;
++	struct stedma40_chan_cfg *msp_i2s_dma_rx;
++	struct stedma40_chan_cfg *msp_i2s_dma_tx;
++	int (*msp_i2s_init) (void);
++	int (*msp_i2s_exit) (void);
++};
++
++
++
++#endif
 -- 
 1.7.8.3
