@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm9081: Hook DAC up via DAPM rather than
-	stream
-Date: Tue,  8 May 2012 12:12:40 +0100
-Message-ID: <1336475560-22230-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: twl6040: Remove HS/HF gain ramp
+	feature
+Date: Tue, 08 May 2012 14:46:54 +0300
+Message-ID: <4FA907AE.4060409@ti.com>
+References: <1336133840-12330-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120507172732.GP17002@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 210BB10425C
+Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
+	[74.125.149.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CB2C2436E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 13:12:45 +0200 (CEST)
+	Tue,  8 May 2012 13:46:41 +0200 (CEST)
+Received: by lbol5 with SMTP id l5so3968230lbo.6
+	for <alsa-devel@alsa-project.org>; Tue, 08 May 2012 04:46:38 -0700 (PDT)
+In-Reply-To: <20120507172732.GP17002@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,46 +26,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-More current API usage.
+Hi,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9081.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On 05/07/2012 08:27 PM, Mark Brown wrote:
+> On Fri, May 04, 2012 at 03:17:20PM +0300, Peter Ujfalusi wrote:
+>> None of the machines uses the gain ramp possibility for HS/HF.
+>> This code path is mostly unused and it does not reduces the pop
+>> noise on the output (it alters it to sound a bit different).
+>> The preferred method to reduce pop noise is to use ABE.
+> =
 
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index 076c126..9328270 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -774,7 +774,7 @@ static const struct snd_soc_dapm_widget wm9081_dapm_widgets[] = {
- SND_SOC_DAPM_INPUT("IN1"),
- SND_SOC_DAPM_INPUT("IN2"),
- 
--SND_SOC_DAPM_DAC("DAC", "HiFi Playback", WM9081_POWER_MANAGEMENT, 0, 0),
-+SND_SOC_DAPM_DAC("DAC", NULL, WM9081_POWER_MANAGEMENT, 0, 0),
- 
- SND_SOC_DAPM_MIXER_NAMED_CTL("Mixer", SND_SOC_NOPM, 0, 0,
- 			     mixer, ARRAY_SIZE(mixer)),
-@@ -799,6 +799,7 @@ SND_SOC_DAPM_SUPPLY("TSENSE", WM9081_POWER_MANAGEMENT, 7, 0, NULL, 0),
- static const struct snd_soc_dapm_route wm9081_audio_paths[] = {
- 	{ "DAC", NULL, "CLK_SYS" },
- 	{ "DAC", NULL, "CLK_DSP" },
-+	{ "DAC", NULL, "AIF" },
- 
- 	{ "Mixer", "IN1 Switch", "IN1" },
- 	{ "Mixer", "IN2 Switch", "IN2" },
-@@ -1252,7 +1253,7 @@ static const struct snd_soc_dai_ops wm9081_dai_ops = {
- static struct snd_soc_dai_driver wm9081_dai = {
- 	.name = "wm9081-hifi",
- 	.playback = {
--		.stream_name = "HiFi Playback",
-+		.stream_name = "AIF",
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = WM9081_RATES,
--- 
-1.7.10
+> ...to implement gain changes?
+
+To fix up the pop noise.
+
+After this feature was implemented to reduce the pop noise it become
+clear that the underlying issue can be better solved with the offset
+cancellation feature within ABE.
+It turned out that the ramp code (which was implemented and deployed at
+the same time as the ABE offset cancellation) alone just alters the
+quality of the pop. With the ABE solution alone we are fine.
+
+> Applied, thanks.
+
+Thank you,
+P=E9ter
