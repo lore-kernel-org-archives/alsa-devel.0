@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/4] ASoC: omap-abe-twl6040: Introduce
- driver data for runtime parameters
-Date: Tue, 8 May 2012 19:31:01 +0100
-Message-ID: <20120508183101.GL15893@opensource.wolfsonmicro.com>
-References: <1336479314-27766-1-git-send-email-peter.ujfalusi@ti.com>
-	<1336479314-27766-4-git-send-email-peter.ujfalusi@ti.com>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: Re: [PATCH] ALSA: HDA: Lessen CPU usage when waiting
+ for chip to respond
+Date: Wed, 09 May 2012 01:35:52 +0530
+Message-ID: <1336507552.5353.3.camel@localhost>
+References: <1336122355-6017-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7543172991281839666=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 873061044AD
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14AB51044A3
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 20:31:03 +0200 (CEST)
-In-Reply-To: <1336479314-27766-4-git-send-email-peter.ujfalusi@ti.com>
+	Tue,  8 May 2012 22:06:10 +0200 (CEST)
+In-Reply-To: <1336122355-6017-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2012-05-04 at 11:05 +0200, David Henningsson wrote:
+> When an IRQ for some reason gets lost, we wait up to a second using
+> udelay, which is CPU intensive. This patch improves the situation by
+> waiting about 30 ms in the CPU intensive mode, then stepping down to
+> using msleep(2) instead. In essence, we trade some granularity in
+> exchange for less CPU consumption when the waiting time is a bit longer.
+> 
+> As a result, PulseAudio should no longer be killed by the kernel
+> for taking up to much RT-prio CPU time. At least not for *this* reason.
+> 
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> ---
+>  sound/pci/hda/hda_intel.c |    6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> Hi Arun,
+> 
+> Can you check if this patch resolves your problem with PulseAudio getting
+> killed by the kernel? If so, we should apply it to the kernel, perhaps even
+> to stable.
+> 
+> // David
 
---===============7543172991281839666==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Xp2nimoPFnvF0aLh"
-Content-Disposition: inline
+Thanks, this fixes the problem for me. Don't know what the official
+procedure for these things is, but fwiw:
 
+Signed-off-by: Arun Raghavan <arun.raghavan@collabora.co.uk>
 
---Xp2nimoPFnvF0aLh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 08, 2012 at 03:15:13PM +0300, Peter Ujfalusi wrote:
-> In preparation to Device Tree support.
-> With DT booted kernel we can not rely on pdata which used to
-> hold information needed for the driver at runtime.
-> Use the card's driver data to hold these informations from now on.
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
---Xp2nimoPFnvF0aLh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPqWZeAAoJEBus8iNuMP3dqFcP/3Z+VZCalwd3zyNb2d0JI0AQ
-00iw4ZPYk13BlVgLmmR5DJr8Qc9BAnevVjhlyHAPz/ACYrFqsiw7ySj+PtdZ75E/
-xy4PMYXwEel50V0ftX6qq3JV0VuW5jJ4gQxdCXG2hqOjSnB3ff3gxFv81MWLECzV
-89tdIwIlSyjxVb4fDnBic6AP5TM7EaLoiGspjSCKv5HQlWMd/+rmsgaeriIAMomB
-QRrbdmPRqlS7WwvnVbMJrIAasEnMYMKaF1mNC8CbuMfh1r/WkKjOeYX8W50K+1Um
-ej7iWlGr+5SN+DRRTwhObIDvwa3TF8AIQBwTePNUbUeyx+G/7fV8XppcGeSu2ta7
-Z1seqHvMNvIy5Uw5H/USDpJU5eMM3zoKOw/AkUGlc3fNOAV5iWNEyhG8EGz/cBfz
-4xdStbsJcBdyQKS31apB1ONzwt5TktReZwhlb23N6QXHOImsaRRrw78QobFpiegW
-fyqT2Fydh9Cv/CX/LcPY7TAmnsL5FVbYB1WqHhu8R0RfbeDu4+LszEBgCZTXT60i
-FvPh7lwk/2WE1lv/3US4q4rNWse9uXbD1aBW+l8+agRo/MvpY/VbDOBxCnSBBfrn
-2SNI5NOB6FKbtiByur38drign0E83Lm1fMooRvSeTEnyeSQegkukArtWJ79xQlg8
-qFzKZZwsJGggjbql1q+q
-=mar0
------END PGP SIGNATURE-----
-
---Xp2nimoPFnvF0aLh--
-
---===============7543172991281839666==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7543172991281839666==--
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 7b6a823..0e7c3f1 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -783,11 +783,13 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+>  {
+>  	struct azx *chip = bus->private_data;
+>  	unsigned long timeout;
+> +	unsigned long loopcounter;
+>  	int do_poll = 0;
+>  
+>   again:
+>  	timeout = jiffies + msecs_to_jiffies(1000);
+> -	for (;;) {
+> +	
+> +	for (loopcounter = 0;; loopcounter++) {
+>  		if (chip->polling_mode || do_poll) {
+>  			spin_lock_irq(&chip->reg_lock);
+>  			azx_update_rirb(chip);
+> @@ -803,7 +805,7 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+>  		}
+>  		if (time_after(jiffies, timeout))
+>  			break;
+> -		if (bus->needs_damn_long_delay)
+> +		if (bus->needs_damn_long_delay || loopcounter > 3000)
+>  			msleep(2); /* temporary workaround */
+>  		else {
+>  			udelay(10);
