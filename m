@@ -1,82 +1,147 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dmic codec: Support for DT
-Date: Tue, 8 May 2012 13:58:38 +0100
-Message-ID: <20120508125837.GN15893@opensource.wolfsonmicro.com>
-References: <1336478157-27526-1-git-send-email-peter.ujfalusi@ti.com>
+From: Konstantin Khlebnikov <khlebnikov@openvz.org>
+Subject: Re: [ALSA hda 3.4-rc] suspend2ram regression in snd_hda_intel
+Date: Tue, 08 May 2012 17:05:43 +0400
+Message-ID: <4FA91A27.3030801@openvz.org>
+References: <4FA38371.9020205@openvz.org>	<4FA6370E.9000702@openvz.org> <s5hpqahvbmv.wl%tiwai@suse.de>	<4FA8C793.4010000@openvz.org> <s5h8vh3um79.wl%tiwai@suse.de> <s5h397bukft.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8546629854620202913=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B02210438F
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2012 14:58:41 +0200 (CEST)
-In-Reply-To: <1336478157-27526-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h397bukft.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Tue, 08 May 2012 10:11:06 +0200,
+> Takashi Iwai wrote:
+>>
+>> At Tue, 08 May 2012 11:13:23 +0400,
+>> Konstantin Khlebnikov wrote:
+>>>
+>>> Takashi Iwai wrote:
+>>>> At Sun, 06 May 2012 12:32:14 +0400,
+>>>> Konstantin Khlebnikov wrote:
+>>>>>
+>>>>> Konstantin Khlebnikov wrote:
+>>>>>> Mainline commit 785f857d1cb0856b612b46a0545b74aa2596e44a
+>>>>>> ("ALSA: hda - Set codec to D3 forcibly even if not used")
+>>>>>> breaks sound for my notebook (thinkpad x220),
+>>>>>> looks like codec cannot wake from power-save state after resume.
+>>>>>> After reverting looks like all works fine.
+>>>>>>
+>>>>>> how to reproduce:
+>>>>>> * unplug the power cord (to enable hda power safe mode)
+>>>>>> * play something and stop
+>>>>>> * wait until the background noise disappears (codec went into power-save mode)
+>>>>>> * suspend
+>>>>>> * resume
+>>>>>> * play something again and hear the silence
+>>>>>> --
+>>>>>> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+>>>>>> the body of a message to majordomo@vger.kernel.org
+>>>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>>>> Please read the FAQ at  http://www.tux.org/lkml/
+>>>>>
+>>>>> Bump
+>>>>
+>>>> It's a weekend, so don't expect quick responces from any normal person
+>>>> :)
+>>>
+>>> Yeah, sorry. In this country a mess with holidays and weekends.
+>>>
+>>>>
+>>>> Which 3.4-rc did you try?  There was a known problem with this codec
+>>>> regarding the power-up sequence, but this should have been fixed in
+>>>> the very recent version.
+>>>
+>>> Bug still in latest v3.4-rc6.
+>>> This is serious degradation since v3.3, so I hope it will be fixed before release.
+>>>
+>>>>
+>>>> If the latest Linus tree still shows the problem, try sound git tree
+>>>> master or for-next branch.
+>>>>      git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+>>>
+>>> I don't see there anything related to this problem. Bug is still there.
+>>> It's 100% reproductible and disappears after reverting that commit.
+>>> Looks like driver missed one power-up cycle after system-resume,
+>>> after second power-save down/up cycle all work fine.
+>>
+>> OK.  Could you try to pass model=auto and see whether it changes
+>> the behavior?  I've checked only the auto-parser mode recently.
+>> It might be just the static quirk that got broken.
+>>
+>> Note that the mixer elements will be renamed by this, so make sure
+>> that you adjust the mixer before testing S3.
+>
+> FWIW, the below is an ad hoc fix.  If this works for you, I'll queue
+> it up for 3.4 kernel.
 
---===============8546629854620202913==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mPOSj6iWmtyhwOMz"
-Content-Disposition: inline
+Of course it helps, but this isn't "fix" at all!
+Right fix follows...
 
-
---mPOSj6iWmtyhwOMz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, May 08, 2012 at 02:55:57PM +0300, Peter Ujfalusi wrote:
-
-> +dmic_codec: dmic_codec@0 { /* generic DMIC codec */
-> +	compatible =3D "generic,dmic-codec";
-> +};
-
-Why is this called "dmic-codec" and not "dmic"?  We probably need to
-have a think about this in the context of the handling of random
-on-board passive components in general - things like jacks and so on -=20
-is the most sensible thing to have a platform device for everything, or
-is that getting too noisy?
-
---mPOSj6iWmtyhwOMz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPqRhkAAoJEBus8iNuMP3dGM8P/2ZnfYpKIsRskZDISh2T1zUA
-lwUwmyOmkBftVNZ7NsOXCw6QsClGPFrgDfwwo4ibms5ZNtZGLvRG4MQ7COnZHDSX
-CrNIkCk18JMTgB0IwwWM93AFcKMHHmsosHhi72Y/0PQrnOEdhZD0scb0Rr52eiT9
-wPndQqIYnEcNOz0iOYrJtOZ3bJhd5MTPN75D4hX+wF5LCIzbm/RuhGSeNFmao3/X
-aPU+ZeStDrZYNhRHkQan+mKyj7+fxEbVJWYJw+d6ESsYFNvrV2psLxIro6n50tCO
-e6XrKSfQjui8IBJpwSqv60QFcIznGUAImXtE70IggnafvN9zbVT1HaljT3EAnQJt
-e0+nUmIhP5jQyfshhLOiaj+enZl6Yh0BEM3qWAe9lpdRO/gpjEePCfDTjNE0y+7w
-sPj4XeJ31FtyAsx7uxTqoQmOiIWoaJL7CYW1nJDxDANxKWBUHJvDBYEogCciSyvB
-GYp5gcip3osJ33YQpGrFFpu1T3IlgHCI+OSccftW3iLRMH6MrZuoXnmd3FlI15b7
-EAJVim/LpyYqAdSLP/EbDrCODpwTJW2VrUalBK+cy21it2JN5zAhkciDiCraxcu0
-4K6zzgzB/TkegitUKgtYftuy4TJ2+5dWlT6AECoFjT9VsiGXEPXv+4xznyepymbl
-Az1VuNzbbRYdvCa8CZzg
-=wQ3s
------END PGP SIGNATURE-----
-
---mPOSj6iWmtyhwOMz--
-
---===============8546629854620202913==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8546629854620202913==--
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> From: Takashi Iwai<tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Fix S3 regression on Thinkpad X220
+>
+> The commit [785f857d: ALSA: hda - Set codec to D3 forcibly even if not
+> used] caused an S3 regression on Lenovo Thinkpad X220.  The codec
+> stays in D3 even after the resume by some reason.
+>
+> As a simple workaround, just avoid the new behavior by that commit,
+> i.e. going to D3 forcibly, for these Conexant codec chips.
+>
+> Reported-by: Konstantin Khlebnikov<khlebnikov@openvz.org>
+> Signed-off-by: Takashi Iwai<tiwai@suse.de>
+> ---
+>   sound/pci/hda/hda_codec.c      |    3 ++-
+>   sound/pci/hda/hda_codec.h      |    1 +
+>   sound/pci/hda/patch_conexant.c |    1 +
+>   3 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index 7a8fcc4..f38c4a8 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -5444,7 +5444,8 @@ int snd_hda_suspend(struct hda_bus *bus)
+>   	list_for_each_entry(codec,&bus->codec_list, list) {
+>   		if (hda_codec_is_power_on(codec))
+>   			hda_call_codec_suspend(codec);
+> -		else /* forcibly change the power to D3 even if not used */
+> +		else if (!codec->no_force_to_d3)
+> +			/* forcibly change the power to D3 even if not used */
+>   			hda_set_power_state(codec,
+>   					    codec->afg ? codec->afg : codec->mfg,
+>   					    AC_PWRST_D3);
+> diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> index 56b4f74..2b3f646 100644
+> --- a/sound/pci/hda/hda_codec.h
+> +++ b/sound/pci/hda/hda_codec.h
+> @@ -854,6 +854,7 @@ struct hda_codec {
+>   	unsigned int single_adc_amp:1; /* adc in-amp takes no index
+>   					* (e.g. CX20549 codec)
+>   					*/
+> +	unsigned int no_force_to_d3:1;	/* don't go to D3 forcibly at sleep */
+>   	unsigned int no_sticky_stream:1; /* no sticky-PCM stream assignment */
+>   	unsigned int pins_shutup:1;	/* pins are shut up */
+>   	unsigned int no_trigger_sense:1; /* don't trigger at pin-sensing */
+> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+> index d906c5b..6b680c2 100644
+> --- a/sound/pci/hda/patch_conexant.c
+> +++ b/sound/pci/hda/patch_conexant.c
+> @@ -3018,6 +3018,7 @@ static int patch_cxt5066(struct hda_codec *codec)
+>   	if (!spec)
+>   		return -ENOMEM;
+>   	codec->spec = spec;
+> +	codec->no_force_to_d3 = 1;
+>
+>   	codec->patch_ops = conexant_patch_ops;
+>   	codec->patch_ops.init = conexant_init;
