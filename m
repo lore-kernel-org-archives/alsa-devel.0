@@ -1,14 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC fix for 3.4
-Date: Wed, 9 May 2012 12:49:04 +0100
-Message-ID: <20120509114903.GL3955@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 4/4] ASoC: omap-abe-twl6040: Add device
+	tree support
+Date: Wed, 09 May 2012 14:45:17 +0300
+Message-ID: <4FAA58CD.5010609@ti.com>
+References: <1336479314-27766-1-git-send-email-peter.ujfalusi@ti.com>
+	<1336479314-27766-5-git-send-email-peter.ujfalusi@ti.com>
+	<20120508135912.GR15893@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2614840380717247402=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EE6092456D
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+	[74.125.149.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3038104576
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 14:06:05 +0200 (CEST)
+	Wed,  9 May 2012 14:06:58 +0200 (CEST)
+Received: by lagr15 with SMTP id r15so165379lag.30
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2012 05:06:56 -0700 (PDT)
+In-Reply-To: <20120508135912.GR15893@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,74 +27,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 05/08/2012 04:59 PM, Mark Brown wrote:
+> On Tue, May 08, 2012 at 03:15:14PM +0300, Peter Ujfalusi wrote:
+> =
 
---===============2614840380717247402==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rVkomL2febZOZtGQ"
-Content-Disposition: inline
+>> 	abe-twl6040,jack_detection =3D <0>;
+> =
 
+> Shouldn't this be a boolean property that simply needs to be present to
+> flag detection?
 
---rVkomL2febZOZtGQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It does work like that as well. This property only need to be there (and
+to be set to 1) if the board can detect the jack.
 
-The following changes since commit 06412088ce98f745405b8f65cfc51ddd6b842bbf:
+> =
 
-  ASoC: s3c2412-i2s: Fix dai registration (2012-04-30 23:45:25 +0100)
+>> 	dai-link1,codec =3D <&twl6040_codec>;
+>> 	dai-link1,dai =3D <&mcpdm>;
+> =
 
-are available in the git repository at:
+> This seems like it ought to be an array of nodes, one per link, instead
+> of having an index in the property name.  It should certainly be easier
+> to parse.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.4
+Very true. We can handle this in a similar way as we handle the
+routings. It might be a good idea to add this as a generic ASoC core
+feature?
 
-for you to fetch changes up to c8587193ba511b788a9888e5e701a9747e70c0d8:
+Something like:
+abe-twl6040,dai-link =3D
+		<&twl6040_codec>, <&mcpdm>;
 
-  ASoC: sh: fix migor.c compilation (2012-05-09 12:41:05 +0100)
+Other platforms could use this and we could handle it with the same code
+in the core.
 
-----------------------------------------------------------------
-ASoC: Build fix for SH in 3.4
+> It also seems like it's not at all board specific and should be factored
+> out.
+> =
 
-An API update which wasn't sufficiently thorough in updating the tree...
+>> 	abe-twl6040,audio-routing =3D
+>> 		"Headset Stereophone", "HSOL",
+>> 		"Headset Stereophone", "HSOR",
+> =
 
-----------------------------------------------------------------
-Guennadi Liakhovetski (1):
-      ASoC: sh: fix migor.c compilation
+> Binding should document what the board-defined nodes are.
 
- sound/soc/sh/migor.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, I'll update the documentation (also covering the codec)
 
---rVkomL2febZOZtGQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+>> +Example:
+>> +
+>> +sound { /* ASoC */
+>> +	compatible =3D "ti,abe-twl6040";
+>> +	abe-twl6040,model =3D "SDP4430";
+> =
 
-iQIcBAEBAgAGBQJPqlmSAAoJEBus8iNuMP3d9wEP/j0n2qwBB1KKQ0ewjVsQ7K0X
-ffTotSS37n/E8Ddd7dxfAe5G4Z8reoTAmrOdyPrjBl39qeBjXDW75SS40idhWjFx
-z21pzrCZ8l020ZCEN13EqqqTeHhinETJtiG4W6uXFx6Q4uOnGfA6GcGQWVWdj3pt
-qO6o0WuTd+3MbE0aMv7Cq0wRvFDDIA2zdZmpg4s8SsPVd0z0b3bMPb4dpoj4TERI
-u5gEZrw3FBnBrzVxVSJCIns0LXU5h9rY2HzaHlOPqgH5sK2F39Z7YMErE3taCY7r
-7zYeXVW2bzQ+3NHrE/FFGFcPkc6OiCphmyiC1ptVAodo9MysQULENgq3gMJtYYrG
-Sk2L5nHfAvFL8BStkIiL+B/MGq2EzLa9Yg4fJotbpAl8bgS2x6wAgK1rXx25WhEG
-VGgXH3h8JcNZ3rSxGnGCQn2alSJefWc1uN8P2xtj8lfuy/8pq/S5/npj4/dpUBJf
-J6Ky13/v9Apn3nZD6XFH7zsBU0Mop2xwpTtvKK24iU323/TVjxgq1hXR1YnUAaDj
-neRGMAOaGWyyFiD5Eg0kfehvlqjsDEf/iua5ZrNaGnAK8GWofVqZ6XQ/yCZ6kCP1
-MGpx4m6XgU+BFmrf3uYI7RRe3mXaE54+6jVSvvVDIlcBCTlH9ufZGJoLdevdDmF3
-vjzDsKPp04L+cj8bGMx5
-=Up6N
------END PGP SIGNATURE-----
+> Please don't repeat your binding documentation in the changelog, it's
+> already in the patch and means it comes after the documentation.
 
---rVkomL2febZOZtGQ--
+OK, I'll remove the examples from the changelog.
 
---===============2614840380717247402==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- =
 
-
---===============2614840380717247402==--
+P=E9ter
