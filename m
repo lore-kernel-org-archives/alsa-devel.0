@@ -1,94 +1,150 @@
-From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: Re: [PATCH 03/11] ASoC: core: Add widget
-	SND_SOC_DAPM_CLOCK_SUPPLY
-Date: Wed, 9 May 2012 09:55:54 +0200
-Message-ID: <4FAA230A.7060407@stericsson.com>
-References: <1336485400-27150-1-git-send-email-ola.o.lilja@stericsson.com>
-	<20120508154027.GY15893@opensource.wolfsonmicro.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2 14/14] OMAPDSS: HDMI: Implement DSS driver interface
+ for audio
+Date: Wed, 09 May 2012 11:28:01 +0300
+Message-ID: <1336552081.3962.15.camel@deskari>
+References: <1336095848-6923-1-git-send-email-ricardo.neri@ti.com>
+	  <1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
+	 <1336390986.2667.8.camel@deskari> <4FA9B289.5000101@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
-	[207.126.144.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id A7E4D2454E
-	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 09:56:10 +0200 (CEST)
-In-Reply-To: <20120508154027.GY15893@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-vU/UqySzAPwAc1aDTg/9"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <4FA9B289.5000101@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: mythripk@ti.com, s-chereau@ti.com, x0055901@ti.com, vaibhav.bedia@ti.com, s-guiriec@ti.com, lrg@ti.com, peter.ujfalusi@ti.com, agraf@suse.de, research@ottomaneng.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/08/2012 05:40 PM, Mark Brown wrote:
 
-> On Tue, May 08, 2012 at 03:56:40PM +0200, Ola Lilja wrote:
-> 
->> +{
->> +	if (SND_SOC_DAPM_EVENT_ON(event))
->> +		return clk_enable(w->priv);
->> +	else {
->> +		clk_disable(w->priv);
->> +		return 0;
-> 
-> Coding style - you need more { }.   This also all needs to be
-> conditionally complied for the many platforms that don't provide the
-> clock API.
+--=-vU/UqySzAPwAc1aDTg/9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2012-05-08 at 18:55 -0500, Ricardo Neri wrote:
+> Hi Tomi,
+>=20
+> Thanks for taking the time to comment.
+>=20
+> On 05/07/2012 06:43 AM, Tomi Valkeinen wrote:
+> > Hi,
+> >
+> > On Thu, 2012-05-03 at 20:44 -0500, Ricardo Neri wrote:
+> >> Implement the DSS device driver audio support interface in the HDMI
+> >> panel driver and generic driver. The implementation relies on the
+> >> IP-specific functions that are defined at DSS probe time.
+> >>
+> >> At the moment, a hardirq-safe spinlock is used to protect the audio
+> >> functions. This is because such functions might be called while
+> >> holding a lock (this especially true for audio_start/stop). For the
+> >> rest of the audio functions, a mutex could be used in the future as
+> >> the enablement of resources might take too much time.
+> >
+> > The series looks good, except locking. Granted, the locking in omapdss
+> > is a bit bad generally also, but here I think it's a bit more broken.
+> >
+> > For example, hdmi_panel.c:hdmi_panel_audio_supported() takes the audio
+> > lock, and then uses variables like dssdev->state, and the hdmi video
+> > mode. However, the video functions do not use audio lock, so effectivel=
+y
+> > the lock doesn't protect at all.
+>=20
+> Yes, it does not protect.
+> >
+> > I'm not sure how to fix it, though. I think this shows the shortcomings
+> > of the current locking strategy (or lack of =3D). What if the audio
+
+Btw, I meant shortcomings in the general DSS locking strategy, not the
+locking in this particular patch.
+
+> > functions that can sleep would take the hdmi panel's mutex, and also th=
+e
+> > audio spinlock? That would at least fix some of the cases.
+>=20
+> But if the function can sleep, protecting it with the HDMI panel's mutex=
+=20
+> should be enough, shouldn't it? Wouldn't it be pointless to also hold=20
+> the spinlock?
+
+If the start/stop functions use the spinlock, but not the mutex, then
+the sleeping functions should also use the spinlock to prevent touching
+the same data at the same time.
+
+> Ideally, I think, only one lock, the HDMI panel's mutex, should be=20
+> enough to protect the HDMI panel's functions, including the audio=20
+> functions. Reusing the HDMI panel's mutex for the audio functions would=
+=20
+> prevent the situation you describe regarding=20
+> hdmi_panel.c:hdmi_panel_audio_supported()... and the spinlock would not=
+=20
+> be required.
+>=20
+> The only functions that cause problems with this approach are=20
+> audio_start/stop as ALSA calls them while holding a spinlock. The=20
+> spinlock could be used for these as they dont read or write the panel's=
+=20
+> variables.
+
+Locks always protect a particular piece of data. What is the data in
+this case, if not panel's variables? DSS registers?
+
+> However, holding a spinlock only when start/stopping audio would fail,=
+=20
+> for instance, if someone starts/stops audio while enabling or=20
+> configuring audio; but that would be an issue in the design of the=20
+> component using DSS HDMI audio, wouldn't be? To prevent that, an=20
+
+I guess it's up to us to decide what is the supposed use-patter of the
+functions =3D). For dss functions in general it's pretty vague and
+non-defined. But we could start here with audio functions and define
+that the audio functions may not be called from multiple threads at the
+same time. That would remove any issues with concurrent calls to audio
+functions, presuming the audio side actually conforms to this =3D).
+
+But the video and audio paths are probably always separate, and for
+those we need protection. As you said, using the mutex for the may-sleep
+audio functions solves the issue for those, leaving start/stop as the
+only problem case.
+
+However, even if we could protect start/stop with locks, we still have a
+problem (which is general problem related to dss locking): we don't have
+any protection between the function calls. So basically this could
+happen:
+
+[video thread] setup video & enable
+[audio thread] check that all is ok, and configure audio
+[video thread] change video config or disable video
+[audio thread] start_audio -> fails, because video config no longer
+valid for audio
+
+But I guess we have to accept that the locking is not perfect, and try
+to solve it properly later, as it's a bigger, dss-wide change.
+
+ Tomi
 
 
-if (clk_enable)
-	return clk_enable(w->priv);
-else
-	return <some error>;
+--=-vU/UqySzAPwAc1aDTg/9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-> 
-> 
->> +	case snd_soc_dapm_clock_supply:
->> +		w->priv = (w->shift) ? clk_get_sys(w->name, NULL) :
->> +				clk_get(dapm->dev, w->name);
-> 
-> I don't think supporting clk_get_sys() is a particularly good idea
-> here...  Also, I think Liam was wanting to add per-user data to the
-> widget rather than reuse the priv pointer.
+iQIcBAABAgAGBQJPqiqRAAoJEPo9qoy8lh71zZ4P/0Kga9n+ywloz6fjZxMdBhD1
+S+HPMVC8vhe7yiP8T86aq8B0o1BmsNqKPuGcBAZAwY0eJaI6zAhO7fnHgZM5YCYV
+dyMUpJkjJt90b1Z1YJmkL+veMQc8+CysX4LjERbPGrAr2eVr2V4fFWySYZtMk0Ly
+WEJ7fSxPvrs0f8CmJmrT27EiTTxgh/Q5BkP6TVZYBeVuXm2g5DBeiaOYUwADavJ7
+KoweJDAY1RrnrfwgPZlJ6s0xFR67CLeLVi3CdgE9XnZwZayKSmOp+O1FtljCoyzv
+Xki/12ZnH8qz+X4VALQu2vj8U8A47OIXOyLrDvbHpPGKx4FE/IR3GCy2ZQqVXyUb
+tuhj7tJDhdLUgfH2GZNgwm+QwmQLDraBxsh2ct+ef1h0FngKBx2nIZBN6gIvOhx1
+jJCvb31wbCCYCV16XAEhbId5tIViGWo4yMmJJRcB13ShF35x86SPUhpHLYhh229e
+v9f72Gk3SqK6+PylpygaBWqHWz9WdRAPdR7vf5W+ORh+FrQchmvdwVCv5PbxvTcC
+phZ1y7Duz4Q/R9sgqUAijqTZggVOAoFFmpIgIOdSWWE8ZqYdfjUkKjL6gxnH8dTv
+cZAZBrP4AhAwGKXrlFSzcvhZJCZldRS/jDS4Zd80Giroy9VDSlIdULuNeuNKfc42
+jcoDqUaW/n0I/qbmk7sl
+=PD9V
+-----END PGP SIGNATURE-----
 
+--=-vU/UqySzAPwAc1aDTg/9--
 
-OK, so how can I solve the fact that we have one clock that is gotten with
-clk_get_sys()?
-The priv-pointer was reused for the delay in the regulator-supply, so I assumed
-that it was ok here as well. How should I do it so that it is OK with you, then?
-
-> 
->> + /**
->> + * snd_soc_dapm_get_power_status - get widget power status
->> + * @dapm: DAPM context
->> + * @pin: Widget name
->> + *
->> + * Get widget power status - Enabled or disabled.
->> + *
->> + * Returns -1 for failure.
->> + * Returns 0 if disabled.
->> + * Returns 1 if enabled.
->> + */
->> +int snd_soc_dapm_get_power_status(struct snd_soc_dapm_context *dapm,
->> +				const char *pin)
-> 
-> This appears to be *nothing* to do with the rest of the patch!  It's
-> also not clear what it's for.
-
-
-It is for the debugging in our driver, using it to get the status of our clocks
-so that we can make sure that the correct clocks are enabled/disabled at certain
-points that we find useful.
-I named it get_power_status instead of get_clock_status, just because I thought
-you would complain that get_clock_status was using the ->power, which is not
-specific to just clock-widgets.
