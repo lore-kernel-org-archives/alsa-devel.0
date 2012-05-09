@@ -1,16 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Fix sparse warning due to use of
-	0 as NULL
-Date: Wed,  9 May 2012 19:12:58 +0100
-Message-ID: <1336587178-28285-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: Fast Track Ultra latency and new streaming logic.
+Date: Wed, 9 May 2012 20:13:25 +0200
+Message-ID: <CAFz=ag6oLMKKX7Azte8b0VLpTa2KN=HVTJfT+x1U+PnL_zq7rA@mail.gmail.com>
+References: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
+	<CAFz=ag5d8PFYoA2KsWKMZ+yX=1gLQmGWx7wFn1cTVf4CW_jDiA@mail.gmail.com>
+	<CAFz=ag6d+zcHrNhxKwaTHQYb04GJEKDXjowz4NhXtERAV-zjag@mail.gmail.com>
+	<CAFz=ag4j2OZTZqzeo+h210AaVgToA93hTs5QPL1UPHCCCLJkZg@mail.gmail.com>
+	<s5hehqtzefd.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D292E103F34
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9669710B98E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 20:13:19 +0200 (CEST)
+	Wed,  9 May 2012 20:13:26 +0200 (CEST)
+Received: by yhnn12 with SMTP id n12so596469yhn.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2012 11:13:26 -0700 (PDT)
+In-Reply-To: <s5hehqtzefd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +28,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+(stupid me.. again for the list...)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b3b2d5f..dfc4e90 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -792,7 +792,7 @@ static void vmid_reference(struct snd_soc_codec *codec)
- 
- 		switch (wm8994->vmid_mode) {
- 		default:
--			WARN_ON(0 == "Invalid VMID mode");
-+			WARN_ON(NULL == "Invalid VMID mode");
- 		case WM8994_VMID_NORMAL:
- 			/* Startup bias, VMID ramp & buffer */
- 			snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
--- 
-1.7.10
+Hi,
+
+2012/5/9 Takashi Iwai <tiwai@suse.de>:
+> Or a full-duplex issue?  You can test the latency via
+> alsa-lib/test/latency program.
+
+OK, I don't know if I'm using it the right way (see below ) but here
+are some observations:
+
+1. With the old streaming logic I can successfully go down to a
+reported latency of 384 frames @96kHz without an xrun.
+
+2. With the new streaming logic 'latency' will not start.
+
+It fails with:
+Unable to set hw params for capture: Device or resource busy
+Unable to set sw parameters for playback stream: Device or resource busy
+
+As a first guess this could be related to the fact that the PCM
+streams of the FTU are never reported as "Running" with the new
+streaming logic. (Daniel?)
+
+3. 'latency' never returns cleanly.
+
+On Ubuntu I'm getting
+*** glibc detected ***
+/home/fex/workspace/Audio/Latency/alsa-lib/test/.libs/lt-latency:
+invalid fastbin entry (free): 0x00000000013c0570 ***
+
+On Fedora (kernel with old streaming logic) I get:
+
+*** glibc detected ***
+/home/fex/workspace/Audio/Latency/alsa-lib/test/.libs/lt-latency:
+munmap_chunk(): invalid pointer: 0x00000000018a5f90 ***
+*** glibc detected ***
+/home/fex/workspace/Audio/Latency/alsa-lib/test/.libs/lt-latency:
+malloc(): memory corruption (fast): 0x00000000018a5a90 ***
+
+On Fedora 'latency' hangs after this message.
+
+>
+> (Yes, the usage is quite undocumented.  Anyone contributing the howto
+>  would be great...)
+
+Yes, I don't even know how to use it or if I've used it correctly...
+
+It doesn't seem to be neccessary to connect an output to an input. Is
+this correct? At least results don't change without a connection...
+
+Regards,
+
+Felix
