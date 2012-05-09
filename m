@@ -1,24 +1,18 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Fast Track Ultra latency and new streaming logic.
-Date: Wed, 9 May 2012 20:13:25 +0200
-Message-ID: <CAFz=ag6oLMKKX7Azte8b0VLpTa2KN=HVTJfT+x1U+PnL_zq7rA@mail.gmail.com>
-References: <CACckToWK=Si8-8rPKgo-ZWA+ncTVb7zW8jHZvf7VbKT1sMM32Q@mail.gmail.com>
-	<CAFz=ag5d8PFYoA2KsWKMZ+yX=1gLQmGWx7wFn1cTVf4CW_jDiA@mail.gmail.com>
-	<CAFz=ag6d+zcHrNhxKwaTHQYb04GJEKDXjowz4NhXtERAV-zjag@mail.gmail.com>
-	<CAFz=ag4j2OZTZqzeo+h210AaVgToA93hTs5QPL1UPHCCCLJkZg@mail.gmail.com>
-	<s5hehqtzefd.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm8994: Use regmap directly for
+	wm8994_mic_work
+Date: Wed,  9 May 2012 19:30:26 +0100
+Message-ID: <1336588226-32725-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1336588226-32725-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9669710B98E
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8816C10454A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 20:13:26 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so596469yhn.38
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2012 11:13:26 -0700 (PDT)
-In-Reply-To: <s5hehqtzefd.wl%tiwai@suse.de>
+	Wed,  9 May 2012 20:30:34 +0200 (CEST)
+In-Reply-To: <1336588226-32725-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,60 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-(stupid me.. again for the list...)
+Make it clearer what context we're operating in.
 
-Hi,
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-2012/5/9 Takashi Iwai <tiwai@suse.de>:
-> Or a full-duplex issue?  You can test the latency via
-> alsa-lib/test/latency program.
-
-OK, I don't know if I'm using it the right way (see below ) but here
-are some observations:
-
-1. With the old streaming logic I can successfully go down to a
-reported latency of 384 frames @96kHz without an xrun.
-
-2. With the new streaming logic 'latency' will not start.
-
-It fails with:
-Unable to set hw params for capture: Device or resource busy
-Unable to set sw parameters for playback stream: Device or resource busy
-
-As a first guess this could be related to the fact that the PCM
-streams of the FTU are never reported as "Running" with the new
-streaming logic. (Daniel?)
-
-3. 'latency' never returns cleanly.
-
-On Ubuntu I'm getting
-*** glibc detected ***
-/home/fex/workspace/Audio/Latency/alsa-lib/test/.libs/lt-latency:
-invalid fastbin entry (free): 0x00000000013c0570 ***
-
-On Fedora (kernel with old streaming logic) I get:
-
-*** glibc detected ***
-/home/fex/workspace/Audio/Latency/alsa-lib/test/.libs/lt-latency:
-munmap_chunk(): invalid pointer: 0x00000000018a5f90 ***
-*** glibc detected ***
-/home/fex/workspace/Audio/Latency/alsa-lib/test/.libs/lt-latency:
-malloc(): memory corruption (fast): 0x00000000018a5a90 ***
-
-On Fedora 'latency' hangs after this message.
-
->
-> (Yes, the usage is quite undocumented.  Anyone contributing the howto
->  would be great...)
-
-Yes, I don't even know how to use it or if I've used it correctly...
-
-It doesn't seem to be neccessary to connect an output to an input. Is
-this correct? At least results don't change without a connection...
-
-Regards,
-
-Felix
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 93d81a9..2f9870a 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3232,18 +3232,20 @@ static void wm8994_mic_work(struct work_struct *work)
+ 	struct wm8994_priv *priv = container_of(work,
+ 						struct wm8994_priv,
+ 						mic_work.work);
+-	struct snd_soc_codec *codec = priv->codec;
+-	int reg;
++	struct regmap *regmap = priv->wm8994->regmap;
++	struct device *dev = priv->wm8994->dev;
++	unsigned int reg;
++	int ret;
+ 	int report;
+ 
+-	reg = snd_soc_read(codec, WM8994_INTERRUPT_RAW_STATUS_2);
+-	if (reg < 0) {
+-		dev_err(codec->dev, "Failed to read microphone status: %d\n",
+-			reg);
++	ret = regmap_read(regmap, WM8994_INTERRUPT_RAW_STATUS_2, &reg);
++	if (ret < 0) {
++		dev_err(dev, "Failed to read microphone status: %d\n",
++			ret);
+ 		return;
+ 	}
+ 
+-	dev_dbg(codec->dev, "Microphone status: %x\n", reg);
++	dev_dbg(dev, "Microphone status: %x\n", reg);
+ 
+ 	report = 0;
+ 	if (reg & WM8994_MIC1_DET_STS) {
+-- 
+1.7.10
