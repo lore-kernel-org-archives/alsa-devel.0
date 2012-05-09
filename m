@@ -1,20 +1,41 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH v2 14/14] OMAPDSS: HDMI: Implement DSS
- driver interface for audio
-Date: Tue, 8 May 2012 18:55:53 -0500
-Message-ID: <4FA9B289.5000101@ti.com>
-References: <1336095848-6923-1-git-send-email-ricardo.neri@ti.com>
-	<1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
-	<1336390986.2667.8.camel@deskari>
+From: Chris Cavey <chris-alsa@rauros.net>
+Subject: Re: M-Audio FastTrack C400
+Date: Tue, 08 May 2012 21:11:48 -0400
+Message-ID: <4FA9C454.7060201@rauros.net>
+References: <4F8D63F4.1040208@rauros.net>
+	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
+	<4F8DF29B.9090907@rauros.net>
+	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
+	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
+	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
+	<4F920D73.7070309@rauros.net>
+	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+	<4F9CB0D7.5060401@rauros.net>
+	<CAFz=ag6tVjD6hANk2e6sH8hcrbJi6SdqYJNy2U-nkArBV5DVfQ@mail.gmail.com>
+	<4F9D4291.6060803@rauros.net>
+	<CAFz=ag5HWp-BW4ZyymR7F60ahtzttyoBk6ZwdSRVKBXepHyn1w@mail.gmail.com>
+	<4FA19CAC.7070704@rauros.net>
+	<CAFz=ag624FsOhyRSKY=cO5+fZtLhCKMsox4_HhFooor_B5OQ8g@mail.gmail.com>
+	<4FA36114.2030305@rauros.net>
+	<CAFz=ag5iwFf7DtfE8sucZWSNq14DZM7enwER5m_M=9=9Do9J7w@mail.gmail.com>
+	<4FA45B69.5010608@rauros.net>
+	<CAFz=ag4ST+StciziAjTyLs5E+kLedULYSceuABV0d1uL+hHeRA@mail.gmail.com>
+Reply-To: chris-alsa@rauros.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D15E2436A
+Received: from vms173001pub.verizon.net (vms173001pub.verizon.net
+	[206.46.173.1]) by alsa0.perex.cz (Postfix) with ESMTP id 83B0A243F4
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 01:56:00 +0200 (CEST)
-In-Reply-To: <1336390986.2667.8.camel@deskari>
+	Wed,  9 May 2012 03:12:31 +0200 (CEST)
+Received: from rauros.net ([unknown] [74.107.69.179])
+	by vms173001.mailsrvcs.net
+	(Sun Java(tm) System Messaging Server 7u2-7.02 32bit (built Apr 16
+	2009)) with ESMTPA id <0M3Q00ECUDZQI5H5@vms173001.mailsrvcs.net> for
+	alsa-devel@alsa-project.org; Tue, 08 May 2012 20:11:55 -0500 (CDT)
+In-reply-to: <CAFz=ag4ST+StciziAjTyLs5E+kLedULYSceuABV0d1uL+hHeRA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,71 +45,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: x0055901@ti.com, alsa-devel@alsa-project.org, research@ottomaneng.com, agraf@suse.de, vaibhav.bedia@ti.com, s-chereau@ti.com, peter.ujfalusi@ti.com, mythripk@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, lrg@ti.com
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tomi,
+I do not get that message anymore.
 
-Thanks for taking the time to comment.
+Fixing the "return 0" back to "break" results in the device not even 
+registering, back to the -5 error from the beginning of this thread.
 
-On 05/07/2012 06:43 AM, Tomi Valkeinen wrote:
-> Hi,
+I'll capture more and get back to you.
+
+The following derails the thread a bit:
+
+As far as switching devices, I'm open. Due to a bug with a PCIE-PCI 
+bridge on my mainboard, I cannot use any PCI devices (I've got a Delta44 
+collecting dust). I really just want to find a single device, USB or 
+Firewire (or PCIE), which works flawlessly in both Windows and Linux. 
+Instrument/Mic input as well as independent balanced out and headphones.
+
+Any thoughts on this?
+
+On 5/5/2012 3:05 AM, Felix Homann wrote:
+> Hi again,
 >
-> On Thu, 2012-05-03 at 20:44 -0500, Ricardo Neri wrote:
->> Implement the DSS device driver audio support interface in the HDMI
->> panel driver and generic driver. The implementation relies on the
->> IP-specific functions that are defined at DSS probe time.
+> 2012/5/5 Chris Cavey<chris-alsa@rauros.net>:
+>> No change.
+>
+> Hmm, do you still get this message:
+>
+>     ALSA mixer.c:352 cannot get ctl value: req = 0x83, wValue = 0x101,
+> wIndex = 0x4001, type = 4
+>     ALSA mixer.c:877 64:1: cannot get min/max values for control 1 (id 64)
+>
+> If so, can you please look at mixer.c 352 if line 352 corresponds to
+> get_ctl_value_v2? (My line numbers are a bit off compared to yours it
+> seems). Can you send some Ci lines from usbmon from before the
+> mesasage appears.
+>
+>
+>>   According to usbmon looks like no matter what channel I adjust,
+>> the clock ctl is always being adjusted as if the wrong wIndex gets selected.
+>> The clock wIndex is 0x8001 but the mixer volume is 0x4001. The wValue looks
+>> correct (first mixer, according to my docs, should be 0x0100).
+>
+> That's strange. Can you try if your "return 0" instead of "break" in
+> the device parsing is still needed now that we have a mixer quirk?
+> (Just a blind guess...)
+>
+>
+>> I'm going to
+>> trace down the rabbit hole to learn how wValue/wIndex is derived from the
+>> mixer controls.
+>
+> Just compare with the FTUs controls.
+>
 >>
->> At the moment, a hardirq-safe spinlock is used to protect the audio
->> functions. This is because such functions might be called while
->> holding a lock (this especially true for audio_start/stop). For the
->> rest of the audio functions, a mutex could be used in the future as
->> the enablement of resources might take too much time.
+>> I'll keep tinkering. At some point I should probably just buy you a C400,
+>> probably easier.
 >
-> The series looks good, except locking. Granted, the locking in omapdss
-> is a bit bad generally also, but here I think it's a bit more broken.
+> Have you thought about switching to a MOTU or RME device? Maybe we
+> should work on these ;-)
 >
-> For example, hdmi_panel.c:hdmi_panel_audio_supported() takes the audio
-> lock, and then uses variables like dssdev->state, and the hdmi video
-> mode. However, the video functions do not use audio lock, so effectively
-> the lock doesn't protect at all.
-
-Yes, it does not protect.
+> Kind regards,
 >
-> I'm not sure how to fix it, though. I think this shows the shortcomings
-> of the current locking strategy (or lack of =). What if the audio
-> functions that can sleep would take the hdmi panel's mutex, and also the
-> audio spinlock? That would at least fix some of the cases.
-
-But if the function can sleep, protecting it with the HDMI panel's mutex 
-should be enough, shouldn't it? Wouldn't it be pointless to also hold 
-the spinlock?
-
-Ideally, I think, only one lock, the HDMI panel's mutex, should be 
-enough to protect the HDMI panel's functions, including the audio 
-functions. Reusing the HDMI panel's mutex for the audio functions would 
-prevent the situation you describe regarding 
-hdmi_panel.c:hdmi_panel_audio_supported()... and the spinlock would not 
-be required.
-
-The only functions that cause problems with this approach are 
-audio_start/stop as ALSA calls them while holding a spinlock. The 
-spinlock could be used for these as they dont read or write the panel's 
-variables.
-
-However, holding a spinlock only when start/stopping audio would fail, 
-for instance, if someone starts/stops audio while enabling or 
-configuring audio; but that would be an issue in the design of the 
-component using DSS HDMI audio, wouldn't be? To prevent that, an 
-audio_configured state variable in the HDMI panel could be used to 
-monitor that audio is started only after it is enabled and configured. 
-In that case, both the spinlock and the mutex would be required, as you 
-propose, because audio_configured would be read inside audio_start/stop.
-
-BR,
-
-Ricardo
-
->
->   Tomi
+> Felix
