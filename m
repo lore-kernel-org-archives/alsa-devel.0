@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: cs42l73: Convert to
-	module_i2c_driver()
-Date: Wed, 9 May 2012 18:20:18 +0100
-Message-ID: <20120509172017.GN3955@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: cs42l73: Remove Chip ID's from
+	reg_default
+Date: Wed, 9 May 2012 18:20:43 +0100
+Message-ID: <20120509172042.GO3955@opensource.wolfsonmicro.com>
 References: <1336583644-12349-1-git-send-email-brian.austin@cirrus.com>
+	<1336583644-12349-2-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2786825066427018891=="
+Content-Type: multipart/mixed; boundary="===============5103452948767795785=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 399622412D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA51B24133
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 19:20:20 +0200 (CEST)
-In-Reply-To: <1336583644-12349-1-git-send-email-brian.austin@cirrus.com>
+	Wed,  9 May 2012 19:21:01 +0200 (CEST)
+In-Reply-To: <1336583644-12349-2-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,50 +27,50 @@ Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2786825066427018891==
+--===============5103452948767795785==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Tb77rFjxeKqknTuc"
+	protocol="application/pgp-signature"; boundary="/7YWha3R2g8GjXQ0"
 Content-Disposition: inline
 
 
---Tb77rFjxeKqknTuc
+--/7YWha3R2g8GjXQ0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 09, 2012 at 12:14:02PM -0500, Brian Austin wrote:
-> Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+On Wed, May 09, 2012 at 12:14:03PM -0500, Brian Austin wrote:
+> We need to read the real register values
 
 Applied, thanks.
 
---Tb77rFjxeKqknTuc
+--/7YWha3R2g8GjXQ0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPqqc9AAoJEBus8iNuMP3d8TgP/1h8NnzgTDJaTfWdYiRY8ynQ
-2AaY2x3Z2JnDfkXsJoY36tDiTipSV9P/CfnvZ8KLGfBmq+lFZjOruacr57hXAzTy
-/BhyK0gHI7yuH7c7i0/brMddPpqDiOXkZ6xHxoMzuIx/2FxXmyJJZcNh32x8IJt6
-Wb6TdZEvSxg/q1f+SOo3vQzeQhTjxL9p6LABqRNBFxzWQY+b/YEKk5urtODQ0x9d
-C7L32Cdcjo4UgqHO81Tdbuc8iCbRookugxTSQU+sYzF4cKoFB+4W/X3rmQXXWX7N
-c4vqXsb8keRcMttF2kzwXVcVnXDn7wB93qWVwYDzzu9hLU8z6cTaAdfxNmadV+vZ
-42Q/nhn28bQUmjYz9g59l6lc+Gvw7gjO1NUKAnYm3N3wTdqXtkhvtVcptnHINT2t
-xRjQ6ltzLRHTBqRO2dzsfzEf2UGtznxKld74MFvcnk3ZZeGNjXwbjndev8wMjKJI
-498kiBNZZmD92Q+ZaXbfCvuuN0mGINo0QpNK2M/7Q/PTC+OZd3CzeusTl1aosaEt
-7MS2iWiYEHkJuZA+NV7A7cnwfOgPboc6z4Z7BIBF+ic0V6tdAgAyxN/PV9QYDBmF
-GViqKY5n4OoyclPFyl5hJ5HQvipK9pk5Uoz5gaidPUrruP1GRUt0eb0Qgog2iV7w
-rbbDQdtwcLkW3KOgiZ7A
-=DM69
+iQIcBAEBAgAGBQJPqqddAAoJEBus8iNuMP3d7dEP/RGodHFubmX6QirKNgNjc1WU
+TUHzpomi6FhPZxN/YBIgj380afFrHcfGQKJI/LKfnUdHt7G08hPQH5FbK/QrfRF1
+XNjlbFLZ2RiwCifsaHYWwZjFN2k0DL2UggoJd6AIR2JPHGszASgl9RawFGgJrQtc
+v2Pdtk23ztocbEgWT+pm4cx9ZLs36nkvdNIVmAZTF3VmKYkGgimtHVYrX2V47k7g
+do5ymrexVcKfFSmeTnQaeDT6Y8nhGzzFud4C757E9dnk0Ildw+neLp+WAmRM8lEU
+DraqVGd1G2qORmg1IHaPqPsQpaG/255aHJgFdTW/o0BG2pzfOW2GQWbx4xqkimrx
+vWrDCFMtfGygdxGHaUaaqsjQT9V4khBDwnBuXi8MMRZTIetkB/oVjBkTWqZnSApD
+ryID/7cAyo+m/E+1R9ISA6/eUqPfNewtMdQavUzd6eIoJT84EwKwhE/224dtk0P1
+5TkFJvmI0zQrazd2OfmVYLLqZSQ1wc6pVVcu6SCC3YCxZhjh8gXS8TGIozWPIfFt
+iJuulR7rn1gNgK2mJF67qx0aXwjdKN9TljBLIc9n/1TWkyUToCcypjiyQl3JCTG2
+GnHbdPQhzV7N0tQK9tBEYcgzULW+eiSHOPXH2a/1B45KXT0NIilAAjRtCRGf8hzC
+fLtn+ub69Ctga/n6aMTJ
+=YY9y
 -----END PGP SIGNATURE-----
 
---Tb77rFjxeKqknTuc--
+--/7YWha3R2g8GjXQ0--
 
---===============2786825066427018891==
+--===============5103452948767795785==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2786825066427018891==--
+--===============5103452948767795785==--
