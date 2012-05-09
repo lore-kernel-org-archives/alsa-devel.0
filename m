@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: twl6040: Support for DT
-Date: Wed, 9 May 2012 14:35:12 +0100
-Message-ID: <20120509133511.GQ3955@opensource.wolfsonmicro.com>
-References: <4FAA5C93.6020703@ti.com>
+Subject: Re: [PATCH 10/11] ASoC: codecs: Add AB8500 codec-driver
+Date: Wed, 9 May 2012 11:51:00 +0100
+Message-ID: <20120509105059.GF3955@opensource.wolfsonmicro.com>
+References: <1336485450-27405-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120508182751.GJ15893@opensource.wolfsonmicro.com>
+	<4FAA2153.1090905@stericsson.com>
+	<20120509083347.GA3928@opensource.wolfsonmicro.com>
+	<4FAA3440.7070600@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4195797343120512423=="
+Content-Type: multipart/mixed; boundary="===============0676002902142299958=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95BBB245AE
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 293CC245B8
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 15:35:13 +0200 (CEST)
-In-Reply-To: <4FAA5C93.6020703@ti.com>
+	Wed,  9 May 2012 15:56:05 +0200 (CEST)
+In-Reply-To: <4FAA3440.7070600@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,80 +24,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, "Cousson,
-	Benoit" <b-cousson@ti.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4195797343120512423==
+--===============0676002902142299958==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0pkK7MCEo5hACTvx"
+	protocol="application/pgp-signature"; boundary="oFbHfjnMgUMsrGjO"
 Content-Disposition: inline
 
 
---0pkK7MCEo5hACTvx
+--oFbHfjnMgUMsrGjO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 09, 2012 at 03:01:23PM +0300, Peter Ujfalusi wrote:
-> On 05/08/2012 04:41 PM, Mark Brown wrote:
-> > On Tue, May 08, 2012 at 03:42:41PM +0300, Peter Ujfalusi wrote:
+On Wed, May 09, 2012 at 11:09:20AM +0200, Ola Lilja wrote:
+> On 05/09/2012 10:33 AM, Mark Brown wrote:
+> > On Wed, May 09, 2012 at 09:48:35AM +0200, Ola Lilja wrote:
 
-> >> Also without a DT entry I will not have a way to use phandle to
-> >> connect the codec in the machine driver.
+> > Please don't just ignore review and continue to submit the same stuff
+> > unless there's been clear discussion that what's happening is actually
+> > OK.
 
-> > Of course you do!  There's going to be a device tree entry for the
-> > chip, things can point at this perfectly happily.
+> I wasn't aware of that the comment with | above was a show-stopper since I
+> explained before why we need to do it. I wasn't either aware that you mea=
+nt that
+> I should just move it to the machine-driver. Furthermore, I didn't want t=
+o spam
+> to much comments each time.
 
-> That's true but what can I do with that in the ASoC machine driver?
-> The chip driver is _not_ the codec driver.
+At the very least this should go in the machine driver, though I have to
+say I remain very much unsure that this needs to be directly controlled
+=66rom the application layer at all.
 
-This really doesn't seem like it should be at all hard to resolve...
+> >> >> +int ab8500_audio_setup_if1(struct snd_soc_codec *codec,
+> >> >> +			unsigned int fmt,
+> >> >> +			unsigned int wl,
+> >> >> +			unsigned int delay)
 
-> I can craft the pdata for the MFD child devices out from the DT
-> information but then the child devices will have no dev.of_node since
-> they were not probed via OF.  So I would have not phandle for the
-> codec to be used to define the dai-link connection within the sound
-> dts section.
+> >> > Why is this not static?
 
-> Am I missing something here?
+> >> Because it is called from the machine-driver.
 
-Clearly.  This is all very circular.  Obviously if you're intent on
-using a phandle specific to the MFD child then you need to have that in
-the device tree but this is because you're making the child devices
-externally visible...  Clearly if we're not going to use the MFD
-subdevices in the DT then the links ought to reference the chip.
+> > Why?  No other driver does this...
 
---0pkK7MCEo5hACTvx
+> This is setting up an I2S-interface connected directly to another chip for
+> FM-radio. It is not triggered by opening an ALSA-device. How/where do you=
+ want
+> me to do this?
+
+Once again, work with the frameworks not against or around them.
+Whenever you find yourself putting in a custom device specific API
+that's externally visible this should be a warning sign.
+
+In this case there's nothing unusual here, it's exactly the same as the
+connection to a digital baseband or back to back link to another CODEC.
+The CODEC driver should just provide a DAI and let the framework connect
+it up, currently that should be with a CODEC<->CODEC link though older
+systems use a bodge where the link is described as a normal PCM.
+
+--oFbHfjnMgUMsrGjO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPqnKGAAoJEBus8iNuMP3dKpAP/iTVUgYEWWMdEu5gv8TG+cE6
-l2lh7BnncjpnzzDAlCcWydaJ+wCM20XqTPPbJxv95eaXAA/o4SJDRc4HJqsJlyTE
-VE/pjq/JJJ2JgE9g6sRMQNdyrgNX1FhGpE857/vB7Rx1Unu4vLPLkpwFSJ4wuPq+
-Q0fZm5jQ/8ALyrf41pi5sOFl+EPWvCSP4XXKcV8tDr2HDjBT6sEsE0dg2Q+f4Mao
-5FI3Yh9aq2xBkUBH68CItvv74mRtvdjX6TB002X5Lh46epNYLglcZ1Azip+OhW2t
-hKfRv97s6resnyHQu1UW0cI2Uy1k3J3p/D8tGZvloi2YuhXdoLehiUQVqT/vsRMG
-t5jIWNaycYpZlZmeNikdMTUYGc85vNNNVgdcLJBfDMfYp9nah7c392LSp+6ABHOh
-QsvlR83lIgbSqffNcLDoaLezNKbfBZS5ja/5i0g4/m5E98rOWeNR6IvfJvvpfh60
-yi1FvkLuMYtQrmoi9YywbwzR8ZPAOaQ7Y4hHMvmoUX3EgskYs8ZHGHrQzGrM0Pnv
-66kXWHMd1v4edPj4gYbQ+4nLic4PcRh11imLkqT/3u9P2Z3cm4qlLtBKxjcgnATV
-TG1zu+pV/chkZ6DmA0ENtC+7bCsmC6nmkJJhdw1Nb71cJpoKaeoRwDlZkOKvxesO
-UdfE8K0+sAc9pmOjgA6q
-=HPOw
+iQIcBAEBAgAGBQJPqkvyAAoJEBus8iNuMP3db50P/ikDzh3tKvfPJIb54jyEqQlG
++gQeak1m4hC1huHieTitlTWiz+riGYwGd+y3gzeffynzX+z1Bm5zZ14eQhZKToZz
+GTSSpnmWMW6cVuImYsU90frk2jwMSAL9pluhlo++YalA+T+7smxN7Xh2m7sqgn01
+MOh3CcynRqIpK0ymSuUyhFakg1oqaojr0SajcmOiX5FryxVjsyU888Vdti5snKJ1
+LzZ0p9Nq9Fae4K9LCKZFj9OLnaThomqb7yaG1CoaYJb1vunXh+2hyp54PXnwRKKn
+WZKFuSLP5mWaPyQopLHaZRvbcTiZxeu01sJAVn4057wv63XFKQV38yyi2Xi1cz6Y
+CRWnVs12Jmr1FeZBvDg3ALkHObIWdP7SQ/id3TFnTSwA1/mCWH+wKUzN+7ALq2lL
+wVWvalsdfHOKsajZlvRbdEzzYJ+fAfwKmOZe9Z+NcrmJb/LvPALrY1NvQhH7yBfG
+aaZA8dh5WsKUlry3DxGF2jboDqEfi8g5n/4MG3T4QNmGXosKzGLVRmsf/jtKck+0
+1L+9yVn/LOLHUnt+oKILJLiC6EAHvRhgDfJ73g6ltVosF6VeM7B5sXGjUhFNMdBM
+0ca65KfygYW02d/CxQGVYvjEnojrxSvzPRcWWEKuRyFHEnnRPDHcq5A+uhKGDbMY
+7WwXQWWXM6Ff/Mc/jF2r
+=3dGN
 -----END PGP SIGNATURE-----
 
---0pkK7MCEo5hACTvx--
+--oFbHfjnMgUMsrGjO--
 
---===============4195797343120512423==
+--===============0676002902142299958==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4195797343120512423==--
+--===============0676002902142299958==--
