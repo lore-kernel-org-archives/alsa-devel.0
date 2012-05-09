@@ -1,49 +1,44 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: sh: fix migor.c compilation
-Date: Wed, 9 May 2012 12:17:02 +0100
-Message-ID: <20120509111701.GI3955@opensource.wolfsonmicro.com>
-References: <Pine.LNX.4.64.1205091255190.8599@axis700.grange>
+From: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCH V2 00/11] enable imx6q_sabrelite sgtl5000 audio support
+Date: Wed, 9 May 2012 19:32:59 +0800
+Message-ID: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VkVuOCYP9O7H3CXI"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1205091255190.8599@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Changes since v1:
 
---VkVuOCYP9O7H3CXI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ - rebase to latest clk and pinctrl base
+ - fix according v1 comments.
 
-On Wed, May 09, 2012 at 12:57:05PM +0200, Guennadi Liakhovetski wrote:
-> Fix a recent compilation breakage, caused by a change in SH clock API.
+You can also get at:
+https://github.com/riczhao/kernel-imx/tree/topics/audio
 
-How recent - when and where was the API changed?
+Richard Zhao (11):
+  dma: imx-sdma: make channel0 operations atomic
+  ARM: dts: imx6q-sabrelite: add i2c1 pinctrl support
+  ASoC: imx-audmux: add pinctrl support
+  ARM: dts: imx6q-sabrelite: add audmux pinctrl support
+  ARM: imx6q: add ssi1_ipg clk_lookup
+  ASoC: fsl_ssi: convert to use devm_clk_get
+  ARM: imx6q_sabrelite: clk_register_clkdev cko1 for sgtl5000
+  ARM: dts: imx6q-sabrelite: add sound device imx6q-sabrelite-sgtl5000
+  ARM: dts: imx6q-sabrelite: add serial2 pinctrl support
+  ARM: imx6q: change clkdev device name from xxxx.uart to xxxx.serial
+  ARM: imx6q: change clkdev device name from xxxx.enet to xxxx.ethernet
 
---VkVuOCYP9O7H3CXI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ arch/arm/boot/dts/imx6q-sabrelite.dts |   20 +++++++++++
+ arch/arm/boot/dts/imx6q.dtsi          |   23 +++++++++++++
+ arch/arm/mach-imx/clk-imx6q.c         |   35 +++++++++++---------
+ arch/arm/mach-imx/mach-imx6q.c        |   28 ++++++++++++++++
+ drivers/dma/imx-sdma.c                |   57 ++++++++++++++++++---------------
+ sound/soc/fsl/fsl_ssi.c               |    7 +---
+ sound/soc/fsl/imx-audmux.c            |    8 +++++
+ 7 files changed, 132 insertions(+), 46 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPqlImAAoJEBus8iNuMP3d/gIP/R42N6z+Zfl6/BKCDCSB5IQh
-jVq3ZsWSYP9t7vWm3j4Xkc6pWU6YJNCeAznj8p5jMXXWShDqiVGcXmVkszsV40zW
-Vh/bsfrUY7ezZl3O0QCB89CFCi8dUFYcXR4VV9LwNn7zA7INHxi3jv00r/BE9kPj
-4gTB0dtCuIrot0fA3PoxqEiZRnylsgN5cKt1PGooEE/77yhkdHpy+JnNBhifbpgR
-P7ln3EvOe1QrufRW61U3Cin2tcUcOqrTCc+qnVwAbeKLlVDlonkxURSMx4CYaWbR
-UGOMC03yrApvcthWt/kBQqeclZZOyplDCgAjsAZBCD3TNwpVAsoap0UUeSPS+uiY
-T+w5u/Ykpb3m9S1jmharKXkPhNEgM9QEpqe242kzfMCiBhrY4HQuK/Om2QwWTcH6
-j3dVY0vB6huKzVtZjX9tu6RunM7XGoQ8ND2UY+IeC+m+LWO76N/JbbXISsJXkv1k
-A+bP7mZQq+AsyvsmZizodRqEbDlCYrDgxKSh9w4DIoCntnk3XOfetylEU7l3/+yE
-8JcoGeAfwnzN6Akek+0CT4wUlrE3UDtK+E63/wZrMKcivKi+UfMN2NhsKF22fB/d
-Lk6ri+2qNfj8UliV7UaRw417V7D014icd2OV0GELL7V+wQOEhvRcZx4t/xyWSl4p
-LHHQn7r08I7L6YB2HMbv
-=yEec
------END PGP SIGNATURE-----
-
---VkVuOCYP9O7H3CXI--
+-- 
+1.7.5.4
