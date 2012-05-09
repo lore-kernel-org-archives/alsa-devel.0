@@ -1,73 +1,62 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: twl6040: Support for DT
-Date: Wed, 09 May 2012 15:01:23 +0300
-Message-ID: <4FAA5C93.6020703@ti.com>
-References: <1336477945-27460-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120508122630.GM15893@opensource.wolfsonmicro.com>
-	<4FA914C1.904@ti.com>
-	<20120508134123.GQ15893@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH V2 06/11] ASoC: fsl_ssi: convert to use devm_clk_get
+Date: Wed, 9 May 2012 13:01:57 +0100
+Message-ID: <20120509120156.GP3955@opensource.wolfsonmicro.com>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+ <1336563190-19974-7-git-send-email-richard.zhao@freescale.com>
+ <20120509115041.GM3955@opensource.wolfsonmicro.com>
+ <CAAQ0ZWSiRysfkUnu2ZoDXFtiJz-nfrQ-DTKOgCpKpCe5LpQj3Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
-	[74.125.149.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B814104174
-	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 14:01:10 +0200 (CEST)
-Received: by lbbgo11 with SMTP id go11so159773lbb.31
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2012 05:01:05 -0700 (PDT)
-In-Reply-To: <20120508134123.GQ15893@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, "Cousson,
-	Benoit" <b-cousson@ti.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Zfao1/4IORAeFOVj"
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAAQ0ZWSiRysfkUnu2ZoDXFtiJz-nfrQ-DTKOgCpKpCe5LpQj3Q-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 05/08/2012 04:41 PM, Mark Brown wrote:
-> On Tue, May 08, 2012 at 03:42:41PM +0300, Peter Ujfalusi wrote:
->> On 05/08/2012 03:26 PM, Mark Brown wrote:
-> =
+--Zfao1/4IORAeFOVj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->>> Why are we loading MFD components using device tree?  It seems like
->>> we're doing something very wrong if we need people to explicitly write
-> =
+On Wed, May 09, 2012 at 07:59:20PM +0800, Shawn Guo wrote:
+> On 9 May 2012 19:50, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
 
->> I have based the twl6040 DT structure on the already existing twl4030,
->> twl6030 MFD parts.
-> =
+> > I'll apply this when devm_clk_get() makes it into mainline (hopefully in
+> > the merge window); please remind me if I forget.
 
-> This really isn't relevant to the issue...
+> We will have rmk's clkdev branch appear on arm-soc as dependency
+> anyway.  Can we have this series go over arm-soc tree, since we will
+> have all the dependencies on clk and pinctrl meet and conflicts solved
+> there?
 
-I thought it was...
+This change is totally unrelated to the rest of the series, it's just a
+random cleanup to the driver - it really shouldn't have been part of the
+series at all.
 
->> Also without a DT entry I will not have a way to use phandle to connect
->> the codec in the machine driver.
-> =
+--Zfao1/4IORAeFOVj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> Of course you do!  There's going to be a device tree entry for the chip,
-> things can point at this perfectly happily.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-That's true but what can I do with that in the ASoC machine driver? The
-chip driver is _not_ the codec driver.
-I can craft the pdata for the MFD child devices out from the DT
-information but then the child devices will have no dev.of_node since
-they were not probed via OF.
-So I would have not phandle for the codec to be used to define the
-dai-link connection within the sound dts section.
+iQIcBAEBAgAGBQJPqlyWAAoJEBus8iNuMP3dw6oP/2BIBZ3xqk9PnHrqLKu4i75p
+O6RAHAeN2Vi0ACqY//TQUKVlvTHZYhH8FPqMKjdxkFOGYSrMS32Q6zwwitEb05Td
+p9V8GiLXIR+j7sPSYO9VNKRJW8GLCrskpl8r4XjMNP842/UYqJUzJM4RFZvRzMTI
+wRA59+qLnv6MNduYovOHbohWDeHcSFvJacJN8mdw10RQ9Sow4FHlumYr2oULkx2n
+BtvGSMXvK1/1wytVaR9ySKu5sdnWvabdwQWbbACPVlHM1ltduENfcypfLk3Obfcn
+paDUoZg0mKikHkoRScDBtFmI00Jp+nwzwFVud3PnKNRHlvSOnsDtjcn0Di9UPT+Z
+2s+sRL3b3p5kzoAogTtoEkd8DJuczaw/PMcYXhapEvtIoI1ckn0cTd9/hVIDddht
+SRO2vBNvqdF2QZFUyanYLlibwv0va2yV33RqfpOrZM2Nh1ko6OwYfmgxjQTBJiSD
+O3e/DncTafdPp1Q2O09SJmzNvP98uK2TXdaQ5qYZ991doQ7Ex+/Gwl8SSTQX63C/
+QoZxVPoTiz79fYy6k3JhhgGGq6rOc9q7R371vgMXycBJTmO8egeIkjNFNFfSsLb0
+PPAL/HS8bdvv2gUPlnpP5Ybp1KAH18tqMVTqc+o57cq7oXDsY2h33cATT9LSKd4C
+GTGZR4hleN9l5iwnQmyn
+=a5zk
+-----END PGP SIGNATURE-----
 
-Am I missing something here?
-
--- =
-
-P=E9ter
+--Zfao1/4IORAeFOVj--
