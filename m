@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 09/11] ASoC: Ux500: Add platform-driver
-Date: Wed, 9 May 2012 17:39:04 +0100
-Message-ID: <20120509163903.GI3955@opensource.wolfsonmicro.com>
-References: <1336485444-27369-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 11/11] ASoC: Ux500: Add machine-driver
+Date: Wed, 9 May 2012 18:05:21 +0100
+Message-ID: <20120509170520.GK3955@opensource.wolfsonmicro.com>
+References: <1336485457-27441-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8550712524382333523=="
+Content-Type: multipart/mixed; boundary="===============4358492837617426698=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE3D4103EE1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 80D61104540
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 18:39:08 +0200 (CEST)
-In-Reply-To: <1336485444-27369-1-git-send-email-ola.o.lilja@stericsson.com>
+	Wed,  9 May 2012 19:05:23 +0200 (CEST)
+In-Reply-To: <1336485457-27441-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +25,52 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linu
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8550712524382333523==
+--===============4358492837617426698==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="p14GW7TY4DvKqgVo"
+	protocol="application/pgp-signature"; boundary="qE0/TkNoJLLGUzs4"
 Content-Disposition: inline
 
 
---p14GW7TY4DvKqgVo
+--qE0/TkNoJLLGUzs4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 08, 2012 at 03:57:24PM +0200, Ola Lilja wrote:
-> Add platform-driver handling all DMA-activities.
+On Tue, May 08, 2012 at 03:57:37PM +0200, Ola Lilja wrote:
+> Add machine-driver for ST-Ericsson U8500 platform, including
+> support for the AB8500-codec.
 
-This looks good but it depends on the first patch which needs a spin
-(and review from Takashi).
+This looks basically good - there's a few things that were identified
+with regard to the CODEC driver but otherwise it looks good.
 
---p14GW7TY4DvKqgVo
+--qE0/TkNoJLLGUzs4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPqp18AAoJEBus8iNuMP3d7OkP/A5azm6zYJxUV6+yyoVoYNce
-pOzrAd18anjEOB2AKwDJ+D9mS9XVcVOfH/5AFmzo+TI/N+zLJgb0B8UP1RBbHFkP
-cjTiDhlW7niHAAsop8kdM0t/TfW4ngwvEckPSCm1vc2p24BsYvHebBibkUW0PR6A
-WlFy8UEmNQpbbc9BJtb792GoqVUa3CYVuGQ8TVL3htzbn1Z1Wa+5p2gZnLhoEz/J
-TCgNGdfeyvPuInwzH/aKM+pW8oeenJKJgLkp7K5jcPwjMakfV6bse0a2NCMfnwa2
-dn8CU+gciBQGakiTEX0SPBLPpsz/+ymZDPqCzG4YP5IRGt9pqROe7ZaUZKCq1cIe
-2DEKna+qoClk65HH97EktjXCe13RIt08gN74IO4YFAlqAx16dO3bSijYCwopSxDA
-0qTnplonS8Idp8uV9vgshWLMksMzgkXPIzeJNY1Ro39ZjYgPCkBv7C2IppprCKHu
-7a9TM6cjW05FvQWiIoxhKAc4HNodwoZtp+BMzuWmVoHsJR7jZxOMFDkaKzVg+xBL
-SGvjFF6YLscknTxGV9SzIXuz3QX8yy9IWLxx5mLLnesAISupeOqa383qGNJo+k2Y
-RZENMG+MqQDu6Q63BjpJ39RSC89PTRaTHMlzbuf5vCeP6aHt8x5uTLwVVI++R/yE
-mXmqoK2YO+levjPIsBN9
-=FCxg
+iQIcBAEBAgAGBQJPqqPJAAoJEBus8iNuMP3d78cQAJMlWTz7OvGrTKcAwnq5g+hc
+axkZNQGt3ArrCja8fG1njbS1j2NTxgvY/HyL5yqESitXjisafV9FfUR4KX+TWbiW
+zU2c99j3sQfPAAzr/CrqX7gtKvDYE7/4OrcVYwaFOIACYcBP31rntzNBnEF8ZjhQ
+em5491C9YbZFnL07HZRhsYOvr/btFczBhIOdo0x6BNDhQDsUHi7iD8AZGAeGzha3
+bwI0EySPl4SwD9yaL71C3Eo76WSIrMYtlDHt4W4hIsv2DQ6dC2EAwl9PKtXKX8jA
+pglBZxeSDQa1AmHizVRvr2ZsavaFVQIInQWSrFy89g8QbsdagRx/Z0vPRUYB5i7a
+sdSAk/Kt5n0+/rNxRd7t+kocuq1Ybb88nfdhClbABBOolGS9Hexynr9RoRTJQ6lR
+AqOvWRSdjcfdAF3dIc5v+BFmeC3LWm4gdKtu1J0GRm3rFNDPNugjmUnSwo+E94+e
+qE5v2Na6+/Zsu0TX1vOqyj0Lqif1qGg3rMBbcraRF5tdUW/ou6RVtTWonZpvtF/6
+Jpu+dugyEoL3fYvp0ton8P6QJK+DAb6knzSobB1A5kkENjytYwr+LnL4siqrM3xj
+OeVGHnRjSRGjtqLZsDPdaI+D7rfjy+IXJpqZKJu3PbRsxsy4PZ7Gg92beqI+KEQ9
+kS1gGmoGobNQT1edQYye
+=tFzF
 -----END PGP SIGNATURE-----
 
---p14GW7TY4DvKqgVo--
+--qE0/TkNoJLLGUzs4--
 
---===============8550712524382333523==
+--===============4358492837617426698==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8550712524382333523==--
+--===============4358492837617426698==--
