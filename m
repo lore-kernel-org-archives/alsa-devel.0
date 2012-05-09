@@ -1,18 +1,18 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: [PATCH 3/3] ASoC: cs42l73: Use DAPM routes to hook AIF
-	widgets to DAI's
-Date: Wed, 9 May 2012 12:14:04 -0500
-Message-ID: <1336583644-12349-3-git-send-email-brian.austin@cirrus.com>
+Subject: [PATCH 2/3] ASoC: cs42l73: Remove Chip ID's from
+	reg_default
+Date: Wed, 9 May 2012 12:14:03 -0500
+Message-ID: <1336583644-12349-2-git-send-email-brian.austin@cirrus.com>
 References: <1336583644-12349-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from am1outboundpool.messaging.microsoft.com
-	(am1ehsobe006.messaging.microsoft.com [213.199.154.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id 490811046BA
+	(am1ehsobe002.messaging.microsoft.com [213.199.154.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C4DA1046E5
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 19:17:08 +0200 (CEST)
+	Wed,  9 May 2012 19:17:05 +0200 (CEST)
 In-Reply-To: <1336583644-12349-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,43 +27,26 @@ To: alsa-devel@alsa-project.org
 Cc: Brian Austin <brian.austin@cirrus.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+We need to read the real register values
+
 Signed-off-by: Brian Austin <brian.austin@cirrus.com>
 ---
- sound/soc/codecs/cs42l73.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/codecs/cs42l73.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 1cf2206..d8b325c 100644
+index 60b7f53..1cf2206 100644
 --- a/sound/soc/codecs/cs42l73.c
 +++ b/sound/soc/codecs/cs42l73.c
-@@ -773,6 +773,14 @@ static const struct snd_soc_dapm_route cs42l73_audio_map[] = {
- 	{"HL Left Mixer", NULL, "VSPIN"},
- 	{"HL Right Mixer", NULL, "VSPIN"},
- 
-+	{"ASPINL", NULL, "ASP Playback"},
-+	{"ASPINM", NULL, "ASP Playback"},
-+	{"ASPINR", NULL, "ASP Playback"},
-+	{"XSPINL", NULL, "XSP Playback"},
-+	{"XSPINM", NULL, "XSP Playback"},
-+	{"XSPINR", NULL, "XSP Playback"},
-+	{"VSPIN", NULL, "VSP Playback"},
-+
- 	/* Capture Paths */
- 	{"MIC1", NULL, "MIC1 Bias"},
- 	{"PGA Left Mux", "Mic 1", "MIC1"},
-@@ -819,6 +827,13 @@ static const struct snd_soc_dapm_route cs42l73_audio_map[] = {
- 
- 	{"VSPOUTL", NULL, "VSPL Output Mixer"},
- 	{"VSPOUTR", NULL, "VSPR Output Mixer"},
-+
-+	{"ASP Capture", NULL, "ASPOUTL"},
-+	{"ASP Capture", NULL, "ASPOUTR"},
-+	{"XSP Capture", NULL, "XSPOUTL"},
-+	{"XSP Capture", NULL, "XSPOUTR"},
-+	{"VSP Capture", NULL, "VSPOUTL"},
-+	{"VSP Capture", NULL, "VSPOUTR"},
+@@ -43,9 +43,6 @@ struct  cs42l73_private {
  };
  
- struct cs42l73_mclk_div {
+ static const struct reg_default cs42l73_reg_defaults[] = {
+-	{ 1, 0x42 },	/* r01	- Device ID A&B */
+-	{ 2, 0xA7 },	/* r02	- Device ID C&D */
+-	{ 3, 0x30 },	/* r03	- Device ID E */
+ 	{ 6, 0xF1 },	/* r06	- Power Ctl 1 */
+ 	{ 7, 0xDF },	/* r07	- Power Ctl 2 */
+ 	{ 8, 0x3F },	/* r08	- Power Ctl 3 */
 -- 
 1.7.10
