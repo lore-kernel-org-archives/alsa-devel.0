@@ -1,21 +1,39 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: dmic codec: Support for DT
-Date: Wed, 09 May 2012 14:28:23 +0300
-Message-ID: <4FAA54D7.3090604@ti.com>
-References: <1336478157-27526-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120508125837.GN15893@opensource.wolfsonmicro.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: M-Audio FastTrack C400
+Date: Wed, 9 May 2012 10:33:57 +0200
+Message-ID: <CAFz=ag4EBn139_zyLihz6cjDiRt9guWT_cpYNccCPsr2HEQ3uw@mail.gmail.com>
+References: <4F8D63F4.1040208@rauros.net>
+	<CACckToXF6yW+GzhzJ3zVBKi3e+thwrpDVnFmMCtjQOqePuixZg@mail.gmail.com>
+	<4F8DF29B.9090907@rauros.net>
+	<CACckToU47usDbT7Cj6DiBNcCQc_4AmxnDJgW07PMALzjv9a52Q@mail.gmail.com>
+	<4F8E6CA2.8010005@ladisch.de> <4F8F7213.8070206@rauros.net>
+	<4F8FD2A7.60700@ladisch.de> <4F911629.5090704@gmail.com>
+	<4F920D73.7070309@rauros.net>
+	<CAFz=ag4viHQ-K7qbpCk-G+H3Q8GKe=7-anfOeCy3jhUCYUJ5BQ@mail.gmail.com>
+	<CACckToUVQu=p0ZSaGw-oRn2ASgfQ_Po2im1ha5-yUVeyt7JUaQ@mail.gmail.com>
+	<4F9CB0D7.5060401@rauros.net>
+	<CAFz=ag6tVjD6hANk2e6sH8hcrbJi6SdqYJNy2U-nkArBV5DVfQ@mail.gmail.com>
+	<4F9D4291.6060803@rauros.net>
+	<CAFz=ag5HWp-BW4ZyymR7F60ahtzttyoBk6ZwdSRVKBXepHyn1w@mail.gmail.com>
+	<4FA19CAC.7070704@rauros.net>
+	<CAFz=ag624FsOhyRSKY=cO5+fZtLhCKMsox4_HhFooor_B5OQ8g@mail.gmail.com>
+	<4FA36114.2030305@rauros.net>
+	<CAFz=ag5iwFf7DtfE8sucZWSNq14DZM7enwER5m_M=9=9Do9J7w@mail.gmail.com>
+	<4FA45B69.5010608@rauros.net>
+	<CAFz=ag4ST+StciziAjTyLs5E+kLedULYSceuABV0d1uL+hHeRA@mail.gmail.com>
+	<4FA9C454.7060201@rauros.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
-	[74.125.149.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA39624562
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8179E2458D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 14:34:47 +0200 (CEST)
-Received: by laap9 with SMTP id p9so194866laa.8
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2012 05:34:45 -0700 (PDT)
-In-Reply-To: <20120508125837.GN15893@opensource.wolfsonmicro.com>
+	Wed,  9 May 2012 14:36:50 +0200 (CEST)
+Received: by yenl1 with SMTP id l1so194891yen.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2012 05:36:49 -0700 (PDT)
+In-Reply-To: <4FA9C454.7060201@rauros.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,62 +43,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: chris-alsa@rauros.net
+Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/08/2012 03:58 PM, Mark Brown wrote:
-> On Tue, May 08, 2012 at 02:55:57PM +0300, Peter Ujfalusi wrote:
-> =
+Hi again,
 
->> +dmic_codec: dmic_codec@0 { /* generic DMIC codec */
->> +	compatible =3D "generic,dmic-codec";
->> +};
-> =
+2012/5/9 Chris Cavey <chris-alsa@rauros.net>:
+> I do not get that message anymore.
 
-> Why is this called "dmic-codec" and not "dmic"?
+That's good.
 
-This is a really good question. Should have been "dmic".
+Could you please send me the contents of your
+/proc/asound/[YOUR_DEVICE]/usbmixer.
 
-> We probably need to have a think about this in the context of the
-> handling of random on-board passive components in general - things
-> like jacks and so on - is the most sensible thing to have a
-> platform device for everything, or is that getting too noisy?
+BTW, you could try to experiment a bit with volume quirks: See,
+mixer.c  search for 2081 to see how it's done for some of the FTU
+controls. The volume controls for the FTU are reported in usbmixer to
+range from -32768 to 0.
 
-It is true that there's no real device (in a sense that it is not
-programmable at least via the current dmic-codec.c driver) behind of the
-dmic codec as such.
-However in our setup it is a vital part of the audio setup since the CPU
-dai (omap4-dmic) need to be connected to _somthing_ in order to have a link.
-It could be argued that if the SW has no control over a component there
-should not be dts section for it either. However when we move to the
-audio machine driver level (or audio setup description) we are going to
-have quiet different looking (I would say confusing) implementation
-among devices, platforms.
+>
+> Fixing the "return 0" back to "break" results in the device not even
+> registering, back to the -5 error from the beginning of this thread.
 
-For example tegra-seaboard have this for the link:
-
-nvidia,i2s-controller =3D <&tegra_i2s1>;
-nvidia,audio-codec =3D <&wm8903>;
-
-It is clearly tells me that i2s1 is connected to wm8903 codec.
-
-Now without dts entry for dmic codec on omap4:
-
-dai-link,dai =3D <&dmic>;
-
-In the background we create the device for the dmic at runtime but it
-does not help the readability of the dts file. Especially if someone is
-looking at the tegra version at the same type.
-
-I would prefer to have something like this in our dts for audio support:
-
-dai-link,dai =3D <&dmic>;
-dai-link,codec =3D <&dmic_codec>;
+OK, it was just a blind guess as I said.
 
 
-I might be as well just plain wrong here.
 
--- =
+> I really just want to find a single device, USB or Firewire (or
+> PCIE), which works flawlessly in both Windows and Linux. Instrument/Mic
+> input as well as independent balanced out and headphones.
+>
+> Any thoughts on this?
 
-P=E9ter
+I was just joking when I mentioned the MOTUs and RMEs ;-) I would
+certainly enjoy getting a MOTU Ultralite mk3 hybrid or a RME Babyface
+to play around with and personally I will never buy a M-Audio device
+again.
+
+But while I'm quite confident that we can get the C400 working (might
+take some time though) I don't know wether or not the MOTUs and RMEs
+do behave in any way like  UAC1/2 devices at all. I haven't seen a
+single report on them, yet.
+
+Regards,
+Felix
