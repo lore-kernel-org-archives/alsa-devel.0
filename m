@@ -1,62 +1,75 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
-Date: Thu, 10 May 2012 09:48:36 -0600
-Message-ID: <4FABE354.7010605@wwwdotorg.org>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com> <1336563190-19974-4-git-send-email-richard.zhao@freescale.com> <20120509160005.GG3955@opensource.wolfsonmicro.com> <20120510003532.GG2982@b20223-02.ap.freescale.net> <20120510063904.GB17875@S2101-09.ap.freescale.net> <20120510084403.GA3908@opensource.wolfsonmicro.com> <20120510090459.GH2982@b20223-02.ap.freescale.net>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: ALSA calling pcm_pointer excessively?
+Date: Thu, 10 May 2012 17:06:01 +0100
+Message-ID: <20120510160601.GC12727@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20120510090459.GH2982-iWYTGMXpHj9ITqJhDdzsOjpauB2SiJktrE5yTffgRl4@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgLinus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 7801D10BAAB
+	for <alsa-devel@alsa-project.org>;
+	Thu, 10 May 2012 18:06:08 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/10/2012 03:05 AM, Richard Zhao wrote:
-> On Thu, May 10, 2012 at 09:44:04AM +0100, Mark Brown wrote:
->> On Thu, May 10, 2012 at 02:39:06PM +0800, Shawn Guo wrote:
->>> On Thu, May 10, 2012 at 08:35:33AM +0800, Richard Zhao wrote:
->>
->>>> It's based on your for-next. But for working, it depends on
->>>> pinctl/for-next.
->>
->>> Mark, may I have your ack to have it go through arm-soc?  I will ask
->>> Arnd pull your sound/for-v3.5 branch into arm-soc as a dependency.
->>> You need to ensure the branch will not be rebased.
->>
->> for-3.5 is the entire undifferentiated blob of ASoC stuff, it's not
->> really suitable for merging elsewhere.  It won't actually get rebased
->> but the idea of merging it into other trees doesn't seem terribly
->> clever, it'd make having topic branches in arm-soc a bit of a joke and
->> if you pull it right now you'll get problems in -next due to the the
->> ux500 stuff.
->>
->> What does "working" mean in this context - what happens without the
->> pinctl changes?
-> devm_pinctrl_get_select_default function is added in below commit which
-> is in pinctrl/for-next.
-> 
-> commit 6d4ca1fb467932773da7b808c52f3d7ef4461ba0
-> Author: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> Date:   Mon Apr 16 10:51:00 2012 -0600
-> 
->     pinctrl: implement devm_pinctrl_get()/put()
->     
->     These functions allow the driver core to automatically clean up any
->     allocations made by drivers, thus leading to simplified drivers.
->     
->     Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->     Signed-off-by: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> 
-> 
-> So it'll fail compile without pinctrl/for-next. I guess Linus may need
-> to prepare a non-rebase base for others to merge.
+I'm wondering what is causing ALSA to behave as follows - I have a 64KiB
+buffer, which is divided up into 4 16KiB periods.  The log below is from
+my soc-dmaengine.c code which supports audio on the Assabet (as we don't
+have cyclic DMA support there yet.)
 
-(CCing Linus)
+I'm just trying to sort out the DMA engine tx_status residue code, and
+am using this as proof that its working.
 
-There is one already.
+However, it seems that ALSA for whatever reason likes to hammer away at
+the pcm_pointer callback from time to time:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tag pinctrl-mergebase-20120418
-The commit is in for-next and devel branches, but not the tip of those.
+soc_dmaengine_pointer: index 3 stat 1 residue 0018 cookie 3cfe pos 10000 bytes ffe8
+soc_dmaengine_pointer: index 3 stat 1 residue 0008 cookie 3cfe pos 10000 bytes fff8
+soc_dmaengine_callback: complete
+soc_dmaengine_pointer: index 0 stat 1 residue 3ff0 cookie 3cff pos 4000 bytes 0010
+soc_dmaengine_submit: submitting index 3 size 4000 cookie 3d02
+soc_dmaengine_pointer: index 0 stat 1 residue 3fd0 cookie 3cff pos 4000 bytes 0030
+soc_dmaengine_pointer: index 0 stat 1 residue 17b8 cookie 3cff pos 4000 bytes 2848
+soc_dmaengine_pointer: index 0 stat 1 residue 1770 cookie 3cff pos 4000 bytes 2890
+soc_dmaengine_pointer: index 0 stat 1 residue 1768 cookie 3cff pos 4000 bytes 2898
+soc_dmaengine_pointer: index 0 stat 1 residue 1758 cookie 3cff pos 4000 bytes 28a8
+soc_dmaengine_pointer: index 0 stat 1 residue 1748 cookie 3cff pos 4000 bytes 28b8
+soc_dmaengine_pointer: index 0 stat 1 residue 1740 cookie 3cff pos 4000 bytes 28c0
+soc_dmaengine_pointer: index 0 stat 1 residue 1730 cookie 3cff pos 4000 bytes 28d0
+soc_dmaengine_pointer: index 0 stat 1 residue 1720 cookie 3cff pos 4000 bytes 28e0
+soc_dmaengine_pointer: index 0 stat 1 residue 1718 cookie 3cff pos 4000 bytes 28e8
+...
+soc_dmaengine_pointer: index 0 stat 1 residue 0018 cookie 3cff pos 4000 bytes 3fe8
+soc_dmaengine_pointer: index 0 stat 1 residue 0008 cookie 3cff pos 4000 bytes 3ff8
+soc_dmaengine_callback: complete
+soc_dmaengine_pointer: index 1 stat 1 residue 3ff0 cookie 3d00 pos 8000 bytes 4010
+soc_dmaengine_submit: submitting index 0 size 4000 cookie 3d03
+soc_dmaengine_pointer: index 1 stat 1 residue 3fd0 cookie 3d00 pos 8000 bytes 4030
+soc_dmaengine_pointer: index 1 stat 1 residue 3b28 cookie 3d00 pos 8000 bytes 44d8
+soc_dmaengine_pointer: index 1 stat 1 residue 3b10 cookie 3d00 pos 8000 bytes 44f0
+soc_dmaengine_pointer: index 1 stat 1 residue 3b00 cookie 3d00 pos 8000 bytes 4500
+
+'pos' is the end of the current DMA buffer ((index + 1) * period_byte_size)
+'residue' is the value returned from tx_status
+'bytes' is the value passed into bytes_to_frames() to return from my
+pcm_pointer function.
+
+The question is - what would cause ALSA to hammer away at the buffer
+like that - checking it every 16 or 8 DMA bytes transferred?  I'm also
+seeing around 75% system CPU time, which really isn't good.
+
+The above was captured while aplay was running, with no apparant audio
+corruption.
+
+Any ideas?
