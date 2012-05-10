@@ -1,48 +1,58 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl
-	support
-Date: Thu, 10 May 2012 14:20:44 +0200
-Message-ID: <CACRpkdYRrhGBjWpe+wqzMhE2RdrLox4Ri92RfQGTZxSakN6eTw@mail.gmail.com>
+From: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
+Date: Thu, 10 May 2012 14:26:31 +0200
+Message-ID: <CACRpkdah3956QLZZ1wTw1PcZ90wWX=Ta9j45jjzWsBtT=nm8-g@mail.gmail.com>
 References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
 	<1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
 	<20120509160005.GG3955@opensource.wolfsonmicro.com>
 	<20120510003532.GG2982@b20223-02.ap.freescale.net>
 	<20120510063904.GB17875@S2101-09.ap.freescale.net>
 	<20120510084403.GA3908@opensource.wolfsonmicro.com>
-	<20120510090715.GF17875@S2101-09.ap.freescale.net>
+	<20120510090459.GH2982@b20223-02.ap.freescale.net>
+	<20120510092733.GH3908@opensource.wolfsonmicro.com>
+	<20120510102309.GK2982@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 329FD24430
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 14:20:45 +0200 (CEST)
-Received: by ggnk3 with SMTP id k3so909386ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 05:20:44 -0700 (PDT)
-In-Reply-To: <20120510090715.GF17875@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, vinod.koul@intel.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, w.sang@pengutronix.de, timur@freescale.com, Richard Zhao <richard.zhao@freescale.com>, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, dong.aisheng@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20120510102309.GK2982-iWYTGMXpHj9ITqJhDdzsOjpauB2SiJktrE5yTffgRl4@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 10, 2012 at 11:07 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+On Thu, May 10, 2012 at 12:23 PM, Richard Zhao
+<richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org> wrote:
+> On Thu, May 10, 2012 at 10:27:34AM +0100, Mark Brown wrote:
+>> On Thu, May 10, 2012 at 05:05:00PM +0800, Richard Zhao wrote:
+>>
+>> > devm_pinctrl_get_select_default function is added in below commit =
+which
+>> > is in pinctrl/for-next.
+>>
+>> Oh, dear. =A0That's unfortunate, I guess it's not on a branch in pin=
+ctl
+>> which can be pulled separately (...)
+>
+> I prefer to have a non-rebase pinctrl branch. We can not defer pinctr=
+l
+> patch for all drivers. pinctrl will be so widely used.
+>
+> Hi Linus,
+>
+> Could you comment?
 
-> Pulling it into arm-soc as a dependency only means we will have it as
-> a base for other branches that depend on. =A0It does not change anything
-> about how the branch flows to Linus. =A0Arnd will only send those arm-soc
-> branches that depend on sound/for-3.5 after it gets merged by Linus.
+You're lucky because a few ARM SoC:s wanted a stable tag to
+use for pinctrl merges.
 
-Oh... um... subject is about pinctrl ... but ... no..
-Aha, he mean Torvalds! :-)
+Ref:
+git://git.linaro.org/people/triad/linux-pinctrl.git
 
-return -ELINWAL;
+The tag pinctrl-mergebase-20120418
+contains the devm and other changes, Stephen is already using
+that for Tegra stuff and it's solid as a rock. Newer patches are
+put on top of this and since pinctrl has no deps in any directions
+it will be requested for pull as soon as the merge window opens.
+
+Yours,
+Linus Walleij
