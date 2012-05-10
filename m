@@ -1,67 +1,90 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2 10/11] ARM: imx6q: change clkdev device name from
- xxxx.uart to xxxx.serial
-Date: Thu, 10 May 2012 14:51:42 +0800
-Message-ID: <20120510065140.GD17875@S2101-09.ap.freescale.net>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
- <1336563190-19974-11-git-send-email-richard.zhao@freescale.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2 14/14] OMAPDSS: HDMI: Implement DSS driver interface
+ for audio
+Date: Thu, 10 May 2012 10:54:09 +0300
+Message-ID: <1336636449.5182.26.camel@deskari>
+References: <1336095848-6923-1-git-send-email-ricardo.neri@ti.com>
+	   <1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
+	  <1336390986.2667.8.camel@deskari> <4FA9B289.5000101@ti.com>
+	 <1336552081.3962.15.camel@deskari> <4FAB403E.6010000@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1336563190-19974-11-git-send-email-richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-OHYrgN/EJi1l6rBRXmbK"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <4FAB403E.6010000@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: mythripk@ti.com, s-chereau@ti.com, x0055901@ti.com, vaibhav.bedia@ti.com, s-guiriec@ti.com, lrg@ti.com, peter.ujfalusi@ti.com, agraf@suse.de, research@ottomaneng.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 09, 2012 at 07:33:09PM +0800, Richard Zhao wrote:
-> It's because the dts changed the node name.
-> 
-Dirk had sent the same patch, but I told him that I will rebase my DT
-branch on top Sascha's clk, the issue will be solved by the rebasing,
-so I'm not taking the last two patches.
 
-Regards,
-Shawn
+--=-OHYrgN/EJi1l6rBRXmbK
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> ---
->  arch/arm/mach-imx/clk-imx6q.c |   20 ++++++++++----------
->  1 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
-> index 096fcfb..4ac1282 100644
-> --- a/arch/arm/mach-imx/clk-imx6q.c
-> +++ b/arch/arm/mach-imx/clk-imx6q.c
-> @@ -393,16 +393,16 @@ int __init mx6q_clocks_init(void)
->  	clk_register_clkdev(clk[gpt_ipg_per], "per", "imx-gpt.0");
->  	clk_register_clkdev(clk[twd], NULL, "smp_twd");
->  	clk_register_clkdev(clk[usboh3], NULL, "usboh3");
-> -	clk_register_clkdev(clk[uart_serial], "per", "2020000.uart");
-> -	clk_register_clkdev(clk[uart_ipg], "ipg", "2020000.uart");
-> -	clk_register_clkdev(clk[uart_serial], "per", "21e8000.uart");
-> -	clk_register_clkdev(clk[uart_ipg], "ipg", "21e8000.uart");
-> -	clk_register_clkdev(clk[uart_serial], "per", "21ec000.uart");
-> -	clk_register_clkdev(clk[uart_ipg], "ipg", "21ec000.uart");
-> -	clk_register_clkdev(clk[uart_serial], "per", "21f0000.uart");
-> -	clk_register_clkdev(clk[uart_ipg], "ipg", "21f0000.uart");
-> -	clk_register_clkdev(clk[uart_serial], "per", "21f4000.uart");
-> -	clk_register_clkdev(clk[uart_ipg], "ipg", "21f4000.uart");
-> +	clk_register_clkdev(clk[uart_serial], "per", "2020000.serial");
-> +	clk_register_clkdev(clk[uart_ipg], "ipg", "2020000.serial");
-> +	clk_register_clkdev(clk[uart_serial], "per", "21e8000.serial");
-> +	clk_register_clkdev(clk[uart_ipg], "ipg", "21e8000.serial");
-> +	clk_register_clkdev(clk[uart_serial], "per", "21ec000.serial");
-> +	clk_register_clkdev(clk[uart_ipg], "ipg", "21ec000.serial");
-> +	clk_register_clkdev(clk[uart_serial], "per", "21f0000.serial");
-> +	clk_register_clkdev(clk[uart_ipg], "ipg", "21f0000.serial");
-> +	clk_register_clkdev(clk[uart_serial], "per", "21f4000.serial");
-> +	clk_register_clkdev(clk[uart_ipg], "ipg", "21f4000.serial");
->  	clk_register_clkdev(clk[enet], NULL, "2188000.enet");
->  	clk_register_clkdev(clk[usdhc1], NULL, "2190000.usdhc");
->  	clk_register_clkdev(clk[usdhc2], NULL, "2194000.usdhc");
-> -- 
-> 1.7.5.4
-> 
-> 
+On Wed, 2012-05-09 at 23:12 -0500, Ricardo Neri wrote:
+
+> Under the new strategy, in addition to not allowing the audio functions=
+=20
+> to be called from multiple threads, audio functions will fail if the=20
+> sequence _CONFIGURED -> _ENABLED -> PLAYING -> DISABLED is not followed.=
+=20
+> This is aligned with the behavior that ALSA follows for the audio=20
+> codecs. Also, it checks the state of the panel to allow the audio=20
+> transitions.
+> >
+> > But the video and audio paths are probably always separate, and for
+> > those we need protection. As you said, using the mutex for the may-slee=
+p
+> > audio functions solves the issue for those, leaving start/stop as the
+> > only problem case.
+>=20
+> Audio only needs to know if the display is active. Under the improved=20
+
+Audio also needs to know if the video mode is suitable for audio, right?
+So not only disabling the video has to stop audio, but also if the video
+mode changes to a non-supported one.
+
+> strategy, audio_start indirectly checks the state of the panel because=
+=20
+> the audio needs to be in AUDIO_ENABLED state to start and this state is=
+=20
+> reached only if the panel is active. The mutex is held to check the=20
+> state of the panel and the audio lock is held to change the audio state.=
+=20
+> Also, the audio transitions to AUDIO_DISABLED if the panel is disabled.=
+=20
+
+Hmm, I can't see the code that does that. As far as I see, no video
+enable/disable/reconfig affects audio in any way. Am I missing a patch?
+Could you setup a public git branch so it's easier for me to get the
+whole series, instead of sending individual patches.
+
+ Tomi
+
+
+--=-OHYrgN/EJi1l6rBRXmbK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJPq3QhAAoJEPo9qoy8lh7149IP/1JsMskK6cHMO23WLmpd4L+X
+SQZFNpSYParoFieovmghjSibRxAwuMbVVtYhCxTh2eu00wH/3JeR+0vsqcWckkg8
+XQGrbtybSwPZTwfw0IBEC6r9ukj6fDn36SAipStXVv0QbrCYlvJmWLQPo7WgYQxs
+EVpYKLlS+pE3SpKaAsCmUfFIrq5QHXqYqtnvv0nZ2YYP+uxQu7lyDyXkNJbr6vD8
+2s0bNCM6kQgVj9Q7lQOTlYHqrEzjyYu5OG1rhOSKn8aGKVfd5Fcu9SfSUWSWJe3r
+6uAqFdbFEvcggMZWZwe72x2iubQ8xVfn9kPxfrV9Lr99gE+jyzm8FNNkT3U3cS0/
+2WJYxiScX0iyXO2MTkcZhIrkCHFriLFZQu4YZyUUjKnm0b50CMkvom4+rTR66gL+
+JBqeq7cLRn0damUr8FvYaFLaDyHdBzIsR7v3Z/kdHZAwh+EfXtvqm8RZr7y5SvYf
+iLhu+XLcDkh7GIcZNeUC55rTpwe+oPL109P5aFKtzY7jvSJKjSRVeLlZPUCV1slv
+30nc7/P83Iv/nrY2JnPqDBtwKX3N0hvLYjP1CjhKdqm2GUGxOeMeoUk3KZrhiU5c
+e969X/UOXr2nT8U2v39PaIz8h4iQ9LB7bZ+LhwOFlTW7ttgzh3nyOmtaqpqNfSOJ
+xxGnGw27CA726FeWPEno
+=Y1mo
+-----END PGP SIGNATURE-----
+
+--=-OHYrgN/EJi1l6rBRXmbK--
+
