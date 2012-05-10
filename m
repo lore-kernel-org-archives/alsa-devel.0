@@ -1,61 +1,36 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
-Date: Thu, 10 May 2012 10:27:34 +0100
-Message-ID: <20120510092733.GH3908@opensource.wolfsonmicro.com>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
- <1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
- <20120509160005.GG3955@opensource.wolfsonmicro.com>
- <20120510003532.GG2982@b20223-02.ap.freescale.net>
- <20120510063904.GB17875@S2101-09.ap.freescale.net>
- <20120510084403.GA3908@opensource.wolfsonmicro.com>
- <20120510090459.GH2982@b20223-02.ap.freescale.net>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: pcm: Staticise non-exported functions
+Date: Thu, 10 May 2012 10:29:40 +0100
+Message-ID: <1336642180.8605.4.camel@odin>
+References: <1336596450-28653-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OpLPJvDmhXTZE4Lg"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20120510090459.GH2982-iWYTGMXpHj9ITqJhDdzsOjpauB2SiJktrE5yTffgRl4@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
+	[74.125.149.76])
+	by alsa0.perex.cz (Postfix) with ESMTP id E493310BA3C
+	for <alsa-devel@alsa-project.org>;
+	Thu, 10 May 2012 11:29:44 +0200 (CEST)
+Received: by wibhr2 with SMTP id hr2so258358wib.1
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 02:29:42 -0700 (PDT)
+In-Reply-To: <1336596450-28653-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2012-05-09 at 21:47 +0100, Mark Brown wrote:
+> They pollute the global namespace and cause sparse to complain.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---OpLPJvDmhXTZE4Lg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 10, 2012 at 05:05:00PM +0800, Richard Zhao wrote:
-
-> devm_pinctrl_get_select_default function is added in below commit which
-> is in pinctrl/for-next.
-
-Oh, dear.  That's unfortunate, I guess it's not on a branch in pinctl
-which can be pulled separately (this is what I've been doing with things
-like regmap and regulator - creating new interfaces on easily mergeable
-branches)?  Looking at it from the other perspective, what goes wrong if
-we defer this patch?
-
---OpLPJvDmhXTZE4Lg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPq4n/AAoJEBus8iNuMP3d5M0P/RDj66WQ1bLnOByWH42LHG3c
-3b84MWRosN4uHlrjeSpdCOLfEa7FSxS/GNaYPWCa249Y/uB9VNOjWeNWJtzQibYD
-ciiN4emmyIKl2lw8VkJgQICT1059o5R3GZKfHvbjAAfUR3LfSOVxvEE6XXilYtcq
-XFhjEaPCMzUnMUp5IKeQ123JShjuxxOOGXeyl5AlL22cdGcvjI33qsH0/5zBFqgp
-h6fKfMc9e0k7CK0GiRK9ZDOpEz+GNvAhpbyVRu8Sa1QivBu8OMlYEgWkr4F97eqA
-lT0k5mlM1M1kzCZgMX5e5V4pZ9HVM6F32M10VcTkQb00hE8X7bLeV4OqlVm3b3GD
-7MYSjbvI/D8gfqjUABcnzBRc8FTkaeTgmuHnBDgGPFCdBAxxwS2EhYgLnXP0UZfx
-wwaD8QiKnRi9idoNWVfPT1smKzodybqJKbDPXooc2NQiXBjvZFADyhOIWaGEk/us
-lQkV4tH5rl9B3e4s+5iePW0YAYVnRmn+fZO8raxsDh1LwG+fw/GqmCiHC3/+Uy1E
-JrPAsKJWRT4lruRHvlVeCi22d2oT/u0k/xcnJSX1Npw9k9We4W2c+tp8fouSwZNr
-WPVLbGAzvFCfLI57mkvg9+Q0xhlCCdMxVEol2o3wqnd5hCBEb20SW9RZTuAM+MRG
-AstBwjvsWSGkgF+kef6k
-=PZh4
------END PGP SIGNATURE-----
-
---OpLPJvDmhXTZE4Lg--
+Acked-by: Liam Girdwood <lrg@ti.com>
