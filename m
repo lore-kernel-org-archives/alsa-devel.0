@@ -1,33 +1,28 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l52: Staticise non-exported
-	symbols
-Date: Wed, 9 May 2012 16:39:24 -0500
-Message-ID: <alpine.DEB.2.02.1205091638071.6547@heelrod.ad.cirrus.com>
-References: <1336598160-4798-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
+Date: Thu, 10 May 2012 08:35:33 +0800
+Message-ID: <20120510003532.GG2982@b20223-02.ap.freescale.net>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+ <1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
+ <20120509160005.GG3955@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68850103F9E
-	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2012 23:42:16 +0200 (CEST)
-In-Reply-To: <1336598160-4798-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20120509160005.GG3955-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-> Makes sparse happy and avoids polluting the global namespace.
->
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+On Wed, May 09, 2012 at 05:00:06PM +0100, Mark Brown wrote:
+> On Wed, May 09, 2012 at 07:33:02PM +0800, Richard Zhao wrote:
+> > Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+> 
+> I guess this depends on some other tree and can't just be directly
+> applied to ASoC?
+It's based on your for-next. But for working, it depends on
+pinctl/for-next.
+
+Thanks
+Richard
