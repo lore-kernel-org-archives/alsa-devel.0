@@ -1,21 +1,21 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 6/6] ARM: dts: enable audio support for
-	imx28-evk
-Date: Thu, 10 May 2012 16:42:13 +0800
-Message-ID: <1336639333-11561-7-git-send-email-shawn.guo@linaro.org>
-References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl
+	support
+Date: Thu, 10 May 2012 09:44:04 +0100
+Message-ID: <20120510084403.GA3908@opensource.wolfsonmicro.com>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+	<1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
+	<20120509160005.GG3955@opensource.wolfsonmicro.com>
+	<20120510003532.GG2982@b20223-02.ap.freescale.net>
+	<20120510063904.GB17875@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6728817901696534201=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6648110BA19
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB10110B9F0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 10:43:05 +0200 (CEST)
-Received: by mail-pb0-f51.google.com with SMTP id rp16so2153807pbb.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:43:05 -0700 (PDT)
-In-Reply-To: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
+	Thu, 10 May 2012 10:44:10 +0200 (CEST)
+In-Reply-To: <20120510063904.GB17875@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,135 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, vinod.koul@intel.com, w.sang@pengutronix.de, timur@freescale.com, Richard Zhao <richard.zhao@freescale.com>, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, dong.aisheng@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- arch/arm/boot/dts/imx28-evk.dts |   41 +++++++++++++++++++++++++++++++++++++++
- arch/arm/boot/dts/imx28.dtsi    |   23 +++++++++++++++++++++
- 2 files changed, 64 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx28-evk.dts b/arch/arm/boot/dts/imx28-evk.dts
-index c4b717f..a07fc92 100644
---- a/arch/arm/boot/dts/imx28-evk.dts
-+++ b/arch/arm/boot/dts/imx28-evk.dts
-@@ -41,10 +41,31 @@
- 		};
- 
- 		apbx@80040000 {
-+			saif0: saif@80042000 {
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&saif0_pins_a>;
-+				status = "okay";
-+			};
-+
-+			saif1: saif@80046000 {
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&saif1_pins_a>;
-+				fsl,saif-master = <&saif0>;
-+				status = "okay";
-+			};
-+
- 			i2c0: i2c@80058000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&i2c0_pins_a>;
- 				status = "okay";
-+
-+				sgtl5000: codec@0a {
-+					compatible = "fsl,sgtl5000";
-+					reg = <0x0a>;
-+					VDDA-supply = <&reg_3p3v>;
-+					VDDIO-supply = <&reg_3p3v>;
-+
-+				};
- 			};
- 
- 			duart: serial@80074000 {
-@@ -70,4 +91,24 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	regulators {
-+		compatible = "simple-bus";
-+
-+		reg_3p3v: 3p3v {
-+			compatible = "regulator-fixed";
-+			regulator-name = "3P3V";
-+			regulator-min-microvolt = <3300000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "fsl,imx28-evk-sgtl5000",
-+			     "fsl,mxs-audio-sgtl5000";
-+		model = "imx28-evk-sgtl5000";
-+		saif-controllers = <&saif0 &saif1>;
-+		audio-codec = <&sgtl5000>;
-+	};
- };
-diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
-index fd73fc2..4634cb8 100644
---- a/arch/arm/boot/dts/imx28.dtsi
-+++ b/arch/arm/boot/dts/imx28.dtsi
-@@ -20,6 +20,8 @@
- 		gpio2 = &gpio2;
- 		gpio3 = &gpio3;
- 		gpio4 = &gpio4;
-+		saif0 = &saif0;
-+		saif1 = &saif1;
- 	};
- 
- 	cpus {
-@@ -212,6 +214,23 @@
- 					fsl,voltage = <1>;
- 					fsl,pull-up = <1>;
- 				};
-+
-+				saif0_pins_a: saif0@0 {
-+					reg = <0>;
-+					fsl,pinmux-ids =
-+						<0x3140 0x3150 0x3160 0x3170>;
-+					fsl,drive-strength = <2>;
-+					fsl,voltage = <1>;
-+					fsl,pull-up = <1>;
-+				};
-+
-+				saif1_pins_a: saif1@0 {
-+					reg = <0>;
-+					fsl,pinmux-ids = <0x31a0>;
-+					fsl,drive-strength = <2>;
-+					fsl,voltage = <1>;
-+					fsl,pull-up = <1>;
-+				};
- 			};
- 
- 			digctl@8001c000 {
-@@ -319,8 +338,10 @@
- 			};
- 
- 			saif0: saif@80042000 {
-+				compatible = "fsl,imx28-saif";
- 				reg = <0x80042000 2000>;
- 				interrupts = <59 80>;
-+				fsl,saif-dma-channel = <4>;
- 				status = "disabled";
- 			};
- 
-@@ -330,8 +351,10 @@
- 			};
- 
- 			saif1: saif@80046000 {
-+				compatible = "fsl,imx28-saif";
- 				reg = <0x80046000 2000>;
- 				interrupts = <58 81>;
-+				fsl,saif-dma-channel = <5>;
- 				status = "disabled";
- 			};
- 
--- 
-1.7.5.4
+--===============6728817901696534201==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
+Content-Disposition: inline
+
+
+--M9NhX3UHpAaciwkO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, May 10, 2012 at 02:39:06PM +0800, Shawn Guo wrote:
+> On Thu, May 10, 2012 at 08:35:33AM +0800, Richard Zhao wrote:
+
+> > It's based on your for-next. But for working, it depends on
+> > pinctl/for-next.
+
+> Mark, may I have your ack to have it go through arm-soc?  I will ask
+> Arnd pull your sound/for-v3.5 branch into arm-soc as a dependency.
+> You need to ensure the branch will not be rebased.
+
+for-3.5 is the entire undifferentiated blob of ASoC stuff, it's not
+really suitable for merging elsewhere.  It won't actually get rebased
+but the idea of merging it into other trees doesn't seem terribly
+clever, it'd make having topic branches in arm-soc a bit of a joke and
+if you pull it right now you'll get problems in -next due to the the
+ux500 stuff.
+
+What does "working" mean in this context - what happens without the
+pinctl changes?
+
+--M9NhX3UHpAaciwkO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPq3/LAAoJEBus8iNuMP3dsgkP/0kU/TSaTg/EhmVlhG8Fj1Ik
+wpHwLCMjYTxEWO0eWO/cbKwGZonM7YMSKMox66tG63J6acFBCLO3taNVP8dGLAp4
+P+JiJos65ZG3Z6V2cUgyMHgFXpYZ5z/Nc9Ak/YRfwutBHsywSWxq3uWzi4SwuhC/
+Rxap3yRegqbXsQzXcsZ5MWNSBSfjyQFRNEshlvs9L/+XRg9aFSEgL3qtf1aWt9Tx
+vAc8U20osoOwMe4mrQi8OanG/XiWe0PlOO4AiGNWJkuRD3PnxEN/jcNfAiplUGVT
+HzwqX3VT5e0CXzSWa/E+1ifZ/sO+g3XBXc4M7k14x/8bO/XSVZeuHFiuWD3IPwGh
+7QR59kMqSLKiwUlZ6SEzE9uJBBFZiD7sKyKE6nAmSq28wVBE1IWATWdHwTBWRdvk
+IaYmqCPLqY8M3eQcE+kkOguA4lCJnynneVtDK+ZYAID68bpH7We8RC13N5IpaHVr
+CS4T+SFBFtn9TAZBk6PJrmZuVnaxDs6iufwABbYEJG56FcR8dL5hD3bdyTEJFExF
+tHqWzqaewa0j/M8WWwnt24Cl2W+TNGf5UZ+wJT1hHYJeRDCd+kKwgzQRAvXa94YK
+s/ce2sXhQpE7H4KWRtkUfX4KcKFye76aC9vjzGtBuBZ+TzebWnxZUyaFP0QH8zbz
+mNhV9H1D5jReTlwcTgRh
+=B+3U
+-----END PGP SIGNATURE-----
+
+--M9NhX3UHpAaciwkO--
+
+--===============6728817901696534201==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6728817901696534201==--
