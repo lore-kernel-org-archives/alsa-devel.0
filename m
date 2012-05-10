@@ -1,20 +1,20 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 2/6] ASoC: mxs: use devm_clk_get for
-	mxs_saif_probe
-Date: Thu, 10 May 2012 16:42:09 +0800
-Message-ID: <1336639333-11561-3-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 3/6] ASoC: mxs: mxs-pcm does not need to be a
+	plaform_driver
+Date: Thu, 10 May 2012 16:42:10 +0800
+Message-ID: <1336639333-11561-4-git-send-email-shawn.guo@linaro.org>
 References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE74E10B9F4
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6953810BA04
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 10:42:43 +0200 (CEST)
-Received: by mail-pb0-f51.google.com with SMTP id rp16so2153807pbb.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:42:43 -0700 (PDT)
+	Thu, 10 May 2012 10:42:49 +0200 (CEST)
+Received: by mail-pz0-f51.google.com with SMTP id t11so1905635daj.38
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:42:49 -0700 (PDT)
 In-Reply-To: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,98 +29,148 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use devm_clk_get for mxs_saif_probe to ease the cleanup.
+Same as the commit 518de86 (ASoC: tegra: register 'platform' from DAIs,
+get rid of pdev), it makes mxs-pcm not a platform_driver but helper to
+register "platform", so that the platform_device for mxs-pcm can be
+saved completely.
 
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- sound/soc/mxs/mxs-saif.c |   20 +++++++-------------
- 1 files changed, 7 insertions(+), 13 deletions(-)
+ sound/soc/mxs/mxs-pcm.c      |   24 ++++++------------------
+ sound/soc/mxs/mxs-pcm.h      |    3 +++
+ sound/soc/mxs/mxs-saif.c     |   25 ++++---------------------
+ sound/soc/mxs/mxs-saif.h     |    1 -
+ sound/soc/mxs/mxs-sgtl5000.c |    4 ++--
+ 5 files changed, 15 insertions(+), 42 deletions(-)
 
+diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
+index e373fbb..373dec9 100644
+--- a/sound/soc/mxs/mxs-pcm.c
++++ b/sound/soc/mxs/mxs-pcm.c
+@@ -220,28 +220,16 @@ static struct snd_soc_platform_driver mxs_soc_platform = {
+ 	.pcm_free	= mxs_pcm_free,
+ };
+ 
+-static int __devinit mxs_soc_platform_probe(struct platform_device *pdev)
++int __devinit mxs_pcm_platform_register(struct device *dev)
+ {
+-	return snd_soc_register_platform(&pdev->dev, &mxs_soc_platform);
++	return snd_soc_register_platform(dev, &mxs_soc_platform);
+ }
++EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
+ 
+-static int __devexit mxs_soc_platform_remove(struct platform_device *pdev)
++void __devexit mxs_pcm_platform_unregister(struct device *dev)
+ {
+-	snd_soc_unregister_platform(&pdev->dev);
+-
+-	return 0;
++	snd_soc_unregister_platform(dev);
+ }
+-
+-static struct platform_driver mxs_pcm_driver = {
+-	.driver = {
+-		.name = "mxs-pcm-audio",
+-		.owner = THIS_MODULE,
+-	},
+-	.probe = mxs_soc_platform_probe,
+-	.remove = __devexit_p(mxs_soc_platform_remove),
+-};
+-
+-module_platform_driver(mxs_pcm_driver);
++EXPORT_SYMBOL_GPL(mxs_pcm_platform_unregister);
+ 
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:mxs-pcm-audio");
+diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
+index 5f01a91..35ba2ca 100644
+--- a/sound/soc/mxs/mxs-pcm.h
++++ b/sound/soc/mxs/mxs-pcm.h
+@@ -24,4 +24,7 @@ struct mxs_pcm_dma_params {
+ 	int chan_num;
+ };
+ 
++int mxs_pcm_platform_register(struct device *dev);
++void mxs_pcm_platform_unregister(struct device *dev);
++
+ #endif
 diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 40d0775..5192db6 100644
+index 5192db6..fa80ee6 100644
 --- a/sound/soc/mxs/mxs-saif.c
 +++ b/sound/soc/mxs/mxs-saif.c
-@@ -658,7 +658,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+@@ -713,35 +713,18 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
  		return ret;
  	}
  
--	saif->clk = clk_get(&pdev->dev, NULL);
-+	saif->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(saif->clk)) {
- 		ret = PTR_ERR(saif->clk);
- 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
-@@ -671,25 +671,22 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
- 	if (!saif->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENODEV;
--		goto failed_get_resource;
-+		return -ENODEV;
- 	}
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmares) {
--		ret = -ENODEV;
- 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
- 			ret);
--		goto failed_get_resource;
-+		return -ENODEV;
- 	}
- 	saif->dma_param.chan_num = dmares->start;
- 
- 	saif->irq = platform_get_irq(pdev, 0);
- 	if (saif->irq < 0) {
--		ret = saif->irq;
- 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
- 			ret);
--		goto failed_get_resource;
-+		return saif->irq;
- 	}
- 
- 	saif->dev = &pdev->dev;
-@@ -697,7 +694,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 			       "mxs-saif", saif);
+-	saif->soc_platform_pdev = platform_device_alloc(
+-					"mxs-pcm-audio", pdev->id);
+-	if (!saif->soc_platform_pdev) {
+-		ret = -ENOMEM;
+-		goto failed_pdev_alloc;
+-	}
+-
+-	platform_set_drvdata(saif->soc_platform_pdev, saif);
+-	ret = platform_device_add(saif->soc_platform_pdev);
++	ret = mxs_pcm_platform_register(&pdev->dev);
  	if (ret) {
- 		dev_err(&pdev->dev, "failed to request irq\n");
--		goto failed_get_resource;
+-		dev_err(&pdev->dev, "failed to add soc platform device\n");
+-		goto failed_pdev_add;
++		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
 +		return ret;
  	}
- 
- 	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
-@@ -705,7 +702,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 		ret = saif->dma_param.chan_irq;
- 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
- 			ret);
--		goto failed_get_resource;
-+		return saif->dma_param.chan_irq;
- 	}
- 
- 	platform_set_drvdata(pdev, saif);
-@@ -713,7 +710,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
- 	if (ret) {
- 		dev_err(&pdev->dev, "register DAI failed\n");
--		goto failed_get_resource;
-+		return ret;
- 	}
- 
- 	saif->soc_platform_pdev = platform_device_alloc(
-@@ -736,8 +733,6 @@ failed_pdev_add:
- 	platform_device_put(saif->soc_platform_pdev);
- failed_pdev_alloc:
- 	snd_soc_unregister_dai(&pdev->dev);
--failed_get_resource:
--	clk_put(saif->clk);
- 
- 	return ret;
- }
-@@ -748,7 +743,6 @@ static int __devexit mxs_saif_remove(struct platform_device *pdev)
- 
- 	platform_device_unregister(saif->soc_platform_pdev);
- 	snd_soc_unregister_dai(&pdev->dev);
--	clk_put(saif->clk);
  
  	return 0;
+-
+-failed_pdev_add:
+-	platform_device_put(saif->soc_platform_pdev);
+-failed_pdev_alloc:
+-	snd_soc_unregister_dai(&pdev->dev);
+-
+-	return ret;
  }
+ 
+ static int __devexit mxs_saif_remove(struct platform_device *pdev)
+ {
+-	struct mxs_saif *saif = platform_get_drvdata(pdev);
+-
+-	platform_device_unregister(saif->soc_platform_pdev);
++	mxs_pcm_platform_unregister(&pdev->dev);
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	return 0;
+diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
+index 12c91e4..3cb342e 100644
+--- a/sound/soc/mxs/mxs-saif.h
++++ b/sound/soc/mxs/mxs-saif.h
+@@ -123,7 +123,6 @@ struct mxs_saif {
+ 	unsigned int cur_rate;
+ 	unsigned int ongoing;
+ 
+-	struct platform_device *soc_platform_pdev;
+ 	u32 fifo_underrun;
+ 	u32 fifo_overrun;
+ };
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index 60f052b..e9e6112 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -90,7 +90,7 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+ 		.codec_dai_name	= "sgtl5000",
+ 		.codec_name	= "sgtl5000.0-000a",
+ 		.cpu_dai_name	= "mxs-saif.0",
+-		.platform_name	= "mxs-pcm-audio.0",
++		.platform_name	= "mxs-saif.0",
+ 		.ops		= &mxs_sgtl5000_hifi_ops,
+ 	}, {
+ 		.name		= "HiFi Rx",
+@@ -98,7 +98,7 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+ 		.codec_dai_name	= "sgtl5000",
+ 		.codec_name	= "sgtl5000.0-000a",
+ 		.cpu_dai_name	= "mxs-saif.1",
+-		.platform_name	= "mxs-pcm-audio.1",
++		.platform_name	= "mxs-saif.1",
+ 		.ops		= &mxs_sgtl5000_hifi_ops,
+ 	},
+ };
 -- 
 1.7.5.4
