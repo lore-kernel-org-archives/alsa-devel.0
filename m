@@ -1,21 +1,25 @@
-From: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH 1/6] ASoC: mxs: add __devinit for
- mxs_saif_probe
-Date: Thu, 10 May 2012 16:58:18 +0800
-Message-ID: <20120510085817.GG6622@shlinux2.ap.freescale.net>
-References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
-	<1336639333-11561-2-git-send-email-shawn.guo@linaro.org>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl
+	support
+Date: Thu, 10 May 2012 17:05:00 +0800
+Message-ID: <20120510090459.GH2982@b20223-02.ap.freescale.net>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+	<1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
+	<20120509160005.GG3955@opensource.wolfsonmicro.com>
+	<20120510003532.GG2982@b20223-02.ap.freescale.net>
+	<20120510063904.GB17875@S2101-09.ap.freescale.net>
+	<20120510084403.GA3908@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EF052437F
+Received: from tx2outboundpool.messaging.microsoft.com
+	(tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 788B6243A9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 10:51:57 +0200 (CEST)
+	Thu, 10 May 2012 11:05:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1336639333-11561-2-git-send-email-shawn.guo@linaro.org>
+In-Reply-To: <20120510084403.GA3908@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +29,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <dong.aisheng@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, dong.aisheng@linaro.org, ben-linux@fluff.org, vinod.koul@intel.com, linus.walleij@linaro.org, w.sang@pengutronix.de, timur@freescale.com, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, Shawn Guo <shawn.guo@linaro.org>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 10, 2012 at 04:42:08PM +0800, Shawn Guo wrote:
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+On Thu, May 10, 2012 at 09:44:04AM +0100, Mark Brown wrote:
+> On Thu, May 10, 2012 at 02:39:06PM +0800, Shawn Guo wrote:
+> > On Thu, May 10, 2012 at 08:35:33AM +0800, Richard Zhao wrote:
+> 
+> > > It's based on your for-next. But for working, it depends on
+> > > pinctl/for-next.
+> 
+> > Mark, may I have your ack to have it go through arm-soc?  I will ask
+> > Arnd pull your sound/for-v3.5 branch into arm-soc as a dependency.
+> > You need to ensure the branch will not be rebased.
+> 
+> for-3.5 is the entire undifferentiated blob of ASoC stuff, it's not
+> really suitable for merging elsewhere.  It won't actually get rebased
+> but the idea of merging it into other trees doesn't seem terribly
+> clever, it'd make having topic branches in arm-soc a bit of a joke and
+> if you pull it right now you'll get problems in -next due to the the
+> ux500 stuff.
+> 
+> What does "working" mean in this context - what happens without the
+> pinctl changes?
+devm_pinctrl_get_select_default function is added in below commit which
+is in pinctrl/for-next.
 
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
+commit 6d4ca1fb467932773da7b808c52f3d7ef4461ba0
+Author: Stephen Warren <swarren@nvidia.com>
+Date:   Mon Apr 16 10:51:00 2012 -0600
 
-Regards
-Dong Aisheng
+    pinctrl: implement devm_pinctrl_get()/put()
+    
+    These functions allow the driver core to automatically clean up any
+    allocations made by drivers, thus leading to simplified drivers.
+    
+    Signed-off-by: Stephen Warren <swarren@nvidia.com>
+    Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+
+
+So it'll fail compile without pinctrl/for-next. I guess Linus may need
+to prepare a non-rebase base for others to merge.
+
+Thanks
+Richard
