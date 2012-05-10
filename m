@@ -1,42 +1,182 @@
-From: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
-Date: Thu, 10 May 2012 18:23:10 +0800
-Message-ID: <20120510102309.GK2982@b20223-02.ap.freescale.net>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
- <1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
- <20120509160005.GG3955@opensource.wolfsonmicro.com>
- <20120510003532.GG2982@b20223-02.ap.freescale.net>
- <20120510063904.GB17875@S2101-09.ap.freescale.net>
- <20120510084403.GA3908@opensource.wolfsonmicro.com>
- <20120510090459.GH2982@b20223-02.ap.freescale.net>
- <20120510092733.GH3908@opensource.wolfsonmicro.com>
+From: Dong Aisheng <aisheng.dong@freescale.com>
+Subject: Re: [PATCH 5/6] ASoC: mxs: add device tree support for
+ mxs-sgtl5000
+Date: Thu, 10 May 2012 19:16:46 +0800
+Message-ID: <20120510111646.GL6622@shlinux2.ap.freescale.net>
+References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
+	<1336639333-11561-6-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tx2outboundpool.messaging.microsoft.com
+	(tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1BC6024375
+	for <alsa-devel@alsa-project.org>;
+	Thu, 10 May 2012 13:10:31 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120510092733.GH3908-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+In-Reply-To: <1336639333-11561-6-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <dong.aisheng@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 10, 2012 at 10:27:34AM +0100, Mark Brown wrote:
-> On Thu, May 10, 2012 at 05:05:00PM +0800, Richard Zhao wrote:
+On Thu, May 10, 2012 at 04:42:12PM +0800, Shawn Guo wrote:
+> Add device tree probe for mxs-sgtl5000 machine driver.
 > 
-> > devm_pinctrl_get_select_default function is added in below commit which
-> > is in pinctrl/for-next.
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Mostly it looks okay to me.
+A few comments.
+
+> ---
+>  .../bindings/sound/mxs-audio-sgtl5000.txt          |   17 ++++++
+>  sound/soc/mxs/mxs-sgtl5000.c                       |   57 ++++++++++++++++++++
+>  2 files changed, 74 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
 > 
-> Oh, dear.  That's unfortunate, I guess it's not on a branch in pinctl
-> which can be pulled separately (this is what I've been doing with things
-> like regmap and regulator - creating new interfaces on easily mergeable
-> branches)?  Looking at it from the other perspective, what goes wrong if
-> we defer this patch?
-I prefer to have a non-rebase pinctrl branch. We can not defer pinctrl
-patch for all drivers. pinctrl will be so widely used.
+> diff --git a/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+> new file mode 100644
+> index 0000000..601c518
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+> @@ -0,0 +1,17 @@
+> +* Freescale MXS audio complex with SGTL5000 codec
+> +
+> +Required properties:
+> +- compatible: "fsl,mxs-audio-sgtl5000"
+> +- model: The user-visible name of this sound complex
+> +- saif-controllers: The phandle list of the MXS SAIF controller
+> +- audio-codec: The phandle of the SGTL5000 audio codec
+> +
+> +Example:
+> +
+> +sound {
+> +	compatible = "fsl,imx28-evk-sgtl5000",
+> +		     "fsl,mxs-audio-sgtl5000";
+> +	model = "imx28-evk-sgtl5000";
+> +	saif-controllers = <&saif0 &saif1>;
+> +	audio-codec = <&sgtl5000>;
+> +};
+> diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+> index e9e6112..d420f11 100644
+> --- a/sound/soc/mxs/mxs-sgtl5000.c
+> +++ b/sound/soc/mxs/mxs-sgtl5000.c
+> @@ -18,6 +18,8 @@
+>  
+>  #include <linux/module.h>
+>  #include <linux/device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+>  #include <sound/soc.h>
+> @@ -110,11 +112,58 @@ static struct snd_soc_card mxs_sgtl5000 = {
+>  	.num_links	= ARRAY_SIZE(mxs_sgtl5000_dai),
+>  };
+>  
+> +static int __devinit mxs_sgtl5000_probe_dt(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct device_node *saif_np[2], *codec_np;
+> +	struct platform_device *saif_pdev[2];
+> +	int i, ret = 0;
+> +
+> +	if (!np)
+> +		return 1; /* no device tree */
+> +
+> +	saif_np[0] = of_parse_phandle(np, "saif-controllers", 0);
+> +	saif_np[1] = of_parse_phandle(np, "saif-controllers", 1);
+> +	codec_np = of_parse_phandle(np, "audio-codec", 0);
+> +	if (!saif_np[0] || !saif_np[1] || !codec_np) {
+> +		dev_err(&pdev->dev, "phandle missing or invalid\n");
+> +		return -EINVAL;
+> +	}
+...
 
-Hi Linus,
+> +
+> +	saif_pdev[0] = of_find_device_by_node(saif_np[0]);
+> +	saif_pdev[1] = of_find_device_by_node(saif_np[1]);
+> +	if (!saif_pdev[0] || !saif_pdev[1]) {
+> +		dev_err(&pdev->dev, "failed to find saif platform device\n");
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+Do we really need this checking?
 
-Could you comment?
+> +
+> +	for (i = 0; i < 2; i++) {
+> +		mxs_sgtl5000_dai[i].codec_name = NULL;
+> +		mxs_sgtl5000_dai[i].codec_of_node = codec_np;
+> +		mxs_sgtl5000_dai[i].cpu_dai_name = NULL;
+> +		mxs_sgtl5000_dai[i].cpu_dai_of_node = saif_np[i];
+> +		mxs_sgtl5000_dai[i].platform_name = NULL;
+> +		mxs_sgtl5000_dai[i].platform_of_node = saif_np[i];
+> +	}
+> +
+> +out:
+> +	of_node_put(codec_np);
+> +	of_node_put(saif_np[0]);
+> +	of_node_put(saif_np[1]);
+> +
+> +	return ret;
+> +}
+> +
+>  static int __devinit mxs_sgtl5000_probe(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_card *card = &mxs_sgtl5000;
+>  	int ret;
+>  
+> +	ret = mxs_sgtl5000_probe_dt(pdev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	/*
+>  	 * Set an init clock(11.28Mhz) for sgtl5000 initialization(i2c r/w).
+>  	 * The Sgtl5000 sysclk is derived from saif0 mclk and it's range
+> @@ -127,6 +176,7 @@ static int __devinit mxs_sgtl5000_probe(struct platform_device *pdev)
+>  	card->dev = &pdev->dev;
+>  	platform_set_drvdata(pdev, card);
+>  
+> +	card->dev = &pdev->dev;
+Repeat assignment?
 
-Thanks
-Richard
+Regards
+Dong Aisheng
+
+>  	ret = snd_soc_register_card(card);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
+> @@ -148,10 +198,17 @@ static int __devexit mxs_sgtl5000_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static const struct of_device_id mxs_sgtl5000_dt_ids[] = {
+> +	{ .compatible = "fsl,mxs-audio-sgtl5000", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, mxs_sgtl5000_dt_ids);
+> +
+>  static struct platform_driver mxs_sgtl5000_audio_driver = {
+>  	.driver = {
+>  		.name = "mxs-sgtl5000",
+>  		.owner = THIS_MODULE,
+> +		.of_match_table = mxs_sgtl5000_dt_ids,
+>  	},
+>  	.probe = mxs_sgtl5000_probe,
+>  	.remove = __devexit_p(mxs_sgtl5000_remove),
+> -- 
+> 1.7.5.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
