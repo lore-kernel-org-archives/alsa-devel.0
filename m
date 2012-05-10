@@ -1,28 +1,45 @@
-From: Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [PATCH V2 01/11] dma: imx-sdma: make channel0 operations atomic
-Date: Thu, 10 May 2012 09:23:58 +0530
-Message-ID: <1336622038.1540.285.camel@vkoul-udesk3>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
-	 <1336563190-19974-2-git-send-email-richard.zhao@freescale.com>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: [PATCH v3] OMAPDSS: HDMI: Implement DSS driver interface for audio
+Date: Wed, 9 May 2012 22:59:47 -0500
+Message-ID: <1336622388-28183-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1336563190-19974-2-git-send-email-richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: tomi.valkeinen@ti.com, mythripk@ti.com
+Cc: s-chereau@ti.com, x0055901@ti.com, vaibhav.bedia@ti.com, s-guiriec@ti.com, lrg@ti.com, peter.ujfalusi@ti.com, agraf@suse.de, research@ottomaneng.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-05-09 at 19:33 +0800, Richard Zhao wrote:
-> device_prep_dma_cyclic may be call in audio trigger function which is
-> atomic context, so we make it atomic too.
-> 
->  - change channel0 lock to spinlock.
->  - Use polling to wait for channel0 finish running.
-> 
-> Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Acked By: Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Hi,
+
+This patch is the third version of PATCH 14 of this series:
+   http://www.spinics.net/lists/linux-omap/msg69466.html
+
+I send this patch separately to ease review, as the rest of the
+patches in the series were regarded as OK by the DSS maintainer.
+
+Changes with respect to v2:
+*An improved locking strategy. The new strategy maintains an audio state
+ machine. The audio state may only be transitioned if the panel is active.
+ Audio can only be started if the previous state is AUDIO_ENABLED. Such state
+ may only be reached if the panel is enabled. If the panel is disabled, it
+ will also disable audio. As the panel and audio states are protected by
+ a mutex and a spinlock, a video thread and audio thread cannot concurrently
+ execute audio functions.
+
+BR,
+
+Ricardo
+
+
+Ricardo Neri (1):
+  OMAPDSS: HDMI: Implement DSS driver interface for audio
+
+ drivers/video/omap2/dss/dss.h        |    8 ++
+ drivers/video/omap2/dss/hdmi.c       |   42 ++++++++++
+ drivers/video/omap2/dss/hdmi_panel.c |  140 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 190 insertions(+), 0 deletions(-)
 
 -- 
-~Vinod
+1.7.5.4
+
