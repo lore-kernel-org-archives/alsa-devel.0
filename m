@@ -1,145 +1,54 @@
-From: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH 2/6] ASoC: mxs: use devm_clk_get for
- mxs_saif_probe
-Date: Thu, 10 May 2012 17:12:05 +0800
-Message-ID: <20120510091204.GH6622@shlinux2.ap.freescale.net>
-References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
-	<1336639333-11561-3-git-send-email-shawn.guo@linaro.org>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
+Date: Thu, 10 May 2012 17:07:18 +0800
+Message-ID: <20120510090715.GF17875@S2101-09.ap.freescale.net>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+ <1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
+ <20120509160005.GG3955@opensource.wolfsonmicro.com>
+ <20120510003532.GG2982@b20223-02.ap.freescale.net>
+ <20120510063904.GB17875@S2101-09.ap.freescale.net>
+ <20120510084403.GA3908@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA7F8104708
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 11:05:47 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1336639333-11561-3-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <dong.aisheng@linaro.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20120510084403.GA3908-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 10, 2012 at 04:42:09PM +0800, Shawn Guo wrote:
-> Use devm_clk_get for mxs_saif_probe to ease the cleanup.
+On Thu, May 10, 2012 at 09:44:04AM +0100, Mark Brown wrote:
+> On Thu, May 10, 2012 at 02:39:06PM +0800, Shawn Guo wrote:
+> > On Thu, May 10, 2012 at 08:35:33AM +0800, Richard Zhao wrote:
 > 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  sound/soc/mxs/mxs-saif.c |   20 +++++++-------------
->  1 files changed, 7 insertions(+), 13 deletions(-)
+> > > It's based on your for-next. But for working, it depends on
+> > > pinctl/for-next.
 > 
-> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-> index 40d0775..5192db6 100644
-> --- a/sound/soc/mxs/mxs-saif.c
-> +++ b/sound/soc/mxs/mxs-saif.c
-> @@ -658,7 +658,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	saif->clk = clk_get(&pdev->dev, NULL);
-> +	saif->clk = devm_clk_get(&pdev->dev, NULL);
->  	if (IS_ERR(saif->clk)) {
->  		ret = PTR_ERR(saif->clk);
->  		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
-> @@ -671,25 +671,22 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  	saif->base = devm_request_and_ioremap(&pdev->dev, iores);
->  	if (!saif->base) {
->  		dev_err(&pdev->dev, "ioremap failed\n");
-> -		ret = -ENODEV;
-> -		goto failed_get_resource;
-> +		return -ENODEV;
->  	}
->  
->  	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
->  	if (!dmares) {
-> -		ret = -ENODEV;
-The 'ret' is used below.
-The following has the same issue.
-
->  		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
->  			ret);
-I think we can remove the ret here since it does not help too much.
-
-> -		goto failed_get_resource;
-> +		return -ENODEV;
->  	}
->  	saif->dma_param.chan_num = dmares->start;
->  
->  	saif->irq = platform_get_irq(pdev, 0);
->  	if (saif->irq < 0) {
-> -		ret = saif->irq;
-ditto
-
->  		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
->  			ret);
-> -		goto failed_get_resource;
-> +		return saif->irq;
->  	}
->  
->  	saif->dev = &pdev->dev;
-> @@ -697,7 +694,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  			       "mxs-saif", saif);
->  	if (ret) {
->  		dev_err(&pdev->dev, "failed to request irq\n");
-> -		goto failed_get_resource;
-> +		return ret;
->  	}
->  
->  	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
-> @@ -705,7 +702,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  		ret = saif->dma_param.chan_irq;
->  		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
->  			ret);
-ditto
-Just remove it.
-
-Regards
-Dong Aisheng
-> -		goto failed_get_resource;
-> +		return saif->dma_param.chan_irq;
->  	}
->  
->  	platform_set_drvdata(pdev, saif);
-> @@ -713,7 +710,7 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  	ret = snd_soc_register_dai(&pdev->dev, &mxs_saif_dai);
->  	if (ret) {
->  		dev_err(&pdev->dev, "register DAI failed\n");
-> -		goto failed_get_resource;
-> +		return ret;
->  	}
->  
->  	saif->soc_platform_pdev = platform_device_alloc(
-> @@ -736,8 +733,6 @@ failed_pdev_add:
->  	platform_device_put(saif->soc_platform_pdev);
->  failed_pdev_alloc:
->  	snd_soc_unregister_dai(&pdev->dev);
-> -failed_get_resource:
-> -	clk_put(saif->clk);
->  
->  	return ret;
->  }
-> @@ -748,7 +743,6 @@ static int __devexit mxs_saif_remove(struct platform_device *pdev)
->  
->  	platform_device_unregister(saif->soc_platform_pdev);
->  	snd_soc_unregister_dai(&pdev->dev);
-> -	clk_put(saif->clk);
->  
->  	return 0;
->  }
-> -- 
-> 1.7.5.4
+> > Mark, may I have your ack to have it go through arm-soc?  I will ask
+> > Arnd pull your sound/for-v3.5 branch into arm-soc as a dependency.
+> > You need to ensure the branch will not be rebased.
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> for-3.5 is the entire undifferentiated blob of ASoC stuff, it's not
+> really suitable for merging elsewhere.  It won't actually get rebased
+> but the idea of merging it into other trees doesn't seem terribly
+> clever, it'd make having topic branches in arm-soc a bit of a joke and
+> if you pull it right now you'll get problems in -next due to the the
+> ux500 stuff.
 > 
+Pulling it into arm-soc as a dependency only means we will have it as
+a base for other branches that depend on.  It does not change anything
+about how the branch flows to Linus.  Arnd will only send those arm-soc
+branches that depend on sound/for-3.5 after it gets merged by Linus.
+
+> What does "working" mean in this context - what happens without the
+> pinctl changes?
+
+It will break all the imx-audmux users that haven't got any pinctrl
+states defined for imx-audmux.  We have patches on imx (arm-soc) tree
+defining pinctrl states either in DT or dummy states in board files
+to make sure pinctrl API works fine for every imx-audmux users. 
+
+-- 
+Regards,
+Shawn
