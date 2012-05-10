@@ -1,22 +1,18 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: ALSA calling pcm_pointer excessively?
-Date: Thu, 10 May 2012 23:17:25 +0530
-Message-ID: <CABb+yY2WfxJdSGH1iFFQuv7HPE-SzC22jbw345LiYye_hUirSA@mail.gmail.com>
-References: <20120510160601.GC12727@n2100.arm.linux.org.uk>
-	<20120510162930.GA17361@n2100.arm.linux.org.uk>
-	<4FABF574.7090804@ladisch.de>
+From: Luca Longhi <lucavermei@gmail.com>
+Subject: Play a sine wave with alsa
+Date: Thu, 10 May 2012 20:05:43 +0200
+Message-ID: <CAAiKgks2TGSFW1Qs=KiTSd9HpXBxc68bOV3-K5-0d47GYrWFvg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9341C10BAF3
+Received: from mail-qa0-f50.google.com (mail-qa0-f50.google.com
+	[209.85.216.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF8E110BAE3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 19:47:25 +0200 (CEST)
-Received: by bkcjg15 with SMTP id jg15so1617800bkc.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 10:47:25 -0700 (PDT)
-In-Reply-To: <4FABF574.7090804@ladisch.de>
+	Thu, 10 May 2012 20:05:44 +0200 (CEST)
+Received: by qafl39 with SMTP id l39so811269qaf.2
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 11:05:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +22,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBNYXkgMTAsIDIwMTIgYXQgMTA6MzUgUE0sIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVu
-c0BsYWRpc2NoLmRlPiB3cm90ZToKPgo+IC0tLSBhL3NvdW5kL2NvcmUvcGNtX2xpYi5jCj4gKysr
-IGIvc291bmQvY29yZS9wY21fbGliLmMKPiBAQCAtMTg5NCw3ICsxODk0LDcgQEAgc3RhdGljIHNu
-ZF9wY21fc2ZyYW1lc190IHNuZF9wY21fbGliX3dyaXRlMShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0gKnN1YnN0cmVhbSwKPiDCoCDCoCDCoCDCoHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRp
-bWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7Cj4gwqAgwqAgwqAgwqBzbmRfcGNtX3VmcmFtZXNfdCB4
-ZmVyID0gMDsKPiDCoCDCoCDCoCDCoHNuZF9wY21fdWZyYW1lc190IG9mZnNldCA9IDA7Cj4gLSDC
-oCDCoCDCoCBpbnQgZXJyID0gMDsKPiArIMKgIMKgIMKgIGludCBidXN5X2xvb3BzID0gMCwgZXJy
-ID0gMDsKPgo+IMKgIMKgIMKgIMKgaWYgKHNpemUgPT0gMCkKPiDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoHJldHVybiAwOwo+IEBAIC0xOTE5LDEyICsxOTE5LDE3IEBAIHN0YXRpYyBzbmRfcGNtX3Nm
-cmFtZXNfdCBzbmRfcGNtX2xpYl93cml0ZTEoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sCj4gwqAgwqAgwqAgwqBydW50aW1lLT50d2FrZSA9IHJ1bnRpbWUtPmNvbnRyb2wtPmF2
-YWlsX21pbiA/IDogMTsKPiDCoCDCoCDCoCDCoHdoaWxlIChzaXplID4gMCkgewo+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgc25kX3BjbV91ZnJhbWVzX3QgZnJhbWVzLCBhcHBsX3B0ciwgYXBwbF9v
-ZnM7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzbmRfcGNtX3VmcmFtZXNfdCBhdmFpbDsKPiAr
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHNuZF9wY21fdWZyYW1lc190IGF2YWlsLCBhdmFpbF93YWl0
-X21heDsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHNuZF9wY21fdWZyYW1lc190IGNvbnQ7Cj4g
-Kwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGJ1c3lfbG9vcHMgPCA1KQo+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYXZhaWxfd2FpdF9tYXggPSAwOwo+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgZWxzZQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-YXZhaWxfd2FpdF9tYXggPSBtaW4ocnVudGltZS0+Y29udHJvbC0+YXZhaWxfbWluLCBzaXplKTsK
-PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGlmIChydW50aW1lLT5zdGF0dXMtPnN0YXRlID09IFNO
-RFJWX1BDTV9TVEFURV9SVU5OSU5HKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgc25kX3BjbV91cGRhdGVfaHdfcHRyKHN1YnN0cmVhbSk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqBhdmFpbCA9IHNuZF9wY21fcGxheWJhY2tfYXZhaWwocnVudGltZSk7Cj4gLSDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCBpZiAoIWF2YWlsKSB7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAo
-YXZhaWwgPD0gYXZhaWxfd2FpdF9tYXgpIHsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoGlmIChub25ibG9jaykgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgZXJyID0gLUVBR0FJTjsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoGdvdG8gX2VuZF91bmxvY2s7Cj4gQEAgLTE5MzQsNiArMTkz
-OSw5IEBAIHN0YXRpYyBzbmRfcGNtX3NmcmFtZXNfdCBzbmRfcGNtX2xpYl93cml0ZTEoc3RydWN0
-IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqBlcnIgPSB3YWl0X2Zvcl9hdmFpbChzdWJzdHJlYW0sICZhdmFpbCk7Cj4gwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBpZiAoZXJyIDwgMCkKPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGdvdG8gX2VuZF91bmxvY2s7Cj4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBidXN5X2xvb3BzID0gMDsKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIH0gZWxzZSB7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCBidXN5X2xvb3BzKys7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9Cj4gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqBmcmFtZXMgPSBzaXplID4gYXZhaWwgPyBhdmFpbCA6IHNpemU7Cj4g
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBjb250ID0gcnVudGltZS0+YnVmZmVyX3NpemUgLSBydW50
-aW1lLT5jb250cm9sLT5hcHBsX3B0ciAlIHJ1bnRpbWUtPmJ1ZmZlcl9zaXplOwo+CkhpIENsZW1l
-bnMsCgpJZiB3ZSByZWFsbHkgd2FudCB0byBjaGFuZ2UgdGhlIGJlaGF2aW9yIG9mIHBsYXksIHdv
-dWxkbid0IHdlIHdhbnQgdG8gZG8gdGhhdApmb3IgY2FwdHVyZShzbmRfcGNtX2xpYl9yZWFkMSkg
-YXMgd2VsbCA/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+I've written this code to play a sine wave but I don't think it's right.
+Could you tell me where I am wrong?
+
+Especially I don't know what period_time and buffer_time are. What I
+have to do to extend the playback time?
+
+
+Code:
+#include <alsa/asoundlib.h>
+#include <math.h>
+
+int main() {
+  int err;
+  snd_pcm_t *handle;
+  snd_pcm_hw_params_t *params;
+  unsigned int Fc, val;
+  int channels=2;
+  int size;
+  int dir=0;
+  unsigned int period_time= 400000;
+  unsigned int buffer_time= 800000;
+  snd_pcm_uframes_t frames;
+  snd_pcm_uframes_t bufferSize;
+  char *buffer;
+
+  /* Open PCM device for playback. */
+  err = snd_pcm_open(&handle, "default",SND_PCM_STREAM_PLAYBACK, 0);
+
+  if (err < 0) {
+    fprintf(stderr,"unable to open pcm device: %s\n",snd_strerror(err));
+    exit(1);
+  }
+
+  snd_pcm_hw_params_alloca(&params);
+  err=snd_pcm_hw_params_any(handle, params);
+  if (err < 0) {
+  printf("Broken configuration for playback: no configurations
+available: %s\n", snd_strerror(err));
+    return err;
+  }
+  err = snd_pcm_hw_params_set_access(handle, params,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+
+  if (err < 0) {
+     printf("Access type not available for playback: %s\n",
+snd_strerror(err));
+     return err;
+  }
+  err=snd_pcm_hw_params_set_format(handle, params,
+SND_PCM_FORMAT_S16_LE);
+  if (err < 0) {
+     printf("Sample format not available for playback: %s\n",
+snd_strerror(err));
+     return err;
+  }
+  err = snd_pcm_hw_params_set_channels(handle, params, channels);
+  if (err < 0) {
+     printf("Channels count (%i) not available for playbacks: %s\n",
+channels, snd_strerror(err));
+     return err;
+  }
+  Fc = 5000;
+  dir=1;
+  err=snd_pcm_hw_params_set_rate_near(handle, params, &Fc, &dir);
+  if (err < 0) {
+     printf("Rate %iHz not available for playback: %s\n", Fc,
+snd_strerror(err));
+     return err;
+  }
+  dir=0;
+
+  err = snd_pcm_hw_params_set_period_time_near(handle, params,
+&period_time, &dir);
+  if (err < 0) {
+                printf("Unable to set period time %i for playback:
+%s\n", period_time, snd_strerror(err));
+                 return err;
+  }
+  err = snd_pcm_hw_params_set_buffer_time_near(handle, params,
+&buffer_time, &dir);
+         if (err < 0) {
+                 printf("Unable to set buffer time %i for playback:
+%s\n", buffer_time, snd_strerror(err));
+                 return err;
+         }
+
+  err = snd_pcm_hw_params(handle, params);
+  if (err < 0) {
+     printf("Unable to set hw params for playback: %s\n",
+snd_strerror(err));
+     return err;
+  }
+
+
+  /* Use a buffer large enough to hold one period */
+  snd_pcm_hw_params_get_period_size(params, &frames, 0);
+
+  size = frames * 4;
+
+
+  short buf[size];
+  unsigned short ampiezza;
+  double frequenza = 500;
+  double omega; /* Pulsazione */
+  int x;
+
+  omega = 2 * M_PI * frequenza / 180;
+  ampiezza = 20000;
+
+   for (x = 0; x < size ; x++)
+    {
+      buf[x] = (short)(ampiezza * (sin (omega*x)));
+    }
+
+
+
+    err = snd_pcm_writei(handle, buf, frames);
+    if (err == -EPIPE) {
+      fprintf(stderr, "underrun occurred\n");
+      snd_pcm_prepare(handle);
+    } else if (err < 0) {
+      fprintf(stderr,
+              "error from writei: %s\n",
+              snd_strerror(err));
+    }  else if (err != (int)frames) {
+      fprintf(stderr,
+              "short write, write %d frames\n", err);
+    }
+
+
+  snd_pcm_drain(handle);
+  snd_pcm_close(handle);
+
+
+  return 0;
+}
