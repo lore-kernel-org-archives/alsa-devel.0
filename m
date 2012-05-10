@@ -1,8 +1,8 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 3/6] ASoC: mxs: mxs-pcm does not need to be a
-	plaform_driver
-Date: Thu, 10 May 2012 16:42:10 +0800
-Message-ID: <1336639333-11561-4-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 4/6] ASoC: mxs: add device tree support for
+	mxs-saif
+Date: Thu, 10 May 2012 16:42:11 +0800
+Message-ID: <1336639333-11561-5-git-send-email-shawn.guo@linaro.org>
 References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,11 +10,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
 	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6953810BA04
+	by alsa0.perex.cz (Postfix) with ESMTP id 8394C10BA0E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 10:42:49 +0200 (CEST)
+	Thu, 10 May 2012 10:42:53 +0200 (CEST)
 Received: by mail-pz0-f51.google.com with SMTP id t11so1905635daj.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:42:49 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:42:53 -0700 (PDT)
 In-Reply-To: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,148 +29,186 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Same as the commit 518de86 (ASoC: tegra: register 'platform' from DAIs,
-get rid of pdev), it makes mxs-pcm not a platform_driver but helper to
-register "platform", so that the platform_device for mxs-pcm can be
-saved completely.
+Add device tree probe for mxs-saif driver.
 
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- sound/soc/mxs/mxs-pcm.c      |   24 ++++++------------------
- sound/soc/mxs/mxs-pcm.h      |    3 +++
- sound/soc/mxs/mxs-saif.c     |   25 ++++---------------------
- sound/soc/mxs/mxs-saif.h     |    1 -
- sound/soc/mxs/mxs-sgtl5000.c |    4 ++--
- 5 files changed, 15 insertions(+), 42 deletions(-)
+ .../devicetree/bindings/sound/mxs-saif.txt         |   36 ++++++++++
+ sound/soc/mxs/mxs-saif.c                           |   74 +++++++++++++++-----
+ 2 files changed, 93 insertions(+), 17 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mxs-saif.txt
 
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index e373fbb..373dec9 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -220,28 +220,16 @@ static struct snd_soc_platform_driver mxs_soc_platform = {
- 	.pcm_free	= mxs_pcm_free,
- };
- 
--static int __devinit mxs_soc_platform_probe(struct platform_device *pdev)
-+int __devinit mxs_pcm_platform_register(struct device *dev)
- {
--	return snd_soc_register_platform(&pdev->dev, &mxs_soc_platform);
-+	return snd_soc_register_platform(dev, &mxs_soc_platform);
- }
-+EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
- 
--static int __devexit mxs_soc_platform_remove(struct platform_device *pdev)
-+void __devexit mxs_pcm_platform_unregister(struct device *dev)
- {
--	snd_soc_unregister_platform(&pdev->dev);
--
--	return 0;
-+	snd_soc_unregister_platform(dev);
- }
--
--static struct platform_driver mxs_pcm_driver = {
--	.driver = {
--		.name = "mxs-pcm-audio",
--		.owner = THIS_MODULE,
--	},
--	.probe = mxs_soc_platform_probe,
--	.remove = __devexit_p(mxs_soc_platform_remove),
--};
--
--module_platform_driver(mxs_pcm_driver);
-+EXPORT_SYMBOL_GPL(mxs_pcm_platform_unregister);
- 
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:mxs-pcm-audio");
-diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
-index 5f01a91..35ba2ca 100644
---- a/sound/soc/mxs/mxs-pcm.h
-+++ b/sound/soc/mxs/mxs-pcm.h
-@@ -24,4 +24,7 @@ struct mxs_pcm_dma_params {
- 	int chan_num;
- };
- 
-+int mxs_pcm_platform_register(struct device *dev);
-+void mxs_pcm_platform_unregister(struct device *dev);
+diff --git a/Documentation/devicetree/bindings/sound/mxs-saif.txt b/Documentation/devicetree/bindings/sound/mxs-saif.txt
+new file mode 100644
+index 0000000..c37ba61
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mxs-saif.txt
+@@ -0,0 +1,36 @@
++* Freescale MXS Serial Audio Interface (SAIF)
 +
- #endif
++Required properties:
++- compatible: Should be "fsl,<chip>-saif"
++- reg: Should contain registers location and length
++- interrupts: Should contain ERROR and DMA interrupts
++- fsl,saif-dma-channel: APBX DMA channel for the SAIF
++
++Optional properties:
++- fsl,saif-master: phandle to the master SAIF.  It's only required for
++  the slave SAIF.
++
++Note: Each SAIF controller should have an alias correctly numbered
++in "aliases" node.
++
++Example:
++
++aliases {
++	saif0 = &saif0;
++	saif1 = &saif1;
++};
++
++saif0: saif@80042000 {
++	compatible = "fsl,imx28-saif";
++	reg = <0x80042000 2000>;
++	interrupts = <59 80>;
++	fsl,saif-dma-channel = <4>;
++};
++
++saif1: saif@80046000 {
++	compatible = "fsl,imx28-saif";
++	reg = <0x80046000 2000>;
++	interrupts = <58 81>;
++	fsl,saif-dma-channel = <5>;
++	fsl,saif-master = <&saif0>;
++};
 diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 5192db6..fa80ee6 100644
+index fa80ee6..ca1e77c 100644
 --- a/sound/soc/mxs/mxs-saif.c
 +++ b/sound/soc/mxs/mxs-saif.c
-@@ -713,35 +713,18 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+@@ -18,6 +18,8 @@
  
--	saif->soc_platform_pdev = platform_device_alloc(
--					"mxs-pcm-audio", pdev->id);
--	if (!saif->soc_platform_pdev) {
--		ret = -ENOMEM;
--		goto failed_pdev_alloc;
--	}
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/dma-mapping.h>
+@@ -623,35 +625,58 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
+ 
+ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *iores, *dmares;
+ 	struct mxs_saif *saif;
+ 	struct mxs_saif_platform_data *pdata;
+ 	struct pinctrl *pinctrl;
+ 	int ret = 0;
+ 
+-	if (pdev->id >= ARRAY_SIZE(mxs_saif))
++
++	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
+ 		return -EINVAL;
+ 
+ 	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
+ 	if (!saif)
+ 		return -ENOMEM;
+ 
+-	mxs_saif[pdev->id] = saif;
+-	saif->id = pdev->id;
 -
--	platform_set_drvdata(saif->soc_platform_pdev, saif);
--	ret = platform_device_add(saif->soc_platform_pdev);
-+	ret = mxs_pcm_platform_register(&pdev->dev);
- 	if (ret) {
--		dev_err(&pdev->dev, "failed to add soc platform device\n");
--		goto failed_pdev_add;
-+		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		return ret;
+-	pdata = pdev->dev.platform_data;
+-	if (pdata && !pdata->master_mode) {
+-		saif->master_id = pdata->master_id;
+-		if (saif->master_id < 0 ||
+-			saif->master_id >= ARRAY_SIZE(mxs_saif) ||
+-			saif->master_id == saif->id) {
+-			dev_err(&pdev->dev, "get wrong master id\n");
+-			return -EINVAL;
++	if (np) {
++		struct device_node *master;
++		saif->id = of_alias_get_id(np, "saif");
++		if (saif->id < 0)
++			return saif->id;
++		/*
++		 * If there is no "fsl,saif-master" phandle, it's a saif
++		 * master.  Otherwise, it's a slave and its phandle points
++		 * to the master.
++		 */
++		master = of_parse_phandle(np, "fsl,saif-master", 0);
++		if (!master) {
++			saif->master_id = saif->id;
++		} else {
++			saif->master_id = of_alias_get_id(master, "saif");
++			if (saif->master_id < 0)
++				return saif->master_id;
+ 		}
+ 	} else {
+-		saif->master_id = saif->id;
++		saif->id = pdev->id;
++
++		pdata = pdev->dev.platform_data;
++		if (pdata && !pdata->master_mode) {
++			saif->master_id = pdata->master_id;
++			if (saif->master_id < 0 ||
++				saif->master_id >= ARRAY_SIZE(mxs_saif) ||
++				saif->master_id == saif->id) {
++				dev_err(&pdev->dev, "get wrong master id\n");
++				return -EINVAL;
++			}
++		} else {
++			saif->master_id = saif->id;
++		}
  	}
  
++	mxs_saif[saif->id] = saif;
++
+ 	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+ 	if (IS_ERR(pinctrl)) {
+ 		ret = PTR_ERR(pinctrl);
+@@ -676,11 +701,19 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+ 
+ 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+ 	if (!dmares) {
+-		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
+-			ret);
+-		return -ENODEV;
++		/*
++		 * TODO: This is a temporary solution and should be changed
++		 * to use generic DMA binding later when the helplers get in.
++		 */
++		ret = of_property_read_u32(np, "fsl,saif-dma-channel",
++					   &saif->dma_param.chan_num);
++		if (ret) {
++			dev_err(&pdev->dev, "failed to get dma channel\n");
++			return ret;
++		}
++	} else {
++		saif->dma_param.chan_num = dmares->start;
+ 	}
+-	saif->dma_param.chan_num = dmares->start;
+ 
+ 	saif->irq = platform_get_irq(pdev, 0);
+ 	if (saif->irq < 0) {
+@@ -730,6 +763,12 @@ static int __devexit mxs_saif_remove(struct platform_device *pdev)
  	return 0;
--
--failed_pdev_add:
--	platform_device_put(saif->soc_platform_pdev);
--failed_pdev_alloc:
--	snd_soc_unregister_dai(&pdev->dev);
--
--	return ret;
  }
  
- static int __devexit mxs_saif_remove(struct platform_device *pdev)
- {
--	struct mxs_saif *saif = platform_get_drvdata(pdev);
--
--	platform_device_unregister(saif->soc_platform_pdev);
-+	mxs_pcm_platform_unregister(&pdev->dev);
- 	snd_soc_unregister_dai(&pdev->dev);
- 
- 	return 0;
-diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
-index 12c91e4..3cb342e 100644
---- a/sound/soc/mxs/mxs-saif.h
-+++ b/sound/soc/mxs/mxs-saif.h
-@@ -123,7 +123,6 @@ struct mxs_saif {
- 	unsigned int cur_rate;
- 	unsigned int ongoing;
- 
--	struct platform_device *soc_platform_pdev;
- 	u32 fifo_underrun;
- 	u32 fifo_overrun;
- };
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index 60f052b..e9e6112 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -90,7 +90,7 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
- 		.codec_dai_name	= "sgtl5000",
- 		.codec_name	= "sgtl5000.0-000a",
- 		.cpu_dai_name	= "mxs-saif.0",
--		.platform_name	= "mxs-pcm-audio.0",
-+		.platform_name	= "mxs-saif.0",
- 		.ops		= &mxs_sgtl5000_hifi_ops,
- 	}, {
- 		.name		= "HiFi Rx",
-@@ -98,7 +98,7 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
- 		.codec_dai_name	= "sgtl5000",
- 		.codec_name	= "sgtl5000.0-000a",
- 		.cpu_dai_name	= "mxs-saif.1",
--		.platform_name	= "mxs-pcm-audio.1",
-+		.platform_name	= "mxs-saif.1",
- 		.ops		= &mxs_sgtl5000_hifi_ops,
++static const struct of_device_id mxs_saif_dt_ids[] = {
++	{ .compatible = "fsl,imx28-saif", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, mxs_saif_dt_ids);
++
+ static struct platform_driver mxs_saif_driver = {
+ 	.probe = mxs_saif_probe,
+ 	.remove = __devexit_p(mxs_saif_remove),
+@@ -737,6 +776,7 @@ static struct platform_driver mxs_saif_driver = {
+ 	.driver = {
+ 		.name = "mxs-saif",
+ 		.owner = THIS_MODULE,
++		.of_match_table = mxs_saif_dt_ids,
  	},
  };
+ 
 -- 
 1.7.5.4
