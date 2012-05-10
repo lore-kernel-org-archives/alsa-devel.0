@@ -1,164 +1,37 @@
-From: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH 4/6] ASoC: mxs: add device tree support for
- mxs-saif
-Date: Thu, 10 May 2012 17:45:25 +0800
-Message-ID: <20120510094525.GJ6622@shlinux2.ap.freescale.net>
-References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
-	<1336639333-11561-5-git-send-email-shawn.guo@linaro.org>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2 08/11] ARM: dts: imx6q-sabrelite: add sound device
+ imx6q-sabrelite-sgtl5000
+Date: Thu, 10 May 2012 17:41:15 +0800
+Message-ID: <20120510094113.GG17875@S2101-09.ap.freescale.net>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+ <1336563190-19974-9-git-send-email-richard.zhao@freescale.com>
+ <20120510064816.GC17875@S2101-09.ap.freescale.net>
+ <20120510093444.GI2982@b20223-02.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C58010BA57
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 11:39:06 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1336639333-11561-5-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <dong.aisheng@linaro.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20120510093444.GI2982-iWYTGMXpHj9ITqJhDdzsOjpauB2SiJktrE5yTffgRl4@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 10, 2012 at 04:42:11PM +0800, Shawn Guo wrote:
-> Add device tree probe for mxs-saif driver.
+On Thu, May 10, 2012 at 05:34:45PM +0800, Richard Zhao wrote:
+> > "Mic Bias" is a SUPPLY for both "MIC_IN" and "Mic Jack", so it should
+> > look like:
+> > 
+> >                        "Mic Jack", "Mic Bias",
+> >                        "MIC_IN", "Mic Bias",
+> Not really. The circuit:
+> MIC_IN <-- capacitor <--> Mic Jack
+>                       /
+>             Mic Bias /
 > 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  .../devicetree/bindings/sound/mxs-saif.txt         |   36 ++++++++++
->  sound/soc/mxs/mxs-saif.c                           |   74 +++++++++++++++-----
->  2 files changed, 93 insertions(+), 17 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/mxs-saif.txt
+The "Mic Bias" here is really a SGTL5000 internal supply.
+
+Regards,
+Shawn
+
+> DC can not pass the capacitor. So Mic Bias only supply Jack.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/mxs-saif.txt b/Documentation/devicetree/bindings/sound/mxs-saif.txt
-> new file mode 100644
-> index 0000000..c37ba61
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/mxs-saif.txt
-> @@ -0,0 +1,36 @@
-> +* Freescale MXS Serial Audio Interface (SAIF)
-> +
-> +Required properties:
-> +- compatible: Should be "fsl,<chip>-saif"
-> +- reg: Should contain registers location and length
-> +- interrupts: Should contain ERROR and DMA interrupts
-> +- fsl,saif-dma-channel: APBX DMA channel for the SAIF
-> +
-> +Optional properties:
-> +- fsl,saif-master: phandle to the master SAIF.  It's only required for
-> +  the slave SAIF.
-> +
-> +Note: Each SAIF controller should have an alias correctly numbered
-> +in "aliases" node.
-> +
-> +Example:
-> +
-> +aliases {
-> +	saif0 = &saif0;
-> +	saif1 = &saif1;
-> +};
-> +
-> +saif0: saif@80042000 {
-> +	compatible = "fsl,imx28-saif";
-> +	reg = <0x80042000 2000>;
-> +	interrupts = <59 80>;
-> +	fsl,saif-dma-channel = <4>;
-> +};
-> +
-> +saif1: saif@80046000 {
-> +	compatible = "fsl,imx28-saif";
-> +	reg = <0x80046000 2000>;
-> +	interrupts = <58 81>;
-> +	fsl,saif-dma-channel = <5>;
-> +	fsl,saif-master = <&saif0>;
-> +};
-> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-> index fa80ee6..ca1e77c 100644
-> --- a/sound/soc/mxs/mxs-saif.c
-> +++ b/sound/soc/mxs/mxs-saif.c
-> @@ -18,6 +18,8 @@
->  
->  #include <linux/module.h>
->  #include <linux/init.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/dma-mapping.h>
-> @@ -623,35 +625,58 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
->  
->  static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  {
-> +	struct device_node *np = pdev->dev.of_node;
->  	struct resource *iores, *dmares;
->  	struct mxs_saif *saif;
->  	struct mxs_saif_platform_data *pdata;
->  	struct pinctrl *pinctrl;
->  	int ret = 0;
->  
-> -	if (pdev->id >= ARRAY_SIZE(mxs_saif))
-> +
-> +	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
->  		return -EINVAL;
->  
->  	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
->  	if (!saif)
->  		return -ENOMEM;
->  
-> -	mxs_saif[pdev->id] = saif;
-> -	saif->id = pdev->id;
-> -
-> -	pdata = pdev->dev.platform_data;
-> -	if (pdata && !pdata->master_mode) {
-> -		saif->master_id = pdata->master_id;
-> -		if (saif->master_id < 0 ||
-> -			saif->master_id >= ARRAY_SIZE(mxs_saif) ||
-> -			saif->master_id == saif->id) {
-> -			dev_err(&pdev->dev, "get wrong master id\n");
-> -			return -EINVAL;
-> +	if (np) {
-> +		struct device_node *master;
-> +		saif->id = of_alias_get_id(np, "saif");
-> +		if (saif->id < 0)
-> +			return saif->id;
-> +		/*
-> +		 * If there is no "fsl,saif-master" phandle, it's a saif
-> +		 * master.  Otherwise, it's a slave and its phandle points
-> +		 * to the master.
-> +		 */
-> +		master = of_parse_phandle(np, "fsl,saif-master", 0);
-> +		if (!master) {
-> +			saif->master_id = saif->id;
-> +		} else {
-> +			saif->master_id = of_alias_get_id(master, "saif");
-> +			if (saif->master_id < 0)
-> +				return saif->master_id;
->  		}
->  	} else {
-> -		saif->master_id = saif->id;
-> +		saif->id = pdev->id;
-> +
-> +		pdata = pdev->dev.platform_data;
-> +		if (pdata && !pdata->master_mode) {
-> +			saif->master_id = pdata->master_id;
-> +			if (saif->master_id < 0 ||
-> +				saif->master_id >= ARRAY_SIZE(mxs_saif) ||
-> +				saif->master_id == saif->id) {
-> +				dev_err(&pdev->dev, "get wrong master id\n");
-> +				return -EINVAL;
-Maybe we could put the master_id validation code out to below since for dt case
-it also needs it.
-
-Otherwise the code looks ok to me.
-
-Regards
-Dong Aisheng
