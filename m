@@ -1,20 +1,20 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 5/6] ASoC: mxs: add device tree support for
-	mxs-sgtl5000
-Date: Thu, 10 May 2012 16:42:12 +0800
-Message-ID: <1336639333-11561-6-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 6/6] ARM: dts: enable audio support for
+	imx28-evk
+Date: Thu, 10 May 2012 16:42:13 +0800
+Message-ID: <1336639333-11561-7-git-send-email-shawn.guo@linaro.org>
 References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B4F310BA07
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6648110BA19
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 10:42:57 +0200 (CEST)
-Received: by mail-pz0-f51.google.com with SMTP id t11so1905635daj.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:42:57 -0700 (PDT)
+	Thu, 10 May 2012 10:43:05 +0200 (CEST)
+Received: by mail-pb0-f51.google.com with SMTP id rp16so2153807pbb.38
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 01:43:05 -0700 (PDT)
 In-Reply-To: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,135 +29,131 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add device tree probe for mxs-sgtl5000 machine driver.
-
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- .../bindings/sound/mxs-audio-sgtl5000.txt          |   17 ++++++
- sound/soc/mxs/mxs-sgtl5000.c                       |   57 ++++++++++++++++++++
- 2 files changed, 74 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+ arch/arm/boot/dts/imx28-evk.dts |   41 +++++++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/imx28.dtsi    |   23 +++++++++++++++++++++
+ 2 files changed, 64 insertions(+), 0 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
-new file mode 100644
-index 0000000..601c518
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
-@@ -0,0 +1,17 @@
-+* Freescale MXS audio complex with SGTL5000 codec
-+
-+Required properties:
-+- compatible: "fsl,mxs-audio-sgtl5000"
-+- model: The user-visible name of this sound complex
-+- saif-controllers: The phandle list of the MXS SAIF controller
-+- audio-codec: The phandle of the SGTL5000 audio codec
-+
-+Example:
-+
-+sound {
-+	compatible = "fsl,imx28-evk-sgtl5000",
-+		     "fsl,mxs-audio-sgtl5000";
-+	model = "imx28-evk-sgtl5000";
-+	saif-controllers = <&saif0 &saif1>;
-+	audio-codec = <&sgtl5000>;
-+};
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index e9e6112..d420f11 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -18,6 +18,8 @@
+diff --git a/arch/arm/boot/dts/imx28-evk.dts b/arch/arm/boot/dts/imx28-evk.dts
+index c4b717f..a07fc92 100644
+--- a/arch/arm/boot/dts/imx28-evk.dts
++++ b/arch/arm/boot/dts/imx28-evk.dts
+@@ -41,10 +41,31 @@
+ 		};
  
- #include <linux/module.h>
- #include <linux/device.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-@@ -110,11 +112,58 @@ static struct snd_soc_card mxs_sgtl5000 = {
- 	.num_links	= ARRAY_SIZE(mxs_sgtl5000_dai),
+ 		apbx@80040000 {
++			saif0: saif@80042000 {
++				pinctrl-names = "default";
++				pinctrl-0 = <&saif0_pins_a>;
++				status = "okay";
++			};
++
++			saif1: saif@80046000 {
++				pinctrl-names = "default";
++				pinctrl-0 = <&saif1_pins_a>;
++				fsl,saif-master = <&saif0>;
++				status = "okay";
++			};
++
+ 			i2c0: i2c@80058000 {
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&i2c0_pins_a>;
+ 				status = "okay";
++
++				sgtl5000: codec@0a {
++					compatible = "fsl,sgtl5000";
++					reg = <0x0a>;
++					VDDA-supply = <&reg_3p3v>;
++					VDDIO-supply = <&reg_3p3v>;
++
++				};
+ 			};
+ 
+ 			duart: serial@80074000 {
+@@ -70,4 +91,24 @@
+ 			status = "okay";
+ 		};
+ 	};
++
++	regulators {
++		compatible = "simple-bus";
++
++		reg_3p3v: 3p3v {
++			compatible = "regulator-fixed";
++			regulator-name = "3P3V";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			regulator-always-on;
++		};
++	};
++
++	sound {
++		compatible = "fsl,imx28-evk-sgtl5000",
++			     "fsl,mxs-audio-sgtl5000";
++		model = "imx28-evk-sgtl5000";
++		saif-controllers = <&saif0 &saif1>;
++		audio-codec = <&sgtl5000>;
++	};
  };
+diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
+index fd73fc2..4634cb8 100644
+--- a/arch/arm/boot/dts/imx28.dtsi
++++ b/arch/arm/boot/dts/imx28.dtsi
+@@ -20,6 +20,8 @@
+ 		gpio2 = &gpio2;
+ 		gpio3 = &gpio3;
+ 		gpio4 = &gpio4;
++		saif0 = &saif0;
++		saif1 = &saif1;
+ 	};
  
-+static int __devinit mxs_sgtl5000_probe_dt(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *saif_np[2], *codec_np;
-+	struct platform_device *saif_pdev[2];
-+	int i, ret = 0;
+ 	cpus {
+@@ -212,6 +214,23 @@
+ 					fsl,voltage = <1>;
+ 					fsl,pull-up = <1>;
+ 				};
 +
-+	if (!np)
-+		return 1; /* no device tree */
++				saif0_pins_a: saif0@0 {
++					reg = <0>;
++					fsl,pinmux-ids =
++						<0x3140 0x3150 0x3160 0x3170>;
++					fsl,drive-strength = <2>;
++					fsl,voltage = <1>;
++					fsl,pull-up = <1>;
++				};
 +
-+	saif_np[0] = of_parse_phandle(np, "saif-controllers", 0);
-+	saif_np[1] = of_parse_phandle(np, "saif-controllers", 1);
-+	codec_np = of_parse_phandle(np, "audio-codec", 0);
-+	if (!saif_np[0] || !saif_np[1] || !codec_np) {
-+		dev_err(&pdev->dev, "phandle missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	saif_pdev[0] = of_find_device_by_node(saif_np[0]);
-+	saif_pdev[1] = of_find_device_by_node(saif_np[1]);
-+	if (!saif_pdev[0] || !saif_pdev[1]) {
-+		dev_err(&pdev->dev, "failed to find saif platform device\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	for (i = 0; i < 2; i++) {
-+		mxs_sgtl5000_dai[i].codec_name = NULL;
-+		mxs_sgtl5000_dai[i].codec_of_node = codec_np;
-+		mxs_sgtl5000_dai[i].cpu_dai_name = NULL;
-+		mxs_sgtl5000_dai[i].cpu_dai_of_node = saif_np[i];
-+		mxs_sgtl5000_dai[i].platform_name = NULL;
-+		mxs_sgtl5000_dai[i].platform_of_node = saif_np[i];
-+	}
-+
-+out:
-+	of_node_put(codec_np);
-+	of_node_put(saif_np[0]);
-+	of_node_put(saif_np[1]);
-+
-+	return ret;
-+}
-+
- static int __devinit mxs_sgtl5000_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &mxs_sgtl5000;
- 	int ret;
++				saif1_pins_a: saif1@0 {
++					reg = <0>;
++					fsl,pinmux-ids = <0x31a0>;
++					fsl,drive-strength = <2>;
++					fsl,voltage = <1>;
++					fsl,pull-up = <1>;
++				};
+ 			};
  
-+	ret = mxs_sgtl5000_probe_dt(pdev);
-+	if (ret < 0)
-+		return ret;
-+
- 	/*
- 	 * Set an init clock(11.28Mhz) for sgtl5000 initialization(i2c r/w).
- 	 * The Sgtl5000 sysclk is derived from saif0 mclk and it's range
-@@ -127,6 +176,7 @@ static int __devinit mxs_sgtl5000_probe(struct platform_device *pdev)
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
+ 			digctl@8001c000 {
+@@ -319,8 +338,10 @@
+ 			};
  
-+	card->dev = &pdev->dev;
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-@@ -148,10 +198,17 @@ static int __devexit mxs_sgtl5000_remove(struct platform_device *pdev)
- 	return 0;
- }
+ 			saif0: saif@80042000 {
++				compatible = "fsl,imx28-saif";
+ 				reg = <0x80042000 2000>;
+ 				interrupts = <59 80>;
++				fsl,saif-dma-channel = <4>;
+ 				status = "disabled";
+ 			};
  
-+static const struct of_device_id mxs_sgtl5000_dt_ids[] = {
-+	{ .compatible = "fsl,mxs-audio-sgtl5000", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, mxs_sgtl5000_dt_ids);
-+
- static struct platform_driver mxs_sgtl5000_audio_driver = {
- 	.driver = {
- 		.name = "mxs-sgtl5000",
- 		.owner = THIS_MODULE,
-+		.of_match_table = mxs_sgtl5000_dt_ids,
- 	},
- 	.probe = mxs_sgtl5000_probe,
- 	.remove = __devexit_p(mxs_sgtl5000_remove),
+@@ -330,8 +351,10 @@
+ 			};
+ 
+ 			saif1: saif@80046000 {
++				compatible = "fsl,imx28-saif";
+ 				reg = <0x80046000 2000>;
+ 				interrupts = <58 81>;
++				fsl,saif-dma-channel = <5>;
+ 				status = "disabled";
+ 			};
+ 
 -- 
 1.7.5.4
