@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/6] ASoC: mxs: add __devinit for
-	mxs_saif_probe
-Date: Thu, 10 May 2012 10:32:29 +0100
-Message-ID: <20120510093229.GJ3908@opensource.wolfsonmicro.com>
-References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
-	<1336639333-11561-2-git-send-email-shawn.guo@linaro.org>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: Re: [PATCH V2 08/11] ARM: dts: imx6q-sabrelite: add
+ sound device imx6q-sabrelite-sgtl5000
+Date: Thu, 10 May 2012 17:34:45 +0800
+Message-ID: <20120510093444.GI2982@b20223-02.ap.freescale.net>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+	<1336563190-19974-9-git-send-email-richard.zhao@freescale.com>
+	<20120510064816.GC17875@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5899895672557159195=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A22BD10BA44
+Received: from tx2outboundpool.messaging.microsoft.com
+	(tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id DCDB210BA50
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2012 11:32:31 +0200 (CEST)
-In-Reply-To: <1336639333-11561-2-git-send-email-shawn.guo@linaro.org>
+	Thu, 10 May 2012 11:34:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20120510064816.GC17875@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,54 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, timur@freescale.com, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, dong.aisheng@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, May 10, 2012 at 02:48:19PM +0800, Shawn Guo wrote:
+> On Wed, May 09, 2012 at 07:33:07PM +0800, Richard Zhao wrote:
+> > Signed-off-by: Richard Zhao <richard.zhao@freescale.com>
+> > ---
+> >  arch/arm/boot/dts/imx6q-sabrelite.dts |   14 ++++++++++++++
+> >  1 files changed, 14 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/arch/arm/boot/dts/imx6q-sabrelite.dts b/arch/arm/boot/dts/imx6q-sabrelite.dts
+> > index 5b51deb..5a35bfd 100644
+> > --- a/arch/arm/boot/dts/imx6q-sabrelite.dts
+> > +++ b/arch/arm/boot/dts/imx6q-sabrelite.dts
+> > @@ -110,4 +110,18 @@
+> >  			regulator-always-on;
+> >  		};
+> >  	};
+> > +
+> > +	sound {
+> > +		compatible = "fsl,imx6q-sabrelite-sgtl5000",
+> > +			     "fsl,imx-audio-sgtl5000";
+> > +		model = "imx6q-sabrelite-sgtl5000";
+> > +		ssi-controller = <&ssi1>;
+> > +		audio-codec = <&codec>;
+> > +		audio-routing =
+> > +			"MIC_IN", "Mic Jack",
+> > +			"Mic Jack", "Mic Bias",
+> 
+> "Mic Bias" is a SUPPLY for both "MIC_IN" and "Mic Jack", so it should
+> look like:
+> 
+>                        "Mic Jack", "Mic Bias",
+>                        "MIC_IN", "Mic Bias",
+Not really. The circuit:
+MIC_IN <-- capacitor <--> Mic Jack
+                      /
+            Mic Bias /
 
---===============5899895672557159195==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4IYkFBVPN84tP7K"
-Content-Disposition: inline
+DC can not pass the capacitor. So Mic Bias only supply Jack.
 
+Thanks
+Richard
 
---T4IYkFBVPN84tP7K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 10, 2012 at 04:42:08PM +0800, Shawn Guo wrote:
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-
-Applied, thanks.
-
---T4IYkFBVPN84tP7K
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPq4siAAoJEBus8iNuMP3dnzIQAIGRyUdIp4KWiyxRPTV2OhdY
-B0/qW2f9Q1v0ebWGjGetAYFDINK1HOqmTU7tj34uCfUWkQOqoxCmIr13WceuZLF4
-WmYZeqBiSNN4Q5GPsv6KY7PnCfvKSH74OKZufgv6F27jLm4mtgvDIf55mgKiX36a
-s2gG6lZGPnPbz/Ahmx4HI/46clCMsODbNG77VX/VQ8T8YbqS1GK4KAz5fuSkQWvq
-qPvYNfLXrGJeGK0ZoqpI3tDC22DP1KPQ/NvnD9Zh22tajWdMvp2IxFfnPbQDulb6
-IA9dF9xZA1ldbROPiVgXfKNkc1ho2oG2ZQ9Rxu0aiFAK8FU5KUliVxAChkHvbfnl
-aZrhxE+VK+x4vDhM+HxcNuClb+35O6d/jFrdk+/8L7Ek3m18RqM5qYPVKVM8/Rkf
-XHHv9hkuB+VTea6Gg/sr3pDFVhdE7VLhDDxj3lL0L8u53BeewTNU4QWsk7zZTsng
-xe2mCZOolp6wFMEm8cdfqJCwFPHj9qcVBw/6Vz3xTQ2sm+mHCA/QVJQ1SwBO4d5K
-y9aL4KY0dMBPNuVXVGAis1OjvnYW5O9+gVGpmCMlBtEhBvn38BGYQEjUlw0C0DLx
-IHUEblPKOXYluc9uPcJWGg9HAgtOt9AViD84JVEWSFBloCVtwFImkGNJo+YoQSpY
-qkHeLXNPDg5nmDmD0YJl
-=KV7Z
------END PGP SIGNATURE-----
-
---T4IYkFBVPN84tP7K--
-
---===============5899895672557159195==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5899895672557159195==--
+> 
+> Regards,
+> Shawn
+> 
+> > +			"Headphone Jack", "HP_OUT";
+> > +		mux-int-port = <1>;
+> > +		mux-ext-port = <4>;
+> > +	};
+> >  };
+> > -- 
+> > 1.7.5.4
+> > 
+> > 
+> 
