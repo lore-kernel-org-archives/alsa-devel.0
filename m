@@ -1,25 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Realtek ACL892: audio gap ~ each 10 seconds?
-	[SOLVED]
-Date: Fri, 11 May 2012 08:20:32 -0700
-Message-ID: <4FAD2E40.9050701@canonical.com>
-References: <jnue8p$8li$1@dough.gmane.org> <jo53ht$j45$2@dough.gmane.org>
-	<jobd2a$bj$1@dough.gmane.org> <johqka$tn$1@dough.gmane.org>
-	<s5hehqruvh9.wl%tiwai@suse.de>
-	<4facb947.541b340a.08eb.130c@mx.google.com>
-	<s5hy5oztb63.wl%tiwai@suse.de> <4FAD17FA.3060904@canonical.com>
-	<s5h1umqakkg.wl%tiwai@suse.de> <4FAD2148.4080701@canonical.com>
-	<s5hpqaa94fo.wl%tiwai@suse.de>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl: fix the binding of imx-sgtl5000
+Date: Fri, 11 May 2012 15:36:25 +0000
+Message-ID: <CAOZdJXUyZ-e+W3RMHWiT5xzVxsfrCpgi6PXE0L9oxEzvTnvRNw@mail.gmail.com>
+References: <1336747463-24237-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id F25F4104730
+Received: from tx2outboundpool.messaging.microsoft.com
+	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2732A104737
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2012 17:20:52 +0200 (CEST)
-In-Reply-To: <s5hpqaa94fo.wl%tiwai@suse.de>
+	Fri, 11 May 2012 17:36:31 +0200 (CEST)
+In-Reply-To: <1336747463-24237-1-git-send-email-shawn.guo@linaro.org>
+Content-Language: en-US
+Content-ID: <F2BA552C92A3864B9B30723CA97C9B02@mgd.freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,89 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, =?UTF-8?B?RMOibmllbCBGcmFnYQ==?= <fragabr@gmail.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Zhao Richard-B20223 <B20223@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0wNS0xMSAwNzoyOSwgVGFrYXNoaSBJd2FpIHNrcmV2Ogo+IEF0IEZyaSwgMTEgTWF5IDIw
-MTIgMDc6MjU6MTIgLTA3MDAsCj4gRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4+IDIwMTItMDUt
-MTEgMDY6NTUsIFRha2FzaGkgSXdhaSBza3JldjoKPj4+IEF0IEZyaSwgMTEgTWF5IDIwMTIgMDY6
-NDU6MzAgLTA3MDAsCj4+PiBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPj4+PiAyMDEyLTA1LTEx
-IDAwOjQzLCBUYWthc2hpIEl3YWkgc2tyZXY6Cj4+Pj4+IEF0IEZyaSwgMTEgTWF5IDIwMTIgMDQ6
-MDE6MjMgLTAzMDAsCj4+Pj4+IETDom5pZWwgRnJhZ2Egd3JvdGU6Cj4+Pj4+PiBPbiBGcmksIDEx
-IE1heSAyMDEyIDA3OjM5OjQ2ICswMjAwCj4+Pj4+PiBUYWthc2hpIEl3YWk8dGl3YWlAc3VzZS5k
-ZT4gICAgd3JvdGU6Cj4+Pj4+Pgo+Pj4+Pj4+IEFoLCBpdCdzIHRoZSBjYXNlLi4uICBZZXMsIHNv
-bWUgbW9ib3MgYXJlIGJhZGx5IGRlc2lnbmVkIG5vdCB0byBoYW5kbGUKPj4+Pj4+PiB0aGUgamFj
-ayBkZXRlY3Rpb24gcHJvcGVybHkuCj4+Pj4+Pj4KPj4+Pj4+PiBEaWQgdGhlIGF1dG8tbXV0ZSBh
-Y3R1YWxseSB3b3JrIG9uIHlvdXIgbWFjaGluZT8gIElmIG5vdCwgd2UgY2FuCj4+Pj4+Pj4gYmxh
-Y2tsaXN0IHRoZSBkZXZpY2UuICBQbGVhc2UgZ2l2ZSBhbHNhLWluZm8uc2ggb3V0cHV0Lgo+Pj4+
-Pj4gCUhpIFRha2FzaGkhIERpc2FibGluZyB0aGUgYXV0by1tdXRlIHNvbHZlZCB0aGUgaXNzdWUu
-IFJlZ2FyZGluZwo+Pj4+Pj4geW91ciBxdWVzdGlvbjogaW4gZmFjdCwgSSBkb24ndCBrbm93IHdo
-eSBhdXRvLW11dGUgd2FzIGVuYWJsZWQsIGJlY2F1c2UKPj4+Pj4+IEkgbmV2ZXIgdXNlIGEgaGVh
-ZHBob25lLgo+Pj4+PiBJdCdzIGEgZHJpdmVyIGZlYXR1cmUgdGhhdCBpcyBlbmFibGVkIGFzIGRl
-ZmF1bHQsIG5vIG1hdHRlciB3aGV0aGVyCj4+Pj4+IHlvdSB1c2Ugb3Igbm90IDopCj4+Pj4+Cj4+
-Pj4+PiBTbyBJIGNhbid0IHRlc3QgaXQuCj4+Pj4+IERvZXMgaXQgbWVhbiB0aGF0IHlvdSBoYXZl
-IG5vIGhlYWRwaG9uZSwgb3IgZG9lcyB0aGUgbWFjaGluZSBoYXZlIG5vCj4+Pj4+IGhlYWRwaG9u
-ZSBqYWNrPwo+Pj4+Pgo+Pj4+Pj4gQnV0IHlvdSBjYW4gYmUgc3VyZSB0aGF0Cj4+Pj4+PiB3aXRo
-IHRoaXMgbW90aGVyYm9hcmQgKEFzdXMgUDhaNjgtViBQcm8vZ2VuMykgdGhlcmUncyB0aGlzICJw
-b3AgYW5kCj4+Pj4+PiBjbGljayIgcHJvYmxlbSB3aGVuIEF1dG8tbXV0ZSBpcyBlbmFibGVkLgo+
-Pj4+PiBUaGF0J3Mgd2h5IEknbSBhc2tpbmcgdG8gdGVzdC4gIFVzdWFsbHkgd2hlbiBzdWNoIGEg
-bm9pc2Ugb2NjdXJzIGR1ZQo+Pj4+PiB0byB0aGUgYXV0by1tdXRlIGZlYXR1cmUsIGl0J3MgYmVj
-YXVzZSB0aGUgYm9ndXMgdW5zb2xpY2l0ZWQgZXZlbnRzCj4+Pj4+IGFyZSBmaXJlZCB1cCB0b28g
-bXVjaCBhbHRob3VnaCBubyBqYWNrIGlzIHBsdWdnZWQgYWN0dWFsbHkuICBUaHVzCj4+Pj4+IHVz
-dWFsbHkgdGhlIGF1dG8tbXV0ZSBmZWF0dXJlIGl0c2VsZiBkb2Vzbid0IHdvcmsgaW4gc3VjaCBh
-IGNhc2UKPj4+Pj4gKGVpdGhlciBubyBoYXJkd2FyZSBpbXBsZW1lbnRhdGlvbiBvciB0aGUgaGFy
-ZHdhcmUgaGFzIGl0cyBvd24KPj4+Pj4gICAgIHN3aXRjaGluZyBtZWNoYW5pc20uKQo+Pj4+IElu
-IHRoZSBsb25nIHRlcm0sIEkgdGhpbmsgd2Ugc2hvdWxkIGZpbHRlciBvdXQgc2hvcnQgamFjayBz
-ZW5zZSBldmVudHMuCj4+Pj4gVGhhdCBpcywgd2hlbiB3ZSBnZXQgYW4gdW5zb2wgamFjayBldmVu
-dCwgY2hlY2sgdGhlIGN1cnJlbnQgc3RhdHVzIGFuZAo+Pj4+IHNldCBhIHRpbWVyIGZvciAyMDAg
-bXMuCj4+Pj4gMjAwIG1zIGxhdGVyLCBpbiB0aGUgdGltZXIgY2FsbGJhY2ssIHdlIHdvdWxkIG9u
-bHkgYWNjZXB0IHRoZSBqYWNrIHNlbnNlCj4+Pj4gZXZlbnQgYXMgdmFsaWQgKGFuZCBkbyBhdXRv
-bXV0ZS9hdXRvc3dpdGNoL2tjb250cm9sIHVwZGF0ZSkgaWYKPj4+PiAgICAgLSBUaGUgY3VycmVu
-dCBzdGF0dXMgaXMgdGhlIHNhbWUgYXMgMjAwIG1zIGVhcmxpZXIKPj4+PiAgICAgLSBJZiB0aGVy
-ZSBoYXMgbm90IGJlZW4gbW9yZSB1bnNvbCBldmVudHMgaW4gdGhlIG1lYW4gdGltZQo+Pj4+ICwK
-Pj4+PiBRdWVzdGlvbiBpcyB3aGV0aGVyIHRvIGRvIHRoaXMgYnkgZGVmYXVsdCwgb3Igb25seSBm
-b3IgZGV2aWNlcyB3ZSBrbm93Cj4+Pj4gYXJlIGZsaWNrZXJpbmcuCj4+Pj4KPj4+PiBJIGhhdmVu
-J3Qgc2VlbiB0aGlzIGEgbG90LCBidXQgdGhlIGZldyBJIGhhdmUgc2VlbiBoYXZlIGhhZCB0aW1l
-cyB3aXRoCj4+Pj4gdGhlIHdyb25nIHN0YXRlIGJlbG93IDEwMCBtcywgc28gSSB0aGluayAyMDAg
-bXMgY291bGQgYmUgYSBnb29kIHZhbHVlIHRvCj4+Pj4gc3RhcnQgd2l0aC4KPj4+IFdlbGwsIGlm
-IG1hbnkgZXZlbnRzIGFyZSB0cmlnZ2VyZWQgYXQgcGx1Z2dpbmcvdW5wbHVnZ2luZywgd2UgY2Fu
-Cj4+PiBmaWx0ZXIgdGhlbSBvdXQuICBUaGUgZXZlbnRzIGFyZSBhbHJlYWR5IGhhbmRsZWQgaW4g
-dGhlIHdvcmtxdWV1ZSwgYW5kCj4+PiBpbiB0aGUgY2FzZSBvZiBqYWNrLWRldGVjdGlvbiwgd2Ug
-Y2FuIGZpbHRlciBvdXQgdGhlIHRvbyBmcmVxdWVudAo+Pj4gb25lcywgYW5kIGV2ZW4gcmVxdWV1
-ZSBpdCBhIGNlcnRhaW4gZGVsYXkgdG8gYmUgc3VyZS4KPj4+Cj4+PiBCdXQgbGlrZSB0aGlzIGNh
-c2UsIGlmIHRoZSBwcm9ibGVtIGhhcHBlbnMgZXZlbiB3aXRob3V0IHRvdWNoaW5nIHRoZQo+Pj4g
-amFjaywgaXQncyBhIGRpZmZlcmVudCBpc3N1ZS4KPj4+Cj4+IEknbSBub3QgdGFsa2luZyBhYm91
-dCBmbGlja2VyaW5nIGF0IHBoeXNpY2FsIHBsdWcvdW5wbHVnLCBldmVuIGlmIG15Cj4+IHByb3Bv
-c2FsIHdvdWxkIGhlbHAgaW4gc3VjaCBjYXNlcyBhbHNvLgo+Pgo+PiBBIHNtYWxsICJjbGljayIs
-IGFzIETDom5pZWwgaXMgZXhwZXJpZW5jaW5nLCB3b3VsZCBpbmRpY2F0ZSB0aGF0IHRoZQo+PiBo
-YXJkd2FyZSAoaW5jb3JyZWN0bHkpIHJlcG9ydHMgYXMgdGhlIGphY2sgYmVpbmcgcGx1Z2dlZCBp
-biwgdGhlbiBhIGZldwo+PiBtaWxsaXNlY29uZHMgbGF0ZXIsIGl0IGlzIHJlcG9ydGVkIGFzIG5v
-IGxvbmdlciBiZWluZyBwbHVnZ2VkIGluLiBUaGlzCj4+IGFwcGxpZXMgdG8gYm90aCBnZXR0aW5n
-IHRoZSB1bnNvbCBldmVudCBhbmQgdGhlIGFjdHVhbCBHRVRfUElOX1NFTlNFCj4+IHJlc3VsdCwg
-aSBlLCBnZXRfcGluX3NlbnNlIHdvdWxkIHJldHVybiB0aGUgd3JvbmcgdmFsdWUgZm9yIGEgZmV3
-Cj4+IG1pbGxpc2Vjb25kcy4KPj4gQnkgZmlsdGVyaW5nIG91dCB0aGVzZSBldmVudHMsIHdlIHJl
-bW92ZSB0aGUgb2NjYXNpb25hbCBjbGlja3MuCj4gSG0sIHNvIHlvdSBwb3N0cG9uZSB0aGUgamFj
-ayBoYW5kbGluZyBhIGJpdCBhbmQgY2hlY2sgd2hldGhlciBhbnkKPiBqYWNrLW9mZiBldmVudCBj
-b21lcyB1cCwgYW5kIGV2ZW50dWFsbHkgZmlsdGVyIG91dD8KRXhhY3RseSwgYXMgd2VsbCBhcyB0
-aGUgb3Bwb3NpdGUgKGlmIHRoZSB1c2VyIGV4cGVyaWVuY2VzIGNsaWNrcyB3aGVuIAp1c2luZyBo
-ZWFkcGhvbmVzKS4KPiBUaGlzIHdvdWxkIHdvcmssCj4gYnV0IHRoZSBxdWVzdGlvbiBpcyB0aGUg
-Y2hvaWNlIG9mIHRoZSBzZW5zaWJsZSBkZWxheSB0aW1lLiAgT25lIHdvdWxkCj4gbm90aWNlIHRo
-ZSBkZWxheSBvZiAyMDBtcyB3aXRoIHRoZSBqYWNrIHBsdWdnaW5nIG9yIG5vdD8KSSB0aGluayBw
-aHlzaWNhbCBwbHVnL3VucGx1ZyBpcyBzb21ldGhpbmcgdGhhdCB0YWtlcyBhIGZldyBzZWNvbmRz
-IHRvIApwZXJmb3JtIGFueXdheSAoZmluZGluZyB0aGUgamFjayB3aXRoIHlvdXIgaGFuZCBhbmQg
-YWN0dWFsbHkgcGx1Z2dpbmcgaXQgCmluKSwgc28gMjAwIG1zIG1vcmUgb3IgbGVzcyB3b3VsZCBu
-b3QgYmUgYW4gYW5ub3lhbmNlLCBhbmQgcHJvYmFibHkgbm90IApldmVuIG5vdGljYWJsZS4gQnV0
-IEkgY291bGQgYmUgd3JvbmcuCgpPciwgd2UgY291bGQgaGF2ZSBhIHNtYWxsIGRlbGF5ICgzMCBt
-cz8pIGZvciBldmVyeWJvZHkgYW5kIG1ha2UgaXQgCnF1aXJrYWJsZSB0byBzb21ldGhpbmcgbGFy
-Z2VyLi4uSSdtIG5vdCBzdXJlIHdoYXQgd291bGQgYmUgdGhlIGJlc3Qgb3B0aW9uLgoKPj4gWW91
-IGluc3RlYWQgc3VnZ2VzdGVkIHNvbWUgYmxhY2tsaXN0aW5nLCB3b3VsZCB0aGF0IGJyZWFrIGhl
-YWRwaG9uZQo+PiBzdXBwb3J0IGNvbXBsZXRlbHksIGF0IGxlYXN0IGZvciB0aGUgamFjayB5b3Ug
-d291bGQgYmxhY2tsaXN0Pwo+IFllcywgSSBkaWRuJ3Qgc3VwcG9zZSB0aGF0IHRoZSBqYWNrIHBs
-dWcgZGV0ZWN0aW9uIGFjdHVhbGx5IHdvcmtzLgoKT2suIEkgd2FzIG1vcmUgdGhpbmtpbmcgYWxv
-bmcgdGhlIGxpbmVzIG9mIEVNSSBkaXN0dXJiYW5jZXMgaW4gdGhlIGphY2sgCnNlbnNpbmcgY2Fi
-bGUsIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQuCgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9u
-aWNhbCBMdGQuCmh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Fri, May 11, 2012 at 9:44 AM, Shawn Guo <shawn.guo@linaro.org> wrote:
+> mention that the Mic Bias
+> will internally supplies to MIC_IN
+
+Is there a typo there?  This sentence doesn't make sense to me.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
