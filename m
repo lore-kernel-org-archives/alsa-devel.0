@@ -1,20 +1,18 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: Distorted jackd output on Macbooks
-Date: Sat, 12 May 2012 00:27:34 +0200
-Message-ID: <20120511222734.GV6396@ltw.loris.tv>
-References: <4F9AEFEC.4070509@drcomp.erfurt.thur.de>
-	<s5hk40nndgz.wl%tiwai@suse.de> <20120508144530.GZ6396@ltw.loris.tv>
-	<s5h4nrq1zq0.wl%tiwai@suse.de>
+From: Mark Hills <mark@pogo.org.uk>
+Subject: Re: [RFC] usb-audio: Use a table of mixer controls
+Date: Sat, 12 May 2012 00:21:14 +0100 (BST)
+Message-ID: <alpine.LNX.2.01.1205120014250.23046@stax.localdomain>
+References: <1336757328-22649-1-git-send-email-mark@pogo.org.uk>
+	<s5hzk9ems3i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
-	by alsa0.perex.cz (Postfix) with ESMTP id 320311047BC
+Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 151B21047A9
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2012 00:27:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h4nrq1zq0.wl%tiwai@suse.de>
+	Sat, 12 May 2012 01:21:16 +0200 (CEST)
+In-Reply-To: <s5hzk9ems3i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 08, 2012 at 05:04:07PM +0200, Takashi Iwai wrote:
+On Fri, 11 May 2012, Takashi Iwai wrote:
 
-> > I've installed Linux on my spare MacBookPro and can report that JACKD is
-> > not to blame. aplay and jackd behave the same:
-> > 
-> >    FLOAT_LE is distorted
-> >    S32LE is fine
-> > 
-> > 
-> > So only FLOAT_LE is broken, S32LE and S24_3LE are fine.
+[...]
+> >  /*
+> > + * Create a set of standard UAC controls from a table
+> > + */
+> > +static int snd_create_std_mono_table(struct usb_mixer_interface *mixer,
+> > +				struct std_mono_table *t)
+> > +{
+> > +	int err;
+> > +
+> > +	while (t->name != NULL) {
+> > +		err = snd_create_std_mono_ctl(mixer, t->unitid, t->control,
+> > +				t->cmask, t->val_type, t->name, t->tlv_callback);
+> > +		if (err < 0)
+> > +			return err;
 > 
-> OK, that's good to know.  I didn't know that the codec supports the
-> float.
+> t++ is missing?
+
+Hmm, yes. A clear indication that the code I must have not tested the 
+correct code (originally I used ARRAY_SIZE)
+
+I'll make sure to confirm this before I submit a proper patch.
+ 
+[...]
+> > +/*
+> > + * The mixer units for Ebox-44 are corrupt, and even where they
+> > + * are valid they presents mono controls as L and R channels of
+> > + * stereo. So we create provide a good mixer here.
+> > + */
+> > +struct std_mono_table ebox44_table[] = {
+> > +	{ 4, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Headphone Playback Switch", NULL },
+> > +	{ 4, 2, 0x1, USB_MIXER_S16, "Headphone A Mix Playback Volume", NULL },
+> > +	{ 4, 2, 0x2, USB_MIXER_S16, "Headphone B Mix Playback Volume", NULL },
+> > +
+> > +	{ 7, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Output Playback Switch", NULL },
+> > +	{ 7, 2, 0x1, USB_MIXER_S16, "Output A Playback Volume", NULL },
+> > +	{ 7, 2, 0x2, USB_MIXER_S16, "Output B Playback Volume", NULL },
+> > +
+> > +	{ 10, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Input Capture Switch", NULL },
+> > +	{ 10, 2, 0x1, USB_MIXER_S16, "Input A Capture Volume", NULL },
+> > +	{ 10, 2, 0x2, USB_MIXER_S16, "Input B Capture Volume", NULL },
+> > +
+> > +	{ }
 > 
-> I guess we can disable the support code for now like the patch below.
-> 
-> Could you check whether it works for you?
-> 
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index 882bb3a..48c50dd 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -3781,11 +3781,13 @@ int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
->  					bps = 20;
->  			}
->  		}
-> +#if 0 /* FIXME: CS4206 doesn't work, which is the only codec supporting float */
->  		if (streams & AC_SUPFMT_FLOAT32) {
->  			formats |= SNDRV_PCM_FMTBIT_FLOAT_LE;
->  			if (!bps)
->  				bps = 32;
->  		}
-> +#endif
->  		if (streams == AC_SUPFMT_AC3) {
->  			/* should be exclusive */
->  			/* temporary hack: we have still no proper support
+> C99 style struct initialization is preferred.  Then NULL settings can
+> be omittted.
 
+Do you mean like this?
 
-Yep, this does the trick. Works.
+  ebox44_table[] = {
+      {
+          .unitid = 4,
+          .control =  1
+          .cmask = 0x0
+          /* etc. */
+      }
 
+Because then it becomes a lot less concise and a lot less readable? Of 
+course, if there are more optional params in the future, then maybe.
 
-Cheers
+IIRC, I could omit the NULL anyway, because static memory is initialised 
+to contain zeroes (hence the "{ }" works). Am I correct? It's late, I 
+might be mistaken.
+
+> Other than that, it looks fine to me.
+
+Thanks for comments.
 
 -- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+Mark
