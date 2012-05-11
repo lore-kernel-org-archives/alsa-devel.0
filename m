@@ -1,88 +1,66 @@
-From: "Cousson, Benoit" <b-cousson-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH] ASoC: twl6040: Support for DT
-Date: Fri, 11 May 2012 13:02:26 +0200
-Message-ID: <4FACF1C2.7050008@ti.com>
-References: <20120509133511.GQ3955@opensource.wolfsonmicro.com>
+From: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
+Date: Fri, 11 May 2012 14:29:28 +0200
+Message-ID: <CACRpkdY3Ga0soie+tsALxA1yhzXbyVOj_HbLLWOjRPz6cMLqtQ@mail.gmail.com>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+	<1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
+	<20120509160005.GG3955@opensource.wolfsonmicro.com>
+	<20120510003532.GG2982@b20223-02.ap.freescale.net>
+	<20120510063904.GB17875@S2101-09.ap.freescale.net>
+	<20120510084403.GA3908@opensource.wolfsonmicro.com>
+	<20120510090459.GH2982@b20223-02.ap.freescale.net>
+	<20120510092733.GH3908@opensource.wolfsonmicro.com>
+	<20120510102309.GK2982@b20223-02.ap.freescale.net>
+	<CACRpkdah3956QLZZ1wTw1PcZ90wWX=Ta9j45jjzWsBtT=nm8-g@mail.gmail.com>
+	<20120511053218.GT17875@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <20120509133511.GQ3955-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Misael Lopez Cruz <misael.lopez-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20120511053218.GT17875-rvtDTF3kK1ictlrPMvKcciBecyulp+rMXqFh9Ls21Oc@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, arm-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-+ DT list
+On Fri, May 11, 2012 at 7:32 AM, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org> wrote=
+:
 
-Hi Mark,
+> pinctrl-mergebase-20120418 is not enough for me. =A0I need mxs and du=
+mmy
+> states support. =A0So if your devel branch will never be rebased, we =
+can
+> simply ask Arnd and Olof to get that as the dependent branch?
 
-On 5/9/2012 3:35 PM, Mark Brown wrote:
-> On Wed, May 09, 2012 at 03:01:23PM +0300, Peter Ujfalusi wrote:
->> On 05/08/2012 04:41 PM, Mark Brown wrote:
->>> On Tue, May 08, 2012 at 03:42:41PM +0300, Peter Ujfalusi wrote:
->
->>>> Also without a DT entry I will not have a way to use phandle to
->>>> connect the codec in the machine driver.
->
->>> Of course you do!  There's going to be a device tree entry for the
->>> chip, things can point at this perfectly happily.
->
->> That's true but what can I do with that in the ASoC machine driver?
->> The chip driver is _not_ the codec driver.
->
-> This really doesn't seem like it should be at all hard to resolve...
->
->> I can craft the pdata for the MFD child devices out from the DT
->> information but then the child devices will have no dev.of_node since
->> they were not probed via OF.  So I would have not phandle for the
->> codec to be used to define the dai-link connection within the sound
->> dts section.
->
->> Am I missing something here?
->
-> Clearly.  This is all very circular.  Obviously if you're intent on
-> using a phandle specific to the MFD child then you need to have that in
-> the device tree but this is because you're making the child devices
-> externally visible...  Clearly if we're not going to use the MFD
-> subdevices in the DT then the links ought to reference the chip.
+Hm, yes the devel branch is getting real stable now, so I will only add=
+ things
+on top.
 
-I'm not sure to understand you concern here.
+Basically the for-next branch is supposed to be even more stable,
+but right now it's a copy of devel.
 
-Describing sub nodes, especially for big SoC is pretty useful.
-It is as useful as doing that for board that are sharing similar components.
-It will allow to define several Audio / PMIC variants without having to 
-rewrite a driver potentially.
+ARM SoC guys: how do you want the pinctrl deps? I can make
+a tag today if that is preferred.
 
-DT is about HW description. You can go to whatever level you'd like as 
-soon as it is relevant for the drivers.
+Also: short-cut to another subject: how have you other guys managed
+this? By e.g.:
 
-In this is case it is relevant since the sub-devices will have driver to 
-be bound to the device nodes.
+git fetch <pinctrl tree>
 
-Both Vibra and Codec IPs can be located elsewhere, so by exposing that 
-inside the DT, you will increase the level of HW details and thus make 
-the re-use of these sub-IPs easier.
+git checkout -b my-pinwork v3.4-rc4
+git merge pinctrl-tag
+(develop develop)
 
-The twl6040 is just a container. These IPs can be inside a PCI chip, or 
-inside OMAP or whatever, but they do need a node to represent them. In 
-this case the container is irrelevant, only the children matter.
+Or:
 
-Moreover, the fact the Linux implementation uses MFD to represent that 
-is irrelevant for the DT description. We should be able to use whatever 
-SW representation for this type of HW.
+git checkout -b my-pinwork pinctrl-tag
 
-DT was useful to get rid of static board definition. DT can be useful as 
-well to get rid of the static cell definition inside a MFD.
-This is exactly the same problem at different HW level.
+?
 
-Regards,
-Benoit
+I was a bit uncertain on how to do this for the pending Ux500
+stuff so better ask. I merged it for now but maybe it's better if
+I just base the whole pullrequest on top of a stable pinctrl
+branch?
+
+Yours,
+Linus Walleij
