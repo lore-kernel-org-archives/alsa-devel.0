@@ -1,66 +1,81 @@
-From: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2 03/11] ASoC: imx-audmux: add pinctrl support
-Date: Fri, 11 May 2012 14:29:28 +0200
-Message-ID: <CACRpkdY3Ga0soie+tsALxA1yhzXbyVOj_HbLLWOjRPz6cMLqtQ@mail.gmail.com>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
-	<1336563190-19974-4-git-send-email-richard.zhao@freescale.com>
-	<20120509160005.GG3955@opensource.wolfsonmicro.com>
-	<20120510003532.GG2982@b20223-02.ap.freescale.net>
-	<20120510063904.GB17875@S2101-09.ap.freescale.net>
-	<20120510084403.GA3908@opensource.wolfsonmicro.com>
-	<20120510090459.GH2982@b20223-02.ap.freescale.net>
-	<20120510092733.GH3908@opensource.wolfsonmicro.com>
-	<20120510102309.GK2982@b20223-02.ap.freescale.net>
-	<CACRpkdah3956QLZZ1wTw1PcZ90wWX=Ta9j45jjzWsBtT=nm8-g@mail.gmail.com>
-	<20120511053218.GT17875@S2101-09.ap.freescale.net>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2 14/14] OMAPDSS: HDMI: Implement DSS driver interface
+ for audio
+Date: Fri, 11 May 2012 15:51:33 +0300
+Message-ID: <1336740693.8751.78.camel@deskari>
+References: <1336095848-6923-1-git-send-email-ricardo.neri@ti.com>
+	    <1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
+	   <1336390986.2667.8.camel@deskari> <4FA9B289.5000101@ti.com>
+	  <1336552081.3962.15.camel@deskari> <4FAB403E.6010000@ti.com>
+	 <1336636449.5182.26.camel@deskari> <4FAC71E0.2060808@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20120511053218.GT17875-rvtDTF3kK1ictlrPMvKcciBecyulp+rMXqFh9Ls21Oc@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, arm-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-BBTw8gDnC50RQbyvup7o"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <4FAC71E0.2060808@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: mythripk@ti.com, s-chereau@ti.com, x0055901@ti.com, vaibhav.bedia@ti.com, s-guiriec@ti.com, lrg@ti.com, peter.ujfalusi@ti.com, agraf@suse.de, research@ottomaneng.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 11, 2012 at 7:32 AM, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org> wrote=
-:
 
-> pinctrl-mergebase-20120418 is not enough for me. =A0I need mxs and du=
-mmy
-> states support. =A0So if your devel branch will never be rebased, we =
-can
-> simply ask Arnd and Olof to get that as the dependent branch?
+--=-BBTw8gDnC50RQbyvup7o
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hm, yes the devel branch is getting real stable now, so I will only add=
- things
-on top.
+On Thu, 2012-05-10 at 20:56 -0500, Ricardo Neri wrote:
 
-Basically the for-next branch is supposed to be even more stable,
-but right now it's a copy of devel.
+> Sorry, some hunks where missing in the patch that I submitted yesterday.
+>=20
+> I just pushed a branch containing the whole most up-to-date series here:
+>=20
+> git://gitorious.org/omap-audio/linux-audio.git=20
+> ricardon/topic/dss_audio-for-tomi
+>=20
+> This includes the implementation of the DSS audio interface for HDMI=20
+> covering the improved locking strategy [1][2], plus the missing hunks in=
+=20
+> my yesterday's patch, plus handling of mode changes you pointed out.
+>=20
+> Please let me know if you want me to resubmit the whole patch series so=
+=20
+> that you can comment if you need to.
 
-ARM SoC guys: how do you want the pinctrl deps? I can make
-a tag today if that is preferred.
+Thanks, I think this is fine. I had to rebase your branch as you had
+some extra patches there also. There were also a few conflicts with
+latest dss stuff, but nothing serious.
 
-Also: short-cut to another subject: how have you other guys managed
-this? By e.g.:
+I pushed the branch with latest dss and your branch to:
 
-git fetch <pinctrl tree>
+git://gitorious.org/linux-omap-dss2/linux.git test
 
-git checkout -b my-pinwork v3.4-rc4
-git merge pinctrl-tag
-(develop develop)
+With a quick test video works ok, but I didn't test audio.
 
-Or:
+ Tomi
 
-git checkout -b my-pinwork pinctrl-tag
 
-?
+--=-BBTw8gDnC50RQbyvup7o
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-I was a bit uncertain on how to do this for the pending Ux500
-stuff so better ask. I merged it for now but maybe it's better if
-I just base the whole pullrequest on top of a stable pinctrl
-branch?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-Yours,
-Linus Walleij
+iQIcBAABAgAGBQJPrQtVAAoJEPo9qoy8lh71SzIP/RyDaK9UYsOOpKHa/9f5g6V1
+7mFkMHbX8hAiSF1E3sr7u8R0jshXOQzV/fL8RJ2UpgW73wDQQiGUt8yrTXdYlCca
+LrbMWbSSnX3Yo4fLMIF/zCeyAa+UkR5AQKRYaU3xW/faYxR8NkDezBQ5bKX7s8lj
+QRhR5EEg9MwGNL6D2SvtRDTSyd9aOyQFZE5WLopB3+2qDOCzu7cmrFSYZHIMltYD
+hEt/5H85TH2epD7HRtt3aVOt446O4zRxjR00/zZkflAvvoGVeJmSIinx00IKjONa
+iFfP671yFI5JIZig0gP/+kYKlP8AdG1Lg7U0SnEkG/b2TRMWRTnqzq7KF8UIzW1m
+RqPUfq7fjf3wKNLgcRcG/6h+NtPatbnmjDYJ7AtUhza7nllCG9pT11H8xGJ7JuWC
+LK2x8POQR6KTvBhSWd3hGRnPXy5qynyQh3leLNQMWWsDl90Q0v0N5R5bGp2wz2JX
+7t/qOKx6hM2wSwLFBTnbh7c/dHY36nL1PiqL8W3CdK7Yao5uFOqItzstL/+VheHw
+1+pE5WZCiNNCigfHTuLJJMbT/ED0sWgxoBSF7bQDZ0ZinAqwkwvq3IRQLLGfydBY
+0q7KuklZwcE06OsMKNi/i1gFCYSGb5vkod01+td83DYEZDuQZcEQ8nhey0Ii4lx4
+xE0yc5NuYubFvbVj3q1b
+=4kfZ
+-----END PGP SIGNATURE-----
+
+--=-BBTw8gDnC50RQbyvup7o--
+
