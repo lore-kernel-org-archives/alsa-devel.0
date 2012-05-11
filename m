@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: twl6040: Support for DT
-Date: Fri, 11 May 2012 15:05:03 +0100
-Message-ID: <20120511140502.GD3960@opensource.wolfsonmicro.com>
-References: <20120509133511.GQ3955@opensource.wolfsonmicro.com>
-	<4FABBAD9.8080008@ti.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 5/6] ASoC: mxs: add device tree support for
+	mxs-sgtl5000
+Date: Fri, 11 May 2012 22:14:38 +0800
+Message-ID: <20120511141434.GA17875@S2101-09.ap.freescale.net>
+References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
+	<1336639333-11561-6-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7403588685434248282=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B42D24439
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id D7BB324493
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2012 16:05:04 +0200 (CEST)
-In-Reply-To: <4FABBAD9.8080008@ti.com>
+	Fri, 11 May 2012 16:14:37 +0200 (CEST)
+Received: by dajt11 with SMTP id t11so4193424daj.38
+	for <alsa-devel@alsa-project.org>; Fri, 11 May 2012 07:14:36 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1336639333-11561-6-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,68 +26,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, "Cousson,
-	Benoit" <b-cousson@ti.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Dong Aisheng <dong.aisheng@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, May 10, 2012 at 04:42:12PM +0800, Shawn Guo wrote:
+> Add device tree probe for mxs-sgtl5000 machine driver.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  .../bindings/sound/mxs-audio-sgtl5000.txt          |   17 ++++++
+>  sound/soc/mxs/mxs-sgtl5000.c                       |   57 ++++++++++++++++++++
+>  2 files changed, 74 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+> new file mode 100644
+> index 0000000..601c518
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mxs-audio-sgtl5000.txt
+> @@ -0,0 +1,17 @@
+> +* Freescale MXS audio complex with SGTL5000 codec
+> +
+> +Required properties:
+> +- compatible: "fsl,mxs-audio-sgtl5000"
+> +- model: The user-visible name of this sound complex
+> +- saif-controllers: The phandle list of the MXS SAIF controller
+> +- audio-codec: The phandle of the SGTL5000 audio codec
+> +
+> +Example:
+> +
+> +sound {
+> +	compatible = "fsl,imx28-evk-sgtl5000",
+> +		     "fsl,mxs-audio-sgtl5000";
+> +	model = "imx28-evk-sgtl5000";
+> +	saif-controllers = <&saif0 &saif1>;
+> +	audio-codec = <&sgtl5000>;
+> +};
+> diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+> index e9e6112..d420f11 100644
+> --- a/sound/soc/mxs/mxs-sgtl5000.c
+> +++ b/sound/soc/mxs/mxs-sgtl5000.c
+> @@ -18,6 +18,8 @@
+>  
+>  #include <linux/module.h>
+>  #include <linux/device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+>  #include <sound/soc.h>
+> @@ -110,11 +112,58 @@ static struct snd_soc_card mxs_sgtl5000 = {
+>  	.num_links	= ARRAY_SIZE(mxs_sgtl5000_dai),
+>  };
+>  
+> +static int __devinit mxs_sgtl5000_probe_dt(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct device_node *saif_np[2], *codec_np;
+> +	struct platform_device *saif_pdev[2];
 
---===============7403588685434248282==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
-Content-Disposition: inline
+The saif_pdev is a left-over which can be removed completely now.
 
+> +	int i, ret = 0;
+> +
+> +	if (!np)
+> +		return 1; /* no device tree */
+> +
+> +	saif_np[0] = of_parse_phandle(np, "saif-controllers", 0);
+> +	saif_np[1] = of_parse_phandle(np, "saif-controllers", 1);
+> +	codec_np = of_parse_phandle(np, "audio-codec", 0);
+> +	if (!saif_np[0] || !saif_np[1] || !codec_np) {
+> +		dev_err(&pdev->dev, "phandle missing or invalid\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	saif_pdev[0] = of_find_device_by_node(saif_np[0]);
+> +	saif_pdev[1] = of_find_device_by_node(saif_np[1]);
+> +	if (!saif_pdev[0] || !saif_pdev[1]) {
+> +		dev_err(&pdev->dev, "failed to find saif platform device\n");
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	for (i = 0; i < 2; i++) {
+> +		mxs_sgtl5000_dai[i].codec_name = NULL;
+> +		mxs_sgtl5000_dai[i].codec_of_node = codec_np;
+> +		mxs_sgtl5000_dai[i].cpu_dai_name = NULL;
+> +		mxs_sgtl5000_dai[i].cpu_dai_of_node = saif_np[i];
+> +		mxs_sgtl5000_dai[i].platform_name = NULL;
+> +		mxs_sgtl5000_dai[i].platform_of_node = saif_np[i];
+> +	}
+> +
+> +out:
 
---d9ADC0YsG2v16Js0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The label is used nowhere now.  Will remove it in v2.
 
-On Thu, May 10, 2012 at 03:55:53PM +0300, Peter Ujfalusi wrote:
-> On 05/09/2012 04:35 PM, Mark Brown wrote:
+> +	of_node_put(codec_np);
+> +	of_node_put(saif_np[0]);
+> +	of_node_put(saif_np[1]);
+> +
+> +	return ret;
+> +}
+> +
 
-> > This really doesn't seem like it should be at all hard to resolve...
-
-> By not using any phandle for the codec in the dts file.
-
-Why even do that?  Just refer to the MFD.  It'd look a lot more
-idiomatic.
-
-> Mark: is this what you were suggesting?
-
-Removing the DMIC stuff until we've figured out how we handle DMICs,
-AMICs and jacks seems sensible yes - I think what you've got at the
-minute is likely to be the way we end up going but it's better to be
-sure.
-
---d9ADC0YsG2v16Js0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPrRyHAAoJEBus8iNuMP3dNK4P/2F+JpO4q9hUkOpRT/zQIfJT
-zCcIb9924YTIt8TOilOcnF3Xrr1TpQ2J5bDVoxk+0CKRqToaqhyH3+hNzCIHoxVA
-QitILowZoEy5lcyJUP+2AgKPVeM9C0ZRrgcZzq6Aw+b7n6Fvrd4fbizfV+juIAsH
-gQWvvUtUJDgvDDLHoVdyNlyKFZmT59PArZgbYk6VCIcz4VCTz5y9i/cAWH2b23Re
-KlZbqziz9bKur/ONvYMFOJKGFB/cKJ4kj86/N0EAeLP6lsWsqZdOAOslPOe8anRR
-M0KTsfndGc+GDrg1C5CZiNzGpMk3Ivh+jlUYq60Lvnz03+p5KpP+yJI9rmQ4/Q2u
-qju6cV1+REaNyxr0JmlVqAehOui7k1NlOQqTVbingVb7OS9N1PLL7FsnZ6a90l/D
-ue9eRIFzuDVb8hZu5FAlaBxCD1RHeotgPEpYyVTdnsphTXVG54HFu9uOXLfVSHNE
-lvUL2OT0H6/NMc9Q5ZuwVvxnlZNvUJvpD0toDWuIFYQDpxuBa3JLhvh2nIjKebSD
-qy/DeCJg1KtjRhFoOY2rzMTEhqZzEhaeYsV2GhF/a/CfPazanhTi57uqGWPjKwZH
-Bhd/3yJfOdaKzyFQob9gV0QHUvjmFARYcohDV019QWp7VXAvdbh3bS9N+wB7N3W/
-Oi8eHMz1p3Xyth27vIOu
-=QkOd
------END PGP SIGNATURE-----
-
---d9ADC0YsG2v16Js0--
-
---===============7403588685434248282==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7403588685434248282==--
+-- 
+Regards,
+Shawn
