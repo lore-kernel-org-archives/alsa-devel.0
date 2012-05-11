@@ -1,20 +1,17 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: ALSA calling pcm_pointer excessively?
-Date: Fri, 11 May 2012 15:02:37 +0100
-Message-ID: <20120511140237.GB6220@n2100.arm.linux.org.uk>
-References: <20120510160601.GC12727@n2100.arm.linux.org.uk>
-	<20120510162930.GA17361@n2100.arm.linux.org.uk>
-	<4FABF574.7090804@ladisch.de> <s5h62c2alpf.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: twl6040: Support for DT
+Date: Fri, 11 May 2012 15:05:03 +0100
+Message-ID: <20120511140502.GD3960@opensource.wolfsonmicro.com>
+References: <20120509133511.GQ3955@opensource.wolfsonmicro.com>
+	<4FABBAD9.8080008@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7403588685434248282=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 68E6224466
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B42D24439
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2012 16:02:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h62c2alpf.wl%tiwai@suse.de>
+	Fri, 11 May 2012 16:05:04 +0200 (CEST)
+In-Reply-To: <4FABBAD9.8080008@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,78 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, "Cousson,
+	Benoit" <b-cousson@ti.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 11, 2012 at 03:31:08PM +0200, Takashi Iwai wrote:
-> At Thu, 10 May 2012 19:05:56 +0200,
-> Clemens Ladisch wrote:
-> > 
-> > Russell King - ARM Linux wrote:
-> > > I think what's happening is that snd_pcm_lib_write1() is looping, and
-> > > each time it updates the hardware position, it finds that it can
-> > > transfer 8 or 16 bytes to the buffer.  Once it's transferred that,
-> > > it re-updates the hardware position which has now advanced by another
-> > > 8 or 16 bytes.  Repeat, and you find that snd_pcm_lib_write1() spends
-> > > a lot of time inefficiently copying the buffer.
-> > >
-> > > It seems that it will only sleep if the hardware pointer stops making
-> > > progress.
-> > 
-> > I'd guess that most existing hardware is fast enough to transfer
-> > samples and has a big enough granularity (typically 32 byte bursts
-> > for PCI) that the pointer doesn't change in consecutive loop
-> > iterations.
-> > 
-> > This (untested) patch tries to avoid too many busy looping.
-> 
-> Hmm...  I still can't follow why such a busy loop happens when
-> avail_min > 1.  If avail_min = 1, a busy loop can't be avoided.
-> But if avail_min is set (typically equal with period_size),
-> runtime->twake is either the rest size or the period size, and
-> wait_for_avail() should wait until that sufficiently.
 
-It's exaclty as I explained.  Lets take avail_min = 4096, as it is in my
-case.
+--===============7403588685434248282==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
+Content-Disposition: inline
 
-In snd_pcm_lib_write1(), we loop - here's the simplified version:
 
-        while (size > 0) {
-                if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
-                        snd_pcm_update_hw_ptr(substream);
-                avail = snd_pcm_playback_avail(runtime);
-                if (!avail) {
-			/* Sleep until avail >= avail_min */
-		}
-		/* Transfer up to max(avail,size) bytes to buffer */
-	}
+--d9ADC0YsG2v16Js0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The problem is this.  On entry to the loop, say, we calculate that we
-can transfer 4096 bytes into the buffer, and we do that.  While we're
-transferring those bytes, the hardware DMA position has advanced.
+On Thu, May 10, 2012 at 03:55:53PM +0300, Peter Ujfalusi wrote:
+> On 05/09/2012 04:35 PM, Mark Brown wrote:
 
-So, the second time around the loop, avail will be non-zero - let's
-say that the DMA position has advanced 32 bytes.  So avail will be
-32 bytes, and we transfer 32 bytes.  Again, while transferring those
-bytes, the DMA position has advanced, but not as far.  Let's say 8
-bytes.
+> > This really doesn't seem like it should be at all hard to resolve...
 
-So, we repeat the loop, and again, we find avail is non-zero.  We
-omit sleeping, instead, dropping through to transfer 8 bytes.
+> By not using any phandle for the codec in the dts file.
 
-Meanwhile, the DMA position has advanced another 8 bytes.
+Why even do that?  Just refer to the MFD.  It'd look a lot more
+idiomatic.
 
-Repeat, endlessly, wasting lots of CPU cycles transferring very small
-sets of sample data to the buffer.
+> Mark: is this what you were suggesting?
 
-That happens because of the requirement for the above code to sleep is
-that there has been _no_ advancement of the DMA position while copying
-data to the buffer.  Unfortunately, that's not always a realistic
-expectation, especially if you have a high data rate.
+Removing the DMIC stuff until we've figured out how we handle DMICs,
+AMICs and jacks seems sensible yes - I think what you've got at the
+minute is likely to be the way we end up going but it's better to be
+sure.
 
-At no point in the above scenario does avail_min come into it, until
-we're lucky enough that we copy data into the buffer without the DMA
-position changing.  At that point, we're then allowed to sleep.  The
-decision to sleep is based purely upon there being _zero_ bytes of
-available buffer space.
+--d9ADC0YsG2v16Js0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPrRyHAAoJEBus8iNuMP3dNK4P/2F+JpO4q9hUkOpRT/zQIfJT
+zCcIb9924YTIt8TOilOcnF3Xrr1TpQ2J5bDVoxk+0CKRqToaqhyH3+hNzCIHoxVA
+QitILowZoEy5lcyJUP+2AgKPVeM9C0ZRrgcZzq6Aw+b7n6Fvrd4fbizfV+juIAsH
+gQWvvUtUJDgvDDLHoVdyNlyKFZmT59PArZgbYk6VCIcz4VCTz5y9i/cAWH2b23Re
+KlZbqziz9bKur/ONvYMFOJKGFB/cKJ4kj86/N0EAeLP6lsWsqZdOAOslPOe8anRR
+M0KTsfndGc+GDrg1C5CZiNzGpMk3Ivh+jlUYq60Lvnz03+p5KpP+yJI9rmQ4/Q2u
+qju6cV1+REaNyxr0JmlVqAehOui7k1NlOQqTVbingVb7OS9N1PLL7FsnZ6a90l/D
+ue9eRIFzuDVb8hZu5FAlaBxCD1RHeotgPEpYyVTdnsphTXVG54HFu9uOXLfVSHNE
+lvUL2OT0H6/NMc9Q5ZuwVvxnlZNvUJvpD0toDWuIFYQDpxuBa3JLhvh2nIjKebSD
+qy/DeCJg1KtjRhFoOY2rzMTEhqZzEhaeYsV2GhF/a/CfPazanhTi57uqGWPjKwZH
+Bhd/3yJfOdaKzyFQob9gV0QHUvjmFARYcohDV019QWp7VXAvdbh3bS9N+wB7N3W/
+Oi8eHMz1p3Xyth27vIOu
+=QkOd
+-----END PGP SIGNATURE-----
+
+--d9ADC0YsG2v16Js0--
+
+--===============7403588685434248282==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7403588685434248282==--
