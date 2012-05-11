@@ -1,67 +1,44 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 5/6] ASoC: mxs: add device tree support for
- mxs-sgtl5000
-Date: Fri, 11 May 2012 10:49:58 +0800
-Message-ID: <20120511024956.GR17875@S2101-09.ap.freescale.net>
-References: <1336639333-11561-1-git-send-email-shawn.guo@linaro.org>
-	<1336639333-11561-6-git-send-email-shawn.guo@linaro.org>
-	<20120510111646.GL6622@shlinux2.ap.freescale.net>
-	<20120510122001.GM17875@S2101-09.ap.freescale.net>
-	<20120511023302.GN6622@shlinux2.ap.freescale.net>
+From: Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [PATCH V2 01/11] dma: imx-sdma: make channel0 operations atomic
+Date: Fri, 11 May 2012 08:22:56 +0530
+Message-ID: <1336704776.15424.1354.camel@vkoul-udesk3>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+	 <1336563190-19974-2-git-send-email-richard.zhao@freescale.com>
+	 <1336622038.1540.285.camel@vkoul-udesk3>
+	 <20120510063446.GA17875@S2101-09.ap.freescale.net>
+	 <20120510123749.GO17875@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D01DE10BB12
-	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2012 04:49:58 +0200 (CEST)
-Received: by pbbrp16 with SMTP id rp16so3577634pbb.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2012 19:49:57 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20120511023302.GN6622@shlinux2.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <aisheng.dong@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng-B29396 <B29396@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Dong Aisheng <dong.aisheng@linaro.org>
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20120510123749.GO17875-rvtDTF3kK1ictlrPMvKcciBecyulp+rMXqFh9Ls21Oc@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 11, 2012 at 10:33:03AM +0800, Dong Aisheng wrote:
-> Hmm, even we need to do sanity check, i guess this could be done in
-> core since the core will take these nodes as parameter.
-> However, after checking the core a bit, i guess the core has already
-> done this:
+On Thu, 2012-05-10 at 20:37 +0800, Shawn Guo wrote:
+> On Thu, May 10, 2012 at 02:34:49PM +0800, Shawn Guo wrote:
+> > On Thu, May 10, 2012 at 09:23:58AM +0530, Vinod Koul wrote:
+> > > On Wed, 2012-05-09 at 19:33 +0800, Richard Zhao wrote:
+> > > > device_prep_dma_cyclic may be call in audio trigger function which is
+> > > > atomic context, so we make it atomic too.
+> > > > 
+> > > >  - change channel0 lock to spinlock.
+> > > >  - Use polling to wait for channel0 finish running.
+> > > > 
+> > > > Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+> > > Acked By: Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+> > > 
+> > Applied on imx/dt branch with Vinod's ack.  Thanks.
+> > 
+> Hi Vinod,
 > 
-> /* no, then find CPU DAI from registered DAIs*/
-> list_for_each_entry(cpu_dai, &dai_list, list) {
-> 	if (dai_link->cpu_dai_of_node) {
-> 		if (cpu_dai->dev->of_node != dai_link->cpu_dai_of_node)
-> 			continue;
-> 	} else {
-> 		if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
-> 			continue;
-> 	}
-> 
-> 	rtd->cpu_dai = cpu_dai;
-> 	goto find_codec;
-> }
-> 
-> It looks if the phandles are not correctly represented, the dai binding
-> will fail, right?
-> 
-Yes, the core will have the sanity check and fail out without reporting
-what's exactly going wrong, unless you turn on ASoC core debug option.
-So what's harm to have the check in driver to fail out as early as
-possible and with the exact message reporting failure cause?
+> Since Mark wouldn't like to have sound tree pulled into arm-soc to help
+> a couple of patches in the series get merged in the coming window, I can
+> not take the series as a whole to go with arm-soc.  It makes less sense
+> to have this patch go arm-soc then, so please take the patch.
+Sure, care to give an ACK before I apply.
 
 -- 
-Regards,
-Shawn
+~Vinod
