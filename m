@@ -1,17 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Getting alsa on Caanoo
-Date: Fri, 11 May 2012 11:29:39 +0200
-Message-ID: <4FACDC03.2050105@ladisch.de>
-References: <CAEQ8eXOzGoF55nwa0W=GvSwf63tZ1jkp0sQDXMP-0Of=frWKeg@mail.gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH] atmel/ac97c: correct the unexpected behavior
+	when using uninitial value for reset pin
+Date: Fri, 11 May 2012 17:39:28 +0800
+Message-ID: <1336729168-20562-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8ACB910BB5D
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA0D810BB66
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2012 11:25:45 +0200 (CEST)
-In-Reply-To: <CAEQ8eXOzGoF55nwa0W=GvSwf63tZ1jkp0sQDXMP-0Of=frWKeg@mail.gmail.com>
+	Fri, 11 May 2012 11:40:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Marc Nostromo [M-.-n]" <marc.nostromo@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, jm.lin@atmel.com, nicolas.ferre@atmel.com, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, josh.wu@atmel.com, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com
 List-Id: alsa-devel@alsa-project.org
 
-Marc Nostromo [M-.-n] wrote:
-> # cat /proc/asound/*
-> 0 [nanoKONTROL    ]: USB-Audio =96 nanoKONTROL
->
-> So I'm thinking I'm on the right track.
->
-> But I don't see anything in /dev to connect to so I can't really do
-> anything with my device.
+When pdata->reset_pin is passed with a negative value (means gpio
+is invalid), then chip->reset_pin will not be assigned to a vaule,
+it will use default value 0. This will cause unexpected behavior.
 
-ALSA devices are in /dev/sound/.
+So, add this patch to correct.
 
-> From what I read here
->
-> http://www.gp32x.com/board/index.php?/topic/60064-usbrs232-device-with-th=
-e-caanoo/page__p__954641&#entry954641
->
-> it could be due to the fact /dev is mounted in read-only (and that there's
-> no /dev/midiXX present) and that I need to create the device file with
-> mknod.
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ sound/atmel/ac97c.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-The alsa-driver package has the snddevices script, but it works only if
-the kernel was compiled without CONFIG_SND_DYNAMIC_MINORS.
-
-> However I'm not sure of what I should do in the specific context of
-> midi/audio with alsa. Right now all I'm looking for is raw midi & pcm out.
-
-aplay something.wav
-aplaymidi something.mid
-
-
-Regards,
-Clemens
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 115313e..f5ded64 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -991,6 +991,8 @@ static int __devinit atmel_ac97c_probe(struct platform_device *pdev)
+ 			gpio_direction_output(pdata->reset_pin, 1);
+ 			chip->reset_pin = pdata->reset_pin;
+ 		}
++	} else {
++		chip->reset_pin = -EINVAL;
+ 	}
+ 
+ 	snd_card_set_dev(card, &pdev->dev);
+-- 
+1.7.10
