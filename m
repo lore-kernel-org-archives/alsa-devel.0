@@ -1,29 +1,93 @@
-From: Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH Rebase 1/1] dma: imx-sdma: make channel0
- operations atomic
-Date: Fri, 11 May 2012 14:03:57 +0530
-Message-ID: <1336725237.15424.1840.camel@vkoul-udesk3>
-References: <1336717928.15424.1597.camel@vkoul-udesk3>
-	 <1336720467-29770-1-git-send-email-richard.zhao@freescale.com>
+From: "Marc Nostromo [M-.-n]" <marc.nostromo@gmail.com>
+Subject: Getting alsa on Caanoo
+Date: Fri, 11 May 2012 11:16:38 +0200
+Message-ID: <CAEQ8eXOzGoF55nwa0W=GvSwf63tZ1jkp0sQDXMP-0Of=frWKeg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1336720467-29770-1-git-send-email-richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dong.aisheng-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+	[209.85.212.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07A3010BB5D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 11 May 2012 11:16:39 +0200 (CEST)
+Received: by wibhj6 with SMTP id hj6so38452wib.2
+	for <alsa-devel@alsa-project.org>; Fri, 11 May 2012 02:16:39 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-05-11 at 15:14 +0800, Richard Zhao wrote:
-> device_prep_dma_cyclic may be call in audio trigger function which is
-> atomic context, so we make it atomic too.
-> 
->  - change channel0 lock to spinlock.
->  - Use polling to wait for channel0 finish running.
-> 
-> Signed-off-by: Richard Zhao <richard.zhao-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Thanks, Applied to slave-dma -next.
+Hi,
 
--- 
-~Vinod
+I'm trying to get alsa to work on an open source korean game console called
+the caanoo
+
+http://en.wikipedia.org/wiki/CAANOO
+
+It's open source and pretty cheap with respect to the horse power it
+delivers, so using it as base for an embedded synth / sequencer makes a lot
+of sense to me.
+I've successfully compiled and loaded the modules for audio & midi support
+but I'm still stuck with the last step so I wondered if I could get any
+help over here, I hope it's the right place to ask.
+
+Right now, when I connect a midi device through USB, I get the following
+console message
+
+root@wiz:/mnt/sd/ko_s# dmesg
+> usb 1-1: new full speed USB device using UBI9032 Test HCD and address 2
+> usb 1-1: configuration #1 chosen from 1 choice
+> MIDIStreaming version 01.00
+> EP 82: 1 jack(s)
+> EP 02: 1 jack(s)
+> created 1 output and 1 input ports
+
+
+And querying /proc/asound gives me
+
+
+root@wiz:/mnt/sd/ko_s# cat /proc/asound/*
+> 0 [nanoKONTROL    ]: USB-Audio =96 nanoKONTROL
+> KORG INC. nanoKONTROL at usb-ubisys-usb-1, full speed
+> 0: [ 0]   : control
+> 1:        : sequencer
+> 8: [ 0- 0]: raw midi
+> 33:        : timer 0 snd_usb_audio
+> G0: system timer : 10000.000us (10000000 ticks)
+> Advanced Linux Sound Architecture Driver Version 1.0.15 (Tue Nov 20
+> 19:16:42 2007 UTC).
+
+
+
+So I'm thinking I'm on the right track.
+
+But I don't see anything in /dev to connect to so I can't really do
+anything with my device.
+
+>From what I read here
+
+http://www.gp32x.com/board/index.php?/topic/60064-usbrs232-device-with-the-=
+caanoo/page__p__954641&#entry954641
+
+it could be due to the fact /dev is mounted in read-only (and that there's
+no /dev/midiXX present) and that I need to create the device file with
+mknod.
+
+However I'm not sure of what I should do in the specific context of
+midi/audio with alsa. Right now all I'm looking for is raw midi & pcm out.
+
+Could anyone give me a clue as what to try next ?
+
+Thanks a lot
+Marc
+
+---
+http://www.marc-nostromo.com
