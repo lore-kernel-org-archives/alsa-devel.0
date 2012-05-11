@@ -1,21 +1,24 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v2 2/3] ASoC: mxs: add device tree support for
-	mxs-saif
-Date: Fri, 11 May 2012 22:24:17 +0800
-Message-ID: <1336746258-23970-3-git-send-email-shawn.guo@linaro.org>
-References: <1336746258-23970-1-git-send-email-shawn.guo@linaro.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Realtek ACL892: audio gap ~ each 10 seconds?
+	[SOLVED]
+Date: Fri, 11 May 2012 07:25:12 -0700
+Message-ID: <4FAD2148.4080701@canonical.com>
+References: <jnue8p$8li$1@dough.gmane.org> <jo53ht$j45$2@dough.gmane.org>
+	<jobd2a$bj$1@dough.gmane.org> <johqka$tn$1@dough.gmane.org>
+	<s5hehqruvh9.wl%tiwai@suse.de>
+	<4facb947.541b340a.08eb.130c@mx.google.com>
+	<s5hy5oztb63.wl%tiwai@suse.de> <4FAD17FA.3060904@canonical.com>
+	<s5h1umqakkg.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1AECD10410F
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B1E010471A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2012 16:25:10 +0200 (CEST)
-Received: by mail-pz0-f51.google.com with SMTP id t11so4207686daj.38
-	for <alsa-devel@alsa-project.org>; Fri, 11 May 2012 07:25:10 -0700 (PDT)
-In-Reply-To: <1336746258-23970-1-git-send-email-shawn.guo@linaro.org>
+	Fri, 11 May 2012 16:25:18 +0200 (CEST)
+In-Reply-To: <s5h1umqakkg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,187 +28,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Dong Aisheng <dong.aisheng@linaro.org>, Shawn Guo <shawn.guo@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?B?RMOibmllbCBGcmFnYQ==?= <fragabr@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add device tree probe for mxs-saif driver.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- .../devicetree/bindings/sound/mxs-saif.txt         |   36 ++++++++++
- sound/soc/mxs/mxs-saif.c                           |   72 +++++++++++++++-----
- 2 files changed, 90 insertions(+), 18 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/mxs-saif.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/mxs-saif.txt b/Documentation/devicetree/bindings/sound/mxs-saif.txt
-new file mode 100644
-index 0000000..c37ba61
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mxs-saif.txt
-@@ -0,0 +1,36 @@
-+* Freescale MXS Serial Audio Interface (SAIF)
-+
-+Required properties:
-+- compatible: Should be "fsl,<chip>-saif"
-+- reg: Should contain registers location and length
-+- interrupts: Should contain ERROR and DMA interrupts
-+- fsl,saif-dma-channel: APBX DMA channel for the SAIF
-+
-+Optional properties:
-+- fsl,saif-master: phandle to the master SAIF.  It's only required for
-+  the slave SAIF.
-+
-+Note: Each SAIF controller should have an alias correctly numbered
-+in "aliases" node.
-+
-+Example:
-+
-+aliases {
-+	saif0 = &saif0;
-+	saif1 = &saif1;
-+};
-+
-+saif0: saif@80042000 {
-+	compatible = "fsl,imx28-saif";
-+	reg = <0x80042000 2000>;
-+	interrupts = <59 80>;
-+	fsl,saif-dma-channel = <4>;
-+};
-+
-+saif1: saif@80046000 {
-+	compatible = "fsl,imx28-saif";
-+	reg = <0x80046000 2000>;
-+	interrupts = <58 81>;
-+	fsl,saif-dma-channel = <5>;
-+	fsl,saif-master = <&saif0>;
-+};
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 356aad8..0642748 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -18,6 +18,8 @@
- 
- #include <linux/module.h>
- #include <linux/init.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-@@ -622,34 +624,54 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
- 
- static int __devinit mxs_saif_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
- 	struct resource *iores, *dmares;
- 	struct mxs_saif *saif;
- 	struct mxs_saif_platform_data *pdata;
- 	int ret = 0;
- 
--	if (pdev->id >= ARRAY_SIZE(mxs_saif))
-+
-+	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
- 		return -EINVAL;
- 
- 	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
- 
--	mxs_saif[pdev->id] = saif;
--	saif->id = pdev->id;
--
--	pdata = pdev->dev.platform_data;
--	if (pdata && !pdata->master_mode) {
--		saif->master_id = pdata->master_id;
--		if (saif->master_id < 0 ||
--			saif->master_id >= ARRAY_SIZE(mxs_saif) ||
--			saif->master_id == saif->id) {
--			dev_err(&pdev->dev, "get wrong master id\n");
--			return -EINVAL;
-+	if (np) {
-+		struct device_node *master;
-+		saif->id = of_alias_get_id(np, "saif");
-+		if (saif->id < 0)
-+			return saif->id;
-+		/*
-+		 * If there is no "fsl,saif-master" phandle, it's a saif
-+		 * master.  Otherwise, it's a slave and its phandle points
-+		 * to the master.
-+		 */
-+		master = of_parse_phandle(np, "fsl,saif-master", 0);
-+		if (!master) {
-+			saif->master_id = saif->id;
-+		} else {
-+			saif->master_id = of_alias_get_id(master, "saif");
-+			if (saif->master_id < 0)
-+				return saif->master_id;
- 		}
- 	} else {
--		saif->master_id = saif->id;
-+		saif->id = pdev->id;
-+		pdata = pdev->dev.platform_data;
-+		if (pdata && !pdata->master_mode)
-+			saif->master_id = pdata->master_id;
-+		else
-+			saif->master_id = saif->id;
-+	}
-+
-+	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
-+		dev_err(&pdev->dev, "get wrong master id\n");
-+		return -EINVAL;
- 	}
- 
-+	mxs_saif[saif->id] = saif;
-+
- 	saif->clk = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(saif->clk)) {
- 		ret = PTR_ERR(saif->clk);
-@@ -669,12 +691,19 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmares) {
--		ret = -ENODEV;
--		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
--			ret);
--		goto failed_get_resource;
-+		/*
-+		 * TODO: This is a temporary solution and should be changed
-+		 * to use generic DMA binding later when the helplers get in.
-+		 */
-+		ret = of_property_read_u32(np, "fsl,saif-dma-channel",
-+					   &saif->dma_param.chan_num);
-+		if (ret) {
-+			dev_err(&pdev->dev, "failed to get dma channel\n");
-+			goto failed_get_resource;
-+		}
-+	} else {
-+		saif->dma_param.chan_num = dmares->start;
- 	}
--	saif->dma_param.chan_num = dmares->start;
- 
- 	saif->irq = platform_get_irq(pdev, 0);
- 	if (saif->irq < 0) {
-@@ -735,6 +764,12 @@ static int __devexit mxs_saif_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id mxs_saif_dt_ids[] = {
-+	{ .compatible = "fsl,imx28-saif", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, mxs_saif_dt_ids);
-+
- static struct platform_driver mxs_saif_driver = {
- 	.probe = mxs_saif_probe,
- 	.remove = __devexit_p(mxs_saif_remove),
-@@ -742,6 +777,7 @@ static struct platform_driver mxs_saif_driver = {
- 	.driver = {
- 		.name = "mxs-saif",
- 		.owner = THIS_MODULE,
-+		.of_match_table = mxs_saif_dt_ids,
- 	},
- };
- 
--- 
-1.7.5.4
+MjAxMi0wNS0xMSAwNjo1NSwgVGFrYXNoaSBJd2FpIHNrcmV2Ogo+IEF0IEZyaSwgMTEgTWF5IDIw
+MTIgMDY6NDU6MzAgLTA3MDAsCj4gRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4+IDIwMTItMDUt
+MTEgMDA6NDMsIFRha2FzaGkgSXdhaSBza3JldjoKPj4+IEF0IEZyaSwgMTEgTWF5IDIwMTIgMDQ6
+MDE6MjMgLTAzMDAsCj4+PiBEw6JuaWVsIEZyYWdhIHdyb3RlOgo+Pj4+IE9uIEZyaSwgMTEgTWF5
+IDIwMTIgMDc6Mzk6NDYgKzAyMDAKPj4+PiBUYWthc2hpIEl3YWk8dGl3YWlAc3VzZS5kZT4gICB3
+cm90ZToKPj4+Pgo+Pj4+PiBBaCwgaXQncyB0aGUgY2FzZS4uLiAgWWVzLCBzb21lIG1vYm9zIGFy
+ZSBiYWRseSBkZXNpZ25lZCBub3QgdG8gaGFuZGxlCj4+Pj4+IHRoZSBqYWNrIGRldGVjdGlvbiBw
+cm9wZXJseS4KPj4+Pj4KPj4+Pj4gRGlkIHRoZSBhdXRvLW11dGUgYWN0dWFsbHkgd29yayBvbiB5
+b3VyIG1hY2hpbmU/ICBJZiBub3QsIHdlIGNhbgo+Pj4+PiBibGFja2xpc3QgdGhlIGRldmljZS4g
+IFBsZWFzZSBnaXZlIGFsc2EtaW5mby5zaCBvdXRwdXQuCj4+Pj4gCUhpIFRha2FzaGkhIERpc2Fi
+bGluZyB0aGUgYXV0by1tdXRlIHNvbHZlZCB0aGUgaXNzdWUuIFJlZ2FyZGluZwo+Pj4+IHlvdXIg
+cXVlc3Rpb246IGluIGZhY3QsIEkgZG9uJ3Qga25vdyB3aHkgYXV0by1tdXRlIHdhcyBlbmFibGVk
+LCBiZWNhdXNlCj4+Pj4gSSBuZXZlciB1c2UgYSBoZWFkcGhvbmUuCj4+PiBJdCdzIGEgZHJpdmVy
+IGZlYXR1cmUgdGhhdCBpcyBlbmFibGVkIGFzIGRlZmF1bHQsIG5vIG1hdHRlciB3aGV0aGVyCj4+
+PiB5b3UgdXNlIG9yIG5vdCA6KQo+Pj4KPj4+PiBTbyBJIGNhbid0IHRlc3QgaXQuCj4+PiBEb2Vz
+IGl0IG1lYW4gdGhhdCB5b3UgaGF2ZSBubyBoZWFkcGhvbmUsIG9yIGRvZXMgdGhlIG1hY2hpbmUg
+aGF2ZSBubwo+Pj4gaGVhZHBob25lIGphY2s/Cj4+Pgo+Pj4+IEJ1dCB5b3UgY2FuIGJlIHN1cmUg
+dGhhdAo+Pj4+IHdpdGggdGhpcyBtb3RoZXJib2FyZCAoQXN1cyBQOFo2OC1WIFByby9nZW4zKSB0
+aGVyZSdzIHRoaXMgInBvcCBhbmQKPj4+PiBjbGljayIgcHJvYmxlbSB3aGVuIEF1dG8tbXV0ZSBp
+cyBlbmFibGVkLgo+Pj4gVGhhdCdzIHdoeSBJJ20gYXNraW5nIHRvIHRlc3QuICBVc3VhbGx5IHdo
+ZW4gc3VjaCBhIG5vaXNlIG9jY3VycyBkdWUKPj4+IHRvIHRoZSBhdXRvLW11dGUgZmVhdHVyZSwg
+aXQncyBiZWNhdXNlIHRoZSBib2d1cyB1bnNvbGljaXRlZCBldmVudHMKPj4+IGFyZSBmaXJlZCB1
+cCB0b28gbXVjaCBhbHRob3VnaCBubyBqYWNrIGlzIHBsdWdnZWQgYWN0dWFsbHkuICBUaHVzCj4+
+PiB1c3VhbGx5IHRoZSBhdXRvLW11dGUgZmVhdHVyZSBpdHNlbGYgZG9lc24ndCB3b3JrIGluIHN1
+Y2ggYSBjYXNlCj4+PiAoZWl0aGVyIG5vIGhhcmR3YXJlIGltcGxlbWVudGF0aW9uIG9yIHRoZSBo
+YXJkd2FyZSBoYXMgaXRzIG93bgo+Pj4gICAgc3dpdGNoaW5nIG1lY2hhbmlzbS4pCj4+IEluIHRo
+ZSBsb25nIHRlcm0sIEkgdGhpbmsgd2Ugc2hvdWxkIGZpbHRlciBvdXQgc2hvcnQgamFjayBzZW5z
+ZSBldmVudHMuCj4+IFRoYXQgaXMsIHdoZW4gd2UgZ2V0IGFuIHVuc29sIGphY2sgZXZlbnQsIGNo
+ZWNrIHRoZSBjdXJyZW50IHN0YXR1cyBhbmQKPj4gc2V0IGEgdGltZXIgZm9yIDIwMCBtcy4KPj4g
+MjAwIG1zIGxhdGVyLCBpbiB0aGUgdGltZXIgY2FsbGJhY2ssIHdlIHdvdWxkIG9ubHkgYWNjZXB0
+IHRoZSBqYWNrIHNlbnNlCj4+IGV2ZW50IGFzIHZhbGlkIChhbmQgZG8gYXV0b211dGUvYXV0b3N3
+aXRjaC9rY29udHJvbCB1cGRhdGUpIGlmCj4+ICAgIC0gVGhlIGN1cnJlbnQgc3RhdHVzIGlzIHRo
+ZSBzYW1lIGFzIDIwMCBtcyBlYXJsaWVyCj4+ICAgIC0gSWYgdGhlcmUgaGFzIG5vdCBiZWVuIG1v
+cmUgdW5zb2wgZXZlbnRzIGluIHRoZSBtZWFuIHRpbWUKPj4gLAo+PiBRdWVzdGlvbiBpcyB3aGV0
+aGVyIHRvIGRvIHRoaXMgYnkgZGVmYXVsdCwgb3Igb25seSBmb3IgZGV2aWNlcyB3ZSBrbm93Cj4+
+IGFyZSBmbGlja2VyaW5nLgo+Pgo+PiBJIGhhdmVuJ3Qgc2VlbiB0aGlzIGEgbG90LCBidXQgdGhl
+IGZldyBJIGhhdmUgc2VlbiBoYXZlIGhhZCB0aW1lcyB3aXRoCj4+IHRoZSB3cm9uZyBzdGF0ZSBi
+ZWxvdyAxMDAgbXMsIHNvIEkgdGhpbmsgMjAwIG1zIGNvdWxkIGJlIGEgZ29vZCB2YWx1ZSB0bwo+
+PiBzdGFydCB3aXRoLgo+IFdlbGwsIGlmIG1hbnkgZXZlbnRzIGFyZSB0cmlnZ2VyZWQgYXQgcGx1
+Z2dpbmcvdW5wbHVnZ2luZywgd2UgY2FuCj4gZmlsdGVyIHRoZW0gb3V0LiAgVGhlIGV2ZW50cyBh
+cmUgYWxyZWFkeSBoYW5kbGVkIGluIHRoZSB3b3JrcXVldWUsIGFuZAo+IGluIHRoZSBjYXNlIG9m
+IGphY2stZGV0ZWN0aW9uLCB3ZSBjYW4gZmlsdGVyIG91dCB0aGUgdG9vIGZyZXF1ZW50Cj4gb25l
+cywgYW5kIGV2ZW4gcmVxdWV1ZSBpdCBhIGNlcnRhaW4gZGVsYXkgdG8gYmUgc3VyZS4KPgo+IEJ1
+dCBsaWtlIHRoaXMgY2FzZSwgaWYgdGhlIHByb2JsZW0gaGFwcGVucyBldmVuIHdpdGhvdXQgdG91
+Y2hpbmcgdGhlCj4gamFjaywgaXQncyBhIGRpZmZlcmVudCBpc3N1ZS4KPgoKSSdtIG5vdCB0YWxr
+aW5nIGFib3V0IGZsaWNrZXJpbmcgYXQgcGh5c2ljYWwgcGx1Zy91bnBsdWcsIGV2ZW4gaWYgbXkg
+CnByb3Bvc2FsIHdvdWxkIGhlbHAgaW4gc3VjaCBjYXNlcyBhbHNvLgoKQSBzbWFsbCAiY2xpY2si
+LCBhcyBEw6JuaWVsIGlzIGV4cGVyaWVuY2luZywgd291bGQgaW5kaWNhdGUgdGhhdCB0aGUgCmhh
+cmR3YXJlIChpbmNvcnJlY3RseSkgcmVwb3J0cyBhcyB0aGUgamFjayBiZWluZyBwbHVnZ2VkIGlu
+LCB0aGVuIGEgZmV3IAptaWxsaXNlY29uZHMgbGF0ZXIsIGl0IGlzIHJlcG9ydGVkIGFzIG5vIGxv
+bmdlciBiZWluZyBwbHVnZ2VkIGluLiBUaGlzIAphcHBsaWVzIHRvIGJvdGggZ2V0dGluZyB0aGUg
+dW5zb2wgZXZlbnQgYW5kIHRoZSBhY3R1YWwgR0VUX1BJTl9TRU5TRSAKcmVzdWx0LCBpIGUsIGdl
+dF9waW5fc2Vuc2Ugd291bGQgcmV0dXJuIHRoZSB3cm9uZyB2YWx1ZSBmb3IgYSBmZXcgCm1pbGxp
+c2Vjb25kcy4KQnkgZmlsdGVyaW5nIG91dCB0aGVzZSBldmVudHMsIHdlIHJlbW92ZSB0aGUgb2Nj
+YXNpb25hbCBjbGlja3MuCgpZb3UgaW5zdGVhZCBzdWdnZXN0ZWQgc29tZSBibGFja2xpc3Rpbmcs
+IHdvdWxkIHRoYXQgYnJlYWsgaGVhZHBob25lIApzdXBwb3J0IGNvbXBsZXRlbHksIGF0IGxlYXN0
+IGZvciB0aGUgamFjayB5b3Ugd291bGQgYmxhY2tsaXN0PwoKLS0gCkRhdmlkIEhlbm5pbmdzc29u
+LCBDYW5vbmljYWwgTHRkLgpodHRwczovL2xhdW5jaHBhZC5uZXQvfmRpd2ljCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
