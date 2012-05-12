@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcpdm: Add device tree bindings
-Date: Sat, 12 May 2012 11:15:34 +0100
-Message-ID: <20120512101534.GD1781@opensource.wolfsonmicro.com>
-References: <1336478312-27595-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-dmic: Add device tree bindings
+Date: Sat, 12 May 2012 11:16:01 +0100
+Message-ID: <20120512101600.GE1781@opensource.wolfsonmicro.com>
+References: <1336478342-27635-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1806460639056275895=="
+Content-Type: multipart/mixed; boundary="===============7110598925570980456=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C55CA24414
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 60B4E24414
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2012 12:15:36 +0200 (CEST)
-In-Reply-To: <1336478312-27595-1-git-send-email-peter.ujfalusi@ti.com>
+	Sat, 12 May 2012 12:16:04 +0200 (CEST)
+In-Reply-To: <1336478342-27635-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,53 +25,50 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1806460639056275895==
+--===============7110598925570980456==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="llIrKcgUOe3dCx0c"
+	protocol="application/pgp-signature"; boundary="Uwl7UQhJk99r8jnw"
 Content-Disposition: inline
 
 
---llIrKcgUOe3dCx0c
+--Uwl7UQhJk99r8jnw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 08, 2012 at 02:58:32PM +0300, Peter Ujfalusi wrote:
-> Device tree support for OMAP4+ McPDM cpu dai driver.
-
-I'm still not at all happy about the use of hwmod with no regs or
-anything but
+On Tue, May 08, 2012 at 02:59:02PM +0300, Peter Ujfalusi wrote:
+> Device tree support for OMAP4+ dmic cpu dai driver.
 
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---llIrKcgUOe3dCx0c
+--Uwl7UQhJk99r8jnw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPrjhAAAoJEBus8iNuMP3d5E8P/R8KDf54VBE57bIqyq2x5qPa
-qZzk2zyNYAe5IFD+6hXzIt569jLhR1EjTVBQGiRa8Fvqe7HWejgUNPvCZvypUvBW
-2Ya611vJoA0mWBNa5SWuPgL34aOwjt95kEQ+CRL/mDARMzDHyjSvsIx5+aPb6fIG
-dhuVkMs2DGWnX5qxc1Wiymh1fn/AJUCXdNHwHyNNwtGsqLTA43bDizVZny2RvQ0w
-srIRX4jXdBh7zuU/ykKE/KaaLOEm9AkNrpO0y1hmxhWIfewQparhsxN7w3PMAJSk
-p/EaDx2LjDLRA9MoAD99W7mYqjXVrwiv9ozNo9a+WmH5zjEwemD/WciqbeNHTN5U
-PqibFUGKNrV8jV3eBfWgXnW/4s9LOYghfcRT8HXflUY4bMIJ8UmuKRmWLaLYEy5+
-j2n2zKrp3esJ6eyBBd8mNin7rwJR/e9QZ0zeNY+VKjqLFCcy+9Zd/YifxjzpCBo8
-iFd9edCKQwC/4BDIpD65nsJQIWZsg9LP9Hfkgmi+xCQBA+lkV2R1lCtWbn7gITH2
-1tvEkj7oLZwJUrOhBvrEiixgVT1TGZE2JrS9yS1Nk5bNvxwqgIa5fpf+xv9vRqj+
-QULXHJkbE/N8SjfzvNz7OIe2w0YPSC/BdP6F+6uKLNCMUnP/n2GjhhVV1FsCiNzj
-OZ5NtTvCqjSVMcyLD3NW
-=qJCN
+iQIcBAEBAgAGBQJPrjhUAAoJEBus8iNuMP3dPFsP/0vko0d07LDgdw89xWgp/d7Q
+KcPmhsb0g0/1M/VHmZVPhzSLvGCVFQuvQQvYV77uIn1Ma5HjMTQAnnsxN+Aep5m/
+D2PGoy2oNFYuPRQOm8+57dMmlKoyu2w2OQ+2DSjF/0DVwj/xBHHej0dlYVJ0ubRm
+imWRQphThiatDHmsG5TBYq0rrrFGheEtBzLq0GV8wp6qS54LQ5imKb511f4kJ9DH
+pk6nOfrRFa7MaPNZIW5a35yxVlJEjNyFculKE+4R3VwBzEndEbVAILT4tAPM8d56
+k/amXdOREr5gUilYGymydIESOFjrecRZ2jvPFf/ro2xypXggVTCbjyENwCBPK1Ky
+TWyCcZJIbpTNn8vOq8Di46/WyKAFfwL24gOWmQy63iSJiy3SHM4DVXu4p2xsj2Cw
+2qRUZnpfGLCNzoA0JyumEIGwezKp1V1NZng5aglL3XqC1Jm9wOA7IqCDVyRm3QAn
+OBKKrblm6HhqQ8mojAiTAESXovoCdT4tQppaJHpJLTCh+lRwPxKpNXeYzx82BNgA
+iu0r24UVwfahf+RRvOIAy7y57xKzkSNvlWv1euj9kARRkNyE82gySZd851MthUPi
+WIFRydjBGwpbKKVSqAX7g3Bav09osKe6Xa1clQRbVpGMedEm9rKCj+jrYKyY1xX5
+DrfzJGlsJgvytQRnQTZb
+=ic6d
 -----END PGP SIGNATURE-----
 
---llIrKcgUOe3dCx0c--
+--Uwl7UQhJk99r8jnw--
 
---===============1806460639056275895==
+--===============7110598925570980456==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1806460639056275895==--
+--===============7110598925570980456==--
