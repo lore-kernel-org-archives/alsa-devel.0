@@ -1,16 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: littlemill: Use a widget to keep track
-	of AIF2 clocking
-Date: Sat, 12 May 2012 12:37:07 +0100
-Message-ID: <1336822627-23604-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work: Mux
+	handling broken?
+Date: Sat, 12 May 2012 12:51:31 +0100
+Message-ID: <20120512115130.GI1781@opensource.wolfsonmicro.com>
+References: <1335448142.20000.40.camel@mars>
+	<20120426172010.GP3207@opensource.wolfsonmicro.com>
+	<1335474693.3628.26.camel@lovely>
+	<20120426213745.GA18260@opensource.wolfsonmicro.com>
+	<1335513602.3504.4.camel@mars>
+	<20120427134638.GI18260@opensource.wolfsonmicro.com>
+	<20120504132845.GA24245@lovely.krouter>
+	<20120507215506.GA5063@lovely.krouter>
+	<20120508102947.GA8226@lovely.krouter>
+	<20120512001556.GA26105@mars>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2431682419721206953=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F3F51244F7
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2944C244FB
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2012 13:46:06 +0200 (CEST)
+	Sat, 12 May 2012 13:51:34 +0200 (CEST)
+In-Reply-To: <20120512001556.GA26105@mars>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,148 +30,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Christoph Fritz <chf.fritz@googlemail.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since we only need to clock AIF2 when it's actively in use start up the
-FLL for it using a supply widget which supplies AIF2CLK. This both makes
-the sequencing more robust and ensures we minimise power consumption.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/samsung/littlemill.c |   86 +++++++++++++++++++++++++---------------
- 1 file changed, 53 insertions(+), 33 deletions(-)
+--===============2431682419721206953==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Encpt1P6Mxii2VuT"
+Content-Disposition: inline
 
-diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
-index fd5ac47..c82c646 100644
---- a/sound/soc/samsung/littlemill.c
-+++ b/sound/soc/samsung/littlemill.c
-@@ -67,7 +67,6 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
- 					       enum snd_soc_bias_level level)
- {
- 	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
--	struct snd_soc_dai *aif2_dai = card->rtd[1].cpu_dai;
- 	int ret;
- 
- 	if (dapm->dev != aif1_dai->dev)
-@@ -75,20 +74,6 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_STANDBY:
--		ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_MCLK2,
--					     32768, SND_SOC_CLOCK_IN);
--		if (ret < 0) {
--			pr_err("Failed to switch away from FLL2: %d\n", ret);
--			return ret;
--		}
--
--		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
--					  0, 0, 0);
--		if (ret < 0) {
--			pr_err("Failed to stop FLL2: %d\n", ret);
--			return ret;
--		}
--
- 		ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
- 					     32768, SND_SOC_CLOCK_IN);
- 		if (ret < 0) {
-@@ -104,24 +89,6 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
- 		}
- 		break;
- 
--	case SND_SOC_BIAS_PREPARE:
--		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
--					  WM8994_FLL_SRC_BCLK, 64 * 8000,
--					  8000 * 256);
--		if (ret < 0) {
--			pr_err("Failed to start FLL: %d\n", ret);
--			return ret;
--		}
--
--		ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_FLL2,
--					     8000 * 256,
--					     SND_SOC_CLOCK_IN);
--		if (ret < 0) {
--			pr_err("Failed to set SYSCLK: %d\n", ret);
--			return ret;
--		}
--		break;
--
- 	default:
- 		break;
- 	}
-@@ -197,11 +164,62 @@ static struct snd_soc_dai_link littlemill_dai[] = {
- 	},
- };
- 
-+static int bbclk_ev(struct snd_soc_dapm_widget *w,
-+		    struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_card *card = w->dapm->card;
-+	struct snd_soc_dai *aif2_dai = card->rtd[1].cpu_dai;
-+	int ret;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
-+					  WM8994_FLL_SRC_BCLK, 64 * 8000,
-+					  8000 * 256);
-+		if (ret < 0) {
-+			pr_err("Failed to start FLL: %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_FLL2,
-+					     8000 * 256,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			pr_err("Failed to set SYSCLK: %d\n", ret);
-+			return ret;
-+		}
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_MCLK2,
-+					     32768, SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			pr_err("Failed to switch away from FLL2: %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
-+					  0, 0, 0);
-+		if (ret < 0) {
-+			pr_err("Failed to stop FLL2: %d\n", ret);
-+			return ret;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static struct snd_soc_dapm_widget widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 
- 	SND_SOC_DAPM_MIC("AMIC", NULL),
- 	SND_SOC_DAPM_MIC("DMIC", NULL),
-+
-+	SND_SOC_DAPM_SUPPLY_S("Baseband Clock", -1, SND_SOC_NOPM, 0, 0,
-+			      bbclk_ev,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
- 
- static struct snd_soc_dapm_route audio_paths[] = {
-@@ -214,6 +232,8 @@ static struct snd_soc_dapm_route audio_paths[] = {
- 	{ "DMIC", NULL, "MICBIAS2" },   /* Default for DMICBIAS jumper */
- 	{ "DMIC1DAT", NULL, "DMIC" },
- 	{ "DMIC2DAT", NULL, "DMIC" },
-+
-+	{ "AIF2CLK", NULL, "Baseband Clock" },
- };
- 
- static struct snd_soc_jack littlemill_headset;
--- 
-1.7.10
+
+--Encpt1P6Mxii2VuT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, May 12, 2012 at 02:15:56AM +0200, Christoph Fritz wrote:
+
+> They refuse to change their Item0 because they are defined as
+> SND_SOC_DAPM_MUX without a correlating path->name so that
+> snd_soc_dapm_mux_update_power() (in sound/soc/soc-dapmc) doesn't
+> change anything.
+
+A route into a mux without a path name (other than a supply) just isn't
+meaningful and I'm surprised it ever worked.
+
+> It works in 2.6.33, but current kernel has different mux handling and
+> it seems that no one since cared that much about microphone support.
+
+It's nothing to do with microphones really, it's more that AC'97 CODECs
+are rarely used with modern kernels as the boards that use AC'97 are
+mostly quite old and suffer performance issues with modern software
+stacks so newer kernels haven't been getting much testing with them.
+
+> Mark, can you confirm this, purpose a fix or even come up with
+> a patch?
+
+Just filling in the appropriate mux value in the relevant route should
+do the trick.  Looking at the code it looks like the widget isn't hooked
+into the audio routing map at all so I'm a little surprised.  I'm out of
+the office at the minute and so can't readily set up a test system
+myself.
+
+--Encpt1P6Mxii2VuT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPrk6hAAoJEBus8iNuMP3d5HYP/3BZucAGeyZlfgbmQMviFVk1
+Pw4ZsGIZuAdjRw4LuM5MWL90XJg8OMURRB6wwESF+xmWHjfLdVROB/DngXMun9eR
+XsaV/CXzs02eIiZJbf/65TlHjAeCM5e8oqth/b1gci1FU42UqoCKtf+XlYrWM3y8
+A0yGqro6qU6cyA1HRBP+oIK9YdiPsMpwGEFqK6h7RtEwwrcz7f62mkX12mv22Ymb
+pqk35TpDAVO2eGxWzFXgmHx0WgbmRZ1bcVwCx//gfQk5/392dtrt+jqdvq81CpmU
+wnHF/hkqi/srG7m80kTni5jQtoYObostYpf3XgxF4DvOTX+F5oLyvR9GcAQggaVH
+b2oeKo0CV0VOIDmggk7Ttj9iC5E03RRahZizLcNu1akrzkeIKr2SVJSZC5MNMMEn
+zyf1I1F2Wfqp4wwWRe2k9k1Q7AvId3MNZuo7s8Hl6aORKz+vbRSNEL9Qm0cG2aYw
+ShLbdZJ5HVNQrYgf3r04ahvGF4H6u/hQCfKO1PlNhxtl0xBhG8ekgY1cJiV9pH70
+V204pHkekFJixhRdpmXGfriNP3g32F5zKRdE8pAKov550ETNJ74q6ZdgA+yO9oFK
+5bHKYsJr+JbHDHV0nmKJfeMLQTLGGUR3km/odoCSt3nM914VSHwIdBiVMMQ6Ud6L
+8XvpX9USiRVY2ZG4WX6u
+=Z58H
+-----END PGP SIGNATURE-----
+
+--Encpt1P6Mxii2VuT--
+
+--===============2431682419721206953==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2431682419721206953==--
