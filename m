@@ -1,18 +1,23 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: [RFC] usb-audio: Use a table of mixer controls
-Date: Sat, 12 May 2012 00:21:14 +0100 (BST)
-Message-ID: <alpine.LNX.2.01.1205120014250.23046@stax.localdomain>
-References: <1336757328-22649-1-git-send-email-mark@pogo.org.uk>
-	<s5hzk9ems3i.wl%tiwai@suse.de>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: Re: [PATCH v2 14/14] OMAPDSS: HDMI: Implement DSS
+ driver interface for audio
+Date: Fri, 11 May 2012 19:18:44 -0500
+Message-ID: <4FADAC64.8090009@ti.com>
+References: <1336095848-6923-1-git-send-email-ricardo.neri@ti.com>
+	<1336095848-6923-15-git-send-email-ricardo.neri@ti.com>
+	<1336390986.2667.8.camel@deskari> <4FA9B289.5000101@ti.com>
+	<1336552081.3962.15.camel@deskari> <4FAB403E.6010000@ti.com>
+	<1336636449.5182.26.camel@deskari> <4FAC71E0.2060808@ti.com>
+	<1336740693.8751.78.camel@deskari>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 151B21047A9
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 181FA104791
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2012 01:21:16 +0200 (CEST)
-In-Reply-To: <s5hzk9ems3i.wl%tiwai@suse.de>
+	Sat, 12 May 2012 02:18:54 +0200 (CEST)
+In-Reply-To: <1336740693.8751.78.camel@deskari>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,78 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: x0055901@ti.com, alsa-devel@alsa-project.org, research@ottomaneng.com, agraf@suse.de, vaibhav.bedia@ti.com, s-chereau@ti.com, peter.ujfalusi@ti.com, mythripk@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 May 2012, Takashi Iwai wrote:
+On 05/11/2012 07:51 AM, Tomi Valkeinen wrote:
+> On Thu, 2012-05-10 at 20:56 -0500, Ricardo Neri wrote:
+>
+>> Sorry, some hunks where missing in the patch that I submitted yesterday.
+>>
+>> I just pushed a branch containing the whole most up-to-date series here:
+>>
+>> git://gitorious.org/omap-audio/linux-audio.git
+>> ricardon/topic/dss_audio-for-tomi
+>>
+>> This includes the implementation of the DSS audio interface for HDMI
+>> covering the improved locking strategy [1][2], plus the missing hunks in
+>> my yesterday's patch, plus handling of mode changes you pointed out.
+>>
+>> Please let me know if you want me to resubmit the whole patch series so
+>> that you can comment if you need to.
+>
+> Thanks, I think this is fine. I had to rebase your branch as you had
+> some extra patches there also. There were also a few conflicts with
+> latest dss stuff, but nothing serious.
+>
+> I pushed the branch with latest dss and your branch to:
+>
+> git://gitorious.org/linux-omap-dss2/linux.git test
+>
+> With a quick test video works ok, but I didn't test audio.
 
-[...]
-> >  /*
-> > + * Create a set of standard UAC controls from a table
-> > + */
-> > +static int snd_create_std_mono_table(struct usb_mixer_interface *mixer,
-> > +				struct std_mono_table *t)
-> > +{
-> > +	int err;
-> > +
-> > +	while (t->name != NULL) {
-> > +		err = snd_create_std_mono_ctl(mixer, t->unitid, t->control,
-> > +				t->cmask, t->val_type, t->name, t->tlv_callback);
-> > +		if (err < 0)
-> > +			return err;
-> 
-> t++ is missing?
+Thanks for taking the patches! In your branch, the audio part would not 
+build with audio enabled as your branch does not have the ALSA CEA-861 
+definitions patch [1]. The platform devices for the ASoC HDMI drivers[2] 
+are also missing. I put these patches on top of your test branch and 
+audio works well. [1] and [2] will come from Takashi's and Tony's branches.
 
-Hmm, yes. A clear indication that the code I must have not tested the 
-correct code (originally I used ARRAY_SIZE)
+BR,
 
-I'll make sure to confirm this before I submit a proper patch.
- 
-[...]
-> > +/*
-> > + * The mixer units for Ebox-44 are corrupt, and even where they
-> > + * are valid they presents mono controls as L and R channels of
-> > + * stereo. So we create provide a good mixer here.
-> > + */
-> > +struct std_mono_table ebox44_table[] = {
-> > +	{ 4, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Headphone Playback Switch", NULL },
-> > +	{ 4, 2, 0x1, USB_MIXER_S16, "Headphone A Mix Playback Volume", NULL },
-> > +	{ 4, 2, 0x2, USB_MIXER_S16, "Headphone B Mix Playback Volume", NULL },
-> > +
-> > +	{ 7, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Output Playback Switch", NULL },
-> > +	{ 7, 2, 0x1, USB_MIXER_S16, "Output A Playback Volume", NULL },
-> > +	{ 7, 2, 0x2, USB_MIXER_S16, "Output B Playback Volume", NULL },
-> > +
-> > +	{ 10, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Input Capture Switch", NULL },
-> > +	{ 10, 2, 0x1, USB_MIXER_S16, "Input A Capture Volume", NULL },
-> > +	{ 10, 2, 0x2, USB_MIXER_S16, "Input B Capture Volume", NULL },
-> > +
-> > +	{ }
-> 
-> C99 style struct initialization is preferred.  Then NULL settings can
-> be omittted.
+Ricardo
 
-Do you mean like this?
 
-  ebox44_table[] = {
-      {
-          .unitid = 4,
-          .control =  1
-          .cmask = 0x0
-          /* etc. */
-      }
-
-Because then it becomes a lot less concise and a lot less readable? Of 
-course, if there are more optional params in the future, then maybe.
-
-IIRC, I could omit the NULL anyway, because static memory is initialised 
-to contain zeroes (hence the "{ }" works). Am I correct? It's late, I 
-might be mistaken.
-
-> Other than that, it looks fine to me.
-
-Thanks for comments.
-
--- 
-Mark
+[1]http://www.mail-archive.com/linux-omap@vger.kernel.org/msg66600.html
+[2]http://www.spinics.net/lists/linux-omap/msg68834.html
+>
+>   Tomi
