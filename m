@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 0/3] Add device tree support for mxs
-	audio
-Date: Sat, 12 May 2012 11:05:25 +0100
-Message-ID: <20120512100524.GB1781@opensource.wolfsonmicro.com>
-References: <1336746258-23970-1-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: omap-mcpdm: Add device tree bindings
+Date: Sat, 12 May 2012 11:15:34 +0100
+Message-ID: <20120512101534.GD1781@opensource.wolfsonmicro.com>
+References: <1336478312-27595-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4562744556448834816=="
+Content-Type: multipart/mixed; boundary="===============1806460639056275895=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E00FC243E5
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C55CA24414
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2012 12:05:27 +0200 (CEST)
-In-Reply-To: <1336746258-23970-1-git-send-email-shawn.guo@linaro.org>
+	Sat, 12 May 2012 12:15:36 +0200 (CEST)
+In-Reply-To: <1336478312-27595-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4562744556448834816==
+--===============1806460639056275895==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
+	protocol="application/pgp-signature"; boundary="llIrKcgUOe3dCx0c"
 Content-Disposition: inline
 
 
---NDin8bjvE/0mNLFQ
+--llIrKcgUOe3dCx0c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 11, 2012 at 10:24:15PM +0800, Shawn Guo wrote:
-> Changes since v1:
-> * Rebased on sound/for-3.5, and consequently the patch of devm_clk_get
->   is dropped.
-> * Fixed the issues caught by Dong (Thanks to Dong).
+On Tue, May 08, 2012 at 02:58:32PM +0300, Peter Ujfalusi wrote:
+> Device tree support for OMAP4+ McPDM cpu dai driver.
 
-applied, thanks.
+I'm still not at all happy about the use of hwmod with no regs or
+anything but
 
---NDin8bjvE/0mNLFQ
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+--llIrKcgUOe3dCx0c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPrjXdAAoJEBus8iNuMP3ddgEQAJLia+IVbUH5oFkjt+NSALjX
-UVnFXr5SfNsGW/IWEQ43/gnYqZdoj+YKHfW2df+1zJAvDXZqZ00mu9PxxQCCMriR
-RxfuWciBmVOMWsrjS0CDl9OXFX5m4KxOBkoBCZ2i7Pzz0/JzQO8Bah+R4zxYui5m
-Vjl2EvGPNurI6TIVJaSNaiYVcDfME73l35B8yCqidbzbhVqjfNmz/hIr4sz/AUBr
-MJ9U0m1bx9tVXrxWD38HHVV82QPR0XXy3IG0C0PIRlsshDis7qZBSCeJtEUUxA6b
-urFy2EQt4gIhlJv0ItPsKQgvJIuIYN+Szx2flJw32mIT2AFCwS+jsP5tFQdhSGmZ
-iUmJh4PDUdtajdFHUIrVCR0yBzDOaQlrFsyjcc3F+xOyIRpEjej5fiKGbRhKa+eT
-uKLyKG0VlE8GRiQIFgOCLDq0fTylEpYBh6BCcienVanJ0pNisqYK9jaPJbO9gXa4
-Y8YS96t9Fe77hwlKkqC4ofu0/RbxesrP1imsM1jjveJ/Mo+mq15EfjDReZs56wAY
-KwXn0gJBSMc2lDQ+WHXfMLNpbQACXdm6aofpjpZt9hjz9Zogl7ULo0NWkhtjKb3b
-jg87pIctc5ji4kT3YGJqZH5aVLDA/ngQwQUGZILIb13eails+QFzT9RBjlWp/vWq
-039Elw/fl1lYa6oN2r44
-=88IL
+iQIcBAEBAgAGBQJPrjhAAAoJEBus8iNuMP3d5E8P/R8KDf54VBE57bIqyq2x5qPa
+qZzk2zyNYAe5IFD+6hXzIt569jLhR1EjTVBQGiRa8Fvqe7HWejgUNPvCZvypUvBW
+2Ya611vJoA0mWBNa5SWuPgL34aOwjt95kEQ+CRL/mDARMzDHyjSvsIx5+aPb6fIG
+dhuVkMs2DGWnX5qxc1Wiymh1fn/AJUCXdNHwHyNNwtGsqLTA43bDizVZny2RvQ0w
+srIRX4jXdBh7zuU/ykKE/KaaLOEm9AkNrpO0y1hmxhWIfewQparhsxN7w3PMAJSk
+p/EaDx2LjDLRA9MoAD99W7mYqjXVrwiv9ozNo9a+WmH5zjEwemD/WciqbeNHTN5U
+PqibFUGKNrV8jV3eBfWgXnW/4s9LOYghfcRT8HXflUY4bMIJ8UmuKRmWLaLYEy5+
+j2n2zKrp3esJ6eyBBd8mNin7rwJR/e9QZ0zeNY+VKjqLFCcy+9Zd/YifxjzpCBo8
+iFd9edCKQwC/4BDIpD65nsJQIWZsg9LP9Hfkgmi+xCQBA+lkV2R1lCtWbn7gITH2
+1tvEkj7oLZwJUrOhBvrEiixgVT1TGZE2JrS9yS1Nk5bNvxwqgIa5fpf+xv9vRqj+
+QULXHJkbE/N8SjfzvNz7OIe2w0YPSC/BdP6F+6uKLNCMUnP/n2GjhhVV1FsCiNzj
+OZ5NtTvCqjSVMcyLD3NW
+=qJCN
 -----END PGP SIGNATURE-----
 
---NDin8bjvE/0mNLFQ--
+--llIrKcgUOe3dCx0c--
 
---===============4562744556448834816==
+--===============1806460639056275895==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4562744556448834816==--
+--===============1806460639056275895==--
