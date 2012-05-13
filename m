@@ -1,18 +1,16 @@
-From: Barratis <barratis@gmail.com>
-Subject: snd_device_register / snd_device_disconnect
-Date: Mon, 14 May 2012 08:23:47 +1000
-Message-ID: <CAM+d0wJoZiooOAVMD97ETefnTZfwvA3Xbx9DF7D8M4_5k_YQdg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: lm49453: Staticise non-exported symbol
+	lm45453_dai
+Date: Sun, 13 May 2012 23:30:41 +0100
+Message-ID: <1336948241-4292-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0676D248A9
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54477248AB
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 00:24:08 +0200 (CEST)
-Received: by obbup19 with SMTP id up19so6767135obb.38
-	for <alsa-devel@alsa-project.org>; Sun, 13 May 2012 15:24:08 -0700 (PDT)
+	Mon, 14 May 2012 00:30:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: M R Swami Reddy <MR.Swami.Reddy@ti.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/lm49453.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I would have a question regarding the behavior of snd_device_register.
-
-Currently, the register operation will only be carried out if the
-state is SNDRV_DEV_BUILD. This effectively prevents device which have
-been disconnected via snd_device_disconnect (and thus having the state
-SNDRV_DEV_DISCONNECTED) to be registered again.
-
-Is this a wanted behavior? If so, I can't seem to find a reason for
-this as per my testing and code reading registering a device in
-DISCONNECTED sate works just fine.
-
-Thanks,
-
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index 5eb726b..02a8179 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -1358,7 +1358,7 @@ static struct snd_soc_dai_ops lm49453_lineout_dai_ops = {
+ };
+ 
+ /* LM49453 dai structure. */
+-struct snd_soc_dai_driver lm49453_dai[] = {
++static const struct snd_soc_dai_driver lm49453_dai[] = {
+ 	{
+ 		.name = "LM49453 Headset",
+ 		.playback = {
 -- 
-Barratis
+1.7.10
