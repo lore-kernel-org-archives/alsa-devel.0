@@ -1,30 +1,18 @@
-From: Christoph Fritz <chf.fritz@googlemail.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work: Mux
-	handling broken?
-Date: Sun, 13 May 2012 05:56:53 +0200
-Message-ID: <20120513035652.GA3532@lovely.krouter>
-References: <20120426172010.GP3207@opensource.wolfsonmicro.com>
-	<1335474693.3628.26.camel@lovely>
-	<20120426213745.GA18260@opensource.wolfsonmicro.com>
-	<1335513602.3504.4.camel@mars>
-	<20120427134638.GI18260@opensource.wolfsonmicro.com>
-	<20120504132845.GA24245@lovely.krouter>
-	<20120507215506.GA5063@lovely.krouter>
-	<20120508102947.GA8226@lovely.krouter>
-	<20120512001556.GA26105@mars>
-	<20120512115130.GI1781@opensource.wolfsonmicro.com>
+From: Barratis <barratis@gmail.com>
+Subject: snd_device_register / snd_device_disconnect
+Date: Mon, 14 May 2012 08:23:47 +1000
+Message-ID: <CAM+d0wJoZiooOAVMD97ETefnTZfwvA3Xbx9DF7D8M4_5k_YQdg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90340246B3
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0676D248A9
 	for <alsa-devel@alsa-project.org>;
-	Sun, 13 May 2012 05:56:58 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so2877022wgb.20
-	for <alsa-devel@alsa-project.org>; Sat, 12 May 2012 20:56:58 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20120512115130.GI1781@opensource.wolfsonmicro.com>
+	Mon, 14 May 2012 00:24:08 +0200 (CEST)
+Received: by obbup19 with SMTP id up19so6767135obb.38
+	for <alsa-devel@alsa-project.org>; Sun, 13 May 2012 15:24:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,38 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 12, 2012 at 12:51:31PM +0100, Mark Brown wrote:
-> On Sat, May 12, 2012 at 02:15:56AM +0200, Christoph Fritz wrote:
-> 
-> > They refuse to change their Item0 because they are defined as
-> > SND_SOC_DAPM_MUX without a correlating path->name so that
-> > snd_soc_dapm_mux_update_power() (in sound/soc/soc-dapmc) doesn't
-> > change anything.
-> 
-> A route into a mux without a path name (other than a supply) just isn't
-> meaningful and I'm surprised it ever worked.
-> 
-> > It works in 2.6.33, but current kernel has different mux handling and
-> > it seems that no one since cared that much about microphone support.
-> 
-> It's nothing to do with microphones really, it's more that AC'97 CODECs
-> are rarely used with modern kernels as the boards that use AC'97 are
-> mostly quite old and suffer performance issues with modern software
-> stacks so newer kernels haven't been getting much testing with them.
-> 
-> > Mark, can you confirm this, purpose a fix or even come up with
-> > a patch?
-> 
-> Just filling in the appropriate mux value in the relevant route should
-> do the trick.  Looking at the code it looks like the widget isn't hooked
-> into the audio routing map at all so I'm a little surprised.  I'm out of
-> the office at the minute and so can't readily set up a test system
-> myself.
+Hi All,
 
-Thanks Mark, I'm pretty interested in testing too :-)
+I would have a question regarding the behavior of snd_device_register.
 
- -- Christoph
+Currently, the register operation will only be carried out if the
+state is SNDRV_DEV_BUILD. This effectively prevents device which have
+been disconnected via snd_device_disconnect (and thus having the state
+SNDRV_DEV_DISCONNECTED) to be registered again.
+
+Is this a wanted behavior? If so, I can't seem to find a reason for
+this as per my testing and code reading registering a device in
+DISCONNECTED sate works just fine.
+
+Thanks,
+
+-- 
+Barratis
