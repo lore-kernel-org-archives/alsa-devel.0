@@ -1,19 +1,30 @@
-From: Mike Mestnik <cheako+alsa@mikemestnik.net>
-Subject: hw/a52/dmix/other hardware plugins: paususpend option.
-Date: Sat, 12 May 2012 22:13:14 -0500
-Message-ID: <4FAF26CA.6070405@mikemestnik.net>
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work: Mux
+	handling broken?
+Date: Sun, 13 May 2012 05:56:53 +0200
+Message-ID: <20120513035652.GA3532@lovely.krouter>
+References: <20120426172010.GP3207@opensource.wolfsonmicro.com>
+	<1335474693.3628.26.camel@lovely>
+	<20120426213745.GA18260@opensource.wolfsonmicro.com>
+	<1335513602.3504.4.camel@mars>
+	<20120427134638.GI18260@opensource.wolfsonmicro.com>
+	<20120504132845.GA24245@lovely.krouter>
+	<20120507215506.GA5063@lovely.krouter>
+	<20120508102947.GA8226@lovely.krouter>
+	<20120512001556.GA26105@mars>
+	<20120512115130.GI1781@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hades.mikemestnik.net (hades.mikemestnik.net [184.106.158.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id DECA42469B
-	for <Alsa-devel@alsa-project.org>;
-	Sun, 13 May 2012 05:13:17 +0200 (CEST)
-Received: from arcadia.mikemestnik.net (unknown
-	[IPv6:2001:470:1f11:9e9:a0ed:d874:ba3c:f7ef])
-	by hades.mikemestnik.net (Postfix) with ESMTPSA id D1AC4D4549
-	for <Alsa-devel@alsa-project.org>; Sat, 12 May 2012 22:13:15 -0500 (CDT)
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90340246B3
+	for <alsa-devel@alsa-project.org>;
+	Sun, 13 May 2012 05:56:58 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so2877022wgb.20
+	for <alsa-devel@alsa-project.org>; Sat, 12 May 2012 20:56:58 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20120512115130.GI1781@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +34,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-  I've recently been working with the wine sound subsystem and there is
-an increasing issue where PA prevents access to the hardware.  Now PA
-already has a 'time out' to relinquish the hardware and this only serves
-to confuse users as it's no-longer clear why "it" would work some times
-but not others.
+On Sat, May 12, 2012 at 12:51:31PM +0100, Mark Brown wrote:
+> On Sat, May 12, 2012 at 02:15:56AM +0200, Christoph Fritz wrote:
+> 
+> > They refuse to change their Item0 because they are defined as
+> > SND_SOC_DAPM_MUX without a correlating path->name so that
+> > snd_soc_dapm_mux_update_power() (in sound/soc/soc-dapmc) doesn't
+> > change anything.
+> 
+> A route into a mux without a path name (other than a supply) just isn't
+> meaningful and I'm surprised it ever worked.
+> 
+> > It works in 2.6.33, but current kernel has different mux handling and
+> > it seems that no one since cared that much about microphone support.
+> 
+> It's nothing to do with microphones really, it's more that AC'97 CODECs
+> are rarely used with modern kernels as the boards that use AC'97 are
+> mostly quite old and suffer performance issues with modern software
+> stacks so newer kernels haven't been getting much testing with them.
+> 
+> > Mark, can you confirm this, purpose a fix or even come up with
+> > a patch?
+> 
+> Just filling in the appropriate mux value in the relevant route should
+> do the trick.  Looking at the code it looks like the widget isn't hooked
+> into the audio routing map at all so I'm a little surprised.  I'm out of
+> the office at the minute and so can't readily set up a test system
+> myself.
 
-  Wine currently has a number of bugs with it's implementation of the
-ALSA API and it's not likely that these will be worked on or even if the
-work is done that it'll make it to become part of wine.  In short it
-looks like the wine project has completely given up on supporting sound.
+Thanks Mark, I'm pretty interested in testing too :-)
 
-  Even so, I've requested that wine's alsa output module issue the
-correct paususpend signals prior to accessing ALSA hardware.  However
-it's non-trivial for an application to detect "If this ALSA driver
-connects to PA?"  A way to query the 'features' needed by a specific
-device string would be handy, keeping in mind that a device in ALSA can
-be configured to pass through plugs, routes, and what not and still
-eventually end up with the pulse plugin.
-
-  Keeping on top of the entire issue, I believe that perhaps ALSA
-plugins can also trigger paususpend.  I guess there biggest issue is not
-to paususpend if being called as part of PulseAudio.  I believe that
-this would be an important feature for every ALSA application, allowing
-better integration with a vary popular Desktop sound server.
-
-As I said, any plugin that attaches to direct hardware should attempt
-discovery of needing to issue a paususpend.  Perhaps an option can be
-added that the PA server should set to disable paususpend.
-
-Thank you.
+ -- Christoph
