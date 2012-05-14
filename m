@@ -1,21 +1,21 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/15] ALSA: hda - Clear the power-saving
-	states properly at reset
-Date: Mon, 14 May 2012 17:31:55 +0200
-Message-ID: <1337009526-26256-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH 11/15] ALSA: hda - Add Conexant CX20751/2/3/4
+	codec support
+Date: Mon, 14 May 2012 17:32:02 +0200
+Message-ID: <1337009526-26256-12-git-send-email-tiwai@suse.de>
 References: <1337009526-26256-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4025124A25
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D52D24A22
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:18 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id E67138FFDD
+	by mx2.suse.de (Postfix) with ESMTP id E7E8390B1D
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:17 +0200 (CEST)
 In-Reply-To: <1337009526-26256-1-git-send-email-tiwai@suse.de>
@@ -32,29 +32,36 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Some power-saving states have been left unchanged in
-snd_hda_codec_reset(), and this is a potential danger because the
-function may be called in various situations including the continuous
-operation after that call.
+These are almost compatible with the older Conexant codecs.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c |    3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_conexant.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index e134e72..8bd3432 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2265,6 +2265,9 @@ int snd_hda_codec_reset(struct hda_codec *codec)
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 2cfcec0..a03fc33 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -4559,6 +4559,10 @@ static int patch_conexant_auto(struct hda_codec *codec)
+  */
  
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- 	cancel_delayed_work(&codec->power_work);
-+	codec->power_on = 0;
-+	codec->power_transition = 0;
-+	codec->power_jiffies = jiffies;
- 	flush_workqueue(codec->bus->workq);
- #endif
- 	snd_hda_ctls_clear(codec);
+ static const struct hda_codec_preset snd_hda_preset_conexant[] = {
++	{ .id = 0x14f11510, .name = "CX20751/2",
++	  .patch = patch_conexant_auto },
++	{ .id = 0x14f11511, .name = "CX20753/4",
++	  .patch = patch_conexant_auto },
+ 	{ .id = 0x14f15045, .name = "CX20549 (Venice)",
+ 	  .patch = patch_cxt5045 },
+ 	{ .id = 0x14f15047, .name = "CX20551 (Waikiki)",
+@@ -4596,6 +4600,8 @@ static const struct hda_codec_preset snd_hda_preset_conexant[] = {
+ 	{} /* terminator */
+ };
+ 
++MODULE_ALIAS("snd-hda-codec-id:14f11510");
++MODULE_ALIAS("snd-hda-codec-id:14f11511");
+ MODULE_ALIAS("snd-hda-codec-id:14f15045");
+ MODULE_ALIAS("snd-hda-codec-id:14f15047");
+ MODULE_ALIAS("snd-hda-codec-id:14f15051");
 -- 
 1.7.9.2
