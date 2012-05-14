@@ -1,24 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/15] ALSA: hda/conexant - Correct vendor IDs
-	for new codecs
-Date: Mon, 14 May 2012 17:32:05 +0200
-Message-ID: <1337009526-26256-15-git-send-email-tiwai@suse.de>
-References: <1337009526-26256-1-git-send-email-tiwai@suse.de>
+From: Antonio Borneo <borneo.antonio@gmail.com>
+Subject: Re: [PATCH alsa-lib 0/1] bug fix and comment on
+	"switch"
+Date: Mon, 14 May 2012 23:47:58 +0800
+Message-ID: <CAAj6DX1X+B4V98DuUr7tJzKRP+7+KT33OEmEcdnQ5zC7STYVSA@mail.gmail.com>
+References: <1336838783-30686-1-git-send-email-borneo.antonio@gmail.com>
+	<s5h8vguyfkm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF53224A30
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6BD2F24A33
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 17:32:18 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id 0BF5E91222
-	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 17:32:18 +0200 (CEST)
-In-Reply-To: <1337009526-26256-1-git-send-email-tiwai@suse.de>
+	Mon, 14 May 2012 17:48:00 +0200 (CEST)
+Received: by dajt11 with SMTP id t11so8578672daj.38
+	for <alsa-devel@alsa-project.org>; Mon, 14 May 2012 08:47:59 -0700 (PDT)
+In-Reply-To: <s5h8vguyfkm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,59 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Never trust datasheet...
+On Mon, May 14, 2012 at 10:58 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sun, 13 May 2012 00:06:22 +0800,
+> Antonio Borneo wrote:
+>>
+>> Hi,
+>>
+>> this is a very simple one line patch but the issue was
+>> driving me crazy for few days.
+>>
+>> After this finding, I have reviewed all the "switch"
+>> statements in alsa-lib. All well done with proper comment
+>> when a "case" falls through the next "case".
+>
+> Thanks, applied the patch now.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_conexant.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Thanks!
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index a03fc33..3acb582 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -4559,10 +4559,6 @@ static int patch_conexant_auto(struct hda_codec *codec)
-  */
- 
- static const struct hda_codec_preset snd_hda_preset_conexant[] = {
--	{ .id = 0x14f11510, .name = "CX20751/2",
--	  .patch = patch_conexant_auto },
--	{ .id = 0x14f11511, .name = "CX20753/4",
--	  .patch = patch_conexant_auto },
- 	{ .id = 0x14f15045, .name = "CX20549 (Venice)",
- 	  .patch = patch_cxt5045 },
- 	{ .id = 0x14f15047, .name = "CX20551 (Waikiki)",
-@@ -4597,11 +4593,15 @@ static const struct hda_codec_preset snd_hda_preset_conexant[] = {
- 	  .patch = patch_conexant_auto },
- 	{ .id = 0x14f150b9, .name = "CX20665",
- 	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f1510f, .name = "CX20751/2",
-+	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f15110, .name = "CX20751/2",
-+	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f15111, .name = "CX20753/4",
-+	  .patch = patch_conexant_auto },
- 	{} /* terminator */
- };
- 
--MODULE_ALIAS("snd-hda-codec-id:14f11510");
--MODULE_ALIAS("snd-hda-codec-id:14f11511");
- MODULE_ALIAS("snd-hda-codec-id:14f15045");
- MODULE_ALIAS("snd-hda-codec-id:14f15047");
- MODULE_ALIAS("snd-hda-codec-id:14f15051");
-@@ -4619,6 +4619,9 @@ MODULE_ALIAS("snd-hda-codec-id:14f150ab");
- MODULE_ALIAS("snd-hda-codec-id:14f150ac");
- MODULE_ALIAS("snd-hda-codec-id:14f150b8");
- MODULE_ALIAS("snd-hda-codec-id:14f150b9");
-+MODULE_ALIAS("snd-hda-codec-id:14f1510f");
-+MODULE_ALIAS("snd-hda-codec-id:14f15110");
-+MODULE_ALIAS("snd-hda-codec-id:14f15111");
- 
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Conexant HD-audio codec");
--- 
-1.7.9.2
+>
+>> But there is one "switch" that does not follow the usual
+>> scheme.
+>> In file src/pcm/pcm_dsnoop.c
+>> procedure snd_pcm_dsnoop_delay()
+>> following code fragment:
+>>
+>> =A0 =A0 =A0 =A0 switch(dsnoop->state) {
+>> =A0 =A0 =A0 =A0 case SNDRV_PCM_STATE_DRAINING:
+>> =A0 =A0 =A0 =A0 case SNDRV_PCM_STATE_RUNNING:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D snd_pcm_dsnoop_sync_ptr(pcm);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (err < 0)
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return err;
+>> =A0 =A0 =A0 =A0 case SNDRV_PCM_STATE_PREPARED:
+>> =A0 =A0 =A0 =A0 case SNDRV_PCM_STATE_SUSPENDED:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 *delayp =3D snd_pcm_mmap_capture_hw_avai=
+l(pcm);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+>>
+>> If snd_pcm_dsnoop_sync_ptr() returns no error, execution
+>> falls through next "case".
+>> It's missing the usual comment
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Fall through */
+>> to highlight such code behavior.
+>> I think the code is correct, but I do not have enough
+>> experience on alsa-lib to be sure. Please confirm.
+>> In such case, I would suggest adding the comment above.
+>
+> Yes, the comment should be added.
+> Care to send a patch?
+
+I'll send it shortly.
+
+Best Regards
+Antonio Borneo
