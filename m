@@ -1,59 +1,47 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Multicasting transfer mode
-Date: Mon, 14 May 2012 13:21:41 -0700
-Message-ID: <4FB16955.70605@codeaurora.org>
-References: <4FB0ADA3.3020304@codeaurora.org>
-	<20120514085405.GI31985@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
-	[199.106.114.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C0F324B14
-	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 22:21:44 +0200 (CEST)
-In-Reply-To: <20120514085405.GI31985@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH] ASoC: don't flip master of DT-instantiated DAI links
+Date: Mon, 14 May 2012 14:47:22 -0600
+Message-ID: <1337028442-5603-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/14/2012 1:54 AM, Mark Brown wrote:
-> On Mon, May 14, 2012 at 12:00:51AM -0700, Patrick Lai wrote:
->
->> The hardware I am working on has CODEC transfer microphone signal to
->> two SOCs simultaneously . In the machine driver, I have two dai-links
->
-> This isn't something the framework supports.  You'd need to either
-> implement the support or wait for someone else to do so.
->
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Yes, I intended to implement framework support. However, I just want to
-make sure I am not hijacking playback_active and capture_active flags
-for unintended purpose. Base on existing code, playback_active is only
-used for handling click and pop and capture_active flag is not used at
-all.
+Commit 4924082 "ASoC: core: Flip master for CODECs in the CPU slot of a
+CODEC<->CODEC link" added code that was conditional on there being no
+PCM/DMA driver for the link. However, it failed to cover the case where
+the link was instantiated from device tree, and hence was specified by
+DT node rather than name.
 
-Thanks
-Patrick
+This prevents the following error on Toshiba AC100:
+aplay: pcm_write:1603: write error: Input/output error
 
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+I tested this fix on AC100 (ALC5632), Harmony (WM8903), and TrimSlice
+(TLV320AIC23). I'm not sure why the issue only affected AC100. Perhaps
+the other codecs support being the I2S master but the ALC5632 driver
+doesn't?
+---
+ sound/soc/soc-core.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2783d2b..b37ee80 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1612,7 +1612,8 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		}
+ 
+ 		/* If this is a regular CPU link there will be a platform */
+-		if (dai_fmt && dai_link->platform_name) {
++		if (dai_fmt &&
++		    (dai_link->platform_name || dai_link->platform_of_node)) {
+ 			ret = snd_soc_dai_set_fmt(card->rtd[i].cpu_dai,
+ 						  dai_fmt);
+ 			if (ret != 0 && ret != -ENOTSUPP)
 -- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+1.7.0.4
