@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8350: Don't use irq_base
-Date: Sun, 13 May 2012 23:53:18 +0100
-Message-ID: <1336949598-6710-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Problem with snd_soc_suspend
+Date: Sun, 13 May 2012 23:30:29 -0700
+Message-ID: <4FB0A685.3040408@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59214103FBC
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90789103B65
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 00:53:26 +0200 (CEST)
+	Mon, 14 May 2012 08:30:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,104 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-In preparation for irq_domain support change the code to the not switch
-based on the irq number. This actually makes things simpler, if slightly
-repetitive.
+Hi,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8350.c |   46 ++++++++++++++++++++++++++-------------------
- 1 file changed, 27 insertions(+), 19 deletions(-)
+The CODEC I am working on has multiple digital audio interfaces included
+in multiple DAI-LINks. DAILINK X has ignore_suspend flag set and
+DAILINK Y has ignore_suspend flag cleared. The problem I encountered is
+that as system attempts to enter suspend while DAILINK X is active,
+snd_soc_suspend() calls snd_soc_dapm_stream_event(
+SND_SOC_DAPM_STREAM_SUSPEND) on inactive DAILINK Y since DAILINK Y
+ignore flag is not set. Consequently, CODEC widgets get powered off
+even though they should remain powered for DAILINK X.
+Kernel version I am working with is 3.0.
 
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index 8006149..8cee548 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -1291,35 +1291,36 @@ static void wm8350_hpr_work(struct work_struct *work)
- 	wm8350_hp_work(priv, &priv->hpr, WM8350_JACK_R_LVL);
- }
- 
--static irqreturn_t wm8350_hp_jack_handler(int irq, void *data)
-+static irqreturn_t wm8350_hpl_jack_handler(int irq, void *data)
- {
- 	struct wm8350_data *priv = data;
- 	struct wm8350 *wm8350 = priv->wm8350;
--	struct wm8350_jack_data *jack = NULL;
- 
--	switch (irq - wm8350->irq_base) {
--	case WM8350_IRQ_CODEC_JCK_DET_L:
- #ifndef CONFIG_SND_SOC_WM8350_MODULE
--		trace_snd_soc_jack_irq("WM8350 HPL");
-+	trace_snd_soc_jack_irq("WM8350 HPL");
- #endif
--		jack = &priv->hpl;
--		break;
- 
--	case WM8350_IRQ_CODEC_JCK_DET_R:
-+	if (device_may_wakeup(wm8350->dev))
-+		pm_wakeup_event(wm8350->dev, 250);
-+
-+	schedule_delayed_work(&priv->hpl.work, 200);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t wm8350_hpr_jack_handler(int irq, void *data)
-+{
-+	struct wm8350_data *priv = data;
-+	struct wm8350 *wm8350 = priv->wm8350;
-+
- #ifndef CONFIG_SND_SOC_WM8350_MODULE
--		trace_snd_soc_jack_irq("WM8350 HPR");
-+	trace_snd_soc_jack_irq("WM8350 HPR");
- #endif
--		jack = &priv->hpr;
--		break;
--
--	default:
--		BUG();
--	}
- 
- 	if (device_may_wakeup(wm8350->dev))
- 		pm_wakeup_event(wm8350->dev, 250);
- 
--	schedule_delayed_work(&jack->work, 200);
-+	schedule_delayed_work(&priv->hpr.work, 200);
- 
- 	return IRQ_HANDLED;
- }
-@@ -1370,7 +1371,14 @@ int wm8350_hp_jack_detect(struct snd_soc_codec *codec, enum wm8350_jack which,
- 	}
- 
- 	/* Sync status */
--	wm8350_hp_jack_handler(irq + wm8350->irq_base, priv);
-+	switch (which) {
-+	case WM8350_JDL:
-+		wm8350_hpl_jack_handler(0, priv);
-+		break;
-+	case WM8350_JDR:
-+		wm8350_hpr_jack_handler(0, priv);
-+		break;
-+	}
- 
- 	return 0;
- }
-@@ -1554,10 +1562,10 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
- 			  WM8350_JDL_ENA | WM8350_JDR_ENA);
- 
- 	wm8350_register_irq(wm8350, WM8350_IRQ_CODEC_JCK_DET_L,
--			    wm8350_hp_jack_handler, 0, "Left jack detect",
-+			    wm8350_hpl_jack_handler, 0, "Left jack detect",
- 			    priv);
- 	wm8350_register_irq(wm8350, WM8350_IRQ_CODEC_JCK_DET_R,
--			    wm8350_hp_jack_handler, 0, "Right jack detect",
-+			    wm8350_hpr_jack_handler, 0, "Right jack detect",
- 			    priv);
- 	wm8350_register_irq(wm8350, WM8350_IRQ_CODEC_MICSCD,
- 			    wm8350_mic_handler, 0, "Microphone short", priv);
+Couple questions with respect to this problem
+
+1. Should soc-core check if CODEC DAI is active beside checking
+ignore_suspend flag before calling snd_soc_dapm_stream_event()?
+I checked latest soc-core.c from kernel 3.4 RC7. The logic is the same
+as 3.0
+
+2. Even if snd_soc_dapm_stream_event() is called, DAPM should not power
+off widgets that are powered up for DAILINK x.  It seems like DAPM has
+the logic to only power off AIF widget if stream name of widget matches
+CODEC DAI stream name in soc_dapm_stream_event(). I have not gotten
+time to debug this problem further. However, is it a known bug on
+kernel 3.0. If so, has the problem been addressed in more recent kernel?
+
+Thanks
+Patrick
+
 -- 
-1.7.10
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
