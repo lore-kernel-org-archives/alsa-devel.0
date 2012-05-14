@@ -1,22 +1,23 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/15] ALSA: hda - Fix concurrent hash accesses
-Date: Mon, 14 May 2012 17:32:04 +0200
-Message-ID: <1337009526-26256-14-git-send-email-tiwai@suse.de>
+Subject: [PATCH 06/15] ALSA: hda - Move up the fixup helper
+	functions to the library module
+Date: Mon, 14 May 2012 17:31:57 +0200
+Message-ID: <1337009526-26256-7-git-send-email-tiwai@suse.de>
 References: <1337009526-26256-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id A925A24A2F
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C21424A21
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:18 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id 06F2F90B96
+	by mx2.suse.de (Postfix) with ESMTP id E61468FC92
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 17:32:18 +0200 (CEST)
+	Mon, 14 May 2012 17:32:17 +0200 (CEST)
 In-Reply-To: <1337009526-26256-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,341 +32,769 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-The amp and caps hashes aren't protected properly for concurrent
-accesses.  Protect them via a new mutex now.
-
-But it can't be so simple as originally thought: since the update of a
-hash table entry itself might trigger the power-up sequence which
-again accesses the hash table, we can't cover the whole function
-simply via mutex.  Thus the update part has to be split from the mutex
-and revalidated.
+Move the fixup helper functions in patch_realtek.c to hda_auto_parser.c
+so that they can be used in other codec drivers like patch_conexant.c.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c |  201 +++++++++++++++++++++++++++------------------
- sound/pci/hda/hda_codec.h |    1 +
- 2 files changed, 121 insertions(+), 81 deletions(-)
+ sound/pci/hda/Makefile          |    2 +-
+ sound/pci/hda/hda_auto_parser.c |  163 ++++++++++++++++++++++++++
+ sound/pci/hda/hda_auto_parser.h |   80 +++++++++++++
+ sound/pci/hda/patch_conexant.c  |   62 ++++------
+ sound/pci/hda/patch_realtek.c   |  244 +++++++--------------------------------
+ 5 files changed, 309 insertions(+), 242 deletions(-)
+ create mode 100644 sound/pci/hda/hda_auto_parser.c
+ create mode 100644 sound/pci/hda/hda_auto_parser.h
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 5e7c4bf..7a621f5 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1255,6 +1255,7 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
- 	codec->addr = codec_addr;
- 	mutex_init(&codec->spdif_mutex);
- 	mutex_init(&codec->control_mutex);
-+	mutex_init(&codec->hash_mutex);
- 	init_hda_cache(&codec->amp_cache, sizeof(struct hda_amp_info));
- 	init_hda_cache(&codec->cmd_cache, sizeof(struct hda_cache_head));
- 	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
-@@ -1605,6 +1606,60 @@ get_alloc_amp_hash(struct hda_codec *codec, u32 key)
- 	return (struct hda_amp_info *)get_alloc_hash(&codec->amp_cache, key);
- }
+diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+index ace157c..bd4149f 100644
+--- a/sound/pci/hda/Makefile
++++ b/sound/pci/hda/Makefile
+@@ -1,6 +1,6 @@
+ snd-hda-intel-objs := hda_intel.o
  
-+/* overwrite the value with the key in the caps hash */
-+static int write_caps_hash(struct hda_codec *codec, u32 key, unsigned int val)
-+{
-+	struct hda_amp_info *info;
+-snd-hda-codec-y := hda_codec.o hda_jack.o
++snd-hda-codec-y := hda_codec.o hda_jack.o hda_auto_parser.o
+ snd-hda-codec-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
+ snd-hda-codec-$(CONFIG_PROC_FS) += hda_proc.o
+ snd-hda-codec-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+new file mode 100644
+index 0000000..7cc3a16
+--- /dev/null
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -0,0 +1,163 @@
++/*
++ * BIOS auto-parser helper functions for HD-audio
++ *
++ * Copyright (c) 2012 Takashi Iwai <tiwai@suse.de>
++ *
++ * This driver is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
 +
-+	mutex_lock(&codec->hash_mutex);
-+	info = get_alloc_amp_hash(codec, key);
-+	if (!info) {
-+		mutex_unlock(&codec->hash_mutex);
-+		return -EINVAL;
-+	}
-+	info->amp_caps = val;
-+	info->head.val |= INFO_AMP_CAPS;
-+	mutex_unlock(&codec->hash_mutex);
++#include <linux/slab.h>
++#include <linux/export.h>
++#include <sound/core.h>
++#include "hda_codec.h"
++#include "hda_auto_parser.h"
++
++#define SFX	"hda_codec: "
++
++int snd_hda_gen_add_verbs(struct hda_gen_spec *spec,
++			  const struct hda_verb *list)
++{
++	const struct hda_verb **v;
++	snd_array_init(&spec->verbs, sizeof(struct hda_verb *), 8);
++	v = snd_array_new(&spec->verbs);
++	if (!v)
++		return -ENOMEM;
++	*v = list;
 +	return 0;
 +}
++EXPORT_SYMBOL_HDA(snd_hda_gen_add_verbs);
 +
-+/* query the value from the caps hash; if not found, fetch the current
-+ * value from the given function and store in the hash
++void snd_hda_gen_apply_verbs(struct hda_codec *codec)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	int i;
++	for (i = 0; i < spec->verbs.used; i++) {
++		struct hda_verb **v = snd_array_elem(&spec->verbs, i);
++		snd_hda_sequence_write(codec, *v);
++	}
++}
++EXPORT_SYMBOL_HDA(snd_hda_gen_apply_verbs);
++
++void snd_hda_apply_pincfgs(struct hda_codec *codec,
++			   const struct hda_pintbl *cfg)
++{
++	for (; cfg->nid; cfg++)
++		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
++}
++EXPORT_SYMBOL_HDA(snd_hda_apply_pincfgs);
++
++void snd_hda_apply_fixup(struct hda_codec *codec, int action)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	int id = spec->fixup_id;
++#ifdef CONFIG_SND_DEBUG_VERBOSE
++	const char *modelname = spec->fixup_name;
++#endif
++	int depth = 0;
++
++	if (!spec->fixup_list)
++		return;
++
++	while (id >= 0) {
++		const struct hda_fixup *fix = spec->fixup_list + id;
++
++		switch (fix->type) {
++		case HDA_FIXUP_PINS:
++			if (action != HDA_FIXUP_ACT_PRE_PROBE || !fix->v.pins)
++				break;
++			snd_printdd(KERN_INFO SFX
++				    "%s: Apply pincfg for %s\n",
++				    codec->chip_name, modelname);
++			snd_hda_apply_pincfgs(codec, fix->v.pins);
++			break;
++		case HDA_FIXUP_VERBS:
++			if (action != HDA_FIXUP_ACT_PROBE || !fix->v.verbs)
++				break;
++			snd_printdd(KERN_INFO SFX
++				    "%s: Apply fix-verbs for %s\n",
++				    codec->chip_name, modelname);
++			snd_hda_gen_add_verbs(codec->spec, fix->v.verbs);
++			break;
++		case HDA_FIXUP_FUNC:
++			if (!fix->v.func)
++				break;
++			snd_printdd(KERN_INFO SFX
++				    "%s: Apply fix-func for %s\n",
++				    codec->chip_name, modelname);
++			fix->v.func(codec, fix, action);
++			break;
++		default:
++			snd_printk(KERN_ERR SFX
++				   "%s: Invalid fixup type %d\n",
++				   codec->chip_name, fix->type);
++			break;
++		}
++		if (!fix->chained)
++			break;
++		if (++depth > 10)
++			break;
++		id = fix->chain_id;
++	}
++}
++EXPORT_SYMBOL_HDA(snd_hda_apply_fixup);
++
++void snd_hda_pick_fixup(struct hda_codec *codec,
++			const struct hda_model_fixup *models,
++			const struct snd_pci_quirk *quirk,
++			const struct hda_fixup *fixlist)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	const struct snd_pci_quirk *q;
++	int id = -1;
++	const char *name = NULL;
++
++	/* when model=nofixup is given, don't pick up any fixups */
++	if (codec->modelname && !strcmp(codec->modelname, "nofixup")) {
++		spec->fixup_list = NULL;
++		spec->fixup_id = -1;
++		return;
++	}
++
++	if (codec->modelname && models) {
++		while (models->name) {
++			if (!strcmp(codec->modelname, models->name)) {
++				id = models->id;
++				name = models->name;
++				break;
++			}
++			models++;
++		}
++	}
++	if (id < 0) {
++		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
++		if (q) {
++			id = q->value;
++#ifdef CONFIG_SND_DEBUG_VERBOSE
++			name = q->name;
++#endif
++		}
++	}
++	if (id < 0) {
++		for (q = quirk; q->subvendor; q++) {
++			unsigned int vendorid =
++				q->subdevice | (q->subvendor << 16);
++			if (vendorid == codec->subsystem_id) {
++				id = q->value;
++#ifdef CONFIG_SND_DEBUG_VERBOSE
++				name = q->name;
++#endif
++				break;
++			}
++		}
++	}
++
++	spec->fixup_id = id;
++	if (id >= 0) {
++		spec->fixup_list = fixlist;
++		spec->fixup_name = name;
++	}
++}
++EXPORT_SYMBOL_HDA(snd_hda_pick_fixup);
+diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
+new file mode 100644
+index 0000000..9fe4f5d
+--- /dev/null
++++ b/sound/pci/hda/hda_auto_parser.h
+@@ -0,0 +1,80 @@
++/*
++ * BIOS auto-parser helper functions for HD-audio
++ *
++ * Copyright (c) 2012 Takashi Iwai <tiwai@suse.de>
++ *
++ * This driver is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
 + */
-+static unsigned int
-+query_caps_hash(struct hda_codec *codec, hda_nid_t nid, int dir, u32 key,
-+		unsigned int (*func)(struct hda_codec *, hda_nid_t, int))
-+{
-+	struct hda_amp_info *info;
-+	unsigned int val;
 +
-+	mutex_lock(&codec->hash_mutex);
-+	info = get_alloc_amp_hash(codec, key);
-+	if (!info) {
-+		mutex_unlock(&codec->hash_mutex);
-+		return 0;
-+	}
-+	if (!(info->head.val & INFO_AMP_CAPS)) {
-+		mutex_unlock(&codec->hash_mutex); /* for reentrance */
-+		val = func(codec, nid, dir);
-+		write_caps_hash(codec, key, val);
-+	} else {
-+		val = info->amp_caps;
-+		mutex_unlock(&codec->hash_mutex);
-+	}
-+	return val;
-+}
++#ifndef __SOUND_HDA_AUTO_PARSER_H
++#define __SOUND_HDA_AUTO_PARSER_H
 +
-+static unsigned int read_amp_cap(struct hda_codec *codec, hda_nid_t nid,
-+				 int direction)
-+{
-+	if (!(get_wcaps(codec, nid) & AC_WCAP_AMP_OVRD))
-+		nid = codec->afg;
-+	return snd_hda_param_read(codec, nid,
-+				  direction == HDA_OUTPUT ?
-+				  AC_PAR_AMP_OUT_CAP : AC_PAR_AMP_IN_CAP);
-+}
++struct hda_gen_spec {
++	/* fix-up list */
++	int fixup_id;
++	const struct hda_fixup *fixup_list;
++	const char *fixup_name;
 +
- /**
-  * query_amp_caps - query AMP capabilities
-  * @codec: the HD-auio codec
-@@ -1619,22 +1674,9 @@ get_alloc_amp_hash(struct hda_codec *codec, u32 key)
++	/* additional init verbs */
++	struct snd_array verbs;
++};
++
++
++/*
++ * Fix-up pin default configurations and add default verbs
++ */
++
++struct hda_pintbl {
++	hda_nid_t nid;
++	u32 val;
++};
++
++struct hda_model_fixup {
++	const int id;
++	const char *name;
++};
++
++struct hda_fixup {
++	int type;
++	bool chained;
++	int chain_id;
++	union {
++		const struct hda_pintbl *pins;
++		const struct hda_verb *verbs;
++		void (*func)(struct hda_codec *codec,
++			     const struct hda_fixup *fix,
++			     int action);
++	} v;
++};
++
++/* fixup types */
++enum {
++	HDA_FIXUP_INVALID,
++	HDA_FIXUP_PINS,
++	HDA_FIXUP_VERBS,
++	HDA_FIXUP_FUNC,
++};
++
++/* fixup action definitions */
++enum {
++	HDA_FIXUP_ACT_PRE_PROBE,
++	HDA_FIXUP_ACT_PROBE,
++	HDA_FIXUP_ACT_INIT,
++	HDA_FIXUP_ACT_BUILD,
++};
++
++int snd_hda_gen_add_verbs(struct hda_gen_spec *spec,
++			  const struct hda_verb *list);
++void snd_hda_gen_apply_verbs(struct hda_codec *codec);
++void snd_hda_apply_pincfgs(struct hda_codec *codec,
++			   const struct hda_pintbl *cfg);
++void snd_hda_apply_fixup(struct hda_codec *codec, int action);
++void snd_hda_pick_fixup(struct hda_codec *codec,
++			const struct hda_model_fixup *models,
++			const struct snd_pci_quirk *quirk,
++			const struct hda_fixup *fixlist);
++
++#endif /* __SOUND_HDA_AUTO_PARSER_H */
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index aabdb9e..2cfcec0 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -30,6 +30,7 @@
+ 
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_beep.h"
+ #include "hda_jack.h"
+ 
+@@ -66,6 +67,7 @@ struct imux_info {
+ };
+ 
+ struct conexant_spec {
++	struct hda_gen_spec gen;
+ 
+ 	const struct snd_kcontrol_new *mixers[5];
+ 	int num_mixers;
+@@ -4407,47 +4409,21 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
+ /*
+  * pin fix-up
   */
- u32 query_amp_caps(struct hda_codec *codec, hda_nid_t nid, int direction)
- {
--	struct hda_amp_info *info;
+-struct cxt_pincfg {
+-	hda_nid_t nid;
+-	u32 val;
+-};
 -
--	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, 0));
--	if (!info)
--		return 0;
--	if (!(info->head.val & INFO_AMP_CAPS)) {
--		if (!(get_wcaps(codec, nid) & AC_WCAP_AMP_OVRD))
--			nid = codec->afg;
--		info->amp_caps = snd_hda_param_read(codec, nid,
--						    direction == HDA_OUTPUT ?
--						    AC_PAR_AMP_OUT_CAP :
--						    AC_PAR_AMP_IN_CAP);
--		if (info->amp_caps)
--			info->head.val |= INFO_AMP_CAPS;
--	}
--	return info->amp_caps;
-+	return query_caps_hash(codec, nid, direction,
-+			       HDA_HASH_KEY(nid, direction, 0),
-+			       read_amp_cap);
- }
- EXPORT_SYMBOL_HDA(query_amp_caps);
- 
-@@ -1654,34 +1696,12 @@ EXPORT_SYMBOL_HDA(query_amp_caps);
- int snd_hda_override_amp_caps(struct hda_codec *codec, hda_nid_t nid, int dir,
- 			      unsigned int caps)
- {
--	struct hda_amp_info *info;
--
--	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, dir, 0));
--	if (!info)
--		return -EINVAL;
--	info->amp_caps = caps;
--	info->head.val |= INFO_AMP_CAPS;
--	return 0;
-+	return write_caps_hash(codec, HDA_HASH_KEY(nid, dir, 0), caps);
- }
- EXPORT_SYMBOL_HDA(snd_hda_override_amp_caps);
- 
--static unsigned int
--query_caps_hash(struct hda_codec *codec, hda_nid_t nid, u32 key,
--		unsigned int (*func)(struct hda_codec *, hda_nid_t))
+-static void apply_pincfg(struct hda_codec *codec, const struct cxt_pincfg *cfg)
 -{
--	struct hda_amp_info *info;
+-	for (; cfg->nid; cfg++)
+-		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
 -
--	info = get_alloc_amp_hash(codec, key);
--	if (!info)
--		return 0;
--	if (!info->head.val) {
--		info->head.val |= INFO_AMP_CAPS;
--		info->amp_caps = func(codec, nid);
--	}
--	return info->amp_caps;
 -}
 -
--static unsigned int read_pin_cap(struct hda_codec *codec, hda_nid_t nid)
-+static unsigned int read_pin_cap(struct hda_codec *codec, hda_nid_t nid,
-+				 int dir)
- {
- 	return snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
- }
-@@ -1699,7 +1719,7 @@ static unsigned int read_pin_cap(struct hda_codec *codec, hda_nid_t nid)
-  */
- u32 snd_hda_query_pin_caps(struct hda_codec *codec, hda_nid_t nid)
- {
--	return query_caps_hash(codec, nid, HDA_HASH_PINCAP_KEY(nid),
-+	return query_caps_hash(codec, nid, 0, HDA_HASH_PINCAP_KEY(nid),
- 			       read_pin_cap);
- }
- EXPORT_SYMBOL_HDA(snd_hda_query_pin_caps);
-@@ -1717,41 +1737,47 @@ EXPORT_SYMBOL_HDA(snd_hda_query_pin_caps);
- int snd_hda_override_pin_caps(struct hda_codec *codec, hda_nid_t nid,
- 			      unsigned int caps)
- {
--	struct hda_amp_info *info;
--	info = get_alloc_amp_hash(codec, HDA_HASH_PINCAP_KEY(nid));
--	if (!info)
--		return -ENOMEM;
--	info->amp_caps = caps;
--	info->head.val |= INFO_AMP_CAPS;
--	return 0;
-+	return write_caps_hash(codec, HDA_HASH_PINCAP_KEY(nid), caps);
- }
- EXPORT_SYMBOL_HDA(snd_hda_override_pin_caps);
+ enum {
+ 	CXT_PINCFG_LENOVO_X200,
+ 	CXT_PINCFG_LENOVO_TP410,
+ 	CXT_FIXUP_STEREO_DMIC,
+ };
  
--/*
-- * read the current volume to info
-- * if the cache exists, read the cache value.
-+/* read or sync the hash value with the current value;
-+ * call within hash_mutex
-  */
--static unsigned int get_vol_mute(struct hda_codec *codec,
--				 struct hda_amp_info *info, hda_nid_t nid,
--				 int ch, int direction, int index)
-+static struct hda_amp_info *
-+update_amp_hash(struct hda_codec *codec, hda_nid_t nid, int ch,
-+		int direction, int index)
+-static void apply_fixup(struct hda_codec *codec,
+-			    const struct snd_pci_quirk *quirk,
+-			    const struct cxt_pincfg **table)
++static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
  {
--	u32 val, parm;
+ 	struct conexant_spec *spec = codec->spec;
 -
--	if (info->head.val & INFO_AMP_VOL(ch))
--		return info->vol[ch];
-+	struct hda_amp_info *info;
-+	unsigned int parm, val = 0;
-+	bool val_read = false;
+-	quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
+-	if (!quirk)
+-		return;
+-	if (table[quirk->value]) {
+-		snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
+-			    quirk->name);
+-		apply_pincfg(codec, table[quirk->value]);
+-	}
+-	if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
+-		snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
+-			    quirk->name);
+-		spec->fixup_stereo_dmic = 1;
+-	}
++	spec->fixup_stereo_dmic = 1;
+ }
  
--	parm = ch ? AC_AMP_GET_RIGHT : AC_AMP_GET_LEFT;
--	parm |= direction == HDA_OUTPUT ? AC_AMP_GET_OUTPUT : AC_AMP_GET_INPUT;
--	parm |= index;
--	val = snd_hda_codec_read(codec, nid, 0,
-+ retry:
-+	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, index));
-+	if (!info)
-+		return NULL;
-+	if (!(info->head.val & INFO_AMP_VOL(ch))) {
-+		if (!val_read) {
-+			mutex_unlock(&codec->hash_mutex);
-+			parm = ch ? AC_AMP_GET_RIGHT : AC_AMP_GET_LEFT;
-+			parm |= direction == HDA_OUTPUT ?
-+				AC_AMP_GET_OUTPUT : AC_AMP_GET_INPUT;
-+			parm |= index;
-+			val = snd_hda_codec_read(codec, nid, 0,
- 				 AC_VERB_GET_AMP_GAIN_MUTE, parm);
--	info->vol[ch] = val & 0xff;
--	info->head.val |= INFO_AMP_VOL(ch);
--	return info->vol[ch];
-+			val &= 0xff;
-+			val_read = true;
-+			mutex_lock(&codec->hash_mutex);
-+			goto retry;
-+		}
-+		info->vol[ch] = val;
-+		info->head.val |= INFO_AMP_VOL(ch);
+ /* ThinkPad X200 & co with cxt5051 */
+-static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
++static const struct hda_pintbl cxt_pincfg_lenovo_x200[] = {
+ 	{ 0x16, 0x042140ff }, /* HP (seq# overridden) */
+ 	{ 0x17, 0x21a11000 }, /* dock-mic */
+ 	{ 0x19, 0x2121103f }, /* dock-HP */
+@@ -4456,17 +4432,26 @@ static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
+ };
+ 
+ /* ThinkPad 410/420/510/520, X201 & co with cxt5066 */
+-static const struct cxt_pincfg cxt_pincfg_lenovo_tp410[] = {
++static const struct hda_pintbl cxt_pincfg_lenovo_tp410[] = {
+ 	{ 0x19, 0x042110ff }, /* HP (seq# overridden) */
+ 	{ 0x1a, 0x21a190f0 }, /* dock-mic */
+ 	{ 0x1c, 0x212140ff }, /* dock-HP */
+ 	{}
+ };
+ 
+-static const struct cxt_pincfg *cxt_pincfg_tbl[] = {
+-	[CXT_PINCFG_LENOVO_X200] = cxt_pincfg_lenovo_x200,
+-	[CXT_PINCFG_LENOVO_TP410] = cxt_pincfg_lenovo_tp410,
+-	[CXT_FIXUP_STEREO_DMIC] = NULL,
++static const struct hda_fixup cxt_fixups[] = {
++	[CXT_PINCFG_LENOVO_X200] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cxt_pincfg_lenovo_x200,
++	},
++	[CXT_PINCFG_LENOVO_TP410] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cxt_pincfg_lenovo_tp410,
++	},
++	[CXT_FIXUP_STEREO_DMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cxt_fixup_stereo_dmic,
++	},
+ };
+ 
+ static const struct snd_pci_quirk cxt5051_fixups[] = {
+@@ -4520,13 +4505,16 @@ static int patch_conexant_auto(struct hda_codec *codec)
+ 	case 0x14f15051:
+ 		add_cx5051_fake_mutes(codec);
+ 		codec->pin_amp_workaround = 1;
+-		apply_fixup(codec, cxt5051_fixups, cxt_pincfg_tbl);
++		snd_hda_pick_fixup(codec, NULL, cxt5051_fixups, cxt_fixups);
+ 		break;
+ 	default:
+ 		codec->pin_amp_workaround = 1;
+-		apply_fixup(codec, cxt5066_fixups, cxt_pincfg_tbl);
++		snd_hda_pick_fixup(codec, NULL, cxt5066_fixups, cxt_fixups);
++		break;
+ 	}
+ 
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
+ 	/* Show mute-led control only on HP laptops
+ 	 * This is a sort of white-list: on HP laptops, EAPD corresponds
+ 	 * only to the mute-LED without actualy amp function.  Meanwhile,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ae9732c..152f458 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -32,6 +32,7 @@
+ #include <sound/jack.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_beep.h"
+ #include "hda_jack.h"
+ 
+@@ -66,8 +67,6 @@ struct alc_customize_define {
+ 	unsigned int  fixup:1; /* Means that this sku is set by driver, not read from hw */
+ };
+ 
+-struct alc_fixup;
+-
+ struct alc_multi_io {
+ 	hda_nid_t pin;		/* multi-io widget pin NID */
+ 	hda_nid_t dac;		/* DAC to be connected */
+@@ -82,19 +81,33 @@ enum {
+ 
+ #define MAX_VOL_NIDS	0x40
+ 
++/* make compatible with old code */
++#define alc_apply_pincfgs	snd_hda_apply_pincfgs
++#define alc_apply_fixup		snd_hda_apply_fixup
++#define alc_pick_fixup		snd_hda_pick_fixup
++#define alc_fixup		hda_fixup
++#define alc_pincfg		hda_pintbl
++#define alc_model_fixup		hda_model_fixup
++
++#define ALC_FIXUP_PINS	HDA_FIXUP_PINS
++#define ALC_FIXUP_VERBS	HDA_FIXUP_VERBS
++#define ALC_FIXUP_FUNC	HDA_FIXUP_FUNC
++
++#define ALC_FIXUP_ACT_PRE_PROBE	HDA_FIXUP_ACT_PRE_PROBE
++#define ALC_FIXUP_ACT_PROBE	HDA_FIXUP_ACT_PROBE
++#define ALC_FIXUP_ACT_INIT	HDA_FIXUP_ACT_INIT
++#define ALC_FIXUP_ACT_BUILD	HDA_FIXUP_ACT_BUILD
++
++
+ struct alc_spec {
++	struct hda_gen_spec gen;
++
+ 	/* codec parameterization */
+ 	const struct snd_kcontrol_new *mixers[5];	/* mixer arrays */
+ 	unsigned int num_mixers;
+ 	const struct snd_kcontrol_new *cap_mixer;	/* capture mixer */
+ 	unsigned int beep_amp;	/* beep amp value, set via set_beep_amp() */
+ 
+-	const struct hda_verb *init_verbs[10];	/* initialization verbs
+-						 * don't forget NULL
+-						 * termination!
+-						 */
+-	unsigned int num_init_verbs;
+-
+ 	char stream_name_analog[32];	/* analog PCM stream */
+ 	const struct hda_pcm_stream *stream_analog_playback;
+ 	const struct hda_pcm_stream *stream_analog_capture;
+@@ -210,11 +223,6 @@ struct alc_spec {
+ 	unsigned int pll_coef_idx, pll_coef_bit;
+ 	unsigned int coef0;
+ 
+-	/* fix-up list */
+-	int fixup_id;
+-	const struct alc_fixup *fixup_list;
+-	const char *fixup_name;
+-
+ 	/* multi-io */
+ 	int multi_ios;
+ 	struct alc_multi_io multi_io[4];
+@@ -396,13 +404,6 @@ static void add_mixer(struct alc_spec *spec, const struct snd_kcontrol_new *mix)
+ 	spec->mixers[spec->num_mixers++] = mix;
+ }
+ 
+-static void add_verb(struct alc_spec *spec, const struct hda_verb *verb)
+-{
+-	if (snd_BUG_ON(spec->num_init_verbs >= ARRAY_SIZE(spec->init_verbs)))
+-		return;
+-	spec->init_verbs[spec->num_init_verbs++] = verb;
+-}
+-
+ /*
+  * GPIO setup tables, used in initialization
+  */
+@@ -1185,6 +1186,16 @@ static void alc_auto_check_switches(struct hda_codec *codec)
+  */
+ #define ALC_FIXUP_SKU_IGNORE (2)
+ 
++static void alc_fixup_sku_ignore(struct hda_codec *codec,
++				 const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->cdefine.fixup = 1;
++		spec->cdefine.sku_cfg = ALC_FIXUP_SKU_IGNORE;
 +	}
-+	return info;
++}
++
+ static int alc_auto_parse_customize_define(struct hda_codec *codec)
+ {
+ 	unsigned int ass, tmp, i;
+@@ -1388,178 +1399,6 @@ static void alc_ssid_check(struct hda_codec *codec, const hda_nid_t *ports)
  }
  
  /*
-- * write the current volume in info to the h/w and update the cache
-+ * write the current volume in info to the h/w
+- * Fix-up pin default configurations and add default verbs
+- */
+-
+-struct alc_pincfg {
+-	hda_nid_t nid;
+-	u32 val;
+-};
+-
+-struct alc_model_fixup {
+-	const int id;
+-	const char *name;
+-};
+-
+-struct alc_fixup {
+-	int type;
+-	bool chained;
+-	int chain_id;
+-	union {
+-		unsigned int sku;
+-		const struct alc_pincfg *pins;
+-		const struct hda_verb *verbs;
+-		void (*func)(struct hda_codec *codec,
+-			     const struct alc_fixup *fix,
+-			     int action);
+-	} v;
+-};
+-
+-enum {
+-	ALC_FIXUP_INVALID,
+-	ALC_FIXUP_SKU,
+-	ALC_FIXUP_PINS,
+-	ALC_FIXUP_VERBS,
+-	ALC_FIXUP_FUNC,
+-};
+-
+-enum {
+-	ALC_FIXUP_ACT_PRE_PROBE,
+-	ALC_FIXUP_ACT_PROBE,
+-	ALC_FIXUP_ACT_INIT,
+-	ALC_FIXUP_ACT_BUILD,
+-};
+-
+-static void alc_apply_pincfgs(struct hda_codec *codec,
+-			      const struct alc_pincfg *cfg)
+-{
+-	for (; cfg->nid; cfg++)
+-		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
+-}
+-
+-static void alc_apply_fixup(struct hda_codec *codec, int action)
+-{
+-	struct alc_spec *spec = codec->spec;
+-	int id = spec->fixup_id;
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+-	const char *modelname = spec->fixup_name;
+-#endif
+-	int depth = 0;
+-
+-	if (!spec->fixup_list)
+-		return;
+-
+-	while (id >= 0) {
+-		const struct alc_fixup *fix = spec->fixup_list + id;
+-		const struct alc_pincfg *cfg;
+-
+-		switch (fix->type) {
+-		case ALC_FIXUP_SKU:
+-			if (action != ALC_FIXUP_ACT_PRE_PROBE || !fix->v.sku)
+-				break;
+-			snd_printdd(KERN_INFO "hda_codec: %s: "
+-				    "Apply sku override for %s\n",
+-				    codec->chip_name, modelname);
+-			spec->cdefine.sku_cfg = fix->v.sku;
+-			spec->cdefine.fixup = 1;
+-			break;
+-		case ALC_FIXUP_PINS:
+-			cfg = fix->v.pins;
+-			if (action != ALC_FIXUP_ACT_PRE_PROBE || !cfg)
+-				break;
+-			snd_printdd(KERN_INFO "hda_codec: %s: "
+-				    "Apply pincfg for %s\n",
+-				    codec->chip_name, modelname);
+-			alc_apply_pincfgs(codec, cfg);
+-			break;
+-		case ALC_FIXUP_VERBS:
+-			if (action != ALC_FIXUP_ACT_PROBE || !fix->v.verbs)
+-				break;
+-			snd_printdd(KERN_INFO "hda_codec: %s: "
+-				    "Apply fix-verbs for %s\n",
+-				    codec->chip_name, modelname);
+-			add_verb(codec->spec, fix->v.verbs);
+-			break;
+-		case ALC_FIXUP_FUNC:
+-			if (!fix->v.func)
+-				break;
+-			snd_printdd(KERN_INFO "hda_codec: %s: "
+-				    "Apply fix-func for %s\n",
+-				    codec->chip_name, modelname);
+-			fix->v.func(codec, fix, action);
+-			break;
+-		default:
+-			snd_printk(KERN_ERR "hda_codec: %s: "
+-				   "Invalid fixup type %d\n",
+-				   codec->chip_name, fix->type);
+-			break;
+-		}
+-		if (!fix->chained)
+-			break;
+-		if (++depth > 10)
+-			break;
+-		id = fix->chain_id;
+-	}
+-}
+-
+-static void alc_pick_fixup(struct hda_codec *codec,
+-			   const struct alc_model_fixup *models,
+-			   const struct snd_pci_quirk *quirk,
+-			   const struct alc_fixup *fixlist)
+-{
+-	struct alc_spec *spec = codec->spec;
+-	const struct snd_pci_quirk *q;
+-	int id = -1;
+-	const char *name = NULL;
+-
+-	/* when model=nofixup is given, don't pick up any fixups */
+-	if (codec->modelname && !strcmp(codec->modelname, "nofixup")) {
+-		spec->fixup_list = NULL;
+-		spec->fixup_id = -1;
+-		return;
+-	}
+-
+-	if (codec->modelname && models) {
+-		while (models->name) {
+-			if (!strcmp(codec->modelname, models->name)) {
+-				id = models->id;
+-				name = models->name;
+-				break;
+-			}
+-			models++;
+-		}
+-	}
+-	if (id < 0) {
+-		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
+-		if (q) {
+-			id = q->value;
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+-			name = q->name;
+-#endif
+-		}
+-	}
+-	if (id < 0) {
+-		for (q = quirk; q->subvendor; q++) {
+-			unsigned int vendorid =
+-				q->subdevice | (q->subvendor << 16);
+-			if (vendorid == codec->subsystem_id) {
+-				id = q->value;
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+-				name = q->name;
+-#endif
+-				break;
+-			}
+-		}
+-	}
+-
+-	spec->fixup_id = id;
+-	if (id >= 0) {
+-		spec->fixup_list = fixlist;
+-		spec->fixup_name = name;
+-	}
+-}
+-
+-/*
+  * COEF access helper functions
   */
- static void put_vol_mute(struct hda_codec *codec, struct hda_amp_info *info,
- 			 hda_nid_t nid, int ch, int direction, int index,
-@@ -1768,7 +1794,6 @@ static void put_vol_mute(struct hda_codec *codec, struct hda_amp_info *info,
- 	else
- 		parm |= val;
- 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE, parm);
--	info->vol[ch] = val;
+ static int alc_read_coef_idx(struct hda_codec *codec,
+@@ -2050,7 +1889,6 @@ static void alc_auto_init_std(struct hda_codec *codec);
+ static int alc_init(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-	unsigned int i;
+ 
+ 	if (spec->init_hook)
+ 		spec->init_hook(codec);
+@@ -2058,8 +1896,6 @@ static int alc_init(struct hda_codec *codec)
+ 	alc_fix_pll(codec);
+ 	alc_auto_init_amp(codec, spec->init_amp);
+ 
+-	for (i = 0; i < spec->num_init_verbs; i++)
+-		snd_hda_sequence_write(codec, spec->init_verbs[i]);
+ 	alc_init_special_input_src(codec);
+ 	alc_auto_init_std(codec);
+ 
+@@ -4885,7 +4721,7 @@ static void alc260_fixup_gpio1_toggle(struct hda_codec *codec,
+ 		spec->autocfg.hp_pins[0] = 0x0f; /* copy it for automute */
+ 		snd_hda_jack_detect_enable(codec, 0x0f, ALC_HP_EVENT);
+ 		spec->unsol_event = alc_sku_unsol_event;
+-		add_verb(codec->spec, alc_gpio1_init_verbs);
++		snd_hda_gen_add_verbs(&spec->gen, alc_gpio1_init_verbs);
+ 	}
  }
  
- /**
-@@ -1785,10 +1810,14 @@ int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch,
- 			   int direction, int index)
- {
- 	struct hda_amp_info *info;
--	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, index));
--	if (!info)
--		return 0;
--	return get_vol_mute(codec, info, nid, ch, direction, index);
-+	unsigned int val = 0;
-+
-+	mutex_lock(&codec->hash_mutex);
-+	info = update_amp_hash(codec, nid, ch, direction, index);
-+	if (info)
-+		val = info->vol[ch];
-+	mutex_unlock(&codec->hash_mutex);
-+	return val;
- }
- EXPORT_SYMBOL_HDA(snd_hda_codec_amp_read);
+@@ -5216,8 +5052,8 @@ static const struct alc_fixup alc882_fixups[] = {
+ 		}
+ 	},
+ 	[ALC882_FIXUP_ACER_ASPIRE_7736] = {
+-		.type = ALC_FIXUP_SKU,
+-		.v.sku = ALC_FIXUP_SKU_IGNORE,
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc_fixup_sku_ignore,
+ 	},
+ 	[ALC882_FIXUP_ASUS_W90V] = {
+ 		.type = ALC_FIXUP_PINS,
+@@ -5693,7 +5529,7 @@ static int alc268_parse_auto_config(struct hda_codec *codec)
+ 	if (err > 0) {
+ 		if (!spec->no_analog && spec->autocfg.speaker_pins[0] != 0x1d) {
+ 			add_mixer(spec, alc268_beep_mixer);
+-			add_verb(spec, alc268_beep_init_verbs);
++			snd_hda_gen_add_verbs(&spec->gen, alc268_beep_init_verbs);
+ 		}
+ 	}
+ 	return err;
+@@ -5995,8 +5831,8 @@ static const struct alc_fixup alc269_fixups[] = {
+ 		}
+ 	},
+ 	[ALC269_FIXUP_SKU_IGNORE] = {
+-		.type = ALC_FIXUP_SKU,
+-		.v.sku = ALC_FIXUP_SKU_IGNORE,
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc_fixup_sku_ignore,
+ 	},
+ 	[ALC269_FIXUP_ASUS_G73JW] = {
+ 		.type = ALC_FIXUP_PINS,
+@@ -6491,7 +6327,7 @@ static int patch_alc861vd(struct hda_codec *codec)
  
-@@ -1810,15 +1839,23 @@ int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
- {
- 	struct hda_amp_info *info;
+ 	if (codec->vendor_id == 0x10ec0660) {
+ 		/* always turn on EAPD */
+-		add_verb(spec, alc660vd_eapd_verbs);
++		snd_hda_gen_add_verbs(&spec->gen, alc660vd_eapd_verbs);
+ 	}
  
--	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, idx));
--	if (!info)
--		return 0;
- 	if (snd_BUG_ON(mask & ~0xff))
- 		mask &= 0xff;
- 	val &= mask;
--	val |= get_vol_mute(codec, info, nid, ch, direction, idx) & ~mask;
--	if (info->vol[ch] == val)
-+
-+	mutex_lock(&codec->hash_mutex);
-+	info = update_amp_hash(codec, nid, ch, direction, idx);
-+	if (!info) {
-+		mutex_unlock(&codec->hash_mutex);
-+		return 0;
-+	}
-+	val |= info->vol[ch] & ~mask;
-+	if (info->vol[ch] == val) {
-+		mutex_unlock(&codec->hash_mutex);
- 		return 0;
-+	}
-+	info->vol[ch] = val;
-+	mutex_unlock(&codec->hash_mutex);
- 	put_vol_mute(codec, info, nid, ch, direction, idx, val);
- 	return 1;
- }
-@@ -3693,7 +3730,8 @@ unsigned int snd_hda_calc_stream_format(unsigned int rate,
- }
- EXPORT_SYMBOL_HDA(snd_hda_calc_stream_format);
- 
--static unsigned int get_pcm_param(struct hda_codec *codec, hda_nid_t nid)
-+static unsigned int get_pcm_param(struct hda_codec *codec, hda_nid_t nid,
-+				  int dir)
- {
- 	unsigned int val = 0;
- 	if (nid != codec->afg &&
-@@ -3708,11 +3746,12 @@ static unsigned int get_pcm_param(struct hda_codec *codec, hda_nid_t nid)
- 
- static unsigned int query_pcm_param(struct hda_codec *codec, hda_nid_t nid)
- {
--	return query_caps_hash(codec, nid, HDA_HASH_PARPCM_KEY(nid),
-+	return query_caps_hash(codec, nid, 0, HDA_HASH_PARPCM_KEY(nid),
- 			       get_pcm_param);
- }
- 
--static unsigned int get_stream_param(struct hda_codec *codec, hda_nid_t nid)
-+static unsigned int get_stream_param(struct hda_codec *codec, hda_nid_t nid,
-+				     int dir)
- {
- 	unsigned int streams = snd_hda_param_read(codec, nid, AC_PAR_STREAM);
- 	if (!streams || streams == -1)
-@@ -3724,7 +3763,7 @@ static unsigned int get_stream_param(struct hda_codec *codec, hda_nid_t nid)
- 
- static unsigned int query_stream_param(struct hda_codec *codec, hda_nid_t nid)
- {
--	return query_caps_hash(codec, nid, HDA_HASH_PARSTR_KEY(nid),
-+	return query_caps_hash(codec, nid, 0, HDA_HASH_PARSTR_KEY(nid),
- 			       get_stream_param);
- }
- 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index fce30b4..29a311b 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -827,6 +827,7 @@ struct hda_codec {
- 
- 	struct mutex spdif_mutex;
- 	struct mutex control_mutex;
-+	struct mutex hash_mutex;
- 	struct snd_array spdif_out;
- 	unsigned int spdif_in_enable;	/* SPDIF input enable? */
- 	const hda_nid_t *slave_dig_outs; /* optional digital out slave widgets */
+ 	if (!spec->no_analog) {
+@@ -6604,8 +6440,8 @@ static const struct alc_fixup alc662_fixups[] = {
+ 		}
+ 	},
+ 	[ALC662_FIXUP_SKU_IGNORE] = {
+-		.type = ALC_FIXUP_SKU,
+-		.v.sku = ALC_FIXUP_SKU_IGNORE,
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc_fixup_sku_ignore,
+ 	},
+ 	[ALC662_FIXUP_HP_RP5800] = {
+ 		.type = ALC_FIXUP_PINS,
 -- 
 1.7.9.2
