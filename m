@@ -1,21 +1,21 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/15] ALSA: hda - Move up the fixup helper
-	functions to the library module
-Date: Mon, 14 May 2012 17:31:57 +0200
-Message-ID: <1337009526-26256-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/15] ALSA: hda - Move BIOS pin-parser code to
+	hda_auto_parser.c
+Date: Mon, 14 May 2012 17:31:58 +0200
+Message-ID: <1337009526-26256-8-git-send-email-tiwai@suse.de>
 References: <1337009526-26256-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C21424A21
+	by alsa0.perex.cz (Postfix) with ESMTP id 82FF724A2A
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:18 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id E61468FC92
+	by mx2.suse.de (Postfix) with ESMTP id E8C0C90B49
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:17 +0200 (CEST)
 In-Reply-To: <1337009526-26256-1-git-send-email-tiwai@suse.de>
@@ -32,769 +32,1550 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Move the fixup helper functions in patch_realtek.c to hda_auto_parser.c
-so that they can be used in other codec drivers like patch_conexant.c.
+Just code shuffles.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/Makefile          |    2 +-
- sound/pci/hda/hda_auto_parser.c |  163 ++++++++++++++++++++++++++
- sound/pci/hda/hda_auto_parser.h |   80 +++++++++++++
- sound/pci/hda/patch_conexant.c  |   62 ++++------
- sound/pci/hda/patch_realtek.c   |  244 +++++++--------------------------------
- 5 files changed, 309 insertions(+), 242 deletions(-)
- create mode 100644 sound/pci/hda/hda_auto_parser.c
- create mode 100644 sound/pci/hda/hda_auto_parser.h
+ sound/pci/hda/hda_auto_parser.c |  597 +++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_auto_parser.h |   80 ++++++
+ sound/pci/hda/hda_codec.c       |  596 --------------------------------------
+ sound/pci/hda/hda_jack.c        |    1 +
+ sound/pci/hda/hda_jack.h        |    2 +
+ sound/pci/hda/hda_local.h       |   82 +-----
+ sound/pci/hda/patch_analog.c    |    1 +
+ sound/pci/hda/patch_ca0110.c    |    1 +
+ sound/pci/hda/patch_ca0132.c    |    1 +
+ sound/pci/hda/patch_cirrus.c    |    1 +
+ sound/pci/hda/patch_cmedia.c    |    1 +
+ sound/pci/hda/patch_sigmatel.c  |    1 +
+ sound/pci/hda/patch_via.c       |    1 +
+ 13 files changed, 690 insertions(+), 675 deletions(-)
 
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index ace157c..bd4149f 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -1,6 +1,6 @@
- snd-hda-intel-objs := hda_intel.o
- 
--snd-hda-codec-y := hda_codec.o hda_jack.o
-+snd-hda-codec-y := hda_codec.o hda_jack.o hda_auto_parser.o
- snd-hda-codec-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
- snd-hda-codec-$(CONFIG_PROC_FS) += hda_proc.o
- snd-hda-codec-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
 diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-new file mode 100644
-index 0000000..7cc3a16
---- /dev/null
+index 7cc3a16..6e9ef3e 100644
+--- a/sound/pci/hda/hda_auto_parser.c
 +++ b/sound/pci/hda/hda_auto_parser.c
-@@ -0,0 +1,163 @@
+@@ -13,10 +13,607 @@
+ #include <linux/export.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
++#include "hda_local.h"
+ #include "hda_auto_parser.h"
+ 
+ #define SFX	"hda_codec: "
+ 
 +/*
-+ * BIOS auto-parser helper functions for HD-audio
-+ *
-+ * Copyright (c) 2012 Takashi Iwai <tiwai@suse.de>
-+ *
-+ * This driver is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
++ * Helper for automatic pin configuration
 + */
 +
-+#include <linux/slab.h>
-+#include <linux/export.h>
-+#include <sound/core.h>
-+#include "hda_codec.h"
-+#include "hda_auto_parser.h"
-+
-+#define SFX	"hda_codec: "
-+
-+int snd_hda_gen_add_verbs(struct hda_gen_spec *spec,
-+			  const struct hda_verb *list)
++static int is_in_nid_list(hda_nid_t nid, const hda_nid_t *list)
 +{
-+	const struct hda_verb **v;
-+	snd_array_init(&spec->verbs, sizeof(struct hda_verb *), 8);
-+	v = snd_array_new(&spec->verbs);
-+	if (!v)
-+		return -ENOMEM;
-+	*v = list;
++	for (; *list; list++)
++		if (*list == nid)
++			return 1;
 +	return 0;
 +}
-+EXPORT_SYMBOL_HDA(snd_hda_gen_add_verbs);
-+
-+void snd_hda_gen_apply_verbs(struct hda_codec *codec)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	int i;
-+	for (i = 0; i < spec->verbs.used; i++) {
-+		struct hda_verb **v = snd_array_elem(&spec->verbs, i);
-+		snd_hda_sequence_write(codec, *v);
-+	}
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_gen_apply_verbs);
-+
-+void snd_hda_apply_pincfgs(struct hda_codec *codec,
-+			   const struct hda_pintbl *cfg)
-+{
-+	for (; cfg->nid; cfg++)
-+		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_apply_pincfgs);
-+
-+void snd_hda_apply_fixup(struct hda_codec *codec, int action)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	int id = spec->fixup_id;
-+#ifdef CONFIG_SND_DEBUG_VERBOSE
-+	const char *modelname = spec->fixup_name;
-+#endif
-+	int depth = 0;
-+
-+	if (!spec->fixup_list)
-+		return;
-+
-+	while (id >= 0) {
-+		const struct hda_fixup *fix = spec->fixup_list + id;
-+
-+		switch (fix->type) {
-+		case HDA_FIXUP_PINS:
-+			if (action != HDA_FIXUP_ACT_PRE_PROBE || !fix->v.pins)
-+				break;
-+			snd_printdd(KERN_INFO SFX
-+				    "%s: Apply pincfg for %s\n",
-+				    codec->chip_name, modelname);
-+			snd_hda_apply_pincfgs(codec, fix->v.pins);
-+			break;
-+		case HDA_FIXUP_VERBS:
-+			if (action != HDA_FIXUP_ACT_PROBE || !fix->v.verbs)
-+				break;
-+			snd_printdd(KERN_INFO SFX
-+				    "%s: Apply fix-verbs for %s\n",
-+				    codec->chip_name, modelname);
-+			snd_hda_gen_add_verbs(codec->spec, fix->v.verbs);
-+			break;
-+		case HDA_FIXUP_FUNC:
-+			if (!fix->v.func)
-+				break;
-+			snd_printdd(KERN_INFO SFX
-+				    "%s: Apply fix-func for %s\n",
-+				    codec->chip_name, modelname);
-+			fix->v.func(codec, fix, action);
-+			break;
-+		default:
-+			snd_printk(KERN_ERR SFX
-+				   "%s: Invalid fixup type %d\n",
-+				   codec->chip_name, fix->type);
-+			break;
-+		}
-+		if (!fix->chained)
-+			break;
-+		if (++depth > 10)
-+			break;
-+		id = fix->chain_id;
-+	}
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_apply_fixup);
-+
-+void snd_hda_pick_fixup(struct hda_codec *codec,
-+			const struct hda_model_fixup *models,
-+			const struct snd_pci_quirk *quirk,
-+			const struct hda_fixup *fixlist)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	const struct snd_pci_quirk *q;
-+	int id = -1;
-+	const char *name = NULL;
-+
-+	/* when model=nofixup is given, don't pick up any fixups */
-+	if (codec->modelname && !strcmp(codec->modelname, "nofixup")) {
-+		spec->fixup_list = NULL;
-+		spec->fixup_id = -1;
-+		return;
-+	}
-+
-+	if (codec->modelname && models) {
-+		while (models->name) {
-+			if (!strcmp(codec->modelname, models->name)) {
-+				id = models->id;
-+				name = models->name;
-+				break;
-+			}
-+			models++;
-+		}
-+	}
-+	if (id < 0) {
-+		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
-+		if (q) {
-+			id = q->value;
-+#ifdef CONFIG_SND_DEBUG_VERBOSE
-+			name = q->name;
-+#endif
-+		}
-+	}
-+	if (id < 0) {
-+		for (q = quirk; q->subvendor; q++) {
-+			unsigned int vendorid =
-+				q->subdevice | (q->subvendor << 16);
-+			if (vendorid == codec->subsystem_id) {
-+				id = q->value;
-+#ifdef CONFIG_SND_DEBUG_VERBOSE
-+				name = q->name;
-+#endif
-+				break;
-+			}
-+		}
-+	}
-+
-+	spec->fixup_id = id;
-+	if (id >= 0) {
-+		spec->fixup_list = fixlist;
-+		spec->fixup_name = name;
-+	}
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_pick_fixup);
-diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
-new file mode 100644
-index 0000000..9fe4f5d
---- /dev/null
-+++ b/sound/pci/hda/hda_auto_parser.h
-@@ -0,0 +1,80 @@
-+/*
-+ * BIOS auto-parser helper functions for HD-audio
-+ *
-+ * Copyright (c) 2012 Takashi Iwai <tiwai@suse.de>
-+ *
-+ * This driver is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ */
-+
-+#ifndef __SOUND_HDA_AUTO_PARSER_H
-+#define __SOUND_HDA_AUTO_PARSER_H
-+
-+struct hda_gen_spec {
-+	/* fix-up list */
-+	int fixup_id;
-+	const struct hda_fixup *fixup_list;
-+	const char *fixup_name;
-+
-+	/* additional init verbs */
-+	struct snd_array verbs;
-+};
 +
 +
 +/*
-+ * Fix-up pin default configurations and add default verbs
++ * Sort an associated group of pins according to their sequence numbers.
 + */
-+
-+struct hda_pintbl {
++static void sort_pins_by_sequence(hda_nid_t *pins, short *sequences,
++				  int num_pins)
++{
++	int i, j;
++	short seq;
 +	hda_nid_t nid;
-+	u32 val;
-+};
 +
-+struct hda_model_fixup {
-+	const int id;
-+	const char *name;
-+};
-+
-+struct hda_fixup {
-+	int type;
-+	bool chained;
-+	int chain_id;
-+	union {
-+		const struct hda_pintbl *pins;
-+		const struct hda_verb *verbs;
-+		void (*func)(struct hda_codec *codec,
-+			     const struct hda_fixup *fix,
-+			     int action);
-+	} v;
-+};
-+
-+/* fixup types */
-+enum {
-+	HDA_FIXUP_INVALID,
-+	HDA_FIXUP_PINS,
-+	HDA_FIXUP_VERBS,
-+	HDA_FIXUP_FUNC,
-+};
-+
-+/* fixup action definitions */
-+enum {
-+	HDA_FIXUP_ACT_PRE_PROBE,
-+	HDA_FIXUP_ACT_PROBE,
-+	HDA_FIXUP_ACT_INIT,
-+	HDA_FIXUP_ACT_BUILD,
-+};
-+
-+int snd_hda_gen_add_verbs(struct hda_gen_spec *spec,
-+			  const struct hda_verb *list);
-+void snd_hda_gen_apply_verbs(struct hda_codec *codec);
-+void snd_hda_apply_pincfgs(struct hda_codec *codec,
-+			   const struct hda_pintbl *cfg);
-+void snd_hda_apply_fixup(struct hda_codec *codec, int action);
-+void snd_hda_pick_fixup(struct hda_codec *codec,
-+			const struct hda_model_fixup *models,
-+			const struct snd_pci_quirk *quirk,
-+			const struct hda_fixup *fixlist);
-+
-+#endif /* __SOUND_HDA_AUTO_PARSER_H */
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index aabdb9e..2cfcec0 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -30,6 +30,7 @@
- 
- #include "hda_codec.h"
- #include "hda_local.h"
-+#include "hda_auto_parser.h"
- #include "hda_beep.h"
- #include "hda_jack.h"
- 
-@@ -66,6 +67,7 @@ struct imux_info {
- };
- 
- struct conexant_spec {
-+	struct hda_gen_spec gen;
- 
- 	const struct snd_kcontrol_new *mixers[5];
- 	int num_mixers;
-@@ -4407,47 +4409,21 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
- /*
-  * pin fix-up
-  */
--struct cxt_pincfg {
--	hda_nid_t nid;
--	u32 val;
--};
--
--static void apply_pincfg(struct hda_codec *codec, const struct cxt_pincfg *cfg)
--{
--	for (; cfg->nid; cfg++)
--		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
--
--}
--
- enum {
- 	CXT_PINCFG_LENOVO_X200,
- 	CXT_PINCFG_LENOVO_TP410,
- 	CXT_FIXUP_STEREO_DMIC,
- };
- 
--static void apply_fixup(struct hda_codec *codec,
--			    const struct snd_pci_quirk *quirk,
--			    const struct cxt_pincfg **table)
-+static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
- {
- 	struct conexant_spec *spec = codec->spec;
--
--	quirk = snd_pci_quirk_lookup(codec->bus->pci, quirk);
--	if (!quirk)
--		return;
--	if (table[quirk->value]) {
--		snd_printdd(KERN_INFO "hda_codec: applying pincfg for %s\n",
--			    quirk->name);
--		apply_pincfg(codec, table[quirk->value]);
--	}
--	if (quirk->value == CXT_FIXUP_STEREO_DMIC) {
--		snd_printdd(KERN_INFO "hda_codec: applying internal mic workaround for %s\n",
--			    quirk->name);
--		spec->fixup_stereo_dmic = 1;
--	}
-+	spec->fixup_stereo_dmic = 1;
- }
- 
- /* ThinkPad X200 & co with cxt5051 */
--static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
-+static const struct hda_pintbl cxt_pincfg_lenovo_x200[] = {
- 	{ 0x16, 0x042140ff }, /* HP (seq# overridden) */
- 	{ 0x17, 0x21a11000 }, /* dock-mic */
- 	{ 0x19, 0x2121103f }, /* dock-HP */
-@@ -4456,17 +4432,26 @@ static const struct cxt_pincfg cxt_pincfg_lenovo_x200[] = {
- };
- 
- /* ThinkPad 410/420/510/520, X201 & co with cxt5066 */
--static const struct cxt_pincfg cxt_pincfg_lenovo_tp410[] = {
-+static const struct hda_pintbl cxt_pincfg_lenovo_tp410[] = {
- 	{ 0x19, 0x042110ff }, /* HP (seq# overridden) */
- 	{ 0x1a, 0x21a190f0 }, /* dock-mic */
- 	{ 0x1c, 0x212140ff }, /* dock-HP */
- 	{}
- };
- 
--static const struct cxt_pincfg *cxt_pincfg_tbl[] = {
--	[CXT_PINCFG_LENOVO_X200] = cxt_pincfg_lenovo_x200,
--	[CXT_PINCFG_LENOVO_TP410] = cxt_pincfg_lenovo_tp410,
--	[CXT_FIXUP_STEREO_DMIC] = NULL,
-+static const struct hda_fixup cxt_fixups[] = {
-+	[CXT_PINCFG_LENOVO_X200] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = cxt_pincfg_lenovo_x200,
-+	},
-+	[CXT_PINCFG_LENOVO_TP410] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = cxt_pincfg_lenovo_tp410,
-+	},
-+	[CXT_FIXUP_STEREO_DMIC] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cxt_fixup_stereo_dmic,
-+	},
- };
- 
- static const struct snd_pci_quirk cxt5051_fixups[] = {
-@@ -4520,13 +4505,16 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 	case 0x14f15051:
- 		add_cx5051_fake_mutes(codec);
- 		codec->pin_amp_workaround = 1;
--		apply_fixup(codec, cxt5051_fixups, cxt_pincfg_tbl);
-+		snd_hda_pick_fixup(codec, NULL, cxt5051_fixups, cxt_fixups);
- 		break;
- 	default:
- 		codec->pin_amp_workaround = 1;
--		apply_fixup(codec, cxt5066_fixups, cxt_pincfg_tbl);
-+		snd_hda_pick_fixup(codec, NULL, cxt5066_fixups, cxt_fixups);
-+		break;
- 	}
- 
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
-+
- 	/* Show mute-led control only on HP laptops
- 	 * This is a sort of white-list: on HP laptops, EAPD corresponds
- 	 * only to the mute-LED without actualy amp function.  Meanwhile,
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ae9732c..152f458 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -32,6 +32,7 @@
- #include <sound/jack.h>
- #include "hda_codec.h"
- #include "hda_local.h"
-+#include "hda_auto_parser.h"
- #include "hda_beep.h"
- #include "hda_jack.h"
- 
-@@ -66,8 +67,6 @@ struct alc_customize_define {
- 	unsigned int  fixup:1; /* Means that this sku is set by driver, not read from hw */
- };
- 
--struct alc_fixup;
--
- struct alc_multi_io {
- 	hda_nid_t pin;		/* multi-io widget pin NID */
- 	hda_nid_t dac;		/* DAC to be connected */
-@@ -82,19 +81,33 @@ enum {
- 
- #define MAX_VOL_NIDS	0x40
- 
-+/* make compatible with old code */
-+#define alc_apply_pincfgs	snd_hda_apply_pincfgs
-+#define alc_apply_fixup		snd_hda_apply_fixup
-+#define alc_pick_fixup		snd_hda_pick_fixup
-+#define alc_fixup		hda_fixup
-+#define alc_pincfg		hda_pintbl
-+#define alc_model_fixup		hda_model_fixup
-+
-+#define ALC_FIXUP_PINS	HDA_FIXUP_PINS
-+#define ALC_FIXUP_VERBS	HDA_FIXUP_VERBS
-+#define ALC_FIXUP_FUNC	HDA_FIXUP_FUNC
-+
-+#define ALC_FIXUP_ACT_PRE_PROBE	HDA_FIXUP_ACT_PRE_PROBE
-+#define ALC_FIXUP_ACT_PROBE	HDA_FIXUP_ACT_PROBE
-+#define ALC_FIXUP_ACT_INIT	HDA_FIXUP_ACT_INIT
-+#define ALC_FIXUP_ACT_BUILD	HDA_FIXUP_ACT_BUILD
-+
-+
- struct alc_spec {
-+	struct hda_gen_spec gen;
-+
- 	/* codec parameterization */
- 	const struct snd_kcontrol_new *mixers[5];	/* mixer arrays */
- 	unsigned int num_mixers;
- 	const struct snd_kcontrol_new *cap_mixer;	/* capture mixer */
- 	unsigned int beep_amp;	/* beep amp value, set via set_beep_amp() */
- 
--	const struct hda_verb *init_verbs[10];	/* initialization verbs
--						 * don't forget NULL
--						 * termination!
--						 */
--	unsigned int num_init_verbs;
--
- 	char stream_name_analog[32];	/* analog PCM stream */
- 	const struct hda_pcm_stream *stream_analog_playback;
- 	const struct hda_pcm_stream *stream_analog_capture;
-@@ -210,11 +223,6 @@ struct alc_spec {
- 	unsigned int pll_coef_idx, pll_coef_bit;
- 	unsigned int coef0;
- 
--	/* fix-up list */
--	int fixup_id;
--	const struct alc_fixup *fixup_list;
--	const char *fixup_name;
--
- 	/* multi-io */
- 	int multi_ios;
- 	struct alc_multi_io multi_io[4];
-@@ -396,13 +404,6 @@ static void add_mixer(struct alc_spec *spec, const struct snd_kcontrol_new *mix)
- 	spec->mixers[spec->num_mixers++] = mix;
- }
- 
--static void add_verb(struct alc_spec *spec, const struct hda_verb *verb)
--{
--	if (snd_BUG_ON(spec->num_init_verbs >= ARRAY_SIZE(spec->init_verbs)))
--		return;
--	spec->init_verbs[spec->num_init_verbs++] = verb;
--}
--
- /*
-  * GPIO setup tables, used in initialization
-  */
-@@ -1185,6 +1186,16 @@ static void alc_auto_check_switches(struct hda_codec *codec)
-  */
- #define ALC_FIXUP_SKU_IGNORE (2)
- 
-+static void alc_fixup_sku_ignore(struct hda_codec *codec,
-+				 const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->cdefine.fixup = 1;
-+		spec->cdefine.sku_cfg = ALC_FIXUP_SKU_IGNORE;
++	for (i = 0; i < num_pins; i++) {
++		for (j = i + 1; j < num_pins; j++) {
++			if (sequences[i] > sequences[j]) {
++				seq = sequences[i];
++				sequences[i] = sequences[j];
++				sequences[j] = seq;
++				nid = pins[i];
++				pins[i] = pins[j];
++				pins[j] = nid;
++			}
++		}
 +	}
 +}
 +
- static int alc_auto_parse_customize_define(struct hda_codec *codec)
++
++/* add the found input-pin to the cfg->inputs[] table */
++static void add_auto_cfg_input_pin(struct auto_pin_cfg *cfg, hda_nid_t nid,
++				   int type)
++{
++	if (cfg->num_inputs < AUTO_CFG_MAX_INS) {
++		cfg->inputs[cfg->num_inputs].pin = nid;
++		cfg->inputs[cfg->num_inputs].type = type;
++		cfg->num_inputs++;
++	}
++}
++
++/* sort inputs in the order of AUTO_PIN_* type */
++static void sort_autocfg_input_pins(struct auto_pin_cfg *cfg)
++{
++	int i, j;
++
++	for (i = 0; i < cfg->num_inputs; i++) {
++		for (j = i + 1; j < cfg->num_inputs; j++) {
++			if (cfg->inputs[i].type > cfg->inputs[j].type) {
++				struct auto_pin_cfg_item tmp;
++				tmp = cfg->inputs[i];
++				cfg->inputs[i] = cfg->inputs[j];
++				cfg->inputs[j] = tmp;
++			}
++		}
++	}
++}
++
++/* Reorder the surround channels
++ * ALSA sequence is front/surr/clfe/side
++ * HDA sequence is:
++ *    4-ch: front/surr  =>  OK as it is
++ *    6-ch: front/clfe/surr
++ *    8-ch: front/clfe/rear/side|fc
++ */
++static void reorder_outputs(unsigned int nums, hda_nid_t *pins)
++{
++	hda_nid_t nid;
++
++	switch (nums) {
++	case 3:
++	case 4:
++		nid = pins[1];
++		pins[1] = pins[2];
++		pins[2] = nid;
++		break;
++	}
++}
++
++/*
++ * Parse all pin widgets and store the useful pin nids to cfg
++ *
++ * The number of line-outs or any primary output is stored in line_outs,
++ * and the corresponding output pins are assigned to line_out_pins[],
++ * in the order of front, rear, CLFE, side, ...
++ *
++ * If more extra outputs (speaker and headphone) are found, the pins are
++ * assisnged to hp_pins[] and speaker_pins[], respectively.  If no line-out jack
++ * is detected, one of speaker of HP pins is assigned as the primary
++ * output, i.e. to line_out_pins[0].  So, line_outs is always positive
++ * if any analog output exists.
++ *
++ * The analog input pins are assigned to inputs array.
++ * The digital input/output pins are assigned to dig_in_pin and dig_out_pin,
++ * respectively.
++ */
++int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
++			     struct auto_pin_cfg *cfg,
++			     const hda_nid_t *ignore_nids,
++			     unsigned int cond_flags)
++{
++	hda_nid_t nid, end_nid;
++	short seq, assoc_line_out;
++	short sequences_line_out[ARRAY_SIZE(cfg->line_out_pins)];
++	short sequences_speaker[ARRAY_SIZE(cfg->speaker_pins)];
++	short sequences_hp[ARRAY_SIZE(cfg->hp_pins)];
++	int i;
++
++	memset(cfg, 0, sizeof(*cfg));
++
++	memset(sequences_line_out, 0, sizeof(sequences_line_out));
++	memset(sequences_speaker, 0, sizeof(sequences_speaker));
++	memset(sequences_hp, 0, sizeof(sequences_hp));
++	assoc_line_out = 0;
++
++	codec->ignore_misc_bit = true;
++	end_nid = codec->start_nid + codec->num_nodes;
++	for (nid = codec->start_nid; nid < end_nid; nid++) {
++		unsigned int wid_caps = get_wcaps(codec, nid);
++		unsigned int wid_type = get_wcaps_type(wid_caps);
++		unsigned int def_conf;
++		short assoc, loc, conn, dev;
++
++		/* read all default configuration for pin complex */
++		if (wid_type != AC_WID_PIN)
++			continue;
++		/* ignore the given nids (e.g. pc-beep returns error) */
++		if (ignore_nids && is_in_nid_list(nid, ignore_nids))
++			continue;
++
++		def_conf = snd_hda_codec_get_pincfg(codec, nid);
++		if (!(get_defcfg_misc(snd_hda_codec_get_pincfg(codec, nid)) &
++		      AC_DEFCFG_MISC_NO_PRESENCE))
++			codec->ignore_misc_bit = false;
++		conn = get_defcfg_connect(def_conf);
++		if (conn == AC_JACK_PORT_NONE)
++			continue;
++		loc = get_defcfg_location(def_conf);
++		dev = get_defcfg_device(def_conf);
++
++		/* workaround for buggy BIOS setups */
++		if (dev == AC_JACK_LINE_OUT) {
++			if (conn == AC_JACK_PORT_FIXED)
++				dev = AC_JACK_SPEAKER;
++		}
++
++		switch (dev) {
++		case AC_JACK_LINE_OUT:
++			seq = get_defcfg_sequence(def_conf);
++			assoc = get_defcfg_association(def_conf);
++
++			if (!(wid_caps & AC_WCAP_STEREO))
++				if (!cfg->mono_out_pin)
++					cfg->mono_out_pin = nid;
++			if (!assoc)
++				continue;
++			if (!assoc_line_out)
++				assoc_line_out = assoc;
++			else if (assoc_line_out != assoc)
++				continue;
++			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
++				continue;
++			cfg->line_out_pins[cfg->line_outs] = nid;
++			sequences_line_out[cfg->line_outs] = seq;
++			cfg->line_outs++;
++			break;
++		case AC_JACK_SPEAKER:
++			seq = get_defcfg_sequence(def_conf);
++			assoc = get_defcfg_association(def_conf);
++			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
++				continue;
++			cfg->speaker_pins[cfg->speaker_outs] = nid;
++			sequences_speaker[cfg->speaker_outs] = (assoc << 4) | seq;
++			cfg->speaker_outs++;
++			break;
++		case AC_JACK_HP_OUT:
++			seq = get_defcfg_sequence(def_conf);
++			assoc = get_defcfg_association(def_conf);
++			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins))
++				continue;
++			cfg->hp_pins[cfg->hp_outs] = nid;
++			sequences_hp[cfg->hp_outs] = (assoc << 4) | seq;
++			cfg->hp_outs++;
++			break;
++		case AC_JACK_MIC_IN:
++			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_MIC);
++			break;
++		case AC_JACK_LINE_IN:
++			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_LINE_IN);
++			break;
++		case AC_JACK_CD:
++			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_CD);
++			break;
++		case AC_JACK_AUX:
++			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_AUX);
++			break;
++		case AC_JACK_SPDIF_OUT:
++		case AC_JACK_DIG_OTHER_OUT:
++			if (cfg->dig_outs >= ARRAY_SIZE(cfg->dig_out_pins))
++				continue;
++			cfg->dig_out_pins[cfg->dig_outs] = nid;
++			cfg->dig_out_type[cfg->dig_outs] =
++				(loc == AC_JACK_LOC_HDMI) ?
++				HDA_PCM_TYPE_HDMI : HDA_PCM_TYPE_SPDIF;
++			cfg->dig_outs++;
++			break;
++		case AC_JACK_SPDIF_IN:
++		case AC_JACK_DIG_OTHER_IN:
++			cfg->dig_in_pin = nid;
++			if (loc == AC_JACK_LOC_HDMI)
++				cfg->dig_in_type = HDA_PCM_TYPE_HDMI;
++			else
++				cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
++			break;
++		}
++	}
++
++	/* FIX-UP:
++	 * If no line-out is defined but multiple HPs are found,
++	 * some of them might be the real line-outs.
++	 */
++	if (!cfg->line_outs && cfg->hp_outs > 1 &&
++	    !(cond_flags & HDA_PINCFG_NO_HP_FIXUP)) {
++		int i = 0;
++		while (i < cfg->hp_outs) {
++			/* The real HPs should have the sequence 0x0f */
++			if ((sequences_hp[i] & 0x0f) == 0x0f) {
++				i++;
++				continue;
++			}
++			/* Move it to the line-out table */
++			cfg->line_out_pins[cfg->line_outs] = cfg->hp_pins[i];
++			sequences_line_out[cfg->line_outs] = sequences_hp[i];
++			cfg->line_outs++;
++			cfg->hp_outs--;
++			memmove(cfg->hp_pins + i, cfg->hp_pins + i + 1,
++				sizeof(cfg->hp_pins[0]) * (cfg->hp_outs - i));
++			memmove(sequences_hp + i, sequences_hp + i + 1,
++				sizeof(sequences_hp[0]) * (cfg->hp_outs - i));
++		}
++		memset(cfg->hp_pins + cfg->hp_outs, 0,
++		       sizeof(hda_nid_t) * (AUTO_CFG_MAX_OUTS - cfg->hp_outs));
++		if (!cfg->hp_outs)
++			cfg->line_out_type = AUTO_PIN_HP_OUT;
++
++	}
++
++	/* sort by sequence */
++	sort_pins_by_sequence(cfg->line_out_pins, sequences_line_out,
++			      cfg->line_outs);
++	sort_pins_by_sequence(cfg->speaker_pins, sequences_speaker,
++			      cfg->speaker_outs);
++	sort_pins_by_sequence(cfg->hp_pins, sequences_hp,
++			      cfg->hp_outs);
++
++	/*
++	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
++	 * as a primary output
++	 */
++	if (!cfg->line_outs &&
++	    !(cond_flags & HDA_PINCFG_NO_LO_FIXUP)) {
++		if (cfg->speaker_outs) {
++			cfg->line_outs = cfg->speaker_outs;
++			memcpy(cfg->line_out_pins, cfg->speaker_pins,
++			       sizeof(cfg->speaker_pins));
++			cfg->speaker_outs = 0;
++			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
++			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
++		} else if (cfg->hp_outs) {
++			cfg->line_outs = cfg->hp_outs;
++			memcpy(cfg->line_out_pins, cfg->hp_pins,
++			       sizeof(cfg->hp_pins));
++			cfg->hp_outs = 0;
++			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
++			cfg->line_out_type = AUTO_PIN_HP_OUT;
++		}
++	}
++
++	reorder_outputs(cfg->line_outs, cfg->line_out_pins);
++	reorder_outputs(cfg->hp_outs, cfg->hp_pins);
++	reorder_outputs(cfg->speaker_outs, cfg->speaker_pins);
++
++	sort_autocfg_input_pins(cfg);
++
++	/*
++	 * debug prints of the parsed results
++	 */
++	snd_printd("autoconfig: line_outs=%d (0x%x/0x%x/0x%x/0x%x/0x%x) type:%s\n",
++		   cfg->line_outs, cfg->line_out_pins[0], cfg->line_out_pins[1],
++		   cfg->line_out_pins[2], cfg->line_out_pins[3],
++		   cfg->line_out_pins[4],
++		   cfg->line_out_type == AUTO_PIN_HP_OUT ? "hp" :
++		   (cfg->line_out_type == AUTO_PIN_SPEAKER_OUT ?
++		    "speaker" : "line"));
++	snd_printd("   speaker_outs=%d (0x%x/0x%x/0x%x/0x%x/0x%x)\n",
++		   cfg->speaker_outs, cfg->speaker_pins[0],
++		   cfg->speaker_pins[1], cfg->speaker_pins[2],
++		   cfg->speaker_pins[3], cfg->speaker_pins[4]);
++	snd_printd("   hp_outs=%d (0x%x/0x%x/0x%x/0x%x/0x%x)\n",
++		   cfg->hp_outs, cfg->hp_pins[0],
++		   cfg->hp_pins[1], cfg->hp_pins[2],
++		   cfg->hp_pins[3], cfg->hp_pins[4]);
++	snd_printd("   mono: mono_out=0x%x\n", cfg->mono_out_pin);
++	if (cfg->dig_outs)
++		snd_printd("   dig-out=0x%x/0x%x\n",
++			   cfg->dig_out_pins[0], cfg->dig_out_pins[1]);
++	snd_printd("   inputs:");
++	for (i = 0; i < cfg->num_inputs; i++) {
++		snd_printd(" %s=0x%x",
++			    hda_get_autocfg_input_label(codec, cfg, i),
++			    cfg->inputs[i].pin);
++	}
++	snd_printd("\n");
++	if (cfg->dig_in_pin)
++		snd_printd("   dig-in=0x%x\n", cfg->dig_in_pin);
++
++	return 0;
++}
++EXPORT_SYMBOL_HDA(snd_hda_parse_pin_defcfg);
++
++int snd_hda_get_input_pin_attr(unsigned int def_conf)
++{
++	unsigned int loc = get_defcfg_location(def_conf);
++	unsigned int conn = get_defcfg_connect(def_conf);
++	if (conn == AC_JACK_PORT_NONE)
++		return INPUT_PIN_ATTR_UNUSED;
++	/* Windows may claim the internal mic to be BOTH, too */
++	if (conn == AC_JACK_PORT_FIXED || conn == AC_JACK_PORT_BOTH)
++		return INPUT_PIN_ATTR_INT;
++	if ((loc & 0x30) == AC_JACK_LOC_INTERNAL)
++		return INPUT_PIN_ATTR_INT;
++	if ((loc & 0x30) == AC_JACK_LOC_SEPARATE)
++		return INPUT_PIN_ATTR_DOCK;
++	if (loc == AC_JACK_LOC_REAR)
++		return INPUT_PIN_ATTR_REAR;
++	if (loc == AC_JACK_LOC_FRONT)
++		return INPUT_PIN_ATTR_FRONT;
++	return INPUT_PIN_ATTR_NORMAL;
++}
++EXPORT_SYMBOL_HDA(snd_hda_get_input_pin_attr);
++
++/**
++ * hda_get_input_pin_label - Give a label for the given input pin
++ *
++ * When check_location is true, the function checks the pin location
++ * for mic and line-in pins, and set an appropriate prefix like "Front",
++ * "Rear", "Internal".
++ */
++
++static const char *hda_get_input_pin_label(struct hda_codec *codec,
++					   hda_nid_t pin, bool check_location)
++{
++	unsigned int def_conf;
++	static const char * const mic_names[] = {
++		"Internal Mic", "Dock Mic", "Mic", "Front Mic", "Rear Mic",
++	};
++	int attr;
++
++	def_conf = snd_hda_codec_get_pincfg(codec, pin);
++
++	switch (get_defcfg_device(def_conf)) {
++	case AC_JACK_MIC_IN:
++		if (!check_location)
++			return "Mic";
++		attr = snd_hda_get_input_pin_attr(def_conf);
++		if (!attr)
++			return "None";
++		return mic_names[attr - 1];
++	case AC_JACK_LINE_IN:
++		if (!check_location)
++			return "Line";
++		attr = snd_hda_get_input_pin_attr(def_conf);
++		if (!attr)
++			return "None";
++		if (attr == INPUT_PIN_ATTR_DOCK)
++			return "Dock Line";
++		return "Line";
++	case AC_JACK_AUX:
++		return "Aux";
++	case AC_JACK_CD:
++		return "CD";
++	case AC_JACK_SPDIF_IN:
++		return "SPDIF In";
++	case AC_JACK_DIG_OTHER_IN:
++		return "Digital In";
++	default:
++		return "Misc";
++	}
++}
++
++/* Check whether the location prefix needs to be added to the label.
++ * If all mic-jacks are in the same location (e.g. rear panel), we don't
++ * have to put "Front" prefix to each label.  In such a case, returns false.
++ */
++static int check_mic_location_need(struct hda_codec *codec,
++				   const struct auto_pin_cfg *cfg,
++				   int input)
++{
++	unsigned int defc;
++	int i, attr, attr2;
++
++	defc = snd_hda_codec_get_pincfg(codec, cfg->inputs[input].pin);
++	attr = snd_hda_get_input_pin_attr(defc);
++	/* for internal or docking mics, we need locations */
++	if (attr <= INPUT_PIN_ATTR_NORMAL)
++		return 1;
++
++	attr = 0;
++	for (i = 0; i < cfg->num_inputs; i++) {
++		defc = snd_hda_codec_get_pincfg(codec, cfg->inputs[i].pin);
++		attr2 = snd_hda_get_input_pin_attr(defc);
++		if (attr2 >= INPUT_PIN_ATTR_NORMAL) {
++			if (attr && attr != attr2)
++				return 1; /* different locations found */
++			attr = attr2;
++		}
++	}
++	return 0;
++}
++
++/**
++ * hda_get_autocfg_input_label - Get a label for the given input
++ *
++ * Get a label for the given input pin defined by the autocfg item.
++ * Unlike hda_get_input_pin_label(), this function checks all inputs
++ * defined in autocfg and avoids the redundant mic/line prefix as much as
++ * possible.
++ */
++const char *hda_get_autocfg_input_label(struct hda_codec *codec,
++					const struct auto_pin_cfg *cfg,
++					int input)
++{
++	int type = cfg->inputs[input].type;
++	int has_multiple_pins = 0;
++
++	if ((input > 0 && cfg->inputs[input - 1].type == type) ||
++	    (input < cfg->num_inputs - 1 && cfg->inputs[input + 1].type == type))
++		has_multiple_pins = 1;
++	if (has_multiple_pins && type == AUTO_PIN_MIC)
++		has_multiple_pins &= check_mic_location_need(codec, cfg, input);
++	return hda_get_input_pin_label(codec, cfg->inputs[input].pin,
++				       has_multiple_pins);
++}
++EXPORT_SYMBOL_HDA(hda_get_autocfg_input_label);
++
++/* return the position of NID in the list, or -1 if not found */
++static int find_idx_in_nid_list(hda_nid_t nid, const hda_nid_t *list, int nums)
++{
++	int i;
++	for (i = 0; i < nums; i++)
++		if (list[i] == nid)
++			return i;
++	return -1;
++}
++
++/* get a unique suffix or an index number */
++static const char *check_output_sfx(hda_nid_t nid, const hda_nid_t *pins,
++				    int num_pins, int *indexp)
++{
++	static const char * const channel_sfx[] = {
++		" Front", " Surround", " CLFE", " Side"
++	};
++	int i;
++
++	i = find_idx_in_nid_list(nid, pins, num_pins);
++	if (i < 0)
++		return NULL;
++	if (num_pins == 1)
++		return "";
++	if (num_pins > ARRAY_SIZE(channel_sfx)) {
++		if (indexp)
++			*indexp = i;
++		return "";
++	}
++	return channel_sfx[i];
++}
++
++static int fill_audio_out_name(struct hda_codec *codec, hda_nid_t nid,
++			       const struct auto_pin_cfg *cfg,
++			       const char *name, char *label, int maxlen,
++			       int *indexp)
++{
++	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
++	int attr = snd_hda_get_input_pin_attr(def_conf);
++	const char *pfx = "", *sfx = "";
++
++	/* handle as a speaker if it's a fixed line-out */
++	if (!strcmp(name, "Line Out") && attr == INPUT_PIN_ATTR_INT)
++		name = "Speaker";
++	/* check the location */
++	switch (attr) {
++	case INPUT_PIN_ATTR_DOCK:
++		pfx = "Dock ";
++		break;
++	case INPUT_PIN_ATTR_FRONT:
++		pfx = "Front ";
++		break;
++	}
++	if (cfg) {
++		/* try to give a unique suffix if needed */
++		sfx = check_output_sfx(nid, cfg->line_out_pins, cfg->line_outs,
++				       indexp);
++		if (!sfx)
++			sfx = check_output_sfx(nid, cfg->speaker_pins, cfg->speaker_outs,
++					       indexp);
++		if (!sfx) {
++			/* don't add channel suffix for Headphone controls */
++			int idx = find_idx_in_nid_list(nid, cfg->hp_pins,
++						       cfg->hp_outs);
++			if (idx >= 0)
++				*indexp = idx;
++			sfx = "";
++		}
++	}
++	snprintf(label, maxlen, "%s%s%s", pfx, name, sfx);
++	return 1;
++}
++
++/**
++ * snd_hda_get_pin_label - Get a label for the given I/O pin
++ *
++ * Get a label for the given pin.  This function works for both input and
++ * output pins.  When @cfg is given as non-NULL, the function tries to get
++ * an optimized label using hda_get_autocfg_input_label().
++ *
++ * This function tries to give a unique label string for the pin as much as
++ * possible.  For example, when the multiple line-outs are present, it adds
++ * the channel suffix like "Front", "Surround", etc (only when @cfg is given).
++ * If no unique name with a suffix is available and @indexp is non-NULL, the
++ * index number is stored in the pointer.
++ */
++int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
++			  const struct auto_pin_cfg *cfg,
++			  char *label, int maxlen, int *indexp)
++{
++	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
++	const char *name = NULL;
++	int i;
++
++	if (indexp)
++		*indexp = 0;
++	if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE)
++		return 0;
++
++	switch (get_defcfg_device(def_conf)) {
++	case AC_JACK_LINE_OUT:
++		return fill_audio_out_name(codec, nid, cfg, "Line Out",
++					   label, maxlen, indexp);
++	case AC_JACK_SPEAKER:
++		return fill_audio_out_name(codec, nid, cfg, "Speaker",
++					   label, maxlen, indexp);
++	case AC_JACK_HP_OUT:
++		return fill_audio_out_name(codec, nid, cfg, "Headphone",
++					   label, maxlen, indexp);
++	case AC_JACK_SPDIF_OUT:
++	case AC_JACK_DIG_OTHER_OUT:
++		if (get_defcfg_location(def_conf) == AC_JACK_LOC_HDMI)
++			name = "HDMI";
++		else
++			name = "SPDIF";
++		if (cfg && indexp) {
++			i = find_idx_in_nid_list(nid, cfg->dig_out_pins,
++						 cfg->dig_outs);
++			if (i >= 0)
++				*indexp = i;
++		}
++		break;
++	default:
++		if (cfg) {
++			for (i = 0; i < cfg->num_inputs; i++) {
++				if (cfg->inputs[i].pin != nid)
++					continue;
++				name = hda_get_autocfg_input_label(codec, cfg, i);
++				if (name)
++					break;
++			}
++		}
++		if (!name)
++			name = hda_get_input_pin_label(codec, nid, true);
++		break;
++	}
++	if (!name)
++		return 0;
++	strlcpy(label, name, maxlen);
++	return 1;
++}
++EXPORT_SYMBOL_HDA(snd_hda_get_pin_label);
++
+ int snd_hda_gen_add_verbs(struct hda_gen_spec *spec,
+ 			  const struct hda_verb *list)
  {
- 	unsigned int ass, tmp, i;
-@@ -1388,178 +1399,6 @@ static void alc_ssid_check(struct hda_codec *codec, const hda_nid_t *ports)
- }
+diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
+index 9fe4f5d..2a7889d 100644
+--- a/sound/pci/hda/hda_auto_parser.h
++++ b/sound/pci/hda/hda_auto_parser.h
+@@ -12,6 +12,86 @@
+ #ifndef __SOUND_HDA_AUTO_PARSER_H
+ #define __SOUND_HDA_AUTO_PARSER_H
  
- /*
-- * Fix-up pin default configurations and add default verbs
++/*
++ * Helper for automatic pin configuration
++ */
++
++enum {
++	AUTO_PIN_MIC,
++	AUTO_PIN_LINE_IN,
++	AUTO_PIN_CD,
++	AUTO_PIN_AUX,
++	AUTO_PIN_LAST
++};
++
++enum {
++	AUTO_PIN_LINE_OUT,
++	AUTO_PIN_SPEAKER_OUT,
++	AUTO_PIN_HP_OUT
++};
++
++#define AUTO_CFG_MAX_OUTS	HDA_MAX_OUTS
++#define AUTO_CFG_MAX_INS	8
++
++struct auto_pin_cfg_item {
++	hda_nid_t pin;
++	int type;
++};
++
++struct auto_pin_cfg;
++const char *hda_get_autocfg_input_label(struct hda_codec *codec,
++					const struct auto_pin_cfg *cfg,
++					int input);
++int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
++			  const struct auto_pin_cfg *cfg,
++			  char *label, int maxlen, int *indexp);
++
++enum {
++	INPUT_PIN_ATTR_UNUSED,	/* pin not connected */
++	INPUT_PIN_ATTR_INT,	/* internal mic/line-in */
++	INPUT_PIN_ATTR_DOCK,	/* docking mic/line-in */
++	INPUT_PIN_ATTR_NORMAL,	/* mic/line-in jack */
++	INPUT_PIN_ATTR_FRONT,	/* mic/line-in jack in front */
++	INPUT_PIN_ATTR_REAR,	/* mic/line-in jack in rear */
++};
++
++int snd_hda_get_input_pin_attr(unsigned int def_conf);
++
++struct auto_pin_cfg {
++	int line_outs;
++	/* sorted in the order of Front/Surr/CLFE/Side */
++	hda_nid_t line_out_pins[AUTO_CFG_MAX_OUTS];
++	int speaker_outs;
++	hda_nid_t speaker_pins[AUTO_CFG_MAX_OUTS];
++	int hp_outs;
++	int line_out_type;	/* AUTO_PIN_XXX_OUT */
++	hda_nid_t hp_pins[AUTO_CFG_MAX_OUTS];
++	int num_inputs;
++	struct auto_pin_cfg_item inputs[AUTO_CFG_MAX_INS];
++	int dig_outs;
++	hda_nid_t dig_out_pins[2];
++	hda_nid_t dig_in_pin;
++	hda_nid_t mono_out_pin;
++	int dig_out_type[2]; /* HDA_PCM_TYPE_XXX */
++	int dig_in_type; /* HDA_PCM_TYPE_XXX */
++};
++
++/* bit-flags for snd_hda_parse_pin_def_config() behavior */
++#define HDA_PINCFG_NO_HP_FIXUP	(1 << 0) /* no HP-split */
++#define HDA_PINCFG_NO_LO_FIXUP	(1 << 1) /* don't take other outs as LO */
++
++int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
++			     struct auto_pin_cfg *cfg,
++			     const hda_nid_t *ignore_nids,
++			     unsigned int cond_flags);
++
++/* older function */
++#define snd_hda_parse_pin_def_config(codec, cfg, ignore) \
++	snd_hda_parse_pin_defcfg(codec, cfg, ignore, 0)
++
++/*
++ */
++
+ struct hda_gen_spec {
+ 	/* fix-up list */
+ 	int fixup_id;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 30a3d8f..f2bdf38 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -4877,602 +4877,6 @@ int _snd_hda_set_pin_ctl(struct hda_codec *codec, hda_nid_t pin,
+ }
+ EXPORT_SYMBOL_HDA(_snd_hda_set_pin_ctl);
+ 
+-/*
+- * Helper for automatic pin configuration
 - */
 -
--struct alc_pincfg {
+-static int is_in_nid_list(hda_nid_t nid, const hda_nid_t *list)
+-{
+-	for (; *list; list++)
+-		if (*list == nid)
+-			return 1;
+-	return 0;
+-}
+-
+-
+-/*
+- * Sort an associated group of pins according to their sequence numbers.
+- */
+-static void sort_pins_by_sequence(hda_nid_t *pins, short *sequences,
+-				  int num_pins)
+-{
+-	int i, j;
+-	short seq;
 -	hda_nid_t nid;
--	u32 val;
--};
 -
--struct alc_model_fixup {
--	const int id;
--	const char *name;
--};
--
--struct alc_fixup {
--	int type;
--	bool chained;
--	int chain_id;
--	union {
--		unsigned int sku;
--		const struct alc_pincfg *pins;
--		const struct hda_verb *verbs;
--		void (*func)(struct hda_codec *codec,
--			     const struct alc_fixup *fix,
--			     int action);
--	} v;
--};
--
--enum {
--	ALC_FIXUP_INVALID,
--	ALC_FIXUP_SKU,
--	ALC_FIXUP_PINS,
--	ALC_FIXUP_VERBS,
--	ALC_FIXUP_FUNC,
--};
--
--enum {
--	ALC_FIXUP_ACT_PRE_PROBE,
--	ALC_FIXUP_ACT_PROBE,
--	ALC_FIXUP_ACT_INIT,
--	ALC_FIXUP_ACT_BUILD,
--};
--
--static void alc_apply_pincfgs(struct hda_codec *codec,
--			      const struct alc_pincfg *cfg)
--{
--	for (; cfg->nid; cfg++)
--		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
--}
--
--static void alc_apply_fixup(struct hda_codec *codec, int action)
--{
--	struct alc_spec *spec = codec->spec;
--	int id = spec->fixup_id;
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--	const char *modelname = spec->fixup_name;
--#endif
--	int depth = 0;
--
--	if (!spec->fixup_list)
--		return;
--
--	while (id >= 0) {
--		const struct alc_fixup *fix = spec->fixup_list + id;
--		const struct alc_pincfg *cfg;
--
--		switch (fix->type) {
--		case ALC_FIXUP_SKU:
--			if (action != ALC_FIXUP_ACT_PRE_PROBE || !fix->v.sku)
--				break;
--			snd_printdd(KERN_INFO "hda_codec: %s: "
--				    "Apply sku override for %s\n",
--				    codec->chip_name, modelname);
--			spec->cdefine.sku_cfg = fix->v.sku;
--			spec->cdefine.fixup = 1;
--			break;
--		case ALC_FIXUP_PINS:
--			cfg = fix->v.pins;
--			if (action != ALC_FIXUP_ACT_PRE_PROBE || !cfg)
--				break;
--			snd_printdd(KERN_INFO "hda_codec: %s: "
--				    "Apply pincfg for %s\n",
--				    codec->chip_name, modelname);
--			alc_apply_pincfgs(codec, cfg);
--			break;
--		case ALC_FIXUP_VERBS:
--			if (action != ALC_FIXUP_ACT_PROBE || !fix->v.verbs)
--				break;
--			snd_printdd(KERN_INFO "hda_codec: %s: "
--				    "Apply fix-verbs for %s\n",
--				    codec->chip_name, modelname);
--			add_verb(codec->spec, fix->v.verbs);
--			break;
--		case ALC_FIXUP_FUNC:
--			if (!fix->v.func)
--				break;
--			snd_printdd(KERN_INFO "hda_codec: %s: "
--				    "Apply fix-func for %s\n",
--				    codec->chip_name, modelname);
--			fix->v.func(codec, fix, action);
--			break;
--		default:
--			snd_printk(KERN_ERR "hda_codec: %s: "
--				   "Invalid fixup type %d\n",
--				   codec->chip_name, fix->type);
--			break;
--		}
--		if (!fix->chained)
--			break;
--		if (++depth > 10)
--			break;
--		id = fix->chain_id;
--	}
--}
--
--static void alc_pick_fixup(struct hda_codec *codec,
--			   const struct alc_model_fixup *models,
--			   const struct snd_pci_quirk *quirk,
--			   const struct alc_fixup *fixlist)
--{
--	struct alc_spec *spec = codec->spec;
--	const struct snd_pci_quirk *q;
--	int id = -1;
--	const char *name = NULL;
--
--	/* when model=nofixup is given, don't pick up any fixups */
--	if (codec->modelname && !strcmp(codec->modelname, "nofixup")) {
--		spec->fixup_list = NULL;
--		spec->fixup_id = -1;
--		return;
--	}
--
--	if (codec->modelname && models) {
--		while (models->name) {
--			if (!strcmp(codec->modelname, models->name)) {
--				id = models->id;
--				name = models->name;
--				break;
--			}
--			models++;
--		}
--	}
--	if (id < 0) {
--		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
--		if (q) {
--			id = q->value;
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--			name = q->name;
--#endif
--		}
--	}
--	if (id < 0) {
--		for (q = quirk; q->subvendor; q++) {
--			unsigned int vendorid =
--				q->subdevice | (q->subvendor << 16);
--			if (vendorid == codec->subsystem_id) {
--				id = q->value;
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--				name = q->name;
--#endif
--				break;
+-	for (i = 0; i < num_pins; i++) {
+-		for (j = i + 1; j < num_pins; j++) {
+-			if (sequences[i] > sequences[j]) {
+-				seq = sequences[i];
+-				sequences[i] = sequences[j];
+-				sequences[j] = seq;
+-				nid = pins[i];
+-				pins[i] = pins[j];
+-				pins[j] = nid;
 -			}
 -		}
 -	}
+-}
 -
--	spec->fixup_id = id;
--	if (id >= 0) {
--		spec->fixup_list = fixlist;
--		spec->fixup_name = name;
+-
+-/* add the found input-pin to the cfg->inputs[] table */
+-static void add_auto_cfg_input_pin(struct auto_pin_cfg *cfg, hda_nid_t nid,
+-				   int type)
+-{
+-	if (cfg->num_inputs < AUTO_CFG_MAX_INS) {
+-		cfg->inputs[cfg->num_inputs].pin = nid;
+-		cfg->inputs[cfg->num_inputs].type = type;
+-		cfg->num_inputs++;
+-	}
+-}
+-
+-/* sort inputs in the order of AUTO_PIN_* type */
+-static void sort_autocfg_input_pins(struct auto_pin_cfg *cfg)
+-{
+-	int i, j;
+-
+-	for (i = 0; i < cfg->num_inputs; i++) {
+-		for (j = i + 1; j < cfg->num_inputs; j++) {
+-			if (cfg->inputs[i].type > cfg->inputs[j].type) {
+-				struct auto_pin_cfg_item tmp;
+-				tmp = cfg->inputs[i];
+-				cfg->inputs[i] = cfg->inputs[j];
+-				cfg->inputs[j] = tmp;
+-			}
+-		}
+-	}
+-}
+-
+-/* Reorder the surround channels
+- * ALSA sequence is front/surr/clfe/side
+- * HDA sequence is:
+- *    4-ch: front/surr  =>  OK as it is
+- *    6-ch: front/clfe/surr
+- *    8-ch: front/clfe/rear/side|fc
+- */
+-static void reorder_outputs(unsigned int nums, hda_nid_t *pins)
+-{
+-	hda_nid_t nid;
+-
+-	switch (nums) {
+-	case 3:
+-	case 4:
+-		nid = pins[1];
+-		pins[1] = pins[2];
+-		pins[2] = nid;
+-		break;
 -	}
 -}
 -
 -/*
-  * COEF access helper functions
+- * Parse all pin widgets and store the useful pin nids to cfg
+- *
+- * The number of line-outs or any primary output is stored in line_outs,
+- * and the corresponding output pins are assigned to line_out_pins[],
+- * in the order of front, rear, CLFE, side, ...
+- *
+- * If more extra outputs (speaker and headphone) are found, the pins are
+- * assisnged to hp_pins[] and speaker_pins[], respectively.  If no line-out jack
+- * is detected, one of speaker of HP pins is assigned as the primary
+- * output, i.e. to line_out_pins[0].  So, line_outs is always positive
+- * if any analog output exists.
+- *
+- * The analog input pins are assigned to inputs array.
+- * The digital input/output pins are assigned to dig_in_pin and dig_out_pin,
+- * respectively.
+- */
+-int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
+-			     struct auto_pin_cfg *cfg,
+-			     const hda_nid_t *ignore_nids,
+-			     unsigned int cond_flags)
+-{
+-	hda_nid_t nid, end_nid;
+-	short seq, assoc_line_out;
+-	short sequences_line_out[ARRAY_SIZE(cfg->line_out_pins)];
+-	short sequences_speaker[ARRAY_SIZE(cfg->speaker_pins)];
+-	short sequences_hp[ARRAY_SIZE(cfg->hp_pins)];
+-	int i;
+-
+-	memset(cfg, 0, sizeof(*cfg));
+-
+-	memset(sequences_line_out, 0, sizeof(sequences_line_out));
+-	memset(sequences_speaker, 0, sizeof(sequences_speaker));
+-	memset(sequences_hp, 0, sizeof(sequences_hp));
+-	assoc_line_out = 0;
+-
+-	codec->ignore_misc_bit = true;
+-	end_nid = codec->start_nid + codec->num_nodes;
+-	for (nid = codec->start_nid; nid < end_nid; nid++) {
+-		unsigned int wid_caps = get_wcaps(codec, nid);
+-		unsigned int wid_type = get_wcaps_type(wid_caps);
+-		unsigned int def_conf;
+-		short assoc, loc, conn, dev;
+-
+-		/* read all default configuration for pin complex */
+-		if (wid_type != AC_WID_PIN)
+-			continue;
+-		/* ignore the given nids (e.g. pc-beep returns error) */
+-		if (ignore_nids && is_in_nid_list(nid, ignore_nids))
+-			continue;
+-
+-		def_conf = snd_hda_codec_get_pincfg(codec, nid);
+-		if (!(get_defcfg_misc(snd_hda_codec_get_pincfg(codec, nid)) &
+-		      AC_DEFCFG_MISC_NO_PRESENCE))
+-			codec->ignore_misc_bit = false;
+-		conn = get_defcfg_connect(def_conf);
+-		if (conn == AC_JACK_PORT_NONE)
+-			continue;
+-		loc = get_defcfg_location(def_conf);
+-		dev = get_defcfg_device(def_conf);
+-
+-		/* workaround for buggy BIOS setups */
+-		if (dev == AC_JACK_LINE_OUT) {
+-			if (conn == AC_JACK_PORT_FIXED)
+-				dev = AC_JACK_SPEAKER;
+-		}
+-
+-		switch (dev) {
+-		case AC_JACK_LINE_OUT:
+-			seq = get_defcfg_sequence(def_conf);
+-			assoc = get_defcfg_association(def_conf);
+-
+-			if (!(wid_caps & AC_WCAP_STEREO))
+-				if (!cfg->mono_out_pin)
+-					cfg->mono_out_pin = nid;
+-			if (!assoc)
+-				continue;
+-			if (!assoc_line_out)
+-				assoc_line_out = assoc;
+-			else if (assoc_line_out != assoc)
+-				continue;
+-			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
+-				continue;
+-			cfg->line_out_pins[cfg->line_outs] = nid;
+-			sequences_line_out[cfg->line_outs] = seq;
+-			cfg->line_outs++;
+-			break;
+-		case AC_JACK_SPEAKER:
+-			seq = get_defcfg_sequence(def_conf);
+-			assoc = get_defcfg_association(def_conf);
+-			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
+-				continue;
+-			cfg->speaker_pins[cfg->speaker_outs] = nid;
+-			sequences_speaker[cfg->speaker_outs] = (assoc << 4) | seq;
+-			cfg->speaker_outs++;
+-			break;
+-		case AC_JACK_HP_OUT:
+-			seq = get_defcfg_sequence(def_conf);
+-			assoc = get_defcfg_association(def_conf);
+-			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins))
+-				continue;
+-			cfg->hp_pins[cfg->hp_outs] = nid;
+-			sequences_hp[cfg->hp_outs] = (assoc << 4) | seq;
+-			cfg->hp_outs++;
+-			break;
+-		case AC_JACK_MIC_IN:
+-			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_MIC);
+-			break;
+-		case AC_JACK_LINE_IN:
+-			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_LINE_IN);
+-			break;
+-		case AC_JACK_CD:
+-			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_CD);
+-			break;
+-		case AC_JACK_AUX:
+-			add_auto_cfg_input_pin(cfg, nid, AUTO_PIN_AUX);
+-			break;
+-		case AC_JACK_SPDIF_OUT:
+-		case AC_JACK_DIG_OTHER_OUT:
+-			if (cfg->dig_outs >= ARRAY_SIZE(cfg->dig_out_pins))
+-				continue;
+-			cfg->dig_out_pins[cfg->dig_outs] = nid;
+-			cfg->dig_out_type[cfg->dig_outs] =
+-				(loc == AC_JACK_LOC_HDMI) ?
+-				HDA_PCM_TYPE_HDMI : HDA_PCM_TYPE_SPDIF;
+-			cfg->dig_outs++;
+-			break;
+-		case AC_JACK_SPDIF_IN:
+-		case AC_JACK_DIG_OTHER_IN:
+-			cfg->dig_in_pin = nid;
+-			if (loc == AC_JACK_LOC_HDMI)
+-				cfg->dig_in_type = HDA_PCM_TYPE_HDMI;
+-			else
+-				cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
+-			break;
+-		}
+-	}
+-
+-	/* FIX-UP:
+-	 * If no line-out is defined but multiple HPs are found,
+-	 * some of them might be the real line-outs.
+-	 */
+-	if (!cfg->line_outs && cfg->hp_outs > 1 &&
+-	    !(cond_flags & HDA_PINCFG_NO_HP_FIXUP)) {
+-		int i = 0;
+-		while (i < cfg->hp_outs) {
+-			/* The real HPs should have the sequence 0x0f */
+-			if ((sequences_hp[i] & 0x0f) == 0x0f) {
+-				i++;
+-				continue;
+-			}
+-			/* Move it to the line-out table */
+-			cfg->line_out_pins[cfg->line_outs] = cfg->hp_pins[i];
+-			sequences_line_out[cfg->line_outs] = sequences_hp[i];
+-			cfg->line_outs++;
+-			cfg->hp_outs--;
+-			memmove(cfg->hp_pins + i, cfg->hp_pins + i + 1,
+-				sizeof(cfg->hp_pins[0]) * (cfg->hp_outs - i));
+-			memmove(sequences_hp + i, sequences_hp + i + 1,
+-				sizeof(sequences_hp[0]) * (cfg->hp_outs - i));
+-		}
+-		memset(cfg->hp_pins + cfg->hp_outs, 0,
+-		       sizeof(hda_nid_t) * (AUTO_CFG_MAX_OUTS - cfg->hp_outs));
+-		if (!cfg->hp_outs)
+-			cfg->line_out_type = AUTO_PIN_HP_OUT;
+-
+-	}
+-
+-	/* sort by sequence */
+-	sort_pins_by_sequence(cfg->line_out_pins, sequences_line_out,
+-			      cfg->line_outs);
+-	sort_pins_by_sequence(cfg->speaker_pins, sequences_speaker,
+-			      cfg->speaker_outs);
+-	sort_pins_by_sequence(cfg->hp_pins, sequences_hp,
+-			      cfg->hp_outs);
+-
+-	/*
+-	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
+-	 * as a primary output
+-	 */
+-	if (!cfg->line_outs &&
+-	    !(cond_flags & HDA_PINCFG_NO_LO_FIXUP)) {
+-		if (cfg->speaker_outs) {
+-			cfg->line_outs = cfg->speaker_outs;
+-			memcpy(cfg->line_out_pins, cfg->speaker_pins,
+-			       sizeof(cfg->speaker_pins));
+-			cfg->speaker_outs = 0;
+-			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
+-			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
+-		} else if (cfg->hp_outs) {
+-			cfg->line_outs = cfg->hp_outs;
+-			memcpy(cfg->line_out_pins, cfg->hp_pins,
+-			       sizeof(cfg->hp_pins));
+-			cfg->hp_outs = 0;
+-			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
+-			cfg->line_out_type = AUTO_PIN_HP_OUT;
+-		}
+-	}
+-
+-	reorder_outputs(cfg->line_outs, cfg->line_out_pins);
+-	reorder_outputs(cfg->hp_outs, cfg->hp_pins);
+-	reorder_outputs(cfg->speaker_outs, cfg->speaker_pins);
+-
+-	sort_autocfg_input_pins(cfg);
+-
+-	/*
+-	 * debug prints of the parsed results
+-	 */
+-	snd_printd("autoconfig: line_outs=%d (0x%x/0x%x/0x%x/0x%x/0x%x) type:%s\n",
+-		   cfg->line_outs, cfg->line_out_pins[0], cfg->line_out_pins[1],
+-		   cfg->line_out_pins[2], cfg->line_out_pins[3],
+-		   cfg->line_out_pins[4],
+-		   cfg->line_out_type == AUTO_PIN_HP_OUT ? "hp" :
+-		   (cfg->line_out_type == AUTO_PIN_SPEAKER_OUT ?
+-		    "speaker" : "line"));
+-	snd_printd("   speaker_outs=%d (0x%x/0x%x/0x%x/0x%x/0x%x)\n",
+-		   cfg->speaker_outs, cfg->speaker_pins[0],
+-		   cfg->speaker_pins[1], cfg->speaker_pins[2],
+-		   cfg->speaker_pins[3], cfg->speaker_pins[4]);
+-	snd_printd("   hp_outs=%d (0x%x/0x%x/0x%x/0x%x/0x%x)\n",
+-		   cfg->hp_outs, cfg->hp_pins[0],
+-		   cfg->hp_pins[1], cfg->hp_pins[2],
+-		   cfg->hp_pins[3], cfg->hp_pins[4]);
+-	snd_printd("   mono: mono_out=0x%x\n", cfg->mono_out_pin);
+-	if (cfg->dig_outs)
+-		snd_printd("   dig-out=0x%x/0x%x\n",
+-			   cfg->dig_out_pins[0], cfg->dig_out_pins[1]);
+-	snd_printd("   inputs:");
+-	for (i = 0; i < cfg->num_inputs; i++) {
+-		snd_printd(" %s=0x%x",
+-			    hda_get_autocfg_input_label(codec, cfg, i),
+-			    cfg->inputs[i].pin);
+-	}
+-	snd_printd("\n");
+-	if (cfg->dig_in_pin)
+-		snd_printd("   dig-in=0x%x\n", cfg->dig_in_pin);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_HDA(snd_hda_parse_pin_defcfg);
+-
+-int snd_hda_get_input_pin_attr(unsigned int def_conf)
+-{
+-	unsigned int loc = get_defcfg_location(def_conf);
+-	unsigned int conn = get_defcfg_connect(def_conf);
+-	if (conn == AC_JACK_PORT_NONE)
+-		return INPUT_PIN_ATTR_UNUSED;
+-	/* Windows may claim the internal mic to be BOTH, too */
+-	if (conn == AC_JACK_PORT_FIXED || conn == AC_JACK_PORT_BOTH)
+-		return INPUT_PIN_ATTR_INT;
+-	if ((loc & 0x30) == AC_JACK_LOC_INTERNAL)
+-		return INPUT_PIN_ATTR_INT;
+-	if ((loc & 0x30) == AC_JACK_LOC_SEPARATE)
+-		return INPUT_PIN_ATTR_DOCK;
+-	if (loc == AC_JACK_LOC_REAR)
+-		return INPUT_PIN_ATTR_REAR;
+-	if (loc == AC_JACK_LOC_FRONT)
+-		return INPUT_PIN_ATTR_FRONT;
+-	return INPUT_PIN_ATTR_NORMAL;
+-}
+-EXPORT_SYMBOL_HDA(snd_hda_get_input_pin_attr);
+-
+-/**
+- * hda_get_input_pin_label - Give a label for the given input pin
+- *
+- * When check_location is true, the function checks the pin location
+- * for mic and line-in pins, and set an appropriate prefix like "Front",
+- * "Rear", "Internal".
+- */
+-
+-static const char *hda_get_input_pin_label(struct hda_codec *codec,
+-					   hda_nid_t pin, bool check_location)
+-{
+-	unsigned int def_conf;
+-	static const char * const mic_names[] = {
+-		"Internal Mic", "Dock Mic", "Mic", "Front Mic", "Rear Mic",
+-	};
+-	int attr;
+-
+-	def_conf = snd_hda_codec_get_pincfg(codec, pin);
+-
+-	switch (get_defcfg_device(def_conf)) {
+-	case AC_JACK_MIC_IN:
+-		if (!check_location)
+-			return "Mic";
+-		attr = snd_hda_get_input_pin_attr(def_conf);
+-		if (!attr)
+-			return "None";
+-		return mic_names[attr - 1];
+-	case AC_JACK_LINE_IN:
+-		if (!check_location)
+-			return "Line";
+-		attr = snd_hda_get_input_pin_attr(def_conf);
+-		if (!attr)
+-			return "None";
+-		if (attr == INPUT_PIN_ATTR_DOCK)
+-			return "Dock Line";
+-		return "Line";
+-	case AC_JACK_AUX:
+-		return "Aux";
+-	case AC_JACK_CD:
+-		return "CD";
+-	case AC_JACK_SPDIF_IN:
+-		return "SPDIF In";
+-	case AC_JACK_DIG_OTHER_IN:
+-		return "Digital In";
+-	default:
+-		return "Misc";
+-	}
+-}
+-
+-/* Check whether the location prefix needs to be added to the label.
+- * If all mic-jacks are in the same location (e.g. rear panel), we don't
+- * have to put "Front" prefix to each label.  In such a case, returns false.
+- */
+-static int check_mic_location_need(struct hda_codec *codec,
+-				   const struct auto_pin_cfg *cfg,
+-				   int input)
+-{
+-	unsigned int defc;
+-	int i, attr, attr2;
+-
+-	defc = snd_hda_codec_get_pincfg(codec, cfg->inputs[input].pin);
+-	attr = snd_hda_get_input_pin_attr(defc);
+-	/* for internal or docking mics, we need locations */
+-	if (attr <= INPUT_PIN_ATTR_NORMAL)
+-		return 1;
+-
+-	attr = 0;
+-	for (i = 0; i < cfg->num_inputs; i++) {
+-		defc = snd_hda_codec_get_pincfg(codec, cfg->inputs[i].pin);
+-		attr2 = snd_hda_get_input_pin_attr(defc);
+-		if (attr2 >= INPUT_PIN_ATTR_NORMAL) {
+-			if (attr && attr != attr2)
+-				return 1; /* different locations found */
+-			attr = attr2;
+-		}
+-	}
+-	return 0;
+-}
+-
+-/**
+- * hda_get_autocfg_input_label - Get a label for the given input
+- *
+- * Get a label for the given input pin defined by the autocfg item.
+- * Unlike hda_get_input_pin_label(), this function checks all inputs
+- * defined in autocfg and avoids the redundant mic/line prefix as much as
+- * possible.
+- */
+-const char *hda_get_autocfg_input_label(struct hda_codec *codec,
+-					const struct auto_pin_cfg *cfg,
+-					int input)
+-{
+-	int type = cfg->inputs[input].type;
+-	int has_multiple_pins = 0;
+-
+-	if ((input > 0 && cfg->inputs[input - 1].type == type) ||
+-	    (input < cfg->num_inputs - 1 && cfg->inputs[input + 1].type == type))
+-		has_multiple_pins = 1;
+-	if (has_multiple_pins && type == AUTO_PIN_MIC)
+-		has_multiple_pins &= check_mic_location_need(codec, cfg, input);
+-	return hda_get_input_pin_label(codec, cfg->inputs[input].pin,
+-				       has_multiple_pins);
+-}
+-EXPORT_SYMBOL_HDA(hda_get_autocfg_input_label);
+-
+-/* return the position of NID in the list, or -1 if not found */
+-static int find_idx_in_nid_list(hda_nid_t nid, const hda_nid_t *list, int nums)
+-{
+-	int i;
+-	for (i = 0; i < nums; i++)
+-		if (list[i] == nid)
+-			return i;
+-	return -1;
+-}
+-
+-/* get a unique suffix or an index number */
+-static const char *check_output_sfx(hda_nid_t nid, const hda_nid_t *pins,
+-				    int num_pins, int *indexp)
+-{
+-	static const char * const channel_sfx[] = {
+-		" Front", " Surround", " CLFE", " Side"
+-	};
+-	int i;
+-
+-	i = find_idx_in_nid_list(nid, pins, num_pins);
+-	if (i < 0)
+-		return NULL;
+-	if (num_pins == 1)
+-		return "";
+-	if (num_pins > ARRAY_SIZE(channel_sfx)) {
+-		if (indexp)
+-			*indexp = i;
+-		return "";
+-	}
+-	return channel_sfx[i];
+-}
+-
+-static int fill_audio_out_name(struct hda_codec *codec, hda_nid_t nid,
+-			       const struct auto_pin_cfg *cfg,
+-			       const char *name, char *label, int maxlen,
+-			       int *indexp)
+-{
+-	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
+-	int attr = snd_hda_get_input_pin_attr(def_conf);
+-	const char *pfx = "", *sfx = "";
+-
+-	/* handle as a speaker if it's a fixed line-out */
+-	if (!strcmp(name, "Line Out") && attr == INPUT_PIN_ATTR_INT)
+-		name = "Speaker";
+-	/* check the location */
+-	switch (attr) {
+-	case INPUT_PIN_ATTR_DOCK:
+-		pfx = "Dock ";
+-		break;
+-	case INPUT_PIN_ATTR_FRONT:
+-		pfx = "Front ";
+-		break;
+-	}
+-	if (cfg) {
+-		/* try to give a unique suffix if needed */
+-		sfx = check_output_sfx(nid, cfg->line_out_pins, cfg->line_outs,
+-				       indexp);
+-		if (!sfx)
+-			sfx = check_output_sfx(nid, cfg->speaker_pins, cfg->speaker_outs,
+-					       indexp);
+-		if (!sfx) {
+-			/* don't add channel suffix for Headphone controls */
+-			int idx = find_idx_in_nid_list(nid, cfg->hp_pins,
+-						       cfg->hp_outs);
+-			if (idx >= 0)
+-				*indexp = idx;
+-			sfx = "";
+-		}
+-	}
+-	snprintf(label, maxlen, "%s%s%s", pfx, name, sfx);
+-	return 1;
+-}
+-
+-/**
+- * snd_hda_get_pin_label - Get a label for the given I/O pin
+- *
+- * Get a label for the given pin.  This function works for both input and
+- * output pins.  When @cfg is given as non-NULL, the function tries to get
+- * an optimized label using hda_get_autocfg_input_label().
+- *
+- * This function tries to give a unique label string for the pin as much as
+- * possible.  For example, when the multiple line-outs are present, it adds
+- * the channel suffix like "Front", "Surround", etc (only when @cfg is given).
+- * If no unique name with a suffix is available and @indexp is non-NULL, the
+- * index number is stored in the pointer.
+- */
+-int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
+-			  const struct auto_pin_cfg *cfg,
+-			  char *label, int maxlen, int *indexp)
+-{
+-	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
+-	const char *name = NULL;
+-	int i;
+-
+-	if (indexp)
+-		*indexp = 0;
+-	if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE)
+-		return 0;
+-
+-	switch (get_defcfg_device(def_conf)) {
+-	case AC_JACK_LINE_OUT:
+-		return fill_audio_out_name(codec, nid, cfg, "Line Out",
+-					   label, maxlen, indexp);
+-	case AC_JACK_SPEAKER:
+-		return fill_audio_out_name(codec, nid, cfg, "Speaker",
+-					   label, maxlen, indexp);
+-	case AC_JACK_HP_OUT:
+-		return fill_audio_out_name(codec, nid, cfg, "Headphone",
+-					   label, maxlen, indexp);
+-	case AC_JACK_SPDIF_OUT:
+-	case AC_JACK_DIG_OTHER_OUT:
+-		if (get_defcfg_location(def_conf) == AC_JACK_LOC_HDMI)
+-			name = "HDMI";
+-		else
+-			name = "SPDIF";
+-		if (cfg && indexp) {
+-			i = find_idx_in_nid_list(nid, cfg->dig_out_pins,
+-						 cfg->dig_outs);
+-			if (i >= 0)
+-				*indexp = i;
+-		}
+-		break;
+-	default:
+-		if (cfg) {
+-			for (i = 0; i < cfg->num_inputs; i++) {
+-				if (cfg->inputs[i].pin != nid)
+-					continue;
+-				name = hda_get_autocfg_input_label(codec, cfg, i);
+-				if (name)
+-					break;
+-			}
+-		}
+-		if (!name)
+-			name = hda_get_input_pin_label(codec, nid, true);
+-		break;
+-	}
+-	if (!name)
+-		return 0;
+-	strlcpy(label, name, maxlen);
+-	return 1;
+-}
+-EXPORT_SYMBOL_HDA(snd_hda_get_pin_label);
+-
+ /**
+  * snd_hda_add_imux_item - Add an item to input_mux
+  *
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index d689484..2dd1c11 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -17,6 +17,7 @@
+ #include <sound/jack.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_jack.h"
+ 
+ bool is_jack_detectable(struct hda_codec *codec, hda_nid_t nid)
+diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+index c66655c..8ae5246 100644
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -12,6 +12,8 @@
+ #ifndef __SOUND_HDA_JACK_H
+ #define __SOUND_HDA_JACK_H
+ 
++struct auto_pin_cfg;
++
+ struct hda_jack_tbl {
+ 	hda_nid_t nid;
+ 	unsigned char action;		/* event action (0 = none) */
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index a5cee95..9a096a8 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -262,6 +262,8 @@ int snd_hda_input_mux_put(struct hda_codec *codec,
+ 			  const struct hda_input_mux *imux,
+ 			  struct snd_ctl_elem_value *ucontrol, hda_nid_t nid,
+ 			  unsigned int *cur_val);
++int snd_hda_add_imux_item(struct hda_input_mux *imux, const char *label,
++			  int index, int *type_index_ret);
+ 
+ /*
+  * Channel mode helper
+@@ -393,72 +395,7 @@ struct hda_bus_unsolicited {
+ 	struct hda_bus *bus;
+ };
+ 
+-/*
+- * Helper for automatic pin configuration
+- */
+-
+-enum {
+-	AUTO_PIN_MIC,
+-	AUTO_PIN_LINE_IN,
+-	AUTO_PIN_CD,
+-	AUTO_PIN_AUX,
+-	AUTO_PIN_LAST
+-};
+-
+-enum {
+-	AUTO_PIN_LINE_OUT,
+-	AUTO_PIN_SPEAKER_OUT,
+-	AUTO_PIN_HP_OUT
+-};
+-
+-#define AUTO_CFG_MAX_OUTS	HDA_MAX_OUTS
+-#define AUTO_CFG_MAX_INS	8
+-
+-struct auto_pin_cfg_item {
+-	hda_nid_t pin;
+-	int type;
+-};
+-
+-struct auto_pin_cfg;
+-const char *hda_get_autocfg_input_label(struct hda_codec *codec,
+-					const struct auto_pin_cfg *cfg,
+-					int input);
+-int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
+-			  const struct auto_pin_cfg *cfg,
+-			  char *label, int maxlen, int *indexp);
+-int snd_hda_add_imux_item(struct hda_input_mux *imux, const char *label,
+-			  int index, int *type_index_ret);
+-
+-enum {
+-	INPUT_PIN_ATTR_UNUSED,	/* pin not connected */
+-	INPUT_PIN_ATTR_INT,	/* internal mic/line-in */
+-	INPUT_PIN_ATTR_DOCK,	/* docking mic/line-in */
+-	INPUT_PIN_ATTR_NORMAL,	/* mic/line-in jack */
+-	INPUT_PIN_ATTR_FRONT,	/* mic/line-in jack in front */
+-	INPUT_PIN_ATTR_REAR,	/* mic/line-in jack in rear */
+-};
+-
+-int snd_hda_get_input_pin_attr(unsigned int def_conf);
+-
+-struct auto_pin_cfg {
+-	int line_outs;
+-	/* sorted in the order of Front/Surr/CLFE/Side */
+-	hda_nid_t line_out_pins[AUTO_CFG_MAX_OUTS];
+-	int speaker_outs;
+-	hda_nid_t speaker_pins[AUTO_CFG_MAX_OUTS];
+-	int hp_outs;
+-	int line_out_type;	/* AUTO_PIN_XXX_OUT */
+-	hda_nid_t hp_pins[AUTO_CFG_MAX_OUTS];
+-	int num_inputs;
+-	struct auto_pin_cfg_item inputs[AUTO_CFG_MAX_INS];
+-	int dig_outs;
+-	hda_nid_t dig_out_pins[2];
+-	hda_nid_t dig_in_pin;
+-	hda_nid_t mono_out_pin;
+-	int dig_out_type[2]; /* HDA_PCM_TYPE_XXX */
+-	int dig_in_type; /* HDA_PCM_TYPE_XXX */
+-};
+-
++/* helper macros to retrieve pin default-config values */
+ #define get_defcfg_connect(cfg) \
+ 	((cfg & AC_DEFCFG_PORT_CONN) >> AC_DEFCFG_PORT_CONN_SHIFT)
+ #define get_defcfg_association(cfg) \
+@@ -472,19 +409,6 @@ struct auto_pin_cfg {
+ #define get_defcfg_misc(cfg) \
+ 	((cfg & AC_DEFCFG_MISC) >> AC_DEFCFG_MISC_SHIFT)
+ 
+-/* bit-flags for snd_hda_parse_pin_def_config() behavior */
+-#define HDA_PINCFG_NO_HP_FIXUP	(1 << 0) /* no HP-split */
+-#define HDA_PINCFG_NO_LO_FIXUP	(1 << 1) /* don't take other outs as LO */
+-
+-int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
+-			     struct auto_pin_cfg *cfg,
+-			     const hda_nid_t *ignore_nids,
+-			     unsigned int cond_flags);
+-
+-/* older function */
+-#define snd_hda_parse_pin_def_config(codec, cfg, ignore) \
+-	snd_hda_parse_pin_defcfg(codec, cfg, ignore, 0)
+-
+ /* amp values */
+ #define AMP_IN_MUTE(idx)	(0x7080 | ((idx)<<8))
+ #define AMP_IN_UNMUTE(idx)	(0x7000 | ((idx)<<8))
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 723bb9c..d8b2d6d 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -28,6 +28,7 @@
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_beep.h"
+ #include "hda_jack.h"
+ 
+diff --git a/sound/pci/hda/patch_ca0110.c b/sound/pci/hda/patch_ca0110.c
+index a3b70a8..19ae14f 100644
+--- a/sound/pci/hda/patch_ca0110.c
++++ b/sound/pci/hda/patch_ca0110.c
+@@ -26,6 +26,7 @@
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ 
+ /*
   */
- static int alc_read_coef_idx(struct hda_codec *codec,
-@@ -2050,7 +1889,6 @@ static void alc_auto_init_std(struct hda_codec *codec);
- static int alc_init(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
--	unsigned int i;
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index d290a8f..d0d3540 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -30,6 +30,7 @@
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
  
- 	if (spec->init_hook)
- 		spec->init_hook(codec);
-@@ -2058,8 +1896,6 @@ static int alc_init(struct hda_codec *codec)
- 	alc_fix_pll(codec);
- 	alc_auto_init_amp(codec, spec->init_amp);
+ #define WIDGET_CHIP_CTRL      0x15
+ #define WIDGET_DSP_CTRL       0x16
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 48c6d81..9647ed4 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -26,6 +26,7 @@
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_jack.h"
+ #include <sound/tlv.h>
  
--	for (i = 0; i < spec->num_init_verbs; i++)
--		snd_hda_sequence_write(codec, spec->init_verbs[i]);
- 	alc_init_special_input_src(codec);
- 	alc_auto_init_std(codec);
+diff --git a/sound/pci/hda/patch_cmedia.c b/sound/pci/hda/patch_cmedia.c
+index b6767b4..c8fdaae 100644
+--- a/sound/pci/hda/patch_cmedia.c
++++ b/sound/pci/hda/patch_cmedia.c
+@@ -29,6 +29,7 @@
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #define NUM_PINS	11
  
-@@ -4885,7 +4721,7 @@ static void alc260_fixup_gpio1_toggle(struct hda_codec *codec,
- 		spec->autocfg.hp_pins[0] = 0x0f; /* copy it for automute */
- 		snd_hda_jack_detect_enable(codec, 0x0f, ALC_HP_EVENT);
- 		spec->unsol_event = alc_sku_unsol_event;
--		add_verb(codec->spec, alc_gpio1_init_verbs);
-+		snd_hda_gen_add_verbs(&spec->gen, alc_gpio1_init_verbs);
- 	}
- }
  
-@@ -5216,8 +5052,8 @@ static const struct alc_fixup alc882_fixups[] = {
- 		}
- 	},
- 	[ALC882_FIXUP_ACER_ASPIRE_7736] = {
--		.type = ALC_FIXUP_SKU,
--		.v.sku = ALC_FIXUP_SKU_IGNORE,
-+		.type = ALC_FIXUP_FUNC,
-+		.v.func = alc_fixup_sku_ignore,
- 	},
- 	[ALC882_FIXUP_ASUS_W90V] = {
- 		.type = ALC_FIXUP_PINS,
-@@ -5693,7 +5529,7 @@ static int alc268_parse_auto_config(struct hda_codec *codec)
- 	if (err > 0) {
- 		if (!spec->no_analog && spec->autocfg.speaker_pins[0] != 0x1d) {
- 			add_mixer(spec, alc268_beep_mixer);
--			add_verb(spec, alc268_beep_init_verbs);
-+			snd_hda_gen_add_verbs(&spec->gen, alc268_beep_init_verbs);
- 		}
- 	}
- 	return err;
-@@ -5995,8 +5831,8 @@ static const struct alc_fixup alc269_fixups[] = {
- 		}
- 	},
- 	[ALC269_FIXUP_SKU_IGNORE] = {
--		.type = ALC_FIXUP_SKU,
--		.v.sku = ALC_FIXUP_SKU_IGNORE,
-+		.type = ALC_FIXUP_FUNC,
-+		.v.func = alc_fixup_sku_ignore,
- 	},
- 	[ALC269_FIXUP_ASUS_G73JW] = {
- 		.type = ALC_FIXUP_PINS,
-@@ -6491,7 +6327,7 @@ static int patch_alc861vd(struct hda_codec *codec)
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 884f8ad..baf1edd 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -36,6 +36,7 @@
+ #include <sound/tlv.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_beep.h"
+ #include "hda_jack.h"
  
- 	if (codec->vendor_id == 0x10ec0660) {
- 		/* always turn on EAPD */
--		add_verb(spec, alc660vd_eapd_verbs);
-+		snd_hda_gen_add_verbs(&spec->gen, alc660vd_eapd_verbs);
- 	}
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 92e1167..db272fb 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -54,6 +54,7 @@
+ #include <sound/asoundef.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_jack.h"
  
- 	if (!spec->no_analog) {
-@@ -6604,8 +6440,8 @@ static const struct alc_fixup alc662_fixups[] = {
- 		}
- 	},
- 	[ALC662_FIXUP_SKU_IGNORE] = {
--		.type = ALC_FIXUP_SKU,
--		.v.sku = ALC_FIXUP_SKU_IGNORE,
-+		.type = ALC_FIXUP_FUNC,
-+		.v.func = alc_fixup_sku_ignore,
- 	},
- 	[ALC662_FIXUP_HP_RP5800] = {
- 		.type = ALC_FIXUP_PINS,
+ /* Pin Widget NID */
 -- 
 1.7.9.2
