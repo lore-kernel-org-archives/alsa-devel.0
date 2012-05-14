@@ -1,21 +1,21 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/15] ALSA: hda/realtek - Call a common helper
-	for alc_spec initialization
-Date: Mon, 14 May 2012 17:31:52 +0200
-Message-ID: <1337009526-26256-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 03/15] ALSA: hda - Always resume the codec
+	immediately
+Date: Mon, 14 May 2012 17:31:54 +0200
+Message-ID: <1337009526-26256-4-git-send-email-tiwai@suse.de>
 References: <1337009526-26256-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75C7224A27
+	by alsa0.perex.cz (Postfix) with ESMTP id 757B724A26
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:18 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id E58918C061
+	by mx2.suse.de (Postfix) with ESMTP id E62218FD0F
 	for <alsa-devel@alsa-project.org>;
 	Mon, 14 May 2012 17:32:17 +0200 (CEST)
 In-Reply-To: <1337009526-26256-1-git-send-email-tiwai@suse.de>
@@ -32,256 +32,116 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Just a clean up by calling the same helper function.
+This is a fix for the problem in commit 785f857d1c, the pop noise
+issue on some machines with ALC269.  The problem was the uninitialized
+state after the resume due to the delayed resume of the codec chips.
+In that commit, we tried to fix by forcibly putting the codec to D3 at
+suspend.  But, this still also leaves the uninitialized state after
+resume, and it _might_ be still problematic with some BIOS.  Since the
+commit turned out to regress another issues, we reverted it in the
+end.
+
+Now, in this fix, try to fix by turning on the codec immediately at
+the resume path.  We need to take care of the power-saving in this
+case.  When the device is woken up at the power-saved state, it should
+go power-saving again after the resume.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c |  136 ++++++++++++++++++-----------------------
- 1 file changed, 61 insertions(+), 75 deletions(-)
+ sound/pci/hda/hda_codec.c |    9 +++++++--
+ sound/pci/hda/hda_codec.h |    2 --
+ sound/pci/hda/hda_intel.c |   14 +-------------
+ 3 files changed, 8 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6dd1b74..ae9732c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4405,6 +4405,25 @@ static int alc_parse_auto_config(struct hda_codec *codec,
- 	return 1;
- }
- 
-+/* common preparation job for alc_spec */
-+static int alc_alloc_spec(struct hda_codec *codec, hda_nid_t mixer_nid)
-+{
-+	struct alc_spec *spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-+	int err;
-+
-+	if (!spec)
-+		return -ENOMEM;
-+	codec->spec = spec;
-+	spec->mixer_nid = mixer_nid;
-+
-+	err = alc_codec_rename_from_preset(codec);
-+	if (err < 0) {
-+		kfree(spec);
-+		return err;
-+	}
-+	return 0;
-+}
-+
- static int alc880_parse_auto_config(struct hda_codec *codec)
- {
- 	static const hda_nid_t alc880_ignore[] = { 0x1d, 0 };
-@@ -4786,13 +4805,11 @@ static int patch_alc880(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x0b);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x0b;
-+	spec = codec->spec;
- 	spec->need_dac_fix = 1;
- 
- 	alc_pick_fixup(codec, alc880_fixup_models, alc880_fixup_tbl,
-@@ -4979,13 +4996,11 @@ static int patch_alc260(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x07);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x07;
-+	spec = codec->spec;
- 
- 	alc_pick_fixup(codec, NULL, alc260_fixup_tbl, alc260_fixups);
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
-@@ -5452,13 +5467,11 @@ static int patch_alc882(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x0b);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x0b;
-+	spec = codec->spec;
- 
- 	switch (codec->vendor_id) {
- 	case 0x10ec0882:
-@@ -5470,10 +5483,6 @@ static int patch_alc882(struct hda_codec *codec)
- 		break;
- 	}
- 
--	err = alc_codec_rename_from_preset(codec);
--	if (err < 0)
--		goto error;
--
- 	alc_pick_fixup(codec, alc882_fixup_models, alc882_fixup_tbl,
- 		       alc882_fixups);
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
-@@ -5597,13 +5606,11 @@ static int patch_alc262(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x0b);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x0b;
-+	spec = codec->spec;
- 
- #if 0
- 	/* pshou 07/11/05  set a zero PCM sample to DAC when FIFO is
-@@ -5699,13 +5706,12 @@ static int patch_alc268(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int i, has_beep, err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
--
- 	/* ALC268 has no aa-loopback mixer */
-+	err = alc_alloc_spec(codec, 0);
-+	if (err < 0)
-+		return err;
-+
-+	spec = codec->spec;
- 
- 	/* automatic parse from the BIOS config */
- 	err = alc268_parse_auto_config(codec);
-@@ -6216,19 +6222,13 @@ static void alc269_fill_coef(struct hda_codec *codec)
- static int patch_alc269(struct hda_codec *codec)
- {
- 	struct alc_spec *spec;
--	int err = 0;
--
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
--
--	spec->mixer_nid = 0x0b;
-+	int err;
- 
--	err = alc_codec_rename_from_preset(codec);
-+	err = alc_alloc_spec(codec, 0x0b);
- 	if (err < 0)
--		goto error;
-+		return err;
-+
-+	spec = codec->spec;
- 
- 	if (codec->vendor_id == 0x10ec0269) {
- 		spec->codec_variant = ALC269_TYPE_ALC269VA;
-@@ -6374,13 +6374,11 @@ static int patch_alc861(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x15);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x15;
-+	spec = codec->spec;
- 
- 	alc_pick_fixup(codec, NULL, alc861_fixup_tbl, alc861_fixups);
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
-@@ -6477,13 +6475,11 @@ static int patch_alc861vd(struct hda_codec *codec)
- 	struct alc_spec *spec;
- 	int err;
- 
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x0b);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x0b;
-+	spec = codec->spec;
- 
- 	alc_pick_fixup(codec, NULL, alc861vd_fixup_tbl, alc861vd_fixups);
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
-@@ -6822,25 +6818,19 @@ static const struct alc_model_fixup alc662_fixup_models[] = {
- static int patch_alc662(struct hda_codec *codec)
- {
- 	struct alc_spec *spec;
--	int err = 0;
--
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (!spec)
--		return -ENOMEM;
-+	int err;
- 
--	codec->spec = spec;
-+	err = alc_alloc_spec(codec, 0x0b);
-+	if (err < 0)
-+		return err;
- 
--	spec->mixer_nid = 0x0b;
-+	spec = codec->spec;
- 
- 	/* handle multiple HPs as is */
- 	spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
- 
- 	alc_fix_pll_init(codec, 0x20, 0x04, 15);
- 
--	err = alc_codec_rename_from_preset(codec);
--	if (err < 0)
--		goto error;
--
- 	if ((alc_get_coef0(codec) & (1 << 14)) &&
- 	    codec->bus->pci->subsystem_vendor == 0x1025 &&
- 	    spec->cdefine.platform_type == 1) {
-@@ -6903,16 +6893,12 @@ static int alc680_parse_auto_config(struct hda_codec *codec)
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 98976c8..e134e72 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3500,6 +3500,10 @@ static void hda_call_codec_suspend(struct hda_codec *codec)
   */
- static int patch_alc680(struct hda_codec *codec)
+ static void hda_call_codec_resume(struct hda_codec *codec)
  {
--	struct alc_spec *spec;
- 	int err;
++	/* set as if powered on for avoiding re-entering the resume
++	 * in the resume / power-save sequence
++	 */
++	hda_keep_power_on(codec);
+ 	hda_set_power_state(codec,
+ 			    codec->afg ? codec->afg : codec->mfg,
+ 			    AC_PWRST_D0);
+@@ -3515,6 +3519,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
+ 		snd_hda_codec_resume_amp(codec);
+ 		snd_hda_codec_resume_cache(codec);
+ 	}
++	snd_hda_power_down(codec); /* flag down before returning */
+ }
+ #endif /* CONFIG_PM */
  
--	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
--	if (spec == NULL)
--		return -ENOMEM;
--
--	codec->spec = spec;
--
- 	/* ALC680 has no aa-loopback mixer */
-+	err = alc_alloc_spec(codec, 0);
-+	if (err < 0)
-+		return err;
+@@ -4332,6 +4337,7 @@ void snd_hda_power_up(struct hda_codec *codec)
+ 	snd_hda_update_power_acct(codec);
+ 	codec->power_on = 1;
+ 	codec->power_jiffies = jiffies;
++	codec->power_transition = 1; /* avoid reentrance */
+ 	if (bus->ops.pm_notify)
+ 		bus->ops.pm_notify(bus);
+ 	hda_call_codec_resume(codec);
+@@ -5521,8 +5527,7 @@ int snd_hda_resume(struct hda_bus *bus)
+ 	list_for_each_entry(codec, &bus->codec_list, list) {
+ 		if (codec->patch_ops.pre_resume)
+ 			codec->patch_ops.pre_resume(codec);
+-		if (snd_hda_codec_needs_resume(codec))
+-			hda_call_codec_resume(codec);
++		hda_call_codec_resume(codec);
+ 	}
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 56b4f74..0fe6491 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -1051,12 +1051,10 @@ const char *snd_hda_get_jack_location(u32 cfg);
+ #ifdef CONFIG_SND_HDA_POWER_SAVE
+ void snd_hda_power_up(struct hda_codec *codec);
+ void snd_hda_power_down(struct hda_codec *codec);
+-#define snd_hda_codec_needs_resume(codec) codec->power_count
+ void snd_hda_update_power_acct(struct hda_codec *codec);
+ #else
+ static inline void snd_hda_power_up(struct hda_codec *codec) {}
+ static inline void snd_hda_power_down(struct hda_codec *codec) {}
+-#define snd_hda_codec_needs_resume(codec) 1
+ #endif
  
- 	/* automatic parse from the BIOS config */
- 	err = alc680_parse_auto_config(codec);
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 6e958bf..c19e71a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2351,17 +2351,6 @@ static void azx_power_notify(struct hda_bus *bus)
+  * power management
+  */
+ 
+-static int snd_hda_codecs_inuse(struct hda_bus *bus)
+-{
+-	struct hda_codec *codec;
+-
+-	list_for_each_entry(codec, &bus->codec_list, list) {
+-		if (snd_hda_codec_needs_resume(codec))
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+ static int azx_suspend(struct pci_dev *pci, pm_message_t state)
+ {
+ 	struct snd_card *card = pci_get_drvdata(pci);
+@@ -2408,8 +2397,7 @@ static int azx_resume(struct pci_dev *pci)
+ 		return -EIO;
+ 	azx_init_pci(chip);
+ 
+-	if (snd_hda_codecs_inuse(chip->bus))
+-		azx_init_chip(chip, 1);
++	azx_init_chip(chip, 1);
+ 
+ 	snd_hda_resume(chip->bus);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 -- 
 1.7.9.2
