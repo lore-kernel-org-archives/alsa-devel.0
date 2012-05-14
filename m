@@ -1,18 +1,16 @@
-From: "Reddy, M.R. Swami" <MR.Swami.Reddy@ti.com>
-Subject: Re: [PATCH] ASoC: lm49453: Fix author e-mail address
-Date: Mon, 14 May 2012 08:35:00 +0000
-Message-ID: <354ACD19F280E44381F0C302BC7A15A38B5F@DLEE07.ent.ti.com>
-References: <1336948264-4355-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Multicasting transfer mode
+Date: Mon, 14 May 2012 09:54:06 +0100
+Message-ID: <20120514085405.GI31985@opensource.wolfsonmicro.com>
+References: <4FB0ADA3.3020304@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3129386766056661531=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9255E104107
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72D312495A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 10:35:03 +0200 (CEST)
-In-Reply-To: <1336948264-4355-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Content-Language: en-US
+	Mon, 14 May 2012 10:54:08 +0200 (CEST)
+In-Reply-To: <4FB0ADA3.3020304@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood, Liam" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-Thanks for lm49453 patches.
+--===============3129386766056661531==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7IgncvKP0CVPV/ZZ"
+Content-Disposition: inline
 
-Thanks
-Swami
 
------Original Message-----
-From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
-Sent: Monday, May 14, 2012 4:01 AM
-To: Reddy, M.R. Swami; Girdwood, Liam
-Cc: alsa-devel@alsa-project.org; Mark Brown
-Subject: [PATCH] ASoC: lm49453: Fix author e-mail address
+--7IgncvKP0CVPV/ZZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/lm49453.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, May 14, 2012 at 12:00:51AM -0700, Patrick Lai wrote:
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c index 02a8179..802b9f1 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -1546,5 +1546,5 @@ static struct i2c_driver lm49453_i2c_driver = {  module_i2c_driver(lm49453_i2c_driver);
- 
- MODULE_DESCRIPTION("ASoC LM49453 driver"); -MODULE_AUTHOR("M R Swami Reddy <MR.Swami.Reddy@ti.com");
-+MODULE_AUTHOR("M R Swami Reddy <MR.Swami.Reddy@ti.com>");
- MODULE_LICENSE("GPL v2");
---
-1.7.10
+> The hardware I am working on has CODEC transfer microphone signal to
+> two SOCs simultaneously . In the machine driver, I have two dai-links
+
+This isn't something the framework supports.  You'd need to either
+implement the support or wait for someone else to do so.
+
+--7IgncvKP0CVPV/ZZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPsMgJAAoJEBus8iNuMP3dvZ8P/2THkdgTR0QKKt18wqejXiOM
+IfGEjQkKUlB72BjWWR4JMK4/xZJ2YZ2LOPwmaM4W15ENQXpMCnJ0sPWz00kgzd8b
+DnVfFaXtZYgGEHlVp+wRZrq2298+YzV0wWpOZPanOUSNCb/4A54qo58pqy2DdWMm
+5wOFZejeefjNa5wglN6fN2NX5MDkKuXyuooZARmklvyghV5Ur9nl7ecV9AMq9YMR
+7JqNfuddXrzLfr63wxcUBfYwh8kkwG5aojs46o089aJMlpbCD0UQhs/I/wC4LEFn
+3doeOeTr0ffNiftXaGpb+Mu2yuR8ptwFC9L+2i79UblqA0TIoLrqBY8SaBSFwVDv
+jlzlXNm9jeC+UE72Yu59LF9ob7PuaKj7c5QRBflkyJjgdxEQsiaNBbWCCX3MCwW6
+UOPW1c+XAvCQi2A5wugpM/7xKA/VEkPOxlxSnx3GmKu3lYOJkRTMc8ctG1s4S2zh
+hpCEEUrt85tKi2GYMEr/AeZfJkYnQA5WyJjHnXG5kymGxfmGF5MA2LWylnV4Iq45
+TTFmOzEL7PUjYnieGI28ErmiNXE7kuDrB3I8KuJccjkWvXuJ/i60caB/E+YXVxCT
+DwnOuBr1UEFY3KJEl6EQx7WWmStj72PZL07MDz3nuqfPBzJkZKxBq5Q0vWomJDvv
+Gjvs2GVU4fkJaptdiizc
+=Uo6Z
+-----END PGP SIGNATURE-----
+
+--7IgncvKP0CVPV/ZZ--
+
+--===============3129386766056661531==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3129386766056661531==--
