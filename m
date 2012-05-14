@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Problem with snd_soc_suspend
-Date: Mon, 14 May 2012 09:34:31 +0100
-Message-ID: <20120514083430.GG31985@opensource.wolfsonmicro.com>
-References: <4FB0A685.3040408@codeaurora.org>
+From: "Reddy, M.R. Swami" <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH] ASoC: lm49453: Fix author e-mail address
+Date: Mon, 14 May 2012 08:35:00 +0000
+Message-ID: <354ACD19F280E44381F0C302BC7A15A38B5F@DLEE07.ent.ti.com>
+References: <1336948264-4355-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8125797958586943581=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 73FB42494E
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9255E104107
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2012 10:34:45 +0200 (CEST)
-In-Reply-To: <4FB0A685.3040408@codeaurora.org>
+	Mon, 14 May 2012 10:35:03 +0200 (CEST)
+In-Reply-To: <1336948264-4355-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,69 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood, Liam" <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============8125797958586943581==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PyMzGVE0NRonI6bs"
-Content-Disposition: inline
+Thanks for lm49453 patches.
 
+Thanks
+Swami
 
---PyMzGVE0NRonI6bs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-----Original Message-----
+From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+Sent: Monday, May 14, 2012 4:01 AM
+To: Reddy, M.R. Swami; Girdwood, Liam
+Cc: alsa-devel@alsa-project.org; Mark Brown
+Subject: [PATCH] ASoC: lm49453: Fix author e-mail address
 
-On Sun, May 13, 2012 at 11:30:29PM -0700, Patrick Lai wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/lm49453.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> that as system attempts to enter suspend while DAILINK X is active,
-> snd_soc_suspend() calls snd_soc_dapm_stream_event(
-> SND_SOC_DAPM_STREAM_SUSPEND) on inactive DAILINK Y since DAILINK Y
-> ignore flag is not set. Consequently, CODEC widgets get powered off
-> even though they should remain powered for DAILINK X.
-
-This sounds like expected behaviour, if the widgets aren't marked as
-ignoring suspend then they will be suspended.
-
-> 1. Should soc-core check if CODEC DAI is active beside checking
-> ignore_suspend flag before calling snd_soc_dapm_stream_event()?
-> I checked latest soc-core.c from kernel 3.4 RC7. The logic is the same
-> as 3.0
-
-No, the whole point here is to suspend.  If we did that we'd never
-suspend any active streams.
-
---PyMzGVE0NRonI6bs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPsMOOAAoJEBus8iNuMP3dF9cQAJvugGG13EtBKCXEspCHSvCr
-k9WIA20dybtSuae+Rr/MFasRdQ82ikvAT54tpziBaYTDgZ4tjtnuiYGeIk+RF0A5
-NO+GWhZH4mLoRi2fYSmnVaChlewIOcoeWpdlc9QBAVcT+6mNIinLLD2m/NcSLXyC
-1Lt4Vrp1jiVnGVPgmxHtg9MYfTYUPdO1QOkIvvakQSKxAkRwKEkvRtk9cnWMJisT
-sQV+ItcUCRGE+6ck1wTbYurjml5N4YFpmSRPTvpspvY01eF2Rn730JZDyabV+uwf
-Zic7J3nsZqpWOtl8tfJJF8B5k8IhZfrhbogslaiT8BBOs0lhNwBxhFYEMvSZsIN5
-jKUkEq/7h2fN+EWdy42NaXAleR01IcH+TNlYMH/jjX1Qd1feLYscR9gqXLLZXm5y
-7umJM/90QT4aSamnNv+ItBIgJlwpQzhxYIMzFj8PupsLLHFUx/x1OFr9KfmuCiDs
-efDHwAzRP10Pj/XsuGQ1YsgOzJ2CB5bvDwGmPATSzh9BnOBYVzHcCA13sRJis4I7
-tSDIOuYSTC3wT+0ZGRTtSOV58tjLhlC7UednEC4Ejl7UnSYlnrdZslW76il6gg3f
-raacx5o+33tZgep+qncEMHitEs6nCIUdTUokOBawLdPi9wptB6ECagdLmCzGKRph
-hQwu+K8hEucP6TCNM2x/
-=ADPR
------END PGP SIGNATURE-----
-
---PyMzGVE0NRonI6bs--
-
---===============8125797958586943581==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8125797958586943581==--
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c index 02a8179..802b9f1 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -1546,5 +1546,5 @@ static struct i2c_driver lm49453_i2c_driver = {  module_i2c_driver(lm49453_i2c_driver);
+ 
+ MODULE_DESCRIPTION("ASoC LM49453 driver"); -MODULE_AUTHOR("M R Swami Reddy <MR.Swami.Reddy@ti.com");
++MODULE_AUTHOR("M R Swami Reddy <MR.Swami.Reddy@ti.com>");
+ MODULE_LICENSE("GPL v2");
+--
+1.7.10
