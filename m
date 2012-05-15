@@ -1,21 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: dmic codec: Support for DT
-Date: Tue, 15 May 2012 14:44:35 +0300
-Message-ID: <4FB241A3.3020104@ti.com>
-References: <1336478157-27526-1-git-send-email-peter.ujfalusi@ti.com>
-	<20120508125837.GN15893@opensource.wolfsonmicro.com>
+From: =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: [PATCH 1/4] mc13xxx: add codec platform data
+Date: Tue, 15 May 2012 13:53:49 +0200
+Message-ID: <1337082832-9764-2-git-send-email-philippe.retornaz@epfl.ch>
+References: <1337082832-9764-1-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
-	[74.125.149.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE2E624CC3
+Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
+	by alsa0.perex.cz (Postfix) with SMTP id 3566C24CD0
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2012 13:44:28 +0200 (CEST)
-Received: by lagz14 with SMTP id z14so4169907lag.7
-	for <alsa-devel@alsa-project.org>; Tue, 15 May 2012 04:44:25 -0700 (PDT)
-In-Reply-To: <20120508125837.GN15893@opensource.wolfsonmicro.com>
+	Tue, 15 May 2012 13:52:41 +0200 (CEST)
+In-Reply-To: <1337082832-9764-1-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, torbenh@linutronix.de, sameo@linux.intel.com, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, philippe.retornaz@epfl.ch, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/08/2012 03:58 PM, Mark Brown wrote:
-> On Tue, May 08, 2012 at 02:55:57PM +0300, Peter Ujfalusi wrote:
-> =
-
->> +dmic_codec: dmic_codec@0 { /* generic DMIC codec */
->> +	compatible =3D "generic,dmic-codec";
->> +};
-> =
-
-> Why is this called "dmic-codec" and not "dmic"?  We probably need to
-> have a think about this in the context of the handling of random
-> on-board passive components in general - things like jacks and so on - =
-
-> is the most sensible thing to have a platform device for everything, or
-> is that getting too noisy?
-
-I don't think that we would need platform devices for most of the
-passive components you have listed.
-AFAIK (Liam can correct me if I'm wrong) the reason that we have this
-(dmic codec) is to be able to use the OMAP4+ DMIC in a card.
-In most cases the digital microphones are passive components connected
-to a codec and the codec is then interfaced with the CPU dai.
-With the OMAP4 DMIC we have the microphones connected directly to the
-CPU dai. In some sense the OMAP4+ DMIC block is a CPU dai and a codec at
-the same time. Or we can view it as we have PDM link betweent he CPU dai
-and the codec (dmic).
-
-Not entirely sure if we will need to have dts section for the dmic, I
-can just create the platform device in the abe-twl6040 machine driver if
-the setup includes digital microphones.
-
--- =
-
-P=E9ter
+ClNpZ25lZC1vZmYtYnk6IFBoaWxpcHBlIFLDqXRvcm5heiA8cGhpbGlwcGUucmV0b3JuYXpAZXBm
+bC5jaD4KLS0tCiBkcml2ZXJzL21mZC9tYzEzeHh4LWNvcmUuYyAgfCAgICAzICsrLQogaW5jbHVk
+ZS9saW51eC9tZmQvbWMxM3h4eC5oIHwgICAxMSArKysrKysrKysrKwogMiBmaWxlcyBjaGFuZ2Vk
+LCAxMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bWZkL21jMTN4eHgtY29yZS5jIGIvZHJpdmVycy9tZmQvbWMxM3h4eC1jb3JlLmMKaW5kZXggOWZk
+NGY2My4uNzM4NzIyYyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tZmQvbWMxM3h4eC1jb3JlLmMKKysr
+IGIvZHJpdmVycy9tZmQvbWMxM3h4eC1jb3JlLmMKQEAgLTgxMyw3ICs4MTMsOCBAQCBlcnJfcmV2
+aXNpb246CiAJCW1jMTN4eHhfYWRkX3N1YmRldmljZShtYzEzeHh4LCAiJXMtYWRjIik7CiAKIAlp
+ZiAobWMxM3h4eC0+ZmxhZ3MgJiBNQzEzWFhYX1VTRV9DT0RFQykKLQkJbWMxM3h4eF9hZGRfc3Vi
+ZGV2aWNlKG1jMTN4eHgsICIlcy1jb2RlYyIpOworCQltYzEzeHh4X2FkZF9zdWJkZXZpY2VfcGRh
+dGEobWMxM3h4eCwgIiVzLWNvZGVjIiwKKwkJCQkJcGRhdGEtPmNvZGVjLCBzaXplb2YoKnBkYXRh
+LT5jb2RlYykpOwogCiAJaWYgKG1jMTN4eHgtPmZsYWdzICYgTUMxM1hYWF9VU0VfUlRDKQogCQlt
+YzEzeHh4X2FkZF9zdWJkZXZpY2UobWMxM3h4eCwgIiVzLXJ0YyIpOwpkaWZmIC0tZ2l0IGEvaW5j
+bHVkZS9saW51eC9tZmQvbWMxM3h4eC5oIGIvaW5jbHVkZS9saW51eC9tZmQvbWMxM3h4eC5oCmlu
+ZGV4IDEwZTAzOGIuLmJmMDcwNzUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvbWZkL21jMTN4
+eHguaAorKysgYi9pbmNsdWRlL2xpbnV4L21mZC9tYzEzeHh4LmgKQEAgLTE3MCw2ICsxNzAsMTYg
+QEAgc3RydWN0IG1jMTN4eHhfdHNfcGxhdGZvcm1fZGF0YSB7CiAJYm9vbCBhdG94OwogfTsKIAor
+ZW51bSBtYzEzNzgzX3NzaV9wb3J0IHsKKwlNQzEzNzgzX1NTSTFfUE9SVCwKKwlNQzEzNzgzX1NT
+STJfUE9SVCwKK307CisKK3N0cnVjdCBtYzEzeHh4X2NvZGVjX3BsYXRmb3JtX2RhdGEgeworCWVu
+dW0gbWMxMzc4M19zc2lfcG9ydCBhZGNfc3NpX3BvcnQ7CisJZW51bSBtYzEzNzgzX3NzaV9wb3J0
+IGRhY19zc2lfcG9ydDsKK307CisKIHN0cnVjdCBtYzEzeHh4X3BsYXRmb3JtX2RhdGEgewogI2Rl
+ZmluZSBNQzEzWFhYX1VTRV9UT1VDSFNDUkVFTiAoMSA8PCAwKQogI2RlZmluZSBNQzEzWFhYX1VT
+RV9DT0RFQwkoMSA8PCAxKQpAQCAtMTgxLDYgKzE5MSw3IEBAIHN0cnVjdCBtYzEzeHh4X3BsYXRm
+b3JtX2RhdGEgewogCXN0cnVjdCBtYzEzeHh4X2xlZHNfcGxhdGZvcm1fZGF0YSAqbGVkczsKIAlz
+dHJ1Y3QgbWMxM3h4eF9idXR0b25zX3BsYXRmb3JtX2RhdGEgKmJ1dHRvbnM7CiAJc3RydWN0IG1j
+MTN4eHhfdHNfcGxhdGZvcm1fZGF0YSB0b3VjaDsKKwlzdHJ1Y3QgbWMxM3h4eF9jb2RlY19wbGF0
+Zm9ybV9kYXRhICpjb2RlYzsKIH07CiAKICNkZWZpbmUgTUMxM1hYWF9BRENfTU9ERV9UUwkJMQot
+LSAKMS43LjAuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
