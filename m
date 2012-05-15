@@ -1,30 +1,21 @@
-From: Christoph Fritz <chf.fritz@googlemail.com>
-Subject: Re: ASoC: wm9712: Microphone doesn't work: Mux
-	handling broken?
-Date: Tue, 15 May 2012 11:15:41 +0200
-Message-ID: <20120515091541.GA4433@lovely.krouter>
-References: <1335474693.3628.26.camel@lovely>
-	<20120426213745.GA18260@opensource.wolfsonmicro.com>
-	<1335513602.3504.4.camel@mars>
-	<20120427134638.GI18260@opensource.wolfsonmicro.com>
-	<20120504132845.GA24245@lovely.krouter>
-	<20120507215506.GA5063@lovely.krouter>
-	<20120508102947.GA8226@lovely.krouter>
-	<20120512001556.GA26105@mars>
-	<20120512115130.GI1781@opensource.wolfsonmicro.com>
-	<20120513035652.GA3532@lovely.krouter>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: dmic codec: Support for DT
+Date: Tue, 15 May 2012 14:44:35 +0300
+Message-ID: <4FB241A3.3020104@ti.com>
+References: <1336478157-27526-1-git-send-email-peter.ujfalusi@ti.com>
+	<20120508125837.GN15893@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id BA39824C8C
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE2E624CC3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2012 11:15:47 +0200 (CEST)
-Received: by bkcjg15 with SMTP id jg15so4701425bkc.38
-	for <alsa-devel@alsa-project.org>; Tue, 15 May 2012 02:15:47 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20120513035652.GA3532@lovely.krouter>
+	Tue, 15 May 2012 13:44:28 +0200 (CEST)
+Received: by lagz14 with SMTP id z14so4169907lag.7
+	for <alsa-devel@alsa-project.org>; Tue, 15 May 2012 04:44:25 -0700 (PDT)
+In-Reply-To: <20120508125837.GN15893@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,49 +26,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 13, 2012 at 05:56:53AM +0200, Christoph Fritz wrote:
-> On Sat, May 12, 2012 at 12:51:31PM +0100, Mark Brown wrote:
-> > On Sat, May 12, 2012 at 02:15:56AM +0200, Christoph Fritz wrote:
-> > 
-> > > They refuse to change their Item0 because they are defined as
-> > > SND_SOC_DAPM_MUX without a correlating path->name so that
-> > > snd_soc_dapm_mux_update_power() (in sound/soc/soc-dapmc) doesn't
-> > > change anything.
-> > 
-> > A route into a mux without a path name (other than a supply) just isn't
-> > meaningful and I'm surprised it ever worked.
-> > 
-> > > It works in 2.6.33, but current kernel has different mux handling and
-> > > it seems that no one since cared that much about microphone support.
-> > 
-> > It's nothing to do with microphones really, it's more that AC'97 CODECs
-> > are rarely used with modern kernels as the boards that use AC'97 are
-> > mostly quite old and suffer performance issues with modern software
-> > stacks so newer kernels haven't been getting much testing with them.
-> > 
-> > > Mark, can you confirm this, purpose a fix or even come up with
-> > > a patch?
-> > 
-> > Just filling in the appropriate mux value in the relevant route should
-> > do the trick.
+On 05/08/2012 03:58 PM, Mark Brown wrote:
+> On Tue, May 08, 2012 at 02:55:57PM +0300, Peter Ujfalusi wrote:
+> =
 
-Do you mean filling in to wm9712_audio_map or wm9712_enum?
+>> +dmic_codec: dmic_codec@0 { /* generic DMIC codec */
+>> +	compatible =3D "generic,dmic-codec";
+>> +};
+> =
 
-> > Looking at the code it looks like the widget isn't hooked
-> > into the audio routing map at all so I'm a little surprised.
+> Why is this called "dmic-codec" and not "dmic"?  We probably need to
+> have a think about this in the context of the handling of random
+> on-board passive components in general - things like jacks and so on - =
 
-Does that mean that wm9712_dapm_widgets should be referred by a
-struct snd_kcontrol_new ?
+> is the most sensible thing to have a platform device for everything, or
+> is that getting too noisy?
 
-> >I'm out of
-> > the office at the minute and so can't readily set up a test system
-> > myself.
+I don't think that we would need platform devices for most of the
+passive components you have listed.
+AFAIK (Liam can correct me if I'm wrong) the reason that we have this
+(dmic codec) is to be able to use the OMAP4+ DMIC in a card.
+In most cases the digital microphones are passive components connected
+to a codec and the codec is then interfaced with the CPU dai.
+With the OMAP4 DMIC we have the microphones connected directly to the
+CPU dai. In some sense the OMAP4+ DMIC block is a CPU dai and a codec at
+the same time. Or we can view it as we have PDM link betweent he CPU dai
+and the codec (dmic).
 
-I'm not that into alsa and would greatly appreciate if you could have
-a look with your test system.
+Not entirely sure if we will need to have dts section for the dmic, I
+can just create the platform device in the abe-twl6040 machine driver if
+the setup includes digital microphones.
 
-Thanks,
- -- Christoph
+-- =
+
+P=E9ter
