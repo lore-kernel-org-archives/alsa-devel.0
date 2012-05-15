@@ -1,14 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Last minute ASoC fixes for 3.4
-Date: Tue, 15 May 2012 18:56:43 +0100
-Message-ID: <20120515175623.GA19592@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: Add mc13783 codec
+Date: Tue, 15 May 2012 19:27:41 +0100
+Message-ID: <20120515182737.GF19592@opensource.wolfsonmicro.com>
+References: <1337082832-9764-1-git-send-email-philippe.retornaz@epfl.ch>
+	<1337082832-9764-2-git-send-email-philippe.retornaz@epfl.ch>
+	<1337082832-9764-3-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1373533700808349478=="
+Content-Type: multipart/mixed; boundary="===============1423797921817331002=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E02524DBC
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3283824DDA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2012 19:56:46 +0200 (CEST)
+	Tue, 15 May 2012 20:27:44 +0200 (CEST)
+In-Reply-To: <1337082832-9764-3-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,85 +22,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: alsa-devel@alsa-project.org, torbenh@linutronix.de, sameo@linux.intel.com, s.hauer@pengutronix.de, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1373533700808349478==
+--===============1423797921817331002==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+	protocol="application/pgp-signature"; boundary="924gEkU1VlJlwnwX"
 Content-Disposition: inline
 
 
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset=us-ascii
+--924gEkU1VlJlwnwX
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 06412088ce98f745405b8f65cfc51ddd6b842bbf:
+On Tue, May 15, 2012 at 01:53:50PM +0200, Philippe R=E9tornaz wrote:
+>=20
+> Signed-off-by: Philippe R=E9tornaz <philippe.retornaz@epfl.ch>
 
-  ASoC: s3c2412-i2s: Fix dai registration (2012-04-30 23:45:25 +0100)
+This looks broadly good from a framework point of view but it's a bit
+depressing that there are so many magic numbers even for register names
+- it makes the code rather impenetrable and I wouldn't like to be
+maintaining it.  I'll go ahead and apply it if Samuel is OK with patch 1
+going via ASoC (there's a build dependency).
 
-are available in the git repository at:
+A few smallish things, please fix incrementally (or roll into a new
+version if you're resubmitting for some reason):
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.4
+> +	snd_soc_add_codec_controls(codec, mc13783_control_list,
+> +					ARRAY_SIZE(mc13783_control_list));
+> +
+> +	snd_soc_dapm_new_controls(dapm, mc13783_dapm_widgets,
+> +					ARRAY_SIZE(mc13783_dapm_widgets));
+> +	snd_soc_dapm_add_routes(dapm, mc13783_routes,
+> +					ARRAY_SIZE(mc13783_routes));
 
-for you to fetch changes up to c7f5f2389377b66028bc129890aa653deafe8d39:
+These should all be assigned in the CODEC driver structure.
 
-  ASoC: wm8994: Fix AIF2ADC power down (2012-05-15 18:29:30 +0100)
+> +static __init int mc13783_init(void)
+> +{
+> +	return platform_driver_register(&mc13783_codec_driver);
+> +}
+> +
+> +static __exit void mc13783_exit(void)
+> +{
+> +	platform_driver_unregister(&mc13783_codec_driver);
+> +}
+> +
+> +module_init(mc13783_init);
+> +module_exit(mc13783_exit);
 
-I'll send the big 3.5 update either later tonight or tomorrow.
+module_platform_driver().
 
-----------------------------------------------------------------
-ASoC: Last minute fixes
-
-Some last minute fixes for ASoC.  Small, focused changes to specific
-drivers.
-
-----------------------------------------------------------------
-Brian Austin (1):
-      ASoC: cs42l73: Sync digital mixer kcontrols to allow for 0dB
-
-Guennadi Liakhovetski (1):
-      ASoC: sh: fix migor.c compilation
-
-Mark Brown (1):
-      ASoC: wm8994: Fix AIF2ADC power down
-
- sound/soc/codecs/cs42l73.c |   16 ++++++++--------
- sound/soc/codecs/wm8994.c  |    2 +-
- sound/soc/sh/migor.c       |    2 +-
- 3 files changed, 10 insertions(+), 10 deletions(-)
-
---ew6BAiZeqk4r7MaW
+--924gEkU1VlJlwnwX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPspi9AAoJEBus8iNuMP3dSJ8P/2r0Ai9DsPmKPVGBq4qQJoYU
-fd1XpOa3bXZDlG2JAMnaRiJRB8nVjXLOykfg0gjAOpNVHVGqDpGKiw525XTZxJGv
-qui1Y0rAzBMEERXRilvZkgcfv9WhVa+fxf9KvCb3ShdV30m52+k8xOu9gpZF+z8D
-DqEM/gOICN5dBMKn1C/7sasAzLzowiI5JPTB9ggeOg6MxUin9DARTy2ov3GRlag7
-EkYPgaTqkmKrCMuDdTxljwDcsGTR9gi10s3/x8OKDRRuq6XaviGaN4Ggji8DU1ip
-Om8HMRjO0v8x7RvEQZbg8dpIAuJkdN1aZb5T+htB+/1CZm0RzEkF1nJ4RGvCVMGm
-1lppyhT830sOvpWCWF1u+RrnNupLMeSHzgiNA0ySI1cQOnAbz3PLAW2v/dtfqKlq
-u1gSG4G5Wst8SMFsbawal6JxoCX4yp4qPCXtH6Z6ROZGCjQll6pWJo9h5K4vf7eg
-9KHspiMd1KWG7Cb+f0DtNCa6ZfqVujNlJYL1FkRD9jgXG7CN99Fvo/+M0JUbbYYj
-q2gK6wLqZAHQYG7jAKaBryjYQO3/XHDOVo5cuhXwXFCPR6ZAxZU2tfGA0MQXnQqZ
-87MlqqM56ebprjpJ241PJWmVidlOkO8443Fc+7C5c0OlKpj8e2b9q3XPyxMqiQ6a
-r8ROB2aD29yxyF4+mpNj
-=y+N4
+iQIcBAEBAgAGBQJPsqAPAAoJEBus8iNuMP3dy5QP/1GkNsvumQBMR8mwWlrchAtH
+Br8mQrb6tp2/havQOFS6FAVvD19TjTJqIVqHLAtJUmhTGKg2C2MmPncN5SaFwlxI
+go2u/B4WrNQ0BCuNT5lQ2g+IwxFA+KOESRzL+1r/8DKKXUlEWDiNEYwgM6hl8F/p
+w+BEkTVR/CQmYRp7DOsT0bmFPzgLoyzqRrmipBHVQaKnhdkt0WmUT38Dh6+2bbTX
+THkb63nXYsXoO75vZ56yX6o19msh4/Zz8torJqxaUibbSVB+l1gfEWEXsdT3XgoI
+7Q5SOAefQuA4ooZ6CC22yoq+97S+UKJ/Qu0kLwnkkD5fGISFydQD2MyqLzxYnnhz
+ZACZ0d1FZYq5G6Tb+z6eKtpzL3Lvg8isG93IOQoPU/8dIF+gQn9nadZNWPWo2OsW
+SsNuQGp5y4NvvsxsmOdrloeDlGRLCJcfz4DleXYf1OB1n25pz5tNs7xhBKgmhTKG
+Pq+YYXDoS0aFtyi+8+ySPnRWa1rDY7nOLRbNDCRV+Qrnsru/iH5Oa8mcuZBmofrg
+QjhA5TH0PI0Xl0PWq86Si+aukzgxGztXkVHWfckgh/lkGL9GLdwh56BOizFUXLw5
+44jfBTnxSzShvGOuIn7erkURPXIT43XlLb02Ds/WrM8pg6haHv+YBZ0oCr8KeR3G
+6Bj7PopEfaqDgqDV+jDi
+=htAU
 -----END PGP SIGNATURE-----
 
---ew6BAiZeqk4r7MaW--
+--924gEkU1VlJlwnwX--
 
---===============1373533700808349478==
+--===============1423797921817331002==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1373533700808349478==--
+--===============1423797921817331002==--
