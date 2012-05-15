@@ -1,17 +1,16 @@
-From: =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: [PATCH 1/1] mx31_3ds: Add sound support
-Date: Tue, 15 May 2012 18:42:26 +0200
-Message-ID: <1337100146-16459-2-git-send-email-philippe.retornaz@epfl.ch>
-References: <1337100146-16459-1-git-send-email-philippe.retornaz@epfl.ch>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: [PATCH] ucm: Handle repeat device and modifier
+	enables/disables
+Date: Tue, 15 May 2012 22:16:38 +0530
+Message-ID: <1337100398-25809-1-git-send-email-arun.raghavan@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
-	by alsa0.perex.cz (Postfix) with SMTP id 9ED0024D8A
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEC5724D8E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2012 18:41:13 +0200 (CEST)
-In-Reply-To: <1337100146-16459-1-git-send-email-philippe.retornaz@epfl.ch>
+	Tue, 15 May 2012 18:46:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,48 +20,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, torbenh@linutronix.de, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, philippe.retornaz@epfl.ch, festevam@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-ClNpZ25lZC1vZmYtYnk6IFBoaWxpcHBlIFLDqXRvcm5heiA8cGhpbGlwcGUucmV0b3JuYXpAZXBm
-bC5jaD4KLS0tCiBhcmNoL2FybS9tYWNoLWlteC9LY29uZmlnICAgICAgICAgfCAgICAxICsKIGFy
-Y2gvYXJtL21hY2gtaW14L21hY2gtbXgzMV8zZHMuYyB8ICAgMjIgKysrKysrKysrKysrKysrKysr
-KysrLQogMiBmaWxlcyBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoK
-ZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtaW14L0tjb25maWcgYi9hcmNoL2FybS9tYWNoLWlt
-eC9LY29uZmlnCmluZGV4IDBkNzU0ODAuLjQ3MmQ0N2IgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL21h
-Y2gtaW14L0tjb25maWcKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgvS2NvbmZpZwpAQCAtMTUxLDYg
-KzE1MSw3IEBAIGNvbmZpZyBNQUNIX01YMjVfM0RTCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JN
-X0lNWDJfV0RUCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWERJX1JUQwogCXNlbGVjdCBJ
-TVhfSEFWRV9QTEFURk9STV9JTVhfSTJDCisJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWF9T
-U0kKIAlzZWxlY3QgSU1YX0hBVkVfUExBVEZPUk1fSU1YX0ZCCiAJc2VsZWN0IElNWF9IQVZFX1BM
-QVRGT1JNX0lNWF9LRVlQQUQKIAlzZWxlY3QgSU1YX0hBVkVfUExBVEZPUk1fSU1YX1VBUlQKZGlm
-ZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtaW14L21hY2gtbXgzMV8zZHMuYyBiL2FyY2gvYXJtL21h
-Y2gtaW14L21hY2gtbXgzMV8zZHMuYwppbmRleCA0ZDFhYWIxLi40ZWFmZGYyIDEwMDY0NAotLS0g
-YS9hcmNoL2FybS9tYWNoLWlteC9tYWNoLW14MzFfM2RzLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1p
-bXgvbWFjaC1teDMxXzNkcy5jCkBAIC0xNTYsNiArMTU2LDExIEBAIHN0YXRpYyBpbnQgbXgzMV8z
-ZHNfcGluc1tdID0gewogCU1YMzFfUElOX0NTSV9WU1lOQ19fQ1NJX1ZTWU5DLAogCU1YMzFfUElO
-X0NTSV9ENV9fR1BJTzNfNSwgLyogQ01PUyBQV0ROICovCiAJSU9NVVhfTU9ERShNWDMxX1BJTl9S
-SV9EVEUxLCBJT01VWF9DT05GSUdfR1BJTyksIC8qIENNT1MgcmVzZXQgKi8KKwkvKiBTU0kgKi8K
-KwlNWDMxX1BJTl9TVFhENF9fU1RYRDQsCisJTVgzMV9QSU5fU1JYRDRfX1NSWEQ0LAorCU1YMzFf
-UElOX1NDSzRfX1NDSzQsCisJTVgzMV9QSU5fU0ZTNF9fU0ZTNCwKIH07CiAKIC8qCkBAIC00ODgs
-MTIgKzQ5MywyMyBAQCBzdGF0aWMgc3RydWN0IG1jMTN4eHhfcmVndWxhdG9yX2luaXRfZGF0YSBt
-eDMxXzNkc19yZWd1bGF0b3JzW10gPSB7CiB9OwogCiAvKiBNQzEzNzgzICovCitzdGF0aWMgc3Ry
-dWN0IG1jMTN4eHhfY29kZWNfcGxhdGZvcm1fZGF0YSBteDMxXzNkc19jb2RlYyA9IHsKKwkuZGFj
-X3NzaV9wb3J0ID0gTUMxMzc4M19TU0kxX1BPUlQsCisJLmFkY19zc2lfcG9ydCA9IE1DMTM3ODNf
-U1NJMV9QT1JULAorfTsKKwogc3RhdGljIHN0cnVjdCBtYzEzeHh4X3BsYXRmb3JtX2RhdGEgbWMx
-Mzc4M19wZGF0YSA9IHsKIAkucmVndWxhdG9ycyA9IHsKIAkJLnJlZ3VsYXRvcnMgPSBteDMxXzNk
-c19yZWd1bGF0b3JzLAogCQkubnVtX3JlZ3VsYXRvcnMgPSBBUlJBWV9TSVpFKG14MzFfM2RzX3Jl
-Z3VsYXRvcnMpLAogCX0sCi0JLmZsYWdzICA9IE1DMTNYWFhfVVNFX1RPVUNIU0NSRUVOIHwgTUMx
-M1hYWF9VU0VfUlRDLAorCS5jb2RlYyA9ICZteDMxXzNkc19jb2RlYywKKwkuZmxhZ3MgID0gTUMx
-M1hYWF9VU0VfVE9VQ0hTQ1JFRU4gfCBNQzEzWFhYX1VTRV9SVEMgfCBNQzEzWFhYX1VTRV9DT0RF
-QywKKworfTsKKworc3RhdGljIHN0cnVjdCBpbXhfc3NpX3BsYXRmb3JtX2RhdGEgbXgzMV8zZHNf
-c3NpX3BkYXRhID0geworCS5mbGFncyA9IElNWF9TU0lfRE1BIHwgSU1YX1NTSV9ORVQsCiB9Owog
-CiAvKiBTUEkgKi8KQEAgLTc0MSw2ICs3NTcsMTAgQEAgc3RhdGljIHZvaWQgX19pbml0IG14MzFf
-M2RzX2luaXQodm9pZCkKIAl9CiAKIAlteDMxXzNkc19pbml0X2NhbWVyYSgpOworCisJaW14MzFf
-YWRkX2lteF9zc2koMCwgJm14MzFfM2RzX3NzaV9wZGF0YSk7CisKKwlpbXhfYWRkX3BsYXRmb3Jt
-X2RldmljZSgiaW14X21jMTM3ODMiLCAwLCBOVUxMLCAwLCBOVUxMLCAwKTsKIH0KIAogc3RhdGlj
-IHZvaWQgX19pbml0IG14MzFfM2RzX3RpbWVyX2luaXQodm9pZCkKLS0gCjEuNy4wLjQKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Currently, enabling a device twice can cause it to be added to
+snd_use_case_mgr_t->active_devices twice, causing the list to become a
+loop and subsequent uses to result in an infinite loop.
+
+This patch makes sure we don't enable/disable a device twice, and avoid
+doing the same for modifiers.
+---
+ src/ucm/main.c |   62 ++++++++++++++++++++++++++++++-------------------------
+ 1 files changed, 34 insertions(+), 28 deletions(-)
+
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 76ca151..79901f8 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -565,6 +565,34 @@ static struct use_case_modifier *
+ 	return NULL;
+ }
+ 
++long device_status(snd_use_case_mgr_t *uc_mgr,
++                   const char *device_name)
++{
++        struct use_case_device *dev;
++        struct list_head *pos;
++
++        list_for_each(pos, &uc_mgr->active_devices) {
++                dev = list_entry(pos, struct use_case_device, active_list);
++                if (strcmp(dev->name, device_name) == 0)
++                        return 1;
++        }
++        return 0;
++}
++
++long modifier_status(snd_use_case_mgr_t *uc_mgr,
++                     const char *modifier_name)
++{
++        struct use_case_modifier *mod;
++        struct list_head *pos;
++
++        list_for_each(pos, &uc_mgr->active_modifiers) {
++                mod = list_entry(pos, struct use_case_modifier, active_list);
++                if (strcmp(mod->name, modifier_name) == 0)
++                        return 1;
++        }
++        return 0;
++}
++
+ /**
+  * \brief Set verb
+  * \param uc_mgr Use case manager
+@@ -607,6 +635,9 @@ static int set_modifier(snd_use_case_mgr_t *uc_mgr,
+ 	struct list_head *seq;
+ 	int err;
+ 
++	if (modifier_status(uc_mgr, modifier->name) == enable)
++		return 0;
++
+ 	if (enable) {
+ 		seq = &modifier->enable_list;
+ 	} else {
+@@ -638,6 +669,9 @@ static int set_device(snd_use_case_mgr_t *uc_mgr,
+ 	struct list_head *seq;
+ 	int err;
+ 
++        if (device_status(uc_mgr, device->name) == enable)
++		return 0;
++
+ 	if (enable) {
+ 		seq = &device->enable_list;
+ 	} else {
+@@ -1316,34 +1350,6 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+         return err;
+ }
+ 
+-long device_status(snd_use_case_mgr_t *uc_mgr,
+-                   const char *device_name)
+-{
+-        struct use_case_device *dev;
+-        struct list_head *pos;
+-        
+-        list_for_each(pos, &uc_mgr->active_devices) {
+-                dev = list_entry(pos, struct use_case_device, active_list);
+-                if (strcmp(dev->name, device_name) == 0)
+-                        return 1;
+-        }
+-        return 0;
+-}
+-
+-long modifier_status(snd_use_case_mgr_t *uc_mgr,
+-                     const char *modifier_name)
+-{
+-        struct use_case_modifier *mod;
+-        struct list_head *pos;
+-        
+-        list_for_each(pos, &uc_mgr->active_modifiers) {
+-                mod = list_entry(pos, struct use_case_modifier, active_list);
+-                if (strcmp(mod->name, modifier_name) == 0)
+-                        return 1;
+-        }
+-        return 0;
+-}
+-
+ 
+ /**
+  * \brief Get current - integer
+-- 
+1.7.8.6
