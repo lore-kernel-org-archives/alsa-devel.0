@@ -1,16 +1,26 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: [PATCH] ucm: Handle repeat device and modifier
-	enables/disables
-Date: Tue, 15 May 2012 22:16:38 +0530
-Message-ID: <1337100398-25809-1-git-send-email-arun.raghavan@collabora.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: wm9712: Microphone doesn't work: Mux
+	handling broken?
+Date: Tue, 15 May 2012 18:15:59 +0100
+Message-ID: <20120515171553.GA4140@opensource.wolfsonmicro.com>
+References: <20120426213745.GA18260@opensource.wolfsonmicro.com>
+	<1335513602.3504.4.camel@mars>
+	<20120427134638.GI18260@opensource.wolfsonmicro.com>
+	<20120504132845.GA24245@lovely.krouter>
+	<20120507215506.GA5063@lovely.krouter>
+	<20120508102947.GA8226@lovely.krouter>
+	<20120512001556.GA26105@mars>
+	<20120512115130.GI1781@opensource.wolfsonmicro.com>
+	<20120513035652.GA3532@lovely.krouter>
+	<20120515091541.GA4433@lovely.krouter>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7321881837537639131=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id AEC5724D8E
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5442124DA3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2012 18:46:59 +0200 (CEST)
+	Tue, 15 May 2012 19:26:09 +0200 (CEST)
+In-Reply-To: <20120515091541.GA4433@lovely.krouter>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,113 +30,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>
+To: Christoph Fritz <chf.fritz@googlemail.com>
+Cc: alsa-devel@alsa-project.org, "Hans J. Koch" <hjk@hansjkoch.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently, enabling a device twice can cause it to be added to
-snd_use_case_mgr_t->active_devices twice, causing the list to become a
-loop and subsequent uses to result in an infinite loop.
 
-This patch makes sure we don't enable/disable a device twice, and avoid
-doing the same for modifiers.
----
- src/ucm/main.c |   62 ++++++++++++++++++++++++++++++-------------------------
- 1 files changed, 34 insertions(+), 28 deletions(-)
+--===============7321881837537639131==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
+Content-Disposition: inline
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 76ca151..79901f8 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -565,6 +565,34 @@ static struct use_case_modifier *
- 	return NULL;
- }
- 
-+long device_status(snd_use_case_mgr_t *uc_mgr,
-+                   const char *device_name)
-+{
-+        struct use_case_device *dev;
-+        struct list_head *pos;
-+
-+        list_for_each(pos, &uc_mgr->active_devices) {
-+                dev = list_entry(pos, struct use_case_device, active_list);
-+                if (strcmp(dev->name, device_name) == 0)
-+                        return 1;
-+        }
-+        return 0;
-+}
-+
-+long modifier_status(snd_use_case_mgr_t *uc_mgr,
-+                     const char *modifier_name)
-+{
-+        struct use_case_modifier *mod;
-+        struct list_head *pos;
-+
-+        list_for_each(pos, &uc_mgr->active_modifiers) {
-+                mod = list_entry(pos, struct use_case_modifier, active_list);
-+                if (strcmp(mod->name, modifier_name) == 0)
-+                        return 1;
-+        }
-+        return 0;
-+}
-+
- /**
-  * \brief Set verb
-  * \param uc_mgr Use case manager
-@@ -607,6 +635,9 @@ static int set_modifier(snd_use_case_mgr_t *uc_mgr,
- 	struct list_head *seq;
- 	int err;
- 
-+	if (modifier_status(uc_mgr, modifier->name) == enable)
-+		return 0;
-+
- 	if (enable) {
- 		seq = &modifier->enable_list;
- 	} else {
-@@ -638,6 +669,9 @@ static int set_device(snd_use_case_mgr_t *uc_mgr,
- 	struct list_head *seq;
- 	int err;
- 
-+        if (device_status(uc_mgr, device->name) == enable)
-+		return 0;
-+
- 	if (enable) {
- 		seq = &device->enable_list;
- 	} else {
-@@ -1316,34 +1350,6 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
-         return err;
- }
- 
--long device_status(snd_use_case_mgr_t *uc_mgr,
--                   const char *device_name)
--{
--        struct use_case_device *dev;
--        struct list_head *pos;
--        
--        list_for_each(pos, &uc_mgr->active_devices) {
--                dev = list_entry(pos, struct use_case_device, active_list);
--                if (strcmp(dev->name, device_name) == 0)
--                        return 1;
--        }
--        return 0;
--}
--
--long modifier_status(snd_use_case_mgr_t *uc_mgr,
--                     const char *modifier_name)
--{
--        struct use_case_modifier *mod;
--        struct list_head *pos;
--        
--        list_for_each(pos, &uc_mgr->active_modifiers) {
--                mod = list_entry(pos, struct use_case_modifier, active_list);
--                if (strcmp(mod->name, modifier_name) == 0)
--                        return 1;
--        }
--        return 0;
--}
--
- 
- /**
-  * \brief Get current - integer
--- 
-1.7.8.6
+
+--lrZ03NoBR/3+SXJZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 15, 2012 at 11:15:41AM +0200, Christoph Fritz wrote:
+> On Sun, May 13, 2012 at 05:56:53AM +0200, Christoph Fritz wrote:
+
+> > > Just filling in the appropriate mux value in the relevant route should
+> > > do the trick.
+
+> Do you mean filling in to wm9712_audio_map or wm9712_enum?
+
+There will need to be routes in the audio map.  Don't know if there are
+any fixes needed in the enum, it was the routing I noticed was missing.
+
+> > > Looking at the code it looks like the widget isn't hooked
+> > > into the audio routing map at all so I'm a little surprised.
+
+> Does that mean that wm9712_dapm_widgets should be referred by a
+> struct snd_kcontrol_new ?
+
+No, that should never happen.
+
+> > >I'm out of
+> > > the office at the minute and so can't readily set up a test system
+> > > myself.
+
+> I'm not that into alsa and would greatly appreciate if you could have
+> a look with your test system.
+
+For personal reasons I don't really have an ETA for when I'll be in the
+office, sorry.
+
+--lrZ03NoBR/3+SXJZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPso9CAAoJEBus8iNuMP3dsxYP/iSMqepyHuLixXwK4EOGttZ4
+PS9cIzhpFsFijqsnRhuGgbxPu3YAQLWEpxEIuFNyG/ff5T4Cot0u8zaLCll4or8x
+BWdvWsisPVfUagh9LEP9pbnuO1WIDL5sTYK5DwFAx5mKtE0Izmy89VJzfVqCl2/C
+Z+QNLSJPjiyBwdq/L9urmRv9VBn5pp4l0xyNsko+6ATqQKHSkA9Nilw1K4Qbq5X+
+bYJ/aWOYUfywYoogHU6P+baEpoCJLVDHKOIU9qllzEyDihUm3oSsPgASxN/OP9A+
+yOMzHh8qyIqMPO3/n/Ij2UPwf/e7lFXOnumUnx7hMYQFq/dHVfvPA6HRfU9JSlC7
+ovdukiEe4R8tf1zMzzGP/qAVL/d/GVlH0g9OBZiUays0jM17Hf6VlFSAPuXVP/WM
+2tCwoyeHItV3f/VrU3JUq9Sg8qgzUr2pKKVN0UTzsei0ZwvUZDaF+yCuF+98sPBf
+Uq6iaGYiNw6GvsxPfi2H75RUQCngTpxb/PHVKlImH/+K5fbmEpUIWHZcLVv/cCr+
+r5lQsbWAckZGM73oCRKTjRCJABYSdk0uTvh5ss5fQAswgqgnpoBhqhtV9rhToS8+
+R8Jsyjq4f+zMavWWQyesphIcsYSzqdmLABvdjNHRBDPPSQfzS7/UrsqT5RB7FIn1
+S0FQc/u+6c3/YqkrXxue
+=jDUq
+-----END PGP SIGNATURE-----
+
+--lrZ03NoBR/3+SXJZ--
+
+--===============7321881837537639131==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7321881837537639131==--
