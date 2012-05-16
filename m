@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/2] ASoC: omap-dmic: Add device tree
-	bindings
-Date: Wed, 16 May 2012 12:47:11 +0100
-Message-ID: <20120516114711.GB26337@opensource.wolfsonmicro.com>
-References: <1337167796-8632-1-git-send-email-peter.ujfalusi@ti.com>
-	<1337167796-8632-3-git-send-email-peter.ujfalusi@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/4] omap-abe-twl6040: Device tree support
+Date: Wed, 16 May 2012 14:57:01 +0300
+Message-ID: <1337169425-9449-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9121017615280207472=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A54102459B
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+	[74.125.149.71]) by alsa0.perex.cz (Postfix) with ESMTP id 7BDFB245A3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 May 2012 13:47:13 +0200 (CEST)
-In-Reply-To: <1337167796-8632-3-git-send-email-peter.ujfalusi@ti.com>
+	Wed, 16 May 2012 13:57:23 +0200 (CEST)
+Received: by lbom4 with SMTP id m4so530947lbo.2
+	for <alsa-devel@alsa-project.org>; Wed, 16 May 2012 04:57:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Benoit Cousson <b-cousson@ti.com>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: devicetree-discuss@lists.ozlabs.org, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---===============9121017615280207472==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
-Content-Disposition: inline
+Changes since v1:
+- Binding docukentation updated with available pins and connectors
+- dts section for abe-twl6040 sound configuration has been changed
+
+Instead of dai link pairs only the nodes probed via DT have phandle:
+ti,mcpdm; ti,dmic, ti,twl6040.
+The driver in turn is responsible to handle the provided information.
+To provide dai link pairs (cpu dai - codec) we would need Linux (ASoC) specific
+nodes in DT for the dmic codec and twl6040 ASoC codec driver.
+
+If the DT section have ti,dmic phandle the ASoC machine driver will register the
+device to load the ASoC dmic-codec runtime.
+
+Example dts section for audio support (SDP4430):
+sound {
+	compatible = "ti,abe-twl6040";
+	ti,model = "SDP4430";
+
+	ti,jack-detection = <1>;
+	ti,mclk-freq = <38400000>;
+
+	ti,mcpdm = <&mcpdm>;
+	ti,dmic = <&dmic>;
+
+	ti,twl6040 = <&twl6040>;
+
+	/* Audio routing */
+	ti,audio-routing =
+		"Headset Stereophone", "HSOL",
+		"Headset Stereophone", "HSOR",
+		"Earphone Spk", "EP",
+		"Ext Spk", "HFL",
+		"Ext Spk", "HFR",
+		"Line Out", "AUXL",
+		"Line Out", "AUXR",
+		"Vibrator", "VIBRAL",
+		"Vibrator", "VIBRAR",
+		"HSMIC", "Headset Mic",
+		"Headset Mic", "Headset Mic Bias",
+		"MAINMIC", "Main Handset Mic",
+		"Main Handset Mic", "Main Mic Bias",
+		"SUBMIC", "Sub Handset Mic",
+		"Sub Handset Mic", "Main Mic Bias",
+		"AFML", "Line In",
+		"AFMR", "Line In",
+		"DMic", "Digital Mic",
+		"Digital Mic", "Digital Mic1 Bias";
+};
 
 
---xgyAXRrhYN0wYx8y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Regards,
+Peter
+---
+Peter Ujfalusi (4):
+  ASoC: omap-abe-twl6040: Keep only one snd_soc_dai_link structure
+  ASoC: omap-abe-twl6040: Move Digital Mic widget into dapm table
+  ASoC: omap-abe-twl6040: Introduce driver data for runtime parameters
+  ASoC: omap-abe-twl6040: Add device tree support
 
-On Wed, May 16, 2012 at 02:29:56PM +0300, Peter Ujfalusi wrote:
-> Device tree support for OMAP4+ dmic cpu dai driver.
+ .../devicetree/bindings/sound/omap-abe-twl6040.txt |   91 +++++++++
+ sound/soc/omap/omap-abe-twl6040.c                  |  195 ++++++++++++++------
+ 2 files changed, 230 insertions(+), 56 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-abe-twl6040.txt
 
-Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
---xgyAXRrhYN0wYx8y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPs5N0AAoJEBus8iNuMP3d4hgP/3NZP+LMzBI9tTFRrf/dq4iO
-yX1cPayG6U/d4CkwD3i0RjBsZ3rIjARX3LMA8Od2PtPwwBCAUpMMV/HuSOa2szUi
-hbafvsr/32Yk5+jo3AnWmI/zStbE+ZS7onVmKNVixWPwIGF0y/WUmAJUrM1nd7WT
-90rIZkZgv1SkwYYyYgDbyHke2ii1fUPRIeERwfVOSmxoXzVtKbPyCHQ8Yc4Espmi
-p5BbFpdkc03S5OVUlmyiZ/PR2mB4XwhClwsAeZoSYdFw6ayOH1+lgtgnUoLTkgEz
-ZBYCVbZ1US53RFMfIBNf/8QVBUiU0ZCw1XiSEIPZW6KSn+qWrYcWsobJra3n9hWP
-0M3H137gGYGbU51pvbouOz/87xrV2HbawURUNYxkCoEWR+vqmotbAp7BxJTjotoM
-i6XDoT2smOVgiyIekKgjUwZnIzpIiBZn0XsWFVXT1b5sG+qwm8ND8uFMfSX24nrb
-BUuW14aZ/VVdPo9pRkmfIrBbSrcXdjHkeHO7FtdzP/Dbvwq6Wl3O/n4wQrexGi+m
-p/VWHeIUXqtkRFJ6vezDH5ACzVa4FTrEJUbSMttqcvmvLHU8uodh8bP9dkudKLB1
-WrN39dMx+fSmVFhdzUVG9EAl2LhoJQ+RVR8wGdaFbOX/Den4lOT8vpWpP8rm2uRo
-HuWYP4JpRtqUkuSyNQwt
-=aEHT
------END PGP SIGNATURE-----
-
---xgyAXRrhYN0wYx8y--
-
---===============9121017615280207472==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9121017615280207472==--
+-- 
+1.7.8.6
