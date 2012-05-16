@@ -1,17 +1,19 @@
-From: =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: [PATCH] ASoC: mc13783 codec cleanups
-Date: Wed, 16 May 2012 12:49:19 +0200
-Message-ID: <1337165359-22733-1-git-send-email-philippe.retornaz@epfl.ch>
-References: <20120515182737.GF19592@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/2] ASoC: OMAP4 DMIC,
+	McPDM device tree support
+Date: Wed, 16 May 2012 14:29:54 +0300
+Message-ID: <1337167796-8632-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
-	by alsa0.perex.cz (Postfix) with SMTP id 35DA824567
+Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
+	[74.125.149.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB46F2458F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 May 2012 12:48:13 +0200 (CEST)
-In-Reply-To: <20120515182737.GF19592@opensource.wolfsonmicro.com>
+	Wed, 16 May 2012 13:29:59 +0200 (CEST)
+Received: by lahj13 with SMTP id j13so700508lah.39
+	for <alsa-devel@alsa-project.org>; Wed, 16 May 2012 04:29:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, torbenh@linutronix.de, sameo@linux.intel.com, s.hauer@pengutronix.de, philippe.retornaz@epfl.ch, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Tony Lindgren <tony@atomide.com>, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-ClNpZ25lZC1vZmYtYnk6IFBoaWxpcHBlIFLDqXRvcm5heiA8cGhpbGlwcGUucmV0b3JuYXpAZXBm
-bC5jaD4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYyB8ICAgMjggKysrKysrKy0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDIxIGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jIGIvc291
-bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMKaW5kZXggNTBmYTM4Yi4uNjI3NmUzNSAxMDA2NDQKLS0t
-IGEvc291bmQvc29jL2NvZGVjcy9tYzEzNzgzLmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9tYzEz
-NzgzLmMKQEAgLTU4MCw3ICs1ODAsNiBAQCBzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcg
-bWMxMzc4M19jb250cm9sX2xpc3RbXSA9IHsKIHN0YXRpYyBpbnQgbWMxMzc4M19wcm9iZShzdHJ1
-Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpCiB7CiAJc3RydWN0IG1jMTM3ODNfcHJpdiAqcHJpdiA9
-IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOwotCXN0cnVjdCBzbmRfc29jX2RhcG1f
-Y29udGV4dCAqZGFwbSA9ICZjb2RlYy0+ZGFwbTsKIAogCW1jMTN4eHhfbG9jayhwcml2LT5tYzEz
-eHh4KTsKIApAQCAtNTkyLDE0ICs1OTEsNiBAQCBzdGF0aWMgaW50IG1jMTM3ODNfcHJvYmUoc3Ry
-dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjKQogCW1jMTN4eHhfcmVnX3dyaXRlKHByaXYtPm1jMTN4
-eHgsIE1DMTM3ODNfQVVESU9fQ09ERUMsIDB4MTgwMDI3KTsKIAltYzEzeHh4X3JlZ193cml0ZShw
-cml2LT5tYzEzeHh4LCBNQzEzNzgzX0FVRElPX0RBQywgMHgwZTAwMDQpOwogCi0Jc25kX3NvY19h
-ZGRfY29kZWNfY29udHJvbHMoY29kZWMsIG1jMTM3ODNfY29udHJvbF9saXN0LAotCQkJCQlBUlJB
-WV9TSVpFKG1jMTM3ODNfY29udHJvbF9saXN0KSk7Ci0KLQlzbmRfc29jX2RhcG1fbmV3X2NvbnRy
-b2xzKGRhcG0sIG1jMTM3ODNfZGFwbV93aWRnZXRzLAotCQkJCQlBUlJBWV9TSVpFKG1jMTM3ODNf
-ZGFwbV93aWRnZXRzKSk7Ci0Jc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFwbSwgbWMxMzc4M19y
-b3V0ZXMsCi0JCQkJCUFSUkFZX1NJWkUobWMxMzc4M19yb3V0ZXMpKTsKLQogCWlmIChwcml2LT5h
-ZGNfc3NpX3BvcnQgPT0gTUMxMzc4M19TU0kxX1BPUlQpCiAJCW1jMTN4eHhfcmVnX3Jtdyhwcml2
-LT5tYzEzeHh4LCBNQzEzNzgzX0FVRElPX0NPREVDLAogCQkJCUFVRElPX1NTSV9TRUwsIDApOwpA
-QCAtNzIxLDYgKzcxMiwxMiBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfY29kZWNfZHJpdmVyIHNv
-Y19jb2RlY19kZXZfbWMxMzc4MyA9IHsKIAkucmVtb3ZlCQk9IG1jMTM3ODNfcmVtb3ZlLAogCS5y
-ZWFkCQk9IG1jMTM3ODNfcmVhZCwKIAkud3JpdGUJCT0gbWMxMzc4M193cml0ZSwKKwkuY29udHJv
-bHMJPSBtYzEzNzgzX2NvbnRyb2xfbGlzdCwKKwkubnVtX2NvbnRyb2xzCT0gQVJSQVlfU0laRSht
-YzEzNzgzX2NvbnRyb2xfbGlzdCksCisJLmRhcG1fd2lkZ2V0cwk9IG1jMTM3ODNfZGFwbV93aWRn
-ZXRzLAorCS5udW1fZGFwbV93aWRnZXRzID0gQVJSQVlfU0laRShtYzEzNzgzX2RhcG1fd2lkZ2V0
-cyksCisJLmRhcG1fcm91dGVzCT0gbWMxMzc4M19yb3V0ZXMsCisJLm51bV9kYXBtX3JvdXRlcyA9
-IEFSUkFZX1NJWkUobWMxMzc4M19yb3V0ZXMpLAogfTsKIAogc3RhdGljIGludCBtYzEzNzgzX2Nv
-ZGVjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCkBAIC03ODEsMTggKzc3OCw3
-IEBAIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG1jMTM3ODNfY29kZWNfZHJpdmVyID0g
-ewogCS5yZW1vdmUgPSBfX2RldmV4aXRfcChtYzEzNzgzX2NvZGVjX3JlbW92ZSksCiB9OwogCi1z
-dGF0aWMgX19pbml0IGludCBtYzEzNzgzX2luaXQodm9pZCkKLXsKLQlyZXR1cm4gcGxhdGZvcm1f
-ZHJpdmVyX3JlZ2lzdGVyKCZtYzEzNzgzX2NvZGVjX2RyaXZlcik7Ci19Ci0KLXN0YXRpYyBfX2V4
-aXQgdm9pZCBtYzEzNzgzX2V4aXQodm9pZCkKLXsKLQlwbGF0Zm9ybV9kcml2ZXJfdW5yZWdpc3Rl
-cigmbWMxMzc4M19jb2RlY19kcml2ZXIpOwotfQotCi1tb2R1bGVfaW5pdChtYzEzNzgzX2luaXQp
-OwotbW9kdWxlX2V4aXQobWMxMzc4M19leGl0KTsKK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXIobWMx
-Mzc4M19jb2RlY19kcml2ZXIpOwogCiBNT0RVTEVfREVTQ1JJUFRJT04oIkFTb0MgTUMxMzc4MyBk
-cml2ZXIiKTsKIE1PRFVMRV9BVVRIT1IoIlNhc2NoYSBIYXVlciwgUGVuZ3V0cm9uaXggPHMuaGF1
-ZXJAcGVuZ3V0cm9uaXguZGU+Iik7Ci0tIAoxLjcuMC40CgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello,
+
+Add DT support and the binding documentation for OMAP4+ DMIC, and McPDM ASoC dai
+drivers.
+
+Changes since v1:
+- Ducumentation update: add properties for register address/size, interrupt
+  number (as Suggested by Mark and Tony).
+
+I have not added Mark's acked-by since I think the changes are big enough from
+v1.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  ASoC: omap-mcpdm: Add device tree bindings
+  ASoC: omap-dmic: Add device tree bindings
+
+ .../devicetree/bindings/sound/omap-dmic.txt        |   21 ++++++++++++++++++++
+ .../devicetree/bindings/sound/omap-mcpdm.txt       |   21 ++++++++++++++++++++
+ sound/soc/omap/omap-dmic.c                         |    8 +++++++
+ sound/soc/omap/omap-mcpdm.c                        |    8 +++++++
+ 4 files changed, 58 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-dmic.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+
+-- 
+1.7.8.6
