@@ -1,128 +1,102 @@
-From: cee1 <fykcee1@gmail.com>
-Subject: Re: Adjust volume may cause audio playback
-	corruption
-Date: Fri, 18 May 2012 05:34:20 +0800
-Message-ID: <CAGXxSxUC54kb8pmDXuRGjRVbQ465v9M0n8_rO-Z4cYUpnzLz+A@mail.gmail.com>
-References: <CAGXxSxUxFbC3mGWa-pbUKrzUqsBbvoQ5PmXNrKfL2W_BXyv1_A@mail.gmail.com>
-	<CAGXxSxWSD+c9tnJHsKVDJYhq=AkY4KfefZgPj6rtgQozzFjuiQ@mail.gmail.com>
-	<CAGXxSxUYWLyRZ1BEz53TRY9aE-CPPxSRoZeNGE5QTsOKP=B+Gg@mail.gmail.com>
-	<4FB54BF6.3000901@ladisch.de>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Problem with snd_soc_suspend
+Date: Thu, 17 May 2012 22:46:05 +0100
+Message-ID: <20120517214604.GK26337@opensource.wolfsonmicro.com>
+References: <4FB0A685.3040408@codeaurora.org>
+	<20120514083430.GG31985@opensource.wolfsonmicro.com>
+	<4FB55DDE.30804@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2107546756=="
-Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <4FB54BF6.3000901@ladisch.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============9014480971920985439=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BD78E103D27
+	for <alsa-devel@alsa-project.org>;
+	Thu, 17 May 2012 23:46:08 +0200 (CEST)
+In-Reply-To: <4FB55DDE.30804@codeaurora.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============2107546756==
-Content-Type: multipart/alternative; boundary=047d7b10ca2dde285c04c0423288
 
---047d7b10ca2dde285c04c0423288
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
-
-=D4=DA 2012=C4=EA5=D4=C218=C8=D5=D0=C7=C6=DA=CE=E5=A3=ACClemens Ladisch =D0=
-=B4=B5=C0=A3=BA
-
-> cee1 wrote:
-> > We've found a way the can reproduce the problem more quickly on our
-> product:
-> > 1. do audio playback
-> > 2. alsamixer, select 'Master', press 'm' and hold for a while.
-> >
-> > Then release 'm', playback corrupts(sounds similar to
-> > http://dev.lemote.com/files/upload/software/PA-apc/corrupted_sound.ogg)=
-.
->
-> Is the output supposed to be playing or muted at this time?
-
-Playing
+--===============9014480971920985439==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HkMjoL2LAeBLhbFV"
+Content-Disposition: inline
 
 
->
-> This appears to be a problem with PA's volume handling.
-> It might be caused by incorrect dB volume information of the HDA codec,
-> or by a bug in PA.
->
-> > What does rewind do? Why we need rewind here?
->
-> It allows to rewrite already written parts of the audio buffer; it's used
-> to apply the new volume to samples that have not yet been actually played=
-.
->
->
-> Regards,
-> Clemens
->
+--HkMjoL2LAeBLhbFV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, May 17, 2012 at 01:21:50PM -0700, Patrick Lai wrote:
+> On 5/14/2012 1:34 AM, Mark Brown wrote:
 
---=20
-Regards,
+> >This sounds like expected behaviour, if the widgets aren't marked as
+> >ignoring suspend then they will be suspended.
 
-- cee1
+> As CODEC is getting more complicated and more widgets would be defined,
+> I don't think it's scalable to mark ignore suspend per widget.
 
---047d7b10ca2dde285c04c0423288
-Content-Type: text/html; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
+You only have to do this for widgets on the edge of the graph, it's
+just the same input to output algorithm that's applied as normal but
+with a subset of input and output widgets being considered.
 
-=D4=DA 2012=C4=EA5=D4=C218=C8=D5=D0=C7=C6=DA=CE=E5=A3=ACClemens Ladisch  =
-=D0=B4=B5=C0=A3=BA<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0=
- 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">cee1 wrote:<br>
-&gt; We&#39;ve found a way the can reproduce the problem more quickly on ou=
-r product:<br>
-&gt; 1. do audio playback<br>
-&gt; 2. alsamixer, select &#39;Master&#39;, press &#39;m&#39; and hold for =
-a while.<br>
-&gt;<br>
-&gt; Then release &#39;m&#39;, playback corrupts(sounds similar to<br>
-&gt; <a href=3D"http://dev.lemote.com/files/upload/software/PA-apc/corrupte=
-d_sound.ogg" target=3D"_blank">http://dev.lemote.com/files/upload/software/=
-PA-apc/corrupted_sound.ogg</a>).<br>
-<br>
-Is the output supposed to be playing or muted at this time?</blockquote><di=
-v>Playing<span></span></div><div>&nbsp;</div><blockquote class=3D"gmail_quo=
-te" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"=
->
-<br>
-This appears to be a problem with PA&#39;s volume handling.<br>
-It might be caused by incorrect dB volume information of the HDA codec,<br>
-or by a bug in PA.<br>
-<br>
-&gt; What does rewind do? Why we need rewind here?<br>
-<br>
-It allows to rewrite already written parts of the audio buffer; it&#39;s us=
-ed<br>
-to apply the new volume to samples that have not yet been actually played.<=
-br>
-<br>
-<br>
-Regards,<br>
-Clemens<br>
-</blockquote><br><br>-- <br>Regards,<div><br><div>- cee1</div></div><br>
+> >No, the whole point here is to suspend.  If we did that we'd never
+> >suspend any active streams.
 
---047d7b10ca2dde285c04c0423288--
+> If so, what is purpose of ignore_suspend? My problem is that active
+> stream which has ignore_suspend flag set ends up suspended because an
+> inactive stream without ignore_suspend flag set happens to be using
+> same CODEC but different digital audio interface. I don't think it's
+> the right behavior. DAPM should maintain widget usage reference. Only
+> If all CODEC DAIs that are using given widget are going to suspend
+> should DAPM go ahead power off the widget.
 
---===============2107546756==
+The suspend of the device is somewhat orthogonal to the suspend of the
+device as a whole - the device as a whole is suspended if there are no
+active widgets and the widgets will go inactive if they're not part of
+an active path.  You will at the very least always have to mark inputs
+and outputs that are connected to the DAIs as ignoring suspend, adding
+something to flag the DAI widgets now we have those should be trivial.
+
+--HkMjoL2LAeBLhbFV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPtXF1AAoJEBus8iNuMP3d03oP/2tLVROs1hUCgPIxgfwSf2VQ
+RHND8FQKZlhafIV3/j1nps2du/WCRYndwSis+o87PplRLwXTFMXrsC2D5tWyALKf
+QAzVgzBepjpuOBH3g03HQU8GXgRA8oq74ZcKlfFrsFkUfBzg1QEC2rkeoDaq9O3e
+5swaDyOMc1+ZvG5IS+ikiCNM1ZqujnlzdnbHxwwxDCTBYnv4hAXD8/PfY86jDI0X
+izABa1mCwRfSvcTgzxF0zHmMgXzL3y4OgBSBxB0Y4xoa9SJ5Xi6Eb34eEG0WD/MB
+mfVXEo/JVr2N9yFcx2R1r0QWSZCuORL04JJ92zHsN/UGDCSbsYM6iCanncd7NRrX
+Lht9IGvtUd3wVTGvaxSdYzHoeCJc6uZlc+rTKA7IgmhvoECYnL0NF6CXETWgNa2m
+8iOvYmB6QHw2ntwP/G2LIkghzO2byjucVkW/OrPWTKboElKbY7ZtCtyPehTcpgnr
+qAMKxMOl+MHeeAsHsx2mHd2uSI1SQSMSx2+etrmnYPHkGQ0y6m1BwyQGRQrJqk2D
+nDkK0dB9lJsJlYYlfA5fXPA3VwGYPIhFJDIjWBqh1Og7YbIYMpKzljh3EWSylZ2k
+dmwoT900bre91UzwAyz0WlhYe5FBWyhG2racpK2MwnsN6dcD7RphacvrWt2rCDpB
+Y4dZKGEpXDMCTimJsWsx
+=hLeJ
+-----END PGP SIGNATURE-----
+
+--HkMjoL2LAeBLhbFV--
+
+--===============9014480971920985439==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-pulseaudio-discuss mailing list
-pulseaudio-discuss@lists.freedesktop.org
-http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss
 
---===============2107546756==--
+--===============9014480971920985439==--
