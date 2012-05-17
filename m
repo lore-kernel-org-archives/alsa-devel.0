@@ -1,19 +1,27 @@
-From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
-Subject: Support new HDA codec continue...
-Date: Thu, 17 May 2012 13:09:00 +0200
-Message-ID: <AB277FB27524F74C87ACAFF84F2767490D56E5160F@NTMBOX.central.cirsa.com>
-References: <AB277FB27524F74C87ACAFF84F2767490D56E5160D@NTMBOX.central.cirsa.com>,
-	<AB277FB27524F74C87ACAFF84F2767490D56E5160E@NTMBOX.central.cirsa.com>
+From: Alex Leach <beamesleach@gmail.com>
+Subject: Re: Asus Xonar DG front panel not working
+Date: Thu, 17 May 2012 11:20:17 +0000 (UTC)
+Message-ID: <loom.20120517T131540-150@post.gmane.org>
+References: <CAJZVDJAO9EBeyuHHAhKfWdej=FzfrzCx0bf33rELWqBnNobTHQ@mail.gmail.com>
+	<4FA91813.2050604@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pegasus.cirsa.com (pegasus.cirsa.com [195.77.234.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0ECE243E9
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1258E2412D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 May 2012 13:09:22 +0200 (CEST)
-In-Reply-To: <AB277FB27524F74C87ACAFF84F2767490D56E5160E@NTMBOX.central.cirsa.com>
-Content-Language: en-US
+	Thu, 17 May 2012 13:25:11 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SUypL-0002fi-Aw
+	for alsa-devel@alsa-project.org; Thu, 17 May 2012 13:25:03 +0200
+Received: from wc10.york.ac.uk ([144.32.128.14])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 May 2012 13:25:03 +0200
+Received: from beamesleach by wc10.york.ac.uk with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 May 2012 13:25:03 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,63 +31,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLA0KDQpJJ3ZlIHRvIHRha2UgYWdhaW4gdGhlIEhEQSBjb2RlYyBmb3IgV29sZnNvbiBi
-ZWNhdXNlIEkgc2VlIHRoYXQgSSBjYW4ndA0KY2hhbmdlIHRoZSBtYXN0ZXIgdm9sdW1lLiBJIHdv
-dWxkIGxpa2UgdG8ga25vdyBob3cgY2FuIEkgZG8gdG8gZ2V0IHdpdGgNCmFtaXhlciBhbiBlbnRy
-eSBmb3IgbWFzdGVyIG8gcGNtIHZvbHVtZS4NCg0KTm93IEkgaGF2ZToNCg0KfiAjIGFtaXhlcg0K
-U2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMA0KICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2gg
-cHN3aXRjaC1qb2luZWQNCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8NCiAgTW9ubzogUGxheWJh
-Y2sgW29uXQ0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCBEZWZhdWx0IFBDTScsMA0KICBD
-YXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQNCiAgUGxheWJhY2sgY2hhbm5lbHM6
-IE1vbm8NCiAgTW9ubzogUGxheWJhY2sgW29uXQ0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ1N0ZXJl
-byBEaWZmZXJlbnRpYWwnLDANCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gNCiAgUGxh
-eWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodA0KICBMaW1pdHM6IFBsYXli
-YWNrIDAgLSAxMjcNCiAgTW9ubzoNCiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMTA2IFs4MyVdIFst
-MTAuNTBkQl0gW29uXQ0KICBGcm9udCBSaWdodDogUGxheWJhY2sgMTA2IFs4MyVdIFstMTAuNTBk
-Ql0gW29uXQ0KDQpidXQgSSBvbmx5IGNhbiBlbmFibGUgb3IgZGlzYWJsZSB0aGUgYXVkaW8gd2l0
-aA0KDQojIGFtaXhlciBzc2V0ICdJRUM5NTgnIG9uIC8gb2ZmDQoNCmJ1dCBubyBtYXN0ZXIgc291
-bmQgY29udHJvbCBpcyBwcmVzZW50Li4uDQoNCndpdGgNCg0KIyBhbWl4ZXIgc3NldCAgJ1N0ZXJl
-byBEaWZmZXJlbnRpYWwnIDEwMCUNCm9yDQojIGFtaXhlciBzc2V0ICAnU3RlcmVvIERpZmZlcmVu
-dGlhbCcgMCUNCg0KdGhlcmUgaXMgbm8gZGlmZmVyZW5jZS4NCg0KQW55IGhpbnQgaXMgd2VsY29t
-ZQ0KVGhhbmtzIQ0KDQpKb3JnZQ0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18NCkZyb206IE1hcmsgQnJvd24gW2Jyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWlj
-cm8uY29tXQ0KU2VudDogTW9uZGF5LCBNYXJjaCAwNSwgMjAxMiAxOjE2IFBNDQpUbzogSm9yZ2Ug
-RmVybmFuZGV6IE1vbnRlYWd1ZG8NCkNjOiBUYWthc2hpIEl3YWk7IGFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZw0KU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBTdXBwb3J0IG5ldyBIREEgY29k
-ZWMNCg0KT24gVGh1LCBNYXIgMDEsIDIwMTIgYXQgMTA6NDQ6MjNBTSArMDEwMCwgSm9yZ2UgRmVy
-bmFuZGV6IE1vbnRlYWd1ZG8gd3JvdGU6DQoNCj4gQXR0YWNoZWQgaXQncyB0aGUgcGF0Y2ggYXBw
-bGllZCB0byBhbHNhIDEuMC4yMy4gQSBuZXcgcGF0Y2hfd29sZnNvbi5jIGZpbGUNCj4gaXMgY3Jl
-YXRlZC4gSSB3b3VsZCBsaWtlIHRvIG5vdGUgdGhhdCBubyBXb2xmc29uIHN1cHBvcnQgd2FzIHJl
-Y2VpdmVkIHRvDQo+IGRldmVsb3AgdG8gdGhpcyBjb2RlLCBhbmQgdGhpcyBjb2RlIGlzIHVzZWZ1
-bCBmb3IgdXMgYmVjYXVzZSB3ZSBvbmx5IG5lZWQNCg0KSHJtLCB0aGF0J3Mgbm90IHN0cmljdGx5
-IGFjY3VyYXRlIC0gd2UgZGlkbid0IGhlbHAgd2l0aCB0aGUgY29kZSBidXQgSQ0Ka25vdyB0aGVy
-ZSdzIGJlZW4gc29tZSBoZWxwIChwb3NzaWJseSB2aWEgdGhlIGRpc3RyaWJ1dG9yKS4NCg0KPiB0
-aGUgb3V0cHV0cyBkaWZmZXJlbnRpYWwgYW5kIFNQRElGLiBUaGlzIGNvZGUgbXVzdCBiZSByZXZp
-c2l0ZWQgaW4gb3JkZXIgdG8NCj4gc3VwcG9ydCB0aGUgZGlmZmVyZW50IGlucHV0cywgdGhlIHN0
-ZXJlbyBub3JtYWwgb3V0cHV0IGFuZCB0aGUgSS9PLg0KDQpMb29raW5nIGF0IHRoZSBjb2RlIGl0
-IHNlZW1zIGxpa2UgbW9zdCBvZiB0aGlzIGlzIHRoaW5ncyB0aGF0IEknZCByZWFsbHkNCmV4cGVj
-dCB0aGUgZ2VuZXJpYyBkcml2ZXIgdG8gYmUgYWJsZSB0byBjb3BlIHdpdGggYXNzdW1pbmcgYSBz
-dWl0YWJsZQ0KQklPUyBzZXR1cCwgYnV0IGxvb2tpbmcgYXQgdGhlIGdlbmVyaWMgZHJpdmVyIGl0
-IHNlZW1zIGxpa2UgaXQgbWlnaHQNCm5lZWQgc29tZSBlbmhhbmNlbWVudCB0byBkbyBzby4gIFRo
-aW5ncyBsaWtlIHRoZSBTL1BJREYgb3V0cHV0IHNob3VsZA0KcmVhbGx5IGJlIGFibGUgdG8gSnVz
-dCBXb3JrLiAgSHJtLg0KDQpFc3RlIG1lbnNhamUgc2UgZGlyaWdlIGV4Y2x1c2l2YW1lbnRlIGEg
-c3UgZGVzdGluYXRhcmlvIHkgcHVlZGUgY29udGVuZXIgaW5mb3JtYWNpw7NuIHByaXZpbGVnaWFk
-YSBvIENPTkZJREVOQ0lBTC4gU2kgbm8gZXMgdmQuIGVsIGRlc3RpbmF0YXJpbyBpbmRpY2Fkbywg
-cXVlZGEgbm90aWZpY2FkbyBkZSBxdWUgbGEgdXRpbGl6YWNpw7NuLCBkaXZ1bGdhY2nDs24geS9v
-IGNvcGlhIHNpbiBhdXRvcml6YWNpw7NuIGVzdMOhIHByb2hpYmlkYSBlbiB2aXJ0dWQgZGUgbGEg
-bGVnaXNsYWNpw7NuIHZpZ2VudGUuIFNpIGhhIHJlY2liaWRvIGVzdGUgbWVuc2FqZSBwb3IgZXJy
-b3IsIGxlIHJvZ2Ftb3MgcXVlIG5vcyBsbyBjb211bmlxdWUgaW5tZWRpYXRhbWVudGUgcG9yIGVz
-dGEgbWlzbWEgdsOtYSB5IHByb2NlZGEgYSBzdSBkZXN0cnVjY2nDs24uDQoNClRoaXMgbWVzc2Fn
-ZSBpcyBpbnRlbmRlZCBleGNsdXNpdmVseSBmb3IgaXRzIGFkZHJlc3NlZSBhbmQgbWF5IGNvbnRh
-aW4gaW5mb3JtYXRpb24gdGhhdCBpcyBDT05GSURFTlRJQUwgYW5kIHByb3RlY3RlZCBieSBwcm9m
-ZXNzaW9uYWwgcHJpdmlsZWdlLg0KSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVu
-dCB5b3UgYXJlIGhlcmVieSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBjb3B5IG9y
-IGRpc2Nsb3N1cmUgb2YgdGhpcyBjb21tdW5pY2F0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQg
-YnkgbGF3LiBJZiB0aGlzIG1lc3NhZ2UgaGFzIGJlZW4gcmVjZWl2ZWQgaW4gZXJyb3IsIHBsZWFz
-ZSBpbW1lZGlhdGVseSBub3RpZnkgdXMgdmlhIGUtbWFpbCBhbmQgZGVsZXRlIGl0Lg0KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Clemens Ladisch <clemens <at> ladisch.de> writes:
+
+> 
+> Marcos Felipe Rasia de Mello wrote:
+> > My Asus Xonar DG doesn't play through FP Headphone connector (HD
+> > Audio). Mic input doesn't work too (both rear and front connectors).
+> 
+> These are known bugs.  They will not be fixed until I find the time
+> to do more reverse engineering to find out how the hardware works.
+> 
+> Regards,
+> Clemens
+> 
+
+Reverse engineering sounds like no easy task, but you've done an excellent job
+so far! I'm getting the same lack of front headphone support on a Xonar HDAV
+1.3, and am hoping the same fix will work for both cards.
+Good luck with the reverse engineering (and finding the time to do it)!
+Kind regards,
+Alex
