@@ -1,58 +1,51 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: [PATCH 09/11] ASoC: OMAP: HDMI: Make build config options more generic
-Date: Fri, 18 May 2012 01:42:41 -0500
-Message-ID: <1337323363-11449-10-git-send-email-ricardo.neri@ti.com>
-References: <1337323363-11449-1-git-send-email-ricardo.neri@ti.com>
+From: cee1 <fykcee1@gmail.com>
+Subject: Re: Adjust volume may cause audio playback corruption
+Date: Fri, 18 May 2012 15:35:04 +0800
+Message-ID: <CAGXxSxXyfk5vNx3yfwLNPuGdWAwEPQU2FGV8dVKV=pLYrJJbbg@mail.gmail.com>
+References: <CAGXxSxUxFbC3mGWa-pbUKrzUqsBbvoQ5PmXNrKfL2W_BXyv1_A@mail.gmail.com>
+	<CAGXxSxWSD+c9tnJHsKVDJYhq=AkY4KfefZgPj6rtgQozzFjuiQ@mail.gmail.com>
+	<CAGXxSxUYWLyRZ1BEz53TRY9aE-CPPxSRoZeNGE5QTsOKP=B+Gg@mail.gmail.com>
+	<4FB54BF6.3000901@ladisch.de>
+	<CAGXxSxUC54kb8pmDXuRGjRVbQ465v9M0n8_rO-Z4cYUpnzLz+A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1337323363-11449-1-git-send-email-ricardo.neri@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: x0055901@ti.com, peter.ujfalusi@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <ricardo.neri@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 788B4103FDA
+	for <alsa-devel@alsa-project.org>;
+	Fri, 18 May 2012 09:35:26 +0200 (CEST)
+Received: by pbbrp16 with SMTP id rp16so4525630pbb.38
+	for <alsa-devel@alsa-project.org>; Fri, 18 May 2012 00:35:25 -0700 (PDT)
+In-Reply-To: <CAGXxSxUC54kb8pmDXuRGjRVbQ465v9M0n8_rO-Z4cYUpnzLz+A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make Kconfig and Makefile more generic to encompass not only
-OMAP4 but other OMAP processors featuring HDMI.
-
-Also, relax the dependency list to depend only on any OMAP processor
-supporting OMAP2_DSS and OMAP4_DSS_HDMI. As HDMI support for
-future OMAP versions is added, the dependency list must change
-accordingly.
-
-Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
----
- sound/soc/omap/Kconfig  |    6 +++---
- sound/soc/omap/Makefile |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 13afb2c..57a2fa7 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -109,9 +109,9 @@ config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 	  - PandaBoard (4430)
- 	  - PandaBoardES (4460)
- 
--config SND_OMAP_SOC_OMAP4_HDMI
--	tristate "SoC Audio support for Texas Instruments OMAP4 HDMI"
--	depends on SND_OMAP_SOC && OMAP4_DSS_HDMI && OMAP2_DSS && ARCH_OMAP4
-+config SND_OMAP_SOC_OMAP_HDMI
-+	tristate "SoC Audio support for Texas Instruments OMAP HDMI"
-+	depends on SND_OMAP_SOC && OMAP4_DSS_HDMI && OMAP2_DSS
- 	select SND_OMAP_SOC_HDMI
- 	select SND_SOC_OMAP_HDMI_CODEC
- 	select OMAP4_DSS_HDMI_AUDIO
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 1d656bc..b4ef308 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -41,4 +41,4 @@ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
- obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) += snd-soc-zoom2.o
- obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP4_HDMI) += snd-soc-omap4-hdmi.o
-+obj-$(CONFIG_SND_OMAP_SOC_OMAP_HDMI) += snd-soc-omap4-hdmi.o
--- 
-1.7.5.4
-
+MjAxMi81LzE4IGNlZTEgPGZ5a2NlZTFAZ21haWwuY29tPjoKPiDlnKggMjAxMuW5tDXmnIgxOOaX
+peaYn+acn+S6lO+8jENsZW1lbnMgTGFkaXNjaCDlhpnpgZPvvJoKPgo+PiBjZWUxIHdyb3RlOgo+
+PiA+IFdlJ3ZlIGZvdW5kIGEgd2F5IHRoZSBjYW4gcmVwcm9kdWNlIHRoZSBwcm9ibGVtIG1vcmUg
+cXVpY2tseSBvbiBvdXIKPj4gPiBwcm9kdWN0Ogo+PiA+IDEuIGRvIGF1ZGlvIHBsYXliYWNrCj4+
+ID4gMi4gYWxzYW1peGVyLCBzZWxlY3QgJ01hc3RlcicsIHByZXNzICdtJyBhbmQgaG9sZCBmb3Ig
+YSB3aGlsZS4KPj4gPgo+PiA+IFRoZW4gcmVsZWFzZSAnbScsIHBsYXliYWNrIGNvcnJ1cHRzKHNv
+dW5kcyBzaW1pbGFyIHRvCj4+ID4gaHR0cDovL2Rldi5sZW1vdGUuY29tL2ZpbGVzL3VwbG9hZC9z
+b2Z0d2FyZS9QQS1hcGMvY29ycnVwdGVkX3NvdW5kLm9nZykuCj4+Cj4+IElzIHRoZSBvdXRwdXQg
+c3VwcG9zZWQgdG8gYmUgcGxheWluZyBvciBtdXRlZCBhdCB0aGlzIHRpbWU/Cj4KPiBQbGF5aW5n
+ClNlZW1zIHNvbWV0aGluZyB0byBkbyB3aXRoIHByb2Nlc3NfcmV3aW5kKG1vZHVsZXMvYWxzYS9h
+bHNhLXNpbmsuYyksIEkKdHJpZWQgY29tbWVudGluZyBvdXQgc25kX3BjbV9yZXdpbmQgYmxvY2sg
+aW4gcHJvY2Vzc19yZXdpbmQoKSBhbmQgc2V0Cm91dF9mcmFtZXM9MCBvciBvdXRfZnJhbWVzPWlu
+X2ZyYW1lcywgdGhlIHByb2JsZW0gc2VlbXMgZ29uZS4KCkEgYnVnIGluIHNuZF9wY21fcmV3aW5k
+KCkvZHJpdmVyPwoKCgotLS0tClJlZ2FyZHMsCmNlZTEKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
