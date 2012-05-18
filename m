@@ -1,68 +1,56 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: kmemleak findings about USB audio recording on
-	3.3.2
-Date: Fri, 18 May 2012 18:00:43 +0200
-Message-ID: <4FB6722B.6050103@ladisch.de>
-References: <1335112621.20322.8.camel@home>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/11] ASoC: OMAP: HDMI: Introduce codec
+Date: Fri, 18 May 2012 17:32:40 +0100
+Message-ID: <20120518163240.GM4039@opensource.wolfsonmicro.com>
+References: <1337323363-11449-1-git-send-email-ricardo.neri@ti.com>
+ <1337323363-11449-2-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay06.ispgateway.de (smtprelay06.ispgateway.de
-	[80.67.31.101]) by alsa0.perex.cz (Postfix) with ESMTP id 521BA24354
-	for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2012 18:01:04 +0200 (CEST)
-In-Reply-To: <1335112621.20322.8.camel@home>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yaap9KN+GmBP785v"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1337323363-11449-2-git-send-email-ricardo.neri@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: lrg@ti.com, x0055901@ti.com, peter.ujfalusi@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alexander E. Patrakov wrote:
-> On my home computer with linux-3.3.2, kmemleak found a lot of copies of
-> this (not only from pulseaudio, but also from wine):
->
-> unreferenced object 0xffff88021afaed40 (size 16):
->   comm "pulseaudio", pid 839, jiffies 4294711382 (age 31392.844s)
->   hex dump (first 16 bytes):
->     80 3e 00 00 c0 5d 00 00 00 7d 00 00 02 00 00 00  .>...]...}......
->   backtrace:
->     [<ffffffff811620d7>] create_object+0x127/0x2b0
->     [<ffffffff81636d81>] kmemleak_alloc+0x21/0x50
->     [<ffffffff81157bc3>] __kmalloc+0x103/0x1e0
->     [<ffffffffa02f650b>] snd_usb_pcm_open+0x3bb/0x4c0 [snd_usb_audio]
 
-Please try this patch.
+--yaap9KN+GmBP785v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---8<---------------------------------------------------------------->8--
-ALSA: usb-audio: fix rate_list memory leak
+On Fri, May 18, 2012 at 01:42:33AM -0500, Ricardo Neri wrote:
+> Introduce codec for HDMI. At the moment, this is a dummy codec. In the
+> future it will parse the EDID to modify the supported parameters, such
+> as the number of channels and the sample rates. At the moment, it blindly
+> supports all the sample rates and audio channels described in the HDMI
+> 1.4a specification.
 
-The array of sample rates is reallocated every time when opening
-the PCM device, but was freed only once when unplugging the device.
+Applied this one, though I had to manually fix up the Kconfig and
+Makefile - you should always submit against the current development
+tree.
 
-Reported-by: "Alexander E. Patrakov" <patrakov@gmail.com>
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/pcm.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+--yaap9KN+GmBP785v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -783,6 +783,9 @@ static int snd_usb_pcm_check_knot(struct snd_pcm_runtime *runtime,
- 	int count = 0, needs_knot = 0;
- 	int err;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-+	kfree(subs->rate_list.list);
-+	subs->rate_list.list = NULL;
-+
- 	list_for_each_entry(fp, &subs->fmt_list, list) {
- 		if (fp->rates & SNDRV_PCM_RATE_CONTINUOUS)
- 			return 0;
+iQIcBAEBAgAGBQJPtnmhAAoJEBus8iNuMP3d1UcP/33DRTWIIK0/cEJMe8fvlxw6
+VVePo5fAEnvcGtLjw0xM8BO70Nc5qV3r5+Adz2j9vqf7664VkkubJ/9A+VOBcNEM
+8KgZhchbDozKSZ9X/GxgEuYxC9Is3XLlaqeciBDARjQt1JvnKnn1T++gWaNbCLel
+nTDDJUptzw1daeL2e/JxRpQj5mSqxbWW3GLA+0hOzZx3EWjAhW98W9wCwWL0FLbf
+jmCq/EsCKQ8ItHrQ/L5hcTP5K2XLWG1jI09r11ZUVTA7F5wkhggo9L7FVSuLEZ8O
+/Lrgl5vvz+zS31bAVfaLLXDjXvCnGG46XqEHzqBT8GyorRk/hQal76Xf/uEboYu7
+cC8mWXrsRsv2DQfUgRvXoFLRC0eC8p5aBCJVFfkoyk/I+9SiAfHiF8tfgevQVV01
+izd6R4+7ecVPoY+aKul3aE1/u8UjvlYP/AbxDqQaMT5aPlBMt5v7zNeOmdhMwNX9
+cjw5MEuJ40utTIzo6Sq8RcjP8khST2RbJqeroaa9xL0sI1LoZN6JLbQOM1D0lIWE
+ThGPiMPQkNKIHrZOK4yb678dtD9mJNVTDENqkhFC4Hf7EJABeNgTDIZznsqox9PO
+hCgyDpWNSHA5/+x4sxY5mxiv2C5NvwVivheN88T0QULOa5V7NVGVrAT3QpDnWqt1
+RCrVhVOJVhqNYFAgWng8
+=XFBG
+-----END PGP SIGNATURE-----
+
+--yaap9KN+GmBP785v--
