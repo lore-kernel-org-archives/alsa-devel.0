@@ -1,29 +1,16 @@
-From: Sebastien LEDUC <sebastien.leduc@stericsson.com>
-Subject: Question on Dynamic PCM
-Date: Fri, 18 May 2012 16:02:09 +0200
-Message-ID: <A3217089E06965468FCEC60ADC3A8F925C16AA7EF8@EXDCVYMBSTM006.EQ1STM.local>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/4] MC13783 sound support
+Date: Fri, 18 May 2012 16:41:54 +0100
+Message-ID: <20120518154153.GH4039@opensource.wolfsonmicro.com>
+References: <1337082832-9764-1-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5602590951941898599=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
-	[207.126.144.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51826103F94
-	for <Alsa-devel@alsa-project.org>;
-	Fri, 18 May 2012 16:02:25 +0200 (CEST)
-Received: from zeta.dmz-us.st.com (ns4.st.com [167.4.16.71])
-	by beta.dmz-us.st.com (STMicroelectronics) with ESMTP id 2A5A461
-	for <Alsa-devel@alsa-project.org>; Fri, 18 May 2012 14:01:53 +0000 (GMT)
-Received: from relay1.stm.gmessaging.net (unknown [10.230.100.17])
-	by zeta.dmz-us.st.com (STMicroelectronics) with ESMTP id 551BD57
-	for <Alsa-devel@alsa-project.org>; Fri, 18 May 2012 11:33:20 +0000 (GMT)
-Received: from exdcvycastm004.EQ1STM.local (alteon-source-exch [10.230.100.61])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(Client CN "exdcvycastm004", Issuer "exdcvycastm004" (not verified))
-	by relay1.stm.gmessaging.net (Postfix) with ESMTPS id 5392F24C07C
-	for <Alsa-devel@alsa-project.org>;
-	Fri, 18 May 2012 16:02:04 +0200 (CEST)
-Content-Language: en-US
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 876D224152
+	for <alsa-devel@alsa-project.org>;
+	Fri, 18 May 2012 17:41:57 +0200 (CEST)
+In-Reply-To: <1337082832-9764-1-git-send-email-philippe.retornaz@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,33 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: alsa-devel@alsa-project.org, torbenh@linutronix.de, sameo@linux.intel.com, s.hauer@pengutronix.de, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-In commit "ASoC: dapm: Add API call to query valid DAPM paths<http://git.kernel.org/?p=linux/kernel/git/broonie/sound.git;a=commit;h=ec2e3031b65f23f66840b5c89c4b83076831a435>" , the signature of the functions is_connected_input_ep / is_connected_output_ep has been modified so that the 2 functions now fill list of connected DAPM widgets.
 
-What I don't understand is why the way widgets are added is not symmetric between the two:
-
-In function is_connected_output_ep:
------------------------------------------------
-
- list_for_each_entry(path, &widget->sinks, list_source) {
-                ...
-                err = dapm_list_add_widget(list, path->sink);
-                ...
-}
-
-In function is_connected_input_ep:
----------------------------------------------
-
-list_for_each_entry(path, &widget->sources, list_sink) {
-...
-                err = dapm_list_add_widget(list, path->sink);
-}
+--===============5602590951941898599==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ik0NlRzMGhMnxrMX"
+Content-Disposition: inline
 
 
-I would have expected to have for the latter:
-err = dapm_list_add_widget(list, path->source);
+--ik0NlRzMGhMnxrMX
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regards,
-Sebastien Le Duc
+On Tue, May 15, 2012 at 01:53:48PM +0200, Philippe R=E9tornaz wrote:
+> Hello
+>=20
+> This patchset enables sound support on boards with mc13783 codec.
+
+Applied all, thanks.
+
+--ik0NlRzMGhMnxrMX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPtm2iAAoJEBus8iNuMP3daGgQAIod9/0Xd8sY13sT1MvAJBJa
+Gcf4wDNrDsDJR0K3xTKkLYcUMxHK453nxt50yZJKsg3SXZ3/b2cwc6Qrug0dlRqz
+4zddst5gMh1hiM6BqpidlESuxbj7HNBzW3JFO2b2+M9+Zv3h4TKJgdBR+z3rgDei
+9cbc7Q1kq0mOZKJ6XeErJ6RWTaE6M4jimEjZTr3DDYX53L2Gbau3yqX+ZiUtNuaw
+GrkBBOe7e/C9O7pMaGmENyOuoXV2CXgzYrgNff4eE8HcSVvEsNc/eoYRP4Jd3ZMy
+tVeLJNuRhpcy4RahW40Cbl2wS8OFdajGC6jojaLMSeZfnVGT92oZq49urnxNz7fM
++sID7Dxb4t0FbaXu5xydH0gOZSOqDfINhi1QqtGdM8Pm5sCLT40HyQLRB2yHStDI
+kHFmEBGr0CCYjxDgZaw26JXOyQWtqmE78LtePdX/ZQKmbtdzV8BvDoDRWQwZXI41
+CelT9aVq9ofUN/nqFUAQz8W/dt+HcHSL36xnsFyNzMRbM4hEd3n3a52AMj8lLqla
+BOW04VMhGAby2V3k0TPECQ3XDy2XtH4bOwgGI3gPAxwfCGxDb69S64wDsZSbCzWN
+NZBMo+yxe1hEpWVpEsDUV5WryDzngA9Vi8e1DdYGD97AtVgRi0++6AKNavmFQmQC
+RQUlXsiZmrljF3lgqvzL
+=BkhV
+-----END PGP SIGNATURE-----
+
+--ik0NlRzMGhMnxrMX--
+
+--===============5602590951941898599==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5602590951941898599==--
