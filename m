@@ -1,49 +1,42 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: hda - unlock on error in azx_interrupt()
-Date: Fri, 18 May 2012 10:36:11 +0300
-Message-ID: <20120518073611.GA4136@elgon.mountain>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/4] mc13xxx: add codec platform data
+Date: Fri, 18 May 2012 11:58:19 +0200
+Message-ID: <20120518095819.GH12015@sortiz-mobl>
+References: <1337082832-9764-1-git-send-email-philippe.retornaz@epfl.ch>
+ <1337082832-9764-2-git-send-email-philippe.retornaz@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D267103FDA
-	for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2012 09:36:25 +0200 (CEST)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, David Henningsson <david.henningsson@canonical.com>
+In-Reply-To: <1337082832-9764-2-git-send-email-philippe.retornaz@epfl.ch>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Cc: alsa-devel@alsa-project.org, torbenh@linutronix.de, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There is an spin_unlock() missing on this error path.
+Hi Philippe, Mark,
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-This was added recently in a82d51ed2 "ALSA: hda - Support
-VGA-switcheroo".  I don't have the hardware so I haven't tested it.
+On Tue, May 15, 2012 at 01:53:49PM +0200, Philippe R=E9tornaz wrote:
+> =
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index bbf953f..2b6392b 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1268,8 +1268,10 @@ static irqreturn_t azx_interrupt(int irq, void *dev_id)
- 
- 	spin_lock(&chip->reg_lock);
- 
--	if (chip->disabled)
-+	if (chip->disabled) {
-+		spin_unlock(&chip->reg_lock);
- 		return IRQ_NONE;
-+	}
- 
- 	status = azx_readl(chip, INTSTS);
- 	if (status == 0) {
+> Signed-off-by: Philippe R=E9tornaz <philippe.retornaz@epfl.ch>
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+
+Mark, I'm fine with you taking this patchset through the ASOC tree.
+
+Cheers,
+Samuel.
+
+-- =
+
+Intel Open Source Technology Centre
+http://oss.intel.com/
