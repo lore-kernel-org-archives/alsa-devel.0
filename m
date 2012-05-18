@@ -1,19 +1,18 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH 01/11] ASoC: OMAP: HDMI: Introduce codec
-Date: Fri, 18 May 2012 11:55:17 -0500
-Message-ID: <4FB67EF5.4010903@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: does snd_pcm_info_get_sync work at all?
+Date: Fri, 18 May 2012 15:46:25 -0500
+Message-ID: <4FB6B521.4000901@linux.intel.com>
 References: <1337323363-11449-1-git-send-email-ricardo.neri@ti.com>
-	<1337323363-11449-2-git-send-email-ricardo.neri@ti.com>
-	<20120518163240.GM4039@opensource.wolfsonmicro.com>
+	<1337323363-11449-4-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id B392F24343
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DFEB2435C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2012 18:55:31 +0200 (CEST)
-In-Reply-To: <20120518163240.GM4039@opensource.wolfsonmicro.com>
+	Fri, 18 May 2012 22:46:28 +0200 (CEST)
+In-Reply-To: <1337323363-11449-4-git-send-email-ricardo.neri@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: x0055901@ti.com, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, lrg@ti.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/18/2012 11:32 AM, Mark Brown wrote:
-> On Fri, May 18, 2012 at 01:42:33AM -0500, Ricardo Neri wrote:
->> Introduce codec for HDMI. At the moment, this is a dummy codec. In the
->> future it will parse the EDID to modify the supported parameters, such
->> as the number of channels and the sample rates. At the moment, it blindly
->> supports all the sample rates and audio channels described in the HDMI
->> 1.4a specification.
->
-> Applied this one, though I had to manually fix up the Kconfig and
-> Makefile - you should always submit against the current development
-> tree.
+Hi list,
+After looking a number of times at the code to start multiple devices at
+the same time, I wonder if the alsa-lib snd_pcm_info_get_sync() routine
+works at all.
 
-Thanks Mark! Sorry for the inconvenience, I will use the development 
-tree in the future.
+The documentation says "Because the drivers cannot guarantee the
+synchronization (sample resolution) on hardware lacking this feature,
+the #snd_pcm_info_get_sync() function returns synchronization ID,
+which is equal for hardware synchronized streams".
+
+It seems some drivers set a value when opening the stream using the
+snd_pcm_set_sync() helper. What exactly is the purpose of this id and
+what should it be used for in user-space? The value returned seems to
+be the card#, the same value no matter if streams are synchronized or
+not.
+
+This is confirmed by a simple experiment, When I tried with a test
+program on my HDAudio laptop, the ID is consistently zero, no matter if
+I called snd_pcm_link() to synchronize devices or not. That doesn't seem
+right. If two devices aren't linked, the information reported my the 
+kernel should be clearly invalid.
+
+What exactly was this intent of this routine, why would a sync_id be
+needed anyway and has anyone used it successfully?
+
+Thanks,
+-Pierre
