@@ -1,14 +1,19 @@
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: add pxa-squ dma support
-Date: Fri, 18 May 2012 12:25:58 +0800
-Message-ID: <CAN1soZzQQVtaRRYKMZig95bxZDP6umEG+Om6M5HTKsGUNJf2=w@mail.gmail.com>
-References: <1337308751-6126-1-git-send-email-zhouqiao@marvell.com>
-	<1337308751-6126-2-git-send-email-zhouqiao@marvell.com>
+From: MASAO TAKAHASHI <masao-takahashi@kanno.co.jp>
+Subject: To disable dma_area caching (twice)
+Date: Fri, 18 May 2012 14:18:57 +0900
+Message-ID: <20120518141857.7c85ae4b0eca0ea8a9a9a0ec@kanno.co.jp>
+Reply-To: masao-takahashi@kanno.co.jp
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1337308751-6126-2-git-send-email-zhouqiao@marvell.com>
+Received: from mow.po.2iij.net (mow311.po.2iij.net [210.128.50.105])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88BC52437A
+	for <alsa-devel@alsa-project.org>;
+	Fri, 18 May 2012 07:19:00 +0200 (CEST)
+Received: from masao-takahashi (202.196.30.125.bf.2iij.net [125.30.196.202])
+	by mbox.po.2iij.net (po-mbox305) id q4I5Iwx2021820
+	for <alsa-devel@alsa-project.org>; Fri, 18 May 2012 14:18:58 +0900
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,23 +24,148 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 18, 2012 at 10:39 AM, Qiao Zhou <zhouqiao@marvell.com> wrote:
-> this patch adds ASoC pxa-squ DMA audio support.
->
-> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
-> +/*
-> + * Descriptor structure for PXA's SQU engine
-> + * Note: this structure must always be aligned to a 16-byte boundary.
-> + */
-> +struct pxa_squ_desc {
-> + =A0 =A0 =A0 __iomem u32 byte_cnt; =A0 /* byte count */
-> + =A0 =A0 =A0 __iomem u32 src_addr; =A0 /* source address */
-> + =A0 =A0 =A0 __iomem u32 dst_addr; =A0 /* target address */
-> + =A0 =A0 =A0 __iomem u32 nxt_desc; =A0 /* next descriptor dress */
-Why do you use __iomem at here?
+Hi everybody.
+Please advice me to solve my problem.
+1.  My environment
+    Hardware	Alpha-project MS104-SH4AG with SH7764
+    kernel		sh-linux-2.6.29
+    ALSA driver sh7764-pcm.c developped 
+       by  Manuel Lauss <mano@roarinelk.homelinux.net>
 
-> +};
-> +
+2. My problem
+	I am using the above ALSA driver for SH7764 SSI.
+	I have found the runtime->dma_area address refers DMA area
+	via D-cache.
+	So, playback start is too late after executing 
+          snd_pcm_writei().
+	Until D-cache writeback is done, sound data stays in D-cache.
+	I want to read and write from/to main memory 
+	without D-cache.
+
+3. My idea to solve this problem
+   3-1 change allocating type of DMA area as follows
+       	snd_pcm_lib_preallocate_pages_for_all(
+            pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+            snd_dma_continuous_data(GFP_KERNEL),
+            64*1024, 64*1024);
+
+       is changed to
+
+        snd_pcm_lib_preallocate_pages_for_all(
+            pcm, SNDRV_DMA_TYPE_DEV, <----------- here
+            snd_dma_continuous_data(GFP_KERNEL),
+            64*1024, 64*1024);
+        to let dma_addr pointing P2SEG area without caching
+
+    3-2 program internal DMA controller start address 
+        with dma_addr
+   
+          ssidma_outl(sd, (virt_to_phys)(u32)runtime->dma_addr,
+                       SSIRDMADR);
+
+
+    3-3 add mmap_data_fault routine
+         static int sh7764_mmap_data_fault(    
+           structvm_area_struct*area,
+           struct vm_fault *vmf)
+        {
+	  struct snd_pcm_substream *substream = area->vm_private_data;
+	  struct snd_pcm_runtime *runtime;
+	  unsigned long offset;
+	  struct page * page;
+	  void *vaddr;
+	  size_t dma_bytes;
+	
+	  pr_debug("mmap_data_fault\n");
+	  if (substream == NULL)
+		return VM_FAULT_SIGBUS;
+	  runtime = substream->runtime;
+	  offset = vmf->pgoff << PAGE_SHIFT;
+	  dma_bytes = PAGE_ALIGN(runtime->dma_bytes);
+	  if (offset > dma_bytes - PAGE_SIZE)
+		return VM_FAULT_SIGBUS;
+	  if (substream->ops->page) {
+		page = substream->ops->page(substream, offset);
+		if (!page)
+			return VM_FAULT_SIGBUS;
+	  } else {
+		vaddr = runtime->dma_addr + offset;
+		page = virt_to_page(vaddr);
+	  }
+	get_page(page);
+	vmf->page = page;
+	pr_debug("mmap_data_fault:page = %x\n", (unsigned int)page);
+	return 0;
+       }
+       static struct vm_operations_struct sh7764_pcm_vm_ops_data =
+      {
+	.open =		snd_pcm_mmap_data_open,
+	.close =	snd_pcm_mmap_data_close,
+	.fault =	sh7764_mmap_data_fault,
+      };
+
+  3-3 add sh7764_pcm_mmap routine
+      static int sh7764_pcm_mmap(
+        struct snd_pcm_substream *substream,
+	struct vm_area_struct *area)
+      {
+	unsigned long	offset;
+	unsigned long	mp;
+	unsigned long	virt;
+	int				map_size;
+	struct page *map, *mapend, *ip;
+	struct snd_pcm_runtime *runtime;
+	int	ret;
+      #ifdef pgprot_noncached
+        area->vm_page_prot = pgprot_noncached(area->vm_page_prot);
+      #endif
+	offset = area->vm_pgoff << PAGE_SHIFT;
+	runtime = substream->runtime;
+	map_size = runtime->dma_bytes;
+	mp = virt_to_phys((unsigned long)runtime->dma_addr));
+	map = virt_to_page(mp);
+	mapend = virt_to_page(mp+map_size - 1);
+	for (ip = map; ip <= mapend; ip++){
+		SetPageReserved(ip);
+	area->vm_ops = &sh7764_pcm_vm_ops_data;
+	area->vm_private_data = substream;
+	area->vm_flags |= VM_IO;
+	ret = io_remap_pfn_range(area, area->vm_start,
+               mp>>PAGE_SHIFT,
+               area->vm_end - area->vm_start, 
+               area->vm_page_prot);
+		
+	if (ret ){
+	  pr_debug("sh7764-pcm.c:remap_pfn_range returned EAGAIN\n");
+	  return -EAGAIN;
+	}
+	atomic_inc(&substream->mmap_count);
+	pr_debug("mmap_count=%u\n", substream->mmap_count);
+	return 0;
+    }
+
+    static struct snd_pcm_ops sh7764_ssidma_ops = {
+	.open		= sh7764_ssidma_open,
+	.close		= sh7764_ssidma_close,
+	.ioctl		= snd_pcm_lib_ioctl,
+	.hw_params	= sh7764_hw_params,
+	.hw_free	= sh7764_hw_free,
+	.prepare	= sh7764_prepare,
+	.trigger	= sh7764_trigger,
+	.pointer	= sh7764_pos,
+	.mmap		= sh7764_pcm_mmap,
+    };
+ ------------------------------------------------------------
+Sorry, so long contents.
+
+My solution is right?
+or
+Is there any better solution ?
+
+Best regards
+---------- 
+MASAO TAKAHASHI <masao-takahashi@kanno.co.jp>
+KANNO WORKS CO., LTD. JAPAN
+TEL 093-436-2330
