@@ -1,19 +1,16 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Subject: Re: snd-usb endpoint rework
-Date: Sun, 20 May 2012 15:13:25 +0100
-Message-ID: <CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
-References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: PCM states and snd_pcm_drain()
+Date: Sun, 20 May 2012 18:25:30 +0100
+Message-ID: <201205201825.30623.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2D590243DD
+Received: from out1.ip03ir2.opaltelecom.net (out1.ip03ir2.opaltelecom.net
+	[62.24.128.239]) by alsa0.perex.cz (Postfix) with ESMTP id B764D24350
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 May 2012 16:13:26 +0200 (CEST)
-Received: by vbip1 with SMTP id p1so3384160vbi.38
-	for <alsa-devel@alsa-project.org>; Sun, 20 May 2012 07:13:25 -0700 (PDT)
-In-Reply-To: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
+	Sun, 20 May 2012 19:21:58 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, gdiffey@gmail.com, clemens@ladisch.de, tiwai@suse.de, linuxaudio@showlabor.de
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-> Hello everyone,
->
-> I compiled today the Kernel 3.4.0-rc7 from the git and used this git
-> to add the FTU support:
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->
-> Unfortunately, all my USB sound card simply stopped working.
->
-> The FTU doesn't produce any sound, nor through Alsa or Jack.
-> I tried playing a simple song through mplayer and nothing. I double
-> checked the mixer, all volumes are set as they should.
-> I checked dmesg, no error that could help.
-> I'm running Ubuntu, and the only thing I can hear is the welcoming
-> sound of ubuntu being cut-off almost instantly.
->
-> I tested my Edirol UA-25Ex, it is working all ok.
+Hi,
 
-Correction, the UA-25Ex doesn't work either.
-The sound dies out after a few minutes being used.
+Can snd_pcm_drain() be safely called on a non-running stream - particularly 
+one in SND_PCM_STATE_XRUN?  I can demonstrate lock-ups (on rather old Alsa 
+versions, though) when _drain is called on a stream in Xrun but it does seem 
+to vary between hardwares.
 
-When the sound dies out, dmesg prints:
+However, the docs at:
 
-[  550.114621] urb status -32
-[  551.601237] urb status -32
-[  551.681206] urb status -32
-[  553.563336] urb status -32
-[  565.588044] urb status -32
-[  566.786965] urb status -32
-[  625.130221] cannot submit urb 0, error -28: not enough bandwidth
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
 
-If there is any other info I can provide, let me know,
+suggest that it should be fine.
 
-Aur=E9lien
+In our case it seems safer (for widest compatibility) to always check for 
+SND_PCM_STATE_RUNNING, and call snd_pcm_drop() if the stream is not running.
+
+Regards
+
+Alan
