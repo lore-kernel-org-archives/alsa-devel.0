@@ -1,79 +1,74 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/5] ASoC: sh: fsi: adds stream transfer
-	mode
-Date: Sat, 19 May 2012 19:44:07 +0100
-Message-ID: <20120519184407.GF4039@opensource.wolfsonmicro.com>
-References: <87mx56wcpf.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8862983735779727064=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9DCBE2474F
-	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2012 20:44:10 +0200 (CEST)
-In-Reply-To: <87mx56wcpf.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 1/3] of: Add prefix parameter to of_modalias_node().
+Date: Sat, 19 May 2012 23:54:36 -0600
+Message-ID: <20120520055436.13AF03E03B8@localhost>
+References: <1336773923-17866-1-git-send-email-ddaney.cavm@gmail.com> <1336773923-17866-2-git-send-email-ddaney.cavm@gmail.com>
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1336773923-17866-2-git-send-email-ddaney.cavm@gmail.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: David Daney <ddaney.cavm@gmail.com>, devicetree-discuss@lists.ozlabs.org, Rob Herring <rob.herring@calxeda.com>, spi-devel-general@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-doc@vger.kernel.org, David Daney <david.daney@cavium.com>, Liam Girdwood <lrg@ti.com>, Timur Tabi <timur@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 11 May 2012 15:05:21 -0700, David Daney <ddaney.cavm@gmail.com> wrote:
+> From: David Daney <david.daney@cavium.com>
+> 
+> When generating MODALIASes, it is convenient to add things like "spi:"
+> or "i2c:" to the front of the strings.  This allows the standard
+> modprobe to find the right driver when automatically populating bus
+> children from the device tree structure.
+> 
+> Add a prefix parameter, and adjust callers.  For
+> of_register_spi_devices() use the "spi:" prefix.
+> 
+> Signed-off-by: David Daney <david.daney@cavium.com>
 
---===============8862983735779727064==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FexDM9E/OpjgUmaq"
-Content-Disposition: inline
+Applied, thanks.  Some notes below...
 
+> Cc: Liam Girdwood <lrg@ti.com>
+> Cc: Timur Tabi <timur@freescale.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: alsa-devel@alsa-project.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> ---
+>  drivers/of/base.c            |   22 ++++++++++++++++------
+>  drivers/of/of_i2c.c          |    2 +-
+>  drivers/of/of_spi.c          |    2 +-
+>  include/linux/of.h           |    3 ++-
+>  sound/soc/fsl/mpc8610_hpcd.c |    2 +-
+>  sound/soc/fsl/p1022_ds.c     |    2 +-
+>  6 files changed, 22 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/of/base.c b/drivers/of/base.c
+> index 5806449..f05a520 100644
+> --- a/drivers/of/base.c
+> +++ b/drivers/of/base.c
+> @@ -575,26 +575,36 @@ EXPORT_SYMBOL(of_find_matching_node);
+>  /**
+>   * of_modalias_node - Lookup appropriate modalias for a device node
+>   * @node:	pointer to a device tree node
+> + * @prefix:	prefix to be added to the compatible property, may be NULL
+>   * @modalias:	Pointer to buffer that modalias value will be copied into
+>   * @len:	Length of modalias value
+>   *
+> - * Based on the value of the compatible property, this routine will attempt
+> - * to choose an appropriate modalias value for a particular device tree node.
+> - * It does this by stripping the manufacturer prefix (as delimited by a ',')
+> - * from the first entry in the compatible list property.
+> + * Based on the value of the compatible property, this routine will
+> + * attempt to choose an appropriate modalias value for a particular
+> + * device tree node.  It does this by stripping the manufacturer
+> + * prefix (as delimited by a ',') from the first entry in the
+> + * compatible list property, and appending it to the prefix.
 
---FexDM9E/OpjgUmaq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Not sure why this text block was reformatted.  I've formatted it back
+to the way it was so the diff shows specifically what has changed in
+the content.
 
-On Thu, May 17, 2012 at 05:32:49PM -0700, Kuninori Morimoto wrote:
->=20
-> Hi Mark, Liam
->=20
-> These patches add stream transfer mode to FSI2
+I don't want to discourage cleanups, but I need to be careful that
+cleanups don't obscure important changes when looking at the diff.
 
-Applied all, thanks.
+g.
 
---FexDM9E/OpjgUmaq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPt+l0AAoJEBus8iNuMP3dX1MP/jYJz8TqcT8itpFyEv+zUGku
-bUXcutYR57e93wD4H0Pd+13pO2pcuqUC99eHAk7yX6nH0w0W+l0wG85fJMjWjmh/
-gaLR8I710aqKPry1eLCTLhnO3yphmCAdzX1IK6/U80AsK2n9ii+pvxSUYEdV4utT
-jjgg29KbtiW/ixLRAPOkI9WZa6+jyzvHoq2e1bGSX46d7OlQ68+FBAjMBNc8y5OR
-hqo0ImdDYdkyDb3ihqyewt2OmYyLsuks5aaUGuxcZzAsJSFplD82BivNsOEGqo3V
-Wolplt8BhQ5GHXLZfMIG2xg4RNtcvp5JtNQJBGZuS54/L/4TrpBUpTkVCmZq2sYf
-kg8w6rUJ8GMFYaKZ7afaL51pXe0i6aVkrpTkbASLe4FSfwlAHFpO1DSQ6DbJpm3i
-Z3XtOFnx4bK2ybryfF+CQhRFQ9kS1Nm9IRYjmWP/At1N3AdLhpq5UtPNaU3dNGNl
-RNFK9JM7Xo1tmuF6QoeM5pMAIUQ8X/xZW40NupABRtyi6l4/pgRLKKYbKxGYPe+Q
-NGpS1sqqUAds4Wd7/5jJHQI85ue60E51aEooeudkTnPOroOqbsOCIdDWTN6AJmXj
-5pPWgu22Jhl+SjMeP0pe11mBiIaqY0jEbF4F+t6Kkg4nHGFS9uXYcEft/5T2kheS
-3ttas+VQRLBsYpLuwEVX
-=Lv/3
------END PGP SIGNATURE-----
-
---FexDM9E/OpjgUmaq--
-
---===============8862983735779727064==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8862983735779727064==--
