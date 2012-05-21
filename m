@@ -1,15 +1,16 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: PCM states and snd_pcm_drain()
-Date: Sun, 20 May 2012 18:25:30 +0100
-Message-ID: <201205201825.30623.gineera@aspect135.co.uk>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: [PATCH] sound: sh: Fix up namespace collision in
+	sh_dac_audio.
+Date: Mon, 21 May 2012 18:21:54 +0900
+Message-ID: <20120521092151.GF31763@linux-sh.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip03ir2.opaltelecom.net (out1.ip03ir2.opaltelecom.net
-	[62.24.128.239]) by alsa0.perex.cz (Postfix) with ESMTP id B764D24350
+Received: from linux-sh.org (linux-sh.org [111.68.239.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 814E024362
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 May 2012 19:21:58 +0200 (CEST)
+	Mon, 21 May 2012 11:21:58 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,26 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Axel Lin <axel.lin@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The module_platform_driver() conversion ended up tripping over the driver
+name, leading to confusion in the macro with regards to 'driver' being
+redefined. rename it to something slightly more suitable to avoid
+namespace collisions.
 
-Can snd_pcm_drain() be safely called on a non-running stream - particularly 
-one in SND_PCM_STATE_XRUN?  I can demonstrate lock-ups (on rather old Alsa 
-versions, though) when _drain is called on a stream in Xrun but it does seem 
-to vary between hardwares.
+sound/sh/sh_dac_audio.c:444:122: error: conflicting types for 'driver_init'
+include/linux/device.h:773:6: note: previous declaration of 'driver_init' was here
+make[3]: *** [sound/sh/sh_dac_audio.o] Error 1
 
-However, the docs at:
+Signed-off-by: Paul Mundt <lethal@linux-sh.org>
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
+---
 
-suggest that it should be fine.
+ sound/sh/sh_dac_audio.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-In our case it seems safer (for widest compatibility) to always check for 
-SND_PCM_STATE_RUNNING, and call snd_pcm_drop() if the stream is not running.
-
-Regards
-
-Alan
+diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
+index b11f82b..f8b01c7 100644
+--- a/sound/sh/sh_dac_audio.c
++++ b/sound/sh/sh_dac_audio.c
+@@ -433,7 +433,7 @@ probe_error:
+ /*
+  * "driver" definition
+  */
+-static struct platform_driver driver = {
++static struct platform_driver sh_dac_driver = {
+ 	.probe	= snd_sh_dac_probe,
+ 	.remove = snd_sh_dac_remove,
+ 	.driver = {
+@@ -441,4 +441,4 @@ static struct platform_driver driver = {
+ 	},
+ };
+ 
+-module_platform_driver(driver);
++module_platform_driver(sh_dac_driver);
