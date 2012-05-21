@@ -1,20 +1,15 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: snd-usb-audio: Substream status not set with new
-	streaming logic
-Date: Mon, 21 May 2012 12:42:39 +0200
-Message-ID: <4FBA1C1F.2040802@gmail.com>
-References: <CAFz=ag5u7Ks3e=9R_A5Scwk361Hw1fFLyr+StWU2hjxD40JMQw@mail.gmail.com>
+Subject: [PATCH] ALSA: snd-usb: fix stream info output in /proc
+Date: Mon, 21 May 2012 12:47:36 +0200
+Message-ID: <1337597256-23860-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 61D60243C8
+Received: from mail.bugwerft.de (unknown [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3D50243C8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 May 2012 12:42:46 +0200 (CEST)
-Received: by bkcjg15 with SMTP id jg15so3943754bkc.38
-	for <alsa-devel@alsa-project.org>; Mon, 21 May 2012 03:42:46 -0700 (PDT)
-In-Reply-To: <CAFz=ag5u7Ks3e=9R_A5Scwk361Hw1fFLyr+StWU2hjxD40JMQw@mail.gmail.com>
+	Mon, 21 May 2012 12:46:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +19,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11.05.2012 12:53, Felix Homann wrote:
-> With the new streaming logic subs->running will never be set to 1. So
-> /proc/... will never show the streams as running. Formerly the status
-> was set in endpoint.c.
-> 
-> Daniel?
+Set some substream struct members to make the proc interface code work
+again.
 
-Well spotted. I'll submit a fix for that.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Reported-by: Felix Homann <linuxaudio@showlabor.de>
+---
+ sound/usb/pcm.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-
-Thanks,
-Daniel
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 2d3a04d..24839d9 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -474,6 +474,11 @@ unlock:
+ 		mutex_unlock(&subs->stream->chip->shutdown_mutex);
+ 	}
+ 
++	if (ret == 0) {
++		subs->interface = fmt->iface;
++		subs->altset_idx = fmt->altset_idx;
++	}
++
+ 	return ret;
+ }
+ 
+@@ -1123,13 +1128,16 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		subs->data_endpoint->prepare_data_urb = prepare_playback_urb;
+ 		subs->data_endpoint->retire_data_urb = retire_playback_urb;
++		subs->running = 1;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		stop_endpoints(subs, 0, 0, 0);
++		subs->running = 0;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		subs->data_endpoint->prepare_data_urb = NULL;
+ 		subs->data_endpoint->retire_data_urb = NULL;
++		subs->running = 0;
+ 		return 0;
+ 	}
+ 
+@@ -1148,15 +1156,19 @@ int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream, int c
+ 			return err;
+ 
+ 		subs->data_endpoint->retire_data_urb = retire_capture_urb;
++		subs->running = 1;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		stop_endpoints(subs, 0, 0, 0);
++		subs->running = 0;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		subs->data_endpoint->retire_data_urb = NULL;
++		subs->running = 0;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		subs->data_endpoint->retire_data_urb = retire_capture_urb;
++		subs->running = 1;
+ 		return 0;
+ 	}
+ 
+-- 
+1.7.5.4
