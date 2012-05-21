@@ -1,103 +1,91 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw
-	value	ranges
-Date: Mon, 21 May 2012 21:38:22 +0200 (CEST)
-Message-ID: <1701803399.1049204.1337629102784.JavaMail.root@advansee.com>
-References: <s5hk422qek0.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta14.web4all.fr (zose-mta14.web4all.fr [88.190.236.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFC1810405A
-	for <alsa-devel@alsa-project.org>;
-	Mon, 21 May 2012 21:34:19 +0200 (CEST)
-In-Reply-To: <s5hk422qek0.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH] ASoC: tegra: simplify Kconfig dependencies
+Date: Mon, 21 May 2012 15:22:23 -0600
+Message-ID: <1337635343-16613-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwgQ2xlbWVucywgYWxsLAoKVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEJlbm/DrnQg
-VGjDqWJhdWRlYXUgd3JvdGU6Cj4gPiAKPiA+IENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPiA+ID4g
-SSdsbCBzZWUgaWYgSSBjYW4gY29iYmxlIHRvZ2V0aGVyIHNvbWUgVExWIGNoZWNraW5nIGNvZGUg
-Li4uCj4gPiAKPiA+IEdyZWF0Lgo+ID4gCj4gPiA+ID4gQmVjYXVzZSBpdCdzIHVzZWxlc3MgdG8g
-d2FpdCB1bnRpbCB0aGUgZW5kIG9mIHRoZSBsb29wIHRvCj4gPiA+ID4gcmV0dXJuCj4gPiA+ID4g
-LUVJTlZBTCwKPiA+ID4gCj4gPiA+IEl0IGlzIG5vdCBuZWNlc3NhcnkgdG8gb3B0aW1pemUgZm9y
-IGVycm9yIGNhc2VzLgo+ID4gCj4gPiBJdCdzIG5vdCBhbiBvcHRpbWl6YXRpb24sIGJ1dCBhIHNp
-bXBsaWZpY2F0aW9uLiBPdGhlcndpc2UsIHBvcwo+ID4gd291bGQgaGF2ZSB0byBiZQo+ID4gdGVz
-dGVkIGFnYWluIGFmdGVyIHRoZSBsb29wIHRvIGRpZmZlcmVudGlhdGUgdGhlIGxvb3Atc2tpcHBl
-ZCBjYXNlCj4gPiBmcm9tIHRoZQo+ID4gYXQtbGVhc3Qtb25lLWxvb3AtaXRlcmF0aW9uIGNhc2Vz
-IHRvIHJldHVybiBlaXRoZXIgLUVJTlZBTCBvciB0aGUKPiA+IHByZXYgc3VibWF4Lgo+IAo+IFVu
-bGVzcyBpdCdzIHJlYWxseSBhIGhvdCBwYXRoLCBzdWNoIGEgbWljcm8tb3B0aW1pemF0aW9uIGRv
-ZXNuJ3QgZ2l2ZQo+IG11Y2ggdmFsdWUuCj4gCj4gUmF0aGVyIGJldHRlciB0byBrZWVwIHRoZSBz
-dGFuZGFyZCBzdHlsZSB0aGF0IG1ha2VzIHBlb3BsZSBlYXNpZXIgdG8KPiByZWFkIHRoZSBjb2Rl
-LiAgQSBkby13aGlsZSBsb29wIHdpdGggYSBsYXJnZSBibG9jayBpcyB1c3VhbGx5IGxlc3MKPiBy
-ZWFkYWJsZSB0aGFuIGEgbm9ybWFsIHdoaWxlIGxvb3AuCgpXb3VsZCB5b3UgYWdyZWUgd2l0aCB0
-aGUgZm9sbG93aW5nIHJldmlzaW9uPwoKW1BBVENIXSBhbHNhLWxpYi90bHY6IGltcHJvdmUgcm9i
-dXN0bmVzcyBvZiByYXcgdmFsdWUgcmFuZ2VzCgpzbmRfdGx2X2NvbnZlcnRfZnJvbV9kQigpIHJl
-bGllcyBvbiByYW5nZW1pbi9tYXggYmxpbmRseS4gU2luY2UgdGhpcyBmdW5jdGlvbiBpcwpleHBv
-cnRlZCwgaXQgaXMgYmV0dGVyIGZvciByb2J1c3RuZXNzIGFuZCBjb25zaXN0ZW5jeSB0byBwYXJz
-ZSB0aGUgcmFuZ2UKcHJvcGVybHksIHdoaWNoIHRoaXMgcGF0Y2ggZG9lcy4KClNpZ25lZC1vZmYt
-Ynk6IEJlbm/DrnQgVGjDqWJhdWRlYXUgPGJlbm9pdC50aGViYXVkZWF1QGFkdmFuc2VlLmNvbT4K
-Ci0tLSBhbHNhLWxpYi9zcmMvY29udHJvbC90bHYuYworKysgYWxzYS1saWIvc3JjL2NvbnRyb2wv
-dGx2LmMKQEAgLTI5MSw0MSArMjkxLDM3IEBAIGludCBzbmRfdGx2X2NvbnZlcnRfZnJvbV9kQih1
-bnNpZ25lZCBpbnQKIHsKICAgICAgICAgc3dpdGNoICh0bHZbMF0pIHsKICAgICAgICAgY2FzZSBT
-TkRfQ1RMX1RMVlRfREJfUkFOR0U6IHsKLSAgICAgICAgICAgICAgICBsb25nIGRibWluLCBkYm1h
-eCwgcHJldl9yYW5nZW1heDsKKyAgICAgICAgICAgICAgICBsb25nIGRibWluLCBkYm1heCwgcHJl
-dl9zdWJtYXg7CiAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IHBvcywgbGVuOwogICAgICAg
-ICAgICAgICAgIGxlbiA9IGludF9pbmRleCh0bHZbMV0pOwotICAgICAgICAgICAgICAgIGlmIChs
-ZW4gPiBNQVhfVExWX1JBTkdFX1NJWkUpCi0gICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4g
-LUVJTlZBTDsKLSAgICAgICAgICAgICAgICBpZiAoc25kX3Rsdl9nZXRfZEJfcmFuZ2UodGx2LCBy
-YW5nZW1pbiwgcmFuZ2VtYXgsCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICZkYm1pbiwgJmRibWF4KSkKKyAgICAgICAgICAgICAgICBpZiAobGVuIDwgNiB8fCBsZW4g
-PiBNQVhfVExWX1JBTkdFX1NJWkUpCiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVJ
-TlZBTDsKLSAgICAgICAgICAgICAgICBpZiAoZGJfZ2FpbiA8PSBkYm1pbikgewotICAgICAgICAg
-ICAgICAgICAgICAgICAgKnZhbHVlID0gcmFuZ2VtaW47Ci0gICAgICAgICAgICAgICAgICAgICAg
-ICByZXR1cm4gMDsKLSAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKGRiX2dhaW4gPj0gZGJtYXgp
-IHsKLSAgICAgICAgICAgICAgICAgICAgICAgICp2YWx1ZSA9IHJhbmdlbWF4OwotICAgICAgICAg
-ICAgICAgICAgICAgICAgcmV0dXJuIDA7Ci0gICAgICAgICAgICAgICAgfQogICAgICAgICAgICAg
-ICAgIHBvcyA9IDI7Ci0gICAgICAgICAgICAgICAgcHJldl9yYW5nZW1heCA9IDA7CisgICAgICAg
-ICAgICAgICAgcHJldl9zdWJtYXggPSAwOwogICAgICAgICAgICAgICAgIHdoaWxlIChwb3MgKyA0
-IDw9IGxlbikgewotICAgICAgICAgICAgICAgICAgICAgICAgcmFuZ2VtaW4gPSAoaW50KXRsdltw
-b3NdOwotICAgICAgICAgICAgICAgICAgICAgICAgcmFuZ2VtYXggPSAoaW50KXRsdltwb3MgKyAx
-XTsKKyAgICAgICAgICAgICAgICAgICAgICAgIGxvbmcgc3VibWluLCBzdWJtYXg7CisgICAgICAg
-ICAgICAgICAgICAgICAgICBzdWJtaW4gPSAoaW50KXRsdltwb3NdOworICAgICAgICAgICAgICAg
-ICAgICAgICAgc3VibWF4ID0gKGludCl0bHZbcG9zICsgMV07CisgICAgICAgICAgICAgICAgICAg
-ICAgICBpZiAocmFuZ2VtYXggPCBzdWJtYXgpCisgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHN1Ym1heCA9IHJhbmdlbWF4OwogICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFzbmRf
-dGx2X2dldF9kQl9yYW5nZSh0bHYgKyBwb3MgKyAyLAotICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICByYW5nZW1pbiwgcmFuZ2VtYXgsCisgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN1Ym1pbiwgc3VibWF4LAog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAmZGJtaW4s
-ICZkYm1heCkgJiYKICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYl9nYWluID49IGRibWlu
-ICYmIGRiX2dhaW4gPD0gZGJtYXgpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJl
-dHVybiBzbmRfdGx2X2NvbnZlcnRfZnJvbV9kQih0bHYgKyBwb3MgKyAyLAotICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmFuZ2Vt
-aW4sIHJhbmdlbWF4LAorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgc3VibWluLCBzdWJtYXgsCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYl9nYWluLCB2YWx1
-ZSwgeGRpcik7CiAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlIGlmIChkYl9nYWluIDwgZGJt
-aW4pIHsKLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKnZhbHVlID0geGRpciA/IHJh
-bmdlbWluIDogcHJldl9yYW5nZW1heDsKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-KnZhbHVlID0geGRpciB8fCBwb3MgPT0gMiA/IHN1Ym1pbiA6IHByZXZfc3VibWF4OwogICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gMDsKICAgICAgICAgICAgICAgICAgICAg
-ICAgIH0KLSAgICAgICAgICAgICAgICAgICAgICAgIHByZXZfcmFuZ2VtYXggPSByYW5nZW1heDsK
-KyAgICAgICAgICAgICAgICAgICAgICAgIHByZXZfc3VibWF4ID0gc3VibWF4OworICAgICAgICAg
-ICAgICAgICAgICAgICAgaWYgKHJhbmdlbWF4ID09IHN1Ym1heCkKKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICAgICAgICAgICBwb3MgKz0gaW50
-X2luZGV4KHRsdltwb3MgKyAzXSkgKyA0OwogICAgICAgICAgICAgICAgIH0KLSAgICAgICAgICAg
-ICAgICByZXR1cm4gLUVJTlZBTDsKKyAgICAgICAgICAgICAgICAqdmFsdWUgPSBwcmV2X3N1Ym1h
-eDsKKyAgICAgICAgICAgICAgICByZXR1cm4gMDsKICAgICAgICAgfQogICAgICAgICBjYXNlIFNO
-RF9DVExfVExWVF9EQl9TQ0FMRTogewogICAgICAgICAgICAgICAgIGludCBtaW4sIHN0ZXAsIG1h
-eDsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+
+The Tegra ASoC machine drivers only depend on Tegra architecture support
+to compile, not specific board support. Remove Kconfig dependencies on
+any particular board. This is required since Kconfig options for boards
+are going away given the migration to device tree.
+
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+(This is for 3.6)
+
+Note that changes in the Tegra tree will remove some of the chunks of
+mach-tegra/Kconfig that are edited here, since those chunks are the
+board-specific Kconfig options. However, I hope those conflicts are
+easy enough to resolve that this is not an issue.
+
+ arch/arm/mach-tegra/Kconfig |    3 ---
+ sound/soc/tegra/Kconfig     |   10 +---------
+ 2 files changed, 1 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm/mach-tegra/Kconfig b/arch/arm/mach-tegra/Kconfig
+index 6a113a9..7c40739 100644
+--- a/arch/arm/mach-tegra/Kconfig
++++ b/arch/arm/mach-tegra/Kconfig
+@@ -63,7 +63,6 @@ comment "Tegra board type"
+ config MACH_HARMONY
+        bool "Harmony board"
+        depends on ARCH_TEGRA_2x_SOC
+-       select MACH_HAS_SND_SOC_TEGRA_WM8903 if SND_SOC
+        help
+          Support for nVidia Harmony development platform
+ 
+@@ -71,7 +70,6 @@ config MACH_KAEN
+        bool "Kaen board"
+        depends on ARCH_TEGRA_2x_SOC
+        select MACH_SEABOARD
+-       select MACH_HAS_SND_SOC_TEGRA_WM8903 if SND_SOC
+        help
+          Support for the Kaen version of Seaboard
+ 
+@@ -84,7 +82,6 @@ config MACH_PAZ00
+ config MACH_SEABOARD
+        bool "Seaboard board"
+        depends on ARCH_TEGRA_2x_SOC
+-       select MACH_HAS_SND_SOC_TEGRA_WM8903 if SND_SOC
+        help
+          Support for nVidia Seaboard development platform. It will
+ 	 also be included for some of the derivative boards that
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index c1c8e95..76dc230 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -58,17 +58,9 @@ config SND_SOC_TEGRA_WM8753
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+ 	  boards using the WM8753 codec, such as Whistler.
+ 
+-config MACH_HAS_SND_SOC_TEGRA_WM8903
+-	bool
+-	help
+-	  Machines that use the SND_SOC_TEGRA_WM8903 driver should select
+-	  this config option, in order to allow the user to enable
+-	  SND_SOC_TEGRA_WM8903.
+-
+ config SND_SOC_TEGRA_WM8903
+ 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
+ 	depends on SND_SOC_TEGRA && I2C
+-	depends on MACH_HAS_SND_SOC_TEGRA_WM8903
+ 	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8903
+@@ -79,7 +71,7 @@ config SND_SOC_TEGRA_WM8903
+ 
+ config SND_SOC_TEGRA_TRIMSLICE
+ 	tristate "SoC Audio support for TrimSlice board"
+-	depends on SND_SOC_TEGRA && MACH_TRIMSLICE && I2C
++	depends on SND_SOC_TEGRA && I2C
+ 	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_TLV320AIC23
+ 	help
+-- 
+1.7.0.4
