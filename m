@@ -1,18 +1,14 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw
-	value	ranges
-Date: Tue, 22 May 2012 04:19:12 +0200 (CEST)
-Message-ID: <1291060194.1061081.1337653152624.JavaMail.root@advansee.com>
-References: <s5hipfp8225.wl%tiwai@suse.de>
+From: Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH 1/2] ARM: MMP: add pxa910-ssp into
+	ssp_id_table
+Date: Tue, 22 May 2012 15:04:07 +0800
+Message-ID: <CAN1soZwZNN5=hpK1J3-2c_4DiZiNVEYNso2zhByPydcw5+SYUQ@mail.gmail.com>
+References: <1337669853-12701-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_1061079_651459218.1337653152621"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta14.web4all.fr (zose-mta14.web4all.fr [88.190.236.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id D643C104174
-	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 04:15:08 +0200 (CEST)
-In-Reply-To: <s5hipfp8225.wl%tiwai@suse.de>
+In-Reply-To: <1337669853-12701-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,93 +18,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_1061079_651459218.1337653152621
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Takashi Iwai wrote:
-> Yes, the patch looks good to me.
-> But I couldn't apply it because the mail is encoded in
-> quoted-printable.  Could you fix it, or if it's difficult, give an
-> attachment?
-
-Sorry about that. I can't avoid that with my current mailer, so I attach th=
-e
-patch. Tell me if it's OK for you like this.
-
-Regards,
-Beno=C3=AEt
-------=_Part_1061079_651459218.1337653152621
-Content-Type: text/x-patch; name=improve-tlv-raw-val-robustness.patch
-Content-Disposition: attachment;
- filename=improve-tlv-raw-val-robustness.patch
-Content-Transfer-Encoding: base64
-
-YWxzYS1saWIvdGx2OiBpbXByb3ZlIHJvYnVzdG5lc3Mgb2YgcmF3IHZhbHVlIHJhbmdlcwoKc25k
-X3Rsdl9jb252ZXJ0X2Zyb21fZEIoKSByZWxpZXMgb24gcmFuZ2VtaW4vbWF4IGJsaW5kbHkuIFNp
-bmNlIHRoaXMgZnVuY3Rpb24gaXMKZXhwb3J0ZWQsIGl0IGlzIGJldHRlciBmb3Igcm9idXN0bmVz
-cyBhbmQgY29uc2lzdGVuY3kgdG8gcGFyc2UgdGhlIHJhbmdlCnByb3Blcmx5LCB3aGljaCB0aGlz
-IHBhdGNoIGRvZXMuCgpTaWduZWQtb2ZmLWJ5OiBCZW5v7nQgVGjpYmF1ZGVhdSA8YmVub2l0LnRo
-ZWJhdWRlYXVAYWR2YW5zZWUuY29tPgoKLS0tIGFsc2EtbGliL3NyYy9jb250cm9sL3Rsdi5jCisr
-KyBhbHNhLWxpYi9zcmMvY29udHJvbC90bHYuYwpAQCAtMjkxLDQxICsyOTEsMzcgQEAgaW50IHNu
-ZF90bHZfY29udmVydF9mcm9tX2RCKHVuc2lnbmVkIGludAogewogICAgICAgICBzd2l0Y2ggKHRs
-dlswXSkgewogICAgICAgICBjYXNlIFNORF9DVExfVExWVF9EQl9SQU5HRTogewotICAgICAgICAg
-ICAgICAgIGxvbmcgZGJtaW4sIGRibWF4LCBwcmV2X3JhbmdlbWF4OworICAgICAgICAgICAgICAg
-IGxvbmcgZGJtaW4sIGRibWF4LCBwcmV2X3N1Ym1heDsKICAgICAgICAgICAgICAgICB1bnNpZ25l
-ZCBpbnQgcG9zLCBsZW47CiAgICAgICAgICAgICAgICAgbGVuID0gaW50X2luZGV4KHRsdlsxXSk7
-Ci0gICAgICAgICAgICAgICAgaWYgKGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKLSAgICAgICAg
-ICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwotICAgICAgICAgICAgICAgIGlmIChzbmRf
-dGx2X2dldF9kQl9yYW5nZSh0bHYsIHJhbmdlbWluLCByYW5nZW1heCwKLSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgJmRibWluLCAmZGJtYXgpKQorICAgICAgICAgICAg
-ICAgIGlmIChsZW4gPCA2IHx8IGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKICAgICAgICAgICAg
-ICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwotICAgICAgICAgICAgICAgIGlmIChkYl9nYWlu
-IDw9IGRibWluKSB7Ci0gICAgICAgICAgICAgICAgICAgICAgICAqdmFsdWUgPSByYW5nZW1pbjsK
-LSAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAwOwotICAgICAgICAgICAgICAgIH0gZWxz
-ZSBpZiAoZGJfZ2FpbiA+PSBkYm1heCkgewotICAgICAgICAgICAgICAgICAgICAgICAgKnZhbHVl
-ID0gcmFuZ2VtYXg7Ci0gICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gMDsKLSAgICAgICAg
-ICAgICAgICB9CiAgICAgICAgICAgICAgICAgcG9zID0gMjsKLSAgICAgICAgICAgICAgICBwcmV2
-X3JhbmdlbWF4ID0gMDsKKyAgICAgICAgICAgICAgICBwcmV2X3N1Ym1heCA9IDA7CiAgICAgICAg
-ICAgICAgICAgd2hpbGUgKHBvcyArIDQgPD0gbGVuKSB7Ci0gICAgICAgICAgICAgICAgICAgICAg
-ICByYW5nZW1pbiA9IChpbnQpdGx2W3Bvc107Ci0gICAgICAgICAgICAgICAgICAgICAgICByYW5n
-ZW1heCA9IChpbnQpdGx2W3BvcyArIDFdOworICAgICAgICAgICAgICAgICAgICAgICAgbG9uZyBz
-dWJtaW4sIHN1Ym1heDsKKyAgICAgICAgICAgICAgICAgICAgICAgIHN1Ym1pbiA9IChpbnQpdGx2
-W3Bvc107CisgICAgICAgICAgICAgICAgICAgICAgICBzdWJtYXggPSAoaW50KXRsdltwb3MgKyAx
-XTsKKyAgICAgICAgICAgICAgICAgICAgICAgIGlmIChyYW5nZW1heCA8IHN1Ym1heCkKKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VibWF4ID0gcmFuZ2VtYXg7CiAgICAgICAgICAg
-ICAgICAgICAgICAgICBpZiAoIXNuZF90bHZfZ2V0X2RCX3JhbmdlKHRsdiArIHBvcyArIDIsCi0g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJhbmdlbWlu
-LCByYW5nZW1heCwKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgc3VibWluLCBzdWJtYXgsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICZkYm1pbiwgJmRibWF4KSAmJgogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGRiX2dhaW4gPj0gZGJtaW4gJiYgZGJfZ2FpbiA8PSBkYm1heCkKICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHNuZF90bHZfY29udmVydF9mcm9tX2RCKHRsdiAr
-IHBvcyArIDIsCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICByYW5nZW1pbiwgcmFuZ2VtYXgsCisgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdWJtaW4sIHN1Ym1h
-eCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGRiX2dhaW4sIHZhbHVlLCB4ZGlyKTsKICAgICAgICAgICAgICAgICAgICAgICAg
-IGVsc2UgaWYgKGRiX2dhaW4gPCBkYm1pbikgewotICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAqdmFsdWUgPSB4ZGlyID8gcmFuZ2VtaW4gOiBwcmV2X3JhbmdlbWF4OworICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAqdmFsdWUgPSB4ZGlyIHx8IHBvcyA9PSAyID8gc3VibWlu
-IDogcHJldl9zdWJtYXg7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAw
-OwogICAgICAgICAgICAgICAgICAgICAgICAgfQotICAgICAgICAgICAgICAgICAgICAgICAgcHJl
-dl9yYW5nZW1heCA9IHJhbmdlbWF4OworICAgICAgICAgICAgICAgICAgICAgICAgcHJldl9zdWJt
-YXggPSBzdWJtYXg7CisgICAgICAgICAgICAgICAgICAgICAgICBpZiAocmFuZ2VtYXggPT0gc3Vi
-bWF4KQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAg
-ICAgICAgICAgICAgIHBvcyArPSBpbnRfaW5kZXgodGx2W3BvcyArIDNdKSArIDQ7CiAgICAgICAg
-ICAgICAgICAgfQotICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOworICAgICAgICAgICAg
-ICAgICp2YWx1ZSA9IHByZXZfc3VibWF4OworICAgICAgICAgICAgICAgIHJldHVybiAwOwogICAg
-ICAgICB9CiAgICAgICAgIGNhc2UgU05EX0NUTF9UTFZUX0RCX1NDQUxFOiB7CiAgICAgICAgICAg
-ICAgICAgaW50IG1pbiwgc3RlcCwgbWF4Ow==
-------=_Part_1061079_651459218.1337653152621
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_Part_1061079_651459218.1337653152621--
+On Tue, May 22, 2012 at 2:57 PM, Qiao Zhou <zhouqiao@marvell.com> wrote:
+> add pxa910-ssp into ssp_id_table, and fix pxa-ssp compiling issue
+> under mach-mmp architect.
+>
+> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+> ---
+> =A0arch/arm/plat-pxa/ssp.c =A0 =A0 =A0 =A0| =A0 =A01 +
+> =A0include/linux/pxa2xx_ssp.h =A0 =A0 | =A0 =A01 +
+> =A0include/linux/spi/pxa2xx_spi.h | =A0 =A02 +-
+> =A03 files changed, 3 insertions(+), 1 deletions(-)
+>
+Acked-by: Haojian Zhuang <haojian.zhuang@gmail.com>
