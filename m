@@ -1,22 +1,18 @@
-From: Richard Zhao <richard.zhao@freescale.com>
-Subject: Re: [PATCH V2 00/11] enable imx6q_sabrelite sgtl5000
-	audio support
-Date: Tue, 22 May 2012 09:39:21 +0800
-Message-ID: <20120522013920.GE6206@b20223-02.ap.freescale.net>
-References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
-	<20120521125930.GC6206@b20223-02.ap.freescale.net>
-	<20120521144543.GA4063@opensource.wolfsonmicro.com>
+From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw
+	value	ranges
+Date: Tue, 22 May 2012 04:19:12 +0200 (CEST)
+Message-ID: <1291060194.1061081.1337653152624.JavaMail.root@advansee.com>
+References: <s5hipfp8225.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_1061079_651459218.1337653152621"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 958C41041F4
+Received: from zose-mta14.web4all.fr (zose-mta14.web4all.fr [88.190.236.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id D643C104174
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 03:39:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20120521144543.GA4063@opensource.wolfsonmicro.com>
+	Tue, 22 May 2012 04:15:08 +0200 (CEST)
+In-Reply-To: <s5hipfp8225.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,50 +22,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, dong.aisheng@linaro.org, ben-linux@fluff.org, vinod.koul@intel.com, w.sang@pengutronix.de, timur@freescale.com, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, shawn.guo@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 21, 2012 at 03:45:44PM +0100, Mark Brown wrote:
-> On Mon, May 21, 2012 at 08:59:31PM +0800, Richard Zhao wrote:
-> 
-> > >   ASoC: imx-audmux: add pinctrl support
-> > >   ASoC: fsl_ssi: convert to use devm_clk_get
-> 
-> > Linus has sent out pull request for pinctrl. So is that ok for you
-> > to pick up the above two patch?
-> 
-> No, apart from anything else the second patch depends on clkdev which is
-> nothing to do with pinctrl!
-All right, It's my fault to mix a clean up patch. It may hold until the
-merge window is closed.
->  For the first patch it wasn't clear if the
-> changes in pinctrl were the actual dependencies or if there were more
-> things needed from the ARM tree,
-I remembered someone already explained the dependencies. It depends
-on imx pinctrl work and dummy pinctrl enabled in ARM platform code. It
-is why Shawn suggest it goes to ARM SoC.
-> and in any case until those patches are
-> actually in the ASoC tree we'll break the build if they get applied.
-All righ, It's ok, if you think, I have to wait for one more cycle to
-see the patch on mainline.
-> 
-> Guys, you really need to think about how you're organising what you're
-> doing more.  You need to split your work out into focused lines of
-> development rather than just having a single branch.  
-Except the clean up patch, others are all related to enable audio. Do
-you mean I supposed to split them in advance?
-> 
-> This patch series contains a whole bunch of different changes (the
-> devm_clk_get() change is as far as I can tell completely unrelated to
-> the rest for example) with unclear dependencies on multiple external
-> trees.  You should be splitting unrelated changes out, trying to
-> minimise interdependencies, and clearly identifying the dependencies
-> that are there we can get things applied in a timely fashion.
-hmm.. I should write more about dependencies in commit message.
-> 
-> Please resend these patches *after* their dependencies are in mainline.
-OK.
+------=_Part_1061079_651459218.1337653152621
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-Richard
+Takashi Iwai wrote:
+> Yes, the patch looks good to me.
+> But I couldn't apply it because the mail is encoded in
+> quoted-printable.  Could you fix it, or if it's difficult, give an
+> attachment?
+
+Sorry about that. I can't avoid that with my current mailer, so I attach th=
+e
+patch. Tell me if it's OK for you like this.
+
+Regards,
+Beno=C3=AEt
+------=_Part_1061079_651459218.1337653152621
+Content-Type: text/x-patch; name=improve-tlv-raw-val-robustness.patch
+Content-Disposition: attachment;
+ filename=improve-tlv-raw-val-robustness.patch
+Content-Transfer-Encoding: base64
+
+YWxzYS1saWIvdGx2OiBpbXByb3ZlIHJvYnVzdG5lc3Mgb2YgcmF3IHZhbHVlIHJhbmdlcwoKc25k
+X3Rsdl9jb252ZXJ0X2Zyb21fZEIoKSByZWxpZXMgb24gcmFuZ2VtaW4vbWF4IGJsaW5kbHkuIFNp
+bmNlIHRoaXMgZnVuY3Rpb24gaXMKZXhwb3J0ZWQsIGl0IGlzIGJldHRlciBmb3Igcm9idXN0bmVz
+cyBhbmQgY29uc2lzdGVuY3kgdG8gcGFyc2UgdGhlIHJhbmdlCnByb3Blcmx5LCB3aGljaCB0aGlz
+IHBhdGNoIGRvZXMuCgpTaWduZWQtb2ZmLWJ5OiBCZW5v7nQgVGjpYmF1ZGVhdSA8YmVub2l0LnRo
+ZWJhdWRlYXVAYWR2YW5zZWUuY29tPgoKLS0tIGFsc2EtbGliL3NyYy9jb250cm9sL3Rsdi5jCisr
+KyBhbHNhLWxpYi9zcmMvY29udHJvbC90bHYuYwpAQCAtMjkxLDQxICsyOTEsMzcgQEAgaW50IHNu
+ZF90bHZfY29udmVydF9mcm9tX2RCKHVuc2lnbmVkIGludAogewogICAgICAgICBzd2l0Y2ggKHRs
+dlswXSkgewogICAgICAgICBjYXNlIFNORF9DVExfVExWVF9EQl9SQU5HRTogewotICAgICAgICAg
+ICAgICAgIGxvbmcgZGJtaW4sIGRibWF4LCBwcmV2X3JhbmdlbWF4OworICAgICAgICAgICAgICAg
+IGxvbmcgZGJtaW4sIGRibWF4LCBwcmV2X3N1Ym1heDsKICAgICAgICAgICAgICAgICB1bnNpZ25l
+ZCBpbnQgcG9zLCBsZW47CiAgICAgICAgICAgICAgICAgbGVuID0gaW50X2luZGV4KHRsdlsxXSk7
+Ci0gICAgICAgICAgICAgICAgaWYgKGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKLSAgICAgICAg
+ICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwotICAgICAgICAgICAgICAgIGlmIChzbmRf
+dGx2X2dldF9kQl9yYW5nZSh0bHYsIHJhbmdlbWluLCByYW5nZW1heCwKLSAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgJmRibWluLCAmZGJtYXgpKQorICAgICAgICAgICAg
+ICAgIGlmIChsZW4gPCA2IHx8IGxlbiA+IE1BWF9UTFZfUkFOR0VfU0laRSkKICAgICAgICAgICAg
+ICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwotICAgICAgICAgICAgICAgIGlmIChkYl9nYWlu
+IDw9IGRibWluKSB7Ci0gICAgICAgICAgICAgICAgICAgICAgICAqdmFsdWUgPSByYW5nZW1pbjsK
+LSAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAwOwotICAgICAgICAgICAgICAgIH0gZWxz
+ZSBpZiAoZGJfZ2FpbiA+PSBkYm1heCkgewotICAgICAgICAgICAgICAgICAgICAgICAgKnZhbHVl
+ID0gcmFuZ2VtYXg7Ci0gICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gMDsKLSAgICAgICAg
+ICAgICAgICB9CiAgICAgICAgICAgICAgICAgcG9zID0gMjsKLSAgICAgICAgICAgICAgICBwcmV2
+X3JhbmdlbWF4ID0gMDsKKyAgICAgICAgICAgICAgICBwcmV2X3N1Ym1heCA9IDA7CiAgICAgICAg
+ICAgICAgICAgd2hpbGUgKHBvcyArIDQgPD0gbGVuKSB7Ci0gICAgICAgICAgICAgICAgICAgICAg
+ICByYW5nZW1pbiA9IChpbnQpdGx2W3Bvc107Ci0gICAgICAgICAgICAgICAgICAgICAgICByYW5n
+ZW1heCA9IChpbnQpdGx2W3BvcyArIDFdOworICAgICAgICAgICAgICAgICAgICAgICAgbG9uZyBz
+dWJtaW4sIHN1Ym1heDsKKyAgICAgICAgICAgICAgICAgICAgICAgIHN1Ym1pbiA9IChpbnQpdGx2
+W3Bvc107CisgICAgICAgICAgICAgICAgICAgICAgICBzdWJtYXggPSAoaW50KXRsdltwb3MgKyAx
+XTsKKyAgICAgICAgICAgICAgICAgICAgICAgIGlmIChyYW5nZW1heCA8IHN1Ym1heCkKKyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VibWF4ID0gcmFuZ2VtYXg7CiAgICAgICAgICAg
+ICAgICAgICAgICAgICBpZiAoIXNuZF90bHZfZ2V0X2RCX3JhbmdlKHRsdiArIHBvcyArIDIsCi0g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJhbmdlbWlu
+LCByYW5nZW1heCwKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgc3VibWluLCBzdWJtYXgsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICZkYm1pbiwgJmRibWF4KSAmJgogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGRiX2dhaW4gPj0gZGJtaW4gJiYgZGJfZ2FpbiA8PSBkYm1heCkKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHNuZF90bHZfY29udmVydF9mcm9tX2RCKHRsdiAr
+IHBvcyArIDIsCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICByYW5nZW1pbiwgcmFuZ2VtYXgsCisgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdWJtaW4sIHN1Ym1h
+eCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGRiX2dhaW4sIHZhbHVlLCB4ZGlyKTsKICAgICAgICAgICAgICAgICAgICAgICAg
+IGVsc2UgaWYgKGRiX2dhaW4gPCBkYm1pbikgewotICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAqdmFsdWUgPSB4ZGlyID8gcmFuZ2VtaW4gOiBwcmV2X3JhbmdlbWF4OworICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAqdmFsdWUgPSB4ZGlyIHx8IHBvcyA9PSAyID8gc3VibWlu
+IDogcHJldl9zdWJtYXg7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAw
+OwogICAgICAgICAgICAgICAgICAgICAgICAgfQotICAgICAgICAgICAgICAgICAgICAgICAgcHJl
+dl9yYW5nZW1heCA9IHJhbmdlbWF4OworICAgICAgICAgICAgICAgICAgICAgICAgcHJldl9zdWJt
+YXggPSBzdWJtYXg7CisgICAgICAgICAgICAgICAgICAgICAgICBpZiAocmFuZ2VtYXggPT0gc3Vi
+bWF4KQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAg
+ICAgICAgICAgICAgIHBvcyArPSBpbnRfaW5kZXgodGx2W3BvcyArIDNdKSArIDQ7CiAgICAgICAg
+ICAgICAgICAgfQotICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOworICAgICAgICAgICAg
+ICAgICp2YWx1ZSA9IHByZXZfc3VibWF4OworICAgICAgICAgICAgICAgIHJldHVybiAwOwogICAg
+ICAgICB9CiAgICAgICAgIGNhc2UgU05EX0NUTF9UTFZUX0RCX1NDQUxFOiB7CiAgICAgICAgICAg
+ICAgICAgaW50IG1pbiwgc3RlcCwgbWF4Ow==
+------=_Part_1061079_651459218.1337653152621
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=_Part_1061079_651459218.1337653152621--
