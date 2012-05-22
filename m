@@ -1,18 +1,17 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw
-	value	ranges
-Date: Tue, 22 May 2012 18:06:34 +0200 (CEST)
-Message-ID: <1666726176.1119743.1337702794239.JavaMail.root@advansee.com>
-References: <s5hbolg8uyp.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [GIT PULL] ASoC updates for 3.5
+Date: Tue, 22 May 2012 18:19:25 +0100
+Message-ID: <1337707165.10706.2.camel@odin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_1119741_375883953.1337702794237"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta14.web4all.fr (zose-mta14.web4all.fr [88.190.236.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6F8924634
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67]) by alsa0.perex.cz (Postfix) with ESMTP id A7E8C24367
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 18:02:30 +0200 (CEST)
-In-Reply-To: <s5hbolg8uyp.wl%tiwai@suse.de>
+	Tue, 22 May 2012 19:19:30 +0200 (CEST)
+Received: by wgbdq11 with SMTP id dq11so5188625wgb.17
+	for <alsa-devel@alsa-project.org>; Tue, 22 May 2012 10:19:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,70 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
-
-------=_Part_1119741_375883953.1337702794237
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
 Hi Takashi,
 
-Takashi Iwai wrote:
-> It's OK to put an attachment, but I failed to apply it.
-> Please check the patch you sent can be really applied cleanly to
-> alsa-lib git tree.
+It's mainly OMAP4 HDMI updates from Ricardo using the new DSS audio
+interface and Device Tree updates from Peter for OMAP.
 
-My copy/paste damaged tabs. Hopefully, this should now work.
+Thanks
 
-Regards,
-Beno=C3=AEt
-------=_Part_1119741_375883953.1337702794237
-Content-Type: text/x-patch; name=improve-tlv-raw-val-robustness.patch
-Content-Disposition: attachment;
- filename=improve-tlv-raw-val-robustness.patch
-Content-Transfer-Encoding: base64
+Liam 
 
-YWxzYS1saWIvdGx2OiBpbXByb3ZlIHJvYnVzdG5lc3Mgb2YgcmF3IHZhbHVlIHJhbmdlcwoKc25k
-X3Rsdl9jb252ZXJ0X2Zyb21fZEIoKSByZWxpZXMgb24gcmFuZ2VtaW4vbWF4IGJsaW5kbHkuIFNp
-bmNlIHRoaXMgZnVuY3Rpb24gaXMKZXhwb3J0ZWQsIGl0IGlzIGJldHRlciBmb3Igcm9idXN0bmVz
-cyBhbmQgY29uc2lzdGVuY3kgdG8gcGFyc2UgdGhlIHJhbmdlCnByb3Blcmx5LCB3aGljaCB0aGlz
-IHBhdGNoIGRvZXMuCgpTaWduZWQtb2ZmLWJ5OiBCZW5v7nQgVGjpYmF1ZGVhdSA8YmVub2l0LnRo
-ZWJhdWRlYXVAYWR2YW5zZWUuY29tPgoKLS0tIGFsc2EtbGliL3NyYy9jb250cm9sL3Rsdi5jCisr
-KyBhbHNhLWxpYi9zcmMvY29udHJvbC90bHYuYwpAQCAtMjkxLDQxICsyOTEsMzcgQEAgaW50IHNu
-ZF90bHZfY29udmVydF9mcm9tX2RCKHVuc2lnbmVkIGludAogewogCXN3aXRjaCAodGx2WzBdKSB7
-CiAJY2FzZSBTTkRfQ1RMX1RMVlRfREJfUkFOR0U6IHsKLQkJbG9uZyBkYm1pbiwgZGJtYXgsIHBy
-ZXZfcmFuZ2VtYXg7CisJCWxvbmcgZGJtaW4sIGRibWF4LCBwcmV2X3N1Ym1heDsKIAkJdW5zaWdu
-ZWQgaW50IHBvcywgbGVuOwogCQlsZW4gPSBpbnRfaW5kZXgodGx2WzFdKTsKLQkJaWYgKGxlbiA+
-IE1BWF9UTFZfUkFOR0VfU0laRSkKKwkJaWYgKGxlbiA8IDYgfHwgbGVuID4gTUFYX1RMVl9SQU5H
-RV9TSVpFKQogCQkJcmV0dXJuIC1FSU5WQUw7Ci0JCWlmIChzbmRfdGx2X2dldF9kQl9yYW5nZSh0
-bHYsIHJhbmdlbWluLCByYW5nZW1heCwKLQkJCQkJICZkYm1pbiwgJmRibWF4KSkKLQkJCXJldHVy
-biAtRUlOVkFMOwotCQlpZiAoZGJfZ2FpbiA8PSBkYm1pbikgewotCQkJKnZhbHVlID0gcmFuZ2Vt
-aW47Ci0JCQlyZXR1cm4gMDsKLQkJfSBlbHNlIGlmIChkYl9nYWluID49IGRibWF4KSB7Ci0JCQkq
-dmFsdWUgPSByYW5nZW1heDsKLQkJCXJldHVybiAwOwotCQl9CiAJCXBvcyA9IDI7Ci0JCXByZXZf
-cmFuZ2VtYXggPSAwOworCQlwcmV2X3N1Ym1heCA9IDA7CiAJCXdoaWxlIChwb3MgKyA0IDw9IGxl
-bikgewotCQkJcmFuZ2VtaW4gPSAoaW50KXRsdltwb3NdOwotCQkJcmFuZ2VtYXggPSAoaW50KXRs
-dltwb3MgKyAxXTsKKwkJCWxvbmcgc3VibWluLCBzdWJtYXg7CisJCQlzdWJtaW4gPSAoaW50KXRs
-dltwb3NdOworCQkJc3VibWF4ID0gKGludCl0bHZbcG9zICsgMV07CisJCQlpZiAocmFuZ2VtYXgg
-PCBzdWJtYXgpCisJCQkJc3VibWF4ID0gcmFuZ2VtYXg7CiAJCQlpZiAoIXNuZF90bHZfZ2V0X2RC
-X3JhbmdlKHRsdiArIHBvcyArIDIsCi0JCQkJCQkgIHJhbmdlbWluLCByYW5nZW1heCwKKwkJCQkJ
-CSAgc3VibWluLCBzdWJtYXgsCiAJCQkJCQkgICZkYm1pbiwgJmRibWF4KSAmJgogCQkJICAgIGRi
-X2dhaW4gPj0gZGJtaW4gJiYgZGJfZ2FpbiA8PSBkYm1heCkKIAkJCQlyZXR1cm4gc25kX3Rsdl9j
-b252ZXJ0X2Zyb21fZEIodGx2ICsgcG9zICsgMiwKLQkJCQkJCQkgICAgICAgcmFuZ2VtaW4sIHJh
-bmdlbWF4LAorCQkJCQkJCSAgICAgICBzdWJtaW4sIHN1Ym1heCwKIAkJCQkJCQkgICAgICAgZGJf
-Z2FpbiwgdmFsdWUsIHhkaXIpOwogCQkJZWxzZSBpZiAoZGJfZ2FpbiA8IGRibWluKSB7Ci0JCQkJ
-KnZhbHVlID0geGRpciA/IHJhbmdlbWluIDogcHJldl9yYW5nZW1heDsKKwkJCQkqdmFsdWUgPSB4
-ZGlyIHx8IHBvcyA9PSAyID8gc3VibWluIDogcHJldl9zdWJtYXg7CiAJCQkJcmV0dXJuIDA7CiAJ
-CQl9Ci0JCQlwcmV2X3JhbmdlbWF4ID0gcmFuZ2VtYXg7CisJCQlwcmV2X3N1Ym1heCA9IHN1Ym1h
-eDsKKwkJCWlmIChyYW5nZW1heCA9PSBzdWJtYXgpCisJCQkJYnJlYWs7CiAJCQlwb3MgKz0gaW50
-X2luZGV4KHRsdltwb3MgKyAzXSkgKyA0OwogCQl9Ci0JCXJldHVybiAtRUlOVkFMOworCQkqdmFs
-dWUgPSBwcmV2X3N1Ym1heDsKKwkJcmV0dXJuIDA7CiAJfQogCWNhc2UgU05EX0NUTF9UTFZUX0RC
-X1NDQUxFOiB7CiAJCWludCBtaW4sIHN0ZXAsIG1heDsK
-------=_Part_1119741_375883953.1337702794237
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---
 
+The following changes since commit 766812e6d5e2e23be1e212cf84902d5e834dd865:
 
-------=_Part_1119741_375883953.1337702794237--
+  ASoC: sh: fsi: enable chip specific data transfer mode (2012-05-19 19:41:45 +0100)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc.git for-3.5
+
+for you to fetch changes up to ced47a3117ba084b404f3fc28de3ef6eaba1b911:
+
+  ASoC: OMAP: HDMI: Rename sound card source file (2012-05-22 17:33:24 +0100)
+
+----------------------------------------------------------------
+Peter Ujfalusi (9):
+      ASoC: omap-mcbsp: Use DMA packet mode for non mono streams on OMAP3+
+      ASoC: omap-mcbsp: Remove unused FRAME dma_op_mode
+      ASoC: omap-mcbsp: Use the common interrupt line if supported by the SoC
+      ASoC: omap-mcbsp: buffer size constraint only applies to playback stream
+      ASoC: omap-mcpdm: Add device tree bindings
+      ASoC: omap-dmic: Add device tree bindings
+      ASoC: omap-abe-twl6040: Keep only one snd_soc_dai_link structure
+      ASoC: omap-abe-twl6040: Move Digital Mic widget into dapm table
+      ASoC: omap-abe-twl6040: Introduce driver data for runtime parameters
+
+Ricardo Neri (10):
+      ASoC: OMAP: HDMI: Update the platform device names
+      ASoC: OMAP: HDMI: Change error values in HDMI CPU DAI
+      ASoC: OMAP: HDMI: Create a structure for private data of the CPU DAI
+      ASoC: OMAP: HDMI: Use the DSS audio interface
+      ASoC: OMAP: HDMI: Expand configuration of hw_params
+      ASoC: OMAP: HDMI: Improve how the display state is verified
+      ASoC: OMAP: HDMI: Expand capabilities of the HDMI DAI
+      ASoC: OMAP: HDMI: Make build config options more generic
+      ASoC: OMAP: HDMI: Make sound card naming more generic
+      ASoC: OMAP: HDMI: Rename sound card source file
+
+ .../devicetree/bindings/sound/omap-dmic.txt        |   21 ++
+ .../devicetree/bindings/sound/omap-mcpdm.txt       |   21 ++
+ sound/soc/omap/Kconfig                             |    7 +-
+ sound/soc/omap/Makefile                            |    4 +-
+ sound/soc/omap/mcbsp.c                             |  115 ++++++++--
+ sound/soc/omap/mcbsp.h                             |    8 +-
+ sound/soc/omap/omap-abe-twl6040.c                  |   68 +++---
+ sound/soc/omap/omap-dmic.c                         |    8 +
+ sound/soc/omap/omap-hdmi-card.c                    |   87 +++++++
+ sound/soc/omap/omap-hdmi.c                         |  238 ++++++++++++++++++--
+ sound/soc/omap/omap-hdmi.h                         |    4 +-
+ sound/soc/omap/omap-mcbsp.c                        |   45 ++--
+ sound/soc/omap/omap-mcpdm.c                        |    8 +
+ sound/soc/omap/omap4-hdmi-card.c                   |  121 ----------
+ 14 files changed, 531 insertions(+), 224 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-dmic.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+ create mode 100644 sound/soc/omap/omap-hdmi-card.c
+ delete mode 100644 sound/soc/omap/omap4-hdmi-card.c
