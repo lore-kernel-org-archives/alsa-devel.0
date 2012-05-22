@@ -1,106 +1,60 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/2] ALSA: core: group read of pointer,
-	tstamp and jiffies
-Date: Tue, 22 May 2012 14:54:02 -0500
-Message-ID: <1337716442-10411-2-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 1/3] of: Add prefix parameter to of_modalias_node().
+Date: Tue, 22 May 2012 14:09:50 -0600
+Message-ID: <CACxGe6tYQVfPRtXxmYF2OPYcEFu+x4-_uzFta9f3mwu=xUrt=g@mail.gmail.com>
+References: <1336773923-17866-1-git-send-email-ddaney.cavm@gmail.com>
+ <1336773923-17866-2-git-send-email-ddaney.cavm@gmail.com> <20120520055436.13AF03E03B8@localhost>
+ <20120520060802.03CE73E03B8@localhost> <4FBBECC2.10503@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id D2C8D24555
-	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 21:54:16 +0200 (CEST)
-In-Reply-To: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <4FBBECC2.10503@gmail.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "spi-devel-general@lists.sourceforge.net" <spi-devel-general@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lrg@ti.com>, Tabi Timur-B04825 <B04825@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Group read of hw_ptr, tstamp and jiffies in a sequence
-for better correlation. Previous code took timestamp at the
-end, which could introduce delays between audio time and
-system time.
+On Tue, May 22, 2012 at 1:45 PM, David Daney <ddaney.cavm@gmail.com> wr=
+ote:
+> On 05/19/2012 11:08 PM, Grant Likely wrote:
+>>
+>> On Sat, 19 May 2012 23:54:36 -0600, Grant
+>> Likely<grant.likely@secretlab.ca> =A0wrote:
+>>>
+>>> On Fri, 11 May 2012 15:05:21 -0700, David Daney<ddaney.cavm@gmail.c=
+om>
+>>> =A0wrote:
+>>>>
+>>>> From: David Daney<david.daney@cavium.com>
+>>>>
+>>>> When generating MODALIASes, it is convenient to add things like "s=
+pi:"
+>>>> or "i2c:" to the front of the strings. =A0This allows the standard
+>>>> modprobe to find the right driver when automatically populating bu=
+s
+>>>> children from the device tree structure.
+>>>>
+>>>> Add a prefix parameter, and adjust callers. =A0For
+>>>> of_register_spi_devices() use the "spi:" prefix.
+>>>>
+>>>> Signed-off-by: David Daney<david.daney@cavium.com>
+>>>
+>>>
+>>> Applied, thanks. =A0Some notes below...
+>>
+>>
+>> Wait... why is this necessary?
+>
+>
+> Because in of_register_spi_devices() in of_spi.c, you do:
+>
+> =A0 =A0 =A0 =A0request_module(spi->modalias);
+>
+> The string passed to request_module() must have the "spi:" prefix.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/core/pcm_lib.c |   23 ++++++++++++++++++-----
- 1 files changed, 18 insertions(+), 5 deletions(-)
+How about modifying the call to request_module() to include the prefix
+also?  I think that would be a simpler change overall.  Would that
+work?
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index ae46d75..3f3097d 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -313,9 +313,22 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	snd_pcm_uframes_t old_hw_ptr, new_hw_ptr, hw_base;
- 	snd_pcm_sframes_t hdelta, delta;
- 	unsigned long jdelta;
-+	unsigned long curr_jiffies;
-+	struct timespec curr_tstamp;
- 
- 	old_hw_ptr = runtime->status->hw_ptr;
-+
-+	/*
-+	 * group pointer, time and jiffies reads to allow for more
-+	 * accurate correlations/corrections.
-+	 * The values are stored at the end of this routine after
-+	 * corrections for hw_ptr position
-+	 */
- 	pos = substream->ops->pointer(substream);
-+	curr_jiffies = jiffies;
-+	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
-+		snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
-+
- 	if (pos == SNDRV_PCM_POS_XRUN) {
- 		xrun(substream);
- 		return -EPIPE;
-@@ -343,7 +356,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 		delta = runtime->hw_ptr_interrupt + runtime->period_size;
- 		if (delta > new_hw_ptr) {
- 			/* check for double acknowledged interrupts */
--			hdelta = jiffies - runtime->hw_ptr_jiffies;
-+			hdelta = curr_jiffies - runtime->hw_ptr_jiffies;
- 			if (hdelta > runtime->hw_ptr_buffer_jiffies/2) {
- 				hw_base += runtime->buffer_size;
- 				if (hw_base >= runtime->boundary)
-@@ -388,7 +401,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 		 * Without regular period interrupts, we have to check
- 		 * the elapsed time to detect xruns.
- 		 */
--		jdelta = jiffies - runtime->hw_ptr_jiffies;
-+		jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
- 		if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
- 			goto no_delta_check;
- 		hdelta = jdelta - delta * HZ / runtime->rate;
-@@ -430,7 +443,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	if (hdelta < runtime->delay)
- 		goto no_jiffies_check;
- 	hdelta -= runtime->delay;
--	jdelta = jiffies - runtime->hw_ptr_jiffies;
-+	jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
- 	if (((hdelta * HZ) / runtime->rate) > jdelta + HZ/100) {
- 		delta = jdelta /
- 			(((runtime->period_size * HZ) / runtime->rate)
-@@ -492,9 +505,9 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	}
- 	runtime->hw_ptr_base = hw_base;
- 	runtime->status->hw_ptr = new_hw_ptr;
--	runtime->hw_ptr_jiffies = jiffies;
-+	runtime->hw_ptr_jiffies = curr_jiffies;
- 	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
--		snd_pcm_gettime(runtime, (struct timespec *)&runtime->status->tstamp);
-+		runtime->status->tstamp = curr_tstamp;
- 
- 	return snd_pcm_update_state(substream, runtime);
- }
--- 
-1.7.6.5
+g.
