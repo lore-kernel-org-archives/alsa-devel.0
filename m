@@ -1,86 +1,79 @@
-From: David Daney <ddaney.cavm@gmail.com>
-Subject: Re: [PATCH 1/3] of: Add prefix parameter to of_modalias_node().
-Date: Tue, 22 May 2012 12:45:06 -0700
-Message-ID: <4FBBECC2.10503@gmail.com>
-References: <1336773923-17866-1-git-send-email-ddaney.cavm@gmail.com> <1336773923-17866-2-git-send-email-ddaney.cavm@gmail.com> <20120520055436.13AF03E03B8@localhost> <20120520060802.03CE73E03B8@localhost>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH 1/3] sb_mixer: Correct SB16 mixer control names
+Date: Tue, 22 May 2012 21:44:47 +0200
+Message-ID: <201205222144.51912.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <20120520060802.03CE73E03B8@localhost>
-Sender: linux-doc-owner@vger.kernel.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: David Daney <ddaney.cavm@gmail.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "spi-devel-general@lists.sourceforge.net" <spi-devel-general@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lrg@ti.com>, Tabi Timur-B04825 <B04825@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 256612454A
+	for <alsa-devel@alsa-project.org>;
+	Tue, 22 May 2012 21:45:15 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/19/2012 11:08 PM, Grant Likely wrote:
-> On Sat, 19 May 2012 23:54:36 -0600, Grant Likely<grant.likely@secretlab.ca>  wrote:
->> On Fri, 11 May 2012 15:05:21 -0700, David Daney<ddaney.cavm@gmail.com>  wrote:
->>> From: David Daney<david.daney@cavium.com>
->>>
->>> When generating MODALIASes, it is convenient to add things like "spi:"
->>> or "i2c:" to the front of the strings.  This allows the standard
->>> modprobe to find the right driver when automatically populating bus
->>> children from the device tree structure.
->>>
->>> Add a prefix parameter, and adjust callers.  For
->>> of_register_spi_devices() use the "spi:" prefix.
->>>
->>> Signed-off-by: David Daney<david.daney@cavium.com>
->>
->> Applied, thanks.  Some notes below...
->
-> Wait... why is this necessary?
+SB16 volume controls affect both playback and recording. Correct the volume controls to match that.
+(Beep volume was already correct).
 
-Because in of_register_spi_devices() in of_spi.c, you do:
+Correct misleading "Capture Volume" and "Playback Volume" names - they're in fact gain controls.
 
-	request_module(spi->modalias);
+Also change "3D Enhancement Switch" to standard name "3D Control - Switch".
 
-The string passed to request_module() must have the "spi:" prefix.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
+--- a/sound/isa/sb/sb_mixer.c
++++ b/sound/isa/sb/sb_mixer.c
+@@ -579,31 +579,31 @@ static struct sbmix_elem snd_sb16_controls[] = {
+ 		  SB_DSP4_PCM_DEV, (SB_DSP4_PCM_DEV + 1), 3, 3, 31),
+ 	SB16_INPUT_SW("Synth Capture Route",
+ 		      SB_DSP4_INPUT_LEFT, SB_DSP4_INPUT_RIGHT, 6, 5),
+-	SB_DOUBLE("Synth Playback Volume",
++	SB_DOUBLE("Synth Volume",
+ 		  SB_DSP4_SYNTH_DEV, (SB_DSP4_SYNTH_DEV + 1), 3, 3, 31),
+ 	SB16_INPUT_SW("CD Capture Route",
+ 		      SB_DSP4_INPUT_LEFT, SB_DSP4_INPUT_RIGHT, 2, 1),
+ 	SB_DOUBLE("CD Playback Switch",
+ 		  SB_DSP4_OUTPUT_SW, SB_DSP4_OUTPUT_SW, 2, 1, 1),
+-	SB_DOUBLE("CD Playback Volume",
++	SB_DOUBLE("CD Volume",
+ 		  SB_DSP4_CD_DEV, (SB_DSP4_CD_DEV + 1), 3, 3, 31),
+ 	SB16_INPUT_SW("Mic Capture Route",
+ 		      SB_DSP4_INPUT_LEFT, SB_DSP4_INPUT_RIGHT, 0, 0),
+ 	SB_SINGLE("Mic Playback Switch", SB_DSP4_OUTPUT_SW, 0, 1),
+-	SB_SINGLE("Mic Playback Volume", SB_DSP4_MIC_DEV, 3, 31),
++	SB_SINGLE("Mic Volume", SB_DSP4_MIC_DEV, 3, 31),
+ 	SB_SINGLE("Beep Volume", SB_DSP4_SPEAKER_DEV, 6, 3),
+-	SB_DOUBLE("Capture Volume",
++	SB_DOUBLE("Gain Capture Volume",
+ 		  SB_DSP4_IGAIN_DEV, (SB_DSP4_IGAIN_DEV + 1), 6, 6, 3),
+-	SB_DOUBLE("Playback Volume",
++	SB_DOUBLE("Gain Playback Volume",
+ 		  SB_DSP4_OGAIN_DEV, (SB_DSP4_OGAIN_DEV + 1), 6, 6, 3),
+ 	SB16_INPUT_SW("Line Capture Route",
+ 		      SB_DSP4_INPUT_LEFT, SB_DSP4_INPUT_RIGHT, 4, 3),
+ 	SB_DOUBLE("Line Playback Switch",
+ 		  SB_DSP4_OUTPUT_SW, SB_DSP4_OUTPUT_SW, 4, 3, 1),
+-	SB_DOUBLE("Line Playback Volume",
++	SB_DOUBLE("Line Volume",
+ 		  SB_DSP4_LINE_DEV, (SB_DSP4_LINE_DEV + 1), 3, 3, 31),
+ 	SB_SINGLE("Mic Auto Gain", SB_DSP4_MIC_AGC, 0, 1),
+-	SB_SINGLE("3D Enhancement Switch", SB_DSP4_3DSE, 0, 1),
++	SB_SINGLE("3D Control - Switch", SB_DSP4_3DSE, 0, 1),
+ 	SB_DOUBLE("Tone Control - Bass",
+ 		  SB_DSP4_BASS_DEV, (SB_DSP4_BASS_DEV + 1), 4, 4, 15),
+ 	SB_DOUBLE("Tone Control - Treble",
 
-> The module type prefix isn't stored in
-> the modalias value for any other bus type as far as I can see,
-
-It is only useful with the prefix, so I though I would add it to the 
-stored value.
-
-> and
-> with this series it appears that the "spi:" prefix may or may not be
-> present in the modalias.  That doesn't look right.
-
-Perhaps, but the with the combination of patches 1/3 and 2/3 I tried to 
-ensure that the prefix would always be present for SPI devices.
-
->
-> Why isn't prefixing spi: at uevent time sufficient?
-
-Because udev may not be loading the driver.
-
-> IIUC, modprobe
-> depends on either UEVENT or the modalias attribute to know which
-> driver to probe.  It does look like the attribute is missing the spi:
-> prefix though.  Does the following change work instead of these two
-> patches?
->
-
-No.
-
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index 3d8f662..da8aac7 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -51,7 +51,7 @@ modalias_show(struct device *dev, struct device_attribute *a, char *buf)
->   {
->          const struct spi_device *spi = to_spi_device(dev);
->
-> -       return sprintf(buf, "%s\n", spi->modalias);
-> +       return sprintf(buf, "%s%s\n", SPI_MODULE_PREFIX, spi->modalias);
->   }
->
-> So, I've dropped this patch from my tree.  If the change above works
-> for you then I'll push it out.
->
-> g.
->
-
+-- 
+Ondrej Zary
