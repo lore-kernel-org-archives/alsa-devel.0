@@ -1,58 +1,80 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: simplify Kconfig dependencies
-Date: Tue, 22 May 2012 11:02:48 +0100
-Message-ID: <20120522100248.GF21999@opensource.wolfsonmicro.com>
-References: <1337635343-16613-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: codecs: Add DA732x codec driver
+Date: Tue, 22 May 2012 14:17:52 +0100
+Message-ID: <20120522131752.GA1967@opensource.wolfsonmicro.com>
+References: <2E89032DDAA8B9408CB92943514A03372E3F5F40@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JSkcQAAxhB1h8DcT"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1337635343-16613-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5917688773834111509=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9FE752456E
+	for <alsa-devel@alsa-project.org>;
+	Tue, 22 May 2012 15:17:54 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A03372E3F5F40@SW-EX-MBX01.diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Software Maintainer <software.maintainer@diasemi.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Michal Hajduk <Michal.Hajduk@diasemi.com>, Adam Thomson <Adam.Thomson@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---JSkcQAAxhB1h8DcT
+--===============5917688773834111509==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Content-Disposition: inline
+
+
+--dDRMvlgZJXvWKvBx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 21, 2012 at 03:22:23PM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Tue, May 22, 2012 at 12:57:35PM +0000, Software Maintainer wrote:
+> This patch adds support for the Dialog DA732x audio codec.
 >=20
-> The Tegra ASoC machine drivers only depend on Tegra architecture support
-> to compile, not specific board support. Remove Kconfig dependencies on
-> any particular board. This is required since Kconfig options for boards
-> are going away given the migration to device tree.
+> Signed-off-by: Michal Hajduk <Michal.Hajduk@diasemi.com>
+> Signed-off-by: Adam Thomson <Adam.Thomson@diasemi.com>
 
-Please merge this as part of the Tegra tree as it's going to conflict
-with the removal of the machine Kconfig entries anyway.
+I've not had time to look at the patch yet but I need these to come from
+a human with proper signoffs, not from a role account.  The signoff bit
+is really important for licensing purposes, see SubmittingPatches.
 
-Acked-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-
---JSkcQAAxhB1h8DcT
+--dDRMvlgZJXvWKvBx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPu2Q/AAoJEBus8iNuMP3dT2oP/1ihrUUtCtu8RFSvZv5M8K5E
-IP1ttnyqLdUoFZpBgJ2b7XdQPetaHaUC2VQV8O5fSC7EfHnJtmPdboGREPnwESWr
-Mmah8o3aesGSbIjWl4OlIB0Ww5jSBhjJ3cvEt4JHK53LQxoIlb7trIwwcemg9v+1
-3kwiNsQUk5Vu/w9jqvhGf2vJREwCh/Pd8JB1glDW/94kURxKeQIPDkaNSnhZz8hL
-XqJPtiwHnaBYTluLPcndE23V29Gr2gi8RIFqFyka8zfNoTjhagTwtoOPFUXWiGUq
-24ef4T+2it72fBrvHAaVPhApiOTHpoxJDOfpBxW9BRUgoJA0F3jnH2KLsGWRPSvD
-bDz7wPrtMoVAmWMIH0A2tGiIik0RUKA2ss1+/BvIQ5KxDg+xUx9fjNRF0tTPpdOy
-osXM9CxONoV1xvb/3YN0zTNoyx/23QfKjsq8eVGCLSMvWkG7ZVe+s7IpguPCGGW1
-cUj6r/x+y9o4myW3cy9X3sIcy6AQWQtbT0ExnXIcRt6YvyeocHEZX8y0HYDl2ZEI
-Lwr7xTtYc9rSlrW1dJbJZq/okuxmZWIOagLsAD58iRm6TkSkQ8lHjn0q6IXOBO61
-aFFzpSFpXIVPVkrC7ntSNCSrmiB5xHHQEbLEGEMjbXhtgqft+6PDoNb5zR+MzSH5
-tOPwffTLH39E3ac/MTXJ
-=zas8
+iQIcBAEBAgAGBQJPu5H5AAoJEBus8iNuMP3dgNYP/3sGYucGkCR1J0UV8DKJ8QpH
+iNIJ5LlcBmCIpn/Cp0FCxLV0BSSaXrrSDjTVMR/tN+Tq8L8vWHUkYdD2yrQGZd4/
+L9SUzgSFO4xaLxcrZ+HhQtLBI+DQuHaM8uT1hVWdhFVlWlfBAaiNGjoW/F23DTAv
+g8wpETlK8w6YfV2802TcerHo0Sj3O1AXHSHQYG9Iz3C5THHKf4vt4ztMO6W2cAmn
+XIIc17tQRrdt7wqpzvvZXIjp5z24QHBV/YUbX6fSTSzN80CHHLoXPLxH4+f9DXDh
+FNjMs0GMdHNKgfyIgZH7TizBBe/XQjueJNvsnjENNOgCdQrXlnb6gtlIfZUbMYb7
+pyKUu6+PMPVHpmGhyPql6ynRGqWUDtR4Xnvgue5V3CC9am0xKHTa+y+hc0w2CUna
+9qUnFEtP0gYhnUqmPMVDLR5OLUAk1SFFMsT+esLifJio79YHyazl3hS2RtvQN1l+
+6iHVM0TP+p9uDSMNe+qaRLawBw8aPVXszb7XhDWCzp93FwkAnCfLisqywwMOC8zk
+xdVv30rSVUUkENqvgWWEymvkJ84uaEw6OKKdFrG6g2UR0sft1bSg/pS7EwevfScF
+VUOeXXt+K9V72XAKODyusMZyAM9sQnifERqyM0ddJlE7NaEaPa321Kg4GFLRNsKP
+BJ37xojGyrS5yTVTXbEW
+=vUBP
 -----END PGP SIGNATURE-----
 
---JSkcQAAxhB1h8DcT--
+--dDRMvlgZJXvWKvBx--
+
+--===============5917688773834111509==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5917688773834111509==--
