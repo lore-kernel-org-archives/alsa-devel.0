@@ -1,17 +1,25 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [GIT PULL] ASoC updates for 3.5
-Date: Tue, 22 May 2012 18:19:25 +0100
-Message-ID: <1337707165.10706.2.camel@odin>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Subject: Re: snd-usb endpoint rework
+Date: Tue, 22 May 2012 19:22:46 +0100
+Message-ID: <CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
+References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
+	<CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
+	<4FBA12E3.2040009@gmail.com>
+	<CAE-xCyOeKjYJrGsa=yt+1U9Wc7x+OhmhYyWQEFCsELww7+Z+-g@mail.gmail.com>
+	<4FBA1F01.4010606@gmail.com>
+	<CAE-xCyNAKUEuHereXpoDUzR2VazY_JCUAMOSxxJWe_F65T06jw@mail.gmail.com>
+	<4FBAC776.9060801@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
-	[74.125.149.67]) by alsa0.perex.cz (Postfix) with ESMTP id A7E8C24367
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 0970E2415E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 19:19:30 +0200 (CEST)
-Received: by wgbdq11 with SMTP id dq11so5188625wgb.17
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2012 10:19:27 -0700 (PDT)
+	Tue, 22 May 2012 20:22:47 +0200 (CEST)
+Received: by vbip1 with SMTP id p1so4363385vbi.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 May 2012 11:22:47 -0700 (PDT)
+In-Reply-To: <4FBAC776.9060801@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,73 +29,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com, linuxaudio@showlabor.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hello Daniel,
 
-It's mainly OMAP4 HDMI updates from Ricardo using the new DSS audio
-interface and Device Tree updates from Peter for OMAP.
+Here are the results of today's testing.
+I don't know if they'll help in anyway, but here we go.
 
-Thanks
 
-Liam 
+BOOT WITH THE UA-25EX
 
----
+Trying to use aplay:
 
-The following changes since commit 766812e6d5e2e23be1e212cf84902d5e834dd865:
+blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
+ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
+ALSA lib conf.c:4241:(_snd_config_evaluate) function
+snd_func_card_driver returned error: No such file or directory
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
+returned error: No such file or directory
+ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
+returned error: No such file or directory
+ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
+or directory
+ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
+aplay: main:682: audio open error: No such file or directory
 
-  ASoC: sh: fsi: enable chip specific data transfer mode (2012-05-19 19:41:45 +0100)
+blablack@igorito:~$ aplay -D default:CARD=3DUA25EX 10\ -\ Track\ 10-L.wav
 
-are available in the git repository at:
+Second one work ok... Let it play for several minutes and it's all fine.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc.git for-3.5
 
-for you to fetch changes up to ced47a3117ba084b404f3fc28de3ef6eaba1b911:
+BOOT WITH THE FTU
 
-  ASoC: OMAP: HDMI: Rename sound card source file (2012-05-22 17:33:24 +0100)
+blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
+ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
+ALSA lib conf.c:4241:(_snd_config_evaluate) function
+snd_func_card_driver returned error: No such file or directory
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
+returned error: No such file or directory
+ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
+returned error: No such file or directory
+ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
+or directory
+ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
+aplay: main:682: audio open error: No such file or directory
 
-----------------------------------------------------------------
-Peter Ujfalusi (9):
-      ASoC: omap-mcbsp: Use DMA packet mode for non mono streams on OMAP3+
-      ASoC: omap-mcbsp: Remove unused FRAME dma_op_mode
-      ASoC: omap-mcbsp: Use the common interrupt line if supported by the SoC
-      ASoC: omap-mcbsp: buffer size constraint only applies to playback stream
-      ASoC: omap-mcpdm: Add device tree bindings
-      ASoC: omap-dmic: Add device tree bindings
-      ASoC: omap-abe-twl6040: Keep only one snd_soc_dai_link structure
-      ASoC: omap-abe-twl6040: Move Digital Mic widget into dapm table
-      ASoC: omap-abe-twl6040: Introduce driver data for runtime parameters
+blablack@igorito:~$ aplay -D default:CARD=3DUltra 10\ -\ Track\ 10-L.wav
 
-Ricardo Neri (10):
-      ASoC: OMAP: HDMI: Update the platform device names
-      ASoC: OMAP: HDMI: Change error values in HDMI CPU DAI
-      ASoC: OMAP: HDMI: Create a structure for private data of the CPU DAI
-      ASoC: OMAP: HDMI: Use the DSS audio interface
-      ASoC: OMAP: HDMI: Expand configuration of hw_params
-      ASoC: OMAP: HDMI: Improve how the display state is verified
-      ASoC: OMAP: HDMI: Expand capabilities of the HDMI DAI
-      ASoC: OMAP: HDMI: Make build config options more generic
-      ASoC: OMAP: HDMI: Make sound card naming more generic
-      ASoC: OMAP: HDMI: Rename sound card source file
+No sound...
+I tried to reboot several times, unplug/replug, checked alsamixer: all
+look fine to me but still no sound.
+Actually, it is not "exactly" no sound: I can see the 4 front leds
+flash very quickly, and I can hear a click in the speakers (with the
+FX, the click is longer due to the reverb, handy to notice it!).
 
- .../devicetree/bindings/sound/omap-dmic.txt        |   21 ++
- .../devicetree/bindings/sound/omap-mcpdm.txt       |   21 ++
- sound/soc/omap/Kconfig                             |    7 +-
- sound/soc/omap/Makefile                            |    4 +-
- sound/soc/omap/mcbsp.c                             |  115 ++++++++--
- sound/soc/omap/mcbsp.h                             |    8 +-
- sound/soc/omap/omap-abe-twl6040.c                  |   68 +++---
- sound/soc/omap/omap-dmic.c                         |    8 +
- sound/soc/omap/omap-hdmi-card.c                    |   87 +++++++
- sound/soc/omap/omap-hdmi.c                         |  238 ++++++++++++++++++--
- sound/soc/omap/omap-hdmi.h                         |    4 +-
- sound/soc/omap/omap-mcbsp.c                        |   45 ++--
- sound/soc/omap/omap-mcpdm.c                        |    8 +
- sound/soc/omap/omap4-hdmi-card.c                   |  121 ----------
- 14 files changed, 531 insertions(+), 224 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/omap-dmic.txt
- create mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
- create mode 100644 sound/soc/omap/omap-hdmi-card.c
- delete mode 100644 sound/soc/omap/omap4-hdmi-card.c
+Using mplayer...well I don't know if I'm just an idiot or if there is
+a deeper problem, but I can't get the alsa parameter to connect to the
+sound card. And if I don't specify the -ao parameter, I get the same
+error as aplay "cannot find card 0".
+
+Using VLC, I can see that VLC doesn't get stuck but plays something,
+unfortunately, still no sound.
+
+
+In dmesg, I get:
+[    3.031270] usb 2-1.2: new high-speed USB device number 3 using ehci_hcd
+[    3.118175] usb 2-1.2: config 1 interface 3 altsetting 0 bulk
+endpoint 0x7 has invalid maxpacket 8
+[    3.118185] usb 2-1.2: config 1 interface 3 altsetting 0 bulk
+endpoint 0x87 has invalid maxpacket 8
+...
+[   18.090854] ALSA mixer.c:796 usb-audio: set quirks for FTU Effect
+Feedback/Volume
+[   18.107831] ALSA mixer.c:787 usb-audio: set quirk for FTU Effect Duration
+[   18.109496] ALSA mixer.c:796 usb-audio: set quirks for FTU Effect
+Feedback/Volume
+
+The first error message is "ok" I far as I remember, and the second
+message shows the detection of the FTU - all look fine to me...
+
+
+
+IN BOTH CASES, FTU AND UA-25EX
+
+Starting jack result in an immediate freeze of the system.
+
+
+If there is anything else I can provide to you, let me know.
+Hope all this help somehow!
+
+Aur=E9lien
