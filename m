@@ -1,143 +1,86 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: snd-usb endpoint rework
-Date: Tue, 22 May 2012 21:36:59 +0200
-Message-ID: <CAFz=ag7eUQuZfG8FdZazM4nDb9+PV3Em_67fhOM1qiY0JaupKw@mail.gmail.com>
-References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
-	<CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
-	<4FBA12E3.2040009@gmail.com>
-	<CAE-xCyOeKjYJrGsa=yt+1U9Wc7x+OhmhYyWQEFCsELww7+Z+-g@mail.gmail.com>
-	<4FBA1F01.4010606@gmail.com>
-	<CAE-xCyNAKUEuHereXpoDUzR2VazY_JCUAMOSxxJWe_F65T06jw@mail.gmail.com>
-	<4FBAC776.9060801@gmail.com>
-	<CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
+From: David Daney <ddaney.cavm@gmail.com>
+Subject: Re: [PATCH 1/3] of: Add prefix parameter to of_modalias_node().
+Date: Tue, 22 May 2012 12:45:06 -0700
+Message-ID: <4FBBECC2.10503@gmail.com>
+References: <1336773923-17866-1-git-send-email-ddaney.cavm@gmail.com> <1336773923-17866-2-git-send-email-ddaney.cavm@gmail.com> <20120520055436.13AF03E03B8@localhost> <20120520060802.03CE73E03B8@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BDFC24540
-	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 21:37:00 +0200 (CEST)
-Received: by yenr13 with SMTP id r13so6008442yen.38
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2012 12:36:59 -0700 (PDT)
-In-Reply-To: <CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Cc: tiwai@suse.de, Grant Diffey <gdiffey@gmail.com>, clemens@ladisch.de, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20120520060802.03CE73E03B8@localhost>
+Sender: linux-doc-owner@vger.kernel.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: David Daney <ddaney.cavm@gmail.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Rob Herring <rob.herring@calxeda.com>, "spi-devel-general@lists.sourceforge.net" <spi-devel-general@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lrg@ti.com>, Tabi Timur-B04825 <B04825@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, I can't help testing at the moment. I'm extremely busy preparing a
-couple of shows I'll be playing in the next few weeks.
+On 05/19/2012 11:08 PM, Grant Likely wrote:
+> On Sat, 19 May 2012 23:54:36 -0600, Grant Likely<grant.likely@secretlab.ca>  wrote:
+>> On Fri, 11 May 2012 15:05:21 -0700, David Daney<ddaney.cavm@gmail.com>  wrote:
+>>> From: David Daney<david.daney@cavium.com>
+>>>
+>>> When generating MODALIASes, it is convenient to add things like "spi:"
+>>> or "i2c:" to the front of the strings.  This allows the standard
+>>> modprobe to find the right driver when automatically populating bus
+>>> children from the device tree structure.
+>>>
+>>> Add a prefix parameter, and adjust callers.  For
+>>> of_register_spi_devices() use the "spi:" prefix.
+>>>
+>>> Signed-off-by: David Daney<david.daney@cavium.com>
+>>
+>> Applied, thanks.  Some notes below...
+>
+> Wait... why is this necessary?
 
-But Aur=E9lien's problems remind me of an issue I had some weeks ago. The
-issue was caused by a jackd process that was unintentionally launched via
-D-Bus on start up.
+Because in of_register_spi_devices() in of_spi.c, you do:
 
-Regards,
-Felix
-Am 22.05.2012 20:22 schrieb "Aur=E9lien Leblond" <blablack@gmail.com>:
+	request_module(spi->modalias);
 
-> Hello Daniel,
+The string passed to request_module() must have the "spi:" prefix.
+
+
+> The module type prefix isn't stored in
+> the modalias value for any other bus type as far as I can see,
+
+It is only useful with the prefix, so I though I would add it to the 
+stored value.
+
+> and
+> with this series it appears that the "spi:" prefix may or may not be
+> present in the modalias.  That doesn't look right.
+
+Perhaps, but the with the combination of patches 1/3 and 2/3 I tried to 
+ensure that the prefix would always be present for SPI devices.
+
 >
-> Here are the results of today's testing.
-> I don't know if they'll help in anyway, but here we go.
+> Why isn't prefixing spi: at uevent time sufficient?
+
+Because udev may not be loading the driver.
+
+> IIUC, modprobe
+> depends on either UEVENT or the modalias attribute to know which
+> driver to probe.  It does look like the attribute is missing the spi:
+> prefix though.  Does the following change work instead of these two
+> patches?
 >
+
+No.
+
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 3d8f662..da8aac7 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -51,7 +51,7 @@ modalias_show(struct device *dev, struct device_attribute *a, char *buf)
+>   {
+>          const struct spi_device *spi = to_spi_device(dev);
 >
-> BOOT WITH THE UA-25EX
+> -       return sprintf(buf, "%s\n", spi->modalias);
+> +       return sprintf(buf, "%s%s\n", SPI_MODULE_PREFIX, spi->modalias);
+>   }
 >
-> Trying to use aplay:
+> So, I've dropped this patch from my tree.  If the change above works
+> for you then I'll push it out.
 >
-> blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
-> ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
-> ALSA lib conf.c:4241:(_snd_config_evaluate) function
-> snd_func_card_driver returned error: No such file or directory
-> ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
-> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
-> returned error: No such file or directory
-> ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
-> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
-> returned error: No such file or directory
-> ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
-> or directory
-> ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
-> aplay: main:682: audio open error: No such file or directory
+> g.
 >
-> blablack@igorito:~$ aplay -D default:CARD=3DUA25EX 10\ -\ Track\ 10-L.wav
->
-> Second one work ok... Let it play for several minutes and it's all fine.
->
->
-> BOOT WITH THE FTU
->
-> blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
-> ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
-> ALSA lib conf.c:4241:(_snd_config_evaluate) function
-> snd_func_card_driver returned error: No such file or directory
-> ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
-> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
-> returned error: No such file or directory
-> ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
-> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
-> returned error: No such file or directory
-> ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
-> or directory
-> ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
-> aplay: main:682: audio open error: No such file or directory
->
-> blablack@igorito:~$ aplay -D default:CARD=3DUltra 10\ -\ Track\ 10-L.wav
->
-> No sound...
-> I tried to reboot several times, unplug/replug, checked alsamixer: all
-> look fine to me but still no sound.
-> Actually, it is not "exactly" no sound: I can see the 4 front leds
-> flash very quickly, and I can hear a click in the speakers (with the
-> FX, the click is longer due to the reverb, handy to notice it!).
->
-> Using mplayer...well I don't know if I'm just an idiot or if there is
-> a deeper problem, but I can't get the alsa parameter to connect to the
-> sound card. And if I don't specify the -ao parameter, I get the same
-> error as aplay "cannot find card 0".
->
-> Using VLC, I can see that VLC doesn't get stuck but plays something,
-> unfortunately, still no sound.
->
->
-> In dmesg, I get:
-> [    3.031270] usb 2-1.2: new high-speed USB device number 3 using ehci_h=
-cd
-> [    3.118175] usb 2-1.2: config 1 interface 3 altsetting 0 bulk
-> endpoint 0x7 has invalid maxpacket 8
-> [    3.118185] usb 2-1.2: config 1 interface 3 altsetting 0 bulk
-> endpoint 0x87 has invalid maxpacket 8
-> ...
-> [   18.090854] ALSA mixer.c:796 usb-audio: set quirks for FTU Effect
-> Feedback/Volume
-> [   18.107831] ALSA mixer.c:787 usb-audio: set quirk for FTU Effect
-> Duration
-> [   18.109496] ALSA mixer.c:796 usb-audio: set quirks for FTU Effect
-> Feedback/Volume
->
-> The first error message is "ok" I far as I remember, and the second
-> message shows the detection of the FTU - all look fine to me...
->
->
->
-> IN BOTH CASES, FTU AND UA-25EX
->
-> Starting jack result in an immediate freeze of the system.
->
->
-> If there is anything else I can provide to you, let me know.
-> Hope all this help somehow!
->
-> Aur=E9lien
->
+
