@@ -1,17 +1,16 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH 3/3] sb_mixer: Add extended SB16 mixer controls
-	for newer chips
-Date: Tue, 22 May 2012 21:45:04 +0200
-Message-ID: <201205222145.08026.linux@rainbow-software.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/2] ALSA: update sync header when streams are
+	linked/unlinked
+Date: Tue, 22 May 2012 14:54:01 -0500
+Message-ID: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id C97D624556
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id F298B24554
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 21:45:25 +0200 (CEST)
-Content-Disposition: inline
+	Tue, 22 May 2012 21:54:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,130 +20,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Newer SB16 chips (Vibra 16C and later) have extended mixer controls.
-This detects them and enables automatically if present.
+Previous code only reported card number and was not updated
+when devices were linked/unlinked. This makes alsa-lib
+snd_pcm_info_get_sync totally useless.
+Add hooks to force update of sync header when devices are
+linked/unlinked, and provide more information such as
+number of devices and indices of capture/playback devices
+linked to
 
-Supported extended controls:
-Synth Playback Switch
-PCM Playback Switch
-Beep Playback Switch
-Master Playback Switch
-PCM Capture Switch
-Master Capture Volume
-Master Capture Switch
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/core/pcm_lib.c    |   37 ++++++++++++++++++++++++++++++++-----
+ sound/core/pcm_native.c |    6 ++++++
+ 2 files changed, 38 insertions(+), 5 deletions(-)
 
-Vibra 16XV has an additional Aux input which is used on
-SF16-FMD and SF16-FMD2 cards to connect the onboard FM tuner:
-Aux Playback Switch
-Aux Volume
-Aux Capture Switch
-
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-
---- a/include/sound/sb.h
-+++ b/include/sound/sb.h
-@@ -214,6 +214,12 @@ struct snd_sb {
- #define SB_DSP4_IGAIN_DEV	0x3f
- #define SB_DSP4_OGAIN_DEV	0x41
- #define SB_DSP4_MIC_AGC		0x43
-+/* extended registers for newer SB16 */
-+#define SB_DSP4_OUTPUT2_SW	0x48
-+#define SB_DSP4_MASTER_SW	0x49
-+#define SB_DSP4_INPUT2_SW	0x4a
-+#define SB_DSP4_MASTER_REC_DEV	0x50
-+#define SB_DSP4_AUX_DEV		0x52
- 
- /* additional registers for SB 16 mixer */
- #define SB_DSP4_IRQSETUP	0x80
---- a/sound/isa/sb/sb_mixer.c
-+++ b/sound/isa/sb/sb_mixer.c
-@@ -615,6 +615,38 @@ static struct sbmix_elem snd_sb16_gain_ctls[] = {
- 		  SB_DSP4_OGAIN_DEV, (SB_DSP4_OGAIN_DEV + 1), 6, 6, 3),
- };
- 
-+static struct sbmix_elem snd_sb16_output2_ctls[] = {
-+	SB_DOUBLE("Synth Playback Switch",
-+		  SB_DSP4_OUTPUT2_SW, SB_DSP4_OUTPUT2_SW, 4, 3, 1),
-+	SB_DOUBLE("PCM Playback Switch",
-+		  SB_DSP4_OUTPUT2_SW, SB_DSP4_OUTPUT2_SW, 2, 1, 1),
-+	SB_SINGLE("Beep Playback Switch", SB_DSP4_OUTPUT2_SW, 0, 1),
-+};
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index faedb14..ae46d75 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -533,11 +533,38 @@ EXPORT_SYMBOL(snd_pcm_set_ops);
+ void snd_pcm_set_sync(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	
+-	runtime->sync.id32[0] = substream->pcm->card->number;
+-	runtime->sync.id32[1] = -1;
+-	runtime->sync.id32[2] = -1;
+-	runtime->sync.id32[3] = -1;
++	struct snd_pcm_substream *s;
++	int dev_c, dev_p;
 +
-+static struct sbmix_elem snd_sb16_master_sw_ctl =
-+	SB_DOUBLE("Master Playback Switch",
-+		  SB_DSP4_MASTER_SW, SB_DSP4_MASTER_SW, 3, 2, 1);
++	if (snd_pcm_stream_linked(substream)) {
++		runtime->sync.id32[0] = substream->pcm->card->number;
++		/* save number of devices linked */
++		runtime->sync.id32[1] = substream->group->count-1;
++		dev_c = dev_p = 0;
 +
-+static struct sbmix_elem snd_sb16_pcm_capture_sw_ctl =
-+	SB_DOUBLE("PCM Capture Switch",
-+		  SB_DSP4_INPUT2_SW, SB_DSP4_INPUT2_SW, 1, 0, 1);
-+
-+static struct sbmix_elem snd_sb16_master_rec_ctls[] = {
-+	SB_DOUBLE("Master Capture Volume",
-+		  SB_DSP4_MASTER_REC_DEV, (SB_DSP4_MASTER_REC_DEV + 1), 3, 3, 31),
-+	SB_DOUBLE("Master Capture Switch",
-+		  SB_DSP4_MASTER_SW, SB_DSP4_MASTER_SW, 1, 0, 1),
-+};
-+
-+static struct sbmix_elem snd_sb16_aux_ctls[] = {
-+	SB_DOUBLE("Aux Playback Switch",
-+		  SB_DSP4_OUTPUT2_SW, SB_DSP4_OUTPUT2_SW, 6, 5, 1),
-+	SB_DOUBLE("Aux Volume",
-+		  SB_DSP4_AUX_DEV, (SB_DSP4_AUX_DEV + 1), 3, 3, 31),
-+	SB_DOUBLE("Aux Capture Switch",
-+		  SB_DSP4_INPUT2_SW, SB_DSP4_INPUT2_SW, 3, 2, 1),
-+};
-+
- static struct sbmix_elem snd_sb16_3d_ctl =
- 	SB_SINGLE("3D Control - Switch", SB_DSP4_3DSE, 0, 1);
- 
-@@ -789,6 +821,43 @@ static int snd_sbmixer_sb16_opt_init(struct snd_sb *chip)
- 		if (err < 0)
- 			return err;
- 	}
-+	/* CT8903 has the following registers but they don't do anything */
-+	if (sb16_type == CT8903)
-+		return 0;
-+	/* additional playback switches */
-+	if ((snd_sbmixer_read(chip, SB_DSP4_OUTPUT2_SW) & 0x9f) == 0x1f)
-+		for (idx = 0; idx < ARRAY_SIZE(snd_sb16_output2_ctls); idx++) {
-+			err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_output2_ctls[idx]);
-+			if (err < 0)
-+				return err;
++		snd_pcm_group_for_each_entry(s, substream) {
++			if (s == substream)
++				continue;
++			if (s->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++				dev_p++;
++				if (dev_p == 1)
++					runtime->sync.id32[2] = 0;
++				/* save mask of linked playback devices */
++				runtime->sync.id32[2] |= (1<<s->number);
++			} else {
++				dev_c++;
++				if (dev_c == 1)
++					runtime->sync.id32[3] = 0;
++				/* save mask of linked capture devices */
++				runtime->sync.id32[3] |= (1<<s->number);
++			}
 +		}
-+	/* master playback switch */
-+	if ((snd_sbmixer_read(chip, SB_DSP4_MASTER_SW) & 0xfc) == 0x0c) {
-+		err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_master_sw_ctl);
-+		if (err < 0)
-+			return err;
++	} else {
++		runtime->sync.id32[0] = -1;
++		runtime->sync.id32[1] = -1;
++		runtime->sync.id32[2] = -1;
++		runtime->sync.id32[3] = -1;
 +	}
-+	/* PCM capture switch */
-+	snd_sbmixer_write(chip, SB_DSP4_INPUT2_SW, 0xff);
-+	if ((snd_sbmixer_read(chip, SB_DSP4_INPUT2_SW) & 0xf3) == 0x03) {
-+		err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_pcm_capture_sw_ctl);
-+		if (err < 0)
-+			return err;
-+	}
-+	/* master capture volume + switch (CT2511) */
-+	if (snd_sbmixer_read(chip, SB_DSP4_MASTER_REC_DEV) == 0xe0)
-+		for (idx = 0; idx < ARRAY_SIZE(snd_sb16_master_rec_ctls); idx++) {
-+			err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_master_rec_ctls[idx]);
-+			if (err < 0)
-+				return err;
-+		}
-+	/* Aux input + switches (CT2511) */
-+	if (snd_sbmixer_read(chip, SB_DSP4_AUX_DEV) == 0xc0)
-+		for (idx = 0; idx < ARRAY_SIZE(snd_sb16_aux_ctls); idx++) {
-+			err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_aux_ctls[idx]);
-+			if (err < 0)
-+				return err;
-+		}
- 
- 	return 0;
  }
-
+ 
+ EXPORT_SYMBOL(snd_pcm_set_sync);
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 3fe99e6..e92bc62 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1619,6 +1619,9 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 	list_add_tail(&substream1->link_list, &substream->group->substreams);
+ 	substream->group->count++;
+ 	substream1->group = substream->group;
++	snd_pcm_set_sync(substream);
++	snd_pcm_set_sync(substream1);
++
+  _end:
+ 	write_unlock_irq(&snd_pcm_link_rwlock);
+ 	up_write(&snd_pcm_link_rwsem);
+@@ -1652,11 +1655,14 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
+ 	if (substream->group->count == 1) {	/* detach the last stream, too */
+ 		snd_pcm_group_for_each_entry(s, substream) {
+ 			relink_to_local(s);
++			snd_pcm_set_sync(s);
+ 			break;
+ 		}
+ 		kfree(substream->group);
+ 	}
+ 	relink_to_local(substream);
++	snd_pcm_set_sync(substream);
++
+        _end:
+ 	write_unlock_irq(&snd_pcm_link_rwlock);
+ 	up_write(&snd_pcm_link_rwsem);
 -- 
-Ondrej Zary
+1.7.6.5
