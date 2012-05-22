@@ -1,16 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/2] ALSA: update sync header when streams are
-	linked/unlinked
-Date: Tue, 22 May 2012 14:54:01 -0500
-Message-ID: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: core: group read of pointer,
+	tstamp and jiffies
+Date: Tue, 22 May 2012 14:54:02 -0500
+Message-ID: <1337716442-10411-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id F298B24554
+	by alsa0.perex.cz (Postfix) with ESMTP id D2C8D24555
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2012 21:54:15 +0200 (CEST)
+	Tue, 22 May 2012 21:54:16 +0200 (CEST)
+In-Reply-To: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,96 +26,81 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previous code only reported card number and was not updated
-when devices were linked/unlinked. This makes alsa-lib
-snd_pcm_info_get_sync totally useless.
-Add hooks to force update of sync header when devices are
-linked/unlinked, and provide more information such as
-number of devices and indices of capture/playback devices
-linked to
+Group read of hw_ptr, tstamp and jiffies in a sequence
+for better correlation. Previous code took timestamp at the
+end, which could introduce delays between audio time and
+system time.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/core/pcm_lib.c    |   37 ++++++++++++++++++++++++++++++++-----
- sound/core/pcm_native.c |    6 ++++++
- 2 files changed, 38 insertions(+), 5 deletions(-)
+ sound/core/pcm_lib.c |   23 ++++++++++++++++++-----
+ 1 files changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index faedb14..ae46d75 100644
+index ae46d75..3f3097d 100644
 --- a/sound/core/pcm_lib.c
 +++ b/sound/core/pcm_lib.c
-@@ -533,11 +533,38 @@ EXPORT_SYMBOL(snd_pcm_set_ops);
- void snd_pcm_set_sync(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	
--	runtime->sync.id32[0] = substream->pcm->card->number;
--	runtime->sync.id32[1] = -1;
--	runtime->sync.id32[2] = -1;
--	runtime->sync.id32[3] = -1;
-+	struct snd_pcm_substream *s;
-+	int dev_c, dev_p;
-+
-+	if (snd_pcm_stream_linked(substream)) {
-+		runtime->sync.id32[0] = substream->pcm->card->number;
-+		/* save number of devices linked */
-+		runtime->sync.id32[1] = substream->group->count-1;
-+		dev_c = dev_p = 0;
-+
-+		snd_pcm_group_for_each_entry(s, substream) {
-+			if (s == substream)
-+				continue;
-+			if (s->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+				dev_p++;
-+				if (dev_p == 1)
-+					runtime->sync.id32[2] = 0;
-+				/* save mask of linked playback devices */
-+				runtime->sync.id32[2] |= (1<<s->number);
-+			} else {
-+				dev_c++;
-+				if (dev_c == 1)
-+					runtime->sync.id32[3] = 0;
-+				/* save mask of linked capture devices */
-+				runtime->sync.id32[3] |= (1<<s->number);
-+			}
-+		}
-+	} else {
-+		runtime->sync.id32[0] = -1;
-+		runtime->sync.id32[1] = -1;
-+		runtime->sync.id32[2] = -1;
-+		runtime->sync.id32[3] = -1;
-+	}
- }
+@@ -313,9 +313,22 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	snd_pcm_uframes_t old_hw_ptr, new_hw_ptr, hw_base;
+ 	snd_pcm_sframes_t hdelta, delta;
+ 	unsigned long jdelta;
++	unsigned long curr_jiffies;
++	struct timespec curr_tstamp;
  
- EXPORT_SYMBOL(snd_pcm_set_sync);
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 3fe99e6..e92bc62 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1619,6 +1619,9 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
- 	list_add_tail(&substream1->link_list, &substream->group->substreams);
- 	substream->group->count++;
- 	substream1->group = substream->group;
-+	snd_pcm_set_sync(substream);
-+	snd_pcm_set_sync(substream1);
+ 	old_hw_ptr = runtime->status->hw_ptr;
 +
-  _end:
- 	write_unlock_irq(&snd_pcm_link_rwlock);
- 	up_write(&snd_pcm_link_rwsem);
-@@ -1652,11 +1655,14 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
- 	if (substream->group->count == 1) {	/* detach the last stream, too */
- 		snd_pcm_group_for_each_entry(s, substream) {
- 			relink_to_local(s);
-+			snd_pcm_set_sync(s);
- 			break;
- 		}
- 		kfree(substream->group);
++	/*
++	 * group pointer, time and jiffies reads to allow for more
++	 * accurate correlations/corrections.
++	 * The values are stored at the end of this routine after
++	 * corrections for hw_ptr position
++	 */
+ 	pos = substream->ops->pointer(substream);
++	curr_jiffies = jiffies;
++	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
++		snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
++
+ 	if (pos == SNDRV_PCM_POS_XRUN) {
+ 		xrun(substream);
+ 		return -EPIPE;
+@@ -343,7 +356,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		delta = runtime->hw_ptr_interrupt + runtime->period_size;
+ 		if (delta > new_hw_ptr) {
+ 			/* check for double acknowledged interrupts */
+-			hdelta = jiffies - runtime->hw_ptr_jiffies;
++			hdelta = curr_jiffies - runtime->hw_ptr_jiffies;
+ 			if (hdelta > runtime->hw_ptr_buffer_jiffies/2) {
+ 				hw_base += runtime->buffer_size;
+ 				if (hw_base >= runtime->boundary)
+@@ -388,7 +401,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		 * Without regular period interrupts, we have to check
+ 		 * the elapsed time to detect xruns.
+ 		 */
+-		jdelta = jiffies - runtime->hw_ptr_jiffies;
++		jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
+ 		if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
+ 			goto no_delta_check;
+ 		hdelta = jdelta - delta * HZ / runtime->rate;
+@@ -430,7 +443,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	if (hdelta < runtime->delay)
+ 		goto no_jiffies_check;
+ 	hdelta -= runtime->delay;
+-	jdelta = jiffies - runtime->hw_ptr_jiffies;
++	jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
+ 	if (((hdelta * HZ) / runtime->rate) > jdelta + HZ/100) {
+ 		delta = jdelta /
+ 			(((runtime->period_size * HZ) / runtime->rate)
+@@ -492,9 +505,9 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
  	}
- 	relink_to_local(substream);
-+	snd_pcm_set_sync(substream);
-+
-        _end:
- 	write_unlock_irq(&snd_pcm_link_rwlock);
- 	up_write(&snd_pcm_link_rwsem);
+ 	runtime->hw_ptr_base = hw_base;
+ 	runtime->status->hw_ptr = new_hw_ptr;
+-	runtime->hw_ptr_jiffies = jiffies;
++	runtime->hw_ptr_jiffies = curr_jiffies;
+ 	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
+-		snd_pcm_gettime(runtime, (struct timespec *)&runtime->status->tstamp);
++		runtime->status->tstamp = curr_tstamp;
+ 
+ 	return snd_pcm_update_state(substream, runtime);
+ }
 -- 
 1.7.6.5
