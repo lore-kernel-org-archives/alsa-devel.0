@@ -1,13 +1,22 @@
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH 1/2] ARM: MMP: add pxa-squ header file
-Date: Tue, 22 May 2012 09:36:39 +0800
-Message-ID: <CAN1soZzvTKNYGCk-+XzjegbTncM6rVYi4ph0+AQREsCrwVKfvA@mail.gmail.com>
-References: <1337330621-9072-1-git-send-email-zhouqiao@marvell.com>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: Re: [PATCH V2 00/11] enable imx6q_sabrelite sgtl5000
+	audio support
+Date: Tue, 22 May 2012 09:39:21 +0800
+Message-ID: <20120522013920.GE6206@b20223-02.ap.freescale.net>
+References: <1336563190-19974-1-git-send-email-richard.zhao@freescale.com>
+	<20120521125930.GC6206@b20223-02.ap.freescale.net>
+	<20120521144543.GA4063@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1337330621-9072-1-git-send-email-zhouqiao@marvell.com>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 958C41041F4
+	for <alsa-devel@alsa-project.org>;
+	Tue, 22 May 2012 03:39:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20120521144543.GA4063@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,82 +26,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, eric.y.miao@gmail.com, Liam Girdwood <lrg@ti.com>, alsa-devel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, dong.aisheng@linaro.org, ben-linux@fluff.org, vinod.koul@intel.com, w.sang@pengutronix.de, timur@freescale.com, linux-i2c@vger.kernel.org, kernel@pengutronix.de, dan.j.williams@intel.com, shawn.guo@linaro.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 18, 2012 at 4:43 PM, Qiao Zhou <zhouqiao@marvell.com> wrote:
-> add pxa-squ header file to support SQU DMA.
->
-> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
-> ---
-> =A0arch/arm/mach-mmp/include/mach/pxa-squ.h | =A0 39 ++++++++++++++++++++=
-++++++++++
-> =A01 files changed, 39 insertions(+), 0 deletions(-)
-> =A0create mode 100644 arch/arm/mach-mmp/include/mach/pxa-squ.h
->
-> diff --git a/arch/arm/mach-mmp/include/mach/pxa-squ.h b/arch/arm/mach-mmp=
-/include/mach/pxa-squ.h
-> new file mode 100644
-> index 0000000..3ee187f
-> --- /dev/null
-> +++ b/arch/arm/mach-mmp/include/mach/pxa-squ.h
-> @@ -0,0 +1,39 @@
-> +#ifndef __MACH_SQU_H
-> +#define __MACH_SQU_H
-> +
-> +#include <mach/addr-map.h>
-> +
-> +#define SQU_REGS_VIRT =A0(AXI_VIRT_BASE + 0xA0000)
-> +#define SQU_REG(x) =A0 =A0 (*((__iomem u32 *)(SQU_REGS_VIRT + (x))))
-> +
-> + /*SQU*/
-> +#define SDSAR(x) =A0 =A0 =A0 =A0 =A0 =A0 =A0 SQU_REG(0x810 + ((x) << 2))
-> +#define SDDAR(x) =A0 =A0 =A0 =A0 =A0 =A0 =A0 SQU_REG(0x820 + ((x) << 2))
-> +#define SDNDPR(x) =A0 =A0 =A0 =A0 =A0 =A0 =A0SQU_REG(0x830 + ((x) << 2))
-> +#define SDCR(x) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SQU_REG(0=
-x840 + ((x) << 2))
-> +#define SDIMR(x) =A0 =A0 =A0 =A0 =A0 =A0 =A0 SQU_REG(0x880 + ((x) << 2))
-> +#define SDISR(x) =A0 =A0 =A0 =A0 =A0 =A0 =A0 SQU_REG(0x8a0 + ((x) << 2))
-> +#define SDCR_SSPMOD =A0 =A0 =A0 =A0 =A0 =A0(1 << 21) =A0 =A0 =A0 /* SSPM=
-od */
-> +#define SDCR_FETCHND =A0 (1 << 13)
-> +#define SDCR_CHANEN =A0 =A0 =A0 =A0 =A0 =A0(1 << 12) =A0 =A0 =A0 /* Chan=
-nel Enable */
-> +#define SDCR_DST_ADDR_INC =A0 =A0 =A0(0 << 4)
-> +#define SDCR_DST_ADDR_HOLD =A0 =A0 (0x2 << 4)
-> +#define SDCR_SRC_ADDR_INC =A0 =A0 =A0(0 << 2)
-> +#define SDCR_SRC_ADDR_HOLD =A0 =A0 (0x2 << 2)
-> +#define SDCR_DMA_BURST_4B =A0 =A0 =A0(0x0 << 6)
-> +#define SDCR_DMA_BURST_8B =A0 =A0 =A0(0x1 << 6)
-> +#define SDCR_DMA_BURST_16B =A0 =A0 (0x3 << 6)
-> +#define SDCR_DMA_BURST_1B =A0 =A0 =A0(0x5 << 6)
-> +#define SDCR_DMA_BURST_2B =A0 =A0 =A0(0x6 << 6)
-> +#define SDCR_DMA_BURST_32B =A0 =A0 (0x7 << 6)
-> +#define SDIMR_COMP =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (1 << 0)
-> +
-> +struct pxa_squ_platdata {
-> + =A0 =A0 =A0 char *pool_name;
-> + =A0 =A0 =A0 int irq;
-> + =A0 =A0 =A0 int period_max_out; =A0 =A0 =A0 =A0 =A0 =A0 /* max period s=
-ize for playback */
-> + =A0 =A0 =A0 int period_max_in; =A0 =A0 =A0 =A0 =A0 =A0 =A0/* max period=
- size for capture */
-> + =A0 =A0 =A0 int buffer_max_out; =A0 =A0 =A0 =A0 =A0 =A0 /* max buffer s=
-ize for playback */
-> + =A0 =A0 =A0 int buffer_max_in; =A0 =A0 =A0 =A0 =A0 =A0 =A0/* max buffer=
- size for capture */
-> +};
-> +#endif /* __MACH_SQU_H */
-> --
-> 1.7.4.1
->
-
-Acked all.
-
-Mark,
-
-Would you mind to apply this patch series?
+On Mon, May 21, 2012 at 03:45:44PM +0100, Mark Brown wrote:
+> On Mon, May 21, 2012 at 08:59:31PM +0800, Richard Zhao wrote:
+> 
+> > >   ASoC: imx-audmux: add pinctrl support
+> > >   ASoC: fsl_ssi: convert to use devm_clk_get
+> 
+> > Linus has sent out pull request for pinctrl. So is that ok for you
+> > to pick up the above two patch?
+> 
+> No, apart from anything else the second patch depends on clkdev which is
+> nothing to do with pinctrl!
+All right, It's my fault to mix a clean up patch. It may hold until the
+merge window is closed.
+>  For the first patch it wasn't clear if the
+> changes in pinctrl were the actual dependencies or if there were more
+> things needed from the ARM tree,
+I remembered someone already explained the dependencies. It depends
+on imx pinctrl work and dummy pinctrl enabled in ARM platform code. It
+is why Shawn suggest it goes to ARM SoC.
+> and in any case until those patches are
+> actually in the ASoC tree we'll break the build if they get applied.
+All righ, It's ok, if you think, I have to wait for one more cycle to
+see the patch on mainline.
+> 
+> Guys, you really need to think about how you're organising what you're
+> doing more.  You need to split your work out into focused lines of
+> development rather than just having a single branch.  
+Except the clean up patch, others are all related to enable audio. Do
+you mean I supposed to split them in advance?
+> 
+> This patch series contains a whole bunch of different changes (the
+> devm_clk_get() change is as far as I can tell completely unrelated to
+> the rest for example) with unclear dependencies on multiple external
+> trees.  You should be splitting unrelated changes out, trying to
+> minimise interdependencies, and clearly identifying the dependencies
+> that are there we can get things applied in a timely fashion.
+hmm.. I should write more about dependencies in commit message.
+> 
+> Please resend these patches *after* their dependencies are in mainline.
+OK.
 
 Thanks
-Haojian
+Richard
