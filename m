@@ -1,17 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: UAC2 defaults to max sampling rate
-Date: Wed, 23 May 2012 11:18:10 +0200
-Message-ID: <4FBCAB52.8030904@ladisch.de>
-References: <4FBC98FC.6000200@freemail.gr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
+	for ML7213
+Date: Wed, 23 May 2012 10:41:00 +0100
+Message-ID: <20120523093857.GC4085@opensource.wolfsonmicro.com>
+References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
+	<1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
+	<20120321160913.GF3226@opensource.wolfsonmicro.com>
+	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
+	<20120326154009.GA17506@sirena.org.uk>
+	<CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6985311460722615423=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id C58EE103F95
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D690C104168
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2012 11:18:11 +0200 (CEST)
-In-Reply-To: <4FBC98FC.6000200@freemail.gr>
+	Wed, 23 May 2012 11:41:02 +0200 (CEST)
+In-Reply-To: <CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +26,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: adelias <adelias@freemail.gr>
-Cc: alsa-devel@alsa-project.org, zonque@gmail.com
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-adelias wrote:
-> I'm running ALSA 1.0.23 and kernel 2.6.37 on ARM. The UAC2 audio device
-> is the XMOS reference board.
->
-> This is what I'm observing. As soon as the XMOS board is plugged in to
-> the USB port, the display on my DAC indicates that is has locked at
-> 192kHz which is the maximum sampling rate supported by the XMOS.
 
-This is an as-yet unfixed bug in the driver.
-(The usb_set_interface call in snd_usb_add_endpoint is completely
-superfluous.)
+--===============6985311460722615423==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LKTjZJSUETSlgu2t"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--LKTjZJSUETSlgu2t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, May 23, 2012 at 01:17:15PM +0900, Tomoya MORINAGA wrote:
+> On Tue, Mar 27, 2012 at 12:40 AM, Mark Brown
+
+> > So, I just said to the SPEAr guys that I really want to see support for
+> > non-cyclic dmaengine added to the helper library rather than open
+> > coding. ?We're seeing lots of platforms moving to dmaengine (as well as
+
+> What is going on this ?
+> Let me know this status.
+
+Nobody seems to be working on it as far as I can tell, I've certainly
+not seen any patches.
+
+--LKTjZJSUETSlgu2t
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPvLChAAoJEBus8iNuMP3dG+MP/jHYji4kkOe1M0pXlN84scSn
+mlgEbih+4LcmU1uePa/nwotrnYc7ij5efZREYkcVegDGwkXptRvhEpAqqFi/FdIV
+fffFjStbLQsiurDaG2P0IRFik6E8fDAxbMvR+NdK1aEoNnNIuYgdhKXe0aYbw2fW
+7gOVxY8zKtZQt9vChsVPph8I0eQTIUq9ZJ8uoyGKJ/0VwPoAOb75so1GmqaRHoH0
+R/rcuxNsm7TWohcOSKpu2W8RKUIjBkzMYQktyZVIvnKd/S9XtUYk3tGeYAwVaTwv
+Ao/VgYQA0dQCPqDJwSJca0kcx/FZCtMatmKDzSRLSBNN0gObMEBrXxB97qX0sKRD
+porUyJ/uzcMPKwxcGnF6ZYyFYgj+cnXYHujz6DX+1m8XpmCCuCrsZ41wO0fPnt/D
+YhIEBpLr4i2jflYjliVcx3I2f8NNkbck+8vH6egeqnwDHs0iChc9Rase4zkUEOl3
+5OHoyQN4EuCtfGe1DFvTsr/sN8V0+yIETXjkycoBwvp3xNSGTbe7XeqIJLX8OTys
+wvrYj7cTT0kslrBEGnxFSRvs0MnZT5li84gqMgIxmvbsIKDgxw7STAHQ1r2xxxDc
+hJ90q2tRF4c7m/8rv+e9ksnrt/MTcVJeaAZ3ArlrpDVqF2G6Wet7F26c1Ui9XMBj
+oaRpfUc7IBRBF1j9q9nY
+=Iy1I
+-----END PGP SIGNATURE-----
+
+--LKTjZJSUETSlgu2t--
+
+--===============6985311460722615423==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6985311460722615423==--
