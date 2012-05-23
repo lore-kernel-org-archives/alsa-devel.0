@@ -1,18 +1,22 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: [PATCH] ucm: Handle repeat device and modifier
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ucm: Handle repeat device and modifier
 	enables/disables
-Date: Wed, 23 May 2012 18:16:33 +0530
-Message-ID: <1337777193-26611-1-git-send-email-arun.raghavan@collabora.co.uk>
+Date: Wed, 23 May 2012 14:27:24 +0100
+Message-ID: <1337779644.14677.0.camel@odin>
 References: <1337149499-10705-1-git-send-email-arun.raghavan@collabora.co.uk>
+	<1337777193-26611-1-git-send-email-arun.raghavan@collabora.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EB86244F2
+Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
+	[74.125.149.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2BD9C24519
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2012 14:46:52 +0200 (CEST)
-In-Reply-To: <1337149499-10705-1-git-send-email-arun.raghavan@collabora.co.uk>
+	Wed, 23 May 2012 15:27:31 +0200 (CEST)
+Received: by wibhn6 with SMTP id hn6so4094836wib.10
+	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 06:27:29 -0700 (PDT)
+In-Reply-To: <1337777193-26611-1-git-send-email-arun.raghavan@collabora.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,117 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Feng Wei <feng.wei@linaro.org>
+To: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Feng Wei <feng.wei@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-[Re-re-send with appropriate CC list. Sorry about the spam!]
+On Wed, 2012-05-23 at 18:16 +0530, Arun Raghavan wrote:
+> [Re-re-send with appropriate CC list. Sorry about the spam!]
+> 
+> Currently, enabling a device twice can cause it to be added to
+> snd_use_case_mgr_t->active_devices twice, causing the list to become a
+> loop and subsequent uses to result in an infinite loop.
+> 
+> This patch makes sure we don't enable/disable a device twice, and avoid
+> doing the same for modifiers.
+> 
+> Signed-off-by: Arun Raghavan <arun.raghavan@collabora.co.uk>
 
-Currently, enabling a device twice can cause it to be added to
-snd_use_case_mgr_t->active_devices twice, causing the list to become a
-loop and subsequent uses to result in an infinite loop.
-
-This patch makes sure we don't enable/disable a device twice, and avoid
-doing the same for modifiers.
-
-Signed-off-by: Arun Raghavan <arun.raghavan@collabora.co.uk>
----
- src/ucm/main.c |   62 ++++++++++++++++++++++++++++++-------------------------
- 1 files changed, 34 insertions(+), 28 deletions(-)
-
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 76ca151..79901f8 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -565,6 +565,34 @@ static struct use_case_modifier *
- 	return NULL;
- }
- 
-+long device_status(snd_use_case_mgr_t *uc_mgr,
-+                   const char *device_name)
-+{
-+        struct use_case_device *dev;
-+        struct list_head *pos;
-+
-+        list_for_each(pos, &uc_mgr->active_devices) {
-+                dev = list_entry(pos, struct use_case_device, active_list);
-+                if (strcmp(dev->name, device_name) == 0)
-+                        return 1;
-+        }
-+        return 0;
-+}
-+
-+long modifier_status(snd_use_case_mgr_t *uc_mgr,
-+                     const char *modifier_name)
-+{
-+        struct use_case_modifier *mod;
-+        struct list_head *pos;
-+
-+        list_for_each(pos, &uc_mgr->active_modifiers) {
-+                mod = list_entry(pos, struct use_case_modifier, active_list);
-+                if (strcmp(mod->name, modifier_name) == 0)
-+                        return 1;
-+        }
-+        return 0;
-+}
-+
- /**
-  * \brief Set verb
-  * \param uc_mgr Use case manager
-@@ -607,6 +635,9 @@ static int set_modifier(snd_use_case_mgr_t *uc_mgr,
- 	struct list_head *seq;
- 	int err;
- 
-+	if (modifier_status(uc_mgr, modifier->name) == enable)
-+		return 0;
-+
- 	if (enable) {
- 		seq = &modifier->enable_list;
- 	} else {
-@@ -638,6 +669,9 @@ static int set_device(snd_use_case_mgr_t *uc_mgr,
- 	struct list_head *seq;
- 	int err;
- 
-+        if (device_status(uc_mgr, device->name) == enable)
-+		return 0;
-+
- 	if (enable) {
- 		seq = &device->enable_list;
- 	} else {
-@@ -1316,34 +1350,6 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
-         return err;
- }
- 
--long device_status(snd_use_case_mgr_t *uc_mgr,
--                   const char *device_name)
--{
--        struct use_case_device *dev;
--        struct list_head *pos;
--        
--        list_for_each(pos, &uc_mgr->active_devices) {
--                dev = list_entry(pos, struct use_case_device, active_list);
--                if (strcmp(dev->name, device_name) == 0)
--                        return 1;
--        }
--        return 0;
--}
--
--long modifier_status(snd_use_case_mgr_t *uc_mgr,
--                     const char *modifier_name)
--{
--        struct use_case_modifier *mod;
--        struct list_head *pos;
--        
--        list_for_each(pos, &uc_mgr->active_modifiers) {
--                mod = list_entry(pos, struct use_case_modifier, active_list);
--                if (strcmp(mod->name, modifier_name) == 0)
--                        return 1;
--        }
--        return 0;
--}
--
- 
- /**
-  * \brief Get current - integer
--- 
-1.7.8.6
+Acked-by: Liam Girdwood <lrg@ti.com>
