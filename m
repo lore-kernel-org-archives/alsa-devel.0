@@ -1,29 +1,33 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver for ML7213
-Date: Wed, 23 May 2012 13:17:15 +0900
-Message-ID: <CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
-References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
-	<1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120321160913.GF3226@opensource.wolfsonmicro.com>
-	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
-	<20120326154009.GA17506@sirena.org.uk>
+From: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: tegra+alc5632: move all GPIO setup into probe
+Date: Wed, 23 May 2012 09:00:11 +0300
+Message-ID: <CALq1K=KZfp48oVHMD7A5RK==-CKet0yOmu-kkPS4XW-R0+noTw@mail.gmail.com>
+References: <1337724592-12434-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120326154009.GA17506@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, lars@metafoo.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1337724592-12434-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 27, 2012 at 12:40 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> So, I just said to the SPEAr guys that I really want to see support for
-> non-cyclic dmaengine added to the helper library rather than open
-> coding. ?We're seeing lots of platforms moving to dmaengine (as well as
-What is going on this ?
-Let me know this status.
+On Wed, May 23, 2012 at 1:09 AM, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>=
+ wrote:
+>
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>
+> Now that deferred probe exists, we can parse device tree and request
+> GPIOs from probe(), rather than deferring this to the DAI link's init=
+().
+>
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> ---
+Thanks.
 
--- 
-ROHM Co., Ltd.
-tomoya
+
+
+--
+Leon Romanovsky | Independent Linux Consultant
+=C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0www.leon.nu=C2=A0| leon-2ukJVAZIZ/Y@public.gmane.org
