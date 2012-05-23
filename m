@@ -1,13 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: fix pxa-ssp compiling issue
-	under mach-mmp
-Date: Wed, 23 May 2012 12:44:56 +0100
-Message-ID: <20120523114455.GA18646@opensource.wolfsonmicro.com>
-References: <1337669906-12745-1-git-send-email-zhouqiao@marvell.com>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: [PATCH] ucm: Handle repeat device and modifier
+	enables/disables
+Date: Wed, 23 May 2012 18:16:33 +0530
+Message-ID: <1337777193-26611-1-git-send-email-arun.raghavan@collabora.co.uk>
+References: <1337149499-10705-1-git-send-email-arun.raghavan@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0936436372709108595=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1337669906-12745-1-git-send-email-zhouqiao@marvell.com>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EB86244F2
+	for <alsa-devel@alsa-project.org>;
+	Wed, 23 May 2012 14:46:52 +0200 (CEST)
+In-Reply-To: <1337149499-10705-1-git-send-email-arun.raghavan@collabora.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,73 +23,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Grant Likely <grant.likely@secretlab.ca>, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org
+Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Feng Wei <feng.wei@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+[Re-re-send with appropriate CC list. Sorry about the spam!]
 
---===============0936436372709108595==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
-Content-Disposition: inline
+Currently, enabling a device twice can cause it to be added to
+snd_use_case_mgr_t->active_devices twice, causing the list to become a
+loop and subsequent uses to result in an infinite loop.
 
+This patch makes sure we don't enable/disable a device twice, and avoid
+doing the same for modifiers.
 
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Arun Raghavan <arun.raghavan@collabora.co.uk>
+---
+ src/ucm/main.c |   62 ++++++++++++++++++++++++++++++-------------------------
+ 1 files changed, 34 insertions(+), 28 deletions(-)
 
-On Tue, May 22, 2012 at 02:58:26PM +0800, Qiao Zhou wrote:
-
-> +#if defined(CONFIG_ARCH_PXA)
->  	if (cpu_is_pxa25x() && ssp->type == PXA25x_SSP) {
->  		sscr0 &= ~0x0000ff00;
->  		sscr0 |= ((div - 2)/2) << 8; /* 2..512 */
->  	} else {
-> +#endif
->  		sscr0 &= ~0x000fff00;
->  		sscr0 |= (div - 1) << 8;     /* 1..4096 */
-> +#if defined(CONFIG_ARCH_PXA)
->  	}
-> +#endif
-
-This is pretty large and fiddly, especially code like the above.  Would
-it not be simpler to just define always false versions of these when on
-MMP, either in this driver or in the arch headers (where it'd help other
-drivers too)?  Right now it doesn't make the code look nice.
-
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPvM2RAAoJEBus8iNuMP3dePsP+wV+OEh1JAlqp9K3YhcuC/Hv
-PdAoVLFdbHdYUTkFKgd+K4PkdbNO/6+hq7ibwvU2KEmzRmRUgzcveeNSrnvyxcTz
-Vzl3FtLZNboOwrwcMJVR3qjdFj3Ld+ayuA51TaqWH/UKFY0/gdtUoHb54a9zOgM2
-aQTTOYdhxx7tSJEToXjeVqfpDJxvPBq6ajbtwJHKQew6IZJOWtEWqOr7gSw2/bRZ
-pwZ/FgGduurIYYfguYRJEOXQ7YrOUaeuDgbvc9ZNhDFFya7EoVDHoFtq3cnt85L9
-GdFqL0hZoGSXu8iSd8TEKcE9ri8AGsgxKF0N4tM+sqRnseMp3ytOw8CDMwuZ5A6u
-YapwioIUtCSC4cN0CvbS+Z+BvpZWLoIH/OXvA3MkSW/TKmBnhjXmyB6e5J6CKz1g
-dgBK0O5tJwKwxtAUWkvHK2Q9OXy9k0CmKKdccUECCB/GiMndB0wtSmTEgVstGeNv
-w8M7v1o3XwcxrzyJ9CWo9Hs98Uypl0P75wt5VQpmfID4FN4QvUWpcQ82oEVBacnT
-R9dfrtkXmaxvKYamVRmRuaCsi64uotp2uNpJVxkS2J1OSrC7oExd5im+OH4Eg7L2
-1vFvrcV6EesJHcJXEHV4ogj/ayVsTOWDr5qfbQQZCbOZBMNt3oUddWZ1NCy5ZY6i
-nPWckdZIAfiiyB8Ubhqa
-=cnnC
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
---===============0936436372709108595==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0936436372709108595==--
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 76ca151..79901f8 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -565,6 +565,34 @@ static struct use_case_modifier *
+ 	return NULL;
+ }
+ 
++long device_status(snd_use_case_mgr_t *uc_mgr,
++                   const char *device_name)
++{
++        struct use_case_device *dev;
++        struct list_head *pos;
++
++        list_for_each(pos, &uc_mgr->active_devices) {
++                dev = list_entry(pos, struct use_case_device, active_list);
++                if (strcmp(dev->name, device_name) == 0)
++                        return 1;
++        }
++        return 0;
++}
++
++long modifier_status(snd_use_case_mgr_t *uc_mgr,
++                     const char *modifier_name)
++{
++        struct use_case_modifier *mod;
++        struct list_head *pos;
++
++        list_for_each(pos, &uc_mgr->active_modifiers) {
++                mod = list_entry(pos, struct use_case_modifier, active_list);
++                if (strcmp(mod->name, modifier_name) == 0)
++                        return 1;
++        }
++        return 0;
++}
++
+ /**
+  * \brief Set verb
+  * \param uc_mgr Use case manager
+@@ -607,6 +635,9 @@ static int set_modifier(snd_use_case_mgr_t *uc_mgr,
+ 	struct list_head *seq;
+ 	int err;
+ 
++	if (modifier_status(uc_mgr, modifier->name) == enable)
++		return 0;
++
+ 	if (enable) {
+ 		seq = &modifier->enable_list;
+ 	} else {
+@@ -638,6 +669,9 @@ static int set_device(snd_use_case_mgr_t *uc_mgr,
+ 	struct list_head *seq;
+ 	int err;
+ 
++        if (device_status(uc_mgr, device->name) == enable)
++		return 0;
++
+ 	if (enable) {
+ 		seq = &device->enable_list;
+ 	} else {
+@@ -1316,34 +1350,6 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+         return err;
+ }
+ 
+-long device_status(snd_use_case_mgr_t *uc_mgr,
+-                   const char *device_name)
+-{
+-        struct use_case_device *dev;
+-        struct list_head *pos;
+-        
+-        list_for_each(pos, &uc_mgr->active_devices) {
+-                dev = list_entry(pos, struct use_case_device, active_list);
+-                if (strcmp(dev->name, device_name) == 0)
+-                        return 1;
+-        }
+-        return 0;
+-}
+-
+-long modifier_status(snd_use_case_mgr_t *uc_mgr,
+-                     const char *modifier_name)
+-{
+-        struct use_case_modifier *mod;
+-        struct list_head *pos;
+-        
+-        list_for_each(pos, &uc_mgr->active_modifiers) {
+-                mod = list_entry(pos, struct use_case_modifier, active_list);
+-                if (strcmp(mod->name, modifier_name) == 0)
+-                        return 1;
+-        }
+-        return 0;
+-}
+-
+ 
+ /**
+  * \brief Get current - integer
+-- 
+1.7.8.6
