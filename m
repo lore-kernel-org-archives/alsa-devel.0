@@ -1,33 +1,46 @@
-From: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: tegra+alc5632: move all GPIO setup into probe
-Date: Wed, 23 May 2012 09:00:11 +0300
-Message-ID: <CALq1K=KZfp48oVHMD7A5RK==-CKet0yOmu-kkPS4XW-R0+noTw@mail.gmail.com>
-References: <1337724592-12434-1-git-send-email-swarren@wwwdotorg.org>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 10/11] ASoC: codecs: Add AB8500 codec-driver
+Date: Wed, 23 May 2012 09:04:49 +0200
+Message-ID: <4FBC8C11.6020602@stericsson.com>
+References: <1336485450-27405-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120508182751.GJ15893@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1337724592-12434-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
+	[207.126.144.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4016B24458
+	for <alsa-devel@alsa-project.org>;
+	Wed, 23 May 2012 09:05:23 +0200 (CEST)
+In-Reply-To: <20120508182751.GJ15893@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 23, 2012 at 1:09 AM, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>=
- wrote:
->
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->
-> Now that deferred probe exists, we can parse device tree and request
-> GPIOs from probe(), rather than deferring this to the DAI link's init=
-().
->
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> ---
-Thanks.
+On 05/08/2012 08:27 PM, Mark Brown wrote:
+
+>> +static struct snd_kcontrol_new ab8500_ctrls[] = {
+>> +	/* Charge pump */
+>> +	SOC_ENUM("Charge Pump High Threshold For Low Voltage",
+>> +		soc_enum_envdeththre),
+>> +	SOC_ENUM("Charge Pump Low Threshold For Low Voltage",
+>> +		soc_enum_envdetlthre),
+>> +	SOC_ENUM("Charge Pump Envelope Detection", soc_enum_envdetcpen),
+>> +	SOC_ENUM("Charge Pump Envelope Detection Decay Time",
+>> +		soc_enum_envdettime),
+> 
+> Again, why is this all exposed to userspace?
 
 
-
---
-Leon Romanovsky | Independent Linux Consultant
-=C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0www.leon.nu=C2=A0| leon-2ukJVAZIZ/Y@public.gmane.org
+These one we need as ALSA-controls. They are parameters that we can tune during
+runtime and are not hard-wired in any way.
