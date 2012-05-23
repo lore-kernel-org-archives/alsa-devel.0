@@ -1,19 +1,26 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ALSA: update sync header when streams
- are linked/unlinked
-Date: Wed, 23 May 2012 17:01:54 -0500
-Message-ID: <4FBD5E52.9050203@linux.intel.com>
-References: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>	<s5h62bn93sc.wl%tiwai@suse.de>
-	<4FBD331E.7010802@linux.intel.com> <4FBD3B38.4050005@ladisch.de>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
+	for ML7213
+Date: Thu, 24 May 2012 08:46:03 +0900
+Message-ID: <CANKRQnhNWC2F6zKgBMJY7HnipJbA5p-=6Lz4uGZqBKNQ688Z3w@mail.gmail.com>
+References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
+	<1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
+	<20120321160913.GF3226@opensource.wolfsonmicro.com>
+	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
+	<20120326154009.GA17506@sirena.org.uk>
+	<CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
+	<20120523093857.GC4085@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81AE8243AA
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 449302443C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 May 2012 00:01:58 +0200 (CEST)
-In-Reply-To: <4FBD3B38.4050005@ladisch.de>
+	Thu, 24 May 2012 01:46:05 +0200 (CEST)
+Received: by pbbrp16 with SMTP id rp16so13143644pbb.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 16:46:03 -0700 (PDT)
+In-Reply-To: <20120523093857.GC4085@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +30,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
->> If I understand you well, the sync id should be a unique identifier
->> shared by all linked streams in the same group.
-> Just to clarify: does the sync id identify streams that are linked, or
-> streams that can be started atomically when linked?  Because at the
-> moment, all drivers implement the latter.  Furthermore, it's possible
-> to link completely unrelated devices, so not even the card number could
-> be used for the former.
-I may have a very Intel-centric view, but it should be the former, 
-identify all streams currently linked. All devices controlled by the 
-same HDAudio controller can be linked at any time, providing the list of 
-possible streams to link to does help anyone since the information is 
-known by default.
-However, I've also seen that a lot of non-HDAudio drivers seem to 
-provide the ability to link only playback and capture for synchronized 
-full-duplex operation. This is a much simpler case than multiple 
-playback/capture devices, most serial links (SSI, McBSP, SSP, etc) 
-provide such capabilities. Bottom line is that maybe the sync 
-information needs to provide both the devices that can be linked and the 
-devices currently linked.
+On Wed, May 23, 2012 at 6:41 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+>> > So, I just said to the SPEAr guys that I really want to see support for
+>> > non-cyclic dmaengine added to the helper library rather than open
+>> > coding. ?We're seeing lots of platforms moving to dmaengine (as well as
+>
+>> What is going on this ?
+>> Let me know this status.
+>
+> Nobody seems to be working on it as far as I can tell, I've certainly
+> not seen any patches.
 
-Regarding the card #, linking between devices handled by different 
-controllers is not supported in hardware, only 32 devices controlled 
-with the same SSYNC register can be linked. In addition there are tests 
-in the HDAudio code to yank devices with a different card number from 
-the group (see azx_pcm_trigger() in hda_intel.c)
--Pierre
+If so, could you accept current platform/machine driver ?
+
+thanks in advance.
+-- 
+ROHM Co., Ltd.
+tomoya
