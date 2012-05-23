@@ -1,25 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 1/2] ALSA: update sync header when streams
  are linked/unlinked
-Date: Wed, 23 May 2012 21:32:08 +0200
-Message-ID: <4FBD3B38.4050005@ladisch.de>
+Date: Wed, 23 May 2012 17:01:54 -0500
+Message-ID: <4FBD5E52.9050203@linux.intel.com>
 References: <1337716442-10411-1-git-send-email-pierre-louis.bossart@linux.intel.com>	<s5h62bn93sc.wl%tiwai@suse.de>
-	<4FBD331E.7010802@linux.intel.com>
+	<4FBD331E.7010802@linux.intel.com> <4FBD3B38.4050005@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 471FF24141
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81AE8243AA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2012 21:32:34 +0200 (CEST)
-Received: from compute2.internal (compute2.nyi.mail.srv.osa [10.202.2.42])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 6746F20DC7
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 15:32:33 -0400 (EDT)
-Received: from [192.168.42.198] (unknown [46.115.35.238])
-	by mail.messagingengine.com (Postfix) with ESMTPA id B11578E0200
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 15:32:31 -0400 (EDT)
-In-Reply-To: <4FBD331E.7010802@linux.intel.com>
+	Thu, 24 May 2012 00:01:58 +0200 (CEST)
+In-Reply-To: <4FBD3B38.4050005@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,22 +26,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Louis Bossart wrote:
->> The fact that the driver currently sets only the card number is
->> actually problematic.  It's not unique enough.  This should be fixed.
->> But, exposing the substream bitmask doesn't help much because it can't
->> be fully implemented in the sync id size.  If you need to know which
->> streams are linked, loop over all streams and check the sync id.
->
-> If I understand you well, the sync id should be a unique identifier
-> shared by all linked streams in the same group.
+>> If I understand you well, the sync id should be a unique identifier
+>> shared by all linked streams in the same group.
+> Just to clarify: does the sync id identify streams that are linked, or
+> streams that can be started atomically when linked?  Because at the
+> moment, all drivers implement the latter.  Furthermore, it's possible
+> to link completely unrelated devices, so not even the card number could
+> be used for the former.
+I may have a very Intel-centric view, but it should be the former, 
+identify all streams currently linked. All devices controlled by the 
+same HDAudio controller can be linked at any time, providing the list of 
+possible streams to link to does help anyone since the information is 
+known by default.
+However, I've also seen that a lot of non-HDAudio drivers seem to 
+provide the ability to link only playback and capture for synchronized 
+full-duplex operation. This is a much simpler case than multiple 
+playback/capture devices, most serial links (SSI, McBSP, SSP, etc) 
+provide such capabilities. Bottom line is that maybe the sync 
+information needs to provide both the devices that can be linked and the 
+devices currently linked.
 
-Just to clarify: does the sync id identify streams that are linked, or
-streams that can be started atomically when linked?  Because at the
-moment, all drivers implement the latter.  Furthermore, it's possible
-to link completely unrelated devices, so not even the card number could
-be used for the former.
-
-
-Regards,
-Clemens
+Regarding the card #, linking between devices handled by different 
+controllers is not supported in hardware, only 32 devices controlled 
+with the same SSYNC register can be linked. In addition there are tests 
+in the HDAudio code to yank devices with a different card number from 
+the group (see azx_pcm_trigger() in hda_intel.c)
+-Pierre
