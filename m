@@ -1,25 +1,19 @@
-From: adelias <adelias@freemail.gr>
-Subject: UAC2 defaults to max sampling rate
-Date: Wed, 23 May 2012 10:59:56 +0300
-Message-ID: <4FBC98FC.6000200@freemail.gr>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH 2/3 v2] sb_mixer: Autodetect optional SB16
+	mixer controls
+Date: Wed, 23 May 2012 10:07:15 +0200
+Message-ID: <201205231007.16100.linux@rainbow-software.org>
+References: <201205222145.00058.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FE3D2449E
+Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id BEF5324492
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2012 10:00:08 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SX6UE-00060m-Cf
-	for alsa-devel@alsa-project.org; Wed, 23 May 2012 10:00:02 +0200
-Received: from 62.1.30.89.dsl.dyn.forthnet.gr ([62.1.30.89])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 10:00:02 +0200
-Received: from adelias by 62.1.30.89.dsl.dyn.forthnet.gr with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 10:00:02 +0200
+	Wed, 23 May 2012 10:07:35 +0200 (CEST)
+In-Reply-To: <201205222145.00058.linux@rainbow-software.org>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,20 +23,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: zonque@gmail.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Tone (bass/treble), gain and 3D mixer controls are not present on all SB16 cards.
 
-I'm running ALSA 1.0.23 and kernel 2.6.37 on ARM. The UAC2 audio device 
-is the XMOS reference board.
+This attempts to detect chip type and enable them only if they're really present.
 
-This is what I'm observing. As soon as the XMOS board is plugged in to 
-the USB port, the display on my DAC indicates that is has locked at 
-192kHz which is the maximum sampling rate supported by the XMOS.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+Removed a debug printk.
 
-Is this the expected behavior or can I specify the defualt sampling rate 
-at start up?
+--- a/sound/isa/sb/sb_mixer.c
++++ b/sound/isa/sb/sb_mixer.c
+@@ -592,10 +592,6 @@ static struct sbmix_elem snd_sb16_controls[] = {
+ 	SB_SINGLE("Mic Playback Switch", SB_DSP4_OUTPUT_SW, 0, 1),
+ 	SB_SINGLE("Mic Volume", SB_DSP4_MIC_DEV, 3, 31),
+ 	SB_SINGLE("Beep Volume", SB_DSP4_SPEAKER_DEV, 6, 3),
+-	SB_DOUBLE("Gain Capture Volume",
+-		  SB_DSP4_IGAIN_DEV, (SB_DSP4_IGAIN_DEV + 1), 6, 6, 3),
+-	SB_DOUBLE("Gain Playback Volume",
+-		  SB_DSP4_OGAIN_DEV, (SB_DSP4_OGAIN_DEV + 1), 6, 6, 3),
+ 	SB16_INPUT_SW("Line Capture Route",
+ 		      SB_DSP4_INPUT_LEFT, SB_DSP4_INPUT_RIGHT, 4, 3),
+ 	SB_DOUBLE("Line Playback Switch",
+@@ -603,13 +599,25 @@ static struct sbmix_elem snd_sb16_controls[] = {
+ 	SB_DOUBLE("Line Volume",
+ 		  SB_DSP4_LINE_DEV, (SB_DSP4_LINE_DEV + 1), 3, 3, 31),
+ 	SB_SINGLE("Mic Auto Gain", SB_DSP4_MIC_AGC, 0, 1),
+-	SB_SINGLE("3D Control - Switch", SB_DSP4_3DSE, 0, 1),
++};
++
++static struct sbmix_elem snd_sb16_tone_ctls[] = {
+ 	SB_DOUBLE("Tone Control - Bass",
+ 		  SB_DSP4_BASS_DEV, (SB_DSP4_BASS_DEV + 1), 4, 4, 15),
+ 	SB_DOUBLE("Tone Control - Treble",
+-		  SB_DSP4_TREBLE_DEV, (SB_DSP4_TREBLE_DEV + 1), 4, 4, 15)
++		  SB_DSP4_TREBLE_DEV, (SB_DSP4_TREBLE_DEV + 1), 4, 4, 15),
++};
++
++static struct sbmix_elem snd_sb16_gain_ctls[] = {
++	SB_DOUBLE("Gain Capture Volume",
++		  SB_DSP4_IGAIN_DEV, (SB_DSP4_IGAIN_DEV + 1), 6, 6, 3),
++	SB_DOUBLE("Gain Playback Volume",
++		  SB_DSP4_OGAIN_DEV, (SB_DSP4_OGAIN_DEV + 1), 6, 6, 3),
+ };
+ 
++static struct sbmix_elem snd_sb16_3d_ctl =
++	SB_SINGLE("3D Control - Switch", SB_DSP4_3DSE, 0, 1);
++
+ static unsigned char snd_sb16_init_values[][2] = {
+ 	{ SB_DSP4_MASTER_DEV + 0, 0 },
+ 	{ SB_DSP4_MASTER_DEV + 1, 0 },
+@@ -720,6 +728,70 @@ static unsigned char snd_als4000_init_values[][2] = {
+ 	{ SB_ALS4000_MIC_IN_GAIN, 0 },
+ };
+ 
++static int snd_sbmixer_sb16_opt_init(struct snd_sb *chip)
++{
++	int idx, err;
++	enum { CLASSIC, CT2504, CT2505, CT2511, CT8903, CT8920 } sb16_type;
++	/*
++	   The detection is a mess because some chips have registers that
++	   appear to work (read/write) but don't do anything. This applies
++	   mainly to tone controls which are present on all SB16 cards but
++	   do nothing on all Vibra chips except CT2502. Also CT8903 appears to
++	   have additional switch registers but they have no effect too.
++	   CT8920 has non-working gain.
++
++	   This tries to detect chip type. CLASSIC means older non-integrated
++	   cards (CT1746/CT1747/CT1749 + CT1745 mixer).
++	   No detection code for CT2501 Vibra 16, CT2502 Vibra 16Pro,
++	   CT2508 Vibra 16CL and CT2510 Vibra 16X (lack of HW for testing).
++	*/
++	sb16_type = CLASSIC;
++	if (snd_sbmixer_read(chip, SB_DSP4_IRQSTATUS) & 0x40) {
++		/* read chip ID (only present on newer (PnP?) chips) */
++		u16 id = snd_sbmixer_read(chip, 0xfd) |
++			 snd_sbmixer_read(chip, 0xfe) << 8;
++		switch (id) {
++		case 0xffff:	/* No ID? Assume CT2504 Vibra 16S */
++			sb16_type = CT2504;
++			break;
++		case 0x0721:	/* CT2505 Vibra 16C */
++			sb16_type = CT2505;
++			break;
++		case 0x0810:	/* CT2511 Vibra 16XV */
++			sb16_type = CT2511;
++			break;
++		case 0x1190:	/* CT8903 AWE64 */
++			sb16_type = CT8903;
++			break;
++		case 0x1241:	/* CT8920 AWE64 */
++			sb16_type = CT8920;
++			break;
++		}
++	}
++	/* tone controls */
++	if (sb16_type == CLASSIC || sb16_type == CT8903 || sb16_type == CT8920)
++		for (idx = 0; idx < ARRAY_SIZE(snd_sb16_tone_ctls); idx++) {
++			err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_tone_ctls[idx]);
++			if (err < 0)
++				return err;
++		}
++	/* gain */
++	if (sb16_type == CLASSIC || sb16_type == CT8903)
++		for (idx = 0; idx < ARRAY_SIZE(snd_sb16_gain_ctls); idx++) {
++			err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_gain_ctls[idx]);
++			if (err < 0)
++				return err;
++		}
++	/* 3D Stereo Enhancement */
++	if (snd_sbmixer_read(chip, SB_DSP4_3DSE) != 0xff) {
++		err = snd_sbmixer_add_ctl_elem(chip, &snd_sb16_3d_ctl);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ /*
+  */
+ static int snd_sbmixer_init(struct snd_sb *chip,
+@@ -750,6 +822,14 @@ static int snd_sbmixer_init(struct snd_sb *chip,
+ 		if (err < 0)
+ 			return err;
+ 	}
++
++	/* detect optional SB16 controls */
++	if (controls == snd_sb16_controls) {
++		err = snd_sbmixer_sb16_opt_init(chip);
++		if (err < 0)
++			return err;
++	}
++
+ 	snd_component_add(card, name);
+ 	strcpy(card->mixername, name);
+ 	return 0;
 
-Thanks
+
+-- 
+Ondrej Zary
