@@ -1,17 +1,16 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: [PATCH 2/5] ASoC: core: Add widget
-	SND_SOC_DAPM_CLOCK_SUPPLY
-Date: Thu, 24 May 2012 15:26:25 +0200
-Message-ID: <1337865985-26077-1-git-send-email-ola.o.lilja@stericsson.com>
+Subject: [PATCH 3/5] ASoC: Ux500: Add platform-driver
+Date: Thu, 24 May 2012 15:26:32 +0200
+Message-ID: <1337865992-26113-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog107.obsmtp.com (eu1sys200aog107.obsmtp.com
-	[207.126.144.123])
-	by alsa0.perex.cz (Postfix) with ESMTP id A91EE244A7
+Received: from eu1sys200aog119.obsmtp.com (eu1sys200aog119.obsmtp.com
+	[207.126.144.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B70E103FCF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 May 2012 15:26:33 +0200 (CEST)
+	Thu, 24 May 2012 15:26:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,196 +24,408 @@ To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Adds a supply-widget variant for connection to the clock-framework.
-This widget-type corresponds to the variant for regulators.
+Add platform-driver handling all DMA-activities.
 
 Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
 ---
- include/sound/soc-dapm.h |   10 ++++++++++
- sound/soc/soc-dapm.c     |   38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+), 0 deletions(-)
+ sound/soc/ux500/Kconfig     |    7 +
+ sound/soc/ux500/Makefile    |    3 +
+ sound/soc/ux500/ux500_pcm.c |  318 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/ux500/ux500_pcm.h |   35 +++++
+ 4 files changed, 363 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/ux500/ux500_pcm.c
+ create mode 100644 sound/soc/ux500/ux500_pcm.h
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index e3833d9..05559e5 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -229,6 +229,10 @@ struct device;
- {	.id = snd_soc_dapm_adc, .name = wname, .sname = stname, .reg = wreg, \
- 	.shift = wshift, .invert = winvert, \
- 	.event = wevent, .event_flags = wflags}
-+#define SND_SOC_DAPM_CLOCK_SUPPLY(wname) \
-+{	.id = snd_soc_dapm_clock_supply, .name = wname, \
-+	.reg = SND_SOC_NOPM, .event = dapm_clock_event, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
- 
- /* generic widgets */
- #define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
-@@ -245,6 +249,7 @@ struct device;
- 	.reg = SND_SOC_NOPM, .shift = wdelay, .event = dapm_regulator_event, \
- 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
- 
+diff --git a/sound/soc/ux500/Kconfig b/sound/soc/ux500/Kconfig
+index 44cf434..1d38515 100644
+--- a/sound/soc/ux500/Kconfig
++++ b/sound/soc/ux500/Kconfig
+@@ -12,3 +12,10 @@ menuconfig SND_SOC_UX500
+ config SND_SOC_UX500_PLAT_MSP_I2S
+ 	tristate
+ 	depends on SND_SOC_UX500
 +
- /* dapm kcontrol types */
- #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-@@ -327,6 +332,8 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event);
-+int dapm_clock_event(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol, int event);
++config SND_SOC_UX500_PLAT_DMA
++	tristate "Platform - DB8500 (DMA)"
++	depends on SND_SOC_UX500
++	select SND_SOC_DMAENGINE_PCM
++	help
++		Say Y if you want to enable the Ux500 platform-driver.
+diff --git a/sound/soc/ux500/Makefile b/sound/soc/ux500/Makefile
+index 19974c5..4634bf0 100644
+--- a/sound/soc/ux500/Makefile
++++ b/sound/soc/ux500/Makefile
+@@ -2,3 +2,6 @@
  
- /* dapm controls */
- int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
-@@ -432,6 +439,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
- 	snd_soc_dapm_supply,		/* power/clock supply */
- 	snd_soc_dapm_regulator_supply,	/* external regulator */
-+	snd_soc_dapm_clock_supply,	/* external clock */
- 	snd_soc_dapm_aif_in,		/* audio interface input */
- 	snd_soc_dapm_aif_out,		/* audio interface output */
- 	snd_soc_dapm_siggen,		/* signal generator */
-@@ -537,6 +545,8 @@ struct snd_soc_dapm_widget {
- 	struct list_head dirty;
- 	int inputs;
- 	int outputs;
+ snd-soc-ux500-plat-msp-i2s-objs := ux500_msp_dai.o ux500_msp_i2s.o
+ obj-$(CONFIG_SND_SOC_UX500_PLAT_MSP_I2S) += snd-soc-ux500-plat-msp-i2s.o
 +
-+	struct clk *clk;
- };
- 
- struct snd_soc_dapm_update {
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 90ee77d..3bb7a6f 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -35,6 +35,7 @@
- #include <linux/debugfs.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/clk.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -51,6 +52,7 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_pre] = 0,
- 	[snd_soc_dapm_supply] = 1,
- 	[snd_soc_dapm_regulator_supply] = 1,
-+	[snd_soc_dapm_clock_supply] = 1,
- 	[snd_soc_dapm_micbias] = 2,
- 	[snd_soc_dapm_dai_link] = 2,
- 	[snd_soc_dapm_dai] = 3,
-@@ -92,6 +94,7 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_aif_out] = 10,
- 	[snd_soc_dapm_dai] = 10,
- 	[snd_soc_dapm_dai_link] = 11,
-+	[snd_soc_dapm_clock_supply] = 12,
- 	[snd_soc_dapm_regulator_supply] = 12,
- 	[snd_soc_dapm_supply] = 12,
- 	[snd_soc_dapm_post] = 13,
-@@ -391,6 +394,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 	case snd_soc_dapm_vmid:
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 	case snd_soc_dapm_aif_in:
- 	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_dai:
-@@ -764,6 +768,7 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
- 	switch (widget->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		return 0;
- 	default:
- 		break;
-@@ -850,6 +855,7 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
- 	switch (widget->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		return 0;
- 	default:
- 		break;
-@@ -996,6 +1002,24 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
- }
- EXPORT_SYMBOL_GPL(dapm_regulator_event);
- 
++snd-soc-ux500-plat-dma-objs := ux500_pcm.o
++obj-$(CONFIG_SND_SOC_UX500_PLAT_DMA) += snd-soc-ux500-plat-dma.o
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+new file mode 100644
+index 0000000..66b080e
+--- /dev/null
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -0,0 +1,318 @@
 +/*
-+ * Handler for clock supply widget.
++ * Copyright (C) ST-Ericsson SA 2012
++ *
++ * Author: Ola Lilja <ola.o.lilja@stericsson.com>,
++ *         Roger Nilsson <roger.xr.nilsson@stericsson.com>
++ *         for ST-Ericsson.
++ *
++ * License terms:
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
 + */
-+int dapm_clock_event(struct snd_soc_dapm_widget *w,
-+		   struct snd_kcontrol *kcontrol, int event)
++
++#include <asm/page.h>
++
++#include <linux/module.h>
++#include <linux/dma-mapping.h>
++#include <linux/dmaengine.h>
++#include <linux/slab.h>
++
++#include <plat/ste_dma40.h>
++
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/dmaengine_pcm.h>
++
++#include "ux500_msp_i2s.h"
++#include "ux500_pcm.h"
++
++static struct snd_pcm_hardware ux500_pcm_hw_playback = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_RESUME |
++		SNDRV_PCM_INFO_PAUSE,
++	.formats = SNDRV_PCM_FMTBIT_S16_LE |
++		SNDRV_PCM_FMTBIT_U16_LE |
++		SNDRV_PCM_FMTBIT_S16_BE |
++		SNDRV_PCM_FMTBIT_U16_BE,
++	.rates = SNDRV_PCM_RATE_KNOT,
++	.rate_min = UX500_PLATFORM_MIN_RATE_PLAYBACK,
++	.rate_max = UX500_PLATFORM_MAX_RATE_PLAYBACK,
++	.channels_min = UX500_PLATFORM_MIN_CHANNELS,
++	.channels_max = UX500_PLATFORM_MAX_CHANNELS,
++	.buffer_bytes_max = UX500_PLATFORM_BUFFER_BYTES_MAX,
++	.period_bytes_min = UX500_PLATFORM_PERIODS_BYTES_MIN,
++	.period_bytes_max = UX500_PLATFORM_PERIODS_BYTES_MAX,
++	.periods_min = UX500_PLATFORM_PERIODS_MIN,
++	.periods_max = UX500_PLATFORM_PERIODS_MAX,
++};
++
++static struct snd_pcm_hardware ux500_pcm_hw_capture = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_RESUME |
++		SNDRV_PCM_INFO_PAUSE,
++	.formats = SNDRV_PCM_FMTBIT_S16_LE |
++		SNDRV_PCM_FMTBIT_U16_LE |
++		SNDRV_PCM_FMTBIT_S16_BE |
++		SNDRV_PCM_FMTBIT_U16_BE,
++	.rates = SNDRV_PCM_RATE_KNOT,
++	.rate_min = UX500_PLATFORM_MIN_RATE_CAPTURE,
++	.rate_max = UX500_PLATFORM_MAX_RATE_CAPTURE,
++	.channels_min = UX500_PLATFORM_MIN_CHANNELS,
++	.channels_max = UX500_PLATFORM_MAX_CHANNELS,
++	.buffer_bytes_max = UX500_PLATFORM_BUFFER_BYTES_MAX,
++	.period_bytes_min = UX500_PLATFORM_PERIODS_BYTES_MIN,
++	.period_bytes_max = UX500_PLATFORM_PERIODS_BYTES_MAX,
++	.periods_min = UX500_PLATFORM_PERIODS_MIN,
++	.periods_max = UX500_PLATFORM_PERIODS_MAX,
++};
++
++static void ux500_pcm_dma_hw_free(struct device *dev,
++				struct snd_pcm_substream *substream)
 +{
-+	if (!w->clk)
-+		return -EIO;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_dma_buffer *buf = runtime->dma_buffer_p;
 +
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		return clk_enable(w->clk);
-+	} else {
-+		clk_disable(w->clk);
-+		return 0;
++	if (runtime->dma_area == NULL)
++		return;
++
++	if (buf != &substream->dma_buffer) {
++		dma_free_coherent(buf->dev.dev, buf->bytes, buf->area,
++				buf->addr);
++		kfree(runtime->dma_buffer_p);
 +	}
-+}
-+EXPORT_SYMBOL_GPL(dapm_clock_event);
 +
- static int dapm_widget_power_check(struct snd_soc_dapm_widget *w)
- {
- 	if (w->power_checked)
-@@ -1487,6 +1511,7 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 	switch (w->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		/* Supplies can't affect their outputs, only their inputs */
- 		break;
- 	default:
-@@ -1587,6 +1612,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 				break;
- 			case snd_soc_dapm_supply:
- 			case snd_soc_dapm_regulator_supply:
-+			case snd_soc_dapm_clock_supply:
- 			case snd_soc_dapm_micbias:
- 				if (d->target_bias_level < SND_SOC_BIAS_STANDBY)
- 					d->target_bias_level = SND_SOC_BIAS_STANDBY;
-@@ -1941,6 +1967,7 @@ static ssize_t dapm_widget_show(struct device *dev,
- 		case snd_soc_dapm_mixer_named_ctl:
- 		case snd_soc_dapm_supply:
- 		case snd_soc_dapm_regulator_supply:
-+		case snd_soc_dapm_clock_supply:
- 			if (w->name)
- 				count += sprintf(buf + count, "%s: %s\n",
- 					w->name, w->power ? "On":"Off");
-@@ -2187,6 +2214,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	case snd_soc_dapm_post:
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 	case snd_soc_dapm_aif_in:
- 	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_dai:
-@@ -2873,6 +2901,15 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 			return NULL;
- 		}
- 		break;
-+	case snd_soc_dapm_clock_supply:
-+		w->clk = clk_get(dapm->dev, w->name);
-+		if (IS_ERR(w->clk)) {
-+			ret = PTR_ERR(w->clk);
-+			dev_err(dapm->dev, "Failed to request %s: %d\n",
-+				w->name, ret);
-+			return NULL;
-+		}
++	snd_pcm_set_runtime_buffer(substream, NULL);
++}
++
++static int ux500_pcm_open(struct snd_pcm_substream *substream)
++{
++	int stream_id = substream->pstr->stream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *dai = rtd->cpu_dai;
++	struct device *dev = dai->dev;
++	int ret;
++	struct ux500_msp_dma_params *dma_params;
++	u16 per_data_width, mem_data_width;
++	struct stedma40_chan_cfg *dma_cfg;
++
++	dev_dbg(dev, "%s: MSP %d (%s): Enter.\n", __func__, dai->id,
++		snd_pcm_stream_str(substream));
++
++	dev_dbg(dev, "%s: Set runtime hwparams.\n", __func__);
++	if (stream_id == SNDRV_PCM_STREAM_PLAYBACK)
++		snd_soc_set_runtime_hwparams(substream,
++					&ux500_pcm_hw_playback);
++	else
++		snd_soc_set_runtime_hwparams(substream,
++					&ux500_pcm_hw_capture);
++
++	/* ensure that buffer size is a multiple of period size */
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(dev, "%s: Error: snd_pcm_hw_constraints failed (%d)\n",
++			__func__, ret);
++		return ret;
++	}
++
++	dev_dbg(dev, "%s: Set hw-struct for %s.\n", __func__,
++		snd_pcm_stream_str(substream));
++	runtime->hw = (stream_id == SNDRV_PCM_STREAM_PLAYBACK) ?
++		ux500_pcm_hw_playback : ux500_pcm_hw_capture;
++
++	mem_data_width = STEDMA40_HALFWORD_WIDTH;
++
++	dma_params = snd_soc_dai_get_dma_data(dai, substream);
++	switch (dma_params->data_size) {
++	case 32:
++		per_data_width = STEDMA40_WORD_WIDTH;
 +		break;
- 	default:
- 		break;
- 	}
-@@ -2924,6 +2961,7 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 		break;
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-+	case snd_soc_dapm_clock_supply:
- 		w->power_check = dapm_supply_check_power;
- 		break;
- 	case snd_soc_dapm_dai:
++	case 16:
++		per_data_width = STEDMA40_HALFWORD_WIDTH;
++		break;
++	case 8:
++		per_data_width = STEDMA40_BYTE_WIDTH;
++		break;
++	default:
++		per_data_width = STEDMA40_WORD_WIDTH;
++		dev_warn(rtd->platform->dev,
++			"%s: Unknown data-size (%d)! Assuming 32 bits.\n",
++			__func__, dma_params->data_size);
++	}
++
++	dma_cfg = dma_params->dma_cfg;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		dma_cfg->src_info.data_width = mem_data_width;
++		dma_cfg->dst_info.data_width = per_data_width;
++	} else {
++		dma_cfg->src_info.data_width = per_data_width;
++		dma_cfg->dst_info.data_width = mem_data_width;
++	}
++
++
++	ret = snd_dmaengine_pcm_open(substream, stedma40_filter, dma_cfg);
++	if (ret) {
++		dev_dbg(dai->dev,
++			"%s: ERROR: snd_dmaengine_pcm_open failed (%d)!\n",
++			__func__, ret);
++		return ret;
++	}
++
++	snd_dmaengine_pcm_set_data(substream, dma_cfg);
++
++	return 0;
++}
++
++static int ux500_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *dai = rtd->cpu_dai;
++
++	dev_dbg(dai->dev, "%s: Enter\n", __func__);
++
++	snd_dmaengine_pcm_close(substream);
++
++	return 0;
++}
++
++static int ux500_pcm_hw_params(struct snd_pcm_substream *substream,
++			struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_dma_buffer *buf = runtime->dma_buffer_p;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	int ret = 0;
++	int size;
++
++	dev_dbg(rtd->platform->dev, "%s: Enter\n", __func__);
++
++	size = params_buffer_bytes(hw_params);
++
++	if (buf) {
++		if (buf->bytes >= size)
++			goto out;
++		ux500_pcm_dma_hw_free(NULL, substream);
++	}
++
++	if (substream->dma_buffer.area != NULL &&
++		substream->dma_buffer.bytes >= size) {
++		buf = &substream->dma_buffer;
++	} else {
++		buf = kmalloc(sizeof(struct snd_dma_buffer), GFP_KERNEL);
++		if (!buf)
++			goto nomem;
++
++		buf->dev.type = SNDRV_DMA_TYPE_DEV;
++		buf->dev.dev = NULL;
++		buf->area = dma_alloc_coherent(NULL, size, &buf->addr,
++					GFP_KERNEL);
++		buf->bytes = size;
++		buf->private_data = NULL;
++
++		if (!buf->area)
++			goto free;
++	}
++	snd_pcm_set_runtime_buffer(substream, buf);
++	ret = 1;
++ out:
++	runtime->dma_bytes = size;
++	return ret;
++
++ free:
++	kfree(buf);
++ nomem:
++	return -ENOMEM;
++}
++
++static int ux500_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	dev_dbg(rtd->platform->dev, "%s: Enter\n", __func__);
++
++	ux500_pcm_dma_hw_free(NULL, substream);
++
++	return 0;
++}
++
++static int ux500_pcm_mmap(struct snd_pcm_substream *substream,
++			struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	dev_dbg(rtd->platform->dev, "%s: Enter.\n", __func__);
++
++	return dma_mmap_coherent(NULL, vma, runtime->dma_area,
++				runtime->dma_addr, runtime->dma_bytes);
++}
++
++static struct snd_pcm_ops ux500_pcm_ops = {
++	.open		= ux500_pcm_open,
++	.close		= ux500_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= ux500_pcm_hw_params,
++	.hw_free	= ux500_pcm_hw_free,
++	.trigger	= snd_dmaengine_pcm_trigger,
++	.pointer	= snd_dmaengine_pcm_pointer,
++	.mmap		= ux500_pcm_mmap
++};
++
++int ux500_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_pcm *pcm = rtd->pcm;
++
++	dev_dbg(rtd->platform->dev, "%s: Enter (id = '%s').\n", __func__,
++		pcm->id);
++
++	pcm->info_flags = 0;
++
++	return 0;
++}
++
++static struct snd_soc_platform_driver ux500_pcm_soc_drv = {
++	.ops		= &ux500_pcm_ops,
++	.pcm_new        = ux500_pcm_new,
++};
++
++static int __devexit ux500_pcm_drv_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = snd_soc_register_platform(&pdev->dev, &ux500_pcm_soc_drv);
++	if (ret < 0) {
++		dev_err(&pdev->dev,
++			"%s: ERROR: Failed to register platform '%s' (%d)!\n",
++			__func__, pdev->name, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int __devinit ux500_pcm_drv_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_platform(&pdev->dev);
++
++	return 0;
++}
++
++static struct platform_driver ux500_pcm_driver = {
++	.driver = {
++		.name = "ux500-pcm",
++		.owner = THIS_MODULE,
++	},
++
++	.probe = ux500_pcm_drv_probe,
++	.remove = __devexit_p(ux500_pcm_drv_remove),
++};
++module_platform_driver(ux500_pcm_driver);
++
++MODULE_LICENSE("GPLv2");
+diff --git a/sound/soc/ux500/ux500_pcm.h b/sound/soc/ux500/ux500_pcm.h
+new file mode 100644
+index 0000000..77ed44d
+--- /dev/null
++++ b/sound/soc/ux500/ux500_pcm.h
+@@ -0,0 +1,35 @@
++/*
++ * Copyright (C) ST-Ericsson SA 2012
++ *
++ * Author: Ola Lilja <ola.o.lilja@stericsson.com>,
++ *         Roger Nilsson <roger.xr.nilsson@stericsson.com>
++ *         for ST-Ericsson.
++ *
++ * License terms:
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ */
++#ifndef UX500_PCM_H
++#define UX500_PCM_H
++
++#include <asm/page.h>
++
++#include <linux/workqueue.h>
++
++#define UX500_PLATFORM_MIN_RATE_PLAYBACK 8000
++#define UX500_PLATFORM_MAX_RATE_PLAYBACK 48000
++#define UX500_PLATFORM_MIN_RATE_CAPTURE	8000
++#define UX500_PLATFORM_MAX_RATE_CAPTURE	48000
++
++#define UX500_PLATFORM_MIN_CHANNELS 1
++#define UX500_PLATFORM_MAX_CHANNELS 8
++
++#define UX500_PLATFORM_PERIODS_BYTES_MIN	128
++#define UX500_PLATFORM_PERIODS_BYTES_MAX	(64 * PAGE_SIZE)
++#define UX500_PLATFORM_PERIODS_MIN		2
++#define UX500_PLATFORM_PERIODS_MAX		48
++#define UX500_PLATFORM_BUFFER_BYTES_MAX		(2048 * PAGE_SIZE)
++
++#endif
 -- 
 1.7.8.3
