@@ -1,26 +1,21 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
-	for ML7213
-Date: Thu, 24 May 2012 08:46:03 +0900
-Message-ID: <CANKRQnhNWC2F6zKgBMJY7HnipJbA5p-=6Lz4uGZqBKNQ688Z3w@mail.gmail.com>
-References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
-	<1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120321160913.GF3226@opensource.wolfsonmicro.com>
-	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
-	<20120326154009.GA17506@sirena.org.uk>
-	<CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
-	<20120523093857.GC4085@opensource.wolfsonmicro.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 10/11] ASoC: codecs: Add AB8500 codec-driver
+Date: Thu, 24 May 2012 08:21:25 +0200
+Message-ID: <4FBDD365.7080304@stericsson.com>
+References: <1336485450-27405-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120508182751.GJ15893@opensource.wolfsonmicro.com>
+	<4FBC8C11.6020602@stericsson.com>
+	<20120523174009.GE4064@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 449302443C
+Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
+	[207.126.144.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2997B103E6F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 May 2012 01:46:05 +0200 (CEST)
-Received: by pbbrp16 with SMTP id rp16so13143644pbb.38
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2012 16:46:03 -0700 (PDT)
-In-Reply-To: <20120523093857.GC4085@opensource.wolfsonmicro.com>
+	Thu, 24 May 2012 08:21:34 +0200 (CEST)
+In-Reply-To: <20120523174009.GE4064@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,24 +26,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 23, 2012 at 6:41 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
->> > So, I just said to the SPEAr guys that I really want to see support for
->> > non-cyclic dmaengine added to the helper library rather than open
->> > coding. ?We're seeing lots of platforms moving to dmaengine (as well as
->
->> What is going on this ?
->> Let me know this status.
->
-> Nobody seems to be working on it as far as I can tell, I've certainly
-> not seen any patches.
+On 05/23/2012 07:40 PM, Mark Brown wrote:
 
-If so, could you accept current platform/machine driver ?
+> On Wed, May 23, 2012 at 09:04:49AM +0200, Ola Lilja wrote:
+>> On 05/08/2012 08:27 PM, Mark Brown wrote:
+> 
+>> >> +	SOC_ENUM("Charge Pump High Threshold For Low Voltage",
+>> >> +		soc_enum_envdeththre),
+>> >> +	SOC_ENUM("Charge Pump Low Threshold For Low Voltage",
+>> >> +		soc_enum_envdetlthre),
+>> >> +	SOC_ENUM("Charge Pump Envelope Detection", soc_enum_envdetcpen),
+>> >> +	SOC_ENUM("Charge Pump Envelope Detection Decay Time",
+>> >> +		soc_enum_envdettime),
+> 
+>> > Again, why is this all exposed to userspace?
+> 
+>> These one we need as ALSA-controls. They are parameters that we can tune during
+>> runtime and are not hard-wired in any way.
+> 
+> This seems incredibly surprising - are you sure the configuration isn't
+> simply a case of enabling and disabling the charge pump voltage scaling?
 
-thanks in advance.
--- 
-ROHM Co., Ltd.
-tomoya
+
+Well, yes. One of the control enables/disables the ability to use another
+charge-pump voltage when the signal gets over a certain threshold. The other
+parameters are tuning of this theshold and responsiveness. This feature can be
+changed during runtime depending of quality vs. powersaving needs.
