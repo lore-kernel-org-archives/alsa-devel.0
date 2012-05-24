@@ -1,30 +1,36 @@
-From: Devendra Naga <devendra.aaru@gmail.com>
-Subject: [PATCH] [emu10k1]: remove the kcallloc cast (reported from make coccicheck's drop_kmalloc_cast.cocci)
-Date: Thu, 24 May 2012 19:32:29 +0530
-Message-ID: <1337868149-17783-1-git-send-email-devendra.aaru@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Devendra Naga <devendra.aaru@gmail.com>
+From: Massimiliano Cialdi <massimiliano.cialdi@powersoft.it>
+Subject: runtime change in plugin behaviour
+Date: Thu, 24 May 2012 16:58:36 +0200
+Message-ID: <4FBE4C9C.2030604@powersoft.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail2.powersoft.it (mail1.powersoft.it [188.219.163.75])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9621B24156
+	for <alsa-devel@alsa-project.org>;
+	Thu, 24 May 2012 16:58:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Devendra Naga <devendra.aaru@gmail.com>
----
- sound/pci/emu10k1/emufx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index dae4050..272f8ac 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1815,7 +1815,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
- 
- 	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL)
- 		return -ENOMEM;
--	if ((icode->gpr_map = (u_int32_t __user *)
-+	if ((icode->gpr_map =
- 	     kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t),
- 		     GFP_KERNEL)) == NULL ||
-             (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
--- 
-1.7.9.5
+I have developed a plugin that implements a bi-quad filter. filter's 
+parameters are given into asoundrc file.
+
+Now I need to change those parameters during playback.
+How can I do?
+what help can gives alsalib to achieve this?
+
+best regards
+
+Max
