@@ -1,16 +1,16 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
 Subject: [PATCH 1/5] ALSA: pcm: Add debug-print helper function
-Date: Thu, 24 May 2012 15:24:57 +0200
-Message-ID: <1337865897-25995-1-git-send-email-ola.o.lilja@stericsson.com>
+Date: Thu, 24 May 2012 15:26:03 +0200
+Message-ID: <1337865963-26040-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog102.obsmtp.com (eu1sys200aog102.obsmtp.com
-	[207.126.144.113])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DDE2103FCF
+Received: from eu1sys200aog106.obsmtp.com (eu1sys200aog106.obsmtp.com
+	[207.126.144.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73D9A24495
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 May 2012 15:25:20 +0200 (CEST)
+	Thu, 24 May 2012 15:26:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,7 +20,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
