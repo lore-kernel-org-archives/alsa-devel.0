@@ -1,22 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 10/11] ASoC: codecs: Add AB8500 codec-driver
-Date: Thu, 24 May 2012 11:33:07 +0100
-Message-ID: <20120524103306.GI5361@opensource.wolfsonmicro.com>
-References: <1336485450-27405-1-git-send-email-ola.o.lilja@stericsson.com>
-	<20120508182751.GJ15893@opensource.wolfsonmicro.com>
-	<4FBC8C11.6020602@stericsson.com>
-	<20120523174009.GE4064@opensource.wolfsonmicro.com>
-	<4FBDD365.7080304@stericsson.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: [PATCH 0/5] Version 5
+Date: Thu, 24 May 2012 15:24:45 +0200
+Message-ID: <1337865885-25957-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50944103EDF
+Received: from eu1sys200aog120.obsmtp.com (eu1sys200aog120.obsmtp.com
+	[207.126.144.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8DE924495
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 May 2012 12:41:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4FBDD365.7080304@stericsson.com>
+	Thu, 24 May 2012 15:24:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,25 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 24, 2012 at 08:21:25AM +0200, Ola Lilja wrote:
+*) ALSA-core helper function made static inline
+*) Removed debug-functions from the core-patch
+*) Bug-fixes in codec-file
+*) Controversial controls (clock-stuff) moved to machine-file
+*) Removed custom functions for second codec-interface
+*) Streams moved to separete DAPM-widgets
 
-> Well, yes. One of the control enables/disables the ability to use another
-> charge-pump voltage when the signal gets over a certain threshold. The other
-> parameters are tuning of this theshold and responsiveness. This feature can be
-> changed during runtime depending of quality vs. powersaving needs.
+Ola Lilja (5):
+  ALSA: pcm: Add debug-print helper function
+  ASoC: core: Add widget SND_SOC_DAPM_CLOCK_SUPPLY
+  ASoC: Ux500: Add platform-driver
+  ASoC: codecs: Add AB8500 codec-driver
+  ASoC: Ux500: Add machine-driver
 
-Right, this is what I had expected except usually the consequence of the
-charge pump voltage failing to adapt rapidly enough is clipping which is
-normally considered unacceptably bad in any situation so with most
-devices there isn't much opportunity to tune the responsiveness.  You do
-see on/off controls that get used for configurations the device can't
-handle for some reason but the responsiveness parameters that work are
-normally a static property of the device.
+ include/sound/pcm.h             |   11 +
+ include/sound/soc-dapm.h        |   10 +
+ sound/soc/codecs/Kconfig        |    4 +
+ sound/soc/codecs/Makefile       |    2 +
+ sound/soc/codecs/ab8500-codec.c | 2569 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ab8500-codec.h |  606 +++++++++
+ sound/soc/soc-dapm.c            |   38 +
+ sound/soc/ux500/Kconfig         |   18 +
+ sound/soc/ux500/Makefile        |    6 +
+ sound/soc/ux500/mop500.c        |  117 ++
+ sound/soc/ux500/mop500_ab8500.c |  441 +++++++
+ sound/soc/ux500/mop500_ab8500.h |   22 +
+ sound/soc/ux500/ux500_pcm.c     |  318 +++++
+ sound/soc/ux500/ux500_pcm.h     |   35 +
+ 14 files changed, 4197 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/ab8500-codec.c
+ create mode 100644 sound/soc/codecs/ab8500-codec.h
+ create mode 100644 sound/soc/ux500/mop500.c
+ create mode 100644 sound/soc/ux500/mop500_ab8500.c
+ create mode 100644 sound/soc/ux500/mop500_ab8500.h
+ create mode 100644 sound/soc/ux500/ux500_pcm.c
+ create mode 100644 sound/soc/ux500/ux500_pcm.h
 
-I guess you might be able to do something slightly more aggressive for
-voice perhaps...  Anyway, like I say the main thing here is surprise at
-seeing these things user tunable.
+-- 
+1.7.8.3
