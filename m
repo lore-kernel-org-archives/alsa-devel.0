@@ -1,28 +1,22 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
-	for ML7213
-Date: Fri, 25 May 2012 18:30:06 +0900
-Message-ID: <CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
-References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
-	<1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120321160913.GF3226@opensource.wolfsonmicro.com>
-	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
-	<20120326154009.GA17506@sirena.org.uk>
-	<CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
-	<20120523093857.GC4085@opensource.wolfsonmicro.com>
-	<CANKRQnhNWC2F6zKgBMJY7HnipJbA5p-=6Lz4uGZqBKNQ688Z3w@mail.gmail.com>
-	<20120524100742.GH5361@opensource.wolfsonmicro.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 2/4] ASoC: mmp: add audio dma support
+Date: Fri, 25 May 2012 10:42:31 +0100
+Message-ID: <20120525094231.GC24149@n2100.arm.linux.org.uk>
+References: <1337929863-31885-1-git-send-email-zhangfei.gao@marvell.com>
+	<1337929863-31885-3-git-send-email-zhangfei.gao@marvell.com>
+	<1337932416.1580.2.camel@vkoul-udesk3>
+	<20120525080500.GB24149@n2100.arm.linux.org.uk>
+	<CAMj5Bkhc46zqY5AbJkc=-h02taP_esxrqpNu--aYtZZcVcPK6A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 29CA5243C7
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 32741243F6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 May 2012 11:30:07 +0200 (CEST)
-Received: by pbbrp16 with SMTP id rp16so1746081pbb.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 May 2012 02:30:06 -0700 (PDT)
-In-Reply-To: <20120524100742.GH5361@opensource.wolfsonmicro.com>
+	Fri, 25 May 2012 11:42:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAMj5Bkhc46zqY5AbJkc=-h02taP_esxrqpNu--aYtZZcVcPK6A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,45 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: zhangfei gao <zhangfei.gao@gmail.com>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>, Qiao Zhou <zhouqiao@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 24, 2012 at 7:07 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
->> > Nobody seems to be working on it as far as I can tell, I've certainly
->> > not seen any patches.
->
->> If so, could you accept current platform/machine driver ?
->
-> Ideally what would be happening here is that you or other people who
-> have such systems would be working to add the required support to the
-> core code, there's clearly a need for common code here as there are a
-> number of different systems that don't have cyclic DMA and it wouldn't
-> be great to end up with duplicated code.
->
-> Is there some great difficulty in factoring out the support for
-> non-cyclic audio DMA on dmaengine - it seems like if there is we must
-> have a serious problem in dmaengine which we should fix? =A0If there is a
-> substantial difficulty then that's different but it doesn't feel like
-> we've tried doing common code yet, if there's problems doing that I'd
-> like to understand what they are before we jump ahead of ourselves.
+On Fri, May 25, 2012 at 04:47:20PM +0800, zhangfei gao wrote:
+> Do you mean at open time, like snd_dmaengine_pcm_open.
+> The channel resource is limited and better get dynamically.
+> As a  result the pcm_new and preallocate already called before.
 
-I'm not so familiar with Linux's DMA idea.
-So we don't know whether non-cyclic dmaengine has problem or not.
+This is where dealing with slave DMA channels in a virtualized setup
+becomes a far better solution than trying to assign a particular
+physical channel at request time.
 
-Until now, we've developed device drivers use DMA driver like UART, SPI.
-These drivers are  implemented using the same way, you called
-"non-cyclic", and already applied.
+What we may wish to think about is having a way for slave drivers to
+assert to DMA engine the priority of a channel, which they can change
+dynamically according to what they're doing.  Eg, an ALSA driver would
+leave the channel low priority while it's not expecting to be used, but
+as soon as we see the prepare call, set it to high priority.
 
-As you said, common code for DMA code can be best solution.
-However, currently, the code is nothing.
-So, I want you to accept our driver as first step.
-Because I think supporting new device is more important for linux than
-dmaengine common.
+The DMA engine driver could use that to decide to assign a physical
+channel to the virtual channel, so that DMA can start as soon as
+possible even with other activity on the DMA engine.
 
-thanks
--- =
-
-ROHM Co., Ltd.
-tomoya
+However, I've yet to see any setup where the number of physical DMA
+channels available exceeds the number of actual _simultaneous_ users.
+Even with the five channels on SA11x0 shared between 12? peripherals,
+with my DMA engine driver I've only seen one or two physical channels
+being used simultaneously.
