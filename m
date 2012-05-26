@@ -1,7 +1,7 @@
-From: Felix Homann <linuxaudio@showlabor.de>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
 Subject: Re: snd-usb endpoint rework
-Date: Sat, 26 May 2012 08:40:46 +0200
-Message-ID: <CAFz=ag6p5rouC4zFN7ezr79smS62Fzs8Jt4NBX3nxSUd_PKtdA@mail.gmail.com>
+Date: Sat, 26 May 2012 17:48:01 +0100
+Message-ID: <CAE-xCyOwFkH7KnfyLt02pJ37F8ZkUtxvi4fdmqReAxoTT2=_FA@mail.gmail.com>
 References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
 	<CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
 	<4FBA12E3.2040009@gmail.com>
@@ -12,18 +12,18 @@ References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
 	<CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
 	<4FBCEBDB.6000209@gmail.com>
 	<CACckToWtFep7G4Qn=JAwJMdxwQadiQ8_KSi84D7A2vLKQihV6A@mail.gmail.com>
+	<CAFz=ag6p5rouC4zFN7ezr79smS62Fzs8Jt4NBX3nxSUd_PKtdA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D424724449
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id CAA5624477
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 May 2012 08:40:47 +0200 (CEST)
-Received: by yenr13 with SMTP id r13so858261yen.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 May 2012 23:40:46 -0700 (PDT)
-In-Reply-To: <CACckToWtFep7G4Qn=JAwJMdxwQadiQ8_KSi84D7A2vLKQihV6A@mail.gmail.com>
+	Sat, 26 May 2012 18:50:07 +0200 (CEST)
+Received: by vbip1 with SMTP id p1so1314550vbi.38
+	for <alsa-devel@alsa-project.org>; Sat, 26 May 2012 09:48:01 -0700 (PDT)
+In-Reply-To: <CAFz=ag6p5rouC4zFN7ezr79smS62Fzs8Jt4NBX3nxSUd_PKtdA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,24 +33,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-2012/5/26 Grant Diffey <gdiffey@gmail.com>:
-> Felix,
+Hi Daniel,
+
+I have tried to do a bit more thorough testing, find the details below.
+Hope this helps!
+
+>> blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
+>> ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
+>> ALSA lib conf.c:4241:(_snd_config_evaluate) function
+>> snd_func_card_driver returned error: No such file or directory
+>> ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+>> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
+>> returned error: No such file or directory
+>> ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
+>> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
+>> returned error: No such file or directory
+>> ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
+>> or directory
+>> ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
+>> aplay: main:682: audio open error: No such file or directory
 >
-> the effects controls are not obvious to me I thought there were independent
-> fx sends for each output so expected 16x4 new controls plus the returns but
-> maybe that's not howitis.
+> What does "aplay -l" show? Also, what does it show on the older Ubuntu
+> kernel? Is there any difference?
 
-I have been confused about it, too. But that's just how the FTU works.
-There are only 16 sends.
+That is just me being an idiot. Ubuntu never mounts a USB sound card
+on the first slot.
+Compiling with the original Alsa coming from Ubuntu, I get the same error.
 
+>> No sound...
+>> I tried to reboot several times, unplug/replug, checked alsamixer: all
+>> look fine to me but still no sound.
+>> Actually, it is not "exactly" no sound: I can see the 4 front leds
+>> flash very quickly, and I can hear a click in the speakers (with the
+>> FX, the click is longer due to the reverb, handy to notice it!).
 >
-> also has anyone looked at how metering is reported on the wire?
+> The 4 front LEDs on the FTU signal input level activity, not output. Is
+> there anything connected to those inputs?
 
-At least I have not.
+There are stuff plugged on the 3 first inputs (2 for my guitar, 1 for
+my mic), bit they are all turned off during testing.
+This click and the 4 leds flash is very similar to the one you have
+when the FTU is plugged in to the USB port after being turned on.
+Somehow, when I want to play something, it makes the 4 leds flash + a
+click/crackle in the speakers.
+
+>> IN BOTH CASES, FTU AND UA-25EX
+>>
+>> Starting jack result in an immediate freeze of the system.
+>
+> I really fail to see any of these issues on my system. I tried with both
+> jackd and jackd2 and set them to real time priorities and chose 64 bytes
+> sample frames in PureData. All good, no lockups. Can you describe your
+> jackd setup? How do you start it?
+
+jackd -dalsa -dhw:1 -r48000 -p256 -n3 -Xseq
+
+
+Normal Ubuntu Kernel:
+	- Compiled with low latency settings
+	- 3.2.18
+	- Original Alsa
+
+	* FTU
+		- mplayer: OK
+		- jack: OK
+
+	* UA-25Ex
+		- mplayer: OK
+		- jack: OK
+
+Ubuntu Kernel + Alsa Git:
+	- Compiled with low latency settings
+	- 3.2.18
+	- Alsa from git alsa-kmirror and alsa-driver
+	- git alsa-kmirror and alsa-driver fetched today (25th May)
+
+	* FTU
+		- mplayer: plays but no sound
+		- jack: freezes the whole system
+
+	* UA-25Ex
+		- mplayer: Ok
+		- jack: freezes the whole system
+
+"Pig" Kernel:
+	- Original Ubuntu Kernel
+	- 3.2.18
+	- Compiled with low latency settings
+	- sound/usb directory from Kernel replaced by sound/usb directory
+from Takashi's Kernel - thus the name of this setup, "Pig" :) :)
+
+	* FTU
+		- mplayer: I get click + 4 led flash, and then just got half a
+second of the song before it goes mute. Unplug/Replug, same results
+(except the sound goes mute after 5/10 sec, tried several times, I
+couldn't to 15 seconds). Mplayer keeps reading, but there is no sound.
+		- jack: Works ok, but I have no sound! (was after unplug/replug)
+
+	* UA-25Ex
+		- mplayer: OK
+		- jack: freezes the whole system
+		=
+
+
+Takashi's Kernel:
+	- Compiled with low latency settings
+	- 3.4.0
+	- Alsa from Takashi's kernel
+	- Fetched today (26th May)
+	=
+
+	* FTU
+		- mplayer: I get click + 4 led flash, and then just got half a
+second of the song before it goes mute. Unplug/Replug, same results
+(except the sound goes mute after 5/10 sec, tried several times, I
+couldn't to 15 seconds). Mplayer keeps reading, but there is no sound.
+		- jack:  Works ok, but I have no sound! (was after unplug/replug)
+
+	* UA-25Ex
+		- mplayer: OK
+		- jack: OK
+
+
+I hope this will help you find out where the problem is.
+At least for now I can use the 3.4.0 kernel with the UA-25Ex
+
+Let me know if I can provide you with any more details.
 
 Regards,
-Felix
+Aur=E9lien
