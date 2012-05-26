@@ -1,15 +1,27 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Dynamic PCM and Tegra AHUB
-Date: Fri, 25 May 2012 18:23:48 -0600
-Message-ID: <4FC02294.1000500@wwwdotorg.org>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: snd-usb endpoint rework
+Date: Sat, 26 May 2012 14:19:26 +1000
+Message-ID: <CACckToWtFep7G4Qn=JAwJMdxwQadiQ8_KSi84D7A2vLKQihV6A@mail.gmail.com>
+References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
+	<CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
+	<4FBA12E3.2040009@gmail.com>
+	<CAE-xCyOeKjYJrGsa=yt+1U9Wc7x+OhmhYyWQEFCsELww7+Z+-g@mail.gmail.com>
+	<4FBA1F01.4010606@gmail.com>
+	<CAE-xCyNAKUEuHereXpoDUzR2VazY_JCUAMOSxxJWe_F65T06jw@mail.gmail.com>
+	<4FBAC776.9060801@gmail.com>
+	<CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
+	<4FBCEBDB.6000209@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA03C103FEA
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47411243BE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 May 2012 02:23:52 +0200 (CEST)
+	Sat, 26 May 2012 06:19:27 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so1079814wgb.20
+	for <alsa-devel@alsa-project.org>; Fri, 25 May 2012 21:19:26 -0700 (PDT)
+In-Reply-To: <4FBCEBDB.6000209@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,90 +31,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, linuxaudio@showlabor.de
 List-Id: alsa-devel@alsa-project.org
 
-Mark, Liam,
+[SNIP]
 
-Tegra30's AHUB is structured as follows:
+(sorry daniel you get two copies because I forgot to cc list and others
 
-> +-------------+   +-----+   +--------------+   +-----+   +------+
-> | FIFO pair 0 |<->| CIF |<->| Cross-bar    |<->| CIF |<->| I2S0 |<-> External IO
-> +-------------+   +-----+   | (the "AHUB") |   +-----+   +------+
->               . . .         |              |         . . .
-> +-------------+   +-----+   |              |   +-----+   +------+
-> | FIFO pair 3 |<->| CIF |<->|              |<->| CIF |<->| I2S4 |<-> External IO
-> +-------------+   +-----+   |              |   +-----+   +------+
->                             |              |
->                             |              |   +-----+   +-------+
->                             |              |<->| CIF |<->| SPDIF |<-> External IO
->                             |              |   +-----+   +-------+
->                             |              |
->                             |              |   +-----+   +-------+
->                             |              |<->| CIF |<->| DAM   |
->                             |              |   +-----+   +-------+
->                             +--------------+
+> > If there is anything else I can provide to you, let me know.
+> > Hope all this help somehow!
+>
+> I need to be able to see the issues you describe. Once I do, I'll work
+> fixing them!
+>
+>
+> Daniel
+>
 
-Notes on the diagram:
+ok I just built a new kernel.
 
-Each FIFO above is a separate TX and RX FIFO. I merged them in the
-drawing for simplicity, but they operate completely independently;
-different memory packing formats, data flow rates, ...
+I started with 3.4 then applied the rt7 patches then merged the topic/misc
+tree from sound (to get the ftu fixes from felix and daniel
 
-The CIF can convert the audio format, e.g. mono<->stereo conversion and
-change the # of bits in the data in pretty arbitrary combinations. This
-is true for all CIFs; those that join the AHUB core to either the DMA
-FIFOs or the I2S/SPDIF/DAM controllers.
+so I have 3.4-rt7+sound/topic/misc
 
-The AHUB core is a complete cross-bar; each output selects 1 of the n
-inputs.
+checkout v3.4 tag then apply the -rt patches using quiltapply then merge
+sound/topic/misc
 
-The I2S and SPDIF controllers take audio from the AHUB, format it to the
-appropriate protocol, and send to external IO (or the other way around).
-The I2S and SPDIF modules don't perform any additional data
-rate/width/channel conversion; the CIF must do whatever conversions are
-needed.
+This all seems to be working ok. if I start jack with anything less that
+128 samples It starts but I get no audio and lots of xruns (this is the
+same as on previous kernel 3.4-rc4-rt5)
 
-The DAMs take 2 input channels from the AHUB, optionally perform some
-sample rate conversion and/or bit size conversion beyond what the CIF
-does, mix them together, and send them back into the AHUB cross-bar.
+i've run jack_iodelay through a loopback (TRS from output 3 to input 3 on
+the back of the FTU) for several hours without any problems
 
-Questions:
+Felix,
 
-It seems like the whole point of ASoC dynamic PCM is to represent the
-AHUB core, and at least some of the surrounding boxes above, as an ASoC
-CODEC.
+the effects controls are not obvious to me I thought there were independent
+fx sends for each output so expected 16x4 new controls plus the returns but
+maybe that's not howitis.
 
-Initially, I would assume the AHUB CODEC's DAIs would be the DMA FIFOs
-and the I2S* controllers themselves, i.e. include everything in the
-above diagram.
+also has anyone looked at how metering is reported on the wire?
 
-If I do that, then the dai_links that the ASoC machine driver registers
-for I2S->WM8903 would represent a codec DAI <-> codec DAI link rather
-than a regular CPU DAI <-> codec DAI link. The difference here is the
-lack of symmetry in struct snd_soc_dai_link: The CPU-side of each DAI
-link only has a "cpu_dai_name" to identify it, whereas the codec side
-has both a codec_name (or of node) /plus/ a DAI name. This is important
-at least in the context of device tree, where to avoid hard-coding
-specific device names into the dai_link structure's .codec_name field in
-the machine driver, an of_node is looked up at run-time instead, and
-then the codec_dai_name interpreted relative to that. Without a CPU-side
-separation between name/node and dai_name, that's not possible. So, I
-sent a patch for that in case this is the right approach.
-
-An alternative to expanding struct snd_soc_dai_link might be to add an
-API so the machine driver could ask the AHUB driver for the
-globally-unique name of each DAI it exposes, and write that into
-dai_link.cpu_dai_name. But if we have that API, we could use it for the
-codec-side of the link to, and just have .codec_dai_name and remove the
-.codec_name and .codec_of_node fields.
-
-Alternatively, perhaps the DMA FIFOs should be registered as CPU DAIs
-completely separately from the AHUB CODEC. The AHUB CIFs would then be
-the DAIs registered by the AHUB CODEC. But then, the machine driver
-would need to include dai_links for all the DMA FIFO <-> CIF
-connections, which would end up duplicating that list of links into all
-Tegra machine drives (or perhaps sharing it in common code).
-
-Very curious for your thoughts...
+Grant.
