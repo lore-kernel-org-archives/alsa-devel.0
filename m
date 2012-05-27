@@ -1,28 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform
-	driver	for ML7213
-Date: Sun, 27 May 2012 23:19:56 +0100
-Message-ID: <20120527221956.GB25019@opensource.wolfsonmicro.com>
-References: <1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120321160913.GF3226@opensource.wolfsonmicro.com>
-	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
-	<20120326154009.GA17506@sirena.org.uk>
-	<CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
-	<20120523093857.GC4085@opensource.wolfsonmicro.com>
-	<CANKRQnhNWC2F6zKgBMJY7HnipJbA5p-=6Lz4uGZqBKNQ688Z3w@mail.gmail.com>
-	<20120524100742.GH5361@opensource.wolfsonmicro.com>
-	<CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
-	<1337941231.1580.19.camel@vkoul-udesk3>
+Subject: Re: Dynamic PCM and Tegra AHUB
+Date: Sun, 27 May 2012 23:33:36 +0100
+Message-ID: <20120527223334.GC25019@opensource.wolfsonmicro.com>
+References: <4FC02294.1000500@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9102B24345
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C386F2434E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2012 00:19:58 +0200 (CEST)
+	Mon, 28 May 2012 00:33:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1337941231.1580.19.camel@vkoul-udesk3>
+In-Reply-To: <4FC02294.1000500@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,36 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, Tomoya MORINAGA <tomoya.rohm@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 25, 2012 at 03:50:31PM +0530, Vinod Koul wrote:
-> On Fri, 2012-05-25 at 18:30 +0900, Tomoya MORINAGA wrote:
-> > On Thu, May 24, 2012 at 7:07 PM, Mark Brown
+On Fri, May 25, 2012 at 06:23:48PM -0600, Stephen Warren wrote:
 
-> > I'm not so familiar with Linux's DMA idea.
-> > So we don't know whether non-cyclic dmaengine has problem or not.
+> It seems like the whole point of ASoC dynamic PCM is to represent the
+> AHUB core, and at least some of the surrounding boxes above, as an ASoC
+> CODEC.
 
-Nobody has written the code, this is the problem!  If the code is not
-there, you should try to write it.  If there is some great problem
-writing the code then you should t
+No, not really though it could do.  It's really intended for cases where
+there's a much tighter coupling between the inputs and the outputs and
+where the AP needs to manage the DMA on both sides of the hub (it looks
+like that isn't the case from your diagram).  It wasn't especially
+intended to be used in CODEC devices at all.
 
-> First you should not be writing your own dma driver, it *needs* to use
-> dmaenegine. We already have bunch of driver supported, so there may be a
+Note that the dynamic PCM setup ends up with you having to define links
+between the components in the machine driver in a similar fashion to
+that which you're discussing below, though the format is different.
 
-He's already done that, their current code is all open coded dmaengine
-stuff.
+> then the codec_dai_name interpreted relative to that. Without a CPU-side
+> separation between name/node and dai_name, that's not possible. So, I
+> sent a patch for that in case this is the right approach.
 
-> > As you said, common code for DMA code can be best solution.
-> > However, currently, the code is nothing.
-> > So, I want you to accept our driver as first step.
-> > Because I think supporting new device is more important for linux than
-> > dmaengine common.
+I think it is, we've just never been encountering naming collisions on
+the CPU side for obvious reasons.
 
-The existing code is far from nothing, there is a fairly substantial
-dmaengine library there already which should share a big chunk of code
-with any cyclic support.  If you were saying "this is too hard for
-$REASON" that'd be one thing but that's not what you're saying here.
-It's possible that there is actually some substantial difficult but
-my first instinct would be that it should be relatively straightforward.
+> An alternative to expanding struct snd_soc_dai_link might be to add an
+> API so the machine driver could ask the AHUB driver for the
+> globally-unique name of each DAI it exposes, and write that into
+> dai_link.cpu_dai_name. But if we have that API, we could use it for the
+> codec-side of the link to, and just have .codec_dai_name and remove the
+> .codec_name and .codec_of_node fields.
+
+This seems bad, it's replacing data with code which is the wrong way
+round.
+
+> Alternatively, perhaps the DMA FIFOs should be registered as CPU DAIs
+> completely separately from the AHUB CODEC. The AHUB CIFs would then be
+> the DAIs registered by the AHUB CODEC. But then, the machine driver
+
+This is what I'd expect.
+
+> would need to include dai_links for all the DMA FIFO <-> CIF
+> connections, which would end up duplicating that list of links into all
+> Tegra machine drives (or perhaps sharing it in common code).
+
+We should probably just have a "link blob" class of device which can be
+used by things like SoCs (and may also be useful for things that have
+lots of derivatives or modular components) and then either placed in the
+machine driver automatically or referenced by the machine driver
+somehow.
+
+Though with DT boards perhaps some DT include/refrence stuff can do this
+transparently, I'd hope so but I'm not optimistic.
