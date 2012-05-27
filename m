@@ -1,29 +1,24 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Subject: Re: snd-usb endpoint rework
-Date: Sat, 26 May 2012 17:48:01 +0100
-Message-ID: <CAE-xCyOwFkH7KnfyLt02pJ37F8ZkUtxvi4fdmqReAxoTT2=_FA@mail.gmail.com>
-References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
-	<CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
-	<4FBA12E3.2040009@gmail.com>
-	<CAE-xCyOeKjYJrGsa=yt+1U9Wc7x+OhmhYyWQEFCsELww7+Z+-g@mail.gmail.com>
-	<4FBA1F01.4010606@gmail.com>
-	<CAE-xCyNAKUEuHereXpoDUzR2VazY_JCUAMOSxxJWe_F65T06jw@mail.gmail.com>
-	<4FBAC776.9060801@gmail.com>
-	<CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
-	<4FBCEBDB.6000209@gmail.com>
-	<CACckToWtFep7G4Qn=JAwJMdxwQadiQ8_KSi84D7A2vLKQihV6A@mail.gmail.com>
-	<CAFz=ag6p5rouC4zFN7ezr79smS62Fzs8Jt4NBX3nxSUd_PKtdA@mail.gmail.com>
+From: cee1 <fykcee1@gmail.com>
+Subject: Re: Adjust volume may cause audio playback corruption
+Date: Sun, 27 May 2012 17:16:03 +0800
+Message-ID: <CAGXxSxUafdPiHyhTZw4AJu-78SM4D0TmRJ3A_p1FTqEhmqXZ4A@mail.gmail.com>
+References: <CAGXxSxUxFbC3mGWa-pbUKrzUqsBbvoQ5PmXNrKfL2W_BXyv1_A@mail.gmail.com>
+	<CAGXxSxWSD+c9tnJHsKVDJYhq=AkY4KfefZgPj6rtgQozzFjuiQ@mail.gmail.com>
+	<CAGXxSxUYWLyRZ1BEz53TRY9aE-CPPxSRoZeNGE5QTsOKP=B+Gg@mail.gmail.com>
+	<4FB54BF6.3000901@ladisch.de>
+	<CAGXxSxUC54kb8pmDXuRGjRVbQ465v9M0n8_rO-Z4cYUpnzLz+A@mail.gmail.com>
+	<CAGXxSxXyfk5vNx3yfwLNPuGdWAwEPQU2FGV8dVKV=pLYrJJbbg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=047d7b1601f138137504c1010e11
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id CAA5624477
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70A36103B49
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 May 2012 18:50:07 +0200 (CEST)
-Received: by vbip1 with SMTP id p1so1314550vbi.38
-	for <alsa-devel@alsa-project.org>; Sat, 26 May 2012 09:48:01 -0700 (PDT)
-In-Reply-To: <CAFz=ag6p5rouC4zFN7ezr79smS62Fzs8Jt4NBX3nxSUd_PKtdA@mail.gmail.com>
+	Sun, 27 May 2012 11:16:26 +0200 (CEST)
+Received: by dajt11 with SMTP id t11so3626221daj.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 May 2012 02:16:24 -0700 (PDT)
+In-Reply-To: <CAGXxSxXyfk5vNx3yfwLNPuGdWAwEPQU2FGV8dVKV=pLYrJJbbg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,136 +28,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+--047d7b1601f138137504c1010e11
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I have tried to do a bit more thorough testing, find the details below.
-Hope this helps!
-
->> blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
->> ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
->> ALSA lib conf.c:4241:(_snd_config_evaluate) function
->> snd_func_card_driver returned error: No such file or directory
->> ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
->> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
->> returned error: No such file or directory
->> ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
->> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
->> returned error: No such file or directory
->> ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
->> or directory
->> ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
->> aplay: main:682: audio open error: No such file or directory
->
-> What does "aplay -l" show? Also, what does it show on the older Ubuntu
-> kernel? Is there any difference?
-
-That is just me being an idiot. Ubuntu never mounts a USB sound card
-on the first slot.
-Compiling with the original Alsa coming from Ubuntu, I get the same error.
-
->> No sound...
->> I tried to reboot several times, unplug/replug, checked alsamixer: all
->> look fine to me but still no sound.
->> Actually, it is not "exactly" no sound: I can see the 4 front leds
->> flash very quickly, and I can hear a click in the speakers (with the
->> FX, the click is longer due to the reverb, handy to notice it!).
->
-> The 4 front LEDs on the FTU signal input level activity, not output. Is
-> there anything connected to those inputs?
-
-There are stuff plugged on the 3 first inputs (2 for my guitar, 1 for
-my mic), bit they are all turned off during testing.
-This click and the 4 leds flash is very similar to the one you have
-when the FTU is plugged in to the USB port after being turned on.
-Somehow, when I want to play something, it makes the 4 leds flash + a
-click/crackle in the speakers.
-
->> IN BOTH CASES, FTU AND UA-25EX
+2012/5/18 cee1 <fykcee1@gmail.com>:
+> 2012/5/18 cee1 <fykcee1@gmail.com>:
+>> =E5=9C=A8 2012=E5=B9=B45=E6=9C=8818=E6=97=A5=E6=98=9F=E6=9C=9F=E4=BA=94=
+=EF=BC=8CClemens Ladisch =E5=86=99=E9=81=93=EF=BC=9A
 >>
->> Starting jack result in an immediate freeze of the system.
->
-> I really fail to see any of these issues on my system. I tried with both
-> jackd and jackd2 and set them to real time priorities and chose 64 bytes
-> sample frames in PureData. All good, no lockups. Can you describe your
-> jackd setup? How do you start it?
+>>> cee1 wrote:
+>>> > We've found a way the can reproduce the problem more quickly on our
+>>> > product:
+>>> > 1. do audio playback
+>>> > 2. alsamixer, select 'Master', press 'm' and hold for a while.
+>>> >
+>>> > Then release 'm', playback corrupts(sounds similar to
+>>> > http://dev.lemote.com/files/upload/software/PA-apc/corrupted_sound.og=
+g).
+I've written a small program[1] that will let PA mute/unmute repeatedly.
 
-jackd -dalsa -dhw:1 -r48000 -p256 -n3 -Xseq
+I find the problem is something to do with rewind_safeguard, If I
+adjust rewind_safeguard to eighth of the original value, it can also
+be easily reproduced through pa-mute-test.c on the AMD turion 64 x2
+board in ubuntu 12.04:
+--- a/src/modules/alsa/alsa-sink.c
++++ b/src/modules/alsa/alsa-sink.c
+@@ -86,8 +86,8 @@
 
+ #define VOLUME_ACCURACY (PA_VOLUME_NORM/100)  /* don't require volume
+adjustments to be perfectly correct. do
 
-Normal Ubuntu Kernel:
-	- Compiled with low latency settings
-	- 3.2.18
-	- Original Alsa
+-#define DEFAULT_REWIND_SAFEGUARD_BYTES (256U) /* 1.33ms @48kHz, we'll
+never rewind less than this */
+-#define DEFAULT_REWIND_SAFEGUARD_USEC (1330) /* 1.33ms, depending on
+channels/rate/sample we may rewind more
++#define DEFAULT_REWIND_SAFEGUARD_BYTES (32U) /* 1.33ms @48kHz, we'll
+never rewind less than this */
++#define DEFAULT_REWIND_SAFEGUARD_USEC (166) /* 1.33ms, depending on
+channels/rate/sample we may rewind more t
 
-	* FTU
-		- mplayer: OK
-		- jack: OK
+ struct userdata {
+     pa_core *core;
 
-	* UA-25Ex
-		- mplayer: OK
-		- jack: OK
+Should we calculate limit_nbytes considering tsched_watermark?
+e.g.(which works on our platform)
+@@ -1614,7 +1614,7 @@ static int process_rewind(struct userdata *u) {
+     unused_nbytes =3D (size_t) unused * u->frame_size;
 
-Ubuntu Kernel + Alsa Git:
-	- Compiled with low latency settings
-	- 3.2.18
-	- Alsa from git alsa-kmirror and alsa-driver
-	- git alsa-kmirror and alsa-driver fetched today (25th May)
+     /* make sure rewind doesn't go too far, can cause issues with DMAs */
+-    unused_nbytes +=3D u->rewind_safeguard;
++    unused_nbytes +=3D u->tsched_watermark;
 
-	* FTU
-		- mplayer: plays but no sound
-		- jack: freezes the whole system
-
-	* UA-25Ex
-		- mplayer: Ok
-		- jack: freezes the whole system
-
-"Pig" Kernel:
-	- Original Ubuntu Kernel
-	- 3.2.18
-	- Compiled with low latency settings
-	- sound/usb directory from Kernel replaced by sound/usb directory
-from Takashi's Kernel - thus the name of this setup, "Pig" :) :)
-
-	* FTU
-		- mplayer: I get click + 4 led flash, and then just got half a
-second of the song before it goes mute. Unplug/Replug, same results
-(except the sound goes mute after 5/10 sec, tried several times, I
-couldn't to 15 seconds). Mplayer keeps reading, but there is no sound.
-		- jack: Works ok, but I have no sound! (was after unplug/replug)
-
-	* UA-25Ex
-		- mplayer: OK
-		- jack: freezes the whole system
-		=
+     if (u->hwbuf_size > unused_nbytes)
+         limit_nbytes =3D u->hwbuf_size - unused_nbytes;
 
 
-Takashi's Kernel:
-	- Compiled with low latency settings
-	- 3.4.0
-	- Alsa from Takashi's kernel
-	- Fetched today (26th May)
-	=
+----
+[1]. See pa-mute-test.c in attachment, using build.sh to build it.
 
-	* FTU
-		- mplayer: I get click + 4 led flash, and then just got half a
-second of the song before it goes mute. Unplug/Replug, same results
-(except the sound goes mute after 5/10 sec, tried several times, I
-couldn't to 15 seconds). Mplayer keeps reading, but there is no sound.
-		- jack:  Works ok, but I have no sound! (was after unplug/replug)
-
-	* UA-25Ex
-		- mplayer: OK
-		- jack: OK
-
-
-I hope this will help you find out where the problem is.
-At least for now I can use the 3.4.0 kernel with the UA-25Ex
-
-Let me know if I can provide you with any more details.
 
 Regards,
-Aur=E9lien
+-- cee1
+
+--047d7b1601f138137504c1010e11
+Content-Type: text/x-csrc; charset=US-ASCII; name="pa-mute-test.c"
+Content-Disposition: attachment; filename="pa-mute-test.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h2pv6esn0
+
+I2luY2x1ZGUgPGdsaWIuaD4KI2luY2x1ZGUgPHB1bHNlL3B1bHNlYXVkaW8uaD4KI2luY2x1ZGUg
+PHB1bHNlL2dsaWItbWFpbmxvb3AuaD4KCiNkZWZpbmUgSU5URVJWQUwgMTI1CiNkZWZpbmUgVEVT
+VF9OUiAgKCgxMDAwL0lOVEVSVkFMKSozNjAwKjcyVUwpCgpzdHJ1Y3QgY29udGV4dHsKCXBhX2Nv
+bnRleHQgKnBhX2N4dDsKCUdNYWluTG9vcCAqbWFpbl9sb29wOwp9OwoKZ2Jvb2xlYW4gc2V0X211
+dGVfdW5tdXRlKHN0cnVjdCBjb250ZXh0ICpjeHQpCnsKCXN0YXRpYyBnYm9vbGVhbiBtdXRlID0g
+VFJVRTsKCXN0YXRpYyBnaW50IGNvdW50ID0gMDsKCXBhX29wZXJhdGlvbiAqbzsKCgltdXRlID0g
+IW11dGU7Cgljb3VudCsrOwoKCW8gPSBwYV9jb250ZXh0X3NldF9zaW5rX211dGVfYnlfaW5kZXgo
+Y3h0LT5wYV9jeHQsIDAsIG11dGUsIE5VTEwsIE5VTEwpOwoJaWYgKG8gPT0gTlVMTCkgewoJCWdf
+d2FybmluZyAoInBhX2NvbnRleHRfc2V0X3NpbmtfbXV0ZV9ieV9pbmRleCgpIGZhaWxlZDogJXMi
+LCBwYV9zdHJlcnJvcihwYV9jb250ZXh0X2Vycm5vKGN4dC0+cGFfY3h0KSkpOwoJCWdfbWFpbl9x
+dWl0KGN4dC0+bWFpbl9sb29wKTsKCQlyZXR1cm4gRkFMU0U7Cgl9IAoKCWlmIChjb3VudCA9PSBU
+RVNUX05SKSB7CgkJZ19wcmludCgiTWF4IHRlc3QgbnVtYmVyKD0lbHUpIHJlYWNoZWQsIHF1aXQu
+XG4iLCBURVNUX05SKTsKCQlnX21haW5fcXVpdChjeHQtPm1haW5fbG9vcCk7CgkJcmV0dXJuIEZB
+TFNFOwoJfQoKCWdfcHJpbnQoIlxyJTEwZDpcdHNldCB0byAlNnMiLCBjb3VudCwgbXV0ZSA/ICJt
+dXRlIjoidW5tdXRlIik7CglwYV9vcGVyYXRpb25fdW5yZWYobyk7CglyZXR1cm4gVFJVRTsKfQoK
+aW50IG1haW4oKQp7CglzdHJ1Y3QgY29udGV4dCBjeHQ7CglwYV9nbGliX21haW5sb29wICpwYV9t
+YWluX2xvb3A7CglpbnQgcjsKCglwYV9tYWluX2xvb3AgPSBwYV9nbGliX21haW5sb29wX25ldyhO
+VUxMKTsKCWN4dC5wYV9jeHQgPSBwYV9jb250ZXh0X25ldyhwYV9nbGliX21haW5sb29wX2dldF9h
+cGkocGFfbWFpbl9sb29wKSwgIm11dGUtYXV0b211dGUtdGVzdCIpOyAKCWN4dC5tYWluX2xvb3Ag
+PSBnX21haW5fbG9vcF9uZXcoTlVMTCwgRkFMU0UpOwoKCXIgPSBwYV9jb250ZXh0X2Nvbm5lY3Qo
+Y3h0LnBhX2N4dCwgTlVMTCwgMCwgTlVMTCk7CgoJaWYgKHIpIHsKCQlnX3ByaW50KCJGYWlsZWQg
+dG8gY29ubmVjdCBQQSBzZXJ2ZXIuXG4iKTsKCQlleGl0KDMpOwoJfQoKCWdfdGltZW91dF9hZGQo
+SU5URVJWQUwsIChHU291cmNlRnVuYykgc2V0X211dGVfdW5tdXRlLCAmY3h0KTsKCglnX21haW5f
+bG9vcF9ydW4oY3h0Lm1haW5fbG9vcCk7CgoJcmV0dXJuIDA7Cn0K
+--047d7b1601f138137504c1010e11
+Content-Type: application/x-sh; name="build.sh"
+Content-Disposition: attachment; filename="build.sh"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h2pv6nba1
+
+IyEvYmluL2Jhc2gKCnNldCAtZQpleHBvcnQgUEtGX0NPTkZJR19QQVRIPS91c3IvbGliL2kzODYt
+bGludXgtZ251L3BrZ2NvbmZpZwpjYyBwYS1tdXRlLXRlc3QuYyBgcGtnLWNvbmZpZyAtLWNmbGFn
+cyAtLWxpYnMgZ2xpYi0yLjAgbGlicHVsc2UgbGlicHVsc2UtbWFpbmxvb3AtZ2xpYmAgLW8gcGEt
+bXV0ZS10ZXN0Cg==
+--047d7b1601f138137504c1010e11
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--047d7b1601f138137504c1010e11--
