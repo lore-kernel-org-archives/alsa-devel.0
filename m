@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ALSA: pcm: Add debug-print helper
-	function
-Date: Mon, 28 May 2012 10:45:29 +0100
-Message-ID: <20120528094528.GA4032@opensource.wolfsonmicro.com>
-References: <1337865963-26040-1-git-send-email-ola.o.lilja@stericsson.com>
-	<s5hk4007pfj.wl%tiwai@suse.de>
+Subject: Re: [PATCH 2/5] ASoC: core: Add widget
+	SND_SOC_DAPM_CLOCK_SUPPLY
+Date: Mon, 28 May 2012 11:59:03 +0100
+Message-ID: <20120528105902.GB4032@opensource.wolfsonmicro.com>
+References: <1337865985-26077-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0620348288926486021=="
+Content-Type: multipart/mixed; boundary="===============9100653660141091306=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ECB3A2443B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4E852448D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2012 11:56:10 +0200 (CEST)
-In-Reply-To: <s5hk4007pfj.wl%tiwai@suse.de>
+	Mon, 28 May 2012 12:59:04 +0200 (CEST)
+In-Reply-To: <1337865985-26077-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lrg@ti.com>
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0620348288926486021==
+--===============9100653660141091306==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+	protocol="application/pgp-signature"; boundary="ADZbWkCsHQ7r3kzd"
 Content-Disposition: inline
 
 
---Kj7319i9nmIyA2yE
+--ADZbWkCsHQ7r3kzd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 25, 2012 at 08:19:44AM +0200, Takashi Iwai wrote:
-> At Thu, 24 May 2012 15:26:03 +0200,
-> Ola Lilja wrote:
+On Thu, May 24, 2012 at 03:26:25PM +0200, Ola Lilja wrote:
+> Adds a supply-widget variant for connection to the clock-framework.
+> This widget-type corresponds to the variant for regulators.
 
-> > Adds a function getting the stream-name as a string for
-> > a specific stream.
+I'll apply this but...
 
-> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> +	case snd_soc_dapm_clock_supply:
+> +		w->clk = clk_get(dapm->dev, w->name);
+> +		if (IS_ERR(w->clk)) {
+> +			ret = PTR_ERR(w->clk);
+> +			dev_err(dapm->dev, "Failed to request %s: %d\n",
+> +				w->name, ret);
+> +			return NULL;
 
-> Mark, Liam, feel free to pick it through your tree.
+Should be devm_clk_get() (which will be there after the merge window)
+but I'll fix that up once the merge window sorts itself out.
 
-Applied, thanks.
+We'll also need to work out how this works with the clk API not being
+generally available but that'll partly depend on the clk API stubs - if
+they're in -rc1 there should be no problem otherwise we'll need ifdefs
+or something.
 
---Kj7319i9nmIyA2yE
+--ADZbWkCsHQ7r3kzd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPw0kxAAoJEBus8iNuMP3dn+MP/3siTHIuhlR/6bh6LC6xqAAw
-LdtQt9AMaIpzASnLlJmlB0MxO7jKupIxkLr9rGd0HNRmr/8sbBsC7dJhGupLa0ij
-qGbclVsm/eUFg2g+GCIKBBU7MJxlOSipFjqYj/jYBX7xwhytl3kL8NKwOkbz9h38
-ZdjQ+xGv3IXer26MRehAmKyiQhJnyZipJklAGoZQIy5TLoupyKzVALNuk3mH8dGJ
-IVkz+0m17+bBbAacs2EHZV2cJ09b7vP62j8LdmWgGjFLI9l31cxS0eRtIFhFmzBt
-1fEervlrwMM43vu2feHbDa8dKYiROyjINCfIQQoV6VHmYxI9cmpBy5V+Gaj4CxsV
-hm2mHuTI4li4BfR3R4aA5RIXccPmpGz3Dv4BWNPHAz3xDrbm0GenoU1QUdipClcn
-ayrfojNoXIiTKONl3miGZy8+sB5E+E1z9NHzfpdWgvBH+sl9PnJutYXlKnZ4Cy2w
-9X3qAmUmjC6sNXHO75eIijlqFAgG2hu/dRWd9/6c6B9nHbScQfAU57hJvMdPFXkl
-apjab0Xwd+e0DL9TV9qRsPqydhWXNK2A0rTEIEOcocCVkzVLsN743nfXCRVwyTBw
-FX6l7jKtdXEZDH6QDb+Fnr+ALJsyMIw01JYvgnt1tCLhtFtB0RzR1Lp0BG3UKOyU
-Jts+kQbRWuVBGc9dapeT
-=dZ9L
+iQIcBAEBAgAGBQJPw1pvAAoJEBus8iNuMP3dHaoP/2tLBndBy1BBwHS+k+Nqzrlf
+Yi1XQ3aweJ2JgUghWY3ZwFVES23SigNVhYtAlFPgb8d4yZnT2uYVfKeyY7iETIys
+eZi/a17l7jQzsOeo17BbMvor33qU5Gi9wm/hh9Fo5OVlWQRGPmS8nlrDo/Gm179X
+nmdBQfpE72jRsHJav4GhrQVVbFWJzbCxFnBQ9NZ5mY4Y/BM22qBPOtm6bUk8Zf1V
+wTyMKoSM8fQOVV6Yw9U0mi/QXXiw7UCeEibkRo4Wx0fnDIP07p7ir0qa3x+vWM3h
+0xxQsaYYSHkrsqpzmJNyb9dq67xutUaqKF6mO8wgjL7hdw/wo0tqrtLSdFWO07TR
+4VTlNZ6SPI/XaBzLSb4/wCEgh2IHrHLj+ZFSClEjOQHCOJsxjH+rEiWNcVHjeZnF
+JXuoF5X/AmEvH399YPFClY+Pp6XrYcOkgs1Y96YGF6DMHIclY2gNOqV4PL+0KUkW
+N9fw+YqQ8jvdUXHm21O5+pq0VZNJcbtVCnNhN2uVBgD+447zIlDbl+drK30lGcsw
+s/RQ27hkkeu4HPheP2wYixEktKhNKokbw/3LZnRrsw+QlL4+sNF83DoFgh8eRtR3
+acSjD2v4xzRTi/5QGbJBz0W/Sbej7qnSMaaS1FzWnWUKN8GRscom42x/k/DvHVc5
+MFTMq+1Fb2SKZGlcDoYj
+=krbr
 -----END PGP SIGNATURE-----
 
---Kj7319i9nmIyA2yE--
+--ADZbWkCsHQ7r3kzd--
 
---===============0620348288926486021==
+--===============9100653660141091306==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0620348288926486021==--
+--===============9100653660141091306==--
