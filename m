@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: imx-ssi: Use
- clk_prepare_enable/clk_disable_unprepare
-Date: Mon, 28 May 2012 15:51:39 +0100
-Message-ID: <20120528145139.GJ4032@opensource.wolfsonmicro.com>
-References: <1337977640-18845-1-git-send-email-fabio.estevam@freescale.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Help requested: new HSS1394 MIDI back-end
+Date: Mon, 28 May 2012 16:58:39 +0200
+Message-ID: <4FC3929F.4050304@ladisch.de>
+References: <4FBFE0D5.8030501@mixxx.org> <4FC23123.8000702@ladisch.de>
+	<4FC295AD.1030901@mixxx.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7491168086048001513=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5964024376
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 536F22438B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2012 16:51:41 +0200 (CEST)
-In-Reply-To: <1337977640-18845-1-git-send-email-fabio.estevam@freescale.com>
+	Mon, 28 May 2012 16:59:06 +0200 (CEST)
+In-Reply-To: <4FC295AD.1030901@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: philippe.retornaz@epfl.ch, s.hauer@pengutronix.de, shawn.guo@linaro.org, alsa-devel@alsa-project.org
+To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Sean M. Pappalardo - D.J. Pegasus wrote:
+> I just updated my kernel and tried it with the SCS.1m but unfortunately it reports an error:
+>
+> firewire_core: created device fw1: GUID 0012600000000000, S400
+> snd_scs1x fw1.0: transaction failed: type error
 
---===============7491168086048001513==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MP5ln1Rcf9Bvi+ZW"
-Content-Disposition: inline
+This is from a snd_fw_transaction call, either the ping or the address
+setting.
 
+Please check if these commands work:
 
---MP5ln1Rcf9Bvi+ZW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	firewire-request /dev/fwX read c007dedadada 4
+	firewire-request /dev/fwX write c007dedadada f100123456789abc
 
-On Fri, May 25, 2012 at 05:27:20PM -0300, Fabio Estevam wrote:
-> Fix the following kernel crash:
+In theory, you should be able to write MIDI commands by prefixing them
+with 00, like this for a note-on:
+	firewire-request /dev/fwX write c007dedadada 00912345
 
-Applied, thanks.
+> Turning on the SCS.1d then yields:
+> firewire_core: created device fw2: GUID 0012600100000000, S400
 
---MP5ln1Rcf9Bvi+ZW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPw5DsAAoJEBus8iNuMP3dswEP+gKwrugwQpQWmK2Yyv1giXEd
-93lMe6x9FrpiwnwrVj/Ljn2j0/gF6muYrEvVOEmufan+bHKpeEVXTIK5fliIMxtB
-SGu0pkCNjWs/zuBBhD/9jJvKxfRc1ipBmd6FkYxWQGXp5c0nGC9wqjaNHc9jmkCz
-K/zz/ZMsAQMt6W5z409Z60DXIOy9sR6G44F0oe0UyAWRtn7t6k0ziARUdQ8F35qn
-JG6P8fYxwHYurYw3Wu6QgB/PgV+wyfo9UssJNGARRmagfVWbmA9CoQ5Dbu9XJ3cc
-0SFKK2CoU7JRyESRu9YN77jrX8tj1M+MUl8eS8OkRj8W0tAqMFbcu++2nm/lzZRC
-8ocGQU6c/mKHvdei0XRtAKKPfVpAZq5eXMB3Wzw5Lg7fneTyTuk58j/+pKtRvi8e
-h2VgkJEc10a47+BRsl02QTuQv0oQPmkRNNaQ/PeQUSkOmyK09b/B+wfa5fRONyn7
-nzBfBh3eM/Hud8G2hMuduZIINc2MbTT28OQ7ETf8AVYg4a/6/ua3VwGzfOf8DJNW
-KHtwPUiMm4TsYoK/LHvDyDqavw0LkyKHlwAkrFSKoNAgKCJEQl2jXn+eJZmBe70G
-A0KgnJSphyleIC+S+g33ylclmKSAHNiGVsJFWGX+zZOMbOmFDx7gXAhIXggNyeUx
-wUdcavfU0hhyhjRp7eMs
-=22lA
------END PGP SIGNATURE-----
-
---MP5ln1Rcf9Bvi+ZW--
-
---===============7491168086048001513==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+FFADO had only the 1m's ID, so the driver does not yet know about the 1d.
 
 
---===============7491168086048001513==--
+Regards,
+Clemens
