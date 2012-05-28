@@ -1,30 +1,18 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
-	for ML7213
-Date: Mon, 28 May 2012 14:35:15 +0900
-Message-ID: <CANKRQnjnHvK_oUOumLyN-s_GY5wYboC-zjQ0niV6+kRHfR14bg@mail.gmail.com>
-References: <1331275160-31757-1-git-send-email-tomoya.rohm@gmail.com>
-	<1332158459-14880-1-git-send-email-tomoya.rohm@gmail.com>
-	<20120321160913.GF3226@opensource.wolfsonmicro.com>
-	<CANKRQnjoGN=uvej8B1BxPHAx7NQtOORD9yJRPUc134DrVmPzNg@mail.gmail.com>
-	<20120326154009.GA17506@sirena.org.uk>
-	<CANKRQnhn=ALR0ucv5gnvwnxwxBQX4ajm9Jo5qC0fL-EFjDdoZg@mail.gmail.com>
-	<20120523093857.GC4085@opensource.wolfsonmicro.com>
-	<CANKRQnhNWC2F6zKgBMJY7HnipJbA5p-=6Lz4uGZqBKNQ688Z3w@mail.gmail.com>
-	<20120524100742.GH5361@opensource.wolfsonmicro.com>
-	<CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
-	<1337941231.1580.19.camel@vkoul-udesk3>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ALSA: pcm: Add debug-print helper
+	function
+Date: Mon, 28 May 2012 10:45:29 +0100
+Message-ID: <20120528094528.GA4032@opensource.wolfsonmicro.com>
+References: <1337865963-26040-1-git-send-email-ola.o.lilja@stericsson.com>
+	<s5hk4007pfj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0620348288926486021=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id E0C0724597
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ECB3A2443B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2012 07:35:16 +0200 (CEST)
-Received: by dajt11 with SMTP id t11so4591181daj.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 May 2012 22:35:15 -0700 (PDT)
-In-Reply-To: <1337941231.1580.19.camel@vkoul-udesk3>
+	Mon, 28 May 2012 11:56:10 +0200 (CEST)
+In-Reply-To: <s5hk4007pfj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,43 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 25, 2012 at 7:20 PM, Vinod Koul <vinod.koul@linux.intel.com> wr=
-ote:
->> >> > Nobody seems to be working on it as far as I can tell, I've certain=
-ly
->> >> > not seen any patches.
->> >
->> >> If so, could you accept current platform/machine driver ?
->> >
->> > Ideally what would be happening here is that you or other people who
->> > have such systems would be working to add the required support to the
->> > core code, there's clearly a need for common code here as there are a
->> > number of different systems that don't have cyclic DMA and it wouldn't
->> > be great to end up with duplicated code.
->> >
->> > Is there some great difficulty in factoring out the support for
->> > non-cyclic audio DMA on dmaengine - it seems like if there is we must
->> > have a serious problem in dmaengine which we should fix? =A0If there i=
-s a
->> > substantial difficulty then that's different but it doesn't feel like
->> > we've tried doing common code yet, if there's problems doing that I'd
->> > like to understand what they are before we jump ahead of ourselves.
->>
->> I'm not so familiar with Linux's DMA idea.
->> So we don't know whether non-cyclic dmaengine has problem or not.
-> First you should not be writing your own dma driver, it *needs* to use
-> dmaenegine. We already have bunch of driver supported, so there may be a
-> case that existing driver works straight or with little modifications.
-> Using your own dma driver is a dead road, so sooner you move over better
-> it is.
-I've never developed our own dma driver.
-I've developed our ASoC driver using linux standard DMA framework.
 
--- =
+--===============0620348288926486021==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
 
-ROHM Co., Ltd.
-tomoya
+
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 25, 2012 at 08:19:44AM +0200, Takashi Iwai wrote:
+> At Thu, 24 May 2012 15:26:03 +0200,
+> Ola Lilja wrote:
+
+> > Adds a function getting the stream-name as a string for
+> > a specific stream.
+
+> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+
+> Mark, Liam, feel free to pick it through your tree.
+
+Applied, thanks.
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPw0kxAAoJEBus8iNuMP3dn+MP/3siTHIuhlR/6bh6LC6xqAAw
+LdtQt9AMaIpzASnLlJmlB0MxO7jKupIxkLr9rGd0HNRmr/8sbBsC7dJhGupLa0ij
+qGbclVsm/eUFg2g+GCIKBBU7MJxlOSipFjqYj/jYBX7xwhytl3kL8NKwOkbz9h38
+ZdjQ+xGv3IXer26MRehAmKyiQhJnyZipJklAGoZQIy5TLoupyKzVALNuk3mH8dGJ
+IVkz+0m17+bBbAacs2EHZV2cJ09b7vP62j8LdmWgGjFLI9l31cxS0eRtIFhFmzBt
+1fEervlrwMM43vu2feHbDa8dKYiROyjINCfIQQoV6VHmYxI9cmpBy5V+Gaj4CxsV
+hm2mHuTI4li4BfR3R4aA5RIXccPmpGz3Dv4BWNPHAz3xDrbm0GenoU1QUdipClcn
+ayrfojNoXIiTKONl3miGZy8+sB5E+E1z9NHzfpdWgvBH+sl9PnJutYXlKnZ4Cy2w
+9X3qAmUmjC6sNXHO75eIijlqFAgG2hu/dRWd9/6c6B9nHbScQfAU57hJvMdPFXkl
+apjab0Xwd+e0DL9TV9qRsPqydhWXNK2A0rTEIEOcocCVkzVLsN743nfXCRVwyTBw
+FX6l7jKtdXEZDH6QDb+Fnr+ALJsyMIw01JYvgnt1tCLhtFtB0RzR1Lp0BG3UKOyU
+Jts+kQbRWuVBGc9dapeT
+=dZ9L
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
+
+--===============0620348288926486021==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0620348288926486021==--
