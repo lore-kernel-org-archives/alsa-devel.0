@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 15/15] ASoC: mxs-saif: Use
- clk_prepare_enable/clk_disable_unprepare
-Date: Mon, 28 May 2012 16:24:39 +0100
-Message-ID: <20120528152439.GO4032@opensource.wolfsonmicro.com>
-References: <1337987696-31728-1-git-send-email-festevam@gmail.com>
-	<1337987696-31728-15-git-send-email-festevam@gmail.com>
-	<20120528145117.GI4032@opensource.wolfsonmicro.com>
-	<CAOMZO5BbCLyxwnsupgVaRr9DYNT+E=Th2UoBEOGzXxh1d-9D5w@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: [PATCH] ASoC: tlv320aic3x: Change Class-D amplifier
+	gain control name
+Date: Mon, 28 May 2012 22:09:02 +0300
+Message-ID: <1338232142-2615-1-git-send-email-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3296417990701827178=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4E94A243EA
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id AB2E724530
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2012 17:24:41 +0200 (CEST)
-In-Reply-To: <CAOMZO5BbCLyxwnsupgVaRr9DYNT+E=Th2UoBEOGzXxh1d-9D5w@mail.gmail.com>
+	Mon, 28 May 2012 21:11:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@freescale.com, kernel@pengutronix.de
+To: alsa-devel@alsa-project.org
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Randolph Chung <rchung42@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+ALSA mixers cannot classify this "Class-D Amplifier Gain" speaker output
+gain control as a playback control. Fix this by changing the name as
+"Class-D Playback Volume".
 
---===============3296417990701827178==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8m/hfNLtAhX2NvnO"
-Content-Disposition: inline
+Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+---
+ sound/soc/codecs/tlv320aic3x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---8m/hfNLtAhX2NvnO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 28, 2012 at 12:21:01PM -0300, Fabio Estevam wrote:
-
-> With this patch applied I have just realized the following (only
-> during the first 'aplay', subsequent 'aplay's do not show it):
-
-[Attempting to do stuff we shouldn't in hard IRQ context]
-
-Is this not just a case of calling clk_prepare_and_enable() from atomic
-context - the whole reason the two are split is that only _enable() can
-be called in atomic context?
-
-I'll discard this commit for now.
-
---8m/hfNLtAhX2NvnO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPw5ixAAoJEBus8iNuMP3d1noP/10I76xGCulQS01hzvB3UiO2
-2QGvTHhY0e01Pd0hYOCeAWh3jwfFWdGzCja9uHe7anNYIXv/vCpVZCbVy7gSvQgh
-GOAzK7c5lULNmfPbdXzsoraGyTy3WtpSh1DUF4UhNVLbyejvSRLKZEI+1QW06B73
-q/e2Ue4PunIX6JISgzbVRW7rcMwlEtIgHrZBMlhs2kujqyj2Vkse21bAHe5pGWXq
-Uw91PhfVQzAcX5I37i8RH5h0vQ3yeyD3qaLYH0He7GQz0L2nBFGjtTRM/aweqj1Z
-TCXxLDZxrvJv6aSSqJEER7B8QVgYSNFOojrs1WHO+vcdVKpXpJ/aNJO5elwz3oLG
-LdH6XJwifqRSZzlse12FzoCfGerDf3BnUF76JdYM188CrfJpj8J3OhG5tWUYhRke
-StB8/EEcuKNpjRRxKrvAW1eggAbtJklxeweBtawTly4ttABroi4HKh0pm2KolhCM
-qV6y6BveraHCAoKSWSmy8Ro+88Fr7yh2kIzuSJ0RZDMJCA73OXRAtcVJF31j2UHK
-Y7Wn0tXK9pj3ncRYrOv50zYzQAwKUPKOfSdkcIViZpsrl+47j9nmBWHxSjO77yyD
-YLVUislFGttOGhxGbBx31ExxUX7YbvXb5icDxlSl/jXGtBPIfVVW/2p0eM26JEpX
-XNfXn0L/y7BHM6zcK2g1
-=Ib2R
------END PGP SIGNATURE-----
-
---8m/hfNLtAhX2NvnO--
-
---===============3296417990701827178==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3296417990701827178==--
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 64d2a4f..58ef59d 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -368,7 +368,7 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ static DECLARE_TLV_DB_SCALE(classd_amp_tlv, 0, 600, 0);
+ 
+ static const struct snd_kcontrol_new aic3x_classd_amp_gain_ctrl =
+-	SOC_DOUBLE_TLV("Class-D Amplifier Gain", CLASSD_CTRL, 6, 4, 3, 0, classd_amp_tlv);
++	SOC_DOUBLE_TLV("Class-D Playback Volume", CLASSD_CTRL, 6, 4, 3, 0, classd_amp_tlv);
+ 
+ /* Left DAC Mux */
+ static const struct snd_kcontrol_new aic3x_left_dac_mux_controls =
+-- 
+1.7.10
