@@ -1,62 +1,70 @@
-From: Chao Xie <xiechao.mail@gmail.com>
-Subject: Re: FW: [alsa-devel] [PATCH 2/4] ASoC: mmp: add audio dma support
-Date: Mon, 28 May 2012 10:00:52 +0800
-Message-ID: <CADApbei-dKRgt7GifamF7HJKEP1FmDcwHk+RUfD2cimc_AxmwA@mail.gmail.com>
-References: <AAD1C6EB06EE3649B35B7E026785068D1A74C045C0@SC-VEXCH2.marvell.com>
+From: cee1 <fykcee1@gmail.com>
+Subject: Re: Adjust volume may cause audio playback corruption
+Date: Mon, 28 May 2012 10:04:34 +0800
+Message-ID: <CAGXxSxV3D-NqC0h2-GkFUSYDdXXXDgfkz8Sdbtki9ySHT_R7CQ@mail.gmail.com>
+References: <CAGXxSxUxFbC3mGWa-pbUKrzUqsBbvoQ5PmXNrKfL2W_BXyv1_A@mail.gmail.com>
+	<CAGXxSxWSD+c9tnJHsKVDJYhq=AkY4KfefZgPj6rtgQozzFjuiQ@mail.gmail.com>
+	<CAGXxSxUYWLyRZ1BEz53TRY9aE-CPPxSRoZeNGE5QTsOKP=B+Gg@mail.gmail.com>
+	<4FB54BF6.3000901@ladisch.de>
+	<CAGXxSxUC54kb8pmDXuRGjRVbQ465v9M0n8_rO-Z4cYUpnzLz+A@mail.gmail.com>
+	<CAGXxSxXyfk5vNx3yfwLNPuGdWAwEPQU2FGV8dVKV=pLYrJJbbg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <AAD1C6EB06EE3649B35B7E026785068D1A74C045C0@SC-VEXCH2.marvell.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux@arm.linux.org.uk
-Cc: vinod.koul@linux.intel.com, eric.y.miao@gmail.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, haojian.zhuang@gmail.com, alsa-devel@vger.kernel.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id E0CD524492
+	for <alsa-devel@alsa-project.org>;
+	Mon, 28 May 2012 04:04:56 +0200 (CEST)
+Received: by pbbrp16 with SMTP id rp16so4899430pbb.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 May 2012 19:04:55 -0700 (PDT)
+In-Reply-To: <CAGXxSxXyfk5vNx3yfwLNPuGdWAwEPQU2FGV8dVKV=pLYrJJbbg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Russell King - ARM Linux [mailto:linux@arm.linux.org.uk]
-> Sent: Friday, May 25, 2012 5:43 PM
-> To: zhangfei gao
-> Cc: Vinod Koul; alsa-devel@alsa-project.org; linux-arm-kernel@lists.infra=
-dead.org; Eric Miao; Leo Yan; Mark Brown; Haojian Zhuang; alsa-devel@vger.k=
-ernel.org; Qiao Zhou; Zhangfei Gao; Liam Girdwood; Chao Xie
-> Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: mmp: add audio dma support
->
-> On Fri, May 25, 2012 at 04:47:20PM +0800, zhangfei gao wrote:
->> Do you mean at open time, like snd_dmaengine_pcm_open.
->> The channel resource is limited and better get dynamically.
->> As a =A0result the pcm_new and preallocate already called before.
->
-> This is where dealing with slave DMA channels in a virtualized setup
-> becomes a far better solution than trying to assign a particular
-> physical channel at request time.
->
-> What we may wish to think about is having a way for slave drivers to
-> assert to DMA engine the priority of a channel, which they can change
-> dynamically according to what they're doing. =A0Eg, an ALSA driver would
-> leave the channel low priority while it's not expecting to be used, but
-> as soon as we see the prepare call, set it to high priority.
->
-> The DMA engine driver could use that to decide to assign a physical
-> channel to the virtual channel, so that DMA can start as soon as
-> possible even with other activity on the DMA engine.
->
-> However, I've yet to see any setup where the number of physical DMA
-> channels available exceeds the number of actual _simultaneous_ users.
-> Even with the five channels on SA11x0 shared between 12? peripherals,
-> with my DMA engine driver I've only seen one or two physical channels
-> being used simultaneously.
->
-I can understand that the virtual channel and physical channel. But i
-do not know that why you said that buf->dev.dev uses the right device,
-and we don't need set the coherent_mask and dma_mask. As i understand
-that buf->dev.dev should be the audio device, so why do you said that
-it is the dma engine device?
+SGksCgoyMDEyLzUvMTggY2VlMSA8ZnlrY2VlMUBnbWFpbC5jb20+Ogo+IDIwMTIvNS8xOCBjZWUx
+IDxmeWtjZWUxQGdtYWlsLmNvbT46Cj4+IOWcqCAyMDEy5bm0NeaciDE45pel5pif5pyf5LqU77yM
+Q2xlbWVucyBMYWRpc2NoIOWGmemBk++8mgo+Pgo+Pj4gY2VlMSB3cm90ZToKPj4+ID4gV2UndmUg
+Zm91bmQgYSB3YXkgdGhlIGNhbiByZXByb2R1Y2UgdGhlIHByb2JsZW0gbW9yZSBxdWlja2x5IG9u
+IG91cgo+Pj4gPiBwcm9kdWN0Ogo+Pj4gPiAxLiBkbyBhdWRpbyBwbGF5YmFjawo+Pj4gPiAyLiBh
+bHNhbWl4ZXIsIHNlbGVjdCAnTWFzdGVyJywgcHJlc3MgJ20nIGFuZCBob2xkIGZvciBhIHdoaWxl
+Lgo+Pj4gPgo+Pj4gPiBUaGVuIHJlbGVhc2UgJ20nLCBwbGF5YmFjayBjb3JydXB0cyhzb3VuZHMg
+c2ltaWxhciB0bwo+Pj4gPiBodHRwOi8vZGV2LmxlbW90ZS5jb20vZmlsZXMvdXBsb2FkL3NvZnR3
+YXJlL1BBLWFwYy9jb3JydXB0ZWRfc291bmQub2dnKS4KPj4+Cj4+PiBJcyB0aGUgb3V0cHV0IHN1
+cHBvc2VkIHRvIGJlIHBsYXlpbmcgb3IgbXV0ZWQgYXQgdGhpcyB0aW1lPwo+Pgo+PiBQbGF5aW5n
+Cj4gU2VlbXMgc29tZXRoaW5nIHRvIGRvIHdpdGggcHJvY2Vzc19yZXdpbmQobW9kdWxlcy9hbHNh
+L2Fsc2Etc2luay5jKSwgSQo+IHRyaWVkIGNvbW1lbnRpbmcgb3V0IHNuZF9wY21fcmV3aW5kIGJs
+b2NrIGluIHByb2Nlc3NfcmV3aW5kKCkgYW5kIHNldAo+IG91dF9mcmFtZXM9MCBvciBvdXRfZnJh
+bWVzPWluX2ZyYW1lcywgdGhlIHByb2JsZW0gc2VlbXMgZ29uZS4KPgo+IEEgYnVnIGluIHNuZF9w
+Y21fcmV3aW5kKCkvZHJpdmVyPwpTb21lIHF1ZXN0aW9ucyBhYm91dCByZXdpbmQgOi0pCjEuIFdo
+ZW4gcmV3aW5kIGhhcHBlbnMsIGl0IGlzIHBvc3NpYmxlIHRvIGdvIGludG8gdW5kZXJydW4sIHJp
+Z2h0PwoyLiBUaGUgaGFyZHdhcmUgZG9lc24ndCBrbm93IGNvbnRyb2wtPmFwcGxfcHRyLCBpdCB3
+aWxsIGdvIHRocm91Z2ggYQpidWZmZXIgc2l6ZSBhbmQgdGhlbiB3cmFwIGJhY2ssIGdvIHRocm91
+Z2ggdGhlIGJ1ZmZlciBhZ2Fpbj8KMy4gQWJvdXQgc3Vic3RyZWFtLT5vcHMtPnBvaW50ZXIsIGlu
+IEhEQSwgaXQgd2FzIGltcGxlbWVudGVkIGJ5CnBvc2l0aW9uIGJ1ZmZlci4gSXMgaXQgYW4gYXRv
+bWljIG9wZXJhdGlvbiBvZiB1cGRhdGUoYnkgSERBCmNvbnRyb2xsZXIpIC9yZWFkKGJ5IGRyaXZl
+cik/CjQuIFthbHNhLWxpYnNdIHNuZF9wY21fbW1hcF9jb21taXQoKSAtPiBzbmRfcGNtX2h3X21t
+YXBfY29tbWl0KCksCndoaWNoIHdpbGwgZm9yd2FyZCBwY20tPmFwcGwucHRyKGFuZCB3cmFwIGJh
+Y2sgaWYgaXMgYmlnZ2VyIHRoYW4KcGNtLT5ib3VuZGFyeSkgYW5kIHRoZW4gcGFzcyB0aGUgbmV3
+IGFwcGwucHRyIHRvIGtlcm5lbCB0aHJvdWdoClNORFJWX1BDTV9JT0NUTF9TWU5DX1BUUiBpb2N0
+bC4KSW4ga2VybmVsIHNpZGUsIGl0IHdpbGwgYXNzaWduIHBjbS0+YXBwbC5wdHIgdG8gY29udHJv
+bC0+YXBwbF9wdHIgZGlyZWN0bHkuCgpUaGUgcXVlc3Rpb24gaXMgaW4gYWxzYS1saWJzIGFwcGxf
+cHRyIHN0YXlzIGluIFswLCBwY20tPmJvdW5kYXJ5KSwKYnV0IGluIGtlcm5lbCBzaWRlIGFwcGxf
+cHRyIHN0YXlzIGluIFswLCBydW50aW1lLT5ib3VuZGFyeSksICB3aWxsIGl0CmhhdmUgcHJvYmxl
+bSBpZiBwY20tPmJvdW5kYXJ5ICE9IHJ1bnRpbWUtPmJvdW5kYXJ5PyBGb3IgZXhhbXBsZSwKc29t
+ZXRpbWVzIGtlcm5lbCBpcyA2NGJpdHMgYnV0IHRoZSB1c2VybGFuZCBpcyAzMmJpdHMsIHRoZW4g
+dGhlIHdpZHRoCm9mICdsb25nJyBpbiBrZXJuZWwgd2lsbCBub3QgYmUgZXF1YWwgdG8gd2lkdGgg
+b2YgJ2xvbmcnIGluIHVzZXJsYW5kCm9uIHNvbWUgcGxhdGZvcm0uCgoKCi0tIApSZWdhcmRzLAoK
+LSBjZWUxCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
