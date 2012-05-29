@@ -1,27 +1,19 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 2/4] ASoC: mmp: add audio dma support
-Date: Tue, 29 May 2012 14:46:32 +0100
-Message-ID: <20120529134632.GB24623@n2100.arm.linux.org.uk>
-References: <1337932416.1580.2.camel@vkoul-udesk3>
-	<20120525080500.GB24149@n2100.arm.linux.org.uk>
-	<CAMj5Bkhc46zqY5AbJkc=-h02taP_esxrqpNu--aYtZZcVcPK6A@mail.gmail.com>
-	<20120525094231.GC24149@n2100.arm.linux.org.uk>
-	<CAMj5BkjhCakuZdUcA+P_nbETi8tnYK5Ok6HMWTG61whZXwCD6g@mail.gmail.com>
-	<1338268734.1580.26.camel@vkoul-udesk3>
-	<20120529073334.GA12217@n2100.arm.linux.org.uk>
-	<20120529090215.GA3954@opensource.wolfsonmicro.com>
-	<20120529092129.GE12217@n2100.arm.linux.org.uk>
-	<20120529131410.GB3954@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Help requested: new HSS1394 MIDI back-end
+Date: Tue, 29 May 2012 19:05:30 +0200
+Message-ID: <4FC501DA.3050900@ladisch.de>
+References: <4FBFE0D5.8030501@mixxx.org> <4FC23123.8000702@ladisch.de>
+	<4FC295AD.1030901@mixxx.org> <4FC3929F.4050304@ladisch.de>
+	<4FC3E2AD.70802@mixxx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 3029024B1B
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id C1D5F24BA1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2012 15:46:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20120529131410.GB3954@opensource.wolfsonmicro.com>
+	Tue, 29 May 2012 19:06:00 +0200 (CEST)
+In-Reply-To: <4FC3E2AD.70802@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,128 +23,499 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>, Qiao Zhou <zhouqiao@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, zhangfei gao <zhangfei.gao@gmail.com>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 29, 2012 at 02:14:11PM +0100, Mark Brown wrote:
-> On Tue, May 29, 2012 at 10:21:29AM +0100, Russell King - ARM Linux wrote:
-> > On Tue, May 29, 2012 at 10:02:15AM +0100, Mark Brown wrote:
-> 
-> > > What is the issue with the current code - it *looks* like you want to
-> > > use the component device for the DMA as the struct device with dmaengine
-> > > but I don't understand the issue that's created if we don't (and why
-> > > things appear to be working for people as they are).
-> 
-> > Look.  It's very very very very simple.
-> 
-> > What does the DMA API take?  A struct device.  What struct device?  Some
-> > random struct device for something in the system, or what?  No, it takes
-> > the struct device for the _device_ in the system which is _performing_
-> > the DMA.
-> 
-> I'm assuming that you mean the client rather than the DMA controller
-> itself (which we must already have found)?  That makes sense,
+Sean M. Pappalardo - D.J. Pegasus wrote:
+>>     firewire-request /dev/fwX write c007dedadada f100123456789abc
+>
+> no response (on both devices)
 
-No, I mean the DMA controller *itself*.
+No error, which is good.
 
-DMA engines _can_ (and do - quite common on ARM platforms) have this setup:
+>>     firewire-request /dev/fwX read c007dedadada 4
+>
+> type error (on both devices)
 
-                      CPU
-                       |
-               +-Bus switch matrix-+
-     (RAM bus) |                   |
-RAM------------+--DMA controller---+
-                        |          |
-                        |(rq+ack)  |(IO bus)
-                        |          |
-                        |          +-----------Peripheral 1
-                        +--------- | ------------'
-                                   +-----------Peripheral 2
-                                  ...
+This is supposed to be used to confirm that this is indeed a HSS1394 device.
+In theory.  But we can just omit this check.  :)
 
-So, the _peripherals_ themselves have no direct access to RAM at all.
-These are totally and utterly incapable of any kind of DMA on their own.
-They can only be _given_ data by some other agent in the system, that
-being in the above case the CPU or the DMA controller.
-
-When the DMA controller is setup, and asked to transfer data to a
-peripheral device, it first starts by originating an access to RAM via
-the RAM bus, and it loads the data into it's FIFO.  It then performs
-accesses on the IO bus to _write_ the data into the peripheral just
-as a CPU would under PIO.
-
-So, to setup the _peripheral_ struct device with some nebulous "oh this
-can access the whole of system memory and is DMA capable, let's allocate
-DMA memory against it" is totally the wrong approach.  The peripheral
-device can not know what the details are for some random DMA controller
-elsewhere in the system.
-
-Indeed, there are systems out there where the same peripheral can be
-driven by more than one DMA controller.  What if each DMA controller
-has different properties?
-
-So, the struct device in the system representing the device which is
-accessing memory is _the_ _DMA_ _controller_.
-
-Why does this matter?  Consider this case:
+New patch below (also with .1d support).
 
 
-                      CPU
-                       |
-     +-----------Bus switch matrix-+
-     |                             |
-RAM--+--IOMMU-----DMA controller---+
-                        |          |
-                        |(rq+ack)  |(IO bus)
-                        |          |
-                        |          +-----------Peripheral 1
-                        +--------- | ------------'
-                                   +-----------Peripheral 2
-                                  ...
+Regards,
+Clemens
 
-Now, for the DMA controller to access RAM, the IOMMU needs to be setup to
-create mappings between the address space that the DMA controller can see,
-and the RAM.  If there are no mappings setup, the DMA controller can't see
-the RAM _at_ _all_ and DMA is not possible.  The IOMMU is managed via the
-DMA API on many kernel architectures, x86 included.
 
-If you use the peripheral struct device with the DMA API, how does the DMA
-API know that it must setup some unknown DMA controller's IOMMU?
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -33,4 +33,17 @@ config SND_ISIGHT
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-isight.
 
-And why should the DMA API code even care about such complexities?
++config SND_SCS1X
++	tristate "Stanton Control System 1 MIDI"
++	select SND_PCM
++	select SND_RAWMIDI
++	select SND_FIREWIRE_LIB
++	help
++	  Say Y here to include support for the MIDI ports of the Stanton
++	  SCS.1d/SCS.1m DJ controllers.  (SCS.1m audio is still handled
++	  by FFADO.)
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-scs1x.
++
+ endif # SND_FIREWIRE
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -2,7 +2,9 @@ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+ 			 fcp.o cmp.o amdtp.o
+ snd-firewire-speakers-objs := speakers.o
+ snd-isight-objs := isight.o
++snd-scs1x-objs := scs1x.o
 
-We don't do this on USB.  When a USB device wants to perform DMA, we map
-its memory using the _host_ _controller_ struct device, not the USB
-peripheral device's struct device.  It's exactly the same principle.
-The struct device corresponding with whatever device is _actually_
-accessing memory must be the struct device passed into the DMA API.
-
-> Currently we seem to have nobody actually working on this code in
-> mainline, as far as I can tell you and Vinod are the only people with
-> any active interest at a framework level (with Vinod's mostly being at
-> the dmaengine rather than ASoC level; I don't have any hardware with any
-> sort of dmaengine support) and because you have this out of tree
-> implementation you're working on you're mostly just offering feedback in
-> these driver review threads where apparently chunks of it are getting
-> missed.  Nobody else seems to be showing much inclination to get
-> involved so it seems unlikely to collide with other work.
-
-That's partly because you took in soc-dmaengine.c, after you ridiculed
-my version - mainly because it didn't support cyclic DMA at the time.
-And so I assumed that you'd made up your mind, and just plain weren't
-interested.  You have been very resistive towards discussing issues
-coming up in this area, and in other areas I've raised with ASoC such
-as the struct device lifetime issues - even when I've created patches
-for you.
-
-Moreover, because I don't see any hope for the SA11x0 PCM support going
-in (it certainly won't support capture mode due to the need to run the
-playback side to receive capture samples) I'm really not pushing it; it's
-more my testbed for testing out my DMA engine work than serious ASoC
-work.
-
-So please excuse me if I'm not in a rush to post it to the list.  In the
-mean time, it's viewable via:
-
-http://ftp.arm.linux.org.uk/git/gitweb.cgi?p=linux-arm.git;a=commitdiff;h=76bc4eb916528ceef2609c22f949429e2322a331
+ obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
+ obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
++obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+--- /dev/null
++++ b/sound/firewire/scs1x.c
+@@ -0,0 +1,436 @@
++/*
++ * Stanton Control System 1 MIDI driver
++ *
++ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/interrupt.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/slab.h>
++#include <linux/wait.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/rawmidi.h>
++#include "lib.h"
++
++#define OUI_STANTON	0x001260
++#define MODEL_SCS_1M	0x001000
++#define MODEL_SCS_1D	0x002000
++
++#define HSS1394_ADDRESS			0xc007dedadadaULL
++#define HSS1394_MAX_PACKET_SIZE		64
++
++#define HSS1394_TAG_USER_DATA		0x00
++#define HSS1394_TAG_CHANGE_ADDRESS	0xf1
++
++struct scs {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	struct fw_address_handler hss_handler;
++	struct fw_transaction transaction;
++	bool transaction_running;
++	bool output_idle;
++	u8 midi_status;
++	u8 midi_bytes;
++	struct snd_rawmidi_substream *output;
++	struct snd_rawmidi_substream *input;
++	struct tasklet_struct tasklet;
++	wait_queue_head_t idle_wait;
++	u8 *buffer;
++};
++
++static int scs_output_open(struct snd_rawmidi_substream *stream)
++{
++	struct scs *scs = stream->rmidi->private_data;
++
++	scs->midi_status = 0;
++	scs->midi_bytes = 0;
++
++	return 0;
++}
++
++static int scs_output_close(struct snd_rawmidi_substream *stream)
++{
++	return 0;
++}
++
++static void scs_output_trigger(struct snd_rawmidi_substream *stream, int up)
++{
++	struct scs *scs = stream->rmidi->private_data;
++
++	ACCESS_ONCE(scs->output) = up ? stream : NULL;
++	if (up) {
++		scs->output_idle = false;
++		tasklet_schedule(&scs->tasklet);
++	}
++}
++
++static void scs_write_callback(struct fw_card *card, int rcode,
++			       void *data, size_t length, void *callback_data)
++{
++	struct scs *scs = callback_data;
++
++	if (rcode == RCODE_GENERATION) {
++		/* TODO: retry this packet */
++	}
++
++	scs->transaction_running = false;
++	tasklet_schedule(&scs->tasklet);
++}
++
++static bool is_valid_running_status(u8 status)
++{
++	return status >= 0x80 && status <= 0xef;
++}
++
++static bool is_one_byte_cmd(u8 status)
++{
++	return status == 0xf6 ||
++	       status >= 0xf8;
++}
++
++static bool is_two_bytes_cmd(u8 status)
++{
++	return (status >= 0xc0 && status <= 0xdf) ||
++	       status == 0xf1 ||
++	       status == 0xf3;
++}
++
++static bool is_three_bytes_cmd(u8 status)
++{
++	return (status >= 0x80 && status <= 0xbf) ||
++	       (status >= 0xe0 && status <= 0xef) ||
++	       status == 0xf2;
++}
++
++static bool is_invalid_cmd(u8 status)
++{
++	return status == 0xf4 || status == 0xf5;
++}
++
++static void scs_output_tasklet(unsigned long data)
++{
++	struct scs *scs = (void *)data;
++	struct snd_rawmidi_substream *stream;
++	unsigned int i;
++	u8 byte;
++	struct fw_device *dev;
++	int generation;
++
++	if (scs->transaction_running)
++		return;
++
++	stream = ACCESS_ONCE(scs->output);
++	if (!stream) {
++		scs->output_idle = true;
++		wake_up(&scs->idle_wait);
++		return;
++	}
++
++	i = scs->midi_bytes;
++	for (;;) {
++		if (snd_rawmidi_transmit(stream, &byte, 1) != 1) {
++			scs->midi_bytes = i;
++			scs->output_idle = true;
++			wake_up(&scs->idle_wait);
++			return;
++		}
++		/*
++		 * Convert from real MIDI to what the device expects (no
++		 * running status, one command per packet).
++		 */
++		if (byte < 0x80) {
++			if (i == 0) {
++				if (!is_valid_running_status(scs->midi_status))
++					continue;
++				scs->buffer[++i] = scs->midi_status;
++			}
++			scs->buffer[++i] = byte;
++			if ((i == 2 && is_two_bytes_cmd(scs->midi_status)) ||
++			    (i == 3 && is_three_bytes_cmd(scs->midi_status)))
++				break;
++			if (i >= HSS1394_MAX_PACKET_SIZE - 1)
++				i = 0;
++		} else if (byte == 0xf7) {
++			if (i > 0 && scs->midi_status == 0xf0) {
++				scs->buffer[++i] = 0xf7;
++				break;
++			}
++		} else if (!is_invalid_cmd(byte) &&
++			   byte < 0xf8) {
++			i = 0;
++			scs->buffer[++i] = byte;
++			scs->midi_status = byte;
++			if (is_one_byte_cmd(byte))
++				break;
++		}
++	}
++	scs->midi_bytes = 0;
++
++	scs->transaction_running = true;
++	dev = fw_parent_device(scs->unit);
++	generation = dev->generation;
++	smp_rmb(); /* node_id vs. generation */
++	fw_send_request(dev->card, &scs->transaction, TCODE_WRITE_BLOCK_REQUEST,
++			dev->node_id, generation, dev->max_speed,
++			HSS1394_ADDRESS, scs->buffer, 1 + i,
++			scs_write_callback, scs);
++}
++
++static void scs_output_drain(struct snd_rawmidi_substream *stream)
++{
++	struct scs *scs = stream->rmidi->private_data;
++
++	wait_event(scs->idle_wait, scs->output_idle);
++}
++
++static struct snd_rawmidi_ops output_ops = {
++	.open    = scs_output_open,
++	.close   = scs_output_close,
++	.trigger = scs_output_trigger,
++	.drain   = scs_output_drain,
++};
++
++static int scs_input_open(struct snd_rawmidi_substream *stream)
++{
++	return 0;
++}
++
++static int scs_input_close(struct snd_rawmidi_substream *stream)
++{
++	return 0;
++}
++
++static void scs_input_trigger(struct snd_rawmidi_substream *stream, int up)
++{
++	struct scs *scs = stream->rmidi->private_data;
++
++	ACCESS_ONCE(scs->input) = up ? stream : NULL;
++}
++
++static struct snd_rawmidi_ops input_ops = {
++	.open    = scs_input_open,
++	.close   = scs_input_close,
++	.trigger = scs_input_trigger,
++};
++
++static int scs_create_midi(struct scs *scs)
++{
++	struct snd_rawmidi *rmidi;
++	int err;
++
++	err = snd_rawmidi_new(scs->card, "SCS.1x", 0, 1, 1, &rmidi);
++	if (err < 0)
++		return err;
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", scs->card->shortname);
++	rmidi->info_flags = SNDRV_RAWMIDI_INFO_OUTPUT |
++	                    SNDRV_RAWMIDI_INFO_INPUT |
++	                    SNDRV_RAWMIDI_INFO_DUPLEX;
++	rmidi->private_data = scs;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &output_ops);
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &input_ops);
++
++	return 0;
++}
++
++static void handle_hss(struct fw_card *card, struct fw_request *request,
++		       int tcode, int destination, int source, int generation,
++		       unsigned long long offset, void *data, size_t length,
++		       void *callback_data)
++{
++	struct scs *scs = callback_data;
++	struct snd_rawmidi_substream *stream;
++
++	if (offset != scs->hss_handler.offset) {
++		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
++		return;
++	}
++	if (tcode != TCODE_WRITE_QUADLET_REQUEST &&
++	    tcode != TCODE_WRITE_BLOCK_REQUEST) {
++		fw_send_response(card, request, RCODE_TYPE_ERROR);
++		return;
++	}
++
++	if (length >= 1 && ((const u8 *)data)[0] == HSS1394_TAG_USER_DATA) {
++		stream = ACCESS_ONCE(scs->input);
++		if (stream)
++			snd_rawmidi_receive(stream, data + 1, length - 1);
++	}
++
++	fw_send_response(card, request, RCODE_COMPLETE);
++}
++
++static int scs_init_hss_address(struct scs *scs)
++{
++	u8 data[8];
++	int err;
++
++	*(__be64 *)data = cpu_to_be64(scs->hss_handler.offset);
++	data[0] = HSS1394_TAG_CHANGE_ADDRESS;
++	err = snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
++				 HSS1394_ADDRESS, data, 8);
++	if (err < 0)
++		dev_err(&scs->unit->device, "HSS1394 communication failed\n");
++
++	return err;
++}
++
++static void scs_card_free(struct snd_card *card)
++{
++	struct scs *scs = card->private_data;
++
++	fw_core_remove_address_handler(&scs->hss_handler);
++	kfree(scs->buffer);
++}
++
++static int scs_probe(struct device *unit_dev)
++{
++	struct fw_unit *unit = fw_unit(unit_dev);
++	struct fw_device *fw_dev = fw_parent_device(unit);
++	struct snd_card *card;
++	struct scs *scs;
++	int err;
++
++	err = snd_card_create(-16, NULL, THIS_MODULE, sizeof(*scs), &card);
++	if (err < 0)
++		return err;
++	snd_card_set_dev(card, unit_dev);
++
++	scs = card->private_data;
++	scs->card = card;
++	scs->unit = unit;
++	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
++	init_waitqueue_head(&scs->idle_wait);
++	scs->output_idle = true;
++
++	scs->buffer = kmalloc(HSS1394_MAX_PACKET_SIZE, GFP_KERNEL);
++	if (!scs->buffer)
++		goto err_card;
++	scs->buffer[0] = HSS1394_TAG_USER_DATA;
++
++	scs->hss_handler.length = HSS1394_MAX_PACKET_SIZE;
++	scs->hss_handler.address_callback = handle_hss;
++	scs->hss_handler.callback_data = scs;
++	err = fw_core_add_address_handler(&scs->hss_handler,
++					  &fw_high_memory_region);
++	if (err < 0)
++		goto err_buffer;
++
++	card->private_free = scs_card_free;
++
++	strcpy(card->driver, "SCS.1x");
++	strcpy(card->shortname, "SCS.1x");
++	fw_csr_string(unit->directory, CSR_MODEL,
++		      card->shortname, sizeof(card->shortname));
++	snprintf(card->longname, sizeof(card->longname),
++		 "Stanton DJ %s (GUID %08x%08x) at %s, S%d",
++		 card->shortname, fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&unit->device), 100 << fw_dev->max_speed);
++	strcpy(card->mixername, card->shortname);
++
++	err = scs_init_hss_address(scs);
++	if (err < 0)
++		goto err_card;
++
++	err = scs_create_midi(scs);
++	if (err < 0)
++		goto err_card;
++
++	err = snd_card_register(card);
++	if (err < 0)
++		goto err_card;
++
++	dev_set_drvdata(unit_dev, scs);
++
++	return 0;
++
++err_buffer:
++	kfree(scs->buffer);
++err_card:
++	snd_card_free(card);
++	return err;
++}
++
++static int scs_remove(struct device *dev)
++{
++	struct scs *scs = dev_get_drvdata(dev);
++
++	snd_card_disconnect(scs->card);
++
++	ACCESS_ONCE(scs->output) = NULL;
++	ACCESS_ONCE(scs->input) = NULL;
++
++	wait_event(scs->idle_wait, scs->output_idle);
++
++	tasklet_kill(&scs->tasklet);
++
++	snd_card_free_when_closed(scs->card);
++
++	return 0;
++}
++
++static void scs_update(struct fw_unit *unit)
++{
++	struct scs *scs = dev_get_drvdata(&unit->device);
++	int generation;
++	u8 data[8];
++
++	*(__be64 *)data = cpu_to_be64(scs->hss_handler.offset);
++	data[0] = HSS1394_TAG_CHANGE_ADDRESS;
++	generation = fw_parent_device(unit)->generation;
++	smp_rmb(); /* node_id vs. generation */
++	snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
++			   HSS1394_ADDRESS, data, 8);
++}
++
++static const struct ieee1394_device_id scs_id_table[] = {
++	{
++		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++		               IEEE1394_MATCH_MODEL_ID,
++		.vendor_id   = OUI_STANTON,
++		.model_id    = MODEL_SCS_1M,
++	},
++	{
++		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++		               IEEE1394_MATCH_MODEL_ID,
++		.vendor_id   = OUI_STANTON,
++		.model_id    = MODEL_SCS_1D,
++	},
++	{}
++};
++MODULE_DEVICE_TABLE(ieee1394, scs_id_table);
++
++MODULE_DESCRIPTION("SCS.1x MIDI driver");
++MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
++MODULE_LICENSE("GPL v2");
++
++static struct fw_driver scs_driver = {
++	.driver = {
++		.owner  = THIS_MODULE,
++		.name   = KBUILD_MODNAME,
++		.bus    = &fw_bus_type,
++		.probe  = scs_probe,
++		.remove = scs_remove,
++	},
++	.update   = scs_update,
++	.id_table = scs_id_table,
++};
++
++static int __init alsa_scs1x_init(void)
++{
++	return driver_register(&scs_driver.driver);
++}
++
++static void __exit alsa_scs1x_exit(void)
++{
++	driver_unregister(&scs_driver.driver);
++}
++
++module_init(alsa_scs1x_init);
++module_exit(alsa_scs1x_exit);
