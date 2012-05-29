@@ -1,21 +1,25 @@
-From: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
-Subject: Re: Help requested: new HSS1394 MIDI back-end
-Date: Tue, 29 May 2012 23:52:26 +0200
-Message-ID: <4FC5451A.9000107@mixxx.org>
-References: <4FBFE0D5.8030501@mixxx.org> <4FC23123.8000702@ladisch.de>
-	<4FC295AD.1030901@mixxx.org> <4FC3929F.4050304@ladisch.de>
-	<4FC3E2AD.70802@mixxx.org> <4FC501DA.3050900@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: mmp: add audio dma support
+Date: Wed, 30 May 2012 00:55:01 +0100
+Message-ID: <20120529235459.GA4054@opensource.wolfsonmicro.com>
+References: <20120525080500.GB24149@n2100.arm.linux.org.uk>
+	<CAMj5Bkhc46zqY5AbJkc=-h02taP_esxrqpNu--aYtZZcVcPK6A@mail.gmail.com>
+	<20120525094231.GC24149@n2100.arm.linux.org.uk>
+	<CAMj5BkjhCakuZdUcA+P_nbETi8tnYK5Ok6HMWTG61whZXwCD6g@mail.gmail.com>
+	<1338268734.1580.26.camel@vkoul-udesk3>
+	<20120529073334.GA12217@n2100.arm.linux.org.uk>
+	<20120529090215.GA3954@opensource.wolfsonmicro.com>
+	<20120529092129.GE12217@n2100.arm.linux.org.uk>
+	<20120529131410.GB3954@opensource.wolfsonmicro.com>
+	<20120529134632.GB24623@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3304129336574421489=="
+Content-Type: multipart/mixed; boundary="===============7520695133433107905=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 248001041D0
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5AEDC2433A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2012 23:52:34 +0200 (CEST)
-Received: by bkcjg15 with SMTP id jg15so3756413bkc.38
-	for <alsa-devel@alsa-project.org>; Tue, 29 May 2012 14:52:33 -0700 (PDT)
-In-Reply-To: <4FC501DA.3050900@ladisch.de>
+	Wed, 30 May 2012 01:55:05 +0200 (CEST)
+In-Reply-To: <20120529134632.GB24623@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,194 +29,172 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, lars@metafoo.de, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>, Qiao Zhou <zhouqiao@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, zhangfei gao <zhangfei.gao@gmail.com>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
 
---===============3304129336574421489==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms070108050303010805080004"
-
-This is a cryptographically signed message in MIME format.
-
---------------ms070108050303010805080004
-Content-Type: multipart/mixed;
- boundary="------------030804050302060803060905"
-
-This is a multi-part message in MIME format.
---------------030804050302060803060905
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+--===============7520695133433107905==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
+Content-Disposition: inline
 
 
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 05/29/2012 07:05 PM, Clemens Ladisch wrote:
-> New patch below (also with .1d support).
+On Tue, May 29, 2012 at 02:46:32PM +0100, Russell King - ARM Linux wrote:
+> On Tue, May 29, 2012 at 02:14:11PM +0100, Mark Brown wrote:
 
-Sweet! It works perfectly with the SCS.1m!! The .1d works, but some of=20
-the non-standard data it sends appears to be getting corrupted. In=20
-particular, the device sends four-byte platter messages that start with=20
-0xF9 and the remaining three can range from 0x00 to 0xFF. These are=20
-coming across as random three- or one-byte messages which cause all=20
-kinds of mayhem. (See attached amidi dump. Each line should begin with=20
-F9 and have three more bytes after it.)
+> > I'm assuming that you mean the client rather than the DMA controller
+> > itself (which we must already have found)?  That makes sense,
 
-Outbound SYSEX seems fine on both devices.
+> No, I mean the DMA controller *itself*.
 
-Sincerely,
-Sean M. Pappalardo
-"D.J. Pegasus"
-Mixxx Developer - Controller Specialist
+I'm quite famililar with the hardware, the issue here is about knowing
+what the device is being used for.  In this case due to context being
+lost in the quotes I hadn't realised exactly what the bug you were
+identifying in the current code actually was, I had thought there was a
+DMA channel already at this point but the lack of one is in fact the
+problem.
 
---------------030804050302060803060905
-Content-Type: text/plain;
- name="SCS.1dCorruption"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="SCS.1dCorruption"
+You did identify this briefly on the original submission though as an
+issue for sa11x0 (which you were higlighting is very oddball and
+indicated you didn't really want in mainline) rather than a widespread
+issue and the discussion (well, single followup from Lars-Peter) was
+that this could be done incrementally which did seem resonable. After
+that nobody did anything.
 
-CkY5CkVDCkYyIDZCCkY5CkYwCkRDIDZCCkY5CkY0CkM1IDZCCkY5CkY4CkFFIDZCCkY5CkZD
-Cjk4IDZCCkY5IDAwCjgxIDZCCkY5IDA0CiAgIDZBIDZCCkY5CiAgIDA4IDUzCiAgIDZCCkY5
-IDBDCiAgIDNDIDZCCkY5CiAgIDEwIDI1CiAgIDZCCkY5IDE0CiAgIDBFIDZCCkY5CiAgIDE3
-CkY4IDZCCkY5CiAgIDFCCkUxIDZCCkY5IDFGCkNBIDZCCkY5CiAgIDIzCkIzIDZCCkY5IDI3
-CjlDIDZCCkY5IDJCCjg1IDZCCkY5IDJGCiAgIDZFIDZCCkY5CiAgIDMzIDU3CiAgIDZCCkY5
-IDM3CiAgIDQwIDZCCkY5CiAgIDNCIDI5CiAgIDZCCkY5IDNGCiAgIDEyIDZCCkY5CiAgIDQy
-CkZDIDZCCkY5CiAgIDQ2CkU1IDZCCkY5IDRBCkNFIDZCCkY5CiAgIDRFCkI3IDZCCkY5IDUy
-CkEwIDZCCkY5IDU2Cjg5IDZCCkY5IDVBCiAgIDcyIDZCCkY5CiAgIDVFIDVCCiAgIDZCCkY5
-IDYyCiAgIDQ0IDZCCkY5CiAgIDY2IDJECiAgIDZCCkY5IDZBCiAgIDE2IDZCCkY5CiAgIDZE
-CkZGIDZCCkY5CiAgIDcxCkU4IDZCCkY5IDc1CkQxIDZCCkY5CiAgIDc5CkJCIDZCCkY5IDdE
-CkE0IDZCCkY5CjgxCjhEIDZCCkY5Cjg1IDc3IDZCCkY5Cjg5IDYwIDZCCkY5CjhEIDRBIDZC
-CkY5CjkxIDMzIDZCCkY5Cjk1IDFDIDZCCkY5Cjk5IDA2IDZCCkY5CjlDCkVGIDZCCkY5CkEw
-CkQ4IDZCCkY5CkE0CkMyIDZCCkY5CkE4CkFCIDZCCkY5CkFDCjk1IDZCCkY5CkIwIDdFIDZC
-CkY5CkI0IDY3IDZCCkY5CkI4IDUxIDZCCkY5CkJDIDNBIDZCCkY5CkMwIDIzCiAgIDZCCkY5
-CkM0IDBECiAgIDZCCkY5CkM3CkY2CjZCCkY5CkNCCkUwIDZCCkY5CkNGCkM5IDZCCkY5CkQz
-CkIyIDZCCkY5CkQ3CjlDIDZCCkY5CkRCCjg1IDZCCkY5CkRGIDZGCiAgIDZCCkY5CkUzIDU4
-IDZCCkY5CkU3IDQxIDZCCkY5CkVCIDJCIDZCCkY5CkVGIDE0IDZCCkY5CkYyCkZEIDZCCkY5
-CkY2CkU3IDZCCkY5CkZBCkQwIDZCCkY5CkJBIDZCCkY5IDAyCkEzIDZCCkY5IDA2CjhDIDZC
-CkY5IDBBCiAgIDc1IDZCCkY5CiAgIDBFIDVFCiAgIDZCCkY5IDEyCiAgIDQ3IDZCCkY5CiAg
-IDE2IDMwCiAgIDZCCkY5IDFBCiAgIDE5IDZCCkY5CiAgIDFFIDAyCiAgIDZCCkY5IDIxCkVC
-IDZCCkY5IDI1CkQ0IDZCCkY5CiAgIDI5CkJFIDZCCkY5IDJECkE3IDZCCkY5IDMxCjkwIDZC
-CkY5IDM1CiAgIDc5IDZCCkY5CiAgIDM5IDYyCiAgIDZCCkY5IDNECiAgIDRCIDZCCkY5CiAg
-IDQxIDM0CiAgIDZCCkY5IDQ1CiAgIDFEIDZCCkY5CiAgIDQ5IDA2CiAgIDZCCkY5IDRDCkVG
-IDZCCkY5IDUwCkQ5IDZCCkY5CiAgIDU0CkMyIDZCCkY5CiAgIDU4CkFCIDZCCkY5IDVDCjk0
-IDZCCkY5IDYwCiAgIDdEIDZCCkY5CiAgIDY0IDY2CiAgIDZCCkY5IDY4CiAgIDUwIDZCCkY5
-CiAgIDZDIDNBCiAgIDZCCkY5IDcwCiAgIDIzIDZCCkY5CiAgIDc0IDBDCiAgIDZCCkY5IDc3
-CkY1CjZCCkY5CjdCCkRGIDZCCkY5CiAgIDdGCkM4IDZCCkY5CjgzCkIyIDZCCkY5Cjg3CjlC
-IDZCCkY5CjhCCjg0IDZCCkY5CjhGIDZFIDZCCkY5CjkzIDU3IDZCCkY5Cjk3IDQwIDZCCkY5
-CjlCIDJBIDZCCkY5CjlGIDEzIDZCCkY5CkEyCkZEIDZCCkY5CkE2CkU2IDZCCkY5CkFBCkNG
-IDZCCkY5CkFFCkI5IDZCCkY5CkIyCkEyIDZCCkY5CkI2CjhCIDZCCkY5CkJBIDc1IDZCCkY5
-CkJFIDVFIDZCCkY5CkMyIDQ4CiAgIDZCCkY5CkM2IDMxCiAgIDZCCkY5CkNBIDFBCiAgIDZC
-CkY5CkNFIDA0CiAgIDZCCkY5CkQxCkVEIDZCCkY5CkQ1CkQ3IDZCCkY5CkQ5CkMwIDZCCkY5
-CkRECkE5IDZCCkY5CkUxCjkzIDZCCkY5CkU1IDdDIDZCCkY5CkU5IDY1IDZCCkY5CkVEIDRG
-IDZCCkY5CkYxIDM4CiAgIDZCCkY5CkY1CjIyCjZCCkY5CkY5CjBCCjZCCkY5CkZDCkY0CjZC
-CkY5CjAwCkRFIDZCCkY5CiAgIDA0CkM3IDZCCkY5CiAgIDA4CkIwIDZCCkY5IDBDCjk5IDZC
-CkY5IDEwCjgyIDZCCkY5IDE0CiAgIDZCIDZCCkY5CiAgIDE4IDU0CiAgIDZCCkY5IDFDCiAg
-IDNFIDZCCkY5CiAgIDIwIDI3CiAgIDZCCkY5IDI0CiAgIDEwIDZCCkY5CiAgIDI3CkY5IDZC
-CkY5CiAgIDJCCkUyIDZCCkY5IDJGCkNCIDZCCkY5CiAgIDMzCkI0IDZCCkY5IDM3CjlFIDZC
-CkY5IDNCCjg3IDZCCkY5IDNGCiAgIDcwIDZCCkY5CiAgIDQzIDU5CiAgIDZCCkY5IDQ3CiAg
-IDQyIDZCCkY5CiAgIDRCIDJCCiAgIDZCCkY5IDRGCiAgIDE0IDZCCkY5CiAgIDUyCkZEIDZC
-CkY5CiAgIDU2CkU2IDZCCkY5IDVBCkNGIDZCCkY5CiAgIDVFCkI4IDZC
---------------030804050302060803060905--
+> That's partly because you took in soc-dmaengine.c, after you ridiculed
+> my version - mainly because it didn't support cyclic DMA at the time.
 
---------------ms070108050303010805080004
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+I don't recall ever ridiculing your version, that's an extremely strong
+term.  Can you please be more specific?  The nearest I can find to that
+is Lars-Peter saying "I had a look at your 'generic' dmaengine PCM
+driver patch" (which is rather dismissive).  I did say that the his idea
+of moving the cyclic emulation down into dmaengine seemed sensible but I
+did also agree that perhaps it was sensible to keep it further up the
+stack if depending on other factors and I'm struggling to see this as
+ridicule, and I did also express some displeasure at the SA11x0 hardware
+design but that's definitely a separate thing.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIINtjCC
-BjQwggQcoAMCAQICASAwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
-DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxKTAnBgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3
-MTAyNDIxMDI1NVoXDTE3MTAyNDIxMDI1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
-dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
-aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
-aWVudCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMsohUWcASz7GfKrpTOM
-KqANy9BV7V0igWdGxA8IU77L3aTxErQ+fcxtDYZ36Z6GH0YFn7fq5RADteP0AYzrCA+EQTfi
-8q1+kA3m0nwtwXG94M5sIqsvs7lRP1aycBke/s5g9hJHryZ2acScnzczjBCAo7X1v5G3yw8M
-DP2m2RCye0KfgZ4nODerZJVzhAlOD9YejvAXZqHksw56HzElVIoYSZ3q4+RJuPXXfIoyby+Y
-2m1E+YzX5iCZXBx05gk6MKAW1vaw4/v2OOLy6FZH3XHHtOkzUreG//CsFnB9+uaYSlR65cdG
-zTsmoIK8WH1ygoXhRBm98SD7Hf/r3FELNvUCAwEAAaOCAa0wggGpMA8GA1UdEwEB/wQFMAMB
-Af8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBSuVYNv7DHKufcd+q9rMfPIHeOsuzAfBgNV
-HSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRaMFgwJwYIKwYBBQUH
-MAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYhaHR0cDovL3d3
-dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20v
-c2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
-d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBADqp
-Jw3I07QWke9plNBpxUxcffc7nUrIQpJHDci91DFG7fVhHRkMZ1J+BKg5UNUxIFJ2Z9B90Mic
-c/NXcs7kPBRdn6XGO/vPc87Y6R+cWS9Nc9+fp3Enmsm94OxOwI9wn8qnr/6o3mD4noP9Jphw
-UPTXwHovjavRnhUQHLfo/i2NG0XXgTHXS2Xm0kVUozXqpYpAdumMiB/vezj1QHQJDmUdPYMc
-p+reg9901zkyT3fDW/ivJVv6pWtkh6Pw2ytZT7mvg7YhX3V50Nv860cV11mocUVcqBLv0gcT
-+HBDYtbuvexNftwNQKD5193A7zN4vG7CTYkXxytSjKuXrpEatEiFPxWgb84nVj25SU5q/r1X
-hwby6mLhkbaXslkVtwEWT3Van49rKjlK4XrUKYYWtnfzq6aSak5u0Vpxd1rY79tWhD3EdCvO
-hNz/QplNa+VkIsrcp7+8ZhP1l1b2U6MaxIVteuVMD3X0vziIwr7jxYae9FZjbxlpUemqXjcC
-0QaFfN7qI0JsQMALL7iGRBg7K0CoOBzECdD3fuZil5kU/LP9cr1BK31U0Uy651bFnAMMMkqh
-AChIbn0ei72VnbpSsrrSdF0BAGYQ8vyHae5aCg+H75dVCV33K6FuxZrf09yTz+Vx/PkdRUYk
-XmZz/OTfyJXsUOUXrym6KvI2rYpccSk5MIIHejCCBmKgAwIBAgICFzUwDQYJKoZIhvcNAQEF
-BQAwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJT
-ZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBD
-bGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTAeFw0xMTEwMDUwOTU4MjBa
-Fw0xMzEwMDUwODI2MThaMIG+MSAwHgYDVQQNExc1Mjg2MjUtMkxtSDcwOVRWS3FBR1N4QjEL
-MAkGA1UEBhMCVVMxETAPBgNVBAgTCE5ldyBZb3JrMRYwFAYDVQQHEw1TdGF0ZW4gSXNsYW5k
-MSIwIAYDVQQKExlSZW5lZ2FkZSBUZWNobm9sb2dpZXMgREJBMRgwFgYDVQQDEw9TZWFuIFBh
-cHBhbGFyZG8xJDAiBgkqhkiG9w0BCQEWFXNwYXBwYWxhcmRvQG1peHh4Lm9yZzCCASIwDQYJ
-KoZIhvcNAQEBBQADggEPADCCAQoCggEBAK1NNpr6hUJ8LOZMez9xHLjyZRYqeJz4Lp5+2dxd
-slcNSxT7n/4wKzLdQiadXLeLKxBGy6OrGNZN2a2cO3+g/0vE3VvcgJJZVW8R7QX1qIaL8oSM
-KcMj76LE/CHtzpYkyPDQipQXhgn6sRe0qvc4IfvOpkwtgpZ2p6kDFO+sl2a97N1Ep/wrS7h1
-MMbaRqpi01jpls8FrysT8vcXzofqaj3S36vr8jdcmCTW4hDz2Si/YZ/jgvF1w7nv6n16Y9fl
-avbhPqSQK4FHKDmRRwyBzVErGzb0MuaNlVlaGWj8a9qtVZa5OoDN+Sx0vnMbP5PJ8JuW/be0
-SxzOyH1RTZu0z+ECAwEAAaOCA7AwggOsMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1Ud
-JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUUvDFTXcNxsN+0UNFTI/K3ZoX
-m6swHwYDVR0jBBgwFoAUrlWDb+wxyrn3HfqvazHzyB3jrLswIAYDVR0RBBkwF4EVc3BhcHBh
-bGFyZG9AbWl4eHgub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8w
-LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
-BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsG
-AQUFBwICMIHqMCcWIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5U
-aGlzIGNlcnRpZmljYXRlIHdhcyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAyIFZh
-bGlkYXRpb24gcmVxdWlyZW1lbnRzIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlh
-bmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhl
-IHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGcBggrBgEFBQcCAjCBjzAnFiBTdGFydENv
-bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRMaWFiaWxpdHkgYW5kIHdhcnJhbnRp
-ZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBhbmQgTGltaXRhdGlvbnMiIG9m
-IHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwu
-c3RhcnRzc2wuY29tL2NydHUyLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUH
-MAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MyL2NsaWVudC9jYTBCBggr
-BgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNzMi5jbGll
-bnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkqhkiG
-9w0BAQUFAAOCAQEALuOsKhJbsLicRnSPl4PMV5ZqM4mTi+qh5YZapOppBJLUuAvR0RsUN7n1
-cOgAbSjnU0/9m7wA/Rm5rt4OWP1L+K6NMIem2Dh7ghP2qXmDia439ACksTxQU+IUhVQCg3ZT
-Ama2VQSOCSM0IinfRk/h7f4bLqQ67OPN4ZeaPOHZs49V6xbIxn1GbfQkZ5hVC77zQsbN2Hx9
-rKZfg0OlEos8fd3HnuB9IS1RthS7Cbz/BgyA/GX2ViEZjQEcgsXh70tEDQ/LA6OaTE7+4a5S
-eDNRhvB5L0r3LQRgkWGQBGDwsL+M0isFmt4VSqIV62Ixx/zZhcknODotr585NfQ2NuFUvjGC
-A80wggPJAgEBMIGTMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
-MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
-U3RhcnRDb20gQ2xhc3MgMiBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAhc1MAkG
-BSsOAwIaBQCgggIOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8X
-DTEyMDUyOTIxNTIyNlowIwYJKoZIhvcNAQkEMRYEFJHGePj9IoFshnrr3IzwVM1i5zoEMF8G
-CSqGSIb3DQEJDzFSMFAwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIA
-gDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBpAYJKwYBBAGCNxAE
-MYGWMIGTMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UE
-CxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRD
-b20gQ2xhc3MgMiBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAhc1MIGmBgsqhkiG
-9w0BCRACCzGBlqCBkzCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
-KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
-L1N0YXJ0Q29tIENsYXNzIDIgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgIXNTAN
-BgkqhkiG9w0BAQEFAASCAQCFluTU1ifnaVNvsay2C6pH5/N/FPewS0cErVP7k1/ec1Tc6AJo
-YWYAWQnUold8g8cc+hNaw9mvmh0RtozBY3ggGOADp1v+TrjfH0T3QuCPMSP3c3jR+GT3TVks
-JIyXRQQRyRI7ZaUsdIMCchjvfe3g44R6J2KGNy4R//BEovd+P0oQ3skGzlP0IZ6pnFObJZ22
-TSJYyyJ5uGGyPJb+OS/I7qoabmN8KTxANHBn1EWDv7CMZLE5fmtmTGX4VmVvdbVvIZCBgQGq
-qMY2XDAq5LGhf162H39QvR+Vp7Pkrslxg4ZbCk5S/dtXitor1we6GZ1a8ucYTNapdEPRcy6r
-NkUHAAAAAAAA
---------------ms070108050303010805080004--
+In terms of the decision to apply the library code it's simply a case of
+the fact that it was the only thing submitted, the only issue anyone had
+with it was the allocation issue which seemed fixable incrementally, and
+it was posted with all the relevant mainline platforms converted over.
+This seems like a clear win, providing a noticable improvement on the
+previous situation.
 
---===============3304129336574421489==
+Having the library doesn't stop anyone creating a generic DMA driver on
+top of it or otherwise fixing or improving on the merged code and it
+does provide useful code sharing to the platforms.
+
+> And so I assumed that you'd made up your mind, and just plain weren't
+> interested.
+
+I think you're reading something into things that just isn't there.  You
+seem to see this as an either/or thing but really as with everything
+else in the kernel the current code is just a useful point at which to
+start doing incremental development in tree.
+
+As I said at the time I think the final result should be a merge of the
+two sets of code, and the addition of cyclic DMA support to your code is
+one example of this happening though sadly out of mainline.  Looking at
+the current state of things the changes I'd hope to see happen if
+anyone's willing to work on it are something like (in no real order):
+
+ - Move the channel acquisition earlier and use that device to allocate
+   buffers.
+ - Merge the non-cyclic support into mainline.
+ - Add the generic driver into mainline in some form or other (or
+   otherwise factor even more code out into the generic code).
+ - Provide the ability for DAIs to register an ASoC DMA driver for
+   themselves from data (like the dmaengine based DT systems want to
+   do).
+ - Give platforms more control over the parameters for the generic
+   driver than they currently do (there's some stuff still #defined in
+   the file).
+
+Possibly split up differently somehow but broadly speaking that's where
+I'd like to see us going.  Hopefully some or all of this will happen
+before I have a dmaengine based platform running mainline, but if not I
+guess I'll do some stuff myself.
+
+In short there's clearly room for improvement in what's in mainline,
+let's fix it with code.
+
+>              You have been very resistive towards discussing issues
+> coming up in this area, and in other areas I've raised with ASoC such
+> as the struct device lifetime issues - even when I've created patches
+> for you.
+
+The one case I can recall not applying a patch you've sent was those
+device lifetime things where my point was that unless there's an issue
+being seen in actual systems that really isn't the sort of thing to be
+fixing in -rc (which was what you were pushing strongly for), especially
+when the patch only addresses a subset of the issue.  I have to say I am
+rather conservative about what I'll apply during -rc, especially to core
+code and around areas of code like that which are poorly tested
+minefields.
+
+Besides, the fix should be done at AC'97 bus level anyway since the
+non-ASoC AC'97 code follows exactly the same pattern - if it's worth
+fixing it's worth fixing for non-ASoC AC'97 systems too.
+
+Otherwise for things other than patches you have to be aware that, in
+common with most other maintainers, I've got a limited amount of time to
+work on things and a whole bunch of different priorities both within the
+kernel and in the rest of my life so if you're asking for something
+that's hard or time consuming it might not happen immediately.  There
+are a bunch of other people who work full time on ASoC things with a
+similar mandate to me you can ask as well.
+
+> Moreover, because I don't see any hope for the SA11x0 PCM support going
+> in (it certainly won't support capture mode due to the need to run the
+> playback side to receive capture samples) I'm really not pushing it; it's
+> more my testbed for testing out my DMA engine work than serious ASoC
+> work.
+
+I really don't recall anything fundamental that would block it at least
+for a playback only driver.  There were some issues with L3 but you
+explained what they were and otherwise it just seemed to be updating to
+current APIs and what looked like fairly straightforward code motion
+stuff.
+
+Doing capture might be more tricky but if the bodge is well enough
+hidden in the driver or sufficiently non-invasive to the core it
+shouldn't be that big a deal.
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPxWHNAAoJEBus8iNuMP3dpHkP/1F+opuxqY1ms7NAUgfDFK8K
+xJEEYLMKhaOGcOKnBbzogN4sUMrzjnbrBo0gU2PP84R5U35djDmUaHBK4MVj8eqa
+5udQ01XnNVhFL1BtCWZ+w5H3PTrvYHLTi3J5ovT58p71IprthFB/mM6jPhRm8VAR
+A7qTmCDdGcGhRnHgBys/Ls92tzmdhCmJ4uOW4wvzzKQKAFO+tbrQvfALpCJAP23T
+jfWE/MH3f4VFN8Q7wR2bBrUDe57GIXK1I8j3ZxoL3Wcm1QWNFtAQpy+8azOXCqia
+JEut84MzKN81JpVYpHA5yiz1qB4cHG2ityPJDXKGoYaBQBFVqw9tblEHzBPHj49v
+vd3ie8I2lTUEEnw+erxfiufaaXaaPWFbqacCR2aX99GARa2msGtI//xVJD1EPEGA
+EUbApXhuN7kJrzjDl82REa826Xq5h4RZakGcq2eug3JslCTyeOUZtG6hYsB48Tef
+HrkNXP8nvVevxzVTDVon4ZrkbYSJCnAv3qXmJczO5yoCCvngqoOf/t1nBKlmVp3x
+Ly3z/wqaPPcM9iSfnU+cKEn4gclcHAOpg4yYXCqoisFi1wI7aKNfOG7RbcMB3x8O
+DxaDuzJYVGZHJyD2JweQgwhCRp//XCshPqrJy89J0HUXzoyQFwMZtnndhKT4qq4V
+eaOo3crwDe8mSFElhdLT
+=x1lo
+-----END PGP SIGNATURE-----
+
+--X1bOJ3K7DJ5YkBrT--
+
+--===============7520695133433107905==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3304129336574421489==--
+--===============7520695133433107905==--
