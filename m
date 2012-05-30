@@ -1,19 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Help requested: new HSS1394 MIDI back-end
-Date: Wed, 30 May 2012 09:18:32 +0200
-Message-ID: <4FC5C9C8.1000604@ladisch.de>
-References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>
-	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>
-	<4FC5AC47.4060606@mixxx.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fsi: bugfix: enable master clock
+ control on DMA stream
+Date: Wed, 30 May 2012 10:42:25 +0100
+Message-ID: <20120530094225.GB9947@opensource.wolfsonmicro.com>
+References: <87r4u8kawm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7860541221076852124=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 2FC0B2457A
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D0C42434D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2012 09:18:35 +0200 (CEST)
-In-Reply-To: <4FC5AC47.4060606@mixxx.org>
+	Wed, 30 May 2012 11:42:29 +0200 (CEST)
+In-Reply-To: <87r4u8kawm.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sean M. Pappalardo - D.J. Pegasus wrote:
-> On 05/30/2012 06:51 AM, Clemens Ladisch wrote:
->> Sean M. Pappalardo - D.J. Pegasus wrote:
->>> four-byte platter messages that start with
->>> 0xF9 and the remaining three can range from 0x00 to 0xFF.
->>
->> This is not MIDI. Into what MIDI messages should
->> the driver convert this?
->
-> It shouldn't convert it at all. Just deliver it as-is in a single
-> four-byte message, if possible.
 
-The problem is the communication between the driver and userspace;
-_that_ must be valid MIDI.
-
-> 0xF9 is a valid, if undefined, MIDI status.
-
-Undefined means invalid.  Furthermore, data bytes must not have the
-eighth bit set.
-
-> I will also need the ability to use the HSS1394 SendUserControl
-> function to set the device's timers, and that is definitely not MIDI
-> at all.
-> I wonder if it would be a good idea to define a special SYSEX message
-> that the SCS1x driver would interpret and convert to a call to that
-> function?
-
-As it happens, the actual SysEx commands use the wrong manufacturer ID
-("00 01 02" is Crystal Semiconductor); I could just use the real ID
-(Stanton is "00 01 60") to escape non-MIDI HSS1394 messages.  Let's add
-"HSS" to identify this, and to allow the full byte range, each HSS1394
-byte is split into two nibbles.  So:
-
-00 F9 xx yy zz -> F0 00 01 60 48 53 53 00 00 0F 09 0x 0x 0y 0y 0z 0z F7
-13 xx yy zz    <- F0 00 01 60 48 53 53 01 03 0x 0x 0y 0y 0z 0z F7
-14 xx yy zz    <- F0 00 01 60 48 53 53 01 04 0x 0x 0y 0y 0z 0z F7
-(0x13 = 0x10 + 3 = kUserTagBase + uUserTag)
+--===============7860541221076852124==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LpQ9ahxlCli8rRTG"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--LpQ9ahxlCli8rRTG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, May 24, 2012 at 11:55:11PM -0700, Kuninori Morimoto wrote:
+> DMA stream handler didn't care about master clock.
+> This patch fixes it up.
+
+Applied, thanks.
+
+--LpQ9ahxlCli8rRTG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPxet4AAoJEBus8iNuMP3dtVEP/359u+hksEL5pP6AHRBIHY6g
+PWgceVD5dc0WpjEpy93E6Udn6uY04i+9XGBR3eQDK2u57Hc/Y7d53ME4Vu27i1si
+9HXPGMmDSI/z6wlaEa3EEUXEAPj/qkkZs5aKqkZ4e/tveTtWqsfuP9RJCF8ERviD
+U5/FUf10QwWjeOVqYgzEIOrQriGkdWah87jnfGFKomX/t2o1eRjrcPwfr/E/hJSG
+SJS906xHP0xWVCDctSugnEsuoN8r7izrWogVaSFjkE5TVEkJS1IT0wM5L+jEXZVg
+lXyGbpNsGrPk9DRTZXqgxnROwuBu51rb26WrWTB61BxglTPnNfvnBe2Vm8blTrGn
+gdlHTdst+91sG8eKyTc6nbArHFVn2K7ArYODRpkKO+Icl4/nazLNbH97CZG+3L3n
+d3fBA8Kg04PAn6hAb8ZSCrHa1N59DozrYy7oKlZOiJ4uGlNadgwSvp7qBRYOZYWa
+wH3cYNRitoeGAOFfzoTyhPkTSf5HR+muQMRxKunAGflYNZLNAsvjPqNeZ/U2RVDs
+z618NdiWLLMa8byv8wQTSO3xRoX+zHOMT3gFTQWSq7jNFr9U6C19VUTt0ABsbGza
+t0PCcayaMtBQpT29xPsfArJzoEeCVjylFUa6yeReOMCVgXccInO1ew3ptfHsLpDc
+W7kpzyPfB+FE1FTgp0I7
+=1zRc
+-----END PGP SIGNATURE-----
+
+--LpQ9ahxlCli8rRTG--
+
+--===============7860541221076852124==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7860541221076852124==--
