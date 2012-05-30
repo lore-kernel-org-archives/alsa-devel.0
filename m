@@ -1,21 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Internal Mics and Speakers not visible in
-	PulseAudio
-Date: Wed, 30 May 2012 21:04:53 +0800
-Message-ID: <CAN8cciYgk5L5PWQkzcd3XF_7eZvzTpzC_eUifCG=hOFymJsx7Q@mail.gmail.com>
-References: <4FC616B8.3090608@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/5] ASoC: codecs: Add AB8500 codec-driver
+Date: Wed, 30 May 2012 14:14:21 +0100
+Message-ID: <20120530131421.GK9947@opensource.wolfsonmicro.com>
+References: <1337865998-26150-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8327009323502792507=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
-	[209.85.212.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFC6D24793
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A34C5247A1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2012 15:04:53 +0200 (CEST)
-Received: by wibhn14 with SMTP id hn14so3386270wib.2
-	for <alsa-devel@alsa-project.org>; Wed, 30 May 2012 06:04:53 -0700 (PDT)
-In-Reply-To: <4FC616B8.3090608@canonical.com>
+	Wed, 30 May 2012 15:14:22 +0200 (CEST)
+In-Reply-To: <1337865998-26150-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,87 +20,181 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-2012/5/30 David Henningsson <david.henningsson@canonical.com>:
-> Posted to both alsa-devel and pulseaudio-discuss lists, as this is a cross
-> issue.
->
-> PulseAudio tries to figure out what equipment is present on the machine
-> using the mixer. If it finds e g "Headphone Playback Volume", "Headphone
-> Playback Switch", or "Headphone Jack", it assumes that a headphone is
-> present and creates a headphone port. If it finds no ports, it creates a
-> fallback "Analog Output" port.
->
-> Now assume that we have a laptop with speakers and a headphone jack, but
-> with only a "Master Playback Volume", and a "Headphone Jack" for the jack
-> detection.
-> PulseAudio will take the "Headphone Jack", and create a headphone port. Now,
-> if this port is currently unconnected/unavailable, it will not show up at
-> all [1]. As a result, the internal speakers - for which no port was created
-> - will be essentially unusable.
->
-> Now, I thought this was a problem with a pair of machines only, that we
-> could easily quirk on the PulseAudio side. But after looking through Ubuntu
-> bugs and posting a blog post [2] about the issue, I have now collected 21
-> different machines affected, mostly on the input side. Several Realtek chips
-> are affected on the dmic side, and some older STAC92xx chips have problems
-> in both directions.
-> So it becomes evident to me, that this is something that needs to be fixed
-> pretty fast.
->
-> So, to move forward, we need to expose these speakers and internal mics to
-> userspace. A very simple (untested) patch is attached. This would make
-> "Internal Mic Jack" and "Speaker Jack" show up. Note that the actual status
-> can be overridden/ignored on the PulseAudio side - the importance here is
-> the sign that there are internal mics and speakers, so that the PulseAudio
-> ports get created.
->
-> I could develop it a little to make sure we don't actually do any jack
-> detection for these pins but always return them as being true/present.
-> That is, if you approve the idea? I admit that the "Internal Mic Jack" is
-> somewhat misleading/hacky as the internal mic is not connected to any
-> physical jack, but it seems like the simplest way of resolving the problem
-> currently.
->
->
->
-I am afraid this does not work with desktop computer which has front
-mic , internal mic, Line in ,CD (or stereo mix with those via hda
-codecs)
 
-With ubuntu 12.04 and unity ,  if I enable hda jack detect with my
-ad198x on my desktop, sound  preference does not allow me to select
-front mic since I am still using ac97 front panel (with no jack detect
-circuit)
-
-Although the rear mic and line in jacks are detectable, when I unplug
-the rear mic, the sound preference automatically switch to the "web
-cam mic" since the desktop does not has any internal mic
-
-The concept of using jack detection to select recording source is not
-suitable when there is more than two undetectable sources or two
-detectable jacks
-
-Some user may connect the output of TV card to the blue jack of ad198x
-which is loop back to green jack. The presence of jack in "Line in"
-does not implies that the user is intend to select Line in as input
-source since the user is just using the analog mixing of ad198x codec
-
-The correct way  is to use the items in "Input Source" or "Capture Source"
+--===============8327009323502792507==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="M9kwpIYUMbI/2cCx"
+Content-Disposition: inline
 
 
-Simple mixer control 'Input Source',0
-  Capabilities: cenum
-  Items: 'Front Mic' 'Rear Mic' 'Line' 'CD' 'Mix'
-  Item0: 'Front Mic'
-Simple mixer control 'Input Source',1
-  Capabilities: cenum
-  Items: 'Front Mic' 'Rear Mic' 'Line' 'CD' 'Mix'
-  Item0: 'Front Mic'
-Simple mixer control 'Input Source',2
-  Capabilities: cenum
-  Items: 'Front Mic' 'Rear Mic' 'Line' 'CD' 'Mix'
-  Item0: 'Line'
+--M9kwpIYUMbI/2cCx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, May 24, 2012 at 03:26:38PM +0200, Ola Lilja wrote:
+
+> +static void show_regulator_status(struct device *dev)
+> +{
+> +	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
+> +	struct ab8500_codec_drvdata_dbg *dbg = &drvdata->dbg;
+> +
+> +	dev_dbg(dev, "%s: Regulator-status:\n", __func__);
+> +	dev_dbg(dev, "%s:     V-AUD: %s\n", __func__,
+> +		(regulator_is_enabled(dbg->vaud) > 0) ?
+> +			"On" : "Off");
+> +	dev_dbg(dev, "%s:     V-AMIC1: %s\n", __func__,
+> +		(regulator_is_enabled(dbg->vamic1) > 0) ?
+> +			"On" : "Off");
+> +	dev_dbg(dev, "%s:     V-AMIC2: %s\n", __func__,
+> +		(regulator_is_enabled(dbg->vamic2) > 0) ?
+> +			"On" : "Off");
+> +	dev_dbg(dev, "%s:     V-DMIC: %s\n", __func__,
+> +		(regulator_is_enabled(dbg->vdmic) > 0) ?
+> +			"On" : "Off");
+
+What problems are you finding when you try to use the debug
+infrastructure in both the regulator API and DAPM to discover the state
+of the regulators?
+
+> +	/* Clocks */
+> +	SND_SOC_DAPM_CLOCK_SUPPLY("audioclk"),
+> +	SND_SOC_DAPM_CLOCK_SUPPLY("gpio.1"),
+
+This looks wrong - audioclk looks reasonable but gpio.1 looks like a
+board-specific name which shouldn't be encoded into the driver.
+
+> +	if (ucontrol->value.integer.value[0] != SID_APPLY_FIR) {
+> +		dev_err(codec->dev,
+> +			"%s: ERROR: This control supports '%s' only!\n",
+> +			__func__, enum_sid_state[SID_APPLY_FIR]);
+> +		return 0;
+> +	}
+
+I'd expect this to return an error...
+
+> +	status = snd_soc_dapm_force_enable_pin(&codec->dapm,
+> +					"ANC Configure Input");
+> +	if (status < 0) {
+> +		dev_err(dev,
+> +			"%s: ERROR: Failed to enable power (status = %d)!\n",
+> +			__func__, status);
+> +		goto cleanup;
+> +	}
+> +	snd_soc_dapm_sync(&codec->dapm);
+> +
+> +	mutex_lock(&codec->mutex);
+
+Your locking looks bad here.  Nothing ensures that something doesn't
+come along and undo the force enable.  Looking at the code this is the
+only function that fiddles with the input but there's still a race where
+one writer might exit the mutex section and disable the pin while a
+second enters the mutex section.
+
+> +static int filter_control_get(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct filter_control *fc =
+> +			(struct filter_control *)kcontrol->private_value;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < fc->count; i++)
+> +		ucontrol->value.integer.value[i] = fc->value[i];
+> +
+> +	return 0;
+> +}
+> +
+> +static int filter_control_put(struct snd_kcontrol *kcontrol,
+> +		struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct filter_control *fc =
+> +			(struct filter_control *)kcontrol->private_value;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < fc->count; i++)
+> +		fc->value[i] = ucontrol->value.integer.value[i];
+
+These don't seem to be locked?
+
+> +int ab8500_audio_init_audioblock(struct snd_soc_codec *codec)
+
+static.  Lots of other functions in the rest of the driver have the same
+issue.
+
+> +static int ab8500_codec_pcm_hw_params(struct snd_pcm_substream *substream,
+> +		struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
+> +{
+> +	dev_dbg(dai->codec->dev, "%s Enter.\n", __func__);
+> +
+> +	return 0;
+> +}
+
+Remove empty functions.
+
+> +	default:
+> +		dev_err(dai->codec->dev,
+> +			"%s: ERROR: Unsupported INV mask 0x%x\n",
+> +			__func__, fmt & SND_SOC_DAIFMT_INV_MASK);
+> +		return -EINVAL;
+> +		break;
+
+The break is redundant.
+
+> +	/* Only 16 bit slot width is supported at the moment in TDM mode */
+> +	if (slot_width != 16) {
+> +		dev_err(dai->codec->dev,
+> +			"%s: ERROR: Unsupported slot_width %d.\n",
+> +			__func__, slot_width);
+> +		return -EINVAL;
+> +	}
+
+You've got code which supports other widths...
+
+> +static struct snd_soc_codec_driver ab8500_codec_driver = {
+> +	.probe =		ab8500_codec_probe,
+> +	.read =			ab8500_codec_read_reg,
+> +	.write =		ab8500_codec_write_reg,
+> +	.reg_cache_size =	0,
+
+no need to init things to zero or NULL in static structs.
+
+> +#define PRE_PMU_POST_PMD			(SND_SOC_DAPM_PRE_PMU | \
+> +						SND_SOC_DAPM_POST_PMD)
+
+You shouldn't define stuff like this in your driver!
+
+--M9kwpIYUMbI/2cCx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPxhyKAAoJEBus8iNuMP3dzLgP/27/8Em3/va4cAzjMQXhSMWJ
+arS/CJ/seVwNUiYAmTF4Vv6zYW35cNY9SUCjeNB4oq1qNOwk3QWOCKWGHeNQKtor
+Fz6kBShANd5TnSTEpjnL3YyeL3Xg2YNQ1QzLhGHdmgExw3lLDZ44BQc71qSpVJp7
+BGPW+uoJOXAlbrGI48zlsVeM3Yw89zVrIhnzmexNZTZUnh7DykSNNkH5MJ5C/lM0
+0XTqmOS8lGtGU+I4Z25m1x9MQV1Qi33QT116jtr6AlvYDAJ4Cxcyax0izEAuHZ/s
+WQSH6ULUB+V1cjxFpgo582C7YkSjbVBBKkGRR0GD/ZtuUVfApmS1kElNV1UCfvwF
+VGcmXsRep0SMDW+N44+F3IsdB3HbWnd7YjCFpFXVQEukf8lS1cTbCLOc1zQFwwq9
+YER7D7y1omEMgvrXblb77jME9Biwd3CetDf1UHw+GW0j0vrGnSN1LBkp31FXbg/Q
+hRSX1umTEib5ZRB5RGagxW4TISX52DPOUrSvOOo6FhqJbRzit5bu5732ak5zU0Fo
+2M+9F/iaj7XJt3y5QE4JqXMde9Cdif+pJagdJOdGIlmGXpmVGYSJaqkp36jMYkT/
+m5TJnUgYlbuBGMpRla5gVFNnRhjccFR5ADvKWsB/2Kl1ch8xodO9F9MghpIOFXD4
+Ju5AZT5zF5fz/jyh60b9
+=3T2i
+-----END PGP SIGNATURE-----
+
+--M9kwpIYUMbI/2cCx--
+
+--===============8327009323502792507==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8327009323502792507==--
