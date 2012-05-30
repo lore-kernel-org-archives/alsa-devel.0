@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsi: use PIO handler if DMA handler
-	was invalid
-Date: Wed, 30 May 2012 10:44:29 +0100
-Message-ID: <20120530094429.GC9947@opensource.wolfsonmicro.com>
-References: <87pq9skaun.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/2] ASoC: fsi: bugfix for DMAEngine
+Date: Wed, 30 May 2012 11:04:32 +0100
+Message-ID: <20120530100432.GE9947@opensource.wolfsonmicro.com>
+References: <87txyzmrj6.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8166997187450119999=="
+Content-Type: multipart/mixed; boundary="===============1110515772184392337=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87AA42434D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 633E724634
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2012 11:44:31 +0200 (CEST)
-In-Reply-To: <87pq9skaun.wl%kuninori.morimoto.gx@renesas.com>
+	Wed, 30 May 2012 12:04:33 +0200 (CEST)
+In-Reply-To: <87txyzmrj6.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +25,53 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kunino
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8166997187450119999==
+--===============1110515772184392337==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DIOMP1UsTsWJauNi"
+	protocol="application/pgp-signature"; boundary="SWTRyWv/ijrBap1m"
 Content-Disposition: inline
 
 
---DIOMP1UsTsWJauNi
+--SWTRyWv/ijrBap1m
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 24, 2012 at 11:56:19PM -0700, Kuninori Morimoto wrote:
-> PIO handler is not good performance, but works on all platform.
-> So, switch to PIO handler if DMA handler was invalid case.
+On Mon, May 28, 2012 at 11:26:41PM -0700, Kuninori Morimoto wrote:
 
-Applied, thanks.
+> These are bugfix for FSI DMAEngine.
+> Without these patches, FSI playback includes noise.
+> These are for v3.5 kernel
 
---DIOMP1UsTsWJauNi
+Applied both, thanks.
+
+--SWTRyWv/ijrBap1m
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPxevIAAoJEBus8iNuMP3dBkIP+QFGQJITFX0ZVfLisCZV/9f0
-XK7yPFJGGfwdd0X9VNO3sVDO1lAzkXbi4rxFsZNW35OMf8E5YpE/9WgSZSuc2oXF
-nlKbYzDtYFxJdzzCm4JurjyvrWGN1pJOfmbCOsa1D/4bsPPc3EKUGXkjjn4ZyZxc
-yCIIagxQEc0bGeOWahh1d7l81ug0YWILFmgCML6TG5BnsDawcTgRxw3jrXjKRhzZ
-8jUyhSYgZIJ3TJniITu9DoIeIrpEwKnyEgRHjRLxZNF6PYS69fCJzgigV7h5pGMs
-w6DEnEaNkoW5Dk1J5SkWOO7xsockRjA5AwXsBU7VbtNc3Uugd9ruasAr/0kNW7qI
-okbo8Qbh4yNjUH6UQ7XDEHqpewkqmLzi4RjS90sfoT3jyf0uEGGqcWNTezuZTaDy
-29ANwkbwntvb7emHZYOkUiYb3iEmth8DvZjMVY7d2Fztq5aTKUODww8dYw9f6/3S
-WPHLkByb5tvWVJEciwUdccr/mFWOrkkGDpe7YcLNfCkzNW1FOrOaznfriLc1pOgP
-/3Co/An+DTKmeLaFDLkhDBXKS+RdgolOJUtFkEma4B4e45EkqdHtZ2Fau96SZANy
-+u6VoNf/uOgdwrIqG3+shD4Rp9e85A+N7JIIAP+lGi6OMBHizbaDRB5L8zC9FLGV
-PZdiW7sv/BLIr34S6a1C
-=u2nL
+iQIcBAEBAgAGBQJPxfCpAAoJEBus8iNuMP3dJoYP/ifTys7qwDmKcRlMV+RxxdOK
+Rfn2iMjNzlo3rSzh0nSEOn/43ObWdBpra3iXqwY/4H0bMI8TimJCUB4GzPbRuTrA
+JwnC0d5zVxNEyowCpRFUsBqEO/JwGmdRRAPj22JG+X1jGVAYBLi7nmL07l+4WD40
+edZxYSLousQOdnywntM/phkN/GKlpSX2MaOWhokP/9+hJDZPsPBIDAqhidhT4hM7
+F3YL90NRbc7oVuTaYmDUAWC457ravMB/Z63/XF/mz0dbrJXitl9R8q3doL7Lv0KZ
+JRcJ1elKBu5L9i156s7k8XSUbk5Qd20PxYmTTdEchxPZ1dt123FnGoWePlANUndk
+HqNrdHs+xqryp0Yh+zDAvighzjM4yF7VETlFBV+6jU2kqJ3czM8y5JdNYnobK+tw
+Rxnr4TTGH9Wod+RpV6EzWrTVsmJJf+nSqWOQC7sJfjzZhZqJ5zmTn2Io9n9YOan5
+VdngCm90Zv1pZEIiRlwiW72tGSbm3225x1fUhtE3n34L4G8CKoFelnstKE7e7z+G
+aFoRpQQezlCNyEl8By0nJaQjBR0ukH91g1RlJ7P/klC1dkbJusVzowuSuEX2L+rH
+UI3YM1D/nHkizDhLvnQnKXyF3MRxerbrhZaUM8zauIX3dyjnUQsimBjRkslQuwGN
+GNzVkpfJKH73E1mtFxIw
+=xhAl
 -----END PGP SIGNATURE-----
 
---DIOMP1UsTsWJauNi--
+--SWTRyWv/ijrBap1m--
 
---===============8166997187450119999==
+--===============1110515772184392337==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8166997187450119999==--
+--===============1110515772184392337==--
