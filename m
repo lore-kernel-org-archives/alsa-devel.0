@@ -1,16 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/2] ASoC: fsi: bugfix for DMAEngine
-Date: Wed, 30 May 2012 11:04:32 +0100
-Message-ID: <20120530100432.GE9947@opensource.wolfsonmicro.com>
-References: <87txyzmrj6.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 2/2 V2] ASoC: fix pxa-ssp compiling issue
+	under mach-mmp
+Date: Wed, 30 May 2012 11:18:44 +0100
+Message-ID: <20120530101843.GG9947@opensource.wolfsonmicro.com>
+References: <1337915528-11887-1-git-send-email-zhouqiao@marvell.com>
+	<CAMPhdO9kzTzY-uxz0dCLTW98oQ0pxdQH9CQY375s+Kx7kpc3yw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1110515772184392337=="
+Content-Type: multipart/mixed; boundary="===============2697859487666459585=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 633E724634
-	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2012 12:04:33 +0200 (CEST)
-In-Reply-To: <87txyzmrj6.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <CAMPhdO9kzTzY-uxz0dCLTW98oQ0pxdQH9CQY375s+Kx7kpc3yw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +18,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Qiao Zhou <zhouqiao@marvell.com>, Liam Girdwood <lrg@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1110515772184392337==
+--===============2697859487666459585==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SWTRyWv/ijrBap1m"
+	protocol="application/pgp-signature"; boundary="V32M1hWVjliPHW+c"
 Content-Disposition: inline
 
 
---SWTRyWv/ijrBap1m
+--V32M1hWVjliPHW+c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 28, 2012 at 11:26:41PM -0700, Kuninori Morimoto wrote:
+On Fri, May 25, 2012 at 12:20:21PM +0800, Eric Miao wrote:
 
-> These are bugfix for FSI DMAEngine.
-> Without these patches, FSI playback includes noise.
-> These are for v3.5 kernel
+> Part of job of #ifdef ... #endif, and cpu_is_pxa*() is to reduce code size when
+> the support for these SoCs are not compiled, but providing the overall
+> maintenance burden and ugliness, I'm fine with the changes here.
 
-Applied both, thanks.
+I did suggest that we should just ensure the macros for the PXAs were
+defined on MMP as well which would seem even simpler...
 
---SWTRyWv/ijrBap1m
+--V32M1hWVjliPHW+c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPxfCpAAoJEBus8iNuMP3dJoYP/ifTys7qwDmKcRlMV+RxxdOK
-Rfn2iMjNzlo3rSzh0nSEOn/43ObWdBpra3iXqwY/4H0bMI8TimJCUB4GzPbRuTrA
-JwnC0d5zVxNEyowCpRFUsBqEO/JwGmdRRAPj22JG+X1jGVAYBLi7nmL07l+4WD40
-edZxYSLousQOdnywntM/phkN/GKlpSX2MaOWhokP/9+hJDZPsPBIDAqhidhT4hM7
-F3YL90NRbc7oVuTaYmDUAWC457ravMB/Z63/XF/mz0dbrJXitl9R8q3doL7Lv0KZ
-JRcJ1elKBu5L9i156s7k8XSUbk5Qd20PxYmTTdEchxPZ1dt123FnGoWePlANUndk
-HqNrdHs+xqryp0Yh+zDAvighzjM4yF7VETlFBV+6jU2kqJ3czM8y5JdNYnobK+tw
-Rxnr4TTGH9Wod+RpV6EzWrTVsmJJf+nSqWOQC7sJfjzZhZqJ5zmTn2Io9n9YOan5
-VdngCm90Zv1pZEIiRlwiW72tGSbm3225x1fUhtE3n34L4G8CKoFelnstKE7e7z+G
-aFoRpQQezlCNyEl8By0nJaQjBR0ukH91g1RlJ7P/klC1dkbJusVzowuSuEX2L+rH
-UI3YM1D/nHkizDhLvnQnKXyF3MRxerbrhZaUM8zauIX3dyjnUQsimBjRkslQuwGN
-GNzVkpfJKH73E1mtFxIw
-=xhAl
+iQIcBAEBAgAGBQJPxfP2AAoJEBus8iNuMP3dMf8QAIeqjzOeH1i8wieZt8uM28gm
+rif0I+AR+GJkQ9138FjOtd7cEMOE8aBM9NZ/sYMUKtwqj2VPnOET4SX8hR6HgmJ1
+y9tPy5mq57qDyt864lJELjOZMe37cBk9xxzbzzUAYBn3hJtA33uqS2dyh95gx2Up
+j3knmuRl6W+gF5DLKNiOS3frgEsUcFqcuIsYyw5vIGSSFJK/O4HIbqVbS1GkdcJy
+bmuN3GDnpY8aPc+vF0GOLo6IND0HKEwGVZda3eL+avaKxz2842MwhDD7kCGAfnV+
+QfQHGPI964FOHEtqXhDZWVSsiFzzEvBRAqNZ+ti9NJnqB8u7RJywd5FHELq3U2DK
+9s1wL0jlbWQ7c2hrinZaksJewLCV+qvaiisJtciBCZ5uHKr+rQynCXEYJlgq7oFn
+Mzuceu4iBbK38xmbvlVdd28s3dFveg1NSEJhFdj9+hNH324vpPKjOueECbHyqCzV
+vcbQx3o3ADnp+/SvGf5WhPs3KuBjFy5aCLfh3id8g0vgyDrsxCUkgUxb8vCuoGtP
+c8hMiy12GasBhVsWp2zagVhadEpbM/PV6KJzmOr1AjPlFM1GcAp5Vy1HtaCWBGMf
+ObnTqdWfJnsTkXVcF3lht5Ijz0HzEwi4W7b6nqfRBgWqljnyRd33ABwbZE8pyxxl
+QJuG2h5H7UQgmMkfqm+Z
+=3KHC
 -----END PGP SIGNATURE-----
 
---SWTRyWv/ijrBap1m--
+--V32M1hWVjliPHW+c--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
---===============1110515772184392337==
+
+--===============2697859487666459585==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1110515772184392337==--
+--===============2697859487666459585==--
