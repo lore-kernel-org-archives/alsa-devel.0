@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsi: bugfix: enable master clock
- control on DMA stream
-Date: Wed, 30 May 2012 10:42:25 +0100
-Message-ID: <20120530094225.GB9947@opensource.wolfsonmicro.com>
-References: <87r4u8kawm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: fsi: use PIO handler if DMA handler
+	was invalid
+Date: Wed, 30 May 2012 10:44:29 +0100
+Message-ID: <20120530094429.GC9947@opensource.wolfsonmicro.com>
+References: <87pq9skaun.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7860541221076852124=="
+Content-Type: multipart/mixed; boundary="===============8166997187450119999=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D0C42434D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87AA42434D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2012 11:42:29 +0200 (CEST)
-In-Reply-To: <87r4u8kawm.wl%kuninori.morimoto.gx@renesas.com>
+	Wed, 30 May 2012 11:44:31 +0200 (CEST)
+In-Reply-To: <87pq9skaun.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +26,51 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kunino
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7860541221076852124==
+--===============8166997187450119999==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LpQ9ahxlCli8rRTG"
+	protocol="application/pgp-signature"; boundary="DIOMP1UsTsWJauNi"
 Content-Disposition: inline
 
 
---LpQ9ahxlCli8rRTG
+--DIOMP1UsTsWJauNi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 24, 2012 at 11:55:11PM -0700, Kuninori Morimoto wrote:
-> DMA stream handler didn't care about master clock.
-> This patch fixes it up.
+On Thu, May 24, 2012 at 11:56:19PM -0700, Kuninori Morimoto wrote:
+> PIO handler is not good performance, but works on all platform.
+> So, switch to PIO handler if DMA handler was invalid case.
 
 Applied, thanks.
 
---LpQ9ahxlCli8rRTG
+--DIOMP1UsTsWJauNi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPxet4AAoJEBus8iNuMP3dtVEP/359u+hksEL5pP6AHRBIHY6g
-PWgceVD5dc0WpjEpy93E6Udn6uY04i+9XGBR3eQDK2u57Hc/Y7d53ME4Vu27i1si
-9HXPGMmDSI/z6wlaEa3EEUXEAPj/qkkZs5aKqkZ4e/tveTtWqsfuP9RJCF8ERviD
-U5/FUf10QwWjeOVqYgzEIOrQriGkdWah87jnfGFKomX/t2o1eRjrcPwfr/E/hJSG
-SJS906xHP0xWVCDctSugnEsuoN8r7izrWogVaSFjkE5TVEkJS1IT0wM5L+jEXZVg
-lXyGbpNsGrPk9DRTZXqgxnROwuBu51rb26WrWTB61BxglTPnNfvnBe2Vm8blTrGn
-gdlHTdst+91sG8eKyTc6nbArHFVn2K7ArYODRpkKO+Icl4/nazLNbH97CZG+3L3n
-d3fBA8Kg04PAn6hAb8ZSCrHa1N59DozrYy7oKlZOiJ4uGlNadgwSvp7qBRYOZYWa
-wH3cYNRitoeGAOFfzoTyhPkTSf5HR+muQMRxKunAGflYNZLNAsvjPqNeZ/U2RVDs
-z618NdiWLLMa8byv8wQTSO3xRoX+zHOMT3gFTQWSq7jNFr9U6C19VUTt0ABsbGza
-t0PCcayaMtBQpT29xPsfArJzoEeCVjylFUa6yeReOMCVgXccInO1ew3ptfHsLpDc
-W7kpzyPfB+FE1FTgp0I7
-=1zRc
+iQIcBAEBAgAGBQJPxevIAAoJEBus8iNuMP3dBkIP+QFGQJITFX0ZVfLisCZV/9f0
+XK7yPFJGGfwdd0X9VNO3sVDO1lAzkXbi4rxFsZNW35OMf8E5YpE/9WgSZSuc2oXF
+nlKbYzDtYFxJdzzCm4JurjyvrWGN1pJOfmbCOsa1D/4bsPPc3EKUGXkjjn4ZyZxc
+yCIIagxQEc0bGeOWahh1d7l81ug0YWILFmgCML6TG5BnsDawcTgRxw3jrXjKRhzZ
+8jUyhSYgZIJ3TJniITu9DoIeIrpEwKnyEgRHjRLxZNF6PYS69fCJzgigV7h5pGMs
+w6DEnEaNkoW5Dk1J5SkWOO7xsockRjA5AwXsBU7VbtNc3Uugd9ruasAr/0kNW7qI
+okbo8Qbh4yNjUH6UQ7XDEHqpewkqmLzi4RjS90sfoT3jyf0uEGGqcWNTezuZTaDy
+29ANwkbwntvb7emHZYOkUiYb3iEmth8DvZjMVY7d2Fztq5aTKUODww8dYw9f6/3S
+WPHLkByb5tvWVJEciwUdccr/mFWOrkkGDpe7YcLNfCkzNW1FOrOaznfriLc1pOgP
+/3Co/An+DTKmeLaFDLkhDBXKS+RdgolOJUtFkEma4B4e45EkqdHtZ2Fau96SZANy
++u6VoNf/uOgdwrIqG3+shD4Rp9e85A+N7JIIAP+lGi6OMBHizbaDRB5L8zC9FLGV
+PZdiW7sv/BLIr34S6a1C
+=u2nL
 -----END PGP SIGNATURE-----
 
---LpQ9ahxlCli8rRTG--
+--DIOMP1UsTsWJauNi--
 
---===============7860541221076852124==
+--===============8166997187450119999==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7860541221076852124==--
+--===============8166997187450119999==--
