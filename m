@@ -1,16 +1,16 @@
-From: Adam Thomson <Adam.Thomson@diasemi.com>
-Subject: [PATCH v2 1/2] ASoC: core: Add single controls with
-	specified range of values
-Date: Thu, 31 May 2012 15:18:01 +0100
-Message-ID: <201205311424.q4VEON1C009932@sw-eng-lt-apt-vm1>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: max98095: Staticise non-exported
+	functions and export jack detect
+Date: Thu, 31 May 2012 16:53:55 +0100
+Message-ID: <1338479635-22766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay1.diasemi.com (mailrelay1.diasemi.com [82.210.246.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 976CE24455
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9F6CB1043DD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 31 May 2012 16:25:27 +0200 (CEST)
+	Thu, 31 May 2012 18:01:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,187 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Adam Thomson <Adam.Thomson@diasemi.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Michal Hajduk <Michal.Hajduk@diasemi.com>
+To: Peter Hsiang <peter.hsiang@maxim-ic.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Control type added for cases where a specific range of values
-within a register are required for control.
-
-Added convenience macros:
-
-SOC_SINGLE_RANGE
-SOC_SINGLE_RANGE_TLV
-
-Added accessor implementations:
-
-snd_soc_info_volsw_range
-snd_soc_put_volsw_range
-snd_soc_get_volsw_range
-
-Signed-off-by: Michal Hajduk <Michal.Hajduk@diasemi.com>
-Signed-off-by: Adam Thomson <Adam.Thomson@diasemi.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |   23 ++++++++++++
- sound/soc/soc-core.c |   98 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 121 insertions(+), 0 deletions(-)
+ sound/soc/codecs/max98095.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index c703871..5f1b536 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -47,6 +47,13 @@
- 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
- 	.put = snd_soc_put_volsw, \
- 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
-+#define SOC_SINGLE_RANGE(xname, xreg, xshift, xmin, xmax, xinvert) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
-+	.info = snd_soc_info_volsw_range, .get = snd_soc_get_volsw_range, \
-+	.put = snd_soc_put_volsw_range, \
-+	.private_value = (unsigned long)&(struct soc_mixer_control) \
-+		{.reg = xreg, .shift = xshift, .min = xmin,\
-+		 .max = xmax, .platform_max = xmax, .invert = xinvert} }
- #define SOC_SINGLE_TLV(xname, reg, shift, max, invert, tlv_array) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
-@@ -67,6 +74,16 @@
- 		{.reg = xreg, .rreg = xreg, \
- 		.shift = xshift, .rshift = xshift, \
- 		.max = xmax, .min = xmin} }
-+#define SOC_SINGLE_RANGE_TLV(xname, xreg, xshift, xmin, xmax, xinvert, tlv_array) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
-+	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
-+		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
-+	.tlv.p = (tlv_array), \
-+	.info = snd_soc_info_volsw_range, \
-+	.get = snd_soc_get_volsw_range, .put = snd_soc_put_volsw_range, \
-+	.private_value = (unsigned long)&(struct soc_mixer_control) \
-+		{.reg = xreg, .shift = xshift, .min = xmin,\
-+		 .max = xmax, .platform_max = xmax, .invert = xinvert} }
- #define SOC_DOUBLE(xname, reg, shift_left, shift_right, max, invert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
- 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
-@@ -460,6 +477,12 @@ int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
-+int snd_soc_info_volsw_range(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo);
-+int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol);
-+int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_limit_volume(struct snd_soc_codec *codec,
- 	const char *name, int max);
- int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b37ee80..d68c67d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2790,6 +2790,104 @@ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
- EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 35179e2..7cd508e 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -2216,7 +2216,7 @@ static irqreturn_t max98095_report_jack(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
  
- /**
-+ * snd_soc_info_volsw_range - single mixer info callback with range.
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to provide information, within a range, about a single
-+ * mixer control.
-+ *
-+ * returns 0 for success.
-+ */
-+int snd_soc_info_volsw_range(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	int platform_max;
-+	int min = mc->min;
-+
-+	if (!mc->platform_max)
-+		mc->platform_max = mc->max;
-+	platform_max = mc->platform_max;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = platform_max - min;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw_range);
-+
-+/**
-+ * snd_soc_put_volsw_range - single mixer put value callback with range.
-+ * @kcontrol: mixer control
-+ * @ucontrol: control element information
-+ *
-+ * Callback to set the value, within a range, for a single mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int reg = mc->reg;
-+	unsigned int shift = mc->shift;
-+	int min = mc->min;
-+	int max = mc->max;
-+	unsigned int mask = (1 << fls(max)) - 1;
-+	unsigned int invert = mc->invert;
-+	unsigned int val, val_mask;
-+
-+	val = ((ucontrol->value.integer.value[0] + min) & mask);
-+	if (invert)
-+		val = max - val;
-+	val_mask = mask << shift;
-+	val = val << shift;
-+
-+	return snd_soc_update_bits_locked(codec, reg, val_mask, val);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_put_volsw_range);
-+
-+/**
-+ * snd_soc_get_volsw_range - single mixer get callback with range
-+ * @kcontrol: mixer control
-+ * @ucontrol: control element information
-+ *
-+ * Callback to get the value, within a range, of a single mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int reg = mc->reg;
-+	unsigned int shift = mc->shift;
-+	int min = mc->min;
-+	int max = mc->max;
-+	unsigned int mask = (1 << fls(max)) - 1;
-+	unsigned int invert = mc->invert;
-+
-+	ucontrol->value.integer.value[0] =
-+		(snd_soc_read(codec, reg) >> shift) & mask;
-+	if (invert)
-+		ucontrol->value.integer.value[0] =
-+			max - ucontrol->value.integer.value[0];
-+	ucontrol->value.integer.value[0] =
-+		ucontrol->value.integer.value[0] - min;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_volsw_range);
-+
-+/**
-  * snd_soc_limit_volume - Set new limit to an existing volume control.
-  *
-  * @codec: where to look for the control
+-int max98095_jack_detect_enable(struct snd_soc_codec *codec)
++static int max98095_jack_detect_enable(struct snd_soc_codec *codec)
+ {
+ 	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+@@ -2245,7 +2245,7 @@ int max98095_jack_detect_enable(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
+-int max98095_jack_detect_disable(struct snd_soc_codec *codec)
++static int max98095_jack_detect_disable(struct snd_soc_codec *codec)
+ {
+ 	int ret = 0;
+ 
+@@ -2286,6 +2286,7 @@ int max98095_jack_detect(struct snd_soc_codec *codec,
+ 	max98095_report_jack(client->irq, codec);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(max98095_jack_detect);
+ 
+ #ifdef CONFIG_PM
+ static int max98095_suspend(struct snd_soc_codec *codec)
 -- 
-1.7.0.4
+1.7.10
