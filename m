@@ -1,18 +1,31 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Help requested: new HSS1394 MIDI back-end
-Date: Thu, 31 May 2012 22:00:01 +0200
-Message-ID: <4FC7CDC1.8020606@ladisch.de>
-References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>
-	<4FC5C9C8.1000604@ladisch.de>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Subject: Re: snd-usb endpoint rework
+Date: Thu, 31 May 2012 21:32:25 +0100
+Message-ID: <CAE-xCyO-X29MPAXvH=68QVT3C-EsHA_c+GHYbQ=pgvhhnqeGow@mail.gmail.com>
+References: <CAE-xCyN+T_cMnmbALn1SZX2GOVkPZ40p4v=fP29+Upqur6TGug@mail.gmail.com>
+	<CAE-xCyP-mN=txZwjnV4Vd6h8UgM-Qgn83jxin6LiYH0Q2-Daiw@mail.gmail.com>
+	<4FBA12E3.2040009@gmail.com>
+	<CAE-xCyOeKjYJrGsa=yt+1U9Wc7x+OhmhYyWQEFCsELww7+Z+-g@mail.gmail.com>
+	<4FBA1F01.4010606@gmail.com>
+	<CAE-xCyNAKUEuHereXpoDUzR2VazY_JCUAMOSxxJWe_F65T06jw@mail.gmail.com>
+	<4FBAC776.9060801@gmail.com>
+	<CAE-xCyPEhMQjPYdbSShDo8P6nEeYSrKWJdKTMi+B_ws7Wq8sUA@mail.gmail.com>
+	<4FBCEBDB.6000209@gmail.com>
+	<CACckToWtFep7G4Qn=JAwJMdxwQadiQ8_KSi84D7A2vLKQihV6A@mail.gmail.com>
+	<CAFz=ag6p5rouC4zFN7ezr79smS62Fzs8Jt4NBX3nxSUd_PKtdA@mail.gmail.com>
+	<CAE-xCyOwFkH7KnfyLt02pJ37F8ZkUtxvi4fdmqReAxoTT2=_FA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 7517F103B5F
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E74A4104490
 	for <alsa-devel@alsa-project.org>;
-	Thu, 31 May 2012 22:00:31 +0200 (CEST)
-In-Reply-To: <4FC5C9C8.1000604@ladisch.de>
+	Thu, 31 May 2012 22:32:26 +0200 (CEST)
+Received: by vbip1 with SMTP id p1so917609vbi.38
+	for <alsa-devel@alsa-project.org>; Thu, 31 May 2012 13:32:25 -0700 (PDT)
+In-Reply-To: <CAE-xCyOwFkH7KnfyLt02pJ37F8ZkUtxvi4fdmqReAxoTT2=_FA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,552 +35,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+To: Daniel Mack <zonque@gmail.com>
+Cc: Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-I wrote:
-> 00 F9 xx yy zz -> F0 00 01 60 48 53 53 00 00 0F 09 0x 0x 0y 0y 0z 0z F7
-> 13 xx yy zz    <- F0 00 01 60 48 53 53 01 03 0x 0x 0y 0y 0z 0z F7
-> 14 xx yy zz    <- F0 00 01 60 48 53 53 01 04 0x 0x 0y 0y 0z 0z F7
+Hello Daniel,
 
-New patch below.
+As I told you in my previous mail, after few hours of frustration and
+testing, I decided to do a fresh install of Ubuntu 12.04 64bit.
 
+After reinstalling Ubuntu, my first step was to compile Takashi's kernel.
+And it worked! I could play a song on the FTU, run Jackd, etc.
 
-Regards,
-Clemens
+Unfortunately, after re-installing all my music software and updating
+Ubuntu, I'm now back to the scenarios I presented to you previously...
 
+What I will do now is:
+- Keep the .deb of the different kernel I compiled.
+- Re-install once again my laptop.
+- Not do any update nor install anything but the kernels
+- Do my testings.
 
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -33,4 +33,17 @@ config SND_ISIGHT
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-isight.
+If this works, I guess we can conclude that something in Ubuntu is
+messing with the sound-usb modules.
 
-+config SND_SCS1X
-+	tristate "Stanton Control System 1 MIDI"
-+	select SND_PCM
-+	select SND_RAWMIDI
-+	select SND_FIREWIRE_LIB
-+	help
-+	  Say Y here to include support for the MIDI ports of the Stanton
-+	  SCS.1d/SCS.1m DJ controllers.  (SCS.1m audio is still handled
-+	  by FFADO.)
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-scs1x.
-+
- endif # SND_FIREWIRE
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -2,7 +2,9 @@ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
- 			 fcp.o cmp.o amdtp.o
- snd-firewire-speakers-objs := speakers.o
- snd-isight-objs := isight.o
-+snd-scs1x-objs := scs1x.o
+I'll keep you updated.
 
- obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
- obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
- obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
-+obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
---- /dev/null
-+++ b/sound/firewire/scs1x.c
-@@ -0,0 +1,498 @@
-+/*
-+ * Stanton Control System 1 MIDI driver
-+ *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/slab.h>
-+#include <linux/string.h>
-+#include <linux/wait.h>
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/rawmidi.h>
-+#include "lib.h"
-+
-+#define OUI_STANTON	0x001260
-+#define MODEL_SCS_1M	0x001000
-+#define MODEL_SCS_1D	0x002000
-+
-+#define HSS1394_ADDRESS			0xc007dedadadaULL
-+#define HSS1394_MAX_PACKET_SIZE		64
-+
-+#define HSS1394_TAG_USER_DATA		0x00
-+#define HSS1394_TAG_CHANGE_ADDRESS	0xf1
-+
-+struct scs {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+	struct fw_address_handler hss_handler;
-+	struct fw_transaction transaction;
-+	bool transaction_running;
-+	bool output_idle;
-+	u8 midi_status;
-+	u8 midi_bytes;
-+	bool output_escaped;
-+	bool escape_high_nibble;
-+	struct snd_rawmidi_substream *output;
-+	struct snd_rawmidi_substream *input;
-+	struct tasklet_struct tasklet;
-+	wait_queue_head_t idle_wait;
-+	u8 *buffer;
-+};
-+
-+static const u8 sysex_escape_prefix[] = {
-+	0xf0,			/* SysEx begin */
-+	0x00, 0x01, 0x60,	/* Stanton DJ */
-+	0x48, 0x53, 0x53,	/* "HSS" */
-+};
-+
-+static int scs_output_open(struct snd_rawmidi_substream *stream)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	scs->midi_status = 0;
-+	scs->midi_bytes = 1;
-+	scs->output_escaped = false;
-+
-+	return 0;
-+}
-+
-+static int scs_output_close(struct snd_rawmidi_substream *stream)
-+{
-+	return 0;
-+}
-+
-+static void scs_output_trigger(struct snd_rawmidi_substream *stream, int up)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	ACCESS_ONCE(scs->output) = up ? stream : NULL;
-+	if (up) {
-+		scs->output_idle = false;
-+		tasklet_schedule(&scs->tasklet);
-+	}
-+}
-+
-+static void scs_write_callback(struct fw_card *card, int rcode,
-+			       void *data, size_t length, void *callback_data)
-+{
-+	struct scs *scs = callback_data;
-+
-+	if (rcode == RCODE_GENERATION) {
-+		/* TODO: retry this packet */
-+	}
-+
-+	scs->transaction_running = false;
-+	tasklet_schedule(&scs->tasklet);
-+}
-+
-+static bool is_valid_running_status(u8 status)
-+{
-+	return status >= 0x80 && status <= 0xef;
-+}
-+
-+static bool is_one_byte_cmd(u8 status)
-+{
-+	return status == 0xf6 ||
-+	       status >= 0xf8;
-+}
-+
-+static bool is_two_bytes_cmd(u8 status)
-+{
-+	return (status >= 0xc0 && status <= 0xdf) ||
-+	       status == 0xf1 ||
-+	       status == 0xf3;
-+}
-+
-+static bool is_three_bytes_cmd(u8 status)
-+{
-+	return (status >= 0x80 && status <= 0xbf) ||
-+	       (status >= 0xe0 && status <= 0xef) ||
-+	       status == 0xf2;
-+}
-+
-+static bool is_invalid_cmd(u8 status)
-+{
-+	return status == 0xf4 ||
-+	       status == 0xf5 ||
-+	       status == 0xf9 ||
-+	       status == 0xfd;
-+}
-+
-+static void scs_output_tasklet(unsigned long data)
-+{
-+	struct scs *scs = (void *)data;
-+	struct snd_rawmidi_substream *stream;
-+	unsigned int i;
-+	u8 byte;
-+	struct fw_device *dev;
-+	int generation;
-+
-+	if (scs->transaction_running)
-+		return;
-+
-+	stream = ACCESS_ONCE(scs->output);
-+	if (!stream) {
-+		scs->output_idle = true;
-+		wake_up(&scs->idle_wait);
-+		return;
-+	}
-+
-+	i = scs->midi_bytes;
-+	for (;;) {
-+		if (snd_rawmidi_transmit(stream, &byte, 1) != 1) {
-+			scs->midi_bytes = i;
-+			scs->output_idle = true;
-+			wake_up(&scs->idle_wait);
-+			return;
-+		}
-+		/*
-+		 * Convert from real MIDI to what the device expects (no
-+		 * running status, one command per packet, unescaped SysExs).
-+		 */
-+		if (scs->output_escaped && byte < 0x80) {
-+			if (scs->escape_high_nibble) {
-+				if (i < HSS1394_MAX_PACKET_SIZE) {
-+					scs->buffer[i] = byte << 4;
-+					scs->escape_high_nibble = false;
-+				}
-+			} else {
-+				scs->buffer[i++] |= byte & 0x0f;
-+				scs->escape_high_nibble = true;
-+			}
-+		} else if (byte < 0x80) {
-+			if (i == 1) {
-+				if (!is_valid_running_status(scs->midi_status))
-+					continue;
-+				scs->buffer[0] = HSS1394_TAG_USER_DATA;
-+				scs->buffer[i++] = scs->midi_status;
-+			}
-+			scs->buffer[i++] = byte;
-+			if ((i == 3 && is_two_bytes_cmd(scs->midi_status)) ||
-+			    (i == 4 && is_three_bytes_cmd(scs->midi_status)))
-+				break;
-+			if (i == 1 + ARRAY_SIZE(sysex_escape_prefix) &&
-+			    !memcmp(scs->buffer + 1, sysex_escape_prefix,
-+				    ARRAY_SIZE(sysex_escape_prefix))) {
-+				scs->output_escaped = true;
-+				scs->escape_high_nibble = true;
-+				i = 0;
-+			}
-+			if (i >= HSS1394_MAX_PACKET_SIZE)
-+				i = 1;
-+		} else if (byte == 0xf7) {
-+			if (scs->output_escaped) {
-+				if (i >= 1 && scs->escape_high_nibble &&
-+				    scs->buffer[0] != HSS1394_TAG_CHANGE_ADDRESS)
-+					break;
-+			} else {
-+				if (i > 1 && scs->midi_status == 0xf0) {
-+					scs->buffer[i++] = 0xf7;
-+					break;
-+				}
-+			}
-+			i = 1;
-+			scs->output_escaped = false;
-+		} else if (!is_invalid_cmd(byte) &&
-+			   byte < 0xf8) {
-+			i = 1;
-+			scs->buffer[0] = HSS1394_TAG_USER_DATA;
-+			scs->buffer[i++] = byte;
-+			scs->midi_status = byte;
-+			scs->output_escaped = false;
-+			if (is_one_byte_cmd(byte))
-+				break;
-+		}
-+	}
-+	scs->midi_bytes = 1;
-+	scs->output_escaped = false;
-+
-+	scs->transaction_running = true;
-+	dev = fw_parent_device(scs->unit);
-+	generation = dev->generation;
-+	smp_rmb(); /* node_id vs. generation */
-+	fw_send_request(dev->card, &scs->transaction, TCODE_WRITE_BLOCK_REQUEST,
-+			dev->node_id, generation, dev->max_speed,
-+			HSS1394_ADDRESS, scs->buffer, i,
-+			scs_write_callback, scs);
-+}
-+
-+static void scs_output_drain(struct snd_rawmidi_substream *stream)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	wait_event(scs->idle_wait, scs->output_idle);
-+}
-+
-+static struct snd_rawmidi_ops output_ops = {
-+	.open    = scs_output_open,
-+	.close   = scs_output_close,
-+	.trigger = scs_output_trigger,
-+	.drain   = scs_output_drain,
-+};
-+
-+static int scs_input_open(struct snd_rawmidi_substream *stream)
-+{
-+	return 0;
-+}
-+
-+static int scs_input_close(struct snd_rawmidi_substream *stream)
-+{
-+	return 0;
-+}
-+
-+static void scs_input_trigger(struct snd_rawmidi_substream *stream, int up)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	ACCESS_ONCE(scs->input) = up ? stream : NULL;
-+}
-+
-+static void scs_input_packet(struct snd_rawmidi_substream *stream,
-+			     const u8 *data, unsigned int bytes)
-+{
-+	unsigned int i;
-+	u8 nibbles[2];
-+
-+	if (data[0] == HSS1394_TAG_USER_DATA && bytes >= 2 &&
-+	    data[1] >= 0x80 && !is_invalid_cmd(data[1])) {
-+		snd_rawmidi_receive(stream, data + 1, bytes - 1);
-+	} else {
-+		snd_rawmidi_receive(stream, sysex_escape_prefix,
-+				    ARRAY_SIZE(sysex_escape_prefix));
-+		for (i = 0; i < bytes; ++i) {
-+			nibbles[0] = data[i] >> 4;
-+			nibbles[1] = data[i] & 0x0f;
-+			snd_rawmidi_receive(stream, nibbles, 2);
-+		}
-+		snd_rawmidi_receive(stream, (const u8[]) { 0xf7 }, 1);
-+	}
-+}
-+
-+static struct snd_rawmidi_ops input_ops = {
-+	.open    = scs_input_open,
-+	.close   = scs_input_close,
-+	.trigger = scs_input_trigger,
-+};
-+
-+static int scs_create_midi(struct scs *scs)
-+{
-+	struct snd_rawmidi *rmidi;
-+	int err;
-+
-+	err = snd_rawmidi_new(scs->card, "SCS.1x", 0, 1, 1, &rmidi);
-+	if (err < 0)
-+		return err;
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", scs->card->shortname);
-+	rmidi->info_flags = SNDRV_RAWMIDI_INFO_OUTPUT |
-+	                    SNDRV_RAWMIDI_INFO_INPUT |
-+	                    SNDRV_RAWMIDI_INFO_DUPLEX;
-+	rmidi->private_data = scs;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &output_ops);
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &input_ops);
-+
-+	return 0;
-+}
-+
-+static void handle_hss(struct fw_card *card, struct fw_request *request,
-+		       int tcode, int destination, int source, int generation,
-+		       unsigned long long offset, void *data, size_t length,
-+		       void *callback_data)
-+{
-+	struct scs *scs = callback_data;
-+	struct snd_rawmidi_substream *stream;
-+
-+	if (offset != scs->hss_handler.offset) {
-+		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
-+		return;
-+	}
-+	if (tcode != TCODE_WRITE_QUADLET_REQUEST &&
-+	    tcode != TCODE_WRITE_BLOCK_REQUEST) {
-+		fw_send_response(card, request, RCODE_TYPE_ERROR);
-+		return;
-+	}
-+
-+	if (length >= 1) {
-+		stream = ACCESS_ONCE(scs->input);
-+		if (stream)
-+			scs_input_packet(stream, data, length);
-+	}
-+
-+	fw_send_response(card, request, RCODE_COMPLETE);
-+}
-+
-+static int scs_init_hss_address(struct scs *scs)
-+{
-+	u8 data[8];
-+	int err;
-+
-+	*(__be64 *)data = cpu_to_be64(scs->hss_handler.offset);
-+	data[0] = HSS1394_TAG_CHANGE_ADDRESS;
-+	err = snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				 HSS1394_ADDRESS, data, 8);
-+	if (err < 0)
-+		dev_err(&scs->unit->device, "HSS1394 communication failed\n");
-+
-+	return err;
-+}
-+
-+static void scs_card_free(struct snd_card *card)
-+{
-+	struct scs *scs = card->private_data;
-+
-+	fw_core_remove_address_handler(&scs->hss_handler);
-+	kfree(scs->buffer);
-+}
-+
-+static int scs_probe(struct device *unit_dev)
-+{
-+	struct fw_unit *unit = fw_unit(unit_dev);
-+	struct fw_device *fw_dev = fw_parent_device(unit);
-+	struct snd_card *card;
-+	struct scs *scs;
-+	int err;
-+
-+	err = snd_card_create(-16, NULL, THIS_MODULE, sizeof(*scs), &card);
-+	if (err < 0)
-+		return err;
-+	snd_card_set_dev(card, unit_dev);
-+
-+	scs = card->private_data;
-+	scs->card = card;
-+	scs->unit = unit;
-+	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
-+	init_waitqueue_head(&scs->idle_wait);
-+	scs->output_idle = true;
-+
-+	scs->buffer = kmalloc(HSS1394_MAX_PACKET_SIZE, GFP_KERNEL);
-+	if (!scs->buffer)
-+		goto err_card;
-+
-+	scs->hss_handler.length = HSS1394_MAX_PACKET_SIZE;
-+	scs->hss_handler.address_callback = handle_hss;
-+	scs->hss_handler.callback_data = scs;
-+	err = fw_core_add_address_handler(&scs->hss_handler,
-+					  &fw_high_memory_region);
-+	if (err < 0)
-+		goto err_buffer;
-+
-+	card->private_free = scs_card_free;
-+
-+	strcpy(card->driver, "SCS.1x");
-+	strcpy(card->shortname, "SCS.1x");
-+	fw_csr_string(unit->directory, CSR_MODEL,
-+		      card->shortname, sizeof(card->shortname));
-+	snprintf(card->longname, sizeof(card->longname),
-+		 "Stanton DJ %s (GUID %08x%08x) at %s, S%d",
-+		 card->shortname, fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&unit->device), 100 << fw_dev->max_speed);
-+	strcpy(card->mixername, card->shortname);
-+
-+	err = scs_init_hss_address(scs);
-+	if (err < 0)
-+		goto err_card;
-+
-+	err = scs_create_midi(scs);
-+	if (err < 0)
-+		goto err_card;
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto err_card;
-+
-+	dev_set_drvdata(unit_dev, scs);
-+
-+	return 0;
-+
-+err_buffer:
-+	kfree(scs->buffer);
-+err_card:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static int scs_remove(struct device *dev)
-+{
-+	struct scs *scs = dev_get_drvdata(dev);
-+
-+	snd_card_disconnect(scs->card);
-+
-+	ACCESS_ONCE(scs->output) = NULL;
-+	ACCESS_ONCE(scs->input) = NULL;
-+
-+	wait_event(scs->idle_wait, scs->output_idle);
-+
-+	tasklet_kill(&scs->tasklet);
-+
-+	snd_card_free_when_closed(scs->card);
-+
-+	return 0;
-+}
-+
-+static void scs_update(struct fw_unit *unit)
-+{
-+	struct scs *scs = dev_get_drvdata(&unit->device);
-+	int generation;
-+	u8 data[8];
-+
-+	*(__be64 *)data = cpu_to_be64(scs->hss_handler.offset);
-+	data[0] = HSS1394_TAG_CHANGE_ADDRESS;
-+	generation = fw_parent_device(unit)->generation;
-+	smp_rmb(); /* node_id vs. generation */
-+	snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
-+			   HSS1394_ADDRESS, data, 8);
-+}
-+
-+static const struct ieee1394_device_id scs_id_table[] = {
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+		               IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id   = OUI_STANTON,
-+		.model_id    = MODEL_SCS_1M,
-+	},
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+		               IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id   = OUI_STANTON,
-+		.model_id    = MODEL_SCS_1D,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, scs_id_table);
-+
-+MODULE_DESCRIPTION("SCS.1x MIDI driver");
-+MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
-+MODULE_LICENSE("GPL v2");
-+
-+static struct fw_driver scs_driver = {
-+	.driver = {
-+		.owner  = THIS_MODULE,
-+		.name   = KBUILD_MODNAME,
-+		.bus    = &fw_bus_type,
-+		.probe  = scs_probe,
-+		.remove = scs_remove,
-+	},
-+	.update   = scs_update,
-+	.id_table = scs_id_table,
-+};
-+
-+static int __init alsa_scs1x_init(void)
-+{
-+	return driver_register(&scs_driver.driver);
-+}
-+
-+static void __exit alsa_scs1x_exit(void)
-+{
-+	driver_unregister(&scs_driver.driver);
-+}
-+
-+module_init(alsa_scs1x_init);
-+module_exit(alsa_scs1x_exit);
+If you have any updates, let me know,
+
+Aur=E9lien
+
+On Sat, May 26, 2012 at 5:48 PM, Aur=E9lien Leblond <blablack@gmail.com> wr=
+ote:
+> Hi Daniel,
+>
+> I have tried to do a bit more thorough testing, find the details below.
+> Hope this helps!
+>
+>>> blablack@igorito:~$ aplay 10\ -\ Track\ 10-L.wav
+>>> ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
+>>> ALSA lib conf.c:4241:(_snd_config_evaluate) function
+>>> snd_func_card_driver returned error: No such file or directory
+>>> ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+>>> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat
+>>> returned error: No such file or directory
+>>> ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
+>>> ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer
+>>> returned error: No such file or directory
+>>> ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file
+>>> or directory
+>>> ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
+>>> aplay: main:682: audio open error: No such file or directory
+>>
+>> What does "aplay -l" show? Also, what does it show on the older Ubuntu
+>> kernel? Is there any difference?
+>
+> That is just me being an idiot. Ubuntu never mounts a USB sound card
+> on the first slot.
+> Compiling with the original Alsa coming from Ubuntu, I get the same error.
+>
+>>> No sound...
+>>> I tried to reboot several times, unplug/replug, checked alsamixer: all
+>>> look fine to me but still no sound.
+>>> Actually, it is not "exactly" no sound: I can see the 4 front leds
+>>> flash very quickly, and I can hear a click in the speakers (with the
+>>> FX, the click is longer due to the reverb, handy to notice it!).
+>>
+>> The 4 front LEDs on the FTU signal input level activity, not output. Is
+>> there anything connected to those inputs?
+>
+> There are stuff plugged on the 3 first inputs (2 for my guitar, 1 for
+> my mic), bit they are all turned off during testing.
+> This click and the 4 leds flash is very similar to the one you have
+> when the FTU is plugged in to the USB port after being turned on.
+> Somehow, when I want to play something, it makes the 4 leds flash + a
+> click/crackle in the speakers.
+>
+>>> IN BOTH CASES, FTU AND UA-25EX
+>>>
+>>> Starting jack result in an immediate freeze of the system.
+>>
+>> I really fail to see any of these issues on my system. I tried with both
+>> jackd and jackd2 and set them to real time priorities and chose 64 bytes
+>> sample frames in PureData. All good, no lockups. Can you describe your
+>> jackd setup? How do you start it?
+>
+> jackd -dalsa -dhw:1 -r48000 -p256 -n3 -Xseq
+>
+>
+> Normal Ubuntu Kernel:
+> =A0 =A0 =A0 =A0- Compiled with low latency settings
+> =A0 =A0 =A0 =A0- 3.2.18
+> =A0 =A0 =A0 =A0- Original Alsa
+>
+> =A0 =A0 =A0 =A0* FTU
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: OK
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: OK
+>
+> =A0 =A0 =A0 =A0* UA-25Ex
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: OK
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: OK
+>
+> Ubuntu Kernel + Alsa Git:
+> =A0 =A0 =A0 =A0- Compiled with low latency settings
+> =A0 =A0 =A0 =A0- 3.2.18
+> =A0 =A0 =A0 =A0- Alsa from git alsa-kmirror and alsa-driver
+> =A0 =A0 =A0 =A0- git alsa-kmirror and alsa-driver fetched today (25th May)
+>
+> =A0 =A0 =A0 =A0* FTU
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: plays but no sound
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: freezes the whole system
+>
+> =A0 =A0 =A0 =A0* UA-25Ex
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: Ok
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: freezes the whole system
+>
+> "Pig" Kernel:
+> =A0 =A0 =A0 =A0- Original Ubuntu Kernel
+> =A0 =A0 =A0 =A0- 3.2.18
+> =A0 =A0 =A0 =A0- Compiled with low latency settings
+> =A0 =A0 =A0 =A0- sound/usb directory from Kernel replaced by sound/usb di=
+rectory
+> from Takashi's Kernel - thus the name of this setup, "Pig" :) :)
+>
+> =A0 =A0 =A0 =A0* FTU
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: I get click + 4 led flash, and =
+then just got half a
+> second of the song before it goes mute. Unplug/Replug, same results
+> (except the sound goes mute after 5/10 sec, tried several times, I
+> couldn't to 15 seconds). Mplayer keeps reading, but there is no sound.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: Works ok, but I have no sound! (wa=
+s after unplug/replug)
+>
+> =A0 =A0 =A0 =A0* UA-25Ex
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: OK
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: freezes the whole system
+>
+>
+> Takashi's Kernel:
+> =A0 =A0 =A0 =A0- Compiled with low latency settings
+> =A0 =A0 =A0 =A0- 3.4.0
+> =A0 =A0 =A0 =A0- Alsa from Takashi's kernel
+> =A0 =A0 =A0 =A0- Fetched today (26th May)
+>
+> =A0 =A0 =A0 =A0* FTU
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: I get click + 4 led flash, and =
+then just got half a
+> second of the song before it goes mute. Unplug/Replug, same results
+> (except the sound goes mute after 5/10 sec, tried several times, I
+> couldn't to 15 seconds). Mplayer keeps reading, but there is no sound.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: =A0Works ok, but I have no sound! =
+(was after unplug/replug)
+>
+> =A0 =A0 =A0 =A0* UA-25Ex
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- mplayer: OK
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0- jack: OK
+>
+>
+> I hope this will help you find out where the problem is.
+> At least for now I can use the 3.4.0 kernel with the UA-25Ex
+>
+> Let me know if I can provide you with any more details.
+>
+> Regards,
+> Aur=E9lien
