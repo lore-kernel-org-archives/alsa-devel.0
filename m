@@ -1,16 +1,19 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Confusing about Playback/Capture, CODEC/CODEC links,
-	and snd_soc_dapm_link_dai_widgets()
-Date: Thu, 31 May 2012 16:49:26 -0600
-Message-ID: <4FC7F576.30101@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Confusing about Playback/Capture, CODEC/CODEC links,
+	and	snd_soc_dapm_link_dai_widgets()
+Date: Fri, 1 Jun 2012 00:37:09 +0100
+Message-ID: <20120531233702.GA30717@opensource.wolfsonmicro.com>
+References: <4FC7F576.30101@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B767103B5F
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03472103FD2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 00:49:30 +0200 (CEST)
+	Fri,  1 Jun 2012 01:37:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4FC7F576.30101@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,228 +23,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark, Liam,
+On Thu, May 31, 2012 at 04:49:26PM -0600, Stephen Warren wrote:
 
-recall the Tegra AHUB structure:
+> I have an issue with the paths that snd_soc_dapm_link_dai_widgets() sets
+> up inside both the AHUB XBAR and the I2S. I'll use the I2S to explain
+> since it's internally much simpler.
 
-> +-------------+   +-----+   +--------------+   +-----+   +------+
-> | FIFO pair 0 |<->| CIF |<->| Cross-bar    |<->| CIF |<->| I2S0 |<-> External IO
-> +-------------+   +-----+   | (the "AHUB") |   +-----+   +------+
->               . . .         |              |         . . .
-> +-------------+   +-----+   |              |   +-----+   +------+
-> | FIFO pair 3 |<->| CIF |<->|              |<->| CIF |<->| I2S4 |<-> External IO
-> +-------------+   +-----+   |              |   +-----+   +------+
->                             |              |
->                             |              |   +-----+   +-------+
->                             |              |<->| CIF |<->| SPDIF |<-> External IO
->                             |              |   +-----+   +-------+
->                             |              |
->                             |              |   +-----+   +-------+
->                             |              |<->| CIF |<->| DAM   |
->                             |              |   +-----+   +-------+
->                             +--------------+
+You shouldn't be using this at all for new code, you should be using
+explicit DAPM routes to link to the widgets and specifying NULL
+stream_name.
 
-(CIF is AHUB XBAR Client InterFace; basically the DAI or DAI link)
+> 2) Is it more that Playback==RX_into_codec, Capture==TX_from_codec? This
+> appears to be supported by the fact that the paths get set up correctly
+> with the second set of AIF definitions above.
 
-I have created a driver for the 4 FIFOs on the left, which exposes 4
-(CPU) DAIs.
+Yes.
 
-I have created a driver for the AHUB XBAR, which is an ASoC CODEC, and
-has a DAI for each of the CIFs.
+> But if (2) is correct, I wonder why soc_dapm_stream_event()'s first if
+> statement appears to consider the playback_widget of both sides of the
+> DAI to be coupled; wouldn't one side's playback widget be coupled to the
+> other side's capture widget?
 
-There's a CODEC/CODEC link between each FIFO DAI and the relevant AHUB
-CIF DAI.
+The DAIs on CPUs have the opposite sense to DAIs on CODECs.  In a
+traditional CPU<->CODEC link we do connect the two playback widgets
+directly to each other.  The current code isn't correct, it's not
+normally noticable since most of the time the CPU DAI end of the link is
+a baseband which doesn't do anything real and is always activated
+bidirectionally so it really makes no odds which widget we look at.
 
-In order to connect the I2S devices to the AHUB XBAR, I had to make that
-a CODEC too. This exposes two DAIs; the CIF DAI to connect to the AHUB,
-and the DAP (Digital Audio Port) DAI to represent the I/O pins on the
-Tegra package that are connected to the external codec.
+I'll fix this tomorrow.
 
-I have an issue with the paths that snd_soc_dapm_link_dai_widgets() sets
-up inside both the AHUB XBAR and the I2S. I'll use the I2S to explain
-since it's internally much simpler.
+> As an aside, I'm not sure if it's conceptually correct to talk about
+> playback or capture any more (beyond the initial CPU DAI) with arbitrary
+> CODEC/CODEC links, since who knows what kind of routing/CPU->CPU
+> loopbacks/external CODEC->CODEC loopbacks/... might exist in the CODECs?
 
-The two DAIs in I2S are roughly:
+We could rename everything to RX and TX but it's a pain and going to be
+annoying for backporting.
 
-> static const struct snd_soc_dai_driver tegra30_i2s_dais[] = {
->     {
-> 	.playback = {
-> 		.stream_name = "DAP Playback",
-> 	},
-> 	.capture = {
-> 		.stream_name = "DAP Capture",
-> 	},
->     },
->     {
-> 	.playback = {
-> 		.stream_name = "CIF Playback",
-> 	},
-> 	.capture = {
-> 		.stream_name = "CIF Capture",
-> 	},
->     },
-> };
+> Either way though, something is still not working correctly even when
+> the expected paths show up in debugfs. When I start playback on a PCM
+> exposed by the DMA FIFO driver, I see the relevant AHUB XBAR's stream
+> turned on, and a route exists to the relevant AIF_IN widget, but that
 
-For the CIF-side DAI, I instantiated widgets for the AIFs:
+Works for me.
 
-> static const struct snd_soc_dapm_widget tegra30_i2s_widgets[] = {
-> 	SND_SOC_DAPM_AIF_IN("CIF RX", "CIF Playback", 0, SND_SOC_NOPM, 0, 0),
-> 	SND_SOC_DAPM_AIF_OUT("CIF TX", "CIF Capture", 0, SND_SOC_NOPM, 0, 0),
+> > # cat APBIF0\ Playback 
+> > APBIF0 Playback: On  in 1 out 1
+> >  stream APBIF0 Playback active
+> >  out "static" "APBIF0 RX"
+> >  out "static" "APBIF0 RX"
+> > # cat APBIF0\ RX
+> > APBIF0 RX: Off  in 2 out 0       <<<<< last value shouldn't be 0?
+> >  stream APBIF0 Playback inactive <<<<< still inactive?
+> >  in  "static" "APBIF0 Playback"
+> >  in  "static" "APBIF0 Playback"
+> >  out "APBIF0 RX" "I2S0 TX Mux"
 
-This works fine; snd_soc_dapm_link_dai_widgets() create a route from the
-DAI widget "DAP Playback" that feeds into the AIF_IN widget "CIF RX".
+So what's the rest of the route look like - what's I2S0 TX Mux look like
+and so on?  For real widgets the number of outputs is a function of the
+rest of the graph so you need to trace through that, clearly you want to
+have some outputs but unless they are connected all the way back to an
+input DAPM will leave everything powered off.  This is just like any
+other DAPM widget in this regard, everything behaves just like an
+analogue link.
 
-"works fine" means that the ASoC debugfs files in
-"asoc/$card/tegra30-i2s.1/dapm/CIF {Playback,RX}" show the expected
-connections.
+> Probably related, the I2S and WM8903 (DAI) drivers aren't being called
+> by the ASoC core to initialize themselves for playback either; pretty
+> much all that happens is that DMA is started. Is the machine driver
+> responsible for this?
 
-The DAPM routes inside the I2S are:
+No, of course not.  This is what soc_dapm_stream_event() is all about.
+It looks like all that's happening is that since DAPM hasn't found a
+complete route it didn't power anything (including the inter device
+links) on.
 
-> static const struct snd_soc_dapm_route tegra30_i2s_routes[] = {
-> 	{ "DAP TX", NULL, "CIF RX" },
-> 	{ "CIF TX", NULL, "DAP RX" },
-> };
+> At this point, I'm not sure whether I have a gross mis-understanding of
+> how this is supposed to work, or whether there are simply bits missing
+> from the DAPM code to fully support CODEC/CODEC links, rather than
+> CPU/CODEC links.
 
-This also works fine.
+It's really hard to comment in much more detail, you've not shown enough
+information.  What are the DAI links connecting the devices?  Is the
+rest of the DAPM path through the system connected?  My best guess is
+that (possibly due to the linking of the playback widgets) you don't
+have a full DAPM path.
 
-Now, I instantiated two AIF widgets to interface with the DAP-side DAI:
+This is all working just fine in mainline on littlemill.
 
-> 	SND_SOC_DAPM_AIF_IN("DAP RX", "DAP Capture", 0, SND_SOC_NOPM, 0, 0),
-> 	SND_SOC_DAPM_AIF_OUT("DAP TX", "DAP Playback", 0, SND_SOC_NOPM, 0, 0),
+> > int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+> > 	struct snd_soc_dapm_widget_list **list)
+> ...
+> > 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > 		paths = is_connected_output_ep(dai->playback_widget, list);
+> > 	else
+> > 		paths = is_connected_input_ep(dai->playback_widget, list);
 
-However, this causes snd_soc_dapm_link_dai_widgets() to set up some
-unexpected paths; "DAP Playback" ends up feeding *into* "DAP TX", rather
-than feeding from/out of it...
+> I would have expected this to use capture_widget on the final line, but
+> I haven't thought about this in detail, just noticed the lack of
+> symmetry by very brief inspection.
 
-> # cat CIF\ Playback 
-> CIF Playback: Off  in 0 out 0
->  stream CIF Playback inactive
->  out "static" "CIF RX"
->  out "static" "CIF RX"
-> # cat CIF\ RX
-> CIF RX: Off  in 0 out 0
->  stream CIF Playback inactive
->  in  "static" "CIF Playback"
->  in  "static" "CIF Playback"
->  out "static" "DAP TX"
-> # cat DAP\ TX
-> DAP TX: Off  in 0 out 0
->  stream DAP Playback inactive
->  in  "static" "DAP Playback"      <<<<<<<<<<
->  in  "static" "DAP Playback"      <<<<<<<<<<
->  in  "static" "CIF RX"
-> # cat DAP\ Playback 
-> DAP Playback: Off  in 0 out 0
->  stream DAP Playback inactive
->  out "static" "DAP TX"
->  out "static" "DAP TX"
-
-Now, I can fake this out by swapping the stream names on the DAP-side
-AIF widgets:
-
-> 	SND_SOC_DAPM_AIF_IN("DAP RX", "DAP Playback", 0, SND_SOC_NOPM, 0, 0),
-> 	SND_SOC_DAPM_AIF_OUT("DAP TX", "DAP Capture", 0, SND_SOC_NOPM, 0, 0),
-
-Which yields the expected paths in debugfs:
-
-> # cat CIF\ Playback 
-> CIF Playback: Off  in 0 out 0
->  stream CIF Playback inactive
->  out "static" "CIF RX"
->  out "static" "CIF RX"
-> # cat CIF\ RX
-> CIF RX: Off  in 0 out 0
->  stream CIF Playback inactive
->  in  "static" "CIF Playback"
->  in  "static" "CIF Playback"
->  out "static" "DAP TX"
-> # cat DAP\ TX
-> DAP TX: Off  in 0 out 0
->  stream DAP Capture inactive
->  in  "static" "CIF RX"
->  out "static" "DAP Capture"
->  out "static" "DAP Capture"
-> # cat DAP\ Capture 
-> DAP Capture: Off  in 0 out 0
->  stream DAP Capture inactive
->  in  "static" "DAP TX"
->  in  "static" "DAP TX"
-
-But I'm not sure if that's quite correct. In the DAI definitions, is the
-.playback sub-structure always meant to represent:
-
-1) Playback from the CPU's perspective, in which case the first set of
-DAP AIF definitions above would be correct
-
-or:
-
-2) Is it more that Playback==RX_into_codec, Capture==TX_from_codec? This
-appears to be supported by the fact that the paths get set up correctly
-with the second set of AIF definitions above.
-
-But if (2) is correct, I wonder why soc_dapm_stream_event()'s first if
-statement appears to consider the playback_widget of both sides of the
-DAI to be coupled; wouldn't one side's playback widget be coupled to the
-other side's capture widget?
-
-As an aside, I'm not sure if it's conceptually correct to talk about
-playback or capture any more (beyond the initial CPU DAI) with arbitrary
-CODEC/CODEC links, since who knows what kind of routing/CPU->CPU
-loopbacks/external CODEC->CODEC loopbacks/... might exist in the CODECs?
-
-Either way though, something is still not working correctly even when
-the expected paths show up in debugfs. When I start playback on a PCM
-exposed by the DMA FIFO driver, I see the relevant AHUB XBAR's stream
-turned on, and a route exists to the relevant AIF_IN widget, but that
-widget is not considered to have any outward connections by
-is_connected_output_ep(), which I think is what is causing it and none
-of the rest of the path to turn on:
-
-(from asoc/$card/asoc/tegra30-ahub-xbar/dapm)
-
-> # cat APBIF0\ Playback 
-> APBIF0 Playback: On  in 1 out 1
->  stream APBIF0 Playback active
->  out "static" "APBIF0 RX"
->  out "static" "APBIF0 RX"
-> # cat APBIF0\ RX
-> APBIF0 RX: Off  in 2 out 0       <<<<< last value shouldn't be 0?
->  stream APBIF0 Playback inactive <<<<< still inactive?
->  in  "static" "APBIF0 Playback"
->  in  "static" "APBIF0 Playback"
->  out "APBIF0 RX" "I2S0 TX Mux"
-
-even though when I look at all the debugfs files, all the expected paths
-are there, at least within the AHUB XBAR and I2S drivers, and the
-external DAI links in the machine driver all probed as expected and
-bound all the components together.
-
-Probably related, the I2S and WM8903 (DAI) drivers aren't being called
-by the ASoC core to initialize themselves for playback either; pretty
-much all that happens is that DMA is started. Is the machine driver
-responsible for this?
-
-At this point, I'm not sure whether I have a gross mis-understanding of
-how this is supposed to work, or whether there are simply bits missing
-from the DAPM code to fully support CODEC/CODEC links, rather than
-CPU/CODEC links.
-
-Probably slightly related to all of this, but is the following code correct:
-
-> int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
-> 	struct snd_soc_dapm_widget_list **list)
-...
-> 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-> 		paths = is_connected_output_ep(dai->playback_widget, list);
-> 	else
-> 		paths = is_connected_input_ep(dai->playback_widget, list);
-
-I would have expected this to use capture_widget on the final line, but
-I haven't thought about this in detail, just noticed the lack of
-symmetry by very brief inspection.
-
-Thanks for any help. Sorry for the long email.
+Yes, that looks buggy.  Don't think there's any mainline users so nobody
+would notice.
