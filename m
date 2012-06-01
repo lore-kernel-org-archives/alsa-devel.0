@@ -1,15 +1,15 @@
 From: <MR.Swami.Reddy@ti.com>
 Subject: [PATCH v2] ASoC: Support TI Isabelle Audio driver
-Date: Fri, 1 Jun 2012 22:19:31 +0530
-Message-ID: <1338569371-18002-1-git-send-email-MR.Swami.Reddy@ti.com>
+Date: Fri, 1 Jun 2012 22:21:54 +0530
+Message-ID: <1338569514-18106-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16EF310403D
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1BE95104523
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 18:43:50 +0200 (CEST)
+	Fri,  1 Jun 2012 18:46:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,8 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
-Cc: vishwas.a.deshpande@ti.com
+Cc: vishwas.a.deshpande@ti.com, M@alsa-project.org, M R Swami Reddy <MR.Swami.Reddy@ti.com>, Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
+
+From: M R Swami Reddy <MR.Swami.Reddy@ti.com>
+
+ASoC: Support TI Isabelle Audio driver
+
+The Isabelle Audio IC is a complete low power high fidelity CODEC with integrated
+ADCs, DACs, decimation and interpolation filters, PLL, and power providers. This
+device supports 2 analog and 2 digital microphone channels, a mono earpiece driver,
+stereo class G headphone drivers with ultra low power and best SNR in the industry,
+stereo Class D speaker drivers, and 2 high performance Line drivers.
+
+The below patch is a basic driver code for TI Isabelle audio codec. The
+functionalities like headset detection, etc., will be included incrementally
+in the up-coming patches.
+
+Signed-off-by: Vishwas A Deshpande <vishwas.a.deshpande@ti.com>
+Signed-off-by: M R Swami Reddy <mr.swami.reddy@ti.com>
+---
+Changes in v2:
+   o Used dev_get_regmap and devm_regmap_init_i2c APIs.
+   o Removed isabelle_priv structure.
 
  sound/soc/codecs/Kconfig    |    4 +
  sound/soc/codecs/Makefile   |    2 +
