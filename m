@@ -1,80 +1,134 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Internal Mics and Speakers not visible in
-	PulseAudio
-Date: Fri, 1 Jun 2012 10:54:01 +0800
-Message-ID: <CAN8cciaip04p6+_hUkoXeyv2HScd38oerNdZUp8GzBGZpR+ntA@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [alsa-devel] Internal Mics and Speakers
+	not visible in PulseAudio
+Date: Fri, 01 Jun 2012 05:38:13 +0200
+Message-ID: <4FC83925.7030309@canonical.com>
 References: <4FC616B8.3090608@canonical.com>
 	<CAN8cciYgk5L5PWQkzcd3XF_7eZvzTpzC_eUifCG=hOFymJsx7Q@mail.gmail.com>
 	<4FC6329A.1040008@canonical.com>
+	<CAN8cciaip04p6+_hUkoXeyv2HScd38oerNdZUp8GzBGZpR+ntA@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4C24104457
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 04:54:01 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so1109573wgb.20
-	for <alsa-devel@alsa-project.org>; Thu, 31 May 2012 19:54:01 -0700 (PDT)
-In-Reply-To: <4FC6329A.1040008@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <CAN8cciaip04p6+_hUkoXeyv2HScd38oerNdZUp8GzBGZpR+ntA@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi81LzMwIERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3NvbkBjYW5vbmljYWwu
-Y29tPjoKPiBPbiAwNS8zMC8yMDEyIDAzOjA0IFBNLCBSYXltb25kIFlhdSB3cm90ZToKPj4KPj4g
-SSBhbSBhZnJhaWQgdGhpcyBkb2VzIG5vdCB3b3JrIHdpdGggZGVza3RvcCBjb21wdXRlciB3aGlj
-aCBoYXMgZnJvbnQKPj4gbWljICwgaW50ZXJuYWwgbWljLCBMaW5lIGluICxDRCAob3Igc3RlcmVv
-IG1peCB3aXRoIHRob3NlIHZpYSBoZGEKPj4gY29kZWNzKQo+Pgo+PiBXaXRoIHVidW50dSAxMi4w
-NCBhbmQgdW5pdHkgLCDCoGlmIEkgZW5hYmxlIGhkYSBqYWNrIGRldGVjdCB3aXRoIG15Cj4+IGFk
-MTk4eCBvbiBteSBkZXNrdG9wLCBzb3VuZCDCoHByZWZlcmVuY2UgZG9lcyBub3QgYWxsb3cgbWUg
-dG8gc2VsZWN0Cj4+IGZyb250IG1pYyBzaW5jZSBJIGFtIHN0aWxsIHVzaW5nIGFjOTcgZnJvbnQg
-cGFuZWwgKHdpdGggbm8gamFjayBkZXRlY3QKPj4gY2lyY3VpdCkKPgo+Cj4gSW4gdGhhdCBjYXNl
-IHlvdXIgQklPUyBzaG91bGQgZGV0ZWN0IHRoYXQgeW91J3JlIHVzaW5nIGFuIGFjJzk3IGZyb250
-IHBhbmVsCj4gYW5kIHNldCB0aGUgIm5vIHByZXNjZW5jZSBkZXRlY3QiIGJpdCBpbiB0aGUgZGVm
-YXVsdCBwaW4gY29uZmlnLgo+Cj4gVGhlIGNvZGVjIGRyaXZlciBzaG91bGQgdGhlbiBub3QgY3Jl
-YXRlIGFueSBqYWNrIGF0IGFsbCwgYW5kIFB1bHNlQXVkaW8KPiB3b3VsZCBwaWNrIHVwICdJbnB1
-dCBTb3VyY2UnIC0+ICdGcm9udCBNaWMnIGFzIGEgcmVhc29uIHRvIGhhdmUgY3JlYXRlIGEKPiAn
-RnJvbnQgTWljJyBwb3J0LgoKVGhlIHBhdGNoZWQgZHJpdmVyIGp1c3QgY3JlYXRlIHR3byBqYWNr
-IGRldGVjdCBjb250cm9scyBmb3IgcmVhciBwYW5lbApqYWNrcyB3aGVuIEJJT1Mgc2V0IGZyb250
-IGF1ZGlvIHBhbmVsIHR5cGUgdG8gQUM5NwoKVGhlcmUgYXJlIGRpZmZlcmVuY2UgZm9yIHRoZSBz
-eXN0ZW0gc2V0dGluZ3Mvc291bmQgaW4gdW5pdHkgYW5kIGdub21lCgpJbiBnbm9tZSBzZXNzaW9u
-LCB0aGUgc3lzdGVtIHNldHRpbmdzL3NvdW5kIGxpc3QgdGhlIHRocmVlIGhhcmRjb2RlZApwb3J0
-cyAoZnJvbnQgbWljLCBsaW5lIGFuZCByZWFyIG1pYykgaW5zdGVhZCBvZiBhbGwgdGhlIGl0ZW1z
-IGluIHRoZQoiSW5wdXQgc291cmNlIiAvICJDYXB0dXJlIFNvdXJjZSIgY29udHJvbHMgKCBUaGVy
-ZSBpcyBubyBDRCBpbiBIREEsCmFuZCBubyBDRCAsIHN0ZXJlbyBtaXgsIGF1eCwgcGhvbmUgZm9y
-IG15IG90aGVyIHNvdW5kIGNhcmRzIHdpdGggYWM5Nwpjb2RlYykKCklzIHRoZXJlIGFueSB3YXkg
-dG8gYWRkIGJhY2sgIlN0ZXJlbyBNaXgiIHRvIHB1bHNlYXVkaW8gJ3MgcG9ydCA/CgpJbiB1bml0
-eSBzZXNzaW9uLCB0aGUgc3lzdGVtIHNldHRpbmdzL3NvdW5kIG9ubHkgbGlzdCAgdGhlIHBsdWdn
-ZWQgamFja3MuCgpJIHRoaW5rIHRoZSB1c2FnZSBvZiBqYWNrIGRldGVjdCB0byBzZWxlY3QgaW5w
-dXQgc291cmNlIGF1dG9tYXRpY2FsbHkKaXMgYnJva2VuIGZvciBmb3IgdGhvc2UgIG1vdGhlcmJv
-YXJkcyB3aGljaCBoYXZlIHRocmVlIGF1ZGlvIGphY2tzIGluCnJlYXIgcGFuZWwgYW5kIHJldGFz
-ayB0aG9zZSBwaW5rIGFuZCBibHVlIGphY2tzIGZvciBzdXJyb3VuZDUxIG91dHB1dC4KClRoZSBt
-b2R1bGUtc3dpdGNoLW9uLWF2YWlsYWJsZS1wb3J0IHNob3VsZCBjaGVjayB3aGV0aGVyICJDaGFu
-bmVsCm1vZGUnIGlzIDYgYW5kIGV4Y2x1ZGUgdGhlIHJlc3VsdCB0aG9zZSBqYWNrIGRldGVjdCBv
-ZiAicmVhciBtaWMiIGFuZAoibGluZSBpbiIgc2luY2UgdGhleSBoYXZlIGJlZW4gcmV0YXNrZWQg
-Zm9yIG91dHB1dAoKQlRXLCB0aGUgSUNIOCBIREEgY29udHJvbGxlciBzdXBwb3J0IG11bHRpIHN0
-cmVhbSBjYXB0dXJpbmcgYW5kIGFkMTk4OApoYXMgdGhlZSBjYXB0dXJlIHN1YmRldmljZXMKCmFy
-ZWNvcmQgLWwKY2FyZCAxOiBJbnRlbCBbSERBIEludGVsXSwgZGV2aWNlIDA6IEFEMTk4eCBBbmFs
-b2cgW0FEMTk4eCBBbmFsb2ddCiAgU3ViZGV2aWNlczogMy8zCiAgU3ViZGV2aWNlICMwOiBzdWJk
-ZXZpY2UgIzAKICBTdWJkZXZpY2UgIzE6IHN1YmRldmljZSAjMQogIFN1YmRldmljZSAjMjogc3Vi
-ZGV2aWNlICMyCgp3aGF0IGlzIHRoZSBkZWZpbml0aW9uIG9mICJNb25vIE91dHB1dCIgaW4gcHVs
-c2VhdWRpbyA/CgppdCBpcyBqdXN0IHRoZSBjYXBhYmlsaXR5IG9mIHRoZSBzb3VuZCBjYXJkIHRv
-IHBsYXkgbW9ubyAgb3IgaGF2ZSBhCm1vbm8gc3BlYWtlciB3aXRoIGEgc3BlY2lmaWMgdm9sdW1l
-IGNvbnRyb2wKCk15IHRocmVlIG90aGVyIHNvdW5kIGNhcmRzIGRvZXMgc3VwcG9ydCBtb25vIHBs
-YXliYWNrIGFuZCBtb25vIGNhcHR1cmUKClRoZSBzeXN0ZW0gc2V0dGluZy9zb3VuZCBpbiBnbm9t
-ZSBzZXNzaW9uIGFsbG93IG1lIHRvIHNlbGVjdCAibW9ubwpkdXBsZXgiIGJ1dCB3aGVuIGl0IGRv
-ZXMgbm90IGFsbG93IG1lIHRvIHNlbGVjdCAibW9ubyBvdXRwdXQgKyBtb25vCmlucHV0IiBpbiB1
-bml0eSBzZXNzaW9uLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 06/01/2012 04:54 AM, Raymond Yau wrote:
+> 2012/5/30 David Henningsson<david.henningsson@canonical.com>:
+>> On 05/30/2012 03:04 PM, Raymond Yau wrote:
+>>>
+>>> I am afraid this does not work with desktop computer which has front
+>>> mic , internal mic, Line in ,CD (or stereo mix with those via hda
+>>> codecs)
+>>>
+>>> With ubuntu 12.04 and unity ,  if I enable hda jack detect with my
+>>> ad198x on my desktop, sound  preference does not allow me to select
+>>> front mic since I am still using ac97 front panel (with no jack detect
+>>> circuit)
+>>
+>>
+>> In that case your BIOS should detect that you're using an ac'97 front panel
+>> and set the "no prescence detect" bit in the default pin config.
+>>
+>> The codec driver should then not create any jack at all, and PulseAudio
+>> would pick up 'Input Source' ->  'Front Mic' as a reason to have create a
+>> 'Front Mic' port.
+>
+> The patched driver just create two jack detect controls for rear panel
+> jacks when BIOS set front audio panel type to AC97
+>
+> There are difference for the system settings/sound in unity and gnome
+>
+> In gnome session, the system settings/sound list the three hardcoded
+> ports (front mic, line and rear mic) instead of all the items in the
+> "Input source" / "Capture Source" controls ( There is no CD in HDA,
+> and no CD , stereo mix, aux, phone for my other sound cards with ac97
+> codec)
+>
+> Is there any way to add back "Stereo Mix" to pulseaudio 's port ?
+
+Yes. See:
+
+http://www.freedesktop.org/wiki/Software/PulseAudio/Backends/ALSA/Profiles
+
+However if you have additional questions about how to write PulseAudio 
+profiles and paths I might not have the time to help you out with that, 
+hopefully you will be able to sort that out by yourself.
+
+> In unity session, the system settings/sound only list  the plugged jacks.
+>
+> I think the usage of jack detect to select input source automatically
+> is broken for for those  motherboards which have three audio jacks in
+> rear panel and retask those pink and blue jacks for surround51 output.
+>
+> The module-switch-on-available-port should check whether "Channel
+> mode' is 6 and exclude the result those jack detect of "rear mic" and
+> "line in" since they have been retasked for output
+
+Hmm. That would lead to quite hairy code in PulseAudio, I'm afraid...and 
+I don't think it's the right way to solve the problem either.
+
+I think we could go about this in different ways.
+
+1) The easiest way is to say that if you're changing "Channel mode" 
+manually in alsamixer, you're on your own. After all, the normal/newbie 
+end user would not know about alsamixer at all, so if you're capable of 
+changing things in alsamixer you're assumed to be capable of configuring 
+PulseAudio's profiles (using the link above) to match that as well.
+
+2) We could make a policy decision to remove the code that retasks the 
+jacks, and direct people to hda-jack-retask if they want to do that. 
+That would mean simpler code for everyone - however, with the recent 
+addition of multi-IO in the Realtek driver (for example), things doesn't 
+seem to head that way...
+
+3) We could add both "Line Out Surround Jack" and "Rear Mic Jack". The 
+"Rear Mic Jack" would always return present=no when you're in 6-channel 
+surround retask mode, and "Line Out Surround Jack" would always return 
+present=no when you're in the normal mode.
+
+> BTW, the ICH8 HDA controller support multi stream capturing and ad1988
+> has thee capture subdevices
+>
+> arecord -l
+> card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
+>    Subdevices: 3/3
+>    Subdevice #0: subdevice #0
+>    Subdevice #1: subdevice #1
+>    Subdevice #2: subdevice #2
+
+You would be able to make a multi-source profile in PulseAudio that can 
+record from all of these simultaneously, but we're missing a patch that 
+can control volumes and switches with indices, so you would have to 
+control the gain manually in alsamixer.
+
+> what is the definition of "Mono Output" in pulseaudio ?
+>
+> it is just the capability of the sound card to play mono  or have a
+> mono speaker with a specific volume control
+>
+> My three other sound cards does support mono playback and mono capture
+>
+> The system setting/sound in gnome session allow me to select "mono
+> duplex" but when it does not allow me to select "mono output + mono
+> input" in unity session.
+
+That sounds like the known bug I was working on yesterday.
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
