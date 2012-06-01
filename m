@@ -1,63 +1,93 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add pm_runtime_get/put functions call
- for McBSP.
-Date: Fri, 1 Jun 2012 21:24:50 +0100
-Message-ID: <20120601202449.GA4258@opensource.wolfsonmicro.com>
-References: <1338581572-11047-1-git-send-email-s-guiriec@ti.com>
+Subject: Re: Confusing about Playback/Capture, CODEC/CODEC links,
+ and snd_soc_dapm_link_dai_widgets()
+Date: Fri, 1 Jun 2012 22:41:47 +0100
+Message-ID: <20120601214146.GD4258@opensource.wolfsonmicro.com>
+References: <4FC7F576.30101@wwwdotorg.org>
+	<20120531233702.GA30717@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1338581572-11047-1-git-send-email-s-guiriec@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Sebastien Guiriec <s-guiriec@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============8170618358707878714=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6985224456
+	for <alsa-devel@alsa-project.org>;
+	Fri,  1 Jun 2012 23:41:49 +0200 (CEST)
+In-Reply-To: <20120531233702.GA30717@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---SUOF0GtieIMvvwua
+--===============8170618358707878714==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
+Content-Disposition: inline
+
+
+--/3yNEOqWowh/8j+e
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 01, 2012 at 10:12:52PM +0200, Sebastien Guiriec wrote:
-> pm_runtime_get_sync() and put_sync() are not called by McBSP driver.
-> This is introducing a problem with PM and Audio Backend due to
-> missing get/put for McBSP IP.
+On Fri, Jun 01, 2012 at 12:37:09AM +0100, Mark Brown wrote:
+> On Thu, May 31, 2012 at 04:49:26PM -0600, Stephen Warren wrote:
 
-They are called by the core.  Probably you're just pointing your struct
-device at some virtual device instead of the physical device, either
-enabling runtime PM for the virtual device (assuming it's a child of the
-physical device) or changing the pointer to the physical device (which
-might make for better dev_ logging potentially) should resolve the
-issue.
+> > But if (2) is correct, I wonder why soc_dapm_stream_event()'s first if
+> > statement appears to consider the playback_widget of both sides of the
+> > DAI to be coupled; wouldn't one side's playback widget be coupled to the
+> > other side's capture widget?
 
-> +       pm_runtime_put_sync(mcbsp->dev);
+> The DAIs on CPUs have the opposite sense to DAIs on CODECs.  In a
+> traditional CPU<->CODEC link we do connect the two playback widgets
+> directly to each other.  The current code isn't correct, it's not
+> normally noticable since most of the time the CPU DAI end of the link is
+> a baseband which doesn't do anything real and is always activated
+> bidirectionally so it really makes no odds which widget we look at.
 
-No need for this, anyway - just use regular _put().  We don't care if
-the device is actually suspended before we return, the PM core can do
-that at it's leisure.
+> I'll fix this tomorrow.
 
---SUOF0GtieIMvvwua
+Sorry, I misremembered the context here (should've looked at the code
+not the quote!).  The current code is correct, it will only be used in
+the case where we have a "real CPU" not the CODEC<->CODEC case so it's
+doing the right thing.
+
+--/3yNEOqWowh/8j+e
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPySUDAAoJEBus8iNuMP3d96sP+gPMTEdzhwmEsH1gwXuA6RB4
-ZS9Rheo5lGyEs1wL2/3R7gshDi2mC5L66tuajrvhjymis4uOiJquysoYF+vNo7/R
-xqhk1jQSM0lsyVnBEKTiz6DkeF84TjrR8YwYzD4fYt+HN7d0BtFDQr+/7WlEmKgc
-k6zn61CLFFjyJmBGbB7zGgncfEp2WA3ag7RCJn6nYybB17YTj+LD6gmRz+2ealDj
-FPTNSakDahs0xbxiRZgyiGA8MqaSbBAzDCH1U3Wpm6BidB3WNlfvfwf2CExCaAH/
-K1Asn+yIadhnzfoy7iGhEQsoo7IBw2qsoKSTkAW+OplzP7nMdGsXBZwz2XvQT/KV
-ftSurJ3J5Cn8jyE1UdBE1Ho2rjQEvfeXZfAAdnoJWXQGQJI3Tgiv3DxAVSBLWjHk
-t/kHj1R6exniNTqZpS0oa2oD3CmhIgQJPXay9f3lHYOaC1DkEppZGUiCILOqyduA
-9s1UGFiRYL7exxHHchW3He9SjTDoypkZrSg65AnAeVeGtJyapCO3bgPlfAw78VNh
-CAkDSNktlI0qAjMNA9EQeAG6GDm/ZCt/XTwpfg3Y2SVna3MZkzBToMGOZNPBY1XD
-Z7dLxxh2wxUauwvEFtdkGFhE6YG3ndHa3YktdaUT+9Q7yhfKkPvcQGk2M0CPuVja
-/I+u6nD4OmwTKsdqk9eD
-=s2RQ
+iQIcBAEBAgAGBQJPyTcRAAoJEBus8iNuMP3d+PcP/3ifZ/QT/8Zq0xSlP87jfQAO
+WViRBolW3D8H+vTgErGa1aSkktuOjPmLkQcDU91n33mL8ix2++je0belXIzFpdvc
+khX2gHqBnn88Ojz4ONvCm/96XuYUBZiTYD0S66MK7dfmyijzR6Tw2b9IVxC2y1hX
+AxWZ6V5O452AvuWJj5f3704FC3g4ew/jgwVEKXH8JCWhuNnKAXHSKp5OdGojtrYP
+e8FvKHI9OprITfPysJGFRpZ6odD6lRN1WFPJU0pUPCe5HgUUQlqLb7DEvdtv0BBq
+KgveETJM3DP6jmljpwUkwutmtcILxssO1aWh7efJGfc/LWOJXcwTgUxey4urQPR2
+0ZzmOsQ9/I6Mh2LeYr6bMsp2c+mjhaRRrTDRgFXMsmW8Y9bpNwnKidzYIspl90WJ
+4HmQGIlmYnRzx91QVbxuw8e8rcjoDYPb4g6sVQgDFzWTvfbMgiP0pFaBvAk44cYk
+zzYr3OqYpL8Wy4Zuwb2SdGQBLDuPkP8r2gwotj6X7mJGqSuEKzUyvpia9wp1MM0r
+Q0Qnhu3xrrkHbrFaZDOnoyRdJyZTRGbZ0PPS2KfZFQ2IS/Jq6QJy88TAYs2nQHRL
+VIj2IIOzpjkbMGQ2bbS9/90AZ1YHWNk94357Pgwuy96N+Osv+DCSRDuUuhioczu7
+vt0TrFYwWj0UD19IZm5A
+=KpKn
 -----END PGP SIGNATURE-----
 
---SUOF0GtieIMvvwua--
+--/3yNEOqWowh/8j+e--
+
+--===============8170618358707878714==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8170618358707878714==--
