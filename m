@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Confusing about Playback/Capture, CODEC/CODEC links,
- and snd_soc_dapm_link_dai_widgets()
-Date: Fri, 1 Jun 2012 22:41:47 +0100
-Message-ID: <20120601214146.GD4258@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: Confusion about Playback/Capture, CODEC/CODEC links,
+	and snd_soc_dapm_link_dai_widgets()
+Date: Fri, 01 Jun 2012 16:31:46 -0600
+Message-ID: <4FC942D2.8060803@wwwdotorg.org>
 References: <4FC7F576.30101@wwwdotorg.org>
 	<20120531233702.GA30717@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8170618358707878714=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6985224456
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1E382447E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 23:41:49 +0200 (CEST)
+	Sat,  2 Jun 2012 00:31:51 +0200 (CEST)
 In-Reply-To: <20120531233702.GA30717@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,72 +23,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8170618358707878714==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Content-Disposition: inline
-
-
---/3yNEOqWowh/8j+e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 01, 2012 at 12:37:09AM +0100, Mark Brown wrote:
+On 05/31/2012 05:37 PM, Mark Brown wrote:
 > On Thu, May 31, 2012 at 04:49:26PM -0600, Stephen Warren wrote:
+>> [ having problems getting codec/codec DAI links working] 
+...
+> It's really hard to comment in much more detail, you've not shown enough
+> information.  What are the DAI links connecting the devices?  Is the
+> rest of the DAPM path through the system connected?  My best guess is
+> that (possibly due to the linking of the playback widgets) you don't
+> have a full DAPM path.
 
-> > But if (2) is correct, I wonder why soc_dapm_stream_event()'s first if
-> > statement appears to consider the playback_widget of both sides of the
-> > DAI to be coupled; wouldn't one side's playback widget be coupled to the
-> > other side's capture widget?
+Here's hopefully everything:
 
-> The DAIs on CPUs have the opposite sense to DAIs on CODECs.  In a
-> traditional CPU<->CODEC link we do connect the two playback widgets
-> directly to each other.  The current code isn't correct, it's not
-> normally noticable since most of the time the CPU DAI end of the link is
-> a baseband which doesn't do anything real and is always activated
-> bidirectionally so it really makes no odds which widget we look at.
+I'm playing back audio on CPU DAI named APBIF0. This is connected to
+AHUB XBAR DAI also named APBIF0. This link appears to be working, since
+the XBAR's stream node is active:
 
-> I'll fix this tomorrow.
+# cat tegra30-ahub-xbar/dapm/APBIF0\ Receive
+APBIF0 Receive: On  in 1 out 1
+ stream APBIF0 Receive active
+ out "static" "APBIF0 RX"
 
-Sorry, I misremembered the context here (should've looked at the code
-not the quote!).  The current code is correct, it will only be used in
-the case where we have a "real CPU" not the CODEC<->CODEC case so it's
-doing the right thing.
+Tracing the path through the XBAR, the paths seem set up OK, but nothing
+else is active:
 
---/3yNEOqWowh/8j+e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+# cat tegra30-ahub-xbar/dapm/APBIF0\ RX
+APBIF0 RX: Off  in 1 out 0
+ in  "static" "APBIF0 Receive"
+ out "APBIF0 RX" "I2S1 Mux"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+# cat tegra30-ahub-xbar/dapm/I2S1\ Mux
+I2S1 Mux: Off  in 1 out 0
+ in  "APBIF0 RX" "APBIF0 RX"
+ out "static" "I2S1 TX"
 
-iQIcBAEBAgAGBQJPyTcRAAoJEBus8iNuMP3d+PcP/3ifZ/QT/8Zq0xSlP87jfQAO
-WViRBolW3D8H+vTgErGa1aSkktuOjPmLkQcDU91n33mL8ix2++je0belXIzFpdvc
-khX2gHqBnn88Ojz4ONvCm/96XuYUBZiTYD0S66MK7dfmyijzR6Tw2b9IVxC2y1hX
-AxWZ6V5O452AvuWJj5f3704FC3g4ew/jgwVEKXH8JCWhuNnKAXHSKp5OdGojtrYP
-e8FvKHI9OprITfPysJGFRpZ6odD6lRN1WFPJU0pUPCe5HgUUQlqLb7DEvdtv0BBq
-KgveETJM3DP6jmljpwUkwutmtcILxssO1aWh7efJGfc/LWOJXcwTgUxey4urQPR2
-0ZzmOsQ9/I6Mh2LeYr6bMsp2c+mjhaRRrTDRgFXMsmW8Y9bpNwnKidzYIspl90WJ
-4HmQGIlmYnRzx91QVbxuw8e8rcjoDYPb4g6sVQgDFzWTvfbMgiP0pFaBvAk44cYk
-zzYr3OqYpL8Wy4Zuwb2SdGQBLDuPkP8r2gwotj6X7mJGqSuEKzUyvpia9wp1MM0r
-Q0Qnhu3xrrkHbrFaZDOnoyRdJyZTRGbZ0PPS2KfZFQ2IS/Jq6QJy88TAYs2nQHRL
-VIj2IIOzpjkbMGQ2bbS9/90AZ1YHWNk94357Pgwuy96N+Osv+DCSRDuUuhioczu7
-vt0TrFYwWj0UD19IZm5A
-=KpKn
------END PGP SIGNATURE-----
+# cat tegra30-ahub-xbar/dapm/I2S1\ TX
+I2S1 TX: Off  in 1 out 0
+ in  "static" "I2S1 Mux"
+ out "static" "I2S1 Transmit"
 
---/3yNEOqWowh/8j+e--
+# cat tegra30-ahub-xbar/dapm/I2S1\ Transmit
+I2S1 Transmit: Off  in 1 out 0
+ stream I2S1 Transmit inactive
+ in  "static" "I2S1 TX"
 
---===============8170618358707878714==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+There is also a DAI link from XBAR's I2S1 TX/Transmit to the I2S
+controller's CIF Receive/RX, which appears to have been linked correctly
+since both DAI names show up in the I2S controller's CIF Receive stream
+debugfs file (see "in" line):
 
+# cat tegra30-i2s.1/dapm/CIF\ Receive
+CIF Receive: Off  in 0 out 0
+ stream CIF Receive inactive
+ in  "static" "I2S1 Transmit-CIF Receive"
+ out "static" "CIF RX"
 
---===============8170618358707878714==--
+(I assume that the "in" line of the AHUB's "APBIF0 Receive" debugfs file
+way above is only "APBIF0" instead of "APBIF0-APBIF0" since it's a
+cpu/codec link not a codec/codec link?)
+
+And again, the path through the I2S controller looks complete:
+
+# cat tegra30-i2s.1/dapm/CIF\ RX
+CIF RX: Off  in 0 out 0
+ in  "static" "CIF Receive"
+ out "static" "DAP TX"
+
+# cat tegra30-i2s.1/dapm/DAP\ TX
+DAP TX: Off  in 0 out 0
+ in  "static" "CIF RX"
+ out "static" "DAP Transmit"
+
+# cat tegra30-i2s.1/dapm/DAP\ Transmit
+DAP Transmit: Off  in 0 out 0
+ stream DAP Transmit inactive
+ in  "static" "DAP TX"
+
+Finally, there's a DAI link from the I2S controller's DAP DAI to the
+WM8903's DAI, which again shows up in the debugfs file:
+
+# cat wm8903.4-001a/dapm/Playback
+Playback: Off  in 0 out 8
+ stream Playback inactive
+ in  "static" "DAP Transmit-Playback"
+ out "static" "AIFRXL"
+ out "static" "AIFRXR"
+ out "static" "AIFRXL"
+ out "static" "AIFRXR"
+
+For completeness, here's the route through the WM8903, although nothing
+in that codec has changed since before I started reworking the Tegra
+drivers:
+
+# cd wm8903.4-001a/dapm/
+
+# cat AIFRXL
+AIFRXL: Off  in 0 out 2
+ stream Left Playback inactive
+ in  "static" "Playback"
+ in  "static" "Playback"
+ out "Left" "Left Playback Mux"
+
+# cat Left\ Playback\ Mux
+Left Playback Mux: Off  in 0 out 2
+ in  "Left" "AIFRXL"
+ out "static" "DACL"
+
+# cat DACL
+DACL: Off  in 0 out 2 - R18(0x12) bit 3
+ in  "static" "CLK_DSP"
+ in  "static" "DACL Sidetone"
+ in  "static" "Left Playback Mux"
+ out "DACL Switch" "Left Speaker Mixer"
+ out "DACL Switch" "Left Output Mixer"
+
+# cat Left\ Speaker\ Mixer
+Left Speaker Mixer: Off  in 0 out 2 - R16(0x10) bit 1
+ in  "DACL Switch" "DACL"
+ out "static" "Left Speaker PGA"
+
+# cat Left\ Speaker\ PGA
+Left Speaker PGA: Off  in 0 out 2 - R17(0x11) bit 1
+ in  "static" "Left Speaker Mixer"
+ out "static" "LON"
+ out "static" "LOP"
+
+# cat LON
+LON: Off  in 0 out 1
+ in  "static" "Left Speaker PGA"
+ out "static" "Int Spk"
+
+# amixer cget name='Int Spk Switch'
+numid=87,iface=MIXER,name='Int Spk Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+
+(I do note that on IRC you said soc-pcm might be a better fit for this
+HW now, but since I figure I'm very close, I'd like to get this working
+and experiment with it a bit either way)
+
+Thanks so much for the help.
