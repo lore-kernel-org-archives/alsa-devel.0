@@ -1,19 +1,13 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RESEND] ASoC: Support TI Isabelle Audio
-	driver
-Date: Fri, 1 Jun 2012 13:46:25 +0100
-Message-ID: <20120601124624.GM24139@opensource.wolfsonmicro.com>
-References: <1338289786-2751-1-git-send-email-MR.Swami.Reddy@ti.com>
-	<20120530164008.GO9947@opensource.wolfsonmicro.com>
-	<4FC8B476.4030305@ti.com>
+Subject: Re: [PATCH 2/2] ASoC: fix pxa-ssp compiling issue
+	under mach-mmp
+Date: Fri, 1 Jun 2012 13:52:49 +0100
+Message-ID: <20120601125249.GN24139@opensource.wolfsonmicro.com>
+References: <1338443313-28276-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3157656674130024489=="
+Content-Type: multipart/mixed; boundary="===============4320753044130620408=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1007103F6E
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 14:46:26 +0200 (CEST)
-In-Reply-To: <4FC8B476.4030305@ti.com>
+In-Reply-To: <1338443313-28276-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,75 +17,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: MR Swami Reddy <MR.Swami.Reddy@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Deshpande A,
-	Vishwas" <Vishwas.A.Deshpande@ti.com>, "Girdwood, Liam" <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3157656674130024489==
+--===============4320753044130620408==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="37cJpJlYZwAfNbm5"
+	protocol="application/pgp-signature"; boundary="mI5TpPl/qDRoXxBg"
 Content-Disposition: inline
 
 
---37cJpJlYZwAfNbm5
+--mI5TpPl/qDRoXxBg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 01, 2012 at 05:54:22PM +0530, MR Swami Reddy wrote:
-> On Wednesday 30 May 2012 10:10 PM, Mark Brown wrote:
+On Thu, May 31, 2012 at 01:48:33PM +0800, Qiao Zhou wrote:
+> pxa-ssp.c uses API like cpu_is_pxa3xx(), cpu_is_pxa2xx(), which is
+> defined under arch-pxa architecture, and drivers under mach-mmp
+> can't find it. so just use ssp->type to replace that API.
 
-> > If this is all you need then you should be able to use the newly
-> > introduced dev_get_regmap() to get the regmap back (other drivers should
-> > be being updated for this soon).
+Still not applying against
 
-> The dev_get_regmap() is not found in the 'for-next' or '3.5' branch. So
-> this api can't be used with 'for-next' source base. Please advice.=20
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.5
 
-It's in Linus' tree so it'll be in for-3.6 just as soon as the merge
-window is open.  While the merge window is still open we don't update
-anything in for-next except for bug fixes but once the merge window
-closes I'll rebase for-3.6 onto -rc1 and add that into for-next.
+for some reason - what did you generate the patch against?
 
-> > This should really include a list of part numbers - the general
-> > expecation people have is that they can just register the part number.
+> Change-Id: I0a0671802189f61ff90d984ca577a41627f869fa
 
-> This audio codec has been referred as 'isabelle' in datasheet and no
-> specific part number.
+Shouldn't have this in mainline submissions...
 
-OK, no problem - that's just a bit unusual.
-
---37cJpJlYZwAfNbm5
+--mI5TpPl/qDRoXxBg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPyLj3AAoJEBus8iNuMP3dRzoP/jVgikUfZs2nFVUP7PCYLVIg
-pW7/vPwDB3c6oP0AZ5P/6tWGEP3w5Xovhs1MUWCsf0LhF9XDblkD6X7LszSDiF8T
-EFkOsqjjC5PaE7b2cJ1XO9cdbc0t7cjMR3cvMMqnj+aZuZCJnb8E+LfGfQqGUrHB
-/C3uR6b57wQ3qWAplcH60h3h5pDIltWvmTIkkIK+iIIKTq2gzAawyZ0SLjwlsDJL
-tdwaxJ+zNGVDY7ypHqLGsL6rwGvcetpVEBRLjTkxPyns0BOWOTeZeHzrFyqg0M3S
-f67Y6kkZvMJugLDgcWAMuB0XcTK2Afw+0io0eF4Sj4Ow5yEJwEvkbtwNeCpFzket
-Q2hLP7nGOAd8tAJl8JVZ3C2jhweUJwqdwjHES624b1X/CLNRuUzkpheiaqfpdtCs
-undXm2Av9PL8sGifXy3aHa/XnaBuLLb0hkMZinm/yQv5L0ZDXhPIu0kIaACQA+23
-cfqB4nyiR6iXqvgOVygYlAs3esQA+dymxMRRL1ZLUIJ7vHbAQIJiOI20E/HA3Dr/
-Wpxhfy8Hs/FI36TuewoylvXGQ3KyQSsLO0c9IHxHAHTQ3znpK1bR37H9gx9Q9qSx
-zp2HsUwW9rWe0X/B29CnLCMD/0ZnUBWRM6gIa7eWl8bMCfPzGIaFp7okrI8kiAZo
-aEyxk5JqK5/5orq4cpvm
-=1ED3
+iQIcBAEBAgAGBQJPyLrYAAoJEBus8iNuMP3dcgIP/2t5BGXxSKMq/bih77zngoXI
+dyXbPZV1oWUXqUoDtBvYejBbaW7beVJA+jOW37md2QGtybhd4us+f+nwClRY5QPg
+3XSF0g+PYf8b6nun+WDLoe8CyVK8d4F3H+5qw3Mgq7BRWh/5TCsXYF9BXl9zFjYH
+gMx9ilGNLd31tPihloeQ0ZQXKfvNkHiOfzebqtr8Osmk2gwErLmRT97aAU96XIBd
+EvjZjyp1MsZBMjP7N+KhflMBWOAQkrlu8swpuv9xmrLk50s1G5nykQBdvz0ZtoSg
+wAUX3l1maXw8tChvUI0I/Afe339WB0xfh4AFvFH8ftbuiEhHTYX+UIfwvqYVEj/t
+82gtu8Rwb47uiQzZ0VbD2aqnOKQEaCYon7MUB5y9keMBjt2W5LkToj2yl1ajGH78
+prEoIDlpJDRqmlc4IMJV3MrtUZMewqaNALle4g8d56GRPvszK3hJsDxXiWPFNOIj
+3nI1r1C4Qvbh6qGH7Cq0DyN7UhwTtkSUaZ4vYrKpW47UiwYsjkI+Qj1qoksC2/VR
+AEVfNCJMmODGxmr4k/Q2pXyZhm1yRGhjgbYU2KBwHSRqj+dEkaOt3nWx5EYoQ+mG
+9Uvgtn+ggubOLRAZ5TO3EQM0PB09S21SbeO8ATo4guAhH/iUhf6jaMP7mD/rSvu/
+kz0Fjapx1CLIimrIX5x3
+=fO6R
 -----END PGP SIGNATURE-----
 
---37cJpJlYZwAfNbm5--
+--mI5TpPl/qDRoXxBg--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
---===============3157656674130024489==
+
+--===============4320753044130620408==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3157656674130024489==--
+--===============4320753044130620408==--
