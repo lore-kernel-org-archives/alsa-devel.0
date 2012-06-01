@@ -1,92 +1,167 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
- for ML7213
-Date: Fri, 1 Jun 2012 09:30:18 +0100
-Message-ID: <20120601083018.GH24139@opensource.wolfsonmicro.com>
-References: <CANKRQnhNWC2F6zKgBMJY7HnipJbA5p-=6Lz4uGZqBKNQ688Z3w@mail.gmail.com>
-	<20120524100742.GH5361@opensource.wolfsonmicro.com>
-	<CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
-	<1337941231.1580.19.camel@vkoul-udesk3>
-	<20120527221956.GB25019@opensource.wolfsonmicro.com>
-	<CANKRQnhwkhGUHi6WQhw-sRJuKari3SLcipCJXVp27OZ29=Vxkw@mail.gmail.com>
-	<20120530121449.GI9947@opensource.wolfsonmicro.com>
-	<CANKRQni4uqQJ99ycOScHmn-g1kz2_XH7ePL+n1taG5jAbDSubw@mail.gmail.com>
-	<20120531104538.GA2666@opensource.wolfsonmicro.com>
-	<CANKRQnjdiV+e=N+n_ZP04jmCAhxKjgZ+wab+anbgO+VJPNo=PQ@mail.gmail.com>
+From: Prashant Gaikwad <pgaikwad@nvidia.com>
+Subject: [PATCH 8/9] ASoC: tegra: add clk_prepare/clk_unprepare
+Date: Fri, 1 Jun 2012 14:42:47 +0530
+Message-ID: <1338541968-7961-9-git-send-email-pgaikwad@nvidia.com>
+References: <1338541968-7961-1-git-send-email-pgaikwad@nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3134532375569288860=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E2139104569
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 10:30:21 +0200 (CEST)
-In-Reply-To: <CANKRQnjdiV+e=N+n_ZP04jmCAhxKjgZ+wab+anbgO+VJPNo=PQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1338541968-7961-1-git-send-email-pgaikwad@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: swarren@nvidia.com, linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, olof@lixom.net, Prashant Gaikwad <pgaikwad@nvidia.com>, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Use clk_prepare/clk_unprepare as required by the generic clk framework.
 
---===============3134532375569288860==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UTZ8bGhNySVQ9LYl"
-Content-Disposition: inline
+This patch should go through Tegra tree since other patches to port Tegra
+to generic clock framework are dependent on it. Posting here to get ack from
+the maintainers.
 
+Signed-off-by: Prashant Gaikwad <pgaikwad@nvidia.com>
+---
+ sound/soc/tegra/tegra20_i2s.c      |    4 ++--
+ sound/soc/tegra/tegra20_spdif.c    |    4 ++--
+ sound/soc/tegra/tegra30_ahub.c     |    8 ++++----
+ sound/soc/tegra/tegra30_i2s.c      |    4 ++--
+ sound/soc/tegra/tegra_asoc_utils.c |   12 ++++++------
+ 5 files changed, 16 insertions(+), 16 deletions(-)
 
---UTZ8bGhNySVQ9LYl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jun 01, 2012 at 05:13:45PM +0900, Tomoya MORINAGA wrote:
-
-> > Linus' tree, or mine.
-
-> Sorry, I couldn't find.
-> Is your saying Linus's tree this ?
-> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> However, any ASoC driver doesn't use cyclic DMA's.
-
-$ grep CYCLIC sound/soc/soc-dmaengine-pcm.c=20
-	dma_cap_set(DMA_CYCLIC, mask);
-
---UTZ8bGhNySVQ9LYl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPyH2BAAoJEBus8iNuMP3deKEP/3Djm3B9K0mBDLBCvjU71CO+
-m+i+NmZupFqbBxkxz8SkfGv9ajX+0UPNdYY6vThQG4ggtyc/A1ejnWuO6vL6S9UK
-3GMJTFvHjg3BhBCC11xdyJpVBUNVdMXrhyDtbDe3P80V4h/mfZETgSMLmL6dIHyn
-KMb+MA+j5LLh7vnigMobp8z0Zra8eZzmrktSYL3dFNlg+GhEa+ixfBW98FOH2sU+
-1ITcaBxRvWardBWRKoDzR1PsZcZ7ajLtJ4K5mTbVTM3kfNkkHcNlNFW5YTfxyo8b
-9APANxysU8BWEvMxXgDCaxMoZjYoC2dh2cGXzQaQA+y9vKnkECwJhF9IF+RNfyhE
-uNv33avnmCeqw0swTFdSqDbEg3UExekhK6yHPgtVkLCsEzxpqg5QstGDpdCYYuGA
-wS5p3vwAuui+YofkQYTApgT7cg1XFFLFtO/L9JBLH1BNkhZXVNGfTRJs1b6EXqJc
-NQvNp3ap6ZoJfi1DzSdfc267FyGRFijmk2+HgNMbxDV9rpqkauZO04shQlwaI/Bz
-h9zkB4lds8irdKrotRhFQLfZ4QUzQjXGsNf+dpmMIdtKRorCUm6Dbg5fUNffmRr7
-xyk6FB0qFnka34OdAw/QtcCdRJT6487N87ckCC9o+amMNl/n62oF8A9mQYV4W839
-Iputd6WtIwY5brZtIiuq
-=NduQ
------END PGP SIGNATURE-----
-
---UTZ8bGhNySVQ9LYl--
-
---===============3134532375569288860==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3134532375569288860==--
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index 0c7af63..1647dbf 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -62,7 +62,7 @@ static int tegra20_i2s_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
+ 
+-	clk_disable(i2s->clk_i2s);
++	clk_disable_unprepare(i2s->clk_i2s);
+ 
+ 	return 0;
+ }
+@@ -72,7 +72,7 @@ static int tegra20_i2s_runtime_resume(struct device *dev)
+ 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = clk_enable(i2s->clk_i2s);
++	ret = clk_prepare_enable(i2s->clk_i2s);
+ 	if (ret) {
+ 		dev_err(dev, "clk_enable failed: %d\n", ret);
+ 		return ret;
+diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+index f9b5741..2262e4f 100644
+--- a/sound/soc/tegra/tegra20_spdif.c
++++ b/sound/soc/tegra/tegra20_spdif.c
+@@ -54,7 +54,7 @@ static int tegra20_spdif_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
+ 
+-	clk_disable(spdif->clk_spdif_out);
++	clk_disable_unprepare(spdif->clk_spdif_out);
+ 
+ 	return 0;
+ }
+@@ -64,7 +64,7 @@ static int tegra20_spdif_runtime_resume(struct device *dev)
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = clk_enable(spdif->clk_spdif_out);
++	ret = clk_prepare_enable(spdif->clk_spdif_out);
+ 	if (ret) {
+ 		dev_err(dev, "clk_enable failed: %d\n", ret);
+ 		return ret;
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 57cd419..1efb822 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -56,8 +56,8 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
+ 	regcache_cache_only(ahub->regmap_apbif, true);
+ 	regcache_cache_only(ahub->regmap_ahub, true);
+ 
+-	clk_disable(ahub->clk_apbif);
+-	clk_disable(ahub->clk_d_audio);
++	clk_disable_unprepare(ahub->clk_apbif);
++	clk_disable_unprepare(ahub->clk_d_audio);
+ 
+ 	return 0;
+ }
+@@ -77,12 +77,12 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
+ {
+ 	int ret;
+ 
+-	ret = clk_enable(ahub->clk_d_audio);
++	ret = clk_prepare_enable(ahub->clk_d_audio);
+ 	if (ret) {
+ 		dev_err(dev, "clk_enable d_audio failed: %d\n", ret);
+ 		return ret;
+ 	}
+-	ret = clk_enable(ahub->clk_apbif);
++	ret = clk_prepare_enable(ahub->clk_apbif);
+ 	if (ret) {
+ 		dev_err(dev, "clk_enable apbif failed: %d\n", ret);
+ 		clk_disable(ahub->clk_d_audio);
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 8596032..d308faa 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -62,7 +62,7 @@ static int tegra30_i2s_runtime_suspend(struct device *dev)
+ 
+ 	regcache_cache_only(i2s->regmap, true);
+ 
+-	clk_disable(i2s->clk_i2s);
++	clk_disable_unprepare(i2s->clk_i2s);
+ 
+ 	return 0;
+ }
+@@ -72,7 +72,7 @@ static int tegra30_i2s_runtime_resume(struct device *dev)
+ 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = clk_enable(i2s->clk_i2s);
++	ret = clk_prepare_enable(i2s->clk_i2s);
+ 	if (ret) {
+ 		dev_err(dev, "clk_enable failed: %d\n", ret);
+ 		return ret;
+diff --git a/sound/soc/tegra/tegra_asoc_utils.c b/sound/soc/tegra/tegra_asoc_utils.c
+index 9515ce5..6872c77 100644
+--- a/sound/soc/tegra/tegra_asoc_utils.c
++++ b/sound/soc/tegra/tegra_asoc_utils.c
+@@ -69,9 +69,9 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+ 	data->set_baseclock = 0;
+ 	data->set_mclk = 0;
+ 
+-	clk_disable(data->clk_cdev1);
+-	clk_disable(data->clk_pll_a_out0);
+-	clk_disable(data->clk_pll_a);
++	clk_disable_unprepare(data->clk_cdev1);
++	clk_disable_unprepare(data->clk_pll_a_out0);
++	clk_disable_unprepare(data->clk_pll_a);
+ 
+ 	err = clk_set_rate(data->clk_pll_a, new_baseclock);
+ 	if (err) {
+@@ -87,19 +87,19 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+ 
+ 	/* Don't set cdev1/extern1 rate; it's locked to pll_a_out0 */
+ 
+-	err = clk_enable(data->clk_pll_a);
++	err = clk_prepare_enable(data->clk_pll_a);
+ 	if (err) {
+ 		dev_err(data->dev, "Can't enable pll_a: %d\n", err);
+ 		return err;
+ 	}
+ 
+-	err = clk_enable(data->clk_pll_a_out0);
++	err = clk_prepare_enable(data->clk_pll_a_out0);
+ 	if (err) {
+ 		dev_err(data->dev, "Can't enable pll_a_out0: %d\n", err);
+ 		return err;
+ 	}
+ 
+-	err = clk_enable(data->clk_cdev1);
++	err = clk_prepare_enable(data->clk_cdev1);
+ 	if (err) {
+ 		dev_err(data->dev, "Can't enable cdev1: %d\n", err);
+ 		return err;
+-- 
+1.7.4.1
