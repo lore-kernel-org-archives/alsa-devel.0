@@ -1,18 +1,22 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH v2] ASoC: Support TI Isabelle Audio driver
-Date: Fri, 1 Jun 2012 16:51:27 +0000
-Message-ID: <172CCDCD-FA24-4B57-A525-7B649AAD62F6@cirrus.com>
-References: <1338569371-18002-1-git-send-email-MR.Swami.Reddy@ti.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: Confusing about Playback/Capture, CODEC/CODEC links,
+ and snd_soc_dapm_link_dai_widgets()
+Date: Fri, 01 Jun 2012 18:01:57 +0100
+Message-ID: <1338570117.5179.2.camel@odin>
+References: <4FC7F576.30101@wwwdotorg.org>
+	<20120531233702.GA30717@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6897993812146541997=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
-	(va3ehsobe004.messaging.microsoft.com [216.32.180.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B999104550
+Received: from na3sys009aog137.obsmtp.com (na3sys009aog137.obsmtp.com
+	[74.125.149.18])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83B86104555
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 18:51:48 +0200 (CEST)
-In-Reply-To: <1338569371-18002-1-git-send-email-MR.Swami.Reddy@ti.com>
-Content-Language: en-US
+	Fri,  1 Jun 2012 19:02:04 +0200 (CEST)
+Received: by wibhr14 with SMTP id hr14so639081wib.2
+	for <alsa-devel@alsa-project.org>; Fri, 01 Jun 2012 10:01:59 -0700 (PDT)
+In-Reply-To: <20120531233702.GA30717@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,236 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "<MR.Swami.Reddy@ti.com> " <MR.Swami.Reddy@ti.com>
-Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<broonie@opensource.wolfsonmicro.com>" <broonie@opensource.wolfsonmicro.com>, "<vishwas.a.deshpande@ti.com>" <vishwas.a.deshpande@ti.com>, "<lrg@ti.com>" <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============6897993812146541997==
-Content-Language: en-US
-Content-Type: multipart/signed;
-	boundary="Apple-Mail=_F813DC45-F852-412D-9110-CFA07B9281E7";
-	protocol="application/pkcs7-signature"; micalg=sha1
+On Fri, 2012-06-01 at 00:37 +0100, Mark Brown wrote:
+> On Thu, May 31, 2012 at 04:49:26PM -0600, Stephen Warren wrote:
 
---Apple-Mail=_F813DC45-F852-412D-9110-CFA07B9281E7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+> 
+> This is all working just fine in mainline on littlemill.
+> 
+> > > int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+> > > 	struct snd_soc_dapm_widget_list **list)
+> > ...
+> > > 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > > 		paths = is_connected_output_ep(dai->playback_widget, list);
+> > > 	else
+> > > 		paths = is_connected_input_ep(dai->playback_widget, list);
+> 
+> > I would have expected this to use capture_widget on the final line, but
+> > I haven't thought about this in detail, just noticed the lack of
+> > symmetry by very brief inspection.
+> 
+> Yes, that looks buggy.  Don't think there's any mainline users so nobody
+> would notice.
 
+Gah, it's a bug - I did have it fixed before the upstreaming but this
+fix seems to have been lost.
 
-> +
-> +#ifndef _ISABELLE_H
-> +#define _ISABELLE_H
-> +
-> +#include <linux/bitops.h>
-> +
-> +/* ISABELLE REGISTERS */
-> +
-> +#define ISABELLE_PWR_CFG_REG		0x01
-> +#define ISABELLE_PWR_EN_REG		0x02
-> +#define ISABELLE_PS_EN1_REG		0x03
-> +#define ISABELLE_INT1_STATUS_REG	0x04
-> +#define ISABELLE_INT1_MASK_REG		0x05
-> +#define ISABELLE_INT2_STATUS_REG	0x06
-> +#define ISABELLE_INT2_MASK_REG		0x07
-> +#define ISABELLE_HKCTL1_REG		0x08
-> +#define ISABELLE_HKCTL2_REG		0x09
-> +#define ISABELLE_HKCTL3_REG		0x0A
-> +#define ISABELLE_ACCDET_STATUS_REG	0x0B
-> +#define ISABELLE_BUTTON_ID_REG		0x0C
-> +#define ISABELLE_PLL_CFG_REG		0x10
-> +#define ISABELLE_PLL_EN_REG		0x11
-> +#define ISABELLE_FS_RATE_CFG_REG	0x12
-> +#define ISABELLE_INTF_CFG_REG		0x13
-> +#define ISABELLE_INTF_EN_REG		0x14
-> +#define ISABELLE_ULATX12_INTF_CFG_REG	0x15
-> +#define ISABELLE_DL12_INTF_CFG_REG	0x16
-> +#define ISABELLE_DL34_INTF_CFG_REG	0x17
-> +#define ISABELLE_DL56_INTF_CFG_REG	0x18
-> +#define ISABELLE_ATX_STPGA1_CFG_REG	0x19
-> +#define ISABELLE_ATX_STPGA2_CFG_REG	0x1A
-> +#define ISABELLE_VTX_STPGA1_CFG_REG	0x1B
-> +#define ISABELLE_VTX2_STPGA2_CFG_REG	0x1C
-> +#define ISABELLE_ATX1_DPGA_REG		0x1D
-> +#define ISABELLE_ATX2_DPGA_REG		0x1E
-> +#define ISABELLE_VTX1_DPGA_REG		0x1F
-> +#define ISABELLE_VTX2_DPGA_REG		0x20
-> +#define ISABELLE_TX_INPUT_CFG_REG	0x21
-> +#define ISABELLE_RX_INPUT_CFG_REG	0x22
-> +#define ISABELLE_RX_INPUT_CFG2_REG	0x23
-> +#define ISABELLE_VOICE_HPF_CFG_REG	0x24
-> +#define ISABELLE_AUDIO_HPF_CFG_REG	0x25
-> +#define ISABELLE_RX1_DPGA_REG		0x26
-> +#define ISABELLE_RX2_DPGA_REG		0x27
-> +#define ISABELLE_RX3_DPGA_REG		0x28
-> +#define ISABELLE_RX4_DPGA_REG		0x29
-> +#define ISABELLE_RX5_DPGA_REG		0x2A
-> +#define ISABELLE_RX6_DPGA_REG		0x2B
-> +#define ISABELLE_ALU_TX_EN_REG		0x2C
-> +#define ISABELLE_ALU_RX_EN_REG		0x2D
-> +#define ISABELLE_IIR_RESYNC_REG		0x2E
-> +#define ISABELLE_ABIAS_CFG_REG		0x30
-> +#define ISABELLE_DBIAS_CFG_REG		0x31
-> +#define ISABELLE_MIC1_GAIN_REG		0x32
-> +#define ISABELLE_MIC2_GAIN_REG		0x33
-> +#define ISABELLE_AMIC_CFG_REG		0x34
-> +#define ISABELLE_DMIC_CFG_REG		0x35
-> +#define ISABELLE_APGA_GAIN_REG		0x36
-> +#define ISABELLE_APGA_CFG_REG		0x37
-> +#define ISABELLE_TX_GAIN_DLY_REG	0x38
-> +#define ISABELLE_RX_GAIN_DLY_REG	0x39
-> +#define ISABELLE_RX_PWR_CTRL_REG	0x3A
-> +#define ISABELLE_DPGA1LR_IN_SEL_REG	0x3B
-> +#define ISABELLE_DPGA1L_GAIN_REG	0x3C
-> +#define ISABELLE_DPGA1R_GAIN_REG	0x3D
-> +#define ISABELLE_DPGA2L_IN_SEL_REG	0x3E
-> +#define ISABELLE_DPGA2R_IN_SEL_REG	0x3F
-> +#define ISABELLE_DPGA2L_GAIN_REG	0x40
-> +#define ISABELLE_DPGA2R_GAIN_REG	0x41
-> +#define ISABELLE_DPGA3LR_IN_SEL_REG	0x42
-> +#define ISABELLE_DPGA3L_GAIN_REG	0x43
-> +#define ISABELLE_DPGA3R_GAIN_REG	0x44
-> +#define ISABELLE_DAC1_SOFTRAMP_REG	0x45
-> +#define ISABELLE_DAC2_SOFTRAMP_REG	0x46
-> +#define ISABELLE_DAC3_SOFTRAMP_REG	0x47
-> +#define ISABELLE_DAC_CFG_REG		0x48
-> +#define ISABELLE_EARDRV_CFG1_REG	0x49
-> +#define ISABELLE_EARDRV_CFG2_REG	0x4A
-> +#define ISABELLE_HSDRV_GAIN_REG		0x4B
-> +#define ISABELLE_HSDRV_CFG1_REG		0x4C
-> +#define ISABELLE_HSDRV_CFG2_REG		0x4D
-> +#define ISABELLE_HS_NG_CFG1_REG		0x4E
-> +#define ISABELLE_HS_NG_CFG2_REG		0x4F
-> +#define ISABELLE_LINEAMP_GAIN_REG	0x50
-> +#define ISABELLE_LINEAMP_CFG_REG	0x51
-> +#define ISABELLE_HFL_VOL_CTRL_REG	0x52
-> +#define ISABELLE_HFL_SFTVOL_CTRL_REG	0x53
-> +#define ISABELLE_HFL_LIM_CTRL_1_REG	0x54
-> +#define ISABELLE_HFL_LIM_CTRL_2_REG	0x55
-> +#define ISABELLE_HFR_VOL_CTRL_REG	0x56
-> +#define ISABELLE_HFR_SFTVOL_CTRL_REG	0x57
-> +#define ISABELLE_HFR_LIM_CTRL_1_REG	0x58
-> +#define ISABELLE_HFR_LIM_CTRL_2_REG	0x59
-> +#define ISABELLE_HF_MODE_REG		0x5A
-> +#define ISABELLE_HFLPGA_CFG_REG		0x5B
-> +#define ISABELLE_HFRPGA_CFG_REG		0x5C
-> +#define ISABELLE_HFDRV_CFG_REG		0x5D
-> +#define ISABELLE_PDMOUT_CFG1_REG	0x5E
-> +#define ISABELLE_PDMOUT_CFG2_REG	0x5F
-> +#define ISABELLE_PDMOUT_L_WM_REG	0x60
-> +#define ISABELLE_PDMOUT_R_WM_REG	0x61
-> +#define ISABELLE_HF_NG_CFG1_REG		0x62
-> +#define ISABELLE_HF_NG_CFG2_REG		0x63
-> +
-> +/* ISABELLE_PWR_EN_REG (0x02h) */
-> +#define ISABELLE_CHIP_EN		BIT(0)
-> +
-> +/* ISABELLE DAI FORMATS */
-> +#define ISABELLE_AIF_FMT_MASK		0x70
-> +#define ISABELLE_I2S_MODE		0x0
-> +#define ISABELLE_LEFT_J_MODE		0x1
-> +#define ISABELLE_PDM_MODE		0x2
-> +
-> +#define ISABELLE_AIF_LENGTH_MASK	0x30
-> +#define ISABELLE_AIF_LENGTH_20		0x00
-> +#define ISABELLE_AIF_LENGTH_32		0x10
-> +
-> +#define ISABELLE_AIF_MS			0x80
-> +
-> +#define ISABELLE_FS_RATE_MASK		0xF
-> +#define ISABELLE_FS_RATE_8		0x0
-> +#define ISABELLE_FS_RATE_11		0x1
-> +#define ISABELLE_FS_RATE_12		0x2
-> +#define ISABELLE_FS_RATE_16		0x4
-> +#define ISABELLE_FS_RATE_22		0x5
-> +#define ISABELLE_FS_RATE_24		0x6
-> +#define ISABELLE_FS_RATE_32		0x8
-> +#define ISABELLE_FS_RATE_44		0x9
+Patch on it's way.
 
-This all needs to be name spaced correctly please.
-
-
---Apple-Mail=_F813DC45-F852-412D-9110-CFA07B9281E7
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIMMTCCBYMw
-ggRroAMCAQICCmESnAkAAAAAAAMwDQYJKoZIhvcNAQEFBQAwWDETMBEGCgmSJomT8ixkARkWA2Nv
-bTEWMBQGCgmSJomT8ixkARkWBmNpcnJ1czESMBAGCgmSJomT8ixkARkWAmFkMRUwEwYDVQQDEwxh
-ZC1DQVJPT1QtQ0EwHhcNMTEwNDEyMjAxNDQyWhcNMTYwNDEyMjAyNDQyWjBYMRMwEQYKCZImiZPy
-LGQBGRYDY29tMRYwFAYKCZImiZPyLGQBGRYGY2lycnVzMRIwEAYKCZImiZPyLGQBGRYCYWQxFTAT
-BgNVBAMTDGFkLUNBU1VCMS1DQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIYQjJFn
-kvtekksMo5EQZ1G6SeF5VoxF76IFFBoO5a2tSRlWkqVC1W+pnTXrQDgaqDqaXpBvtBm8SxTmdKfu
-28vwZfanrzUfA+5oWi6+hHzohe52tXJLafVevfxjP3Cr+DSu0h1zHS9M+am3iKrc4D3JUMlGR4Bf
-COoPwG8fMmw35M5iA5fURrw9xvsiiZDiblv4jRYjmuqqGuCNzOWaGrVMgeCIGGE95xFdoaNwwD5S
-zCYwpQgujYf9ed2Ig5gOT5E+Bou48+PcGmouKV5PNEqmxLUPJ+851GALCtZaOmLldNrHDATtjeW+
-a3U0DIWZIJ5GjNt0H0mLfH2+tgg3M4UCAwEAAaOCAk0wggJJMBIGCSsGAQQBgjcVAQQFAgMBAAEw
-IwYJKwYBBAGCNxUCBBYEFKwWBOBnCgA5i/dX8QmYcM2UFkiQMB0GA1UdDgQWBBRBxVW0bFUVFUUv
-Dcc0L1yGhCdoaDAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0T
-AQH/BAUwAwEB/zAfBgNVHSMEGDAWgBTU30/gZySZRaDiMmMfeod1SRGIyzCBzgYDVR0fBIHGMIHD
-MIHAoIG9oIG6hoG3bGRhcDovLy9DTj1hZC1DQVJPT1QtQ0EsQ049Q0FSb290LENOPUNEUCxDTj1Q
-dWJsaWMlMjBLZXklMjBTZXJ2aWNlcyxDTj1TZXJ2aWNlcyxDTj1Db25maWd1cmF0aW9uLERDPWFk
-LERDPWNpcnJ1cyxEQz1jb20/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdD9iYXNlP29iamVjdENs
-YXNzPWNSTERpc3RyaWJ1dGlvblBvaW50MIHDBggrBgEFBQcBAQSBtjCBszCBsAYIKwYBBQUHMAKG
-gaNsZGFwOi8vL0NOPWFkLUNBUk9PVC1DQSxDTj1BSUEsQ049UHVibGljJTIwS2V5JTIwU2Vydmlj
-ZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1hZCxEQz1jaXJydXMsREM9Y29tP2NB
-Q2VydGlmaWNhdGU/YmFzZT9vYmplY3RDbGFzcz1jZXJ0aWZpY2F0aW9uQXV0aG9yaXR5MA0GCSqG
-SIb3DQEBBQUAA4IBAQAX/fhcoBXPZniRLReyvYHdGKrE9mzqm6UGbM4DtkdpiKnLgD24Abvj/oT4
-7WUMpmnmDRoNb8486QMqdJHumuFWJS4nw9BkULBFfjGe/YUk8oRVtWYCmo/5qW3WiCmW/TYmXsCW
-1LPgtE1J1bWg6ws0oTJJZZSnxVI/jhVuuofQrPdAv0AfVH4o8Fwx8sSC1nNFUbIlqQLzLklziqcy
-b6x2tDqk3F+oHnHHt+IyiCsGq3/hclefyZrY2/8seJuLk+CrYVL4ZI2v+gkAi8vwr2tVtpc+EP6i
-nj0qBWO/PdbSS09S6nzN8eNJ2gudKWB4TOhaEoIBCO+U9RB+XKnC7AbaMIIGpjCCBY6gAwIBAgIK
-OTgTiQABAAAS7DANBgkqhkiG9w0BAQUFADBYMRMwEQYKCZImiZPyLGQBGRYDY29tMRYwFAYKCZIm
-iZPyLGQBGRYGY2lycnVzMRIwEAYKCZImiZPyLGQBGRYCYWQxFTATBgNVBAMTDGFkLUNBU1VCMS1D
-QTAeFw0xMTA3MjgxNTQ5MzZaFw0xMzA3MjcxNTQ5MzZaMIGnMRMwEQYKCZImiZPyLGQBGRYDY29t
-MRYwFAYKCZImiZPyLGQBGRYGY2lycnVzMRIwEAYKCZImiZPyLGQBGRYCYWQxDzANBgNVBAsTBlBl
-b3BsZTETMBEGA1UECxMKVEVSUkFDRSBCNTEWMBQGA1UEAxMNQXVzdGluLCBCcmlhbjEmMCQGCSqG
-SIb3DQEJARYXQnJpYW4uQXVzdGluQGNpcnJ1cy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
-ggEKAoIBAQCy87TkTKo85pOsBlZ76Ifo/MeL5Ur09Phz7LTXFI7fkwLyw75OXFF0DpqvMOtqGefl
-YVE9Ve0oL2FP3frTj1df3brATuHHs79LIa287k8dKaXfciAY1249ELAjfiWHsivR2daxtJ0zjyRj
-GtgfppmeRA7uhm9VSQP4l0/YU7FTKu6P+FMgy7y7QJjtWIKNa+seCKhQoxhifPmYDzqhsPVz4EA7
-nsXcyO1h0WVQ34gZfnuRuZagLilC8LSqsMGuMQzTy1mGcmYHiT4hvPtux64yr8ldxZs0HvXIHSRQ
-xPREY8RwyTCLbKp5wZpPuVcpsmAWlSH9V87WG7H2azaJdwaDAgMBAAGjggMgMIIDHDAdBgNVHQ4E
-FgQU9yzlSoU5qj4apOykJWMG5Em9XiQwHwYDVR0jBBgwFoAUQcVVtGxVFRVFLw3HNC9choQnaGgw
-gdEGA1UdHwSByTCBxjCBw6CBwKCBvYaBumxkYXA6Ly8vQ049YWQtQ0FTVUIxLUNBKDEpLENOPUNB
-U3ViMSxDTj1DRFAsQ049UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29u
-ZmlndXJhdGlvbixEQz1hZCxEQz1jaXJydXMsREM9Y29tP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxp
-c3Q/YmFzZT9vYmplY3RDbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludDCBwwYIKwYBBQUHAQEEgbYw
-gbMwgbAGCCsGAQUFBzAChoGjbGRhcDovLy9DTj1hZC1DQVNVQjEtQ0EsQ049QUlBLENOPVB1Ymxp
-YyUyMEtleSUyMFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9YWQsREM9
-Y2lycnVzLERDPWNvbT9jQUNlcnRpZmljYXRlP2Jhc2U/b2JqZWN0Q2xhc3M9Y2VydGlmaWNhdGlv
-bkF1dGhvcml0eTAOBgNVHQ8BAf8EBAMCBaAwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIgdgI
-hLeiGoTpmQuF6Y84s6ZRAozknKxhjfHFoxoCAWQCAQUwKQYDVR0lBCIwIAYIKwYBBQUHAwIGCCsG
-AQUFBwMEBgorBgEEAYI3CgMEMDUGCSsGAQQBgjcVCgQoMCYwCgYIKwYBBQUHAwIwCgYIKwYBBQUH
-AwQwDAYKKwYBBAGCNwoDBDBJBgNVHREEQjBAoCUGCisGAQQBgjcUAgOgFwwVYmF1c3RpbkBhZC5j
-aXJydXMuY29tgRdCcmlhbi5BdXN0aW5AY2lycnVzLmNvbTBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqG
-SIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwDQYJKoZIhvcN
-AQEFBQADggEBADOxkZy4DcuL9BC1L9DmJ+swOQ6O3C130cDblE1UZoyXZ/9rgMX10OTPa6TK+1IC
-RmuhsOnKOleYrQgIMgvcV8EXPV7s2Bm84S1FuzshaJ4qwSOSSuctOpmNvQA8pg0EAaOOJXa31mHM
-JsBg3vOSFwCRP/XhdYBROqfGHwIVbOES0Kmba3F267YyqH6R6OcM8HXFoyGTLwr+w8Sq/puk8hkY
-J02P+H9UDdo9gwho2OYw/OYJqwq0eFcDhNqmiR79xjWpioN42FNBXyEi/ZWpX+jjg745/VjX07oJ
-yBm2B6WZSj7AJ/VBqjKjMcY6pLiwmXmpqoPsL9nAdW6WMrbU3wcxggLeMIIC2gIBATBmMFgxEzAR
-BgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJk/IsZAEZ
-FgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMAkGBSsOAwIaBQCgggFNMBgG
-CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTEyMDYwMTE2NTIxNVowIwYJ
-KoZIhvcNAQkEMRYEFAyaTgdoV1RWUhAeBQMHoOVhBFS9MHUGCSsGAQQBgjcQBDFoMGYwWDETMBEG
-CgmSJomT8ixkARkWA2NvbTEWMBQGCgmSJomT8ixkARkWBmNpcnJ1czESMBAGCgmSJomT8ixkARkW
-AmFkMRUwEwYDVQQDEwxhZC1DQVNVQjEtQ0ECCjk4E4kAAQAAEuwwdwYLKoZIhvcNAQkQAgsxaKBm
-MFgxEzARBgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJ
-k/IsZAEZFgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMA0GCSqGSIb3DQEB
-AQUABIIBAF7SYYsFm8DgEb26D2m54//rqUW4JXiRJEj96wzsAg0FfQ+xVwWLHPqLpcphxlpJFH4N
-OZ+NTJYv26W7mma5uZbXQaZKNBG++437Tsbdp3PF4oHrqmBxXWz+aShhz4GZE6OHioBMQMVsEiM1
-snZ6xlN8suv8FosCwrOXI02L3LH7mja1ilpVY7I4ZuNxt5OlO//8FyRfV9BuhOpuJQaHUiPG4He+
-nGiQXDTh1V4PoMwyt/C5see14NG73jHP3rj5ibgcOxQtCCafU5uKiN11CNkbx+YDFPTtJaUk+zB1
-18cAz2kPVfYvNubFfiEsli4F02jYV9z0RbJTxpRd4Gmu+0EAAAAAAAA=
-
---Apple-Mail=_F813DC45-F852-412D-9110-CFA07B9281E7--
-
---===============6897993812146541997==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6897993812146541997==--
+Liam
