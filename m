@@ -1,167 +1,65 @@
-From: Prashant Gaikwad <pgaikwad@nvidia.com>
-Subject: [PATCH 8/9] ASoC: tegra: add clk_prepare/clk_unprepare
-Date: Fri, 1 Jun 2012 14:42:47 +0530
-Message-ID: <1338541968-7961-9-git-send-email-pgaikwad@nvidia.com>
-References: <1338541968-7961-1-git-send-email-pgaikwad@nvidia.com>
+From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH RESEND] ASoC: Support TI Isabelle Audio
+	driver
+Date: Fri, 1 Jun 2012 17:54:22 +0530
+Message-ID: <4FC8B476.4030305@ti.com>
+References: <1338289786-2751-1-git-send-email-MR.Swami.Reddy@ti.com>
+	<20120530164008.GO9947@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1338541968-7961-1-git-send-email-pgaikwad@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: swarren@nvidia.com, linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, olof@lixom.net, Prashant Gaikwad <pgaikwad@nvidia.com>, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 672B4103B49
+	for <alsa-devel@alsa-project.org>;
+	Fri,  1 Jun 2012 14:18:43 +0200 (CEST)
+In-Reply-To: <20120530164008.GO9947@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Deshpande A,
+	Vishwas" <Vishwas.A.Deshpande@ti.com>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use clk_prepare/clk_unprepare as required by the generic clk framework.
+Hi Mark,
 
-This patch should go through Tegra tree since other patches to port Tegra
-to generic clock framework are dependent on it. Posting here to get ack from
-the maintainers.
+On Wednesday 30 May 2012 10:10 PM, Mark Brown wrote:
+> On Tue, May 29, 2012 at 04:39:46PM +0530, MR.Swami.Reddy@ti.com wrote:
+>
+>> he below patch is a basic driver code for TI Isabelle audio codec. The
+>> functionalities like headset detection, etc., will be included incrementally
+>> in the up-coming patches.
+> Overall this is very good, there's a few issues below but they're pretty
+> minor and ought to be easy to fix.
 
-Signed-off-by: Prashant Gaikwad <pgaikwad@nvidia.com>
----
- sound/soc/tegra/tegra20_i2s.c      |    4 ++--
- sound/soc/tegra/tegra20_spdif.c    |    4 ++--
- sound/soc/tegra/tegra30_ahub.c     |    8 ++++----
- sound/soc/tegra/tegra30_i2s.c      |    4 ++--
- sound/soc/tegra/tegra_asoc_utils.c |   12 ++++++------
- 5 files changed, 16 insertions(+), 16 deletions(-)
+Thanks for quick review. I will fix these minor issues and update the patch.
+>> +/* codec private data */
+>> +struct isabelle_priv {
+>> +	struct regmap *regmap;
+>> +};
+> If this is all you need then you should be able to use the newly
+> introduced dev_get_regmap() to get the regmap back (other drivers should
+> be being updated for this soon).
+>
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 0c7af63..1647dbf 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -62,7 +62,7 @@ static int tegra20_i2s_runtime_suspend(struct device *dev)
- {
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 
--	clk_disable(i2s->clk_i2s);
-+	clk_disable_unprepare(i2s->clk_i2s);
- 
- 	return 0;
- }
-@@ -72,7 +72,7 @@ static int tegra20_i2s_runtime_resume(struct device *dev)
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = clk_enable(i2s->clk_i2s);
-+	ret = clk_prepare_enable(i2s->clk_i2s);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index f9b5741..2262e4f 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -54,7 +54,7 @@ static int tegra20_spdif_runtime_suspend(struct device *dev)
- {
- 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
- 
--	clk_disable(spdif->clk_spdif_out);
-+	clk_disable_unprepare(spdif->clk_spdif_out);
- 
- 	return 0;
- }
-@@ -64,7 +64,7 @@ static int tegra20_spdif_runtime_resume(struct device *dev)
- 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = clk_enable(spdif->clk_spdif_out);
-+	ret = clk_prepare_enable(spdif->clk_spdif_out);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 57cd419..1efb822 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -56,8 +56,8 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 	regcache_cache_only(ahub->regmap_ahub, true);
- 
--	clk_disable(ahub->clk_apbif);
--	clk_disable(ahub->clk_d_audio);
-+	clk_disable_unprepare(ahub->clk_apbif);
-+	clk_disable_unprepare(ahub->clk_d_audio);
- 
- 	return 0;
- }
-@@ -77,12 +77,12 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
--	ret = clk_enable(ahub->clk_d_audio);
-+	ret = clk_prepare_enable(ahub->clk_d_audio);
- 	if (ret) {
- 		dev_err(dev, "clk_enable d_audio failed: %d\n", ret);
- 		return ret;
- 	}
--	ret = clk_enable(ahub->clk_apbif);
-+	ret = clk_prepare_enable(ahub->clk_apbif);
- 	if (ret) {
- 		dev_err(dev, "clk_enable apbif failed: %d\n", ret);
- 		clk_disable(ahub->clk_d_audio);
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 8596032..d308faa 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -62,7 +62,7 @@ static int tegra30_i2s_runtime_suspend(struct device *dev)
- 
- 	regcache_cache_only(i2s->regmap, true);
- 
--	clk_disable(i2s->clk_i2s);
-+	clk_disable_unprepare(i2s->clk_i2s);
- 
- 	return 0;
- }
-@@ -72,7 +72,7 @@ static int tegra30_i2s_runtime_resume(struct device *dev)
- 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = clk_enable(i2s->clk_i2s);
-+	ret = clk_prepare_enable(i2s->clk_i2s);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/tegra/tegra_asoc_utils.c b/sound/soc/tegra/tegra_asoc_utils.c
-index 9515ce5..6872c77 100644
---- a/sound/soc/tegra/tegra_asoc_utils.c
-+++ b/sound/soc/tegra/tegra_asoc_utils.c
-@@ -69,9 +69,9 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
- 	data->set_baseclock = 0;
- 	data->set_mclk = 0;
- 
--	clk_disable(data->clk_cdev1);
--	clk_disable(data->clk_pll_a_out0);
--	clk_disable(data->clk_pll_a);
-+	clk_disable_unprepare(data->clk_cdev1);
-+	clk_disable_unprepare(data->clk_pll_a_out0);
-+	clk_disable_unprepare(data->clk_pll_a);
- 
- 	err = clk_set_rate(data->clk_pll_a, new_baseclock);
- 	if (err) {
-@@ -87,19 +87,19 @@ int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
- 
- 	/* Don't set cdev1/extern1 rate; it's locked to pll_a_out0 */
- 
--	err = clk_enable(data->clk_pll_a);
-+	err = clk_prepare_enable(data->clk_pll_a);
- 	if (err) {
- 		dev_err(data->dev, "Can't enable pll_a: %d\n", err);
- 		return err;
- 	}
- 
--	err = clk_enable(data->clk_pll_a_out0);
-+	err = clk_prepare_enable(data->clk_pll_a_out0);
- 	if (err) {
- 		dev_err(data->dev, "Can't enable pll_a_out0: %d\n", err);
- 		return err;
- 	}
- 
--	err = clk_enable(data->clk_cdev1);
-+	err = clk_prepare_enable(data->clk_cdev1);
- 	if (err) {
- 		dev_err(data->dev, "Can't enable cdev1: %d\n", err);
- 		return err;
--- 
-1.7.4.1
+The dev_get_regmap() is not found in the 'for-next' or '3.5' branch. So
+this api can't be used with 'for-next' source base. Please advice. 
+>> +static const struct i2c_device_id isabelle_i2c_id[] = {
+>> +	{ "isabelle", 0 },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(i2c, isabelle_i2c_id);
+> This should really include a list of part numbers - the general
+> expecation people have is that they can just register the part number.
+This audio codec has been referred as 'isabelle' in datasheet and no
+specific part number.
+
+Thanks
+Swami
