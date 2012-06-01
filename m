@@ -1,19 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: dapm: Fix connected widget capture path
-	query.
-Date: Fri,  1 Jun 2012 18:03:00 +0100
-Message-ID: <1338570180-12299-1-git-send-email-lrg@ti.com>
+From: Sebastien Guiriec <s-guiriec@ti.com>
+Subject: [PATCH] ASoC: omap-mcbsp: Add pm_runtime_get/put
+	functions call for McBSP.
+Date: Fri, 1 Jun 2012 22:12:52 +0200
+Message-ID: <1338581572-11047-1-git-send-email-s-guiriec@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog128.obsmtp.com (na3sys009aog128.obsmtp.com
-	[74.125.149.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 166B0104582
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C5B710458C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2012 19:03:09 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so1575344wgb.20
-	for <alsa-devel@alsa-project.org>; Fri, 01 Jun 2012 10:03:06 -0700 (PDT)
+	Fri,  1 Jun 2012 22:13:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Make sure we check the correct path for capture.
+pm_runtime_get_sync() and put_sync() are not called by McBSP driver.
+This is introducing a problem with PM and Audio Backend due to
+missing get/put for McBSP IP.
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
+Signed-off-by: Sebastien Guiriec <s-guiriec@ti.com>
 ---
- sound/soc/soc-dapm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/omap/omap-mcbsp.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 3bb7a6f..24ddcb6 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -960,7 +960,7 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		paths = is_connected_output_ep(dai->playback_widget, list);
- 	else
--		paths = is_connected_input_ep(dai->playback_widget, list);
-+		paths = is_connected_input_ep(dai->capture_widget, list);
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 1046083..007d239 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -117,6 +117,8 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int err = 0;
  
- 	trace_snd_soc_dapm_connected(paths, stream);
- 	dapm_clear_walk(&card->dapm);
++	pm_runtime_get_sync(mcbsp->dev);
++
+ 	if (!cpu_dai->active)
+ 		err = omap_mcbsp_request(mcbsp);
+ 
+@@ -165,6 +167,8 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
+ 		omap_mcbsp_free(mcbsp);
+ 		mcbsp->configured = 0;
+ 	}
++
++	pm_runtime_put_sync(mcbsp->dev);
+ }
+ 
+ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
 -- 
-1.7.9.5
+1.7.4.1
