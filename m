@@ -1,86 +1,94 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: fix pxa-ssp compiling issue
-	under mach-mmp
-Date: Fri, 1 Jun 2012 13:52:49 +0100
-Message-ID: <20120601125249.GN24139@opensource.wolfsonmicro.com>
-References: <1338443313-28276-1-git-send-email-zhouqiao@marvell.com>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [alsa-devel] Help requested: new HSS1394 MIDI back-end
+Date: Fri, 1 Jun 2012 15:40:25 +0200
+Message-ID: <20120601154025.40af3e8f@stein>
+References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>
+	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>
+	<4FC5AC47.4060606@mixxx.org> <4FC5C9C8.1000604@ladisch.de>
+	<4FC7EB01.1070306@mixxx.org> <4FC87BD8.8070104@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4320753044130620408=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1338443313-28276-1-git-send-email-zhouqiao@marvell.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <4FC87BD8.8070104@ladisch.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Jun 01 Clemens Ladisch wrote:
+> Sean M. Pappalardo - D.J. Pegasus wrote:
+> > On 05/30/2012 09:18 AM, Clemens Ladisch wrote:
+> >> As it happens, the actual SysEx commands use the wrong manufacturer ID
+> >> ("00 01 02" is Crystal Semiconductor); I could just use the real ID
+> >> (Stanton is "00 01 60") to escape non-MIDI HSS1394 messages.  Let's add
+> >> "HSS" to identify this, and to allow the full byte range, each HSS1394
+> >> byte is split into two nibbles.
 
---===============4320753044130620408==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mI5TpPl/qDRoXxBg"
-Content-Disposition: inline
+It wasn't quite clear (to me) from the start that HSS1394 is not actually
+"MIDI encapsulated in a vendor-defined 1394 transport protocol" but more
+like "a vendor-defined events-and-commands protocol which borrows much
+from MIDI, encapsulated in a vendor-defined 1394 transport protocol".
 
+> > That all sounds good, but that now means that applications that want
+> > to use these device features must have different code for Linux than
+> > they do for Windows or OSX.
 
---mI5TpPl/qDRoXxBg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On the other hand, there is the benefit that applications (multi-platform
+or single-platform, HSS1394 aware or unaware) just have to cope with
+generic ALSA-based MIDI programming when on Linux.
 
-On Thu, May 31, 2012 at 01:48:33PM +0800, Qiao Zhou wrote:
-> pxa-ssp.c uses API like cpu_is_pxa3xx(), cpu_is_pxa2xx(), which is
-> defined under arch-pxa architecture, and drivers under mach-mmp
-> can't find it. so just use ssp->type to replace that API.
+> IIRC it was decided to use a MIDI driver in order to allow other
+> applications to access these devices with standard MIDI APIs.
+> (Does this imply that on Windows and OS X, it is not possible to
+> access them without using the HSS1394 library?)
 
-Still not applying against
+I guess while a HSS1394-to-MIDI driver, sitting between the native 1394
+stack and the native audio and music API, would be just as feasible on
+these two other platforms, only the libhss1394 way was implemented.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.5
+Seeing how small Clemens' driver is, and speculating that a similar OS X
+driver would be about the same amount of code while a Windows driver may
+or may not be bigger, I suspect that the overall code size of such three
+platform specific drivers would actually be less than
+  - the platform independent part of libhss1394,
+  - plus OS X, Windows, and Linux backends in libhss1394,
+  - plus the Thesycon driver which is required by libhss1394 on Windows.
+And then there is the need of applications (on whatever platform) to
+interface with libhss1394 in addition to native MIDI interfaces if these
+applications want to support other MIDI devices too.
 
-for some reason - what did you generate the patch against?
+Granted, if nobody is there to implement the small kernelspace solution
+but somebody is there to implement the bigger userspace solution, then the
+latter is what gets done, for better or worse.
 
-> Change-Id: I0a0671802189f61ff90d984ca577a41627f869fa
+> You could still port the HSS1394 library so that it sits on top of the
+> MIDI driver.  (In other words, the Linux MIDI backend would be the
+> equivalent of the Windows and OS X FireWire backends.)
 
-Shouldn't have this in mainline submissions...
+The current interface between the platform-independent and
+platform-specific parts of libhss1394 resides on a level of abstraction
+similar to the raw1394 interface.  It deals with 1394 node IDs, 1394 bus
+generation, 1394 block transactions and the likes.  (But also with
+interfaces to the platforms' threading APIs etc.)  So, either the Linux
+backend would have to be hooked into libhss1394 somewhere higher than
+that, or it would have to be written as a raw-I/O backend and to ignore
+Clemens' nice ALSA driver.
+-- 
+Stefan Richter
+-=====-===-- -==- ----=
+http://arcgraph.de/sr/
 
---mI5TpPl/qDRoXxBg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPyLrYAAoJEBus8iNuMP3dcgIP/2t5BGXxSKMq/bih77zngoXI
-dyXbPZV1oWUXqUoDtBvYejBbaW7beVJA+jOW37md2QGtybhd4us+f+nwClRY5QPg
-3XSF0g+PYf8b6nun+WDLoe8CyVK8d4F3H+5qw3Mgq7BRWh/5TCsXYF9BXl9zFjYH
-gMx9ilGNLd31tPihloeQ0ZQXKfvNkHiOfzebqtr8Osmk2gwErLmRT97aAU96XIBd
-EvjZjyp1MsZBMjP7N+KhflMBWOAQkrlu8swpuv9xmrLk50s1G5nykQBdvz0ZtoSg
-wAUX3l1maXw8tChvUI0I/Afe339WB0xfh4AFvFH8ftbuiEhHTYX+UIfwvqYVEj/t
-82gtu8Rwb47uiQzZ0VbD2aqnOKQEaCYon7MUB5y9keMBjt2W5LkToj2yl1ajGH78
-prEoIDlpJDRqmlc4IMJV3MrtUZMewqaNALle4g8d56GRPvszK3hJsDxXiWPFNOIj
-3nI1r1C4Qvbh6qGH7Cq0DyN7UhwTtkSUaZ4vYrKpW47UiwYsjkI+Qj1qoksC2/VR
-AEVfNCJMmODGxmr4k/Q2pXyZhm1yRGhjgbYU2KBwHSRqj+dEkaOt3nWx5EYoQ+mG
-9Uvgtn+ggubOLRAZ5TO3EQM0PB09S21SbeO8ATo4guAhH/iUhf6jaMP7mD/rSvu/
-kz0Fjapx1CLIimrIX5x3
-=fO6R
------END PGP SIGNATURE-----
-
---mI5TpPl/qDRoXxBg--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
---===============4320753044130620408==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4320753044130620408==--
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
