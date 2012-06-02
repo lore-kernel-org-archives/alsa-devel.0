@@ -1,19 +1,22 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: Confusion about Playback/Capture, CODEC/CODEC links,
-	and snd_soc_dapm_link_dai_widgets()
-Date: Fri, 01 Jun 2012 16:31:46 -0600
-Message-ID: <4FC942D2.8060803@wwwdotorg.org>
-References: <4FC7F576.30101@wwwdotorg.org>
-	<20120531233702.GA30717@opensource.wolfsonmicro.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: [PATCH] alsa-lib/tlv: fix handling of raw value
+	ranges
+Date: Sat, 2 Jun 2012 09:09:56 +0100
+Message-ID: <CAAMvbhGA=JUMH97V3OD_M2GZ=AqJfhUQMA6e8QXU2WLavzrvgg@mail.gmail.com>
+References: <4F7570D1.2060809@ladisch.de>
+	<3f0367dc-8bd2-4342-99b5-9397ea4189b7@zose-store-12>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id E1E382447E
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C70C2454E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Jun 2012 00:31:51 +0200 (CEST)
-In-Reply-To: <20120531233702.GA30717@opensource.wolfsonmicro.com>
+	Sat,  2 Jun 2012 10:09:57 +0200 (CEST)
+Received: by qcha6 with SMTP id a6so1618040qch.38
+	for <alsa-devel@alsa-project.org>; Sat, 02 Jun 2012 01:09:56 -0700 (PDT)
+In-Reply-To: <3f0367dc-8bd2-4342-99b5-9397ea4189b7@zose-store-12>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,147 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+To: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/31/2012 05:37 PM, Mark Brown wrote:
-> On Thu, May 31, 2012 at 04:49:26PM -0600, Stephen Warren wrote:
->> [ having problems getting codec/codec DAI links working] 
-...
-> It's really hard to comment in much more detail, you've not shown enough
-> information.  What are the DAI links connecting the devices?  Is the
-> rest of the DAPM path through the system connected?  My best guess is
-> that (possibly due to the linking of the playback widgets) you don't
-> have a full DAPM path.
-
-Here's hopefully everything:
-
-I'm playing back audio on CPU DAI named APBIF0. This is connected to
-AHUB XBAR DAI also named APBIF0. This link appears to be working, since
-the XBAR's stream node is active:
-
-# cat tegra30-ahub-xbar/dapm/APBIF0\ Receive
-APBIF0 Receive: On  in 1 out 1
- stream APBIF0 Receive active
- out "static" "APBIF0 RX"
-
-Tracing the path through the XBAR, the paths seem set up OK, but nothing
-else is active:
-
-# cat tegra30-ahub-xbar/dapm/APBIF0\ RX
-APBIF0 RX: Off  in 1 out 0
- in  "static" "APBIF0 Receive"
- out "APBIF0 RX" "I2S1 Mux"
-
-# cat tegra30-ahub-xbar/dapm/I2S1\ Mux
-I2S1 Mux: Off  in 1 out 0
- in  "APBIF0 RX" "APBIF0 RX"
- out "static" "I2S1 TX"
-
-# cat tegra30-ahub-xbar/dapm/I2S1\ TX
-I2S1 TX: Off  in 1 out 0
- in  "static" "I2S1 Mux"
- out "static" "I2S1 Transmit"
-
-# cat tegra30-ahub-xbar/dapm/I2S1\ Transmit
-I2S1 Transmit: Off  in 1 out 0
- stream I2S1 Transmit inactive
- in  "static" "I2S1 TX"
-
-There is also a DAI link from XBAR's I2S1 TX/Transmit to the I2S
-controller's CIF Receive/RX, which appears to have been linked correctly
-since both DAI names show up in the I2S controller's CIF Receive stream
-debugfs file (see "in" line):
-
-# cat tegra30-i2s.1/dapm/CIF\ Receive
-CIF Receive: Off  in 0 out 0
- stream CIF Receive inactive
- in  "static" "I2S1 Transmit-CIF Receive"
- out "static" "CIF RX"
-
-(I assume that the "in" line of the AHUB's "APBIF0 Receive" debugfs file
-way above is only "APBIF0" instead of "APBIF0-APBIF0" since it's a
-cpu/codec link not a codec/codec link?)
-
-And again, the path through the I2S controller looks complete:
-
-# cat tegra30-i2s.1/dapm/CIF\ RX
-CIF RX: Off  in 0 out 0
- in  "static" "CIF Receive"
- out "static" "DAP TX"
-
-# cat tegra30-i2s.1/dapm/DAP\ TX
-DAP TX: Off  in 0 out 0
- in  "static" "CIF RX"
- out "static" "DAP Transmit"
-
-# cat tegra30-i2s.1/dapm/DAP\ Transmit
-DAP Transmit: Off  in 0 out 0
- stream DAP Transmit inactive
- in  "static" "DAP TX"
-
-Finally, there's a DAI link from the I2S controller's DAP DAI to the
-WM8903's DAI, which again shows up in the debugfs file:
-
-# cat wm8903.4-001a/dapm/Playback
-Playback: Off  in 0 out 8
- stream Playback inactive
- in  "static" "DAP Transmit-Playback"
- out "static" "AIFRXL"
- out "static" "AIFRXR"
- out "static" "AIFRXL"
- out "static" "AIFRXR"
-
-For completeness, here's the route through the WM8903, although nothing
-in that codec has changed since before I started reworking the Tegra
-drivers:
-
-# cd wm8903.4-001a/dapm/
-
-# cat AIFRXL
-AIFRXL: Off  in 0 out 2
- stream Left Playback inactive
- in  "static" "Playback"
- in  "static" "Playback"
- out "Left" "Left Playback Mux"
-
-# cat Left\ Playback\ Mux
-Left Playback Mux: Off  in 0 out 2
- in  "Left" "AIFRXL"
- out "static" "DACL"
-
-# cat DACL
-DACL: Off  in 0 out 2 - R18(0x12) bit 3
- in  "static" "CLK_DSP"
- in  "static" "DACL Sidetone"
- in  "static" "Left Playback Mux"
- out "DACL Switch" "Left Speaker Mixer"
- out "DACL Switch" "Left Output Mixer"
-
-# cat Left\ Speaker\ Mixer
-Left Speaker Mixer: Off  in 0 out 2 - R16(0x10) bit 1
- in  "DACL Switch" "DACL"
- out "static" "Left Speaker PGA"
-
-# cat Left\ Speaker\ PGA
-Left Speaker PGA: Off  in 0 out 2 - R17(0x11) bit 1
- in  "static" "Left Speaker Mixer"
- out "static" "LON"
- out "static" "LOP"
-
-# cat LON
-LON: Off  in 0 out 1
- in  "static" "Left Speaker PGA"
- out "static" "Int Spk"
-
-# amixer cget name='Int Spk Switch'
-numid=87,iface=MIXER,name='Int Spk Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-
-(I do note that on IRC you said soc-pcm might be a better fit for this
-HW now, but since I figure I'm very close, I'd like to get this working
-and experiment with it a bit either way)
-
-Thanks so much for the help.
+T24gMzAgTWFyY2ggMjAxMiAxMTo0MSwgQmVub8OudCBUaMOpYmF1ZGVhdQo8YmVub2l0LnRoZWJh
+dWRlYXVAYWR2YW5zZWUuY29tPiB3cm90ZToKPiBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4+IEJl
+bm/DrnQgVGjDqWJhdWRlYXUgd3JvdGU6Cj4+ID4gSW4gY2FzZSBvZiBhIFRMViBkQiByYW5nZSB3
+aXRoIGFsbCBpdGVtcyBoYXZpbmcgcmF3IHZhbHVlIHJhbmdlcwo+PiA+IHN0cmljdGx5IHdpdGhp
+bgo+PiA+IHRoZSBtYWluIHJhdyB2YWx1ZSByYW5nZSByZXBvcnRlZCBieSB0aGUgZHJpdmVyLAo+
+PiA+IHNuZF90bHZfY29udmVydF9mcm9tX2RCKCkKPj4gPiByZXR1cm5lZCBvbmUgb2YgdGhlIG1h
+aW4gcmF3IHJhbmdlIGJvdW5kYXJpZXMsIHdoaWNoIHdhcyBvdXRzaWRlCj4+ID4gYWxsIGRCIHJh
+bmdlCj4+ID4gaXRlbXMuCj4+Cj4+IEJ1dCB0aGUgbWFpbiByYXcgcmFuZ2UgYm91bmRhcmllcyBf
+YXJlXyB2YWxpZCB2YWx1ZXMuCj4KPiBOb3QgYWx3YXlzLiBGb3IgaW5zdGFuY2UsIGlmIGEgY29k
+ZWMgcmVnaXN0ZXIgaGFzIHRoZSBmb2xsb3dpbmcgdm9sdW1lIHZhbHVlczoKPiAweDAwIHRvIDB4
+MjA6IHByb2hpYml0ZWQKPiAweDIxIHRvIDB4NDA6IHNvbWUgZEIgdmFsdWVzCj4gMHg0MSB0byAw
+eDYwOiBwcm9oaWJpdGVkCj4gMHg2MSB0byAweGZmOiBzb21lIGRCIHZhbHVlcwo+CgpJbiB0aGUg
+dXNlcnNwYWNlIHRvIGtlcm5lbCBpbnRlcmZhY2UuIEEgbWl4ZXIgY29udHJvbCBtdXN0IGhhdmUg
+bWluL21heCB2YWx1ZXMuCldoZW4gd3JpdGluZyB0aGUgdmFsdWUsIGFsbCB2YWx1ZXMgd2l0aGlu
+IHRoZSByYW5nZSBvZiBtaW4gdG8gbWF4IG11c3QKYmUgdmFsaWQgdmFsdWVzLgpUaGVyZSBhcmUg
+anVzdCB0b28gbWFueSB1c2VyIGxhbmQgdG9vbHMgdGhhdCByZWx5IG9uIHRoaXMgZmFjdC4KVGhp
+bmsgb2YgdGhlIHVzZSBjYXNlIG9yICJOZXh0IHN0ZXAgbG91ZGVyIHBsZWFzZSIuIElmIHRoZSBj
+dXJyZW50bHkKd3JpdHRlbiB2YWx1ZSBpcyAweDQwLCB0aGUgY3VycmVudCB1c2VyIGxhbmQgbWl4
+ZXIgYXBwcyB3b3VsZCB0cnkgdG8Kd3JpdGUgMHg0MSwgd2l0aG91dCBldmVuIGJvdGhlcmluZyB0
+byBsb29rIGF0IHRoZSBkQiB0YWJsZXMuCklmIHlvdSBpbnN0ZWFkIGNoYW5nZSB0aGUgZHJpdmVy
+IHRvIG1hcDoKMHgyMSB0byAweDQwIC0+IDB4MDAgdG8gMHgxZgoweDYxIHRvIDB4ZmYgLT4gMHgy
+MCB0byAweEJFCmFuZCBzZXQgbWluIHRvIDAsIGFuZCBtYXggdG8gMHhiZQpUaGUgdXNlciBzcGFj
+ZSB0b29scyB3aWxsIHRoZW4gd29yayBmaW5lLgoKVGhlIGRCIGNvbnZlcnNpb24gdGFibGVzIGFy
+ZSBqdXN0IGEgZnJpZW5kbHkgd2F5IG9mIGRpc3BsYXlpbmcgYQpzbGlnaHRseSBtb3JlIHVzZWZ1
+bCBmaWd1cmUgdG8gdGhlIHVzZXIgdGhhbiBhIHBlcmNlbnRhZ2UuCklmIHlvdSBoYXZlIGhhcmR3
+YXJlIHdpdGggZ2FwcyBsaWtlIHRoZSBhYm92ZSwgdGhlIGtlcm5lbCBkcml2ZXIgd2lsbApoYXZl
+IHRvIGJlIGZpeGVkIHRvIHJlbW92ZSB0aGUgcHJvaGliaXRlZCByYW5nZXMgaW4gdGhlIGtlcm5l
+bCB0bwp1c2Vyc3BhY2UgQVBJLgpUaGlzIHNvcnQgb2YgY29udmVyc2lvbiBpcyBkb25lIGluIG1h
+bnkgb3RoZXIgYWxzYSBrZXJuZWwgZHJpdmVycy4KCktpbmQgUmVnYXJkcwoKSmFtZXMKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
