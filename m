@@ -1,15 +1,17 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: dapm_widget_power_read_file() symmetry issue?
-Date: Mon, 04 Jun 2012 16:39:57 -0600
-Message-ID: <4FCD393D.3040205@wwwdotorg.org>
+From: learnom learnom <learnom1@gmail.com>
+Subject: McBSP in TDM for audio codec
+Date: Mon, 4 Jun 2012 16:37:27 -0700
+Message-ID: <CADU0PKEAQtEP_26YwyiKXg0tVO=aAH9fDUuk7cohNG51nUHRFA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D0FE243A5
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id B48FF243DD
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 00:40:01 +0200 (CEST)
+	Tue,  5 Jun 2012 01:37:27 +0200 (CEST)
+Received: by lagw12 with SMTP id w12so3274438lag.38
+	for <alsa-devel@alsa-project.org>; Mon, 04 Jun 2012 16:37:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,21 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In dapm_widget_power_read_file(), there is first:
+Hi All,
 
-> 	list_for_each_entry(p, &w->sources, list_sink) {
-> 		if (p->connected && !p->connected(w, p->sink))
-> 			continue;
+I have to support 4 channels in I2S format in TDM mode.
+Processor: OMAP 3703
 
-then right after that:
+If any one have any idea on how to go about this. Please let me know.
 
-> 	list_for_each_entry(p, &w->sinks, list_source) {
-> 		if (p->connected && !p->connected(w, p->sink))
-> 			continue;
-
-Should that last call to p->connected() be p->connected(p->source, w),
-since the function's parameters are (source, sink)?
+Thanks,
+learnom
