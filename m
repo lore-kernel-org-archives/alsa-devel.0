@@ -1,18 +1,18 @@
-From: Richard Zhao <richard.zhao@freescale.com>
-Subject: [PATCH v2 REBASE] ASoC: imx-audmux: add pinctrl support
-Date: Mon, 4 Jun 2012 09:42:54 +0800
-Message-ID: <1338774174-3960-2-git-send-email-richard.zhao@freescale.com>
-References: <1338774174-3960-1-git-send-email-richard.zhao@freescale.com>
+From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH v2] ASoC: Support TI Isabelle Audio driver
+Date: Mon, 4 Jun 2012 11:05:46 +0530
+Message-ID: <4FCC4932.5040005@ti.com>
+References: <1338569371-18002-1-git-send-email-MR.Swami.Reddy@ti.com>
+	<172CCDCD-FA24-4B57-A525-7B649AAD62F6@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
-	(tx2ehsobe004.messaging.microsoft.com [65.55.88.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1BBA8103EDF
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F5BC103EFB
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2012 03:43:06 +0200 (CEST)
-In-Reply-To: <1338774174-3960-1-git-send-email-richard.zhao@freescale.com>
+	Mon,  4 Jun 2012 07:29:53 +0200 (CEST)
+In-Reply-To: <172CCDCD-FA24-4B57-A525-7B649AAD62F6@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +22,160 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: shawn.guo@linaro.org, broonie@opensource.wolfsonmicro.com, Richard Zhao <richard.zhao@freescale.com>, kernel@pengutronix.de, dong.aisheng@linaro.org, timur@freescale.com
+To: "Austin, Brian" <Brian.Austin@cirrus.com>
+Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<broonie@opensource.wolfsonmicro.com>" <broonie@opensource.wolfsonmicro.com>, "Deshpande A,
+	Vishwas" <Vishwas.A.Deshpande@ti.com>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Zhao <richard.zhao@freescale.com>
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
----
-Rebase to 3.5rc1.
+On Friday 01 June 2012 10:21 PM, Austin, Brian wrote:
+>> +
+>> +#ifndef _ISABELLE_H
+>> +#define _ISABELLE_H
+>> +
+>> +#include <linux/bitops.h>
+>> +
+>> +/* ISABELLE REGISTERS */
+>> +
+>> +#define ISABELLE_PWR_CFG_REG		0x01
+>> +#define ISABELLE_PWR_EN_REG		0x02
+>> +#define ISABELLE_PS_EN1_REG		0x03
+>> +#define ISABELLE_INT1_STATUS_REG	0x04
+>> +#define ISABELLE_INT1_MASK_REG		0x05
+>> +#define ISABELLE_INT2_STATUS_REG	0x06
+>> +#define ISABELLE_INT2_MASK_REG		0x07
+>> +#define ISABELLE_HKCTL1_REG		0x08
+>> +#define ISABELLE_HKCTL2_REG		0x09
+>> +#define ISABELLE_HKCTL3_REG		0x0A
+>> +#define ISABELLE_ACCDET_STATUS_REG	0x0B
+>> +#define ISABELLE_BUTTON_ID_REG		0x0C
+>> +#define ISABELLE_PLL_CFG_REG		0x10
+>> +#define ISABELLE_PLL_EN_REG		0x11
+>> +#define ISABELLE_FS_RATE_CFG_REG	0x12
+>> +#define ISABELLE_INTF_CFG_REG		0x13
+>> +#define ISABELLE_INTF_EN_REG		0x14
+>> +#define ISABELLE_ULATX12_INTF_CFG_REG	0x15
+>> +#define ISABELLE_DL12_INTF_CFG_REG	0x16
+>> +#define ISABELLE_DL34_INTF_CFG_REG	0x17
+>> +#define ISABELLE_DL56_INTF_CFG_REG	0x18
+>> +#define ISABELLE_ATX_STPGA1_CFG_REG	0x19
+>> +#define ISABELLE_ATX_STPGA2_CFG_REG	0x1A
+>> +#define ISABELLE_VTX_STPGA1_CFG_REG	0x1B
+>> +#define ISABELLE_VTX2_STPGA2_CFG_REG	0x1C
+>> +#define ISABELLE_ATX1_DPGA_REG		0x1D
+>> +#define ISABELLE_ATX2_DPGA_REG		0x1E
+>> +#define ISABELLE_VTX1_DPGA_REG		0x1F
+>> +#define ISABELLE_VTX2_DPGA_REG		0x20
+>> +#define ISABELLE_TX_INPUT_CFG_REG	0x21
+>> +#define ISABELLE_RX_INPUT_CFG_REG	0x22
+>> +#define ISABELLE_RX_INPUT_CFG2_REG	0x23
+>> +#define ISABELLE_VOICE_HPF_CFG_REG	0x24
+>> +#define ISABELLE_AUDIO_HPF_CFG_REG	0x25
+>> +#define ISABELLE_RX1_DPGA_REG		0x26
+>> +#define ISABELLE_RX2_DPGA_REG		0x27
+>> +#define ISABELLE_RX3_DPGA_REG		0x28
+>> +#define ISABELLE_RX4_DPGA_REG		0x29
+>> +#define ISABELLE_RX5_DPGA_REG		0x2A
+>> +#define ISABELLE_RX6_DPGA_REG		0x2B
+>> +#define ISABELLE_ALU_TX_EN_REG		0x2C
+>> +#define ISABELLE_ALU_RX_EN_REG		0x2D
+>> +#define ISABELLE_IIR_RESYNC_REG		0x2E
+>> +#define ISABELLE_ABIAS_CFG_REG		0x30
+>> +#define ISABELLE_DBIAS_CFG_REG		0x31
+>> +#define ISABELLE_MIC1_GAIN_REG		0x32
+>> +#define ISABELLE_MIC2_GAIN_REG		0x33
+>> +#define ISABELLE_AMIC_CFG_REG		0x34
+>> +#define ISABELLE_DMIC_CFG_REG		0x35
+>> +#define ISABELLE_APGA_GAIN_REG		0x36
+>> +#define ISABELLE_APGA_CFG_REG		0x37
+>> +#define ISABELLE_TX_GAIN_DLY_REG	0x38
+>> +#define ISABELLE_RX_GAIN_DLY_REG	0x39
+>> +#define ISABELLE_RX_PWR_CTRL_REG	0x3A
+>> +#define ISABELLE_DPGA1LR_IN_SEL_REG	0x3B
+>> +#define ISABELLE_DPGA1L_GAIN_REG	0x3C
+>> +#define ISABELLE_DPGA1R_GAIN_REG	0x3D
+>> +#define ISABELLE_DPGA2L_IN_SEL_REG	0x3E
+>> +#define ISABELLE_DPGA2R_IN_SEL_REG	0x3F
+>> +#define ISABELLE_DPGA2L_GAIN_REG	0x40
+>> +#define ISABELLE_DPGA2R_GAIN_REG	0x41
+>> +#define ISABELLE_DPGA3LR_IN_SEL_REG	0x42
+>> +#define ISABELLE_DPGA3L_GAIN_REG	0x43
+>> +#define ISABELLE_DPGA3R_GAIN_REG	0x44
+>> +#define ISABELLE_DAC1_SOFTRAMP_REG	0x45
+>> +#define ISABELLE_DAC2_SOFTRAMP_REG	0x46
+>> +#define ISABELLE_DAC3_SOFTRAMP_REG	0x47
+>> +#define ISABELLE_DAC_CFG_REG		0x48
+>> +#define ISABELLE_EARDRV_CFG1_REG	0x49
+>> +#define ISABELLE_EARDRV_CFG2_REG	0x4A
+>> +#define ISABELLE_HSDRV_GAIN_REG		0x4B
+>> +#define ISABELLE_HSDRV_CFG1_REG		0x4C
+>> +#define ISABELLE_HSDRV_CFG2_REG		0x4D
+>> +#define ISABELLE_HS_NG_CFG1_REG		0x4E
+>> +#define ISABELLE_HS_NG_CFG2_REG		0x4F
+>> +#define ISABELLE_LINEAMP_GAIN_REG	0x50
+>> +#define ISABELLE_LINEAMP_CFG_REG	0x51
+>> +#define ISABELLE_HFL_VOL_CTRL_REG	0x52
+>> +#define ISABELLE_HFL_SFTVOL_CTRL_REG	0x53
+>> +#define ISABELLE_HFL_LIM_CTRL_1_REG	0x54
+>> +#define ISABELLE_HFL_LIM_CTRL_2_REG	0x55
+>> +#define ISABELLE_HFR_VOL_CTRL_REG	0x56
+>> +#define ISABELLE_HFR_SFTVOL_CTRL_REG	0x57
+>> +#define ISABELLE_HFR_LIM_CTRL_1_REG	0x58
+>> +#define ISABELLE_HFR_LIM_CTRL_2_REG	0x59
+>> +#define ISABELLE_HF_MODE_REG		0x5A
+>> +#define ISABELLE_HFLPGA_CFG_REG		0x5B
+>> +#define ISABELLE_HFRPGA_CFG_REG		0x5C
+>> +#define ISABELLE_HFDRV_CFG_REG		0x5D
+>> +#define ISABELLE_PDMOUT_CFG1_REG	0x5E
+>> +#define ISABELLE_PDMOUT_CFG2_REG	0x5F
+>> +#define ISABELLE_PDMOUT_L_WM_REG	0x60
+>> +#define ISABELLE_PDMOUT_R_WM_REG	0x61
+>> +#define ISABELLE_HF_NG_CFG1_REG		0x62
+>> +#define ISABELLE_HF_NG_CFG2_REG		0x63
+>> +
+>> +/* ISABELLE_PWR_EN_REG (0x02h) */
+>> +#define ISABELLE_CHIP_EN		BIT(0)
+>> +
+>> +/* ISABELLE DAI FORMATS */
+>> +#define ISABELLE_AIF_FMT_MASK		0x70
+>> +#define ISABELLE_I2S_MODE		0x0
+>> +#define ISABELLE_LEFT_J_MODE		0x1
+>> +#define ISABELLE_PDM_MODE		0x2
+>> +
+>> +#define ISABELLE_AIF_LENGTH_MASK	0x30
+>> +#define ISABELLE_AIF_LENGTH_20		0x00
+>> +#define ISABELLE_AIF_LENGTH_32		0x10
+>> +
+>> +#define ISABELLE_AIF_MS			0x80
+>> +
+>> +#define ISABELLE_FS_RATE_MASK		0xF
+>> +#define ISABELLE_FS_RATE_8		0x0
+>> +#define ISABELLE_FS_RATE_11		0x1
+>> +#define ISABELLE_FS_RATE_12		0x2
+>> +#define ISABELLE_FS_RATE_16		0x4
+>> +#define ISABELLE_FS_RATE_22		0x5
+>> +#define ISABELLE_FS_RATE_24		0x6
+>> +#define ISABELLE_FS_RATE_32		0x8
+>> +#define ISABELLE_FS_RATE_44		0x9
+> This all needs to be name spaced correctly please.
+>
+All the above name spaced as :
+   1.   #define   X_XX_REG
+           Where   X -> is the audio codec name
+                        XX -> Name of the register name as per the
+datasheet.
 
- sound/soc/fsl/imx-audmux.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+  2.   #define   X_XX_MASK
+            Where   X -> is the audio codec name
+                        XX -> Specific functionality
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index f237003..0803274 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -26,6 +26,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/pinctrl/consumer.h>
- 
- #include "imx-audmux.h"
- 
-@@ -249,6 +250,7 @@ EXPORT_SYMBOL_GPL(imx_audmux_v2_configure_port);
- static int __devinit imx_audmux_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-+	struct pinctrl *pinctrl;
- 	const struct of_device_id *of_id =
- 			of_match_device(imx_audmux_dt_ids, &pdev->dev);
- 
-@@ -257,6 +259,12 @@ static int __devinit imx_audmux_probe(struct platform_device *pdev)
- 	if (!audmux_base)
- 		return -EADDRNOTAVAIL;
- 
-+	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-+	if (IS_ERR(pinctrl)) {
-+		dev_err(&pdev->dev, "setup pinctrl failed!");
-+		return PTR_ERR(pinctrl);
-+	}
-+
- 	audmux_clk = clk_get(&pdev->dev, "audmux");
- 	if (IS_ERR(audmux_clk)) {
- 		dev_dbg(&pdev->dev, "cannot get clock: %ld\n",
--- 
-1.7.5.4
+  3.   #define   X_XX   
+            Where   X -> is the audio codec name
+                        XX -> Specific functionality
+           This macro used as offset/enumeration to the MASK #define  (2).
+
+Thanks
+swami
+
+
+Thanks
+Swami           
