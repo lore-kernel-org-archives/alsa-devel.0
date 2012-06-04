@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: lm49453: Remove version.h header
-	file inclusion
-Date: Mon, 4 Jun 2012 10:56:05 +0100
-Message-ID: <20120604095605.GG3943@opensource.wolfsonmicro.com>
-References: <1338744520-11873-1-git-send-email-sachin.kamat@linaro.org>
+Subject: Re: [PATCH v2] ASoC: Support TI Isabelle Audio driver
+Date: Mon, 4 Jun 2012 11:37:54 +0100
+Message-ID: <20120604103753.GF7538@opensource.wolfsonmicro.com>
+References: <1338569514-18106-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7407314292010523176=="
+Content-Type: multipart/mixed; boundary="===============1144348220988368320=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 864AE104172
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B6B72490B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2012 11:56:06 +0200 (CEST)
-In-Reply-To: <1338744520-11873-1-git-send-email-sachin.kamat@linaro.org>
+	Mon,  4 Jun 2012 12:37:56 +0200 (CEST)
+In-Reply-To: <1338569514-18106-1-git-send-email-MR.Swami.Reddy@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: alsa-devel@alsa-project.org, patches@linaro.org, mr.swami.reddy@ti.com
+To: MR.Swami.Reddy@ti.com
+Cc: alsa-devel@alsa-project.org, vishwas.a.deshpande@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7407314292010523176==
+--===============1144348220988368320==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xjyYRNSh/RebjC6o"
+	protocol="application/pgp-signature"; boundary="5CUMAwwhRxlRszMD"
 Content-Disposition: inline
 
 
---xjyYRNSh/RebjC6o
+--5CUMAwwhRxlRszMD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 03, 2012 at 10:58:40PM +0530, Sachin Kamat wrote:
-> version.h header file is no longer required.
+On Fri, Jun 01, 2012 at 10:21:54PM +0530, MR.Swami.Reddy@ti.com wrote:
+> From: M R Swami Reddy <MR.Swami.Reddy@ti.com>
+>=20
+> ASoC: Support TI Isabelle Audio driver
+>=20
+> The Isabelle Audio IC is a complete low power high fidelity CODEC with in=
+tegrated
+> ADCs, DACs, decimation and interpolation filters, PLL, and power provider=
+s. This
 
-Applied, thanks.
+Actually, I tried to apply this but the Makefile and Kconfig clearly
+show that whatever thsi was generated against wasn't for-3.6...  I fixed
+it up by hand.
 
---xjyYRNSh/RebjC6o
+--5CUMAwwhRxlRszMD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPzIYsAAoJEBus8iNuMP3djJ0P/jpNcRxXhtPpamus2L8p04TC
-hRaU49XwdJAHV488NIX0/l55VVL6QyKrg28Ej1Kusxvuja4sx0SSdBU1KJ0AzfMq
-HrN34jToyohzmz0EzNlapy4EZXEnN8evh5BH9Hi8GR+o+0YirvSJRg6j9XpbOm96
-vZGIgAC/hYGWIOTNnFJruJ6FlN4Oi15Ajfj7oHtpXeqnSxvh6Hu/1FZAs4pdYXKq
-eZhSfaDCC/KMrPcLNwcHsHIFTix5oXLHgqioI02Y4nlDaqLogsxsKRbFu3HyX0am
-2NekLyCBTihQYXtGSFqBoBS3fxzycf492bKfEYLzDUcApFuvCD7Tgw8ZANBmnYq5
-7f5HuvSx1xm2f3WXlHh9+SBzU4nuGQ8mmUhEUZo9nE4e42/hE0MaNwddu2IRtCFn
-1I0ynD/REMYFeQQykS8N6tbGzK998OvpKJw1VqYP9SU6rdStVDSviUwe1WhSDkDj
-zfmwMzP3ae4ol+laTPnZdl3JXtvblkcKueVGxsf3SjboaXQ7UHkyZhm6eM6ZiMTJ
-dslzF2DoRbP8S4vDsWVfEZ+nQIEDmMrgWHfBOU6471Kg3pQg4I4Ko4Digkq7yo66
-zCEFEGqzdDrtgf/RN9lGjXzGZtInn8Z0e1g73Q1s6FKA51F0Fsi6YwgrYurXf+MP
-cCo6UrIU1dcPmBAl+OxA
-=1Tx1
+iQIcBAEBAgAGBQJPzI/sAAoJEBus8iNuMP3dxRMP+QG1b2s1Atzr7L+EurcdtCk7
+uLACh0R+mR4f1Pf9J8cbyPTGWnw2zaJa9duOgmix/JuVoXyfIPITkKITavWXaFtP
+m54MHmHVqWzjC4Mcpmg2CFRklvb+ooAPlmGunOJ1SbnlLsdS5gGPuVBEa3lr8DPO
+UFtYBz5XMOEJOF88Otz+soE2QwQ7AzxSRY55YDOm6096r1eJRnrtufk5QauQwxOz
+2bnAymF25H2ahPjGaIiK/s/nkTjHYDMeT/dBRGKmN6BYk6EZ5dQR8M/PdhJ3VQLk
+ZNO8mGm8Q9PgKA2R3Vd8swSwDYVMUeyADb6ZZmJIiS+1PATBKNo0rrznU/IDXMZD
+g0wgOtLAu6zMQkE0HUxQldekFuRmMbSlgcpgQvWuwhKpvviiPZ7hM+fFUCK2ClTD
+8pq0Pi02rXVru3QXBf6TKZskRDlwcviHUgK4gDffRLKYUIINDpPKhcz7KdgF5AgO
+y5qEpTYAsvVRFzhho1MoSXVGm3OPosjInA5CW987jmtsFtozQ5j7cMOjVumJUNFP
+FPR+rKD/3xAUPePfeL+VKzEKhGz8uNYcJV9uRoWzHkPkoCG6JOg66bxF1D6SasxB
+LgJdoyNtfMuM4724gLTUir2k2QpGx/D6Mra7A/CHNwYRqiLUXoHxN3Fu22mnakaq
+J188dPKkA7alM00e1Mg+
+=jZ29
 -----END PGP SIGNATURE-----
 
---xjyYRNSh/RebjC6o--
+--5CUMAwwhRxlRszMD--
 
---===============7407314292010523176==
+--===============1144348220988368320==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7407314292010523176==--
+--===============1144348220988368320==--
