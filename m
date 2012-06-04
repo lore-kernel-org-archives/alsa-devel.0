@@ -1,18 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Analog Mono Output and Mono Input
-Date: Mon, 4 Jun 2012 09:30:14 +0800
-Message-ID: <CAN8ccibJxcCbakfHwo3v5UFGzGgDiPBiG7dz7Ae7SGhAw8tBfA@mail.gmail.com>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: [PATCH v2 REBASE] ASoC: fsl_ssi: convert to use
+	devm_clk_get
+Date: Mon, 4 Jun 2012 09:42:53 +0800
+Message-ID: <1338774174-3960-1-git-send-email-richard.zhao@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB2AC103B6F
+Received: from db3outboundpool.messaging.microsoft.com
+	(db3ehsobe003.messaging.microsoft.com [213.199.154.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 48746103EDF
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2012 03:30:14 +0200 (CEST)
-Received: by werh12 with SMTP id h12so2506725wer.38
-	for <alsa-devel@alsa-project.org>; Sun, 03 Jun 2012 18:30:14 -0700 (PDT)
+	Mon,  4 Jun 2012 03:43:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: shawn.guo@linaro.org, broonie@opensource.wolfsonmicro.com, Richard Zhao <richard.zhao@freescale.com>, kernel@pengutronix.de, dong.aisheng@linaro.org, timur@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
->
->> what is the definition of "Mono Output" in pulseaudio ?
->>
->> My three other sound cards does support mono playback and mono capture
->>
->> The system setting/sound in gnome session allow me to select "mono
->> duplex" but when it does not allow me to select "mono output + mono
->> input" in unity session.
->
->
-> That sounds like the known bug I was working on yesterday.
->
+Signed-off-by: Richard Zhao <richard.zhao@freescale.com>
+Acked-by: Timur Tabi <timur@freescale.com>
+---
 
-Although those three sound cards (au8830, emu10k1 and ymfpci) support
-mono playback and capture.
+Rebase to 3.5rc1.
 
-None of them use the AC97 "Master Mono" pin for output.
+ sound/soc/fsl/fsl_ssi.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-gnome speaker-test show only one speaker
-
-"Master Mono Playback Volume" was also removed from emu10k1 driver but
-still exist in au8830 and ymfpci driver
-
-There is no "mono" volume control for capture volume.
-
-There are "LFE on mono" in unity settings/sound in ubuntu 12.04 for
-au8830 and ymfpci which still have "Master Mono Playback Volume" but
-"LFE on mono" is not exist in gnome settings/sound Fedora 17 Live CD
-
-Also My Creative 4.1 speaker set only have green and black jacks
-(Surround40) supported by emu10k1 and au8830
-
-Can anyone explain "Analog Mono Output" and "surround41" in pulseaudio ?
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 4ed2afd..b10a427 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -725,7 +725,7 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
+ 		u32 dma_events[2];
+ 		ssi_private->ssi_on_imx = true;
+ 
+-		ssi_private->clk = clk_get(&pdev->dev, NULL);
++		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+ 		if (IS_ERR(ssi_private->clk)) {
+ 			ret = PTR_ERR(ssi_private->clk);
+ 			dev_err(&pdev->dev, "could not get clock: %d\n", ret);
+@@ -842,10 +842,8 @@ error_dev:
+ 	device_remove_file(&pdev->dev, dev_attr);
+ 
+ error_clk:
+-	if (ssi_private->ssi_on_imx) {
++	if (ssi_private->ssi_on_imx)
+ 		clk_disable_unprepare(ssi_private->clk);
+-		clk_put(ssi_private->clk);
+-	}
+ 
+ error_irq:
+ 	free_irq(ssi_private->irq, ssi_private);
+@@ -871,7 +869,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	if (ssi_private->ssi_on_imx) {
+ 		platform_device_unregister(ssi_private->imx_pcm_pdev);
+ 		clk_disable_unprepare(ssi_private->clk);
+-		clk_put(ssi_private->clk);
+ 	}
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 	device_remove_file(&pdev->dev, &ssi_private->dev_attr);
+-- 
+1.7.5.4
