@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v2] ASoC: Support TI Isabelle Audio driver
-Date: Mon, 4 Jun 2012 11:37:54 +0100
-Message-ID: <20120604103753.GF7538@opensource.wolfsonmicro.com>
+Date: Mon, 4 Jun 2012 11:35:19 +0100
+Message-ID: <20120604103519.GE7538@opensource.wolfsonmicro.com>
 References: <1338569514-18106-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1144348220988368320=="
+Content-Type: multipart/mixed; boundary="===============5409276401921934807=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B6B72490B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 977EA104176
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2012 12:37:56 +0200 (CEST)
+	Mon,  4 Jun 2012 12:41:11 +0200 (CEST)
 In-Reply-To: <1338569514-18106-1-git-send-email-MR.Swami.Reddy@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,60 +25,54 @@ Cc: alsa-devel@alsa-project.org, vishwas.a.deshpande@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1144348220988368320==
+--===============5409276401921934807==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5CUMAwwhRxlRszMD"
+	protocol="application/pgp-signature"; boundary="2qXFWqzzG3v1+95a"
 Content-Disposition: inline
 
 
---5CUMAwwhRxlRszMD
+--2qXFWqzzG3v1+95a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
 On Fri, Jun 01, 2012 at 10:21:54PM +0530, MR.Swami.Reddy@ti.com wrote:
-> From: M R Swami Reddy <MR.Swami.Reddy@ti.com>
->=20
-> ASoC: Support TI Isabelle Audio driver
->=20
-> The Isabelle Audio IC is a complete low power high fidelity CODEC with in=
-tegrated
-> ADCs, DACs, decimation and interpolation filters, PLL, and power provider=
-s. This
 
-Actually, I tried to apply this but the Makefile and Kconfig clearly
-show that whatever thsi was generated against wasn't for-3.6...  I fixed
-it up by hand.
+>    o Used dev_get_regmap and devm_regmap_init_i2c APIs.
 
---5CUMAwwhRxlRszMD
+This looks mostly good so I've applied it but please send an incremental
+patch to remove the use of regmap_exit() - the major point of devm_ APIs
+is that you don't need to explicitly clean things up, removing a class
+of potential leaks.
+
+--2qXFWqzzG3v1+95a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPzI/sAAoJEBus8iNuMP3dxRMP+QG1b2s1Atzr7L+EurcdtCk7
-uLACh0R+mR4f1Pf9J8cbyPTGWnw2zaJa9duOgmix/JuVoXyfIPITkKITavWXaFtP
-m54MHmHVqWzjC4Mcpmg2CFRklvb+ooAPlmGunOJ1SbnlLsdS5gGPuVBEa3lr8DPO
-UFtYBz5XMOEJOF88Otz+soE2QwQ7AzxSRY55YDOm6096r1eJRnrtufk5QauQwxOz
-2bnAymF25H2ahPjGaIiK/s/nkTjHYDMeT/dBRGKmN6BYk6EZ5dQR8M/PdhJ3VQLk
-ZNO8mGm8Q9PgKA2R3Vd8swSwDYVMUeyADb6ZZmJIiS+1PATBKNo0rrznU/IDXMZD
-g0wgOtLAu6zMQkE0HUxQldekFuRmMbSlgcpgQvWuwhKpvviiPZ7hM+fFUCK2ClTD
-8pq0Pi02rXVru3QXBf6TKZskRDlwcviHUgK4gDffRLKYUIINDpPKhcz7KdgF5AgO
-y5qEpTYAsvVRFzhho1MoSXVGm3OPosjInA5CW987jmtsFtozQ5j7cMOjVumJUNFP
-FPR+rKD/3xAUPePfeL+VKzEKhGz8uNYcJV9uRoWzHkPkoCG6JOg66bxF1D6SasxB
-LgJdoyNtfMuM4724gLTUir2k2QpGx/D6Mra7A/CHNwYRqiLUXoHxN3Fu22mnakaq
-J188dPKkA7alM00e1Mg+
-=jZ29
+iQIcBAEBAgAGBQJPzI9EAAoJEBus8iNuMP3d0HIP/2e4FR6oHD79INs3RKs7fcnS
+U1apv1jBHKbLmwnceui6WFZ7PkUvrANCc5Hw3p+75fDmsmnrY8fA+XTI0Tw8HGWp
+zSoxoyh1HNFNXj/82t/MaBv4XlPEa0hLaknTYynqXcMrhUcAHoSUmykMDyglqcgE
+CK0nhJgQ5sf9wsArFc/rgDFRUc67Uei0Gv+prnZ7iW1GEfGcHunSG0UXa8coCCjh
+eJbBetEx36XRa5hQwkyjW4EoZ9CN2U3oUxEeJBFhWweqKtTIKHcjVr0y5C2ztAma
+T67joaLdHT3ssBnF01JrYXdvkh68zHoitUgO5fNBDK6qNqa2+zGY2SdjaCn7f4yJ
+tV8mvxVSCr/FMSVKRddSYoUFEhC+CRnxvpvrpuBbjeyV4dl4CMUYglbVq+e7Ai1v
+4E5w62DVXuvKdzoOs5J1pR4fR8gpV5ZH8TUWEDJl7PPIReTvvo1XeF05r8rB4oAC
+/WgnPo7KqjGcAmSO2sMkuPVXYDJXvIdQtDchmeHgBWah7o9aTnz3dFFAa11g0hFL
+126ANNiygVGt44fYTIePzMAUMHwAXF6RgNI4DHJ+fav3M2Xu/NbDl414qIgzLTtP
+7CfYOg3LA4vZKbbH4lleNnfkO17YuRIcRDaTCYKiuOOwoR85wALwtlUYRUufqnE5
++MJ/4Hgt0M3+mptsYKuc
+=xydE
 -----END PGP SIGNATURE-----
 
---5CUMAwwhRxlRszMD--
+--2qXFWqzzG3v1+95a--
 
---===============1144348220988368320==
+--===============5409276401921934807==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1144348220988368320==--
+--===============5409276401921934807==--
