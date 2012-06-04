@@ -1,22 +1,15 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH v2] ASoC: Support TI Isabelle Audio driver
-Date: Mon, 04 Jun 2012 11:49:16 +0100
-Message-ID: <1338806956.15595.3.camel@odin>
-References: <1338569514-18106-1-git-send-email-MR.Swami.Reddy@ti.com>
-	<20120604103519.GE7538@opensource.wolfsonmicro.com>
-	<4FCC9280.2090706@ti.com>
+From: <MR.Swami.Reddy@ti.com>
+Subject: [PATCH] ASoC:isabelle:Remove regmap_exit()
+Date: Mon, 4 Jun 2012 17:44:54 +0530
+Message-ID: <1338812094-10426-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
-	[74.125.149.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B0A92490F
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E82524942
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2012 12:49:22 +0200 (CEST)
-Received: by weyu7 with SMTP id u7so3429406wey.33
-	for <alsa-devel@alsa-project.org>; Mon, 04 Jun 2012 03:49:18 -0700 (PDT)
-In-Reply-To: <4FCC9280.2090706@ti.com>
+	Mon,  4 Jun 2012 14:09:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: MR Swami Reddy <MR.Swami.Reddy@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Deshpande A,
-	Vishwas" <Vishwas.A.Deshpande@ti.com>
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
+Cc: vishwas.a.deshpande@ti.com, M@alsa-project.org, MR Swami Reddy <MR.Swami.Reddy@ti.com>, Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Swami,
+From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
 
-On Mon, 2012-06-04 at 16:18 +0530, MR Swami Reddy wrote:
-> On Monday 04 June 2012 04:05 PM, Mark Brown wrote:
-> > On Fri, Jun 01, 2012 at 10:21:54PM +0530, MR.Swami.Reddy@ti.com wrote:
-> >
-> >>    o Used dev_get_regmap and devm_regmap_init_i2c APIs.
-> > This looks mostly good so I've applied it but please send an incremental
-> > patch to remove the use of regmap_exit() - the major point of devm_ APIs
-> > is that you don't need to explicitly clean things up, removing a class
-> > of potential leaks.
-> 
-> Thank you.
-> I will remove the regmap_exit() and send the next patch soon.
-> Plz confirm, do I need to send full patch or only removing part for
-> regmap_exit()?
-> 
+ASoC:isabelle:With devm_ APIs regmap_exit() not needed, so remove regmap_exit().
 
-Please send an incremental patch. An incremental patch not be the full
-driver patch, but will just be the changes for regmap_exit().
+Signed-off-by: Vishwas A Deshpande <vishwas.a.deshpande@ti.com>
+Signed-off-by: M R Swami Reddy <mr.swami.reddy@ti.com>
+---
+ sound/soc/codecs/isabelle.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-Regards
-
-Liam
+diff --git a/sound/soc/codecs/isabelle.c b/sound/soc/codecs/isabelle.c
+index 69228ec..bcc77ef 100644
+--- a/sound/soc/codecs/isabelle.c
++++ b/sound/soc/codecs/isabelle.c
+@@ -1141,7 +1141,6 @@ static int __devinit isabelle_i2c_probe(struct i2c_client *i2c,
+ 				ARRAY_SIZE(isabelle_dai));
+ 	if (ret < 0) {
+ 		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
+-		regmap_exit(dev_get_regmap(&i2c->dev, NULL));
+ 		return ret;
+ 	}
+ 
+@@ -1151,7 +1150,6 @@ static int __devinit isabelle_i2c_probe(struct i2c_client *i2c,
+ static int __devexit isabelle_i2c_remove(struct i2c_client *client)
+ {
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(dev_get_regmap(&client->dev, NULL));
+ 	return 0;
+ }
+ 
