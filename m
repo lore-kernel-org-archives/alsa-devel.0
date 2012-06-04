@@ -1,22 +1,16 @@
-From: Sebastien LEDUC <sebastien.leduc@stericsson.com>
-Subject: Re: Confusing about Playback/Capture, CODEC/CODEC links,
- and snd_soc_dapm_link_dai_widgets()
-Date: Mon, 4 Jun 2012 15:02:15 +0200
-Message-ID: <A3217089E06965468FCEC60ADC3A8F925C172270E5@EXDCVYMBSTM006.EQ1STM.local>
-References: <4FC7F576.30101@wwwdotorg.org>
-	<20120531233702.GA30717@opensource.wolfsonmicro.com>
-	<1338570117.5179.2.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: codecs: Add AB8500 codec-driver
+Date: Mon, 4 Jun 2012 15:17:53 +0100
+Message-ID: <20120604141752.GH7538@opensource.wolfsonmicro.com>
+References: <1338547834-22714-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2352170259545762005=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
-	[207.126.144.137])
-	by alsa0.perex.cz (Postfix) with ESMTP id F03242495F
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8A3EB2415E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2012 15:02:23 +0200 (CEST)
-In-Reply-To: <1338570117.5179.2.camel@odin>
-Content-Language: en-US
+	Mon,  4 Jun 2012 16:17:55 +0200 (CEST)
+In-Reply-To: <1338547834-22714-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,73 +20,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Liam
-There seem to be a similar mistake in the implementation of is_connected_output_ep / is_connected_input_ep:
 
-In function is_connected_output_ep:
------------------------------------------------
-
- list_for_each_entry(path, &widget->sinks, list_source) {
-                ...
-                err = dapm_list_add_widget(list, path->sink);
-                ...
-}
-
-In function is_connected_input_ep:
----------------------------------------------
-
-list_for_each_entry(path, &widget->sources, list_sink) {
-...
-                err = dapm_list_add_widget(list, path->sink);
-}
+--===============2352170259545762005==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7J16OGEJ/mt06A90"
+Content-Disposition: inline
 
 
-I would have expected to have for the latter:
-err = dapm_list_add_widget(list, path->source);
+--7J16OGEJ/mt06A90
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-regards
-Sebastien
+On Fri, Jun 01, 2012 at 12:50:34PM +0200, Ola Lilja wrote:
 
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Liam Girdwood
-Sent: Friday, June 01, 2012 7:02 PM
-To: Mark Brown
-Cc: alsa-devel@alsa-project.org; Stephen Warren
-Subject: Re: [alsa-devel] Confusing about Playback/Capture, CODEC/CODEC links, and snd_soc_dapm_link_dai_widgets()
+> +/*
+> + * Extended interface for codec-driver
+> + */
 
-On Fri, 2012-06-01 at 00:37 +0100, Mark Brown wrote:
-> On Thu, May 31, 2012 at 04:49:26PM -0600, Stephen Warren wrote:
+So, a few issues below.  Could you please submit a version with this
+extended API removed or made driver internal as much as possible?  The
+rest of the driver looks good so it'd be good to split this stuff out
+and review separately.
 
-> 
-> This is all working just fine in mainline on littlemill.
-> 
-> > > int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
-> > > 	struct snd_soc_dapm_widget_list **list)
-> > ...
-> > > 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > > 		paths = is_connected_output_ep(dai->playback_widget, list);
-> > > 	else
-> > > 		paths = is_connected_input_ep(dai->playback_widget, list);
-> 
-> > I would have expected this to use capture_widget on the final line, but
-> > I haven't thought about this in detail, just noticed the lack of
-> > symmetry by very brief inspection.
-> 
-> Yes, that looks buggy.  Don't think there's any mainline users so nobody
-> would notice.
+> +int ab8500_audio_init_audioblock(struct snd_soc_codec *codec)
+> +{
+> +	int status;
+> +
+> +	dev_dbg(codec->dev, "%s: Enter.\n", __func__);
+> +
+> +	/* Reset audio-registers and disable 32kHz-clock output 2 */
+> +	status = ab8500_sysctrl_write(AB8500_STW4500CTRL3,
+> +				AB8500_STW4500CTRL3_CLK32KOUT2DIS |
+> +					AB8500_STW4500CTRL3_RESETAUDN,
+> +				AB8500_STW4500CTRL3_RESETAUDN);
+> +	if (status < 0)
+> +		return status;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(ab8500_audio_init_audioblock);
 
-Gah, it's a bug - I did have it fixed before the upstreaming but this
-fix seems to have been lost.
+This is really odd (I'm sure I've queried this on previous versions of
+the driver) - why is something else reinitialising the device?
+Shouldn't the CODEC driver be doing this by itself - if nothing else I'd
+expect it to cause confusion if the device is reinitialised underneath
+the driver?
 
-Patch on it's way.
+I didn't register this last time as I'd assumed that the issue was a
+missing static rather than something else calling the function.
 
-Liam
+> +int ab8500_audio_setup_mics(struct snd_soc_codec *codec,
+> +			struct amic_settings *amics)
+> +{
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Similar thing here, I'd expect this to just be platform data.
+
+> +int ab8500_audio_set_ear_cmv(struct snd_soc_codec *codec,
+> +			enum ear_cm_voltage ear_cmv)
+> +{
+> +	char *cmv_str;
+> +
+> +	switch (ear_cmv) {
+> +	case EAR_CMV_0_95V:
+> +		cmv_str = "0.95V";
+> +		break;
+> +	case EAR_CMV_1_10V:
+> +		cmv_str = "1.10V";
+> +		break;
+> +	case EAR_CMV_1_27V:
+> +		cmv_str = "1.27V";
+> +		break;
+> +	case EAR_CMV_1_58V:
+> +		cmv_str = "1.58V";
+> +		break;
+> +	default:
+> +		dev_err(codec->dev,
+> +			"%s: Unknown earpiece CM-voltage (%d)!\n",
+> +			__func__, (int)ear_cmv);
+> +		return -EINVAL;
+> +	}
+> +	dev_dbg(codec->dev, "%s: Earpiece CM-voltage: %s\n", __func__,
+> +		cmv_str);
+> +	snd_soc_update_bits(codec, AB8500_ANACONF1, AB8500_ANACONF1_EARSELCM,
+> +			ear_cmv);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(ab8500_audio_set_ear_cmv);
+
+This is *possibly* OK, though again it does look platform dataish.
+
+--7J16OGEJ/mt06A90
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPzMOIAAoJEBus8iNuMP3drK8P/i1wtgPrWXlNRrU9EMf1ly7n
+8HPhw7pCVSdYvYoicLXhOs5ta/CU5RWK4FgxAuVoOS8yI4KDi08otBYen3PpmqPD
+nwOy9UgpDdNJKZ7yAbmA1w2GNS6ktP83k+eZ8LvxIP2uCO9h/rIjSscuIcmTZIje
+OWvrgHYiGapU4wt+JLmfgL9wYBGN9/42uezUYKMI3lX6UYAzmWgbzeF3IXBvzzys
+gy0LFA/rCHXqZp7rLwq5t0KvfIfppPin8lMKxAh3itqFyJSjSUlrIIEgA6TXI3/8
+7h59MsO2jVsx1ffucJF965I7Ovvp1EiKq2IPmQ0H30Hz9GpnNeD0FYz0sjayB6Ou
+7WgJdCjE1QhkbdADxy8EkIdpGFOFTXQ4xjFvKxJglGekwuVZZxg+PwmLSpZGw38G
++4rw5mXODgK3EtryIRYmoHzM5mSX5pxWQjk5378DqeX6ojzvp27EkELC71WEo5Bp
+5mGZD1zlqmse+6YUP8nOwU13qY6toENkzz/tG0CoN+BcG2UE7fE+mRK2RdG1AF/A
+1rImeJqFxeiyDr7ZtqWco8pohWb7AzVgaSp9aQ3k3cz9k3z+Fe//6VlNLjQqObIc
+jjyceWdexhzg3WoBmh+Y3UZ7rgmSXuNFwamMq1Ondmd/ljiQIwIwq65H2w0VPQP9
+f8P+Qo1J0EXSBCkoEI6c
+=+4uk
+-----END PGP SIGNATURE-----
+
+--7J16OGEJ/mt06A90--
+
+--===============2352170259545762005==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2352170259545762005==--
