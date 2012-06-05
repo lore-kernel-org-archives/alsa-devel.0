@@ -1,16 +1,20 @@
-From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH] ALSA: hda - add power states information in
-	proc
-Date: Tue,  5 Jun 2012 18:08:10 +0800
-Message-ID: <1338890890-25147-1-git-send-email-xingchao.wang@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 REBASE] ASoC: fsl_ssi: convert to use
+	devm_clk_get
+Date: Tue, 5 Jun 2012 11:14:13 +0100
+Message-ID: <20120605101413.GJ23408@opensource.wolfsonmicro.com>
+References: <1338774174-3960-1-git-send-email-richard.zhao@freescale.com>
+	<20120605064714.GL30400@pengutronix.de>
+	<20120605100316.GG23408@opensource.wolfsonmicro.com>
+	<20120605100851.GI8262@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1842912093003033380=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28E2A10429A
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2FC801042C5
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 12:12:32 +0200 (CEST)
+	Tue,  5 Jun 2012 12:14:15 +0200 (CEST)
+In-Reply-To: <20120605100851.GI8262@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,51 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, swarren@nvidia.com, wangxingchao2011@gmail.com, Wang Xingchao <xingchao.wang@intel.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, Sascha Hauer <s.hauer@pengutronix.de>, Richard Zhao <richard.zhao@freescale.com>, kernel@pengutronix.de, dong.aisheng@linaro.org, timur@freescale.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-add more power states information:
-- reset status
-- clock stop ok
-- power states error
 
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
----
- sound/pci/hda/hda_codec.h |    3 +++
- sound/pci/hda/hda_proc.c  |    6 ++++++
- 2 files changed, 9 insertions(+)
+--===============1842912093003033380==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Xssso5lpTBgMxDfe"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 4fc3960..71864cdd 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -323,6 +323,9 @@ enum {
- #define AC_PWRST_D1			0x01
- #define AC_PWRST_D2			0x02
- #define AC_PWRST_D3			0x03
-+#define AC_PWRST_ERROR                  (1<<8)
-+#define AC_PWRST_CLK_STOP_OK            (1<<9)
-+#define AC_PWRST_SETTING_RESET          (1<<10)
- 
- /* Processing capabilies */
- #define AC_PCAP_BENIGN			(1<<0)
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index e59e2f0..5511de1 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -459,6 +459,12 @@ static void print_power_state(struct snd_info_buffer *buffer,
- 		    get_pwr_state(pwr & AC_PWRST_SETTING),
- 		    get_pwr_state((pwr & AC_PWRST_ACTUAL) >>
- 				  AC_PWRST_ACTUAL_SHIFT));
-+	if (pwr & AC_PWRST_ERROR)
-+		snd_iprintf(buffer, " Power state error\n");
-+	if (pwr & AC_PWRST_CLK_STOP_OK)
-+		snd_iprintf(buffer, " PS: clock stop ok\n");
-+	if (pwr & AC_PWRST_SETTING_RESET)
-+		snd_iprintf(buffer, " Power state setting reset\n");
- }
- 
- static void print_unsol_cap(struct snd_info_buffer *buffer,
--- 
-1.7.9.5
+
+--Xssso5lpTBgMxDfe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 05, 2012 at 11:08:51AM +0100, Russell King - ARM Linux wrote:
+> On Tue, Jun 05, 2012 at 11:03:16AM +0100, Mark Brown wrote:
+
+> > I've not, but I guess there will be an issue.  I'd say the fix here is
+> > on the PowerPC side - it's not good to have to have Kconfig bodges for
+> > things like this in individual drivers.  Ideally we'd add clkdev
+> > support...
+
+> Or get rid of devm_clk_get()'s dependency on CLKDEV (which is in itself
+> silly.)
+
+That'd work too, of course (providing everyone has been implementing
+clk_put()).  Though getting everyone on the same page with the clock API
+seems much more worthwhile if we can do it.
+
+--Xssso5lpTBgMxDfe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJPzdvXAAoJEBus8iNuMP3dDLoP/RsdJUpE/NyXSZVEoBwsgr8J
+DTyiGj+nHlfOFIUxoWzQllJWKNF/pMjcikytrKJOUiZOK0cSTj/a12O4xujJYjrF
+b15owLcRL6L4udxlnwKfpi7NEipFlT9V0uJDhYOiWJVBdlSdDPKagY0XR2Uui1UB
+Iz2I0JLSDnE/m0uNx1dHjFWa3WDkv+4u/oI9nD/rSoDjTPAFxCLhhnVtCT+GYU3h
+yy/5GL3HEvHY/7MtCCbHLaF+BFKmWMkORMSaZc7tIDKIJWXXnbNqKDpLiLNMXafr
+Nzh5+vtNUUQlsIYR8M/Q1n8/6ecmuoAfylh/EPrgdPyEcVVYGttDgR0UTSluy59d
+iiI60cVucsMQT+fTDDR4Cqp+PKKso7zUPad/Z6budhIN7TMl82lttaGqIfGUOpr8
+EN29wsETzSnvY4U1EERJq6h0gf/aOghgRIwtAJext+/WKJfz+62wCJ3YwxJAYJ6M
+IiKNsiOrkwJ1m2Ups2lJkwHdJrHMRJZldIxxzldNIzx8Vug0zRsGPI1St5FlaUI1
+mMeUB3+c+gypWvdJi1FG0P2LyPzQ1utx6oqwsb2Ux2CYrRVBa2uLdWcRPOLQdspA
+oBNU9A6f84bqa5DyzzpHhaLJ2qWx7WPN8oPU/LH2AH9cW8qVmBNw5lq2KjgHklpp
+u5OTnGHtonwJZcuPZzZ5
+=2dYj
+-----END PGP SIGNATURE-----
+
+--Xssso5lpTBgMxDfe--
+
+--===============1842912093003033380==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1842912093003033380==--
