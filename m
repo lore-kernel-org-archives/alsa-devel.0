@@ -1,54 +1,60 @@
-From: Joe Perches <joe@perches.com>
+From: Kay Sievers <kay@vrfy.org>
 Subject: Re: [PATCH 0/8] Rework KERN_<LEVEL>
-Date: Tue, 05 Jun 2012 15:49:32 -0700
-Message-ID: <1338936572.5780.29.camel@joe2Laptop>
+Date: Wed, 06 Jun 2012 00:55:00 +0200
+Message-ID: <1338936900.1157.3.camel@mop>
 References: <cover.1338889066.git.joe@perches.com>
-	<20120605142826.d92316a0.akpm@linux-foundation.org>
-	<1338934303.5780.8.camel@joe2Laptop>
-	<20120605151754.a794ac7c.akpm@linux-foundation.org>
+ <20120605142826.d92316a0.akpm@linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7614D2414F
-	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jun 2012 00:49:36 +0200 (CEST)
-In-Reply-To: <20120605151754.a794ac7c.akpm@linux-foundation.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <devel-bounces@linuxdriverproject.org>
+In-Reply-To: <20120605142826.d92316a0.akpm@linux-foundation.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/devel>,
+ <mailto:devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/devel>
+List-Post: <mailto:devel@linuxdriverproject.org>
+List-Help: <mailto:devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/devel>,
+ <mailto:devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: devel-bounces@linuxdriverproject.org
+Sender: devel-bounces@linuxdriverproject.org
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Kay Sievers <kay.sievers@vrfy.org>, Sievers <kay@vrfy.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Kay@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-btrfs@vger.kernel.org
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Kay Sievers <kay.sievers@vrfy.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Joe Perches <joe@perches.com>, Linus Torvalds <torvalds@linux-foundation.org>, linux-btrfs@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-06-05 at 15:17 -0700, Andrew Morton wrote:
-> On Tue, 05 Jun 2012 15:11:43 -0700
-> Joe Perches <joe@perches.com> wrote:
-> 
-> > On Tue, 2012-06-05 at 14:28 -0700, Andrew Morton wrote:
-> > > Unfortunately the <n> thing is part of the kernel ABI:
-> > > 
-> > > 	echo "<4>foo" > /dev/kmsg
-> > 
-> > Which works the same way it did before.
-> 
-> I didn't say it didn't.
-> 
-> What I did say is that echo "\0014">/dev/kmsg will subvert the intent
-> of the new logging code.  Or might.  But you just ignored all that,
-> forcing me to repeat myself, irritatedly.
+On Tue, 2012-06-05 at 14:28 -0700, Andrew Morton wrote:
 
-It works the same way before and after the patch.
+> devkmsg_writev() does weird and wonderful things with
+> facilities/levels.  That function incorrectly returns "success" when
+> copy_from_user() faults, btw.
 
-Any write to /dev/kmsg without a KERN_<LEVEL>
-emits at (1 << 3) + KERN_DEFAULT.
+Oh. Better?
 
-Writes with <n> values >= 8 are emitted at
-that level.
+Thanks,
+Kay
+
+
+From: Kay Sievers <kay@vrfy.org>
+Subject: kmsg: /dev/kmsg - properly return possible copy_from_user() failure
+
+Reported-By: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Kay Sievers <kay@vrfy.org
+---
+ printk.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/printk.c b/kernel/printk.c
+index 32462d2..6bdacab 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -365,8 +365,10 @@ static ssize_t devkmsg_writev(struct kiocb *iocb, const struct iovec *iv,
+ 
+ 	line = buf;
+ 	for (i = 0; i < count; i++) {
+-		if (copy_from_user(line, iv[i].iov_base, iv[i].iov_len))
++		if (copy_from_user(line, iv[i].iov_base, iv[i].iov_len)) {
++			ret = -EFAULT;
+ 			goto out;
++		}
+ 		line += iv[i].iov_len;
+ 	}
