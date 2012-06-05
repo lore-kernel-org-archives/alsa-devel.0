@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 0/4] omap-abe-twl6040: Device tree
-	support
-Date: Tue, 5 Jun 2012 13:48:03 +0100
-Message-ID: <20120605124803.GU23408@opensource.wolfsonmicro.com>
-References: <1337169425-9449-1-git-send-email-peter.ujfalusi@ti.com>
-	<4FCDFFA2.3060205@ti.com>
+Subject: [PATCH 1/2] ASoC: wm8994: Ensure all AIFnCLK events
+	are run from the _late variants
+Date: Tue,  5 Jun 2012 13:52:19 +0100
+Message-ID: <1338900740-24523-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4903087327820746073=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5A23224642
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 73B6A2464B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 14:48:05 +0200 (CEST)
-In-Reply-To: <4FCDFFA2.3060205@ti.com>
+	Tue,  5 Jun 2012 14:52:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,59 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Benoit Cousson <b-cousson@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Ensure that all the actions get taken at appropriate times by calling the
+_PRE and _POST events for the aifNclk_ev functions explicitly.
 
---===============4903087327820746073==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qpPEP5KwiTnADq8L"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-
---qpPEP5KwiTnADq8L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 05, 2012 at 03:46:26PM +0300, Peter Ujfalusi wrote:
-
-> Can you take a look at patch 4 in this series?
-> The rest of the series has been already applied for 3.5 but the 4th one has
-> been missed.
-
-If this happens you should resend the patch, there's a good chance
-people don't have a copy of it.
-
---qpPEP5KwiTnADq8L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPzf/pAAoJEBus8iNuMP3dwfwP/jjteyvxNnjD8P5sBMio7ecO
-DRKSnwD+ZkuR6DJTBaMR2vN676JGA0+/JdN4PrbWMozqvT9fUpC3f2CAbtWv14gM
-7BK9yjmx0whC6VAeRMa2lwgVE+eNiVbjrYlYiJZmcrT9hbujgmX3Kl4JT/zDR4yc
-q8l1qfI0wU58Nb0s2lHxi3aPNS1BkVAfY1R1WGIyATLVxxH2q4RiA3DJ5memlIk3
-Yp/SxcCefn/pddp8LIBzqjyjR8RIhaBeKVV3v0Dtb5+ZSCeHyIl/qSYFzCNYxHCv
-5lbcCe81KHckc+Q/1ghy1MjpO+NIOqrZpyO5h3GBfigLUUHFj8eZmG9I9FhJFaeE
-WNEMfJ1BhNWRv5mDQxvV8pK3bzB6ef+1rikFnzhJ3e4uWxEFrLI6wVlhXk4vsuJY
-Msg6FPcMhD7C+LXwbm8rLkztmiN6IEyF8xH7Pc+LR/FrJtGCt1jt8OcvIko6rXNc
-sp5MSWtvOPq2J16gnjyiYnCOrZbepEGJZ6EPT8vFYcjbRbZWl3k1PG3izuCD5rNH
-plWbqEV2ZpcbivUdPM76P4WkdDqpqfrWHgfw7XDNQKXTk4wSNZ75QMn3VYirO1YY
-pTELcZkgk6j73tK5PuwN3gjQsnuS0WPqv3Tv7rw7s93lNIvLKnlzOVcuO6BVStfT
-dLcZzMzsz2+LcZRa5CDj
-=c9fT
------END PGP SIGNATURE-----
-
---qpPEP5KwiTnADq8L--
-
---===============4903087327820746073==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4903087327820746073==--
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 993639d..6d3a865 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1190,17 +1190,19 @@ static int late_enable_ev(struct snd_soc_dapm_widget *w,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		if (wm8994->aif1clk_enable) {
+-			aif1clk_ev(w, kcontrol, event);
++			aif1clk_ev(w, kcontrol, SND_SOC_DAPM_PRE_PMU);
+ 			snd_soc_update_bits(codec, WM8994_AIF1_CLOCKING_1,
+ 					    WM8994_AIF1CLK_ENA_MASK,
+ 					    WM8994_AIF1CLK_ENA);
++			aif1clk_ev(w, kcontrol, SND_SOC_DAPM_POST_PMU);
+ 			wm8994->aif1clk_enable = 0;
+ 		}
+ 		if (wm8994->aif2clk_enable) {
+-			aif2clk_ev(w, kcontrol, event);
++			aif2clk_ev(w, kcontrol, SND_SOC_DAPM_PRE_PMU);
+ 			snd_soc_update_bits(codec, WM8994_AIF2_CLOCKING_1,
+ 					    WM8994_AIF2CLK_ENA_MASK,
+ 					    WM8994_AIF2CLK_ENA);
++			aif2clk_ev(w, kcontrol, SND_SOC_DAPM_POST_PMU);
+ 			wm8994->aif2clk_enable = 0;
+ 		}
+ 		break;
+@@ -1221,15 +1223,17 @@ static int late_disable_ev(struct snd_soc_dapm_widget *w,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		if (wm8994->aif1clk_disable) {
++			aif1clk_ev(w, kcontrol, SND_SOC_DAPM_PRE_PMD);
+ 			snd_soc_update_bits(codec, WM8994_AIF1_CLOCKING_1,
+ 					    WM8994_AIF1CLK_ENA_MASK, 0);
+-			aif1clk_ev(w, kcontrol, event);
++			aif1clk_ev(w, kcontrol, SND_SOC_DAPM_POST_PMD);
+ 			wm8994->aif1clk_disable = 0;
+ 		}
+ 		if (wm8994->aif2clk_disable) {
++			aif2clk_ev(w, kcontrol, SND_SOC_DAPM_PRE_PMD);
+ 			snd_soc_update_bits(codec, WM8994_AIF2_CLOCKING_1,
+ 					    WM8994_AIF2CLK_ENA_MASK, 0);
+-			aif2clk_ev(w, kcontrol, event);
++			aif2clk_ev(w, kcontrol, SND_SOC_DAPM_POST_PMD);
+ 			wm8994->aif2clk_disable = 0;
+ 		}
+ 		break;
+-- 
+1.7.10
