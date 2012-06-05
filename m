@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: OMAP: HDMI: Initialize IEC-60958
- channel status word
-Date: Tue, 5 Jun 2012 11:28:21 +0100
-Message-ID: <20120605102821.GO23408@opensource.wolfsonmicro.com>
-References: <1338836836-7396-1-git-send-email-ricardo.neri@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 0/4] omap-abe-twl6040: Device tree
+	support
+Date: Tue, 05 Jun 2012 15:46:26 +0300
+Message-ID: <4FCDFFA2.3060205@ti.com>
+References: <1337169425-9449-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1039919085381374287=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0981A245CC
+Received: from na3sys009aog137.obsmtp.com (na3sys009aog137.obsmtp.com
+	[74.125.149.18]) by alsa0.perex.cz (Postfix) with ESMTP id 816EC24642
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 12:28:24 +0200 (CEST)
-In-Reply-To: <1338836836-7396-1-git-send-email-ricardo.neri@ti.com>
+	Tue,  5 Jun 2012 14:46:33 +0200 (CEST)
+Received: by lbbgg6 with SMTP id gg6so4681440lbb.36
+	for <alsa-devel@alsa-project.org>; Tue, 05 Jun 2012 05:46:30 -0700 (PDT)
+In-Reply-To: <1337169425-9449-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +24,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, lrg@ti.com, s-guiriec@ti.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark, Liam,
 
---===============1039919085381374287==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iEWWOZ/QYGWEaBRW"
-Content-Disposition: inline
+On 05/16/2012 02:57 PM, Peter Ujfalusi wrote:
 
+> Hello,
+> =
 
---iEWWOZ/QYGWEaBRW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jun 04, 2012 at 02:07:15PM -0500, Ricardo Neri wrote:
-> Hi Mark, Liam,
->=20
-> This patch is to fix an bug that I found in K3.5-rc1. As the IEC-60958 ch=
-annel
-> status word is not initialized in hw_params, the params from previous
-> calls corrupt those of the current playback.
-
-Don't send cover letters for single patches, if there's anything useful
-to say say it in the patch.
-
---iEWWOZ/QYGWEaBRW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPzd3zAAoJEBus8iNuMP3du9AP/R9do7EWCagOItBgZ/50VhXB
-vYZiK9CoH4atI9fQjGDq55GCPMfHRmmC27pOOPjh1XhGUUFIX3AufH88Hvr4BcfL
-lkd38w7ifYpc6Kqe3K4pp2J6X9cmbbb+FhY30zsLRKMC7Fm3Suud+0lwOv76D5Gq
-Tz6Q0m9xrxt9bsVxFdxTsBRUYF+ItRIUh2DJhzToHL+C3C2f2XsJ46Xk6yA2XKd+
-8dKlYFB2kYWRA25y2VVad1IVl3GkVly0LaIK8cnEewRT7nGTMAPyN95E6XF8LSd7
-M3QIHO66mXIoWQo4DzasYg2bdnRtqCnT782CW39Lyaf7daTIr6TQ1M2o2OJa5UVh
-TA6iwI1rcSRRij8fLZdEIh6RxzKjBAOLUTsdgne7mJVCsE7bEX0qsXA8jxmNfX0a
-C/N8HH5T9fCRrATCeZhxvT5Q3RhDDVhYHmKrP2PNfwTXJvw3q7FuiP4u6/nukeLh
-vIp34z6/yC2ybSI/TbE+gbWaFZYyKYF8Bkt1F1jNX60o9KDadBsV9bvaPfFGyXw3
-w/hwTXNyRxoyiyUbOkd8QOWI1s2GiEc2a3cfwL0q3QziUX8m9YPLOIv0wis9mXn9
-n5v8t7goDhjUR28GBB9sKJceuUdU1hk7ENBaRvT2KlGgsvU9tKV9vzCPFg0x2XfM
-bfGyaOKyZkpOoy67+y2i
-=rTGb
------END PGP SIGNATURE-----
-
---iEWWOZ/QYGWEaBRW--
-
---===============1039919085381374287==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> Changes since v1:
+> - Binding docukentation updated with available pins and connectors
+> - dts section for abe-twl6040 sound configuration has been changed
 
 
---===============1039919085381374287==--
+Can you take a look at patch 4 in this series?
+The rest of the series has been already applied for 3.5 but the 4th one has
+been missed.
+
+Thank you,
+P=E9ter
+
+> =
+
+> Instead of dai link pairs only the nodes probed via DT have phandle:
+> ti,mcpdm; ti,dmic, ti,twl6040.
+> The driver in turn is responsible to handle the provided information.
+> To provide dai link pairs (cpu dai - codec) we would need Linux (ASoC) sp=
+ecific
+> nodes in DT for the dmic codec and twl6040 ASoC codec driver.
+> =
+
+> If the DT section have ti,dmic phandle the ASoC machine driver will regis=
+ter the
+> device to load the ASoC dmic-codec runtime.
+> =
+
+> Example dts section for audio support (SDP4430):
+> sound {
+> 	compatible =3D "ti,abe-twl6040";
+> 	ti,model =3D "SDP4430";
+> =
+
+> 	ti,jack-detection =3D <1>;
+> 	ti,mclk-freq =3D <38400000>;
+> =
+
+> 	ti,mcpdm =3D <&mcpdm>;
+> 	ti,dmic =3D <&dmic>;
+> =
+
+> 	ti,twl6040 =3D <&twl6040>;
+> =
+
+> 	/* Audio routing */
+> 	ti,audio-routing =3D
+> 		"Headset Stereophone", "HSOL",
+> 		"Headset Stereophone", "HSOR",
+> 		"Earphone Spk", "EP",
+> 		"Ext Spk", "HFL",
+> 		"Ext Spk", "HFR",
+> 		"Line Out", "AUXL",
+> 		"Line Out", "AUXR",
+> 		"Vibrator", "VIBRAL",
+> 		"Vibrator", "VIBRAR",
+> 		"HSMIC", "Headset Mic",
+> 		"Headset Mic", "Headset Mic Bias",
+> 		"MAINMIC", "Main Handset Mic",
+> 		"Main Handset Mic", "Main Mic Bias",
+> 		"SUBMIC", "Sub Handset Mic",
+> 		"Sub Handset Mic", "Main Mic Bias",
+> 		"AFML", "Line In",
+> 		"AFMR", "Line In",
+> 		"DMic", "Digital Mic",
+> 		"Digital Mic", "Digital Mic1 Bias";
+> };
+> =
+
+> =
+
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (4):
+>   ASoC: omap-abe-twl6040: Keep only one snd_soc_dai_link structure
+>   ASoC: omap-abe-twl6040: Move Digital Mic widget into dapm table
+>   ASoC: omap-abe-twl6040: Introduce driver data for runtime parameters
+>   ASoC: omap-abe-twl6040: Add device tree support
+> =
+
+>  .../devicetree/bindings/sound/omap-abe-twl6040.txt |   91 +++++++++
+>  sound/soc/omap/omap-abe-twl6040.c                  |  195 ++++++++++++++=
+------
+>  2 files changed, 230 insertions(+), 56 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/omap-abe-twl6=
+040.txt
+> =
