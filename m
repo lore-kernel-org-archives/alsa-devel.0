@@ -1,15 +1,19 @@
-From: <MR.Swami.Reddy@ti.com>
-Subject: [PATCH] ASoC:isabelle:Fix warning message
-Date: Tue, 5 Jun 2012 20:11:21 +0530
-Message-ID: <1338907281-22442-1-git-send-email-MR.Swami.Reddy@ti.com>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: Re: [PATCH] ASoC: OMAP: HDMI: Initialize IEC-60958
+ channel status word
+Date: Tue, 5 Jun 2012 10:25:31 -0500
+Message-ID: <4FCE24EB.6060307@ti.com>
+References: <1338836836-7396-1-git-send-email-ricardo.neri@ti.com>
+	<20120605102821.GO23408@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B2342442F
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73B0A104339
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 16:35:34 +0200 (CEST)
+	Tue,  5 Jun 2012 17:26:02 +0200 (CEST)
+In-Reply-To: <20120605102821.GO23408@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,31 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
-Cc: vishwas.a.deshpande@ti.com, MR Swami Reddy <MR.Swami.Reddy@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, lrg@ti.com, s-guiriec@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
+Hi Mark,
+On 06/05/2012 05:28 AM, Mark Brown wrote:
+> On Mon, Jun 04, 2012 at 02:07:15PM -0500, Ricardo Neri wrote:
+>> Hi Mark, Liam,
+>>
+>> This patch is to fix an bug that I found in K3.5-rc1. As the IEC-60958 channel
+>> status word is not initialized in hw_params, the params from previous
+>> calls corrupt those of the current playback.
+>
+> Don't send cover letters for single patches, if there's anything useful
+> to say say it in the patch.
 
-Patch to fix the below warning message:
-sound/soc/codecs/isabelle.c:1126: warning: 'isabelle_regmap' is used uninitialized in this function
+Sorry, I will resend as a single patch without the cover letter.
 
-Signed-off-by: Vishwas A Deshpande <vishwas.a.deshpande@ti.com>
-Signed-off-by: M R Swami Reddy <MR.Swami.Reddy@ti.com>
----
- sound/soc/codecs/isabelle.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/isabelle.c b/sound/soc/codecs/isabelle.c
-index bcc77ef..a2efe1a 100644
---- a/sound/soc/codecs/isabelle.c
-+++ b/sound/soc/codecs/isabelle.c
-@@ -1126,8 +1126,6 @@ static int __devinit isabelle_i2c_probe(struct i2c_client *i2c,
- 	struct regmap *isabelle_regmap;
- 	int ret = 0;
- 
--	i2c_set_clientdata(i2c, isabelle_regmap);
--
- 	isabelle_regmap = devm_regmap_init_i2c(i2c, &isabelle_regmap_config);
- 	if (IS_ERR(isabelle_regmap)) {
- 		ret = PTR_ERR(isabelle_regmap);
+Ricardo
