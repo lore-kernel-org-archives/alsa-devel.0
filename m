@@ -1,195 +1,58 @@
-From: MASAO TAKAHASHI <masao-takahashi@kanno.co.jp>
-Subject: Re: To disable dma_area caching (twice)
-Date: Tue, 5 Jun 2012 09:30:03 +0900
-Message-ID: <20120605093003.3254a7231b56786fee171de2@kanno.co.jp>
-References: <20120518141857.7c85ae4b0eca0ea8a9a9a0ec@kanno.co.jp>
-	<s5hd35s7m8u.wl%tiwai@suse.de>
-Reply-To: masao-takahashi@kanno.co.jp
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Clipping in Analog Mono Output
+Date: Tue, 5 Jun 2012 11:05:22 +0800
+Message-ID: <CAN8cciZ6XqatXQ6wW3pMS9bjCvnoGhtxu1W9y+ymCam1_yjrDA@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mow.po.2iij.net (mow312.po.2iij.net [210.128.50.106])
-	by alsa0.perex.cz (Postfix) with ESMTP id 725CD24415
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 02:30:08 +0200 (CEST)
-In-Reply-To: <s5hd35s7m8u.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
+2012/6/1 David Henningsson <david.henningsson@canonical.com>:
+> On 06/01/2012 04:54 AM, Raymond Yau wrote:
+>
+>> what is the definition of "Mono Output" in pulseaudio ?
+>>
+>> My three other sound cards does support mono playback and mono capture
+>>
+>> The system setting/sound in gnome session allow me to select "mono
+>> duplex" but when it does not allow me to select "mono output + mono
+>> input" in unity session.
+>
+>
+> That sounds like the known bug I was working on yesterday.
+>
 
-On Fri, 25 May 2012 09:28:33 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+The major problem of Analog Mono output is clipping
 
-> At Fri, 18 May 2012 14:18:57 +0900,
-> MASAO TAKAHASHI wrote:
-> > 
-> > Hi everybody.
-> > Please advice me to solve my problem.
-> > 1.  My environment
-> >     Hardware	Alpha-project MS104-SH4AG with SH7764
-> >     kernel		sh-linux-2.6.29
-> >     ALSA driver sh7764-pcm.c developped 
-> >        by  Manuel Lauss <mano@roarinelk.homelinux.net>
-> > 
-> > 2. My problem
-> > 	I am using the above ALSA driver for SH7764 SSI.
-> > 	I have found the runtime->dma_area address refers DMA area
-> > 	via D-cache.
-> > 	So, playback start is too late after executing 
-> >           snd_pcm_writei().
-> > 	Until D-cache writeback is done, sound data stays in D-cache.
-> > 	I want to read and write from/to main memory 
-> > 	without D-cache.
-> > 
-> > 3. My idea to solve this problem
-> >    3-1 change allocating type of DMA area as follows
-> >        	snd_pcm_lib_preallocate_pages_for_all(
-> >             pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-> >             snd_dma_continuous_data(GFP_KERNEL),
-> >             64*1024, 64*1024);
-> > 
-> >        is changed to
-> > 
-> >         snd_pcm_lib_preallocate_pages_for_all(
-> >             pcm, SNDRV_DMA_TYPE_DEV, <----------- here
-> >             snd_dma_continuous_data(GFP_KERNEL),
-> >             64*1024, 64*1024);
-> >         to let dma_addr pointing P2SEG area without caching
-> > 
-> >     3-2 program internal DMA controller start address 
-> >         with dma_addr
-> >    
-> >           ssidma_outl(sd, (virt_to_phys)(u32)runtime->dma_addr,
-> >                        SSIRDMADR);
-> > 
-> > 
-> >     3-3 add mmap_data_fault routine
-> >          static int sh7764_mmap_data_fault(    
-> >            structvm_area_struct*area,
-> >            struct vm_fault *vmf)
-> >         {
-> > 	  struct snd_pcm_substream *substream = area->vm_private_data;
-> > 	  struct snd_pcm_runtime *runtime;
-> > 	  unsigned long offset;
-> > 	  struct page * page;
-> > 	  void *vaddr;
-> > 	  size_t dma_bytes;
-> > 	
-> > 	  pr_debug("mmap_data_fault\n");
-> > 	  if (substream == NULL)
-> > 		return VM_FAULT_SIGBUS;
-> > 	  runtime = substream->runtime;
-> > 	  offset = vmf->pgoff << PAGE_SHIFT;
-> > 	  dma_bytes = PAGE_ALIGN(runtime->dma_bytes);
-> > 	  if (offset > dma_bytes - PAGE_SIZE)
-> > 		return VM_FAULT_SIGBUS;
-> > 	  if (substream->ops->page) {
-> > 		page = substream->ops->page(substream, offset);
-> > 		if (!page)
-> > 			return VM_FAULT_SIGBUS;
-> > 	  } else {
-> > 		vaddr = runtime->dma_addr + offset;
-> > 		page = virt_to_page(vaddr);
-> > 	  }
-> > 	get_page(page);
-> > 	vmf->page = page;
-> > 	pr_debug("mmap_data_fault:page = %x\n", (unsigned int)page);
-> > 	return 0;
-> >        }
-> >        static struct vm_operations_struct sh7764_pcm_vm_ops_data =
-> >       {
-> > 	.open =		snd_pcm_mmap_data_open,
-> > 	.close =	snd_pcm_mmap_data_close,
-> > 	.fault =	sh7764_mmap_data_fault,
-> >       };
-> > 
-> >   3-3 add sh7764_pcm_mmap routine
-> >       static int sh7764_pcm_mmap(
-> >         struct snd_pcm_substream *substream,
-> > 	struct vm_area_struct *area)
-> >       {
-> > 	unsigned long	offset;
-> > 	unsigned long	mp;
-> > 	unsigned long	virt;
-> > 	int				map_size;
-> > 	struct page *map, *mapend, *ip;
-> > 	struct snd_pcm_runtime *runtime;
-> > 	int	ret;
-> >       #ifdef pgprot_noncached
-> >         area->vm_page_prot = pgprot_noncached(area->vm_page_prot);
-> >       #endif
-> > 	offset = area->vm_pgoff << PAGE_SHIFT;
-> > 	runtime = substream->runtime;
-> > 	map_size = runtime->dma_bytes;
-> > 	mp = virt_to_phys((unsigned long)runtime->dma_addr));
-> > 	map = virt_to_page(mp);
-> > 	mapend = virt_to_page(mp+map_size - 1);
-> > 	for (ip = map; ip <= mapend; ip++){
-> > 		SetPageReserved(ip);
-> > 	area->vm_ops = &sh7764_pcm_vm_ops_data;
-> > 	area->vm_private_data = substream;
-> > 	area->vm_flags |= VM_IO;
-> > 	ret = io_remap_pfn_range(area, area->vm_start,
-> >                mp>>PAGE_SHIFT,
-> >                area->vm_end - area->vm_start, 
-> >                area->vm_page_prot);
-> > 		
-> > 	if (ret ){
-> > 	  pr_debug("sh7764-pcm.c:remap_pfn_range returned EAGAIN\n");
-> > 	  return -EAGAIN;
-> > 	}
-> > 	atomic_inc(&substream->mmap_count);
-> > 	pr_debug("mmap_count=%u\n", substream->mmap_count);
-> > 	return 0;
-> >     }
-> > 
-> >     static struct snd_pcm_ops sh7764_ssidma_ops = {
-> > 	.open		= sh7764_ssidma_open,
-> > 	.close		= sh7764_ssidma_close,
-> > 	.ioctl		= snd_pcm_lib_ioctl,
-> > 	.hw_params	= sh7764_hw_params,
-> > 	.hw_free	= sh7764_hw_free,
-> > 	.prepare	= sh7764_prepare,
-> > 	.trigger	= sh7764_trigger,
-> > 	.pointer	= sh7764_pos,
-> > 	.mmap		= sh7764_pcm_mmap,
-> >     };
-> >  ------------------------------------------------------------
-> > Sorry, so long contents.
-> > 
-> > My solution is right?
-> > or
-> > Is there any better solution ?
-> 
-> The "right" fix would be to implement a proper dma_mmap_coherent() for
-> SH architecture.  It's found for ARM and some PPC variants, but for
-> neither SH nor MIPS.
+it seem pulseaudio just add the left and right channels instead of
+half of the left and right channels and the sound is distorted
 
-I have a question about your reply.
+why database contrain invalid format since it is a clean install of
+ubuntu 12.04l
 
-Do I need to use snd_pcm_mmap_write instead of snd_pcm_writei to disable dma_area caching ?
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-
-
-
-----------------------------------------------
-KANNO WORKS CO.,LTD.
-MASAO TAKAHASHI
-MASAO TAKAHASHI <masao-takahashi@kanno.co.jp>
-TEL 093-436-2330
+D: [pulseaudio] module-device-restore.c: Database contains invalid
+data for key: sink:alsa_output.pci-0000_04_02.0.analog-mono:null
+D: [pulseaudio] module-suspend-on-idle.c: Sink
+alsa_output.pci-0000_04_02.0.analog-mono becomes idle, timeout in 5
+seconds.
+I: [pulseaudio] resampler.c: Forcing resampler 'copy', because of
+fixed, identical sample rates.
+D: [pulseaudio] resampler.c: Channel matrix:
+D: [pulseaudio] resampler.c:        I00   I01
+D: [pulseaudio] resampler.c:     +------------
+D: [pulseaudio] resampler.c: O00 | 1.000 1.000
+I: [pulseaudio] remap.c: Using generic matrix remapping
