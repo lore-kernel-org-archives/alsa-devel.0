@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 REBASE] ASoC: fsl_ssi: convert to use
-	devm_clk_get
-Date: Tue, 5 Jun 2012 11:10:48 +0100
-Message-ID: <20120605101048.GI23408@opensource.wolfsonmicro.com>
-References: <1338774174-3960-1-git-send-email-richard.zhao@freescale.com>
-	<20120605064714.GL30400@pengutronix.de>
+From: Wang Xingchao <xingchao.wang@intel.com>
+Subject: [PATCH] ALSA: hda - add power states information in
+	proc
+Date: Tue,  5 Jun 2012 18:08:10 +0800
+Message-ID: <1338890890-25147-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1113630973321591637=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D011D10427F
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28E2A10429A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 12:10:49 +0200 (CEST)
-In-Reply-To: <20120605064714.GL30400@pengutronix.de>
+	Tue,  5 Jun 2012 12:12:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, dong.aisheng@linaro.org, Richard Zhao <richard.zhao@freescale.com>, kernel@pengutronix.de, shawn.guo@linaro.org, timur@freescale.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, swarren@nvidia.com, wangxingchao2011@gmail.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+add more power states information:
+- reset status
+- clock stop ok
+- power states error
 
---===============1113630973321591637==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cVp8NMj01v+Em8Se"
-Content-Disposition: inline
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+---
+ sound/pci/hda/hda_codec.h |    3 +++
+ sound/pci/hda/hda_proc.c  |    6 ++++++
+ 2 files changed, 9 insertions(+)
 
-
---cVp8NMj01v+Em8Se
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 05, 2012 at 08:47:14AM +0200, Sascha Hauer wrote:
-
-> Have you tried compiling this on PowerPC? devm_clk_get is only available
-> with CONFIG_CLKDEV_LOOKUP, I think on PowerPC this is not the case.
-
-I just reverted the commit, we can try again when PowerPC has been
-updated somehow.
-
---cVp8NMj01v+Em8Se
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPzdsVAAoJEBus8iNuMP3d35UP/iLl+yaJCe09EI95/lalGghk
-B3wYpemAJ+FGLamZE34v3Zu52Z1Ex22Xni/Uvqj7bT5IxtBy2pg6nlo9ZWiNiFra
-zjyTrLgGelC8Gw/FbBcOtNvG58Yn8QGMx/l0aKxldgz4jqQEoJJhiGLV/GoZcEfb
-Or+z9ybe1AySQ6AlDHN0CVj6/uC7Z5pSdOg+cS9dz6oQ4sMXyHrNBjNvQAssrKSm
-ClDeIZMSmDmRsWshtK08wa3+t5AsHNq8ascSqkZIruuSZh8NdLmHHHyhXY+bWzjO
-p17pZKg1EgvNIcj1NPeTLXuAK1AH626J8Uiyag+k2hvb7jGDjDIiyFzx8IjVhOhs
-SV2zmjlouUf6h21z/GDCd3jFxkDYAQTVuM2A0OaCxqgJ6hF4Rya5np0xUPD7wgrv
-riQ9IJ0+bO6q9D7GDfrptzcHquox7l6sV6/sLuxinE03BkDoIcsUUWnlgvyi7//v
-jc0XqLASMypsEZ7ozjyjd/fyOrLmPu6lxSzC6Rfnk+nfNM+KcP3DMJQe3IKIwbaI
-2xWdLpTaAsPDM0oWmvwOh1PI4tfkElCJr2zvOvTDp73eCwLGhzahobvQJRHQ/T7g
-94lh04yG1LCWf0mVpLr98gstQENh4jEiwXOIiqsRtB/MSrYPf1JzY56tR3pg/MNr
-4rWr3H4H6aD0hRD39CSa
-=kAE1
------END PGP SIGNATURE-----
-
---cVp8NMj01v+Em8Se--
-
---===============1113630973321591637==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1113630973321591637==--
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 4fc3960..71864cdd 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -323,6 +323,9 @@ enum {
+ #define AC_PWRST_D1			0x01
+ #define AC_PWRST_D2			0x02
+ #define AC_PWRST_D3			0x03
++#define AC_PWRST_ERROR                  (1<<8)
++#define AC_PWRST_CLK_STOP_OK            (1<<9)
++#define AC_PWRST_SETTING_RESET          (1<<10)
+ 
+ /* Processing capabilies */
+ #define AC_PCAP_BENIGN			(1<<0)
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index e59e2f0..5511de1 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -459,6 +459,12 @@ static void print_power_state(struct snd_info_buffer *buffer,
+ 		    get_pwr_state(pwr & AC_PWRST_SETTING),
+ 		    get_pwr_state((pwr & AC_PWRST_ACTUAL) >>
+ 				  AC_PWRST_ACTUAL_SHIFT));
++	if (pwr & AC_PWRST_ERROR)
++		snd_iprintf(buffer, " Power state error\n");
++	if (pwr & AC_PWRST_CLK_STOP_OK)
++		snd_iprintf(buffer, " PS: clock stop ok\n");
++	if (pwr & AC_PWRST_SETTING_RESET)
++		snd_iprintf(buffer, " Power state setting reset\n");
+ }
+ 
+ static void print_unsol_cap(struct snd_info_buffer *buffer,
+-- 
+1.7.9.5
