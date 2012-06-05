@@ -1,69 +1,58 @@
-From: Boojin Kim <boojin.kim@samsung.com>
-Subject: [PATCH 3/3] ASoC: follow the updated samsung DMA common operations
-Date: Tue, 05 Jun 2012 16:20:10 +0900
-Message-ID: <011701cd42eb$a4209940$ec61cbc0$%kim@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-References: 
-In-reply-to: 
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Boojin Kim' <boojin.kim@samsung.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, spi-devel-general@lists.sourceforge.net
-Cc: 'Vinod Koul' <vinod.koul@intel.com>, 'Grant Likely' <grant.likely@secretlab.ca>, 'Russell King - ARM Linux' <linux@arm.linux.org.uk>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Dan Williams' <dan.j.williams@intel.com>, kgene.kim@samsung.com
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 0/8] Rework KERN_<LEVEL>
+Date: Tue,  5 Jun 2012 02:46:29 -0700
+Message-ID: <cover.1338889066.git.joe@perches.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03B41245B4
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Jun 2012 11:46:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org
+Cc: devel@driverdev.osuosl.org, Andrew Morton <akpm@linux-foundation.org>, Kay Sievers <kay@vrfy.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch uses config() function to configure DMA transmit options.
+KERN_<LEVEL> currently takes up 3 bytes.
+Shrink the kernel size by using an ASCII SOH and then the level byte.
+Remove the need for KERN_CONT.
+Convert directly embedded uses of <.> to KERN_<LEVEL>
 
-Signed-off-by: Boojin Kim <boojin.kim@samsung.com>
----
- sound/soc/samsung/dma.c |   18 ++++++++++--------
- 1 files changed, 10 insertions(+), 8 deletions(-)
+Joe Perches (8):
+  printk: Add generic functions to find KERN_<LEVEL> headers
+  printk: Add kern_levels.h to make KERN_<LEVEL> available for asm use
+  arch: Remove direct definitions of KERN_<LEVEL> uses
+  btrfs: Use printk_get_level and printk_skip_level, add __printf, fix fallout
+  sound: Use printk_get_level and printk_skip_level
+  staging: wlags49_h2: Remove direct declarations of KERN_<LEVEL> prefixes
+  printk: Convert the format for KERN_<LEVEL> to a 2 byte pattern
+  printk: Remove the now unnecessary "C" annotation for KERN_CONT
 
-diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-index ddc6cde..f3ebc38 100644
---- a/sound/soc/samsung/dma.c
-+++ b/sound/soc/samsung/dma.c
-@@ -74,7 +74,7 @@ static void dma_enqueue(struct snd_pcm_substream *substream)
- 	struct runtime_data *prtd = substream->runtime->private_data;
- 	dma_addr_t pos = prtd->dma_pos;
- 	unsigned int limit;
--	struct samsung_dma_prep_info dma_info;
-+	struct samsung_dma_prep dma_info;
+ arch/arm/lib/io-acorn.S              |    3 +-
+ arch/arm/vfp/vfphw.S                 |    7 +++--
+ arch/frv/kernel/kernel_thread.S      |    2 +-
+ drivers/staging/wlags49_h2/hcf.c     |    8 +++---
+ drivers/staging/wlags49_h2/wl_main.c |    4 +-
+ fs/btrfs/ctree.h                     |   13 ++++++++++
+ fs/btrfs/disk-io.c                   |    2 +-
+ fs/btrfs/relocation.c                |    2 +-
+ fs/btrfs/super.c                     |   41 +++++++++++++++++++++++++++++-----
+ include/linux/kern_levels.h          |   25 ++++++++++++++++++++
+ include/linux/printk.h               |   41 +++++++++++++++++++--------------
+ kernel/printk.c                      |   14 +++++++----
+ sound/core/misc.c                    |   13 +++++++---
+ 13 files changed, 130 insertions(+), 45 deletions(-)
+ create mode 100644 include/linux/kern_levels.h
 
- 	pr_debug("Entered %s\n", __func__);
-
-@@ -146,7 +146,8 @@ static int dma_hw_params(struct snd_pcm_substream *substream,
- 	unsigned long totbytes = params_buffer_bytes(params);
- 	struct s3c_dma_params *dma =
- 		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--	struct samsung_dma_info dma_info;
-+	struct samsung_dma_req req;
-+	struct samsung_dma_config config;
-
- 	pr_debug("Entered %s\n", __func__);
-
-@@ -166,16 +167,17 @@ static int dma_hw_params(struct snd_pcm_substream *substream,
-
- 		prtd->params->ops = samsung_dma_get_ops();
-
--		dma_info.cap = (samsung_dma_has_circular() ?
-+		req.cap = (samsung_dma_has_circular() ?
- 			DMA_CYCLIC : DMA_SLAVE);
--		dma_info.client = prtd->params->client;
--		dma_info.direction =
-+		req.client = prtd->params->client;
-+		config.direction =
- 			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK
- 			? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
--		dma_info.width = prtd->params->dma_size;
--		dma_info.fifo = prtd->params->dma_addr;
-+		config.width = prtd->params->dma_size;
-+		config.fifo = prtd->params->dma_addr;
- 		prtd->params->ch = prtd->params->ops->request(
--				prtd->params->channel, &dma_info);
-+				prtd->params->channel, &req);
-+		prtd->params->ops->config(prtd->params->ch, &config);
- 	}
-
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
---
-1.7.1
+-- 
+1.7.8.111.gad25c.dirty
