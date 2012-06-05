@@ -1,52 +1,65 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 0/8] Rework KERN_<LEVEL>
-Date: Tue, 5 Jun 2012 14:28:26 -0700
-Message-ID: <20120605142826.d92316a0.akpm@linux-foundation.org>
-References: <cover.1338889066.git.joe@perches.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Confusion about Playback/Capture, CODEC/CODEC	links,
+	and snd_soc_dapm_link_dai_widgets()
+Date: Tue, 5 Jun 2012 22:34:48 +0100
+Message-ID: <20120605213447.GA12405@opensource.wolfsonmicro.com>
+References: <4FC7F576.30101@wwwdotorg.org> <4FCE6B0F.6080106@wwwdotorg.org>
+	<20120605204758.GA8486@opensource.wolfsonmicro.com>
+	<4FCE775B.7020901@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1338889066.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org, Kay Sievers <kay@vrfy.org>, linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Kay Sievers <kay.sievers@vrfy.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DD71924702
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Jun 2012 23:34:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4FCE775B.7020901@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue,  5 Jun 2012 02:46:29 -0700
-Joe Perches <joe@perches.com> wrote:
+On Tue, Jun 05, 2012 at 03:17:15PM -0600, Stephen Warren wrote:
 
-> KERN_<LEVEL> currently takes up 3 bytes.
-> Shrink the kernel size by using an ASCII SOH and then the level byte.
-> Remove the need for KERN_CONT.
-> Convert directly embedded uses of <.> to KERN_<LEVEL>
+> So, should the logic be something like this early-ish in
+> snd_soc_instantiate_card():
 
-What an epic patchset.  I guess that saving a byte per printk does make
-the world a better place, and forcibly ensuring that nothing is
-dependent upon the internal format of the KERN_foo strings is nice.
+> for every dai link:
+>     if cpu side is a codec and it isn't probed
+>         probe it
+>     if codec side isn't probed
+>         probe it
+> something similar for aux devs
+> something similar for platforms?
 
+> And modify soc_probe_dai_link() to only probe DAIs, never anything else.
 
-Unfortunately the <n> thing is part of the kernel ABI:
+Yeah, something like this.
 
-	echo "<4>foo" > /dev/kmsg
+> Is the following loop still required:
 
-devkmsg_writev() does weird and wonderful things with
-facilities/levels.  That function incorrectly returns "success" when
-copy_from_user() faults, btw.  It also babbles on about LOG_USER and
-LOG_KERN without ever defining these things.  I guess they're
-userspace-only concepts and are hardwired to 0 and 1 in the kernel.  Or
-not.
+> > 	/* early DAI link probe */
+> > 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+> > 			order++) {
 
-So what to do about /dev/kmsg?  I'd say "nothing": we retain "<n>" as
-the externally-presented kernel format for a facility level, and the
-fact that the kernel internally uses a different encoding is hidden
-from userspace.
+> I'm not sure what the probe ordering stuff is achieving, and whether
+> it's really intended for just CPU DAIs, just all DAIs, just CODECS,
+> everything...
 
-And if the user does
-
-	echo "\0014foo" > /dev/kmsg
-
-then I guess we should pass it straight through, retaining the \0014. 
-But from my reading of your code, this doesn't work - vprintk_emit()
-will go ahead and strip and interpret the \0014, evading the stuff
-which devkmsg_writev() did.
+The only user of that is OMAP, I can't remember if they've actually got
+their users for that upstream or not.  IIRC it's there to resolve clock
+order dependencies but I'm not sure there isn't a neater solution with
+something like cache only register I/O especially now we've got better
+infrastructure.  Or if we can add something based on having a usable
+clock API, we can rely on but that doesn't seem too realistic in the
+medium term.
