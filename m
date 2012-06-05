@@ -1,20 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v2 0/4] omap-abe-twl6040: Device tree
 	support
-Date: Tue, 05 Jun 2012 15:46:26 +0300
-Message-ID: <4FCDFFA2.3060205@ti.com>
+Date: Tue, 5 Jun 2012 13:48:03 +0100
+Message-ID: <20120605124803.GU23408@opensource.wolfsonmicro.com>
 References: <1337169425-9449-1-git-send-email-peter.ujfalusi@ti.com>
+	<4FCDFFA2.3060205@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4903087327820746073=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog137.obsmtp.com (na3sys009aog137.obsmtp.com
-	[74.125.149.18]) by alsa0.perex.cz (Postfix) with ESMTP id 816EC24642
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5A23224642
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 14:46:33 +0200 (CEST)
-Received: by lbbgg6 with SMTP id gg6so4681440lbb.36
-	for <alsa-devel@alsa-project.org>; Tue, 05 Jun 2012 05:46:30 -0700 (PDT)
-In-Reply-To: <1337169425-9449-1-git-send-email-peter.ujfalusi@ti.com>
+	Tue,  5 Jun 2012 14:48:05 +0200 (CEST)
+In-Reply-To: <4FCDFFA2.3060205@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,100 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Benoit Cousson <b-cousson@ti.com>
+Cc: devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Liam,
 
-On 05/16/2012 02:57 PM, Peter Ujfalusi wrote:
-
-> Hello,
-> =
-
-> Changes since v1:
-> - Binding docukentation updated with available pins and connectors
-> - dts section for abe-twl6040 sound configuration has been changed
+--===============4903087327820746073==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qpPEP5KwiTnADq8L"
+Content-Disposition: inline
 
 
-Can you take a look at patch 4 in this series?
-The rest of the series has been already applied for 3.5 but the 4th one has
-been missed.
+--qpPEP5KwiTnADq8L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you,
-P=E9ter
+On Tue, Jun 05, 2012 at 03:46:26PM +0300, Peter Ujfalusi wrote:
 
-> =
+> Can you take a look at patch 4 in this series?
+> The rest of the series has been already applied for 3.5 but the 4th one has
+> been missed.
 
-> Instead of dai link pairs only the nodes probed via DT have phandle:
-> ti,mcpdm; ti,dmic, ti,twl6040.
-> The driver in turn is responsible to handle the provided information.
-> To provide dai link pairs (cpu dai - codec) we would need Linux (ASoC) sp=
-ecific
-> nodes in DT for the dmic codec and twl6040 ASoC codec driver.
-> =
+If this happens you should resend the patch, there's a good chance
+people don't have a copy of it.
 
-> If the DT section have ti,dmic phandle the ASoC machine driver will regis=
-ter the
-> device to load the ASoC dmic-codec runtime.
-> =
+--qpPEP5KwiTnADq8L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> Example dts section for audio support (SDP4430):
-> sound {
-> 	compatible =3D "ti,abe-twl6040";
-> 	ti,model =3D "SDP4430";
-> =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-> 	ti,jack-detection =3D <1>;
-> 	ti,mclk-freq =3D <38400000>;
-> =
+iQIcBAEBAgAGBQJPzf/pAAoJEBus8iNuMP3dwfwP/jjteyvxNnjD8P5sBMio7ecO
+DRKSnwD+ZkuR6DJTBaMR2vN676JGA0+/JdN4PrbWMozqvT9fUpC3f2CAbtWv14gM
+7BK9yjmx0whC6VAeRMa2lwgVE+eNiVbjrYlYiJZmcrT9hbujgmX3Kl4JT/zDR4yc
+q8l1qfI0wU58Nb0s2lHxi3aPNS1BkVAfY1R1WGIyATLVxxH2q4RiA3DJ5memlIk3
+Yp/SxcCefn/pddp8LIBzqjyjR8RIhaBeKVV3v0Dtb5+ZSCeHyIl/qSYFzCNYxHCv
+5lbcCe81KHckc+Q/1ghy1MjpO+NIOqrZpyO5h3GBfigLUUHFj8eZmG9I9FhJFaeE
+WNEMfJ1BhNWRv5mDQxvV8pK3bzB6ef+1rikFnzhJ3e4uWxEFrLI6wVlhXk4vsuJY
+Msg6FPcMhD7C+LXwbm8rLkztmiN6IEyF8xH7Pc+LR/FrJtGCt1jt8OcvIko6rXNc
+sp5MSWtvOPq2J16gnjyiYnCOrZbepEGJZ6EPT8vFYcjbRbZWl3k1PG3izuCD5rNH
+plWbqEV2ZpcbivUdPM76P4WkdDqpqfrWHgfw7XDNQKXTk4wSNZ75QMn3VYirO1YY
+pTELcZkgk6j73tK5PuwN3gjQsnuS0WPqv3Tv7rw7s93lNIvLKnlzOVcuO6BVStfT
+dLcZzMzsz2+LcZRa5CDj
+=c9fT
+-----END PGP SIGNATURE-----
 
-> 	ti,mcpdm =3D <&mcpdm>;
-> 	ti,dmic =3D <&dmic>;
-> =
+--qpPEP5KwiTnADq8L--
 
-> 	ti,twl6040 =3D <&twl6040>;
-> =
+--===============4903087327820746073==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> 	/* Audio routing */
-> 	ti,audio-routing =3D
-> 		"Headset Stereophone", "HSOL",
-> 		"Headset Stereophone", "HSOR",
-> 		"Earphone Spk", "EP",
-> 		"Ext Spk", "HFL",
-> 		"Ext Spk", "HFR",
-> 		"Line Out", "AUXL",
-> 		"Line Out", "AUXR",
-> 		"Vibrator", "VIBRAL",
-> 		"Vibrator", "VIBRAR",
-> 		"HSMIC", "Headset Mic",
-> 		"Headset Mic", "Headset Mic Bias",
-> 		"MAINMIC", "Main Handset Mic",
-> 		"Main Handset Mic", "Main Mic Bias",
-> 		"SUBMIC", "Sub Handset Mic",
-> 		"Sub Handset Mic", "Main Mic Bias",
-> 		"AFML", "Line In",
-> 		"AFMR", "Line In",
-> 		"DMic", "Digital Mic",
-> 		"Digital Mic", "Digital Mic1 Bias";
-> };
-> =
 
-> =
-
-> Regards,
-> Peter
-> ---
-> Peter Ujfalusi (4):
->   ASoC: omap-abe-twl6040: Keep only one snd_soc_dai_link structure
->   ASoC: omap-abe-twl6040: Move Digital Mic widget into dapm table
->   ASoC: omap-abe-twl6040: Introduce driver data for runtime parameters
->   ASoC: omap-abe-twl6040: Add device tree support
-> =
-
->  .../devicetree/bindings/sound/omap-abe-twl6040.txt |   91 +++++++++
->  sound/soc/omap/omap-abe-twl6040.c                  |  195 ++++++++++++++=
-------
->  2 files changed, 230 insertions(+), 56 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/omap-abe-twl6=
-040.txt
-> =
+--===============4903087327820746073==--
