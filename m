@@ -1,15 +1,18 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 0/8] Rework KERN_<LEVEL>
-Date: Tue,  5 Jun 2012 02:46:29 -0700
-Message-ID: <cover.1338889066.git.joe@perches.com>
+Subject: [PATCH 5/8] sound: Use printk_get_level and
+	printk_skip_level
+Date: Tue,  5 Jun 2012 02:46:34 -0700
+Message-ID: <69c567123040afc72a785fe01af1f0417f38e0cb.1338889067.git.joe@perches.com>
+References: <cover.1338889066.git.joe@perches.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03B41245B4
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BFEB245B9
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2012 11:46:50 +0200 (CEST)
+	Tue,  5 Jun 2012 11:47:41 +0200 (CEST)
+In-Reply-To: <cover.1338889066.git.joe@perches.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,40 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linus Torvalds <torvalds@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org
-Cc: devel@driverdev.osuosl.org, Andrew Morton <akpm@linux-foundation.org>, Kay Sievers <kay@vrfy.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@linux-foundation.org>, Kay Sievers <kay@vrfy.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-KERN_<LEVEL> currently takes up 3 bytes.
-Shrink the kernel size by using an ASCII SOH and then the level byte.
-Remove the need for KERN_CONT.
-Convert directly embedded uses of <.> to KERN_<LEVEL>
+Make the output logging routine independent of the
+KERN_<LEVEL> style.
 
-Joe Perches (8):
-  printk: Add generic functions to find KERN_<LEVEL> headers
-  printk: Add kern_levels.h to make KERN_<LEVEL> available for asm use
-  arch: Remove direct definitions of KERN_<LEVEL> uses
-  btrfs: Use printk_get_level and printk_skip_level, add __printf, fix fallout
-  sound: Use printk_get_level and printk_skip_level
-  staging: wlags49_h2: Remove direct declarations of KERN_<LEVEL> prefixes
-  printk: Convert the format for KERN_<LEVEL> to a 2 byte pattern
-  printk: Remove the now unnecessary "C" annotation for KERN_CONT
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ sound/core/misc.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
 
- arch/arm/lib/io-acorn.S              |    3 +-
- arch/arm/vfp/vfphw.S                 |    7 +++--
- arch/frv/kernel/kernel_thread.S      |    2 +-
- drivers/staging/wlags49_h2/hcf.c     |    8 +++---
- drivers/staging/wlags49_h2/wl_main.c |    4 +-
- fs/btrfs/ctree.h                     |   13 ++++++++++
- fs/btrfs/disk-io.c                   |    2 +-
- fs/btrfs/relocation.c                |    2 +-
- fs/btrfs/super.c                     |   41 +++++++++++++++++++++++++++++-----
- include/linux/kern_levels.h          |   25 ++++++++++++++++++++
- include/linux/printk.h               |   41 +++++++++++++++++++--------------
- kernel/printk.c                      |   14 +++++++----
- sound/core/misc.c                    |   13 +++++++---
- 13 files changed, 130 insertions(+), 45 deletions(-)
- create mode 100644 include/linux/kern_levels.h
-
+diff --git a/sound/core/misc.c b/sound/core/misc.c
+index 7681679..30e027e 100644
+--- a/sound/core/misc.c
++++ b/sound/core/misc.c
+@@ -68,6 +68,7 @@ void __snd_printk(unsigned int level, const char *path, int line,
+ {
+ 	va_list args;
+ #ifdef CONFIG_SND_VERBOSE_PRINTK
++	int kern_level;
+ 	struct va_format vaf;
+ 	char verbose_fmt[] = KERN_DEFAULT "ALSA %s:%d %pV";
+ #endif
+@@ -81,12 +82,16 @@ void __snd_printk(unsigned int level, const char *path, int line,
+ #ifdef CONFIG_SND_VERBOSE_PRINTK
+ 	vaf.fmt = format;
+ 	vaf.va = &args;
+-	if (format[0] == '<' && format[2] == '>') {
+-		memcpy(verbose_fmt, format, 3);
+-		vaf.fmt = format + 3;
++
++	kern_level = printk_get_level(format);
++	if (kern_level) {
++		const char *end_of_header = printk_skip_level(format);
++		memcpy(verbose_fmt, format, end_of_header - format);
++		vaf.fmt = end_of_header;
+ 	} else if (level)
+-		memcpy(verbose_fmt, KERN_DEBUG, 3);
++		memcpy(verbose_fmt, KERN_DEBUG, sizeof(KERN_DEBUG) - 1);
+ 	printk(verbose_fmt, sanity_file_name(path), line, &vaf);
++
+ #else
+ 	vprintk(format, args);
+ #endif
 -- 
 1.7.8.111.gad25c.dirty
