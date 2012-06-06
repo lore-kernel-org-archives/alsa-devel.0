@@ -1,7 +1,8 @@
 From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 0/8] Rework KERN_<LEVEL>
-Date: Tue, 05 Jun 2012 19:06:05 -0700
-Message-ID: <1338948365.11962.32.camel@joe2Laptop>
+Subject: [PATCH 9/8] printk: Only look for prefix levels in
+	kernel messages
+Date: Tue, 05 Jun 2012 20:04:02 -0700
+Message-ID: <1338951842.11962.41.camel@joe2Laptop>
 References: <cover.1338889066.git.joe@perches.com>
 	<20120605142826.d92316a0.akpm@linux-foundation.org>
 	<1338934303.5780.8.camel@joe2Laptop>
@@ -27,9 +28,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20C5E243E2
+	by alsa0.perex.cz (Postfix) with ESMTP id CCDE81044B1
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jun 2012 04:06:09 +0200 (CEST)
+	Wed,  6 Jun 2012 05:04:06 +0200 (CEST)
 In-Reply-To: <CAPXgP11DA2z2y4kR8C+AGtrd_-8=2Cy0jj3GX7T5JqczNke4GQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -44,39 +45,63 @@ To: Kay Sievers <kay@vrfy.org>
 Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-btrfs@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-06-06 at 03:10 +0200, Kay Sievers wrote:
-> On Wed, Jun 6, 2012 at 2:46 AM, Andrew Morton <akpm@linux-foundation.org> wrote:
-> > On Tue, 05 Jun 2012 17:40:05 -0700 Joe Perches <joe@perches.com> wrote:
-> >
-> >> On Tue, 2012-06-05 at 17:37 -0700, Andrew Morton wrote:
-> >> > On Tue, 05 Jun 2012 17:07:27 -0700 Joe Perches <joe@perches.com> wrote:
-> >> >
-> >> > > On Tue, 2012-06-05 at 16:58 -0700, Andrew Morton wrote:
-> >> > > >  echo "\0014Hello Joe" > /dev/kmsg
-> >> > >
-> >> > > # echo -e "\x014Hello Me" > /dev/kmsg
-> >> > > gives:
-> >> > > 12,778,4057982669;Hello Me
-> >> >
-> >> > That's changed behavior.
-> >>
-> >> Which is an improvement too.
-> >
-> > No it isn't.  It exposes internal kernel implementation details in
-> > random weird inexplicable ways.  It doesn't seem at all important
-> > though.
-> >
-> >> I very much doubt a single app will change
-> >> because of this.
-> >
-> > I doubt it as well.
-> 
-> Yeah, the value of injecting such binary data is kind of questionable. :)
-> 
-> Joe, maybe you can change printk_emit() to skip the prefix
-> detection/stripping if a prefix is already passed to the function?
+vprintk_emit prefix parsing should only be done for internal
+kernel messages.  This allows existing behavior to be kept
+in all cases.
 
-Sure, it's pretty trivial.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ kernel/printk.c |   32 +++++++++++++++++---------------
+ 1 files changed, 17 insertions(+), 15 deletions(-)
 
-Perhaps all binary data data should be elided.
-Maybe print . for all non-printable ascii chars.
+diff --git a/kernel/printk.c b/kernel/printk.c
+index 5cd73f7..4e72c07 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -1267,7 +1267,6 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 	static char cont_buf[LOG_LINE_MAX];
+ 	static size_t cont_len;
+ 	static int cont_level;
+-	int kern_level;
+ 	static struct task_struct *cont_task;
+ 	static char textbuf[LOG_LINE_MAX];
+ 	char *text = textbuf;
+@@ -1329,21 +1328,24 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 		newline = true;
+ 	}
+ 
+-	/* strip syslog prefix and extract log level or control flags */
+-	kern_level = printk_get_level(text);
+-	if (kern_level) {
+-		const char *end_of_header = printk_skip_level(text);
+-		switch (kern_level) {
+-		case '0' ... '7':
+-			if (level == -1)
+-				level = kern_level - '0';
+-		case 'd':	/* KERN_DEFAULT */
+-			prefix = true;
+-		case 'c':	/* KERN_CONT */
+-			break;
++	/* strip kernel syslog prefix and extract log level or control flags */
++	if (facility == 0) {
++		int kern_level = printk_get_level(text);
++
++		if (kern_level) {
++			const char *end_of_header = printk_skip_level(text);
++			switch (kern_level) {
++			case '0' ... '7':
++				if (level == -1)
++					level = kern_level - '0';
++			case 'd':	/* KERN_DEFAULT */
++				prefix = true;
++			case 'c':	/* KERN_CONT */
++				break;
++			}
++			text_len -= end_of_header - text;
++			text = (char *)end_of_header;
+ 		}
+-		text_len -=  end_of_header - text;
+-		text = (char *)end_of_header;
+ 	}
+ 
+ 	if (level == -1)
