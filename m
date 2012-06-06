@@ -1,16 +1,15 @@
-From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH V2] ALSA: hda - add power states information in
-	proc
-Date: Wed,  6 Jun 2012 13:49:44 +0800
-Message-ID: <1338961784-26518-1-git-send-email-xingchao.wang@intel.com>
+From: Selma Bensaid <selma.bensaid@intel.com>
+Subject: [PATCH] ASOC: utils: Fix the dummy_codec
+Date: Wed,  6 Jun 2012 10:02:22 +0200
+Message-ID: <1338969742-14455-1-git-send-email-selma.bensaid@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6877D104505
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F58A104457
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jun 2012 07:54:12 +0200 (CEST)
+	Wed,  6 Jun 2012 10:02:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +19,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: wangxingchao2011@gmail.com, Wang Xingchao <xingchao.wang@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, sylvain.centelles@intel.com, broonie@opensource.wolfsonmicro.com, louis.le.gall@intel.com, Selma Bensaid <selma.bensaid@intel.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-add more power states information:
-- reset status
-- clock stop ok
-- power states error
+This patch consists in settings the channels_min, rates and formats
+of the dummy codec DAI driver to enable the creation of the PCM streams
+using it.
 
-Output like:
-Power: setting=D0, actual=D0, Error, Clock-stop-OK, Setting-reset
-
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+Signed-off-by: Selma Bensaid <selma.bensaid@intel.com>
 ---
- sound/pci/hda/hda_codec.h |    3 +++
- sound/pci/hda/hda_proc.c  |    9 ++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/soc-utils.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 4fc3960..71864cdd 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -323,6 +323,9 @@ enum {
- #define AC_PWRST_D1			0x01
- #define AC_PWRST_D2			0x02
- #define AC_PWRST_D3			0x03
-+#define AC_PWRST_ERROR                  (1<<8)
-+#define AC_PWRST_CLK_STOP_OK            (1<<9)
-+#define AC_PWRST_SETTING_RESET          (1<<10)
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 6005370..465a094 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -89,9 +89,27 @@ static struct snd_soc_platform_driver dummy_platform = {
+ 	.ops = &dummy_dma_ops,
+ };
  
- /* Processing capabilies */
- #define AC_PCAP_BENIGN			(1<<0)
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index e59e2f0..79d0188 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -455,10 +455,17 @@ static void print_power_state(struct snd_info_buffer *buffer,
- 		snd_iprintf(buffer, "  Power states: %s\n",
- 			    bits_names(sup, names, ARRAY_SIZE(names)));
++#define NULL_FORMATS \
++	(SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |\
++	SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |\
++	SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32)
++
+ static struct snd_soc_codec_driver dummy_codec;
+ static struct snd_soc_dai_driver dummy_dai = {
+ 	.name = "snd-soc-dummy-dai",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 16,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.formats = NULL_FORMATS,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 16,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.formats = NULL_FORMATS,
++	},
++	.ops = NULL,
+ };
  
--	snd_iprintf(buffer, "  Power: setting=%s, actual=%s\n",
-+	snd_iprintf(buffer, "  Power: setting=%s, actual=%s",
- 		    get_pwr_state(pwr & AC_PWRST_SETTING),
- 		    get_pwr_state((pwr & AC_PWRST_ACTUAL) >>
- 				  AC_PWRST_ACTUAL_SHIFT));
-+	if (pwr & AC_PWRST_ERROR)
-+		snd_iprintf(buffer, " , Error");
-+	if (pwr & AC_PWRST_CLK_STOP_OK)
-+		snd_iprintf(buffer, " , Clock-stop-OK");
-+	if (pwr & AC_PWRST_SETTING_RESET)
-+		snd_iprintf(buffer, " , Setting-reset");
-+	snd_iprintf(buffer, "\n");
- }
- 
- static void print_unsol_cap(struct snd_info_buffer *buffer,
+ static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
 -- 
-1.7.9.5
+1.7.0.4
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
