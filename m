@@ -1,7 +1,7 @@
-From: Andrew Morton <akpm@linux-foundation.org>
+From: Joe Perches <joe@perches.com>
 Subject: Re: [PATCH 0/8] Rework KERN_<LEVEL>
-Date: Tue, 5 Jun 2012 16:58:08 -0700
-Message-ID: <20120605165808.cd255b93.akpm@linux-foundation.org>
+Date: Tue, 05 Jun 2012 17:07:27 -0700
+Message-ID: <1338941247.11962.16.camel@joe2Laptop>
 References: <cover.1338889066.git.joe@perches.com>
 	<20120605142826.d92316a0.akpm@linux-foundation.org>
 	<1338934303.5780.8.camel@joe2Laptop>
@@ -13,16 +13,16 @@ References: <cover.1338889066.git.joe@perches.com>
 	<1338939792.11962.4.camel@joe2Laptop>
 	<CAPXgP10DEsqtz9xbPUQ3xCwdFGTTYyTGSd7yEcU2vUr3SJ83Sw@mail.gmail.com>
 	<1338940345.11962.9.camel@joe2Laptop>
+	<20120605165808.cd255b93.akpm@linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
-	[140.211.169.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F7922438A
+Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 198F424393
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jun 2012 01:58:10 +0200 (CEST)
-In-Reply-To: <1338940345.11962.9.camel@joe2Laptop>
+	Wed,  6 Jun 2012 02:07:30 +0200 (CEST)
+In-Reply-To: <20120605165808.cd255b93.akpm@linux-foundation.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,34 +32,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Kay Sievers <kay@vrfy.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-btrfs@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 05 Jun 2012 16:52:25 -0700
-Joe Perches <joe@perches.com> wrote:
+On Tue, 2012-06-05 at 16:58 -0700, Andrew Morton wrote:
+>  echo "\0014Hello Joe" > /dev/kmsg
 
-> On Wed, 2012-06-06 at 01:48 +0200, Kay Sievers wrote:
-> > On Wed, Jun 6, 2012 at 1:43 AM, Joe Perches <joe@perches.com> wrote:
-> > > On Wed, 2012-06-06 at 01:39 +0200, Kay Sievers wrote:
-> > 
-> > >> > # echo "\001Hello Andrew" > /dev/kmsg
-> > >> > /dev/kmsg has
-> > >> > 12,774,2462339252;\001Hello Andrew
-> > >>
-> > >> Try "echo -e"? The stuff is copied verbatim otherwise.
-> > >
-> > > # echo -e "\001Hello Kay" > /dev/kmsg
-> > > gives
-> > > 12,776,3046752764;\x01Hello Kay
-> > 
-> > Don't you need two bytes to trigger the logic?
-> 
-> Yes.  Angle brackets fore and aft.
+# echo -e "\x014Hello Me" > /dev/kmsg
+gives:
+12,778,4057982669;Hello Me
 
-he means
+#echo -e "\x011Hello Me_2" > /dev/kmsg
+gives:
+12,779,4140452093;Hello Me_2
 
-	echo "\0014Hello Joe" > /dev/kmsg
-	          ^
+I didn't change devkmsg_writev so the
+original parsing style for "<.>" is
+unchanged.
 
-It needs one of [0-7cd] to trigger the prefix handling.
+from printk.c:
+
+static ssize_t devkmsg_writev(struct kiocb *iocb, const struct iovec *iv,
+			      unsigned long count, loff_t pos)
+[...]
+	int level = default_message_loglevel;
+[...]
+	if (line[0] == '<') {
+		char *endp = NULL;
+
+		i = simple_strtoul(line+1, &endp, 10);
+		if (endp && endp[0] == '>') {
+			level = i & 7;
+			if (i >> 3)
+				facility = i >> 3;
+			endp++;
+			len -= endp - line;
+			line = endp;
+		}
+	}
+	line[len] = '\0';
+
+	printk_emit(facility, level, NULL, 0, "%s", line);
+[]
+
+level is what matters.
+
+from dmesg -r
+
+<12>[ 2462.339252] \001Hello Andrew
+<9>[ 2516.023444] Hello Andrew
+<12>[ 3046.752764] \x01Hello Kay
+<12>[ 3940.871850] \x01Hello Kay
+<12>[ 4057.982669] Hello Me
+<12>[ 4140.452093] Hello Me_2
