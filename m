@@ -1,18 +1,21 @@
-From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH 2/2] ALSA: hda - reduce msleep time if EPSS
-	power states supported
-Date: Wed,  6 Jun 2012 22:02:49 +0800
-Message-ID: <1338991369-31656-2-git-send-email-xingchao.wang@intel.com>
-References: <1338991369-31656-1-git-send-email-xingchao.wang@intel.com>
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: [Q] Writing an alsa module for usb audio & video
+	capture device
+Date: Wed, 6 Jun 2012 13:40:48 -0300
+Message-ID: <CALF0-+W=PVa6f4oYVutCs20d8K4Ya5Mb9USe7+zhp2H6MXSwrA@mail.gmail.com>
+References: <CALF0-+X3CT=XU1idrTrz-ZY+zMS907JAoXEvKsr6PT73yK01kA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id C096F2439A
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9637B2445B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jun 2012 16:07:21 +0200 (CEST)
-In-Reply-To: <1338991369-31656-1-git-send-email-xingchao.wang@intel.com>
+	Wed,  6 Jun 2012 18:40:49 +0200 (CEST)
+Received: by obbup19 with SMTP id up19so10704595obb.38
+	for <alsa-devel@alsa-project.org>; Wed, 06 Jun 2012 09:40:48 -0700 (PDT)
+In-Reply-To: <CALF0-+X3CT=XU1idrTrz-ZY+zMS907JAoXEvKsr6PT73yK01kA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: wangxingchao2011@gmail.com, Wang Xingchao <xingchao.wang@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-if EPSS supported, transition from D3 state to D0 state in less
-than 10ms
+Hi again,
 
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
----
- sound/pci/hda/hda_codec.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Mon, Jun 4, 2012 at 6:50 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+> Hi everyone,
+>
+> I'm writing a driver for stk1160 usb bridge (audio & video capture device).
+> The video part is almost done [1] and now I've started the alsa part.
+>
+> As the driver replaces an in-tree staging driver I could just grab the alsa part
+> from the original driver (called easycap), or look into em28xx sources.
+>
+[snipped myself]
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index b89c8ec..5298ba1 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3526,14 +3526,18 @@ static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec, hda_nid_t fg
- static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
- 				unsigned int power_state)
- {
-+	bool epss;
- 	if (codec->patch_ops.set_power_state) {
- 		codec->patch_ops.set_power_state(codec, fg, power_state);
- 		return;
- 	}
- 
-+	epss = snd_hda_codec_get_supported_ps(codec, fg, AC_PWRST_EPSS);
- 	/* this delay seems necessary to avoid click noise at power-down */
--	if (power_state == AC_PWRST_D3)
-+	if ((power_state == AC_PWRST_D3) && !epss)
- 		msleep(100);
-+	else
-+		msleep(10);
- 	snd_hda_codec_read(codec, fg, 0, AC_VERB_SET_POWER_STATE,
- 			    power_state);
- 	snd_hda_codec_set_power_to_all(codec, fg, power_state, true);
--- 
-1.7.9.5
+I also would like to know (if anyone is reading this):
+
+1. Why do I need to write another module for my device? Is it not
+possible to make it work
+with snd-usb-audio?
+2. The device uses ac97 chip, could I use some ac97 common code
+instead of rewriting it myself?
+
+Currently, v4l drivers that must support alsa rewrites a lot of stuff.
+I'm not sure this is the *right thing*.
+
+Thanks,
+Ezequiel.
