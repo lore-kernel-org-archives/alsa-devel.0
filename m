@@ -1,21 +1,19 @@
-From: Ezequiel Garcia <elezegarcia@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [Q] Writing an alsa module for usb audio & video
-	capture device
-Date: Wed, 6 Jun 2012 13:40:48 -0300
-Message-ID: <CALF0-+W=PVa6f4oYVutCs20d8K4Ya5Mb9USe7+zhp2H6MXSwrA@mail.gmail.com>
+ capture device
+Date: Wed, 06 Jun 2012 19:26:36 +0200
+Message-ID: <4FCF92CC.2050600@ladisch.de>
 References: <CALF0-+X3CT=XU1idrTrz-ZY+zMS907JAoXEvKsr6PT73yK01kA@mail.gmail.com>
+	<CALF0-+W=PVa6f4oYVutCs20d8K4Ya5Mb9USe7+zhp2H6MXSwrA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9637B2445B
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8ABF524484
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jun 2012 18:40:49 +0200 (CEST)
-Received: by obbup19 with SMTP id up19so10704595obb.38
-	for <alsa-devel@alsa-project.org>; Wed, 06 Jun 2012 09:40:48 -0700 (PDT)
-In-Reply-To: <CALF0-+X3CT=XU1idrTrz-ZY+zMS907JAoXEvKsr6PT73yK01kA@mail.gmail.com>
+	Wed,  6 Jun 2012 19:27:07 +0200 (CEST)
+In-Reply-To: <CALF0-+W=PVa6f4oYVutCs20d8K4Ya5Mb9USe7+zhp2H6MXSwrA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+Ezequiel Garcia wrote:
+> 1. Why do I need to write another module for my device? Is it not
+> possible to make it work
+> with snd-usb-audio?
 
-On Mon, Jun 4, 2012 at 6:50 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
-> Hi everyone,
->
-> I'm writing a driver for stk1160 usb bridge (audio & video capture device).
-> The video part is almost done [1] and now I've started the alsa part.
->
-> As the driver replaces an in-tree staging driver I could just grab the alsa part
-> from the original driver (called easycap), or look into em28xx sources.
->
-[snipped myself]
+Of course it is possible; just make it USB Audio class compliant.
 
-I also would like to know (if anyone is reading this):
+> 2. The device uses ac97 chip, could I use some ac97 common code
+> instead of rewriting it myself?
 
-1. Why do I need to write another module for my device? Is it not
-possible to make it work
-with snd-usb-audio?
-2. The device uses ac97 chip, could I use some ac97 common code
-instead of rewriting it myself?
+The AC'97 code is for managing codecs on an AC'97 bus, but the bus
+inside a USB device is not directly accessible to code on the host.
 
-Currently, v4l drivers that must support alsa rewrites a lot of stuff.
-I'm not sure this is the *right thing*.
 
-Thanks,
-Ezequiel.
+Regards,
+Clemens
