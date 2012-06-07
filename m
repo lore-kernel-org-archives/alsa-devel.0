@@ -1,96 +1,81 @@
-From: Jamie Heilman <jamie@audible.transient.net>
-Subject: Re: 3.5-rc1 snd_usb_audio stream format breakage
-Date: Thu, 7 Jun 2012 08:17:35 +0000
-Message-ID: <20120607081735.GA4648@cucamonga.audible.transient.net>
-References: <20120607033830.GB4321@cucamonga.audible.transient.net>
- <s5hhaun7efv.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH] ASOC: utils: Fix the dummy_codec
+Date: Thu, 07 Jun 2012 14:05:58 +0530
+Message-ID: <1339058158.1927.15.camel@vkoul-udesk3>
+References: <1338969742-14455-1-git-send-email-selma.bensaid@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hhaun7efv.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id E44EC2454F
+	for <alsa-devel@alsa-project.org>;
+	Thu,  7 Jun 2012 10:42:50 +0200 (CEST)
+In-Reply-To: <1338969742-14455-1-git-send-email-selma.bensaid@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Selma Bensaid <selma.bensaid@intel.com>
+Cc: sylvain.centelles@intel.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, louis.le.gall@intel.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 7 Jun 2012 03:38:30 +0000,
-> Jamie Heilman wrote:
-> > 
-> > With the USB audio streaming logic changes, my HeadRoom Bithead
-> > (08bb:2902 Burr-Brown PCM2902) no longer works.  Symptoms include the
-> > loss of most of the normally available formats leaving only:
-> > 
-> > root@cucamonga:~# cat /proc/asound/bithead/stream0 
-> > Burr-Brown from TI USB Audio CODEC at usb-0000:00:1a.7-1.1.4, full speed : USB Audio
-> > 
-> > Playback:
-> >   Status: Stop
-> >   Interface 1
-> >     Altset 6
-> >     Format: U8
-> >     Channels: 1
-> >     Endpoint: 2 OUT (ADAPTIVE)
-> >     Rates: 32000, 44100, 48000
-> > 
-> > Capture:
-> >   Status: Stop
-> >   Interface 2
-> >     Altset 18
-> >     Format: S8
-> >     Channels: 1
-> >     Endpoint: 4 IN (SYNC)
-> >     Rates: 11025
-> > 
-> > (normally 2 channel S16_LE is available, with capture rates up to
-> > 48kHz ... only the last altset's are being reported now) and a slew of
-> > proc registration warnings logged:
-> > 
-> > ------------[ cut here ]------------
-> > WARNING: at fs/proc/generic.c:586 proc_register+0x169/0x1a6()
-> > Hardware name: Precision WorkStation T3400  
-> > proc_dir_entry 'card1/pcm0p' already registered
-> > Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hda_intel(+) snd_hda_codec snd_hwdep snd_seq_midi snd_seq_midi_event snd_pcm snd_page_alloc snd_rawmidi snd_seq snd_seq_device snd_timer snd soundcore dcdbas floppy sr_mod usb_storage cdrom kvm_intel psmouse kvm tg3 evdev xfs dm_mod raid1 md_mod
-> > Pid: 1152, comm: modprobe Not tainted 3.5.0-rc1-00110-g71fae7e #2
-> > Call Trace:
-> >  [<ffffffff8102a400>] warn_slowpath_common+0x83/0x9c
-> >  [<ffffffff8102a4bc>] warn_slowpath_fmt+0x46/0x48
-> >  [<ffffffff813829ad>] ? add_preempt_count+0x39/0x3b
-> >  [<ffffffff811292f0>] proc_register+0x169/0x1a6
-> >  [<ffffffff8112962e>] create_proc_entry+0x74/0x8c
-> >  [<ffffffffa018eb63>] snd_info_register+0x3e/0xc3 [snd]
-> >  [<ffffffffa01fde2e>] snd_pcm_new_stream+0xb1/0x404 [snd_pcm]
-> >  [<ffffffffa024861f>] snd_usb_add_audio_stream+0xd2/0x230 [snd_usb_audio]
-> >  [<ffffffffa0241d33>] ? snd_usb_parse_audio_format+0x252/0x34f [snd_usb_audio]
-> >  [<ffffffff810d6b17>] ? kmem_cache_alloc_trace+0xab/0xbb
-> >  [<ffffffffa0248c29>] snd_usb_parse_audio_interface+0x4ac/0x567 [snd_usb_audio]
-> >  [<ffffffffa023f0ff>] snd_usb_create_stream+0xe9/0x125 [snd_usb_audio]
-> >  [<ffffffffa023f9b1>] usb_audio_probe+0x62a/0x72c [snd_usb_audio]
-> >  [<ffffffff812c49f5>] usb_probe_interface+0x136/0x1b1
-> >  [<ffffffff81287e66>] ? driver_probe_device+0x1d3/0x1d3
-> >  [<ffffffff81287d43>] driver_probe_device+0xb0/0x1d3
-> >  [<ffffffff81287ec5>] __driver_attach+0x5f/0x83
-> >  [<ffffffff812863a2>] bus_for_each_dev+0x54/0x86
-> >  [<ffffffff81287730>] driver_attach+0x1e/0x20
-> >  [<ffffffff8128747f>] bus_add_driver+0xfd/0x23a
-> >  [<ffffffff812882e8>] driver_register+0x93/0x10e
-> >  [<ffffffff812c383f>] usb_register_driver+0x7e/0x12a
-> >  [<ffffffffa0257000>] ? 0xffffffffa0256fff
-> >  [<ffffffffa0257000>] ? 0xffffffffa0256fff
-> >  [<ffffffffa0257040>] snd_usb_audio_init+0x40/0x1000 [snd_usb_audio]
-> >  [<ffffffff810001ff>] do_one_initcall+0x7f/0x134
-> >  [<ffffffffa0257000>] ? 0xffffffffa0256fff
-> >  [<ffffffff810688d4>] sys_init_module+0x16cf/0x195e
-> >  [<ffffffff8106516c>] ? free_notes_attrs+0x4d/0x4d
-> >  [<ffffffff810c38cb>] ? mmap_region+0x1c7/0x469
-> >  [<ffffffff813856d2>] system_call_fastpath+0x16/0x1b
-> > ---[ end trace c1baea1a25a91564 ]---
-> 
-> Looks like the PCM substream assignment is buggy.
-> Does the patch (untested at all) below help?
+On Wed, 2012-06-06 at 10:02 +0200, Selma Bensaid wrote:
+> This patch consists in settings the channels_min, rates and formats
+> of the dummy codec DAI driver to enable the creation of the PCM streams
+> using it.
+patch title is not clear what you are fixing in dummy_codec, pls
+consider appropriate title.
 
-Yep, that fixed it.  Thanks!
+> 
+> Signed-off-by: Selma Bensaid <selma.bensaid@intel.com>
+> ---
+>  sound/soc/soc-utils.c |   18 ++++++++++++++++++
+>  1 files changed, 18 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+> index 6005370..465a094 100644
+> --- a/sound/soc/soc-utils.c
+> +++ b/sound/soc/soc-utils.c
+> @@ -89,9 +89,27 @@ static struct snd_soc_platform_driver dummy_platform = {
+>  	.ops = &dummy_dma_ops,
+>  };
+>  
+> +#define NULL_FORMATS \
+> +	(SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |\
+> +	SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |\
+> +	SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32)
+Would it make sense to have a CONTINUOUS format macro instead?
+As people start using these, I can see this becoming big and ugly.
+
+But are the other formats defined in pcm.h widely used?
+
+> +
+>  static struct snd_soc_codec_driver dummy_codec;
+>  static struct snd_soc_dai_driver dummy_dai = {
+>  	.name = "snd-soc-dummy-dai",
+> +	.playback = {
+> +		.channels_min = 1,
+> +		.channels_max = 16,
+> +		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+> +		.formats = NULL_FORMATS,
+> +	},
+> +	.capture = {
+> +		.channels_min = 1,
+> +		.channels_max = 16,
+> +		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+> +		.formats = NULL_FORMATS,
+> +	},
+> +	.ops = NULL,
+>  };
+>  
+>  static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
+
 
 -- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+~Vinod
