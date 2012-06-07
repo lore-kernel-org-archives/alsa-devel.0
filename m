@@ -1,139 +1,76 @@
-From: Jamie Heilman <jamie@audible.transient.net>
-Subject: 3.5-rc1 snd_usb_audio stream format breakage
-Date: Thu, 7 Jun 2012 03:38:30 +0000
-Message-ID: <20120607033830.GB4321@cucamonga.audible.transient.net>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - reduce msleep time if EPSS
+ power states supported
+Date: Thu, 07 Jun 2012 09:15:11 +0200
+Message-ID: <4FD054FF.1090907@canonical.com>
+References: <1338991369-31656-1-git-send-email-xingchao.wang@intel.com>
+	<1338991369-31656-2-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id B1E26244EB
+	for <alsa-devel@alsa-project.org>;
+	Thu,  7 Jun 2012 09:15:13 +0200 (CEST)
+In-Reply-To: <1338991369-31656-2-git-send-email-xingchao.wang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Wang Xingchao <xingchao.wang@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, wangxingchao2011@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-With the USB audio streaming logic changes, my HeadRoom Bithead
-(08bb:2902 Burr-Brown PCM2902) no longer works.  Symptoms include the
-loss of most of the normally available formats leaving only:
+On 06/06/2012 04:02 PM, Wang Xingchao wrote:
+> if EPSS supported, transition from D3 state to D0 state in less
+> than 10ms
+>
+> Signed-off-by: Wang Xingchao<xingchao.wang@intel.com>
+> ---
+>   sound/pci/hda/hda_codec.c |    6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index b89c8ec..5298ba1 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -3526,14 +3526,18 @@ static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec, hda_nid_t fg
+>   static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
+>   				unsigned int power_state)
+>   {
+> +	bool epss;
+>   	if (codec->patch_ops.set_power_state) {
+>   		codec->patch_ops.set_power_state(codec, fg, power_state);
+>   		return;
+>   	}
+>
+> +	epss = snd_hda_codec_get_supported_ps(codec, fg, AC_PWRST_EPSS);
+>   	/* this delay seems necessary to avoid click noise at power-down */
+> -	if (power_state == AC_PWRST_D3)
+> +	if ((power_state == AC_PWRST_D3)&&  !epss)
+>   		msleep(100);
+> +	else
+> +		msleep(10);
 
-root@cucamonga:~# cat /proc/asound/bithead/stream0 
-Burr-Brown from TI USB Audio CODEC at usb-0000:00:1a.7-1.1.4, full speed : USB Audio
+Hi Wang,
 
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 6
-    Format: U8
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
+You seem to have increased the delay from 0 to 10 ms on all cases when 
+power_state != AC_PWRST_D3, is this intentional?
 
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 18
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
+Or did you mean to write like this:
 
-(normally 2 channel S16_LE is available, with capture rates up to
-48kHz ... only the last altset's are being reported now) and a slew of
-proc registration warnings logged:
+	if (power_state == AC_PWRST_D3) {
+		bool epss = snd_hda_codec_get_supported_ps(codec, fg, AC_PWRST_EPSS);
+		msleep(epss ? 10 : 100);
+	}
 
-------------[ cut here ]------------
-WARNING: at fs/proc/generic.c:586 proc_register+0x169/0x1a6()
-Hardware name: Precision WorkStation T3400  
-proc_dir_entry 'card1/pcm0p' already registered
-Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hda_intel(+) snd_hda_codec snd_hwdep snd_seq_midi snd_seq_midi_event snd_pcm snd_page_alloc snd_rawmidi snd_seq snd_seq_device snd_timer snd soundcore dcdbas floppy sr_mod usb_storage cdrom kvm_intel psmouse kvm tg3 evdev xfs dm_mod raid1 md_mod
-Pid: 1152, comm: modprobe Not tainted 3.5.0-rc1-00110-g71fae7e #2
-Call Trace:
- [<ffffffff8102a400>] warn_slowpath_common+0x83/0x9c
- [<ffffffff8102a4bc>] warn_slowpath_fmt+0x46/0x48
- [<ffffffff813829ad>] ? add_preempt_count+0x39/0x3b
- [<ffffffff811292f0>] proc_register+0x169/0x1a6
- [<ffffffff8112962e>] create_proc_entry+0x74/0x8c
- [<ffffffffa018eb63>] snd_info_register+0x3e/0xc3 [snd]
- [<ffffffffa01fde2e>] snd_pcm_new_stream+0xb1/0x404 [snd_pcm]
- [<ffffffffa024861f>] snd_usb_add_audio_stream+0xd2/0x230 [snd_usb_audio]
- [<ffffffffa0241d33>] ? snd_usb_parse_audio_format+0x252/0x34f [snd_usb_audio]
- [<ffffffff810d6b17>] ? kmem_cache_alloc_trace+0xab/0xbb
- [<ffffffffa0248c29>] snd_usb_parse_audio_interface+0x4ac/0x567 [snd_usb_audio]
- [<ffffffffa023f0ff>] snd_usb_create_stream+0xe9/0x125 [snd_usb_audio]
- [<ffffffffa023f9b1>] usb_audio_probe+0x62a/0x72c [snd_usb_audio]
- [<ffffffff812c49f5>] usb_probe_interface+0x136/0x1b1
- [<ffffffff81287e66>] ? driver_probe_device+0x1d3/0x1d3
- [<ffffffff81287d43>] driver_probe_device+0xb0/0x1d3
- [<ffffffff81287ec5>] __driver_attach+0x5f/0x83
- [<ffffffff812863a2>] bus_for_each_dev+0x54/0x86
- [<ffffffff81287730>] driver_attach+0x1e/0x20
- [<ffffffff8128747f>] bus_add_driver+0xfd/0x23a
- [<ffffffff812882e8>] driver_register+0x93/0x10e
- [<ffffffff812c383f>] usb_register_driver+0x7e/0x12a
- [<ffffffffa0257000>] ? 0xffffffffa0256fff
- [<ffffffffa0257000>] ? 0xffffffffa0256fff
- [<ffffffffa0257040>] snd_usb_audio_init+0x40/0x1000 [snd_usb_audio]
- [<ffffffff810001ff>] do_one_initcall+0x7f/0x134
- [<ffffffffa0257000>] ? 0xffffffffa0256fff
- [<ffffffff810688d4>] sys_init_module+0x16cf/0x195e
- [<ffffffff8106516c>] ? free_notes_attrs+0x4d/0x4d
- [<ffffffff810c38cb>] ? mmap_region+0x1c7/0x469
- [<ffffffff813856d2>] system_call_fastpath+0x16/0x1b
----[ end trace c1baea1a25a91564 ]---
-
-followed immediately by 4 more instances of:
-
-------------[ cut here ]------------
-WARNING: at fs/proc/generic.c:586 proc_register+0x169/0x1a6()
-Hardware name: Precision WorkStation T3400  
-proc_dir_entry 'card1/pcm0p' already registered
-Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hda_intel(+) snd_hda_codec snd_hwdep snd_seq_midi snd_seq_midi_event snd_pcm snd_page_alloc snd_rawmidi snd_seq snd_seq_device snd_timer snd soundcore dcdbas floppy sr_mod usb_storage cdrom kvm_intel psmouse kvm tg3 evdev xfs dm_mod raid1 md_mod
-Pid: 1152, comm: modprobe Tainted: G        W    3.5.0-rc1-00110-g71fae7e #2
-Call Trace:
- [<ffffffff8102a400>] warn_slowpath_common+0x83/0x9c
- [<ffffffff8102a4bc>] warn_slowpath_fmt+0x46/0x48
- [<ffffffff813829ad>] ? add_preempt_count+0x39/0x3b
- [<ffffffff811292f0>] proc_register+0x169/0x1a6
- [<ffffffff8112962e>] create_proc_entry+0x74/0x8c
- [<ffffffffa018eb63>] snd_info_register+0x3e/0xc3 [snd]
- [<ffffffffa01fde2e>] snd_pcm_new_stream+0xb1/0x404 [snd_pcm]
- [<ffffffffa024861f>] snd_usb_add_audio_stream+0xd2/0x230 [snd_usb_audio]
- [<ffffffffa0241d33>] ? snd_usb_parse_audio_format+0x252/0x34f [snd_usb_audio]
- [<ffffffff810d6b17>] ? kmem_cache_alloc_trace+0xab/0xbb
- [<ffffffffa0248c29>] snd_usb_parse_audio_interface+0x4ac/0x567 [snd_usb_audio]
- [<ffffffffa023f0ff>] snd_usb_create_stream+0xe9/0x125 [snd_usb_audio]
- [<ffffffffa023f9b1>] usb_audio_probe+0x62a/0x72c [snd_usb_audio]
- [<ffffffff812c49f5>] usb_probe_interface+0x136/0x1b1
- [<ffffffff81287e66>] ? driver_probe_device+0x1d3/0x1d3
- [<ffffffff81287d43>] driver_probe_device+0xb0/0x1d3
- [<ffffffff81287ec5>] __driver_attach+0x5f/0x83
- [<ffffffff812863a2>] bus_for_each_dev+0x54/0x86
- [<ffffffff81287730>] driver_attach+0x1e/0x20
- [<ffffffff8128747f>] bus_add_driver+0xfd/0x23a
- [<ffffffff812882e8>] driver_register+0x93/0x10e
- [<ffffffff812c383f>] usb_register_driver+0x7e/0x12a
- [<ffffffffa0257000>] ? 0xffffffffa0256fff
- [<ffffffffa0257000>] ? 0xffffffffa0256fff
- [<ffffffffa0257040>] snd_usb_audio_init+0x40/0x1000 [snd_usb_audio]
- [<ffffffff810001ff>] do_one_initcall+0x7f/0x134
- [<ffffffffa0257000>] ? 0xffffffffa0256fff
- [<ffffffff810688d4>] sys_init_module+0x16cf/0x195e
- [<ffffffff8106516c>] ? free_notes_attrs+0x4d/0x4d
- [<ffffffff810c38cb>] ? mmap_region+0x1c7/0x469
- [<ffffffff813856d2>] system_call_fastpath+0x16/0x1b
----[ end trace c1baea1a25a91565 ]---
-
-and then 17 instances of the same thing only for proc_dir_entry
-'card1/pcm0c'
-
-Bisecting the issue got as far as
-d399ff9593e088d33fb38f5206c6427825892baa being bad and
-8fdff6a319e7dac757c558bd283dc4577e68cde7 being good ... with
-edcd3633e72a1590c4cf46befe5e6cd03b5aec3e not building, but its pretty
-obvious when things went wrong.
-
-The host system is built for x86_64, happy to provide configs and such
-if you think them relevant.  Lemme know if I can be of help in testing
-fixes or providing more debugging info.
 
 -- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
