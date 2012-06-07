@@ -1,13 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v1 3/5] ASOC: mmp: add sspa support
-Date: Fri, 8 Jun 2012 06:10:24 +0800
-Message-ID: <20120607221019.GA14525__24448.7084135928$1339116960$gmane$org@opensource.wolfsonmicro.com>
-References: <1338791851-21038-1-git-send-email-zhangfei.gao@marvell.com>
-	<1338791851-21038-4-git-send-email-zhangfei.gao@marvell.com>
+Subject: ASoC updates for 3.5
+Date: Fri, 8 Jun 2012 07:18:14 +0800
+Message-ID: <20120607231813.GM14525@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5202044424473309874=="
+Content-Type: multipart/mixed; boundary="===============5719792442638635479=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1338791851-21038-4-git-send-email-zhangfei.gao@marvell.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B1241045FA
+	for <alsa-devel@alsa-project.org>;
+	Fri,  8 Jun 2012 02:55:56 +0200 (CEST)
+Received: from [116.228.53.169] (helo=finisterre.wolfsonmicro.main)
+	by cassiel.sirena.org.uk with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.72) (envelope-from <broonie@opensource.wolfsonmicro.com>)
+	id 1ScnUY-0006dg-2B
+	for alsa-devel@alsa-project.org; Fri, 08 Jun 2012 01:55:56 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,80 +23,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Vinod Koul <vinod.koul@intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@ti.com>, Qiao Zhou <zhouqiao@marvell.com>, Chao Xie <cxie4@marvell.com>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5202044424473309874==
+--===============5719792442638635479==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+	protocol="application/pgp-signature"; boundary="pFpMklMRdxwSC3Yi"
 Content-Disposition: inline
 
 
---4Ckj6UjgE2iN1+kY
+--pFpMklMRdxwSC3Yi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 04, 2012 at 02:37:29PM +0800, Zhangfei Gao wrote:
-> The SSPA is a configurable multi-channel audio serial (TDM) interface.
-> It's configurable at runtime to support up to 128 channels and the
-> number of bits per sample: 8, 12, 16, 20, 24 and 32 bits. It also
-> support stereo format: I2S, left-justified or right-justified.
+The following changes since commit f8f5701bdaf9134b1f90e5044a82c66324d2073f:
 
-This looks mostly good (though you want to check your indentation a bit)
-but...
+  Linux 3.5-rc1 (2012-06-02 18:29:26 -0700)
 
-> +static int __init mmp_sspa_modinit(void)
-> +{
-> +	audio_clk = clk_get(NULL, "mmp-audio");
-> +	if (IS_ERR(audio_clk))
-> +		return PTR_ERR(audio_clk);
-> +
-> +	sysclk = clk_get(NULL, "mmp-sysclk");
-> +	if (IS_ERR(sysclk))
-> +		return PTR_ERR(sysclk);
-> +	clk_enable(audio_clk);
+are available in the git repository at:
 
-You should be doing this stuff from the driver, not from the module init
-(and ideally you'd be managing the audio clock dynamically).  Even if
-it's the same clock every time in current silicon it's still a good idea
-to do this from a quality of implementation point of view.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.5
 
---4Ckj6UjgE2iN1+kY
+for you to fetch changes up to 3ff1ec27e9f567824e73316025a9025528494506:
+
+  ASoC: wm2000: Always use a 4s timeout for the firmware (2012-06-08 07:00:13 +0800)
+
+----------------------------------------------------------------
+ASoC: Updates for 3.5
+
+Some driver-specific updates, a few fixes for the dynamic PCM code and
+the addition of pinctrl support for the i.MX audmux which didn't make it
+into -rc1 due to cross tree dependency issues.
+
+----------------------------------------------------------------
+Liam Girdwood (3):
+      ASoC: dapm: Fix connected widget capture path query.
+      ASoC: dpcm: Fix dpcm_get_be() to check that DAI is BE
+      ASoC: dapm: Fix input list to use source widgets
+
+Mark Brown (3):
+      ASoC: wm8994: Ensure all AIFnCLK events are run from the _late variants
+      ASoC: wm8994: Apply volume updates with clocks enabled
+      ASoC: wm2000: Always use a 4s timeout for the firmware
+
+Richard Zhao (1):
+      ASoC: imx-audmux: add pinctrl support
+
+ sound/soc/codecs/wm2000.c  |   59 +++++++++----------------
+ sound/soc/codecs/wm8994.c  |  105 ++++++++++++++++++++++++++++----------------
+ sound/soc/fsl/imx-audmux.c |    8 ++++
+ sound/soc/soc-dapm.c       |    4 +-
+ sound/soc/soc-pcm.c        |    6 +++
+ 5 files changed, 103 insertions(+), 79 deletions(-)
+
+--pFpMklMRdxwSC3Yi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP0SbEAAoJEBus8iNuMP3dfFIQAJw6YAM6fqL9rA4aGtT6/6M9
-eExr4SoHugtlZyRundEZtp+lxM1lKJqubXRrV9XYAhXskRU6Wa4PcZh7C2TcBqRo
-rOXDTZ+o0DDs3YtldWlMm3WWCUT+iC2tdOpLAAevdBWADjSQzaIGjLusJvg41Lr9
-tofO/R4hrcibrPz13TFRlZugeHNwme8qEV1DT8+pXB2J9xyMWqgiuuwgQOlwEFCY
-lUBEUpPTaHkl1NUz4i+5IArsrPCBo9WNslxDMpS6dvs96p1WqvuoL4ZI9a93YBMJ
-js4xUarWXxXRnLKcQZnaL55jVnhMu5ip6z6/+RUxogVsBx1QKb9ZMQIoCTYcQFCU
-B4wphqhEHG1pbBPPc36RpRweJ0H2VF2wHKi064JtA1Q3cArm4GAqzkEcbxpE//6K
-vOdkOiMlhCFNpWpbjo6IROtO39/JXlO9L/ziHSDwz9R2Q2p7DIBOV27obSHfrXwa
-4Xs3uEyFHoCEfdldoOKh05rQ7B9H6GjhPUMsCeDsccipV7Z/iKPIMwtqaECNa+ND
-cH+t+a3wj/5vBBOcINUrKqlse4DRMImgrDbUrg+5HqwRhDYkQZITPOfjcRutrjrW
-B22xiMKIaZHvWiZEGaV2Ag2+AynD5zftvLm8nijRVVYQaABtxPy0cOIQOodyhcoV
-xMe9lI4kd3Lv/mjzeT3z
-=M7eN
+iQIcBAEBAgAGBQJP0TatAAoJEBus8iNuMP3dh2MP/iZCJIGTAgCrp0YWYThP4Q64
+DjjQt/6NBeor2LaUQWZK/ZItmFQJW/ZzWRyNF7FqVHYgWfKFPZBEjv3nbifQ1q1X
+t0YGz7EVYHQwddZpL4OFmnCmdfKYj4DT8dr2KEaTLacWe2+/lpThQR9NXfNUubrO
+EGSpyF2ABmfEIP2BsczWIgnfIeyhWSPM5Qn/ggp7HYt4HX+EG0ITdbNBPexo8/dh
+tFNK3P60N0P1T1imstJOO/NVSYIusVwhsBqZTzfl9SdInoWABdzUhCYO3JhsjfUs
+plcRGUWjq+7sA06xSbC17VLgEs9DbFj3ZK85PQRccNJU/BH0CFRIeMFPZgGyfC/t
+WZQ6LsoCliujM0gqBZq6dn/0QImy7vxwdEXDFkhVyZP5FHmnkiPiDnPXCubiaQ6H
+pNWrPNUSY3uqPczZWzd7Tiy7PVGODkbe4lIabUNobDDBP9q1Mj8TM1W4dGA3n0zN
+08+0G6f9ZhrSTXJLXCzbFxxqc9OyWkR5zfdN8mZOrWQnA05NZM7ltgYDj5Tnmi9j
+wiYwxfU200c2RQteDmk2ZV/T6fC/vKYIcFOvdzYdfgHuMU4d6YPplJJfH2jgULGZ
+9bTJviYN7IG51bkjy/FS7V48o8sJNTqp7M53pOJHK1H6g6dMnBr75K8GKwcFWndi
+Yg7wb+7raFmkm7z140PH
+=my6C
 -----END PGP SIGNATURE-----
 
---4Ckj6UjgE2iN1+kY--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--pFpMklMRdxwSC3Yi--
 
-
---===============5202044424473309874==
+--===============5719792442638635479==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5202044424473309874==--
+--===============5719792442638635479==--
