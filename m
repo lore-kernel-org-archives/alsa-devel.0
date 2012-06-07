@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Q] Writing an alsa module for usb audio & video
- capture device
-Date: Thu, 07 Jun 2012 21:21:34 +0200
-Message-ID: <4FD0FF3E.5010607@ladisch.de>
-References: <CALF0-+X3CT=XU1idrTrz-ZY+zMS907JAoXEvKsr6PT73yK01kA@mail.gmail.com>	<CALF0-+W=PVa6f4oYVutCs20d8K4Ya5Mb9USe7+zhp2H6MXSwrA@mail.gmail.com>	<4FCF92CC.2050600@ladisch.de>
-	<CALF0-+Uj8Q-uqEL0ZWhXyOiWmgpdOFKKqW_O4=nFcXpMNXOdBw@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASOC: utils: Update dummy codec DAI
+ settings to allow stream creation
+Date: Thu, 7 Jun 2012 22:30:57 +0100
+Message-ID: <20120607213057.GA19485@sirena.org.uk>
+References: <1339058158.1927.15.camel@vkoul-udesk3>
+	<1339063721-15193-1-git-send-email-selma.bensaid@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C57DC2436F
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B649F245C2
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2012 21:22:11 +0200 (CEST)
-In-Reply-To: <CALF0-+Uj8Q-uqEL0ZWhXyOiWmgpdOFKKqW_O4=nFcXpMNXOdBw@mail.gmail.com>
+	Thu,  7 Jun 2012 23:31:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1339063721-15193-1-git-send-email-selma.bensaid@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Selma Bensaid <selma.bensaid@intel.com>
+Cc: vinod.koul@intel.com, sylvain.centelles@intel.com, alsa-devel@alsa-project.org, louis.le.gall@intel.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Ezequiel Garcia wrote:
-> On Wed, Jun 6, 2012 at 2:26 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> make it USB Audio class compliant.
->
-> What do you mean by that?
+On Thu, Jun 07, 2012 at 12:08:41PM +0200, Selma Bensaid wrote:
+> This patch consists in settings the channels_min, rates and formats
+> of the dummy codec DAI driver to enable the creation of the PCM streams
+> using it.
 
-Implement the descriptors and class-specific requests required by one of
-the Audio Class specifications:
-http://www.usb.org/developers/devclass_docs#approved
+I still don't understand what this is actually supposed to fix - why are
+we trying to set up a stream to something that isn't there?  Though it
+looks like this was added for dynamic PCM which has no mainline users so
+perhaps there's a sensible use for this...
 
-> What's exactly the scope of supported devices by snd-usb-audio?
-
-Pretty much everything in Audio Class 1.0 and 2.0 (some clock-related
-parts of v2 are yet missing).
-
-
-Regards,
-Clemens
+The other question is how we decide that these are sensible values to
+set for the dummy CODEC.
