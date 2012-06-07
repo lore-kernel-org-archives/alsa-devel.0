@@ -1,16 +1,23 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Create phantom jacks for fixed
-	inputs and outputs
-Date: Thu,  7 Jun 2012 15:52:08 +0200
-Message-ID: <1339077128-9534-1-git-send-email-david.henningsson@canonical.com>
+Subject: Re: Internal Mics and Speakers not visible in
+	PulseAudio
+Date: Thu, 07 Jun 2012 16:49:44 +0200
+Message-ID: <4FD0BF88.5090508@canonical.com>
+References: <4FC616B8.3090608@canonical.com>
+	<CAN8cciYgk5L5PWQkzcd3XF_7eZvzTpzC_eUifCG=hOFymJsx7Q@mail.gmail.com>
+	<4FC6329A.1040008@canonical.com>
+	<CAN8cciaip04p6+_hUkoXeyv2HScd38oerNdZUp8GzBGZpR+ntA@mail.gmail.com>
+	<4FC83925.7030309@canonical.com>
+	<CAN8cciZwnF+DNm=PWM0Z1U_y=Pf+KzmFznQvntguQukiSNd+ow@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id D9FF82438F
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id CA1DB243C5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2012 15:52:12 +0200 (CEST)
+	Thu,  7 Jun 2012 16:49:44 +0200 (CEST)
+In-Reply-To: <CAN8cciZwnF+DNm=PWM0Z1U_y=Pf+KzmFznQvntguQukiSNd+ow@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,185 +27,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-PulseAudio sometimes have difficulties knowing that there is a
-"Speaker" or "Internal Mic", if they have no individual volume
-controls or selectors. As a result, only e g "Headphone" might
-be created for a laptop, but no "Speaker".
-To help out, create phantom jacks (that are always present,
-at least for now) for "Speaker", "Internal Mic" etc, in case we
-detect them.
-The naming convention is e g "Speaker Phantom Jack".
-
-In order not to pollute the /dev/input namespace with even more
-devices, these are added to the kcontrols only, not the input devices.
-
-An implementation note:
-The possibility to override how to actually do jack sensing opens
-up for more advanced usage of the jack infrastructure in the future
-(e g letting the headphone jack detection set presence status for
-both headphone and mic in case of a headset jack, among other things).
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/hda_jack.c |   64 ++++++++++++++++++++++++++++++++++------------
- sound/pci/hda/hda_jack.h |    5 ++++
- 2 files changed, 52 insertions(+), 17 deletions(-)
-
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 2dd1c11..c5569f1 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -133,6 +133,13 @@ static void jack_detect_update(struct hda_codec *codec,
- 	}
- }
- 
-+static void jack_detect_always_present(struct hda_codec *codec,
-+				       struct hda_jack_tbl *jack)
-+{
-+	jack->pin_sense = AC_PINSENSE_PRESENCE;
-+	jack->jack_dirty = 0;
-+}
-+
- /**
-  * snd_hda_set_dirty_all - Mark all the cached as dirty
-  *
-@@ -162,7 +169,8 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
- {
- 	struct hda_jack_tbl *jack = snd_hda_jack_tbl_get(codec, nid);
- 	if (jack) {
--		jack_detect_update(codec, jack);
-+		if (jack->update_func)
-+			jack->update_func(codec, jack);
- 		return jack->pin_sense;
- 	}
- 	return read_pin_sense(codec, nid);
-@@ -215,7 +223,8 @@ void snd_hda_jack_report_sync(struct hda_codec *codec)
- 
- 	for (i = 0; i < codec->jacktbl.used; i++, jack++)
- 		if (jack->nid) {
--			jack_detect_update(codec, jack);
-+			if (jack->update_func)
-+				jack->update_func(codec, jack);
- 			if (!jack->kctl)
- 				continue;
- 			state = get_jack_plug_state(jack->pin_sense);
-@@ -264,8 +273,8 @@ static void hda_free_jack_priv(struct snd_jack *jack)
-  * This assigns a jack-detection kctl to the given pin.  The kcontrol
-  * will have the given name and index.
-  */
--int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
--			  const char *name, int idx)
-+static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
-+			  const char *name, int idx, bool phantom_jack)
- {
- 	struct hda_jack_tbl *jack;
- 	struct snd_kcontrol *kctl;
-@@ -283,19 +292,33 @@ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
- 	if (err < 0)
- 		return err;
- 	jack->kctl = kctl;
-+	if (phantom_jack)
-+		jack->update_func = jack_detect_always_present;
-+	else
-+		jack->update_func = jack_detect_update;
-+
- 	state = snd_hda_jack_detect(codec, nid);
- 	snd_kctl_jack_report(codec->bus->card, kctl, state);
- #ifdef CONFIG_SND_HDA_INPUT_JACK
--	jack->type = get_input_jack_type(codec, nid);
--	err = snd_jack_new(codec->bus->card, name, jack->type, &jack->jack);
--	if (err < 0)
--		return err;
--	jack->jack->private_data = jack;
--	jack->jack->private_free = hda_free_jack_priv;
--	snd_jack_report(jack->jack, state ? jack->type : 0);
-+	if (!phantom_jack) {
-+		jack->type = get_input_jack_type(codec, nid);
-+		err = snd_jack_new(codec->bus->card, name, jack->type,
-+				   &jack->jack);
-+		if (err < 0)
-+			return err;
-+		jack->jack->private_data = jack;
-+		jack->jack->private_free = hda_free_jack_priv;
-+		snd_jack_report(jack->jack, state ? jack->type : 0);
-+	}
- #endif
- 	return 0;
- }
-+
-+int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
-+			  const char *name, int idx)
-+{
-+	return __snd_hda_jack_add_kctl(codec, nid, name, idx, false);
-+}
- EXPORT_SYMBOL_HDA(snd_hda_jack_add_kctl);
- 
- static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
-@@ -305,25 +328,32 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
- 	unsigned int def_conf, conn;
- 	char name[44];
- 	int idx, err;
-+	bool phantom_jack;
- 
- 	if (!nid)
- 		return 0;
--	if (!is_jack_detectable(codec, nid))
--		return 0;
- 	def_conf = snd_hda_codec_get_pincfg(codec, nid);
- 	conn = get_defcfg_connect(def_conf);
--	if (conn != AC_JACK_PORT_COMPLEX)
-+	if (conn == AC_JACK_PORT_NONE)
- 		return 0;
-+	phantom_jack = (conn != AC_JACK_PORT_COMPLEX) ||
-+		       !is_jack_detectable(codec, nid);
- 
- 	snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
-+	if (phantom_jack)
-+		/* Example final name: "Internal Mic Phantom Jack" */
-+		strncat(name, " Phantom", sizeof(name) - strlen(name) - 1);
- 	if (!strcmp(name, lastname) && idx == *lastidx)
- 		idx++;
--	strncpy(lastname, name, 44);
-+	strncpy(lastname, name, sizeof(name));
- 	*lastidx = idx;
--	err = snd_hda_jack_add_kctl(codec, nid, name, idx);
-+	err = __snd_hda_jack_add_kctl(codec, nid, name, idx, phantom_jack);
- 	if (err < 0)
- 		return err;
--	return snd_hda_jack_detect_enable(codec, nid, 0);
-+
-+	if (!phantom_jack)
-+		return snd_hda_jack_detect_enable(codec, nid, 0);
-+	return 0;
- }
- 
- /**
-diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
-index 8ae5246..4055236 100644
---- a/sound/pci/hda/hda_jack.h
-+++ b/sound/pci/hda/hda_jack.h
-@@ -13,6 +13,10 @@
- #define __SOUND_HDA_JACK_H
- 
- struct auto_pin_cfg;
-+struct hda_jack_tbl;
-+
-+typedef void (*snd_hda_jack_detect_update)(struct hda_codec *codec,
-+	       struct hda_jack_tbl *jack);
- 
- struct hda_jack_tbl {
- 	hda_nid_t nid;
-@@ -24,6 +28,7 @@ struct hda_jack_tbl {
- 	unsigned int jack_detect:1;	/* capable of jack-detection? */
- 	unsigned int jack_dirty:1;	/* needs to update? */
- 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
-+	snd_hda_jack_detect_update update_func; /* function to call to perform jack detection */
- #ifdef CONFIG_SND_HDA_INPUT_JACK
- 	int type;
- 	struct snd_jack *jack;
--- 
-1.7.9.5
+T24gMDYvMDcvMjAxMiAwNDo1OSBBTSwgUmF5bW9uZCBZYXUgd3JvdGU6Cj4KPgo+IERhdmlkIEhl
+bm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3NvbkBjYW5vbmljYWwuY29tCj4gPG1haWx0bzpkYXZp
+ZC5oZW5uaW5nc3NvbkBjYW5vbmljYWwuY29tPj4g5pa8IDIwMTLlubQ25pyIMeaXpeaYn+acn+S6
+lOWvq+mBk++8mgo+ICA+IE9uIDA2LzAxLzIwMTIgMDQ6NTQgQU0sIFJheW1vbmQgWWF1IHdyb3Rl
+Ogo+ICA+Pgo+ICA+PiAyMDEyLzUvMzAgRGF2aWQgSGVubmluZ3Nzb248ZGF2aWQuaGVubmluZ3Nz
+b25AY2Fub25pY2FsLmNvbQo+IDxtYWlsdG86ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNv
+bT4+Ogo+ICA+Pj4KPiAgPj4+IE9uIDA1LzMwLzIwMTIgMDM6MDQgUE0sIFJheW1vbmQgWWF1IHdy
+b3RlOgo+ICA+Pj4+Cj4gID4+Pj4gSSBhbSBhZnJhaWQgdGhpcyBkb2VzIG5vdCB3b3JrIHdpdGgg
+ZGVza3RvcCBjb21wdXRlciB3aGljaCBoYXMgZnJvbnQKPiAgPj4+PiBtaWMgLCBpbnRlcm5hbCBt
+aWMsIExpbmUgaW4gLENEIChvciBzdGVyZW8gbWl4IHdpdGggdGhvc2UgdmlhIGhkYQo+ICA+Pj4+
+IGNvZGVjcykKPiAgPj4+Pgo+ICA+Pj4+IFdpdGggdWJ1bnR1IDEyLjA0IGFuZCB1bml0eSAsICBp
+ZiBJIGVuYWJsZSBoZGEgamFjayBkZXRlY3Qgd2l0aCBteQo+ICA+Pj4+IGFkMTk4eCBvbiBteSBk
+ZXNrdG9wLCBzb3VuZCAgcHJlZmVyZW5jZSBkb2VzIG5vdCBhbGxvdyBtZSB0byBzZWxlY3QKPiAg
+Pj4+PiBmcm9udCBtaWMgc2luY2UgSSBhbSBzdGlsbCB1c2luZyBhYzk3IGZyb250IHBhbmVsICh3
+aXRoIG5vIGphY2sgZGV0ZWN0Cj4gID4+Pj4gY2lyY3VpdCkKPiAgPj4+Cj4gID4+Pgo+ICA+Pgo+
+IEZvciB0aG9zZSB1c2VyIHdpdGggaGRhIGZyb250IGF1ZGlvIHBhbmVsLCBXaGVuIHRoZSByZWFy
+IG1pYyBpcwo+IHVucGx1Z2dlZCwgcHVsc2UgYXVkaW8gY2hhbmdlIHRoZSBpbnB1dCB0byBhbm90
+aGVyIHNvdW5kIGNhcmQgaWYgdGhlcmUKPiBpcyBubyBwbHVnZ2VkIGlucHV0IGphY2tzIGFzIHBh
+IGRvbid0IHJlZ2FyZCBjZCBvciBzdGVyZW8gbWljIGFzIHZhbGlkCj4gcG9ydCBvZiB0aGUgaW5w
+dXQgc291cmNlLgo+Cj4gV2hlbiB0aGUgcmVhciBtaWMgaXMgcGx1Z2dlZCBiZWZvcmUgcHVsYXNl
+YXVkaW8gc3RhcnQgYW5kIGl0IGlzIHRoZQo+IGZpcnN0IHBvcnQgb2YgdGhlIGlucHV0IGluIHRo
+ZSBzb3VuZCBzZXR0aW5nICxpdCBjaGFuZ2UgdG8gdGhlIHdlYmNhbQo+IG1pYyhzZWNvbmQgcG9y
+dCkgYWZ0ZXIgdGhlIHJlYXIgbWljIGlzIHVucGx1Z2dlZC4KPgo+IFNvIGl0IHdvbid0IGF1dG9z
+ZWxlY3Qgd2hlbiBUaGUgdXNlciBwbHVnZ2VkIHRoZSByZWFyIG1pYyBhZ2Fpbi4gSGUgaGF2ZQo+
+IHRvIHNlbGVjdCB0aGUgcmVhciBtaWMgaW4gc291bmQgc2V0dGluZywgdGhlIHJlYXIgbWljIGlz
+IHRoZSBsYXN0IHBvcnQKPiBpbiBzb3VuZCBzZXR0aW5nLml0IDxodHRwOi8vc2V0dGluZy5pdD4g
+d2lsbCBjaGFuZ2UgdG8gdGhlIG1pYzFvZgo+IGFub3RoZXIgc291bmQgY2FyZChsYXN0IHBvcnQp
+CgpJIHRoaW5rIHdlIGhhdmUgdG8gbGl2ZSB3aXRoIHRoZXNlIGtpbmRzIG9mIGlzc3VlcyBpbiBQ
+dWxzZUF1ZGlvIHVudGlsIApDb2xpbiBoYXMgY29tcGxldGVkIGhpcyBwcmlvcml0eSBsaXN0IGlt
+cGxlbWVudGF0aW9uLgoKPiAgPj4gVGhlcmUgYXJlIGRpZmZlcmVuY2UgZm9yIHRoZSBzeXN0ZW0g
+c2V0dGluZ3Mvc291bmQgaW4gdW5pdHkgYW5kIGdub21lCj4gID4+Cj4gID4+IEluIGdub21lIHNl
+c3Npb24sIHRoZSBzeXN0ZW0gc2V0dGluZ3Mvc291bmQgbGlzdCB0aGUgdGhyZWUgaGFyZGNvZGVk
+Cj4gID4+IHBvcnRzIChmcm9udCBtaWMsIGxpbmUgYW5kIHJlYXIgbWljKSBpbnN0ZWFkIG9mIGFs
+bCB0aGUgaXRlbXMgaW4gdGhlCj4gID4+ICJJbnB1dCBzb3VyY2UiIC8gIkNhcHR1cmUgU291cmNl
+IiBjb250cm9scyAoIFRoZXJlIGlzIG5vIENEIGluIEhEQSwKPiAgPj4gYW5kIG5vIENEICwgc3Rl
+cmVvIG1peCwgYXV4LCBwaG9uZSBmb3IgbXkgb3RoZXIgc291bmQgY2FyZHMgd2l0aCBhYzk3Cj4g
+ID4+IGNvZGVjKQo+ICA+Pgo+ICA+PiBJcyB0aGVyZSBhbnkgd2F5IHRvIGFkZCBiYWNrICJTdGVy
+ZW8gTWl4IiB0byBwdWxzZWF1ZGlvICdzIHBvcnQgPwo+ICA+Cj4gID4gWWVzLiBTZWU6Cj4gID4K
+PiAgPgo+IGh0dHA6Ly93d3cuZnJlZWRlc2t0b3Aub3JnL3dpa2kvU29mdHdhcmUvUHVsc2VBdWRp
+by9CYWNrZW5kcy9BTFNBL1Byb2ZpbGVzCj4gID4KPiAgPiBIb3dldmVyIGlmIHlvdSBoYXZlIGFk
+ZGl0aW9uYWwgcXVlc3Rpb25zIGFib3V0IGhvdyB0byB3cml0ZQo+IFB1bHNlQXVkaW8gcHJvZmls
+ZXMgYW5kIHBhdGhzIEkgbWlnaHQgbm90IGhhdmUgdGhlIHRpbWUgdG8gaGVscCB5b3Ugb3V0Cj4g
+d2l0aCB0aGF0LCBob3BlZnVsbHkgeW91IHdpbGwgYmUgYWJsZSB0byBzb3J0IHRoYXQgb3V0IGJ5
+IHlvdXJzZWxmLgo+Cj4gSSBoYXZlIGZvbGxvd3MgY29saW4ncyB0dXRvcmlhbCBjb21waWxpbmcg
+YW5kIHJ1bm5pbmcgcHVsc2UgYXVkaW8gZnJvbSBnaXQuCgpZb3UgZG9uJ3QgbmVlZCB0byByZWNv
+bXBpbGUgcHVsc2VhdWRpbyB0byBjaGFuZ2UgY29uZmlndXJhdGlvbiBmaWxlcywgCnRoZXkgYXJl
+IGFsbCBpbiAvdXNyL3NoYXJlL3B1bHNlYXVkaW8vYWxzYS1taXhlcgoKPiBEbyBpIG5lZWQgdG8g
+YnVpbGQgdGhlIHVuaXR5L2dub21lIHNvdW5kIHNldHRpbmcgYW5kIHdoYXQgYXJlIHRoZSBuYW1l
+Cj4gb2YgdGhlIHN5c3RlbSBzZXR0aW5nIHNvdW5kIGluIGdub21lIGFuZCB1bml0eT8KPgo+IEFs
+dGhvdWdoIHRoZXJlIGlzIG5vIGF1eCBpbiBzb3VuZCBzZXR0aW5nLCBzZWxlY3QgYW5hbG9nIGlu
+cHV0IGluIHNvdW5kCj4gc2V0dGluZyB3aWxsIHNlbGVjdCB0aGUgYXV4Cj4KPiBXaHkgY2hhbmdp
+bmcgdGhlIGlucHV0IHBvcnQgZnJvbSByZWFyIG1pYyB0byBmcm9udCBtaWMgYWxzbyBjaGFuZ2Ug
+dGhlCj4gdmFsdWUgb2YgcmVhciBtaWMgYm9vc3QgYW5kIGZyb250IG1pYyBib29zdCBhdCB0aGUg
+c2FtZSB0aW1lID8KPgo+IFRoaXMgIGZvcmJpZCBtdWx0aSBzdHJlYW1pbmcgY2FwdHVyZSB1c2lu
+ZyB0d28gbWljLgoKWW91IGNhbiBjaGFuZ2UgdGhpcyBieSBjaGFuZ2luZyB0aGUgY29uZmlndXJh
+dGlvbiBmaWxlcy4KCj4gID4+IEluIHVuaXR5IHNlc3Npb24sIHRoZSBzeXN0ZW0gc2V0dGluZ3Mv
+c291bmQgb25seSBsaXN0ICB0aGUgcGx1Z2dlZAo+IGphY2tzLgo+ICA+Pgo+ICA+PiBJIHRoaW5r
+IHRoZSB1c2FnZSBvZiBqYWNrIGRldGVjdCB0byBzZWxlY3QgaW5wdXQgc291cmNlIGF1dG9tYXRp
+Y2FsbHkKPiAgPj4gaXMgYnJva2VuIGZvciBmb3IgdGhvc2UgIG1vdGhlcmJvYXJkcyB3aGljaCBo
+YXZlIHRocmVlIGF1ZGlvIGphY2tzIGluCj4gID4+IHJlYXIgcGFuZWwgYW5kIHJldGFzayB0aG9z
+ZSBwaW5rIGFuZCBibHVlIGphY2tzIGZvciBzdXJyb3VuZDUxIG91dHB1dC4KPiAgPj4KPiAgPj4g
+VGhlIG1vZHVsZS1zd2l0Y2gtb24tYXZhaWxhYmxlLXBvcnQgc2hvdWxkIGNoZWNrIHdoZXRoZXIg
+IkNoYW5uZWwKPiAgPj4gbW9kZScgaXMgNiBhbmQgZXhjbHVkZSB0aGUgcmVzdWx0IHRob3NlIGph
+Y2sgZGV0ZWN0IG9mICJyZWFyIG1pYyIgYW5kCj4gID4+ICJsaW5lIGluIiBzaW5jZSB0aGV5IGhh
+dmUgYmVlbiByZXRhc2tlZCBmb3Igb3V0cHV0Cj4gID4KPiAgPiBIbW0uIFRoYXQgd291bGQgbGVh
+ZCB0byBxdWl0ZSBoYWlyeSBjb2RlIGluIFB1bHNlQXVkaW8sIEknbQo+IGFmcmFpZC4uLmFuZCBJ
+IGRvbid0IHRoaW5rIGl0J3MgdGhlIHJpZ2h0IHdheSB0byBzb2x2ZSB0aGUgcHJvYmxlbSBlaXRo
+ZXIuCj4gID4KPiAgPiBJIHRoaW5rIHdlIGNvdWxkIGdvIGFib3V0IHRoaXMgaW4gZGlmZmVyZW50
+IHdheXMuCj4gID4KPiAgPiAxKSBUaGUgZWFzaWVzdCB3YXkgaXMgdG8gc2F5IHRoYXQgaWYgeW91
+J3JlIGNoYW5naW5nICJDaGFubmVsIG1vZGUiCj4gbWFudWFsbHkgaW4gYWxzYW1peGVyLCB5b3Un
+cmUgb24geW91ciBvd24uIEFmdGVyIGFsbCwgdGhlIG5vcm1hbC9uZXdiaWUKPiBlbmQgdXNlciB3
+b3VsZCBub3Qga25vdyBhYm91dCBhbHNhbWl4ZXIgYXQgYWxsLCBzbyBpZiB5b3UncmUgY2FwYWJs
+ZSBvZgo+IGNoYW5naW5nIHRoaW5ncyBpbiBhbHNhbWl4ZXIgeW91J3JlIGFzc3VtZWQgdG8gYmUg
+Y2FwYWJsZSBvZiBjb25maWd1cmluZwo+IFB1bHNlQXVkaW8ncyBwcm9maWxlcyAodXNpbmcgdGhl
+IGxpbmsgYWJvdmUpIHRvIG1hdGNoIHRoYXQgYXMgd2VsbC4KPiAgPgo+ICA+IDIpIFdlIGNvdWxk
+IG1ha2UgYSBwb2xpY3kgZGVjaXNpb24gdG8gcmVtb3ZlIHRoZSBjb2RlIHRoYXQgcmV0YXNrcwo+
+IHRoZSBqYWNrcywgYW5kIGRpcmVjdCBwZW9wbGUgdG8gaGRhLWphY2stcmV0YXNrIGlmIHRoZXkg
+d2FudCB0byBkbyB0aGF0Lgo+IFRoYXQgd291bGQgbWVhbiBzaW1wbGVyIGNvZGUgZm9yIGV2ZXJ5
+b25lIC0gaG93ZXZlciwgd2l0aCB0aGUgcmVjZW50Cj4gYWRkaXRpb24gb2YgbXVsdGktSU8gaW4g
+dGhlIFJlYWx0ZWsgZHJpdmVyIChmb3IgZXhhbXBsZSksIHRoaW5ncyBkb2Vzbid0Cj4gc2VlbSB0
+byBoZWFkIHRoYXQgd2F5Li4uCj4gID4KPiAgPiAzKSBXZSBjb3VsZCBhZGQgYm90aCAiTGluZSBP
+dXQgU3Vycm91bmQgSmFjayIgYW5kICJSZWFyIE1pYyBKYWNrIi4KPiBUaGUgIlJlYXIgTWljIEph
+Y2siIHdvdWxkIGFsd2F5cyByZXR1cm4gcHJlc2VudD1ubyB3aGVuIHlvdSdyZSBpbgo+IDYtY2hh
+bm5lbCBzdXJyb3VuZCByZXRhc2sgbW9kZSwgYW5kICJMaW5lIE91dCBTdXJyb3VuZCBKYWNrIiB3
+b3VsZAo+IGFsd2F5cyByZXR1cm4gcHJlc2VudD1ubyB3aGVuIHlvdSdyZSBpbiB0aGUgbm9ybWFs
+IG1vZGUuCj4gID4KPgo+Cj4gSXQgc2VlbSB0aGF0IGlzIG5vdCBwb3NzaWJsZSB0byBpbXBsZW1l
+bnQgMykgaW4gY3VycmVudCBpbXBsZW1lbnRhdGlvbgo+IGluIGhkYS1qYWNrLmMKCkJ1dCBldmVy
+eXRoaW5nIGlzIHBvc3NpYmxlIHdpdGggdGhlIHJpZ2h0IHBhdGNoZXMgOi0pCgo+IEkgcHJlZmVy
+IGFuIG1vZHVsZSBwYXJhbWV0ZXIgb2YgaGRhIGZvciBkaXNhYmxlIHRoZSBjcmVhdGlvbiBvZiBq
+YWNrCj4gZGV0ZWN0IGNvbnRyb2wgc2luY2UgdGhpcyBmb3JjZSBwYSB0byBmYWxsYmFjayBsaWtl
+IHRoZSBvdGhlciBzb3VuZAo+IGNhcmRzIHdoaWNoIGhhdmUgbm8gamFjayBkZXRlY3Rpb24KCldo
+eSBkb24ndCB5b3UganVzdCByZW1vdmUgdGhlIGphY2sgZGV0ZWN0aW9uIGZyb20gUHVsc2VBdWRp
+bydzIApjb25maWd1cmF0aW9uIGZpbGVzIGluc3RlYWQ/Cgo+IFRoZSBiZWhhdmlvdXIgb2YgZGVz
+a3RvcCB1c2VycyBhcmUgZGlmZmVyZW50IGZyb20gbm90ZWJvb2sgdXNlcnMKPiBUaGUgZGVza3Rv
+cCB1c2VycyBhcmUgdW5saWtlbHkgdG8gcGx1Zy91bnBsdWcgdGhlIGphY2tzIGF0IHJlYXIgcGFu
+ZWwKPiBldmVyeSB0aW1lLiBUaGV5IHJhdGhlciBjb25uZWN0ZWQgYWxsIHRoZSBuZWNlc3Nhcnkg
+amFja3Mgb2YgdGhlIHJlYXIKPiBhdWRpbyBwYW5lbAo+Cj4gID4+IEJUVywgdGhlIElDSDggSERB
+IGNvbnRyb2xsZXIgc3VwcG9ydCBtdWx0aSBzdHJlYW0gY2FwdHVyaW5nIGFuZCBhZDE5ODgKPiAg
+Pj4gaGFzIHRoZWUgY2FwdHVyZSBzdWJkZXZpY2VzCj4gID4+Cj4gID4+IGFyZWNvcmQgLWwKPiAg
+Pj4gY2FyZCAxOiBJbnRlbCBbSERBIEludGVsXSwgZGV2aWNlIDA6IEFEMTk4eCBBbmFsb2cgW0FE
+MTk4eCBBbmFsb2ddCj4gID4+ICAgU3ViZGV2aWNlczogMy8zCj4gID4+ICAgU3ViZGV2aWNlICMw
+OiBzdWJkZXZpY2UgIzAKPiAgPj4gICBTdWJkZXZpY2UgIzE6IHN1YmRldmljZSAjMQo+ICA+PiAg
+IFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMyCj4gID4KPiAgPiBZb3Ugd291bGQgYmUgYWJsZSB0
+byBtYWtlIGEgbXVsdGktc291cmNlIHByb2ZpbGUgaW4gUHVsc2VBdWRpbyB0aGF0Cj4gY2FuIHJl
+Y29yZCBmcm9tIGFsbCBvZiB0aGVzZSBzaW11bHRhbmVvdXNseSwgYnV0IHdlJ3JlIG1pc3Npbmcg
+YSBwYXRjaAo+IHRoYXQgY2FuIGNvbnRyb2wgdm9sdW1lcyBhbmQgc3dpdGNoZXMgd2l0aCBpbmRp
+Y2VzLCBzbyB5b3Ugd291bGQgaGF2ZSB0bwo+IGNvbnRyb2wgdGhlIGdhaW4gbWFudWFsbHkgaW4g
+YWxzYW1peGVyLgo+ICA+Cj4gSSBkb24ndCB0aGluayB0aGlzIHdvcmsgc2luY2Ugd2hlbiBjaGFu
+Z2luZyBmcm9tIHJlYXIgbWljIHRvIGZyb250IG1pYywKPiBwdWxzZWF1ZGlvIGFsc28gY2hhbmdl
+IHRoZSByZWFyIG1pYyBib29zdCBhbmQgZnJvbnQgbWljIGJvb3N0Lgo+IEVzcGVjaWFsbHkgd2hl
+biB0aGUgcHVsc2UgYXVkaW8gQVBJIGRvZXMgbm90IGFsbG93IGFwcGxpY2F0aW9uIHRvIHNlbGVj
+dAo+IGRpZmZlcmVudCBzaW5rIG9yIHNvdXJjZSAoSS5lLiBNdWx0aSBzdHJlYW1pbmcgcGxheWJh
+Y2svY2FwdHVyZSBpcyBub3QKPiBzdXBwb3J0ZWQgYnkgcHVsc2UgYXVkaW8pCj4KPiBUaGUgcG9z
+c2libGUgd2F5IGlzCj4gMSkgYW4gbW9kdWxlIHBhcmFtZXRlciBvZiBoZGEgZHJpdmVyIHRvIGRp
+c2FibGUgY3JlYXRpb24gb2YgamFjawo+IGRldGVjdGlvbiBjb250cm9scwo+IDIpIGRvbid0IHVz
+ZSBtb2R1bGUtc3dpdGNoLW9uLWF2YWlsYWJsZS1wb3J0IGluIGRlZmF1bHQucGEKPiA8aHR0cDov
+L2RlZmF1bHQucGE+Cj4KPiBCdHcgaXQgc2VlbSBzb3VuZCBpcyBkaXN0b3J0ZWQgd2hlbiB0aGUg
+YXBwbGljYXRpb24gY2FwdHVyZSBtb25vIGFuZCB0aGUKPiBzb3VuZCBjYXJkIG9ubHkgc3VwcG9y
+dCBzdGVyZW8gaXMgYmVjYXVzZSBwYSBqdXN0IHN1bSB0aGUgbGVmdCBhbmQgcmlnaHQKPiBjaGFu
+bmVsIChjbGlwcGluZykKCk9rLiBBcyBhIHdvcmthcm91bmQsIGxvd2VyIHRoZSBpbnB1dCBnYWlu
+LgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgpodHRwczovL2xhdW5jaHBh
+ZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
