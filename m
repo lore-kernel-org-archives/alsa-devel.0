@@ -1,20 +1,16 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v1 2/5] ASoC: mmp: add audio dma support
-Date: Thu, 07 Jun 2012 15:35:47 +0530
-Message-ID: <1339063547.1927.63.camel@vkoul-udesk3>
-References: <1338791851-21038-1-git-send-email-zhangfei.gao@marvell.com>
-	<1338791851-21038-3-git-send-email-zhangfei.gao@marvell.com>
-	<1339061042.1927.61.camel@vkoul-udesk3>
-	<CAMj5Bkj+4qQqoDgz_d7eLK+QuVm41fnN5204tRpJ8NKrNsAjcg@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/2] HD-audio HDMI regression fixes with
+	VGA-switcheroo
+Date: Thu,  7 Jun 2012 12:15:14 +0200
+Message-ID: <1339064116-18579-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F4D710B955
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4B7610B955
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2012 12:12:40 +0200 (CEST)
-In-Reply-To: <CAMj5Bkj+4qQqoDgz_d7eLK+QuVm41fnN5204tRpJ8NKrNsAjcg@mail.gmail.com>
+	Thu,  7 Jun 2012 12:15:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: zhangfei gao <zhangfei.gao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
+To: David Airlie <airlied@linux.ie>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?J=C3=B6rg-Volker=20Peetz?= <jvpeetz@web.de>, dri-devel@lists.freedesktop.org, Steven Newbury <steve@snewbury.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-06-07 at 17:59 +0800, zhangfei gao wrote:
-> On Thu, Jun 7, 2012 at 5:24 PM, Vinod Koul <vinod.koul@linux.intel.com> wrote:
-> > On Mon, 2012-06-04 at 14:37 +0800, Zhangfei Gao wrote:
-> >> mmp-pcm handle audio dma based on soc-dmaengine
-> >> Support mmp and pxa910
-> > See soc-dmaengine.c. You sneed to use the library to use dmaengine.
-> >
-> 
-> Thanks Vinod for kind review.
-> 
-> Some confusion, only find sound/soc/soc-dmaengine-pcm.c.
-> So the driver base on the library, snd_dmaengine_pcm_open/close etc.
-> Replacing dma_request_channel etc.
-> 
-> Is it right direction?
-Yes your driver should use it. See examples in other soc drivers
+Hi,
+
+this is a series of patches to fix the regressions of HD-audio HDMI
+on D-GPUs in 3.5-rc1 due to the support of VGA-switcheroo audio clients.
+
+The first patch adds a new helper function to vga-switcheroo and the
+second just uses that instead of an open code.
+
+Dave, if the first patch is OK, I'm going to apply it though sound tree.
+Let me know if any problem is found.
+
+Joerg, could you check whether this doesn't break your setup, too?
 
 
--- 
-~Vinod
+thanks,
+
+Takashi
