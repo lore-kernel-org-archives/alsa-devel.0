@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dpcm: Fix dpcm_get_be() to check
-	that DAI is BE.
-Date: Fri, 8 Jun 2012 06:57:19 +0800
-Message-ID: <20120607225718.GE14525@opensource.wolfsonmicro.com>
-References: <1338920819-5246-1-git-send-email-lrg@ti.com>
+Subject: [PATCH] ASoC: wm2000: Always use a 4s timeout for the
+	firmware
+Date: Fri,  8 Jun 2012 06:54:44 +0800
+Message-ID: <1339109684-23743-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8328231486418984563=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 176D01045D2
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DB981045FA
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2012 02:53:32 +0200 (CEST)
-In-Reply-To: <1338920819-5246-1-git-send-email-lrg@ti.com>
+	Fri,  8 Jun 2012 02:53:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,54 +21,224 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Rather than having varying timeouts depending on the transition always
+use a 4s timeout. This provides better diagnostics for clocking errors
+and ensures compatibility with current calibration firmwares.
 
---===============8328231486418984563==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Uwl7UQhJk99r8jnw"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm2000.c |   59 ++++++++++++++++-----------------------------
+ 1 file changed, 21 insertions(+), 38 deletions(-)
 
-
---Uwl7UQhJk99r8jnw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 05, 2012 at 07:26:59PM +0100, Liam Girdwood wrote:
-> Make sure that the dpcm_get_be() only returns BE DAI links.
-
-Applied, thanks.
-
---Uwl7UQhJk99r8jnw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP0THFAAoJEBus8iNuMP3d8IAP/32VouiZsKdYjnEoFSav/JVV
-SEifecWrWmhvntB3cgklXHO6xB5NifMi/kZCoZbjajSlKcGpQ2jjp3g66rLbqaq1
-0Hf8tuZ+zAZUlPr/10PB7lfjLA6A9WqJSRGbFAUHGDnAkrePU3omIVKrkkD+9Bj4
-kFJD/iP/5NT76VjF8zc7E1vza+5kjzO1nXFh/RfYgpwInLVvokykkmIU2GgvQBDj
-+Im4UQLR2rGXzE6MqYMPBr+H0/nqGUueUr8BN00WJgHYCaXROJ4KhcK2KwtuvB/E
-Z2HSORBRiIfxdgzr1gvXMO60UWbHsq8bIaHhfR3zvWdMQfOKQ1X5gasmRCuXxSju
-lDdVPtZHOForJ6mre3BdUGI7QRJI5r2tFDou/d9SD0F2UuiDZHJ3UUkP9NXGTzSp
-ciOlvqmFB3ainRM24QjsKQKSqp0mFMAuAUmiG8130L6DNkQ46M1ZgWKyPDY4JnO5
-kTq7kZfMirx/UHjpRQg4TzNPtuDy1wUGVH0WF4TjC/1wRi6TDx49+gC6raWXCefG
-QxZBIra898LHMwjUxZMAV/u6rfeyhBUK8N7BzKx3OmyGNRa4BiXebcxn9GDRQLD2
-O/YSDcuHVEz5gDTV3uKgBLiIoYkkpyd3yDA8fup788FdbzInZHrNr83vzRU5VYkI
-45hJvRvrmzGBOtmt/7mp
-=pqFW
------END PGP SIGNATURE-----
-
---Uwl7UQhJk99r8jnw--
-
---===============8328231486418984563==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8328231486418984563==--
+diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
+index 78a148f..3fd5b29 100644
+--- a/sound/soc/codecs/wm2000.c
++++ b/sound/soc/codecs/wm2000.c
+@@ -99,8 +99,9 @@ static void wm2000_reset(struct wm2000_priv *wm2000)
+ }
+ 
+ static int wm2000_poll_bit(struct i2c_client *i2c,
+-			   unsigned int reg, u8 mask, int timeout)
++			   unsigned int reg, u8 mask)
+ {
++	int timeout = 4000;
+ 	int val;
+ 
+ 	val = wm2000_read(i2c, reg);
+@@ -119,7 +120,7 @@ static int wm2000_poll_bit(struct i2c_client *i2c,
+ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
+ {
+ 	struct wm2000_priv *wm2000 = dev_get_drvdata(&i2c->dev);
+-	int ret, timeout;
++	int ret;
+ 
+ 	BUG_ON(wm2000->anc_mode != ANC_OFF);
+ 
+@@ -140,13 +141,13 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
+ 
+ 	/* Wait for ANC engine to become ready */
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_ANC_STAT,
+-			     WM2000_ANC_ENG_IDLE, 1)) {
++			     WM2000_ANC_ENG_IDLE)) {
+ 		dev_err(&i2c->dev, "ANC engine failed to reset\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_BOOT_COMPLETE, 1)) {
++			     WM2000_STATUS_BOOT_COMPLETE)) {
+ 		dev_err(&i2c->dev, "ANC engine failed to initialise\n");
+ 		return -ETIMEDOUT;
+ 	}
+@@ -173,16 +174,13 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
+ 	dev_dbg(&i2c->dev, "Download complete\n");
+ 
+ 	if (analogue) {
+-		timeout = 248;
+-		wm2000_write(i2c, WM2000_REG_ANA_VMID_PU_TIME, timeout / 4);
++		wm2000_write(i2c, WM2000_REG_ANA_VMID_PU_TIME, 248 / 4);
+ 
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_ANA_SEQ_INCLUDE |
+ 			     WM2000_MODE_MOUSE_ENABLE |
+ 			     WM2000_MODE_THERMAL_ENABLE);
+ 	} else {
+-		timeout = 10;
+-
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_MOUSE_ENABLE |
+ 			     WM2000_MODE_THERMAL_ENABLE);
+@@ -201,9 +199,8 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
+ 	wm2000_write(i2c, WM2000_REG_SYS_CTL2, WM2000_ANC_INT_N_CLR);
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_MOUSE_ACTIVE, timeout)) {
+-		dev_err(&i2c->dev, "Timed out waiting for device after %dms\n",
+-			timeout * 10);
++			     WM2000_STATUS_MOUSE_ACTIVE)) {
++		dev_err(&i2c->dev, "Timed out waiting for device\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -218,28 +215,25 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
+ static int wm2000_power_down(struct i2c_client *i2c, int analogue)
+ {
+ 	struct wm2000_priv *wm2000 = dev_get_drvdata(&i2c->dev);
+-	int timeout;
+ 
+ 	if (analogue) {
+-		timeout = 248;
+-		wm2000_write(i2c, WM2000_REG_ANA_VMID_PD_TIME, timeout / 4);
++		wm2000_write(i2c, WM2000_REG_ANA_VMID_PD_TIME, 248 / 4);
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_ANA_SEQ_INCLUDE |
+ 			     WM2000_MODE_POWER_DOWN);
+ 	} else {
+-		timeout = 10;
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_POWER_DOWN);
+ 	}
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_POWER_DOWN_COMPLETE, timeout)) {
++			     WM2000_STATUS_POWER_DOWN_COMPLETE)) {
+ 		dev_err(&i2c->dev, "Timeout waiting for ANC power down\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_ANC_STAT,
+-			     WM2000_ANC_ENG_IDLE, 1)) {
++			     WM2000_ANC_ENG_IDLE)) {
+ 		dev_err(&i2c->dev, "Timeout waiting for ANC engine idle\n");
+ 		return -ETIMEDOUT;
+ 	}
+@@ -268,13 +262,13 @@ static int wm2000_enter_bypass(struct i2c_client *i2c, int analogue)
+ 	}
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_ANC_DISABLED, 10)) {
++			     WM2000_STATUS_ANC_DISABLED)) {
+ 		dev_err(&i2c->dev, "Timeout waiting for ANC disable\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_ANC_STAT,
+-			     WM2000_ANC_ENG_IDLE, 1)) {
++			     WM2000_ANC_ENG_IDLE)) {
+ 		dev_err(&i2c->dev, "Timeout waiting for ANC engine idle\n");
+ 		return -ETIMEDOUT;
+ 	}
+@@ -311,7 +305,7 @@ static int wm2000_exit_bypass(struct i2c_client *i2c, int analogue)
+ 	wm2000_write(i2c, WM2000_REG_SYS_CTL2, WM2000_ANC_INT_N_CLR);
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_MOUSE_ACTIVE, 10)) {
++			     WM2000_STATUS_MOUSE_ACTIVE)) {
+ 		dev_err(&i2c->dev, "Timed out waiting for MOUSE\n");
+ 		return -ETIMEDOUT;
+ 	}
+@@ -325,38 +319,32 @@ static int wm2000_exit_bypass(struct i2c_client *i2c, int analogue)
+ static int wm2000_enter_standby(struct i2c_client *i2c, int analogue)
+ {
+ 	struct wm2000_priv *wm2000 = dev_get_drvdata(&i2c->dev);
+-	int timeout;
+ 
+ 	BUG_ON(wm2000->anc_mode != ANC_ACTIVE);
+ 
+ 	if (analogue) {
+-		timeout = 248;
+-		wm2000_write(i2c, WM2000_REG_ANA_VMID_PD_TIME, timeout / 4);
++		wm2000_write(i2c, WM2000_REG_ANA_VMID_PD_TIME, 248 / 4);
+ 
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_ANA_SEQ_INCLUDE |
+ 			     WM2000_MODE_THERMAL_ENABLE |
+ 			     WM2000_MODE_STANDBY_ENTRY);
+ 	} else {
+-		timeout = 10;
+-
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_THERMAL_ENABLE |
+ 			     WM2000_MODE_STANDBY_ENTRY);
+ 	}
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_ANC_DISABLED, timeout)) {
++			     WM2000_STATUS_ANC_DISABLED)) {
+ 		dev_err(&i2c->dev,
+ 			"Timed out waiting for ANC disable after 1ms\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+-	if (!wm2000_poll_bit(i2c, WM2000_REG_ANC_STAT, WM2000_ANC_ENG_IDLE,
+-			     1)) {
++	if (!wm2000_poll_bit(i2c, WM2000_REG_ANC_STAT, WM2000_ANC_ENG_IDLE)) {
+ 		dev_err(&i2c->dev,
+-			"Timed out waiting for standby after %dms\n",
+-			timeout * 10);
++			"Timed out waiting for standby\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -374,23 +362,19 @@ static int wm2000_enter_standby(struct i2c_client *i2c, int analogue)
+ static int wm2000_exit_standby(struct i2c_client *i2c, int analogue)
+ {
+ 	struct wm2000_priv *wm2000 = dev_get_drvdata(&i2c->dev);
+-	int timeout;
+ 
+ 	BUG_ON(wm2000->anc_mode != ANC_STANDBY);
+ 
+ 	wm2000_write(i2c, WM2000_REG_SYS_CTL1, 0);
+ 
+ 	if (analogue) {
+-		timeout = 248;
+-		wm2000_write(i2c, WM2000_REG_ANA_VMID_PU_TIME, timeout / 4);
++		wm2000_write(i2c, WM2000_REG_ANA_VMID_PU_TIME, 248 / 4);
+ 
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_ANA_SEQ_INCLUDE |
+ 			     WM2000_MODE_THERMAL_ENABLE |
+ 			     WM2000_MODE_MOUSE_ENABLE);
+ 	} else {
+-		timeout = 10;
+-
+ 		wm2000_write(i2c, WM2000_REG_SYS_MODE_CNTRL,
+ 			     WM2000_MODE_THERMAL_ENABLE |
+ 			     WM2000_MODE_MOUSE_ENABLE);
+@@ -400,9 +384,8 @@ static int wm2000_exit_standby(struct i2c_client *i2c, int analogue)
+ 	wm2000_write(i2c, WM2000_REG_SYS_CTL2, WM2000_ANC_INT_N_CLR);
+ 
+ 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
+-			     WM2000_STATUS_MOUSE_ACTIVE, timeout)) {
+-		dev_err(&i2c->dev, "Timed out waiting for MOUSE after %dms\n",
+-			timeout * 10);
++			     WM2000_STATUS_MOUSE_ACTIVE)) {
++		dev_err(&i2c->dev, "Timed out waiting for MOUSE\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+-- 
+1.7.10
