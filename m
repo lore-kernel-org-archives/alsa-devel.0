@@ -1,140 +1,139 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Internal Mics and Speakers not visible in PulseAudio
-Date: Thu, 7 Jun 2012 10:59:42 +0800
-Message-ID: <CAN8cciZwnF+DNm=PWM0Z1U_y=Pf+KzmFznQvntguQukiSNd+ow@mail.gmail.com>
-References: <4FC616B8.3090608@canonical.com>
-	<CAN8cciYgk5L5PWQkzcd3XF_7eZvzTpzC_eUifCG=hOFymJsx7Q@mail.gmail.com>
-	<4FC6329A.1040008@canonical.com>
-	<CAN8cciaip04p6+_hUkoXeyv2HScd38oerNdZUp8GzBGZpR+ntA@mail.gmail.com>
-	<4FC83925.7030309@canonical.com>
+From: Jamie Heilman <jamie@audible.transient.net>
+Subject: 3.5-rc1 snd_usb_audio stream format breakage
+Date: Thu, 7 Jun 2012 03:38:30 +0000
+Message-ID: <20120607033830.GB4321@cucamonga.audible.transient.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
-	[209.85.212.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 46541243C4
-	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2012 04:59:46 +0200 (CEST)
-Received: by wibhn14 with SMTP id hn14so629244wib.2
-	for <alsa-devel@alsa-project.org>; Wed, 06 Jun 2012 19:59:45 -0700 (PDT)
-In-Reply-To: <4FC83925.7030309@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+IOaWvCAy
-MDEy5bm0NuaciDHml6XmmJ/mnJ/kupTlr6vpgZPvvJoKPiBPbiAwNi8wMS8yMDEyIDA0OjU0IEFN
-LCBSYXltb25kIFlhdSB3cm90ZToKPj4KPj4gMjAxMi81LzMwIERhdmlkIEhlbm5pbmdzc29uPGRh
-dmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+Ogo+Pj4KPj4+IE9uIDA1LzMwLzIwMTIgMDM6
-MDQgUE0sIFJheW1vbmQgWWF1IHdyb3RlOgo+Pj4+Cj4+Pj4gSSBhbSBhZnJhaWQgdGhpcyBkb2Vz
-IG5vdCB3b3JrIHdpdGggZGVza3RvcCBjb21wdXRlciB3aGljaCBoYXMgZnJvbnQKPj4+PiBtaWMg
-LCBpbnRlcm5hbCBtaWMsIExpbmUgaW4gLENEIChvciBzdGVyZW8gbWl4IHdpdGggdGhvc2Ugdmlh
-IGhkYQo+Pj4+IGNvZGVjcykKPj4+Pgo+Pj4+IFdpdGggdWJ1bnR1IDEyLjA0IGFuZCB1bml0eSAs
-ICBpZiBJIGVuYWJsZSBoZGEgamFjayBkZXRlY3Qgd2l0aCBteQo+Pj4+IGFkMTk4eCBvbiBteSBk
-ZXNrdG9wLCBzb3VuZCAgcHJlZmVyZW5jZSBkb2VzIG5vdCBhbGxvdyBtZSB0byBzZWxlY3QKPj4+
-PiBmcm9udCBtaWMgc2luY2UgSSBhbSBzdGlsbCB1c2luZyBhYzk3IGZyb250IHBhbmVsICh3aXRo
-IG5vIGphY2sgZGV0ZWN0Cj4+Pj4gY2lyY3VpdCkKPj4+Cj4+Pgo+PgpGb3IgdGhvc2UgdXNlciB3
-aXRoIGhkYSBmcm9udCBhdWRpbyBwYW5lbCwgV2hlbiB0aGUgcmVhciBtaWMgaXMgdW5wbHVnZ2Vk
-LApwdWxzZSBhdWRpbyBjaGFuZ2UgdGhlIGlucHV0IHRvIGFub3RoZXIgc291bmQgY2FyZCBpZiB0
-aGVyZSBpcyBubyBwbHVnZ2VkCmlucHV0IGphY2tzIGFzIHBhIGRvbid0IHJlZ2FyZCBjZCBvciBz
-dGVyZW8gbWljIGFzIHZhbGlkIHBvcnQgb2YgdGhlIGlucHV0CnNvdXJjZS4KCldoZW4gdGhlIHJl
-YXIgbWljIGlzIHBsdWdnZWQgYmVmb3JlIHB1bGFzZWF1ZGlvIHN0YXJ0IGFuZCBpdCBpcyB0aGUg
-Zmlyc3QKcG9ydCBvZiB0aGUgaW5wdXQgaW4gdGhlIHNvdW5kIHNldHRpbmcgLGl0IGNoYW5nZSB0
-byB0aGUgd2ViY2FtIG1pYyhzZWNvbmQKcG9ydCkgYWZ0ZXIgdGhlIHJlYXIgbWljIGlzIHVucGx1
-Z2dlZC4KClNvIGl0IHdvbid0IGF1dG9zZWxlY3Qgd2hlbiBUaGUgdXNlciBwbHVnZ2VkIHRoZSBy
-ZWFyIG1pYyBhZ2Fpbi4gSGUgaGF2ZSB0bwpzZWxlY3QgdGhlIHJlYXIgbWljIGluIHNvdW5kIHNl
-dHRpbmcsIHRoZSByZWFyIG1pYyBpcyB0aGUgbGFzdCBwb3J0IGluCnNvdW5kIHNldHRpbmcuaXQg
-d2lsbCBjaGFuZ2UgdG8gdGhlIG1pYzFvZiBhbm90aGVyIHNvdW5kIGNhcmQobGFzdCBwb3J0KQoK
-Cj4+IFRoZXJlIGFyZSBkaWZmZXJlbmNlIGZvciB0aGUgc3lzdGVtIHNldHRpbmdzL3NvdW5kIGlu
-IHVuaXR5IGFuZCBnbm9tZQo+Pgo+PiBJbiBnbm9tZSBzZXNzaW9uLCB0aGUgc3lzdGVtIHNldHRp
-bmdzL3NvdW5kIGxpc3QgdGhlIHRocmVlIGhhcmRjb2RlZAo+PiBwb3J0cyAoZnJvbnQgbWljLCBs
-aW5lIGFuZCByZWFyIG1pYykgaW5zdGVhZCBvZiBhbGwgdGhlIGl0ZW1zIGluIHRoZQo+PiAiSW5w
-dXQgc291cmNlIiAvICJDYXB0dXJlIFNvdXJjZSIgY29udHJvbHMgKCBUaGVyZSBpcyBubyBDRCBp
-biBIREEsCj4+IGFuZCBubyBDRCAsIHN0ZXJlbyBtaXgsIGF1eCwgcGhvbmUgZm9yIG15IG90aGVy
-IHNvdW5kIGNhcmRzIHdpdGggYWM5Nwo+PiBjb2RlYykKPj4KPj4gSXMgdGhlcmUgYW55IHdheSB0
-byBhZGQgYmFjayAiU3RlcmVvIE1peCIgdG8gcHVsc2VhdWRpbyAncyBwb3J0ID8KPgo+IFllcy4g
-U2VlOgo+Cj4gaHR0cDovL3d3dy5mcmVlZGVza3RvcC5vcmcvd2lraS9Tb2Z0d2FyZS9QdWxzZUF1
-ZGlvL0JhY2tlbmRzL0FMU0EvUHJvZmlsZXMKPgo+IEhvd2V2ZXIgaWYgeW91IGhhdmUgYWRkaXRp
-b25hbCBxdWVzdGlvbnMgYWJvdXQgaG93IHRvIHdyaXRlIFB1bHNlQXVkaW8KcHJvZmlsZXMgYW5k
-IHBhdGhzIEkgbWlnaHQgbm90IGhhdmUgdGhlIHRpbWUgdG8gaGVscCB5b3Ugb3V0IHdpdGggdGhh
-dCwKaG9wZWZ1bGx5IHlvdSB3aWxsIGJlIGFibGUgdG8gc29ydCB0aGF0IG91dCBieSB5b3Vyc2Vs
-Zi4KCkkgaGF2ZSBmb2xsb3dzIGNvbGluJ3MgdHV0b3JpYWwgY29tcGlsaW5nIGFuZCBydW5uaW5n
-IHB1bHNlIGF1ZGlvIGZyb20gZ2l0LgpEbyBpIG5lZWQgdG8gYnVpbGQgdGhlIHVuaXR5L2dub21l
-IHNvdW5kIHNldHRpbmcgYW5kIHdoYXQgYXJlIHRoZSBuYW1lIG9mCnRoZSBzeXN0ZW0gc2V0dGlu
-ZyBzb3VuZCBpbiBnbm9tZSBhbmQgdW5pdHk/CgpBbHRob3VnaCB0aGVyZSBpcyBubyBhdXggaW4g
-c291bmQgc2V0dGluZywgc2VsZWN0IGFuYWxvZyBpbnB1dCBpbiBzb3VuZApzZXR0aW5nIHdpbGwg
-c2VsZWN0IHRoZSBhdXgKCldoeSBjaGFuZ2luZyB0aGUgaW5wdXQgcG9ydCBmcm9tIHJlYXIgbWlj
-IHRvIGZyb250IG1pYyBhbHNvIGNoYW5nZSB0aGUKdmFsdWUgb2YgcmVhciBtaWMgYm9vc3QgYW5k
-IGZyb250IG1pYyBib29zdCBhdCB0aGUgc2FtZSB0aW1lID8KClRoaXMgIGZvcmJpZCBtdWx0aSBz
-dHJlYW1pbmcgY2FwdHVyZSB1c2luZyB0d28gbWljLgoKPgo+PiBJbiB1bml0eSBzZXNzaW9uLCB0
-aGUgc3lzdGVtIHNldHRpbmdzL3NvdW5kIG9ubHkgbGlzdCAgdGhlIHBsdWdnZWQgamFja3MuCj4+
-Cj4+IEkgdGhpbmsgdGhlIHVzYWdlIG9mIGphY2sgZGV0ZWN0IHRvIHNlbGVjdCBpbnB1dCBzb3Vy
-Y2UgYXV0b21hdGljYWxseQo+PiBpcyBicm9rZW4gZm9yIGZvciB0aG9zZSAgbW90aGVyYm9hcmRz
-IHdoaWNoIGhhdmUgdGhyZWUgYXVkaW8gamFja3MgaW4KPj4gcmVhciBwYW5lbCBhbmQgcmV0YXNr
-IHRob3NlIHBpbmsgYW5kIGJsdWUgamFja3MgZm9yIHN1cnJvdW5kNTEgb3V0cHV0Lgo+Pgo+PiBU
-aGUgbW9kdWxlLXN3aXRjaC1vbi1hdmFpbGFibGUtcG9ydCBzaG91bGQgY2hlY2sgd2hldGhlciAi
-Q2hhbm5lbAo+PiBtb2RlJyBpcyA2IGFuZCBleGNsdWRlIHRoZSByZXN1bHQgdGhvc2UgamFjayBk
-ZXRlY3Qgb2YgInJlYXIgbWljIiBhbmQKPj4gImxpbmUgaW4iIHNpbmNlIHRoZXkgaGF2ZSBiZWVu
-IHJldGFza2VkIGZvciBvdXRwdXQKPgo+IEhtbS4gVGhhdCB3b3VsZCBsZWFkIHRvIHF1aXRlIGhh
-aXJ5IGNvZGUgaW4gUHVsc2VBdWRpbywgSSdtIGFmcmFpZC4uLmFuZApJIGRvbid0IHRoaW5rIGl0
-J3MgdGhlIHJpZ2h0IHdheSB0byBzb2x2ZSB0aGUgcHJvYmxlbSBlaXRoZXIuCj4KPiBJIHRoaW5r
-IHdlIGNvdWxkIGdvIGFib3V0IHRoaXMgaW4gZGlmZmVyZW50IHdheXMuCj4KPiAxKSBUaGUgZWFz
-aWVzdCB3YXkgaXMgdG8gc2F5IHRoYXQgaWYgeW91J3JlIGNoYW5naW5nICJDaGFubmVsIG1vZGUi
-Cm1hbnVhbGx5IGluIGFsc2FtaXhlciwgeW91J3JlIG9uIHlvdXIgb3duLiBBZnRlciBhbGwsIHRo
-ZSBub3JtYWwvbmV3YmllIGVuZAp1c2VyIHdvdWxkIG5vdCBrbm93IGFib3V0IGFsc2FtaXhlciBh
-dCBhbGwsIHNvIGlmIHlvdSdyZSBjYXBhYmxlIG9mCmNoYW5naW5nIHRoaW5ncyBpbiBhbHNhbWl4
-ZXIgeW91J3JlIGFzc3VtZWQgdG8gYmUgY2FwYWJsZSBvZiBjb25maWd1cmluZwpQdWxzZUF1ZGlv
-J3MgcHJvZmlsZXMgKHVzaW5nIHRoZSBsaW5rIGFib3ZlKSB0byBtYXRjaCB0aGF0IGFzIHdlbGwu
-Cj4KPiAyKSBXZSBjb3VsZCBtYWtlIGEgcG9saWN5IGRlY2lzaW9uIHRvIHJlbW92ZSB0aGUgY29k
-ZSB0aGF0IHJldGFza3MgdGhlCmphY2tzLCBhbmQgZGlyZWN0IHBlb3BsZSB0byBoZGEtamFjay1y
-ZXRhc2sgaWYgdGhleSB3YW50IHRvIGRvIHRoYXQuIFRoYXQKd291bGQgbWVhbiBzaW1wbGVyIGNv
-ZGUgZm9yIGV2ZXJ5b25lIC0gaG93ZXZlciwgd2l0aCB0aGUgcmVjZW50IGFkZGl0aW9uIG9mCm11
-bHRpLUlPIGluIHRoZSBSZWFsdGVrIGRyaXZlciAoZm9yIGV4YW1wbGUpLCB0aGluZ3MgZG9lc24n
-dCBzZWVtIHRvIGhlYWQKdGhhdCB3YXkuLi4KPgo+IDMpIFdlIGNvdWxkIGFkZCBib3RoICJMaW5l
-IE91dCBTdXJyb3VuZCBKYWNrIiBhbmQgIlJlYXIgTWljIEphY2siLiBUaGUKIlJlYXIgTWljIEph
-Y2siIHdvdWxkIGFsd2F5cyByZXR1cm4gcHJlc2VudD1ubyB3aGVuIHlvdSdyZSBpbiA2LWNoYW5u
-ZWwKc3Vycm91bmQgcmV0YXNrIG1vZGUsIGFuZCAiTGluZSBPdXQgU3Vycm91bmQgSmFjayIgd291
-bGQgYWx3YXlzIHJldHVybgpwcmVzZW50PW5vIHdoZW4geW91J3JlIGluIHRoZSBub3JtYWwgbW9k
-ZS4KPgoKCkl0IHNlZW0gdGhhdCBpcyBub3QgcG9zc2libGUgdG8gaW1wbGVtZW50IDMpIGluIGN1
-cnJlbnQgaW1wbGVtZW50YXRpb24gaW4KaGRhLWphY2suYwoKSSBwcmVmZXIgYW4gbW9kdWxlIHBh
-cmFtZXRlciBvZiBoZGEgZm9yIGRpc2FibGUgdGhlIGNyZWF0aW9uIG9mIGphY2sgZGV0ZWN0CmNv
-bnRyb2wgc2luY2UgdGhpcyBmb3JjZSBwYSB0byBmYWxsYmFjayBsaWtlIHRoZSBvdGhlciBzb3Vu
-ZCBjYXJkcyB3aGljaApoYXZlIG5vIGphY2sgZGV0ZWN0aW9uCgpUaGUgYmVoYXZpb3VyIG9mIGRl
-c2t0b3AgdXNlcnMgYXJlIGRpZmZlcmVudCBmcm9tIG5vdGVib29rIHVzZXJzClRoZSBkZXNrdG9w
-IHVzZXJzIGFyZSB1bmxpa2VseSB0byBwbHVnL3VucGx1ZyB0aGUgamFja3MgYXQgcmVhciBwYW5l
-bCBldmVyeQp0aW1lLiBUaGV5IHJhdGhlciBjb25uZWN0ZWQgYWxsIHRoZSBuZWNlc3NhcnkgamFj
-a3Mgb2YgdGhlIHJlYXIgYXVkaW8gcGFuZWwKCj4+IEJUVywgdGhlIElDSDggSERBIGNvbnRyb2xs
-ZXIgc3VwcG9ydCBtdWx0aSBzdHJlYW0gY2FwdHVyaW5nIGFuZCBhZDE5ODgKPj4gaGFzIHRoZWUg
-Y2FwdHVyZSBzdWJkZXZpY2VzCj4+Cj4+IGFyZWNvcmQgLWwKPj4gY2FyZCAxOiBJbnRlbCBbSERB
-IEludGVsXSwgZGV2aWNlIDA6IEFEMTk4eCBBbmFsb2cgW0FEMTk4eCBBbmFsb2ddCj4+ICAgU3Vi
-ZGV2aWNlczogMy8zCj4+ICAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKPj4gICBTdWJkZXZp
-Y2UgIzE6IHN1YmRldmljZSAjMQo+PiAgIFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMyCj4KPiBZ
-b3Ugd291bGQgYmUgYWJsZSB0byBtYWtlIGEgbXVsdGktc291cmNlIHByb2ZpbGUgaW4gUHVsc2VB
-dWRpbyB0aGF0IGNhbgpyZWNvcmQgZnJvbSBhbGwgb2YgdGhlc2Ugc2ltdWx0YW5lb3VzbHksIGJ1
-dCB3ZSdyZSBtaXNzaW5nIGEgcGF0Y2ggdGhhdCBjYW4KY29udHJvbCB2b2x1bWVzIGFuZCBzd2l0
-Y2hlcyB3aXRoIGluZGljZXMsIHNvIHlvdSB3b3VsZCBoYXZlIHRvIGNvbnRyb2wgdGhlCmdhaW4g
-bWFudWFsbHkgaW4gYWxzYW1peGVyLgo+CkkgZG9uJ3QgdGhpbmsgdGhpcyB3b3JrIHNpbmNlIHdo
-ZW4gY2hhbmdpbmcgZnJvbSByZWFyIG1pYyB0byBmcm9udCBtaWMsCnB1bHNlYXVkaW8gYWxzbyBj
-aGFuZ2UgdGhlIHJlYXIgbWljIGJvb3N0IGFuZCBmcm9udCBtaWMgYm9vc3QuIEVzcGVjaWFsbHkK
-d2hlbiB0aGUgcHVsc2UgYXVkaW8gQVBJIGRvZXMgbm90IGFsbG93IGFwcGxpY2F0aW9uIHRvIHNl
-bGVjdCBkaWZmZXJlbnQKc2luayBvciBzb3VyY2UgKEkuZS4gTXVsdGkgc3RyZWFtaW5nIHBsYXli
-YWNrL2NhcHR1cmUgaXMgbm90IHN1cHBvcnRlZCBieQpwdWxzZSBhdWRpbykKClRoZSBwb3NzaWJs
-ZSB3YXkgaXMKMSkgYW4gbW9kdWxlIHBhcmFtZXRlciBvZiBoZGEgZHJpdmVyIHRvIGRpc2FibGUg
-Y3JlYXRpb24gb2YgamFjayBkZXRlY3Rpb24KY29udHJvbHMKMikgZG9uJ3QgdXNlIG1vZHVsZS1z
-d2l0Y2gtb24tYXZhaWxhYmxlLXBvcnQgaW4gZGVmYXVsdC5wYQoKQnR3IGl0IHNlZW0gc291bmQg
-aXMgZGlzdG9ydGVkIHdoZW4gdGhlIGFwcGxpY2F0aW9uIGNhcHR1cmUgbW9ubyBhbmQgdGhlCnNv
-dW5kIGNhcmQgb25seSBzdXBwb3J0IHN0ZXJlbyBpcyBiZWNhdXNlIHBhIGp1c3Qgc3VtIHRoZSBs
-ZWZ0IGFuZCByaWdodApjaGFubmVsIChjbGlwcGluZykKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+With the USB audio streaming logic changes, my HeadRoom Bithead
+(08bb:2902 Burr-Brown PCM2902) no longer works.  Symptoms include the
+loss of most of the normally available formats leaving only:
+
+root@cucamonga:~# cat /proc/asound/bithead/stream0 
+Burr-Brown from TI USB Audio CODEC at usb-0000:00:1a.7-1.1.4, full speed : USB Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 6
+    Format: U8
+    Channels: 1
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 18
+    Format: S8
+    Channels: 1
+    Endpoint: 4 IN (SYNC)
+    Rates: 11025
+
+(normally 2 channel S16_LE is available, with capture rates up to
+48kHz ... only the last altset's are being reported now) and a slew of
+proc registration warnings logged:
+
+------------[ cut here ]------------
+WARNING: at fs/proc/generic.c:586 proc_register+0x169/0x1a6()
+Hardware name: Precision WorkStation T3400  
+proc_dir_entry 'card1/pcm0p' already registered
+Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hda_intel(+) snd_hda_codec snd_hwdep snd_seq_midi snd_seq_midi_event snd_pcm snd_page_alloc snd_rawmidi snd_seq snd_seq_device snd_timer snd soundcore dcdbas floppy sr_mod usb_storage cdrom kvm_intel psmouse kvm tg3 evdev xfs dm_mod raid1 md_mod
+Pid: 1152, comm: modprobe Not tainted 3.5.0-rc1-00110-g71fae7e #2
+Call Trace:
+ [<ffffffff8102a400>] warn_slowpath_common+0x83/0x9c
+ [<ffffffff8102a4bc>] warn_slowpath_fmt+0x46/0x48
+ [<ffffffff813829ad>] ? add_preempt_count+0x39/0x3b
+ [<ffffffff811292f0>] proc_register+0x169/0x1a6
+ [<ffffffff8112962e>] create_proc_entry+0x74/0x8c
+ [<ffffffffa018eb63>] snd_info_register+0x3e/0xc3 [snd]
+ [<ffffffffa01fde2e>] snd_pcm_new_stream+0xb1/0x404 [snd_pcm]
+ [<ffffffffa024861f>] snd_usb_add_audio_stream+0xd2/0x230 [snd_usb_audio]
+ [<ffffffffa0241d33>] ? snd_usb_parse_audio_format+0x252/0x34f [snd_usb_audio]
+ [<ffffffff810d6b17>] ? kmem_cache_alloc_trace+0xab/0xbb
+ [<ffffffffa0248c29>] snd_usb_parse_audio_interface+0x4ac/0x567 [snd_usb_audio]
+ [<ffffffffa023f0ff>] snd_usb_create_stream+0xe9/0x125 [snd_usb_audio]
+ [<ffffffffa023f9b1>] usb_audio_probe+0x62a/0x72c [snd_usb_audio]
+ [<ffffffff812c49f5>] usb_probe_interface+0x136/0x1b1
+ [<ffffffff81287e66>] ? driver_probe_device+0x1d3/0x1d3
+ [<ffffffff81287d43>] driver_probe_device+0xb0/0x1d3
+ [<ffffffff81287ec5>] __driver_attach+0x5f/0x83
+ [<ffffffff812863a2>] bus_for_each_dev+0x54/0x86
+ [<ffffffff81287730>] driver_attach+0x1e/0x20
+ [<ffffffff8128747f>] bus_add_driver+0xfd/0x23a
+ [<ffffffff812882e8>] driver_register+0x93/0x10e
+ [<ffffffff812c383f>] usb_register_driver+0x7e/0x12a
+ [<ffffffffa0257000>] ? 0xffffffffa0256fff
+ [<ffffffffa0257000>] ? 0xffffffffa0256fff
+ [<ffffffffa0257040>] snd_usb_audio_init+0x40/0x1000 [snd_usb_audio]
+ [<ffffffff810001ff>] do_one_initcall+0x7f/0x134
+ [<ffffffffa0257000>] ? 0xffffffffa0256fff
+ [<ffffffff810688d4>] sys_init_module+0x16cf/0x195e
+ [<ffffffff8106516c>] ? free_notes_attrs+0x4d/0x4d
+ [<ffffffff810c38cb>] ? mmap_region+0x1c7/0x469
+ [<ffffffff813856d2>] system_call_fastpath+0x16/0x1b
+---[ end trace c1baea1a25a91564 ]---
+
+followed immediately by 4 more instances of:
+
+------------[ cut here ]------------
+WARNING: at fs/proc/generic.c:586 proc_register+0x169/0x1a6()
+Hardware name: Precision WorkStation T3400  
+proc_dir_entry 'card1/pcm0p' already registered
+Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hda_intel(+) snd_hda_codec snd_hwdep snd_seq_midi snd_seq_midi_event snd_pcm snd_page_alloc snd_rawmidi snd_seq snd_seq_device snd_timer snd soundcore dcdbas floppy sr_mod usb_storage cdrom kvm_intel psmouse kvm tg3 evdev xfs dm_mod raid1 md_mod
+Pid: 1152, comm: modprobe Tainted: G        W    3.5.0-rc1-00110-g71fae7e #2
+Call Trace:
+ [<ffffffff8102a400>] warn_slowpath_common+0x83/0x9c
+ [<ffffffff8102a4bc>] warn_slowpath_fmt+0x46/0x48
+ [<ffffffff813829ad>] ? add_preempt_count+0x39/0x3b
+ [<ffffffff811292f0>] proc_register+0x169/0x1a6
+ [<ffffffff8112962e>] create_proc_entry+0x74/0x8c
+ [<ffffffffa018eb63>] snd_info_register+0x3e/0xc3 [snd]
+ [<ffffffffa01fde2e>] snd_pcm_new_stream+0xb1/0x404 [snd_pcm]
+ [<ffffffffa024861f>] snd_usb_add_audio_stream+0xd2/0x230 [snd_usb_audio]
+ [<ffffffffa0241d33>] ? snd_usb_parse_audio_format+0x252/0x34f [snd_usb_audio]
+ [<ffffffff810d6b17>] ? kmem_cache_alloc_trace+0xab/0xbb
+ [<ffffffffa0248c29>] snd_usb_parse_audio_interface+0x4ac/0x567 [snd_usb_audio]
+ [<ffffffffa023f0ff>] snd_usb_create_stream+0xe9/0x125 [snd_usb_audio]
+ [<ffffffffa023f9b1>] usb_audio_probe+0x62a/0x72c [snd_usb_audio]
+ [<ffffffff812c49f5>] usb_probe_interface+0x136/0x1b1
+ [<ffffffff81287e66>] ? driver_probe_device+0x1d3/0x1d3
+ [<ffffffff81287d43>] driver_probe_device+0xb0/0x1d3
+ [<ffffffff81287ec5>] __driver_attach+0x5f/0x83
+ [<ffffffff812863a2>] bus_for_each_dev+0x54/0x86
+ [<ffffffff81287730>] driver_attach+0x1e/0x20
+ [<ffffffff8128747f>] bus_add_driver+0xfd/0x23a
+ [<ffffffff812882e8>] driver_register+0x93/0x10e
+ [<ffffffff812c383f>] usb_register_driver+0x7e/0x12a
+ [<ffffffffa0257000>] ? 0xffffffffa0256fff
+ [<ffffffffa0257000>] ? 0xffffffffa0256fff
+ [<ffffffffa0257040>] snd_usb_audio_init+0x40/0x1000 [snd_usb_audio]
+ [<ffffffff810001ff>] do_one_initcall+0x7f/0x134
+ [<ffffffffa0257000>] ? 0xffffffffa0256fff
+ [<ffffffff810688d4>] sys_init_module+0x16cf/0x195e
+ [<ffffffff8106516c>] ? free_notes_attrs+0x4d/0x4d
+ [<ffffffff810c38cb>] ? mmap_region+0x1c7/0x469
+ [<ffffffff813856d2>] system_call_fastpath+0x16/0x1b
+---[ end trace c1baea1a25a91565 ]---
+
+and then 17 instances of the same thing only for proc_dir_entry
+'card1/pcm0c'
+
+Bisecting the issue got as far as
+d399ff9593e088d33fb38f5206c6427825892baa being bad and
+8fdff6a319e7dac757c558bd283dc4577e68cde7 being good ... with
+edcd3633e72a1590c4cf46befe5e6cd03b5aec3e not building, but its pretty
+obvious when things went wrong.
+
+The host system is built for x86_64, happy to provide configs and such
+if you think them relevant.  Lemme know if I can be of help in testing
+fixes or providing more debugging info.
+
+-- 
+Jamie Heilman                     http://audible.transient.net/~jamie/
