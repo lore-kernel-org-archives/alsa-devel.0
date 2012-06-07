@@ -1,18 +1,22 @@
-From: Selma Bensaid <selma.bensaid@intel.com>
-Subject: [PATCH] ASOC: utils: Update dummy codec DAI settings
-	to allow stream creation
-Date: Thu,  7 Jun 2012 12:08:41 +0200
-Message-ID: <1339063721-15193-1-git-send-email-selma.bensaid@intel.com>
-References: <1339058158.1927.15.camel@vkoul-udesk3>
+From: Wang Xingchao <wangxingchao2011@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - modem function group wake on
+	ring support
+Date: Thu, 7 Jun 2012 18:09:28 +0800
+Message-ID: <CA+v+29ifDCMzkDimYD6kTsqSCT9LxaBwaKr7KXg2a=yX-Z3g=w@mail.gmail.com>
+References: <1339059153-4166-1-git-send-email-xingchao.wang@intel.com>
+	<s5haa0f79n4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id B49C510453D
+Received: from mail-qa0-f50.google.com (mail-qa0-f50.google.com
+	[209.85.216.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id 448E710B941
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2012 12:08:54 +0200 (CEST)
-In-Reply-To: <1339058158.1927.15.camel@vkoul-udesk3>
+	Thu,  7 Jun 2012 12:09:49 +0200 (CEST)
+Received: by qafl39 with SMTP id l39so35136qaf.2
+	for <alsa-devel@alsa-project.org>; Thu, 07 Jun 2012 03:09:48 -0700 (PDT)
+In-Reply-To: <s5haa0f79n4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,73 +26,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, sylvain.centelles@intel.com, broonie@opensource.wolfsonmicro.com, louis.le.gall@intel.com, Selma Bensaid <selma.bensaid@intel.com>, lrg@ti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, fengguang.wu@intel.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch consists in settings the channels_min, rates and formats
-of the dummy codec DAI driver to enable the creation of the PCM streams
-using it.
+2012/6/7 Takashi Iwai <tiwai@suse.de>:
+> At Thu, =A07 Jun 2012 16:52:33 +0800,
+> Wang Xingchao wrote:
+>>
+>> =A0D2 allows for the lowest possible power consuming
+>> =A0state from which it can return to "fully on" state D0 within 2ms.
+>> =A0For modems, it's the "wake on ring" power state.
+>>
+>> Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+>> ---
+>> =A0sound/pci/hda/hda_codec.c | =A0 12 ++++++++++++
+>> =A01 file changed, 12 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+>> index 2737fe7..d0ca370 100644
+>> --- a/sound/pci/hda/hda_codec.c
+>> +++ b/sound/pci/hda/hda_codec.c
+>> @@ -3542,6 +3542,18 @@ static void hda_set_power_state(struct hda_codec =
+*codec, hda_nid_t fg,
+>> =A0 =A0 =A0 snd_hda_codec_set_power_to_all(codec, fg, power_state, true);
+>> =A0}
+>>
+>> +/* modem wake on ring: transition from D2 to D0 in less than 2ms. For m=
+odems,
+>> + * this is the wake-on-ring power state =A0*/
+>> +static void hda_modem_wake_on_ring(struct hda_codec *codec, bool enter)
+>> +{
+>> + =A0 =A0 if (codec->mfg) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (enter)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 hda_set_power_state(codec, cod=
+ec->mfg, AC_PWRST_D2);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 else
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 hda_set_power_state(codec, cod=
+ec->mfg, AC_PWRST_D0);
+>> + =A0 =A0 }
+>> +}
+>> +
+>> =A0#ifdef CONFIG_SND_HDA_HWDEP
+>> =A0/* execute additional init verbs */
+>> =A0static void hda_exec_init_verbs(struct hda_codec *codec)
+>
+> No caller of the new function? =A0Otherwise it's useless...
+>
+Hi Takashi,
 
-Signed-off-by: Selma Bensaid <selma.bensaid@intel.com>
----
- include/sound/pcm.h   |    7 +++++++
- sound/soc/soc-utils.c |   13 +++++++++++++
- 2 files changed, 20 insertions(+), 0 deletions(-)
+I have not see codec indicates "Modem function group" yet, do you know
+which codec on HDA as Modem type and i could search whether it need
+such "wake on ring" feature.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index ff536f1..649b0d5 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -203,6 +203,13 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
- #endif
- 
-+#define SNDRV_PCM_FMTBIT_CONTINUOUS \
-+	(SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |\
-+	SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |\
-+	SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32 |\
-+	SNDRV_PCM_FMTBIT_FLOAT | SNDRV_PCM_FMTBIT_FLOAT64 |\
-+	SNDRV_PCM_FMTBIT_IEC958_SUBFRAME)
-+
- struct snd_pcm_file {
- 	struct snd_pcm_substream *substream;
- 	int no_compat_mmap;
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 6005370..79125a0 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -92,6 +92,19 @@ static struct snd_soc_platform_driver dummy_platform = {
- static struct snd_soc_codec_driver dummy_codec;
- static struct snd_soc_dai_driver dummy_dai = {
- 	.name = "snd-soc-dummy-dai",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+		.formats = SNDRV_PCM_FMTBIT_CONTINUOUS,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+		.formats = SNDRV_PCM_FMTBIT_CONTINUOUS,
-+	},
-+	.ops = NULL,
- };
- 
- static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
--- 
-1.7.0.4
+This patch should bring codec out of D2 states in less than 2ms. It
+should help modem save power with "wake-on-ring" feature.
 
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+thanks
+--xingchao
