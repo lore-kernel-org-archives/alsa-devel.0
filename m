@@ -1,17 +1,13 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch] ASoC: isabelle: using an uninitialized
-	variable
-Date: Fri, 8 Jun 2012 06:59:38 +0800
-Message-ID: <20120607225937.GH14525@opensource.wolfsonmicro.com>
-References: <20120607123837.GA7171@elgon.mountain>
+Subject: Re: [PATCH v1 4/5] ASoC: add mmp brownstone support
+Date: Fri, 8 Jun 2012 06:13:26 +0800
+Message-ID: <20120607221325.GB14525@opensource.wolfsonmicro.com>
+References: <1338791851-21038-1-git-send-email-zhangfei.gao@marvell.com>
+	<1338791851-21038-5-git-send-email-zhangfei.gao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8406243958722398730=="
+Content-Type: multipart/mixed; boundary="===============4413058916751926029=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C9351045BC
-	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2012 02:54:45 +0200 (CEST)
-In-Reply-To: <20120607123837.GA7171@elgon.mountain>
+In-Reply-To: <1338791851-21038-5-git-send-email-zhangfei.gao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +17,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Vinod Koul <vinod.koul@intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@ti.com>, Qiao Zhou <zhouqiao@marvell.com>, Chao Xie <cxie4@marvell.com>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8406243958722398730==
+--===============4413058916751926029==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZPDwMsyfds7q4mrK"
+	protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
 Content-Disposition: inline
 
 
---ZPDwMsyfds7q4mrK
+--NDin8bjvE/0mNLFQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 07, 2012 at 03:38:37PM +0300, Dan Carpenter wrote:
-> We should set "isabelle_regmap" before using it.  GCC complains.
->=20
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Mon, Jun 04, 2012 at 02:37:30PM +0800, Zhangfei Gao wrote:
 
-Applied, thanks.
+One small thing here...
 
---ZPDwMsyfds7q4mrK
+> +	ret = snd_soc_add_card_controls(dapm->card, brownstone_dapm_control,
+> +				   ARRAY_SIZE(brownstone_dapm_control));
+> +	if (ret < 0)
+> +		return ret;
+
+You can just set these up with the controls member of the card struct.
+
+--NDin8bjvE/0mNLFQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP0TJNAAoJEBus8iNuMP3dsqsQAIPs+uMT770+Glu7qhIHmWbb
-uCu/vg4XOW8n5hK8RFvQhs2u4EioHswKv8JHP4PyGHgpZ0/NrEARdoytv5fKhIME
-B2hcHzPfhv3zX1F6hD48lbdRMKM4aaHd2x5YrvBOnhYWGYp/pmNynuog5tvPP9jz
-mCk+BdnkTa4N8hMGmx2LaQMhxPFfHQDUVGWY8rd8z9yeKLhKarMGtJ6j43mzuQD0
-/MEG4/DbvqnJTyCf9vudYXMnxBChUCI4SFDtk80/FwmFgR6bpy95ijY1s7UeR8Vx
-ni6Dq9iyrV+xOSBnju6u1w7wiko7pdUEXQGNGy0l69pmAPjCkVrrfChGgYEaTpgz
-aVcFwB+kEZMUS+PkZigVvFgrAYyeckyikI7z6opAG9hsynB9i5zPwL87ZsXgdcIU
-77B4sa0EgBjbto3bE8PeKR2w8OzK6bzGSxrHU1n4FA7uslm869Bh8cDfESYDLJJ5
-cMO+8AId1/t/mPJG3J0/Fm4Y0PZYBxlP/yUmf6KKeFuVU/jiFISB9Jy5m2Yu8Ca6
-iwQuEPzNMJQpR58aADiPmwychEltAzJZQCH+pnvY6D0ytr9Hf+6TFP33aP6Uqvg0
-nOn7l2ray41vmICIVU0R3GRmk0HPI5VwMe11Hp0JE3svWqTIAPcMk/NnFWpF272Q
-btvRSMzFA0qUFH3L2wot
-=dd5j
+iQIcBAEBAgAGBQJP0Sd5AAoJEBus8iNuMP3dc/0QAI3rZ25RE7K0VYkZMjayJsJH
+e+zHoD2NZ0uHdk9c/7baMZImR0xNqfEQY6yz6yCmvfSy7WE4my10LsvGz4mSyQKn
+E21YjVFhF5m5yFy0NuOmDrbg/JdT+UOR53ZY9SMaxsIq+B/FvxYlsYwxo4urRlFY
+1QVVUI05rtKQW3IcS2k2izfrfRAJbZG4ByLgQc9p8qlPutIKkaJaRgRQBT27JLaL
+vovD6lwQDH0Ja/wX8RBcydsS0CZYPiLq6Hu7TxJpyCpNhkxBrrwmvXq0tS3YzRf0
+SQjGK6rzoUGJ6vc0K/2U1s8/iKV/A+0+kUaGLojBiGBmhVLGxq/xzAr1gODZ/JnB
+rG1Pw7WR6ovuxQXFW2lM6gMspfqJ1WJyBoSaqQVPuG8GIY+qxAWKmph13LGnUi9j
+JkbGX7JU9QJBk0Wdqt/7yO8MI2jVgMsCbY+SyqtUV4nQvm8iPS0FmOTVyHMQeNKz
+4M20HtdC3KobM0AVNcv/xaeNtEvPvyuZRhsLrcQH2GM0dd85zpgNaTY48/ny9PSq
+Hg+/4IqYnlZsoi2PMwtaZuQWv2WpggqUObuohHWywGbIBkWtknBfTGEkeZ6Rnfne
+Rn8Fi35bpzimAo5vDc7bHfFsqgPp0LxuzPAErw0pRLV60+EHqkSjEWptwOaQfaHj
+gfPUK/q7mPtXQ7qVGrYE
+=TW1x
 -----END PGP SIGNATURE-----
 
---ZPDwMsyfds7q4mrK--
+--NDin8bjvE/0mNLFQ--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
---===============8406243958722398730==
+
+--===============4413058916751926029==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8406243958722398730==--
+--===============4413058916751926029==--
