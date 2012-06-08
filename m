@@ -1,103 +1,105 @@
-From: Selma Bensaid <selma.bensaid@intel.com>
-Subject: [PATCH] ASOC: utils: Update dummy codec DAI settings
-	to allow stream creation
-Date: Fri,  8 Jun 2012 16:26:24 +0200
-Message-ID: <1339165584-1719-1-git-send-email-selma.bensaid@intel.com>
-References: <4FD1B19E.1030808@intel.com>
+From: =?ISO-8859-1?Q?J=F6rg-Volker_Peetz?= <jvpeetz@web.de>
+Subject: Re: [PATCH 0/2] HD-audio HDMI regression fixes with VGA-switcheroo
+Date: Fri, 08 Jun 2012 13:26:57 +0200
+Message-ID: <4FD1E181.4030805@web.de>
+References: <1339064116-18579-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0DCD124370
-	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2012 16:26:35 +0200 (CEST)
-In-Reply-To: <4FD1B19E.1030808@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, sylvain.centelles@intel.com, broonie@opensource.wolfsonmicro.com, louis.le.gall@intel.com, Selma Bensaid <selma.bensaid@intel.com>, lrg@ti.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <1339064116-18579-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch consists in settings the channels_min, rates and formats
-of the dummy codec DAI driver to enable the creation of the PCM streams
-using it.
+Takashi Iwai wrote, on 06/07/12 12:15:
+> Hi,
+> =
 
-Signed-off-by: Selma Bensaid <selma.bensaid@intel.com>
----
- include/sound/pcm.h   |    9 +++++++++
- sound/soc/soc-utils.c |   13 +++++++++++++
- 2 files changed, 22 insertions(+), 0 deletions(-)
+> this is a series of patches to fix the regressions of HD-audio HDMI
+> on D-GPUs in 3.5-rc1 due to the support of VGA-switcheroo audio clients.
+> =
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index ff536f1..c0b5fd4 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -127,6 +127,8 @@ struct snd_pcm_ops {
- 
- #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
- #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-+#define SNDRV_PCM_RATE_ALL		(0xFFFFFFFF)    /* support all RATES */
-+
- 
- #define SNDRV_PCM_RATE_8000_44100	(SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_11025|\
- 					 SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_22050|\
-@@ -203,6 +205,13 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
- #endif
- 
-+#define SNDRV_PCM_FMTBIT_CONTINUOUS \
-+	(SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |\
-+	SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |\
-+	SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32 |\
-+	SNDRV_PCM_FMTBIT_FLOAT | SNDRV_PCM_FMTBIT_FLOAT64 |\
-+	SNDRV_PCM_FMTBIT_IEC958_SUBFRAME)
-+
- struct snd_pcm_file {
- 	struct snd_pcm_substream *substream;
- 	int no_compat_mmap;
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 6005370..2aeaf0b 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -92,6 +92,19 @@ static struct snd_soc_platform_driver dummy_platform = {
- static struct snd_soc_codec_driver dummy_codec;
- static struct snd_soc_dai_driver dummy_dai = {
- 	.name = "snd-soc-dummy-dai",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 0xFFFF,
-+		.rates = SNDRV_PCM_RATE_ALL,
-+		.formats = SNDRV_PCM_FMTBIT_CONTINUOUS,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 0xFFFF,
-+		.rates = SNDRV_PCM_RATE_ALL,
-+		.formats = SNDRV_PCM_FMTBIT_CONTINUOUS,
-+	},
-+	.ops = NULL,
- };
- 
- static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
--- 
-1.7.0.4
+> The first patch adds a new helper function to vga-switcheroo and the
+> second just uses that instead of an open code.
+> =
 
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
+> Dave, if the first patch is OK, I'm going to apply it though sound tree.
+> Let me know if any problem is found.
+> =
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+> Joerg, could you check whether this doesn't break your setup, too?
+> =
+
+> =
+
+> thanks,
+> =
+
+> Takashi
+
+Hello Takashi,
+
+I applied both your patches on 3.5-rc1. With this kernel I made three tests.
+1) After booting I switched off the discrete GPU via vga_switcheroo.
+   Then ca. 210 times the message
+
+     hda-intel: spurious response 0x0:0x0, last cmd=3D0x170503
+
+   appears on the console and in the logs.
+   Starting X and using the built-in USB web-cam work, as well as sound with
+   mplayer2 works.
+
+2) After booting I switched to the discrete GPU via
+
+     echo -n DDIS > /sys/kernel/debugfs/vgaswitcheroo/switch
+
+   Then I started X via startx. The desktop screen appears but the system
+   freezes. No reaction on keyboard or touchpad input. The computer is not
+   reachable via ethernet wire.
+
+3) After booting the machine freezes (hard-lock) when trying to switch to
+   dynamic power mangement on the integrated GPU via
+
+     echo -n dynpm > /sys/class/drm/card0/device/power_method
+
+  at least two trace calls are done. On the console only the last two lines=
+ of
+  one call trace and the last one are visible (machine is frozen). It says
+  (typed by hand, therefore, not complete):
+
+...
+---[ end trace a926a4156be75305 ]---
+BUG: unable to handle kernel paging request at fffffffffffffff8
+IP: [<ffffffff81045097>] kthread_data+0x7/0x10
+PGD 1585067 PUD 1586067 PMD 0
+Oops: 0000 [#2] SMP
+CPU 1
+
+...
+
+Call Trace:
+[< ... >] ? wq_worker_sleeping+0x8/0x80
+   ...    ? __schedule+0x363/0x520
+   ...    ? do_exit+0x552/0x850
+   ...    ? oops_end+0x67/0x90
+   ...    ? no_context+0x24e/0x279
+   ...    ? do_page_fault+0x2bb/0x460
+
+...
+---[ end trace a926a4156be75305 ]---
+Fixing recursive fault but reboot is needed!
+
+-- =
+
+Best regards,
+J=F6rg-Volker.
