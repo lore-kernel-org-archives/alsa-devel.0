@@ -1,240 +1,70 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH 4/4] ASoC: probe CODECs and platforms before
-	DAIs and links
-Date: Fri,  8 Jun 2012 12:34:23 -0600
-Message-ID: <1339180463-21178-4-git-send-email-swarren@wwwdotorg.org>
-References: <1339180463-21178-1-git-send-email-swarren@wwwdotorg.org>
+From: =?UTF-8?B?SsO2cmctVm9sa2VyIFBlZXR6?= <jvpeetz@web.de>
+Subject: Re: [PATCH 0/2] HD-audio HDMI regression fixes with VGA-switcheroo
+Date: Fri, 08 Jun 2012 17:45:17 +0200
+Message-ID: <4FD21E0D.1050405@web.de>
+References: <1339064116-18579-1-git-send-email-tiwai@suse.de>
+	<4FD1E181.4030805@web.de> <s5h4nqmrm4q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65B8411CF31
-	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2012 20:34:34 +0200 (CEST)
-In-Reply-To: <1339180463-21178-1-git-send-email-swarren@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <s5h4nqmrm4q.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
-
-soc_probe_dai_link() currently inter-mixes the probing of CODECs,
-platforms, and DAIs. This can lead to problems such as a CODEC's DAI
-being probed before the CODEC, if that DAI is used as the CPU-side of
-a DAI link without any other of the CODEC's DAIs having been used as
-the CODEC-side of any DAI link that was probed earlier.
-
-To solve this, split soc_probe_dai_link() into soc_probe_link_components()
-and soc_probe_link_dais(). The former is used to probe all CODECs and
-platforms used by a card first, and then the latter is used to probe all
-the DAIs and links later.
-
-A similar change is made to soc_remove_dai_links().
-
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/soc/soc-core.c |  129 ++++++++++++++++++++++++++++++++++++-------------
- 1 files changed, 95 insertions(+), 34 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a539ade..fe16135 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -941,11 +941,9 @@ static void soc_remove_codec(struct snd_soc_codec *codec)
- 	module_put(codec->dev->driver->owner);
- }
- 
--static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
-+static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
- {
- 	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai, *cpu_dai = rtd->cpu_dai;
- 	int err;
- 
-@@ -970,16 +968,6 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
- 		list_del(&codec_dai->card_list);
- 	}
- 
--	/* remove the platform */
--	if (platform && platform->probed &&
--			platform->driver->remove_order == order)
--		soc_remove_platform(platform);
--
--	/* remove the CODEC */
--	if (codec && codec->probed &&
--			codec->driver->remove_order == order)
--		soc_remove_codec(codec);
--
- 	/* remove the cpu_dai */
- 	if (cpu_dai && cpu_dai->probed &&
- 			cpu_dai->driver->remove_order == order) {
-@@ -999,6 +987,38 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num, int order)
- 	}
- }
- 
-+static void soc_remove_link_components(struct snd_soc_card *card, int num,
-+				       int order)
-+{
-+	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_codec *codec;
-+
-+	/* remove the platform */
-+	if (platform && platform->probed &&
-+	    platform->driver->remove_order == order) {
-+		soc_remove_platform(platform);
-+	}
-+
-+	/* remove the CODEC-side CODEC */
-+	if (codec_dai) {
-+		codec = codec_dai->codec;
-+		if (codec && codec->probed &&
-+		    codec->driver->remove_order == order)
-+			soc_remove_codec(codec);
-+	}
-+
-+	/* remove any CPU-side CODEC */
-+	if (cpu_dai) {
-+		codec = cpu_dai->codec;
-+		if (codec && codec->probed &&
-+		    codec->driver->remove_order == order)
-+			soc_remove_codec(codec);
-+	}
-+}
-+
- static void soc_remove_dai_links(struct snd_soc_card *card)
- {
- 	int dai, order;
-@@ -1006,8 +1026,15 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 			order++) {
- 		for (dai = 0; dai < card->num_rtd; dai++)
--			soc_remove_dai_link(card, dai, order);
-+			soc_remove_link_dais(card, dai, order);
-+	}
-+
-+	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
-+			order++) {
-+		for (dai = 0; dai < card->num_rtd; dai++)
-+			soc_remove_link_components(card, dai, order);
- 	}
-+
- 	card->num_rtd = 0;
- }
- 
-@@ -1244,7 +1271,44 @@ out:
- 	return 0;
- }
- 
--static int soc_probe_dai_link(struct snd_soc_card *card, int num, int order)
-+static int soc_probe_link_components(struct snd_soc_card *card, int num,
-+				     int order)
-+{
-+	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret;
-+
-+	/* probe the CPU-side component, if it is a CODEC */
-+	if (cpu_dai->codec &&
-+	    !cpu_dai->codec->probed &&
-+	    cpu_dai->codec->driver->probe_order == order) {
-+		ret = soc_probe_codec(card, cpu_dai->codec);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* probe the CODEC-side component */
-+	if (!codec_dai->codec->probed &&
-+	    codec_dai->codec->driver->probe_order == order) {
-+		ret = soc_probe_codec(card, codec_dai->codec);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* probe the platform */
-+	if (!platform->probed &&
-+	    platform->driver->probe_order == order) {
-+		ret = soc_probe_platform(card, platform);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- {
- 	struct snd_soc_dai_link *dai_link = &card->dai_link[num];
- 	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
-@@ -1292,22 +1356,6 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num, int order)
- 		list_add(&cpu_dai->card_list, &card->dai_dev_list);
- 	}
- 
--	/* probe the CODEC */
--	if (!codec->probed &&
--			codec->driver->probe_order == order) {
--		ret = soc_probe_codec(card, codec);
--		if (ret < 0)
--			return ret;
--	}
--
--	/* probe the platform */
--	if (!platform->probed &&
--			platform->driver->probe_order == order) {
--		ret = soc_probe_platform(card, platform);
--		if (ret < 0)
--			return ret;
--	}
--
- 	/* probe the CODEC DAI */
- 	if (!codec_dai->probed && codec_dai->driver->probe_order == order) {
- 		if (codec_dai->driver->probe) {
-@@ -1582,14 +1630,27 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 			goto card_probe_error;
- 	}
- 
--	/* early DAI link probe */
-+	/* probe all components used by DAI links on this card */
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 			order++) {
- 		for (i = 0; i < card->num_links; i++) {
--			ret = soc_probe_dai_link(card, i, order);
-+			ret = soc_probe_link_components(card, i, order);
- 			if (ret < 0) {
- 				pr_err("asoc: failed to instantiate card %s: %d\n",
--			       card->name, ret);
-+				       card->name, ret);
-+				goto probe_dai_err;
-+			}
-+		}
-+	}
-+
-+	/* probe all DAI links on this card */
-+	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
-+			order++) {
-+		for (i = 0; i < card->num_links; i++) {
-+			ret = soc_probe_link_dais(card, i, order);
-+			if (ret < 0) {
-+				pr_err("asoc: failed to instantiate card %s: %d\n",
-+				       card->name, ret);
- 				goto probe_dai_err;
- 			}
- 		}
--- 
-1.7.0.4
+SGVsbG8gVGFrYXNoaSwKClRha2FzaGkgSXdhaSB3cm90ZSwgb24gMDYvMDgvMTIgMTU6MDM6Cj4g
+QXQgRnJpLCAwOCBKdW4gMjAxMiAxMzoyNjo1NyArMDIwMCwKPiBKw7ZyZy1Wb2xrZXIgUGVldHog
+d3JvdGU6Cj4+Cj4+IFRha2FzaGkgSXdhaSB3cm90ZSwgb24gMDYvMDcvMTIgMTI6MTU6Cj4+PiBI
+aSwKPj4+Cj4+PiB0aGlzIGlzIGEgc2VyaWVzIG9mIHBhdGNoZXMgdG8gZml4IHRoZSByZWdyZXNz
+aW9ucyBvZiBIRC1hdWRpbyBIRE1JCj4+PiBvbiBELUdQVXMgaW4gMy41LXJjMSBkdWUgdG8gdGhl
+IHN1cHBvcnQgb2YgVkdBLXN3aXRjaGVyb28gYXVkaW8gY2xpZW50cy4KPj4+Cj4+PiBUaGUgZmly
+c3QgcGF0Y2ggYWRkcyBhIG5ldyBoZWxwZXIgZnVuY3Rpb24gdG8gdmdhLXN3aXRjaGVyb28gYW5k
+IHRoZQo+Pj4gc2Vjb25kIGp1c3QgdXNlcyB0aGF0IGluc3RlYWQgb2YgYW4gb3BlbiBjb2RlLgo+
+Pj4KPj4+IERhdmUsIGlmIHRoZSBmaXJzdCBwYXRjaCBpcyBPSywgSSdtIGdvaW5nIHRvIGFwcGx5
+IGl0IHRob3VnaCBzb3VuZCB0cmVlLgo+Pj4gTGV0IG1lIGtub3cgaWYgYW55IHByb2JsZW0gaXMg
+Zm91bmQuCj4+Pgo+Pj4gSm9lcmcsIGNvdWxkIHlvdSBjaGVjayB3aGV0aGVyIHRoaXMgZG9lc24n
+dCBicmVhayB5b3VyIHNldHVwLCB0b28/Cj4+Pgo+Pj4KPj4+IHRoYW5rcywKPj4+Cj4+PiBUYWth
+c2hpCj4+Cj4+IEhlbGxvIFRha2FzaGksCj4+Cj4+IEkgYXBwbGllZCBib3RoIHlvdXIgcGF0Y2hl
+cyBvbiAzLjUtcmMxLiBXaXRoIHRoaXMga2VybmVsIEkgbWFkZSB0aHJlZSB0ZXN0cy4KPj4gMSkg
+QWZ0ZXIgYm9vdGluZyBJIHN3aXRjaGVkIG9mZiB0aGUgZGlzY3JldGUgR1BVIHZpYSB2Z2Ffc3dp
+dGNoZXJvby4KPj4gICAgVGhlbiBjYS4gMjEwIHRpbWVzIHRoZSBtZXNzYWdlCj4+Cj4+ICAgICAg
+aGRhLWludGVsOiBzcHVyaW91cyByZXNwb25zZSAweDA6MHgwLCBsYXN0IGNtZD0weDE3MDUwMwo+
+Pgo+PiAgICBhcHBlYXJzIG9uIHRoZSBjb25zb2xlIGFuZCBpbiB0aGUgbG9ncy4KPj4gICAgU3Rh
+cnRpbmcgWCBhbmQgdXNpbmcgdGhlIGJ1aWx0LWluIFVTQiB3ZWItY2FtIHdvcmssIGFzIHdlbGwg
+YXMgc291bmQgd2l0aAo+PiAgICBtcGxheWVyMiB3b3Jrcy4KPj4KPj4gMikgQWZ0ZXIgYm9vdGlu
+ZyBJIHN3aXRjaGVkIHRvIHRoZSBkaXNjcmV0ZSBHUFUgdmlhCj4+Cj4+ICAgICAgZWNobyAtbiBE
+RElTID4gL3N5cy9rZXJuZWwvZGVidWdmcy92Z2Fzd2l0Y2hlcm9vL3N3aXRjaAo+Pgo+PiAgICBU
+aGVuIEkgc3RhcnRlZCBYIHZpYSBzdGFydHguIFRoZSBkZXNrdG9wIHNjcmVlbiBhcHBlYXJzIGJ1
+dCB0aGUgc3lzdGVtCj4+ICAgIGZyZWV6ZXMuIE5vIHJlYWN0aW9uIG9uIGtleWJvYXJkIG9yIHRv
+dWNocGFkIGlucHV0LiBUaGUgY29tcHV0ZXIgaXMgbm90Cj4+ICAgIHJlYWNoYWJsZSB2aWEgZXRo
+ZXJuZXQgd2lyZS4KPiAKPiBIbSwgdGhlc2UgaXNzdWVzIGFyZW4ndCBzZWVuIG9uIDMuNS1yYzEg
+YmVmb3JlIG15IHBhdGNoZXM/Cj4gSWYgc28sIHdlIG5lZWQgdG8gZml4IG5vdy4KPiAKTm8sIHRo
+ZXNlIGlzc3VlcyBhcmVuJ3Qgc2VlbiBvbiAzLjUtcmMxIHdpdGhvdXQgeW91ciBwYXRjaGVzLiBJ
+J20gYWJsZSB0byBzdGFydApYIHdpdGggdGhlIGRpc2NyZXRlIEdQVSBpbiB1c2UsIGRpcmVjdCBy
+ZW5kZXJpbmcgYW5kIHRoZSBidWlsdC1pbiBVU0IgY2FtZXJhIHdvcmsuClByb2JhYmx5IHVucmVs
+YXRlZDogaW4gYm90aCBjYXNlcyBJJ20gdW5hYmxlIHRvIGxvd2VyIHRoZSBzY3JlZW4gYnJpZ2h0
+bmVzcyBmcm9tCmhpZ2hlc3QgdmFsdWUuIFdpdGhvdXQgeW91ciBwYXRjaGVzIGl0IGFwcGVhcnMg
+YSB3YXJuaW5nOgoKICBBQ1BJIFdhcm5pbmc6IF9CUUMgcmV0dXJuZWQgYW4gaW52YWxpZCBsZXZl
+bCAoMjAxMjAzMjAvdmlkZW8tNDcyKQoKCj4+Cj4+IDMpIEFmdGVyIGJvb3RpbmcgdGhlIG1hY2hp
+bmUgZnJlZXplcyAoaGFyZC1sb2NrKSB3aGVuIHRyeWluZyB0byBzd2l0Y2ggdG8KPj4gICAgZHlu
+YW1pYyBwb3dlciBtYW5nZW1lbnQgb24gdGhlIGludGVncmF0ZWQgR1BVIHZpYQo+Pgo+PiAgICAg
+IGVjaG8gLW4gZHlucG0gPiAvc3lzL2NsYXNzL2RybS9jYXJkMC9kZXZpY2UvcG93ZXJfbWV0aG9k
+Cj4+Cj4+ICAgYXQgbGVhc3QgdHdvIHRyYWNlIGNhbGxzIGFyZSBkb25lLiBPbiB0aGUgY29uc29s
+ZSBvbmx5IHRoZSBsYXN0IHR3byBsaW5lcyBvZgo+PiAgIG9uZSBjYWxsIHRyYWNlIGFuZCB0aGUg
+bGFzdCBvbmUgYXJlIHZpc2libGUgKG1hY2hpbmUgaXMgZnJvemVuKS4gSXQgc2F5cwo+PiAgICh0
+eXBlZCBieSBoYW5kLCB0aGVyZWZvcmUsIG5vdCBjb21wbGV0ZSk6Cj4gCj4gVGhpcyBpcyBhbiBp
+cnJlbGV2YW50IGlzc3VlIHdpdGggbXkgcGF0Y2hlcy4KPiAKPiAKPiB0aGFua3MsCj4gCj4gVGFr
+YXNoaQoKLS0gCkJlc3QgcmVnYXJkcywKSsO2cmctVm9sa2VyLgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
