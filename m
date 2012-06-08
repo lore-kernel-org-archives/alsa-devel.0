@@ -1,21 +1,18 @@
-From: zhangfei gao <zhangfei.gao@gmail.com>
-Subject: Re: [PATCH v1 3/5] ASOC: mmp: add sspa support
-Date: Fri, 8 Jun 2012 21:28:12 +0800
-Message-ID: <CAMj5Bkg7cSaEHm+mz-9ah85J83rQFiw1QNxMP5RBa8BiYJhoqw@mail.gmail.com>
-References: <1338791851-21038-1-git-send-email-zhangfei.gao@marvell.com>
-	<1338791851-21038-4-git-send-email-zhangfei.gao@marvell.com>
-	<20120607221019.GA14525@opensource.wolfsonmicro.com>
+From: Selma Bensaid <selma.bensaid@intel.com>
+Subject: [PATCH] ASOC: utils: Update dummy codec DAI settings
+	to allow stream creation
+Date: Fri,  8 Jun 2012 16:26:24 +0200
+Message-ID: <1339165584-1719-1-git-send-email-selma.bensaid@intel.com>
+References: <4FD1B19E.1030808@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id ED85124433
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0DCD124370
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2012 15:28:12 +0200 (CEST)
-Received: by lagw12 with SMTP id w12so1158648lag.38
-	for <alsa-devel@alsa-project.org>; Fri, 08 Jun 2012 06:28:12 -0700 (PDT)
-In-Reply-To: <20120607221019.GA14525@opensource.wolfsonmicro.com>
+	Fri,  8 Jun 2012 16:26:35 +0200 (CEST)
+In-Reply-To: <4FD1B19E.1030808@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,37 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Vinod Koul <vinod.koul@intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, sylvain.centelles@intel.com, broonie@opensource.wolfsonmicro.com, louis.le.gall@intel.com, Selma Bensaid <selma.bensaid@intel.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 8, 2012 at 6:10 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Jun 04, 2012 at 02:37:29PM +0800, Zhangfei Gao wrote:
->> The SSPA is a configurable multi-channel audio serial (TDM) interface.
->> It's configurable at runtime to support up to 128 channels and the
->> number of bits per sample: 8, 12, 16, 20, 24 and 32 bits. It also
->> support stereo format: I2S, left-justified or right-justified.
->
-> This looks mostly good (though you want to check your indentation a bit)
-> but...
->
->> +static int __init mmp_sspa_modinit(void)
->> +{
->> + =A0 =A0 audio_clk =3D clk_get(NULL, "mmp-audio");
->> + =A0 =A0 if (IS_ERR(audio_clk))
->> + =A0 =A0 =A0 =A0 =A0 =A0 return PTR_ERR(audio_clk);
->> +
->> + =A0 =A0 sysclk =3D clk_get(NULL, "mmp-sysclk");
->> + =A0 =A0 if (IS_ERR(sysclk))
->> + =A0 =A0 =A0 =A0 =A0 =A0 return PTR_ERR(sysclk);
->> + =A0 =A0 clk_enable(audio_clk);
->
-> You should be doing this stuff from the driver, not from the module init
-> (and ideally you'd be managing the audio clock dynamically). =A0Even if
-> it's the same clock every time in current silicon it's still a good idea
-> to do this from a quality of implementation point of view.
+This patch consists in settings the channels_min, rates and formats
+of the dummy codec DAI driver to enable the creation of the PCM streams
+using it.
 
-Thanks, will remove the module init, and move clk staff to probe.
-However, dynamically control audio_clk make audio subsystem works abnormall=
-y.
+Signed-off-by: Selma Bensaid <selma.bensaid@intel.com>
+---
+ include/sound/pcm.h   |    9 +++++++++
+ sound/soc/soc-utils.c |   13 +++++++++++++
+ 2 files changed, 22 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index ff536f1..c0b5fd4 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -127,6 +127,8 @@ struct snd_pcm_ops {
+ 
+ #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
+ #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
++#define SNDRV_PCM_RATE_ALL		(0xFFFFFFFF)    /* support all RATES */
++
+ 
+ #define SNDRV_PCM_RATE_8000_44100	(SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_11025|\
+ 					 SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_22050|\
+@@ -203,6 +205,13 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
+ #endif
+ 
++#define SNDRV_PCM_FMTBIT_CONTINUOUS \
++	(SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |\
++	SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |\
++	SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32 |\
++	SNDRV_PCM_FMTBIT_FLOAT | SNDRV_PCM_FMTBIT_FLOAT64 |\
++	SNDRV_PCM_FMTBIT_IEC958_SUBFRAME)
++
+ struct snd_pcm_file {
+ 	struct snd_pcm_substream *substream;
+ 	int no_compat_mmap;
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 6005370..2aeaf0b 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -92,6 +92,19 @@ static struct snd_soc_platform_driver dummy_platform = {
+ static struct snd_soc_codec_driver dummy_codec;
+ static struct snd_soc_dai_driver dummy_dai = {
+ 	.name = "snd-soc-dummy-dai",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 0xFFFF,
++		.rates = SNDRV_PCM_RATE_ALL,
++		.formats = SNDRV_PCM_FMTBIT_CONTINUOUS,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 0xFFFF,
++		.rates = SNDRV_PCM_RATE_ALL,
++		.formats = SNDRV_PCM_FMTBIT_CONTINUOUS,
++	},
++	.ops = NULL,
+ };
+ 
+ static __devinit int snd_soc_dummy_probe(struct platform_device *pdev)
+-- 
+1.7.0.4
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
