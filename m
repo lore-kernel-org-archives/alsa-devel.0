@@ -1,35 +1,75 @@
-From: Markus Trippelsdorf <markus@trippelsdorf.de>
-Subject: [Bisected] ALSA: snd-usb: New streaming logic causes distortions on
- Burr-Brown DAC
-Date: Fri, 8 Jun 2012 18:40:04 +0200
-Message-ID: <20120608164004.GA580@x4>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: wm8903: disable mic detect irqs until
+	jack registered
+Date: Fri,  8 Jun 2012 11:37:54 -0600
+Message-ID: <1339177075-20506-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, zonque@gmail.com, tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9315A24374
+	for <alsa-devel@alsa-project.org>;
+	Fri,  8 Jun 2012 19:38:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-I hear distortions on my Burr-Brown USB DAC whenever the (software)
-volume is set to some value lower than 100% in mpd. The lower the volume
-the bigger are the resulting distortions.
+From: Stephen Warren <swarren@nvidia.com>
 
-I've bisected this to the two commits below:
-(One wouldn't compile without the other)
+If either mic detection interrupt is unmasked when the IRQ handler is
+first registered, they might fire immediately. However, at this point,
+wm8903->mic_jack cannot have been set, since wm8903_mic_detect() can
+only operate after wm8903_probe() has completed. If the IRQ fires at
+this point, wm8903_irq() will use the uninitialized or stale mic_jack,
+and crash.
 
-commit d399ff9593e088d33fb38f5206c6427825892baa
-Author: Daniel Mack <zonque@gmail.com>
-Date:   Thu Apr 12 13:51:13 2012 +0200
+This problem can be triggered by fully initializing an audio card, then
+removing and re-inserting the machine driver module. This would leave
+mic detection enabled in HW, and mic_jack set to a stale value.
 
-    ALSA: snd-usb: remove old streaming logic
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+This is useful in 3.5.
 
-commit edcd3633e72a1590c4cf46befe5e6cd03b5aec3e
-Author: Daniel Mack <zonque@gmail.com>
-Date:   Thu Apr 12 13:51:12 2012 +0200
+As an aside, I wondered instead about modifying wm8903_remove() to disable
+mic detection, and clear any status. However, even if we do that, I think
+we still want to make this change too, since I think we want probe() to
+work the first time without relying on previous HW state?
 
-    ALSA: snd-usb: switch over to new endpoint streaming logic
+ sound/soc/codecs/wm8903.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 304b5cf..d00a2b3 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1946,7 +1946,16 @@ static int wm8903_probe(struct snd_soc_codec *codec)
+ 
+ 		snd_soc_update_bits(codec, WM8903_INTERRUPT_CONTROL,
+ 				    WM8903_IRQ_POL, irq_pol);
+-		
++
++		/*
++		 * Ensure mic detection interrupts are masked until after
++		 * wm8903_mic_detect() is called, so that wm8903_irq() has
++		 * a valid wm8903->mic_jack() to report on.
++		 */
++		snd_soc_update_bits(codec, WM8903_INTERRUPT_STATUS_1_MASK,
++				    WM8903_MICDET_EINT | WM8903_MICSHRT_EINT,
++				    WM8903_MICDET_EINT | WM8903_MICSHRT_EINT);
++
+ 		ret = request_threaded_irq(wm8903->irq, NULL, wm8903_irq,
+ 					   trigger | IRQF_ONESHOT,
+ 					   "wm8903", codec);
 -- 
-Markus
+1.7.0.4
