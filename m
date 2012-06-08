@@ -1,22 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix input list to use source
-	widgets.
-Date: Fri, 8 Jun 2012 06:57:35 +0800
-Message-ID: <20120607225734.GF14525@opensource.wolfsonmicro.com>
-References: <1338920835-5281-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH] asoc: bfin: add i2s driver for blackfin
+	bf60x processor
+Date: Fri, 8 Jun 2012 08:59:42 +0800
+Message-ID: <20120608005941.GA10455@opensource.wolfsonmicro.com>
+References: <1338840199-19714-1-git-send-email-scott.jiang.linux@gmail.com>
+	<20120604150732.GM7538@opensource.wolfsonmicro.com>
+	<CAHG8p1CGUAFCQbqN=dsMwQG9W+Ads2vVyo40c7Ay=X+wYaDVRQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1982634253591970243=="
+Content-Type: multipart/mixed; boundary="===============4644871037106170118=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 419A610B9E3
+	by alsa0.perex.cz (Postfix) with ESMTP id 5642D10B9E3
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2012 02:58:34 +0200 (CEST)
-Received: from [116.228.53.169] (helo=finisterre.wolfsonmicro.main)
-	by cassiel.sirena.org.uk with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.72) (envelope-from <broonie@opensource.wolfsonmicro.com>)
-	id 1ScnX6-0006gB-4a
-	for alsa-devel@alsa-project.org; Fri, 08 Jun 2012 01:58:34 +0100
-In-Reply-To: <1338920835-5281-1-git-send-email-lrg@ti.com>
+	Fri,  8 Jun 2012 02:59:54 +0200 (CEST)
+In-Reply-To: <CAHG8p1CGUAFCQbqN=dsMwQG9W+Ads2vVyo40c7Ay=X+wYaDVRQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1982634253591970243==
+--===============4644871037106170118==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XIiC+We3v3zHqZ6Z"
+	protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
 Content-Disposition: inline
 
 
---XIiC+We3v3zHqZ6Z
-Content-Type: text/plain; charset=us-ascii
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 05, 2012 at 07:27:15PM +0100, Liam Girdwood wrote:
-> We should only add source widgets to the input list.
+On Tue, Jun 05, 2012 at 11:41:56AM +0800, Scott Jiang wrote:
 
-Applied, thanks.
+> These two sports are totally different, bf5xx is full duplex, while
+> bf6xx is half duplex.
+> So we combine two sports on bf6xx to one logic sport.
+> I carefully reviewed these drivers, only dma driver can be merged to
+> one. Do I need to do this?
 
---XIiC+We3v3zHqZ6Z
+Well, it'd be nice.  But it sounds like there's far too many differences
+so it seems reasonable to not bother, it'd probably just make the code
+too complex.
+
+> >> =A0config SND_BF5XX_SOC_SSM2602
+> >> =A0 =A0 =A0 tristate "SoC SSM2602 Audio support for BF52x ezkit"
+
+> > This bit also needs updating...
+
+> Do you mean config name or prompt?
+
+Both, ideally.
+
+--3V7upXqbjpZ4EhLz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP0THWAAoJEBus8iNuMP3dONMQAJRsVedOzUFLhbNBtZAfuNjl
-PPQfHtJZ5o6NqMd50mjyj8BH5B7sQ+pZw2hqrXOkx40yCvnDq9U+hjRLsPIdcBKY
-UF5JFIOjjTcP7jMz4ftTWOfTs1uMu9Q1rEW0VtzSJmTtHbPUm76STD24gdoItLeC
-/mYgYWDSuoG0+crce18ZqtgEMzlq0vlcZ6hEj01kqim/Vtwr/v0NKlVC3tsIu7BQ
-Keu/V08Rd0Kfd6mpxEbBHvO/91TTbC55HSvLxDCEPoB8WWo2wMUlAkgPuW91pvHP
-Nnbbfqdy/qk75Qht6LI50LAq5tobl215bZJEClrhAFO3YZMpjMSPkPQNFTA9LAqf
-rhPKq7nTfJVcpS098HZ/sCKOtq4ShGavciQYr9fzC+khF3M/O+WXTbv8+21F3JGl
-U3csjZy8w3LttKGb0AY28rSKiPEFRxSTUrqL4uqguZTMNj7Y+IQeV+Kwd78ZNbnP
-csaP3esDtOTr2np/oqJWgfOQGnFdIlZgkDG71PMGdNxck/kzKTETVH0EttJ6wJBD
-Td1RT2TW0JIO4RulI4pnQyLyynbRPzcWuiFiscDOccbC71J2gOeZamCGf177JXb3
-iAfHHDpb9M3xgT1/c7aUea5sDFfn0oueCv0xYDwdra+2xcLd90NQ4lTgTwCa4bCD
-0OvPAVK7tgyeVYjME+1Z
-=SoCC
+iQIcBAEBAgAGBQJP0U5UAAoJEBus8iNuMP3d6S8P/3TpTm/0P1IxXY2clWrqnTLz
+pr9dPWRZHe4DnxxfrKH9nqVoAXu/394zJU9IXpp8hjjbpjD9Se5hNUOpHCCNywfP
+0GdkRjjz2kNF2I77EtIQThUodc4xXDJGYj1003hZSkDKzmW0Lh0bHnTXQyvMh61t
+BlTXf2fS+So8tGxYD1VjI/D3++m8sQYxFbXIDD6Aj5NHgfr9ZtxwJs6d34bBOhNI
+fXITSokSr7MoaInBCE+dDE85qhAjqHuwnyMxyR2zNLOuYlH175KDCoNNFM3T4+JK
+K1IHldtR1PzrV8LGZA3H2ZLYaucgvnpjAABWtCZ5C3fZGyQcn5s0/syshCM7wAnc
+a0zk51IC3Bv3FP0Dho0/3+XazpuJkYF28L9Vaq3DLLfmPpZRenQbDuK6VwDqC2Ci
+K9kUPCrjSND8dHbQWhKySq0X/Pzv9txw4IvxKxwI6YsfKUA0JjG5tpfrQE4uT7XP
+7nUEfq68mGL4RvlnuiX348PfEnWsVVXJnPTApBVsinyTyKPmdfkPq3tH399sOx2w
+o8fO6YGcyzYrwMKnrLHsFvxEwpMYFWYxKoRJVMl/O3FKHVbSXeClZnuNMMgXMWQN
+RO0L3ue1fsmDJb1eunjAOJ+L4tBtSC//DGf1kBdVRFCJHAH+rXkpoyWg9DGNYnQ2
+QTV+l3MPBNQXc2jL9Jw8
+=03kt
 -----END PGP SIGNATURE-----
 
---XIiC+We3v3zHqZ6Z--
+--3V7upXqbjpZ4EhLz--
 
---===============1982634253591970243==
+--===============4644871037106170118==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1982634253591970243==--
+--===============4644871037106170118==--
