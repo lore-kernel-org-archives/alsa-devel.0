@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm8903: disable mic detect irqs
- until jack registered
-Date: Sat, 9 Jun 2012 09:31:58 +0800
-Message-ID: <20120609013154.GA3924@opensource.wolfsonmicro.com>
-References: <1339177075-20506-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH 2/5] ASoC: wm8903: Make interrupt handler use
+	regmap directly
+Date: Sat,  9 Jun 2012 11:09:53 +0800
+Message-ID: <1339211396-31711-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1339211396-31711-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7516726325002027388=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0022103D92
+	by alsa0.perex.cz (Postfix) with ESMTP id 06C5D103B6F
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Jun 2012 03:32:23 +0200 (CEST)
-In-Reply-To: <1339177075-20506-1-git-send-email-swarren@wwwdotorg.org>
+	Sat,  9 Jun 2012 05:10:11 +0200 (CEST)
+In-Reply-To: <1339211396-31711-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,81 +22,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
+To: Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+There's no urgent need for the interrupt handler to use the ASoC I/O
+functions and it'll support a further move in where we request the
+interrupt so call the regmap APIs directly.
 
---===============7516726325002027388==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8903.c |   48 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
 
-
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 08, 2012 at 11:37:54AM -0600, Stephen Warren wrote:
-
-> This problem can be triggered by fully initializing an audio card, then
-> removing and re-inserting the machine driver module. This would leave
-> mic detection enabled in HW, and mic_jack set to a stale value.
-
-This isn't a good fix for this issue, - the fact that it works is more a
-sign that nobody got round to moving the interrupt registration to the
-I2C probe() function than anything else.
-
-> As an aside, I wondered instead about modifying wm8903_remove() to disable
-> mic detection, and clear any status. However, even if we do that, I think
-> we still want to make this change too, since I think we want probe() to
-> work the first time without relying on previous HW state?
-
-It does currently work without relying on previous hardware state, the
-first thing that we do with the chip as soon as we get control of it is
-a hard reset.
-
-In terms of the mic detection itself it's really the responsibility of
-the machine driver to say that the jack doesn't exist any more when it's
-being removed - it should be calling wm8903_mic_detect() again during
-unregistration to disable the interrupt.  Otherwise there's always going
-to be an interval where the jack object has been discarded but the CODEC
-driver is still active and could get an interrupt.  That fix should be
-enough for 3.5.
-
-Normally nobody cares about this because for most systems there's no
-realistic use case for removing a driver like this, it's something
-you're only going to run into during driver development.
-
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP0qeCAAoJEBus8iNuMP3dWFMP/jMMyvGfcGfs6XyAjBifdZyY
-WvGPL39x5O1mCAxP/W7JnBt5QBaDJILXn0TtAerqfniO0pevhoc3JTK7Pm+5UHlJ
-hG4oVuoa4Qide4L+FEBT+FhDEveEJrxAUV6A7lVHPC+MMCG3dIrE/VAQjRrCN2Ju
-pcJ7Q6PIHGzAEmLIcMJ1S1LRrZhw8cZQrv5DoLPeFVBvBaSEVqL+gD02Lv+QabDS
-f2x8JUFnx7IdIh/76b26ozYnSyRkdC1ozB10kIyKwtuUojd4f8l+fPFJxzB50UY7
-TFP4chFS/XZHPeyInNAHOVNkh/5v4eBfq66CVaT0+svML7OJv3HZmkY8fxzNMHca
-z/v3N5VjuJTtdZZkNRZ5c9SfUmoAL3N2jkqQku2cvqACYGrMhEyivSBUbvmvok+B
-XKWtbvwwBtjCp0YiTI9CI1ukf9JjfPj6EB8uqghS05pCkPdW8BL3i7Ogv20iLzfB
-gu/qzO3czzScpFJNYZE8Hm/rLNnxWk2JBeAt3Q1A9zLNzDzqAdHUjsernLgYS3TF
-pOsBm+P3cHe6ML87PcdH3kD2LytdCLf3s3TXCPP7u12non/nn+V789gq9zqmVc4E
-TMgYa/BweAOkm2il7XTC66ykhND4vPSQwtl2nj/4BqYXA8yV61/Cy5s/8g1E40jG
-wiFUmjCE0KjnXZjOwGRU
-=MNLw
------END PGP SIGNATURE-----
-
---r5Pyd7+fXNt84Ff3--
-
---===============7516726325002027388==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7516726325002027388==--
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 7200088..8fe9b78 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1830,17 +1830,27 @@ EXPORT_SYMBOL_GPL(wm8903_mic_detect);
+ 
+ static irqreturn_t wm8903_irq(int irq, void *data)
+ {
+-	struct snd_soc_codec *codec = data;
+-	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+-	int mic_report;
+-	int int_pol;
+-	int int_val = 0;
+-	int mask = ~snd_soc_read(codec, WM8903_INTERRUPT_STATUS_1_MASK);
++	struct wm8903_priv *wm8903 = data;
++	int mic_report, ret;
++	unsigned int int_val, mask, int_pol;
++
++	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1_MASK,
++			  &mask);
++	if (ret != 0) {
++		dev_err(wm8903->dev, "Failed to read IRQ mask: %d\n", ret);
++		return IRQ_NONE;
++	}
++
++	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1, &int_val);
++	if (ret != 0) {
++		dev_err(wm8903->dev, "Failed to read IRQ status: %d\n", ret);
++		return IRQ_NONE;
++	}
+ 
+-	int_val = snd_soc_read(codec, WM8903_INTERRUPT_STATUS_1) & mask;
++	int_val &= ~mask;
+ 
+ 	if (int_val & WM8903_WSEQ_BUSY_EINT) {
+-		dev_warn(codec->dev, "Write sequencer done\n");
++		dev_warn(wm8903->dev, "Write sequencer done\n");
+ 	}
+ 
+ 	/*
+@@ -1851,22 +1861,28 @@ static irqreturn_t wm8903_irq(int irq, void *data)
+ 	 * the polarity register.
+ 	 */
+ 	mic_report = wm8903->mic_last_report;
+-	int_pol = snd_soc_read(codec, WM8903_INTERRUPT_POLARITY_1);
++	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_POLARITY_1,
++			  &int_pol);
++	if (ret != 0) {
++		dev_err(wm8903->dev, "Failed to read interrupt polarity: %d\n",
++			ret);
++		return IRQ_HANDLED;
++	}
+ 
+ #ifndef CONFIG_SND_SOC_WM8903_MODULE
+ 	if (int_val & (WM8903_MICSHRT_EINT | WM8903_MICDET_EINT))
+-		trace_snd_soc_jack_irq(dev_name(codec->dev));
++		trace_snd_soc_jack_irq(dev_name(wm8903->dev));
+ #endif
+ 
+ 	if (int_val & WM8903_MICSHRT_EINT) {
+-		dev_dbg(codec->dev, "Microphone short (pol=%x)\n", int_pol);
++		dev_dbg(wm8903->dev, "Microphone short (pol=%x)\n", int_pol);
+ 
+ 		mic_report ^= wm8903->mic_short;
+ 		int_pol ^= WM8903_MICSHRT_INV;
+ 	}
+ 
+ 	if (int_val & WM8903_MICDET_EINT) {
+-		dev_dbg(codec->dev, "Microphone detect (pol=%x)\n", int_pol);
++		dev_dbg(wm8903->dev, "Microphone detect (pol=%x)\n", int_pol);
+ 
+ 		mic_report ^= wm8903->mic_det;
+ 		int_pol ^= WM8903_MICDET_INV;
+@@ -1874,8 +1890,8 @@ static irqreturn_t wm8903_irq(int irq, void *data)
+ 		msleep(wm8903->mic_delay);
+ 	}
+ 
+-	snd_soc_update_bits(codec, WM8903_INTERRUPT_POLARITY_1,
+-			    WM8903_MICSHRT_INV | WM8903_MICDET_INV, int_pol);
++	regmap_update_bits(wm8903->regmap, WM8903_INTERRUPT_POLARITY_1,
++			   WM8903_MICSHRT_INV | WM8903_MICDET_INV, int_pol);
+ 
+ 	snd_soc_jack_report(wm8903->mic_jack, mic_report,
+ 			    wm8903->mic_short | wm8903->mic_det);
+@@ -2108,7 +2124,7 @@ static int wm8903_probe(struct snd_soc_codec *codec)
+ 		
+ 		ret = request_threaded_irq(wm8903->irq, NULL, wm8903_irq,
+ 					   trigger | IRQF_ONESHOT,
+-					   "wm8903", codec);
++					   "wm8903", wm8903);
+ 		if (ret != 0) {
+ 			dev_err(codec->dev, "Failed to request IRQ: %d\n",
+ 				ret);
+@@ -2164,7 +2180,7 @@ static int wm8903_remove(struct snd_soc_codec *codec)
+ 
+ 	wm8903_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	if (wm8903->irq)
+-		free_irq(wm8903->irq, codec);
++		free_irq(wm8903->irq, wm8903);
+ 
+ 	return 0;
+ }
+-- 
+1.7.10
