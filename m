@@ -1,84 +1,101 @@
-From: =?UTF-8?B?SsO2cmctVm9sa2VyIFBlZXR6?= <jvpeetz@web.de>
-Subject: Re: [PATCH 0/2] HD-audio HDMI regression fixes with VGA-switcheroo
-Date: Fri, 08 Jun 2012 22:17:29 +0200
-Message-ID: <4FD25DD9.3030705@web.de>
-References: <1339064116-18579-1-git-send-email-tiwai@suse.de>
-	<4FD1E181.4030805@web.de> <s5h4nqmrm4q.wl%tiwai@suse.de>
-	<4FD21E0D.1050405@web.de> <s5hfwa56bso.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8903: disable mic detect irqs
+ until jack registered
+Date: Sat, 9 Jun 2012 09:31:58 +0800
+Message-ID: <20120609013154.GA3924@opensource.wolfsonmicro.com>
+References: <1339177075-20506-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <s5hfwa56bso.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+Content-Type: multipart/mixed; boundary="===============7516726325002027388=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0022103D92
+	for <alsa-devel@alsa-project.org>;
+	Sat,  9 Jun 2012 03:32:23 +0200 (CEST)
+In-Reply-To: <1339177075-20506-1-git-send-email-swarren@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlLCBvbiAwNi8wOC8xMiAxNzo1MjoKPiBBdCBGcmksIDA4IEp1biAy
-MDEyIDE3OjQ1OjE3ICswMjAwLAo+IErDtnJnLVZvbGtlciBQZWV0eiB3cm90ZToKPj4KPj4gSGVs
-bG8gVGFrYXNoaSwKPj4KPj4gVGFrYXNoaSBJd2FpIHdyb3RlLCBvbiAwNi8wOC8xMiAxNTowMzoK
-Pj4+IEF0IEZyaSwgMDggSnVuIDIwMTIgMTM6MjY6NTcgKzAyMDAsCj4+PiBKw7ZyZy1Wb2xrZXIg
-UGVldHogd3JvdGU6Cj4+Pj4KPj4+PiBUYWthc2hpIEl3YWkgd3JvdGUsIG9uIDA2LzA3LzEyIDEy
-OjE1Ogo+Pj4+PiBIaSwKPj4+Pj4KPj4+Pj4gdGhpcyBpcyBhIHNlcmllcyBvZiBwYXRjaGVzIHRv
-IGZpeCB0aGUgcmVncmVzc2lvbnMgb2YgSEQtYXVkaW8gSERNSQo+Pj4+PiBvbiBELUdQVXMgaW4g
-My41LXJjMSBkdWUgdG8gdGhlIHN1cHBvcnQgb2YgVkdBLXN3aXRjaGVyb28gYXVkaW8gY2xpZW50
-cy4KPj4+Pj4KPj4+Pj4gVGhlIGZpcnN0IHBhdGNoIGFkZHMgYSBuZXcgaGVscGVyIGZ1bmN0aW9u
-IHRvIHZnYS1zd2l0Y2hlcm9vIGFuZCB0aGUKPj4+Pj4gc2Vjb25kIGp1c3QgdXNlcyB0aGF0IGlu
-c3RlYWQgb2YgYW4gb3BlbiBjb2RlLgo+Pj4+Pgo+Pj4+PiBEYXZlLCBpZiB0aGUgZmlyc3QgcGF0
-Y2ggaXMgT0ssIEknbSBnb2luZyB0byBhcHBseSBpdCB0aG91Z2ggc291bmQgdHJlZS4KPj4+Pj4g
-TGV0IG1lIGtub3cgaWYgYW55IHByb2JsZW0gaXMgZm91bmQuCj4+Pj4+Cj4+Pj4+IEpvZXJnLCBj
-b3VsZCB5b3UgY2hlY2sgd2hldGhlciB0aGlzIGRvZXNuJ3QgYnJlYWsgeW91ciBzZXR1cCwgdG9v
-Pwo+Pj4+Pgo+Pj4+Pgo+Pj4+PiB0aGFua3MsCj4+Pj4+Cj4+Pj4+IFRha2FzaGkKPj4+Pgo+Pj4+
-IEhlbGxvIFRha2FzaGksCj4+Pj4KPj4+PiBJIGFwcGxpZWQgYm90aCB5b3VyIHBhdGNoZXMgb24g
-My41LXJjMS4gV2l0aCB0aGlzIGtlcm5lbCBJIG1hZGUgdGhyZWUgdGVzdHMuCj4+Pj4gMSkgQWZ0
-ZXIgYm9vdGluZyBJIHN3aXRjaGVkIG9mZiB0aGUgZGlzY3JldGUgR1BVIHZpYSB2Z2Ffc3dpdGNo
-ZXJvby4KPj4+PiAgICBUaGVuIGNhLiAyMTAgdGltZXMgdGhlIG1lc3NhZ2UKPj4+Pgo+Pj4+ICAg
-ICAgaGRhLWludGVsOiBzcHVyaW91cyByZXNwb25zZSAweDA6MHgwLCBsYXN0IGNtZD0weDE3MDUw
-Mwo+Pj4+Cj4+Pj4gICAgYXBwZWFycyBvbiB0aGUgY29uc29sZSBhbmQgaW4gdGhlIGxvZ3MuCj4+
-Pj4gICAgU3RhcnRpbmcgWCBhbmQgdXNpbmcgdGhlIGJ1aWx0LWluIFVTQiB3ZWItY2FtIHdvcmss
-IGFzIHdlbGwgYXMgc291bmQgd2l0aAo+Pj4+ICAgIG1wbGF5ZXIyIHdvcmtzLgo+Pj4+Cj4+Pj4g
-MikgQWZ0ZXIgYm9vdGluZyBJIHN3aXRjaGVkIHRvIHRoZSBkaXNjcmV0ZSBHUFUgdmlhCj4+Pj4K
-Pj4+PiAgICAgIGVjaG8gLW4gRERJUyA+IC9zeXMva2VybmVsL2RlYnVnZnMvdmdhc3dpdGNoZXJv
-by9zd2l0Y2gKPj4+Pgo+Pj4+ICAgIFRoZW4gSSBzdGFydGVkIFggdmlhIHN0YXJ0eC4gVGhlIGRl
-c2t0b3Agc2NyZWVuIGFwcGVhcnMgYnV0IHRoZSBzeXN0ZW0KPj4+PiAgICBmcmVlemVzLiBObyBy
-ZWFjdGlvbiBvbiBrZXlib2FyZCBvciB0b3VjaHBhZCBpbnB1dC4gVGhlIGNvbXB1dGVyIGlzIG5v
-dAo+Pj4+ICAgIHJlYWNoYWJsZSB2aWEgZXRoZXJuZXQgd2lyZS4KPj4+Cj4+PiBIbSwgdGhlc2Ug
-aXNzdWVzIGFyZW4ndCBzZWVuIG9uIDMuNS1yYzEgYmVmb3JlIG15IHBhdGNoZXM/Cj4+PiBJZiBz
-bywgd2UgbmVlZCB0byBmaXggbm93Lgo+Pj4KPj4gTm8sIHRoZXNlIGlzc3VlcyBhcmVuJ3Qgc2Vl
-biBvbiAzLjUtcmMxIHdpdGhvdXQgeW91ciBwYXRjaGVzLiBJJ20gYWJsZSB0byBzdGFydAo+PiBY
-IHdpdGggdGhlIGRpc2NyZXRlIEdQVSBpbiB1c2UsIGRpcmVjdCByZW5kZXJpbmcgYW5kIHRoZSBi
-dWlsdC1pbiBVU0IgY2FtZXJhIHdvcmsuCj4gCj4gT0ssIGl0IG1lYW5zIHRoYXQgdGhlIHN3aXRj
-aGluZyBmcm9tIHRoZSBhdWRpby1PTiB0byBhdWRpby1PRkYgZG9lc24ndAo+IHdvcmsuICBDb3Vs
-ZCB5b3UgdHJ5IHRoZSBwYXRjaCBiZWxvdyBpbiBhZGRpdG9uPwo+IAoKQXBwbHlpbmcgYWxsIHlv
-dXIgdGhyZWUgcGF0Y2hlcyBvbiAzLjUtcmMxIG1ha2VzIHRoZSBkaXNjcmV0ZSBHUFUgd29yayBv
-biBteQpzeXN0ZW06IGFmdGVyIG1vdW50aW5nIGRlYnVnZnMgYW5kIHN3aXRjaGluZyB0byAiRERJ
-UyIsIEkgY2FuIHN0YXJ0IFggYW5kIGRpcmVjdApyZW5kZXJpbmcsIHNvdW5kIGFuZCBidWlsdC1p
-biBVU0IgY2FtZXJhIHdvcmsuCgpCeSB0aGUgd2F5LCB3cml0aW5nICJERElTIiB0byAvc3lzL2tl
-cm5lbC9kZWJ1Z2ZzL3ZnYXN3aXRjaGVyb28gc3dpdGNoZXMgb2ZmIHRoZQppbnRlZ3JhdGVkIEdQ
-VS4gVGhhdCdzIHRoZSByZWFzb24gZm9yIGxvb3NpbmcgdGhlIGNvbnRyb2wgb3ZlciB0aGUgc2Ny
-ZWVuCmJyaWdodG5lc3MuIFN3aXRjaGluZyBvbiBhbHNvIHRoZSBpbnRlZ3JhdGVkIEdQVSAod3Jp
-dGluZyAiT04iIHRvCi9zeXMva2VybmVsL2RlYnVnZnMvdmdhc3dpdGNoZXJvbykgZW5hYmxlcyB0
-aGUgYnJpZ2h0bmVzcyBjb250cm9sIG9mIHRoZSBzY3JlZW4uCk9mIGNvdXJzZSBmb3IgdGhlIGVu
-ZXJneSBjb25zdW1wdGlvbiB0aGlzIGlzIGF3a3dhcmQuCkkgd3JpdGUgYWxsIHRoaXMgYXMgaW5m
-b3JtYXRpb24gYWJvdXQgdGhlIHN0YXRlIG9mIHZnYV9zd2l0Y2hlcm9vIGZvciBEYXZpZC4KCk1h
-bnkgdGhhbmtzIHRvIHlvdSBhbmQgRGF2aWQgZm9yIGFsbCB5b3VyIHdvcmsuCgo+PiBQcm9iYWJs
-eSB1bnJlbGF0ZWQ6IGluIGJvdGggY2FzZXMgSSdtIHVuYWJsZSB0byBsb3dlciB0aGUgc2NyZWVu
-IGJyaWdodG5lc3MgZnJvbQo+PiBoaWdoZXN0IHZhbHVlLiBXaXRob3V0IHlvdXIgcGF0Y2hlcyBp
-dCBhcHBlYXJzIGEgd2FybmluZzoKPj4KPj4gICBBQ1BJIFdhcm5pbmc6IF9CUUMgcmV0dXJuZWQg
-YW4gaW52YWxpZCBsZXZlbCAoMjAxMjAzMjAvdmlkZW8tNDcyKQo+IAo+IEhtbSwgSSBzZWUgbm8g
-cmVsYXRpb24gYmV0d2VlbiB0aGlzIGFuZCB0aGUgSERNSSBhdWRpbyBwYXJ0Lgo+IEl0J3Mgb2Yg
-Y291cnNlIHBvc3NpYmxlIHRoYXQgc29tZSBub24td29ya2luZyBzdGF0ZSBnaXZlcwo+IHNpZGUt
-ZWZmZWN0cy4uLgo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCj4gCjxzbmlwPgotLSAKQmVz
-dCByZWdhcmRzLApKw7ZyZy1Wb2xrZXIuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2RyaS1kZXZlbAo=
+
+--===============7516726325002027388==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
+Content-Disposition: inline
+
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jun 08, 2012 at 11:37:54AM -0600, Stephen Warren wrote:
+
+> This problem can be triggered by fully initializing an audio card, then
+> removing and re-inserting the machine driver module. This would leave
+> mic detection enabled in HW, and mic_jack set to a stale value.
+
+This isn't a good fix for this issue, - the fact that it works is more a
+sign that nobody got round to moving the interrupt registration to the
+I2C probe() function than anything else.
+
+> As an aside, I wondered instead about modifying wm8903_remove() to disable
+> mic detection, and clear any status. However, even if we do that, I think
+> we still want to make this change too, since I think we want probe() to
+> work the first time without relying on previous HW state?
+
+It does currently work without relying on previous hardware state, the
+first thing that we do with the chip as soon as we get control of it is
+a hard reset.
+
+In terms of the mic detection itself it's really the responsibility of
+the machine driver to say that the jack doesn't exist any more when it's
+being removed - it should be calling wm8903_mic_detect() again during
+unregistration to disable the interrupt.  Otherwise there's always going
+to be an interval where the jack object has been discarded but the CODEC
+driver is still active and could get an interrupt.  That fix should be
+enough for 3.5.
+
+Normally nobody cares about this because for most systems there's no
+realistic use case for removing a driver like this, it's something
+you're only going to run into during driver development.
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP0qeCAAoJEBus8iNuMP3dWFMP/jMMyvGfcGfs6XyAjBifdZyY
+WvGPL39x5O1mCAxP/W7JnBt5QBaDJILXn0TtAerqfniO0pevhoc3JTK7Pm+5UHlJ
+hG4oVuoa4Qide4L+FEBT+FhDEveEJrxAUV6A7lVHPC+MMCG3dIrE/VAQjRrCN2Ju
+pcJ7Q6PIHGzAEmLIcMJ1S1LRrZhw8cZQrv5DoLPeFVBvBaSEVqL+gD02Lv+QabDS
+f2x8JUFnx7IdIh/76b26ozYnSyRkdC1ozB10kIyKwtuUojd4f8l+fPFJxzB50UY7
+TFP4chFS/XZHPeyInNAHOVNkh/5v4eBfq66CVaT0+svML7OJv3HZmkY8fxzNMHca
+z/v3N5VjuJTtdZZkNRZ5c9SfUmoAL3N2jkqQku2cvqACYGrMhEyivSBUbvmvok+B
+XKWtbvwwBtjCp0YiTI9CI1ukf9JjfPj6EB8uqghS05pCkPdW8BL3i7Ogv20iLzfB
+gu/qzO3czzScpFJNYZE8Hm/rLNnxWk2JBeAt3Q1A9zLNzDzqAdHUjsernLgYS3TF
+pOsBm+P3cHe6ML87PcdH3kD2LytdCLf3s3TXCPP7u12non/nn+V789gq9zqmVc4E
+TMgYa/BweAOkm2il7XTC66ykhND4vPSQwtl2nj/4BqYXA8yV61/Cy5s/8g1E40jG
+wiFUmjCE0KjnXZjOwGRU
+=MNLw
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
+
+--===============7516726325002027388==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7516726325002027388==--
