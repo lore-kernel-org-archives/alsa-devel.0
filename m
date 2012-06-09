@@ -1,19 +1,19 @@
 From: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
 Subject: Re: Help requested: new HSS1394 MIDI back-end
-Date: Sat, 09 Jun 2012 10:42:51 +0200
-Message-ID: <4FD30C8B.1040409@mixxx.org>
+Date: Sat, 09 Jun 2012 12:12:33 +0200
+Message-ID: <4FD32191.2080207@mixxx.org>
 References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>
 	<4FC5C9C8.1000604@ladisch.de> <4FC7CDC1.8020606@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1437732262835683706=="
+Content-Type: multipart/mixed; boundary="===============5712990951941967071=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
 	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA0B0103F40
+	by alsa0.perex.cz (Postfix) with ESMTP id EDC31103F56
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Jun 2012 10:42:57 +0200 (CEST)
-Received: by bkcjg15 with SMTP id jg15so2263002bkc.38
-	for <alsa-devel@alsa-project.org>; Sat, 09 Jun 2012 01:42:57 -0700 (PDT)
+	Sat,  9 Jun 2012 12:12:39 +0200 (CEST)
+Received: by bkcjg15 with SMTP id jg15so2289704bkc.38
+	for <alsa-devel@alsa-project.org>; Sat, 09 Jun 2012 03:12:39 -0700 (PDT)
 In-Reply-To: <4FC7CDC1.8020606@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,47 +30,29 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a cryptographically signed message in MIME format.
 
---===============1437732262835683706==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms060602010201060209030006"
+--===============5712990951941967071==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms070703040904080508000607"
 
 This is a cryptographically signed message in MIME format.
 
---------------ms060602010201060209030006
+--------------ms070703040904080508000607
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-Hello again.
+Oh one more thing, sorry for the multiple messages.
 
-I just modified Mixxx's SCS.1d script to work with your custom sysex=20
-messages and tested with your latest patch. The .1d doesn't actually=20
-work 100% with this since Mixxx never receives some of the standard MIDI =
+As soon as I start the JACK server to handle the audio interface on the=20
+SCS.1m, the ALSA driver stops sending MIDI for that device unless I stop =
 
-messages amid all of the sysex ones, and it's much worse when the=20
-platter is spinning and sending the tons of messages it does. This could =
+JACK and power-cycle the device. Its last words are:
+F0 00 01 60 48 53 53 0F 03 00 03 00 00 0B 01 F7
+It does, however, continue to respond to MIDI messages send to it.
 
-be due to PortMIDI's lack of a callback mechanism, forcing Mixxx to poll =
+The SCS.1d (connected through the SCS.1m) continues as before.
 
-it every 1ms because it's much more difficult to reproduce the problem=20
-using amidi -d. (Of course, amidi isn't sending data to the controller=20
-at the same time like Mixxx does.)
+(On Windows via libhss1394, it's possible to use the audio interface and =
 
-That said, the scratching works better in Linux that it does on Windows=20
-via libhss1394! (Not really a surprise since Windows has issues anyway.)
-
-I also see an F9 message slip through once in awhile according to amidi -=
-d:
-F9
-    55
-91
-C4
-
-That's most likely to happen if the unit is sending alot of standard=20
-MIDI messages (such as when I quickly move a slider that sends a CC)=20
-since the device is always sending F9 messages as timestamps. More F9=20
-messages slip through when the platter is spinning because then they=20
-come more frequently.
-
-Thank you again very much for your time and work!
+HSS1394 control on both devices simultaneously.)
 
 Sincerely,
 Sean M. Pappalardo
@@ -78,7 +60,7 @@ Sean M. Pappalardo
 Mixxx Developer - Controller Specialist
 
 
---------------ms060602010201060209030006
+--------------ms070703040904080508000607
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -154,7 +136,7 @@ A9owggPWAgEBMIGTMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMiBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAhc1MAkG
 BSsOAwIaBQCgggIbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8X
-DTEyMDYwOTA4NDI1MVowIwYJKoZIhvcNAQkEMRYEFKcw2u9AGVMu9MV6B3NFyhWTGxjDMGwG
+DTEyMDYwOTEwMTIzM1owIwYJKoZIhvcNAQkEMRYEFLMXm3KlRuCZEWQnws9wdCBHfKjFMGwG
 CSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAO
 BggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgw
 gaQGCSsGAQQBgjcQBDGBljCBkzCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29t
@@ -163,19 +145,19 @@ BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDIgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENB
 AgIXNTCBpgYLKoZIhvcNAQkQAgsxgZaggZMwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
 dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
 aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
-aWVudCBDQQICFzUwDQYJKoZIhvcNAQEBBQAEggEAjjX2EohN3znyQE7zUz5L2SJ25KivJIa0
-EV8Ab7py6bJfmDEf9rmR+rN0O2YB3Flfxzg628XoNWZwG/jyDBjrHYap1kNH/p6rnWXYaDwV
-x1XpjRxbvpfC6Fa8Tn0Vf4IiRpwhbZhMwtoFLlcYIghaIZL/J6NiH/ap6UolJIbqS2+M3LQt
-5bfLJfW5ui6Wwl+qiP3hotEVCUm8zEI7F3HH/5TkYqETSL7em1JX8FZrh3sKTL+eiqckbBd2
-lyoG0thNqvpGhBZM8jBz6zJ/k6elUvBX7X/mxrDgKEgwqetA8IwcYOkDlezXx/YOVqkM0Abd
-TmHlLX4DguRYEP8zew+0uwAAAAAAAA==
---------------ms060602010201060209030006--
+aWVudCBDQQICFzUwDQYJKoZIhvcNAQEBBQAEggEAKE4FCjZyyQmvowGTLN/y01nmhLHi9ZqM
+d4OB+W313cav44xMHJFMjap3tLELDXuKDpIRGne899llphty5G7RblVyn8kkBjrDzq+EeI8K
+p4/fDFYw4gqj00sFtn+63H4RpJUAINjxeTJlYMYaGPwrHpl1gSdr2c3Va9Cswa3ulDs0ClBk
+Y01nA8CuzVOc1ky9E11JAD/vvakOKhyO519BahIXeqkeZZ3kgJ/Q31hD9tAIkgA81D51PiOr
+sM6qS+WoWbNAHZN5ZWjK/BrdCB1fGJ1lHCaHyZ5i2HtXQy+p5IIwFapFI2A6DEbliQsT0iJ4
+TpMxllUG2Xmg+c0BdZWuewAAAAAAAA==
+--------------ms070703040904080508000607--
 
---===============1437732262835683706==
+--===============5712990951941967071==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1437732262835683706==--
+--===============5712990951941967071==--
