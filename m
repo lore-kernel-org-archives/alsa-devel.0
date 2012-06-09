@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/5] ASoC: wm8903: Make interrupt handler use
-	regmap directly
-Date: Sat,  9 Jun 2012 11:09:53 +0800
-Message-ID: <1339211396-31711-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1339211396-31711-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ASoC: wm8903: Move pin configuration into
+	I2C probe() function
+Date: Sat,  9 Jun 2012 11:09:52 +0800
+Message-ID: <1339211396-31711-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06C5D103B6F
+	by alsa0.perex.cz (Postfix) with ESMTP id A7AD8103E82
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Jun 2012 05:10:11 +0200 (CEST)
-In-Reply-To: <1339211396-31711-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Sat,  9 Jun 2012 05:10:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,116 +24,160 @@ To: Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-There's no urgent need for the interrupt handler to use the ASoC I/O
-functions and it'll support a further move in where we request the
-interrupt so call the regmap APIs directly.
+Ensure that the device pins are configured as soon as possible by moving
+the pin configration (including MICBIAS) into the I2C probe() function.
+This had been done in the CODEC probe() function when we were relying on
+the ASoC register I/O code.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8903.c |   48 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 32 insertions(+), 16 deletions(-)
+
+This series is untested but should deal with the WM8903 side of what I
+was saying earlier.
+
+ sound/soc/codecs/wm8903.c |   92 +++++++++++++++++++++++----------------------
+ 1 file changed, 47 insertions(+), 45 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 7200088..8fe9b78 100644
+index e76a66d..7200088 100644
 --- a/sound/soc/codecs/wm8903.c
 +++ b/sound/soc/codecs/wm8903.c
-@@ -1830,17 +1830,27 @@ EXPORT_SYMBOL_GPL(wm8903_mic_detect);
- 
- static irqreturn_t wm8903_irq(int irq, void *data)
+@@ -1,7 +1,7 @@
+ /*
+  * wm8903.c  --  WM8903 ALSA SoC Audio driver
+  *
+- * Copyright 2008-11 Wolfson Microelectronics
++ * Copyright 2008-12 Wolfson Microelectronics
+  * Copyright 2011-2012 NVIDIA, Inc.
+  *
+  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+@@ -2081,10 +2081,9 @@ static int wm8903_probe(struct snd_soc_codec *codec)
  {
--	struct snd_soc_codec *codec = data;
--	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
--	int mic_report;
--	int int_pol;
--	int int_val = 0;
--	int mask = ~snd_soc_read(codec, WM8903_INTERRUPT_STATUS_1_MASK);
-+	struct wm8903_priv *wm8903 = data;
-+	int mic_report, ret;
-+	unsigned int int_val, mask, int_pol;
+ 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8903_platform_data *pdata = wm8903->pdata;
+-	int ret, i;
++	int ret;
+ 	int trigger, irq_pol;
+ 	u16 val;
+-	bool mic_gpio = false;
+ 
+ 	wm8903->codec = codec;
+ 	codec->control_data = wm8903->regmap;
+@@ -2095,47 +2094,6 @@ static int wm8903_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
+-	/* Set up GPIOs, detect if any are MIC detect outputs */
+-	for (i = 0; i < ARRAY_SIZE(pdata->gpio_cfg); i++) {
+-		if ((!pdata->gpio_cfg[i]) ||
+-		    (pdata->gpio_cfg[i] > WM8903_GPIO_CONFIG_ZERO))
+-			continue;
+-
+-		snd_soc_write(codec, WM8903_GPIO_CONTROL_1 + i,
+-				pdata->gpio_cfg[i] & 0x7fff);
+-
+-		val = (pdata->gpio_cfg[i] & WM8903_GP1_FN_MASK)
+-			>> WM8903_GP1_FN_SHIFT;
+-
+-		switch (val) {
+-		case WM8903_GPn_FN_MICBIAS_CURRENT_DETECT:
+-		case WM8903_GPn_FN_MICBIAS_SHORT_DETECT:
+-			mic_gpio = true;
+-			break;
+-		default:
+-			break;
+-		}
+-	}
+-
+-	/* Set up microphone detection */
+-	snd_soc_write(codec, WM8903_MIC_BIAS_CONTROL_0,
+-			pdata->micdet_cfg);
+-
+-	/* Microphone detection needs the WSEQ clock */
+-	if (pdata->micdet_cfg)
+-		snd_soc_update_bits(codec, WM8903_WRITE_SEQUENCER_0,
+-				    WM8903_WSEQ_ENA, WM8903_WSEQ_ENA);
+-
+-	/* If microphone detection is enabled by pdata but
+-	    * detected via IRQ then interrupts can be lost before
+-	    * the machine driver has set up microphone detection
+-	    * IRQs as the IRQs are clear on read.  The detection
+-	    * will be enabled when the machine driver configures.
+-	    */
+-	WARN_ON(!mic_gpio && (pdata->micdet_cfg & WM8903_MICDET_ENA));
+-
+-	wm8903->mic_delay = pdata->micdet_delay;
+-
+ 	if (wm8903->irq) {
+ 		if (pdata->irq_active_low) {
+ 			trigger = IRQF_TRIGGER_LOW;
+@@ -2316,8 +2274,9 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct wm8903_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct wm8903_priv *wm8903;
++	bool mic_gpio = false;
+ 	unsigned int val;
+-	int ret;
++	int ret, i;
+ 
+ 	wm8903 = devm_kzalloc(&i2c->dev,  sizeof(struct wm8903_priv),
+ 			      GFP_KERNEL);
+@@ -2361,6 +2320,8 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
+ 		}
+ 	}
+ 
++	pdata = wm8903->pdata;
 +
-+	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1_MASK,
-+			  &mask);
-+	if (ret != 0) {
-+		dev_err(wm8903->dev, "Failed to read IRQ mask: %d\n", ret);
-+		return IRQ_NONE;
+ 	ret = regmap_read(wm8903->regmap, WM8903_SW_RESET_AND_ID, &val);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
+@@ -2385,6 +2346,47 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
+ 
+ 	wm8903_init_gpio(wm8903);
+ 
++	/* Set up GPIO pin state, detect if any are MIC detect outputs */
++	for (i = 0; i < ARRAY_SIZE(pdata->gpio_cfg); i++) {
++		if ((!pdata->gpio_cfg[i]) ||
++		    (pdata->gpio_cfg[i] > WM8903_GPIO_CONFIG_ZERO))
++			continue;
++
++		regmap_write(wm8903->regmap, WM8903_GPIO_CONTROL_1 + i,
++				pdata->gpio_cfg[i] & 0x7fff);
++
++		val = (pdata->gpio_cfg[i] & WM8903_GP1_FN_MASK)
++			>> WM8903_GP1_FN_SHIFT;
++
++		switch (val) {
++		case WM8903_GPn_FN_MICBIAS_CURRENT_DETECT:
++		case WM8903_GPn_FN_MICBIAS_SHORT_DETECT:
++			mic_gpio = true;
++			break;
++		default:
++			break;
++		}
 +	}
 +
-+	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1, &int_val);
-+	if (ret != 0) {
-+		dev_err(wm8903->dev, "Failed to read IRQ status: %d\n", ret);
-+		return IRQ_NONE;
-+	}
- 
--	int_val = snd_soc_read(codec, WM8903_INTERRUPT_STATUS_1) & mask;
-+	int_val &= ~mask;
- 
- 	if (int_val & WM8903_WSEQ_BUSY_EINT) {
--		dev_warn(codec->dev, "Write sequencer done\n");
-+		dev_warn(wm8903->dev, "Write sequencer done\n");
- 	}
- 
- 	/*
-@@ -1851,22 +1861,28 @@ static irqreturn_t wm8903_irq(int irq, void *data)
- 	 * the polarity register.
- 	 */
- 	mic_report = wm8903->mic_last_report;
--	int_pol = snd_soc_read(codec, WM8903_INTERRUPT_POLARITY_1);
-+	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_POLARITY_1,
-+			  &int_pol);
-+	if (ret != 0) {
-+		dev_err(wm8903->dev, "Failed to read interrupt polarity: %d\n",
-+			ret);
-+		return IRQ_HANDLED;
-+	}
- 
- #ifndef CONFIG_SND_SOC_WM8903_MODULE
- 	if (int_val & (WM8903_MICSHRT_EINT | WM8903_MICDET_EINT))
--		trace_snd_soc_jack_irq(dev_name(codec->dev));
-+		trace_snd_soc_jack_irq(dev_name(wm8903->dev));
- #endif
- 
- 	if (int_val & WM8903_MICSHRT_EINT) {
--		dev_dbg(codec->dev, "Microphone short (pol=%x)\n", int_pol);
-+		dev_dbg(wm8903->dev, "Microphone short (pol=%x)\n", int_pol);
- 
- 		mic_report ^= wm8903->mic_short;
- 		int_pol ^= WM8903_MICSHRT_INV;
- 	}
- 
- 	if (int_val & WM8903_MICDET_EINT) {
--		dev_dbg(codec->dev, "Microphone detect (pol=%x)\n", int_pol);
-+		dev_dbg(wm8903->dev, "Microphone detect (pol=%x)\n", int_pol);
- 
- 		mic_report ^= wm8903->mic_det;
- 		int_pol ^= WM8903_MICDET_INV;
-@@ -1874,8 +1890,8 @@ static irqreturn_t wm8903_irq(int irq, void *data)
- 		msleep(wm8903->mic_delay);
- 	}
- 
--	snd_soc_update_bits(codec, WM8903_INTERRUPT_POLARITY_1,
--			    WM8903_MICSHRT_INV | WM8903_MICDET_INV, int_pol);
-+	regmap_update_bits(wm8903->regmap, WM8903_INTERRUPT_POLARITY_1,
-+			   WM8903_MICSHRT_INV | WM8903_MICDET_INV, int_pol);
- 
- 	snd_soc_jack_report(wm8903->mic_jack, mic_report,
- 			    wm8903->mic_short | wm8903->mic_det);
-@@ -2108,7 +2124,7 @@ static int wm8903_probe(struct snd_soc_codec *codec)
- 		
- 		ret = request_threaded_irq(wm8903->irq, NULL, wm8903_irq,
- 					   trigger | IRQF_ONESHOT,
--					   "wm8903", codec);
-+					   "wm8903", wm8903);
- 		if (ret != 0) {
- 			dev_err(codec->dev, "Failed to request IRQ: %d\n",
- 				ret);
-@@ -2164,7 +2180,7 @@ static int wm8903_remove(struct snd_soc_codec *codec)
- 
- 	wm8903_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	if (wm8903->irq)
--		free_irq(wm8903->irq, codec);
-+		free_irq(wm8903->irq, wm8903);
- 
- 	return 0;
- }
++	/* Set up microphone detection */
++	regmap_write(wm8903->regmap, WM8903_MIC_BIAS_CONTROL_0,
++		     pdata->micdet_cfg);
++
++	/* Microphone detection needs the WSEQ clock */
++	if (pdata->micdet_cfg)
++		regmap_update_bits(wm8903->regmap, WM8903_WRITE_SEQUENCER_0,
++				   WM8903_WSEQ_ENA, WM8903_WSEQ_ENA);
++
++	/* If microphone detection is enabled by pdata but
++	 * detected via IRQ then interrupts can be lost before
++	 * the machine driver has set up microphone detection
++	 * IRQs as the IRQs are clear on read.  The detection
++	 * will be enabled when the machine driver configures.
++	 */
++	WARN_ON(!mic_gpio && (pdata->micdet_cfg & WM8903_MICDET_ENA));
++
++	wm8903->mic_delay = pdata->micdet_delay;
++
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8903, &wm8903_dai, 1);
+ 	if (ret != 0)
 -- 
 1.7.10
