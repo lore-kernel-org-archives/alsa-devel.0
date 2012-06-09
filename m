@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Help requested: new HSS1394 MIDI back-end
-Date: Sat, 09 Jun 2012 13:07:34 +0200
-Message-ID: <4FD32E76.3090304@ladisch.de>
-References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>
-	<4FC5C9C8.1000604@ladisch.de> <4FC7CDC1.8020606@ladisch.de>
-	<4FD2F324.7070402@mixxx.org>
+From: Mark Hills <mark@pogo.org.uk>
+Subject: Re: [RFC] usb-audio: Use a table of mixer controls
+Date: Sat, 9 Jun 2012 13:13:00 +0100 (BST)
+Message-ID: <alpine.LNX.2.01.1206091310410.13043@stax.localdomain>
+References: <1336757328-22649-1-git-send-email-mark@pogo.org.uk>
+	<s5hzk9ems3i.wl%tiwai@suse.de>
+	<alpine.LNX.2.01.1205120014250.23046@stax.localdomain>
+	<s5htxzln8qr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id B518610404C
+Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3AE424456
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Jun 2012 13:08:06 +0200 (CEST)
-In-Reply-To: <4FD2F324.7070402@mixxx.org>
+	Sat,  9 Jun 2012 14:13:06 +0200 (CEST)
+In-Reply-To: <s5htxzln8qr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,66 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sean M. Pappalardo - D.J. Pegasus wrote:
-> On 05/31/2012 10:00 PM, Clemens Ladisch wrote:
->> I wrote:
->>> 00 F9 xx yy zz ->  F0 00 01 60 48 53 53 00 00 0F 09 0x 0x 0y 0y 0z 0z F7
->
-> This appears to work fine. But where did you get the leading 00 from?
+On Sat, 12 May 2012, Takashi Iwai wrote:
 
-This is how the FireWire packets are constructed.  The first byte is
-a tag; 00 means that the rest of the packet contains MIDI data, ...
+> At Sat, 12 May 2012 00:21:14 +0100 (BST),
+> Mark Hills wrote:
+> > 
+> > On Fri, 11 May 2012, Takashi Iwai wrote:
+> > 
+> > > > +/*
+> > > > + * The mixer units for Ebox-44 are corrupt, and even where they
+> > > > + * are valid they presents mono controls as L and R channels of
+> > > > + * stereo. So we create provide a good mixer here.
+> > > > + */
+> > > > +struct std_mono_table ebox44_table[] = {
+> > > > +	{ 4, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Headphone Playback Switch", NULL },
+> > > > +	{ 4, 2, 0x1, USB_MIXER_S16, "Headphone A Mix Playback Volume", NULL },
+> > > > +	{ 4, 2, 0x2, USB_MIXER_S16, "Headphone B Mix Playback Volume", NULL },
+> > > > +
+> > > > +	{ 7, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Output Playback Switch", NULL },
+> > > > +	{ 7, 2, 0x1, USB_MIXER_S16, "Output A Playback Volume", NULL },
+> > > > +	{ 7, 2, 0x2, USB_MIXER_S16, "Output B Playback Volume", NULL },
+> > > > +
+> > > > +	{ 10, 1, 0x0, USB_MIXER_INV_BOOLEAN, "Input Capture Switch", NULL },
+> > > > +	{ 10, 2, 0x1, USB_MIXER_S16, "Input A Capture Volume", NULL },
+> > > > +	{ 10, 2, 0x2, USB_MIXER_S16, "Input B Capture Volume", NULL },
+> > > > +
+> > > > +	{ }
+> > > 
+> > > C99 style struct initialization is preferred.  Then NULL settings can
+> > > be omittted.
+> > 
+> > Do you mean like this?
+> > 
+> >   ebox44_table[] = {
+> >       {
+> >           .unitid = 4,
+> >           .control =  1
+> >           .cmask = 0x0
+> >           /* etc. */
+> >       }
+> > 
+> > Because then it becomes a lot less concise and a lot less readable?
+> 
+> I can't count fields more than two, so to me, C99 style is more
+> readable :)
 
->>> 13 xx yy zz<- F0 00 01 60 48 53 53 01 03 0x 0x 0y 0y 0z 0z F7
->>> 14 xx yy zz<- F0 00 01 60 48 53 53 01 04 0x 0x 0y 0y 0z 0z F7
->>> (0x13 = 0x10 + 3 = kUserTagBase + uUserTag)
+I know you can count more than two, because I see you do it with function 
+calls all the time :-)
 
-... while tags in the range 10..EF are "user tags".
+Nevertheless, I'll follow-up with revised (and tested) patches, ready for 
+inclusion.
+ 
+> > Of course, if there are more optional params in the future, then maybe.
+> 
+> Yep.
 
-When you use this function:
+I see now in doing this that likely to happen is that the table becomes a 
+full 'quirks' table with a mix of mono and stereo entries etc..
 
-> // uUserTag is valid in the range 0x00 - 0xDF.
-> virtual uint SendUserControl(uint8 uUserTag, const uint8 *pUserData,
->                              uint uDataBytes) = 0;
+[...]
+> Takashi
 
-libhss1394 will add 0x10 to the tag.
-
-> I just modified Mixxx's SCS.1d script to work with your custom sysex
-> messages and tested with your latest patch. The .1d doesn't actually
-> work 100% with this since Mixxx never receives some of the standard
-> MIDI messages amid all of the sysex ones, and it's much worse when the
-> platter is spinning and sending the tons of messages it does. This
-> could be due to PortMIDI's lack of a callback mechanism, forcing Mixxx
-> to poll it every 1ms because it's much more difficult to reproduce the
-> problem using amidi -d.
-
-That's possible.  However, at 4 KB, ALSA's buffer should be big enough
-for those messages.
-
-> I also see an F9 message slip through once in awhile according to amidi -d:
-> F9
->    55
-> 91
-> C4
-
-The driver currently assumes that there is exactly one MIDI message per
-packet.  It appears that this is not true, and if F9 and real MIDI
-commands are mixed in one packet, the result is not correct.
-
-> As soon as I start the JACK server to handle the audio interface on
-> the SCS.1m, the ALSA driver stops sending MIDI for that device unless
-> I stop JACK and power-cycle the device. Its last words are:
-> F0 00 01 60 48 53 53 0F 03 00 03 00 00 0B 01 F7
-
-This is a ping response (tag F3).  Apparently, Jack's FFADO driver
-reinitializes the device and registers its own address for received
-packets.  Since it does _not_ handle MIDI messages, it really should
-not do this.
-
-
-Regards,
-Clemens
+-- 
+Mark
