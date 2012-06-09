@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: wm8904: Convert to
-	module_i2c_driver()
-Date: Sat,  9 Jun 2012 12:20:08 +0800
-Message-ID: <1339215609-14435-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm8904: Convert to
+	devm_regmap_init_i2c()
+Date: Sat,  9 Jun 2012 12:20:09 +0800
+Message-ID: <1339215609-14435-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1339215609-14435-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5B0B103EDF
+	by alsa0.perex.cz (Postfix) with ESMTP id 78666103F39
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Jun 2012 06:20:21 +0200 (CEST)
+	Sat,  9 Jun 2012 06:20:22 +0200 (CEST)
+In-Reply-To: <1339215609-14435-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +28,37 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8904.c |   18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+ sound/soc/codecs/wm8904.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index db94d10..02bc2ca 100644
+index 02bc2ca..560a9a47 100644
 --- a/sound/soc/codecs/wm8904.c
 +++ b/sound/soc/codecs/wm8904.c
-@@ -2313,23 +2313,7 @@ static struct i2c_driver wm8904_i2c_driver = {
- 	.id_table = wm8904_i2c_id,
- };
+@@ -2263,7 +2263,7 @@ static __devinit int wm8904_i2c_probe(struct i2c_client *i2c,
+ 	if (wm8904 == NULL)
+ 		return -ENOMEM;
  
--static int __init wm8904_modinit(void)
--{
--	int ret = 0;
--	ret = i2c_add_driver(&wm8904_i2c_driver);
--	if (ret != 0) {
--		printk(KERN_ERR "Failed to register wm8904 I2C driver: %d\n",
--		       ret);
--	}
--	return ret;
--}
--module_init(wm8904_modinit);
--
--static void __exit wm8904_exit(void)
--{
--	i2c_del_driver(&wm8904_i2c_driver);
--}
--module_exit(wm8904_exit);
-+module_i2c_driver(wm8904_i2c_driver);
+-	wm8904->regmap = regmap_init_i2c(i2c, &wm8904_regmap);
++	wm8904->regmap = devm_regmap_init_i2c(i2c, &wm8904_regmap);
+ 	if (IS_ERR(wm8904->regmap)) {
+ 		ret = PTR_ERR(wm8904->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+@@ -2283,15 +2283,12 @@ static __devinit int wm8904_i2c_probe(struct i2c_client *i2c,
+ 	return 0;
  
- MODULE_DESCRIPTION("ASoC WM8904 driver");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ err:
+-	regmap_exit(wm8904->regmap);
+ 	return ret;
+ }
+ 
+ static __devexit int wm8904_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8904_priv *wm8904 = i2c_get_clientdata(client);
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(wm8904->regmap);
+ 	return 0;
+ }
+ 
 -- 
 1.7.10
