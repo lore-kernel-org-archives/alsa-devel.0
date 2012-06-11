@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 6/8] ASoC: wm8996: Move regulator notifier
-	callbacks into I2C level
-Date: Mon, 11 Jun 2012 19:55:38 +0800
-Message-ID: <1339415740-2376-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1339415740-2376-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Create phantom jacks for fixed
+ inputs and outputs
+Date: Mon, 11 Jun 2012 13:58:43 +0200
+Message-ID: <4FD5DD73.5070300@canonical.com>
+References: <1339077128-9534-1-git-send-email-david.henningsson@canonical.com>
+	<s5h62b2tcbg.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010405080703040807000606"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B19D243A0
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 0963B2435C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2012 13:56:31 +0200 (CEST)
-In-Reply-To: <1339415740-2376-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 11 Jun 2012 13:58:43 +0200 (CEST)
+In-Reply-To: <s5h62b2tcbg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,104 +22,245 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that we're using regmap the cache is available here.
+This is a multi-part message in MIME format.
+--------------010405080703040807000606
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |   41 ++++++++++++++++++++---------------------
- 1 file changed, 20 insertions(+), 21 deletions(-)
+On 06/08/2012 10:52 AM, Takashi Iwai wrote:
+> At Thu,  7 Jun 2012 15:52:08 +0200,
+> David Henningsson wrote:
+>>
+>> PulseAudio sometimes have difficulties knowing that there is a
+>> "Speaker" or "Internal Mic", if they have no individual volume
+>> controls or selectors. As a result, only e g "Headphone" might
+>> be created for a laptop, but no "Speaker".
+>> To help out, create phantom jacks (that are always present,
+>> at least for now) for "Speaker", "Internal Mic" etc, in case we
+>> detect them.
+>> The naming convention is e g "Speaker Phantom Jack".
+>>
+>> In order not to pollute the /dev/input namespace with even more
+>> devices, these are added to the kcontrols only, not the input devices.
+>>
+>> An implementation note:
+>> The possibility to override how to actually do jack sensing opens
+>> up for more advanced usage of the jack infrastructure in the future
+>> (e g letting the headphone jack detection set presence status for
+>> both headphone and mic in case of a headset jack, among other things).
+>>
+>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+>> ---
+>>   sound/pci/hda/hda_jack.c |   64 ++++++++++++++++++++++++++++++++++------------
+>>   sound/pci/hda/hda_jack.h |    5 ++++
+>>   2 files changed, 52 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+>> index 2dd1c11..c5569f1 100644
+>> --- a/sound/pci/hda/hda_jack.c
+>> +++ b/sound/pci/hda/hda_jack.c
+>> @@ -133,6 +133,13 @@ static void jack_detect_update(struct hda_codec *codec,
+>>   	}
+>>   }
+>>
+>> +static void jack_detect_always_present(struct hda_codec *codec,
+>> +				       struct hda_jack_tbl *jack)
+>> +{
+>> +	jack->pin_sense = AC_PINSENSE_PRESENCE;
+>> +	jack->jack_dirty = 0;
+>> +}
+>> +
+>>   /**
+>>    * snd_hda_set_dirty_all - Mark all the cached as dirty
+>>    *
+>> @@ -162,7 +169,8 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
+>>   {
+>>   	struct hda_jack_tbl *jack = snd_hda_jack_tbl_get(codec, nid);
+>>   	if (jack) {
+>> -		jack_detect_update(codec, jack);
+>> +		if (jack->update_func)
+>> +			jack->update_func(codec, jack);
+>
+> IMO, it's easier to modify jack_detect_update().
+> Instead of adding update_func pointer, add a new flag phantom_jack
+> (can be a bit field), then in jack_detect_update():
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 49e0e8d..e0cf5b0 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2644,21 +2644,6 @@ static int wm8996_probe(struct snd_soc_codec *codec)
- 		goto err;
- 	}
- 
--	wm8996->disable_nb[0].notifier_call = wm8996_regulator_event_0;
--	wm8996->disable_nb[1].notifier_call = wm8996_regulator_event_1;
--	wm8996->disable_nb[2].notifier_call = wm8996_regulator_event_2;
--
--	/* This should really be moved into the regulator core */
--	for (i = 0; i < ARRAY_SIZE(wm8996->supplies); i++) {
--		ret = regulator_register_notifier(wm8996->supplies[i].consumer,
--						  &wm8996->disable_nb[i]);
--		if (ret != 0) {
--			dev_err(codec->dev,
--				"Failed to register regulator notifier: %d\n",
--				ret);
--		}
--	}
--
- 	/* Apply platform data settings */
- 	snd_soc_update_bits(codec, WM8996_LINE_INPUT_CONTROL,
- 			    WM8996_INL_MODE_MASK | WM8996_INR_MODE_MASK,
-@@ -2858,9 +2843,7 @@ err:
- 
- static int wm8996_remove(struct snd_soc_codec *codec)
- {
--	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
- 	struct i2c_client *i2c = to_i2c_client(codec->dev);
--	int i;
- 
- 	snd_soc_update_bits(codec, WM8996_INTERRUPT_CONTROL,
- 			    WM8996_IM_IRQ, WM8996_IM_IRQ);
-@@ -2868,10 +2851,6 @@ static int wm8996_remove(struct snd_soc_codec *codec)
- 	if (i2c->irq)
- 		free_irq(i2c->irq, codec);
- 
--	for (i = 0; i < ARRAY_SIZE(wm8996->supplies); i++)
--		regulator_unregister_notifier(wm8996->supplies[i].consumer,
--					      &wm8996->disable_nb[i]);
--
- 	return 0;
- }
- 
-@@ -2985,6 +2964,21 @@ static __devinit int wm8996_i2c_probe(struct i2c_client *i2c,
- 		goto err_gpio;
- 	}
- 
-+	wm8996->disable_nb[0].notifier_call = wm8996_regulator_event_0;
-+	wm8996->disable_nb[1].notifier_call = wm8996_regulator_event_1;
-+	wm8996->disable_nb[2].notifier_call = wm8996_regulator_event_2;
-+
-+	/* This should really be moved into the regulator core */
-+	for (i = 0; i < ARRAY_SIZE(wm8996->supplies); i++) {
-+		ret = regulator_register_notifier(wm8996->supplies[i].consumer,
-+						  &wm8996->disable_nb[i]);
-+		if (ret != 0) {
-+			dev_err(&i2c->dev,
-+				"Failed to register regulator notifier: %d\n",
-+				ret);
-+		}
-+	}
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8996->supplies),
- 				    wm8996->supplies);
- 	if (ret != 0) {
-@@ -3062,6 +3056,7 @@ err:
- static __devexit int wm8996_i2c_remove(struct i2c_client *client)
- {
- 	struct wm8996_priv *wm8996 = i2c_get_clientdata(client);
-+	int i;
- 
- 	snd_soc_unregister_codec(&client->dev);
- 	wm8996_free_gpio(wm8996);
-@@ -3069,6 +3064,10 @@ static __devexit int wm8996_i2c_remove(struct i2c_client *client)
- 		gpio_set_value_cansleep(wm8996->pdata.ldo_ena, 0);
- 		gpio_free(wm8996->pdata.ldo_ena);
- 	}
-+	for (i = 0; i < ARRAY_SIZE(wm8996->supplies); i++)
-+		regulator_unregister_notifier(wm8996->supplies[i].consumer,
-+					      &wm8996->disable_nb[i]);
-+
- 	return 0;
- }
- 
+The idea was to open up for other types of jack overrides as well, but 
+if you prefer to keep it simpler while we can, I'm okay with that.
+
+I'm attaching the modified patch.
+
 -- 
-1.7.10
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
+
+--------------010405080703040807000606
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Create-phantom-jacks-for-fixed-inputs-and-o.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Create-phantom-jacks-for-fixed-inputs-and-o.pa";
+ filename*1="tch"
+
+>From da45741a45fafc4b4d3767948d269be06cf36851 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Mon, 4 Jun 2012 09:33:51 +0200
+Subject: [PATCH] ALSA: HDA: Create phantom jacks for fixed inputs and outputs
+
+PulseAudio sometimes have difficulties knowing that there is a
+"Speaker" or "Internal Mic", if they have no individual volume
+controls or selectors. As a result, only e g "Headphone" might
+be created for a laptop, but no "Speaker".
+To help out, create phantom jacks (that are always present,
+at least for now) for "Speaker", "Internal Mic" etc, in case we
+detect them.
+The naming convention is e g "Speaker Phantom Jack".
+
+In order not to pollute the /dev/input namespace with even more
+devices, these are added to the kcontrols only, not the input devices.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_jack.c |   59 ++++++++++++++++++++++++++++++++--------------
+ sound/pci/hda/hda_jack.h |    1 +
+ 2 files changed, 42 insertions(+), 18 deletions(-)
+
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index 2dd1c11..60c976f 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -127,10 +127,15 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec)
+ static void jack_detect_update(struct hda_codec *codec,
+ 			       struct hda_jack_tbl *jack)
+ {
+-	if (jack->jack_dirty || !jack->jack_detect) {
++	if (!jack->jack_dirty)
++		return;
++
++	if (jack->phantom_jack)
++		jack->pin_sense = AC_PINSENSE_PRESENCE;
++	else
+ 		jack->pin_sense = read_pin_sense(codec, jack->nid);
+-		jack->jack_dirty = 0;
+-	}
++
++	jack->jack_dirty = 0;
+ }
+ 
+ /**
+@@ -264,8 +269,8 @@ static void hda_free_jack_priv(struct snd_jack *jack)
+  * This assigns a jack-detection kctl to the given pin.  The kcontrol
+  * will have the given name and index.
+  */
+-int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			  const char *name, int idx)
++static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
++			  const char *name, int idx, bool phantom_jack)
+ {
+ 	struct hda_jack_tbl *jack;
+ 	struct snd_kcontrol *kctl;
+@@ -283,19 +288,30 @@ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+ 	if (err < 0)
+ 		return err;
+ 	jack->kctl = kctl;
++	jack->phantom_jack = !!phantom_jack;
++
+ 	state = snd_hda_jack_detect(codec, nid);
+ 	snd_kctl_jack_report(codec->bus->card, kctl, state);
+ #ifdef CONFIG_SND_HDA_INPUT_JACK
+-	jack->type = get_input_jack_type(codec, nid);
+-	err = snd_jack_new(codec->bus->card, name, jack->type, &jack->jack);
+-	if (err < 0)
+-		return err;
+-	jack->jack->private_data = jack;
+-	jack->jack->private_free = hda_free_jack_priv;
+-	snd_jack_report(jack->jack, state ? jack->type : 0);
++	if (!phantom_jack) {
++		jack->type = get_input_jack_type(codec, nid);
++		err = snd_jack_new(codec->bus->card, name, jack->type,
++				   &jack->jack);
++		if (err < 0)
++			return err;
++		jack->jack->private_data = jack;
++		jack->jack->private_free = hda_free_jack_priv;
++		snd_jack_report(jack->jack, state ? jack->type : 0);
++	}
+ #endif
+ 	return 0;
+ }
++
++int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
++			  const char *name, int idx)
++{
++	return __snd_hda_jack_add_kctl(codec, nid, name, idx, false);
++}
+ EXPORT_SYMBOL_HDA(snd_hda_jack_add_kctl);
+ 
+ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
+@@ -305,25 +321,32 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
+ 	unsigned int def_conf, conn;
+ 	char name[44];
+ 	int idx, err;
++	bool phantom_jack;
+ 
+ 	if (!nid)
+ 		return 0;
+-	if (!is_jack_detectable(codec, nid))
+-		return 0;
+ 	def_conf = snd_hda_codec_get_pincfg(codec, nid);
+ 	conn = get_defcfg_connect(def_conf);
+-	if (conn != AC_JACK_PORT_COMPLEX)
++	if (conn == AC_JACK_PORT_NONE)
+ 		return 0;
++	phantom_jack = (conn != AC_JACK_PORT_COMPLEX) ||
++		       !is_jack_detectable(codec, nid);
+ 
+ 	snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
++	if (phantom_jack)
++		/* Example final name: "Internal Mic Phantom Jack" */
++		strncat(name, " Phantom", sizeof(name) - strlen(name) - 1);
+ 	if (!strcmp(name, lastname) && idx == *lastidx)
+ 		idx++;
+-	strncpy(lastname, name, 44);
++	strncpy(lastname, name, sizeof(name));
+ 	*lastidx = idx;
+-	err = snd_hda_jack_add_kctl(codec, nid, name, idx);
++	err = __snd_hda_jack_add_kctl(codec, nid, name, idx, phantom_jack);
+ 	if (err < 0)
+ 		return err;
+-	return snd_hda_jack_detect_enable(codec, nid, 0);
++
++	if (!phantom_jack)
++		return snd_hda_jack_detect_enable(codec, nid, 0);
++	return 0;
+ }
+ 
+ /**
+diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+index 8ae5246..a9803da 100644
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -23,6 +23,7 @@ struct hda_jack_tbl {
+ 	unsigned int pin_sense;		/* cached pin-sense value */
+ 	unsigned int jack_detect:1;	/* capable of jack-detection? */
+ 	unsigned int jack_dirty:1;	/* needs to update? */
++	unsigned int phantom_jack:1;    /* a fixed, always present port? */
+ 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
+ #ifdef CONFIG_SND_HDA_INPUT_JACK
+ 	int type;
+-- 
+1.7.9.5
+
+
+--------------010405080703040807000606
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------010405080703040807000606--
