@@ -1,18 +1,17 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/4] alsa-info: Cosmetic heading fixup
-Date: Mon, 11 Jun 2012 10:45:21 +0200
-Message-ID: <1339404323-3770-2-git-send-email-david.henningsson@canonical.com>
-References: <1339404323-3770-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 1/4] utils/alsa-info.sh: adding system firmware
+	version to the defaults collected under "DMI Information"
+Date: Mon, 11 Jun 2012 10:45:20 +0200
+Message-ID: <1339404323-3770-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
 	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id AEBEA1041B6
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BA401041B6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2012 10:45:33 +0200 (CEST)
-In-Reply-To: <1339404323-3770-1-git-send-email-david.henningsson@canonical.com>
+	Mon, 11 Jun 2012 10:45:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,82 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: Chris Van Hoof <vanhoof@canonical.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The number of ---- should match the corresponding headers.
+From: Chris Van Hoof <vanhoof@canonical.com>
 
+Signed-off-by: Chris Van Hoof <vanhoof@canonical.com>
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- utils/alsa-info.sh |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ utils/alsa-info.sh |    3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/utils/alsa-info.sh b/utils/alsa-info.sh
-index 46d2ebb..01429a5 100755
+index fd7df96..46d2ebb 100755
 --- a/utils/alsa-info.sh
 +++ b/utils/alsa-info.sh
-@@ -111,7 +111,7 @@ cleanup() {
+@@ -424,10 +424,12 @@ if [ -d /sys/class/dmi/id ]; then
+     DMI_SYSTEM_MANUFACTURER=$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null)
+     DMI_SYSTEM_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
+     DMI_SYSTEM_PRODUCT_VERSION=$(cat /sys/class/dmi/id/product_version 2>/dev/null)
++    DMI_SYSTEM_FIRMWARE_VERSION=$(cat /sys/class/dmi/id/bios_version 2>/dev/null)
+ elif [ -x $DMIDECODE ]; then
+     DMI_SYSTEM_MANUFACTURER=$($DMIDECODE -s system-manufacturer 2>/dev/null)
+     DMI_SYSTEM_PRODUCT_NAME=$($DMIDECODE -s system-product-name 2>/dev/null)
+     DMI_SYSTEM_PRODUCT_VERSION=$($DMIDECODE -s system-version 2>/dev/null)
++    DMI_SYSTEM_FIRMWARE_VERSION=$($DMIDECODE -s bios-version 2>/dev/null)
+ fi
  
- withaplay() {
-         echo "!!Aplay/Arecord output" >> $FILE
--        echo "!!------------" >> $FILE
-+        echo "!!--------------------" >> $FILE
-         echo "" >> $FILE
-        	echo "APLAY" >> $FILE
- 	echo "" >> $FILE 
-@@ -149,7 +149,7 @@ withamixer() {
- 
- withalsactl() {
- 	echo "!!Alsactl output" >> $FILE
--        echo "!!-------------" >> $FILE
-+        echo "!!--------------" >> $FILE
-         echo "" >> $FILE
-         exe=""
-         if [ -x /usr/sbin/alsactl ]; then
-@@ -244,7 +244,7 @@ withsysfs() {
- 
- withdmesg() {
- 	echo "!!ALSA/HDA dmesg" >> $FILE
--	echo "!!------------------" >> $FILE
-+	echo "!!--------------" >> $FILE
- 	echo "" >> $FILE
- 	dmesg | grep -C1 -E 'ALSA|HDA|HDMI|sound|hda.codec|hda.intel' >> $FILE
- 	echo "" >> $FILE
-@@ -547,7 +547,7 @@ cat $TEMPDIR/lspci.tmp >> $FILE
+ cat /proc/asound/modules 2>/dev/null|awk {'print $2'}>$TEMPDIR/alsamodules.tmp
+@@ -469,6 +471,7 @@ echo "" >> $FILE
+ echo "Manufacturer:      $DMI_SYSTEM_MANUFACTURER" >> $FILE
+ echo "Product Name:      $DMI_SYSTEM_PRODUCT_NAME" >> $FILE
+ echo "Product Version:   $DMI_SYSTEM_PRODUCT_VERSION" >> $FILE
++echo "Firmware Version:  $DMI_SYSTEM_FIRMWARE_VERSION" >> $FILE
  echo "" >> $FILE
  echo "" >> $FILE
- echo "!!Advanced information - PCI Vendor/Device/Subsystem ID's" >> $FILE
--echo "!!--------------------------------------------------------" >> $FILE
-+echo "!!-------------------------------------------------------" >> $FILE
- echo "" >> $FILE
- lspci -vvn |grep -A1 040[1-3] >> $FILE
- echo "" >> $FILE
-@@ -566,7 +566,7 @@ fi
- if [ -d "$SYSFS" ]
- then
- echo "!!Loaded sound module options" >> $FILE
--echo "!!--------------------------" >> $FILE
-+echo "!!---------------------------" >> $FILE
- echo "" >> $FILE
- for mod in `cat /proc/asound/modules|awk {'print $2'}`;do
- echo "!!Module: $mod" >> $FILE
-@@ -594,7 +594,7 @@ fi
- if [ -s "$TEMPDIR/alsa-ac97.tmp" ]
- then
-         echo "!!AC97 Codec information" >> $FILE
--        echo "!!---------------------------" >> $FILE
-+        echo "!!----------------------" >> $FILE
-         echo "--startcollapse--" >> $FILE
-         echo "" >> $FILE
-         cat $TEMPDIR/alsa-ac97.tmp >> $FILE
-@@ -608,7 +608,7 @@ fi
- if [ -s "$TEMPDIR/alsa-usbmixer.tmp" ]
- then
-         echo "!!USB Mixer information" >> $FILE
--        echo "!!---------------------------" >> $FILE
-+        echo "!!---------------------" >> $FILE
-         echo "--startcollapse--" >> $FILE
-         echo "" >> $FILE
-         cat $TEMPDIR/alsa-usbmixer.tmp >> $FILE
+ echo "!!Kernel Information" >> $FILE
 -- 
 1.7.9.5
