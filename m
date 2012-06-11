@@ -1,26 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
- for ML7213
-Date: Mon, 11 Jun 2012 16:54:05 +0800
-Message-ID: <20120611085404.GB11439@opensource.wolfsonmicro.com>
-References: <CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
-	<1337941231.1580.19.camel@vkoul-udesk3>
-	<20120527221956.GB25019@opensource.wolfsonmicro.com>
-	<CANKRQnhwkhGUHi6WQhw-sRJuKari3SLcipCJXVp27OZ29=Vxkw@mail.gmail.com>
-	<20120530121449.GI9947@opensource.wolfsonmicro.com>
-	<CANKRQni4uqQJ99ycOScHmn-g1kz2_XH7ePL+n1taG5jAbDSubw@mail.gmail.com>
-	<20120531104538.GA2666@opensource.wolfsonmicro.com>
-	<CANKRQnjdiV+e=N+n_ZP04jmCAhxKjgZ+wab+anbgO+VJPNo=PQ@mail.gmail.com>
-	<20120601083018.GH24139@opensource.wolfsonmicro.com>
-	<CANKRQnjeYtBucmGoDUg7oTK82rvnkakWRB0Siezyz-kbhyPC+g@mail.gmail.com>
+Subject: Re: [PATCH v3] ASoC: codecs: Add DA732x codec driver
+Date: Mon, 11 Jun 2012 17:01:55 +0800
+Message-ID: <20120611090152.GD11439@opensource.wolfsonmicro.com>
+References: <201206110813.q5B8DvXq020445@sw-eng-lt-apt-vm1>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0453561807557445421=="
+Content-Type: multipart/mixed; boundary="===============0754592351965878418=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 717D81041E1
+	by alsa0.perex.cz (Postfix) with ESMTP id B8FC61041FC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2012 10:54:32 +0200 (CEST)
-In-Reply-To: <CANKRQnjeYtBucmGoDUg7oTK82rvnkakWRB0Siezyz-kbhyPC+g@mail.gmail.com>
+	Mon, 11 Jun 2012 11:02:12 +0200 (CEST)
+In-Reply-To: <201206110813.q5B8DvXq020445@sw-eng-lt-apt-vm1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,71 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Adam Thomson <Adam.Thomson@diasemi.com>
+Cc: alsa-devel@alsa-project.org, Michal Hajduk <Michal.Hajduk@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0453561807557445421==
+--===============0754592351965878418==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H1spWtNR+x+ondvy"
+	protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
 Content-Disposition: inline
 
 
---H1spWtNR+x+ondvy
+--fXStkuK2IQBfcDe+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 11, 2012 at 04:05:56PM +0900, Tomoya MORINAGA wrote:
+On Mon, Jun 11, 2012 at 09:12:22AM +0100, Adam Thomson wrote:
+> On Wed, Jun 11, 2012 at 05:41AM, Mark Brown wrote:
 
-> That is to say, some drivers ASoC DMA framework. However some drivers
-> don't use any ASoC DMA framework.
+> > This doesn't apply, please always submit new code against current
+> > development code for the subsystem.  You've also got something else
+> > wrong with your setup, the Date: header for your mail is "Date: $(date
+> > -R)" which is upsetting the tools.
 
-There are some drivers that predate the availibility of the dmaengine
-framework.
+> Apologies. Was using linux-next as my base code. Will re-send changes
+> against your ASoC repository. Assume it should be against the 'for-next'
+> head?
 
-> Why didn't you do porting to your saying "ASoC DMA framework"?
+ASoC should be the same in both, my for-next is what turns up in -next.
+The change would get applied on for-3.6.
 
-This, and the fact that the PCH driver uses dmaengine without using any
-shared code, is the topic of the discussion.  It is entirely natural
-that there are no open coded drivers using cyclic DMA via dmaengine,
-they have all had that code factored out.
-
-Please stop this and at least look at factoring this code out.  If it
-turns out that there's some reason why it's a lot of work that's one
-thing but it seems clear that you've not even looked yet.  It's like the
-previous issues where you were sending patches which would clearly not
-run successfully, it's not a very positive approach.
-
---H1spWtNR+x+ondvy
+--fXStkuK2IQBfcDe+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP1bIhAAoJEBus8iNuMP3ddVgQAJcrfdr+DY+i/KiFN+auDY6E
-oL96PlUFpLsDZa4WpgDbJyx7NbDezHxNl+mQYiHZZmYqEY+rajfTYZ9TIZXZDutL
-ccRLYWZ8bzqrsaagCLpBwaZa/SKm30k2rHvmKY1NbvEcXDin00RGm+JTw1NbQJCV
-zWvOElaTDl+pCSZEK5FKhFfB52HNjYx+3IPCt0rFDeFodmZct4BTV9bWAMEXlJDl
-L5+OFk3S9Kx8DZycymdYcYKIysHYSW48P7kWXKdMq9/Ef15R1Kd5pmnBtMKUd10W
-TWWhZO+wbx6LewAenn3s9NHH1RzdFFMTuBoRofnHITPR38MjCo/2z5OTLvecJ1Gq
-RIXrQ3CMDhFnzIWoXn93nKHDssyDcBciyfPzzwgdLzCzLFiqV5Guk4ufz6atodMJ
-IxzPGF15StSv6iH3JMc0vgVZMbrlqBcb/6KEWkApgUcF7wiH5zLzCuHIClZreX4X
-WLEzvNe4v0VNUFnEmTnXcXGJCZc2jDPbBh92aOMEPW6Jy+ds2XYER30cnnMVMyq+
-F2+bTB+nQpcaf2OmNw1FkeAYo4v1+liAMVZC07TjUg2hYwBQtB0t/tT36H1YiDki
-9oUsp7oA72D/aYcYiBIzdR7CLjiq59691i1Ob70d+uULCZ3gM5+1kPWAsN0UwFSN
-tRW2Tgmc4yAVnK8kx8rf
-=PjxK
+iQIcBAEBAgAGBQJP1bP3AAoJEBus8iNuMP3dIcUP/01c8GXwpC7EyxHqh4ucC2y3
+PvEeukGr/hzJRgkJLkRJXewdyWsgWsEAuJHSIWcQeBBslsXs9PtsDrbPyzwQPYyp
+Z3ARYRFRGLonCoiF+3j1OoxjpxUeFhW4KJPsenRMi1NMBw7WKwVa+qUddAB9Z6pg
+KLUtbqY+PbHBOfw6SqkrhdnaeO3Yh3iXNTAUE5j3hq5Gh5E2jG3JMmOVIhbd5Uqt
+dASpWFA36MHZAFUCjY6A1R59eMwrVTmA7bh7Gu8TqK4A4vG2QXlAF+udeFEH+MYu
+FE1qU3kLE+u/tYNeA+G79TU6g4uzq9mQn76iEMQAP8sD7dJ0LPxEoJXsT+OgXism
+HWxhsjH0Uv9HqabpCCapLYjxeeq/qGS3BazPPbkw0PGeyKqDbjlTU+MZdt1I0c0Q
+4+TInpzZYymK52+bLt4ZiOvBJGlTHXGrsMobwPDdQonw9bdxsE9JWcNVYWPgmXhA
+btKKBoZO6Ap8ESe06jtDKY4Tt5tUhxP8HFHT8mQMWFsxAIdjaAsQ5SssGXE0pWHu
+ndKPk4v5nf/tckoATo5P3l8C+JOOo8i5HcdHl3w8PdFGzAtsUP0wqzuc7xRpm6UR
+LKaF7OlGmzZ0koCglz6vYFzyNEMh3oG7kGTjAwUvXSXxW0O+i/xJDG7Qvmf+H+kG
+/DfQK1s8s8m5jeLKHeGB
+=K4Ag
 -----END PGP SIGNATURE-----
 
---H1spWtNR+x+ondvy--
+--fXStkuK2IQBfcDe+--
 
---===============0453561807557445421==
+--===============0754592351965878418==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0453561807557445421==--
+--===============0754592351965878418==--
