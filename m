@@ -1,106 +1,99 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 3/3] ASoC: dmaengine-pcm: Add support for querying stream position from DMA driver
-Date: Mon, 11 Jun 2012 20:11:42 +0200
-Message-ID: <1339438302-12417-3-git-send-email-lars@metafoo.de>
-References: <1339438302-12417-1-git-send-email-lars@metafoo.de>
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: [PATCH 1/3] maestro3: Remove unused AC97 register definitions
+Date: Mon, 11 Jun 2012 16:58:49 -0300
+Message-ID: <1339444731-15678-1-git-send-email-elezegarcia@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1339438302-12417-1-git-send-email-lars@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Ola Lilja <ola.o.lilja@stericsson.com>, Shawn Guo <shawn.guo@linaro.org>, Mika Westerberg <mika.westerberg@iki.fi>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Ezequiel Garcia <elezegarcia@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the sound dmaengine pcm helper functions implement the pcm_pointer
-callback by trying to count the number of elapsed periods. This is done by
-advancing the stream position in the dmaengine callback by one period.
-Unfortunately there is no guarantee that the callback will be called for each
-elapsed period. It may be possible that under high system load it is only called
-once for multiple elapsed periods. This patch addresses the issue by
-implementing support for querying the current stream position directly from the
-dmaengine driver. Since not all dmaengine drivers support reporting the stream
-position yet the old period counting implementation is kept for now.
-
-Furthermore the new mechanism allows to report the stream position with a
-sub-period granularity, given that the dmaengine driver supports this.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
 ---
-Changes since v1:
-	* Don't implement fallback support in snd_dmaengine_pcm_pointer, instead it
-	  is now moved to its own function. This was done to make it more explicit
-	  that implementing residue reporting for cyclic is required and that this
-	  won't be optional for new drivers.
----
- include/sound/dmaengine_pcm.h |    1 +
- sound/soc/soc-dmaengine-pcm.c |   29 ++++++++++++++++++++++++++++-
- 2 files changed, 29 insertions(+), 1 deletion(-)
+ sound/pci/maestro3.c |   68 --------------------------------------------------
+ 1 files changed, 0 insertions(+), 68 deletions(-)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index ea57915..b877334 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -38,6 +38,7 @@ void *snd_dmaengine_pcm_get_data(struct snd_pcm_substream *substream);
- int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hw_params *params, struct dma_slave_config *slave_config);
- int snd_dmaengine_pcm_trigger(struct snd_pcm_substream *substream, int cmd);
-+snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream);
- snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream *substream);
+diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+index deef213..adb3b4c 100644
+--- a/sound/pci/maestro3.c
++++ b/sound/pci/maestro3.c
+@@ -361,74 +361,6 @@ MODULE_PARM_DESC(amp_gpio, "GPIO pin number for external amp. (default = -1)");
+ #define DSP2HOST_REQ_I2SRATE    0x02
+ #define DSP2HOST_REQ_TIMER      0x04
  
- int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
-diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
-index 7c0877e..2995334 100644
---- a/sound/soc/soc-dmaengine-pcm.c
-+++ b/sound/soc/soc-dmaengine-pcm.c
-@@ -30,6 +30,7 @@
- 
- struct dmaengine_pcm_runtime_data {
- 	struct dma_chan *dma_chan;
-+	dma_cookie_t cookie;
- 
- 	unsigned int pos;
- 
-@@ -153,7 +154,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
- 
- 	desc->callback = dmaengine_pcm_dma_complete;
- 	desc->callback_param = substream;
--	dmaengine_submit(desc);
-+	prtd->cookie = dmaengine_submit(desc);
- 
- 	return 0;
- }
-@@ -213,6 +214,32 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer_no_residue);
- 
-+/**
-+ * snd_dmaengine_pcm_pointer - dmaengine based PCM pointer implementation
-+ * @substream: PCM substream
-+ *
-+ * This function can be used as the PCM pointer callback for dmaengine based PCM
-+ * driver implementations.
-+ */
-+snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+	unsigned int buf_size;
-+	unsigned int pos = 0;
-+
-+	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
-+	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
-+		buf_size = snd_pcm_lib_buffer_bytes(substream);
-+		if (state.residue > 0 && state.residue <= buf_size)
-+			pos = buf_size - state.residue;
-+	}
-+
-+	return bytes_to_frames(substream->runtime, pos);
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer);
-+
- static int dmaengine_pcm_request_channel(struct dmaengine_pcm_runtime_data *prtd,
- 	dma_filter_fn filter_fn, void *filter_data)
- {
+-/* AC97 registers */
+-/* XXX fix this crap up */
+-/*#define AC97_RESET              0x00*/
+-
+-#define AC97_VOL_MUTE_B         0x8000
+-#define AC97_VOL_M              0x1F
+-#define AC97_LEFT_VOL_S         8
+-
+-#define AC97_MASTER_VOL         0x02
+-#define AC97_LINE_LEVEL_VOL     0x04
+-#define AC97_MASTER_MONO_VOL    0x06
+-#define AC97_PC_BEEP_VOL        0x0A
+-#define AC97_PC_BEEP_VOL_M      0x0F
+-#define AC97_SROUND_MASTER_VOL  0x38
+-#define AC97_PC_BEEP_VOL_S      1
+-
+-/*#define AC97_PHONE_VOL          0x0C
+-#define AC97_MIC_VOL            0x0E*/
+-#define AC97_MIC_20DB_ENABLE    0x40
+-
+-/*#define AC97_LINEIN_VOL         0x10
+-#define AC97_CD_VOL             0x12
+-#define AC97_VIDEO_VOL          0x14
+-#define AC97_AUX_VOL            0x16*/
+-#define AC97_PCM_OUT_VOL        0x18
+-/*#define AC97_RECORD_SELECT      0x1A*/
+-#define AC97_RECORD_MIC         0x00
+-#define AC97_RECORD_CD          0x01
+-#define AC97_RECORD_VIDEO       0x02
+-#define AC97_RECORD_AUX         0x03
+-#define AC97_RECORD_MONO_MUX    0x02
+-#define AC97_RECORD_DIGITAL     0x03
+-#define AC97_RECORD_LINE        0x04
+-#define AC97_RECORD_STEREO      0x05
+-#define AC97_RECORD_MONO        0x06
+-#define AC97_RECORD_PHONE       0x07
+-
+-/*#define AC97_RECORD_GAIN        0x1C*/
+-#define AC97_RECORD_VOL_M       0x0F
+-
+-/*#define AC97_GENERAL_PURPOSE    0x20*/
+-#define AC97_POWER_DOWN_CTRL    0x26
+-#define AC97_ADC_READY          0x0001
+-#define AC97_DAC_READY          0x0002
+-#define AC97_ANALOG_READY       0x0004
+-#define AC97_VREF_ON            0x0008
+-#define AC97_PR0                0x0100
+-#define AC97_PR1                0x0200
+-#define AC97_PR2                0x0400
+-#define AC97_PR3                0x0800
+-#define AC97_PR4                0x1000
+-
+-#define AC97_RESERVED1          0x28
+-
+-#define AC97_VENDOR_TEST        0x5A
+-
+-#define AC97_CLOCK_DELAY        0x5C
+-#define AC97_LINEOUT_MUX_SEL    0x0001
+-#define AC97_MONO_MUX_SEL       0x0002
+-#define AC97_CLOCK_DELAY_SEL    0x1F
+-#define AC97_DAC_CDS_SHIFT      6
+-#define AC97_ADC_CDS_SHIFT      11
+-
+-#define AC97_MULTI_CHANNEL_SEL  0x74
+-
+-/*#define AC97_VENDOR_ID1         0x7C
+-#define AC97_VENDOR_ID2         0x7E*/
+-
+ /*
+  * ASSP control regs
+  */
 -- 
-1.7.10
+1.7.4.4
