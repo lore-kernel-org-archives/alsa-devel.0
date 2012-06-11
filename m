@@ -1,19 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: dmaengine-pcm: Add support for
-	querying stream position from DMA device
-Date: Mon, 11 Jun 2012 14:04:13 +0200
-Message-ID: <1339416253-4121-2-git-send-email-lars@metafoo.de>
-References: <1339416253-4121-1-git-send-email-lars@metafoo.de>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: [PATCH 2/3] ASoC: Ux500: Add machine-driver
+Date: Mon, 11 Jun 2012 14:22:33 +0200
+Message-ID: <4FD5E309.4080301@stericsson.com>
+References: <1339070437-15150-1-git-send-email-ola.o.lilja@stericsson.com>
+	<20120611053432.GP4218@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-178.synserver.de (smtp-out-194.synserver.de
-	[212.40.185.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 040B524365
+Received: from eu1sys200aog115.obsmtp.com (eu1sys200aog115.obsmtp.com
+	[207.126.144.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50908243BF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2012 14:00:57 +0200 (CEST)
-In-Reply-To: <1339416253-4121-1-git-send-email-lars@metafoo.de>
+	Mon, 11 Jun 2012 14:23:01 +0200 (CEST)
+In-Reply-To: <20120611053432.GP4218@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,77 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the sound dmaengine pcm helper functions implement the pcm_pointer
-callback by trying to count the number of elapsed periods. This is done by
-advancing the stream position in the dmaengine callback by one period.
-Unfortunately there is no guarantee that the callback will be called for each
-elapsed period. It may be possible that under high system load it is only called
-once for multiple elapsed periods. This patch addresses the issue by
-implementing support for querying the current stream position directly from the
-dmaengine device. Since not all dmaengine drivers support reporting the stream
-position yet the old period counting mechanism is kept as a fallback.
 
-Furthermore the new mechanism allows to report the stream position with a
-sub-period granularity, given that the dmaengine driver supports this.
+>> +static inline const char *get_mclk_str(enum mclk mclk_sel)
+>> +{
+>> +	switch (mclk_sel) {
+>> +	case MCLK_SYSCLK:
+>> +		return "MCLK_SYSCLK";
+>> +	case MCLK_ULPCLK:
+>> +		return "MCLK_ULPCLK";
+> 
+> Why not just drop the MCLK_ from the strings?  I'd expect that'll be
+> implied by the context...
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dmaengine-pcm.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
-index 643147e..1c754a7 100644
---- a/sound/soc/soc-dmaengine-pcm.c
-+++ b/sound/soc/soc-dmaengine-pcm.c
-@@ -30,6 +30,7 @@
- 
- struct dmaengine_pcm_runtime_data {
- 	struct dma_chan *dma_chan;
-+	dma_cookie_t cookie;
- 
- 	unsigned int pos;
- 
-@@ -146,7 +147,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
- 
- 	desc->callback = dmaengine_pcm_dma_complete;
- 	desc->callback_param = substream;
--	dmaengine_submit(desc);
-+	prtd->cookie = dmaengine_submit(desc);
- 
- 	return 0;
- }
-@@ -202,7 +203,27 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_trigger);
- snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
--	return bytes_to_frames(substream->runtime, prtd->pos);
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+	unsigned int pos;
-+
-+	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
-+	if (status != DMA_IN_PROGRESS && status != DMA_PAUSED) {
-+		pos = 0;
-+	} else if (state.residue == 0) {
-+		/* This should never happen with cyclic transfers, so assume
-+		 * that the dmaengine driver does not support reporting residue
-+		 * and fall back to counting periods. */
-+		pos = prtd->pos;
-+	} else {
-+		pos = snd_pcm_lib_buffer_bytes(substream);
-+		if (state.residue <= pos)
-+			pos -= state.residue;
-+		else
-+			pos = 0;
-+	}
-+
-+	return bytes_to_frames(substream->runtime, pos);
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer);
- 
--- 
-1.7.10
+I like having some kind of prefix before the alternatives in my enums,
+even if you could figure out what its for without it.
+
+> 
+>> +	/* Digital interface - Clocks */
+>> +	SOC_SINGLE("Digital Interface Master Generator Switch",
+>> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENMASTGEN,
+>> +		1, 0),
+> 
+> This enables and disables a 256fs (or similar ratio) clock output from
+> the device?
+
+
+This is the clocking of the digital interface which is used together with the
+bit-clock switches when we are in gated mode (see discussions regarding these
+parameters in earlier review of the codec-driver).
+
+> 
+>> +	SOC_SINGLE("Digital Interface 0 Bit-clock Switch",
+>> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK0,
+>> +		1, 0),
+>> +	SOC_SINGLE("Digital Interface 1 Bit-clock Switch",
+>> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK1,
+>> +		1, 0),
+> 
+> I suspect that these are doing what DAIFMT_CONT is for...
+
+
+See comment above.
