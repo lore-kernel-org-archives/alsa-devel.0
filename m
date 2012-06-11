@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASOC: utils: Update dummy codec
-	DAI	settings to allow stream creation
-Date: Mon, 11 Jun 2012 04:13:32 +0100
-Message-ID: <20120611031331.GG28211@opensource.wolfsonmicro.com>
-References: <1339058158.1927.15.camel@vkoul-udesk3>
-	<1339063721-15193-1-git-send-email-selma.bensaid@intel.com>
-	<20120607213057.GA19485@sirena.org.uk> <4FD1B19E.1030808@intel.com>
+Subject: Re: [PATCH v3] ASoC: codecs: Add DA732x codec driver
+Date: Mon, 11 Jun 2012 12:41:04 +0800
+Message-ID: <20120611044058.GM4218@opensource.wolfsonmicro.com>
+References: <201206061634.q56GYWVk010054@sw-eng-lt-apt-vm1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8967852801001508319=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B821824A96
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5608224B17
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2012 05:13:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4FD1B19E.1030808@intel.com>
+	Mon, 11 Jun 2012 06:41:21 +0200 (CEST)
+In-Reply-To: <201206061634.q56GYWVk010054@sw-eng-lt-apt-vm1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Selma Bensaid <selma.bensaid@intel.com>
-Cc: vinod.koul@intel.com, sylvain.centelles@intel.com, alsa-devel@alsa-project.org, louis.le.gall@intel.com, lrg@ti.com
+To: Adam Thomson <Adam.Thomson@diasemi.com>
+Cc: alsa-devel@alsa-project.org, Michal Hajduk <Michal.Hajduk@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 08, 2012 at 10:02:38AM +0200, Selma Bensaid wrote:
 
-Please check your mailer configuration, it's doing something really odd
-with the word wrapping which makes things hard to read.
+--===============8967852801001508319==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5V5c01chtBAiSHoy"
+Content-Disposition: inline
 
->> I still don't understand what this is actually supposed to fix - why are
->> we trying to set up a stream to something that isn't there?  Though it
->> looks like this was added for dynamic PCM which has no mainline users so
->> perhaps there's a sensible use for this...
 
-> I'm trying to use the dummy codec for BT and Modem device where the  
-> coded is handled
-> @ AP side.
+--5V5c01chtBAiSHoy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You shouldn't be doing this, you should have actual devices for these
-with appropriate capabilities for the device.  Ideally we'd even have
-real drivers for these things!  For example, you're currently setting
-them up as supporting continuous audio rates but both BT and baseband
-devices won't do anything like that.  Even your new version which has
-all the rates enabled has about the same issue.
+On Wed, Jun 06, 2012 at 04:35:39PM +0000, Adam Thomson wrote:
+> This patch adds support for the Dialog DA732x audio codec.
+>=20
+> Signed-off-by: Michal Hajduk <Michal.Hajduk@diasemi.com>
+> Signed-off-by: Adam Thomson <Adam.Thomson@diasemi.com>
+
+This doesn't apply, please always submit new code against current
+development code for the subsystem.  You've also got something else
+wrong with your setup, the Date: header for your mail is "Date: $(date
+-R)" which is upsetting the tools.
+
+Please also send followups adding the specific devices to the ID table.
+
+--5V5c01chtBAiSHoy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP1XbRAAoJEBus8iNuMP3dIiUP/3ZowKyfeQDq7YfYWbbD7ssv
+qeULSmnV9oNjwI8naz19wOC9eRGv9PDCsShdY8aFCCp4FGmAGQxQh8/lRTDtD6h5
+WqA6DJs6vx7auhCYmG9rC9QcJArGdD62VsT9z6rULvZOFaSEL/evRRGv6JTEXaWY
+fcMYu2U9lUQW+OwyZVhEbPnjya1lLw/X79sBGhkKiGRpoBXvPaChLNIG+S0e8LWw
+l/By9oZCPqRL3U3RUjQYt7CBoKnskoEyWBTUW4sHwZf7FMGgcPmBGrkMapx5CzGV
+3VKPSCaLB5Ola/QHw0cq0s67d6dDtpBGGY8O+RkdwWBjcCFATLlJDnxBPY/uZibJ
+AY4jTlPRYbzJICPUxvZvVa23ZKhBfUhMnQq1N6Zf3rBsM8Gq4QOD+JwJp2lIjGfO
+81ekQrgBVMPRxLsK/m6C83hBwyKa6ef9ZOU2Ydpd4NcTe0Ank871s10azOekt7+a
+7729UqOsuiogrTTxTP9jZWwH0FLtsSUhHFhn0VcMDpjTLasr/Q1cyEfU/k92OeqO
+zQbXH1hd/3+Wu/Jwt3iUwO6/HIGtuHsnOrDN+2jnqug6K3i9uhPAmM6S2d/oxDvc
+6lsiHGrle0k/bcnGKWNR+PPWDRlEzTuJyci0g9cqerlG2PJKoCQTkBir+HgTbl3B
+mKDDWsGA/EfI3G5zS1xd
+=P8Ev
+-----END PGP SIGNATURE-----
+
+--5V5c01chtBAiSHoy--
+
+--===============8967852801001508319==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8967852801001508319==--
