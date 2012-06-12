@@ -1,58 +1,81 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra+wm8903: turn of mic detect when card is
- removed
-Date: Tue, 12 Jun 2012 11:42:55 +0800
-Message-ID: <20120612034254.GA4258@opensource.wolfsonmicro.com>
-References: <1339435640-20171-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] mfd/ab8500: Move platform-data for
+ ab8500-codec into mfd-driver
+Date: Tue, 12 Jun 2012 11:48:02 +0800
+Message-ID: <20120612034753.GA4139@opensource.wolfsonmicro.com>
+References: <1339070446-15186-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1339435640-20171-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============4988380965049325191=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C2CA24392
+	for <alsa-devel@alsa-project.org>;
+	Tue, 12 Jun 2012 05:48:26 +0200 (CEST)
+In-Reply-To: <1339070446-15186-1-git-send-email-ola.o.lilja@stericsson.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---gKMricLos+KVdGMg
+--===============4988380965049325191==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
+Content-Disposition: inline
+
+
+--mYCpIKhGyMATD0i+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 11, 2012 at 11:27:19AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> If mic detect is left enabled and the WM8903 detects a status change,
-> the WM8903 driver will make a callback against the free()d jack, which
-> will cause a crash.
->=20
-> This problem can be triggered by fully initializing an audio card, then
-> removing and re-inserting the machine driver module.
+On Thu, Jun 07, 2012 at 02:00:46PM +0200, Ola Lilja wrote:
+> The platform-data used by the Ux500 ASoC-driver is moved from the
+> machine-driver context into the codec-driver context. This means
+> adding the platform-data for 'ab8500-codec' into the main AB8500
+> platform-data.
 
-Applied, thanks.
+Applied, thanks - it's needed to fix the build so I'm just applying
+before acks.
 
---gKMricLos+KVdGMg
+This should really have been sent to Samuel as well...
+
+--mYCpIKhGyMATD0i+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP1rp6AAoJEBus8iNuMP3ddgAP/jWkINLupOl4WFzW/kj7DnME
-1vv/FGCfTp1tm7Nu/ANgSDvGNrs6HCHoGdeelGe67Ng9Eyc335ZZB9Y0XjaRPJgj
-TkD74fgkBOOnLB+ZyvOM0n0p0fEdxskyGCYGYycR0NhCabGIggfOq36Mk5pQv9q8
-xIPPfTc1Eeun9oCwzK+ZLj7KElKq3khEg/dg5kkTBCm/+pt2ryRsVQfGYGX78Yyt
-t0lQihYvCeCpf6p+k9KLVnGRCsQr1gsGh9Z+x+d4u1xvjTSnGHxOssTjFTfZjxEO
-9l/BYUgTrI082GweLlMGBH7G5AJsSC2jXcclzx+5F+uOjqJDD3wi/TMjI2u0vcYs
-Zc2zmITVFEIYsAS5b6Uwb8+7lAs+fDcQXqiSd6NBsYdelRoMzZ1M9FubU0GXMu8o
-MGHXoXVIljL/PQJoG6aphCruYzl6ewmMr2079hYbpht8FSkwWi52L+bjXVfRsz+q
-bsITBXdGOi+rYTHSEFs9gorcOwEVR1XyUITtkY8Vy6152Ux4F7lgMQAf1WS7ZNs6
-yzARd3eWDUsFNVQSd6XauszaZq9GwZBDahlRU8WjG7qjmwKzOY2BVkaBjFo6ulqp
-GxPb8MOeTvIZcndHSjEBqmibwkwe2En90vw445XjYHV6XIk6NJ7+TFbfkiKV1SE8
-I5Ha9G3BKLBh378xmZrj
-=WrBN
+iQIcBAEBAgAGBQJP1rupAAoJEBus8iNuMP3dbEwQAJ0LeJ+yNNIucE5MP36HG9Zo
+Lqb0lXx57O9+tF90fc3H5JJqiwI8pKq6YTtZUnYi7R7rDVtTRTTamJ0++DcsbOwq
+E1s21ykM+ZNCte9qowIBAUVD/Kozn2BtbCx03+EsJ/uoKOakNsOdqPFv8iv2WYNo
+4SYIctMZVUTd6ndzBJFRo/EUI1eurL5MihlvU1z2fRc0pSoTiKgweREHY9lxDHOn
+VVpAnVPhq5hndeZbssoArslC6iO3Hpvwl+X07qak5WK69UBD+5LZx0V3y9bpVmcu
+5JI+rsUU7VUjcIcHlxwpUYB+NvIKT6tec+/CoHcY2Uh1zOEyu7Of0YVTY3L21h2M
+Vdd5HNgPxqlh/HD2RVcbrCzLJ7toWpTETH9jvCe8AsEd2pS8fRnTjKirZvoX6EFr
+wJzpgxLAFT+59yjGoZNTmvHJir0orhNnihhxQoWaY3eu7Y/zHYuprVky3bR3Rk27
+RI3lwtoAVLAUlQZ2VxIVqphNjLKfQLj6oOEJbO0tBt0cwehmN+fNtKy6kw6aegLb
+TEImchknfOtCZ82494R2uEKfYxzweL0Nbv5vMW+Zoa1IIVfjmODXJWmLogbBfZ96
+swiHsxW7kyDXTUi1UQq8lPZdNmOv7vdXTtF6sW3q5Qobdxo/ybIyJvd9hW3ukSyY
+GhAmoD3upKRx1Ry25k3a
+=CrsX
 -----END PGP SIGNATURE-----
 
---gKMricLos+KVdGMg--
+--mYCpIKhGyMATD0i+--
+
+--===============4988380965049325191==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4988380965049325191==--
