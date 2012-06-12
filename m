@@ -1,109 +1,65 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] USB: fix gathering of interface associations
-Date: Tue, 12 Jun 2012 20:23:52 +0200
-Message-ID: <1339525432-22039-1-git-send-email-zonque@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D42324749
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jun 2012 20:24:18 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-usb@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, ivanperrone@hotmail.com, sarah.a.sharp@linux.intel.com, gregkh@linuxfoundation.org, ml_all@circa.be, Daniel Mack <zonque@gmail.com>, stern@rowland.harvard.edu
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 1/1] hda_intel: switch Intel chipsets to COMBO position_fix
+Date: Tue, 12 Jun 2012 16:30:00 -0700
+Message-ID: <1339543800-10834-1-git-send-email-seth.heasley@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, James Ralston <james.d.ralston@intel.com>, Seth Heasley <seth.heasley@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-TEAC's UD-H01 (and probably other devices) have a gap in the interface
-number allocation of their descriptors:
+This patch implements the COMBO position_fix for recent Intel client chipsets.
 
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          220
-    bNumInterfaces          3
-    [...]
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      [...]
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         2
-      bInterfaceCount         2
-      bFunctionClass          1 Audio
-      bFunctionSubClass       0
-      bFunctionProtocol      32
-      iFunction               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      [...]
-
-Once a configuration is selected, usb_set_configuration() walks the
-known interfaces of a given configuration and calls find_iad() on
-each of them to set the interface association pointer the interface
-is included in.
-
-The problem here is that the loop variable is taken for the interface
-number in the comparison logic that gathers the association. Which is
-fine as long as the descriptors are sane.
-
-In the case above, however, the logic gets out of sync and the
-interface association fields of all interfaces beyond the interface
-number gap are wrong.
-
-Fix this by passing the interface's bInterfaceNumber to find_iad()
-instead.
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-by: bEN <ml_all@circa.be>
-Reported-by: Ivan Perrone <ivanperrone@hotmail.com>
+Signed-off-by: Seth Heasley <seth.heasley@intel.com>
 ---
+ sound/pci/hda/hda_intel.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
 
-This patch has been tested on a virtual USB device emulated in QEMU.
-I'm still waiting for test results based on real hardware, but the bug
-is rather obvious is and the fix really simple.
-
-Daniel
-
- drivers/usb/core/message.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index b548cf1..bdd1c67 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1838,7 +1838,6 @@ free_interfaces:
- 		intfc = cp->intf_cache[i];
- 		intf->altsetting = intfc->altsetting;
- 		intf->num_altsetting = intfc->num_altsetting;
--		intf->intf_assoc = find_iad(dev, cp, i);
- 		kref_get(&intfc->ref);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 2b6392b..466a88c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -535,6 +535,7 @@ enum {
+ #define AZX_DCAPS_BUFSIZE	(1 << 21)	/* no buffer size alignment */
+ #define AZX_DCAPS_ALIGN_BUFSIZE	(1 << 22)	/* buffer size alignment */
+ #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
++#define AZX_DCAPS_POSFIX_COMBO  (1 << 24)	/* Use COMBO as default */
  
- 		alt = usb_altnum_to_altsetting(intf, 0);
-@@ -1851,6 +1850,8 @@ free_interfaces:
- 		if (!alt)
- 			alt = &intf->altsetting[0];
+ /* quirks for ATI SB / AMD Hudson */
+ #define AZX_DCAPS_PRESET_ATI_SB \
+@@ -2728,6 +2729,10 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+ 		snd_printd(SFX "Using LPIB position fix\n");
+ 		return POS_FIX_LPIB;
+ 	}
++	if (chip->driver_caps & AZX_DCAPS_POSFIX_COMBO) {
++		snd_printd(SFX "Using COMBO position fix\n");
++		return POS_FIX_COMBO;
++	}
+ 	return POS_FIX_AUTO;
+ }
  
-+		intf->intf_assoc =
-+			find_iad(dev, cp, alt->desc.bInterfaceNumber);
- 		intf->cur_altsetting = alt;
- 		usb_enable_interface(dev, intf, true);
- 		intf->dev.parent = &dev->dev;
+@@ -3240,7 +3245,7 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+ 	/* CPT */
+ 	{ PCI_DEVICE(0x8086, 0x1c20),
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+-	  AZX_DCAPS_BUFSIZE },
++	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+ 	/* PBG */
+ 	{ PCI_DEVICE(0x8086, 0x1d20),
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+@@ -3248,11 +3253,11 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+ 	/* Panther Point */
+ 	{ PCI_DEVICE(0x8086, 0x1e20),
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+-	  AZX_DCAPS_BUFSIZE},
++	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+ 	/* Lynx Point */
+ 	{ PCI_DEVICE(0x8086, 0x8c20),
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+-	  AZX_DCAPS_BUFSIZE},
++	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+ 	/* SCH */
+ 	{ PCI_DEVICE(0x8086, 0x811b),
+ 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
 -- 
-1.7.10.2
+1.7.4.4
