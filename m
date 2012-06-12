@@ -1,15 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Pin fixup for Zotac Z68 motherboard
-Date: Tue, 12 Jun 2012 13:15:12 +0200
-Message-ID: <1339499712-4468-1-git-send-email-david.henningsson@canonical.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 3/3] mfd/ab8500: Move platform-data for
+	ab8500-codec into mfd-driver
+Date: Tue, 12 Jun 2012 16:21:51 +0200
+Message-ID: <CACRpkdb=y2KuDxm4-bu7H=R5gKKdqhwfgzTYCL6YwGrj5_6iyQ@mail.gmail.com>
+References: <1339070446-15186-1-git-send-email-ola.o.lilja@stericsson.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 427F424453
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B88C7245A9
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jun 2012 13:15:16 +0200 (CEST)
+	Tue, 12 Jun 2012 16:21:52 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so2862580qcs.38
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2012 07:21:51 -0700 (PDT)
+In-Reply-To: <1339070446-15186-1-git-send-email-ola.o.lilja@stericsson.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,54 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 993162@bugs.launchpad.net
-Cc: stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pin 0x1b was connected to the front panel connector, which according to
-the HDA standard should contain a mic and a headphone. In this case,
-the headphone was listed as "line out" by BIOS.
+On Thu, Jun 7, 2012 at 2:00 PM, Ola Lilja <ola.o.lilja@stericsson.com> wrote:
 
-Cc: stable@kernel.org
-BugLink: https://bugs.launchpad.net/bugs/993162
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+> The platform-data used by the Ux500 ASoC-driver is moved from the
+> machine-driver context into the codec-driver context. This means
+> adding the platform-data for 'ab8500-codec' into the main AB8500
+> platform-data.
+>
+> Signed-off-by: Ola Lilja <ola.o.lilja@stericsson.com>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 224410e..b896681 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6439,6 +6439,7 @@ enum {
- 	ALC662_FIXUP_ASUS_MODE7,
- 	ALC662_FIXUP_ASUS_MODE8,
- 	ALC662_FIXUP_NO_JACK_DETECT,
-+	ALC662_FIXUP_ZOTAC_Z68,
- };
- 
- static const struct alc_fixup alc662_fixups[] = {
-@@ -6588,6 +6589,13 @@ static const struct alc_fixup alc662_fixups[] = {
- 		.type = ALC_FIXUP_FUNC,
- 		.v.func = alc_fixup_no_jack_detect,
- 	},
-+	[ALC662_FIXUP_ZOTAC_Z68] = {
-+		.type = ALC_FIXUP_PINS,
-+		.v.pins = (const struct alc_pincfg[]) {
-+			{ 0x1b, 0x02214020 }, /* Front HP */
-+			{ }
-+		}
-+	},
- };
- 
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -6601,6 +6609,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
-+	SND_PCI_QUIRK(0x19da, 0xa130, "Zotac Z68", ALC662_FIXUP_ZOTAC_Z68),
- 	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
- 
- #if 0
--- 
-1.7.9.5
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+Thanks,
+Linus Walleij
