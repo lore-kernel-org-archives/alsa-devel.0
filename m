@@ -1,20 +1,18 @@
-From: zhangfei gao <zhangfei.gao@gmail.com>
-Subject: Re: [PATCH v2 0/5] mmp audio support
-Date: Wed, 13 Jun 2012 22:01:55 +0800
-Message-ID: <CAMj5BkiOtgc1rPb1usHCahna8V_2PJceh9v9SGBduzChKjqoEQ@mail.gmail.com>
-References: <1339409081-10097-1-git-send-email-zhangfei.gao@marvell.com>
-	<20120613121743.GN4545@opensource.wolfsonmicro.com>
+From: Brent Weatherall <brentweatherall@gmail.com>
+Subject: Possible message repeat
+Date: Wed, 13 Jun 2012 07:13:45 -0700
+Message-ID: <CAAo96ZB8WUuFyNm-GcLubh+uJ2v99-U_7uXFEtHBi638E=vWhw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9754A2454D
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 407B12456F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 16:01:56 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so450425wgb.20
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 07:01:56 -0700 (PDT)
-In-Reply-To: <20120613121743.GN4545@opensource.wolfsonmicro.com>
+	Wed, 13 Jun 2012 16:13:46 +0200 (CEST)
+Received: by yenr13 with SMTP id r13so494454yen.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 07:13:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Vinod Koul <vinod.koul@intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
+To: alsa-devel@alsa-project.org
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 13, 2012 at 8:17 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Jun 11, 2012 at 06:04:36PM +0800, Zhangfei Gao wrote:
->
->> These patches provide mmp audio support under alsa via dmaengine
->> Support platfrom pxa688 and pxa910
->> mmp_tdma.c and mmp-pcm.c is shared for pxa688 and pxa910
->> pxa688 (mmp2) use mmp2-sspa.c
->> pxa910 directly use pxa-ssp.c
->> mmp_tdma.c is under dmaengine framework
->
-> Applied 2-4. =A0I'm not seeing a direct code dependency between this and
-> the dmaengine driver in patch 1 (or review of it from Vinod yet) so I'm
-> expecting that to go via the dmaengine tree.
+Hello.  I sent this message previously before I solidified my membership to
+the list and it seems my message never posted.  Here it is again.
+ My apologies if did go through and I missed it.
 
-Great, thanks Mark.
-By the way, patch 05 "ASoC: add ttc-dkb machine support" also based on
-these patches.
-ttc-dkb (pxa910) and brownstone (pxa688) are sharing mmp-pcm.c and mmp-tdma=
-.c.
+I am new to audio development in Linux.  I have worked with user space
+development with respect to UVC code and I have worked with specifying an
+XU in UVC.  I wrote a user space driver/application to talk to a device
+supporting the UVC XU in Linux.  I am trying to specify an extension to the
+UAC specification and then write a user space driver/application to use the
+extension when a device that supports it is available in Linux.  Pretty
+much the same situation as I have already done with UVC XU.  Windows and
+Mac code will follow, but right now I am only concerned with Linux.
+
+Can anyone assist me with the best path forward for writing user space code
+to use the XU I am going to define?  Meaning generically speaking how to
+use UAC XU controls in ALSA.  I was looking for code samples that use the
+audio.h header file interface, but after a day and a half I am coming to
+conclusion that only kernel space uses audio.h and that I will need to go
+through ALSA to accomplish my task.  Again, this will be user space code I
+want distribute easily, with minimal dependencies.  Our code will be
+apache licensed afterwards if possible, just like our UVC code was.  So any
+work I do should be freely available to the community afterwards. **EDIT
+FROM PREVIOUS MESSAGE**  After more searching, it appears that any XU
+controls would be processed through usbmixer.c, but I don't see how to use
+the code in usbmixer from user space.  And so far I can't tell what source
+usbmixer resides in.  I downloaded the alsa-lib source in Fedora, but I
+don't see that file.  Is this a Linux kernel file?  So far I am having lots
+of trouble finding anything useful regarding audio XUs in Linux.  My
+apologies if this should be simple.  Thank you in advance for
+any assistance.
+
+Best Regards,
+
+Brent
