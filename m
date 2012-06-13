@@ -1,22 +1,21 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: How to redefine "default" to be equivalent to
-	"sysdefault"?
-Date: Wed, 13 Jun 2012 10:57:34 +0300
-Message-ID: <1339574254.2909.15.camel@laptop>
+From: Wang Xingchao <wangxingchao2011@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Add DeviceID for Haswell HDA
+Date: Wed, 13 Jun 2012 16:05:12 +0800
+Message-ID: <CA+v+29gXpHoQSfq59jjXgOw-w5gvCJ9kRd13HOosDVcAqCb_7w@mail.gmail.com>
+References: <1339554232-3410-1-git-send-email-xingchao.wang@intel.com>
+	<s5hr4tjwvxz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 1BC542442B
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF98D24441
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 09:57:37 +0200 (CEST)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id ADDB320E05
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 03:57:36 -0400 (EDT)
-Received: from [91.153.206.55] (unknown [91.153.206.55])
-	by mail.messagingengine.com (Postfix) with ESMTPA id 2506A8E01AF
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 03:57:36 -0400 (EDT)
+	Wed, 13 Jun 2012 10:05:33 +0200 (CEST)
+Received: by obbup19 with SMTP id up19so481019obb.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 01:05:32 -0700 (PDT)
+In-Reply-To: <s5hr4tjwvxz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,123 +25,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, fengguang.wu@intel.com, Seth Heasley <seth.heasley@intel.com>, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Takashi,
 
-I have a file with the following contents:
+2012/6/13 Takashi Iwai <tiwai@suse.de>:
+> At Wed, 13 Jun 2012 10:23:51 +0800,
+> Wang Xingchao wrote:
+>>
+>> this patch add proper id for Haswell HDA Controller.
+>>
+>> Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+>
+> Oh, now ID number decreases to 0xxx? :)
 
+Id 0c0c is readout from "lspci" like below:
+[amanda@amanda-fedora-16 ~]$ lspci
 
+00:03.0 Audio device: Intel Corporation Device 0c0c (rev 01)
 
-# This file an alsa configuration file, used by pasuspender to make the
-# "default" Alsa device work while PulseAudio is in suspended state.
+00:1b.0 Audio device: Intel Corporation Device 8c20 (rev 01)
 
-# Include the system configuration first. Is there any easier way to do this?
-# 14 lines for including one file is a bit much...
-@hooks [
-        {
-                func load
-                files [
-                        {
-                                @func concat
-                                strings [
-                                        { @func datadir }
-                                        "/alsa.conf"
-                                ]
-                        }
-                ]
-        }
-]
+>
+> While we are on this: could you verify whether position_fix=3D4 (combo)
+> options works for Haswell? =A0In this mode, LPIB is used for playback
+> positioning while POS buffer is used for capture.
+>
+> Seth (Cc'ed) figured out that this mode works better than the default
+> (usually POS buf both for playback and capture) on the recent Intel
+> controller chips, so I guess it'd be applied to Haswell, too.
+>
 
-# Redefine "default" to be the same as "sysdefault". On most systems
-# "sysdefault" is configured to use dmix.
-pcm.!default sysdefault
+I'm afraid no better result to provide now. This patch is to fix codec
+probe error at initialization. you can get details at this bug page:
+Bug 829405 - [Intel 6.4 Bug] Shark Bay: sound related warnings/errors in dm=
+esg
+https://bugzilla.redhat.com/show_bug.cgi?id=3D829405
 
+The other patch about HDMI device id could get correct device list by
+"aplay -l", but there's still some problem to detect HDMI monitor, so
+i cannot test audio on Haswell HDA now. But once the HDMI monitor
+detection works, i will provide the test result of Seth's patch.
 
+I think if someone has Haswell HDA plus normal ALC* codec, it could
+help much to test the patch easily.
 
-That doesn't do what I want it to do. When I run
+So Takashi you could reject this patch until i send out the updated
+one with test result then.
 
-    ALSA_CONFIG_PATH=/path/to/file.conf aplay -Ddefault ~/test.wav
-
-aplay still uses pulseaudio. Using "-Dsysdefault" instead of "-Ddefault"
-doesn't use pulseaudio, so "sysdefault" does what it's supposed to do.
-The problem is then: why doesn't "default" behave the same way as
-"sysdefault"?
-
-What error did I make?
-
-Below is "aplay -L" output with and without setting the environment
-variable. When the environment variable is set, "default" is listed
-twice, and "null" and "pulse" are included in the list while they are
-not included in the list when running aplay without the environment
-variable. What causes those differences?
-
-
-
-> ALSA_CONFIG_PATH=/path/to/file.conf aplay -L
-default
-    Playback/recording through the PulseAudio sound server
-null
-    Discard all samples (playback) or generate zero samples (capture)
-pulse
-    Playback/recording through the PulseAudio sound server
-default
-    Playback/recording through the PulseAudio sound server
-sysdefault:CARD=Intel
-    HDA Intel, AD198x Analog
-    Default Audio Device
-front:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    Front speakers
-surround40:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-iec958:CARD=Intel,DEV=0
-    HDA Intel, AD198x Digital
-    IEC958 (S/PDIF) Digital Audio Output
-
-
-
-> aplay -L
-default
-    Playback/recording through the PulseAudio sound server
-sysdefault:CARD=Intel
-    HDA Intel, AD198x Analog
-    Default Audio Device
-front:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    Front speakers
-surround40:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=Intel,DEV=0
-    HDA Intel, AD198x Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-iec958:CARD=Intel,DEV=0
-    HDA Intel, AD198x Digital
-    IEC958 (S/PDIF) Digital Audio Output
-
--- 
-Tanu
+thanks
+--xingchao
+>
+> thanks,
+>
+> Takashi
+>
+>> ---
+>> =A0sound/pci/hda/hda_intel.c | =A0 =A05 +++++
+>> =A01 file changed, 5 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index 2b6392b..f530c40 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -151,6 +151,7 @@ MODULE_SUPPORTED_DEVICE("{{Intel, ICH6},"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{Intel, CPT},"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{Intel, PPT},"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{Intel, LPT},"
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{Intel, HPT},"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{Intel, PBG},"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{Intel, SCH},"
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"{ATI, SB450},"
+>> @@ -3253,6 +3254,10 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) =3D {
+>> =A0 =A0 =A0 { PCI_DEVICE(0x8086, 0x8c20),
+>> =A0 =A0 =A0 =A0 .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+>> =A0 =A0 =A0 =A0 AZX_DCAPS_BUFSIZE},
+>> + =A0 =A0 /* Haswell */
+>> + =A0 =A0 { PCI_DEVICE(0x8086, 0x0c0c),
+>> + =A0 =A0 =A0 .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+>> + =A0 =A0 =A0 AZX_DCAPS_BUFSIZE},
+>> =A0 =A0 =A0 /* SCH */
+>> =A0 =A0 =A0 { PCI_DEVICE(0x8086, 0x811b),
+>> =A0 =A0 =A0 =A0 .driver_data =3D AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+>> --
+>> 1.7.9.5
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
