@@ -1,17 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/2] ALSA: core: add hooks for audio timestamps
-	read from WALLCLOCK
-Date: Wed, 13 Jun 2012 15:26:31 -0500
-Message-ID: <1339619192-2733-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: hda: support for wallclock timestamps
+Date: Wed, 13 Jun 2012 15:26:32 -0500
+Message-ID: <1339619192-2733-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE02C104550
+	by alsa0.perex.cz (Postfix) with ESMTP id 50D4E104543
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 22:26:45 +0200 (CEST)
+	Wed, 13 Jun 2012 22:26:46 +0200 (CEST)
 In-Reply-To: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,122 +25,191 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add new .audio_wallclock routine to enable fine-grain synchronization
-between monotonic system time and audio hardware time.
-Prior to this patch, the clock drift estimation was handled in
-user-space by comparing frames and system time.
-Using the wallclock, if supported in hardware, allows for a
-much better sub-microsecond precision and a common drift tracking for
-all devices sharing the same wall clock (master clock).
+reuse code from clocksource to handle wall clock counter,
+translate cycles to timespec. The code wasn't reused as
+is as the HDA wall clock is based on 24MHz ticks. To avoid
+compounding rounding errors, the counters track cycles
+and will convert elapsed cycles to ns, instead of delta cycles
+as done in the cyclecounter code.
+Since wrapparound occurs, the timestamps are reinitialized with
+monotonic time on a trigger.
+
+TODO:
+- only re-init timecounter if there was no device active.
+- Keep the same timestamp for all devices on same chip.
+- make sure no overflow occurs in the 125/3 scaling implementation
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/asound.h  |    7 ++++++-
- include/sound/pcm.h     |    2 ++
- sound/core/pcm_lib.c    |   15 +++++++++++++--
- sound/core/pcm_native.c |    2 ++
- 4 files changed, 23 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_intel.c |  106 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 105 insertions(+), 1 deletions(-)
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 0876a1e..7c768fa 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -274,6 +274,7 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
- #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
- #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
-+#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
- #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
- 
- typedef int __bitwise snd_pcm_state_t;
-@@ -422,7 +423,10 @@ struct snd_pcm_status {
- 	snd_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
- 	snd_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
- 	snd_pcm_state_t suspended_state; /* suspended stream state */
--	unsigned char reserved[60];	/* must be filled with zero */
-+	union {
-+		unsigned char reserved[60];	/* must be filled with zero */
-+		struct timespec audio_tstamp;	/* audio wall clock timestamp */
-+	} ext;
- };
- 
- struct snd_pcm_mmap_status {
-@@ -430,6 +434,7 @@ struct snd_pcm_mmap_status {
- 	int pad1;			/* Needed for 64 bit alignment */
- 	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
- 	struct timespec tstamp;		/* Timestamp */
-+	struct timespec audio_tstamp;	/* audio wall clock timestamp */
- 	snd_pcm_state_t suspended_state; /* RO: suspended stream state */
- };
- 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 0d11128..75d9db0 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -71,6 +71,8 @@ struct snd_pcm_ops {
- 	int (*prepare)(struct snd_pcm_substream *substream);
- 	int (*trigger)(struct snd_pcm_substream *substream, int cmd);
- 	snd_pcm_uframes_t (*pointer)(struct snd_pcm_substream *substream);
-+	int (*wall_clock)(struct snd_pcm_substream *substream,
-+			  struct timespec *audio_ts);
- 	int (*copy)(struct snd_pcm_substream *substream, int channel,
- 		    snd_pcm_uframes_t pos,
- 		    void __user *buf, snd_pcm_uframes_t count);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 8f312fa..beece7d 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -315,6 +315,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	unsigned long jdelta;
- 	unsigned long curr_jiffies;
- 	struct timespec curr_tstamp;
-+	struct timespec audio_tstamp;
- 
- 	old_hw_ptr = runtime->status->hw_ptr;
- 
-@@ -326,9 +327,17 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	 */
- 	pos = substream->ops->pointer(substream);
- 	curr_jiffies = jiffies;
--	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
-+	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
- 		snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
- 
-+		if ((runtime->hw.info & SNDRV_PCM_INFO_HAS_WALL_CLOCK) &&
-+			(substream->ops->wall_clock))
-+			substream->ops->wall_clock(substream, &audio_tstamp);
-+		else
-+			/* no audio tstamp available, initialize anyway */
-+			audio_tstamp = curr_tstamp;
-+	}
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 2b6392b..f9b9bc1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -46,6 +46,10 @@
+ #include <linux/mutex.h>
+ #include <linux/reboot.h>
+ #include <linux/io.h>
 +
- 	if (pos == SNDRV_PCM_POS_XRUN) {
- 		xrun(substream);
- 		return -EPIPE;
-@@ -506,8 +515,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	runtime->hw_ptr_base = hw_base;
- 	runtime->status->hw_ptr = new_hw_ptr;
- 	runtime->hw_ptr_jiffies = curr_jiffies;
--	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
-+	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
- 		runtime->status->tstamp = curr_tstamp;
-+		runtime->status->audio_tstamp = audio_tstamp;
-+	}
++#include <linux/clocksource.h>
++#include <linux/time.h>
++
+ #ifdef CONFIG_X86
+ /* for snoop control */
+ #include <asm/pgtable.h>
+@@ -426,6 +430,15 @@ struct azx_pcm {
+ 	struct list_head list;
+ };
  
- 	return snd_pcm_update_state(substream, runtime);
++struct azx_timecounter {
++	cycle_t cycle_last;
++	cycle_t mask;
++	cycle_t elapsed_cycles;
++	u64     initial_time_nsec;
++	u32     mult;
++	u32     shift;
++};
++
+ struct azx {
+ 	struct snd_card *card;
+ 	struct pci_dev *pci;
+@@ -496,6 +509,9 @@ struct azx {
+ 
+ 	/* reboot notifier (for mysterious hangup problem at power-down) */
+ 	struct notifier_block reboot_notifier;
++
++	/* Wall clock counter */
++	struct azx_timecounter tc;
+ };
+ 
+ /* driver types */
+@@ -1699,6 +1715,89 @@ static inline void azx_release_device(struct azx_dev *azx_dev)
+ 	azx_dev->opened = 0;
  }
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 53b5ada..bf0176b 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -594,6 +594,8 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
- 		snd_pcm_update_hw_ptr(substream);
- 		if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
- 			status->tstamp = runtime->status->tstamp;
-+			status->ext.audio_tstamp =
-+				runtime->status->audio_tstamp;
- 			goto _tstamp_end;
- 		}
+ 
++static void azx_timecounter_init(struct azx *chip)
++{
++	struct azx_timecounter *tc = &chip->tc;
++	struct timespec ts;
++
++	tc->cycle_last = azx_readl(chip, WALLCLK);
++	tc->elapsed_cycles = 0;
++	tc->mask = CLOCKSOURCE_MASK(32);
++	/*
++	 * conversion from 24MHz to nsec requires fractional operation,
++	 * approximate 125/3 ratio
++	 */
++#define NBITS_NS 16
++	tc->mult = (u32)(1<<NBITS_NS)*125L/3L;
++	tc->shift = NBITS_NS;
++
++	/* save initial time */
++	ktime_get_ts(&ts);
++	tc->initial_time_nsec = timespec_to_ns(&ts);
++}
++
++/**
++ * azx_timecounter_read_delta - get nanoseconds since last call of this function
++ * @tc:         Pointer to time counter
++ *
++ * When the underlying cycle counter runs over, this will be handled
++ * correctly as long as it does not run over more than once between
++ * calls.
++ *
++ * The first call to this function for a new time counter initializes
++ * the time tracking and returns an undefined result.
++ */
++static u64 azx_timecounter_read_delta(struct azx_timecounter *tc,
++				cycle_t cycle_now)
++{
++	cycle_t cycle_delta;
++	u64 nsec;
++
++	/* calculate the delta since the last timecounter_read_delta(): */
++	cycle_delta = (cycle_now - tc->cycle_last) & tc->mask;
++
++	tc->elapsed_cycles += cycle_delta;
++
++	/* convert to nanoseconds: */
++	nsec = (u64)tc->elapsed_cycles;
++	nsec = (nsec * tc->mult) >> tc->shift;
++
++	/* update time stamp of azx_timecounter_read_delta() call: */
++	tc->cycle_last = cycle_now;
++
++	return nsec;
++}
++
++u64 azx_timecounter_read(struct azx *chip)
++{
++	u64 nsec;
++	struct azx_timecounter *tc = &chip->tc;
++	cycle_t cycle_now;
++
++	/* read cycle counter: */
++	cycle_now = azx_readl(chip, WALLCLK);
++
++	/* increment time by nanoseconds since last call */
++	nsec = azx_timecounter_read_delta(tc, cycle_now);
++	nsec += tc->initial_time_nsec;
++
++	return nsec;
++}
++
++
++static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
++				struct timespec *ts)
++{
++	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
++	struct azx *chip = apcm->chip;
++	u64 nsec;
++
++	nsec = azx_timecounter_read(chip);
++	*ts = ns_to_timespec(nsec);
++
++	return 0;
++}
++
+ static struct snd_pcm_hardware azx_pcm_hw = {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_INTERLEAVED |
+@@ -1708,6 +1807,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 				 /* SNDRV_PCM_INFO_RESUME |*/
+ 				 SNDRV_PCM_INFO_PAUSE |
+ 				 SNDRV_PCM_INFO_SYNC_START |
++				 SNDRV_PCM_INFO_HAS_WALL_CLOCK |
+ 				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
+ 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates =		SNDRV_PCM_RATE_48000,
+@@ -1981,8 +2081,10 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
  	}
+ 	spin_unlock(&chip->reg_lock);
+ 	if (start) {
+-		if (nsync == 1)
++		if (nsync == 1) {
++			azx_timecounter_init(chip);
+ 			return 0;
++		}
+ 		/* wait until all FIFOs get ready */
+ 		for (timeout = 5000; timeout; timeout--) {
+ 			nwait = 0;
+@@ -1998,6 +2100,7 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				break;
+ 			cpu_relax();
+ 		}
++		azx_timecounter_init(chip);
+ 	} else {
+ 		/* wait until all RUN bits are cleared */
+ 		for (timeout = 5000; timeout; timeout--) {
+@@ -2239,6 +2342,7 @@ static struct snd_pcm_ops azx_pcm_ops = {
+ 	.prepare = azx_pcm_prepare,
+ 	.trigger = azx_pcm_trigger,
+ 	.pointer = azx_pcm_pointer,
++	.wall_clock =  azx_get_wallclock_tstamp,
+ 	.mmap = azx_pcm_mmap,
+ 	.page = snd_pcm_sgbuf_ops_page,
+ };
 -- 
 1.7.6.5
