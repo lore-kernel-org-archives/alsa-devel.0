@@ -1,11 +1,9 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
-	for ML7213
-Date: Wed, 13 Jun 2012 19:41:57 +0900
-Message-ID: <CANKRQngP3e3U+VZDgA7fQfxBti9vri-AEAR8iTmhLYiqXP_kiw@mail.gmail.com>
-References: <CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
-	<1337941231.1580.19.camel@vkoul-udesk3>
-	<20120527221956.GB25019@opensource.wolfsonmicro.com>
+ for ML7213
+Date: Wed, 13 Jun 2012 13:11:40 +0100
+Message-ID: <20120613121140.GL4545@opensource.wolfsonmicro.com>
+References: <20120527221956.GB25019@opensource.wolfsonmicro.com>
 	<CANKRQnhwkhGUHi6WQhw-sRJuKari3SLcipCJXVp27OZ29=Vxkw@mail.gmail.com>
 	<20120530121449.GI9947@opensource.wolfsonmicro.com>
 	<CANKRQni4uqQJ99ycOScHmn-g1kz2_XH7ePL+n1taG5jAbDSubw@mail.gmail.com>
@@ -14,18 +12,15 @@ References: <CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
 	<20120601083018.GH24139@opensource.wolfsonmicro.com>
 	<CANKRQnjeYtBucmGoDUg7oTK82rvnkakWRB0Siezyz-kbhyPC+g@mail.gmail.com>
 	<20120611085404.GB11439@opensource.wolfsonmicro.com>
+	<CANKRQngP3e3U+VZDgA7fQfxBti9vri-AEAR8iTmhLYiqXP_kiw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2091052176854401854=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f179.google.com (mail-gh0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22C3D244E7
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E4D6104517
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 12:41:59 +0200 (CEST)
-Received: by ghbg24 with SMTP id g24so216964ghb.38
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 03:41:58 -0700 (PDT)
-In-Reply-To: <20120611085404.GB11439@opensource.wolfsonmicro.com>
+	Wed, 13 Jun 2012 14:11:42 +0200 (CEST)
+In-Reply-To: <CANKRQngP3e3U+VZDgA7fQfxBti9vri-AEAR8iTmhLYiqXP_kiw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,40 +30,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
 Cc: Vinod Koul <vinod.koul@linux.intel.com>, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 11, 2012 at 5:54 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> There are some drivers that predate the availibility of the dmaengine
-> framework.
 
-In case, you develop a new ASoC framework,  all previous ASoC drivers
-should be adopted to the framework by yourself, don't you ?
-Because a new developer must be confused by this.
+--===============2091052176854401854==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5VuzLDXibKSJvVYD"
+Content-Disposition: inline
 
-> This, and the fact that the PCH driver uses dmaengine without using any
-> shared code, is the topic of the discussion. =A0It is entirely natural
-> that there are no open coded drivers using cyclic DMA via dmaengine,
-> they have all had that code factored out.
->
-> Please stop this and at least look at factoring this code out. =A0If it
-> turns out that there's some reason why it's a lot of work that's one
-> thing but it seems clear that you've not even looked yet. =A0It's like the
-> previous issues where you were sending patches which would clearly not
-> run successfully, it's not a very positive approach.
 
-OK, I'll stop this.
+--5VuzLDXibKSJvVYD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I wanted to finish adding these patch series to upstream because we
-spent much resource on this.
-But I'm involved in other work, so I can't start now.
+On Wed, Jun 13, 2012 at 07:41:57PM +0900, Tomoya MORINAGA wrote:
+> On Mon, Jun 11, 2012 at 5:54 PM, Mark Brown
 
-Until now thank you for your support.
-Regards.
+> > There are some drivers that predate the availibility of the dmaengine
+> > framework.
 
--- =
+> In case, you develop a new ASoC framework,  all previous ASoC drivers
+> should be adopted to the framework by yourself, don't you ?
+> Because a new developer must be confused by this.
 
-ROHM Co., Ltd.
-tomoya
+This is exactly what Lars-Peter did, he updated all the drivers that
+used cyclic mode to use the framework.  Drivers using non-cyclic mode
+weren't updated as there is some additional work needed in the
+framework.
+
+That said, you don't always want to do this - depending on the change
+involved it's sometimes simpler and easier to move things over piecemeal
+unless there's an actual issue being created by the lack of the new
+firmware.
+
+--5VuzLDXibKSJvVYD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP2IN1AAoJEBus8iNuMP3dpW0P/2FLeH2rXM/kE5wWCqg7cnjv
+fNuZ1C9c6cgSkdJZaod12mdXt/yzZLr1udUKnI1hURGavb8pIQRMZGqD9t3CJEyN
+Smc75DWaBu33bYdyW3PMhZRtHatW7RyhjtJx0NCfPw/fESR8BnfttwEIDefUCr/U
++Hgav+Zn4ZxdbkAx/5zEkLnqoNc4XRhkSEq4uLrZHYnWGxHM1dEOFSrjKf3KjWNb
+B57jKp7tP58lWF3o7gkHlwBl4+Nfcmqa5ziF95iGxWibzvzZQOr4SIpuhMFK25mQ
+rj0xfDQMBTjMCriD8TCatgV/5sFYBHzoGK0JpJwpatl/HyjSXJ90ahiH5gCu/VNT
+5acsGxGoSI+FdlCRBCzP/UTMMWDM5GHaDhXb/8o/xbRXhicw7aa4QDdi5H+2S2ax
+fdAqbyjWPXP9/k2zsF+Uqrod3RpgIHYuCW5O7TaCBevk5Vz9c8AQKFnvrQV6REk7
+iEamBUAwfW6TNyGQ+XEkOPTR+gHM3T9KIrY9OAYyEEE+f8DL5x54ZcKR7IoTaBwI
+efZQfRZDqITicOZKddj7r/nd3G0ROEWKAtyfl120SvEh2aLoBnG1imiluLoozhVY
+y73E2DUcDB2ZiI0/xHagwBxsPI6xl05AP3jcV8EB9yOTzM5sXKwf8iEkxSGBE5eR
+QV4htJ6k51wTWvyRYY9R
+=/BpO
+-----END PGP SIGNATURE-----
+
+--5VuzLDXibKSJvVYD--
+
+--===============2091052176854401854==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2091052176854401854==--
