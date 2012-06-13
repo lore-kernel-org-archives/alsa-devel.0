@@ -1,89 +1,87 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Questions regarding adding regmap support for
-	TLV320AIC3262
-Date: Wed, 13 Jun 2012 18:56:25 +0100
-Message-ID: <20120613175624.GG7804@opensource.wolfsonmicro.com>
-References: <6817C817C9581447825BFB369EAC42163E936642@DBDE01.ent.ti.com>
+From: "Heasley, Seth" <seth.heasley@intel.com>
+Subject: RE: [PATCH 1/1] hda_intel: switch Intel chipsets to COMBO
+ position_fix
+Date: Wed, 13 Jun 2012 17:58:57 +0000
+Message-ID: <DEC3922D1904474A8862C7BFF516EA9A459FAAF9@ORSMSX101.amr.corp.intel.com>
+References: <1339543800-10834-1-git-send-email-seth.heasley@intel.com>
+ <s5hsjdzww89.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0196079736972802031=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1965E104543
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 19:56:26 +0200 (CEST)
-In-Reply-To: <6817C817C9581447825BFB369EAC42163E936642@DBDE01.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Navada Kanyana, Mukund" <navada@ti.com>
-Cc: "alsa-devel@alsa-project.org." <alsa-devel@alsa-project.org>, "Girdwood,
-	Liam" <lrg@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hsjdzww89.wl%tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Ralston, James D" <james.d.ralston@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+>> This patch implements the COMBO position_fix for recent Intel client
+>chipsets.
+>>
+>> Signed-off-by: Seth Heasley <seth.heasley@intel.com>
+>
+>Thanks for the patch.
+>But could you give a bit more context why this change is needed?
 
---===============0196079736972802031==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UTZ8bGhNySVQ9LYl"
-Content-Disposition: inline
+The COMBO method was recommended for Intel chipsets by a certain audio maintainer. ;)  It was also tested on the most recent Intel chips because we were seeing warning messages when using DMA positioning ("Invalid position buffer, using LPIB read method instead.").
 
-
---UTZ8bGhNySVQ9LYl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 12, 2012 at 08:45:51AM +0000, Navada Kanyana, Mukund wrote:
-
-Fix your mailer to word wrap within paragraphs.  See email-clients.txt
-in the kernel.
-
->   In order to support such a regmap, I would like to push the
->   following patch for regmap.c to add support for 24-bit register
->   addressing.
-
-This looks fine, please submit as covered in SubmittingPatches in the
-kernel source.  You might also want to have a look in the list archives
-for the patches that some of the guys at Dialog have been submitting for
-devices with paged register maps, it sounds like these might be useful
-for this device.
-
-Please always CC the appropriate mailing list for the subsytem, in this
-case linux-kernel.  There's nothing ASoC specific about this.
-
---UTZ8bGhNySVQ9LYl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP2NQ+AAoJEBus8iNuMP3dzscP/2kf30Cv/fmY2Fmdc67O0X9B
-AAAHzdHemz8JIo4QlzVaOqf981NBbjfroc2549lcS1xYUHsgKvCEp/3QjjIJlAtd
-vdHmcwn4svNFB/g//B+7DfzT80SR2E6ftAtgd2Ll3Tv1qVz++cSRqxurg59bnNjE
-FN1gGUJKsbKOtFSTaMmBzUHS1yl7U4PtHPENKNYextSj17Jw2qCm7l6Ca/3qcKw9
-2a9YlzxAOI/cacnXjPXIN9DJAJEBseEM5na23y3DsIBPhk1Un95JR7r4GFzaGlut
-Lt69PjEEP8RKo33R7bkUUmX1ETV6+YBoQDZ2Hh7R/lS6zboQ5yW98d7VYxQ0L0e7
-aDpkfebYRB2CF3B689lxUKP65WJY55SmRXq80KvWMKF7BPcCuGF/xcCgLi/IFWpj
-Iru7Dk35FHGlPS1zQ2TwvG1RL/Q0aYoLb4B89/Q6PxcWSpZ8sp9TFeOa5E+ERi6P
-qNwRCLYBWM4PKRve3zGJUmEP0l7YeAYtFVJ0BD7pqV9UP13hxdarVlsPans4MjuU
-WmbZf5/0GhMvMtAapx/qFHgkYdpdnynwosniVh43uOLVU509ypE90KWfg5vZsEdt
-LlU+gTKhK1g4blfUNgntGgiwnx8W9jpwdjfGc7J4Oeyv0Mv4jutHBS/87RakKVlL
-XOnUH0vKfAFRQ/avxjvV
-=BxND
------END PGP SIGNATURE-----
-
---UTZ8bGhNySVQ9LYl--
-
---===============0196079736972802031==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0196079736972802031==--
+>> ---
+>>  sound/pci/hda/hda_intel.c |   11 ++++++++---
+>>  1 files changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index 2b6392b..466a88c 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -535,6 +535,7 @@ enum {
+>>  #define AZX_DCAPS_BUFSIZE	(1 << 21)	/* no buffer size
+>alignment */
+>>  #define AZX_DCAPS_ALIGN_BUFSIZE	(1 << 22)	/* buffer size
+>alignment */
+>>  #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary
+>*/
+>> +#define AZX_DCAPS_POSFIX_COMBO  (1 << 24)	/* Use COMBO as
+>default */
+>>
+>>  /* quirks for ATI SB / AMD Hudson */
+>>  #define AZX_DCAPS_PRESET_ATI_SB \
+>> @@ -2728,6 +2729,10 @@ static int __devinit check_position_fix(struct azx
+>*chip, int fix)
+>>  		snd_printd(SFX "Using LPIB position fix\n");
+>>  		return POS_FIX_LPIB;
+>>  	}
+>> +	if (chip->driver_caps & AZX_DCAPS_POSFIX_COMBO) {
+>> +		snd_printd(SFX "Using COMBO position fix\n");
+>> +		return POS_FIX_COMBO;
+>> +	}
+>>  	return POS_FIX_AUTO;
+>>  }
+>>
+>> @@ -3240,7 +3245,7 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>>  	/* CPT */
+>>  	{ PCI_DEVICE(0x8086, 0x1c20),
+>>  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+>> -	  AZX_DCAPS_BUFSIZE },
+>> +	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+>>  	/* PBG */
+>>  	{ PCI_DEVICE(0x8086, 0x1d20),
+>>  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP | @@ -
+>3248,11
+>> +3253,11 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>>  	/* Panther Point */
+>>  	{ PCI_DEVICE(0x8086, 0x1e20),
+>>  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+>> -	  AZX_DCAPS_BUFSIZE},
+>> +	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+>>  	/* Lynx Point */
+>>  	{ PCI_DEVICE(0x8086, 0x8c20),
+>>  	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+>> -	  AZX_DCAPS_BUFSIZE},
+>> +	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+>>  	/* SCH */
+>>  	{ PCI_DEVICE(0x8086, 0x811b),
+>>  	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+>> --
+>> 1.7.4.4
+>>
