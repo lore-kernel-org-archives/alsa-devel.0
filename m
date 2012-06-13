@@ -1,21 +1,31 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: HDA: Create phantom jacks for fixed
- inputs and outputs
-Date: Wed, 13 Jun 2012 11:52:46 +0200
-Message-ID: <4FD862EE.6060409@canonical.com>
-References: <1339077128-9534-1-git-send-email-david.henningsson@canonical.com>
-	<s5h62b2tcbg.wl%tiwai@suse.de> <4FD5DD73.5070300@canonical.com>
-	<s5h7gvctsdf.wl%tiwai@suse.de>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v5] sound/soc/lapis: add platform driver
+	for ML7213
+Date: Wed, 13 Jun 2012 19:41:57 +0900
+Message-ID: <CANKRQngP3e3U+VZDgA7fQfxBti9vri-AEAR8iTmhLYiqXP_kiw@mail.gmail.com>
+References: <CANKRQnj_LdGQPYPV7d5NNZBx8oM5aAGHu4qZidiiS6C4eNtNJQ@mail.gmail.com>
+	<1337941231.1580.19.camel@vkoul-udesk3>
+	<20120527221956.GB25019@opensource.wolfsonmicro.com>
+	<CANKRQnhwkhGUHi6WQhw-sRJuKari3SLcipCJXVp27OZ29=Vxkw@mail.gmail.com>
+	<20120530121449.GI9947@opensource.wolfsonmicro.com>
+	<CANKRQni4uqQJ99ycOScHmn-g1kz2_XH7ePL+n1taG5jAbDSubw@mail.gmail.com>
+	<20120531104538.GA2666@opensource.wolfsonmicro.com>
+	<CANKRQnjdiV+e=N+n_ZP04jmCAhxKjgZ+wab+anbgO+VJPNo=PQ@mail.gmail.com>
+	<20120601083018.GH24139@opensource.wolfsonmicro.com>
+	<CANKRQnjeYtBucmGoDUg7oTK82rvnkakWRB0Siezyz-kbhyPC+g@mail.gmail.com>
+	<20120611085404.GB11439@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABCBF104511
+Received: from mail-gh0-f179.google.com (mail-gh0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22C3D244E7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 11:52:48 +0200 (CEST)
-In-Reply-To: <s5h7gvctsdf.wl%tiwai@suse.de>
+	Wed, 13 Jun 2012 12:41:59 +0200 (CEST)
+Received: by ghbg24 with SMTP id g24so216964ghb.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2012 03:41:58 -0700 (PDT)
+In-Reply-To: <20120611085404.GB11439@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,92 +35,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2012-06-12 18:19, Takashi Iwai skrev:
-> At Mon, 11 Jun 2012 13:58:43 +0200,
-> David Henningsson wrote:
->> On 06/08/2012 10:52 AM, Takashi Iwai wrote:
->>> At Thu,  7 Jun 2012 15:52:08 +0200,
->>> David Henningsson wrote:
->>>> PulseAudio sometimes have difficulties knowing that there is a
->>>> "Speaker" or "Internal Mic", if they have no individual volume
->>>> controls or selectors. As a result, only e g "Headphone" might
->>>> be created for a laptop, but no "Speaker".
->>>> To help out, create phantom jacks (that are always present,
->>>> at least for now) for "Speaker", "Internal Mic" etc, in case we
->>>> detect them.
->>>> The naming convention is e g "Speaker Phantom Jack".
->>>>
->>>> In order not to pollute the /dev/input namespace with even more
->>>> devices, these are added to the kcontrols only, not the input devices.
->>>>
->>>> An implementation note:
->>>> The possibility to override how to actually do jack sensing opens
->>>> up for more advanced usage of the jack infrastructure in the future
->>>> (e g letting the headphone jack detection set presence status for
->>>> both headphone and mic in case of a headset jack, among other things).
->>>>
->>>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
->>>> ---
->>>>    sound/pci/hda/hda_jack.c |   64 ++++++++++++++++++++++++++++++++++------------
->>>>    sound/pci/hda/hda_jack.h |    5 ++++
->>>>    2 files changed, 52 insertions(+), 17 deletions(-)
->>>>
->>>> diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
->>>> index 2dd1c11..c5569f1 100644
->>>> --- a/sound/pci/hda/hda_jack.c
->>>> +++ b/sound/pci/hda/hda_jack.c
->>>> @@ -133,6 +133,13 @@ static void jack_detect_update(struct hda_codec *codec,
->>>>    	}
->>>>    }
->>>>
->>>> +static void jack_detect_always_present(struct hda_codec *codec,
->>>> +				       struct hda_jack_tbl *jack)
->>>> +{
->>>> +	jack->pin_sense = AC_PINSENSE_PRESENCE;
->>>> +	jack->jack_dirty = 0;
->>>> +}
->>>> +
->>>>    /**
->>>>     * snd_hda_set_dirty_all - Mark all the cached as dirty
->>>>     *
->>>> @@ -162,7 +169,8 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
->>>>    {
->>>>    	struct hda_jack_tbl *jack = snd_hda_jack_tbl_get(codec, nid);
->>>>    	if (jack) {
->>>> -		jack_detect_update(codec, jack);
->>>> +		if (jack->update_func)
->>>> +			jack->update_func(codec, jack);
->>> IMO, it's easier to modify jack_detect_update().
->>> Instead of adding update_func pointer, add a new flag phantom_jack
->>> (can be a bit field), then in jack_detect_update():
->> The idea was to open up for other types of jack overrides as well, but
->> if you prefer to keep it simpler while we can, I'm okay with that.
->>
->> I'm attaching the modified patch.
-> Thanks, this looks better to me.
-> Is it OK to merge this to 3.6 tree?
+On Mon, Jun 11, 2012 at 5:54 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> There are some drivers that predate the availibility of the dmaengine
+> framework.
 
-Hmm, good question. I guess the answer is, it would be nice to have in 
-3.5 but not strictly necessary.
+In case, you develop a new ASoC framework,  all previous ASoC drivers
+should be adopted to the framework by yourself, don't you ?
+Because a new developer must be confused by this.
 
-With the Ubuntu hat on, the autumn version of Ubuntu is more likely to 
-use 3.5 (but maybe 3.6, it has not yet been decided), and I'm going to 
-need this fix in there, but if necessary I can backport it into the 
-Ubuntu kernel.
+> This, and the fact that the PCH driver uses dmaengine without using any
+> shared code, is the topic of the discussion. =A0It is entirely natural
+> that there are no open coded drivers using cyclic DMA via dmaengine,
+> they have all had that code factored out.
+>
+> Please stop this and at least look at factoring this code out. =A0If it
+> turns out that there's some reason why it's a lot of work that's one
+> thing but it seems clear that you've not even looked yet. =A0It's like the
+> previous issues where you were sending patches which would clearly not
+> run successfully, it's not a very positive approach.
 
-With the PulseAudio hat on, as it helps us resolve a problem that hits 
-quite a few machines, it would be good to have it ASAP, but OTOH, since 
-we're currently discussing the PulseAudio release schedule, it's 
-difficult to tell whether we will actually have a PulseAudio version out 
-that uses these new phantom jacks anyway before Linux 3.6 is released.
+OK, I'll stop this.
 
-(and with the kernel hat on, I have to admit it isn't strictly a 
-regression fix, and that the merge window is over...)
+I wanted to finish adding these patch series to upstream because we
+spent much resource on this.
+But I'm involved in other work, so I can't start now.
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Until now thank you for your support.
+Regards.
+
+-- =
+
+ROHM Co., Ltd.
+tomoya
