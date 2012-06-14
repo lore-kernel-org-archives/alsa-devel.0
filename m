@@ -1,15 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] pcm: support for audio wallclock
-Date: Wed, 13 Jun 2012 15:27:47 -0500
-Message-ID: <1339619267-2782-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: zhangfei gao <zhangfei.gao@gmail.com>
+Subject: Re: [PATCH v2 0/5] mmp audio support
+Date: Thu, 14 Jun 2012 09:59:53 +0800
+Message-ID: <CAMj5Bkg-JVbZivKJHun6otu95=9idkLj9ozT834NwbF0iv19wQ@mail.gmail.com>
+References: <1339409081-10097-1-git-send-email-zhangfei.gao@marvell.com>
+	<201206131958.49446.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1AF51104583
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2012 22:27:52 +0200 (CEST)
+In-Reply-To: <201206131958.49446.arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,90 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@ti.com>, Qiao Zhou <zhouqiao@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, alsa-devel@vger.kernel.org, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-add new snd_pcm_status_get_htstamp_wallclk() routine to
-query the audio timestamps read from the wallclock.
+On Thu, Jun 14, 2012 at 3:58 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Monday 11 June 2012, Zhangfei Gao wrote:
+>>
+>> v1->v2:
+>> modify accroingly with suggestion from Vinod and Mark
+>> remove deprecated chan->private and dma.h
+>> remove prep_slave_sg
+>> remove module_init and move operation to probe
+>> misc change
+>
+> It seems that this driver is missing DT bindings, which really need to get
+> added. The brownstone platform is currently supported using both DT and
+> ATAG probing, but we want to remove the ATAG variant eventually, so adding
+> a new driver for that platform without support for DT booting is a step in
+> the wrong direction.
+>
+> =A0 =A0 =A0 =A0Arnd
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/pcm.h          |    1 +
- include/sound/asound.h |    7 ++++++-
- src/pcm/pcm.c          |   16 ++++++++++++++++
- 3 files changed, 23 insertions(+), 1 deletions(-)
+Thanks Arnd, we will add DT support in the next step.
+The driver will support both DT and non-DT, just as what Chris do for
+mmc driver.
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 4997557..325c0ea 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -858,6 +858,7 @@ void snd_pcm_status_get_trigger_tstamp(const snd_pcm_status_t *obj, snd_timestam
- void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
- void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
- void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
-+void snd_pcm_status_get_htstamp_wallclk(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
- snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 07c03fa..c186fd6 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -285,6 +285,7 @@ enum sndrv_pcm_subformat {
- #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
- #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
- #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
-+#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
- 
- enum sndrv_pcm_state {
- 	SNDRV_PCM_STATE_OPEN = 0,	/* stream is open */
-@@ -426,7 +427,10 @@ struct sndrv_pcm_status {
- 	sndrv_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
- 	sndrv_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
- 	int suspended_state;		/* suspended stream state */
--	unsigned char reserved[60];	/* must be filled with zero */
-+	union {
-+		unsigned char reserved[60];	/* must be filled with zero */
-+		struct timespec audio_tstamp;	/* audio wall clock timestamp */
-+	} ext;
- };
- 
- struct sndrv_pcm_mmap_status {
-@@ -434,6 +438,7 @@ struct sndrv_pcm_mmap_status {
- 	int pad1;			/* Needed for 64 bit alignment */
- 	sndrv_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
- 	struct timespec tstamp;		/* Timestamp */
-+	struct timespec audio_tstamp;	/* audio wall clock timestamp */
- 	int suspended_state;		/* RO: suspended stream state */
- };
- 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 18b43b3..2221865 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -6213,6 +6213,22 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
- use_default_symbol_version(__snd_pcm_status_get_htstamp, snd_pcm_status_get_htstamp, ALSA_0.9.0rc8);
- 
- /** 
-+ * \brief Get "now" hi-res audio wallclock timestamp from a PCM status container
-+ * \param obj pointer to #snd_pcm_status_t
-+ * \param ptr Pointer to returned timestamp
-+ */
-+#ifndef DOXYGEN
-+void INTERNAL(snd_pcm_status_get_htstamp_wallclk)(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
-+#else
-+void snd_pcm_status_get_htstamp_wallclk(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
-+#endif
-+{
-+	assert(obj && ptr);
-+	*ptr = obj->ext.audio_tstamp;
-+}
-+use_default_symbol_version(__snd_pcm_status_get_htstamp_wallclk, snd_pcm_status_get_htstamp_wallclk, ALSA_0.9.0rc8);  /* FIXME, no idea why this is needed */
-+
-+/**
-  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
-  * \return Delay in frames
-  *
--- 
-1.7.6.5
+> --
+> To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
