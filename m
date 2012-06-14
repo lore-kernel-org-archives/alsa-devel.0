@@ -1,20 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/2] ALSA: hda: support for wallclock
-	timestamps
-Date: Wed, 13 Jun 2012 23:57:59 -0500
-Message-ID: <4FD96F57.3090502@linux.intel.com>
-References: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<1339619192-2733-3-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<CA+v+29goT9xmx-h4Fuiyg6wuZFCvBvuFx=1P_=e8CfqoQFahMA@mail.gmail.com>
+From: Philip Chu <Philip.Chu@logicpd.com>
+Subject: Does amixer have commands to turn on / off Codec
+ TWL4030 analog microphone bias voltage output?
+Date: Thu, 14 Jun 2012 00:03:05 -0500
+Message-ID: <0520A3FE5EDCF24F88B3F1451CFC64AE04A69EE073@edprex01>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E7BB244AD
-	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jun 2012 06:58:02 +0200 (CEST)
-In-Reply-To: <CA+v+29goT9xmx-h4Fuiyg6wuZFCvBvuFx=1P_=e8CfqoQFahMA@mail.gmail.com>
+Received: from barracuda.logicpd.com (smtp.logicpd.com [174.46.170.145])
+	by alsa0.perex.cz (Postfix) with SMTP id DDED6244B4
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 14 Jun 2012 07:03:10 +0200 (CEST)
+Received: from EDPREX01.logicpd.com (edprex01.logicpd.com [10.1.18.134]) by
+	barracuda.logicpd.com with ESMTP id EBei2wrv13EZASDY
+	(version=TLSv1 cipher=AES128-SHA bits=128 verify=NO) for
+	<Alsa-devel@alsa-project.org>; Thu, 14 Jun 2012 00:03:08 -0500 (CDT)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/13/2012 10:32 PM, Wang Xingchao wrote:
-> I'm afraid you donot think much about the Wall Clock Counter register, 
-> the counter will roll over to 0 within 179s under 24Mhz. Another case 
-> maybe BCLK stop and controller reset. thanks --xingchao
+I am using Linux kernel 3.0 and a  Logic PD DM3530 SOM LV, looking for the amixer commands to turn on / off analog microphone bias supply.
+Following lines do not have the bias needed for Headset MIC input:
 
-Hi Xingchao,
-all cycle counters will wrap around at some point, the HDAudio wall 
-clock isn't an exception. As long as you have 2 periods or events per 
-179s, the wrap-around can be detected without any issues. It's 
-explicitely handled in the code.
-If the BCLK stops, then there's no real audio transfer happening, is 
-there? Likewise the controller reset does not matter since we re-init 
-during a trigger.
-I don't see any of these points as show-stoppers. The HDAudio spec 
-clearly mentions that such a wall clock should be used for 
-synchronization with other devices, and I am enabling just that.
-Regards,
--Pierre
+amixer set 'Analog Left AUXL' nocap
+amixer set 'Analog Right AUXR' nocap
+amixer set 'Analog Left Main Mic' nocap
+amixer set 'Analog Left Headset Mic' cap
+
+Anybody can help?
+
+Thanks,
+
+Philip Chu
+
+principal software engineer
+LogicPD www.logicpd.com
+5 Clock Tower Place, Suite 215
+Maynard, MA 01754
+Phone: 978-243-2450 Fax: 978-461-1598
