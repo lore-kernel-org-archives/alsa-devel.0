@@ -1,23 +1,17 @@
-From: Benjamin Sion <ml_all@circa.be>
-Subject: Re: [PATCH] USB: fix gathering of interface
-	associations
-Date: Thu, 14 Jun 2012 14:23:51 +0200
-Message-ID: <4FD9D7D7.3000209@circa.be>
-References: <1339525432-22039-1-git-send-email-zonque@gmail.com>
-	<4FD9C7D2.8030506@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Anyone using alsactl preinit / postinit scripts?
+Date: Thu, 14 Jun 2012 15:07:40 +0200
+Message-ID: <4FD9E21C.9030002@perex.cz>
+References: <s5hd352p00j.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo5.mail-out.ovh.net (1.mo5.mail-out.ovh.net [188.165.57.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id D62602446F
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83BA624492
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jun 2012 14:23:55 +0200 (CEST)
-Received: from mail624.ha.ovh.net (b6.ovh.net [213.186.33.56])
-	by mo5.mail-out.ovh.net (Postfix) with SMTP id 83C31FFAC24
-	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jun 2012 14:26:40 +0200 (CEST)
-In-Reply-To: <4FD9C7D2.8030506@gmail.com>
+	Thu, 14 Jun 2012 15:07:13 +0200 (CEST)
+In-Reply-To: <s5hd352p00j.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 14/06/12 13:15, Daniel Mack wrote:
-> On 12.06.2012 20:23, Daniel Mack wrote:
->> TEAC's UD-H01 (and probably other devices) have a gap in the interface
->> number allocation of their descriptors:
+Date 14.6.2012 14:10, Takashi Iwai wrote:
+> Hi,
 > 
-> I now got a report from Sergio Tabanelli who tried this patch on real
-> hardware, and he confirmed the fix. I added some more people to the
-> patch description and copied stable@ as well.
+> is anyone already using preinit / postinit scripts of alsactl init?
+> I'm thinking of appliny the patch below, but before that, I'd like to
+> make sure that *.conf is the appropriate extension.
 
-Daniel,
+Hi,
 
-just for information, I only can try the patch on real hardware (TEAC
-UD-H01) during this week-end.
+This filename filter looks good to me. I have no objections to use the
+.conf extension.
 
-btw, thanks a lot for your effort on this patch.
+While improving this code, adding a filename sort might be also useful ;-)
 
-bEN
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] alsactl: Read only *.conf files when a directory is passed via INCLUDE
+> 
+> When alsactl init is invoked and a directory path is passed to INCLUDE
+> command in the config file, read only *.conf files in that directory.
+> This will avoid reading backup files or invalid files that have been
+> created accidentally.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  alsactl/init_parse.c |   10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/alsactl/init_parse.c b/alsactl/init_parse.c
+> index 51b515c..83d12ba 100644
+> --- a/alsactl/init_parse.c
+> +++ b/alsactl/init_parse.c
+> @@ -1502,12 +1502,16 @@ static int parse_line(struct space *space, char *line, size_t linesize)
+>  			if (dir) {
+>  				count = strlen(string);
+>  				while ((dirent = readdir(dir)) != NULL) {
+> -					if (strcmp(dirent->d_name, ".") == 0 ||
+> -					    strcmp(dirent->d_name, "..") == 0)
+> +					const char *name = dirent->d_name;
+> +					const char *ext;
+> +					if (*name == '.')
+> +						continue;
+> +					ext = strrchr(name, ',');
+
+'.' should be matched here...
+
+> +					if (!ext || strcmp(ext, ".conf"))
+>  						continue;
+
+Please, update also the documentation in alsactl_init.xml .
+
+				Thanks,
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
