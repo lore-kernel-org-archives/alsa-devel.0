@@ -1,34 +1,54 @@
-From: Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Subject: Re: [PATCH] USB: fix gathering of interface associations
-Date: Thu, 14 Jun 2012 08:48:40 -0700
-Message-ID: <20120614154840.GH17140@kroah.com>
-References: <1339525432-22039-1-git-send-email-zonque@gmail.com>
- <4FD9C7D2.8030506@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] ALSA: hda: support for wallclock
+	timestamps
+Date: Thu, 14 Jun 2012 12:01:47 -0500
+Message-ID: <4FDA18FB.6060404@linux.intel.com>
+References: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<1339619192-2733-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<CA+v+29goT9xmx-h4Fuiyg6wuZFCvBvuFx=1P_=e8CfqoQFahMA@mail.gmail.com>
+	<4FD96F57.3090502@linux.intel.com> <4FD99DA7.60206@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <4FD9C7D2.8030506-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ml_all-+8pbQKgpUcE@public.gmane.org, ivanperrone-PkbjNfxxIARBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org, sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, sergio tabanelli <sergio.tabanelli-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1E0D24598
+	for <alsa-devel@alsa-project.org>;
+	Thu, 14 Jun 2012 19:01:52 +0200 (CEST)
+In-Reply-To: <4FD99DA7.60206@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 14, 2012 at 01:15:30PM +0200, Daniel Mack wrote:
-> On 12.06.2012 20:23, Daniel Mack wrote:
-> > TEAC's UD-H01 (and probably other devices) have a gap in the interface
-> > number allocation of their descriptors:
-> 
-> I now got a report from Sergio Tabanelli who tried this patch on real
-> hardware, and he confirmed the fix. I added some more people to the
-> patch description and copied stable@ as well.
-> 
-> Greg, can can this go through your tree?
-
-Yup, I'll take it now, thanks.
-
-greg k-h
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On 6/14/2012 3:15 AM, Clemens Ladisch wrote:
+>> As long as you have 2 periods or events per 179s, the wrap-around can
+>> be detected without any issues. It's explicitely handled in the code.
+> AFAICS there is no code that enforces the 179s restriction.
+179s corresponds to a 33MB buffer for stereo 48kHz 16bit. There is 
+indeed nothing preventing the wrap-around at the moment but this could 
+be achieved by limiting the buffer size.
+> And why are you using a separate wallclock timer instead of the sample
+> count?  Does the higher resolution result in a noticeable improvement?
+The wallclock is common for each HDAudio controller, this helps you 
+build _one_ estimator for the drift between audio time and system 
+(monotonic) time. It'd help avoid what PulseAudio does today, ie a 
+different drift estimate per sink/source. If you work with sample 
+counts, you'll have separate results for each devices and possibly 
+different ASRC in user-space. Also the precision of sample counters is 
+limited to 10us for 48kHz, a lot higher than what we can get with 
+PTP-based schemes. The accuracy of the wall clock is 41.6 ns, order of 
+magnitude more precise.
+>
+> How should userspace detect streams whose sample clock is not
+> synchronous with this wall clock, such as digital inputs?
+Good point. I didn't think about this case, i need to look into it.
+Thanks for your feedback, much appreciated
+-Pierre
