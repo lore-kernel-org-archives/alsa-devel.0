@@ -1,23 +1,22 @@
-From: zhangfei gao <zhangfei.gao@gmail.com>
-Subject: Re: [PATCH v2 1/5] dmaengine: mmp_tdma: add mmp tdma
-	support
-Date: Fri, 15 Jun 2012 11:02:02 +0800
-Message-ID: <CAMj5Bkhz8UPxRT6B6v8Ds-jPqXBnOCSgd6nUKx9e+x3SZwxRQw@mail.gmail.com>
-References: <1339409081-10097-1-git-send-email-zhangfei.gao@marvell.com>
-	<1339409081-10097-2-git-send-email-zhangfei.gao@marvell.com>
-	<1339670638.1927.1641.camel@vkoul-udesk3>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: McBSP in TDM for audio codec
+Date: Fri, 15 Jun 2012 09:34:48 +0300
+Message-ID: <4FDAD788.9060407@ti.com>
+References: <CADU0PKEAQtEP_26YwyiKXg0tVO=aAH9fDUuk7cohNG51nUHRFA@mail.gmail.com>
+	<4FCE0127.8080404@ti.com>
+	<CADU0PKGmx=dqdUVxvTUDKr2qG_3+3yXcWeKTb__50ayjPHgV+A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
-	[209.85.212.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id ADE9E24371
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8028E2454E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 05:02:02 +0200 (CEST)
-Received: by wibhj6 with SMTP id hj6so78268wib.2
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2012 20:02:02 -0700 (PDT)
-In-Reply-To: <1339670638.1927.1641.camel@vkoul-udesk3>
+	Fri, 15 Jun 2012 08:34:36 +0200 (CEST)
+Received: by lbbgh12 with SMTP id gh12so2288422lbb.25
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2012 23:34:33 -0700 (PDT)
+In-Reply-To: <CADU0PKGmx=dqdUVxvTUDKr2qG_3+3yXcWeKTb__50ayjPHgV+A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,29 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
+To: learnom learnom <learnom1@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 14, 2012 at 6:43 PM, Vinod Koul <vinod.koul@linux.intel.com> wr=
-ote:
-> On Mon, 2012-06-11 at 18:04 +0800, Zhangfei Gao wrote:
->> +static int mmp_tdma_clear_chan_irq(struct mmp_tdma_chan *tdmac)
->> +{
->> + =A0 =A0 =A0 u32 reg =3D readl(tdmac->reg_base + TDISR);
->> +
->> + =A0 =A0 =A0 if (reg & TDISR_COMP) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* clear irq */
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg &=3D ~TDISR_COMP;
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(reg, tdmac->reg_base + TDISR);
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
->> + =A0 =A0 =A0 }
->> + =A0 =A0 =A0 return -1;
->> +}
-> -1?
-> Please return a proper linux error code.
+Hi,
 
-Thanks Vinod for careful review, my mistake, will resend the patch.
+On 06/06/2012 04:56 AM, learnom learnom wrote:
 
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> I want to control these channel0, 1, 2, 3 independently.
+> For example, lets say,
+> 1) If I want to transmit the data in channel 1 only, i want to see the
+> channel0 null, channel1 with data, channel 2 null, channel 3 null.
+>  =
+
+> 2)I want to transmit data at the same time, channel 1 (data) , channel2
+> (Data), channel3 data, channel(data).
+>  =
+
+> Can you please let me know how to recognize that the user is sending from
+> which channel, and how to setup for these two scenarios.
+
+
+User space need to make sure that it is placing the data to the correct
+channel. The McBSP/sDMA just see a stream of data in a memory.
+McBSP do have TDM mode where you can have limited control over how the
+channels are handled, but it still handle the data as stream and you can on=
+ly
+tell which slot it should use and which one to ignore. This TDM programming
+mode is not implemented since we did not needed it so far and without a cod=
+ec
+it is kind of hard to test it (well, with a scope the channels can bee
+observed but that would be all).
+
+-- =
+
+P=E9ter
