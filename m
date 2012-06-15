@@ -1,19 +1,16 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [pulseaudio-discuss] Using UCM with PulseAudio
-Date: Fri, 15 Jun 2012 20:38:08 +0300
-Message-ID: <1339781888.3007.153.camel@laptop>
-References: <1339728813.5228.48.camel@localhost>
-	<1339762287.3007.127.camel@laptop> <1339781331.7609.36.camel@odin>
-	<20120615173441.GN4482@opensource.wolfsonmicro.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-opti9xx: fixes for MED3931 card (opti931)
+Date: Fri, 15 Jun 2012 20:55:54 +0200
+Message-ID: <201206152055.58181.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 8A26E103FD4
+Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 372E3103B63
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 19:38:11 +0200 (CEST)
-In-Reply-To: <20120615173441.GN4482@opensource.wolfsonmicro.com>
+	Fri, 15 Jun 2012 22:22:49 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>, jankovac503@gmail.com, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+To: alsa-devel@alsa-project.org
+Cc: Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-06-15 at 18:34 +0100, Mark Brown wrote:
-> On Fri, Jun 15, 2012 at 06:28:51PM +0100, Liam Girdwood wrote:
-> > On Fri, 2012-06-15 at 15:11 +0300, Tanu Kaskinen wrote:
-> 
-> > > This sort of hardware causes trouble for the planned routing system, at
-> > > least as I have envisioned it to behave. My vision has been that the
-> > > routing logic in pulseaudio would enable and disable ports based on the
-> > > streams that exist and their properties. In the OMAP4 case, there aren't
-> > > any streams created when a cellular call starts, and therefore the
-> > > routing logic doesn't know that it should do something.
-> 
-> > This is quite common in the smartphone voice call use case. A lot of
-> 
-> It's more than common, I'm only aware of one phone design which does
-> route the audio via the CPU on call (the N900).  Anything that can't
-> cope with bypassed on call audio is going to struggle.
+MED3931 card did not work (failed with "OPTI chip not found") because
+snd-opti9xx gets mc_indir_index from pnp by adding 2 to the pnp-reported port.
+It probably works for some cards but not for this one. Datasheet says that
+the port is always at 0xe?e so just force the lowest nibble to be 0xe.
 
-N9 also routes the audio via the CPU. Now you know two phone designs :)
+Also this card powers up with (ugly) 3D sound enabled. As there's no mixer
+control for this, just disable it.
+
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -135,7 +135,6 @@ struct snd_opti9xx {
+ 	unsigned long mc_base_size;
+ #ifdef OPTi93X
+ 	unsigned long mc_indir_index;
+-	unsigned long mc_indir_size;
+ 	struct resource *res_mc_indir;
+ 	struct snd_wss *codec;
+ #endif	/* OPTi93X */
+@@ -245,10 +244,8 @@ static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
+ 	case OPTi9XX_HW_82C931:
+ 	case OPTi9XX_HW_82C933:
+ 		chip->mc_base = (hardware == OPTi9XX_HW_82C930) ? 0xf8f : 0xf8d;
+-		if (!chip->mc_indir_index) {
++		if (!chip->mc_indir_index)
+ 			chip->mc_indir_index = 0xe0e;
+-			chip->mc_indir_size = 2;
+-		}
+ 		chip->password = 0xe4;
+ 		chip->pwd_reg = 0;
+ 		break;
+@@ -403,7 +400,9 @@ static int __devinit snd_opti9xx_configure(struct snd_opti9xx *chip,
+ 
+ #else	/* OPTi93X */
+ 	case OPTi9XX_HW_82C931:
+-	case OPTi9XX_HW_82C933:
++		/* disable 3D sound (set GPIO1 as output, low) */
++		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(20), 0x04, 0x0c);
++	case OPTi9XX_HW_82C933: /* FALL THROUGH */
+ 		/*
+ 		 * The BTC 1817DW has QS1000 wavetable which is connected
+ 		 * to the serial digital input of the OPTI931.
+@@ -696,8 +695,7 @@ static int __devinit snd_opti9xx_read_check(struct snd_opti9xx *chip)
+ 		if (value == snd_opti9xx_read(chip, OPTi9XX_MC_REG(1)))
+ 			return 0;
+ #else	/* OPTi93X */
+-	chip->res_mc_indir = request_region(chip->mc_indir_index,
+-					    chip->mc_indir_size,
++	chip->res_mc_indir = request_region(chip->mc_indir_index, 2,
+ 					    "OPTi93x MC");
+ 	if (chip->res_mc_indir == NULL)
+ 		return -EBUSY;
+@@ -770,8 +768,9 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
+ #ifdef OPTi93X
+ 	port = pnp_port_start(pdev, 0) - 4;
+ 	fm_port = pnp_port_start(pdev, 1) + 8;
+-	chip->mc_indir_index = pnp_port_start(pdev, 3) + 2;
+-	chip->mc_indir_size = pnp_port_len(pdev, 3) - 2;
++	/* adjust mc_indir_index - some cards report it at 0xe?d,
++	   other at 0xe?c but it really is always at 0xe?e */
++	chip->mc_indir_index = (pnp_port_start(pdev, 3) & ~0xf) | 0xe;
+ #else
+ 	devmc = pnp_request_card_device(card, pid->devs[2].id, NULL);
+ 	if (devmc == NULL)
 
 -- 
-Tanu
+Ondrej Zary
