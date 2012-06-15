@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcpdm: Convert to use devm_*
-Date: Fri, 15 Jun 2012 10:11:48 +0100
-Message-ID: <20120615091148.GA3898@opensource.wolfsonmicro.com>
-References: <1339750500-16517-1-git-send-email-peter.ujfalusi@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] ALSA: hda: support for wallclock
+	timestamps
+Date: Fri, 15 Jun 2012 05:02:38 -0500
+Message-ID: <4FDB083E.9060903@linux.intel.com>
+References: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<1339619192-2733-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<s5hfw9yqr6e.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3388957862573954279=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 715A324663
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id BEBFA2469C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 11:11:52 +0200 (CEST)
-In-Reply-To: <1339750500-16517-1-git-send-email-peter.ujfalusi@ti.com>
+	Fri, 15 Jun 2012 12:02:41 +0200 (CEST)
+In-Reply-To: <s5hfw9yqr6e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,55 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3388957862573954279==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
-Content-Disposition: inline
+>> +struct azx_timecounter {
+>> +	cycle_t cycle_last;
+>> +	cycle_t mask;
+>> +	cycle_t elapsed_cycles;
+>> +	u64     initial_time_nsec;
+>> +	u32     mult;
+>> +	u32     shift;
+>> +};
+>
+> Any reason not using the normal struct timecounter stuff?
+> Most of the open codes can be replaced gracefully with functions /
+> macros there, I guess.
 
-
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 15, 2012 at 11:55:00AM +0300, Peter Ujfalusi wrote:
-> Switch to use devm_* te make the probe/remove code more cleaner.
-
-Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP2vxMAAoJEBus8iNuMP3dt6AP/jezlSio0ofwX4IVd3NErCEh
-rTkARRocoUUqBZHigDT3r2A8SlST+ccnvU12IgZAc41wzP4CwpHF2moRShmvMq2t
-kiyWu8PyJM7mTbkGhuFBK8ezlgLBZ6B99C70kXHfVPG44wCbLmKC+YWzvbRkMMhC
-quakOE3ebqJh63lbvMOTVvLAav2e5XkLWdqXQu1dGOI5WFiFATj1B8oU7gmqLF7o
-cEy72C1wgDhv9kMup1bu5BzKO+BBC11QHfw4f5th1wALupjwvh9IfZ7UKo+2BlVr
-v+WHnbxbhAoS5Peav+ixuJuojN+FZ5C3iRcGDRe0hfdUpc8DTAo+1XE0sXxj2C/R
-+qIDH9CDdtrcKNLpiiy+KHv10/91fWLWC+nYa/EG1IBdyQBDacMuCBhW1rGVI/47
-nuSOiBDPqCkR/D9yDZEv2omgA67N3SCJmmx3bP9XNG6MDtetObOT9DrWLy7tfA/2
-vJ3+6HWt+oxWDUil+hSD8ZkdXGFTJnF0EzP22tNBGU/d3xJPeqEwSSQtiABXW1xU
-eUMsUEtKP6tyrT3d92+Mo5BvdS+ljZHwPY6FfqbHcc/zERE3nDpc2m+XsJG5ah3G
-ab1Ahvxgxmvs2iIpyYhYtV70JMVvvBqfN3TNUXvmHM+miuXnb93nsm6LZDu2x4H9
-Sbql7FLoaCEvozwcXFx2
-=Ei8L
------END PGP SIGNATURE-----
-
---WIyZ46R2i8wDzkSu--
-
---===============3388957862573954279==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3388957862573954279==--
+Yes there is a reason. The conversion from wall clock cycles to ns is a 
+fractional operation (125/3 ratio from 24 MHz to 1 GHz). If you do this 
+conversion to ns every time, you will accumulate rounding errors. That 
+doesn't seem like a very good design if the precision depends on the 
+duration of the track...
+On top of this, I couldn't find a way to pass the 'chip' argument in the 
+cyclecounter .read() operation to map it to azx_read.
+Makes sense?
+-Pierre
