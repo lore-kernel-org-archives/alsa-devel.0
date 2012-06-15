@@ -1,15 +1,23 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: Using UCM with PulseAudio
-Date: Fri, 15 Jun 2012 08:23:33 +0530
-Message-ID: <1339728813.5228.48.camel@localhost>
+From: zhangfei gao <zhangfei.gao@gmail.com>
+Subject: Re: [PATCH v2 1/5] dmaengine: mmp_tdma: add mmp tdma
+	support
+Date: Fri, 15 Jun 2012 11:02:02 +0800
+Message-ID: <CAMj5Bkhz8UPxRT6B6v8Ds-jPqXBnOCSgd6nUKx9e+x3SZwxRQw@mail.gmail.com>
+References: <1339409081-10097-1-git-send-email-zhangfei.gao@marvell.com>
+	<1339409081-10097-2-git-send-email-zhangfei.gao@marvell.com>
+	<1339670638.1927.1641.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id B4AA524368
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+	[209.85.212.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADE9E24371
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 04:53:34 +0200 (CEST)
+	Fri, 15 Jun 2012 05:02:02 +0200 (CEST)
+Received: by wibhj6 with SMTP id hj6so78268wib.2
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2012 20:02:02 -0700 (PDT)
+In-Reply-To: <1339670638.1927.1641.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,52 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Feng Wei <feng.wei@linaro.org>
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I've been working on porting PulseAudio to Android on the OMAP4-based
-Galaxy Nexus, and have recently looking at the policy-bits. The basic
-porting has been greatly simplified with Wei Feng's work to renew
-PulseAudio UCM integration and  Liam's help with fixing up some of the
-UCM config for the Galaxy Nexus. I am, however, facing some trouble
-mapping how the hardware is used to how UCM presents it (or, perhaps,
-the UCM-PA mapping does).
+On Thu, Jun 14, 2012 at 6:43 PM, Vinod Koul <vinod.koul@linux.intel.com> wr=
+ote:
+> On Mon, 2012-06-11 at 18:04 +0800, Zhangfei Gao wrote:
+>> +static int mmp_tdma_clear_chan_irq(struct mmp_tdma_chan *tdmac)
+>> +{
+>> + =A0 =A0 =A0 u32 reg =3D readl(tdmac->reg_base + TDISR);
+>> +
+>> + =A0 =A0 =A0 if (reg & TDISR_COMP) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* clear irq */
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg &=3D ~TDISR_COMP;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(reg, tdmac->reg_base + TDISR);
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+>> + =A0 =A0 =A0 }
+>> + =A0 =A0 =A0 return -1;
+>> +}
+> -1?
+> Please return a proper linux error code.
 
-Some simplified background: the devices of interest on the OMAP4 SoC are
-the main hifi PCM which can be routed to various outputs, the modem PCM
-which is not used for actual output but to enable use of the modem
-during calls, and the tones PCM which is intended to be used for playing
-ringtones, aiui.
+Thanks Vinod for careful review, my mistake, will resend the patch.
 
-The first problem is mutual exclusivity of verbs. From what I can
-understand, verbs are intended to be mutually exclusive -- if you have a
-HiFi verb and a VoiceCall verb, only one may be used at a time. We have
-mapped verbs to card profiles, which offer the same guarantee. However,
-on Android (which is a fair example of the kind of audio policy we might
-want), the HiFi verb PCMs maybe used while the VoiceCall PCMs are open.
-This is done, for example, to play an end-of-call tone from the CPU
-while the modem PCMs are still held open. Is there some way to do this
-with UCM?
-
-The second problem is having separate PCMs for modifiers. In the OMAP4
-profile, ringtone playback is exposed via a PlayTone modifier which
-corresponds to a separate PCM from regular HiFi playback. In the UCM-PA
-mapping we decided on, modifiers were implemented as device intended
-roles on a sink, so that when a stream with that role came in, we could
-enable the modifier, and disable it when such a stream ends. However,
-this doesn't account for switching the PCM on which playback is
-occurring. Should we be creating a separate sink for such modifiers
-(with lower priority, so they're not routed to unless there's a stream
-with the required role coming in)? Or should we be reopening the PCM for
-this?
-
-Finally, a question also related to modifiers -- is it expected that
-there will never be a case where a stream that requires no modifier is
-being played while a stream that does require a modifier also exists? If
-not, what kind of policy should we have for enabling the modifier or
-not?
-
-Cheers,
-Arun
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
