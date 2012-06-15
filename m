@@ -1,20 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ALSA: core: add hooks for audio
- timestamps read from WALLCLOCK
-Date: Fri, 15 Jun 2012 05:07:27 -0500
-Message-ID: <4FDB095F.5030200@linux.intel.com>
-References: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<1339619192-2733-2-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<s5hhaueqrob.wl%tiwai@suse.de>
+Subject: Re: [PATCH] pcm: support for audio wallclock
+Date: Fri, 15 Jun 2012 05:13:55 -0500
+Message-ID: <4FDB0AE3.5030809@linux.intel.com>
+References: <1339619267-2782-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<s5hehpiqqui.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2D42246A5
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7632246B5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 12:07:29 +0200 (CEST)
-In-Reply-To: <s5hhaueqrob.wl%tiwai@suse.de>
+	Fri, 15 Jun 2012 12:13:57 +0200 (CEST)
+In-Reply-To: <s5hehpiqqui.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+> You need to provide a function to indicate whether htstamp_wallclk is
+> available or not.  Since the function returning tstamp_wallclk is a
+> void function and it itself can't return the error, user can't know
+> whether it's a bogus value or not.
+
+Yes, this was planned but I wasn't sure how to go about it. These types 
+of routines usually rely on hw_params, I guess I could query them and 
+check the .info field. Not sure if there's another way.
+Also maybe I should change the return type to provide -EINVAL is somehow 
+the audio timestamp is not available for a specific device (digital 
+input as Clemens mentioned)
+
+
+> And that function should check whether the running PCM protocol
+> version is high enough to support the new ABI.
+Yep
+
+
+\
+>> +#ifndef DOXYGEN
+>> +void INTERNAL(snd_pcm_status_get_htstamp_wallclk)(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
+>> +#else
+>> +void snd_pcm_status_get_htstamp_wallclk(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
+>> +#endif
 >
-> The biggest problem of struct timespec is that it's pretty much
-> arch-dependent.  But since it's used in all other places, we need to
-> live with that...
->
-> Usually when we add a new field, we don't use union.  Just decrease
-> sizeof(struct timespec) from reserved[] size.
->
-> No matter whether using union or not, it doesn't mean that the whole
-> struct size work is kept.  The field might be aligned since we haven't
-> added the packed attribute.  Maybe better to add a padding to align
-> 64bit before audio_tstamp, then cross your finger.
+> I think you can avoid this hack for the new functions.
 
-Ok, this is the feedback I needed, I had no idea if I could add a new 
-field and why exactly the reserved field had to be zeroed out. On the 
-first try I had an invalid ioctl error and found this workaround.
-Will fix this.
-
-
->>   struct snd_pcm_mmap_status {
->> @@ -430,6 +434,7 @@ struct snd_pcm_mmap_status {
->>   	int pad1;			/* Needed for 64 bit alignment */
->>   	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
->>   	struct timespec tstamp;		/* Timestamp */
->> +	struct timespec audio_tstamp;	/* audio wall clock timestamp */
->>   	snd_pcm_state_t suspended_state; /* RO: suspended stream state */
->>   };
->
-> struct snd_pcm_mmap_status is mmapped to user-space, thus it must be
-> backward compatible.  Always append the new field.
-
-will do.
-
-> In addition, if you change the ABI, please change the PCM protocol
-> version, so that alsa-lib can detect the ABI change
-
-ok
-
-> Also, last not but least, don't forget to convert pcm_compat.c.
-
-will look into it
-
-> Other than these, changes look good to me.
-
-Cool, thanks for the feedback.
--Pierre
+Ok, I have no idea what I am doing here, just copy-pasted to make it work...
