@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Using UCM with PulseAudio
-Date: Fri, 15 Jun 2012 13:28:41 +0100
-Message-ID: <20120615122840.GF4482@opensource.wolfsonmicro.com>
-References: <1339728813.5228.48.camel@localhost>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ALSA: Add snd_pcm_rate_bit_to_rate()
+Date: Fri, 15 Jun 2012 16:35:28 +0100
+Message-ID: <1339774528-12358-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1746290852155509894=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 824CE24784
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75DE424834
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 14:28:42 +0200 (CEST)
-In-Reply-To: <1339728813.5228.48.camel@localhost>
+	Fri, 15 Jun 2012 17:35:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com, pulseaudio-discuss@lists.freedesktop.org, Feng Wei <feng.wei@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+This is essentially the reverse of snd_pcm_rate_to_rate_bit().
 
---===============1746290852155509894==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J5MfuwkIyy7RmF4Q"
-Content-Disposition: inline
+This is generally useful as the Compress API uses the rate bit
+directly and it helps to be able to map back to the actual sample
+rate.
 
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ include/sound/pcm.h   |    1 +
+ sound/core/pcm_misc.c |   18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
---J5MfuwkIyy7RmF4Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 15, 2012 at 08:23:33AM +0530, Arun Raghavan wrote:
-
-> Finally, a question also related to modifiers -- is it expected that
-> there will never be a case where a stream that requires no modifier is
-> being played while a stream that does require a modifier also exists? If
-> not, what kind of policy should we have for enabling the modifier or
-> not?
-
-Yes, music playback plus ringtone where at least ringtone would probably
-be a modifier.
-
---J5MfuwkIyy7RmF4Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP2ypwAAoJEBus8iNuMP3dWV0P/RMhdj8oXgIf5hCeRVwgQ0LK
-7zCbYyQ+7voenJeNN9EDvl9OC1Dc1dXYKWl9OXB4Bzts61fJ5TRC3CFo2X9SgkUn
-NtnCwm6JRpbFPunIufvp/+jqEZIF0wCHhK1GdQjNx7wEYM0OWGG79tBzhrZM1ffO
-3IrQaWxurOQ4lOTcoAU0KDmEy2RzZjy4XQWTOsP/vcvgSZvfMfJiB19G6FRg7+DD
-UGUD+vVVdQe1CwJCIXM4qySMClWu7XJfDIucXcjm32foAdXTVj9XT2WeO0oiEnSW
-WKSf0DD4NhNzO1Ho0VOyon9JMh3TwGyUX2bN+qlN2a4KGjuYGe2fsxQKb+ASSIw1
-jDlKp1rdROSrspvk9xYspXDplFgty5exSC3IpM/gZt87Rhz9p16rLRTclspZOFx3
-tbtULXxRTbbirDXXOYDKfjFjS2dG/mY2nvcaIyb3ecIhg9n9XiwMckfviQnSFe+z
-8zZc0RqMNkFmUZXE/2TIKQ9pQa2nTF7sbyaaU5A698ysaz7J9cs0BrbecGULO56R
-3As+5NCWmZ0RgAR8mB8jO6seGoImtCQBxcsv8RBlA4TaqagUAXmBjPMZXu1RsZhE
-bwyfzjN2AA2jeoXpdiefrdgmX74TwVNlzofLwPTKpNoYoWjg6yvecp+tZxcpPK7b
-aI/KA6AKj3FsMJmD419r
-=UPPQ
------END PGP SIGNATURE-----
-
---J5MfuwkIyy7RmF4Q--
-
---===============1746290852155509894==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1746290852155509894==--
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 1d58d79..18ad1f1 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -892,6 +892,7 @@ extern const struct snd_pcm_hw_constraint_list snd_pcm_known_rates;
+ 
+ int snd_pcm_limit_hw_rates(struct snd_pcm_runtime *runtime);
+ unsigned int snd_pcm_rate_to_rate_bit(unsigned int rate);
++unsigned int snd_pcm_rate_bit_to_rate(unsigned int rate_bit);
+ 
+ static inline void snd_pcm_set_runtime_buffer(struct snd_pcm_substream *substream,
+ 					      struct snd_dma_buffer *bufp)
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index 9c9eff9..d4fc1bf 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -488,3 +488,21 @@ unsigned int snd_pcm_rate_to_rate_bit(unsigned int rate)
+ 	return SNDRV_PCM_RATE_KNOT;
+ }
+ EXPORT_SYMBOL(snd_pcm_rate_to_rate_bit);
++
++/**
++ * snd_pcm_rate_bit_to_rate - converts SNDRV_PCM_RATE_xxx bit to sample rate
++ * @rate_bit: the rate bit to convert
++ *
++ * Returns the sample rate that corresponds to the given SNDRV_PCM_RATE_xxx flag
++ * or 0 for an unknown rate bit
++ */
++unsigned int snd_pcm_rate_bit_to_rate(unsigned int rate_bit)
++{
++	unsigned int i;
++
++	for (i = 0; i < snd_pcm_known_rates.count; i++)
++		if ((1u << i) == rate_bit)
++			return snd_pcm_known_rates.list[i];
++	return 0;
++}
++EXPORT_SYMBOL(snd_pcm_rate_bit_to_rate);
+-- 
+1.7.10.4
