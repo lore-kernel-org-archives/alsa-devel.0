@@ -1,20 +1,20 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/2] ALSA: hda: support for wallclock
-	timestamps
-Date: Fri, 15 Jun 2012 05:02:38 -0500
-Message-ID: <4FDB083E.9060903@linux.intel.com>
+Subject: Re: [PATCH 1/2] ALSA: core: add hooks for audio
+ timestamps read from WALLCLOCK
+Date: Fri, 15 Jun 2012 05:07:27 -0500
+Message-ID: <4FDB095F.5030200@linux.intel.com>
 References: <1339619192-2733-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<1339619192-2733-3-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<s5hfw9yqr6e.wl%tiwai@suse.de>
+	<1339619192-2733-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<s5hhaueqrob.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEBFA2469C
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2D42246A5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 12:02:41 +0200 (CEST)
-In-Reply-To: <s5hfw9yqr6e.wl%tiwai@suse.de>
+	Fri, 15 Jun 2012 12:07:29 +0200 (CEST)
+In-Reply-To: <s5hhaueqrob.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
->> +struct azx_timecounter {
->> +	cycle_t cycle_last;
->> +	cycle_t mask;
->> +	cycle_t elapsed_cycles;
->> +	u64     initial_time_nsec;
->> +	u32     mult;
->> +	u32     shift;
->> +};
 >
-> Any reason not using the normal struct timecounter stuff?
-> Most of the open codes can be replaced gracefully with functions /
-> macros there, I guess.
+> The biggest problem of struct timespec is that it's pretty much
+> arch-dependent.  But since it's used in all other places, we need to
+> live with that...
+>
+> Usually when we add a new field, we don't use union.  Just decrease
+> sizeof(struct timespec) from reserved[] size.
+>
+> No matter whether using union or not, it doesn't mean that the whole
+> struct size work is kept.  The field might be aligned since we haven't
+> added the packed attribute.  Maybe better to add a padding to align
+> 64bit before audio_tstamp, then cross your finger.
 
-Yes there is a reason. The conversion from wall clock cycles to ns is a 
-fractional operation (125/3 ratio from 24 MHz to 1 GHz). If you do this 
-conversion to ns every time, you will accumulate rounding errors. That 
-doesn't seem like a very good design if the precision depends on the 
-duration of the track...
-On top of this, I couldn't find a way to pass the 'chip' argument in the 
-cyclecounter .read() operation to map it to azx_read.
-Makes sense?
+Ok, this is the feedback I needed, I had no idea if I could add a new 
+field and why exactly the reserved field had to be zeroed out. On the 
+first try I had an invalid ioctl error and found this workaround.
+Will fix this.
+
+
+>>   struct snd_pcm_mmap_status {
+>> @@ -430,6 +434,7 @@ struct snd_pcm_mmap_status {
+>>   	int pad1;			/* Needed for 64 bit alignment */
+>>   	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
+>>   	struct timespec tstamp;		/* Timestamp */
+>> +	struct timespec audio_tstamp;	/* audio wall clock timestamp */
+>>   	snd_pcm_state_t suspended_state; /* RO: suspended stream state */
+>>   };
+>
+> struct snd_pcm_mmap_status is mmapped to user-space, thus it must be
+> backward compatible.  Always append the new field.
+
+will do.
+
+> In addition, if you change the ABI, please change the PCM protocol
+> version, so that alsa-lib can detect the ABI change
+
+ok
+
+> Also, last not but least, don't forget to convert pcm_compat.c.
+
+will look into it
+
+> Other than these, changes look good to me.
+
+Cool, thanks for the feedback.
 -Pierre
