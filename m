@@ -1,17 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: omap-mcpdm: Convert to use devm_*
-Date: Fri, 15 Jun 2012 11:55:00 +0300
-Message-ID: <1339750500-16517-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: omap-mcpdm: Convert to use devm_*
+Date: Fri, 15 Jun 2012 10:11:48 +0100
+Message-ID: <20120615091148.GA3898@opensource.wolfsonmicro.com>
+References: <1339750500-16517-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3388957862573954279=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
-	[74.125.149.69]) by alsa0.perex.cz (Postfix) with ESMTP id F3CF124656
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 715A324663
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 10:54:48 +0200 (CEST)
-Received: by lban1 with SMTP id n1so2480402lba.38
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2012 01:54:45 -0700 (PDT)
+	Fri, 15 Jun 2012 11:11:52 +0200 (CEST)
+In-Reply-To: <1339750500-16517-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,99 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Switch to use devm_* te make the probe/remove code more cleaner.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/omap-mcpdm.c |   52 ++++++++++--------------------------------
- 1 files changed, 13 insertions(+), 39 deletions(-)
+--===============3388957862573954279==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Disposition: inline
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 59d47ab..b5e23af 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -445,9 +445,8 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
- {
- 	struct omap_mcpdm *mcpdm;
- 	struct resource *res;
--	int ret = 0;
- 
--	mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
-+	mcpdm = devm_kzalloc(&pdev->dev, sizeof(struct omap_mcpdm), GFP_KERNEL);
- 	if (!mcpdm)
- 		return -ENOMEM;
- 
-@@ -456,55 +455,30 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
- 	mutex_init(&mcpdm->mutex);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (res == NULL) {
--		dev_err(&pdev->dev, "no resource\n");
--		goto err_res;
--	}
-+	if (res == NULL)
-+		return -ENOMEM;
- 
--	if (!request_mem_region(res->start, resource_size(res), "McPDM")) {
--		ret = -EBUSY;
--		goto err_res;
--	}
-+	if (!devm_request_mem_region(&pdev->dev, res->start,
-+				     resource_size(res), "McPDM"))
-+		return -EBUSY;
- 
--	mcpdm->io_base = ioremap(res->start, resource_size(res));
--	if (!mcpdm->io_base) {
--		ret = -ENOMEM;
--		goto err_iomap;
--	}
-+	mcpdm->io_base = devm_ioremap(&pdev->dev, res->start,
-+				      resource_size(res));
-+	if (!mcpdm->io_base)
-+		return -ENOMEM;
- 
- 	mcpdm->irq = platform_get_irq(pdev, 0);
--	if (mcpdm->irq < 0) {
--		ret = mcpdm->irq;
--		goto err_irq;
--	}
-+	if (mcpdm->irq < 0)
-+		return mcpdm->irq;
- 
- 	mcpdm->dev = &pdev->dev;
- 
--	ret = snd_soc_register_dai(&pdev->dev, &omap_mcpdm_dai);
--	if (!ret)
--		return 0;
--
--err_irq:
--	iounmap(mcpdm->io_base);
--err_iomap:
--	release_mem_region(res->start, resource_size(res));
--err_res:
--	kfree(mcpdm);
--	return ret;
-+	return snd_soc_register_dai(&pdev->dev, &omap_mcpdm_dai);
- }
- 
- static int __devexit asoc_mcpdm_remove(struct platform_device *pdev)
- {
--	struct omap_mcpdm *mcpdm = platform_get_drvdata(pdev);
--	struct resource *res;
--
- 	snd_soc_unregister_dai(&pdev->dev);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	iounmap(mcpdm->io_base);
--	release_mem_region(res->start, resource_size(res));
--
--	kfree(mcpdm);
- 	return 0;
- }
- 
--- 
-1.7.8.6
+
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jun 15, 2012 at 11:55:00AM +0300, Peter Ujfalusi wrote:
+> Switch to use devm_* te make the probe/remove code more cleaner.
+
+Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP2vxMAAoJEBus8iNuMP3dt6AP/jezlSio0ofwX4IVd3NErCEh
+rTkARRocoUUqBZHigDT3r2A8SlST+ccnvU12IgZAc41wzP4CwpHF2moRShmvMq2t
+kiyWu8PyJM7mTbkGhuFBK8ezlgLBZ6B99C70kXHfVPG44wCbLmKC+YWzvbRkMMhC
+quakOE3ebqJh63lbvMOTVvLAav2e5XkLWdqXQu1dGOI5WFiFATj1B8oU7gmqLF7o
+cEy72C1wgDhv9kMup1bu5BzKO+BBC11QHfw4f5th1wALupjwvh9IfZ7UKo+2BlVr
+v+WHnbxbhAoS5Peav+ixuJuojN+FZ5C3iRcGDRe0hfdUpc8DTAo+1XE0sXxj2C/R
++qIDH9CDdtrcKNLpiiy+KHv10/91fWLWC+nYa/EG1IBdyQBDacMuCBhW1rGVI/47
+nuSOiBDPqCkR/D9yDZEv2omgA67N3SCJmmx3bP9XNG6MDtetObOT9DrWLy7tfA/2
+vJ3+6HWt+oxWDUil+hSD8ZkdXGFTJnF0EzP22tNBGU/d3xJPeqEwSSQtiABXW1xU
+eUMsUEtKP6tyrT3d92+Mo5BvdS+ljZHwPY6FfqbHcc/zERE3nDpc2m+XsJG5ah3G
+ab1Ahvxgxmvs2iIpyYhYtV70JMVvvBqfN3TNUXvmHM+miuXnb93nsm6LZDu2x4H9
+Sbql7FLoaCEvozwcXFx2
+=Ei8L
+-----END PGP SIGNATURE-----
+
+--WIyZ46R2i8wDzkSu--
+
+--===============3388957862573954279==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3388957862573954279==--
