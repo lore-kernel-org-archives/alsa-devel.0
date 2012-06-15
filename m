@@ -1,65 +1,70 @@
-From: Seth Heasley <seth.heasley@intel.com>
-Subject: [PATCH 1/1] hda_intel: activate COMBO mode for Intel client chipsets
-Date: Thu, 14 Jun 2012 14:23:53 -0700
-Message-ID: <1339709033-3583-1-git-send-email-seth.heasley@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, James Ralston <james.d.ralston@intel.com>, Seth Heasley <seth.heasley@intel.com>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: Using UCM with PulseAudio
+Date: Fri, 15 Jun 2012 08:23:33 +0530
+Message-ID: <1339728813.5228.48.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4AA524368
+	for <alsa-devel@alsa-project.org>;
+	Fri, 15 Jun 2012 04:53:34 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Feng Wei <feng.wei@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch activates the COMBO position_fix for recent Intel client chipsets.  COMBO mode is the recommended setting for Intel chipsets and eliminates HD audio warnings in dmesg.  This patch has been tested on Lynx Point, Panther Point, and Cougar Pont.
+Hello,
+I've been working on porting PulseAudio to Android on the OMAP4-based
+Galaxy Nexus, and have recently looking at the policy-bits. The basic
+porting has been greatly simplified with Wei Feng's work to renew
+PulseAudio UCM integration and  Liam's help with fixing up some of the
+UCM config for the Galaxy Nexus. I am, however, facing some trouble
+mapping how the hardware is used to how UCM presents it (or, perhaps,
+the UCM-PA mapping does).
 
-Signed-off-by: Seth Heasley <seth.heasley@intel.com>
----
- sound/pci/hda/hda_intel.c |   11 ++++++++---
- 1 files changed, 8 insertions(+), 3 deletions(-)
+Some simplified background: the devices of interest on the OMAP4 SoC are
+the main hifi PCM which can be routed to various outputs, the modem PCM
+which is not used for actual output but to enable use of the modem
+during calls, and the tones PCM which is intended to be used for playing
+ringtones, aiui.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 2b6392b..466a88c 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -535,6 +535,7 @@ enum {
- #define AZX_DCAPS_BUFSIZE	(1 << 21)	/* no buffer size alignment */
- #define AZX_DCAPS_ALIGN_BUFSIZE	(1 << 22)	/* buffer size alignment */
- #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
-+#define AZX_DCAPS_POSFIX_COMBO  (1 << 24)	/* Use COMBO as default */
- 
- /* quirks for ATI SB / AMD Hudson */
- #define AZX_DCAPS_PRESET_ATI_SB \
-@@ -2728,6 +2729,10 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
- 		snd_printd(SFX "Using LPIB position fix\n");
- 		return POS_FIX_LPIB;
- 	}
-+	if (chip->driver_caps & AZX_DCAPS_POSFIX_COMBO) {
-+		snd_printd(SFX "Using COMBO position fix\n");
-+		return POS_FIX_COMBO;
-+	}
- 	return POS_FIX_AUTO;
- }
- 
-@@ -3240,7 +3245,7 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
- 	/* CPT */
- 	{ PCI_DEVICE(0x8086, 0x1c20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
--	  AZX_DCAPS_BUFSIZE },
-+	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
- 	/* PBG */
- 	{ PCI_DEVICE(0x8086, 0x1d20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
-@@ -3248,11 +3253,11 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
- 	/* Panther Point */
- 	{ PCI_DEVICE(0x8086, 0x1e20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
--	  AZX_DCAPS_BUFSIZE},
-+	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
- 	/* Lynx Point */
- 	{ PCI_DEVICE(0x8086, 0x8c20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
--	  AZX_DCAPS_BUFSIZE},
-+	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
- 	/* SCH */
- 	{ PCI_DEVICE(0x8086, 0x811b),
- 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
--- 
-1.7.4.4
+The first problem is mutual exclusivity of verbs. From what I can
+understand, verbs are intended to be mutually exclusive -- if you have a
+HiFi verb and a VoiceCall verb, only one may be used at a time. We have
+mapped verbs to card profiles, which offer the same guarantee. However,
+on Android (which is a fair example of the kind of audio policy we might
+want), the HiFi verb PCMs maybe used while the VoiceCall PCMs are open.
+This is done, for example, to play an end-of-call tone from the CPU
+while the modem PCMs are still held open. Is there some way to do this
+with UCM?
+
+The second problem is having separate PCMs for modifiers. In the OMAP4
+profile, ringtone playback is exposed via a PlayTone modifier which
+corresponds to a separate PCM from regular HiFi playback. In the UCM-PA
+mapping we decided on, modifiers were implemented as device intended
+roles on a sink, so that when a stream with that role came in, we could
+enable the modifier, and disable it when such a stream ends. However,
+this doesn't account for switching the PCM on which playback is
+occurring. Should we be creating a separate sink for such modifiers
+(with lower priority, so they're not routed to unless there's a stream
+with the required role coming in)? Or should we be reopening the PCM for
+this?
+
+Finally, a question also related to modifiers -- is it expected that
+there will never be a case where a stream that requires no modifier is
+being played while a stream that does require a modifier also exists? If
+not, what kind of policy should we have for enabling the modifier or
+not?
+
+Cheers,
+Arun
