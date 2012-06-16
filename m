@@ -1,16 +1,16 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: Ux500: unlock on an error path
-Date: Sat, 16 Jun 2012 16:19:27 +0300
-Message-ID: <20120616131927.GB17980@elgon.mountain>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: snd-usb: make
+	snd_usb_substream_capture_trigger static
+Date: Sat, 16 Jun 2012 16:58:04 +0200
+Message-ID: <1339858684-31758-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29862243E3
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55F212466F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Jun 2012 15:19:52 +0200 (CEST)
-Content-Disposition: inline
+	Sat, 16 Jun 2012 16:58:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,26 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is a missing mutex_unlock() here.  The cleanup path also has more
-debug output.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/usb/pcm.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 389dd66..3c79592 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -1235,7 +1235,8 @@ static int anc_status_control_put(struct snd_kcontrol *kcontrol,
- 		req != ANC_APPLY_IIR) {
- 		dev_err(dev, "%s: ERROR: Unsupported status to set '%s'!\n",
- 			__func__, enum_anc_state[req]);
--		return -EINVAL;
-+		status = -EINVAL;
-+		goto cleanup;
- 	}
- 	apply_fir = req == ANC_APPLY_FIR || req == ANC_APPLY_FIR_IIR;
- 	apply_iir = req == ANC_APPLY_IIR || req == ANC_APPLY_FIR_IIR;
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index cdf8b76..ce22f5f 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1147,7 +1147,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
+ 	return -EINVAL;
+ }
+ 
+-int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream,
++					     int cmd)
+ {
+ 	int err;
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
+-- 
+1.7.10.2
