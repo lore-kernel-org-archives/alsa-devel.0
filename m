@@ -1,16 +1,19 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH] snd-opti9xx: fixes for MED3931 card (opti931)
-Date: Fri, 15 Jun 2012 20:55:54 +0200
-Message-ID: <201206152055.58181.linux@rainbow-software.org>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH] ALSA: hda - Handle open while transitioning to
+	D3.
+Date: Fri, 15 Jun 2012 19:36:23 -0700
+Message-ID: <1339814183-29728-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 372E3103B63
+Received: from mail-qc0-f201.google.com (mail-qc0-f201.google.com
+	[209.85.216.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC9B1103E5D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2012 22:22:49 +0200 (CEST)
-Content-Disposition: inline
+	Sat, 16 Jun 2012 04:36:26 +0200 (CEST)
+Received: by qcha6 with SMTP id a6so310417qch.2
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2012 19:36:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,75 +23,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: olofj@chromium.org, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-MED3931 card did not work (failed with "OPTI chip not found") because
-snd-opti9xx gets mc_indir_index from pnp by adding 2 to the pnp-reported port.
-It probably works for some cards but not for this one. Datasheet says that
-the port is always at 0xe?e so just force the lowest nibble to be 0xe.
+This addresses an issue encountered when a pcm is opened while
+transitioning to low power state (codec->power_on == 1 &&
+codec->power_transition == -1).  Add snd_pcm_power_up_d3wait to
+hda_codec.  This function is used to power up from azx_open as opposed
+to snd_hda_power_up used from codec_exec_verb. When powering up from
+azx_open, wait for pending power downs to complete, avoiding the power
+up continuing in parallel with the power down on the work queue.
 
-Also this card powers up with (ugly) 3D sound enabled. As there's no mixer
-control for this, just disable it.
+The specific issue seen was with the CS4210 codec, it powers off the ADC
+and DAC nid in its suspend handler.  If it is re-opened before the
+~100ms power down process completes, the ADC and DAC nid are initialized
+while powered down and audio is lost until another suspend/resume cycle.
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/pci/hda/hda_codec.c |   46 ++++++++++++++++++++++++++++++++++++--------
+ sound/pci/hda/hda_codec.h |    2 +
+ sound/pci/hda/hda_intel.c |    2 +-
+ 3 files changed, 40 insertions(+), 10 deletions(-)
 
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -135,7 +135,6 @@ struct snd_opti9xx {
- 	unsigned long mc_base_size;
- #ifdef OPTi93X
- 	unsigned long mc_indir_index;
--	unsigned long mc_indir_size;
- 	struct resource *res_mc_indir;
- 	struct snd_wss *codec;
- #endif	/* OPTi93X */
-@@ -245,10 +244,8 @@ static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
- 	case OPTi9XX_HW_82C931:
- 	case OPTi9XX_HW_82C933:
- 		chip->mc_base = (hardware == OPTi9XX_HW_82C930) ? 0xf8f : 0xf8d;
--		if (!chip->mc_indir_index) {
-+		if (!chip->mc_indir_index)
- 			chip->mc_indir_index = 0xe0e;
--			chip->mc_indir_size = 2;
--		}
- 		chip->password = 0xe4;
- 		chip->pwd_reg = 0;
- 		break;
-@@ -403,7 +400,9 @@ static int __devinit snd_opti9xx_configure(struct snd_opti9xx *chip,
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 851e6ec..604699c 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -4423,20 +4423,19 @@ void snd_hda_update_power_acct(struct hda_codec *codec)
+ 	codec->power_jiffies += delta;
+ }
  
- #else	/* OPTi93X */
- 	case OPTi9XX_HW_82C931:
--	case OPTi9XX_HW_82C933:
-+		/* disable 3D sound (set GPIO1 as output, low) */
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(20), 0x04, 0x0c);
-+	case OPTi9XX_HW_82C933: /* FALL THROUGH */
- 		/*
- 		 * The BTC 1817DW has QS1000 wavetable which is connected
- 		 * to the serial digital input of the OPTI931.
-@@ -696,8 +695,7 @@ static int __devinit snd_opti9xx_read_check(struct snd_opti9xx *chip)
- 		if (value == snd_opti9xx_read(chip, OPTi9XX_MC_REG(1)))
- 			return 0;
- #else	/* OPTi93X */
--	chip->res_mc_indir = request_region(chip->mc_indir_index,
--					    chip->mc_indir_size,
-+	chip->res_mc_indir = request_region(chip->mc_indir_index, 2,
- 					    "OPTi93x MC");
- 	if (chip->res_mc_indir == NULL)
- 		return -EBUSY;
-@@ -770,8 +768,9 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
- #ifdef OPTi93X
- 	port = pnp_port_start(pdev, 0) - 4;
- 	fm_port = pnp_port_start(pdev, 1) + 8;
--	chip->mc_indir_index = pnp_port_start(pdev, 3) + 2;
--	chip->mc_indir_size = pnp_port_len(pdev, 3) - 2;
-+	/* adjust mc_indir_index - some cards report it at 0xe?d,
-+	   other at 0xe?c but it really is always at 0xe?e */
-+	chip->mc_indir_index = (pnp_port_start(pdev, 3) & ~0xf) | 0xe;
+-/**
+- * snd_hda_power_up - Power-up the codec
+- * @codec: HD-audio codec
+- *
+- * Increment the power-up counter and power up the hardware really when
+- * not turned on yet.
+- */
+-void snd_hda_power_up(struct hda_codec *codec)
++/* Transition to powered up, if wait_power_down then wait for a pending
++ * transition to D3 to complete. A pending D3 transition is indicated
++ * with power_transition == -1. */
++static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
+ {
+ 	struct hda_bus *bus = codec->bus;
+ 
+ 	spin_lock(&codec->power_lock);
+ 	codec->power_count++;
+-	if (codec->power_on || codec->power_transition > 0) {
++	/* Return if power_on or transitioning to power_on, unless currently
++	 * powering down. */
++	if ((codec->power_on || codec->power_transition > 0) &&
++	    !(wait_power_down && codec->power_transition < 0)) {
+ 		spin_unlock(&codec->power_lock);
+ 		return;
+ 	}
+@@ -4460,8 +4459,37 @@ void snd_hda_power_up(struct hda_codec *codec)
+ 	codec->power_transition = 0;
+ 	spin_unlock(&codec->power_lock);
+ }
++
++/**
++ * snd_hda_power_up - Power-up the codec
++ * @codec: HD-audio codec
++ *
++ * Increment the power-up counter and power up the hardware really when
++ * not turned on yet.
++ */
++void snd_hda_power_up(struct hda_codec *codec)
++{
++	__snd_hda_power_up(codec, false);
++}
+ EXPORT_SYMBOL_HDA(snd_hda_power_up);
+ 
++/**
++ * snd_hda_power_up_d3wait - Power-up the codec after waiting for any pending
++ *   D3 transition to complete.  This differs from snd_hda_power_up() when
++ *   power_transition == -1.  snd_hda_power_up sees this case as a nop,
++ *   snd_hda_power_up_d3wait waits for the D3 transition to complete then powers
++ *   back up.
++ * @codec: HD-audio codec
++ *
++ * Cancel any power down operation hapenning on the work queue, then power up.
++ */
++void snd_hda_power_up_d3wait(struct hda_codec *codec)
++{
++	/* This will cancel and wait for pending power_work to complete. */
++	__snd_hda_power_up(codec, true);
++}
++EXPORT_SYMBOL_HDA(snd_hda_power_up_d3wait);
++
+ #define power_save(codec)	\
+ 	((codec)->bus->power_save ? *(codec)->bus->power_save : 0)
+ 
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 71864cdd..a4ac1de 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -1059,10 +1059,12 @@ const char *snd_hda_get_jack_location(u32 cfg);
+  */
+ #ifdef CONFIG_SND_HDA_POWER_SAVE
+ void snd_hda_power_up(struct hda_codec *codec);
++void snd_hda_power_up_d3wait(struct hda_codec *codec);
+ void snd_hda_power_down(struct hda_codec *codec);
+ void snd_hda_update_power_acct(struct hda_codec *codec);
  #else
- 	devmc = pnp_request_card_device(card, pid->devs[2].id, NULL);
- 	if (devmc == NULL)
-
+ static inline void snd_hda_power_up(struct hda_codec *codec) {}
++static inline void snd_hda_power_up_d3wait(struct hda_codec *codec) {}
+ static inline void snd_hda_power_down(struct hda_codec *codec) {}
+ #endif
+ 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 8f85d30..86758dd 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1767,7 +1767,7 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 				   buff_step);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+ 				   buff_step);
+-	snd_hda_power_up(apcm->codec);
++	snd_hda_power_up_d3wait(apcm->codec);
+ 	err = hinfo->ops.open(hinfo, apcm->codec, substream);
+ 	if (err < 0) {
+ 		azx_release_device(azx_dev);
 -- 
-Ondrej Zary
+1.7.9.rc0
