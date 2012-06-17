@@ -1,16 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: 6fire: use NULL instead of 0 for pointer
-	assignment
-Date: Sat, 16 Jun 2012 16:58:36 +0200
-Message-ID: <1339858716-31813-1-git-send-email-zonque@gmail.com>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: 2.6.18 unknown symbol ksize error
+Date: Sun, 17 Jun 2012 09:27:44 +0200 (CEST)
+Message-ID: <28300.101.169.127.232.1339918064.squirrel@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2F8C24662
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 967422444D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Jun 2012 16:58:41 +0200 (CEST)
+	Sun, 17 Jun 2012 09:27:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Torsten Schenk <torsten.schenk@zoho.com>, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Torsten Schenk <torsten.schenk@zoho.com>
----
- sound/usb/6fire/firmware.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
-index 6f9715a..56ad923 100644
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -209,7 +209,7 @@ static int usb6fire_fw_ezusb_upload(
- 	int ret;
- 	u8 data;
- 	struct usb_device *device = interface_to_usbdev(intf);
--	const struct firmware *fw = 0;
-+	const struct firmware *fw = NULL;
- 	struct ihex_record *rec = kmalloc(sizeof(struct ihex_record),
- 			GFP_KERNEL);
- 
--- 
-1.7.10.2
+I have compiled the latest stable alsa drivers against 2.6.18 kernel with
+gcc-4.1.
+
+I am getting an error when I insert the sound card modules.
+
+    snd_rawmidi: Unknown symbol ksize
+
+As far as I can tell 2.6.18 has support for ksize so I am not sure where
+this error is coming from.
+
+
+
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
