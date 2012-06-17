@@ -1,15 +1,23 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: snd-usb: fix sync pipe check
-Date: Sun, 17 Jun 2012 13:44:27 +0200
-Message-ID: <1339933467-12479-1-git-send-email-zonque@gmail.com>
+From: Benjamin Sion <ml_all@circa.be>
+Subject: Re: [PATCH] USB: fix gathering of interface
+	associations
+Date: Sun, 17 Jun 2012 14:41:51 +0200
+Message-ID: <4FDDD08F.6040003@circa.be>
+References: <1339525432-22039-1-git-send-email-zonque@gmail.com>
+	<4FD9C7D2.8030506@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0EF2243B6
+Received: from mo3.mail-out.ovh.net (20.mo3.mail-out.ovh.net [178.33.47.94])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4387C243F6
 	for <alsa-devel@alsa-project.org>;
-	Sun, 17 Jun 2012 13:45:04 +0200 (CEST)
+	Sun, 17 Jun 2012 14:41:54 +0200 (CEST)
+Received: from mail181.ha.ovh.net (b7.ovh.net [213.186.33.57])
+	by mo3.mail-out.ovh.net (Postfix) with SMTP id 2A51BFF8391
+	for <alsa-devel@alsa-project.org>;
+	Sun, 17 Jun 2012 14:45:55 +0200 (CEST)
+In-Reply-To: <4FD9C7D2.8030506@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,53 +27,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, ivanperrone@hotmail.com, sarah.a.sharp@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, sergio tabanelli <sergio.tabanelli@gmail.com>, stern@rowland.harvard.edu
 List-Id: alsa-devel@alsa-project.org
 
-Fix a bogus sanity check for sync pipe in pcm.c. This flaw was
-introduced during the streaming logic refactorization.
+On 14/06/12 13:15, Daniel Mack wrote:
+> On 12.06.2012 20:23, Daniel Mack wrote:
+>> TEAC's UD-H01 (and probably other devices) have a gap in the interface
+>> number allocation of their descriptors:
+> 
+> I now got a report from Sergio Tabanelli who tried this patch on real
+> hardware, and he confirmed the fix. I added some more people to the
+> patch description and copied stable@ as well.
 
-While at it, improve the error messages that are generated in such cases.
+Your patch just tested here on real hardware (TEAC UD-H01), I confirm it
+works: interface is registered (despite UD-H01's buggy descriptors).
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-and-tested-by: <ben@b1c1l1.com>
----
- sound/usb/pcm.c |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Thanks!
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index cdf8b76..fc7ce7c 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -354,17 +354,21 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 		    (get_endpoint(alts, 1)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
- 		     get_endpoint(alts, 1)->bSynchAddress != 0 &&
- 		     !implicit_fb)) {
--			snd_printk(KERN_ERR "%d:%d:%d : invalid synch pipe\n",
--				   dev->devnum, fmt->iface, fmt->altsetting);
-+			snd_printk(KERN_ERR "%d:%d:%d : invalid sync pipe. bmAttributes %02x, bLength %d, bSynchAddress %02x\n",
-+				   dev->devnum, fmt->iface, fmt->altsetting,
-+				   get_endpoint(alts, 1)->bmAttributes,
-+				   get_endpoint(alts, 1)->bLength,
-+				   get_endpoint(alts, 1)->bSynchAddress);
- 			return -EINVAL;
- 		}
- 		ep = get_endpoint(alts, 1)->bEndpointAddress;
--		if (get_endpoint(alts, 0)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
-+		if (!implicit_fb &&
-+		    get_endpoint(alts, 0)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
- 		    (( is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress | USB_DIR_IN)) ||
--		     (!is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress & ~USB_DIR_IN)) ||
--		     ( is_playback && !implicit_fb))) {
--			snd_printk(KERN_ERR "%d:%d:%d : invalid synch pipe\n",
--				   dev->devnum, fmt->iface, fmt->altsetting);
-+		     (!is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress & ~USB_DIR_IN)))) {
-+			snd_printk(KERN_ERR "%d:%d:%d : invalid sync pipe. is_playback %d, ep %02x, bSynchAddress %02x\n",
-+				   dev->devnum, fmt->iface, fmt->altsetting,
-+				   is_playback, ep, get_endpoint(alts, 0)->bSynchAddress);
- 			return -EINVAL;
- 		}
- 
--- 
-1.7.10.2
+bEN
