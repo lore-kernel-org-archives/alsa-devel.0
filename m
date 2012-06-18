@@ -1,69 +1,43 @@
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [PATCH 2/3] swarm_cs4297: Rename AC97 registers to use
- sound/ac97_codec.h definitions
-Date: Mon, 18 Jun 2012 14:50:53 -0300
-Message-ID: <CALF0-+Ukw2+whn5zpA4R6PjN0BoLm5aUhQKUNQt0rpWM1vNXFA@mail.gmail.com>
-References: <1339444731-15678-1-git-send-email-elezegarcia@gmail.com>
-	<1339444731-15678-2-git-send-email-elezegarcia@gmail.com>
-	<s5h8vfkn2bb.wl%tiwai@suse.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: snd-usb-caiaq: initialize card pointer
+Date: Mon, 18 Jun 2012 21:16:31 +0200
+Message-ID: <1340046991-23552-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h8vfkn2bb.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id B93572457E
+	for <alsa-devel@alsa-project.org>;
+	Mon, 18 Jun 2012 21:16:53 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-On Mon, Jun 18, 2012 at 11:04 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 11 Jun 2012 16:58:50 -0300,
-> Ezequiel Garcia wrote:
->>
->> This patch removes the last usage of linux/ac97_codec.h
->> by renaming ac97 registers to use sound/ac97_codec.h definitions.
->> This will enable us to remove linux/ac97_codec.h.
->>
->> Not even compilation tested.
->>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Cc: Jaroslav Kysela <perex@perex.cz>
->> Cc: Takashi Iwai <tiwai@suse.de>
->> Cc: Clemens Ladisch <clemens@ladisch.de>
->> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
->> ---
->> Hi all,
->>
->> This patch is important so we can remove linux/ac97_codec.h usage.
->> Since this driver is mips related, I can't test it until I install
->> a mips toolchain.
->> If someone can compile this for me, or even test it with real
->> hardware I think it would be better.
->> If not then I can install a mips toolchain and compile it myself,
->> but I won't be able to test it on real hardware.
->>
->> This patch should be treated with carefully and be applied only
->> if someone manages to test it.
->
-> A slight concern by this change is that the driver includes
-> sound/ac97_codec.h although it's based on OSS framework.
-> sound/ac97_codec.h is the header for ALSA ac97 structs, and this can't
-> be mixed up with OSS.
->
-> If the intention is only about AC97 register definition, we may split
-> ac97_codec.h into ac97_regs.h and ac97_codecs.h where the former
-> contains only the register definitions (thus framework-neutral) and
-> the latter includes the former.
->
->
-
-Yes, splitting sounds good to me. It could be useful for other ac97
-drivers (e.g. em28xx).
-
-I wonder if anyone is using this swarm driver (and/or can test).
-
-Also, is there any date scheduled for OSS removal?
-
-Thanks for reviewing,
-Ezequiel.
+Rml4ZXMgdGhlIGZvbGxvd2luZyB3YXJuaW5nOgoKICBDQyBbTV0gIHNvdW5kL3VzYi9jYWlhcS9k
+ZXZpY2Uubwpzb3VuZC91c2IvY2FpYXEvZGV2aWNlLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9wcm9i
+ZeKAmToKc291bmQvdXNiL2NhaWFxL2RldmljZS5jOjUwMDoxNjogd2FybmluZzog4oCYY2FyZOKA
+mSBtYXkgYmUgdXNlZAp1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24gWy1XbWF5YmUtdW5p
+bml0aWFsaXplZF0KClNpZ25lZC1vZmYtYnk6IERhbmllbCBNYWNrIDx6b25xdWVAZ21haWwuY29t
+PgotLS0KIHNvdW5kL3VzYi9jYWlhcS9kZXZpY2UuYyB8ICAgIDIgKy0KIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9j
+YWlhcS9kZXZpY2UuYyBiL3NvdW5kL3VzYi9jYWlhcS9kZXZpY2UuYwppbmRleCA2NGFlZDQzLi43
+ZGEwZDBhIDEwMDY0NAotLS0gYS9zb3VuZC91c2IvY2FpYXEvZGV2aWNlLmMKKysrIGIvc291bmQv
+dXNiL2NhaWFxL2RldmljZS5jCkBAIC00ODUsNyArNDg1LDcgQEAgc3RhdGljIGludCBfX2Rldmlu
+aXQgc25kX3Byb2JlKHN0cnVjdCB1c2JfaW50ZXJmYWNlICppbnRmLAogCQkgICAgIGNvbnN0IHN0
+cnVjdCB1c2JfZGV2aWNlX2lkICppZCkKIHsKIAlpbnQgcmV0OwotCXN0cnVjdCBzbmRfY2FyZCAq
+Y2FyZDsKKwlzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQgPSBOVUxMOwogCXN0cnVjdCB1c2JfZGV2aWNl
+ICpkZXZpY2UgPSBpbnRlcmZhY2VfdG9fdXNiZGV2KGludGYpOwogCiAJcmV0ID0gY3JlYXRlX2Nh
+cmQoZGV2aWNlLCBpbnRmLCAmY2FyZCk7Ci0tIAoxLjcuMTAuMgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
