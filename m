@@ -1,88 +1,65 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: How to redefine "default" to be equivalent
-	to	"sysdefault"?
-Date: Mon, 18 Jun 2012 17:37:26 +0300
-Message-ID: <1340030246.2892.9.camel@laptop>
-References: <1339574254.2909.15.camel@laptop> <s5hbokgn375.wl%tiwai@suse.de>
-	<1340029054.2892.5.camel@laptop>
+From: Roland Stigge <stigge@antcom.de>
+Subject: Re: [PATCH] gpio: of_get_named_gpio_flags() return -EPROBE_DEFER
+ if GPIO not yet available
+Date: Mon, 18 Jun 2012 18:40:48 +0200
+Message-ID: <4FDF5A10.5080706@antcom.de>
+References: <1339927893-8842-1-git-send-email-stigge@antcom.de> <4FDE8D27.6030508@wwwdotorg.org> <4FDEF293.9080305@antcom.de> <4FDF403E.9090302@wwwdotorg.org> <4FDF4461.60707@antcom.de> <4FDF4543.6090009@wwwdotorg.org> <4FDF47D8.9000309@antcom.de> <4FDF4D14.50203@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 17D471041D6
-	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jun 2012 16:37:34 +0200 (CEST)
-In-Reply-To: <1340029054.2892.5.camel@laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <4FDF4D14.50203@wwwdotorg.org>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: cjb@laptop.org, grant.likely@secretlab.ca, rob.herring@calxeda.com, rmk+kernel@arm.linux.org.uk, ulf.hansson@stericsson.com, linus.walleij@linaro.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, aletes.xgr@gmail.com, linux-arm-kernel@lists.infradead.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-06-18 at 17:17 +0300, Tanu Kaskinen wrote:
-> On Mon, 2012-06-18 at 15:45 +0200, Takashi Iwai wrote:
-> > At Wed, 13 Jun 2012 10:57:34 +0300,
-> > Tanu Kaskinen wrote:
-> > > 
-> > > Hi,
-> > > 
-> > > I have a file with the following contents:
-> > > 
-> > > 
-> > > 
-> > > # This file an alsa configuration file, used by pasuspender to make the
-> > > # "default" Alsa device work while PulseAudio is in suspended state.
-> > > 
-> > > # Include the system configuration first. Is there any easier way to do this?
-> > > # 14 lines for including one file is a bit much...
-> > > @hooks [
-> > >         {
-> > >                 func load
-> > >                 files [
-> > >                         {
-> > >                                 @func concat
-> > >                                 strings [
-> > >                                         { @func datadir }
-> > >                                         "/alsa.conf"
-> > >                                 ]
-> > >                         }
-> > >                 ]
-> > >         }
-> > > ]
-
-As a sidenote, I've now discovered that the cumbersome hooks block can
-be replaced simply with
-
-<confdir:alsa.conf>
-
-> > > 
-> > > # Redefine "default" to be the same as "sysdefault". On most systems
-> > > # "sysdefault" is configured to use dmix.
-> > > pcm.!default sysdefault
-> > > 
-> > > 
-> > > 
-> > > That doesn't do what I want it to do. When I run
-> > > 
-> > >     ALSA_CONFIG_PATH=/path/to/file.conf aplay -Ddefault ~/test.wav
-> > 
-> > Doesn't ALSA_CONFIG_PATH=/path/to/file.conf:/usr/share/alsa/alsa.conf
-> > work?
+On 06/18/2012 05:45 PM, Stephen Warren wrote:
+>>>> Should be easy to fix (replacing the if (... == -ENODEV) to -EPROBE_DEFER.
+>>>>
+>>>> Will you provide patches as signalled, of should I? Which branch would
+>>>> be the correct one to build on top?
+>>>
+>>> I'm happy either way. It'd probably be best to roll the change into your
+>>> patch/series so you can manage all the dependencies in one series, but
+>>> if you can't for some reason, I'm happy to provide a patch for this.
+>>
+>> I should be able ;-) - is broonie's sound.git, branch for-next the
+>> correct one to patch against?
 > 
-> I didn't know that I can give multiple files, so I haven't tried. One
-> minor problem with this approach is that the alsa.conf path would be
-> hardcoded, instead of using $(datadir)/alsa.conf.
+> Yes, that's the one. Thanks.
 
-I tried that now, and it doesn't work any better - "default" still goes
-through pulseaudio.
+I'm posting this as a series of 2 for the sound changes only. Would be 
+easiest to merge separately via sound/for-next, and the gpiolib-of 
+change via gpio. However, this could break bisecting.
 
--- 
-Tanu
+Since the respective precondition commits are only in the sound tree, 
+this would be the only one practical for merging a single combined 
+patch (combining those 3). Would this be OK for the GPIO maintainers? 
+It's practically only a one-line change in gpiolib-of.c that would come 
+in via sound.
+
+Thanks in advance,
+
+Roland
+
+
+PS: Just for illustration purposes for the sound maintainers:
+---
+ drivers/gpio/gpiolib-of.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- linux-2.6.orig/drivers/gpio/gpiolib-of.c
++++ linux-2.6/drivers/gpio/gpiolib-of.c
+@@ -62,7 +62,10 @@ static int of_gpiochip_find_and_xlate(st
+ int of_get_named_gpio_flags(struct device_node *np, const char *propname,
+                            int index, enum of_gpio_flags *flags)
+ {
+-       struct gg_data gg_data = { .flags = flags, .out_gpio = -ENODEV };
++       /* Return -EPROBE_DEFER to support probe() functions to be called
++        * later when the GPIO actually becomes available
++        */
++       struct gg_data gg_data = { .flags = flags, .out_gpio = -EPROBE_DEFER };
+        int ret;
+
+        /* .of_xlate might decide to not fill in the flags, so clear it. */
