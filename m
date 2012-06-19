@@ -1,38 +1,80 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH 3/3] ASoC: follow the updated samsung DMA common operations
-Date: Tue, 19 Jun 2012 17:49:46 +0900
-Message-ID: <019501cd4df8$7a56cef0$6f046cd0$%kim@samsung.com>
-References: <011701cd42eb$a4209940$ec61cbc0$%kim@samsung.com>
- <20120607234540.GU14525@opensource.wolfsonmicro.com>
- <011101cd4de4$f41f59f0$dc5e0dd0$%kim@samsung.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: ASoC: codecs: Add AB8500 codec-driver
+Date: Tue, 19 Jun 2012 10:50:43 +0200
+Message-ID: <4FE03D63.3030108@stericsson.com>
+References: <20120616131904.GA17980@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <011101cd4de4$f41f59f0$dc5e0dd0$%kim@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Boojin Kim' <boojin.kim@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, 'Russell King - ARM Linux' <linux@arm.linux.org.uk>, 'Vinod Koul' <vinod.koul@intel.com>, 'Grant Likely' <grant.likely@secretlab.ca>, spi-devel-general@lists.sourceforge.net, 'Dan Williams' <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
+	[207.126.144.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9BE524410
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jun 2012 10:50:49 +0200 (CEST)
+In-Reply-To: <20120616131904.GA17980@elgon.mountain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Boojin Kim wrote:
+On 06/16/2012 03:19 PM, Dan Carpenter wrote:
+
+> Hello Ola Lilja,
+
 > 
-> Mark Brown wrote
-> > > This patch uses config() function to configure DMA transmit options.
-> >
-> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> >
-Thanks for your ack and let me pick this up in Samsung tree.
 
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+Hi Dan!
 
-> > It'd be good if we could get all the older Samsung platforms moved over
-> to dmaengine...
-> Thanks for your ack :)
-> And, Our engineer's preparing to move the older Samsung dma driver into
-> dmaengine.
+> The patch 679d7abdc754: "ASoC: codecs: Add AB8500 codec-driver" from
+> Jun 7, 2012, leads to the following Sparse warnings:
+> 
+> sound/soc/codecs/ab8500-codec.c:1960:53:
+> 	warning: cast truncates bits from constant value (1013 becomes 13)
+> sound/soc/codecs/ab8500-codec.c:1968:53:
+> 	warning: cast truncates bits from constant value (1013 becomes 13)
+> 
+> sound/soc/codecs/ab8500-codec.c
+>   1958          /* Set DMic-clocks to outputs */
+>   1959          status = abx500_get_register_interruptible(codec->dev, (u8)AB8500_MISC,
+>   1960                                                  (u8)AB8500_GPIO_DIR4_REG,
+>                                                             ^^^^^^^^^^^^^^^^^^^^
+>   1961                                                  &value8);
+>   1962          if (status < 0)
+>   1963                  return status;
+>   1964          value = value8 | GPIO27_DIR_OUTPUT | GPIO29_DIR_OUTPUT |
+>   1965                  GPIO31_DIR_OUTPUT;
+>   1966          status = abx500_set_register_interruptible(codec->dev,
+>   1967                                                  (u8)AB8500_MISC,
+>   1968                                                  (u8)AB8500_GPIO_DIR4_REG,
+>                                                         ^^^^^^^^^^^^^^^^^^^^^^^^
+>   1969                                                  value);
+> 
+> In my quick check we only seem to use the truncated values of these
+> defines so I'm not sure this was intended.
+
+
+The error here is that for that variable the bank-byte has (faulty) been
+attached to the register-byte, where the bank is 0x10. This should not have been
+there and the result after truncation is the correct value of 0x13.
+Our registers are only 8-bits. We have fixed this define in an internal patch so
+it will show up here eventually.
+
+Thanks for pointing it out!
+
+> 
+> regards,
+> dan carpenter
+> 
+
+
+regards,
+Ola Lilja
