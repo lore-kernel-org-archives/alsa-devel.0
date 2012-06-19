@@ -1,62 +1,108 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH] Inverted internal mic
-Date: Tue, 19 Jun 2012 09:43:07 +0200
-Message-ID: <4FE02D8B.7050201@canonical.com>
-References: <4F4C9714.1080307@canonical.com> <s5haa43ux7u.wl%tiwai@suse.de>
-	<4F4CA438.90103@canonical.com> <s5hvcmrp7ji.wl%tiwai@suse.de>
-	<4F4CD1AF.2050409@canonical.com> <s5hboojozx7.wl%tiwai@suse.de>
-	<4F4CE264.7040008@canonical.com>
-	<loom.20120619T050139-760@post.gmane.org>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH 2/3] spi: Add the use of DMA config operation
+Date: Tue, 19 Jun 2012 17:47:56 +0900
+Message-ID: <019301cd4df8$3a5883c0$af098b40$%kim@samsung.com>
+References: <011601cd42eb$8314ab10$893e0130$%kim@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 2FB562433F
-	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jun 2012 09:43:09 +0200 (CEST)
-In-Reply-To: <loom.20120619T050139-760@post.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <011601cd42eb$8314ab10$893e0130$%kim@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Boojin Kim' <boojin.kim@samsung.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, spi-devel-general@lists.sourceforge.net
+Cc: 'Vinod Koul' <vinod.koul@intel.com>, 'Grant Likely' <grant.likely@secretlab.ca>, 'Russell King - ARM Linux' <linux@arm.linux.org.uk>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Dan Williams' <dan.j.williams@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/19/2012 05:07 AM, Eliot Blennerhassett wrote:
-> David Henningsson<david.henningsson<at>  canonical.com>  writes:
->> On 02/28/2012 02:22 PM, Takashi Iwai wrote:
->>> At Tue, 28 Feb 2012 14:07:59 +0100,
->>> David Henningsson wrote:
->>> Is there a way we can
->>>> know the corresponding processing coefficients to set for ALC268 and
->>>> ALC272X as well?
->>>
->>> AFAIK, no, it was specific to the codec model.
->>
->> Ok, then we can only hope for Kailang to supply this information if
->> possible. And if not possible we could attempt the workaround (when/if
->> we agree on it...) for these devices as well?
->
-> Greetings,
->
-> Any chance that there has been any progress on this?
-> I have a machine with dmic and ALC272X (details below) that exhibits this
-> problem, and can test any proposed patch.
+Boojin Kim wrote:
+> 
+> Config operation is separated from request operation in DMA common
+> operation.
+> Because spi driver can change the DMA config for every transfer.
+> So this patch is using the separated DMA config operation.
+> 
+> Signed-off-by: Boojin Kim <boojin.kim@samsung.com>
+> Signed-off-by: Kyoungil Kim <ki0351.kim@samsung.com>
+> ---
+>  drivers/spi/spi-s3c64xx.c |   33 +++++++++++++++++++--------------
+>  1 files changed, 19 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index 15f864d..f4e2341 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -262,14 +262,24 @@ static void prepare_dma(struct s3c64xx_spi_dma_data
+> *dma,
+>  					unsigned len, dma_addr_t buf)
+>  {
+>  	struct s3c64xx_spi_driver_data *sdd;
+> -	struct samsung_dma_prep_info info;
+> +	struct samsung_dma_prep info;
+> +	struct samsung_dma_config config;
+> 
+> -	if (dma->direction == DMA_DEV_TO_MEM)
+> +	if (dma->direction == DMA_DEV_TO_MEM) {
+>  		sdd = container_of((void *)dma,
+>  			struct s3c64xx_spi_driver_data, rx_dma);
+> -	else
+> +		config.direction = sdd->rx_dma.direction;
+> +		config.fifo = sdd->sfr_start + S3C64XX_SPI_RX_DATA;
+> +		config.width = sdd->cur_bpw / 8;
+> +		sdd->ops->config(sdd->rx_dma.ch, &config);
+> +	} else {
+>  		sdd = container_of((void *)dma,
+>  			struct s3c64xx_spi_driver_data, tx_dma);
+> +		config.direction =  sdd->tx_dma.direction;
+> +		config.fifo = sdd->sfr_start + S3C64XX_SPI_TX_DATA;
+> +		config.width = sdd->cur_bpw / 8;
+> +		sdd->ops->config(sdd->tx_dma.ch, &config);
+> +	}
+> 
+>  	info.cap = DMA_SLAVE;
+>  	info.len = len;
+> @@ -284,20 +294,15 @@ static void prepare_dma(struct s3c64xx_spi_dma_data
+> *dma,
+> 
+>  static int acquire_dma(struct s3c64xx_spi_driver_data *sdd)
+>  {
+> -	struct samsung_dma_info info;
+> +	struct samsung_dma_req req;
+> 
+>  	sdd->ops = samsung_dma_get_ops();
+> 
+> -	info.cap = DMA_SLAVE;
+> -	info.client = &s3c64xx_spi_dma_client;
+> -	info.width = sdd->cur_bpw / 8;
+> -
+> -	info.direction = sdd->rx_dma.direction;
+> -	info.fifo = sdd->sfr_start + S3C64XX_SPI_RX_DATA;
+> -	sdd->rx_dma.ch = sdd->ops->request(sdd->rx_dma.dmach, &info);
+> -	info.direction =  sdd->tx_dma.direction;
+> -	info.fifo = sdd->sfr_start + S3C64XX_SPI_TX_DATA;
+> -	sdd->tx_dma.ch = sdd->ops->request(sdd->tx_dma.dmach, &info);
+> +	req.cap = DMA_SLAVE;
+> +	req.client = &s3c64xx_spi_dma_client;
+> +
+> +	sdd->rx_dma.ch = sdd->ops->request(sdd->rx_dma.dmach, &req);
+> +	sdd->tx_dma.ch = sdd->ops->request(sdd->tx_dma.dmach, &req);
+> 
+>  	return 1;
+>  }
+> --
+> 1.7.1
 
-We have a patch in for the Thinkpad U300s, but that one had a Conexant 
-codec.
-I haven't had time to start working on kernel patches for the Realtek 
-ones yet, but meanwhile, I'm tracking known machines here:
+Hi Grant,
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1002978
+I think, this is needed to support Samsung SPI with DMA and this has
+dependency with other patches in this series.
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+If you're ok on this, please reply with your ack :) so that I can take this
+series together.
+
+Thanks.
+
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
