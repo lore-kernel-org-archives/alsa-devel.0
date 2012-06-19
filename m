@@ -1,28 +1,79 @@
-From: Roland Stigge <stigge@antcom.de>
-Subject: Re: [PATCH 2/2] sound: tegra_alc5632: Adjust to of_get_named_gpio()
- change
-Date: Tue, 19 Jun 2012 13:03:21 +0200
-Message-ID: <4FE05C79.1040602@antcom.de>
-References: <1340037743-12924-1-git-send-email-stigge@antcom.de> <1340037743-12924-2-git-send-email-stigge@antcom.de> <CAAAP30G1qzDn+NKT1is+GJ9K2DS3Sm3QY+=n7s-P-Rop2b7FPQ@mail.gmail.com> <CALq1K=LXVqfiyrLjn+_p+NTU3X5RjyQzvKdVRf09zXk-RqbkrQ@mail.gmail.com> <CAAAP30FoHAbA1HcUCGQxorFymVDed19N1PPe-ZH0x0s3M+W8bg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix snd_soc_dapm_put_volsw()
+	connect
+Date: Tue, 19 Jun 2012 12:36:42 +0100
+Message-ID: <20120619113641.GL3974@opensource.wolfsonmicro.com>
+References: <1376117137.2888145.1340052088940.JavaMail.root@advansee.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <CAAAP30FoHAbA1HcUCGQxorFymVDed19N1PPe-ZH0x0s3M+W8bg@mail.gmail.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-Cc: Leon Romanovsky <leon@leon.nu>, swarren@wwwdotorg.org, cjb@laptop.org, grant.likely@secretlab.ca, rob.herring@calxeda.com, rmk+kernel@arm.linux.org.uk, ulf.hansson@stericsson.com, linus.walleij@linaro.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3616398699430290790=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75D5D103F39
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jun 2012 13:36:44 +0200 (CEST)
+In-Reply-To: <1376117137.2888145.1340052088940.JavaMail.root@advansee.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/19/2012 12:03 PM, Alexandre Pereira da Silva wrote:
-> On Tue, Jun 19, 2012 at 3:29 AM, Leon Romanovsky <leon@leon.nu> wrote:
->> Hi Alexandre,
->> Sorry to be rude, but can you explain me why did you "Acked-by" on this patch ?
->> I don't see your name in git log for tegra_alc5632.c file:
->> http://git.kernel.org/?p=linux/kernel/git/broonie/sound.git;a=history;f=sound/soc/tegra/tegra_alc5632.c;h=d684df294c0c5c80458b6de591c16965027db14b;hb=refs/heads/for-next
-> 
-> I'm tracking Roland's work on Probe defer.
 
-Yes, that's valuable. Thanks!
+--===============3616398699430290790==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TlDjLAx2PuPdVSSH"
+Content-Disposition: inline
 
-Roland
+
+--TlDjLAx2PuPdVSSH
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 18, 2012 at 10:41:28PM +0200, Beno=EEt Th=E9baudeau wrote:
+> snd_soc_dapm_put_volsw() sets connect incorrectly in the case max > 1 with
+> invert. In that case, the raw disconnect value should be max, which corre=
+sponds
+> to the userspace value 0.
+
+Applied, thanks.
+
+--TlDjLAx2PuPdVSSH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP4GRCAAoJEBus8iNuMP3dgFQP/RDhkt4DB7jiChKhDQXFvCb4
+0LlINW+rBSNLcYFvZfMfoVz/E8BChoCvGzN8BF+9V5tPQE88SwikPgbzDtTxi4ZB
+V3soDZCiMRXS4NoWFxW3Eqyd+sr0x+yK+tKAhuh/HQm7dmuBPyrdpDIjOBXcdf7g
+EmhhlLW3pws8srQHbsfrru6/+Bgi7kJodUQmRG11itVsjGvPSwxusx2iVRol+usx
+vyxsjNzkDTG8Ffr151Yu8OYpTX1ToAY/PBevYdxjKDp4MSWk+WMto4wlavqcylGH
+AlmVW/jbZb/vyvqY5GL22QA0C/6IZ6h9P4uyBLjDwUqHxZNoCHNP2/7p5n3XH+r+
+YSjH8C7shAaPi8vp4HvB2hSsH3DboPpWN672ze0hWaKU9dnMQJBAP+0X58Tk7XCP
+//SIB1WfHChMk3BcLXXForU0Az1S7OVloDC44JcN3mQ5WUQMy4UgaST6YfkHgBha
+vTVBaIrbtGf9ytbBxJDf5CITr3SsKmXGgYpKDFGmgDVXf8B8p8wLGtQzMq2i/k0o
+q3ZlxXqLrsKfM252rRYm23EqxVH689BhIbGj8Q95DOoYaxCEGLYWSFlWAp3OB8Ol
+OKQPwx0L3motduA0yufMqwUYW3skGmIZllfNH6TqSnn/JFyqh2RuUx6dxz91r/K0
+Z2fe787ZRpUILPZwD09L
+=lLYC
+-----END PGP SIGNATURE-----
+
+--TlDjLAx2PuPdVSSH--
+
+--===============3616398699430290790==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3616398699430290790==--
