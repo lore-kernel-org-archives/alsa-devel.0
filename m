@@ -1,16 +1,29 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: [PATCH] ASoC: dapm: Fix snd_soc_dapm_put_volsw()
-	connect
-Date: Mon, 18 Jun 2012 22:41:28 +0200 (CEST)
-Message-ID: <1376117137.2888145.1340052088940.JavaMail.root@advansee.com>
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Subject: Re: [RFC PATCH] Inverted internal mic
+Date: Tue, 19 Jun 2012 03:07:40 +0000 (UTC)
+Message-ID: <loom.20120619T050139-760@post.gmane.org>
+References: <4F4C9714.1080307@canonical.com> <s5haa43ux7u.wl%tiwai@suse.de>
+	<4F4CA438.90103@canonical.com> <s5hvcmrp7ji.wl%tiwai@suse.de>
+	<4F4CD1AF.2050409@canonical.com> <s5hboojozx7.wl%tiwai@suse.de>
+	<4F4CE264.7040008@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta14.web4all.fr (zose-mta14.web4all.fr [88.190.236.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86903245C9
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CA092436E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jun 2012 22:37:15 +0200 (CEST)
+	Tue, 19 Jun 2012 05:10:07 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SgopQ-0001Vr-IP
+	for alsa-devel@alsa-project.org; Tue, 19 Jun 2012 05:10:04 +0200
+Received: from 121-72-250-62.cable.telstraclear.net ([121.72.250.62])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2012 05:10:04 +0200
+Received: from eliot by 121-72-250-62.cable.telstraclear.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2012 05:10:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,34 +33,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-c25kX3NvY19kYXBtX3B1dF92b2xzdygpIHNldHMgY29ubmVjdCBpbmNvcnJlY3RseSBpbiB0aGUg
-Y2FzZSBtYXggPiAxIHdpdGgKaW52ZXJ0LiBJbiB0aGF0IGNhc2UsIHRoZSByYXcgZGlzY29ubmVj
-dCB2YWx1ZSBzaG91bGQgYmUgbWF4LCB3aGljaCBjb3JyZXNwb25kcwp0byB0aGUgdXNlcnNwYWNl
-IHZhbHVlIDAuCgpUaGlzIHVzZSBjYXNlIGN1cnJlbnRseSBkb2VzIG5vdCBhcHBlYXIgdXBzdHJl
-YW0sIGJ1dCBpdCBjb3VsZCBicmVhawpTT0NfREFQTV9TSU5HTEUoKSBvciBTT0NfREFQTV9TSU5H
-TEVfVExWKCkgZWxzZXdoZXJlIG9yIGluIHRoZSBmdXR1cmUuCgpDYzogTGlhbSBHaXJkd29vZCA8
-bHJnQHRpLmNvbT4KQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWlj
-cm8uY29tPgpDYzogPGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4KU2lnbmVkLW9mZi1ieTog
-QmVub8OudCBUaMOpYmF1ZGVhdSA8YmVub2l0LnRoZWJhdWRlYXVAYWR2YW5zZWUuY29tPgotLS0K
-IC4uLi9zb3VuZC9zb2Mvc29jLWRhcG0uYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-OCArLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA3IGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBsaW51eC1uZXh0LUhFQUQtNmM4NmI1OC5vcmlnL3NvdW5kL3NvYy9zb2Mt
-ZGFwbS5jIGxpbnV4LW5leHQtSEVBRC02Yzg2YjU4L3NvdW5kL3NvYy9zb2MtZGFwbS5jCmluZGV4
-IDQwNTg0MWMuLjVlZjA4MmYgMTAwNjQ0Ci0tLSBsaW51eC1uZXh0LUhFQUQtNmM4NmI1OC5vcmln
-L3NvdW5kL3NvYy9zb2MtZGFwbS5jCisrKyBsaW51eC1uZXh0LUhFQUQtNmM4NmI1OC9zb3VuZC9z
-b2Mvc29jLWRhcG0uYwpAQCAtMjUxNSwxOSArMjUxNSwxMyBAQCBpbnQgc25kX3NvY19kYXBtX3B1
-dF92b2xzdyhzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAlpbnQgd2k7CiAKIAl2YWwg
-PSAodWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVbMF0gJiBtYXNrKTsKKwljb25uZWN0ID0g
-ISF2YWw7CiAKIAlpZiAoaW52ZXJ0KQogCQl2YWwgPSBtYXggLSB2YWw7CiAJbWFzayA9IG1hc2sg
-PDwgc2hpZnQ7CiAJdmFsID0gdmFsIDw8IHNoaWZ0OwogCi0JaWYgKHZhbCkKLQkJLyogbmV3IGNv
-bm5lY3Rpb24gKi8KLQkJY29ubmVjdCA9IGludmVydCA/IDAgOiAxOwotCWVsc2UKLQkJLyogb2xk
-IGNvbm5lY3Rpb24gbXVzdCBiZSBwb3dlcmVkIGRvd24gKi8KLQkJY29ubmVjdCA9IGludmVydCA/
-IDEgOiAwOwotCiAJbXV0ZXhfbG9ja19uZXN0ZWQoJmNhcmQtPmRhcG1fbXV0ZXgsIFNORF9TT0Nf
-REFQTV9DTEFTU19SVU5USU1FKTsKIAogCWNoYW5nZSA9IHNuZF9zb2NfdGVzdF9iaXRzKHdpZGdl
-dC0+Y29kZWMsIHJlZywgbWFzaywgdmFsKTsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+David Henningsson <david.henningsson <at> canonical.com> writes:
+> On 02/28/2012 02:22 PM, Takashi Iwai wrote:
+> > At Tue, 28 Feb 2012 14:07:59 +0100,
+> > David Henningsson wrote:
+> > Is there a way we can
+> >> know the corresponding processing coefficients to set for ALC268 and
+> >> ALC272X as well?
+> >
+> > AFAIK, no, it was specific to the codec model.
+> 
+> Ok, then we can only hope for Kailang to supply this information if 
+> possible. And if not possible we could attempt the workaround (when/if 
+> we agree on it...) for these devices as well?
+
+Greetings,
+
+Any chance that there has been any progress on this?
+I have a machine with dmic and ALC272X (details below) that exhibits this
+problem, and can test any proposed patch.
+
+regards
+
+--
+Eliot
+
+Machine details:
+emachines 350
+Codec: Realtek ALC272X
+Vendor Id: 0x10ec0272
+Subsystem Id: 0x10250349
+Revision Id: 0x100001
