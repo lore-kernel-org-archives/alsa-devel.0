@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix snd_soc_dapm_put_volsw()
-	connect
-Date: Tue, 19 Jun 2012 12:36:42 +0100
-Message-ID: <20120619113641.GL3974@opensource.wolfsonmicro.com>
-References: <1376117137.2888145.1340052088940.JavaMail.root@advansee.com>
+Subject: [PATCH] ASoC: wm5100: Remove stubs of ASoC-level
+	register map code
+Date: Tue, 19 Jun 2012 12:43:09 +0100
+Message-ID: <1340106189-8435-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3616398699430290790=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75D5D103F39
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FFEF24464
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jun 2012 13:36:44 +0200 (CEST)
-In-Reply-To: <1376117137.2888145.1340052088940.JavaMail.root@advansee.com>
+	Tue, 19 Jun 2012 13:56:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5100.c |    9 ---------
+ 1 file changed, 9 deletions(-)
 
---===============3616398699430290790==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TlDjLAx2PuPdVSSH"
-Content-Disposition: inline
-
-
---TlDjLAx2PuPdVSSH
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jun 18, 2012 at 10:41:28PM +0200, Beno=EEt Th=E9baudeau wrote:
-> snd_soc_dapm_put_volsw() sets connect incorrectly in the case max > 1 with
-> invert. In that case, the raw disconnect value should be max, which corre=
-sponds
-> to the userspace value 0.
-
-Applied, thanks.
-
---TlDjLAx2PuPdVSSH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP4GRCAAoJEBus8iNuMP3dgFQP/RDhkt4DB7jiChKhDQXFvCb4
-0LlINW+rBSNLcYFvZfMfoVz/E8BChoCvGzN8BF+9V5tPQE88SwikPgbzDtTxi4ZB
-V3soDZCiMRXS4NoWFxW3Eqyd+sr0x+yK+tKAhuh/HQm7dmuBPyrdpDIjOBXcdf7g
-EmhhlLW3pws8srQHbsfrru6/+Bgi7kJodUQmRG11itVsjGvPSwxusx2iVRol+usx
-vyxsjNzkDTG8Ffr151Yu8OYpTX1ToAY/PBevYdxjKDp4MSWk+WMto4wlavqcylGH
-AlmVW/jbZb/vyvqY5GL22QA0C/6IZ6h9P4uyBLjDwUqHxZNoCHNP2/7p5n3XH+r+
-YSjH8C7shAaPi8vp4HvB2hSsH3DboPpWN672ze0hWaKU9dnMQJBAP+0X58Tk7XCP
-//SIB1WfHChMk3BcLXXForU0Az1S7OVloDC44JcN3mQ5WUQMy4UgaST6YfkHgBha
-vTVBaIrbtGf9ytbBxJDf5CITr3SsKmXGgYpKDFGmgDVXf8B8p8wLGtQzMq2i/k0o
-q3ZlxXqLrsKfM252rRYm23EqxVH689BhIbGj8Q95DOoYaxCEGLYWSFlWAp3OB8Ol
-OKQPwx0L3motduA0yufMqwUYW3skGmIZllfNH6TqSnn/JFyqh2RuUx6dxz91r/K0
-Z2fe787ZRpUILPZwD09L
-=lLYC
------END PGP SIGNATURE-----
-
---TlDjLAx2PuPdVSSH--
-
---===============3616398699430290790==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3616398699430290790==--
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index ba52534..33aa363 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2517,13 +2517,6 @@ static int wm5100_remove(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int wm5100_soc_volatile(struct snd_soc_codec *codec,
+-			       unsigned int reg)
+-{
+-	return true;
+-}
+-
+-
+ static struct snd_soc_codec_driver soc_codec_dev_wm5100 = {
+ 	.probe =	wm5100_probe,
+ 	.remove =	wm5100_remove,
+@@ -2531,8 +2524,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm5100 = {
+ 	.set_sysclk = wm5100_set_sysclk,
+ 	.set_pll = wm5100_set_fll,
+ 	.idle_bias_off = 1,
+-	.reg_cache_size = WM5100_MAX_REGISTER,
+-	.volatile_register = wm5100_soc_volatile,
+ 
+ 	.seq_notifier = wm5100_seq_notifier,
+ 	.controls = wm5100_snd_controls,
+-- 
+1.7.10
