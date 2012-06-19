@@ -1,22 +1,15 @@
-From: zhangfei gao <zhangfei.gao@gmail.com>
-Subject: Re: [PATCH v2 1/5] dmaengine: mmp_tdma: add mmp tdma
-	support
-Date: Tue, 19 Jun 2012 20:21:27 +0800
-Message-ID: <CAMj5Bkh+DeQCVc5OVMUwxxsMUGMaGz5=BxA_9gd-FcyYtGH6=w@mail.gmail.com>
-References: <1339409081-10097-1-git-send-email-zhangfei.gao@marvell.com>
-	<1339409081-10097-2-git-send-email-zhangfei.gao@marvell.com>
-	<1339670638.1927.1641.camel@vkoul-udesk3>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8904: Remove unused variable in probe()
+Date: Tue, 19 Jun 2012 13:22:40 +0100
+Message-ID: <1340108560-24656-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AE2C244CF
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5471D244D2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jun 2012 14:21:28 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so4746845wgb.20
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2012 05:21:28 -0700 (PDT)
-In-Reply-To: <1339670638.1927.1641.camel@vkoul-udesk3>
+	Tue, 19 Jun 2012 14:22:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,33 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 14, 2012 at 6:43 PM, Vinod Koul <vinod.koul@linux.intel.com> wr=
-ote:
-> On Mon, 2012-06-11 at 18:04 +0800, Zhangfei Gao wrote:
->> +static int mmp_tdma_clear_chan_irq(struct mmp_tdma_chan *tdmac)
->> +{
->> + =A0 =A0 =A0 u32 reg =3D readl(tdmac->reg_base + TDISR);
->> +
->> + =A0 =A0 =A0 if (reg & TDISR_COMP) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* clear irq */
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg &=3D ~TDISR_COMP;
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(reg, tdmac->reg_base + TDISR);
->> +
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
->> + =A0 =A0 =A0 }
->> + =A0 =A0 =A0 return -1;
->> +}
-> -1?
-> Please return a proper linux error code.
->
->
-> --
-> ~Vinod
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8904.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-Hi, Vinod
-
-The patch is updated, would you mind take a look, thanks.
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index cc5fb43..0013afe 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -2054,7 +2054,6 @@ static void wm8904_handle_pdata(struct snd_soc_codec *codec)
+ static int wm8904_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8904_pdata *pdata = wm8904->pdata;
+ 	int ret;
+ 
+ 	codec->control_data = wm8904->regmap;
+-- 
+1.7.10
