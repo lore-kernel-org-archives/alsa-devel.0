@@ -1,91 +1,81 @@
 From: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [PATCH 2/3] swarm_cs4297: Rename AC97 registers to use
- sound/ac97_codec.h definitions
-Date: Tue, 19 Jun 2012 16:13:55 -0300
-Message-ID: <CALF0-+Vbje9D44KpX+vP3XoZGMX-ipXPJp5mejOqP=EseyPYBg@mail.gmail.com>
-References: <1339444731-15678-1-git-send-email-elezegarcia@gmail.com>
-	<1339444731-15678-2-git-send-email-elezegarcia@gmail.com>
-	<s5h8vfkn2bb.wl%tiwai@suse.de>
-	<CALF0-+Ukw2+whn5zpA4R6PjN0BoLm5aUhQKUNQt0rpWM1vNXFA@mail.gmail.com>
-	<s5ha9zz97zw.wl%tiwai@suse.de>
-	<CALF0-+WxqMmoPMGjMZBBiKq2NR5qPESo6mA0B4MPhdyc_KUNsw@mail.gmail.com>
-	<s5h1ulbjwnr.wl%tiwai@suse.de>
+Subject: [PATCH 1/2] swarm_cs4297: Provide definitions for AC97
+	registers
+Date: Tue, 19 Jun 2012 16:20:23 -0300
+Message-ID: <1340133624-3670-1-git-send-email-elezegarcia@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h1ulbjwnr.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7837E24447
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jun 2012 21:20:46 +0200 (CEST)
+Received: by ggnk3 with SMTP id k3so4791076ggn.38
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2012 12:20:45 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Ezequiel Garcia <elezegarcia@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Ralf Baechle <ralf@linux-mips.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 19, 2012 at 9:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 19 Jun 2012 09:41:30 -0300,
-> Ezequiel Garcia wrote:
->>
->> On Tue, Jun 19, 2012 at 2:38 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Mon, 18 Jun 2012 14:50:53 -0300,
->> > Ezequiel Garcia wrote:
->> >>
->> >> Hi Takashi,
->> >>
->> >> On Mon, Jun 18, 2012 at 11:04 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > At Mon, 11 Jun 2012 16:58:50 -0300,
->> >> > Ezequiel Garcia wrote:
->> >> >>
->> >> >> This patch removes the last usage of linux/ac97_codec.h
->> >> >> by renaming ac97 registers to use sound/ac97_codec.h definitions.
->> >> >> This will enable us to remove linux/ac97_codec.h.
->> >> >>
->> >> >> Not even compilation tested.
->> >> >>
->> >> >> Cc: Ralf Baechle <ralf@linux-mips.org>
->> >> >> Cc: Jaroslav Kysela <perex@perex.cz>
->> >> >> Cc: Takashi Iwai <tiwai@suse.de>
->> >> >> Cc: Clemens Ladisch <clemens@ladisch.de>
->> >> >> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
->> >> >> ---
->> >> >> Hi all,
->> >> >>
->> >> >> This patch is important so we can remove linux/ac97_codec.h usage.
->> >> >> Since this driver is mips related, I can't test it until I install
->> >> >> a mips toolchain.
->> >> >> If someone can compile this for me, or even test it with real
->> >> >> hardware I think it would be better.
->> >> >> If not then I can install a mips toolchain and compile it myself,
->> >> >> but I won't be able to test it on real hardware.
->> >> >>
->> >> >> This patch should be treated with carefully and be applied only
->> >> >> if someone manages to test it.
->> >> >
->> >> > A slight concern by this change is that the driver includes
->> >> > sound/ac97_codec.h although it's based on OSS framework.
->> >> > sound/ac97_codec.h is the header for ALSA ac97 structs, and this can't
->> >> > be mixed up with OSS.
->> >> >
->> >> > If the intention is only about AC97 register definition, we may split
->> >> > ac97_codec.h into ac97_regs.h and ac97_codecs.h where the former
->> >> > contains only the register definitions (thus framework-neutral) and
->> >> > the latter includes the former.
->> >> >
->> >> >
->> >>
->> >> Yes, splitting sounds good to me. It could be useful for other ac97
->> >> drivers (e.g. em28xx).
->>
->> On a second thought, I'm not sure splitting the header is the best way
->> to proceed. Since swarm just uses some AC97 register definition
->> maybe we could just duplicate those (less than ten) macros in swarm
->> c file.
->>
->> It's a less intrusive aproach and it allows us to remove the unused
->> linux/ac97_codec.h.
->
-> I'm OK in both ways.
->
+This patch removes the last usage of linux/ac97_codec.h by
+re-defining used AC97 registers.
+We can't use sound/ac97_codec.h here, since it is an OSS driver.
 
-Okey, consider this last two patches nacked and I'll prepare new ones.
-Still, I would like someone to *at least* compile swarm driver with the patch.
+Not even compilation tested.
 
-Thanks,
-Ezequiel.
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+---
+ sound/oss/swarm_cs4297a.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
+
+diff --git a/sound/oss/swarm_cs4297a.c b/sound/oss/swarm_cs4297a.c
+index 09d4648..bd75f54 100644
+--- a/sound/oss/swarm_cs4297a.c
++++ b/sound/oss/swarm_cs4297a.c
+@@ -69,7 +69,6 @@
+ #include <linux/sound.h>
+ #include <linux/slab.h>
+ #include <linux/soundcard.h>
+-#include <linux/ac97_codec.h>
+ #include <linux/pci.h>
+ #include <linux/bitops.h>
+ #include <linux/interrupt.h>
+@@ -199,6 +198,22 @@ static const char invalid_magic[] =
+         }                                          \
+ })
+ 
++/* AC97 registers */
++#define AC97_MASTER_VOL_STEREO   0x0002      /* Line Out		*/
++#define AC97_PCBEEP_VOL          0x000a      /* none			*/
++#define AC97_PHONE_VOL           0x000c      /* TAD Input (mono)	*/
++#define AC97_MIC_VOL             0x000e      /* MIC Input (mono)	*/
++#define AC97_LINEIN_VOL          0x0010      /* Line Input (stereo)	*/
++#define AC97_CD_VOL              0x0012      /* CD Input (stereo)	*/
++#define AC97_AUX_VOL             0x0016      /* Aux Input (stereo)	*/
++#define AC97_PCMOUT_VOL          0x0018      /* Wave Output (stereo)	*/
++#define AC97_RECORD_SELECT       0x001a      /*			*/
++#define AC97_RECORD_GAIN         0x001c
++#define AC97_GENERAL_PURPOSE     0x0020
++#define AC97_3D_CONTROL          0x0022
++#define AC97_POWER_CONTROL       0x0026
++#define AC97_VENDOR_ID1           0x007c
++
+ struct list_head cs4297a_devs = { &cs4297a_devs, &cs4297a_devs };
+ 
+ typedef struct serdma_descr_s {
+-- 
+1.7.4.4
