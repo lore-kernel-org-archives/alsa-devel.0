@@ -1,95 +1,78 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 1/2 v2] asoc: add sport driver for
-	bf6xx soc
-Date: Wed, 20 Jun 2012 11:25:55 +0100
-Message-ID: <20120620102555.GI3978@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2 v2] asoc: add i2s dai driver for bf6xx
+	soc
+Date: Wed, 20 Jun 2012 11:27:41 +0100
+Message-ID: <20120620102741.GJ3978@opensource.wolfsonmicro.com>
 References: <1340226031-19930-1-git-send-email-scott.jiang.linux@gmail.com>
+	<1340226031-19930-2-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3635259213465378414=="
-Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-In-Reply-To: <1340226031-19930-1-git-send-email-scott.jiang.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
-List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-To: Scott Jiang <scott.jiang.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============6955797699735319478=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ACBFF24484
+	for <alsa-devel@alsa-project.org>;
+	Wed, 20 Jun 2012 12:27:42 +0200 (CEST)
+In-Reply-To: <1340226031-19930-2-git-send-email-scott.jiang.linux@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3635259213465378414==
+--===============6955797699735319478==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7IgncvKP0CVPV/ZZ"
+	protocol="application/pgp-signature"; boundary="2fjX3cMESU3XgGmZ"
 Content-Disposition: inline
 
 
---7IgncvKP0CVPV/ZZ
+--2fjX3cMESU3XgGmZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jun 20, 2012 at 05:00:30PM -0400, Scott Jiang wrote:
+On Wed, Jun 20, 2012 at 05:00:31PM -0400, Scott Jiang wrote:
+> This driver enables i2s mode support on blackfin bf6xx platform.
+> We reuse bf5xx-i2s-pcm.c as its i2s pcm driver because it's the same
+> for both bf5xx and bf6xx soc.
 
-Applied, thanks.  There is one minor fixup below - please send an
-incremental patch for that.
+Applied, thanks.
 
-> The SPORT(Serial Port) module on bf6xx soc has a totally different ip comparing to bf5xx
-> soc. An individual SPORT module consists of two independently configurable SPORT halves
-> with identical functionality. Each SPORT half can be configured for either transmitter
-> or receiver.
-
-Please take more care with the formatting of your changelogs, they
-should be wrapped to within 80 columns and the subject line should
-correspond to the subsystem style.  I reflowed.
-
-> +static irqreturn_t sport_err_irq(int irq, void *dev_id)
-> +{
-> +	struct sport_device *sport = dev_id;
-> +	struct device *dev = &sport->pdev->dev;
-> +
-> +	if (sport->tx_regs->spctl & SPORT_CTL_DERRPRI)
-> +		dev_dbg(dev, "sport error: TUVF\n");
-> +	if (sport->rx_regs->spctl & SPORT_CTL_DERRPRI)
-> +		dev_dbg(dev, "sport error: ROVF\n");
-
-These should be dev_err() not dev_dbg() - they're errors.
-
---7IgncvKP0CVPV/ZZ
+--2fjX3cMESU3XgGmZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP4aUsAAoJEBus8iNuMP3dsd4P/26LELHC+xYp6kGQUtIjQDGo
-Su87Fk44wUGqZM6uEbWVIb/1FTrovGwVZefaW0h5FgR7cciwbFL3o+CBlPrtOGz7
-FCStcBGODUTvg9uTtaOWHfOd7faDhWWo6/TFr8Gty1YBnYHZH4SfbVzk6sAlBVWO
-t+8MM7Fn9b2wNgdELHVtGIf+D7PGchDyoWxszHtMskwuauiut1fHM7cM6PyE2bIu
-Eehrpw0/VR/7z0kcgOGk93nvxalQ1TzIKBCwCddT55qX7lQ8mSwkyiNrJ8NRmwmc
-FTxhm6fr4TIgy8ehlEI8YDggAJts8syKbfqihYV9XqK39qAhfKv9RC435nTGV5RU
-QajXPzhCigqUyjHXe6cQXurnD4r7RVmD3h4/yyU/0mKYQnaoqo5UBJKpC908Asxj
-XqYPX/ekiM01dd8cFDQ+QK88LK7mu4nv2CdUbTrRYZnN1HlE9MQEMiFv3JuaEGxD
-EQAPqvDZtMq8wX0mJn3duDhbfCFoKb4w4EpN/DZyvj/H3JCsu7hqTnvy+ooXGGoX
-cVND7LoD8+7qg/IH8DLT5FiTYPLhdId6+C8ccRFNVZnD9jDAvnrY/TqpgPYuY/kz
-kFbd8rrgW7IDTmlNXje2oszyJN4jPmXLbyjdpArKEPKH/Ii9FBxmnYpHmBWsMAwc
-VeshnoLSVWfxQQkceUJ5
-=A2CI
+iQIcBAEBAgAGBQJP4aWUAAoJEBus8iNuMP3dWUcP/3IgQI1L7ePVUMjbHmK6yDXH
+5hEYrB3doPvGsFbPoIj/iMAys8sP0Y545ci4jx0/IzPA5YP1RkKVZPFsSY8hoj/y
+JRoHynV/5I21zFAqrad745WzL0uE8Lipq/IeYuB5xwN9qF9uJvKij73aRPaBYix7
+TO66LRa3FG3/RG6pp05bIVO3i9zkH7mxLe4k4JvaXDuZPOT4LchvSwrvWz3yAd0v
+kX6tYsJ9/1N8mm558iJ1XqlemeYrbT4b0DTEYl/uvhcV58Xzu7AVpJMB404Wzxk2
+tSD5TlMTpegl44l0x1DqgLMTfmsGqS2PKcdkpKEPgIRoR6Gc6SfGJDP1yImWLvJN
+hnbw08pXyuAdez/LIWcYcq44bd8h6l6aE3ulIqiW+4DqMbTKfrtenCUvKAkBqpPY
+S/4+l2UxHFkSuKb7SkUDV51v/kCjoSrcsFBXyUf1O6WEiNTycQF+JjNpAjdq0Vyh
+mR03iwpDd5Xo0SbP3MDGUbFIG4qYzK2bXDAoMZp7JLRbroga3cc70tHhtrxAd+Fx
+AFTLuZEO1ZJJVEYip8PxeJz6PBRwkx0ZAHdKpwUQXyTfrhmo4LjyK66TZugTo4KT
+3eeQt4J6q3GHOmHOzvI5UgbovFzKZWiJWToeZa6e4FDn7+VwAqpo5GCzCfySQ1G4
+rC0SP/wRcck1VeT42Dr0
+=DaoP
 -----END PGP SIGNATURE-----
 
---7IgncvKP0CVPV/ZZ--
+--2fjX3cMESU3XgGmZ--
 
---===============3635259213465378414==
+--===============6955797699735319478==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-Uclinux-dist-devel mailing list
-Uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel
---===============3635259213465378414==--
+
+--===============6955797699735319478==--
