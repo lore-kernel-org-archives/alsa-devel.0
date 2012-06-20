@@ -1,20 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 1/3] dmaengine: Add wrapper for
-	device_tx_status callback
-Date: Wed, 20 Jun 2012 14:13:45 +0200
-Message-ID: <4FE1BE79.5080903@metafoo.de>
-References: <1339438302-12417-1-git-send-email-lars@metafoo.de>
-	<1340189662.1927.1648.camel@vkoul-udesk3>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: Re: Using UCM with PulseAudio
+Date: Wed, 20 Jun 2012 13:30:48 +0100
+Message-ID: <1340195448.8622.7.camel@localhost>
+References: <1339728813.5228.48.camel@localhost>
+	<1339780110.7609.21.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-150.synserver.de (smtp-out-159.synserver.de
-	[212.40.185.159])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00EF52454C
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE4FB24356
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2012 14:10:30 +0200 (CEST)
-In-Reply-To: <1340189662.1927.1648.camel@vkoul-udesk3>
+	Wed, 20 Jun 2012 14:30:49 +0200 (CEST)
+In-Reply-To: <1339780110.7609.21.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Mika Westerberg <mika.westerberg@iki.fi>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, pulseaudio-discuss@lists.freedesktop.org, Feng Wei <feng.wei@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/20/2012 12:54 PM, Vinod Koul wrote:
-> On Mon, 2012-06-11 at 20:11 +0200, Lars-Peter Clausen wrote:
->> This patch adds a small inline wrapper for the devivce_tx_status callback of a
->> dma device. This makes the source code of users of this function a bit more
->> compact and a bit more legible.
-> Applied, thanks
+Liam,
+Thanks for clearing things up.
+
+On Fri, 2012-06-15 at 18:08 +0100, Liam Girdwood wrote:
+[...]
+> > The first problem is mutual exclusivity of verbs. From what I can
+> > understand, verbs are intended to be mutually exclusive -- if you have a
+> > HiFi verb and a VoiceCall verb, only one may be used at a time. We have
+> > mapped verbs to card profiles, which offer the same guarantee. However,
+> > on Android (which is a fair example of the kind of audio policy we might
+> > want), the HiFi verb PCMs maybe used while the VoiceCall PCMs are open.
+> > This is done, for example, to play an end-of-call tone from the CPU
+> > while the modem PCMs are still held open. Is there some way to do this
+> > with UCM?
+> > 
 > 
-> rest of the series should go thru ASoC tree.
+> A verb is not tied to any specific PCM device here. It's intended to be
+> the highest level of audio use case where it can configure any audio
+> resource (including multiple cards) to enable the use case action.
 > 
+> So for OMAP4 we would have the HiFi verb for all use case where we are
+> playing or capturing HiFi quality and the voice call verb where we are
+> making a telephone voice call.
+> 
+> UCM provides the "modifier" to allow ad-hoc modifications to the audio
+> use case like above where we want to play an end of call tone. In this
+> case the verb is still VoiceCall, but PA would enable the "PlayTone"
+> modifer to play the tone (UCM can also tell Pulseaudio the sink PCM and
+> volume control for the tone data).
 
-Thanks.
+Just as an observation, I think the Android HAL just uses PCM 0 and not
+the PCM 3, but in the PA case, I'll do it the way you describe since
+that makes more sense.
 
-There is a compile time dependency between the patches, so this patch should
-go through the ASoC tree as well, or we'll have to wait another release
-before the ASoC patches can be applied.
+> > The second problem is having separate PCMs for modifiers. In the OMAP4
+> > profile, ringtone playback is exposed via a PlayTone modifier which
+> > corresponds to a separate PCM from regular HiFi playback. In the UCM-PA
+> > mapping we decided on, modifiers were implemented as device intended
+> > roles on a sink, so that when a stream with that role came in, we could
+> > enable the modifier, and disable it when such a stream ends. However,
+> > this doesn't account for switching the PCM on which playback is
+> > occurring. Should we be creating a separate sink for such modifiers
+> > (with lower priority, so they're not routed to unless there's a stream
+> > with the required role coming in)? Or should we be reopening the PCM for
+> > this?
+> 
+> The intention for modifiers that use separate ALSA PCM sinks/sources
+> from the verb is to keep the main stream on the verb PCM source/sink and
+> the modifier stream will use the modifier PCM sink/source (this can be
+> the same PCM for some hardware).
+> 
+> e.g. MP3 will be played to pcm 0 sink and ringtone to pcm 1 sink. The HW
+> will then mix both streams before they are rendered.
 
-- Lars
+Okay, so what this means is that we need to extend the current UCM work
+to create a second, lower priority sink for each modifier that has a
+distinct PlaybackPCM, and let the role-based routing pick that in cases
+where it makes sense. It's good that this doesn't change how we've
+mapped existing concepts -- just adds to it.
+
+Cheers,
+Arun
