@@ -1,74 +1,133 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: [PATCH 1/1] davinci:mcasp: Fix audio pll (pll-p) configure bug
-Date: Wed, 20 Jun 2012 19:18:07 +0530
-Message-ID: <1340200087-13744-1-git-send-email-gururaja.hebbar@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 3/3] ASoC: dmaengine-pcm: Add support
+ for querying stream position from DMA driver
+Date: Wed, 20 Jun 2012 16:11:03 +0200
+Message-ID: <4FE1D9F7.3000902@metafoo.de>
+References: <1339438302-12417-1-git-send-email-lars@metafoo.de>
+	<1339438302-12417-3-git-send-email-lars@metafoo.de>
+	<20120620134800.GL10387@shlinux2.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org
-Cc: sudhakar.raj@ti.com, nsekhar@ti.com, gururaja.hebbar@ti.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-128.synserver.de (smtp-out-173.synserver.de
+	[212.40.185.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 49D29245AF
+	for <alsa-devel@alsa-project.org>;
+	Wed, 20 Jun 2012 16:07:19 +0200 (CEST)
+In-Reply-To: <20120620134800.GL10387@shlinux2.ap.freescale.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dong Aisheng <aisheng.dong@freescale.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Mika Westerberg <mika.westerberg@iki.fi>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-In sound/soc/codecs/tlv320aic3x.c
+On 06/20/2012 03:48 PM, Dong Aisheng wrote:
+> On Mon, Jun 11, 2012 at 08:11:42PM +0200, Lars-Peter Clausen wrote:
+>> Currently the sound dmaengine pcm helper functions implement the pcm_pointer
+>> callback by trying to count the number of elapsed periods. This is done by
+>> advancing the stream position in the dmaengine callback by one period.
+>> Unfortunately there is no guarantee that the callback will be called for each
+>> elapsed period. It may be possible that under high system load it is only called
+>> once for multiple elapsed periods. This patch addresses the issue by
+>> implementing support for querying the current stream position directly from the
+>> dmaengine driver. Since not all dmaengine drivers support reporting the stream
+>> position yet the old period counting implementation is kept for now.
+>>
+>> Furthermore the new mechanism allows to report the stream position with a
+>> sub-period granularity, given that the dmaengine driver supports this.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>>
+>> ---
+>> Changes since v1:
+>> 	* Don't implement fallback support in snd_dmaengine_pcm_pointer, instead it
+>> 	  is now moved to its own function. This was done to make it more explicit
+>> 	  that implementing residue reporting for cyclic is required and that this
+>> 	  won't be optional for new drivers.
+>> ---
+>>  include/sound/dmaengine_pcm.h |    1 +
+>>  sound/soc/soc-dmaengine-pcm.c |   29 ++++++++++++++++++++++++++++-
+>>  2 files changed, 29 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+>> index ea57915..b877334 100644
+>> --- a/include/sound/dmaengine_pcm.h
+>> +++ b/include/sound/dmaengine_pcm.h
+>> @@ -38,6 +38,7 @@ void *snd_dmaengine_pcm_get_data(struct snd_pcm_substream *substream);
+>>  int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
+>>  	const struct snd_pcm_hw_params *params, struct dma_slave_config *slave_config);
+>>  int snd_dmaengine_pcm_trigger(struct snd_pcm_substream *substream, int cmd);
+>> +snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream);
+>>  snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream *substream);
+>>  
+>>  int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+>> diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+>> index 7c0877e..2995334 100644
+>> --- a/sound/soc/soc-dmaengine-pcm.c
+>> +++ b/sound/soc/soc-dmaengine-pcm.c
+>> @@ -30,6 +30,7 @@
+>>  
+>>  struct dmaengine_pcm_runtime_data {
+>>  	struct dma_chan *dma_chan;
+>> +	dma_cookie_t cookie;
+>>  
+>>  	unsigned int pos;
+>>  
+>> @@ -153,7 +154,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+>>  
+>>  	desc->callback = dmaengine_pcm_dma_complete;
+>>  	desc->callback_param = substream;
+>> -	dmaengine_submit(desc);
+>> +	prtd->cookie = dmaengine_submit(desc);
+>>  
+>>  	return 0;
+>>  }
+>> @@ -213,6 +214,32 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
+>>  }
+>>  EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer_no_residue);
+>>  
+>> +/**
+>> + * snd_dmaengine_pcm_pointer - dmaengine based PCM pointer implementation
+>> + * @substream: PCM substream
+>> + *
+>> + * This function can be used as the PCM pointer callback for dmaengine based PCM
+>> + * driver implementations.
+>> + */
+>> +snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
+>> +{
+>> +	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+>> +	struct dma_tx_state state;
+>> +	enum dma_status status;
+>> +	unsigned int buf_size;
+>> +	unsigned int pos = 0;
+>> +
+>> +	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
+>> +	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
+>> +		buf_size = snd_pcm_lib_buffer_bytes(substream);
+>> +		if (state.residue > 0 && state.residue <= buf_size)
+>> +			pos = buf_size - state.residue;
+> One question i still not very clear, for the case when one buffer size of cyclic dma
+> transfer completes, the dma residue may be buf_size( or 0 as Russell said), then
+> pos here is 0. So is it correct that call bytes_to_frames(substream->runtime, 0)
+> for this case?
+> 
 
-	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
-	snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
-		      data | (pll_p << PLLP_SHIFT));
+Yes, a residue of 0 and of buf_size are equivalent. And the fact that
+residue may be 0 for cyclic DMA is just leakage through our abstraction
+layers when cyclic DMA is emulated using "normal" DMA. For real cyclic DMA
+residue should never be zero.
 
-In the above code pll-p value is OR'ed with previous value without
-clearing the mask.
+The value which is returned by the pcm_pointer callback needs to less than
+buffer_size, otherwise the ALSA core code will report an error. So if
+residue is 0 and we'd not do any special handling for this case we'd return
+buffer_size here.
 
-Currently it seems pll-p value doesn't change across Sampling frequency
-(it stays at 1).
-
-However on some platforms (like AM335x EVM-SK), pll-p may have different
-values across different sampling frequencies. In such case, above code
-configures the pll with a wrong value.
-Because of this bug, when a audio stream is played with pll value
-different from previous stream, audio is heard as stretched.
-
-Fix the same by clearing the mask and then writing the value.
-
-Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
----
- sound/soc/codecs/tlv320aic3x.c |    2 +-
- sound/soc/codecs/tlv320aic3x.h |    1 +
- 2 files changed, 2 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index d0dbac1..8c1977b 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -963,7 +963,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- found:
--	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
-+	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG) & ~PLLP_MASK;
- 	snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
- 		      data | (pll_p << PLLP_SHIFT));
- 	snd_soc_write(codec, AIC3X_OVRF_STATUS_AND_PLLR_REG,
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 06a1978..16d9999 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -166,6 +166,7 @@
- 
- /* PLL registers bitfields */
- #define PLLP_SHIFT		0
-+#define PLLP_MASK		7
- #define PLLQ_SHIFT		3
- #define PLLR_SHIFT		0
- #define PLLJ_SHIFT		2
--- 
-1.7.1
+- Lars
