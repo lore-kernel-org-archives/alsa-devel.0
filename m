@@ -1,20 +1,23 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: [RFC PATCH] Inverted internal mic
-Date: Wed, 20 Jun 2012 22:53:08 +0100
-Message-ID: <CAAMvbhFUicGXUT56DKMm2kZ8y8UmrGxwGQM3efh1sZj9ELa56w@mail.gmail.com>
-References: <4F4C9714.1080307@canonical.com>
+From: zhangfei gao <zhangfei.gao@gmail.com>
+Subject: Re: [PATCH 1/5] dmaengine: mmp_tdma: add mmp tdma
+	support
+Date: Thu, 21 Jun 2012 09:03:07 +0800
+Message-ID: <CAMj5BkiQij0fRnt33KAQ7TygLeWSyE3xC-w7ocN-qqHvxnb_8w@mail.gmail.com>
+References: <1339670638.1927.1641.camel@vkoul-udesk3>
+	<1339729448-25895-1-git-send-email-zhangfei.gao@marvell.com>
+	<1340190231.1927.1652.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6A7024700
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CAEAC103F67
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2012 22:31:55 +0200 (CEST)
-Received: by vcbgb23 with SMTP id gb23so2732086vcb.38
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2012 14:53:08 -0700 (PDT)
-In-Reply-To: <4F4C9714.1080307@canonical.com>
+	Thu, 21 Jun 2012 01:41:56 +0200 (CEST)
+Received: by werh12 with SMTP id h12so48190wer.38
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2012 18:03:09 -0700 (PDT)
+In-Reply-To: <1340190231.1927.1652.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, 903853@bugs.launchpad.net
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Leo Yan <leoy@marvell.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, alsa-devel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@ti.com>, Chao Xie <cxie4@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 28 February 2012 08:57, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> Hi,
+On Wed, Jun 20, 2012 at 7:03 PM, Vinod Koul <vinod.koul@linux.intel.com> wr=
+ote:
+> On Fri, 2012-06-15 at 11:04 +0800, Zhangfei Gao wrote:
+>> Add support for two-channel dma under dmaengine
+>> support: mmp-adma and pxa910-squ
+> Applied, thanks
 >
-> One of the more common problems on laptop machines, is that the internal mic
-> provides a stereo signal but with one channel phase inverted, or
-> differential output.
+> --
+> ~Vinod
+
+Thanks Vinod for the great help.
+
 >
-> This means problems for applications recording two channels but later
-> merging them into one, leaving them with zero or near-zero output.
+> --
+> To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
 >
-
-If the mic capture looks phase inverted, this might actually be a way
-to reduce common mode noise on the pickup.
-It might be a differential input for improved dynamic range.
-In which case, just dropping one of the channels is not the best,
-quality wise, option.
-To get the highest quality output, it might be best to do a
-differential calculation.
-I.e. Channel A - Channel B.
-The problem being, if the input is 16bits, the Channel A - Channel B is 17bits.
-Can any tests be done to see if Channel A - Channel B has a better S/N
-ratio than simply dropping channel B, and copy channel A to channel B?
-
-Kind Regards
-
-James
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
