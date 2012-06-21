@@ -1,15 +1,18 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: [PATCH] davinci:mcasp: Fix codec pll configure bug
-Date: Thu, 21 Jun 2012 16:08:28 +0530
-Message-ID: <1340275108-15555-1-git-send-email-gururaja.hebbar@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V2 2/9] sound:asoc: Add support for STA529
+	Audio Codec
+Date: Thu, 21 Jun 2012 13:25:40 +0100
+Message-ID: <20120621122540.GV4037@opensource.wolfsonmicro.com>
+References: <cover.1340273261.git.rajeev-dlh.kumar@st.com>
+	<d06e4180229ac4aa0e0f27aa4d444dd7a9634afd.1340273261.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0895928097652603880=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F1D810B988
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB05B10B97A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jun 2012 11:32:42 +0200 (CEST)
+	Thu, 21 Jun 2012 13:04:31 +0200 (CEST)
+In-Reply-To: <d06e4180229ac4aa0e0f27aa4d444dd7a9634afd.1340273261.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,58 +22,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, alsa-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org
-Cc: sudhakar.raj@ti.com, nsekhar@ti.com, gururaja.hebbar@ti.com
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-In sound/soc/codecs/tlv320aic3x.c
 
-	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
-	snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
-		      data | (pll_p << PLLP_SHIFT));
+--===============0895928097652603880==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oAjj1ZwgLg4oRN9q"
+Content-Disposition: inline
 
-In the above code, pll-p value is OR'ed with previous value without
-clearing it. Bug is not seen if pll-p value doesn't change across
-Sampling frequency.
 
-However on some platforms (like AM335x EVM-SK), pll-p may have different
-values across different sampling frequencies. In such case, above code
-configures the pll with a wrong value.
-Because of this bug, when a audio stream is played with pll value
-different from previous stream, audio is heard as stretched.
+--oAjj1ZwgLg4oRN9q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fix the same by clearing the mask and then writing the value.
+On Thu, Jun 21, 2012 at 03:54:50PM +0530, Rajeev Kumar wrote:
+> This patch adds the support for STA529 audio codec.
 
-Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
----
- sound/soc/codecs/tlv320aic3x.c |    2 +-
- sound/soc/codecs/tlv320aic3x.h |    1 +
- 2 files changed, 2 insertions(+), 1 deletions(-)
+As I said last time always use subject lines corresponding to the style
+of the subsystem, don't make up your own style.
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index d0dbac1..8c1977b 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -963,7 +963,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- found:
--	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
-+	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG) & ~PLLP_MASK;
- 	snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
- 		      data | (pll_p << PLLP_SHIFT));
- 	snd_soc_write(codec, AIC3X_OVRF_STATUS_AND_PLLR_REG,
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 06a1978..16d9999 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -166,6 +166,7 @@
- 
- /* PLL registers bitfields */
- #define PLLP_SHIFT		0
-+#define PLLP_MASK		7
- #define PLLQ_SHIFT		3
- #define PLLR_SHIFT		0
- #define PLLJ_SHIFT		2
--- 
-1.7.1
+This is mostly OK, a few things below but nothing terribly major.
+
+> +static int sta529_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	u8 val;
+> +
+> +	if (mute)
+> +		val |= CODEC_MUTE_VAL;
+
+You need to initialise val otherwise it's going to have an undefined
+value when you're not muting.
+
+> +	codec->control_data = sta529->regmap;
+> +	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+
+You've got a regmap, you should be using SND_SOC_REGMAP as the control
+mode.
+
+> +	snd_soc_add_codec_controls(codec, sta529_snd_controls,
+> +			ARRAY_SIZE(sta529_snd_controls));
+> +
+> +	snd_soc_add_codec_controls(codec, sta529_new_snd_controls,
+> +			ARRAY_SIZE(sta529_new_snd_controls));
+
+Set these in the CODEC driver structure and merge the two arrays, no
+point in having code for this.
+
+> +static int sta529_resume(struct snd_soc_codec *codec)
+> +{
+> +	snd_soc_cache_sync(codec);
+
+You're not using the ASoC cache code.
+
+> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
+
+The second of these isn't needed, the core will ensure the device is in
+standby before suspend.
+
+> +	sta529->regmap = regmap_init_i2c(i2c, &sta529_regmap);
+> +	if (IS_ERR(sta529->regmap)) {
+
+devm_regmap_init_i2c() then you don't need any cleanup code for it.
+
+> +static int __init sta529_modinit(void)
+> +{
+> +	int ret = 0;
+
+module_i2c_driver.
+
+--oAjj1ZwgLg4oRN9q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP4xFCAAoJEBus8iNuMP3dvl0P/ib62k2yUJB1YeA6ORoVcFK9
+g/zg7dbQRtjxEEnPC/WpitfHEn+GxP1OIooxZf+3xpi4gxMjtVeWIWsnZtqdAMCB
+nlnVH4iDti2yEYw3UWGT1B7+yQ3uMF6QxDvVgxbC0F/lcAGQei2/SpiYZvdvMhrz
+rXrdJz/TqWKGUF5MlPzd0qcVHuFeySr6qd0jrnnqrjhIIQjrPnNzmG/G9I7RwHqZ
+2Pi3+MPOjJHtqqgsSi926jLESbnDCBT/1++xSDIa4PgYS7HNNTNREbJhHBvlQTxa
+tBFY0pM4y//QhKl6MAwqARpdU6f+WV0CJiTGHYwYFkKG7SEV28J23UGijUuHMJKX
+iwMfQrU5yVZNqBa3lXQgZLg7VfSdcLiiYgy56JZIKkA44ijbID+i+nJbisWSfu2K
+Qdx9ar8+EYi4JiIK8glJeAOTjM7xpXg9cyjzL0AJo6hh8EPpiQ41goePZQIzTXhN
+OBysFFZyxj+l3qQKFG583GyHzJ6Be15GcT2A723DSTG9N6gcTkWZOSbVJCdisvIh
+HGRXvVF1m0gP41VV+KX+4WaIfEHGbYYwB8Ekga44r0Dowey7jpMSAs5pY9R0YNAX
+gVesbsMeX85Fh3udn9Ra+Sbe+BJ/6LXlZTIc7x6qB7BnRDA4ee/VapMx3UerpnP+
+gSaY7LisV0VcxOTeehYV
+=0mmF
+-----END PGP SIGNATURE-----
+
+--oAjj1ZwgLg4oRN9q--
+
+--===============0895928097652603880==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0895928097652603880==--
