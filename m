@@ -1,45 +1,95 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Tempo event in a Midi sequencer...
-Date: Thu, 21 Jun 2012 08:34:55 +0200
-Message-ID: <4FE2C08F.3050307@ladisch.de>
-References: <1340223429.16177.YahooMailClassic@web29601.mail.ird.yahoo.com>
+From: Feng Wei <feng.wei@linaro.org>
+Subject: Re: [alsa-devel] Using UCM with PulseAudio
+Date: Thu, 21 Jun 2012 16:30:04 +0800
+Message-ID: <CAJ4+uhVuCAKZACJn5stP1ZM62dOQot-Jtu3bgqaNgVBVTzvKYw@mail.gmail.com>
+References: <1339728813.5228.48.camel@localhost>
+	<1339780110.7609.21.camel@odin> <1340195448.8622.7.camel@localhost>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 8A9F11040DE
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jun 2012 07:13:44 +0200 (CEST)
-In-Reply-To: <1340223429.16177.YahooMailClassic@web29601.mail.ird.yahoo.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ru Vuott <vuott@yahoo.it>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <1340195448.8622.7.camel@localhost>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: pulseaudio-discuss@lists.freedesktop.org
+Cc: broonie@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ru Vuott wrote:
-> I have some little problem about changing the metronomic Tempo within a midi song.
-> Looking for a solution, I had a look at the code of your Aplaymidi, and I saw this statement:
->
-> case 0x51: /* tempo */
->     ......
->     ...etc
->     event->type = SND_SEQ_EVENT_TEMPO;
->     ...etc,
->
-> so, I thought that the change of Tempo occur simply by sending an event
-> Instead, listening to the midi track, the change does not happen!
-
-Have a look into play_midi; that event must be sent to the system timer port.
-
-
-Regards,
-Clemens
+MjAxMi82LzIwIEFydW4gUmFnaGF2YW4gPGFydW4ucmFnaGF2YW5AY29sbGFib3JhLmNvLnVrPjoK
+PiBMaWFtLAo+IFRoYW5rcyBmb3IgY2xlYXJpbmcgdGhpbmdzIHVwLgo+Cj4gT24gRnJpLCAyMDEy
+LTA2LTE1IGF0IDE4OjA4ICswMTAwLCBMaWFtIEdpcmR3b29kIHdyb3RlOgo+IFsuLi5dCj4+ID4g
+VGhlIGZpcnN0IHByb2JsZW0gaXMgbXV0dWFsIGV4Y2x1c2l2aXR5IG9mIHZlcmJzLiBGcm9tIHdo
+YXQgSSBjYW4KPj4gPiB1bmRlcnN0YW5kLCB2ZXJicyBhcmUgaW50ZW5kZWQgdG8gYmUgbXV0dWFs
+bHkgZXhjbHVzaXZlIC0tIGlmIHlvdSBoYXZlIGEKPj4gPiBIaUZpIHZlcmIgYW5kIGEgVm9pY2VD
+YWxsIHZlcmIsIG9ubHkgb25lIG1heSBiZSB1c2VkIGF0IGEgdGltZS4gV2UgaGF2ZQo+PiA+IG1h
+cHBlZCB2ZXJicyB0byBjYXJkIHByb2ZpbGVzLCB3aGljaCBvZmZlciB0aGUgc2FtZSBndWFyYW50
+ZWUuIEhvd2V2ZXIsCj4+ID4gb24gQW5kcm9pZCAod2hpY2ggaXMgYSBmYWlyIGV4YW1wbGUgb2Yg
+dGhlIGtpbmQgb2YgYXVkaW8gcG9saWN5IHdlIG1pZ2h0Cj4+ID4gd2FudCksIHRoZSBIaUZpIHZl
+cmIgUENNcyBtYXliZSB1c2VkIHdoaWxlIHRoZSBWb2ljZUNhbGwgUENNcyBhcmUgb3Blbi4KPj4g
+PiBUaGlzIGlzIGRvbmUsIGZvciBleGFtcGxlLCB0byBwbGF5IGFuIGVuZC1vZi1jYWxsIHRvbmUg
+ZnJvbSB0aGUgQ1BVCj4+ID4gd2hpbGUgdGhlIG1vZGVtIFBDTXMgYXJlIHN0aWxsIGhlbGQgb3Bl
+bi4gSXMgdGhlcmUgc29tZSB3YXkgdG8gZG8gdGhpcwo+PiA+IHdpdGggVUNNPwo+PiA+Cj4+Cj4+
+IEEgdmVyYiBpcyBub3QgdGllZCB0byBhbnkgc3BlY2lmaWMgUENNIGRldmljZSBoZXJlLiBJdCdz
+IGludGVuZGVkIHRvIGJlCj4+IHRoZSBoaWdoZXN0IGxldmVsIG9mIGF1ZGlvIHVzZSBjYXNlIHdo
+ZXJlIGl0IGNhbiBjb25maWd1cmUgYW55IGF1ZGlvCj4+IHJlc291cmNlIChpbmNsdWRpbmcgbXVs
+dGlwbGUgY2FyZHMpIHRvIGVuYWJsZSB0aGUgdXNlIGNhc2UgYWN0aW9uLgo+Pgo+PiBTbyBmb3Ig
+T01BUDQgd2Ugd291bGQgaGF2ZSB0aGUgSGlGaSB2ZXJiIGZvciBhbGwgdXNlIGNhc2Ugd2hlcmUg
+d2UgYXJlCj4+IHBsYXlpbmcgb3IgY2FwdHVyaW5nIEhpRmkgcXVhbGl0eSBhbmQgdGhlIHZvaWNl
+IGNhbGwgdmVyYiB3aGVyZSB3ZSBhcmUKPj4gbWFraW5nIGEgdGVsZXBob25lIHZvaWNlIGNhbGwu
+Cj4+Cj4+IFVDTSBwcm92aWRlcyB0aGUgIm1vZGlmaWVyIiB0byBhbGxvdyBhZC1ob2MgbW9kaWZp
+Y2F0aW9ucyB0byB0aGUgYXVkaW8KPj4gdXNlIGNhc2UgbGlrZSBhYm92ZSB3aGVyZSB3ZSB3YW50
+IHRvIHBsYXkgYW4gZW5kIG9mIGNhbGwgdG9uZS4gSW4gdGhpcwo+PiBjYXNlIHRoZSB2ZXJiIGlz
+IHN0aWxsIFZvaWNlQ2FsbCwgYnV0IFBBIHdvdWxkIGVuYWJsZSB0aGUgIlBsYXlUb25lIgo+PiBt
+b2RpZmVyIHRvIHBsYXkgdGhlIHRvbmUgKFVDTSBjYW4gYWxzbyB0ZWxsIFB1bHNlYXVkaW8gdGhl
+IHNpbmsgUENNIGFuZAo+PiB2b2x1bWUgY29udHJvbCBmb3IgdGhlIHRvbmUgZGF0YSkuCj4KPiBK
+dXN0IGFzIGFuIG9ic2VydmF0aW9uLCBJIHRoaW5rIHRoZSBBbmRyb2lkIEhBTCBqdXN0IHVzZXMg
+UENNIDAgYW5kIG5vdAo+IHRoZSBQQ00gMywgYnV0IGluIHRoZSBQQSBjYXNlLCBJJ2xsIGRvIGl0
+IHRoZSB3YXkgeW91IGRlc2NyaWJlIHNpbmNlCj4gdGhhdCBtYWtlcyBtb3JlIHNlbnNlLgo+Cj4+
+ID4gVGhlIHNlY29uZCBwcm9ibGVtIGlzIGhhdmluZyBzZXBhcmF0ZSBQQ01zIGZvciBtb2RpZmll
+cnMuIEluIHRoZSBPTUFQNAo+PiA+IHByb2ZpbGUsIHJpbmd0b25lIHBsYXliYWNrIGlzIGV4cG9z
+ZWQgdmlhIGEgUGxheVRvbmUgbW9kaWZpZXIgd2hpY2gKPj4gPiBjb3JyZXNwb25kcyB0byBhIHNl
+cGFyYXRlIFBDTSBmcm9tIHJlZ3VsYXIgSGlGaSBwbGF5YmFjay4gSW4gdGhlIFVDTS1QQQo+PiA+
+IG1hcHBpbmcgd2UgZGVjaWRlZCBvbiwgbW9kaWZpZXJzIHdlcmUgaW1wbGVtZW50ZWQgYXMgZGV2
+aWNlIGludGVuZGVkCj4+ID4gcm9sZXMgb24gYSBzaW5rLCBzbyB0aGF0IHdoZW4gYSBzdHJlYW0g
+d2l0aCB0aGF0IHJvbGUgY2FtZSBpbiwgd2UgY291bGQKPj4gPiBlbmFibGUgdGhlIG1vZGlmaWVy
+LCBhbmQgZGlzYWJsZSBpdCB3aGVuIHN1Y2ggYSBzdHJlYW0gZW5kcy4gSG93ZXZlciwKPj4gPiB0
+aGlzIGRvZXNuJ3QgYWNjb3VudCBmb3Igc3dpdGNoaW5nIHRoZSBQQ00gb24gd2hpY2ggcGxheWJh
+Y2sgaXMKPj4gPiBvY2N1cnJpbmcuIFNob3VsZCB3ZSBiZSBjcmVhdGluZyBhIHNlcGFyYXRlIHNp
+bmsgZm9yIHN1Y2ggbW9kaWZpZXJzCj4+ID4gKHdpdGggbG93ZXIgcHJpb3JpdHksIHNvIHRoZXkn
+cmUgbm90IHJvdXRlZCB0byB1bmxlc3MgdGhlcmUncyBhIHN0cmVhbQo+PiA+IHdpdGggdGhlIHJl
+cXVpcmVkIHJvbGUgY29taW5nIGluKT8gT3Igc2hvdWxkIHdlIGJlIHJlb3BlbmluZyB0aGUgUENN
+IGZvcgo+PiA+IHRoaXM/Cj4+Cj4+IFRoZSBpbnRlbnRpb24gZm9yIG1vZGlmaWVycyB0aGF0IHVz
+ZSBzZXBhcmF0ZSBBTFNBIFBDTSBzaW5rcy9zb3VyY2VzCj4+IGZyb20gdGhlIHZlcmIgaXMgdG8g
+a2VlcCB0aGUgbWFpbiBzdHJlYW0gb24gdGhlIHZlcmIgUENNIHNvdXJjZS9zaW5rIGFuZAo+PiB0
+aGUgbW9kaWZpZXIgc3RyZWFtIHdpbGwgdXNlIHRoZSBtb2RpZmllciBQQ00gc2luay9zb3VyY2Ug
+KHRoaXMgY2FuIGJlCj4+IHRoZSBzYW1lIFBDTSBmb3Igc29tZSBoYXJkd2FyZSkuCj4+Cj4+IGUu
+Zy4gTVAzIHdpbGwgYmUgcGxheWVkIHRvIHBjbSAwIHNpbmsgYW5kIHJpbmd0b25lIHRvIHBjbSAx
+IHNpbmsuIFRoZSBIVwo+PiB3aWxsIHRoZW4gbWl4IGJvdGggc3RyZWFtcyBiZWZvcmUgdGhleSBh
+cmUgcmVuZGVyZWQuCj4KPiBPa2F5LCBzbyB3aGF0IHRoaXMgbWVhbnMgaXMgdGhhdCB3ZSBuZWVk
+IHRvIGV4dGVuZCB0aGUgY3VycmVudCBVQ00gd29yawo+IHRvIGNyZWF0ZSBhIHNlY29uZCwgbG93
+ZXIgcHJpb3JpdHkgc2luayBmb3IgZWFjaCBtb2RpZmllciB0aGF0IGhhcyBhCj4gZGlzdGluY3Qg
+UGxheWJhY2tQQ00sIGFuZCBsZXQgdGhlIHJvbGUtYmFzZWQgcm91dGluZyBwaWNrIHRoYXQgaW4g
+Y2FzZXMKPiB3aGVyZSBpdCBtYWtlcyBzZW5zZS4gSXQncyBnb29kIHRoYXQgdGhpcyBkb2Vzbid0
+IGNoYW5nZSBob3cgd2UndmUKPiBtYXBwZWQgZXhpc3RpbmcgY29uY2VwdHMgLS0ganVzdCBhZGRz
+IHRvIGl0LgpTb3VuZHMgZmluZSB0byBtZS4gVGhlIG9ubHkgcHJvYmxlbSBpcyBjYW4gd2UgYWx3
+YXlzIG9wZW4gdGhlIG1vZGlmaWVyCnBjbSB3aGVuIG1vZGlmaWVyIGlzIG5vdCBlbmFibGVkLiBJ
+ZiBub3QsIEkgcHJlZmVyIHRvIGNyZWF0ZS9kZXN0cm95CnRoZSBzaW5rIGJ5IGV2ZW50cy4KPgo+
+IENoZWVycywKPiBBcnVuCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwKCgoKLS0gCldlaS5GZW5nIChpcmMgd2VpX2ZlbmcpCkxpbmFybyBNdWx0
+aW1lZGlhIFRlYW0KTGluYXJvLm9yZ5qBmk9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29D
+cwpGb2xsb3eaTGluYXJvOppGYWNlYm9va5p8mlR3aXR0ZXKafJpCbG9nCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWls
+aW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2VhdWRpby1kaXNjdXNz
+Cg==
