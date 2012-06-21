@@ -1,14 +1,21 @@
-From: zhangfei gao <zhangfei.gao@gmail.com>
-Subject: Re: why snd_soc_suspend is not called
-Date: Thu, 21 Jun 2012 10:47:12 +0800
-Message-ID: <CAMj5BkgbmdALET_hiHL1LNs7v-+9RyEQPgg1EBzyadt6rZ+EJg@mail.gmail.com>
-References: <CAMj5BkgV9odU+1VwhXx5w0Y8pPdHg25tHWNMX-5ecG_aL+r+cw@mail.gmail.com>
-	<20120619093000.GA3974@opensource.wolfsonmicro.com>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: Using UCM with PulseAudio
+Date: Wed, 20 Jun 2012 21:50:02 -0500
+Message-ID: <4FE28BDA.4060707@gmail.com>
+References: <1339728813.5228.48.camel@localhost>
+	<1339780110.7609.21.camel@odin> <1340195448.8622.7.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20120619093000.GA3974@opensource.wolfsonmicro.com>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BB591040A1
+	for <alsa-devel@alsa-project.org>;
+	Thu, 21 Jun 2012 03:29:13 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so247604obb.38
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2012 19:50:25 -0700 (PDT)
+In-Reply-To: <1340195448.8622.7.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,38 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@vger.kernel.org, Leo Yan <leoy@marvell.com>
+To: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Feng Wei <feng.wei@linaro.org>, Liam Girdwood <lrg@ti.com>, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 19, 2012 at 5:30 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Jun 19, 2012 at 01:12:05PM +0800, zhangfei gao wrote:
+On 06/20/2012 07:30 AM, Arun Raghavan wrote:
+>> UCM provides the "modifier" to allow ad-hoc modifications to the audio
+>> use case like above where we want to play an end of call tone. In this
+>> case the verb is still VoiceCall, but PA would enable the "PlayTone"
+>> modifer to play the tone (UCM can also tell Pulseaudio the sink PCM and
+>> volume control for the tone data).
 >
->> In fact, even soc_probe is not called since no soc-audio device.
->
-> This is only called for soc-audio, if it were called otherwise it would
-> be abug.
->
->> When running, system recommend using snd_soc_register_card instead.
->> After doing such modification, the audio could work.
->> But strangely snd_soc_suspend is not called, as well as soc-probe.
->> So cpu_dai->driver->suspend will no be called accordingly.
->
->> If manually add "soc-audio" in arch/, the soc-probe can be called.
->> But snd_soc_suspend still fail to be called.
->
->> Could you give me some suggestion?
->
-> There is probably a bug in your code. =A0At a guess you've not set up the
-> pm ops for your card.
+> Just as an observation, I think the Android HAL just uses PCM 0 and not
+> the PCM 3, but in the PA case, I'll do it the way you describe since
+> that makes more sense.
 
-Thanks Mark.
-Using snd_soc_register_card, pm ops of cpu driver has to be provided
-instead of dai driver as before.
-However, SNDRV_PCM_TRIGGER_SUSPEND/RESUME can not be called.
-SNDRV_PCM_TRIGGER_START/SNDRV_PCM_TRIGGER_STOP will be called in suspend/re=
-sume.
-Is it right?
+Yes, the Galaxy Nexus pretty much only uses PCM 0 -- but that's mostly a 
+reflection of AudioFlinger's design and limitations.
 
-Thanks
+-gabriel
