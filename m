@@ -1,23 +1,14 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH] Inverted internal mic
-Date: Thu, 21 Jun 2012 03:15:27 +0200
-Message-ID: <4FE275AF.4080004@canonical.com>
-References: <4F4C9714.1080307@canonical.com> <s5haa43ux7u.wl%tiwai@suse.de>
-	<4F4CA438.90103@canonical.com> <s5hvcmrp7ji.wl%tiwai@suse.de>
-	<4F4CD1AF.2050409@canonical.com> <s5hboojozx7.wl%tiwai@suse.de>
-	<4F4CE264.7040008@canonical.com>
-	<loom.20120619T050139-760@post.gmane.org>
-	<4FE02D8B.7050201@canonical.com> <s5htxy6f6tt.wl%tiwai@suse.de>
+From: zhangfei gao <zhangfei.gao@gmail.com>
+Subject: Re: why snd_soc_suspend is not called
+Date: Thu, 21 Jun 2012 10:47:12 +0800
+Message-ID: <CAMj5BkgbmdALET_hiHL1LNs7v-+9RyEQPgg1EBzyadt6rZ+EJg@mail.gmail.com>
+References: <CAMj5BkgV9odU+1VwhXx5w0Y8pPdHg25tHWNMX-5ecG_aL+r+cw@mail.gmail.com>
+	<20120619093000.GA3974@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id C8EFD103B63
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jun 2012 01:54:13 +0200 (CEST)
-In-Reply-To: <s5htxy6f6tt.wl%tiwai@suse.de>
+In-Reply-To: <20120619093000.GA3974@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,65 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+To: alsa-devel@alsa-project.org
+Cc: Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@vger.kernel.org, Leo Yan <leoy@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/20/2012 03:31 PM, Takashi Iwai wrote:
-> At Tue, 19 Jun 2012 09:43:07 +0200,
-> David Henningsson wrote:
->>
->> On 06/19/2012 05:07 AM, Eliot Blennerhassett wrote:
->>> David Henningsson<david.henningsson<at>   canonical.com>   writes:
->>>> On 02/28/2012 02:22 PM, Takashi Iwai wrote:
->>>>> At Tue, 28 Feb 2012 14:07:59 +0100,
->>>>> David Henningsson wrote:
->>>>> Is there a way we can
->>>>>> know the corresponding processing coefficients to set for ALC268 and
->>>>>> ALC272X as well?
->>>>>
->>>>> AFAIK, no, it was specific to the codec model.
->>>>
->>>> Ok, then we can only hope for Kailang to supply this information if
->>>> possible. And if not possible we could attempt the workaround (when/if
->>>> we agree on it...) for these devices as well?
->>>
->>> Greetings,
->>>
->>> Any chance that there has been any progress on this?
->>> I have a machine with dmic and ALC272X (details below) that exhibits this
->>> problem, and can test any proposed patch.
->>
->> We have a patch in for the Thinkpad U300s, but that one had a Conexant
->> codec.
->> I haven't had time to start working on kernel patches for the Realtek
->> ones yet, but meanwhile, I'm tracking known machines here:
->>
->> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1002978
+On Tue, Jun 19, 2012 at 5:30 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Tue, Jun 19, 2012 at 01:12:05PM +0800, zhangfei gao wrote:
 >
-> Looking at the codec, it's not so trivial to port the inverted switch
-> to Realtek.  In the input path of Realtek codecs, there is no
-> individual capture volume/switch but only a central ADC volume and a
-> MUX (or a mixer).
+>> In fact, even soc_probe is not called since no soc-audio device.
+>
+> This is only called for soc-audio, if it were called otherwise it would
+> be abug.
+>
+>> When running, system recommend using snd_soc_register_card instead.
+>> After doing such modification, the audio could work.
+>> But strangely snd_soc_suspend is not called, as well as soc-probe.
+>> So cpu_dai->driver->suspend will no be called accordingly.
+>
+>> If manually add "soc-audio" in arch/, the soc-probe can be called.
+>> But snd_soc_suspend still fail to be called.
+>
+>> Could you give me some suggestion?
+>
+> There is probably a bug in your code. =A0At a guess you've not set up the
+> pm ops for your card.
 
-Yeah, that's part of why I haven't done it myself yet ;-)
+Thanks Mark.
+Using snd_soc_register_card, pm ops of cpu driver has to be provided
+instead of dai driver as before.
+However, SNDRV_PCM_TRIGGER_SUSPEND/RESUME can not be called.
+SNDRV_PCM_TRIGGER_START/SNDRV_PCM_TRIGGER_STOP will be called in suspend/re=
+sume.
+Is it right?
 
- > I can think of a new boolean switch or an enum to choose whether to
- > shut off the right channel of the input-mux and the loopback volume.
- > But it's feasible only if it make sense to PA.
-
-It seems possible that for ALC269 [1], you could switch path entirely 
-(including ADC). I e, the internal mic would go 0x12 -> 0x23 -> 0x08 and 
-the external mic would go 0x18 -> 0x24 -> 0x07. That way you could then 
-label the volume control on 0x08 "Internal Mic Capture Volume" and 
-"Inverted Internal Mic Capture Volume".
-
-Do you think this is a good strategy, or would it lead to other problems 
-(i e, what happens when you plug your mic in while actively recording)?
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
-[1] Example alsa info: 
-https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/946232/+attachment/3156604/+files/Acer-Aspire-1810TZ__alsa-info.txt
+Thanks
