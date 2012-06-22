@@ -1,23 +1,16 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH V2 1/9] sound:asoc: Add support for spdif
-	in Audio Codec
-Date: Fri, 22 Jun 2012 15:24:20 +0530
-Message-ID: <4FE440CC.1050306@st.com>
-References: <cover.1340273261.git.rajeev-dlh.kumar@st.com>
-	<4293b6815ad92e19fe8791262cdec8e68f365ddb.1340273261.git.rajeev-dlh.kumar@st.com>
-	<20120622092129.GH4037@opensource.wolfsonmicro.com>
-	<4FE43E7B.5030307@st.com>
-	<20120622094931.GK4037@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: da732x: Staticise non-exported symbol
+	soc_codec_dev_da732x
+Date: Fri, 22 Jun 2012 11:36:18 +0100
+Message-ID: <1340361378-12192-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog115.obsmtp.com (eu1sys200aog115.obsmtp.com
-	[207.126.144.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1427A104471
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8DD1103F9E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2012 11:54:27 +0200 (CEST)
-In-Reply-To: <20120622094931.GK4037@opensource.wolfsonmicro.com>
+	Fri, 22 Jun 2012 12:36:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, spear-devel <spear-devel@list.st.com>, Vipin KUMAR <vipin.kumar@st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Michal Hajduk <Michal.Hajduk@diasemi.com>, Adam Thomson <Adam.Thomson@diasemi.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/da732x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 6/22/2012 3:19 PM, Mark Brown wrote:
-> On Fri, Jun 22, 2012 at 03:14:27PM +0530, Rajeev kumar wrote:
->
->> It should be
->> ASoc: SPEAr: SPDIF
->
-> It should be "ASoC".  Where have you seen "ASoc"?
-
-Oops, Yes it should be "ASoC".
-
-Best Regards,
-Rajeev
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index 04af369..01be2a3 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -1543,7 +1543,7 @@ static int da732x_remove(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-struct snd_soc_codec_driver soc_codec_dev_da732x = {
++static struct snd_soc_codec_driver soc_codec_dev_da732x = {
+ 	.probe			= da732x_probe,
+ 	.remove			= da732x_remove,
+ 	.set_bias_level		= da732x_set_bias_level,
+-- 
+1.7.10
