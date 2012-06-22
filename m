@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 2/9] sound:asoc: Add support for STA529
-	Audio Codec
-Date: Fri, 22 Jun 2012 09:49:19 +0100
-Message-ID: <20120622084918.GE4037@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V2 1/9] sound:asoc: Add support for spdif
+	in Audio Codec
+Date: Fri, 22 Jun 2012 10:21:29 +0100
+Message-ID: <20120622092129.GH4037@opensource.wolfsonmicro.com>
 References: <cover.1340273261.git.rajeev-dlh.kumar@st.com>
-	<d06e4180229ac4aa0e0f27aa4d444dd7a9634afd.1340273261.git.rajeev-dlh.kumar@st.com>
-	<20120621122540.GV4037@opensource.wolfsonmicro.com>
-	<4FE41021.3060605@st.com>
+	<4293b6815ad92e19fe8791262cdec8e68f365ddb.1340273261.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1090810587420010049=="
+Content-Type: multipart/mixed; boundary="===============2472938717343000586=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B32EB24336
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 747FA2438F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2012 10:49:21 +0200 (CEST)
-In-Reply-To: <4FE41021.3060605@st.com>
+	Fri, 22 Jun 2012 11:21:31 +0200 (CEST)
+In-Reply-To: <4293b6815ad92e19fe8791262cdec8e68f365ddb.1340273261.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,66 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: tiwai@suse.de, Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1090810587420010049==
+--===============2472938717343000586==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vDpvzslK0qRw06MN"
+	protocol="application/pgp-signature"; boundary="Jz4B0QKJ3xxfGEtb"
 Content-Disposition: inline
 
 
---vDpvzslK0qRw06MN
+--Jz4B0QKJ3xxfGEtb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 22, 2012 at 11:56:41AM +0530, Rajeev kumar wrote:
-> On 6/21/2012 5:55 PM, Mark Brown wrote:
+On Thu, Jun 21, 2012 at 03:54:49PM +0530, Rajeev Kumar wrote:
+> From: Vipin Kumar <vipin.kumar@st.com>
+>=20
+> This patch adds the support for spdif in audio codec.
 
-> >>+static int sta529_resume(struct snd_soc_codec *codec)
-> >>>  +{
-> >>>  +	snd_soc_cache_sync(codec);
-> >You're not using the ASoC cache code.
+As ever do try to provide subject lines which are appropriate for the
+subsystem you're submitting against.
 
-> Point is not clear to me, you mean to say I need to use
-> regcache_sync(sta529->regmap), please confirm.
+> +static int __init dir_modinit(void)
+> +{
+> +	return platform_driver_register(&spdif_dir_driver);
+> +}
+> +
+> +static void __exit dir_exit(void)
+> +{
+> +	platform_driver_unregister(&spdif_dir_driver);
+> +}
+> +
+> +module_init(dir_modinit);
+> +module_exit(dir_exit);
 
-You shouldn't be calling ASoC cache functions at all since you're not
-using an ASoC cache.  There's no point in doing anything here as you're
-doing your cache management in set_bias_level() but if you were then yes
-you should be using regcache_sync().
+module_platform_driver().
 
---vDpvzslK0qRw06MN
+--Jz4B0QKJ3xxfGEtb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP5DGGAAoJEBus8iNuMP3dtjMP/jLdOOF+af8+ICET3+RFqpqr
-P0meUIeiDLN3pbGeotzdzAft4lou2RhtpW7xJGA+B1lQeOvv4YZQhY+wWKILJzVY
-U96/C+JV9pWxBZezx5mJbNzHb5sKiomoJDp/i3JF8VKs+VR8U30OeQG2Mwtxyn2z
-Ge9KwbWpJs9q5uULKhxRO4johff+0QqpcsTVty5KjbiWOj8BxDYRJ/MlcO1zRr0P
-qr2KSKWDj8CcpHcGL510MSfXxXkPXbSDNOi701Dn+7P2c8vggWZ4wpp1INRbSlP7
-UeKYYFWRcIZYm3Zyumlm0FmSwB/yA8IB8XjwRSw70EfzllvZVskEtEotDM8LD3kz
-4Y4TH9dDzk7KxynUY0B0XsbL+EY8ImB2DBBChMk24j8yr5KkZerBk3HXfgvXQCvm
-MuKz9CydthRWuw0lLzko686p2z3DQgj0OiKGI3q8LNAuA1fSdIb0NcAzMiXgkWMN
-p9b9Po2Ie/+WBzXCQe1LyADNOAFqiI0pyqY1jq3+CzYEZWsPobu66gmQ/4J13zym
-e/uoEwmBRjF3iW5PWgRe8O6r78PjtX2t2GXkanVkePOzqxxxTxIN2g5Nww+3ffVz
-YKDXqiVfqRmw4cn4Bso2Y/udPQrouhOuoKJY4ngi7L2z+9MhBSZr/p4o+vzdO2Ay
-Si5hQTrHq0yasocsnSGj
-=istC
+iQIcBAEBAgAGBQJP5DkTAAoJEBus8iNuMP3dwX8QAJ4ZnQjy7UhQsx5y/XWom1si
+BsSprDq1H6jilrPMQSf71xTjdZpyEZHpjSbsgdv2a+tLQSEoHKobx9As/xrSJ5qb
+tbvKZrZjKx/ojE1HkTozE0iBP8YZny93uxLYk3Zq7I4rfsBXOHTC9xSwi94HDidl
+ylbBsiXOrP9mW3u+sN+HUNyKMmha0M1AfH6NY1CyMLuPBpLJEDtzYBr+SdrdujqS
+8YQFHohm59MYDCc62/5Jow+9MQIdMCpF28t61+WJ8h55YmUFheaEvqpCKxF1vsuk
+y51ZdCi8FRou/xoxqfeZv4bIsFtS9pduZPyKz/kZl8DIttOW/UMlrPWmjuZ+5aG4
+OCVXBZfZMZeJXKOi1FkEeUwSam172jpCt7soLiwVlU8rF7/OMOk4gE3KG7122prL
+YIxqnqUMqbV+RsUnuOuwjiKRHiIdO8oRHY8GDB9FiHZZlqPoyxqqFcV4YvQ1+Ibf
+tlqYS9i8NG0fOGkMQXcKPbagRTnajxC+WI0Kz29CgZQ14FXGR8sK6xZKuNtNFOOw
+qvarxxypt4la8evs3ZR6am1WB0dT44dnhsxkJYtazo5gtCDi1nRucq+rCcwF9uGQ
+i4ZtL9MXas7rTfHvtr4wUlIuZZSxmjs64x53ln5fH97zNZ0iGZ18DPvz/u8PiNz8
+LvfaUQDfmJYqQhrXsBTA
+=ooQl
 -----END PGP SIGNATURE-----
 
---vDpvzslK0qRw06MN--
+--Jz4B0QKJ3xxfGEtb--
 
---===============1090810587420010049==
+--===============2472938717343000586==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1090810587420010049==--
+--===============2472938717343000586==--
