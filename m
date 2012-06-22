@@ -1,21 +1,21 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: dapm: Try to add all routes even if
-	one fails
-Date: Fri, 22 Jun 2012 19:56:06 +0100
-Message-ID: <1340391366.12316.1.camel@odin>
-References: <1340364142-25237-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: Add DOUBLE_R variants of the
+	_RANGE controls
+Date: Fri, 22 Jun 2012 19:56:29 +0100
+Message-ID: <1340391389.12316.2.camel@odin>
+References: <1340361682-12409-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
-	[74.125.149.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5304243BA
+Received: from na3sys009aog127.obsmtp.com (na3sys009aog127.obsmtp.com
+	[74.125.149.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8815210451B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2012 20:56:13 +0200 (CEST)
-Received: by werc12 with SMTP id c12so1546663wer.36
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2012 11:56:08 -0700 (PDT)
-In-Reply-To: <1340364142-25237-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 22 Jun 2012 20:56:36 +0200 (CEST)
+Received: by wibhm11 with SMTP id hm11so679358wib.12
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2012 11:56:34 -0700 (PDT)
+In-Reply-To: <1340361682-12409-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,9 +29,9 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-06-22 at 12:22 +0100, Mark Brown wrote:
-> We may as well print as many errors as we can in one go rather than
-> requiring developers to iterate through all their typos.
+On Fri, 2012-06-22 at 11:41 +0100, Mark Brown wrote:
+> The code handles this fine already, we just need new macros in the header
+> for drivers to create the controls.
 > 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
