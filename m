@@ -1,18 +1,28 @@
-From: Adam Thomson <Adam.Thomson@diasemi.com>
-Subject: Re: [PATCH] ASoC: da732x: Staticise non-exported
-	symbol soc_codec_dev_da732x
-Date: Fri, 22 Jun 2012 14:26:29 +0100
-Message-ID: <201206221327.q5MDRTqX009972@sw-eng-lt-apt-vm1>
-References: <1340361378-12192-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] Inverted internal mic
+Date: Fri, 22 Jun 2012 17:27:51 +0200
+Message-ID: <4FE48EF7.6060101@canonical.com>
+References: <4F4C9714.1080307@canonical.com> <s5haa43ux7u.wl%tiwai@suse.de>
+	<4F4CA438.90103@canonical.com> <s5hvcmrp7ji.wl%tiwai@suse.de>
+	<4F4CD1AF.2050409@canonical.com> <s5hboojozx7.wl%tiwai@suse.de>
+	<4F4CE264.7040008@canonical.com>
+	<loom.20120619T050139-760@post.gmane.org>
+	<4FE02D8B.7050201@canonical.com> <s5htxy6f6tt.wl%tiwai@suse.de>
+	<4FE275AF.4080004@canonical.com> <s5hhau4esiu.wl%tiwai@suse.de>
+	<4FE31BEC.20708@canonical.com> <s5hbokcerax.wl%tiwai@suse.de>
+	<4FE32E74.1040902@canonical.com> <s5h62aj4rov.wl%tiwai@suse.de>
+	<4FE44D1F.1060903@canonical.com> <s5h1ul7d31x.wl%tiwai@suse.de>
+	<s5hsjdnbjka.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay1.diasemi.com (mailrelay1.diasemi.com [82.210.246.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74FA110405A
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17567103FAE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2012 15:29:48 +0200 (CEST)
-In-Reply-To: <1340361378-12192-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 22 Jun 2012 17:27:45 +0200 (CEST)
+In-Reply-To: <s5hsjdnbjka.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +32,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Michal Hajduk <Michal.Hajduk@diasemi.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 22, 2012 at 11:36AM, Mark Brown wrote:
+On 06/22/2012 02:46 PM, Takashi Iwai wrote:
+>   /*
+> + * Inverted digital-mic handling
+> + *
+> + * First off, it's a bit tricky.  The "Inverted Internal Mic Capture Switch"
+> + * gives the additional mute only to the right channel of the digital mic
+> + * capture stream.  This is a workaround for avoiding the almost silence
+> + * by summing the stereo stereo stream from some (known to be ForteMedia)
 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/da732x.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
-> index 04af369..01be2a3 100644
-> --- a/sound/soc/codecs/da732x.c
-> +++ b/sound/soc/codecs/da732x.c
-> @@ -1543,7 +1543,7 @@ static int da732x_remove(struct snd_soc_codec *codec)
->  	return 0;
->  }
-> 
-> -struct snd_soc_codec_driver soc_codec_dev_da732x = {
-> +static struct snd_soc_codec_driver soc_codec_dev_da732x = {
->  	.probe			= da732x_probe,
->  	.remove			= da732x_remove,
->  	.set_bias_level		= da732x_set_bias_level,
-> --
-> 1.7.10
+Stereo stereo? It's "stereo" in stereo! :-)
 
-Looks fine.
+> + * digital mic unit.
+> + *
+> + * The logic is to call alc_inv_dmic_sync() after each action (possibly)
+> + * modifying ADC amp.  When the mute flag is set, it mutes the R-channel
+> + * without caching so that the cache can still keep the original value.
+> + * The cached value is then restored when the flag is set off or any other
+> + * than d-mic is used as the current input source.
 
-Acked-by: Adam Thomson <Adam.Thomson@diasemi.com>
+Ok, I get it now.
+
+There is a slight drawback with this (IMO a bit hacky) patch, and that 
+is that you can get a short signal spike on the right channel when you 
+turn "Capture Switch" on while "Inverted Capture" is off. Hopefully it 
+is not a practical problem.
+
+Thanks for looking at this long-standing problem :-)
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
