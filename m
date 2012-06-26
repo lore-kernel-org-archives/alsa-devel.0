@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: add missing registers
-	and bits
-Date: Tue, 26 Jun 2012 14:21:18 +0100
-Message-ID: <20120626132117.GV30406@opensource.wolfsonmicro.com>
-References: <4FE9AD5F.7080302@aksignal.cz>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH V2] ASoC: tlv320aic3x: Fix codec pll
+	configure bug
+Date: Tue, 26 Jun 2012 14:07:48 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA2D2A2@DBDE01.ent.ti.com>
+References: <1340690623-18177-1-git-send-email-gururaja.hebbar@ti.com>
+	<20120626085403.GH30406@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8614747185358070540=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7180224361
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id B96D224399
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 15:21:19 +0200 (CEST)
-In-Reply-To: <4FE9AD5F.7080302@aksignal.cz>
+	Tue, 26 Jun 2012 16:07:57 +0200 (CEST)
+In-Reply-To: <20120626085403.GH30406@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Prchal =?utf-8?B?SmnFmcOt?= <jiri.prchal@aksignal.cz>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+	Sudhakar" <sudhakar.raj@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jun 26, 2012 at 14:24:03, Mark Brown wrote:
+> On Tue, Jun 26, 2012 at 11:33:43AM +0530, Hebbar, Gururaja wrote:
+> > In sound/soc/codecs/tlv320aic3x.c
+> > 
+> >         data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
+> >         snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
+> >                       data | (pll_p << PLLP_SHIFT));
+> > 
+> > In the above code, pll-p value is OR'ed with previous value without
+> > clearing it. Bug is not seen if pll-p value doesn't change across
+> > Sampling frequency.
+> 
+> A better fix is to change the code to use snd_soc_update_bits() rather
+> than open code it.  This is more idiomatic and will suppress writes if
+> they don't change anything.
+> 
 
---===============8614747185358070540==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X9hp/qFlD/MyfJCu"
-Content-Disposition: inline
-
-
---X9hp/qFlD/MyfJCu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jun 26, 2012 at 02:38:55PM +0200, Prchal Ji=C5=99=C3=AD wrote:
-> This patch adds missing registers and bits for TLV320AIC3106.
-
->  static const u8 aic3x_reg[AIC3X_CACHEREGNUM] =3D {
-> -	0x00, 0x00, 0x00, 0x10,	/* 0 */
-
-> +	0x00, 0x00, 0x00, 0x10, 0x04, 0x00, 0x00, 0x00, /* 0 */
-
-This is essentially impossible to review as you've not said what's being
-fixed and have completely reformatted the table so the diff doesn't
-highlight the changes at all.  What's wrong and what is the change
-fixing?
-
---X9hp/qFlD/MyfJCu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP6bdHAAoJEBus8iNuMP3dGwQP+wc2obDhyOoV/ht3uKkZ8lef
-FxbKY0sGcBfPfNFpofAd3CoTXT1rJFmlB99pNTluNgaNA2L66krCF6TieKp7VFXy
-ry0u4LFzvSLYUX3T147vRAZjsc/Z3x4rdWlnlalVbNNQmt0I3Rec8equHBJRYjyh
-ozOaylWfEqWCe/FUWAHseFrfWBqUBWcUcLjce/GxuXY+89tEDiSkh6LCBOEvZTOJ
-H8HFDFDXif9s0DJze/JGQE2YNiPr/+91v3XW67go35b7W8FIajvJdQhWBDRjBe3E
-s8e1EdVcxV4U9lmk5bDs5U7VNTvHDAqczGfDUpMYFx51n4yoQydQfwvzJC9f4cSd
-ZybyRjSHmdGYJxsdyGSsdZQ+hNM8yr/0hgdBbmJCf0SabZ0KkxDQznNHAm73CBxf
-liXcrEzPPG6vxz7ilSqLAdR+dJvlCuJNaKwLZ5Cw8VF0Hy+a3z+Wfh34zakiwTux
-0aKVu3P/CGLHkpO8AnZD5bO9kW5dDYkZWwpCTvpMal0JYl0q90m66EVKEkPqewyl
-1IlEKZRLmWeNeojC0NHI417fHih9SvTiWkxxFlmt19ODn0kBzJ8CV2mVZjGKoQ2Y
-ktVkiBFi1oQRjDmMVvjYvoS+0Fi0+WKvSkMugylwxKtsgSn4faED/vhD50qOh+gr
-lKPNYzU3854vZxK+bfvV
-=6x/R
------END PGP SIGNATURE-----
-
---X9hp/qFlD/MyfJCu--
-
---===============8614747185358070540==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sure will resend the patch. Thanks for the review
 
 
---===============8614747185358070540==--
+Regards, 
+Gururaja
