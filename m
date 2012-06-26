@@ -1,19 +1,19 @@
 From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
 Subject: Re: [PATCH V2] ASoC: tlv320aic3x: Fix codec pll
 	configure bug
-Date: Tue, 26 Jun 2012 14:07:48 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA2D2A2@DBDE01.ent.ti.com>
+Date: Tue, 26 Jun 2012 14:08:12 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA2D2B6@DBDE01.ent.ti.com>
 References: <1340690623-18177-1-git-send-email-gururaja.hebbar@ti.com>
-	<20120626085403.GH30406@opensource.wolfsonmicro.com>
+	<4FE97A76.5070105@aksignal.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id B96D224399
+	by alsa0.perex.cz (Postfix) with ESMTP id 04487103B5F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 16:07:57 +0200 (CEST)
-In-Reply-To: <20120626085403.GH30406@opensource.wolfsonmicro.com>
+	Tue, 26 Jun 2012 16:08:20 +0200 (CEST)
+In-Reply-To: <4FE97A76.5070105@aksignal.cz>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,30 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: =?utf-8?B?UHJjaGFsIEppcsOt?= <jiri.prchal@aksignal.cz>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
-	Sudhakar" <sudhakar.raj@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+	Sudhakar" <sudhakar.raj@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 26, 2012 at 14:24:03, Mark Brown wrote:
-> On Tue, Jun 26, 2012 at 11:33:43AM +0530, Hebbar, Gururaja wrote:
-> > In sound/soc/codecs/tlv320aic3x.c
-> > 
-> >         data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
-> >         snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
-> >                       data | (pll_p << PLLP_SHIFT));
-> > 
-> > In the above code, pll-p value is OR'ed with previous value without
-> > clearing it. Bug is not seen if pll-p value doesn't change across
-> > Sampling frequency.
-> 
-> A better fix is to change the code to use snd_soc_update_bits() rather
-> than open code it.  This is more idiomatic and will suppress writes if
-> they don't change anything.
-> 
-
-Sure will resend the patch. Thanks for the review
-
-
-Regards, 
-Gururaja
+T24gVHVlLCBKdW4gMjYsIDIwMTIgYXQgMTQ6MzE6NDIsIFByY2hhbCBKacWZw60gd3JvdGU6DQo+
+IEhpIEd1cnVyYWphLA0KPiBzaG91bGRuJ3QgYmUgYmV0dGVyIHRvIHVzZToNCj4gDQo+IHNuZF9z
+b2NfdXBkYXRlX2JpdHMoY29kZWMsIEFJQzNYX1BMTF9QUk9HQV9SRUcsIFBMTFBfTUFTSywgcGxs
+X3ApOw0KPiANCj4gaW5zdGVhZCBvZiAicmVhZCBtYXNrIHdyaXRlIiA/DQoNClN1cmUgd2lsbCBy
+ZXNlbmQgdGhlIHBhdGNoLiBUaGFua3MgZm9yIHRoZSByZXZpZXcNCg0KPiBFdmVuIGF0IHRoaXMg
+cGxhY2UgeW91IGRvbid0IG5lZWQgdG8ga2VlcCByZXN0IG9mIHJlZ2lzdGVyIChQTExfUSBhbmQg
+UExMX2VuYWJsZSksIHNvIHl1c3Qgd3JpdGluZyBpcyBPSy4NCj4gDQo+IHNuZF9zb2Nfd3JpdGUo
+Y29kZWMsIEFJQzNYX1BMTF9QUk9HQV9SRUcsIHBsbF9wIDw8IFBMTFBfU0hJRlQpOw0KPiANCg0K
+PiBEbmUgMjYuNi4yMDEyIDA4OjAzLCBIZWJiYXIsIEd1cnVyYWphIG5hcHNhbChhKToNCj4gPiBJ
+biBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMNCj4gPg0KPiA+ICAgICAgICAgIGRhdGEg
+PSBzbmRfc29jX3JlYWQoY29kZWMsIEFJQzNYX1BMTF9QUk9HQV9SRUcpOw0KPiA+ICAgICAgICAg
+IHNuZF9zb2Nfd3JpdGUoY29kZWMsIEFJQzNYX1BMTF9QUk9HQV9SRUcsDQo+ID4gICAgICAgICAg
+ICAgICAgICAgICAgICBkYXRhIHwgKHBsbF9wPDwgIFBMTFBfU0hJRlQpKTsNCj4gPg0KPiA+IElu
+IHRoZSBhYm92ZSBjb2RlLCBwbGwtcCB2YWx1ZSBpcyBPUidlZCB3aXRoIHByZXZpb3VzIHZhbHVl
+IHdpdGhvdXQNCj4gPiBjbGVhcmluZyBpdC4gQnVnIGlzIG5vdCBzZWVuIGlmIHBsbC1wIHZhbHVl
+IGRvZXNuJ3QgY2hhbmdlIGFjcm9zcw0KPiA+IFNhbXBsaW5nIGZyZXF1ZW5jeS4NCj4gPg0KPiA+
+IEhvd2V2ZXIgb24gc29tZSBwbGF0Zm9ybXMgKGxpa2UgQU0zMzV4IEVWTS1TSyksIHBsbC1wIG1h
+eSBoYXZlIGRpZmZlcmVudA0KPiA+IHZhbHVlcyBhY3Jvc3MgZGlmZmVyZW50IHNhbXBsaW5nIGZy
+ZXF1ZW5jaWVzLiBJbiBzdWNoIGNhc2UsIGFib3ZlIGNvZGUNCj4gPiBjb25maWd1cmVzIHRoZSBw
+bGwgd2l0aCBhIHdyb25nIHZhbHVlLg0KPiA+IEJlY2F1c2Ugb2YgdGhpcyBidWcsIHdoZW4gYSBh
+dWRpbyBzdHJlYW0gaXMgcGxheWVkIHdpdGggcGxsIHZhbHVlDQo+ID4gZGlmZmVyZW50IGZyb20g
+cHJldmlvdXMgc3RyZWFtLCBhdWRpbyBpcyBoZWFyZCBhcyBkaWZmZXJlbnRseS4NCj4gPg0KPiA+
+IFNpZ25lZC1vZmYtYnk6IEhlYmJhciwgR3VydXJhamE8Z3VydXJhamEuaGViYmFyQHRpLmNvbT4N
+Cj4gPiAtLS0NCj4gPiBjaG5hZ2VzIGluIFYyOg0KPiA+IAltb2RpZnkgc3ViamVjdCB0byBpbmRp
+Y2F0ZSBBU09DIGFuZCBjb2RlYyBhcyB0bHYzMjBhaWMzeA0KPiA+DQo+ID4gICBzb3VuZC9zb2Mv
+Y29kZWNzL3RsdjMyMGFpYzN4LmMgfCAgICAyICstDQo+ID4gICBzb3VuZC9zb2MvY29kZWNzL3Rs
+djMyMGFpYzN4LmggfCAgICAxICsNCj4gPiAgIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2Rl
+Y3MvdGx2MzIwYWljM3guYyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYw0KPiA+IGlu
+ZGV4IGQwZGJhYzEuLjhjMTk3N2IgMTAwNjQ0DQo+ID4gLS0tIGEvc291bmQvc29jL2NvZGVjcy90
+bHYzMjBhaWMzeC5jDQo+ID4gKysrIGIvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jDQo+
+ID4gQEAgLTk2Myw3ICs5NjMsNyBAQCBzdGF0aWMgaW50IGFpYzN4X2h3X3BhcmFtcyhzdHJ1Y3Qg
+c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gPiAgIAl9DQo+ID4NCj4gPiAgIGZvdW5k
+Og0KPiA+IC0JZGF0YSA9IHNuZF9zb2NfcmVhZChjb2RlYywgQUlDM1hfUExMX1BST0dBX1JFRyk7
+DQo+ID4gKwlkYXRhID0gc25kX3NvY19yZWFkKGNvZGVjLCBBSUMzWF9QTExfUFJPR0FfUkVHKSYg
+IH5QTExQX01BU0s7DQo+ID4gICAJc25kX3NvY193cml0ZShjb2RlYywgQUlDM1hfUExMX1BST0dB
+X1JFRywNCj4gPiAgIAkJICAgICAgZGF0YSB8IChwbGxfcDw8ICBQTExQX1NISUZUKSk7DQo+ID4g
+ICAJc25kX3NvY193cml0ZShjb2RlYywgQUlDM1hfT1ZSRl9TVEFUVVNfQU5EX1BMTFJfUkVHLA0K
+PiA+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmggYi9zb3VuZC9z
+b2MvY29kZWNzL3RsdjMyMGFpYzN4LmgNCj4gPiBpbmRleCAwNmExOTc4Li4xNmQ5OTk5IDEwMDY0
+NA0KPiA+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guaA0KPiA+ICsrKyBiL3Nv
+dW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guaA0KPiA+IEBAIC0xNjYsNiArMTY2LDcgQEANCj4g
+Pg0KPiA+ICAgLyogUExMIHJlZ2lzdGVycyBiaXRmaWVsZHMgKi8NCj4gPiAgICNkZWZpbmUgUExM
+UF9TSElGVAkJMA0KPiA+ICsjZGVmaW5lIFBMTFBfTUFTSwkJNw0KPiA+ICAgI2RlZmluZSBQTExR
+X1NISUZUCQkzDQo+ID4gICAjZGVmaW5lIFBMTFJfU0hJRlQJCTANCj4gPiAgICNkZWZpbmUgUExM
+Sl9TSElGVAkJMg0KPiANCj4gDQoNCg0KUmVnYXJkcywgDQpHdXJ1cmFqYQ0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
