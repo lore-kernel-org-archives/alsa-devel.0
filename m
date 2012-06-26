@@ -1,20 +1,19 @@
-From: Zhen Fu <fuzh@marvell.com>
-Subject: Re: how to update hw_ptr and appl_ptr
-Date: Tue, 26 Jun 2012 02:43:11 -0700
-Message-ID: <DBBC59900F0EF340B9938F193FB1A3453605DD79@SC-VEXCH4.marvell.com>
-References: <DBBC59900F0EF340B9938F193FB1A3453605DBD2@SC-VEXCH4.marvell.com>
-	<4FE98239.7050908@ladisch.de>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: Configuring an audio path within ALSA
+Date: Tue, 26 Jun 2012 15:13:18 +0530
+Message-ID: <1340703798.1562.205.camel@vkoul-udesk3>
+References: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
+	<4FE924E2.2010504@codeaurora.org>
+	<CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
-	[74.125.149.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E8D7245C6
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1452245E3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 11:43:14 +0200 (CEST)
-In-Reply-To: <4FE98239.7050908@ladisch.de>
-Content-Language: en-US
+	Tue, 26 Jun 2012 11:52:36 +0200 (CEST)
+In-Reply-To: <CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Zhen Fu <fuzh@marvell.com>
+To: rashmi narayan <rashmi.nyn@gmail.com>
+Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I recently write squ driver and when DMA handler called snd_pcm_period_elapsed, so I want to know how about update hw_ptr in ALSA. 
+On Tue, 2012-06-26 at 13:22 +0530, rashmi narayan wrote:
+Dont TOP Post!!
 
---
-Best Regards,
-Zhen Fu
+> Thank you Patrick .
+> 
+> Currently my codec driver SGTL5000.c has the following audio map
+> static const struct snd_soc_dapm_route audio_map[] = {
+>  {"ADC Mux", "LINE_IN", "LINE_IN"},
+> {"ADC Mux", "MIC_IN", "MIC_IN"},
+>  {"ADC", NULL, "ADC Mux"},
+> {"DAC Mux", "DAC", "DAC"},
+>  {"DAC Mux", "LINE_IN", "LINE_IN"},
+> {"LO", NULL, "DAC"},
+>  {"HP", NULL, "DAC Mux"},
+> {"LINE_OUT", NULL, "LO"},
+>  {"HP_OUT", NULL, "HP"},
+> };
+> 
+> This map does not have a link from ADC to DAC.
+> You mention "After a set of ALSA mixer commands is issued to create a
+> path from one end point to another end point" , how do we issue those
+> commands? to create a link , currently my alsa mixer shows no option for a
+> ADC to DAC select.
+Does the codec data sheet support it, if so please create the DAPM
+widgets for this and add them in above map.
+
+> 
+> -Rashmi
+> 
+> 
+> On Tue, Jun 26, 2012 at 8:26 AM, Patrick Lai <plai@codeaurora.org> wrote:
+> 
+> > On 6/25/2012 5:26 AM, rashmi narayan wrote:
+> >
+> >> Dear ALSA Folks,
+> >>
+> >> I am a newbie to ALSA .I am trying to configure a path within the driver
+> >> to
+> >> open up /power up the path within the codec from MIC-IN to LineOUT. How
+> >> can
+> >> I do this within ALSA. Please send me some pointers.
+> >>
+> >>  If your CODEC driver is written to plug into ASoC framework, ASoC
+> > dynamic audio power management(DAPM) will be able to link MIC-IN to
+> > Lineout. After a set of ALSA mixer commands is issued to create a path
+> > from one end point to another end point, DAPM will kick in and enable
+> > the path according to widgets and audio routing map defined in the
+> > CODEC driver.
+> >
+> >  Thank you,
+> >> Rashmi
+> >> ______________________________**_________________
+> >> Alsa-devel mailing list
+> >> Alsa-devel@alsa-project.org
+> >> http://mailman.alsa-project.**org/mailman/listinfo/alsa-**devel<http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
+> >>
+> >
+> >
+> > --
+> > Sent by an employee of the Qualcomm Innovation Center, Inc.
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+> >
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
------Original Message-----
-From: Clemens Ladisch [mailto:clemens@ladisch.de] 
-Sent: Tuesday, June 26, 2012 5:35 PM
-To: Zhen Fu
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] how to update hw_ptr and appl_ptr
-
-Zhen Fu wrote:
-> I recently look the function snd_pcm_update_hw_ptr0 want to  find how
-> to update status->hw_ptr and control->appl_ptr.
-
-status->hw_ptr is updated by snd_pcm_update_hw_ptr0.  control->appl_ptr
-is updated by snd_pcm_lib_write1.
-
-Why are you asking?
-
-
-Regards,
-Clemens
+-- 
+~Vinod
