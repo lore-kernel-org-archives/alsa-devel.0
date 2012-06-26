@@ -1,17 +1,16 @@
-From: Zhen Fu <fuzh@marvell.com>
-Subject: how to update hw_ptr and appl_ptr
-Date: Mon, 25 Jun 2012 22:40:09 -0700
-Message-ID: <DBBC59900F0EF340B9938F193FB1A3453605DBD2@SC-VEXCH4.marvell.com>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: [PATCH V2] ASoC: tlv320aic3x: Fix codec pll configure
+	bug
+Date: Tue, 26 Jun 2012 11:33:43 +0530
+Message-ID: <1340690623-18177-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog132.obsmtp.com (na3sys009aog132.obsmtp.com
-	[74.125.149.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id A31F924AE1
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 585F3104069
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 07:41:28 +0200 (CEST)
-Content-Language: en-US
+	Tue, 26 Jun 2012 08:19:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,14 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Zhen Fu <fuzh@marvell.com>
+To: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, alsa-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org
+Cc: broonie@opensource.wolfsonmicro.com, sudhakar.raj@ti.com, nsekhar@ti.com, lrg@ti.com, gururaja.hebbar@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi developer,
+In sound/soc/codecs/tlv320aic3x.c
 
-I recently look the function snd_pcm_update_hw_ptr0 want to  find how to update status->hw_ptr and control->appl_ptr. If you have to know this, can you tell me? Thank you very much.
+        data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
+        snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
+                      data | (pll_p << PLLP_SHIFT));
 
---
-Best Regards,
-Zhen Fu
+In the above code, pll-p value is OR'ed with previous value without
+clearing it. Bug is not seen if pll-p value doesn't change across
+Sampling frequency.
+
+However on some platforms (like AM335x EVM-SK), pll-p may have different
+values across different sampling frequencies. In such case, above code
+configures the pll with a wrong value.
+Because of this bug, when a audio stream is played with pll value
+different from previous stream, audio is heard as differently.
+
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+---
+chnages in V2:
+	modify subject to indicate ASOC and codec as tlv320aic3x
+
+ sound/soc/codecs/tlv320aic3x.c |    2 +-
+ sound/soc/codecs/tlv320aic3x.h |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index d0dbac1..8c1977b 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -963,7 +963,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ found:
+-	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
++	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG) & ~PLLP_MASK;
+ 	snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
+ 		      data | (pll_p << PLLP_SHIFT));
+ 	snd_soc_write(codec, AIC3X_OVRF_STATUS_AND_PLLR_REG,
+diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
+index 06a1978..16d9999 100644
+--- a/sound/soc/codecs/tlv320aic3x.h
++++ b/sound/soc/codecs/tlv320aic3x.h
+@@ -166,6 +166,7 @@
+ 
+ /* PLL registers bitfields */
+ #define PLLP_SHIFT		0
++#define PLLP_MASK		7
+ #define PLLQ_SHIFT		3
+ #define PLLR_SHIFT		0
+ #define PLLJ_SHIFT		2
+-- 
+1.7.1
