@@ -1,19 +1,19 @@
-From: =?UTF-8?B?UHJjaGFsIEppxZnDrQ==?= <jiri.prchal@aksignal.cz>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: add input clock
-	selection
-Date: Tue, 26 Jun 2012 13:47:35 +0200
-Message-ID: <4FE9A157.8030105@aksignal.cz>
-References: <4FE98D28.8050908@aksignal.cz>
-	<20120626102627.GN30406@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: how to update hw_ptr and appl_ptr
+Date: Tue, 26 Jun 2012 14:27:04 +0200
+Message-ID: <4FE9AA98.7000307@ladisch.de>
+References: <DBBC59900F0EF340B9938F193FB1A3453605DBD2@SC-VEXCH4.marvell.com>
+	<4FE98239.7050908@ladisch.de>
+	<DBBC59900F0EF340B9938F193FB1A3453605DD79@SC-VEXCH4.marvell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B9EE2465C
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 438C92466D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 13:47:39 +0200 (CEST)
-In-Reply-To: <20120626102627.GN30406@opensource.wolfsonmicro.com>
+	Tue, 26 Jun 2012 14:27:40 +0200 (CEST)
+In-Reply-To: <DBBC59900F0EF340B9938F193FB1A3453605DD79@SC-VEXCH4.marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
+To: Zhen Fu <fuzh@marvell.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCkRuZSAyNi42LjIwMTIgMTI6MjYsIE1hcmsgQnJvd24gbmFwc2FsKGEpOgo+IE9u
-IFR1ZSwgSnVuIDI2LCAyMDEyIGF0IDEyOjIxOjI4UE0gKzAyMDAsIFByY2hhbCBKacWZw60gd3Jv
-dGU6Cj4KPj4gKwkvKiBzZXQgY2xvY2sgb24gTUNMSyBvciBHUElPMiBvciBCQ0xLICovCj4+ICsJ
-c25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgQUlDM1hfQ0xLR0VOX0NUUkxfUkVHLCBQTExDTEtf
-SU5fTUFTSywgY2xrX2lkKTsKPj4gKwlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBBSUMzWF9D
-TEtHRU5fQ1RSTF9SRUcsIENMS0RJVl9JTl9NQVNLLCBjbGtfaWQpOwo+Cj4gTm9ybWFsbHkgaXQn
-cyBwb3NzaWJsZSB0byBzZXQgdGhlc2Ugc2VwYXJhdGVseS4gIElzIHRoZXJlIGEgcmVhc29uIHdo
-eQo+IHRoZXkgaGF2ZSB0byBiZSB0aGUgc2FtZSAoYW5kIGlmIHNvIHdoeSBoYXMgdGhlIGNoaXAg
-Z290IHNlcGFyYXRlCj4gcmVnaXN0ZXJzKT8KSXQgY291bGQgYmUgc2V0IHNlcGFyYXRlbHkgYnV0
-IGluIG15IG9waW5pb24gdGhhdCBkb2Vzbid0IG1ha2Ugc2Vuc2UuIENvZGVjIGhhcyBvbmUgaW5u
-ZXIgY2xvY2sgd2hpY2ggaXMgZnJvbSBkaXZpZGVyIG9yIApwbGwuIEluIG9uZSB0aW1lIGlzIHVz
-ZWQgb25seSBvbmUgY2xvY2sgc291cmNlIHNvIGl0IGRvZXNuJ3QgbWF0dGVyIGhvdyBpcyBzZXQg
-dGhlIG90aGVyLiBBbmQgdGhlIG90aGVyIG11c3QgYmUgc2V0IHRvIApzb21lb25lLCBjYW5ub3Qg
-YmUgc3dpdGNoZWQgb2ZmLgpOb3JtYWxseSBib2FyZCBkZXNpZ24gY29udGFpbiBvbmUgY2xvY2sg
-Y29ubmVjdGVkIHRvIG9uZSBvZiB0cmVlIGlucHV0IHBpbnMuIFRoaXMgaXMgdG8gc2VsZWN0IHBp
-bi4KU2VsZWN0aW9uIG9mIGlucHV0IGRpdmlkZXIgb3IgcGxsIGlzIGRvbmUgc29tZXdoZXJlIGVs
-c2UgZGVwZW5kZWQgb24gZnJlcXVlbmN5IGFuZCBzYW1wbGluZyByYXRlLgpDYW4gc29tZW9uZSBm
-cm9tIFRJIGFwcHJvdmUgb3IgZGlzYXBwcm92ZSB0aGlzPwo+Cj4+ICsjZGVmaW5lIFBMTENMS19J
-Tl9NQVNLCQkweDMwCj4+ICsjZGVmaW5lIENMS0RJVl9JTl9NQVNLCQkweGMwCj4+ICsvKiBjbG9j
-ayBpbiBzb3VyY2UgKi8KPj4gKyNkZWZpbmUgQ0xLSU5fTUNMSwkJMAo+PiArI2RlZmluZSBDTEtJ
-Tl9HUElPMgkJMQo+PiArI2RlZmluZSBDTEtJTl9CQ0xLCQkyCj4KPiBUaGlzIGRvZXNuJ3QgbG9v
-ayByaWdodCAtIHlvdSB1c2UgdGhlIGNsb2NrIHNvdXJjZSB2YWx1ZXMgZGlyZWN0bHkgYWJvdmUK
-PiBidXQgdGhleSBuZWVkIHNoaWZ0aW5nIHRvIGJlIHVzZWQgYXMgaWYgdGhleSdyZSB1c2VkIGRp
-cmVjdGx5IHRoZXknbGwKPiBhbHdheXMgY29tZSBvdXQgYXMgemVyby4gIEl0J2QgYWxzbyBiZSBi
-ZXR0ZXIgdG8gaGF2ZSBzb21lIGJvdW5kcwo+IGNoZWNraW5nIG9uIHRoZSB2YWx1ZXMuCllvdSBh
-cmUgcmlnaHQsIG15IG1pc3Rha2UuIEJlbG93IGlzIGNvcnJlY3RlZCBwYXRjaC4KVGhhbmtzLgoK
-Ci0tLSAvaG9tZS9wcmNoYWwvYXJtL2Z3LWNkdS9saW51eC9saW51eC0zLjUtcmMzL3NvdW5kL3Nv
-Yy9jb2RlY3MvdGx2MzIwYWljM3guYy5vcmlnCisrKyAvaG9tZS9wcmNoYWwvYXJtL2Z3LWNkdS9s
-aW51eC9saW51eC0zLjUtcmMzL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYwpAQCAtOTcy
-LDYgKzk3MiwxMiBAQAogIAlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWkt
-PmNvZGVjOwogIAlzdHJ1Y3QgYWljM3hfcHJpdiAqYWljM3ggPSBzbmRfc29jX2NvZGVjX2dldF9k
-cnZkYXRhKGNvZGVjKTsKCisJLyogc2V0IGNsb2NrIG9uIE1DTEsgb3IgR1BJTzIgb3IgQkNMSyAq
-LworCXNuZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMsIEFJQzNYX0NMS0dFTl9DVFJMX1JFRywgUExM
-Q0xLX0lOX01BU0ssCisJCQkJY2xrX2lkIDw8IFBMTENMS19JTl9TSElGVCk7CisJc25kX3NvY191
-cGRhdGVfYml0cyhjb2RlYywgQUlDM1hfQ0xLR0VOX0NUUkxfUkVHLCBDTEtESVZfSU5fTUFTSywK
-KwkJCQljbGtfaWQgPDwgQ0xLRElWX0lOX1NISUZUKTsKKwogIAlhaWMzeC0+c3lzY2xrID0gZnJl
-cTsKICAJcmV0dXJuIDA7CiAgfQoKLS0tIC9ob21lL3ByY2hhbC9hcm0vZnctY2R1L2xpbnV4L2xp
-bnV4LTMuNS1yYzMvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5oLm9yaWcKKysrIC9ob21l
-L3ByY2hhbC9hcm0vZnctY2R1L2xpbnV4L2xpbnV4LTMuNS1yYzMvc291bmQvc29jL2NvZGVjcy90
-bHYzMjBhaWMzeC5oCkBAIC0xNzgsNiArMTc4LDE1IEBACiAgI2RlZmluZSBQTExfQ0xLSU5fU0hJ
-RlQJCTQKICAjZGVmaW5lIE1DTEtfU09VUkNFCQkweDAKICAjZGVmaW5lIFBMTF9DTEtESVZfU0hJ
-RlQJMAorI2RlZmluZSBQTExDTEtfSU5fTUFTSwkJMHgzMAorI2RlZmluZSBQTExDTEtfSU5fU0hJ
-RlQJCTQKKyNkZWZpbmUgQ0xLRElWX0lOX01BU0sJCTB4YzAKKyNkZWZpbmUgQ0xLRElWX0lOX1NI
-SUZUCQk2CisvKiBjbG9jayBpbiBzb3VyY2UgKi8KKyNkZWZpbmUgQ0xLSU5fTUNMSwkJMAorI2Rl
-ZmluZSBDTEtJTl9HUElPMgkJMQorI2RlZmluZSBDTEtJTl9CQ0xLCQkyCisKCiAgLyogU29mdHdh
-cmUgcmVzZXQgcmVnaXN0ZXIgYml0cyAqLwogICNkZWZpbmUgU09GVF9SRVNFVAkJMHg4MApfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Zhen Fu wrote:
+> when DMA handler called snd_pcm_period_elapsed, so I want to know how
+> about update hw_ptr in ALSA.
+
+snd_pcm_period_elapsed() calls snd_pcm_update_hw_ptr0(), which calls
+your driver's .pointer callback.  The value returned by that callback
+essentially is the hw_ptr (although it doesn't wrap around at the end
+of the buffer).
+
+Why do you care about hw_ptr?
+
+
+Regards,
+Clemens
