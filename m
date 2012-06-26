@@ -1,18 +1,20 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH] davinci:mcasp: Fix codec pll configure bug
-Date: Tue, 26 Jun 2012 06:23:37 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA2C783@DBDE01.ent.ti.com>
-References: <1340275108-15555-1-git-send-email-gururaja.hebbar@ti.com>
+From: rashmi narayan <rashmi.nyn@gmail.com>
+Subject: Re: Configuring an audio path within ALSA
+Date: Tue, 26 Jun 2012 13:22:16 +0530
+Message-ID: <CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
+References: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
+	<4FE924E2.2010504@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75F91104069
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A18B424510
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 08:23:42 +0200 (CEST)
-In-Reply-To: <1340275108-15555-1-git-send-email-gururaja.hebbar@ti.com>
-Content-Language: en-US
+	Tue, 26 Jun 2012 09:52:16 +0200 (CEST)
+Received: by eekc1 with SMTP id c1so1337877eek.38
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2012 00:52:16 -0700 (PDT)
+In-Reply-To: <4FE924E2.2010504@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +24,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Cc: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>, "Nori,
-	Sekhar" <nsekhar@ti.com>
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-All,
+Thank you Patrick .
 
-Kindly ignore this patch I will resend a corrected patch with below changes
+Currently my codec driver SGTL5000.c has the following audio map
+static const struct snd_soc_dapm_route audio_map[] = {
+ {"ADC Mux", "LINE_IN", "LINE_IN"},
+{"ADC Mux", "MIC_IN", "MIC_IN"},
+ {"ADC", NULL, "ADC Mux"},
+{"DAC Mux", "DAC", "DAC"},
+ {"DAC Mux", "LINE_IN", "LINE_IN"},
+{"LO", NULL, "DAC"},
+ {"HP", NULL, "DAC Mux"},
+{"LINE_OUT", NULL, "LO"},
+ {"HP_OUT", NULL, "HP"},
+};
 
-1. add asoc codec maintainers (Mark Brown & Liam Girdwood)
-2. modify the subject to indicate ASOC and codec as tlv320aic3x
+This map does not have a link from ADC to DAC.
+You mention "After a set of ALSA mixer commands is issued to create a
+path from one end point to another end point" , how do we issue those
+commands? to create a link , currently my alsa mixer shows no option for a
+ADC to DAC select.
 
-On Thu, Jun 21, 2012 at 16:08:28, Hebbar, Gururaja wrote:
-> In sound/soc/codecs/tlv320aic3x.c
-> 
-> 	data = snd_soc_read(codec, AIC3X_PLL_PROGA_REG);
-> 	snd_soc_write(codec, AIC3X_PLL_PROGA_REG,
-> 		      data | (pll_p << PLLP_SHIFT));
-> 
-> In the above code, pll-p value is OR'ed with previous value without
-> clearing it. Bug is not seen if pll-p value doesn't change across
-> Sampling frequency.
-> 
-> However on some platforms (like AM335x EVM-SK), pll-p may have different
-> values across different sampling frequencies. In such case, above code
-> configures the pll with a wrong value.
-> Because of this bug, when a audio stream is played with pll value
-> different from previous stream, audio is heard as stretched.
-> 
-> Fix the same by clearing the mask and then writing the value.
-> 
-> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
-> ---
->  sound/soc/codecs/tlv320aic3x.c |    2 +-
->  sound/soc/codecs/tlv320aic3x.h |    1 +
+-Rashmi
 
-...snip...
-...snip...
 
->  #define PLLJ_SHIFT		2
-> -- 
-> 1.7.1
-> 
+On Tue, Jun 26, 2012 at 8:26 AM, Patrick Lai <plai@codeaurora.org> wrote:
 
-Regards, 
-Gururaja
+> On 6/25/2012 5:26 AM, rashmi narayan wrote:
+>
+>> Dear ALSA Folks,
+>>
+>> I am a newbie to ALSA .I am trying to configure a path within the driver
+>> to
+>> open up /power up the path within the codec from MIC-IN to LineOUT. How
+>> can
+>> I do this within ALSA. Please send me some pointers.
+>>
+>>  If your CODEC driver is written to plug into ASoC framework, ASoC
+> dynamic audio power management(DAPM) will be able to link MIC-IN to
+> Lineout. After a set of ALSA mixer commands is issued to create a path
+> from one end point to another end point, DAPM will kick in and enable
+> the path according to widgets and audio routing map defined in the
+> CODEC driver.
+>
+>  Thank you,
+>> Rashmi
+>> ______________________________**_________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.**org/mailman/listinfo/alsa-**devel<http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
+>>
+>
+>
+> --
+> Sent by an employee of the Qualcomm Innovation Center, Inc.
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+>
