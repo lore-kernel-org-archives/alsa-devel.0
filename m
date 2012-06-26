@@ -1,15 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add Realtek ALC280 codec support
-Date: Mon, 25 Jun 2012 19:49:28 +0200
-Message-ID: <1340646568-2533-1-git-send-email-david.henningsson@canonical.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Configuring an audio path within ALSA
+Date: Mon, 25 Jun 2012 19:56:34 -0700
+Message-ID: <4FE924E2.2010504@codeaurora.org>
+References: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 2A1282443D
+Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
+	[199.106.114.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A302247DE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2012 19:49:32 +0200 (CEST)
+	Tue, 26 Jun 2012 04:56:38 +0200 (CEST)
+In-Reply-To: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,35 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
+To: rashmi narayan <rashmi.nyn@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This chip looks very similar to ALC269 and ALC27* variants. The bug reporter
-has verified that sound was working after this patch had been applied.
+On 6/25/2012 5:26 AM, rashmi narayan wrote:
+> Dear ALSA Folks,
+>
+> I am a newbie to ALSA .I am trying to configure a path within the driver to
+> open up /power up the path within the codec from MIC-IN to LineOUT. How can
+> I do this within ALSA. Please send me some pointers.
+>
+If your CODEC driver is written to plug into ASoC framework, ASoC
+dynamic audio power management(DAPM) will be able to link MIC-IN to
+Lineout. After a set of ALSA mixer commands is issued to create a path
+from one end point to another end point, DAPM will kick in and enable
+the path according to widgets and audio routing map defined in the
+CODEC driver.
 
-Cc: stable@kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1017017
-Tested-by: Richard Crossley <richardcrossley@o2.co.uk>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+> Thank you,
+> Rashmi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Alsa info available at:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1017017/+attachment/3202012/+files/alsa-info.txt.6Uupl5Ch1L
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 41475ae..a5534b3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6800,6 +6800,7 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
- 	{ .id = 0x10ec0272, .name = "ALC272", .patch = patch_alc662 },
- 	{ .id = 0x10ec0275, .name = "ALC275", .patch = patch_alc269 },
- 	{ .id = 0x10ec0276, .name = "ALC276", .patch = patch_alc269 },
-+	{ .id = 0x10ec0280, .name = "ALC280", .patch = patch_alc269 },
- 	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660",
- 	  .patch = patch_alc861 },
- 	{ .id = 0x10ec0660, .name = "ALC660-VD", .patch = patch_alc861vd },
 -- 
-1.7.9.5
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
