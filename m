@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: =?UTF-8?B?UHJjaGFsIEppxZnDrQ==?= <jiri.prchal@aksignal.cz>
 Subject: Re: [PATCH] ASoC: tlv320aic3x: add input clock
 	selection
-Date: Tue, 26 Jun 2012 11:26:28 +0100
-Message-ID: <20120626102627.GN30406@opensource.wolfsonmicro.com>
+Date: Tue, 26 Jun 2012 13:47:35 +0200
+Message-ID: <4FE9A157.8030105@aksignal.cz>
 References: <4FE98D28.8050908@aksignal.cz>
+	<20120626102627.GN30406@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1693644748094101917=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D10DB24601
+Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B9EE2465C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 12:26:30 +0200 (CEST)
-In-Reply-To: <4FE98D28.8050908@aksignal.cz>
+	Tue, 26 Jun 2012 13:47:39 +0200 (CEST)
+In-Reply-To: <20120626102627.GN30406@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,75 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Prchal =?utf-8?B?SmnFmcOt?= <jiri.prchal@aksignal.cz>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1693644748094101917==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+2GlJm56SCtLHYlr"
-Content-Disposition: inline
-
-
---+2GlJm56SCtLHYlr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jun 26, 2012 at 12:21:28PM +0200, Prchal Ji=C5=99=C3=AD wrote:
-
-> +	/* set clock on MCLK or GPIO2 or BCLK */
-> +	snd_soc_update_bits(codec, AIC3X_CLKGEN_CTRL_REG, PLLCLK_IN_MASK, clk_i=
-d);
-> +	snd_soc_update_bits(codec, AIC3X_CLKGEN_CTRL_REG, CLKDIV_IN_MASK, clk_i=
-d);
-
-Normally it's possible to set these separately.  Is there a reason why
-they have to be the same (and if so why has the chip got separate
-registers)?
-
-> +#define PLLCLK_IN_MASK		0x30
-> +#define CLKDIV_IN_MASK		0xc0
-> +/* clock in source */
-> +#define CLKIN_MCLK		0
-> +#define CLKIN_GPIO2		1
-> +#define CLKIN_BCLK		2
-
-This doesn't look right - you use the clock source values directly above
-but they need shifting to be used as if they're used directly they'll
-always come out as zero.  It'd also be better to have some bounds
-checking on the values.
-
---+2GlJm56SCtLHYlr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP6Y4lAAoJEBus8iNuMP3dBR0P/A7kCIunU7fNaY2JfyEQo9F4
-fqP1IpD9L0mf99JhlRMF1ljW3rz/BLF2v+95EPxFMpP9ixhmflmKUBTJOLOeP2Mb
-9yl8wGeHc53qtK1kTMXn6U5KOEqic8LAYuGBL/RjYzOpfL7QrtCM1uJekp8DpYS1
-Cp5xrXA25zAD8jlfeEH5FKj9P0U8cR9os3GCi2C79pIbDvARh+ynGvvd8lTdvdap
-FvO5MjJHvh5O2fEUEjNQTXTLFwTSLiEJqqAb7pR3Afq0sGdnE1O1ci7efzrJO0+Z
-YYjbXhXiHYQg7tsSnWnILEwbJgMmfpYrFF7X2eNDipBs14G3vbRaWnmUrxDwPMHF
-OLpXrsSl7ah6fLIQIzgiaPOdJWsG/iSvMOaZ5poTdsmQOrH2SNlp0fvz/D7xR9Oi
-6s4ApYwS2m95ObQiGc7qSI7VbbLjNuAlDMJkkCqpisotVRntJUUVDVT/BBU1uyZW
-0mc7cIFVFn6HGW4XmRdFuCcsev81DdDTZodeGlutZ+DhriP92Djvpc3X+Z/yb2VV
-a+hzrN1Sa9nVMlSe8zzkP2eVY36RA4OscP7Lq64Na96RF4jt0Nxmp7aUyHv4UoK6
-n8UlLeas9k3/B3Bq0rZte/q1OzIHtwL+rZGoLdomUGW/XOKI54Oc5wLB3QK1dOCF
-Sfuuy9dKhu9t6tUKEWsJ
-=uB61
------END PGP SIGNATURE-----
-
---+2GlJm56SCtLHYlr--
-
---===============1693644748094101917==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1693644748094101917==--
+SGkgTWFyaywKCkRuZSAyNi42LjIwMTIgMTI6MjYsIE1hcmsgQnJvd24gbmFwc2FsKGEpOgo+IE9u
+IFR1ZSwgSnVuIDI2LCAyMDEyIGF0IDEyOjIxOjI4UE0gKzAyMDAsIFByY2hhbCBKacWZw60gd3Jv
+dGU6Cj4KPj4gKwkvKiBzZXQgY2xvY2sgb24gTUNMSyBvciBHUElPMiBvciBCQ0xLICovCj4+ICsJ
+c25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgQUlDM1hfQ0xLR0VOX0NUUkxfUkVHLCBQTExDTEtf
+SU5fTUFTSywgY2xrX2lkKTsKPj4gKwlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBBSUMzWF9D
+TEtHRU5fQ1RSTF9SRUcsIENMS0RJVl9JTl9NQVNLLCBjbGtfaWQpOwo+Cj4gTm9ybWFsbHkgaXQn
+cyBwb3NzaWJsZSB0byBzZXQgdGhlc2Ugc2VwYXJhdGVseS4gIElzIHRoZXJlIGEgcmVhc29uIHdo
+eQo+IHRoZXkgaGF2ZSB0byBiZSB0aGUgc2FtZSAoYW5kIGlmIHNvIHdoeSBoYXMgdGhlIGNoaXAg
+Z290IHNlcGFyYXRlCj4gcmVnaXN0ZXJzKT8KSXQgY291bGQgYmUgc2V0IHNlcGFyYXRlbHkgYnV0
+IGluIG15IG9waW5pb24gdGhhdCBkb2Vzbid0IG1ha2Ugc2Vuc2UuIENvZGVjIGhhcyBvbmUgaW5u
+ZXIgY2xvY2sgd2hpY2ggaXMgZnJvbSBkaXZpZGVyIG9yIApwbGwuIEluIG9uZSB0aW1lIGlzIHVz
+ZWQgb25seSBvbmUgY2xvY2sgc291cmNlIHNvIGl0IGRvZXNuJ3QgbWF0dGVyIGhvdyBpcyBzZXQg
+dGhlIG90aGVyLiBBbmQgdGhlIG90aGVyIG11c3QgYmUgc2V0IHRvIApzb21lb25lLCBjYW5ub3Qg
+YmUgc3dpdGNoZWQgb2ZmLgpOb3JtYWxseSBib2FyZCBkZXNpZ24gY29udGFpbiBvbmUgY2xvY2sg
+Y29ubmVjdGVkIHRvIG9uZSBvZiB0cmVlIGlucHV0IHBpbnMuIFRoaXMgaXMgdG8gc2VsZWN0IHBp
+bi4KU2VsZWN0aW9uIG9mIGlucHV0IGRpdmlkZXIgb3IgcGxsIGlzIGRvbmUgc29tZXdoZXJlIGVs
+c2UgZGVwZW5kZWQgb24gZnJlcXVlbmN5IGFuZCBzYW1wbGluZyByYXRlLgpDYW4gc29tZW9uZSBm
+cm9tIFRJIGFwcHJvdmUgb3IgZGlzYXBwcm92ZSB0aGlzPwo+Cj4+ICsjZGVmaW5lIFBMTENMS19J
+Tl9NQVNLCQkweDMwCj4+ICsjZGVmaW5lIENMS0RJVl9JTl9NQVNLCQkweGMwCj4+ICsvKiBjbG9j
+ayBpbiBzb3VyY2UgKi8KPj4gKyNkZWZpbmUgQ0xLSU5fTUNMSwkJMAo+PiArI2RlZmluZSBDTEtJ
+Tl9HUElPMgkJMQo+PiArI2RlZmluZSBDTEtJTl9CQ0xLCQkyCj4KPiBUaGlzIGRvZXNuJ3QgbG9v
+ayByaWdodCAtIHlvdSB1c2UgdGhlIGNsb2NrIHNvdXJjZSB2YWx1ZXMgZGlyZWN0bHkgYWJvdmUK
+PiBidXQgdGhleSBuZWVkIHNoaWZ0aW5nIHRvIGJlIHVzZWQgYXMgaWYgdGhleSdyZSB1c2VkIGRp
+cmVjdGx5IHRoZXknbGwKPiBhbHdheXMgY29tZSBvdXQgYXMgemVyby4gIEl0J2QgYWxzbyBiZSBi
+ZXR0ZXIgdG8gaGF2ZSBzb21lIGJvdW5kcwo+IGNoZWNraW5nIG9uIHRoZSB2YWx1ZXMuCllvdSBh
+cmUgcmlnaHQsIG15IG1pc3Rha2UuIEJlbG93IGlzIGNvcnJlY3RlZCBwYXRjaC4KVGhhbmtzLgoK
+Ci0tLSAvaG9tZS9wcmNoYWwvYXJtL2Z3LWNkdS9saW51eC9saW51eC0zLjUtcmMzL3NvdW5kL3Nv
+Yy9jb2RlY3MvdGx2MzIwYWljM3guYy5vcmlnCisrKyAvaG9tZS9wcmNoYWwvYXJtL2Z3LWNkdS9s
+aW51eC9saW51eC0zLjUtcmMzL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYwpAQCAtOTcy
+LDYgKzk3MiwxMiBAQAogIAlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWkt
+PmNvZGVjOwogIAlzdHJ1Y3QgYWljM3hfcHJpdiAqYWljM3ggPSBzbmRfc29jX2NvZGVjX2dldF9k
+cnZkYXRhKGNvZGVjKTsKCisJLyogc2V0IGNsb2NrIG9uIE1DTEsgb3IgR1BJTzIgb3IgQkNMSyAq
+LworCXNuZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMsIEFJQzNYX0NMS0dFTl9DVFJMX1JFRywgUExM
+Q0xLX0lOX01BU0ssCisJCQkJY2xrX2lkIDw8IFBMTENMS19JTl9TSElGVCk7CisJc25kX3NvY191
+cGRhdGVfYml0cyhjb2RlYywgQUlDM1hfQ0xLR0VOX0NUUkxfUkVHLCBDTEtESVZfSU5fTUFTSywK
+KwkJCQljbGtfaWQgPDwgQ0xLRElWX0lOX1NISUZUKTsKKwogIAlhaWMzeC0+c3lzY2xrID0gZnJl
+cTsKICAJcmV0dXJuIDA7CiAgfQoKLS0tIC9ob21lL3ByY2hhbC9hcm0vZnctY2R1L2xpbnV4L2xp
+bnV4LTMuNS1yYzMvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5oLm9yaWcKKysrIC9ob21l
+L3ByY2hhbC9hcm0vZnctY2R1L2xpbnV4L2xpbnV4LTMuNS1yYzMvc291bmQvc29jL2NvZGVjcy90
+bHYzMjBhaWMzeC5oCkBAIC0xNzgsNiArMTc4LDE1IEBACiAgI2RlZmluZSBQTExfQ0xLSU5fU0hJ
+RlQJCTQKICAjZGVmaW5lIE1DTEtfU09VUkNFCQkweDAKICAjZGVmaW5lIFBMTF9DTEtESVZfU0hJ
+RlQJMAorI2RlZmluZSBQTExDTEtfSU5fTUFTSwkJMHgzMAorI2RlZmluZSBQTExDTEtfSU5fU0hJ
+RlQJCTQKKyNkZWZpbmUgQ0xLRElWX0lOX01BU0sJCTB4YzAKKyNkZWZpbmUgQ0xLRElWX0lOX1NI
+SUZUCQk2CisvKiBjbG9jayBpbiBzb3VyY2UgKi8KKyNkZWZpbmUgQ0xLSU5fTUNMSwkJMAorI2Rl
+ZmluZSBDTEtJTl9HUElPMgkJMQorI2RlZmluZSBDTEtJTl9CQ0xLCQkyCisKCiAgLyogU29mdHdh
+cmUgcmVzZXQgcmVnaXN0ZXIgYml0cyAqLwogICNkZWZpbmUgU09GVF9SRVNFVAkJMHg4MApfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
