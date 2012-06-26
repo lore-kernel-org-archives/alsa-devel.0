@@ -1,19 +1,19 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: Re: [Regression] No sound on HP Pavilion dv6, STAC92xx
-Date: Tue, 26 Jun 2012 17:02:30 +0100
-Message-ID: <87hatyrrhl.fsf@canonical.com>
-References: <87d34mtb3c.fsf@canonical.com> <s5hvcie5faz.wl%tiwai@suse.de>
-	<s5hk3yu5ct9.wl%tiwai@suse.de> <s5hd34m5av0.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: add missing registers
+ and bits
+Date: Tue, 26 Jun 2012 17:33:44 +0100
+Message-ID: <20120626163344.GW30406@opensource.wolfsonmicro.com>
+References: <4FE9AD5F.7080302@aksignal.cz>
+	<20120626132117.GV30406@opensource.wolfsonmicro.com>
+	<CAONxwYPutt+Tqtt6dKgS1x-c17_czu0_r+hBwQR262sYgzxgdg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2708303720800207216=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 5C79C24363
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D799024398
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2012 18:02:34 +0200 (CEST)
-In-Reply-To: <s5hd34m5av0.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
-	26 Jun 2012 17:52:35 +0200")
+	Tue, 26 Jun 2012 18:41:15 +0200 (CEST)
+In-Reply-To: <CAONxwYPutt+Tqtt6dKgS1x-c17_czu0_r+hBwQR262sYgzxgdg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,106 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>
+To: Roberto Nibali <rnibali@gmail.com>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, Prchal =?utf-8?B?SmnFmcOt?= <jiri.prchal@aksignal.cz>, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-Takashi Iwai <tiwai@suse.de> writes:
+--===============2708303720800207216==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="msgLTjjeumHWYklJ"
+Content-Disposition: inline
 
-> At Tue, 26 Jun 2012 17:10:26 +0200,
-> Takashi Iwai wrote:
->> 
->> At Tue, 26 Jun 2012 16:16:36 +0200,
->> Takashi Iwai wrote:
->> > 
->> > At Tue, 26 Jun 2012 15:13:43 +0100,
->> > Luis Henriques wrote:
->> > > 
->> > > Hi,
->> > > 
->> > > After commit b0791dda813c179e539b0fc1ecd3f5f30f2571e2 ("ALSA: hda/idt
->> > > - Fix power-map for speaker-pins with some HP laptops") we have
->> > > several bug reports about not having sound on HP Pavilion laptops.
->> > > 
->> > > Here's a link to one of these bug reports:
->> > > 
->> > >  http://bugs.launchpad.net/bugs/1013183
->> > > 
->> > > After reverting the referred commit, everything seems to be working
->> > > fine again.
->> > > 
->> > > Any ideas/fixes?
->> > 
->> > Could you give alsa-info.sh output on both working and non-working
->> > kernels?
->> 
->> Also, does it really happen with the upstream kernels (vanilla 3.2.y
->> and Linus tree) without ubuntu changes?  If yes, I'd need alsa-info.sh
->> outputs on these, too.
->
-> Never mind, I found the culprit.
-> The fixed patch for 3.5 kernel is below.
->
-> For 3.4 and older kernels, another patch is necessary.  Will put in
-> another post.
->
 
-Great, thanks a lot for your help.  I was trying to gather the data
-from bug reporters, but I guess I can abort that.
+--msgLTjjeumHWYklJ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll try to get someone testing the patch.
+On Tue, Jun 26, 2012 at 04:56:27PM +0200, Roberto Nibali wrote:
+> On Tue, Jun 26, 2012 at 3:21 PM, Mark Brown
 
-Cheers,
---
-Luis
+> > This is essentially impossible to review as you've not said what's being
+> > fixed and have completely reformatted the table so the diff doesn't
+> > highlight the changes at all. =A0What's wrong and what is the change
+> > fixing?
 
->
-> Takashi
->
-> ---
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Fix power-map regression for HP dv6 & co
->
-> The recent fix for power-map controls (commit b0791dda813) caused
-> regressions on some other HP laptops.  They have fixed pins but these
-> pins are exposed as jack-detectable.  Thus the driver tries to control
-> the power-map dynamically per jack detection where it never gets on.
->
-> This patch adds the check of connection and it assumes the no jack
-> detection is available for fixed pins no matter what pin capability
-> says.
->
-> BugLink: http://bugs.launchpad.net/bugs/1013183
-> Reported-by: Luis Henriques <luis.henriques@canonical.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/patch_sigmatel.c |    7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-> index 7db8228..0767528 100644
-> --- a/sound/pci/hda/patch_sigmatel.c
-> +++ b/sound/pci/hda/patch_sigmatel.c
-> @@ -4367,7 +4367,7 @@ static int stac92xx_init(struct hda_codec *codec)
->  					 AC_PINCTL_IN_EN);
->  	for (i = 0; i < spec->num_pwrs; i++)  {
->  		hda_nid_t nid = spec->pwr_nids[i];
-> -		int pinctl, def_conf;
-> +		unsigned int pinctl, def_conf;
->  
->  		def_conf = snd_hda_codec_get_pincfg(codec, nid);
->  		def_conf = get_defcfg_connect(def_conf);
-> @@ -4376,6 +4376,11 @@ static int stac92xx_init(struct hda_codec *codec)
->  			stac_toggle_power_map(codec, nid, 0);
->  			continue;
->  		}
-> +		if (def_conf == AC_JACK_PORT_FIXED) {
-> +			/* no need for jack detection for fixed pins */
-> +			stac_toggle_power_map(codec, nid, 1);
-> +			continue;
-> +		}
->  		/* power on when no jack detection is available */
->  		/* or when the VREF is used for controlling LED */
->  		if (!spec->hp_detect ||
+> This is merely a match to the data sheet of various TLV320AIC310x
+> codecs. I've planned on submitting almost the same patch a couple of
+> months ago. The reformatting to my avail adds to readability, no
+> values are changed. Only a couple of 0x00 are added for the missing
+
+This is irrelevant, you shouldn't be putting several unrelated changes
+into a single patch.  It's bad for review and it's bad for reading the
+history  Mixing minor style changes with bug fixes is especially bad,
+whatever actual changes you've made are essentially invisible in all the
+reformating.
+
+To be perfectly honest I personally find your new version less readable,
+having more numbers per line means more counting is needed to figure out
+which register is which.
+
+You've still also not clearly described what the actual changes are...
+
+--msgLTjjeumHWYklJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP6eRfAAoJEBus8iNuMP3ddmIP/0FT10xAz0Wj/9mFB4hyd79t
+bwni2elaXsmnRPFmNaagvndxO5REcPwNO6kiaLfHQt3nD09XSe6mmEnYnjQ9K0+w
+HVD5yhq1dy3EUVEzpJzqFkGBEdJobMAlmbDvdu2O5XK29+eaEzitTsb6e7n+6HYW
+PC5nd1tgU+qOV0npFS0Sw+vzWVEYQ1oV4pdLMqLNN8sqLR56+4sBMfnqU1bMK2Tf
+culxfrFqq7iuAgCZTmj+tQbNP76n2fZiD21GpuZC59AJvbsMo392UkfPiOgXuMSS
+3U653rJ+6L/aXGHmxx8J95/g89H3frJkZPDGthtVD1yBOuWjLJI72IB1vbP4Wi4J
+ldCUI8v5lbYMnQozWYaoaGjwngJlr9yMTMoNNyUiyjeiXPdtDs24uW8bX4Fzu7cH
+J+q3sxunWqMBMsLYQjMSkklfJr9y943GrTVlFsOO3+g5u3YmBTt550A48fa9IHl3
+BoLNLUQ4txCEVzzhVzdAaYlUjS5u2sZHKthj0DcNzlPPeIScysU18jdeXYgkVlnt
+q3TiSwMcjL30KuMiM/ttgarfBAvFoI2OEbavgswJxdTvXXmNqJDTtvsjRktIhBsl
+kIquktDA6TbMjbiyDJfmCL+V/CzNu6N8TiN3PuIwsX9ZjoCNOTlgi2k7VhyuKt6Z
+LdwsgZDhu+7Rvy/YNvFm
+=LcvE
+-----END PGP SIGNATURE-----
+
+--msgLTjjeumHWYklJ--
+
+--===============2708303720800207216==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2708303720800207216==--
