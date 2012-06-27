@@ -1,22 +1,22 @@
-From: Zhen Fu <fuzh@marvell.com>
-Subject: Re: how to update hw_ptr and appl_ptr
-Date: Tue, 26 Jun 2012 20:13:31 -0700
-Message-ID: <DBBC59900F0EF340B9938F193FB1A3453611F4F2@SC-VEXCH4.marvell.com>
-References: <DBBC59900F0EF340B9938F193FB1A3453605DBD2@SC-VEXCH4.marvell.com>
-	<4FE98239.7050908@ladisch.de>
-	<DBBC59900F0EF340B9938F193FB1A3453605DD79@SC-VEXCH4.marvell.com>
-	<4FE9AA98.7000307@ladisch.de>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH V2 7/9] sound:asoc: Add support for SPEAr
+ ASoC machine driver.
+Date: Wed, 27 Jun 2012 10:07:04 +0530
+Message-ID: <4FEA8DF0.70107@st.com>
+References: <cover.1340273261.git.rajeev-dlh.kumar@st.com>
+	<6eb72cea276e7dc191713cff9e4a0ce8ed6b2faf.1340273261.git.rajeev-dlh.kumar@st.com>
+	<20120623110113.GU4037@opensource.wolfsonmicro.com>
+	<4FE83D3E.1070900@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog129.obsmtp.com (na3sys009aog129.obsmtp.com
-	[74.125.149.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8949B24455
+Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
+	[207.126.144.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E0D324369
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2012 05:13:43 +0200 (CEST)
-In-Reply-To: <4FE9AA98.7000307@ladisch.de>
-Content-Language: en-US
+	Wed, 27 Jun 2012 07:08:51 +0200 (CEST)
+In-Reply-To: <4FE83D3E.1070900@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Zhen Fu <fuzh@marvell.com>
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Because when I use aplay playback wav file, appear underrun phenomenon. So I want to ALSA driver how to handle xrun.
+Hello Mark,
 
---
-Best Regards,
-Zhen Fu
+On 6/25/2012 3:58 PM, Rajeev kumar wrote:
+>> I'd expect to see an of_match_table in the device too given that you're
+>> parsing OF compatible data.  Given how simple this is I wonder if you
+>> can instead add DT support to the simple-card driver which Morimoto-san
+>> recently contributed rather than adding a new driver?
+>>
 
------Original Message-----
-From: Clemens Ladisch [mailto:clemens@ladisch.de] 
-Sent: Tuesday, June 26, 2012 8:27 PM
-To: Zhen Fu
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] how to update hw_ptr and appl_ptr
+This will completely eliminate m/c driver. Am I correct ?
 
-Zhen Fu wrote:
-> when DMA handler called snd_pcm_period_elapsed, so I want to know how
-> about update hw_ptr in ALSA.
-
-snd_pcm_period_elapsed() calls snd_pcm_update_hw_ptr0(), which calls
-your driver's .pointer callback.  The value returned by that callback
-essentially is the hw_ptr (although it doesn't wrap around at the end
-of the buffer).
-
-Why do you care about hw_ptr?
+>
+> I am not well-versed with device-tree framework. It will take me some
+> time to study and incorporate the changes. I will get back on this point
+> as soon as I finish the same.
+>
 
 
-Regards,
-Clemens
+> In the meanwhile can I send the V3 of rest patches which is not applied,
+> namely
+>
+> 1. [PATCH V2 1/9] sound:asoc: Add support for spdif in Audio Codec.
+> 2. [PATCH V2 2/9] sound:asoc: Add support for STA529 Audio Codec.
+> 3. [PATCH V2 6/9] sound:asoc:spdif_out: Add spdif out support
+
+Can I send above patches.
+
+Best Regards
+Rajeev
