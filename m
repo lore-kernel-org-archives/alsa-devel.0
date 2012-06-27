@@ -1,29 +1,16 @@
-From: Thomas Richter <thor@math.tu-berlin.de>
-Subject: Re: emu10k1 driver can't allocate memory
-Date: Wed, 27 Jun 2012 15:07:11 +0000 (UTC)
-Message-ID: <loom.20120627T170549-645@post.gmane.org>
-References: <CAHYJk3R0aS84KYLXFtWmxaHWQG+vdy3xSmXpVO+vN8w7ov2XSQ@mail.gmail.com>
-	<s5h396j9umz.wl%tiwai@suse.de>
-	<loom.20120627T153803-845@post.gmane.org>
-	<s5h7gusrh1f.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 1/2] ALSA: HDA: Support single 3-pin jack
+	without VREF on the actual pin
+Date: Wed, 27 Jun 2012 18:45:44 +0200
+Message-ID: <1340815545-7731-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6856724157
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 219AC243E6
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2012 17:07:28 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Sjtq1-0006vt-Ea
-	for alsa-devel@alsa-project.org; Wed, 27 Jun 2012 17:07:25 +0200
-Received: from rusime04.rus.uni-stuttgart.de ([129.69.58.55])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2012 17:07:25 +0200
-Received: from thor by rusime04.rus.uni-stuttgart.de with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2012 17:07:25 +0200
+	Wed, 27 Jun 2012 18:45:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,23 +20,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1018262@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
+Some ASUS device has a single 3-pin jack that can either be a mic or
+a headphone, but the pin does not have VREF capabilities. We've been
+told by Realtek to instead enable VREF on pin 0x18 in that case.
 
+BugLink: https://bugs.launchpad.net/bugs/1018262
+Tested-by: Chih-Hsyuan Ho <chih.ho@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   49 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 34 insertions(+), 15 deletions(-)
 
-> > There is a kernel patch for this:
-> > 
-> > https://bugs.launchpad.net/ubuntu/+source/awesfx/+bug/183456
-> 
-> Did you see the address value in the above original report?  It's the
-> address returned from dma_alloc_coherent().  Certainly the same
-> problem won't happen on 2GB memory system without IOMMU.  It's a
-> completely different thing.
+Alsa info:
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1018262/+attachment/3205361/+files/alsa-info-1015cx-unplugged.log
 
-Thanks, I guess you are right - especially in so far as the mentioned 
-patch seem to have been applied by the OP already.
-
-So long,
-Thomas
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 5c81ee9..6174d4a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -303,6 +303,38 @@ static inline hda_nid_t get_capsrc(struct alc_spec *spec, int idx)
+ static void call_update_outputs(struct hda_codec *codec);
+ static void alc_inv_dmic_sync(struct hda_codec *codec, bool force);
+ 
++/* for shared I/O, change the pin-control accordingly */
++static void update_shared_mic_hp(struct hda_codec *codec, bool set_as_mic)
++{
++	struct alc_spec *spec = codec->spec;
++	unsigned int val;
++	hda_nid_t pin = spec->autocfg.inputs[1].pin;
++	/* NOTE: this assumes that there are only two inputs, the
++	 * first is the real internal mic and the second is HP/mic jack.
++	 */
++
++	val = snd_hda_get_default_vref(codec, pin);
++
++	/* This pin does not have vref caps - let's instead enable vref on pin 0x18
++	   instead, as suggested by Realtek */
++	if (val == AC_PINCTL_VREF_HIZ) {
++		const hda_nid_t vref_pin = 0x18;
++		/* Sanity check pin 0x18 */
++		if (get_wcaps_type(get_wcaps(codec, vref_pin)) == AC_WID_PIN &&
++		    get_defcfg_connect(snd_hda_codec_get_pincfg(codec, vref_pin)) == AC_JACK_PORT_NONE) {
++			unsigned int vref_val = snd_hda_get_default_vref(codec, vref_pin);
++			if (vref_val != AC_PINCTL_VREF_HIZ)
++				snd_hda_set_pin_ctl(codec, vref_pin, PIN_IN | (set_as_mic ? vref_val : 0));
++		}
++	}
++
++	val = set_as_mic ? val | PIN_IN : PIN_HP;
++	snd_hda_set_pin_ctl(codec, pin, val);
++
++	spec->automute_speaker = !set_as_mic;
++	call_update_outputs(codec);
++}
++
+ /* select the given imux item; either unmute exclusively or select the route */
+ static int alc_mux_select(struct hda_codec *codec, unsigned int adc_idx,
+ 			  unsigned int idx, bool force)
+@@ -329,21 +361,8 @@ static int alc_mux_select(struct hda_codec *codec, unsigned int adc_idx,
+ 		return 0;
+ 	spec->cur_mux[adc_idx] = idx;
+ 
+-	/* for shared I/O, change the pin-control accordingly */
+-	if (spec->shared_mic_hp) {
+-		unsigned int val;
+-		hda_nid_t pin = spec->autocfg.inputs[1].pin;
+-		/* NOTE: this assumes that there are only two inputs, the
+-		 * first is the real internal mic and the second is HP jack.
+-		 */
+-		if (spec->cur_mux[adc_idx])
+-			val = snd_hda_get_default_vref(codec, pin) | PIN_IN;
+-		else
+-			val = PIN_HP;
+-		snd_hda_set_pin_ctl(codec, pin, val);
+-		spec->automute_speaker = !spec->cur_mux[adc_idx];
+-		call_update_outputs(codec);
+-	}
++	if (spec->shared_mic_hp)
++		update_shared_mic_hp(codec, spec->cur_mux[adc_idx]);
+ 
+ 	if (spec->dyn_adc_switch) {
+ 		alc_dyn_adc_pcm_resetup(codec, idx);
+-- 
+1.7.9.5
