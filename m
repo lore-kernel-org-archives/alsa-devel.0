@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 7/9] sound:asoc: Add support for SPEAr
- ASoC machine driver.
-Date: Wed, 27 Jun 2012 12:12:38 +0100
-Message-ID: <20120627111238.GD308@opensource.wolfsonmicro.com>
-References: <cover.1340273261.git.rajeev-dlh.kumar@st.com>
-	<6eb72cea276e7dc191713cff9e4a0ce8ed6b2faf.1340273261.git.rajeev-dlh.kumar@st.com>
-	<20120623110113.GU4037@opensource.wolfsonmicro.com>
-	<4FE83D3E.1070900@st.com> <4FEA8DF0.70107@st.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: add AGC, MIC_BIAS
+Date: Wed, 27 Jun 2012 12:25:23 +0100
+Message-ID: <20120627112523.GE308@opensource.wolfsonmicro.com>
+References: <4FE9B35B.9020002@aksignal.cz>
+	<20120626131712.GT30406@opensource.wolfsonmicro.com>
+	<4FEABABC.9040309@aksignal.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0638493453661255807=="
+Content-Type: multipart/mixed; boundary="===============5622512851503490940=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 309CF103EE1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 709D41042E9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2012 13:12:40 +0200 (CEST)
-In-Reply-To: <4FEA8DF0.70107@st.com>
+	Wed, 27 Jun 2012 13:25:25 +0200 (CEST)
+In-Reply-To: <4FEABABC.9040309@aksignal.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +22,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Prchal =?utf-8?B?SmnFmcOt?= <jiri.prchal@aksignal.cz>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0638493453661255807==
+--===============5622512851503490940==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="C1iGAkRnbeBonpVg"
+	protocol="application/pgp-signature"; boundary="Rgf3q3z9SdmXC6oT"
 Content-Disposition: inline
 
 
---C1iGAkRnbeBonpVg
-Content-Type: text/plain; charset=us-ascii
+--Rgf3q3z9SdmXC6oT
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 27, 2012 at 10:07:04AM +0530, Rajeev kumar wrote:
-> Hello Mark,
->=20
-> On 6/25/2012 3:58 PM, Rajeev kumar wrote:
-> >>I'd expect to see an of_match_table in the device too given that you're
-> >>parsing OF compatible data.  Given how simple this is I wonder if you
-> >>can instead add DT support to the simple-card driver which Morimoto-san
-> >>recently contributed rather than adding a new driver?
+On Wed, Jun 27, 2012 at 09:48:12AM +0200, Prchal Ji=C5=99=C3=AD wrote:
 
-> This will completely eliminate m/c driver. Am I correct ?
+Please fix your mailer to word wrap within paragraphs, I've reflowed
+your text for legibility.
 
-Well, it'll mean that you don't need to write a custom one.
+> Dne 26.6.2012 15:17, Mark Brown napsal(a):
+> >On Tue, Jun 26, 2012 at 03:04:27PM +0200, Prchal Ji=C5=99=C3=AD wrote:
 
---C1iGAkRnbeBonpVg
+> >Please move everything out of the big array or if you insist on having
+> >the array then use the indexes in the assignments.  Otherwise the code
+> >is just error prone and hard to read.
+
+> I just add some elements to big array.
+> As I see in other codec drivers (e.g. wm9713) there are big arrays too.
+> I think it's more readable to use symbolic names instead of indexes.
+
+I'm saying it's even better not to use an enormous array at all and you
+should fix that up rather than extend it (especially given that you're
+using a different style to the existing controls).  Only a few old
+drivers still use the magic array indexes.
+
+> >>+	SOC_ENUM("Mic Bias", aic3x_enum[MIC_BIAS_ENUM]),
+
+> >No, this should be platform data or done with a callback from the
+> >machine driver.  It's very unlikely that it's sensible to vary at
+> >runtime without coordination with other driver code.
+
+> I don't know how, can you, please, suggest me. There are three levels of =
+voltage.
+
+There are numerous examples of platform data in the kernel...
+
+> >>+	/* set to avoid artifacts on the audio output during power-on/off */
+> >>+	snd_soc_write(codec, AIC3X_HEADSET_DETECT_CTRL_B, 0x80); /*ac-coupled=
+*/
+> >>+	snd_soc_write(codec, HPOUT_POP_REDUCTION, 0x4e); /* 10 + 4 ms, refere=
+nce*/
+
+> >>+	/* short circuit protection */
+> >>+	snd_soc_write(codec, HPRCOM_CFG, 0x04);
+
+> >This appears to be unrelated to the change.  What is it for?
+
+> This sets default values and I think it would be nice to have
+> defaultly reduced pops-up and short circuit protection.
+
+So it is as I said totally unrelated to the rest of your change and
+should be sent separately.  As covered in SubmittingPatches don't make
+multiple unrelated changes in a single commit, it is especially bad if
+you don't even mention some of them.
+
+> >>  	/* DAC to Mono Line Out default volume and route to Output mixer */
+> >>-	snd_soc_write(codec, DACL1_2_MONOLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
+> >>-	snd_soc_write(codec, DACR1_2_MONOLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
+> >>+	/* mix both channels with -6dB level */
+> >>+	snd_soc_write(codec, DACL1_2_MONOLOPM_VOL, (DEFAULT_VOL + 12) | ROUTE=
+_ON);
+> >>+	snd_soc_write(codec, DACR1_2_MONOLOPM_VOL, (DEFAULT_VOL + 12) | ROUTE=
+_ON);
+
+> >This is also an unrelated change to the chip defaults (which we were
+> >overriding anyway when we shouldn't be...).  Code like this should just
+> >be removed completely.
+
+> No, correct mixing two channels to one is 1/2 + 1/2. 1/2 =3D -6dB.
+
+I'm not sure how that follows on from what I said?  To repeat, the code
+you're changing shouldn't be here in the first place and what you're
+doing is unrelated to the rest of your change.
+
+> >>+	/* AGC to -10dB, 20 / 500ms, no clip stepping, noise gate -90dB, hyst=
+eresis 3dB*/
+> >>+	snd_soc_write(codec, LAGC_CTRL_A, 0x2f);
+> >>+	snd_soc_write(codec, RAGC_CTRL_A, 0x2f);
+> >>+	snd_soc_write(codec, LAGC_CTRL_C, 0xbe);
+> >>+	snd_soc_write(codec, RAGC_CTRL_C, 0xbe);
+
+> >Again, just use the chip defaults and let the user override.
+
+> Originally the driver sets many defaults to hear playback, because
+> after reset defaults won't hear anything and user need to set many
+> switches and volumes. Maybe is not necessary to set AGC here.
+
+All this code in the driver should be removed, the driver should leave
+the device in the default state for the most part.
+
+--Rgf3q3z9SdmXC6oT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP6uqFAAoJEBus8iNuMP3ddGIQAIPiiUHoHeoikiz4SvQl4yKv
-1GjRZJHCRvNFAB4hbDi9qvAyi+7LxERl+O0Xg5I2VWzie7Vbi7izWVKGRcgggtao
-RdcRQEbMNfTQS5fx4BkAHVUmbGRYU5Ogb4IwLOAwR1C0+vNfHPVmMs94gwQ57Ct4
-HV6Dm5yos8Fr7DXrPVub/AJe6Zp7P8tgNcyr6MXc9Fit/5vBKPd6ieGKqCM/Witn
-eW70+X/jCg7pANKSZuQFfB76vkrcnRftw78QPK3GjFHHxRAMT9qldwxl9K43tkaR
-01tBOBLXODx0BIc0rkOb0/Edh6RV4v2o6vNlRXGQAwrsV+lYkoNkHkWrIcq6Fs1B
-CeN7kaq9FGXiWg9/2nRUxOLfaI67IA/Z3Q5RHMdCjLgFCEBwIFitF9j/VoUct8vR
-Rb/G8CWNYZCdD9bwlrgQt9vHW2vNfvcrfXzoQbFpdWS1STK6EzfB37fWlXxp9KcZ
-V7Fi/2FJ5roz2YMTDYJKc7xkg/6IKeoCtZBMxyLvv4r8UQjtfN7mr7aDLrz7+lJ7
-IHhURtUXNdHFSQG8r7YUEinMou5Rzj81mPo4XuFNdk2f1dlC4rhyo0BK5mIPJwdp
-/HwzhR5yqkHy6YVpGvwhalZ7y/VlGyLqDF45r6snIH3lfJzNuS3+Qnq77laJqRa7
-91/NwomHPJykKhom+19H
-=Rh2r
+iQIcBAEBAgAGBQJP6u2cAAoJEBus8iNuMP3dzbUP/1ncKqkxbtyB7WhY5LPxQUoS
+kapbqBK+4tqIjXOQ/JdJufK5aRWhVBt2QlvwOaQYTnq0jc3jvhpPb5F7bRsX6hDl
+bWG5T46dhchIW6v2TZDUzvruT4JBHATDayk1Xt4Sr8KFthv50poePOSILirNdRTO
+n0SIuC2cX4+/AlHBpAdmE007bAYwp2Vpls2AZze2UMndQEkdvmYPHEAdWDAJnA2U
+/4+ogbHUL5W8wDQ90RslpQc78Yn5btYcc1nSRJ8s6QS+f7OI+v7fttTB76l7lwyA
+y42DaM9AWjsTAFTVScPGmr7aUMSWSAUuzQC7orqXbuZL+0MmvfIRqmmGFC+KN4nu
+wmCKLjK/hfWQwBQ3Ekf5mhOuGrxC/9YCnT/A7wGt0VeEyFnJef5wPgkM+6PHaqCp
+D0D9BEvTkK2XkChUIajLPjXnU7Ef6NJ7EPsYqa3ejZmgIx2HRQs1LOgnqYqraWhd
+m8TiAZUwh7oBLmwPBoN6PRf4QfIVB5YA7ePR9u8ekcJlY3Mi/sE4XIOqANnrK1wB
+vB/RrLOOik0URp0rntglE40z9ClbDeveG+Tm+zD0VbH+YewH074gEWQEPQgXq9mB
+rR5rJAVOS+K7mP9hqNNYswjhLRuhnLtXELOLtRLNXilSa6rNU8cwcLwXPE6mtA2i
+JVuHPQK6u07bmOgtDNXN
+=Q9Dl
 -----END PGP SIGNATURE-----
 
---C1iGAkRnbeBonpVg--
+--Rgf3q3z9SdmXC6oT--
 
---===============0638493453661255807==
+--===============5622512851503490940==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0638493453661255807==--
+--===============5622512851503490940==--
