@@ -1,23 +1,19 @@
-From: rashmi narayan <rashmi.nyn@gmail.com>
-Subject: Re: Configuring an audio path within ALSA
-Date: Wed, 27 Jun 2012 17:34:47 +0530
-Message-ID: <CABTnDnPpvSsrU-iQhv9ntvR+3LgL7uoD7DgqkVU9eqiJX30TeA@mail.gmail.com>
-References: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
-	<4FE924E2.2010504@codeaurora.org>
-	<CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
-	<4FEA99D6.3000308@codeaurora.org>
+From: =?UTF-8?B?UHJjaGFsIEppxZnDrQ==?= <jiri.prchal@aksignal.cz>
+Subject: Re: [PATCH v3] ASoC: tlv320aic3x: add missing
+	registers and bits
+Date: Wed, 27 Jun 2012 15:01:29 +0200
+Message-ID: <4FEB0429.9080209@aksignal.cz>
+References: <4FEAA303.5020806@aksignal.cz>
+	<20120627120130.GJ308@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B17C104345
+Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9966F244CA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2012 14:04:48 +0200 (CEST)
-Received: by eaaa1 with SMTP id a1so306575eaa.38
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2012 05:04:47 -0700 (PDT)
-In-Reply-To: <4FEA99D6.3000308@codeaurora.org>
+	Wed, 27 Jun 2012 15:01:33 +0200 (CEST)
+In-Reply-To: <20120627120130.GJ308@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,63 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 27, 2012 at 10:57 AM, Patrick Lai <plai@codeaurora.org> wrote:
+Adds missing register default values to cache.
+Adds register and bit shift definitions in header file.
+Changes are for TLV320AIC310x based on data sheet.
 
-> On 6/26/2012 12:52 AM, rashmi narayan wrote:
->
->> Thank you Patrick .
->>
->> Currently my codec driver SGTL5000.c has the following audio map
->> static const struct snd_soc_dapm_route audio_map[] = {
->> {"ADC Mux", "LINE_IN", "LINE_IN"},
->> {"ADC Mux", "MIC_IN", "MIC_IN"},
->> {"ADC", NULL, "ADC Mux"},
->> {"DAC Mux", "DAC", "DAC"},
->> {"DAC Mux", "LINE_IN", "LINE_IN"},
->> {"LO", NULL, "DAC"},
->> {"HP", NULL, "DAC Mux"},
->> {"LINE_OUT", NULL, "LO"},
->> {"HP_OUT", NULL, "HP"},
->> };
->>
->> This map does not have a link from ADC to DAC.
->> You mention "After a set of ALSA mixer commands is issued to create a
->> path from one end point to another end point" , how do we issue those
->> commands? to create a link , currently my alsa mixer shows no option for
->> a ADC to DAC select.
->>
->
-> If you have widgets defined matching what you specify in audio_map, you
-> should see mixer command i.e "ADC Mux' base on audio map you have
-> given. Then you give amixer 'ADC Mux' 'LINE_IN', this would translate
-> to writing codec register to have ADC Mux take LINE_IN as input. Audio
-> map is defined base on your CODEC topology. I would not be able to
-> comment on how to enable CODEC loopback for your CODEC. However,
-> the audio map you provided above is kind of fishy. For example,
-> shouldn't DAC be sink instead of source
-> {"DAC", "DAC", "DAC MUX"} as opposed to {"DAC Mux", "DAC", "DAC"}
->
->
-  The DAC MUX is a misnomer , it can be thought of as HeadphoneMux where
-the inputs are LINE_IN and DAC(arch of SGTL5000).
-The datasheet has a DAC select register to choose between ADC and I2S_
-IN(I2S In is default) . I don't see that in the map.
- The driver doesn't understand the command * amixer 'ADC Mux' 'LINE_IN' *it
-understands amixer control or alsamixer though .
- So is there any other option for the connect source to destination
-command... Am I missing something here?
+v2: keep formatting of cache
+v3: fix wrong diff format (sorry for that, I start learning git)
 
+Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+---
+  sound/soc/codecs/tlv320aic3x.c |    4 +++-
+  sound/soc/codecs/tlv320aic3x.h |   19 ++++++++++++++++++-
+  2 files changed, 21 insertions(+), 2 deletions(-)
 
->> -Rashmi
->>
->>
->>
->
-> --
-> Sent by an employee of the Qualcomm Innovation Center, Inc.
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
->
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 64d2a4f..50a7112 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -118,7 +118,9 @@ static const u8 aic3x_reg[AIC3X_CACHEREGNUM] = {
+  	0x00, 0x00, 0x00, 0x00,	/* 88 */
+  	0x00, 0x00, 0x00, 0x00,	/* 92 */
+  	0x00, 0x00, 0x00, 0x00,	/* 96 */
+-	0x00, 0x00, 0x02,	/* 100 */
++	0x00, 0x00, 0x02, 0x00,	/* 100 */
++	0x00, 0x00, 0x00, 0x00,	/* 104 */
++	0x00, 0x00,            	/* 108 */
+  };
+
+  #define SOC_DAPM_SINGLE_AIC3X(xname, reg, shift, mask, invert) \
+diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
+index 6f097fb..5da5eb3 100644
+--- a/sound/soc/codecs/tlv320aic3x.h
++++ b/sound/soc/codecs/tlv320aic3x.h
+@@ -13,7 +13,7 @@
+  #define _AIC3X_H
+
+  /* AIC3X register space */
+-#define AIC3X_CACHEREGNUM		103
++#define AIC3X_CACHEREGNUM		110
+
+  /* Page select register */
+  #define AIC3X_PAGE_SELECT		0
+@@ -74,6 +74,8 @@
+  #define HPLCOM_CFG			37
+  /* Right High Power Output control registers */
+  #define HPRCOM_CFG			38
++/* High Power Output Stage Control Register */
++#define HPOUT_SC			40
+  /* DAC Output Switching control registers */
+  #define DAC_LINE_MUX			41
+  /* High Power Output Driver Pop Reduction registers */
+@@ -148,6 +150,17 @@
+  #define AIC3X_GPIOB_REG			101
+  /* Clock generation control register */
+  #define AIC3X_CLKGEN_CTRL_REG		102
++/* New AGC registers */
++#define LAGCN_ATTACK			103
++#define LAGCN_DECAY			104
++#define RAGCN_ATTACK			105
++#define RAGCN_DECAY			106
++/* New Programmable ADC Digital Path and I2C Bus Condition Register */
++#define NEW_ADC_DIGITALPATH		107
++/* Passive Analog Signal Bypass Selection During Powerdown Register */
++#define PASSIVE_BYPASS			108
++/* DAC Quiescent Current Adjustment Register */
++#define DAC_ICC_ADJ			109
+
+  /* Page select register bits */
+  #define PAGE0_SELECT		0
+@@ -163,6 +176,10 @@
+  #define DUAL_RATE_MODE		((1 << 5) | (1 << 6))
+  #define LDAC2LCH		(0x1 << 3)
+  #define RDAC2RCH		(0x1 << 1)
++#define LDAC2RCH		(0x2 << 3)
++#define RDAC2LCH		(0x2 << 1)
++#define LDAC2MONOMIX		(0x3 << 3)
++#define RDAC2MONOMIX		(0x3 << 1)
+
+  /* PLL registers bitfields */
+  #define PLLP_SHIFT		0
+-- 
+1.7.7
