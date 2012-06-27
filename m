@@ -1,7 +1,7 @@
 From: rashmi narayan <rashmi.nyn@gmail.com>
 Subject: Re: Configuring an audio path within ALSA
-Date: Wed, 27 Jun 2012 17:34:06 +0530
-Message-ID: <CABTnDnNv-_rCbNjGZGV2Db3=LQS35TYnmE+mJ2=XLK90obO=iA@mail.gmail.com>
+Date: Wed, 27 Jun 2012 17:34:47 +0530
+Message-ID: <CABTnDnPpvSsrU-iQhv9ntvR+3LgL7uoD7DgqkVU9eqiJX30TeA@mail.gmail.com>
 References: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
 	<4FE924E2.2010504@codeaurora.org>
 	<CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
@@ -10,12 +10,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1BB25104345
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B17C104345
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2012 14:04:07 +0200 (CEST)
-Received: by eekc1 with SMTP id c1so283036eek.38
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2012 05:04:06 -0700 (PDT)
+	Wed, 27 Jun 2012 14:04:48 +0200 (CEST)
+Received: by eaaa1 with SMTP id a1so306575eaa.38
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2012 05:04:47 -0700 (PDT)
 In-Reply-To: <4FEA99D6.3000308@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -66,7 +67,8 @@ On Wed, Jun 27, 2012 at 10:57 AM, Patrick Lai <plai@codeaurora.org> wrote:
 > shouldn't DAC be sink instead of source
 > {"DAC", "DAC", "DAC MUX"} as opposed to {"DAC Mux", "DAC", "DAC"}
 >
->   The DAC MUX is a misnomer , it can be thought of as HeadphoneMux where
+>
+  The DAC MUX is a misnomer , it can be thought of as HeadphoneMux where
 the inputs are LINE_IN and DAC(arch of SGTL5000).
 The datasheet has a DAC select register to choose between ADC and I2S_
 IN(I2S In is default) . I don't see that in the map.
@@ -74,11 +76,8 @@ IN(I2S In is default) . I don't see that in the map.
 understands amixer control or alsamixer though .
  So is there any other option for the connect source to destination
 command... Am I missing something here?
- -amateur hence!
 
 
-
->
 >> -Rashmi
 >>
 >>
