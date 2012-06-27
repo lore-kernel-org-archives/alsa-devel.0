@@ -1,20 +1,18 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Configuring an audio path within ALSA
-Date: Tue, 26 Jun 2012 22:27:50 -0700
-Message-ID: <4FEA99D6.3000308@codeaurora.org>
-References: <CABTnDnPfGF8AddTSQ4GPyyvosQVa7K6Koda2cz79dknxWMaTVg@mail.gmail.com>
-	<4FE924E2.2010504@codeaurora.org>
-	<CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
+From: Amit Nagal <helloin.amit@gmail.com>
+Subject: periods_max initialization in snd_usb_hardware
+Date: Wed, 27 Jun 2012 11:24:02 +0530
+Message-ID: <CA+F9FsDoX=X14qpzgoH+Fm8oEq8f36fwa02J1fQTD9eqbCnVSw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
-	[199.106.114.254])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8893E24514
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 53D0224543
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2012 07:27:55 +0200 (CEST)
-In-Reply-To: <CABTnDnNv4tjHUY4MTTUxT_aiLUof85SpJLqV6ooEiqJF1yTLqA@mail.gmail.com>
+	Wed, 27 Jun 2012 07:54:03 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so381656qcs.24
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2012 22:54:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: rashmi narayan <rashmi.nyn@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 6/26/2012 12:52 AM, rashmi narayan wrote:
-> Thank you Patrick .
->
-> Currently my codec driver SGTL5000.c has the following audio map
-> static const struct snd_soc_dapm_route audio_map[] = {
-> {"ADC Mux", "LINE_IN", "LINE_IN"},
-> {"ADC Mux", "MIC_IN", "MIC_IN"},
-> {"ADC", NULL, "ADC Mux"},
-> {"DAC Mux", "DAC", "DAC"},
-> {"DAC Mux", "LINE_IN", "LINE_IN"},
-> {"LO", NULL, "DAC"},
-> {"HP", NULL, "DAC Mux"},
-> {"LINE_OUT", NULL, "LO"},
-> {"HP_OUT", NULL, "HP"},
-> };
->
-> This map does not have a link from ADC to DAC.
-> You mention "After a set of ALSA mixer commands is issued to create a
-> path from one end point to another end point" , how do we issue those
-> commands? to create a link , currently my alsa mixer shows no option for
-> a ADC to DAC select.
+Hi ,
 
-If you have widgets defined matching what you specify in audio_map, you
-should see mixer command i.e "ADC Mux' base on audio map you have
-given. Then you give amixer 'ADC Mux' 'LINE_IN', this would translate
-to writing codec register to have ADC Mux take LINE_IN as input. Audio
-map is defined base on your CODEC topology. I would not be able to
-comment on how to enable CODEC loopback for your CODEC. However,
-the audio map you provided above is kind of fishy. For example,
-shouldn't DAC be sink instead of source
-{"DAC", "DAC", "DAC MUX"} as opposed to {"DAC Mux", "DAC", "DAC"}
+snd_usb_hardware is defined in sound/usb/pcm.c as :
+static struct snd_pcm_hardware snd_usb_hardware =
+{
+                 .....
+	.buffer_bytes_max =	1024 * 1024,
+	.period_bytes_min =	64,
+	.period_bytes_max =	512 * 1024,
+	.periods_min =	2,
+	.periods_max =	1024,
+};
 
->
-> -Rashmi
->
->
+here periods_max is intialized with value = 1024 .
+
+but going by buffer_bytes_max and period_bytes_min value defined above ,
+periods_max = ( buffer_bytes_max / period_bytes_min ) = 16384 .
+
+why this upper cap of  1024 is maintained for  periods_max even though from
+calculation it comes as 16384 ?
 
 
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+
+Thanx & Regards
+Amit Nagal
