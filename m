@@ -1,101 +1,63 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V3 3/4] ASoC: SPEAr spdif_out: Add spdif
-	out support
-Date: Thu, 28 Jun 2012 13:27:28 +0100
-Message-ID: <20120628122727.GI28922@opensource.wolfsonmicro.com>
-References: <cover.1340862505.git.rajeev-dlh.kumar@st.com>
-	<ef5b01e2bff6cb1e72db4e2d216d1a039a048e62.1340862505.git.rajeev-dlh.kumar@st.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: snd_dmaengine: add common api for
+ pcm_mmap
+Date: Thu, 28 Jun 2012 13:28:31 +0100
+Message-ID: <20120628122830.GJ28922@opensource.wolfsonmicro.com>
+References: <1340866886-24432-1-git-send-email-ldewangan@nvidia.com>
+ <4FEC3B70.5030902@metafoo.de>
+ <s5hobo3zl79.wl%tiwai@suse.de>
+ <20120628121816.GB21029@sirena.org.uk>
+ <4FEC4E62.3020101@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6669895973039105078=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BA6C10402B
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jun 2012 14:27:29 +0200 (CEST)
-In-Reply-To: <ef5b01e2bff6cb1e72db4e2d216d1a039a048e62.1340862505.git.rajeev-dlh.kumar@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x0KprKst+ZOYEj2z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4FEC4E62.3020101@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, swarren@nvidia.com, linux-kernel@vger.kernel.org, Laxman Dewangan <ldewangan@nvidia.com>, lrg@ti.com, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6669895973039105078==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X+nYw8KZ/oNxZ8JS"
-Content-Disposition: inline
-
-
---X+nYw8KZ/oNxZ8JS
+--x0KprKst+ZOYEj2z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 28, 2012 at 12:31:39PM +0530, Rajeev Kumar wrote:
+On Thu, Jun 28, 2012 at 02:30:26PM +0200, Lars-Peter Clausen wrote:
+> On 06/28/2012 02:18 PM, Mark Brown wrote:
 
-> +	void *io_base;
+> > Oh, dear - this means we don't actually have a generic API at all.  Is
+> > there any effort being made to make this generally available?
 
-Should be __iomem.  Looking at the code I suspect this might benefit
-=66rom using regmap like Tegra, you'd save having to open code your mute
-control if nothing else.
+> Yes there is, and in fact in next/master there is generic
+> dma_mmap_writecombine. I'm not quite sure how it behaves on non ARM archs
+> though. But in theory it should fallback to a normal coherent mapping. Marek
+> did a lot of work on this, I've put him on Cc.
 
-> +static const struct snd_kcontrol_new spdif_out_controls[] =3D {
-> +	SOC_SINGLE_BOOL_EXT("SPDIF Play Mute", (unsigned long)&spdif_out_mute,
-> +			spdif_mute_get, spdif_mute_put),
+OK, that's not so bad.  Where is this code, can we merge it into ALSA?
+If not it's probably best to punt until after the merge window.
 
-Should be "IEC958 Playback Switch".
-
-> +int spdif_soc_dai_probe(struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_card *card =3D dai->card;
-> +	struct snd_soc_pcm_runtime *rtd =3D card->rtd;
-> +	struct snd_soc_codec *codec =3D rtd->codec;
-> +
-> +	return snd_soc_add_codec_controls(codec, spdif_out_controls,
-> +				ARRAY_SIZE(spdif_out_controls));
-
-We should add a framework thing for this...
-
-> +	.ops =3D (struct snd_soc_dai_ops *)&spdif_out_dai_ops,
-
-Why do you need this cast?
-
---X+nYw8KZ/oNxZ8JS
+--x0KprKst+ZOYEj2z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP7E2nAAoJEBus8iNuMP3dnIAP/2riV1Whjj6QQUHWYyup0+/M
-DWIXiqV39+OKiLDzOFLcLtHcc1EzfH17Gy0+EP+KgcylD8maWmF0X/FvlGYHMTw4
-nJ6UpIKpEnu0vmdaS/LEGzRIcOW6924+xNTuzQi0fa6VgDglv0TqR3BKyH7Ua9jr
-aLbBJmEfZPZfLtqOHTpAuus5nrwqGX9Jr+r7/4iqKVOPITYa4sAji3g9SyXsJDET
-oQ62CUNzIXPXBQ77XkAZ93VFSmb8C2E1op/Gmk5fBM/LIJO32J+ybJANPAlM3LeT
-xqVhR8apwqqbXPu6dJNi8LxyRmqDeVdCYlKHEoeuOvBwlxqS1nrt5cJF7LuQ/Tyj
-dP3q4iEngWeCIc6oejXppEogyHLFMRLfUQGK7+eKqhDDAJRqonaIPVYdGJcWymLo
-MP+Ic3H0jLUCM1+78Ut/ZOUq1yTsgJYRTtM0kOgQWBgvHDI6zy4zSUPecJbzdWiM
-E3M7bn4BkP4Wzgv4EsCuYQ6N7b5spMh+ROWL3HG08lqQFk0JnurOk2ntnmYO0F5m
-bTxytVG6IGZz1k6DCdAOCp51oP1UYdCdV3GRZ+7QOdcajAiJ4x76OXrTbm8yoGcr
-QnWr7ohwjUQ1GNFGWtLN3EBitZ1C8P7Vx4tZh53/qgajFovYmvlNT9iY0lOXJmre
-GIm2jWNRjIQujkPNBCD8
-=yfF4
+iQIcBAEBAgAGBQJP7E3lAAoJEBus8iNuMP3dFk8P/1KXEXgMFvv/gOq420U6HbdH
+hzPvm0f1xnfLWkrbUEarbfXiFjShJ0xF2dIerxkuq0gqtN+zgX6g12pUfNfAyCy7
+rzrd0nLfZj51Q+uLuVdsgl68ewOOQPofGU+PRAmXU80AczVUonaSI/hlEVHTzCzD
+x9QwjLBSCaoakJdnGGtMZfhcaXOyRGZHMfB5sH5nPRKSObsKFDrk6t3NWRL3Zkq7
+fJvB/wHHo8fvJQxIKharLLX86QSJHf3MCCeNw2djcItR7+CFGHoZDRb96y6oAAdA
+9/wZqho2kh/Y1GVu4sGO4hzpIO8z4Bh/JghApvBAy2/bKi9TgtYsvpvnZTPPa7Yu
+ud13p7npOg6ySGyORie+UKh4wXyY6Kco8nteqMYOmChZz3EgdfeeKzjNrDX45jM/
+itFLqTfPwMUuz2DTAJlqvtMMp5EOUsZRvc+2eBv+PGolXvkebqKZG39K67MqB9B3
+o18gQEgLgwYmZKRSTuxQPyCUbJEOLb460hASYwfcjs1lDp8w2cAb+7k4W2s9Ube3
+XUP5G0mPWAva5fefRhKOfzmk2yj2++B6crsgHhv2Wfs3onCv6yIKnhkyQFsQySVg
+kO7cRWGpY1cTcus64LgPMzc5FpHBeid5bB+HQ3PDGgeOlxoBYQWCW7yEwvAc2Hf7
+nEazcyjs4fm3bC1OtPHS
+=2Wgx
 -----END PGP SIGNATURE-----
 
---X+nYw8KZ/oNxZ8JS--
-
---===============6669895973039105078==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6669895973039105078==--
+--x0KprKst+ZOYEj2z--
