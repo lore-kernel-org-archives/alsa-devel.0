@@ -1,17 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/2] ALSA: hda: support for wallclock timestamps
-Date: Thu, 28 Jun 2012 16:12:35 -0500
-Message-ID: <1340917955-31422-3-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1340917955-31422-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] pcm: support for audio wallclock
+Date: Thu, 28 Jun 2012 16:13:58 -0500
+Message-ID: <1340918038-31479-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE1A724454
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id DAAD224454
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jun 2012 23:12:44 +0200 (CEST)
-In-Reply-To: <1340917955-31422-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	Thu, 28 Jun 2012 23:14:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,127 +23,127 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-reuse code from clocksource to handle wall clock counter.
-Since wrapparound occurs, the timestamps are reinitialized with
-monotonic time on a trigger.
+add new snd_pcm_status_get_htstamp_wallclk() routine to
+query the audio timestamps read from the wallclock.
+Also add snd_pcm_hw_params_supports_audio_wallclock_ts()
+to query what the hardware supports.
 
-TODO:
-- only re-init timecounter if there was no device active.
-- Keep the same timestamp for all devices on same chip.
-- make sure no overflow occurs in the 125/3 scaling implementation
+TODO: check protocol compatibility?
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c |   54 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 53 insertions(+), 1 deletions(-)
+ include/pcm.h          |    2 ++
+ include/sound/asound.h |    7 +++++--
+ src/pcm/pcm.c          |   31 +++++++++++++++++++++++++++++++
+ 3 files changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 86758dd..9bb795b 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -46,6 +46,10 @@
- #include <linux/mutex.h>
- #include <linux/reboot.h>
- #include <linux/io.h>
-+
-+#include <linux/clocksource.h>
-+#include <linux/time.h>
-+
- #ifdef CONFIG_X86
- /* for snoop control */
- #include <asm/pgtable.h>
-@@ -496,6 +500,10 @@ struct azx {
+diff --git a/include/pcm.h b/include/pcm.h
+index 4997557..542d9a8 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -550,6 +550,7 @@ int snd_pcm_hw_params_is_half_duplex(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_is_joint_duplex(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_can_sync_start(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *params);
++int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_get_rate_numden(const snd_pcm_hw_params_t *params,
+ 				      unsigned int *rate_num,
+ 				      unsigned int *rate_den);
+@@ -858,6 +859,7 @@ void snd_pcm_status_get_trigger_tstamp(const snd_pcm_status_t *obj, snd_timestam
+ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
+ void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
+ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
++void snd_pcm_status_get_htstamp_wallclk(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
+ snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 07c03fa..f0d23d6 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -160,7 +160,7 @@ enum {
+  *                                                                           *
+  *****************************************************************************/
  
- 	/* reboot notifier (for mysterious hangup problem at power-down) */
- 	struct notifier_block reboot_notifier;
-+
-+	struct timecounter  azx_tc;
-+	struct cyclecounter azx_cc;
-+
+-#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 10)
++#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 11)
+ 
+ typedef unsigned long sndrv_pcm_uframes_t;
+ typedef long sndrv_pcm_sframes_t;
+@@ -285,6 +285,7 @@ enum sndrv_pcm_subformat {
+ #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
+ #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
+ #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
++#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
+ 
+ enum sndrv_pcm_state {
+ 	SNDRV_PCM_STATE_OPEN = 0,	/* stream is open */
+@@ -426,7 +427,8 @@ struct sndrv_pcm_status {
+ 	sndrv_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
+ 	sndrv_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
+ 	int suspended_state;		/* suspended stream state */
+-	unsigned char reserved[60];	/* must be filled with zero */
++	struct timespec audio_tstamp;	/* audio wall clock timestamp */
++	unsigned char reserved[60-sizeof(struct timespec)]; /* must be filled with zero */
  };
  
- /* driver types */
-@@ -1700,6 +1708,45 @@ static inline void azx_release_device(struct azx_dev *azx_dev)
- 	azx_dev->opened = 0;
+ struct sndrv_pcm_mmap_status {
+@@ -435,6 +437,7 @@ struct sndrv_pcm_mmap_status {
+ 	sndrv_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
+ 	struct timespec tstamp;		/* Timestamp */
+ 	int suspended_state;		/* RO: suspended stream state */
++	struct timespec audio_tstamp;	/* audio wall clock timestamp */
+ };
+ 
+ struct sndrv_pcm_mmap_control {
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 18b43b3..49d7b99 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -3123,6 +3123,26 @@ int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *param
  }
  
-+static cycle_t azx_cc_read(const struct cyclecounter *cc)
+ /**
++ * \brief Check if hardware supports audio wallclock timestamps
++ * \param params Configuration space
++ * \retval 0 Hardware doesn't support audio wallclock timestamps
++ * \retval 1 Hardware supports audio wallclock timestamps
++ *
++ * This function should only be called when the configuration space
++ * contains a single configuration. Call #snd_pcm_hw_params to choose
++ * a single configuration from the configuration space.
++ */
++int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params)
 +{
-+	struct azx *chip = container_of(cc, struct azx, azx_cc);
-+
-+	return azx_readl(chip, WALLCLK);
++	assert(params);
++	if (CHECK_SANITY(params->info == ~0U)) {
++		SNDMSG("invalid PCM info field");
++		return 0; /* FIXME: should be a negative error? */
++	}
++	return !!(params->info & SNDRV_PCM_INFO_HAS_WALL_CLOCK);
 +}
 +
-+static void azx_timecounter_init(struct azx *chip)
++/**
+  * \brief Get rate exact info from a configuration space
+  * \param params Configuration space
+  * \param rate_num Pointer to returned rate numerator
+@@ -6213,6 +6233,17 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
+ use_default_symbol_version(__snd_pcm_status_get_htstamp, snd_pcm_status_get_htstamp, ALSA_0.9.0rc8);
+ 
+ /** 
++ * \brief Get "now" hi-res audio wallclock timestamp from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to returned timestamp
++ */
++void snd_pcm_status_get_htstamp_wallclk(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
 +{
-+	struct timecounter *tc = &chip->azx_tc;
-+	struct cyclecounter *cc = &chip->azx_cc;
-+	struct timespec ts;
-+	u64 nsec;
-+
-+	cc->read = azx_cc_read;
-+	cc->mask = CLOCKSOURCE_MASK(32);
-+
-+#define NBITS_NS 12 /* accuracy issues in cyc2ns with lower number of bits */
-+	cc->mult = clocksource_khz2mult(24000, NBITS_NS);
-+	cc->shift = NBITS_NS;
-+
-+	ktime_get_ts(&ts);
-+	nsec = timespec_to_ns(&ts);
-+	timecounter_init(tc, cc, nsec);
++	assert(obj && ptr);
++	*ptr = obj->audio_tstamp;
 +}
 +
-+static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
-+				struct timespec *ts)
-+{
-+	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
-+	struct azx *chip = apcm->chip;
-+	u64 nsec;
-+
-+	nsec = timecounter_read(&chip->azx_tc);
-+	*ts = ns_to_timespec(nsec);
-+
-+	return 0;
-+}
-+
- static struct snd_pcm_hardware azx_pcm_hw = {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
- 				 SNDRV_PCM_INFO_INTERLEAVED |
-@@ -1709,6 +1756,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
- 				 /* SNDRV_PCM_INFO_RESUME |*/
- 				 SNDRV_PCM_INFO_PAUSE |
- 				 SNDRV_PCM_INFO_SYNC_START |
-+				 SNDRV_PCM_INFO_HAS_WALL_CLOCK |
- 				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
- 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
- 	.rates =		SNDRV_PCM_RATE_48000,
-@@ -1982,8 +2030,10 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	}
- 	spin_unlock(&chip->reg_lock);
- 	if (start) {
--		if (nsync == 1)
-+		if (nsync == 1) {
-+			azx_timecounter_init(chip);
- 			return 0;
-+		}
- 		/* wait until all FIFOs get ready */
- 		for (timeout = 5000; timeout; timeout--) {
- 			nwait = 0;
-@@ -1999,6 +2049,7 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 				break;
- 			cpu_relax();
- 		}
-+		azx_timecounter_init(chip);
- 	} else {
- 		/* wait until all RUN bits are cleared */
- 		for (timeout = 5000; timeout; timeout--) {
-@@ -2240,6 +2291,7 @@ static struct snd_pcm_ops azx_pcm_ops = {
- 	.prepare = azx_pcm_prepare,
- 	.trigger = azx_pcm_trigger,
- 	.pointer = azx_pcm_pointer,
-+	.wall_clock =  azx_get_wallclock_tstamp,
- 	.mmap = azx_pcm_mmap,
- 	.page = snd_pcm_sgbuf_ops_page,
- };
++/**
+  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
+  * \return Delay in frames
+  *
 -- 
 1.7.6.5
