@@ -1,89 +1,118 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix
-	snd_soc_dapm_put_volsw()	connect
-Date: Fri, 29 Jun 2012 16:29:22 +0200 (CEST)
-Message-ID: <778337527.335015.1340980162853.JavaMail.root@advansee.com>
-References: <s5h8vf6xr45.wl%tiwai@suse.de>
+From: Laxman Dewangan <ldewangan@nvidia.com>
+Subject: Re: [PATCH 0/3] ASoC: Move pcm writecombine dma buffer allocation
+ to core
+Date: Fri, 29 Jun 2012 20:34:24 +0530
+Message-ID: <4FEDC3F8.8000501@nvidia.com>
+References: <1340965398-20872-1-git-send-email-ldewangan@nvidia.com> <s5h7guqxqnd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta15.web4all.fr (zose-mta15.web4all.fr [176.31.217.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDC9E11CF7E
-	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jun 2012 16:24:44 +0200 (CEST)
-In-Reply-To: <s5h8vf6xr45.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h7guqxqnd.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: "lrg@ti.com" <lrg@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lars@metafoo.de" <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, "perex@perex.cz" <perex@perex.cz>, "clemens@ladisch.de" <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMjksIDIwMTIgYXQgMDI6MDM6MDZQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IEZyaSwgMjkgSnVuIDIwMTIgMTM6NTM6NTYgKzAyMDAgKENFU1QpLAo+IEJlbm/D
-rnQgVGjDqWJhdWRlYXUgd3JvdGU6Cj4gPiAKPiA+IE9uIEZyaSwgSnVuIDI5LCAyMDEyIGF0IDA4
-OjI1OjE0QU0gKzAyMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4gQXQgTW9uLCAxOCBKdW4g
-MjAxMiAyMjo0MToyOCArMDIwMCAoQ0VTVCksCj4gPiA+IEJlbm/DrnQgVGjDqWJhdWRlYXUgd3Jv
-dGU6Cj4gPiA+ID4gCj4gPiA+ID4gc25kX3NvY19kYXBtX3B1dF92b2xzdygpIHNldHMgY29ubmVj
-dCBpbmNvcnJlY3RseSBpbiB0aGUgY2FzZQo+ID4gPiA+IG1heCA+Cj4gPiA+ID4gMSB3aXRoCj4g
-PiA+ID4gaW52ZXJ0LiBJbiB0aGF0IGNhc2UsIHRoZSByYXcgZGlzY29ubmVjdCB2YWx1ZSBzaG91
-bGQgYmUgbWF4LAo+ID4gPiA+IHdoaWNoCj4gPiA+ID4gY29ycmVzcG9uZHMKPiA+ID4gPiB0byB0
-aGUgdXNlcnNwYWNlIHZhbHVlIDAuCj4gPiA+ID4gCj4gPiA+ID4gVGhpcyB1c2UgY2FzZSBjdXJy
-ZW50bHkgZG9lcyBub3QgYXBwZWFyIHVwc3RyZWFtLCBidXQgaXQgY291bGQKPiA+ID4gPiBicmVh
-awo+ID4gPiA+IFNPQ19EQVBNX1NJTkdMRSgpIG9yIFNPQ19EQVBNX1NJTkdMRV9UTFYoKSBlbHNl
-d2hlcmUgb3IgaW4gdGhlCj4gPiA+ID4gZnV0dXJlLgo+ID4gPiA+IAo+ID4gPiA+IENjOiBMaWFt
-IEdpcmR3b29kIDxscmdAdGkuY29tPgo+ID4gPiA+IENjOiBNYXJrIEJyb3duIDxicm9vbmllQG9w
-ZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiA+ID4gPiBDYzogPGFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZz4KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBCZW5vw650IFRow6liYXVkZWF1Cj4g
-PiA+ID4gPGJlbm9pdC50aGViYXVkZWF1QGFkdmFuc2VlLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4g
-PiAgLi4uL3NvdW5kL3NvYy9zb2MtZGFwbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-ICA4Cj4gPiA+ID4gICstLS0tLS0tCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
-bigrKSwgNyBkZWxldGlvbnMoLSkKPiA+ID4gPiAKPiA+ID4gPiBkaWZmIC0tZ2l0IGxpbnV4LW5l
-eHQtSEVBRC02Yzg2YjU4Lm9yaWcvc291bmQvc29jL3NvYy1kYXBtLmMKPiA+ID4gPiBsaW51eC1u
-ZXh0LUhFQUQtNmM4NmI1OC9zb3VuZC9zb2Mvc29jLWRhcG0uYwo+ID4gPiA+IGluZGV4IDQwNTg0
-MWMuLjVlZjA4MmYgMTAwNjQ0Cj4gPiA+ID4gLS0tIGxpbnV4LW5leHQtSEVBRC02Yzg2YjU4Lm9y
-aWcvc291bmQvc29jL3NvYy1kYXBtLmMKPiA+ID4gPiArKysgbGludXgtbmV4dC1IRUFELTZjODZi
-NTgvc291bmQvc29jL3NvYy1kYXBtLmMKPiA+ID4gPiBAQCAtMjUxNSwxOSArMjUxNSwxMyBAQCBp
-bnQgc25kX3NvY19kYXBtX3B1dF92b2xzdyhzdHJ1Y3QKPiA+ID4gPiBzbmRfa2NvbnRyb2wgKmtj
-b250cm9sLAo+ID4gPiA+ICAJaW50IHdpOwo+ID4gPiA+ICAKPiA+ID4gPiAgCXZhbCA9ICh1Y29u
-dHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVswXSAmIG1hc2spOwo+ID4gPiA+ICsJY29ubmVjdCA9
-ICEhdmFsOwo+ID4gPiA+ICAKPiA+ID4gPiAgCWlmIChpbnZlcnQpCj4gPiA+ID4gIAkJdmFsID0g
-bWF4IC0gdmFsOwo+ID4gPiA+ICAJbWFzayA9IG1hc2sgPDwgc2hpZnQ7Cj4gPiA+ID4gIAl2YWwg
-PSB2YWwgPDwgc2hpZnQ7Cj4gPiA+ID4gIAo+ID4gPiA+IC0JaWYgKHZhbCkKPiA+ID4gPiAtCQkv
-KiBuZXcgY29ubmVjdGlvbiAqLwo+ID4gPiA+IC0JCWNvbm5lY3QgPSBpbnZlcnQgPyAwIDogMTsK
-PiA+ID4gPiAtCWVsc2UKPiA+ID4gPiAtCQkvKiBvbGQgY29ubmVjdGlvbiBtdXN0IGJlIHBvd2Vy
-ZWQgZG93biAqLwo+ID4gPiA+IC0JCWNvbm5lY3QgPSBpbnZlcnQgPyAxIDogMDsKPiA+ID4gPiAt
-Cj4gPiA+IAo+ID4gPiBEb2Vzbid0IHRoaXMgcmVzdWx0IGluIHRoZSBzYW1lIHZhbHVlIG9mIGNv
-bm5lY3Q/Cj4gPiA+IAo+ID4gPiAoZ2l2ZW4gdmFsdWUsIGludmVydCkgLS0+IChyYXcgdmFsdWUs
-IGNvbm5lY3QpCj4gPiA+IAo+ID4gPiBvbGQgY29kZTogICgwLCAwKSAtLT4gKDAsIDApCj4gPiA+
-ICAgICAgICAgICAgKDAsIDEpIC0tPiAobWF4LCAwKQo+ID4gPiAgICAgICAgICAgIChtYXgsIDAp
-IC0+IChtYXgsIDEpCj4gPiA+ICAgICAgICAgICAgKG1heCwgMSkgLT4gKDAsIDEpCj4gPiA+IAo+
-ID4gPiBuZXcgY29kZTogICgwLCAwKSAtLT4gKDAsIDApCj4gPiA+ICAgICAgICAgICAgKDAsIDEp
-IC0tPiAobWF4LCAwKQo+ID4gPiAgICAgICAgICAgIChtYXgsIDApIC0tPiAobWF4LCAxKQo+ID4g
-PiAgICAgICAgICAgIChtYXgsIDEpIC0tPiAoMCwgMSkKPiA+ID4gCj4gPiA+IEknZCB1bmRlcnN0
-YW5kIGlmIHRoZSBsaW5lICJjb25uZWN0ID0gISF2YWw7IiB3ZXJlIGFmdGVyIHRoZQo+ID4gPiBp
-bnZlcnQKPiA+ID4gY29udmVyc2lvbi4uLgo+ID4gPiAKPiA+ID4gICAJaWYgKGludmVydCkKPiA+
-ID4gICAJCXZhbCA9IG1heCAtIHZhbDsKPiA+ID4gCWNvbm5lY3QgPSAhIXZhbDsKPiA+IAo+ID4g
-VGFrZSBtYXggPSA1LCBpbnZlcnQgPSAxLCB1c2VyIHZhbCA9IDI6Cj4gPiBvbGQgY29kZTogY29u
-bmVjdCA9IDAKPiA+IG5ldyBjb2RlOiBjb25uZWN0ID0gMQo+IAo+IE9LLCB0aGVuIHlvdSBuZWVk
-IHRvIGZpeCBkYXBtX3NldF9wYXRoX3N0YXR1cygpIGFzIHdlbGwsIHRvby4KPiBPdGhlcndpc2Ug
-dGhlIGxvZ2ljIGJlY29tZXMgaW5jb25zaXN0ZW50LgoKSW5kZWVkLCBJIG1pc3NlZCB0aGF0LiBC
-dXQgdGhlIGlzc3VlIGlzIGV2ZW4gd29yc2UgaW4gdGhpcyBmdW5jdGlvbjogSXQgdXNlcyB0aGUK
-Y29udHJvbCByZWdpc3RlciB2YWx1ZSB0byBkZXRlcm1pbmUgaWYgY29ubmVjdCBzaG91bGQgYmUg
-c2V0IHdoaWxlIG9ubHkgdGhlCnVzZXJzcGFjZSB2YWx1ZSBjYW4gdGVsbCB0aGF0LCBhbmQgaXQg
-aGFzIG5vIHdheSBvZiBkZXJpdmluZyB0aGUgdXNlcnNwYWNlIHZhbHVlCmFwYXJ0IGZyb20gY2Fs
-bGluZyB0aGUgZ2V0IGZ1bmN0aW9uLCB3aGlsZSBoZXJlIGl0IGFzc3VtZXMgdGhhdCB0aGUgcmVn
-aXN0ZXIKdmFsdWUgd2lsbCBiZSBtb3JlIG9yIGxlc3MgY29tcGF0aWJsZSB3aXRoIHNuZF9zb2Nf
-ZGFwbV9nZXRfdm9sc3cuCgpIZW5jZSwgSSB0aGluayB0aGF0IHRoZSBmaXggaGVyZSBzaG91bGQg
-YmUgdG8gY2FsbCBnZXQsIHRoZW4gdG8gZGVkdWNlIGNvbm5lY3QKZnJvbSB0aGUgcmV0dXJuZWQg
-dmFsdWUuIERvIHlvdSBhZ3JlZT8KClJlZ2FyZHMsCkJlbm/DrnQKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Takashi,
+Thanks for sample code. It helps lot.
+
+On Friday 29 June 2012 05:43 PM, Takashi Iwai wrote:
+> At Fri, 29 Jun 2012 15:53:15 +0530,
+> Laxman Dewangan wrote:
+>> Some of the ARM based soc allocate the writecombine dma buffer for
+>> pcm substreams. They have the same codes for managing this buffer.
+>> Moving this to the core/pcm files so that they can use that directly.
+>>
+>> Remove the code from Tegra PCM and use these new library function.
+>>
+>> This is enabled only for ARM specific and can be extended to other
+>> architecture if they support the writecombine dma buffer.
+>>
+>> This patch is based on detail discussion on patch:
+>> [PATCH] ASoC: snd_dmaengine: add common api for pcm_mmap
+>> And suggestion from Lars and Takashi.
+> Looking through your patch, I think an easier integration is just to
+> add writecombine option to memalloc.c which calls
+> dma_alloc_writecombine() instead of dma_alloc_coherent().
+>
+> The addition for mmap is still an open question.  Again, an easier
+> option so far looks like just add the call of dma_alloc_writecombine()
+> in snd_pcm_lib_default_mmap().  Alternatively, we can create an
+> individual mmap pcm_ops as we discussed.
+>
+> Below is a totally untested patch, but you can imagine what I meant.
+>
+> After this change, replace with snd_pcm_lib_malloc_pages with
+> SNDRV_DMA_TYPE_DEV_WC, and that's all you need in the driver side.
+
+We can not use the snd_pcm_lib_malloc_pages() in the pcm_new callback 
+because at this time the substream->runtime is not initialized and it 
+leads to the kernel crash.
+
+I used the apis as
+
+int snd_soc_pcm_new_wc_dma_buffer(struct snd_soc_pcm_runtime *rtd,
+                 size_t max_bytes)
+{
+      :::::::::::::
+         substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+         if (substream) {
+                 substream->dma_buffer.dev.type = SNDRV_DMA_TYPE_DEV_WC;
+                 ret = snd_pcm_lib_malloc_pages(substream, max_bytes);
+                 if (ret)
+                         goto err;
+         }
+::::::::
+}
+
+
+int snd_pcm_lib_malloc_pages(struct snd_pcm_substream *substream, size_t 
+size)
+{
+         struct snd_pcm_runtime *runtime;
+         struct snd_dma_buffer *dmab = NULL;
+
+         if (PCM_RUNTIME_CHECK(substream))
+                 return -EINVAL;
+
+         if (snd_BUG_ON(substream->dma_buffer.dev.type ==
+                        SNDRV_DMA_TYPE_UNKNOWN))
+                 return -EINVAL;
+
+         runtime = substream->runtime;
+
+         if (runtime->dma_buffer_p) {
+---------------Kernel crash at this point ----------
+
+So I used the snd_dma_alloc_pages() from the driver to allocate WC memory.
+
+
+> +/* allocate the coherent DMA pages */
+> +static void *snd_malloc_dev_pages(struct device *dev, size_t size, dma_addr_t *dma)
+> +{
+> +	return __snd_malloc_dev_pages(dev, size, dma, dma_alloc_coherent);
+
+This does not get compiled in ARM because dma_alloc_coherant is macro 
+defined as
+
+#define dma_alloc_coherent(d, s, h, f) dma_alloc_attrs(d, s, h, f, NULL)
+
+static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+                                        dma_addr_t *dma_handle, gfp_t flag,
+                                        struct dma_attrs *attrs)
+
+
+I fixed this by
+static void *_dma_alloc_coherent(struct device *dev, size_t size,
+                 dma_addr_t *dma_handle, gfp_t flag)
+{
+         return dma_alloc_coherent(dev, size, dma_handle, flag);
+}
+
+/* allocate the coherent DMA pages */
+static void *snd_malloc_dev_pages(struct device *dev, size_t size, 
+dma_addr_t *dma)
+{
+         return _snd_malloc_dev_pages(dev, size, dma, _dma_alloc_coherent);
+}
