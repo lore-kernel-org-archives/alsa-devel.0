@@ -1,21 +1,26 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 0/3] ASoC: Move pcm writecombine dma buffer
- allocation to core
-Date: Fri, 29 Jun 2012 18:32:35 +0200
-Message-ID: <4FEDD8A3.8000608@metafoo.de>
-References: <1340965398-20872-1-git-send-email-ldewangan@nvidia.com>
-	<s5h7guqxqnd.wl%tiwai@suse.de> <4FEDC3F8.8000501@nvidia.com>
-	<4FEDD29C.8040209@metafoo.de> <s5h1ukyw0pb.wl%tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: snd_dmaengine: add common api for
+ pcm_mmap
+Date: Fri, 29 Jun 2012 18:42:23 +0200
+Message-ID: <4FEDDAEF.5020609@metafoo.de>
+References: <1340866886-24432-1-git-send-email-ldewangan@nvidia.com>
+	<4FEC3B70.5030902@metafoo.de> <s5hobo3zl79.wl%tiwai@suse.de>
+	<20120628121816.GB21029@sirena.org.uk>
+	<4FEC4E62.3020101@metafoo.de>
+	<20120628122830.GJ28922@opensource.wolfsonmicro.com>
+	<4FEC4FA9.20004@nvidia.com> <s5hlij7zja0.wl%tiwai@suse.de>
+	<4FEC5642.9080908@nvidia.com> <s5hk3yrzhte.wl%tiwai@suse.de>
+	<4FEC5DC7.5060600@nvidia.com> <s5hd34jzgs0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-132.synserver.de (smtp-out-134.synserver.de
 	[212.40.185.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B63511CFB1
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CCAA11CFBE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jun 2012 18:28:47 +0200 (CEST)
-In-Reply-To: <s5h1ukyw0pb.wl%tiwai@suse.de>
+	Fri, 29 Jun 2012 18:38:34 +0200 (CEST)
+In-Reply-To: <s5hd34jzgs0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,83 +31,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "clemens@ladisch.de" <clemens@ladisch.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, "lrg@ti.com" <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, "lrg@ti.com" <lrg@ti.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/29/2012 06:18 PM, Takashi Iwai wrote:
-> At Fri, 29 Jun 2012 18:06:52 +0200,
-> Lars-Peter Clausen wrote:
->>
->> On 06/29/2012 05:04 PM, Laxman Dewangan wrote:
->>> [...]
->>>
->>>
->>>> +/* allocate the coherent DMA pages */
->>>> +static void *snd_malloc_dev_pages(struct device *dev, size_t size,
->>>> dma_addr_t *dma)
->>>> +{
->>>> +    return __snd_malloc_dev_pages(dev, size, dma, dma_alloc_coherent);
->>>
->>> This does not get compiled in ARM because dma_alloc_coherant is macro
->>> defined as
->>>
->>> #define dma_alloc_coherent(d, s, h, f) dma_alloc_attrs(d, s, h, f, NULL)
->>>
->>> static inline void *dma_alloc_attrs(struct device *dev, size_t size,
->>>                                        dma_addr_t *dma_handle, gfp_t flag,
->>>                                        struct dma_attrs *attrs)
->>>
->>>
->>> I fixed this by
->>> static void *_dma_alloc_coherent(struct device *dev, size_t size,
->>>                 dma_addr_t *dma_handle, gfp_t flag)
->>> {
->>>         return dma_alloc_coherent(dev, size, dma_handle, flag);
->>> }
->>>
->>> /* allocate the coherent DMA pages */
->>> static void *snd_malloc_dev_pages(struct device *dev, size_t size,
->>> dma_addr_t *dma)
->>> {
->>>         return _snd_malloc_dev_pages(dev, size, dma, _dma_alloc_coherent);
->>> }
->>
->> I think all dma_alloc_* functions use dma_alloc_attrs internally these days.
->> I think it might be a better idea just to use dma_alloc_attrs in
->> __snd_malloc_dev_pages and just pass a dma_attrs struct instead of a function.
->>
->> Something like:
->>
->> static void *__snd_malloc_dev_pages(struct device *dev, size_t size,
->> 			    dma_addr_t *dma, struct dma_attrs *attrs)
->> {
->> ....
->> 	res = dma_alloc_attrs(dev, PAGE_SIZE << pg, dma, gfp_flags, attrs);
->> ....
->> }
->>
->>
->> static void *snd_malloc_dev_pages(struct device *dev, size_t size,
->> 	dma_addr_t *dma)
->> {
->> 	return __snd_malloc_dev_pages(dev, size, dma, NULL);
->> }
->>
->> static void *snd_malloc_dev_wc_pages(struct device *dev, size_t size,
->> 	dma_addr_t *dma)
->> {
->> 	DEFINE_DMA_ATTRS(attrs);
->> 	dma_set_attr(DMA_ATTR_WRITE_COMBINE, &attrs);
->>
->> 	return __snd_malloc_dev_pages(dev, size, dma, &attrs);
->> }
->>
->> Same applies for freeing the memory again.
+On 06/28/2012 03:51 PM, Takashi Iwai wrote:
+> At Thu, 28 Jun 2012 19:06:07 +0530,
+> Laxman Dewangan wrote:
+> [...]
 > 
-> Yes, that'd be cleaner.
-> But I prefer the code still workable on 3.5-base kernel, which makes
-> easier to test and merge for 3.6, at first. 
+> But, still we need to be careful about this.  As mentioned, there is
+> no flag to know the possibility of writecombine mmap beforehand.
+> It'd be nice if we have either a compile-time or a run-time flag /
+> function to check that.  Then the driver can also expose the mmap
+> capability to user-space depending on the flag.
+> 
 
-Actually that part is already in 3.5. But I've just had a closer look and it
-looks as if even for 3.6 not all archs have been converted to
-dma_alloc_attrs yet :/
+If writecombine is not supported it will fallback to a "normal" mmap.
+Here's an excerpt from the DMA mapping documentation:
+
+DMA_ATTR_WRITE_COMBINE
+----------------------
+
+DMA_ATTR_WRITE_COMBINE specifies that writes to the mapping may be
+buffered to improve performance.
+
+Since it is optional for platforms to implement DMA_ATTR_WRITE_COMBINE,
+those that do not will simply ignore the attribute and exhibit default
+behavior.
+
+- Lars
