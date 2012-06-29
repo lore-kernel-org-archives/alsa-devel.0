@@ -1,62 +1,48 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: snd_dmaengine: add common api for
- pcm_mmap
-Date: Fri, 29 Jun 2012 18:42:23 +0200
-Message-ID: <4FEDDAEF.5020609@metafoo.de>
-References: <1340866886-24432-1-git-send-email-ldewangan@nvidia.com>
-	<4FEC3B70.5030902@metafoo.de> <s5hobo3zl79.wl%tiwai@suse.de>
-	<20120628121816.GB21029@sirena.org.uk>
-	<4FEC4E62.3020101@metafoo.de>
-	<20120628122830.GJ28922@opensource.wolfsonmicro.com>
-	<4FEC4FA9.20004@nvidia.com> <s5hlij7zja0.wl%tiwai@suse.de>
-	<4FEC5642.9080908@nvidia.com> <s5hk3yrzhte.wl%tiwai@suse.de>
-	<4FEC5DC7.5060600@nvidia.com> <s5hd34jzgs0.wl%tiwai@suse.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
+Date: Fri, 29 Jun 2012 11:02:01 -0600
+Message-ID: <4FEDDF89.1050907@wwwdotorg.org>
+References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com> <1340969673-7776-2-git-send-email-ldewangan@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-132.synserver.de (smtp-out-134.synserver.de
-	[212.40.185.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CCAA11CFBE
-	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jun 2012 18:38:34 +0200 (CEST)
-In-Reply-To: <s5hd34jzgs0.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, "lrg@ti.com" <lrg@ti.com>, Marek Szyprowski <m.szyprowski@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1340969673-7776-2-git-send-email-ldewangan@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: tiwai@suse.de, perex@perex.cz, swarren@nvidia.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/28/2012 03:51 PM, Takashi Iwai wrote:
-> At Thu, 28 Jun 2012 19:06:07 +0530,
-> Laxman Dewangan wrote:
-> [...]
+On 06/29/2012 05:34 AM, Laxman Dewangan wrote:
+> Use the dmaengine based Tegra APB DMA driver for
+> data transfer between SPI fifo and memory in
+> place of legacy Tegra APB DMA.
 > 
-> But, still we need to be careful about this.  As mentioned, there is
-> no flag to know the possibility of writecombine mmap beforehand.
-> It'd be nice if we have either a compile-time or a run-time flag /
-> function to check that.  Then the driver can also expose the mmap
-> capability to user-space depending on the flag.
+> Because generic soc-dmaengine-pcm uses the DMAs API
+> based on dmaengine, using the exported APIs provided
+> by this generic driver.
 > 
+> The new driver is selected if legacy driver is not
+> selected and new dma driver is enabled through config
+> file.
 
-If writecombine is not supported it will fallback to a "normal" mmap.
-Here's an excerpt from the DMA mapping documentation:
+This works just fine with the existing non-dmaengine DMA driver enabled.
 
-DMA_ATTR_WRITE_COMBINE
-----------------------
+However, I can't get it to work with dmaengine:
 
-DMA_ATTR_WRITE_COMBINE specifies that writes to the mapping may be
-buffered to improve performance.
+> # aplay ~/abba-dq-48000-stereo.wav
+> [  151.613476] tegra20-i2s tegra20-i2s.0: dmaengine pcm open failed with err -6
+> [  151.620557] tegra20-i2s tegra20-i2s.0: can't open platform tegra20-i2s.0: -6
+> aplay: main:654: audio open error: No such device or address
 
-Since it is optional for platforms to implement DMA_ATTR_WRITE_COMBINE,
-those that do not will simply ignore the attribute and exhibit default
-behavior.
+I do have the following in my local tree:
+68a67b8 ARM: tegra: add device tree AUXDATA for APBDMA
+0db7a96 ARM: tegra: dma: rename driver name for clock to "tegra-apbdma"
 
-- Lars
+I also fixed the compatible values in drivers/dma/tegra20-apb-dma.c so
+the driver would get instantiated, which it does;
+/sys/devices/tegra-apbdma/dma has a bunch of dmaengine channels in it.
+
+(Note: This is on Ventana, although I doubt that makes much difference)
+
+Is there something else I need to do to test this?
