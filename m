@@ -1,209 +1,70 @@
-From: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: use dmaengine based dma driver
-Date: Fri, 29 Jun 2012 17:04:33 +0530
-Message-ID: <1340969673-7776-2-git-send-email-ldewangan@nvidia.com>
-References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com>
+From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix
+	snd_soc_dapm_put_volsw()	connect
+Date: Fri, 29 Jun 2012 13:53:56 +0200 (CEST)
+Message-ID: <1365560586.322930.1340970836633.JavaMail.root@advansee.com>
+References: <s5hobo2bpo5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1340969673-7776-1-git-send-email-ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from zose-mta13.web4all.fr (zose-mta13.web4all.fr [178.33.204.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E04E24484
+	for <alsa-devel@alsa-project.org>;
+	Fri, 29 Jun 2012 13:49:18 +0200 (CEST)
+In-Reply-To: <s5hobo2bpo5.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the dmaengine based Tegra APB DMA driver for
-data transfer between SPI fifo and memory in
-place of legacy Tegra APB DMA.
-
-Because generic soc-dmaengine-pcm uses the DMAs API
-based on dmaengine, using the exported APIs provided
-by this generic driver.
-
-The new driver is selected if legacy driver is not
-selected and new dma driver is enabled through config
-file.
-
-Signed-off-by: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- sound/soc/tegra/Kconfig     |    3 +-
- sound/soc/tegra/tegra_pcm.c |  115 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/tegra/tegra_pcm.h |    2 +
- 3 files changed, 119 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index 76dc230..02bcd30 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -1,7 +1,8 @@
- config SND_SOC_TEGRA
- 	tristate "SoC Audio for the Tegra System-on-Chip"
--	depends on ARCH_TEGRA && TEGRA_SYSTEM_DMA
-+	depends on ARCH_TEGRA && (TEGRA_SYSTEM_DMA || TEGRA20_APB_DMA)
- 	select REGMAP_MMIO
-+	select SND_SOC_DMAENGINE_PCM if TEGRA20_APB_DMA
- 	help
- 	  Say Y or M here if you want support for SoC audio on Tegra.
- 
-diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
-index 127348d..5658bce 100644
---- a/sound/soc/tegra/tegra_pcm.c
-+++ b/sound/soc/tegra/tegra_pcm.c
-@@ -36,6 +36,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/dmaengine_pcm.h>
- 
- #include "tegra_pcm.h"
- 
-@@ -56,6 +57,7 @@ static const struct snd_pcm_hardware tegra_pcm_hardware = {
- 	.fifo_size		= 4,
- };
- 
-+#if defined(CONFIG_TEGRA_SYSTEM_DMA)
- static void tegra_pcm_queue_dma(struct tegra_runtime_data *prtd)
- {
- 	struct snd_pcm_substream *substream = prtd->substream;
-@@ -285,6 +287,119 @@ static struct snd_pcm_ops tegra_pcm_ops = {
- 	.pointer	= tegra_pcm_pointer,
- 	.mmap		= tegra_pcm_mmap,
- };
-+#else
-+static int tegra_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct device *dev = rtd->platform->dev;
-+	int ret;
-+
-+	/* Set HW params now that initialization is complete */
-+	snd_soc_set_runtime_hwparams(substream, &tegra_pcm_hardware);
-+
-+	ret = snd_dmaengine_pcm_open(substream, NULL, NULL);
-+	if (ret) {
-+		dev_err(dev, "dmaengine pcm open failed with err %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tegra_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	snd_dmaengine_pcm_close(substream);
-+	return 0;
-+}
-+
-+static int tegra_pcm_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct device *dev = rtd->platform->dev;
-+	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
-+	struct tegra_pcm_dma_params *dmap;
-+	struct dma_slave_config slave_config;
-+	int ret;
-+
-+	dmap = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	ret = snd_hwparams_to_dma_slave_config(substream, params,
-+						&slave_config);
-+	if (ret) {
-+		dev_err(dev, "hw params config failed with err %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		slave_config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		slave_config.dst_addr = dmap->addr;
-+		slave_config.src_maxburst = 0;
-+	} else {
-+		slave_config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		slave_config.src_addr = dmap->addr;
-+		slave_config.dst_maxburst = 0;
-+	}
-+	slave_config.slave_id = dmap->req_sel;
-+
-+	ret = dmaengine_slave_config(chan, &slave_config);
-+	if (ret < 0) {
-+		dev_err(dev, "dma slave config failed with err %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	return 0;
-+}
-+
-+static int tegra_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	snd_pcm_set_runtime_buffer(substream, NULL);
-+	return 0;
-+}
-+
-+static int tegra_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		return snd_dmaengine_pcm_trigger(substream,
-+					SNDRV_PCM_TRIGGER_START);
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		return snd_dmaengine_pcm_trigger(substream,
-+					SNDRV_PCM_TRIGGER_STOP);
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int tegra_pcm_mmap(struct snd_pcm_substream *substream,
-+				struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+					runtime->dma_area,
-+					runtime->dma_addr,
-+					runtime->dma_bytes);
-+}
-+
-+static struct snd_pcm_ops tegra_pcm_ops = {
-+	.open		= tegra_pcm_open,
-+	.close		= tegra_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= tegra_pcm_hw_params,
-+	.hw_free	= tegra_pcm_hw_free,
-+	.trigger	= tegra_pcm_trigger,
-+	.pointer	= snd_dmaengine_pcm_pointer,
-+	.mmap		= tegra_pcm_mmap,
-+};
-+#endif
- 
- static int tegra_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- {
-diff --git a/sound/soc/tegra/tegra_pcm.h b/sound/soc/tegra/tegra_pcm.h
-index 985d418..a3a4503 100644
---- a/sound/soc/tegra/tegra_pcm.h
-+++ b/sound/soc/tegra/tegra_pcm.h
-@@ -40,6 +40,7 @@ struct tegra_pcm_dma_params {
- 	unsigned long req_sel;
- };
- 
-+#if defined(CONFIG_TEGRA_SYSTEM_DMA)
- struct tegra_runtime_data {
- 	struct snd_pcm_substream *substream;
- 	spinlock_t lock;
-@@ -51,6 +52,7 @@ struct tegra_runtime_data {
- 	struct tegra_dma_req dma_req[2];
- 	struct tegra_dma_channel *dma_chan;
- };
-+#endif
- 
- int tegra_pcm_platform_register(struct device *dev);
- void tegra_pcm_platform_unregister(struct device *dev);
--- 
-1.7.1.1
+T24gRnJpLCBKdW4gMjksIDIwMTIgYXQgMDg6MjU6MTRBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEF0IE1vbiwgMTggSnVuIDIwMTIgMjI6NDE6MjggKzAyMDAgKENFU1QpLAo+IEJlbm/D
+rnQgVGjDqWJhdWRlYXUgd3JvdGU6Cj4gPiAKPiA+IHNuZF9zb2NfZGFwbV9wdXRfdm9sc3coKSBz
+ZXRzIGNvbm5lY3QgaW5jb3JyZWN0bHkgaW4gdGhlIGNhc2UgbWF4ID4KPiA+IDEgd2l0aAo+ID4g
+aW52ZXJ0LiBJbiB0aGF0IGNhc2UsIHRoZSByYXcgZGlzY29ubmVjdCB2YWx1ZSBzaG91bGQgYmUg
+bWF4LCB3aGljaAo+ID4gY29ycmVzcG9uZHMKPiA+IHRvIHRoZSB1c2Vyc3BhY2UgdmFsdWUgMC4K
+PiA+IAo+ID4gVGhpcyB1c2UgY2FzZSBjdXJyZW50bHkgZG9lcyBub3QgYXBwZWFyIHVwc3RyZWFt
+LCBidXQgaXQgY291bGQKPiA+IGJyZWFrCj4gPiBTT0NfREFQTV9TSU5HTEUoKSBvciBTT0NfREFQ
+TV9TSU5HTEVfVExWKCkgZWxzZXdoZXJlIG9yIGluIHRoZQo+ID4gZnV0dXJlLgo+ID4gCj4gPiBD
+YzogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KPiA+IENjOiBNYXJrIEJyb3duIDxicm9vbmll
+QG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiA+IENjOiA8YWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnPgo+ID4gU2lnbmVkLW9mZi1ieTogQmVub8OudCBUaMOpYmF1ZGVhdSA8YmVub2l0
+LnRoZWJhdWRlYXVAYWR2YW5zZWUuY29tPgo+ID4gLS0tCj4gPiAgLi4uL3NvdW5kL3NvYy9zb2Mt
+ZGFwbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA4ICstLS0tLS0tCj4gPiAgMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA3IGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZm
+IC0tZ2l0IGxpbnV4LW5leHQtSEVBRC02Yzg2YjU4Lm9yaWcvc291bmQvc29jL3NvYy1kYXBtLmMK
+PiA+IGxpbnV4LW5leHQtSEVBRC02Yzg2YjU4L3NvdW5kL3NvYy9zb2MtZGFwbS5jCj4gPiBpbmRl
+eCA0MDU4NDFjLi41ZWYwODJmIDEwMDY0NAo+ID4gLS0tIGxpbnV4LW5leHQtSEVBRC02Yzg2YjU4
+Lm9yaWcvc291bmQvc29jL3NvYy1kYXBtLmMKPiA+ICsrKyBsaW51eC1uZXh0LUhFQUQtNmM4NmI1
+OC9zb3VuZC9zb2Mvc29jLWRhcG0uYwo+ID4gQEAgLTI1MTUsMTkgKzI1MTUsMTMgQEAgaW50IHNu
+ZF9zb2NfZGFwbV9wdXRfdm9sc3coc3RydWN0Cj4gPiBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+
+ID4gIAlpbnQgd2k7Cj4gPiAgCj4gPiAgCXZhbCA9ICh1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52
+YWx1ZVswXSAmIG1hc2spOwo+ID4gKwljb25uZWN0ID0gISF2YWw7Cj4gPiAgCj4gPiAgCWlmIChp
+bnZlcnQpCj4gPiAgCQl2YWwgPSBtYXggLSB2YWw7Cj4gPiAgCW1hc2sgPSBtYXNrIDw8IHNoaWZ0
+Owo+ID4gIAl2YWwgPSB2YWwgPDwgc2hpZnQ7Cj4gPiAgCj4gPiAtCWlmICh2YWwpCj4gPiAtCQkv
+KiBuZXcgY29ubmVjdGlvbiAqLwo+ID4gLQkJY29ubmVjdCA9IGludmVydCA/IDAgOiAxOwo+ID4g
+LQllbHNlCj4gPiAtCQkvKiBvbGQgY29ubmVjdGlvbiBtdXN0IGJlIHBvd2VyZWQgZG93biAqLwo+
+ID4gLQkJY29ubmVjdCA9IGludmVydCA/IDEgOiAwOwo+ID4gLQo+IAo+IERvZXNuJ3QgdGhpcyBy
+ZXN1bHQgaW4gdGhlIHNhbWUgdmFsdWUgb2YgY29ubmVjdD8KPiAKPiAoZ2l2ZW4gdmFsdWUsIGlu
+dmVydCkgLS0+IChyYXcgdmFsdWUsIGNvbm5lY3QpCj4gCj4gb2xkIGNvZGU6ICAoMCwgMCkgLS0+
+ICgwLCAwKQo+ICAgICAgICAgICAgKDAsIDEpIC0tPiAobWF4LCAwKQo+ICAgICAgICAgICAgKG1h
+eCwgMCkgLT4gKG1heCwgMSkKPiAgICAgICAgICAgIChtYXgsIDEpIC0+ICgwLCAxKQo+IAo+IG5l
+dyBjb2RlOiAgKDAsIDApIC0tPiAoMCwgMCkKPiAgICAgICAgICAgICgwLCAxKSAtLT4gKG1heCwg
+MCkKPiAgICAgICAgICAgIChtYXgsIDApIC0tPiAobWF4LCAxKQo+ICAgICAgICAgICAgKG1heCwg
+MSkgLS0+ICgwLCAxKQo+IAo+IEknZCB1bmRlcnN0YW5kIGlmIHRoZSBsaW5lICJjb25uZWN0ID0g
+ISF2YWw7IiB3ZXJlIGFmdGVyIHRoZSBpbnZlcnQKPiBjb252ZXJzaW9uLi4uCj4gCj4gICAJaWYg
+KGludmVydCkKPiAgIAkJdmFsID0gbWF4IC0gdmFsOwo+IAljb25uZWN0ID0gISF2YWw7CgpUYWtl
+IG1heCA9IDUsIGludmVydCA9IDEsIHVzZXIgdmFsID0gMjoKb2xkIGNvZGU6IGNvbm5lY3QgPSAw
+Cm5ldyBjb2RlOiBjb25uZWN0ID0gMQoKUmVnYXJkcywKQmVub8OudApfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
