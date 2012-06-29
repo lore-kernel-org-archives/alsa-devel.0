@@ -1,18 +1,20 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] ASoC: dapm:
-	Fix	snd_soc_dapm_put_volsw()	connect
-Date: Fri, 29 Jun 2012 18:05:44 +0200 (CEST)
-Message-ID: <71354327.345161.1340985944186.JavaMail.root@advansee.com>
-References: <s5ha9zmw2cy.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 0/3] ASoC: Move pcm writecombine dma buffer
+ allocation to core
+Date: Fri, 29 Jun 2012 18:06:52 +0200
+Message-ID: <4FEDD29C.8040209@metafoo.de>
+References: <1340965398-20872-1-git-send-email-ldewangan@nvidia.com>
+	<s5h7guqxqnd.wl%tiwai@suse.de> <4FEDC3F8.8000501@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta13.web4all.fr (zose-mta13.web4all.fr [178.33.204.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5882211CF9E
+Received: from smtp-out-132.synserver.de (smtp-out-134.synserver.de
+	[212.40.185.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 95C8A11CFA6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jun 2012 18:01:06 +0200 (CEST)
-In-Reply-To: <s5ha9zmw2cy.wl%tiwai@suse.de>
+	Fri, 29 Jun 2012 18:03:04 +0200 (CEST)
+In-Reply-To: <4FEDC3F8.8000501@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,121 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "clemens@ladisch.de" <clemens@ladisch.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMjksIDIwMTIgYXQgMDU6NDM6MDlQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IEZyaSwgMjkgSnVuIDIwMTIgMTY6Mjk6MjIgKzAyMDAgKENFU1QpLAo+IEJlbm/D
-rnQgVGjDqWJhdWRlYXUgd3JvdGU6Cj4gPiAKPiA+IE9uIEZyaSwgSnVuIDI5LCAyMDEyIGF0IDAy
-OjAzOjA2UE0gKzAyMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4gQXQgRnJpLCAyOSBKdW4g
-MjAxMiAxMzo1Mzo1NiArMDIwMCAoQ0VTVCksCj4gPiA+IEJlbm/DrnQgVGjDqWJhdWRlYXUgd3Jv
-dGU6Cj4gPiA+ID4gCj4gPiA+ID4gT24gRnJpLCBKdW4gMjksIDIwMTIgYXQgMDg6MjU6MTRBTSAr
-MDIwMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4gPiA+ID4gQXQgTW9uLCAxOCBKdW4gMjAxMiAy
-Mjo0MToyOCArMDIwMCAoQ0VTVCksCj4gPiA+ID4gPiBCZW5vw650IFRow6liYXVkZWF1IHdyb3Rl
-Ogo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gc25kX3NvY19kYXBtX3B1dF92b2xzdygpIHNldHMg
-Y29ubmVjdCBpbmNvcnJlY3RseSBpbiB0aGUKPiA+ID4gPiA+ID4gY2FzZQo+ID4gPiA+ID4gPiBt
-YXggPgo+ID4gPiA+ID4gPiAxIHdpdGgKPiA+ID4gPiA+ID4gaW52ZXJ0LiBJbiB0aGF0IGNhc2Us
-IHRoZSByYXcgZGlzY29ubmVjdCB2YWx1ZSBzaG91bGQgYmUKPiA+ID4gPiA+ID4gbWF4LAo+ID4g
-PiA+ID4gPiB3aGljaAo+ID4gPiA+ID4gPiBjb3JyZXNwb25kcwo+ID4gPiA+ID4gPiB0byB0aGUg
-dXNlcnNwYWNlIHZhbHVlIDAuCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBUaGlzIHVzZSBjYXNl
-IGN1cnJlbnRseSBkb2VzIG5vdCBhcHBlYXIgdXBzdHJlYW0sIGJ1dCBpdAo+ID4gPiA+ID4gPiBj
-b3VsZAo+ID4gPiA+ID4gPiBicmVhawo+ID4gPiA+ID4gPiBTT0NfREFQTV9TSU5HTEUoKSBvciBT
-T0NfREFQTV9TSU5HTEVfVExWKCkgZWxzZXdoZXJlIG9yIGluCj4gPiA+ID4gPiA+IHRoZQo+ID4g
-PiA+ID4gPiBmdXR1cmUuCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBDYzogTGlhbSBHaXJkd29v
-ZCA8bHJnQHRpLmNvbT4KPiA+ID4gPiA+ID4gQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNv
-dXJjZS53b2xmc29ubWljcm8uY29tPgo+ID4gPiA+ID4gPiBDYzogPGFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZz4KPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogQmVub8OudCBUaMOpYmF1ZGVh
-dQo+ID4gPiA+ID4gPiA8YmVub2l0LnRoZWJhdWRlYXVAYWR2YW5zZWUuY29tPgo+ID4gPiA+ID4g
-PiAtLS0KPiA+ID4gPiA+ID4gIC4uLi9zb3VuZC9zb2Mvc29jLWRhcG0uYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgICAgOAo+ID4gPiA+ID4gPiAgKy0tLS0tLS0KPiA+ID4gPiA+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgNyBkZWxldGlvbnMoLSkKPiA+ID4gPiA+ID4g
-Cj4gPiA+ID4gPiA+IGRpZmYgLS1naXQKPiA+ID4gPiA+ID4gbGludXgtbmV4dC1IRUFELTZjODZi
-NTgub3JpZy9zb3VuZC9zb2Mvc29jLWRhcG0uYwo+ID4gPiA+ID4gPiBsaW51eC1uZXh0LUhFQUQt
-NmM4NmI1OC9zb3VuZC9zb2Mvc29jLWRhcG0uYwo+ID4gPiA+ID4gPiBpbmRleCA0MDU4NDFjLi41
-ZWYwODJmIDEwMDY0NAo+ID4gPiA+ID4gPiAtLS0gbGludXgtbmV4dC1IRUFELTZjODZiNTgub3Jp
-Zy9zb3VuZC9zb2Mvc29jLWRhcG0uYwo+ID4gPiA+ID4gPiArKysgbGludXgtbmV4dC1IRUFELTZj
-ODZiNTgvc291bmQvc29jL3NvYy1kYXBtLmMKPiA+ID4gPiA+ID4gQEAgLTI1MTUsMTkgKzI1MTUs
-MTMgQEAgaW50IHNuZF9zb2NfZGFwbV9wdXRfdm9sc3coc3RydWN0Cj4gPiA+ID4gPiA+IHNuZF9r
-Y29udHJvbCAqa2NvbnRyb2wsCj4gPiA+ID4gPiA+ICAJaW50IHdpOwo+ID4gPiA+ID4gPiAgCj4g
-PiA+ID4gPiA+ICAJdmFsID0gKHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdICYgbWFz
-ayk7Cj4gPiA+ID4gPiA+ICsJY29ubmVjdCA9ICEhdmFsOwo+ID4gPiA+ID4gPiAgCj4gPiA+ID4g
-PiA+ICAJaWYgKGludmVydCkKPiA+ID4gPiA+ID4gIAkJdmFsID0gbWF4IC0gdmFsOwo+ID4gPiA+
-ID4gPiAgCW1hc2sgPSBtYXNrIDw8IHNoaWZ0Owo+ID4gPiA+ID4gPiAgCXZhbCA9IHZhbCA8PCBz
-aGlmdDsKPiA+ID4gPiA+ID4gIAo+ID4gPiA+ID4gPiAtCWlmICh2YWwpCj4gPiA+ID4gPiA+IC0J
-CS8qIG5ldyBjb25uZWN0aW9uICovCj4gPiA+ID4gPiA+IC0JCWNvbm5lY3QgPSBpbnZlcnQgPyAw
-IDogMTsKPiA+ID4gPiA+ID4gLQllbHNlCj4gPiA+ID4gPiA+IC0JCS8qIG9sZCBjb25uZWN0aW9u
-IG11c3QgYmUgcG93ZXJlZCBkb3duICovCj4gPiA+ID4gPiA+IC0JCWNvbm5lY3QgPSBpbnZlcnQg
-PyAxIDogMDsKPiA+ID4gPiA+ID4gLQo+ID4gPiA+ID4gCj4gPiA+ID4gPiBEb2Vzbid0IHRoaXMg
-cmVzdWx0IGluIHRoZSBzYW1lIHZhbHVlIG9mIGNvbm5lY3Q/Cj4gPiA+ID4gPiAKPiA+ID4gPiA+
-IChnaXZlbiB2YWx1ZSwgaW52ZXJ0KSAtLT4gKHJhdyB2YWx1ZSwgY29ubmVjdCkKPiA+ID4gPiA+
-IAo+ID4gPiA+ID4gb2xkIGNvZGU6ICAoMCwgMCkgLS0+ICgwLCAwKQo+ID4gPiA+ID4gICAgICAg
-ICAgICAoMCwgMSkgLS0+IChtYXgsIDApCj4gPiA+ID4gPiAgICAgICAgICAgIChtYXgsIDApIC0+
-IChtYXgsIDEpCj4gPiA+ID4gPiAgICAgICAgICAgIChtYXgsIDEpIC0+ICgwLCAxKQo+ID4gPiA+
-ID4gCj4gPiA+ID4gPiBuZXcgY29kZTogICgwLCAwKSAtLT4gKDAsIDApCj4gPiA+ID4gPiAgICAg
-ICAgICAgICgwLCAxKSAtLT4gKG1heCwgMCkKPiA+ID4gPiA+ICAgICAgICAgICAgKG1heCwgMCkg
-LS0+IChtYXgsIDEpCj4gPiA+ID4gPiAgICAgICAgICAgIChtYXgsIDEpIC0tPiAoMCwgMSkKPiA+
-ID4gPiA+IAo+ID4gPiA+ID4gSSdkIHVuZGVyc3RhbmQgaWYgdGhlIGxpbmUgImNvbm5lY3QgPSAh
-IXZhbDsiIHdlcmUgYWZ0ZXIgdGhlCj4gPiA+ID4gPiBpbnZlcnQKPiA+ID4gPiA+IGNvbnZlcnNp
-b24uLi4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gICAJaWYgKGludmVydCkKPiA+ID4gPiA+ICAgCQl2
-YWwgPSBtYXggLSB2YWw7Cj4gPiA+ID4gPiAJY29ubmVjdCA9ICEhdmFsOwo+ID4gPiA+IAo+ID4g
-PiA+IFRha2UgbWF4ID0gNSwgaW52ZXJ0ID0gMSwgdXNlciB2YWwgPSAyOgo+ID4gPiA+IG9sZCBj
-b2RlOiBjb25uZWN0ID0gMAo+ID4gPiA+IG5ldyBjb2RlOiBjb25uZWN0ID0gMQo+ID4gPiAKPiA+
-ID4gT0ssIHRoZW4geW91IG5lZWQgdG8gZml4IGRhcG1fc2V0X3BhdGhfc3RhdHVzKCkgYXMgd2Vs
-bCwgdG9vLgo+ID4gPiBPdGhlcndpc2UgdGhlIGxvZ2ljIGJlY29tZXMgaW5jb25zaXN0ZW50Lgo+
-ID4gCj4gPiBJbmRlZWQsIEkgbWlzc2VkIHRoYXQuIEJ1dCB0aGUgaXNzdWUgaXMgZXZlbiB3b3Jz
-ZSBpbiB0aGlzCj4gPiBmdW5jdGlvbjogSXQgdXNlcyB0aGUKPiA+IGNvbnRyb2wgcmVnaXN0ZXIg
-dmFsdWUgdG8gZGV0ZXJtaW5lIGlmIGNvbm5lY3Qgc2hvdWxkIGJlIHNldCB3aGlsZQo+ID4gb25s
-eSB0aGUKPiA+IHVzZXJzcGFjZSB2YWx1ZSBjYW4gdGVsbCB0aGF0LCBhbmQgaXQgaGFzIG5vIHdh
-eSBvZiBkZXJpdmluZyB0aGUKPiA+IHVzZXJzcGFjZSB2YWx1ZQo+ID4gYXBhcnQgZnJvbSBjYWxs
-aW5nIHRoZSBnZXQgZnVuY3Rpb24sIHdoaWxlIGhlcmUgaXQgYXNzdW1lcyB0aGF0IHRoZQo+ID4g
-cmVnaXN0ZXIKPiA+IHZhbHVlIHdpbGwgYmUgbW9yZSBvciBsZXNzIGNvbXBhdGlibGUgd2l0aCBz
-bmRfc29jX2RhcG1fZ2V0X3ZvbHN3Lgo+IAo+IFRoYXQncyBhIHZhbGlkIGFzc3VtcHRpb24uICBV
-c3VhbGx5IGdldCBhbmQgcHV0IGNhbGxiYWNrcyBtdXN0IGJlCj4gcGFpcmVkIHdlbGwuCgpZZXMs
-IGV4Y2VwdCB0aGF0IHNvbWUgY29kZWMgZHJpdmVycyBjdXN0b21pemUgdGhlc2UgY2FsbGJhY2tz
-IGZvciBzcGVjaWZpYwpyZWdpc3RlciBlbmNvZGluZ3MgKGUuZy4gc25kX3NvY19kYXBtX3B1dF92
-b2xzd19haWMzeCkuIEJ5IGNoYW5jZSwgb25seSB0aGUgcHV0CmNhbGxiYWNrcyBzZWVtIHRvIGhh
-dmUgYmVlbiBjdXN0b21pemVkIHNvIGZhci4KCldoYXQgaXMgdGhlIHBvaW50IG9mIGhhdmluZyBj
-dXN0b21pemFibGUgZ2V0L3B1dCBjYWxsYmFja3MgaWYKZGFwbV9zZXRfcGF0aF9zdGF0dXMoKSBp
-Z25vcmVzIHRoZW0gYW5kIGR1cGxpY2F0ZXMgdGhlaXIgY29yZSBiZWhhdmlvcj8KCkluIHRoZSBh
-aWMzeCBleGFtcGxlLCB0aGUgYml0LWZpZWxkIGlzIGFjdHVhbGx5IGEgbWl4ZXIgdm9sdW1lIGNv
-bnRyb2wsIGFuZCBub3QKb25seSBhIGJvb2xlYW4sIHNvIEkgd2FzIHBsYW5uaW5nIHRvIHBvc3Qg
-YSBmaXggZm9yIHRoYXQuIFRoZSBpc3N1ZSBpcyB0aGF0IHRoZQplbmNvZGluZyBvZiByZWdpc3Rl
-ciB2YWx1ZXMgZm9yIHRoaXMgdm9sdW1lIGhhcyBob2xlcyB0aGF0IHNob3VsZCBub3QgYmUKZHVw
-bGljYXRlZCBpbiB1c2Vyc3BhY2UgcmF3IHZhbHVlcywgc28gY3VzdG9tIGdldCBhbmQgcHV0IGNh
-bGxiYWNrcyBoYXZlIHRvIGJlCnVzZWQgaGVyZSB0aGF0IHdpbGwgbm90IGJlIGNvbXBhdGlibGUg
-d2l0aCBzbmRfc29jX2RhcG1fZ2V0X3ZvbHN3KCksIHdoaWNoIHdpbGwKYmUgYmxvY2tpbmcgZm9y
-IGRhcG1fc2V0X3BhdGhfc3RhdHVzKCkuIERvIHlvdSBoYXZlIGEgc2ltcGxlIHNvbHV0aW9uIGZv
-ciB0aGF0PwoKPiA+IEhlbmNlLCBJIHRoaW5rIHRoYXQgdGhlIGZpeCBoZXJlIHNob3VsZCBiZSB0
-byBjYWxsIGdldCwgdGhlbiB0bwo+ID4gZGVkdWNlIGNvbm5lY3QKPiA+IGZyb20gdGhlIHJldHVy
-bmVkIHZhbHVlLiBEbyB5b3UgYWdyZWU/Cj4gCj4gV2VsbCwgY2FsbGluZyBhIGNvbnRyb2wgY2Fs
-bGJhY2sgaW50ZXJuYWxseSBpcyBhIGJpdCB3b3JyaXNvbWUuCgpZZXMsIGFuZCB0aGVyZSBpcyBh
-bm90aGVyIGlzc3VlOiBrY29udHJvbCBtYXkgbm90IGJlIGF2YWlsYWJsZSBmb3IgZ2V0IGF0IHRo
-aXMKcG9pbnQuCgpJbiB0aGUgbWVhbnRpbWUsIHBsZWFzZSBmaW5kIGJlbG93IGEgcXVpY2sgcGF0
-Y2ggZm9yIHRoZSBjb25zaXN0ZW5jeSBpc3N1ZS4KClJlZ2FyZHMsCkJlbm/DrnQKCgpbUEFUQ0hd
-IEFTb0M6IGRhcG06IEZpeCBkYXBtX3NldF9wYXRoX3N0YXR1cygpIGNvbm5lY3QKCmRhcG1fc2V0
-X3BhdGhfc3RhdHVzKCkgc2V0cyBjb25uZWN0IGluY29ycmVjdGx5IGluIHRoZSBjYXNlIG1heCA+
-IDEgd2l0aCBpbnZlcnQuCkluIHRoYXQgY2FzZSwgdGhlIHJhdyBkaXNjb25uZWN0IHZhbHVlIHNo
-b3VsZCBiZSBtYXgsIHdoaWNoIGNvcnJlc3BvbmRzIHRvIHRoZQp1c2Vyc3BhY2UgdmFsdWUgMC4K
-ClRoaXMgdXNlIGNhc2UgY3VycmVudGx5IGRvZXMgbm90IGFwcGVhciB1cHN0cmVhbSwgYnV0IGl0
-IGNvdWxkIGJyZWFrClNPQ19EQVBNX1NJTkdMRSgpIG9yIFNPQ19EQVBNX1NJTkdMRV9UTFYoKSBl
-bHNld2hlcmUgb3IgaW4gdGhlIGZ1dHVyZS4KClRoaXMgcGF0Y2ggY29tcGxldGVzIGNvbW1pdCAz
-YTlhYmU4LgoKQ2M6IExpYW0gR2lyZHdvb2QgPGxyZ0B0aS5jb20+CkNjOiBNYXJrIEJyb3duIDxi
-cm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KQ2M6IDxhbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmc+ClNpZ25lZC1vZmYtYnk6IEJlbm/DrnQgVGjDqWJhdWRlYXUgPGJlbm9pdC50
-aGViYXVkZWF1QGFkdmFuc2VlLmNvbT4KLS0tCiAuLi4vc291bmQvc29jL3NvYy1kYXBtLmMgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDcgKysrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDMg
-aW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgbGludXgtbmV4dC1IRUFE
-LWQxZDJkM2Eub3JpZy9zb3VuZC9zb2Mvc29jLWRhcG0uYyBsaW51eC1uZXh0LUhFQUQtZDFkMmQz
-YS9zb3VuZC9zb2Mvc29jLWRhcG0uYwppbmRleCA5NjcwNjY4Li43ZjJhNGJiIDEwMDY0NAotLS0g
-bGludXgtbmV4dC1IRUFELWQxZDJkM2Eub3JpZy9zb3VuZC9zb2Mvc29jLWRhcG0uYworKysgbGlu
-dXgtbmV4dC1IRUFELWQxZDJkM2Evc291bmQvc29jL3NvYy1kYXBtLmMKQEAgLTMyNCwxMSArMzI0
-LDEwIEBAIHN0YXRpYyB2b2lkIGRhcG1fc2V0X3BhdGhfc3RhdHVzKHN0cnVjdCBzbmRfc29jX2Rh
-cG1fd2lkZ2V0ICp3LAogCiAJCXZhbCA9IHNvY193aWRnZXRfcmVhZCh3LCByZWcpOwogCQl2YWwg
-PSAodmFsID4+IHNoaWZ0KSAmIG1hc2s7CisJCWlmIChpbnZlcnQpCisJCQl2YWwgPSBtYXggLSB2
-YWw7CiAKLQkJaWYgKChpbnZlcnQgJiYgIXZhbCkgfHwgKCFpbnZlcnQgJiYgdmFsKSkKLQkJCXAt
-PmNvbm5lY3QgPSAxOwotCQllbHNlCi0JCQlwLT5jb25uZWN0ID0gMDsKKwkJcC0+Y29ubmVjdCA9
-ICEhdmFsOwogCX0KIAlicmVhazsKIAljYXNlIHNuZF9zb2NfZGFwbV9tdXg6IHsKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 06/29/2012 05:04 PM, Laxman Dewangan wrote:
+> [...]
+> 
+> 
+>> +/* allocate the coherent DMA pages */
+>> +static void *snd_malloc_dev_pages(struct device *dev, size_t size,
+>> dma_addr_t *dma)
+>> +{
+>> +    return __snd_malloc_dev_pages(dev, size, dma, dma_alloc_coherent);
+> 
+> This does not get compiled in ARM because dma_alloc_coherant is macro
+> defined as
+> 
+> #define dma_alloc_coherent(d, s, h, f) dma_alloc_attrs(d, s, h, f, NULL)
+> 
+> static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+>                                        dma_addr_t *dma_handle, gfp_t flag,
+>                                        struct dma_attrs *attrs)
+> 
+> 
+> I fixed this by
+> static void *_dma_alloc_coherent(struct device *dev, size_t size,
+>                 dma_addr_t *dma_handle, gfp_t flag)
+> {
+>         return dma_alloc_coherent(dev, size, dma_handle, flag);
+> }
+> 
+> /* allocate the coherent DMA pages */
+> static void *snd_malloc_dev_pages(struct device *dev, size_t size,
+> dma_addr_t *dma)
+> {
+>         return _snd_malloc_dev_pages(dev, size, dma, _dma_alloc_coherent);
+> }
+
+I think all dma_alloc_* functions use dma_alloc_attrs internally these days.
+I think it might be a better idea just to use dma_alloc_attrs in
+__snd_malloc_dev_pages and just pass a dma_attrs struct instead of a function.
+
+Something like:
+
+static void *__snd_malloc_dev_pages(struct device *dev, size_t size,
+			    dma_addr_t *dma, struct dma_attrs *attrs)
+{
+....
+	res = dma_alloc_attrs(dev, PAGE_SIZE << pg, dma, gfp_flags, attrs);
+....
+}
+
+
+static void *snd_malloc_dev_pages(struct device *dev, size_t size,
+	dma_addr_t *dma)
+{
+	return __snd_malloc_dev_pages(dev, size, dma, NULL);
+}
+
+static void *snd_malloc_dev_wc_pages(struct device *dev, size_t size,
+	dma_addr_t *dma)
+{
+	DEFINE_DMA_ATTRS(attrs);
+	dma_set_attr(DMA_ATTR_WRITE_COMBINE, &attrs);
+
+	return __snd_malloc_dev_pages(dev, size, dma, &attrs);
+}
+
+Same applies for freeing the memory again.
+
+- Lars
