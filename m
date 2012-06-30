@@ -1,20 +1,18 @@
-From: "Patrick Shirkey" <pshirkey@boosthardware.com>
-Subject: Re: 2.6.18 unknown symbol ksize error
-Date: Sat, 30 Jun 2012 11:28:34 +0200 (CEST)
-Message-ID: <41403.175.39.33.120.1341048514.squirrel@boosthardware.com>
-References: <28300.101.169.127.232.1339918064.squirrel@boosthardware.com>
-	<4FDEE5E2.70604@ladisch.de> <s5hfw9tnevr.wl%tiwai@suse.de>
-	<61144.175.39.33.120.1340503011.squirrel@boosthardware.com>
-	<s5hpq8o345a.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix snd_soc_dapm_put_volsw()
+ connect
+Date: Sat, 30 Jun 2012 12:39:50 +0100
+Message-ID: <20120630113949.GT28922@opensource.wolfsonmicro.com>
+References: <2026346.354826.1340996989713.JavaMail.root@advansee.com>
+	<2127566796.356487.1341001087854.JavaMail.root@advansee.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8917293789341254192=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FA6C245CB
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 880A82461C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 Jun 2012 11:28:37 +0200 (CEST)
-In-Reply-To: <s5hpq8o345a.wl%tiwai@suse.de>
+	Sat, 30 Jun 2012 13:39:52 +0200 (CEST)
+In-Reply-To: <2127566796.356487.1341001087854.JavaMail.root@advansee.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Sun, June 24, 2012 9:23 pm, Takashi Iwai wrote:
-> At Sun, 24 Jun 2012 03:56:51 +0200 (CEST),
-> Patrick Shirkey wrote:
->>
->>
->> On Mon, June 18, 2012 11:33 am, Takashi Iwai wrote:
->> > At Mon, 18 Jun 2012 10:25:06 +0200,
->> > Clemens Ladisch wrote:
->> >>
->> >> Patrick Shirkey wrote:
->> >> > I have compiled the latest stable alsa drivers against 2.6.18
->> kernel
->> >> with
->> >> > gcc-4.1.
->> >> >
->> >> > I am getting an error when I insert the sound card modules.
->> >> >
->> >> >     snd_rawmidi: Unknown symbol ksize
->> >> >
->> >> > As far as I can tell 2.6.18 has support for ksize so I am not sure
->> >> where
->> >> > this error is coming from.
->> >>
->> >> That kernel didn't export ksize.
->> >>
->> >> Try --with-debug=memory to get a separate allocator implementation.
->> >
->> > Indeed.  The patch below (untested) forces to enable
->> > CONFIG_SND_DEBUG_MEMORY on older kernels.  Let me know if this helps.
->> >
->>
->> Seems to be worse now. Compiling with gcc-4.1 because that is the latest
->> version of gcc we can get on this old system without having to go
->> wholesale LFS on it. Upgrading alsa and jack is a big step for this
->> machine. If this is in the too hard basket I'll compile a new kernel
->> instead.
->>
->> Now seeing the following errors from dmesg:
->>
->> snd_hidden_kmalloc
->> snd_timer: Unknown symbol snd_register_device_for_dev
-> ...
->
-> Then try simple passing --with-debug=full configure option.
->
->
-
-It's the same results with both methods.
-
-Any other ideas or should I go ahead with compiling a new kernel?
+--===============8917293789341254192==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VjP/dwTbBl6I9PQk"
+Content-Disposition: inline
 
 
+--VjP/dwTbBl6I9PQk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---
-Patrick Shirkey
-Boost Hardware Ltd
+On Fri, Jun 29, 2012 at 10:18:07PM +0200, Beno=EEt Th=E9baudeau wrote:
+
+> I've finished. The following patch should be applied after my patch
+> "ASoC: dapm: Fix dapm_set_path_status() connect".
+
+Don't submit patches in the middle of discussions, but please bear in
+mind what I just said about not doing stereo.
+
+--VjP/dwTbBl6I9PQk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP7uV5AAoJEBus8iNuMP3d3nAQAJA6y96hMckt4WhQjJ7yjNnH
+WsTscWfaXQRbtUpSrvIhA0UHlFLlP03Nfv9jmLV5hz2zaHxFTZF3aXXlB6XqrZie
+dRxvQU3DRkY75SCoIre3KYywQ64eGbQUFMb0BOxT5zXBMchq86aGx6ttH1oUHZoi
+PwK3Pql68G/cpaWQcVHkYcq5tR8wQr2ElKCUSE3fqJ2Qe9uOW9tgrai+wvN9gBoM
+4mRS7EzjebpuaovmQgh0mgAoSzqYObM5S6+ypWZynKMKypjC9OKVixdnqrQ1pQEC
+U1viQYHz+QT7kW5kCSo1OyrUJZV+PhUWPsU1+VzniPdReiXfWGL587ytZKQgd6FL
+8iJ4f9mLd6IXIueJnWbJ+oWfI2I9pNQdMsxcLf870WElKJHlPzw22ZEj0slQMw0q
+l0ZcZ4XzPfzTjscr67hHig7VFUjwq8F+636kVedvRjHqr4EcH/Bh9ov+jB8w2SiV
+s9vFG6zl9lIvfVYlqfL6HbNeaj/ZJhBNfmGg6VTrgCTK4aOOKWL9FIbOQZpAZeVC
+hwyoOZ5mrkDLGBQSH6sCM21P1KYglntcQkFe7NkHU/xOaqMHav7OpF6nzUXLusi5
+qnD5hXIg3+CdcdPGvNNhlURnyVbL/C0GgQcYAgH0CK8yBbbVBhPzn7eduxgXuaJD
+WfrngHc3RWSXhssgIZEV
+=YEAf
+-----END PGP SIGNATURE-----
+
+--VjP/dwTbBl6I9PQk--
+
+--===============8917293789341254192==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8917293789341254192==--
