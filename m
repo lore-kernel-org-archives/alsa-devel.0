@@ -1,56 +1,37 @@
-From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Subject: [PATCH 2/2] ASoC: Convert S3C2412 I2S driver to gpiolib API
-Date: Sat, 30 Jun 2012 14:37:56 +0200
-Message-ID: <1341059876-29460-2-git-send-email-sylvester.nawrocki@gmail.com>
-References: <1341059876-29460-1-git-send-email-sylvester.nawrocki@gmail.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1341059876-29460-1-git-send-email-sylvester.nawrocki@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: sbkim73@samsung.com, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Ben Dooks <ben-linux@fluff.org>
+From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix snd_soc_dapm_put_volsw()
+ connect
+Date: Sat, 30 Jun 2012 15:03:03 +0200 (CEST)
+Message-ID: <1535746789.386644.1341061383351.JavaMail.root@advansee.com>
+References: <20120630115424.GX28922@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from zose-mta12.web4all.fr (zose-mta12.web4all.fr [178.33.204.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE989103B6F
+	for <alsa-devel@alsa-project.org>;
+	Sat, 30 Jun 2012 14:58:24 +0200 (CEST)
+In-Reply-To: <20120630115424.GX28922@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The s3c2410_gpio* calls are obsolete and have been scheduled for
-removal since several kernel releases. Remove them and use common
-gpiolib API.
-This patch is a prerequisite for removal of the S3C24XX SoC specific
-arch/arm/plat-samsung/include/gpio-fns.h header.
-
-Compile tested only.
-
-Cc: Ben Dooks <ben-linux@fluff.org>
-Signed-off-by: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
----
- sound/soc/samsung/s3c2412-i2s.c |   10 +++-------
- 1 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 79fbeea..ac7701b 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -25,7 +25,6 @@
- #include <sound/soc.h>
- #include <sound/pcm_params.h>
-
--#include <mach/regs-gpio.h>
- #include <mach/dma.h>
-
- #include "dma.h"
-@@ -83,12 +82,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
-
- 	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
-
--	/* Configure the I2S pins in correct mode */
--	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE1, S3C2410_GPE1_I2SSCLK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE2, S3C2410_GPE2_CDCLK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE3, S3C2410_GPE3_I2SSDI);
--	s3c2410_gpio_cfgpin(S3C2410_GPE4, S3C2410_GPE4_I2SSDO);
-+	/* Configure the I2S pins (GPE0...GPE4) in correct mode */
-+	s3c_gpio_cfgall_range(S3C2410_GPE(0), 5, S3C_GPIO_SFN(2),
-+			      S3C_GPIO_PULL_NONE);
-
- 	return 0;
- }
---
-1.7.4.1
+T24gU2F0LCBKdW4gMzAsIDIwMTIgYXQgMDE6NTQ6MjVQTSArMDIwMCwgTWFyayBCcm93biB3cm90
+ZToKPiA+IEluIHRoZSBtZWFudGltZSwgcGxlYXNlIGZpbmQgYmVsb3cgYSBxdWljayBwYXRjaCBm
+b3IgdGhlCj4gPiBjb25zaXN0ZW5jeSBpc3N1ZS4KPiAKPiBTdG9wIGRvaW5nIHRoaXMsIHNlbmQg
+cGF0Y2hlcyBmb3IgcmV2aWV3IHJhdGhlciB0aGFuIGJ1cnlpbmcgdGhlbSBpbgo+IHRoZQo+IG1p
+ZGRsZSBvZiBlLW1haWxzIHdoZXJlIHRoZXkncmUgYXQgYmVzdCBhIHBhaW4gdG8gYXBwbHkuCgpP
+SywgSSdsbCByZXBvc3QgaXQgc2VwYXJhdGVseSBvbiBNb25kYXkuCgpSZWdhcmRzLApCZW5vw650
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
