@@ -1,19 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 0/2] RFC: support for audio wall clock
-Date: Sat, 30 Jun 2012 09:03:49 +0800
-Message-ID: <CAN8cciZR73c74p6yTDn7qu4CKJUC_o7d4mwQthFmAtC9j3SzVw@mail.gmail.com>
-References: <1340917955-31422-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Monty Montgomery <xiphmont@gmail.com>
+Subject: A problem with USB audio devices and the UHCI scheduler
+Date: Fri, 29 Jun 2012 21:05:48 -0400
+Message-ID: <CACrD=+8BOOb=17Qs5k_2jZeEf_+N3U1dq2sm0PtwrWxkrouRLw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1B2B24455
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id D05E42445D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 Jun 2012 03:03:49 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so2671250wgb.20
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2012 18:03:49 -0700 (PDT)
-In-Reply-To: <1340917955-31422-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	Sat, 30 Jun 2012 03:05:48 +0200 (CEST)
+Received: by bkcjg15 with SMTP id jg15so3159917bkc.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2012 18:05:48 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Manuel Jander <manuel.jander@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/6/29 Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>:
-> V2 of patches to show how the audio wall clock (eg. the
-> HDAudio one) can be used to provide precise audio timestamps and track
-> the drift between audio time and system time. On my laptop I am able
-> to track a 7ppm delta.
-> I will explain in more details how this can be
-> used during LPC in San Diego, but with the summer coming I'd like to
-> get feedback as there are changes to the core/alsa-lib that haven't
-> been modified in years.
->
-> TODO:
-> - 64-bit alignment, verification of pcm_compat.c changes
-> - handling of digital inputs, need to disable wall-clock timestamps in that case (feedback from Clemens)
-> - check differences in protocol
-> - change timecounter to avoid accumulation of rounding errors in cycle->ns conversions
-> - check overflows
-> - rework the timecounter init on trigger
+A question for Clemens et al...
 
-Do suspsend/resume affect the usage of the wall clock ?
+Background: I can run a USB audio device at 6ch/24 bit single duplex,
+but I cannot run the same device at 16 bit stereo full duplex.  UHCI
+and EHCI both say 'not enough bandwidth' (OHCI works).
 
-Those au88x0 also have a 32 bit register which return the ticks from a
-12.288 Mz oscillator (i.e. 256 x 48000Hz) , this register wrap around
-in around 349.5 seconds
+EHCI's scheduling issues are well known, but I was surprised UHCI
+could not schedule this either.  The cause is simple; UHCI (and EHCI)
+use the endpoint's wMaxPacketSize for all bandwidth allocation.  My
+device supports all of its sample rates on the same altset, with a
+wMaxPacketSize matching the highest (96kHz) rate.  So, the HCD is
+reserving most of the USB bus's bandwidth regardless of the actual
+requirements.
 
-Can this clock be used to determine the drift too ?
+How should I approach fixing this in the driver? There's currently no
+means to communicate a desired bandwidth reservation to the HCD from
+USB audio, so I'd have to extend even the quirks.  I was considering
+shadowing the endpoint's original wMaxPacketSize in the substream
+struct, and replacing the value in the endpoint's native descriptor
+while the stream is running.  I have no idea how much trouble that would
+cause (eg, corruption elsewhere, or middle finger from Linus).
+
+Suggestions? For now I have things working by disabling UHCI's initial
+bandwidth checks (as there is in fact more than enough bandwidth to
+schedule what I'm doing) but I'd like a more permanent solution.
+
+Monty
