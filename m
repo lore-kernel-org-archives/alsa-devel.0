@@ -1,48 +1,71 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix snd_soc_dapm_put_volsw()
- connect
-Date: Sat, 30 Jun 2012 15:03:09 +0200 (CEST)
-Message-ID: <1228563845.386649.1341061389052.JavaMail.root@advansee.com>
-References: <20120630113949.GT28922@opensource.wolfsonmicro.com>
+From: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
+Date: Sat, 30 Jun 2012 20:38:29 +0530
+Message-ID: <4FEF166D.2010705@nvidia.com>
+References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com> <1340969673-7776-2-git-send-email-ldewangan@nvidia.com> <4FEDDF89.1050907@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta12.web4all.fr (zose-mta12.web4all.fr [178.33.204.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7594B103FDA
-	for <alsa-devel@alsa-project.org>;
-	Sat, 30 Jun 2012 14:58:29 +0200 (CEST)
-In-Reply-To: <20120630113949.GT28922@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <4FEDDF89.1050907-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBKdW4gMzAsIDIwMTIgYXQgMDE6Mzk6NTBQTSArMDIwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBGcmksIEp1biAyOSwgMjAxMiBhdCAxMDoxODowN1BNICswMjAwLCBCZW5vw650IFRo
-w6liYXVkZWF1IHdyb3RlOgo+IAo+ID4gSSd2ZSBmaW5pc2hlZC4gVGhlIGZvbGxvd2luZyBwYXRj
-aCBzaG91bGQgYmUgYXBwbGllZCBhZnRlciBteSBwYXRjaAo+ID4gIkFTb0M6IGRhcG06IEZpeCBk
-YXBtX3NldF9wYXRoX3N0YXR1cygpIGNvbm5lY3QiLgo+IAo+IERvbid0IHN1Ym1pdCBwYXRjaGVz
-IGluIHRoZSBtaWRkbGUgb2YgZGlzY3Vzc2lvbnMsIGJ1dCBwbGVhc2UgYmVhciBpbgo+IG1pbmQg
-d2hhdCBJIGp1c3Qgc2FpZCBhYm91dCBub3QgZG9pbmcgc3RlcmVvLgoKPiBBY3R1YWxseSBJJ2Qg
-cmVhbGx5IGV4cGVjdCBpdCB0byBtZWFuIGV4YWN0bHkgdGhhdC4gIERBUE0gaXMgZmFpcmx5Cj4g
-ZnVuZGFtZW50YWxseSBkZWFsaW5nIHdpdGggc2luZ2xlIGNoYW5uZWwgYXVkaW8gc3RyZWFtcyBh
-bmQgSSdkIGV4cGVjdAo+IHRoYXQgaWYgd2UgZGlkIGltcGxlbWVudCBzdGVyZW8gY29udHJvbHMg
-dGhleSdkIGFsbG93IHRoZXNlIHN0cmVhbXMgdG8KPiBwYXNzIHRocm91Z2ggd2l0aG91dCBnZXR0
-aW5nIG1lcmdlZC4gIFRoZXJlJ3MgYSBjb3VwbGUgb2YgdGhpbmdzIHRoYXQKPiBzdG9wIHVzIGRv
-aW5nIHRoYXQgcmlnaHQgbm93IGJ1dCBJIGRvbid0IHRoaW5rIHdlIHNob3VsZCBhZGQgc3RlcmVv
-Cj4gY29udHJvbHMgdGhhdCBkb24ndCBkbyB0aGF0LgoKQ2FuIHlvdSBiZSBtb3JlIHNwZWNpZmlj
-IGFib3V0IHdoYXQgc3RvcHMgdXMgZG9pbmcgdGhhdCByaWdodCBub3c/CgpTaG91bGQgd2UgZHJv
-cCB0aGlzIGlkZWEgZm9yIG5vdyBhbmQgc2ltcGx5IHJlbW92ZSBzdGVyZW8gZnJvbQpzbmRfc29j
-X2RhcG1fZ2V0X3ZvbHN3KCk/CgpSZWdhcmRzLApCZW5vw650Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Friday 29 June 2012 10:32 PM, Stephen Warren wrote:
+> On 06/29/2012 05:34 AM, Laxman Dewangan wrote:
+>> Use the dmaengine based Tegra APB DMA driver for
+>> data transfer between SPI fifo and memory in
+>> place of legacy Tegra APB DMA.
+>>
+>> Because generic soc-dmaengine-pcm uses the DMAs API
+>> based on dmaengine, using the exported APIs provided
+>> by this generic driver.
+>>
+>> The new driver is selected if legacy driver is not
+>> selected and new dma driver is enabled through config
+>> file.
+> This works just fine with the existing non-dmaengine DMA driver enabled.
+>
+> However, I can't get it to work with dmaengine:
+>
+>> # aplay ~/abba-dq-48000-stereo.wav
+>> [  151.613476] tegra20-i2s tegra20-i2s.0: dmaengine pcm open failed with err -6
+>> [  151.620557] tegra20-i2s tegra20-i2s.0: can't open platform tegra20-i2s.0: -6
+>> aplay: main:654: audio open error: No such device or address
+
+With the error, it seems that dmachannel is not getting allocated.
+
+> I do have the following in my local tree:
+> 68a67b8 ARM: tegra: add device tree AUXDATA for APBDMA
+> 0db7a96 ARM: tegra: dma: rename driver name for clock to "tegra-apbdma"
+>
+
+Some dma changes which I sent and already on linux-next are also require 
+with the above change.
+Alsong with that I have local change like to rename the dma driver to 
+compatible with dts files (remove -new from driver).
+
+I think I should send that patches so that you can test it by:
+- Taking already applied dma driver change in linux-next.
+- Apply my new patches which I am going to send.
+
+And do local change in the tegra_defconfig to disable SYSTEM_DMA and 
+enable dmaengine based dma driver.
+
+
+> I also fixed the compatible values in drivers/dma/tegra20-apb-dma.c so
+> the driver would get instantiated, which it does;
+> /sys/devices/tegra-apbdma/dma has a bunch of dmaengine channels in it.
+>
+
+Possibly some patches in dma driver  which is already applied in next is 
+not available in your tree. CYCLIC_DMA patch is important.
+
+> (Note: This is on Ventana, although I doubt that makes much difference)
+>
+
+I tested on cardhu only but it should not matter.
+
+> Is there something else I need to do to test this?
