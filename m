@@ -1,8 +1,10 @@
 From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Subject: [PATCH 1/2] ASoC: Convert S3C24XX I2S driver to gpiolib API
-Date: Sat, 30 Jun 2012 14:37:55 +0200
-Message-ID: <1341059876-29460-1-git-send-email-sylvester.nawrocki@gmail.com>
+Subject: [PATCH 2/2] ASoC: Convert S3C2412 I2S driver to gpiolib API
+Date: Sat, 30 Jun 2012 14:37:56 +0200
+Message-ID: <1341059876-29460-2-git-send-email-sylvester.nawrocki@gmail.com>
+References: <1341059876-29460-1-git-send-email-sylvester.nawrocki@gmail.com>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1341059876-29460-1-git-send-email-sylvester.nawrocki@gmail.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: sbkim73@samsung.com, lrg@ti.com
 Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Ben Dooks <ben-linux@fluff.org>
@@ -14,27 +16,29 @@ gpiolib API.
 This patch is a prerequisite for removal of the S3C24XX SoC specific
 arch/arm/plat-samsung/include/gpio-fns.h header.
 
+Compile tested only.
+
 Cc: Ben Dooks <ben-linux@fluff.org>
 Signed-off-by: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
 ---
- sound/soc/samsung/s3c24xx-i2s.c |   10 +++-------
+ sound/soc/samsung/s3c2412-i2s.c |   10 +++-------
  1 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index c4aa4d4..0aae3a3 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -23,7 +23,6 @@
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 79fbeea..ac7701b 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -25,7 +25,6 @@
  #include <sound/soc.h>
  #include <sound/pcm_params.h>
 
 -#include <mach/regs-gpio.h>
  #include <mach/dma.h>
- #include <plat/regs-iis.h>
 
-@@ -391,12 +390,9 @@ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
- 	}
- 	clk_enable(s3c24xx_i2s.iis_clk);
+ #include "dma.h"
+@@ -83,12 +82,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+
+ 	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
 
 -	/* Configure the I2S pins in correct mode */
 -	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
@@ -46,7 +50,7 @@ index c4aa4d4..0aae3a3 100644
 +	s3c_gpio_cfgall_range(S3C2410_GPE(0), 5, S3C_GPIO_SFN(2),
 +			      S3C_GPIO_PULL_NONE);
 
- 	writel(S3C2410_IISCON_IISEN, s3c24xx_i2s.regs + S3C2410_IISCON);
-
+ 	return 0;
+ }
 --
 1.7.4.1
