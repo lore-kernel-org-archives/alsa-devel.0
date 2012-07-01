@@ -1,17 +1,23 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: soc-dapm: Use ASYNC_DOMAIN_EXCLUSIVE
-Date: Sat, 30 Jun 2012 16:39:35 -0300
-Message-ID: <1341085175-20599-1-git-send-email-festevam@gmail.com>
+From: Vipin Kumar <vipin.kumar@st.com>
+Subject: Re: [PATCH V3 3/4] ASoC: SPEAr spdif_out: Add spdif
+	out support
+Date: Sun, 1 Jul 2012 12:02:31 +0530
+Message-ID: <4FEFEEFF.7040204@st.com>
+References: <cover.1340862505.git.rajeev-dlh.kumar@st.com>
+	<ef5b01e2bff6cb1e72db4e2d216d1a039a048e62.1340862505.git.rajeev-dlh.kumar@st.com>
+	<20120628122727.GI28922@opensource.wolfsonmicro.com>
+	<4FED5AB1.6030907@st.com>
+	<20120630183558.GB28922@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f50.google.com (mail-yw0-f50.google.com
-	[209.85.213.50]) by alsa0.perex.cz (Postfix) with ESMTP id D991B24563
+Received: from eu1sys200aog112.obsmtp.com (eu1sys200aog112.obsmtp.com
+	[207.126.144.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id A299324796
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 Jun 2012 21:39:46 +0200 (CEST)
-Received: by yhjj63 with SMTP id j63so4562793yhj.23
-	for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2012 12:39:43 -0700 (PDT)
+	Sun,  1 Jul 2012 08:32:41 +0200 (CEST)
+In-Reply-To: <20120630183558.GB28922@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +27,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, dan.j.williams@intel.com, lrg@ti.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Rajeev KUMAR <rajeev-dlh.kumar@st.com>, "tiwai@suse.de" <tiwai@suse.de>, spear-devel <spear-devel@list.st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On 7/1/2012 12:05 AM, Mark Brown wrote:
+> On Fri, Jun 29, 2012 at 01:05:13PM +0530, Vipin Kumar wrote:
+>> On 6/28/2012 5:57 PM, Mark Brown wrote:
+>
+>>>> +	.ops = (struct snd_soc_dai_ops *)&spdif_out_dai_ops,
+>
+>>> Why do you need this cast?
+>
+>> It was a const I think
+>
+> So you've just introduced a bug, then - you're using a const variable in
+> a non-const context.  Don't cast away the const, either arrange for the
+> ops pointer in the dai to be const or remove the const.
 
-commit e895407d (async: introduce 'async_domain' type)
-changed the parameter types of async_schedule_domain() and async_synchronize_full_domain().
-
-Use ASYNC_DOMAIN_EXCLUSIVE and fix the following build warnings:
-
-sound/soc/soc-dapm.c:1646:6: warning: passing argument 3 of 'async_schedule_domain' from incompatible pointer type
-sound/soc/soc-dapm.c:1647:2: warning: passing argument 1 of 'async_synchronize_full_domain' from incompatible pointer type
-sound/soc/soc-dapm.c:1660:6: warning: passing argument 3 of 'async_schedule_domain' from incompatible pointer type
-sound/soc/soc-dapm.c:1661:2: warning: passing argument 1 of 'async_synchronize_full_domain' from incompatible pointer type
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Build tested only.
-
- sound/soc/soc-dapm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9670668..c93e832 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1572,7 +1572,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 	struct snd_soc_dapm_context *d;
- 	LIST_HEAD(up_list);
- 	LIST_HEAD(down_list);
--	LIST_HEAD(async_domain);
-+	ASYNC_DOMAIN_EXCLUSIVE(async_domain);
- 	enum snd_soc_bias_level bias;
- 
- 	trace_snd_soc_dapm_start(card);
--- 
-1.7.1
+sure, i will do that...got it :)
