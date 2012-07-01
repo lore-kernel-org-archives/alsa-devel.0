@@ -1,16 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-dapm: Use ASYNC_DOMAIN_EXCLUSIVE
-Date: Sun, 1 Jul 2012 19:11:49 +0100
-Message-ID: <20120701181149.GD28922@opensource.wolfsonmicro.com>
-References: <1341085175-20599-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH v3] ASoC: tlv320aic3x: add missing
+	registers and bits
+Date: Sun, 1 Jul 2012 19:31:31 +0100
+Message-ID: <20120701183131.GG28922@opensource.wolfsonmicro.com>
+References: <4FEAA303.5020806@aksignal.cz>
+	<20120627120130.GJ308@opensource.wolfsonmicro.com>
+	<4FEB0429.9080209@aksignal.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7668231744025853366=="
+Content-Type: multipart/mixed; boundary="===============7767787878470636053=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A6AE52436A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E43724391
 	for <alsa-devel@alsa-project.org>;
-	Sun,  1 Jul 2012 20:11:51 +0200 (CEST)
-In-Reply-To: <1341085175-20599-1-git-send-email-festevam@gmail.com>
+	Sun,  1 Jul 2012 20:31:42 +0200 (CEST)
+In-Reply-To: <4FEB0429.9080209@aksignal.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,63 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, dan.j.williams@intel.com, lrg@ti.com, alsa-devel@alsa-project.org
+To: Prchal =?utf-8?B?SmnFmcOt?= <jiri.prchal@aksignal.cz>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7668231744025853366==
+--===============7767787878470636053==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ax5Xc7LkAiI0IBI6"
+	protocol="application/pgp-signature"; boundary="rvXnmSEQm80JaX+R"
 Content-Disposition: inline
 
 
---Ax5Xc7LkAiI0IBI6
-Content-Type: text/plain; charset=us-ascii
+--rvXnmSEQm80JaX+R
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 30, 2012 at 04:39:35PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> commit e895407d (async: introduce 'async_domain' type)
-> changed the parameter types of async_schedule_domain() and async_synchron=
-ize_full_domain().
+On Wed, Jun 27, 2012 at 03:01:29PM +0200, Prchal Ji=C5=99=C3=AD wrote:
+> Adds missing register default values to cache.
+> Adds register and bit shift definitions in header file.
+> Changes are for TLV320AIC310x based on data sheet.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+This doesn't apply against current ASoC, please regenerate it against my
+current tree.
 
-but obviously this needs to go along with the patckes introducing the
-issue rather than the ASoC tree.
+> v2: keep formatting of cache
+> v3: fix wrong diff format (sorry for that, I start learning git)
 
---Ax5Xc7LkAiI0IBI6
+Don't put noise like this in the changelog, if you want to include it
+put it after the --- like SubmittingPatches says.
+
+--rvXnmSEQm80JaX+R
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP8JLeAAoJEBus8iNuMP3dEGkP/AtC2zew5HjDtmjow9qn3ujZ
-8RpTpyhZu//rw0wfzneOWhg8BA7uJB5EOODEeNTGG7WlZIcZNKrw44F3iLgHT2U6
-f+A91ioHM//MKuLNK6Dxx0a0Mos9w22j4CuhFOmbfUHJS7/4usNVSvQyBzDtqtcc
-p4KBrSQfRGsP2/6FlI7IYxJ3vae8iQGaqo0YmbVykJR0H2VWimTy63OBMpQZlat7
-tVFL0TJI+pxdvkyMr1LW+QzBzCwj6nqhN/mQvrRISqfwDNopNI4YwxI6D3IaZjQ5
-yjt10Ku7NPebhRPzrf683iCHQwZ+GemUtUSQODN9Cv2jVdzFeeftik7hzwTYXq64
-IGDPZq3MbVyYzHKOWAQBtPuuZ/ILdKPeHyUu1r2jAF5OrZ5/AmsyeldX80Ss2ed2
-sffTP2HO9nhHRX3s/K3NL8t/j5TLSgBjR6u3Bu4JUzOBW/l1qGuqzAHH46NGSKQA
-N/ibKOacHuhyQ6hze6UAZjtLPQ/zKaXbin6L1I9b3gvAvdYtJ4+KqE8JMbKfHLcd
-vrPYcr0qMDvxTdDWg0yrpTZ8kbi873vSIIxQBuSgXvh3WZg+1Uh/fDp6oEe9to3H
-xpX9duyrMagnhHHhD2vEGozeBgJyFI1I3sxbuCybrEaQYpPV5hET4ZZvNvdWRP/U
-Jg+uPoE1A5AhMVgfqWYV
-=MHVU
+iQIcBAEBAgAGBQJP8Jd8AAoJEBus8iNuMP3duJAP/iah56LBuErhzlsHGYfT5JmG
+0/MRDxSiV1HHQuSNgis513xoOHq/1eE4spS0xYd7bxh84T+8lBLAx+jGAO1l3UkO
+IZfH3lG0WOKkysMh9a97cRyTbE2nTGUS+47dfz3NCBH1x2p0hL7ibktEcVhp4boH
+a7kTkdMXlCaMLBr/NbOCGbp0YS2PUn/pSNYRz/+Qb4P0nt3yviXMEcNACkr3ZSNu
+h86Q3qz4TUHhUfCSRLkm6mJaIK2bZaslE2WojFIN1IbGTBGd8MyXynXeLF28fdqH
+4ZFl/tQ78cnoE7Lwy1GiiqHwcFs/Q9f6n7GJlBlxQwq5USmbQq2zywK7DTGWjWjy
+UuZoh5Oy/FBkIsIT5N0k7BJpzCPb//4DJqp+pcNmBBBljcsmMqk0X9LMns4s3Llv
+X7L4l1NJPZzdIIR5TEe9ud5tIJ1caXoV0iqVAC92OytKweJwzAPGfTjCK5k0Gy1f
+B/a7Cj7aVMOliB1khsIAQIP1DzQ34GYMfy6mSZKcs9xLVz1SrFofkN5z6vl/hv0A
+8ukxBEnNTKVYTr86RPz8Ov4J+G8NVNNc1POuIXa9x6eve+KGwKkMXCSWHKm5El+P
+VZoCYRwoA38WpJpk2GNbnkFgAgL8GZzRoDt0F2qh6D7BrbFlGVP2yg3+TKcZKc7w
+Fh7bx0KOzyZWM8oL1F/9
+=BC+E
 -----END PGP SIGNATURE-----
 
---Ax5Xc7LkAiI0IBI6--
+--rvXnmSEQm80JaX+R--
 
---===============7668231744025853366==
+--===============7767787878470636053==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7668231744025853366==--
+--===============7767787878470636053==--
