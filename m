@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] mioa701 convert to snd_soc_register_card
-	API
-Date: Sun, 1 Jul 2012 19:33:21 +0100
-Message-ID: <20120701183320.GH28922@opensource.wolfsonmicro.com>
-References: <1341077108-18455-1-git-send-email-robert.jarzmik@free.fr>
+From: raj raja <yuvaraj.addu@gmail.com>
+Subject: Re: alsa-driver cross compile problem - upgrading ALSA
+Date: Mon, 2 Jul 2012 09:36:51 +0530
+Message-ID: <CADgpFcpmf2LQzXYnfvUgZttAw0Ko71CdaTpAMJ+d3HpT0omTJA@mail.gmail.com>
+References: <20120629153248.29780@gmx.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8993494693843847048=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6974E24396
+Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id D572C2455C
 	for <alsa-devel@alsa-project.org>;
-	Sun,  1 Jul 2012 20:33:27 +0200 (CEST)
-In-Reply-To: <1341077108-18455-1-git-send-email-robert.jarzmik@free.fr>
+	Mon,  2 Jul 2012 06:06:51 +0200 (CEST)
+Received: by wgbds1 with SMTP id ds1so2488850wgb.2
+	for <alsa-devel@alsa-project.org>; Sun, 01 Jul 2012 21:06:51 -0700 (PDT)
+In-Reply-To: <20120629153248.29780@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+To: Max Klein <mein_name@ist-einmalig.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============8993494693843847048==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SIpeN1L2gmCc/JOo"
-Content-Disposition: inline
+Better you compile with kernel
 
 
---SIpeN1L2gmCc/JOo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks
 
-On Sat, Jun 30, 2012 at 07:25:08PM +0200, Robert Jarzmik wrote:
-> The mioa701 board code is converted to the snd_soc_register_card()
-> and snd_soc_unregister_card() APIs.
+Yuvi R
 
-Applied, thanks, but please do try to use subject lines appropriate for
-the subsystem you're submitting against.
+On Fri, Jun 29, 2012 at 9:02 PM, Max Klein <mein_name@ist-einmalig.de>wrote:
 
---SIpeN1L2gmCc/JOo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP8JfWAAoJEBus8iNuMP3deVMQAIiKN4kCI9EgUvIKMHpsykmv
-aoaL52N0APxBVOTwo8dvPI8uspJGBrN9BlZ1RJzt8n36k7/01TPDXnsrDWLmSL57
-nrG2vT87dR7NZ/59wBKNhKPMCRNxFH+72ScwouHMIHW1pRYlzHVNG3hM1OOWNB/r
-M7IK6j+hmL0BSj4v/Vo+AYHzF/yACmMyGoJtN0UlsEfG1pFFmedHzOGY1vRU0P1P
-fAdXlKVa7ZlxkxVTGQqKLiMbtdQgS6rkxC9DM6vhBzKG7tGCKyG/igoZZNVNBmbU
-U6iJhPXALjNWZDLLpowI6CyUHsHL9J/Qp7lhAeYhnaqH964agI2UPuPn0GXRUdpD
-UF0pt13tqHd7+HyJW8n5nMrzE1tiZijoS3P3LaUHtlJIs10A856oY+h2S52T7v8a
-nyCEV90kjVtUIGuCvihWFg12HJbk/IfF+kkEyc6xTerGUB+dDjh/xDennOvqPdeo
-cfho0wBUvyqppMba+Y+ryUxuXNaJLixXJ35fx2Fy5rTkg7JVqLUkzOk3h69OKHAx
-n9WrG2/h5OKb/IlMJdFYCeOYho7IO7xQpLzyYfwc6scj2NwqasDulrdUlnF19Z5K
-4Iq/MLxotWuWxiZC0Emc/bl0W2iZfniDqggkDgg5sFHsCKYNmJqCTlJN19XgLs+g
-gNJ9hlNdDPy8zfmRSeQ9
-=izkT
------END PGP SIGNATURE-----
-
---SIpeN1L2gmCc/JOo--
-
---===============8993494693843847048==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8993494693843847048==--
+> I am running 2.6.27 kernel on arm board with ALSA driver version 1.0.17
+> (cat /proc/asound/version) and I would like to update ALSA driver version
+> to current 1.0.25.
+>
+> I am trying to build alsa-drivers with "./configure
+> --with-cross=arm-none-linux-gnueabi- --enable-dynamic-minors
+> --with-debug=full --with-isapnp=no --with-oss=no
+> --with-kernel=/data/src/kernel/linux-davinci
+> --with-build=/data/src/kernel/linux-davinci --with-sequencer=no"
+>
+> Afterwards I compile it via "make ARCH=arm" but this fails we the
+> following error:
+>
+> In file included from
+> /data/VRM/davinci33/alsa-1.0.25/alsa-driver-1.0.25/acore/hrtimer.c:1:
+> /data/VRM/davinci33/alsa-1.0.25/alsa-driver-1.0.25/include/adriver.h:753:
+> error: static declaration of 'jiffies_to_msecs' follows non-static
+> declaration
+> include/linux/jiffies.h:286: error: previous declaration of
+> 'jiffies_to_msecs' was here
+> /data/VRM/davinci33/alsa-1.0.25/alsa-driver-1.0.25/include/adriver.h:772:
+> error: static declaration of 'msecs_to_jiffies' follows non-static
+> declaration
+> include/linux/jiffies.h:288: error: previous declaration of
+> 'msecs_to_jiffies' was here
+>
+>
+> Can someone please help me how to get ALSA upgraded on my platform?
+> Obviously I am either doing something wrong when configuring or I am on the
+> absolutely wrong way?
+>
+> I am looking forward for any advice, thanks in advance!
+> --
+> NEU: FreePhone 3-fach-Flat mit kostenlosem Smartphone!
+> Jetzt informieren: http://mobile.1und1.de/?ac=OM.PW.PW003K20328T7073a
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
