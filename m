@@ -1,90 +1,57 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC/PATCH] ASoC: dapm: Fix/add support for stereo
-	widgets
-Date: Mon, 2 Jul 2012 13:27:14 +0100
-Message-ID: <20120702122714.GE25093@opensource.wolfsonmicro.com>
-References: <20120630182446.GA28922@opensource.wolfsonmicro.com>
-	<134211720.502545.1341229602023.JavaMail.root@advansee.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: snd_dmaengine: add common api for
+ pcm_mmap
+Date: Mon, 02 Jul 2012 14:50:58 +0200
+Message-ID: <02c301cd5851$572fd440$058f7cc0$%szyprowski@samsung.com>
+References: <1340866886-24432-1-git-send-email-ldewangan@nvidia.com>
+ <4FEC3B70.5030902@metafoo.de> <s5hobo3zl79.wl%tiwai@suse.de>
+ <20120628121816.GB21029@sirena.org.uk> <4FEC4E62.3020101@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8030088199432478718=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CE52C244A3
-	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jul 2012 14:27:23 +0200 (CEST)
-In-Reply-To: <134211720.502545.1341229602023.JavaMail.root@advansee.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <4FEC4E62.3020101@metafoo.de>
+Content-language: pl
+Sender: linux-kernel-owner@vger.kernel.org
+To: 'Lars-Peter Clausen' <lars@metafoo.de>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, alsa-devel@alsa-project.org, swarren@nvidia.com, linux-kernel@vger.kernel.org, 'Laxman Dewangan' <ldewangan@nvidia.com>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---===============8030088199432478718==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qOrJKOH36bD5yhNe"
-Content-Disposition: inline
+On Thursday, June 28, 2012 2:30 PM Lars-Peter Clausen wrote:
 
+> On 06/28/2012 02:18 PM, Mark Brown wrote:
+> > On Thu, Jun 28, 2012 at 02:15:38PM +0200, Takashi Iwai wrote:
+> >> Lars-Peter Clausen wrote:
+> >
+> >>> to the ALSA core. Now that there is a generic dma_mmap_writecombine it may
+> >>> make sense to integrate this with snd_pcm_lib_default_mmap.
+> >
+> >> Agreed.
+> >
+> >> Also, it must be portable.  So far, only ARM has
+> >> dma_mmap_writecombine(), thus the build on other arch would fail as
+> >> is.
+> >
+> > Oh, dear - this means we don't actually have a generic API at all.  Is
+> > there any effort being made to make this generally available?
+> 
+> Yes there is, and in fact in next/master there is generic
+> dma_mmap_writecombine. I'm not quite sure how it behaves on non ARM archs
+> though. But in theory it should fallback to a normal coherent mapping. Marek
+> did a lot of work on this, I've put him on Cc.
 
---qOrJKOH36bD5yhNe
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On architectures which don't support DMA_ATTR_WRITECOMBINE attribute it falls
+back to standard 'coherent' implementation, so it is equivalent to 
+dma_mmap_coherent(). If architecture doesn't provide mmap callback, my patch
+provides a so called 'generic' implementation based on virt_to_phys() macro.
+Once this patch gets merged, I hope that each architecture will be reviewed 
+if such implementation is correct. If not, some architectures might need to
+provide their own implementations, but at least we can get the buffer-mmap
+related hacks from the device drivers.
 
-On Mon, Jul 02, 2012 at 01:46:42PM +0200, Beno=EEt Th=E9baudeau wrote:
-> This patch:
-> * adds a choice in snd_soc_dapm_get_volsw_mut() for stereo between 1 and 2
->   registers, like in snd_soc_get_volsw().
-> * fixes the missing stereo in other parts of dapm.
-> * removes the unused saved_value from struct snd_soc_dapm_widget.
-
-There's a couple of high level problems here. =20
-
-One is that you've got multiple different things in a single commit
-which isn't great practice for review, especially with such a vauge
-changelog.
-
-The other is that while you say that this "fixes the missing stereo in
-other parts of dapm" I can't see any sign of any changes to (for
-example) the path setup code which would seem to be essential for
-supporting more than one channel in controls.
-
---qOrJKOH36bD5yhNe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP8ZOOAAoJEBus8iNuMP3dvNwP/2jrPUaMV8d7jDTxWRbvsDro
-UhRCRutRc/2XlVQwRiqKzcWcsIyB7docxzFMtI5lU/u8ewASAzPNSObIAjtvbB/p
-BWxDqaFqSvIZX7dRadtP4Dh8bEgk4czlfN1xA/7SIKtx+JsWKvUgLaRzzHGVbzSK
-h00bUHE5Ei6HC0lQpHggWnXNXm6zTku/k0vc+uSrFBcTEINttz1WonRsdibHQt4W
-vcoih96cbcfyAKxVeLPAZV1HkP3UPfag5A4oxHKXYMkPiZCUaEWo74vLmLp1CEH0
-xDda9HnyW5nM8nSrM5o0wbYmMPO87GFAR7KNXP7TMaQyRi3BLCoSN7ddmTFKJ5GL
-IL91tQ0MS9jZx72rn/GZpPm7D8iPvgAZEGtoD+S1q7qf1Uswpxtq8mqJyZZ2Lxxq
-FA4AwLa4yNZS9rca9ZD8y0qzNIY7fRhls695b2s0YF+hTKVa219tE7XPP+0imKR0
-HU1lPm4X4F7DRHDGbuIEH32Qvt0E20EMrKsAInkJy/hIKExXKRUePX5RVNkfrAW8
-WG77vi7sEzv7vtwmKmfmz2VL65kOq8UqZLtGV3W0hIVRwQKc2xwBqTWmLvG2paSB
-TDXWN5u7GwCDfgZ3ZarCSGrMZOZBeyBrk4fquV5MkvcgRMt4Qg9crZm3t2ge4Uan
-ScERqgz9Vvsq8vFPp/hs
-=elQw
------END PGP SIGNATURE-----
-
---qOrJKOH36bD5yhNe--
-
---===============8030088199432478718==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8030088199432478718==--
+Best regards
+-- 
+Marek Szyprowski
+Samsung Poland R&D Center
