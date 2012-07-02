@@ -1,18 +1,17 @@
-From: Vipin Kumar <vipin.kumar@st.com>
-Subject: Re: 24 bit sample embedded in 32 bits
-Date: Mon, 2 Jul 2012 16:41:15 +0530
-Message-ID: <4FF181D3.6030208@st.com>
-References: <4FF173D4.7060401@st.com> <4FF17F81.8070300@ladisch.de>
+From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Subject: [PATCH] ASoC: dapm: Fix dapm_set_path_status() connect
+Date: Mon, 2 Jul 2012 13:45:21 +0200 (CEST)
+Message-ID: <1035078102.502287.1341229521711.JavaMail.root@advansee.com>
+References: <1535746789.386644.1341061383351.JavaMail.root@advansee.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog107.obsmtp.com (eu1sys200aog107.obsmtp.com
-	[207.126.144.123])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B5D124572
+Received: from zose-mta13.web4all.fr (zose-mta13.web4all.fr [178.33.204.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FEE524590
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jul 2012 13:11:29 +0200 (CEST)
-In-Reply-To: <4FF17F81.8070300@ladisch.de>
+	Mon,  2 Jul 2012 13:40:42 +0200 (CEST)
+In-Reply-To: <1535746789.386644.1341061383351.JavaMail.root@advansee.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/2/2012 4:31 PM, Clemens Ladisch wrote:
-> Vipin Kumar wrote:
->> I assume that the alsa framework expects the 24 bit sample data to be
->> packed one after the other.
->
-> ALSA expects the sample data to conform to whatever sample format has
-> been configured.
->
-> Most hardware uses 32-bit sample words in memory to make the
-> interface to the PCI bus easier.
->
->> I need to find a way to tell the framework that the data is 24bit
->> but is embedded in 32 bit.
->
-> (HH = highest byte, LL = lowest byte, MM = middle byte)
->
-> LL MM HH     SNDRV_PCM_FORMAT_S24_3LE
-> xx LL MM HH  SNDRV_PCM_FORMAT_S32_LE
-> LL MM HH xx  SNDRV_PCM_FORMAT_S24_LE
-> HH MM LL     SNDRV_PCM_FORMAT_S24_3BE
-> HH MM LL xx  SNDRV_PCM_FORMAT_S32_BE
-> xx HH MM LL  SNDRV_PCM_FORMAT_S24_BE
->
-
-Thanks Clemens, Jaroslav,
-
-This was very helpful..I would try more cases and come back for more 
-doubts if there are any :)
-
-Regards
-Vipin
-
->
-> Regards,
-> Clemens
-> .
->
+ZGFwbV9zZXRfcGF0aF9zdGF0dXMoKSBzZXRzIGNvbm5lY3QgaW5jb3JyZWN0bHkgaW4gdGhlIGNh
+c2UgbWF4ID4gMSB3aXRoIGludmVydC4KSW4gdGhhdCBjYXNlLCB0aGUgcmF3IGRpc2Nvbm5lY3Qg
+dmFsdWUgc2hvdWxkIGJlIG1heCwgd2hpY2ggY29ycmVzcG9uZHMgdG8gdGhlCnVzZXJzcGFjZSB2
+YWx1ZSAwLgoKVGhpcyB1c2UgY2FzZSBjdXJyZW50bHkgZG9lcyBub3QgYXBwZWFyIHVwc3RyZWFt
+LCBidXQgaXQgY291bGQgYnJlYWsKU09DX0RBUE1fU0lOR0xFKCkgb3IgU09DX0RBUE1fU0lOR0xF
+X1RMVigpIGVsc2V3aGVyZSBvciBpbiB0aGUgZnV0dXJlLgoKVGhpcyBwYXRjaCBjb21wbGV0ZXMg
+Y29tbWl0IDNhOWFiZTguCgpDYzogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KQ2M6IE1hcmsg
+QnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgpDYzogPGFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZz4KU2lnbmVkLW9mZi1ieTogQmVub8OudCBUaMOpYmF1ZGVhdSA8
+YmVub2l0LnRoZWJhdWRlYXVAYWR2YW5zZWUuY29tPgotLS0KIC4uLi9zb3VuZC9zb2Mvc29jLWRh
+cG0uYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNyArKystLS0tCiAxIGZpbGUgY2hh
+bmdlZCwgMyBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBsaW51eC1u
+ZXh0LUhFQUQtZDFkMmQzYS5vcmlnL3NvdW5kL3NvYy9zb2MtZGFwbS5jIGxpbnV4LW5leHQtSEVB
+RC1kMWQyZDNhL3NvdW5kL3NvYy9zb2MtZGFwbS5jCmluZGV4IDk2NzA2NjguLjdmMmE0YmIgMTAw
+NjQ0Ci0tLSBsaW51eC1uZXh0LUhFQUQtZDFkMmQzYS5vcmlnL3NvdW5kL3NvYy9zb2MtZGFwbS5j
+CisrKyBsaW51eC1uZXh0LUhFQUQtZDFkMmQzYS9zb3VuZC9zb2Mvc29jLWRhcG0uYwpAQCAtMzI0
+LDExICszMjQsMTAgQEAgc3RhdGljIHZvaWQgZGFwbV9zZXRfcGF0aF9zdGF0dXMoc3RydWN0IHNu
+ZF9zb2NfZGFwbV93aWRnZXQgKncsCiAKIAkJdmFsID0gc29jX3dpZGdldF9yZWFkKHcsIHJlZyk7
+CiAJCXZhbCA9ICh2YWwgPj4gc2hpZnQpICYgbWFzazsKKwkJaWYgKGludmVydCkKKwkJCXZhbCA9
+IG1heCAtIHZhbDsKIAotCQlpZiAoKGludmVydCAmJiAhdmFsKSB8fCAoIWludmVydCAmJiB2YWwp
+KQotCQkJcC0+Y29ubmVjdCA9IDE7Ci0JCWVsc2UKLQkJCXAtPmNvbm5lY3QgPSAwOworCQlwLT5j
+b25uZWN0ID0gISF2YWw7CiAJfQogCWJyZWFrOwogCWNhc2Ugc25kX3NvY19kYXBtX211eDogewpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
