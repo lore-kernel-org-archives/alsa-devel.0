@@ -1,19 +1,21 @@
-From: raj raja <yuvaraj.addu@gmail.com>
-Subject: Re: alsa-driver cross compile problem - upgrading ALSA
-Date: Mon, 2 Jul 2012 09:36:51 +0530
-Message-ID: <CADgpFcpmf2LQzXYnfvUgZttAw0Ko71CdaTpAMJ+d3HpT0omTJA@mail.gmail.com>
-References: <20120629153248.29780@gmx.net>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH V3 3/4] ASoC: SPEAr spdif_out: Add spdif
+	out support
+Date: Mon, 2 Jul 2012 10:30:25 +0530
+Message-ID: <4FF12AE9.6000001@st.com>
+References: <cover.1340862505.git.rajeev-dlh.kumar@st.com>
+	<ef5b01e2bff6cb1e72db4e2d216d1a039a048e62.1340862505.git.rajeev-dlh.kumar@st.com>
+	<20120628122727.GI28922@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id D572C2455C
+Received: from eu1sys200aog113.obsmtp.com (eu1sys200aog113.obsmtp.com
+	[207.126.144.135])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82F7F2459C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jul 2012 06:06:51 +0200 (CEST)
-Received: by wgbds1 with SMTP id ds1so2488850wgb.2
-	for <alsa-devel@alsa-project.org>; Sun, 01 Jul 2012 21:06:51 -0700 (PDT)
-In-Reply-To: <20120629153248.29780@gmx.net>
+	Mon,  2 Jul 2012 07:00:34 +0200 (CEST)
+In-Reply-To: <20120628122727.GI28922@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Max Klein <mein_name@ist-einmalig.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, Vipin KUMAR <vipin.kumar@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello Mark,
 
-Better you compile with kernel
+On 6/28/2012 5:57 PM, Mark Brown wrote:
+>> +int spdif_soc_dai_probe(struct snd_soc_dai *dai)
+>> >  +{
+>> >  +	struct snd_soc_card *card = dai->card;
+>> >  +	struct snd_soc_pcm_runtime *rtd = card->rtd;
+>> >  +	struct snd_soc_codec *codec = rtd->codec;
+>> >  +
+>> >  +	return snd_soc_add_codec_controls(codec, spdif_out_controls,
+>> >  +				ARRAY_SIZE(spdif_out_controls));
+> We should add a framework thing for this...
+>
 
+I was going through the simaple-card.c file and I think that the above 
+is possible if we have a pointer of "snd_kcontrol_new" in 
+asoc_simple_card_info structure. In this case we can pass all the 
+controls from board file (arch/arm/mach-*). Please share your opinion.
 
-Thanks
+or,
 
-Yuvi R
+Is there any other way to do this ?
 
-On Fri, Jun 29, 2012 at 9:02 PM, Max Klein <mein_name@ist-einmalig.de>wrote:
-
-> I am running 2.6.27 kernel on arm board with ALSA driver version 1.0.17
-> (cat /proc/asound/version) and I would like to update ALSA driver version
-> to current 1.0.25.
->
-> I am trying to build alsa-drivers with "./configure
-> --with-cross=arm-none-linux-gnueabi- --enable-dynamic-minors
-> --with-debug=full --with-isapnp=no --with-oss=no
-> --with-kernel=/data/src/kernel/linux-davinci
-> --with-build=/data/src/kernel/linux-davinci --with-sequencer=no"
->
-> Afterwards I compile it via "make ARCH=arm" but this fails we the
-> following error:
->
-> In file included from
-> /data/VRM/davinci33/alsa-1.0.25/alsa-driver-1.0.25/acore/hrtimer.c:1:
-> /data/VRM/davinci33/alsa-1.0.25/alsa-driver-1.0.25/include/adriver.h:753:
-> error: static declaration of 'jiffies_to_msecs' follows non-static
-> declaration
-> include/linux/jiffies.h:286: error: previous declaration of
-> 'jiffies_to_msecs' was here
-> /data/VRM/davinci33/alsa-1.0.25/alsa-driver-1.0.25/include/adriver.h:772:
-> error: static declaration of 'msecs_to_jiffies' follows non-static
-> declaration
-> include/linux/jiffies.h:288: error: previous declaration of
-> 'msecs_to_jiffies' was here
->
->
-> Can someone please help me how to get ALSA upgraded on my platform?
-> Obviously I am either doing something wrong when configuring or I am on the
-> absolutely wrong way?
->
-> I am looking forward for any advice, thanks in advance!
-> --
-> NEU: FreePhone 3-fach-Flat mit kostenlosem Smartphone!
-> Jetzt informieren: http://mobile.1und1.de/?ac=OM.PW.PW003K20328T7073a
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Best Regards
+Rajeev
