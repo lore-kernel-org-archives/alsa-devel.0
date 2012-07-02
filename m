@@ -1,68 +1,187 @@
-From: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
-Date: Mon, 2 Jul 2012 13:55:58 +0530
-Message-ID: <4FF15B16.9020903@nvidia.com>
-References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com> <1340969673-7776-2-git-send-email-ldewangan@nvidia.com> <4FEDDF89.1050907@wwwdotorg.org> <4FEF166D.2010705@nvidia.com>
+From: Laxman Dewangan <ldewangan@nvidia.com>
+Subject: [PATCH 2/2] ASoC: tegra: use sound pcm library for substream dma buffer
+Date: Mon, 2 Jul 2012 14:24:33 +0530
+Message-ID: <1341219273-7439-3-git-send-email-ldewangan@nvidia.com>
+References: <1341219273-7439-1-git-send-email-ldewangan@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4FEF166D.2010705-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1341219273-7439-1-git-send-email-ldewangan@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de, lrg@ti.com, broonie@opensource.wolfsonmicro.com, lars@metafoo.de, swarren@nvidia.com, perex@perex.cz, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Laxman Dewangan <ldewangan@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 30 June 2012 08:38 PM, Laxman Dewangan wrote:
-> On Friday 29 June 2012 10:32 PM, Stephen Warren wrote:
->> On 06/29/2012 05:34 AM, Laxman Dewangan wrote:
->>> Use the dmaengine based Tegra APB DMA driver for
->>> data transfer between SPI fifo and memory in
->>> place of legacy Tegra APB DMA.
->>>
->>> Because generic soc-dmaengine-pcm uses the DMAs API
->>> based on dmaengine, using the exported APIs provided
->>> by this generic driver.
->>>
->>> The new driver is selected if legacy driver is not
->>> selected and new dma driver is enabled through config
->>> file.
->> This works just fine with the existing non-dmaengine DMA driver enabled.
->>
->> However, I can't get it to work with dmaengine:
->>
->>> # aplay ~/abba-dq-48000-stereo.wav
->>> [  151.613476] tegra20-i2s tegra20-i2s.0: dmaengine pcm open failed with err -6
->>> [  151.620557] tegra20-i2s tegra20-i2s.0: can't open platform tegra20-i2s.0: -6
->>> aplay: main:654: audio open error: No such device or address
-> With the error, it seems that dmachannel is not getting allocated.
->
->> I do have the following in my local tree:
->> 68a67b8 ARM: tegra: add device tree AUXDATA for APBDMA
->> 0db7a96 ARM: tegra: dma: rename driver name for clock to "tegra-apbdma"
->>
-> Some dma changes which I sent and already on linux-next are also require
-> with the above change.
-> Alsong with that I have local change like to rename the dma driver to
-> compatible with dts files (remove -new from driver).
->
-> I think I should send that patches so that you can test it by:
-> - Taking already applied dma driver change in linux-next.
-> - Apply my new patches which I am going to send.
->
-> And do local change in the tegra_defconfig to disable SYSTEM_DMA and
-> enable dmaengine based dma driver.
->
->
-The new dma patches are:
+The sound pcm library support the writecombine DMA buffer
+allocation/deallocation/mapping and hence using the APIs
+form sound pcm library inplace of implementing the same
+locally.
 
-  dma: tegra: fix residual calculation for cyclic case
-  dma: tegra: rename driver and compatible to match with dts
+Signed-off-by: Laxman Dewangan <ldewangan@nvidia.com>
+---
+Changes from V1:
+Changes done to use the existing APIs for sound pcm memory management
+which is now supporting writecombine.
 
-You require dma changes which is already in linux-next:
+ sound/soc/tegra/tegra_pcm.c |  112 ++++++++++--------------------------------
+ 1 files changed, 27 insertions(+), 85 deletions(-)
 
-  dma: tegra: set DMA_CYCLIC capability
-  dma: tegra: do not set transfer desc flag to DMA_CTRL_ACK in cyclic mode
-  dma: tegra: add clk_prepare/clk_unprepare
-  dma: tegra: use sg_dma_address() for getting dma buffer address
-  dma: tegra: add dmaengine based dma driver
+diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+index 127348d..ec1fa25 100644
+--- a/sound/soc/tegra/tegra_pcm.c
++++ b/sound/soc/tegra/tegra_pcm.c
+@@ -202,8 +202,14 @@ static int tegra_pcm_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct tegra_runtime_data *prtd = runtime->private_data;
++	int ret;
+ 
+-	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++	ret = snd_pcm_lib_malloc_pages(substream,
++				params_buffer_bytes(params));
++	if (ret < 0) {
++		pr_err("page allocation failed, err %d\n", ret);
++		return ret;
++	}
+ 
+ 	prtd->dma_req[0].size = params_period_bytes(params);
+ 	prtd->dma_req[1].size = prtd->dma_req[0].size;
+@@ -213,9 +219,7 @@ static int tegra_pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int tegra_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+-	snd_pcm_set_runtime_buffer(substream, NULL);
+-
+-	return 0;
++	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+ static int tegra_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+@@ -263,18 +267,6 @@ static snd_pcm_uframes_t tegra_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return prtd->period_index * runtime->period_size;
+ }
+ 
+-
+-static int tegra_pcm_mmap(struct snd_pcm_substream *substream,
+-				struct vm_area_struct *vma)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
+-					runtime->dma_area,
+-					runtime->dma_addr,
+-					runtime->dma_bytes);
+-}
+-
+ static struct snd_pcm_ops tegra_pcm_ops = {
+ 	.open		= tegra_pcm_open,
+ 	.close		= tegra_pcm_close,
+@@ -283,87 +275,37 @@ static struct snd_pcm_ops tegra_pcm_ops = {
+ 	.hw_free	= tegra_pcm_hw_free,
+ 	.trigger	= tegra_pcm_trigger,
+ 	.pointer	= tegra_pcm_pointer,
+-	.mmap		= tegra_pcm_mmap,
++	.mmap		= snd_pcm_lib_default_mmap,
+ };
+ 
+-static int tegra_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-	size_t size = tegra_pcm_hardware.buffer_bytes_max;
+-
+-	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
+-						&buf->addr, GFP_KERNEL);
+-	if (!buf->area)
+-		return -ENOMEM;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->private_data = NULL;
+-	buf->bytes = size;
+-
+-	return 0;
+-}
+-
+-static void tegra_pcm_deallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+-{
+-	struct snd_pcm_substream *substream;
+-	struct snd_dma_buffer *buf;
+-
+-	substream = pcm->streams[stream].substream;
+-	if (!substream)
+-		return;
+-
+-	buf = &substream->dma_buffer;
+-	if (!buf->area)
+-		return;
+-
+-	dma_free_writecombine(pcm->card->dev, buf->bytes,
+-				buf->area, buf->addr);
+-	buf->area = NULL;
+-}
+-
+-static u64 tegra_dma_mask = DMA_BIT_MASK(32);
+-
++#define TEGRA_PCM_PREALLOC_BUFFER	(32 * 1024)
++#define TEGRA_PCM_PREALLOC_BUFFER_MAX	(32 * 1024)
+ static int tegra_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+-	int ret = 0;
+-
+-	if (!card->dev->dma_mask)
+-		card->dev->dma_mask = &tegra_dma_mask;
+-	if (!card->dev->coherent_dma_mask)
+-		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+-		ret = tegra_pcm_preallocate_dma_buffer(pcm,
+-						SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret)
+-			goto err;
+-	}
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+-		ret = tegra_pcm_preallocate_dma_buffer(pcm,
+-						SNDRV_PCM_STREAM_CAPTURE);
+-		if (ret)
+-			goto err_free_play;
++	struct snd_card *card = rtd->card->snd_card;
++	int retval = 0;
++
++	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
++			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
++		retval =  snd_pcm_lib_preallocate_pages_for_all(pcm,
++				SNDRV_DMA_TYPE_DEV_WC,
++				card->dev,
++				TEGRA_PCM_PREALLOC_BUFFER,
++				TEGRA_PCM_PREALLOC_BUFFER_MAX);
++		if (retval < 0)
++			dev_err(card->dev,
++				"dma buffer pre-alloc failied %d\n", retval);
+ 	}
+-
+-	return 0;
+-
+-err_free_play:
+-	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
+-err:
+-	return ret;
++	return retval;
+ }
+ 
+ static void tegra_pcm_free(struct snd_pcm *pcm)
+ {
+-	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_CAPTURE);
+-	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
++	snd_pcm_lib_preallocate_free_for_all(pcm);
+ }
+ 
++
+ static struct snd_soc_platform_driver tegra_pcm_platform = {
+ 	.ops		= &tegra_pcm_ops,
+ 	.pcm_new	= tegra_pcm_new,
+-- 
+1.7.1.1
