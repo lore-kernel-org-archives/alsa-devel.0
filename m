@@ -1,67 +1,29 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH V3 3/4] ASoC: SPEAr spdif_out: Add spdif
-	out support
-Date: Tue, 3 Jul 2012 09:50:26 +0530
-Message-ID: <4FF2730A.4000900@st.com>
-References: <cover.1340862505.git.rajeev-dlh.kumar@st.com>
-	<ef5b01e2bff6cb1e72db4e2d216d1a039a048e62.1340862505.git.rajeev-dlh.kumar@st.com>
-	<20120628122727.GI28922@opensource.wolfsonmicro.com>
-	<4FF12AE9.6000001@st.com>
+From: Laxman Dewangan <ldewangan@nvidia.com>
+Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
+Date: Tue, 3 Jul 2012 11:56:41 +0530
+Message-ID: <4FF290A1.6060603@nvidia.com>
+References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com> <1340969673-7776-2-git-send-email-ldewangan@nvidia.com> <4FEDDF89.1050907@wwwdotorg.org> <4FEF166D.2010705@nvidia.com> <4FF15B16.9020903@nvidia.com> <4FF1D00D.6040402@wwwdotorg.org> <20120702164717.GH25093@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
-	[207.126.144.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E5682436A
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2012 06:20:35 +0200 (CEST)
-In-Reply-To: <4FF12AE9.6000001@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120702164717.GH25093@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Rajeev kumar <rajeev-dlh.kumar@st.com>, "tiwai@suse.de" <tiwai@suse.de>, Vipin KUMAR <vipin.kumar@st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Cc: Stephen Warren <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "perex@perex.cz" <perex@perex.cz>, Stephen Warren <swarren@nvidia.com>, "lrg@ti.com" <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+On Monday 02 July 2012 10:17 PM, Mark Brown wrote:
+> * PGP Signed by an unknown key
+>
+> On Mon, Jul 02, 2012 at 10:45:01AM -0600, Stephen Warren wrote:
+>
+>> to work. No audio is heard, and aplay eventually exits with the
+>> following error message:
+> For values of eventually that will be about 10s by default.
+>
+>> aplay: pcm_write:1603: write error: Input/output error
+>> I believe this means that the DMA simply isn't operating.
+> Yes, normally.
 
-On 7/2/2012 10:30 AM, Rajeev kumar wrote:
-> Hello Mark,
->
-> On 6/28/2012 5:57 PM, Mark Brown wrote:
->>> +int spdif_soc_dai_probe(struct snd_soc_dai *dai)
->>> > +{
->>> > + struct snd_soc_card *card = dai->card;
->>> > + struct snd_soc_pcm_runtime *rtd = card->rtd;
->>> > + struct snd_soc_codec *codec = rtd->codec;
->>> > +
->>> > + return snd_soc_add_codec_controls(codec, spdif_out_controls,
->>> > + ARRAY_SIZE(spdif_out_controls));
->> We should add a framework thing for this...
->>
->
-> I was going through the simaple-card.c file and I think that the above
-> is possible if we have a pointer of "snd_kcontrol_new" in
-> asoc_simple_card_info structure. In this case we can pass all the
-> controls from board file (arch/arm/mach-*). Please share your opinion.
->
-> or,
->
-> Is there any other way to do this ?
->
-
-Waiting for your reply,
-
-Best Regards
-Rajeev
-
-> Best Regards
-> Rajeev
->
+Let me debug this specific to T20 but it will not stop to apply the patch.
