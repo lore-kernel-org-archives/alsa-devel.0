@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: dapm: Remove incomplete stereo
-	code
-Date: Tue, 3 Jul 2012 19:54:53 +0100
-Message-ID: <20120703185452.GY29030@opensource.wolfsonmicro.com>
-References: <681621148.529589.1341242387391.JavaMail.root@advansee.com>
-	<927358047.646516.1341339497010.JavaMail.root@advansee.com>
+Subject: Re: [PATCH V4 2/2] ASoC: SPEAr spdif_out: Add spdif
+	out support
+Date: Tue, 3 Jul 2012 19:58:22 +0100
+Message-ID: <20120703185821.GZ29030@opensource.wolfsonmicro.com>
+References: <cover.1341312609.git.rajeev-dlh.kumar@st.com>
+	<12728a82d749be9ee0a9de9d4d4dcb8d83a94bb5.1341312609.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6681673591186984866=="
+Content-Type: multipart/mixed; boundary="===============4491700582406182469=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69564104147
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 414271042A0
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2012 20:54:54 +0200 (CEST)
-In-Reply-To: <927358047.646516.1341339497010.JavaMail.root@advansee.com>
+	Tue,  3 Jul 2012 20:58:23 +0200 (CEST)
+In-Reply-To: <12728a82d749be9ee0a9de9d4d4dcb8d83a94bb5.1341312609.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: tiwai@suse.de, Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6681673591186984866==
+--===============4491700582406182469==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="b2s+RKoBicgQlNJs"
+	protocol="application/pgp-signature"; boundary="nynJ8Zgemp8dhn89"
 Content-Disposition: inline
 
 
---b2s+RKoBicgQlNJs
-Content-Type: text/plain; charset=iso-8859-1
+--nynJ8Zgemp8dhn89
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 03, 2012 at 08:18:17PM +0200, Beno=EEt Th=E9baudeau wrote:
-> Stereo is not yet supported by dapm widgets, so remove stereo code from
-> snd_soc_dapm_get_volsw(), and warn if stereo controls are detected.
+On Tue, Jul 03, 2012 at 05:24:59PM +0530, Rajeev Kumar wrote:
 
-Applied, thanks.
+> +static int spdif_out_mute;
 
---b2s+RKoBicgQlNJs
+This should be part of your driver data, not static data.
+
+> +int spdif_soc_dai_probe(struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_card *card = dai->card;
+> +	struct snd_soc_pcm_runtime *rtd = card->rtd;
+> +	struct snd_soc_codec *codec = rtd->codec;
+> +
+> +	return snd_soc_add_codec_controls(codec, spdif_out_controls,
+> +				ARRAY_SIZE(spdif_out_controls));
+
+snd_soc_add_dai_controls().
+
+--nynJ8Zgemp8dhn89
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP8z/0AAoJEBus8iNuMP3dRK8P/RHvLqpC3jtCk0kg6ptIVv4A
-w+OehmP4budVfxVHh28ybRkUdCxLbCp6gfz+tMPJH8jkFQ5rgBpHNHWKudxDQc6f
-BUWa3PtxEyPRJxSlC1oIDknTOQQdruhSZS0+WpkMfAkanIIIeLWKlNozP+p3DW7Z
-+wCChrFeZf6bG6wfGzCK+zd6F0+syUFI+3lTm8JnDvGYovzUyKFTa0mvJsFgTVc9
-TByKKBEaWvAN8c7a7KkW0KXI5KpwIuA9UNA4GX5XIaa2ta4yWhP/sl1Jty3ecMBd
-BF5Da69izxGDa3cwUjbJQ0Dqu8fXji1ccrV90dYtVxqGHlapLcxcmQqP3eeajulc
-gOQkFhrIitWOew8g1JGOPVXENqkePfwBIz7aR1IfchmiSCAW16/93WJjeq0iuZQD
-kuGBsF7IHGAijbwDqOztjcRTOeSQw0GZLFcebuRsLyrG/3YGRX39rSe6E0RKMaxz
-UG2ZF6PpM1msPB8AP6yF0ysBcqnSBugvwXOFbXfyQgaXDtpCtM53zZLDT2ojKF5C
-4mLJxc7zSWjCqX6pDVzfiG9E3xe+jZHx1hOh+65SmGZX5h4JgoqOl6xEOOf+85m4
-JNSB9xiVzFVP8Chv65lYHRNOinfGlp/fITBAOOZOZzVg/wEGfUM1PXDPvqEp2wDW
-XuHf1Lty0N2bjFIUF0Kz
-=TX0H
+iQIcBAEBAgAGBQJP80DHAAoJEBus8iNuMP3dakEQAJWtBk46OzNqlQn+9ZMxPfgu
+PjgOPXyjoIgcVnPXuQmI6yvyGA/6rGIn4D3nIkCqpqhGzx0B91VF8vH07IHrKVxh
+g+BrNqcwShcFvZvDIkMny5NbJcgNJBOxqCHm+Y0Fjr5xSdot62FFHX4hGhjoFd9l
+MI8Pu8405JvQjZvAwy6MFyAYVcHRqhG+1RpkXRbpNlgCtnbFJVmujQHKR8aEXFXs
+92CTvynPacCvEevalJedl95FlTGEJQwC5rUj424jwrDVjGb9YUDbIaCaFpBvBMJt
+E6S6NTSseHGvhyy50RHGx7V6juXA6/CmkVOwHApzCqmE/yBu51MBxEHr/UrAx38G
+y4Zsq2iR0SpGzdd6bNj/hDxkbnaoJt1UEL9RgZn7+hOcivdpw8F5H/Ekcl3I0KyH
+gMIuiavgaibrfR89y8RjLPiR1SkYGjVMv+GOBrh/7vTs+tWKmuLAzruDGRCOewft
+oTfcCR49UBMpfGEyy2wPB7KEEIVpxJ5yFBBNnrTVL7IGtVxMTlip8F2Dq7QswZ9R
+z6WYuZRN9EpMmtXVvR/HHCRLpDpPkSZLR0HmOuaR1XbFl4492pfkjKugav8MZK1d
+BXI2X142vlpTqp1MnnF4qWI22ikdwupVKVvrBoLjZmv05VFuJwlnQhDBJ01a98fW
+lKSrxpOdgwDrXqOiJdRH
+=Sxy6
 -----END PGP SIGNATURE-----
 
---b2s+RKoBicgQlNJs--
+--nynJ8Zgemp8dhn89--
 
---===============6681673591186984866==
+--===============4491700582406182469==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6681673591186984866==--
+--===============4491700582406182469==--
