@@ -1,85 +1,52 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V4 1/2] ASoC: STA529: Add support for
-	STA529 Audio Codec
-Date: Tue, 3 Jul 2012 20:03:00 +0100
-Message-ID: <20120703190300.GA29030@opensource.wolfsonmicro.com>
-References: <cover.1341312609.git.rajeev-dlh.kumar@st.com>
-	<0fec3fec69088f016a1093da6dab010a8eb4e599.1341312609.git.rajeev-dlh.kumar@st.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
+Date: Tue, 3 Jul 2012 20:07:46 +0100
+Message-ID: <20120703190746.GB29030@opensource.wolfsonmicro.com>
+References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com>
+ <1340969673-7776-2-git-send-email-ldewangan@nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2658616328961191567=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 156A71042A0
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2012 21:03:02 +0200 (CEST)
-In-Reply-To: <0fec3fec69088f016a1093da6dab010a8eb4e599.1341312609.git.rajeev-dlh.kumar@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qD80nKKiJWXm4UaL"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1340969673-7776-2-git-send-email-ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2658616328961191567==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JVTyp1F/hrbhzAAs"
-Content-Disposition: inline
-
-
---JVTyp1F/hrbhzAAs
+--qD80nKKiJWXm4UaL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 03, 2012 at 05:24:58PM +0530, Rajeev Kumar wrote:
+On Fri, Jun 29, 2012 at 05:04:33PM +0530, Laxman Dewangan wrote:
+> Use the dmaengine based Tegra APB DMA driver for
+> data transfer between SPI fifo and memory in
+> place of legacy Tegra APB DMA.
 
-> +=20
-> +	/* set FFX audio frequency range */
-> +	val =3D (((val & 0x83) | (play_freq_val << 4)) | (record_freq_val << 2)=
-);
-> +	snd_soc_update_bits(codec, STA529_MISC, FREQ_RANGE_MSK, val);
+Applied, thanks.
 
-This is more buggy than last time, it's still setting both playback and
-record configuration but instead of using update_bits() like write()
-it's now using val uninitialised.  As I said last time it looks like you
-want to move this into the playback/capture if statement immediately above.
-
---JVTyp1F/hrbhzAAs
+--qD80nKKiJWXm4UaL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP80HeAAoJEBus8iNuMP3dGh0P/2x7py10PCL6EsaXeWwdzF6E
-7Rew97SYFrcZeXawGBwaziOytL7gb4MInClBdeddbEaXI79P9VXMGOqNTxeo2o2U
-vzzutFooFo4ahNdRT8T1qtSfu/GUjjNFeuykwpMacKy5Kyp/2/LhjSuqtZ9yk8Pf
-Hz7ju9Dy76H1Bh0YSzb8hYfxvXJ57fngg3T79PoLRnvmFMHj27RVsg2T8VBPs9at
-6aLS4XT3/BEcBWz0GzZvKPmIrjVPhKN/VDwYmT5qOzQnldTeHVtwdhYun3qh7CuH
-ZWuNrfeWGCrYk3+JyVYUM74iPlU/jIGwN04MEwzaberLemxQkIjmagusjb/mZGBL
-opZmpsyQOTGgSLiVDBQPkQJtyWHe/O/Z1t/Wq5OBW79n3dddvsYEjs6LiiQivpga
-DBZ6XSNHiJs1CmBjwO6eSJj0jAtmlmKYf3fqflnTNKI0JTcFi3DjMnubTxB4Foil
-fl3RqVuq0IxShLCM99BLlqu2Urg/38//ldKRWtBNIbwDPjJVTUf2BkQXB/lMyGhq
-P1pG0jLZHycBwAzVh+P2vgc3lj1PYqc/5PQhHVbHsOhCfIzlWlaOZVG1uPfl8sta
-i9wxJ5UvlBbgC5CZb2sNaAVNSm0maxGYowtEVMxmPxnngeTHXZZF0CzsleK97Glu
-aIdXVFurbrIjgLxXGXaG
-=hP5x
+iQIcBAEBAgAGBQJP80L5AAoJEBus8iNuMP3dXa0P/2DvVqppo8KzSaFeEyA2afvX
+wcBoJKP8JqS7IvQo+WLI4jsRSbWg+zfCguzyOVBLXLuawUF3Pfy7KSiIUAxrvuJN
+cxthQh0/zk7GYFTpo/nGN5f1gHq4oRd/txodLkW8c15Z1uauIwSus9U+cueVAkHq
+2Kc6qpxJt8yEw3RaQPDYEePHtQUcxJj2a5b/128mnH/a2j4iEkGQ+QG83kv7G5Rp
+iwpYDJ5PpPaPqbvGC4K/fY0mSZHGyD0+nsOpqLR/vLUsIwuRke0gRmVdfhrC4Lgo
+EPGMJcB28N765JqLJ1HN1WKHFH5qgVdoDqX+LGFThTkO0PUDV1pgg/4YWCKlVS64
+uPjPeOqiUprFZg4veT7N0Cqr9QxnIpPDJRE3MQGX7xIgckK9JllKO7gh2DEHuZc4
+LIGQipgWZ2VnX1LwdYiVW5Y7FvT24aI7z23qM7Knedci7osp8r+nhJD6ATRom3/T
+9wYVUUlwE0PEyoCBdtsF5jJLQoLFRoZb2F4/stltQoImM1r6DCqIjuJhu1gfVzzA
++uv4IbbpcNbwRHvI1ZF7lVSuUzVDMtzLoMVwu7x8wcHry/bL+DWuA/zix+ddwZDz
+jIYBraQmM5ArdXnSBRg3VqYjbjFfyGbf/FjYFQ5888NWSybf2iOwjul3EO2L62sp
+Krfof+PDaCAOoZZJaknZ
+=xG/L
 -----END PGP SIGNATURE-----
 
---JVTyp1F/hrbhzAAs--
-
---===============2658616328961191567==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2658616328961191567==--
+--qD80nKKiJWXm4UaL--
