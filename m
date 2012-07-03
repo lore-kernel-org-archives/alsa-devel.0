@@ -1,66 +1,51 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: [PATCH v2] ASoC: dapm: Remove incomplete stereo code
-Date: Tue, 3 Jul 2012 20:18:17 +0200 (CEST)
-Message-ID: <927358047.646516.1341339497010.JavaMail.root@advansee.com>
-References: <681621148.529589.1341242387391.JavaMail.root@advansee.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: Samsung: Convert to use snd_soc_register_card()
+Date: Tue, 3 Jul 2012 19:48:20 +0100
+Message-ID: <20120703184819.GW29030@opensource.wolfsonmicro.com>
+References: <1341304444-11188-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta15.web4all.fr (zose-mta15.web4all.fr [176.31.217.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11CA4245CC
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2012 20:13:34 +0200 (CEST)
-In-Reply-To: <681621148.529589.1341242387391.JavaMail.root@advansee.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q/AGl/UrDvkbRExF"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1341304444-11188-1-git-send-email-sachin.kamat@linaro.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, kgene.kim@samsung.com, tiwai@suse.de, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-U3RlcmVvIGlzIG5vdCB5ZXQgc3VwcG9ydGVkIGJ5IGRhcG0gd2lkZ2V0cywgc28gcmVtb3ZlIHN0
-ZXJlbyBjb2RlIGZyb20Kc25kX3NvY19kYXBtX2dldF92b2xzdygpLCBhbmQgd2FybiBpZiBzdGVy
-ZW8gY29udHJvbHMgYXJlIGRldGVjdGVkLgoKQ2M6IExpYW0gR2lyZHdvb2QgPGxyZ0B0aS5jb20+
-CkNjOiBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KQ2M6
-IDxhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+ClNpZ25lZC1vZmYtYnk6IEJlbm/DrnQgVGjD
-qWJhdWRlYXUgPGJlbm9pdC50aGViYXVkZWF1QGFkdmFuc2VlLmNvbT4KLS0tCiAuLi4vc291bmQv
-c29jL3NvYy1kYXBtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMjIgKysrKysrKysr
-KystLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgbGludXgtbmV4dC1IRUFELWY5NjM3YmEub3JpZy9zb3VuZC9zb2Mv
-c29jLWRhcG0uYyBsaW51eC1uZXh0LUhFQUQtZjk2MzdiYS9zb3VuZC9zb2Mvc29jLWRhcG0uYwpp
-bmRleCBjOTNlODMyLi5lODBmMmUzIDEwMDY0NAotLS0gbGludXgtbmV4dC1IRUFELWY5NjM3YmEu
-b3JpZy9zb3VuZC9zb2Mvc29jLWRhcG0uYworKysgbGludXgtbmV4dC1IRUFELWY5NjM3YmEvc291
-bmQvc29jL3NvYy1kYXBtLmMKQEAgLTI0NjQsMjMgKzI0NjQsMjAgQEAgaW50IHNuZF9zb2NfZGFw
-bV9nZXRfdm9sc3coc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCiAJCShzdHJ1Y3Qgc29j
-X21peGVyX2NvbnRyb2wgKilrY29udHJvbC0+cHJpdmF0ZV92YWx1ZTsKIAl1bnNpZ25lZCBpbnQg
-cmVnID0gbWMtPnJlZzsKIAl1bnNpZ25lZCBpbnQgc2hpZnQgPSBtYy0+c2hpZnQ7Ci0JdW5zaWdu
-ZWQgaW50IHJzaGlmdCA9IG1jLT5yc2hpZnQ7CiAJaW50IG1heCA9IG1jLT5tYXg7Ci0JdW5zaWdu
-ZWQgaW50IGludmVydCA9IG1jLT5pbnZlcnQ7CiAJdW5zaWduZWQgaW50IG1hc2sgPSAoMSA8PCBm
-bHMobWF4KSkgLSAxOworCXVuc2lnbmVkIGludCBpbnZlcnQgPSBtYy0+aW52ZXJ0OworCisJaWYg
-KHNuZF9zb2Nfdm9sc3dfaXNfc3RlcmVvKG1jKSkKKwkJZGV2X3dhcm4od2lkZ2V0LT5kYXBtLT5k
-ZXYsCisJCQkgIkNvbnRyb2wgJyVzJyBpcyBzdGVyZW8sIHdoaWNoIGlzIG5vdCBzdXBwb3J0ZWRc
-biIsCisJCQkga2NvbnRyb2wtPmlkLm5hbWUpOwogCiAJdWNvbnRyb2wtPnZhbHVlLmludGVnZXIu
-dmFsdWVbMF0gPQogCQkoc25kX3NvY19yZWFkKHdpZGdldC0+Y29kZWMsIHJlZykgPj4gc2hpZnQp
-ICYgbWFzazsKLQlpZiAoc2hpZnQgIT0gcnNoaWZ0KQotCQl1Y29udHJvbC0+dmFsdWUuaW50ZWdl
-ci52YWx1ZVsxXSA9Ci0JCQkoc25kX3NvY19yZWFkKHdpZGdldC0+Y29kZWMsIHJlZykgPj4gcnNo
-aWZ0KSAmIG1hc2s7Ci0JaWYgKGludmVydCkgeworCWlmIChpbnZlcnQpCiAJCXVjb250cm9sLT52
-YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdID0KIAkJCW1heCAtIHVjb250cm9sLT52YWx1ZS5pbnRlZ2Vy
-LnZhbHVlWzBdOwotCQlpZiAoc2hpZnQgIT0gcnNoaWZ0KQotCQkJdWNvbnRyb2wtPnZhbHVlLmlu
-dGVnZXIudmFsdWVbMV0gPQotCQkJCW1heCAtIHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVl
-WzFdOwotCX0KIAogCXJldHVybiAwOwogfQpAQCAtMjUxNCw2ICsyNTExLDExIEBAIGludCBzbmRf
-c29jX2RhcG1fcHV0X3ZvbHN3KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAogCXN0cnVj
-dCBzbmRfc29jX2RhcG1fdXBkYXRlIHVwZGF0ZTsKIAlpbnQgd2k7CiAKKwlpZiAoc25kX3NvY192
-b2xzd19pc19zdGVyZW8obWMpKQorCQlkZXZfd2Fybih3aWRnZXQtPmRhcG0tPmRldiwKKwkJCSAi
-Q29udHJvbCAnJXMnIGlzIHN0ZXJlbywgd2hpY2ggaXMgbm90IHN1cHBvcnRlZFxuIiwKKwkJCSBr
-Y29udHJvbC0+aWQubmFtZSk7CisKIAl2YWwgPSAodWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFs
-dWVbMF0gJiBtYXNrKTsKIAljb25uZWN0ID0gISF2YWw7CiAKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--Q/AGl/UrDvkbRExF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 03, 2012 at 02:04:04PM +0530, Sachin Kamat wrote:
+> Current method for machine driver to register with the ASoC core is to use
+> snd_soc_register_card() instead of creating a "soc-audio" platform device.
+
+Applied, thanks (it's not a generic Samsung patch, it's just for the one
+board BTW).
+
+--Q/AGl/UrDvkbRExF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP8z5sAAoJEBus8iNuMP3daooP+gKq4PWE0G3w+vwqm4m8ReVc
+XnkcOiF+oi6ePxUD3F+eVo3T1IzrO0+DGtweARnmF8AGV+fzUK1khUCOvxD7K5iG
+FETUbJrb79Fup9ez/83VsDzks73abZn/Zt3/GSGSVVoL9IddENtfW2JI4+wvc0Vl
+bpsHrtmvSQI+4vlUwMz9hz/qJur6F5am3FkCsX+8h4/9VWsfubfuT/uoI/vjDlSv
+oj+5bKrDodOm8hETyyXstMZX+JY1LM+FmmHxf9NpFuuV7aPLkZsW+P4Oi0Ce1ffH
+dbW1nWqp06d8PAKds/9mrP0rdOC12/uWbCwjg74whlcrXiSoo5tn9vXaThOl36KA
+23MNSl4/3Xgu5rzzNRXZfPZX586Ywzz2Eaj/uKEa1YN9YM/6hBZIPaBNeVZiu1vy
+MMfUvQAs9qYmKfqBwLLDQkLAIFTmuSmGZgvNcv6A5ZjDP3RkgWYPcBGfm8VOR7rb
+e0VQbRM9UNgESODp3fVrFSYLuKjnHUKdaHBb0OUlj3kts7O8rLqJ6QWT+ccpWPCj
+hhbg4+VfX/qQhjkX7Gb+bNDbce2Y/9Ng8Txh2LpbAE3F7TXeYav456FdziYKzojT
+Zs+/uYcNBd0oUXa87ZqS9CfgrI/rIfn4+KYe0ffNWd2iJrnPIyHKc5wHV/Pmc+GT
+38wfGkqrE8jP7rypI2Kv
+=kBr5
+-----END PGP SIGNATURE-----
+
+--Q/AGl/UrDvkbRExF--
