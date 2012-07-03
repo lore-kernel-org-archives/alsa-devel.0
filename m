@@ -1,57 +1,59 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
-Date: Tue, 3 Jul 2012 11:09:43 +0100
-Message-ID: <20120703100943.GG29030@opensource.wolfsonmicro.com>
-References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com>
- <1340969673-7776-2-git-send-email-ldewangan@nvidia.com>
- <4FF1D083.7060207@wwwdotorg.org>
- <4FF2914B.1000601@nvidia.com>
+From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Subject: [PATCH V4 0/2] Add support for sta529 audio codec and
+	spdif_out controller
+Date: Tue, 3 Jul 2012 17:24:57 +0530
+Message-ID: <cover.1341312609.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qxfKREH7IwbezJ+T"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4FF2914B.1000601@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Laxman Dewangan <ldewangan@nvidia.com>
-Cc: Stephen Warren <swarren@wwwdotorg.org>, "tiwai@suse.de" <tiwai@suse.de>, "perex@perex.cz" <perex@perex.cz>, Stephen Warren <swarren@nvidia.com>, "lrg@ti.com" <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog110.obsmtp.com (eu1sys200aog110.obsmtp.com
+	[207.126.144.129])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8F402433B
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Jul 2012 13:55:07 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+The patch set contains minor modification according to review comments.
 
---qxfKREH7IwbezJ+T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Patches that got applied(from V3 of patch set) are listed below: 
 
-On Tue, Jul 03, 2012 at 11:59:31AM +0530, Laxman Dewangan wrote:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-June/052868.html
 
-> Are you taking this patch?
-> I have other independent patch for the writecombine dma support in
-> pcm memory library and wanted to avoid any merge conflicts.
-> So if it goes in your tree then the other patch also need to go in
-> your tree.
+1. [PATCH V3 1/4] ASoC: spdif_receiver: Add support for spdif in Audio Codec. 
 
-You've not even left 24 hours for me to respond!
+Patches that got applied(from V2 of patch set) are listed below: 
 
---qxfKREH7IwbezJ+T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-June/052868.html
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+1. [PATCH V2 3/9] sound:asoc: Add support for synopsys i2s controller as per ASoC framework.
+2. [PATCH V2 4/9] sound:asoc: Add support for SPEAr ASoC pcm layer.
+3. [PATCH V2 5/9] sound:asoc:spdif_in: Add spdif IN support
 
-iQIcBAEBAgAGBQJP8sTYAAoJEBus8iNuMP3d3BsP/0bUbFwwz8ky1BHf3puU+0hO
-MXHEIerCJfUk3T50cRUy/Xt9VINRcb2QaW+KaxhP63gpopcJkWDxdlIhjZAiiYAY
-HKulS/E36PWokG6wFT5KdOp2BCsgxL2r1ejT2rKAS4aIAQllR4yilPdR/RLHQRTZ
-TpCbM7bht9cs9S9CcE2qw5xlZHfnCiebLedMlHt3kax4Ra93fRVSsD98vM1m99jh
-fe28ayF7oGEME+zdJiQlDEtFCYW8B85Q++sNyTaPeYrkpUFIt+L0eS7ndK4ITwm4
-6+UITZNS6Utvo4/62YtdKqGtb1KwwpjjGcMrNJBDpxlAUROMi//9LJH0zqJAPd0x
-kW7OVjxci2LGwBBR1UecB+3He7o8cXoLMTZUm9devi/slA7Z4EUQxmj4ZZVPK4Nz
-LXyWg/u7Q9RXg6frWFlG2cnLQMvq0tbquLk5B5wECU0Z/ps8CohdiJNzsSEqySzj
-TvwodwcU1oc/eog64uM/fM8nqVh3cjyEybECzbc8WZ1Ubnev+3qEZxA4vFCcrYug
-CSLbRFVSCPOXm/e8RL53WDNyGlYsGQPAjVuOffUaBlGVReqqGbv3ueEkeMcS25JO
-sVwEiqometxOqIrLt7AhYG0qtFfozxDqGKaRbDx5Ko/0hqcCIq8qJl0myD3hxGOv
-f7SztCkczc1dUUd1xWoP
-=gZ5d
------END PGP SIGNATURE-----
 
---qxfKREH7IwbezJ+T--
+Rajeev Kumar (1):
+  ASoC: STA529: Add support for STA529 Audio Codec
+
+Vipin Kumar (1):
+  ASoC: SPEAr spdif_out: Add spdif out support
+
+ sound/soc/codecs/Kconfig         |    4 +
+ sound/soc/codecs/Makefile        |    2 +
+ sound/soc/codecs/sta529.c        |  440 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/spdif_out.c      |  388 +++++++++++++++++++++++++++++++++
+ sound/soc/spear/spdif_out_regs.h |   79 +++++++
+ 5 files changed, 913 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/sta529.c
+ create mode 100644 sound/soc/spear/spdif_out.c
+ create mode 100644 sound/soc/spear/spdif_out_regs.h
