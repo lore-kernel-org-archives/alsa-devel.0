@@ -1,52 +1,81 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: use dmaengine based dma driver
-Date: Tue, 3 Jul 2012 20:07:46 +0100
-Message-ID: <20120703190746.GB29030@opensource.wolfsonmicro.com>
-References: <1340969673-7776-1-git-send-email-ldewangan@nvidia.com>
- <1340969673-7776-2-git-send-email-ldewangan@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix dapm_set_path_status()
+	connect
+Date: Tue, 3 Jul 2012 20:08:46 +0100
+Message-ID: <20120703190845.GC29030@opensource.wolfsonmicro.com>
+References: <1535746789.386644.1341061383351.JavaMail.root@advansee.com>
+	<1035078102.502287.1341229521711.JavaMail.root@advansee.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qD80nKKiJWXm4UaL"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1340969673-7776-2-git-send-email-ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============6108275085056489636=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2431A245C0
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Jul 2012 21:08:47 +0200 (CEST)
+In-Reply-To: <1035078102.502287.1341229521711.JavaMail.root@advansee.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---qD80nKKiJWXm4UaL
-Content-Type: text/plain; charset=us-ascii
+--===============6108275085056489636==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PAKmkkBo0+rTwAqJ"
 Content-Disposition: inline
 
-On Fri, Jun 29, 2012 at 05:04:33PM +0530, Laxman Dewangan wrote:
-> Use the dmaengine based Tegra APB DMA driver for
-> data transfer between SPI fifo and memory in
-> place of legacy Tegra APB DMA.
+
+--PAKmkkBo0+rTwAqJ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jul 02, 2012 at 01:45:21PM +0200, Beno=EEt Th=E9baudeau wrote:
+> dapm_set_path_status() sets connect incorrectly in the case max > 1 with =
+invert.
+> In that case, the raw disconnect value should be max, which corresponds t=
+o the
+> userspace value 0.
 
 Applied, thanks.
 
---qD80nKKiJWXm4UaL
+--PAKmkkBo0+rTwAqJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP80L5AAoJEBus8iNuMP3dXa0P/2DvVqppo8KzSaFeEyA2afvX
-wcBoJKP8JqS7IvQo+WLI4jsRSbWg+zfCguzyOVBLXLuawUF3Pfy7KSiIUAxrvuJN
-cxthQh0/zk7GYFTpo/nGN5f1gHq4oRd/txodLkW8c15Z1uauIwSus9U+cueVAkHq
-2Kc6qpxJt8yEw3RaQPDYEePHtQUcxJj2a5b/128mnH/a2j4iEkGQ+QG83kv7G5Rp
-iwpYDJ5PpPaPqbvGC4K/fY0mSZHGyD0+nsOpqLR/vLUsIwuRke0gRmVdfhrC4Lgo
-EPGMJcB28N765JqLJ1HN1WKHFH5qgVdoDqX+LGFThTkO0PUDV1pgg/4YWCKlVS64
-uPjPeOqiUprFZg4veT7N0Cqr9QxnIpPDJRE3MQGX7xIgckK9JllKO7gh2DEHuZc4
-LIGQipgWZ2VnX1LwdYiVW5Y7FvT24aI7z23qM7Knedci7osp8r+nhJD6ATRom3/T
-9wYVUUlwE0PEyoCBdtsF5jJLQoLFRoZb2F4/stltQoImM1r6DCqIjuJhu1gfVzzA
-+uv4IbbpcNbwRHvI1ZF7lVSuUzVDMtzLoMVwu7x8wcHry/bL+DWuA/zix+ddwZDz
-jIYBraQmM5ArdXnSBRg3VqYjbjFfyGbf/FjYFQ5888NWSybf2iOwjul3EO2L62sp
-Krfof+PDaCAOoZZJaknZ
-=xG/L
+iQIcBAEBAgAGBQJP80M1AAoJEBus8iNuMP3d/AkQAIuICt4nP3Zzj7rWMyYyOwQg
+bTDPNAyGZbP96vVAeU5w9veqtekJczqIe/rM/nW4q/Of1rnbMbwum+O4pVteXRmG
+kw9LOVauV0hjkPjfjG2YjTQFLOnWt/ABraF5AIMOjMel47Wr6xXQV3+OaQAD/16E
+odjOXTEaliQ+tjTNof5K8deXN9KBw8v5xOMyqjzkzBlH3bbp907YuBykwlF7n4s/
+2lI2vaHGSXIHiLimECbcMRrydSRTz1+o+HMXu4u5NmgqnfYbp+8geHb/60g1dpmM
+Cmxz9FZq5D+XZvW7rzTmGNDwc2/VWcwQekD/WhEhnbg8fue44ZFS0mIb4r8UmIyr
+28rYYVhLOeUUoach6GUxK0UYSB6oFLCt14zW/Z/i+vTc5VhvSh2YmgHm9WHH++I7
+8T36NC2suV6X3PK5jZ/mqiScP6SAOxJdnBpC+t/q0ZkiclPTwPD0aYgBTDNrirTS
+s9algv5C6Lch+mO1JISnHG8T0FoO4m3Xi3ww8x5klAg+4i7wwYJq0LYobe8kJrEe
+IzZBu75Gz1SS2MiJo9KNlMuNwRHcHj3dKUf6l/f3VAZK+hBaA4KYiHpjf+Oo+5mR
+/HoNoNag+wecnL4WmYHc4mQWGA+vFdkho6wNbfU6tG1HVvLbHBTpAV6vizdn4v3P
+GI4QQJuABJeEeQQt9RB6
+=NbQW
 -----END PGP SIGNATURE-----
 
---qD80nKKiJWXm4UaL--
+--PAKmkkBo0+rTwAqJ--
+
+--===============6108275085056489636==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6108275085056489636==--
