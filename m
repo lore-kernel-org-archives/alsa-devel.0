@@ -1,13 +1,13 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
 Subject: [PATCH 2/2] ASoC: imx-mc13783: Add audmux settings for mx27pdk
-Date: Tue, 3 Jul 2012 15:44:58 -0300
-Message-ID: <1341341098-9510-2-git-send-email-fabio.estevam@freescale.com>
-References: <1341341098-9510-1-git-send-email-fabio.estevam@freescale.com>
+Date: Tue, 3 Jul 2012 15:44:05 -0300
+Message-ID: <1341341045-9472-2-git-send-email-fabio.estevam@freescale.com>
+References: <1341341045-9472-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1341341098-9510-1-git-send-email-fabio.estevam@freescale.com>
+In-Reply-To: <1341341045-9472-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
