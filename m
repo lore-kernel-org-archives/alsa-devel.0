@@ -1,16 +1,15 @@
 From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: How to handle parameter variation across different
- boards but same platform
-Date: Wed, 4 Jul 2012 12:45:03 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA3532A@DBDE01.ent.ti.com>
+Subject: DT support for Davinci ASoC platform
+Date: Wed, 4 Jul 2012 12:48:05 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA35352@DBDE01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2C6324581
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C74924585
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2012 14:45:13 +0200 (CEST)
+	Wed,  4 Jul 2012 14:48:11 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,24 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "'sudhakar.raj@ti.com" <'sudhakar.raj@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Girdwood, Liam" <lrg@ti.com>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori,
+	Sekhar" <nsekhar@ti.com>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "Rajashekhara,
+	Sudhakar" <sudhakar.raj@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+All,
 
-Currently on Davinci platform, codec system clock & snd_soc_card parameter is decided
-using machine_is_xxxx() api.
+Are there any plans or work going on for providing Device Tree Support for Davinci
+ASoC?
 
-	sound/soc/Davinci/davinci-evm.c, inside evm_hw_params() & evm_init(),
+I am planning to add DT support for TI AM335x (McASP) and I don't want to do duplicate
+task.
 
-We have an upcoming board based on TI AM335x soc which has both codec system clock 
-And the codec name (because of i2c bus difference) different from previous am335x 
-based boards. 
-
-Using machine_is_xxx() is not sufficient because there are 2 other boards on same 
-Platform/machine but with different values.
-
-So, how to specify these parameters for the new board?
 
 Regards
 Gururaja
