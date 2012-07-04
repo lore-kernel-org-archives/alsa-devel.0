@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/4] ALSA: hda beep clean up
-Date: Tue, 03 Jul 2012 22:01:45 +0200
-Message-ID: <4FF34FA9.10806@perex.cz>
-References: <1341331397-21182-1-git-send-email-tiwai@suse.de>
-	<4FF31E7B.8030906@perex.cz>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: QasTools 0.17.0 released
+Date: Wed, 4 Jul 2012 10:44:19 +0800
+Message-ID: <CAN8cciaAx6unmfDheYsze7thfkKzyjXN6jhdUfQmBm4Ltvf92g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAF32103F3B
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+	[209.85.212.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3567F244A4
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2012 22:00:11 +0200 (CEST)
-In-Reply-To: <4FF31E7B.8030906@perex.cz>
+	Wed,  4 Jul 2012 04:44:20 +0200 (CEST)
+Received: by wibhm6 with SMTP id hm6so3846600wib.2
+	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2012 19:44:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "Sebastian H." <vand2@gmx.de>
+Cc: pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 3.7.2012 18:31, Jaroslav Kysela wrote:
-> Date 3.7.2012 18:03, Takashi Iwai wrote:
->> Hi,
->>
->> this is a series of small cleanups of HD-audio beep code.
->> Since the keyboard driver already handles the simultaneous outputs
->> from the multiple input beep instances, there is no merit to have
->> beep_mode=2 option to switch the beep input device.
-> 
-> Acked-by: Jaroslav Kysela <perex@perex.cz>
+> QasTools version 0.17.0 is available.
 
-While I acked this, I vaguely remember now, that the event duplication
-(simultaneous outputs) caused some issues on some Lenovo notebooks.
+> QasTools is a collection of dektop applications for ALSA.
 
-When the pcspkr and HDA beep generator is connected to the same output
-(integrated speakers), it may cause some issues (bad beep quality -
-frequency etc.).
+> Changes:
 
-I looked to the input code, and the kd_mksound() calls
-input_handler_for_each_handle(), thus the event is duplicated to all
-beep generators, right?
+>  * all: setting names for state save/restore changed/regrouped
+>  * all: smart main window sizeHint() to get a useable window
+>        size after leaving fullscreen
+>  * all: new common info dialog - uses QListView page
+>        selection intead of tabs
+> * shared: device selection style tweaks: selected item
+>           now emphasized by a thin frame
+> * shared: device selection style tweaks: Rounded selection area
+> * shared: use QSplitter instead of QDockwidget for device selection
+>           view. It couldn't be detached anyway and size restoring
+>          works more reliable.
+> * qasconfig: settings directory changed to shared ~/.config/qastools/
+>              (was ~/.config/qasconfig/)
+> * qasconfig: new basic command line options (--version, --help, etc.)
+> * qashctl: new basic command line options (--version, --help, etc.)
+> * qasmixer: new application icon
 
-The beep_mode=2 was introduced to let users to help with this issue with
-a comfortable way.
+qasmixer only show a mono Master and Capture volume controls/switch of
+"pulse" when user selected 4.0 / 5.1/ 7.1 analog output and stereo
+input in sound setting of ubuntu 12.04 , amixer and alsamixer show the
+volume control with correct channels
 
-						Jaroslav
+apt-cache policy qasmixer
+qasmixer:
+  Installed: 0.17.1-1
+  Candidate: 0.17.1-1
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+amixer -Dpulse
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined penum
+  Playback channels: Front Left - Front Right - Rear Left - Rear Right
+  Limits: Playback 0 - 65536
+  Mono:
+  Front Left: Playback 45314 [69%] [on]
+  Front Right: Playback 45314 [69%] [on]
+  Rear Left: Playback 45314 [69%] [on]
+  Rear Right: Playback 45314 [69%] [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined penum
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 65536
+  Front Left: Capture 65535 [100%] [off]
+  Front Right: Capture 65535 [100%] [off]
