@@ -1,18 +1,19 @@
-From: Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH 2/2] ASoC: tlv320aic3x: extending registers
-	cache
-Date: Wed,  4 Jul 2012 08:12:51 +0200
-Message-ID: <1341382371-4515-2-git-send-email-jiri.prchal@aksignal.cz>
-References: <1341382371-4515-1-git-send-email-jiri.prchal@aksignal.cz>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 0/4] ALSA: hda beep clean up
+Date: Wed, 04 Jul 2012 09:43:23 +0200
+Message-ID: <4FF3F41B.2050107@perex.cz>
+References: <1341331397-21182-1-git-send-email-tiwai@suse.de>
+	<4FF31E7B.8030906@perex.cz> <4FF34FA9.10806@perex.cz>
+	<s5h62a45cms.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id F13C310437A
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE47C2444D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2012 08:13:21 +0200 (CEST)
-In-Reply-To: <1341382371-4515-1-git-send-email-jiri.prchal@aksignal.cz>
+	Wed,  4 Jul 2012 09:41:49 +0200 (CEST)
+In-Reply-To: <s5h62a45cms.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: Jiri Prchal <jiri.prchal@aksignal.cz>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adds missing register default values to cache.
+Date 4.7.2012 07:16, Takashi Iwai wrote:
+> At Tue, 03 Jul 2012 22:01:45 +0200,
+> Jaroslav Kysela wrote:
+>>
+>> Date 3.7.2012 18:31, Jaroslav Kysela wrote:
+>>> Date 3.7.2012 18:03, Takashi Iwai wrote:
+>>>> Hi,
+>>>>
+>>>> this is a series of small cleanups of HD-audio beep code.
+>>>> Since the keyboard driver already handles the simultaneous outputs
+>>>> from the multiple input beep instances, there is no merit to have
+>>>> beep_mode=2 option to switch the beep input device.
+>>>
+>>> Acked-by: Jaroslav Kysela <perex@perex.cz>
+>>
+>> While I acked this, I vaguely remember now, that the event duplication
+>> (simultaneous outputs) caused some issues on some Lenovo notebooks.
+>>
+>> When the pcspkr and HDA beep generator is connected to the same output
+>> (integrated speakers), it may cause some issues (bad beep quality -
+>> frequency etc.).
+>>
+>> I looked to the input code, and the kd_mksound() calls
+>> input_handler_for_each_handle(), thus the event is duplicated to all
+>> beep generators, right?
+> 
+> Right.
+> 
+>> The beep_mode=2 was introduced to let users to help with this issue with
+>> a comfortable way.
+> 
+> Not really.  At the time this was introduced, the keyboard driver took
+> only a single input handle exclusively, namely only the last
+> registered one.  Thus playing on both had never happened until
+> recently.
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
- sound/soc/codecs/tlv320aic3x.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+OK, thanks for the clarification. The question is, if it's the desired
+behaviour. Multiple outs can cause some harmonic effects. It would be
+nice, if the input layer can turn on/off (filter) the beep events at
+runtime separately for all registered drivers. The setup can be handled
+using sysfs or so..
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 7a49390..bd03f4d 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -119,7 +119,9 @@ static const u8 aic3x_reg[AIC3X_CACHEREGNUM] = {
- 	0x00, 0x00, 0x00, 0x00,	/* 88 */
- 	0x00, 0x00, 0x00, 0x00,	/* 92 */
- 	0x00, 0x00, 0x00, 0x00,	/* 96 */
--	0x00, 0x00, 0x02,	/* 100 */
-+	0x00, 0x00, 0x02, 0x00,	/* 100 */
-+	0x00, 0x00, 0x00, 0x00,	/* 104 */
-+	0x00, 0x00,            	/* 108 */
- };
- 
- /*
+					Jaroslav
+
 -- 
-1.7.7
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
