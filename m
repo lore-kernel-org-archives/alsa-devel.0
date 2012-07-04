@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V5 2/2] ASoC: SPEAr spdif_out: Add spdif
-	out support
-Date: Wed, 4 Jul 2012 11:53:17 +0100
-Message-ID: <20120704105317.GL4111@opensource.wolfsonmicro.com>
-References: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
-	<3bb309a530d271fb1504b9d3f935d375de1f9e86.1341397193.git.rajeev-dlh.kumar@st.com>
+From: Mohsen Pahlevanzadeh <mohsen@pahlevanzadeh.org>
+Subject: static build on two machine
+Date: Wed, 04 Jul 2012 16:36:59 +0430
+Message-ID: <1341403619.5509.9.camel@debian>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7428435270314762436=="
+Content-Type: multipart/mixed; boundary="===============8784628410429925684=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F10891043BD
+Received: from server.pw-hc.in (static.109.189.63.178.clients.your-server.de
+	[178.63.189.109])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7EAEA2448A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2012 12:53:18 +0200 (CEST)
-In-Reply-To: <3bb309a530d271fb1504b9d3f935d375de1f9e86.1341397193.git.rajeev-dlh.kumar@st.com>
+	Wed,  4 Jul 2012 14:07:03 +0200 (CEST)
+Received: from [91.99.8.52] (port=10615 helo=[192.168.1.50])
+	by server.pw-hc.in with esmtpsa (TLSv1:AES256-SHA:256) (Exim 4.77)
+	(envelope-from <mohsen@pahlevanzadeh.org>) id 1SmOMH-0007hK-UU
+	for alsa-devel@alsa-project.org; Wed, 04 Jul 2012 16:37:02 +0430
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,59 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7428435270314762436==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fDERRRNgB4on1jOB"
-Content-Disposition: inline
+--===============8784628410429925684==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-WCbseGGGbHMYdFrpzuoV"
 
 
---fDERRRNgB4on1jOB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-WCbseGGGbHMYdFrpzuoV
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 04, 2012 at 04:11:13PM +0530, Rajeev Kumar wrote:
-> From: Vipin Kumar <vipin.kumar@st.com>
->=20
-> This patch implements the spdif out driver for ST peripheral. This
-> peripheral implements IEC60958 standard
+Dear all,
 
-Applied, thanks.
+My co-worker built alsa-lib-1.0.25 and now, i should work on this
+project, So i get it and compile and compile with the following
+commands:
+        libtoolize --force --copy --automake
+        aclocal
+        autoheader
+        automake --foreign --copy --add-missing
+        autoconf
+	./configure --enable-shared=3Dno --enable-static=3Dyes
+--prefix=3D/usr/i686 ;make install
+Now, When i compile my own software, i get two warning however my
+co-worker doesn't get them:
+///////////////////////
+/usr/i686/lib/libasound.a(pcm_dmix.o):-1: In function
+`snd_pcm_dmix_sync_ptr':
+pcm_dmix.c:-1: warning: Warning: snd_pcm_hwsync() is deprecated,
+consider to use snd_pcm_avail()
+/////////////////////////
+When i run  my program my program that my co-worker wrote, crashed, But
+when he run it, it's crashed.
+How can i solve this problem?
 
---fDERRRNgB4on1jOB
+--Best regards
+Mohsen.
+
+--=-WCbseGGGbHMYdFrpzuoV
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP9CCEAAoJEBus8iNuMP3dRGgP+wS/foPTIg07OWJSEOkXiSUL
-YegnbofQkA0EKY21A4jrGCvf4dpt9mawEHDIV535ouCbiK5F5S1x04kS/3NbZv0o
-b2vNmlDrEPeO7ch+JS6IJKURch3axs+HoPdNKZg0YnRtjof6ltDOlFy0qLImmunw
-IM986UA3u0eChjuXUQpXBKfNTg8go7A01gJAxE3SYoFPiI866of/lB6/SVzD+J2u
-4YCkQLnbV9O4APyjGyatbukFj3X6ChtnpTSX4obmOQ4scy0F/UtTfwY6s9Opv7jn
-O06mp+fmhMBnLaki4t1r8CDOzYCmmq3Ltx3mDkVTJ3LCMTGdIqkWdLK+VWS/LIgQ
-+yuFpiBWU0eqgEAnT8mMNA8i6eWFlTEtaiUDyGJut4Lb/CkkWQBXqi6Z6CVcSaJE
-auuoay1roXRcxSpDmO7BjWK8aUpV0t/u7/OI2AaiOilgKvB1oc7nPDe0OaryopI7
-2/GyqJj1JrIzk9WXGfPwKohL6ux88BnwHzrpgXennoeIeuqCYGSQMcERTS6iV6k5
-gUqy+sM+8xUMj4/ox6HsgCG0HufKrkP7F/7xcHCIa3+oEboPSNeyE8cxAQIl2KkY
-xrS7eyEybJClLhN2vFbb9Eu5gKzH3vdgZt8U7ZluOD6pQ/XG1VhcFQHUud7eH7OF
-CmaiGo5RVX1T+JfwqmH5
-=qQSN
+iJwEAAECAAYFAk/0MeMACgkQBq6ixBojHB8X2AP/e6kTrLzituBbyUEqlzXrvod0
+EVid7ngTy0mHnpl27dYTl6qRJwIqfuqHYLjx9miicYEBacn2qJkLwh9QRlKGv1QQ
+D7HTWgqnln+crest8u+Dp9pkmqr6HoVLg5/B0gTIN2bHQGNNBaKBe6g05fPNPqAw
+qGkqLGt5U5wR4MRRf00=
+=cwEA
 -----END PGP SIGNATURE-----
 
---fDERRRNgB4on1jOB--
+--=-WCbseGGGbHMYdFrpzuoV--
 
---===============7428435270314762436==
+
+--===============8784628410429925684==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7428435270314762436==--
+--===============8784628410429925684==--
