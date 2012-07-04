@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: add deemphasis switch
-Date: Wed, 4 Jul 2012 11:43:00 +0100
-Message-ID: <20120704104300.GI4111@opensource.wolfsonmicro.com>
-References: <4FED6D0C.50004@aksignal.cz>
+Subject: Re: [PATCH V5 1/2] ASoC: STA529: Add support for
+	STA529 Audio Codec
+Date: Wed, 4 Jul 2012 11:49:54 +0100
+Message-ID: <20120704104953.GK4111@opensource.wolfsonmicro.com>
+References: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5460693819820643189=="
+Content-Type: multipart/mixed; boundary="===============0897712309432416853=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B5C8104391
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3BEA2104396
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2012 12:43:04 +0200 (CEST)
-In-Reply-To: <4FED6D0C.50004@aksignal.cz>
+	Wed,  4 Jul 2012 12:49:55 +0200 (CEST)
+In-Reply-To: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Prchal =?utf-8?B?SmnFmcOt?= <jiri.prchal@aksignal.cz>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, peter.ujfalusi@ti.com, mr.swami.reddy@ti.com, lrg@ti.com
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5460693819820643189==
+--===============0897712309432416853==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oxV4ZoPwBLqAyY+a"
+	protocol="application/pgp-signature"; boundary="yiup30KVCQiHUZFC"
 Content-Disposition: inline
 
 
---oxV4ZoPwBLqAyY+a
-Content-Type: text/plain; charset=utf-8
+--yiup30KVCQiHUZFC
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 29, 2012 at 10:53:32AM +0200, Prchal Ji=C5=99=C3=AD wrote:
-> This patch adds missing deemphasis switch.
->=20
-> Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+On Wed, Jul 04, 2012 at 04:11:12PM +0530, Rajeev Kumar wrote:
+> The STA529 is a digital stereo class-D audio amplifier. It includes an
+> audio DSP, an ST proprietary high-efficiency class-D driver and CMOS
+> power output stage. It is intended for high-efficiency
+> digital-to-power-audio conversion for portable applications.
 
-This doesn't apply, probably due to whatever issue affected your other
-patch.  Could you please try to fix, I guess whatever you did for the
-other patches will address the issue?
+Applied, thanks.
 
---oxV4ZoPwBLqAyY+a
+--yiup30KVCQiHUZFC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP9B4rAAoJEBus8iNuMP3dAuUP/RHCOZ2hNziyhcsUPEo1i+2w
-6VjrnHlV72FLiEYwcfUvmSsnRun1rM546MRO924ruJJERBJVAV91XLUmDkOSFx5m
-lVHjPq6nFHJ5rpv53ZqEp8pS0kkQhO28aiYLypYxL2UIyMWKwr5+WqLcjjEQOMqX
-C6w+PY3KWNOg6U/2Sif9Uhsw9qEh8HGJCD8pZPMQtfYZydmjt3/GVcolG+pPVY3N
-z2DhdTFpBx3ociUE2ikqGsbVo1xGG34vkDfmFl9phPISzDQTBf01VV7Av3hbLqsQ
-KF7g528CrX4C5dq1kkyMtlbjt/tm3peXDbCKT/jRRDFjjFpVF6VA0JYKehfvtCds
-y3o78X9ChsL/0SGOLRApqIyFJos4pgDpQD634GG12ie2l2OKeh69zUaGQ6c/VGSS
-iPjNVDy+Ov+eQRy30tzAY2rS+QRJJQippUFhavMaZHF5ZAnzFodlLqPVtLQ06ndU
-lLnp0asaB10LfNcwvESxEuLW80CjeFcu2YPWfYmpRLwplbTnWaHuKMfvmyAd7VKb
-Om80UC/qd5XNiY+TrVigxE1YqUFX+1L4FsIS4+xM0XcuZlG4aZ3C2dNYQK4gfMm+
-DtxlOLXmW8WeN0kORYSpjUVoIThkB0Nx1akpPpwThR7s/sSl3HoDF8c4BWxtpV7z
-dfWJ9jEi63iZNe1bWk07
-=lwKj
+iQIcBAEBAgAGBQJP9B/LAAoJEBus8iNuMP3d3UgP/RfSfP/iLDOfRqtL/F8U5BQs
+9FdJXlI/jzmEvlqzJv4xJq0l8xSTCasQaMnCS7DTYQqr1vfELyuYkNp2Wq85AfXS
+A6r8qOWk37tqgJUHCsHfIGTgfSAjgl0z+PK2U5/fQ2giAUFUGUJ2l/E/k7ZBMqfV
+YvSTetETUqMk/UUmETbr3X6U2S6QHTkXWkDnTE2e0OIHSipNoK2cs75lUiGu8M+h
+yWqUPiixdTZGxDHjyWPlIR28e8OjlTXTDs8QHVw173e9Am5eeLPkpWK2MOH/pON4
+U/dTD1IisOLm4/XfiB/3qNZu0CYlvdERsZ4HitI9MK4l9vSlJOqDYcIMKe5aU3xp
+pInZAbhQksevE7XgbfPm5ZgerPbqKfMN1R6hhdcjYRQODW0xpMV4GeQp3j+IeUTh
+SgDZHVg+HlFS2YTOqS1a3exj50OreKRWvrgRjsFaBtQbKTgnb1DG4xtwd0ROsm57
+lvuUo84Ex+yoU4WTkTbU5ld8PHY2/NlIwPptacjG0JXBuTeWbSabpOr6W8Ru7ZN3
+Tm25ZDFCT5aWitTNSegTmU43vRgnuMvhI/ogzqiEksOD3pa3HxCIU96SchSdiyg9
+Wa86Y6u6kxHhuIa0FyibxX2sEu3+9SaLhoAm+SjjmYK7DB6+7kBJ22zxFtpOvmX6
+Qw1cnknvHK8srjPLX5CI
+=bgfO
 -----END PGP SIGNATURE-----
 
---oxV4ZoPwBLqAyY+a--
+--yiup30KVCQiHUZFC--
 
---===============5460693819820643189==
+--===============0897712309432416853==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5460693819820643189==--
+--===============0897712309432416853==--
