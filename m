@@ -1,17 +1,19 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH V5 1/2] ASoC: STA529: Add support for STA529
-	Audio Codec
-Date: Wed, 4 Jul 2012 16:11:12 +0530
-Message-ID: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
+Subject: [PATCH V5 2/2] ASoC: SPEAr spdif_out: Add spdif out
+	support
+Date: Wed, 4 Jul 2012 16:11:13 +0530
+Message-ID: <3bb309a530d271fb1504b9d3f935d375de1f9e86.1341397193.git.rajeev-dlh.kumar@st.com>
+References: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
-	[207.126.144.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 220F610437E
+Received: from eu1sys200aog104.obsmtp.com (eu1sys200aog104.obsmtp.com
+	[207.126.144.117])
+	by alsa0.perex.cz (Postfix) with ESMTP id 580BF104391
 	for <alsa-devel@alsa-project.org>;
 	Wed,  4 Jul 2012 12:41:20 +0200 (CEST)
+In-Reply-To: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,77 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
+Cc: Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The STA529 is a digital stereo class-D audio amplifier. It includes an
-audio DSP, an ST proprietary high-efficiency class-D driver and CMOS
-power output stage. It is intended for high-efficiency
-digital-to-power-audio conversion for portable applications.
+From: Vipin Kumar <vipin.kumar@st.com>
 
+This patch implements the spdif out driver for ST peripheral. This
+peripheral implements IEC60958 standard
+
+Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 ---
- sound/soc/codecs/Kconfig  |    4 +
- sound/soc/codecs/Makefile |    2 +
- sound/soc/codecs/sta529.c |  441 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 447 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/sta529.c
+ sound/soc/spear/spdif_out.c      |  389 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/spdif_out_regs.h |   79 ++++++++
+ 2 files changed, 468 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/spear/spdif_out.c
+ create mode 100644 sound/soc/spear/spdif_out_regs.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 1de24cc..bbcb038 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -57,6 +57,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_SPDIF
- 	select SND_SOC_SSM2602 if SND_SOC_I2C_AND_SPI
- 	select SND_SOC_STA32X if I2C
-+	select SND_SOC_STA529 if I2C
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
- 	select SND_SOC_TLV320AIC23 if I2C
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
-@@ -284,6 +285,9 @@ config SND_SOC_SSM2602
- config SND_SOC_STA32X
- 	tristate
- 
-+config SND_SOC_STA529
-+	tristate
-+
- config SND_SOC_STAC9766
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index acf8088..8da3d22 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -49,6 +49,7 @@ snd-soc-spdif-tx-objs := spdif_transciever.o
- snd-soc-spdif-rx-objs := spdif_receiver.o
- snd-soc-ssm2602-objs := ssm2602.o
- snd-soc-sta32x-objs := sta32x.o
-+snd-soc-sta529-objs := sta529.o
- snd-soc-stac9766-objs := stac9766.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic26-objs := tlv320aic26.o
-@@ -163,6 +164,7 @@ obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
- obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif-rx.o snd-soc-spdif-tx.o
- obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
- obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
-+obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
- obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
 new file mode 100644
-index 0000000..a9f34c7
+index 0000000..5eac4cd
 --- /dev/null
-+++ b/sound/soc/codecs/sta529.c
-@@ -0,0 +1,441 @@
++++ b/sound/soc/spear/spdif_out.c
+@@ -0,0 +1,389 @@
 +/*
-+ * ASoC codec driver for spear platform
-+ *
-+ * sound/soc/codecs/sta529.c -- spear ALSA Soc codec driver
++ * ALSA SoC SPDIF Out Audio Layer for spear processors
 + *
 + * Copyright (C) 2012 ST Microelectronics
-+ * Rajeev Kumar <rajeev-dlh.kumar@st.com>
++ * Vipin Kumar <vipin.kumar@st.com>
 + *
 + * This file is licensed under the terms of the GNU General Public
 + * License version 2. This program is licensed "as is" without any
@@ -100,432 +59,467 @@ index 0000000..a9f34c7
 + */
 +
 +#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
 +#include <linux/init.h>
-+#include <linux/i2c.h>
 +#include <linux/io.h>
++#include <linux/ioport.h>
 +#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/pm.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
++#include <linux/platform_device.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
++#include <sound/spear_dma.h>
++#include <sound/spear_spdif.h>
++#include "spdif_out_regs.h"
 +
-+/* STA529 Register offsets */
-+#define	 STA529_FFXCFG0		0x00
-+#define	 STA529_FFXCFG1		0x01
-+#define	 STA529_MVOL		0x02
-+#define	 STA529_LVOL		0x03
-+#define	 STA529_RVOL		0x04
-+#define	 STA529_TTF0		0x05
-+#define	 STA529_TTF1		0x06
-+#define	 STA529_TTP0		0x07
-+#define	 STA529_TTP1		0x08
-+#define	 STA529_S2PCFG0		0x0A
-+#define	 STA529_S2PCFG1		0x0B
-+#define	 STA529_P2SCFG0		0x0C
-+#define	 STA529_P2SCFG1		0x0D
-+#define	 STA529_PLLCFG0		0x14
-+#define	 STA529_PLLCFG1		0x15
-+#define	 STA529_PLLCFG2		0x16
-+#define	 STA529_PLLCFG3		0x17
-+#define	 STA529_PLLPFE		0x18
-+#define	 STA529_PLLST		0x19
-+#define	 STA529_ADCCFG		0x1E /*mic_select*/
-+#define	 STA529_CKOCFG		0x1F
-+#define	 STA529_MISC		0x20
-+#define	 STA529_PADST0		0x21
-+#define	 STA529_PADST1		0x22
-+#define	 STA529_FFXST		0x23
-+#define	 STA529_PWMIN1		0x2D
-+#define	 STA529_PWMIN2		0x2E
-+#define	 STA529_POWST		0x32
-+
-+#define STA529_MAX_REGISTER	0x32
-+
-+#define STA529_RATES		(SNDRV_PCM_RATE_8000 | \
-+				SNDRV_PCM_RATE_11025 | \
-+				SNDRV_PCM_RATE_16000 | \
-+				SNDRV_PCM_RATE_22050 | \
-+				SNDRV_PCM_RATE_32000 | \
-+				SNDRV_PCM_RATE_44100 | \
-+				SNDRV_PCM_RATE_48000)
-+
-+#define STA529_FORMAT		(SNDRV_PCM_FMTBIT_S16_LE | \
-+				SNDRV_PCM_FMTBIT_S24_LE | \
-+				SNDRV_PCM_FMTBIT_S32_LE)
-+#define	S2PC_VALUE		0x98
-+#define CLOCK_OUT		0x60
-+#define LEFT_J_DATA_FORMAT	0x10
-+#define I2S_DATA_FORMAT		0x12
-+#define RIGHT_J_DATA_FORMAT	0x14
-+#define CODEC_MUTE_VAL		0x80
-+
-+#define POWER_CNTLMSAK		0x40
-+#define POWER_STDBY		0x40
-+#define FFX_MASK		0x80
-+#define FFX_OFF			0x80
-+#define POWER_UP		0x00
-+#define FFX_CLK_ENB		0x01
-+#define FFX_CLK_DIS		0x00
-+#define FFX_CLK_MSK		0x01
-+#define PLAY_FREQ_RANGE_MSK	0x70
-+#define CAP_FREQ_RANGE_MSK	0x0C
-+#define PDATA_LEN_MSK		0xC0
-+#define BCLK_TO_FS_MSK		0x30
-+#define AUDIO_MUTE_MSK		0x80
-+
-+static const struct reg_default sta529_reg_defaults[] = {
-+	{ 0,  0x35 },     /* R0   - FFX Configuration reg 0 */
-+	{ 1,  0xc8 },     /* R1   - FFX Configuration reg 1 */
-+	{ 2,  0x50 },     /* R2   - Master Volume */
-+	{ 3,  0x00 },     /* R3   - Left Volume */
-+	{ 4,  0x00 },     /* R4  -  Right Volume */
-+	{ 10, 0xb2 },     /* R10  - S2P Config Reg 0 */
-+	{ 11, 0x41 },     /* R11  - S2P Config Reg 1 */
-+	{ 12, 0x92 },     /* R12  - P2S Config Reg 0 */
-+	{ 13, 0x41 },     /* R13  - P2S Config Reg 1 */
-+	{ 30, 0xd2 },     /* R30  - ADC Config Reg */
-+	{ 31, 0x40 },     /* R31  - clock Out Reg */
-+	{ 32, 0x21 },     /* R32  - Misc Register */
++struct spdif_out_params {
++	u32 rate;
++	u32 core_freq;
++	u32 mute;
 +};
 +
-+struct sta529 {
-+	struct regmap *regmap;
++struct spdif_out_dev {
++	struct clk *clk;
++	struct spear_dma_data dma_params;
++	struct spdif_out_params saved_params;
++	u32 running;
++	void __iomem *io_base;
 +};
 +
-+static bool sta529_readable(struct device *dev, unsigned int reg)
++static void spdif_out_configure(struct spdif_out_dev *host)
 +{
-+	switch (reg) {
++	writel(SPDIF_OUT_RESET, host->io_base + SPDIF_OUT_SOFT_RST);
++	mdelay(1);
++	writel(readl(host->io_base + SPDIF_OUT_SOFT_RST) & ~SPDIF_OUT_RESET,
++			host->io_base + SPDIF_OUT_SOFT_RST);
 +
-+	case STA529_FFXCFG0:
-+	case STA529_FFXCFG1:
-+	case STA529_MVOL:
-+	case STA529_LVOL:
-+	case STA529_RVOL:
-+	case STA529_S2PCFG0:
-+	case STA529_S2PCFG1:
-+	case STA529_P2SCFG0:
-+	case STA529_P2SCFG1:
-+	case STA529_ADCCFG:
-+	case STA529_CKOCFG:
-+	case STA529_MISC:
-+		return true;
-+	default:
-+		return false;
-+	}
++	writel(SPDIF_OUT_FDMA_TRIG_16 | SPDIF_OUT_MEMFMT_16_16 |
++			SPDIF_OUT_VALID_HW | SPDIF_OUT_USER_HW |
++			SPDIF_OUT_CHNLSTA_HW | SPDIF_OUT_PARITY_HW,
++			host->io_base + SPDIF_OUT_CFG);
++
++	writel(0x7F, host->io_base + SPDIF_OUT_INT_STA_CLR);
++	writel(0x7F, host->io_base + SPDIF_OUT_INT_EN_CLR);
 +}
 +
-+
-+static const char *pwm_mode_text[] = { "Binary", "Headphone", "Ternary",
-+	"Phase-shift"};
-+
-+static const DECLARE_TLV_DB_SCALE(out_gain_tlv, -9150, 50, 0);
-+static const DECLARE_TLV_DB_SCALE(master_vol_tlv, -12750, 50, 0);
-+static const SOC_ENUM_SINGLE_DECL(pwm_src, STA529_FFXCFG1, 4, pwm_mode_text);
-+
-+static const struct snd_kcontrol_new sta529_snd_controls[] = {
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume", STA529_LVOL, STA529_RVOL, 0,
-+			127, 0, out_gain_tlv),
-+	SOC_SINGLE_TLV("Master Playback Volume", STA529_MVOL, 0, 127, 1,
-+			master_vol_tlv),
-+	SOC_ENUM("PWM Select", pwm_src),
-+};
-+
-+static int sta529_set_bias_level(struct snd_soc_codec *codec, enum
-+		snd_soc_bias_level level)
++static int spdif_out_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *cpu_dai)
 +{
-+	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++	int ret;
 +
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+	case SND_SOC_BIAS_PREPARE:
-+		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
-+				POWER_UP);
-+		snd_soc_update_bits(codec, STA529_MISC,	FFX_CLK_MSK,
-+				FFX_CLK_ENB);
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
-+			regcache_sync(sta529->regmap);
-+		snd_soc_update_bits(codec, STA529_FFXCFG0,
-+					POWER_CNTLMSAK, POWER_STDBY);
-+		/* Making FFX output to zero */
-+		snd_soc_update_bits(codec, STA529_FFXCFG0, FFX_MASK,
-+				FFX_OFF);
-+		snd_soc_update_bits(codec, STA529_MISC, FFX_CLK_MSK,
-+				FFX_CLK_DIS);
-+		break;
-+	case SND_SOC_BIAS_OFF:
-+		break;
-+	}
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return -EINVAL;
 +
-+	/*
-+	 * store the label for powers down audio subsystem for suspend.This is
-+	 * used by soc core layer
-+	 */
-+	codec->dapm.bias_level = level;
++	snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)&host->dma_params);
++
++	ret = clk_enable(host->clk);
++	if (ret)
++		return ret;
++
++	host->running = true;
++	spdif_out_configure(host);
 +
 +	return 0;
-+
 +}
 +
-+static int sta529_hw_params(struct snd_pcm_substream *substream,
++static void spdif_out_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
++
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return;
++
++	clk_disable(host->clk);
++	host->running = false;
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
++}
++
++static void spdif_out_clock(struct spdif_out_dev *host, u32 core_freq,
++		u32 rate)
++{
++	u32 divider, ctrl;
++
++	clk_set_rate(host->clk, core_freq);
++	divider = DIV_ROUND_CLOSEST(clk_get_rate(host->clk), (rate * 128));
++
++	ctrl = readl(host->io_base + SPDIF_OUT_CTRL);
++	ctrl &= ~SPDIF_DIVIDER_MASK;
++	ctrl |= (divider << SPDIF_DIVIDER_SHIFT) & SPDIF_DIVIDER_MASK;
++	writel(ctrl, host->io_base + SPDIF_OUT_CTRL);
++}
++
++static int spdif_out_hw_params(struct snd_pcm_substream *substream,
 +		struct snd_pcm_hw_params *params,
 +		struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int pdata, play_freq_val, record_freq_val;
-+	int bclk_to_fs_ratio;
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
++	u32 rate, core_freq;
 +
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		pdata = 1;
-+		bclk_to_fs_ratio = 0;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		pdata = 2;
-+		bclk_to_fs_ratio = 1;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		pdata = 3;
-+		bclk_to_fs_ratio = 2;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Unsupported format\n");
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
 +		return -EINVAL;
-+	}
 +
-+	switch (params_rate(params)) {
++	rate = params_rate(params);
++
++	switch (rate) {
 +	case 8000:
-+	case 11025:
-+		play_freq_val = 0;
-+		record_freq_val = 2;
-+		break;
 +	case 16000:
-+	case 22050:
-+		play_freq_val = 1;
-+		record_freq_val = 0;
-+		break;
-+
 +	case 32000:
++	case 64000:
++		/*
++		 * The clock is multiplied by 10 to bring it to feasible range
++		 * of frequencies for sscg
++		 */
++		core_freq = 64000 * 128 * 10;	/* 81.92 MHz */
++		break;
++	case 5512:
++	case 11025:
++	case 22050:
 +	case 44100:
++	case 88200:
++	case 176400:
++		core_freq = 176400 * 128;	/* 22.5792 MHz */
++		break;
 +	case 48000:
-+		play_freq_val = 2;
-+		record_freq_val = 0;
-+		break;
++	case 96000:
++	case 192000:
 +	default:
-+		dev_err(codec->dev, "Unsupported rate\n");
++		core_freq = 192000 * 128;	/* 24.576 MHz */
++		break;
++	}
++
++	spdif_out_clock(host, core_freq, rate);
++	host->saved_params.core_freq = core_freq;
++	host->saved_params.rate = rate;
++
++	return 0;
++}
++
++static int spdif_out_trigger(struct snd_pcm_substream *substream, int cmd,
++		struct snd_soc_dai *dai)
++{
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
++	u32 ctrl;
++	int ret = 0;
++
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
 +		return -EINVAL;
-+	}
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		snd_soc_update_bits(codec, STA529_S2PCFG1, PDATA_LEN_MSK,
-+				pdata << 6);
-+		snd_soc_update_bits(codec, STA529_S2PCFG1, BCLK_TO_FS_MSK,
-+				bclk_to_fs_ratio << 4);
-+		snd_soc_update_bits(codec, STA529_MISC, PLAY_FREQ_RANGE_MSK,
-+				play_freq_val << 4);
-+	} else {
-+		snd_soc_update_bits(codec, STA529_P2SCFG1, PDATA_LEN_MSK,
-+				pdata << 6);
-+		snd_soc_update_bits(codec, STA529_P2SCFG1, BCLK_TO_FS_MSK,
-+				bclk_to_fs_ratio << 4);
-+		snd_soc_update_bits(codec, STA529_MISC, CAP_FREQ_RANGE_MSK,
-+				record_freq_val << 2);
-+	}
-+
-+	return 0;
-+}
-+
-+static int sta529_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	u8 val = 0;
-+
-+	if (mute)
-+		val |= CODEC_MUTE_VAL;
-+
-+	snd_soc_update_bits(dai->codec, STA529_FFXCFG0, AUDIO_MUTE_MSK, val);
-+
-+	return 0;
-+}
-+
-+static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u8 mode = 0;
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		mode = LEFT_J_DATA_FORMAT;
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++			ctrl = readl(host->io_base + SPDIF_OUT_CTRL);
++			ctrl &= ~SPDIF_OPMODE_MASK;
++			if (!host->saved_params.mute)
++				ctrl |= SPDIF_OPMODE_AUD_DATA |
++					SPDIF_STATE_NORMAL;
++			else
++				ctrl |= SPDIF_OPMODE_MUTE_PCM;
++			writel(ctrl, host->io_base + SPDIF_OUT_CTRL);
 +		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		mode = I2S_DATA_FORMAT;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ctrl = readl(host->io_base + SPDIF_OUT_CTRL);
++		ctrl &= ~SPDIF_OPMODE_MASK;
++		ctrl |= SPDIF_OPMODE_OFF;
++		writel(ctrl, host->io_base + SPDIF_OUT_CTRL);
 +		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		mode = RIGHT_J_DATA_FORMAT;
-+		break;
++
 +	default:
-+		return -EINVAL;
++		ret = -EINVAL;
++		break;
 +	}
-+
-+	snd_soc_update_bits(codec, STA529_S2PCFG0, 0x0D, mode);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops sta529_dai_ops = {
-+	.hw_params	=	sta529_hw_params,
-+	.set_fmt	=	sta529_set_dai_fmt,
-+	.digital_mute	=	sta529_mute,
-+};
-+
-+static struct snd_soc_dai_driver sta529_dai = {
-+	.name = "sta529-audio",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = STA529_RATES,
-+		.formats = STA529_FORMAT,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = STA529_RATES,
-+		.formats = STA529_FORMAT,
-+	},
-+	.ops	= &sta529_dai_ops,
-+};
-+
-+static int sta529_probe(struct snd_soc_codec *codec)
-+{
-+	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	codec->control_data = sta529->regmap;
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
-+
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	return 0;
-+}
-+
-+/* power down chip */
-+static int sta529_remove(struct snd_soc_codec *codec)
-+{
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+
-+	return 0;
-+}
-+
-+static int sta529_suspend(struct snd_soc_codec *codec)
-+{
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+
-+	return 0;
-+}
-+
-+static int sta529_resume(struct snd_soc_codec *codec)
-+{
-+	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_codec_driver sta529_codec_driver = {
-+	.probe = sta529_probe,
-+	.remove = sta529_remove,
-+	.set_bias_level = sta529_set_bias_level,
-+	.suspend = sta529_suspend,
-+	.resume = sta529_resume,
-+	.controls = sta529_snd_controls,
-+	.num_controls = ARRAY_SIZE(sta529_snd_controls),
-+};
-+
-+static const struct regmap_config sta529_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = STA529_MAX_REGISTER,
-+	.readable_reg = sta529_readable,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = sta529_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(sta529_reg_defaults),
-+};
-+
-+static __devinit int sta529_i2c_probe(struct i2c_client *i2c,
-+		const struct i2c_device_id *id)
-+{
-+	struct sta529 *sta529;
-+	int ret;
-+
-+	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-+		return -EINVAL;
-+
-+	sta529 = devm_kzalloc(&i2c->dev, sizeof(struct sta529), GFP_KERNEL);
-+	if (sta529 == NULL) {
-+		dev_err(&i2c->dev, "Can not allocate memory\n");
-+		return -ENOMEM;
-+	}
-+
-+	sta529->regmap = devm_regmap_init_i2c(i2c, &sta529_regmap);
-+	if (IS_ERR(sta529->regmap)) {
-+		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
-+		return PTR_ERR(sta529->regmap);
-+	}
-+
-+	i2c_set_clientdata(i2c, sta529);
-+
-+	ret = snd_soc_register_codec(&i2c->dev,
-+			&sta529_codec_driver, &sta529_dai, 1);
-+	if (ret != 0)
-+		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
-+
 +	return ret;
 +}
 +
-+static int __devexit sta529_i2c_remove(struct i2c_client *client)
++static int spdif_digital_mute(struct snd_soc_dai *dai, int mute)
 +{
-+	snd_soc_unregister_codec(&client->dev);
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
++	u32 val;
++
++	host->saved_params.mute = mute;
++	val = readl(host->io_base + SPDIF_OUT_CTRL);
++	val &= ~SPDIF_OPMODE_MASK;
++
++	if (mute)
++		val |= SPDIF_OPMODE_MUTE_PCM;
++	else {
++		if (host->running)
++			val |= SPDIF_OPMODE_AUD_DATA | SPDIF_STATE_NORMAL;
++		else
++			val |= SPDIF_OPMODE_OFF;
++	}
++
++	writel(val, host->io_base + SPDIF_OUT_CTRL);
++	return 0;
++}
++
++static int spdif_mute_get(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_card *card = codec->card;
++	struct snd_soc_pcm_runtime *rtd = card->rtd;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++
++	ucontrol->value.integer.value[0] = host->saved_params.mute;
++	return 0;
++}
++
++static int spdif_mute_put(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_card *card = codec->card;
++	struct snd_soc_pcm_runtime *rtd = card->rtd;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++
++	if (host->saved_params.mute == ucontrol->value.integer.value[0])
++		return 0;
++
++	spdif_digital_mute(cpu_dai, ucontrol->value.integer.value[0]);
++
++	return 1;
++}
++static const struct snd_kcontrol_new spdif_out_controls[] = {
++	SOC_SINGLE_BOOL_EXT("IEC958 Playback Switch", 0,
++			spdif_mute_get, spdif_mute_put),
++};
++
++int spdif_soc_dai_probe(struct snd_soc_dai *dai)
++{
++	return snd_soc_add_dai_controls(dai, spdif_out_controls,
++				ARRAY_SIZE(spdif_out_controls));
++}
++
++static const struct snd_soc_dai_ops spdif_out_dai_ops = {
++	.digital_mute	= spdif_digital_mute,
++	.startup	= spdif_out_startup,
++	.shutdown	= spdif_out_shutdown,
++	.trigger	= spdif_out_trigger,
++	.hw_params	= spdif_out_hw_params,
++};
++
++static struct snd_soc_dai_driver spdif_out_dai = {
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 | \
++				 SNDRV_PCM_RATE_192000),
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.probe = spdif_soc_dai_probe,
++	.ops = &spdif_out_dai_ops,
++};
++
++static int spdif_out_probe(struct platform_device *pdev)
++{
++	struct spdif_out_dev *host;
++	struct spear_spdif_platform_data *pdata;
++	struct resource *res;
++	int ret;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
++
++	if (!devm_request_mem_region(&pdev->dev, res->start,
++				resource_size(res), pdev->name)) {
++		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
++		return -ENOENT;
++	}
++
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
++	if (!host) {
++		dev_warn(&pdev->dev, "kzalloc fail\n");
++		return -ENOMEM;
++	}
++
++	host->io_base = devm_ioremap(&pdev->dev, res->start,
++				resource_size(res));
++	if (!host->io_base) {
++		dev_warn(&pdev->dev, "ioremap failed\n");
++		return -ENOMEM;
++	}
++
++	host->clk = clk_get(&pdev->dev, NULL);
++	if (IS_ERR(host->clk))
++		return PTR_ERR(host->clk);
++
++	pdata = dev_get_platdata(&pdev->dev);
++
++	host->dma_params.data = pdata->dma_params;
++	host->dma_params.addr = res->start + SPDIF_OUT_FIFO_DATA;
++	host->dma_params.max_burst = 16;
++	host->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	host->dma_params.filter = pdata->filter;
++
++	dev_set_drvdata(&pdev->dev, host);
++
++	ret = snd_soc_register_dai(&pdev->dev, &spdif_out_dai);
++	if (ret != 0) {
++		clk_put(host->clk);
++		return ret;
++	}
 +
 +	return 0;
 +}
 +
-+static const struct i2c_device_id sta529_i2c_id[] = {
-+	{ "sta529", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, sta529_i2c_id);
++static int spdif_out_remove(struct platform_device *pdev)
++{
++	struct spdif_out_dev *host = dev_get_drvdata(&pdev->dev);
 +
-+static struct i2c_driver sta529_i2c_driver = {
-+	.driver = {
-+		.name = "sta529",
-+		.owner = THIS_MODULE,
++	snd_soc_unregister_dai(&pdev->dev);
++	dev_set_drvdata(&pdev->dev, NULL);
++
++	clk_put(host->clk);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int spdif_out_suspend(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct spdif_out_dev *host = dev_get_drvdata(&pdev->dev);
++
++	if (host->running)
++		clk_disable(host->clk);
++
++	return 0;
++}
++
++static int spdif_out_resume(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct spdif_out_dev *host = dev_get_drvdata(&pdev->dev);
++
++	if (host->running) {
++		clk_enable(host->clk);
++		spdif_out_configure(host);
++		spdif_out_clock(host, host->saved_params.core_freq,
++				host->saved_params.rate);
++	}
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(spdif_out_dev_pm_ops, spdif_out_suspend, \
++		spdif_out_resume);
++
++#define SPDIF_OUT_DEV_PM_OPS (&spdif_out_dev_pm_ops)
++
++#else
++#define SPDIF_OUT_DEV_PM_OPS NULL
++
++#endif
++
++static struct platform_driver spdif_out_driver = {
++	.probe		= spdif_out_probe,
++	.remove		= spdif_out_remove,
++	.driver		= {
++		.name	= "spdif-out",
++		.owner	= THIS_MODULE,
++		.pm	= SPDIF_OUT_DEV_PM_OPS,
 +	},
-+	.probe		= sta529_i2c_probe,
-+	.remove		= __devexit_p(sta529_i2c_remove),
-+	.id_table	= sta529_i2c_id,
 +};
 +
-+module_i2c_driver(sta529_i2c_driver);
++module_platform_driver(spdif_out_driver);
 +
-+MODULE_DESCRIPTION("ASoC STA529 codec driver");
-+MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
++MODULE_AUTHOR("Vipin Kumar <vipin.kumar@st.com>");
++MODULE_DESCRIPTION("SPEAr SPDIF OUT SoC Interface");
 +MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:spdif_out");
+diff --git a/sound/soc/spear/spdif_out_regs.h b/sound/soc/spear/spdif_out_regs.h
+new file mode 100644
+index 0000000..a5e5332
+--- /dev/null
++++ b/sound/soc/spear/spdif_out_regs.h
+@@ -0,0 +1,79 @@
++/*
++ * SPEAr SPDIF OUT controller header file
++ *
++ * Copyright (ST) 2011 Vipin Kumar (vipin.kumar@st.com)
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ */
++
++#ifndef SPDIF_OUT_REGS_H
++#define SPDIF_OUT_REGS_H
++
++#define SPDIF_OUT_SOFT_RST	0x00
++	#define SPDIF_OUT_RESET		(1 << 0)
++#define SPDIF_OUT_FIFO_DATA	0x04
++#define SPDIF_OUT_INT_STA	0x08
++#define SPDIF_OUT_INT_STA_CLR	0x0C
++	#define SPDIF_INT_UNDERFLOW	(1 << 0)
++	#define SPDIF_INT_EODATA	(1 << 1)
++	#define SPDIF_INT_EOBLOCK	(1 << 2)
++	#define SPDIF_INT_EOLATENCY	(1 << 3)
++	#define SPDIF_INT_EOPD_DATA	(1 << 4)
++	#define SPDIF_INT_MEMFULLREAD	(1 << 5)
++	#define SPDIF_INT_EOPD_PAUSE	(1 << 6)
++
++#define SPDIF_OUT_INT_EN	0x10
++#define SPDIF_OUT_INT_EN_SET	0x14
++#define SPDIF_OUT_INT_EN_CLR	0x18
++#define SPDIF_OUT_CTRL		0x1C
++	#define SPDIF_OPMODE_MASK	(7 << 0)
++	#define SPDIF_OPMODE_OFF	(0 << 0)
++	#define SPDIF_OPMODE_MUTE_PCM	(1 << 0)
++	#define SPDIF_OPMODE_MUTE_PAUSE	(2 << 0)
++	#define SPDIF_OPMODE_AUD_DATA	(3 << 0)
++	#define SPDIF_OPMODE_ENCODE	(4 << 0)
++	#define SPDIF_STATE_NORMAL	(1 << 3)
++	#define SPDIF_DIVIDER_MASK	(0xff << 5)
++	#define SPDIF_DIVIDER_SHIFT	(5)
++	#define SPDIF_SAMPLEREAD_MASK	(0x1ffff << 15)
++	#define SPDIF_SAMPLEREAD_SHIFT	(15)
++#define SPDIF_OUT_STA		0x20
++#define SPDIF_OUT_PA_PB		0x24
++#define SPDIF_OUT_PC_PD		0x28
++#define SPDIF_OUT_CL1		0x2C
++#define SPDIF_OUT_CR1		0x30
++#define SPDIF_OUT_CL2_CR2_UV	0x34
++#define SPDIF_OUT_PAUSE_LAT	0x38
++#define SPDIF_OUT_FRMLEN_BRST	0x3C
++#define SPDIF_OUT_CFG		0x40
++	#define SPDIF_OUT_MEMFMT_16_0	(0 << 5)
++	#define SPDIF_OUT_MEMFMT_16_16	(1 << 5)
++	#define SPDIF_OUT_VALID_DMA	(0 << 3)
++	#define SPDIF_OUT_VALID_HW	(1 << 3)
++	#define SPDIF_OUT_USER_DMA	(0 << 2)
++	#define SPDIF_OUT_USER_HW	(1 << 2)
++	#define SPDIF_OUT_CHNLSTA_DMA	(0 << 1)
++	#define SPDIF_OUT_CHNLSTA_HW	(1 << 1)
++	#define SPDIF_OUT_PARITY_HW	(0 << 0)
++	#define SPDIF_OUT_PARITY_DMA	(1 << 0)
++	#define SPDIF_OUT_FDMA_TRIG_2	(2 << 8)
++	#define SPDIF_OUT_FDMA_TRIG_6	(6 << 8)
++	#define SPDIF_OUT_FDMA_TRIG_8	(8 << 8)
++	#define SPDIF_OUT_FDMA_TRIG_10	(10 << 8)
++	#define SPDIF_OUT_FDMA_TRIG_12	(12 << 8)
++	#define SPDIF_OUT_FDMA_TRIG_16	(16 << 8)
++	#define SPDIF_OUT_FDMA_TRIG_18	(18 << 8)
++
++#endif /* SPDIF_OUT_REGS_H */
 -- 
 1.7.0.4
