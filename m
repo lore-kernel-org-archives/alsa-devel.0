@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V5 1/2] ASoC: STA529: Add support for
-	STA529 Audio Codec
-Date: Wed, 4 Jul 2012 11:49:54 +0100
-Message-ID: <20120704104953.GK4111@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V5 2/2] ASoC: SPEAr spdif_out: Add spdif
+	out support
+Date: Wed, 4 Jul 2012 11:53:17 +0100
+Message-ID: <20120704105317.GL4111@opensource.wolfsonmicro.com>
 References: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
+	<3bb309a530d271fb1504b9d3f935d375de1f9e86.1341397193.git.rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0897712309432416853=="
+Content-Type: multipart/mixed; boundary="===============7428435270314762436=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3BEA2104396
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F10891043BD
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2012 12:49:55 +0200 (CEST)
-In-Reply-To: <84c88e8a2cba8eb19bb3cf8e61dbb31b48207e7c.1341397193.git.rajeev-dlh.kumar@st.com>
+	Wed,  4 Jul 2012 12:53:18 +0200 (CEST)
+In-Reply-To: <3bb309a530d271fb1504b9d3f935d375de1f9e86.1341397193.git.rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Cc: tiwai@suse.de, Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0897712309432416853==
+--===============7428435270314762436==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yiup30KVCQiHUZFC"
+	protocol="application/pgp-signature"; boundary="fDERRRNgB4on1jOB"
 Content-Disposition: inline
 
 
---yiup30KVCQiHUZFC
+--fDERRRNgB4on1jOB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 04, 2012 at 04:11:12PM +0530, Rajeev Kumar wrote:
-> The STA529 is a digital stereo class-D audio amplifier. It includes an
-> audio DSP, an ST proprietary high-efficiency class-D driver and CMOS
-> power output stage. It is intended for high-efficiency
-> digital-to-power-audio conversion for portable applications.
+On Wed, Jul 04, 2012 at 04:11:13PM +0530, Rajeev Kumar wrote:
+> From: Vipin Kumar <vipin.kumar@st.com>
+>=20
+> This patch implements the spdif out driver for ST peripheral. This
+> peripheral implements IEC60958 standard
 
 Applied, thanks.
 
---yiup30KVCQiHUZFC
+--fDERRRNgB4on1jOB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP9B/LAAoJEBus8iNuMP3d3UgP/RfSfP/iLDOfRqtL/F8U5BQs
-9FdJXlI/jzmEvlqzJv4xJq0l8xSTCasQaMnCS7DTYQqr1vfELyuYkNp2Wq85AfXS
-A6r8qOWk37tqgJUHCsHfIGTgfSAjgl0z+PK2U5/fQ2giAUFUGUJ2l/E/k7ZBMqfV
-YvSTetETUqMk/UUmETbr3X6U2S6QHTkXWkDnTE2e0OIHSipNoK2cs75lUiGu8M+h
-yWqUPiixdTZGxDHjyWPlIR28e8OjlTXTDs8QHVw173e9Am5eeLPkpWK2MOH/pON4
-U/dTD1IisOLm4/XfiB/3qNZu0CYlvdERsZ4HitI9MK4l9vSlJOqDYcIMKe5aU3xp
-pInZAbhQksevE7XgbfPm5ZgerPbqKfMN1R6hhdcjYRQODW0xpMV4GeQp3j+IeUTh
-SgDZHVg+HlFS2YTOqS1a3exj50OreKRWvrgRjsFaBtQbKTgnb1DG4xtwd0ROsm57
-lvuUo84Ex+yoU4WTkTbU5ld8PHY2/NlIwPptacjG0JXBuTeWbSabpOr6W8Ru7ZN3
-Tm25ZDFCT5aWitTNSegTmU43vRgnuMvhI/ogzqiEksOD3pa3HxCIU96SchSdiyg9
-Wa86Y6u6kxHhuIa0FyibxX2sEu3+9SaLhoAm+SjjmYK7DB6+7kBJ22zxFtpOvmX6
-Qw1cnknvHK8srjPLX5CI
-=bgfO
+iQIcBAEBAgAGBQJP9CCEAAoJEBus8iNuMP3dRGgP+wS/foPTIg07OWJSEOkXiSUL
+YegnbofQkA0EKY21A4jrGCvf4dpt9mawEHDIV535ouCbiK5F5S1x04kS/3NbZv0o
+b2vNmlDrEPeO7ch+JS6IJKURch3axs+HoPdNKZg0YnRtjof6ltDOlFy0qLImmunw
+IM986UA3u0eChjuXUQpXBKfNTg8go7A01gJAxE3SYoFPiI866of/lB6/SVzD+J2u
+4YCkQLnbV9O4APyjGyatbukFj3X6ChtnpTSX4obmOQ4scy0F/UtTfwY6s9Opv7jn
+O06mp+fmhMBnLaki4t1r8CDOzYCmmq3Ltx3mDkVTJ3LCMTGdIqkWdLK+VWS/LIgQ
++yuFpiBWU0eqgEAnT8mMNA8i6eWFlTEtaiUDyGJut4Lb/CkkWQBXqi6Z6CVcSaJE
+auuoay1roXRcxSpDmO7BjWK8aUpV0t/u7/OI2AaiOilgKvB1oc7nPDe0OaryopI7
+2/GyqJj1JrIzk9WXGfPwKohL6ux88BnwHzrpgXennoeIeuqCYGSQMcERTS6iV6k5
+gUqy+sM+8xUMj4/ox6HsgCG0HufKrkP7F/7xcHCIa3+oEboPSNeyE8cxAQIl2KkY
+xrS7eyEybJClLhN2vFbb9Eu5gKzH3vdgZt8U7ZluOD6pQ/XG1VhcFQHUud7eH7OF
+CmaiGo5RVX1T+JfwqmH5
+=qQSN
 -----END PGP SIGNATURE-----
 
---yiup30KVCQiHUZFC--
+--fDERRRNgB4on1jOB--
 
---===============0897712309432416853==
+--===============7428435270314762436==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0897712309432416853==--
+--===============7428435270314762436==--
