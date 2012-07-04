@@ -1,17 +1,20 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: static build on two machine
-Date: Wed, 04 Jul 2012 15:36:31 +0200
-Message-ID: <4FF446DF.7010500@ladisch.de>
-References: <1341403619.5509.9.camel@debian>
+Subject: Re: A problem with USB audio devices and the UHCI
+	scheduler
+Date: Wed, 04 Jul 2012 15:43:04 +0200
+Message-ID: <4FF44868.70506@ladisch.de>
+References: <CACrD=+8BOOb=17Qs5k_2jZeEf_+N3U1dq2sm0PtwrWxkrouRLw@mail.gmail.com>
+	<4FF33018.2050701@ladisch.de>
+	<CACrD=+-NB0Lyd=BAAC7D304fUA6xj-OZOao5_9B96C5ffi2osA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id C9B3824601
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 55F40104409
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2012 15:36:36 +0200 (CEST)
-In-Reply-To: <1341403619.5509.9.camel@debian>
+	Wed,  4 Jul 2012 15:43:08 +0200 (CEST)
+In-Reply-To: <CACrD=+-NB0Lyd=BAAC7D304fUA6xj-OZOao5_9B96C5ffi2osA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mohsen Pahlevanzadeh <mohsen@pahlevanzadeh.org>
+To: Monty Montgomery <xiphmont@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mohsen Pahlevanzadeh wrote:
-> When i compile my own software, i get two warning however my
-> co-worker doesn't get them:
-> ///////////////////////
-> /usr/i686/lib/libasound.a(pcm_dmix.o):-1: In function `snd_pcm_dmix_sync_ptr':
-> pcm_dmix.c:-1: warning: Warning: snd_pcm_hwsync() is deprecated, consider to use snd_pcm_avail()
+Monty Montgomery wrote:
+> The device does use altsets for different sample formats and
+> input/output channels, just not altsets for each sample rate (as
+> supported/encouraged by the Audio Class...
 
-You probably have different compiler options or library versions.
+Supported, but not encouraged:
+| A typical use of alternate settings is to provide a way to change
+| the bandwidth requirements an active AudioStreaming interface
+| imposes on the USB.
 
-> When i run  my program my program that my co-worker wrote, crashed, But
-> when he run it, it's crashed.
+> Is it really the case that other Audio Class devices never make use
+> of the "multiple sample rates in an altset" feature?
 
-Sounds like a bug somewhere.
+They do, but not when bandwidth matters.
 
 
 Regards,
