@@ -1,61 +1,69 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: How to handle parameter variation across different
-	boards but same platform
-Date: Thu, 5 Jul 2012 08:32:16 +0000
-Message-ID: <201207050832.16750.arnd@arndb.de>
-References: <1BAFE6F6C881BF42822005164F1491C33EA3532A@DBDE01.ent.ti.com>
-	<20120704142745.GC4111@opensource.wolfsonmicro.com>
-	<4FF52948.6090904@ti.com>
+From: Christophe Aeschlimann <c.aeschlimann-5/WUhD8XThOVQ4qyx6sgCw@public.gmane.org>
+Subject: davinci-pcm.c : snd_pcm_hardware.periods_min value
+Date: Thu, 5 Jul 2012 10:52:14 +0200
+Message-ID: <4FF555BE.7090509@acn-group.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id E520B243C5
-	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jul 2012 10:32:44 +0200 (CEST)
-In-Reply-To: <4FF52948.6090904@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Vaibhav Hiremath <hvaibhav@ti.com>, "Hebbar,
-	Gururaja" <gururaja.hebbar@ti.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, vbarinov-hkdhdckH98+B+jHODAdFcQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 05 July 2012, Vaibhav Hiremath wrote:
-> On 7/4/2012 7:57 PM, Mark Brown wrote:
-> > On Wed, Jul 04, 2012 at 02:17:48PM +0000, Hebbar, Gururaja wrote:
-> >> On Wed, Jul 04, 2012 at 19:31:18, Mark Brown wrote:
-> > 
-> >>> If these are totally different boards they should have different machine
-> >>> IDs set so machine_is_() should identify.  If that isn't there then you
-> >>> need to do something custom to your products to identify the boards
-> >>> further.
-> > 
-> >> They are different boards with same SoC (AM33xx). So they both are true for
-> >> machine_is_am33xx().
-> > 
-> 
-> What if the device only supports Linux boot from DT, where we set
-> machine_desc.nr = ~0 ??
-> 
-> Does machine ID still gets set? May be I am missing something...
+Hi,
 
-No, it doesn't.
+We are working with an OMAP-L138 attached to a TI stereo codec
+(TLV320AIC3107) using McASP and we are trying to reduce the latency on
+the playback path.
 
-> As part of my debugging, on AM335xEVM platform machine_is_am33xx()
-> returns false, since the value of machine_desc.nr is set to ~0.
+We are using the real-time patches on a 3.0.y longterm stable kernel.
 
-Correct. However, when you are booting using the device tree, parameters
-such as the clock frequency of a device should be encoded in the device
-tree itself, so you don't need to know which machine you are on.
+In /sound/soc/davinci/davinci-pcm.c I can see the following structure:
 
-	Arnd
+> static struct snd_pcm_hardware pcm_hardware_playback =3D {
+> 	.info =3D (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+> 	.formats =3D (SNDRV_PCM_FMTBIT_S16_LE),
+> 	.rates =3D (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+> 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+> 		  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+> 		  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+> 		  SNDRV_PCM_RATE_KNOT),
+> 	.rate_min =3D 8000,
+> 	.rate_max =3D 96000,
+> 	.channels_min =3D 2,
+> 	.channels_max =3D 2,
+> 	.buffer_bytes_max =3D 128 * 1024,
+> 	.period_bytes_min =3D 32,
+> 	.period_bytes_max =3D 8 * 1024,
+> 	.periods_min =3D 16,
+> 	.periods_max =3D 255,
+> 	.fifo_size =3D 0,
+> };
+
+Which I think affects the minimum latency achievable.
+
+I would like to know if there is a reason why the periods_min is set to
+such a high value (16) ? (comparatively to most drivers).
+
+I'd welcome any information :)
+
+Best regards,
+-- =
+
+Christophe Aeschlimann
+
+Embedded Software Engineer & IT Manager
+ACN Advanced Communications Networks S.A.
+2000 - Neuch=E2tel, Switzerland
+Tel. +41 32 724 74 31
