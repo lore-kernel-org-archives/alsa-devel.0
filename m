@@ -1,62 +1,73 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: fsl: remove unneeded AUDMUX register
- setting from imx-sgtl5000
-Date: Thu, 5 Jul 2012 09:33:43 +0800
-Message-ID: <20120705013341.GA10610@S2101-09.ap.freescale.net>
-References: <1341387507-21015-1-git-send-email-jason77.wang@gmail.com>
+From: Vaibhav Hiremath <hvaibhav-l0cyMroinI0@public.gmane.org>
+Subject: Re: How to handle parameter variation across different boards but
+	same platform
+Date: Thu, 5 Jul 2012 11:12:32 +0530
+Message-ID: <4FF52948.6090904@ti.com>
+References: <1BAFE6F6C881BF42822005164F1491C33EA3532A@DBDE01.ent.ti.com>
+	<20120704131749.GZ4111@opensource.wolfsonmicro.com>
+	<1BAFE6F6C881BF42822005164F1491C33EA35456@DBDE01.ent.ti.com>
+	<20120704140118.GA4111@opensource.wolfsonmicro.com>
+	<1BAFE6F6C881BF42822005164F1491C33EA35B10@DBDE01.ent.ti.com>
+	<20120704142745.GC4111@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
-	(db3ehsobe001.messaging.microsoft.com [213.199.154.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36F0A245A9
-	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jul 2012 03:33:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1341387507-21015-1-git-send-email-jason77.wang@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <jason77.wang@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <20120704142745.GC4111-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org" <alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>, "Girdwood, Liam" <lrg-l0cyMroinI0@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 04, 2012 at 03:38:27PM +0800, Hui Wang wrote:
-> If we don't set IMX_AUDMUX_V2_PTCR_TCLKDIR in the AUDMUX PTCR
-> register (means Tx clock pin is input), we don't need to set
-> IMX_AUDMUX_V2_PTCR_TCSEL as well. Since both i.MX35, i.MX51 and
-> i.MX6 datasheet says "When Tx clock pin set as an input, the TCSEL
-> settings are ignored".
-> 
-> Signed-off-by: Hui Wang <jason77.wang@gmail.com>
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
 
-> ---
->  sound/soc/fsl/imx-sgtl5000.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
+On 7/4/2012 7:57 PM, Mark Brown wrote:
+> On Wed, Jul 04, 2012 at 02:17:48PM +0000, Hebbar, Gururaja wrote:
+>> On Wed, Jul 04, 2012 at 19:31:18, Mark Brown wrote:
 > 
-> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-> index 3a729ca..fb21b17 100644
-> --- a/sound/soc/fsl/imx-sgtl5000.c
-> +++ b/sound/soc/fsl/imx-sgtl5000.c
-> @@ -95,8 +95,7 @@ static int __devinit imx_sgtl5000_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  	imx_audmux_v2_configure_port(ext_port,
-> -			IMX_AUDMUX_V2_PTCR_SYN |
-> -			IMX_AUDMUX_V2_PTCR_TCSEL(int_port),
-> +			IMX_AUDMUX_V2_PTCR_SYN,
->  			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
->  	if (ret) {
->  		dev_err(&pdev->dev, "audmux external port setup failed\n");
-> -- 
-> 1.7.6
+>>> If these are totally different boards they should have different machine
+>>> IDs set so machine_is_() should identify.  If that isn't there then you
+>>> need to do something custom to your products to identify the boards
+>>> further.
+> 
+>> They are different boards with same SoC (AM33xx). So they both are true for
+>> machine_is_am33xx().
+> 
+
+What if the device only supports Linux boot from DT, where we set
+machine_desc.nr = ~0 ??
+
+Does machine ID still gets set? May be I am missing something...
+
+As part of my debugging, on AM335xEVM platform machine_is_am33xx()
+returns false, since the value of machine_desc.nr is set to ~0.
+
+Thanks,
+Vaibhav
+
+> That's not how this stuff is supposed to work - machine is the board,
+> you should have cpu_is_() for identifying the SoC.
+> 
+>> We have a means to detect the type of board but in arch/arm/mach-omap2/ 
+>> board file. However, I believe it is not recommended to call boards api
+>> inside drivers.
+> 
+> Only for generic drivers, board specific drivers are obviously board
+> specific.  The point is that you shouldn't make something that could run
+> on many boards depend on an API specific to a particular board.
+> 
+> 
+> 
+> _______________________________________________
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
 > 
