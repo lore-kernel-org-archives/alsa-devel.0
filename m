@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: pcm: Mostly constify constraints
-Date: Thu, 5 Jul 2012 10:28:42 +0100
-Message-ID: <20120705092841.GI4111@opensource.wolfsonmicro.com>
-References: <1341423313-9561-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5hhatm4rgp.wl%tiwai@suse.de>
+Subject: Re: How to handle parameter variation across different
+ boards but same platform
+Date: Thu, 5 Jul 2012 10:38:08 +0100
+Message-ID: <20120705093808.GJ4111@opensource.wolfsonmicro.com>
+References: <1BAFE6F6C881BF42822005164F1491C33EA3532A@DBDE01.ent.ti.com>
+	<20120704142745.GC4111@opensource.wolfsonmicro.com>
+	<4FF52948.6090904@ti.com> <201207050832.16750.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7828991375774178817=="
+Content-Type: multipart/mixed; boundary="===============7786985917063114102=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 315762445D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CD98624466
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jul 2012 11:28:44 +0200 (CEST)
-In-Reply-To: <s5hhatm4rgp.wl%tiwai@suse.de>
+	Thu,  5 Jul 2012 11:38:09 +0200 (CEST)
+In-Reply-To: <201207050832.16750.arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vaibhav Hiremath <hvaibhav@ti.com>, "Hebbar,
+	Gururaja" <gururaja.hebbar@ti.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7828991375774178817==
+--===============7786985917063114102==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Eb2dXAwtBqAM4EkP"
+	protocol="application/pgp-signature"; boundary="8D3PigL67BfDl295"
 Content-Disposition: inline
 
 
---Eb2dXAwtBqAM4EkP
+--8D3PigL67BfDl295
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 05, 2012 at 09:06:30AM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Thu, Jul 05, 2012 at 08:32:16AM +0000, Arnd Bergmann wrote:
+> On Thursday 05 July 2012, Vaibhav Hiremath wrote:
 
-> > There is no need for the constraints to be modified while being
-> > applied
+> > Does machine ID still gets set? May be I am missing something...
 
-> Many drivers pass the local instance to rule->private, and it's not
-> always guaranteed to be const.  For example, you can imagine some
-> state modified kept in the struct while it's modified via rules.
+> No, it doesn't.
 
-> In short: you'd have seen many compile warnings for non-ASoC drivers
-> if you run make once with this patch ;)
+This is a *really* unfortunate decision, BTW - it means that if your
+bootloader has a device tree available it needs to know if the kernel
+it's booting is DT or non-DT which is just generally unhelpful.  Sadly I
+don't hold out much hope of being able to fix it, though.
 
-Well, that's trivial to fix.
-
-> As a safe side fix, how about just adding const to
-> snd_pcm_hw_constraint_list() & co, and expclitly cast to non-const
-> later?
-
-My inclination for something like this is to put the casts with the
-users since that way we get the type safety through most of the code and
-we can see that dropping the const is safe since we're just getting back
-our own data.  If we can see the APIs immediately dropping the const I'd
-expect we'd get people spending time on code review trying to figure out
-if it's safe.
-
---Eb2dXAwtBqAM4EkP
+--8D3PigL67BfDl295
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP9V4BAAoJEBus8iNuMP3d/bUP/jYMwi482XwovbA7nGJXdM39
-umAi0FwBo2h7Rz368EpEZ8c03CFeP2SxQI1yDSXd00v3tjv4R4Nql2jQepYt1Std
-cV5XHB/0Iuc4jRvSrs+BFHV+bWWyHC6fGi8fYGt+srFLx08W7iItc6HjGMHsiU4Q
-VJNQBXa4VyJ/0WpPGCTZEAB0Cfhk9hv6Pm+ZfeI8HEcjv4Br6JbgkyD4ARuoQSy1
-pLpDjO3UFDFQRNTfskT78tGDgdl9fEFIFzjjmEvlblPapoghcv8g7PKkJL/lGGU7
-df2tQX2fmZaDijkF7pMpSOb5u9VCXwcFmqXWqhJrngnnuQoAGnywXu7e/tj0a5LA
-99fbUbSWTxjr3gfvpASZfpbdfI48p6ltIaHlG+p0e/OR6OPwchi2Fa1hEd0Sf2Ls
-W0iR2iVcvaDvMRdXRXBxsFMES6C5SHcQShp+aN41ePrW0CJwMsh9k+sGPvgfELQ8
-78VmAX6eAGeAHnu2a/JHagcDJLLXJnch+BUT1ZcN8M6CZpZtIXUtaC5nwGUoek0o
-g3c2cXXmZJNPAfwe6Y6hb8Lo7mKcvCZ1/mEMe8zBXR5gexVHhhhhBZMgtV2fCnbA
-Y4R8+TYGcdXc6ICdbijS9xz2mKlNz+pti+q4Jw9vcaBWDnwv8smxMENspfuqjwjg
-t6XeFgJ6sJqKJGCu7R8q
-=5vMf
+iQIcBAEBAgAGBQJP9WBQAAoJEBus8iNuMP3dRcwP/j1e02Qg74hQnvIsBAFidKAJ
+fZDHJtrRD7p0cS5B7KJrlXXTObhrERfbLO+q/5N2MvQrqCviWPJKVx/i+HM84tNi
+TN3QHHO+ITBD/OWQ/R7oG2hUCsISXeNG4iWnbWtcoAvzjjMykxSLlNhqF+uXFzSa
++oO0LpTlfieiG18DGOoFf/2MCEa75KiRTAEB6pqJigZniSmQ/m+XnGneVGrEteR/
+xHQPj1pr6xC88KqALetfR/iwIUR5P0dApGCnmOWmRVjh1eCJ5H2FITAL6EJ+u0zv
+A380Mp+ksV8VVJVQRb2A76knVzBKkZN4LCd7pCRTePsozR041C8JP3JBRYA5Hb7q
++i9IMC3FKutPP8xLwg+rde5Oslli6Rjywhdhhnr+7Iw4T8SafJ/sOCt8RAO1/HUy
+h/G/iafLTAdNO057gn+8+G4N1i7Sy80W7cCQp7qEQiye/Jf5H5M7NgkE8Yui/BDt
+PLNeU2tgddtVFXeLy7OQ/p8ara4o9iDX3WKGxA42si4rINWxNYk6H738CdqdfeNx
+xdsUI+ZYtntN9MJzUJNJUiJ5dONAZPJNy7BC2fvZZXS6DYuHiW8NdyLQEnsNzP9G
+bzqcEqEdyWMikb7k6uhAIwpx3yB/L3fwoHSV8wnpuVvr50J1bidfkMaoC9E93iyH
+7Xq4W0wClmKlVBD5oeu2
+=bxwV
 -----END PGP SIGNATURE-----
 
---Eb2dXAwtBqAM4EkP--
+--8D3PigL67BfDl295--
 
---===============7828991375774178817==
+--===============7786985917063114102==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7828991375774178817==--
+--===============7786985917063114102==--
