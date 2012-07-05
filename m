@@ -1,69 +1,96 @@
-From: Christophe Aeschlimann <c.aeschlimann-5/WUhD8XThOVQ4qyx6sgCw@public.gmane.org>
-Subject: davinci-pcm.c : snd_pcm_hardware.periods_min value
-Date: Thu, 5 Jul 2012 10:52:14 +0200
-Message-ID: <4FF555BE.7090509@acn-group.ch>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: pcm: Mostly constify constraints
+Date: Thu, 5 Jul 2012 10:28:42 +0100
+Message-ID: <20120705092841.GI4111@opensource.wolfsonmicro.com>
+References: <1341423313-9561-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hhatm4rgp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, vbarinov-hkdhdckH98+B+jHODAdFcQ@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============7828991375774178817=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 315762445D
+	for <alsa-devel@alsa-project.org>;
+	Thu,  5 Jul 2012 11:28:44 +0200 (CEST)
+In-Reply-To: <s5hhatm4rgp.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-We are working with an OMAP-L138 attached to a TI stereo codec
-(TLV320AIC3107) using McASP and we are trying to reduce the latency on
-the playback path.
+--===============7828991375774178817==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Eb2dXAwtBqAM4EkP"
+Content-Disposition: inline
 
-We are using the real-time patches on a 3.0.y longterm stable kernel.
 
-In /sound/soc/davinci/davinci-pcm.c I can see the following structure:
+--Eb2dXAwtBqAM4EkP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> static struct snd_pcm_hardware pcm_hardware_playback =3D {
-> 	.info =3D (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-> 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-> 	.formats =3D (SNDRV_PCM_FMTBIT_S16_LE),
-> 	.rates =3D (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-> 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
-> 		  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-> 		  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-> 		  SNDRV_PCM_RATE_KNOT),
-> 	.rate_min =3D 8000,
-> 	.rate_max =3D 96000,
-> 	.channels_min =3D 2,
-> 	.channels_max =3D 2,
-> 	.buffer_bytes_max =3D 128 * 1024,
-> 	.period_bytes_min =3D 32,
-> 	.period_bytes_max =3D 8 * 1024,
-> 	.periods_min =3D 16,
-> 	.periods_max =3D 255,
-> 	.fifo_size =3D 0,
-> };
+On Thu, Jul 05, 2012 at 09:06:30AM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Which I think affects the minimum latency achievable.
+> > There is no need for the constraints to be modified while being
+> > applied
 
-I would like to know if there is a reason why the periods_min is set to
-such a high value (16) ? (comparatively to most drivers).
+> Many drivers pass the local instance to rule->private, and it's not
+> always guaranteed to be const.  For example, you can imagine some
+> state modified kept in the struct while it's modified via rules.
 
-I'd welcome any information :)
+> In short: you'd have seen many compile warnings for non-ASoC drivers
+> if you run make once with this patch ;)
 
-Best regards,
--- =
+Well, that's trivial to fix.
 
-Christophe Aeschlimann
+> As a safe side fix, how about just adding const to
+> snd_pcm_hw_constraint_list() & co, and expclitly cast to non-const
+> later?
 
-Embedded Software Engineer & IT Manager
-ACN Advanced Communications Networks S.A.
-2000 - Neuch=E2tel, Switzerland
-Tel. +41 32 724 74 31
+My inclination for something like this is to put the casts with the
+users since that way we get the type safety through most of the code and
+we can see that dropping the const is safe since we're just getting back
+our own data.  If we can see the APIs immediately dropping the const I'd
+expect we'd get people spending time on code review trying to figure out
+if it's safe.
+
+--Eb2dXAwtBqAM4EkP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP9V4BAAoJEBus8iNuMP3d/bUP/jYMwi482XwovbA7nGJXdM39
+umAi0FwBo2h7Rz368EpEZ8c03CFeP2SxQI1yDSXd00v3tjv4R4Nql2jQepYt1Std
+cV5XHB/0Iuc4jRvSrs+BFHV+bWWyHC6fGi8fYGt+srFLx08W7iItc6HjGMHsiU4Q
+VJNQBXa4VyJ/0WpPGCTZEAB0Cfhk9hv6Pm+ZfeI8HEcjv4Br6JbgkyD4ARuoQSy1
+pLpDjO3UFDFQRNTfskT78tGDgdl9fEFIFzjjmEvlblPapoghcv8g7PKkJL/lGGU7
+df2tQX2fmZaDijkF7pMpSOb5u9VCXwcFmqXWqhJrngnnuQoAGnywXu7e/tj0a5LA
+99fbUbSWTxjr3gfvpASZfpbdfI48p6ltIaHlG+p0e/OR6OPwchi2Fa1hEd0Sf2Ls
+W0iR2iVcvaDvMRdXRXBxsFMES6C5SHcQShp+aN41ePrW0CJwMsh9k+sGPvgfELQ8
+78VmAX6eAGeAHnu2a/JHagcDJLLXJnch+BUT1ZcN8M6CZpZtIXUtaC5nwGUoek0o
+g3c2cXXmZJNPAfwe6Y6hb8Lo7mKcvCZ1/mEMe8zBXR5gexVHhhhhBZMgtV2fCnbA
+Y4R8+TYGcdXc6ICdbijS9xz2mKlNz+pti+q4Jw9vcaBWDnwv8smxMENspfuqjwjg
+t6XeFgJ6sJqKJGCu7R8q
+=5vMf
+-----END PGP SIGNATURE-----
+
+--Eb2dXAwtBqAM4EkP--
+
+--===============7828991375774178817==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7828991375774178817==--
