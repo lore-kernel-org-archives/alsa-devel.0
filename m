@@ -1,57 +1,58 @@
-From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: Re: [alsa-devel] DT support for Davinci ASoC platform
-Date: Fri, 6 Jul 2012 18:42:36 +0530
-Message-ID: <4FF6E444.1050901@ti.com>
-References: <1BAFE6F6C881BF42822005164F1491C33EA35352@DBDE01.ent.ti.com>
-	<4FF5733E.6000604@gmail.com> <201207051536.45920.arnd@arndb.de>
-	<4FF5BB34.9070002@gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: dapm: Mark widgets as dirty when
+ a route is added
+Date: Fri, 06 Jul 2012 15:04:42 +0100
+Message-ID: <1341583482.4963.0.camel@odin>
+References: <1341505680-10802-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <4FF5BB34.9070002-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org" <alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>, "Girdwood, Liam" <lrg-l0cyMroinI0@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog136.obsmtp.com (na3sys009aog136.obsmtp.com
+	[74.125.149.85]) by alsa0.perex.cz (Postfix) with ESMTP id 373562444A
+	for <alsa-devel@alsa-project.org>;
+	Fri,  6 Jul 2012 16:04:47 +0200 (CEST)
+Received: by werf13 with SMTP id f13so7794694wer.23
+	for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2012 07:04:45 -0700 (PDT)
+In-Reply-To: <1341505680-10802-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
-
-On 7/5/2012 9:35 PM, Daniel Mack wrote:
-> On 05.07.2012 17:36, Arnd Bergmann wrote:
->> On Thursday 05 July 2012, Daniel Mack wrote:
->>> On 04.07.2012 14:48, Hebbar, Gururaja wrote:
->>>> All,
->>>>
->>>> Are there any plans or work going on for providing Device Tree Support for Davinci
->>>> ASoC?
->>>>
->>>> I am planning to add DT support for TI AM335x (McASP) and I don't want to do duplicate
->>>> task.
->>>
->>> That's good to know. But isn't there a dependency on the EDMA engine? Is
->>> that part ported yet?
->>
->> None of the dma engines are ported yet, because the generic binding for dma
->> engines is still under debate. So far, all DMA channels are described using
->> auxdata on platforms that use DT, with the exception of exynos, but that one
->> will have to change once we have the common code.
+On Thu, 2012-07-05 at 17:27 +0100, Mark Brown wrote:
+> If we add a new route at runtime then we'll need to recheck the connections
+> to the affected widgets.
 > 
-> You're talking about the DT bindings here, right? But the code itself is
-> also only present in TI's BSP kernel sources, and not in mainline.
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-dapm.c |    4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index ed1860c..beac5e6 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -2250,6 +2250,10 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+>  		path->connect = 0;
+>  		return 0;
+>  	}
+> +
+> +	dapm_mark_dirty(wsource, "Route added");
+> +	dapm_mark_dirty(wsink, "Route added");
+> +
+>  	return 0;
+>  
+>  err:
 
-AM335x uses TI EDMA which is present in mainline under mach-davinci.
-Matt Porter from TI is working on moving this to DMA engine. Once that's
-done the driver should be usable on AM335x too. Have a look at the wiki
-page Vaibhav posted under the thread "Current state of AM33xx patches"
+All
 
-Thanks,
-Sekhar
+Acked-by: Liam Girdwood <lrg@ti.com>
