@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: dapm: Mark widgets as dirty when
- a route is added
-Date: Fri, 06 Jul 2012 15:04:42 +0100
-Message-ID: <1341583482.4963.0.camel@odin>
-References: <1341505680-10802-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: DT support for Davinci ASoC platform
+Date: Fri, 6 Jul 2012 15:01:42 +0000
+Message-ID: <201207061501.42204.arnd@arndb.de>
+References: <1BAFE6F6C881BF42822005164F1491C33EA35352@DBDE01.ent.ti.com>
+	<201207051536.45920.arnd@arndb.de> <4FF5BB34.9070002@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog136.obsmtp.com (na3sys009aog136.obsmtp.com
-	[74.125.149.85]) by alsa0.perex.cz (Postfix) with ESMTP id 373562444A
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81F6E103B63
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 16:04:47 +0200 (CEST)
-Received: by werf13 with SMTP id f13so7794694wer.23
-	for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2012 07:04:45 -0700 (PDT)
-In-Reply-To: <1341505680-10802-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri,  6 Jul 2012 17:02:24 +0200 (CEST)
+In-Reply-To: <4FF5BB34.9070002@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+	Sudhakar" <sudhakar.raj@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Hebbar,
+	Gururaja" <gururaja.hebbar@ti.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-07-05 at 17:27 +0100, Mark Brown wrote:
-> If we add a new route at runtime then we'll need to recheck the connections
-> to the affected widgets.
+On Thursday 05 July 2012, Daniel Mack wrote:
+> > 
+> > None of the dma engines are ported yet, because the generic binding for dma
+> > engines is still under debate. So far, all DMA channels are described using
+> > auxdata on platforms that use DT, with the exception of exynos, but that one
+> > will have to change once we have the common code.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-dapm.c |    4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index ed1860c..beac5e6 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -2250,6 +2250,10 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
->  		path->connect = 0;
->  		return 0;
->  	}
-> +
-> +	dapm_mark_dirty(wsource, "Route added");
-> +	dapm_mark_dirty(wsink, "Route added");
-> +
->  	return 0;
->  
->  err:
+> You're talking about the DT bindings here, right? But the code itself is
+> also only present in TI's BSP kernel sources, and not in mainline.
 
-All
+Right, I was misreading the question, sorry for the noise.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+	Arnd
