@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix locking during codec
-	shutdown
-Date: Fri, 6 Jul 2012 19:03:33 +0100
-Message-ID: <20120706180333.GC5437@opensource.wolfsonmicro.com>
-References: <1341590225-20837-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH] ASoC: twl6040: fix spelling mistake
+Date: Fri, 6 Jul 2012 19:06:34 +0100
+Message-ID: <20120706180634.GD5437@opensource.wolfsonmicro.com>
+References: <1341590657-20959-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4172842768038736748=="
+Content-Type: multipart/mixed; boundary="===============3446761735069061051=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CE5C1045B3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69E201045B3
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 20:03:34 +0200 (CEST)
-In-Reply-To: <1341590225-20837-1-git-send-email-lrg@ti.com>
+	Fri,  6 Jul 2012 20:06:35 +0200 (CEST)
+In-Reply-To: <1341590657-20959-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: alsa-devel@alsa-project.org, Simon Wilson <simonwilson@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4172842768038736748==
+--===============3446761735069061051==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
+	protocol="application/pgp-signature"; boundary="uxuisgdDHaNETlh8"
 Content-Disposition: inline
 
 
---vOmOzSkFvhd7u8Ms
+--uxuisgdDHaNETlh8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 06, 2012 at 04:57:05PM +0100, Liam Girdwood wrote:
-> Codec shutdown performs a DAPM power sequence that might cause conflicts
-> and/or race conditions if another stream power event is running simultaneously.
-> Use card's dapm mutex to protect any potential race condition between them.
+On Fri, Jul 06, 2012 at 05:04:17PM +0100, Liam Girdwood wrote:
+> From: Simon Wilson <simonwilson@google.com>
+>=20
+> Fix spelling mistake in "High-Performance" option of twl6040 power mode.
+>=20
+> Signed-off-by: Simon Wilson <simonwilson@google.com>
 
-Applied, but I do think this needs a much closer look - there must be
-some other issues lurking here.
+Applied (with your signoff as discussed offline).
 
---vOmOzSkFvhd7u8Ms
+--uxuisgdDHaNETlh8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP9yhrAAoJEBus8iNuMP3dPtAP/3ogW9VFSIvKTnciR9rOwhnv
-BbZZryNm8xl31E8Ua9lyCVia2APpOUo4Q2NzTReD9NcU7HBFXSBKynoOh54DyblN
-Uv5BFuiHE6VTqkfxicR0pk3AV4WTQ2SRL0d39mdx01YAzuac6N5efKBRxXHrs0np
-OGBoyd/Z1WetjDMXwyuVEsNZzMYnwylhkd6GFo5uRji4vKOvT+BejPbD8BbMfSGM
-f8zw6oadk7K9rTx0mfpcqligBK4gWqAM+C2v1p1Ktw42N098ElUVpxcauL1Qh04S
-e5VZdkGXTgEQIb0UzkM7M4iy5z1nwG2zQ8NZLZYTvbC4F6/6OlI35HyipzmgMUIC
-8g14blO8tikjIFnbqYLcmfqSGl/B+8xyy/gqjXCgTbm0wMbB/DnEbLWMoH9kXotT
-GLUkl1nPG+hinl3+01cPlblpA9O5tz8sCmMhZaNevOpnbE3GjRdfBCqFZ1JAeI4n
-y9CDYo5mn5BXJI78Pph9z0g2BFMa+KtNWjKX5ezlBzAFTNRKxGQhI5ece/GJTXXS
-5IjMoL7nsDS60CzCanM0kIRnfrU3RgH+n9jImGhfAcfwP9JMNHmJv36EOWK1dXTK
-cWReA1wgt2/2ufDFrkvQiKPWOfftf6WFOwKZOYBnmjmg+tcN/Yo8V6MzFBlJXuBS
-Iq4kB04OgpU/e1+SYSMm
-=isMz
+iQIcBAEBAgAGBQJP9ykgAAoJEBus8iNuMP3dP7cP/1otfi6iP97Ol9eB39DHbXSx
+F3AtTvGVsrHu+sEBIP/BuGJNDL3jQZAtJ3r4a8b9W3QM01nzjiqwoRz6oFK+CN46
+kLGjgJgfjy5k/Y2Ba52prwfbnmxX0ZAgtjtIVlm8Ny+i6LdxtWiR+0yR96hyPE58
+787K5UZ81oIk7IIzKBDObBVfGjvT8jVXUjsJtcQpI5SeCPfOoN/C4jgvVODohkY1
+f34Lg1JTaCZtJGtB5LVTaYHUnFwmlzq16tJ8jMNZZhGWVkeeDI5hlVRf8WthbJYN
+ZiTy3CpZgxwkKg/szshkx4E+DqvEZiJ0O1LiTpsztdo1YC0+hTbh2bGxo9BKy2EH
+ZFPUNcLCJlvElR0rEqS9hORKg3tQee/3qxaWFQycTGPzasUW4ih5oQq/u6hM3J/C
+jNxwskXJWoO0QefyLnVHweRtaSTRbJGP1dLEZVG4kTsex6u1JpkwFmRldIsBdFms
+lF2eZOu44gsqLOC8atvsMO6e/UWNaNp0rHcq4lZqa8JngbhK0/gsIAWq5Eyq9zyT
+m6Tkj2izIXqkatd7KdIuD2GEnVfgjANRDvBs5DjB+5BhIGicgK1qgJttHoBQrNt/
+IRvZlxOYoAqmJz1eMurVO/6vFkV4Z+tDPszLnSr6Zkoy69TxN48Q62E0mLIvvFUP
+IP9NS/qZMmEW7uQbtug5
+=H2qQ
 -----END PGP SIGNATURE-----
 
---vOmOzSkFvhd7u8Ms--
+--uxuisgdDHaNETlh8--
 
---===============4172842768038736748==
+--===============3446761735069061051==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4172842768038736748==--
+--===============3446761735069061051==--
