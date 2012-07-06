@@ -1,19 +1,22 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: dpcm: Allow FE to be opened without
-	valid BE routes.
-Date: Fri,  6 Jul 2012 17:07:00 +0100
-Message-ID: <1341590820-21040-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix locking during codec
+	shutdown
+Date: Fri, 06 Jul 2012 17:36:15 +0100
+Message-ID: <1341592575.4963.7.camel@odin>
+References: <1341590225-20837-1-git-send-email-lrg@ti.com>
+	<20120706160220.GG4017@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog127.obsmtp.com (na3sys009aog127.obsmtp.com
-	[74.125.149.107])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F86610458B
+Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
+	[74.125.149.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id 168ED104575
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 18:07:59 +0200 (CEST)
-Received: by werc12 with SMTP id c12so2821058wer.35
-	for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2012 09:07:08 -0700 (PDT)
+	Fri,  6 Jul 2012 18:36:22 +0200 (CEST)
+Received: by wgbdr1 with SMTP id dr1so7384425wgb.12
+	for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2012 09:36:18 -0700 (PDT)
+In-Reply-To: <20120706160220.GG4017@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some userspace will open a PCM device and then configure mixers
-for routing before triggering. This patch allows userspace to do
-this sequence.
+On Fri, 2012-07-06 at 17:02 +0100, Mark Brown wrote:
+> On Fri, Jul 06, 2012 at 04:57:05PM +0100, Liam Girdwood wrote:
+> > Codec shutdown performs a DAPM power sequence that might cause conflicts
+> > and/or race conditions if another stream power event is running simultaneously.
+> > Use card's dapm mutex to protect any potential race condition between them.
+> 
+> There's a bigger problem here if we're managing to run into this - the
+> shutdown function is only supposed to be being called while the system
+> is in the middle of shutting down so we've probably got a bunch of other
+> races further up the stack to worry about too...
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- sound/soc/soc-pcm.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I don't think there is anything explicitly stopping a power off from
+happening during a stream shutdown atm without this patch. It was
+reported to me that this would fail 1 in 20 times on a certain device
+and that the above patch fixed the issue (1200 tests completed OK after
+the patch).
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 7063b8f..ef22d0b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1955,10 +1955,8 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
- 	fe->dpcm[stream].runtime = fe_substream->runtime;
- 
- 	if (dpcm_path_get(fe, stream, &list) <= 0) {
--		dev_warn(fe->dev, "asoc: %s no valid %s route\n",
-+		dev_dbg(fe->dev, "asoc: %s no valid %s route\n",
- 			fe->dai_link->name, stream ? "capture" : "playback");
--			mutex_unlock(&fe->card->mutex);
--			return -EINVAL;
- 	}
- 
- 	/* calculate valid and active FE <-> BE dpcms */
--- 
-1.7.9.5
+I do think we need this patch atm since we are accessing the same
+resources as the stream event.
+
+Liam
