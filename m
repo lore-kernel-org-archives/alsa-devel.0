@@ -1,18 +1,16 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: DT support for Davinci ASoC platform
-Date: Fri, 6 Jul 2012 15:01:42 +0000
-Message-ID: <201207061501.42204.arnd@arndb.de>
-References: <1BAFE6F6C881BF42822005164F1491C33EA35352@DBDE01.ent.ti.com>
-	<201207051536.45920.arnd@arndb.de> <4FF5BB34.9070002@gmail.com>
+From: Torben Hohn <torbenh@linutronix.de>
+Subject: [PATCH 1/2] ASoC imx-audmux: add
+	MX31_AUDMUX_PORT7_SSI_PINS_7 define
+Date: Fri,  6 Jul 2012 17:43:57 +0200
+Message-ID: <1341589437-18246-1-git-send-email-torbenh@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81F6E103B63
+Received: from Galois.linutronix.de (www.linutronix.de [62.245.132.108])
+	by alsa0.perex.cz (Postfix) with ESMTP id A62D9103F67
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 17:02:24 +0200 (CEST)
-In-Reply-To: <4FF5BB34.9070002@gmail.com>
+	Fri,  6 Jul 2012 17:44:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
-	Sudhakar" <sudhakar.raj@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Hebbar,
-	Gururaja" <gururaja.hebbar@ti.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood, Liam" <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Torben Hohn <torbenh@linutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 05 July 2012, Daniel Mack wrote:
-> > 
-> > None of the dma engines are ported yet, because the generic binding for dma
-> > engines is still under debate. So far, all DMA channels are described using
-> > auxdata on platforms that use DT, with the exception of exynos, but that one
-> > will have to change once we have the common code.
-> 
-> You're talking about the DT bindings here, right? But the code itself is
-> also only present in TI's BSP kernel sources, and not in mainline.
+The MX31 Audmux also has 7 Ports.
+This patch adds the missing define, and makes the debugfs code iterate
+over that port too.
 
-Right, I was misreading the question, sorry for the noise.
+Signed-off-by: Torben Hohn <torbenh@linutronix.de>
+---
+ sound/soc/fsl/imx-audmux.c |    2 +-
+ sound/soc/fsl/imx-audmux.h |    1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-	Arnd
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 0803274..e7c800e 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -156,7 +156,7 @@ static void __init audmux_debugfs_init(void)
+ 		return;
+ 	}
+ 
+-	for (i = 0; i < MX31_AUDMUX_PORT6_SSI_PINS_6 + 1; i++) {
++	for (i = 0; i < MX31_AUDMUX_PORT7_SSI_PINS_7 + 1; i++) {
+ 		snprintf(buf, sizeof(buf), "ssi%d", i);
+ 		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
+ 					 (void *)i, &audmux_debugfs_fops))
+diff --git a/sound/soc/fsl/imx-audmux.h b/sound/soc/fsl/imx-audmux.h
+index 04ebbab..b8ff44b 100644
+--- a/sound/soc/fsl/imx-audmux.h
++++ b/sound/soc/fsl/imx-audmux.h
+@@ -14,6 +14,7 @@
+ #define MX31_AUDMUX_PORT4_SSI_PINS_4	3
+ #define MX31_AUDMUX_PORT5_SSI_PINS_5	4
+ #define MX31_AUDMUX_PORT6_SSI_PINS_6	5
++#define MX31_AUDMUX_PORT7_SSI_PINS_7	6
+ 
+ #define MX51_AUDMUX_PORT1_SSI0		0
+ #define MX51_AUDMUX_PORT2_SSI1		1
+-- 
+1.7.10
