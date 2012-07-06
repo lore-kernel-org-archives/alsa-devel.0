@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix locking during codec
-	shutdown
-Date: Fri, 6 Jul 2012 18:20:29 +0100
-Message-ID: <20120706172029.GI4017@opensource.wolfsonmicro.com>
-References: <1341590225-20837-1-git-send-email-lrg@ti.com>
-	<20120706160220.GG4017@opensource.wolfsonmicro.com>
-	<1341592575.4963.7.camel@odin>
-	<20120706164344.GH4017@opensource.wolfsonmicro.com>
-	<1341594613.4963.11.camel@odin>
+Subject: Re: [PATCH] ASoC: pcm: Clean up logging in
+	soc_new_pcm()
+Date: Fri, 6 Jul 2012 19:02:26 +0100
+Message-ID: <20120706180226.GA5437@opensource.wolfsonmicro.com>
+References: <1341590092-20713-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3686574428913442462=="
+Content-Type: multipart/mixed; boundary="===============0311355962857872406=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9CB641045A2
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D654A1045A2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 19:20:30 +0200 (CEST)
-In-Reply-To: <1341594613.4963.11.camel@odin>
+	Fri,  6 Jul 2012 20:02:28 +0200 (CEST)
+In-Reply-To: <1341590092-20713-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,64 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3686574428913442462==
+--===============0311355962857872406==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f5QefDQHtn8hx44O"
+	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
 Content-Disposition: inline
 
 
---f5QefDQHtn8hx44O
+--huq684BweRXVnRxX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 06, 2012 at 06:10:13PM +0100, Liam Girdwood wrote:
-> On Fri, 2012-07-06 at 17:43 +0100, Mark Brown wrote:
+On Fri, Jul 06, 2012 at 04:54:52PM +0100, Liam Girdwood wrote:
+> Use dev_ style logging throughout soc_new_pcm()
 
-> > So how is suspend and resume safe, for example?  It's the same general
-> > path through the PM core.
+Applied, thanks.
 
-> suspend and resume are safe as they call stream_event() that holds the
-> DAPM mutex.
-
-So that's safe with regard to DAPM...  it's not the specific example
-that's concerning me here so much as the fact that I don't think we're
-doing anything else to make sure shutdown is safe with other things that
-might be going on when shutdown is called.  There's probably a huge raft
-of issues that might occur...
-
---f5QefDQHtn8hx44O
+--huq684BweRXVnRxX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJP9x5BAAoJEBus8iNuMP3dl0YP/j1ANL+HuU0h1AadUBUYTkMu
-OYYvNUYJGAqXL2ks9idrNeZU8dimShQxkz+fkHtH0biKHyvJSd9Av0Gx2/wEPIFn
-j9+MVMA8PKJyJPP1Yx2vlbspEkfuUUjpMXMWMAdOewyjU5r4IGZIu+zcgBoFHql+
-nPo8LeLjaY8j1oeFmTZVjX9pAXa3hqf/ahqqmiNN111z0X2sBxChjj/S6pBZiM0G
-ZOksbXT4zQOgCqkcr8iWw117N3aoPZf2rh+D2lpdcOKkak/rcSncUjOeRpNd4+DF
-wjwUF9n1d65C4YAgW8aTBC8mi4qFJuPSoLqzR+v2iAkG638l6iTmITS/YxmPWEHl
-4SFImGnaXcWX9F9Mibks4t39bQMUDBG9PhFHJ1ZlnfRHqXkFgRFB6VJa/BKo4xZv
-fEVbDNCMesn+XTTEQD0JNB8riAtI/X5LxbbAMVQ4pk/RBEPvPl1BuWhsf0iQ8urz
-yKmgW7Z6y2EvLcqLQAps1dfVtcnHanIhZqW30jgrjd8Dh45nP3vyPb5NlynD0pE7
-V7CULzBnNL/YO+d8rUqgRzLebqvx6xjx7b7oeCV/C8HSYVybsKPQrtJHaLan/4uF
-FLORIzzXLtB+xzt99kdQPJL7nuedPiSs1isXCNStMIa/yvAuweaKz45NeTStHIiS
-KiMhqy9rL699mxHVr5HO
-=/JPa
+iQIcBAEBAgAGBQJP9yd9AAoJEBus8iNuMP3dnTIP/1RB83g17HpEvdGOTuzyzJR6
+Q6f0NtraR7TppOVauVkuc0HMi8Or0EbtdlNN1fmXM27xVNvO3BRrYRVYwXMpmHC+
+nrOVDE++iXGejAXAHqPR+cjjnyZOjKllazqhvwdEsdGfbsqgsTDexkvyn5ThTcSe
+bKgDWNqREaQpBvP7x6NRffuntnwBRF+RxhVjSSRBrKgUZNE/MBgxQd20YMdVEMu+
+XwjFtjjPspbegdRcejCLWuA8FFVADIKIRYhMuqYayWMipABYpktR87w/Fe6vxPRu
+WDbEFS9LFJLaPMdOK6pUoqYu47U/NiESQEqNDIzUvcutzcOilqun4+bhcdemWqzE
+9NWkSy0ArVh0ffD8YuzDYjJ2ZJEFqizfDLNpp8JzGEpMEm3PousDo0ZJ1zRzeynQ
+F25atVya4XrXD9bVzIyslpVwBO1SDQUPeOwAGiy9zk+ZNjqIb8InqG24VTMt3QPg
+A2+AXokmjM8hxUq0If9RjxG3u5S9pu/4qqHvx9GsNhRxZ/gIegFo6huS+xZ8IjdK
+BLDTdiApxOqkGEWsKszDgoCVXVl11yh3a8NOjyMv4aHDnPbpIXe8IFEd01/RT2N3
+is/5fKo8JBr8gJ15RRJuiIChxXCXU8v9yHH5PQS7Oat2VQ1R4dWGyREm9I8NVbC9
+pP8HVcF+lmR2Fi5MvLvt
+=P0mD
 -----END PGP SIGNATURE-----
 
---f5QefDQHtn8hx44O--
+--huq684BweRXVnRxX--
 
---===============3686574428913442462==
+--===============0311355962857872406==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3686574428913442462==--
+--===============0311355962857872406==--
