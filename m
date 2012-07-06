@@ -1,16 +1,18 @@
-From: Torben Hohn <torbenh@linutronix.de>
-Subject: [PATCH 1/2] ASoC imx-audmux: add
-	MX31_AUDMUX_PORT7_SSI_PINS_7 define
-Date: Fri,  6 Jul 2012 17:43:57 +0200
-Message-ID: <1341589437-18246-1-git-send-email-torbenh@linutronix.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH] ASoC: pcm: Clean up logging in soc_new_pcm()
+Date: Fri,  6 Jul 2012 16:54:52 +0100
+Message-ID: <1341590092-20713-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (www.linutronix.de [62.245.132.108])
-	by alsa0.perex.cz (Postfix) with ESMTP id A62D9103F67
+Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
+	[74.125.149.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03F5C104566
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 17:44:19 +0200 (CEST)
+	Fri,  6 Jul 2012 17:55:00 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so6706197wgb.32
+	for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2012 08:54:57 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,44 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Torben Hohn <torbenh@linutronix.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The MX31 Audmux also has 7 Ports.
-This patch adds the missing define, and makes the debugfs code iterate
-over that port too.
+Use dev_ style logging throughout soc_new_pcm()
 
-Signed-off-by: Torben Hohn <torbenh@linutronix.de>
+Signed-off-by: Liam Girdwood <lrg@ti.com>
 ---
- sound/soc/fsl/imx-audmux.c |    2 +-
- sound/soc/fsl/imx-audmux.h |    1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/soc-pcm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 0803274..e7c800e 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -156,7 +156,7 @@ static void __init audmux_debugfs_init(void)
- 		return;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 48fd15b..7063b8f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2003,7 +2003,6 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
+ /* create a new pcm */
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ {
+-	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -2042,7 +2041,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			capture, &pcm);
+ 	}
+ 	if (ret < 0) {
+-		printk(KERN_ERR "asoc: can't create pcm for codec %s\n", codec->name);
++		dev_err(rtd->card->dev, "can't create pcm for %s\n",
++			rtd->dai_link->name);
+ 		return ret;
+ 	}
+ 	dev_dbg(rtd->card->dev, "registered pcm #%d %s\n",num, new_name);
+@@ -2099,14 +2099,14 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	if (platform->driver->pcm_new) {
+ 		ret = platform->driver->pcm_new(rtd);
+ 		if (ret < 0) {
+-			pr_err("asoc: platform pcm constructor failed\n");
++			dev_err(platform->dev, "pcm constructor failed\n");
+ 			return ret;
+ 		}
  	}
  
--	for (i = 0; i < MX31_AUDMUX_PORT6_SSI_PINS_6 + 1; i++) {
-+	for (i = 0; i < MX31_AUDMUX_PORT7_SSI_PINS_7 + 1; i++) {
- 		snprintf(buf, sizeof(buf), "ssi%d", i);
- 		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
- 					 (void *)i, &audmux_debugfs_fops))
-diff --git a/sound/soc/fsl/imx-audmux.h b/sound/soc/fsl/imx-audmux.h
-index 04ebbab..b8ff44b 100644
---- a/sound/soc/fsl/imx-audmux.h
-+++ b/sound/soc/fsl/imx-audmux.h
-@@ -14,6 +14,7 @@
- #define MX31_AUDMUX_PORT4_SSI_PINS_4	3
- #define MX31_AUDMUX_PORT5_SSI_PINS_5	4
- #define MX31_AUDMUX_PORT6_SSI_PINS_6	5
-+#define MX31_AUDMUX_PORT7_SSI_PINS_7	6
- 
- #define MX51_AUDMUX_PORT1_SSI0		0
- #define MX51_AUDMUX_PORT2_SSI1		1
+ 	pcm->private_free = platform->driver->pcm_free;
+ out:
+-	printk(KERN_INFO "asoc: %s <-> %s mapping ok\n", codec_dai->name,
++	dev_info(rtd->card->dev, " %s <-> %s mapping ok\n", codec_dai->name,
+ 		cpu_dai->name);
+ 	return ret;
+ }
 -- 
-1.7.10
+1.7.9.5
