@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcpdm: Add missing MODULE_ALIAS
-Date: Fri, 6 Jul 2012 19:07:54 +0100
-Message-ID: <20120706180754.GF5437@opensource.wolfsonmicro.com>
-References: <1341569950-15074-1-git-send-email-peter.ujfalusi@ti.com>
+From: Marc Dietrich <marvin24@gmx.de>
+Subject: [PATCH 1/2] ASoC: tegra+alc5632: Swap MICBIAS1 and
+	MIC1 dapm widgets
+Date: Sat,  7 Jul 2012 15:36:29 +0200
+Message-ID: <b561a188ff2521d81b282edd45ded4b2c7133468.1341668123.git.marvin24@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7247016686019417717=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 49D2E1045DA
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
+	by alsa0.perex.cz (Postfix) with SMTP id D571724340
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2012 20:08:00 +0200 (CEST)
-In-Reply-To: <1341569950-15074-1-git-send-email-peter.ujfalusi@ti.com>
+	Sat,  7 Jul 2012 15:37:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Marc Dietrich <marvin24@gmx.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Leon Romanovsky <leon@leon.nu>, Andrey Danin <danindrey@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
+From: Andrey Danin <danindrey@mail.ru>
 
---===============7247016686019417717==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hUH5gZbnpyIv7Mn4"
-Content-Disposition: inline
+MICBIAS1 is an internal widget. If MICBIAS1 is connected to the board
+driver instead of the MIC1 ASoC core, it enables widgets even if the
+capture stream isn't active.
 
+Cc: Leon Romanovsky <leon@leon.nu>
+Signed-off-by: Andrey Danin <danindrey@mail.ru>
+Signed-off-by: Marc Dietrich <marvin24@gmx.de>
+---
+ sound/soc/codecs/alc5632.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---hUH5gZbnpyIv7Mn4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jul 06, 2012 at 12:19:10PM +0200, Peter Ujfalusi wrote:
-> The MODULE_ALIAS() was missing from the driver.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-Applied, thanks.
-
---hUH5gZbnpyIv7Mn4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP9ylvAAoJEBus8iNuMP3ddmoP/1aaXztBR3gc1WoXesF7L1o3
-NEEV3Su+84E3v0cRjEwWvZaN1FAZH3kttDL0JKg4sbBecsCWKuWh4pN02pMDR1u4
-LG+O2xOKucZNSe/MSlA59jS+SQpquZ7HKdb5rvHa/G5Vc/WlCSL8IdIqnzhis1cT
-jfUlBHppviX/QczjV9N7PqH6x5bFXDRdpZXrL6BDZhpsCjTBEEBfJ59Pt26TMcjU
-pSkAxDJ55dPVVJjDaX0N4VdmxRAZc37JRfZzEW86xvnOED0y2XHR8pzpUDCZqWpq
-X3q2yLXiybhcDrprecYANNLvKGX4fjAuwNtQqZFmHRxI3d5A4h2yg6KUf6pbAsvr
-kfzWsQ+SfXpI4xCftlTERWzS4vCSS6WGoM575gtOPHPhQCUpQqyVQO3jkFMJ6sIj
-FiNASesvkoThJKmcAGJ6S/vPvMtMKaHBucVQT8BuoIrKdj7QNRFbXBGtQWDEVkd7
-Tz7I0z8mY9Kp02IQ6GNTLnkHvMw4fyfW0Qix/MsR6VlfbGXzXRDidf3Nr1bECG8+
-sSduMZci/DQlPD6dKnrT0PrhYqeKdgRX0tzrMi1pol8EIQcY7FadPTbRiZK9kZoB
-RWxHMfvPDkxKlb253/MJWyUl4KeP7D+GBNQnCtp90fYTS0WFpPQzCsnkRUw7IJe3
-x/TL0mlWD0iwKotGooUR
-=WBy4
------END PGP SIGNATURE-----
-
---hUH5gZbnpyIv7Mn4--
-
---===============7247016686019417717==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7247016686019417717==--
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index 7dd0242..8609a86 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -551,8 +551,10 @@ static const struct snd_soc_dapm_route alc5632_dapm_routes[] = {
+ 	{"Left LineIn", NULL,				"LINEINL"},
+ 	{"Right LineIn", NULL,				"LINEINR"},
+ 	{"Phone", NULL,				"PHONEP"},
+-	{"MIC1 Pre Amp", NULL,				"MIC1"},
+-	{"MIC2 Pre Amp", NULL,				"MIC2"},
++	{"MICBIAS1", NULL,				"MIC1"},
++	{"MIC1 Pre Amp", NULL,				"MICBIAS1"},
++	{"MICBIAS2", NULL,				"MIC2"},
++	{"MIC2 Pre Amp", NULL,				"MICBIAS2"},
+ 	{"MIC1 PGA", NULL,				"MIC1 Pre Amp"},
+ 	{"MIC2 PGA", NULL,				"MIC2 Pre Amp"},
+ 
+-- 
+1.7.9.5
