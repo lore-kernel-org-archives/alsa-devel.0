@@ -1,118 +1,100 @@
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
-Subject: Re: [PATCH 2/3] swarm_cs4297: Rename AC97 registers to use
- sound/ac97_codec.h definitions
-Date: Sun, 8 Jul 2012 00:06:18 +0100 (BST)
-Message-ID: <alpine.LFD.2.00.1207072320000.12288@eddie.linux-mips.org>
-References: <1339444731-15678-1-git-send-email-elezegarcia@gmail.com>        <1339444731-15678-2-git-send-email-elezegarcia@gmail.com>        <s5h8vfkn2bb.wl%tiwai@suse.de>        <CALF0-+Ukw2+whn5zpA4R6PjN0BoLm5aUhQKUNQt0rpWM1vNXFA@mail.gmail.com>       
- <s5ha9zz97zw.wl%tiwai@suse.de>        <CALF0-+WxqMmoPMGjMZBBiKq2NR5qPESo6mA0B4MPhdyc_KUNsw@mail.gmail.com>        <s5h1ulbjwnr.wl%tiwai@suse.de> <CALF0-+Vbje9D44KpX+vP3XoZGMX-ipXPJp5mejOqP=EseyPYBg@mail.gmail.com>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: 3.5-rc6 doesn't run powerpc SoundByLayout
+Date: Sun, 8 Jul 2012 10:21:57 +0200
+Message-ID: <20120708082157.GA3955@samweis.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CALF0-+Vbje9D44KpX+vP3XoZGMX-ipXPJp5mejOqP=EseyPYBg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: multipart/mixed; boundary="===============2927053881448555205=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout1.hostsharing.net (mailout1.hostsharing.net
+	[83.223.95.204]) by alsa0.perex.cz (Postfix) with ESMTP id 1A6452438F
+	for <alsa-devel@alsa-project.org>;
+	Sun,  8 Jul 2012 10:22:15 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: debian-powerpc@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Jun 2012, Ezequiel Garcia wrote:
 
-> >> >> >> This patch removes the last usage of linux/ac97_codec.h
-> >> >> >> by renaming ac97 registers to use sound/ac97_codec.h definitions.
-> >> >> >> This will enable us to remove linux/ac97_codec.h.
-> >> >> >>
-> >> >> >> Not even compilation tested.
-> >> >> >>
-> >> >> >> Cc: Ralf Baechle <ralf@linux-mips.org>
-> >> >> >> Cc: Jaroslav Kysela <perex@perex.cz>
-> >> >> >> Cc: Takashi Iwai <tiwai@suse.de>
-> >> >> >> Cc: Clemens Ladisch <clemens@ladisch.de>
-> >> >> >> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
-> >> >> >> ---
-> >> >> >> Hi all,
-> >> >> >>
-> >> >> >> This patch is important so we can remove linux/ac97_codec.h usage.
-> >> >> >> Since this driver is mips related, I can't test it until I install
-> >> >> >> a mips toolchain.
-> >> >> >> If someone can compile this for me, or even test it with real
-> >> >> >> hardware I think it would be better.
-> >> >> >> If not then I can install a mips toolchain and compile it myself,
-> >> >> >> but I won't be able to test it on real hardware.
-> >> >> >>
-> >> >> >> This patch should be treated with carefully and be applied only
-> >> >> >> if someone manages to test it.
-> >> >> >
-> >> >> > A slight concern by this change is that the driver includes
-> >> >> > sound/ac97_codec.h although it's based on OSS framework.
-> >> >> > sound/ac97_codec.h is the header for ALSA ac97 structs, and this can't
-> >> >> > be mixed up with OSS.
-> >> >> >
-> >> >> > If the intention is only about AC97 register definition, we may split
-> >> >> > ac97_codec.h into ac97_regs.h and ac97_codecs.h where the former
-> >> >> > contains only the register definitions (thus framework-neutral) and
-> >> >> > the latter includes the former.
-> >> >> >
-> >> >> >
-> >> >>
-> >> >> Yes, splitting sounds good to me. It could be useful for other ac97
-> >> >> drivers (e.g. em28xx).
-> >>
-> >> On a second thought, I'm not sure splitting the header is the best way
-> >> to proceed. Since swarm just uses some AC97 register definition
-> >> maybe we could just duplicate those (less than ten) macros in swarm
-> >> c file.
-> >>
-> >> It's a less intrusive aproach and it allows us to remove the unused
-> >> linux/ac97_codec.h.
-> >
-> > I'm OK in both ways.
-> >
-> 
-> Okey, consider this last two patches nacked and I'll prepare new ones.
-> Still, I would like someone to *at least* compile swarm driver with the patch.
+--===============2927053881448555205==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
+Content-Disposition: inline
 
- I'll see what I can do sometime, but not very soon I am afraid, I'm 
-overloaded.  Please ping me back if you have any new code.
 
- This board has an interesting setup in that it does not have a sound 
-adapter, not at least a "proper" one.  The AC97 codec is wired to a 
-generic serial port, one of a pair, both embedded in the SOC that 
-comprises the heart of the system.  The two serial ports (USARTs) are 
-identical, have external line drivers and corresponding DE-9 connectors 
-and can be reconfigured independently for either asynchronous or 
-synchronous operation -- for the latter the usual clocking modes are 
-supported as for DTE or DCE and the clock lines are wired to the external 
-connector too, for use as inputs or outputs as required.
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- The port that is used for the AC97 is multiplexed between the codec and 
-the line driver/external connector with an additional control circuit.  
-For sound I/O (input is accepted too; two 3.5mm TRS sockets are available 
-for input and output, respectively) the serial port has to be configured 
-for synchronous operation and internal clocking at 48kHz; DMA is available 
-via a general-purpose third-party data mover agent available within the 
-SOC (it doesn't care whether it moves sound samples or other data for the 
-serial port of course), one of four with no specific preassignment and 
-the usual data needed/data available/underrun/overrun interrupt support.
+Hi all,
 
- So all in all for actual operation what this needs is a generic AC97 
-driver plus some infrastructure to configure the board logic in the right 
-mode.  For years my plan has been to properly support the multiplexer as 
-well and make it possible for the first user to grab the right driver and 
-lock the USART as long as it needs -- i.e. when you open the sound device, 
-then the USART is configured for synchronous operation as appropriate, the 
-line multiplexer switched for the AC97 and any attempts to open the 
-corresponding serial port return EBUSY.  Once the sound device is closed, 
-the USART is disabled, the rest of the logic set to some sane state and 
-both devices available for any one to be picked.  Likewise when the serial 
-port device is opened, then the USART is configured as requested, the 
-multiplexer switched for the serial line driver and any attempt to open 
-the sound device returns EBUSY.
+trying 3.5.0-rc6 doesn't give me sound from my snd_aoa_codec_onyx.
+ii  libasound2:powerpc                      1.0.25-3
+ii  libasound2-plugins:powerpc              1.0.25-2
+ii  alsa-utils                              1.0.25-3
 
- Right now the configuration is selected via kernel build configuration, 
-that is, ahem, a bit antiquated for today's standards.  Though, 
-presumably, nobody has tried using the sound device for quite a while now.  
-Even back when I first used it the driver had endianness issues that I had 
-to correct (I reckon it didn't byte-swap the samples in the little-endian 
-mode -- the board is bi-endian, but it was the big endianness that was 
-considered the default).  And that was some nine years ago already IIRC.
 
-  Maciej
+alsamixer tells: This sound device does not have any controls.
+
+$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+
+$ aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+pulse
+    PulseAudio Sound Server
+default:CARD=3DSoundByLayout
+    Default Audio Device
+sysdefault:CARD=3DSoundByLayout
+    Default Audio Device
+
+Kernel 3.4.4 runs just fine!
+
+Does one had similar experience?
+
+Elimar
+--=20
+  Learned men are the cisterns of knowledge,
+  not the fountainheads ;-)
+
+--SUOF0GtieIMvvwua
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBCAAGBQJP+UMjAAoJED2rN0233PG7/5EQALIVf2Qll1gYesyLGKVtLLim
+hnmSFMfa4SnWnQlXsU8PO1/xSFRl1Xv467AyXUr+aiVMeFymrm+DGZ53wpupoKNi
+VClP7hIoyz0tDJIBpqL+Si/wnA6NZU3Gex7Ljk/v6VH6FWWFYjQAJom2dGiinE4f
+L9l95GazuvDbpTodr6tx1wT+bkbejcbmabY5HxxRcp6JyNTEZRbFadODeVnuhDsS
+Dq+21Yx4aG5Ha445IbNljlzg+T34SUSlFqPppumcdwByJ1Z82qUpiwKzIAvWFZQ3
+RcLp0SsyWPurrQtKTRWd7vZuQJtpHMFAqqeVjxpDG8yziIFC8jEp0e4qlKM98stR
+ZwD4yZKYWx4R8OMl+R1JoIqQmFxCj4cFLlhAO0rOPyHkS5TUvT2yKOvNqdOzq/rx
+TELUyH1MYJgUhYsHeUwlx+jputCxi5w6lnsQJA6jvw8Yz3JmEE20ZXdIpOaGC8Uj
+dxbTpX6FOuMQxruZTcVIZ2VwF0bqAOTBC2TufdhNHsXNGmjD0G2JKZHlniVBqoY+
+5K6WBkHep+EfzD2npJGkSn0/Ofzupf2mWLRbZPDTqHNkX7REYxwyuKwQucRp9fyR
+VwgOSASYkpCNyCgYpK3YjOaaeECubQqeumsVoN2aZ3DTnofN5fK4TyxFJdk+3+YO
+pSpJC0c80ZJs5m4HT/vi
+=K9/t
+-----END PGP SIGNATURE-----
+
+--SUOF0GtieIMvvwua--
+
+--===============2927053881448555205==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2927053881448555205==--
