@@ -1,14 +1,17 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: 3.5-rc6 doesn't run powerpc SoundByLayout
-Date: Sun, 8 Jul 2012 10:21:57 +0200
-Message-ID: <20120708082157.GA3955@samweis.home.lxtec.de>
+From: Kaspar Bumke <kaspar.bumke@gmail.com>
+Subject: usage of snd_seq_set_client_event_filter
+Date: Sun, 8 Jul 2012 20:41:42 +0100
+Message-ID: <CAB+dmjiXDs7u20T8HJJZAv47o-61kZStL2+=ZX5zLjBsH7VPdQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2927053881448555205=="
+Content-Type: multipart/mixed; boundary=20cf303bfc8807a4e004c456b107
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.hostsharing.net (mailout1.hostsharing.net
-	[83.223.95.204]) by alsa0.perex.cz (Postfix) with ESMTP id 1A6452438F
+Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A02424699
 	for <alsa-devel@alsa-project.org>;
-	Sun,  8 Jul 2012 10:22:15 +0200 (CEST)
+	Sun,  8 Jul 2012 21:42:03 +0200 (CEST)
+Received: by ggnk3 with SMTP id k3so9254308ggn.38
+	for <alsa-devel@alsa-project.org>; Sun, 08 Jul 2012 12:42:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,82 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: debian-powerpc@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2927053881448555205==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-
-
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--20cf303bfc8807a4e004c456b107
+Content-Type: text/plain; charset=ISO-8859-1
 
 Hi all,
 
-trying 3.5.0-rc6 doesn't give me sound from my snd_aoa_codec_onyx.
-ii  libasound2:powerpc                      1.0.25-3
-ii  libasound2-plugins:powerpc              1.0.25-2
-ii  alsa-utils                              1.0.25-3
+I was trying to use snd_seq_set_client_event_filter in my application but I
+can't seem to get it to work correctly.
 
+I have attached a small test program which can be compiled with "g++ -o
+test test.cpp -lasound".  My alsa-lib is at 1.0.25. It should simple print
+the note number for any noteOn events.
 
-alsamixer tells: This sound device does not have any controls.
+I was under the impression that the way I have used it only noteOn events
+would get through but it seems that only the first noteOn event I send it
+gets through. I have been sending events using VMPK.
 
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
+If I remove snd_seq_set_client_event_filter everything seems to work
+(except the events aren't filtered of course).
 
-$ aplay -L
-null
-    Discard all samples (playback) or generate zero samples (capture)
-pulse
-    PulseAudio Sound Server
-default:CARD=3DSoundByLayout
-    Default Audio Device
-sysdefault:CARD=3DSoundByLayout
-    Default Audio Device
+What am I doing wrong?
 
-Kernel 3.4.4 runs just fine!
+All the Best,
 
-Does one had similar experience?
+Kaspar
 
-Elimar
---=20
-  Learned men are the cisterns of knowledge,
-  not the fountainheads ;-)
+--20cf303bfc8807a4e004c456b107
+Content-Type: text/x-c++src; charset=US-ASCII; name="test.cpp"
+Content-Disposition: attachment; filename="test.cpp"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h4eiw1tx0
 
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBCAAGBQJP+UMjAAoJED2rN0233PG7/5EQALIVf2Qll1gYesyLGKVtLLim
-hnmSFMfa4SnWnQlXsU8PO1/xSFRl1Xv467AyXUr+aiVMeFymrm+DGZ53wpupoKNi
-VClP7hIoyz0tDJIBpqL+Si/wnA6NZU3Gex7Ljk/v6VH6FWWFYjQAJom2dGiinE4f
-L9l95GazuvDbpTodr6tx1wT+bkbejcbmabY5HxxRcp6JyNTEZRbFadODeVnuhDsS
-Dq+21Yx4aG5Ha445IbNljlzg+T34SUSlFqPppumcdwByJ1Z82qUpiwKzIAvWFZQ3
-RcLp0SsyWPurrQtKTRWd7vZuQJtpHMFAqqeVjxpDG8yziIFC8jEp0e4qlKM98stR
-ZwD4yZKYWx4R8OMl+R1JoIqQmFxCj4cFLlhAO0rOPyHkS5TUvT2yKOvNqdOzq/rx
-TELUyH1MYJgUhYsHeUwlx+jputCxi5w6lnsQJA6jvw8Yz3JmEE20ZXdIpOaGC8Uj
-dxbTpX6FOuMQxruZTcVIZ2VwF0bqAOTBC2TufdhNHsXNGmjD0G2JKZHlniVBqoY+
-5K6WBkHep+EfzD2npJGkSn0/Ofzupf2mWLRbZPDTqHNkX7REYxwyuKwQucRp9fyR
-VwgOSASYkpCNyCgYpK3YjOaaeECubQqeumsVoN2aZ3DTnofN5fK4TyxFJdk+3+YO
-pSpJC0c80ZJs5m4HT/vi
-=K9/t
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
-
---===============2927053881448555205==
+I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUg
+PGlvc3RyZWFtPgp1c2luZyBuYW1lc3BhY2Ugc3RkOwoKc25kX3NlcV90ICogaGFuZGxlOwoKaW50
+IG1haW4oKSAKewoJc25kX3NlcV9vcGVuKCZoYW5kbGUsICJkZWZhdWx0IiwgU05EX1NFUV9PUEVO
+X0lOUFVULCAwKTsKCXNuZF9zZXFfc2V0X2NsaWVudF9uYW1lKGhhbmRsZSwgInRlc3QiKTsKCgkv
+L3NuZF9zZXFfc2V0X2NsaWVudF9ldmVudF9maWx0ZXIoaGFuZGxlLCBTTkRfU0VRX0VWRU5UX05P
+VEVPTik7CgoJc25kX3NlcV9jcmVhdGVfc2ltcGxlX3BvcnQoaGFuZGxlLCAiaW4iLCBTTkRfU0VR
+X1BPUlRfQ0FQX1dSSVRFIHwgU05EX1NFUV9QT1JUX0NBUF9TVUJTX1dSSVRFLCBTTkRfU0VRX1BP
+UlRfVFlQRV9BUFBMSUNBVElPTik7IAoJd2hpbGUgKDEpIHsKCQkvL3NsZWVwKDEpOwoJCXNuZF9z
+ZXFfZXZlbnRfdCAqIGV2ZW50OwoJCWlmKHNuZF9zZXFfZXZlbnRfaW5wdXQoaGFuZGxlLCAmZXZl
+bnQpID49IDApCgkJCWNvdXQgPDwgKGludCkoKmV2ZW50KS5kYXRhLm5vdGUubm90ZSA8PCBlbmRs
+OwoJfQoKfQo=
+--20cf303bfc8807a4e004c456b107
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2927053881448555205==--
+--20cf303bfc8807a4e004c456b107--
