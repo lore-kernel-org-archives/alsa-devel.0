@@ -1,15 +1,21 @@
-From: Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH 3/3] ASoC: tlv320aic3x: add deemphasis switch
-Date: Mon,  9 Jul 2012 09:48:44 +0200
-Message-ID: <1341820124-7902-1-git-send-email-jiri.prchal@aksignal.cz>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: core: Use dedicated substream ptr
+	for ASoC rtd.
+Date: Mon, 09 Jul 2012 11:19:43 +0100
+Message-ID: <1341829183.30148.1.camel@odin>
+References: <1341827730-29842-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B82E24451
+Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
+	[74.125.149.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C24424417
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2012 09:48:59 +0200 (CEST)
+	Mon,  9 Jul 2012 12:19:48 +0200 (CEST)
+Received: by wgbgn7 with SMTP id gn7so11486765wgb.9
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2012 03:19:45 -0700 (PDT)
+In-Reply-To: <1341827730-29842-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: Jiri Prchal <jiri.prchal@aksignal.cz>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds missing deemphasis switch.
+On Mon, 2012-07-09 at 10:55 +0100, Liam Girdwood wrote:
+> The ALSA substream private data should really be used by individual
+> drivers and
+> not really by the subsystem to store subsystem data. Create a
+> dedicated
+> rtd pointer in the PCM substream for ASoC operations.
+> 
+> The component driver were converted using this sed :-
+> 
+> sed -i 's/substream->private_data/substream->rtd/'  $(git ls-files
+> sound/soc)
+> 
+> Signed-off-by: Liam Girdwood <lrg@ti.com>
+> --- 
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
- sound/soc/codecs/tlv320aic3x.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Cancel this one, I've left something from another patch in it.
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index bd03f4d..0b17e66 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -381,6 +381,9 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 	*/
- 	SOC_DOUBLE_R("AGC Switch", LAGC_CTRL_A, RAGC_CTRL_A, 7, 0x01, 0),
- 
-+	/* De-emphasis */
-+	SOC_DOUBLE("De-emphasis Switch", AIC3X_CODEC_DFILT_CTRL, 2, 0, 0x01, 0),
-+
- 	/* Input */
- 	SOC_DOUBLE_R_TLV("PGA Capture Volume", LADC_VOL, RADC_VOL,
- 			 0, 119, 0, adc_tlv),
--- 
-1.7.7
+Liam 
