@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: tegra+alc5632: Swap MICBIAS1 and
- MIC1 dapm widgets
-Date: Tue, 10 Jul 2012 14:51:52 +0100
-Message-ID: <20120710135152.GF9409@opensource.wolfsonmicro.com>
-References: <b561a188ff2521d81b282edd45ded4b2c7133468.1341668123.git.marvin24@gmx.de>
-	<20120709164441.GJ3934@opensource.wolfsonmicro.com>
-	<1341901029.151674687@f219.mail.ru>
+From: Christian Gruber <christian.gruber@voiceinterconnect.de>
+Subject: Full duplex ALSA-plugin
+Date: Tue, 10 Jul 2012 16:28:33 +0200
+Message-ID: <4FFC3C11.4020600@voiceinterconnect.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6717986037882749109=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A06832433E
+Received: from dd14716.kasserver.com (dd14716.kasserver.com [85.13.136.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id B00362437B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 15:51:53 +0200 (CEST)
-In-Reply-To: <1341901029.151674687@f219.mail.ru>
+	Tue, 10 Jul 2012 16:24:42 +0200 (CEST)
+Received: from server-a.vic.site (146-52-60-185-dynip.superkabel.de
+	[146.52.60.185])
+	by dd14716.kasserver.com (Postfix) with ESMTPSA id 3B21115CC02A
+	for <alsa-devel@alsa-project.org>;
+	Tue, 10 Jul 2012 16:24:42 +0200 (CEST)
+Received: from kepler.vic.site ([192.168.13.149])
+	by server-a.vic.site with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.72) (envelope-from <gruber@voiceinterconnect.de>)
+	id 1SobMn-0003Ra-9I
+	for alsa-devel@alsa-project.org; Tue, 10 Jul 2012 16:24:41 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,73 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Andrey Danin <danindrey@mail.ru>
-Cc: alsa-devel@alsa-project.org, Leon Romanovsky <leon@leon.nu>, Marc Dietrich <marvin24@gmx.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I was looking for information on writing an echo cancellation ALSA-plugin. So I studied 
+the ALSA-plugin docs and also found several interesting threads in this mailing list. But 
+what I found out, was quiet disillusioning.
 
---===============6717986037882749109==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
-Content-Disposition: inline
+If I understood the ALSA-plugin concept right, there is no possibility to write a plugin 
+working on two streams, a playback and a record stream, simultaneously. One can only write 
+a filter plugin, which works either on a playback stream or a record stream but not both. 
+And there is no possibility to open a full duplex stream (consisting of playback and 
+record) with snd_pcm_open().
 
+Is there a reason, why full duplex streams are not implemented yet? Or is it planned in 
+the future to implement this feature?
 
---f61P+fpdnY2FZS1u
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 10, 2012 at 10:17:09AM +0400, Andrey Danin wrote:
-> Mon, 9 Jul 2012 17:44:41 +0100 =D0=BE=D1=82 Mark Brown <broonie@opensourc=
-e.wolfsonmicro.com>:
-> > On Sat, Jul 07, 2012 at 03:36:29PM +0200, Marc Dietrich wrote:
-
-Please fix your mailer to word wrap within paragraph.
-
-> >  > MICBIAS1 is an internal widget. If MICBIAS1 is connected to the board
-> >  > driver instead of the MIC1 ASoC core, it enables widgets even if the
-> >  > capture stream isn't active.
-
-> >  What exactly is MICBIAS1 then? It sounds horribly named...
-
-> According to alc5632 documentation alc5632 has one physical pin named
-> MICBIAS (MIC BIAS Voltage Output).  MICBIAS1 is declared as
-> SND_SOC_DAPM_SUPPLY. It describes "MICBIAS1 Power" bit in power
-> management register.  Should "MICBIAS1/2" be renamed to "MICBIAS1/2
-> Power" ?
-
-Sounds like it might be plausible, and whatever controls the external
-MICBIAS pin probably ought to be renamed to MICBIAS.
-
---f61P+fpdnY2FZS1u
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJP/DNxAAoJEBus8iNuMP3dSMoP/38K6NsHO4f3RVbvFdSevyqU
-x9bN39I6qn7nk51ePhqoMeJfXiLBjLktHQunstAXweartDVZ3hy5iJNBa1XJg553
-YmG0eU7/Gt0OdfYGnP7E8JqPeWzMsckx+y9ylEi+NseUuzncWnrgmGXHklO3FuQD
-c8dPeImzW804BG6cls1msNzbNRhA6bGLJll9O7fKCc6Mze55NcYazmPFHwbsF8Rb
-zskCxkbPmHaSnUid4ka7tsidCGZBun9o3ip0yx2tFohqhTQNUrAntuD4n8Ej4MKM
-nS/t0CCRFYU2i5n+8m0T0DZwSB4voPhaFM5G4vPhtQ5OvdS+y6dAEqC7sOP0dgQC
-nH8F/fsuSy5cdTu5b49pd9ay0thXRprgBPaUmiNdkbvFdCuuFYBqz7FkrJ7n+6AV
-cavpJxcTQWIfAjudF4mxnP3zqYVUUNz1A0ZRRvu5G7dAKILEeYPBccMvYMsFsPeU
-p/uVpb2aaHv8dDLintFKW3cvvarzp+x+Pt18HYpNoUXdXK2U2WiQ+JO19bLn/0FN
-bRZESk+x5phjJdzFJy1IHgq1LP3NutatvSZh5wade3AwGh+0D5RPDdnbaOM+AoJz
-5D1vhIpk4d+rO2NtIzi4gpb+xQ+uPn7Gthr9vaTosCIk0JwwJ2Le/EBsFOU0LTdf
-LM0QuKwN5W1wymdiW4UI
-=rVMO
------END PGP SIGNATURE-----
-
---f61P+fpdnY2FZS1u--
-
---===============6717986037882749109==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6717986037882749109==--
+Regards,
+Christian
