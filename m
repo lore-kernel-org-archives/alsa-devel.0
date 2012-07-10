@@ -1,17 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Full duplex ALSA-plugin
-Date: Tue, 10 Jul 2012 16:39:16 +0200
-Message-ID: <4FFC3E94.5060300@perex.cz>
-References: <4FFC3C11.4020600@voiceinterconnect.de>
+From: Andreas Gretler <andreasgretler@googlemail.com>
+Subject: MX28EVK mainline Patchs-3.5-rc5 sgtl5000 record not
+	working
+Date: Tue, 10 Jul 2012 18:11:12 +0200
+Message-ID: <CAHE2-smjaK0L+yJ3B2eizq1NgMLdHM_dw6XwfGTJ8vtUcL0yDQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id D280624393
+Received: from mail-gh0-f179.google.com (mail-gh0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 187382417E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 16:37:59 +0200 (CEST)
-In-Reply-To: <4FFC3C11.4020600@voiceinterconnect.de>
+	Tue, 10 Jul 2012 18:11:13 +0200 (CEST)
+Received: by ghbg24 with SMTP id g24so148388ghb.38
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2012 09:11:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christian Gruber <christian.gruber@voiceinterconnect.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 10.7.2012 16:28, Christian Gruber wrote:
-> I was looking for information on writing an echo cancellation ALSA-plugin. So I studied 
-> the ALSA-plugin docs and also found several interesting threads in this mailing list. But 
-> what I found out, was quiet disillusioning.
-> 
-> If I understood the ALSA-plugin concept right, there is no possibility to write a plugin 
-> working on two streams, a playback and a record stream, simultaneously. One can only write 
-> a filter plugin, which works either on a playback stream or a record stream but not both. 
-> And there is no possibility to open a full duplex stream (consisting of playback and 
-> record) with snd_pcm_open().
-> 
-> Is there a reason, why full duplex streams are not implemented yet? Or is it planned in 
-> the future to implement this feature?
+Hi,
 
-If you want to do some synchronization between two streams, you have to
-use own "data sharing" mechanism such as IPC or so..
+i've tested mainline 3.5-Patchs-3.5-rc5 for MX28EVK and it boot up and
+work fine.
 
-In other words - implement filters on both playback and capture streams
-and implement the required communication between them.
+But I'm not able to record something. Playback works. I also test it
+against the old 2.6.35.3 Kernel and there record works.
 
-					Jaroslav
+arecord -l show me this:
+
+**** List of CAPTURE Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 0: HiFi Playback sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: mxssgtl5000 [mxs_sgtl5000], device 1: HiFi Capture sgtl5000-1 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+I try record with arecord -d 2 -D hw:0,1 -f dat test.wav , but it
+crash the Linux. No ErrMsg printed and the board stop working.
+I have no idea what goes wrong. I put some printk message in
+mxs-saif.c and the last message i can see before the board crash is in
+mxs_saif_trigger() is before clk_enable is called.
+
+		/*
+		 * If the saif's master is not himself, we also need to enable
+		 * itself clk for its internal basic logic to work.
+		 */
+		if (saif != master_saif) {
+			clk_enable(saif->clk);
+			__raw_writel(BM_SAIF_CTRL_RUN,
+				saif->base + SAIF_CTRL + MXS_SET_ADDR);
+		}
+
+ In alsamixer i can not toggle the capture source from Mic-In to
+Line-in and also can't change the Headphone from DAC to Line-IN.
+
+I'm not sure this is the right place to ask? I will also post it to
+linux-arm-kernel@lists.infradead.org.
+Can anyone confirm the Problem? Or do/understand I something wrong
+with record and there is no Problem?
+
+Andreas Gretler
