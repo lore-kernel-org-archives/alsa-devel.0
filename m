@@ -1,18 +1,15 @@
-From: Kumar Gala <galak@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: select PPC_CLOCK unconditionally
-	for FSL_SOC
-Date: Tue, 10 Jul 2012 07:24:41 -0500
-Message-ID: <881CAA24-930D-4708-9911-80C9B40B0F3C@kernel.crashing.org>
-References: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
-Mime-Version: 1.0 (Apple Message framework v1278)
+From: Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH] ASoC: tlv320aic3x: add AGC settings
+Date: Tue, 10 Jul 2012 14:35:11 +0200
+Message-ID: <1341923712-8361-1-git-send-email-jiri.prchal@aksignal.cz>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id C08D124AA1
+Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB0FE24AB7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 14:24:44 +0200 (CEST)
-In-Reply-To: <1333085936-8977-1-git-send-email-shawn.guo@linaro.org>
+	Tue, 10 Jul 2012 14:35:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@freescale.com>
+To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: Jiri Prchal <jiri.prchal@aksignal.cz>
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds AGC target level and times settings for TLV320AIC3x.
+Enums uses small arrays of two channels left and right since it uses different registers.
 
-On Mar 30, 2012, at 12:38 AM, Shawn Guo wrote:
+Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+---
+ sound/soc/codecs/tlv320aic3x.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
 
-> Freescale PowerPC SoCs share a number of IP blocks with Freescale
-> ARM/IMX SoCs, FlexCAN, SSI, FEC, eSDHC, USB, etc.  There are some
-> effort consolidating those drivers to make them work for both
-> architectures.
-> 
-> One outstanding difference between two architectures is ARM/IMX will
-> turn off module clocks during platform initialization for power saving
-> and expects drivers manage clocks using clk API, while PowerPC
-> mostly does not do that, and thus does not always build in clk API.
-> 
-> Listing all those driver Kconfig options in "select PPC_CLOCK if" seems
-> not scalable for long term maintenance, and could easily introduce
-> Kconfig recursive dependency.  This patch chooses to select PPC_CLOCK
-> unconditionally for FSL_SOC to always build clk API for PowerPC in.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
-> arch/powerpc/Kconfig |    2 +-
-> 1 files changed, 1 insertions(+), 1 deletions(-)
-
-applied to next
-
-- k
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 0b17e66..11e195f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -256,6 +256,25 @@ static const struct soc_enum aic3x_enum[] = {
+ 	SOC_ENUM_DOUBLE(AIC3X_CODEC_DFILT_CTRL, 6, 4, 4, aic3x_adc_hpf),
+ };
+ 
++static const char *aic3x_agc_level[] =
++	{ "-5.5dB", "-8dB", "-10dB", "-12dB", "-14dB", "-17dB", "-20dB", "-24dB" };
++static const struct soc_enum aic3x_agc_level_enum[] = {
++	SOC_ENUM_SINGLE(LAGC_CTRL_A, 4, 8, aic3x_agc_level),
++	SOC_ENUM_SINGLE(RAGC_CTRL_A, 4, 8, aic3x_agc_level),
++};
++
++static const char *aic3x_agc_attack[] = { "8ms", "11ms", "16ms", "20ms" };
++static const struct soc_enum aic3x_agc_attack_enum[] = {
++	SOC_ENUM_SINGLE(LAGC_CTRL_A, 2, 4, aic3x_agc_attack),
++	SOC_ENUM_SINGLE(RAGC_CTRL_A, 2, 4, aic3x_agc_attack),
++};
++
++static const char *aic3x_agc_decay[] = { "100ms", "200ms", "400ms", "500ms" };
++static const struct soc_enum aic3x_agc_decay_enum[] = {
++	SOC_ENUM_SINGLE(LAGC_CTRL_A, 0, 4, aic3x_agc_decay),
++	SOC_ENUM_SINGLE(RAGC_CTRL_A, 0, 4, aic3x_agc_decay),
++};
++
+ /*
+  * DAC digital volumes. From -63.5 to 0 dB in 0.5 dB steps
+  */
+@@ -380,6 +399,12 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	 * adjust PGA to max value when ADC is on and will never go back.
+ 	*/
+ 	SOC_DOUBLE_R("AGC Switch", LAGC_CTRL_A, RAGC_CTRL_A, 7, 0x01, 0),
++	SOC_ENUM("Left AGC Target level", aic3x_agc_level_enum[0]),
++	SOC_ENUM("Right AGC Target level", aic3x_agc_level_enum[1]),
++	SOC_ENUM("Left AGC Attack time", aic3x_agc_attack_enum[0]),
++	SOC_ENUM("Right AGC Attack time", aic3x_agc_attack_enum[1]),
++	SOC_ENUM("Left AGC Decay time", aic3x_agc_decay_enum[0]),
++	SOC_ENUM("Right AGC Decay time", aic3x_agc_decay_enum[1]),
+ 
+ 	/* De-emphasis */
+ 	SOC_DOUBLE("De-emphasis Switch", AIC3X_CODEC_DFILT_CTRL, 2, 0, 0x01, 0),
+-- 
+1.7.7
