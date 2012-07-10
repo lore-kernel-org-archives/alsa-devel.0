@@ -1,19 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Usb audio - unsuported sampling rates
-Date: Tue, 10 Jul 2012 08:53:54 +0200
-Message-ID: <4FFBD182.9040503@gmail.com>
-References: <CADPOxSii6AGmyBmEYkBSs24Zd7fwasutf=HxTrB0xNqo4vuhXg@mail.gmail.com>
+From: Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH 4/4] ASoC: tlv320aic3x: add AGC settings
+Date: Tue, 10 Jul 2012 09:41:10 +0200
+Message-ID: <1341906070-4429-1-git-send-email-jiri.prchal@aksignal.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5F13924538
+Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71A2F2470C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 08:53:58 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so3407177bkc.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2012 23:53:58 -0700 (PDT)
-In-Reply-To: <CADPOxSii6AGmyBmEYkBSs24Zd7fwasutf=HxTrB0xNqo4vuhXg@mail.gmail.com>
+	Tue, 10 Jul 2012 09:41:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,52 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: gordon.dilan@gmail.com
+To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: Jiri Prchal <jiri.prchal@aksignal.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch adds AGC target level and times settings for TLV320AIC3x.
+Enums uses small arrays of two channels left and right since it uses different registers.
 
-On 10.07.2012 07:25, Gordon Dilan wrote:
-> I'm using an usb mic which(according to it's producer should support up to
-> 48kHz sampling rate). The problem is ALSA allows me to use only 16 kHz for
-> this device. I do not want to resample the data, I want to sample it at
-> 48kHz in order to be able to record some high pitch sounds 18-20kHz.
-> 
-> I would want to try to do any modifications necessary in order to try
-> support 48kHz, but I'm not sure where to start.
+Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+---
+ sound/soc/codecs/tlv320aic3x.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
 
-[...]
-
-> Some more information:
-> lsusb
-> Bus 001 Device 007: ID 1415:2000 Nam Tai E&E Products Ltd. or OmniVision
-> Technologies, Inc. Sony Playstation Eye
-> 
-> lsusb -t
-
-Please also provide the output of 'lsusb -v'.
-
-> /:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=ehci_hcd/2p, 480M
->     |__ Port 1: Dev 2, If 0, Class=hub, Driver=hub/6p, 480M
->         |__ Port 2: Dev 7, If 0, Class=vend., Driver=ov534, 480M
->         |__ Port 2: Dev 7, If 1, Class=audio, Driver=snd-usb-audio, 480M
->         |__ Port 2: Dev 7, If 2, Class=audio, Driver=snd-usb-audio, 480M
-> 
-> 
-> At the moment I'm looking inside ALSA's source code to try to see from
-> where this limitation of 16000kHz for my device appears, but I have to
-> admit that I'm kind of lost.
-> Any pointers on what direction should I go to try make my desired rate
-> supported would be greatly appreciated!
-
-The device is queried for its supported sample rates during probe using
-class-specific commands. If it doesn't return all rates that are
-actually supported, we need to add a quirk and override this list.
-
-The list of known sample rates is included in
-/proc/asound/card1/stream0. What does that show for you?
-
-
-
-Daniel
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 0b17e66..11e195f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -256,6 +256,25 @@ static const struct soc_enum aic3x_enum[] = {
+ 	SOC_ENUM_DOUBLE(AIC3X_CODEC_DFILT_CTRL, 6, 4, 4, aic3x_adc_hpf),
+ };
+ 
++static const char *aic3x_agc_level[] =
++	{ "-5.5dB", "-8dB", "-10dB", "-12dB", "-14dB", "-17dB", "-20dB", "-24dB" };
++static const struct soc_enum aic3x_agc_level_enum[] = {
++	SOC_ENUM_SINGLE(LAGC_CTRL_A, 4, 8, aic3x_agc_level),
++	SOC_ENUM_SINGLE(RAGC_CTRL_A, 4, 8, aic3x_agc_level),
++};
++
++static const char *aic3x_agc_attack[] = { "8ms", "11ms", "16ms", "20ms" };
++static const struct soc_enum aic3x_agc_attack_enum[] = {
++	SOC_ENUM_SINGLE(LAGC_CTRL_A, 2, 4, aic3x_agc_attack),
++	SOC_ENUM_SINGLE(RAGC_CTRL_A, 2, 4, aic3x_agc_attack),
++};
++
++static const char *aic3x_agc_decay[] = { "100ms", "200ms", "400ms", "500ms" };
++static const struct soc_enum aic3x_agc_decay_enum[] = {
++	SOC_ENUM_SINGLE(LAGC_CTRL_A, 0, 4, aic3x_agc_decay),
++	SOC_ENUM_SINGLE(RAGC_CTRL_A, 0, 4, aic3x_agc_decay),
++};
++
+ /*
+  * DAC digital volumes. From -63.5 to 0 dB in 0.5 dB steps
+  */
+@@ -380,6 +399,12 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	 * adjust PGA to max value when ADC is on and will never go back.
+ 	*/
+ 	SOC_DOUBLE_R("AGC Switch", LAGC_CTRL_A, RAGC_CTRL_A, 7, 0x01, 0),
++	SOC_ENUM("Left AGC Target level", aic3x_agc_level_enum[0]),
++	SOC_ENUM("Right AGC Target level", aic3x_agc_level_enum[1]),
++	SOC_ENUM("Left AGC Attack time", aic3x_agc_attack_enum[0]),
++	SOC_ENUM("Right AGC Attack time", aic3x_agc_attack_enum[1]),
++	SOC_ENUM("Left AGC Decay time", aic3x_agc_decay_enum[0]),
++	SOC_ENUM("Right AGC Decay time", aic3x_agc_decay_enum[1]),
+ 
+ 	/* De-emphasis */
+ 	SOC_DOUBLE("De-emphasis Switch", AIC3X_CODEC_DFILT_CTRL, 2, 0, 0x01, 0),
+-- 
+1.7.7
