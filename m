@@ -1,19 +1,16 @@
-From: Andreas Gretler <andreasgretler@googlemail.com>
-Subject: MX28EVK mainline Patchs-3.5-rc5 sgtl5000 record not
-	working
-Date: Tue, 10 Jul 2012 18:11:12 +0200
-Message-ID: <CAHE2-smjaK0L+yJ3B2eizq1NgMLdHM_dw6XwfGTJ8vtUcL0yDQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Support variable FLL VCO
+	multipliers
+Date: Tue, 10 Jul 2012 17:21:28 +0100
+Message-ID: <1341937288-32640-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f179.google.com (mail-gh0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 187382417E
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EC12424373
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 18:11:13 +0200 (CEST)
-Received: by ghbg24 with SMTP id g24so148388ghb.38
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2012 09:11:13 -0700 (PDT)
+	Tue, 10 Jul 2012 18:21:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Some Arizona chips have a higher frequency for the FLL VCO, support this
+in the common code.
 
-i've tested mainline 3.5-Patchs-3.5-rc5 for MX28EVK and it boot up and
-work fine.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    6 +++---
+ sound/soc/codecs/arizona.h |    1 +
+ sound/soc/codecs/wm5102.c  |    3 +++
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
-But I'm not able to record something. Playback works. I also test it
-against the old 2.6.35.3 Kernel and there record works.
-
-arecord -l show me this:
-
-**** List of CAPTURE Hardware Devices ****
-card 0: mxssgtl5000 [mxs_sgtl5000], device 0: HiFi Playback sgtl5000-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: mxssgtl5000 [mxs_sgtl5000], device 1: HiFi Capture sgtl5000-1 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-
-I try record with arecord -d 2 -D hw:0,1 -f dat test.wav , but it
-crash the Linux. No ErrMsg printed and the board stop working.
-I have no idea what goes wrong. I put some printk message in
-mxs-saif.c and the last message i can see before the board crash is in
-mxs_saif_trigger() is before clk_enable is called.
-
-		/*
-		 * If the saif's master is not himself, we also need to enable
-		 * itself clk for its internal basic logic to work.
-		 */
-		if (saif != master_saif) {
-			clk_enable(saif->clk);
-			__raw_writel(BM_SAIF_CTRL_RUN,
-				saif->base + SAIF_CTRL + MXS_SET_ADDR);
-		}
-
- In alsamixer i can not toggle the capture source from Mic-In to
-Line-in and also can't change the Headphone from DAC to Line-IN.
-
-I'm not sure this is the right place to ask? I will also post it to
-linux-arm-kernel@lists.infradead.org.
-Can anyone confirm the Problem? Or do/understand I something wrong
-with record and there is no Problem?
-
-Andreas Gretler
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index f3680c3..5c9caca 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -734,9 +734,9 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 	/* Apply the division for our remaining calculations */
+ 	Fref /= div;
+ 
+-	/* Fvco should be 90-100MHz; don't check the upper bound */
++	/* Fvco should be over the targt; don't check the upper bound */
+ 	div = 1;
+-	while (Fout * div < 90000000) {
++	while (Fout * div < 90000000 * fll->vco_mult) {
+ 		div++;
+ 		if (div > 7) {
+ 			arizona_fll_err(fll, "No FLL_OUTDIV for Fout=%uHz\n",
+@@ -744,7 +744,7 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 			return -EINVAL;
+ 		}
+ 	}
+-	target = Fout * div;
++	target = Fout * div / fll->vco_mult;
+ 	cfg->outdiv = div;
+ 
+ 	arizona_fll_dbg(fll, "Fvco=%dHz\n", target);
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index b894b64..59caca8 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -141,6 +141,7 @@ struct arizona_fll {
+ 	struct arizona *arizona;
+ 	int id;
+ 	unsigned int base;
++	unsigned int vco_mult;
+ 	struct completion lock;
+ 	struct completion ok;
+ 
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 7a6a11a..6537f16 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -853,6 +853,9 @@ static int __devinit wm5102_probe(struct platform_device *pdev)
+ 
+ 	wm5102->core.arizona = arizona;
+ 
++	for (i = 0; i < ARRAY_SIZE(wm5102->fll); i++)
++		wm5102->fll[i].vco_mult = 1;
++
+ 	arizona_init_fll(arizona, 1, ARIZONA_FLL1_CONTROL_1 - 1,
+ 			 ARIZONA_IRQ_FLL1_LOCK, ARIZONA_IRQ_FLL1_CLOCK_OK,
+ 			 &wm5102->fll[0]);
+-- 
+1.7.10
