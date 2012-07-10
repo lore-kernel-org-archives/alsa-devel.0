@@ -1,16 +1,16 @@
-From: Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH 5/5] ASoC: tlv320aic3x: add input clock
-	selection
-Date: Tue, 10 Jul 2012 10:15:07 +0200
-Message-ID: <1341908107-5090-1-git-send-email-jiri.prchal@aksignal.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: tlv320aic3x: add AGC settings
+Date: Tue, 10 Jul 2012 09:57:17 +0100
+Message-ID: <20120710085717.GB3918@opensource.wolfsonmicro.com>
+References: <1341906070-4429-1-git-send-email-jiri.prchal@aksignal.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0580189367825188561=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E06524819
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A7F2A24976
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 10:15:12 +0200 (CEST)
+	Tue, 10 Jul 2012 11:06:25 +0200 (CEST)
+In-Reply-To: <1341906070-4429-1-git-send-email-jiri.prchal@aksignal.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,54 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: Jiri Prchal <jiri.prchal@aksignal.cz>
+To: Jiri Prchal <jiri.prchal@aksignal.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds input selection of main codec clock - from what pin.
-Both registers set same value since codec uses clock divider or pll at one time.
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
- sound/soc/codecs/tlv320aic3x.c |    6 ++++++
- sound/soc/codecs/tlv320aic3x.h |    8 ++++++++
- 2 files changed, 14 insertions(+), 0 deletions(-)
+--===============0580189367825188561==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="p4qYPpj5QlsIQJ0K"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 11e195f..5bc5543 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1030,6 +1030,12 @@ static int aic3x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
- 
-+	/* set clock on MCLK or GPIO2 or BCLK */
-+	snd_soc_update_bits(codec, AIC3X_CLKGEN_CTRL_REG, PLLCLK_IN_MASK,
-+				clk_id << PLLCLK_IN_SHIFT);
-+	snd_soc_update_bits(codec, AIC3X_CLKGEN_CTRL_REG, CLKDIV_IN_MASK,
-+				clk_id << CLKDIV_IN_SHIFT);
-+
- 	aic3x->sysclk = freq;
- 	return 0;
- }
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 586c5d5..ed4a788 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -195,6 +195,14 @@
- #define PLL_CLKIN_SHIFT		4
- #define MCLK_SOURCE		0x0
- #define PLL_CLKDIV_SHIFT	0
-+#define PLLCLK_IN_MASK		0x30
-+#define PLLCLK_IN_SHIFT		4
-+#define CLKDIV_IN_MASK		0xc0
-+#define CLKDIV_IN_SHIFT		6
-+/* clock in source */
-+#define CLKIN_MCLK		0
-+#define CLKIN_GPIO2		1
-+#define CLKIN_BCLK		2
- 
- /* Software reset register bits */
- #define SOFT_RESET		0x80
--- 
-1.7.7
+
+--p4qYPpj5QlsIQJ0K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 10, 2012 at 09:41:10AM +0200, Jiri Prchal wrote:
+> This patch adds AGC target level and times settings for TLV320AIC3x.
+> Enums uses small arrays of two channels left and right since it uses different registers.
+
+Patches 1-3 don't seem to have been sent...
+
+--p4qYPpj5QlsIQJ0K
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJP++5mAAoJEBus8iNuMP3dYDQQAJtziau3N/Ea+7BuSs81KRrU
+I01XrvATkas3mgPIaUlLivNjv3i1Cqb5+kJ9QfloEpBuWPdKZ7pERy0v9NKJHw5F
+CMNh++PTakqW2KK4hUhPNBVpJbMmlSTuYkDjZQ5g3XqE3V0e5M15TR5I3UEgS+z1
+qkHXwAYmtqAH1pq8nqQjrwxWGeJkwvg3LxtDhK2n8KscbLrNIAw9bvN4SxwHyQRb
+P6gP7BHpcEjnTQwae6AjhjscFX/E3db8PuuRXu//LrnKzikXiujAGM1Jh0qYJxFV
+l5jONGiqXeprrxbGyx22PWGwKa3ph8dOc6pY1DTS4gw4n3DiScMoTUsY06ls4q/f
+henhSNCXcDuw3IPEJVkHUT9Mdq3HCC/7H7uQL26COBQX5I5PqrIYh/Zwily1q8FZ
+8Ei0wNaGOmpcj4jleNjyhMytVD+phOsU47yjWczDEHKIyhUfYzH/s7tem8m3v11z
+LWrsm3xXo4GKZ7KtO6PDwm3X1tpgJWnwrW/ks+ksE+o5s2Z88nk6D/FVYTW3iUOe
+JxD9k5fCl3zj0jKO4MRzN8/LA2fD/o59dYJ4/+Wmv4ZZWW/blHv/9+aPLuxpmQHo
+l2MlVVQ/GmgFlSDnijqg+aJUhLPxAerhxbyABE7piV9NM0kK9JPDloghpx+VKJTt
+gNrqx+cO9nXBxbi0QfRR
+=RJtU
+-----END PGP SIGNATURE-----
+
+--p4qYPpj5QlsIQJ0K--
+
+--===============0580189367825188561==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0580189367825188561==--
