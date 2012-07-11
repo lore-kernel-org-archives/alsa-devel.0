@@ -1,21 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Usb audio - unsuported sampling rates
-Date: Tue, 10 Jul 2012 23:33:02 +0200
-Message-ID: <4FFC9F8E.6090004@gmail.com>
-References: <CADPOxSii6AGmyBmEYkBSs24Zd7fwasutf=HxTrB0xNqo4vuhXg@mail.gmail.com>
-	<4FFBD182.9040503@gmail.com>
-	<CADPOxSis1apDxiFn6A6g-Rdi22sOgeMqCe+vOsDXy3odvjALAg@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: STA529: fix an error message
+Date: Wed, 11 Jul 2012 09:41:23 +0300
+Message-ID: <20120711064123.GI11812@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9331C24365
+Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id D17A62414A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2012 23:33:06 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so401407bkc.38
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2012 14:33:06 -0700 (PDT)
-In-Reply-To: <CADPOxSis1apDxiFn6A6g-Rdi22sOgeMqCe+vOsDXy3odvjALAg@mail.gmail.com>
+	Wed, 11 Jul 2012 08:41:36 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Gordon Dilan <gordon.dilan@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gordon,
+GCC complains that "ret" is uninitialized here.
 
-On 10.07.2012 20:57, Gordon Dilan wrote:
-           0
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        2
->       bAlternateSetting       1
->       bNumEndpoints           1
->       bInterfaceClass         1 Audio
->       bInterfaceSubClass      2 Streaming
->       bInterfaceProtocol      0
->       iInterface              0
->       AudioStreaming Interface Descriptor:
->         bLength                 7
->         bDescriptorType        36
->         bDescriptorSubtype      1 (AS_GENERAL)
->         bTerminalLink           2
->         bDelay                  1 frames
->         wFormatTag              1 PCM
->       AudioStreaming Interface Descriptor:
->         bLength                11
->         bDescriptorType        36
->         bDescriptorSubtype      2 (FORMAT_TYPE)
->         bFormatType             1 (FORMAT_TYPE_I)
->         bNrChannels             4
->         bSubframeSize           2
->         bBitResolution         16
->         bSamFreqType            1 Discrete
->         tSamFreq[ 0]        16000
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-The interface only reports this single sample rate. If the vendor claims
-that there are in fact more, it would be good to know which ones.
-
-Then we can add a quirk to parse_audio_format_rates_v1() in
-sound/usb/format.c - that shouldn't be too hard.
-
-
-Daniel
+diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+index a9f34c7..0c225cd 100644
+--- a/sound/soc/codecs/sta529.c
++++ b/sound/soc/codecs/sta529.c
+@@ -397,8 +397,9 @@ static __devinit int sta529_i2c_probe(struct i2c_client *i2c,
+ 
+ 	sta529->regmap = devm_regmap_init_i2c(i2c, &sta529_regmap);
+ 	if (IS_ERR(sta529->regmap)) {
++		ret = PTR_ERR(sta529->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
+-		return PTR_ERR(sta529->regmap);
++		return ret;
+ 	}
+ 
+ 	i2c_set_clientdata(i2c, sta529);
