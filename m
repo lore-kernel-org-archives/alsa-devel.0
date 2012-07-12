@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: When will Realtek High-Defintion audio codec
- ALC282 be supported?
-Date: Thu, 12 Jul 2012 08:33:14 +0200
-Message-ID: <4FFE6FAA.8070209@canonical.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F81560FB@SHSMSX101.ccr.corp.intel.com>
-	<F46914AEC2663F4A9BB62374E5EEF8F81561B7@SHSMSX101.ccr.corp.intel.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Usb audio - unsuported sampling rates
+Date: Thu, 12 Jul 2012 09:44:34 +0200
+Message-ID: <4FFE8062.5040101@gmail.com>
+References: <CADPOxSii6AGmyBmEYkBSs24Zd7fwasutf=HxTrB0xNqo4vuhXg@mail.gmail.com>
+	<4FFBD182.9040503@gmail.com>
+	<CADPOxSis1apDxiFn6A6g-Rdi22sOgeMqCe+vOsDXy3odvjALAg@mail.gmail.com>
+	<4FFC9F8E.6090004@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------060700070904070901020706"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 591F524478
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id B2FAD244C0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Jul 2012 08:33:16 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F81561B7@SHSMSX101.ccr.corp.intel.com>
+	Thu, 12 Jul 2012 09:44:37 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so1424025bkc.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jul 2012 00:44:37 -0700 (PDT)
+In-Reply-To: <4FFC9F8E.6090004@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +25,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Gordon Dilan <gordon.dilan@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/12/2012 04:57 AM, Lin, Mengdong wrote:
-> Hi David,
->
-> Do you have any plan to support ALC282? Could you give any comments?
->
-> And could you or anyone share me the codec id/datasheet of ALC282? So I can try to configure it to share old driver of ALC2XX as you did for ALC280.
-> http://www.mail-archive.com/stable@vger.kernel.org/msg10752.html
->
-> Thanks
-> Mengdong
->
-> From: Lin, Mengdong
-> Sent: Thursday, July 12, 2012 7:05 AM
-> To: alsa-devel@alsa-project.org
-> Cc: Lin, Mengdong
-> Subject: When will Realtek High-Defintion audio codec ALC282 be supported?
->
-> Hi,
->
-> I'm going to have a platform with Realtek HDA ALC282 codec. But the driver has no support for ALC282 now. Does anybody know when ALC282 will be supported?
->
-> I saw that another Realtek ALC280 is supported by just adding the codec id and still using 'patch_alc269'. I wonder if ALC282 can also be supported in this way if it's similar enough to other ALC2XX codecs. Could anyone share some idea about this?
->
-> Thanks
-> Mengdong
+This is a multi-part message in MIME format.
+--------------060700070904070901020706
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Hello Mengdong,
+On 10.07.2012 23:33, Daniel Mack wrote:
+> Hi Gordon,
+> 
+> On 10.07.2012 20:57, Gordon Dilan wrote:
+>            0
+>>     Interface Descriptor:
+>>       bLength                 9
+>>       bDescriptorType         4
+>>       bInterfaceNumber        2
+>>       bAlternateSetting       1
+>>       bNumEndpoints           1
+>>       bInterfaceClass         1 Audio
+>>       bInterfaceSubClass      2 Streaming
+>>       bInterfaceProtocol      0
+>>       iInterface              0
+>>       AudioStreaming Interface Descriptor:
+>>         bLength                 7
+>>         bDescriptorType        36
+>>         bDescriptorSubtype      1 (AS_GENERAL)
+>>         bTerminalLink           2
+>>         bDelay                  1 frames
+>>         wFormatTag              1 PCM
+>>       AudioStreaming Interface Descriptor:
+>>         bLength                11
+>>         bDescriptorType        36
+>>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>>         bFormatType             1 (FORMAT_TYPE_I)
+>>         bNrChannels             4
+>>         bSubframeSize           2
+>>         bBitResolution         16
+>>         bSamFreqType            1 Discrete
+>>         tSamFreq[ 0]        16000
+> 
+> The interface only reports this single sample rate. If the vendor claims
+> that there are in fact more, it would be good to know which ones.
+> 
+> Then we can add a quirk to parse_audio_format_rates_v1() in
+> sound/usb/format.c - that shouldn't be too hard.
 
-I know just as little as you do about Realtek ALC282. Chances are that 
-Realtek haven't changed the codec much compared to ALC280, and then just 
-another line next to the ALC280 would do just fine:
-
-{ .id = 0x10ec0282, .name = "ALC282", .patch = patch_alc269 },
-
-But I don't think Takashi would add such a line to the kernel without 
-somebody testing that it actually works.
-If you have the hardware available, you can try the above line, see if 
-it works, and report back together with alsa-info for the affected system.
+Something like the patch below could help. Can you try this?
 
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Daniel
+
+--------------060700070904070901020706
+Content-Type: text/x-patch;
+ name="playstation-eye-samplerates.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="playstation-eye-samplerates.diff"
+
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index ddfef57..ce64a5b 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -158,6 +158,17 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ 		return -1;
+ 	}
+ 
++	/* 
++	 * Sony's "Playstation Eye" microphone only reports one sample rate,
++	 * but can in fact handle more.
++	 */
++	if (chip->usb_id == USB_ID(0x1415, 0x2000) && fp->altsetting == 1) {
++		fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
++		fp->rate_min = 16000;
++		fp->rate_min = 48000;
++		return 0;
++	}
++
+ 	if (nr_rates) {
+ 		/*
+ 		 * build the rate table and bitmap flags
+
+--------------060700070904070901020706
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------060700070904070901020706--
