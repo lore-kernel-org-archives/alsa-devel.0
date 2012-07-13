@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: Convert S3C24XX I2S driver to
-	gpiolib API
-Date: Fri, 13 Jul 2012 15:28:53 +0100
-Message-ID: <20120713142853.GN4215@opensource.wolfsonmicro.com>
-References: <1341059876-29460-1-git-send-email-sylvester.nawrocki@gmail.com>
-	<4FFED794.9050800@gmail.com>
-	<20120712161933.GD7256@opensource.wolfsonmicro.com>
-	<4FFF12C5.6030403@gmail.com>
+Subject: Re: [PATCH 1/2] sound:soc:soc-dmap: Fix compilation
+	warning.
+Date: Fri, 13 Jul 2012 15:45:24 +0100
+Message-ID: <20120713144524.GO4215@opensource.wolfsonmicro.com>
+References: <1342126816-22308-1-git-send-email-marek.belisko@open-nandra.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9145243592403228478=="
+Content-Type: multipart/mixed; boundary="===============1072522730509120516=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B46124784
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F1892479E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jul 2012 16:28:57 +0200 (CEST)
-In-Reply-To: <4FFF12C5.6030403@gmail.com>
+	Fri, 13 Jul 2012 16:45:26 +0200 (CEST)
+In-Reply-To: <1342126816-22308-1-git-send-email-marek.belisko@open-nandra.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,58 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lrg@ti.com, Ben Dooks <ben-linux@fluff.org>
+To: Marek Belisko <marek.belisko@open-nandra.com>
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9145243592403228478==
+--===============1072522730509120516==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FCF9ydJxlAJsfRTu"
+	protocol="application/pgp-signature"; boundary="RD6GsZsdEJvsf78O"
 Content-Disposition: inline
 
 
---FCF9ydJxlAJsfRTu
-Content-Type: text/plain; charset=us-ascii
+--RD6GsZsdEJvsf78O
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 12, 2012 at 08:09:09PM +0200, Sylwester Nawrocki wrote:
+On Thu, Jul 12, 2012 at 11:00:16PM +0200, Marek Belisko wrote:
+> Fix following:
+> sound/soc/soc-dapm.c: In function =E2=80=98dapm_clock_event=E2=80=99:
+> sound/soc/soc-dapm.c:1021:1: warning: control reaches end of non-void fun=
+ction [-Wreturn-type]
 
-> Thanks, would that be Takashi Iwai and Jaroslav Kysela then ? I just
-> want to get it right this time...
-> Or perhaps could you take care of them ?
+Applied,:but:please:do:make:an:effort:to:use:subject:lines:appropriate:to
+the:subsystem.  As well as using a totally different style there's a
+spelling issue, I very nearly deleted the patch unread because of these
+things.
 
-As with everything else look in MAINTAINERS, so me for ASoC.
-
---FCF9ydJxlAJsfRTu
+--RD6GsZsdEJvsf78O
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQADCNAAoJEBus8iNuMP3dDdwP/140e7KW3JM7IZxMWv50tSQE
-mC92LOboWm9VAuIi1mHczWqqAwHWCp7FVaHs2ft/z/onjfvvshYsb3zgyjh/O+R5
-YVghp6HEJIt8iizsBIXFUOFKYFSIF2a1reGpYCv8cFhSIzg7UlROnSKjl4/9ahCT
-tDHeXuTzeSgF/EOAmLVzcKEl1Mgu6No75tIZprIWO5o6d79TzmwI9KfSNOoIxJR1
-zzlzNVHz9e/zZbLBhIe34L2LGGiMGrHusx4xjULqDC3KEY+B9rTZR3ry613wZFAN
-+9nL1QAM371ZqEnuFt+bjBG8xqn0yCxA65gmD1jxjLm3oonrJ5T/YuiXSPBFiMXG
-/YrItC4tJpGjfUiKKPXvUQf3NxiVB4jNvzCt5KtrBPJ+09PEUHk6UfkFhwYx0NEt
-X0ZyAQwzNEti8CWyM2L57UFUIG4XhWGbquBEzEK5/4NhroBIdtcmVGTfCkzVm3oZ
-VAUC+4JhNK8ZXnXOB0Qa2XS7WTdnZUrGWg0bkR9ynOfocw65FBkJzaGh07ctqctJ
-nFwAsrkox/03nRM72IKS4OWI8gIb46fgD1pbPWbzDZNVradLVOxRIPgg/u10WoLa
-o+iYblSisW/Nni7BOf/8sm9rNX4hqeA1rB6fS57uex7InTb9lO/+WTz3AhUPzlPc
-4k9i24vEDm1Y9Tm3iqnQ
-=QLt0
+iQIcBAEBAgAGBQJQADR3AAoJEBus8iNuMP3df14QAJi+1R1niDq/r1HEb/mReIg4
+AGfbc5gFn0XkmCPMAIC4g/OFSMcGpDrs9ItgtgHqkaMkjUIpOZxu9cOiUgIxnpaw
+mtMJxr1wBCuFHvRnKRdpXzTPpAVogO+dKMkBjoN5G2WJ6PGMbuPnbhWBfK8U64R2
+UVeg8ISJxgnehuh6fta8JUBYneZS3E9vwSwBayDQL4mbWnGjVMC/aHL1Te5DKu29
+chp+rjPRn7LGImFShsiGMgaUr/R93t75ze1cdWuk4654fQVG9mFZA91ZiTIXFHNg
+qiWj0XStLknMbQpRpTNGL9keAzMXQBPU1LPxIcBHn/WL7vebT79H5Bpnqsme3SPS
+LbgLsmjay6vKVkshG6nlnz9aNYbMwPc1Ur2AFlenlNVdvjvBiHpyxw855s+aYkue
+xX6h+HHqRLYo4re8dx5m7cLO2WAciL4lRjm7QUKAnPLn6Nrg7wfoFceo0cKoHskI
+mdma9lg9nw4afZv/D2vrxtqOsN3cBhVfGm7PmQjbjnU31jVG7CtjAgUuxYnVmF/N
+vldwn8KIJsy+PesH4FexboeFeZm1lqOtW8nWsCMfr+P93W4oo2Qx84Vw9383rtTI
+8s6IlSH57ABWaUGnSS5vPVMWIwxWvq9EYOF4o6CRzJcwLBLkgxCt+TFvwW+qUub1
+k+V6IL6aojjdTXHmIdjU
+=bV68
 -----END PGP SIGNATURE-----
 
---FCF9ydJxlAJsfRTu--
+--RD6GsZsdEJvsf78O--
 
---===============9145243592403228478==
+--===============1072522730509120516==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9145243592403228478==--
+--===============1072522730509120516==--
