@@ -1,16 +1,22 @@
-From: ian_minett@creativelabs.com
-Subject: [PATCH - CA0132 HDA Codec 2/2] Change
-	spin_lock()/unlock() to spin_lock_irqsave()/restore() in
-	azx_pcm_trigger(). This prevents deadlock when an interrupt
-	occurs, caused by chip->reg_lock contention.
-Date: Fri, 13 Jul 2012 16:44:29 -0700
-Message-ID: <1342223070-25852-2-git-send-email-ian_minett@creativelabs.com>
-References: <1342223070-25852-1-git-send-email-ian_minett@creativelabs.com>
+From: Gordon Dilan <gordon.dilan@gmail.com>
+Subject: Re: Usb audio - unsuported sampling rates
+Date: Sat, 14 Jul 2012 05:01:40 -0400
+Message-ID: <CADPOxSi7ijOCobfyRVoTBPenY-gJBnPivaJF1pY8jnrgVgmxsg@mail.gmail.com>
+References: <CADPOxSii6AGmyBmEYkBSs24Zd7fwasutf=HxTrB0xNqo4vuhXg@mail.gmail.com>
+	<4FFBD182.9040503@gmail.com>
+	<CADPOxSis1apDxiFn6A6g-Rdi22sOgeMqCe+vOsDXy3odvjALAg@mail.gmail.com>
+	<4FFC9F8E.6090004@gmail.com> <4FFE8062.5040101@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1342223070-25852-1-git-send-email-ian_minett@creativelabs.com>
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7C2872433A
+	for <alsa-devel@alsa-project.org>;
+	Sat, 14 Jul 2012 11:01:41 +0200 (CEST)
+Received: by vbip1 with SMTP id p1so2683978vbi.38
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jul 2012 02:01:40 -0700 (PDT)
+In-Reply-To: <4FFE8062.5040101@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,52 +26,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Ian Minett <ian_minett@creativelabs.com>
+Hello Daniel,
 
+Thank you very much for your help and sorry for the late answer. I was
+without internet access for the last few days.
 
-Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
+I have tried the patch that you sent me(with a minor modification:
+fp->rate_max(instead of min) = 48000; ).
+If I try to record using 48kHz and then playback, it will playback in "fast
+speed", voices being recorded as "chipmunks".
+Only at 16000Hz it records at "normal speed".
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 796472d..0ccffde 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -551,6 +551,7 @@ enum {
- 	(AZX_DCAPS_NVIDIA_SNOOP | AZX_DCAPS_RIRB_DELAY | AZX_DCAPS_NO_MSI |\
- 	 AZX_DCAPS_ALIGN_BUFSIZE)
- 
-+/* quirks for Creative CTHDA */
- #define AZX_DCAPS_PRESET_CTHDA \
- 	(AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB | AZX_DCAPS_4K_BDLE_BOUNDARY)
- 
-@@ -1930,6 +1931,7 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_pcm_substream *s;
- 	int rstart = 0, start, nsync = 0, sbits = 0;
- 	int nwait, timeout;
-+	unsigned long flags;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1956,7 +1958,7 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		snd_pcm_trigger_done(s, substream);
- 	}
- 
--	spin_lock(&chip->reg_lock);
-+	spin_lock_irqsave(&chip->reg_lock, flags);
- 	if (nsync > 1) {
- 		/* first, set SYNC bits of corresponding streams */
- 		if (chip->driver_caps & AZX_DCAPS_OLD_SSYNC)
-@@ -1980,7 +1982,7 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		}
- 		azx_dev->running = start;
- 	}
--	spin_unlock(&chip->reg_lock);
-+	spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	if (start) {
- 		if (nsync == 1)
- 			return 0;
--- 
-1.7.4.1
+So it seems that the recording is still done in fact at 16kHz, even though
+now the driver appears to support sampling rates between 16000-48000Hz.
+
+Dmesg is also showing me this everytime I try to record using the
+microphone(These messages appeared even without the driver modification):
+[  165.364728] ALSA clock.c:242 current rate 175902 is different from the
+runtime rate 48000
+[  171.838509] ALSA clock.c:242 current rate 51816 is different from the
+runtime rate 48000
+[  206.950822] ALSA clock.c:242 current rate 281039 is different from the
+runtime rate 48000
+[  968.713856] ALSA clock.c:242 current rate 6096811 is different from the
+runtime rate 48000
+
+Once again, thank you very much for your support!
+
+Best Regards,
+Gordon
+
+On Thu, Jul 12, 2012 at 3:44 AM, Daniel Mack <zonque@gmail.com> wrote:
+
+> On 10.07.2012 23:33, Daniel Mack wrote:
+> > Hi Gordon,
+> >
+> > On 10.07.2012 20:57, Gordon Dilan wrote:
+> >            0
+> >>     Interface Descriptor:
+> >>       bLength                 9
+> >>       bDescriptorType         4
+> >>       bInterfaceNumber        2
+> >>       bAlternateSetting       1
+> >>       bNumEndpoints           1
+> >>       bInterfaceClass         1 Audio
+> >>       bInterfaceSubClass      2 Streaming
+> >>       bInterfaceProtocol      0
+> >>       iInterface              0
+> >>       AudioStreaming Interface Descriptor:
+> >>         bLength                 7
+> >>         bDescriptorType        36
+> >>         bDescriptorSubtype      1 (AS_GENERAL)
+> >>         bTerminalLink           2
+> >>         bDelay                  1 frames
+> >>         wFormatTag              1 PCM
+> >>       AudioStreaming Interface Descriptor:
+> >>         bLength                11
+> >>         bDescriptorType        36
+> >>         bDescriptorSubtype      2 (FORMAT_TYPE)
+> >>         bFormatType             1 (FORMAT_TYPE_I)
+> >>         bNrChannels             4
+> >>         bSubframeSize           2
+> >>         bBitResolution         16
+> >>         bSamFreqType            1 Discrete
+> >>         tSamFreq[ 0]        16000
+> >
+> > The interface only reports this single sample rate. If the vendor claims
+> > that there are in fact more, it would be good to know which ones.
+> >
+> > Then we can add a quirk to parse_audio_format_rates_v1() in
+> > sound/usb/format.c - that shouldn't be too hard.
+>
+> Something like the patch below could help. Can you try this?
+>
+>
+> Daniel
+>
