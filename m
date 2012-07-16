@@ -1,19 +1,21 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Status of USB audio class 2 drivers in ALSA
-Date: Sun, 15 Jul 2012 23:43:32 +0200
-Message-ID: <50033984.6050407@gmail.com>
-References: <CAFi4vu-LeUyVg_wz_OkMVTrGbc-n1e6MKoJwo+iTHgbwD5s0zA@mail.gmail.com>
+From: Wang Xingchao <wangxingchao2011@gmail.com>
+Subject: Re: [PATCH 1/1] hda_intel: activate COMBO mode for
+	Intel client chipsets
+Date: Mon, 16 Jul 2012 14:10:07 +0800
+Message-ID: <CA+v+29hZjJ4MLaJzmjW-Xi2eHxyhhymhjRZpXghvjxrHdcgzRg@mail.gmail.com>
+References: <1339709033-3583-1-git-send-email-seth.heasley@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6503224375
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 376AD24B78
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Jul 2012 23:43:40 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so3220071bkc.38
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2012 14:43:40 -0700 (PDT)
-In-Reply-To: <CAFi4vu-LeUyVg_wz_OkMVTrGbc-n1e6MKoJwo+iTHgbwD5s0zA@mail.gmail.com>
+	Mon, 16 Jul 2012 08:10:28 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so3218663qcs.38
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2012 23:10:27 -0700 (PDT)
+In-Reply-To: <1339709033-3583-1-git-send-email-seth.heasley@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +25,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Seth Heasley <seth.heasley@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, James Ralston <james.d.ralston@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 15.07.2012 23:03, Anand Joseph wrote:
-> I am working on building a multi-channel USB audio device using the
-> PIC32MX2 series with dual WM8731 audio codecs. The goal is a low cost
-> 4 channel USB audio device. While this might not be the best
-> combination for
-> multi-channel audio, I do not have a better solution as the XMOS
-> series is not easily available in India. I would like to know the
-> status of USB audio class 2 support in ALSA and is there anyway I can
-> contribute. I did go through the USB specifications for audio class 2
-> devices, but an idea of the implementation in ALSA would help in
-> writing the firmware.
+Hi Seth,
 
-UAC2 is mostly supported in ALSA since a while. Things that are missing
-are exotic features like complex clock infrastructure handling and some
-mixer extension units that haven't been observed in the wild yet.
+2012/6/15 Seth Heasley <seth.heasley@intel.com>:
+> This patch activates the COMBO position_fix for recent Intel client chipsets.  COMBO mode is the recommended setting for Intel chipsets and eliminates HD audio warnings in dmesg.  This patch has been tested on Lynx Point, Panther Point, and Cougar Pont.
 
-In any case, the support that is there already is more than enough to
-support a simple streaming device like the one you have in mind.
+Haswell HDMI audio works now on Sharkbay mobile platform, so i would
+like to test whether this patch is useful for Haswell. Would you tell
+me how to finish the test to prove it works better?
 
-Let us know how your project goes and if you encounter any problems with
-the drivers.
+thanks
+--xingchao
 
-
-Daniel
+>
+> Signed-off-by: Seth Heasley <seth.heasley@intel.com>
+> ---
+>  sound/pci/hda/hda_intel.c |   11 ++++++++---
+>  1 files changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 2b6392b..466a88c 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -535,6 +535,7 @@ enum {
+>  #define AZX_DCAPS_BUFSIZE      (1 << 21)       /* no buffer size alignment */
+>  #define AZX_DCAPS_ALIGN_BUFSIZE        (1 << 22)       /* buffer size alignment */
+>  #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)   /* BDLE in 4k boundary */
+> +#define AZX_DCAPS_POSFIX_COMBO  (1 << 24)      /* Use COMBO as default */
+>
+>  /* quirks for ATI SB / AMD Hudson */
+>  #define AZX_DCAPS_PRESET_ATI_SB \
+> @@ -2728,6 +2729,10 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+>                 snd_printd(SFX "Using LPIB position fix\n");
+>                 return POS_FIX_LPIB;
+>         }
+> +       if (chip->driver_caps & AZX_DCAPS_POSFIX_COMBO) {
+> +               snd_printd(SFX "Using COMBO position fix\n");
+> +               return POS_FIX_COMBO;
+> +       }
+>         return POS_FIX_AUTO;
+>  }
+>
+> @@ -3240,7 +3245,7 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>         /* CPT */
+>         { PCI_DEVICE(0x8086, 0x1c20),
+>           .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -         AZX_DCAPS_BUFSIZE },
+> +         AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+>         /* PBG */
+>         { PCI_DEVICE(0x8086, 0x1d20),
+>           .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> @@ -3248,11 +3253,11 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>         /* Panther Point */
+>         { PCI_DEVICE(0x8086, 0x1e20),
+>           .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -         AZX_DCAPS_BUFSIZE},
+> +         AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+>         /* Lynx Point */
+>         { PCI_DEVICE(0x8086, 0x8c20),
+>           .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -         AZX_DCAPS_BUFSIZE},
+> +         AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
+>         /* SCH */
+>         { PCI_DEVICE(0x8086, 0x811b),
+>           .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+> --
+> 1.7.4.4
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
