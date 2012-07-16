@@ -1,164 +1,75 @@
-From: Matthew Gregan <kinetik@flim.org>
-Subject: Immediate underrun with PulseAudio ALSA plugin when PA
- and ALSA buffer sizes differ
-Date: Tue, 17 Jul 2012 09:38:55 +1200
-Message-ID: <20120716213855.GE7462@flim.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="7iMSBzlTiPOCCT2k"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from flim.org (flim.org [65.99.223.158])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C080264EF7
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2012 23:38:59 +0200 (CEST)
-Received: from brak (unknown [121.98.132.55])
- (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by flim.org (Postfix) with ESMTPSA id F0CF21431F
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2012 21:38:59 +0000 (UTC)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+From: Marek Vasut <marex@denx.de>
+Subject: [PATCH V2] [SCSI] async: Fixup arguments of async_synchronize_full_domain in alsa-soc
+Date: Tue, 17 Jul 2012 00:17:06 +0200
+Message-ID: <1342477026-8376-1-git-send-email-marex@denx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dan Williams <dan.j.williams@intel.com>, Arjan van de Ven <arjan@linux.intel.com>, James Bottomley <JBottomley@Parallels.com>
 List-Id: alsa-devel@alsa-project.org
 
+This caused the following crash:
 
---7iMSBzlTiPOCCT2k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+[    3.950000] sgtl5000 0-000a: Using internal LDO instead of VDDD
+[    3.960000] sgtl5000 0-000a: sgtl5000 revision 0x11
+[    3.970000] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+[    3.970000] pgd = c0004000
+[    3.970000] [00000000] *pgd=00000000
+[    3.970000] Internal error: Oops: 817 [#1] ARM
+[    3.970000] Modules linked in:
+[    3.970000] CPU: 0    Not tainted  (3.5.0-rc7-next-20120716-00024-g47a3902-dirty #1814)
+[    3.970000] PC is at async_run_entry_fn+0x3c/0x1cc
+[    3.970000] LR is at process_one_work+0x12c/0x3c8
+[    3.970000] pc : [<c0039a84>]    lr : [<c002ead8>]    psr: 60000093
+[    3.970000] sp : c74fff38  ip : 00000000  fp : c74fe000
+[    3.970000] r10: c7447d98  r9 : c2fc7f40  r8 : c2fc7f48
+[    3.970000] r7 : c0039a48  r6 : c7403e00  r5 : c74f7d40  r4 : c2fc7f48
+[    3.970000] r3 : 60000013  r2 : 00000000  r1 : c2fc7f80  r0 : c7447da0
+[    3.970000] Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+[    3.970000] Control: 0005317f  Table: 42fd0000  DAC: 00000017
+[    3.970000] Process kworker/u:1 (pid: 16, stack limit = 0xc74fe270)
+[    3.970000] Stack: (0xc74fff38 to 0xc7500000)
+[    3.970000] ff20:                                                       c06480d4 c003afe4
+[    3.970000] ff40: 00000001 c7444e60 a0000093 00000000 c2fc7f48 c74f7d40 c7403e00 c0039a48
+[    3.970000] ff60: 00000000 00000000 c06480d4 c002ead8 00000000 c745bf1c 00000001 c74f7d40
+[    3.970000] ff80: c06480d4 c74f7d50 c74fe000 c05ff124 c06255d9 c0647fc4 00000089 c002f518
+[    3.970000] ffa0: 00000013 00000000 00000000 c745bf14 c74f7d40 c002f3b4 00000013 00000000
+[    3.970000] ffc0: 00000000 00000000 00000000 c00335d8 00000000 00000000 c74f7d40 00000000
+[    3.970000] ffe0: c74fffe0 c74fffe0 c745bf14 c0033554 c000fb70 c000fb70 ffbbfaa5 eaeafefe
+[    3.970000] [<c0039a84>] (async_run_entry_fn+0x3c/0x1cc) from [<c002ead8>] (process_one_work+0x12c/0x3c8)
+[    3.970000] [<c002ead8>] (process_one_work+0x12c/0x3c8) from [<c002f518>] (worker_thread+0x164/0x36c)
+[    3.970000] [<c002f518>] (worker_thread+0x164/0x36c) from [<c00335d8>] (kthread+0x84/0x90)
+[    3.970000] [<c00335d8>] (kthread+0x84/0x90) from [<c000fb70>] (kernel_thread_exit+0x0/0x8)
+[    3.970000] Code: e59a200c e28a0008 e58a900c e9080005 (e5829000)
+[    3.970000] ---[ end trace 7e75d80e67ab9651 ]---
 
-I'm investigating an issue in Firefox's audio code when the PulseAudio ALSA
-plugin is in use.  I posted about this on pulseaudio-discuss last week
-(http://lists.freedesktop.org/archives/pulseaudio-discuss/2012-July/014091.html),
-but I hoped I might have more success here.
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Arjan van de Ven <arjan@linux.intel.com>
+Cc: James Bottomley <JBottomley@Parallels.com>
+---
+ sound/soc/soc-dapm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Firefox requests a particular latency (100ms, 4410 frames at 44.1kHz) via
-snd_pcm_set_params.  Inside the plugin (pcm_pulse.c:pulse_hw_params), that
-value is used to set up buffer_attr.  When the PA stream is connected in
-pcm_pulse.c:pulse_prepare, PA may configure the stream with larger
-buffer_attr values (e.g. because the minimum sink latency has increased over
-time due to underruns on the server, or because the sink hardware doesn't
-support lower latency), but this isn't reflected in pcm->buffer_attr or
-higher layers in ALSA (i.e. pcm->buffer_size is not updated).
+V2: CC proper people, hopefully proper mailing list
+    Adjust the patch subject with proper tags
 
-The problem I'm faced with is that there doesn't appear to be a way to
-detect and handle this issue at the ALSA API level, and requesting a too low
-latency results in broken audio playback rather than a PCM setup failure or
-a larger buffer than requested being used.
-
-In the case of the PA server's minimum latency increasing over time, this
-also means that a stream that was configured and running correctly may break
-while running if PA increases the minimum latency above what the PCM was
-originally configured with.
-
-I've attached a simple testcase that uses snd_pcm_wait,
-snd_pcm_avail_update, and snd_pcm_writei.  Run it with a latency argument
-specified in milliseconds on the command line.  For my local machine, 55ms
-works and 54ms fails immediately like so:
-
-snd_pcm_wait wakes
-snd_pcm_avail_update returns 4410
-snd_pcm_writei writes 4410
-snd_pcm_wait wakes immediately
-snd_pcm_avail_update returns -EPIPE
-
-(Note that when I reported this on pulseaudio-discuss, my server's minimum
-latency was 45ms, and now pacmd list-sinks | grep configured\ latency
-reports a minimum latency of 56ms)
-
-I'd expect to see one of the following behaviours instead:
-1. PCM setup fails due to requesting a too small buffer.
-2. Buffer is silently raised during setup and snd_pcm_avail_update requests
-   the correct number of frames.
-
-Presumably this could be achieved by having the PA plugin report valid
-values from pcm_pulse.c:pulse_hw_constraint, but I'm not sure how to query
-the necessary values from the server.  This also wouldn't address the
-problem where the buffer_attr changes over time, and I'm not sure what to do
-about that case.
-
-Thanks,
--mjg
-
---7iMSBzlTiPOCCT2k
-Content-Type: text/x-csrc; charset=us-ascii
-Content-Disposition: attachment; filename="latency.c"
-
-#include <sys/time.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <alsa/asoundlib.h>
-
-static double
-ts(void)
-{
-  static struct timeval last;
-  struct timeval now, dt;
-  if (last.tv_sec == 0) {
-    gettimeofday(&last, NULL);
-  }
-  gettimeofday(&now, NULL);
-  timersub(&now, &last, &dt);
-  last = now;
-  return dt.tv_sec * 1000.0 + dt.tv_usec / 1000.0;
-}
-
-int
-main(int argc, char * argv[])
-{
-  int r;
-  snd_pcm_t * pcm;
-  snd_pcm_uframes_t buffer_size, period_size;
-  char silence[88200] = {0};
-
-  if (argc != 2) {
-    return 1;
-  }
-
-  r = snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0);
-  assert(r == 0);
-
-  r = snd_pcm_set_params(pcm, SND_PCM_FORMAT_S16_LE,
-                         SND_PCM_ACCESS_RW_INTERLEAVED, 2, 44100, 1,
-                         atoi(argv[1]) * 1000);
-  assert(r == 0);
-
-  r = snd_pcm_get_params(pcm, &buffer_size, &period_size);
-  assert(r == 0);
-  fprintf(stderr, "%.2f: buffer_size = %u, period_size = %u\n",
-          ts(), (unsigned) buffer_size, (unsigned) period_size);
-  assert(buffer_size <= sizeof(silence) / 4);
-
-  for (;;) {
-    snd_pcm_sframes_t avail, wrote = 0;
-
-    snd_pcm_wait(pcm, -1);
-
-    avail = snd_pcm_avail_update(pcm);
-    if (avail == -EPIPE) {
-      snd_pcm_recover(pcm, -EPIPE, 0);
-      avail = snd_pcm_avail_update(pcm);
-    }
-    if (avail > 0) {
-      wrote = snd_pcm_writei(pcm, silence, avail);
-    }
-    fprintf(stderr, "%.2f: avail = %d, wrote = %d\n", ts(), (int) avail, (int) wrote);
-  }
-
-  return 0;
-}
-
---7iMSBzlTiPOCCT2k
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---7iMSBzlTiPOCCT2k--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index eded657..e491eb0 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1572,7 +1572,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 	struct snd_soc_dapm_context *d;
+ 	LIST_HEAD(up_list);
+ 	LIST_HEAD(down_list);
+-	LIST_HEAD(async_domain);
++	ASYNC_DOMAIN_EXCLUSIVE(async_domain);
+ 	enum snd_soc_bias_level bias;
+ 
+ 	trace_snd_soc_dapm_start(card);
+-- 
+1.7.10.4
