@@ -1,40 +1,39 @@
-From: "Liu, George" <yueliu@lab126.com>
-Subject: how to unload alsa kernel driver
-Date: Tue, 17 Jul 2012 16:44:13 -0700
-Message-ID: <164969DEADC6FB4E8F1494DA3D34E98B03462F0924@EX-SEA19-A.ant.amazon.com>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: 3.4.4: Oops in snd_hda_codec_realtek (alc_auto_create_multi_out_ctls)
+Date: Tue, 17 Jul 2012 17:46:27 -0600
+Message-ID: <CADLC3L0yUcXS4KG2Fxj2W9-f2U08ODxAn0_7iWK7=ECSVnGgBA@mail.gmail.com>
+References: <CADLC3L3dDOG8BBXR0zWn9SqM0BUotpW0Y+C=HUMEK-SAGCFLJg@mail.gmail.com>
+	<s5hmx2ylgkr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com
- [207.171.189.228])
- by alsa0.perex.cz (Postfix) with ESMTP id 09017264FD3
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2012 01:44:19 +0200 (CEST)
-Received: from ex-hub-9002.ant.amazon.com (ex-hub-9002.sea19.amazon.com
- [10.185.11.25])
- by smtp-in-0105.sea3.amazon.com (8.13.8/8.13.8) with ESMTP id q6HNiFed012283
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=OK)
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 23:44:16 GMT
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hmx2ylgkr.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Alsa-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm new to kernel development and is trying out the dummy alsa driver.
-I can compile and install snd_dummy driver on my Ubuntu, but how do I remove it?
+On Tue, Jul 17, 2012 at 6:25 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Mon, 9 Jul 2012 13:40:09 -0600,
+> Robert Hancock wrote:
+>>
+>> I've got a sort of industrial portable PC that uses a Supermicro C2SBX
+>> motherboard. Running an RHEL6 kernel (2.6.32-ish) it works fine, but
+>> if I run a 3.4.4 kernel (using the kernel-ml builds provided by ELRepo
+>> for RHEL6) it blows up on boot inside snd_hda_codec_realtek. Below is
+>> the dmesg output from bootup up to the oops, after I blacklisted
+>> snd_hda_intel from auto-loading and then manually modprobed it. Is
+>> this a known problem?
+>
+> I don't know of this issue, so need to check more.
+> Could you load snd-hda-intel module with probe_only=1 option, and run
+> alsa-info.sh with --no-upload option and give the output?
+> Then I can try the emulator to see what's wrong.
+>
+> Also, of course, testing a newer kernel like 3.5-rc7 would be helpful,
+> too.
 
-It seems that after installation, snd_pcm and snd automatically depends on snd_dummy, so rmmod will not work.
-
-Alsa force-unload snd-dummy also not work.
-Can somebody help? I don't want to restart my machine every time.
-
-Thanks
-George
+Unfortunately this machine is about to ship back out to a customer so
+there's not really any more info I can gather from it at this point.
+If I can get hold of it or a similar machine again in the future, I
+can try to get more information.
