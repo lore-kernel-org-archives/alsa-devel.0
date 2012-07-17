@@ -1,22 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA server upgrade
-Date: Tue, 17 Jul 2012 19:34:35 +0200
-Message-ID: <5005A22B.4060502@perex.cz>
-References: <5003D896.3080606@perex.cz>
+From: "Liu, George" <yueliu@lab126.com>
+Subject: how to unload alsa kernel driver
+Date: Tue, 17 Jul 2012 16:44:13 -0700
+Message-ID: <164969DEADC6FB4E8F1494DA3D34E98B03462F0924@EX-SEA19-A.ant.amazon.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 284B126520B
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 19:33:34 +0200 (CEST)
-Received: from server.perex.cz (unknown [172.16.0.20])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 3E6E414991C
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 18:11:53 +0200 (CEST)
-Received: from t510.perex-int.cz (localhost [127.0.0.1])
- by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id 28A89844B5
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 18:11:50 +0200 (CEST)
-In-Reply-To: <5003D896.3080606@perex.cz>
+Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com
+ [207.171.189.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09017264FD3
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2012 01:44:19 +0200 (CEST)
+Received: from ex-hub-9002.ant.amazon.com (ex-hub-9002.sea19.amazon.com
+ [10.185.11.25])
+ by smtp-in-0105.sea3.amazon.com (8.13.8/8.13.8) with ESMTP id q6HNiFed012283
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=OK)
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 23:44:16 GMT
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,26 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Date 16.7.2012 11:02, Jaroslav Kysela wrote:
-> Hello,
-> 
-> 	I will do the complete ALSA server upgrade in next days. It means that
-> all services may be affected for some time (the devel mailing list, web
-> server, ftp server, GIT server).
+I'm new to kernel development and is trying out the dummy alsa driver.
+I can compile and install snd_dummy driver on my Ubuntu, but how do I remove it?
 
-	The main configuration fighting is finished. Most problems were caused
-by SELinux, the migration from gitosys to gitolite and the MediaWiki
-upgrade.
-	Web server, GIT server, FTP server, tar ball snapshots, mailing lists
-are working.
-	The mantis bugtracking system is not available at this moment.
+It seems that after installation, snd_pcm and snd automatically depends on snd_dummy, so rmmod will not work.
 
-						Jaroslav
+Alsa force-unload snd-dummy also not work.
+Can somebody help? I don't want to restart my machine every time.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Thanks
+George
