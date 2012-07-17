@@ -1,16 +1,16 @@
 From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: [alsa-lib] [PATCH 2/4] build: Fallback to alphasort()
-	if versionsort() isn't available
-Date: Tue, 17 Jul 2012 15:30:15 +0530
-Message-ID: <1342519217-3668-3-git-send-email-arun.raghavan@collabora.co.uk>
+Subject: [alsa-lib] [PATCH 3/4] ucm: Add missing pthread.h
+	include
+Date: Tue, 17 Jul 2012 15:30:16 +0530
+Message-ID: <1342519217-3668-4-git-send-email-arun.raghavan@collabora.co.uk>
 References: <1342519217-3668-1-git-send-email-arun.raghavan@collabora.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.135.160])
- by alsa0.perex.cz (Postfix) with ESMTP id 98367264F93
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 12:02:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6332B264F91
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 12:02:05 +0200 (CEST)
 In-Reply-To: <1342519217-3668-1-git-send-email-arun.raghavan@collabora.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,45 +25,24 @@ To: alsa-devel@alsa-project.org
 Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-versionsort() is a GNU-ism and can't be relied on for non-GNU systems.
+Needed for the use of pthread_mutex_t
 
 Signed-off-by: Arun Raghavan <arun.raghavan@collabora.co.uk>
 ---
- src/conf.c       |    4 ++++
- src/ucm/parser.c |    4 ++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+ src/ucm/ucm_local.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/src/conf.c b/src/conf.c
-index 32446a2..2a3a03c 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -3505,7 +3505,11 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
- 			struct dirent **namelist;
- 			int n;
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 03d3ace..87f14a2 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -36,6 +36,7 @@
+ #define UC_MGR_DEBUG
+ #endif
  
-+#ifdef _GNU_SOURCE
- 			n = scandir(fi[idx].name, &namelist, config_filename_filter, versionsort);
-+#else
-+			n = scandir(fi[idx].name, &namelist, config_filename_filter, alphasort);
-+#endif
- 			if (n > 0) {
- 				int j;
- 				err = 0;
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index b93d832..e999619 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -1254,7 +1254,11 @@ int uc_mgr_scan_master_configs(const char **_list[])
- 		"%s", env ? env : ALSA_USE_CASE_DIR);
- 	filename[MAX_FILE-1] = '\0';
++#include <pthread.h>
+ #include "local.h"
+ #include "use-case.h"
  
-+#ifdef _GNU_SOURCE
- 	err = scandir(filename, &namelist, filename_filter, versionsort);
-+#else
-+	err = scandir(filename, &namelist, filename_filter, alphasort);
-+#endif
- 	if (err < 0) {
- 		err = -errno;
- 		uc_error("error: could not scan directory %s: %s",
 -- 
 1.7.8.6
