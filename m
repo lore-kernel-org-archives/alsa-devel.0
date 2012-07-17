@@ -1,91 +1,60 @@
-From: Guillaume Gardet <guillaume.gardet@free.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH V2] Add missing modules aliases to get sound working on
  omap devices
-Date: Tue, 17 Jul 2012 15:31:11 +0200
-Message-ID: <5005691F.9010301@free.fr>
-References: <4FFECC40.5020502@free.fr> <20120713100953.GF4215@opensource.wolfsonmicro.com>
-Reply-To: guillaume.gardet@free.fr
+Date: Tue, 17 Jul 2012 14:37:42 +0100
+Message-ID: <20120717133742.GD4477@opensource.wolfsonmicro.com>
+References: <4FFECC40.5020502@free.fr>
+ <20120713100953.GF4215@opensource.wolfsonmicro.com>
+ <5005691F.9010301@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uxuisgdDHaNETlh8"
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20120713100953.GF4215@opensource.wolfsonmicro.com>
+Content-Disposition: inline
+In-Reply-To: <5005691F.9010301@free.fr>
 Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Guillaume Gardet <guillaume.gardet@free.fr>
 Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, mans.rullgard@linaro.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Le 13/07/2012 12:09, Mark Brown a =E9crit :
-> On Thu, Jul 12, 2012 at 03:08:16PM +0200, Guillaume Gardet wrote:
->> This patch add missing modules aliases to get sound working on omap =
-devices.
->>
->> Tested on Beagleboard xM rev. B.
->>
->> This patch is against 3.5-rc6 vanilla.
->>
->> Signed-off-by: Guillaume GARDET <guillaume.gardet@free.fr>
->> Signed-off-by: Mans Rullgard <mans.rullgard@linaro.org>
->>
->>
->>  From 18b1ba8becc3dd256bdaad2d825f46b551debda3 Mon Sep 17 00:00:00 2=
-001
->> From: Guillaume GARDET <guillaume.gardet@oliseo.fr>
->> Date: Tue, 10 Jul 2012 13:47:16 +0200
-> Please resend in the format from SubmittingPatches rather than as an
-> attachment.
+--uxuisgdDHaNETlh8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok. Please find the patch below.
+On Tue, Jul 17, 2012 at 03:31:11PM +0200, Guillaume Gardet wrote:
 
-This patch add missing modules aliases to get sound working on omap dev=
-ices.
+> >Please resend in the format from SubmittingPatches rather than as an
+> >attachment.
 
-Tested on Beagleboard xM rev. B.
+> Ok. Please find the patch below.
+>=20
+> This patch add missing modules aliases to get sound working on omap devic=
+es.
 
-This patch is against 3.5-rc6 vanilla.
+I'm not sure you've looked at all of SubmittingPatches...
 
-Signed-off-by: Guillaume GARDET <guillaume.gardet@free.fr>
-Signed-off-by: Mans Rullgard <mans.rullgard@linaro.org>
+--uxuisgdDHaNETlh8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
- From 18b1ba8becc3dd256bdaad2d825f46b551debda3 Mon Sep 17 00:00:00 2001
-=46rom: Guillaume GARDET <guillaume.gardet@oliseo.fr>
-Date: Tue, 10 Jul 2012 13:47:16 +0200
-Subject: [PATCH] Add missing modules aliases to fix audio on omap devic=
-es
+iQIcBAEBAgAGBQJQBWqfAAoJEBus8iNuMP3dUtAP/A1C63h9WayJZMevTVc1+9hw
+u4bWDa9WYvuNBBRCkr2uZUrpOq9BA4JvmX55ghbAHR63h/4ei29JXxIV2L4xlIqQ
+lxOQS6ThnUg8D9Q8vZs4kB6hCptAeKG3uySHvf8xqnAWBoxSHogT7/kTTTREIpn7
+aPFSyVEHZ6JmUX85fWa3OXB+sG9tA30Y4BECj+hFFRoFrCECzWFr1f4bEyUJoAG2
+IHXxA+eGd97bdMUyLib7z6N+bPFrroWaxNtJ9OTOWZu0NthQqTSg3Bb0To4g6lfg
+FljJAyS6wP5k9m/e6rfbT7h/croykzGiFlU6oMicyQaCupWc3C9A0xdeQZMZLhPs
+1cA69vxADT452YcUJnOkpgJusjNamaq848fByI0I+fSTzNQC6xhEiZ8EJe0SE4rT
+9hhRPPTgYycuoEpG+TiffBJSCfRUV6FaJXwtcABODxluDUjd6hruwf7I0ifoYy6L
+DC4fzGsW6i7sU1weY6DUOFPLiFGij5bkaTwyDE6kuaSaIj2WiiDVFO8kHUFcTvtG
+L9W8rfSpf+9XWyVrFmOurke2nuC7wrLqESrxyTQmRchx47U3YQTN+W/6xUSnCqEx
+G1csRDaVwsTeR/BHKTNxJNH9BEglvc4HkGUe2eX2ke707jt8n7eTEoGe8o1YIZX9
+qeH5RWzME5wCItFBQDvV
+=gKMX
+-----END PGP SIGNATURE-----
 
----
-  sound/soc/omap/omap-mcbsp.c |    1 +
-  sound/soc/omap/omap-pcm.c   |    1 +
-  2 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 1046083..acdd3ef 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -820,3 +820,4 @@ module_platform_driver(asoc_mcbsp_driver);
-  MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
-  MODULE_DESCRIPTION("OMAP I2S SoC Interface");
-  MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:omap-mcbsp");
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 5a649da..f0feb06 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -441,3 +441,4 @@ module_platform_driver(omap_pcm_driver);
-  MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
-  MODULE_DESCRIPTION("OMAP PCM DMA module");
-  MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:omap-pcm-audio");
---=20
-1.7.7
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--uxuisgdDHaNETlh8--
