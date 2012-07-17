@@ -1,17 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Anisse Astier <anisse@astier.eu>
 Subject: Re: Sound issues with ALC269VB-based hardware
-Date: Tue, 17 Jul 2012 17:40:14 +0200
-Message-ID: <5005875E.90009@canonical.com>
+Date: Tue, 17 Jul 2012 17:50:40 +0200
+Message-ID: <20120717175040.55779252@destiny.ordissimo>
 References: <20120717151109.66d239a5@destiny.ordissimo>
  <s5htxx6jum7.wl%tiwai@suse.de> <s5hmx2yjtoj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D94A22651FE
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 17:40:11 +0200 (CEST)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFCBB265202
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 17:50:45 +0200 (CEST)
+Received: by eaaa1 with SMTP id a1so205801eaa.38
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 08:50:48 -0700 (PDT)
 In-Reply-To: <s5hmx2yjtoj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,49 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/17/2012 05:25 PM, Takashi Iwai wrote:
+On Tue, 17 Jul 2012 17:25:48 +0200, Takashi Iwai <tiwai@suse.de> wrote :
+
 > At Tue, 17 Jul 2012 17:05:36 +0200,
 > Takashi Iwai wrote:
->>
->> At Tue, 17 Jul 2012 15:11:09 +0200,
->> Anisse Astier wrote:
->>>
->>> Hi,
->>>
->>> So I have this hardware that has a few issues (all tested with tiwai/sound for-next)
->>>
->>> Audio out/speakers:
->>>   - Audio does not work by default. It needs plugging a jack in either headphone or mic.
->>>   - disabling "Enable Automute" does make it work. But then it doesn't mute when jack is plugged (obviously).
->>>
->>> Mic:
->>>   - needs model=laptop-dmic so that working "Internal Mic 1" appears
->>>   - "Internal Mic" is useless.
->>>   - no jack sense, need to select manually "Internal Mic 1" or "Mic" (external) as Input Source
->>>
->>> Please find alsa-info.sh with and without model=laptop-dmic in attachement.
->>
->> All sounds like that your BIOS setup is broken.
->>
->> You have two internal mics on 0x12 and 0x19.  Judging from your
->> comment, the pin 0x12 seems bogus.
->
+> > 
+> > All sounds like that your BIOS setup is broken.
+> > 
+> > You have two internal mics on 0x12 and 0x19.  Judging from your
+> > comment, the pin 0x12 seems bogus.
+
+Thanks, I will explore this and maybe come back to you.
+
+> 
 > BTW, this revealed a bug in the latest code.  Since phantom jack
 > renaming, the account of ctl name index seems broken.  With this
 > setup, the driver ended up with the duplicated internal mic phantom
 > jack controls.
->
+
+Glad I could help.
+
+> 
 > So I applied the patch below now.
 
-While the new checking is more robust, I fail to see how it happens, and 
-what the phantom jacks have anything to do with it?
-Both inputs and outputs should be sent to add_jack_kctl in type order, 
-phantom or not.
+I'm testing this right now to see if anything changes. (Although it
+shouldn't if I understand well)
 
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Anisse
