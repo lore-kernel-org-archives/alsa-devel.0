@@ -1,20 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Immediate underrun with PulseAudio ALSA plugin
- when PA and ALSA buffer sizes differ
-Date: Tue, 17 Jul 2012 15:36:52 +0800
-Message-ID: <CAN8ccibduuRoPH1yFVWCbaoV2vqVMJHutmfj=E8DT9xBbAXuyA@mail.gmail.com>
-References: <20120716213855.GE7462@flim.org>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH] snd-opti9xx: Implement suspend/resume
+Date: Tue, 17 Jul 2012 14:08:08 +0530
+Message-ID: <50052470.4060604@st.com>
+References: <201207170916.44277.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C19A264F47
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 09:36:54 +0200 (CEST)
-Received: by wibhm6 with SMTP id hm6so2725186wib.2
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 00:36:52 -0700 (PDT)
-In-Reply-To: <20120716213855.GE7462@flim.org>
+Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
+ [207.126.144.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C83F264F4D
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 10:38:13 +0200 (CEST)
+In-Reply-To: <201207170916.44277.linux@rainbow-software.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +21,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi03LTE3IOS4iuWNiDU6Mzkg5pa8ICJNYXR0aGV3IEdyZWdhbiIgPGtpbmV0aWtAZmxpbS5v
-cmc+IOWvq+mBk++8mgo+Cj4gSSdtIGludmVzdGlnYXRpbmcgYW4gaXNzdWUgaW4gRmlyZWZveCdz
-IGF1ZGlvIGNvZGUgd2hlbiB0aGUgUHVsc2VBdWRpbwpBTFNBCj4gcGx1Z2luIGlzIGluIHVzZS4g
-IEkgcG9zdGVkIGFib3V0IHRoaXMgb24gcHVsc2VhdWRpby1kaXNjdXNzIGxhc3Qgd2Vlawo+ICgK
-aHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9hcmNoaXZlcy9wdWxzZWF1ZGlvLWRpc2N1c3Mv
-MjAxMi1KdWx5LzAxNDA5MS5odG1sCiksCj4gYnV0IEkgaG9wZWQgSSBtaWdodCBoYXZlIG1vcmUg
-c3VjY2VzcyBoZXJlLgo+Cj4gRmlyZWZveCByZXF1ZXN0cyBhIHBhcnRpY3VsYXIgbGF0ZW5jeSAo
-MTAwbXMsIDQ0MTAgZnJhbWVzIGF0IDQ0LjFrSHopIHZpYQo+IHNuZF9wY21fc2V0X3BhcmFtcy4K
-CnRoaXMgZnVuY3Rpb24gZG9lcyBub3Qgd29yayBmb3IgYWxsIHNvdW5kIGNhcmQgZHJpdmVycy4K
-Cm1hbnkgcGNpIHNvdW5kIGNhcmRzIGhhdmUgaGFyZHdhcmUgY29uc3RyYWludHMgd2hpY2ggeW91
-IGNhbm5vdCBzZWxlY3QgMTBtcwpvciAxMDBtcyBwZXJpb2QgdGltZSAvIGJ1ZmZlciB0aW1lLgoK
-PiBJbnNpZGUgdGhlIHBsdWdpbiAocGNtX3B1bHNlLmM6cHVsc2VfaHdfcGFyYW1zKSwgdGhhdAo+
-IHZhbHVlIGlzIHVzZWQgdG8gc2V0IHVwIGJ1ZmZlcl9hdHRyLiAgV2hlbiB0aGUgUEEgc3RyZWFt
-IGlzIGNvbm5lY3RlZCBpbgo+IHBjbV9wdWxzZS5jOnB1bHNlX3ByZXBhcmUsIFBBIG1heSBjb25m
-aWd1cmUgdGhlIHN0cmVhbSB3aXRoIGxhcmdlcgo+IGJ1ZmZlcl9hdHRyIHZhbHVlcyAoZS5nLiBi
-ZWNhdXNlIHRoZSBtaW5pbXVtIHNpbmsgbGF0ZW5jeSBoYXMgaW5jcmVhc2VkCm92ZXIKPiB0aW1l
-IGR1ZSB0byB1bmRlcnJ1bnMgb24gdGhlIHNlcnZlciwgb3IgYmVjYXVzZSB0aGUgc2luayBoYXJk
-d2FyZSBkb2Vzbid0Cj4gc3VwcG9ydCBsb3dlciBsYXRlbmN5KSwgYnV0IHRoaXMgaXNuJ3QgcmVm
-bGVjdGVkIGluIHBjbS0+YnVmZmVyX2F0dHIgb3IKPiBoaWdoZXIgbGF5ZXJzIGluIEFMU0EgKGku
-ZS4gcGNtLT5idWZmZXJfc2l6ZSBpcyBub3QgdXBkYXRlZCkuCj4KPiBUaGUgcHJvYmxlbSBJJ20g
-ZmFjZWQgd2l0aCBpcyB0aGF0IHRoZXJlIGRvZXNuJ3QgYXBwZWFyIHRvIGJlIGEgd2F5IHRvCj4g
-ZGV0ZWN0IGFuZCBoYW5kbGUgdGhpcyBpc3N1ZSBhdCB0aGUgQUxTQSBBUEkgbGV2ZWwsIGFuZCBy
-ZXF1ZXN0aW5nIGEgdG9vCmxvdwo+IGxhdGVuY3kgcmVzdWx0cyBpbiBicm9rZW4gYXVkaW8gcGxh
-eWJhY2sgcmF0aGVyIHRoYW4gYSBQQ00gc2V0dXAgZmFpbHVyZQpvcgo+IGEgbGFyZ2VyIGJ1ZmZl
-ciB0aGFuIHJlcXVlc3RlZCBiZWluZyB1c2VkLgoKZG8geW91IG1lYW4gdGhlIHB1bHNlIHBsdWdp
-biBhZHZlcnRpc2UgYSBsb3cgbGF0ZW5jeSBidXQgdGhlIHNlcnZlciBpbiBmYWN0CmZvcmNlIHRo
-ZSBhcHBsaWNhdGlvbiB0byB1c2UgYSBsYXJnZSBidWZmZXIgd2l0aCBoaWdoIGxhdGVuY3k/Cgo+
-Cj4gSW4gdGhlIGNhc2Ugb2YgdGhlIFBBIHNlcnZlcidzIG1pbmltdW0gbGF0ZW5jeSBpbmNyZWFz
-aW5nIG92ZXIgdGltZSwgdGhpcwo+IGFsc28gbWVhbnMgdGhhdCBhIHN0cmVhbSB0aGF0IHdhcyBj
-b25maWd1cmVkIGFuZCBydW5uaW5nIGNvcnJlY3RseSBtYXkKYnJlYWsKPiB3aGlsZSBydW5uaW5n
-IGlmIFBBIGluY3JlYXNlcyB0aGUgbWluaW11bSBsYXRlbmN5IGFib3ZlIHdoYXQgdGhlIFBDTSB3
-YXMKPiBvcmlnaW5hbGx5IGNvbmZpZ3VyZWQgd2l0aC4KPgo+IEkndmUgYXR0YWNoZWQgYSBzaW1w
-bGUgdGVzdGNhc2UgdGhhdCB1c2VzIHNuZF9wY21fd2FpdCwKPiBzbmRfcGNtX2F2YWlsX3VwZGF0
-ZSwgYW5kIHNuZF9wY21fd3JpdGVpLiAgUnVuIGl0IHdpdGggYSBsYXRlbmN5IGFyZ3VtZW50Cj4g
-c3BlY2lmaWVkIGluIG1pbGxpc2Vjb25kcyBvbiB0aGUgY29tbWFuZCBsaW5lLiAgRm9yIG15IGxv
-Y2FsIG1hY2hpbmUsIDU1bXMKPiB3b3JrcyBhbmQgNTRtcyBmYWlscyBpbW1lZGlhdGVseSBsaWtl
-IHNvOgo+Cj4gc25kX3BjbV93YWl0IHdha2VzCj4gc25kX3BjbV9hdmFpbF91cGRhdGUgcmV0dXJu
-cyA0NDEwCj4gc25kX3BjbV93cml0ZWkgd3JpdGVzIDQ0MTAKPiBzbmRfcGNtX3dhaXQgd2FrZXMg
-aW1tZWRpYXRlbHkKPiBzbmRfcGNtX2F2YWlsX3VwZGF0ZSByZXR1cm5zIC1FUElQRQo+Cj4gKE5v
-dGUgdGhhdCB3aGVuIEkgcmVwb3J0ZWQgdGhpcyBvbiBwdWxzZWF1ZGlvLWRpc2N1c3MsIG15IHNl
-cnZlcidzIG1pbmltdW0KPiBsYXRlbmN5IHdhcyA0NW1zLCBhbmQgbm93IHBhY21kIGxpc3Qtc2lu
-a3MgfCBncmVwIGNvbmZpZ3VyZWRcIGxhdGVuY3kKPiByZXBvcnRzIGEgbWluaW11bSBsYXRlbmN5
-IG9mIDU2bXMpCj4KPiBJJ2QgZXhwZWN0IHRvIHNlZSBvbmUgb2YgdGhlIGZvbGxvd2luZyBiZWhh
-dmlvdXJzIGluc3RlYWQ6Cj4gMS4gUENNIHNldHVwIGZhaWxzIGR1ZSB0byByZXF1ZXN0aW5nIGEg
-dG9vIHNtYWxsIGJ1ZmZlci4KPiAyLiBCdWZmZXIgaXMgc2lsZW50bHkgcmFpc2VkIGR1cmluZyBz
-ZXR1cCBhbmQgc25kX3BjbV9hdmFpbF91cGRhdGUKcmVxdWVzdHMKPiAgICB0aGUgY29ycmVjdCBu
-dW1iZXIgb2YgZnJhbWVzLgoKdGhlcmUgaXMgbm8gbmVnb3RpYXRpb24gYmV0d2VlbiBwYSBjbGll
-bnQgYW5kIHBhIHNlcnZlciBhYm91dCB0aGUKY2FwYWJpbGl0eSBvZiBkaWZmZXJlbnQgc291bmQg
-Y2FyZHMgYW5kIHlvdSBjYW5ub3QgY2hhbmdlIHRoZSBwZWlvZAp0aW1lL2J1ZmZlciB0aW1lIHdo
-ZW4gdGhlcmUgYXJlIGFub3RoZXIgcGEgY2xpZW50KHMpIGFscmVhZHkKcGxheWluZy9jYXB0dXJp
-bmcKCj4KPiBQcmVzdW1hYmx5IHRoaXMgY291bGQgYmUgYWNoaWV2ZWQgYnkgaGF2aW5nIHRoZSBQ
-QSBwbHVnaW4gcmVwb3J0IHZhbGlkCj4gdmFsdWVzIGZyb20gcGNtX3B1bHNlLmM6cHVsc2VfaHdf
-Y29uc3RyYWludCwgYnV0IEknbSBub3Qgc3VyZSBob3cgdG8gcXVlcnkKPiB0aGUgbmVjZXNzYXJ5
-IHZhbHVlcyBmcm9tIHRoZSBzZXJ2ZXIuICBUaGlzIGFsc28gd291bGRuJ3QgYWRkcmVzcyB0aGUK
-PiBwcm9ibGVtIHdoZXJlIHRoZSBidWZmZXJfYXR0ciBjaGFuZ2VzIG92ZXIgdGltZSwgYW5kIEkn
-bSBub3Qgc3VyZSB3aGF0IHRvCmRvCj4gYWJvdXQgdGhhdCBjYXNlLgo+Cj4gVGhhbmtzLAo+IC1t
-amcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello Ondrej,
+
+On 7/17/2012 12:46 PM, Ondrej Zary wrote:
+> Implement suspend/resume support for Opti 92x and 93x chips.
+> Tested with Opti 929A+AD1848 and Opti 931.
+>
+> Signed-off-by: Ondrej Zary<linux@rainbow-software.org>
+>
+
+<snip...>
+
+> +#ifdef CONFIG_PM
+> +static int snd_opti9xx_suspend(struct snd_card *card)
+> +{
+> +	struct snd_opti9xx *chip = card->private_data;
+> +
+> +	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+> +	chip->codec->suspend(chip->codec);
+> +	return 0;
+> +}
+> +
+> +static int snd_opti9xx_resume(struct snd_card *card)
+> +{
+> +	struct snd_opti9xx *chip = card->private_data;
+> +	int error, xdma2;
+> +#if defined(CS4231) || defined(OPTi93X)
+> +	xdma2 = dma2;
+> +#else
+> +	xdma2 = -1;
+> +#endif
+> +
+> +	error = snd_opti9xx_configure(chip, port, irq, dma1, xdma2,
+> +				      mpu_port, mpu_irq);
+
+dma1??
+
+> +	if (error)
+> +		return error;
+
+Variable name is not convincing. You are assuming that the function is 
+returning error.
+
+> +	chip->codec->resume(chip->codec);
+> +	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+
+blank line required.
+
+> +	return 0;
+> +}
+> +
+> +static int snd_opti9xx_isa_suspend(struct device *dev, unsigned int n,
+> +				   pm_message_t state)
+> +{
+> +	return snd_opti9xx_suspend(dev_get_drvdata(dev));
+> +}
+> +
+> +static int snd_opti9xx_isa_resume(struct device *dev, unsigned int n)
+> +{
+> +	return snd_opti9xx_resume(dev_get_drvdata(dev));
+> +}
+> +#endif
+> +
+>   static struct isa_driver snd_opti9xx_driver = {
+>   	.match		= snd_opti9xx_isa_match,
+>   	.probe		= snd_opti9xx_isa_probe,
+>   	.remove		= __devexit_p(snd_opti9xx_isa_remove),
+> -	/* FIXME: suspend/resume */
+> +#ifdef CONFIG_PM
+> +	.suspend	= snd_opti9xx_isa_suspend,
+> +	.resume		= snd_opti9xx_isa_resume,
+> +#endif
+>   	.driver		= {
+>   		.name	= DEV_NAME
+>   	},
+> @@ -1123,12 +1165,29 @@ static void __devexit snd_opti9xx_pnp_remove(struct pnp_card_link * pcard)
+>   	snd_opti9xx_pnp_is_probed = 0;
+>   }
+>
+> +#ifdef CONFIG_PM
+> +static int snd_opti9xx_pnp_suspend(struct pnp_card_link *pcard,
+> +				   pm_message_t state)
+> +{
+> +	return snd_opti9xx_suspend(pnp_get_card_drvdata(pcard));
+> +}
+> +
+> +static int snd_opti9xx_pnp_resume(struct pnp_card_link *pcard)
+> +{
+> +	return snd_opti9xx_resume(pnp_get_card_drvdata(pcard));
+> +}
+> +#endif
+> +
+>   static struct pnp_card_driver opti9xx_pnpc_driver = {
+>   	.flags		= PNP_DRIVER_RES_DISABLE,
+>   	.name		= "opti9xx",
+
+Why this is opti why not OPTi
+
+~Rajeev
+
+>   	.id_table	= snd_opti9xx_pnpids,
+>   	.probe		= snd_opti9xx_pnp_probe,
+>   	.remove		= __devexit_p(snd_opti9xx_pnp_remove),
+> +#ifdef CONFIG_PM
+> +	.suspend	= snd_opti9xx_pnp_suspend,
+> +	.resume		= snd_opti9xx_pnp_resume,
+> +#endif
+>   };
+>   #endif
+>
+>
