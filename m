@@ -1,18 +1,15 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 1/2] MFD: twl6040: Fix revision information
-Date: Tue, 17 Jul 2012 12:09:44 +0530
-Message-ID: <500508B0.9010009@st.com>
-References: <1342432184-12046-1-git-send-email-peter.ujfalusi@ti.com>
- <1342432184-12046-2-git-send-email-peter.ujfalusi@ti.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-opti9xx: Implement suspend/resume
+Date: Tue, 17 Jul 2012 09:16:44 +0200
+Message-ID: <201207170916.44277.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
- [207.126.144.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 558A7264F24
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 08:39:50 +0200 (CEST)
-In-Reply-To: <1342432184-12046-2-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2391264F25
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 09:16:51 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +19,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Peter,
+Implement suspend/resume support for Opti 92x and 93x chips.
+Tested with Opti 929A+AD1848 and Opti 931.
 
-On 7/16/2012 3:19 PM, Peter Ujfalusi wrote:
-> twl6040 ES1.1 and ES1.2 have the same revid (0x01).
-> ES1.3 of twl6040 REVID is 0x02.
->
-> Signed-off-by: Peter Ujfalusi<peter.ujfalusi@ti.com>
-> ---
->   include/linux/mfd/twl6040.h |    4 ++--
->   sound/soc/codecs/twl6040.c  |    2 +-
->   2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
-> index 6659487..e002097 100644
-> --- a/include/linux/mfd/twl6040.h
-> +++ b/include/linux/mfd/twl6040.h
-> @@ -161,8 +161,8 @@
->   #define TWL6040_CELLS			2
->
->   #define TWL6040_REV_ES1_0		0x00
-> -#define TWL6040_REV_ES1_1		0x01
-> -#define TWL6040_REV_ES1_2		0x02
-> +#define TWL6040_REV_ES1_1		0x01 /* Rev ES1.1 and ES1.2 */
-> +#define TWL6040_REV_ES1_3		0x02
->
->   #define TWL6040_IRQ_TH			0
->   #define TWL6040_IRQ_PLUG		1
-> diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-> index a36e9fc..2786de2 100644
-> --- a/sound/soc/codecs/twl6040.c
-> +++ b/sound/soc/codecs/twl6040.c
-> @@ -653,7 +653,7 @@ int twl6040_get_hs_step_size(struct snd_soc_codec *codec)
->   {
->   	struct twl6040 *twl6040 = codec->control_data;
->
-> -	if (twl6040_get_revid(twl6040)<  TWL6040_REV_ES1_2)
-> +	if (twl6040_get_revid(twl6040)<  TWL6040_REV_ES1_3)
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -136,8 +136,8 @@ struct snd_opti9xx {
+ #ifdef OPTi93X
+ 	unsigned long mc_indir_index;
+ 	struct resource *res_mc_indir;
+-	struct snd_wss *codec;
+ #endif	/* OPTi93X */
++	struct snd_wss *codec;
+ 	unsigned long pwd_reg;
+ 
+ 	spinlock_t lock;
+@@ -870,9 +870,7 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
+ 			       &codec);
+ 	if (error < 0)
+ 		return error;
+-#ifdef OPTi93X
+ 	chip->codec = codec;
+-#endif
+ 	error = snd_wss_pcm(codec, 0, &pcm);
+ 	if (error < 0)
+ 		return error;
+@@ -1053,11 +1051,55 @@ static int __devexit snd_opti9xx_isa_remove(struct device *devptr,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
++static int snd_opti9xx_suspend(struct snd_card *card)
++{
++	struct snd_opti9xx *chip = card->private_data;
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
++	chip->codec->suspend(chip->codec);
++	return 0;
++}
++
++static int snd_opti9xx_resume(struct snd_card *card)
++{
++	struct snd_opti9xx *chip = card->private_data;
++	int error, xdma2;
++#if defined(CS4231) || defined(OPTi93X)
++	xdma2 = dma2;
++#else
++	xdma2 = -1;
++#endif
++
++	error = snd_opti9xx_configure(chip, port, irq, dma1, xdma2,
++				      mpu_port, mpu_irq);
++	if (error)
++		return error;
++	chip->codec->resume(chip->codec);
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	return 0;
++}
++
++static int snd_opti9xx_isa_suspend(struct device *dev, unsigned int n,
++				   pm_message_t state)
++{
++	return snd_opti9xx_suspend(dev_get_drvdata(dev));
++}
++
++static int snd_opti9xx_isa_resume(struct device *dev, unsigned int n)
++{
++	return snd_opti9xx_resume(dev_get_drvdata(dev));
++}
++#endif
++
+ static struct isa_driver snd_opti9xx_driver = {
+ 	.match		= snd_opti9xx_isa_match,
+ 	.probe		= snd_opti9xx_isa_probe,
+ 	.remove		= __devexit_p(snd_opti9xx_isa_remove),
+-	/* FIXME: suspend/resume */
++#ifdef CONFIG_PM
++	.suspend	= snd_opti9xx_isa_suspend,
++	.resume		= snd_opti9xx_isa_resume,
++#endif
+ 	.driver		= {
+ 		.name	= DEV_NAME
+ 	},
+@@ -1123,12 +1165,29 @@ static void __devexit snd_opti9xx_pnp_remove(struct pnp_card_link * pcard)
+ 	snd_opti9xx_pnp_is_probed = 0;
+ }
+ 
++#ifdef CONFIG_PM
++static int snd_opti9xx_pnp_suspend(struct pnp_card_link *pcard,
++				   pm_message_t state)
++{
++	return snd_opti9xx_suspend(pnp_get_card_drvdata(pcard));
++}
++
++static int snd_opti9xx_pnp_resume(struct pnp_card_link *pcard)
++{
++	return snd_opti9xx_resume(pnp_get_card_drvdata(pcard));
++}
++#endif
++
+ static struct pnp_card_driver opti9xx_pnpc_driver = {
+ 	.flags		= PNP_DRIVER_RES_DISABLE,
+ 	.name		= "opti9xx",
+ 	.id_table	= snd_opti9xx_pnpids,
+ 	.probe		= snd_opti9xx_pnp_probe,
+ 	.remove		= __devexit_p(snd_opti9xx_pnp_remove),
++#ifdef CONFIG_PM
++	.suspend	= snd_opti9xx_pnp_suspend,
++	.resume		= snd_opti9xx_pnp_resume,
++#endif
+ };
+ #endif
+ 
 
-Instead of doing this change why not you take a #define for revision and 
-  do
-if (twl6040_get_revid(twl6040)<  TWL6040_REV)
-
-~Rajeev
-
->   		/* For ES under ES_1.3 HS step is 2 mV */
->   		return 2;
->   	else
+-- 
+Ondrej Zary
