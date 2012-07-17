@@ -1,43 +1,116 @@
-From: Aaron Plattner <aplattner@nvidia.com>
-Subject: [PATCH] ALSA: hda - Add new GPU codec ID to snd-hda
-Date: Mon, 16 Jul 2012 17:10:04 -0700
-Message-ID: <1342483804-10888-1-git-send-email-aplattner@nvidia.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [regression] ALSA: hda - Handle open while
+	transitioning to D3.
+Date: Mon, 16 Jul 2012 22:26:42 -0700
+Message-ID: <CAEUnVG5V1+00n5YOjS9qM=PFcOpUAD9AU+7_pwK+druanm43JA@mail.gmail.com>
+References: <50010B52.7060803@fisher-privat.net>
+ <CAEUnVG6s9wxMjN-BQ3_iW0EDZ1A6c+UgsV-3EaBTbLVDFUVkig@mail.gmail.com>
+ <500175FA.3070900@fisher-privat.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: Aaron Plattner <aplattner@nvidia.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99471264F1C
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 07:27:00 +0200 (CEST)
+Received: by wibhq4 with SMTP id hq4so14273wib.2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2012 22:27:02 -0700 (PDT)
+In-Reply-To: <500175FA.3070900@fisher-privat.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Oleksij Rempel (fishor)" <bug-track@fisher-privat.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Vendor ID 0x10de0051 is used by a yet-to-be-named GPU chip.
+On Sat, Jul 14, 2012 at 6:36 AM, Oleksij Rempel (fishor)
+<bug-track@fisher-privat.net> wrote:
+> dmesg is in attachment
+Thanks Oleksij,
 
-Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
-Acked-by: Andy Ritger <aritger@nvidia.com>
-Reviewed-by: Daniel Dadap <ddadap@nvidia.com>
----
- sound/pci/hda/patch_hdmi.c |    2 ++
- 1 file changed, 2 insertions(+)
+I didn't get much from that though.  What is your powersave timeout
+set to?  If you have time could you try adding the following and send
+me the output, I have two guesses about where it is spending it's time
+(no guesses about why yet though).  I've got a couple of systems with
+a 269, I'll try to get some tests run on those tomorrow.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index ad319d4..4efe741 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1902,6 +1902,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
- { .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_generic_hdmi },
- { .id = 0x10de0043, .name = "GPU 43 HDMI/DP",	.patch = patch_generic_hdmi },
- { .id = 0x10de0044, .name = "GPU 44 HDMI/DP",	.patch = patch_generic_hdmi },
-+{ .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_generic_hdmi },
- { .id = 0x10de0067, .name = "MCP67 HDMI",	.patch = patch_nvhdmi_2ch },
- { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
- { .id = 0x80860054, .name = "IbexPeak HDMI",	.patch = patch_generic_hdmi },
-@@ -1948,6 +1949,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0041");
- MODULE_ALIAS("snd-hda-codec-id:10de0042");
- MODULE_ALIAS("snd-hda-codec-id:10de0043");
- MODULE_ALIAS("snd-hda-codec-id:10de0044");
-+MODULE_ALIAS("snd-hda-codec-id:10de0051");
- MODULE_ALIAS("snd-hda-codec-id:10de0067");
- MODULE_ALIAS("snd-hda-codec-id:10de8001");
- MODULE_ALIAS("snd-hda-codec-id:17e80047");
--- 
-1.7.9.5
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 20580bf..fd8ce9e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -4383,9 +4383,11 @@ static void hda_power_work(struct work_struct *work)
+        }
+        spin_unlock(&codec->power_lock);
+
++       snd_printd("power_work start %p\n", codec);;
+        hda_call_codec_suspend(codec);
+        if (bus->ops.pm_notify)
+                bus->ops.pm_notify(bus);
++       snd_printd("power_work done %p\n", codec);;
+ }
+
+ static void hda_keep_power_on(struct hda_codec *codec)
+@@ -4426,7 +4428,9 @@ static void __snd_hda_power_up(struct hda_codec
+*codec, bool wait_power_down)
+        }
+        spin_unlock(&codec->power_lock);
+
++       snd_printd("power_up cancel sync start %p\n", codec);
+        cancel_delayed_work_sync(&codec->power_work);
++       snd_printd("power_up cancel sync done %p\n", codec);
+
+        spin_lock(&codec->power_lock);
+        /* If the power down delayed work was cancelled above before starting,
+
+>
+>
+> On 14.07.2012 11:21, Dylan Reid wrote:
+>>
+>> On Jul 13, 2012 11:01 PM, "Oleksij Rempel (fishor)"
+>> <bug-track@fisher-privat.net <mailto:bug-track@fisher-privat.net>> wrote:
+>>  >
+>>  > Hallo Dylan, Takashi,
+>>  >
+>>  > I have regression after patch b4a91cf05c3 "ALSA: hda - Handle open
+>> while transitioning to D3."
+>>  >
+>>  > This regression i can reproduce only if my laptop works on batteries.
+>> After this patch it needs almost 1 minute more to start. The login
+>> screen usually plays start sound, but after this patch it wait until
+>> sound card is ready.
+>>  >
+>>  > My hardware: asus zenbook ux31e.
+>>  >
+>>  > Codec: Realtek ALC269VB
+>>  >
+>>  > 00:1b.0 0403: 8086:1c20 (rev 05)
+>>  >         Subsystem: 1043:1427
+>>  >         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+>> ParErr- Stepping- SERR- FastB2B- DisINTx+
+>>  >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast
+>>  >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>>  >         Latency: 0, Cache Line Size: 64 bytes
+>>  >         Interrupt: pin A routed to IRQ 50
+>>  >         Region 0: Memory at dfe00000 (64-bit, non-prefetchable)
+>> [size=16K]
+>>  >         Capabilities: <access denied>
+>>  >         Kernel driver in use: snd_hda_intel
+>>  >         Kernel modules: snd-hda-intel
+>>  >
+>>
+>> Could you enable config_snd_debug and send the output during startup?
+>> I'm actually using the same codec on one of our systems.
+>>
+>> Thanks for testing.
+>>
+>> Dylan
+>>
+>
+>
