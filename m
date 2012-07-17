@@ -1,151 +1,55 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH] snd-opti9xx: Implement suspend/resume
-Date: Tue, 17 Jul 2012 10:51:01 +0200
-Message-ID: <201207171051.01687.linux@rainbow-software.org>
-References: <201207170916.44277.linux@rainbow-software.org>
- <50052470.4060604@st.com>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH V2] [SCSI] async: Fixup arguments of async_synchronize_full_domain in alsa-soc
+Date: Tue, 17 Jul 2012 09:50:34 +0200
+Message-ID: <201207170950.34351.marex@denx.de>
+References: <1342477026-8376-1-git-send-email-marex@denx.de> <CAA9_cmcWaj_KWLz1m0sxCJNihVuGMQsbP53=1cPiEBBWiei7bg@mail.gmail.com> <1342510116.3039.5.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id 6936D264F22
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 10:51:43 +0200 (CEST)
-In-Reply-To: <50052470.4060604@st.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kernel development list <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1342510116.3039.5.camel@dabdike.int.hansenpartnership.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: James Bottomley <jbottomley@parallels.com>
+Cc: Dan Williams <dan.j.williams@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Arjan van de Ven <arjan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 17 July 2012, Rajeev kumar wrote:
-> Hello Ondrej,
->
-> On 7/17/2012 12:46 PM, Ondrej Zary wrote:
-> > Implement suspend/resume support for Opti 92x and 93x chips.
-> > Tested with Opti 929A+AD1848 and Opti 931.
-> >
-> > Signed-off-by: Ondrej Zary<linux@rainbow-software.org>
->
-> <snip...>
->
-> > +#ifdef CONFIG_PM
-> > +static int snd_opti9xx_suspend(struct snd_card *card)
-> > +{
-> > +	struct snd_opti9xx *chip = card->private_data;
-> > +
-> > +	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-> > +	chip->codec->suspend(chip->codec);
-> > +	return 0;
-> > +}
-> > +
-> > +static int snd_opti9xx_resume(struct snd_card *card)
-> > +{
-> > +	struct snd_opti9xx *chip = card->private_data;
-> > +	int error, xdma2;
-> > +#if defined(CS4231) || defined(OPTi93X)
-> > +	xdma2 = dma2;
-> > +#else
-> > +	xdma2 = -1;
-> > +#endif
-> > +
-> > +	error = snd_opti9xx_configure(chip, port, irq, dma1, xdma2,
-> > +				      mpu_port, mpu_irq);
->
-> dma1??
+Dear James Bottomley,
 
-What's wrong with that? It's a global variable. The driver is old and only 
-supports one card.
+> On Mon, 2012-07-16 at 15:56 -0700, Dan Williams wrote:
+> > On Mon, Jul 16, 2012 at 3:17 PM, Marek Vasut <marex@denx.de> wrote:
+> > [..]
+> > 
+> > >  sound/soc/soc-dapm.c |    2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > V2: CC proper people, hopefully proper mailing list
+> > > 
+> > >     Adjust the patch subject with proper tags
+> > > 
+> > > diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> > > index eded657..e491eb0 100644
+> > > --- a/sound/soc/soc-dapm.c
+> > > +++ b/sound/soc/soc-dapm.c
+> > > @@ -1572,7 +1572,7 @@ static int dapm_power_widgets(struct
+> > > snd_soc_dapm_context *dapm, int event)
+> > > 
+> > >         struct snd_soc_dapm_context *d;
+> > >         LIST_HEAD(up_list);
+> > >         LIST_HEAD(down_list);
+> > > 
+> > > -       LIST_HEAD(async_domain);
+> > > +       ASYNC_DOMAIN_EXCLUSIVE(async_domain);
+> > > 
+> > >         enum snd_soc_bias_level bias;
+> > 
+> > Thanks.  This was folded into the resend that was submitted week [1]
+> 
+> OK, I missed that with the cockup in the cover letters.
 
-> > +	if (error)
-> > +		return error;
->
-> Variable name is not convincing. You are assuming that the function is
-> returning error.
+Well, the main point is it's now fixed. Thanks guys! :-)
 
-This is consistent with other code in the driver.
->
-> > +	chip->codec->resume(chip->codec);
-> > +	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
->
-> blank line required.
+> James
 
-This is consistent with other code in the driver.
-
-> > +	return 0;
-> > +}
-> > +
-> > +static int snd_opti9xx_isa_suspend(struct device *dev, unsigned int n,
-> > +				   pm_message_t state)
-> > +{
-> > +	return snd_opti9xx_suspend(dev_get_drvdata(dev));
-> > +}
-> > +
-> > +static int snd_opti9xx_isa_resume(struct device *dev, unsigned int n)
-> > +{
-> > +	return snd_opti9xx_resume(dev_get_drvdata(dev));
-> > +}
-> > +#endif
-> > +
-> >   static struct isa_driver snd_opti9xx_driver = {
-> >   	.match		= snd_opti9xx_isa_match,
-> >   	.probe		= snd_opti9xx_isa_probe,
-> >   	.remove		= __devexit_p(snd_opti9xx_isa_remove),
-> > -	/* FIXME: suspend/resume */
-> > +#ifdef CONFIG_PM
-> > +	.suspend	= snd_opti9xx_isa_suspend,
-> > +	.resume		= snd_opti9xx_isa_resume,
-> > +#endif
-> >   	.driver		= {
-> >   		.name	= DEV_NAME
-> >   	},
-> > @@ -1123,12 +1165,29 @@ static void __devexit
-> > snd_opti9xx_pnp_remove(struct pnp_card_link * pcard)
-> > snd_opti9xx_pnp_is_probed = 0;
-> >   }
-> >
-> > +#ifdef CONFIG_PM
-> > +static int snd_opti9xx_pnp_suspend(struct pnp_card_link *pcard,
-> > +				   pm_message_t state)
-> > +{
-> > +	return snd_opti9xx_suspend(pnp_get_card_drvdata(pcard));
-> > +}
-> > +
-> > +static int snd_opti9xx_pnp_resume(struct pnp_card_link *pcard)
-> > +{
-> > +	return snd_opti9xx_resume(pnp_get_card_drvdata(pcard));
-> > +}
-> > +#endif
-> > +
-> >   static struct pnp_card_driver opti9xx_pnpc_driver = {
-> >   	.flags		= PNP_DRIVER_RES_DISABLE,
-> >   	.name		= "opti9xx",
->
-> Why this is opti why not OPTi
-
-It's not my code. This patch is just adding suspend/resume and not changing 
-anything else.
-
-> ~Rajeev
->
-> >   	.id_table	= snd_opti9xx_pnpids,
-> >   	.probe		= snd_opti9xx_pnp_probe,
-> >   	.remove		= __devexit_p(snd_opti9xx_pnp_remove),
-> > +#ifdef CONFIG_PM
-> > +	.suspend	= snd_opti9xx_pnp_suspend,
-> > +	.resume		= snd_opti9xx_pnp_resume,
-> > +#endif
-> >   };
-> >   #endif
-
-
--- 
-Ondrej Zary
+Best regards,
+Marek Vasut
