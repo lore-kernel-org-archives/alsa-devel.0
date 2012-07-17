@@ -1,142 +1,37 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH] snd-opti9xx: Implement suspend/resume
-Date: Tue, 17 Jul 2012 09:16:44 +0200
-Message-ID: <201207170916.44277.linux@rainbow-software.org>
+From: James Bottomley <jbottomley@parallels.com>
+Subject: Re: [PATCH V2] [SCSI] async: Fixup arguments of
+ async_synchronize_full_domain in alsa-soc
+Date: Tue, 17 Jul 2012 07:28:38 +0000
+Message-ID: <1342510116.3039.5.camel@dabdike.int.hansenpartnership.com>
+References: <1342477026-8376-1-git-send-email-marex@denx.de>
+	 <CAA9_cmcWaj_KWLz1m0sxCJNihVuGMQsbP53=1cPiEBBWiei7bg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id E2391264F25
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 09:16:51 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAA9_cmcWaj_KWLz1m0sxCJNihVuGMQsbP53=1cPiEBBWiei7bg@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <EF04A8B95988B84897A776DDA14BB20E@sw.swsoft.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Williams <dan.j.williams@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Arjan van de Ven <arjan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Implement suspend/resume support for Opti 92x and 93x chips.
-Tested with Opti 929A+AD1848 and Opti 931.
-
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -136,8 +136,8 @@ struct snd_opti9xx {
- #ifdef OPTi93X
- 	unsigned long mc_indir_index;
- 	struct resource *res_mc_indir;
--	struct snd_wss *codec;
- #endif	/* OPTi93X */
-+	struct snd_wss *codec;
- 	unsigned long pwd_reg;
- 
- 	spinlock_t lock;
-@@ -870,9 +870,7 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
- 			       &codec);
- 	if (error < 0)
- 		return error;
--#ifdef OPTi93X
- 	chip->codec = codec;
--#endif
- 	error = snd_wss_pcm(codec, 0, &pcm);
- 	if (error < 0)
- 		return error;
-@@ -1053,11 +1051,55 @@ static int __devexit snd_opti9xx_isa_remove(struct device *devptr,
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM
-+static int snd_opti9xx_suspend(struct snd_card *card)
-+{
-+	struct snd_opti9xx *chip = card->private_data;
-+
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-+	chip->codec->suspend(chip->codec);
-+	return 0;
-+}
-+
-+static int snd_opti9xx_resume(struct snd_card *card)
-+{
-+	struct snd_opti9xx *chip = card->private_data;
-+	int error, xdma2;
-+#if defined(CS4231) || defined(OPTi93X)
-+	xdma2 = dma2;
-+#else
-+	xdma2 = -1;
-+#endif
-+
-+	error = snd_opti9xx_configure(chip, port, irq, dma1, xdma2,
-+				      mpu_port, mpu_irq);
-+	if (error)
-+		return error;
-+	chip->codec->resume(chip->codec);
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
-+	return 0;
-+}
-+
-+static int snd_opti9xx_isa_suspend(struct device *dev, unsigned int n,
-+				   pm_message_t state)
-+{
-+	return snd_opti9xx_suspend(dev_get_drvdata(dev));
-+}
-+
-+static int snd_opti9xx_isa_resume(struct device *dev, unsigned int n)
-+{
-+	return snd_opti9xx_resume(dev_get_drvdata(dev));
-+}
-+#endif
-+
- static struct isa_driver snd_opti9xx_driver = {
- 	.match		= snd_opti9xx_isa_match,
- 	.probe		= snd_opti9xx_isa_probe,
- 	.remove		= __devexit_p(snd_opti9xx_isa_remove),
--	/* FIXME: suspend/resume */
-+#ifdef CONFIG_PM
-+	.suspend	= snd_opti9xx_isa_suspend,
-+	.resume		= snd_opti9xx_isa_resume,
-+#endif
- 	.driver		= {
- 		.name	= DEV_NAME
- 	},
-@@ -1123,12 +1165,29 @@ static void __devexit snd_opti9xx_pnp_remove(struct pnp_card_link * pcard)
- 	snd_opti9xx_pnp_is_probed = 0;
- }
- 
-+#ifdef CONFIG_PM
-+static int snd_opti9xx_pnp_suspend(struct pnp_card_link *pcard,
-+				   pm_message_t state)
-+{
-+	return snd_opti9xx_suspend(pnp_get_card_drvdata(pcard));
-+}
-+
-+static int snd_opti9xx_pnp_resume(struct pnp_card_link *pcard)
-+{
-+	return snd_opti9xx_resume(pnp_get_card_drvdata(pcard));
-+}
-+#endif
-+
- static struct pnp_card_driver opti9xx_pnpc_driver = {
- 	.flags		= PNP_DRIVER_RES_DISABLE,
- 	.name		= "opti9xx",
- 	.id_table	= snd_opti9xx_pnpids,
- 	.probe		= snd_opti9xx_pnp_probe,
- 	.remove		= __devexit_p(snd_opti9xx_pnp_remove),
-+#ifdef CONFIG_PM
-+	.suspend	= snd_opti9xx_pnp_suspend,
-+	.resume		= snd_opti9xx_pnp_resume,
-+#endif
- };
- #endif
- 
-
--- 
-Ondrej Zary
+T24gTW9uLCAyMDEyLTA3LTE2IGF0IDE1OjU2IC0wNzAwLCBEYW4gV2lsbGlhbXMgd3JvdGU6DQo+
+IE9uIE1vbiwgSnVsIDE2LCAyMDEyIGF0IDM6MTcgUE0sIE1hcmVrIFZhc3V0IDxtYXJleEBkZW54
+LmRlPiB3cm90ZToNCj4gWy4uXQ0KPiA+ICBzb3VuZC9zb2Mvc29jLWRhcG0uYyB8ICAgIDIgKy0N
+Cj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4N
+Cj4gPiBWMjogQ0MgcHJvcGVyIHBlb3BsZSwgaG9wZWZ1bGx5IHByb3BlciBtYWlsaW5nIGxpc3QN
+Cj4gPiAgICAgQWRqdXN0IHRoZSBwYXRjaCBzdWJqZWN0IHdpdGggcHJvcGVyIHRhZ3MNCj4gPg0K
+PiA+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLWRhcG0uYyBiL3NvdW5kL3NvYy9zb2MtZGFw
+bS5jDQo+ID4gaW5kZXggZWRlZDY1Ny4uZTQ5MWViMCAxMDA2NDQNCj4gPiAtLS0gYS9zb3VuZC9z
+b2Mvc29jLWRhcG0uYw0KPiA+ICsrKyBiL3NvdW5kL3NvYy9zb2MtZGFwbS5jDQo+ID4gQEAgLTE1
+NzIsNyArMTU3Miw3IEBAIHN0YXRpYyBpbnQgZGFwbV9wb3dlcl93aWRnZXRzKHN0cnVjdCBzbmRf
+c29jX2RhcG1fY29udGV4dCAqZGFwbSwgaW50IGV2ZW50KQ0KPiA+ICAgICAgICAgc3RydWN0IHNu
+ZF9zb2NfZGFwbV9jb250ZXh0ICpkOw0KPiA+ICAgICAgICAgTElTVF9IRUFEKHVwX2xpc3QpOw0K
+PiA+ICAgICAgICAgTElTVF9IRUFEKGRvd25fbGlzdCk7DQo+ID4gLSAgICAgICBMSVNUX0hFQUQo
+YXN5bmNfZG9tYWluKTsNCj4gPiArICAgICAgIEFTWU5DX0RPTUFJTl9FWENMVVNJVkUoYXN5bmNf
+ZG9tYWluKTsNCj4gPiAgICAgICAgIGVudW0gc25kX3NvY19iaWFzX2xldmVsIGJpYXM7DQo+ID4N
+Cj4gDQo+IFRoYW5rcy4gIFRoaXMgd2FzIGZvbGRlZCBpbnRvIHRoZSByZXNlbmQgdGhhdCB3YXMg
+c3VibWl0dGVkIHdlZWsgWzFdDQoNCk9LLCBJIG1pc3NlZCB0aGF0IHdpdGggdGhlIGNvY2t1cCBp
+biB0aGUgY292ZXIgbGV0dGVycy4NCg0KSmFtZXMNCg0K
