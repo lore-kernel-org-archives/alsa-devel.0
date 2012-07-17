@@ -1,19 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Immediate underrun with PulseAudio ALSA plugin
- when PA and ALSA buffer sizes differ
-Date: Tue, 17 Jul 2012 08:22:20 +0200
-Message-ID: <5005049C.5000806@canonical.com>
-References: <20120716213855.GE7462@flim.org>
- <1342502963.14027.24.camel@localhost>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 1/2] MFD: twl6040: Fix revision information
+Date: Tue, 17 Jul 2012 12:09:44 +0530
+Message-ID: <500508B0.9010009@st.com>
+References: <1342432184-12046-1-git-send-email-peter.ujfalusi@ti.com>
+ <1342432184-12046-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 55A39264F21
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 08:22:20 +0200 (CEST)
-In-Reply-To: <1342502963.14027.24.camel@localhost>
+Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
+ [207.126.144.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 558A7264F24
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2012 08:39:50 +0200 (CEST)
+In-Reply-To: <1342432184-12046-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,95 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org, Matthew Gregan <kinetik@flim.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/17/2012 07:29 AM, Arun Raghavan wrote:
-> [x-posting back to pulseaudio-discuss since it's relevant to both lists]
+Hello Peter,
+
+On 7/16/2012 3:19 PM, Peter Ujfalusi wrote:
+> twl6040 ES1.1 and ES1.2 have the same revid (0x01).
+> ES1.3 of twl6040 REVID is 0x02.
 >
-> On Tue, 2012-07-17 at 09:38 +1200, Matthew Gregan wrote:
->> I'm investigating an issue in Firefox's audio code when the PulseAudio ALSA
->> plugin is in use.  I posted about this on pulseaudio-discuss last week
->> (http://lists.freedesktop.org/archives/pulseaudio-discuss/2012-July/014091.html),
->> but I hoped I might have more success here.
->>
->> Firefox requests a particular latency (100ms, 4410 frames at 44.1kHz) via
->> snd_pcm_set_params.  Inside the plugin (pcm_pulse.c:pulse_hw_params), that
->> value is used to set up buffer_attr.  When the PA stream is connected in
->> pcm_pulse.c:pulse_prepare, PA may configure the stream with larger
->> buffer_attr values (e.g. because the minimum sink latency has increased over
->> time due to underruns on the server, or because the sink hardware doesn't
->> support lower latency), but this isn't reflected in pcm->buffer_attr or
->> higher layers in ALSA (i.e. pcm->buffer_size is not updated).
-
-100 ms of latency is a lot, even for PulseAudio - is this some special 
-hardware?
-
->> The problem I'm faced with is that there doesn't appear to be a way to
->> detect and handle this issue at the ALSA API level, and requesting a too low
->> latency results in broken audio playback rather than a PCM setup failure or
->> a larger buffer than requested being used.
->>
->> In the case of the PA server's minimum latency increasing over time, this
->> also means that a stream that was configured and running correctly may break
->> while running if PA increases the minimum latency above what the PCM was
->> originally configured with.
->>
->> I've attached a simple testcase that uses snd_pcm_wait,
->> snd_pcm_avail_update, and snd_pcm_writei.  Run it with a latency argument
->> specified in milliseconds on the command line.  For my local machine, 55ms
->> works and 54ms fails immediately like so:
->>
->> snd_pcm_wait wakes
->> snd_pcm_avail_update returns 4410
->> snd_pcm_writei writes 4410
->> snd_pcm_wait wakes immediately
->> snd_pcm_avail_update returns -EPIPE
-
-Could you clarify what versions of PulseAudio and alsa-plugins you're 
-using? The latest improvement to this handling was done less than a year 
-ago and might require the latest versions of these components.
-
->> (Note that when I reported this on pulseaudio-discuss, my server's minimum
->> latency was 45ms, and now pacmd list-sinks | grep configured\ latency
->> reports a minimum latency of 56ms)
->>
->> I'd expect to see one of the following behaviours instead:
->> 1. PCM setup fails due to requesting a too small buffer.
->> 2. Buffer is silently raised during setup and snd_pcm_avail_update requests
->>     the correct number of frames.
-
-I think the better solution would be nr 2 in this case. Nr 1 won't solve 
-the case where the sink's latency is increased dynamically - because the 
-stream is moved, for example.
-
->> Presumably this could be achieved by having the PA plugin report valid
->> values from pcm_pulse.c:pulse_hw_constraint, but I'm not sure how to query
->> the necessary values from the server.  This also wouldn't address the
->> problem where the buffer_attr changes over time, and I'm not sure what to do
->> about that case.
+> Signed-off-by: Peter Ujfalusi<peter.ujfalusi@ti.com>
+> ---
+>   include/linux/mfd/twl6040.h |    4 ++--
+>   sound/soc/codecs/twl6040.c  |    2 +-
+>   2 files changed, 3 insertions(+), 3 deletions(-)
 >
-> The necessary values are available via pa_stream_get_buffer_attr().
-> Potentially we could use this in the pulse_pointer() function to update
-> the corresponding snd_pcm_t's period/buffer sizes, but I don't know if
-> this is kosher with regards to what alsa-lib expects plugins to be
-> doing.
+> diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
+> index 6659487..e002097 100644
+> --- a/include/linux/mfd/twl6040.h
+> +++ b/include/linux/mfd/twl6040.h
+> @@ -161,8 +161,8 @@
+>   #define TWL6040_CELLS			2
 >
-> If this is not sufficient for the initial update, from what I can see,
-> snd_pcm_set_params() first sets period/buffer sizes, queries them for
-> later calculations, and then commits them with snd_pcm_hw_params(). If
-> we could move the querying to after the params are committed (and in
-> this case, the stream is connected and buffer attributes are
-> negotiated), that would solve your problem. Again, I'm not sure what
-> side-effects this might have, but I've attached a draft untested patch
-> for it.
+>   #define TWL6040_REV_ES1_0		0x00
+> -#define TWL6040_REV_ES1_1		0x01
+> -#define TWL6040_REV_ES1_2		0x02
+> +#define TWL6040_REV_ES1_1		0x01 /* Rev ES1.1 and ES1.2 */
+> +#define TWL6040_REV_ES1_3		0x02
+>
+>   #define TWL6040_IRQ_TH			0
+>   #define TWL6040_IRQ_PLUG		1
+> diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+> index a36e9fc..2786de2 100644
+> --- a/sound/soc/codecs/twl6040.c
+> +++ b/sound/soc/codecs/twl6040.c
+> @@ -653,7 +653,7 @@ int twl6040_get_hs_step_size(struct snd_soc_codec *codec)
+>   {
+>   	struct twl6040 *twl6040 = codec->control_data;
+>
+> -	if (twl6040_get_revid(twl6040)<  TWL6040_REV_ES1_2)
+> +	if (twl6040_get_revid(twl6040)<  TWL6040_REV_ES1_3)
 
-I don't know either - and it also does not seem to solve the case where 
-the sink's latency is suddenly increased (e g, when the sink input is 
-moved to another sink).
 
+Instead of doing this change why not you take a #define for revision and 
+  do
+if (twl6040_get_revid(twl6040)<  TWL6040_REV)
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+~Rajeev
+
+>   		/* For ES under ES_1.3 HS step is 2 mV */
+>   		return 2;
+>   	else
