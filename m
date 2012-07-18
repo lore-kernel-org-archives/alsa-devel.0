@@ -1,15 +1,16 @@
-From: Torben Hohn <torbenh@linutronix.de>
-Subject: [PATCH] ASoC imx-audmux: add
-	MX31_AUDMUX_PORT7_SSI_PINS_7 define
-Date: Wed, 18 Jul 2012 15:01:17 +0200
-Message-ID: <1342616477-24778-1-git-send-email-torbenh@linutronix.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - make sure alc268 does not OOPS on
+	codec parse
+Date: Wed, 18 Jul 2012 18:02:53 +0200
+Message-ID: <1342627373-5042-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (www.linutronix.de [62.245.132.108])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C7CA2652E1
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2012 15:01:52 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED5AC26030A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2012 18:02:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Torben Hohn <torbenh@linutronix.de>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Richard Zhao <richard.zhao@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The MX31 Audmux also has 7 Ports.
-This patch adds the missing define, and makes the debugfs code iterate
-over that port too.
+A recent commit made patch_alc268 call snd_hda_pick_fixup with
+NULL quirk pointer. Make sure we do not reference that NULL pointer.
 
-Signed-off-by: Torben Hohn <torbenh@linutronix.de>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/fsl/imx-audmux.c |    2 +-
- sound/soc/fsl/imx-audmux.h |    1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_auto_parser.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 0803274..e7c800e 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -156,7 +156,7 @@ static void __init audmux_debugfs_init(void)
- 		return;
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index f7520b9..647218d 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -727,7 +727,7 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 			models++;
+ 		}
  	}
- 
--	for (i = 0; i < MX31_AUDMUX_PORT6_SSI_PINS_6 + 1; i++) {
-+	for (i = 0; i < MX31_AUDMUX_PORT7_SSI_PINS_7 + 1; i++) {
- 		snprintf(buf, sizeof(buf), "ssi%d", i);
- 		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
- 					 (void *)i, &audmux_debugfs_fops))
-diff --git a/sound/soc/fsl/imx-audmux.h b/sound/soc/fsl/imx-audmux.h
-index 04ebbab..b8ff44b 100644
---- a/sound/soc/fsl/imx-audmux.h
-+++ b/sound/soc/fsl/imx-audmux.h
-@@ -14,6 +14,7 @@
- #define MX31_AUDMUX_PORT4_SSI_PINS_4	3
- #define MX31_AUDMUX_PORT5_SSI_PINS_5	4
- #define MX31_AUDMUX_PORT6_SSI_PINS_6	5
-+#define MX31_AUDMUX_PORT7_SSI_PINS_7	6
- 
- #define MX51_AUDMUX_PORT1_SSI0		0
- #define MX51_AUDMUX_PORT2_SSI1		1
+-	if (id < 0) {
++	if (id < 0 && quirk) {
+ 		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
+ 		if (q) {
+ 			id = q->value;
+@@ -736,7 +736,7 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ #endif
+ 		}
+ 	}
+-	if (id < 0) {
++	if (id < 0 && quirk) {
+ 		for (q = quirk; q->subvendor; q++) {
+ 			unsigned int vendorid =
+ 				q->subdevice | (q->subvendor << 16);
 -- 
-1.7.10
+1.7.9.5
