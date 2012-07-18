@@ -1,39 +1,53 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: 3.4.4: Oops in snd_hda_codec_realtek (alc_auto_create_multi_out_ctls)
-Date: Tue, 17 Jul 2012 17:46:27 -0600
-Message-ID: <CADLC3L0yUcXS4KG2Fxj2W9-f2U08ODxAn0_7iWK7=ECSVnGgBA@mail.gmail.com>
-References: <CADLC3L3dDOG8BBXR0zWn9SqM0BUotpW0Y+C=HUMEK-SAGCFLJg@mail.gmail.com>
-	<s5hmx2ylgkr.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add support for Realtek ALC282
+Date: Wed, 18 Jul 2012 07:38:46 +0200
+Message-ID: <1342589926-5862-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hmx2ylgkr.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Alsa-Devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35E7F265254
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2012 07:38:48 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: mengdong.lin@intel.com, stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 17, 2012 at 6:25 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 9 Jul 2012 13:40:09 -0600,
-> Robert Hancock wrote:
->>
->> I've got a sort of industrial portable PC that uses a Supermicro C2SBX
->> motherboard. Running an RHEL6 kernel (2.6.32-ish) it works fine, but
->> if I run a 3.4.4 kernel (using the kernel-ml builds provided by ELRepo
->> for RHEL6) it blows up on boot inside snd_hda_codec_realtek. Below is
->> the dmesg output from bootup up to the oops, after I blacklisted
->> snd_hda_intel from auto-loading and then manually modprobed it. Is
->> this a known problem?
->
-> I don't know of this issue, so need to check more.
-> Could you load snd-hda-intel module with probe_only=1 option, and run
-> alsa-info.sh with --no-upload option and give the output?
-> Then I can try the emulator to see what's wrong.
->
-> Also, of course, testing a newer kernel like 3.5-rc7 would be helpful,
-> too.
+This codec has a separate dmic path (separate dmic only ADC),
+and thus it looks mostly like ALC275.
 
-Unfortunately this machine is about to ship back out to a customer so
-there's not really any more info I can gather from it at this point.
-If I can get hold of it or a similar machine again in the future, I
-can try to get more information.
+Cc: stable@kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1025377
+Tested-by: Ray Chen <ray.chen@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+One of the machines we are about enable has this chip installed. Ray Chen has
+verified that this patch makes the internal speaker and microphone work.
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 04e9243..ec14224 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7016,6 +7016,7 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
+ 	{ .id = 0x10ec0275, .name = "ALC275", .patch = patch_alc269 },
+ 	{ .id = 0x10ec0276, .name = "ALC276", .patch = patch_alc269 },
+ 	{ .id = 0x10ec0280, .name = "ALC280", .patch = patch_alc269 },
++	{ .id = 0x10ec0282, .name = "ALC282", .patch = patch_alc269 },
+ 	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660",
+ 	  .patch = patch_alc861 },
+ 	{ .id = 0x10ec0660, .name = "ALC660-VD", .patch = patch_alc861vd },
+-- 
+1.7.9.5
