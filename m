@@ -1,19 +1,17 @@
-From: Simon Brenner <simon.brenner@mobotix.com>
-Subject: SGTL5000: fix max Mic Volume in SGTL5000_CHIP_MIC_CTRL
-Date: Thu, 19 Jul 2012 16:00:54 +0200
-Message-ID: <50081316.4010807@mobotix.com>
-Reply-To: simon.brenner@mobotix.com
+From: Harman Kalra <harman4linux@gmail.com>
+Subject: Selecting Audio formats
+Date: Thu, 19 Jul 2012 19:51:19 +0530
+Message-ID: <CAA4JwzUwL=nkwcpJa62i9nLW8MOZ3mcj696-53V3R-wbdkbnnA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smail.mobotix.com (smail.mobotix.com [213.183.84.167])
- by alsa0.perex.cz (Postfix) with ESMTP id DB00F2652BA
- for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2012 16:00:52 +0200 (CEST)
-Received: from [192.168.24.20] ([192.168.24.20] verified)
- by mobotix.com (CommuniGate Pro SMTP 5.4.4)
- with ESMTP id 14633961 for alsa-devel@alsa-project.org;
- Thu, 19 Jul 2012 16:00:54 +0200
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id B212B2652CD
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2012 16:21:17 +0200 (CEST)
+Received: by lban1 with SMTP id n1so3365067lba.38
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2012 07:21:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +24,37 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hello Everybody
 
-I have noticed a wrong value for the "max" field of the macro
-SOC_SINGLE_TLV() in the Linux kernel file
-<kernel_root>/sound/soc/codecs/sgtl5000.c (approx. line 402,
-sgtl5000_snd_controls[]):
+I am a newbie to Linux Sound Programming, so few of my queries may sound
+foolish, but kindly address them.
 
-SOC_SINGLE_TLV("Mic Volume", SGTL5000_CHIP_MIC_CTRL, 0, 4, 0,
-                   mic_gain_tlv)
+*I want to capture a video on my beagle board Xm rev C (TI DM3730). *So as
+per as the audio capturing is concerned, I am very much confused about the
+audio formats, like which format should I choose to get a better sound
+quality in the least possible memory requirement.
 
-The value "4" should be a "3" (see datasheet "Low Power Stereo Codec
-with Headphone Amp" by Freescale, page 40).
+Since so many PCM formats such as S8, U8, S16_LE, U16_LE, A-law, u-law-,
+IMA_ADPCM, MPEG, GSM, etc are there so which format should I opt for.
 
-Regards,
--Simon.
+Also
+
+   1.  What is difference between signed and unsigned PCM format, how does
+   it can affect the sound quality.
+   2. If I go for MPEG format, does it mean that audio compression would
+   handled at my audio port level and my DSP processor would not come into
+   picture.
+   3. In reference to my above query i.e. 2, if audio compression is
+   handled at audio port level, so at the time of audio/video sync up, how
+   would be my processor be able to time sync both audio and video, since
+   audio is not being compressed by the DSP.
+   4. If I opt for A-law or u-law, what could be benefits/disadvantages of
+   using these formats. Would the audio sample be in compressed form in this
+   case, if yes, how would audio/video sync up will happen in this case.
+
+
+If possible kindly provide me a link where I can find differences between
+these various formats, pros and cons of each of them.
+
+Thanks & Regards
+Harman
