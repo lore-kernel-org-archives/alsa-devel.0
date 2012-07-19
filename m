@@ -1,16 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Selecting Audio formats
-Date: Thu, 19 Jul 2012 17:00:03 +0200
-Message-ID: <500820F3.4050302@ladisch.de>
-References: <CAA4JwzUwL=nkwcpJa62i9nLW8MOZ3mcj696-53V3R-wbdkbnnA@mail.gmail.com>
+Date: Thu, 19 Jul 2012 20:35:36 +0200
+Message-ID: <50085378.5000300@ladisch.de>
+References: <CAA4JwzUwL=nkwcpJa62i9nLW8MOZ3mcj696-53V3R-wbdkbnnA@mail.gmail.com>	<500820F3.4050302@ladisch.de>
+ <CAA4JwzW3zNOCWeFoaCSxnx8WzsQTbu1+rOuq2jFxdt043MWSaQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id CDE5C2652D1
- for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2012 17:00:02 +0200 (CEST)
-In-Reply-To: <CAA4JwzUwL=nkwcpJa62i9nLW8MOZ3mcj696-53V3R-wbdkbnnA@mail.gmail.com>
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id DE617260305
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2012 20:36:25 +0200 (CEST)
+In-Reply-To: <CAA4JwzW3zNOCWeFoaCSxnx8WzsQTbu1+rOuq2jFxdt043MWSaQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +26,36 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Harman Kalra wrote:
-> Since so many PCM formats such as S8, U8, S16_LE, U16_LE, A-law, u-law-,
-> IMA_ADPCM, MPEG, GSM, etc are there so which format should I opt for.
+>     Can you please explain difference between signed and unsigned PCM
+> formats,
 
-In most cases, you should use some format supported by your hardware.
-Typically, this is S16.
+Signed PCM formats have a sign, unsigned don't.  S16 allows values in the
+range -32768..32767, U16, 0..65535.
 
->    1.  What is difference between signed and unsigned PCM format, how does
->    it can affect the sound quality.
+> in what cases does unsigned is used,
 
-It does not affect the sound quality.
+In practice, never.  It was historically used by some 8-bit cards.
 
->    2. If I go for MPEG format, does it mean that audio compression would
->    handled at my audio port level and my DSP processor would not come into
->    picture.
+> which is more efficient (memory and sound clarity)
 
-If you tried to set MPEG format, ALSA would inform you that the device
-does not support this.
+I refer the honourable gentleman to the reply I gave in the last mail.
 
->    4. If I opt for A-law or u-law, what could be benefits/disadvantages of
->    using these formats.
+>> If you tried to set MPEG format, ALSA would inform you that the device
+>> does not support this.
+>
+>         But when I queried the hardware regarding the supported audio
+> formats using the api " snd_pcm_format_name", it responded with a list of
+> formats, including , A-law, u-law-, IMA_ADPCM, MPEG, GSM, so what does it
+> mean.
 
-These formats use one byte per sample, like U8, but have more dynamic
-range than U8.  They are still worse than S16.
+It means that the sample format identified by the constant
+SND_PCM_FORMAT_MPEG is indeed named "MPEG".  This has nothing to do
+with what formats some particular hardware supports.
+
+>       What would be audio sample file size in case of A-law, will it be
+> same as U8.
+
+I refer the honourable gentleman to the reply I gave in the last mail.
 
 
 Regards,
