@@ -1,18 +1,17 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH 4/4] ARM: mx28evk: add missed clkmux select for
-	saif
-Date: Fri, 20 Jul 2012 17:20:27 +0800
-Message-ID: <1342776027-31758-5-git-send-email-b29396@freescale.com>
-References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
+From: Harman Kalra <harman4linux@gmail.com>
+Subject: Selecting Data Access Type
+Date: Fri, 20 Jul 2012 15:13:07 +0530
+Message-ID: <CAA4JwzXvnw3MtQ2LWnqsEdc8jtzaH0QJ57HircMSCEuqY2OsCg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
- by alsa0.perex.cz (Postfix) with ESMTP id F335B265315
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2012 11:31:30 +0200 (CEST)
-In-Reply-To: <1342776027-31758-1-git-send-email-b29396@freescale.com>
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9430A260304
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2012 11:43:05 +0200 (CEST)
+Received: by lban1 with SMTP id n1so4387518lba.38
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2012 02:43:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, shawn.guo@freescale.com, w.sang@pengutronix.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Dong Aisheng <dong.aisheng@linaro.org>
+I have few doubts regarding Data Access types, which controls the way that
+the program will deliver/receive data from the interface in Alsa:
 
-Added missed clkmux setting for mx28evk.
+   1. What are the advantages/disadvantages of interleaved over non
+   interleaved or vice versa
+   2. What are the advantages/disadvantages of MMAP interleaved over RW
+   interleaved or vice versa
+   3. Which access type is most appropriate for, camera recording
 
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>
-Cc: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Dong Aisheng <dong.aisheng@linaro.org>
----
- arch/arm/mach-mxs/mach-mxs.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/mach-mxs/mach-mxs.c b/arch/arm/mach-mxs/mach-mxs.c
-index 8cac94b..82f27a4 100644
---- a/arch/arm/mach-mxs/mach-mxs.c
-+++ b/arch/arm/mach-mxs/mach-mxs.c
-@@ -21,6 +21,7 @@
- #include <asm/mach/arch.h>
- #include <asm/mach/time.h>
- #include <mach/common.h>
-+#include <mach/digctl.h>
- 
- static int __init mxs_icoll_add_irq_domain(struct device_node *np,
- 				struct device_node *interrupt_parent)
-@@ -79,6 +80,8 @@ static void __init imx28_evk_init(void)
- 	clk = clk_get_sys("enet_out", NULL);
- 	if (!IS_ERR(clk))
- 		clk_prepare_enable(clk);
-+
-+	mxs_saif_clkmux_select(MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0);
- }
- 
- static void __init mxs_machine_init(void)
--- 
-1.7.0.4
+Regards
+Harman kalra
