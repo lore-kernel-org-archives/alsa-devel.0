@@ -1,17 +1,19 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
 Subject: Re: [PATCH] ALSA: pcm - introduce soc_delay
-Date: Mon, 23 Jul 2012 16:44:12 +0530
-Message-ID: <1343042052.1726.4892.camel@vkoul-udesk3>
+Date: Mon, 23 Jul 2012 16:47:07 +0530
+Message-ID: <1343042227.1726.4899.camel@vkoul-udesk3>
 References: <1343037997-16689-1-git-send-email-vinod.koul@linux.intel.com>
- <s5hvcheu60x.wl%tiwai@suse.de>  <500D2BB7.2010802@perex.cz>
+ <CABb+yY1-RyuCigCYM-dwsc1D1vSvy+QX1nunrc8G+3bT2n134g@mail.gmail.com>
+ <1343039998.1726.4833.camel@vkoul-udesk3>
+ <CAJe_ZhfnSkYz_zWbHTs43GtCdvisiq4xztV9xcbW6i0jj7boCA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C784260324
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 13:14:09 +0200 (CEST)
-In-Reply-To: <500D2BB7.2010802@perex.cz>
+ by alsa0.perex.cz (Postfix) with ESMTP id 78BC7260324
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 13:16:45 +0200 (CEST)
+In-Reply-To: <CAJe_ZhfnSkYz_zWbHTs43GtCdvisiq4xztV9xcbW6i0jj7boCA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Jassi Brar <jaswinder.singh@linaro.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, lrg@ti.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-07-23 at 12:47 +0200, Jaroslav Kysela wrote:
-> mm, it's confusing to have both delay and soc_delay fields.
-> > 
-> > And, if the XRUN detection is the only problem, we can provide a flag
-> > to correct avail with runtime->delay.
-> 
-> I agree. The runtime->delay variable should handle all situations for
-> queued samples.
-> But the point is - we have data in some FIFO, but the DMA ring buffer is
-> empty. 
-In a DSP you can have input buffer (from the ring buffer), which is post
-processed and sent to output DMA buffer. This buffering is dynamic in
-nature and since input buffer is memory copy, it would buffer ahead of
-time unlike the output buffer which will run at PCM rate. The samples at
-input DMA and various modules doing DSP processing are still before
-output circular DMA and should be considered when we do xrun
-calculation.
+On Mon, 2012-07-23 at 16:20 +0530, Jassi Brar wrote:
+> >> Couldn't we employ snd_pcm_hw_params.fifo_size for the purpose ?
+> > Nope, that should be used to represent the delay in samples being
+> output
+> > not the sample which are buffered and processed in a DSP
+> >
+> After leaving alsa ring buffer, don't the samples incur extra delay of
+> your internal  buffer ? 
+Yes they do.
 
-> If you use the delay value in the snd_pcm_update_state(), you'll
-> probably allow to transfer invalid samples to the FIFO (probably
-> previous samples from the ring buffer, because application has not
-> provided new ones). That was the purpose of the check.
-Yes and the right one. But what about samples still there before DMA,
-this patch just attempts to represent those. not the ones at and after
-DMA, they are correctly represented today in runtime->delay.
+And they are two types. 
+a) constant delay in DMA FIFO, aptly represented by delay
+b) dynamic buffering on input DMA at DSP and during post-processing.
+This is before the circular DMA at output, and this patch attempts to
+represent this buffering.
 
-> Of course, if you stop DMA according the appl_ptr and wait on
-> application to provide new data in the "FIFO time window", then the
-> check should be updated for this type of hw.
-> 
+I guess soc_delay is not a best of name and is causing quite a churn!
 
-
->                                         Jaroslav 
 -- 
 ~Vinod
