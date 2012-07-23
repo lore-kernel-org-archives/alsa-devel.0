@@ -1,17 +1,14 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [pulseaudio-discuss] Using UCM with PulseAudio
-Date: Mon, 23 Jul 2012 09:33:27 +0300
-Message-ID: <1343025207.2904.12.camel@laptop>
-References: <1339728813.5228.48.camel@localhost>
- <1339762287.3007.127.camel@laptop> <1343014720.6131.21.camel@localhost>
+From: alberto Villa <a.villa@seletech.com>
+Subject: Using MMAP feature
+Date: Mon, 23 Jul 2012 09:13:24 +0200
+Message-ID: <500CF994.5090901@seletech.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id A5FB3260308
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 08:33:28 +0200 (CEST)
-In-Reply-To: <1343014720.6131.21.camel@localhost>
+Received: from smtplq01.aruba.it (smtpweb21.aruba.it [62.149.158.21])
+ by alsa0.perex.cz (Postfix) with SMTP id 74AB4264EEF
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 09:13:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,23 +18,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Cc: lrg@ti.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, pulseaudio-discuss@lists.freedesktop.org, jankovac503@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-07-23 at 09:08 +0530, Arun Raghavan wrote:
-> 3. Devices that have a loopback path in hardware/DSP (this is a request
-> I've seen, but I'm not aware of hardware that does this)
+Hello,
 
-Isn't this very common with desktop hardware? For example, my laptop's
-sound card has a playback volume and mute control for the "Mic" element,
-which supposedly could be used for looping the mic audio to the speakers
-or headphones inside the hardware.
+I'm going to use the MMAP feature of ALSA. I understood I have to use 
+snd_pcm_mmap_begin and snd_pcm_mmap_commit functions, but I can't 
+understand the meaning of some parameters in  the snd_pcm_mmap_begin 
+function: when I call this function in order to have access to the 
+capture stream on a call like this:
 
-The N9 hardware also has several possibilities for loopbacks. We used
-one for the sidetone in calls (sidetone means playing back your own
-voice back to you, and it's a mandatory feature in mobile phones,
-AFAIK).
+err = snd_pcm_mmap_begin(capture, &c_area, &c_offset, &c_frames);
+
+it keeps to return c_frames = 0: is it right ? what does  this mean? is 
+the buffer full so that I can read samples or the available contiguous 
+space to be read is 0?
+
+Thank you,
+
+Alberto
 
 -- 
-Tanu
+Dr. Villa Alberto
+Sw Engineer
+
+SeleTech srl
+via Collodi, 8 20052 Monza (MI)
+tel: +39 039 5962000
+fax: +39 039 9716905
+email: a.villa@seletech.com
+web: www.seletech.com
+      www.seletech.eu
