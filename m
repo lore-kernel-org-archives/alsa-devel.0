@@ -1,17 +1,17 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ALSA: pcm - introduce soc_delay
-Date: Mon, 23 Jul 2012 16:17:15 +0530
-Message-ID: <1343040435.1726.4848.camel@vkoul-udesk3>
+Date: Mon, 23 Jul 2012 11:47:20 +0100
+Message-ID: <20120723104720.GK4435@opensource.wolfsonmicro.com>
 References: <1343037997-16689-1-git-send-email-vinod.koul@linux.intel.com>
- <s5hvcheu60x.wl%tiwai@suse.de>
+ <20120723101851.GG4435@opensource.wolfsonmicro.com>
+ <1343039946.1726.4830.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8685470325562278429=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C50D265242
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 12:46:53 +0200 (CEST)
-In-Reply-To: <s5hvcheu60x.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 44429265269
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 12:47:19 +0200 (CEST)
+In-Reply-To: <1343039946.1726.4830.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,135 +21,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-07-23 at 12:27 +0200, Takashi Iwai wrote:
-> At Mon, 23 Jul 2012 15:36:37 +0530,
-> Vinod Koul wrote:
-> > 
-> > In many modern SoCs the audio DSP can buffer the PCM ring buffer data. Today we
-> > have no means to represent this buffering and ALSA wrongly detects an overrun
-> > when hw_ptr reaches app_ptr value, though DSP may still have some buffered data.
-> > 
-> > This patch tries to add a new field "soc_delay" to represent buffering done in
-> > DSPs. This value is also used for the xrun calculations in ALSA.
-> > 
-> > Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
-> > 
-> > --
-> > Once we are okay with this approach, I will send a follow up patch which adds
-> > this notion in ASoC and uses this to compute cpu_dai delay. The codec_dai delay
-> > along with FIFO delay from cpu_dai should be added and reresented by today's
-> > notion of delay.
-> 
-> Hmm, it's confusing to have both delay and soc_delay fields.
-Yes, I agree but delay doesn't represent this and we should still keep
-delay for knowing the delay in samples getting rendered. This should be
-sum of output DMA FIFO delay and codec delay
-> 
-> And, if the XRUN detection is the only problem, we can provide a flag
-> to correct avail with runtime->delay.
-For start yes, but from a correctness perspective we should tell ALSA
-how much data is buffered.
-It also helps when we would like to do rewind and forward (not handled
-in this patch yet)
-> 
-> 
-> > ---
-> >  include/sound/pcm.h     |    1 +
-> >  sound/core/pcm_lib.c    |   14 +++++++++++---
-> >  sound/core/pcm_native.c |    6 +++---
-> >  3 files changed, 15 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> > index a55d5db..405deb7 100644
-> > --- a/include/sound/pcm.h
-> > +++ b/include/sound/pcm.h
-> > @@ -281,6 +281,7 @@ struct snd_pcm_runtime {
-> >  	unsigned long hw_ptr_jiffies;	/* Time when hw_ptr is updated */
-> >  	unsigned long hw_ptr_buffer_jiffies; /* buffer time in jiffies */
-> >  	snd_pcm_sframes_t delay;	/* extra delay; typically FIFO size */
-> > +	snd_pcm_sframes_t soc_delay;	/* extra delay; typically delay incurred in soc */
-> >  
-> >  	/* -- HW params -- */
-> >  	snd_pcm_access_t access;	/* access mode */
-> > diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> > index 8f312fa..4977012 100644
-> > --- a/sound/core/pcm_lib.c
-> > +++ b/sound/core/pcm_lib.c
-> > @@ -292,7 +292,15 @@ int snd_pcm_update_state(struct snd_pcm_substream *substream,
-> >  			return -EPIPE;
-> >  		}
-> >  	} else {
-> > -		if (avail >= runtime->stop_threshold) {
-> > +		snd_pcm_uframes_t actual_avail;
-> > +		if (avail < runtime->soc_delay)
-> > +			actual_avail = avail;
-> > +		else
-> > +			actual_avail = avail - runtime->soc_delay;
-> > +		if (actual_avail  >= runtime->stop_threshold) {
-> > +			snd_printd(KERN_ERR  "avail > stop_threshold!!\n");
-> > +			snd_printd(KERN_ERR  "actual_avail %ld, avail %ld, soc_delay %ld!!\n",
-> > +					actual_avail, avail,  runtime->soc_delay);
-> 
-> Don't add debug prints here.  This is no kernel error, and XRUN is
-> already informed in xrun() function.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> >  			xrun(substream);
-> >  			return -EPIPE;
-> >  		}
-> > @@ -440,9 +448,9 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
-> >  	if (runtime->hw.info & SNDRV_PCM_INFO_BATCH)
-> >  		goto no_jiffies_check;
-> >  	hdelta = delta;
-> > -	if (hdelta < runtime->delay)
-> > +	if (hdelta < (runtime->delay + runtime->soc_delay))
-> >  		goto no_jiffies_check;
-> > -	hdelta -= runtime->delay;
-> > +	hdelta -= (runtime->delay + runtime->soc_delay);
-> >  	jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
-> >  	if (((hdelta * HZ) / runtime->rate) > jdelta + HZ/100) {
-> >  		delta = jdelta /
-> > diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> > index 53b5ada..fc2d664 100644
-> > --- a/sound/core/pcm_native.c
-> > +++ b/sound/core/pcm_native.c
-> > @@ -606,13 +606,13 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
-> >  		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
-> >  		    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
-> >  			status->delay = runtime->buffer_size - status->avail;
-> > -			status->delay += runtime->delay;
-> > +			status->delay += runtime->delay + runtime->soc_delay;
-> >  		} else
-> >  			status->delay = 0;
-> >  	} else {
-> >  		status->avail = snd_pcm_capture_avail(runtime);
-> >  		if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
-> > -			status->delay = status->avail + runtime->delay;
-> > +			status->delay = status->avail + runtime->delay + runtime->soc_delay;
-> >  		else
-> >  			status->delay = 0;
-> >  	}
-> > @@ -2442,7 +2442,7 @@ static int snd_pcm_delay(struct snd_pcm_substream *substream,
-> >  			n = snd_pcm_playback_hw_avail(runtime);
-> >  		else
-> >  			n = snd_pcm_capture_avail(runtime);
-> > -		n += runtime->delay;
-> > +		n += runtime->delay + runtime->soc_delay;
-> >  		break;
-> >  	case SNDRV_PCM_STATE_XRUN:
-> >  		err = -EPIPE;
-> > -- 
-> > 1.7.0.4
-> > 
+
+--===============8685470325562278429==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KaGhPsiNaI6/sRd6"
+Content-Disposition: inline
 
 
--- 
-~Vinod
+--KaGhPsiNaI6/sRd6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 23, 2012 at 04:09:06PM +0530, Vinod Koul wrote:
+> On Mon, 2012-07-23 at 11:18 +0100, Mark Brown wrote:
+
+> > It's not immediately clear to me that we shouldn't be flagging an
+> > overrun here - obviously if there's just a pure delay introduced by the
+
+> Take the case of a DSP which employs DMA on input and output (of the
+> DSP)
+> At start, DSP would buffer some data, assuming a period. And assume app
+> has filed one period only. So at start as we buffered a period, ALSA
+> threw up wrong xrun, as it wasn't aware that this buffer is not yet
+> rendered.
+
+> Using this notion, ALSA knows that there is some buffer in DSP and used
+> that for xrun as well as delay calculations.
+
+I'm having a hard time relating this to what I was saying.  The point
+here is that if the device keeps marching on consuming data (as most
+cyclic DMAs would) then there's still going to be an underrun even if
+there's a buffer that causes a delay in the user hearing it.
+
+> > > This patch tries to add a new field "soc_delay" to represent buffering done in
+> > > DSPs. This value is also used for the xrun calculations in ALSA.
+
+> > soc_delay seems like a very unclear name for this.
+
+> I am not good with names, perhaps soc_buffer is good name :-) ?
+
+The "soc" is the problem here - this shouldn't be specific to some sort
+of hardware.
+
+--KaGhPsiNaI6/sRd6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQDSuwAAoJEBus8iNuMP3dDqsQAIz0k4iOT3urM9KM7I0AL5KE
+9mHTiHyfK7UojDcnHSLPkQYWAuLtZmCnYJE8Fl83+WqwhN/Y5fStjOY0qTOZBCm3
+HaljGr0OHD8J+O8kCvCygh8VhHdTpMYMCssOOIt1aX5AnHO89G/7sQBH79HsX5Na
+J7vXBuYdHxSZDy0rNte1+/AR5CXlkPuDUsZbfOkmrTzdLhaiJwdaxoj68alX8wSf
+JvQxmj/Er3VaohxTigWtAyeN2fv1mlr4F4GFgUokYfDGOVSEGK4v+Rd7kD+YvBLV
+RXjC9AvitGz8mhNk20U+ndjtmjW1G/vYv4G6Mm423xJZxgK3Wy/8HKVdOEaRa78H
+zzRlONDh5gG+b9z6tjxe5RwxNYOCErCe+JAmVtFYMbi59ry5AVBs5ebkXQO7Ew1C
+OwHnQWN4GWAHjwWvGV6IqV/VIXRn3s6XhnQIGPMWq+5bK4m+sS0wh348c4TStVRR
+q9GgQhs2qwbEzM1YVTsEfTJS/nuFHYL6WmLRlvsisT3AfuPSiRytSCI9HAZ1MeV/
+DfqFVJCDtjlVoaebzNry0Wp4EIdXpk1QAGMtYPTGbxRQ0RxrBGFM9l5cJcFbrnz4
+tWGrzkNRnhs7TrKW81w6IwctlQ/8qGDvuESpQUFQE2UU4kuaJncq3aquNbbtasn2
+cIRfIACe3ljr70BwHfQQ
+=MHbY
+-----END PGP SIGNATURE-----
+
+--KaGhPsiNaI6/sRd6--
+
+--===============8685470325562278429==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8685470325562278429==--
