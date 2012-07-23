@@ -1,16 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Declaring HDMI channel allocation to kernel
-Date: Mon, 23 Jul 2012 14:39:38 -0500
-Message-ID: <500DA87A.8080901@linux.intel.com>
-References: <500D5D3D.2060108@gmail.com>
+Subject: Re: [PATCH] ALSA: pcm - introduce soc_delay
+Date: Mon, 23 Jul 2012 14:51:48 -0500
+Message-ID: <500DAB54.20705@linux.intel.com>
+References: <1343037997-16689-1-git-send-email-vinod.koul@linux.intel.com>
+ <20120723101851.GG4435@opensource.wolfsonmicro.com>
+ <1343039946.1726.4830.camel@vkoul-udesk3>
+ <20120723104720.GK4435@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 74885260317
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 21:39:37 +0200 (CEST)
-In-Reply-To: <500D5D3D.2060108@gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B795260317
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 21:51:47 +0200 (CEST)
+In-Reply-To: <20120723104720.GK4435@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,17 +26,14 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/23/2012 9:18 AM, Gabriel M. Beddingfield wrote:
->
-> Is there an established way for me (from userspace) to pass the HDMI 
-> Channel Allocation (1 byte) to the driver?  If not, can you recommend 
-> an approach?
->
-> In most of the drivers that I've inspected, the drivers seem to assume 
-> that there's a 1:1 mapping of Number-of-Channels to 
-> Channel-Allocation.  However, the HDMI sink declares which speakers it 
-> has attached in the EDID.  If I can match this in userspace... I need 
-> a way to communicate it to the driver.
-I believe this is one of the topics that will be presented by Takashi at 
-LPC, we need the ability to specify a arbitrary sink-specific channel 
-mapping.
+On 7/23/2012 5:47 AM, Mark Brown wrote:
+> I'm having a hard time relating this to what I was saying.  The point
+> here is that if the device keeps marching on consuming data (as most
+> cyclic DMAs would) then there's still going to be an underrun even if
+> there's a buffer that causes a delay in the user hearing it
+Not necessarily. The DMA between system memory and DSP buffers need not 
+work at a rate linked to the serial bit clock, they can be much faster, 
+and actually they should to help put the system in a low power state 
+rather than reading continuously from memory... what Vinod is trying to 
+explain is that due to the bursty nature of data transfers inside the 
+soc, we need to modify how the accounting is done.
