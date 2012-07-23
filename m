@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [RESEND] ASoC: omap-mcpdm: Convert to use devm_*
-Date: Mon, 23 Jul 2012 12:39:51 +0300
-Message-ID: <1343036391-1326-1-git-send-email-peter.ujfalusi@ti.com>
+From: Paul Freeman <alsa-dev@lists-in.noc4.net>
+Subject: VIA VT2021 Support
+Date: Mon, 23 Jul 2012 11:03:14 +0100
+Message-ID: <a40c0510d961b4f18b15aa3d11fac195@noc4.net>
+Reply-To: alsa-dev@lists-in.noc4.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
- [74.125.149.211])
- by alsa0.perex.cz (Postfix) with ESMTP id 50410265222
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 11:39:26 +0200 (CEST)
-Received: by obhx4 with SMTP id x4so11448794obh.0
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 02:39:27 -0700 (PDT)
+Received: from mta2.mx.noc4.net (mta2.mx.noc4.net [176.67.161.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A43C26522A
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 12:02:08 +0200 (CEST)
+Received: from unknown (HELO www.noc4.net) (176.67.161.175)
+ by mta2.mx.noc4.net with SMTP for <alsa-devel@alsa-project.org>;
+ 23 Jul 2012 10:02:08 -0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,100 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Switch to use devm_* te make the probe/remove code more cleaner.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/omap/omap-mcpdm.c |   52 ++++++++++--------------------------------
- 1 files changed, 13 insertions(+), 39 deletions(-)
-
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 2c66e24..f7babb3 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -445,9 +445,8 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
- {
- 	struct omap_mcpdm *mcpdm;
- 	struct resource *res;
--	int ret = 0;
- 
--	mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
-+	mcpdm = devm_kzalloc(&pdev->dev, sizeof(struct omap_mcpdm), GFP_KERNEL);
- 	if (!mcpdm)
- 		return -ENOMEM;
- 
-@@ -456,55 +455,30 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
- 	mutex_init(&mcpdm->mutex);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (res == NULL) {
--		dev_err(&pdev->dev, "no resource\n");
--		goto err_res;
--	}
-+	if (res == NULL)
-+		return -ENOMEM;
- 
--	if (!request_mem_region(res->start, resource_size(res), "McPDM")) {
--		ret = -EBUSY;
--		goto err_res;
--	}
-+	if (!devm_request_mem_region(&pdev->dev, res->start,
-+				     resource_size(res), "McPDM"))
-+		return -EBUSY;
- 
--	mcpdm->io_base = ioremap(res->start, resource_size(res));
--	if (!mcpdm->io_base) {
--		ret = -ENOMEM;
--		goto err_iomap;
--	}
-+	mcpdm->io_base = devm_ioremap(&pdev->dev, res->start,
-+				      resource_size(res));
-+	if (!mcpdm->io_base)
-+		return -ENOMEM;
- 
- 	mcpdm->irq = platform_get_irq(pdev, 0);
--	if (mcpdm->irq < 0) {
--		ret = mcpdm->irq;
--		goto err_irq;
--	}
-+	if (mcpdm->irq < 0)
-+		return mcpdm->irq;
- 
- 	mcpdm->dev = &pdev->dev;
- 
--	ret = snd_soc_register_dai(&pdev->dev, &omap_mcpdm_dai);
--	if (!ret)
--		return 0;
--
--err_irq:
--	iounmap(mcpdm->io_base);
--err_iomap:
--	release_mem_region(res->start, resource_size(res));
--err_res:
--	kfree(mcpdm);
--	return ret;
-+	return snd_soc_register_dai(&pdev->dev, &omap_mcpdm_dai);
- }
- 
- static int __devexit asoc_mcpdm_remove(struct platform_device *pdev)
- {
--	struct omap_mcpdm *mcpdm = platform_get_drvdata(pdev);
--	struct resource *res;
--
- 	snd_soc_unregister_dai(&pdev->dev);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	iounmap(mcpdm->io_base);
--	release_mem_region(res->start, resource_size(res));
--
--	kfree(mcpdm);
- 	return 0;
- }
- 
--- 
-1.7.8.6
+Hi,
+  I recently acquired a Intel Z77 based motherboard, a GigaByte Z77-D3H 
+which uses a VIA VT2021 chip.. having had a quick look/grep though the 
+alsa source I didn't find any mention of it and Google has little say 
+about it either with regards to linux. anyone aware of/working on 
+support for this? - some of the outputs are working but not things like 
+front heaphone out etc
