@@ -1,48 +1,58 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Ensure there are enough BCLKs
-	for four channels
-Date: Mon, 23 Jul 2012 18:34:46 +0100
-Message-ID: <1343064886-28803-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Will Deacon <will.deacon@arm.com>
+Subject: Re: Help request - ASoC recursion issue
+Date: Mon, 23 Jul 2012 19:12:49 +0100
+Message-ID: <20120723181249.GF3421@mudshark.cambridge.arm.com>
+References: <500D5A1F.9000808@linaro.org>
+ <500D649B.80704@linaro.org>
+ <500D6602.6070809@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17EA2260310
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 19:41:25 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <500D6602.6070809@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise if someone tries to use all four channels on AIF1 with the
-device in master mode we won't be able to clock out all the data.
+On Mon, Jul 23, 2012 at 03:56:02PM +0100, Lee Jones wrote:
+> On 23/07/12 15:50, Lee Jones wrote:
+> >> I was wondering if I may bother you for some help. I've been having
+> >> serious issues with testing the new mop500 sound system you have in your
+> >> ASoC for-next branch. I've fixed a few issues and will be submitting
+> >> patches shortly. The most serious issue I came across was with
+> >> recursion.
+> >
+> > It appears you can ignore this. I just tried another piece of hardware
+> > and this problem doesn't arise, leading me to believe I have some kind
+> > of eMMC corruption error going on with one of my boards.
+> 
+> FYI, just so you don't think I'm mad: http://paste.ubuntu.com/1106535/
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I still maintain that you're getting memory corruption as a result of your
+linear mapping getting screwed up:
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index bb62f4b..235577a 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2649,7 +2649,7 @@ static int wm8994_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	bclk_rate = params_rate(params) * 2;
-+	bclk_rate = params_rate(params) * 4;
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		bclk_rate *= 16;
--- 
-1.7.10.4
+  Truncating RAM at 18000000-3fffffff to -2c3fffff (vmalloc region overlap).
+
+looks wrong to me. Your command line also has some non-standard mem= options
+that I don't understand:
+
+  vmalloc=300M mem=128M@0 mali.mali_mem=64M@128M hwmem=168M@192M mem=22M@360M mem_issw=1M@383M mem=640M@384M
+
+I'd guess you need highmem to map that lot, but you don't appear to have that
+enabled and you end up with a rather strange amount of reported memory to go
+with your lowmem mapping:
+
+  Memory: 474156k/474156k available, 11220k reserved, 0K highmem
+  Virtual kernel memory layout:
+      vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+      fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+      vmalloc : 0xec800000 - 0xff000000   ( 296 MB)
+      lowmem  : 0xc0000000 - 0xec400000   ( 708 MB)
+
+Now, I don't know a thing about Snowball, so maybe this is all normal for
+that board but if you're seeing memory corruption I'd get to the bottom of
+this before trying to debug instances of it cropping up in random driver
+code :)
+
+Will
