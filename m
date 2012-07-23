@@ -1,14 +1,20 @@
-From: alberto Villa <a.villa@seletech.com>
-Subject: Using MMAP feature
-Date: Mon, 23 Jul 2012 09:13:24 +0200
-Message-ID: <500CF994.5090901@seletech.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix _PRE and _POST events for
+ DAPM performance improvements
+Date: Mon, 23 Jul 2012 08:59:43 +0100
+Message-ID: <1343030383.4873.0.camel@odin>
+References: <1342801940-11549-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtplq01.aruba.it (smtpweb21.aruba.it [62.149.158.21])
- by alsa0.perex.cz (Postfix) with SMTP id 74AB4264EEF
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 09:13:23 +0200 (CEST)
+Received: from na3sys009aog118.obsmtp.com (na3sys009aog118.obsmtp.com
+ [74.125.149.244])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE06F265212
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 10:00:18 +0200 (CEST)
+Received: by wibhq4 with SMTP id hq4so2108342wib.14
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 00:59:45 -0700 (PDT)
+In-Reply-To: <1342801940-11549-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,35 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Fri, 2012-07-20 at 17:32 +0100, Mark Brown wrote:
+> Ever since the DAPM performance improvements we've been marking all widgets
+> as not dirty after each DAPM run. Since _PRE and _POST events aren't part
+> of the DAPM graph this has rendered them non-functional, they will never be
+> marked dirty again and thus will never be run again.
+> 
+> Fix this by skipping them when marking widgets as not dirty.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-I'm going to use the MMAP feature of ALSA. I understood I have to use 
-snd_pcm_mmap_begin and snd_pcm_mmap_commit functions, but I can't 
-understand the meaning of some parameters in  the snd_pcm_mmap_begin 
-function: when I call this function in order to have access to the 
-capture stream on a call like this:
-
-err = snd_pcm_mmap_begin(capture, &c_area, &c_offset, &c_frames);
-
-it keeps to return c_frames = 0: is it right ? what does  this mean? is 
-the buffer full so that I can read samples or the available contiguous 
-space to be read is 0?
-
-Thank you,
-
-Alberto
-
--- 
-Dr. Villa Alberto
-Sw Engineer
-
-SeleTech srl
-via Collodi, 8 20052 Monza (MI)
-tel: +39 039 5962000
-fax: +39 039 9716905
-email: a.villa@seletech.com
-web: www.seletech.com
-      www.seletech.eu
+Acked-by: Liam Girdwood <lrg@ti.com>
