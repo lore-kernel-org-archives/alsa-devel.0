@@ -1,20 +1,21 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: Can ASoC support SPDIF AC3 passthrough playback
- (non linear PCM) ?
-Date: Sun, 22 Jul 2012 20:03:46 -0500
-Message-ID: <500CA2F2.1090801@gmail.com>
-References: <CANh+=Y-jvvhafmiTFr_XgiO2sBUKCa0Z=hzMvgxyJbry3L1YNw@mail.gmail.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [PATCH 4/4] ARM: mx28evk: add missed clkmux select
+ for saif
+Date: Mon, 23 Jul 2012 10:36:33 +0800
+Message-ID: <20120723023632.GA9427@shlinux2.ap.freescale.net>
+References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
+ <1342776027-31758-5-git-send-email-b29396@freescale.com>
+ <20120721074002.GC923@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CBDB265018
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 03:03:57 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so8137019obb.38
- for <alsa-devel@alsa-project.org>; Sun, 22 Jul 2012 18:03:58 -0700 (PDT)
-In-Reply-To: <CANh+=Y-jvvhafmiTFr_XgiO2sBUKCa0Z=hzMvgxyJbry3L1YNw@mail.gmail.com>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 032E126501B
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 04:48:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20120721074002.GC923@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,52 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, sangsu@gmail.com
-Cc: android-platform@googlegroups.com
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Guo Shawn-R65073 <r65073@freescale.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/21/2012 10:39 AM, Sangsu Park wrote:
-> Hi,
-> We're developing a platform where we have SPDIF output.
-> And we want to SPDIF AC3 playback (non linear PCM).
-> Our CPU is a kind of ARM architecture one and it has a SPDIF that can
-> support AC3 passthrough playback.
->
-> I've already know that ALSA can support SPDIF AC3 passthrough playback
-> like follows,
-> http://www.mythtv.org/wiki/Configuring_Digital_Sound_with_AC3_and_SPDIF
-> But, I can't find that any ARM architecture CPU can be supportable for
-> SPDIF AC3 passthrough playback.
->
-> Are there anyone who have a SPDIF AC3 passthrough playback?
-> or anyone who know the clue about SPDIF AC3 passthrought playback
-> supportable on ASoC?
+On Sat, Jul 21, 2012 at 03:40:04PM +0800, Shawn Guo wrote:
+> On Fri, Jul 20, 2012 at 05:20:27PM +0800, Dong Aisheng wrote:
+> > From: Dong Aisheng <dong.aisheng@linaro.org>
+> > 
+> > Added missed clkmux setting for mx28evk.
+> > 
+> > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > Cc: Liam Girdwood <lrg@ti.com>
+> > Cc: Wolfram Sang <w.sang@pengutronix.de>
+> > Cc: Shawn Guo <shawn.guo@linaro.org>
+> > Signed-off-by: Dong Aisheng <dong.aisheng@linaro.org>
+> > ---
+> >  arch/arm/mach-mxs/mach-mxs.c |    3 +++
+> >  1 files changed, 3 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/arch/arm/mach-mxs/mach-mxs.c b/arch/arm/mach-mxs/mach-mxs.c
+> > index 8cac94b..82f27a4 100644
+> > --- a/arch/arm/mach-mxs/mach-mxs.c
+> > +++ b/arch/arm/mach-mxs/mach-mxs.c
+> > @@ -21,6 +21,7 @@
+> >  #include <asm/mach/arch.h>
+> >  #include <asm/mach/time.h>
+> >  #include <mach/common.h>
+> > +#include <mach/digctl.h>
+> >  
+> >  static int __init mxs_icoll_add_irq_domain(struct device_node *np,
+> >  				struct device_node *interrupt_parent)
+> > @@ -79,6 +80,8 @@ static void __init imx28_evk_init(void)
+> >  	clk = clk_get_sys("enet_out", NULL);
+> >  	if (!IS_ERR(clk))
+> >  		clk_prepare_enable(clk);
+> > +
+> > +	mxs_saif_clkmux_select(MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0);
+> 
+> Is this a board specific setup?  Or every single imx28 based board that
+> wants recording function is going to need this setup?
+> 
+Yes, this is a board specific setup, just as non-dt does currently.
+Different boards may have different setting.
 
-I'm currently working on a similar project -- and I'm learning about 
-this myself, too.
+> BTW, the patch needs to get rebased on v3.6-rc1, where mach-mxs.c will
+> have some context update.
+> 
+I can do it.
+This patch series was made based on Mark's sound-2.6 tree.
+Do you want this one go through mxs tree and other three go through Mark's tree?
+I'm thinking maybe it would be better go through one tree(Mark's or Yours) since
+without this one the saif record still can not work.
+Maybe go through yours may save some conflicts.
 
-As I understand it, you have to package the AC-3 into IEC 61937 format 
-first.  The S/PDIF driver will then encode it into the IEC 60958 (S/PDIF 
-protocol).
+Mark,
+What's your suggestion?
 
-You probably need/want a copy of IEC 61937-3.[1]  It looks pretty simple 
-(add 4 headers to the front and some zero-padding at the end to meet the 
-alignment requirements).  I don't know of any software examples for 
-doing it[2] -- so if you find some, please share! :-)
-
-As for feeding it to ALSA, I think that's what the 
-SNDRV_PCM_FORMAT_IEC958_SUBFRAME is intended for.  However, in practice 
-I've heard that you can usually configure the PCM device to something 
-like an S16 format and things "just work."  (IEC 61937-3's payload is 
-16-bit aligned.)
-
-...and I think I've heard of some people shooting raw AC-3 and things 
-"just work."  YMMV. :-)
-
--gabriel
-
-[1] Digital Audio - Interface for non-linear PCM encoded audio 
-bitstreams applying IEC 60958 - Part-3: Non-linear PCM bitstreams 
-according to the AC-3 format.
-
-[2] Nor do I know of anything in ALSA that will do it for you.
+Regards
+Dong Aisheng
