@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [pulseaudio-discuss] Using UCM with PulseAudio
-Date: Mon, 23 Jul 2012 08:57:44 +0100
-Message-ID: <20120723075744.GA9269@opensource.wolfsonmicro.com>
-References: <1339728813.5228.48.camel@localhost>
- <1339762287.3007.127.camel@laptop>
- <1343014720.6131.21.camel@localhost>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [RESEND] ASoC: omap-mcpdm: Convert to use devm_*
+Date: Mon, 23 Jul 2012 12:39:51 +0300
+Message-ID: <1343036391-1326-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1044745921215286053=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C67D265214
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 10:06:24 +0200 (CEST)
-In-Reply-To: <1343014720.6131.21.camel@localhost>
+Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
+ [74.125.149.211])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50410265222
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 11:39:26 +0200 (CEST)
+Received: by obhx4 with SMTP id x4so11448794obh.0
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 02:39:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +21,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Cc: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel@alsa-project.org, jankovac503@gmail.com, pulseaudio-discuss@lists.freedesktop.org, lrg@ti.com
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Switch to use devm_* te make the probe/remove code more cleaner.
 
---===============1044745921215286053==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
-Content-Disposition: inline
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/omap/omap-mcpdm.c |   52 ++++++++++--------------------------------
+ 1 files changed, 13 insertions(+), 39 deletions(-)
 
-
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 23, 2012 at 09:08:40AM +0530, Arun Raghavan wrote:
-
-Guys, please delete unneeded context from messages - makes it much
-easier to find the new content.
-
-> 3. Devices that have a loopback path in hardware/DSP (this is a request
-> I've seen, but I'm not aware of hardware that does this)
-
-Essentially all basebands in cellphones are connected like this; usually
-on a phone call the processor running Linux can go into suspend.  There
-are cases where the loopback happens in the main SoC but from the point
-of view of thinking about it the physical location doesn't usually make
-a big difference.
-
-Most mobile CODECs also have the ability to route their inputs to their
-outputs without involving the processor for use in sidetone paths and
-similar.  PCs always used to have the ability to do this too, though I
-guess it's possible that got dropped at some point.
-
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQDQPxAAoJEBus8iNuMP3dwq0P/0KqeV4zHejeZBs/DGRn2RWh
-kBLJMGCYpTKKytmEV27ji0dSI2uEDo0aTO5xTlbCXroMUHIIxQ1aFNXiwF96HfnY
-aA6NsmAl0577gOZ8bXmGFdY4C15pbPHLMRAZhmIxZLphKQBnDNNyFsejZnrJRmz5
-/pnnJ3OKjyguT8cgjem9AGP30CAZMeEuEsR6Mwhwj4Ct8P1rpTWbKeH6skOASxHE
-cZDg87xWH1huTE0RAhzhf1FfzQnlptevs5hAbG3K7Afn3M4URdkjtSqJjGf0XsAc
-E1DkiRurRdGMneDV+JBB/+gsLlH2ykkB0oX1FDyPDaeeZa0lr+1nC21UvnV8mAG3
-BydbKwpOynajnCf/zDsMgYJm7dhdSNP7ni5ZDEas3ncs0o8R2KRwQ3IpITJaxD8Z
-WI4bkPXaXs4GQfCEjWBUIy3zPXQZmT9cTKFBMoFhhjP/MyvhEtZSJ2/Bg4ebFGbi
-zjzmS2lWI0dpTPM/BB/1Q+CsEsG1cuaxoWIepr//KBEjNnKtMmZum0cNDEy+liKx
-zEAqe/RvTBOrqGm2WoOveGVTa2SeCIMKBrLyO7GmN/HZzEiOVmf0asu3KkyLTIVn
-uDhJB+BbtioQaszwJ3Olpfp/6pI4D0pFGHvpISByThNbLhE3u0wuLZemSaQ4butJ
-WnHFueeH92EIPZ1QfglI
-=tQP2
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
-
---===============1044745921215286053==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1044745921215286053==--
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 2c66e24..f7babb3 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -445,9 +445,8 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
+ {
+ 	struct omap_mcpdm *mcpdm;
+ 	struct resource *res;
+-	int ret = 0;
+ 
+-	mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
++	mcpdm = devm_kzalloc(&pdev->dev, sizeof(struct omap_mcpdm), GFP_KERNEL);
+ 	if (!mcpdm)
+ 		return -ENOMEM;
+ 
+@@ -456,55 +455,30 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
+ 	mutex_init(&mcpdm->mutex);
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (res == NULL) {
+-		dev_err(&pdev->dev, "no resource\n");
+-		goto err_res;
+-	}
++	if (res == NULL)
++		return -ENOMEM;
+ 
+-	if (!request_mem_region(res->start, resource_size(res), "McPDM")) {
+-		ret = -EBUSY;
+-		goto err_res;
+-	}
++	if (!devm_request_mem_region(&pdev->dev, res->start,
++				     resource_size(res), "McPDM"))
++		return -EBUSY;
+ 
+-	mcpdm->io_base = ioremap(res->start, resource_size(res));
+-	if (!mcpdm->io_base) {
+-		ret = -ENOMEM;
+-		goto err_iomap;
+-	}
++	mcpdm->io_base = devm_ioremap(&pdev->dev, res->start,
++				      resource_size(res));
++	if (!mcpdm->io_base)
++		return -ENOMEM;
+ 
+ 	mcpdm->irq = platform_get_irq(pdev, 0);
+-	if (mcpdm->irq < 0) {
+-		ret = mcpdm->irq;
+-		goto err_irq;
+-	}
++	if (mcpdm->irq < 0)
++		return mcpdm->irq;
+ 
+ 	mcpdm->dev = &pdev->dev;
+ 
+-	ret = snd_soc_register_dai(&pdev->dev, &omap_mcpdm_dai);
+-	if (!ret)
+-		return 0;
+-
+-err_irq:
+-	iounmap(mcpdm->io_base);
+-err_iomap:
+-	release_mem_region(res->start, resource_size(res));
+-err_res:
+-	kfree(mcpdm);
+-	return ret;
++	return snd_soc_register_dai(&pdev->dev, &omap_mcpdm_dai);
+ }
+ 
+ static int __devexit asoc_mcpdm_remove(struct platform_device *pdev)
+ {
+-	struct omap_mcpdm *mcpdm = platform_get_drvdata(pdev);
+-	struct resource *res;
+-
+ 	snd_soc_unregister_dai(&pdev->dev);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	iounmap(mcpdm->io_base);
+-	release_mem_region(res->start, resource_size(res));
+-
+-	kfree(mcpdm);
+ 	return 0;
+ }
+ 
+-- 
+1.7.8.6
