@@ -1,17 +1,17 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH] ALSA: pcm - introduce soc_delay
-Date: Mon, 23 Jul 2012 16:09:58 +0530
-Message-ID: <1343039998.1726.4833.camel@vkoul-udesk3>
+Date: Mon, 23 Jul 2012 12:47:19 +0200
+Message-ID: <500D2BB7.2010802@perex.cz>
 References: <1343037997-16689-1-git-send-email-vinod.koul@linux.intel.com>
- <CABb+yY1-RyuCigCYM-dwsc1D1vSvy+QX1nunrc8G+3bT2n134g@mail.gmail.com>
+ <s5hvcheu60x.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id ECF3A265254
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 12:39:42 +0200 (CEST)
-In-Reply-To: <CABb+yY1-RyuCigCYM-dwsc1D1vSvy+QX1nunrc8G+3bT2n134g@mail.gmail.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7364D265242
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 12:46:32 +0200 (CEST)
+In-Reply-To: <s5hvcheu60x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-07-23 at 15:49 +0530, Jassi Brar wrote:
-> On Mon, Jul 23, 2012 at 3:36 PM, Vinod Koul <vinod.koul@linux.intel.com> wrote:
-> > In many modern SoCs the audio DSP can buffer the PCM ring buffer data. Today we
-> > have no means to represent this buffering and ALSA wrongly detects an overrun
-> > when hw_ptr reaches app_ptr value, though DSP may still have some buffered data.
-> >
-> > This patch tries to add a new field "soc_delay" to represent buffering done in
-> > DSPs. This value is also used for the xrun calculations in ALSA.
-> >
-> Couldn't we employ snd_pcm_hw_params.fifo_size for the purpose ?
-Nope, that should be used to represent the delay in samples being output
-not the sample which are buffered and processed in a DSP
+Date 23.7.2012 12:27, Takashi Iwai wrote:
+> At Mon, 23 Jul 2012 15:36:37 +0530,
+> Vinod Koul wrote:
+>>
+>> In many modern SoCs the audio DSP can buffer the PCM ring buffer data. Today we
+>> have no means to represent this buffering and ALSA wrongly detects an overrun
+>> when hw_ptr reaches app_ptr value, though DSP may still have some buffered data.
+>>
+>> This patch tries to add a new field "soc_delay" to represent buffering done in
+>> DSPs. This value is also used for the xrun calculations in ALSA.
+>>
+>> Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+>>
+>> --
+>> Once we are okay with this approach, I will send a follow up patch which adds
+>> this notion in ASoC and uses this to compute cpu_dai delay. The codec_dai delay
+>> along with FIFO delay from cpu_dai should be added and reresented by today's
+>> notion of delay.
+> 
+> Hmm, it's confusing to have both delay and soc_delay fields.
+> 
+> And, if the XRUN detection is the only problem, we can provide a flag
+> to correct avail with runtime->delay.
+
+I agree. The runtime->delay variable should handle all situations for
+queued samples.
+
+But the point is - we have data in some FIFO, but the DMA ring buffer is
+empty. If you use the delay value in the snd_pcm_update_state(), you'll
+probably allow to transfer invalid samples to the FIFO (probably
+previous samples from the ring buffer, because application has not
+provided new ones). That was the purpose of the check.
+
+Of course, if you stop DMA according the appl_ptr and wait on
+application to provide new data in the "FIFO time window", then the
+check should be updated for this type of hw.
+
+					Jaroslav
 
 -- 
-~Vinod
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
