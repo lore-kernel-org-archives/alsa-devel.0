@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: mxs-saif: set a base clock rate
- for EXTMASTER mode work
-Date: Tue, 24 Jul 2012 20:18:25 +0100
-Message-ID: <20120724191825.GD3099@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] ASoC: sgtl5000: remove unneeded
+ snd_soc_dapm_new_widgets in probe
+Date: Tue, 24 Jul 2012 20:20:08 +0100
+Message-ID: <20120724192008.GE3099@opensource.wolfsonmicro.com>
 References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
- <1342776027-31758-3-git-send-email-b29396@freescale.com>
+ <1342776027-31758-4-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7404736883062665631=="
+Content-Type: multipart/mixed; boundary="===============6451018608249354306=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9324D265D53
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 21:18:24 +0200 (CEST)
-In-Reply-To: <1342776027-31758-3-git-send-email-b29396@freescale.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 795C126528A
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 21:20:07 +0200 (CEST)
+In-Reply-To: <1342776027-31758-4-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +26,54 @@ Cc: shawn.guo@freescale.com, alsa-devel@alsa-project.org, lrg@ti.com, linux-arm-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7404736883062665631==
+--===============6451018608249354306==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NklN7DEeGtkPCoo3"
+	protocol="application/pgp-signature"; boundary="cPi+lWm09sJ+d57q"
 Content-Disposition: inline
 
 
---NklN7DEeGtkPCoo3
+--cPi+lWm09sJ+d57q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 20, 2012 at 05:20:25PM +0800, Dong Aisheng wrote:
+On Fri, Jul 20, 2012 at 05:20:26PM +0800, Dong Aisheng wrote:
 > From: Dong Aisheng <dong.aisheng@linaro.org>
 >=20
-> Set an initial clock rate for the saif internal logic to work
-> properly. This is important when working in EXTMASTER mode that
-> uses the other saif's BITCLK&LRCLK but it still needs a basic
-> clock which should be fast enough for the internal logic.
+> There's a driver bug that sgtl5000 dapm widget kcontrols do not work.
+> e.g. can not select capture mux with amixer tool(no error info prompted).
 
 Applied, thanks.
 
---NklN7DEeGtkPCoo3
+--cPi+lWm09sJ+d57q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQDvT2AAoJEBus8iNuMP3d+FIP/0uUwYOnXZVYrfV3fIzJXm9Z
-rzBiB2CWOY3NkN19U1uOCq7axaoyVAOuoRLuDayWf4rdEdW3Q/yNqzirYm4/V99S
-YLzgDaqo9SABrNhyJf5fUyhmxHauf13NISzqG0XnFw5vgGpjfnQOQdqELIycq/su
-RLwr3mV6C4GwGFaxwb3VDJ8G6ImGUXdQL1uWvmZOIU9LxMzE2vHNi+QRaBM83/iC
-i546fwAbI3J0mQUkEbuJHgn4s1xclp/Aa8P6C1p8+WY5ebUAAMENizylTUvSLCWg
-UTNWnsxOupxkQHnAJpJihq4g327J6T5EeRP+QacW3tgIDBgSk1gRZLNlv8bty83k
-GlazV+x/O6nOe4Thqu22LuJwyvvvuLenfnG5/ktl5DT3eljC4funMLODM91D0qyE
-3s2MVWxhdyCZOhesZMJTbqBmOGKWvnjQkwSDEnKhUcWk9yyb8ev6nWhx/S2pVbIc
-yI3VJc6QAVxkGu9Mw9EF6Z3sF1Y4hZSPDow96COmsdDqwRKJjvhQIfhnrh0gfHT+
-Ssf2XzfLb01bsg7CECdNCNUdZtU/8Xe73dO8O3Z4IiW5pa1CLRB8wUPdYYd1M4+I
-qyObhh1RLjy5vWqGvh/Id5fEqie0MW0e7kTFlBHLNJUzAjqRb1H6hfQEdmWA8QDE
-cZM3ez6VGJvngCjlD+2u
-=qsmY
+iQIcBAEBAgAGBQJQDvUvAAoJEBus8iNuMP3dpcIP/Rw5jVQ46IC5lEVmVCZM2VJe
+mSRF0RRyzkNYZCT3F/TihPdGGDhgsjHoZAVy8lgZBFlv2be64pZ6R9tqKPuivWBj
+twV/Ci3DscNXq7Wbg3ifF9d8pAHRiXuwci26mteCw0VRcY2Qe5xWLLrUK48b5oTN
++dXthEYhHZiYF+JiC5I3two3gGhXcr9Nx+HvuQYk4UY0zr/XMX/LdvwECQWbdb0g
+TLR9ni0m0RTn3nbjIXo7WToxCASuDztmLqTvnDcRRNvhJLJhsEAQqVWcwd8h2Yob
+x6tg+N21+Hsr1y1TcdytCtz4ogMb4R6u7Az/soYc3LMn6TDbZ5y8CodY4nWGS2Uf
+0CCLI9+NfaXGSoukxRhu2LX40WvEfXstF7Wk1K++95w69y2sLcof5RHTvFcD2puJ
+l6OV4zlUJJaWtwBvBjkgML6Ce0z5UrVEBdM32aT4HXpTW2mkAHngLwBR3SC4I2OZ
+eC45Xax/dGHVw9YJy+eSQmixPD7PoAjFNv2sInrFyPGUiscNmfjdWT2ig4m57b/w
+7PcOnrMyTmqpJlU2Ih0YXTJfDSN71Cpaw66KynU49KEIeucNkKP6L7bZFNAk4fiW
+KBn3765wCsdC8SXFZivXEJ323LCIgCYyqX8nO+shIFwTHYFRYriwUgP2xHhPFS/Y
+KSBcBhQvDvuQ6GdcEill
+=EktK
 -----END PGP SIGNATURE-----
 
---NklN7DEeGtkPCoo3--
+--cPi+lWm09sJ+d57q--
 
---===============7404736883062665631==
+--===============6451018608249354306==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7404736883062665631==--
+--===============6451018608249354306==--
