@@ -1,16 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/4] ASoC: fix saif record unwork issue
-Date: Tue, 24 Jul 2012 20:21:25 +0100
-Message-ID: <20120724192125.GF3099@opensource.wolfsonmicro.com>
-References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
- <500E992E.6090900@bluegiga.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/2] ALSA: ASoC: add DT bindings for cs4270
+Date: Tue, 24 Jul 2012 22:20:47 +0200
+Message-ID: <1343161248-27557-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3326428339883342396=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 515242652A2
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 21:21:24 +0200 (CEST)
-In-Reply-To: <500E992E.6090900@bluegiga.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA9F626031B
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 22:20:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +18,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lauri Hintsala <lauri.hintsala@bluegiga.com>
-Cc: alsa-devel@alsa-project.org, w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, shawn.guo@freescale.com
+To: alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@freescale.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Cc: Timur Tabi <timur@freescale.com>
+---
+ Documentation/devicetree/bindings/sound/cs4270.txt |   16 ++++++++++++++++
+ sound/soc/codecs/cs4270.c                          |   11 +++++++++++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs4270.txt
 
---===============3326428339883342396==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AH+kv8CCoFf6qPuz"
-Content-Disposition: inline
-
-
---AH+kv8CCoFf6qPuz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jul 24, 2012 at 03:46:38PM +0300, Lauri Hintsala wrote:
-
-> 1. Recorded audio file is totally silent. Hexdump shows zeros.
-
-This one is commonly due to devices powering up muted by default and
-requiring that you set some controls to route the audio through - are
-you sure you've not missed anything there?
-
---AH+kv8CCoFf6qPuz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQDvWhAAoJEBus8iNuMP3daRYQAIXBj4tnkgLyjV6Q2SUp5vay
-klSM8kXsMXOXDx/KLq6aVWHRhHM2XkXJzAdvZYiQUD1rt0vjbUihagga6pHjbwpF
-pPPWu1ub1fPhCfKwDGlgNU796Cj/YIHAbsP2K85tHk0v09lVPZIS+5lCGWLMkfbI
-mzTW74xKPtO5c31QmJ0UcW80AoLyfz//0/Lmz8/ztO+JJCXllznL2WhstPb3yzqs
-S74QFQEF1rt61qM7UO1bjFzma9Uy4M2UNE4bhzu830usOOrsDFSKKhMPBjebi2vi
-OuvIL8gl1oavDO08CAPxXsK8U/aC6OjVZcbCGq2ZbYjf2CZdyCZlNy4AkyPN7/RU
-m5aXdaPijnZPZLOXU8nWffC019CkbAGKzo4xKp0Okqn6aXng31K3d0mJVBD17/Jj
-QLDQ6d/nQb0qDt1mgXljtaFzWfw5fIIcezWTJvK8c1R90zikmO9Cj6H728obUtHb
-liaNlFqSb5jetPnws03AqZh9aTSLhfXrHpyqNZW0zyGmOxgy14SIHLJ22G1ZgQIq
-uwGxpGzmoi7QYxKjUk23f3OFMPIR8cYLQVHbN/vfcYzbI8kth+NyUzIMMublK1au
-1SPyxFA24yZ4ngDkdIQaggMtHjOnkRzhdPVcXn2+aeE/kfmfHv4IrW5AmAmx4R6D
-B8Dz7ZmP3AmJNmt6uJaR
-=uCt5
------END PGP SIGNATURE-----
-
---AH+kv8CCoFf6qPuz--
-
---===============3326428339883342396==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3326428339883342396==--
+diff --git a/Documentation/devicetree/bindings/sound/cs4270.txt b/Documentation/devicetree/bindings/sound/cs4270.txt
+new file mode 100644
+index 0000000..7f0bfd8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs4270.txt
+@@ -0,0 +1,16 @@
++CS4270 audio CODEC
++
++The driver for this device currently only supports I2C.
++
++Required properties:
++
++  - compatible : "cirrus,cs4270"
++
++  - reg : the I2C address of the device for I2C
++
++Example:
++
++codec: cs4270@48 {
++	compatible = "cirrus,cs4270";
++	reg = <0x48>;
++};
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 047917f..4b71b01 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -29,6 +29,7 @@
+ #include <linux/i2c.h>
+ #include <linux/delay.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of_device.h>
+ 
+ /*
+  * The codec isn't really big-endian or little-endian, since the I2S
+@@ -639,6 +640,15 @@ static const struct snd_soc_codec_driver soc_codec_device_cs4270 = {
+ 	.reg_cache_default =	cs4270_default_reg_cache,
+ };
+ 
++/*
++ * cs4270_of_match - the device tree bindings
++ */
++static const struct of_device_id cs4270_of_match[] = {
++	{ .compatible = "cirrus,cs4270", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, cs4270_of_match);
++
+ /**
+  * cs4270_i2c_probe - initialize the I2C interface of the CS4270
+  * @i2c_client: the I2C client object
+@@ -718,6 +728,7 @@ static struct i2c_driver cs4270_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs4270",
+ 		.owner = THIS_MODULE,
++		.of_match_table = cs4270_of_match,
+ 	},
+ 	.id_table = cs4270_id,
+ 	.probe = cs4270_i2c_probe,
+-- 
+1.7.10.4
