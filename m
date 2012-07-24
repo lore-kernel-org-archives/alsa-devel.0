@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RESEND] ASoC: omap-mcpdm: Convert to use devm_*
-Date: Tue, 24 Jul 2012 20:16:17 +0100
-Message-ID: <20120724191617.GA3099@opensource.wolfsonmicro.com>
-References: <1343036391-1326-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/1] ASoC: isabelle: Remove version.h
+ header file inclusion
+Date: Tue, 24 Jul 2012 20:16:33 +0100
+Message-ID: <20120724191633.GB3099@opensource.wolfsonmicro.com>
+References: <1343044515-5212-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3316355101158801818=="
+Content-Type: multipart/mixed; boundary="===============4214996215547706916=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00B1F26036F
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 21:16:17 +0200 (CEST)
-In-Reply-To: <1343036391-1326-1-git-send-email-peter.ujfalusi@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28FC026528A
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 21:16:32 +0200 (CEST)
+In-Reply-To: <1343044515-5212-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, mr.swami.reddy@ti.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3316355101158801818==
+--===============4214996215547706916==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+	protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
 Content-Disposition: inline
 
 
---AhhlLboLdkugWU4S
+--2B/JsCI69OhZNC5r
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 23, 2012 at 12:39:51PM +0300, Peter Ujfalusi wrote:
-> Switch to use devm_* te make the probe/remove code more cleaner.
+On Mon, Jul 23, 2012 at 05:25:15PM +0530, Sachin Kamat wrote:
+> version.h header file inclusion is no longer needed for this file.
 
 Applied, thanks.
 
---AhhlLboLdkugWU4S
+--2B/JsCI69OhZNC5r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQDvR2AAoJEBus8iNuMP3dAcAP/Aue0opbavqFAYlALaH0/WzN
-HoyMquuTQtGkl6qQLipgH5pWyGH6SvgGMXiIWLkPy6DkuxFmzrDxjKs/xThfVIMu
-Wlcai8IDgB0PRPGTWJwjy0sS3767VYlKq7U2mEPMkNrhZI1q1XM8YiqaXAAEM+5r
-7rovB+4PTFXiz5MSz8Hgb/KUnhKOFAGeZjiZ9Yn16IEsfLZRfCbkwcQ17ANrkGu6
-dR5w/uyDG9drt1oLwqfOHckmAP0jQbjAYAYphVe9JSaEIb5ZUqMY4eDgnfzdBu7W
-4Z3LGtv8eia3fwYSSIiRtSDIoX+Iil6rgt0P9ogxCy7DsK7vfYUctS2MdeAIHP5A
-Ie2E50Npk6yP7CwZdh1iDYEC9ueUKkbs0sDYQLwgn6/wXiXGuvddfb9c201ZB/UW
-UtQs3COzdKPBK8RoXFvZE4ueFQzkmQbreKQcSuYTDmFI4tjiZ3nUuSBXx+mk73Xv
-JMvtRObrlMuOrZ/pzd0VYNTeynDR/CHCh1J7sdoJ2yVIi/V/OmBLdVDwBgc2+GqQ
-Hdrfv23o153XCBLABFjA/ARb6GDSzPQo5HFfnP2rJtZScHN5TnFuVANCIYrUG9Sb
-nHAKWX8VgIqbX6Gs98mQC0eSYigKznsS9amnoJz1cTHHCJanyAFPejfrOUNaJdNA
-D3KGTN/H5uVbeXu/tjoF
-=UcwJ
+iQIcBAEBAgAGBQJQDvSKAAoJEBus8iNuMP3drFkP/3h0XZBxekdTsKq1ccKYi4Eh
+giQqGJeRBKujlvdwpQcpua0VowwXSDpe/POSPv6Uo24LkYQyOcCWSnlwvNtyVs0I
+2qKUfSzeH7Ji9DDacUZj4OKpGxD6k3GSE5UdN6jQmRApj+fumjmaLsL9/3m68r6D
+WaQnqHQfaqhZqA0Cq2/WrKw81RB+zzOqdnSaLScDrPdYFZWdqxwF/FNUyMWDnX8t
+By0yWFtuA3DH2o5zlLhYM7vqI4CUt3krmoXUkgOYk+mQ/3dxHjeZ0HvbQWlgwzAb
+LdwJU6RRdwrqbzJ7k5+a/45c7CKy/Bap+QolyYynnHDKUtEDPoFHuV5gNMNVeYI2
+Rl0c+Ri9hdfxPiDp26GCCbiEmmz5SuA6V7EaL0kg/fQTctAYrrnBsj+0r59NPv5x
+0EPdEGHrH5nqShBrbG8bIDxLQMWK9vf2Z73wTOik4vOSWw303w5TQZ0hyWqcJIxW
+N0hu1lIn2MqLl/kqIq3YEvdDksfNDlvo5HDIM5HkB9LHO92py3faYgtLBNFoS616
+GjrMk304nT1UYx80w1lhC0uOM8z2jh3D+Bs7+FKXyghclTgrgX8CaiW02o75DsPa
+4bMzyxiNUP/4eqehGA9jKo8LH1K2xJyB4JmYYpRMhwUtjCW0Ups94s48zGYNufKs
+oFDZ3wEPcjJjtDLb9BOw
+=tnm7
 -----END PGP SIGNATURE-----
 
---AhhlLboLdkugWU4S--
+--2B/JsCI69OhZNC5r--
 
---===============3316355101158801818==
+--===============4214996215547706916==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3316355101158801818==--
+--===============4214996215547706916==--
