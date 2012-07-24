@@ -1,16 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2] ALSA: ASoC: Add reset-gpio DT property to
-	cs4270 driver
-Date: Tue, 24 Jul 2012 22:20:48 +0200
-Message-ID: <1343161248-27557-2-git-send-email-zonque@gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/2] ALSA: ASoC: add DT bindings for cs4270
+Date: Tue, 24 Jul 2012 15:22:31 -0500
+Message-ID: <500F0407.8090807@freescale.com>
 References: <1343161248-27557-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id D65C42652B9
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 22:20:52 +0200 (CEST)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ED032652B9
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 22:22:34 +0200 (CEST)
 In-Reply-To: <1343161248-27557-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,77 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-In the process of moving over from static board files to the device
-tree, reset pins of peripheral reset pins should be handled by their
-corresponding drivers.
+Daniel Mack wrote:
 
-Add a reset-gpio DT property to the cs4270 driver, and de-assert it
-before probing the chip. The logic could be augmented some day to
-re-assert it when codec is put to suspend.
+> +/*
+> + * cs4270_of_match - the device tree bindings
+> + */
+> +static const struct of_device_id cs4270_of_match[] = {
+> +	{ .compatible = "cirrus,cs4270", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, cs4270_of_match);
+> +
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Timur Tabi <timur@freescale.com>
----
- Documentation/devicetree/bindings/sound/cs4270.txt |    5 +++++
- sound/soc/codecs/cs4270.c                          |   16 ++++++++++++++++
- 2 files changed, 21 insertions(+)
+Why is this necessary?  The CS4270 driver works just fine on our
+device-tree enabled boards.
 
-diff --git a/Documentation/devicetree/bindings/sound/cs4270.txt b/Documentation/devicetree/bindings/sound/cs4270.txt
-index 7f0bfd8..6b222f9 100644
---- a/Documentation/devicetree/bindings/sound/cs4270.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4270.txt
-@@ -8,6 +8,11 @@ Required properties:
- 
-   - reg : the I2C address of the device for I2C
- 
-+Optional properties:
-+
-+  - reset-gpio : a GPIO spec for the reset pin. If specified, it will be
-+		 deasserted before communication to the codec starts.
-+
- Example:
- 
- codec: cs4270@48 {
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 4b71b01..7d206be 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -30,6 +30,7 @@
- #include <linux/delay.h>
- #include <linux/regulator/consumer.h>
- #include <linux/of_device.h>
-+#include <linux/of_gpio.h>
- 
- /*
-  * The codec isn't really big-endian or little-endian, since the I2S
-@@ -660,9 +661,24 @@ MODULE_DEVICE_TABLE(of, cs4270_of_match);
- static int cs4270_i2c_probe(struct i2c_client *i2c_client,
- 	const struct i2c_device_id *id)
- {
-+	struct device_node *np = i2c_client->dev.of_node;
- 	struct cs4270_private *cs4270;
- 	int ret;
- 
-+	/* See if we way to bring the codec out of reset */
-+	if (np) {
-+		enum of_gpio_flags reset_gpio_flags;
-+		int reset_gpio = of_get_named_gpio_flags(np, "reset-gpio", 0,
-+							 &reset_gpio_flags);
-+
-+		if (devm_gpio_request_one(&i2c_client->dev, reset_gpio,
-+				     reset_gpio_flags & OF_GPIO_ACTIVE_LOW ?
-+					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
-+				     "cs4270 reset") < 0) {
-+			reset_gpio = -EINVAL;
-+		}
-+	}
-+
- 	/* Verify that we have a CS4270 */
- 
- 	ret = i2c_smbus_read_byte_data(i2c_client, CS4270_CHIPID);
 -- 
-1.7.10.4
+Timur Tabi
+Linux kernel developer at Freescale
