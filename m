@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Implement support for
-	self-oscillation mode in the FLL
-Date: Tue, 24 Jul 2012 11:50:05 +0100
-Message-ID: <1343127005-7691-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Help requested: new HSS1394 MIDI back-end
+Date: Tue, 24 Jul 2012 13:44:30 +0200
+Message-ID: <500E8A9E.6050604@ladisch.de>
+References: <4FBFE0D5.8030501@mixxx.org> <4FC23123.8000702@ladisch.de>
+ <4FC295AD.1030901@mixxx.org> <4FC3929F.4050304@ladisch.de>
+ <4FC3E2AD.70802@mixxx.org> <4FC501DA.3050900@ladisch.de>
+ <4FC5451A.9000107@mixxx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DAE0265202
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 12:50:05 +0200 (CEST)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D518C265264
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 13:44:30 +0200 (CEST)
+In-Reply-To: <4FC5451A.9000107@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,89 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The FLLs in the WM8994 series devices can be started without any reference
-being supplied, mainly for use in analogue bypass cases. Implement support
-for this mode.
+I wrote:
+> I wrote:
+>> Sean M. Pappalardo - D.J. Pegasus wrote:
+>>> I also see an F9 message slip through once in awhile according to amidi -d:
+>>
+>> The driver currently assumes that there is exactly one MIDI message per
+>> packet.  It appears that this is not true, and if F9 and real MIDI
+>> commands are mixed in one packet, the result is not correct.
+>
+> New patch below.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   21 +++++++++++++++------
- sound/soc/codecs/wm8994.h |    9 +++++----
- 2 files changed, 20 insertions(+), 10 deletions(-)
+Ping?  Does it work?  Wouldn't it be time to move it into the kernel?
+Would you be OK with this tag on the patch?
+  Tested-by: Sean M. Pappalardo - D.J. Pegasus <spappalardo@mixxx.org>
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 235577a..30fdcf9 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2102,6 +2102,10 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 	case WM8994_FLL_SRC_LRCLK:
- 	case WM8994_FLL_SRC_BCLK:
- 		break;
-+	case WM8994_FLL_SRC_INTERNAL:
-+		freq_in = 12000000;
-+		freq_out = 12000000;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -2164,9 +2168,11 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 				    fll.n << WM8994_FLL1_N_SHIFT);
- 
- 	snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_5 + reg_offset,
--			    WM8958_FLL1_BYP |
-+			    WM8994_FLL1_FRC_NCO | WM8958_FLL1_BYP |
- 			    WM8994_FLL1_REFCLK_DIV_MASK |
- 			    WM8994_FLL1_REFCLK_SRC_MASK,
-+			    ((src == WM8994_FLL_SRC_INTERNAL)
-+			     << WM8994_FLL1_FRC_NCO_SHIFT) |
- 			    (fll.clk_ref_div << WM8994_FLL1_REFCLK_DIV_SHIFT) |
- 			    (src - 1));
- 
-@@ -2192,13 +2198,16 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 			}
- 		}
- 
-+		reg = WM8994_FLL1_ENA;
-+
- 		if (fll.k)
--			reg = WM8994_FLL1_ENA | WM8994_FLL1_FRAC;
--		else
--			reg = WM8994_FLL1_ENA;
-+			reg |= WM8994_FLL1_FRAC;
-+		if (src == WM8994_FLL_SRC_INTERNAL)
-+			reg |= WM8994_FLL1_OSC_ENA;
-+
- 		snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_1 + reg_offset,
--				    WM8994_FLL1_ENA | WM8994_FLL1_FRAC,
--				    reg);
-+				    WM8994_FLL1_ENA | WM8994_FLL1_OSC_ENA |
-+				    WM8994_FLL1_FRAC, reg);
- 
- 		if (wm8994->fll_locked_irq) {
- 			timeout = wait_for_completion_timeout(&wm8994->fll_locked[id],
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index d77e06f..19068d8 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -28,10 +28,11 @@
- #define WM8994_FLL1 1
- #define WM8994_FLL2 2
- 
--#define WM8994_FLL_SRC_MCLK1  1
--#define WM8994_FLL_SRC_MCLK2  2
--#define WM8994_FLL_SRC_LRCLK  3
--#define WM8994_FLL_SRC_BCLK   4
-+#define WM8994_FLL_SRC_MCLK1    1
-+#define WM8994_FLL_SRC_MCLK2    2
-+#define WM8994_FLL_SRC_LRCLK    3
-+#define WM8994_FLL_SRC_BCLK     4
-+#define WM8994_FLL_SRC_INTERNAL 5
- 
- enum wm8994_vmid_mode {
- 	WM8994_VMID_NORMAL,
--- 
-1.7.10.4
+
+Regards,
+Clemens
