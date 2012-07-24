@@ -1,19 +1,17 @@
-From: "Liu, George" <yueliu@lab126.com>
-Subject: Re: virtual sound driver
-Date: Mon, 23 Jul 2012 17:15:02 -0700
-Message-ID: <164969DEADC6FB4E8F1494DA3D34E98B034658BAC1@EX-SEA19-A.ant.amazon.com>
-References: <164969DEADC6FB4E8F1494DA3D34E98B034641ADAB@EX-SEA19-A.ant.amazon.com>
- <s5htxx1wmb1.wl%tiwai@suse.de>
+From: =?EUC-KR?B?udq/tbHi?= <ghostyak@gmail.com>
+Subject: alsa-lib v1.0.16 error
+Date: Tue, 24 Jul 2012 10:02:47 +0900
+Message-ID: <500DF437.3030603@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-fw-9101.amazon.com (smtp-fw-9101.amazon.com
- [207.171.184.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D367264F4A
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 02:15:08 +0200 (CEST)
-In-Reply-To: <s5htxx1wmb1.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+ [209.85.213.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC319264FA9
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 03:02:49 +0200 (CEST)
+Received: by yenr13 with SMTP id r13so5871801yen.38
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2012 18:02:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I installed aloop driver, and selected it as the default Audio input and output device.
+Hi all,
 
-Then, I played a pcm file while also started recording (using the sound recorder in Ubuntu 11.04). I'm expected to record what I'm playing, but there's no sound in the captured wav file. 
-Did I do anything wrong?
+I'm a beginner developer in ALSA.
+I got an error in my application which uses alsa v1.0.16 and
+Segmentation Fault too.
 
-I want to use aloop or dummy driver as the starting point to write my own driver. 
-Thanks for helping me out.
-George
+My system is :
+- OS: embedded linux
+- CPU: S3C-6410 CPU
+- CODEC: WM9713
 
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
-Sent: Saturday, July 21, 2012 1:28 AM
-To: Liu, George
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] virtual sound driver
-
-At Fri, 20 Jul 2012 18:05:40 -0700,
-Liu, George wrote:
-> 
-> I'm trying to write a virtual sound driver to capture PCM data.
-> How do I modify dummy.c to capture PCM into buffer?
-> 
-> Does the PCM data ever sent to any of the pcm_op call backs? There's no read/write callbacks?
-
-Did you take a look at aloop driver?
+I want to resolve this problem. So what should I do?
+is there an patch? Or do I have to migration to higher version? Or how
+to debug?
 
 
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ALSA lib confmisc.c:1286:(snd_func_refer) Unable to find definition
+'defaults.ctl.card'
+ALSA lib conf.c:3513:(_snd_config_evaluate) function snd_func_refer
+returned error: No such file or directory
+ALSA lib confmisc.c:251:(snd_func_getenv) error evaluating default
+ALSA lib conf.c:3513:(_snd_config_evaluate) function snd_func_getenv
+returned error: No such file or directory
+ALSA lib conf.c:3985:(snd_config_expand) Evaluate error: No such file or
+directory
+ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL default
+
+
+Regards,
+Young-Gi (YG) Park
