@@ -1,18 +1,19 @@
-From: Lauri Hintsala <lauri.hintsala@bluegiga.com>
-Subject: Re: [PATCH 0/4] ASoC: fix saif record unwork issue
-Date: Wed, 25 Jul 2012 08:26:38 +0300
-Message-ID: <500F838E.6050709@bluegiga.com>
-References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
- <500E992E.6090900@bluegiga.com>
- <20120724192125.GF3099@opensource.wolfsonmicro.com>
+From: "Reddy, M.R. Swami" <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH 1/1] ASoC: isabelle: Remove version.h
+ header file inclusion
+Date: Wed, 25 Jul 2012 05:53:12 +0000
+Message-ID: <354ACD19F280E44381F0C302BC7A15A3017204@DLEE07.ent.ti.com>
+References: <1343044515-5212-1-git-send-email-sachin.kamat@linaro.org>
+ <20120724191633.GB3099@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from darkblue.bluegiga.com (bluegiga.fi [194.100.31.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 522CC2652C3
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 07:26:37 +0200 (CEST)
-In-Reply-To: <20120724192125.GF3099@opensource.wolfsonmicro.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC45A264F3D
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 07:53:12 +0200 (CEST)
+In-Reply-To: <20120724191633.GB3099@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, shawn.guo@freescale.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Sachin Kamat <sachin.kamat@linaro.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@linaro.org" <patches@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/24/2012 10:21 PM, Mark Brown wrote:
-> On Tue, Jul 24, 2012 at 03:46:38PM +0300, Lauri Hintsala wrote:
->
->> 1. Recorded audio file is totally silent. Hexdump shows zeros.
->
-> This one is commonly due to devices powering up muted by default and
-> requiring that you set some controls to route the audio through - are
-> you sure you've not missed anything there?
+Thanks Mark and Sachin.
 
-I tried to set gains and other settings with alsamixer. I didn't see any 
-options for muting. Here is the output of amixer.
+-----Original Message-----
+From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+Sent: Wednesday, July 25, 2012 12:47 AM
+To: Sachin Kamat
+Cc: alsa-devel@alsa-project.org; Reddy, M.R. Swami; tiwai@suse.de; patches@linaro.org
+Subject: Re: [PATCH 1/1] ASoC: isabelle: Remove version.h header file inclusion
 
-$ amixer
-Simple mixer control 'Headphone',0
-   Capabilities: pvolume penum
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 127
-   Mono:
-   Front Left: Playback 122 [96%] [9.50dB]
-   Front Right: Playback 122 [96%] [9.50dB]
-Simple mixer control 'Headphone Mux',0
-   Capabilities: enum
-   Items: 'DAC' 'LINE_IN'
-   Item0: 'LINE_IN'
-Simple mixer control 'Headphone Playback ZC',0
-   Capabilities: pswitch pswitch-joined penum
-   Playback channels: Mono
-   Mono: Playback [on]
-Simple mixer control 'PCM',0
-   Capabilities: pvolume penum
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 192
-   Mono:
-   Front Left: Playback 173 [90%]
-   Front Right: Playback 173 [90%]
-Simple mixer control 'Mic',0
-   Capabilities: volume volume-joined penum
-   Playback channels: Mono
-   Capture channels: Mono
-   Limits: 0 - 4
-   Mono: 2 [50%] [30.00dB]
-Simple mixer control 'Capture',0
-   Capabilities: cvolume penum
-   Capture channels: Front Left - Front Right
-   Limits: Capture 0 - 15
-   Front Left: Capture 14 [93%]
-   Front Right: Capture 14 [93%]
-Simple mixer control 'Capture Attenuate Switch (-6dB)',0
-   Capabilities: volume volume-joined penum
-   Playback channels: Mono
-   Capture channels: Mono
-   Limits: 0 - 2
-   Mono: 2 [100%]
-Simple mixer control 'Capture Mux',0
-   Capabilities: enum
-   Items: 'MIC_IN' 'LINE_IN'
-   Item0: 'LINE_IN'
-Simple mixer control 'Capture ZC',0
-   Capabilities: pswitch pswitch-joined penum
-   Playback channels: Mono
-   Mono: Playback [on]
+On Mon, Jul 23, 2012 at 05:25:15PM +0530, Sachin Kamat wrote:
+> version.h header file inclusion is no longer needed for this file.
 
-The testing is not currently very reasonable. I have to reboot my 
-machine after every single recording because of "busy" bug.
-
-Regards,
-Lauri
+Applied, thanks.
