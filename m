@@ -1,22 +1,23 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: ASoC: add DT bindings for cs4270
-Date: Wed, 25 Jul 2012 08:19:20 +0200
-Message-ID: <500F8FE8.3070501@gmail.com>
-References: <1343161248-27557-1-git-send-email-zonque@gmail.com>
- <500F0407.8090807@freescale.com> <500F050D.6080505@gmail.com>
- <500F05CC.2000105@freescale.com> <500F0666.3030707@gmail.com>
- <500F07F9.8000408@freescale.com> <500F0B2D.9070303@gmail.com>
- <500F0D2C.9010600@freescale.com>
+From: Christian Gruber <christian.gruber@voiceinterconnect.de>
+Subject: Buffer underrun in a not empty playback buffer
+Date: Wed, 25 Jul 2012 08:33:05 +0200
+Message-ID: <500F9321.30305@voiceinterconnect.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id C5326264F3D
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 08:19:21 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so260214wgb.20
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 23:19:24 -0700 (PDT)
-In-Reply-To: <500F0D2C.9010600@freescale.com>
+Received: from dd14716.kasserver.com (dd14716.kasserver.com [85.13.136.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id 500BE2652AF
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 08:29:06 +0200 (CEST)
+Received: from server-a.vic.site (146-52-60-185-dynip.superkabel.de
+ [146.52.60.185])
+ by dd14716.kasserver.com (Postfix) with ESMTPSA id 0DCE566C23B
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 08:29:08 +0200 (CEST)
+Received: from kepler.vic.site ([192.168.13.149])
+ by server-a.vic.site with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.72) (envelope-from <gruber@voiceinterconnect.de>)
+ id 1Stv5l-0000N0-3K
+ for alsa-devel@alsa-project.org; Wed, 25 Jul 2012 08:29:07 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,29 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 24.07.2012 23:01, Timur Tabi wrote:
+I had a problem with an ALSA-driver, which causes an underrun in the playba=
+ck stream =
 
-> Also, I have a gut feeling that if someone else needs to do the same
-> thing, then this code:
-> 
-> devm_gpio_request_one(&i2c_client->dev, reset_gpio,
-> 	reset_gpio_flags & OF_GPIO_ACTIVE_LOW ?
-> 	GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
-> 	"cs4270 reset")
-> 
-> won't work for him, because it's not generic enough.
+before the playback buffer was completely empty (snd_pcm_avail() < playback=
+ buffer size). =
 
-Why is that? The GPIO in the spec can be located anywhere on the board,
-either directly driven by the SoC or by any arbitrary other part on on
-the board that exposes itself as GPIO chip. And with the ACTIVE_LOW
-flag, it's even possible to compensate external circuitry that changes
-the polarity.
+The driver developer told me, that this is correct, since for correct DMA t=
+ransfer a =
 
-Which case can you imagine where that flexibility wouldn't suffice?
+minimum buffer filling level is required.
 
+Is this an allowed ALSA-driver behaviour or does the ALSA-driver developer =
+has to hide all =
 
-Daniel
+DMA internals to the application developer so that an underrun just occurs,=
+ when the =
+
+playback buffer is empty? If yes, how can I get to know about the required =
+minimum buffer =
+
+filling level before an underrun occurs?
+
+Regards,
+Christian
+
+-- =
+
+---------------------------------------------------------------
+Dipl.-Ing. Christian Gruber
+voiceINTERconnect GmbH
+Ammonstra=DFe 35
+01067 Dresden
+Germany
+
+Tel.:   +49 (0) 351 - 407 526 67
+Fax.:   +49 (0) 351 - 407 526 55
+---------------------------------------------------------------
+www.voiceinterconnect.de
+... smart signal processing for electronic devices
+
+Gesch=E4ftsf=FChrung:               Eingetragen im Handelsregister:
+Dr.-Ing. Diane Hirschfeld,      Amtsgericht Dresden HRB 19466
+Ludwig Linkenheil
