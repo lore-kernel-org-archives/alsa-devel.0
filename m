@@ -1,17 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2 v2] ALSA: ASoC: Add reset-gpio DT property
-	to cs4270 driver
-Date: Wed, 25 Jul 2012 09:03:29 +0200
-Message-ID: <1343199809-11936-1-git-send-email-zonque@gmail.com>
-References: <500F8E48.9000007@gmail.com>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: [PATCH] ia64: rename platform_name to
+	ia64_platform_name
+Date: Wed, 25 Jul 2012 16:06:53 +0800
+Message-ID: <20120725080653.GA18233@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id DDE912652E0
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 09:03:39 +0200 (CEST)
-In-Reply-To: <500F8E48.9000007@gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 514772652FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 10:06:54 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,75 +20,175 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: alsa-devel@alsa-project.org, Fengguang Wu <fengguang.wu@intel.com>, linux-ia64@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-In the process of moving over from static board files to the device
-tree, reset pins of peripheral reset pins should be handled by their
-corresponding drivers.
+The macro name is too generic and conflicts with
+snd_soc_dai_link.platform_name, which triggers lots of ALSA build errors.
 
-Add a reset-gpio DT property to the cs4270 driver, and de-assert it
-before probing the chip. The logic could be augmented some day to
-re-assert it when codec is put to suspend.
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Timur Tabi <timur@freescale.com>
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 ---
- Documentation/devicetree/bindings/sound/cs4270.txt |    5 +++++
- sound/soc/codecs/cs4270.c                          |   14 ++++++++++++++
- 2 files changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs4270.txt b/Documentation/devicetree/bindings/sound/cs4270.txt
-index 7f0bfd8..6b222f9 100644
---- a/Documentation/devicetree/bindings/sound/cs4270.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4270.txt
-@@ -8,6 +8,11 @@ Required properties:
+(not sure if the previous sent was successful, so resend)
+
+ arch/ia64/include/asm/machvec.h               |    2 +-
+ arch/ia64/include/asm/machvec_dig.h           |    2 +-
+ arch/ia64/include/asm/machvec_dig_vtd.h       |    2 +-
+ arch/ia64/include/asm/machvec_hpsim.h         |    2 +-
+ arch/ia64/include/asm/machvec_hpzx1.h         |    2 +-
+ arch/ia64/include/asm/machvec_hpzx1_swiotlb.h |    2 +-
+ arch/ia64/include/asm/machvec_sn2.h           |    2 +-
+ arch/ia64/include/asm/machvec_uv.h            |    2 +-
+ arch/ia64/include/asm/machvec_xen.h           |    2 +-
+ arch/ia64/include/asm/processor.h             |    2 +-
+ arch/ia64/pci/fixup.c                         |    4 ++--
+ 11 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/arch/ia64/include/asm/machvec.h b/arch/ia64/include/asm/machvec.h
+index 367d299..2d1ad4b1 100644
+--- a/arch/ia64/include/asm/machvec.h
++++ b/arch/ia64/include/asm/machvec.h
+@@ -120,7 +120,7 @@ extern void machvec_tlb_migrate_finish (struct mm_struct *);
+ # ifdef MACHVEC_PLATFORM_HEADER
+ #  include MACHVEC_PLATFORM_HEADER
+ # else
+-#  define platform_name		ia64_mv.name
++#  define ia64_platform_name	ia64_mv.name
+ #  define platform_setup	ia64_mv.setup
+ #  define platform_cpu_init	ia64_mv.cpu_init
+ #  define platform_irq_init	ia64_mv.irq_init
+diff --git a/arch/ia64/include/asm/machvec_dig.h b/arch/ia64/include/asm/machvec_dig.h
+index 8a0752f..1f7403a 100644
+--- a/arch/ia64/include/asm/machvec_dig.h
++++ b/arch/ia64/include/asm/machvec_dig.h
+@@ -10,7 +10,7 @@ extern ia64_mv_setup_t dig_setup;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name		"dig"
++#define ia64_platform_name	"dig"
+ #define platform_setup		dig_setup
  
-   - reg : the I2C address of the device for I2C
+ #endif /* _ASM_IA64_MACHVEC_DIG_h */
+diff --git a/arch/ia64/include/asm/machvec_dig_vtd.h b/arch/ia64/include/asm/machvec_dig_vtd.h
+index 6ab1de5..44308b4 100644
+--- a/arch/ia64/include/asm/machvec_dig_vtd.h
++++ b/arch/ia64/include/asm/machvec_dig_vtd.h
+@@ -11,7 +11,7 @@ extern ia64_mv_dma_init			pci_iommu_alloc;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name				"dig_vtd"
++#define ia64_platform_name			"dig_vtd"
+ #define platform_setup				dig_setup
+ #define platform_dma_init			pci_iommu_alloc
  
-+Optional properties:
-+
-+  - reset-gpio : a GPIO spec for the reset pin. If specified, it will be
-+		 deasserted before communication to the codec starts.
-+
- Example:
+diff --git a/arch/ia64/include/asm/machvec_hpsim.h b/arch/ia64/include/asm/machvec_hpsim.h
+index cf72fc8..e757112 100644
+--- a/arch/ia64/include/asm/machvec_hpsim.h
++++ b/arch/ia64/include/asm/machvec_hpsim.h
+@@ -11,7 +11,7 @@ extern ia64_mv_irq_init_t hpsim_irq_init;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name		"hpsim"
++#define ia64_platform_name	"hpsim"
+ #define platform_setup		hpsim_setup
+ #define platform_irq_init	hpsim_irq_init
  
- codec: cs4270@48 {
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 4b71b01..1b03058 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -30,6 +30,7 @@
- #include <linux/delay.h>
- #include <linux/regulator/consumer.h>
- #include <linux/of_device.h>
-+#include <linux/of_gpio.h>
+diff --git a/arch/ia64/include/asm/machvec_hpzx1.h b/arch/ia64/include/asm/machvec_hpzx1.h
+index 3bd83d7..c74d315 100644
+--- a/arch/ia64/include/asm/machvec_hpzx1.h
++++ b/arch/ia64/include/asm/machvec_hpzx1.h
+@@ -11,7 +11,7 @@ extern ia64_mv_dma_init			sba_dma_init;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name				"hpzx1"
++#define ia64_platform_name			"hpzx1"
+ #define platform_setup				dig_setup
+ #define platform_dma_init			sba_dma_init
  
- /*
-  * The codec isn't really big-endian or little-endian, since the I2S
-@@ -660,9 +661,22 @@ MODULE_DEVICE_TABLE(of, cs4270_of_match);
- static int cs4270_i2c_probe(struct i2c_client *i2c_client,
- 	const struct i2c_device_id *id)
- {
-+	struct device_node *np = i2c_client->dev.of_node;
- 	struct cs4270_private *cs4270;
- 	int ret;
+diff --git a/arch/ia64/include/asm/machvec_hpzx1_swiotlb.h b/arch/ia64/include/asm/machvec_hpzx1_swiotlb.h
+index 1091ac3..906ef62 100644
+--- a/arch/ia64/include/asm/machvec_hpzx1_swiotlb.h
++++ b/arch/ia64/include/asm/machvec_hpzx1_swiotlb.h
+@@ -11,7 +11,7 @@ extern ia64_mv_dma_get_ops			hwsw_dma_get_ops;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name				"hpzx1_swiotlb"
++#define ia64_platform_name			"hpzx1_swiotlb"
+ #define platform_setup				dig_setup
+ #define platform_dma_init			machvec_noop
+ #define platform_dma_get_ops			hwsw_dma_get_ops
+diff --git a/arch/ia64/include/asm/machvec_sn2.h b/arch/ia64/include/asm/machvec_sn2.h
+index f061a30..ece9fa8 100644
+--- a/arch/ia64/include/asm/machvec_sn2.h
++++ b/arch/ia64/include/asm/machvec_sn2.h
+@@ -71,7 +71,7 @@ extern ia64_mv_pci_fixup_bus_t		sn_pci_fixup_bus;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name			"sn2"
++#define ia64_platform_name		"sn2"
+ #define platform_setup			sn_setup
+ #define platform_cpu_init		sn_cpu_init
+ #define platform_irq_init		sn_irq_init
+diff --git a/arch/ia64/include/asm/machvec_uv.h b/arch/ia64/include/asm/machvec_uv.h
+index 2931447..2c50853 100644
+--- a/arch/ia64/include/asm/machvec_uv.h
++++ b/arch/ia64/include/asm/machvec_uv.h
+@@ -20,7 +20,7 @@ extern ia64_mv_setup_t uv_setup;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name			"uv"
++#define ia64_platform_name		"uv"
+ #define platform_setup			uv_setup
  
-+	/* See if we have a way to bring the codec out of reset */
-+	if (np) {
-+		enum of_gpio_flags flags;
-+		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
-+
-+		if (gpio_is_valid(gpio))
-+			devm_gpio_request_one(&i2c_client->dev, gpio,
-+				     flags & OF_GPIO_ACTIVE_LOW ?
-+					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
-+				     "cs4270 reset");
-+	}
-+
- 	/* Verify that we have a CS4270 */
+ #endif /* _ASM_IA64_MACHVEC_UV_H */
+diff --git a/arch/ia64/include/asm/machvec_xen.h b/arch/ia64/include/asm/machvec_xen.h
+index 55f9228..8b8bd0e 100644
+--- a/arch/ia64/include/asm/machvec_xen.h
++++ b/arch/ia64/include/asm/machvec_xen.h
+@@ -13,7 +13,7 @@ extern ia64_mv_send_ipi_t		xen_platform_send_ipi;
+  * platform's machvec structure.  When compiling a non-generic kernel,
+  * the macros are used directly.
+  */
+-#define platform_name				"xen"
++#define ia64_platform_name			"xen"
+ #define platform_setup				dig_setup
+ #define platform_cpu_init			xen_cpu_init
+ #define platform_irq_init			xen_irq_init
+diff --git a/arch/ia64/include/asm/processor.h b/arch/ia64/include/asm/processor.h
+index 832dd37..944152a 100644
+--- a/arch/ia64/include/asm/processor.h
++++ b/arch/ia64/include/asm/processor.h
+@@ -719,7 +719,7 @@ enum idle_boot_override {IDLE_NO_OVERRIDE=0, IDLE_HALT, IDLE_FORCE_MWAIT,
  
- 	ret = i2c_smbus_read_byte_data(i2c_client, CS4270_CHIPID);
+ void default_idle(void);
+ 
+-#define ia64_platform_is(x) (strcmp(x, platform_name) == 0)
++#define ia64_platform_is(x) (strcmp(x, ia64_platform_name) == 0)
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+diff --git a/arch/ia64/pci/fixup.c b/arch/ia64/pci/fixup.c
+index f5959c0..eab28e3 100644
+--- a/arch/ia64/pci/fixup.c
++++ b/arch/ia64/pci/fixup.c
+@@ -30,8 +30,8 @@ static void __devinit pci_fixup_video(struct pci_dev *pdev)
+ 	struct pci_bus *bus;
+ 	u16 config;
+ 
+-	if ((strcmp(platform_name, "dig") != 0)
+-	    && (strcmp(platform_name, "hpzx1")  != 0))
++	if ((strcmp(ia64_platform_name, "dig") != 0)
++	    && (strcmp(ia64_platform_name, "hpzx1")  != 0))
+ 		return;
+ 	/* Maybe, this machine supports legacy memory map. */
+ 
 -- 
-1.7.10.4
+1.7.10
