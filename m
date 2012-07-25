@@ -1,18 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH v3 1/2] ALSA: ASoC: add DT bindings for
-	cs4270
-Date: Wed, 25 Jul 2012 17:08:19 -0500
-Message-ID: <50106E53.9090705@freescale.com>
-References: <1343222915-26108-1-git-send-email-zonque@gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: ALSA concurrent use case for 5.1 LPCM on HDMI.
+Date: Thu, 26 Jul 2012 00:07:01 +0100
+Message-ID: <1343257621.16982.9.camel@odin>
+References: <16e078f384eda9134af4b78dec4ec090.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
- by alsa0.perex.cz (Postfix) with ESMTP id C970526538C
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 00:08:23 +0200 (CEST)
-In-Reply-To: <1343222915-26108-1-git-send-email-zonque@gmail.com>
+Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
+ [74.125.149.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id A489D265B47
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 01:07:03 +0200 (CEST)
+Received: by weyr1 with SMTP id r1so1030369wey.29
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 16:07:03 -0700 (PDT)
+In-Reply-To: <16e078f384eda9134af4b78dec4ec090.squirrel@www.codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,17 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: gsantosh@codeaurora.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
-> Cc: Timur Tabi <timur@freescale.com>
+On Wed, 2012-07-25 at 01:37 -0700, gsantosh@codeaurora.org wrote:
+> Hi All,
+> 
+> I have following use case I am facing an issue with the ALSA framework,
+> 
+> Consider a use case
+> 
+> 1)	System tone or any stream running on Front End 0 with stereo channel
+> configuration On Back End 0(HDMI)
+> 2)	Start a local file playback for 5.1 LPCM on Front End 1 with 5.1
+> channel configuration On Back End 0(HDMI)
+> 
+> Here FE0 and FE1 is routed to same BE0.
+> 
+> When step 2 is done I see following behavior of ALSA which is not correct.
+> Framework will check that the BE0 is running with FE0 routed and running,
+> Framework will not trigger the fixup and hw_params callback to re
+> configure the session for FE1 with 5.1 channel.
+> 
+> With this effect we are playing the FE1 session with stereo instead of 5.1
+> channel configuration, how to rectify this issue?
+> 
 
-Please give me a couple days to get around to testing these patches.  They
-look okay, but I need to make sure they don't break PowerPC.
+Hmm, the fixup code will currently only run when the BE0 is initially
+configured via hw_params(). The problem here is that if we fixup and
+reconfigure BE0 (via hw_params()) after it is running then this will
+likely cause undesired audio artifacts on BE0 (since in this case it's
+already playing stereo and we want to change to 6 channel).
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+We have a similar situation with OMAP where we support many channels (2
+- 6) on one McBSP BE DAI. We always configure the BE McBSP in 6 channel
+mode and that allows us to open any FE with 2...6 channels (without a
+fixup and restart of the McBSP port). 
+
+Regards
+
+Liam
+
+> Regards,
+> Santosh M G.
+> 
+> 
+> 
+> 
