@@ -1,17 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Crash when probing imx_mc13783
-Date: Wed, 25 Jul 2012 16:56:43 -0300
-Message-ID: <CAOMZO5B4Z4jACQFt5gy2o3VLqGrQg+bXcN12ChysrQphYNxQBA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND] ASoC: omap-abe-twl6040: Add device tree
+	support
+Date: Wed, 25 Jul 2012 22:48:37 +0100
+Message-ID: <20120725214837.GQ3099@opensource.wolfsonmicro.com>
+References: <1343221751-29863-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120725131507.GM3099@opensource.wolfsonmicro.com>
+ <500FF709.9060205@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id E68D4265363
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 21:56:41 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so1456392obb.38
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 12:56:43 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F3AD4265B44
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 23:56:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <500FF709.9060205@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,207 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <kernel@pengutronix.de>, =?UTF-8?Q?Philippe_R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Jul 25, 2012 at 04:39:21PM +0300, Peter Ujfalusi wrote:
+> On 07/25/2012 04:15 PM, Mark Brown wrote:
 
-I have just tried 3.5.0-next-20120725+  on a mx31pdk board and I am getting:
+> > We're already in the merge window...
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000078
-pgd = 80004000
-[00000078] *pgd=00000000
-Internal error: Oops: 5 [#1] SMP ARM
-Modules linked in:
-CPU: 0    Tainted: G        W     (3.5.0-next-20120725+ #1263)
-PC is at regmap_read+0x18/0x64
-LR is at hw_read+0x50/0x98
-pc : [<802bcd90>]    lr : [<803cad18>]    psr: 60000013
-sp : 87035cf0  ip : 87035d10  fp : 87035d0c
-r10: 80681f34  r9 : 805d113c  r8 : 00000000
-r7 : 871f0a00  r6 : 80681db0  r5 : 00000025  r4 : 00000000
-r3 : 00000000  r2 : 87035d14  r1 : 00000025  r0 : 00000025
-Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: 00c5387d  Table: 80004000  DAC: 00000017
-Process swapper/0 (pid: 1, stack limit = 0x870342f0)
-Stack: (0x87035cf0 to 0x87036000)
-5ce0:                                     871f0a00 00000025 80681db0 871f0a00
-5d00: 87035d2c 87035d10 803cad18 802bcd84 80681db0 871fb600 80681db0 871fb540
-5d20: 87035d3c 87035d30 803bbe88 803cacd4 87035d4c 87035d40 803c1858 803bbe80
-5d40: 87035d9c 87035d50 803c5abc 803c1844 804e6c00 00000000 00000000 871f0aa8
-5d60: 00000000 00000000 00000000 00000000 00000000 80681db0 871ec810 80681db0
-5d80: 871f0a00 00000000 805d113c 80681f34 87035dd4 87035da0 803be5d0 803c58fc
-5da0: 871f5400 00000006 87035dd4 80681db0 871ec810 00000000 87167840 87167780
-5dc0: 00000000 00000000 87035e44 87035dd8 803bfd98 803be590 80681dc0 87035e10
-5de0: 00000000 00000000 80681eb0 80681e78 80681ea0 80681db0 80681e88 80681dd0
-5e00: 80681e80 80681008 80681f34 871f0a00 80680ff8 00000002 87072a08 806d7544
-5e20: 87072a08 87072a08 80681d74 00000095 80649140 8063cbfc 87035e5c 87035e48
-5e40: 804b4cb8 803bf350 806d7544 80681d74 87035e6c 87035e60 802b341c 804b4ca4
-5e60: 87035e94 87035e70 802b1f38 802b3408 87072a08 80681d74 87072a3c 00000000
-5e80: 00000095 80649140 87035eb4 87035e98 802b2150 802b1ec4 80681d74 87035eb8
-5ea0: 802b20bc 00000000 87035edc 87035eb8 802b06c4 802b20c8 87024158 870708b4
-5ec0: 80681d74 80672f58 871f5600 00000000 87035eec 87035ee0 802b1d98 802b0668
-5ee0: 87035f14 87035ef0 802b0ff4 802b1d84 805820cc 87035f00 87034000 80681d74
-5f00: 80688480 00000000 87035f3c 87035f18 802b2780 802b0e7c 87034000 00000007
-5f20: 80688480 00000000 00000095 80649140 87035f4c 87035f40 802b37c4 802b270c
-5f40: 87035f5c 87035f50 8062c600 802b3784 87035fb4 87035f60 800086b4 8062c5f8
-5f60: 87035fb4 87035f70 8062c5ec 00000000 00000000 00000006 00000006 8060071c
-5f80: 805c7970 60000013 87035fb4 8063cbf4 00000007 80688480 80602270 00000095
-5fa0: 80649140 8063cbfc 87035ff4 87035fb8 806023f4 80008680 00000006 00000006
-5fc0: 80602270 806022f8 800280a8 00000000 806022f8 800280a8 00000013 00000000
-5fe0: 00000000 00000000 00000000 87035ff8 800280a8 80602304 00000000 00000000
-Backtrace:
-[<802bcd78>] (regmap_read+0x0/0x64) from [<803cad18>] (hw_read+0x50/0x98)
- r7:871f0a00 r6:80681db0 r5:00000025 r4:871f0a00
-[<803cacc8>] (hw_read+0x0/0x98) from [<803bbe88>] (snd_soc_read+0x14/0x18)
- r5:871fb540 r4:80681db0
-[<803bbe74>] (snd_soc_read+0x0/0x18) from [<803c1858>] (soc_widget_read+0x20/0x)
-[<803c1838>] (soc_widget_read+0x0/0x58) from [<803c5abc>] (snd_soc_dapm_new_wid)
-[<803c58f0>] (snd_soc_dapm_new_widgets+0x0/0x680) from [<803be5d0>] (soc_post_c)
-[<803be584>] (soc_post_component_init+0x0/0x290) from [<803bfd98>] (snd_soc_reg)
-[<803bf344>] (snd_soc_register_card+0x0/0x133c) from [<804b4cb8>] (imx_mc13783_)
-[<804b4c98>] (imx_mc13783_probe+0x0/0x70) from [<802b341c>] (platform_drv_probe)
- r5:80681d74 r4:806d7544
-[<802b33fc>] (platform_drv_probe+0x0/0x24) from [<802b1f38>] (driver_probe_devi)
-[<802b1eb8>] (driver_probe_device+0x0/0x204) from [<802b2150>] (__driver_attach)
- r9:80649140 r8:00000095 r7:00000000 r6:87072a3c r5:80681d74
-r4:87072a08
-[<802b20bc>] (__driver_attach+0x0/0x98) from [<802b06c4>] (bus_for_each_dev+0x6)
- r7:00000000 r6:802b20bc r5:87035eb8 r4:80681d74
-[<802b065c>] (bus_for_each_dev+0x0/0x94) from [<802b1d98>] (driver_attach+0x20/)
- r7:00000000 r6:871f5600 r5:80672f58 r4:80681d74
-[<802b1d78>] (driver_attach+0x0/0x28) from [<802b0ff4>] (bus_add_driver+0x184/0)
-[<802b0e70>] (bus_add_driver+0x0/0x240) from [<802b2780>] (driver_register+0x80)
- r7:00000000 r6:80688480 r5:80681d74 r4:87034000
-[<802b2700>] (driver_register+0x0/0x148) from [<802b37c4>] (platform_driver_reg)
- r9:80649140 r8:00000095 r7:00000000 r6:80688480 r5:00000007
-r4:87034000
-[<802b3778>] (platform_driver_register+0x0/0x60) from [<8062c600>] (imx_mc13783)
-[<8062c5ec>] (imx_mc13783_audio_driver_init+0x0/0x1c) from [<800086b4>] (do_one)
-[<80008674>] (do_one_initcall+0x0/0x194) from [<806023f4>] (kernel_init+0xfc/0x)
-[<806022f8>] (kernel_init+0x0/0x1cc) from [<800280a8>] (do_exit+0x0/0x810)
-Code: e24cb004 e1a04000 e1a05001 e1a00001 (e5941078)
----[ end trace 67a21a201b7e603a ]---
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> Yes, I'm aware of that.
+> I have sent the v3 on 6.6.2012 to the list [1].
+> I just noticed that on my working branch after I have rebased it on mainline
+> the omap-abe-twl6040 was not compiling (due to the cpu_dai_of_node rename to
+> cpu_of_node). I wanted to send a quick fix for this when I realized that the
+> DT support for the machine driver is not taken.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-pgd = 80004000
-[00000000] *pgd=00000000
-Internal error: Oops: 80000005 [#2] SMP ARM
-Modules linked in:
-CPU: 0    Tainted: G      D W     (3.5.0-next-20120725+ #1263)
-PC is at 0x0
-LR is at smp_send_stop+0x58/0xfc
-pc : [<00000000>]    lr : [<80013770>]    psr: 60000193
-sp : 87035a60  ip : 00000000  fp : 87035a84
-r10: 87034000  r9 : 87035b37  r8 : 87035ad4
-r7 : 8066819c  r6 : 80654f18  r5 : 000f4240  r4 : 87035a64
-r3 : 00000000  r2 : 00000000  r1 : 00000006  r0 : 87035a64
-Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 00c5387d  Table: 80004000  DAC: 00000015
-Process swapper/0 (pid: 1, stack limit = 0x870342f0)
-Stack: (0x87035a60 to 0x87036000)
-5a60: 80689270 00000000 80689270 80689270 0000000b 87032000 87035a9c 87035a88
-5a80: 804b8438 80013724 87032000 87035aa4 87035ae4 87035ab0 800287b0 804b83cc
-5aa0: 805848c8 0000000b 8064e040 87036000 87034000 87035acc 00000001 8703225c
-5ac0: 87035b37 806887e0 87035ae4 87035acc 87035acc 8703214c 87035b6c 87035ae8
-5ae0: 8001286c 800280b4 870342f0 0000000b 00000001 00000008 87034000 00000000
-5b00: 60000113 802bcd94 63343265 34303062 61316520 30303430 31652030 30353061
-5b20: 65203130 30306131 20313030 39356528 37303134 00202938 8001578c 804b8608
-5b40: 805d88e4 87035ca8 00000078 00000000 00000005 00000000 87032000 00000078
-5b60: 87035b94 87035b70 80015858 8001267c 87034000 00000000 87035ca8 00000005
-5b80: 00000000 87032000 87035bdc 87035b98 800159d0 800157f8 807e6b78 60000013
-5ba0: 00000000 00000000 00000028 87035bb8 800b1cf8 00000005 80658c28 00000078
-5bc0: 87035ca8 00000000 805d113c 80681f34 87035bfc 87035be0 80015bfc 80015884
-5be0: 00000005 80658c28 00000078 87035ca8 87035ca4 87035c00 80008434 80015b64
-5c00: 87035c3c 800cc3ec 0000012d 000000d0 00000000 8700cb00 00000000 00008124
-5c20: 80655148 804e6c00 805d113c 86c1f6d8 87035c7c 87035c40 800b2298 800b1b90
-5c40: 6b636162 800cf944 000000a1 000000d0 87035c7c 87035c60 800cf830 80045114
-5c60: 86c20000 8704ec00 00008124 00000124 87035c94 87035c80 87035ca4 87035c88
-5c80: 800ca310 804bb180 802bcd90 60000013 ffffffff 87035cdc 87035d0c 87035ca8
-5ca0: 8000e760 80008404 00000025 00000025 87035d14 00000000 00000000 00000025
-5cc0: 80681db0 871f0a00 00000000 805d113c 80681f34 87035d0c 87035d10 87035cf0
-5ce0: 803cad18 802bcd90 60000013 ffffffff 871f0a00 00000025 80681db0 871f0a00
-5d00: 87035d2c 87035d10 803cad18 802bcd84 80681db0 871fb600 80681db0 871fb540
-5d20: 87035d3c 87035d30 803bbe88 803cacd4 87035d4c 87035d40 803c1858 803bbe80
-5d40: 87035d9c 87035d50 803c5abc 803c1844 804e6c00 00000000 00000000 871f0aa8
-5d60: 00000000 00000000 00000000 00000000 00000000 80681db0 871ec810 80681db0
-5d80: 871f0a00 00000000 805d113c 80681f34 87035dd4 87035da0 803be5d0 803c58fc
-5da0: 871f5400 00000006 87035dd4 80681db0 871ec810 00000000 87167840 87167780
-5dc0: 00000000 00000000 87035e44 87035dd8 803bfd98 803be590 80681dc0 87035e10
-5de0: 00000000 00000000 80681eb0 80681e78 80681ea0 80681db0 80681e88 80681dd0
-5e00: 80681e80 80681008 80681f34 871f0a00 80680ff8 00000002 87072a08 806d7544
-5e20: 87072a08 87072a08 80681d74 00000095 80649140 8063cbfc 87035e5c 87035e48
-5e40: 804b4cb8 803bf350 806d7544 80681d74 87035e6c 87035e60 802b341c 804b4ca4
-5e60: 87035e94 87035e70 802b1f38 802b3408 87072a08 80681d74 87072a3c 00000000
-5e80: 00000095 80649140 87035eb4 87035e98 802b2150 802b1ec4 80681d74 87035eb8
-5ea0: 802b20bc 00000000 87035edc 87035eb8 802b06c4 802b20c8 87024158 870708b4
-5ec0: 80681d74 80672f58 871f5600 00000000 87035eec 87035ee0 802b1d98 802b0668
-5ee0: 87035f14 87035ef0 802b0ff4 802b1d84 805820cc 87035f00 87034000 80681d74
-5f00: 80688480 00000000 87035f3c 87035f18 802b2780 802b0e7c 87034000 00000007
-5f20: 80688480 00000000 00000095 80649140 87035f4c 87035f40 802b37c4 802b270c
-5f40: 87035f5c 87035f50 8062c600 802b3784 87035fb4 87035f60 800086b4 8062c5f8
-5f60: 87035fb4 87035f70 8062c5ec 00000000 00000000 00000006 00000006 8060071c
-5f80: 805c7970 60000013 87035fb4 8063cbf4 00000007 80688480 80602270 00000095
-5fa0: 80649140 8063cbfc 87035ff4 87035fb8 806023f4 80008680 00000006 00000006
-5fc0: 80602270 806022f8 800280a8 00000000 806022f8 800280a8 00000013 00000000
-5fe0: 00000000 00000000 00000000 87035ff8 800280a8 80602304 00000000 00000000
-Backtrace:
-[<80013718>] (smp_send_stop+0x0/0xfc) from [<804b8438>] (panic+0x7c/0x1bc)
- r7:87032000 r6:0000000b r5:80689270 r4:80689270
-[<804b83bc>] (panic+0x0/0x1bc) from [<800287b0>] (do_exit+0x708/0x810)
- r3:87036000 r2:8064e040 r1:0000000b r0:805848c8
-[<800280a8>] (do_exit+0x0/0x810) from [<8001286c>] (die+0x1fc/0x40c)
-[<80012670>] (die+0x0/0x40c) from [<80015858>] (__do_kernel_fault+0x6c/0x8c)
-[<800157ec>] (__do_kernel_fault+0x0/0x8c) from [<800159d0>] (do_page_fault+0x15)
- r9:87032000 r8:00000000 r7:00000005 r6:87035ca8 r5:00000000
-r4:87034000
-[<80015878>] (do_page_fault+0x0/0x26c) from [<80015bfc>] (do_translation_fault+)
-[<80015b58>] (do_translation_fault+0x0/0xac) from [<80008434>] (do_DataAbort+0x)
- r7:87035ca8 r6:00000078 r5:80658c28 r4:00000005
-[<800083f8>] (do_DataAbort+0x0/0xa4) from [<8000e760>] (__dabt_svc+0x40/0x60)
-Exception stack(0x87035ca8 to 0x87035cf0)
-5ca0:                   00000025 00000025 87035d14 00000000 00000000 00000025
-5cc0: 80681db0 871f0a00 00000000 805d113c 80681f34 87035d0c 87035d10 87035cf0
-5ce0: 803cad18 802bcd90 60000013 ffffffff
- r7:87035cdc r6:ffffffff r5:60000013 r4:802bcd90
-[<802bcd78>] (regmap_read+0x0/0x64) from [<803cad18>] (hw_read+0x50/0x98)
- r7:871f0a00 r6:80681db0 r5:00000025 r4:871f0a00
-[<803cacc8>] (hw_read+0x0/0x98) from [<803bbe88>] (snd_soc_read+0x14/0x18)
- r5:871fb540 r4:80681db0
-[<803bbe74>] (snd_soc_read+0x0/0x18) from [<803c1858>] (soc_widget_read+0x20/0x)
-[<803c1838>] (soc_widget_read+0x0/0x58) from [<803c5abc>] (snd_soc_dapm_new_wid)
-[<803c58f0>] (snd_soc_dapm_new_widgets+0x0/0x680) from [<803be5d0>] (soc_post_c)
-[<803be584>] (soc_post_component_init+0x0/0x290) from [<803bfd98>] (snd_soc_reg)
-[<803bf344>] (snd_soc_register_card+0x0/0x133c) from [<804b4cb8>] (imx_mc13783_)
-[<804b4c98>] (imx_mc13783_probe+0x0/0x70) from [<802b341c>] (platform_drv_probe)
- r5:80681d74 r4:806d7544
-[<802b33fc>] (platform_drv_probe+0x0/0x24) from [<802b1f38>] (driver_probe_devi)
-[<802b1eb8>] (driver_probe_device+0x0/0x204) from [<802b2150>] (__driver_attach)
- r9:80649140 r8:00000095 r7:00000000 r6:87072a3c r5:80681d74
-r4:87072a08
-[<802b20bc>] (__driver_attach+0x0/0x98) from [<802b06c4>] (bus_for_each_dev+0x6)
- r7:00000000 r6:802b20bc r5:87035eb8 r4:80681d74
-[<802b065c>] (bus_for_each_dev+0x0/0x94) from [<802b1d98>] (driver_attach+0x20/)
- r7:00000000 r6:871f5600 r5:80672f58 r4:80681d74
-[<802b1d78>] (driver_attach+0x0/0x28) from [<802b0ff4>] (bus_add_driver+0x184/0)
-[<802b0e70>] (bus_add_driver+0x0/0x240) from [<802b2780>] (driver_register+0x80)
- r7:00000000 r6:80688480 r5:80681d74 r4:87034000
-[<802b2700>] (driver_register+0x0/0x148) from [<802b37c4>] (platform_driver_reg)
- r9:80649140 r8:00000095 r7:00000000 r6:80688480 r5:00000007
-r4:87034000
-[<802b3778>] (platform_driver_register+0x0/0x60) from [<8062c600>] (imx_mc13783)
-[<8062c5ec>] (imx_mc13783_audio_driver_init+0x0/0x1c) from [<800086b4>] (do_one)
-[<80008674>] (do_one_initcall+0x0/0x194) from [<806023f4>] (kernel_init+0xfc/0x)
-[<806022f8>] (kernel_init+0x0/0x1cc) from [<800280a8>] (do_exit+0x0/0x810)
-Code: bad PC value
----[ end trace 67a21a201b7e603b ]---
-Fixing recursive fault but reboot is needed!
+Please just send the build fix with a followup adding the DT bindings
+and then we can get the DT bindings in for 3.7.  It's unfortunate that
+Liam's been so busy and things like this got dropped on the floor but
+I'm not enthusiastic adding something like this after the pull request
+went to Linus.
 
-Before I start to investigate this, I would like to know if there is
-some recent patch I am missing or any other suggestion.
+Though obviously it's not even been compiled in mainline :/
 
-Thanks,
-
-Fabio Estevam
+In general you need to really start paying attention to this stuff
+and start chasing around -rc5 or so.
