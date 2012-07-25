@@ -1,16 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Buffer underrun in a not empty playback buffer
-Date: Wed, 25 Jul 2012 09:01:13 +0200
-Message-ID: <500F99B9.1050905@ladisch.de>
-References: <500F9321.30305@voiceinterconnect.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 2/2 v2] ALSA: ASoC: Add reset-gpio DT property
+	to cs4270 driver
+Date: Wed, 25 Jul 2012 09:03:29 +0200
+Message-ID: <1343199809-11936-1-git-send-email-zonque@gmail.com>
+References: <500F8E48.9000007@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 2BE922652D7
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 09:01:14 +0200 (CEST)
-In-Reply-To: <500F9321.30305@voiceinterconnect.de>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDE912652E0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 09:03:39 +0200 (CEST)
+In-Reply-To: <500F8E48.9000007@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,46 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Gruber <christian.gruber@voiceinterconnect.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@freescale.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Christian Gruber wrote:
-> I had a problem with an ALSA-driver, which causes an underrun in the
-> playback stream before the playback buffer was completely empty
-> (snd_pcm_avail() < playback buffer size). The driver developer told
-> me, that this is correct, since for correct DMA transfer a minimum
-> buffer filling level is required.
+In the process of moving over from static board files to the device
+tree, reset pins of peripheral reset pins should be handled by their
+corresponding drivers.
 
-There is indeed a minimum buffer filling level.  If the device reads
-data out of the buffer x bytes at a time, then you'd better make sure
-that there are at least x bytes available.
+Add a reset-gpio DT property to the cs4270 driver, and de-assert it
+before probing the chip. The logic could be augmented some day to
+re-assert it when codec is put to suspend.
 
-> Is this an allowed ALSA-driver behaviour
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Cc: Timur Tabi <timur@freescale.com>
+---
+ Documentation/devicetree/bindings/sound/cs4270.txt |    5 +++++
+ sound/soc/codecs/cs4270.c                          |   14 ++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-This has nothing to do with the driver itself; the ALSA framework checks
-for underruns.
-
-Furthermore, the underrun does not happen before the buffer is empty;
-underruns are alway detected after the fact.  It's just that your
-application will never be able to read snd_pcm_avail()==0 because that
-value would automatically trigger the underrun detection.
-
-(Or does that driver, which you did not name, do additional checks?)
-
-> how can I get to know about the required minimum buffer filling level
-> before an underrun occurs?
-
-The minimum buffer filling level _before_ an underrun is one frame.
-However, to ensure that the device has enough data available, and to
-protect against random scheduling delays, your application should
-try to keep the buffer always as much filled as possible.
-
-There is no function to read the device's read block size.  However, for
-large block sizes, snd_pcm_hw_params_is_block_transfer() returns 1, and
-the block size cannot be larger than one period.  (Quite a few embedded
-devices indeed transfer entire periods.)
-
-
-Regards,
-Clemens
+diff --git a/Documentation/devicetree/bindings/sound/cs4270.txt b/Documentation/devicetree/bindings/sound/cs4270.txt
+index 7f0bfd8..6b222f9 100644
+--- a/Documentation/devicetree/bindings/sound/cs4270.txt
++++ b/Documentation/devicetree/bindings/sound/cs4270.txt
+@@ -8,6 +8,11 @@ Required properties:
+ 
+   - reg : the I2C address of the device for I2C
+ 
++Optional properties:
++
++  - reset-gpio : a GPIO spec for the reset pin. If specified, it will be
++		 deasserted before communication to the codec starts.
++
+ Example:
+ 
+ codec: cs4270@48 {
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 4b71b01..1b03058 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -30,6 +30,7 @@
+ #include <linux/delay.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/of_device.h>
++#include <linux/of_gpio.h>
+ 
+ /*
+  * The codec isn't really big-endian or little-endian, since the I2S
+@@ -660,9 +661,22 @@ MODULE_DEVICE_TABLE(of, cs4270_of_match);
+ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+ 	const struct i2c_device_id *id)
+ {
++	struct device_node *np = i2c_client->dev.of_node;
+ 	struct cs4270_private *cs4270;
+ 	int ret;
+ 
++	/* See if we have a way to bring the codec out of reset */
++	if (np) {
++		enum of_gpio_flags flags;
++		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
++
++		if (gpio_is_valid(gpio))
++			devm_gpio_request_one(&i2c_client->dev, gpio,
++				     flags & OF_GPIO_ACTIVE_LOW ?
++					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
++				     "cs4270 reset");
++	}
++
+ 	/* Verify that we have a CS4270 */
+ 
+ 	ret = i2c_smbus_read_byte_data(i2c_client, CS4270_CHIPID);
+-- 
+1.7.10.4
