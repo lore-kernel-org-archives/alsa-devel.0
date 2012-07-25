@@ -1,22 +1,14 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 2/2 v2] ALSA: ASoC: Add reset-gpio DT
- property to cs4270 driver
-Date: Wed, 25 Jul 2012 15:22:29 +0200
-Message-ID: <500FF315.50806@gmail.com>
-References: <500F8E48.9000007@gmail.com>
- <1343199809-11936-1-git-send-email-zonque@gmail.com>
- <20120725131816.GN3099@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 1/2] ALSA: ASoC: add DT bindings for cs4270
+Date: Wed, 25 Jul 2012 15:28:34 +0200
+Message-ID: <1343222915-26108-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id ABC2A2652D5
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 15:22:31 +0200 (CEST)
-Received: by weyx10 with SMTP id x10so471105wey.38
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 06:22:33 -0700 (PDT)
-In-Reply-To: <20120725131816.GN3099@opensource.wolfsonmicro.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC410265306
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 15:28:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,36 +18,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com, Timur Tabi <timur@freescale.com>
+To: alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@freescale.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 25.07.2012 15:18, Mark Brown wrote:
-> On Wed, Jul 25, 2012 at 09:03:29AM +0200, Daniel Mack wrote:
->> In the process of moving over from static board files to the device
->> tree, reset pins of peripheral reset pins should be handled by their
->> corresponding drivers.
->>
->> Add a reset-gpio DT property to the cs4270 driver, and de-assert it
->> before probing the chip. The logic could be augmented some day to
->> re-assert it when codec is put to suspend.
-> 
-> I'm missing 1/2...  Please also don't bury patches in the middle of
-> previous threads.
-> 
->> +		enum of_gpio_flags flags;
->> +		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
->> +
->> +		if (gpio_is_valid(gpio))
->> +			devm_gpio_request_one(&i2c_client->dev, gpio,
->> +				     flags & OF_GPIO_ACTIVE_LOW ?
->> +					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
->> +				     "cs4270 reset");
-> 
-> This ignores the return code and won't work well with probe deferral, if
-> we manage to get a GPIO from the DT then we should fail if we're unable
-> request it.  Passing back the return code should get you deferral
-> support for free in 3.6 and onwards.
-> 
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Cc: Timur Tabi <timur@freescale.com>
+---
+ Documentation/devicetree/bindings/sound/cs4270.txt |   16 ++++++++++++++++
+ sound/soc/codecs/cs4270.c                          |   11 +++++++++++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs4270.txt
 
-Ok, will resent both patches.
+diff --git a/Documentation/devicetree/bindings/sound/cs4270.txt b/Documentation/devicetree/bindings/sound/cs4270.txt
+new file mode 100644
+index 0000000..7f0bfd8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs4270.txt
+@@ -0,0 +1,16 @@
++CS4270 audio CODEC
++
++The driver for this device currently only supports I2C.
++
++Required properties:
++
++  - compatible : "cirrus,cs4270"
++
++  - reg : the I2C address of the device for I2C
++
++Example:
++
++codec: cs4270@48 {
++	compatible = "cirrus,cs4270";
++	reg = <0x48>;
++};
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 047917f..4b71b01 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -29,6 +29,7 @@
+ #include <linux/i2c.h>
+ #include <linux/delay.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of_device.h>
+ 
+ /*
+  * The codec isn't really big-endian or little-endian, since the I2S
+@@ -639,6 +640,15 @@ static const struct snd_soc_codec_driver soc_codec_device_cs4270 = {
+ 	.reg_cache_default =	cs4270_default_reg_cache,
+ };
+ 
++/*
++ * cs4270_of_match - the device tree bindings
++ */
++static const struct of_device_id cs4270_of_match[] = {
++	{ .compatible = "cirrus,cs4270", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, cs4270_of_match);
++
+ /**
+  * cs4270_i2c_probe - initialize the I2C interface of the CS4270
+  * @i2c_client: the I2C client object
+@@ -718,6 +728,7 @@ static struct i2c_driver cs4270_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs4270",
+ 		.owner = THIS_MODULE,
++		.of_match_table = cs4270_of_match,
+ 	},
+ 	.id_table = cs4270_id,
+ 	.probe = cs4270_i2c_probe,
+-- 
+1.7.10.4
