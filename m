@@ -1,18 +1,18 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: Declaring HDMI channel allocation to kernel
-Date: Tue, 24 Jul 2012 22:10:30 -0500
-Message-ID: <500F63A6.30704@ti.com>
-References: <500D5D3D.2060108@gmail.com> <500DA87A.8080901@linux.intel.com>
- <500E9565.2040102@gmail.com> <500EDECF.5000902@ti.com>
- <CAPbw_hwmTGaTk0Yze=+x6njj0Kjb8OeBW-UOTstK=COayXgj0Q@mail.gmail.com>
+From: Lauri Hintsala <lauri.hintsala@bluegiga.com>
+Subject: Re: [PATCH 0/4] ASoC: fix saif record unwork issue
+Date: Wed, 25 Jul 2012 08:26:38 +0300
+Message-ID: <500F838E.6050709@bluegiga.com>
+References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
+ <500E992E.6090900@bluegiga.com>
+ <20120724192125.GF3099@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 976C0265289
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 05:11:31 +0200 (CEST)
-In-Reply-To: <CAPbw_hwmTGaTk0Yze=+x6njj0Kjb8OeBW-UOTstK=COayXgj0Q@mail.gmail.com>
+Received: from darkblue.bluegiga.com (bluegiga.fi [194.100.31.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 522CC2652C3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 07:26:37 +0200 (CEST)
+In-Reply-To: <20120724192125.GF3099@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Gabriel Beddingfield <gabrbedd@gmail.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gabriel,
-On 07/24/2012 01:55 PM, Gabriel Beddingfield wrote:
-> Thanks, Ricardo.
+On 07/24/2012 10:21 PM, Mark Brown wrote:
+> On Tue, Jul 24, 2012 at 03:46:38PM +0300, Lauri Hintsala wrote:
 >
-> Is this just re-arranging the chanels in-place?  I'm not sure that's
-> what I need.  In this case, I'm needing to be able to differentiate
-> between "quad" (FL, FR, RL, RR) and "surround" (FL, FR, FC, RC) in
-> order to support both.
+>> 1. Recorded audio file is totally silent. Hexdump shows zeros.
+>
+> This one is commonly due to devices powering up muted by default and
+> requiring that you set some controls to route the audio through - are
+> you sure you've not missed anything there?
 
-Perhaps you could create two different devices, one for surround and 
-another for quad, each having its own static reroute table. You would 
-use the appropriate device for each specific use case.
+I tried to set gains and other settings with alsamixer. I didn't see any 
+options for muting. Here is the output of amixer.
 
-Ricardo
->
-> -gabriel
->
-> On Tue, Jul 24, 2012 at 12:43 PM, Ricardo Neri <ricardo.neri@ti.com> wrote:
->> Hi Gabriel,
->>
->>
->> On 07/24/2012 07:30 AM, Gabriel M. Beddingfield wrote:
->>>
->>> On 07/23/2012 02:39 PM, Pierre-Louis Bossart wrote:
->>>>
->>>> On 7/23/2012 9:18 AM, Gabriel M. Beddingfield wrote:
->>>>>
->>>>>
->>>>> Is there an established way for me (from userspace) to pass the HDMI
->>>>> Channel Allocation (1 byte) to the driver?  If not, can you recommend
->>>>> an approach?
->>>
->>> [snip[
->>>>
->>>> I believe this is one of the topics that will be presented by Takashi at
->>>> LPC, we need the ability to specify a arbitrary sink-specific channel
->>>> mapping.
->>>
->>>
->>> OK, thanks!  So then, to do this today I need to add my own special sauce.
->>
->>
->> FWIW, in the past I could use the route plugin to achieve arbitrary channel
->> mapping. This was done by SW, though. The details are here:
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-April/051573.html
->>
->> Ricardo
->>>
->>>
->>> -gabriel
->>>
->>>
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>
+$ amixer
+Simple mixer control 'Headphone',0
+   Capabilities: pvolume penum
+   Playback channels: Front Left - Front Right
+   Limits: Playback 0 - 127
+   Mono:
+   Front Left: Playback 122 [96%] [9.50dB]
+   Front Right: Playback 122 [96%] [9.50dB]
+Simple mixer control 'Headphone Mux',0
+   Capabilities: enum
+   Items: 'DAC' 'LINE_IN'
+   Item0: 'LINE_IN'
+Simple mixer control 'Headphone Playback ZC',0
+   Capabilities: pswitch pswitch-joined penum
+   Playback channels: Mono
+   Mono: Playback [on]
+Simple mixer control 'PCM',0
+   Capabilities: pvolume penum
+   Playback channels: Front Left - Front Right
+   Limits: Playback 0 - 192
+   Mono:
+   Front Left: Playback 173 [90%]
+   Front Right: Playback 173 [90%]
+Simple mixer control 'Mic',0
+   Capabilities: volume volume-joined penum
+   Playback channels: Mono
+   Capture channels: Mono
+   Limits: 0 - 4
+   Mono: 2 [50%] [30.00dB]
+Simple mixer control 'Capture',0
+   Capabilities: cvolume penum
+   Capture channels: Front Left - Front Right
+   Limits: Capture 0 - 15
+   Front Left: Capture 14 [93%]
+   Front Right: Capture 14 [93%]
+Simple mixer control 'Capture Attenuate Switch (-6dB)',0
+   Capabilities: volume volume-joined penum
+   Playback channels: Mono
+   Capture channels: Mono
+   Limits: 0 - 2
+   Mono: 2 [100%]
+Simple mixer control 'Capture Mux',0
+   Capabilities: enum
+   Items: 'MIC_IN' 'LINE_IN'
+   Item0: 'LINE_IN'
+Simple mixer control 'Capture ZC',0
+   Capabilities: pswitch pswitch-joined penum
+   Playback channels: Mono
+   Mono: Playback [on]
+
+The testing is not currently very reasonable. I have to reboot my 
+machine after every single recording because of "busy" bug.
+
+Regards,
+Lauri
