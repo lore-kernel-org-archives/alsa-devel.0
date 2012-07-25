@@ -1,23 +1,22 @@
 From: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH 1/2] ALSA: ASoC: add DT bindings for cs4270
-Date: Wed, 25 Jul 2012 08:12:24 +0200
-Message-ID: <500F8E48.9000007@gmail.com>
+Date: Wed, 25 Jul 2012 08:19:20 +0200
+Message-ID: <500F8FE8.3070501@gmail.com>
 References: <1343161248-27557-1-git-send-email-zonque@gmail.com>
  <500F0407.8090807@freescale.com> <500F050D.6080505@gmail.com>
- <500F05CC.2000105@freescale.com> <500F1B05.3050107@wwwdotorg.org>
- <500F1BB7.7020504@freescale.com>
- <20120724224440.GD1767@opensource.wolfsonmicro.com>
+ <500F05CC.2000105@freescale.com> <500F0666.3030707@gmail.com>
+ <500F07F9.8000408@freescale.com> <500F0B2D.9070303@gmail.com>
+ <500F0D2C.9010600@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 602D326021A
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 08:12:26 +0200 (CEST)
-Received: by wibhq4 with SMTP id hq4so265670wib.2
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 23:12:28 -0700 (PDT)
-In-Reply-To: <20120724224440.GD1767@opensource.wolfsonmicro.com>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5326264F3D
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2012 08:19:21 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so260214wgb.20
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2012 23:19:24 -0700 (PDT)
+In-Reply-To: <500F0D2C.9010600@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,36 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com, Timur Tabi <timur@freescale.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 25.07.2012 00:44, Mark Brown wrote:
-> On Tue, Jul 24, 2012 at 05:03:35PM -0500, Timur Tabi wrote:
->> Stephen Warren wrote:
->>> The I2C code matches the compatible values from the device tree against
->>> two tables in the kernel. First, the of_match_table that this patch
->>> adds, and then if there's no match it falls back to the I2C device ID
->>> table, and matches that against the DT compatible value with the vendor
->>> prefix stripped off.
-> 
->>> So while the second method does work as a fall-back, in the past I've
->>> received guidance (I think from Grant Likely) that we should still add
->>> the of_match_table to drivers in order to be explicit.
-> 
->> So you're saying that all I2C device drivers should have an
-> 
-> It's certainly better to add one, it avoids any ambiguity in part
-> numbers (there's at least one other chip vendor (Wondermedia) using wm
-> for example).
-> 
->> of_match_table()?  If so, then we should probably fix all codec drivers in
->> one patch.
-> 
-> Meh, it's fine doing it piecemeal really.  It's hardly urgent anyway.
+On 24.07.2012 23:01, Timur Tabi wrote:
 
-Ok, thanks for all the explanation. So I'll repost a cleaned up version
-of the 2nd patch then. Timur, are you ok with that?
+> Also, I have a gut feeling that if someone else needs to do the same
+> thing, then this code:
+> 
+> devm_gpio_request_one(&i2c_client->dev, reset_gpio,
+> 	reset_gpio_flags & OF_GPIO_ACTIVE_LOW ?
+> 	GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
+> 	"cs4270 reset")
+> 
+> won't work for him, because it's not generic enough.
+
+Why is that? The GPIO in the spec can be located anywhere on the board,
+either directly driven by the SoC or by any arbitrary other part on on
+the board that exposes itself as GPIO chip. And with the ACTIVE_LOW
+flag, it's even possible to compensate external circuitry that changes
+the polarity.
+
+Which case can you imagine where that flexibility wouldn't suffice?
 
 
 Daniel
