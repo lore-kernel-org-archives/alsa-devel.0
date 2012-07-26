@@ -1,19 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 16/21] ASoC: Ux500: Enable MOP500 driver
-	for Device Tree
-Date: Thu, 26 Jul 2012 14:53:23 +0100
-Message-ID: <20120726135323.GI3099@opensource.wolfsonmicro.com>
-References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
- <1343298534-13611-17-git-send-email-lee.jones@linaro.org>
- <20120726113734.GZ3099@opensource.wolfsonmicro.com>
- <50114B4D.3030305@linaro.org>
+Subject: [PATCH] ASoC: wm8994: Fix some indentation issues
+Date: Thu, 26 Jul 2012 14:49:51 +0100
+Message-ID: <1343310591-23553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2623262579406859909=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 96E72265B8B
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 15:53:23 +0200 (CEST)
-In-Reply-To: <50114B4D.3030305@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 289CB265B8A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 15:56:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +18,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, sameo@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, linus.walleij@stericsson.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---===============2623262579406859909==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ov6R7U0hl+EAcYoD"
-Content-Disposition: inline
-
-
---ov6R7U0hl+EAcYoD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 26, 2012 at 02:51:09PM +0100, Lee Jones wrote:
-> On 26/07/12 12:37, Mark Brown wrote:> On Thu, Jul 26, 2012 at 11:28:49AM +0100, Lee Jones wrote:
-
-> > There is no binding documentation here.  All bindings should be
-> > documented.
-
-> Yes I know. This is more of an RFC _before_ I waste my time writing
-> documentation (again).
-
-I can't be the only person who reviews bindings by reading the
-documentation for the binding...
-
---ov6R7U0hl+EAcYoD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQEUu7AAoJEBus8iNuMP3dOCUP/ipRUWjc5Af7QmYfFM0KKCwC
-Z+b8BpQOaxSCLiiPcroeQ+MNAFYYZHJhP+xShtq4wONnWrOFElJ26ohUOCfxMt4j
-AZWaldWGhgeD4zapMdyplLL1almaAVjRETC0eq8toLfmJb68WaatjYI0wBb8PjVM
-xM3mIQ3eMv5A9g9o32N9YNbE8KzmgRL2zB84EMpRNRZcMEVEA9n0OIa850sVCZz4
-bbIGmMFTEJ0qqCtNddZCx+ZZUo6itpZM35KCU7GfXBjj+Zw6KzRzthfdKRlaxkZW
-/OecvCuxxKva43aSBB+19wgFuO0J64IvkbHs7aq2wqgLv0zf7EZDomXgD9NCy8Ka
-JuLIdJYwTRyqh5fkEGAG5pKyC3olmnhacUSer6ic/EKvU96AIWLXp410ET41Dfpa
-bwZI8TECwsRa5uvdPnYEO3rlces72ZhikjUHFQG21EynSSU9fSwxXhqtWwEBEkbL
-+XnKRwlye+MCniyRzsqgC0PDOoxpTgvD8MBrmbjvy4sskiu1E+lYAUldBHb2yV3V
-qzTVEViyort+hC8Kqwk/Q/s/eYPYeKbP/RnpZdGB65R5Arro0y3h9RpYdVSEf6L7
-6oYo1j2h0+0IcRHfIuYmjXVmfiWExNoPiS+FmhlC8vOBiMUkFtyxIdlUzE/3Kbvg
-877b3RzRZWTAAsul4spk
-=PJ1+
------END PGP SIGNATURE-----
-
---ov6R7U0hl+EAcYoD--
-
---===============2623262579406859909==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2623262579406859909==--
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index e0125e3..eaa77f9 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2273,7 +2273,7 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
+ 
+ 	snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_4 + reg_offset,
+ 			    WM8994_FLL1_N_MASK,
+-				    fll.n << WM8994_FLL1_N_SHIFT);
++			    fll.n << WM8994_FLL1_N_SHIFT);
+ 
+ 	snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_5 + reg_offset,
+ 			    WM8994_FLL1_FRC_NCO | WM8958_FLL1_BYP |
+@@ -3501,7 +3501,7 @@ static void wm8958_default_micdet(u16 status, void *data)
+ 
+ 			snd_soc_jack_report(wm8994->micdet[0].jack, 0,
+ 					    wm8994->btn_mask |
+-					     SND_JACK_HEADSET);
++					    SND_JACK_HEADSET);
+ 		}
+ 		return;
+ 	}
+-- 
+1.7.10.4
