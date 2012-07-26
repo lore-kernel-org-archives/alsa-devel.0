@@ -1,63 +1,46 @@
-From: Hideki EIRAKU <hdk@igel.co.jp>
-Subject: [PATCH v2 3/4] media: videobuf2-dma-contig: use dma_mmap_coherent if available
-Date: Thu, 26 Jul 2012 20:13:10 +0900
-Message-ID: <1343301191-26001-4-git-send-email-hdk@igel.co.jp>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v2 4/4] fbdev: sh_mobile_lcdc: use
+	dma_mmap_coherent if available
+Date: Thu, 26 Jul 2012 13:20:44 +0200
+Message-ID: <1820152.JumtPU1V17@avalon>
 References: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King <linux@arm.linux.org.uk>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, Hideki EIRAKU <hdk@igel.co.jp>
+ <1343301191-26001-5-git-send-email-hdk@igel.co.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+ [95.142.166.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id B959E265E5D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 13:20:35 +0200 (CEST)
+In-Reply-To: <1343301191-26001-5-git-send-email-hdk@igel.co.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hideki EIRAKU <hdk@igel.co.jp>
+Cc: alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, linux-fbdev@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, linux-media@vger.kernel.org, Pawel Osciak <pawel@osciak.com>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Kyungmin Park <kyungmin.park@samsung.com>, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously the vb2_dma_contig_mmap() function was using a dma_addr_t as a
-physical address.  The two addressses are not necessarily the same.
-For example, when using the IOMMU funtion on certain platforms, dma_addr_t
-addresses are not directly mappable physical address.
-dma_mmap_coherent() maps the address correctly.
-It is available on ARM platforms.
+Hi Eiraku-san,
 
-Signed-off-by: Hideki EIRAKU <hdk@igel.co.jp>
----
- drivers/media/video/videobuf2-dma-contig.c |   18 ++++++++++++++++++
- 1 files changed, 18 insertions(+), 0 deletions(-)
+On Thursday 26 July 2012 20:13:11 Hideki EIRAKU wrote:
+> fb_mmap() implemented in fbmem.c uses smem_start as the physical
+> address of the frame buffer.  In the sh_mobile_lcdc driver, the
+> smem_start is a dma_addr_t that is not a physical address when IOMMU is
+> enabled.  dma_mmap_coherent() maps the address correctly.  It is
+> available on ARM platforms.
+> 
+> Signed-off-by: Hideki EIRAKU <hdk@igel.co.jp>
 
-diff --git a/drivers/media/video/videobuf2-dma-contig.c b/drivers/media/video/videobuf2-dma-contig.c
-index 4b71326..4dc85ab 100644
---- a/drivers/media/video/videobuf2-dma-contig.c
-+++ b/drivers/media/video/videobuf2-dma-contig.c
-@@ -101,14 +101,32 @@ static unsigned int vb2_dma_contig_num_users(void *buf_priv)
- static int vb2_dma_contig_mmap(void *buf_priv, struct vm_area_struct *vma)
- {
- 	struct vb2_dc_buf *buf = buf_priv;
-+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-+	int ret;
-+#endif
- 
- 	if (!buf) {
- 		printk(KERN_ERR "No buffer to map\n");
- 		return -EINVAL;
- 	}
- 
-+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-+	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-+	ret = dma_mmap_coherent(buf->conf->dev, vma, buf->vaddr, buf->dma_addr,
-+				buf->size);
-+	if (ret) {
-+		pr_err("Remapping memory failed, error: %d\n", ret);
-+		return ret;
-+	}
-+	vma->vm_flags |= VM_DONTEXPAND | VM_RESERVED;
-+	vma->vm_private_data = &buf->handler;
-+	vma->vm_ops = &vb2_common_vm_ops;
-+	vma->vm_ops->open(vma);
-+	return 0;
-+#else
- 	return vb2_mmap_pfn_range(vma, buf->dma_addr, buf->size,
- 				  &vb2_common_vm_ops, &buf->handler);
-+#endif
- }
- 
- static void *vb2_dma_contig_get_userptr(void *alloc_ctx, unsigned long vaddr,
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 -- 
-1.7.0.4
+Regards,
+
+Laurent Pinchart
