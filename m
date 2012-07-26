@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 09/21] ARM: ux500: Add MSP devices to DB8500 Device Tree
-Date: Thu, 26 Jul 2012 11:28:42 +0100
-Message-ID: <1343298534-13611-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 11/21] ARM: ux500: Add all encompassing Sound node to DB8500 Device Tree
+Date: Thu, 26 Jul 2012 11:28:44 +0100
+Message-ID: <1343298534-13611-12-git-send-email-lee.jones@linaro.org>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
@@ -10,55 +10,32 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-List all four MSP devices which exist on all DB8500 based platforms,
-to ensure correct device probing and configuration passing when booting
-with DT.
+This is the node which links together the platform (PCM), codec (AB8500)
+and the CPU side Digital Audio Interface (MCP) with the machine driver.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/db8500.dtsi |   30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ arch/arm/boot/dts/db8500.dtsi |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/db8500.dtsi b/arch/arm/boot/dts/db8500.dtsi
-index a3bee0a..5a72be6 100644
+index b9d4405..978dd60 100644
 --- a/arch/arm/boot/dts/db8500.dtsi
 +++ b/arch/arm/boot/dts/db8500.dtsi
-@@ -591,6 +591,36 @@
- 			status = "disabled";
+@@ -595,6 +595,14 @@
+ 			compatible = "stericsson,ux500-pcm";
  		};
  
-+		msp0: msp@80123000 {
-+			compatible = "stericsson,ux500-msp-i2s";
-+			reg = <0x80123000 0x1000>;
-+			interrupts = <0 31 0x4>;
-+			v-ape-supply = <&db8500_vape_reg>;
++		sound {
++			compatible = "stericsson,snd-soc-mop500";
++
++			platform-pcm-dma = <&pcm>;
++			cpu-dai = <&msp1 &msp3>;
++			audio-codec = <&codec>;
 +		};
 +
-+		msp1: msp@80124000 {
-+			compatible = "stericsson,ux500-msp-i2s";
-+			reg = <0x80124000 0x1000>;
-+			interrupts = <0 62 0x4>;
-+			v-ape-supply = <&db8500_vape_reg>;
-+			stericcson,use-pinctrl;
-+		};
-+
-+		// HDMI sound
-+		msp2: msp@80117000 {
-+			compatible = "stericsson,ux500-msp-i2s";
-+			reg = <0x80117000 0x1000>;
-+			interrupts = <0 98 0x4>;
-+			v-ape-supply = <&db8500_vape_reg>;
-+		};
-+
-+		msp3: msp@80125000 {
-+			compatible = "stericsson,ux500-msp-i2s";
-+			reg = <0x80125000 0x1000>;
-+			interrupts = <0 62 0x4>;
-+			v-ape-supply = <&db8500_vape_reg>;
-+		};
-+
- 		external-bus@50000000 {
- 			compatible = "simple-bus";
- 			reg = <0x50000000 0x4000000>;
+ 		msp0: msp@80123000 {
+ 			compatible = "stericsson,ux500-msp-i2s";
+ 			reg = <0x80123000 0x1000>;
 -- 
 1.7.9.5
