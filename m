@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 17/21] ASoC: Ux500: Enable ux500 PCM driver
- for Device Tree
-Date: Thu, 26 Jul 2012 15:22:25 +0100
-Message-ID: <20120726142225.GJ3099@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 20/21] ASoC: codecs: Enable AB8500 CODEC
+	for Device Tree
+Date: Thu, 26 Jul 2012 15:28:26 +0100
+Message-ID: <20120726142825.GK3099@opensource.wolfsonmicro.com>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
- <1343298534-13611-18-git-send-email-lee.jones@linaro.org>
- <20120726113838.GA3099@opensource.wolfsonmicro.com>
- <50114B89.7070100@linaro.org>
+ <1343298534-13611-21-git-send-email-lee.jones@linaro.org>
+ <20120726115055.GD3099@opensource.wolfsonmicro.com>
+ <50114D71.9060700@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2712650914587880830=="
+Content-Type: multipart/mixed; boundary="===============7488254356360093544=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A5C52265E6A
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 16:22:24 +0200 (CEST)
-In-Reply-To: <50114B89.7070100@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3468E265B44
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 16:28:25 +0200 (CEST)
+In-Reply-To: <50114D71.9060700@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,60 +28,77 @@ Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, sameo@linux.intel.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2712650914587880830==
+--===============7488254356360093544==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gX7DG0PufVj3JKBt"
+	protocol="application/pgp-signature"; boundary="Ry3qE+viRNtbc3l7"
 Content-Disposition: inline
 
 
---gX7DG0PufVj3JKBt
+--Ry3qE+viRNtbc3l7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 26, 2012 at 02:52:09PM +0100, Lee Jones wrote:
-> On 26/07/12 12:38, Mark Brown wrote:
+On Thu, Jul 26, 2012 at 03:00:17PM +0100, Lee Jones wrote:
+> On 26/07/12 12:50, Mark Brown wrote:
 
-> >>-	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
-> >>-	platform_device_register(&ux500_pcm);
+> >Yet again no binding documentation....
 
-> >This has the same issue as your last patch...  the way you're doing
-> >things will break audio on all boards using this driver.
+> RFC. ;)
 
-> It will, why?
+> I'll write the documentation when/if the properties are accepted.
 
-You've just removed registration of the device and not added anything
-else to replace that.  Even if all boards convert to DT their DTs will
-need to be updated which you're not doing.
+No, write the documentation.  It's way too much effort to reverse
+engineer the bindings from the code.
 
---gX7DG0PufVj3JKBt
+> >>+		default :
+> >>+			codec->ear_cmv = EAR_CMV_UNKNOWN;
+> >>+			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
+
+> >The platform data code picks a default, can't the DT code do the same?
+
+> No, I don't think that it does? The original code returns -EINVAL
+> unless a value is specified.
+
+The code doesn't specify values for the enumeration so it ought to
+default to EAR_CMV_0_95V if nothing is specified.
+
+> The original author is keen to have a clear error message in case
+> users try to specify non-exact values. I'd rather we fail-out than
+> use incorrect values which would be a great deal harder for a user
+> to debug.
+
+By that argument all the properties should be mandatory but it's only
+this one IIRC.
+
+--Ry3qE+viRNtbc3l7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQEVKZAAoJEBus8iNuMP3dXXAP/115NxMC9YPGEiyKwkdPCvRf
-0Ghbh1Kv2AlpCc25WOc/KeasYgk08QUryvYBKRvxjZ1NpA12+XAOZXdGYD8qVgyv
-EY+yRiKtib9+JsrnPpV7cLWWFUIYkwgk+xNVKwPaw1xxKUwJjUKiwu2GkysHcFET
-TXj7o+JMA9Kfxa2jE3FSa/3JPXgDdLqj7+ZX4olKmIYjGKvdREMv6EuaxCxKAwY0
-kVC0InBKXtmwncuQIQ2hwfcgG9h/sgh0KF13dLByEkTaU/3TveiIZvvs9QX038SX
-eYc82VwRFhSXvAypRl+rQcHu6xEVlK1GHXpW0kZLqSIw0H4Euw2lmCccyhVO0qIY
-spCJ4EseyOyQOyCUZen+r+wbn2N9UqGVfvBZogxMDm2mg8cahyNlrMGKcn4TJfFM
-Ko4HnSjEWJIEKd23nOVC5cTyqXEG2x8aRxapZbadOI+qT1hToECZ1P24gbbwmS6I
-kuPo8ELWYngS4P+/arSxx+dS5rch5tS1Jf1Pf4OHJgY7TEOAPO3MDw8ga7pa4MMt
-6XavRrOV71hNshq7p0/asZdfYb9l+jAF8HXm39+o8GZCbLNVBKQZ/zzAIAhpeKzW
-64CKZgRPCTH4m8LkuJ/g1ry+pzkfJkAZv9OzkjfSiUI/EiYIMTCO1tQI7YtWNCYk
-xDleYooo2WUK64orbkqk
-=lOaV
+iQIcBAEBAgAGBQJQEVP/AAoJEBus8iNuMP3d4OAP/3dSjzRTMkWkanupN3zmIKS+
+20DJ+p7U12apePR7+fXAUi3uJn5htRClpwJymyYNPTIcd0Q55647dqxOF7PX8bmt
+pOBAeSyMbTBr05fMuOlp3YzOnR32c7/nO80100x8K8oJ8+oC7wS3xnlVrAermTiq
+2EwE8PlFRuLVB58ROttdxzmORyxYPgyaon9UH9MPSTW9SmA1FkSAIEp13bojx3V9
+TAuA/g8ItWPTW7vjCPytxBmH/wshwoI9SaIM/OZRLIGVDc2De7XYDla1uPa0Joy2
+boxyB791GYs05hhGK8xKpkyDPtdbRyQNdYFZuOUIPf4X//bnHyOFEZFCxB2qW5+h
+xhFFmlV4x/GpMNTZUyQe4xNTXiscCOw+zexu1r8uTi3KpyHoOzdel1H5pJV3jgFr
+GMBAH+Vkz/7FubJ91lh2eOu7s4dL5C1JOR4IFMoym/SJk6f6HJM0W6sD8krFpx6U
+aMoL52g+BnTm9/boB9rqQd75cMbbnmLF/QM/D6sDzxE3mV6QQtDV1eCVjE/RIw6+
+HwXbKiSbTZgiAHKfJcumcs1ws+N+9NE7B9OZqi2MhvXWzrE1hxF9qU1tpl0dfYy3
+ujncSTs07vN6UuIW3ymdAF3YmQNBa9rHoIQ/kD8NR/vwABTnbrAHixOa+/fm0IAZ
+u7YBVktNDnjWCm2QFRTn
+=0Ho6
 -----END PGP SIGNATURE-----
 
---gX7DG0PufVj3JKBt--
+--Ry3qE+viRNtbc3l7--
 
---===============2712650914587880830==
+--===============7488254356360093544==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2712650914587880830==--
+--===============7488254356360093544==--
