@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 14/21] ARM: ux500: Enable HIGHMEM on all mop500 platforms
-Date: Thu, 26 Jul 2012 11:28:47 +0100
-Message-ID: <1343298534-13611-15-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 10/21] ARM: ux500: Add ux500 PCM to DB8500 Device Tree
+Date: Thu, 26 Jul 2012 11:28:43 +0100
+Message-ID: <1343298534-13611-11-git-send-email-lee.jones@linaro.org>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
@@ -10,27 +10,28 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The current kernel commandline for ux500 based devices includes
-hard-coded allocations for things like mali and hwmem, which
-actually run over lowmem. Here we enable highmem in order to
-avoid memory corruption errors.
+Nothing special here. We're only providing a compatible string
+to ensure the driver is probed using a Device Tree boot.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/db8500.dtsi |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/mach-ux500/Kconfig b/arch/arm/mach-ux500/Kconfig
-index c013bbf..f51c351 100644
---- a/arch/arm/mach-ux500/Kconfig
-+++ b/arch/arm/mach-ux500/Kconfig
-@@ -28,6 +28,7 @@ config MACH_MOP500
- 	select I2C
- 	select I2C_NOMADIK
- 	select SOC_BUS
-+	select HIGHMEM
- 	help
- 	  Include support for the MOP500 development platform.
+diff --git a/arch/arm/boot/dts/db8500.dtsi b/arch/arm/boot/dts/db8500.dtsi
+index 5a72be6..b9d4405 100644
+--- a/arch/arm/boot/dts/db8500.dtsi
++++ b/arch/arm/boot/dts/db8500.dtsi
+@@ -591,6 +591,10 @@
+ 			status = "disabled";
+ 		};
  
++		pcm: ux500-pcm {
++			compatible = "stericsson,ux500-pcm";
++		};
++
+ 		msp0: msp@80123000 {
+ 			compatible = "stericsson,ux500-msp-i2s";
+ 			reg = <0x80123000 0x1000>;
 -- 
 1.7.9.5
