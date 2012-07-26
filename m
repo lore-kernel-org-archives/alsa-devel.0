@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 11/21] ARM: ux500: Add all encompassing Sound node to DB8500 Device Tree
-Date: Thu, 26 Jul 2012 11:28:44 +0100
-Message-ID: <1343298534-13611-12-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 13/21] ARM: ux500: Ensure probing of Audio devices when Device Tree is enabled
+Date: Thu, 26 Jul 2012 11:28:46 +0100
+Message-ID: <1343298534-13611-14-git-send-email-lee.jones@linaro.org>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
@@ -10,32 +10,43 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is the node which links together the platform (PCM), codec (AB8500)
-and the CPU side Digital Audio Interface (MCP) with the machine driver.
+Previous attempts to add platform probing of the Audio related devices
+only call from non-DT initialisation functions. This patch extends that
+functionality to the Device Tree related ones too.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/db8500.dtsi |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/mach-ux500/board-mop500.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/db8500.dtsi b/arch/arm/boot/dts/db8500.dtsi
-index b9d4405..978dd60 100644
---- a/arch/arm/boot/dts/db8500.dtsi
-+++ b/arch/arm/boot/dts/db8500.dtsi
-@@ -595,6 +595,14 @@
- 			compatible = "stericsson,ux500-pcm";
- 		};
+diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
+index b87393c..6f53a6f 100644
+--- a/arch/arm/mach-ux500/board-mop500.c
++++ b/arch/arm/mach-ux500/board-mop500.c
+@@ -793,6 +793,7 @@ static void __init u8500_init_machine(void)
+ 				ARRAY_SIZE(mop500_platform_devs));
  
-+		sound {
-+			compatible = "stericsson,snd-soc-mop500";
-+
-+			platform-pcm-dma = <&pcm>;
-+			cpu-dai = <&msp1 &msp3>;
-+			audio-codec = <&codec>;
-+		};
-+
- 		msp0: msp@80123000 {
- 			compatible = "stericsson,ux500-msp-i2s";
- 			reg = <0x80123000 0x1000>;
+ 		mop500_sdi_init(parent);
++		mop500_msp_init(parent);
+ 		i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+ 		i2c_register_board_info(0, mop500_i2c0_devices, i2c0_devs);
+ 		i2c_register_board_info(2, mop500_i2c2_devices,
+@@ -800,6 +801,8 @@ static void __init u8500_init_machine(void)
+ 
+ 		mop500_uib_init();
+ 
++	} else if (of_machine_is_compatible("calaosystems,snowball-a9500")) {
++		mop500_of_msp_init(parent);
+ 	} else if (of_machine_is_compatible("st-ericsson,hrefv60+")) {
+ 		/*
+ 		 * The HREFv60 board removed a GPIO expander and routed
+@@ -811,6 +814,7 @@ static void __init u8500_init_machine(void)
+ 				ARRAY_SIZE(mop500_platform_devs));
+ 
+ 		hrefv60_sdi_init(parent);
++		mop500_msp_init(parent);
+ 
+ 		i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+ 		i2c0_devs -= NUM_PRE_V60_I2C0_DEVICES;
 -- 
 1.7.9.5
