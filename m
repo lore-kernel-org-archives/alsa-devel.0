@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/21] ASoC: io: Prevent use of regmap if request fails
-Date: Thu, 26 Jul 2012 11:28:40 +0100
-Message-ID: <1343298534-13611-8-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 05/21] ASoC: ux500: Include the correct header files
+Date: Thu, 26 Jul 2012 11:28:38 +0100
+Message-ID: <1343298534-13611-6-git-send-email-lee.jones@linaro.org>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
@@ -10,53 +10,55 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-If a sound codec fails to request a regmap, the 'using_regmap' is
-set as true regardless, despite there being no regmap to use. As a
-repercussion, when a latter read function checks to see if we are
-using regmaps, it assumes we are and attempts to. Only the kernel
-oopes, because regmap_* tries to extract information from a NULL
-pointer.
+Thought to be another merge error, board-mop500-msp.h has never existed
+in the upstream kernel, only msp.h. This patch changes the include files
+to match the existing file name.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/soc-io.c |   14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/ux500/ux500_msp_dai.c |    2 +-
+ sound/soc/ux500/ux500_msp_i2s.c |    2 +-
+ sound/soc/ux500/ux500_msp_i2s.h |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index 29183ef..601cb7f 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -52,10 +52,13 @@ static unsigned int hw_read(struct snd_soc_codec *codec, unsigned int reg)
- 		if (codec->cache_only)
- 			return -1;
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index cdbbdaf..772cb19 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -21,7 +21,7 @@
+ #include <linux/mfd/dbx500-prcmu.h>
  
--		ret = regmap_read(codec->control_data, reg, &val);
--		if (ret == 0)
--			return val;
--		else
-+		if (codec->using_regmap) {
-+			ret = regmap_read(codec->control_data, reg, &val);
-+			if (ret == 0)
-+				return val;
-+			else
-+				return -1;
-+		} else
- 			return -1;
- 	}
+ #include <mach/hardware.h>
+-#include <mach/board-mop500-msp.h>
++#include <mach/msp.h>
  
-@@ -141,11 +144,12 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 4c79850..36be11e 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -19,7 +19,7 @@
+ #include <linux/slab.h>
  
- 	case SND_SOC_REGMAP:
- 		/* Device has made its own regmap arrangements */
--		codec->using_regmap = true;
- 		if (!codec->control_data)
- 			codec->control_data = dev_get_regmap(codec->dev, NULL);
+ #include <mach/hardware.h>
+-#include <mach/board-mop500-msp.h>
++#include <mach/msp.h>
  
- 		if (codec->control_data) {
-+			codec->using_regmap = true;
-+
- 			ret = regmap_get_val_bytes(codec->control_data);
- 			/* Errors are legitimate for non-integer byte
- 			 * multiples */
+ #include <sound/soc.h>
+ 
+diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
+index 7f71b4a..2d9136d 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.h
++++ b/sound/soc/ux500/ux500_msp_i2s.h
+@@ -17,7 +17,7 @@
+ 
+ #include <linux/platform_device.h>
+ 
+-#include <mach/board-mop500-msp.h>
++#include <mach/msp.h>
+ 
+ #define MSP_INPUT_FREQ_APB 48000000
+ 
 -- 
 1.7.9.5
