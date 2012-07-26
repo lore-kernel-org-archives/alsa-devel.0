@@ -1,46 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: ab8500: Remove pointless cast
-Date: Thu, 26 Jul 2012 15:49:11 +0100
-Message-ID: <1343314151-26442-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 07/21] ASoC: io: Prevent use of regmap if request fails
+Date: Thu, 26 Jul 2012 15:51:13 +0100
+Message-ID: <50115961.6060509@linaro.org>
+References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org> <1343298534-13611-8-git-send-email-lee.jones@linaro.org> <20120726113204.GY3099@opensource.wolfsonmicro.com> <50112C29.6020606@linaro.org> <20120726114215.GB3099@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E1F6265EBD
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 16:49:10 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ola Lilja <ola.o.lilja@stericsson.com>, Lee Jones <lee.jones@linaro.org>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120726114215.GB3099@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-There's never any need to cast away from void.
+On 26/07/12 12:42, Mark Brown wrote:
+> On Thu, Jul 26, 2012 at 12:38:17PM +0100, Lee Jones wrote:
+>> On 26/07/12 12:32, Mark Brown wrote:
+>
+>>> Again, this makes no sense.  If we're explicitly being asked to use
+>>> regmap then we should be using regmap or just failing to set up I/O
+>>> (which is obviously a catastrophic failure).
+>
+>> How much work is there involved in regmap:ing a device, so that
+>> dev_get_regmap() doesn't fail?
+>
+> Trivial if it's on a supported bus, otherwise you just need to write =
+the
+> bus.  But why do you care if dev_get_regmap() fails?  We only try to =
+use
+> regmap if the driver asked for regmap I/O (or doesn't have registers =
+at
+> all in which case it doesn't matter since we never do any I/O).  What
+> you appear to be saying here is that you're using regmap on a device
+> which doesn't have a regmap set up which is clearly never going to wo=
+rk
+> terribly well...
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/ab8500-codec.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't think we want to use regmap at all, but we're forced to by=20
+soc-core. How do we over-ride that behavior? By writing some nonsense=20
+into codec->control_data?
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 3c79592..05d70934 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2405,7 +2405,7 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 	dev_dbg(dev, "%s: Enter.\n", __func__);
- 
- 	/* Setup AB8500 according to board-settings */
--	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
-+	pdata = dev_get_platdata(dev->parent);
- 	status = ab8500_audio_setup_mics(codec, &pdata->codec->amics);
- 	if (status < 0) {
- 		pr_err("%s: Failed to setup mics (%d)!\n", __func__, status);
--- 
-1.7.10.4
+
+--=20
+Lee Jones
+Linaro ST-Ericsson Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
