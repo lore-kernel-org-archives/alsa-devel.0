@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RESEND] ASoC: omap-abe-twl6040: Add device tree
-	support
-Date: Thu, 26 Jul 2012 13:00:46 +0100
-Message-ID: <20120726120046.GH3099@opensource.wolfsonmicro.com>
-References: <1343221751-29863-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/2] ASoC: wm_hubs: Factor out DC servo
+	readback code
+Date: Thu, 26 Jul 2012 14:15:42 +0100
+Message-ID: <1343308543-22455-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6245475064791398815=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1BCEB265E85
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 14:00:45 +0200 (CEST)
-In-Reply-To: <1343221751-29863-1-git-send-email-peter.ujfalusi@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 19C4C264EFB
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 15:15:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +19,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+It's currently only used in one place but another user will be added
+shortly and there's an argument it's clearer anyway.
 
---===============6245475064791398815==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h2J70RNbM0WNXG3M"
-Content-Disposition: inline
+Also add support for readback in mode 1, though it's not currently used.
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_hubs.c |   65 +++++++++++++++++++++++++++++---------------
+ 1 file changed, 43 insertions(+), 22 deletions(-)
 
---h2J70RNbM0WNXG3M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 25, 2012 at 04:09:11PM +0300, Peter Ujfalusi wrote:
-> When the board boots with device tree the driver will receive the name of the
-> card, DAPM routing map, phandle for the audio components described in the dts
-> file, mclk speed, and the possibility of detecting the jack detection.
-
-Applied, thanks (for 3.7).
-
---h2J70RNbM0WNXG3M
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQETFnAAoJEBus8iNuMP3dc70P/3Sj1yk/PR+jQWlqv6+Dp+bg
-drYjU3riCLRzBq/PoKQqf3MBYKt6hrJd54S/ecM8SLVkGf6sPyWiyz3ymQQPq7pD
-hfGOBAT4YL4EWAZzf7+X6zL74iTmOaKm/D1nnjJgiWbw9fwaXQAakJtC07CbjC9O
-I7bOMXLpJWxYD+VLWjratDDracPQd1GbcOwSmSlgubQVgkG+8NWjJtnI2nFzYBKB
-LzWJ39qOaCW45hB2xEsakgsZUNIr+aZB7Ku9wOqKK0phvHh7ZI1VBj7Ybcdj0YnZ
-2F8UWIXMApZWUKaROhntb8rlDB7oIbHkGB9tGQiGEaRPB5973MDWLTKcxd0BizX3
-D6RanlLQEp23v/GFxniowaNjy4MyuwG+w1Ic2tNnSxoaiBzvbre0ByExraI696Wg
-r1c+r1cUR0UpkvwaLY37a8d1fuZH+eizdrCpLrlil46IXUbKoa2vHYnq5lTIT8wh
-4a38jMWf5q8YiV+o99psyMDdGApDYpzCWDQ6GkgiyexeNtUZvBbJcTTkrNXlupwQ
-aBCSFrg7qCiQ5Leno5bidjV9HDnSuwTTHoHM/BHx1O3+eYzJkmIP6g8UeqSgXVXu
-UEnVplJ/vv5z74SO6Z8Nd6Wo+CnXw1MChSBnltz+nF8Pp6s0ybqGU8mZ38B62+Sf
-xmim6ySwgXuYJGHNu6D9
-=Suk5
------END PGP SIGNATURE-----
-
---h2J70RNbM0WNXG3M--
-
---===============6245475064791398815==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6245475064791398815==--
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 728a180..6ab69f3 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -199,6 +199,47 @@ static void wm_hubs_dcs_cache_set(struct snd_soc_codec *codec, u16 dcs_cfg)
+ 	list_add_tail(&cache->list, &hubs->dcs_cache);
+ }
+ 
++static void wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
++				  u16 *reg_l, u16 *reg_r)
++{
++	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
++	u16 dcs_reg, reg;
++
++	switch (hubs->dcs_readback_mode) {
++	case 2:
++		dcs_reg = WM8994_DC_SERVO_4E;
++		break;
++	case 1:
++		dcs_reg = WM8994_DC_SERVO_READBACK;
++		break;
++	default:
++		dcs_reg = WM8993_DC_SERVO_3;
++		break;
++	}
++
++	/* Different chips in the family support different readback
++	 * methods.
++	 */
++	switch (hubs->dcs_readback_mode) {
++	case 0:
++		*reg_l = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_1)
++			& WM8993_DCS_INTEG_CHAN_0_MASK;
++		*reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
++			& WM8993_DCS_INTEG_CHAN_1_MASK;
++		break;
++	case 2:
++	case 1:
++		reg = snd_soc_read(codec, dcs_reg);
++		*reg_r = (reg & WM8993_DCS_DAC_WR_VAL_1_MASK)
++			>> WM8993_DCS_DAC_WR_VAL_1_SHIFT;
++		*reg_l = reg & WM8993_DCS_DAC_WR_VAL_0_MASK;
++		break;
++	default:
++		WARN(1, "Unknown DCS readback method\n");
++		return;
++	}
++}
++
+ /*
+  * Startup calibration of the DC servo
+  */
+@@ -207,7 +248,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_hubs_dcs_cache *cache;
+ 	s8 offset;
+-	u16 reg, reg_l, reg_r, dcs_cfg, dcs_reg;
++	u16 reg_l, reg_r, dcs_cfg, dcs_reg;
+ 
+ 	switch (hubs->dcs_readback_mode) {
+ 	case 2:
+@@ -245,27 +286,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 				  WM8993_DCS_TRIG_STARTUP_1);
+ 	}
+ 
+-	/* Different chips in the family support different readback
+-	 * methods.
+-	 */
+-	switch (hubs->dcs_readback_mode) {
+-	case 0:
+-		reg_l = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_1)
+-			& WM8993_DCS_INTEG_CHAN_0_MASK;
+-		reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
+-			& WM8993_DCS_INTEG_CHAN_1_MASK;
+-		break;
+-	case 2:
+-	case 1:
+-		reg = snd_soc_read(codec, dcs_reg);
+-		reg_r = (reg & WM8993_DCS_DAC_WR_VAL_1_MASK)
+-			>> WM8993_DCS_DAC_WR_VAL_1_SHIFT;
+-		reg_l = reg & WM8993_DCS_DAC_WR_VAL_0_MASK;
+-		break;
+-	default:
+-		WARN(1, "Unknown DCS readback method\n");
+-		return;
+-	}
++	wm_hubs_read_dc_servo(codec, &reg_l, &reg_r);
+ 
+ 	dev_dbg(codec->dev, "DCS input: %x %x\n", reg_l, reg_r);
+ 
+-- 
+1.7.10.4
