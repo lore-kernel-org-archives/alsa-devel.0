@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 12/21] ARM: ux500: Fork MSP platform registration for step-by-step DT enablement
-Date: Thu, 26 Jul 2012 11:28:45 +0100
-Message-ID: <1343298534-13611-13-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 14/21] ARM: ux500: Enable HIGHMEM on all mop500 platforms
+Date: Thu, 26 Jul 2012 11:28:47 +0100
+Message-ID: <1343298534-13611-15-git-send-email-lee.jones@linaro.org>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
@@ -10,69 +10,27 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-We've done this before and it worked well last time. Here we're
-duplicating a complex registration function to ease the process
-of enabling it for Device Tree. As there are quite a few steps
-taken during the registration process, it makes sense to break
-them up into more manageable chunks. This patch will aid us.
+The current kernel commandline for ux500 based devices includes
+hard-coded allocations for things like mali and hwmem, which
+actually run over lowmem. Here we enable highmem in order to
+avoid memory corruption errors.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/board-mop500-msp.c |   42 ++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ arch/arm/mach-ux500/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
-index 217df1d..d0bd030 100644
---- a/arch/arm/mach-ux500/board-mop500-msp.c
-+++ b/arch/arm/mach-ux500/board-mop500-msp.c
-@@ -223,6 +223,48 @@ static struct msp_i2s_platform_data msp3_platform_data = {
- 	.msp_i2s_exit = msp13_i2s_exit,
- };
+diff --git a/arch/arm/mach-ux500/Kconfig b/arch/arm/mach-ux500/Kconfig
+index c013bbf..f51c351 100644
+--- a/arch/arm/mach-ux500/Kconfig
++++ b/arch/arm/mach-ux500/Kconfig
+@@ -28,6 +28,7 @@ config MACH_MOP500
+ 	select I2C
+ 	select I2C_NOMADIK
+ 	select SOC_BUS
++	select HIGHMEM
+ 	help
+ 	  Include support for the MOP500 development platform.
  
-+/* Due for removal once the MSP driver has been fully DT:ed. */
-+void mop500_of_msp_init(struct device *parent)
-+{
-+	struct platform_device *msp1;
-+
-+	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
-+	platform_device_register(&snd_soc_mop500);
-+
-+	pr_info("Initialize MSP I2S-devices.\n");
-+	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
-+			   &msp0_platform_data);
-+	msp1 = db8500_add_msp_i2s(parent, 1, U8500_MSP1_BASE, IRQ_DB8500_MSP1,
-+			   &msp1_platform_data);
-+	db8500_add_msp_i2s(parent, 2, U8500_MSP2_BASE, IRQ_DB8500_MSP2,
-+			   &msp2_platform_data);
-+	db8500_add_msp_i2s(parent, 3, U8500_MSP3_BASE, IRQ_DB8500_MSP1,
-+			   &msp3_platform_data);
-+
-+	/* Get the pinctrl handle for MSP1 */
-+	if (msp1) {
-+		msp1_p = pinctrl_get(&msp1->dev);
-+		if (IS_ERR(msp1_p))
-+			dev_err(&msp1->dev, "could not get MSP1 pinctrl\n");
-+		else {
-+			msp1_def = pinctrl_lookup_state(msp1_p,
-+							PINCTRL_STATE_DEFAULT);
-+			if (IS_ERR(msp1_def)) {
-+				dev_err(&msp1->dev,
-+					"could not get MSP1 defstate\n");
-+			}
-+			msp1_sleep = pinctrl_lookup_state(msp1_p,
-+							  PINCTRL_STATE_SLEEP);
-+			if (IS_ERR(msp1_sleep))
-+				dev_err(&msp1->dev,
-+					"could not get MSP1 idlestate\n");
-+		}
-+	}
-+
-+	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
-+	platform_device_register(&ux500_pcm);
-+}
-+
- void mop500_msp_init(struct device *parent)
- {
- 	struct platform_device *msp1;
 -- 
 1.7.9.5
