@@ -1,12 +1,16 @@
-From: "Bharath Ramachandramurthy" <bramacha@codeaurora.org>
-Subject: Unregister and register the sound card
-Date: Wed, 25 Jul 2012 22:48:50 -0700
-Message-ID: <003201cd6af2$55879070$0096b150$@codeaurora.org>
+From: Philippe =?ISO-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: Crash when probing imx_mc13783
+Date: Thu, 26 Jul 2012 09:29:26 +0200
+Message-ID: <3192997.N5KLupAYnr@laptop>
+References: <CAOMZO5B4Z4jACQFt5gy2o3VLqGrQg+bXcN12ChysrQphYNxQBA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Language: en-us
+Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
+ by alsa0.perex.cz (Postfix) with SMTP id 10923264EEB
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 09:29:31 +0200 (CEST)
+In-Reply-To: <CAOMZO5B4Z4jACQFt5gy2o3VLqGrQg+bXcN12ChysrQphYNxQBA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,50 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Le mercredi 25 juillet 2012 16:56:43 Fabio Estevam a =E9crit :
+> Hi,
+> =
 
- 
+> I have just tried 3.5.0-next-20120725+  on a mx31pdk board and I am getti=
+ng:
 
-After the kernel has booted up and sound card detection is also fine, if
-there is a requirement
+> =
 
-To unregister the sound card and re-register it back to ALSA SOC framework,
-what is the recommendation,
+> Before I start to investigate this, I would like to know if there is
+> some recent patch I am missing or any other suggestion.
 
-Especially when platform, codec & cpu dai drivers are registering with ALSA
-framework only at bootime ?
+Well, I'm able to boot 3.5 on my board (imx31 based), so it must be a patch =
 
- 
+between 3.5 and 3.5-next. It should be quite quickly bisectable.
 
-Am noticing that when sound card is
-unregistered(platform_device_unregister), all dai links gets deregistered 
+Regards,
 
-(pls note the driver is not removed from kernel, only the device is removed
-from alsa framework)
-
-but when I try to add the same using platform_device_add(soc-audio), 
-
-observe that dai links registration doesn't go thru fine as the cpu dais are
-not re-registered back to ALSA framework.
-
-This is because the probes of the cpu dais weren't called as it was not
-never unregistered with the kernel.
-
- 
-
-What is the best way to overcome this pbm ?
-
- 
-
- 
-
-Thanks
-
-Bharath
-
- 
-
- 
+Philippe
