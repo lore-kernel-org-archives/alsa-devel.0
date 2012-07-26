@@ -1,19 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Crash when probing imx_mc13783
-Date: Thu, 26 Jul 2012 21:20:26 +0100
-Message-ID: <20120726202025.GB4560@opensource.wolfsonmicro.com>
-References: <CAOMZO5B4Z4jACQFt5gy2o3VLqGrQg+bXcN12ChysrQphYNxQBA@mail.gmail.com>
- <3192997.N5KLupAYnr@laptop>
- <CAOMZO5BsOV3X09DKc-uexe9mqhYhkbmKZg2vh_h2-hBB=X1A7Q@mail.gmail.com>
- <50116D38.6050001@linaro.org>
- <CAOMZO5AFifTGBt1=Z87pqp9Go9PkS_a5Mcu2+MMLCzFGrzqANA@mail.gmail.com>
+Subject: Re: [PATCH 07/21] ASoC: io: Prevent use of regmap if
+	request fails
+Date: Thu, 26 Jul 2012 21:23:11 +0100
+Message-ID: <20120726202311.GC4560@opensource.wolfsonmicro.com>
+References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
+ <1343298534-13611-8-git-send-email-lee.jones@linaro.org>
+ <20120726113204.GY3099@opensource.wolfsonmicro.com>
+ <50112C29.6020606@linaro.org>
+ <20120726114215.GB3099@opensource.wolfsonmicro.com>
+ <50115961.6060509@linaro.org>
+ <20120726151217.GO3099@opensource.wolfsonmicro.com>
+ <501160F5.5050807@linaro.org>
+ <20120726152533.GS3099@opensource.wolfsonmicro.com>
+ <50116ADF.4050700@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5639248029264085111=="
+Content-Type: multipart/mixed; boundary="===============1512748410078864875=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B3B50265F2B
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 22:20:48 +0200 (CEST)
-In-Reply-To: <CAOMZO5AFifTGBt1=Z87pqp9Go9PkS_a5Mcu2+MMLCzFGrzqANA@mail.gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BE31265F25
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 22:24:29 +0200 (CEST)
+In-Reply-To: <50116ADF.4050700@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +29,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>, Sascha Hauer <kernel@pengutronix.de>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, sameo@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, linus.walleij@stericsson.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5639248029264085111==
+--===============1512748410078864875==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
+	protocol="application/pgp-signature"; boundary="ZwgA9U+XZDXt4+m+"
 Content-Disposition: inline
 
 
---BwCQnh7xodEAoBMC
+--ZwgA9U+XZDXt4+m+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 26, 2012 at 02:16:43PM -0300, Fabio Estevam wrote:
+On Thu, Jul 26, 2012 at 05:05:51PM +0100, Lee Jones wrote:
+> On 26/07/12 16:25, Mark Brown wrote:
 
-> +	codec->control_data = priv;
-> +
+> >You're supposed to use it for the data you use to call back into the
+> >underlying I/O code.
 
-> Will submit this patch shortly.
+> I don't understand. What 'data'?
 
-Yes, this looks good.
+Whatever your I/O layer so desires, the core doesn't care.  It's
+generally whatever the lower layer that does your I/O takes to identify
+the device.
 
---BwCQnh7xodEAoBMC
+> Surely if .read and .write are populated in 'struct
+> snd_soc_codec_driver', then it should just call back into those?
+
+Yes, and in fact that's what we do!
+
+--ZwgA9U+XZDXt4+m+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQEaaBAAoJEBus8iNuMP3dTtsP/j7cOLtTrLajlEqAKsbLZMeL
-QIitmAXOyBf0YEkO6gYkjfsFW2AC6M75+kgwSyFEgFYqMqKfhkLQmYKlfvqg9dGu
-0BQ4qZVYKPP/mzJhGm97p1QeiPBIXJf28TFb5zx+sJ3WgjalRLAszc807yzNTz1v
-PHwFdQGwr3yBu2dj0RdFgD6qUGs9ECL/k1sJbQd/28Q1/J7Yer7EkJ7GFakDyirX
-njQ1jpUcj90uzpPr2cCqONqEwBz+NH0e72I0T0ML+Odmx9ThW22/tMwJ7eQaDzJG
-8JImS4qyFBMFchAYQyHv1oXrc+SWsEGeuEm3Pl4Uzf4l8MpfmMbW9A6M9lTRdo9R
-u/S6AyC5RNklUQ+7P+tXsvKuJVmd1k4dzWU7P15pBpYMXcGxQe5i7bt4wzey+rdC
-QT/viTsEz7S98UhkXhFJ3rg2S7wsWSC0H2xmOH6ZvGyfW5H/wMB9G5zvCKu7Kh1l
-vR0czKThXbRfKbZwXbRAOs7EXNO616vjMbbbi9/xXZY3TnRjj6PlELQwzOBwInkZ
-0w3Cj1AdnAxzZUeH6bidlmQv9YP+xcwmk1+C9znVSDzYUDm+sTe8cWn6cJAdai7t
-3NHKDJp4dXr0p+yraN4/jXwm64dyRNMpjAq6y7dPhT6VC95fOyt5BLxDR/Yw8s/A
-tcYK+2KcSyOIOBeQMvg0
-=gBgV
+iQIcBAEBAgAGBQJQEacfAAoJEBus8iNuMP3dEasP/3A3n/FxKTf/QXUrkiPW7T6n
+Pgafq7YAXayZ0Xps44bkxTFQ8qfy53a2RiumkngR0FxZO8f1EzY0PdhNaCgMbAmk
+EfCzak6zgJLaij+dNehjtyQk4G5JDpYnoTzScYRbs6a+3nsFQj72LSrK5r6MbVPv
+jYuCnPZZbjWw4V/BEGDzWRkwO+YK3ofPL+JlSOyu/kpfb/IUpuQWpE7vwR5pSOjr
+mjVGmJ/3pL/rgVY4YU+o/D8uUP5Ty/YJ1Qo1rCntWFq3N3wWG66HIT6Izlxy9CPs
+hGaDXbKsiwwpmZaSPGzVMrmsnEryefErN3tuaZdGZlk3qyRY4ajcZ5LGr70+L/lE
+xIIm04lYv9Xfi8gC/MNhntDU2my08avOeZEtoPraVjwtW6tVxXD4jpIPkmLkjU+4
+EF5i8T5KvJpWtYXehJWLZ5VUT4dk+dEkVTB9JaytSnX64Yv5NC5hf2pvBZOTN1s+
+f1HduEu/rNwCFbwhnDK89eePqcrXH9G1QPNwn3WES5Z8PsW7FQ587IgVGP5kZ7WD
+c371hLhrWto4EPJmNa2K9IqUr3vAKhCu4/13QXaYDze22d6pbPLCFAZEk4vdNodz
+oN4ax/8Ha4KjiiwWEjJJu4kl4zR1u8FlMV7YRORo89TetXBYo7k2rYcDWOoxIluY
+tdw+U5f1UG3NYirAraHS
+=akTz
 -----END PGP SIGNATURE-----
 
---BwCQnh7xodEAoBMC--
+--ZwgA9U+XZDXt4+m+--
 
---===============5639248029264085111==
+--===============1512748410078864875==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5639248029264085111==--
+--===============1512748410078864875==--
