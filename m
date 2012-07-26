@@ -1,36 +1,42 @@
 From: Hideki EIRAKU <hdk@igel.co.jp>
-Subject: [PATCH v2 0/4] Use dma_mmap_coherent to support IOMMU mapper
-Date: Thu, 26 Jul 2012 20:13:07 +0900
-Message-ID: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
+Subject: [PATCH v2 2/4] ALSA: pcm - Don't define ARCH_HAS_DMA_MMAP_COHERENT privately for ARM
+Date: Thu, 26 Jul 2012 20:13:09 +0900
+Message-ID: <1343301191-26001-3-git-send-email-hdk@igel.co.jp>
+References: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Russell King <linux@arm.linux.org.uk>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, Hideki EIRAKU <hdk@igel.co.jp>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is a dma_mmap_coherent() API in some architectures.  This API
-provides a mmap function for memory allocated by dma_alloc_coherent().
-Some drivers mmap a dma_addr_t returned by dma_alloc_coherent() as a
-physical address.  But such drivers do not work correctly when IOMMU
-mapper is used.
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-v2:
-- Rebase on fbdev-next branch of
-  git://github.com/schandinat/linux-2.6.git.
-- Initialize .fb_mmap in both sh_mobile_lcdc_overlay_ops and
-  sh_mobile_lcdc_ops.
-- Add Laurent's clean up patch.
+The ARM architecture now defines ARCH_HAS_DMA_MMAP_COHERENT, there's no
+need to define it privately anymore.
 
-Hideki EIRAKU (3):
-  ARM: dma-mapping: define ARCH_HAS_DMA_MMAP_COHERENT
-  media: videobuf2-dma-contig: use dma_mmap_coherent if available
-  fbdev: sh_mobile_lcdc: use dma_mmap_coherent if available
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ sound/core/pcm_native.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
 
-Laurent Pinchart (1):
-  ALSA: pcm - Don't define ARCH_HAS_DMA_MMAP_COHERENT privately for ARM
-
- arch/arm/include/asm/dma-mapping.h         |    1 +
- drivers/media/video/videobuf2-dma-contig.c |   18 ++++++++++++++++++
- drivers/video/sh_mobile_lcdcfb.c           |   28 ++++++++++++++++++++++++++++
- sound/core/pcm_native.c                    |    7 -------
- 4 files changed, 47 insertions(+), 7 deletions(-)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 53b5ada..84ead60 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3156,13 +3156,6 @@ static const struct vm_operations_struct snd_pcm_vm_ops_data_fault = {
+ 	.fault =	snd_pcm_mmap_data_fault,
+ };
+ 
+-#ifndef ARCH_HAS_DMA_MMAP_COHERENT
+-/* This should be defined / handled globally! */
+-#ifdef CONFIG_ARM
+-#define ARCH_HAS_DMA_MMAP_COHERENT
+-#endif
+-#endif
+-
+ /*
+  * mmap the DMA buffer on RAM
+  */
+-- 
+1.7.0.4
