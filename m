@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 10/21] ARM: ux500: Add ux500 PCM to DB8500 Device Tree
-Date: Thu, 26 Jul 2012 11:28:43 +0100
-Message-ID: <1343298534-13611-11-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 06/21] ASoC: dapm: If one widget fails, do not force all subsequent widgets to fail too
+Date: Thu, 26 Jul 2012 11:28:39 +0100
+Message-ID: <1343298534-13611-7-git-send-email-lee.jones@linaro.org>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
@@ -10,28 +10,28 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Nothing special here. We're only providing a compatible string
-to ensure the driver is probed using a Device Tree boot.
+If a list of widgets is provided and one of them fails to be added as
+a control, the present semantics fail all subsequent widgets. A better
+solution would be to only fail that widget, but pursue in attempting
+to add the rest of the list.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/db8500.dtsi |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/soc-dapm.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/db8500.dtsi b/arch/arm/boot/dts/db8500.dtsi
-index 5a72be6..b9d4405 100644
---- a/arch/arm/boot/dts/db8500.dtsi
-+++ b/arch/arm/boot/dts/db8500.dtsi
-@@ -591,6 +591,10 @@
- 			status = "disabled";
- 		};
- 
-+		pcm: ux500-pcm {
-+			compatible = "stericsson,ux500-pcm";
-+		};
-+
- 		msp0: msp@80123000 {
- 			compatible = "stericsson,ux500-msp-i2s";
- 			reg = <0x80123000 0x1000>;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index eded657..7d9c154 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3095,8 +3095,6 @@ int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
+ 			dev_err(dapm->dev,
+ 				"ASoC: Failed to create DAPM control %s\n",
+ 				widget->name);
+-			ret = -ENOMEM;
+-			break;
+ 		}
+ 		widget++;
+ 	}
 -- 
 1.7.9.5
