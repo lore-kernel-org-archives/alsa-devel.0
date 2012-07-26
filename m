@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 20/21] ASoC: codecs: Enable AB8500 CODEC
 	for Device Tree
-Date: Thu, 26 Jul 2012 15:28:26 +0100
-Message-ID: <20120726142825.GK3099@opensource.wolfsonmicro.com>
+Date: Thu, 26 Jul 2012 15:43:36 +0100
+Message-ID: <20120726144336.GL3099@opensource.wolfsonmicro.com>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
  <1343298534-13611-21-git-send-email-lee.jones@linaro.org>
  <20120726115055.GD3099@opensource.wolfsonmicro.com>
- <50114D71.9060700@linaro.org>
+ <501150E5.6010503@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7488254356360093544=="
+Content-Type: multipart/mixed; boundary="===============1830481492470531548=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3468E265B44
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 16:28:25 +0200 (CEST)
-In-Reply-To: <50114D71.9060700@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5CACD265EBD
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 16:43:35 +0200 (CEST)
+In-Reply-To: <501150E5.6010503@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,77 +28,99 @@ Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, sameo@linux.intel.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7488254356360093544==
+--===============1830481492470531548==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ry3qE+viRNtbc3l7"
+	protocol="application/pgp-signature"; boundary="hm39DdI+xc+0zcX9"
 Content-Disposition: inline
 
 
---Ry3qE+viRNtbc3l7
+--hm39DdI+xc+0zcX9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 26, 2012 at 03:00:17PM +0100, Lee Jones wrote:
-> On 26/07/12 12:50, Mark Brown wrote:
+On Thu, Jul 26, 2012 at 03:15:01PM +0100, Lee Jones wrote:
+> Sorry missed this:
 
-> >Yet again no binding documentation....
+> >Why are we doing this?  The MFD cells are a totally Linux specific
+> >thing, there's no reason to represent them in the device tree unless
+> >they're in some way reusable and the "ab8500-codec" name suggests that's
+> >unlikely.  Just put the properties on the parent node and instantiate
+> >the MFD cell as normal.
 
-> RFC. ;)
+> We have all of the AB8500 devices into the Device Tree to accurately
+> represent the hardware. We will also be passing configuration
+> information into the AB8500 Codec from Device Tree. The only reason
+> we're still registering them using the MFD API is to overcome
+> addressing issues encountered earlier. Each 'device' still belongs
+> in the 'device' tree.
 
-> I'll write the documentation when/if the properties are accepted.
+The device here is the AB8500.  The fact that Linux chooses to represent
+it as an MFD with a particular set of subdrivers is a Linux specific
+decision and may well change over time.  For example it's likely that
+we'll want to migrate the clocks out of the audio driver and into the
+clock API when that becomes useful.  Similarly currently a lot of these
+devices use ASoC level jack detection but that's going to move over to
+extcon over time.=20
 
-No, write the documentation.  It's way too much effort to reverse
-engineer the bindings from the code.
+There's no way you're going to be able to reuse this for anything that
+isn't an AB8500, there's no abstraction of the SoC integration here.  If
+you had clearly identifiable, repeatable IPs which you could reasonably
+bind to a different bit of silicon then that'd be different but there's
+nothing like that here.  We already know that the functionality covered
+by the driver is going to be present simply by virtue of knowing that
+there's an AB8500 and similarly there's no real way this driver could
+ever be used without the core driver.  All the "device" in the device
+tree is doing is serving as a container to place some of the DT
+properties into, this needs to be separated out from the instantiation
+of the Linux device driver.  There's nothing stopping the driver from
+looking at the OF node of its parent here.
 
-> >>+		default :
-> >>+			codec->ear_cmv = EAR_CMV_UNKNOWN;
-> >>+			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
+The goal here isn't just to copy the Linux device model and platform
+data into device tree bindings, the device tree bindings need to think
+about what the chip actually is so they can be reused by other OSs and
+by future versions of Linux.
 
-> >The platform data code picks a default, can't the DT code do the same?
+> If we were to take this Device Tree and use it on something
+> non-Linux, that OS will still need to know about each of the AB8500
+> devices and every associated configuration option. Only in Linux do
+> we continue to register them though a different API, which doesn't
+> affect any other OS.
 
-> No, I don't think that it does? The original code returns -EINVAL
-> unless a value is specified.
+Another OS might have a different idea about how it's going to split up
+the chip which better fits with the models which that OS has for the
+functions present on the device.  The reason this is a distinct device
+in Linux is all to do with how Linux models the hardware.
 
-The code doesn't specify values for the enumeration so it ought to
-default to EAR_CMV_0_95V if nothing is specified.
-
-> The original author is keen to have a clear error message in case
-> users try to specify non-exact values. I'd rather we fail-out than
-> use incorrect values which would be a great deal harder for a user
-> to debug.
-
-By that argument all the properties should be mandatory but it's only
-this one IIRC.
-
---Ry3qE+viRNtbc3l7
+--hm39DdI+xc+0zcX9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQEVP/AAoJEBus8iNuMP3d4OAP/3dSjzRTMkWkanupN3zmIKS+
-20DJ+p7U12apePR7+fXAUi3uJn5htRClpwJymyYNPTIcd0Q55647dqxOF7PX8bmt
-pOBAeSyMbTBr05fMuOlp3YzOnR32c7/nO80100x8K8oJ8+oC7wS3xnlVrAermTiq
-2EwE8PlFRuLVB58ROttdxzmORyxYPgyaon9UH9MPSTW9SmA1FkSAIEp13bojx3V9
-TAuA/g8ItWPTW7vjCPytxBmH/wshwoI9SaIM/OZRLIGVDc2De7XYDla1uPa0Joy2
-boxyB791GYs05hhGK8xKpkyDPtdbRyQNdYFZuOUIPf4X//bnHyOFEZFCxB2qW5+h
-xhFFmlV4x/GpMNTZUyQe4xNTXiscCOw+zexu1r8uTi3KpyHoOzdel1H5pJV3jgFr
-GMBAH+Vkz/7FubJ91lh2eOu7s4dL5C1JOR4IFMoym/SJk6f6HJM0W6sD8krFpx6U
-aMoL52g+BnTm9/boB9rqQd75cMbbnmLF/QM/D6sDzxE3mV6QQtDV1eCVjE/RIw6+
-HwXbKiSbTZgiAHKfJcumcs1ws+N+9NE7B9OZqi2MhvXWzrE1hxF9qU1tpl0dfYy3
-ujncSTs07vN6UuIW3ymdAF3YmQNBa9rHoIQ/kD8NR/vwABTnbrAHixOa+/fm0IAZ
-u7YBVktNDnjWCm2QFRTn
-=0Ho6
+iQIcBAEBAgAGBQJQEVeRAAoJEBus8iNuMP3dWHcP/3xSSO3FtpCDtno2hVqAxba7
+rQ4KOEFOnrvzQGQAPwKfR+541Nn3Eo1Sv+2fzTFofgWJ8uwg48w1eaT7Bh4Smv4B
+gLU+DzH3b8JJN+1n/gPtNmhrbjOHA80yN7QYdMdffMFX2T88FtAL+hfzcJ79ildL
+nB4RHoIoLzCA7fj3Q8P1K0gtNiz5Lec+BQXuif+mgr7nXYwKn4n3FR7sqCdzjHPY
+QpoZDfsC2sAKXZbDzBAxI5AjKunhtCKkM5kC+4g9KsSpkyrTcumoPWXmQKgb4w1C
+1+0pQJhPTS/EdlnsfM3LpXXB9QnpVN0SvMjnQQbHZBLoeZg8ojiwZTy6suepWCbI
+cJQZvT//FUD5oE71h5jDxcCOvApaRkKiZQPtEoP1qvBe9uAGrc1WnudqoGA0QRY2
+PMfPkp5kd9w+mfLFV8ufN3wlvjmsvqn258+Hfcau3VXwJuPVaU75yyAmgOJfMsc1
+YnlAcoDPGGdx/X9+ax4NecXxQtVEDa5bJU/PROhFeadDqWNKULTELGCXlp7pCPmH
+klyju4aC0fqx16cAwzO/tEmfJVjFgNl+lTqltq4Wp4RsaHv9uaEhlw2SepaA6JpL
+LpaJMxbmJCdvxNrCGBWGAG5jf43yO/um+4XEX5QEbflwLPX8SIBDfemZKhja2ziW
+SV1okyag48xsne6nRMT0
+=7eYn
 -----END PGP SIGNATURE-----
 
---Ry3qE+viRNtbc3l7--
+--hm39DdI+xc+0zcX9--
 
---===============7488254356360093544==
+--===============1830481492470531548==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7488254356360093544==--
+--===============1830481492470531548==--
