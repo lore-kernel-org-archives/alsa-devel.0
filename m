@@ -1,51 +1,86 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] sound: tegra_wm8903: Adjust to of_get_named_gpio()
- change
-Date: Thu, 26 Jul 2012 22:25:16 +0100
-Message-ID: <20120726212515.GH4560@opensource.wolfsonmicro.com>
-References: <1340037743-12924-1-git-send-email-stigge@antcom.de>
+Subject: Re: [PATCH V2] Add missing modules aliases to get
+ sound working on omap devices
+Date: Thu, 26 Jul 2012 23:00:50 +0100
+Message-ID: <20120726220049.GK4560@opensource.wolfsonmicro.com>
+References: <4FFECC40.5020502@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="N8ia4yKhAKKETby7"
-Return-path: <linux-mmc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1340037743-12924-1-git-send-email-stigge@antcom.de>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Roland Stigge <stigge@antcom.de>
-Cc: swarren@wwwdotorg.org, cjb@laptop.org, grant.likely@secretlab.ca, rob.herring@calxeda.com, rmk+kernel@arm.linux.org.uk, ulf.hansson@stericsson.com, linus.walleij@linaro.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, aletes.xgr@gmail.com, linux-arm-kernel@lists.infradead.org, lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============1301524147303685493=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C015265EA1
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 00:01:31 +0200 (CEST)
+In-Reply-To: <4FFECC40.5020502@free.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Guillaume Gardet <guillaume.gardet@free.fr>
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, mans.rullgard@linaro.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---N8ia4yKhAKKETby7
+--===============1301524147303685493==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hl1kWnBARzJiTscN"
+Content-Disposition: inline
+
+
+--hl1kWnBARzJiTscN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 18, 2012 at 06:42:21PM +0200, Roland Stigge wrote:
-> of_get_named_gpio() was changed to return -EPROBE_DEFER in case of
-> gpios not probed yet. This patch adjusts tegra_wm8903 to this.
+On Thu, Jul 12, 2012 at 03:08:16PM +0200, Guillaume Gardet wrote:
+> This patch add missing modules aliases to get sound working on omap devices.
 
-Applied both, thanks.
+So, after a bunch of hand editing I applied this.  As I *repeatedly*
+requested you should send patches in the format covered in
+SubmittingPatches, the main reason it took me so long to get round to
+applying this is that I had to strip things like this:
 
---N8ia4yKhAKKETby7
+> From 18b1ba8becc3dd256bdaad2d825f46b551debda3 Mon Sep 17 00:00:00 2001
+> From: Guillaume GARDET <guillaume.gardet@oliseo.fr>
+> Date: Tue, 10 Jul 2012 13:47:16 +0200
+> Subject: [PATCH] Add missing modules aliases to fix audio on omap devices
+
+out of the commit message, plus the fact that since you hadn't used an
+appropriate subject line for the subsystem your patch didn't turn up
+when I searched my mail for patches to be handled.
+
+--hl1kWnBARzJiTscN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQEbW1AAoJEBus8iNuMP3dcZEP/RWkqLK6Fi2eQ3ziTyDfHNKj
-cMC3zf4Eh3RyQKFyDZKlYubrYMeQYb1RlsKrfeD4JLj8YqKhLRQ1rzMFEbWqzhN9
-cnDFeeeq18j2QX2noqRRfzwHvJaVcVpYrnxBy0v6EHTzEXKhZ4khpMh7opo80QRy
-saawUlKdFpiiu0vgmDpEShAea6rI5ZPCQPVrdnmaZUC1OUMCBUnGoxJ7OHAuf5yO
-asznIak+jN3FxAdjqRcQ/KMAu+sjKRHM1PqR4bSyc4yLX/sTC0W2MfqgINGKVi1y
-dN6/Ycr+LrQIeWZYwHy5My248DbHpumjYubguz568k86WyogT8K+axlg+6F7oeuV
-O7fnXFP9AtS+7Qv7sZUH6MOEar425Vq0qvLO964L1tGBypL7LNjn6YIM9cp85RFC
-GE5qnv8dOMbRE0KtbKrVgAizqC7yQ1AJiMK2uY8Atg8r0u39O2DJSTZ6UQkeHu6I
-z+sgO0GSqli0uV6COpdFPLDooDUHDKCzeMLjNygwSnBOS4rsjJN6ju0+CKmk6kpW
-rc7tiLfArNYD2DNPXZNFuzyUydY9ZohBvPVNqHLfsA1j2pN0N/njHwy02HY9YMOJ
-R6z9mzc2MB1tYfFsCrdKcuqb68NHX0yxqGkxLv/PnIie75rkW2pkOUjfvr02Umuc
-Xr7MT53DvXZAPOS7G94G
-=nyD7
+iQIcBAEBAgAGBQJQEb38AAoJEBus8iNuMP3duHIP+wfACPXfvx13c5xDwwblu7V2
+qGGMwHwe224Eg55dqvtS+xshTewKkNz3iFIAOUxoiN0dbR4HY0SsdtKqoeNOLWqP
+iN93QrVXkeXbW9009FYsPq+p8/tNqdcOXxacLKsGCefAesw5Hs9/3+dqeuicEGie
+/1mVs1shM5n9q3/Qr+3q0uT2HLmUSo5Kbu8JlpqiBf4wxHFfVQmsOR3UtwGYG5rk
+hd2yttrZiBj2tSPg+NqRCN6dmNiGEJK6nXCzTDXqqwhKv4z6ynkd+gHRcchkFOUE
+UAvO8HAYDK3siOmoKvvC9bEwKX1dW31dX3cZqiiDVN0pwVDgmDx1dRlzsNxlu8iE
+z+OOBklPb+4tTVs0QSA4AeoMm6BawdHsjGmErF2d/qX3ee0Kv/wVwiXpV9qwYwF0
+nCAZcaOqVovy8/24U3/+PbkzQOKP0sXGF3ZilvwJGxwcumv1ciTiwZssk5SckjeV
+lf726snEeEuPZ/q9FKqqnjWURQjran1/nrnuXJSQpaQIOUL75ZhmE3ahquNfylVG
+kck/kGNExNgY6R+xc96tDk4wW0WPTvWpqbjBmm+F1hH9eW0UEZZNOi1MW9xMHDB5
+14kjK1rFXOjgH5rDvfBLHCalmwu0IIbecJgcYCn2TZ9HMiSDBWeXH55plgszwbg4
+iyH7t8TlWh+FIk7LcgAP
+=reJn
 -----END PGP SIGNATURE-----
 
---N8ia4yKhAKKETby7--
+--hl1kWnBARzJiTscN--
+
+--===============1301524147303685493==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1301524147303685493==--
