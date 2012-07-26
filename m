@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 04/21] ASoC: ux500: Strengthen error
- checking after memory allocation
-Date: Thu, 26 Jul 2012 12:57:49 +0100
-Message-ID: <20120726115749.GF3099@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 05/21] ASoC: ux500: Include the correct
+	header files
+Date: Thu, 26 Jul 2012 12:58:57 +0100
+Message-ID: <20120726115857.GG3099@opensource.wolfsonmicro.com>
 References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
- <1343298534-13611-5-git-send-email-lee.jones@linaro.org>
+ <1343298534-13611-6-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0341999383597579702=="
+Content-Type: multipart/mixed; boundary="===============6143405272656885033=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA42B265E92
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 13:57:48 +0200 (CEST)
-In-Reply-To: <1343298534-13611-5-git-send-email-lee.jones@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4912C265E92
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 13:58:56 +0200 (CEST)
+In-Reply-To: <1343298534-13611-6-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +26,52 @@ Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, sameo@linux.intel.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0341999383597579702==
+--===============6143405272656885033==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ugMgaRwDDWDxqvmW"
+	protocol="application/pgp-signature"; boundary="lIdIj/ncdD+VcXt4"
 Content-Disposition: inline
 
 
---ugMgaRwDDWDxqvmW
+--lIdIj/ncdD+VcXt4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 26, 2012 at 11:28:37AM +0100, Lee Jones wrote:
-> Currently there is no out-of-memory error checking after attempting
-> to allocate memory for the ux500_msp or ux500_msp_i2s_drvdata data
-> structures. Instead we go about populating them regardless. This
-> patch applies the necessary error checking to prevent a panic.
+On Thu, Jul 26, 2012 at 11:28:38AM +0100, Lee Jones wrote:
+> Thought to be another merge error, board-mop500-msp.h has never existed
+> in the upstream kernel, only msp.h. This patch changes the include files
+> to match the existing file name.
 
 Applied, thanks.
 
---ugMgaRwDDWDxqvmW
+--lIdIj/ncdD+VcXt4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQETC1AAoJEBus8iNuMP3dvEgQAJQQ4N0si8kBeBLoLos27IxL
-43adUukfh/hAESFOWfiLbieCHjAig+XSRMKfpKWkM2/2cWNV6Ps1s1P1SG+xTVZE
-fFYtNNtPWZpRp7d4TlT5EvY9NHq8ZYPW12917nOsJGlgxSPqZmYRLM0wB//dmF4d
-yY6O9iPY0aEr2fRsOWVOFTrUZFJPOW2r0OFqK9WYtv8PcgzFaSEyF2bKuYf+fFWL
-9jjeNh18NcCoHAqFRCAadoG+6SmGJPl2rEVT4taR2sg13m7rCg3fLgLh9iDgEWDU
-oHlQcRtc+Byqct1+YdB87zg12u9fTihU49ggxdLi15eEA1Lu59OlZZkzxocoylo9
-gPMF1kFMbuMav3lJN2ZhLz4AnjYEoaX2ySOz12p9dqvKlseyYiX/QDvZSs6iLJ9/
-yLbUFOaAxb317euq3j27Az236/1u0mGPCUlB4ynbLLaC/vRIZeOFyFYX+o8iWcao
-E8bGe/+DA2USmlt8dsSS+YAuqGJ49HazdnnOhIp9UoQLIzzPTB/PN9617V2ZqMtl
-U8UX0Sm41BX3npgLTfE7rXfpD5WDivrqz67U31r/ovw0rHtn6CNAroWvWkwPkpfX
-iuDkYDuQYZ97qRCHWhLKA6cyielO/2KSJ70aD0r4qkk+3ltpHEsYcwafao4pvv8h
-uMARFIixaSeXsWZv2P03
-=29+Z
+iQIcBAEBAgAGBQJQETDwAAoJEBus8iNuMP3dWp0QAI35HBC1mXgHfopkpELya+2c
+0zbB0kWAfNRjwoiT7tatgoAPFEFcCUzRJ/Ref0BuI/Vy2EkRYXnijSWgeRbjQ/UJ
+xbsVh4cvC5FIsxZL2wYffGAY1BwaANkzU141q6iaRMMEJ8CkzlaAfiuUkSveQTlv
+sSg4RoM9JDR4lnQDB8XEfYk62xpa6yLmloM+qx7F/AuU+FY74Tda/IxYFYQk2snO
+cz9CcXiW0Vdjoyg5F+gMXUb3l8+FzQQfbm/CC26jLfdV+AGzG8cOqG/S5KeK2Rit
+8XBaVlIy1VPyjAfsF/dFZWo3FuNOQdiB5WCwmvMltDjTjtSRIQ+I+H/l9vSuofGz
+PlWYK4HerF4LgIGr5AyV5s1gVt5P4LlmjScMwld3bR87A4ENfPWAbOWRvomC5Gfi
+UUPKUibNECpmQkcVs6qlA6ZUL1dRy110P2sq+yr14WdfspkFHIYDaG0zxpH/ZAtL
+Sl8Ezan3GNCE+QoFaYjm8mZyKvF4tvD5dsuRuxks9cJShkkwz42g8k0WBXYxp7d/
+6kXrR3rDakiW+Ba7BijAb9Cz21uKRqGhSoyi6VnG5Sre3eSF7Z8mEfuPJUERd0w2
+tliJ5EeV+liB3ATm+LAatGsQuSvOYJi7p29P90MBCP320Lt51Bv5W5ds+UrSjkiu
+zl3prGwEdMuItD1E5itZ
+=i13L
 -----END PGP SIGNATURE-----
 
---ugMgaRwDDWDxqvmW--
+--lIdIj/ncdD+VcXt4--
 
---===============0341999383597579702==
+--===============6143405272656885033==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0341999383597579702==--
+--===============6143405272656885033==--
