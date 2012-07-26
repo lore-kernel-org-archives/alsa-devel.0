@@ -1,52 +1,34 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 04/21] ASoC: ux500: Strengthen error checking after memory allocation
-Date: Thu, 26 Jul 2012 11:28:37 +0100
-Message-ID: <1343298534-13611-5-git-send-email-lee.jones@linaro.org>
-References: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
+From: Hideki EIRAKU <hdk@igel.co.jp>
+Subject: [PATCH v2 1/4] ARM: dma-mapping: define ARCH_HAS_DMA_MMAP_COHERENT
+Date: Thu, 26 Jul 2012 20:13:08 +0900
+Message-ID: <1343301191-26001-2-git-send-email-hdk@igel.co.jp>
+References: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1343298534-13611-1-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, sameo@linux.intel.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
+To: Russell King <linux@arm.linux.org.uk>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, Hideki EIRAKU <hdk@igel.co.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Currently there is no out-of-memory error checking after attempting
-to allocate memory for the ux500_msp or ux500_msp_i2s_drvdata data
-structures. Instead we go about populating them regardless. This
-patch applies the necessary error checking to prevent a panic.
+ARCH_HAS_DMA_MMAP_COHERENT indicates that there is dma_mmap_coherent() API
+in this architecture.  The name is already defined in PowerPC.
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Hideki EIRAKU <hdk@igel.co.jp>
 ---
- sound/soc/ux500/ux500_msp_dai.c |    3 +++
- sound/soc/ux500/ux500_msp_i2s.c |    2 ++
- 2 files changed, 5 insertions(+)
+ arch/arm/include/asm/dma-mapping.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 62ac0285..cdbbdaf 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -760,6 +760,9 @@ static int __devinit ux500_msp_drv_probe(struct platform_device *pdev)
- 	drvdata = devm_kzalloc(&pdev->dev,
- 				sizeof(struct ux500_msp_i2s_drvdata),
- 				GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
- 	drvdata->fmt = 0;
- 	drvdata->slots = 1;
- 	drvdata->tx_mask = 0x01;
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index ee14d2d..4c79850 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -673,6 +673,8 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+diff --git a/arch/arm/include/asm/dma-mapping.h b/arch/arm/include/asm/dma-mapping.h
+index bbef15d..f41cd30 100644
+--- a/arch/arm/include/asm/dma-mapping.h
++++ b/arch/arm/include/asm/dma-mapping.h
+@@ -187,6 +187,7 @@ extern int arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+ 			struct dma_attrs *attrs);
  
- 	*msp_p = devm_kzalloc(&pdev->dev, sizeof(struct ux500_msp), GFP_KERNEL);
- 	msp = *msp_p;
-+	if (!msp)
-+		return -ENOMEM;
+ #define dma_mmap_coherent(d, v, c, h, s) dma_mmap_attrs(d, v, c, h, s, NULL)
++#define ARCH_HAS_DMA_MMAP_COHERENT
  
- 	msp->id = platform_data->id;
- 	msp->dev = &pdev->dev;
+ static inline int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
+ 				  void *cpu_addr, dma_addr_t dma_addr,
 -- 
-1.7.9.5
+1.7.0.4
