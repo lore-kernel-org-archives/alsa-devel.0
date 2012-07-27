@@ -1,19 +1,17 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 06/18] ASoC: codecs: Enable AB8500 CODEC for
-	Device Tree
-Date: Fri, 27 Jul 2012 13:45:50 +0100
-Message-ID: <1343393162-11938-7-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/18] ARM: ux500: Clean-up MSP platform code
+Date: Fri, 27 Jul 2012 13:45:51 +0100
+Message-ID: <1343393162-11938-8-git-send-email-lee.jones@linaro.org>
 References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 58636265FBF
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:15 +0200 (CEST)
-Received: by wibhq4 with SMTP id hq4so2244944wib.2
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:17 -0700 (PDT)
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id CABDD265FC4
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:16 +0200 (CEST)
+Received: by mail-wg0-f51.google.com with SMTP id ed3so2092152wgb.20
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:19 -0700 (PDT)
 In-Reply-To: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,148 +26,117 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-We continue to allow the AB8500 CODEC to be registered via the AB8500
-Multi Functional Device API, only this time we extract its configuration
-from the Device Tree binary.
+This patch contains a couple of general MSP clean-ups pertaining to
+layout changes and changing functions to be void instead of int instead
+of regardlessly returning '0'.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- include/linux/mfd/abx500/ab8500-codec.h |    6 ++-
- sound/soc/codecs/ab8500-codec.c         |   81 +++++++++++++++++++++++++++++++
- 2 files changed, 85 insertions(+), 2 deletions(-)
+ arch/arm/mach-ux500/board-mop500-msp.c |   26 ++++++++++++--------------
+ arch/arm/mach-ux500/board-mop500-msp.h |   14 --------------
+ arch/arm/mach-ux500/board-mop500.c     |    1 -
+ arch/arm/mach-ux500/board-mop500.h     |    3 +++
+ 4 files changed, 15 insertions(+), 29 deletions(-)
+ delete mode 100644 arch/arm/mach-ux500/board-mop500-msp.h
 
-diff --git a/include/linux/mfd/abx500/ab8500-codec.h b/include/linux/mfd/abx500/ab8500-codec.h
-index dc65292..d707941 100644
---- a/include/linux/mfd/abx500/ab8500-codec.h
-+++ b/include/linux/mfd/abx500/ab8500-codec.h
-@@ -23,7 +23,8 @@ enum amic_type {
- /* Mic-biases */
- enum amic_micbias {
- 	AMIC_MICBIAS_VAMIC1,
--	AMIC_MICBIAS_VAMIC2
-+	AMIC_MICBIAS_VAMIC2,
-+	AMIC_MICBIAS_UNKNOWN
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
+index a740e8a..719db15 100644
+--- a/arch/arm/mach-ux500/board-mop500-msp.c
++++ b/arch/arm/mach-ux500/board-mop500-msp.c
+@@ -144,21 +144,21 @@ static struct platform_device *db8500_add_msp_i2s(struct device *parent,
+ }
+ 
+ /* Platform device for ASoC U8500 machine */
+-static struct platform_device snd_soc_u8500 = {
+-		.name = "snd-soc-u8500",
+-		.id = 0,
+-		.dev = {
+-			.platform_data = NULL,
+-		},
++static struct platform_device snd_soc_mop500 = {
++	.name = "snd-soc-mop500",
++	.id = 0,
++	.dev = {
++		.platform_data = NULL,
++	},
  };
  
- /* Bias-voltage */
-@@ -31,7 +32,8 @@ enum ear_cm_voltage {
- 	EAR_CMV_0_95V,
- 	EAR_CMV_1_10V,
- 	EAR_CMV_1_27V,
--	EAR_CMV_1_58V
-+	EAR_CMV_1_58V,
-+	EAR_CMV_UNKNOWN
+ /* Platform device for Ux500-PCM */
+ static struct platform_device ux500_pcm = {
+-		.name = "ux500-pcm",
+-		.id = 0,
+-		.dev = {
+-			.platform_data = NULL,
+-		},
++	.name = "ux500-pcm",
++	.id = 0,
++	.dev = {
++		.platform_data = NULL,
++	},
  };
  
- /* Analog microphone settings */
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 23b4018..fa80961 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -34,6 +34,7 @@
- #include <linux/mfd/abx500/ab8500-sysctrl.h>
- #include <linux/mfd/abx500/ab8500-codec.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/of.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -2394,9 +2395,65 @@ struct snd_soc_dai_driver ab8500_codec_dai[] = {
- 	}
+ static struct msp_i2s_platform_data msp2_platform_data = {
+@@ -174,7 +174,7 @@ static struct msp_i2s_platform_data msp3_platform_data = {
+ 	.use_pinctrl    = true,
  };
  
-+static void ab8500_codec_of_probe(struct device *dev, struct device_node *np,
-+				struct ab8500_codec_platform_data *codec)
-+{
-+	u32 value;
-+
-+	if (of_get_property(np, "stericsson,amic1-type-single-ended", NULL))
-+		codec->amics.mic1_type = AMIC_TYPE_SINGLE_ENDED;
-+	else
-+		codec->amics.mic1_type = AMIC_TYPE_DIFFERENTIAL;
-+
-+	if (of_get_property(np, "stericsson,amic2-type-single-ended", NULL))
-+		codec->amics.mic2_type = AMIC_TYPE_SINGLE_ENDED;
-+	else
-+		codec->amics.mic2_type = AMIC_TYPE_DIFFERENTIAL;
-+
-+	/* Has a non-standard Vamic been requested? */
-+	if (of_get_property(np, "stericsson,amic1a-bias-vamic2", NULL))
-+		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC2;
-+	else
-+		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC1;
-+
-+	if (of_get_property(np, "stericsson,amic1b-bias-vamic2", NULL))
-+		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC2;
-+	else
-+		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC1;
-+
-+	if (of_get_property(np, "stericsson,amic2-bias-vamic1", NULL))
-+		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC1;
-+	else
-+		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC2;
-+
-+	if (!of_property_read_u32(np, "stericsson,earpeice-cmv", &value)) {
-+		switch (value) {
-+		case 950 :
-+			codec->ear_cmv = EAR_CMV_0_95V;
-+			break;
-+		case 1100 :
-+			codec->ear_cmv = EAR_CMV_1_10V;
-+			break;
-+		case 1270 :
-+			codec->ear_cmv = EAR_CMV_1_27V;
-+			break;
-+		case 1580 :
-+			codec->ear_cmv = EAR_CMV_1_58V;
-+			break;
-+		default :
-+			codec->ear_cmv = EAR_CMV_UNKNOWN;
-+			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
-+		}
-+	} else {
-+		dev_warn(dev, "No earpiece voltage found in DT - using default\n");
-+		codec->ear_cmv = EAR_CMV_0_95V;
-+	}
-+}
-+
- static int ab8500_codec_probe(struct snd_soc_codec *codec)
+-int mop500_msp_init(struct device *parent)
++void mop500_msp_init(struct device *parent)
  {
- 	struct device *dev = codec->dev;
-+	struct device_node *np = dev->of_node;
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
- 	struct ab8500_platform_data *pdata;
- 	struct filter_control *fc;
-@@ -2407,6 +2464,30 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 	/* Setup AB8500 according to board-settings */
- 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
+ 	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
+ 	platform_device_register(&snd_soc_mop500);
+@@ -191,6 +191,4 @@ int mop500_msp_init(struct device *parent)
  
-+	if (np) {
-+		if (!pdata)
-+			pdata = devm_kzalloc(dev,
-+					sizeof(struct ab8500_platform_data),
-+					GFP_KERNEL);
-+
-+		if (!pdata->codec)
-+			pdata->codec
-+				= devm_kzalloc(dev,
-+					sizeof(struct ab8500_codec_platform_data),
-+					GFP_KERNEL);
-+
-+		if (!(pdata && pdata->codec))
-+			return -ENOMEM;
-+
-+		ab8500_codec_of_probe(dev, np, pdata->codec);
-+
-+	} else {
-+		if (!(pdata && pdata->codec)) {
-+			dev_err(dev, "No codec platform data or DT found\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	/* Inform SoC Core that we have our own I/O arrangements. */
- 	codec->control_data = (void *)true;
+ 	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
+ 	platform_device_register(&ux500_pcm);
+-
+-	return 0;
+ }
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.h b/arch/arm/mach-ux500/board-mop500-msp.h
+deleted file mode 100644
+index 6fcfb5e..0000000
+--- a/arch/arm/mach-ux500/board-mop500-msp.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-/*
+- * Copyright (C) ST-Ericsson SA 2012
+- *
+- * Author: Ola Lilja <ola.o.lilja@stericsson.com>,
+- *         for ST-Ericsson.
+- *
+- * License terms:
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as published
+- * by the Free Software Foundation.
+- */
+-
+-void mop500_msp_init(struct device *parent);
+diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
+index 87a5cd7..6f53a6f 100644
+--- a/arch/arm/mach-ux500/board-mop500.c
++++ b/arch/arm/mach-ux500/board-mop500.c
+@@ -54,7 +54,6 @@
+ #include "devices-db8500.h"
+ #include "board-mop500.h"
+ #include "board-mop500-regulators.h"
+-#include "board-mop500-msp.h"
  
+ static struct gpio_led snowball_led_array[] = {
+ 	{
+diff --git a/arch/arm/mach-ux500/board-mop500.h b/arch/arm/mach-ux500/board-mop500.h
+index d04a8e6..1d7316b 100644
+--- a/arch/arm/mach-ux500/board-mop500.h
++++ b/arch/arm/mach-ux500/board-mop500.h
+@@ -92,6 +92,9 @@ void __init mop500_stuib_init(void);
+ void __init mop500_pinmaps_init(void);
+ void __init snowball_pinmaps_init(void);
+ void __init hrefv60_pinmaps_init(void);
++void mop500_msp_init(struct device *parent);
++/* Due for removal once the MSP driver has been fully DT:ed. */
++void mop500_of_msp_init(struct device *parent);
+ 
+ int __init mop500_uib_init(void);
+ void mop500_uib_i2c_add(int busnum, struct i2c_board_info *info,
 -- 
 1.7.9.5
