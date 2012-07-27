@@ -1,113 +1,118 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 05/18] ASoC: Ux500: Enable ux500 MSP driver for Device Tree
-Date: Fri, 27 Jul 2012 13:45:49 +0100
-Message-ID: <1343393162-11938-6-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 03/18] ASoC: Ux500: Enable MOP500 driver for
+	Device Tree
+Date: Fri, 27 Jul 2012 13:45:47 +0100
+Message-ID: <1343393162-11938-4-git-send-email-lee.jones@linaro.org>
 References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 319FD264F8F
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:10 +0200 (CEST)
+Received: by mail-wg0-f51.google.com with SMTP id ed3so2092152wgb.20
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:12 -0700 (PDT)
 In-Reply-To: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com, Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Register both parts of the MSP driver from Device Tree so that they
-are probed when Device Tree is enabled. Also, as there is platform
-data involved, we ensure that there is allocated memory to place the
-configuration into and that the correct information is extracted from
-the DT binary.
+Here we ensure that the MOP500 audio driver will be probed during a
+Device Tree boot. We also parse the sound node to link together the
+codec, dma and the CPU-side Digital Audio Interface.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_dai.c |    6 ++++++
- sound/soc/ux500/ux500_msp_i2s.c |   33 ++++++++++++++++++++++++++++++---
- 2 files changed, 36 insertions(+), 3 deletions(-)
+ sound/soc/ux500/mop500.c |   41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 772cb19..0f7dd49 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -833,10 +833,16 @@ static int __devexit ux500_msp_drv_remove(struct platform_device *pdev)
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 31c4d26..d84a073 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/io.h>
+ #include <linux/spi/spi.h>
++#include <linux/of.h>
+ 
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+@@ -56,14 +57,48 @@ static struct snd_soc_card mop500_card = {
+ 	.num_links = ARRAY_SIZE(mop500_dai_links),
+ };
+ 
++static int __devinit mop500_of_probe(struct platform_device *pdev,
++				struct device_node *np)
++{
++	struct device_node *codec_np, *platform_np, *msp_np[2];
++	int i;
++
++	platform_np = of_parse_phandle(np, "platform-pcm-dma", 0);
++	msp_np[0]   = of_parse_phandle(np, "cpu-dai", 0);
++	msp_np[1]   = of_parse_phandle(np, "cpu-dai", 1);
++	codec_np    = of_parse_phandle(np, "audio-codec", 0);
++
++	if (!(platform_np && msp_np[0] && msp_np[1] && codec_np)) {
++		dev_err(&pdev->dev, "Phandle missing or invalid\n");
++		return -EINVAL;
++	}
++
++	for (i = 0; i < 2; i++) {
++		mop500_dai_links[i].platform_of_node = platform_np;
++		mop500_dai_links[i].platform_name = NULL;
++		mop500_dai_links[i].cpu_of_node = msp_np[i];
++		mop500_dai_links[i].cpu_dai_name = NULL;
++		mop500_dai_links[i].codec_of_node = codec_np;
++		mop500_dai_links[i].codec_name = NULL;
++	}
++
++	return 0;
++}
+ static int __devinit mop500_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	int ret;
+ 
+ 	pr_debug("%s: Enter.\n", __func__);
+ 
+ 	dev_dbg(&pdev->dev, "%s: Enter.\n", __func__);
+ 
++	if (np) {
++		ret = mop500_of_probe(pdev, np);
++		if (ret)
++			return ret;
++	}
++
+ 	mop500_card.dev = &pdev->dev;
+ 
+ 	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
+@@ -101,10 +136,16 @@ static int __devexit mop500_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static const struct of_device_id ux500_msp_i2c_match[] = {
-+	{ .compatible = "stericsson,ux500-msp-i2s", },
++static const struct of_device_id snd_soc_mop500_match[] = {
++	{ .compatible = "stericsson,snd-soc-mop500", },
 +	{},
 +};
 +
- static struct platform_driver msp_i2s_driver = {
+ static struct platform_driver snd_soc_mop500_driver = {
  	.driver = {
- 		.name = "ux500-msp-i2s",
  		.owner = THIS_MODULE,
-+		.of_match_table = ux500_msp_i2c_match,
+ 		.name = "snd-soc-mop500",
++		.of_match_table = snd_soc_mop500_match,
  	},
- 	.probe = ux500_msp_drv_probe,
- 	.remove = ux500_msp_drv_remove,
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 72ad6e8..1ecdec0 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -18,6 +18,7 @@
- #include <linux/pinctrl/consumer.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/of.h>
- 
- #include <mach/hardware.h>
- #include <mach/msp.h>
-@@ -685,6 +686,16 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
- 
- }
- 
-+void ux500_msp_i2s_of_init_msp(struct platform_device *pdev,
-+			struct ux500_msp *msp,
-+			struct device_node *np)
-+{
-+	if (of_get_property(np, "stericsson,use-pinctrl", NULL))
-+		msp->use_pinctrl = true;
-+	else
-+		msp->use_pinctrl = false;
-+}
-+
- int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 			struct ux500_msp **msp_p,
- 			struct msp_i2s_platform_data *platform_data)
-@@ -692,17 +703,33 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 	int ret = 0;
- 	struct resource *res = NULL;
- 	struct i2s_controller *i2s_cont;
-+	struct device_node *np = pdev->dev.of_node;
- 	struct ux500_msp *msp;
- 	static int initialised = false;
- 
--	dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
--		pdev->name, platform_data->id);
--
- 	*msp_p = devm_kzalloc(&pdev->dev, sizeof(struct ux500_msp), GFP_KERNEL);
- 	msp = *msp_p;
- 	if (!msp)
- 		return -ENOMEM;
- 
-+	if (np) {
-+		if (!platform_data) {
-+			platform_data = devm_kzalloc(&pdev->dev,
-+				sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
-+			if (!platform_data)
-+				ret = -ENOMEM;
-+		}
-+		ux500_msp_i2s_of_init_msp(pdev, msp, np);
-+	} else
-+		if (!platform_data)
-+			ret = -EINVAL;
-+
-+	if (ret)
-+		goto err_res;
-+
-+	dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
-+		pdev->name, platform_data->id);
-+
- 	msp->id = platform_data->id;
- 	msp->dev = &pdev->dev;
- 	msp->use_pinctrl = platform_data->use_pinctrl;
+ 	.probe = mop500_probe,
+ 	.remove = __devexit_p(mop500_remove),
 -- 
 1.7.9.5
