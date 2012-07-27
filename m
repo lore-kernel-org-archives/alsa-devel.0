@@ -1,17 +1,17 @@
 From: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: [PATCH v5] media: Add stk1160 new driver
-Date: Thu, 26 Jul 2012 18:05:35 -0300
-Message-ID: <1343336735-10513-1-git-send-email-elezegarcia@gmail.com>
+Subject: [PATCH v6] media: Add stk1160 new driver
+Date: Thu, 26 Jul 2012 21:15:22 -0300
+Message-ID: <1343348122-2215-1-git-send-email-elezegarcia@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gh0-f179.google.com (mail-gh0-f179.google.com
- [209.85.160.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B90D265F2A
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 23:05:51 +0200 (CEST)
-Received: by ghbg24 with SMTP id g24so2360442ghb.38
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 14:05:52 -0700 (PDT)
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+ [209.85.213.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC32B265B54
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 02:15:38 +0200 (CEST)
+Received: by yenr13 with SMTP id r13so2491191yen.38
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2012 17:15:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,14 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>, Ezequiel Garcia <elezegarcia@gmail.com>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Mauro Carvalho Chehab <mchehab@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
 This driver adds support for stk1160 usb bridge as used in some
 video/audio usb capture devices.
 It is a complete rewrite of staging/media/easycap driver and
-it's expected as a replacement.
+it's expected as a future replacement.
 
 Cc: Mauro Carvalho Chehab <mchehab@redhat.com>
 Cc: Takashi Iwai <tiwai@suse.de>
@@ -36,6 +36,7 @@ Cc: Hans Verkuil <hverkuil@xs4all.nl>
 Cc: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
 Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
 ---
+
 Here we are once again,
 
 As stk1160 allows communication with an ac97 codec chip, this
@@ -64,8 +65,8 @@ The usage of this parameter can avoid memory fragmentation that may
 cause the driver to stop working on low memory systems.
 A similar mechanism is implemented in em28xx driver (see commit 86d38d).
 
-This v5 patch removes easycap driver, takes advantage of latest
-videobuf2 improvements and addresses some minor comments from Mauro.
+This v6 patch fixes some locking problems of v5
+(using an independent mutex for videobuf2 queue).
 
 I consider the driver to be pretty usable, but of course: bugs happen.
 As usual, any comments/reviews of *any* kind will be greatly
@@ -76,6 +77,9 @@ Don't use this patch! Instead, search for <stk1160-standalone> on github :-)
 
 Thanks to Hans, Sylwester, Mauro and everyone else for their
 indispensable help.
+
+Changes from v5:
+ * Use an independent mutex for videobuf2 queue
 
 Changes from v4:
  * Remove old easycap staging driver
@@ -104,18 +108,19 @@ Changes from v1:
  * Add explicit locking for file operations
  * Add vb2 buffer sanity check
  * Minor style cleanups
+
 ---
  drivers/media/video/Kconfig                      |    2 +
  drivers/media/video/Makefile                     |    1 +
  drivers/media/video/stk1160/Kconfig              |   12 +
  drivers/media/video/stk1160/Makefile             |    6 +
  drivers/media/video/stk1160/stk1160-ac97.c       |  153 +
- drivers/media/video/stk1160/stk1160-core.c       |  431 +++
+ drivers/media/video/stk1160/stk1160-core.c       |  434 +++
  drivers/media/video/stk1160/stk1160-i2c.c        |  294 ++
  drivers/media/video/stk1160/stk1160-reg.h        |   93 +
- drivers/media/video/stk1160/stk1160-v4l.c        |  727 ++++
+ drivers/media/video/stk1160/stk1160-v4l.c        |  726 ++++
  drivers/media/video/stk1160/stk1160-video.c      |  518 +++
- drivers/media/video/stk1160/stk1160.h            |  202 +
+ drivers/media/video/stk1160/stk1160.h            |  203 ++
  drivers/staging/media/Kconfig                    |    2 -
  drivers/staging/media/Makefile                   |    1 -
  drivers/staging/media/easycap/Kconfig            |   30 -
@@ -128,7 +133,7 @@ Changes from v1:
  drivers/staging/media/easycap/easycap_settings.c |  696 ----
  drivers/staging/media/easycap/easycap_sound.c    |  750 ----
  drivers/staging/media/easycap/easycap_testcard.c |  155 -
- 23 files changed, 2439 insertions(+), 9997 deletions(-)
+ 23 files changed, 2442 insertions(+), 9997 deletions(-)
  create mode 100644 drivers/media/video/stk1160/Kconfig
  create mode 100644 drivers/media/video/stk1160/Makefile
  create mode 100644 drivers/media/video/stk1160/stk1160-ac97.c
@@ -365,10 +370,10 @@ index 0000000..8d325f5
 +}
 diff --git a/drivers/media/video/stk1160/stk1160-core.c b/drivers/media/video/stk1160/stk1160-core.c
 new file mode 100644
-index 0000000..e902e25
+index 0000000..8302848
 --- /dev/null
 +++ b/drivers/media/video/stk1160/stk1160-core.c
-@@ -0,0 +1,431 @@
+@@ -0,0 +1,434 @@
 +/*
 + * STK1160 driver
 + *
@@ -687,6 +692,7 @@ index 0000000..e902e25
 +	 */
 +	spin_lock_init(&dev->buf_lock);
 +	mutex_init(&dev->v4l_lock);
++	mutex_init(&dev->vb_queue_lock);
 +
 +	rc = v4l2_ctrl_handler_init(&dev->ctrl_handler, 0);
 +	if (rc) {
@@ -768,6 +774,7 @@ index 0000000..e902e25
 +	 * Wait until all current v4l2 operation are finished
 +	 * then deallocate resources
 +	 */
++	mutex_lock(&dev->vb_queue_lock);
 +	mutex_lock(&dev->v4l_lock);
 +
 +	/* Here is the only place where isoc get released */
@@ -784,6 +791,7 @@ index 0000000..e902e25
 +	dev->udev = NULL;
 +
 +	mutex_unlock(&dev->v4l_lock);
++	mutex_unlock(&dev->vb_queue_lock);
 +
 +	/*
 +	 * This calls stk1160_release if it's the last reference.
@@ -1201,10 +1209,10 @@ index 0000000..3e49da6
 +#define STK1160_EEPROM_SZ		0x5f0
 diff --git a/drivers/media/video/stk1160/stk1160-v4l.c b/drivers/media/video/stk1160/stk1160-v4l.c
 new file mode 100644
-index 0000000..1c1a541
+index 0000000..7b674d1
 --- /dev/null
 +++ b/drivers/media/video/stk1160/stk1160-v4l.c
-@@ -0,0 +1,727 @@
+@@ -0,0 +1,726 @@
 +/*
 + * STK1160 driver
 + *
@@ -1373,6 +1381,8 @@ index 0000000..1c1a541
 +	if (!dev->udev)
 +		return -ENODEV;
 +
++	if (mutex_lock_interruptible(&dev->v4l_lock))
++		return -ERESTARTSYS;
 +	/*
 +	 * For some reason it is mandatory to set alternate *first*
 +	 * and only *then* initialize isoc urbs.
@@ -1410,13 +1420,18 @@ index 0000000..1c1a541
 +
 +	stk1160_dbg("streaming started\n");
 +
++	mutex_unlock(&dev->v4l_lock);
++
 +	return 0;
 +}
 +
 +int stk1160_stop_streaming(struct stk1160 *dev, bool connected)
 +{
 +	struct stk1160_buffer *buf;
-+	unsigned long flags = 0;
++	unsigned long flags;
++
++	if (mutex_lock_interruptible(&dev->v4l_lock))
++		return -ERESTARTSYS;
 +
 +	stk1160_cancel_isoc(dev);
 +
@@ -1458,6 +1473,9 @@ index 0000000..1c1a541
 +	spin_unlock_irqrestore(&dev->buf_lock, flags);
 +
 +	stk1160_dbg("streaming stopped\n");
++
++	mutex_unlock(&dev->v4l_lock);
++
 +	return 0;
 +}
 +
@@ -1614,7 +1632,7 @@ index 0000000..1c1a541
 +	return 0;
 +}
 +
-+/* FIXME: Extend support for other inputs */
++
 +static int vidioc_enum_input(struct file *file, void *priv,
 +				struct v4l2_input *i)
 +{
@@ -1834,25 +1852,13 @@ index 0000000..1c1a541
 +	return stk1160_stop_streaming(dev, true);
 +}
 +
-+static void stk1160_lock(struct vb2_queue *vq)
-+{
-+	struct stk1160 *dev = vb2_get_drv_priv(vq);
-+	mutex_lock(&dev->v4l_lock);
-+}
-+
-+static void stk1160_unlock(struct vb2_queue *vq)
-+{
-+	struct stk1160 *dev = vb2_get_drv_priv(vq);
-+	mutex_unlock(&dev->v4l_lock);
-+}
-+
 +static struct vb2_ops stk1160_video_qops = {
 +	.queue_setup		= queue_setup,
 +	.buf_queue		= buffer_queue,
 +	.start_streaming	= start_streaming,
 +	.stop_streaming		= stop_streaming,
-+	.wait_prepare		= stk1160_unlock,
-+	.wait_finish		= stk1160_lock,
++	.wait_prepare		= vb2_ops_wait_prepare,
++	.wait_finish		= vb2_ops_wait_finish,
 +};
 +
 +static struct video_device v4l_template = {
@@ -1899,10 +1905,11 @@ index 0000000..1c1a541
 +	dev->vdev.queue = &dev->vb_vidq;
 +
 +	/*
-+	 * Provide a mutex to v4l2 core.
++	 * Provide mutexes for v4l2 core and for videobuf2 queue.
 +	 * It will be used to protect *only* v4l2 ioctls.
 +	 */
 +	dev->vdev.lock = &dev->v4l_lock;
++	dev->vdev.queue->lock = &dev->vb_queue_lock;
 +
 +	/* This will be used to set video_device parent */
 +	dev->vdev.v4l2_dev = &dev->v4l2_dev;
@@ -2458,10 +2465,10 @@ index 0000000..3785269
 +
 diff --git a/drivers/media/video/stk1160/stk1160.h b/drivers/media/video/stk1160/stk1160.h
 new file mode 100644
-index 0000000..7b9ce28
+index 0000000..ebf3f14
 --- /dev/null
 +++ b/drivers/media/video/stk1160/stk1160.h
-@@ -0,0 +1,202 @@
+@@ -0,0 +1,203 @@
 +/*
 + * STK1160 driver
 + *
@@ -2622,6 +2629,7 @@ index 0000000..7b9ce28
 +	struct i2c_client i2c_client;
 +
 +	struct mutex v4l_lock;
++	struct mutex vb_queue_lock;
 +	spinlock_t buf_lock;
 +
 +	struct file *fh_owner;	/* filehandle ownership */
