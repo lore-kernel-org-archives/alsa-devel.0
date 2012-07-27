@@ -1,18 +1,19 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5/7] ARM: ux500: Remove unused
-	snowball_of_platform_devs struct
-Date: Fri, 27 Jul 2012 13:38:52 +0100
-Message-ID: <1343392734-11805-6-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 6/7] ARM: ux500: Fix merge error,
+	so such struct 'snd_soc_u8500'
+Date: Fri, 27 Jul 2012 13:38:53 +0100
+Message-ID: <1343392734-11805-7-git-send-email-lee.jones@linaro.org>
 References: <1343392734-11805-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id CDEBD2652DD
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:39:07 +0200 (CEST)
-Received: by mail-wg0-f51.google.com with SMTP id ed3so2087774wgb.20
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:39:10 -0700 (PDT)
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35263265CC7
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:39:09 +0200 (CEST)
+Received: by mail-we0-f179.google.com with SMTP id x10so1836409wey.38
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:39:11 -0700 (PDT)
 In-Reply-To: <1343392734-11805-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,30 +28,27 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, sameo@linux.intel.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com, linus.walleij@stericsson.com
 List-Id: alsa-devel@alsa-project.org
 
-This was left over during a recent clean-up which removed Device Tree
-helper structs. There is no longer a requirement for it, so we can just
-remove it.
+The platform attempts to register platform device 'snd_soc_u8500'
+which doesn't actually exist. Here we change the reference to the
+correct one 'snd_soc_mop500'.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/board-mop500.c |    5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm/mach-ux500/board-mop500-msp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
-index 80b4f0e..e641003 100644
---- a/arch/arm/mach-ux500/board-mop500.c
-+++ b/arch/arm/mach-ux500/board-mop500.c
-@@ -726,11 +726,6 @@ MACHINE_END
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
+index 9960480..1b6a193 100644
+--- a/arch/arm/mach-ux500/board-mop500-msp.c
++++ b/arch/arm/mach-ux500/board-mop500-msp.c
+@@ -228,7 +228,7 @@ int mop500_msp_init(struct device *parent)
+ 	struct platform_device *msp1;
  
- #ifdef CONFIG_MACH_UX500_DT
+ 	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
+-	platform_device_register(&snd_soc_u8500);
++	platform_device_register(&snd_soc_mop500);
  
--static struct platform_device *snowball_of_platform_devs[] __initdata = {
--	&snowball_led_dev,
--	&snowball_key_dev,
--};
--
- struct of_dev_auxdata u8500_auxdata_lookup[] __initdata = {
- 	/* Requires call-back bindings. */
- 	OF_DEV_AUXDATA("arm,cortex-a9-pmu", 0, "arm-pmu", &db8500_pmu_platdata),
+ 	pr_info("Initialize MSP I2S-devices.\n");
+ 	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
 -- 
 1.7.9.5
