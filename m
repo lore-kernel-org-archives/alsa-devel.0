@@ -1,36 +1,37 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 14/18] ARM: ux500: Stop registering the PCM driver from platform code
-Date: Fri, 27 Jul 2012 13:45:58 +0100
-Message-ID: <1343393162-11938-15-git-send-email-lee.jones@linaro.org>
-References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 3/7] mfd: db8500-prcmu: Ensure AB8500 platform data is
+ passed through MFD Core
+Date: Fri, 27 Jul 2012 15:36:10 +0200
+Message-ID: <20120727133610.GP16859@sortiz-mobl>
+References: <1343392734-11805-1-git-send-email-lee.jones@linaro.org>
+ <1343392734-11805-4-git-send-email-lee.jones@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
+Content-Disposition: inline
+In-Reply-To: <1343392734-11805-4-git-send-email-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com, Lee Jones <lee.jones@linaro.org>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-In this patch we prevent PCM driver registration from platform
-code and rely solely on Device Tree to do the probing for us.
+Hi Lee,
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- arch/arm/mach-ux500/board-mop500-msp.c |    3 ---
- 1 file changed, 3 deletions(-)
+On Fri, Jul 27, 2012 at 01:38:50PM +0100, Lee Jones wrote:
+> When booting via platform code the AB8500 platform data is now passed
+> in though the DB8500. However, if pdata_size is not set it will not be
+> subsequently passed onto subordinate devices. This patch correctly
+> populates pdata_size.
+> 
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mfd/db8500-prcmu.c |    1 +
+>  1 file changed, 1 insertion(+)
+Applied, thanks.
 
-diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
-index 1a83fa5..391c129 100644
---- a/arch/arm/mach-ux500/board-mop500-msp.c
-+++ b/arch/arm/mach-ux500/board-mop500-msp.c
-@@ -186,9 +186,6 @@ void mop500_of_msp_init(struct device *parent)
- 			   &msp2_platform_data);
- 	db8500_add_msp_i2s(parent, 3, U8500_MSP3_BASE, IRQ_DB8500_MSP1,
- 			   &msp3_platform_data);
--
--	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
--	platform_device_register(&ux500_pcm);
- }
- 
- void mop500_msp_init(struct device *parent)
+Cheers,
+Samuel.
+
 -- 
-1.7.9.5
+Intel Open Source Technology Centre
+http://oss.intel.com/
