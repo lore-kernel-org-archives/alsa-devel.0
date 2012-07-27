@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2] Add missing modules aliases to get
- sound working on omap devices
-Date: Thu, 26 Jul 2012 23:00:50 +0100
-Message-ID: <20120726220049.GK4560@opensource.wolfsonmicro.com>
-References: <4FFECC40.5020502@free.fr>
+From: Adam Williamson <awilliam@redhat.com>
+Subject: Re: Internal speaker output from Sony Vaio Z (2010
+ model) lost somewhere between 3.1.0 and 3.2.6
+Date: Thu, 26 Jul 2012 22:26:42 -0700
+Message-ID: <1343366802.6396.48.camel@adam>
+References: <1331939409.22414.29.camel@adam> <s5hty1nh7i6.wl%tiwai@suse.de>
+ <1343253173.6396.8.camel@adam> <s5htxwv6plt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1301524147303685493=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C015265EA1
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 00:01:31 +0200 (CEST)
-In-Reply-To: <4FFECC40.5020502@free.fr>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 693A8265B9C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 07:26:45 +0200 (CEST)
+In-Reply-To: <s5htxwv6plt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guillaume Gardet <guillaume.gardet@free.fr>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, mans.rullgard@linaro.org, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2012-07-26 at 07:47 +0200, Takashi Iwai wrote:
 
---===============1301524147303685493==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hl1kWnBARzJiTscN"
-Content-Disposition: inline
+> > I don't know if tiwai's later suggestion to try the sound.git tree is
+> > still relevant, since I expect all of the stuff there that was 'new'
+> > back in March has been merged into later kernels since, and it's still
+> > broken. But if so, send me the word and I'll try it.
+> > 
+> > Thanks! I promise to reply more promptly for the next few weeks at
+> > least.
+> 
+> OK, then try the following two patches.
+> The first one is to make the speaker-pin as the primary output like
+> the earlier kernel (3.1.x), and the second one is to add the COEF
+> setup for ALC889.  Check each of them alone gives any difference.
 
+First patch on its own - alc-no-primary-hp-out.diff - fixes the bug.
+Output through the speakers works. I also tested that it doesn't do
+anything bad to the speaker/headphone output: plugging in headphones
+routes the output through that socket automatically, no need to change
+any PA setting, and unplugging the headphones sends it back through the
+internal speakers again. The internal mic works fine in all cases. So
+with just the first patch, everything works correctly as far as I can
+test (I don't have an external mic to check).
 
---hl1kWnBARzJiTscN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 12, 2012 at 03:08:16PM +0200, Guillaume Gardet wrote:
-> This patch add missing modules aliases to get sound working on omap devices.
-
-So, after a bunch of hand editing I applied this.  As I *repeatedly*
-requested you should send patches in the format covered in
-SubmittingPatches, the main reason it took me so long to get round to
-applying this is that I had to strip things like this:
-
-> From 18b1ba8becc3dd256bdaad2d825f46b551debda3 Mon Sep 17 00:00:00 2001
-> From: Guillaume GARDET <guillaume.gardet@oliseo.fr>
-> Date: Tue, 10 Jul 2012 13:47:16 +0200
-> Subject: [PATCH] Add missing modules aliases to fix audio on omap devices
-
-out of the commit message, plus the fact that since you hadn't used an
-appropriate subject line for the subsystem your patch didn't turn up
-when I searched my mail for patches to be handled.
-
---hl1kWnBARzJiTscN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQEb38AAoJEBus8iNuMP3duHIP+wfACPXfvx13c5xDwwblu7V2
-qGGMwHwe224Eg55dqvtS+xshTewKkNz3iFIAOUxoiN0dbR4HY0SsdtKqoeNOLWqP
-iN93QrVXkeXbW9009FYsPq+p8/tNqdcOXxacLKsGCefAesw5Hs9/3+dqeuicEGie
-/1mVs1shM5n9q3/Qr+3q0uT2HLmUSo5Kbu8JlpqiBf4wxHFfVQmsOR3UtwGYG5rk
-hd2yttrZiBj2tSPg+NqRCN6dmNiGEJK6nXCzTDXqqwhKv4z6ynkd+gHRcchkFOUE
-UAvO8HAYDK3siOmoKvvC9bEwKX1dW31dX3cZqiiDVN0pwVDgmDx1dRlzsNxlu8iE
-z+OOBklPb+4tTVs0QSA4AeoMm6BawdHsjGmErF2d/qX3ee0Kv/wVwiXpV9qwYwF0
-nCAZcaOqVovy8/24U3/+PbkzQOKP0sXGF3ZilvwJGxwcumv1ciTiwZssk5SckjeV
-lf726snEeEuPZ/q9FKqqnjWURQjran1/nrnuXJSQpaQIOUL75ZhmE3ahquNfylVG
-kck/kGNExNgY6R+xc96tDk4wW0WPTvWpqbjBmm+F1hH9eW0UEZZNOi1MW9xMHDB5
-14kjK1rFXOjgH5rDvfBLHCalmwu0IIbecJgcYCn2TZ9HMiSDBWeXH55plgszwbg4
-iyH7t8TlWh+FIk7LcgAP
-=reJn
------END PGP SIGNATURE-----
-
---hl1kWnBARzJiTscN--
-
---===============1301524147303685493==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1301524147303685493==--
+Didn't try the other patch on its own or in combination yet. I'll do so
+tomorrow, unless you tell me it's not necessary. Thanks!
+-- 
+Adam Williamson
+Fedora QA Community Monkey
+IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
+http://www.happyassassin.net
