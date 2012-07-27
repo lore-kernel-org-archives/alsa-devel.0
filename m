@@ -1,18 +1,19 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 03/18] ASoC: Ux500: Enable MOP500 driver for
+Subject: [PATCH 04/18] ASoC: Ux500: Enable ux500 PCM driver for
 	Device Tree
-Date: Fri, 27 Jul 2012 13:45:47 +0100
-Message-ID: <1343393162-11938-4-git-send-email-lee.jones@linaro.org>
+Date: Fri, 27 Jul 2012 13:45:48 +0100
+Message-ID: <1343393162-11938-5-git-send-email-lee.jones@linaro.org>
 References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 319FD264F8F
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:10 +0200 (CEST)
-Received: by mail-wg0-f51.google.com with SMTP id ed3so2092152wgb.20
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:12 -0700 (PDT)
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 421D8265F74
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:12 +0200 (CEST)
+Received: by mail-we0-f179.google.com with SMTP id x10so1840692wey.38
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:14 -0700 (PDT)
 In-Reply-To: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,92 +28,34 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Here we ensure that the MOP500 audio driver will be probed during a
-Device Tree boot. We also parse the sound node to link together the
-codec, dma and the CPU-side Digital Audio Interface.
+This simple patch ensures the PCM driver will be probed during
+boot-up when Device Tree is enabled.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/mop500.c |   41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ sound/soc/ux500/ux500_pcm.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index 31c4d26..d84a073 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/spi/spi.h>
-+#include <linux/of.h>
- 
- #include <sound/soc.h>
- #include <sound/initval.h>
-@@ -56,14 +57,48 @@ static struct snd_soc_card mop500_card = {
- 	.num_links = ARRAY_SIZE(mop500_dai_links),
- };
- 
-+static int __devinit mop500_of_probe(struct platform_device *pdev,
-+				struct device_node *np)
-+{
-+	struct device_node *codec_np, *platform_np, *msp_np[2];
-+	int i;
-+
-+	platform_np = of_parse_phandle(np, "platform-pcm-dma", 0);
-+	msp_np[0]   = of_parse_phandle(np, "cpu-dai", 0);
-+	msp_np[1]   = of_parse_phandle(np, "cpu-dai", 1);
-+	codec_np    = of_parse_phandle(np, "audio-codec", 0);
-+
-+	if (!(platform_np && msp_np[0] && msp_np[1] && codec_np)) {
-+		dev_err(&pdev->dev, "Phandle missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < 2; i++) {
-+		mop500_dai_links[i].platform_of_node = platform_np;
-+		mop500_dai_links[i].platform_name = NULL;
-+		mop500_dai_links[i].cpu_of_node = msp_np[i];
-+		mop500_dai_links[i].cpu_dai_name = NULL;
-+		mop500_dai_links[i].codec_of_node = codec_np;
-+		mop500_dai_links[i].codec_name = NULL;
-+	}
-+
-+	return 0;
-+}
- static int __devinit mop500_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
- 	int ret;
- 
- 	pr_debug("%s: Enter.\n", __func__);
- 
- 	dev_dbg(&pdev->dev, "%s: Enter.\n", __func__);
- 
-+	if (np) {
-+		ret = mop500_of_probe(pdev, np);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	mop500_card.dev = &pdev->dev;
- 
- 	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
-@@ -101,10 +136,16 @@ static int __devexit mop500_remove(struct platform_device *pdev)
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index 1a04e24..557da2d 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -304,10 +304,16 @@ static int __devinit ux500_pcm_drv_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static const struct of_device_id snd_soc_mop500_match[] = {
-+	{ .compatible = "stericsson,snd-soc-mop500", },
-+	{},
++static const struct of_device_id ux500_pcm_match[] = {
++       { .compatible = "stericsson,ux500-pcm", },
++       {},
 +};
 +
- static struct platform_driver snd_soc_mop500_driver = {
+ static struct platform_driver ux500_pcm_driver = {
  	.driver = {
+ 		.name = "ux500-pcm",
  		.owner = THIS_MODULE,
- 		.name = "snd-soc-mop500",
-+		.of_match_table = snd_soc_mop500_match,
++		.of_match_table = ux500_pcm_match,
  	},
- 	.probe = mop500_probe,
- 	.remove = __devexit_p(mop500_remove),
+ 
+ 	.probe = ux500_pcm_drv_probe,
 -- 
 1.7.9.5
