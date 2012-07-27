@@ -1,19 +1,19 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 04/18] ASoC: Ux500: Enable ux500 PCM driver for
+Subject: [PATCH 06/18] ASoC: codecs: Enable AB8500 CODEC for
 	Device Tree
-Date: Fri, 27 Jul 2012 13:45:48 +0100
-Message-ID: <1343393162-11938-5-git-send-email-lee.jones@linaro.org>
+Date: Fri, 27 Jul 2012 13:45:50 +0100
+Message-ID: <1343393162-11938-7-git-send-email-lee.jones@linaro.org>
 References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 421D8265F74
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:12 +0200 (CEST)
-Received: by mail-we0-f179.google.com with SMTP id x10so1840692wey.38
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:14 -0700 (PDT)
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58636265FBF
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 14:46:15 +0200 (CEST)
+Received: by wibhq4 with SMTP id hq4so2244944wib.2
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2012 05:46:17 -0700 (PDT)
 In-Reply-To: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,34 +28,148 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-This simple patch ensures the PCM driver will be probed during
-boot-up when Device Tree is enabled.
+We continue to allow the AB8500 CODEC to be registered via the AB8500
+Multi Functional Device API, only this time we extract its configuration
+from the Device Tree binary.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_pcm.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/mfd/abx500/ab8500-codec.h |    6 ++-
+ sound/soc/codecs/ab8500-codec.c         |   81 +++++++++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index 1a04e24..557da2d 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -304,10 +304,16 @@ static int __devinit ux500_pcm_drv_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/include/linux/mfd/abx500/ab8500-codec.h b/include/linux/mfd/abx500/ab8500-codec.h
+index dc65292..d707941 100644
+--- a/include/linux/mfd/abx500/ab8500-codec.h
++++ b/include/linux/mfd/abx500/ab8500-codec.h
+@@ -23,7 +23,8 @@ enum amic_type {
+ /* Mic-biases */
+ enum amic_micbias {
+ 	AMIC_MICBIAS_VAMIC1,
+-	AMIC_MICBIAS_VAMIC2
++	AMIC_MICBIAS_VAMIC2,
++	AMIC_MICBIAS_UNKNOWN
+ };
  
-+static const struct of_device_id ux500_pcm_match[] = {
-+       { .compatible = "stericsson,ux500-pcm", },
-+       {},
-+};
+ /* Bias-voltage */
+@@ -31,7 +32,8 @@ enum ear_cm_voltage {
+ 	EAR_CMV_0_95V,
+ 	EAR_CMV_1_10V,
+ 	EAR_CMV_1_27V,
+-	EAR_CMV_1_58V
++	EAR_CMV_1_58V,
++	EAR_CMV_UNKNOWN
+ };
+ 
+ /* Analog microphone settings */
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 23b4018..fa80961 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -34,6 +34,7 @@
+ #include <linux/mfd/abx500/ab8500-sysctrl.h>
+ #include <linux/mfd/abx500/ab8500-codec.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -2394,9 +2395,65 @@ struct snd_soc_dai_driver ab8500_codec_dai[] = {
+ 	}
+ };
+ 
++static void ab8500_codec_of_probe(struct device *dev, struct device_node *np,
++				struct ab8500_codec_platform_data *codec)
++{
++	u32 value;
 +
- static struct platform_driver ux500_pcm_driver = {
- 	.driver = {
- 		.name = "ux500-pcm",
- 		.owner = THIS_MODULE,
-+		.of_match_table = ux500_pcm_match,
- 	},
++	if (of_get_property(np, "stericsson,amic1-type-single-ended", NULL))
++		codec->amics.mic1_type = AMIC_TYPE_SINGLE_ENDED;
++	else
++		codec->amics.mic1_type = AMIC_TYPE_DIFFERENTIAL;
++
++	if (of_get_property(np, "stericsson,amic2-type-single-ended", NULL))
++		codec->amics.mic2_type = AMIC_TYPE_SINGLE_ENDED;
++	else
++		codec->amics.mic2_type = AMIC_TYPE_DIFFERENTIAL;
++
++	/* Has a non-standard Vamic been requested? */
++	if (of_get_property(np, "stericsson,amic1a-bias-vamic2", NULL))
++		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC2;
++	else
++		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC1;
++
++	if (of_get_property(np, "stericsson,amic1b-bias-vamic2", NULL))
++		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC2;
++	else
++		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC1;
++
++	if (of_get_property(np, "stericsson,amic2-bias-vamic1", NULL))
++		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC1;
++	else
++		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC2;
++
++	if (!of_property_read_u32(np, "stericsson,earpeice-cmv", &value)) {
++		switch (value) {
++		case 950 :
++			codec->ear_cmv = EAR_CMV_0_95V;
++			break;
++		case 1100 :
++			codec->ear_cmv = EAR_CMV_1_10V;
++			break;
++		case 1270 :
++			codec->ear_cmv = EAR_CMV_1_27V;
++			break;
++		case 1580 :
++			codec->ear_cmv = EAR_CMV_1_58V;
++			break;
++		default :
++			codec->ear_cmv = EAR_CMV_UNKNOWN;
++			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
++		}
++	} else {
++		dev_warn(dev, "No earpiece voltage found in DT - using default\n");
++		codec->ear_cmv = EAR_CMV_0_95V;
++	}
++}
++
+ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct device *dev = codec->dev;
++	struct device_node *np = dev->of_node;
+ 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
+ 	struct ab8500_platform_data *pdata;
+ 	struct filter_control *fc;
+@@ -2407,6 +2464,30 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 	/* Setup AB8500 according to board-settings */
+ 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
  
- 	.probe = ux500_pcm_drv_probe,
++	if (np) {
++		if (!pdata)
++			pdata = devm_kzalloc(dev,
++					sizeof(struct ab8500_platform_data),
++					GFP_KERNEL);
++
++		if (!pdata->codec)
++			pdata->codec
++				= devm_kzalloc(dev,
++					sizeof(struct ab8500_codec_platform_data),
++					GFP_KERNEL);
++
++		if (!(pdata && pdata->codec))
++			return -ENOMEM;
++
++		ab8500_codec_of_probe(dev, np, pdata->codec);
++
++	} else {
++		if (!(pdata && pdata->codec)) {
++			dev_err(dev, "No codec platform data or DT found\n");
++			return -EINVAL;
++		}
++	}
++
+ 	/* Inform SoC Core that we have our own I/O arrangements. */
+ 	codec->control_data = (void *)true;
+ 
 -- 
 1.7.9.5
