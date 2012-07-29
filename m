@@ -1,18 +1,20 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: [PATCH] es1688 - freeup resources on init failure
-Date: Sun, 29 Jul 2012 19:39:09 +0800
-Message-ID: <20120729113909.GA14106@localhost>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH] es1688 - freeup resources on init failure
+Date: Sun, 29 Jul 2012 16:23:08 +0200
+Message-ID: <5015474C.9080103@gmail.com>
 References: <20120728132046.GA14210@localhost> <501401B1.4070108@gmail.com>
- <s5hd33fknfg.wl%tiwai@suse.de>
+ <s5hd33fknfg.wl%tiwai@suse.de> <20120729113909.GA14106@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 42F8426522C
- for <alsa-devel@alsa-project.org>; Sun, 29 Jul 2012 13:39:14 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hd33fknfg.wl%tiwai@suse.de>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF4CD265248
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jul 2012 16:23:10 +0200 (CEST)
+Received: by weyx10 with SMTP id x10so2745408wey.38
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jul 2012 07:23:13 -0700 (PDT)
+In-Reply-To: <20120729113909.GA14106@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,203 +24,209 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Krzysztof Helt <krzysztof.h1@wp.pl>, Rene Herman <rene.herman@gmail.com>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Krzysztof Helt <krzysztof.h1@wp.pl>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> >  	err = snd_es1688_init(chip, 1);
-> >  	if (err < 0)
-> > -		return err;
-> > +		goto exit_release_dma;
-> >  
-> >  	/* Register device */
-> >  	return snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-> > +
-> > +exit_release_dma:
-> > +	free_dma(chip->dma8);
-> > +exit_release_irq:
-> > +	free_irq(chip->irq, chip);
-> > +exit_release_region:
-> > +	release_and_free_resource(chip->res_port);
-> > +exit:
-> > +	return err;
+On 29.07.2012 13:39, Fengguang Wu wrote:
+>>>  	err = snd_es1688_init(chip, 1);
+>>>  	if (err < 0)
+>>> -		return err;
+>>> +		goto exit_release_dma;
+>>>  
+>>>  	/* Register device */
+>>>  	return snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+>>> +
+>>> +exit_release_dma:
+>>> +	free_dma(chip->dma8);
+>>> +exit_release_irq:
+>>> +	free_irq(chip->irq, chip);
+>>> +exit_release_region:
+>>> +	release_and_free_resource(chip->res_port);
+>>> +exit:
+>>> +	return err;
+>>
+>> You can simply call snd_es1688_free(chip) instead of a bunch of
+>> labels.  That is, all goto's can be "goto exit", and
+>>
+>>   exit:
+>> 	snd_es1688_free(chip);
+>> 	return err;
 > 
-> You can simply call snd_es1688_free(chip) instead of a bunch of
-> labels.  That is, all goto's can be "goto exit", and
+> snd_es1688_free() will call snd_es1688_init() which in turn use the
+> uninitialized spin locks and other data. So I end up with the below
+> patch. snd_device_new() could also return errors and will be handled
+> in the same way.
 > 
->   exit:
-> 	snd_es1688_free(chip);
-> 	return err;
+> I don't have the hardware, however tests show it at least fixed the
+> boot time irq mismatch warnings.
+> 
+> Daniel, thanks for your initial implementation and please kindly
+> confirm the below 3rd version :)
 
-snd_es1688_free() will call snd_es1688_init() which in turn use the
-uninitialized spin locks and other data. So I end up with the below
-patch. snd_device_new() could also return errors and will be handled
-in the same way.
+Looks good to me, but I don't have the hardware either :)
 
-I don't have the hardware, however tests show it at least fixed the
-boot time irq mismatch warnings.
 
-Daniel, thanks for your initial implementation and please kindly
-confirm the below 3rd version :)
+Daniel
 
-Thanks,
-Fengguang
----
-es1688 - freeup resources on init failure
 
-This will fix the following oops:
-
-[    6.169981] genirq: Flags mismatch irq 5. 00000000 (ES1688) vs. 00000000 (ES1688)
-[    6.170851] Pid: 1, comm: swapper Not tainted 3.5.0-00004-gceee0e9 #14
-[    6.170851] Call Trace:
-[    6.170851]  [<c1062237>] ? __setup_irq+0x3c7/0x420
-[    6.170851]  [<c1062486>] ? request_threaded_irq+0x76/0x140
-[    6.170851]  [<c1290220>] ? snd_es1688_ioctl+0x10/0x10
-[    6.170851]  [<c10624c2>] ? request_threaded_irq+0xb2/0x140
-[    6.170851]  [<c1291196>] ? snd_es1688_create+0x96/0x330
-[    6.170851]  [<c138365d>] ? snd_gusextreme_probe+0x18d/0x5a2
-[    6.170851]  [<c11c9d80>] ? __driver_attach+0x80/0x80
-[    6.170851]  [<c10db22f>] ? sysfs_create_link+0xf/0x20
-[    6.170851]  [<c11c9d80>] ? __driver_attach+0x80/0x80
-[    6.170851]  [<c11d1502>] ? isa_bus_probe+0x12/0x20
-[    6.170851]  [<c11c9b95>] ? driver_probe_device+0x55/0x1c0
-[    6.170851]  [<c13ae04f>] ? _raw_spin_unlock+0xf/0x30
-[    6.170851]  [<c13705ea>] ? klist_next+0x6a/0xe0
-[    6.170851]  [<c11d15c1>] ? isa_bus_match+0x21/0x40
-[    6.170851]  [<c11c8a24>] ? bus_for_each_drv+0x34/0x70
-[    6.170851]  [<c11c9e4b>] ? device_attach+0x7b/0x90
-[    6.170851]  [<c11c9d80>] ? __driver_attach+0x80/0x80
-[    6.170851]  [<c11c8bff>] ? bus_probe_device+0x5f/0x80
-[    6.170851]  [<c11c7493>] ? device_add+0x573/0x620
-[    6.170851]  [<c1042820>] ? complete_all+0x40/0x60
-[    6.170851]  [<c13ae08a>] ? _raw_spin_unlock_irqrestore+0x1a/0x30
-[    6.170851]  [<c11d16c6>] ? isa_register_driver+0xb6/0x150
-[    6.170851]  [<c15c9002>] ? alsa_card_gusmax_init+0xf/0xf
-[    6.170851]  [<c15a99bc>] ? do_one_initcall+0x7f/0x12b
-[    6.170851]  [<c15a9b7a>] ? kernel_init+0x112/0x1a9
-[    6.170851]  [<c15a9423>] ? do_early_param+0x77/0x77
-[    6.170851]  [<c15a9a68>] ? do_one_initcall+0x12b/0x12b
-[    6.170851]  [<c13aefbe>] ? kernel_thread_helper+0x6/0xd
-[    6.190170] es1688: can't grab IRQ 5
-[    6.190613] genirq: Flags mismatch irq 5. 00000000 (ES1688) vs. 00000000 (ES1688)
-[    6.191566] Pid: 1, comm: swapper Not tainted 3.5.0-00004-gceee0e9 #14
-[    6.192394] Call Trace:
-[    6.192685]  [<c1062237>] ? __setup_irq+0x3c7/0x420
-[    6.193342]  [<c1062486>] ? request_threaded_irq+0x76/0x140
-[    6.194081]  [<c1290220>] ? snd_es1688_ioctl+0x10/0x10
-[    6.194607]  [<c10624c2>] ? request_threaded_irq+0xb2/0x140
-[    6.194607]  [<c1291196>] ? snd_es1688_create+0x96/0x330
-[    6.194607]  [<c138365d>] ? snd_gusextreme_probe+0x18d/0x5a2
-[    6.194607]  [<c11c9d80>] ? __driver_attach+0x80/0x80
-[    6.194607]  [<c10db22f>] ? sysfs_create_link+0xf/0x20
-[    6.194607]  [<c11c9d80>] ? __driver_attach+0x80/0x80
-[    6.194607]  [<c11d1502>] ? isa_bus_probe+0x12/0x20
-[    6.194607]  [<c11c9b95>] ? driver_probe_device+0x55/0x1c0
-[    6.194607]  [<c13ae04f>] ? _raw_spin_unlock+0xf/0x30
-[    6.194607]  [<c13705ea>] ? klist_next+0x6a/0xe0
-[    6.194607]  [<c11d15c1>] ? isa_bus_match+0x21/0x40
-[    6.194607]  [<c11c8a24>] ? bus_for_each_drv+0x34/0x70
-[    6.194607]  [<c11c9e4b>] ? device_attach+0x7b/0x90
-[    6.194607]  [<c11c9d80>] ? __driver_attach+0x80/0x80
-[    6.194607]  [<c11c8bff>] ? bus_probe_device+0x5f/0x80
-[    6.194607]  [<c11c7493>] ? device_add+0x573/0x620
-[    6.194607]  [<c1042820>] ? complete_all+0x40/0x60
-[    6.194607]  [<c13ae08a>] ? _raw_spin_unlock_irqrestore+0x1a/0x30
-[    6.194607]  [<c11d16c6>] ? isa_register_driver+0xb6/0x150
-[    6.194607]  [<c15c9002>] ? alsa_card_gusmax_init+0xf/0xf
-[    6.194607]  [<c15a99bc>] ? do_one_initcall+0x7f/0x12b
-[    6.194607]  [<c15a9b7a>] ? kernel_init+0x112/0x1a9
-[    6.194607]  [<c15a9423>] ? do_early_param+0x77/0x77
-[    6.194607]  [<c15a9a68>] ? do_one_initcall+0x12b/0x12b
-[    6.194607]  [<c13aefbe>] ? kernel_thread_helper+0x6/0xd
-[    6.210779] es1688: can't grab IRQ 5
-[    6.211305] gusextreme: probe of gusextreme.0 failed with error -16
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
----
- include/sound/es1688.h        |    1 
- sound/isa/es1688/es1688_lib.c |   34 +++++++++++++++++++++-----------
- 2 files changed, 24 insertions(+), 11 deletions(-)
-
---- linux.orig/sound/isa/es1688/es1688_lib.c	2012-07-29 18:59:09.820640797 +0800
-+++ linux/sound/isa/es1688/es1688_lib.c	2012-07-29 18:59:11.576640840 +0800
-@@ -612,10 +612,10 @@ static int snd_es1688_capture_close(stru
- 
- static int snd_es1688_free(struct snd_es1688 *chip)
- {
--	if (chip->res_port) {
-+	if (chip->hardware != ES1688_HW_UNDEF)
- 		snd_es1688_init(chip, 0);
-+	if (chip->res_port)
- 		release_and_free_resource(chip->res_port);
--	}
- 	if (chip->irq >= 0)
- 		free_irq(chip->irq, (void *) chip);
- 	if (chip->dma8 >= 0) {
-@@ -657,19 +657,27 @@ int snd_es1688_create(struct snd_card *c
- 		return -ENOMEM;
- 	chip->irq = -1;
- 	chip->dma8 = -1;
-+	chip->hardware = ES1688_HW_UNDEF;
- 	
--	if ((chip->res_port = request_region(port + 4, 12, "ES1688")) == NULL) {
-+	chip->res_port = request_region(port + 4, 12, "ES1688");
-+	if (chip->res_port == NULL) {
- 		snd_printk(KERN_ERR "es1688: can't grab port 0x%lx\n", port + 4);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto exit;
- 	}
--	if (request_irq(irq, snd_es1688_interrupt, 0, "ES1688", (void *) chip)) {
-+
-+	err = request_irq(irq, snd_es1688_interrupt, 0, "ES1688", (void *) chip);
-+	if (err < 0) {
- 		snd_printk(KERN_ERR "es1688: can't grab IRQ %d\n", irq);
--		return -EBUSY;
-+		goto exit;
- 	}
-+
- 	chip->irq = irq;
--	if (request_dma(dma8, "ES1688")) {
-+	err = request_dma(dma8, "ES1688");
-+
-+	if (err < 0) {
- 		snd_printk(KERN_ERR "es1688: can't grab DMA8 %d\n", dma8);
--		return -EBUSY;
-+		goto exit;
- 	}
- 	chip->dma8 = dma8;
- 
-@@ -685,14 +693,18 @@ int snd_es1688_create(struct snd_card *c
- 
- 	err = snd_es1688_probe(chip);
- 	if (err < 0)
--		return err;
-+		goto exit;
- 
- 	err = snd_es1688_init(chip, 1);
- 	if (err < 0)
--		return err;
-+		goto exit;
- 
- 	/* Register device */
--	return snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+exit:
-+	if (err)
-+		snd_es1688_free(chip);
-+	return err;
- }
- 
- static struct snd_pcm_ops snd_es1688_playback_ops = {
---- linux.orig/include/sound/es1688.h	2012-07-29 18:59:09.820640797 +0800
-+++ linux/include/sound/es1688.h	2012-07-29 18:59:13.000640873 +0800
-@@ -29,6 +29,7 @@
- #define ES1688_HW_AUTO		0x0000
- #define ES1688_HW_688		0x0001
- #define ES1688_HW_1688		0x0002
-+#define ES1688_HW_UNDEF	0x0003
- 
- struct snd_es1688 {
- 	unsigned long port;		/* port of ESS chip */
+> ---
+> es1688 - freeup resources on init failure
+> 
+> This will fix the following oops:
+> 
+> [    6.169981] genirq: Flags mismatch irq 5. 00000000 (ES1688) vs. 00000000 (ES1688)
+> [    6.170851] Pid: 1, comm: swapper Not tainted 3.5.0-00004-gceee0e9 #14
+> [    6.170851] Call Trace:
+> [    6.170851]  [<c1062237>] ? __setup_irq+0x3c7/0x420
+> [    6.170851]  [<c1062486>] ? request_threaded_irq+0x76/0x140
+> [    6.170851]  [<c1290220>] ? snd_es1688_ioctl+0x10/0x10
+> [    6.170851]  [<c10624c2>] ? request_threaded_irq+0xb2/0x140
+> [    6.170851]  [<c1291196>] ? snd_es1688_create+0x96/0x330
+> [    6.170851]  [<c138365d>] ? snd_gusextreme_probe+0x18d/0x5a2
+> [    6.170851]  [<c11c9d80>] ? __driver_attach+0x80/0x80
+> [    6.170851]  [<c10db22f>] ? sysfs_create_link+0xf/0x20
+> [    6.170851]  [<c11c9d80>] ? __driver_attach+0x80/0x80
+> [    6.170851]  [<c11d1502>] ? isa_bus_probe+0x12/0x20
+> [    6.170851]  [<c11c9b95>] ? driver_probe_device+0x55/0x1c0
+> [    6.170851]  [<c13ae04f>] ? _raw_spin_unlock+0xf/0x30
+> [    6.170851]  [<c13705ea>] ? klist_next+0x6a/0xe0
+> [    6.170851]  [<c11d15c1>] ? isa_bus_match+0x21/0x40
+> [    6.170851]  [<c11c8a24>] ? bus_for_each_drv+0x34/0x70
+> [    6.170851]  [<c11c9e4b>] ? device_attach+0x7b/0x90
+> [    6.170851]  [<c11c9d80>] ? __driver_attach+0x80/0x80
+> [    6.170851]  [<c11c8bff>] ? bus_probe_device+0x5f/0x80
+> [    6.170851]  [<c11c7493>] ? device_add+0x573/0x620
+> [    6.170851]  [<c1042820>] ? complete_all+0x40/0x60
+> [    6.170851]  [<c13ae08a>] ? _raw_spin_unlock_irqrestore+0x1a/0x30
+> [    6.170851]  [<c11d16c6>] ? isa_register_driver+0xb6/0x150
+> [    6.170851]  [<c15c9002>] ? alsa_card_gusmax_init+0xf/0xf
+> [    6.170851]  [<c15a99bc>] ? do_one_initcall+0x7f/0x12b
+> [    6.170851]  [<c15a9b7a>] ? kernel_init+0x112/0x1a9
+> [    6.170851]  [<c15a9423>] ? do_early_param+0x77/0x77
+> [    6.170851]  [<c15a9a68>] ? do_one_initcall+0x12b/0x12b
+> [    6.170851]  [<c13aefbe>] ? kernel_thread_helper+0x6/0xd
+> [    6.190170] es1688: can't grab IRQ 5
+> [    6.190613] genirq: Flags mismatch irq 5. 00000000 (ES1688) vs. 00000000 (ES1688)
+> [    6.191566] Pid: 1, comm: swapper Not tainted 3.5.0-00004-gceee0e9 #14
+> [    6.192394] Call Trace:
+> [    6.192685]  [<c1062237>] ? __setup_irq+0x3c7/0x420
+> [    6.193342]  [<c1062486>] ? request_threaded_irq+0x76/0x140
+> [    6.194081]  [<c1290220>] ? snd_es1688_ioctl+0x10/0x10
+> [    6.194607]  [<c10624c2>] ? request_threaded_irq+0xb2/0x140
+> [    6.194607]  [<c1291196>] ? snd_es1688_create+0x96/0x330
+> [    6.194607]  [<c138365d>] ? snd_gusextreme_probe+0x18d/0x5a2
+> [    6.194607]  [<c11c9d80>] ? __driver_attach+0x80/0x80
+> [    6.194607]  [<c10db22f>] ? sysfs_create_link+0xf/0x20
+> [    6.194607]  [<c11c9d80>] ? __driver_attach+0x80/0x80
+> [    6.194607]  [<c11d1502>] ? isa_bus_probe+0x12/0x20
+> [    6.194607]  [<c11c9b95>] ? driver_probe_device+0x55/0x1c0
+> [    6.194607]  [<c13ae04f>] ? _raw_spin_unlock+0xf/0x30
+> [    6.194607]  [<c13705ea>] ? klist_next+0x6a/0xe0
+> [    6.194607]  [<c11d15c1>] ? isa_bus_match+0x21/0x40
+> [    6.194607]  [<c11c8a24>] ? bus_for_each_drv+0x34/0x70
+> [    6.194607]  [<c11c9e4b>] ? device_attach+0x7b/0x90
+> [    6.194607]  [<c11c9d80>] ? __driver_attach+0x80/0x80
+> [    6.194607]  [<c11c8bff>] ? bus_probe_device+0x5f/0x80
+> [    6.194607]  [<c11c7493>] ? device_add+0x573/0x620
+> [    6.194607]  [<c1042820>] ? complete_all+0x40/0x60
+> [    6.194607]  [<c13ae08a>] ? _raw_spin_unlock_irqrestore+0x1a/0x30
+> [    6.194607]  [<c11d16c6>] ? isa_register_driver+0xb6/0x150
+> [    6.194607]  [<c15c9002>] ? alsa_card_gusmax_init+0xf/0xf
+> [    6.194607]  [<c15a99bc>] ? do_one_initcall+0x7f/0x12b
+> [    6.194607]  [<c15a9b7a>] ? kernel_init+0x112/0x1a9
+> [    6.194607]  [<c15a9423>] ? do_early_param+0x77/0x77
+> [    6.194607]  [<c15a9a68>] ? do_one_initcall+0x12b/0x12b
+> [    6.194607]  [<c13aefbe>] ? kernel_thread_helper+0x6/0xd
+> [    6.210779] es1688: can't grab IRQ 5
+> [    6.211305] gusextreme: probe of gusextreme.0 failed with error -16
+> 
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+> ---
+>  include/sound/es1688.h        |    1 
+>  sound/isa/es1688/es1688_lib.c |   34 +++++++++++++++++++++-----------
+>  2 files changed, 24 insertions(+), 11 deletions(-)
+> 
+> --- linux.orig/sound/isa/es1688/es1688_lib.c	2012-07-29 18:59:09.820640797 +0800
+> +++ linux/sound/isa/es1688/es1688_lib.c	2012-07-29 18:59:11.576640840 +0800
+> @@ -612,10 +612,10 @@ static int snd_es1688_capture_close(stru
+>  
+>  static int snd_es1688_free(struct snd_es1688 *chip)
+>  {
+> -	if (chip->res_port) {
+> +	if (chip->hardware != ES1688_HW_UNDEF)
+>  		snd_es1688_init(chip, 0);
+> +	if (chip->res_port)
+>  		release_and_free_resource(chip->res_port);
+> -	}
+>  	if (chip->irq >= 0)
+>  		free_irq(chip->irq, (void *) chip);
+>  	if (chip->dma8 >= 0) {
+> @@ -657,19 +657,27 @@ int snd_es1688_create(struct snd_card *c
+>  		return -ENOMEM;
+>  	chip->irq = -1;
+>  	chip->dma8 = -1;
+> +	chip->hardware = ES1688_HW_UNDEF;
+>  	
+> -	if ((chip->res_port = request_region(port + 4, 12, "ES1688")) == NULL) {
+> +	chip->res_port = request_region(port + 4, 12, "ES1688");
+> +	if (chip->res_port == NULL) {
+>  		snd_printk(KERN_ERR "es1688: can't grab port 0x%lx\n", port + 4);
+> -		return -EBUSY;
+> +		err = -EBUSY;
+> +		goto exit;
+>  	}
+> -	if (request_irq(irq, snd_es1688_interrupt, 0, "ES1688", (void *) chip)) {
+> +
+> +	err = request_irq(irq, snd_es1688_interrupt, 0, "ES1688", (void *) chip);
+> +	if (err < 0) {
+>  		snd_printk(KERN_ERR "es1688: can't grab IRQ %d\n", irq);
+> -		return -EBUSY;
+> +		goto exit;
+>  	}
+> +
+>  	chip->irq = irq;
+> -	if (request_dma(dma8, "ES1688")) {
+> +	err = request_dma(dma8, "ES1688");
+> +
+> +	if (err < 0) {
+>  		snd_printk(KERN_ERR "es1688: can't grab DMA8 %d\n", dma8);
+> -		return -EBUSY;
+> +		goto exit;
+>  	}
+>  	chip->dma8 = dma8;
+>  
+> @@ -685,14 +693,18 @@ int snd_es1688_create(struct snd_card *c
+>  
+>  	err = snd_es1688_probe(chip);
+>  	if (err < 0)
+> -		return err;
+> +		goto exit;
+>  
+>  	err = snd_es1688_init(chip, 1);
+>  	if (err < 0)
+> -		return err;
+> +		goto exit;
+>  
+>  	/* Register device */
+> -	return snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+> +	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+> +exit:
+> +	if (err)
+> +		snd_es1688_free(chip);
+> +	return err;
+>  }
+>  
+>  static struct snd_pcm_ops snd_es1688_playback_ops = {
+> --- linux.orig/include/sound/es1688.h	2012-07-29 18:59:09.820640797 +0800
+> +++ linux/include/sound/es1688.h	2012-07-29 18:59:13.000640873 +0800
+> @@ -29,6 +29,7 @@
+>  #define ES1688_HW_AUTO		0x0000
+>  #define ES1688_HW_688		0x0001
+>  #define ES1688_HW_1688		0x0002
+> +#define ES1688_HW_UNDEF	0x0003
+>  
+>  struct snd_es1688 {
+>  	unsigned long port;		/* port of ESS chip */
+> 
