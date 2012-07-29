@@ -1,100 +1,58 @@
-From: "Ola Lilja" <olalilja@yahoo.se>
-Subject: RE: [PATCH 1/6] ASoC: dapm: If one widget fails,
- do not force all subsequent widgets to fail too
-Date: Thu, 2 Aug 2012 07:58:24 +0200
-Message-ID: <003901cd7073$d49cacc0$7dd60640$@se>
-References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
- <1343741493-17671-3-git-send-email-lee.jones@linaro.org>
- <20120731134214.GK4468@opensource.wolfsonmicro.com>
- <5017EAC3.3080504@linaro.org>
- <20120731142820.GW4468@opensource.wolfsonmicro.com>
- <5017EDCA.4020601@linaro.org>
- <20120731145443.GY4468@opensource.wolfsonmicro.com>
- <5017F68B.3060400@linaro.org>
- <20120731151819.GC4468@opensource.wolfsonmicro.com>
- <5018D880.5090306@linaro.org>
- <20120801132022.GS11892@opensource.wolfsonmicro.com>
+From: Misha Ketslah <thezogg@gmail.com>
+Subject: Fwd: [ALC882/883/885/888/889] Problems with
+ snd-hda-intel after 3.1.6 and the FIX
+Date: Sun, 29 Jul 2012 16:29:06 +0300
+Message-ID: <CAL-popidMRO=Q38_CVDNgpmpgpZ50geTUqxKsHk-fAySa4GJXA@mail.gmail.com>
+References: <CAL-pophdLXqOJM1jzumjuM-AzKpi1px8X+SqaykUj-A8JCQL_g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20120801132022.GS11892@opensource.wolfsonmicro.com>
-Content-Language: sv
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Lee Jones' <lee.jones@linaro.org>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <CAL-pophdLXqOJM1jzumjuM-AzKpi1px8X+SqaykUj-A8JCQL_g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: den 1 augusti 2012 15:20
-> To: Lee Jones
-> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> STEricsson_nomadik_linux@list.st.com; linus.walleij@stericsson.com;
-> arnd@arndb.de; olalilja@yahoo.se; ola.o.lilja@stericsson.com; alsa-
-> devel@alsa-project.org; lrg@ti.com
-> Subject: Re: [PATCH 1/6] ASoC: dapm: If one widget fails, do not force
-> all subsequent widgets to fail too
-> 
-> On Wed, Aug 01, 2012 at 08:19:28AM +0100, Lee Jones wrote:
-> > On 31/07/12 16:18, Mark Brown wrote:
-> 
-> > >I'm not going to apply this patch.  This isn't a vendor BSP, we
-> > >shouldn't be putting random hacks like this in core code.
-> 
-> > BSP kernel or otherwise, it still seems wrong to me to fail and
-> entire
-> > audio driver just because of a broken link.
-> 
-> No, really.  Random disconnections in the DAPM graph are just endless
-> pain from a support and debug point of view.  This isn't something that
-> randomly breaks on specific hardware where we'd expect random errors at
-> runtime, it's something that will never have worked - it seems clear
-> nobody tested the mainline submission.
-> 
-> It's very disappointing to see such an error exist, and even more
-> disappointing that there's no interest in fixing the driver.
+Hello,
+As i can't reach bugtracker (is it down, or problem on my side?), i'll
+post here. Though there is already few open bugs there i saw. I just
+found temp solution.
 
-(Yes, I know this mailer isn't configured correctly, but I'm on vacation
-and have no Linux-computer/community-mailer available. However I find it
-important to answer this)
-Mark, you very well know that I have put in a lot of effort in getting our
-Ux500-driver mainlined. This is something I have driven without really
-getting sanctioned directly at working, rendering it even harder to find
-time for it.
-Accusing me of having "no interest in fixing the driver" is just absurd
-regarding the time I've spent on this. I'm also still driving for
-mainlining our upcoming drivers, so there is no lack of interest, nor lack
-of activity at our side. I really think you could afford a bit more polite
-attitude when doing reviews. It is not easy to fulfill every single aspect
-of mainlining directly and there is (most likely) no one that purposely do
-break any community rules. At least not from my side.
+Bug itslef:
+After updating to greater version of kernel than 3.1.6 speakers stoped
+working anymore on most vaio z and similar models, though there is
+still sound through headphones. (ithere are a lot of people reporting
+it on different distro bug trackers and forums as well)
+My specific cards are
 
-Regarding the problem with the failing DAPM-widget I can probably guess
-What is going wrong when Lee is trying it out. There will be two failing
-clock-supply widgets due to the fact that on the mainline-code these
-clocks simply is not there yet. I have, of course, tested this driver
-before submitting it, and I wouldn't dream on submitting a driver where
-there were failing widgets/routes. Internally, I have put a patch with our
-clock-tree for Ux500 on, but this is not mainline-quality code and that is
-why it is not submitted with the other patches I sent. The clocks are in
-the moment of writing being worked on by other persons in ST-Ericsson, and
-I would not have had any time to be doing all this which is not in the
-scope of my responsibilities (which is the audio-domain).
-Before you told me to create the clock-supply widget-type, I had only
-warnings for these failing clocks, as an intermediate solution, before
-the clock-tree was submitted, but now they are implemented with the clock-
-supply-type and there will be route-errors instead.
-Linus W. could probably shed some light of when the missing clocks are to
-be submitted.
+00:1b.0 Audio device: Intel Corporation 5 Series/3400 Series Chipset
+High Definition Audio (rev 05)
+01:00.1 Audio device: NVIDIA Corporation High Definition Audio
+Controller (rev ff)
 
-Regards,
-Ola
+The only solution was to use model=generic, but than most of features
+wouldn't work.(plugin jack automute, missing most settings in
+alsamixer).
+
+Solution:
+And as bug was reported for a long time, i waited through kernel
+updates to fix it. But yesterday as i updated to 3.5 it was still
+there. And as 3.5 has fewer models for [ALC882/883/885/888/889], as my
+card is ALC889 i just tried all 3 of them, and it seems everyting
+working when setting model=acer-aspire-8930g (cant and didn't try HDMI
+out).
+
+But the problem is that it still not that obvious for people with
+other than acer laptops to set this as model, as well as before
+(<3.1.6) it worked out-of-box with not model setting at all.
+
+thanks,
+Michael Ketslah.
