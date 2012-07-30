@@ -1,40 +1,42 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: [PATCH 4/7] mfd: ab8500-core: Apply the AB8500 CODEC's
- compatible string to its MFD cell
-Date: Mon, 30 Jul 2012 15:24:22 +0200
-Message-ID: <20120730132422.GW16859@sortiz-mobl>
-References: <1343392734-11805-1-git-send-email-lee.jones@linaro.org>
- <1343392734-11805-5-git-send-email-lee.jones@linaro.org>
- <20120727133633.GQ16859@sortiz-mobl>
- <20120729202806.GC4384@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 05/18] ASoC: Ux500: Enable ux500 MSP driver
+ for Device Tree
+Date: Mon, 30 Jul 2012 14:39:30 +0100
+Message-ID: <20120730133930.GB4468@opensource.wolfsonmicro.com>
+References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
+ <1343393162-11938-6-git-send-email-lee.jones@linaro.org>
+ <20120729204218.GI4384@opensource.wolfsonmicro.com>
+ <50162F70.2050900@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0C44F2652F4
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 15:39:30 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120729202806.GC4384@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com
+In-Reply-To: <50162F70.2050900@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 29, 2012 at 09:28:07PM +0100, Mark Brown wrote:
-> On Fri, Jul 27, 2012 at 03:36:33PM +0200, Samuel Ortiz wrote:
-> > On Fri, Jul 27, 2012 at 01:38:51PM +0100, Lee Jones wrote:
-> 
-> > > Provide a compatible string for the AB8500 CODEC to aid in
-> > > configuration property look-up from its associated Device Tree
-> > > node.
-> 
-> > Applied as well.
-> 
-> I remain *deeply* unconvinced that this is tasteful design for the
-> device tree bindings, and it's certainly not needed urgently for v3.6 as
-> there's no DT bindings on the CODEC side.
-Fair enough, I'll keep this one for the next merge window.
+On Mon, Jul 30, 2012 at 07:53:36AM +0100, Lee Jones wrote:
+> On 29/07/12 21:42, Mark Brown wrote:
 
-Cheers,
-Samuel.
+> >>+	if (of_get_property(np, "stericsson,use-pinctrl", NULL))
 
--- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+> >This doesn't seem particularly sane...  why is this conditional?
+
+> It's conditional because only MSP1 and MSP3 have pinctrl support.
+
+Why does the driver care - doesn't the pinctrl abstraction and/or
+bindings handle this sensibly?
