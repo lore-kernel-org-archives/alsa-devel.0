@@ -1,14 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8962: Allow VMID time to fully ramp
-Date: Mon, 30 Jul 2012 18:46:32 +0100
-Message-ID: <1343670392-6997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH v3 1/2] ALSA: ASoC: add DT bindings for
+	cs4270
+Date: Mon, 30 Jul 2012 15:42:31 -0500
+Message-ID: <5016F1B7.6070109@freescale.com>
+References: <1343222915-26108-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72932265348
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 19:46:32 +0200 (CEST)
+Received: from db3outboundpool.messaging.microsoft.com
+ (db3ehsobe006.messaging.microsoft.com [213.199.154.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2414265344
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 22:42:36 +0200 (CEST)
+In-Reply-To: <1343222915-26108-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,30 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Required for reliable power up from cold.
+Daniel Mack wrote:
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> Cc: Timur Tabi <timur@freescale.com>
+> ---
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |    3 +++
- 1 file changed, 3 insertions(+)
+Both patches:
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 6c67950..b56f699 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2503,6 +2503,9 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
- 		/* VMID 2*250k */
- 		snd_soc_update_bits(codec, WM8962_PWR_MGMT_1,
- 				    WM8962_VMID_SEL_MASK, 0x100);
-+
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
-+			msleep(100);
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
+Acked-by: Timur Tabi <timur@freescale.com>
+
+I am seeing something a little weird, though, although I doubt it's
+related to these patches.  Audio works, even though I see this on the boot
+log:
+
+cs4270 0-004f: found device at i2c address 4F
+cs4270 0-004f: hardware revision 3
+Freescale MPC8610 HPCD ALSA SoC machine driver
+soc-audio soc-audio: ASoC machine snd-soc-mpc8610hpcd should use
+snd_soc_register_card()
+soc-audio soc-audio: Failed to register card
+platform soc-audio: Driver soc-audio requests probe deferral
+...
+ALSA device list:
+  No soundcards found.
+soc-audio soc-audio: ASoC machine snd-soc-mpc8610hpcd should use
+snd_soc_register_card()
+soc-audio soc-audio:  cs4270-hifi <-> e0016000.ssi mapping ok
+soc-audio soc-audio:  cs4270-hifi <-> e0016000.ssi mapping ok
+
+Is there a connection between the message "ASoC machine
+snd-soc-mpc8610hpcd should use snd_soc_register_card()", the requests for
+probe deferral, and the "No soundcards found." message?
+
 -- 
-1.7.10.4
+Timur Tabi
+Linux kernel developer at Freescale
