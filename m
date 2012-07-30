@@ -1,18 +1,22 @@
-From: Matthew Gregan <kinetik@flim.org>
-Subject: Re: [pulseaudio-discuss] Immediate underrun with
- PulseAudio ALSA plugin when PA and ALSA buffer sizes differ
-Date: Mon, 30 Jul 2012 17:49:57 +1200
-Message-ID: <20120730054957.GA2610@flim.org>
-References: <20120718221439.GA2875@flim.org> <5007CBA9.5050808@canonical.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 05/18] ASoC: Ux500: Enable ux500 MSP driver
+ for Device Tree
+Date: Mon, 30 Jul 2012 07:53:36 +0100
+Message-ID: <50162F70.2050900@linaro.org>
+References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
+ <1343393162-11938-6-git-send-email-lee.jones@linaro.org>
+ <20120729204218.GI4384@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from flim.org (flim.org [65.99.223.158])
- by alsa0.perex.cz (Postfix) with ESMTP id D3C7F26525A
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 07:49:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5007CBA9.5050808@canonical.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 491A326525A
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 08:53:59 +0200 (CEST)
+Received: by eaaa13 with SMTP id a13so697975eaa.38
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jul 2012 23:54:00 -0700 (PDT)
+In-Reply-To: <20120729204218.GI4384@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-At 2012-07-19T10:56:09+0200, David Henningsson wrote:
-> What I meant was that I can successfully run your latency test with
-> 10 ms here - when I go down to 5 I start to get xruns. In that
-> context, getting problems around 50 - 100 ms of latency is quite a
-> lot.
-
-Oh, right.  Of the three bug reports I have, two reports are from users with
-HDA, the third was using snd_ca01016 and tsched=0 with a fixed 200ms
-latency.  On my system (Lenovo W510, 1.73GHz Core i7, HDA/CX20585), PA will
-creep up to 46-56ms over multiple days of use (across multiple laptop
-suspend/resume cycles), but will run with 16ms fine after restarting PA.
-
-> Meanwhile, you could make a workaround like this in ~/.asoundrc:
-> 
-> pcm.pulse_no_underrun {
->   type pulse
->   handle_underrun 0
-> }
-> 
-> and then open the device "pulse_no_underrun". With that workaround I
-> can run with 1 ms without problem in your latency test. (We can't
-> ignore underruns for everyone though, as that would break
-> applications depending on these being delivered as well. Been there,
-> done that.)
-
-Thanks, this seems to work around the problem the way I'd hoped.  It's not
-ideal, because you end up spinning on an instantly ready fd until the PCM's
-buffer has filled, but it's better than anything I had managed to cook up in
-the meantime.  I've added code to set this at runtime[0] via the local
-config interface, inspired by WINE's winealsa.drv, which explicitly enables
-rather than disables handle_underrun.
-
-[0] https://github.com/kinetiknz/cubeb/commit/1aa0058d0729eb85505df104cd1ac072432c6d24
-
-Thanks,
--mjg
+T24gMjkvMDcvMTIgMjE6NDIsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJpLCBKdWwgMjcsIDIw
+MTIgYXQgMDE6NDU6NDlQTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+Cj4+ICsJaWYgKG9mX2dl
+dF9wcm9wZXJ0eShucCwgInN0ZXJpY3Nzb24sdXNlLXBpbmN0cmwiLCBOVUxMKSkKPj4gKwkJbXNw
+LT51c2VfcGluY3RybCA9IHRydWU7Cj4+ICsJZWxzZQo+PiArCQltc3AtPnVzZV9waW5jdHJsID0g
+ZmFsc2U7Cj4KPiBJIGRvbid0IHJlY2FsbCBzZWVpbmcgYW55IHJlc3BvbnNlIHRvIG15IHF1ZXJ5
+IGFib3V0IHRoaXMgb24gdGhlIGZpcnN0Cj4gaXRlcmF0aW9uLiAgUGxlYXNlIGRvbid0IGp1c3Qg
+aWdub3JlIHJldmlldyBjb21tZW50cy4KCkl0IHdhc24ndCBpbnRlbnRpb25hbC4gSSBtdXN0IGhh
+dmUgbWlzc2VkIGl0IGJlZm9yZS4KCj4gVGhpcyBkb2Vzbid0IHNlZW0gcGFydGljdWxhcmx5IHNh
+bmUuLi4gIHdoeSBpcyB0aGlzIGNvbmRpdGlvbmFsPwoKSXQncyBjb25kaXRpb25hbCBiZWNhdXNl
+IG9ubHkgTVNQMSBhbmQgTVNQMyBoYXZlIHBpbmN0cmwgc3VwcG9ydC4KCi0tIApMZWUgSm9uZXMK
+TGluYXJvIFNULUVyaWNzc29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4g
+c291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3
+aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
