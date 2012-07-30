@@ -1,81 +1,77 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: RE: [PATCH v2 3/4] media: videobuf2-dma-contig: use dma_mmap_coherent
- if available
-Date: Mon, 30 Jul 2012 09:43:16 +0200
-Message-ID: <02b301cd6e27$000e9cf0$002bd6d0$%szyprowski@samsung.com>
-References: <1343301191-26001-1-git-send-email-hdk@igel.co.jp>
- <1343301191-26001-4-git-send-email-hdk@igel.co.jp>
+From: "jovanovic.ljubomir@t-online.de" <jovanovic.ljubomir@t-online.de>
+Subject: US Robotics USB Phone
+Date: Mon, 30 Jul 2012 10:18:29 +0200
+Message-ID: <1SvlBN-0Eeodc0@fwd18.aul.t-online.de>
+Reply-To: "jovanovic.ljubomir@t-online.de" <jovanovic.ljubomir@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <1343301191-26001-4-git-send-email-hdk@igel.co.jp>
-Content-language: pl
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Hideki EIRAKU' <hdk@igel.co.jp>, 'Russell King' <linux@arm.linux.org.uk>, 'Pawel Osciak' <pawel@osciak.com>, 'Kyungmin Park' <kyungmin.park@samsung.com>, 'Mauro Carvalho Chehab' <mchehab@infradead.org>, 'Florian Tobias Schandinat' <FlorianSchandinat@gmx.de>, 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, 'Katsuya MATSUBARA' <matsu@igel.co.jp>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout10.t-online.de (mailout10.t-online.de [194.25.134.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD5192652A9
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 10:18:34 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-On Thursday, July 26, 2012 1:13 PM Hideki EIRAKU wrote:
-
-> Previously the vb2_dma_contig_mmap() function was using a dma_addr_t as a
-> physical address.  The two addressses are not necessarily the same.
-> For example, when using the IOMMU funtion on certain platforms, dma_addr_t
-> addresses are not directly mappable physical address.
-> dma_mmap_coherent() maps the address correctly.
-> It is available on ARM platforms.
-> 
-> Signed-off-by: Hideki EIRAKU <hdk@igel.co.jp>
-> ---
->  drivers/media/video/videobuf2-dma-contig.c |   18 ++++++++++++++++++
->  1 files changed, 18 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/media/video/videobuf2-dma-contig.c b/drivers/media/video/videobuf2-dma-
-> contig.c
-> index 4b71326..4dc85ab 100644
-> --- a/drivers/media/video/videobuf2-dma-contig.c
-> +++ b/drivers/media/video/videobuf2-dma-contig.c
-> @@ -101,14 +101,32 @@ static unsigned int vb2_dma_contig_num_users(void *buf_priv)
->  static int vb2_dma_contig_mmap(void *buf_priv, struct vm_area_struct *vma)
->  {
->  	struct vb2_dc_buf *buf = buf_priv;
-> +#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-> +	int ret;
-> +#endif
-> 
->  	if (!buf) {
->  		printk(KERN_ERR "No buffer to map\n");
->  		return -EINVAL;
->  	}
-> 
-> +#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-
-The above line is not needed. It is up to dma_mmap_coherent() / dma_mmap_attrs() to set page
-protection bits which match requested type of dma buffer mapping.
-
-> +	ret = dma_mmap_coherent(buf->conf->dev, vma, buf->vaddr, buf->dma_addr,
-> +				buf->size);
-> +	if (ret) {
-> +		pr_err("Remapping memory failed, error: %d\n", ret);
-> +		return ret;
-> +	}
-> +	vma->vm_flags |= VM_DONTEXPAND | VM_RESERVED;
-> +	vma->vm_private_data = &buf->handler;
-> +	vma->vm_ops = &vb2_common_vm_ops;
-> +	vma->vm_ops->open(vma);
-> +	return 0;
-> +#else
->  	return vb2_mmap_pfn_range(vma, buf->dma_addr, buf->size,
->  				  &vb2_common_vm_ops, &buf->handler);
-> +#endif
->  }
-> 
->  static void *vb2_dma_contig_get_userptr(void *alloc_ctx, unsigned long vaddr,
-
-Best regards
--- 
-Marek Szyprowski
-Samsung Poland R&D Center
+SGVsbG8gYWxsLAoKQXMgYWxzYS1wcm9qZWN0J3MgYnVnIHRyYWNrZXIgc2VlbXMgdW5yZWFjaGFi
+bGUgYXQgdGhlIG1vbWVudCBhbmQKYXVkaW8gZGV2aWNlIEkgd291bGQgbGlrZSB0byB1c2UgZmFj
+ZXMKdGhlIHNhbWUgcHJvYmxlbSBvbiBzZXZlcmFsIGRpc3Ryb3MgYW5kIGlzIHVubGlrZWx5IGRp
+c3RybydzIHByb2JsZW0sCkkgd2lsbCBwb3N0IGhlcmU6CgpXaGVuIEkgY29ubmVjdCB0aGlzCmh0
+dHA6Ly93d3cudXNyLmNvbS9zdXBwb3J0L3Byb2R1Y3QtdGVtcGxhdGUuYXNwP3Byb2Q9OTYwMiBb
+MV0gdXNiCmludGVybmV0IG1pbmkgcGhvbmUgdG8gdGhlCnVwIHRvIGRhdGUgZmVkb3JhIDE3IG5l
+dGJvb2sgKGFsc2EtKiB2ZXJzaW9uIGlzIDEuMC4yNSkgaXQgaXMgbm90CmZ1bmN0aW9uYWwuClBo
+b25lIGlzIHdvcmtpbmcgZmluZSB1bmRlciB3aW54cC4KCmxzdXNiICBnaXZlczoKQnVzIDAwMyBE
+ZXZpY2UgMDAyOiBJRCAwNjJhOjkwMDQgQ3JlYXRpdmUgTGFicyBVU1I5NjAyIFVTQiBJbnRlcm5l
+dApNaW5pIFBob25lCgpyZWxldmFudCBsaW5lcyBvZiBkbWVzZyBvdXRwdXQgYXJlOgpbMjczNzIu
+NzYzMTMyXSB1c2IgMy0xOiBuZXcgZnVsbC1zcGVlZCBVU0IgZGV2aWNlIG51bWJlciAzIHVzaW5n
+CnVoY2lfaGNkClsyNzM3My4xMjYyMTVdIHVzYiAzLTE6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBp
+ZFZlbmRvcj0wNjJhLAppZFByb2R1Y3Q9OTAwNApbMjczNzMuMTI2MjM0XSB1c2IgMy0xOiBOZXcg
+VVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MCwgUHJvZHVjdD0xLApTZXJpYWxOdW1iZXI9MApbMjcz
+NzMuMTI2MjU3XSB1c2IgMy0xOiBQcm9kdWN0OiBVU0IgUGhvbmUKWzI3MzczLjEzNDIxMV0gQUxT
+QSBzb3VuZC91c2IvY2xvY2suYzoyMzYgMzoxOjE6IGNhbm5vdCBnZXQgZnJlcSBhdCBlcAoweDEK
+WzI3MzczLjEzNzIyNV0gQUxTQSBzb3VuZC91c2IvY2xvY2suYzoyMjcgMzoyOjE6IGNhbm5vdCBz
+ZXQgZnJlcSAxNjAwMAp0byBlcCAweDgyClsyNzM3My4xMzgyNDddIEFMU0Egc291bmQvdXNiL21p
+eGVyLmM6ODQ2IDk6MDogY2Fubm90IGdldCBtaW4vbWF4CnZhbHVlcyBmb3IgY29udHJvbCAyIChp
+ZCA5KQpbMjczNzMuMTM4Mjk2XSBBTFNBIHNvdW5kL3VzYi9taXhlci5jOjg0NiAxMDowOiBjYW5u
+b3QgZ2V0IG1pbi9tYXgKdmFsdWVzIGZvciBjb250cm9sIDIgKGlkIDEwKQpbMjczNzMuMTQ2MjIw
+XSBnZW5lcmljLXVzYjogcHJvYmUgb2YgMDAwMzowNjJBOjkwMDQuMDAwMiBmYWlsZWQgd2l0aApl
+cnJvciAtMzIKWzI3MzczLjI4OTIyNl0gQUxTQSBzb3VuZC91c2IvbWl4ZXIuYzo4NDYgOTowOiBj
+YW5ub3QgZ2V0IG1pbi9tYXgKdmFsdWVzIGZvciBjb250cm9sIDIgKGlkIDkpClsyNzM3My4yOTky
+MjVdIEFMU0Egc291bmQvdXNiL21peGVyLmM6ODQ2IDk6MDogY2Fubm90IGdldCBtaW4vbWF4CnZh
+bHVlcyBmb3IgY29udHJvbCAyIChpZCA5KQpbMjczNzMuMzA5MjUzXSBBTFNBIHNvdW5kL3VzYi9t
+aXhlci5jOjg0NiA5OjA6IGNhbm5vdCBnZXQgbWluL21heAp2YWx1ZXMgZm9yIGNvbnRyb2wgMiAo
+aWQgOSkKWzI3MzczLjMyNDIzN10gQUxTQSBzb3VuZC91c2IvbWl4ZXIuYzo4NDYgOTowOiBjYW5u
+b3QgZ2V0IG1pbi9tYXgKdmFsdWVzIGZvciBjb250cm9sIDIgKGlkIDkpClsyNzM3My4zMzQyMjVd
+IEFMU0Egc291bmQvdXNiL21peGVyLmM6ODQ2IDk6MDogY2Fubm90IGdldCBtaW4vbWF4CnZhbHVl
+cyBmb3IgY29udHJvbCAyIChpZCA5KQpbMjczNzMuMzQ0MjIzXSBBTFNBIHNvdW5kL3VzYi9taXhl
+ci5jOjg0NiA5OjA6IGNhbm5vdCBnZXQgbWluL21heAp2YWx1ZXMgZm9yIGNvbnRyb2wgMiAoaWQg
+OSkKWzI3MzczLjM1NDIyM10gQUxTQSBzb3VuZC91c2IvbWl4ZXIuYzo4NDYgOTowOiBjYW5ub3Qg
+Z2V0IG1pbi9tYXgKdmFsdWVzIGZvciBjb250cm9sIDIgKGlkIDkpClsyNzM3My4zNjQyMjNdIEFM
+U0Egc291bmQvdXNiL21peGVyLmM6ODQ2IDk6MDogY2Fubm90IGdldCBtaW4vbWF4CnZhbHVlcyBm
+b3IgY29udHJvbCAyIChpZCA5KQpbMjczNzMuMzc0MjI3XSBBTFNBIHNvdW5kL3VzYi9taXhlci5j
+Ojg0NiA5OjA6IGNhbm5vdCBnZXQgbWluL21heAp2YWx1ZXMgZm9yIGNvbnRyb2wgMiAoaWQgOSkK
+WzI3MzczLjM4NDI1MF0gQUxTQSBzb3VuZC91c2IvbWl4ZXIuYzo0MDIgY2Fubm90IGdldCBjdXJy
+ZW50IHZhbHVlIGZvcgpjb250cm9sIDIgY2ggMTogZXJyID0gLTIyClsyNzM3My4zOTQyNTZdIEFM
+U0Egc291bmQvdXNiL21peGVyLmM6NDAyIGNhbm5vdCBnZXQgY3VycmVudCB2YWx1ZSBmb3IKY29u
+dHJvbCAyIGNoIDE6IGVyciA9IC0yMgpbMjczNzMuNDA0MjI0XSBBTFNBIHNvdW5kL3VzYi9taXhl
+ci5jOjQwMiBjYW5ub3QgZ2V0IGN1cnJlbnQgdmFsdWUgZm9yCmNvbnRyb2wgMSBjaCAwOiBlcnIg
+PSAtMjIKCmZvbGxvd2VkIGJ5IGEgbG90IG9mIHRoZXNlOgpbMjczNzMuNDUxMjE2XSBBTFNBIHNv
+dW5kL3VzYi9wY20uYzoyNTAgMzoxOjE6IHVzYl9zZXRfaW50ZXJmYWNlCmZhaWxlZApbMjczNzMu
+NDUyMjE5XSBBTFNBIHNvdW5kL3VzYi9wY20uYzoyNTAgMzoxOjE6IHVzYl9zZXRfaW50ZXJmYWNl
+CmZhaWxlZAouLi4gCgogIEZSRUVNQUlMQFQtT05MSU5FLkRFIC0gRGllIGtvc3Rlbmxvc2UgRS1N
+YWlsIEFkcmVzc2UgdW5hYmjDpG5naWcgdm9tCkludGVybmV0YW5iaWV0ZXIuIEpldHp0IGtvc3Rl
+bmxvcyBhbm1lbGRlbiB1bnRlcgpodHRwOi8vdC1vbmxpbmUuZGUvZ3JhdGlzLWVtYWlsIFsyXQoK
+TGlua3M6Ci0tLS0tLQpbMV0gaHR0cDovL3d3dy51c3IuY29tL3N1cHBvcnQvcHJvZHVjdC10ZW1w
+bGF0ZS5hc3A/cHJvZD05NjAyClsyXSBodHRwOi8vdC1vbmxpbmUuZGUvZ3JhdGlzLWVtYWlsCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
