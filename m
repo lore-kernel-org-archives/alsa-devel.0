@@ -1,21 +1,21 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 13/18] ARM: ux500: Add ux500 PCM to DB8500
-	Device Tree
-Date: Mon, 30 Jul 2012 08:32:43 +0100
-Message-ID: <5016389B.4020003@linaro.org>
+Subject: Re: [PATCH 17/18] ARM: ux500: Add all encompassing
+ Sound node to DB8500 Device Tree
+Date: Mon, 30 Jul 2012 08:35:18 +0100
+Message-ID: <50163936.1050901@linaro.org>
 References: <1343393162-11938-1-git-send-email-lee.jones@linaro.org>
- <1343393162-11938-14-git-send-email-lee.jones@linaro.org>
- <20120729205001.GK4384@opensource.wolfsonmicro.com>
+ <1343393162-11938-18-git-send-email-lee.jones@linaro.org>
+ <20120729205227.GL4384@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 4644426525A
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 09:32:43 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so922881eek.38
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 00:32:45 -0700 (PDT)
-In-Reply-To: <20120729205001.GK4384@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 355AB26526D
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 09:35:18 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so923510eek.38
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2012 00:35:20 -0700 (PDT)
+In-Reply-To: <20120729205227.GL4384@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,25 +29,23 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjkvMDcvMTIgMjE6NTAsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJpLCBKdWwgMjcsIDIw
-MTIgYXQgMDE6NDU6NTdQTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+PiBOb3RoaW5nIHNwZWNp
-YWwgaGVyZS4gV2UncmUgb25seSBwcm92aWRpbmcgYSBjb21wYXRpYmxlIHN0cmluZwo+PiB0byBl
-bnN1cmUgdGhlIGRyaXZlciBpcyBwcm9iZWQgdXNpbmcgYSBEZXZpY2UgVHJlZSBib290Lgo+Cj4+
-ICsJCXBjbTogdXg1MDAtcGNtIHsKPj4gKwkJCWNvbXBhdGlibGUgPSAic3Rlcmljc3Nvbix1eDUw
-MC1wY20iOwo+PiArCQl9Owo+PiArCj4KPiBPbmUgb2YgdHdvIHRoaW5ncyBpcyB3cm9uZyBoZXJl
-LiAgRWl0aGVyIHlvdSd2ZSBub3QgcHJvdmlkZWQgYW55Cj4gaW5mb3JtYXRpb24gYWJvdXQgdGhl
-IGhhcmR3YXJlIHNvIHRoZSBkcml2ZXIgd29uJ3QgYmUgYWJsZSB0byB3b3JrIG91dAo+IHdoYXQg
-dG8gdGFsayB0byBvciB5b3UndmUgbm90IHByb3ZpZGVkIGFueSBkYXRhIHNvIHlvdSdyZSByZWdp
-c3RlcmluZyBhCj4gcHVyZWx5IHZpcnR1YWwgTGludXgtaW50ZXJuYWwgZGV2aWNlIHZpYSB0aGUg
-ZGV2aWNlIHRyZWUuCj4KPiBPbmNlIG1vcmUsIHRoZSBpZGVhIGhlcmUgaXMgdG8gZGVzY3JpYmUg
-dGhlIGhhcmR3YXJlIG5vdCB0byBkdW1wIExpbnV4J3MKPiBpbnRlcm5hbCBkYXRhIHN0cnVjdHVy
-ZXMgaW50byB0aGUgZGV2aWNlIHRyZWUuCgpXZSB1c2UgaXQgcmVnaXN0ZXIgdGhlIGRyaXZlciBm
-b3IgcHJvYmUoKWluZy4gSW4gdGhlIHNhbWUgd2F5IHdlIGRvIGZvciAKdGhlIFBNVSBhbmQgUmVn
-dWxhdG9ycy4gQWxsIHRocmVlIG9mIHdoaWNoIGFjdHVhbGx5IGJlbG9uZyB0byBhIApkaWZmZXJl
-bnQgaGFyZHdhcmUgYmxvY2suIERvIHlvdSBrbm93IG9mIGEgYmV0dGVyIHdheSB0byByZWdpc3Rl
-ciB0aG9zZSAKZGV2aWNlcz8KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNULUVyaWNzc29uIExhbmRp
-bmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0g
-U29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+T24gMjkvMDcvMTIgMjE6NTIsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJpLCBKdWwgMjcsIDIw
+MTIgYXQgMDE6NDY6MDFQTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+Cj4+ICAgYXJjaC9hcm0v
+Ym9vdC9kdHMvZGI4NTAwLmR0c2kgfCAgICA4ICsrKysrKysrCj4KPiBUaGlzIGlzIGEgZ2VuZXJp
+YyBEVCBpbmNsdWRlIGZpbGUgYnV0Li4uCj4KPj4gKwkJc291bmQgewo+PiArCQkJY29tcGF0aWJs
+ZSA9ICJzdGVyaWNzc29uLHNuZC1zb2MtbW9wNTAwIjsKPj4gKwo+PiArCQkJc3Rlcmljc3Nvbixw
+bGF0Zm9ybS1wY20tZG1hID0gPCZwY20+Owo+PiArCQkJc3Rlcmljc3NvbixjcHUtZGFpID0gPCZt
+c3AxICZtc3AzPjsKPj4gKwkJCXN0ZXJpY3Nzb24sYXVkaW8tY29kZWMgPSA8JmNvZGVjPjsKPj4g
+KwkJfTsKPgo+IC4uLnRoaXMgaXMgY2xlYXJseSB0aGUgYm9hcmQtc3BlY2lmaWMgc2V0dXAgZm9y
+IHRoZSBzeXN0ZW0sIHNob3dpbmcgaG93Cj4gdGhlIENQVSBhbmQgQ09ERUMgYXJlIGhvb2tlZCB1
+cC4gIFRoaXMgc2hvdWxkIHRoZXJlZm9yZSBiZSBpbiB0aGUgRFQgZm9yCj4gd2hhdGV2ZXIgYm9h
+cmQgdGhpcyBpcyB5b3UncmUgd29ya2luZyBvbi4KCkkgZG9uJ3QgdGhpbmsgaXQncyBib2FyZCBz
+cGVjaWZpYy4gSSBiZWxpZXZlIHRoaXMgaXMgdGhlIHNldHVwIG9uIGFsbCAKZGI4NTAwIHBsYXRm
+b3Jtcy4gSSdtIGhhcHB5IHRvIGJlIHRvbGQgSSdtIHdyb25nIGhlcmUsIGluIHdoaWNoIGNhc2Ug
+SSAKY2FuIG1vdmUgaXQgdG8gdGhlIGJvYXJkIHNwZWNpZmljIGZpbGVzLgoKLS0gCkxlZSBKb25l
+cwpMaW5hcm8gU1QtRXJpY3Nzb24gTGFuZGluZyBUZWFtIExlYWQKTGluYXJvLm9yZyDilIIgT3Bl
+biBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwg
+VHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
