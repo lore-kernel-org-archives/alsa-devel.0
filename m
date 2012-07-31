@@ -1,53 +1,43 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 10/19] ARM: ux500: Stop registering the MOP500
-	Audio driver from platform code
-Date: Tue, 31 Jul 2012 14:39:04 +0100
-Message-ID: <1343741953-17828-11-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 16/19] ARM: ux500: Add all encompassing sound node to the Snowball Device Tree
+Date: Tue, 31 Jul 2012 14:39:10 +0100
+Message-ID: <1343741953-17828-17-git-send-email-lee.jones@linaro.org>
 References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 65657265D9F
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:36 +0200 (CEST)
-Received: by mail-wg0-f51.google.com with SMTP id ed3so4575643wgb.20
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:38 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com
-Cc: STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, linus.walleij@stericsson.com, arnd@arndb.de
+Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-In this patch we prevent MOP500 driver registration from platform
-code and rely solely on Device Tree to do the probing for us.
+This is where we link together all of the SoC sound components for
+a given platform. This all encompassing sound node is only found
+in the very lowest hierarchical DTS file, since the component mix may
+well change from board variant to board variant.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/board-mop500-msp.c |    3 ---
- 1 file changed, 3 deletions(-)
+ arch/arm/boot/dts/snowball.dts |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
-index 3328c3a..71d62ed 100644
---- a/arch/arm/mach-ux500/board-mop500-msp.c
-+++ b/arch/arm/mach-ux500/board-mop500-msp.c
-@@ -175,9 +175,6 @@ struct msp_i2s_platform_data msp3_platform_data = {
- /* Due for removal once the MSP driver has been fully DT:ed. */
- void mop500_of_msp_init(struct device *parent)
- {
--	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
--	platform_device_register(&snd_soc_mop500);
--
- 	pr_info("Initialize MSP I2S-devices.\n");
- 	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
- 			   &msp0_platform_data);
+diff --git a/arch/arm/boot/dts/snowball.dts b/arch/arm/boot/dts/snowball.dts
+index fce4a00..2969997 100644
+--- a/arch/arm/boot/dts/snowball.dts
++++ b/arch/arm/boot/dts/snowball.dts
+@@ -83,6 +83,14 @@
+ 	};
+ 
+ 	soc-u9500 {
++
++		sound {
++			compatible = "stericsson,snd-soc-mop500";
++
++			stericsson,cpu-dai = <&msp1 &msp3>;
++			stericsson,audio-codec = <&codec>;
++		};
++
+ 		msp1: msp@80124000 {
+ 			status = "okay";
+ 		};
 -- 
 1.7.9.5
