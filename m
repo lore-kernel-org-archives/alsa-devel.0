@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 17/19] Documentation: Define the MOP500 Audio Machine Driver Device Tree bindings
-Date: Tue, 31 Jul 2012 14:39:11 +0100
-Message-ID: <1343741953-17828-18-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 08/19] ARM: ux500: Fork MSP platform registration for step-by-step DT enablement
+Date: Tue, 31 Jul 2012 14:39:02 +0100
+Message-ID: <1343741953-17828-9-git-send-email-lee.jones@linaro.org>
 References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
@@ -10,59 +10,47 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, olalilja
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Here we add the required documentation for the new Device Tree
-bindings pertaining to the MOP500 Audio Machine driver.
+We've done this before and it worked well last time. Here we're
+duplicating a complex registration function to ease the process
+of enabling it for Device Tree. As there are quite a few steps
+taken during the registration process, it makes sense to break
+them up into more manageable chunks. This patch will aid us.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../devicetree/bindings/sound/ux500-mop500.txt     |   39 ++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ux500-mop500.txt
+ arch/arm/mach-ux500/board-mop500-msp.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ux500-mop500.txt b/Documentation/devicetree/bindings/sound/ux500-mop500.txt
-new file mode 100644
-index 0000000..0c57063
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ux500-mop500.txt
-@@ -0,0 +1,39 @@
-+* MOP500 Audio Machine Driver
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
+index 573d912..7dd997a 100644
+--- a/arch/arm/mach-ux500/board-mop500-msp.c
++++ b/arch/arm/mach-ux500/board-mop500-msp.c
+@@ -172,6 +172,26 @@ static struct msp_i2s_platform_data msp3_platform_data = {
+ 	.msp_i2s_dma_tx	= NULL,
+ };
+ 
++/* Due for removal once the MSP driver has been fully DT:ed. */
++void mop500_of_msp_init(struct device *parent)
++{
++	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
++	platform_device_register(&snd_soc_mop500);
 +
-+This node is responsible for linking together all ux500 Audio Driver components.
++	pr_info("Initialize MSP I2S-devices.\n");
++	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
++			   &msp0_platform_data);
++	db8500_add_msp_i2s(parent, 1, U8500_MSP1_BASE, IRQ_DB8500_MSP1,
++			   &msp1_platform_data);
++	db8500_add_msp_i2s(parent, 2, U8500_MSP2_BASE, IRQ_DB8500_MSP2,
++			   &msp2_platform_data);
++	db8500_add_msp_i2s(parent, 3, U8500_MSP3_BASE, IRQ_DB8500_MSP1,
++			   &msp3_platform_data);
 +
-+Required properties:
-+ - compatible                : "stericsson,snd-soc-mop500"
++	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
++	platform_device_register(&ux500_pcm);
++}
 +
-+Non-standard properties:
-+ - Machine Driver:
-+   - stericsson,cpu-dai      : Phandle to the CPU-side DAI
-+   - stericsson,audio-codec  : Phandle to the Audio CODEC
-+
-+Example:
-+
-+	sound {
-+		compatible = "stericsson,snd-soc-mop500";
-+
-+		stericsson,cpu-dai = <&msp1 &msp3>;
-+		stericsson,audio-codec = <&codec>;
-+	};
-+
-+	msp1: msp@80124000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80124000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	msp3: msp@80125000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80125000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	codec: ab8500-codec {
-+		compatible = "stericsson,ab8500-codec";
-+		stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+	};
+ void mop500_msp_init(struct device *parent)
+ {
+ 	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
 -- 
 1.7.9.5
