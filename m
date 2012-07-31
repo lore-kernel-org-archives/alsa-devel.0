@@ -1,18 +1,19 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 03/19] ASoC: Ux500: Enable ux500 MSP driver for
+Subject: [PATCH 02/19] ASoC: Ux500: Enable MOP500 driver for
 	Device Tree
-Date: Tue, 31 Jul 2012 14:38:57 +0100
-Message-ID: <1343741953-17828-4-git-send-email-lee.jones@linaro.org>
+Date: Tue, 31 Jul 2012 14:38:56 +0100
+Message-ID: <1343741953-17828-3-git-send-email-lee.jones@linaro.org>
 References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F6D3265D2D
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:25 +0200 (CEST)
-Received: by mail-wg0-f51.google.com with SMTP id ed3so4575643wgb.20
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:27 -0700 (PDT)
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7253A265D0C
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:23 +0200 (CEST)
+Received: by mail-wi0-f173.google.com with SMTP id hm6so2372350wib.2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:25 -0700 (PDT)
 In-Reply-To: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,85 +28,89 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, olalilja
 Cc: STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, linus.walleij@stericsson.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-Register both parts of the MSP driver from Device Tree so that they
-are probed when Device Tree is enabled. Also, as there is platform
-data involved, we ensure that there is allocated memory to place the
-configuration into and that the correct information is extracted from
-the DT binary.
+Here we ensure that the MOP500 audio driver will be probed during a
+Device Tree boot. We also parse the sound node to link together the
+codec, dma and the CPU-side Digital Audio Interface.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_dai.c |    6 ++++++
- sound/soc/ux500/ux500_msp_i2s.c |   22 +++++++++++++++++++---
- 2 files changed, 25 insertions(+), 3 deletions(-)
+ sound/soc/ux500/mop500.c |   38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 772cb19..0f7dd49 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -833,10 +833,16 @@ static int __devexit ux500_msp_drv_remove(struct platform_device *pdev)
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 31c4d26..821f2a9 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/io.h>
+ #include <linux/spi/spi.h>
++#include <linux/of.h>
+ 
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+@@ -56,14 +57,45 @@ static struct snd_soc_card mop500_card = {
+ 	.num_links = ARRAY_SIZE(mop500_dai_links),
+ };
+ 
++static int __devinit mop500_of_probe(struct platform_device *pdev,
++				struct device_node *np)
++{
++	struct device_node *codec_np, *msp_np[2];
++	int i;
++
++	msp_np[0] = of_parse_phandle(np, "stericsson,cpu-dai", 0);
++	msp_np[1] = of_parse_phandle(np, "stericsson,cpu-dai", 1);
++	codec_np  = of_parse_phandle(np, "stericsson,audio-codec", 0);
++
++	if (!(msp_np[0] && msp_np[1] && codec_np)) {
++		dev_err(&pdev->dev, "Phandle missing or invalid\n");
++		return -EINVAL;
++	}
++
++	for (i = 0; i < 2; i++) {
++		mop500_dai_links[i].cpu_of_node = msp_np[i];
++		mop500_dai_links[i].cpu_dai_name = NULL;
++		mop500_dai_links[i].codec_of_node = codec_np;
++		mop500_dai_links[i].codec_name = NULL;
++	}
++
++	return 0;
++}
+ static int __devinit mop500_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	int ret;
+ 
+ 	pr_debug("%s: Enter.\n", __func__);
+ 
+ 	dev_dbg(&pdev->dev, "%s: Enter.\n", __func__);
+ 
++	if (np) {
++		ret = mop500_of_probe(pdev, np);
++		if (ret)
++			return ret;
++	}
++
+ 	mop500_card.dev = &pdev->dev;
+ 
+ 	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
+@@ -101,10 +133,16 @@ static int __devexit mop500_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static const struct of_device_id ux500_msp_i2c_match[] = {
-+	{ .compatible = "stericsson,ux500-msp-i2s", },
++static const struct of_device_id snd_soc_mop500_match[] = {
++	{ .compatible = "stericsson,snd-soc-mop500", },
 +	{},
 +};
 +
- static struct platform_driver msp_i2s_driver = {
+ static struct platform_driver snd_soc_mop500_driver = {
  	.driver = {
- 		.name = "ux500-msp-i2s",
  		.owner = THIS_MODULE,
-+		.of_match_table = ux500_msp_i2c_match,
+ 		.name = "snd-soc-mop500",
++		.of_match_table = snd_soc_mop500_match,
  	},
- 	.probe = ux500_msp_drv_probe,
- 	.remove = ux500_msp_drv_remove,
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 2cbfc54..5e0bf8c 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -18,6 +18,7 @@
- #include <linux/pinctrl/consumer.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/of.h>
- 
- #include <mach/hardware.h>
- #include <mach/msp.h>
-@@ -692,16 +693,31 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 	int ret = 0;
- 	struct resource *res = NULL;
- 	struct i2s_controller *i2s_cont;
-+	struct device_node *np = pdev->dev.of_node;
- 	struct ux500_msp *msp;
- 
--	dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
--		pdev->name, platform_data->id);
--
- 	*msp_p = devm_kzalloc(&pdev->dev, sizeof(struct ux500_msp), GFP_KERNEL);
- 	msp = *msp_p;
- 	if (!msp)
- 		return -ENOMEM;
- 
-+	if (np) {
-+		if (!platform_data) {
-+			platform_data = devm_kzalloc(&pdev->dev,
-+				sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
-+			if (!platform_data)
-+				ret = -ENOMEM;
-+		}
-+	} else
-+		if (!platform_data)
-+			ret = -EINVAL;
-+
-+	if (ret)
-+		goto err_res;
-+
-+	dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
-+		pdev->name, platform_data->id);
-+
- 	msp->id = platform_data->id;
- 	msp->dev = &pdev->dev;
- 	msp->dma_cfg_rx = platform_data->msp_i2s_dma_rx;
+ 	.probe = mop500_probe,
+ 	.remove = __devexit_p(mop500_remove),
 -- 
 1.7.9.5
