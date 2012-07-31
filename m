@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4/6] ARM: ux500: Ensure probing of Audio devices when Device Tree is enabled
-Date: Tue, 31 Jul 2012 14:31:28 +0100
-Message-ID: <1343741493-17671-8-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 5/6] ARM: ux500: Ensure probing of Audio devices when Device Tree is enabled
+Date: Tue, 31 Jul 2012 14:31:31 +0100
+Message-ID: <1343741493-17671-11-git-send-email-lee.jones@linaro.org>
 References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
