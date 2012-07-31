@@ -1,23 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 1/2] ALSA: ASoC: add DT bindings for
-	cs4270
-Date: Tue, 31 Jul 2012 17:06:50 +0100
-Message-ID: <20120731160650.GC11892@opensource.wolfsonmicro.com>
-References: <1343222915-26108-1-git-send-email-zonque@gmail.com>
- <5016F1B7.6070109@freescale.com>
- <20120731140950.GQ4468@opensource.wolfsonmicro.com>
- <5017F08C.9010209@freescale.com>
- <20120731160023.GA11892@opensource.wolfsonmicro.com>
- <501801A8.2000203@freescale.com>
+From: Phil Moh <phiamo@googlemail.com>
+Subject: Re:
+	=?utf-8?q?Enable_docking_station_speaker_jack_for_ne?=
+	=?utf-8?q?w_Lenovo=09Thinkpads?=
+Date: Tue, 31 Jul 2012 16:11:05 +0000 (UTC)
+Message-ID: <loom.20120731T180005-845@post.gmane.org>
+References: <50170719.8090207@hadiko.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C5C4265DC8
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 18:06:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <501801A8.2000203@freescale.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03064265D42
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 18:15:19 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SwF6M-0001R0-6D
+ for alsa-devel@alsa-project.org; Tue, 31 Jul 2012 18:15:18 +0200
+Received: from p5DE78992.dip.t-dialin.net ([93.231.137.146])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 18:15:18 +0200
+Received: from phiamo by p5DE78992.dip.t-dialin.net with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 18:15:18 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,34 +31,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 31, 2012 at 11:02:48AM -0500, Timur Tabi wrote:
-> Mark Brown wrote:
+Hi Mario,
+i have the same problem with my T430s with ubuntu 12.04.
+I never debugged alsa, so not sure howto help the best way.
+I downloaded hda-analyzer too and it gave me some output i did not yet fully 
+understand.
 
-> > It's not a problem.  If you ensure that all the dependencies for the
-> > card are registered before the card it won't happen but that'll depend
-> > on the order people have in their DT.
+Can you give me some hints how to track this down a bit further?
 
-> Well, it may not be a real problem, but it is disconcerting.  I can
-> imagine a bunch of bogus bug reports coming my way because people think
-> the drivers have not loaded properly.
+I didnt really get howto use hda-verb to umute the docking sound, probably you 
+can also give a a hint on this.
+Thanks a lot!
 
-Yeah.  TBH I think the best fix is to remove the logging of the cards
-rather than anything else, make the core announce each card as it
-appears if it's useful.
-
-> >> Are you planning on removing support for soc-audio (thereby forcing me to
-> >> update to snd_soc_register_card), or can I just ignore the warning?
-
-> > You should update.
-
-> I know, but is it urgent that I update?  How much time do I have?  If
-> you're telling me that you're going to yank it in 3.7, then I need to
-> re-prioritize my work.
-
-Not that urgent, no - conversion won't be forced until it's blocking
-something in the framework and that's not likely to happen any time
-soon.
+Phil
