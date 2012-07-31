@@ -1,16 +1,20 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [RFC PATCH 2/2] ASoC: add compress stream support
-Date: Tue, 31 Jul 2012 12:11:40 +0530
-Message-ID: <1343716900-23491-3-git-send-email-vinod.koul@linux.intel.com>
-References: <1343716900-23491-1-git-send-email-vinod.koul@linux.intel.com>
+From: Joao Bonina <bonina_2001@yahoo.com>
+Subject: Alsa: USB Class 2 Audio soundcard device disappears
+	suddenly
+Date: Tue, 31 Jul 2012 03:12:39 -0700 (PDT)
+Message-ID: <1343729559.92141.YahooMailNeo@web121604.mail.ne1.yahoo.com>
+References: <1343687555.25545.YahooMailNeo@web121601.mail.ne1.yahoo.com>
+ <50176C21.4080203@gmail.com>
+ <1343729241.63273.YahooMailNeo@web121603.mail.ne1.yahoo.com>
+Reply-To: Joao Bonina <bonina_2001@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="-36511695-849502224-1343729559=:92141"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 203B3265CDA
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 08:41:02 +0200 (CEST)
-In-Reply-To: <1343716900-23491-1-git-send-email-vinod.koul@linux.intel.com>
+Received: from nm24-vm3.bullet.mail.ne1.yahoo.com
+ (nm24-vm3.bullet.mail.ne1.yahoo.com [98.138.91.154])
+ by alsa0.perex.cz (Postfix) with SMTP id 96538265CF1
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 12:12:40 +0200 (CEST)
+In-Reply-To: <1343729241.63273.YahooMailNeo@web121603.mail.ne1.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,361 +24,516 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, pierre-louis.bossart@linux.intel.com, ramesh.babu@intel.com, namartax.kohli@intel.com, lrg@ti.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Namarta Kohli <namartax.kohli@intel.com>
+---36511695-849502224-1343729559=:92141
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds the support to parse the compress dai's and then also adds the
-soc-compress.c file while handles the compress stream operations, mostly analogous 
-to what is done in the soc-pcm.c and additional handling of the compress
-operations
+=0A=0AIt doesn't show anything when that happens.=0A=0ALooking at dmesg (I'=
+m attaching it), it shows this:=0A[=A0 350.170478] usb 1-4: config 1 has an=
+ invalid interface number: 3 but max is 2=0A[=A0 350.170500] usb 1-4: confi=
+g 1 has no interface number 2=0A[=A0 350.170843] usb 1-4: config 1 has an i=
+nvalid interface number: 3 but max is 2=0A[=A0 350.170864] usb 1-4: config =
+1 has no interface number 2=0A[=A0 350.171344] usb 1-4: New USB device foun=
+d, idVendor=3D21b4, idProduct=3D0230=0A=0A[=A0 350.171366] usb 1-4: New USB=
+ device strings: Mfr=3D1, Product=3D2, SerialNumber=3D3=0A[=A0 350.171385] =
+usb 1-4: Product: Ayre USB Interface=0A[=A0 350.171401] usb 1-4: Manufactur=
+er: Ayre Acoustics=0A[=A0 350.171418] usb 1-4: SerialNumber: (C) 2010 XMOS/=
+Wavelength Audio=0A=0A=0ADon't know if those 'invalid interface number' mes=
+sages are relevant for the issue.=0A=0AJoao=0A=0A=0A----- Original Message =
+-----=0AFrom: Daniel Mack <zonque@gmail.com>=0ATo: Joao Bonina <bonina_2001=
+@yahoo.com>=0ACc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.or=
+g>=0ASent: Tuesday, 31 July 2012, 6:24=0ASubject: Re: [alsa-devel] Alsa: US=
+B Class 2 Audio soundcard device disappears suddenly=0A=0AOn 31.07.2012 00:=
+32, Joao Bonina wrote:=0A> Hi,=0A> =0A> I'm using an USB Class 2 Audio DAC =
+(basically a soundcard) with my Linux box and MPD software.=0A> =0A> It wor=
+ks great when playing files stored in a remote share, but when =0A> playing=
+ files from an USB pen, it stops playing in a few minutes.=0A> =0A> Mpd.log=
+ shows this:=0A> =0A> Code:=0A> Jul 30 13:03 : output: "USB" [alsa] failed =
+to play: No such device=0A> Jul 30 13:03 : output: closed plugin=3Dalsa nam=
+e=3D"USB"=0A> ALSA lib pcm_hw.c:1401:(_snd_pcm_hw_open) Invalid value for c=
+ard=0A> Jul 30 13:03 : output: Failed to open "USB" [alsa]: Failed to open =
+ALSA device "hw:0,0": No such file or directoryIt seems to be somewhat rela=
+ted to the USB bus not being able to =0A> cope with both PCM streaming to t=
+he soundcard and reading from the flash pen simultaneously, I guess.=0A> =
+=0A> So, anybody faced this issue previously and can provide some hints to =
+solve this?=0A> =0A> MPD is 0.17, kernel is 3.2.17, alsa-utils is 1.0.25.=
+=0A=0ADoes the kernel log or 'dmesg' show anything weird what that happens?=
+=0A=0A=0ADaniel=0A=0A_______________________________________________=0AAlsa=
+-devel mailing list=0AAlsa-devel@alsa-project.org=0Ahttp://mailman.alsa-pro=
+ject.org/mailman/listinfo/alsa-devel=0A
+---36511695-849502224-1343729559=:92141
+Content-Type: text/plain; name="dmesg.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="dmesg.txt"
 
-Signed-off-by: Namarta Kohli <namartax.kohli@intel.com>
-Signed-off-by: Ramesh Babu K V <ramesh.babu@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
----
- sound/soc/Makefile       |    2 +-
- sound/soc/soc-compress.c |  297 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-core.c     |   10 ++-
- 3 files changed, 307 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/soc-compress.c
+WyAgICAwLjAwMDAwMF0gSW5pdGlhbGl6aW5nIGNncm91cCBzdWJzeXMgY3B1
+c2V0DQpbICAgIDAuMDAwMDAwXSBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5
+cyBjcHUNClsgICAgMC4wMDAwMDBdIExpbnV4IHZlcnNpb24gMy4yLjE3LXJ0
+MjggKHJvb3RAZGViaWFuKSAoZ2NjIHZlcnNpb24gNC40LjUgKERlYmlhbiA0
+LjQuNS04KSApICMxIFBSRUVNUFQgUlQgU2F0IEp1bCAyOCAyMzo1MTo0MiBX
+RVNUIDIwMTINClsgICAgMC4wMDAwMDBdIEtFUk5FTCBzdXBwb3J0ZWQgY3B1
+czoNClsgICAgMC4wMDAwMDBdICAgQU1EIEF1dGhlbnRpY0FNRA0KWyAgICAw
+LjAwMDAwMF0gQklPUy1wcm92aWRlZCBwaHlzaWNhbCBSQU0gbWFwOg0KWyAg
+ICAwLjAwMDAwMF0gIEJJT1MtZTgyMDogMDAwMDAwMDAwMDAwMDAwMCAtIDAw
+MDAwMDAwMDAwOWU4MDAgKHVzYWJsZSkNClsgICAgMC4wMDAwMDBdICBCSU9T
+LWU4MjA6IDAwMDAwMDAwMDAwOWU4MDAgLSAwMDAwMDAwMDAwMGEwMDAwIChy
+ZXNlcnZlZCkNClsgICAgMC4wMDAwMDBdICBCSU9TLWU4MjA6IDAwMDAwMDAw
+MDAwZjAwMDAgLSAwMDAwMDAwMDAwMTAwMDAwIChyZXNlcnZlZCkNClsgICAg
+MC4wMDAwMDBdICBCSU9TLWU4MjA6IDAwMDAwMDAwMDAxMDAwMDAgLSAwMDAw
+MDAwMDBmN2MwMDAwICh1c2FibGUpDQpbICAgIDAuMDAwMDAwXSAgQklPUy1l
+ODIwOiAwMDAwMDAwMGZmZmYwMDAwIC0gMDAwMDAwMDEwMDAwMDAwMCAocmVz
+ZXJ2ZWQpDQpbICAgIDAuMDAwMDAwXSBOb3RpY2U6IE5YIChFeGVjdXRlIERp
+c2FibGUpIHByb3RlY3Rpb24gbWlzc2luZyBpbiBDUFUhDQpbICAgIDAuMDAw
+MDAwXSBETUkgbm90IHByZXNlbnQgb3IgaW52YWxpZC4NClsgICAgMC4wMDAw
+MDBdIGU4MjAgdXBkYXRlIHJhbmdlOiAwMDAwMDAwMDAwMDAwMDAwIC0gMDAw
+MDAwMDAwMDAxMDAwMCAodXNhYmxlKSA9PT4gKHJlc2VydmVkKQ0KWyAgICAw
+LjAwMDAwMF0gZTgyMCByZW1vdmUgcmFuZ2U6IDAwMDAwMDAwMDAwYTAwMDAg
+LSAwMDAwMDAwMDAwMTAwMDAwICh1c2FibGUpDQpbICAgIDAuMDAwMDAwXSBs
+YXN0X3BmbiA9IDB4ZjdjMCBtYXhfYXJjaF9wZm4gPSAweDEwMDAwMA0KWyAg
+ICAwLjAwMDAwMF0gaW5pdGlhbCBtZW1vcnkgbWFwcGVkIDogMCAtIDAxODAw
+MDAwDQpbICAgIDAuMDAwMDAwXSBCYXNlIG1lbW9yeSB0cmFtcG9saW5lIGF0
+IFtjMDA5ZDAwMF0gOWQwMDAgc2l6ZSA0MDk2DQpbICAgIDAuMDAwMDAwXSBp
+bml0X21lbW9yeV9tYXBwaW5nOiAwMDAwMDAwMDAwMDAwMDAwLTAwMDAwMDAw
+MGY3YzAwMDANClsgICAgMC4wMDAwMDBdICAwMDAwMDAwMDAwIC0gMDAwMDQw
+MDAwMCBwYWdlIDRrDQpbICAgIDAuMDAwMDAwXSAgMDAwMDQwMDAwMCAtIDAw
+MGY0MDAwMDAgcGFnZSAyTQ0KWyAgICAwLjAwMDAwMF0gIDAwMGY0MDAwMDAg
+LSAwMDBmN2MwMDAwIHBhZ2UgNGsNClsgICAgMC4wMDAwMDBdIGtlcm5lbCBk
+aXJlY3QgbWFwcGluZyB0YWJsZXMgdXAgdG8gZjdjMDAwMCBAIDE3ZmIwMDAt
+MTgwMDAwMA0KWyAgICAwLjAwMDAwMF0gUkFNRElTSzogMGI3Y2QwMDAgLSAw
+YmExMDAwMA0KWyAgICAwLjAwMDAwMF0gQUNQSSBFcnJvcjogQSB2YWxpZCBS
+U0RQIHdhcyBub3QgZm91bmQgKDIwMTEwNjIzL3RieGZyb290LTIxOSkNClsg
+ICAgMC4wMDAwMDBdIDBNQiBISUdITUVNIGF2YWlsYWJsZS4NClsgICAgMC4w
+MDAwMDBdIDI0N01CIExPV01FTSBhdmFpbGFibGUuDQpbICAgIDAuMDAwMDAw
+XSAgIG1hcHBlZCBsb3cgcmFtOiAwIC0gMGY3YzAwMDANClsgICAgMC4wMDAw
+MDBdICAgbG93IHJhbTogMCAtIDBmN2MwMDAwDQpbICAgIDAuMDAwMDAwXSBa
+b25lIFBGTiByYW5nZXM6DQpbICAgIDAuMDAwMDAwXSAgIERNQSAgICAgIDB4
+MDAwMDAwMTAgLT4gMHgwMDAwMTAwMA0KWyAgICAwLjAwMDAwMF0gICBOb3Jt
+YWwgICAweDAwMDAxMDAwIC0+IDB4MDAwMGY3YzANClsgICAgMC4wMDAwMDBd
+ICAgSGlnaE1lbSAgZW1wdHkNClsgICAgMC4wMDAwMDBdIE1vdmFibGUgem9u
+ZSBzdGFydCBQRk4gZm9yIGVhY2ggbm9kZQ0KWyAgICAwLjAwMDAwMF0gZWFy
+bHlfbm9kZV9tYXBbMl0gYWN0aXZlIFBGTiByYW5nZXMNClsgICAgMC4wMDAw
+MDBdICAgICAwOiAweDAwMDAwMDEwIC0+IDB4MDAwMDAwOWUNClsgICAgMC4w
+MDAwMDBdICAgICAwOiAweDAwMDAwMTAwIC0+IDB4MDAwMGY3YzANClsgICAg
+MC4wMDAwMDBdIE9uIG5vZGUgMCB0b3RhbHBhZ2VzOiA2MzMxMA0KWyAgICAw
+LjAwMDAwMF0gZnJlZV9hcmVhX2luaXRfbm9kZTogbm9kZSAwLCBwZ2RhdCBj
+MTMzMDNlMCwgbm9kZV9tZW1fbWFwIGNmNWNmMjAwDQpbICAgIDAuMDAwMDAw
+XSAgIERNQSB6b25lOiAzMiBwYWdlcyB1c2VkIGZvciBtZW1tYXANClsgICAg
+MC4wMDAwMDBdICAgRE1BIHpvbmU6IDAgcGFnZXMgcmVzZXJ2ZWQNClsgICAg
+MC4wMDAwMDBdICAgRE1BIHpvbmU6IDM5NTAgcGFnZXMsIExJRk8gYmF0Y2g6
+MA0KWyAgICAwLjAwMDAwMF0gICBOb3JtYWwgem9uZTogNDY0IHBhZ2VzIHVz
+ZWQgZm9yIG1lbW1hcA0KWyAgICAwLjAwMDAwMF0gICBOb3JtYWwgem9uZTog
+NTg4NjQgcGFnZXMsIExJRk8gYmF0Y2g6MTUNClsgICAgMC4wMDAwMDBdIEFs
+bG9jYXRpbmcgUENJIHJlc291cmNlcyBzdGFydGluZyBhdCBmN2MwMDAwIChn
+YXA6IGY3YzAwMDA6ZjA4MzAwMDApDQpbICAgIDAuMDAwMDAwXSBwY3B1LWFs
+bG9jOiBzMCByMCBkMzI3NjggdTMyNzY4IGFsbG9jPTEqMzI3NjgNClsgICAg
+MC4wMDAwMDBdIHBjcHUtYWxsb2M6IFswXSAwIA0KWyAgICAwLjAwMDAwMF0g
+QnVpbHQgMSB6b25lbGlzdHMgaW4gWm9uZSBvcmRlciwgbW9iaWxpdHkgZ3Jv
+dXBpbmcgb24uICBUb3RhbCBwYWdlczogNjI4MTQNClsgICAgMC4wMDAwMDBd
+IEtlcm5lbCBjb21tYW5kIGxpbmU6IEJPT1RfSU1BR0U9L2Jvb3Qvdm1saW51
+ei0zLjIuMTctcnQyOCByb290PVVVSUQ9ZGIwMGFmMWItN2EyMS00OTY4LTkw
+ODctOTJiYjdjYjkyZWUwIHJvIHF1aWV0IGNsb2Nrc291cmNlPWFjcGlfcG0g
+bWF4Y3B1cz0xDQpbICAgIDAuMDAwMDAwXSBQSUQgaGFzaCB0YWJsZSBlbnRy
+aWVzOiAxMDI0IChvcmRlcjogMCwgNDA5NiBieXRlcykNClsgICAgMC4wMDAw
+MDBdIERlbnRyeSBjYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDMyNzY4IChv
+cmRlcjogNSwgMTMxMDcyIGJ5dGVzKQ0KWyAgICAwLjAwMDAwMF0gSW5vZGUt
+Y2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAxNjM4NCAob3JkZXI6IDQsIDY1
+NTM2IGJ5dGVzKQ0KWyAgICAwLjAwMDAwMF0gSW5pdGlhbGl6aW5nIENQVSMw
+DQpbICAgIDAuMDAwMDAwXSBJbml0aWFsaXppbmcgSGlnaE1lbSBmb3Igbm9k
+ZSAwICgwMDAwMDAwMDowMDAwMDAwMCkNClsgICAgMC4wMDAwMDBdIE1lbW9y
+eTogMjQ0ODMyay8yNTM2OTZrIGF2YWlsYWJsZSAoMjE2OWsga2VybmVsIGNv
+ZGUsIDg0MDhrIHJlc2VydmVkLCAxMTEyayBkYXRhLCAyNjBrIGluaXQsIDBr
+IGhpZ2htZW0pDQpbICAgIDAuMDAwMDAwXSB2aXJ0dWFsIGtlcm5lbCBtZW1v
+cnkgbGF5b3V0Og0KWyAgICAwLjAwMDAwMF0gICAgIGZpeG1hcCAgOiAweGZm
+ZmU1MDAwIC0gMHhmZmZmZjAwMCAgICggMTA0IGtCKQ0KWyAgICAwLjAwMDAw
+MF0gICAgIHBrbWFwICAgOiAweGZmODAwMDAwIC0gMHhmZmMwMDAwMCAgICg0
+MDk2IGtCKQ0KWyAgICAwLjAwMDAwMF0gICAgIHZtYWxsb2MgOiAweGNmZmMw
+MDAwIC0gMHhmZjdmZTAwMCAgICggNzYwIE1CKQ0KWyAgICAwLjAwMDAwMF0g
+ICAgIGxvd21lbSAgOiAweGMwMDAwMDAwIC0gMHhjZjdjMDAwMCAgICggMjQ3
+IE1CKQ0KWyAgICAwLjAwMDAwMF0gICAgICAgLmluaXQgOiAweGMxMzM1MDAw
+IC0gMHhjMTM3NjAwMCAgICggMjYwIGtCKQ0KWyAgICAwLjAwMDAwMF0gICAg
+ICAgLmRhdGEgOiAweGMxMjFlNjQ1IC0gMHhjMTMzNDk4MCAgICgxMTEyIGtC
+KQ0KWyAgICAwLjAwMDAwMF0gICAgICAgLnRleHQgOiAweGMxMDAwMDAwIC0g
+MHhjMTIxZTY0NSAgICgyMTY5IGtCKQ0KWyAgICAwLjAwMDAwMF0gQ2hlY2tp
+bmcgaWYgdGhpcyBwcm9jZXNzb3IgaG9ub3VycyB0aGUgV1AgYml0IGV2ZW4g
+aW4gc3VwZXJ2aXNvciBtb2RlLi4uT2suDQpbICAgIDAuMDAwMDAwXSBOUl9J
+UlFTOjE2IG5yX2lycXM6MTYgMTYNClsgICAgMC4wMDAwMDBdIENQVSAwIGly
+cXN0YWNrcywgaGFyZD1jZjAwODAwMCBzb2Z0PWNmMDBhMDAwDQpbICAgIDAu
+MDAwMDAwXSBDb25zb2xlOiBjb2xvdXIgVkdBKyA4MHgyNQ0KWyAgICAwLjAw
+MDAwMF0gY29uc29sZSBbdHR5MF0gZW5hYmxlZA0KWyAgICAwLjAwMDAwMF0g
+RmFzdCBUU0MgY2FsaWJyYXRpb24gdXNpbmcgUElUDQpbICAgIDAuMDAwMDAw
+XSBEZXRlY3RlZCA0OTguMTIwIE1IeiBwcm9jZXNzb3IuDQpbICAgIDAuMDAy
+MDA1XSBDYWxpYnJhdGluZyBkZWxheSBsb29wIChza2lwcGVkKSwgdmFsdWUg
+Y2FsY3VsYXRlZCB1c2luZyB0aW1lciBmcmVxdWVuY3kuLiA5OTYuMjQgQm9n
+b01JUFMgKGxwaj00OTgxMjApDQpbICAgIDAuMDAyMDMzXSBwaWRfbWF4OiBk
+ZWZhdWx0OiAzMjc2OCBtaW5pbXVtOiAzMDENClsgICAgMC4wMDIzMzNdIE1v
+dW50LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogNTEyDQpbICAgIDAuMDAz
+MjQ1XSBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBjcHVhY2N0DQpbICAg
+IDAuMDAzMjY0XSBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBkZXZpY2Vz
+DQpbICAgIDAuMDAzMjc4XSBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBm
+cmVlemVyDQpbICAgIDAuMDAzMjkyXSBJbml0aWFsaXppbmcgY2dyb3VwIHN1
+YnN5cyBuZXRfY2xzDQpbICAgIDAuMDAzNDA4XSBDUFU6IEdlb2RlKFRNKSBJ
+bnRlZ3JhdGVkIFByb2Nlc3NvciBieSBBTUQgUENTIHN0ZXBwaW5nIDAyDQpb
+ICAgIDAuMDAzNjMwXSBQZXJmb3JtYW5jZSBFdmVudHM6IG5vIFBNVSBkcml2
+ZXIsIHNvZnR3YXJlIGV2ZW50cyBvbmx5Lg0KWyAgICAwLjAwNDY2MF0gZGV2
+dG1wZnM6IGluaXRpYWxpemVkDQpbICAgIDAuMDA1NDk4XSBwcmludF9jb25z
+dHJhaW50czogZHVtbXk6IA0KWyAgICAwLjAwNTczOV0gTkVUOiBSZWdpc3Rl
+cmVkIHByb3RvY29sIGZhbWlseSAxNg0KWyAgICAwLjAwNzgwOV0gUENJOiBQ
+Q0kgQklPUyByZXZpc2lvbiAyLjEwIGVudHJ5IGF0IDB4ZmE5ODAsIGxhc3Qg
+YnVzPTANClsgICAgMC4wMTExMDddIGJpbzogY3JlYXRlIHNsYWIgPGJpby0w
+PiBhdCAwDQpbICAgIDAuMDExNDM1XSBBQ1BJOiBJbnRlcnByZXRlciBkaXNh
+YmxlZC4NClsgICAgMC4wMTE3NjNdIFBDSTogUHJvYmluZyBQQ0kgaGFyZHdh
+cmUNClsgICAgMC4wMTE3NzddIFBDSTogUHJvYmluZyBQQ0kgaGFyZHdhcmUg
+KGJ1cyAwMCkNClsgICAgMC4wMTIxMzZdIHBjaSAwMDAwOjAwOjAxLjA6IFsx
+MDIyOjIwODBdIHR5cGUgMCBjbGFzcyAweDAwMDYwMA0KWyAgICAwLjAxMjMw
+Ml0gcGNpIDAwMDA6MDA6MDEuMDogcmVnIDEwOiBbaW8gIDB4YWMxYy0weGFj
+MWZdDQpbICAgIDAuMDEzMzAyXSBwY2kgMDAwMDowMDowMS4xOiBbMTAyMjoy
+MDgxXSB0eXBlIDAgY2xhc3MgMHgwMDAzMDANClsgICAgMC4wMTM2OThdIHBj
+aSAwMDAwOjAwOjAxLjE6IHJlZyAxMDogW21lbSAweGVlMDAwMDAwLTB4ZWVm
+ZmZmZmZdDQpbICAgIDAuMDE0MDI5XSBwY2kgMDAwMDowMDowMS4xOiByZWcg
+MTQ6IFttZW0gMHhlZmZlYzAwMC0weGVmZmVmZmZmXQ0KWyAgICAwLjAxNDMy
+N10gcGNpIDAwMDA6MDA6MDEuMTogcmVnIDE4OiBbbWVtIDB4ZWZmZTgwMDAt
+MHhlZmZlYmZmZl0NClsgICAgMC4wMTQ2MjVdIHBjaSAwMDAwOjAwOjAxLjE6
+IHJlZyAxYzogW21lbSAweGVmZmY4MDAwLTB4ZWZmZmJmZmZdDQpbICAgIDAu
+MDE0OTIzXSBwY2kgMDAwMDowMDowMS4xOiByZWcgMjA6IFttZW0gMHhlZmZm
+NDAwMC0weGVmZmY3ZmZmXQ0KWyAgICAwLjAxNTgyNF0gcGNpIDAwMDA6MDA6
+MDEuMjogWzEwMjI6MjA4Ml0gdHlwZSAwIGNsYXNzIDB4MDAxMDEwDQpbICAg
+IDAuMDE2MjQxXSBwY2kgMDAwMDowMDowMS4yOiByZWcgMTA6IFttZW0gMHhl
+ZmZmMDAwMC0weGVmZmYzZmZmXQ0KWyAgICAwLjAxODE3OF0gcGNpIDAwMDA6
+MDA6MGQuMDogWzExMDY6MzA1M10gdHlwZSAwIGNsYXNzIDB4MDAwMjAwDQpb
+ICAgIDAuMDE4Mjc1XSBwY2kgMDAwMDowMDowZC4wOiByZWcgMTA6IFtpbyAg
+MHhmYzAwLTB4ZmNmZl0NClsgICAgMC4wMTgzMzddIHBjaSAwMDAwOjAwOjBk
+LjA6IHJlZyAxNDogW21lbSAweGVmZmZmMDAwLTB4ZWZmZmYwZmZdDQpbICAg
+IDAuMDE4NjQ5XSBwY2kgMDAwMDowMDowZC4wOiBzdXBwb3J0cyBEMSBEMg0K
+WyAgICAwLjAxODY2Nl0gcGNpIDAwMDA6MDA6MGQuMDogUE1FIyBzdXBwb3J0
+ZWQgZnJvbSBEMCBEMSBEMiBEM2hvdCBEM2NvbGQNClsgICAgMC4wMTg2OThd
+IHBjaSAwMDAwOjAwOjBkLjA6IFBNRSMgZGlzYWJsZWQNClsgICAgMC4wMTg4
+NzRdIHBjaSAwMDAwOjAwOjBmLjA6IFsxMDIyOjIwOTBdIHR5cGUgMCBjbGFz
+cyAweDAwMDYwMQ0KWyAgICAwLjAxOTIyNl0gcGNpIDAwMDA6MDA6MGYuMDog
+cmVnIDEwOiBbaW8gIDB4NjAwMC0weDYwMDddDQpbICAgIDAuMDE5NTY4XSBw
+Y2kgMDAwMDowMDowZi4wOiByZWcgMTQ6IFtpbyAgMHg2MTAwLTB4NjFmZl0N
+ClsgICAgMC4wMTk5MTBdIHBjaSAwMDAwOjAwOjBmLjA6IHJlZyAxODogW2lv
+ICAweDYyMDAtMHg2MjNmXQ0KWyAgICAwLjAyMDM0OF0gcGNpIDAwMDA6MDA6
+MGYuMDogcmVnIDFjOiBbaW8gIDB4MDAwMC0weDAwMWZdDQpbICAgIDAuMDIw
+Njk2XSBwY2kgMDAwMDowMDowZi4wOiByZWcgMjA6IFtpbyAgMHg5ZDAwLTB4
+OWQ3Zl0NClsgICAgMC4wMjEwMjVdIHBjaSAwMDAwOjAwOjBmLjA6IHJlZyAy
+NDogW2lvICAweDljMDAtMHg5YzNmXQ0KWyAgICAwLjAyMTY5OV0gcGNpIDAw
+MDA6MDA6MGYuMjogWzEwMjI6MjA5YV0gdHlwZSAwIGNsYXNzIDB4MDAwMTAx
+DQpbICAgIDAuMDIzMTQ3XSBwY2kgMDAwMDowMDowZi4yOiByZWcgMjA6IFtp
+byAgMHhmZjAwLTB4ZmYwZl0NClsgICAgMC4wMjQxNzZdIHBjaSAwMDAwOjAw
+OjBmLjU6IFsxMDIyOjIwOTVdIHR5cGUgMCBjbGFzcyAweDAwMGMwMw0KWyAg
+ICAwLjAyNDY0MF0gcGNpIDAwMDA6MDA6MGYuNTogcmVnIDEwOiBbbWVtIDB4
+ZWZmZmUwMDAtMHhlZmZmZWZmZl0NClsgICAgMC4wMjY2MzhdIHBjaSAwMDAw
+OjAwOjBmLjU6IFBNRSMgc3VwcG9ydGVkIGZyb20gRDAgRDNob3QgRDNjb2xk
+DQpbICAgIDAuMDI2NzQxXSBwY2kgMDAwMDowMDowZi41OiBQTUUjIGRpc2Fi
+bGVkDQpbICAgIDAuMDI4NTgwXSBwY2kgMDAwMDowMDowZi4wOiBOYXRTZW1p
+IElSUSByb3V0ZXIgWzEwMjI6MjA5MF0NClsgICAgMC4wMjg4MThdIFBDSTog
+cGNpX2NhY2hlX2xpbmVfc2l6ZSBzZXQgdG8gMzIgYnl0ZXMNClsgICAgMC4w
+MjkyNjddIHJlc2VydmUgUkFNIGJ1ZmZlcjogMDAwMDAwMDAwMDA5ZTgwMCAt
+IDAwMDAwMDAwMDAwOWZmZmYgDQpbICAgIDAuMDI5Mjg1XSByZXNlcnZlIFJB
+TSBidWZmZXI6IDAwMDAwMDAwMGY3YzAwMDAgLSAwMDAwMDAwMDBmZmZmZmZm
+IA0KWyAgICAwLjAyOTc4MV0gU3dpdGNoaW5nIHRvIGNsb2Nrc291cmNlIHBp
+dA0KWyAgICAwLjAyOTk0NV0gcG5wOiBQblAgQUNQSTogZGlzYWJsZWQNClsg
+ICAgMC4wNDA3NzldIFBDSTogbWF4IGJ1cyBkZXB0aDogMCBwY2lfdHJ5X251
+bTogMQ0KWyAgICAwLjA0MDgyNF0gcGNpIDAwMDA6MDA6MGYuMDogQkFSIDM6
+IGFzc2lnbmVkIFtpbyAgMHgxMDAwLTB4MTAxZl0NClsgICAgMC4wNDA5MjJd
+IHBjaSAwMDAwOjAwOjBmLjA6IEJBUiAzOiBzZXQgdG8gW2lvICAweDEwMDAt
+MHgxMDFmXSAoUENJIGFkZHJlc3MgWzB4MTAwMC0weDEwMWZdKQ0KWyAgICAw
+LjA0MDk0OF0gcGNpX2J1cyAwMDAwOjAwOiByZXNvdXJjZSAwIFtpbyAgMHgw
+MDAwLTB4ZmZmZl0NClsgICAgMC4wNDA5NjldIHBjaV9idXMgMDAwMDowMDog
+cmVzb3VyY2UgMSBbbWVtIDB4MDAwMDAwMDAtMHhmZmZmZmZmZl0NClsgICAg
+MC4wNDExNTFdIE5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMg0K
+WyAgICAwLjA0MTM2N10gSVAgcm91dGUgY2FjaGUgaGFzaCB0YWJsZSBlbnRy
+aWVzOiAyMDQ4IChvcmRlcjogMSwgODE5MiBieXRlcykNClsgICAgMC4wNDE4
+MTRdIFRDUCBlc3RhYmxpc2hlZCBoYXNoIHRhYmxlIGVudHJpZXM6IDgxOTIg
+KG9yZGVyOiA0LCA2NTUzNiBieXRlcykNClsgICAgMC4wNDIwNjddIFRDUCBi
+aW5kIGhhc2ggdGFibGUgZW50cmllczogODE5MiAob3JkZXI6IDUsIDE5NjYw
+OCBieXRlcykNClsgICAgMC4wNDI3OTVdIFRDUDogSGFzaCB0YWJsZXMgY29u
+ZmlndXJlZCAoZXN0YWJsaXNoZWQgODE5MiBiaW5kIDgxOTIpDQpbICAgIDAu
+MDQyODEwXSBUQ1AgcmVubyByZWdpc3RlcmVkDQpbICAgIDAuMDQyODI5XSBV
+RFAgaGFzaCB0YWJsZSBlbnRyaWVzOiAxMjggKG9yZGVyOiAxLCA4MTkyIGJ5
+dGVzKQ0KWyAgICAwLjA0MjkwMl0gVURQLUxpdGUgaGFzaCB0YWJsZSBlbnRy
+aWVzOiAxMjggKG9yZGVyOiAxLCA4MTkyIGJ5dGVzKQ0KWyAgICAwLjA0MzIy
+MV0gTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAxDQpbICAgIDAu
+MDQzMzQxXSBwY2kgMDAwMDowMDowMS4xOiBCb290IHZpZGVvIGRldmljZQ0K
+WyAgICAwLjA0MzgyNV0gUENJOiBzZXR0aW5nIElSUSA1IGFzIGxldmVsLXRy
+aWdnZXJlZA0KWyAgICAwLjA0Mzg0NF0gcGNpIDAwMDA6MDA6MGYuNTogYXNz
+aWduZWQgUENJIElOVCBEIC0+IElSUSA1DQpbICAgIDAuMDQ0MzU1XSBQQ0k6
+IENMUyAzMiBieXRlcywgZGVmYXVsdCAzMg0KWyAgICAwLjA0NDYzNl0gVW5w
+YWNraW5nIGluaXRyYW1mcy4uLg0KWyAgICAwLjUxNTgyNF0gRnJlZWluZyBp
+bml0cmQgbWVtb3J5OiAyMzE2ayBmcmVlZA0KWyAgICAwLjUxODU2NF0gcGxh
+dGZvcm0gcnRjX2Ntb3M6IHJlZ2lzdGVyZWQgcGxhdGZvcm0gUlRDIGRldmlj
+ZSAobm8gUE5QIGRldmljZSBmb3VuZCkNClsgICAgMC41MTkxOTRdIHNjeDIw
+MDogTmF0U2VtaSBTQ3gyMDAgRHJpdmVyDQpbICAgIDAuNTE5ODc2XSBhdWRp
+dDogaW5pdGlhbGl6aW5nIG5ldGxpbmsgc29ja2V0IChkaXNhYmxlZCkNClsg
+ICAgMC41MTk5MjFdIHR5cGU9MjAwMCBhdWRpdCgxMzQzNzI4MzE1LjUxODox
+KTogaW5pdGlhbGl6ZWQNClsgICAgMC43MDgyNzddIEh1Z2VUTEIgcmVnaXN0
+ZXJlZCA0IE1CIHBhZ2Ugc2l6ZSwgcHJlLWFsbG9jYXRlZCAwIHBhZ2VzDQpb
+ICAgIDAuNzA4OTAzXSBWRlM6IERpc2sgcXVvdGFzIGRxdW90XzYuNS4yDQpb
+ICAgIDAuNzA4OTc1XSBEcXVvdC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6
+IDEwMjQgKG9yZGVyIDAsIDQwOTYgYnl0ZXMpDQpbICAgIDAuNzA5NDQ5XSBt
+c2dtbmkgaGFzIGJlZW4gc2V0IHRvIDQ4Mg0KWyAgICAwLjcxMDE0OF0gQmxv
+Y2sgbGF5ZXIgU0NTSSBnZW5lcmljIChic2cpIGRyaXZlciB2ZXJzaW9uIDAu
+NCBsb2FkZWQgKG1ham9yIDI1MykNClsgICAgMC43MTAxNjZdIGlvIHNjaGVk
+dWxlciBub29wIHJlZ2lzdGVyZWQNClsgICAgMC43MTAxNzldIGlvIHNjaGVk
+dWxlciBkZWFkbGluZSByZWdpc3RlcmVkDQpbICAgIDAuNzEwMjM2XSBpbyBz
+Y2hlZHVsZXIgY2ZxIHJlZ2lzdGVyZWQgKGRlZmF1bHQpDQpbICAgIDAuNzkx
+MjA2XSBTZXJpYWw6IDgyNTAvMTY1NTAgZHJpdmVyLCA0IHBvcnRzLCBJUlEg
+c2hhcmluZyBlbmFibGVkDQpbICAgIDAuODEyMTA2XSBzZXJpYWw4MjUwOiB0
+dHlTMCBhdCBJL08gMHgzZjggKGlycSA9IDQpIGlzIGEgMTY1NTBBDQpbICAg
+IDAuODMyOTU5XSBzZXJpYWw4MjUwOiB0dHlTMSBhdCBJL08gMHgyZjggKGly
+cSA9IDMpIGlzIGEgMTY1NTBBDQpbICAgIDAuODM0NjQyXSBpODA0MjogUE5Q
+OiBObyBQUy8yIGNvbnRyb2xsZXIgZm91bmQuIFByb2JpbmcgcG9ydHMgZGly
+ZWN0bHkuDQpbICAgIDAuODM3MjMxXSBzZXJpbzogaTgwNDIgS0JEIHBvcnQg
+YXQgMHg2MCwweDY0IGlycSAxDQpbICAgIDAuODM3MjczXSBzZXJpbzogaTgw
+NDIgQVVYIHBvcnQgYXQgMHg2MCwweDY0IGlycSAxMg0KWyAgICAwLjgzODAw
+MV0gcnRjX2Ntb3MgcnRjX2Ntb3M6IHJ0YyBjb3JlOiByZWdpc3RlcmVkIHJ0
+Y19jbW9zIGFzIHJ0YzANClsgICAgMC44MzgyMjVdIHJ0YzA6IGFsYXJtcyB1
+cCB0byBvbmUgZGF5LCAxMTQgYnl0ZXMgbnZyYW0NClsgICAgMC44Mzg2OTNd
+IHJ0Yy10ZXN0IHJ0Yy10ZXN0LjA6IHJ0YyBjb3JlOiByZWdpc3RlcmVkIHRl
+c3QgYXMgcnRjMQ0KWyAgICAwLjgzOTExMl0gcnRjLXRlc3QgcnRjLXRlc3Qu
+MTogcnRjIGNvcmU6IHJlZ2lzdGVyZWQgdGVzdCBhcyBydGMyDQpbICAgIDAu
+ODM5MTQxXSBjcHVpZGxlOiB1c2luZyBnb3Zlcm5vciBsYWRkZXINClsgICAg
+MC44Mzk1NzBdIFRDUCBjdWJpYyByZWdpc3RlcmVkDQpbICAgIDAuODM5NzI3
+XSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDEwDQpbICAgIDAu
+ODQwNDY4XSBNb2JpbGUgSVB2Ng0KWyAgICAwLjg0MDQ4M10gTkVUOiBSZWdp
+c3RlcmVkIHByb3RvY29sIGZhbWlseSAxNw0KWyAgICAwLjg0MDUwOF0gUmVn
+aXN0ZXJpbmcgdGhlIGRuc19yZXNvbHZlciBrZXkgdHlwZQ0KWyAgICAwLjg0
+MTIyNF0gcmVnaXN0ZXJlZCB0YXNrc3RhdHMgdmVyc2lvbiAxDQpbICAgIDAu
+ODQyMTkwXSBydGNfY21vcyBydGNfY21vczogc2V0dGluZyBzeXN0ZW0gY2xv
+Y2sgdG8gMjAxMi0wNy0zMSAwOTo1MTo1NiBVVEMgKDEzNDM3MjgzMTYpDQpb
+ICAgIDAuODQyOTk0XSBGcmVlaW5nIHVudXNlZCBrZXJuZWwgbWVtb3J5OiAy
+NjBrIGZyZWVkDQpbICAgIDAuODQzNjAzXSBXcml0ZSBwcm90ZWN0aW5nIHRo
+ZSBrZXJuZWwgdGV4dDogMjE3MmsNClsgICAgMC44NDM3MzddIFdyaXRlIHBy
+b3RlY3RpbmcgdGhlIGtlcm5lbCByZWFkLW9ubHkgZGF0YTogOTQ4aw0KWyAg
+ICAwLjkzMzkyMF0gdWRldls0NF06IHN0YXJ0aW5nIHZlcnNpb24gMTY0DQpb
+ICAgIDEuNTIzMDQ1XSBTd2l0Y2hpbmcgdG8gY2xvY2tzb3VyY2UgdHNjDQpb
+ICAgIDEuNTY3MTI0XSBTQ1NJIHN1YnN5c3RlbSBpbml0aWFsaXplZA0KWyAg
+ICAyLjA5NDM3NV0gbGliYXRhIHZlcnNpb24gMy4wMCBsb2FkZWQuDQpbICAg
+IDIuMTA0OTkwXSBwYXRhX2FtZCAwMDAwOjAwOjBmLjI6IHZlcnNpb24gMC40
+LjENClsgICAgMi4xMTI3NDNdIHNjc2kwIDogcGF0YV9hbWQNClsgICAgMi4x
+MTM2NThdIHNjc2kxIDogcGF0YV9hbWQNClsgICAgMi4xMTM5NTldIGF0YTE6
+IFBBVEEgbWF4IFVETUEvMTAwIGNtZCAweDFmMCBjdGwgMHgzZjYgYm1kbWEg
+MHhmZjAwIGlycSAxNA0KWyAgICAyLjExMzk4MF0gYXRhMjogUEFUQSBtYXgg
+VURNQS8xMDAgY21kIDB4MTcwIGN0bCAweDM3NiBibWRtYSAweGZmMDggaXJx
+IDE1DQpbICAgIDIuMjY3MjA2XSBzcHVyaW91cyA4MjU5QSBpbnRlcnJ1cHQ6
+IElSUTcuDQpbICAgIDIuMjc2Mzc2XSBhdGExLjAwOiBDRkE6IFRTNEdDRjEz
+MywgMjAxMTA0MDcsIG1heCBVRE1BLzY2DQpbICAgIDIuMjc2Mzk3XSBhdGEx
+LjAwOiA3ODMxMTUyIHNlY3RvcnMsIG11bHRpIDA6IExCQSANClsgICAgMi4y
+NzY0MzhdIGF0YTEuMDE6IEFUQS0wOiBQUUkgSURFIERpc2tPbk1vZHVsZSwg
+WVVBTjEwMjYsIG1heCBVRE1BLzMzDQpbICAgIDIuMjc2NDYwXSBhdGExLjAx
+OiAxMDE1MDU2IHNlY3RvcnMsIG11bHRpIDA6IExCQSANClsgICAgMi4yODMy
+ODNdIGF0YTEuMDA6IGNvbmZpZ3VyZWQgZm9yIFVETUEvNjYNClsgICAgMi4y
+ODYyNzNdIGF0YTEuMDE6IGNvbmZpZ3VyZWQgZm9yIFVETUEvMzMNClsgICAg
+Mi4yOTc0MTNdIHNjc2kgMDowOjA6MDogRGlyZWN0LUFjY2VzcyAgICAgQVRB
+ICAgICAgVFM0R0NGMTMzICAgICAgICAyMDExIFBROiAwIEFOU0k6IDUNClsg
+ICAgMi4yOTkyNTVdIHNjc2kgMDowOjE6MDogRGlyZWN0LUFjY2VzcyAgICAg
+QVRBICAgICAgUFFJIElERSBEaXNrT25NbyBZVUFOIFBROiAwIEFOU0k6IDUN
+ClsgICAgMi4zMDE0MjddIGF0YTI6IHBvcnQgZGlzYWJsZWQtLWlnbm9yaW5n
+DQpbICAgIDIuMzUwOTc1XSBzZCAwOjA6MDowOiBbc2RhXSA3ODMxMTUyIDUx
+Mi1ieXRlIGxvZ2ljYWwgYmxvY2tzOiAoNC4wMCBHQi8zLjczIEdpQikNClsg
+ICAgMi4zNTEyOTddIHNkIDA6MDowOjA6IFtzZGFdIFdyaXRlIFByb3RlY3Qg
+aXMgb2ZmDQpbICAgIDIuMzUxMzE5XSBzZCAwOjA6MDowOiBbc2RhXSBNb2Rl
+IFNlbnNlOiAwMCAzYSAwMCAwMA0KWyAgICAyLjM1MTQzMF0gc2QgMDowOjA6
+MDogW3NkYV0gV3JpdGUgY2FjaGU6IGRpc2FibGVkLCByZWFkIGNhY2hlOiBl
+bmFibGVkLCBkb2Vzbid0IHN1cHBvcnQgRFBPIG9yIEZVQQ0KWyAgICAyLjM1
+NDY3NF0gc2QgMDowOjE6MDogW3NkYl0gMTAxNTA1NiA1MTItYnl0ZSBsb2dp
+Y2FsIGJsb2NrczogKDUxOSBNQi80OTUgTWlCKQ0KWyAgICAyLjM1NDkxOV0g
+c2QgMDowOjE6MDogW3NkYl0gV3JpdGUgUHJvdGVjdCBpcyBvZmYNClsgICAg
+Mi4zNTQ5NDBdIHNkIDA6MDoxOjA6IFtzZGJdIE1vZGUgU2Vuc2U6IDAwIDNh
+IDAwIDAwDQpbICAgIDIuMzU1MzQ3XSBzZCAwOjA6MTowOiBbc2RiXSBXcml0
+ZSBjYWNoZTogZGlzYWJsZWQsIHJlYWQgY2FjaGU6IGVuYWJsZWQsIGRvZXNu
+J3Qgc3VwcG9ydCBEUE8gb3IgRlVBDQpbICAgIDIuMzU2MTI3XSAgc2RhOiBz
+ZGExIHNkYTINClsgICAgMi4zNTk5MTVdICBzZGI6IHVua25vd24gcGFydGl0
+aW9uIHRhYmxlDQpbICAgIDIuMzY0MjUyXSBzZCAwOjA6MDowOiBbc2RhXSBB
+dHRhY2hlZCBTQ1NJIHJlbW92YWJsZSBkaXNrDQpbICAgIDIuMzY0MjkwXSBz
+ZCAwOjA6MTowOiBbc2RiXSBBdHRhY2hlZCBTQ1NJIGRpc2sNClsgICAgMi44
+NTQ1MjRdIEVYVDMtZnMgKHNkYTEpOiBtb3VudGVkIGZpbGVzeXN0ZW0gd2l0
+aCBvcmRlcmVkIGRhdGEgbW9kZQ0KWyAgICAyLjg1NTY2N10ga2pvdXJuYWxk
+IHN0YXJ0aW5nLiAgQ29tbWl0IGludGVydmFsIDUgc2Vjb25kcw0KWyAgICAz
+LjY1MTM5M10gdWRldlsxNjFdOiBzdGFydGluZyB2ZXJzaW9uIDE2NA0KWyAg
+ICA0LjAyMTc3MF0gQU1EIEdlb2RlIFJORyBkZXRlY3RlZA0KWyAgICA0LjA1
+NTUwNF0gY3M1NTM1LW1mZCAwMDAwOjAwOjBmLjA6IDUgZGV2aWNlcyByZWdp
+c3RlcmVkLg0KWyAgICA0LjA2MzI3OF0gUENJOiBzZXR0aW5nIElSUSAxMSBh
+cyBsZXZlbC10cmlnZ2VyZWQNClsgICAgNC4wNjMzMDFdIEdlb2RlIExYIEFF
+UyAwMDAwOjAwOjAxLjI6IGZvdW5kIFBDSSBJTlQgQSAtPiBJUlEgMTENClsg
+ICAgNC4wNjQxODRdIHBjaSAwMDAwOjAwOjAxLjE6IElSUSByb3V0aW5nIGNv
+bmZsaWN0OiBoYXZlIElSUSAxMCwgd2FudCBJUlEgMTENClsgICAgNC4wNjQy
+NDBdIEdlb2RlIExYIEFFUyAwMDAwOjAwOjAxLjI6IElSUSByb3V0aW5nIGNv
+bmZsaWN0OiBoYXZlIElSUSAxMCwgd2FudCBJUlEgMTENClsgICAgNC4wODY1
+MDldIHZpYV9yaGluZTogdjEuMTAtTEsxLjUuMCAyMDEwLTEwLTA5IFdyaXR0
+ZW4gYnkgRG9uYWxkIEJlY2tlcg0KWyAgICA0LjEwNjExM10gZ2VvZGUtYWVz
+OiBHRU9ERSBBRVMgZW5naW5lIGVuYWJsZWQuDQpbICAgIDQuMTA2ODQ0XSBQ
+Q0k6IHNldHRpbmcgSVJRIDEwIGFzIGxldmVsLXRyaWdnZXJlZA0KWyAgICA0
+LjEwNjg2Nl0gdmlhLXJoaW5lIDAwMDA6MDA6MGQuMDogZm91bmQgUENJIElO
+VCBBIC0+IElSUSAxMA0KWyAgICA0LjEwNzAwMl0gdmlhLXJoaW5lIDAwMDA6
+MDA6MGQuMDogSVJRIHJvdXRpbmcgY29uZmxpY3Q6IGhhdmUgSVJRIDExLCB3
+YW50IElSUSAxMA0KWyAgICA0LjEwNzE5Ml0gdmlhLXJoaW5lIDAwMDA6MDA6
+MGQuMDogc2V0dGluZyBsYXRlbmN5IHRpbWVyIHRvIDY0DQpbICAgIDQuMTg0
+NDAzXSB2aWEtcmhpbmUgMDAwMDowMDowZC4wOiBldGgwOiBWSUEgUmhpbmUg
+SUlJIChNYW5hZ2VtZW50IEFkYXB0ZXIpIGF0IDB4ZWZmZmYwMDAsIDAwOjBk
+OmI5OjBlOjBkOjI4LCBJUlEgMTENClsgICAgNC4xOTk5NzFdIHZpYS1yaGlu
+ZSAwMDAwOjAwOjBkLjA6IGV0aDA6IE1JSSBQSFkgZm91bmQgYXQgYWRkcmVz
+cyAxLCBzdGF0dXMgMHg3ODZkIGFkdmVydGlzaW5nIDA1ZTEgTGluayBjZGUx
+DQpbICAgIDQuNDY0NDE3XSBjczU1MzUtbWZncHQgY3M1NTM1LW1mZ3B0OiBy
+ZXNlcnZlZCByZXNvdXJjZSByZWdpb24gW2lvICAweDYyMDAtMHg2MjNmXQ0K
+WyAgICA0LjQ2NDQ0Nl0gY3M1NTM1LW1mZ3B0IGNzNTUzNS1tZmdwdDogNCBN
+RkdQVCB0aW1lcnMgYXZhaWxhYmxlDQpbICAgIDQuNTkyNjEyXSBjczU1MzUt
+Z3BpbyBjczU1MzUtZ3BpbzogcmVzZXJ2ZWQgcmVzb3VyY2UgcmVnaW9uIFtp
+byAgMHg2MTAwLTB4NjFmZl0NClsgICAgNC41OTI3NjFdIGNzNTUzNS1ncGlv
+IGNzNTUzNS1ncGlvOiBHUElPIHN1cHBvcnQgc3VjY2Vzc2Z1bGx5IGxvYWRl
+ZC4NClsgICAgNC42MzA1MTNdIGNzNTUzNS1zbWIgY3M1NTM1LXNtYjogU0N4
+MjAwIGRldmljZSAnQ1M1NTM1IEFDQjAnIHJlZ2lzdGVyZWQNClsgICAgNC43
+MzEzMzJdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2
+ZXIgdXNiZnMNClsgICAgNC43MzE0NTRdIHVzYmNvcmU6IHJlZ2lzdGVyZWQg
+bmV3IGludGVyZmFjZSBkcml2ZXIgaHViDQpbICAgIDQuNzQxMTkwXSB1c2Jj
+b3JlOiByZWdpc3RlcmVkIG5ldyBkZXZpY2UgZHJpdmVyIHVzYg0KWyAgICA0
+Ljc3NTU4MV0gZWhjaV9oY2Q6IFVTQiAyLjAgJ0VuaGFuY2VkJyBIb3N0IENv
+bnRyb2xsZXIgKEVIQ0kpIERyaXZlcg0KWyAgICA0Ljc3NTgyNl0gZWhjaV9o
+Y2QgMDAwMDowMDowZi41OiBmb3VuZCBQQ0kgSU5UIEQgLT4gSVJRIDUNClsg
+ICAgNC43ODUzOTBdIGVoY2lfaGNkIDAwMDA6MDA6MGYuNTogc2V0dGluZyBs
+YXRlbmN5IHRpbWVyIHRvIDY0DQpbICAgIDQuNzg1NDYyXSBlaGNpX2hjZCAw
+MDAwOjAwOjBmLjU6IEVIQ0kgSG9zdCBDb250cm9sbGVyDQpbICAgIDQuNzg1
+NTU4XSBlaGNpX2hjZCAwMDAwOjAwOjBmLjU6IG5ldyBVU0IgYnVzIHJlZ2lz
+dGVyZWQsIGFzc2lnbmVkIGJ1cyBudW1iZXIgMQ0KWyAgICA0LjgxNDE1M10g
+ZWhjaV9oY2QgMDAwMDowMDowZi41OiBpcnEgNSwgaW8gbWVtIDB4ZWZmZmUw
+MDANClsgICAgNC44MjAwNzRdIGVoY2lfaGNkIDAwMDA6MDA6MGYuNTogVVNC
+IDIuMCBzdGFydGVkLCBFSENJIDEuMDANClsgICAgNC44MjAxOThdIHVzYiB1
+c2IxOiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MWQ2YiwgaWRQ
+cm9kdWN0PTAwMDINClsgICAgNC44MjAyMjBdIHVzYiB1c2IxOiBOZXcgVVNC
+IGRldmljZSBzdHJpbmdzOiBNZnI9MywgUHJvZHVjdD0yLCBTZXJpYWxOdW1i
+ZXI9MQ0KWyAgICA0LjgyMDIzOV0gdXNiIHVzYjE6IFByb2R1Y3Q6IEVIQ0kg
+SG9zdCBDb250cm9sbGVyDQpbICAgIDQuODIwMjU1XSB1c2IgdXNiMTogTWFu
+dWZhY3R1cmVyOiBMaW51eCAzLjIuMTctcnQyOCBlaGNpX2hjZA0KWyAgICA0
+LjgyMDI3Ml0gdXNiIHVzYjE6IFNlcmlhbE51bWJlcjogMDAwMDowMDowZi41
+DQpbICAgIDQuODI1MzY0XSBodWIgMS0wOjEuMDogVVNCIGh1YiBmb3VuZA0K
+WyAgICA0LjgyNTM5NF0gaHViIDEtMDoxLjA6IDQgcG9ydHMgZGV0ZWN0ZWQN
+ClsgICAgNS4xMjcxMTBdIHVzYiAxLTI6IG5ldyBoaWdoLXNwZWVkIFVTQiBk
+ZXZpY2UgbnVtYmVyIDIgdXNpbmcgZWhjaV9oY2QNClsgICAgNS4yNDE3ODld
+IHVzYiAxLTI6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0xYTQw
+LCBpZFByb2R1Y3Q9MDIwMQ0KWyAgICA1LjI0MTgxMl0gdXNiIDEtMjogTmV3
+IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTAsIFByb2R1Y3Q9MSwgU2VyaWFs
+TnVtYmVyPTANClsgICAgNS4yNDE4MzFdIHVzYiAxLTI6IFByb2R1Y3Q6IFVT
+QiAyLjAgSHViIFtNVFRdDQpbICAgIDUuMjQyNzE5XSBodWIgMS0yOjEuMDog
+VVNCIGh1YiBmb3VuZA0KWyAgICA1LjI0MjkwNV0gaHViIDEtMjoxLjA6IDcg
+cG9ydHMgZGV0ZWN0ZWQNClsgICAgNS4zNDYxMTZdIHVzYiAxLTM6IG5ldyBo
+aWdoLXNwZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDMgdXNpbmcgZWhjaV9oY2QN
+ClsgICAgNS40NjUzOTNdIHVzYiAxLTM6IE5ldyBVU0IgZGV2aWNlIGZvdW5k
+LCBpZFZlbmRvcj0wOTUxLCBpZFByb2R1Y3Q9MTY0Mw0KWyAgICA1LjQ2NTQx
+Nl0gdXNiIDEtMzogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTEsIFBy
+b2R1Y3Q9MiwgU2VyaWFsTnVtYmVyPTMNClsgICAgNS40NjU0MzRdIHVzYiAx
+LTM6IFByb2R1Y3Q6IERhdGFUcmF2ZWxlciBHMw0KWyAgICA1LjQ2NTQ1MF0g
+dXNiIDEtMzogTWFudWZhY3R1cmVyOiBLaW5nc3Rvbg0KWyAgICA1LjQ2NTQ2
+Nl0gdXNiIDEtMzogU2VyaWFsTnVtYmVyOiAwMDFDQzBFQzM0NkNCQzUxMTcx
+QjAwNzANClsgICAgNS41NjkwNzJdIHVzYiAxLTQ6IG5ldyBoaWdoLXNwZWVk
+IFVTQiBkZXZpY2UgbnVtYmVyIDQgdXNpbmcgZWhjaV9oY2QNClsgICAgNS42
+ODM0NjddIHVzYiAxLTQ6IGNvbmZpZyAxIGhhcyBhbiBpbnZhbGlkIGludGVy
+ZmFjZSBudW1iZXI6IDMgYnV0IG1heCBpcyAyDQpbICAgIDUuNjgzNDg5XSB1
+c2IgMS00OiBjb25maWcgMSBoYXMgbm8gaW50ZXJmYWNlIG51bWJlciAyDQpb
+ICAgIDUuNjgzODM3XSB1c2IgMS00OiBjb25maWcgMSBoYXMgYW4gaW52YWxp
+ZCBpbnRlcmZhY2UgbnVtYmVyOiAzIGJ1dCBtYXggaXMgMg0KWyAgICA1LjY4
+Mzg1OF0gdXNiIDEtNDogY29uZmlnIDEgaGFzIG5vIGludGVyZmFjZSBudW1i
+ZXIgMg0KWyAgICA1LjY4NDMzOF0gdXNiIDEtNDogTmV3IFVTQiBkZXZpY2Ug
+Zm91bmQsIGlkVmVuZG9yPTIxYjQsIGlkUHJvZHVjdD0wMjMwDQpbICAgIDUu
+Njg0MzYwXSB1c2IgMS00OiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9
+MSwgUHJvZHVjdD0yLCBTZXJpYWxOdW1iZXI9Mw0KWyAgICA1LjY4NDM3OV0g
+dXNiIDEtNDogUHJvZHVjdDogQXlyZSBVU0IgSW50ZXJmYWNlDQpbICAgIDUu
+Njg0Mzk1XSB1c2IgMS00OiBNYW51ZmFjdHVyZXI6IEF5cmUgQWNvdXN0aWNz
+DQpbICAgIDUuNjg0NDExXSB1c2IgMS00OiBTZXJpYWxOdW1iZXI6IChDKSAy
+MDEwIFhNT1MvV2F2ZWxlbmd0aCBBdWRpbw0KWyAgICA1Ljc5NjA5M10gSW5p
+dGlhbGl6aW5nIFVTQiBNYXNzIFN0b3JhZ2UgZHJpdmVyLi4uDQpbICAgIDUu
+Nzk2NTg0XSBzY3NpMiA6IHVzYi1zdG9yYWdlIDEtMzoxLjANClsgICAgNS43
+OTg4NjZdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2
+ZXIgdXNiLXN0b3JhZ2UNClsgICAgNS43OTg4ODJdIFVTQiBNYXNzIFN0b3Jh
+Z2Ugc3VwcG9ydCByZWdpc3RlcmVkLg0KWyAgICA2LjAyMjIwOV0gdXNiY29y
+ZTogcmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciBzbmQtdXNiLWF1
+ZGlvDQpbICAgIDYuODc4MjQ0XSBzY3NpIDI6MDowOjA6IERpcmVjdC1BY2Nl
+c3MgICAgIEtpbmdzdG9uIERhdGFUcmF2ZWxlciBHMyAgUE1BUCBQUTogMCBB
+TlNJOiAwIENDUw0KWyAgICA3LjA3MDk1Nl0gRVhUMy1mcyAoc2RhMSk6IHVz
+aW5nIGludGVybmFsIGpvdXJuYWwNClsgICAgNy4yNTY1MDhdIGZ1c2UgaW5p
+dCAoQVBJIHZlcnNpb24gNy4xNykNClsgICAgOC40MzY2MjldIHNkIDI6MDow
+OjA6IFtzZGNdIDYxNDA4MTI4IDUxMi1ieXRlIGxvZ2ljYWwgYmxvY2tzOiAo
+MzEuNCBHQi8yOS4yIEdpQikNClsgICAgOC40MzcyMjldIHNkIDI6MDowOjA6
+IFtzZGNdIFdyaXRlIFByb3RlY3QgaXMgb2ZmDQpbICAgIDguNDM3MjUxXSBz
+ZCAyOjA6MDowOiBbc2RjXSBNb2RlIFNlbnNlOiAyMyAwMCAwMCAwMA0KWyAg
+ICA4LjQzNzg2MF0gc2QgMjowOjA6MDogW3NkY10gTm8gQ2FjaGluZyBtb2Rl
+IHBhZ2UgcHJlc2VudA0KWyAgICA4LjQzNzg3OF0gc2QgMjowOjA6MDogW3Nk
+Y10gQXNzdW1pbmcgZHJpdmUgY2FjaGU6IHdyaXRlIHRocm91Z2gNClsgICAg
+OC40NDMzNjRdIHNkIDI6MDowOjA6IFtzZGNdIE5vIENhY2hpbmcgbW9kZSBw
+YWdlIHByZXNlbnQNClsgICAgOC40NDMzODNdIHNkIDI6MDowOjA6IFtzZGNd
+IEFzc3VtaW5nIGRyaXZlIGNhY2hlOiB3cml0ZSB0aHJvdWdoDQpbICAgIDgu
+NDY0MjA2XSAgc2RjOiBzZGMxDQpbICAgIDguNDcwNDk4XSBzZCAyOjA6MDow
+OiBbc2RjXSBObyBDYWNoaW5nIG1vZGUgcGFnZSBwcmVzZW50DQpbICAgIDgu
+NDcwNTE3XSBzZCAyOjA6MDowOiBbc2RjXSBBc3N1bWluZyBkcml2ZSBjYWNo
+ZTogd3JpdGUgdGhyb3VnaA0KWyAgICA4LjQ3MDUzOF0gc2QgMjowOjA6MDog
+W3NkY10gQXR0YWNoZWQgU0NTSSByZW1vdmFibGUgZGlzaw0KWyAgICA4LjUz
+NTMyMV0gdzgzNjI3aGY6IHc4MzYyN2hmOiBGb3VuZCBXODM2MjdIRiBjaGlw
+IGF0IDB4MjkwDQpbICAgIDguNTgzNzY4XSBwcGRldjogdXNlci1zcGFjZSBw
+YXJhbGxlbCBwb3J0IGRyaXZlcg0KWyAgICA4LjYxMTY2M10gcGFycG9ydDA6
+IFBDLXN0eWxlIGF0IDB4Mzc4ICgweDc3OCkgW1BDU1BQLFRSSVNUQVRFLEVQ
+UF0NClsgICAgOC42MTIzNTVdIHBhcnBvcnQwOiBpcnEgNyBkZXRlY3RlZA0K
+WyAgICA5LjYyMTUwM10gRVhUMy1mcyAoc2RiKTogd2FybmluZzogbWF4aW1h
+bCBtb3VudCBjb3VudCByZWFjaGVkLCBydW5uaW5nIGUyZnNjayBpcyByZWNv
+bW1lbmRlZA0KWyAgICA5LjYyMTY0NV0ga2pvdXJuYWxkIHN0YXJ0aW5nLiAg
+Q29tbWl0IGludGVydmFsIDUgc2Vjb25kcw0KWyAgICA5LjYzNTU0OF0gRVhU
+My1mcyAoc2RiKTogdXNpbmcgaW50ZXJuYWwgam91cm5hbA0KWyAgICA5LjYz
+NTU3MV0gRVhUMy1mcyAoc2RiKTogbW91bnRlZCBmaWxlc3lzdGVtIHdpdGgg
+b3JkZXJlZCBkYXRhIG1vZGUNClsgICAgOS42NDM3MTRdIEVYVDMtZnMgKHNk
+YTIpOiBtb3VudGVkIGZpbGVzeXN0ZW0gd2l0aCBvcmRlcmVkIGRhdGEgbW9k
+ZQ0KWyAgICA5LjY0NjA4Nl0ga2pvdXJuYWxkIHN0YXJ0aW5nLiAgQ29tbWl0
+IGludGVydmFsIDUgc2Vjb25kcw0KWyAgIDExLjE4Mzk4NV0gdmlhLXJoaW5l
+IDAwMDA6MDA6MGQuMDogZXRoMDogbGluayB1cCwgMTAwTWJwcywgZnVsbC1k
+dXBsZXgsIGxwYSAweENERTENClsgICAxMS44MDU1NzldIEZBVC1mcyAoc2Rj
+MSk6IHV0ZjggaXMgbm90IGEgcmVjb21tZW5kZWQgSU8gY2hhcnNldCBmb3Ig
+RkFUIGZpbGVzeXN0ZW1zLCBmaWxlc3lzdGVtIHdpbGwgYmUgY2FzZSBzZW5z
+aXRpdmUhDQpbICAgMjIuMDgyMDQyXSBldGgwOiBubyBJUHY2IHJvdXRlcnMg
+cHJlc2VudA0KWyAgMTIzLjM5NjE3MF0gaHViIDEtMDoxLjA6IHBvcnQgNCBk
+aXNhYmxlZCBieSBodWIgKEVNST8pLCByZS1lbmFibGluZy4uLg0KWyAgMTIz
+LjM5NjE5NF0gdXNiIDEtNDogVVNCIGRpc2Nvbm5lY3QsIGRldmljZSBudW1i
+ZXIgNA0KWyAgMTIzLjY2MTA2N10gdXNiIDEtNDogbmV3IGhpZ2gtc3BlZWQg
+VVNCIGRldmljZSBudW1iZXIgNSB1c2luZyBlaGNpX2hjZA0KWyAgMTIzLjc3
+NTQ5OF0gdXNiIDEtNDogY29uZmlnIDEgaGFzIGFuIGludmFsaWQgaW50ZXJm
+YWNlIG51bWJlcjogMyBidXQgbWF4IGlzIDINClsgIDEyMy43NzU1MjBdIHVz
+YiAxLTQ6IGNvbmZpZyAxIGhhcyBubyBpbnRlcmZhY2UgbnVtYmVyIDINClsg
+IDEyMy43NzU4NjVdIHVzYiAxLTQ6IGNvbmZpZyAxIGhhcyBhbiBpbnZhbGlk
+IGludGVyZmFjZSBudW1iZXI6IDMgYnV0IG1heCBpcyAyDQpbICAxMjMuNzc1
+ODg2XSB1c2IgMS00OiBjb25maWcgMSBoYXMgbm8gaW50ZXJmYWNlIG51bWJl
+ciAyDQpbICAxMjMuNzc2MzY2XSB1c2IgMS00OiBOZXcgVVNCIGRldmljZSBm
+b3VuZCwgaWRWZW5kb3I9MjFiNCwgaWRQcm9kdWN0PTAyMzANClsgIDEyMy43
+NzYzODddIHVzYiAxLTQ6IE5ldyBVU0IgZGV2aWNlIHN0cmluZ3M6IE1mcj0x
+LCBQcm9kdWN0PTIsIFNlcmlhbE51bWJlcj0zDQpbICAxMjMuNzc2NDA2XSB1
+c2IgMS00OiBQcm9kdWN0OiBBeXJlIFVTQiBJbnRlcmZhY2UNClsgIDEyMy43
+NzY0MjJdIHVzYiAxLTQ6IE1hbnVmYWN0dXJlcjogQXlyZSBBY291c3RpY3MN
+ClsgIDEyMy43NzY0MzldIHVzYiAxLTQ6IFNlcmlhbE51bWJlcjogKEMpIDIw
+MTAgWE1PUy9XYXZlbGVuZ3RoIEF1ZGlvDQpbICAyOTMuOTU3MDMwXSBzY2hl
+ZDogUlQgdGhyb3R0bGluZyBhY3RpdmF0ZWQNClsgIDM0OS43ODkyMDBdIGh1
+YiAxLTA6MS4wOiBwb3J0IDQgZGlzYWJsZWQgYnkgaHViIChFTUk/KSwgcmUt
+ZW5hYmxpbmcuLi4NClsgIDM0OS43ODkyMjRdIHVzYiAxLTQ6IFVTQiBkaXNj
+b25uZWN0LCBkZXZpY2UgbnVtYmVyIDUNClsgIDM1MC4wNTYwODJdIHVzYiAx
+LTQ6IG5ldyBoaWdoLXNwZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDYgdXNpbmcg
+ZWhjaV9oY2QNClsgIDM1MC4xNzA0NzhdIHVzYiAxLTQ6IGNvbmZpZyAxIGhh
+cyBhbiBpbnZhbGlkIGludGVyZmFjZSBudW1iZXI6IDMgYnV0IG1heCBpcyAy
+DQpbICAzNTAuMTcwNTAwXSB1c2IgMS00OiBjb25maWcgMSBoYXMgbm8gaW50
+ZXJmYWNlIG51bWJlciAyDQpbICAzNTAuMTcwODQzXSB1c2IgMS00OiBjb25m
+aWcgMSBoYXMgYW4gaW52YWxpZCBpbnRlcmZhY2UgbnVtYmVyOiAzIGJ1dCBt
+YXggaXMgMg0KWyAgMzUwLjE3MDg2NF0gdXNiIDEtNDogY29uZmlnIDEgaGFz
+IG5vIGludGVyZmFjZSBudW1iZXIgMg0KWyAgMzUwLjE3MTM0NF0gdXNiIDEt
+NDogTmV3IFVTQiBkZXZpY2UgZm91bmQsIGlkVmVuZG9yPTIxYjQsIGlkUHJv
+ZHVjdD0wMjMwDQpbICAzNTAuMTcxMzY2XSB1c2IgMS00OiBOZXcgVVNCIGRl
+dmljZSBzdHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0yLCBTZXJpYWxOdW1iZXI9
+Mw0KWyAgMzUwLjE3MTM4NV0gdXNiIDEtNDogUHJvZHVjdDogQXlyZSBVU0Ig
+SW50ZXJmYWNlDQpbICAzNTAuMTcxNDAxXSB1c2IgMS00OiBNYW51ZmFjdHVy
+ZXI6IEF5cmUgQWNvdXN0aWNzDQpbICAzNTAuMTcxNDE4XSB1c2IgMS00OiBT
+ZXJpYWxOdW1iZXI6IChDKSAyMDEwIFhNT1MvV2F2ZWxlbmd0aCBBdWRpbw0K
 
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 00a555a..c126400 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -1,5 +1,5 @@
- snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-cache.o soc-utils.o
--snd-soc-core-objs += soc-pcm.o soc-io.o
-+snd-soc-core-objs += soc-pcm.o soc-compress.o soc-io.o
- 
- snd-soc-dmaengine-pcm-objs := soc-dmaengine-pcm.o
- obj-$(CONFIG_SND_SOC_DMAENGINE_PCM) += snd-soc-dmaengine-pcm.o
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-new file mode 100644
-index 0000000..573f9bc
---- /dev/null
-+++ b/sound/soc/soc-compress.c
-@@ -0,0 +1,297 @@
-+/*
-+ * soc-compress.c  --  ALSA SoC Compress
-+ *
-+ * Copyright (C) 2012 Intel Corp.
-+ *
-+ * Authors: Namarta Kohli <namartax.kohli@intel.com>
-+ *          Ramesh Babu K V <ramesh.babu@linux.intel.com>
-+ *          Vinod Koul <vinod.koul@linux.intel.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/workqueue.h>
-+#include <sound/core.h>
-+#include <sound/compress_params.h>
-+#include <sound/compress_driver.h>
-+#include <sound/soc.h>
-+#include <sound/initval.h>
-+
-+static int soc_compr_open(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->open) {
-+		ret = platform->driver->compr_ops->open(cstream);
-+		if (ret < 0) {
-+			printk(KERN_ERR "asoc: can't open platform %s\n", platform->name);
-+			goto out;
-+		}
-+	}
-+
-+	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->startup) {
-+		ret = rtd->dai_link->compr_ops->startup(cstream);
-+		if (ret < 0) {
-+			printk(KERN_ERR "asoc: %s startup failed\n", rtd->dai_link->name);
-+			goto machine_err;
-+		}
-+	}
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-+		cpu_dai->playback_active++;
-+		codec_dai->playback_active++;
-+	} else {
-+		cpu_dai->capture_active++;
-+		codec_dai->capture_active++;
-+	}
-+	cpu_dai->active++;
-+	codec_dai->active++;
-+	rtd->codec->active++;
-+
-+	return 0;
-+
-+machine_err:
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->free)
-+		platform->driver->compr_ops->free(cstream);
-+out:
-+	return ret;
-+}
-+
-+static int soc_compr_free(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-+		cpu_dai->playback_active--;
-+		codec_dai->playback_active--;
-+	} else {
-+		cpu_dai->capture_active--;
-+		codec_dai->capture_active--;
-+	}
-+
-+	cpu_dai->active--;
-+	codec_dai->active--;
-+	codec->active--;
-+
-+	if (!cpu_dai->active)
-+		cpu_dai->rate = 0;
-+
-+	if (!codec_dai->active)
-+		codec_dai->rate = 0;
-+
-+	/* Muting the DAC suppresses artifacts caused during digital
-+	 * shutdown, for example from stopping clocks.
-+	 */
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK)
-+		snd_soc_dai_digital_mute(codec_dai, 1);
-+
-+	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
-+		rtd->dai_link->compr_ops->shutdown(cstream);
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->free)
-+		platform->driver->compr_ops->free(cstream);
-+		cpu_dai->runtime = NULL;
-+
-+	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-+		if (!rtd->pmdown_time || codec->ignore_pmdown_time ||
-+		    rtd->dai_link->ignore_pmdown_time) {
-+			snd_soc_dapm_stream_event(rtd,
-+					SNDRV_PCM_STREAM_PLAYBACK,
-+					SND_SOC_DAPM_STREAM_STOP);
-+		} else
-+			codec_dai->pop_wait = 1;
-+			schedule_delayed_work(&rtd->delayed_work,
-+				msecs_to_jiffies(rtd->pmdown_time));
-+	} else {
-+		/* capture streams can be powered down now */
-+		snd_soc_dapm_stream_event(rtd,
-+			SNDRV_PCM_STREAM_CAPTURE,
-+			SND_SOC_DAPM_STREAM_STOP);
-+	}
-+
-+	mutex_unlock(&rtd->pcm_mutex);
-+	return 0;
-+}
-+
-+static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
-+{
-+
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->trigger) {
-+		ret = platform->driver->compr_ops->trigger(cstream, cmd);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	return ret;
-+}
-+int soc_compr_set_params(struct snd_compr_stream *cstream,
-+					struct snd_compr_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret = 0;
-+
-+	/* first we call set_params for the platform driver
-+	 * this should configure the soc side
-+	 * if the machine has compressed ops then we call that as well
-+	 * expectation is that platform and machine will configure everything
-+	 * for this compress path, like configuring pcm port for codec
-+	 */
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
-+		ret = platform->driver->compr_ops->set_params(cstream, params);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->set_params) {
-+		ret = rtd->dai_link->compr_ops->set_params(cstream);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
-+				SND_SOC_DAPM_STREAM_START);
-+
-+	snd_soc_dai_digital_mute(codec_dai, 0);
-+	return ret;
-+}
-+
-+int soc_compr_get_params(struct snd_compr_stream *cstream,
-+					struct snd_codec *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->get_params) {
-+		ret = platform->driver->compr_ops->get_params(cstream, params);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	return ret;
-+}
-+
-+int soc_compr_get_caps(struct snd_compr_stream *cstream,
-+				struct snd_compr_caps *caps)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->get_caps) {
-+		ret = platform->driver->compr_ops->get_caps(cstream, caps);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	return ret;
-+}
-+
-+int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
-+				struct snd_compr_codec_caps *codec)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->get_codec_caps)
-+		ret = platform->driver->compr_ops->get_codec_caps(cstream, codec);
-+		if (ret < 0)
-+			return ret;
-+	return ret;
-+}
-+
-+int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->ack)
-+		ret = platform->driver->compr_ops->ack(cstream, bytes);
-+		if (ret < 0)
-+			return ret;
-+
-+	return ret;
-+}
-+
-+int soc_compr_pointer(struct snd_compr_stream *cstream,
-+			struct snd_compr_tstamp *tstamp)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
-+		platform->driver->compr_ops->pointer(cstream, tstamp);
-+
-+	return 0;
-+}
-+
-+/* ASoC Compress operations */
-+static struct snd_compr_ops soc_compr_ops = {
-+	.open		= soc_compr_open,
-+	.free		= soc_compr_free,
-+	.set_params	= soc_compr_set_params,
-+	.get_params	= soc_compr_get_params,
-+	.trigger	= soc_compr_trigger,
-+	.pointer	= soc_compr_pointer,
-+	.ack		= soc_compr_ack,
-+	.get_caps	= soc_compr_get_caps,
-+	.get_codec_caps = soc_compr_get_codec_caps
-+};
-+
-+/* create a new compress */
-+int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_compr *compr;
-+	char new_name[64];
-+	int ret = 0, direction = 0;
-+
-+	/* check client and interface hw capabilities */
-+	snprintf(new_name, sizeof(new_name), "%s %s-%d",
-+			rtd->dai_link->stream_name, codec_dai->name, num);
-+	/* TODO add support for cature */
-+	direction = SND_COMPRESS_PLAYBACK;
-+	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
-+	if (compr == NULL) {
-+		snd_printk(KERN_ERR "Cannot allocate compr\n");
-+		return -ENOMEM;
-+	}
-+
-+	compr->ops = &soc_compr_ops;
-+	mutex_init(&compr->lock);
-+	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
-+	if (ret < 0) {
-+		printk(KERN_ERR "asoc: can't create pcm for codec %s\n", codec->name);
-+		kfree(compr);
-+		return ret;
-+	}
-+
-+	rtd->compr = compr;
-+	compr->private_data = rtd;
-+
-+	printk(KERN_INFO "asoc: %s <-> %s mapping ok\n", codec_dai->name,
-+		cpu_dai->name);
-+	return ret;
-+}
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f219b2f..492275b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1388,7 +1388,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 	if (ret < 0)
- 		pr_warn("asoc: failed to add pmdown_time sysfs:%d\n", ret);
- 
--	if (!dai_link->params) {
-+	if (cpu_dai->driver->compress_dai) {
-+		/*create compress device*/
-+		ret = soc_new_compress(rtd, num);
-+		if (ret < 0 ) {
-+			printk(KERN_ERR "asoc: can't create offload %s\n",
-+					 dai_link->stream_name);
-+			return ret;
-+		}
-+	} else if (!dai_link->params) {
- 		/* create the pcm */
- 		ret = soc_new_pcm(rtd, num);
- 		if (ret < 0) {
--- 
-1.7.0.4
+
+---36511695-849502224-1343729559=:92141
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+---36511695-849502224-1343729559=:92141--
