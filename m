@@ -1,19 +1,19 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 1/5] ASoC: dapm: If one widget fails,
-	do not force all subsequent widgets to fail too
-Date: Tue, 31 Jul 2012 15:45:40 +0100
-Message-ID: <1343745944-18418-2-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 2/5] ASoC: ab8500: Inform SoC Core that we have
+	our own I/O arrangements
+Date: Tue, 31 Jul 2012 15:45:41 +0100
+Message-ID: <1343745944-18418-3-git-send-email-lee.jones@linaro.org>
 References: <1343745944-18418-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id C64F9265B44
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 16:45:59 +0200 (CEST)
-Received: by mail-we0-f179.google.com with SMTP id x10so3971679wey.38
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 07:46:02 -0700 (PDT)
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABA99265D06
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 16:46:01 +0200 (CEST)
+Received: by wibhm2 with SMTP id hm2so3599632wib.2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 07:46:03 -0700 (PDT)
 In-Reply-To: <1343745944-18418-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,28 +28,38 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-If a list of widgets is provided and one of them fails to be added as
-a control, the present semantics fail all subsequent widgets. A better
-solution would be to only fail that widget, but pursue in attempting
-to add the rest of the list.
+If codec->control_data is not populated SoC Core assumes we want to
+use regmap, which fails catastrophically, as we don't have one:
+
+Unable to handle kernel NULL pointer dereference at virtual address 00000080
+pgd = c0004000
+[00000080] *pgd=00000000
+Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 1    Not tainted  (3.5.0-rc6-00884-g0b2419e-dirty #130)
+PC is at regmap_read+0x10/0x5c
+LR is at hw_read+0x80/0x90
+pc : [<c01a91b8>]    lr : [<c0216804>]    psr: 60000013
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/soc-dapm.c |    2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/ab8500-codec.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index eded657..7d9c154 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3095,8 +3095,6 @@ int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
- 			dev_err(dapm->dev,
- 				"ASoC: Failed to create DAPM control %s\n",
- 				widget->name);
--			ret = -ENOMEM;
--			break;
- 		}
- 		widget++;
- 	}
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 3c79592..23b4018 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2406,6 +2406,10 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	/* Setup AB8500 according to board-settings */
+ 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
++
++	/* Inform SoC Core that we have our own I/O arrangements. */
++	codec->control_data = (void *)true;
++
+ 	status = ab8500_audio_setup_mics(codec, &pdata->codec->amics);
+ 	if (status < 0) {
+ 		pr_err("%s: Failed to setup mics (%d)!\n", __func__, status);
 -- 
 1.7.9.5
