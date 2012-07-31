@@ -1,13 +1,31 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 6/6] ARM: ux500: Enable HIGHMEM on all mop500 platforms
-Date: Tue, 31 Jul 2012 14:31:32 +0100
-Message-ID: <1343741493-17671-12-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 5/6] ARM: ux500: Enable HIGHMEM on all mop500
+	platforms
+Date: Tue, 31 Jul 2012 14:31:30 +0100
+Message-ID: <1343741493-17671-10-git-send-email-lee.jones@linaro.org>
 References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90421265D36
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:31:54 +0200 (CEST)
+Received: by mail-wi0-f179.google.com with SMTP id hq4so2363110wib.2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:31:56 -0700 (PDT)
 In-Reply-To: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 The current kernel commandline for ux500 based devices includes
