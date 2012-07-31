@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [RFC PATCH 0/2] ASoC: add compress stream support
-Date: Tue, 31 Jul 2012 12:11:38 +0530
-Message-ID: <1343716900-23491-1-git-send-email-vinod.koul@linux.intel.com>
+Subject: [RFC PATCH 1/2] ASoC: add definitions for compressed
+	operations
+Date: Tue, 31 Jul 2012 12:11:39 +0530
+Message-ID: <1343716900-23491-2-git-send-email-vinod.koul@linux.intel.com>
+References: <1343716900-23491-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 01F43265CD9
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 08:40:57 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E1D99265CD6
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 08:40:59 +0200 (CEST)
+In-Reply-To: <1343716900-23491-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +25,120 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, pierre-louis.bossart@linux.intel.com, ramesh.babu@intel.com, namartax.kohli@intel.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Here is the much delayed support for compress audio streams in ASoC.
-This patch series is in RFC form, once we have agreed on this I will send
-the patches supporting Intel driver as well.
+Here we update the asoc structures to add compress stream definitions
+First the struct snd_soc_dai_driver adds a new member to indicate if the dai is
+compressed or pcm. Next we add a new structre the struct snd_soc_compr_ops in
+the struct snd_soc_dai_link. This is to be used for machine driver to perform
+any operations required for setting up compressed audio streams
 
-Mainly we indicate if the dai is of compressed nature and based on that
-register a new compressed device. Also the platform driver adds the compress
-stream operations.
-Since the codecs handles PCM only, the assumption is that they will not have
-anything to do here and machine needs to set codec appropriately for compressed
-streams. In future if codec with such support are available then we can simply
-add compressed operations into codec as well
+next is the compressed data operations, they are added using struct
+snd_compr_ops in the struct snd_soc_platform_driver.
 
-Comments, criticism welcome...
-
---
-Namarta Kohli (1):
-  ASoC: add compress stream support
-
-Vinod Koul (1):
-  ASoC: add definations for compressed operations
-
+Signed-off-by: Namarta Kohli <namartax.kohli@intel.com>
+Signed-off-by: Ramesh Babu K V <ramesh.babu@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+---
  include/sound/compress_driver.h |    1 +
- include/sound/soc-dai.h         |    2 +
- include/sound/soc.h             |   17 ++-
- sound/soc/Makefile              |    2 +-
- sound/soc/soc-compress.c        |  297 +++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-core.c            |   10 ++-
- 6 files changed, 326 insertions(+), 3 deletions(-)
- create mode 100644 sound/soc/soc-compress.c
+ include/sound/soc-dai.h         |    2 ++
+ include/sound/soc.h             |   17 ++++++++++++++++-
+ 3 files changed, 19 insertions(+), 1 deletions(-)
+
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 48f2a1f..f2912ab 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -61,6 +61,7 @@ struct snd_compr_runtime {
+ 	u64 total_bytes_available;
+ 	u64 total_bytes_transferred;
+ 	wait_queue_head_t sleep;
++	void *private_data;
+ };
+ 
+ /**
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 1f69e0a..a05218d 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -205,6 +205,8 @@ struct snd_soc_dai_driver {
+ 	int (*remove)(struct snd_soc_dai *dai);
+ 	int (*suspend)(struct snd_soc_dai *dai);
+ 	int (*resume)(struct snd_soc_dai *dai);
++	/* compress dai */
++	bool compress_dai;
+ 
+ 	/* ops */
+ 	const struct snd_soc_dai_ops *ops;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e063380..796b4cd 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -22,6 +22,7 @@
+ #include <linux/regmap.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
++#include <sound/compress_driver.h>
+ #include <sound/control.h>
+ #include <sound/ac97_codec.h>
+ 
+@@ -399,6 +400,7 @@ int snd_soc_platform_read(struct snd_soc_platform *platform,
+ int snd_soc_platform_write(struct snd_soc_platform *platform,
+ 					unsigned int reg, unsigned int val);
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
++int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
+ 
+ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
+ 		const char *dai_link, int stream);
+@@ -632,6 +634,13 @@ struct snd_soc_ops {
+ 	int (*trigger)(struct snd_pcm_substream *, int);
+ };
+ 
++struct snd_soc_compr_ops {
++	int (*startup)(struct snd_compr_stream *);
++	void (*shutdown)(struct snd_compr_stream *);
++	int (*set_params)(struct snd_compr_stream *);
++	int (*trigger)(struct snd_compr_stream *);
++};
++
+ /* SoC cache ops */
+ struct snd_soc_cache_ops {
+ 	const char *name;
+@@ -787,9 +796,12 @@ struct snd_soc_platform_driver {
+ 	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
+ 		struct snd_soc_dai *);
+ 
+-	/* platform stream ops */
++	/* platform stream pcm ops */
+ 	struct snd_pcm_ops *ops;
+ 
++	/* platform stream compress ops */
++	struct snd_compr_ops *compr_ops;
++
+ 	/* platform stream completion event */
+ 	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
+ 
+@@ -891,6 +903,7 @@ struct snd_soc_dai_link {
+ 
+ 	/* machine stream operations */
+ 	struct snd_soc_ops *ops;
++	struct snd_soc_compr_ops *compr_ops;
+ };
+ 
+ struct snd_soc_codec_conf {
+@@ -1027,6 +1040,7 @@ struct snd_soc_pcm_runtime {
+ 
+ 	/* runtime devices */
+ 	struct snd_pcm *pcm;
++	struct snd_compr *compr;
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_platform *platform;
+ 	struct snd_soc_dai *codec_dai;
+@@ -1039,6 +1053,7 @@ struct snd_soc_pcm_runtime {
+ #endif
+ };
+ 
++
+ /* mixer control */
+ struct soc_mixer_control {
+ 	int min, max, platform_max;
+-- 
+1.7.0.4
