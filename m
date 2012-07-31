@@ -1,46 +1,53 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 5/6] ARM: ux500: Enable HIGHMEM on all
-	mop500 platforms
-Date: Tue, 31 Jul 2012 20:50:02 +0000
-Message-ID: <201207312050.03113.arnd@arndb.de>
-References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
- <5017EBDC.6010005@linaro.org> <20120731143732.GS6802@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH 5/6] ARM: ux500: Ensure probing of Audio devices when Device Tree is enabled
+Date: Tue, 31 Jul 2012 20:54:13 +0000
+Message-ID: <201207312054.13818.arnd@arndb.de>
+References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org> <1343741493-17671-11-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AFC3265D31
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 22:50:17 +0200 (CEST)
-In-Reply-To: <20120731143732.GS6802@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1343741493-17671-11-git-send-email-lee.jones@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 31 July 2012, Russell King - ARM Linux wrote:
-> I still fail to see how not having highmem enabled would ever cause memory
-> corruption errors (unless something dealing with memory in a very very
-> wrong way - iow, not using one of the reservation or memory allocation
-> methods provided by the kernel.)
+On Tuesday 31 July 2012, Lee Jones wrote:
+> diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
+> index e641003..87a5cd7 100644
+> --- a/arch/arm/mach-ux500/board-mop500.c
+> +++ b/arch/arm/mach-ux500/board-mop500.c
+> @@ -794,6 +794,7 @@ static void __init u8500_init_machine(void)
+>                                 ARRAY_SIZE(mop500_platform_devs));
+>  
+>                 mop500_sdi_init(parent);
+> +               mop500_msp_init(parent);
+>                 i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+>                 i2c_register_board_info(0, mop500_i2c0_devices, i2c0_devs);
+>                 i2c_register_board_info(2, mop500_i2c2_devices,
+> @@ -801,6 +802,8 @@ static void __init u8500_init_machine(void)
+>  
+>                 mop500_uib_init();
+>  
+> +       } else if (of_machine_is_compatible("calaosystems,snowball-a9500")) {
+> +               mop500_of_msp_init(parent);
+>         } else if (of_machine_is_compatible("st-ericsson,hrefv60+")) {
+>                 /*
+>                  * The HREFv60 board removed a GPIO expander and routed
+> @@ -812,6 +815,7 @@ static void __init u8500_init_machine(void)
+>                                 ARRAY_SIZE(mop500_platform_devs));
+>  
+>                 hrefv60_sdi_init(parent);
+> +               mop500_msp_init(parent);
+>  
+>                 i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
+>                 i2c0_devs -= NUM_PRE_V60_I2C0_DEVICES;
 
-The problem is that all users of ux500 systems pass a command line like
 
-vmalloc=256M mem=128M@0 mali.mali_mem=32M@128M hwmem=168M@160M mem=48M@328M mem_issw=1M@383M mem=640M@384M
-
-This is of course totally bogus and should not be done. If I understand
-Lee correctly, one of the issues resulting from passing a command
-line like this without enabling highmem is memory corruption.
-
-"Doctor it hurts when I do this ..."
+Looks like you're adding the same call to each of the three cases:
+mop500, snowball and hrefv60+. How about moving it before or after
+the if/elseif block?
 
 	Arnd
