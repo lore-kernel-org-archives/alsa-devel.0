@@ -1,18 +1,20 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 1/6] Bugfixes and clean-ups bound for the v3.6
-	RCs
-Date: Tue, 31 Jul 2012 14:31:21 +0100
-Message-ID: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 1/6] ASoC: dapm: If one widget fails,
+	do not force all subsequent widgets to fail too
+Date: Tue, 31 Jul 2012 14:31:23 +0100
+Message-ID: <1343741493-17671-3-git-send-email-lee.jones@linaro.org>
+References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id AB344265D14
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:31:40 +0200 (CEST)
-Received: by weyx10 with SMTP id x10so3913093wey.38
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:31:42 -0700 (PDT)
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA60E265D0C
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:31:43 +0200 (CEST)
+Received: by mail-wi0-f173.google.com with SMTP id hm6so2366379wib.2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:31:46 -0700 (PDT)
+In-Reply-To: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch-set includes some important changes which should make
-their way to the Mainline Release Candidates for the v3.6 release.
-Without them Audio doesn't even probe (at all) when booting with
-Device Tree selected. The kernel can't compile with ux500 audio
-enabled. Even if we can get that far SoC Core will assume we're
-using regmaps and attempt to use them; however, none exist for
-this driver, so the kernel will oops.
+If a list of widgets is provided and one of them fails to be added as
+a control, the present semantics fail all subsequent widgets. A better
+solution would be to only fail that widget, but pursue in attempting
+to add the rest of the list.
 
- arch/arm/mach-ux500/Kconfig            |    1 +
- arch/arm/mach-ux500/board-mop500-msp.c |    2 +-
- arch/arm/mach-ux500/board-mop500.c     |    9 ++++-----
- sound/soc/codecs/ab8500-codec.c        |    4 ++++
- sound/soc/soc-dapm.c                   |    2 --
- 5 files changed, 10 insertions(+), 8 deletions(-)
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/soc-dapm.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index eded657..7d9c154 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3095,8 +3095,6 @@ int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
+ 			dev_err(dapm->dev,
+ 				"ASoC: Failed to create DAPM control %s\n",
+ 				widget->name);
+-			ret = -ENOMEM;
+-			break;
+ 		}
+ 		widget++;
+ 	}
+-- 
+1.7.9.5
