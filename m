@@ -1,13 +1,31 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 1/6] ASoC: ab8500: Inform SoC Core that we have our own I/O arrangements
-Date: Tue, 31 Jul 2012 14:31:22 +0100
-Message-ID: <1343741493-17671-2-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 2/6] ASoC: ab8500: Inform SoC Core that we have
+	our own I/O arrangements
+Date: Tue, 31 Jul 2012 14:31:25 +0100
+Message-ID: <1343741493-17671-5-git-send-email-lee.jones@linaro.org>
 References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD687265D14
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:31:46 +0200 (CEST)
+Received: by wibhq4 with SMTP id hq4so2363110wib.2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:31:49 -0700 (PDT)
 In-Reply-To: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 If codec->control_data is not populated SoC Core assumes we want to
