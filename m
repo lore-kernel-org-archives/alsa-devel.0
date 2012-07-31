@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/19] ARM: ux500: Add AB8500 CODEC node to DB8500 Device Tree
-Date: Tue, 31 Jul 2012 14:39:01 +0100
-Message-ID: <1343741953-17828-8-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 18/19] Documentation: Define the MSP Driver Device Tree bindings
+Date: Tue, 31 Jul 2012 14:39:12 +0100
+Message-ID: <1343741953-17828-19-git-send-email-lee.jones@linaro.org>
 References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
@@ -10,30 +10,63 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, olalilja
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ensure correct probing and pass though important configuration
-options to the AB8500 CODEC driver when DT is enabled
+Here we add the required documentation for the new Device Tree
+bindings pertaining to the MSP CPU-side DAI Driver.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/db8500.dtsi |    6 ++++++
- 1 file changed, 6 insertions(+)
+ .../devicetree/bindings/sound/ux500-msp.txt        |   43 ++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ux500-msp.txt
 
-diff --git a/arch/arm/boot/dts/db8500.dtsi b/arch/arm/boot/dts/db8500.dtsi
-index 7279165..a3bee0a 100644
---- a/arch/arm/boot/dts/db8500.dtsi
-+++ b/arch/arm/boot/dts/db8500.dtsi
-@@ -370,6 +370,12 @@
- 					compatible = "stericsson,ab8500-debug";
- 				};
- 
-+				codec: ab8500-codec {
-+					compatible = "stericsson,ab8500-codec";
+diff --git a/Documentation/devicetree/bindings/sound/ux500-msp.txt b/Documentation/devicetree/bindings/sound/ux500-msp.txt
+new file mode 100644
+index 0000000..5b883cc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ux500-msp.txt
+@@ -0,0 +1,43 @@
++* ux500 MSP (CPU-side Digital Audio Interface)
 +
-+					stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+				};
++Required properties:
++ - compatible       :"stericsson,ux500-msp-i2s"
++ - reg              : Physical base address and length of the device's registers.
 +
- 				ab8500-regulators {
- 					compatible = "stericsson,ab8500-regulator";
- 
++Optional properties:
++ - interrupts       : The interrupt outputs from the device.
++ - interrupt-parent : The parent interrupt controller.
++ - <name>-supply    : Phandle to the regulator <name> supply
++
++Example:
++
++	sound {
++		compatible = "stericsson,snd-soc-mop500";
++
++		stericsson,platform-pcm-dma = <&pcm>;
++		stericsson,cpu-dai = <&msp1 &msp3>;
++		stericsson,audio-codec = <&codec>;
++	};
++
++	pcm: ux500-pcm {
++		compatible = "stericsson,ux500-pcm";
++	};
++
++	msp1: msp@80124000 {
++		compatible = "stericsson,ux500-msp-i2s";
++		reg = <0x80124000 0x1000>;
++		interrupts = <0 62 0x4>;
++		v-ape-supply = <&db8500_vape_reg>;
++	};
++
++	msp3: msp@80125000 {
++		compatible = "stericsson,ux500-msp-i2s";
++		reg = <0x80125000 0x1000>;
++		interrupts = <0 62 0x4>;
++		v-ape-supply = <&db8500_vape_reg>;
++	};
++
++	codec: ab8500-codec {
++		compatible = "stericsson,ab8500-codec";
++		stericsson,earpeice-cmv = <950>; /* Units in mV. */
++	};
 -- 
 1.7.9.5
