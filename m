@@ -1,52 +1,54 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5/6] ARM: ux500: Ensure probing of Audio devices when Device Tree is enabled
-Date: Tue, 31 Jul 2012 14:31:31 +0100
-Message-ID: <1343741493-17671-11-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 4/6] ARM: ux500: Fix merge error,
+	so such struct 'snd_soc_u8500'
+Date: Tue, 31 Jul 2012 14:31:29 +0100
+Message-ID: <1343741493-17671-9-git-send-email-lee.jones@linaro.org>
 References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8EF2265D14
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:31:52 +0200 (CEST)
+Received: by mail-we0-f179.google.com with SMTP id x10so3913093wey.38
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:31:55 -0700 (PDT)
 In-Reply-To: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Previous attempts to add platform probing of the Audio related devices
-only call from non-DT initialisation functions. This patch extends that
-functionality to the Device Tree related ones too.
+The platform attempts to register platform device 'snd_soc_u8500'
+which doesn't actually exist. Here we change the reference to the
+correct one 'snd_soc_mop500'.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/board-mop500.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/mach-ux500/board-mop500-msp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
-index e641003..87a5cd7 100644
---- a/arch/arm/mach-ux500/board-mop500.c
-+++ b/arch/arm/mach-ux500/board-mop500.c
-@@ -794,6 +794,7 @@ static void __init u8500_init_machine(void)
- 				ARRAY_SIZE(mop500_platform_devs));
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
+index 9960480..1b6a193 100644
+--- a/arch/arm/mach-ux500/board-mop500-msp.c
++++ b/arch/arm/mach-ux500/board-mop500-msp.c
+@@ -228,7 +228,7 @@ int mop500_msp_init(struct device *parent)
+ 	struct platform_device *msp1;
  
- 		mop500_sdi_init(parent);
-+		mop500_msp_init(parent);
- 		i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
- 		i2c_register_board_info(0, mop500_i2c0_devices, i2c0_devs);
- 		i2c_register_board_info(2, mop500_i2c2_devices,
-@@ -801,6 +802,8 @@ static void __init u8500_init_machine(void)
+ 	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
+-	platform_device_register(&snd_soc_u8500);
++	platform_device_register(&snd_soc_mop500);
  
- 		mop500_uib_init();
- 
-+	} else if (of_machine_is_compatible("calaosystems,snowball-a9500")) {
-+		mop500_of_msp_init(parent);
- 	} else if (of_machine_is_compatible("st-ericsson,hrefv60+")) {
- 		/*
- 		 * The HREFv60 board removed a GPIO expander and routed
-@@ -812,6 +815,7 @@ static void __init u8500_init_machine(void)
- 				ARRAY_SIZE(mop500_platform_devs));
- 
- 		hrefv60_sdi_init(parent);
-+		mop500_msp_init(parent);
- 
- 		i2c0_devs = ARRAY_SIZE(mop500_i2c0_devices);
- 		i2c0_devs -= NUM_PRE_V60_I2C0_DEVICES;
+ 	pr_info("Initialize MSP I2S-devices.\n");
+ 	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
 -- 
 1.7.9.5
