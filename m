@@ -1,19 +1,18 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 09/19] ARM: ux500: Pass MSP DMA platform data
-	though AUXDATA
-Date: Tue, 31 Jul 2012 14:39:03 +0100
-Message-ID: <1343741953-17828-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 10/19] ARM: ux500: Stop registering the MOP500
+	Audio driver from platform code
+Date: Tue, 31 Jul 2012 14:39:04 +0100
+Message-ID: <1343741953-17828-11-git-send-email-lee.jones@linaro.org>
 References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id DD035265D0C
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:34 +0200 (CEST)
-Received: by mail-we0-f179.google.com with SMTP id x10so3918401wey.38
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:37 -0700 (PDT)
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65657265D9F
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:36 +0200 (CEST)
+Received: by mail-wg0-f51.google.com with SMTP id ed3so4575643wgb.20
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:38 -0700 (PDT)
 In-Reply-To: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,99 +27,27 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, olalilja
 Cc: STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, linus.walleij@stericsson.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-It isn't currently possible to pass all platform specific configuration
-though Device Tree. Thinks like device names used in the clock
-infrastructure, call-backs and DMA information have to be passed in via
-AUXDATA structures and the MSP is no exception. Here we're passing DMA
-settings.
+In this patch we prevent MOP500 driver registration from platform
+code and rely solely on Device Tree to do the probing for us.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/board-mop500-msp.c |    8 ++++----
- arch/arm/mach-ux500/board-mop500.c     |    9 +++++++++
- arch/arm/mach-ux500/board-mop500.h     |    5 +++++
- 3 files changed, 18 insertions(+), 4 deletions(-)
+ arch/arm/mach-ux500/board-mop500-msp.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
-index 7dd997a..3328c3a 100644
+index 3328c3a..71d62ed 100644
 --- a/arch/arm/mach-ux500/board-mop500-msp.c
 +++ b/arch/arm/mach-ux500/board-mop500-msp.c
-@@ -49,7 +49,7 @@ static struct stedma40_chan_cfg msp0_dma_tx = {
- 	/* data_width is set during configuration */
- };
- 
--static struct msp_i2s_platform_data msp0_platform_data = {
-+struct msp_i2s_platform_data msp0_platform_data = {
- 	.id = MSP_I2S_0,
- 	.msp_i2s_dma_rx = &msp0_dma_rx,
- 	.msp_i2s_dma_tx = &msp0_dma_tx,
-@@ -81,7 +81,7 @@ static struct stedma40_chan_cfg msp1_dma_tx = {
- 	/* data_width is set during configuration */
- };
- 
--static struct msp_i2s_platform_data msp1_platform_data = {
-+struct msp_i2s_platform_data msp1_platform_data = {
- 	.id = MSP_I2S_1,
- 	.msp_i2s_dma_rx = NULL,
- 	.msp_i2s_dma_tx = &msp1_dma_tx,
-@@ -160,13 +160,13 @@ static struct platform_device ux500_pcm = {
- 	},
- };
- 
--static struct msp_i2s_platform_data msp2_platform_data = {
-+struct msp_i2s_platform_data msp2_platform_data = {
- 	.id = MSP_I2S_2,
- 	.msp_i2s_dma_rx = &msp2_dma_rx,
- 	.msp_i2s_dma_tx = &msp2_dma_tx,
- };
- 
--static struct msp_i2s_platform_data msp3_platform_data = {
-+struct msp_i2s_platform_data msp3_platform_data = {
- 	.id		= MSP_I2S_3,
- 	.msp_i2s_dma_rx	= &msp1_dma_rx,
- 	.msp_i2s_dma_tx	= NULL,
-diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
-index 6f53a6f..d455a61 100644
---- a/arch/arm/mach-ux500/board-mop500.c
-+++ b/arch/arm/mach-ux500/board-mop500.c
-@@ -753,6 +753,15 @@ struct of_dev_auxdata u8500_auxdata_lookup[] __initdata = {
- 	OF_DEV_AUXDATA("st,nomadik-i2c", 0x8012a000, "nmk-i2c.4", NULL),
- 	/* Requires device name bindings. */
- 	OF_DEV_AUXDATA("stericsson,nmk_pinctrl", 0, "pinctrl-db8500", NULL),
-+	/* Requires clock name and DMA bindings. */
-+	OF_DEV_AUXDATA("stericsson,ux500-msp-i2s", 0x80123000,
-+		"ux500-msp-i2s.0", &msp0_platform_data),
-+	OF_DEV_AUXDATA("stericsson,ux500-msp-i2s", 0x80124000,
-+		"ux500-msp-i2s.1", &msp1_platform_data),
-+	OF_DEV_AUXDATA("stericsson,ux500-msp-i2s", 0x80117000,
-+		"ux500-msp-i2s.2", &msp2_platform_data),
-+	OF_DEV_AUXDATA("stericsson,ux500-msp-i2s", 0x80125000,
-+		"ux500-msp-i2s.3", &msp3_platform_data),
- 	{},
- };
- 
-diff --git a/arch/arm/mach-ux500/board-mop500.h b/arch/arm/mach-ux500/board-mop500.h
-index 1d7316b..3fbf48f 100644
---- a/arch/arm/mach-ux500/board-mop500.h
-+++ b/arch/arm/mach-ux500/board-mop500.h
-@@ -9,6 +9,7 @@
- 
- /* For NOMADIK_NR_GPIO */
- #include <mach/irqs.h>
-+#include <mach/msp.h>
- #include <linux/amba/mmci.h>
- 
- /* Snowball specific GPIO assignments, this board has no GPIO expander */
-@@ -81,6 +82,10 @@ struct device;
- struct i2c_board_info;
- extern struct mmci_platform_data mop500_sdi0_data;
- extern struct mmci_platform_data mop500_sdi4_data;
-+extern struct msp_i2s_platform_data msp0_platform_data;
-+extern struct msp_i2s_platform_data msp1_platform_data;
-+extern struct msp_i2s_platform_data msp2_platform_data;
-+extern struct msp_i2s_platform_data msp3_platform_data;
- extern struct arm_pmu_platdata db8500_pmu_platdata;
- 
- extern void mop500_sdi_init(struct device *parent);
+@@ -175,9 +175,6 @@ struct msp_i2s_platform_data msp3_platform_data = {
+ /* Due for removal once the MSP driver has been fully DT:ed. */
+ void mop500_of_msp_init(struct device *parent)
+ {
+-	pr_info("%s: Register platform-device 'snd-soc-u8500'.\n", __func__);
+-	platform_device_register(&snd_soc_mop500);
+-
+ 	pr_info("Initialize MSP I2S-devices.\n");
+ 	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
+ 			   &msp0_platform_data);
 -- 
 1.7.9.5
