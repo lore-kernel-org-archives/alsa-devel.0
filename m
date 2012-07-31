@@ -1,19 +1,18 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 2/5] ASoC: ab8500: Inform SoC Core that we have
-	our own I/O arrangements
-Date: Tue, 31 Jul 2012 15:45:41 +0100
-Message-ID: <1343745944-18418-3-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 3/5] ARM: ux500: Remove unused
+	snowball_of_platform_devs struct
+Date: Tue, 31 Jul 2012 15:45:42 +0100
+Message-ID: <1343745944-18418-4-git-send-email-lee.jones@linaro.org>
 References: <1343745944-18418-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id ABA99265D06
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 16:46:01 +0200 (CEST)
-Received: by wibhm2 with SMTP id hm2so3599632wib.2
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 07:46:03 -0700 (PDT)
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B00C265B44
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 16:46:03 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so4635472wgb.20
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 07:46:05 -0700 (PDT)
 In-Reply-To: <1343745944-18418-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,38 +27,30 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-If codec->control_data is not populated SoC Core assumes we want to
-use regmap, which fails catastrophically, as we don't have one:
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000080
-pgd = c0004000
-[00000080] *pgd=00000000
-Internal error: Oops: 17 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 1    Not tainted  (3.5.0-rc6-00884-g0b2419e-dirty #130)
-PC is at regmap_read+0x10/0x5c
-LR is at hw_read+0x80/0x90
-pc : [<c01a91b8>]    lr : [<c0216804>]    psr: 60000013
+This was left over during a recent clean-up which removed Device Tree
+helper structs. There is no longer a requirement for it, so we can just
+remove it.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/codecs/ab8500-codec.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/mach-ux500/board-mop500.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 3c79592..23b4018 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2406,6 +2406,10 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
+index 80b4f0e..e641003 100644
+--- a/arch/arm/mach-ux500/board-mop500.c
++++ b/arch/arm/mach-ux500/board-mop500.c
+@@ -726,11 +726,6 @@ MACHINE_END
  
- 	/* Setup AB8500 according to board-settings */
- 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
-+
-+	/* Inform SoC Core that we have our own I/O arrangements. */
-+	codec->control_data = (void *)true;
-+
- 	status = ab8500_audio_setup_mics(codec, &pdata->codec->amics);
- 	if (status < 0) {
- 		pr_err("%s: Failed to setup mics (%d)!\n", __func__, status);
+ #ifdef CONFIG_MACH_UX500_DT
+ 
+-static struct platform_device *snowball_of_platform_devs[] __initdata = {
+-	&snowball_led_dev,
+-	&snowball_key_dev,
+-};
+-
+ struct of_dev_auxdata u8500_auxdata_lookup[] __initdata = {
+ 	/* Requires call-back bindings. */
+ 	OF_DEV_AUXDATA("arm,cortex-a9-pmu", 0, "arm-pmu", &db8500_pmu_platdata),
 -- 
 1.7.9.5
