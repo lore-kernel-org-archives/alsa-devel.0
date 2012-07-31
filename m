@@ -1,19 +1,19 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 02/19] ASoC: Ux500: Enable MOP500 driver for
+Subject: [PATCH 05/19] ASoC: codecs: Enable AB8500 CODEC for
 	Device Tree
-Date: Tue, 31 Jul 2012 14:38:56 +0100
-Message-ID: <1343741953-17828-3-git-send-email-lee.jones@linaro.org>
+Date: Tue, 31 Jul 2012 14:38:59 +0100
+Message-ID: <1343741953-17828-6-git-send-email-lee.jones@linaro.org>
 References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 7253A265D0C
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:23 +0200 (CEST)
-Received: by mail-wi0-f173.google.com with SMTP id hm6so2372350wib.2
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:25 -0700 (PDT)
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B439265D4F
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 15:39:28 +0200 (CEST)
+Received: by mail-we0-f179.google.com with SMTP id x10so3918401wey.38
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2012 06:39:30 -0700 (PDT)
 In-Reply-To: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,89 +28,148 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, olalilja
 Cc: STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>, linus.walleij@stericsson.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-Here we ensure that the MOP500 audio driver will be probed during a
-Device Tree boot. We also parse the sound node to link together the
-codec, dma and the CPU-side Digital Audio Interface.
+We continue to allow the AB8500 CODEC to be registered via the AB8500
+Multi Functional Device API, only this time we extract its configuration
+from the Device Tree binary.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/mop500.c |   38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ include/linux/mfd/abx500/ab8500-codec.h |    6 ++-
+ sound/soc/codecs/ab8500-codec.c         |   81 +++++++++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index 31c4d26..821f2a9 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/spi/spi.h>
-+#include <linux/of.h>
- 
- #include <sound/soc.h>
- #include <sound/initval.h>
-@@ -56,14 +57,45 @@ static struct snd_soc_card mop500_card = {
- 	.num_links = ARRAY_SIZE(mop500_dai_links),
+diff --git a/include/linux/mfd/abx500/ab8500-codec.h b/include/linux/mfd/abx500/ab8500-codec.h
+index dc65292..d707941 100644
+--- a/include/linux/mfd/abx500/ab8500-codec.h
++++ b/include/linux/mfd/abx500/ab8500-codec.h
+@@ -23,7 +23,8 @@ enum amic_type {
+ /* Mic-biases */
+ enum amic_micbias {
+ 	AMIC_MICBIAS_VAMIC1,
+-	AMIC_MICBIAS_VAMIC2
++	AMIC_MICBIAS_VAMIC2,
++	AMIC_MICBIAS_UNKNOWN
  };
  
-+static int __devinit mop500_of_probe(struct platform_device *pdev,
-+				struct device_node *np)
+ /* Bias-voltage */
+@@ -31,7 +32,8 @@ enum ear_cm_voltage {
+ 	EAR_CMV_0_95V,
+ 	EAR_CMV_1_10V,
+ 	EAR_CMV_1_27V,
+-	EAR_CMV_1_58V
++	EAR_CMV_1_58V,
++	EAR_CMV_UNKNOWN
+ };
+ 
+ /* Analog microphone settings */
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 23b4018..fa80961 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -34,6 +34,7 @@
+ #include <linux/mfd/abx500/ab8500-sysctrl.h>
+ #include <linux/mfd/abx500/ab8500-codec.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -2394,9 +2395,65 @@ struct snd_soc_dai_driver ab8500_codec_dai[] = {
+ 	}
+ };
+ 
++static void ab8500_codec_of_probe(struct device *dev, struct device_node *np,
++				struct ab8500_codec_platform_data *codec)
 +{
-+	struct device_node *codec_np, *msp_np[2];
-+	int i;
++	u32 value;
 +
-+	msp_np[0] = of_parse_phandle(np, "stericsson,cpu-dai", 0);
-+	msp_np[1] = of_parse_phandle(np, "stericsson,cpu-dai", 1);
-+	codec_np  = of_parse_phandle(np, "stericsson,audio-codec", 0);
++	if (of_get_property(np, "stericsson,amic1-type-single-ended", NULL))
++		codec->amics.mic1_type = AMIC_TYPE_SINGLE_ENDED;
++	else
++		codec->amics.mic1_type = AMIC_TYPE_DIFFERENTIAL;
 +
-+	if (!(msp_np[0] && msp_np[1] && codec_np)) {
-+		dev_err(&pdev->dev, "Phandle missing or invalid\n");
-+		return -EINVAL;
++	if (of_get_property(np, "stericsson,amic2-type-single-ended", NULL))
++		codec->amics.mic2_type = AMIC_TYPE_SINGLE_ENDED;
++	else
++		codec->amics.mic2_type = AMIC_TYPE_DIFFERENTIAL;
++
++	/* Has a non-standard Vamic been requested? */
++	if (of_get_property(np, "stericsson,amic1a-bias-vamic2", NULL))
++		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC2;
++	else
++		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC1;
++
++	if (of_get_property(np, "stericsson,amic1b-bias-vamic2", NULL))
++		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC2;
++	else
++		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC1;
++
++	if (of_get_property(np, "stericsson,amic2-bias-vamic1", NULL))
++		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC1;
++	else
++		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC2;
++
++	if (!of_property_read_u32(np, "stericsson,earpeice-cmv", &value)) {
++		switch (value) {
++		case 950 :
++			codec->ear_cmv = EAR_CMV_0_95V;
++			break;
++		case 1100 :
++			codec->ear_cmv = EAR_CMV_1_10V;
++			break;
++		case 1270 :
++			codec->ear_cmv = EAR_CMV_1_27V;
++			break;
++		case 1580 :
++			codec->ear_cmv = EAR_CMV_1_58V;
++			break;
++		default :
++			codec->ear_cmv = EAR_CMV_UNKNOWN;
++			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
++		}
++	} else {
++		dev_warn(dev, "No earpiece voltage found in DT - using default\n");
++		codec->ear_cmv = EAR_CMV_0_95V;
 +	}
-+
-+	for (i = 0; i < 2; i++) {
-+		mop500_dai_links[i].cpu_of_node = msp_np[i];
-+		mop500_dai_links[i].cpu_dai_name = NULL;
-+		mop500_dai_links[i].codec_of_node = codec_np;
-+		mop500_dai_links[i].codec_name = NULL;
-+	}
-+
-+	return 0;
 +}
- static int __devinit mop500_probe(struct platform_device *pdev)
++
+ static int ab8500_codec_probe(struct snd_soc_codec *codec)
  {
-+	struct device_node *np = pdev->dev.of_node;
- 	int ret;
- 
- 	pr_debug("%s: Enter.\n", __func__);
- 
- 	dev_dbg(&pdev->dev, "%s: Enter.\n", __func__);
+ 	struct device *dev = codec->dev;
++	struct device_node *np = dev->of_node;
+ 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
+ 	struct ab8500_platform_data *pdata;
+ 	struct filter_control *fc;
+@@ -2407,6 +2464,30 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 	/* Setup AB8500 according to board-settings */
+ 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
  
 +	if (np) {
-+		ret = mop500_of_probe(pdev, np);
-+		if (ret)
-+			return ret;
++		if (!pdata)
++			pdata = devm_kzalloc(dev,
++					sizeof(struct ab8500_platform_data),
++					GFP_KERNEL);
++
++		if (!pdata->codec)
++			pdata->codec
++				= devm_kzalloc(dev,
++					sizeof(struct ab8500_codec_platform_data),
++					GFP_KERNEL);
++
++		if (!(pdata && pdata->codec))
++			return -ENOMEM;
++
++		ab8500_codec_of_probe(dev, np, pdata->codec);
++
++	} else {
++		if (!(pdata && pdata->codec)) {
++			dev_err(dev, "No codec platform data or DT found\n");
++			return -EINVAL;
++		}
 +	}
 +
- 	mop500_card.dev = &pdev->dev;
+ 	/* Inform SoC Core that we have our own I/O arrangements. */
+ 	codec->control_data = (void *)true;
  
- 	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
-@@ -101,10 +133,16 @@ static int __devexit mop500_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id snd_soc_mop500_match[] = {
-+	{ .compatible = "stericsson,snd-soc-mop500", },
-+	{},
-+};
-+
- static struct platform_driver snd_soc_mop500_driver = {
- 	.driver = {
- 		.owner = THIS_MODULE,
- 		.name = "snd-soc-mop500",
-+		.of_match_table = snd_soc_mop500_match,
- 	},
- 	.probe = mop500_probe,
- 	.remove = __devexit_p(mop500_remove),
 -- 
 1.7.9.5
