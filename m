@@ -1,22 +1,15 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 5/6] ARM: ux500: Ensure probing of Audio
- devices when Device Tree is enabled
-Date: Wed, 01 Aug 2012 14:55:58 +0100
-Message-ID: <5019356E.6020407@linaro.org>
-References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
- <201207312054.13818.arnd@arndb.de> <5018DBEE.9090203@linaro.org>
- <201208011332.02500.arnd@arndb.de>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Move snd_legacy_find_free_ioport to initval.h
+Date: Wed, 1 Aug 2012 16:05:39 +0200
+Message-ID: <201208011605.39519.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 023382652D1
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 15:56:00 +0200 (CEST)
-Received: by eaaa13 with SMTP id a13so1418420eaa.38
- for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2012 06:56:03 -0700 (PDT)
-In-Reply-To: <201208011332.02500.arnd@arndb.de>
+Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9988B265F53
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 16:05:48 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +19,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDEvMDgvMTIgMTQ6MzIsIEFybmQgQmVyZ21hbm4gd3JvdGU6Cj4gT24gV2VkbmVzZGF5IDAx
-IEF1Z3VzdCAyMDEyLCBMZWUgSm9uZXMgd3JvdGU6Cj4+PiBMb29rcyBsaWtlIHlvdSdyZSBhZGRp
-bmcgdGhlIHNhbWUgY2FsbCB0byBlYWNoIG9mIHRoZSB0aHJlZSBjYXNlczoKPj4+IG1vcDUwMCwg
-c25vd2JhbGwgYW5kIGhyZWZ2NjArLiBIb3cgYWJvdXQgbW92aW5nIGl0IGJlZm9yZSBvciBhZnRl
-cgo+Pj4gdGhlIGlmL2Vsc2VpZiBibG9jaz8KPj4KPj4gVGhlIFNub3diYWxsIG9uZSBpcyBkaWZm
-ZXJlbnQgJ21vcDUwMF9tc3BfaW5pdCcgLT4gJ21vcDUwMF9vZl9tc3BfaW5pdCcuCj4KPiBBaCwg
-SSBzZWUuIElzIHRoZXJlIGEgcHJvYmxlbSBpbiBhbHdheXMgdXNpbmcgbW9wNTAwX29mX21zcF9p
-bml0IHRoZW4/Cj4gSSB3b3VsZCBndWVzcyB0aGF0IHRoaXMganVzdCBtZWFucyB5b3UnZCBoYXZl
-IHRvIHB1dCB0aGUgbXNwIGludG8gdGhlCj4gZGV2aWNlIHRyZWUgZmlsZXMsIHdoaWNoIGRvbid0
-IHlldCBleGlzdCBmb3IgbW9wNTAwIGFuZCBocmVmdjYwLgoKQWx0aG91Z2ggdGhhdCBpcyB0cnVl
-LCBpdCdzIG9ubHkgcGFydCBvZiB0aGUgaXNzdWUuCgptb3A1MDBfb2ZfbXNwX2luaXQgaXMgb25s
-eSBhIHRlbXBvcmFyeSBzb2x1dGlvbiB0byBhaWQgaW4gc3RlcC1ieS1zdGVwIAplbmFibGVtZW50
-IG9mIERUIGZvciBhdWRpby4gQnkgdGhlIGVuZCBvZiB0aGUgcGF0Y2gtc2V0IGl0IGhhcyBiZWVu
-IApyZW1vdmVkIChhbG9uZyB3aXRoIHRoZSBjYWxsIHRvIGl0IGlmICdvZl9tYWNoaW5lX2lzX2Nv
-bXBhdGlibGUgCigiY2FsYW9zeXN0ZW1zLHNub3diYWxsLWE5NTAwIiknLiBXaGF0IEkgY2FuIGRv
-IGl0IHdyaXRlIGEgcGF0Y2ggdG8gCmNvbnNvbGlkYXRlIHRoZSBjYWxscyBfYWZ0ZXJfICJBUk06
-IHV4NTAwOiBSZW1vdmUgcGxhdGZvcm0gcmVnaXN0cmF0aW9uIApvZiBNU1AgZGV2aWNlcyIsIGFz
-IGEgYm9sdC1vbi4KCgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5nIFRl
-YW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MK
-Rm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Move snd_legacy_find_free_ioport() function back to initval.h as it is used
+by two drivers.
+
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+
+diff --git a/include/sound/initval.h b/include/sound/initval.h
+index f99a0d2..ac62c67 100644
+--- a/include/sound/initval.h
++++ b/include/sound/initval.h
+@@ -50,6 +50,20 @@
+ #define SNDRV_DEFAULT_DMA_SIZE	{ [0 ... (SNDRV_CARDS-1)] = SNDRV_AUTO_DMA_SIZE }
+ #define SNDRV_DEFAULT_PTR	SNDRV_DEFAULT_STR
+ 
++#ifdef SNDRV_LEGACY_FIND_FREE_IOPORT
++static long snd_legacy_find_free_ioport(long *port_table, long size)
++{
++	while (*port_table != -1) {
++		if (request_region(*port_table, size, "ALSA test")) {
++			release_region(*port_table, size);
++			return *port_table;
++		}
++		port_table++;
++	}
++	return -1;
++}
++#endif
++
+ #ifdef SNDRV_LEGACY_FIND_FREE_IRQ
+ #include <linux/interrupt.h>
+ 
+diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+index c24594c..3d1afb6 100644
+--- a/sound/isa/opti9xx/miro.c
++++ b/sound/isa/opti9xx/miro.c
+@@ -37,6 +37,7 @@
+ #include <sound/opl4.h>
+ #include <sound/control.h>
+ #include <sound/info.h>
++#define SNDRV_LEGACY_FIND_FREE_IOPORT
+ #define SNDRV_LEGACY_FIND_FREE_IRQ
+ #define SNDRV_LEGACY_FIND_FREE_DMA
+ #include <sound/initval.h>
+@@ -770,20 +771,6 @@ static int __devinit snd_miro_mixer(struct snd_card *card,
+ 	return 0;
+ }
+ 
+-static long snd_legacy_find_free_ioport(long *port_table, long size)
+-{
+-	while (*port_table != -1) {
+-		struct resource *res;
+-		if ((res = request_region(*port_table, size, 
+-					  "ALSA test")) != NULL) {
+-			release_and_free_resource(res);
+-			return *port_table;
+-		}
+-		port_table++;
+-	}
+-	return -1;
+-}
+-
+ static int __devinit snd_miro_init(struct snd_miro *chip,
+ 				   unsigned short hardware)
+ {
+diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
+index f8fbe22..2899c9f 100644
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -39,6 +39,7 @@
+ #ifndef OPTi93X
+ #include <sound/opl4.h>
+ #endif
++#define SNDRV_LEGACY_FIND_FREE_IOPORT
+ #define SNDRV_LEGACY_FIND_FREE_IRQ
+ #define SNDRV_LEGACY_FIND_FREE_DMA
+ #include <sound/initval.h>
+@@ -185,19 +186,6 @@ static char * snd_opti9xx_names[] = {
+ 	"82C930",	"82C931",	"82C933"
+ };
+ 
+-
+-static long __devinit snd_legacy_find_free_ioport(long *port_table, long size)
+-{
+-	while (*port_table != -1) {
+-		if (request_region(*port_table, size, "ALSA test")) {
+-			release_region(*port_table, size);
+-			return *port_table;
+-		}
+-		port_table++;
+-	}
+-	return -1;
+-}
+-
+ static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
+ 				      unsigned short hardware)
+ {
+
+
+-- 
+Ondrej Zary
