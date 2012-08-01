@@ -1,48 +1,63 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: Re: [alsa-devel] [PATCH 4/4] ARM: mx28evk: add missed clkmux
- select for saif
-Date: Wed, 1 Aug 2012 10:47:38 +0800
-Message-ID: <20120801024737.GB30492@shlinux2.ap.freescale.net>
-References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
- <1342776027-31758-5-git-send-email-b29396@freescale.com>
- <20120721074002.GC923@S2101-09.ap.freescale.net>
- <20120723023632.GA9427@shlinux2.ap.freescale.net>
- <20120728082543.GB2128@S2101-09.ap.freescale.net>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH] ASoC: Samsung: Update Kconfig for Exynos5250 and Exynos4412
+Date: Wed, 01 Aug 2012 12:06:57 +0900
+Message-ID: <030901cd6f92$b5fc6da0$21f548e0$%kim@samsung.com>
+References: <1343218351-30577-1-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20120728082543.GB2128@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Guo Shawn-R65073 <r65073@freescale.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1343218351-30577-1-git-send-email-padma.v@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Padmavathi Venna' <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: rcsekar@samsung.com, sbkim73@samsung.com, sangsu4u.park@samsung.com, ben-linux@fluff.org, olofj@google.com, thutt@chromium.org, joshi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 28, 2012 at 04:25:48PM +0800, Shawn Guo wrote:
-> On Mon, Jul 23, 2012 at 10:36:33AM +0800, Dong Aisheng wrote:
-> > This patch series was made based on Mark's sound-2.6 tree.
-> > Do you want this one go through mxs tree and other three go through Mark's tree?
+Padmavathi Venna wrote:
 > 
-> Yes.  That's the way to save conflict.
+> Update Kconfig file to support the Exynos5250 and Exynos4412
 > 
-> > I'm thinking maybe it would be better go through one tree(Mark's or Yours) since
-> > without this one the saif record still can not work.
+> Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
+> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+> ---
+>  sound/soc/samsung/Kconfig |    8 ++++----
+>  1 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> The recording has been broken.  There is no point to force the whole
-> series to go via one tree.  When sound and arm-soc get merged on
-> linux-next (for testing) and mainline, the recording gets back to work.
+> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+> index fe3995c..d54e400 100644
+> --- a/sound/soc/samsung/Kconfig
+> +++ b/sound/soc/samsung/Kconfig
+> @@ -1,6 +1,6 @@
+>  config SND_SOC_SAMSUNG
+>  	tristate "ASoC support for Samsung"
+> -	depends on ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5PC100 ||
+> ARCH_S5PV210 || ARCH_S5P64X0 || ARCH_EXYNOS4
+> +	depends on PLAT_SAMSUNG
+>  	select S3C64XX_DMA if ARCH_S3C64XX
+>  	select S3C2410_DMA if ARCH_S3C24XX
+>  	help
+> @@ -63,7 +63,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
 > 
-Understand.
-Will rebase it and resend it for this one.
+>  config SND_SOC_SAMSUNG_SMDK_WM8994
+>  	tristate "SoC I2S Audio support for WM8994 on SMDK"
+> -	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 ||
+> MACH_SMDK4212)
+> +	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 ||
+> MACH_SMDK4212 || MACH_SMDK4412 || SOC_EXYNOS5250)
 
-Regards
-Dong Aisheng
+Well, do you think _really_ all board which has a EXYNOS5250 SoC is needed
+this config?
+
+I don't think so?
+
+[...]
+
+Thanks.
+
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
