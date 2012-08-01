@@ -1,49 +1,72 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-io: Only force use regmap if the
- codec have it implemented
-Date: Wed, 1 Aug 2012 14:24:20 +0100
-Message-ID: <20120801132419.GT11892@opensource.wolfsonmicro.com>
-References: <1343822505-6331-1-git-send-email-peter.ujfalusi@ti.com>
- <20120801121630.GP11892@opensource.wolfsonmicro.com>
- <50191F0D.6090807@ti.com>
- <20120801124021.GQ11892@opensource.wolfsonmicro.com>
- <50192A8A.3080204@ti.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH] ASoC: Samsung: Update Kconfig for Exynos5250 and Exynos4412
+Date: Wed, 1 Aug 2012 19:01:28 +0530
+Message-ID: <CAAgF-BfmVfiPZozRd_d5h0DHCypDrmk-5kN2N9un_UEN=qQmDQ@mail.gmail.com>
+References: <1343218351-30577-1-git-send-email-padma.v@samsung.com>
+	<030901cd6f92$b5fc6da0$21f548e0$%kim@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A25A265209
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 15:24:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <50192A8A.3080204@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <030901cd6f92$b5fc6da0$21f548e0$%kim@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Kukjin Kim <kgene.kim@samsung.com>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, rcsekar@samsung.com, sbkim73@samsung.com, sangsu4u.park@samsung.com, ben-linux@fluff.org, olofj@google.com, thutt@chromium.org, joshi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 01, 2012 at 04:09:30PM +0300, Peter Ujfalusi wrote:
-> On 08/01/2012 03:40 PM, Mark Brown wrote:
+Hi,
 
-> > You're changing the function setting up register I/O to ignore what's
-> > being set.  This is silly - the soc-io code is doing exactly the right
-> > thing here.
-
-> Well, it overrides the codec->read/write/bulk_write_raw callbacks, sets the
-> codec->using_regmap to true regardless if the codec have regmap or not.
-> It should only do all of these if the regmap is there IMHO.
-
-That's exactly what it's being asked to do!
-
-> The soc-core calls snd_soc_codec_set_cache_io() if codec->control_data is NULL
-> at the moment.
-
-Right, so perhaps that's the decision which needs revisiting?
+On Wed, Aug 1, 2012 at 8:36 AM, Kukjin Kim <kgene.kim@samsung.com> wrote:
+> Padmavathi Venna wrote:
+>>
+>> Update Kconfig file to support the Exynos5250 and Exynos4412
+>>
+>> Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
+>> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+>> ---
+>>  sound/soc/samsung/Kconfig |    8 ++++----
+>>  1 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+>> index fe3995c..d54e400 100644
+>> --- a/sound/soc/samsung/Kconfig
+>> +++ b/sound/soc/samsung/Kconfig
+>> @@ -1,6 +1,6 @@
+>>  config SND_SOC_SAMSUNG
+>>       tristate "ASoC support for Samsung"
+>> -     depends on ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5PC100 ||
+>> ARCH_S5PV210 || ARCH_S5P64X0 || ARCH_EXYNOS4
+>> +     depends on PLAT_SAMSUNG
+>>       select S3C64XX_DMA if ARCH_S3C64XX
+>>       select S3C2410_DMA if ARCH_S3C24XX
+>>       help
+>> @@ -63,7 +63,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
+>>
+>>  config SND_SOC_SAMSUNG_SMDK_WM8994
+>>       tristate "SoC I2S Audio support for WM8994 on SMDK"
+>> -     depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 ||
+>> MACH_SMDK4212)
+>> +     depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 ||
+>> MACH_SMDK4212 || MACH_SMDK4412 || SOC_EXYNOS5250)
+>
+> Well, do you think _really_ all board which has a EXYNOS5250 SoC is needed
+> this config?
+>
+> I don't think so?
+Yes. It is not required on all boards which has EXYNOS5250 SoC. I will
+change this.
+>
+> [...]
+>
+> Thanks.
+>
+> Best regards,
+> Kgene.
+> --
+> Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+> SW Solution Development Team, Samsung Electronics Co., Ltd.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
