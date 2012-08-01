@@ -1,20 +1,18 @@
-From: Joao Bonina <bonina_2001@yahoo.com>
-Subject: Re: Alsa: USB Class 2 Audio soundcard device
-	disappears suddenly
-Date: Wed, 1 Aug 2012 03:07:59 -0700 (PDT)
-Message-ID: <1343815679.50686.YahooMailNeo@web121604.mail.ne1.yahoo.com>
-References: <1343736296.42529.YahooMailNeo@web121606.mail.ne1.yahoo.com>
- <Pine.LNX.4.44L0.1207311034140.1532-100000@iolanthe.rowland.org>
-Reply-To: Joao Bonina <bonina_2001@yahoo.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: soc-io: Only force use regmap if the
+	codec have it implemented
+Date: Wed,  1 Aug 2012 15:01:45 +0300
+Message-ID: <1343822505-6331-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm17-vm3.bullet.mail.ne1.yahoo.com
- (nm17-vm3.bullet.mail.ne1.yahoo.com [98.138.91.147])
- by alsa0.perex.cz (Postfix) with SMTP id 7B3A9260316
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 12:07:59 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1207311034140.1532-100000@iolanthe.rowland.org>
+Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
+ [74.125.149.155])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3088A265217
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 14:01:01 +0200 (CEST)
+Received: by ghbz10 with SMTP id z10so8507458ghb.21
+ for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2012 05:01:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,72 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-usb <linux-usb@vger.kernel.org>, Daniel Mack <zonque@gmail.com>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Some codecs (like twl4030, twl6040) can not have regmap implementation
+since they are accessing to the chip via MFD core drivers.
 
+Force the use of regmap only in cases when the regmap is actually
+available for the codec.
 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
 
+Hi Mark,
 
+the following commit:
+38cbf95 ASoC: core: Try to use regmap if the driver doesn't set up any I/O
 
->________________________________
-> From: Alan Stern <stern@rowland.harvard.edu>
->To: Joao Bonina <bonina_2001@yahoo.com> =
+broke audio for boards using twl4030 or twl6040 as codec. These devices can not
+have regmap implementation in the codec driver since they rely on their MFD core
+to access to the chip.
 
->Cc: Daniel Mack <zonque@gmail.com>; "alsa-devel@alsa-project.org" <alsa-de=
-vel@alsa-project.org>; linux-usb <linux-usb@vger.kernel.org> =
+As it is now big number of OMAP based devices have broken audio. Would it be
+possible to include this fix for 3.6-rc1 already?
 
->Sent: Tuesday, 31 July 2012, 15:35
->Subject: Re: [alsa-devel] Alsa: USB Class 2 Audio soundcard device disappe=
-ars suddenly
-> =
+Regards,
+Peter
 
->On Tue, 31 Jul 2012, Joao Bonina wrote:
->
->> You're right about the EMI message, it's happening when the streaming st=
-ops.
->> =
+ sound/soc/soc-io.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
->> I've tried different cables before, but that didn't solve the problem.
->> =
-
->> The motherboard is an Alix 1D, and I'm using the onboard USB 2.0 ports.
->> =
-
->> If this really is an EMI issue, guess I'll have to source some kind of m=
-iniPCI-USB 2.0 card and see if that solves the problem.
->
->Another possibility is to put a USB hub before the sound device.=A0 That =
-
->_might_ clean up the signal.
->
->Alan Stern
->
-
-
-Thanks for that suggestion, Alan.
-
-I=A0 used a cheap hub that I had stashed away. At the begining that seemed =
-to solve the problem. But after a while, some clicks and pops became audibl=
-e.
-
-Disconnected it all for a while, and when I reconnected, the problem was ba=
-ck again with this message on mpd.log:
-
-Aug 01 05:57 : output: "USB" [alsa] failed to play: No such device
-Aug 01 05:57 : output: closed plugin=3Dalsa name=3D"USB"
-
-
-
-This time, there's no EMI message in dmesg. =
-
-
-
-Still have to try copying files from one usb flash to another.
-
-Jo=E3o Bonina
-
-
-
->
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index 29183ef..26948be 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -117,9 +117,6 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 	int ret;
+ 
+ 	memset(&config, 0, sizeof(config));
+-	codec->write = hw_write;
+-	codec->read = hw_read;
+-	codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
+ 
+ 	config.reg_bits = addr_bits;
+ 	config.val_bits = data_bits;
+@@ -141,11 +138,11 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 
+ 	case SND_SOC_REGMAP:
+ 		/* Device has made its own regmap arrangements */
+-		codec->using_regmap = true;
+ 		if (!codec->control_data)
+ 			codec->control_data = dev_get_regmap(codec->dev, NULL);
+ 
+ 		if (codec->control_data) {
++			codec->using_regmap = true;
+ 			ret = regmap_get_val_bytes(codec->control_data);
+ 			/* Errors are legitimate for non-integer byte
+ 			 * multiples */
+@@ -161,6 +158,13 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 	if (IS_ERR(codec->control_data))
+ 		return PTR_ERR(codec->control_data);
+ 
++	/* Only override the read/write callbacks if regmap is available */
++	if (codec->control_data) {
++		codec->write = hw_write;
++		codec->read = hw_read;
++		codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_codec_set_cache_io);
+-- 
+1.7.8.6
