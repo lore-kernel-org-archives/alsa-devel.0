@@ -1,22 +1,20 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 5/6] ARM: ux500: Enable HIGHMEM on all
-	mop500 platforms
-Date: Wed, 01 Aug 2012 08:56:14 +0100
-Message-ID: <5018E11E.7080907@linaro.org>
-References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
- <5017EBDC.6010005@linaro.org> <20120731143732.GS6802@n2100.arm.linux.org.uk>
- <201207312050.03113.arnd@arndb.de>
- <20120731220145.GD10335@n2100.arm.linux.org.uk>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [RFC PATCH 1/1] ASoC: soc-dapm: warn if no
+ avaiable path found for widget kcontrol
+Date: Wed, 1 Aug 2012 15:49:53 +0800
+Message-ID: <20120801074952.GC30492@shlinux2.ap.freescale.net>
+References: <1343387941-25266-1-git-send-email-b29396@freescale.com>
+ <20120729202219.GA4384@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D5E30265B83
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 09:56:14 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so1521617eek.38
- for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2012 00:56:17 -0700 (PDT)
-In-Reply-To: <20120731220145.GD10335@n2100.arm.linux.org.uk>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAC8D265D02
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 10:03:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20120729202219.GA4384@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, Arnd Bergmann <arnd@arndb.de>, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMzEvMDcvMTIgMjM6MDEsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCB3cm90ZToKPiBPbiBU
-dWUsIEp1bCAzMSwgMjAxMiBhdCAwODo1MDowMlBNICswMDAwLCBBcm5kIEJlcmdtYW5uIHdyb3Rl
-Ogo+PiBPbiBUdWVzZGF5IDMxIEp1bHkgMjAxMiwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IHdy
-b3RlOgo+Pj4gSSBzdGlsbCBmYWlsIHRvIHNlZSBob3cgbm90IGhhdmluZyBoaWdobWVtIGVuYWJs
-ZWQgd291bGQgZXZlciBjYXVzZSBtZW1vcnkKPj4+IGNvcnJ1cHRpb24gZXJyb3JzICh1bmxlc3Mg
-c29tZXRoaW5nIGRlYWxpbmcgd2l0aCBtZW1vcnkgaW4gYSB2ZXJ5IHZlcnkKPj4+IHdyb25nIHdh
-eSAtIGlvdywgbm90IHVzaW5nIG9uZSBvZiB0aGUgcmVzZXJ2YXRpb24gb3IgbWVtb3J5IGFsbG9j
-YXRpb24KPj4+IG1ldGhvZHMgcHJvdmlkZWQgYnkgdGhlIGtlcm5lbC4pCj4+Cj4+IFRoZSBwcm9i
-bGVtIGlzIHRoYXQgYWxsIHVzZXJzIG9mIHV4NTAwIHN5c3RlbXMgcGFzcyBhIGNvbW1hbmQgbGlu
-ZSBsaWtlCj4+Cj4+IHZtYWxsb2M9MjU2TSBtZW09MTI4TUAwIG1hbGkubWFsaV9tZW09MzJNQDEy
-OE0gaHdtZW09MTY4TUAxNjBNIG1lbT00OE1AMzI4TSBtZW1faXNzdz0xTUAzODNNIG1lbT02NDBN
-QDM4NE0KPj4KPj4gVGhpcyBpcyBvZiBjb3Vyc2UgdG90YWxseSBib2d1cyBhbmQgc2hvdWxkIG5v
-dCBiZSBkb25lLiBJZiBJIHVuZGVyc3RhbmQKPj4gTGVlIGNvcnJlY3RseSwgb25lIG9mIHRoZSBp
-c3N1ZXMgcmVzdWx0aW5nIGZyb20gcGFzc2luZyBhIGNvbW1hbmQKPj4gbGluZSBsaWtlIHRoaXMg
-d2l0aG91dCBlbmFibGluZyBoaWdobWVtIGlzIG1lbW9yeSBjb3JydXB0aW9uLgo+Cj4gQnV0IHRo
-ZSBxdWVzdGlvbiBpcyBfd2h5XyBkb2VzIHRoYXQgY29ycnVwdGlvbiBoYXBwZW4uCj4KPiAgRnJv
-bSB0aGUgYWJvdmUsIHdlIHdpbGwgZW5kIHVwIHdpdGggdGhlIGtlcm5lbCBnZXR0aW5nOgo+Cj4g
-MHgwMDAwMDAwMCAtIDB4MDdmZmZmZmYgKDEyOE0gQCAwKQo+IDB4MTQ4MDAwMDAgLSAweDE3N2Zm
-ZmZmICg0OE0gIEAgMzI4TSkKPiAweDE4MDAwMDAwIC0gMHgzZmZmZmZmZiAoNjQwTSBAIDM4NE0p
-Cj4KPiB3aXRoOgo+Cj4gMHgwODAwMDAwMCAtIDB4MDgxZmZmZmYgdXNlZCBmb3IgbWFsaQo+IDB4
-MGEwMDAwMDAgLSAweDE0N2ZmZmZmIHVzZWQgZm9yIGh3bWVtCj4gMHgxN2YwMDAwMCAtIDB4MTdm
-ZmZmZmYgdXNlZCBmb3IgbWVtX2lzc3cKPgo+IE5vdywgd2l0aCBoaWdobWVtIGRpc2FibGVkLCB0
-aGUga2VybmVsIHNob3VsZCBzdGlsbCBtYXAgZXhhY3RseSB0aGUKPiByZWdpb25zOiAweDAwMDAw
-MDAwIC0gMHgwN2ZmZmZmZiwgMHgxNDgwMDAwMCAtIDB4MTc3ZmZmZmYsIGludG8gdGhlCj4gZGly
-ZWN0IG1hcHBlZCByZWdpb24sIGFuZCB0cnVuY2F0ZSB0aGUgMHgxODAwMDAwMCAtIDB4M2ZmZmZm
-ZmYKPiByZWdpb24gYXBwcm9wcmlhdGVseSwgcmVkdWNpbmcgdGhlIGFtb3VudCBvZiBtZW1vcnkg
-YXZhaWxhYmxlIHN1Y2gKPiB0aGF0IGl0IHdvbid0IG92ZXJsYXAgdGhlIHZtYWxsb2MgYXJlYSAo
-d2hpY2ggeW91J3ZlIHNwZWNpZmllZCB0byBiZQo+IGEgbWluaW11bSBvZiAyNTZNLikKPgo+IFRo
-aXMgc2hvdWxkIF9OT1RfIGNhdXNlIGFueSBtZW1vcnkgY29ycnVwdGlvbi4KPgo+IFNvLCBjb21l
-IG9uIGd1eXMuICBEZWJ1Z2dpbmcgaXMgKm1hbmRhdG9yeSogZm9yIHRoaXMga2luZCBvZiBwcm9i
-bGVtLgo+IFBhcGVyaW5nIG92ZXIgaXQgaXMgb2JzY2VuZS4KCkFjdHVhbGx5IEkgZGlkbid0IGdv
-IGFueSBmdXJ0aGVyIHdpdGggaXQsIGFzIEkgY2hhbmdlZCB0byBhbm90aGVyIAppZGVudGljYWwg
-cGllY2Ugb2YgaGFyZHdhcmUgYW5kIGNvdWxkbid0IHJlcHJvZHVjZSB0aGUgaXNzdWUuCgpGWUks
-IGhlcmUncyB0aGUgYm9vdCBsb2cgZnJvbSB0aGUgYnJva2VuIGJvYXJkOgoKaHR0cDovL3Bhc3Rl
-LnVidW50dS5jb20vMTEwMjAxNy8KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNULUVyaWNzc29uIExh
-bmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBB
-Uk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Jul 30, 2012 at 04:22:19AM +0800, Mark Brown wrote:
+> On Fri, Jul 27, 2012 at 07:19:01PM +0800, Dong Aisheng wrote:
+> > From: Dong Aisheng <dong.aisheng@linaro.org>
+> > 
+> > This could help people know what's wrong going on if the required
+> > path is not registered.
+> 
+> This isn't a good idea, it's fairly common for widgets to have a "None"
+> option which isn't expected to have an input.
+> 
+
+What i changed is mux widgets, i'm wondering is it possible or correct
+the mux widget has no input path?
+If i understand correct, we may need set correct input path
+for mux widget, or why we still need a mux?
+
+Or can you help give an example that no input needed for mux widget?
+
+Regards
+Dong Aisheng
