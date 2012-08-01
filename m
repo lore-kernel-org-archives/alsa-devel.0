@@ -1,18 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: soc-io: Only force use regmap if the
-	codec have it implemented
-Date: Wed,  1 Aug 2012 15:01:45 +0300
-Message-ID: <1343822505-6331-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC PATCH 1/1] ASoC: soc-dapm: warn if no
+ avaiable path found for widget kcontrol
+Date: Wed, 1 Aug 2012 13:15:16 +0100
+Message-ID: <20120801121516.GO11892@opensource.wolfsonmicro.com>
+References: <1343387941-25266-1-git-send-email-b29396@freescale.com>
+ <20120729202219.GA4384@opensource.wolfsonmicro.com>
+ <20120801074952.GC30492@shlinux2.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
- [74.125.149.155])
- by alsa0.perex.cz (Postfix) with ESMTP id 3088A265217
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 14:01:01 +0200 (CEST)
-Received: by ghbz10 with SMTP id z10so8507458ghb.21
- for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2012 05:01:02 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D037265243
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 14:15:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20120801074952.GC30492@shlinux2.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some codecs (like twl4030, twl6040) can not have regmap implementation
-since they are accessing to the chip via MFD core drivers.
+On Wed, Aug 01, 2012 at 03:49:53PM +0800, Dong Aisheng wrote:
+> On Mon, Jul 30, 2012 at 04:22:19AM +0800, Mark Brown wrote:
 
-Force the use of regmap only in cases when the regmap is actually
-available for the codec.
+> > This isn't a good idea, it's fairly common for widgets to have a "None"
+> > option which isn't expected to have an input.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
+> What i changed is mux widgets, i'm wondering is it possible or correct
+> the mux widget has no input path?
+> If i understand correct, we may need set correct input path
+> for mux widget, or why we still need a mux?
 
-Hi Mark,
+> Or can you help give an example that no input needed for mux widget?
 
-the following commit:
-38cbf95 ASoC: core: Try to use regmap if the driver doesn't set up any I/O
-
-broke audio for boards using twl4030 or twl6040 as codec. These devices can not
-have regmap implementation in the codec driver since they rely on their MFD core
-to access to the chip.
-
-As it is now big number of OMAP based devices have broken audio. Would it be
-possible to include this fix for 3.6-rc1 already?
-
-Regards,
-Peter
-
- sound/soc/soc-io.c |   12 ++++++++----
- 1 files changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index 29183ef..26948be 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -117,9 +117,6 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 	int ret;
- 
- 	memset(&config, 0, sizeof(config));
--	codec->write = hw_write;
--	codec->read = hw_read;
--	codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
- 
- 	config.reg_bits = addr_bits;
- 	config.val_bits = data_bits;
-@@ -141,11 +138,11 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_REGMAP:
- 		/* Device has made its own regmap arrangements */
--		codec->using_regmap = true;
- 		if (!codec->control_data)
- 			codec->control_data = dev_get_regmap(codec->dev, NULL);
- 
- 		if (codec->control_data) {
-+			codec->using_regmap = true;
- 			ret = regmap_get_val_bytes(codec->control_data);
- 			/* Errors are legitimate for non-integer byte
- 			 * multiples */
-@@ -161,6 +158,13 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 	if (IS_ERR(codec->control_data))
- 		return PTR_ERR(codec->control_data);
- 
-+	/* Only override the read/write callbacks if regmap is available */
-+	if (codec->control_data) {
-+		codec->write = hw_write;
-+		codec->read = hw_read;
-+		codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_soc_codec_set_cache_io);
--- 
-1.7.8.6
+The above is the most common example - one of the inputs to a mux being
+a "no input" option which shouldn't be connected to anything.  A mux
+with no inputs at all would be silly, but having one (or sometimes a
+couple for various reasons) that isn't connected isn't unusual.
