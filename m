@@ -1,15 +1,17 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Move snd_legacy_find_free_ioport to initval.h
-Date: Wed, 1 Aug 2012 16:05:39 +0200
-Message-ID: <201208011605.39519.linux@rainbow-software.org>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: arm system wide sram support
+Date: Wed, 1 Aug 2012 14:06:26 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA4FFD4@DBDE01.ent.ti.com>
+References: <1BAFE6F6C881BF42822005164F1491C33EA3F274@DBDE01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id 9988B265F53
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 16:05:48 +0200 (CEST)
-Content-Disposition: inline
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 094B7265F53
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 16:06:32 +0200 (CEST)
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EA3F274@DBDE01.ent.ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,106 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
+Cc: "Hilman, Kevin" <khilman@ti.com>, "tony@atomide.com" <tony@atomide.com>, "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Move snd_legacy_find_free_ioport() function back to initval.h as it is used
-by two drivers.
+Ping... any updates please
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-
-diff --git a/include/sound/initval.h b/include/sound/initval.h
-index f99a0d2..ac62c67 100644
---- a/include/sound/initval.h
-+++ b/include/sound/initval.h
-@@ -50,6 +50,20 @@
- #define SNDRV_DEFAULT_DMA_SIZE	{ [0 ... (SNDRV_CARDS-1)] = SNDRV_AUTO_DMA_SIZE }
- #define SNDRV_DEFAULT_PTR	SNDRV_DEFAULT_STR
- 
-+#ifdef SNDRV_LEGACY_FIND_FREE_IOPORT
-+static long snd_legacy_find_free_ioport(long *port_table, long size)
-+{
-+	while (*port_table != -1) {
-+		if (request_region(*port_table, size, "ALSA test")) {
-+			release_region(*port_table, size);
-+			return *port_table;
-+		}
-+		port_table++;
-+	}
-+	return -1;
-+}
-+#endif
-+
- #ifdef SNDRV_LEGACY_FIND_FREE_IRQ
- #include <linux/interrupt.h>
- 
-diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
-index c24594c..3d1afb6 100644
---- a/sound/isa/opti9xx/miro.c
-+++ b/sound/isa/opti9xx/miro.c
-@@ -37,6 +37,7 @@
- #include <sound/opl4.h>
- #include <sound/control.h>
- #include <sound/info.h>
-+#define SNDRV_LEGACY_FIND_FREE_IOPORT
- #define SNDRV_LEGACY_FIND_FREE_IRQ
- #define SNDRV_LEGACY_FIND_FREE_DMA
- #include <sound/initval.h>
-@@ -770,20 +771,6 @@ static int __devinit snd_miro_mixer(struct snd_card *card,
- 	return 0;
- }
- 
--static long snd_legacy_find_free_ioport(long *port_table, long size)
--{
--	while (*port_table != -1) {
--		struct resource *res;
--		if ((res = request_region(*port_table, size, 
--					  "ALSA test")) != NULL) {
--			release_and_free_resource(res);
--			return *port_table;
--		}
--		port_table++;
--	}
--	return -1;
--}
--
- static int __devinit snd_miro_init(struct snd_miro *chip,
- 				   unsigned short hardware)
- {
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index f8fbe22..2899c9f 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -39,6 +39,7 @@
- #ifndef OPTi93X
- #include <sound/opl4.h>
- #endif
-+#define SNDRV_LEGACY_FIND_FREE_IOPORT
- #define SNDRV_LEGACY_FIND_FREE_IRQ
- #define SNDRV_LEGACY_FIND_FREE_DMA
- #include <sound/initval.h>
-@@ -185,19 +186,6 @@ static char * snd_opti9xx_names[] = {
- 	"82C930",	"82C931",	"82C933"
- };
- 
--
--static long __devinit snd_legacy_find_free_ioport(long *port_table, long size)
--{
--	while (*port_table != -1) {
--		if (request_region(*port_table, size, "ALSA test")) {
--			release_region(*port_table, size);
--			return *port_table;
--		}
--		port_table++;
--	}
--	return -1;
--}
--
- static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
- 				      unsigned short hardware)
- {
+On Fri, Jul 13, 2012 at 15:25:11, Hebbar, Gururaja wrote:
+> Hi,
+> 
+> I have started working on Audio support for TI AM335x SOC. 
+> It uses the same McASP IP as in Davinci platform.
+> 
+> The mcasp driver (davinci-pcm) uses SRAM api's. 
+> Currently OMAP & Davinci have their own allocation systems, and both with
+> their own ways of copying functions into the SRAM.
+> 
+> A Patch was floating in the ML which supported merging this functionality
+> as a unified consolidated sram support. 
+> 
+> https://patchwork.kernel.org/patch/961222/
+> 
+> However I believe the patch was not accepted and I couldn't find any 
+> updates on it later.
+> 
+> Can someone give me some pointers about the status for this patch or 
+> If there has been any update on this?
+> 
+> Is anyone working on this consolidation?
+> 
+> Thanks & Regards
+> Gururaja
+> 
+> 
+> _______________________________________________
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
+> 
 
 
--- 
-Ondrej Zary
+Regards, 
+Gururaja
