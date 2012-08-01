@@ -1,74 +1,52 @@
-From: Ian Minett <ian_minett@creativelabs.com>
-Subject: Re: [PATCHv2 - CA0132 HDA Codec 1/2]
- ALSA:	Update	Creative CA0132 codec to add DSP features.
-Date: Tue, 31 Jul 2012 19:38:05 -0700
-Message-ID: <OF26B70F85.68DA70BC-ON88257A4D.000B1C43-88257A4D.000E7965@cli.creative.com>
-References: <s5hipdoggbb.wl%tiwai@suse.de>
- <1343239280-3503-1-git-send-email-ian_minett@creativelabs.com>
- <s5hsjcfrlor.wl%tiwai@suse.de>
- <OF0CFC3DA9.A9100453-ON88257A48.006BF087-88257A48.006FCB42@cli.creative.com>
- <s5hlii4l96y.wl%tiwai@suse.de>
- <OF301523C9.1A0D8E05-ON88257A4B.0074BC06-88257A4B.007D5630@cli.creative.com>
- <s5hsjc8ezc3.wl%tiwai@suse.de>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: Re: [alsa-devel] [PATCH 1/1] ASoC: sgtl5000: enable VAG_POWER for
+ LINE_IN
+Date: Wed, 1 Aug 2012 10:46:33 +0800
+Message-ID: <20120801024630.GA30492@shlinux2.ap.freescale.net>
+References: <1343387922-25227-1-git-send-email-b29396@freescale.com>
+ <20120728143957.GJ2128@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-outbound2.cli.creative.com
- (smtp-outbound2.cli.creative.com [124.246.64.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DF1E265DFC
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 04:38:47 +0200 (CEST)
-In-Reply-To: <s5hsjc8ezc3.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20120728143957.GJ2128@S2101-09.ap.freescale.net>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Jul 28, 2012 at 10:39:59PM +0800, Shawn Guo wrote:
+> On Fri, Jul 27, 2012 at 07:18:42PM +0800, Dong Aisheng wrote:
+> > From: Dong Aisheng <dong.aisheng@linaro.org>
+> > 
+> > LINE_IN also needs VAG_POWER on or we may hear noise when directly
+> > route LINE_IN to Headphone Mux.
+> 
+> The following is what I see from sgtl5000 data sheet about VAG_POWER.
+> 
+>   VAG is the internal voltage reference for the ADC and DAC.
+> 
+> Are you seeing any info that requires VAG_POWER in route of LINE_IN to
+> Headphone Mux?  Or it's only a result from your testing?
+> 
+No, it's from the test result.
+Maybe i should have added a FIXME for this.
 
+> Does it also fix the noise issue you mentioned with normal recording
+> (LINE_IN to ADC) before?
+> 
+ADC also needs VAG power which already fixed by:
+commit f0cdcf3 (ASoC: sgtl5000: Enable VAG when DAC/ADC up)
+This patch is only for direct LINE_IN to Headphone Mux.
 
-
-
-
-
->>>The only question is where to implement the DSP loader stuff and how.
->>
->> Ok, we understand. Given that the codec cannot call into the controller's
->> PCM interface to load the DSP image, is there an acceptable way you could
->> recommend for us to add this functionality to the module, without breaking
->> the architecture?
->
->Well, as mentioned earlier, we need to push it up to the controller
->layer, i.e. hda_intel.c.  For example, add a new op for firmware DMA
->transfer in hda_bus_ops.
->
->Could you describe briefly the procedure for the DMA transfer of
->CA0132?  The code looks too complex to follow.
-
-Sure - the DSP code download procedure is:
-
-1.  The CA0132 driver extracts DSP data segments that need to download to
-      the DSP chip.
-2.  Each of these data segments will be downloaded to the DSP chip via
-      HDA-link, like audio data.
-3.  The HDA controller and CA0132 are programmed to transfer the DSP data
-      segments.
-4.  The HDA controller FIFO must be flushed on every data segment to ensure
-      that there is no previous residual data.
-
-These are the controller ops that the CA0132 driver used for the DMA transfer:
-#define azx_pcm_open(a)       (a->ops->open(a))
-#define azx_pcm_close(a)      (a->ops->close(a))
-#define azx_pcm_prepare(a)    (a->ops->prepare(a))
-#define azx_pcm_trigger(a, b) (a->ops->trigger(a, b))
-#define azx_pcm_hw_free(a)    (a->ops->hw_free(a))
-
-Thanks,
-Ian
+Regards
+Dong Aisheng
