@@ -1,55 +1,74 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 5/6] ARM: ux500: Enable HIGHMEM on all mop500 platforms
-Date: Tue, 31 Jul 2012 23:01:45 +0100
-Message-ID: <20120731220145.GD10335@n2100.arm.linux.org.uk>
-References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org> <5017EBDC.6010005@linaro.org> <20120731143732.GS6802@n2100.arm.linux.org.uk> <201207312050.03113.arnd@arndb.de>
+From: Ian Minett <ian_minett@creativelabs.com>
+Subject: Re: [PATCHv2 - CA0132 HDA Codec 1/2]
+ ALSA:	Update	Creative CA0132 codec to add DSP features.
+Date: Tue, 31 Jul 2012 19:38:05 -0700
+Message-ID: <OF26B70F85.68DA70BC-ON88257A4D.000B1C43-88257A4D.000E7965@cli.creative.com>
+References: <s5hipdoggbb.wl%tiwai@suse.de>
+ <1343239280-3503-1-git-send-email-ian_minett@creativelabs.com>
+ <s5hsjcfrlor.wl%tiwai@suse.de>
+ <OF0CFC3DA9.A9100453-ON88257A48.006BF087-88257A48.006FCB42@cli.creative.com>
+ <s5hlii4l96y.wl%tiwai@suse.de>
+ <OF301523C9.1A0D8E05-ON88257A4B.0074BC06-88257A4B.007D5630@cli.creative.com>
+ <s5hsjc8ezc3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201207312050.03113.arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-outbound2.cli.creative.com
+ (smtp-outbound2.cli.creative.com [124.246.64.232])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DF1E265DFC
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 04:38:47 +0200 (CEST)
+In-Reply-To: <s5hsjc8ezc3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 31, 2012 at 08:50:02PM +0000, Arnd Bergmann wrote:
-> On Tuesday 31 July 2012, Russell King - ARM Linux wrote:
-> > I still fail to see how not having highmem enabled would ever cause memory
-> > corruption errors (unless something dealing with memory in a very very
-> > wrong way - iow, not using one of the reservation or memory allocation
-> > methods provided by the kernel.)
-> 
-> The problem is that all users of ux500 systems pass a command line like
-> 
-> vmalloc=256M mem=128M@0 mali.mali_mem=32M@128M hwmem=168M@160M mem=48M@328M mem_issw=1M@383M mem=640M@384M
-> 
-> This is of course totally bogus and should not be done. If I understand
-> Lee correctly, one of the issues resulting from passing a command
-> line like this without enabling highmem is memory corruption.
 
-But the question is _why_ does that corruption happen.
 
->From the above, we will end up with the kernel getting:
 
-0x00000000 - 0x07ffffff (128M @ 0)
-0x14800000 - 0x177fffff (48M  @ 328M)
-0x18000000 - 0x3fffffff (640M @ 384M)
 
-with:
 
-0x08000000 - 0x081fffff used for mali
-0x0a000000 - 0x147fffff used for hwmem
-0x17f00000 - 0x17ffffff used for mem_issw
 
-Now, with highmem disabled, the kernel should still map exactly the
-regions: 0x00000000 - 0x07ffffff, 0x14800000 - 0x177fffff, into the
-direct mapped region, and truncate the 0x18000000 - 0x3fffffff
-region appropriately, reducing the amount of memory available such
-that it won't overlap the vmalloc area (which you've specified to be
-a minimum of 256M.)
+>>>The only question is where to implement the DSP loader stuff and how.
+>>
+>> Ok, we understand. Given that the codec cannot call into the controller's
+>> PCM interface to load the DSP image, is there an acceptable way you could
+>> recommend for us to add this functionality to the module, without breaking
+>> the architecture?
+>
+>Well, as mentioned earlier, we need to push it up to the controller
+>layer, i.e. hda_intel.c.  For example, add a new op for firmware DMA
+>transfer in hda_bus_ops.
+>
+>Could you describe briefly the procedure for the DMA transfer of
+>CA0132?  The code looks too complex to follow.
 
-This should _NOT_ cause any memory corruption.
+Sure - the DSP code download procedure is:
 
-So, come on guys.  Debugging is *mandatory* for this kind of problem.
-Papering over it is obscene.
+1.  The CA0132 driver extracts DSP data segments that need to download to
+      the DSP chip.
+2.  Each of these data segments will be downloaded to the DSP chip via
+      HDA-link, like audio data.
+3.  The HDA controller and CA0132 are programmed to transfer the DSP data
+      segments.
+4.  The HDA controller FIFO must be flushed on every data segment to ensure
+      that there is no previous residual data.
+
+These are the controller ops that the CA0132 driver used for the DMA transfer:
+#define azx_pcm_open(a)       (a->ops->open(a))
+#define azx_pcm_close(a)      (a->ops->close(a))
+#define azx_pcm_prepare(a)    (a->ops->prepare(a))
+#define azx_pcm_trigger(a, b) (a->ops->trigger(a, b))
+#define azx_pcm_hw_free(a)    (a->ops->hw_free(a))
+
+Thanks,
+Ian
