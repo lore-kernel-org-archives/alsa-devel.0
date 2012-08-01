@@ -1,52 +1,86 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: Re: [PATCH 1/2] ASOC: SAMSUNG: Add DT support for i2s
-Date: Wed, 01 Aug 2012 17:29:37 +0900
-Message-ID: <08da01cd6fbf$cd9b5c00$68d21400$@com>
-References: <1343218170-30483-1-git-send-email-padma.v@samsung.com>
- <1343218170-30483-2-git-send-email-padma.v@samsung.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 5/6] ARM: ux500: Enable HIGHMEM on all mop500 platforms
+Date: Wed, 1 Aug 2012 09:41:27 +0100
+Message-ID: <20120801084127.GT6802@n2100.arm.linux.org.uk>
+References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org> <5017EBDC.6010005@linaro.org> <20120731143732.GS6802@n2100.arm.linux.org.uk> <201207312050.03113.arnd@arndb.de> <20120731220145.GD10335@n2100.arm.linux.org.uk> <5018E11E.7080907@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 337B4264FC1
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 10:29:45 +0200 (CEST)
-Received: from epcpsbgm1.samsung.com (mailout1.samsung.com [203.254.224.24])
- by mailout1.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0M82001XOI9GJ0R0@mailout1.samsung.com> for
- alsa-devel@alsa-project.org; Wed, 01 Aug 2012 17:29:44 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.118.225])
- by mmp2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTPA id <0M8200LR6I9KUA80@mmp2.samsung.com> for
- alsa-devel@alsa-project.org; Wed, 01 Aug 2012 17:29:44 +0900 (KST)
-In-reply-to: <1343218170-30483-2-git-send-email-padma.v@samsung.com>
-Content-language: ko
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Padmavathi Venna' <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
-Cc: kgene.kim@samsung.com, rcsekar@samsung.com, sangsu4u.park@samsung.com, joshi@samsung.com, thutt@chromium.org, ben-linux@fluff.org, olofj@google.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5018E11E.7080907@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-On Wednesday, July 25, 2012 9:09 PM, Padmavathi Venna wrote:
+On Wed, Aug 01, 2012 at 08:56:14AM +0100, Lee Jones wrote:
+> On 31/07/12 23:01, Russell King - ARM Linux wrote:
+>> On Tue, Jul 31, 2012 at 08:50:02PM +0000, Arnd Bergmann wrote:
+>>> On Tuesday 31 July 2012, Russell King - ARM Linux wrote:
+>>>> I still fail to see how not having highmem enabled would ever cause memory
+>>>> corruption errors (unless something dealing with memory in a very very
+>>>> wrong way - iow, not using one of the reservation or memory allocation
+>>>> methods provided by the kernel.)
+>>>
+>>> The problem is that all users of ux500 systems pass a command line like
+>>>
+>>> vmalloc=256M mem=128M@0 mali.mali_mem=32M@128M hwmem=168M@160M mem=48M@328M mem_issw=1M@383M mem=640M@384M
+>>>
+>>> This is of course totally bogus and should not be done. If I understand
+>>> Lee correctly, one of the issues resulting from passing a command
+>>> line like this without enabling highmem is memory corruption.
+>>
+>> But the question is _why_ does that corruption happen.
+>>
+>>  From the above, we will end up with the kernel getting:
+>>
+>> 0x00000000 - 0x07ffffff (128M @ 0)
+>> 0x14800000 - 0x177fffff (48M  @ 328M)
+>> 0x18000000 - 0x3fffffff (640M @ 384M)
+>>
+>> with:
+>>
+>> 0x08000000 - 0x081fffff used for mali
+>> 0x0a000000 - 0x147fffff used for hwmem
+>> 0x17f00000 - 0x17ffffff used for mem_issw
+>>
+>> Now, with highmem disabled, the kernel should still map exactly the
+>> regions: 0x00000000 - 0x07ffffff, 0x14800000 - 0x177fffff, into the
+>> direct mapped region, and truncate the 0x18000000 - 0x3fffffff
+>> region appropriately, reducing the amount of memory available such
+>> that it won't overlap the vmalloc area (which you've specified to be
+>> a minimum of 256M.)
+>>
+>> This should _NOT_ cause any memory corruption.
+>>
+>> So, come on guys.  Debugging is *mandatory* for this kind of problem.
+>> Papering over it is obscene.
+>
+> Actually I didn't go any further with it, as I changed to another  
+> identical piece of hardware and couldn't reproduce the issue.
+>
+> FYI, here's the boot log from the broken board:
+>
+> http://paste.ubuntu.com/1102017/
 
-> Add support for device based discovery.
-> 
-Currently, I'm reviewing your patch set.
-Your patch can support device tree for Samsung's i2s.
-But I wonder that Your patch can support non-dt too,
-So, Please test your patch on non-dt environment.
-It looks unclear handling of clock source.
-After code review, I will give you more detail comments,
+Well, the good thing is this:
 
-Thanks,
-Sangbeom.
+   8 Truncating RAM at 18000000-3fffffff to -2c3fffff (vmalloc region overlap).
+
+which means the RAM was properly truncated before it is passed to
+memblock, etc.
+
+That oops dump looks very much like an ASoC problem, where
+dapm_widget_power_check() recurses into dapm_supply_check_power()
+which then recurses back into dapm_widget_power_check(), and it
+eventually overflows the kernel stack, corrupting the thread_info
+and the pages below.
+
+Given the address of the stack pointer (ebc480a8) I don't think
+we can be too sure where it was supposed to be, and where the top
+of stack should have been, so we don't know how many pages have
+been stomped on and corrupted.
+
+Stopping that recursion is the first thing that needs to be done
+so that the cause of it can then be properly debugged without the
+kernel itself corrupting memory below the kernel stack.
