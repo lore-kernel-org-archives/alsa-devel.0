@@ -1,20 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Revert "ASoC: core: Try to use regmap if
- the driver doesn't set up any I/O"
-Date: Wed, 1 Aug 2012 18:59:55 +0100
-Message-ID: <20120801175953.GA4483@opensource.wolfsonmicro.com>
-References: <1343829022-23259-1-git-send-email-peter.ujfalusi@ti.com>
- <20120801152248.GZ11892@opensource.wolfsonmicro.com>
- <s5hzk6ed1zr.wl%tiwai@suse.de>
+Subject: [PATCH] ASoC: sta529: Staticise non-exported codec
+	driver struct
+Date: Wed,  1 Aug 2012 19:29:11 +0100
+Message-ID: <1343845751-19675-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C5785265D65
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 20:06:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hzk6ed1zr.wl%tiwai@suse.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0CAF8265F03
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 20:29:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>, Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 01, 2012 at 06:13:28PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/sta529.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > No, this isn't constructive - it just shoves things onto the drivers
-> > that are relying on the implicit functionality.  Why not just change the
-> > criteria we use to check, for example looking for the ops instead?
-
-> Well, the NULL check of dev_get_regmap() looks necessary, but I find
-> it was done in a wrong place in Peter's first patch, too.
-> It could be rather in the caller side, e.g.
-
-Yes, this is exactly the sort of change I'm talking about above.  We
-need to take a better decision about deciding to use regmap for the
-device I/O, this seems like a useful input.  Checking for ops should be
-even better, though - one could potentially use regmap but want to wrap
-it for some reason (can't think of one right now though).
-
-What I *don't* think is a good idea is trying to bodge this in the I/O
-code.
+diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+index 0c225cd..9e31448 100644
+--- a/sound/soc/codecs/sta529.c
++++ b/sound/soc/codecs/sta529.c
+@@ -358,7 +358,7 @@ static int sta529_resume(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-struct snd_soc_codec_driver sta529_codec_driver = {
++static const struct snd_soc_codec_driver sta529_codec_driver = {
+ 	.probe = sta529_probe,
+ 	.remove = sta529_remove,
+ 	.set_bias_level = sta529_set_bias_level,
+-- 
+1.7.10.4
