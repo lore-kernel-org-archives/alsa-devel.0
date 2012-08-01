@@ -1,56 +1,38 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: soc-io: Only force use regmap if the
- codec have it implemented
-Date: Wed, 01 Aug 2012 16:09:30 +0300
-Message-ID: <50192A8A.3080204@ti.com>
-References: <1343822505-6331-1-git-send-email-peter.ujfalusi@ti.com>
- <20120801121630.GP11892@opensource.wolfsonmicro.com>
- <50191F0D.6090807@ti.com>
- <20120801124021.GQ11892@opensource.wolfsonmicro.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASOC: SAMSUNG: Add DT support for i2s
+Date: Wed, 1 Aug 2012 18:42:03 +0530
+Message-ID: <CAAgF-Bf7kJeA6gdy7Ri_bA8AHxSWwp5i8Tv0pWSXumebM5NX7g@mail.gmail.com>
+References: <1343218170-30483-1-git-send-email-padma.v@samsung.com>
+	<1343218170-30483-2-git-send-email-padma.v@samsung.com>
+	<08da01cd6fbf$cd9b5c00$68d21400$@com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog138.obsmtp.com (na3sys009aog138.obsmtp.com
- [74.125.149.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 4914F264F04
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 15:08:42 +0200 (CEST)
-Received: by obbtb18 with SMTP id tb18so16641807obb.21
- for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2012 06:08:42 -0700 (PDT)
-In-Reply-To: <20120801124021.GQ11892@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <08da01cd6fbf$cd9b5c00$68d21400$@com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, kgene.kim@samsung.com, rcsekar@samsung.com, sangsu4u.park@samsung.com, joshi@samsung.com, thutt@chromium.org, ben-linux@fluff.org, olofj@google.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/01/2012 03:40 PM, Mark Brown wrote:
-> You're changing the function setting up register I/O to ignore what's
-> being set.  This is silly - the soc-io code is doing exactly the right
-> thing here.
-
-Well, it overrides the codec->read/write/bulk_write_raw callbacks, sets the
-codec->using_regmap to true regardless if the codec have regmap or not.
-It should only do all of these if the regmap is there IMHO.
-
-The soc-core calls snd_soc_codec_set_cache_io() if codec->control_data is N=
-ULL
-at the moment.
-
-Reverting commit
-38cbf95 ASoC: core: Try to use regmap if the driver doesn't set up any I/O
-would fix the issue as well without changing the soc-io file.
-
-We can as well return if the codec does not have the regmap and
-snd_soc_codec_set_cache_io() fails in the SND_SOC_REGMAP case.
-
--- =
-
-P=E9ter
+Hi,
+On Wed, Aug 1, 2012 at 1:59 PM, Sangbeom Kim <sbkim73@samsung.com> wrote:
+> Hi,
+> On Wednesday, July 25, 2012 9:09 PM, Padmavathi Venna wrote:
+>
+>> Add support for device based discovery.
+>>
+> Currently, I'm reviewing your patch set.
+> Your patch can support device tree for Samsung's i2s.
+> But I wonder that Your patch can support non-dt too,
+> So, Please test your patch on non-dt environment.
+> It looks unclear handling of clock source.
+> After code review, I will give you more detail comments,
+Okey. I will test these patches in non-dt environment.
+>
+> Thanks,
+> Sangbeom.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
