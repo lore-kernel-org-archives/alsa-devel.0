@@ -1,27 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/6] ASoC: dapm: If one widget fails,
- do not force all subsequent widgets to fail too
-Date: Wed, 1 Aug 2012 20:41:34 +0100
-Message-ID: <20120801194134.GA4103@sirena.org.uk>
-References: <5017EAC3.3080504@linaro.org>
- <20120731142820.GW4468@opensource.wolfsonmicro.com>
- <5017EDCA.4020601@linaro.org>
- <20120731145443.GY4468@opensource.wolfsonmicro.com>
- <5017F68B.3060400@linaro.org>
- <20120731151819.GC4468@opensource.wolfsonmicro.com>
- <5018D880.5090306@linaro.org>
- <20120801132022.GS11892@opensource.wolfsonmicro.com>
- <50193428.5000708@linaro.org>
- <20120801160824.GB11892@opensource.wolfsonmicro.com>
+From: Mario <anyc@hadiko.de>
+Subject: Re: Enable docking station speaker jack for new	Lenovo
+ Thinkpads
+Date: Wed, 01 Aug 2012 22:51:04 +0200
+Message-ID: <501996B8.9040609@hadiko.de>
+References: <50170719.8090207@hadiko.de> <s5hsjc7b0ze.wl%tiwai@suse.de>
+ <335971331.CJ8quuUl7T@i82pc11> <s5h1ujreywg.wl%tiwai@suse.de>
+ <s5hvch2d1ed.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D568B265F4B
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 21:41:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20120801160824.GB11892@opensource.wolfsonmicro.com>
+Received: from mailout.scc.kit.edu (mailout.scc.kit.edu [129.13.185.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F7D2265DFF
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2012 22:51:08 +0200 (CEST)
+In-Reply-To: <s5hvch2d1ed.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,35 +23,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 01, 2012 at 05:08:24PM +0100, Mark Brown wrote:
-> On Wed, Aug 01, 2012 at 02:50:32PM +0100, Lee Jones wrote:
 
-> > >It's very disappointing to see such an error exist, and even more
-> > >disappointing that there's no interest in fixing the driver.
+It works with both patches and kernel 3.4.5. Thank you very much!
 
-> > This is incorrect. I'm sure the driver will be fixed post-haste when
-> > Ola returns back from vacation. If I can find some time I might
-> > dabble in the mean-time also.
+The only issue left, is that there is "plop" sound during booting. But I
+guess that is problem with mixer levels/pulseaudio?!
 
-> It may not be what you're intending but it's unfortuantely what's I'm
-> seeing.
+Best regards,
+Mario
 
-Just to expand on this a bit since I've found myself pushing back in
-this sort of way far too often with these recent serieses and it's
-making everyone grumpy:
-
-What I'm seeing here is a lot of patches getting sent with problems that
-I'd really not expect from someone sending such a high volume of
-patches.  Things like the lack of documentation for the DT bindings for
-example, it's something that's mandatory and which people doing lots of
-device tree work really ought to be aware of.  There's also noticable
-pushback with fixing some of these issues, and like I say this happens
-often enough to be really noticeable.
-
-This isn't awesome from a review point of view, it's not nice to find
-issues in things and when it happens a lot for the wrong sort of thing
-it ends up seeming like the time spent doing the reviews isn't valued.
+On 01.08.2012 18:26, Takashi Iwai wrote:
+> At Wed, 01 Aug 2012 11:37:19 +0200,
+> Takashi Iwai wrote:
+>>
+>> At Wed, 01 Aug 2012 10:47:05 +0200,
+>> Mario wrote:
+>>>
+>>> On Wednesday 01 August 2012 08:05:57 Takashi Iwai wrote:
+>>>> Which kernel are you using?
+>>>
+>>> I'm using 3.4.5 with gentoo patches.
+>>>
+>>>>>      Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+>>>>
+>>>>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>>>>
+>>>> This is the reason.  The driver checks the pin config set by BIOS,
+>>>> and it leaves this pin unused.  Could you give alsa-info.sh output for
+>>>> more checks?
+>>>
+>>> I included the link to alsa-info in my original mail. ;)
+>>>
+>>> This is the link:
+>>> http://www.alsa-project.org/db/?f=e297bdda4fd099425516c7c831e28a2c7d8ae6b6
+>>> I append the info below this mail.
+>>
+>> Thanks.
+>>
+>> Basically you can build your kernel based on 3.5, cherry-pick the
+>> commit 108cc108a3bb42fe4705df1317ff98e1e29428a6, then pass
+>> model=lenovo-dock option, or apply the patch below in addition.
+>
+> It seems that the commit 108cc108 can't be cherry-picked
+> straightforwardly.
+>
+> Below is the patch rebased for 3.5.x.  It should be applicable to
+> 3.4.x kernel, too.  Give it a try.  You can apply the previous
+> one-liner patch after this one for enabling T530 fixup.
+>
+>
+> Takashi
+>
+> ---
+> From: David Henningsson<david.henningsson@canonical.com>
+> Subject: [PATCH] ALSA: hda - add dock support for Thinkpad X230 Tablet
+>
+> commit 108cc108a3bb42fe4705df1317ff98e1e29428a6 upstream.
+>
+> Also add a model/fixup string "lenovo-dock", so that other Thinkpad
+> users will be able to test this fixup easily, to see if it enables
+> dock I/O for them as well.
+>
+> Cc: stable@kernel.org
+> BugLink: https://bugs.launchpad.net/bugs/1026953
+> Tested-by: John McCarron<john.mccarron@canonical.com>
+> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+> Signed-off-by: Takashi Iwai<tiwai@suse.de>
+> ---
+>   Documentation/sound/alsa/HD-Audio-Models.txt |    3 ++-
+>   sound/pci/hda/patch_realtek.c                |   27 ++++++++++++++++++++++++++
+>   2 files changed, 29 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+> index 03f7897..286ec04 100644
+> --- a/Documentation/sound/alsa/HD-Audio-Models.txt
+> +++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+> @@ -21,10 +21,11 @@ ALC267/268
+>   ==========
+>     N/A
+>
+> -ALC269
+> +ALC269/270/275/276/280/282
+>   ======
+>     laptop-amic	Laptops with analog-mic input
+>     laptop-dmic	Laptops with digital-mic input
+> +  lenovo-dock   Enables docking station I/O for some Lenovos
+>
+>   ALC662/663/272
+>   ==============
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index aa4c25e..222c1f5 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -5704,6 +5704,15 @@ static int alc269_resume(struct hda_codec *codec)
+>   }
+>   #endif /* CONFIG_PM */
+>
+> +static void alc269_fixup_pincfg_no_hp_to_lineout(struct hda_codec *codec,
+> +						 const struct alc_fixup *fix, int action)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +
+> +	if (action == ALC_FIXUP_ACT_PRE_PROBE)
+> +		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
+> +}
+> +
+>   static void alc269_fixup_hweq(struct hda_codec *codec,
+>   			       const struct alc_fixup *fix, int action)
+>   {
+> @@ -5828,6 +5837,8 @@ enum {
+>   	ALC269VB_FIXUP_AMIC,
+>   	ALC269VB_FIXUP_DMIC,
+>   	ALC269_FIXUP_MIC2_MUTE_LED,
+> +	ALC269_FIXUP_LENOVO_DOCK,
+> +	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
+>   };
+>
+>   static const struct alc_fixup alc269_fixups[] = {
+> @@ -5952,6 +5963,20 @@ static const struct alc_fixup alc269_fixups[] = {
+>   		.type = ALC_FIXUP_FUNC,
+>   		.v.func = alc269_fixup_mic2_mute,
+>   	},
+> +	[ALC269_FIXUP_LENOVO_DOCK] = {
+> +		.type = ALC_FIXUP_PINS,
+> +		.v.pins = (const struct alc_pincfg[]) {
+> +			{ 0x19, 0x23a11040 }, /* dock mic */
+> +			{ 0x1b, 0x2121103f }, /* dock headphone */
+> +			{ }
+> +		},
+> +		.chained = true,
+> +		.chain_id = ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT
+> +	},
+> +	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
+> +		.type = ALC_FIXUP_FUNC,
+> +		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+> +	},
+>   };
+>
+>   static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> @@ -5975,6 +6000,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>   	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+>   	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
+>   	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
+> +	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
+>   	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_QUANTA_MUTE),
+>   	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Lenovo Ideapd", ALC269_FIXUP_PCM_44K),
+>   	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+> @@ -6033,6 +6059,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>   static const struct alc_model_fixup alc269_fixup_models[] = {
+>   	{.id = ALC269_FIXUP_AMIC, .name = "laptop-amic"},
+>   	{.id = ALC269_FIXUP_DMIC, .name = "laptop-dmic"},
+> +	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
+>   	{}
+>   };
+>
