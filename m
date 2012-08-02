@@ -1,40 +1,97 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: [alsa-devel] Alsa: USB Class 2 Audio soundcard device disappears
- suddenly
-Date: Thu, 2 Aug 2012 11:42:31 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1208021136180.1170-100000@iolanthe.rowland.org>
-References: <1343919982.13369.YahooMailNeo@web121604.mail.ne1.yahoo.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.6
+Date: Thu, 2 Aug 2012 17:02:12 +0100
+Message-ID: <20120802160212.GB4537@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1343919982.13369.YahooMailNeo-JJyWuWT5O7AbWpotXP+qY5OW+3bF1jUfVpNB7YpNyf8@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Joao Bonina <bonina_2001-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-usb <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 51FB726523E
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 18:11:24 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2 Aug 2012, Joao Bonina wrote:
+The following changes since commit 15d47763b354256053c390a9b7bc9f2b4f197711:
 
-> Did the copying test and all went well there.
-> 
-> Also did a usbmon session with the DAC disconnecting/reconnecting 
-> automatically. There was no EMI message in dmesg there, and I'm 
-> connecting the DAC through a USB hub.
-> 
-> Analyzed the usbmon log with Virtual USB analyzer, but couldn't find
-> reasons there for the disconnection. I'm not very experienced in this
-> subject, so excuse me if I'm missing something obvious here.
-> 
-> I'm attaching the usbmon log if someone wants to take a look at it.
-> Sorry for the long attachment file.
+  Merge branch 'for-3.5' into for-3.6 (2012-07-23 10:45:07 +0100)
 
-I agree, there's no obvious reason for the disconnection in the log.  
-Possible explanations include a bad cable connection or a bug in the 
-sound card's firmware.
+are available in the git repository at:
 
-Alan Stern
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.6
+
+for you to fetch changes up to 98d3088e534a2a61f6690b5426909b0c3b57a785:
+
+  ASoC: core: Fix check before defaulting to regmap (2012-08-02 11:43:45 +0100)
+
+(this is a new subkey on my key which I just realised I didn't upload to
+the server - will do that on Monday.)
+
+----------------------------------------------------------------
+ASoC: Additional updates for 3.6
+
+A few updates for issues discovered during the merge window, the main
+one being the fix for the issues with defaulting to use of regmap
+without properly checking if there was I/O in place already.
+
+----------------------------------------------------------------
+Dong Aisheng (4):
+      ASoC: mxs-saif: fix clock prepare and enable unbalance issue
+      ASoC: mxs-saif: set a base clock rate for EXTMASTER mode work
+      ASoC: sgtl5000: remove unneeded snd_soc_dapm_new_widgets in probe
+      ASoC: sgtl5000: enable VAG_POWER for LINE_IN
+
+Fabio Estevam (1):
+      ASoC: mc13783: Provide codec->control_data
+
+Guillaume Gardet (1):
+      ASoC: omap: Add missing modules aliases to get sound working on omap devices
+
+Lee Jones (2):
+      ASoC: ux500: Include the correct header files
+      ASoC: ab8500: Inform SoC Core that we have our own I/O arrangements
+
+Manuel Lauss (1):
+      ASoC: AC97 doesn't use regmap by default
+
+Mark Brown (4):
+      ASoC: wm8994: Ensure there are enough BCLKs for four channels
+      ASoC: wm8994: Hold runtime PM reference while handling mic and jack IRQs
+      ASoC: wm8962: Allow VMID time to fully ramp
+      ASoC: core: Fix check before defaulting to regmap
+
+Roland Stigge (2):
+      sound: tegra_wm8903: Adjust to of_get_named_gpio() change
+      sound: tegra_alc5632: Adjust to of_get_named_gpio() change
+
+ sound/soc/codecs/ab8500-codec.c |    4 ++++
+ sound/soc/codecs/ad1980.c       |    1 +
+ sound/soc/codecs/mc13783.c      |    2 ++
+ sound/soc/codecs/sgtl5000.c     |    3 +--
+ sound/soc/codecs/stac9766.c     |    1 +
+ sound/soc/codecs/wm8962.c       |    3 +++
+ sound/soc/codecs/wm8994.c       |   15 ++++++++++++++-
+ sound/soc/codecs/wm9712.c       |    1 +
+ sound/soc/codecs/wm9713.c       |    1 +
+ sound/soc/mxs/mxs-saif.c        |   24 ++++++++++++++++++++++++
+ sound/soc/omap/omap-mcbsp.c     |    1 +
+ sound/soc/omap/omap-pcm.c       |    1 +
+ sound/soc/soc-core.c            |    2 +-
+ sound/soc/tegra/tegra_alc5632.c |    2 +-
+ sound/soc/tegra/tegra_wm8903.c  |   10 +++++-----
+ sound/soc/ux500/ux500_msp_dai.c |    2 +-
+ sound/soc/ux500/ux500_msp_i2s.c |    2 +-
+ sound/soc/ux500/ux500_msp_i2s.h |    2 +-
+ 18 files changed, 64 insertions(+), 13 deletions(-)
