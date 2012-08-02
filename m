@@ -1,22 +1,21 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 17/19] Documentation: Define the MOP500
- Audio Machine Driver Device Tree bindings
-Date: Thu, 2 Aug 2012 13:12:56 +0100
-Message-ID: <20120802121255.GA22201@gmail.com>
-References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
- <1343741953-17828-18-git-send-email-lee.jones@linaro.org>
- <20120731135337.GM4468@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/6] ASoC: dapm: If one widget fails,
+ do not force all subsequent widgets to fail too
+Date: Thu, 2 Aug 2012 13:21:03 +0100
+Message-ID: <20120802122101.GA22228@gmail.com>
+References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
+ <1343741493-17671-3-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 57037265029
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 14:12:58 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so1881802eek.38
- for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2012 05:13:00 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id D9DBD265202
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 14:21:04 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so1884424eek.38
+ for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2012 05:21:07 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20120731135337.GM4468@opensource.wolfsonmicro.com>
+In-Reply-To: <1343741493-17671-3-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,68 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Lee Jones <lee.jones@linaro.org>
-Date: Tue, 31 Jul 2012 11:56:51 +0100
-Subject: [PATCH 1/1] Documentation: Define the MOP500 Audio Machine Driver
- Device Tree bindings
-
-Here we add the required documentation for the new Device Tree
-bindings pertaining to the MOP500 Audio Machine driver.
-
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- .../devicetree/bindings/sound/ux500-mop500.txt     |   39 ++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ux500-mop500.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/ux500-mop500.txt b/Documentation/devicetree/bindings/sound/ux500-mop500.txt
-new file mode 100644
-index 0000000..48e071c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ux500-mop500.txt
-@@ -0,0 +1,39 @@
-+* MOP500 Audio Machine Driver
-+
-+This node is responsible for linking together all ux500 Audio Driver components.
-+
-+Required properties:
-+ - compatible              : "stericsson,snd-soc-mop500"
-+
-+Non-standard properties:
-+ - stericsson,cpu-dai      : Phandle to the CPU-side DAI
-+ - stericsson,audio-codec  : Phandle to the Audio CODEC
-+ - stericsson,card-name    : Over-ride default card name
-+
-+Example:
-+
-+	sound {
-+		compatible = "stericsson,snd-soc-mop500";
-+
-+		stericsson,cpu-dai = <&msp1 &msp3>;
-+		stericsson,audio-codec = <&codec>;
-+	};
-+
-+	msp1: msp@80124000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80124000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	msp3: msp@80125000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80125000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	codec: ab8500-codec {
-+		compatible = "stericsson,ab8500-codec";
-+		stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+	};
--- 
-1.7.9.5
+UGF0Y2ggd2l0aGRyYXduLgoKT24gVHVlLCBKdWwgMzEsIDIwMTIgYXQgMDI6MzE6MjNQTSArMDEw
+MCwgTGVlIEpvbmVzIHdyb3RlOgo+IElmIGEgbGlzdCBvZiB3aWRnZXRzIGlzIHByb3ZpZGVkIGFu
+ZCBvbmUgb2YgdGhlbSBmYWlscyB0byBiZSBhZGRlZCBhcwo+IGEgY29udHJvbCwgdGhlIHByZXNl
+bnQgc2VtYW50aWNzIGZhaWwgYWxsIHN1YnNlcXVlbnQgd2lkZ2V0cy4gQSBiZXR0ZXIKPiBzb2x1
+dGlvbiB3b3VsZCBiZSB0byBvbmx5IGZhaWwgdGhhdCB3aWRnZXQsIGJ1dCBwdXJzdWUgaW4gYXR0
+ZW1wdGluZwo+IHRvIGFkZCB0aGUgcmVzdCBvZiB0aGUgbGlzdC4KPiAKPiBTaWduZWQtb2ZmLWJ5
+OiBMZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgo+IC0tLQo+ICBzb3VuZC9zb2Mvc29j
+LWRhcG0uYyB8ICAgIDIgLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgZGVsZXRpb25zKC0pCj4gCj4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtZGFwbS5jIGIvc291bmQvc29jL3NvYy1kYXBtLmMK
+PiBpbmRleCBlZGVkNjU3Li43ZDljMTU0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zb2MtZGFw
+bS5jCj4gKysrIGIvc291bmQvc29jL3NvYy1kYXBtLmMKPiBAQCAtMzA5NSw4ICszMDk1LDYgQEAg
+aW50IHNuZF9zb2NfZGFwbV9uZXdfY29udHJvbHMoc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0
+ICpkYXBtLAo+ICAJCQlkZXZfZXJyKGRhcG0tPmRldiwKPiAgCQkJCSJBU29DOiBGYWlsZWQgdG8g
+Y3JlYXRlIERBUE0gY29udHJvbCAlc1xuIiwKPiAgCQkJCXdpZGdldC0+bmFtZSk7Cj4gLQkJCXJl
+dCA9IC1FTk9NRU07Cj4gLQkJCWJyZWFrOwo+ICAJCX0KPiAgCQl3aWRnZXQrKzsKPiAgCX0KPiAt
+LSAKPiAxLjcuOS41Cj4gCgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5n
+IFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNv
+Q3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
