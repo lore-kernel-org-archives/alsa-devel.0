@@ -1,21 +1,23 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/6] ASoC: dapm: If one widget fails,
- do not force all subsequent widgets to fail too
-Date: Thu, 2 Aug 2012 13:21:03 +0100
-Message-ID: <20120802122101.GA22228@gmail.com>
-References: <1343741493-17671-1-git-send-email-lee.jones@linaro.org>
- <1343741493-17671-3-git-send-email-lee.jones@linaro.org>
+Subject: Re: [PATCH 18/19] Documentation: Define the MSP Driver
+ Device Tree bindings
+Date: Thu, 02 Aug 2012 13:45:32 +0100
+Message-ID: <501A766C.1060502@linaro.org>
+References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
+ <1343741953-17828-19-git-send-email-lee.jones@linaro.org>
+ <20120731135539.GO4468@opensource.wolfsonmicro.com>
+ <5017F2E2.4040100@linaro.org>
+ <20120731151024.GA4468@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D9DBD265202
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 14:21:04 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so1884424eek.38
- for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2012 05:21:07 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1343741493-17671-3-git-send-email-lee.jones@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 01AC3265202
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 14:45:32 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so1891538eek.38
+ for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2012 05:45:35 -0700 (PDT)
+In-Reply-To: <20120731151024.GA4468@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-UGF0Y2ggd2l0aGRyYXduLgoKT24gVHVlLCBKdWwgMzEsIDIwMTIgYXQgMDI6MzE6MjNQTSArMDEw
-MCwgTGVlIEpvbmVzIHdyb3RlOgo+IElmIGEgbGlzdCBvZiB3aWRnZXRzIGlzIHByb3ZpZGVkIGFu
-ZCBvbmUgb2YgdGhlbSBmYWlscyB0byBiZSBhZGRlZCBhcwo+IGEgY29udHJvbCwgdGhlIHByZXNl
-bnQgc2VtYW50aWNzIGZhaWwgYWxsIHN1YnNlcXVlbnQgd2lkZ2V0cy4gQSBiZXR0ZXIKPiBzb2x1
-dGlvbiB3b3VsZCBiZSB0byBvbmx5IGZhaWwgdGhhdCB3aWRnZXQsIGJ1dCBwdXJzdWUgaW4gYXR0
-ZW1wdGluZwo+IHRvIGFkZCB0aGUgcmVzdCBvZiB0aGUgbGlzdC4KPiAKPiBTaWduZWQtb2ZmLWJ5
-OiBMZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgo+IC0tLQo+ICBzb3VuZC9zb2Mvc29j
-LWRhcG0uYyB8ICAgIDIgLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgZGVsZXRpb25zKC0pCj4gCj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtZGFwbS5jIGIvc291bmQvc29jL3NvYy1kYXBtLmMK
-PiBpbmRleCBlZGVkNjU3Li43ZDljMTU0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zb2MtZGFw
-bS5jCj4gKysrIGIvc291bmQvc29jL3NvYy1kYXBtLmMKPiBAQCAtMzA5NSw4ICszMDk1LDYgQEAg
-aW50IHNuZF9zb2NfZGFwbV9uZXdfY29udHJvbHMoc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0
-ICpkYXBtLAo+ICAJCQlkZXZfZXJyKGRhcG0tPmRldiwKPiAgCQkJCSJBU29DOiBGYWlsZWQgdG8g
-Y3JlYXRlIERBUE0gY29udHJvbCAlc1xuIiwKPiAgCQkJCXdpZGdldC0+bmFtZSk7Cj4gLQkJCXJl
-dCA9IC1FTk9NRU07Cj4gLQkJCWJyZWFrOwo+ICAJCX0KPiAgCQl3aWRnZXQrKzsKPiAgCX0KPiAt
-LSAKPiAxLjcuOS41Cj4gCgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5n
-IFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNv
-Q3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+T24gMzEvMDcvMTIgMTY6MTAsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gVHVlLCBKdWwgMzEsIDIw
+MTIgYXQgMDM6NTk6NDZQTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+PiBPbiAzMS8wNy8xMiAx
+NDo1NSwgTWFyayBCcm93biB3cm90ZToKPgo+Pj4+ICtPcHRpb25hbCBwcm9wZXJ0aWVzOgo+Pj4+
+ICsgLSBpbnRlcnJ1cHRzICAgICAgIDogVGhlIGludGVycnVwdCBvdXRwdXRzIGZyb20gdGhlIGRl
+dmljZS4KPgo+Pj4gSWYgdGhlcmUncyBtb3JlIHRoYW4gb25lIGludGVycnVwdCB0aGVuIGhvdyBh
+cmUgdGhleSBvcmRlcmVkPwo+Cj4+IEl0IGRvZXNuJ3QgbWF0dGVyLiBJZiB0aGVyZSBhcmUgYW55
+IG1vcmUgdGhhbiBvbmUgKHdoaWNoIHRoZXJlCj4+IGFyZW4ndCBpbiB0aGlzIGNhc2UpLCB3ZSB1
+c3VhbGx5IHVzZSB0aGUgaW50ZXJydXB0LW5hbWVzIHByb3BlcnR5Cj4+IHRoZW4gcmVxdWVzdCB0
+aGVtIGJ5IG5hbWUgaW4gdGhlIGRyaXZlci4KPgo+IFNvIHRoZSBiaW5kaW5nIHRoZXJlZm9yZSBu
+ZWVkcyB0byBzYXkgIlRoZSBpbnRlcnJ1cHQgb3V0cHV0IGZyb20gdGhlCj4gZGV2aWNlIiBhcyB0
+aGVyZSdzIG9ubHkgb25lIG91dHB1dCBzdXBwb3J0ZWQuICBJZiB3ZSB3ZXJlIHVzaW5nCj4gaW50
+ZXJydXB0LW5hbWVzIHRoZW4gd2UnZCBuZWVkIHRvIGRvY3VtZW50IHdoYXQgdGhlIHN1cHBvcnRl
+ZCBuYW1lcyBhcmUuCgpPa2F5LCBJJ3ZlIGNoYW5nZWQgJ291dHB1dHMnIHRvICdvdXRwdXQnLgoK
+LS0gCkxlZSBKb25lcwpMaW5hcm8gU1QtRXJpY3Nzb24gTGFuZGluZyBUZWFtIExlYWQKTGluYXJv
+Lm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86
+IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
