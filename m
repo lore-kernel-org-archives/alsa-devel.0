@@ -1,73 +1,90 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: core: Fix check before defaulting to
-	regmap
-Date: Thu, 02 Aug 2012 10:44:41 +0300
-Message-ID: <501A2FE9.50706@ti.com>
-References: <1343847985-23712-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Lee Jones <ljkenny@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: dapm: If one widget fails, do not
+ force all subsequent widgets to fail too
+Date: Thu, 2 Aug 2012 08:45:18 +0100
+Message-ID: <20120802074517.GA19231@gmail.com>
+References: <20120731142820.GW4468@opensource.wolfsonmicro.com>
+ <5017EDCA.4020601@linaro.org>
+ <20120731145443.GY4468@opensource.wolfsonmicro.com>
+ <5017F68B.3060400@linaro.org>
+ <20120731151819.GC4468@opensource.wolfsonmicro.com>
+ <5018D880.5090306@linaro.org>
+ <20120801132022.GS11892@opensource.wolfsonmicro.com>
+ <50193428.5000708@linaro.org>
+ <20120801160824.GB11892@opensource.wolfsonmicro.com>
+ <20120801194134.GA4103@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog131.obsmtp.com (na3sys009aog131.obsmtp.com
- [74.125.149.247])
- by alsa0.perex.cz (Postfix) with ESMTP id 427A2260304
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 09:43:50 +0200 (CEST)
-Received: by yhjj63 with SMTP id j63so9554828yhj.37
- for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2012 00:43:50 -0700 (PDT)
-In-Reply-To: <1343847985-23712-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120801194134.GA4103@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, olalilja@yahoo.se, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On 08/01/2012 10:06 PM, Mark Brown wrote:
-> Check if the chip has provided a write operation (which is mandatory for
-> I/O) rather than looking for control data as some of the MFDs use a global
-> for this. Also skip the attempt if there's no regmap available by device
-> in case things get confused by the attempt to default.
+On Wed, Aug 01, 2012 at 08:41:34PM +0100, Mark Brown wrote:
+> On Wed, Aug 01, 2012 at 05:08:24PM +0100, Mark Brown wrote:
+> > On Wed, Aug 01, 2012 at 02:50:32PM +0100, Lee Jones wrote:
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-core.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >It's very disappointing to see such an error exist, and even more
+> > > >disappointing that there's no interest in fixing the driver.
 > 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index b1fd043..5359623 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1096,7 +1096,7 @@ static int soc_probe_codec(struct snd_soc_card *card,
->  	}
->  
->  	/* If the driver didn't set I/O up try regmap */
-> -	if (!codec->control_data)
-> +	if (!codec->write && dev_get_regmap(codec->dev, NULL))
->  		snd_soc_codec_set_cache_io(codec, 0, 0, SND_SOC_REGMAP);
->  
->  	if (driver->controls)
+> > > This is incorrect. I'm sure the driver will be fixed post-haste when
+> > > Ola returns back from vacation. If I can find some time I might
+> > > dabble in the mean-time also.
+> 
+> > It may not be what you're intending but it's unfortuantely what's I'm
+> > seeing.
+> 
+> Just to expand on this a bit since I've found myself pushing back in
+> this sort of way far too often with these recent serieses and it's
+> making everyone grumpy:
+> 
+> What I'm seeing here is a lot of patches getting sent with problems that
+> I'd really not expect from someone sending such a high volume of
+> patches.  Things like the lack of documentation for the DT bindings for
+> example, it's something that's mandatory and which people doing lots of
+> device tree work really ought to be aware of.  There's also noticable
+> pushback with fixing some of these issues, and like I say this happens
+> often enough to be really noticeable.
+> 
+> This isn't awesome from a review point of view, it's not nice to find
+> issues in things and when it happens a lot for the wrong sort of thing
+> it ends up seeming like the time spent doing the reviews isn't valued.
 
-I have a slightly different implementation of this, but this looks better.
+Okay, seeing as we're lying our cards on the table, here's my hand:
 
-Boards using the following machine drivers are affected by this issue:
-zoom2, overo, omap3pandora, omap3beagle, sdp3430, omap-abe-twl6040, omap3evm,
-igep0020.
+I'm in a very difficult position here. My initial task was to enable
+Device Tree on all drivers associated with the Snowball low-cost 
+development board. I was working very closely with Arnd, who was regularly
+requesting code restructuring, both within the drivers and in platform
+code. Something I was only too pleased to do. Then some of the original
+authors noticed the restructuring and I subsequently spent a great deal of
+time defending my actions. Now we have some systems in place to keep
+everyone informed and happy.
 
-All boards using these machine drivers will have kernel crash at the first
-time we try to write a register in the codec.
+Over time, the requests for Maintainers have Snowballed (pun intended). My 
+task now seems to be enabling drivers for Device Tree _and_ fix all 
+associated driver bugs, including any requested restructuring and API
+adoption. What you fail to notice is that I am only one person, and hopping
+all over the code-base trying to do everyone's bidding is no mean feat. In
+reality I am no more obliged to fix driver bugs than you are. In fact as
+the Maintainer of some of these subsystems, perhaps you could even help out
+a bit?
 
-Could you send this patch (if the patch OK with you) to be included in 3.6-rc1
-to avoid boards booting to kernel crash (if they restore the mixers at boot
-time).
+With regards to the documentation, I am perfectly aware that any new binding
+needs to be documented. Leaving it out was intentional until we can agree on
+the bindings. After you told me you review the documentation rather than
+the code bindings themselves ( pffft... ;) ) I added the documentation to
+the patch-set. I always had every intention of writing them!
 
-Thank you.
+On your last point about feeling undervalued, that's not the case at all. I
+do respect your opinion and value your reviews. They are always completed
+quickly and are very thorough. If I had one complaint it's that you are
+_too_ stringent. Some of this stuff really doesn't matter.
 
-Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+We are all trying to do good things here. Please try not to be too over-
+critical. We all know Mainlining is a good thing. Perhaps less people
+would be so frightened of it, thus more people would do it if the reviews
+weren't such a ball-ache ( for want of a better expression :) ).
