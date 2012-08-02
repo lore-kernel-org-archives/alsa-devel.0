@@ -1,27 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/6] ASoC: dapm: If one widget fails,
- do not force all subsequent widgets to fail too
-Date: Thu, 2 Aug 2012 10:59:00 +0100
-Message-ID: <20120802095900.GC29157@opensource.wolfsonmicro.com>
-References: <20120731134214.GK4468@opensource.wolfsonmicro.com>
- <5017EAC3.3080504@linaro.org>
- <20120731142820.GW4468@opensource.wolfsonmicro.com>
- <5017EDCA.4020601@linaro.org>
- <20120731145443.GY4468@opensource.wolfsonmicro.com>
- <5017F68B.3060400@linaro.org>
- <20120731151819.GC4468@opensource.wolfsonmicro.com>
- <5018D880.5090306@linaro.org>
- <20120801132022.GS11892@opensource.wolfsonmicro.com>
- <003901cd7073$d49cacc0$7dd60640$@se>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 17/19] Documentation: Define the MOP500
+ Audio Machine Driver Device Tree bindings
+Date: Thu, 2 Aug 2012 13:12:56 +0100
+Message-ID: <20120802121255.GA22201@gmail.com>
+References: <1343741953-17828-1-git-send-email-lee.jones@linaro.org>
+ <1343741953-17828-18-git-send-email-lee.jones@linaro.org>
+ <20120731135337.GM4468@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7D35F265023
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 11:59:00 +0200 (CEST)
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57037265029
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2012 14:12:58 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so1881802eek.38
+ for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2012 05:13:00 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <003901cd7073$d49cacc0$7dd60640$@se>
+In-Reply-To: <20120731135337.GM4468@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,36 +26,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ola Lilja <olalilja@yahoo.se>
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, 'Lee Jones' <lee.jones@linaro.org>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, linux-kernel@vger.kernel.org, olalilja@yahoo.se, STEricsson_nomadik_linux@list.st.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 02, 2012 at 07:58:24AM +0200, Ola Lilja wrote:
+From: Lee Jones <lee.jones@linaro.org>
+Date: Tue, 31 Jul 2012 11:56:51 +0100
+Subject: [PATCH 1/1] Documentation: Define the MOP500 Audio Machine Driver
+ Device Tree bindings
 
-> Accusing me of having "no interest in fixing the driver" is just absurd
-> regarding the time I've spent on this. I'm also still driving for
+Here we add the required documentation for the new Device Tree
+bindings pertaining to the MOP500 Audio Machine driver.
 
-Sorry, this is more directed at the current round of fixes that are
-being sent than the driver itself - the patches to bodge around the
-issue are being pushed fairly aggressively as an urgent fix without
-even mentioning what the issue is.  I don't have any concerns with
-the driver, only with the way it's being fixed.
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ .../devicetree/bindings/sound/ux500-mop500.txt     |   39 ++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ux500-mop500.txt
 
-> Regarding the problem with the failing DAPM-widget I can probably guess
-> What is going wrong when Lee is trying it out. There will be two failing
-> clock-supply widgets due to the fact that on the mainline-code these
-> clocks simply is not there yet. I have, of course, tested this driver
-> before submitting it, and I wouldn't dream on submitting a driver where
-> there were failing widgets/routes. Internally, I have put a patch with our
-> clock-tree for Ux500 on, but this is not mainline-quality code and that is
-
-This sort of reliance on out of tree patches which any real user of the
-device would be expected to have sounds like exactly the sort of thing
-I'd expect to have caused an issue like this, and obviously the fix here
-is to get the clocks in place (even if just as stubs, though I'd expect
-there to be a major impact on the functionality of the device if it's
-not clocked...) rather than to just bodge out the error checking.
-
-It does also suggest that the DT binding for this device will need to
-include the setup of these clocks (I believe the clock bindings for DT
-have just gone into mainline this merge window but I'd need to check).
+diff --git a/Documentation/devicetree/bindings/sound/ux500-mop500.txt b/Documentation/devicetree/bindings/sound/ux500-mop500.txt
+new file mode 100644
+index 0000000..48e071c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ux500-mop500.txt
+@@ -0,0 +1,39 @@
++* MOP500 Audio Machine Driver
++
++This node is responsible for linking together all ux500 Audio Driver components.
++
++Required properties:
++ - compatible              : "stericsson,snd-soc-mop500"
++
++Non-standard properties:
++ - stericsson,cpu-dai      : Phandle to the CPU-side DAI
++ - stericsson,audio-codec  : Phandle to the Audio CODEC
++ - stericsson,card-name    : Over-ride default card name
++
++Example:
++
++	sound {
++		compatible = "stericsson,snd-soc-mop500";
++
++		stericsson,cpu-dai = <&msp1 &msp3>;
++		stericsson,audio-codec = <&codec>;
++	};
++
++	msp1: msp@80124000 {
++		compatible = "stericsson,ux500-msp-i2s";
++		reg = <0x80124000 0x1000>;
++		interrupts = <0 62 0x4>;
++		v-ape-supply = <&db8500_vape_reg>;
++	};
++
++	msp3: msp@80125000 {
++		compatible = "stericsson,ux500-msp-i2s";
++		reg = <0x80125000 0x1000>;
++		interrupts = <0 62 0x4>;
++		v-ape-supply = <&db8500_vape_reg>;
++	};
++
++	codec: ab8500-codec {
++		compatible = "stericsson,ab8500-codec";
++		stericsson,earpeice-cmv = <950>; /* Units in mV. */
++	};
+-- 
+1.7.9.5
