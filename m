@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Clock generators in ASoC setups
-Date: Fri, 3 Aug 2012 22:55:46 +0100
-Message-ID: <20120803215545.GA4515@opensource.wolfsonmicro.com>
-References: <500FABD0.4040001@gmail.com>
- <20120725105258.GH3099@opensource.wolfsonmicro.com>
- <501AE805.1060309@gmail.com>
+Subject: Re: ASoC updates for 3.6
+Date: Fri, 3 Aug 2012 23:04:07 +0100
+Message-ID: <20120803220406.GC4515@opensource.wolfsonmicro.com>
+References: <20120802160212.GB4537@opensource.wolfsonmicro.com>
+ <s5hwr1hqnhx.wl%tiwai@suse.de> <s5htxwlqna2.wl%tiwai@suse.de>
+ <20120802175807.GH4537@opensource.wolfsonmicro.com>
+ <s5hipd1xfgy.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D89882652AB
- for <alsa-devel@alsa-project.org>; Sat,  4 Aug 2012 12:04:45 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C7E92652AC
+ for <alsa-devel@alsa-project.org>; Sat,  4 Aug 2012 12:04:49 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <501AE805.1060309@gmail.com>
+In-Reply-To: <s5hipd1xfgy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 02, 2012 at 10:50:13PM +0200, Daniel Mack wrote:
-> On 25.07.2012 12:52, Mark Brown wrote:
-> > On Wed, Jul 25, 2012 at 10:18:24AM +0200, Daniel Mack wrote:
+On Thu, Aug 02, 2012 at 09:26:37PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> > The problem here is that we don't have a usable clock API to work with.
+> > I remember those commit IDs well but I think you were thinking of some
+> > others. :P I'm going to revert them for 3.7 but didn't want to rebase
+> > them right now.
 
-> Hmm, could you elaborate a bit about the background here? So the idea is
-> to have the clock framework that handles all system clocks also take
-> care for clocks related to audio?
+> Oh no, I don't want to rebase them, too.  I just have expected that
+> you'll revert these changes in 3.6-rc2.  But 3.7 is also fine, too.
 
-Yes, since many of them are the same clocks - we certainly have massive
-overlap here and clocks can go in both directions.
-
-> What would such a framework need to accomplish, and what missing in -
-> for example - the common clock framework in that regard?
-
-Well, for a start it'd need to be deployed on a useful set of platforms.
-Right now we've not got any clock API at all on most platforms and only
-a vanishingly small set are using the generic API.  I'm hopefully going
-to persuade Arnd to unblock the one issue preventing me fixing the first
-problem and obviously there's some progress on the second.
-
-As things stand there just isn't a non-specific clock API that anything
-that generates clocks can realistically use.
+I was contemplating just rebasing them out before I pushed my patch but
+ended up not doing that.
