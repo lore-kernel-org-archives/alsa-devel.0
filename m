@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 3.6
-Date: Fri, 3 Aug 2012 23:04:07 +0100
-Message-ID: <20120803220406.GC4515@opensource.wolfsonmicro.com>
-References: <20120802160212.GB4537@opensource.wolfsonmicro.com>
- <s5hwr1hqnhx.wl%tiwai@suse.de> <s5htxwlqna2.wl%tiwai@suse.de>
- <20120802175807.GH4537@opensource.wolfsonmicro.com>
- <s5hipd1xfgy.wl%tiwai@suse.de>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 3/3] sound/soc/soc-core.c: drop kfree of
+	devm_kzalloc's data
+Date: Sat,  4 Aug 2012 14:00:32 +0200
+Message-ID: <1344081632-4729-3-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C7E92652AC
- for <alsa-devel@alsa-project.org>; Sat,  4 Aug 2012 12:04:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hipd1xfgy.wl%tiwai@suse.de>
+Received: from mail1-relais-roc.national.inria.fr
+ (mail1-relais-roc.national.inria.fr [192.134.164.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 433922652B3
+ for <alsa-devel@alsa-project.org>; Sat,  4 Aug 2012 14:00:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>, matthias@kaehlcke.net
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 02, 2012 at 09:26:37PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-> > I remember those commit IDs well but I think you were thinking of some
-> > others. :P I'm going to revert them for 3.7 but didn't want to rebase
-> > them right now.
+Using kfree to free data allocated with devm_kzalloc causes double frees.
 
-> Oh no, I don't want to rebase them, too.  I just have expected that
-> you'll revert these changes in 3.6-rc2.  But 3.7 is also fine, too.
+The semantic patch that fixes this problem is as follows:
+(http://coccinelle.lip6.fr/)
 
-I was contemplating just rebasing them out before I pushed my patch but
-ended up not doing that.
+// <smpl>
+@@
+expression x;
+@@
+
+x = devm_kzalloc(...)
+...
+?-kfree(x);
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
+---
+The kfrees were introduced in b761c0ca.
+
+ sound/soc/soc-core.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f81c597..86d7a36 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4136,7 +4136,6 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 			dev_err(card->dev,
+ 				"Property '%s' index %d could not be read: %d\n",
+ 				propname, 2 * i, ret);
+-			kfree(routes);
+ 			return -EINVAL;
+ 		}
+ 		ret = of_property_read_string_index(np, propname,
+@@ -4145,7 +4144,6 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 			dev_err(card->dev,
+ 				"Property '%s' index %d could not be read: %d\n",
+ 				propname, (2 * i) + 1, ret);
+-			kfree(routes);
+ 			return -EINVAL;
+ 		}
+ 	}
