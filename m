@@ -1,85 +1,40 @@
-From: Hideki EIRAKU <hdk@igel.co.jp>
-Subject: [PATCH v3 4/4] fbdev: sh_mobile_lcdc: use dma_mmap_coherent if available
-Date: Mon,  6 Aug 2012 18:55:24 +0900
-Message-ID: <1344246924-32620-5-git-send-email-hdk@igel.co.jp>
-References: <1344246924-32620-1-git-send-email-hdk@igel.co.jp>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1344246924-32620-1-git-send-email-hdk@igel.co.jp>
-Sender: linux-media-owner@vger.kernel.org
-To: Russell King <linux@arm.linux.org.uk>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, Hideki EIRAKU <hdk@igel.co.jp>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] sound/soc/soc-core.c: drop kfree of
+ devm_kzalloc's data
+Date: Sat, 4 Aug 2012 15:32:04 +0100
+Message-ID: <20120804143200.GD15691@opensource.wolfsonmicro.com>
+References: <1344081632-4729-3-git-send-email-Julia.Lawall@lip6.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0379265B66
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 11:53:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1344081632-4729-3-git-send-email-Julia.Lawall@lip6.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, matthias@kaehlcke.net, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-fb_mmap() implemented in fbmem.c uses smem_start as the physical
-address of the frame buffer.  In the sh_mobile_lcdc driver, the
-smem_start is a dma_addr_t that is not a physical address when IOMMU is
-enabled.  dma_mmap_coherent() maps the address correctly.  It is
-available on ARM platforms.
+On Sat, Aug 04, 2012 at 02:00:32PM +0200, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
+> 
+> Using kfree to free data allocated with devm_kzalloc causes double frees.
+> 
+> The semantic patch that fixes this problem is as follows:
+> (http://coccinelle.lip6.fr/)
 
-Signed-off-by: Hideki EIRAKU <hdk@igel.co.jp>
----
- drivers/video/sh_mobile_lcdcfb.c |   28 ++++++++++++++++++++++++++++
- 1 files changed, 28 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/video/sh_mobile_lcdcfb.c b/drivers/video/sh_mobile_lcdcfb.c
-index 8cb653b..c8cba7a 100644
---- a/drivers/video/sh_mobile_lcdcfb.c
-+++ b/drivers/video/sh_mobile_lcdcfb.c
-@@ -1614,6 +1614,17 @@ static int sh_mobile_lcdc_overlay_blank(int blank, struct fb_info *info)
- 	return 1;
- }
- 
-+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-+static int
-+sh_mobile_lcdc_overlay_mmap(struct fb_info *info, struct vm_area_struct *vma)
-+{
-+	struct sh_mobile_lcdc_overlay *ovl = info->par;
-+
-+	return dma_mmap_coherent(ovl->channel->lcdc->dev, vma, ovl->fb_mem,
-+				 ovl->dma_handle, ovl->fb_size);
-+}
-+#endif
-+
- static struct fb_ops sh_mobile_lcdc_overlay_ops = {
- 	.owner          = THIS_MODULE,
- 	.fb_read        = fb_sys_read,
-@@ -1626,6 +1637,9 @@ static struct fb_ops sh_mobile_lcdc_overlay_ops = {
- 	.fb_ioctl       = sh_mobile_lcdc_overlay_ioctl,
- 	.fb_check_var	= sh_mobile_lcdc_overlay_check_var,
- 	.fb_set_par	= sh_mobile_lcdc_overlay_set_par,
-+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-+	.fb_mmap	= sh_mobile_lcdc_overlay_mmap,
-+#endif
- };
- 
- static void
-@@ -2093,6 +2107,17 @@ static int sh_mobile_lcdc_blank(int blank, struct fb_info *info)
- 	return 0;
- }
- 
-+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-+static int
-+sh_mobile_lcdc_mmap(struct fb_info *info, struct vm_area_struct *vma)
-+{
-+	struct sh_mobile_lcdc_chan *ch = info->par;
-+
-+	return dma_mmap_coherent(ch->lcdc->dev, vma, ch->fb_mem,
-+				 ch->dma_handle, ch->fb_size);
-+}
-+#endif
-+
- static struct fb_ops sh_mobile_lcdc_ops = {
- 	.owner          = THIS_MODULE,
- 	.fb_setcolreg	= sh_mobile_lcdc_setcolreg,
-@@ -2108,6 +2133,9 @@ static struct fb_ops sh_mobile_lcdc_ops = {
- 	.fb_release	= sh_mobile_lcdc_release,
- 	.fb_check_var	= sh_mobile_lcdc_check_var,
- 	.fb_set_par	= sh_mobile_lcdc_set_par,
-+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-+	.fb_mmap	= sh_mobile_lcdc_mmap,
-+#endif
- };
- 
- static void
--- 
-1.7.0.4
+Might it make more sense to devm_kfree() them?  If we don't expect to
+immediately abort driver instantiation it'll save having them lying
+around for the entire lifetime of the device even if they're not
+strictly leaked.
