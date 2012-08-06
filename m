@@ -1,19 +1,17 @@
-From: "Philipp A. Mohrenweiser" <phiamo@googlemail.com>
-Subject: [PATCH] ALSA: hda - add dock support for Thinkpad T430s
-Date: Mon,  6 Aug 2012 13:14:18 +0200
-Message-ID: <1344251658-16097-1-git-send-email-phiamo@googlemail.com>
-References: <s5hy5lsjn07.wl%tiwai@suse.de>
+From: antony k <adkalkan@gmail.com>
+Subject: plughw vs default / per-application volume changer
+Date: Mon, 6 Aug 2012 14:41:43 +0300
+Message-ID: <CAC2-5LccH=QCQ8UKF-o+JtZUFdxRyU_NaEsq7kGW8ekoLXkGOQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id DF5EA265352
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 12:44:40 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so900992bkc.38
- for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 04:14:26 -0700 (PDT)
-In-Reply-To: <s5hy5lsjn07.wl%tiwai@suse.de>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C059264F9B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 13:11:58 +0200 (CEST)
+Received: by yhnn12 with SMTP id n12so681605yhn.38
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 04:41:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,33 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, phiamo <phiamo@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: phiamo <phiamo@googlemail.com>
+Hello,
+I am new to ALSA and I cant figure out 2 things.
 
-    Add a model/fixup string "lenovo-dock", for
-    Thinkpad T430s, to allow sound in docking station.
+a) if and why should I prefer the "plughw:0,0" over the "default" device
+name.
+I am developing a simple audio player which is based on the latter.
+I made this choice because when I was using plughw:0,0 with other audio
+programs(flash player,vlc) open in the background I would get the "Device
+is busy" error code.
+With default, it's fine.
 
-    Tested on Lenovo T430s with ThinkPad Mini Dock Plus Series 3
+b) can I have an application specific volume changer? So far I have managed
+to tweak the master volume of the "default" device which has a global
+effect. Im guessing a) and b) are connected.
 
-    Cc: stable@kernel.org
-    Signed-off-by: Philipp A. Mohrenweiser <phiamo@googlemail.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b9a5c45..bb93f92 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6207,6 +6207,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_QUANTA_MUTE),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Lenovo Ideapd", ALC269_FIXUP_PCM_44K),
--- 
-1.7.9.5
+Thanks for your time
