@@ -1,18 +1,17 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v8] media: Add stk1160 new driver
-Date: Mon, 6 Aug 2012 16:18:56 +0200
-Message-ID: <201208061618.56479.hverkuil@xs4all.nl>
-References: <1344260302-28849-1-git-send-email-elezegarcia@gmail.com>
- <CALF0-+Xwa6qNH3pEOgJq9f07C+ArNco6nxQcjGWoy5kwyQeScA@mail.gmail.com>
- <501FCFE1.7010802@redhat.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 00/27] ASoC: Use module_i2c_driver
+Date: Mon, 6 Aug 2012 15:23:35 +0100
+Message-ID: <20120806142334.GJ16861@opensource.wolfsonmicro.com>
+References: <1344254160-6615-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr8.xs4all.nl (smtp-vbr8.xs4all.nl [194.109.24.28])
- by alsa0.perex.cz (Postfix) with ESMTP id CC66D265B61
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 15:49:13 +0200 (CEST)
-In-Reply-To: <501FCFE1.7010802@redhat.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5531826533D
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 15:53:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1344254160-6615-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Ezequiel Garcia <elezegarcia@gmail.com>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon August 6 2012 16:08:33 Mauro Carvalho Chehab wrote:
-> Em 06-08-2012 10:58, Ezequiel Garcia escreveu:
-> > Hi Mauro,
-> > 
-> > On Mon, Aug 6, 2012 at 10:38 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
-> >> This driver adds support for stk1160 usb bridge as used in some
-> >> video/audio usb capture devices.
-> >> It is a complete rewrite of staging/media/easycap driver and
-> >> it's expected as a replacement.
-> >> ---
-> >>
-> > 
-> > I just sent v8, but it looks it wasn't received by patchwork either.
-> > 
-> > What's going on?
-> 
-> The patch didn't arrive at linux-media ML.
-> 
-> Not sure why it got rejected at vger. I suggest you to ping vger admin
-> to see why your patches are being rejected there.
-> 
-> I tested parsing this patch manually and patchwork accepted. So, once
-> the issue with vger is solved, other patches should be properly
-> handled there.
+On Mon, Aug 06, 2012 at 05:25:33PM +0530, Sachin Kamat wrote:
+> module_i2c_driver() is helper macro for I2C drivers which do not do anything
+> special in module init/exit. This eliminates a lot of boilerplate
+> and calling it replaces module_init() and module_exit().
 
-Could it be related to the fact that a gmail account is used? Konke Radlow
-had a similar issue recently when he posted a patch from a gmail account. It
-worked fine when posted from a company account.
-
-Regards,
-
-	Hans
+Applied all, thanks.
