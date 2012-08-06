@@ -1,36 +1,72 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH 2/2] ASoC: add compress stream support
-Date: Mon, 6 Aug 2012 14:07:51 +0100
-Message-ID: <20120806130751.GI16861@opensource.wolfsonmicro.com>
-References: <1343716900-23491-1-git-send-email-vinod.koul@linux.intel.com>
- <1343716900-23491-3-git-send-email-vinod.koul@linux.intel.com>
- <20120802180926.GL4537@opensource.wolfsonmicro.com>
- <s5h1ujkmotf.wl%tiwai@suse.de>
+From: =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
+Subject: [PATCH 1/1] mx27_3ds: Add sound support
+Date: Mon,  6 Aug 2012 15:07:27 +0200
+Message-ID: <1344258447-6162-1-git-send-email-gcembed@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 050AE265279
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 14:38:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h1ujkmotf.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, ramesh.babu@intel.com, namartax.kohli@intel.com, lrg@ti.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Sascha Hauer <kernel@pengutronix.de>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 06, 2012 at 10:01:32AM +0200, Takashi Iwai wrote:
-
-> of snd_pcm_stream_lock*().  But before adding it, we should revisit
-> the current lock mess in the code...
-
-Yes, simplifying the locking scheme would be really helpful all round.
+SGksCkkgaGF2ZSBwb3J0ZWQgY29kZSAiRW5hYmxlIHNvdW5kIG9uIG14MzFfM2RzIiBmcm9tIFBo
+aWxpcHBlIFLDqXRvcm5heiB0bwpNWDI3IDNEUyBwbGF0Zm9ybSBvbiBtYXN0ZXIgYnJhbmNoIG9m
+IGxpbnV4LW5leHQgKHRhZyBuZXh0LTIwMTIwODA2KS4KSSBhbHNvIGFwcGxpZWQgcGF0Y2ggImRt
+YTogaW14LWRtYTogRml4IGtlcm5lbCBjcmFzaCBkdWUgdG8gbWlzc2luZyBjbG9jawpjb252ZXJz
+aW9uIiBvZiBGYWJpbyBFc3RldmFtIHdoaWNoIGlzIG5vdCB5ZXQgbWVyZ2VkIGluIGxpbnV4LW5l
+eHQuClRoYW5rcyB0byB0aGVtLCBldmVyeXRoaW5nIGlzIHdvcmtpbmcgZ29vZCBvbiBNWDI3IDNE
+UyBwbGF0Zm9ybSBleGNlcHQgdGhhdApzb3VuZCBpcyBwbGF5ZWQgdG9vIGZhc3QuCldoaWNoIHBh
+cmFtZXRlciBtdXN0IGJlIGFkanVzdGVkIHRvIGhhdmUgc291bmQgcGxheWluZyBhdCBub3JtYWwg
+c3BlZWQgPwpJbiBtYzEzNzgzIGNvZGVjIGRyaXZlciwgaW14X2FkZF9pbXhfc3NpKCksIGNsb2Nr
+IGNvbmZpZ3VyYXRpb24gaW4KbWFjaC1teDI3XzNkcyBmaWxlID8KClRoYW5rcyBmb3IgeW91ciBo
+ZWxwLgoKU2lnbmVkLW9mZi1ieTogR2HDq3RhbiBDYXJsaWVyIDxnY2VtYmVkQGdtYWlsLmNvbT4K
+LS0tCiBhcmNoL2FybS9tYWNoLWlteC9LY29uZmlnICAgICAgICAgfCAgICAxICsKIGFyY2gvYXJt
+L21hY2gtaW14L21hY2gtbXgyN18zZHMuYyB8ICAgMTkgKysrKysrKysrKysrKysrKysrLQogMiBm
+aWxlcyBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL2FyY2gvYXJtL21hY2gtaW14L0tjb25maWcgYi9hcmNoL2FybS9tYWNoLWlteC9LY29uZmln
+CmluZGV4IGFmZDU0MmEuLjYzZjY0ZjEgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL21hY2gtaW14L0tj
+b25maWcKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgvS2NvbmZpZwpAQCAtMzAyLDYgKzMwMiw3IEBA
+IGNvbmZpZyBNQUNIX01YMjdfM0RTCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWDJfV0RU
+CiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWF9GQgogCXNlbGVjdCBJTVhfSEFWRV9QTEFU
+Rk9STV9JTVhfSTJDCisJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX0lNWF9TU0kKIAlzZWxlY3Qg
+SU1YX0hBVkVfUExBVEZPUk1fSU1YX0tFWVBBRAogCXNlbGVjdCBJTVhfSEFWRV9QTEFURk9STV9J
+TVhfVUFSVAogCXNlbGVjdCBJTVhfSEFWRV9QTEFURk9STV9NWDJfQ0FNRVJBCmRpZmYgLS1naXQg
+YS9hcmNoL2FybS9tYWNoLWlteC9tYWNoLW14MjdfM2RzLmMgYi9hcmNoL2FybS9tYWNoLWlteC9t
+YWNoLW14MjdfM2RzLmMKaW5kZXggNThjMjRjMS4uYTVkNDA4MCAxMDA2NDQKLS0tIGEvYXJjaC9h
+cm0vbWFjaC1pbXgvbWFjaC1teDI3XzNkcy5jCisrKyBiL2FyY2gvYXJtL21hY2gtaW14L21hY2gt
+bXgyN18zZHMuYwpAQCAtMTU4LDYgKzE1OCwxMSBAQCBzdGF0aWMgY29uc3QgaW50IG14MjdwZGtf
+cGluc1tdIF9faW5pdGNvbnN0ID0gewogCVBCMjFfUEZfQ1NJX0hTWU5DLAogCUNTSV9QV1JEV04g
+fCBHUElPX0dQSU8gfCBHUElPX09VVCwKIAlDU0lfUkVTRVQgfCBHUElPX0dQSU8gfCBHUElPX09V
+VCwKKwkvKiBTU0kgKi8KKwlQQzE2X1BGX1NTSTRfRlMsCisJUEMxN19QRl9TU0k0X1JYRCwKKwlQ
+QzE4X1BGX1NTSTRfVFhELAorCVBDMTlfUEZfU1NJNF9DTEssCiB9OwogCiBzdGF0aWMgc3RydWN0
+IGdwaW8gbXgyN18zZHNfY2FtZXJhX2dwaW9zW10gPSB7CkBAIC0zMjksMTMgKzMzNCwyMyBAQCBz
+dGF0aWMgc3RydWN0IG1jMTN4eHhfcmVndWxhdG9yX2luaXRfZGF0YSBteDI3XzNkc19yZWd1bGF0
+b3JzW10gPSB7CiB9OwogCiAvKiBNQzEzNzgzICovCitzdGF0aWMgc3RydWN0IG1jMTN4eHhfY29k
+ZWNfcGxhdGZvcm1fZGF0YSBteDI3XzNkc19jb2RlYyA9IHsKKwkuZGFjX3NzaV9wb3J0ID0gTUMx
+Mzc4M19TU0kxX1BPUlQsCisJLmFkY19zc2lfcG9ydCA9IE1DMTM3ODNfU1NJMV9QT1JULAorfTsK
+Kwogc3RhdGljIHN0cnVjdCBtYzEzeHh4X3BsYXRmb3JtX2RhdGEgbWMxMzc4M19wZGF0YSA9IHsK
+IAkucmVndWxhdG9ycyA9IHsKIAkJLnJlZ3VsYXRvcnMgPSBteDI3XzNkc19yZWd1bGF0b3JzLAog
+CQkubnVtX3JlZ3VsYXRvcnMgPSBBUlJBWV9TSVpFKG14MjdfM2RzX3JlZ3VsYXRvcnMpLAogCiAJ
+fSwKLQkuZmxhZ3MgID0gTUMxM1hYWF9VU0VfVE9VQ0hTQ1JFRU4gfCBNQzEzWFhYX1VTRV9SVEMs
+CisJLmNvZGVjID0gJm14MjdfM2RzX2NvZGVjLAorCS5mbGFncyAgPSBNQzEzWFhYX1VTRV9UT1VD
+SFNDUkVFTiB8IE1DMTNYWFhfVVNFX1JUQyB8IE1DMTNYWFhfVVNFX0NPREVDLAorfTsKKworc3Rh
+dGljIHN0cnVjdCBpbXhfc3NpX3BsYXRmb3JtX2RhdGEgbXgyN18zZHNfc3NpX3BkYXRhID0gewor
+CQkuZmxhZ3MgPSBJTVhfU1NJX0RNQSB8IElNWF9TU0lfTkVULAogfTsKIAogLyogU1BJICovCkBA
+IC01MTIsNiArNTI3LDggQEAgc3RhdGljIHZvaWQgX19pbml0IG14MjdwZGtfaW5pdCh2b2lkKQog
+CX0KIAogCWlteDI3X2FkZF9teDJfY2FtZXJhKCZteDI3XzNkc19jYW1fcGRhdGEpOworCWlteDI3
+X2FkZF9pbXhfc3NpKDAsICZteDI3XzNkc19zc2lfcGRhdGEpOworCWlteF9hZGRfcGxhdGZvcm1f
+ZGV2aWNlKCJpbXhfbWMxMzc4MyIsIDAsIE5VTEwsIDAsIE5VTEwsIDApOwogfQogCiBzdGF0aWMg
+dm9pZCBfX2luaXQgbXgyN3Bka190aW1lcl9pbml0KHZvaWQpCi0tIAoxLjcuNy40CgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5l
+bCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
