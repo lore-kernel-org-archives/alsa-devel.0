@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Plumbers: Please split audio topics into separate
-	sessions
-Date: Mon, 6 Aug 2012 22:45:31 +0100
-Message-ID: <20120806214530.GB26698@opensource.wolfsonmicro.com>
-References: <50201664.7000804@canonical.com>
- <20120806193858.GB16199@opensource.wolfsonmicro.com>
- <502025C0.2050508@canonical.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: imx-ssi: Fix mono playback
+Date: Mon, 6 Aug 2012 18:49:04 -0300
+Message-ID: <CAOMZO5AekbYTnrSM+jK_PBeHDx6vKT4DbxbuXhUwA6uD3PAZFQ@mail.gmail.com>
+References: <1344281785-22478-1-git-send-email-fabio.estevam@freescale.com>
+ <20120806195438.GD16199@opensource.wolfsonmicro.com>
+ <CAOMZO5B15kcUziVCMBctGdFmx6xkTqby1-cE+arVUJSXosDU-A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 10D53265E07
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 23:15:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <502025C0.2050508@canonical.com>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 672AD265E07
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 23:19:19 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so5880849obb.38
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 14:49:04 -0700 (PDT)
+In-Reply-To: <CAOMZO5B15kcUziVCMBctGdFmx6xkTqby1-cE+arVUJSXosDU-A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, kernel@pengutronix.de, gcembed@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 06, 2012 at 10:14:56PM +0200, David Henningsson wrote:
-> On 08/06/2012 09:38 PM, Mark Brown wrote:
+On Mon, Aug 6, 2012 at 4:58 PM, Fabio Estevam <festevam@gmail.com> wrote:
 
->> The two ASoC topics certainly don't need to be split, they're roughly
->> the same area.  I'd be really surprised if the last two were terribly
->> time consuming individually.
+> Ok, understood.
+>
+> Sascha,
+>
+> Do you know if mono playback used to work previously in imx-ssi?
 
-> What other topic than "DSPs on ASoC" are you referring to? I thought  
-> "Expose routing" was not ASoC specific. At least it does not look that  
-> way from the presentation text.
+Ok, just tested a mono track on a mx6qsabrelite and it played well.
 
-Those two - the routing is mostly an ASoC thing, HDA could use it but
-none of the desktop guys ever seemed really interested and it's more
-likely that any active work on that is going to come from people with
-DSPs.  I guess ASoC isn't the right term, though.
+So it seems the issue is mc13783 related then.
+
+Regards,
+
+Fabio Estevam
