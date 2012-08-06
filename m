@@ -1,36 +1,46 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: remove device tree probe
-	match table
-Date: Mon, 6 Aug 2012 12:54:00 +0100
-Message-ID: <20120806115400.GA16861@opensource.wolfsonmicro.com>
-References: <1344247231-21359-1-git-send-email-jason77.wang@gmail.com>
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: [PATCH v7] media: Add stk1160 new driver
+Date: Mon, 6 Aug 2012 09:28:36 -0300
+Message-ID: <CALF0-+XEStNrfdqYecKQHr=qkcFPtC5CyDC4DWWy_7+_oA0h=g@mail.gmail.com>
+References: <1343485133-11090-1-git-send-email-elezegarcia@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C93EF265CFA
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 13:24:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1344247231-21359-1-git-send-email-jason77.wang@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <jason77.wang@gmail.com>
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1343485133-11090-1-git-send-email-elezegarcia@gmail.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: Ezequiel Garcia <elezegarcia@gmail.com>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 06, 2012 at 06:00:31PM +0800, Hui Wang wrote:
-> The sgtl5000 codec driver is an i2c driver instead of a platform
-> driver, current of_i2c subsystem will convert an i2c device node
-> into a traditional i2c device, the of_match_table is not used.
+Hi Mauro,
 
-No, this is a regression - even though we can take a good guess for I2C
-devices it is always good to provide a compatible property to avoid
-ambiguity.
+On Sat, Jul 28, 2012 at 11:18 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+> This driver adds support for stk1160 usb bridge as used in some
+> video/audio usb capture devices.
+> It is a complete rewrite of staging/media/easycap driver and
+> it's expected as a future replacement.
+>
+> Cc: Mauro Carvalho Chehab <mchehab@redhat.com>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+> Cc: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+> ---
+>
+
+Did you take a look at this?
+
+Perhaps we can discuss now you're previous comments:
+
+1. Place for ac97 code: media or alsa? (see Takashis' comments)
+2. current_norm usage (see Hans' comments)
+3. vb2_dqbuf and O_NONBLOCK flag (also see Hans' comments)
+
+I know it's a big patch*, so there is no need to rush.
+I just wanted to discuss a bit about this before my brain-cache
+flushes completely :-)
+
+Thanks,
+Ezequiel.
+
+* Actually it's huge (12k lines) since I'm removing staging/easycap.
