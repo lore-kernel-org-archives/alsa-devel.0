@@ -1,55 +1,46 @@
-From: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH 1/1] mx27_3ds: Add sound support
-Date: Mon, 06 Aug 2012 16:24:09 +0200
-Message-ID: <501FD389.1050105@gmail.com>
+Date: Mon, 6 Aug 2012 11:26:52 -0300
+Message-ID: <CAOMZO5B3i9NeSD-uqbjN6LLCR1UUhSYKs8g+D6yj7hs31kNJ6A@mail.gmail.com>
 References: <1344258447-6162-1-git-send-email-gcembed@gmail.com>
  <CAOMZO5B9ZmTHrYjVc5a7j=uUgUEyfDva54cKxBP3UeCYZsUWRw@mail.gmail.com>
+ <501FD389.1050105@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAOMZO5B9ZmTHrYjVc5a7j=uUgUEyfDva54cKxBP3UeCYZsUWRw@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Fabio Estevam <festevam@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94C41265B7B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 15:57:07 +0200 (CEST)
+Received: by yhnn12 with SMTP id n12so856830yhn.38
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 07:26:52 -0700 (PDT)
+In-Reply-To: <501FD389.1050105@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Ga=C3=ABtan_Carlier?= <gcembed@gmail.com>
 Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRmFiaW8sClNvcnJ5LCBJIGhhdmUgbWlzc2VkIHlvdXIgcGF0Y2ggaW4gbXkgZW1haWwgYXJj
-aGl2ZS4gSSBkaWRuJ3Qgc2VhcmNoIHRoZSAKcmlnaHQga2V5d29yZHMuCkkgYXBwbGllZCB5b3Vy
-IFtwYXRjaCAxLzJdICgyLzIgaXMgYWxyZWFkeSBtZXJnZWQpIGJ1dCBJIGhhdmUgc2FtZSAKZWZm
-ZWN0LiBJIHVzZSBhcGxheSB3aXRoIGZpbGUgazNiX2Vycm9yMS53YXYgKFVuc2lnbmVkIDggYml0
-LCBSYXRlIDgwMDAgCkh6LCBNb25vKSBhbmQgYWxzYS9Gcm9udF9MZWZ0LndhdiAoU2lnbmVkIDE2
-IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIAo0ODAwMCBIeiwgTW9ubykuIFR3byBzb3VuZHMgYXJl
-IHBsYXllZCB0b28gZmFzdC4KSXQgaXMgbWF5YmUgYSBiYWQgY29uZmlndXJhdGlvbiBvZiBBbHNh
-IChidXQgdGhpcyBpcyB3b3JraW5nIHdpdGgga2VybmVsIAoyLjYuMjIgZnJvbSBGcmVlc2NhbGUp
-LgpUaGFua3MuCkdhw6t0YW4uCgpPbiAwOC8wNi8yMDEyIDAzOjM2IFBNLCBGYWJpbyBFc3RldmFt
-IHdyb3RlOgo+IEhpIEdhw6t0YW4sCj4KPiBPbiBNb24sIEF1ZyA2LCAyMDEyIGF0IDEwOjA3IEFN
-LCBHYcOrdGFuIENhcmxpZXIgPGdjZW1iZWRAZ21haWwuY29tPiB3cm90ZToKPj4gSGksCj4+IEkg
-aGF2ZSBwb3J0ZWQgY29kZSAiRW5hYmxlIHNvdW5kIG9uIG14MzFfM2RzIiBmcm9tIFBoaWxpcHBl
-IFLDqXRvcm5heiB0bwo+PiBNWDI3IDNEUyBwbGF0Zm9ybSBvbiBtYXN0ZXIgYnJhbmNoIG9mIGxp
-bnV4LW5leHQgKHRhZyBuZXh0LTIwMTIwODA2KS4KPj4gSSBhbHNvIGFwcGxpZWQgcGF0Y2ggImRt
-YTogaW14LWRtYTogRml4IGtlcm5lbCBjcmFzaCBkdWUgdG8gbWlzc2luZyBjbG9jawo+PiBjb252
-ZXJzaW9uIiBvZiBGYWJpbyBFc3RldmFtIHdoaWNoIGlzIG5vdCB5ZXQgbWVyZ2VkIGluIGxpbnV4
-LW5leHQuCj4+IFRoYW5rcyB0byB0aGVtLCBldmVyeXRoaW5nIGlzIHdvcmtpbmcgZ29vZCBvbiBN
-WDI3IDNEUyBwbGF0Zm9ybSBleGNlcHQgdGhhdAo+PiBzb3VuZCBpcyBwbGF5ZWQgdG9vIGZhc3Qu
-Cj4+IFdoaWNoIHBhcmFtZXRlciBtdXN0IGJlIGFkanVzdGVkIHRvIGhhdmUgc291bmQgcGxheWlu
-ZyBhdCBub3JtYWwgc3BlZWQgPwo+PiBJbiBtYzEzNzgzIGNvZGVjIGRyaXZlciwgaW14X2FkZF9p
-bXhfc3NpKCksIGNsb2NrIGNvbmZpZ3VyYXRpb24gaW4KPj4gbWFjaC1teDI3XzNkcyBmaWxlID8K
-Pj4KPj4gVGhhbmtzIGZvciB5b3VyIGhlbHAuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEdhw6t0YW4g
-Q2FybGllciA8Z2NlbWJlZEBnbWFpbC5jb20+Cj4KPiBJIGhhdmUgYWRkZWQgYXVkaW8gc3VwcG9y
-dCBmb3IgbXgyN3BkazoKPiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExNTI5
-NTEvCj4KPiAsYW5kIGluIG15IHRlc3RzIHRoZSBhdWRpbyB3YXMgcGxheWVkIGF0IHRoZSBjb3Jy
-ZWN0IHJhdGUuCj4KPiBDYW4geW91IHBsZWFzZSBoYXZlIGEgdHJ5Pwo+Cj4gV2hhdCBpcyB0aGUg
-c2FtcGxpbmcgcmF0ZSBvZiB5b3VyIGZpbGU/Cj4KPiBSZWdhcmRzLAo+Cj4gRmFiaW8gRXN0ZXZh
-bQo+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGlu
-dXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-YXJtLWtlcm5lbAo=
+T24gTW9uLCBBdWcgNiwgMjAxMiBhdCAxMToyNCBBTSwgR2HDq3RhbiBDYXJsaWVyIDxnY2VtYmVk
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gSGkgRmFiaW8sCj4gU29ycnksIEkgaGF2ZSBtaXNzZWQgeW91
+ciBwYXRjaCBpbiBteSBlbWFpbCBhcmNoaXZlLiBJIGRpZG4ndCBzZWFyY2ggdGhlCj4gcmlnaHQg
+a2V5d29yZHMuCj4gSSBhcHBsaWVkIHlvdXIgW3BhdGNoIDEvMl0gKDIvMiBpcyBhbHJlYWR5IG1l
+cmdlZCkgYnV0IEkgaGF2ZSBzYW1lIGVmZmVjdC4gSQo+IHVzZSBhcGxheSB3aXRoIGZpbGUgazNi
+X2Vycm9yMS53YXYgKFVuc2lnbmVkIDggYml0LCBSYXRlIDgwMDAgSHosIE1vbm8pIGFuZAo+IGFs
+c2EvRnJvbnRfTGVmdC53YXYgKFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA0ODAw
+MCBIeiwgTW9ubykuIFR3bwo+IHNvdW5kcyBhcmUgcGxheWVkIHRvbyBmYXN0Lgo+IEl0IGlzIG1h
+eWJlIGEgYmFkIGNvbmZpZ3VyYXRpb24gb2YgQWxzYSAoYnV0IHRoaXMgaXMgd29ya2luZyB3aXRo
+IGtlcm5lbAo+IDIuNi4yMiBmcm9tIEZyZWVzY2FsZSkuCgpPaywgd2Ugd2lsbCBuZWVkIHRvIGRl
+YnVnIHRoaXMgcHJvYmxlbSB0aGVuLgoKQ2FuIHlvdSBwbGVhc2Ugc2VuZCBtZSBvZmZsaW5lIHRo
+ZXNlIHR3byBmaWxlcz8KClJlZ2FyZHMsCgpGYWJpbyBFc3RldmFtCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
