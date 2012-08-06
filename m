@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] sound/soc/soc-core.c: drop kfree of
- devm_kzalloc's data
-Date: Sat, 4 Aug 2012 15:32:04 +0100
-Message-ID: <20120804143200.GD15691@opensource.wolfsonmicro.com>
-References: <1344081632-4729-3-git-send-email-Julia.Lawall@lip6.fr>
+From: phiamo <phiamo@googlemail.com>
+Subject: [PATCH] ALSA: hda - add dock support for Thinkpad T430s
+Date: Mon,  6 Aug 2012 12:37:26 +0200
+Message-ID: <1344249447-11160-1-git-send-email-phiamo@googlemail.com>
+References: <loom.20120806T101258-620@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0379265B66
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 11:53:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1344081632-4729-3-git-send-email-Julia.Lawall@lip6.fr>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ACD3264EF8
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 12:08:00 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so889242bkc.38
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 03:37:46 -0700 (PDT)
+In-Reply-To: <loom.20120806T101258-620@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, matthias@kaehlcke.net, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, phiamo <phiamo@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 04, 2012 at 02:00:32PM +0200, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
-> 
-> Using kfree to free data allocated with devm_kzalloc causes double frees.
-> 
-> The semantic patch that fixes this problem is as follows:
-> (http://coccinelle.lip6.fr/)
+    Based on commit 108cc108a3bb42fe4705df1317ff98e1e29428a6:
 
-Might it make more sense to devm_kfree() them?  If we don't expect to
-immediately abort driver instantiation it'll save having them lying
-around for the entire lifetime of the device even if they're not
-strictly leaked.
+    Also add a model/fixup string "lenovo-dock", so that other Thinkpad
+    users will be able to test this fixup easily, to see if it enables
+    dock I/O for them as well.
+
+    Cc: stable@kernel.org
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b9a5c45..bb93f92 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6207,6 +6207,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_QUANTA_MUTE),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Lenovo Ideapd", ALC269_FIXUP_PCM_44K),
+-- 
+1.7.9.5
