@@ -1,21 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/1] mx27_3ds: Add sound support
-Date: Mon, 6 Aug 2012 11:26:52 -0300
-Message-ID: <CAOMZO5B3i9NeSD-uqbjN6LLCR1UUhSYKs8g+D6yj7hs31kNJ6A@mail.gmail.com>
-References: <1344258447-6162-1-git-send-email-gcembed@gmail.com>
- <CAOMZO5B9ZmTHrYjVc5a7j=uUgUEyfDva54cKxBP3UeCYZsUWRw@mail.gmail.com>
- <501FD389.1050105@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: adding an external dsp under soc-dsp framework
+Date: Mon, 6 Aug 2012 15:39:57 +0100
+Message-ID: <20120806143956.GA29272@sirena.org.uk>
+References: <loom.20120806T144411-583@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
- [209.85.213.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 94C41265B7B
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 15:57:07 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so856830yhn.38
- for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 07:26:52 -0700 (PDT)
-In-Reply-To: <501FD389.1050105@gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07340265B76
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 16:10:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <loom.20120806T144411-583@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Ga=C3=ABtan_Carlier?= <gcembed@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>
+To: ziv haziz <ziv.haziz@dspg.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgNiwgMjAxMiBhdCAxMToyNCBBTSwgR2HDq3RhbiBDYXJsaWVyIDxnY2VtYmVk
-QGdtYWlsLmNvbT4gd3JvdGU6Cj4gSGkgRmFiaW8sCj4gU29ycnksIEkgaGF2ZSBtaXNzZWQgeW91
-ciBwYXRjaCBpbiBteSBlbWFpbCBhcmNoaXZlLiBJIGRpZG4ndCBzZWFyY2ggdGhlCj4gcmlnaHQg
-a2V5d29yZHMuCj4gSSBhcHBsaWVkIHlvdXIgW3BhdGNoIDEvMl0gKDIvMiBpcyBhbHJlYWR5IG1l
-cmdlZCkgYnV0IEkgaGF2ZSBzYW1lIGVmZmVjdC4gSQo+IHVzZSBhcGxheSB3aXRoIGZpbGUgazNi
-X2Vycm9yMS53YXYgKFVuc2lnbmVkIDggYml0LCBSYXRlIDgwMDAgSHosIE1vbm8pIGFuZAo+IGFs
-c2EvRnJvbnRfTGVmdC53YXYgKFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA0ODAw
-MCBIeiwgTW9ubykuIFR3bwo+IHNvdW5kcyBhcmUgcGxheWVkIHRvbyBmYXN0Lgo+IEl0IGlzIG1h
-eWJlIGEgYmFkIGNvbmZpZ3VyYXRpb24gb2YgQWxzYSAoYnV0IHRoaXMgaXMgd29ya2luZyB3aXRo
-IGtlcm5lbAo+IDIuNi4yMiBmcm9tIEZyZWVzY2FsZSkuCgpPaywgd2Ugd2lsbCBuZWVkIHRvIGRl
-YnVnIHRoaXMgcHJvYmxlbSB0aGVuLgoKQ2FuIHlvdSBwbGVhc2Ugc2VuZCBtZSBvZmZsaW5lIHRo
-ZXNlIHR3byBmaWxlcz8KClJlZ2FyZHMsCgpGYWJpbyBFc3RldmFtCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Aug 06, 2012 at 12:53:40PM +0000, ziv haziz wrote:
+
+Always CC maintainers on patches.
+
+> i plan on adding an external dsp which has slimbus interface under soc-dsp 
+> framwork.
+
+You shouldn't be doing this.  The soc-pcm code is *purely* about
+managing the interdependencies between the data DMAed from memory and
+the external interfaces on a SoC, if you're an off-SoC device then you
+should be providing a CODEC driver.  This is why you're having trouble
+working out how to fit your driver into the frameworks - they're not
+designed to do what you're trying to do.
+
+> last small question: as slimbus ports id should be passed how do you suggest a 
+> device should share his slimbus port id?
+
+Well, the bigger blocker here is that we don't have any Slimbus support
+in the kernel at the minute.  I'm hoping to help push that along at the
+KS/LPC/LinuxCon conferences at the end of this month.
