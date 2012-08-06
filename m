@@ -1,17 +1,18 @@
-From: antony k <adkalkan@gmail.com>
-Subject: plughw vs default / per-application volume changer
-Date: Mon, 6 Aug 2012 14:41:43 +0300
-Message-ID: <CAC2-5LccH=QCQ8UKF-o+JtZUFdxRyU_NaEsq7kGW8ekoLXkGOQ@mail.gmail.com>
+From: "Brand, Mark (Mr) (Summerstrand Campus South)" <Mark.Brand@nmmu.ac.za>
+Subject: Re: Gitcompile for Kernel 3.2?
+Date: Mon, 6 Aug 2012 11:52:53 +0000
+Message-ID: <35FE09CFAB387A4BA7ACDDED49F345181D0496@CRETE.nmmu.ac.za>
+References: <35FE09CFAB387A4BA7ACDDED49F345181D00D8@CRETE.nmmu.ac.za>
+ <s5h3940mpcd.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
- [209.85.213.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C059264F9B
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 13:11:58 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so681605yhn.38
- for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 04:41:44 -0700 (PDT)
+Received: from osiris.nmmu.ac.za (osiris.nmmu.ac.za [196.21.198.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A4E5265B59
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 13:23:37 +0200 (CEST)
+In-Reply-To: <s5h3940mpcd.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I am new to ALSA and I cant figure out 2 things.
+Takashi Iwai wrote:
+> Could you try the following tree (or alsa-driver snpashot)?
+>
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/alsa-driver.git
+>  ftp://ftp.suse.com/pub/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
 
-a) if and why should I prefer the "plughw:0,0" over the "default" device
-name.
-I am developing a simple audio player which is based on the latter.
-I made this choice because when I was using plughw:0,0 with other audio
-programs(flash player,vlc) open in the background I would get the "Device
-is busy" error code.
-With default, it's fine.
+The git url couldn't be found (should I go with alsa-driver-build.git?), but I have pulled the tarball, thank you.  It wouldn't compile on my 3.2 lowlatency machine (with or without ALSAKERNELDIR set to 3.2.0-lowlatency source).  I'll carry it home and try on a vanilla 3.2 kernel tonight.  Would you mind clarifying for me: is it necessary to have kernel source on hand or not?
 
-b) can I have an application specific volume changer? So far I have managed
-to tweak the master volume of the "default" device which has a global
-effect. Im guessing a) and b) are connected.
+Thanks,
+Mark Brand.
 
-Thanks for your time
+________________________________
+
+NOTICE: Please note that this eMail, and the contents thereof, is subject to the standard NMMU eMail disclaimer which may be found at:
+http://www.nmmu.ac.za/disclaimer/email.htm
