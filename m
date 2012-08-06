@@ -1,48 +1,47 @@
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [PATCH v7] media: Add stk1160 new driver
-Date: Mon, 6 Aug 2012 09:51:10 -0300
-Message-ID: <CALF0-+V2MDBvtuNLYLjNMvu+GWU8-KypV_Y1PwLAUEGJUHt-SA@mail.gmail.com>
-References: <1343485133-11090-1-git-send-email-elezegarcia@gmail.com>
-	<CALF0-+XEStNrfdqYecKQHr=qkcFPtC5CyDC4DWWy_7+_oA0h=g@mail.gmail.com>
-	<501FBBB1.1030802@redhat.com>
-	<CALF0-+Woc9s7_TFKyw74SAusg+YCmnFOeViP6kT0QthP4LN9zw@mail.gmail.com>
+From: ziv haziz <ziv.haziz@dspg.com>
+Subject: adding an external dsp under soc-dsp framework
+Date: Mon, 6 Aug 2012 12:53:40 +0000 (UTC)
+Message-ID: <loom.20120806T144411-583@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <CALF0-+Woc9s7_TFKyw74SAusg+YCmnFOeViP6kT0QthP4LN9zw@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBE2D265217
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2012 14:24:06 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1SyMog-0001M1-V5
+ for alsa-devel@alsa-project.org; Mon, 06 Aug 2012 14:53:51 +0200
+Received: from proxy56.messagelabs.net ([85.158.138.25])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 14:53:50 +0200
+Received: from ziv.haziz by proxy56.messagelabs.net with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 14:53:50 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 6, 2012 at 9:46 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
-> On Mon, Aug 6, 2012 at 9:42 AM, Mauro Carvalho Chehab
-> <mchehab@redhat.com> wrote:
->> Em 06-08-2012 09:28, Ezequiel Garcia escreveu:
->>> Hi Mauro,
->>>
->>> On Sat, Jul 28, 2012 at 11:18 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
->>>> This driver adds support for stk1160 usb bridge as used in some
->>>> video/audio usb capture devices.
->>>> It is a complete rewrite of staging/media/easycap driver and
->>>> it's expected as a future replacement.
->>>>
->>>> Cc: Mauro Carvalho Chehab <mchehab@redhat.com>
->>>> Cc: Takashi Iwai <tiwai@suse.de>
->>>> Cc: Hans Verkuil <hverkuil@xs4all.nl>
->>>> Cc: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
->>>> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
->>>> ---
->>>>
->>>
->>> Did you take a look at this?
->>
->> Patchwork didn't get it[1]. Maybe the patch got mangled?
->> If so, could you please re-post?
->>
->> [1] http://patchwork.linuxtv.org/project/linux-media/list/?state=*&q=stk1160
->>
+i plan on adding an external dsp which has slimbus interface under soc-dsp 
+framwork.
+currently i would like to make the following type of connection:
+CPU->DSP->Codec and as the dsp is an external one
+(physically seperated from both the CPU and the Codec)
+i have a difficulty defining how to represent it:
+do i need to make two entities of the dsp:
+- one for the BE connection and one for the FE connection 
+and add some internal routing using mixer controls? this will 
+create two devices in the user space which the user application should open? 
+- or is there a way to make one device which is composed of all three blocks?
 
-I'm preparing v8 based on v3.7...
-
-Ezequiel.
+last small question: as slimbus ports id should be passed how do you suggest a 
+device should share his slimbus port id?
