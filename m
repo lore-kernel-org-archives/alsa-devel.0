@@ -1,20 +1,21 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
+From: nerwusek <luk0104@gmail.com>
 Subject: Re: uda1380 and pxa255 plays nothing but noise
-Date: Wed, 8 Aug 2012 00:21:11 +0300
-Message-ID: <CA+E=qVfand5iknCf_Xi2jdgDawp+WafKxHFjF0EAmwPYebs=eQ@mail.gmail.com>
-References: <50216A11.3050407@gmail.com> <20120807192645.GD14711@sirena.org.uk>
- <50216F4E.1040201@gmail.com>
+Date: Tue, 07 Aug 2012 23:48:24 +0200
+Message-ID: <50218D28.1080404@gmail.com>
+References: <50216A11.3050407@gmail.com>
+ <20120807192645.GD14711@sirena.org.uk> <50216F4E.1040201@gmail.com>
+ <CA+E=qVeeOhXB7iF_BFEp0FpguJQaUhV2nz_0HR4vxnwsMVXJ6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id B360F26601E
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 22:51:46 +0200 (CEST)
-Received: by qcse14 with SMTP id e14so43551qcs.38
- for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2012 14:21:32 -0700 (PDT)
-In-Reply-To: <50216F4E.1040201@gmail.com>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7536265F59
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 23:19:05 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so27707bkc.38
+ for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2012 14:48:51 -0700 (PDT)
+In-Reply-To: <CA+E=qVeeOhXB7iF_BFEp0FpguJQaUhV2nz_0HR4vxnwsMVXJ6Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: nerwusek <luk0104@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBdWcgNywgMjAxMiBhdCAxMDo0MSBQTSwgbmVyd3VzZWsgPGx1azAxMDRAZ21haWwu
-Y29tPiB3cm90ZToKPiBPbiAwNy4wOC4yMDEyIDIxOjI2LCBNYXJrIEJyb3duIHdyb3RlOgo+Pgo+
-PiBIYXZlIHlvdSBjaGVja2VkIHRoYXQgdGhlIG91dHB1dCBpc24ndCBtdXRlZCwgaGFzIHRoZSBh
-dWRpbyByb3V0ZWQgdG8gdGhlCj4+IG91dHB1dCB5b3UncmUgdXNpbmcgYW5kIGhhcyBhIHN1aXRh
-YmxlIHZvbHVtZT8KPgo+IFllcyBJIGhhdmUgY2hlY2tlZCBhbGwgdGhhdCB0aGluZ3MuIEkgaGF2
-ZSAyIHJvdXRlcyBmcm9tIFZPVVRIUHtMUn0gYW5kIGZyb20KPiBWT1VUe0xSfSBhbmQgSSB0aGlu
-ayBpdCdzIG9rIGJlY2F1c2Ugb2YgaW5mbyBpbiBsb2dzICJhc29jOiB1ZGExMzgwLWhpZmkgPC0+
-Cj4gcHhhMnh4LWkycyBtYXBwaW5nIG9rIi4KPiBJIGhhdmUgYWxzbyBvYnNlcnZlZCB0aGF0IGlm
-IEkgY2hhbmdlIE91dHB1dCBNdXggZnJvbSBEQUMgdG8gQW5hbG9nIE1peGVyCj4gYW5kIGNoYW5n
-ZSBBbm9sb2cgTWl4ZXIgdm9sdW1lIHVwIHRoZSBub2lzZSBhbmQgbG91ZGVyLgo+IEluIG15IG9w
-aW5pb24gcHJvYmxlbSBpcyBzb21ld2hlcmUgZWxzZS4gSSB0aGluayB0aGF0IEkgZm9yZ290IHRv
-IGVuYWJsZSBzdGgKPiBpbiBBTFNBLiBBcyBJIHNhaWQgd2hlbiBJIGVuYWJsZWQgSTJDIGRlYnVn
-Z2luZyBkYXRhIGZsb3dzIG9ubHkgd2hlbgo+IHBsYXliYWNrIGlzIHN0YXJ0aW5nIG9yIHdoZW4g
-SSBjaGFuZ2UgdmFsdWVzIGluIGFsc2FtaXhlciwgd2hlbiBtdXNpYyBpcwo+IHBsYXllZCBubyBk
-YXRhIGFyZSBzZW5kIHRvIGNvZGVjLgoKQXVkaW8gZGF0YSBzaG91bGQgYmUgc2VudCBvdmVyIEky
-Uywgc28gdGhlcmUncyBubyBJMkMgdHJhZmZpYyBkdXJpbmcKYXVkaW8gcGxheWJhY2suCgpSZWdh
-cmRzClZhc2lseQoKPiDFgXVrYXN6IERhxYJlawpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On 07.08.2012 23:18, Vasily Khoruzhick wrote:
+> Maybe some amplifier is not enabled? On iPAQ h1940 and rx1950 you need to
+> toggle gpio pin to hear something from internal speaker (not sure if
+> that pin disables
+> headphones).
+When I change volume of Analog Mixer the noise in headphones is
+getting stronger or weaker so GPIOs in my opinion are set up correctly.
+
+I'll enable debug messages on i2s bus and see if there is sth
+sent to codec. Maybe alsa is sending music packets to /dev/null.
+
+I will also want to see what debugfs files should contain when audio works.
+Could you send me few examples or point me to address with them?
+
+=A3ukasz Da=B3ek
