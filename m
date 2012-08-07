@@ -1,22 +1,23 @@
-From: Fabio Estevam <festevam@gmail.com>
+From: Tabi Timur-B04825 <B04825@freescale.com>
 Subject: Re: [PATCH] ASoC: imx-ssi: Fix mono playback
-Date: Tue, 7 Aug 2012 08:45:27 -0300
-Message-ID: <CAOMZO5A4dmM7u98378famhRFnvXkwwgE3y+FPj1d_Ma=2jPoJw@mail.gmail.com>
+Date: Tue, 7 Aug 2012 12:00:14 +0000
+Message-ID: <5021034D.9080307@freescale.com>
 References: <1344281785-22478-1-git-send-email-fabio.estevam@freescale.com>
  <20120806195438.GD16199@opensource.wolfsonmicro.com>
  <CAOMZO5B15kcUziVCMBctGdFmx6xkTqby1-cE+arVUJSXosDU-A@mail.gmail.com>
- <20120807062623.GD1451@pengutronix.de>
+ <CAOZdJXUmgD+GjuvdLMVErYRs7tsGXOxWROi6YGDvf0yHSOBA_w@mail.gmail.com>
+ <CA+7tXigKNQM2ci1Qxc8BjUFyQhNURGvAx=wD0CEim8izMGtU1w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DA7F265204
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 13:15:42 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so6718042obb.38
- for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2012 04:45:27 -0700 (PDT)
-In-Reply-To: <20120807062623.GD1451@pengutronix.de>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3D76265EC2
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 13:30:34 +0200 (CEST)
+In-Reply-To: <CA+7tXigKNQM2ci1Qxc8BjUFyQhNURGvAx=wD0CEim8izMGtU1w@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <1CCFEEB2D775AC4091B0173447DB2BE9@mgd.freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,20 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel@pengutronix.de, gcembed@gmail.com
+To: Trent Piepho <tpiepho@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Estevam Fabio-R49496 <r49496@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, "gcembed@gmail.com" <gcembed@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sascha,
+Trent Piepho wrote:
+> It depends on the codec connected to the I2S.  We have SSI that works
+> in mono mode, using a modified driver.  Our codec allows mono playback
+> by only using the samples on the left channel.
 
-On Tue, Aug 7, 2012 at 3:26 AM, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+I would *love* to see that driver.
 
-> AFAIK only stereo works with the mc13783.
+> There is the race issue in that playback and record must both match
+> mono and stereo and ALSA doesn't handle substreams with constraints
+> that depend on other substreams in a race free manner.
 
-Ok, could you please let me know what do you think about my patch? It
-does the same thing as in fsl_ssi.c by setting channels_min to 2 and I
-am interested to know if this is an acceptable change.
+Isn't that only a problem if both streams are opened literally 
+simultaneously?  I would assume that most apps will open one stream at a time.
 
-Thanks,
-
-Fabio Estevam
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
