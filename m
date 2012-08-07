@@ -1,23 +1,19 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH] ASoC: imx-ssi: Fix mono playback
-Date: Tue, 7 Aug 2012 12:00:14 +0000
-Message-ID: <5021034D.9080307@freescale.com>
-References: <1344281785-22478-1-git-send-email-fabio.estevam@freescale.com>
- <20120806195438.GD16199@opensource.wolfsonmicro.com>
- <CAOMZO5B15kcUziVCMBctGdFmx6xkTqby1-cE+arVUJSXosDU-A@mail.gmail.com>
- <CAOZdJXUmgD+GjuvdLMVErYRs7tsGXOxWROi6YGDvf0yHSOBA_w@mail.gmail.com>
- <CA+7tXigKNQM2ci1Qxc8BjUFyQhNURGvAx=wD0CEim8izMGtU1w@mail.gmail.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v3 4/4] fbdev: sh_mobile_lcdc: use
+	dma_mmap_coherent if available
+Date: Tue, 07 Aug 2012 14:01:43 +0200
+Message-ID: <1854100.yBXTHaXkcr@avalon>
+References: <1344246924-32620-1-git-send-email-hdk@igel.co.jp>
+ <1344246924-32620-5-git-send-email-hdk@igel.co.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
- by alsa0.perex.cz (Postfix) with ESMTP id C3D76265EC2
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 13:30:34 +0200 (CEST)
-In-Reply-To: <CA+7tXigKNQM2ci1Qxc8BjUFyQhNURGvAx=wD0CEim8izMGtU1w@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <1CCFEEB2D775AC4091B0173447DB2BE9@mgd.freescale.com>
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+ [95.142.166.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E530265EC7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 13:31:47 +0200 (CEST)
+In-Reply-To: <1344246924-32620-5-git-send-email-hdk@igel.co.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,24 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <tpiepho@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Estevam Fabio-R49496 <r49496@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, "gcembed@gmail.com" <gcembed@gmail.com>
+To: Hideki EIRAKU <hdk@igel.co.jp>
+Cc: alsa-devel@alsa-project.org, Katsuya MATSUBARA <matsu@igel.co.jp>, linux-fbdev@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, linux-media@vger.kernel.org, Pawel Osciak <pawel@osciak.com>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Kyungmin Park <kyungmin.park@samsung.com>, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Trent Piepho wrote:
-> It depends on the codec connected to the I2S.  We have SSI that works
-> in mono mode, using a modified driver.  Our codec allows mono playback
-> by only using the samples on the left channel.
+Hi Eiraku-san,
 
-I would *love* to see that driver.
+On Monday 06 August 2012 18:55:24 Hideki EIRAKU wrote:
+> fb_mmap() implemented in fbmem.c uses smem_start as the physical
+> address of the frame buffer.  In the sh_mobile_lcdc driver, the
+> smem_start is a dma_addr_t that is not a physical address when IOMMU is
+> enabled.  dma_mmap_coherent() maps the address correctly.  It is
+> available on ARM platforms.
+> 
+> Signed-off-by: Hideki EIRAKU <hdk@igel.co.jp>
 
-> There is the race issue in that playback and record must both match
-> mono and stereo and ALSA doesn't handle substreams with constraints
-> that depend on other substreams in a race free manner.
+Acked-by: Hideki EIRAKU <hdk@igel.co.jp>
 
-Isn't that only a problem if both streams are opened literally 
-simultaneously?  I would assume that most apps will open one stream at a time.
+As this patch doesn't depend on any other patch in your series 
+(ARCH_HAS_DMA_MMAP_COHERENT will not be defined without 1/4, so this patch 
+will be a no-op until then), I've applied it to my tree and will push it to 
+avoid merge conflicts, unless you would prefer to push it yourself.
+
+> ---
+>  drivers/video/sh_mobile_lcdcfb.c |   28 ++++++++++++++++++++++++++++
+>  1 files changed, 28 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/video/sh_mobile_lcdcfb.c
+> b/drivers/video/sh_mobile_lcdcfb.c index 8cb653b..c8cba7a 100644
+> --- a/drivers/video/sh_mobile_lcdcfb.c
+> +++ b/drivers/video/sh_mobile_lcdcfb.c
+> @@ -1614,6 +1614,17 @@ static int sh_mobile_lcdc_overlay_blank(int blank,
+> struct fb_info *info) return 1;
+>  }
+> 
+> +#ifdef ARCH_HAS_DMA_MMAP_COHERENT
+> +static int
+> +sh_mobile_lcdc_overlay_mmap(struct fb_info *info, struct vm_area_struct
+> *vma) +{
+> +	struct sh_mobile_lcdc_overlay *ovl = info->par;
+> +
+> +	return dma_mmap_coherent(ovl->channel->lcdc->dev, vma, ovl->fb_mem,
+> +				 ovl->dma_handle, ovl->fb_size);
+> +}
+> +#endif
+> +
+>  static struct fb_ops sh_mobile_lcdc_overlay_ops = {
+>  	.owner          = THIS_MODULE,
+>  	.fb_read        = fb_sys_read,
+> @@ -1626,6 +1637,9 @@ static struct fb_ops sh_mobile_lcdc_overlay_ops = {
+>  	.fb_ioctl       = sh_mobile_lcdc_overlay_ioctl,
+>  	.fb_check_var	= sh_mobile_lcdc_overlay_check_var,
+>  	.fb_set_par	= sh_mobile_lcdc_overlay_set_par,
+> +#ifdef ARCH_HAS_DMA_MMAP_COHERENT
+> +	.fb_mmap	= sh_mobile_lcdc_overlay_mmap,
+> +#endif
+>  };
+> 
+>  static void
+> @@ -2093,6 +2107,17 @@ static int sh_mobile_lcdc_blank(int blank, struct
+> fb_info *info) return 0;
+>  }
+> 
+> +#ifdef ARCH_HAS_DMA_MMAP_COHERENT
+> +static int
+> +sh_mobile_lcdc_mmap(struct fb_info *info, struct vm_area_struct *vma)
+> +{
+> +	struct sh_mobile_lcdc_chan *ch = info->par;
+> +
+> +	return dma_mmap_coherent(ch->lcdc->dev, vma, ch->fb_mem,
+> +				 ch->dma_handle, ch->fb_size);
+> +}
+> +#endif
+> +
+>  static struct fb_ops sh_mobile_lcdc_ops = {
+>  	.owner          = THIS_MODULE,
+>  	.fb_setcolreg	= sh_mobile_lcdc_setcolreg,
+> @@ -2108,6 +2133,9 @@ static struct fb_ops sh_mobile_lcdc_ops = {
+>  	.fb_release	= sh_mobile_lcdc_release,
+>  	.fb_check_var	= sh_mobile_lcdc_check_var,
+>  	.fb_set_par	= sh_mobile_lcdc_set_par,
+> +#ifdef ARCH_HAS_DMA_MMAP_COHERENT
+> +	.fb_mmap	= sh_mobile_lcdc_mmap,
+> +#endif
+>  };
+> 
+>  static void
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Regards,
+
+Laurent Pinchart
