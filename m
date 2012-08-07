@@ -1,19 +1,16 @@
-From: nerwusek <luk0104@gmail.com>
-Subject: Re: uda1380 and pxa255 plays nothing but noise
-Date: Tue, 07 Aug 2012 21:41:02 +0200
-Message-ID: <50216F4E.1040201@gmail.com>
-References: <50216A11.3050407@gmail.com> <20120807192645.GD14711@sirena.org.uk>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v2] ASoC: imx-ssi: Remove mono support
+Date: Tue,  7 Aug 2012 16:51:34 -0300
+Message-ID: <1344369094-24085-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6656395252567910635=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 630A7265FE9
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 21:11:43 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so1454147bkc.38
- for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2012 12:41:29 -0700 (PDT)
-In-Reply-To: <20120807192645.GD14711@sirena.org.uk>
+Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
+ [209.85.161.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A813265FFC
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 21:22:01 +0200 (CEST)
+Received: by ggni2 with SMTP id i2so843273ggn.38
+ for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2012 12:51:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, kernel@pengutronix.de, gcembed@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07.08.2012 21:26, Mark Brown wrote:
-> Have you checked that the output isn't muted, has the audio routed to =
+--===============6656395252567910635==
+Content-Type: text/plain
 
-> the output you're using and has a suitable volume? =
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Yes I have checked all that things. I have 2 routes from VOUTHP{LR} and =
+Playing a mono track results in incorrect playback rate, ie, the audio
+is played at a faster rate.
 
-from VOUT{LR} and I think it's ok because of info in logs "asoc: =
+Remove mono support in the driver by setting 'channes_min' to dual-channel 
+and this allows mono tracks to be played correctly.
 
-uda1380-hifi <-> pxa2xx-i2s mapping ok".
-I have also observed that if I change Output Mux from DAC to Analog =
+Reported-by: Gaëtan Carlier <gcembed@gmail.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+Changes since v1:
+- Also change 'channels_min' for the capture
+- Improve the commit log
+ sound/soc/fsl/imx-ssi.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-Mixer and change Anolog Mixer volume up the noise and louder.
-In my opinion problem is somewhere else. I think that I forgot to enable =
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index 3c520c4..7074ae6 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -380,13 +380,14 @@ static int imx_ssi_dai_probe(struct snd_soc_dai *dai)
+ static struct snd_soc_dai_driver imx_ssi_dai = {
+ 	.probe = imx_ssi_dai_probe,
+ 	.playback = {
+-		.channels_min = 1,
++		/* The SSI does not support monaural audio. */
++		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_96000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.capture = {
+-		.channels_min = 1,
++		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_96000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-- 
+1.7.1
 
-sth in ALSA. As I said when I enabled I2C debugging data flows only when =
 
-playback is starting or when I change values in alsamixer, when music is =
+--===============6656395252567910635==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-played no data are send to codec.
 
-=A3ukasz Da=B3ek
+--===============6656395252567910635==--
