@@ -1,20 +1,22 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH] ALSA: hda - Set channels count for
-	HBR	format
-Date: Tue, 7 Aug 2012 08:03:08 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48900FF42444@SHSMSX102.ccr.corp.intel.com>
-References: <1344324022-17310-1-git-send-email-xingchao.wang@intel.com>
- <46B810F6945F7C4788E11DCE57EC48900FF42416@SHSMSX102.ccr.corp.intel.com>
- <s5h628vi1ka.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Plumbers: Please split audio topics into separate
+	sessions
+Date: Tue, 07 Aug 2012 10:08:54 +0200
+Message-ID: <5020CD16.6020705@canonical.com>
+References: <50201664.7000804@canonical.com> <s5hwr1bizuj.wl%tiwai@suse.de>
+ <50202500.5060607@canonical.com>
+ <20120806222417.GF26698@opensource.wolfsonmicro.com>
+ <s5htxwfi6pb.wl%tiwai@suse.de> <5020B8AF.3090003@canonical.com>
+ <s5hhasfi3b4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 47C00265E43
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 09:33:30 +0200 (CEST)
-In-Reply-To: <s5h628vi1ka.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FBA1265005
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 09:39:10 +0200 (CEST)
+In-Reply-To: <s5hhasfi3b4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,110 +27,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/07/2012 09:11 AM, Takashi Iwai wrote:
+
+>>>>> Judging from our last experience, where we had a two-hour session on
+>>>>> Sunday and then had to reschedule on Wednesday for two more hours, and
+>>>>> yet had to cancel the topic I was about to introduce, because everybody
+>>>>> was tired (and waiting for lunch), I certainly beg to differ!
+>>>>
+>>>> Hrm?  Was this Plumbers or the BoF in Prague last year?
+>>
+>> The BoF in Prague.
+>
+> That was the problem of having too long time slot.  Discussions tend
+> to be either too deep or too boring when continued for long time.
+
+We'll have to agree to disagree on that.
+
+>>>>> Also; we fly across half the world to get there, to spend just a few
+>>>>> minutes talking? Better have some margins. Maybe some session will end
+>>>>> early, but will it hurt? No. If we miss a topic, or have to cut it short
+>>>>> without a conclusion, will it hurt? Yes.
+
+Btw, take "HD Audio cooking recipe" as an example. We will discuss:
+
+  * debugging practices for typical problems
+  * open problems
+  * jack retasking
+  * HDMI stream assignment
+  * missing speaker/mic streams
+  * better interaction / organization with user-space applications like 
+PulseAudio
+
+For 15-20 minutes in total, that gives approximately 3 minutes per 
+sub-topic. (!)
+
+>> Since I don't seem to get understanding for the need to have 45 min
+>> sessions per topic, which I still believe would be the best option, can
+>> we split the channel-mapping API topic with a new topic - "simplifying
+>> volume set/get on startup and shutdown"?
+>
+> Sorry, I don't understand what you mean here.  The channel-mapping API
+> has nothing to do with volume get/set things...  So you are proposing
+> a completely new topic now?
+>
+> The channel-API topic slot was considered to be an optional one from
+> the beginning.  I got the slot lately in case anyone would like to
+> bring up new topics, e.g. use it for lightening talks.  So, if you
+> have a new topic proposal, it's fine.  Let's assign there.
+
+New topic suggestion:
+
+Simplifying volume setting on startup/shutdown
+====================
+Currently, on a normal desktop session, volume is set four times on 
+startup - initally by the kernel, then by alsactl, then by PulseAudio in 
+the DM session, then by PulseAudio in the logged in session.
+
+When shutting down, both PulseAudio and alsactl saves volumes to restore 
+them later. And then we also have suspend and hibernate to consider, and 
+that cards can be plugged in at any time.
+
+First, isn't this quite complex for something as simple as setting 
+volumes? Second, can we facilitate new features, such as 1) having a 
+"set this volume as default, for all users, on startup" button in the 
+volume control, or 2) "allow the DM user to introspect different users' 
+volumes"?
+===================
+
+This is mostly a problem statement. I don't have a good proposal for how 
+to simplify it.
+
+>>> And, if needed, we can ask for a slot/room for BoF beforehand in
+>>> addition.
+>>
+>> Can we ensure that the required participants make it to that slot/room then?
+>
+> Yeah I meant as an official (5th) slot, so people can check it
+> rightly.
+
+Ok, if we can't have 45 minutes per topic, a 5th slot is better than 
+nothing.
 
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> Sent: Tuesday, August 07, 2012 3:50 PM
-> To: Wang, Xingchao
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Set channels count for HBR format
-> 
-> At Tue, 7 Aug 2012 07:40:40 +0000,
-> Wang, Xingchao wrote:
-> >
-> > Hi Takashi,
-> >
-> > When test HBR feature, unless specify the channel number in command
-> line(as below), alsa will be confused about the real channel number.
-> >
-> > aplay -D hdmi:DEV=1,AES0=0x06 -c8 -fs16_le -r192000
-> > testi.dtshd.20120730.ma-71-24.spdif
-> 
-> But is_hbr_format() assumes the channels must be 8.
-> 
-> #define is_hbr_format(format) \
-> 	((format & AC_FMT_TYPE_NON_PCM) && (format &
-> AC_FMT_CHAN_MASK) == 7)
-> 
-> where format value is computed from runtime->channels in
-> snd_hda_calc_stream_format().
-
-Oh yes, thanks for clarification, I did not read this code carefully. :) 
-I thought the case without setting channels number as 8 from pulseaudio and it's HBR stream in fact.
-
-I've not test HBR stream playback from pulseaduio pass-through mode yet, when that happen and I will 
-Write a new patch then.
-
-So this patch is redundant, just ignore it.
-
-Thanks
---xingchao
-> 
-> So, passing anything else than 8 is simply invalid as HBR.
-> 
-> > If the HBR stream is gone through pulseaudio(regarded as passthrough), the
-> channels number is faked.
-> 
-> That is, this is simply a wrong operation.
-> 
-> 
-> Takashi
-> 
-> >
-> > Thanks
-> > --xingchao
-> >
-> > > -----Original Message-----
-> > > From: alsa-devel-bounces@alsa-project.org
-> > > [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Wang
-> > > Xingchao
-> > > Sent: Tuesday, August 07, 2012 3:20 PM
-> > > To: alsa-devel@alsa-project.org; tiwai@suse.de
-> > > Cc: Wang, Xingchao
-> > > Subject: [alsa-devel] [PATCH] ALSA: hda - Set channels count for HBR
-> > > format
-> > >
-> > > If it's HBR format, the channels count should be 8.
-> > >
-> > > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
-> > > ---
-> > >  sound/pci/hda/patch_hdmi.c |    7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > > index ad319d4..ae4e67e 100644
-> > > --- a/sound/pci/hda/patch_hdmi.c
-> > > +++ b/sound/pci/hda/patch_hdmi.c
-> > > @@ -1153,8 +1153,11 @@ static int
-> > > generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
-> > >  	struct hdmi_spec *spec = codec->spec;
-> > >  	int pin_idx = hinfo_to_pin_index(spec, hinfo);
-> > >  	hda_nid_t pin_nid = spec->pins[pin_idx].pin_nid;
-> > > -
-> > > -	hdmi_set_channel_count(codec, cvt_nid, substream->runtime->channels);
-> > > +
-> > > +	if (is_hbr_format(format))
-> > > +		hdmi_set_channel_count(codec, cvt_nid, 8);
-> > > +	else
-> > > +		hdmi_set_channel_count(codec, cvt_nid,
-> > > substream->runtime->channels);
-> > >
-> > >  	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
-> > >
-> > > --
-> > > 1.7.9.5
-> > >
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@alsa-project.org
-> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
