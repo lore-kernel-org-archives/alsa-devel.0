@@ -1,22 +1,22 @@
 From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH] ASoC: imx-ssi: Fix mono playback
-Date: Mon, 6 Aug 2012 21:32:10 -0300
-Message-ID: <CAOMZO5BxB5C_psY1bK+B5mb3dhYs+nfiBvcSfAmU7eeEOBy5oQ@mail.gmail.com>
+Date: Tue, 7 Aug 2012 00:22:41 -0300
+Message-ID: <CAOMZO5BwZnhR=Fa3VaCEFTQGso9US3jSYXi5EzQjG35MP23k4g@mail.gmail.com>
 References: <1344281785-22478-1-git-send-email-fabio.estevam@freescale.com>
  <20120806195438.GD16199@opensource.wolfsonmicro.com>
  <CAOMZO5B15kcUziVCMBctGdFmx6xkTqby1-cE+arVUJSXosDU-A@mail.gmail.com>
- <CAOZdJXUmgD+GjuvdLMVErYRs7tsGXOxWROi6YGDvf0yHSOBA_w@mail.gmail.com>
+ <CAOMZO5AekbYTnrSM+jK_PBeHDx6vKT4DbxbuXhUwA6uD3PAZFQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
  [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 5468B265E53
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 02:02:25 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so6051859obb.38
- for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 17:32:10 -0700 (PDT)
-In-Reply-To: <CAOZdJXUmgD+GjuvdLMVErYRs7tsGXOxWROi6YGDvf0yHSOBA_w@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A4900265E2D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 04:52:56 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so6228865obb.38
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2012 20:22:41 -0700 (PDT)
+In-Reply-To: <CAOMZO5AekbYTnrSM+jK_PBeHDx6vKT4DbxbuXhUwA6uD3PAZFQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,42 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: Estevam Fabio-R49496 <r49496@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "gcembed@gmail.com" <gcembed@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Tabi Timur-B04825 <B04825@freescale.com>, kernel@pengutronix.de, =?UTF-8?Q?Ga=C3=ABtan_Carlier?= <gcembed@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGltdXIsCgpPbiBNb24sIEF1ZyA2LCAyMDEyIGF0IDg6MzMgUE0sIFRhYmkgVGltdXItQjA0
-ODI1IDxCMDQ4MjVAZnJlZXNjYWxlLmNvbT4gd3JvdGU6Cj4gT24gTW9uLCBBdWcgNiwgMjAxMiBh
-dCAyOjU4IFBNLCBGYWJpbyBFc3RldmFtIDxmZXN0ZXZhbUBnbWFpbC5jb20+IHdyb3RlOgo+Cj4+
-IERvIHlvdSBrbm93IGlmIG1vbm8gcGxheWJhY2sgdXNlZCB0byB3b3JrIHByZXZpb3VzbHkgaW4g
-aW14LXNzaT8KPgo+IEkgZG91YnQgaXQuICBJIGRvbid0IHRoaW5rIHRoZSBJMlMgc3RhbmRhcmQg
-YWxsb3dzIGZvciBtb25vIHBsYXliYWNrLAo+IHNvIHRoZSBTU0kgd291bGQgbmVlZCB0byBzZW5k
-IHRoZSBzYW1lIHNhbXBsZSB0d2ljZSwgYW5kIEkgZG9uJ3Qgc2VlCj4gYW55IHN1cHBvcnQgZm9y
-IHRoYXQgZmVhdHVyZSBpbiB0aGUgUk0uCj4KPiBXaGVuIEkgd3JvdGUgZnNsX3NzaSwgSSBjb3Vs
-ZG4ndCBmaW5kIGFueSB3YXkgdG8gZ2V0IG1vbm8gcGxheWJhY2sgdG8gd29yay4KPgo+IEJUVywg
-SSBjYW4ndCBmaW5kIHRoZSBvcmlnaW5hbCBwYXRjaCBpbiBteSBpbmJveCBvciB0aGUgbWFpbGlu
-ZyBsaXN0Cj4gYXJjaGl2ZXMuICBXaGVuIHdhcyBpdCBzZW50PwoKSSBzZW50IHRoZSBwYXRjaCBm
-cm9tIEZTTCBhbmQgaXQgd2FzIGJsb2NrZWQgYmVjYXVzZSBJIGFtIG5vdApzdWJzY3JpYmVkIGlu
-IGFsc2EtZGV2ZWwgbGlzdCBmcm9tIG15IEZTTCBhY2NvdW50LgoKVGhlIG9yaWdpbmFsIHBhdGNo
-IEkgc2VudCB3YXMgdGhlIGZvbGxvd2luZyBhbmQgaXQgYWxsb3dlZCBtZSB0byBwbGF5CmEgbW9u
-byB0cmFjazoKCkZyb20gYmM0NjA4NzExMGJkNDhhNDFmMWY3ZGNiODI2ODUzMzQ5NjYyYzc2NiBN
-b24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogRmFiaW8gRXN0ZXZhbSA8ZmFiaW8uZXN0ZXZh
-bUBmcmVlc2NhbGUuY29tPgpEYXRlOiBNb24sIDYgQXVnIDIwMTIgMTY6MzA6NTEgLTAzMDAKU3Vi
-amVjdDogW1BBVENIXSBBU29DOiBpbXgtc3NpOiBGaXggbW9ubyBwbGF5YmFjawoKQ3VycmVudGx5
-IG1vbm8gcGxheWJhY2sgaXMgcGxheWVkIG9uIGEgZmFzdGVyIHJhdGUuCgpBZGp1c3QgY2hhbm5l
-bHNfbWluIHRvIDIgY2hhbm5lbHMgaW4gb3JkZXIgdG8gcGxheSBpdCBiYWNrIGNvcnJlY3RseS4K
-ClJlcG9ydGVkLWJ5OiBHYcOrdGFuIENhcmxpZXIgPGdjZW1iZWRAZ21haWwuY29tPgpTaWduZWQt
-b2ZmLWJ5OiBGYWJpbyBFc3RldmFtIDxmYWJpby5lc3RldmFtQGZyZWVzY2FsZS5jb20+Ci0tLQog
-c291bmQvc29jL2ZzbC9pbXgtc3NpLmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5z
-ZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL2lt
-eC1zc2kuYyBiL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jCmluZGV4IDI4ZGQ3NmMuLmM0MmRmMzEg
-MTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jCisrKyBiL3NvdW5kL3NvYy9mc2wv
-aW14LXNzaS5jCkBAIC0zODAsNyArMzgwLDcgQEAgc3RhdGljIGludCBpbXhfc3NpX2RhaV9wcm9i
-ZShzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJp
-dmVyIGlteF9zc2lfZGFpID0gewogCS5wcm9iZSA9IGlteF9zc2lfZGFpX3Byb2JlLAogCS5wbGF5
-YmFjayA9IHsKLQkJLmNoYW5uZWxzX21pbiA9IDEsCisJCS5jaGFubmVsc19taW4gPSAyLAogCQku
-Y2hhbm5lbHNfbWF4ID0gMiwKIAkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF85NjAwMCwK
-IAkJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSwKLS0gCjEuNy4xCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Aug 6, 2012 at 6:49 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Mon, Aug 6, 2012 at 4:58 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>
+>> Ok, understood.
+>>
+>> Sascha,
+>>
+>> Do you know if mono playback used to work previously in imx-ssi?
+>
+> Ok, just tested a mono track on a mx6qsabrelite and it played well.
+
+Ops, I was making a confusion:
+
+mx6sabrelite runs a dt kernel and uses fsl_ssi.c driver.
+
+mx31pdk runs a non-dt kernel and uses imx-ssi.c driver.
+
+The fsl_ssi.c code has:
+
+	.playback = {
+		/* The SSI does not support monaural audio. */
+		.channels_min = 2,
+		.channels_max = 2,
+		.rates = FSLSSI_I2S_RATES,
+		.formats = FSLSSI_I2S_FORMATS,
+	},
+
+and if I do the same on imx-ssi.c, ie, change 'channels_min' to 2,
+then it also plays correctly.
+
+So is my original patch correct? Maybe I should change the wording of
+the commit log?
+
+Thanks,
+
+Fabio Estevam
