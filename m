@@ -1,18 +1,21 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: Plumbers: Please split audio topics into separate
- sessions
-Date: Tue, 07 Aug 2012 12:12:29 +0530
-Message-ID: <1344321749.1726.14466.camel@vkoul-udesk3>
-References: <50201664.7000804@canonical.com>
- <20120806193858.GB16199@opensource.wolfsonmicro.com>
+	sessions
+Date: Tue, 07 Aug 2012 08:41:51 +0200
+Message-ID: <5020B8AF.3090003@canonical.com>
+References: <50201664.7000804@canonical.com> <s5hwr1bizuj.wl%tiwai@suse.de>
+ <50202500.5060607@canonical.com>
+ <20120806222417.GF26698@opensource.wolfsonmicro.com>
+ <s5htxwfi6pb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 381D626506D
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 08:11:18 +0200 (CEST)
-In-Reply-To: <20120806193858.GB16199@opensource.wolfsonmicro.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B31D26506D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2012 08:12:07 +0200 (CEST)
+In-Reply-To: <s5htxwfi6pb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +25,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-08-06 at 20:38 +0100, Mark Brown wrote:
-> On Mon, Aug 06, 2012 at 09:09:24PM +0200, David Henningsson wrote:
-> 
-> > Audio uConf: HD-audio cooking && QA/Testing
-> > Audio uConf: Expose Routing && DSPs in ASoC
-> > Audio uConf: Time Alignment && PA on Android
-> 
-> > Please split these three sessions into six. It is better to have a  
-> > little more time than necessary (even if I believe we easily fill 45  
-> > minutes per topic), than having to skip a topic just because the other  
-> > topic took more time than expected.
-> 
-> The two ASoC topics certainly don't need to be split, they're roughly
-> the same area.  I'd be really surprised if the last two were terribly
-> time consuming individually.
-Well it was three proposals, Liam's, ours and your routing one. So maybe
-little tight to complete in 20minutes.
-Also it would be good to have a summary from you/Liam on advances in
-ASoC and future plans, the core has changed a lot since last Plumbers :)
+(Answer to both of you)
+
+On 08/07/2012 07:58 AM, Takashi Iwai wrote:
+> At Mon, 6 Aug 2012 23:24:17 +0100,
+> Mark Brown wrote:
+>>
+>> On Mon, Aug 06, 2012 at 10:11:44PM +0200, David Henningsson wrote:
+>>> On 08/06/2012 09:29 PM, Takashi Iwai wrote:
+>>
+>>>> Well, as already announced, each topic was planned to be about 20
+>>>> minutes, so I don't think we need to extend session time.
+>>
+>>> Judging from our last experience, where we had a two-hour session on
+>>> Sunday and then had to reschedule on Wednesday for two more hours, and
+>>> yet had to cancel the topic I was about to introduce, because everybody
+>>> was tired (and waiting for lunch), I certainly beg to differ!
+>>
+>> Hrm?  Was this Plumbers or the BoF in Prague last year?
+
+The BoF in Prague.
+
+>> On the other hand if we don't have much concrete to discuss then it can
+>> end up being too long.
+>>
+>> I guess this is one of the concerns I have with having lots of sessions
+>> - it means we've split topics up and have less play to manage time
+>> overall, it means we either cover less or take more time.  The
+>> flexibility for attendees is good, though - have to see how the
+>> tradeoffs work.
+
+I'm not sure I follow, but if you're worried that you will miss sessions 
+of other tracks, mark yourself as "Participation essential" do the 
+blueprints, and the scheduler will try to not schedule them in parallel.
+
+> My initial idea is to kick off discussions in the sessions, then
+> continue at BoF or whatever if not finished in time.  This is often
+> more fruitful than too lengthy discussions.  You can cool down and
+> reconsider the idea.
+
+If we're going to have spill-over sessions, I think they will need to be 
+more formalised than "BoF or whatever". Otherwise people might not show 
+up (due to having to attend other sessions, for example).
+
+>>> Also all of the 45 minutes is not effective discussion/presentation
+>>> time: Assume that we first wait 5 minutes for all people to appear, then
+>>> we have 5 minutes presentation and 15 - 20 minutes discussion for the
+>>> first topic, then 5 minutes are spent fiddling with the projector to
+>>> show the slides for the second topic...and suddenly there is just a few
+>>> minutes left for discussion of the second topic.
+>>
+>> This is a bit of a concern, yes.
+>
+> Yeah, but we should apply a strict rule in such a case.
+> The preparation must be done before the session.  If not, the topic
+> should be started without the video.
+
+With only 5 minutes between sessions, there is no time to do 
+preparations (i e checking the projector and stuff).
+
+ > Also, the topic is cut strictly in time.
+
+Maybe it will work if we at the time of overrun stop discussion, and 
+instead only reply with SND_PCM_STATE_XRUN ;-)
+
+>>> Also; we fly across half the world to get there, to spend just a few
+>>> minutes talking? Better have some margins. Maybe some session will end
+>>> early, but will it hurt? No. If we miss a topic, or have to cut it short
+>>> without a conclusion, will it hurt? Yes.
+>>
+>> Perhaps the best thing is to have an additional session for overrun
+>> rather than plan on everything being 45 minutes long?
+>
+> As mentioned, we have already one additional slot, currently planned
+> for my channel-mapping API topic.  I can shorten the topic and the
+> almost whole slot can be used for other discussions.
+
+Since I don't seem to get understanding for the need to have 45 min 
+sessions per topic, which I still believe would be the best option, can 
+we split the channel-mapping API topic with a new topic - "simplifying 
+volume set/get on startup and shutdown"?
+
+> And, if needed, we can ask for a slot/room for BoF beforehand in
+> addition.
+
+Can we ensure that the required participants make it to that slot/room then?
+
+Also we need to make sure that the spill-over slot(s) happens *after* 
+the other sessions. Right now the session you say can be used for 
+spill-over sessions (channel-mapping API topic), is scheduled before the 
+actual sessions that can spill over.
+
 
 -- 
-~Vinod
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
