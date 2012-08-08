@@ -1,18 +1,17 @@
-From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: Re: hw_params ignores ioplug's buffer size requirements
-Date: Wed, 8 Aug 2012 09:51:42 -0500
-Message-ID: <20120808145142.GO2424@foghorn.codeweavers.com>
-References: <20120807143211.GM2424@foghorn.codeweavers.com>
- <s5h4noehekq.wl%tiwai@suse.de>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: [PATCH] ASoC: Davinci: McASP: Flush the FIFO before
+	enabling
+Date: Wed, 8 Aug 2012 20:40:31 +0530
+Message-ID: <1344438632-2604-2-git-send-email-gururaja.hebbar@ti.com>
+References: <1344438632-2604-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 5071C26613E
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 16:21:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h4noehekq.wl%tiwai@suse.de>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02683266250
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 16:55:17 +0200 (CEST)
+In-Reply-To: <1344438632-2604-1-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Eikum <aeikum@codeweavers.com>, alsa-devel@alsa-project.org
+To: tony@atomide.com, lrg@ti.com, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, Vaibhav Bedia <vaibhav.bedia@ti.com>, gururaja.hebbar@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 07, 2012 at 06:06:13PM +0200, Takashi Iwai wrote:
-> At Tue, 7 Aug 2012 09:32:11 -0500,
-> Andrew Eikum wrote:
-> > There is also test client, alsa-test.c, which attempts to violate
-> > those hw_params restrictions, and succeeds! The eventual call to the
-> > ioplug's example_hw_params() callback gets an invalid buffer_size
-> > parameter (it happens to be 512).
-> 
-> Why is it wrong?  512 frames = 512 * 2 channel * 2 bytes-per-sample
->  = 2048 bytes.
-> 
-> I guess you are confused about the units passed to
-> snd_pcm_hw_params_set_buffer_size_near().  It's in frames, not in
-> bytes.
-> 
+From: Vaibhav Bedia <vaibhav.bedia@ti.com>
 
-Yeah, you're right. I should've noticed the type for that parameter.
-Thanks for pointing it out, sorry for the noise.
+FIFO should be flushed before it is enabled for the first time.
+This fixes the I/O errors reported by the ASoC core on a fresh boot
 
-Andrew
+Signed-off-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+---
+This patch was tested on AM18x Board and is based on repo at 
+http://git.kernel.org/?p=linux/kernel/git/broonie/sound.git;
+a=shortlog;h=refs/heads/for-3.6
+
+:100644 100644 95441bf... ce5e5cd... M	sound/soc/davinci/davinci-mcasp.c
+ sound/soc/davinci/davinci-mcasp.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 95441bf..ce5e5cd 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -380,14 +380,20 @@ static void mcasp_start_tx(struct davinci_audio_dev *dev)
+ static void davinci_mcasp_start(struct davinci_audio_dev *dev, int stream)
+ {
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		if (dev->txnumevt)	/* enable FIFO */
++		if (dev->txnumevt) {	/* enable FIFO */
++			mcasp_clr_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
++								FIFO_ENABLE);
+ 			mcasp_set_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
+ 								FIFO_ENABLE);
++		}
+ 		mcasp_start_tx(dev);
+ 	} else {
+-		if (dev->rxnumevt)	/* enable FIFO */
++		if (dev->rxnumevt) {	/* enable FIFO */
++			mcasp_clr_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
++								FIFO_ENABLE);
+ 			mcasp_set_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
+ 								FIFO_ENABLE);
++		}
+ 		mcasp_start_rx(dev);
+ 	}
+ }
+-- 
+1.7.1
