@@ -1,22 +1,21 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 3/4] ARM: OMAP3: Switch to use the unified
- audio driver (omap-twl4030) for selected boards
-Date: Wed, 08 Aug 2012 15:29:41 +0300
-Message-ID: <50225BB5.3000407@ti.com>
-References: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
- <1344419650-5389-4-git-send-email-peter.ujfalusi@ti.com>
- <50225A84.5010008@compulab.co.il>
+Subject: Re: [PATCH 04/11] MFD: twl4030-audio: Add DT support
+Date: Wed, 08 Aug 2012 15:43:29 +0300
+Message-ID: <50225EF1.4010203@ti.com>
+References: <1344418887-5262-1-git-send-email-peter.ujfalusi@ti.com>
+ <1344418887-5262-5-git-send-email-peter.ujfalusi@ti.com>
+ <5022529D.3090406@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog128.obsmtp.com (na3sys009aog128.obsmtp.com
- [74.125.149.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E1982661D2
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 14:00:03 +0200 (CEST)
-Received: by obbun3 with SMTP id un3so2109481obb.27
- for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2012 05:29:47 -0700 (PDT)
-In-Reply-To: <50225A84.5010008@compulab.co.il>
+Received: from na3sys009aog131.obsmtp.com (na3sys009aog131.obsmtp.com
+ [74.125.149.247])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82F042661D2
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 14:13:45 +0200 (CEST)
+Received: by obbwd20 with SMTP id wd20so1133375obb.9
+ for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2012 05:43:29 -0700 (PDT)
+In-Reply-To: <5022529D.3090406@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,33 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Igor Grinberg <grinberg@compulab.co.il>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, Steve Sakoman <steve@sakoman.com>
+To: Benoit Cousson <b-cousson@ti.com>
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Igor,
+Hi Benoit,
 
-On 08/08/2012 03:24 PM, Igor Grinberg wrote:
->> diff --git a/arch/arm/mach-omap2/board-cm-t35.c b/arch/arm/mach-omap2/bo=
-ard-cm-t35.c
->> index 97d7190..b73fa5c 100644
->> --- a/arch/arm/mach-omap2/board-cm-t35.c
->> +++ b/arch/arm/mach-omap2/board-cm-t35.c
->> @@ -731,6 +731,7 @@ static void __init cm_t3x_common_init(void)
->>  	cm_t35_init_ethernet();
->>  	cm_t35_init_led();
->>  	cm_t35_init_display();
->> +	omap_twl4030_audio_init("overo", 26000000);
+On 08/08/2012 02:50 PM, Benoit Cousson wrote:
+>> +Required properties:
+>> +- compatible : must be "ti,twl4030-audio"
+>> +- ti,audio_mclk: Master clock frequency used on the board. Supported
+>> +	         frequencies: 19200000, 26000000 and 38400000
 > =
 
-> Can the card_name here be "cm-t3x" ?
+> Since you care about the frequency only you can use the generic
+> attribute: clock-frequency (in your example, I2C is using it).
 
-I have used the "overo" as card name here since what I gathered is that cm-=
-t35
-used the sound/soc/omap/overo.c machine driver for audio support.
-If the card name is changing your existing user space might get confused by
-the card name change.
-But sure, I can change the card name to "cm-t3x" if it is better for you.
+I see, I'll use replace the property with clock-frequency.
+
+> That being said, since we do have the clock binding now, maybe we should
+> create a clock provider at board level for the sys_clk and thus you will
+> just have to create a phandle to it in your audio description.
+> =
+
+> In theory OMAP and other components will thus have to use that sys_clock
+> reference as well.
+
+And in the driver I would need to do for example:
+clkp =3D clk_get(NULL, "audio_mclk");
+clk_rate =3D clk_get_rate(clkp);
+clk_put(clkp);
+
+to get the frequency in this way?
+Note that the twl4030-audio stack itself does not handle clocks at the mome=
+nt
+since the clock needed for the audio module is always running (HFCLKIN ->
+HFCLKOUT -> AUDIO_MCLK (USB_MCLK)). All of this is within twl4030. Do we
+really want to model this?
 
 -- =
 
