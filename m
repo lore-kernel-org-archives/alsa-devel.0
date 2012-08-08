@@ -1,37 +1,59 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/11] ARM/ASoC: OMAP McBSP device tree
-	support
-Date: Wed, 8 Aug 2012 12:21:32 +0100
-Message-ID: <20120808112132.GN16861@opensource.wolfsonmicro.com>
-References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH] ASoC: Samsung: Fix build error
+Date: Wed, 8 Aug 2012 17:03:09 +0530
+Message-ID: <CAK9yfHzE4sRKj7uUKAEWtonV2uVBcg5_JhL1Ny4d1ohS5g+5yw@mail.gmail.com>
+References: <1344405883-27603-1-git-send-email-sachin.kamat@linaro.org>
+	<20120808110926.GK16861@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5F9D26607D
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 12:51:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20120808110926.GK16861@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, patches@linaro.org, sbkim73@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 08, 2012 at 12:11:30PM +0300, Peter Ujfalusi wrote:
+Hi Mark,
 
-> The series changes McBSP related files mostly. It would be great if the whole
-> series could go via audio tree (if the patches are OK and it is fine by Tony).
+On 8 August 2012 16:39, Mark Brown <broonie@opensource.wolfsonmicro.com=
+> wrote:
+> On Wed, Aug 08, 2012 at 11:34:43AM +0530, Sachin Kamat wrote:
+>> Fixes the following build error:
+>> In file included from arch/arm/mach-exynos/include/mach/dma.h:24:0,
+>>               from arch/arm/plat-samsung/include/plat/dma-ops.h:17,
+>>               from arch/arm/plat-samsung/include/plat/dma.h:128,
+>>               from sound/soc/samsung/pcm.c:23:
+>> arch/arm/plat-samsung/include/plat/dma-pl330.h:106:8:
+>>                       error: redefinition of =91struct s3c2410_dma_c=
+lient=92
+>> arch/arm/plat-samsung/include/plat/dma.h:40:8: note: originally defi=
+ned here
+>> make[3]: *** [sound/soc/samsung/pcm.o] Error 1
+>
+> Shouldn't this be being fixed in the headers?  It looks like they
+> reference and disagree with each other on Exynos (my primary developm=
+ent
+> platform is S3C6410 based so I'd notice if it was a generic Samsung
+> issue.
+>
+> Pasting the error message isn't really that useful unless the fix is
+> obvious, it's better to explain in words what's wrong.
 
-I'm OK with all the patches, if Tony's happy with me applying them then
-I'll put them in a separate branch so they can easily be merged into the
-OMAP trees (or similarly if it's applied in an OMAP tree having a branch
-I can merge if needed would be good).
+I had sent the initial patch trying to fix this in the headers and it
+worked for exynos4 config. However Kukjin pointed out that the patch
+created similar errors with 2410 and 6400 configs. Fixing it further
+in the headers did not look quite straight forward as there are many
+headers trying to include one another. Hence I felt it is better
+handled in the current way. I understand i should have added this
+information in the commit message. Below is the link for your
+reference that provides the complete discussion.
+
+http://comments.gmane.org/gmane.linux.kernel.samsung-soc/11274
+
+Please let me know your opinion about this.
+
+
+--=20
+With warm regards,
+Sachin
