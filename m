@@ -1,23 +1,19 @@
-From: Ian Minett <ian_minett@creativelabs.com>
-Subject: Re: [PATCHv2 - CA0132 HDA Codec 1/2] ALSA: Update
- Creative CA0132 codec to add DSP features.
-Date: Tue, 7 Aug 2012 17:27:59 -0700
-Message-ID: <OFF64E9BBA.26E5B659-ON88257A53.0082F4D3-88257A54.0002903D@cli.creative.com>
-References: <s5hipdoggbb.wl%tiwai@suse.de>	<1343239280-3503-1-git-send-email-ian_minett@creativelabs.com>
- <s5hsjcfrlor.wl%tiwai@suse.de>	<OF0CFC3DA9.A9100453-ON88257A48.006BF087-88257A48.006FCB42@cli.creative.com>
- <s5hlii4l96y.wl%tiwai@suse.de>	<OF301523C9.1A0D8E05-ON88257A4B.0074BC06-88257A4B.007D5630@cli.creative.com>
- <s5hsjc8ezc3.wl%tiwai@suse.de>	<OF26B70F85.68DA70BC-ON88257A4D.000B1C43-88257A4D.000E7965@cli.creative.com>
- <s5hvch3b1t9.wl%tiwai@suse.de>	<OF01097BF9.024F0E41-ON88257A50.00122DF1-88257A50.001333B2@cli.creative.com>
- <s5hfw83jesw.wl%tiwai@suse.de>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: alsa-project.org is down
+Date: Tue, 07 Aug 2012 21:34:36 -0500
+Message-ID: <5021D03C.4020507@gmail.com>
+References: <50213383.8020706@gmail.com> <50215EC3.3000106@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-outbound2.cli.creative.com
- (smtp-outbound2.cli.creative.com [124.246.64.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CC83265247
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 01:58:30 +0200 (CEST)
-In-Reply-To: <s5hfw83jesw.wl%tiwai@suse.de>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17A41266023
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 04:05:01 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so431000obb.38
+ for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2012 19:34:47 -0700 (PDT)
+In-Reply-To: <50215EC3.3000106@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,35 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-
-
-
->Looks good, but I think start and stop can be a single trigger like
->PCM op, something like:
+On 08/07/2012 01:30 PM, Daniel Mack wrote:
+> On 07.08.2012 17:25, Gabriel M. Beddingfield wrote:
+>>
+>> Howdy,
+>>
+>> Several have noticed that alsa-project.org is down.  I don't know if
+>> this is a planned outage or not.
 >
->  int (*load_dsp_trigger)(struct hda_bus *bus, bool start);
->
->The second argument could be a generic int like PCM op, but I don't
->think we'd need pause or suspend/resume command for DSP loader :)
+> Seems to work just fine from here:
 
-Hi Takashi,
+Well, it's no longer dead... but...
 
-The proposed method for handling the DSP load process looks fine to
-us, and we can make a start on adding this to the CA0132 driver now.
+Everything is loading really really slow.
 
-We can update patch_ca0132.c, but would you be able to assist us with
-the modifications to the hda_intel.c side at all? We think it might
-result in a smoother process (and involving fewer submissions :) )
-given your familiarity with the low-level architecture in that area.
-
-If not, we'd appreciate any info or pointers you can provide on how
-and where the necessary modifications need to be made to hda_intel.c.
-
-Thanks again for all your help with this.
-Ian
+-gabriel
