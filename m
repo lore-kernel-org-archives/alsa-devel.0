@@ -1,77 +1,233 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/4] ARM: OMAP: twl-common: Add helper function to register the omap-twl4030 audio driver
-Date: Wed,  8 Aug 2012 12:54:08 +0300
-Message-ID: <1344419650-5389-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, devicetree-discuss@lists.ozlabs.org
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 2/2] hda-emu: Initial draft of test framework
+	implementation
+Date: Wed,  8 Aug 2012 11:54:30 +0200
+Message-ID: <1344419670-8946-2-git-send-email-david.henningsson@canonical.com>
+References: <1344419670-8946-1-git-send-email-david.henningsson@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id A18C42660DA
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 11:24:47 +0200 (CEST)
+In-Reply-To: <1344419670-8946-1-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since several OMAP3 based boards will be using the unified simple audio
-driver it is better to not have duplicated code in the board files for this
-purpose.
-Board files can call omap_twl4030_audio_init(); to set up the needed device
-for the audio support.
+Still work in progress, but it is starting to prove useful.
 
-For example:
-omap_twl4030_audio_init("omap3beagle", 26000000);
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- arch/arm/mach-omap2/twl-common.c |   28 ++++++++++++++++++++++++++++
- arch/arm/mach-omap2/twl-common.h |    2 ++
- 2 files changed, 30 insertions(+), 0 deletions(-)
+ tester/hda-emu-tester.py |   61 ++++++++++++++++++++++++++
+ tester/runall.sh         |    3 ++
+ tester/runner.py         |  109 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 173 insertions(+)
+ create mode 100755 tester/hda-emu-tester.py
+ create mode 100755 tester/runall.sh
+ create mode 100644 tester/runner.py
 
-diff --git a/arch/arm/mach-omap2/twl-common.c b/arch/arm/mach-omap2/twl-common.c
-index d52be85..639ea02 100644
---- a/arch/arm/mach-omap2/twl-common.c
-+++ b/arch/arm/mach-omap2/twl-common.c
-@@ -522,3 +522,31 @@ void __init omap4_pmic_get_config(struct twl4030_platform_data *pmic_data,
- 		pmic_data->v2v1 = &omap4_v2v1_idata;
- }
- #endif /* CONFIG_ARCH_OMAP4 */
+diff --git a/tester/hda-emu-tester.py b/tester/hda-emu-tester.py
+new file mode 100755
+index 0000000..a931651
+--- /dev/null
++++ b/tester/hda-emu-tester.py
+@@ -0,0 +1,61 @@
++#!/usr/bin/env python
 +
-+#if defined(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) || \
-+	defined(CONFIG_SND_OMAP_SOC_OMAP_TWL4030_MODULE)
-+#include <linux/platform_data/omap-twl4030.h>
++# hda-emu-tester - a test framework around hda-emu
++#
++# Written by David Henningsson <david.henningsson@canonical.com>
++#
++#    Copyright 2012 Canonical Ltd.
++#
++#    This program is free software: you can redistribute it and/or modify it 
++#    under the terms of the GNU General Public License version 3, as published 
++#    by the Free Software Foundation.
++#
++#    This program is distributed in the hope that it will be useful, but 
++#    WITHOUT ANY WARRANTY; without even the implied warranties of 
++#    MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
++#    PURPOSE.  See the GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along 
++#    with this program.  If not, see <http://www.gnu.org/licenses/>.
 +
-+static struct omap_tw4030_pdata omap_twl4030_audio_data;
++def handle_argv():
++    import argparse
++    parser = argparse.ArgumentParser(description='Hda-emu automated test wrapper.')
++    parser.add_argument('--file', dest='file', required=True, help='alsa-info filename')
++    return parser.parse_args()
 +
-+static struct platform_device audio_device = {
-+	.name		= "omap-twl4030",
-+	.id		= -1,
-+	.dev = {
-+		.platform_data = &omap_twl4030_audio_data,
-+	},
-+};
++def run_test(argv):
++    import runner
++    result = runner.HdaEmuRunner()
++    result.set_alsa_info_file(argv.file)
++    result.run_standard()
++    return result
 +
-+void __init omap_twl4030_audio_init(char *card_name, int codec_sysclk)
-+{
-+	omap_twl4030_audio_data.card_name = card_name;
-+	omap_twl4030_audio_data.codec_sysclk = codec_sysclk;
-+	platform_device_register(&audio_device);
-+}
++def get_exit_code(result):
++    if result.errors > 9:
++        return 29
++    if result.errors > 0:
++        return 20 + result.errors
++    if result.warnings > 9:
++        return 19
++    if result.warnings > 0:
++        return 10 + result.warnings
++    return 0
 +
-+#else /* SOC_OMAP_TWL4030 */
-+void __init omap_twl4030_audio_init(char *card_name, int codec_sysclk)
-+{
-+	return;
-+}
-+#endif /* SOC_OMAP_TWL4030 */
-diff --git a/arch/arm/mach-omap2/twl-common.h b/arch/arm/mach-omap2/twl-common.h
-index de062c7..b774c19 100644
---- a/arch/arm/mach-omap2/twl-common.h
-+++ b/arch/arm/mach-omap2/twl-common.h
-@@ -60,4 +60,6 @@ void omap3_pmic_get_config(struct twl4030_platform_data *pmic_data,
- void omap4_pmic_get_config(struct twl4030_platform_data *pmic_data,
- 			   u32 pdata_flags, u32 regulators_flags);
- 
-+void omap_twl4030_audio_init(char *card_name, int codec_sysclk);
++def main():
++    import sys
++    try:
++        argv_dict = handle_argv()
++        result = run_test(argv_dict)
++        exitcode = get_exit_code(result)
++        if result.errors > 0 or result.warnings > 0:
++            print '{0} errors, {1} warnings. ({2})'.format(result.errors, result.warnings, argv_dict.file)
++    except:
++        import traceback
++        traceback.print_exc()
++        sys.exit(99)
 +
- #endif /* __OMAP_PMIC_COMMON__ */
++    sys.exit(exitcode)
++
++if __name__ == "__main__":
++    main()
+diff --git a/tester/runall.sh b/tester/runall.sh
+new file mode 100755
+index 0000000..d078f35
+--- /dev/null
++++ b/tester/runall.sh
+@@ -0,0 +1,3 @@
++#!/bin/sh
++find ../codecs/canonical/ -type f | sort | xargs -n1 ./hda-emu-tester.py --file
++
+diff --git a/tester/runner.py b/tester/runner.py
+new file mode 100644
+index 0000000..28953be
+--- /dev/null
++++ b/tester/runner.py
+@@ -0,0 +1,109 @@
++# hda-emu-tester - a test framework around hda-emu
++#
++# Written by David Henningsson <david.henningsson@canonical.com>
++#
++#    Copyright 2012 Canonical Ltd.
++#
++#    This program is free software: you can redistribute it and/or modify it 
++#    under the terms of the GNU General Public License version 3, as published 
++#    by the Free Software Foundation.
++#
++#    This program is distributed in the hope that it will be useful, but 
++#    WITHOUT ANY WARRANTY; without even the implied warranties of 
++#    MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
++#    PURPOSE.  See the GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along 
++#    with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++import subprocess
++import os
++
++class HdaEmuRunner():
++
++    def __init__(self):
++        self.child_args = "../hda-emu -M -F"
++        self.alsa_info = "/proc/asound/card0/codec#0"
++        self.errors = 0
++        self.warnings = 0
++
++    def set_alsa_info_file(self, filename):
++        self.alsa_info = filename
++
++    def start_process(self):
++        import shlex
++        from subprocess import PIPE, STDOUT
++
++        args = shlex.split(self.child_args)
++        args.append(self.alsa_info)
++        self.child = subprocess.Popen(args, bufsize=0, stdin=PIPE, stdout=PIPE, stderr=PIPE)
++
++    def stop_process(self):
++        if self.child is None:
++            return
++        self.child.terminate()
++        self.child.wait()
++        self.child = None
++
++
++    def check_stdout(self):
++        s = os.read(self.child.stdout.fileno(), 65536)
++        # print "Stdout received (", len(s), ")"
++        if s == "":
++            print "Unexpected EOF of stdout (hda-emu crashed?)"
++            self.errors += 1
++            return
++        self.stdout_total += s
++
++        q, _, self.stdout_total = self.stdout_total.rpartition('\n')
++        for s in q.splitlines():
++            if s.startswith("Error:"):
++                self.errors += 1
++                # print s
++            if s.startswith("Warning:"):
++                self.warnings += 1
++                # print s
++
++    def check_stderr(self):
++        s = os.read(self.child.stderr.fileno(), 65536)
++        # print "Stderr received (", len(s), ")"
++        if s == "":
++            print "Unexpected EOF of stderr (hda-emu crashed?)"
++            self.errors += 1
++            return False
++        if s == "> ":
++            return True
++        print "Unexpected stderr output: '" + prompt + "'"
++        self.errors += 1
++        return False
++
++    def run_command(self, command=None):
++        if command:
++            self.child.stdin.write(command + '\n')
++            self.child.stdin.flush()
++
++        import select
++        self.stdout_total = ""
++        pipelist = [self.child.stdout, self.child.stderr]
++        while True:
++            readable, _, broken = select.select(pipelist, [], pipelist, 3)
++            for q in broken:
++                print "Broken pipe (hda-emu crashed?)"
++                self.errors += 1
++                return
++            if readable == []:
++                print "Timeout waiting for hda-emu"
++                self.errors += 1
++                return
++            if self.child.stdout in readable:
++                self.check_stdout()
++            if self.child.stderr in readable:
++                if self.check_stderr():
++                    return
++
++    def run_standard(self):
++        self.start_process()
++        self.run_command() # Initial parsing
++        self.run_command("pm") # S3 test
++        self.stop_process()
++
 -- 
-1.7.8.6
-
+1.7.9.5
