@@ -1,76 +1,100 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/2] hda-emu: Flush output before prompt
-Date: Wed,  8 Aug 2012 11:54:29 +0200
-Message-ID: <1344419670-8946-1-git-send-email-david.henningsson@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id A77332660C3
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 11:24:46 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 3/4] ARM: OMAP3: Switch to use the unified audio driver (omap-twl4030) for selected boards
+Date: Wed,  8 Aug 2012 12:54:09 +0300
+Message-ID: <1344419650-5389-4-git-send-email-peter.ujfalusi@ti.com>
+References: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-When stdout is redirected, there is a risk not all stdout is sent
-before the prompt is sent on stderr. Thanks to Jeremy Kerr for
-help with this issue.
----
- hda-ctlsh.c       |    1 +
- hda-log.c         |    5 +++++
- include/hda-log.h |    1 +
- 3 files changed, 7 insertions(+)
+These boards have similar audio setup and they can all use the same driver
+for audio support if it is enabled in the kernel config.
 
-diff --git a/hda-ctlsh.c b/hda-ctlsh.c
-index 4c21341..d84cc71 100644
---- a/hda-ctlsh.c
-+++ b/hda-ctlsh.c
-@@ -851,6 +851,7 @@ int cmd_loop(FILE *fp)
- 	init_completion();
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ arch/arm/mach-omap2/board-cm-t35.c      |    1 +
+ arch/arm/mach-omap2/board-devkit8000.c  |    1 +
+ arch/arm/mach-omap2/board-igep0020.c    |    1 +
+ arch/arm/mach-omap2/board-omap3beagle.c |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c    |    1 +
+ arch/arm/mach-omap2/board-overo.c       |    1 +
+ 6 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-cm-t35.c b/arch/arm/mach-omap2/board-cm-t35.c
+index 97d7190..b73fa5c 100644
+--- a/arch/arm/mach-omap2/board-cm-t35.c
++++ b/arch/arm/mach-omap2/board-cm-t35.c
+@@ -731,6 +731,7 @@ static void __init cm_t3x_common_init(void)
+ 	cm_t35_init_ethernet();
+ 	cm_t35_init_led();
+ 	cm_t35_init_display();
++	omap_twl4030_audio_init("overo", 26000000);
  
- 	for (;;) {
-+		hda_log_flush();
- 		line = readline("> ");
- 		if (!line)
- 			break;
-diff --git a/hda-log.c b/hda-log.c
-index 65f3044..67ee8e2 100644
---- a/hda-log.c
-+++ b/hda-log.c
-@@ -179,6 +179,11 @@ int hda_log_level_set(int level)
- 	return saved;
+ 	usb_musb_init(NULL);
+ 	cm_t35_init_usbh();
+diff --git a/arch/arm/mach-omap2/board-devkit8000.c b/arch/arm/mach-omap2/board-devkit8000.c
+index 6567c1c..f834b3e 100644
+--- a/arch/arm/mach-omap2/board-devkit8000.c
++++ b/arch/arm/mach-omap2/board-devkit8000.c
+@@ -630,6 +630,7 @@ static void __init devkit8000_init(void)
+ 	usbhs_init(&usbhs_bdata);
+ 	omap_nand_flash_init(NAND_BUSWIDTH_16, devkit8000_nand_partitions,
+ 			     ARRAY_SIZE(devkit8000_nand_partitions));
++	omap_twl4030_audio_init("omap3beagle", 26000000);
+ 
+ 	/* Ensure SDRC pins are mux'd for self-refresh */
+ 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
+diff --git a/arch/arm/mach-omap2/board-igep0020.c b/arch/arm/mach-omap2/board-igep0020.c
+index 7491529..bc7c1ea 100644
+--- a/arch/arm/mach-omap2/board-igep0020.c
++++ b/arch/arm/mach-omap2/board-igep0020.c
+@@ -626,6 +626,7 @@ static void __init igep_init(void)
+ 
+ 	igep_flash_init();
+ 	igep_leds_init();
++	omap_twl4030_audio_init("igep2", 26000000);
+ 
+ 	/*
+ 	 * WLAN-BT combo module from MuRata which has a Marvell WLAN
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 6202fc7..dd6e4f0 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -519,6 +519,7 @@ static void __init omap3_beagle_init(void)
+ 	usbhs_init(&usbhs_bdata);
+ 	omap_nand_flash_init(NAND_BUSWIDTH_16, omap3beagle_nand_partitions,
+ 			     ARRAY_SIZE(omap3beagle_nand_partitions));
++	omap_twl4030_audio_init("omap3beagle", 26000000);
+ 
+ 	/* Ensure msecure is mux'd to be able to set the RTC. */
+ 	omap_mux_init_signal("sys_drm_msecure", OMAP_PIN_OFF_OUTPUT_HIGH);
+diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
+index ef230a0..1be8f6e 100644
+--- a/arch/arm/mach-omap2/board-omap3evm.c
++++ b/arch/arm/mach-omap2/board-omap3evm.c
+@@ -736,6 +736,7 @@ static void __init omap3_evm_init(void)
+ 	omap3evm_init_smsc911x();
+ 	omap3_evm_display_init();
+ 	omap3_evm_wl12xx_init();
++	omap_twl4030_audio_init("omap3evm", 26000000);
  }
  
-+void hda_log_flush()
-+{
-+	fflush(logfp);
-+}
-+
- FILE *hda_get_logfp(void)
- {
- 	return logfp;
-diff --git a/include/hda-log.h b/include/hda-log.h
-index 2e2137b..8b0d392 100644
---- a/include/hda-log.h
-+++ b/include/hda-log.h
-@@ -18,6 +18,7 @@ int hda_log_init(const char *file, unsigned int flags);
- void hda_log(int level, const char *fmt, ...);
- void hda_log_printk(const char *fmt, ...);
- void hda_log_echo(int level, const char *fmt, ...);
-+void hda_log_flush(void);
+ MACHINE_START(OMAP3EVM, "OMAP3 EVM")
+diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+index 779734d..7b7db3d 100644
+--- a/arch/arm/mach-omap2/board-overo.c
++++ b/arch/arm/mach-omap2/board-overo.c
+@@ -509,6 +509,7 @@ static void __init overo_init(void)
+ 	overo_display_init();
+ 	overo_init_led();
+ 	overo_init_keys();
++	omap_twl4030_audio_init("overo", 26000000);
  
- extern int hda_log_trap_on_error;
- 
+ 	/* Ensure SDRC pins are mux'd for self-refresh */
+ 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
 -- 
-1.7.9.5
+1.7.8.6
+
