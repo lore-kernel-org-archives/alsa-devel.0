@@ -1,55 +1,78 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 04/11] ARM: OMAP: board-am3517evm: Configure McBSP1 CLKR/FSR signal source
-Date: Wed,  8 Aug 2012 12:11:34 +0300
-Message-ID: <1344417101-5015-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>
+Subject: [PATCH 00/11] MFD/ASoC/Input: twl4030-audio submodule
+	DT support
+Date: Wed,  8 Aug 2012 12:41:16 +0300
+Message-ID: <1344418887-5262-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog130.obsmtp.com (na3sys009aog130.obsmtp.com
+ [74.125.149.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id C669B26609F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 11:11:53 +0200 (CEST)
+Received: by obqv19 with SMTP id v19so2107240obq.16
+ for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2012 02:41:38 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>
+Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-am3517evm board uses McBSP1 for audio with 4pin configuration.
-The CLKR/FSR signals need to be connected to CLKX/FSX pin of the SoC in
-this case.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+The following series adds DT support for the twl4030 audio submodule which
+provides audio codec and vibra functionality.
+
+The MFD core driver is probed via DT, it will create the needed child devices
+based on the provided information in the DT blob.
+Child drivers (vibra, ASoC codec) will parse the core's node if needed to get
+the needed parameters for their configuration.
+
+In the ASoC codec driver the hs_extmute callback (which was used to toggle a
+GPIO line) has been removed. The codec driver will receive the GPIO number
+(if it is needed on the platform) and also the level to disable the mute.
+
+If the series is OK (and no objections from the maintainers), it would be good
+if this can go via audio. Changed files are well contained within the
+twl4030-audio stack so I do not expect merge issues later.
+
+The series has been tested on BeagleBoard (with the McBSP DT series, and with
+the upcoming DT audio support for BeagleBoard).
+
+Regards,
+Peter
 ---
- arch/arm/mach-omap2/board-am3517evm.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+Peter Ujfalusi (11):
+  MFD: twl4030-audio: Clean up MODULE_* and platform_driver part
+  MFD: twl4030-audio: Convert to use devm_kzalloc
+  MFD: twl4030-audio: Rearange and clean-up the probe function
+  MFD: twl4030-audio: Add DT support
+  Input: twl4030-vibra: Support for DT booted kernel
+  ASoC: twl4030: Move hs_extmute GPIO handling to driver
+  ARM: OMAP/ASoC: Zoom2: Let the codec to handle the hs_extmute GPIO
+  ASoC/MFD: twl4030: Remove set_hs_extmute callback from platform data
+  ASoC: twl4030: Convert to use devm_kzalloc
+  ASoC: twl4030: Add pointer to pdata within the private data
+  ASoC: twl4030: Support for DT booted kernel
 
-diff --git a/arch/arm/mach-omap2/board-am3517evm.c b/arch/arm/mach-omap2/board-am3517evm.c
-index 18f6010..592812a 100644
---- a/arch/arm/mach-omap2/board-am3517evm.c
-+++ b/arch/arm/mach-omap2/board-am3517evm.c
-@@ -264,6 +264,16 @@ static __init void am3517_evm_musb_init(void)
- 	usb_musb_init(&musb_board_data);
- }
- 
-+static __init void am3517_evm_mcbsp1_init(void)
-+{
-+	u32 devconf0;
-+
-+	/* McBSP1 CLKR/FSR signal to be connected to CLKX/FSX pin */
-+	devconf0 = omap_ctrl_readl(OMAP2_CONTROL_DEVCONF0);
-+	devconf0 |=  OMAP2_MCBSP1_CLKR_MASK | OMAP2_MCBSP1_FSR_MASK;
-+	omap_ctrl_writel(devconf0, OMAP2_CONTROL_DEVCONF0);
-+}
-+
- static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
- 	.port_mode[0] = OMAP_EHCI_PORT_MODE_PHY,
- #if defined(CONFIG_PANEL_SHARP_LQ043T1DG01) || \
-@@ -373,6 +383,9 @@ static void __init am3517_evm_init(void)
- 	/* MUSB */
- 	am3517_evm_musb_init();
- 
-+	/* McBSP1 */
-+	am3517_evm_mcbsp1_init();
-+
- 	/* MMC init function */
- 	omap_hsmmc_init(mmc);
- }
+ .../devicetree/bindings/mfd/twl4030-audio.txt      |   51 +++++++++
+ arch/arm/mach-omap2/board-zoom-peripherals.c       |    9 +-
+ arch/arm/mach-omap2/include/mach/board-zoom.h      |    2 -
+ drivers/input/misc/twl4030-vibra.c                 |   20 +++-
+ drivers/mfd/twl4030-audio.c                        |  114 +++++++++++++------
+ include/linux/i2c/twl.h                            |    4 +-
+ sound/soc/codecs/twl4030.c                         |  117 ++++++++++++++++----
+ sound/soc/omap/zoom2.c                             |    4 -
+ 8 files changed, 250 insertions(+), 71 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/twl4030-audio.txt
+
 -- 
 1.7.8.6
-
