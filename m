@@ -1,81 +1,95 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 04/11] MFD: twl4030-audio: Add DT support
-Date: Wed, 8 Aug 2012 14:52:53 +0100
-Message-ID: <20120808135253.GC16861@opensource.wolfsonmicro.com>
-References: <1344418887-5262-1-git-send-email-peter.ujfalusi@ti.com>
- <1344418887-5262-5-git-send-email-peter.ujfalusi@ti.com>
- <20120808131356.GS16861@opensource.wolfsonmicro.com>
- <50226CF4.1010202@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 08/11] ARM: OMAP3: Remove callback for
+ McBSP sidetone ICLK workaround
+Date: Wed, 08 Aug 2012 17:00:36 +0300
+Message-ID: <50227104.3040506@ti.com>
+References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
+ <1344417101-5015-9-git-send-email-peter.ujfalusi@ti.com>
+ <502268B1.9040506@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <50226CF4.1010202@ti.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
+ [74.125.149.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EA8926609B
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 15:30:55 +0200 (CEST)
+Received: by obhx4 with SMTP id x4so1434679obh.0
+ for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2012 07:00:35 -0700 (PDT)
+In-Reply-To: <502268B1.9040506@bitmer.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 08, 2012 at 04:43:16PM +0300, Peter Ujfalusi wrote:
-> On 08/08/2012 04:13 PM, Mark Brown wrote:
+Hi Jarkko,
 
-> > This doesn't seem like something that should be in the CODEC driver
-> > really, there's a general need for something which can unmute contr=
-ols
-> > at the end of the power up sequence and mute before power down.  Al=
-so,
-> > if this is going to be part of the binding shouldn't we just omit t=
-he
-> > first property and simply check for the presence of the property wh=
-ich
-> > specifies the GPIO?
+On 08/08/2012 04:25 PM, Jarkko Nikula wrote:
+> On 08/08/2012 12:11 PM, Peter Ujfalusi wrote:
+>> We can achieve the same result with SIDLEMODE field within McBSP SYSCONF=
+IG
+>> register.
+>> The ASoC driver has been modified to use this method and we can now remo=
+ve
+>> the workaround using the control module register.
+>>
+> Are you sure it works without any changes to sidetone audio quality or
+> current consumption? What I remember idlemode was broken at least on
+> 3430 and caused bad sidetone audio if autoidle was set and a little bit
+> higher current consumption (something like 2-3 mA higher where reference
+> consumption was around 10 mA) when McBSP was set to no-idle.
 
-> The hs_extmute is used for reducing pop noise on the headset. The seq=
-uence is
-> described in the TRM and it need to be done within the codec driver s=
-ince it
-> is within the sequence.
+Yes, the idelmode settings are still broken in the sidetone block. However =
+we
+are toggling the SIDLEMODE of the corresponding McBSP instance where the ST
+block is attached.
+This should have the same effect as doing the same down in PRCM level since
+the McBSP SIDLEMODE does work correctly preventing ICLK to be gated when it=
+ is
+set to no-idle.
 
-Is the point it's at in the sequence the end?
+Unfortunately I can not get my BeagleBoard to start gating iclk even if I
+remove the ICLK gating prevention (on top of 3.6-rc1). So I can not really =
+say
+for 100% this is equivalent to the the PRCM level workaround.
+However I have also spend long time hacking around in McBSP, and I know that
+the SIDLEMODE in McBSP is working correctly.
+Do you know how can I get OMAP3 to start gating the clocks (to idle)?
 
-> >> +#ifdef CONFIG_OF
-> >> +	if (of_find_node_by_name(node, "codec"))
-> >> +		return true;
-> >> +#endif
+> Here's the old thread:
+> =
 
-> > This really seems like we should be stubbing out of_find_node_by_na=
-me()
-> > to return false in non-OF cases.
+> http://www.mail-archive.com/linux-omap@vger.kernel.org/msg52024.html
+> =
 
-> Yes, most likely the of_find_node_by_name() deserves the same treatme=
-nt as
-> some selected of_* function in case CONFIG_OF is not selected.
-> But at the moment this is not the case, we need to protect with ifdef=
- since we
-> might break other randconfigs where CONFIG_OF is not set.
+> I think I tested all of this by using arecord >/dev/null | aplay
+> /dev/zero with threshold based DMA transfers with all bells and whistles
+> set for dynamic retention idle in order to hear only McBSP sidetone
+> while measuring current consumption.
 
-We can always add a patch stubbing it out as part of the series, or in =
-a
-branch in the OF tree that we can pull in.
+I'm doing the same test on BeagleBoard, but this thing does not want to hit
+retention despite all the effort :(
 
->=20
-> >> +#ifdef CONFIG_OF
-> >> +	if (!of_property_read_u32(node, "ti,enable-vibra", &vibra) && vi=
-bra)
-> >> +		return true;
-> >> +#endif
-> >=20
-> > Similarly here.
->=20
-> Here the ifdef is no needed. of_property_read_u32() return -ENOSYS in=
- case
-> CONFIG_OF is not selected.
->=20
-> --=20
-> P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> But I guess 2-3 mA higher consumption is ok if it simplifies SW a lot
+> and base consumption is anyway much higher than 10 mA when sidetone is
+> in real use (my test above was artificial where actual use is under a
+> phone call with heavy consumption from cellular modem etc).
+
+Well 2-3 mA is quite big number in my book...
+I'm still not sure if I ever measured the difference between the PRCM level
+autoidle prevention compared to the McBSP SIDLEMODE(no_idle).
+
+Having said that, it is suspicious how we ended up doing the ICLK fixup in
+PRCM level...
+
+-- =
+
+P=E9ter
