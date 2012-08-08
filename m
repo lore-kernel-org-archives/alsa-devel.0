@@ -1,237 +1,105 @@
-From: Benoit Cousson <b-cousson@ti.com>
-Subject: Re: [PATCH 04/11] MFD: twl4030-audio: Add DT support
-Date: Wed, 8 Aug 2012 13:50:53 +0200
-Message-ID: <5022529D.3090406@ti.com>
-References: <1344418887-5262-1-git-send-email-peter.ujfalusi@ti.com>
- <1344418887-5262-5-git-send-email-peter.ujfalusi@ti.com>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH] ASoC: Samsung: Fix build error
+Date: Wed, 08 Aug 2012 21:18:47 +0900
+Message-ID: <0b2901cd755f$f669bc80$e33d3580$%kim@samsung.com>
+References: <1344405883-27603-1-git-send-email-sachin.kamat@linaro.org>
+ <20120808110926.GK16861@opensource.wolfsonmicro.com>
+ <CAK9yfHzE4sRKj7uUKAEWtonV2uVBcg5_JhL1Ny4d1ohS5g+5yw@mail.gmail.com>
+ <0b1401cd755a$552fb9f0$ff8f2dd0$%kim@samsung.com>
+ <CAK9yfHw7pYBJ=5E4EX9OzApz0YM=_2PNSCqspTT=rRTR1UrneQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 46B8A26608C
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 13:21:15 +0200 (CEST)
-In-Reply-To: <1344418887-5262-5-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <CAK9yfHw7pYBJ=5E4EX9OzApz0YM=_2PNSCqspTT=rRTR1UrneQ@mail.gmail.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Sachin Kamat' <sachin.kamat@linaro.org>
+Cc: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, patches@linaro.org, sbkim73@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
-
-On 08/08/2012 11:41 AM, Peter Ujfalusi wrote:
-> Support for loading the twl4030 audio module via devicetree.
-> Sub devices for codec and vibra will be created as mfd devices once the
-> core MFD driver is loaded when the kernel is booted with a DT blob.
+Sachin Kamat wrote:
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  .../devicetree/bindings/mfd/twl4030-audio.txt      |   51 +++++++++++++++
->  drivers/mfd/twl4030-audio.c                        |   65 +++++++++++++++++---
->  2 files changed, 108 insertions(+), 8 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/twl4030-audio.txt
+> On 8 August 2012 17:08, Kukjin Kim <kgene.kim@samsung.com> wrote:
+> > Sachin Kamat wrote:
+> >>
+> >> Hi Mark,
+> >>
+> >> On 8 August 2012 16:39, Mark Brown
+> <broonie@opensource.wolfsonmicro.com>
+> >> wrote:
+> >> > On Wed, Aug 08, 2012 at 11:34:43AM +0530, Sachin Kamat wrote:
+> >> >> Fixes the following build error:
+> >> >> In file included from arch/arm/mach-exynos/include/mach/dma.h:24:0,
+> >> >>               from arch/arm/plat-samsung/include/plat/dma-ops.h:17,
+> >> >>               from arch/arm/plat-samsung/include/plat/dma.h:128,
+> >> >>               from sound/soc/samsung/pcm.c:23:
+> >> >> arch/arm/plat-samsung/include/plat/dma-pl330.h:106:8:
+> >> >>                       error: redefinition of 'struct
+> > s3c2410_dma_client'
+> >> >> arch/arm/plat-samsung/include/plat/dma.h:40:8: note: originally
+> defined
+> >> here
+> >> >> make[3]: *** [sound/soc/samsung/pcm.o] Error 1
+> >> >
+> >> > Shouldn't this be being fixed in the headers?  It looks like they
+> >> > reference and disagree with each other on Exynos (my primary
+> development
+> >> > platform is S3C6410 based so I'd notice if it was a generic Samsung
+> >> > issue.
+> >> >
+> >> > Pasting the error message isn't really that useful unless the fix is
+> >> > obvious, it's better to explain in words what's wrong.
+> >>
+> >> I had sent the initial patch trying to fix this in the headers and it
+> >> worked for exynos4 config. However Kukjin pointed out that the patch
+> >> created similar errors with 2410 and 6400 configs. Fixing it further
+> >> in the headers did not look quite straight forward as there are many
+> >> headers trying to include one another. Hence I felt it is better
+> >> handled in the current way. I understand i should have added this
+> >> information in the commit message. Below is the link for your
+> >> reference that provides the complete discussion.
+> >>
+> >> http://comments.gmane.org/gmane.linux.kernel.samsung-soc/11274
+> >>
+> >> Please let me know your opinion about this.
+> >>
+> >>
+> > I also agree with Mark's opinion and current Sachin's approach cannot
+> avoid
+> > whole similar build error.
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/twl4030-audio.txt b/Documentation/devicetree/bindings/mfd/twl4030-audio.txt
-> new file mode 100644
-> index 0000000..bc45025
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/twl4030-audio.txt
-> @@ -0,0 +1,51 @@
-> +Texas Instruments TWL family (twl4030) audio module
-> +
-> +The audio module inside the TWL family consist of an audio codec and a vibra
-> +driver.
-> +
-> +Required properties:
-> +- compatible : must be "ti,twl4030-audio"
-> +- ti,audio_mclk: Master clock frequency used on the board. Supported
-> +	         frequencies: 19200000, 26000000 and 38400000
-
-Since you care about the frequency only you can use the generic
-attribute: clock-frequency (in your example, I2C is using it).
-
-
-That being said, since we do have the clock binding now, maybe we should
-create a clock provider at board level for the sys_clk and thus you will
-just have to create a phandle to it in your audio description.
-
-In theory OMAP and other components will thus have to use that sys_clock
-reference as well.
-
-Regards,
-Benoit
-
-
-> +
-> +Optional properties, nodes:
-> +
-> +Audio functionality:
-> +- codec { }: Need to be present if the audio functionality is used. Within this
-> +	     section the following options can be used:
-> +- ti,digimic_delay: Delay need after enabling the digimic to reduce artifacts
-> +		    from the start of the recorded sample (in ms)
-> +-ti,ramp_delay_value: HS ramp delay configuration to reduce pop noise
-> +-ti,hs_extmute: Use external mute for HS pop reduction
-> +-ti,hs_extmute_gpio: Use external GPIO to control the external mute
-> +-ti,hs_extmute_disable_level: The desired level of the GPIO line when the
-> +			      external mute is disabled. valuse: 0 or 1
-> +-ti,offset_cncl_path: Offset cancellation path selection, refer to TRM for the
-> +		      valid values.
-> +
-> +Vibra functionality
-> +- ti,enable-vibra: Need to be set to <1> if the vibra functionality is used. if
-> +		   missing or it is 0, the vibra functionality is disabled.
-> +
-> +Example:
-> +&i2c1 {
-> +	clock-frequency = <2600000>;
-> +
-> +	twl: twl@48 {
-> +		reg = <0x48>;
-> +		interrupts = <7>; /* SYS_NIRQ cascaded to intc */
-> +		interrupt-parent = <&intc>;
-> +
-> +		twl_audio: audio {
-> +			compatible = "ti,twl4030-audio";
-> +			ti,audio_mclk = <26000000>;
-> +
-> +			ti,enable-vibra = <1>;
-> +
-> +			codec {
-> +				ti,ramp_delay_value = <3>;
-> +			};
-> +
-> +		};
-> +	};
-> +};
-> diff --git a/drivers/mfd/twl4030-audio.c b/drivers/mfd/twl4030-audio.c
-> index ca2d669..a4df8b3a 100644
-> --- a/drivers/mfd/twl4030-audio.c
-> +++ b/drivers/mfd/twl4030-audio.c
-> @@ -28,6 +28,8 @@
->  #include <linux/kernel.h>
->  #include <linux/fs.h>
->  #include <linux/platform_device.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
->  #include <linux/i2c/twl.h>
->  #include <linux/mfd/core.h>
->  #include <linux/mfd/twl4030-audio.h>
-> @@ -156,15 +158,46 @@ unsigned int twl4030_audio_get_mclk(void)
->  }
->  EXPORT_SYMBOL_GPL(twl4030_audio_get_mclk);
->  
-> +static bool twl4030_audio_has_codec(struct twl4030_audio_data *pdata,
-> +			      struct device_node *node)
-> +{
-> +	if (pdata && pdata->codec)
-> +		return true;
-> +
-> +#ifdef CONFIG_OF
-> +	if (of_find_node_by_name(node, "codec"))
-> +		return true;
-> +#endif
-> +
-> +	return false;
-> +}
-> +
-> +static bool twl4030_audio_has_vibra(struct twl4030_audio_data *pdata,
-> +			      struct device_node *node)
-> +{
-> +	int vibra;
-> +
-> +	if (pdata && pdata->vibra)
-> +		return true;
-> +
-> +#ifdef CONFIG_OF
-> +	if (!of_property_read_u32(node, "ti,enable-vibra", &vibra) && vibra)
-> +		return true;
-> +#endif
-> +
-> +	return false;
-> +}
-> +
->  static int __devinit twl4030_audio_probe(struct platform_device *pdev)
->  {
->  	struct twl4030_audio *audio;
->  	struct twl4030_audio_data *pdata = pdev->dev.platform_data;
-> +	struct device_node *node = pdev->dev.of_node;
->  	struct mfd_cell *cell = NULL;
->  	int ret, childs = 0;
->  	u8 val;
->  
-> -	if (!pdata) {
-> +	if (!pdata && !node) {
->  		dev_err(&pdev->dev, "Platform data is missing\n");
->  		return -EINVAL;
->  	}
-> @@ -175,7 +208,12 @@ static int __devinit twl4030_audio_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	mutex_init(&audio->mutex);
-> -	audio->audio_mclk = pdata->audio_mclk;
-> +	if (pdata)
-> +		audio->audio_mclk = pdata->audio_mclk;
-> +#ifdef CONFIG_OF
-> +	else
-> +		of_property_read_u32(node, "ti,audio_mclk", &audio->audio_mclk);
-> +#endif
->  
->  	/* Configure APLL_INFREQ and disable APLL if enabled */
->  	switch (audio->audio_mclk) {
-> @@ -202,18 +240,22 @@ static int __devinit twl4030_audio_probe(struct platform_device *pdev)
->  	audio->resource[TWL4030_AUDIO_RES_APLL].reg = TWL4030_REG_APLL_CTL;
->  	audio->resource[TWL4030_AUDIO_RES_APLL].mask = TWL4030_APLL_EN;
->  
-> -	if (pdata->codec) {
-> +	if (twl4030_audio_has_codec(pdata, node)) {
->  		cell = &audio->cells[childs];
->  		cell->name = "twl4030-codec";
-> -		cell->platform_data = pdata->codec;
-> -		cell->pdata_size = sizeof(*pdata->codec);
-> +		if (pdata) {
-> +			cell->platform_data = pdata->codec;
-> +			cell->pdata_size = sizeof(*pdata->codec);
-> +		}
->  		childs++;
->  	}
-> -	if (pdata->vibra) {
-> +	if (twl4030_audio_has_vibra(pdata, node)) {
->  		cell = &audio->cells[childs];
->  		cell->name = "twl4030-vibra";
-> -		cell->platform_data = pdata->vibra;
-> -		cell->pdata_size = sizeof(*pdata->vibra);
-> +		if (pdata) {
-> +			cell->platform_data = pdata->vibra;
-> +			cell->pdata_size = sizeof(*pdata->vibra);
-> +		}
->  		childs++;
->  	}
->  
-> @@ -245,10 +287,17 @@ static int __devexit twl4030_audio_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static const struct of_device_id twl4030_audio_of_match[] = {
-> +	{.compatible = "ti,twl4030-audio", },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, twl4030_audio_of_match);
-> +
->  static struct platform_driver twl4030_audio_driver = {
->  	.driver		= {
->  		.owner	= THIS_MODULE,
->  		.name	= "twl4030-audio",
-> +		.of_match_table = twl4030_audio_of_match,
->  	},
->  	.probe		= twl4030_audio_probe,
->  	.remove		= __devexit_p(twl4030_audio_remove),
+> With the current change I did not see any build error with the configs
+> (2410, 6400, 64x0 and exyno4) i checked with (after enabling audio).
+> Please let me know if you observed any such build error after adding
+> this patch.
 > 
+> 
+
+Happens following error with s5pv210_defcofnig (after enabling s5p-sss).
+
+In file included from arch/arm/mach-s5pv210/include/mach/dma.h:24,
+                 from arch/arm/plat-samsung/include/plat/dma-ops.h:17,
+                 from arch/arm/plat-samsung/include/plat/dma.h:128,
+                 from drivers/crypto/s5p-sss.c:33:
+arch/arm/plat-samsung/include/plat/dma-pl330.h:106: error: redefinition of
+'struct s3c2410_dma_client'
+make[2]: *** [drivers/crypto/s5p-sss.o] Error 1
+make[1]: *** [drivers/crypto] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [drivers] Error 2
+make: *** Waiting for unfinished jobs....
+
+Actually, <mach/dma.h> is including <plat/dma-pl330.h> for s5p64x0, s5pc100,
+s5pv210 and exynos or <plat/dma.h> for s3c24xx and s3c64xx. And the cause of
+build error you reported is duplicated declaration of s3c2410_dma_client. So
+it can happen when <plat/dma-pl330.h> and <plat/dma.h> are included together
+at the same time...
+
+Thanks.
+
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
