@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: adding an external dsp under soc-dsp framework
-Date: Wed, 8 Aug 2012 11:59:20 +0100
-Message-ID: <20120808105919.GJ16861@opensource.wolfsonmicro.com>
-References: <FC1850374E3CB245B9E97002380578E0022216D4@ILMAIL01.dspg.com>
- <20120806154822.GP16861@opensource.wolfsonmicro.com>
- <loom.20120806T203950-581@post.gmane.org>
- <20120807140902.GH29272@sirena.org.uk>
- <FC1850374E3CB245B9E97002380578E002221820@ILMAIL01.dspg.com>
+Subject: Re: [PATCH] ASoC: Samsung: Fix build error
+Date: Wed, 8 Aug 2012 12:09:26 +0100
+Message-ID: <20120808110926.GK16861@opensource.wolfsonmicro.com>
+References: <1344405883-27603-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 525E6265F91
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 12:36:44 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 30318266073
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 12:39:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <FC1850374E3CB245B9E97002380578E002221820@ILMAIL01.dspg.com>
+In-Reply-To: <1344405883-27603-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ziv Haziz <Ziv.Haziz@dspg.com>
-Cc: alsa-devel@alsa-project.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: sbkim73@samsung.com, kgene.kim@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 08, 2012 at 11:21:20AM +0300, Ziv Haziz wrote:
-
-> >I n that case what you're saying above with a DAI link is exactly what
-> > you're supposed to do, I don't see any structural problem here?
-
-> Creating two dai links will create two separated devices which must be
-> open for setting configurations, but the dsp-codec dai cannot be started
-> (or I will get an  error). This means changing the codec driver to
-> enable everything not from trigger callback.
-
-> Is it possible to have a dai link without a platform for data transfer?
-> I saw in the plumbers agenda you are going to talk on codec-codec
-> interface - do you have any preliminary suggestion?
-
-This is already supported in mainline, look at littlemill for one
-example user.
-
-Alternatively for older kernels you can easily support this from
-userspace by just not starting the DMA, this has been deployed for some
-considerable time on many systems (OpenMoko is one long standing
-mainline example).
+T24gV2VkLCBBdWcgMDgsIDIwMTIgYXQgMTE6MzQ6NDNBTSArMDUzMCwgU2FjaGluIEthbWF0IHdy
+b3RlOgo+IEZpeGVzIHRoZSBmb2xsb3dpbmcgYnVpbGQgZXJyb3I6Cj4gSW4gZmlsZSBpbmNsdWRl
+ZCBmcm9tIGFyY2gvYXJtL21hY2gtZXh5bm9zL2luY2x1ZGUvbWFjaC9kbWEuaDoyNDowLAo+IAkJ
+ZnJvbSBhcmNoL2FybS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2RtYS1vcHMuaDoxNywKPiAJ
+CWZyb20gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9kbWEuaDoxMjgsCj4gCQlm
+cm9tIHNvdW5kL3NvYy9zYW1zdW5nL3BjbS5jOjIzOgo+IGFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9p
+bmNsdWRlL3BsYXQvZG1hLXBsMzMwLmg6MTA2Ojg6Cj4gCQkJZXJyb3I6IHJlZGVmaW5pdGlvbiBv
+ZiDigJhzdHJ1Y3QgczNjMjQxMF9kbWFfY2xpZW504oCZCj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5n
+L2luY2x1ZGUvcGxhdC9kbWEuaDo0MDo4OiBub3RlOiBvcmlnaW5hbGx5IGRlZmluZWQgaGVyZQo+
+IG1ha2VbM106ICoqKiBbc291bmQvc29jL3NhbXN1bmcvcGNtLm9dIEVycm9yIDEKClNob3VsZG4n
+dCB0aGlzIGJlIGJlaW5nIGZpeGVkIGluIHRoZSBoZWFkZXJzPyAgSXQgbG9va3MgbGlrZSB0aGV5
+CnJlZmVyZW5jZSBhbmQgZGlzYWdyZWUgd2l0aCBlYWNoIG90aGVyIG9uIEV4eW5vcyAobXkgcHJp
+bWFyeSBkZXZlbG9wbWVudApwbGF0Zm9ybSBpcyBTM0M2NDEwIGJhc2VkIHNvIEknZCBub3RpY2Ug
+aWYgaXQgd2FzIGEgZ2VuZXJpYyBTYW1zdW5nCmlzc3VlLgoKUGFzdGluZyB0aGUgZXJyb3IgbWVz
+c2FnZSBpc24ndCByZWFsbHkgdGhhdCB1c2VmdWwgdW5sZXNzIHRoZSBmaXggaXMKb2J2aW91cywg
+aXQncyBiZXR0ZXIgdG8gZXhwbGFpbiBpbiB3b3JkcyB3aGF0J3Mgd3JvbmcuCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
