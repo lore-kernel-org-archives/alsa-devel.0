@@ -1,668 +1,248 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 4/4] ASoC: Remove obsolete OMAP3 machine drivers
-Date: Wed,  8 Aug 2012 12:54:10 +0300
-Message-ID: <1344419650-5389-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, devicetree-discuss@lists.ozlabs.org
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2] hda-emu: Initial draft of test
+	framework implementation
+Date: Wed, 08 Aug 2012 11:55:45 +0200
+Message-ID: <502237A1.7040901@canonical.com>
+References: <1344419670-8946-1-git-send-email-david.henningsson@canonical.com>
+ <1344419670-8946-2-git-send-email-david.henningsson@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A12B26604C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 11:25:59 +0200 (CEST)
+In-Reply-To: <1344419670-8946-2-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The new omap-twl4030 handles the boards used the following drivers:
-igep0020, omap3beagle, omap3evm and overo.
-Remove these drivers since they are mostly identical and we already have
-drop in replacement for all of them.
 
-Note: Earlier patch added the needed code for the board files to retain the
-audio support for boards I can identify that used one of the removed
-drivers.
-If I missed something please take a look at for example:
-arch/arm/mach-omap2/board-omap3beagle.c on how add support for omap-twl4030
-audio.
+So - this is mostly to satisfy your curiousity, to show how far I am 
+with the framework. I don't know how much more it offers compared to the 
+diff scripts you run at your side, so it's up to you whether you 
+actually want to commit this now, or whether you want to wait for me to 
+develop more tests (jack plug/unplug, set controls and such).
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/Kconfig       |   35 ----------
- sound/soc/omap/Makefile      |    8 --
- sound/soc/omap/igep0020.c    |  120 ---------------------------------
- sound/soc/omap/omap3beagle.c |  150 ------------------------------------------
- sound/soc/omap/omap3evm.c    |  118 ---------------------------------
- sound/soc/omap/overo.c       |  122 ----------------------------------
- 6 files changed, 0 insertions(+), 553 deletions(-)
- delete mode 100644 sound/soc/omap/igep0020.c
- delete mode 100644 sound/soc/omap/omap3beagle.c
- delete mode 100644 sound/soc/omap/omap3evm.c
- delete mode 100644 sound/soc/omap/overo.c
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index fc83d74..2c484a5 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -60,23 +60,6 @@ config SND_OMAP_SOC_OSK5912
- 	help
- 	  Say Y if you want to add support for SoC audio on osk5912.
- 
--config SND_OMAP_SOC_OVERO
--	tristate "SoC Audio support for Gumstix Overo and CompuLab CM-T35"
--	depends on TWL4030_CORE && SND_OMAP_SOC && (MACH_OVERO || MACH_CM_T35)
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for SoC audio on the
--	  Gumstix Overo or CompuLab CM-T35
--
--config SND_OMAP_SOC_OMAP3EVM
--	tristate "SoC Audio support for OMAP3EVM board"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3EVM
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for SoC audio on the omap3evm board.
--
- config SND_OMAP_SOC_AM3517EVM
- 	tristate "SoC Audio support for OMAP3517 / AM3517 EVM"
- 	depends on SND_OMAP_SOC && MACH_OMAP3517EVM && I2C
-@@ -140,16 +123,6 @@ config SND_OMAP_SOC_OMAP3_PANDORA
- 	help
- 	  Say Y if you want to add support for SoC audio on the OMAP3 Pandora.
- 
--config SND_OMAP_SOC_OMAP3_BEAGLE
--	tristate "SoC Audio support for OMAP3 Beagle and Devkit8000"
--	depends on TWL4030_CORE && SND_OMAP_SOC
--	depends on (MACH_OMAP3_BEAGLE || MACH_DEVKIT8000)
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for SoC audio on the Beagleboard or
--	  the clone Devkit8000.
--
- config SND_OMAP_SOC_ZOOM2
- 	tristate "SoC Audio support for Zoom2"
- 	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_ZOOM2
-@@ -157,11 +130,3 @@ config SND_OMAP_SOC_ZOOM2
- 	select SND_SOC_TWL4030
- 	help
- 	  Say Y if you want to add support for Soc audio on Zoom2 board.
--
--config SND_OMAP_SOC_IGEP0020
--	tristate "SoC Audio support for IGEP v2"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_IGEP0020
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for Soc audio on IGEP v2 board.
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 861e640..19637e5 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -16,31 +16,23 @@ snd-soc-n810-objs := n810.o
- snd-soc-rx51-objs := rx51.o
- snd-soc-ams-delta-objs := ams-delta.o
- snd-soc-osk5912-objs := osk5912.o
--snd-soc-overo-objs := overo.o
--snd-soc-omap3evm-objs := omap3evm.o
- snd-soc-am3517evm-objs := am3517evm.o
- snd-soc-sdp3430-objs := sdp3430.o
- snd-soc-omap-abe-twl6040-objs := omap-abe-twl6040.o
- snd-soc-omap-twl4030-objs := omap-twl4030.o
- snd-soc-omap3pandora-objs := omap3pandora.o
--snd-soc-omap3beagle-objs := omap3beagle.o
- snd-soc-zoom2-objs := zoom2.o
--snd-soc-igep0020-objs := igep0020.o
- snd-soc-omap-hdmi-card-objs := omap-hdmi-card.o
- 
- obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
- obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
--obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP3EVM) += snd-soc-omap3evm.o
- obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
- obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) += snd-soc-omap-twl4030.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
- obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) += snd-soc-zoom2.o
--obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_HDMI) += snd-soc-omap-hdmi-card.o
-diff --git a/sound/soc/omap/igep0020.c b/sound/soc/omap/igep0020.c
-deleted file mode 100644
-index e835781..0000000
---- a/sound/soc/omap/igep0020.c
-+++ /dev/null
-@@ -1,120 +0,0 @@
--/*
-- * igep0020.c  --  SoC audio for IGEP v2
-- *
-- * Based on sound/soc/omap/overo.c by Steve Sakoman
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int igep2_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--					    SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops igep2_ops = {
--	.hw_params = igep2_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link igep2_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.codec_dai_name = "twl4030-hifi",
--	.platform_name = "omap-pcm-audio",
--	.codec_name = "twl4030-codec",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops = &igep2_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_card_igep2 = {
--	.name = "igep2",
--	.owner = THIS_MODULE,
--	.dai_link = &igep2_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *igep2_snd_device;
--
--static int __init igep2_soc_init(void)
--{
--	int ret;
--
--	if (!machine_is_igep0020())
--		return -ENODEV;
--	printk(KERN_INFO "IGEP v2 SoC init\n");
--
--	igep2_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!igep2_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(igep2_snd_device, &snd_soc_card_igep2);
--
--	ret = platform_device_add(igep2_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(igep2_snd_device);
--
--	return ret;
--}
--module_init(igep2_soc_init);
--
--static void __exit igep2_soc_exit(void)
--{
--	platform_device_unregister(igep2_snd_device);
--}
--module_exit(igep2_soc_exit);
--
--MODULE_AUTHOR("Enric Balletbo i Serra <eballetbo@iseebcn.com>");
--MODULE_DESCRIPTION("ALSA SoC IGEP v2");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-deleted file mode 100644
-index 2830dfd..0000000
---- a/sound/soc/omap/omap3beagle.c
-+++ /dev/null
-@@ -1,150 +0,0 @@
--/*
-- * omap3beagle.c  --  SoC audio for OMAP3 Beagle
-- *
-- * Author: Steve Sakoman <steve@sakoman.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int fmt;
--	int ret;
--
--	switch (params_channels(params)) {
--	case 2: /* Stereo I2S mode */
--		fmt =	SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_CBM_CFM;
--		break;
--	case 4: /* Four channel TDM mode */
--		fmt =	SND_SOC_DAIFMT_DSP_A |
--			SND_SOC_DAIFMT_IB_NF |
--			SND_SOC_DAIFMT_CBM_CFM;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	/* Set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec DAI configuration\n");
--		return ret;
--	}
--
--	/* Set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set cpu DAI configuration\n");
--		return ret;
--	}
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops omap3beagle_ops = {
--	.hw_params = omap3beagle_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link omap3beagle_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.platform_name = "omap-pcm-audio",
--	.codec_dai_name = "twl4030-hifi",
--	.codec_name = "twl4030-codec",
--	.ops = &omap3beagle_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_omap3beagle = {
--	.name = "omap3beagle",
--	.owner = THIS_MODULE,
--	.dai_link = &omap3beagle_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *omap3beagle_snd_device;
--
--static int __init omap3beagle_soc_init(void)
--{
--	int ret;
--
--	if (!(machine_is_omap3_beagle() || machine_is_devkit8000()))
--		return -ENODEV;
--	pr_info("OMAP3 Beagle/Devkit8000 SoC init\n");
--
--	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!omap3beagle_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(omap3beagle_snd_device, &snd_soc_omap3beagle);
--
--	ret = platform_device_add(omap3beagle_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(omap3beagle_snd_device);
--
--	return ret;
--}
--
--static void __exit omap3beagle_soc_exit(void)
--{
--	platform_device_unregister(omap3beagle_snd_device);
--}
--
--module_init(omap3beagle_soc_init);
--module_exit(omap3beagle_soc_exit);
--
--MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
--MODULE_DESCRIPTION("ALSA SoC OMAP3 Beagle");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
-deleted file mode 100644
-index 3d468c9..0000000
---- a/sound/soc/omap/omap3evm.c
-+++ /dev/null
-@@ -1,118 +0,0 @@
--/*
-- * omap3evm.c  -- ALSA SoC support for OMAP3 EVM
-- *
-- * Author: Anuj Aggarwal <anuj.aggarwal@ti.com>
-- *
-- * Based on sound/soc/omap/beagle.c by Steve Sakoman
-- *
-- * Copyright (C) 2008 Texas Instruments, Incorporated
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the
-- * Free Software Foundation version 2.
-- *
-- * This program is distributed "as is" WITHOUT ANY WARRANTY of any kind,
-- * whether express or implied; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-- * General Public License for more details.
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int omap3evm_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "Can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops omap3evm_ops = {
--	.hw_params = omap3evm_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link omap3evm_dai = {
--	.name 		= "TWL4030",
--	.stream_name 	= "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.codec_dai_name = "twl4030-hifi",
--	.platform_name = "omap-pcm-audio",
--	.codec_name = "twl4030-codec",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops 		= &omap3evm_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_omap3evm = {
--	.name = "omap3evm",
--	.owner = THIS_MODULE,
--	.dai_link = &omap3evm_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *omap3evm_snd_device;
--
--static int __init omap3evm_soc_init(void)
--{
--	int ret;
--
--	if (!machine_is_omap3evm())
--		return -ENODEV;
--	pr_info("OMAP3 EVM SoC init\n");
--
--	omap3evm_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!omap3evm_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(omap3evm_snd_device, &snd_soc_omap3evm);
--	ret = platform_device_add(omap3evm_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(omap3evm_snd_device);
--
--	return ret;
--}
--
--static void __exit omap3evm_soc_exit(void)
--{
--	platform_device_unregister(omap3evm_snd_device);
--}
--
--module_init(omap3evm_soc_init);
--module_exit(omap3evm_soc_exit);
--
--MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
--MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
--MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
-deleted file mode 100644
-index 6ac3e0c..0000000
---- a/sound/soc/omap/overo.c
-+++ /dev/null
-@@ -1,122 +0,0 @@
--/*
-- * overo.c  --  SoC audio for Gumstix Overo
-- *
-- * Author: Steve Sakoman <steve@sakoman.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int overo_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--					    SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops overo_ops = {
--	.hw_params = overo_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link overo_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.codec_dai_name = "twl4030-hifi",
--	.platform_name = "omap-pcm-audio",
--	.codec_name = "twl4030-codec",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops = &overo_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_card_overo = {
--	.name = "overo",
--	.owner = THIS_MODULE,
--	.dai_link = &overo_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *overo_snd_device;
--
--static int __init overo_soc_init(void)
--{
--	int ret;
--
--	if (!(machine_is_overo() || machine_is_cm_t35())) {
--		pr_debug("Incomatible machine!\n");
--		return -ENODEV;
--	}
--	printk(KERN_INFO "overo SoC init\n");
--
--	overo_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!overo_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(overo_snd_device, &snd_soc_card_overo);
--
--	ret = platform_device_add(overo_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(overo_snd_device);
--
--	return ret;
--}
--module_init(overo_soc_init);
--
--static void __exit overo_soc_exit(void)
--{
--	platform_device_unregister(overo_snd_device);
--}
--module_exit(overo_soc_exit);
--
--MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
--MODULE_DESCRIPTION("ALSA SoC overo");
--MODULE_LICENSE("GPL");
+On 08/08/2012 11:54 AM, David Henningsson wrote:
+> Still work in progress, but it is starting to prove useful.
+>
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> ---
+>   tester/hda-emu-tester.py |   61 ++++++++++++++++++++++++++
+>   tester/runall.sh         |    3 ++
+>   tester/runner.py         |  109 ++++++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 173 insertions(+)
+>   create mode 100755 tester/hda-emu-tester.py
+>   create mode 100755 tester/runall.sh
+>   create mode 100644 tester/runner.py
+>
+> diff --git a/tester/hda-emu-tester.py b/tester/hda-emu-tester.py
+> new file mode 100755
+> index 0000000..a931651
+> --- /dev/null
+> +++ b/tester/hda-emu-tester.py
+> @@ -0,0 +1,61 @@
+> +#!/usr/bin/env python
+> +
+> +# hda-emu-tester - a test framework around hda-emu
+> +#
+> +# Written by David Henningsson <david.henningsson@canonical.com>
+> +#
+> +#    Copyright 2012 Canonical Ltd.
+> +#
+> +#    This program is free software: you can redistribute it and/or modify it
+> +#    under the terms of the GNU General Public License version 3, as published
+> +#    by the Free Software Foundation.
+> +#
+> +#    This program is distributed in the hope that it will be useful, but
+> +#    WITHOUT ANY WARRANTY; without even the implied warranties of
+> +#    MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+> +#    PURPOSE.  See the GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program.  If not, see <http://www.gnu.org/licenses/>.
+> +
+> +def handle_argv():
+> +    import argparse
+> +    parser = argparse.ArgumentParser(description='Hda-emu automated test wrapper.')
+> +    parser.add_argument('--file', dest='file', required=True, help='alsa-info filename')
+> +    return parser.parse_args()
+> +
+> +def run_test(argv):
+> +    import runner
+> +    result = runner.HdaEmuRunner()
+> +    result.set_alsa_info_file(argv.file)
+> +    result.run_standard()
+> +    return result
+> +
+> +def get_exit_code(result):
+> +    if result.errors > 9:
+> +        return 29
+> +    if result.errors > 0:
+> +        return 20 + result.errors
+> +    if result.warnings > 9:
+> +        return 19
+> +    if result.warnings > 0:
+> +        return 10 + result.warnings
+> +    return 0
+> +
+> +def main():
+> +    import sys
+> +    try:
+> +        argv_dict = handle_argv()
+> +        result = run_test(argv_dict)
+> +        exitcode = get_exit_code(result)
+> +        if result.errors > 0 or result.warnings > 0:
+> +            print '{0} errors, {1} warnings. ({2})'.format(result.errors, result.warnings, argv_dict.file)
+> +    except:
+> +        import traceback
+> +        traceback.print_exc()
+> +        sys.exit(99)
+> +
+> +    sys.exit(exitcode)
+> +
+> +if __name__ == "__main__":
+> +    main()
+> diff --git a/tester/runall.sh b/tester/runall.sh
+> new file mode 100755
+> index 0000000..d078f35
+> --- /dev/null
+> +++ b/tester/runall.sh
+> @@ -0,0 +1,3 @@
+> +#!/bin/sh
+> +find ../codecs/canonical/ -type f | sort | xargs -n1 ./hda-emu-tester.py --file
+> +
+> diff --git a/tester/runner.py b/tester/runner.py
+> new file mode 100644
+> index 0000000..28953be
+> --- /dev/null
+> +++ b/tester/runner.py
+> @@ -0,0 +1,109 @@
+> +# hda-emu-tester - a test framework around hda-emu
+> +#
+> +# Written by David Henningsson <david.henningsson@canonical.com>
+> +#
+> +#    Copyright 2012 Canonical Ltd.
+> +#
+> +#    This program is free software: you can redistribute it and/or modify it
+> +#    under the terms of the GNU General Public License version 3, as published
+> +#    by the Free Software Foundation.
+> +#
+> +#    This program is distributed in the hope that it will be useful, but
+> +#    WITHOUT ANY WARRANTY; without even the implied warranties of
+> +#    MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+> +#    PURPOSE.  See the GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program.  If not, see <http://www.gnu.org/licenses/>.
+> +
+> +import subprocess
+> +import os
+> +
+> +class HdaEmuRunner():
+> +
+> +    def __init__(self):
+> +        self.child_args = "../hda-emu -M -F"
+> +        self.alsa_info = "/proc/asound/card0/codec#0"
+> +        self.errors = 0
+> +        self.warnings = 0
+> +
+> +    def set_alsa_info_file(self, filename):
+> +        self.alsa_info = filename
+> +
+> +    def start_process(self):
+> +        import shlex
+> +        from subprocess import PIPE, STDOUT
+> +
+> +        args = shlex.split(self.child_args)
+> +        args.append(self.alsa_info)
+> +        self.child = subprocess.Popen(args, bufsize=0, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+> +
+> +    def stop_process(self):
+> +        if self.child is None:
+> +            return
+> +        self.child.terminate()
+> +        self.child.wait()
+> +        self.child = None
+> +
+> +
+> +    def check_stdout(self):
+> +        s = os.read(self.child.stdout.fileno(), 65536)
+> +        # print "Stdout received (", len(s), ")"
+> +        if s == "":
+> +            print "Unexpected EOF of stdout (hda-emu crashed?)"
+> +            self.errors += 1
+> +            return
+> +        self.stdout_total += s
+> +
+> +        q, _, self.stdout_total = self.stdout_total.rpartition('\n')
+> +        for s in q.splitlines():
+> +            if s.startswith("Error:"):
+> +                self.errors += 1
+> +                # print s
+> +            if s.startswith("Warning:"):
+> +                self.warnings += 1
+> +                # print s
+> +
+> +    def check_stderr(self):
+> +        s = os.read(self.child.stderr.fileno(), 65536)
+> +        # print "Stderr received (", len(s), ")"
+> +        if s == "":
+> +            print "Unexpected EOF of stderr (hda-emu crashed?)"
+> +            self.errors += 1
+> +            return False
+> +        if s == "> ":
+> +            return True
+> +        print "Unexpected stderr output: '" + prompt + "'"
+> +        self.errors += 1
+> +        return False
+> +
+> +    def run_command(self, command=None):
+> +        if command:
+> +            self.child.stdin.write(command + '\n')
+> +            self.child.stdin.flush()
+> +
+> +        import select
+> +        self.stdout_total = ""
+> +        pipelist = [self.child.stdout, self.child.stderr]
+> +        while True:
+> +            readable, _, broken = select.select(pipelist, [], pipelist, 3)
+> +            for q in broken:
+> +                print "Broken pipe (hda-emu crashed?)"
+> +                self.errors += 1
+> +                return
+> +            if readable == []:
+> +                print "Timeout waiting for hda-emu"
+> +                self.errors += 1
+> +                return
+> +            if self.child.stdout in readable:
+> +                self.check_stdout()
+> +            if self.child.stderr in readable:
+> +                if self.check_stderr():
+> +                    return
+> +
+> +    def run_standard(self):
+> +        self.start_process()
+> +        self.run_command() # Initial parsing
+> +        self.run_command("pm") # S3 test
+> +        self.stop_process()
+> +
+>
+
+
+
 -- 
-1.7.8.6
-
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
