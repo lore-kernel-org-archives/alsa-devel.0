@@ -1,48 +1,65 @@
-From: james.d.ralston@intel.com
-Subject: [PATCH 3/5] hda_intel: Add Device IDs for Intel Lynx Point-LP PCH
-Date: Thu,  9 Aug 2012 09:38:59 -0700
-Message-ID: <1344530339-2559-1-git-send-email-james.d.ralston@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Seth Heasley <seth.heasley@intel.com>, James Ralston <james.d.ralston@intel.com>
+From: nerwusek <luk0104@gmail.com>
+Subject: Re: uda1380 and pxa255 plays nothing but noise
+Date: Thu, 09 Aug 2012 18:43:45 +0200
+Message-ID: <5023E8C1.4020302@gmail.com>
+References: <50216A11.3050407@gmail.com>
+ <20120807192645.GD14711@sirena.org.uk> <50216F4E.1040201@gmail.com>
+ <CA+E=qVeeOhXB7iF_BFEp0FpguJQaUhV2nz_0HR4vxnwsMVXJ6Q@mail.gmail.com>
+ <50218D28.1080404@gmail.com> <20120808095747.GF14711@sirena.org.uk>
+ <50224AA4.4010902@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-2"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C52562663E1
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 18:14:33 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so231767bkc.38
+ for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2012 09:44:19 -0700 (PDT)
+In-Reply-To: <50224AA4.4010902@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: James Ralston <james.d.ralston@intel.com>
+On 08.08.2012 13:16, nerwusek wrote:
+> On 08.08.2012 11:57, Mark Brown wrote:
+>> This sounds like either the CPU isn't actually sending data or =
 
-This patch adds the Intel HD Audio Device IDs for the Intel Lynx Point-LP PCH
+>> there's a digital mute. =
 
-Signed-off-by: James Ralston <james.d.ralston@intel.com>
----
- sound/pci/hda/hda_intel.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+> Debugfs file asoc/ipaq/uda.../dapm/Playback shows:
+> Playback: On  in 1 out 1
+>  stream Playback active
+>  out "static" "DAC"
+>  out "static" "DAC"
+>  out "static" "DAC"
+>
+> and file DAC shows:
+> DAC: On  in 3 out 4 - R2(0x2) bit 10
+>  stream Playback inactive
+>  in  "static" "Playback"
+>  in  "static" "Playback"
+>  in  "static" "Playback"
+>  out "DAC" "Output Mux"
+>  out "static" "Analog Mixer"
+>
+> is it correct? Shouldn't stream Playback in DAC show active status?
+> Also I noticed that alsamixer works slower when playing music so
+> some data must be sent to codec but I don't know is that music
+> data or sth else.
+>
+> =A3ukasz Da=B3ek
+I also booted handhelds kernel (2.6.21) and compared UDA registers with it.
+Everything was the same except in my kernel (3.4) was silence.
+At this point I have no idea where is the problem.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c8aced1..60882c6 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -151,6 +151,7 @@ MODULE_SUPPORTED_DEVICE("{{Intel, ICH6},"
- 			 "{Intel, CPT},"
- 			 "{Intel, PPT},"
- 			 "{Intel, LPT},"
-+			 "{Intel, LPT_LP},"
- 			 "{Intel, HPT},"
- 			 "{Intel, PBG},"
- 			 "{Intel, SCH},"
-@@ -3270,6 +3271,14 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
- 	{ PCI_DEVICE(0x8086, 0x8c20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
- 	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
-+	/* Lynx Point-LP */
-+	{ PCI_DEVICE(0x8086, 0x9c20),
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
-+	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
-+	/* Lynx Point-LP */
-+	{ PCI_DEVICE(0x8086, 0x9c21),
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
-+	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_COMBO },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0c0c),
- 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
--- 
-1.7.7.6
+=A3ukasz Da=B3ek
