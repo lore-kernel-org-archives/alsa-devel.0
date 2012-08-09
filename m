@@ -1,106 +1,67 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH 07/11] ASoC: omap-mcbsp: Sidetone: Use
- SIDLE bits in SYSCONFIG register to select noidle mode
-Date: Wed, 8 Aug 2012 17:12:58 -0500
-Message-ID: <5022E46A.4010909@ti.com>
-References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
- <1344417101-5015-8-git-send-email-peter.ujfalusi@ti.com>
+From: Chen Jie <chenj@lemote.com>
+Subject: Re: [alsa-devel] [PATCH V4 12/16] ALSA: HDA: Make hda sound card
+ usable for Loongson.
+Date: Thu, 9 Aug 2012 11:35:15 +0800
+Message-ID: <CAGXxSxVs0cq08d+xk3rew6tQttkw1XM7pugn142m1_F6tJBWNQ@mail.gmail.com>
+References: <1343977571-2292-1-git-send-email-chenhc@lemote.com>
+ <1343977571-2292-13-git-send-email-chenhc@lemote.com> <s5hobmsqqeh.wl%tiwai@suse.de>
+ <CAAhV-H5ATFD7pksBkA374ShYWmvrgttGSs0vgu8QJ1F3VeRyzA@mail.gmail.com> <s5hipd0m3bj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id E0F9B265E54
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2012 23:44:28 +0200 (CEST)
-In-Reply-To: <1344417101-5015-8-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Benoit Cousson <b-cousson@ti.com>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <s5hipd0m3bj.wl%tiwai@suse.de>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Huacai Chen <chenhuacai@gmail.com>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Zhangjin Wu <wuzhangjin@gmail.com>, Hua Yan <yanh@lemote.com>, Ralf Baechle <ralf@linux-mips.org>, Hongliang Tao <taohl@lemote.com>, Fuxin Zhang <zhangfx@lemote.com>, Huacai Chen <chenhc@lemote.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/08/2012 04:11 AM, Peter Ujfalusi wrote:
-> Instead of the callback (which modifies control module register) use the
-> McBSP module's SYSCONFIG register to disable smart-idle mode when the
-> sidetone is enabled.
-> Store the original SIDLEMODE configuration and restore it when the sidetone
-> has been disabled.
+Hi,
 
-Is this another case in which it is required to change the idle-mode on 
-a per-use-case basis? In the past I was trying to do the same with HDMI 
-[1]. In that case it was decided to add the HWMOD_SWSUP_SIDLE to hwmod 
-data with the drawback of using no-idle/force-idle rather than 
-smart-idle[2][3].
+2012/8/3 Takashi Iwai <tiwai@suse.de>:
+> At Fri, 3 Aug 2012 18:36:40 +0800,
+> Huacai Chen wrote:
+>>
+>> We write these quirks on 2.6.36 some time ago, and then we port them
+>> to 3.x (3.2, 3.3, 3.4 and 3.5). As you say, PMON (BIOS for Loongson)
+>> doesn't set the pins correctly. Anyway, I'll try your suggestions.
+>
+> Thanks.  I guess it should work by just adding a new entry for your
+> device in cxt_fixups[] containing the right default pin-configuration
+> table, then point it in cxt5066_fixups[] with the corresponding PCI
+> (or codec) SSID.
+>
+>
+> Takashi
 
-[1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg60226.html
-[2] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg70463.html
-[3] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg70653.html
->
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->   sound/soc/omap/mcbsp.c |   18 ++++++++++++++----
->   sound/soc/omap/mcbsp.h |    1 +
->   2 files changed, 15 insertions(+), 4 deletions(-)
->
-> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-> index c870023..e008898 100644
-> --- a/sound/soc/omap/mcbsp.c
-> +++ b/sound/soc/omap/mcbsp.c
-> @@ -257,8 +257,15 @@ static void omap_st_on(struct omap_mcbsp *mcbsp)
->   {
->   	unsigned int w;
->
-> -	if (mcbsp->pdata->enable_st_clock)
-> -		mcbsp->pdata->enable_st_clock(mcbsp->id, 1);
-> +	/*
-> +	 * Sidetone uses McBSP ICLK - which must not idle when sidetones
-> +	 * are enabled or sidetones start sounding ugly.
-> +	 */
-> +	w = MCBSP_READ(mcbsp, SYSCON);
-> +	mcbsp->st_data->mcbsp_sidle = (w >> 3) & 0x3;
-> +	w &= ~SIDLEMODE(0x3);
-> +	w |= SIDLEMODE(0x1);
-> +	MCBSP_WRITE(mcbsp, SYSCON, w);
+I've found it is a little difficult to get proper pincfg values. The
+original patch builds  'input/output path' manually, the new way does
+it automatically as long as providing proper pincfgs for 'end points'.
 
-Wouldn't this create a mismatch between the SYSCONFIG register and McBSP 
-omap_hwmod._sysc_cache? Perhaps this could be done with a future 
-omap_hwmod API?
+I tried to copy related pincfgs from a workable lemote a1004
+laptop(kernel with the original patch, read from
+/proc/asound/card0/codec#0), didn't help much.
 
-Ricardo
->
->   	/* Enable McBSP Sidetone */
->   	w = MCBSP_READ(mcbsp, SSELCR);
-> @@ -279,8 +286,11 @@ static void omap_st_off(struct omap_mcbsp *mcbsp)
->   	w = MCBSP_READ(mcbsp, SSELCR);
->   	MCBSP_WRITE(mcbsp, SSELCR, w & ~(SIDETONEEN));
->
-> -	if (mcbsp->pdata->enable_st_clock)
-> -		mcbsp->pdata->enable_st_clock(mcbsp->id, 0);
-> +	/* Restore the SIDLEMODE as it was before the ST has been started */
-> +	w = MCBSP_READ(mcbsp, SYSCON);
-> +	w &= ~SIDLEMODE(0x3);
-> +	w |= SIDLEMODE(mcbsp->st_data->mcbsp_sidle);
-> +	MCBSP_WRITE(mcbsp, SYSCON, w);
->   }
->
->   static void omap_st_fir_write(struct omap_mcbsp *mcbsp, s16 *fir)
-> diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
-> index 49a6725..ba82846 100644
-> --- a/sound/soc/omap/mcbsp.h
-> +++ b/sound/soc/omap/mcbsp.h
-> @@ -280,6 +280,7 @@ struct omap_mcbsp_st_data {
->   	int nr_taps;	/* Number of filter coefficients in use */
->   	s16 ch0gain;
->   	s16 ch1gain;
-> +	unsigned int mcbsp_sidle;
->   };
->
->   struct omap_mcbsp {
->
+I guess the pincfgs are not correct, and on the platform, the pincfgs
+are not touched by BIOS, so I have to calculate proper pincfgs, how?
+
+HDA spec explains a pincfg as four bytes. For each byte, it has bits
+indicate amp/in/out/vref/ept.
+
+In the kernel side, it reads a pincfg and explains it as a 32bits
+flag, indicating
+connect/location/device/jack_connect_type/jack_color/misc/association/sequence.
+
+Why they differ? How to get proper pincfg values?
+
+
+
+Regards,
+-- Chen Jie
