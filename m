@@ -1,29 +1,48 @@
-From: Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH 3/4] ARM: OMAP3: Switch to use the unified audio driver
- (omap-twl4030) for selected boards
-Date: Thu, 09 Aug 2012 16:12:13 +0300
-Message-ID: <5023B72D.9030005@compulab.co.il>
-References: <1344419650-5389-1-git-send-email-peter.ujfalusi@ti.com> <1344419650-5389-4-git-send-email-peter.ujfalusi@ti.com> <50225A84.5010008@compulab.co.il> <50225BB5.3000407@ti.com> <50226444.4060100@compulab.co.il> <50238F37.2030302@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Add missing dapm routes for
+	WM8958 rev A
+Date: Thu,  9 Aug 2012 14:20:49 +0100
+Message-ID: <1344518449-10730-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <50238F37.2030302@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, devicetree-discuss@lists.ozlabs.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66486266316
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 14:51:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/12 13:21, Peter Ujfalusi wrote:
-> On 08/08/2012 04:06 PM, Igor Grinberg wrote:
->> Well, yes I know we will need to adjust the user space.
->> I wanted to change that for a long time and did not get to it...
->> Now, with your patches, it seems like the best time for doing this.
-> 
-> Done for the v2. You will have card named "cm-t3x".
+From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
 
-Thanks!
+Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 04ef031..6c9eeca 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -4038,6 +4038,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 		break;
+ 	case WM8958:
+ 		if (wm8994->revision < 1) {
++			snd_soc_dapm_add_routes(dapm, wm8994_intercon,
++						ARRAY_SIZE(wm8994_intercon));
+ 			snd_soc_dapm_add_routes(dapm, wm8994_revd_intercon,
+ 						ARRAY_SIZE(wm8994_revd_intercon));
+ 			snd_soc_dapm_add_routes(dapm, wm8994_lateclk_revd_intercon,
 -- 
-Regards,
-Igor.
+1.7.10.4
