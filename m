@@ -1,48 +1,48 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Add missing dapm routes for
-	WM8958 rev A
-Date: Thu,  9 Aug 2012 14:20:49 +0100
-Message-ID: <1344518449-10730-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - Deferred probing with request_firmware_nowait()
+Date: Thu, 09 Aug 2012 15:26:56 +0200
+Message-ID: <5023BAA0.1080304@canonical.com>
+References: <1344494723-6827-1-git-send-email-thierry.reding@avionic-design.de> <s5hhascft86.wl%tiwai@suse.de> <20120809070813.GA6979@avionic-0098.mockup.avionic-design.de> <s5hd330frn1.wl%tiwai@suse.de> <20120809073642.GA24695@avionic-0098.mockup.avionic-design.de> <s5h7gt8fr47.wl%tiwai@suse.de> <20120809080713.GC24808@avionic-0098.mockup.avionic-design.de> <s5hzk64earo.wl%tiwai@suse.de> <20120809103430.GA1560@avionic-0098.mockup.avionic-design.de> <s5hobmk2ql5.wl%tiwai@suse.de> <s5hd3302ovw.wl%tiwai@suse.de> <s5ha9y42os2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66486266316
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 14:51:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5ha9y42os2.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Thierry Reding <thierry.reding@avionic-design.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+On 08/09/2012 03:11 PM, Takashi Iwai wrote:
 
-Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 ++
- 1 file changed, 2 insertions(+)
+> @@ -3187,13 +3217,16 @@ static int __devinit azx_probe(struct pci_dev *pci,
+>   	if (patch[dev] && *patch[dev]) {
+>   		snd_printk(KERN_ERR SFX "Applying patch firmware '%s'\n",
+>   			   patch[dev]);
+> -		err = request_firmware(&chip->fw, patch[dev], &pci->dev);
+> +		err = request_firmware_nowait(THIS_MODULE, true, patch[dev],
+> +					      &pci->dev, GFP_KERNEL, card,
+> +					      azx_firmware_cb);
+>   		if (err < 0)
+>   			goto out_free;
+> +		chip->probe_deferred = 1;
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 04ef031..6c9eeca 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -4038,6 +4038,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		break;
- 	case WM8958:
- 		if (wm8994->revision < 1) {
-+			snd_soc_dapm_add_routes(dapm, wm8994_intercon,
-+						ARRAY_SIZE(wm8994_intercon));
- 			snd_soc_dapm_add_routes(dapm, wm8994_revd_intercon,
- 						ARRAY_SIZE(wm8994_revd_intercon));
- 			snd_soc_dapm_add_routes(dapm, wm8994_lateclk_revd_intercon,
+I might be out on deep water here, but isn't this racy? Or is 
+azx_firmware_cb somehow guaranteed not to execute before this function 
+has exited?
+
+>   	}
+>   #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+>
+> -	if (!chip->disabled) {
+> +	if (!chip->disabled && !chip->probe_deferred) {
+>   		err = azx_probe_continue(chip);
+>   		if (err < 0)
+>   			goto out_free;
+>
+
+
+
 -- 
-1.7.10.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
