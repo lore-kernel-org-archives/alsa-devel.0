@@ -1,129 +1,83 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2 v2] ALSA: hda - Deferred probing with
-	request_firmware_nowait()
-Date: Thu, 09 Aug 2012 15:54:04 +0200
-Message-ID: <5023C0FC.2030207@canonical.com>
-References: <1344494723-6827-1-git-send-email-thierry.reding@avionic-design.de>
- <s5hhascft86.wl%tiwai@suse.de>
- <20120809070813.GA6979@avionic-0098.mockup.avionic-design.de>
- <s5hd330frn1.wl%tiwai@suse.de>
- <20120809073642.GA24695@avionic-0098.mockup.avionic-design.de>
- <s5h7gt8fr47.wl%tiwai@suse.de>
- <20120809080713.GC24808@avionic-0098.mockup.avionic-design.de>
- <s5hzk64earo.wl%tiwai@suse.de>
- <20120809103430.GA1560@avionic-0098.mockup.avionic-design.de>
- <s5hobmk2ql5.wl%tiwai@suse.de> <s5hd3302ovw.wl%tiwai@suse.de>
- <s5ha9y42os2.wl%tiwai@suse.de> <5023BAA0.1080304@canonical.com>
- <s5h4noc2ntn.wl%tiwai@suse.de> <s5h1ujg2nm7.wl%tiwai@suse.de>
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v8] media: Add stk1160 new driver
+Date: Thu, 9 Aug 2012 10:57:42 -0300
+Message-ID: <CALF0-+Ve-+sY48-86=+sPZDBUeXFmoKqoLU8tiDniZopjv6B_Q@mail.gmail.com>
+References: <1344260302-28849-1-git-send-email-elezegarcia@gmail.com>
+	<CALF0-+Xwa6qNH3pEOgJq9f07C+ArNco6nxQcjGWoy5kwyQeScA@mail.gmail.com>
+	<501FCFE1.7010802@redhat.com>
+	<201208061618.56479.hverkuil@xs4all.nl>
+	<CALF0-+U7DYEgRFMaJx4kRpNb4aeeUaTywBVDkmw99azozG_0nQ@mail.gmail.com>
+	<CALF0-+UkH7o=mopJJSjRMBF-+60q+-6L=LdfJsWt17oJ0ij0Lw@mail.gmail.com>
+	<CALF0-+WmqJdEprO+ShJDDVfxvE70hWaW1iXAb=9zxOYajRgStw@mail.gmail.com>
+	<CALF0-+UqJUeCCakr73yHFjUvRVm6ZJ371wtTDKPmAXSWUB-57g@mail.gmail.com>
+	<5023AE05.1040604@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id DE6AC26633E
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 15:24:14 +0200 (CEST)
-In-Reply-To: <s5h1ujg2nm7.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Thierry Reding <thierry.reding@avionic-design.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <5023AE05.1040604@redhat.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, Takashi Iwai <tiwai@suse.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/2012 03:36 PM, Takashi Iwai wrote:
-> +/* callback from request_firmware_nowait() */
-> +static void azx_firmware_cb(const struct firmware *fw, void *context)
-> +{
-> +	struct snd_card *card = context;
-> +	struct azx *chip = card->private_data;
-> +	struct pci_dev *pci = chip->pci;
-> +
-> +	if (!fw) {
-> +		snd_printk(KERN_ERR SFX "Cannot load firmware, aborting\n");
-> +		goto error;
-> +	}
-
-Another thing, aren't you missing a
-
-chip->fw = fw;
-
-here?
-
-> +
-> +	if (!chip->disabled) {
-> +		/* continue probing */
-> +		if (azx_probe_continue(chip))
-> +			goto error;
-> +	}
-> +	return; /* OK */
-> +
-> + error:
-> +	snd_card_free(card);
-> +	pci_set_drvdata(pci, NULL);
-> +}
-> +
->   static int __devinit azx_probe(struct pci_dev *pci,
->   			       const struct pci_device_id *pci_id)
->   {
->   	static int dev;
->   	struct snd_card *card;
->   	struct azx *chip;
-> +	bool probe_deferred;
->   	int err;
+On Thu, Aug 9, 2012 at 9:33 AM, Mauro Carvalho Chehab
+<mchehab@redhat.com> wrote:
+> Em 09-08-2012 09:24, Ezequiel Garcia escreveu:
+>> Hi Mauro,
+>>
+>> On Mon, Aug 6, 2012 at 4:13 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+>>>>
+>>>> On a second thought, perhaps it makes sense to have a git repo (on linuxtv.org)
+>>>> for me to work on stk1160.
+>>>> That way I could simply send "git pull" requests instead of patches.
+>>>>
+>>>> I'm not sure if this is a better workflow and/or would allow for
+>>>> easier reviewing.
+>>>>
+>>>
+>>> Well, I just got an answer from vger administrator. He told me the
+>>> patch was exceeding
+>>> the allowed limit. Which I later discovered it was documented here:
+>>>
+>>> http://vger.kernel.org/majordomo-info.html
+>>>
+>>> Apparently, there is a 100, 000 characters limit.
+>>>
+>>> So, how do we proceed?
+>>>
+>>
+>> Ping! Could you take a look at this?
+>> I'd like to solve the pending issues (see previous mails),
+>> in order to know if the driver will need further work.
+>>
+>> ... or perhaps we can leave this for after the merge window, when
+>> you (and everyone) are be less busy.
+>>
+>> I *really* hope I'm not spamming. In that case, feel free to say so.
 >
->   	if (dev >= SNDRV_CARDS)
-> @@ -3182,18 +3211,22 @@ static int __devinit azx_probe(struct pci_dev *pci,
->   	if (err < 0)
->   		goto out_free;
->   	card->private_data = chip;
+> The merge window was closed already.
 
-Right, this patch has the race removed, as the variable is no longer set 
-in azx_firmware_cb. To be picky, it's slightly confusing that 
-probe_deferred is also used for signalling a disabled chip. Maybe 
-"probe_now" (inverted) would have been even better, like this:
+Yes, you're right. I'm still unsure about the work flow.
 
-> +	probe_deferred = chip->disabled;
-
-probe_now = !chip->disabled;
-
->
->   #ifdef CONFIG_SND_HDA_PATCH_LOADER
->   	if (patch[dev] && *patch[dev]) {
-
-(maybe we should not ask for firmware for a disabled chip either)
-
->   		snd_printk(KERN_ERR SFX "Applying patch firmware '%s'\n",
->   			   patch[dev]);
-> -		err = request_firmware(&chip->fw, patch[dev], &pci->dev);
-> +		err = request_firmware_nowait(THIS_MODULE, true, patch[dev],
-> +					      &pci->dev, GFP_KERNEL, card,
-> +					      azx_firmware_cb);
->   		if (err < 0)
->   			goto out_free;
-> +		probe_deferred = true;
-
-probe_now = false;
-
->   	}
->   #endif /* CONFIG_SND_HDA_PATCH_LOADER */
->
-> -	if (!chip->disabled) {
-> +	if (!probe_deferred) {
-
-if (probe_now) {
-
->   		err = azx_probe_continue(chip);
->   		if (err < 0)
->   			goto out_free;
+> I pushed this patch directly into patchwork,
+> so I should be handling it sooner or later.
 >
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Yes, I noticed it after sending the mail.
+
+> Unfortunately, I had a crash on my home volume group, and I'm busy those
+> days recovering data from it. It seems I'll be able to recover everything,
+> but I'll need to move about 800GB of data between two disks (one of them is
+> a slow one), plus my backup machine. I'll likely break it into several smaller
+> logical volumes, in order to help me to keep the backup updated. So,
+> that'll keep me busy for a while. In the meantime, I'm working on a slow
+> notebook. So, I might still be able to review and add some patches upstream,
+> especially the more trivial ones.
+>
+
+Ouch! I'm sorry to hear that. I hope you can recover soon.
+
+I'll stay tuned for your comments (and I'll stop bothering).
+
+Thanks for your reply!
+Ezequiel.
