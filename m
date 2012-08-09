@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Davinci: McASP: remove unused header
-	include
-Date: Thu, 9 Aug 2012 14:06:20 +0100
-Message-ID: <20120809130620.GR24328@opensource.wolfsonmicro.com>
-References: <1344438632-2604-1-git-send-email-gururaja.hebbar@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: ad1836: convert to use
+ snd_soc_register_card
+Date: Thu, 9 Aug 2012 14:08:41 +0100
+Message-ID: <20120809130841.GS24328@opensource.wolfsonmicro.com>
+References: <1344550120-30901-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 795702652BF
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 14:36:36 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AF3292652BF
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 14:38:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1344438632-2604-1-git-send-email-gururaja.hebbar@ti.com>
+In-Reply-To: <1344550120-30901-1-git-send-email-scott.jiang.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 08, 2012 at 08:40:30PM +0530, Hebbar, Gururaja wrote:
-> Defines or parameters from <mach/mux.h> isn't used anywhere. Hence
-> remove the header include.
+On Thu, Aug 09, 2012 at 06:08:39PM -0400, Scott Jiang wrote:
+> Cpu dai and codec name are passed in through platform data.
 
-Applied all, thanks.
+Won't applying this break all existing boards - there's no patch adding
+platform data here?  We should merge the updates for the boards together
+with the driver update to ensure they still work, or provide default
+platform data so that only boards that wish to change something from the
+current code need to be updated.
+
+Also, the patch description should be something like "ASoC: bf5xx-ad1836"
+as it's a board driver change.
