@@ -1,19 +1,19 @@
-From: Kaskinen Tanu <tanu.kaskinen@digia.com>
-Subject: Re: [PATCH] ucm: Allow cset commands to have values
-	with spaces.
-Date: Thu, 9 Aug 2012 18:23:29 +0300
-Message-ID: <1344525809.4283.44.camel@IT-D-4QB9Z4J>
-References: <1344519811-29520-1-git-send-email-tanu.kaskinen@digia.com>
- <s5hr4rg17m0.wl%tiwai@suse.de> <1344523452.4283.43.camel@IT-D-4QB9Z4J>
- <s5hboik14lm.wl%tiwai@suse.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 03/22] ASoC: ab8500: Inform SoC Core that we
+	have our own I/O arrangements
+Date: Thu,  9 Aug 2012 16:47:29 +0100
+Message-ID: <1344527268-5964-4-git-send-email-lee.jones@linaro.org>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.digia.com (smtp1.digia.com [82.118.214.156])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A38C2663BE
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 16:53:44 +0200 (CEST)
-In-Reply-To: <s5hboik14lm.wl%tiwai@suse.de>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24B8E266304
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 17:18:28 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so398404wgb.20
+ for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2012 08:48:13 -0700 (PDT)
+In-Reply-To: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-08-09 at 17:12 +0200, Takashi Iwai wrote:
-> At Thu, 9 Aug 2012 17:44:12 +0300,
-> Kaskinen Tanu wrote:
-> > 
-> > On Thu, 2012-08-09 at 16:07 +0200, Takashi Iwai wrote:
-> > > At Thu, 9 Aug 2012 16:43:31 +0300,
-> > > Tanu Kaskinen wrote:
-> > > > @@ -170,8 +170,23 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
-> > > >  	snd_ctl_elem_value_malloc(&value);
-> > > >  	snd_ctl_elem_info_malloc(&info);
-> > > >  
-> > > > -	pos = strrchr(cset, ' ');
-> > > > -	if (pos == NULL) {
-> > > > +	/* Find the space after the element id, taking quoting with
-> > > > +	   single-quotes into account. */
-> > > > +	for (pos = cset; *pos != '\0'; pos += strcspn(pos, "' ")) {
-> > > > +		if (*pos == ' ')
-> > > > +			break;
-> > > > +		if (*pos == '\'') {
-> > > 
-> > > A double-quote can be supported easily here...
-> > 
-> > True, I'll post v2 soon.
-> 
-> On the second thought, parsing the string intensively at that point
-> doesn't make sense.  The string will be parsed anyway in
-> snd_ctl_ascii_elem_id_parse(), then why not just let it give the next
-> pointer from there?
-> 
-> Below is a quick hack (untested at all!).  Could you check whether it
-> works?
+If codec->control_data is not populated SoC Core assumes we want to
+use regmap, which fails catastrophically, as we don't have one:
 
-It does :)
+Unable to handle kernel NULL pointer dereference at virtual address 00000080
+pgd = c0004000
+[00000080] *pgd=00000000
+Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 1    Not tainted  (3.5.0-rc6-00884-g0b2419e-dirty #130)
+PC is at regmap_read+0x10/0x5c
+LR is at hw_read+0x80/0x90
+pc : [<c01a91b8>]    lr : [<c0216804>]    psr: 60000013
 
+CC: alsa-devel@alsa-project.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/codecs/ab8500-codec.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 3c79592..23b4018 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2406,6 +2406,10 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	/* Setup AB8500 according to board-settings */
+ 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
++
++	/* Inform SoC Core that we have our own I/O arrangements. */
++	codec->control_data = (void *)true;
++
+ 	status = ab8500_audio_setup_mics(codec, &pdata->codec->amics);
+ 	if (status < 0) {
+ 		pr_err("%s: Failed to setup mics (%d)!\n", __func__, status);
 -- 
-Tanu
+1.7.9.5
