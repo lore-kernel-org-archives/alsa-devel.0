@@ -1,28 +1,29 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 04/11] MFD: twl4030-audio: Add DT support
-Date: Thu, 09 Aug 2012 16:53:26 +0300
-Message-ID: <5023C0D6.8040600@ti.com>
-References: <1344418887-5262-1-git-send-email-peter.ujfalusi@ti.com>
- <1344418887-5262-5-git-send-email-peter.ujfalusi@ti.com>
- <20120808131356.GS16861@opensource.wolfsonmicro.com>
- <50226CF4.1010202@ti.com>
- <20120808135253.GC16861@opensource.wolfsonmicro.com>
- <502274DA.9020204@ti.com>
- <20120808141849.GA24328@opensource.wolfsonmicro.com> <50227837.10400@ti.com>
- <20120808144933.GC24328@opensource.wolfsonmicro.com>
- <50238E8A.5030902@ti.com>
- <20120809103600.GI24328@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/2 v2] ALSA: hda - Deferred probing with
+	request_firmware_nowait()
+Date: Thu, 09 Aug 2012 15:54:04 +0200
+Message-ID: <5023C0FC.2030207@canonical.com>
+References: <1344494723-6827-1-git-send-email-thierry.reding@avionic-design.de>
+ <s5hhascft86.wl%tiwai@suse.de>
+ <20120809070813.GA6979@avionic-0098.mockup.avionic-design.de>
+ <s5hd330frn1.wl%tiwai@suse.de>
+ <20120809073642.GA24695@avionic-0098.mockup.avionic-design.de>
+ <s5h7gt8fr47.wl%tiwai@suse.de>
+ <20120809080713.GC24808@avionic-0098.mockup.avionic-design.de>
+ <s5hzk64earo.wl%tiwai@suse.de>
+ <20120809103430.GA1560@avionic-0098.mockup.avionic-design.de>
+ <s5hobmk2ql5.wl%tiwai@suse.de> <s5hd3302ovw.wl%tiwai@suse.de>
+ <s5ha9y42os2.wl%tiwai@suse.de> <5023BAA0.1080304@canonical.com>
+ <s5h4noc2ntn.wl%tiwai@suse.de> <s5h1ujg2nm7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
- [74.125.149.76])
- by alsa0.perex.cz (Postfix) with ESMTP id 63AF726633B
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 15:23:41 +0200 (CEST)
-Received: by yenq13 with SMTP id q13so477972yen.40
- for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2012 06:53:24 -0700 (PDT)
-In-Reply-To: <20120809103600.GI24328@opensource.wolfsonmicro.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE6AC26633E
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 15:24:14 +0200 (CEST)
+In-Reply-To: <s5h1ujg2nm7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,77 +33,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, Benoit Cousson <b-cousson@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Thierry Reding <thierry.reding@avionic-design.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/2012 01:36 PM, Mark Brown wrote:
-> On Thu, Aug 09, 2012 at 01:18:50PM +0300, Peter Ujfalusi wrote:
->> On 08/08/2012 05:49 PM, Mark Brown wrote:
-> =
+On 08/09/2012 03:36 PM, Takashi Iwai wrote:
+> +/* callback from request_firmware_nowait() */
+> +static void azx_firmware_cb(const struct firmware *fw, void *context)
+> +{
+> +	struct snd_card *card = context;
+> +	struct azx *chip = card->private_data;
+> +	struct pci_dev *pci = chip->pci;
+> +
+> +	if (!fw) {
+> +		snd_printk(KERN_ERR SFX "Cannot load firmware, aborting\n");
+> +		goto error;
+> +	}
 
->>> That makes sense if the GPIO is actively driven, open drain should be
->>> better here, but it's still a generic thing which it'd be nice to
->>> extract.
-> =
+Another thing, aren't you missing a
 
->> To cover all of this in a generic way is not that straight forward IMHO.
-> =
+chip->fw = fw;
 
-> The sequence is just:
-> =
+here?
 
->   1. Enable mutes (at _PRE time)
->   2. Do whatever the device needs
->   3. Disable the mutes (at _POST time)
-> =
+> +
+> +	if (!chip->disabled) {
+> +		/* continue probing */
+> +		if (azx_probe_continue(chip))
+> +			goto error;
+> +	}
+> +	return; /* OK */
+> +
+> + error:
+> +	snd_card_free(card);
+> +	pci_set_drvdata(pci, NULL);
+> +}
+> +
+>   static int __devinit azx_probe(struct pci_dev *pci,
+>   			       const struct pci_device_id *pci_id)
+>   {
+>   	static int dev;
+>   	struct snd_card *card;
+>   	struct azx *chip;
+> +	bool probe_deferred;
+>   	int err;
+>
+>   	if (dev >= SNDRV_CARDS)
+> @@ -3182,18 +3211,22 @@ static int __devinit azx_probe(struct pci_dev *pci,
+>   	if (err < 0)
+>   		goto out_free;
+>   	card->private_data = chip;
 
-> I'm not sure there's any reason for you not to use the internal mute
-> even if the external mute is present but if there is that's the only
-> thing that's weird here.  If there's no reason not to do it it just goes
-> into step 2 and then it's fine, even if there is you can make it
-> conditional in step 2.
+Right, this patch has the race removed, as the variable is no longer set 
+in azx_firmware_cb. To be picky, it's slightly confusing that 
+probe_deferred is also used for signalling a disabled chip. Maybe 
+"probe_now" (inverted) would have been even better, like this:
 
-Not sure, but it should not cause issues. The PIN is multiplexed between
-GPIO6/PWM0/MUTE functionality.
-For that matter probably I could just don't care about flags here and
-configure the extmute (the internal one) all the time. Not sure, it has bee=
-n a
-long time I have dealt with the twl4030...
+> +	probe_deferred = chip->disabled;
 
->> Sure I could do this:
->> hs_extmute: if only this is set we shall use the chip built in functiona=
-lity
->> hs_extmute_gpio: if this is set we use the extmute feature but with exte=
-rnal
->>                  GPIO.
-> =
+probe_now = !chip->disabled;
 
->> But both need to be documented and supported.
-> =
+>
+>   #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>   	if (patch[dev] && *patch[dev]) {
 
-> Is there any actual case where an external mute is supplied via a
-> mechanism other than a GPIO, and if there is would it not either need
-> its own DT property or already need to interact with the driver from
-> code, making the DT property redundant?
+(maybe we should not ask for firmware for a disabled chip either)
 
-Not with my knowledge. The only board using it is the zoom2 upstream. I know
-other boards (not in upstream) which either uses the internal mute or GPIO.
+>   		snd_printk(KERN_ERR SFX "Applying patch firmware '%s'\n",
+>   			   patch[dev]);
+> -		err = request_firmware(&chip->fw, patch[dev], &pci->dev);
+> +		err = request_firmware_nowait(THIS_MODULE, true, patch[dev],
+> +					      &pci->dev, GFP_KERNEL, card,
+> +					      azx_firmware_cb);
+>   		if (err < 0)
+>   			goto out_free;
+> +		probe_deferred = true;
 
-> My thinking here is that the
-> flag should be redundant because we already need to specify how we do
-> the mute, what I'd expect is that we activate the external mute
-> functionality as a result of being given another way of doing it so we
-> don't need to provide a flag.
+probe_now = false;
 
-I perfectly understand your point. However how would you imagine this in th=
-e core?
-We should have something similar to DAPM_SUPPLY which we can attach to the
-widget which needs this sort of mute, but how big change we would need in t=
-he
-core to do this I'm not sure.
-I can take a look at this, but I would do it as a follow up series.
+>   	}
+>   #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+>
+> -	if (!chip->disabled) {
+> +	if (!probe_deferred) {
 
--- =
+if (probe_now) {
 
-P=E9ter
+>   		err = azx_probe_continue(chip);
+>   		if (err < 0)
+>   			goto out_free;
+>
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
