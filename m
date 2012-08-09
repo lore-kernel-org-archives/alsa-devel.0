@@ -1,83 +1,100 @@
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v8] media: Add stk1160 new driver
-Date: Thu, 9 Aug 2012 10:57:42 -0300
-Message-ID: <CALF0-+Ve-+sY48-86=+sPZDBUeXFmoKqoLU8tiDniZopjv6B_Q@mail.gmail.com>
-References: <1344260302-28849-1-git-send-email-elezegarcia@gmail.com>
-	<CALF0-+Xwa6qNH3pEOgJq9f07C+ArNco6nxQcjGWoy5kwyQeScA@mail.gmail.com>
-	<501FCFE1.7010802@redhat.com>
-	<201208061618.56479.hverkuil@xs4all.nl>
-	<CALF0-+U7DYEgRFMaJx4kRpNb4aeeUaTywBVDkmw99azozG_0nQ@mail.gmail.com>
-	<CALF0-+UkH7o=mopJJSjRMBF-+60q+-6L=LdfJsWt17oJ0ij0Lw@mail.gmail.com>
-	<CALF0-+WmqJdEprO+ShJDDVfxvE70hWaW1iXAb=9zxOYajRgStw@mail.gmail.com>
-	<CALF0-+UqJUeCCakr73yHFjUvRVm6ZJ371wtTDKPmAXSWUB-57g@mail.gmail.com>
-	<5023AE05.1040604@redhat.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: Re: [PATCH 2/2 v2] ALSA: hda - Deferred probing with
+ request_firmware_nowait()
+Date: Thu, 9 Aug 2012 16:04:03 +0200
+Message-ID: <20120809140403.GA10145@avionic-0098.mockup.avionic-design.de>
+References: <20120809080713.GC24808@avionic-0098.mockup.avionic-design.de>
+ <s5hzk64earo.wl%tiwai@suse.de>
+ <20120809103430.GA1560@avionic-0098.mockup.avionic-design.de>
+ <s5hobmk2ql5.wl%tiwai@suse.de> <s5hd3302ovw.wl%tiwai@suse.de>
+ <s5ha9y42os2.wl%tiwai@suse.de> <5023BAA0.1080304@canonical.com>
+ <s5h4noc2ntn.wl%tiwai@suse.de> <s5h1ujg2nm7.wl%tiwai@suse.de>
+ <5023C0FC.2030207@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <5023AE05.1040604@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, Takashi Iwai <tiwai@suse.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2643890270188533377=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+ [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFDC7266341
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 15:34:22 +0200 (CEST)
+In-Reply-To: <5023C0FC.2030207@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 9, 2012 at 9:33 AM, Mauro Carvalho Chehab
-<mchehab@redhat.com> wrote:
-> Em 09-08-2012 09:24, Ezequiel Garcia escreveu:
->> Hi Mauro,
->>
->> On Mon, Aug 6, 2012 at 4:13 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
->>>>
->>>> On a second thought, perhaps it makes sense to have a git repo (on linuxtv.org)
->>>> for me to work on stk1160.
->>>> That way I could simply send "git pull" requests instead of patches.
->>>>
->>>> I'm not sure if this is a better workflow and/or would allow for
->>>> easier reviewing.
->>>>
->>>
->>> Well, I just got an answer from vger administrator. He told me the
->>> patch was exceeding
->>> the allowed limit. Which I later discovered it was documented here:
->>>
->>> http://vger.kernel.org/majordomo-info.html
->>>
->>> Apparently, there is a 100, 000 characters limit.
->>>
->>> So, how do we proceed?
->>>
->>
->> Ping! Could you take a look at this?
->> I'd like to solve the pending issues (see previous mails),
->> in order to know if the driver will need further work.
->>
->> ... or perhaps we can leave this for after the merge window, when
->> you (and everyone) are be less busy.
->>
->> I *really* hope I'm not spamming. In that case, feel free to say so.
->
-> The merge window was closed already.
 
-Yes, you're right. I'm still unsure about the work flow.
+--===============2643890270188533377==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
+Content-Disposition: inline
 
-> I pushed this patch directly into patchwork,
-> so I should be handling it sooner or later.
->
 
-Yes, I noticed it after sending the mail.
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Unfortunately, I had a crash on my home volume group, and I'm busy those
-> days recovering data from it. It seems I'll be able to recover everything,
-> but I'll need to move about 800GB of data between two disks (one of them is
-> a slow one), plus my backup machine. I'll likely break it into several smaller
-> logical volumes, in order to help me to keep the backup updated. So,
-> that'll keep me busy for a while. In the meantime, I'm working on a slow
-> notebook. So, I might still be able to review and add some patches upstream,
-> especially the more trivial ones.
->
+On Thu, Aug 09, 2012 at 03:54:04PM +0200, David Henningsson wrote:
+> On 08/09/2012 03:36 PM, Takashi Iwai wrote:
+> >+/* callback from request_firmware_nowait() */
+> >+static void azx_firmware_cb(const struct firmware *fw, void *context)
+> >+{
+> >+	struct snd_card *card =3D context;
+> >+	struct azx *chip =3D card->private_data;
+> >+	struct pci_dev *pci =3D chip->pci;
+> >+
+> >+	if (!fw) {
+> >+		snd_printk(KERN_ERR SFX "Cannot load firmware, aborting\n");
+> >+		goto error;
+> >+	}
+>=20
+> Another thing, aren't you missing a
+>=20
+> chip->fw =3D fw;
+>=20
+> here?
 
-Ouch! I'm sorry to hear that. I hope you can recover soon.
+Adding that line here fixes the problem for me.
 
-I'll stay tuned for your comments (and I'll stop bothering).
+Thierry
 
-Thanks for your reply!
-Ezequiel.
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQI8NTAAoJEN0jrNd/PrOh+1MP/32F4f/B7NVwAF0xDBuZhYaB
+DN9KkfSUi8Y8O7wJnIpi2INXjuO4DQycbJuLw4Om645R+Ok1m/EUtM9s30Lm3Mkc
+3iJTo6598mwMHuI5qMLIJ+5j0iY3saSCqHLgexY/9FeyVpvRLj5zlp9f/n+aOhwf
+U1ZYHtfoLsh9JpeppbnfTtCe/3RkpMsOYsMoF8iMRc8IourVC6grBIrTBRV3qDcp
+XufoM8Ik1CwmTD86cfEcVGvA6SDMt4zFFwSEdJVQstKHuXRPugOGiB7V9Qe1E4yU
+Rb89YDORAhcxDPRz812ki0GN6l8CdownZ+MlZ+URG98h40CqPyM+Vfa8AYgJWvwu
+HYgnr3/dGh9n7h19NdENN7e6pqrb5HgxvgbJM4z85l6GWLwUC50NehQJs2McYeNf
+ChIE65aH8gfyrCQmIxvpelv6tw2jBHNhmGnAymSK6YYp1lgHLiDPRBxn5wGGtqZr
+kzARmrgLHnyV37F650dTfw64Eo8R0dZt3rF3hCXbeUvDzDYXTJYYZGEuNIZwYNCF
+H9GvINevaMscUAsz09+q4QgBNZZ5S/FNstPrSTZBctatYkTJ1WaQ+prrd4Ayb3o3
+yv77I1aKEOFDxfA6Ash9NMvdQi9q3Ev+BVj6CA+Fk9Zn+4/VVwSSpV7zW3SspOmk
+Gj9yPgwxCwRq9EiAUFeC
+=JnU1
+-----END PGP SIGNATURE-----
+
+--ZGiS0Q5IWpPtfppv--
+
+--===============2643890270188533377==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2643890270188533377==--
