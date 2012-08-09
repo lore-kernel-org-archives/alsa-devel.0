@@ -1,163 +1,62 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
-	probe rather than as a device
-Date: Thu,  9 Aug 2012 16:47:33 +0100
-Message-ID: <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 22/22] Documentation: Add the AB8500 CODEC device to the MFD AB8500 doc
+Date: Thu,  9 Aug 2012 16:47:48 +0100
+Message-ID: <1344527268-5964-23-git-send-email-lee.jones@linaro.org>
 References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 104E72663F8
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2012 17:18:35 +0200 (CEST)
-Received: by weyx10 with SMTP id x10so355801wey.38
- for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2012 08:48:20 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
+Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The PCM is a pseudo-device. It doesn't have any of it's own registers
-or hardware. It rather acts as a layer of abstraction for DMA
-transfers. Hence, instead of classifying it as a device in its own
-right, we call the initialisation from the MSP driver.
+Here we document the AB8500 Audio CODEC in the existing MFD AB8500 document.
 
 CC: alsa-devel@alsa-project.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/mop500.c        |    4 ++--
- sound/soc/ux500/ux500_msp_dai.c |   14 +++++++++++++-
- sound/soc/ux500/ux500_pcm.c     |   19 ++++---------------
- sound/soc/ux500/ux500_pcm.h     |    3 +++
- 4 files changed, 22 insertions(+), 18 deletions(-)
+ Documentation/devicetree/bindings/mfd/ab8500.txt |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index 6840df7..fe6223a 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -33,7 +33,7 @@ struct snd_soc_dai_link mop500_dai_links[] = {
- 		.stream_name = "ab8500_0",
- 		.cpu_dai_name = "ux500-msp-i2s.1",
- 		.codec_dai_name = "ab8500-codec-dai.0",
--		.platform_name = "ux500-pcm.0",
-+		.platform_name = "ux500-msp-i2s.1",
- 		.codec_name = "ab8500-codec.0",
- 		.init = mop500_ab8500_machine_init,
- 		.ops = mop500_ab8500_ops,
-@@ -43,7 +43,7 @@ struct snd_soc_dai_link mop500_dai_links[] = {
- 		.stream_name = "ab8500_1",
- 		.cpu_dai_name = "ux500-msp-i2s.3",
- 		.codec_dai_name = "ab8500-codec-dai.1",
--		.platform_name = "ux500-pcm.0",
-+		.platform_name = "ux500-msp-i2s.3",
- 		.codec_name = "ab8500-codec.0",
- 		.init = NULL,
- 		.ops = mop500_ab8500_ops,
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 0f7dd49..3476d6a 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -28,6 +28,7 @@
+diff --git a/Documentation/devicetree/bindings/mfd/ab8500.txt b/Documentation/devicetree/bindings/mfd/ab8500.txt
+index 69e757a..ce83c8d 100644
+--- a/Documentation/devicetree/bindings/mfd/ab8500.txt
++++ b/Documentation/devicetree/bindings/mfd/ab8500.txt
+@@ -23,6 +23,7 @@ Device                     IRQ Names              Supply Names   Description
+ ab8500-bm                :                      :              : Battery Manager
+ ab8500-btemp             :                      :              : Battery Temperature
+ ab8500-charger           :                      :              : Battery Charger
++ab8500-codec             :                      :              : Audio Codec
+ ab8500-fg                :                      :              : Fuel Gauge
+ ab8500-gpadc             : HW_CONV_END          : vddadc       : Analogue to Digital Converter
+                            SW_CONV_END          :              :
+@@ -52,6 +53,14 @@ Optional child device properties:
+                            supplied in the interrupts property
+ - <supply_name>-supply   : contains a phandle to the regulator supply node in Device Tree
  
- #include "ux500_msp_i2s.h"
- #include "ux500_msp_dai.h"
-+#include "ux500_pcm.h"
- 
- static int setup_pcm_multichan(struct snd_soc_dai *dai,
- 			struct ux500_msp_config *msp_config)
-@@ -806,11 +807,20 @@ static int __devinit ux500_msp_drv_probe(struct platform_device *pdev)
- 		goto err_init_msp;
- 	}
- 
-+	ret = ux500_pcm_register_platform(pdev);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev,
-+			"Error: %s: Failed to register PCM platform device!\n",
-+			__func__);
-+		goto err_reg_plat;
-+	}
++Non-standard child device properties:
++ - Audio CODEC:
++   - stericsson,amic[1|2]-type-single-ended : Single-ended Analoge Mic (default: differential)
++   - stericsson,amic1a-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,amic1b-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,amic2-bias-vamic1           : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,earpeice-cmv                : Earpeice voltage (only: 950 | 1100 | 1270 | 1580)
 +
- 	return 0;
+ ab8500@5 {
+          compatible = "stericsson,ab8500";
+          reg = <5>; /* mailbox 5 is i2c */
+@@ -110,6 +119,12 @@ ab8500@5 {
+                 compatible = "stericsson,ab8500-pwm";
+         };
  
-+err_reg_plat:
-+	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(ux500_msp_dai_drv));
- err_init_msp:
- 	clk_put(drvdata->clk);
--
- err_clk:
- 	devm_regulator_put(drvdata->reg_vape);
- 
-@@ -821,6 +831,8 @@ static int __devexit ux500_msp_drv_remove(struct platform_device *pdev)
- {
- 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
- 
-+	ux500_pcm_unregister_platform(pdev);
++	codec: ab8500-codec {
++		compatible = "stericsson,ab8500-codec";
 +
- 	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(ux500_msp_dai_drv));
- 
- 	devm_regulator_put(drvdata->reg_vape);
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index 1a04e24..894c9f4 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -282,7 +282,7 @@ static struct snd_soc_platform_driver ux500_pcm_soc_drv = {
- 	.pcm_new        = ux500_pcm_new,
- };
- 
--static int __devexit ux500_pcm_drv_probe(struct platform_device *pdev)
-+int __devinit ux500_pcm_register_platform(struct platform_device *pdev)
- {
- 	int ret;
- 
-@@ -296,23 +296,12 @@ static int __devexit ux500_pcm_drv_probe(struct platform_device *pdev)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(ux500_pcm_register_platform);
- 
--static int __devinit ux500_pcm_drv_remove(struct platform_device *pdev)
-+int __devexit ux500_pcm_unregister_platform(struct platform_device *pdev)
- {
- 	snd_soc_unregister_platform(&pdev->dev);
- 
- 	return 0;
- }
--
--static struct platform_driver ux500_pcm_driver = {
--	.driver = {
--		.name = "ux500-pcm",
--		.owner = THIS_MODULE,
--	},
--
--	.probe = ux500_pcm_drv_probe,
--	.remove = __devexit_p(ux500_pcm_drv_remove),
--};
--module_platform_driver(ux500_pcm_driver);
--
--MODULE_LICENSE("GPL v2");
-+EXPORT_SYMBOL_GPL(ux500_pcm_unregister_platform);
-diff --git a/sound/soc/ux500/ux500_pcm.h b/sound/soc/ux500/ux500_pcm.h
-index 77ed44d..76d3444 100644
---- a/sound/soc/ux500/ux500_pcm.h
-+++ b/sound/soc/ux500/ux500_pcm.h
-@@ -32,4 +32,7 @@
- #define UX500_PLATFORM_PERIODS_MAX		48
- #define UX500_PLATFORM_BUFFER_BYTES_MAX		(2048 * PAGE_SIZE)
- 
-+int ux500_pcm_register_platform(struct platform_device *pdev);
-+int ux500_pcm_unregister_platform(struct platform_device *pdev);
++		stericsson,earpeice-cmv = <950>; /* Units in mV. */
++	};
 +
- #endif
+         ab8500-regulators {
+                 compatible = "stericsson,ab8500-regulator";
+ 
 -- 
 1.7.9.5
