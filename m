@@ -1,33 +1,64 @@
-From: Jerry Snitselaar <dev@snitselaar.org>
-Subject: [PATCH] ASoC: core: remove unused variable in soc_probe() in linux-next
-Date: Thu,  9 Aug 2012 23:16:26 -0700
-Message-ID: <1344579386-27193-1-git-send-email-dev@snitselaar.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH] ASoC: Samsung: Fix build error
+Date: Fri, 10 Aug 2012 11:47:33 +0530
+Message-ID: <CAK9yfHx4FA0f_n2jYy3TObFpHJRz1XpmVaP=8n0EOj13YAaSow@mail.gmail.com>
+References: <1344405883-27603-1-git-send-email-sachin.kamat@linaro.org>
+	<0dd201cd76bd$d57df270$8079d750$%kim@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <0dd201cd76bd$d57df270$8079d750$%kim@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Kukjin Kim <kgene.kim@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, patches@linaro.org, sbkim73@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-With commit 28d528c8 "ASoC: core: Remove pointless error on card
-registration failure", the variable ret is no longer used in
-soc_probe() and generates an unused variable warning during a build.
+Hi Kukjin,
 
-Signed-off-by: Jerry Snitselaar <dev@snitselaar.org>
----
- sound/soc/soc-core.c | 1 -
- 1 file changed, 1 deletion(-)
+On 10 August 2012 11:33, Kukjin Kim <kgene.kim@samsung.com> wrote:
+> Sachin Kamat wrote:
+>>
+>> Fixes the following build error:
+>> In file included from arch/arm/mach-exynos/include/mach/dma.h:24:0,
+>>               from arch/arm/plat-samsung/include/plat/dma-ops.h:17,
+>>               from arch/arm/plat-samsung/include/plat/dma.h:128,
+>>               from sound/soc/samsung/pcm.c:23:
+>> arch/arm/plat-samsung/include/plat/dma-pl330.h:106:8:
+>>                       error: redefinition of =91struct s3c2410_dma_c=
+lient=92
+>> arch/arm/plat-samsung/include/plat/dma.h:40:8: note: originally defi=
+ned
+>> here
+>> make[3]: *** [sound/soc/samsung/pcm.o] Error 1
+>>
+>> Cc: Kukjin Kim <kgene.kim@samsung.com>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
+>
+> BTW, Sachin, do you _really_ need to keep above double signoff with d=
+ifferent e-mail?
+>
+> I think, last one should be removed? Because in the field of author, =
+'linaro.org' e-mail is used?
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2d98ffc..7adf115 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1816,7 +1816,6 @@ base_error:
- static int soc_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
--	int ret = 0;
- 
- 	/*
- 	 * no card, so machine driver should be registering card
--- 
-1.7.12.rc1.17.g9a7365c
+It is just for a policy i had to keep both. Anyway I don't think it
+should be a problem as it is practiced by many developers.
+If you _really_ feel it is too annoying, then please feel free to remov=
+e one.
+
+>
+> Thanks.
+>
+> Best regards,
+> Kgene.
+> --
+> Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+> SW Solution Development Team, Samsung Electronics Co., Ltd.
+>
+
+
+
+--=20
+With warm regards,
+Sachin
