@@ -1,112 +1,95 @@
-From: "Fujikawa, Kazutoshi" <fujikawa.k@jp.fujitsu.com>
-Subject: Question about Conversion to S24_LE from S24_3LE
-Date: Fri, 10 Aug 2012 00:28:50 +0000
-Message-ID: <1C2A10B55A8EFD41B703692DB3F435E40C2321BD@G01JPEXMBYT21>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [alsa-devel] XMOS UAC2
+Date: Thu, 9 Aug 2012 22:17:42 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1208092214420.614-100000@netrider.rowland.org>
+References: <50241B0B.1050301@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fgwmail5.fujitsu.co.jp (fgwmail5.fujitsu.co.jp [192.51.44.35])
- by alsa0.perex.cz (Postfix) with ESMTP id 6188326642C
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 01:59:11 +0200 (CEST)
-Received: from m2.gw.fujitsu.co.jp (unknown [10.0.50.72])
- by fgwmail5.fujitsu.co.jp (Postfix) with ESMTP id B6ED23EE0AE
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 09:28:54 +0900 (JST)
-Received: from smail (m2 [127.0.0.1])
- by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 965AD45DE4E
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 09:28:54 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (s2.gw.fujitsu.co.jp [10.0.50.92])
- by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 8192D45DE52
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 09:28:54 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
- by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 74EB61DB802C
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 09:28:54 +0900 (JST)
-Received: from G01JPEXCHYT22.g01.fujitsu.local
- (G01JPEXCHYT22.g01.fujitsu.local [10.128.193.105])
- by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 242261DB8041
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 09:28:54 +0900 (JST)
-Content-Language: ja-JP
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <50241B0B.1050301-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "adelias-Y8qEzhMunLxMo1R+fwTmgw@public.gmane.org" <adelias-Y8qEzhMunLxMo1R+fwTmgw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On Thu, 9 Aug 2012, Daniel Mack wrote:
 
-I'd like to play a wav file converted from S24_3LE format to S24_LE by alsa-lib.
-(I use aplay command.)
-
-I recognize the following:
-
-<PCM format in wav file>
-ex. Valid PCM data is 0x123456.
-
-S24_LE  :  0x12345600(in 4bytes, LSB 0 padding)
-S24_3LE :  0x123456  (in 3bytes, No padding)
-
-
-When the S24_LE format file is played, the ALSA driver receives data format is as follows:
-
-0x12345600 (LSB 0 padding)
-
-
-However, when the S24_3LE format file which is converted to S24_LE by alsa-lib is played, the ALSA driver receives data formats is as follows:
-
-0x00123456 (MSB 0(or 0xFF) padding)
-
-Why is the how to pad 0 different(LSB/MSB)?
-
-
-cf.
-
-When "snd_pcm_linear_getput" is called
-  'get_idx' is set 16.
-  'put_idx' is set 8.
-
-[alsa-lib:pcm_linear.c]
-
-211     void snd_pcm_linear_getput(const snd_pcm_channel_area_t *dst_areas, snd_ pcm_uframes_t dst_offset,
-212                                const snd_pcm_channel_area_t *src_areas, snd_ pcm_uframes_t src_offset,
-213                                unsigned int channels, snd_pcm_uframes_t fram es,
-214                                unsigned int get_idx, unsigned int put_idx)
-215     {
-216     #define CONV24_LABELS
-217     #include "plugin_ops.h"
-218     #undef CONV24_LABELS
-219             void *get = get32_labels[get_idx];
-220             void *put = put32_labels[put_idx];
-221             unsigned int channel;
-222             u_int32_t sample = 0;
-223             for (channel = 0; channel < channels; ++channel) {
-224                     const char *src;
+> (Cc linux-usb)
+>=20
+> On 09.08.2012 21:59, adelias-Y8qEzhMunLxMo1R+fwTmgw@public.gmane.org wrote:
+> > I've attached the dmesg of each.
+> >=20
+> > On 9/8/2012 10:45 =EC=EC, Daniel Mack wrote:
+> >> > On 09.08.2012 21:33, adelias wrote:
+> >>> >> I have an XMOS Reference board with the latest firmware (v3.3)=
+=2E With
+> >>> >> ALSA 1.0.23 it enumerates and functions properly. With ALSA 1.=
+0.25 it
+> >>> >> appears to enumerate properly after boot up but will not outpu=
+t sound.
+> >>> >> Removing and reinserting snd-usb-audio with modprobe doesn't h=
+elp. Only
+> >>> >> after I reset it by unpluging and repluging the usb cable will=
+ it
+> >>> >> function as it should.
+> >> >
+> >> > Could you provide the full boot logs of both scenarios please?
+> >=20
+> > dmesg.1.0.24
+>=20
+> Thanks. To summarize, you're not only using two different versions of
+> ALSA but two versions of the kernel (2.6.37 vs 3.0.36+), and the prob=
+lem
+> is not caused by ALSA but by the USB host controller driver (see belo=
+w).
+>=20
+> Is there any reason why you can't update to a more recent kernel (3.5=
+)?
 
 
-When 'get_idx' is 16 and 'put_idx' is 8, it is converted as follows:
+> > [   47.410000] [sw-ehci2]: sw_usb_disable_ehci
+> > [   47.420000] [sw-ehci2]: remove, pdev->name: sw-ehci, pdev->id: 2=
+, sw_ehci: 0xc05fe800
+> > [   47.440000] sw-ehci sw-ehci.2: remove, state 1
+> > [   47.440000] usb usb3: USB disconnect, device number 1
+> > [   47.450000] BUG: scheduling while atomic: swapper/1/0x40000002
+> > [   47.460000] Modules linked in:
+> > [   47.470000] [<c0036e80>] (unwind_backtrace+0x0/0xe0) from [<c03c=
+263c>] (__schedule+0x5c/0x4ec)
+> > [   47.480000] [<c03c263c>] (__schedule+0x5c/0x4ec) from [<c00517fc=
+>] (__cond_resched+0x14/0x20)
+> > [   47.500000] [<c00517fc>] (__cond_resched+0x14/0x20) from [<c03c2=
+b64>] (_cond_resched+0x34/0x44)
+> > [   47.520000] [<c03c2b64>] (_cond_resched+0x34/0x44) from [<c02457=
+94>] (wakeup_source_unregister+0xc/0x18)
+> > [   47.530000] [<c0245794>] (wakeup_source_unregister+0xc/0x18) fro=
+m [<c0245964>] (device_wakeup_disable+0x64/0x78)
+> > [   47.550000] [<c0245964>] (device_wakeup_disable+0x64/0x78) from =
+[<c02447ac>] (device_pm_remove+0x48/0x58)
+> > [   47.570000] [<c02447ac>] (device_pm_remove+0x48/0x58) from [<c02=
+3d144>] (device_del+0x34/0x168)
+> > [   47.590000] [<c023d144>] (device_del+0x34/0x168) from [<c02847f4=
+>] (usb_disconnect+0x9c/0xf8)
+> > [   47.600000] [<c02847f4>] (usb_disconnect+0x9c/0xf8) from [<c0287=
+244>] (usb_remove_hcd+0xb8/0x174)
+> > [   47.620000] [<c0287244>] (usb_remove_hcd+0xb8/0x174) from [<c029=
+5bbc>] (sw_ehci_hcd_remove+0x9c/0x104)
+> > [   47.640000] [<c0295bbc>] (sw_ehci_hcd_remove+0x9c/0x104) from [<=
+c0295cec>] (sw_usb_disable_ehci+0xc8/0xf0)
+> > [   47.650000] [<c0295cec>] (sw_usb_disable_ehci+0xc8/0xf0) from [<=
+c0295ed0>] (sw_ehci_hcd_probe+0x1bc/0x228)
+> > [   47.670000] [<c0295ed0>] (sw_ehci_hcd_probe+0x1bc/0x228) from [<=
+c02409c4>] (platform_drv_probe+0x14/0x18)
 
-0x123456(S24_3LE) -> 0x00123456(MSB 0 padding)
+What is this sw-ehci driver?  It isn't in the standard kernel.  Why
+does it disable a host controller from within the probe routine?
 
+And why does it do this while it is in an atomic context?
 
-I expect the following:
+Alan Stern
 
-0x123456(S24_3LE) -> 0x12345600(LSB 0 padding)
-
-(If 'get_idx' is 16 and 'put_idx' is 12, it is converted like this.)
-
-
-I'm doing something wrong?
-
---------------------
-alsa-lib-1.0.24.1
-alsa-utils-1.0.24.2
---------------------
-
-Regards.
-
-Kaz
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
