@@ -1,22 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Error with "Unsigned 8 bit, Rate 8000 Hz,
-	Mono" track
-Date: Fri, 10 Aug 2012 10:04:12 -0300
-Message-ID: <CAOMZO5C7SFzdqeV9x5W2fQem3qYprXUc_MNizr1HRwJ4zKBsSA@mail.gmail.com>
-References: <CAOMZO5Dc38HSZRXFeZ-55KN83v1NNPCAAuoiFdixJ0K2dw90vg@mail.gmail.com>
- <20120810110004.GA7142@shlinux2.ap.freescale.net>
- <CAOMZO5CdyZ8ONK+iOK-UVnL-K02gCP7-w6Aoj+cL-1g=K0B0rQ@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 00/11] ARM/ASoC: OMAP McBSP device tree
+	support
+Date: Fri, 10 Aug 2012 16:15:26 +0300
+Message-ID: <5025096E.8030300@bitmer.com>
+References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120808112132.GN16861@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E2B826655F
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 14:34:27 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so2086466obb.38
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 06:04:12 -0700 (PDT)
-In-Reply-To: <CAOMZO5CdyZ8ONK+iOK-UVnL-K02gCP7-w6Aoj+cL-1g=K0B0rQ@mail.gmail.com>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB24A2664D6
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 14:45:48 +0200 (CEST)
+In-Reply-To: <20120808112132.GN16861@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,15 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: Shawn Guo <shawn.guo@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/10/12, Fabio Estevam <festevam@gmail.com> wrote:
+On 08/08/2012 02:21 PM, Mark Brown wrote:
+> On Wed, Aug 08, 2012 at 12:11:30PM +0300, Peter Ujfalusi wrote:
+> 
+>> The series changes McBSP related files mostly. It would be great if the whole
+>> series could go via audio tree (if the patches are OK and it is fine by Tony).
+> 
+> I'm OK with all the patches, if Tony's happy with me applying them then
+> I'll put them in a separate branch so they can easily be merged into the
+> OMAP trees (or similarly if it's applied in an OMAP tree having a branch
+> I can merge if needed would be good).
 
-> I can play this file on a mx51evk and mx6qsabrelite boards, which also
-> uses a sgtl5000.
+I suppose we could apply 1/11, 3-6/11 and 9-10 right away (2/11 perhaps
+should go near 11/11?) and apply 7-8/11 (sidetone patches that increase
+consumption) later?
 
-Ok, these boards have sgtl5000 in master mode.
+My ack to patches 1, 3-6 and 9-10:
 
-Only on mx28evk we have sgtl5000 in slave mode.
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
