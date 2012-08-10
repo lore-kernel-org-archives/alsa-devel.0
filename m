@@ -1,19 +1,14 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA : hda - bug fix on return value check
- when getting supported power states of a codec
-Date: Fri, 10 Aug 2012 10:22:25 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F816FE03@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F816FDAD@SHSMSX101.ccr.corp.intel.com>
- <s5ha9y3ys3p.wl%tiwai@suse.de>
+From: Tanu Kaskinen <tanu.kaskinen@digia.com>
+Subject: [PATCH] Add *.swp to .gitignore.
+Date: Fri, 10 Aug 2012 13:24:44 +0300
+Message-ID: <1344594284-21279-1-git-send-email-tanu.kaskinen@digia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id C456E266429
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 11:52:43 +0200 (CEST)
-In-Reply-To: <s5ha9y3ys3p.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp1.digia.com (smtp1.digia.com [82.118.214.156])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44BC6266429
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 11:55:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,48 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@digia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+These are vim swap files.
 
-Sorry for using HTML format. The patch is resent with new subject:  [PATCH] ALSA : hda - bug fix on checking the supported power states of a codec.
-Please review, thanks again!
+Signed-off-by: Tanu Kaskinen <tanu.kaskinen@digia.com>
+---
+ .gitignore |    1 +
+ 1 file changed, 1 insertion(+)
 
-Mengdong
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, August 10, 2012 6:11 PM
-> To: Lin, Mengdong
-> Cc: alsa-devel@alsa-project.org; Wang, Xingchao
-> Subject: Re: [PATCH] ALSA : hda - bug fix on return value check when
-> getting supported power states of a codec
-> 
-> At Fri, 10 Aug 2012 09:15:51 +0000,
-> Lin, Mengdong wrote:
-> >
-> > The return value of snd_hda_param_read() is -1 for an error, otherwise
-> it's the supported power states of a codec.
-> >
-> > The supported power states is a 32-bit value. Bit 31 will be set to 1 if the
-> codec supports EPSS, thus making "sup" negative. And the bit 28:5 is
-> reserved as "0".
-> > So a negative value other than -1 shall be further checked.
-> >
-> > Please refer to High-Definition spec 7.3.4.12 "Supported Power States",
-> thanks!
-> >
-> >
-> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> Could you resend in a normal text?  It's garbled badly with HTML in the
-> signature and can't be applied.
-> 
-> Also, try to shorten the subject a bit more.
-> 
-> 
-> thanks,
-> 
-> Takashi
+diff --git a/.gitignore b/.gitignore
+index 64d0bc6..7f1827e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -27,6 +27,7 @@ ltconfig
+ *.pc
+ *.o
+ *~
++*.swp
+ include/config.h
+ include/stamp-h1
+ include/stamp-vh
+-- 
+1.7.9.5
