@@ -1,20 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH][trivial] ASoC: isabelle: Remove unneeded
- include of version.h
-Date: Fri, 10 Aug 2012 19:24:05 +0100
-Message-ID: <20120810182405.GO24328@opensource.wolfsonmicro.com>
-References: <alpine.LNX.2.00.1208102010480.17673@swampdragon.chaosbits.net>
- <20120810181631.GN24328@opensource.wolfsonmicro.com>
- <alpine.LNX.2.00.1208102019510.17673@swampdragon.chaosbits.net>
+Subject: Lockups reading from i.MX51 SSI registers
+Date: Fri, 10 Aug 2012 20:50:08 +0100
+Message-ID: <20120810195005.GP24328@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00CDD2665C6
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 19:54:21 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00B262665D0
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 21:20:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1208102019510.17673@swampdragon.chaosbits.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Liam Girdwood <lrg@ti.com>
+To: Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <kernel@pengutronix.de>
+Cc: Christoph Fritz <chf.fritz@googlemail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 10, 2012 at 08:21:51PM +0200, Jesper Juhl wrote:
-> On Fri, 10 Aug 2012, Mark Brown wrote:
+Hi,
 
-> > Not sure what this patch is against, there appears to be no include of
-> > version.h in current code...
+I'm trying to use -next to test AC'97 register I/O on an i.MX51 board
+but I'm seeing the CPU hang during probe at:
 
-> It's against Linus's tree. I created a branch off of master at 
-> f4ba394c1b02e7fc2179fda8d3941a5b3b65efb6 and did the patch.
+	lreg = (reg & 0x7f) <<  12 ;
+	writel(lreg, base + SSI_SACADD);
 
-Ah, the fix is only in -next.
+in imx_ssi_ac97_read().  I'm somewhat suspicious this might be because
+the IP block isn't clocked properly, I do notice the recent conversion
+to the clock API which looks rather involved but it's possible something
+else broke.  Does anyone have any bright ideas what might be going on
+here?  The board doesn't have the reste functions defined so this is the
+first interaction with the hardware block AFAICT.
+
+Thanks,
+Mark
