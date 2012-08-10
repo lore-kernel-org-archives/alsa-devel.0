@@ -1,17 +1,21 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Error with "Unsigned 8 bit, Rate 8000 Hz, Mono" track
-Date: Fri, 10 Aug 2012 01:25:13 -0300
-Message-ID: <CAOMZO5Dc38HSZRXFeZ-55KN83v1NNPCAAuoiFdixJ0K2dw90vg@mail.gmail.com>
+From: arun kumar <arun.esd@gmail.com>
+Subject: Re: PCM substream
+Date: Fri, 10 Aug 2012 10:16:15 +0530
+Message-ID: <CABnBtVAg0QQVPxakC6+=uKtPocm3qYBMbC-01uHAsu-5Xyo36g@mail.gmail.com>
+References: <CABnBtVCEP0z_2_1NaPyvMpq1C=6CM9fPcM=6znpjGMZaT8STNQ@mail.gmail.com>
+ <CABnBtVDJQ_0nTLwfFrbMN1w16z7upNY3=ui1Oi1mZJmaHztiGQ@mail.gmail.com>
+ <5023B1C3.40001@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 472682664A3
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 05:55:28 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so1576015obb.38
- for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2012 21:25:13 -0700 (PDT)
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C38E32664A2
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 06:16:30 +0200 (CEST)
+Received: by pbbro8 with SMTP id ro8so2051582pbb.38
+ for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2012 21:46:15 -0700 (PDT)
+In-Reply-To: <5023B1C3.40001@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,39 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Clemens,
 
-Running 3.6-rc1 on a mx28evk I get the following error with this wav format:
+Thanks for the reply.So, if any application tries to open more than one
+substream will it get the error? or alsa subsystem gives it one more
+substream and helps in mixing of substreams considering my hardware has
+only support for one substream.
 
-root@freescale /home$ aplay k3b_error1.wav
-Playing WAVE 'k3b_error1.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-[  303.640000] asoc: machine hw_params failed: -22
-aplay: set_params:959: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  U8
-SUBFORMAT:  STD
-SAMPLE_BITS: 8
-FRAME_BITS: 8
-CHANNELS: 1
-RATE: 8000
-PERIOD_TIME: 125000
-PERIOD_SIZE: 1000
-PERIOD_BYTES: 1000
-PERIODS: 4
-BUFFER_TIME: 500000
-BUFFER_SIZE: 4000
-BUFFER_BYTES: 4000
-TICK_TIME: 0
+regards,
+Arun.
+On Thu, Aug 9, 2012 at 6:19 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
 
-Haven't started debugging yet, but if anyone sees something obvious,
-please let me know.
-
-This same file plays correctly on mx31/mx27/mx51/mx6q boards.
-
-Regards,
-
-Fabio Estevam
+> arun kumar wrote:
+> > From the last couple of days, I have been trying to understand the Linux
+> > Alsa Subsystem.I have read the Alsa Driver API and Application API's.
+> But I
+> > could not understand the concept of PCM substreams,
+>
+> A PCM stream has one or more substreams.  Multiple substreams are used when
+> the hardware can mix them together for one output.  This was used in old
+> wavetable sound cards; nowadays, you almost always have one substream.
+>
+>
+> Regards,
+> Clemens
+>
