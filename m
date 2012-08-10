@@ -1,16 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: wm5110: Add missing input PGA routes
-Date: Fri, 10 Aug 2012 15:53:43 +0100
-Message-ID: <1344610424-29057-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1344610424-29057-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 08/11] ARM: OMAP3: Remove callback for
+ McBSP sidetone ICLK workaround
+Date: Fri, 10 Aug 2012 18:39:11 +0300
+Message-ID: <50252B1F.2040107@ti.com>
+References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
+ <1344417101-5015-9-git-send-email-peter.ujfalusi@ti.com>
+ <502268B1.9040506@bitmer.com> <50227104.3040506@ti.com>
+ <502505D4.2030308@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75CE926658C
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 16:24:00 +0200 (CEST)
-In-Reply-To: <1344610424-29057-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from na3sys009aog138.obsmtp.com (na3sys009aog138.obsmtp.com
+ [74.125.149.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id E20AB26652E
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 17:09:18 +0200 (CEST)
+Received: by obc16 with SMTP id 16so2634458obc.20
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 08:39:03 -0700 (PDT)
+In-Reply-To: <502505D4.2030308@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Hi Jarkko,
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 3db6e6e..57c7d9c 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -685,6 +685,18 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
- 	{ "AIF2 Capture", NULL, "SYSCLK" },
- 	{ "AIF3 Capture", NULL, "SYSCLK" },
- 
-+	{ "IN1L PGA", NULL, "IN1L" },
-+	{ "IN1R PGA", NULL, "IN1R" },
-+
-+	{ "IN2L PGA", NULL, "IN2L" },
-+	{ "IN2R PGA", NULL, "IN2R" },
-+
-+	{ "IN3L PGA", NULL, "IN3L" },
-+	{ "IN3R PGA", NULL, "IN3R" },
-+
-+	{ "IN4L PGA", NULL, "IN4L" },
-+	{ "IN4R PGA", NULL, "IN4R" },
-+
- 	ARIZONA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
- 	ARIZONA_MIXER_ROUTES("OUT1R", "HPOUT1R"),
- 	ARIZONA_MIXER_ROUTES("OUT2L", "HPOUT2L"),
--- 
-1.7.10.4
+On 08/10/2012 04:00 PM, Jarkko Nikula wrote:
+> I got some odd current consumption results from Beagle to really compare
+> different kernel versions but I was able get sensible results from N900.
+
+I still use my n900 as a main phone so I can not really hack on it :(
+
+> I tested your set on top of 196973c of sound.git.
+> =
+
+> First consumption when using threshold based transfer has remained the
+> same between 2.6.38-3.6.0-rc1 (wau!).
+
+Cool!
+
+> Active sidetone under "arecord -f
+> dat >/dev/null |aplay -f dat /dev/zero" test increases consumption from
+> plain playback about 17 mA in 3.4 and 3.6.0-rc1.
+> =
+
+> With your set applied consumption increases 28 mA when the sidetone is
+> active (i.e. +11 mA higher than on top of 196973c). Plain threshold
+> based playback remains still the same.
+
+Oh. 11mA is huge... Really strange. I would expected smaller (actually zero)
+difference since in essence both workaround should be doing the same.
+Only if the OMAP pm core making different decisions runtime when it see that
+the no-idle is selected in the SYSCONFIG register of McBSP2. But the
+autogating of clocks should work without SW.
+
+So it seams that we need to do this down at PRCM level?
+
+>> I'm doing the same test on BeagleBoard, but this thing does not want to =
+hit
+>> retention despite all the effort :(
+>>
+> Could it be display subsystem which keeps it active? At least on N900 I
+> need to get DSS drivers activated in order to be able to blank the
+> display after bootloader and thus be able to reach the retention idle.
+
+I tried that as well, but nothing helps. It must be something else which I
+have overlooked...
+
+-- =
+
+P=E9ter
