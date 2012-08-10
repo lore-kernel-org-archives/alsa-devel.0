@@ -1,21 +1,19 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Error with "Unsigned 8 bit, Rate 8000 Hz,
-	Mono" track
-Date: Fri, 10 Aug 2012 09:52:30 -0300
-Message-ID: <CAOMZO5CdyZ8ONK+iOK-UVnL-K02gCP7-w6Aoj+cL-1g=K0B0rQ@mail.gmail.com>
-References: <CAOMZO5Dc38HSZRXFeZ-55KN83v1NNPCAAuoiFdixJ0K2dw90vg@mail.gmail.com>
- <20120810110004.GA7142@shlinux2.ap.freescale.net>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 08/11] ARM: OMAP3: Remove callback for
+ McBSP sidetone ICLK workaround
+Date: Fri, 10 Aug 2012 16:00:04 +0300
+Message-ID: <502505D4.2030308@bitmer.com>
+References: <1344417101-5015-1-git-send-email-peter.ujfalusi@ti.com>
+ <1344417101-5015-9-git-send-email-peter.ujfalusi@ti.com>
+ <502268B1.9040506@bitmer.com> <50227104.3040506@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
- [209.85.213.51])
- by alsa0.perex.cz (Postfix) with ESMTP id BEEFC26651D
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 14:22:45 +0200 (CEST)
-Received: by yhnn12 with SMTP id n12so1406071yhn.38
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 05:52:30 -0700 (PDT)
-In-Reply-To: <20120810110004.GA7142@shlinux2.ap.freescale.net>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F86F26651D
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 14:30:26 +0200 (CEST)
+In-Reply-To: <50227104.3040506@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: Shawn Guo <shawn.guo@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/10/12, Dong Aisheng <b29396@freescale.com> wrote:
-> On Fri, Aug 10, 2012 at 12:25:13PM +0800, Fabio Estevam wrote:
->> Hi,
->>
->> Running 3.6-rc1 on a mx28evk I get the following error with this wav
->> format:
->>
->> root@freescale /home$ aplay k3b_error1.wav
->> Playing WAVE 'k3b_error1.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
->> [  303.640000] asoc: machine hw_params failed: -22
-> It failed at here:
-> /* Sgtl5000 sysclk should be >= 8MHz and <= 27M */
-> if (mclk < 8000000 || mclk > 27000000)
-> 	return -EINVAL;
->
-> Since sgtl5000 on slave mode, the mclk can only be 256*fs, 384*fs, 512*fs,
-> the maximum mclk of 8Khz 4096000(512 * 8000) < 8Mhz, it does not meet
-> the minimum clock requirement of mclk.
-> It looks like hw limitation on slave mode.
+Hi Peter
 
-I can play this file on a mx51evk and mx6qsabrelite boards, which also
-uses a sgtl5000.
+On 08/08/2012 05:00 PM, Peter Ujfalusi wrote:
+>> Are you sure it works without any changes to sidetone audio quality or
+>> current consumption? What I remember idlemode was broken at least on
+>> 3430 and caused bad sidetone audio if autoidle was set and a little bit
+>> higher current consumption (something like 2-3 mA higher where reference
+>> consumption was around 10 mA) when McBSP was set to no-idle.
+> 
+> Yes, the idelmode settings are still broken in the sidetone block. However we
+> are toggling the SIDLEMODE of the corresponding McBSP instance where the ST
+> block is attached.
+> This should have the same effect as doing the same down in PRCM level since
+> the McBSP SIDLEMODE does work correctly preventing ICLK to be gated when it is
+> set to no-idle.
+> 
+> Unfortunately I can not get my BeagleBoard to start gating iclk even if I
+> remove the ICLK gating prevention (on top of 3.6-rc1). So I can not really say
+> for 100% this is equivalent to the the PRCM level workaround.
+> However I have also spend long time hacking around in McBSP, and I know that
+> the SIDLEMODE in McBSP is working correctly.
+> Do you know how can I get OMAP3 to start gating the clocks (to idle)?
+> 
+I got some odd current consumption results from Beagle to really compare
+different kernel versions but I was able get sensible results from N900.
 
-So it looks like a mxs issue, right?
+I tested your set on top of 196973c of sound.git.
 
-Thanks,
+First consumption when using threshold based transfer has remained the
+same between 2.6.38-3.6.0-rc1 (wau!). Active sidetone under "arecord -f
+dat >/dev/null |aplay -f dat /dev/zero" test increases consumption from
+plain playback about 17 mA in 3.4 and 3.6.0-rc1.
 
-Fabio Estevam
+With your set applied consumption increases 28 mA when the sidetone is
+active (i.e. +11 mA higher than on top of 196973c). Plain threshold
+based playback remains still the same.
+
+> I'm doing the same test on BeagleBoard, but this thing does not want to hit
+> retention despite all the effort :(
+> 
+Could it be display subsystem which keeps it active? At least on N900 I
+need to get DSS drivers activated in order to be able to blank the
+display after bootloader and thus be able to reach the retention idle.
+
+-- 
+Jarkko
