@@ -1,18 +1,16 @@
 From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: [PATCH 2/2 v2] blackfin: add platform device for
-	ad1836 machine driver
-Date: Fri, 10 Aug 2012 18:06:09 -0400
-Message-ID: <1344636369-12367-2-git-send-email-scott.jiang.linux@gmail.com>
-References: <1344636369-12367-1-git-send-email-scott.jiang.linux@gmail.com>
+Subject: [PATCH 1/2 v2] ASoC: bf5xx-ad1836: convert to use
+	snd_soc_register_card
+Date: Fri, 10 Aug 2012 18:06:08 -0400
+Message-ID: <1344636369-12367-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
- by alsa0.perex.cz (Postfix) with ESMTP id 707622664BE
- for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 11:03:38 +0200 (CEST)
-In-Reply-To: <1344636369-12367-1-git-send-email-scott.jiang.linux@gmail.com>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe002.messaging.microsoft.com [216.32.180.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id 989722664E0
+ for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2012 11:03:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,202 +24,116 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.or
 Cc: Scott Jiang <scott.jiang.linux@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
----
- arch/blackfin/mach-bf527/boards/ezkit.c |   20 ++++++++++++++++++++
- arch/blackfin/mach-bf533/boards/stamp.c |   20 ++++++++++++++++++++
- arch/blackfin/mach-bf537/boards/stamp.c |   20 ++++++++++++++++++++
- arch/blackfin/mach-bf561/boards/ezkit.c |   20 ++++++++++++++++++++
- arch/blackfin/mach-bf609/boards/ezkit.c |   19 +++++++++++++++++++
- 5 files changed, 99 insertions(+), 0 deletions(-)
+Cpu dai and codec name are passed in through platform data.
 
-diff --git a/arch/blackfin/mach-bf527/boards/ezkit.c b/arch/blackfin/mach-bf527/boards/ezkit.c
-index fc179ca..29f16e5 100644
---- a/arch/blackfin/mach-bf527/boards/ezkit.c
-+++ b/arch/blackfin/mach-bf527/boards/ezkit.c
-@@ -587,6 +587,21 @@ static struct platform_device bfin_tdm = {
- };
- #endif
+Signed-off-by: Scott Jiang <scott.jiang.linux@gmail.com>
+---
+ sound/soc/blackfin/bf5xx-ad1836.c |   73 +++++++++++++++++++------------------
+ 1 files changed, 37 insertions(+), 36 deletions(-)
+
+diff --git a/sound/soc/blackfin/bf5xx-ad1836.c b/sound/soc/blackfin/bf5xx-ad1836.c
+index d542d40..16b9c9e 100644
+--- a/sound/soc/blackfin/bf5xx-ad1836.c
++++ b/sound/soc/blackfin/bf5xx-ad1836.c
+@@ -59,62 +59,63 @@ static struct snd_soc_ops bf5xx_ad1836_ops = {
+ #define BF5XX_AD1836_DAIFMT (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_IF | \
+ 				SND_SOC_DAIFMT_CBM_CFM)
  
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
-+	        || defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+static const char * const ad1836_link[] = {
-+	"bfin-tdm.0",
-+	"spi0.4",
-+};
-+static struct platform_device bfin_ad1836_machine = {
-+	.name = "bfin-snd-ad1836",
-+	.id = -1,
-+	.dev = {
-+		.platform_data = (void *)ad1836_link,
+-static struct snd_soc_dai_link bf5xx_ad1836_dai[] = {
+-	{
+-		.name = "ad1836",
+-		.stream_name = "AD1836",
+-		.cpu_dai_name = "bfin-tdm.0",
+-		.codec_dai_name = "ad1836-hifi",
+-		.platform_name = "bfin-tdm-pcm-audio",
+-		.codec_name = "spi0.4",
+-		.ops = &bf5xx_ad1836_ops,
+-		.dai_fmt = BF5XX_AD1836_DAIFMT,
+-	},
+-	{
+-		.name = "ad1836",
+-		.stream_name = "AD1836",
+-		.cpu_dai_name = "bfin-tdm.1",
+-		.codec_dai_name = "ad1836-hifi",
+-		.platform_name = "bfin-tdm-pcm-audio",
+-		.codec_name = "spi0.4",
+-		.ops = &bf5xx_ad1836_ops,
+-		.dai_fmt = BF5XX_AD1836_DAIFMT,
+-	},
++static struct snd_soc_dai_link bf5xx_ad1836_dai = {
++	.name = "ad1836",
++	.stream_name = "AD1836",
++	.codec_dai_name = "ad1836-hifi",
++	.platform_name = "bfin-tdm-pcm-audio",
++	.ops = &bf5xx_ad1836_ops,
++	.dai_fmt = BF5XX_AD1836_DAIFMT,
+ };
+ 
+ static struct snd_soc_card bf5xx_ad1836 = {
+ 	.name = "bfin-ad1836",
+ 	.owner = THIS_MODULE,
+-	.dai_link = &bf5xx_ad1836_dai[CONFIG_SND_BF5XX_SPORT_NUM],
++	.dai_link = &bf5xx_ad1836_dai,
+ 	.num_links = 1,
+ };
+ 
+-static struct platform_device *bfxx_ad1836_snd_device;
+-
+-static int __init bf5xx_ad1836_init(void)
++static __devinit int bf5xx_ad1836_driver_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = &bf5xx_ad1836;
++	const char **link_name;
+ 	int ret;
+ 
+-	bfxx_ad1836_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!bfxx_ad1836_snd_device)
+-		return -ENOMEM;
++	link_name = pdev->dev.platform_data;
++	if (!link_name) {
++		dev_err(&pdev->dev, "No platform data supplied\n");
++		return -EINVAL;
++	}
++	bf5xx_ad1836_dai.cpu_dai_name = link_name[0];
++	bf5xx_ad1836_dai.codec_name = link_name[1];
+ 
+-	platform_set_drvdata(bfxx_ad1836_snd_device, &bf5xx_ad1836);
+-	ret = platform_device_add(bfxx_ad1836_snd_device);
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
+ 
++	ret = snd_soc_register_card(card);
+ 	if (ret)
+-		platform_device_put(bfxx_ad1836_snd_device);
+-
++		dev_err(&pdev->dev, "Failed to register card\n");
+ 	return ret;
+ }
+ 
+-static void __exit bf5xx_ad1836_exit(void)
++static int __devexit bf5xx_ad1836_driver_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(bfxx_ad1836_snd_device);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++	return 0;
+ }
+ 
+-module_init(bf5xx_ad1836_init);
+-module_exit(bf5xx_ad1836_exit);
++static struct platform_driver bf5xx_ad1836_driver = {
++	.driver = {
++		.name = "bfin-snd-ad1836",
++		.owner = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
 +	},
++	.probe = bf5xx_ad1836_driver_probe,
++	.remove = __devexit_p(bf5xx_ad1836_driver_remove),
 +};
-+#endif
-+
- static struct spi_board_info bfin_spi_board_info[] __initdata = {
- #if defined(CONFIG_MTD_M25P80) \
- 	|| defined(CONFIG_MTD_M25P80_MODULE)
-@@ -1269,6 +1284,11 @@ static struct platform_device *stamp_devices[] __initdata = {
- #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
- 	&bfin_tdm,
- #endif
-+
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
-+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+	&bfin_ad1836_machine,
-+#endif
- };
++module_platform_driver(bf5xx_ad1836_driver);
  
- static int __init ezkit_init(void)
-diff --git a/arch/blackfin/mach-bf533/boards/stamp.c b/arch/blackfin/mach-bf533/boards/stamp.c
-index ce88a71..6fca869 100644
---- a/arch/blackfin/mach-bf533/boards/stamp.c
-+++ b/arch/blackfin/mach-bf533/boards/stamp.c
-@@ -617,6 +617,21 @@ static struct platform_device bfin_ac97_pcm = {
- };
- #endif
- 
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
-+	        || defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+static const char * const ad1836_link[] = {
-+	"bfin-tdm.0",
-+	"spi0.4",
-+};
-+static struct platform_device bfin_ad1836_machine = {
-+	.name = "bfin-snd-ad1836",
-+	.id = -1,
-+	.dev = {
-+		.platform_data = (void *)ad1836_link,
-+	},
-+};
-+#endif
-+
- #if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
- 	defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
- static const unsigned ad73311_gpio[] = {
-@@ -754,6 +769,11 @@ static struct platform_device *stamp_devices[] __initdata = {
- 	&bfin_ac97_pcm,
- #endif
- 
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
-+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+	&bfin_ad1836_machine,
-+#endif
-+
- #if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
- 	defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
- 	&bfin_ad73311_machine,
-diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
-index 5ed654a..307bd7e 100644
---- a/arch/blackfin/mach-bf537/boards/stamp.c
-+++ b/arch/blackfin/mach-bf537/boards/stamp.c
-@@ -2641,6 +2641,21 @@ static struct platform_device bfin_ac97_pcm = {
- };
- #endif
- 
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
-+	        || defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+static const char * const ad1836_link[] = {
-+	"bfin-tdm.0",
-+	"spi0.4",
-+};
-+static struct platform_device bfin_ad1836_machine = {
-+	.name = "bfin-snd-ad1836",
-+	.id = -1,
-+	.dev = {
-+		.platform_data = (void *)ad1836_link,
-+	},
-+};
-+#endif
-+
- #if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
- 				defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
- static const unsigned ad73311_gpio[] = {
-@@ -2927,6 +2942,11 @@ static struct platform_device *stamp_devices[] __initdata = {
- 	&bfin_ac97_pcm,
- #endif
- 
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
-+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+	&bfin_ad1836_machine,
-+#endif
-+
- #if defined(CONFIG_SND_BF5XX_SOC_AD73311) || \
- 		defined(CONFIG_SND_BF5XX_SOC_AD73311_MODULE)
- 	&bfin_ad73311_machine,
-diff --git a/arch/blackfin/mach-bf561/boards/ezkit.c b/arch/blackfin/mach-bf561/boards/ezkit.c
-index 7c36777..551f866 100644
---- a/arch/blackfin/mach-bf561/boards/ezkit.c
-+++ b/arch/blackfin/mach-bf561/boards/ezkit.c
-@@ -539,6 +539,21 @@ static struct platform_device bfin_ac97 = {
- };
- #endif
- 
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
-+	        || defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+static const char * const ad1836_link[] = {
-+	"bfin-tdm.0",
-+	"spi0.4",
-+};
-+static struct platform_device bfin_ad1836_machine = {
-+	.name = "bfin-snd-ad1836",
-+	.id = -1,
-+	.dev = {
-+		.platform_data = (void *)ad1836_link,
-+	},
-+};
-+#endif
-+
- static struct platform_device *ezkit_devices[] __initdata = {
- 
- 	&bfin_dpmc,
-@@ -603,6 +618,11 @@ static struct platform_device *ezkit_devices[] __initdata = {
- #if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
- 	&bfin_ac97,
- #endif
-+
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
-+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+	&bfin_ad1836_machine,
-+#endif
- };
- 
- static int __init net2272_init(void)
-diff --git a/arch/blackfin/mach-bf609/boards/ezkit.c b/arch/blackfin/mach-bf609/boards/ezkit.c
-index c2cf1ae..61c1f47 100644
---- a/arch/blackfin/mach-bf609/boards/ezkit.c
-+++ b/arch/blackfin/mach-bf609/boards/ezkit.c
-@@ -818,6 +818,21 @@ static struct platform_device bfin_i2s = {
- };
- #endif
- 
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
-+	        || defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+static const char * const ad1836_link[] = {
-+	"bfin-tdm.0",
-+	"spi0.76",
-+};
-+static struct platform_device bfin_ad1836_machine = {
-+	.name = "bfin-snd-ad1836",
-+	.id = -1,
-+	.dev = {
-+		.platform_data = (void *)ad1836_link,
-+	},
-+};
-+#endif
-+
- #if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61) || \
- 	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61_MODULE)
- static struct platform_device adau1761_device = {
-@@ -1557,6 +1572,10 @@ static struct platform_device *ezkit_devices[] __initdata = {
- 	defined(CONFIG_SND_BF6XX_SOC_I2S_MODULE)
- 	&bfin_i2s,
- #endif
-+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
-+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
-+	&bfin_ad1836_machine,
-+#endif
- #if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61) || \
- 	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1X61_MODULE)
- 	&adau1761_device,
+ /* Module information */
+ MODULE_AUTHOR("Barry Song");
 -- 
 1.7.0.4
