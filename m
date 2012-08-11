@@ -1,20 +1,17 @@
-From: Huacai Chen <chenhuacai@gmail.com>
-Subject: [PATCH V5 14/18] ALSA: HDA: Make hda sound card usable
-	for Loongson.
-Date: Sat, 11 Aug 2012 17:32:19 +0800
-Message-ID: <1344677543-22591-15-git-send-email-chenhc@lemote.com>
-References: <1344677543-22591-1-git-send-email-chenhc@lemote.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: HDA Mono out
+Date: Sat, 11 Aug 2012 20:19:43 +0800
+Message-ID: <CAN8cciaj=yM3Gk6yKF+4r1ip8QXoKNgxHUqtjUVqWXihjQjEsg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 008AD265376
- for <alsa-devel@alsa-project.org>; Sat, 11 Aug 2012 11:04:22 +0200 (CEST)
-Received: by pbbro8 with SMTP id ro8so4056458pbb.38
- for <alsa-devel@alsa-project.org>; Sat, 11 Aug 2012 02:34:07 -0700 (PDT)
-In-Reply-To: <1344677543-22591-1-git-send-email-chenhc@lemote.com>
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8036E264EF8
+ for <alsa-devel@alsa-project.org>; Sat, 11 Aug 2012 13:49:58 +0200 (CEST)
+Received: by qadb17 with SMTP id b17so459282qad.17
+ for <alsa-devel@alsa-project.org>; Sat, 11 Aug 2012 05:19:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,88 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Zhangjin Wu <wuzhangjin@gmail.com>, Hua Yan <yanh@lemote.com>, Fuxin Zhang <zhangfx@lemote.com>, linux-kernel@vger.kernel.org, Hongliang Tao <taohl@lemote.com>, Jie Chen <chenj@lemote.com>, Huacai Chen <chenhc@lemote.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: pulseaudio-discuss@list.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Lemote A1004(Laptop) and A1205(All-In-One) use Conexant's hda codec,
-this patch modify patch_conexant.c to add Lemote specific code.
+How can the driver differentiate those mono internal chassis speaker of
+desktop from those subwoofer speaker of laptop?
 
-Signed-off-by: Jie Chen <chenj@lemote.com>
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Signed-off-by: Hongliang Tao <taohl@lemote.com>
-Signed-off-by: Hua Yan <yanh@lemote.com>
-Cc: alsa-devel@alsa-project.org
----
- include/linux/pci_ids.h        |    2 ++
- sound/pci/hda/patch_conexant.c |   24 ++++++++++++++++++++++++
- 2 files changed, 26 insertions(+), 0 deletions(-)
+https://launchpadlibrarian.net/34863455/Card0.Codecs.codec.2.txt
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index fc35260..b28270e 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -2918,3 +2918,5 @@
- #define PCI_DEVICE_ID_XEN_PLATFORM	0x0001
- 
- #define PCI_VENDOR_ID_OCZ		0x1b85
-+
-+#define PCI_VENDOR_ID_LEMOTE		0x1c06
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 1436118..b7de368 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -4414,6 +4414,8 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
- enum {
- 	CXT_PINCFG_LENOVO_X200,
- 	CXT_PINCFG_LENOVO_TP410,
-+	CXT_PINCFG_LEMOTE_A1004,
-+	CXT_PINCFG_LEMOTE_A1205,
- 	CXT_FIXUP_STEREO_DMIC,
- };
- 
-@@ -4441,6 +4443,18 @@ static const struct hda_pintbl cxt_pincfg_lenovo_tp410[] = {
- 	{}
- };
- 
-+/* Lemote A1004/A1205 with cxt5066 */
-+static const struct hda_pintbl cxt_pincfg_lemote[] = {
-+	{ 0x1a, 0x90a10020 }, /* Internal mic */
-+	{ 0x1b, 0x03a11020 }, /* External mic */
-+	{ 0x1d, 0x400101f0 }, /* Not used */
-+	{ 0x1e, 0x40a701f0 }, /* Not used */
-+	{ 0x20, 0x404501f0 }, /* Not used */
-+	{ 0x22, 0x404401f0 }, /* Not used */
-+	{ 0x23, 0x40a701f0 }, /* Not used */
-+	{}
-+};
-+
- static const struct hda_fixup cxt_fixups[] = {
- 	[CXT_PINCFG_LENOVO_X200] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -4450,6 +4464,14 @@ static const struct hda_fixup cxt_fixups[] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cxt_pincfg_lenovo_tp410,
- 	},
-+	[CXT_PINCFG_LEMOTE_A1004] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = cxt_pincfg_lemote,
-+	},
-+	[CXT_PINCFG_LEMOTE_A1205] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = cxt_pincfg_lemote,
-+	},
- 	[CXT_FIXUP_STEREO_DMIC] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = cxt_fixup_stereo_dmic,
-@@ -4467,6 +4489,8 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x215f, "Lenovo T510", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21ce, "Lenovo T420", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21cf, "Lenovo T520", CXT_PINCFG_LENOVO_TP410),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_LEMOTE, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_LEMOTE, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
- 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
- 	{}
--- 
-1.7.7.3
+Node 0x13 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
+Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x00]
+  Pincap 0x00000010: OUT
+  Pin Default 0x911711f0: [Fixed] Speaker at Int Rear
+   Conn = Analog, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x2d
+
+refer to the patch
+
+hda: Added mono_out_pin to autoconfig
+
+Added a mono_out_pin field to autocfg struct, and code to parse for the
+mono_out_line.
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=blobdiff;f=sound/pci/hda/hda_codec.c;h=df927be176af87e1f262b4a6b0809fe1ef0ed757;hp=f6a9a5dd9b7459d13527d0ead11db2a03160e6cb;hb=90da78bf6aaabd4d31c6663b7c1d1b9c5a8c023f;hpb=cd93dc8ccad8680f104c9134ae73888feb14e946
+
+does any computer really has the mono jack using the mono pin complex?
+
+do pulseaudio classify those mono internal chassis speaker as desktop
+speaker path or speaker path?
+
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths
+
+in patch_analog.c, "mono playback switch" is created in 6stack. 3stack and
+laptop model.  the auto model need to handle the speaker of the laptop
+implementation but lenovo 3000 workstation contain the internal chassis
+speaker which hda auto parser put it in speaker_pins instead of mono_out
+
+if ((err = ad1988_auto_create_multi_out_ctls(spec, &spec->autocfg)) < 0 ||
+    (err = ad1988_auto_create_extra_out(codec,
+spec->autocfg.speaker_pins[0],
+"Speaker")) < 0 ||
+     (err = ad1988_auto_create_extra_out(codec, spec->autocfg.hp_pins[0],
+"Headphone")) < 0 ||
+    (err = ad1988_auto_create_analog_input_ctls(codec, &spec->autocfg)) < 0)
+return err;
+
+one possible way to fix this bug for lenovo 3000 by checking wcaps of the
+pin support mono/stereo in ad1988_auto_create_extra_out and create the mono
+playback switch for the internal chassis speaker instead of the speaker
+playback volume/switch since mono out pin have to share audio output 0x04
+with green jack at rear panel.
