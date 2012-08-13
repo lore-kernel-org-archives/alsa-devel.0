@@ -1,14 +1,14 @@
 From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH] ALSA: hda - show ICT/KAE control bits
-Date: Mon, 13 Aug 2012 13:38:57 +0800
-Message-ID: <1344836337-2713-1-git-send-email-xingchao.wang@intel.com>
+Subject: [PATCH 1/3] ALSA: hda - show ICT/KAE control bits
+Date: Mon, 13 Aug 2012 14:11:09 +0800
+Message-ID: <1344838271-3528-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E0B6C265B93
- for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2012 07:21:22 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2E3C265CA7
+ for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2012 07:53:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,7 +32,7 @@ Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
  2 files changed, 8 insertions(+)
 
 diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index c422d33..7167f37 100644
+index c422d33..141b3b8 100644
 --- a/sound/pci/hda/hda_codec.h
 +++ b/sound/pci/hda/hda_codec.h
 @@ -386,6 +386,10 @@ enum {
@@ -40,7 +40,7 @@ index c422d33..7167f37 100644
  #define AC_DIG2_CC			(0x7f<<0)
  
 +/* DIGITAL3 bits */
-+#define AC_DIG3_ICT			(0xf<<16)
++#define AC_DIG3_ICT			(0xf<<0)
 +#define AC_DIG3_KAE			(1<<23)
 +
  /* Pin widget control - 8bit */
