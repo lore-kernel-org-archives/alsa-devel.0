@@ -1,26 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 04/11] MFD: twl4030-audio: Add DT support
-Date: Sun, 12 Aug 2012 19:50:12 +0100
-Message-ID: <20120812185012.GB10627@opensource.wolfsonmicro.com>
-References: <20120808131356.GS16861@opensource.wolfsonmicro.com>
- <50226CF4.1010202@ti.com>
- <20120808135253.GC16861@opensource.wolfsonmicro.com>
- <502274DA.9020204@ti.com>
- <20120808141849.GA24328@opensource.wolfsonmicro.com>
- <50227837.10400@ti.com>
- <20120808144933.GC24328@opensource.wolfsonmicro.com>
- <50238E8A.5030902@ti.com>
- <20120809103600.GI24328@opensource.wolfsonmicro.com>
- <5023C0D6.8040600@ti.com>
+From: Wang Xingchao <xingchao.wang@intel.com>
+Subject: [PATCH] ALSA: hda - show ICT/KAE control bits
+Date: Mon, 13 Aug 2012 13:38:57 +0800
+Message-ID: <1344836337-2713-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 995AE26521F
- for <alsa-devel@alsa-project.org>; Sun, 12 Aug 2012 20:20:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5023C0D6.8040600@ti.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0B6C265B93
+ for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2012 07:21:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,20 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, Benoit Cousson <b-cousson@ti.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 09, 2012 at 04:53:26PM +0300, Peter Ujfalusi wrote:
-> On 08/09/2012 01:36 PM, Mark Brown wrote:
+Enable two debug options for S/PDIF Converter Control.
+KAE: Keep Alive Enable; ICT: IEC Coding Type.
 
-> > Is there any actual case where an external mute is supplied via a
-> > mechanism other than a GPIO, and if there is would it not either need
-> > its own DT property or already need to interact with the driver from
-> > code, making the DT property redundant?
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+---
+ sound/pci/hda/hda_codec.h |    4 ++++
+ sound/pci/hda/hda_proc.c  |    4 ++++
+ 2 files changed, 8 insertions(+)
 
-> Not with my knowledge. The only board using it is the zoom2 upstream. I know
-> other boards (not in upstream) which either uses the internal mute or GPIO.
-
-OK, so we can probably only support GPIO for now then worry about other
-external mutes when there's something to work with.
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index c422d33..7167f37 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -386,6 +386,10 @@ enum {
+ /* DIGITAL2 bits */
+ #define AC_DIG2_CC			(0x7f<<0)
+ 
++/* DIGITAL3 bits */
++#define AC_DIG3_ICT			(0xf<<16)
++#define AC_DIG3_KAE			(1<<23)
++
+ /* Pin widget control - 8bit */
+ #define AC_PINCTL_EPT			(0x3<<0)
+ #define AC_PINCTL_EPT_NATIVE		0
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index 7e46258..a222aae 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -419,9 +419,13 @@ static void print_digital_conv(struct snd_info_buffer *buffer,
+ 		snd_iprintf(buffer, " Pro");
+ 	if (digi1 & AC_DIG1_LEVEL)
+ 		snd_iprintf(buffer, " GenLevel");
++	if (digi1 & AC_DIG3_KAE)
++		snd_iprintf(buffer, " KAE");
+ 	snd_iprintf(buffer, "\n");
+ 	snd_iprintf(buffer, "  Digital category: 0x%x\n",
+ 		    (digi1 >> 8) & AC_DIG2_CC);
++	snd_iprintf(buffer, "  IEC Coding Type: 0x%x\n",
++			(digi1 >> 16) & AC_DIG3_ICT);
+ }
+ 
+ static const char *get_pwr_state(u32 state)
+-- 
+1.7.9.5
