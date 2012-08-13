@@ -1,14 +1,16 @@
 From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH 1/3] ALSA: hda - show ICT/KAE control bits
-Date: Mon, 13 Aug 2012 14:11:09 +0800
-Message-ID: <1344838271-3528-1-git-send-email-xingchao.wang@intel.com>
+Subject: [PATCH 2/3] ALSA: hda - fix Copyright debug message
+Date: Mon, 13 Aug 2012 14:11:10 +0800
+Message-ID: <1344838271-3528-2-git-send-email-xingchao.wang@intel.com>
+References: <1344838271-3528-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C2E3C265CA7
- for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2012 07:53:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BA61265CA9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2012 07:53:36 +0200 (CEST)
+In-Reply-To: <1344838271-3528-1-git-send-email-xingchao.wang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +24,25 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable two debug options for S/PDIF Converter Control.
-KAE: Keep Alive Enable; ICT: IEC Coding Type.
+As spec said, 1 indicates no copyright is asserted.
 
 Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
 ---
- sound/pci/hda/hda_codec.h |    4 ++++
- sound/pci/hda/hda_proc.c  |    4 ++++
- 2 files changed, 8 insertions(+)
+ sound/pci/hda/hda_proc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index c422d33..141b3b8 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -386,6 +386,10 @@ enum {
- /* DIGITAL2 bits */
- #define AC_DIG2_CC			(0x7f<<0)
- 
-+/* DIGITAL3 bits */
-+#define AC_DIG3_ICT			(0xf<<0)
-+#define AC_DIG3_KAE			(1<<23)
-+
- /* Pin widget control - 8bit */
- #define AC_PINCTL_EPT			(0x3<<0)
- #define AC_PINCTL_EPT_NATIVE		0
 diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index 7e46258..a222aae 100644
+index a222aae..bb9e8f9 100644
 --- a/sound/pci/hda/hda_proc.c
 +++ b/sound/pci/hda/hda_proc.c
-@@ -419,9 +419,13 @@ static void print_digital_conv(struct snd_info_buffer *buffer,
- 		snd_iprintf(buffer, " Pro");
- 	if (digi1 & AC_DIG1_LEVEL)
- 		snd_iprintf(buffer, " GenLevel");
-+	if (digi1 & AC_DIG3_KAE)
-+		snd_iprintf(buffer, " KAE");
- 	snd_iprintf(buffer, "\n");
- 	snd_iprintf(buffer, "  Digital category: 0x%x\n",
- 		    (digi1 >> 8) & AC_DIG2_CC);
-+	snd_iprintf(buffer, "  IEC Coding Type: 0x%x\n",
-+			(digi1 >> 16) & AC_DIG3_ICT);
- }
- 
- static const char *get_pwr_state(u32 state)
+@@ -412,7 +412,7 @@ static void print_digital_conv(struct snd_info_buffer *buffer,
+ 	if (digi1 & AC_DIG1_EMPHASIS)
+ 		snd_iprintf(buffer, " Preemphasis");
+ 	if (digi1 & AC_DIG1_COPYRIGHT)
+-		snd_iprintf(buffer, " Copyright");
++		snd_iprintf(buffer, " Non-Copyright");
+ 	if (digi1 & AC_DIG1_NONAUDIO)
+ 		snd_iprintf(buffer, " Non-Audio");
+ 	if (digi1 & AC_DIG1_PROFESSIONAL)
 -- 
 1.7.9.5
