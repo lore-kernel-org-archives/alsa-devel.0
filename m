@@ -1,20 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 12/14] ASoC: twl4030: Convert to use
-	devm_kzalloc
-Date: Tue, 14 Aug 2012 17:22:40 +0300
-Message-ID: <1344954162-7985-13-git-send-email-peter.ujfalusi@ti.com>
-References: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC PATCH 1/1] ALSA: hda - add a timer to find
+ and suspend idle codecs
+Date: Tue, 14 Aug 2012 14:35:56 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8170A84@SHSMSX101.ccr.corp.intel.com>
+References: <1344967003-5470-1-git-send-email-mengdong.lin@intel.com>
+ <s5hfw7pu5ue.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog135.obsmtp.com (na3sys009aog135.obsmtp.com
- [74.125.149.84])
- by alsa0.perex.cz (Postfix) with ESMTP id B3B44265EF6
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 15:53:30 +0200 (CEST)
-Received: by obqv19 with SMTP id v19so1406881obq.16
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 07:23:14 -0700 (PDT)
-In-Reply-To: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DEF7265EAE
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 16:06:13 +0200 (CEST)
+In-Reply-To: <s5hfw7pu5ue.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>
-Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Allocate the private data with devm_kzalloc.
+> Is watching the codec power up/down the only purpose?
+> If so, the time for codec power on/off can be already checked in
+> /sys/class/sound/hwC*D*/power_{on|off}_acct files.
+> These are used by powertop, for example.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/twl4030.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Hi Takashi,
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 27ccea4..413e698 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -2231,7 +2231,8 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
- {
- 	struct twl4030_priv *twl4030;
- 
--	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
-+	twl4030 = devm_kzalloc(codec->dev, sizeof(struct twl4030_priv),
-+			       GFP_KERNEL);
- 	if (twl4030 == NULL) {
- 		dev_err(codec->dev, "Can not allocate memory\n");
- 		return -ENOMEM;
-@@ -2253,7 +2254,6 @@ static int twl4030_soc_remove(struct snd_soc_codec *codec)
- 	/* Reset registers to their chip default before leaving */
- 	twl4030_reset_registers(codec);
- 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	kfree(twl4030);
- 
- 	if (pdata && pdata->hs_extmute && gpio_is_valid(pdata->hs_extmute_gpio))
- 		gpio_free(pdata->hs_extmute_gpio);
--- 
-1.7.8.6
+My purpose is to enable runtime power management on HD audio. And I hope to base runtime PM on current power saving implementation.
+
+The basic idea is:
+For the HD-A controller, runtime PM can be enabled on platforms than can provide acceptable latency on transition from D3 to D0.
+When both power saving and runtime PM are enabled by the user, and if all codec are suspended (in D3), the HD-A controller can also enter low-power state by triggering system runtime suspend. And on user operations or HW wakeup event, HD-A controller will be resumed before codecs.
+
+In my test, I found the issue described in my patch. Such idle but unsuspended codecs prevent the controller from entering D3 at runtime. So I need a 
+method to detect such idle codecs and suspend them. Even if runtime PM is not enabled, I hope this method can improve current power saving.
+
+Thanks
+Mengdong
