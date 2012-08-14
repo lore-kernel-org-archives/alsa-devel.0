@@ -1,8 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: hda - Implement snd_hda_power_sync()
-	helper function
-Date: Tue, 14 Aug 2012 17:20:36 +0200
-Message-ID: <s5hboidzeij.wl%tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: hda - Check the power state when
+	power_save option is changed
+Date: Tue, 14 Aug 2012 17:21:09 +0200
+Message-ID: <s5ha9xxzehm.wl%tiwai@suse.de>
 References: <1344967003-5470-1-git-send-email-mengdong.lin@intel.com>
  <s5hfw7pu5ue.wl%tiwai@suse.de>
  <F46914AEC2663F4A9BB62374E5EEF8F8170A84@SHSMSX101.ccr.corp.intel.com>
@@ -12,8 +12,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FBFA265ED8
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 16:50:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A0921265EB8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 16:51:23 +0200 (CEST)
 In-Reply-To: <s5hehn9zeku.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,223 +28,121 @@ To: "Lin, Mengdong" <mengdong.lin@intel.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Added a new helper function snd_hda_power_sync() to trigger the
-power-saving manually.  It's an inline function call to
-snd_hda_power_save() helper function.
+... by calling the newly introduced snd_hda_power_sync().
 
-Together with this addition, snd_hda_power_up*() and
-snd_hda_power_down() functions are inlined to a call of the same
-snd_hda_power_save() helper function.
+I had to reimplement a wheel for adding the trigger at changing the
+parameter -- the parameter set ops is overwritten to pass the integer
+parameter, then trigger the power-state sync.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 81 ++++++++++++++++-------------------------------
- sound/pci/hda/hda_codec.h | 60 +++++++++++++++++++++++++++++++----
- 2 files changed, 82 insertions(+), 59 deletions(-)
+ sound/pci/hda/hda_intel.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 408babc..8ba17d7 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -4411,19 +4411,16 @@ void snd_hda_update_power_acct(struct hda_codec *codec)
- /* Transition to powered up, if wait_power_down then wait for a pending
-  * transition to D3 to complete. A pending D3 transition is indicated
-  * with power_transition == -1. */
-+/* call this with codec->power_lock held! */
- static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
- {
- 	struct hda_bus *bus = codec->bus;
- 
--	spin_lock(&codec->power_lock);
--	codec->power_count++;
- 	/* Return if power_on or transitioning to power_on, unless currently
- 	 * powering down. */
- 	if ((codec->power_on || codec->power_transition > 0) &&
--	    !(wait_power_down && codec->power_transition < 0)) {
--		spin_unlock(&codec->power_lock);
-+	    !(wait_power_down && codec->power_transition < 0))
- 		return;
--	}
- 	spin_unlock(&codec->power_lock);
- 
- 	cancel_delayed_work_sync(&codec->power_work);
-@@ -4432,10 +4429,9 @@ static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
- 	/* If the power down delayed work was cancelled above before starting,
- 	 * then there is no need to go through power up here.
- 	 */
--	if (codec->power_on) {
--		spin_unlock(&codec->power_lock);
-+	if (codec->power_on)
- 		return;
--	}
-+
- 	trace_hda_power_up(codec);
- 	snd_hda_update_power_acct(codec);
- 	codec->power_on = 1;
-@@ -4449,65 +4445,44 @@ static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
- 
- 	spin_lock(&codec->power_lock);
- 	codec->power_transition = 0;
--	spin_unlock(&codec->power_lock);
--}
--
--/**
-- * snd_hda_power_up - Power-up the codec
-- * @codec: HD-audio codec
-- *
-- * Increment the power-up counter and power up the hardware really when
-- * not turned on yet.
-- */
--void snd_hda_power_up(struct hda_codec *codec)
--{
--	__snd_hda_power_up(codec, false);
--}
--EXPORT_SYMBOL_HDA(snd_hda_power_up);
--
--/**
-- * snd_hda_power_up_d3wait - Power-up the codec after waiting for any pending
-- *   D3 transition to complete.  This differs from snd_hda_power_up() when
-- *   power_transition == -1.  snd_hda_power_up sees this case as a nop,
-- *   snd_hda_power_up_d3wait waits for the D3 transition to complete then powers
-- *   back up.
-- * @codec: HD-audio codec
-- *
-- * Cancel any power down operation hapenning on the work queue, then power up.
-- */
--void snd_hda_power_up_d3wait(struct hda_codec *codec)
--{
--	/* This will cancel and wait for pending power_work to complete. */
--	__snd_hda_power_up(codec, true);
- }
--EXPORT_SYMBOL_HDA(snd_hda_power_up_d3wait);
- 
- #define power_save(codec)	\
- 	((codec)->bus->power_save ? *(codec)->bus->power_save : 0)
- 
--/**
-- * snd_hda_power_down - Power-down the codec
-- * @codec: HD-audio codec
-- *
-- * Decrement the power-up counter and schedules the power-off work if
-- * the counter rearches to zero.
-- */
--void snd_hda_power_down(struct hda_codec *codec)
-+/* Transition to powered down */
-+static void __snd_hda_power_down(struct hda_codec *codec)
- {
--	spin_lock(&codec->power_lock);
--	--codec->power_count;
--	if (!codec->power_on || codec->power_count || codec->power_transition) {
--		spin_unlock(&codec->power_lock);
-+	if (!codec->power_on || codec->power_count || codec->power_transition)
- 		return;
--	}
-+
- 	if (power_save(codec)) {
- 		codec->power_transition = -1; /* avoid reentrance */
- 		queue_delayed_work(codec->bus->workq, &codec->power_work,
- 				msecs_to_jiffies(power_save(codec) * 1000));
- 	}
-+}
-+
-+/**
-+ * snd_hda_power_save - Power-up/down/sync the codec
-+ * @codec: HD-audio codec
-+ * @delta: the counter delta to change
-+ *
-+ * Change the power-up counter via @delta, and power up or down the hardware
-+ * appropriately.  For the power-down, queue to the delayed action.
-+ * Passing zero to @delta means to synchronize the power state.
-+ */
-+void snd_hda_power_save(struct hda_codec *codec, int delta, bool d3wait)
-+{
-+	spin_lock(&codec->power_lock);
-+	codec->power_count += delta;
-+	if (delta > 0)
-+		__snd_hda_power_up(codec, d3wait);
-+	else
-+		__snd_hda_power_down(codec);
- 	spin_unlock(&codec->power_lock);
- }
--EXPORT_SYMBOL_HDA(snd_hda_power_down);
-+EXPORT_SYMBOL_HDA(snd_hda_power_save);
- 
- /**
-  * snd_hda_check_amp_list_power - Check the amp list and update the power
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index d772c25..1d4dfce 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -1062,16 +1062,64 @@ const char *snd_hda_get_jack_location(u32 cfg);
-  * power saving
-  */
- #ifdef CONFIG_SND_HDA_POWER_SAVE
--void snd_hda_power_up(struct hda_codec *codec);
--void snd_hda_power_up_d3wait(struct hda_codec *codec);
--void snd_hda_power_down(struct hda_codec *codec);
-+void snd_hda_power_save(struct hda_codec *codec, int delta, bool d3wait);
- void snd_hda_update_power_acct(struct hda_codec *codec);
- #else
--static inline void snd_hda_power_up(struct hda_codec *codec) {}
--static inline void snd_hda_power_up_d3wait(struct hda_codec *codec) {}
--static inline void snd_hda_power_down(struct hda_codec *codec) {}
-+static inline void snd_hda_power_save(struct hda_codec *codec, int delta,
-+				      bool d3wait) {}
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 23ad7e2..330a5ff 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -110,8 +110,15 @@ MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
  #endif
  
-+/**
-+ * snd_hda_power_up - Power-up the codec
-+ * @codec: HD-audio codec
-+ *
-+ * Increment the power-up counter and power up the hardware really when
-+ * not turned on yet.
-+ */
-+static inline void snd_hda_power_up(struct hda_codec *codec)
+ #ifdef CONFIG_SND_HDA_POWER_SAVE
++static int param_set_xint(const char *val, const struct kernel_param *kp);
++static struct kernel_param_ops param_ops_xint = {
++	.set = param_set_xint,
++	.get = param_get_int,
++};
++#define param_check_xint param_check_int
++
+ static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
+-module_param(power_save, int, 0644);
++module_param(power_save, xint, 0644);
+ MODULE_PARM_DESC(power_save, "Automatic power-saving timeout "
+ 		 "(in second, 0 = disable).");
+ 
+@@ -502,6 +509,9 @@ struct azx {
+ 
+ 	/* reboot notifier (for mysterious hangup problem at power-down) */
+ 	struct notifier_block reboot_notifier;
++
++	/* card list (for power_save trigger) */
++	struct list_head list;
+ };
+ 
+ /* driver types */
+@@ -2407,6 +2417,48 @@ static void azx_power_notify(struct hda_bus *bus)
+ 		 !bus->power_keep_link_on)
+ 		azx_stop_chip(chip);
+ }
++
++static DEFINE_MUTEX(card_list_lock);
++static LIST_HEAD(card_list);
++
++static void azx_add_card_list(struct azx *chip)
 +{
-+	snd_hda_power_save(codec, 1, false);
++	mutex_lock(&card_list_lock);
++	list_add(&chip->list, &card_list);
++	mutex_unlock(&card_list_lock);
 +}
 +
-+/**
-+ * snd_hda_power_up_d3wait - Power-up the codec after waiting for any pending
-+ *   D3 transition to complete.  This differs from snd_hda_power_up() when
-+ *   power_transition == -1.  snd_hda_power_up sees this case as a nop,
-+ *   snd_hda_power_up_d3wait waits for the D3 transition to complete then powers
-+ *   back up.
-+ * @codec: HD-audio codec
-+ *
-+ * Cancel any power down operation hapenning on the work queue, then power up.
-+ */
-+static inline void snd_hda_power_up_d3wait(struct hda_codec *codec)
++static void azx_del_card_list(struct azx *chip)
 +{
-+	snd_hda_power_save(codec, 1, true);
++	mutex_lock(&card_list_lock);
++	list_del_init(&chip->list);
++	mutex_unlock(&card_list_lock);
 +}
 +
-+/**
-+ * snd_hda_power_down - Power-down the codec
-+ * @codec: HD-audio codec
-+ *
-+ * Decrement the power-up counter and schedules the power-off work if
-+ * the counter rearches to zero.
-+ */
-+static inline void snd_hda_power_down(struct hda_codec *codec)
++/* trigger power-save check at writing parameter */
++static int param_set_xint(const char *val, const struct kernel_param *kp)
 +{
-+	snd_hda_power_save(codec, -1, false);
-+}
++	struct azx *chip;
++	struct hda_codec *c;
++	int prev = power_save;
++	int ret = param_set_int(val, kp);
 +
-+/**
-+ * snd_hda_power_sync - Synchronize the power-save status
-+ * @codec: HD-audio codec
-+ *
-+ * Synchronize the actual power state with the power account;
-+ * called when power_save parameter is changed
-+ */
-+static inline void snd_hda_power_sync(struct hda_codec *codec)
-+{
-+	snd_hda_power_save(codec, 0, false);
-+}
++	if (ret || prev == power_save)
++		return ret;
 +
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
- /*
-  * patch firmware
++	mutex_lock(&card_list_lock);
++	list_for_each_entry(chip, &card_list, list) {
++		if (!chip->bus || chip->disabled)
++			continue;
++		list_for_each_entry(c, &chip->bus->codec_list, list)
++			snd_hda_power_sync(c);
++	}
++	mutex_unlock(&card_list_lock);
++	return 0;
++}
++#else
++#define azx_add_card_list(chip) /* NOP */
++#define azx_del_card_list(chip) /* NOP */
+ #endif /* CONFIG_SND_HDA_POWER_SAVE */
+ 
+ #ifdef CONFIG_PM
+@@ -2607,6 +2659,8 @@ static int azx_free(struct azx *chip)
+ {
+ 	int i;
+ 
++	azx_del_card_list(chip);
++
+ 	azx_notifier_unregister(chip);
+ 
+ 	if (use_vga_switcheroo(chip)) {
+@@ -2914,6 +2968,7 @@ static int __devinit azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	chip->dev_index = dev;
+ 	INIT_WORK(&chip->irq_pending_work, azx_irq_pending_work);
+ 	INIT_LIST_HEAD(&chip->pcm_list);
++	INIT_LIST_HEAD(&chip->list);
+ 	init_vga_switcheroo(chip);
+ 
+ 	chip->position_fix[0] = chip->position_fix[1] =
+@@ -3291,6 +3346,7 @@ static int DELAYED_INIT_MARK azx_probe_continue(struct azx *chip)
+ 	chip->running = 1;
+ 	power_down_all_codecs(chip);
+ 	azx_notifier_register(chip);
++	azx_add_card_list(chip);
+ 
+ 	return 0;
+ 
 -- 
 1.7.11.4
