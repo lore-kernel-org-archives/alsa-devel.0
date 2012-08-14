@@ -1,43 +1,79 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH 1/1] ALSA: hda - add a timer to find
- and suspend idle codecs
-Date: Tue, 14 Aug 2012 13:55:55 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8170A31@SHSMSX101.ccr.corp.intel.com>
-References: <1344967003-5470-1-git-send-email-mengdong.lin@intel.com>
- <502A23AC.1000405@perex.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id DE44D2652BF
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 15:26:23 +0200 (CEST)
-In-Reply-To: <502A23AC.1000405@perex.cz>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 00/14] MFD/ASoC/Input: twl4030-audio submodule DT support
+Date: Tue, 14 Aug 2012 17:22:28 +0300
+Message-ID: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>
+Cc: Tero Kristo <t-kristo@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> I would prefer to create a sysfs file to track the writes rather than using
-> this timer hack.
+Hello,
 
-Hi Jaroslav,
+Changes since v1:
+- Get the MCLK frequencey from twl-core driver (via new API)
+- hs_extmute_disable_level parameter has been removed
+- empty of_find_node_by_name() in of.h for !CONFIG_OF builds
 
-I don't want to change the control interface of power saving, for compatibility consideration.
+Mark: the extmute GPIO handling (when it is used) remained in the codec driver
+for now. I can think more on how to add support for this type of mute control.
+If you can point me to other codec needing this it would help on designing
+something which is common enough for other users.
+As for now I have a separate series to add GPIO controlled output amps (hp/spk).
+I will send that to review soon.
 
-Is it possible that HD-A still uses this "power_save" parameter, but let kernel
-send a notification to the driver module? Need to change the generic implementation
-of module parameters?
+Introl mail from v1:
 
+The following series adds DT support for the twl4030 audio submodule which
+provides audio codec and vibra functionality.
 
-Thanks
-Mengdong
+The MFD core driver is probed via DT, it will create the needed child devices
+based on the provided information in the DT blob.
+Child drivers (vibra, ASoC codec) will parse the core's node if needed to get
+the needed parameters for their configuration.
+
+In the ASoC codec driver the hs_extmute callback (which was used to toggle a
+GPIO line) has been removed. The codec driver will receive the GPIO number
+(if it is needed on the platform).
+
+If the series is OK (and no objections from the maintainers), it would be good
+if this can go via audio. Changed files are well contained within the
+twl4030-audio stack so I do not expect merge issues later.
+
+The series has been tested on BeagleBoard (with the McBSP DT series, and with
+the upcoming DT audio support for BeagleBoard).
+
+Regards,
+Peter
+---
+Peter Ujfalusi (14):
+  MFD: twl4030-audio: Clean up MODULE_* and platform_driver part
+  MFD: twl4030-audio: Convert to use devm_kzalloc
+  MFD: twl4030-audio: Rearange and clean-up the probe function
+  MFD: twl-core: Add API to query the HFCLK rate
+  MFD: twl4030-audio: Get audio MCLK via twl-core API instead of pdata
+  dt: Add empty of_find_node_by_name() function
+  MFD: twl4030-audio: Add DT support
+  Input: twl4030-vibra: Support for DT booted kernel
+  ASoC: twl4030: Move hs_extmute GPIO handling to driver
+  ARM: OMAP/ASoC: Zoom2: Let the codec to handle the hs_extmute GPIO
+  ASoC/MFD: twl4030: Remove set_hs_extmute callback from platform data
+  ASoC: twl4030: Convert to use devm_kzalloc
+  ASoC: twl4030: Add pointer to pdata within the private data
+  ASoC: twl4030: Support for DT booted kernel
+
+ .../devicetree/bindings/mfd/twl4030-audio.txt      |   46 +++++++++
+ arch/arm/mach-omap2/board-zoom-peripherals.c       |    9 +--
+ arch/arm/mach-omap2/include/mach/board-zoom.h      |    2 -
+ drivers/input/misc/twl4030-vibra.c                 |   20 ++++-
+ drivers/mfd/twl-core.c                             |   32 ++++++
+ drivers/mfd/twl4030-audio.c                        |  107 +++++++++++++-------
+ include/linux/i2c/twl.h                            |    3 +-
+ include/linux/of.h                                 |    6 +
+ sound/soc/codecs/twl4030.c                         |  103 +++++++++++++++----
+ sound/soc/omap/zoom2.c                             |    4 -
+ 10 files changed, 261 insertions(+), 71 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/twl4030-audio.txt
+
+-- 
+1.7.8.6
