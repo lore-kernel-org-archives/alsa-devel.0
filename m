@@ -1,16 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Automated test suite for HDA codecs,
- now up and running for daily builds
-Date: Tue, 14 Aug 2012 12:44:08 +0200
-Message-ID: <502A2BF8.4050705@canonical.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
+ probe rather than as a device
+Date: Tue, 14 Aug 2012 13:08:23 +0200
+Message-ID: <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E31D265E5C
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 12:14:22 +0200 (CEST)
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+ [209.85.212.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96E10265E61
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 12:38:38 +0200 (CEST)
+Received: by vbbfn1 with SMTP id fn1so182791vbb.38
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 04:08:23 -0700 (PDT)
+In-Reply-To: <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ubuntu-audio-dev@lists.launchpad.net
-Cc: Takashi Iwai <tiwai@suse.de>, Daniel Manrique <daniel.manrique@canonical.com>, brad.figg@canonical.com, Jeremy Kerr <jk@ozlabs.org>, Chris Van Hoof <vanhoof@canonical.com>
+To: Lee Jones <lee.jones@linaro.org>, Ola LILJA2 <ola.o.lilja@stericsson.com>, Ola Lilja <olalilja@yahoo.se>
+Cc: alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-As some of you know, I've been working on extending hda-emu to become an 
-automated test suite.
+On Thu, Aug 9, 2012 at 5:47 PM, Lee Jones <lee.jones@linaro.org> wrote:
 
-A little status report follows:
+> The PCM is a pseudo-device. It doesn't have any of it's own registers
+> or hardware. It rather acts as a layer of abstraction for DMA
+> transfers. Hence, instead of classifying it as a device in its own
+> right, we call the initialisation from the MSP driver.
+>
+> CC: alsa-devel@alsa-project.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-  * Daniel Manrique provided me with alsa-info from ~110 machines that 
-Canonical have certified. These alsa-infos are now upstreamed (except 
-for a few which were marked confidential or never reached the market), 
-and distributed with hda-emu [1].
+I'd prefer to have Ola LILJA review this patch, but it looks alright to me.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-  * The test suite (which also is a part of hda-emu) loops over all 
-these codecs, and sends a few commands to hda-emu for each one of them. 
-E g, it tries setting volume controls and verifies that the value read 
-back is the same it tried to set. It also looks for errors from hda-emu 
-after each command sent.
-
-  * I already run daily imports of Takashi's sound tarballs to provide 
-automatic DKMS-based builds. What's new is that this import script [3] 
-now also runs the test suite on that code. It uses the summary of this 
-test run as commit message, which is then imported into Launchpad [2], 
-and sent out by email (to anyone subscribed to that branch).
-
-I've just set this up, so maybe there will be some bumps before the 
-import script runs correctly, but hopefully everything will run smoothly 
-soon, and that we'll catch some regressions before they affect anyone. :-)
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
-[1] 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/hda-emu.git;a=commit;h=fb3b3a7654452bdba188166ef9815baa15042e6f
-
-[2] https://code.launchpad.net/~ubuntu-audio-dev/alsa-driver/tiwai-trunk2
-
-[3] 
-https://code.launchpad.net/~ubuntu-audio-dev/alsa-driver/filter-sound-script
+Yours,
+Linus Walleij
