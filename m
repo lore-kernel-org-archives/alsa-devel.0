@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
- probe rather than as a device
-Date: Tue, 14 Aug 2012 13:08:23 +0200
-Message-ID: <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
+Subject: Re: [PATCH 08/22] ASoC: codecs: Enable AB8500 CODEC
+	for Device Tree
+Date: Tue, 14 Aug 2012 13:09:33 +0200
+Message-ID: <CACRpkdZtfmsSUxn91ebArALT6gyTg_59EcRhqZVzP=Ff11dhYw@mail.gmail.com>
 References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
- <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-9-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
- [209.85.212.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 96E10265E61
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 12:38:38 +0200 (CEST)
-Received: by vbbfn1 with SMTP id fn1so182791vbb.38
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 04:08:23 -0700 (PDT)
-In-Reply-To: <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
+ [209.85.220.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86422265E63
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 12:39:48 +0200 (CEST)
+Received: by vcqp16 with SMTP id p16so184255vcq.38
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 04:09:34 -0700 (PDT)
+In-Reply-To: <1344527268-5964-9-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,16 +31,15 @@ List-Id: alsa-devel@alsa-project.org
 
 On Thu, Aug 9, 2012 at 5:47 PM, Lee Jones <lee.jones@linaro.org> wrote:
 
-> The PCM is a pseudo-device. It doesn't have any of it's own registers
-> or hardware. It rather acts as a layer of abstraction for DMA
-> transfers. Hence, instead of classifying it as a device in its own
-> right, we call the initialisation from the MSP driver.
+> We continue to allow the AB8500 CODEC to be registered via the AB8500
+> Multi Functional Device API, only this time we extract its configuration
+> from the Device Tree binary.
 >
 > CC: alsa-devel@alsa-project.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-I'd prefer to have Ola LILJA review this patch, but it looks alright to me.
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Also for Ola to look at, and/or ACK.
+I dare not even ACK patches like this.
 
 Yours,
 Linus Walleij
