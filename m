@@ -1,668 +1,245 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 4/4] ASoC: Remove obsolete OMAP3 machine drivers
-Date: Tue, 14 Aug 2012 12:07:59 +0300
-Message-ID: <1344935279-32364-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1344935279-32364-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1344935279-32364-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
-Cc: Steve Sakoman <steve@sakoman.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Benoit Cousson <b-cousson@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
+From: mengdong.lin@intel.com
+Subject: [RFC PATCH 1/1] ALSA: hda - add a timer to find and
+	suspend idle codecs
+Date: Tue, 14 Aug 2012 13:44:29 -0400
+Message-ID: <1344966269-5358-1-git-send-email-mengdong.lin@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBD542652DB
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2012 11:17:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The new omap-twl4030 handles the boards used the following drivers:
-igep0020, omap3beagle, omap3evm and overo.
-Remove these drivers since they are mostly identical and we already have
-drop in replacement for all of them.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Note: Earlier patch added the needed code for the board files to retain the
-audio support for boards I can identify that used one of the removed
-drivers.
-If I missed something please take a look at for example:
-arch/arm/mach-omap2/board-omap3beagle.c on how add support for omap-twl4030
-audio.
+This patch sets up a timer to monitor changes of the parameter 'power_save'
+and suspend any idle codecs if power save is re-enabled by the user.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+A codec won't be suspended if it becomes idle when power save is disabled. And it
+will remain unsuspended if power save is enabled later but no further user
+operations comes. So a timer is used here to find and suspend such idle codecs
+when power save is re-enabled.
+
+Now the timer has a fixed interval of 1 second.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 ---
- sound/soc/omap/Kconfig       |   35 ----------
- sound/soc/omap/Makefile      |    8 --
- sound/soc/omap/igep0020.c    |  120 ---------------------------------
- sound/soc/omap/omap3beagle.c |  150 ------------------------------------------
- sound/soc/omap/omap3evm.c    |  118 ---------------------------------
- sound/soc/omap/overo.c       |  122 ----------------------------------
- 6 files changed, 0 insertions(+), 553 deletions(-)
- delete mode 100644 sound/soc/omap/igep0020.c
- delete mode 100644 sound/soc/omap/omap3beagle.c
- delete mode 100644 sound/soc/omap/omap3evm.c
- delete mode 100644 sound/soc/omap/overo.c
+ sound/pci/hda/hda_codec.c |  109 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_codec.h |    9 ++++
+ sound/pci/hda/hda_intel.c |    2 +-
+ 3 files changed, 119 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index fc83d74..2c484a5 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -60,23 +60,6 @@ config SND_OMAP_SOC_OSK5912
- 	help
- 	  Say Y if you want to add support for SoC audio on osk5912.
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 629131a..6bd8873 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -98,6 +98,8 @@ EXPORT_SYMBOL_HDA(snd_hda_delete_codec_preset);
+ static void hda_power_work(struct work_struct *work);
+ static void hda_keep_power_on(struct hda_codec *codec);
+ #define hda_codec_is_power_on(codec)	((codec)->power_on)
++#define POWER_SAVE_MONITOR_INTERVAL 1000
++static void power_save_monitor_timeout(unsigned long data);
+ #else
+ static inline void hda_keep_power_on(struct hda_codec *codec) {}
+ #define hda_codec_is_power_on(codec)	1
+@@ -685,6 +687,9 @@ static int snd_hda_bus_free(struct hda_bus *bus)
  
--config SND_OMAP_SOC_OVERO
--	tristate "SoC Audio support for Gumstix Overo and CompuLab CM-T35"
--	depends on TWL4030_CORE && SND_OMAP_SOC && (MACH_OVERO || MACH_CM_T35)
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for SoC audio on the
--	  Gumstix Overo or CompuLab CM-T35
--
--config SND_OMAP_SOC_OMAP3EVM
--	tristate "SoC Audio support for OMAP3EVM board"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3EVM
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for SoC audio on the omap3evm board.
--
- config SND_OMAP_SOC_AM3517EVM
- 	tristate "SoC Audio support for OMAP3517 / AM3517 EVM"
- 	depends on SND_OMAP_SOC && MACH_OMAP3517EVM && I2C
-@@ -140,16 +123,6 @@ config SND_OMAP_SOC_OMAP3_PANDORA
- 	help
- 	  Say Y if you want to add support for SoC audio on the OMAP3 Pandora.
+ 	if (!bus)
+ 		return 0;
++
++	snd_hda_power_save_monitor_stop(bus);
++
+ 	if (bus->workq)
+ 		flush_workqueue(bus->workq);
+ 	if (bus->unsol)
+@@ -4558,6 +4563,106 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
+ 	return 0;
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
++
++#define BUS_POWER_SAVE(bus) \
++	((bus)->power_save && *(bus)->power_save ?  1 : 0)
++
++static void power_save_monitor_timeout(unsigned long data)
++{
++	int ret;
++	struct hda_bus *bus = (struct hda_bus *)data;
++	struct list_head *codec_list = &bus->codec_list;
++	struct hda_codec *codec, *next;
++
++	if (BUS_POWER_SAVE(bus) == bus->power_save_enabled)
++		goto out;
++
++	bus->power_save_enabled = BUS_POWER_SAVE(bus);
++	if (!bus->power_save_enabled) {
++		snd_printd("hda-bus: power save disabled\n");
++		goto out;
++	}
++
++	snd_printd("hda-bus: power save enabled\n");
++	list_for_each_entry_safe(codec, next, codec_list, list) {
++		spin_lock(&codec->power_lock);
++		if (codec->power_on
++			&& !codec->power_count
++			&& !codec->power_transition) {
++			snd_printd("hda codec %d idle\n", codec->addr);
++			codec->power_transition = -1; /* avoid reentrance */
++			queue_delayed_work(codec->bus->workq,
++				&codec->power_work,
++				msecs_to_jiffies(power_save(codec) * 1000));
++		}
++		spin_unlock(&codec->power_lock);
++	}
++
++out:
++	ret = mod_timer(&bus->power_save_timer,
++				jiffies + \
++				msecs_to_jiffies(POWER_SAVE_MONITOR_INTERVAL));
++	if (ret)
++		snd_printd("hda-bus: error in mod_timer\n");
++
++	return;
++}
++
++/**
++ * snd_hda_power_save_monitor_start - Setup a timer to monitor the changes of
++ *    power_save parameter.
++ * @bus: HD-audio bus
++ *
++ * Setup a timer to monitor whether parameter power_save is changed by the user.
++ * A codec won't be suspended if it becomes idle when power save is disabled,
++ * and can remain unsuspended after power save is enabled later.
++ * This monitor will find and suspened such idle codecs when power save is
++ * re-enabled.
++ */
++void  snd_hda_power_save_monitor_start(struct hda_bus *bus)
++{
++	int ret;
++
++	if (bus->power_save_timer_inited) {
++		snd_printd("hda-bus: power save timer already inited\n");
++		return;
++	}
++
++	setup_timer(&bus->power_save_timer,
++				power_save_monitor_timeout, (unsigned long)bus);
++	bus->power_save_timer_inited = 1;
++
++	snd_printd("hda-bus: start power save monitor\n");
++	ret = mod_timer(&bus->power_save_timer,
++			jiffies + \
++			msecs_to_jiffies(POWER_SAVE_MONITOR_INTERVAL));
++	if (ret)
++		snd_printd("hda-bus: error in mod_timer\n");
++
++	return;
++}
++EXPORT_SYMBOL_HDA(snd_hda_power_save_monitor_start);
++
++/**
++ * snd_hda_power_save_monitor_stop - Delete the timer to monitor the changes of
++ *    power_save parameter.
++ * @bus: HD-audio bus
++ */
++void snd_hda_power_save_monitor_stop(struct hda_bus *bus)
++{
++	int ret;
++
++	if (bus->power_save_timer_inited) {
++		snd_printd("hda-bus: stop power save monitor\n");
++		ret = del_timer_sync(&bus->power_save_timer);
++		if (ret < 0)
++			snd_printd("hda-bus: error in del_timer_sync\n");
++		bus->power_save_timer_inited = 0;
++	}
++
++	return;
++}
++EXPORT_SYMBOL_HDA(snd_hda_power_save_monitor_stop);
+ #endif
  
--config SND_OMAP_SOC_OMAP3_BEAGLE
--	tristate "SoC Audio support for OMAP3 Beagle and Devkit8000"
--	depends on TWL4030_CORE && SND_OMAP_SOC
--	depends on (MACH_OMAP3_BEAGLE || MACH_DEVKIT8000)
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for SoC audio on the Beagleboard or
--	  the clone Devkit8000.
--
- config SND_OMAP_SOC_ZOOM2
- 	tristate "SoC Audio support for Zoom2"
- 	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_ZOOM2
-@@ -157,11 +130,3 @@ config SND_OMAP_SOC_ZOOM2
- 	select SND_SOC_TWL4030
- 	help
- 	  Say Y if you want to add support for Soc audio on Zoom2 board.
--
--config SND_OMAP_SOC_IGEP0020
--	tristate "SoC Audio support for IGEP v2"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_IGEP0020
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TWL4030
--	help
--	  Say Y if you want to add support for Soc audio on IGEP v2 board.
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 861e640..19637e5 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -16,31 +16,23 @@ snd-soc-n810-objs := n810.o
- snd-soc-rx51-objs := rx51.o
- snd-soc-ams-delta-objs := ams-delta.o
- snd-soc-osk5912-objs := osk5912.o
--snd-soc-overo-objs := overo.o
--snd-soc-omap3evm-objs := omap3evm.o
- snd-soc-am3517evm-objs := am3517evm.o
- snd-soc-sdp3430-objs := sdp3430.o
- snd-soc-omap-abe-twl6040-objs := omap-abe-twl6040.o
- snd-soc-omap-twl4030-objs := omap-twl4030.o
- snd-soc-omap3pandora-objs := omap3pandora.o
--snd-soc-omap3beagle-objs := omap3beagle.o
- snd-soc-zoom2-objs := zoom2.o
--snd-soc-igep0020-objs := igep0020.o
- snd-soc-omap-hdmi-card-objs := omap-hdmi-card.o
+ /*
+@@ -5045,6 +5150,8 @@ int snd_hda_suspend(struct hda_bus *bus)
+ {
+ 	struct hda_codec *codec;
  
- obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
- obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
--obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP3EVM) += snd-soc-omap3evm.o
- obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
- obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) += snd-soc-omap-twl4030.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
- obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) += snd-soc-zoom2.o
--obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_HDMI) += snd-soc-omap-hdmi-card.o
-diff --git a/sound/soc/omap/igep0020.c b/sound/soc/omap/igep0020.c
-deleted file mode 100644
-index e835781..0000000
---- a/sound/soc/omap/igep0020.c
-+++ /dev/null
-@@ -1,120 +0,0 @@
--/*
-- * igep0020.c  --  SoC audio for IGEP v2
-- *
-- * Based on sound/soc/omap/overo.c by Steve Sakoman
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int igep2_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--					    SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops igep2_ops = {
--	.hw_params = igep2_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link igep2_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.codec_dai_name = "twl4030-hifi",
--	.platform_name = "omap-pcm-audio",
--	.codec_name = "twl4030-codec",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops = &igep2_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_card_igep2 = {
--	.name = "igep2",
--	.owner = THIS_MODULE,
--	.dai_link = &igep2_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *igep2_snd_device;
--
--static int __init igep2_soc_init(void)
--{
--	int ret;
--
--	if (!machine_is_igep0020())
--		return -ENODEV;
--	printk(KERN_INFO "IGEP v2 SoC init\n");
--
--	igep2_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!igep2_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(igep2_snd_device, &snd_soc_card_igep2);
--
--	ret = platform_device_add(igep2_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(igep2_snd_device);
--
--	return ret;
--}
--module_init(igep2_soc_init);
--
--static void __exit igep2_soc_exit(void)
--{
--	platform_device_unregister(igep2_snd_device);
--}
--module_exit(igep2_soc_exit);
--
--MODULE_AUTHOR("Enric Balletbo i Serra <eballetbo@iseebcn.com>");
--MODULE_DESCRIPTION("ALSA SoC IGEP v2");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-deleted file mode 100644
-index 2830dfd..0000000
---- a/sound/soc/omap/omap3beagle.c
-+++ /dev/null
-@@ -1,150 +0,0 @@
--/*
-- * omap3beagle.c  --  SoC audio for OMAP3 Beagle
-- *
-- * Author: Steve Sakoman <steve@sakoman.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int fmt;
--	int ret;
--
--	switch (params_channels(params)) {
--	case 2: /* Stereo I2S mode */
--		fmt =	SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_CBM_CFM;
--		break;
--	case 4: /* Four channel TDM mode */
--		fmt =	SND_SOC_DAIFMT_DSP_A |
--			SND_SOC_DAIFMT_IB_NF |
--			SND_SOC_DAIFMT_CBM_CFM;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	/* Set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec DAI configuration\n");
--		return ret;
--	}
--
--	/* Set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set cpu DAI configuration\n");
--		return ret;
--	}
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops omap3beagle_ops = {
--	.hw_params = omap3beagle_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link omap3beagle_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.platform_name = "omap-pcm-audio",
--	.codec_dai_name = "twl4030-hifi",
--	.codec_name = "twl4030-codec",
--	.ops = &omap3beagle_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_omap3beagle = {
--	.name = "omap3beagle",
--	.owner = THIS_MODULE,
--	.dai_link = &omap3beagle_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *omap3beagle_snd_device;
--
--static int __init omap3beagle_soc_init(void)
--{
--	int ret;
--
--	if (!(machine_is_omap3_beagle() || machine_is_devkit8000()))
--		return -ENODEV;
--	pr_info("OMAP3 Beagle/Devkit8000 SoC init\n");
--
--	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!omap3beagle_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(omap3beagle_snd_device, &snd_soc_omap3beagle);
--
--	ret = platform_device_add(omap3beagle_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(omap3beagle_snd_device);
--
--	return ret;
--}
--
--static void __exit omap3beagle_soc_exit(void)
--{
--	platform_device_unregister(omap3beagle_snd_device);
--}
--
--module_init(omap3beagle_soc_init);
--module_exit(omap3beagle_soc_exit);
--
--MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
--MODULE_DESCRIPTION("ALSA SoC OMAP3 Beagle");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
-deleted file mode 100644
-index 3d468c9..0000000
---- a/sound/soc/omap/omap3evm.c
-+++ /dev/null
-@@ -1,118 +0,0 @@
--/*
-- * omap3evm.c  -- ALSA SoC support for OMAP3 EVM
-- *
-- * Author: Anuj Aggarwal <anuj.aggarwal@ti.com>
-- *
-- * Based on sound/soc/omap/beagle.c by Steve Sakoman
-- *
-- * Copyright (C) 2008 Texas Instruments, Incorporated
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the
-- * Free Software Foundation version 2.
-- *
-- * This program is distributed "as is" WITHOUT ANY WARRANTY of any kind,
-- * whether express or implied; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-- * General Public License for more details.
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int omap3evm_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "Can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops omap3evm_ops = {
--	.hw_params = omap3evm_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link omap3evm_dai = {
--	.name 		= "TWL4030",
--	.stream_name 	= "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.codec_dai_name = "twl4030-hifi",
--	.platform_name = "omap-pcm-audio",
--	.codec_name = "twl4030-codec",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops 		= &omap3evm_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_omap3evm = {
--	.name = "omap3evm",
--	.owner = THIS_MODULE,
--	.dai_link = &omap3evm_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *omap3evm_snd_device;
--
--static int __init omap3evm_soc_init(void)
--{
--	int ret;
--
--	if (!machine_is_omap3evm())
--		return -ENODEV;
--	pr_info("OMAP3 EVM SoC init\n");
--
--	omap3evm_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!omap3evm_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(omap3evm_snd_device, &snd_soc_omap3evm);
--	ret = platform_device_add(omap3evm_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(omap3evm_snd_device);
--
--	return ret;
--}
--
--static void __exit omap3evm_soc_exit(void)
--{
--	platform_device_unregister(omap3evm_snd_device);
--}
--
--module_init(omap3evm_soc_init);
--module_exit(omap3evm_soc_exit);
--
--MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
--MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
--MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
-deleted file mode 100644
-index 6ac3e0c..0000000
---- a/sound/soc/omap/overo.c
-+++ /dev/null
-@@ -1,122 +0,0 @@
--/*
-- * overo.c  --  SoC audio for Gumstix Overo
-- *
-- * Author: Steve Sakoman <steve@sakoman.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <mach/hardware.h>
--#include <mach/gpio.h>
--#include <plat/mcbsp.h>
--
--#include "omap-mcbsp.h"
--#include "omap-pcm.h"
--
--static int overo_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
--					    SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		printk(KERN_ERR "can't set codec system clock\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static struct snd_soc_ops overo_ops = {
--	.hw_params = overo_hw_params,
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link overo_dai = {
--	.name = "TWL4030",
--	.stream_name = "TWL4030",
--	.cpu_dai_name = "omap-mcbsp.2",
--	.codec_dai_name = "twl4030-hifi",
--	.platform_name = "omap-pcm-audio",
--	.codec_name = "twl4030-codec",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops = &overo_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_card_overo = {
--	.name = "overo",
--	.owner = THIS_MODULE,
--	.dai_link = &overo_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *overo_snd_device;
--
--static int __init overo_soc_init(void)
--{
--	int ret;
--
--	if (!(machine_is_overo() || machine_is_cm_t35())) {
--		pr_debug("Incomatible machine!\n");
--		return -ENODEV;
--	}
--	printk(KERN_INFO "overo SoC init\n");
--
--	overo_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!overo_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(overo_snd_device, &snd_soc_card_overo);
--
--	ret = platform_device_add(overo_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(overo_snd_device);
--
--	return ret;
--}
--module_init(overo_soc_init);
--
--static void __exit overo_soc_exit(void)
--{
--	platform_device_unregister(overo_snd_device);
--}
--module_exit(overo_soc_exit);
--
--MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
--MODULE_DESCRIPTION("ALSA SoC overo");
--MODULE_LICENSE("GPL");
++	snd_hda_power_save_monitor_stop(bus);
++
+ 	list_for_each_entry(codec, &bus->codec_list, list) {
+ 		if (hda_codec_is_power_on(codec))
+ 			hda_call_codec_suspend(codec);
+@@ -5069,6 +5176,8 @@ int snd_hda_resume(struct hda_bus *bus)
+ 	list_for_each_entry(codec, &bus->codec_list, list) {
+ 		hda_call_codec_resume(codec);
+ 	}
++
++	snd_hda_power_save_monitor_start(bus);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_resume);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index c422d33..8b88ec5 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -653,6 +653,8 @@ struct hda_bus {
+ 	struct hda_bus_unsolicited *unsol;
+ 	char workq_name[16];
+ 	struct workqueue_struct *workq;	/* common workqueue for codecs */
++	/* timer to monitor changes of power_save parameter */
++	struct timer_list power_save_timer;
+ 
+ 	/* assigned PCMs */
+ 	DECLARE_BITMAP(pcm_dev_bits, SNDRV_PCM_DEVICES);
+@@ -667,6 +669,9 @@ struct hda_bus {
+ 	unsigned int response_reset:1;	/* controller was reset */
+ 	unsigned int in_reset:1;	/* during reset operation */
+ 	unsigned int power_keep_link_on:1; /* don't power off HDA link */
++	/* power save flags */
++	unsigned int power_save_enabled:1;	/* enabled at last check */
++	unsigned int power_save_timer_inited:1;	/* timer is initialized */
+ };
+ 
+ /*
+@@ -1062,10 +1067,14 @@ void snd_hda_power_up(struct hda_codec *codec);
+ void snd_hda_power_up_d3wait(struct hda_codec *codec);
+ void snd_hda_power_down(struct hda_codec *codec);
+ void snd_hda_update_power_acct(struct hda_codec *codec);
++extern void snd_hda_power_save_monitor_start(struct hda_bus *bus);
++extern void snd_hda_power_save_monitor_stop(struct hda_bus *bus);
+ #else
+ static inline void snd_hda_power_up(struct hda_codec *codec) {}
+ static inline void snd_hda_power_up_d3wait(struct hda_codec *codec) {}
+ static inline void snd_hda_power_down(struct hda_codec *codec) {}
++#define snd_hda_power_save_monitor_start(bus) {}
++#define snd_hda_power_save_monitor_stop(bus) {}
+ #endif
+ 
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index c8aced1..fe015d0 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -3236,7 +3236,7 @@ static int DELAYED_INIT_MARK azx_probe_continue(struct azx *chip)
+ 	chip->running = 1;
+ 	power_down_all_codecs(chip);
+ 	azx_notifier_register(chip);
+-
++	snd_hda_power_save_monitor_start(chip->bus);
+ 	return 0;
+ 
+ out_free:
 -- 
-1.7.8.6
-
+1.7.9.5
