@@ -1,15 +1,15 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-emu: Fixup ALC268 input amp on Beep node
-Date: Thu, 16 Aug 2012 13:55:39 +0200
-Message-ID: <1345118139-7242-1-git-send-email-david.henningsson@canonical.com>
+Subject: command 0x7e7 sent on STAC9200 / STAC9228
+Date: Thu, 16 Aug 2012 14:03:39 +0200
+Message-ID: <502CE19B.9030000@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 89245265FDF
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 13:25:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A20A265FDA
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 13:33:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,52 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-According to the ALC268 datasheet, there is actually an input amplifier
-on node 0x1d, even though this is not exposed in the codec proc file.
+Hi Takashi,
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- hda-spec.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+While working with fixing the stuff that my automated test tool has 
+discovered, here's one I'm not sure what to do with.
 
-Relevant alsa info: alc268-toshiba-tecra-s11-m11--nvidia--ccert-201002-5346
+If you run hda-emu on any of these three:
 
-diff --git a/hda-spec.c b/hda-spec.c
-index f1b03b4..dd43ee9 100644
---- a/hda-spec.c
-+++ b/hda-spec.c
-@@ -386,6 +386,20 @@ static void fixup_via_mixer(struct xhda_codec *codec)
- 	node->node[node->num_nodes++] = 0x08;
- }
- 
-+static void fixup_alc268_beep(struct xhda_codec *codec)
-+{
-+	struct xhda_node *node = find_node(codec, 0x1d);
-+	if (!node)
-+		return;
-+	node->wcaps |= (1 << 1);	/* AMP-in present */
-+
-+	node->amp_in_caps.ofs = 0x0c;
-+	node->amp_in_caps.nsteps = 0x0c;
-+	node->amp_in_caps.stepsize = 0x07;
-+	node->amp_in_caps.mute = 0;
-+	node->amp_in_caps.override = 1;
-+}
-+
- struct fixup_list {
- 	unsigned int vendor_id;
- 	void (*func)(struct xhda_codec *);
-@@ -397,6 +411,7 @@ static struct fixup_list fixups[] = {
- 	{ 0x11060438, fixup_via_mixer },
- 	{ 0x11064438, fixup_via_mixer },
- 	{ 0x11060448, fixup_via_mixer },
-+	{ 0x10ec0268, fixup_alc268_beep },
- 	{ }
- };
- 
+codecs/canonical/stac9200-dell-inspiron-6400-ccert-200705-83
+codecs/canonical/stac9200-dell-inspiron-6400-ccert-200712-207
+codecs/canonical/stac9228-dell-inspiron-1420-ccert-200708-95
+
+Hda-emu prints out:
+invalid command: NID=0x1, verb=0x7e7, parm=0x0
+
+In this case, I'm not sure if the command is invalid (and thus should be 
+removed), or if it's a secret IDT verb that we need to set.
+
+ From patch_sigmatel.c:
+
+	/* Configure GPIOx as CMOS */
+	snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0);
+
+But in hda-spec.c this verb is only in the verb table of IDT codecs, not 
+STAC codecs.
+
+Can you offer some enlightement?
+
 -- 
-1.7.9.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
