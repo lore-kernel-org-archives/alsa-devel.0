@@ -1,20 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Bug 46011] Capture of sound from USB connected
- audio card (UGM96) doesn't work in 3.5.1 - kernel bug generated: scheduling
- while atomic
-Date: Thu, 16 Aug 2012 13:26:48 +0200
-Message-ID: <502CD8F8.50008@ladisch.de>
-References: <bug-46011-47592@https.bugzilla.kernel.org/>
- <20120815103121.D4D5211FC6C@bugzilla.kernel.org> <502B7B5B.1030808@gmail.com>
- <s5htxw4xwt7.wl%tiwai@suse.de> <502CCB3D.3070506@gmail.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: [PATCH 0/3] ASoC: add compress stream support
+Date: Thu, 16 Aug 2012 17:10:39 +0530
+Message-ID: <1345117242-26975-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 06189265B5D
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 12:57:07 +0200 (CEST)
-In-Reply-To: <502CCB3D.3070506@gmail.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id D131F265B5D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 13:08:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> Clemens, the patch below fixes a "sleeping while atomic" bug in the USB
-> audio driver, but it raises a new "not enough bandwidth" issue, which
-> might even be unreleated.
->
->> +++ b/sound/usb/pcm.c
->> @@ -544,6 +544,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->>
->> +	/* clear the pending deactivation on the target EPs */
->> +	deactivate_endpoints(subs);
+Here is the much delayed support for compress audio streams in ASoC.
+The v2 incorprates feedback discussed on v1 patches and this also adds
+the support in Intel drivers.
 
-The HC drivers calculate bandwidth for a stream when the first URB is
-submitted or the last one is completed.  (xHCI does this when the
-altsetting is changed; IIRC there are plans to have other HCDs do the
-same.)
+Namarta Kohli (1):
+  ASoC: add compress stream support
 
-This patch doesn't change the relative order of URB submissions and
-cancellations.  The descriptions in bug 46011 indicates that we're
-running into the not-completely-fixed EHCI scheduling bugs.
+Vinod Koul (2):
+  ASoC: add definations for compressed operations
+  ASoC: mid-x86 - add support for compressed streams
 
-
-Regards,
-Clemens
+ include/sound/compress_driver.h  |    1 +
+ include/sound/soc-dai.h          |    3 +
+ include/sound/soc.h              |   16 ++-
+ sound/soc/Kconfig                |    1 +
+ sound/soc/Makefile               |    2 +-
+ sound/soc/mid-x86/mfld_machine.c |    9 ++
+ sound/soc/mid-x86/sst_dsp.h      |  134 +++++++++++++++++
+ sound/soc/mid-x86/sst_platform.c |  204 ++++++++++++++++++++++++++-
+ sound/soc/mid-x86/sst_platform.h |   26 ++++-
+ sound/soc/soc-compress.c         |  295 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-core.c             |   57 +++++---
+ 11 files changed, 721 insertions(+), 27 deletions(-)
+ create mode 100644 sound/soc/mid-x86/sst_dsp.h
+ create mode 100644 sound/soc/soc-compress.c
