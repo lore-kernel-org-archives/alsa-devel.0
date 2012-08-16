@@ -1,58 +1,53 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: RE: [PATCH v3 3/4] media: videobuf2-dma-contig: use dma_mmap_coherent
- if available
-Date: Thu, 16 Aug 2012 12:39:57 +0200
-Message-ID: <015b01cd7b9b$8010e2b0$8032a810$%szyprowski@samsung.com>
-References: <1344246924-32620-1-git-send-email-hdk@igel.co.jp>
- <1344246924-32620-4-git-send-email-hdk@igel.co.jp>
- <012701cd74ac$6a617060$3f245120$%szyprowski@samsung.com>
- <20120816.191358.127675610.hdk@igel.co.jp>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Bug 46011] Capture of sound from USB connected
+ audio card (UGM96) doesn't work in 3.5.1 - kernel bug generated: scheduling
+ while atomic
+Date: Thu, 16 Aug 2012 13:26:48 +0200
+Message-ID: <502CD8F8.50008@ladisch.de>
+References: <bug-46011-47592@https.bugzilla.kernel.org/>
+ <20120815103121.D4D5211FC6C@bugzilla.kernel.org> <502B7B5B.1030808@gmail.com>
+ <s5htxw4xwt7.wl%tiwai@suse.de> <502CCB3D.3070506@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-reply-to: <20120816.191358.127675610.hdk@igel.co.jp>
-Content-language: pl
-Sender: linux-media-owner@vger.kernel.org
-To: 'Hideki EIRAKU' <hdk@igel.co.jp>
-Cc: laurent.pinchart@ideasonboard.com, linux@arm.linux.org.uk, pawel@osciak.com, kyungmin.park@samsung.com, mchehab@infradead.org, FlorianSchandinat@gmx.de, perex@perex.cz, tiwai@suse.de, Tomasz Stanislawski <t.stanislaws@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, matsu@igel.co.jp, dhobsong@igel.co.jp
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 06189265B5D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 12:57:07 +0200 (CEST)
+In-Reply-To: <502CCB3D.3070506@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Daniel Mack wrote:
+> Clemens, the patch below fixes a "sleeping while atomic" bug in the USB
+> audio driver, but it raises a new "not enough bandwidth" issue, which
+> might even be unreleated.
+>
+>> +++ b/sound/usb/pcm.c
+>> @@ -544,6 +544,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>>
+>> +	/* clear the pending deactivation on the target EPs */
+>> +	deactivate_endpoints(subs);
 
-On Thursday, August 16, 2012 12:14 PM Hideki EIRAKU wrote:
+The HC drivers calculate bandwidth for a stream when the first URB is
+submitted or the last one is completed.  (xHCI does this when the
+altsetting is changed; IIRC there are plans to have other HCDs do the
+same.)
 
-> From: Marek Szyprowski <m.szyprowski@samsung.com>
-> Subject: RE: [PATCH v3 3/4] media: videobuf2-dma-contig: use dma_mmap_coherent if available
-> Date: Tue, 07 Aug 2012 16:53:25 +0200
-> 
-> > I'm sorry for bringing this issue now, once you have already created v3 of your
-> > patches, but similar patch has been already proposed some time ago. It is already
-> > processed together with general videobuf2-dma-contig redesign and dma-buf extensions
-> > by Tomasz Stanislawski.
-> >
-> > See post http://thread.gmane.org/gmane.comp.video.dri.devel/70402/focus=49461 and
-> > http://thread.gmane.org/gmane.linux.drivers.video-input-infrastructure/49438
-> >
-> > It doesn't use conditional code inside videobuf2 allocator and rely entirely on
-> > dma-mapping subsystem to provide a working dma_mmap_coherent/writecombine/attrs()
-> > function. When it was posted, it relied on the dma-mapping extensions, which now
-> > have been finally merged to v3.6-rc1. Now I wonder if there are any architectures,
-> > which don't use dma_map_ops based dma-mapping framework, which might use
-> > videobuf2-dma-conting module.
-> 
-> Thank you for telling me about videobuf2-dma-contig and v3.6-rc1.  The
-> videobuf2-dma-contig patch I sent is now unnecessary.  So I will
-> remove the patch.  I will remove the patch defining
-> ARCH_HAS_DMA_MMAP_COHERENT too because the v3.6-rc1 kernel has generic
-> dma_mmap_coherent() API for every architecture.
+This patch doesn't change the relative order of URB submissions and
+cancellations.  The descriptions in bug 46011 indicates that we're
+running into the not-completely-fixed EHCI scheduling bugs.
 
-Just to let you know - Tomasz has posted an updated version of the dma-buf/vb2-dma-contig
-patches:
 
-http://www.spinics.net/lists/linux-media/msg51768.html
-
-Best regards
--- 
-Marek Szyprowski
-Samsung Poland R&D Center
+Regards,
+Clemens
