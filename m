@@ -1,32 +1,44 @@
-From: Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH v2 3/4] ARM: OMAP3: Switch to use the unified audio driver
- (omap-twl4030) for selected boards
-Date: Thu, 16 Aug 2012 09:21:22 +0300
-Message-ID: <502C9162.4020801@compulab.co.il>
-References: <1344935279-32364-1-git-send-email-peter.ujfalusi@ti.com> <1344935279-32364-4-git-send-email-peter.ujfalusi@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: add python compiled files to gitignore
+Date: Thu, 16 Aug 2012 10:55:35 +0200
+Message-ID: <1345107335-2475-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1344935279-32364-4-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Steve Sakoman <steve@sakoman.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Benoit Cousson <b-cousson@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AFCB26505E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 10:25:52 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/14/12 12:07, Peter Ujfalusi wrote:
-> These boards have similar audio setup and they can all use the same driver
-> for audio support if it is enabled in the kernel config.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Igor Grinberg <grinberg@compulab.co.il>
-> Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ .gitignore |    1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Igor Grinberg <grinberg@compulab.co.il>
-
-Thanks Peter!
-
-
+diff --git a/.gitignore b/.gitignore
+index 2281a23..5ab6918 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,6 +1,7 @@
+ *~
+ *.o
+ *.a
++*.pyc
+ hda-emu
+ hda-decode-verb
+ hda-encode-verb
 -- 
-Regards,
-Igor.
+1.7.9.5
