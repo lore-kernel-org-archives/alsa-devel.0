@@ -1,69 +1,53 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Question about Conversion to S24_LE from S24_3LE
-Date: Thu, 16 Aug 2012 11:41:36 +0200
-Message-ID: <502CC050.1040102@perex.cz>
-References: <13855858.72631345077438708.cxe06701@nifty.ne.jp>
- <24633629.312801345103755036.cxe06701@nifty.ne.jp>
- <s5hmx1vmc1j.wl%tiwai@suse.de>
+From: Hideki EIRAKU <hdk@igel.co.jp>
+Subject: Re: [PATCH v3 3/4] media: videobuf2-dma-contig: use
+ dma_mmap_coherent if available
+Date: Thu, 16 Aug 2012 19:13:58 +0900 (JST)
+Message-ID: <20120816.191358.127675610.hdk@igel.co.jp>
+References: <1344246924-32620-1-git-send-email-hdk@igel.co.jp>
+	<1344246924-32620-4-git-send-email-hdk@igel.co.jp>
+	<012701cd74ac$6a617060$3f245120$%szyprowski@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 26C98265325
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 11:09:18 +0200 (CEST)
-In-Reply-To: <s5hmx1vmc1j.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, etsuko suzuki <cxe06701@nifty.ne.jp>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <012701cd74ac$6a617060$3f245120$%szyprowski@samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: m.szyprowski@samsung.com
+Cc: laurent.pinchart@ideasonboard.com, linux@arm.linux.org.uk, pawel@osciak.com, kyungmin.park@samsung.com, mchehab@infradead.org, FlorianSchandinat@gmx.de, perex@perex.cz, tiwai@suse.de, t.stanislaws@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, matsu@igel.co.jp, dhobsong@igel.co.jp
 List-Id: alsa-devel@alsa-project.org
 
-Date 16.8.2012 11:16, Takashi Iwai wrote:
-> At Thu, 16 Aug 2012 16:55:55 +0900 (JST),
-> etsuko suzuki wrote:
->>
->> Thank you for your kindness reply.
->>
->>> Did you subscribe to the ML? 
->>
->> Yes I did.
->> I subscribed ML and I accepted the mail 'Welcome to the "Alsa-devel" mailing l
->> ist'.
->> And I can receive mails of this ML.
->> But I can't post it to ML.
->> (The mails were NOT rejected.)
->>
->> I  had sent e-mail to 'alsa-devel-owner@alsa-project.org' several times.
->> But there was no answer.
->> (The mails were NOT rejected.)
->>
->> Is something done else? 
->> I am sorry about like this question... 
+Hello,
+
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: RE: [PATCH v3 3/4] media: videobuf2-dma-contig: use dma_mmap_coherent if available
+Date: Tue, 07 Aug 2012 16:53:25 +0200
+
+> I'm sorry for bringing this issue now, once you have already created v3 of your
+> patches, but similar patch has been already proposed some time ago. It is already
+> processed together with general videobuf2-dma-contig redesign and dma-buf extensions
+> by Tomasz Stanislawski.
 > 
-> Hm, I guess your message didn't reach properly, or was filtered by
-> some spam filter.  Better to contact with Jaroslav (Cc'ed), who
-> maintains alsa-devel ML.
+> See post http://thread.gmane.org/gmane.comp.video.dri.devel/70402/focus=49461 and
+> http://thread.gmane.org/gmane.linux.drivers.video-input-infrastructure/49438 
+> 
+> It doesn't use conditional code inside videobuf2 allocator and rely entirely on 
+> dma-mapping subsystem to provide a working dma_mmap_coherent/writecombine/attrs() 
+> function. When it was posted, it relied on the dma-mapping extensions, which now
+> have been finally merged to v3.6-rc1. Now I wonder if there are any architectures, 
+> which don't use dma_map_ops based dma-mapping framework, which might use 
+> videobuf2-dma-conting module. 
 
-The ALSA server identifies e-mails from Etsuko as spams and they're just
-ignored. The culprit can be, that the e-mails are in HTML, non-standard
-code pages or the sender may be in a blacklist IP list.
+Thank you for telling me about videobuf2-dma-contig and v3.6-rc1.  The
+videobuf2-dma-contig patch I sent is now unnecessary.  So I will
+remove the patch.  I will remove the patch defining
+ARCH_HAS_DMA_MMAP_COHERENT too because the v3.6-rc1 kernel has generic
+dma_mmap_coherent() API for every architecture.
 
-I turned on the capturing of the SPAM messages temporary, if you like to
-know, where is the problem. Just ping me after you send your e-mail.
-This is for Etsuko.
+I will also remove the Laurent's patch I sent because it was related
+to ARCH_HAS_DMA_MMAP_COHERENT.
 
-				Thanks,
-					Jaroslav
+The remaining patch is sh_mobile_lcdc.  I will remove ifdefs from the
+patch and re-post it as a patch v4.
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Hideki EIRAKU <hdk@igel.co.jp>
