@@ -1,14 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Add bytes controls for DRC
-Date: Thu, 16 Aug 2012 13:35:08 +0100
-Message-ID: <1345120511-32638-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] hda-emu: Add idt_set_gpio verb for stac92xx
+Date: Thu, 16 Aug 2012 14:59:42 +0200
+Message-ID: <502CEEBE.6010106@canonical.com>
+References: <1345119958-8259-1-git-send-email-david.henningsson@canonical.com>
+ <s5ha9xvvx45.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 659E426603A
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 14:05:32 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCD60264EF8
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 14:29:55 +0200 (CEST)
+In-Reply-To: <s5ha9xvvx45.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,67 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If DRC coefficients are not configured via platform data then add bytes
-controls for them instead so they can be configured by applications. This
-is the normal means of controlling things like this for newer systems, we
-maintain compatibility with platform data to avoid disruption to existing
-systems.
+On 08/16/2012 02:29 PM, Takashi Iwai wrote:
+> At Thu, 16 Aug 2012 14:25:58 +0200,
+> David Henningsson wrote:
+>>
+>> According to Takashi, this verb is valid and given by Sigmatel.
+>>
+>> Also merge two identical arrays and sort the table a little.
+>>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>
+> Thanks, applied.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+And with that, the number of codecs failing is down from nine to three 
+today. Thanks for your helpfulness, as always :-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 7755ac9..2d60ed3 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -759,6 +759,18 @@ SOC_SINGLE_TLV("AIF2 EQ5 Volume", WM8994_AIF2_EQ_GAINS_2, 6, 31, 0,
- 	       eq_tlv),
- };
- 
-+static const struct snd_kcontrol_new wm8994_drc_controls[] = {
-+SND_SOC_BYTES_MASK("AIF1.1 DRC", WM8994_AIF1_DRC1_1, 5,
-+		   WM8994_AIF1DAC1_DRC_ENA | WM8994_AIF1ADC1L_DRC_ENA |
-+		   WM8994_AIF1ADC1R_DRC_ENA),
-+SND_SOC_BYTES_MASK("AIF1.2 DRC", WM8994_AIF1_DRC2_1, 5,
-+		   WM8994_AIF1DAC2_DRC_ENA | WM8994_AIF1ADC2L_DRC_ENA |
-+		   WM8994_AIF1ADC2R_DRC_ENA),
-+SND_SOC_BYTES_MASK("AIF2 DRC", WM8994_AIF2_DRC_1, 5,
-+		   WM8994_AIF2DAC_DRC_ENA | WM8994_AIF2ADCL_DRC_ENA |
-+		   WM8994_AIF2ADCR_DRC_ENA),
-+};
-+
- static const char *wm8958_ng_text[] = {
- 	"30ms", "125ms", "250ms", "500ms",
- };
-@@ -3254,14 +3266,19 @@ static void wm8994_handle_pdata(struct wm8994_priv *wm8994)
- 
- 		ret = snd_soc_add_codec_controls(wm8994->hubs.codec, controls,
- 					   ARRAY_SIZE(controls));
--		if (ret != 0)
--			dev_err(wm8994->hubs.codec->dev,
--				"Failed to add DRC mode controls: %d\n", ret);
--
- 		for (i = 0; i < WM8994_NUM_DRC; i++)
- 			wm8994_set_drc(codec, i);
-+	} else {
-+		ret = snd_soc_add_codec_controls(wm8994->hubs.codec,
-+						 wm8994_drc_controls,
-+						 ARRAY_SIZE(wm8994_drc_controls));
- 	}
- 
-+	if (ret != 0)
-+		dev_err(wm8994->hubs.codec->dev,
-+			"Failed to add DRC mode controls: %d\n", ret);
-+
-+
- 	dev_dbg(codec->dev, "%d ReTune Mobile configurations\n",
- 		pdata->num_retune_mobile_cfgs);
- 
+
 -- 
-1.7.10.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
