@@ -1,53 +1,101 @@
-From: Hideki EIRAKU <hdk@igel.co.jp>
-Subject: Re: [PATCH v3 3/4] media: videobuf2-dma-contig: use
- dma_mmap_coherent if available
-Date: Thu, 16 Aug 2012 19:13:58 +0900 (JST)
-Message-ID: <20120816.191358.127675610.hdk@igel.co.jp>
-References: <1344246924-32620-1-git-send-email-hdk@igel.co.jp>
-	<1344246924-32620-4-git-send-email-hdk@igel.co.jp>
-	<012701cd74ac$6a617060$3f245120$%szyprowski@samsung.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [Bug 46011] Capture of sound from USB connected
+ audio card (UGM96) doesn't work in 3.5.1 - kernel bug generated: scheduling
+ while atomic
+Date: Thu, 16 Aug 2012 12:28:13 +0200
+Message-ID: <502CCB3D.3070506@gmail.com>
+References: <bug-46011-47592@https.bugzilla.kernel.org/>
+ <20120815103121.D4D5211FC6C@bugzilla.kernel.org> <502B7B5B.1030808@gmail.com>
+ <s5htxw4xwt7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <012701cd74ac$6a617060$3f245120$%szyprowski@samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: m.szyprowski@samsung.com
-Cc: laurent.pinchart@ideasonboard.com, linux@arm.linux.org.uk, pawel@osciak.com, kyungmin.park@samsung.com, mchehab@infradead.org, FlorianSchandinat@gmx.de, perex@perex.cz, tiwai@suse.de, t.stanislaws@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, matsu@igel.co.jp, dhobsong@igel.co.jp
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DFBD26537D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 11:58:31 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so771000bkc.38
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 03:28:17 -0700 (PDT)
+In-Reply-To: <s5htxw4xwt7.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On 15.08.2012 12:40, Takashi Iwai wrote:
+>>> Could you try the patch below?
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: RE: [PATCH v3 3/4] media: videobuf2-dma-contig: use dma_mmap_coherent if available
-Date: Tue, 07 Aug 2012 16:53:25 +0200
+Clemens, the patch below fixes a "sleeping while atomic" bug in the USB
+audio driver, but it raises a new "not enough bandwidth" issue, which
+might even be unreleated.
 
-> I'm sorry for bringing this issue now, once you have already created v3 of your
-> patches, but similar patch has been already proposed some time ago. It is already
-> processed together with general videobuf2-dma-contig redesign and dma-buf extensions
-> by Tomasz Stanislawski.
+I currently don't see the root cause here, but I might be blind. Do you
+have any idea?
+
+
+Thanks,
+Daniel
+
+
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: usb-audio: Fix scheduling-while-atomic bug in PCM
+>  capture stream
 > 
-> See post http://thread.gmane.org/gmane.comp.video.dri.devel/70402/focus=49461 and
-> http://thread.gmane.org/gmane.linux.drivers.video-input-infrastructure/49438 
+> A PCM capture stream on usb-audio causes a scheduling-while-atomic
+> BUG, as reported in the bugzilla entry below.  It's because
+> snd_usb_endpoint_start() is called at first at trigger START for a
+> capture stream, and this function contains the left-over EP
+> deactivation codes.  The problem doesn't happen for a playback stream
+> because the function is called at PCM prepare time, which can sleep.
 > 
-> It doesn't use conditional code inside videobuf2 allocator and rely entirely on 
-> dma-mapping subsystem to provide a working dma_mmap_coherent/writecombine/attrs() 
-> function. When it was posted, it relied on the dma-mapping extensions, which now
-> have been finally merged to v3.6-rc1. Now I wonder if there are any architectures, 
-> which don't use dma_map_ops based dma-mapping framework, which might use 
-> videobuf2-dma-conting module. 
-
-Thank you for telling me about videobuf2-dma-contig and v3.6-rc1.  The
-videobuf2-dma-contig patch I sent is now unnecessary.  So I will
-remove the patch.  I will remove the patch defining
-ARCH_HAS_DMA_MMAP_COHERENT too because the v3.6-rc1 kernel has generic
-dma_mmap_coherent() API for every architecture.
-
-I will also remove the Laurent's patch I sent because it was related
-to ARCH_HAS_DMA_MMAP_COHERENT.
-
-The remaining patch is sh_mobile_lcdc.  I will remove ifdefs from the
-patch and re-post it as a patch v4.
-
--- 
-Hideki EIRAKU <hdk@igel.co.jp>
+> This patch fixes the BUG by moving the EP deactivation code into the
+> PCM prepare callback.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=46011
+> Cc: <stable@vger.kernel.org> [v3.5+]
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/endpoint.c | 4 ----
+>  sound/usb/pcm.c      | 3 +++
+>  2 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index 0f647d2..c411812 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -821,10 +821,6 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+>  	if (++ep->use_count != 1)
+>  		return 0;
+>  
+> -	/* just to be sure */
+> -	deactivate_urbs(ep, 0, 1);
+> -	wait_clear_urbs(ep);
+> -
+>  	ep->active_mask = 0;
+>  	ep->unlink_mask = 0;
+>  	ep->phase = 0;
+> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> index a1298f3..62ec808 100644
+> --- a/sound/usb/pcm.c
+> +++ b/sound/usb/pcm.c
+> @@ -544,6 +544,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>  	subs->last_frame_number = 0;
+>  	runtime->delay = 0;
+>  
+> +	/* clear the pending deactivation on the target EPs */
+> +	deactivate_endpoints(subs);
+> +
+>  	/* for playback, submit the URBs now; otherwise, the first hwptr_done
+>  	 * updates for all URBs would happen at the same time when starting */
+>  	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
+> 
