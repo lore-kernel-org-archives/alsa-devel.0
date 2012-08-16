@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5102: Add AEC routing control
-Date: Thu, 16 Aug 2012 20:32:48 +0100
-Message-ID: <1345145568-29283-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm9712: Make microphone source selectable
+Date: Thu, 16 Aug 2012 22:36:04 +0100
+Message-ID: <1345152965-14773-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 135C1265FF8
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 21:11:45 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08DE7265371
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 23:06:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,95 +18,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
+To: Christop Fritz <chf.fritz@googlemail.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Currently the microphone input source is not selectable as while there is
+a DAPM widget it's not connected to anything so it won't be properly
+instantiated. Add something more correct for the input structure to get
+things going, even though it's not hooked into the rest of the routing
+map and so won't actually achieve anything except allowing the relevant
+register bits to be written.
+
+Reported-by: Christop Fritz <chf.fritz@googlemail.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5102.c |   34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ sound/soc/codecs/wm9712.c |   19 +++++++++++++++++--
+ 1 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index a5aea03..e2fb07e 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -274,6 +274,27 @@ ARIZONA_MIXER_ENUMS(ASRC1R, ARIZONA_ASRC1RMIX_INPUT_1_SOURCE);
- ARIZONA_MIXER_ENUMS(ASRC2L, ARIZONA_ASRC2LMIX_INPUT_1_SOURCE);
- ARIZONA_MIXER_ENUMS(ASRC2R, ARIZONA_ASRC2RMIX_INPUT_1_SOURCE);
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 00f4436..f35e3bd 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -270,7 +270,7 @@ SOC_DAPM_ENUM("Route", wm9712_enum[9]);
  
+ /* Mic select */
+ static const struct snd_kcontrol_new wm9712_mic_src_controls =
+-SOC_DAPM_ENUM("Route", wm9712_enum[7]);
++SOC_DAPM_ENUM("Mic Source Select", wm9712_enum[7]);
+ 
+ /* diff select */
+ static const struct snd_kcontrol_new wm9712_diff_sel_controls =
+@@ -289,7 +289,9 @@ SND_SOC_DAPM_MUX("Left Capture Select", SND_SOC_NOPM, 0, 0,
+ 	&wm9712_capture_selectl_controls),
+ SND_SOC_DAPM_MUX("Right Capture Select", SND_SOC_NOPM, 0, 0,
+ 	&wm9712_capture_selectr_controls),
+-SND_SOC_DAPM_MUX("Mic Select Source", SND_SOC_NOPM, 0, 0,
++SND_SOC_DAPM_MUX("Left Mic Select Source", SND_SOC_NOPM, 0, 0,
++	&wm9712_mic_src_controls),
++SND_SOC_DAPM_MUX("Right Mic Select Source", SND_SOC_NOPM, 0, 0,
+ 	&wm9712_mic_src_controls),
+ SND_SOC_DAPM_MUX("Differential Source", SND_SOC_NOPM, 0, 0,
+ 	&wm9712_diff_sel_controls),
+@@ -317,6 +319,7 @@ SND_SOC_DAPM_PGA("Out 3 PGA", AC97_INT_PAGING, 5, 1, NULL, 0),
+ SND_SOC_DAPM_PGA("Line PGA", AC97_INT_PAGING, 2, 1, NULL, 0),
+ SND_SOC_DAPM_PGA("Phone PGA", AC97_INT_PAGING, 1, 1, NULL, 0),
+ SND_SOC_DAPM_PGA("Mic PGA", AC97_INT_PAGING, 0, 1, NULL, 0),
++SND_SOC_DAPM_PGA("Differential Mic", SND_SOC_NOPM, 0, 0, NULL, 0),
+ SND_SOC_DAPM_MICBIAS("Mic Bias", AC97_INT_PAGING, 10, 1),
+ SND_SOC_DAPM_OUTPUT("MONOOUT"),
+ SND_SOC_DAPM_OUTPUT("HPOUTL"),
+@@ -377,6 +380,18 @@ static const struct snd_soc_dapm_route wm9712_audio_map[] = {
+ 	{"Mic PGA", NULL, "MIC1"},
+ 	{"Mic PGA", NULL, "MIC2"},
+ 
++	/* microphones */
++	{"Differential Mic", NULL, "MIC1"},
++	{"Differential Mic", NULL, "MIC2"},
++	{"Left Mic Select Source", "Mic 1", "MIC1"},
++	{"Left Mic Select Source", "Mic 2", "MIC2"},
++	{"Left Mic Select Source", "Stereo", "MIC1"},
++	{"Left Mic Select Source", "Differential", "Differential Mic"},
++	{"Right Mic Select Source", "Mic 1", "MIC1"},
++	{"Right Mic Select Source", "Mic 2", "MIC2"},
++	{"Right Mic Select Source", "Stereo", "MIC2"},
++	{"Right Mic Select Source", "Differential", "Differential Mic"},
 +
-+static const char *wm5102_aec_loopback_texts[] = {
-+	"HPOUT1L", "HPOUT1R", "HPOUT2L", "HPOUT2R", "EPOUT",
-+	"SPKOUTL", "SPKOUTR", "SPKDAT1L", "SPKDAT1R",
-+};
-+
-+static const unsigned int wm5102_aec_loopback_values[] = {
-+	0, 1, 2, 3, 4, 6, 7, 8, 9,
-+};
-+
-+static const struct soc_enum wm5102_aec_loopback =
-+	SOC_VALUE_ENUM_SINGLE(ARIZONA_DAC_AEC_CONTROL_1,
-+			      ARIZONA_AEC_LOOPBACK_SRC_SHIFT,
-+			      ARIZONA_AEC_LOOPBACK_SRC_MASK,
-+			      ARRAY_SIZE(wm5102_aec_loopback_texts),
-+			      wm5102_aec_loopback_texts,
-+			      wm5102_aec_loopback_values);
-+
-+static const struct snd_kcontrol_new wm5102_aec_loopback_mux =
-+	SOC_DAPM_VALUE_ENUM("AEC Loopback", wm5102_aec_loopback);
-+
- static const struct snd_soc_dapm_widget wm5102_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
- 		    0, NULL, 0),
-@@ -425,6 +446,9 @@ SND_SOC_DAPM_AIF_IN("AIF3RX1", NULL, 0,
- SND_SOC_DAPM_AIF_IN("AIF3RX2", NULL, 0,
- 		    ARIZONA_AIF3_RX_ENABLES, ARIZONA_AIF3RX2_ENA_SHIFT, 0),
- 
-+SND_SOC_DAPM_VALUE_MUX("AEC Loopback", ARIZONA_DAC_AEC_CONTROL_1,
-+		       ARIZONA_AEC_LOOPBACK_ENA, 0, &wm5102_aec_loopback_mux),
-+
- SND_SOC_DAPM_PGA_E("OUT1L", ARIZONA_OUTPUT_ENABLES_1,
- 		   ARIZONA_OUT1L_ENA_SHIFT, 0, NULL, 0, arizona_out_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
-@@ -520,6 +544,7 @@ SND_SOC_DAPM_OUTPUT("SPKDAT1R"),
- 	{ name, "Noise Generator", "Noise Generator" }, \
- 	{ name, "Tone Generator 1", "Tone Generator 1" }, \
- 	{ name, "Tone Generator 2", "Tone Generator 2" }, \
-+	{ name, "AEC", "AEC Loopback" }, \
- 	{ name, "IN1L", "IN1L PGA" }, \
- 	{ name, "IN1R", "IN1R PGA" }, \
- 	{ name, "IN2L", "IN2L PGA" }, \
-@@ -685,21 +710,30 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
- 	ARIZONA_MIXER_ROUTES("ASRC2L", "ASRC2L"),
- 	ARIZONA_MIXER_ROUTES("ASRC2R", "ASRC2R"),
- 
-+	{ "AEC Loopback", "HPOUT1L", "OUT1L" },
-+	{ "AEC Loopback", "HPOUT1R", "OUT1R" },
- 	{ "HPOUT1L", NULL, "OUT1L" },
- 	{ "HPOUT1R", NULL, "OUT1R" },
- 
-+	{ "AEC Loopback", "HPOUT2L", "OUT2L" },
-+	{ "AEC Loopback", "HPOUT2R", "OUT2R" },
- 	{ "HPOUT2L", NULL, "OUT2L" },
- 	{ "HPOUT2R", NULL, "OUT2R" },
- 
-+	{ "AEC Loopback", "EPOUT", "OUT3L" },
- 	{ "EPOUTN", NULL, "OUT3L" },
- 	{ "EPOUTP", NULL, "OUT3L" },
- 
-+	{ "AEC Loopback", "SPKOUTL", "OUT4L" },
- 	{ "SPKOUTLN", NULL, "OUT4L" },
- 	{ "SPKOUTLP", NULL, "OUT4L" },
- 
-+	{ "AEC Loopback", "SPKOUTR", "OUT4R" },
- 	{ "SPKOUTRN", NULL, "OUT4R" },
- 	{ "SPKOUTRP", NULL, "OUT4R" },
- 
-+	{ "AEC Loopback", "SPKDAT1L", "OUT5L" },
-+	{ "AEC Loopback", "SPKDAT1R", "OUT5R" },
- 	{ "SPKDAT1L", NULL, "OUT5L" },
- 	{ "SPKDAT1R", NULL, "OUT5R" },
- };
+ 	/* left capture selector */
+ 	{"Left Capture Select", "Mic", "MIC1"},
+ 	{"Left Capture Select", "Speaker Mixer", "Speaker Mixer"},
 -- 
-1.7.10.4
+1.7.9.1
