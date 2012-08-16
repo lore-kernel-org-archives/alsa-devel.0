@@ -1,47 +1,71 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] hda-emu: Add idt_set_gpio verb for stac92xx
-Date: Thu, 16 Aug 2012 14:59:42 +0200
-Message-ID: <502CEEBE.6010106@canonical.com>
-References: <1345119958-8259-1-git-send-email-david.henningsson@canonical.com>
- <s5ha9xvvx45.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id CCD60264EF8
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2012 14:29:55 +0200 (CEST)
-In-Reply-To: <s5ha9xvvx45.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/9] ARM/ASoC: OMAP McBSP device tree support
+Date: Thu, 16 Aug 2012 16:40:59 +0300
+Message-ID: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/16/2012 02:29 PM, Takashi Iwai wrote:
-> At Thu, 16 Aug 2012 14:25:58 +0200,
-> David Henningsson wrote:
->>
->> According to Takashi, this verb is valid and given by Sigmatel.
->>
->> Also merge two identical arrays and sort the table a little.
->>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->
-> Thanks, applied.
+Hello,
 
-And with that, the number of codecs failing is down from nine to three 
-today. Thanks for your helpfulness, as always :-)
+Changes since v2:
+- Replaced the IS_ERR_OR_NULL() with IS_ERR()
 
+Changes since v1:
+- ICLK workaround for the sidetone module has been kept for legacy mode.
+
+Intro mail from v2:
+
+in order to be able to add DT support for the McBSP driver which is used on all
+OMAP platforms (OMAP1/2/3/4/5) I needed to make some cleanups to the stack:
+- Removing callbacks used by the driver for
+ - clock re-parenting (code moved to sound driver)
+ - FSR/CLKR mux configuration (from now on it need to be done at board level)
+   This mux is board specific and depends on the wiring.
+- Replaced the cpu_is_omap* checks with future proof check.
+- The FIFO was not enabled on OMAP2430 SoC
+
+It has been tested on BeagleBoard (with legacy and DT boot).
+
+The series changes McBSP related files mostly. It would be great if the whole
+series could go via audio tree (if the patches are OK and it is fine by Tony).
+
+For DT booted kernel on OMAP3 proper ICLK woraround need to be implemented. At
+the moment I don't see this as a stopper since we can not properly boot OMAP3
+devices (especially rx51 which is using the ST). Other OMAP revisions does not
+have ST block so the missing workaround is not going to hurt them.
+I'm working on a solution which can replace the current workaround with a
+generic implementation to support DT and non DT booted kernels.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (9):
+  ARM/ASoC: omap-mcbsp: Move OMAP2+ clock parenting code to ASoC driver
+  ARM: OMAP: mcbsp: Enable FIFO use for OMAP2430
+  ARM: OMAP: board-am3517evm: Configure McBSP1 CLKR/FSR signal source
+  ASoC: am3517evm: Do not configure McBSP1 CLKR/FSR signal muxing
+  ARM/ASoC: omap-mcbsp: Remove CLKR/FSR mux configuration code
+  ASoC: omap-mcbsp: Remove unused defines
+  ASoC: omap-mcbsp: Remove cpu_is_omap* checks from the code
+  ARM: OMAP2+: McBSP: Do not create legacy devices when booting with DT
+    data
+  ASoC: omap-mcbsp: Add device tree bindings
+
+ .../devicetree/bindings/sound/omap-mcbsp.txt       |   45 +++++++
+ arch/arm/mach-omap2/board-am3517evm.c              |   13 ++
+ arch/arm/mach-omap2/mcbsp.c                        |  126 +------------------
+ arch/arm/plat-omap/include/plat/mcbsp.h            |    2 -
+ sound/soc/omap/am3517evm.c                         |   20 +---
+ sound/soc/omap/mcbsp.c                             |   54 ++++-----
+ sound/soc/omap/mcbsp.h                             |    3 -
+ sound/soc/omap/omap-mcbsp.c                        |  106 +++++++++++-----
+ sound/soc/omap/omap-mcbsp.h                        |   20 ---
+ 9 files changed, 162 insertions(+), 227 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-mcbsp.txt
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.7.8.6
+
