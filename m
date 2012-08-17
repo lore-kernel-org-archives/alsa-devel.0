@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/5] ASoC: Davinci: machine: Add device
-	tree binding
-Date: Fri, 17 Aug 2012 23:43:28 +0100
-Message-ID: <20120817224327.GK18871@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/5] ASoC: tlv320aic3x: Add device tree
+	bindings
+Date: Fri, 17 Aug 2012 23:45:13 +0100
+Message-ID: <20120817224512.GL18871@opensource.wolfsonmicro.com>
 References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
- <1344948125-5649-5-git-send-email-gururaja.hebbar@ti.com>
+ <1344948125-5649-6-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7948969900518533237=="
+Content-Type: multipart/mixed; boundary="===============8179298287243478362=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DEB2326619E
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 00:13:43 +0200 (CEST)
-In-Reply-To: <1344948125-5649-5-git-send-email-gururaja.hebbar@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B96E726619E
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 00:15:28 +0200 (CEST)
+In-Reply-To: <1344948125-5649-6-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,58 +26,57 @@ Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7948969900518533237==
+--===============8179298287243478362==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f5QefDQHtn8hx44O"
+	protocol="application/pgp-signature"; boundary="h3LYUU6HlUDSAOzy"
 Content-Disposition: inline
 
 
---f5QefDQHtn8hx44O
+--h3LYUU6HlUDSAOzy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 14, 2012 at 06:12:04PM +0530, Hebbar, Gururaja wrote:
+On Tue, Aug 14, 2012 at 06:12:05PM +0530, Hebbar, Gururaja wrote:
 
-> +- ti,codec-clock : The Codec Clock from the board
+> +- gpio-reset - <int> -  gpio pin number used for codec reset
 
-I think this is the clock rate?  Please specify it more specifically.
+This should be a standard DT GPIO reference by phandle like:
 
-> +"<CODEC DAI Name>",	"<true if evm_aic3x_init is required, else false>",
-> +"<evm ops required, evm_ops or evm_spdif_ops>";
+	gpio = <&gpio1 16 0>;
 
-Please be more specific as to what these actually do - consider the user
-who is reading the bindings with a view to implementing them for their
-board, or writing drivers for another OS.
+There's quite a few examples in tree.
 
---f5QefDQHtn8hx44O
+Otherwise this looks good.
+
+--h3LYUU6HlUDSAOzy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQLskEAAoJEFJkBDiqVpZ47WQP/0YoudpM3P9Ro0IjpwOsFeuv
-TmDpNh3qqzFZskXVWht4vUyirCBNv5o4VTCi05pO/NHJ4MB3fi+00pYGfPhDdqYP
-QcUfKvU0zQl8zk+nnsogwX9xBUyzHLvFgCG+yEB1PSml/Wi9EJucVBxHZQlH+G0Y
-sMJsvUWEWZbwfdoRUnqOMgIcfcuzioONH2uNLkWR9CGI15Zt9vPDarbtJmVf4J39
-c2cJbfIb5IwldXbrq4pMKL4EUtdddvdbDhQRN7yMysG5W6rvlLMuk6C8gi6AwBUQ
-zalM5gVNJ5XmPPybj4Uz52n8Xm3XMlqaf0x4hXNcuax/5GMXk7aOwmJ4AQLX5QWc
-jFo2d5mqbP15L0xHmTmRjo3ykHpI6WJGHNf08MvBBsbQTREHfqXZ2CzMKmC4vFPD
-kpd5EvhkwUqohNvsquHVE14w1qI3WQ0fZktkxVzPBB8ablsWbOaTMvehma7PBtVd
-oddCaD+Nmx67MW75gwIspyNHQGdTwPDmm2ZmcIAyK19DlILjAv9yKCJkMLGM9nUU
-Vk6Xj6SjhafAG2Y5yDrsbIprrY0vw3VOSubJNMyyUTUcWbjrEwLlYbzbTMtUP/sh
-rvFenZ4OU4TUTtxEiCoKccNc0AzjwMXXBqvSbt3DdivbxLLD1j8QO7FFo42yCgB6
-CPSeXJa9sMJzCUHEBzrF
-=n9Ux
+iQIcBAEBAgAGBQJQLsluAAoJEFJkBDiqVpZ4o8gP/2aaH1RQXSDY02h5ZQk98bIq
+TCbKNYacplJDvqm+LQgPdv90cGuzXExSVcqnSdczBZZUO26WmBaJ2VWN4++YxnUC
+KzpGVvk8pk6yktEwUmIXJJ+3wzGnc2G3/ti64LnGNQNy8PI0+96k7KAqeiS8RB9L
+i4TfC+YJd1+zno3vlpNb3WqstSNly4mktdrBGLmARqdTYlL1Q2jJR/NaCRxzkZ15
+f0ESewsnATYS+tRG/InT/wR9uiun+GSxS3VCrDIDM+b4EOS99fTC6oV7VNq1j1v8
+ze4SVgzlwR4h7W5SfEw19lvVArJcfsoWhHpSPAXgOHt33aC/9tFHMTgvCyOhg0Qq
+CuYdON6znN9U+eivuYq4I44q7gk8czjPmsynjGCCnLbv3vbIwI4kgTe1kSbMFh8u
+kNzps85sD8cwnyYlwcrM976D/ISMriCNsMjEnNp3is6aAxDthsNSx5I0l51OTJBm
+Xxy8XKyxmAT/v9u0n1+pwjyeLo5g5q6aFoMuvrQU3hwOBXDbQqgC7HgBaBmr28vZ
+zc8Bz0POJjcu9vqC1McuJ4AVvaES3Bynq3oYHocXlHacAJeUVo4gSFccKZDmP/zR
+Se2iohTfRIt37FZpieEC288njv4GVCuuOu55b4CtZ9FTFwT4Z2oJxV+A2TQrLLke
+HUI2GhBfDXABsg3HxgpT
+=d3hz
 -----END PGP SIGNATURE-----
 
---f5QefDQHtn8hx44O--
+--h3LYUU6HlUDSAOzy--
 
---===============7948969900518533237==
+--===============8179298287243478362==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7948969900518533237==--
+--===============8179298287243478362==--
