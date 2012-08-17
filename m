@@ -1,17 +1,16 @@
-From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: [alsa-plugins PATCH] pulse: Support 24-bit formats
-Date: Fri, 17 Aug 2012 15:41:07 -0500
-Message-ID: <20120817204107.GV2424@foghorn.codeweavers.com>
-Reply-To: alsa-devel <alsa-devel@alsa-project.org>,
- Andrew Eikum <aeikum@codeweavers.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2 v2] ASoC: bf5xx-ad1836: convert to use
+ snd_soc_register_card
+Date: Fri, 17 Aug 2012 23:26:45 +0100
+Message-ID: <20120817222645.GG18871@opensource.wolfsonmicro.com>
+References: <1344636369-12367-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="u5E4XgoOPWr4PD9E"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1716354497252359117=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C990265230
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 22:11:24 +0200 (CEST)
-Content-Disposition: inline
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 562EA266189
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 23:57:06 +0200 (CEST)
+In-Reply-To: <1344636369-12367-1-git-send-email-scott.jiang.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---u5E4XgoOPWr4PD9E
-Content-Type: text/plain; charset=utf-8; format=fixed
+--===============1716354497252359117==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NKoe5XOeduwbEQHU"
 Content-Disposition: inline
 
 
-These formats were introduced in PulseAudio 0.9.15. There aren't any
-new formats supported since then, so this also brings the PulseAudio
-plugin in sync with current PulseAudio.
+--NKoe5XOeduwbEQHU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Andrew Eikum <aeikum@codeweavers.com>
----
+On Fri, Aug 10, 2012 at 06:06:08PM -0400, Scott Jiang wrote:
+> Cpu dai and codec name are passed in through platform data.
 
-There was a problem once before with a patch I submitted. This is
-using format-patch and imap-send, so hopefully it goes through better
-than it did before :)
+Applied both, thanks.
 
- pulse/pcm_pulse.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+--NKoe5XOeduwbEQHU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
 
---u5E4XgoOPWr4PD9E
-Content-Type: text/x-patch; charset=us-ascii;
-	name="0001-pulse-Support-24-bit-formats.patch"
-Content-Disposition: inline; filename="0001-pulse-Support-24-bit-formats.patch"
-Content-Transfer-Encoding: quoted-printable
+iQIcBAEBAgAGBQJQLsT1AAoJEFJkBDiqVpZ4rIUP/0FzDRvHWtKpGSlwGIH/odPe
+/qjhT9tw3Y5zFu/HpPEacTZZVwgReIBSxf1x+Kn8EhVMqR2V4+pINjlwI1j29O+M
+zC8tH1Aj3Uae0MGN6LSLDFJHhZ17+UdiuqZVJHodlwRMXWmXub+Mi9KnhiNbEW4o
+dDBAVMpjER4N7Qd85Ru1psAlBAX8TuDP+AJ6QX8a44VHF0D0J8c+4CTH82I3TmIs
+joMahrKjFOUjSSqPYi+CQRP60Nx+WAnl1EBIX0HG9mFEdVWfMSQ+7wulYZqHPsnV
+EvmWbjZHhTdSxccYZIKOuAoWGjkS+G/Bwqi+7jCxv4wLXpRAY+HZgG7yFBVPoURg
+WiEl8eVwx5ACBxFCiDvXLKu45pFTwHKQcbNSRb/rhjoYLslt0ZGiYctISFTfAiQg
+/Mk21x7gKv68JBGcBcS10FVBk9v0yUkfC7oX4m5eKi5tNMXqGVOrcFibPgJQJLvF
+Sxtl1hnjALj6hVlxsLN53SPJIgCoK66tV6AmwcigE+FOTR1r/Mh0H7rSehSV1QHT
+AUfYUCrit08yJB3iy0pBteA3oD+jvm3j3IQsMNvtrb36ZUIeLIqJdT/lxbpQRUjq
+yUVGOojerRfjzc+hxx05muttDo+Vdd2Ygaum890lYwqTAwhFpHKyuU+/JrwY+x13
+dHGJsPPM4b1xtvNS6Swk
+=mrPw
+-----END PGP SIGNATURE-----
 
-diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
-index e0fbd4c..24fd4da 100644
---- a/pulse/pcm_pulse.c
-+++ b/pulse/pcm_pulse.c
-@@ -820,6 +820,26 @@ static int pulse_hw_params(snd_pcm_ioplug_t * io,
- 		pcm->ss.format =3D PA_SAMPLE_S32BE;
- 		break;
- #endif
-+#ifdef PA_SAMPLE_S24LE
-+	case SND_PCM_FORMAT_S24_3LE:
-+		pcm->ss.format =3D PA_SAMPLE_S24LE;
-+		break;
-+#endif
-+#ifdef PA_SAMPLE_S24BE
-+	case SND_PCM_FORMAT_S24_3BE:
-+		pcm->ss.format =3D PA_SAMPLE_S24BE;
-+		break;
-+#endif
-+#ifdef PA_SAMPLE_S24_32LE
-+	case SND_PCM_FORMAT_S24_LE:
-+		pcm->ss.format =3D PA_SAMPLE_S24_32LE;
-+		break;
-+#endif
-+#ifdef PA_SAMPLE_S24_32BE
-+	case SND_PCM_FORMAT_S24_BE:
-+		pcm->ss.format =3D PA_SAMPLE_S24_32BE;
-+		break;
-+#endif
- 	default:
- 		SNDERR("PulseAudio: Unsupported format %s\n",
- 			snd_pcm_format_name(io->format));
+--NKoe5XOeduwbEQHU--
 
---u5E4XgoOPWr4PD9E
+--===============1716354497252359117==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---u5E4XgoOPWr4PD9E--
+--===============1716354497252359117==--
