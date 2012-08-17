@@ -1,34 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 0/9] ARM/ASoC: OMAP McBSP device tree
-	support
-Date: Fri, 17 Aug 2012 11:18:39 +0100
-Message-ID: <20120817101838.GB30548@opensource.wolfsonmicro.com>
-References: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: 3.5-rc6 doesn't run powerpc SoundByLayout
+Date: Fri, 17 Aug 2012 14:17:07 +0200
+Message-ID: <m2zk5t4ssc.fsf@igel.home>
+References: <20120708082157.GA3955@samweis.home.lxtec.de>
+	<1345193894.2924.10.camel@thor.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 900762660DF
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 11:48:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <bounce-debian-powerpc=debian-powerpc=m.gmane.org@lists.debian.org>
+In-Reply-To: <1345193894.2924.10.camel@thor.local> ("Michel =?utf-8?Q?D?=
+ =?utf-8?Q?=C3=A4nzer=22's?= message
+	of "Fri, 17 Aug 2012 10:58:14 +0200")
+Resent-Message-ID: <I4KovlroK0F.A.GUB.lwjLQB@bendel>
+List-Post: <mailto:debian-powerpc@lists.debian.org>
+List-Help: <mailto:debian-powerpc-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=unsubscribe>
+To: Michel =?utf-8?Q?D=C3=A4nzer?= <daenzer@debian.org>
+Cc: Elimar Riesebieter <riesebie@lxtec.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org, debian-powerpc@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 16, 2012 at 04:40:59PM +0300, Peter Ujfalusi wrote:
+Michel D=C3=A4nzer <daenzer@debian.org> writes:
 
-> in order to be able to add DT support for the McBSP driver which is used on all
-> OMAP platforms (OMAP1/2/3/4/5) I needed to make some cleanups to the stack:
+> Commit 26b0d14106954ae46d2f4f7eec3481828a210f7d ('sound/aoa: Adapt to
+> new i2c probing scheme') seems to fix it for me (only tested with
+> loading the snd-aoa-codec-onyx module manually so far). Andreas, maybe
+> this commit should be submitted for the 3.5 stable tree?
 
-Tony, are you OK with these changes going via ASoC?
+You also need 3a3dd01.
+
+Andreas.
+
+--=20
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED=
+5
+"And now for something completely different."
+
+
+--=20
+To UNSUBSCRIBE, email to debian-powerpc-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian=
+.org
+Archive: http://lists.debian.org/m2zk5t4ssc.fsf@igel.home
