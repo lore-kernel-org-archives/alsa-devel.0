@@ -1,74 +1,135 @@
-From: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH 1/5] ARM: tegra: config: enable dmaengine based APB DMA
- driver
-Date: Fri, 17 Aug 2012 12:08:54 +0530
-Message-ID: <502DE6FE.8040200@nvidia.com>
-References: <1345126397-28864-1-git-send-email-ldewangan@nvidia.com> <1345126397-28864-2-git-send-email-ldewangan@nvidia.com> <502D33B6.7070103@wwwdotorg.org>
+From: Huacai Chen <chenhc@lemote.com>
+Subject: [PATCH V6 12/15] ALSA: HDA: Make hda sound card usable
+	for Loongson
+Date: Fri, 17 Aug 2012 16:43:32 +0800
+Message-ID: <1345193015-3024-13-git-send-email-chenhc@lemote.com>
+References: <1345193015-3024-1-git-send-email-chenhc@lemote.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <502D33B6.7070103-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org" <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org" <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, "linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org" <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org" <spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
+ [209.85.161.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97828265223
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 10:15:08 +0200 (CEST)
+Received: by ggni2 with SMTP id i2so3841561ggn.38
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 01:44:53 -0700 (PDT)
+In-Reply-To: <1345193015-3024-1-git-send-email-chenhc@lemote.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Zhangjin Wu <wuzhangjin@gmail.com>, Hua Yan <yanh@lemote.com>, Fuxin Zhang <zhangfx@lemote.com>, linux-kernel@vger.kernel.org, Hongliang Tao <taohl@lemote.com>, Jie Chen <chenj@lemote.com>, Huacai Chen <chenhc@lemote.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 16 August 2012 11:23 PM, Stephen Warren wrote:
-> On 08/16/2012 08:13 AM, Laxman Dewangan wrote:
->> Enable config for dmaengine based Tegra APB DMA driver and
->> disable the legacy APB DMA driver (SYSTEM_DMA).
-> Laxman, if I apply this series to next-20120816 (plus a few patches in
-> my local work branch plus the CPU hotplug patches from Joseph, although
-> I suspect none of that matters), then audio playback on Tegra20 is
-> broken; the pitch is far too high. Audio playback on Tegra30 works as
-> expected.
-I run the test again on ventana and did not see any issue.
-I play one song and saw similar behavior with/without this series.
+Lemote A1004(Laptop) and A1205(All-In-One) use Conexant's hda codec,
+this patch modify patch_conexant.c to add Lemote specific code.
 
-With this series:
---------------------
+Both A1004 and A1205 use the same pin configurations, but A1004 need
+to increase the default boost of internal mic.
 
-ubuntu@tegra-ubuntu:/home$ aplay "1-04 Hungry Like The Wolf.wav"
-Playing WAVE '1-04 Hungry Like The Wolf.wav' : Signed 16 bit Little 
-Endian, Rate
-  44100 Hz, Stereo
-underrun!!! (at least 5039.388 ms long)
-underrun!!! (at least 60.601 ms long)
-underrun!!! (at least 3027.668 ms long)
-underrun!!! (at least 2063.667 ms long)
-underrun!!! (at least 1062.503 ms long)
-underrun!!! (at least 5073.551 ms long)
-underrun!!! (at least 6.461 ms long)
-underrun!!! (at least 4075.519 ms long)
-underrun!!! (at least 78.731 ms long)
-underrun!!! (at least 4042.804 ms long)
-underrun!!! (at least 28.395 ms long)
-underrun!!! (at least 5076.706 ms long)
-underrun!!! (at least 6043.105 ms long)
-underrun!!! (at least 24.857 ms long)
-underrun!!! (at least 5023.783 ms long)
-ubuntu@tegra-ubuntu:/home$
+Signed-off-by: Jie Chen <chenj@lemote.com>
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Hongliang Tao <taohl@lemote.com>
+Signed-off-by: Hua Yan <yanh@lemote.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/pci/hda/patch_conexant.c |   44 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 44 insertions(+), 0 deletions(-)
 
-And on tot:
---------------
-ubuntu@tegra-ubuntu:/home$ aplay "1-04 Hungry Like The Wolf.wav"
-Playing WAVE '1-04 Hungry Like The Wolf.wav' : Signed 16 bit Little 
-Endian, Rate
-  44100 Hz, Stereo
-underrun!!! (at least 17098.259 ms long)
-underrun!!! (at least 5042.101 ms long)
-underrun!!! (at least 87.446 ms long)
-underrun!!! (at least 4084.481 ms long)
-underrun!!! (at least 4035.531 ms long)
-underrun!!! (at least 1026.132 ms long)
-underrun!!! (at least 3096.078 ms long)
-underrun!!! (at least 1007.028 ms long)
-underrun!!! (at least 1034.265 ms long)
-underrun!!! (at least 2092.453 ms long)
-underrun!!! (at least 1029.957 ms long)
-underrun!!! (at least 3076.209 ms long)
-underrun!!! (at least 52.042 ms long)
-underrun!!! (at least 1001.812 ms long)
-underrun!!! (at least 3083.294 ms long)
-ubuntu@tegra-ubuntu:/home$
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 5e22a8f..3cc265e 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -4408,7 +4408,10 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
+ enum {
+ 	CXT_PINCFG_LENOVO_X200,
+ 	CXT_PINCFG_LENOVO_TP410,
++	CXT_PINCFG_LEMOTE_A1004,
++	CXT_PINCFG_LEMOTE_A1205,
+ 	CXT_FIXUP_STEREO_DMIC,
++	CXT_FIXUP_INC_MIC_BOOST,
+ };
+ 
+ static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
+@@ -4418,6 +4421,19 @@ static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
+ 	spec->fixup_stereo_dmic = 1;
+ }
+ 
++static void cxt5066_increase_mic_boost(struct hda_codec *codec,
++				   const struct hda_fixup *fix, int action)
++{
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	snd_hda_override_amp_caps(codec, 0x17, HDA_OUTPUT,
++				  (0x3 << AC_AMPCAP_OFFSET_SHIFT) |
++				  (0x4 << AC_AMPCAP_NUM_STEPS_SHIFT) |
++				  (0x27 << AC_AMPCAP_STEP_SIZE_SHIFT) |
++				  (0 << AC_AMPCAP_MUTE_SHIFT));
++}
++
+ /* ThinkPad X200 & co with cxt5051 */
+ static const struct hda_pintbl cxt_pincfg_lenovo_x200[] = {
+ 	{ 0x16, 0x042140ff }, /* HP (seq# overridden) */
+@@ -4435,6 +4451,18 @@ static const struct hda_pintbl cxt_pincfg_lenovo_tp410[] = {
+ 	{}
+ };
+ 
++/* Lemote A1004/A1205 with cxt5066 */
++static const struct hda_pintbl cxt_pincfg_lemote[] = {
++	{ 0x1a, 0x90a10020 }, /* Internal mic */
++	{ 0x1b, 0x03a11020 }, /* External mic */
++	{ 0x1d, 0x400101f0 }, /* Not used */
++	{ 0x1e, 0x40a701f0 }, /* Not used */
++	{ 0x20, 0x404501f0 }, /* Not used */
++	{ 0x22, 0x404401f0 }, /* Not used */
++	{ 0x23, 0x40a701f0 }, /* Not used */
++	{}
++};
++
+ static const struct hda_fixup cxt_fixups[] = {
+ 	[CXT_PINCFG_LENOVO_X200] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -4444,10 +4472,24 @@ static const struct hda_fixup cxt_fixups[] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = cxt_pincfg_lenovo_tp410,
+ 	},
++	[CXT_PINCFG_LEMOTE_A1004] = {
++		.type = HDA_FIXUP_PINS,
++		.chained = true,
++		.chain_id = CXT_FIXUP_INC_MIC_BOOST,
++		.v.pins = cxt_pincfg_lemote,
++	},
++	[CXT_PINCFG_LEMOTE_A1205] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cxt_pincfg_lemote,
++	},
+ 	[CXT_FIXUP_STEREO_DMIC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cxt_fixup_stereo_dmic,
+ 	},
++	[CXT_FIXUP_INC_MIC_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cxt5066_increase_mic_boost,
++	},
+ };
+ 
+ static const struct snd_pci_quirk cxt5051_fixups[] = {
+@@ -4463,6 +4505,8 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x21cf, "Lenovo T520", CXT_PINCFG_LENOVO_TP410),
+ 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
++	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
++	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
+ 	{}
+ };
+ 
+-- 
+1.7.7.3
