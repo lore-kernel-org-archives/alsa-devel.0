@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoC: tlv320aic3x: Add device tree
-	bindings
-Date: Fri, 17 Aug 2012 23:45:13 +0100
-Message-ID: <20120817224512.GL18871@opensource.wolfsonmicro.com>
-References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
- <1344948125-5649-6-git-send-email-gururaja.hebbar@ti.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Lockups reading from i.MX51 SSI registers
+Date: Fri, 17 Aug 2012 20:35:49 -0300
+Message-ID: <CAOMZO5BgeW_z-zf3Auw6RCJg1o5L=DqWdVeF+0Xb_W=6hZJMnQ@mail.gmail.com>
+References: <20120810195005.GP24328@opensource.wolfsonmicro.com>
+ <20120810195638.GF1451@pengutronix.de>
+ <20120810201456.GL25520@pengutronix.de>
+ <20120810210647.GG1451@pengutronix.de>
+ <CAOMZO5DAs=jm-08tWdfdLG_nm=gdi-Q_RReiUKGM_RCgB82dwA@mail.gmail.com>
+ <20120817222738.GH18871@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8179298287243478362=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B96E726619E
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 00:15:28 +0200 (CEST)
-In-Reply-To: <1344948125-5649-6-git-send-email-gururaja.hebbar@ti.com>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22E6326618D
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 01:06:04 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so5694144obb.38
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 16:35:49 -0700 (PDT)
+In-Reply-To: <20120817222738.GH18871@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +28,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, peter.ujfalusi@ti.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Christoph Fritz <chf.fritz@googlemail.com>, Sascha Hauer <kernel@pengutronix.de>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Aug 17, 2012 at 7:27 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Aug 17, 2012 at 04:08:47PM -0300, Fabio Estevam wrote:
+>
+>> Also, for the playback to work you need to install the SDMA firmware.
+>
+> This is deadlocking during boot, I'm getting nowhere near trying
+> playback.
 
---===============8179298287243478362==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h3LYUU6HlUDSAOzy"
-Content-Disposition: inline
-
-
---h3LYUU6HlUDSAOzy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Aug 14, 2012 at 06:12:05PM +0530, Hebbar, Gururaja wrote:
-
-> +- gpio-reset - <int> -  gpio pin number used for codec reset
-
-This should be a standard DT GPIO reference by phandle like:
-
-	gpio = <&gpio1 16 0>;
-
-There's quite a few examples in tree.
-
-Otherwise this looks good.
-
---h3LYUU6HlUDSAOzy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQLsluAAoJEFJkBDiqVpZ4o8gP/2aaH1RQXSDY02h5ZQk98bIq
-TCbKNYacplJDvqm+LQgPdv90cGuzXExSVcqnSdczBZZUO26WmBaJ2VWN4++YxnUC
-KzpGVvk8pk6yktEwUmIXJJ+3wzGnc2G3/ti64LnGNQNy8PI0+96k7KAqeiS8RB9L
-i4TfC+YJd1+zno3vlpNb3WqstSNly4mktdrBGLmARqdTYlL1Q2jJR/NaCRxzkZ15
-f0ESewsnATYS+tRG/InT/wR9uiun+GSxS3VCrDIDM+b4EOS99fTC6oV7VNq1j1v8
-ze4SVgzlwR4h7W5SfEw19lvVArJcfsoWhHpSPAXgOHt33aC/9tFHMTgvCyOhg0Qq
-CuYdON6znN9U+eivuYq4I44q7gk8czjPmsynjGCCnLbv3vbIwI4kgTe1kSbMFh8u
-kNzps85sD8cwnyYlwcrM976D/ISMriCNsMjEnNp3is6aAxDthsNSx5I0l51OTJBm
-Xxy8XKyxmAT/v9u0n1+pwjyeLo5g5q6aFoMuvrQU3hwOBXDbQqgC7HgBaBmr28vZ
-zc8Bz0POJjcu9vqC1McuJ4AVvaES3Bynq3oYHocXlHacAJeUVo4gSFccKZDmP/zR
-Se2iohTfRIt37FZpieEC288njv4GVCuuOu55b4CtZ9FTFwT4Z2oJxV+A2TQrLLke
-HUI2GhBfDXABsg3HxgpT
-=d3hz
------END PGP SIGNATURE-----
-
---h3LYUU6HlUDSAOzy--
-
---===============8179298287243478362==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8179298287243478362==--
+Are you running a dt or non-dt kernel? In case of a dt kernel, can you
+share the dts file?
