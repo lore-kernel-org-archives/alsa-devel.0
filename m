@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Lockups reading from i.MX51 SSI registers
-Date: Fri, 17 Aug 2012 23:27:38 +0100
-Message-ID: <20120817222738.GH18871@opensource.wolfsonmicro.com>
-References: <20120810195005.GP24328@opensource.wolfsonmicro.com>
- <20120810195638.GF1451@pengutronix.de>
- <20120810201456.GL25520@pengutronix.de>
- <20120810210647.GG1451@pengutronix.de>
- <CAOMZO5DAs=jm-08tWdfdLG_nm=gdi-Q_RReiUKGM_RCgB82dwA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] ASoC: Davinci: pcm: Add device tree
+	bindings
+Date: Fri, 17 Aug 2012 23:31:24 +0100
+Message-ID: <20120817223122.GA21445@opensource.wolfsonmicro.com>
+References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
+ <1344948125-5649-4-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1911546348417369748=="
+Content-Type: multipart/mixed; boundary="===============3150895413801385594=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 015EF266189
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 23:57:54 +0200 (CEST)
-In-Reply-To: <CAOMZO5DAs=jm-08tWdfdLG_nm=gdi-Q_RReiUKGM_RCgB82dwA@mail.gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DBB5926618B
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 00:01:39 +0200 (CEST)
+In-Reply-To: <1344948125-5649-4-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Christoph Fritz <chf.fritz@googlemail.com>, Sascha Hauer <kernel@pengutronix.de>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, peter.ujfalusi@ti.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1911546348417369748==
+--===============3150895413801385594==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
+	protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
 Content-Disposition: inline
 
 
---tNQTSEo8WG/FKZ8E
+--bp/iNruPH9dso1Pn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 17, 2012 at 04:08:47PM -0300, Fabio Estevam wrote:
+On Tue, Aug 14, 2012 at 06:12:03PM +0530, Hebbar, Gururaja wrote:
+> Device tree support for Davinci/OMAP2+ pcm driver.
 
-> Also, for the playback to work you need to install the SDMA firmware.
+This looks like it's a device which maps a shared DMA controller in the
+SoC core into ASoC rather than actual hardware.  Such devices are
+usually instantiated automatically from the DAI rather than being
+represented in the device tree since they are a Linux internal thing
+really - the Tegra and Freescale drivers provide examples of how this
+sort of thing can be done.
 
-This is deadlocking during boot, I'm getting nowhere near trying
-playback.
-
---tNQTSEo8WG/FKZ8E
+--bp/iNruPH9dso1Pn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQLsVPAAoJEFJkBDiqVpZ4e/wP/2pRde/XNgap31fNouq3maJ5
-Q9qV/ZbMYFNzHtDFRunYajQrhsTaJq9plvo06tVbK+TbsC5QgQ+ozVFSR6KA5+bN
-JogucOFJ6PA1GZdLgxVgOnYzVniqGvJU01I7NyuEkEqoSE+x7ilm7avs4x4xk904
-tYsst0Am9CC04LizWGiGRCzj+hGBu8vYVM3LDZyVlD2Fo61bi8cZgb8RT5sl/jgB
-cvxVzUHnJ1/D639CAsAWSrpdJn5Fw7nRN9tqRiaVn55TXtSSFVcqhrNriiWDb5aZ
-WRQDcCfY+Z1xkK30psyqiGFCDC8RdIR1FKkTsGgbUSbMRSuUQeMoQQb32NVMZij9
-fEcVV9VFUqbaERNQQ0xyzN1e2tKwE3w67vW7g7VBbiJxYCW90gZXF9JdGmq1QAmO
-H3eusvNPjffPq7YHmmYSLL30LYA1JKM99OhF6mTvdFzhC9nZ9JwpANF4e7SluVuT
-JyV/3K+/lSZfR2JuLBuIJnryPT6bqFvalnh5MHO4Prj8FfBMAirRAiY2LL9JJo/1
-OylB2bQK/VvcH1PRwTwCV9W2lzgdFqaXofDaHvcx4gHuCbWeXSIwPXUjZPN4EQOE
-AOUPcWe6GxarJ3qy9ldC4Ee1BSsaBluKP+XAJlolwN35hrs/hnU6zxxSg+4662vG
-60BNLSHjF/vtnU04G5E4
-=r+yi
+iQIcBAEBAgAGBQJQLsYvAAoJEFJkBDiqVpZ4sS4QALMO1nb9g20kTiJ6ZjWQCGYX
+jYtzMvLM1OoNdNUwpzCZ4vi5vxbx+Td//Py59sKwKA3IXcHw+MSCyC+G7NYTle58
+Ot170pSO2xU068GEZWFigLEOw8f/SPzJkA/3sttfdF3Px/GuyL/uo7sKVPAtitGC
+X1jdiiCn2BcJu6UUoM7+T6tJm2Vy8aHF4e4bDbd0VX045coO/FFuviffLeGoewT5
+0gSaVnTEFKCiBNumiqwIL+LiuWT+7V/CV7exvnfB1oaBABBIt1roSOHZcO3M5KZS
+TSx4wazOLyyx6LjSqBK+Oz5DZf7CzF6dgpu4yznaMO8iDcGBG59wxlq5Q1XUVf7S
+dZxUDylUS18R+/hrzCLE7BdjaIlZrdL9jppukKY3ftL/lHsxKB4eVVgS5h7IChDo
+J9XLEyrveIhWeb8VjJPsszLNuSphXySZwO3o0vbmJ/dbgcBClN6ZSkygofCfL36V
+RrLKJZP0xm6C+aMBym9homd6M4k/GHx35FIPocsxd3MWe9y9uSliHjhdOhCLY/xP
+yGpSF2D834PIeo4bhv1nrbJGzaciaKcm4K+G8xFwR1y2bkdV1C2OyI5ZhJz5nL0K
+VkcuX94TItpuJQithe1raHbDG3ZlvrgYn5x9y5b4hslJUfHA35eWfCpBK6lMJ+z7
+U35Uqnx8LLs9hrpuf32Q
+=Ap4d
 -----END PGP SIGNATURE-----
 
---tNQTSEo8WG/FKZ8E--
+--bp/iNruPH9dso1Pn--
 
---===============1911546348417369748==
+--===============3150895413801385594==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1911546348417369748==--
+--===============3150895413801385594==--
