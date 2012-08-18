@@ -1,21 +1,25 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3 2/9] ARM: OMAP: mcbsp: Enable FIFO use
-	for OMAP2430
-Date: Fri, 17 Aug 2012 23:08:10 -0700
-Message-ID: <20120818060810.GH11011@atomide.com>
-References: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
- <1345124468-8876-3-git-send-email-peter.ujfalusi@ti.com>
- <20120817130723.GZ11011@atomide.com> <502E43BC.30708@bitmer.com>
- <502E4F2B.6060403@ti.com>
+From: Christoph Fritz <chf.fritz@googlemail.com>
+Subject: Re: Lockups reading from i.MX51 SSI registers
+Date: Sat, 18 Aug 2012 08:31:28 +0200
+Message-ID: <1345271488.3694.1.camel@lovely>
+References: <20120810195005.GP24328@opensource.wolfsonmicro.com>
+ <20120810195638.GF1451@pengutronix.de>
+ <20120810201456.GL25520@pengutronix.de>
+ <20120810210647.GG1451@pengutronix.de>
+ <CAOMZO5DAs=jm-08tWdfdLG_nm=gdi-Q_RReiUKGM_RCgB82dwA@mail.gmail.com>
+ <20120817222738.GH18871@opensource.wolfsonmicro.com>
+ <CAOMZO5BgeW_z-zf3Auw6RCJg1o5L=DqWdVeF+0Xb_W=6hZJMnQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-ewr.mailhop.org (mho-01-ewr.mailhop.org [204.13.248.71])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A6D72661CF
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 07:38:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <502E4F2B.6060403@ti.com>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33D23264FA9
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 08:01:46 +0200 (CEST)
+Received: by wibhq4 with SMTP id hq4so1843398wib.2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 23:31:32 -0700 (PDT)
+In-Reply-To: <CAOMZO5BgeW_z-zf3Auw6RCJg1o5L=DqWdVeF+0Xb_W=6hZJMnQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <kernel@pengutronix.de>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [120817 07:03]:
-> On 08/17/2012 04:14 PM, Jarkko Nikula wrote:
-> > On 08/17/2012 04:07 PM, Tony Lindgren wrote:
-> >> * Peter Ujfalusi <peter.ujfalusi@ti.com> [120816 06:41]:
-> >>> On OMAP2430 all McBSP ports have 128 word long buffer, enable the use of
-> >>> the FIFO for the audio stack.
-> >> Is this the case also for 2420? I thought some only had a FIFO at
-> >> one port?
-> >>
-> > IRCC (I don't have specs), nope. Only 2430 (as noted by Peter) and
-> > onwards have FIFO.
-> > 
-> > But that's true that FIFO sizes differ between the ports. E.g. only
-> > ports 2 and 3 have 1024+128 deep FIFOs in OMAP3.
-> > 
+On Fri, 2012-08-17 at 20:35 -0300, Fabio Estevam wrote:
+> On Fri, Aug 17, 2012 at 7:27 PM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+> > On Fri, Aug 17, 2012 at 04:08:47PM -0300, Fabio Estevam wrote:
+> >
+> >> Also, for the playback to work you need to install the SDMA firmware.
+> >
+> > This is deadlocking during boot, I'm getting nowhere near trying
+> > playback.
 > 
-> OMAP2420 McBSP does not have FIFO (the IP is closer to OMAP1 McBSP).
-> OMAP2430, OMAP4, OMAP5 has 128 word long FIFO on all McBSP ports.
-> On OMAP3: McBSP2 have 1024+256 (1280) word FIFO the rest of the ports have 128
-> long FIFO.
+> Are you running a dt or non-dt kernel? In case of a dt kernel, can you
+> share the dts file?
 
-Thanks, is this patch still correct so it does not try to enable FIFO
-for 2420?
-
-Regards,
-
-Tony
+I suppose Mark means an i.MX35 not an i.MX51.
