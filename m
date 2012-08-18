@@ -1,19 +1,17 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: How to define card specific pcm devices?
-Date: Sat, 18 Aug 2012 07:09:13 +0300
-Message-ID: <1345262953.4864.12.camel@laptop>
-References: <1344597903.4283.68.camel@IT-D-4QB9Z4J>
- <1345215040.2530.26.camel@IT-D-4QB9Z4J>
- <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
- <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
+From: ValdikSS <iam@valdikss.org.ru>
+Subject: Broken powersave in 3.5.2, codec is always active
+Date: Sat, 18 Aug 2012 12:44:29 +0700
+Message-ID: <op.wi718fk8rz4thc@valaptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 13CBA2661B4
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 05:39:31 +0200 (CEST)
-In-Reply-To: <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA90B2661CF
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 07:14:47 +0200 (CEST)
+Received: by lbao2 with SMTP id o2so2053352lba.38
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 22:44:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Tanu Kaskinen <tanu.kaskinen@digia.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyMDEyLTA4LTE4IGF0IDA5OjI2ICswODAwLCBSYXltb25kIFlhdSB3cm90ZToKPiAy
-MDEyLTgtMTcg5LiL5Y2IMTA6NTEg5pa8ICJUYW51IEthc2tpbmVuIiA8dGFudS5rYXNraW5lbkBk
-aWdpYS5jb20+IOWvq+mBk++8mgo+ID4KPiA+IFBpbmc/Cj4gPgo+ID4gSWYgY2FyZCBzcGVjaWZp
-YyBwY20gZGVmaW5pdGlvbnMgYXJlIG5vdCBwb3NzaWJsZSwgd291bGQgaXQgYmUKPiA+IGFjY2Vw
-dGFibGUgdG8gaGF2ZSBhIGdlbmVyaWMgImZyb250X2xlZnQ6Q0FSRCIgb3IgImZpcnN0X2NoYW5u
-ZWw6Q0FSRCIKPiA+IHBjbSwgd2hpY2ggd291bGQgdHJhbnNmb3JtICJmcm9udDpDQVJEIiBvciAi
-aHc6Q0FSRCIgaW50byBhIG1vbm8gZGV2aWNlPwo+IAo+IEFzIHB1bHNlYXVkaW8gc2VydmVyIHVz
-ZSBTTkRfUENNX05PX0FVVE9fQ0hBTk5FTCB3aGljaCBkaWFibGUgY2hhbm5lbAo+IGNvbnZlcnNp
-b24sIHRoaXMgbGVmdCBjaGFubmVsIGRldmljZSBvbmx5IHdvcmsgd2l0aCBvdGhlciBhbHNhIGFw
-cGxpY2F0aW9ucwo+IGV4Y2VwdCBwdWxzZWF1ZGlvIHdoZW4geW91ciBzb3VuZCBjYXJkIGRvZXMg
-bm90IHN1cHBvcnQgbW9uby4KClNvIGFyZSB5b3Ugc3VnZ2VzdGluZyB0aGF0IEFsc2EgZG9lc24n
-dCBuZWVkIGFueSBjaGFuZ2VzLCBiZWNhdXNlIGFsbApvdGhlciBhcHBsaWNhdGlvbnMgYWxsb3cg
-YXV0b21hdGljIGNoYW5uZWwgY29udmVyc2lvbiwgYW5kIHRoZXJlZm9yZQp0aGlzIGlzIGEgUHVs
-c2VBdWRpbyBzcGVjaWZpYyBwcm9ibGVtIGFuZCBzaG91bGQgYmUgZml4ZWQgaW4gUHVsc2VBdWRp
-bz8KCj4gCj4gaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL3B1bHNlYXVkaW8vcHVsc2VhdWRp
-by9jb21taXQvP2lkPWZmNGFmOTAyY2Y0YWMwN2M1ZjFkYTNiNmRhY2JiMzE5NWM3YzIyMmQKPiAK
-PiB0aGUgc29sdXRpb24gaXMgdG8gY2hhbmdlIHRoZSBtaXhpbmcgaW4gcHVsc2VhdWRpbyBieSB1
-c2luZyBsZWZ0IGNoYW5uZWwKPiBmb3IgdGhpcyBtaWMgYW5kIHRob3NlIHN0ZXJlbyBtaWMgd2l0
-aCBpbnZlcnRlZCBwaGFzZSAsIGFuZCBhdmVyYWdlIGZvcgo+IG1vbm8gcGxheWJhY2sgZGV2aWNl
-IC4gc3RlcmVvIG1pYyBhbmQgbGluZS1pbgoKU3VyZSB0aGlzIGNhbiBiZSBmaXhlZCBpbiBQdWxz
-ZUF1ZGlvIHdpdGggY2FyZCBzcGVjaWZpYyBjb25maWd1cmF0aW9uLApidXQgaWYgYXQgYWxsIHBv
-c3NpYmxlLCBJIHdhbnQgdG8gYXZvaWQgY2FyZCBzcGVjaWZpYyBjb25maWd1cmF0aW9uIGluClB1
-bHNlQXVkaW8uIEkgYmVsaWV2ZSBvbmUgb2YgdGhlIG1haW4gcG9pbnRzIG9mIFVDTSBpcyB0byBh
-dm9pZCBoYXJkd2FyZQpzcGVjaWZpYyBjb25maWd1cmF0aW9uIGluIGFwcGxpY2F0aW9ucyB1c2lu
-ZyBBbHNhLgoKVGhpcyBjb3VsZCBiZSBzb2x2ZWQgYWxzbyBieSBzdGF0aW5nIGluIHRoZSBVQ00g
-Y29uZmlndXJhdGlvbiB0aGF0IG9ubHkKdGhlIGxlZnQgY2hhbm5lbCBvZiB0aGUgc3RlcmVvIGRl
-dmljZSBjb250YWlucyB1c2VmdWwgZGF0YS4gVGhpcyB3b3VsZAphdm9pZCBoYXZpbmcgY2FyZCBz
-cGVjaWZpYyBjb25maWd1cmF0aW9uIGluIGFwcGxpY2F0aW9ucywgYnV0IGhhbmRsaW5nCnRoYXQg
-aW5mb3JtYXRpb24gYWRkcyBtb3JlIGNvbXBsZXhpdHkgaW4gYXBwbGljYXRpb25zLiBIYXZpbmcg
-YSBwcm9wZXIKbW9ubyBkZXZpY2UgaW4gQWxzYSB3b3VsZCBhdm9pZCBhbnkgY2hhbmdlcyBpbiBh
-cHBsaWNhdGlvbnMuCgo+IGhvdyBhYm91dCB0aGUgNCBjaGFubmVsIG1pYz8KCldoYXQgYWJvdXQg
-aXQ/IFRoZSBkaXNjdXNzaW9uIHN0b3BwZWQgd2hlbiBJIGFza2VkIHdoYXQgc2hvdWxkIGJlIHRo
-ZQpuYW1lIGZvciB0aGUgZGV2aWNlLiBJIGFza2VkIHdoZXRoZXIgIjRjaGFubmVsaW5wdXQiIHdv
-dWxkIGJlIGdvb2QsIGJ1dApnb3Qgbm8gYW5zd2Vycy4gQXQgUHVsc2VBdWRpbyBzaWRlIHdlIGZp
-Z3VyZWQgdGhhdCAiaHciIHdvcmtzIHdlbGwKZW5vdWdoIGluIHByYWN0aWNlLCBzbyB0aGVyZSB3
-YXMgbm90IG11Y2ggcHJlc3N1cmUgZm9yIG1lIHRvIGtlZXAgdGhlCmRpc2N1c3Npb24gYWxpdmUu
-CgotLSAKVGFudQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Hello!
+I have a Lenovo ThinkPad X220 laptop with a conexant codec and recently  
+(after kernel 3.5.2) it is active all the time after KDE login, as  
+powertop says. This couldn't be fixed by logging of from KDE or playing  
+some music in mplayer from console. The only kernel I tried in 3.5.x is  
+3.5.2, so I can't say is this bug reproducible in 3.5.0 or 3.5.1, but  
+everything is fine with 3.4.9. This never happens if you don't start KDE  
+after reboot, you can listen to some music in mplayer in console and  
+everything seems to be fine. lsof and fuser /dev/snd/* shows nothing.
+Thank you!
+
+$ cat /etc/modprobe.d/options.conf
+options snd-hda-intel power_save=1 power_save_controller=1
+
+$ lspci -nn | grep Audio
+00:1b.0 Audio device [0403]: Intel Corporation 6 Series/C200 Series  
+Chipset Family High Definition Audio Controller [8086:1c20] (rev 04)
+
+$ lsmod | grep snd
+snd_hda_codec_hdmi     23704  1
+snd_hda_codec_conexant    47158  1
+snd_hda_intel          25700  2
+snd_hda_codec          97400  3  
+snd_hda_codec_hdmi,snd_hda_codec_conexant,snd_hda_intel
+snd_hwdep               6300  1 snd_hda_codec
+snd_pcm                74926  3  
+snd_hda_codec_hdmi,snd_hda_codec,snd_hda_intel
+snd_page_alloc          7185  2 snd_pcm,snd_hda_intel
+snd_timer              18966  1 snd_pcm
+snd                    60021  12  
+snd_hwdep,snd_timer,snd_hda_codec_hdmi,snd_hda_codec_conexant,snd_pcm,snd_hda_codec,snd_hda_intel,thinkpad_acpi
+soundcore               5442  1 snd
