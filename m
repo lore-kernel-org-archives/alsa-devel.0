@@ -1,25 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Lockups reading from i.MX51 SSI registers
-Date: Sat, 18 Aug 2012 11:53:35 -0300
-Message-ID: <CAOMZO5BirGnUqmvprk-PKDfJ-PX9GYkLeULHRKETUsedbi2F2A@mail.gmail.com>
-References: <20120810195005.GP24328@opensource.wolfsonmicro.com>
- <20120810195638.GF1451@pengutronix.de>
- <20120810201456.GL25520@pengutronix.de>
- <20120810210647.GG1451@pengutronix.de>
- <CAOMZO5DAs=jm-08tWdfdLG_nm=gdi-Q_RReiUKGM_RCgB82dwA@mail.gmail.com>
- <20120817222738.GH18871@opensource.wolfsonmicro.com>
- <20120818074216.GG2232@pengutronix.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] oss/sb_audio: prevent divide by zero bug
+Date: Sat, 18 Aug 2012 18:55:15 +0300
+Message-ID: <20120818155515.GA22424@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 95253265CCD
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 16:23:50 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so6531719obb.38
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 07:53:35 -0700 (PDT)
-In-Reply-To: <20120818074216.GG2232@pengutronix.de>
+Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8F8A265CDC
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 17:25:41 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,18 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Christoph Fritz <chf.fritz@googlemail.com>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBdWcgMTgsIDIwMTIgYXQgNDo0MiBBTSwgVXdlIEtsZWluZS1Lw7ZuaWcKPHUua2xl
-aW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6Cgo+IFlvdSdyZSBvbiBpLk1YMzUsIHJp
-Z2h0LiBJIGhhZCB0byBhZGQKPgo+ICAgICAgICAgY2xrX3JlZ2lzdGVyX2Nsa2RldihjbGtbc3Np
-MV9nYXRlXSwgTlVMTCwgImlteC1zc2kuMCIpOwoKQWgsIG9rLiBUaGlzIGlzIHRoZSBzYW1lIHdl
-IGhhdmUgb24gYXJjaC9hcm0vbWFjaC1pbXgvY2xrLWlteDMxLmMgLAoKYW5kIG14MzEgYXVkaW8g
-cGxheWJhY2sgaXMgZnVuY3Rpb25hbCBpbiBuZXh0LCBzbyBpdCBsb29rcyBsaWtlIHRoaXMKd2ls
-bCBmaXggTWFyaydzIGlzc3VlIG9uIG14MzUuCgpVd2UsIHdvdWxkIHlvdSBsaWtlIHRvIHNlbmQg
-dGhpcyBwYXRjaCBmb3IgY2xrLWlteDM1LmMgPwoKUmVnYXJkcywKCkZhYmlvIEVzdGV2YW0KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Speed comes from get_user() in audio_ioctl().  We use it to set the "s"
+variable before clamping it to valid values so it could lead to a divide
+by zero bug.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/sound/oss/sb_audio.c b/sound/oss/sb_audio.c
+index 733b014..b2b3c01 100644
+--- a/sound/oss/sb_audio.c
++++ b/sound/oss/sb_audio.c
+@@ -575,13 +575,15 @@ static int jazz16_audio_set_speed(int dev, int speed)
+ 	if (speed > 0)
+ 	{
+ 		int tmp;
+-		int s = speed * devc->channels;
++		int s;
+ 
+ 		if (speed < 5000)
+ 			speed = 5000;
+ 		if (speed > 44100)
+ 			speed = 44100;
+ 
++		s = speed * devc->channels;
++
+ 		devc->tconst = (256 - ((1000000 + s / 2) / s)) & 0xff;
+ 
+ 		tmp = 256 - devc->tconst;
