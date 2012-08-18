@@ -1,24 +1,21 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Lockups reading from i.MX51 SSI registers
-Date: Fri, 17 Aug 2012 20:35:49 -0300
-Message-ID: <CAOMZO5BgeW_z-zf3Auw6RCJg1o5L=DqWdVeF+0Xb_W=6hZJMnQ@mail.gmail.com>
-References: <20120810195005.GP24328@opensource.wolfsonmicro.com>
- <20120810195638.GF1451@pengutronix.de>
- <20120810201456.GL25520@pengutronix.de>
- <20120810210647.GG1451@pengutronix.de>
- <CAOMZO5DAs=jm-08tWdfdLG_nm=gdi-Q_RReiUKGM_RCgB82dwA@mail.gmail.com>
- <20120817222738.GH18871@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: How to define card specific pcm devices?
+Date: Sat, 18 Aug 2012 09:26:29 +0800
+Message-ID: <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
+References: <1344597903.4283.68.camel@IT-D-4QB9Z4J>
+ <1345215040.2530.26.camel@IT-D-4QB9Z4J>
+ <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 22E6326618D
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 01:06:04 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so5694144obb.38
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 16:35:49 -0700 (PDT)
-In-Reply-To: <20120817222738.GH18871@opensource.wolfsonmicro.com>
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id C08502661A5
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 02:56:44 +0200 (CEST)
+Received: by qadb17 with SMTP id b17so2142834qad.17
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 18:26:29 -0700 (PDT)
+In-Reply-To: <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,18 +25,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Christoph Fritz <chf.fritz@googlemail.com>, Sascha Hauer <kernel@pengutronix.de>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Tanu Kaskinen <tanu.kaskinen@digia.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 17, 2012 at 7:27 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Aug 17, 2012 at 04:08:47PM -0300, Fabio Estevam wrote:
->
->> Also, for the playback to work you need to install the SDMA firmware.
->
-> This is deadlocking during boot, I'm getting nowhere near trying
-> playback.
-
-Are you running a dt or non-dt kernel? In case of a dt kernel, can you
-share the dts file?
+MjAxMi04LTE3IOS4i+WNiDEwOjUxIOaWvCAiVGFudSBLYXNraW5lbiIgPHRhbnUua2Fza2luZW5A
+ZGlnaWEuY29tPiDlr6vpgZPvvJoKPgo+IFBpbmc/Cj4KPiBJZiBjYXJkIHNwZWNpZmljIHBjbSBk
+ZWZpbml0aW9ucyBhcmUgbm90IHBvc3NpYmxlLCB3b3VsZCBpdCBiZQo+IGFjY2VwdGFibGUgdG8g
+aGF2ZSBhIGdlbmVyaWMgImZyb250X2xlZnQ6Q0FSRCIgb3IgImZpcnN0X2NoYW5uZWw6Q0FSRCIK
+PiBwY20sIHdoaWNoIHdvdWxkIHRyYW5zZm9ybSAiZnJvbnQ6Q0FSRCIgb3IgImh3OkNBUkQiIGlu
+dG8gYSBtb25vIGRldmljZT8KCkFzIHB1bHNlYXVkaW8gc2VydmVyIHVzZSBTTkRfUENNX05PX0FV
+VE9fQ0hBTk5FTCB3aGljaCBkaWFibGUgY2hhbm5lbApjb252ZXJzaW9uLCB0aGlzIGxlZnQgY2hh
+bm5lbCBkZXZpY2Ugb25seSB3b3JrIHdpdGggb3RoZXIgYWxzYSBhcHBsaWNhdGlvbnMKZXhjZXB0
+IHB1bHNlYXVkaW8gd2hlbiB5b3VyIHNvdW5kIGNhcmQgZG9lcyBub3Qgc3VwcG9ydCBtb25vLgoK
+aHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL3B1bHNlYXVkaW8vcHVsc2VhdWRpby9jb21taXQv
+P2lkPWZmNGFmOTAyY2Y0YWMwN2M1ZjFkYTNiNmRhY2JiMzE5NWM3YzIyMmQKCnRoZSBzb2x1dGlv
+biBpcyB0byBjaGFuZ2UgdGhlIG1peGluZyBpbiBwdWxzZWF1ZGlvIGJ5IHVzaW5nIGxlZnQgY2hh
+bm5lbApmb3IgdGhpcyBtaWMgYW5kIHRob3NlIHN0ZXJlbyBtaWMgd2l0aCBpbnZlcnRlZCBwaGFz
+ZSAsIGFuZCBhdmVyYWdlIGZvcgptb25vIHBsYXliYWNrIGRldmljZSAuIHN0ZXJlbyBtaWMgYW5k
+IGxpbmUtaW4KCmhvdyBhYm91dCB0aGUgNCBjaGFubmVsIG1pYz8KCj4KPiAtLSBUYW51Cj4KPgo+
+IE9uIEZyaSwgMjAxMi0wOC0xMCBhdCAxNDoyNSArMDMwMCwgVGFudSBLYXNraW5lbiB3cm90ZToK
+PiA+IEhpLAo+ID4KPiA+IEknbSB3cml0aW5nIFVDTSBjb25maWd1cmF0aW9uIGZvciBSWC01MSAo
+Tm9raWEgTjkwMCksIGFuZCBJIGhhdmUgYQo+ID4gcHJvYmxlbTogImh3OlJYNTEiIGNhbid0IGJl
+IG9wZW5lZCBpbiBtb25vIG1vZGUsIGJ1dCB0aGVyZSdzIG9ubHkgb25lCj4gPiBpbnRlZ3JhdGVk
+IG1vbm8gbWljcm9waG9uZSwgYW5kIGl0cyBhdWRpbyBpcyByb3V0ZWQgdG8gdGhlIGxlZnQgaW5w
+dXQKPiA+IGNoYW5uZWwuIEFwcGxpY2F0aW9ucyB3aWxsIGdldCBvbmx5IHNpbGVuY2UgaW4gdGhl
+IHJpZ2h0IGNoYW5uZWwgd2hlbgo+ID4gdGhleSB1c2UgImh3OlJYNTEiLgo+ID4KPiA+IFRoZSBi
+ZXN0IHNvbHV0aW9uIHRoYXQgSSBoYXZlIGNvbWUgdXAgaXMgdG8gZGVmaW5lIGEgcGNtIHRoYXQg
+Y29udmVydHMKPiA+ICJodzpSWDUxIiBpbnRvIGEgbW9ubyBkZXZpY2UuIFRoZSBwcm9ibGVtIGlz
+IHRoYXQgSSBkb24ndCBrbm93IGhvdwo+ID4gZXhhY3RseSB0byBkbyB0aGF0LiBJIGd1ZXNzIHRo
+ZSByb3V0ZSBwbHVnaW4gY2FuIGJlIHVzZWQgZm9yIHRoYXQ6Cj4gPgo+ID4gcGNtLnJ4NTFfbW9u
+b19mcm9tX2xlZnQgewo+ID4gICAgICAgICB0eXBlIHJvdXRlCj4gPiAgICAgICAgIHNsYXZlLnBj
+bSBodzpSWDUxCj4gPiAgICAgICAgIHNsYXZlLmNoYW5uZWxzIDIKPiA+ICAgICAgICAgdHRhYmxl
+LjAuMCAxCj4gPiB9Cj4gPgo+ID4gSSB0cmllZCBwdXR0aW5nIHRoYXQgZGVmaW5pdGlvbiBpbiAv
+dXNyL3NoYXJlL2Fsc2EvY2FyZHMvUlgtNTEuY29uZiAoYW5kCj4gPiBhbHNvIFJYNTEuY29uZiwg
+c2luY2UgaXQncyBub3QgZW50aXJlbHkgY2xlYXIgdG8gbWUgd2hlbiB0aGUgZGFzaCBzaG91bGQK
+PiA+IGJlIG9taXR0ZWQpLiBJIGhhdmUgdGhpcyBpbiB0aGUgVUNNIGNvbmZpZ3VyYXRpb246Cj4g
+Pgo+ID4gVmFsdWUgewo+ID4gICAgICAgICBDYXB0dXJlUENNICJyeDUxX21vbm9fZnJvbV9sZWZ0
+Igo+ID4gICAgICAgICBDYXB0dXJlQ2hhbm5lbHMgIjEiCj4gPiB9Cj4gPgo+ID4gVGhpcyBpcyBw
+cmludGVkIHRvIHRoZSBQdWxzZUF1ZGlvIGxvZzoKPiA+Cj4gPiAoYWxzYS1saWIpcGNtLmM6IFVu
+a25vd24gUENNIHJ4NTFfbW9ub19mcm9tX2xlZnQKPiA+Cj4gPiBTbyB0aGUgcng1MV9tb25vX2Zy
+b21fbGVmdCBkZWZpbml0aW9uIGlzIG5vdCBsb2FkZWQuIEknbSBub3QgdGVycmlibHkKPiA+IHN1
+cnByaXNlZDogSSBndWVzcyB0aGUgY2FyZCBjb25maWd1cmF0aW9uIGZpbGVzIGFyZSBsb2FkZWQg
+b25seSB3aGVuCj4gPiBuZWNlc3NhcnksIGFuZCB3aGVuIFB1bHNlQXVkaW8gdHJpZXMgdG8gb3Bl
+biAicng1MV9tb25vX2Zyb21fbGVmdCIsCj4gPiBhbHNhLWxpYiBjYW4ndCByZWFsbHkga25vdyB0
+aGF0IGl0J3Mgc29tZWhvdyByZWxhdGVkIHRvIHRoZSBSWC01MSBjYXJkLgo+ID4KPiA+IEhvdyBz
+aG91bGQgSSBzb2x2ZSB0aGlzPwo+ID4KPgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
