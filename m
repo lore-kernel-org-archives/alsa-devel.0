@@ -1,17 +1,21 @@
-From: ValdikSS <iam@valdikss.org.ru>
-Subject: Broken powersave in 3.5.2, codec is always active
-Date: Sat, 18 Aug 2012 12:44:29 +0700
-Message-ID: <op.wi718fk8rz4thc@valaptop>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v3 2/9] ARM: OMAP: mcbsp: Enable FIFO use
+	for OMAP2430
+Date: Fri, 17 Aug 2012 23:08:10 -0700
+Message-ID: <20120818060810.GH11011@atomide.com>
+References: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
+ <1345124468-8876-3-git-send-email-peter.ujfalusi@ti.com>
+ <20120817130723.GZ11011@atomide.com> <502E43BC.30708@bitmer.com>
+ <502E4F2B.6060403@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
- [209.85.217.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BA90B2661CF
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 07:14:47 +0200 (CEST)
-Received: by lbao2 with SMTP id o2so2053352lba.38
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2012 22:44:33 -0700 (PDT)
+Received: from mho-01-ewr.mailhop.org (mho-01-ewr.mailhop.org [204.13.248.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A6D72661CF
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 07:38:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <502E4F2B.6060403@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,38 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
-I have a Lenovo ThinkPad X220 laptop with a conexant codec and recently  
-(after kernel 3.5.2) it is active all the time after KDE login, as  
-powertop says. This couldn't be fixed by logging of from KDE or playing  
-some music in mplayer from console. The only kernel I tried in 3.5.x is  
-3.5.2, so I can't say is this bug reproducible in 3.5.0 or 3.5.1, but  
-everything is fine with 3.4.9. This never happens if you don't start KDE  
-after reboot, you can listen to some music in mplayer in console and  
-everything seems to be fine. lsof and fuser /dev/snd/* shows nothing.
-Thank you!
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [120817 07:03]:
+> On 08/17/2012 04:14 PM, Jarkko Nikula wrote:
+> > On 08/17/2012 04:07 PM, Tony Lindgren wrote:
+> >> * Peter Ujfalusi <peter.ujfalusi@ti.com> [120816 06:41]:
+> >>> On OMAP2430 all McBSP ports have 128 word long buffer, enable the use of
+> >>> the FIFO for the audio stack.
+> >> Is this the case also for 2420? I thought some only had a FIFO at
+> >> one port?
+> >>
+> > IRCC (I don't have specs), nope. Only 2430 (as noted by Peter) and
+> > onwards have FIFO.
+> > 
+> > But that's true that FIFO sizes differ between the ports. E.g. only
+> > ports 2 and 3 have 1024+128 deep FIFOs in OMAP3.
+> > 
+> 
+> OMAP2420 McBSP does not have FIFO (the IP is closer to OMAP1 McBSP).
+> OMAP2430, OMAP4, OMAP5 has 128 word long FIFO on all McBSP ports.
+> On OMAP3: McBSP2 have 1024+256 (1280) word FIFO the rest of the ports have 128
+> long FIFO.
 
-$ cat /etc/modprobe.d/options.conf
-options snd-hda-intel power_save=1 power_save_controller=1
+Thanks, is this patch still correct so it does not try to enable FIFO
+for 2420?
 
-$ lspci -nn | grep Audio
-00:1b.0 Audio device [0403]: Intel Corporation 6 Series/C200 Series  
-Chipset Family High Definition Audio Controller [8086:1c20] (rev 04)
+Regards,
 
-$ lsmod | grep snd
-snd_hda_codec_hdmi     23704  1
-snd_hda_codec_conexant    47158  1
-snd_hda_intel          25700  2
-snd_hda_codec          97400  3  
-snd_hda_codec_hdmi,snd_hda_codec_conexant,snd_hda_intel
-snd_hwdep               6300  1 snd_hda_codec
-snd_pcm                74926  3  
-snd_hda_codec_hdmi,snd_hda_codec,snd_hda_intel
-snd_page_alloc          7185  2 snd_pcm,snd_hda_intel
-snd_timer              18966  1 snd_pcm
-snd                    60021  12  
-snd_hwdep,snd_timer,snd_hda_codec_hdmi,snd_hda_codec_conexant,snd_pcm,snd_hda_codec,snd_hda_intel,thinkpad_acpi
-soundcore               5442  1 snd
+Tony
