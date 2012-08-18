@@ -1,52 +1,36 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] oss/sb_audio: prevent divide by zero bug
-Date: Sat, 18 Aug 2012 18:55:15 +0300
-Message-ID: <20120818155515.GA22424@elgon.mountain>
+From: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 2/9] ARM: OMAP: mcbsp: Enable FIFO use for OMAP2430
+Date: Sat, 18 Aug 2012 17:58:10 +0200
+Message-ID: <CAPo=G1w5N5GVra7TK=En9xnaFmNNP1Zb7g2tZSjg8CO8wewOwA@mail.gmail.com>
+References: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
+	<1345124468-8876-3-git-send-email-peter.ujfalusi@ti.com>
+	<20120817130723.GZ11011@atomide.com>
+	<502E43BC.30708@bitmer.com>
+	<502E4F2B.6060403@ti.com>
+	<20120818060810.GH11011@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
- by alsa0.perex.cz (Postfix) with ESMTP id A8F8A265CDC
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2012 17:25:41 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20120818060810.GH11011@atomide.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Speed comes from get_user() in audio_ioctl().  We use it to set the "s"
-variable before clamping it to valid values so it could lead to a divide
-by zero bug.
+Hi Tony,
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Sat, Aug 18, 2012 at 8:08 AM, Tony Lindgren <tony@atomide.com> wrote=
+:
+> Thanks, is this patch still correct so it does not try to enable FIFO
+> for 2420?
 
-diff --git a/sound/oss/sb_audio.c b/sound/oss/sb_audio.c
-index 733b014..b2b3c01 100644
---- a/sound/oss/sb_audio.c
-+++ b/sound/oss/sb_audio.c
-@@ -575,13 +575,15 @@ static int jazz16_audio_set_speed(int dev, int speed)
- 	if (speed > 0)
- 	{
- 		int tmp;
--		int s = speed * devc->channels;
-+		int s;
- 
- 		if (speed < 5000)
- 			speed = 5000;
- 		if (speed > 44100)
- 			speed = 44100;
- 
-+		s = speed * devc->channels;
-+
- 		devc->tconst = (256 - ((1000000 + s / 2) / s)) & 0xff;
- 
- 		tmp = 256 - devc->tconst;
+Yes it only enables the FIFO for 2430, 2420 is not affected.
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
