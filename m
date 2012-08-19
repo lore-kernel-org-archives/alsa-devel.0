@@ -1,33 +1,19 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 3/10] sound/atmel/abdac.c: fix error return code
-Date: Sun, 19 Aug 2012 09:02:58 +0200
-Message-ID: <1345359780-18647-8-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 4/9] sound/soc/omap/am3517evm.c: fix error return code
+Date: Sun, 19 Aug 2012 09:03:00 +0200
+Message-ID: <1345359780-18647-10-git-send-email-Julia.Lawall@lip6.fr>
 References: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail4-relais-sop.national.inria.fr
- (mail4-relais-sop.national.inria.fr [192.134.164.105])
- by alsa0.perex.cz (Postfix) with ESMTP id 10B89265CFF
- for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2012 08:33:19 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: kernel-janitors@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Initialize retval before returning from a failed call to ioremap.
+It was forgotten to initialize ret to the result of calling
+snd_soc_dai_set_sysclk, unlike at the other calls in the same function.
 
 A simplified version of the semantic match that finds this problem is as
 follows: (http://coccinelle.lip6.fr/)
@@ -53,18 +39,19 @@ ret@p1 = 0
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/atmel/abdac.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/omap/am3517evm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/atmel/abdac.c b/sound/atmel/abdac.c
-index 98554f4..277ebce 100644
---- a/sound/atmel/abdac.c
-+++ b/sound/atmel/abdac.c
-@@ -452,6 +452,7 @@ static int __devinit atmel_abdac_probe(struct platform_device *pdev)
- 	dac->regs = ioremap(regs->start, resource_size(regs));
- 	if (!dac->regs) {
- 		dev_dbg(&pdev->dev, "could not remap register memory\n");
-+		retval = -ENOMEM;
- 		goto out_free_card;
+diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
+index 009533a..df65f98 100644
+--- a/sound/soc/omap/am3517evm.c
++++ b/sound/soc/omap/am3517evm.c
+@@ -59,7 +59,7 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
  	}
  
+-	snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_FSR_SRC_FSX, 0,
++	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_FSR_SRC_FSX, 0,
+ 				SND_SOC_CLOCK_IN);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "can't set CPU system clock OMAP_MCBSP_FSR_SRC_FSX\n");
