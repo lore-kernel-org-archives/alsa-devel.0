@@ -1,8 +1,7 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 6/9] sound/pci/ctxfi/ctatc.c: fix error return
-	code
-Date: Sun, 19 Aug 2012 09:02:56 +0200
-Message-ID: <1345359780-18647-6-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 3/10] sound/atmel/abdac.c: fix error return code
+Date: Sun, 19 Aug 2012 09:02:58 +0200
+Message-ID: <1345359780-18647-8-git-send-email-Julia.Lawall@lip6.fr>
 References: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail4-relais-sop.national.inria.fr
  (mail4-relais-sop.national.inria.fr [192.134.164.105])
- by alsa0.perex.cz (Postfix) with ESMTP id CDF402652CD
- for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2012 08:33:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 10B89265CFF
+ for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2012 08:33:19 +0200 (CEST)
 In-Reply-To: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,8 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Initialize err before returning on failure, as done elsewhere in the
-function.
+Initialize retval before returning from a failed call to ioremap.
 
 A simplified version of the semantic match that finds this problem is as
 follows: (http://coccinelle.lip6.fr/)
@@ -55,22 +53,18 @@ ret@p1 = 0
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/pci/ctxfi/ctatc.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/atmel/abdac.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-index 58b235c..a2f997a 100644
---- a/sound/pci/ctxfi/ctatc.c
-+++ b/sound/pci/ctxfi/ctatc.c
-@@ -1725,8 +1725,10 @@ int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
- 	atc_connect_resources(atc);
+diff --git a/sound/atmel/abdac.c b/sound/atmel/abdac.c
+index 98554f4..277ebce 100644
+--- a/sound/atmel/abdac.c
++++ b/sound/atmel/abdac.c
+@@ -452,6 +452,7 @@ static int __devinit atmel_abdac_probe(struct platform_device *pdev)
+ 	dac->regs = ioremap(regs->start, resource_size(regs));
+ 	if (!dac->regs) {
+ 		dev_dbg(&pdev->dev, "could not remap register memory\n");
++		retval = -ENOMEM;
+ 		goto out_free_card;
+ 	}
  
- 	atc->timer = ct_timer_new(atc);
--	if (!atc->timer)
-+	if (!atc->timer) {
-+		err = -ENOMEM;
- 		goto error1;
-+	}
- 
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, atc, &ops);
- 	if (err < 0)
