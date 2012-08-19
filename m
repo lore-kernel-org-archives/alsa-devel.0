@@ -1,18 +1,34 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 9/9] sound/ppc/snd_ps3.c: fix error return code
-Date: Sun, 19 Aug 2012 09:02:59 +0200
-Message-ID: <1345359780-18647-9-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 6/9] sound/pci/ctxfi/ctatc.c: fix error return
+	code
+Date: Sun, 19 Aug 2012 09:02:56 +0200
+Message-ID: <1345359780-18647-6-git-send-email-Julia.Lawall@lip6.fr>
 References: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail4-relais-sop.national.inria.fr
+ (mail4-relais-sop.national.inria.fr [192.134.164.105])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDF402652CD
+ for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2012 08:33:18 +0200 (CEST)
 In-Reply-To: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geoff Levand <geoff@infradead.org>
-Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, cbe-oss-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Initialize ret before returning on failure, as done elsewhere in the
+Initialize err before returning on failure, as done elsewhere in the
 function.
 
 A simplified version of the semantic match that finds this problem is as
@@ -39,18 +55,22 @@ ret@p1 = 0
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/ppc/snd_ps3.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/ctxfi/ctatc.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
-index 1aa52ef..9b18b52 100644
---- a/sound/ppc/snd_ps3.c
-+++ b/sound/ppc/snd_ps3.c
-@@ -1040,6 +1040,7 @@ static int __devinit snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
- 				   GFP_KERNEL);
- 	if (!the_card.null_buffer_start_vaddr) {
- 		pr_info("%s: nullbuffer alloc failed\n", __func__);
-+		ret = -ENOMEM;
- 		goto clean_preallocate;
- 	}
- 	pr_debug("%s: null vaddr=%p dma=%#llx\n", __func__,
+diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+index 58b235c..a2f997a 100644
+--- a/sound/pci/ctxfi/ctatc.c
++++ b/sound/pci/ctxfi/ctatc.c
+@@ -1725,8 +1725,10 @@ int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+ 	atc_connect_resources(atc);
+ 
+ 	atc->timer = ct_timer_new(atc);
+-	if (!atc->timer)
++	if (!atc->timer) {
++		err = -ENOMEM;
+ 		goto error1;
++	}
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, atc, &ops);
+ 	if (err < 0)
