@@ -1,23 +1,22 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 1/1] ASoC: codecs: Enable AB8500 CODEC for
-	Device Tree
-Date: Mon, 20 Aug 2012 12:34:31 +0100
-Message-ID: <20120820113427.GN8450@gmail.com>
+Subject: Re: [PATCH 04/22] ASoC: Ux500: Move MSP pinctrl setup
+ into the MSP driver
+Date: Mon, 20 Aug 2012 12:59:25 +0100
+Message-ID: <20120820115914.GP8450@gmail.com>
 References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
- <1344527268-5964-9-git-send-email-lee.jones@linaro.org>
- <s5h628lu0q9.wl%tiwai@suse.de>
+ <1344527268-5964-5-git-send-email-lee.jones@linaro.org>
+ <CACRpkda_xOyu9BFGRK4xTsXOO9RCJu7BbU-kPGpttVkR6mDMZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id D43DE265E11
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 13:04:49 +0200 (CEST)
-Received: by eaa13 with SMTP id 13so1492137eaa.38
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 04:34:35 -0700 (PDT)
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5389264EAA
+ for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 13:59:27 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so1307133eek.38
+ for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 04:59:28 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <s5h628lu0q9.wl%tiwai@suse.de>
+In-Reply-To: <CACRpkda_xOyu9BFGRK4xTsXOO9RCJu7BbU-kPGpttVkR6mDMZg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,159 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linux-arm-kernel@lists.infradead.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Ola LILJA2 <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, Patrice CHOTARD <patrice.chotard@stericsson.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lee Jones <lee.jones@linaro.org>
-Date: Fri, 27 Jul 2012 08:50:05 +0100
-Subject: [PATCH 1/1] ASoC: codecs: Enable AB8500 CODEC for Device Tree
-
-We continue to allow the AB8500 CODEC to be registered via the AB8500
-Multi Functional Device API, only this time we extract its configuration
-from the Device Tree binary.
-
-CC: alsa-devel@alsa-project.org
-Acked-by: Ola Lilja <ola.o.lilja@stericsson.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- include/linux/mfd/abx500/ab8500-codec.h |    6 ++-
- sound/soc/codecs/ab8500-codec.c         |   81 +++++++++++++++++++++++++++++++
- 2 files changed, 85 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mfd/abx500/ab8500-codec.h b/include/linux/mfd/abx500/ab8500-codec.h
-index dc65292..d707941 100644
---- a/include/linux/mfd/abx500/ab8500-codec.h
-+++ b/include/linux/mfd/abx500/ab8500-codec.h
-@@ -23,7 +23,8 @@ enum amic_type {
- /* Mic-biases */
- enum amic_micbias {
- 	AMIC_MICBIAS_VAMIC1,
--	AMIC_MICBIAS_VAMIC2
-+	AMIC_MICBIAS_VAMIC2,
-+	AMIC_MICBIAS_UNKNOWN
- };
- 
- /* Bias-voltage */
-@@ -31,7 +32,8 @@ enum ear_cm_voltage {
- 	EAR_CMV_0_95V,
- 	EAR_CMV_1_10V,
- 	EAR_CMV_1_27V,
--	EAR_CMV_1_58V
-+	EAR_CMV_1_58V,
-+	EAR_CMV_UNKNOWN
- };
- 
- /* Analog microphone settings */
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 23b4018..99dffcf 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -34,6 +34,7 @@
- #include <linux/mfd/abx500/ab8500-sysctrl.h>
- #include <linux/mfd/abx500/ab8500-codec.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/of.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -2394,9 +2395,65 @@ struct snd_soc_dai_driver ab8500_codec_dai[] = {
- 	}
- };
- 
-+static void ab8500_codec_of_probe(struct device *dev, struct device_node *np,
-+				struct ab8500_codec_platform_data *codec)
-+{
-+	u32 value;
-+
-+	if (of_get_property(np, "stericsson,amic1-type-single-ended", NULL))
-+		codec->amics.mic1_type = AMIC_TYPE_SINGLE_ENDED;
-+	else
-+		codec->amics.mic1_type = AMIC_TYPE_DIFFERENTIAL;
-+
-+	if (of_get_property(np, "stericsson,amic2-type-single-ended", NULL))
-+		codec->amics.mic2_type = AMIC_TYPE_SINGLE_ENDED;
-+	else
-+		codec->amics.mic2_type = AMIC_TYPE_DIFFERENTIAL;
-+
-+	/* Has a non-standard Vamic been requested? */
-+	if (of_get_property(np, "stericsson,amic1a-bias-vamic2", NULL))
-+		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC2;
-+	else
-+		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC1;
-+
-+	if (of_get_property(np, "stericsson,amic1b-bias-vamic2", NULL))
-+		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC2;
-+	else
-+		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC1;
-+
-+	if (of_get_property(np, "stericsson,amic2-bias-vamic1", NULL))
-+		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC1;
-+	else
-+		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC2;
-+
-+	if (!of_property_read_u32(np, "stericsson,earpeice-cmv", &value)) {
-+		switch (value) {
-+		case 950 :
-+			codec->ear_cmv = EAR_CMV_0_95V;
-+			break;
-+		case 1100 :
-+			codec->ear_cmv = EAR_CMV_1_10V;
-+			break;
-+		case 1270 :
-+			codec->ear_cmv = EAR_CMV_1_27V;
-+			break;
-+		case 1580 :
-+			codec->ear_cmv = EAR_CMV_1_58V;
-+			break;
-+		default :
-+			codec->ear_cmv = EAR_CMV_UNKNOWN;
-+			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
-+		}
-+	} else {
-+		dev_warn(dev, "No earpiece voltage found in DT - using default\n");
-+		codec->ear_cmv = EAR_CMV_0_95V;
-+	}
-+}
-+
- static int ab8500_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct device *dev = codec->dev;
-+	struct device_node *np = dev->of_node;
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
- 	struct ab8500_platform_data *pdata;
- 	struct filter_control *fc;
-@@ -2407,6 +2464,30 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 	/* Setup AB8500 according to board-settings */
- 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
- 
-+	if (np) {
-+		if (!pdata)
-+			pdata = devm_kzalloc(dev,
-+					sizeof(struct ab8500_platform_data),
-+					GFP_KERNEL);
-+
-+		if (pdata && !pdata->codec)
-+			pdata->codec
-+				= devm_kzalloc(dev,
-+					sizeof(struct ab8500_codec_platform_data),
-+					GFP_KERNEL);
-+
-+		if (!(pdata && pdata->codec))
-+			return -ENOMEM;
-+
-+		ab8500_codec_of_probe(dev, np, pdata->codec);
-+
-+	} else {
-+		if (!(pdata && pdata->codec)) {
-+			dev_err(dev, "No codec platform data or DT found\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	/* Inform SoC Core that we have our own I/O arrangements. */
- 	codec->control_data = (void *)true;
- 
--- 
-1.7.9.5
+T24gVHVlLCBBdWcgMTQsIDIwMTIgYXQgMTA6NTE6MDJBTSArMDIwMCwgTGludXMgV2FsbGVpaiB3
+cm90ZToKPiBPbiBUaHUsIEF1ZyA5LCAyMDEyIGF0IDU6NDcgUE0sIExlZSBKb25lcyA8bGVlLmpv
+bmVzQGxpbmFyby5vcmc+IHdyb3RlOgo+IAo+ID4gSW4gdGhlIGluaXRpYWwgc3VibWlzc2lvbiBv
+ZiB0aGUgTVNQIGRyaXZlciBtc3AxIGFuZCBtc3AzJ3MgYXNzb2NpYXRlZAo+ID4gcGluY3RybCBt
+ZWNoYW5pc20gd2FzIHBhc3NlZCBiYWNrIHRvIHBsYXRmb3JtIGNvZGUgdXNpbmcgYSBwbGF0X2lu
+aXQoKQo+ID4gY2FsbC1iYWNrIHJvdXRpbmUsIGJ1dCBpdCBoYXMgbm8gcGxhY2UgaW4gcGxhdGZv
+cm0gY29kZS4gVGhlIE1TUCBkcml2ZXIKPiA+IHNob3VsZCBzZXQgdGhpcyB1cCBmb3IgdGhlIGFw
+cHJvcHJpYXRlIHBvcnRzLiBJbnN0ZWFkIHdlIHVzZSBhIHVzZV9waW5jdHJsCj4gPiBpZGVudGlm
+aWVyIHdoaWNoIGlzIHBhc3NlZCBmcm9tIHBsYXRmb3JtX2RhdGEvRGV2aWNlIFRyZWUgd2hpY2gg
+aW5kaWNhdGVzCj4gPiB3aGljaCBwb3J0cyBzaG91bGQgdXNlIHBpbmN0cmwuCj4gPgo+ID4gQ0M6
+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gU2lnbmVkLW9mZi1ieTogTGVlIEpvbmVz
+IDxsZWUuam9uZXNAbGluYXJvLm9yZz4KPiAKPiBUaGlzIGlzIHZlcnkgZ29vZCBiZWNhdXNlIGl0
+IHJpZHMgcGxhdGZvcm0gY29kZSBhbmQgbWFrZXMgdGhlIGRyaXZlcgo+IHNlbGYtY29udGFpbmVk
+IHdpdGhvdXQgc3RyYW5nZSBwbGF0Zm9ybSBkYXRhIGhvb2tzLgo+IAo+IE5vdyBkZXRhaWxzLi4u
+Cj4gCj4gPiArLyogTVNQMS8zIFR4L1J4IHVzYWdlIHByb3RlY3Rpb24gKi8KPiA+ICtzdGF0aWMg
+REVGSU5FX1NQSU5MT0NLKG1zcF9yeHR4X2xvY2spOwo+ID4gKwo+ID4gKy8qIFBpbiBtb2RlcyAq
+Lwo+ID4gK3N0cnVjdCBwaW5jdHJsICpwaW5jdHJsX3A7Cj4gPiArc3RydWN0IHBpbmN0cmxfc3Rh
+dGUgKnBpbmN0cmxfZGVmOwo+ID4gK3N0cnVjdCBwaW5jdHJsX3N0YXRlICpwaW5jdHJsX3NsZWVw
+Owo+ID4gKwo+ID4gKy8qIFJlZmVyZW5jZSBDb3VudCAqLwo+ID4gK2ludCBwaW5jdHJsX3J4dHhf
+cmVmOwo+IAo+IAo+IEJ1dCB3YWl0LiBUaGVzZSBhcmUganVzdCBsb2NhbCBzdGF0aWNzLiBTdXJl
+bHR5IHlvdSBjYW4gcHV0IHRoZXNlIGludG8KPiBzdHJ1Y3QgdXg1MDBfbXNwIGluc3RlYWQ/IEhl
+cmUgaXQgbG9va3MgbGlrZSB0aGVzZSB3aWxsIGJlIHVzZWQgZm9yCj4gYWxsIHBvcnRzLCBzbyBN
+U1AyIHdpbGwgZW5hYmxlIHRoZSBwaW5zIHJlcXVlc3RlZCBieSBNU1AxIGV0Ywo+IGNvbXBsZXRl
+bHkgYnJva2VuLiBTbyBwdXQgaXQgaW50byB0aGUgc3RydWN0IHV4NTAwX21zcCBzdGF0ZQo+IGNv
+bnRhaW5lciBmcm9tIHV4NTAwX21zcF9pMnMuaCB3aGVyZSBpdCBiZWxvbmdzLgo+IAo+IFJlZmVy
+IHRvIGRyaXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMgd2hlbiBpbiB0cm91YmxlLiBUaGlz
+Cj4gb25lIGlzIGEgZ29vZCBwaW5jdHJsIGV4YW1wbGUuCgpIb3cgZG8geW91IHNlZSB0aGUgTVNQ
+MSBhbmQgTVNQMyB1c2FnZSBwcm90ZWN0aW9uIHdvcmtpbmcgaWYgSSBoaWRlIGl0CmFsbCBhd2F5
+IGluIE1TUCBzcGVjaWZpYyBzdHJ1Y3RzPwoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1QtRXJpY3Nz
+b24gTGFuZGluZyBUZWFtIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUg
+Zm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
