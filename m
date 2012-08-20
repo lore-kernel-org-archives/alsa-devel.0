@@ -1,33 +1,71 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3 2/9] ARM: OMAP: mcbsp: Enable FIFO use for OMAP2430
-Date: Sun, 19 Aug 2012 23:57:41 -0700
-Message-ID: <20120820065740.GK11011@atomide.com>
-References: <1345124468-8876-1-git-send-email-peter.ujfalusi@ti.com>
- <1345124468-8876-3-git-send-email-peter.ujfalusi@ti.com>
- <20120817130723.GZ11011@atomide.com>
- <502E43BC.30708@bitmer.com>
- <502E4F2B.6060403@ti.com>
- <20120818060810.GH11011@atomide.com>
- <CAPo=G1w5N5GVra7TK=En9xnaFmNNP1Zb7g2tZSjg8CO8wewOwA@mail.gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 04/22] ASoC: Ux500: Move MSP pinctrl setup into the MSP
+ driver
+Date: Mon, 20 Aug 2012 09:09:46 +0100
+Message-ID: <20120820080945.GE8450@gmail.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-5-git-send-email-lee.jones@linaro.org>
+ <CACRpkda_xOyu9BFGRK4xTsXOO9RCJu7BbU-kPGpttVkR6mDMZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAPo=G1w5N5GVra7TK=En9xnaFmNNP1Zb7g2tZSjg8CO8wewOwA@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>
+In-Reply-To: <CACRpkda_xOyu9BFGRK4xTsXOO9RCJu7BbU-kPGpttVkR6mDMZg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com, Patrice CHOTARD <patrice.chotard@stericsson.com>, Ola LILJA2 <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Ujfalusi, Peter <peter.ujfalusi@ti.com> [120818 08:58]:
-> Hi Tony,
-> 
-> On Sat, Aug 18, 2012 at 8:08 AM, Tony Lindgren <tony@atomide.com> wrote:
-> > Thanks, is this patch still correct so it does not try to enable FIFO
-> > for 2420?
-> 
-> Yes it only enables the FIFO for 2430, 2420 is not affected.
+On Tue, Aug 14, 2012 at 10:51:02AM +0200, Linus Walleij wrote:
+> On Thu, Aug 9, 2012 at 5:47 PM, Lee Jones <lee.jones@linaro.org> wrot=
+e:
+>=20
+> > In the initial submission of the MSP driver msp1 and msp3's associa=
+ted
+> > pinctrl mechanism was passed back to platform code using a plat_ini=
+t()
+> > call-back routine, but it has no place in platform code. The MSP dr=
+iver
+> > should set this up for the appropriate ports. Instead we use a use_=
+pinctrl
+> > identifier which is passed from platform_data/Device Tree which ind=
+icates
+> > which ports should use pinctrl.
+> >
+> > CC: alsa-devel@alsa-project.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>=20
+> This is very good because it rids platform code and makes the driver
+> self-contained without strange platform data hooks.
+>=20
+> Now details...
+>=20
+> > +/* MSP1/3 Tx/Rx usage protection */
+> > +static DEFINE_SPINLOCK(msp_rxtx_lock);
+> > +
+> > +/* Pin modes */
+> > +struct pinctrl *pinctrl_p;
+> > +struct pinctrl_state *pinctrl_def;
+> > +struct pinctrl_state *pinctrl_sleep;
+> > +
+> > +/* Reference Count */
+> > +int pinctrl_rxtx_ref;
+>=20
+>=20
+> But wait. These are just local statics. Surelty you can put these int=
+o
+> struct ux500_msp instead? Here it looks like these will be used for
+> all ports, so MSP2 will enable the pins requested by MSP1 etc
+> completely broken. So put it into the struct ux500_msp state
+> container from ux500_msp_i2s.h where it belongs.
 
-OK thanks for the clarification.
+This was intentional, as in the previous implementation only MSP1 and
+MSP3 (which share pins) were enabled for pinctrl. I will move them into
+struct ux500_msp instead though, no problem
 
-Tony
+--=20
+Lee Jones
+Linaro ST-Ericsson Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
