@@ -1,22 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH] ALSA: hda - add support for
-	runtime	power management
-Date: Mon, 20 Aug 2012 09:35:58 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F818DAA3@SHSMSX101.ccr.corp.intel.com>
-References: <1345195814-2287-1-git-send-email-mengdong.lin@intel.com>
- <s5hsjblvo9s.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F818B4E4@SHSMSX101.ccr.corp.intel.com>
- <s5hd32psbqb.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F818C27C@SHSMSX101.ccr.corp.intel.com>
+From: James Warden <warjamy@yahoo.com>
+Subject: Can module snd-aloop (virtual looback device) be made
+	clock slave of a real audio device ?
+Date: Mon, 20 Aug 2012 02:51:55 -0700 (PDT)
+Message-ID: <1345456315.34107.YahooMailNeo@web39304.mail.mud.yahoo.com>
+Reply-To: James Warden <warjamy@yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B05E265DB0
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 11:06:15 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F818C27C@SHSMSX101.ccr.corp.intel.com>
-Content-Language: en-US
+Received: from nm10.bullet.mail.ac4.yahoo.com (nm10.bullet.mail.ac4.yahoo.com
+ [98.139.52.207]) by alsa0.perex.cz (Postfix) with SMTP id 85888265DB0
+ for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 11:22:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hello alsa-devel's,
 
-> > - The IRQ reassignment is required for runtime PM?
-> 
-> I'm not sure if the IRQ reassignment can be removed and I'll double check
-> this.
+A while back, I had written a rather hackish method to hook up the ALSA virtual loopback device to jack (jackaudio.org) via Jack clients alsa_in / alsa_out so that non jack-aware applications that can however use ALSA devices "directly" (via alsa-lib) can have their audio stream redirected to jack (see my rather lengthy prose at http://alsa.opensrc.org/Jack_and_Loopback_device_as_Alsa-to-Jack_bridge).
 
-The IRQ reassignment is removed. And the HD-A interrupt handler will ignore IRQ when runtime suspended or during suspending or resuming.
-The patch is updated with title [PATCH v2] ALSA: hda - add runtime PM support. Please review.
+There are a few advantages in this method (depends on your use-cases of course). But it could be improved (or so I think) by removing the following drawbacks:
 
-Thanks
-Mengdong
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+The alsa_in/out jack clients are resampling the audio stream to synchronize with the device that jack is using. The resampling, done by libsamplerate, takes some CPU power. Since many users are using my recipe on laptops, this is not always welcome. 
+
+Because snd-aloop is a virtual device, couldn't it be made a clock slave of the h/w device that jack is operating on ? This would in principle remove the need for resampling. I could imagine that the module could be passed an option at loading time (e.g. modprobe snd-aloop clock-master=<real h/w device index> or something like that)
+
+
+Since I have no clue as to the kernel code required to implement / extend snd-aloop, I would like some opinions about this.
+
+
+Thanks for any hints.
+
+J.
