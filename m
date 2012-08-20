@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/10] sound/soc/fsl/imx-sgtl5000.c: fix
-	error return code
-Date: Mon, 20 Aug 2012 20:44:56 +0100
-Message-ID: <20120820194455.GN26991@opensource.wolfsonmicro.com>
-References: <1345359780-18647-1-git-send-email-Julia.Lawall@lip6.fr>
- <1345359780-18647-2-git-send-email-Julia.Lawall@lip6.fr>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-als100: fix suspend/resume
+Date: Mon, 20 Aug 2012 21:50:13 +0200
+Message-ID: <201208202150.13593.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4787781645984091158=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 35D2C265E7A
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 21:44:57 +0200 (CEST)
-In-Reply-To: <1345359780-18647-2-git-send-email-Julia.Lawall@lip6.fr>
+Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26C02265E78
+ for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 21:50:40 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Massimo Piccioni <dafastidio@libero.it>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+snd_card_als100_probe() does not set pcm field in struct snd_sb.
+As a result, PCM is not suspended and applications don't know that they need
+to resume the playback.
 
---===============4787781645984091158==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5FetH82qe0Z6y/zI"
-Content-Disposition: inline
+Tested with Labway A381-F20 card (ALS120).
 
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
---5FetH82qe0Z6y/zI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Aug 19, 2012 at 09:02:52AM +0200, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
->=20
-> Initialize ret on the second call to imx_audmux_v2_configure_port so that
-> the subsequent test checks that result and not the previous one.
-
-Applied all ASoC patches, thanks.
-
---5FetH82qe0Z6y/zI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQMpOxAAoJEFJkBDiqVpZ4rF8P/0Zg10jkPs3h1QeygboiX62P
-NbaGfV/tvrUfqE6J/JP+TAXbKAdRKlh+AYISMGhZsCXqD0c5RINrmOEsM3grxI92
-WsM6H8Ca114MFTWEfdQ72JqEjwiXt5Y5iA6i7v54E07DgpWWiGKnZo1UWWdUPGt+
-r4/iz/fhutz+wRH1CA54x3a/+0PdvKQzJQO6R+rFLTHVi2yq/konH1AsI5Vo9DeV
-jI3iCIHc9mLAHQvmnF45lNQLNj/r0XIIPc7tLwweFQnCL8ZJUlNBYj+qJDyPlaC5
-fp071IBepzp0qSQz8vA9CtGCktzXoFzj1sIST4/3++chKe9UdD3ifnw2ANr9mJqm
-+ZWiGCIrsDVL8knupX5Ax4JLMIT7LP6eIHuq0nM8ComR5njGS2bmazA1TupKcslK
-tMnyUXWVYUvRr6RilV87YneN5WIfZpSjMhrYFh5akVh9d0220bFZQ2ZwD0gFT/Ht
-HdLccyqk/UKqg/JrgOd5YKug+Lwb19oFWImcIcQv5dwgsInJ/q112KkyJGlQ+2vF
-/tfA8spkr/L6no432HzOeqjQvPktskzZi5Ubmhh1ilg+i7au8E6YJHsL8jbcDOQc
-0XDdscAnUHjxAIw31kv3OpsPvMaY7KGWOq6NJSxGUA4+IqQtIh1SOE0oKTWoHUVT
-/5jz8POclpcRymOeKlpl
-=yLGW
------END PGP SIGNATURE-----
-
---5FetH82qe0Z6y/zI--
-
---===============4787781645984091158==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+--- a/sound/isa/als100.c
++++ b/sound/isa/als100.c
+@@ -233,7 +233,7 @@ static int __devinit snd_card_als100_probe(int dev,
+ 			irq[dev], dma8[dev], dma16[dev]);
+ 	}
+ 
+-	if ((error = snd_sb16dsp_pcm(chip, 0, NULL)) < 0) {
++	if ((error = snd_sb16dsp_pcm(chip, 0, &chip->pcm)) < 0) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
 
 
---===============4787781645984091158==--
+
+
+-- 
+Ondrej Zary
