@@ -1,19 +1,23 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [RFC] ASoC: snd_soc_jack for HDMI audio: does it
-	make sense?
-Date: Tue, 21 Aug 2012 09:01:07 +0300
-Message-ID: <1345528867.15491.12.camel@lappyti>
-References: <5032E8A5.8070108@ti.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC PATCH] ALSA: hda - add support for runtime
+	power management
+Date: Tue, 21 Aug 2012 06:35:06 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F819177F@SHSMSX101.ccr.corp.intel.com>
+References: <1345195814-2287-1-git-send-email-mengdong.lin@intel.com>
+ <s5hsjblvo9s.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F818B4E4@SHSMSX101.ccr.corp.intel.com>
+ <s5hd32psbqb.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F818C27C@SHSMSX101.ccr.corp.intel.com>
+ <s5hlihaq68y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2690218304647117694=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog132.obsmtp.com (na3sys009aog132.obsmtp.com
- [74.125.149.250])
- by alsa0.perex.cz (Postfix) with ESMTP id 057D0260311
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 08:01:12 +0200 (CEST)
-Received: by lbbgg13 with SMTP id gg13so1148735lbb.27
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2012 23:01:10 -0700 (PDT)
-In-Reply-To: <5032E8A5.8070108@ti.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEA45260311
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 08:35:43 +0200 (CEST)
+In-Reply-To: <s5hlihaq68y.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,100 +27,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricardo Neri <ricardo.neri@ti.com>, Rob Clark <rob@ti.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "Brown,
- Mark" <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Guiriec,
- Sebastien" <s-guiriec@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2690218304647117694==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-Szot05M4txkX9DqslzbM"
-
-
---=-Szot05M4txkX9DqslzbM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2012-08-20 at 20:47 -0500, Ricardo Neri wrote:
-> Hello!
->=20
-> I have been working on prototypes for the ASoC OMAP HDMI audio driver to=
-=20
-> propagate events from the HDMI output (e.g., display getting=20
-> enabled/disabled/suspended). This for the users of the driver to react=
-=20
-> to such events. For instance, if the display is disabled or disconected,=
-=20
-> audio could be stopped, rerouted or whatever other decision the user=20
-> makes. This is needed because, if, for instance, the  HDMI IP goes off,=
-=20
-> audio will stall and the audio users will only see a "playback write=20
-> error (DMA or IRQ trouble?)"
->=20
-> In my prototypes I have used snd_soc_jack for this purpose and I have=20
-> some questions:
->=20
-> *I see snd_soc_jack is used mostly for headsets and microphones with=20
-> actual external mechanical connections. Strictly, in my case I propagate=
-=20
-> events originated by the OMAP display driver (changes in the power=20
-> state), and not from external events. Some of these events are generated=
-=20
-> from an actual HDMI cable connection/disconnection, though.
->=20
-> *Maybe the event should be propagated by omapdss/omapdrm/drm and the=20
-> entity in charge of the audio policy should listen those events instead.
->=20
-> *I do see SND_JACK_VIDEOOUT and SND_JACK_AVOUT types so maybe it is=20
-> feasible for an audio driver to report events from an AV output.
->=20
-> I was wondering about how much sense does it make to you guys use a=20
-> snd_soc_jack in this case?
-
-How does DRM handle audio? I made a quick grep, but I see the drm
-drivers only enabling the audio in the HW, nothing else.
-
-If there's a common generic way to handle this, we should obviously use
-that. But if we need to choose between doing something custom or doing
-it in omapdrm driver, I think we should go for drm the only solution and
-forget about audio with omapfb.
-
- Tomi
+> > > - Are snd_power_change_state() calls needed for runtime PM?
+> > I think this is needed. It's because HW is actually in D3 when it's runtime
+> suspended and need a delay for transition back to D0. And there are
+> operations that need HW in D0, such as snd_pcm_prepare().
+> 
+> Well, first off, PCM prepare will be never reached during runtime PM
+> suspend.
+> 
+> Secondly, you seem to misunderstand the concept of
+> snd_power_change_state().  It's for blocking the whole operations until the
+> resume finished.  In the case of runtime PM, the resume itself is triggered
+> by the operation.  Thus if you call
+> snd_power_change_state(D3) in the runtime suspend, it'd deadlock, since
+> the wake-up operation itself is blocked by that.
 
 
---=-Szot05M4txkX9DqslzbM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Hi Takashi,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+You're right. snd_power_change_state() calls should be removed before runtime suspend/resume.
+I've not met deadlock before just because I used aplay so PCM open triggers resume at first without waiting the sound card back to D0.
 
-iQIcBAABAgAGBQJQMyQjAAoJEPo9qoy8lh71hwIP/iONBQLhPP9iXI7WEYU6BNUD
-MGJoTFNDPZAUXtuZOssNXLRGFs/ISwZxPGXPLGixuh7N8Iod7kHntajS3JlFU9V4
-5lR6kUePjabWqpLfE3inmNLfDDeOcCgoGDZBOtbPeUDZICC+ajJwy6SIFsSlGKeI
-mMZbGTeuyamiaaKG56lAFHM9TwMRHrEeoSwSoDcqLg15UjQfl1GISAayzTM9dLor
-YcBVrSeG+jqBYaJL3Su/u2gDMX0zdDUfqOYk5TzU7+O2MolCgzYWxUCdHq4t8cDO
-Q1CdrZkNnJ5cfOtmpptf/QBLsaSqTGldpyAe0SgEK01Jrnr4QUDBzMdDUQf/Eezq
-d4bg1bAYaHbvS/0DGoR74DkvtUoE8Cz0igWpyEGgyu581ADZtDLucEo8Kwl5DZqq
-q9AkPt2LJZXfYFo9yUfZQ3Vta0b/OS6W7Tfh9UHRot51h+S2dHG1f4xjxEbgBfZ7
-kLgmrUxpTXX9OmvXwdeNSYjAwOBJl4Q7D2cLmgmGSVj8FfmNu9RY4Lvnj9A5YBOG
-DoatF1AsIW8xjsL2JiZ/xwOQo7tslqedrVDIvBPL16yf9K2eEoV2Rt66AjqVsIKW
-wNP+yk0aQEp7OxKpMB1bY85u1X5hgBg+x5Dd7fV2KPLlAQkgrBjxIVoYQ57yU9r4
-16icE0kjj+6gUa1yI97h
-=K9TE
------END PGP SIGNATURE-----
+Please if ignore my patch v2 because snd_power_change_state() has not been removed.  Sorry, I missed your mail yesterday.
 
---=-Szot05M4txkX9DqslzbM--
-
-
---===============2690218304647117694==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2690218304647117694==--
+Thanks
+Mengdong
