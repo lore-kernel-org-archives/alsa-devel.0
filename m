@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [RFC] Channel mapping API
-Date: Tue, 21 Aug 2012 13:37:58 +0200
-Message-ID: <50337316.4080208@ladisch.de>
-References: <s5hr4r0359e.wl%tiwai@suse.de>
+Date: Tue, 21 Aug 2012 13:44:15 +0200
+Message-ID: <5033748F.40509@ladisch.de>
+References: <s5hr4r0359e.wl%tiwai@suse.de> <50337005.7090404@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id B16A3265334
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 13:37:58 +0200 (CEST)
-In-Reply-To: <s5hr4r0359e.wl%tiwai@suse.de>
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id C7D03265352
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 13:44:15 +0200 (CEST)
+In-Reply-To: <50337005.7090404@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,38 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> this is a progress report of my longstanding TODO, the channel map API
-> implementation.  I'm going to cover this at Plumbers audio uconf, so
-> we can discuss details there, too.
+David Henningsson wrote:
+> 5) I'm not sure I'm getting the _VAR and _PAIRED types, even though
+> I read the documentation. Is this for the query only?
 
-I won't be there, so ...
+AFAIU this types appear only in the TLV, which is read only.  The TLV
+documents what channel configurations are possible, while the current
+configuration is read/changed through the control value, which is
+a plain array of integers, one for each channel, without headers.
 
-> The channel mapping API provides a method for user-space to query, get
-> and set the channel map of a PCM stream.  It's required for assigning
-> channels properly for multi-channel streams.
-
-This doesn't handle devices with simply numbered outputs (such as many
-ICE1712-based devices), or cases where one PCM channel can be routed to
-multiple outputs.  However, those devices typically have their own mixer
-applets, and generic applications aren't interested in configuring them.
-
-> snd_pcm_get_chmap() returns the currently assigned channel map for the
-> given PCM stream.  If the PCM is before prepared, it fills UNKNOWN.
-
-So channel maps are reset when a device is reopened?
-
-> * WRITE OPERATION
->
-> This operation is allowed only at PCM PREPARED state.  When called in
-> other states, it shall return an error.
-
-This sounds like an hda-intel HDMI restriction; other chips allow
-rerouting at any time.  (And the route plugin could allow that, too.)
+So _VAR implies that the control's value can be set to any permutation
+of the channels in the TLV.
 
 
 Regards,
