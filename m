@@ -1,90 +1,54 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: omap-mcbsp: Device tree binding documentation update
-Date: Tue, 21 Aug 2012 17:33:56 +0300
-Message-ID: <1345559636-23370-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>
+Subject: [PATCH 0/3] ASoC: omap-mcbsp: Sidetone related changes
+Date: Tue, 21 Aug 2012 17:42:00 +0300
+Message-ID: <1345560123-23959-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
+ [74.125.149.76])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A970265FE9
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 16:42:16 +0200 (CEST)
+Received: by eekb57 with SMTP id b57so1917188eek.34
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 07:42:16 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
-
-To reflect the final devicetree node structure of McBSPs.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
 
 Hello,
 
-the initial OMAP McBSP DT structure was not able to describe the IP (and it's
-versions) correctly.
-The main issue was the sidetone block of McBSP2/3 on OMAP3.
-With this change in the DT description the OS can get the needed information
-about the IP.
+When we boot with DT blob the sidetone is not supported at the moment. Prepare
+the McBSP code for the time when we are going to be able to support ST with DT
+booted kernel.
+Meanwhile do not block the audio card if the st_data is missing from the port,
+but print a warning about it. This will allow us to debug the DT booted kernels
+with audio.
 
-The sidetone is still not supported when the Linux kernel is booted with DT
-since we still depend on hwmod to fill the resources.
-
-This patch depend on the McBSP DT support series going via audio tree.
+Mark: This series as such does not depend on the McBSP DT support, but it can be
+attached to that branch.
 
 Regards,
 Peter
+---
+Peter Ujfalusi (3):
+  ASoC: omap-mcbsp: Check mcbsp->id instead of cpu_dai->id when adding
+    ST controls
+  ASoC: omap-mcbsp: Only print warning if the st_data is missing for
+    the port
+  ASoC: omap-mcbsp: Use macro to create the McBSP2/3 ST controls
 
- .../devicetree/bindings/sound/omap-mcbsp.txt       |   28 +++++++------------
- 1 files changed, 10 insertions(+), 18 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |   47 ++++++++++++++++++------------------------
+ 1 files changed, 20 insertions(+), 27 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/omap-mcbsp.txt b/Documentation/devicetree/bindings/sound/omap-mcbsp.txt
-index 447cb13..17cce44 100644
---- a/Documentation/devicetree/bindings/sound/omap-mcbsp.txt
-+++ b/Documentation/devicetree/bindings/sound/omap-mcbsp.txt
-@@ -8,38 +8,30 @@ Required properties:
- - reg: Register location and size, for OMAP4+ as an array:
-        <MPU access base address, size>,
-        <L3 interconnect address, size>;
-+- reg-names: Array of strings associated with the address space
- - interrupts: Interrupt numbers for the McBSP port, as an array in case the
- 	      McBSP IP have more interrupt lines:
- 	<OCP compliant irq>,
- 	<TX irq>,
- 	<RX irq>;
-+- interrupt-names: Array of strings associated with the interrupt numbers
- - interrupt-parent: The parent interrupt controller
- - ti,buffer-size: Size of the FIFO on the port (OMAP2430 and newer SoC)
- - ti,hwmods: Name of the hwmod associated to the McBSP port
- 
--Sidetone support for OMAP3 McBSP2 and 3 ports:
--- sidetone { }: Within this section the following parameters are required:
--- reg: Register location and size for the ST block
--- interrupts: The interrupt number for the ST block
--- interrupt-parent: The parent interrupt controller for the ST block
--
- Example:
- 
- mcbsp2: mcbsp@49022000 {
- 	compatible = "ti,omap3-mcbsp";
--	#address-cells = <1>;
--	#size-cells = <1>;
--	reg = <0x49022000 0xff>;
--	interrupts = <0 17 0x4>, /* OCP compliant interrup */
--		     <0 62 0x4>, /* TX interrup */
--		     <0 63 0x4>; /* RX interrup */
-+	reg = <0x49022000 0xff>,
-+	      <0x49028000 0xff>;
-+	reg-names = "mpu", "sidetone";
-+	interrupts = <0 17 0x4>, /* OCP compliant interrupt */
-+		     <0 62 0x4>, /* TX interrupt */
-+		     <0 63 0x4>, /* RX interrupt */
-+		     <0 4 0x4>;  /* Sidetone */
-+	interrupt-names = "common", "tx", "rx", "sidetone";
- 	interrupt-parent = <&intc>;
- 	ti,buffer-size = <1280>;
- 	ti,hwmods = "mcbsp2";
--
--	sidetone {
--		reg = <0x49028000 0xff>;
--		interrupts = <0 4 0x4>;
--		interrupt-parent = <&intc>;
--	};
- };
 -- 
 1.7.8.6
-
