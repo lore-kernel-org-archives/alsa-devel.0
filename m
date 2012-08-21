@@ -1,17 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [RFC] Channel mapping API
-Date: Tue, 21 Aug 2012 16:00:37 +0200
-Message-ID: <50339485.30500@canonical.com>
+Date: Tue, 21 Aug 2012 15:06:48 +0100
+Message-ID: <20120821140648.GC21557@sirena.org.uk>
 References: <s5hr4r0359e.wl%tiwai@suse.de> <50337316.4080208@ladisch.de>
+ <50339485.30500@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 35F20265F5A
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 16:00:38 +0200 (CEST)
-In-Reply-To: <50337316.4080208@ladisch.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72CA7265F8E
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 16:06:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <50339485.30500@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,45 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/21/2012 01:37 PM, Clemens Ladisch wrote:
-> Takashi Iwai wrote:
->> this is a progress report of my longstanding TODO, the channel map API
->> implementation.  I'm going to cover this at Plumbers audio uconf, so
->> we can discuss details there, too.
->
-> I won't be there, so ...
->
->> The channel mapping API provides a method for user-space to query, get
->> and set the channel map of a PCM stream.  It's required for assigning
->> channels properly for multi-channel streams.
->
-> This doesn't handle devices with simply numbered outputs (such as many
-> ICE1712-based devices), or cases where one PCM channel can be routed to
-> multiple outputs.  However, those devices typically have their own mixer
-> applets, and generic applications aren't interested in configuring them.
+On Tue, Aug 21, 2012 at 04:00:37PM +0200, David Henningsson wrote:
+> On 08/21/2012 01:37 PM, Clemens Ladisch wrote:
 
-Good point! It would be nice if we had better support for devices that 
-simply number their outputs, including standard mixer names for those 
-devices, that would be good.
+> >This doesn't handle devices with simply numbered outputs (such as many
+> >ICE1712-based devices), or cases where one PCM channel can be routed to
+> >multiple outputs.  However, those devices typically have their own mixer
+> >applets, and generic applications aren't interested in configuring them.
 
-One of the long-standing bugs in PulseAudio is better support for such 
-hardware, so if we had better possibilities to detect and use these 
-outputs and inputs, it could be worth the effort.
+> As for routing more than one channel in the map from the same PCM,
+> that seems a bit more complex. Maybe one could do a bitmap of
+> channels instead of just one channel (with say, 32 room channel
+> positions and 32 just numbered positions, that would be 64 bits).
+> But how common is that anyway?
 
-As for routing more than one channel in the map from the same PCM, that 
-seems a bit more complex. Maybe one could do a bitmap of channels 
-instead of just one channel (with say, 32 room channel positions and 32 
-just numbered positions, that would be 64 bits). But how common is that 
-anyway?
-
-Would it make sense to present a bitmap as the query result anyway? Then 
-we could skip the _VAR and _PAIRED types, right?
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+It's very common on the embedded side to use pure numbered stuff (or at
+least to assign semantics dynamically at runtime which I suspect boils
+down to the same thing here).
