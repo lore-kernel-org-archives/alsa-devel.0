@@ -1,19 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: SAIF configuration on imx28
-Date: Tue, 21 Aug 2012 08:56:05 -0300
-Message-ID: <CAOMZO5C9ezzU7S0M-AN0f8gk7SBWs3WNbA6cG2S+7BF8j+dVxA@mail.gmail.com>
-References: <CAACwSTK-fzSy+HG+u5H0aNU_wfSa7gvAsH2fVMdczssnYtpJXw@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] ASoC: snd_soc_jack for HDMI audio: does it
+ make	sense?
+Date: Tue, 21 Aug 2012 13:05:12 +0100
+Message-ID: <20120821120511.GB7995@opensource.wolfsonmicro.com>
+References: <5032E8A5.8070108@ti.com>
+ <s5hlih895kt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2747477949912194840=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 97005265B9C
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 13:56:05 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so10477585obb.38
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 04:56:06 -0700 (PDT)
-In-Reply-To: <CAACwSTK-fzSy+HG+u5H0aNU_wfSa7gvAsH2fVMdczssnYtpJXw@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90E9B265B5D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 14:05:12 +0200 (CEST)
+In-Reply-To: <s5hlih895kt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +21,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: George Stefan <stefan.george87@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <b29396@freescale.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Ricardo Neri <ricardo.neri@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Valkeinen, Tomi" <tomi.valkeinen@ti.com>, "Guiriec,
+ Sebastien" <s-guiriec@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi George,
 
-On Tue, Aug 21, 2012 at 8:24 AM, George Stefan
-<stefan.george87@gmail.com> wrote:
+--===============2747477949912194840==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
+Content-Disposition: inline
 
-> My problem is, although i am receiving dma irqs when i record ( arecord -f
-> S16_LE -r 8000 -c 1 <file>.wav), when i play the resulting file its just
-> silence.
->
-> [ 5295.890000] dump @ mxs_saif_trigger
-> [ 5295.890000] scr 101  , 107
-> [ 5295.890000] stat 80010041    , 80010071
-> [ 5295.890000] data 0   , ffffffff
-> [ 5295.890000] version 1010000  , 1010000
-> This  is a dump for arecord!
->
-> Do you have any ideeas?
 
-Can you please to record as:
-arecord -D hw:0,1 -d 5 -f S16_LE -r 44100 -c 2 1.wav
+--tsOsTdHNUZQcU9Ye
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-,as suggested here: http://www.spinics.net/lists/arm-kernel/msg186015.html
+On Tue, Aug 21, 2012 at 07:28:34AM +0200, Takashi Iwai wrote:
+> Ricardo Neri wrote:
 
-Regards,
+> > I was wondering about how much sense does it make to you guys use a=20
+> > snd_soc_jack in this case?
 
-Fabio Estevam
+> HD-audio already uses the generic jack event for the HDMI/DP
+> connection change notification as well, so I think it would make sense
+> in general.
+
+The whole problem here is that we don't *have* a generic jack interface.
+We've got:
+
+ - sound/core/jack.c which was written to be a generic API and is used
+   by everything that does jack support currently.
+
+ - sound/core/ctljack.c which was added later and provides separate
+   in-kernel and userspace APIs and is currently only used by HDA.
+
+ - extcon which does have a good reason to be a separate API since that
+   it's not audio specific (and is likely to be picked up by Android as
+   the code was originally taken from there); it's currently not
+   supported by the frameworks in ALSA.  I'd suggest Pulse should be using
+   it too.
+
+This is a complete shambles for both driver authors and userspace, the
+ABI varies randomly with drivers and in theory driver authors have to
+implement everything three times which is just nuts.
+
+What I'd like to see happening is that we merge ctljack into jack (since
+only HDA is going to be affected by that change it seems like the right
+direction to make the merge) and also add extcon support, I have looked
+at the extcon support.
+
+Short term for drivers used on embedded systems I'd have to recommend
+extcon rather than anything ALSA-specific.
+
+--tsOsTdHNUZQcU9Ye
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQM3cQAAoJEFJkBDiqVpZ4RUkP/3MYbWl0tz76hqaxIRdiEqjC
+VPvFOjIq2MCw+848IhHj3Gyu7U4Nb20eOZdrxXeGJXO5D79sR9bOlo9NSIIiN+Tj
+1xc6CqeVuZnUIEHXU+WvGQvemxUFVY+2n8qj1Bs8Rr1IDZoXZkha/qDsZQPqFtRT
+dMupl14B65RCtxi6C1GZ9iFXD3hVkNvfPxVskFDVP/M9SQeZZPGP5HFL9mCr5VSA
+tDKPePqHQF/dXGrE5yMzV0PxA9ex2tHq8AFTI5xk+vDx7eP67hHkNcA2HBudXZCR
+MqlSrCwcWlWfUUziEYFe137lt3hcsGRn2XvC91l70iWtth496u1WPJu76vfTp5SR
+Yr50VLCCBrzb9ynOmCxsQueORu16r9n+XDSV8cMfG/QUgW0/Z5l/4cl5J07xTgvg
+/BwwPpjBUIMTB9KaI8tg4UdIiLWD4hm4372LNLbG3cVP7RD5IXTq3DzYCyuGeDyh
+IyGTQFmH/eSK/mxDCi3NTKfhLMedBABMKS+QfVND/VoEPxWjLH6fyWYoSdw5fCO+
+6nU8memN5K3DR9pmfmUgnwYGaBjgXE3SoGzjLw0xuxISi5qmRPKzvG5JB7hcnEtJ
+tWbfAoC1POvclSDaCyEZfWJwXOM02Nab5ETBdE+y46C5vcU2sVfz6jj0KaTvJCM/
+WK8nrzcfW3BRH3xbDlEn
+=m50x
+-----END PGP SIGNATURE-----
+
+--tsOsTdHNUZQcU9Ye--
+
+--===============2747477949912194840==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2747477949912194840==--
