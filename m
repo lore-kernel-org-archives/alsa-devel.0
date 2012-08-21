@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [RFC] Channel mapping API
-Date: Tue, 21 Aug 2012 14:59:47 +0100
-Message-ID: <20120821135947.GB21557@sirena.org.uk>
-References: <s5hr4r0359e.wl%tiwai@suse.de>
+Date: Tue, 21 Aug 2012 16:00:37 +0200
+Message-ID: <50339485.30500@canonical.com>
+References: <s5hr4r0359e.wl%tiwai@suse.de> <50337316.4080208@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FFCD265F1D
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 15:59:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hr4r0359e.wl%tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35F20265F5A
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 16:00:38 +0200 (CEST)
+In-Reply-To: <50337316.4080208@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 21, 2012 at 12:31:57PM +0200, Takashi Iwai wrote:
+On 08/21/2012 01:37 PM, Clemens Ladisch wrote:
+> Takashi Iwai wrote:
+>> this is a progress report of my longstanding TODO, the channel map API
+>> implementation.  I'm going to cover this at Plumbers audio uconf, so
+>> we can discuss details there, too.
+>
+> I won't be there, so ...
+>
+>> The channel mapping API provides a method for user-space to query, get
+>> and set the channel map of a PCM stream.  It's required for assigning
+>> channels properly for multi-channel streams.
+>
+> This doesn't handle devices with simply numbered outputs (such as many
+> ICE1712-based devices), or cases where one PCM channel can be routed to
+> multiple outputs.  However, those devices typically have their own mixer
+> applets, and generic applications aren't interested in configuring them.
 
-> snd_pcm_query_chmaps() returns the list of channel maps.  A channel
-> map is represented by an integer array, beginning with the channel map
-> type, followed by the number of channels, and the position of each
-> channel, e.g.
->   { SND_CHMAP_FIXED, 4, SND_CHMAP_FL, SND_CHMAP_FR, SND_CHMAP_RL, SND_CHMAP_RR }
+Good point! It would be nice if we had better support for devices that 
+simply number their outputs, including standard mixer names for those 
+devices, that would be good.
 
-Currently only named channel maps are supported.  It'd be nice to also
-support just plain numbered channels, or at least provide a way to say
-to userspace that it needs to do something like chase through a routing
-map to figure out where each channel goes (as opposed to assuming that
-the driver doesn't know what to report).  
+One of the long-standing bugs in PulseAudio is better support for such 
+hardware, so if we had better possibilities to detect and use these 
+outputs and inputs, it could be worth the effort.
 
-It'd also be nice to be able to express the situation we sometimes get
-in embedded devices where we (for example) play to channels 0 and 1 to
-get headphones and to 2 and 3 for speaker but that usually falls into
-the route tracing case anyway so I'm not sure it's worth worrying about.
+As for routing more than one channel in the map from the same PCM, that 
+seems a bit more complex. Maybe one could do a bitmap of channels 
+instead of just one channel (with say, 32 room channel positions and 32 
+just numbered positions, that would be 64 bits). But how common is that 
+anyway?
+
+Would it make sense to present a bitmap as the query result anyway? Then 
+we could skip the _VAR and _PAIRED types, right?
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
