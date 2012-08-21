@@ -1,71 +1,78 @@
-From: "Clark, Rob" <rob@ti.com>
-Subject: Re: [RFC] ASoC: snd_soc_jack for HDMI audio: does it make sense?
-Date: Tue, 21 Aug 2012 07:39:55 -0500
-Message-ID: <CAO8GWq=B8wa1tWOiT5ja80T2VrxHiSKSp4U6fHydV9iyOg=+Zg@mail.gmail.com>
-References: <5032E8A5.8070108@ti.com>
-	<1345528867.15491.12.camel@lappyti>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/1] ASoC: codecs: Enable AB8500 CODEC for
+	Device Tree
+Date: Tue, 21 Aug 2012 13:58:12 +0100
+Message-ID: <20120821125811.GA931@gmail.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-9-git-send-email-lee.jones@linaro.org>
+ <s5h628lu0q9.wl%tiwai@suse.de> <20120820113427.GN8450@gmail.com>
+ <20120820143653.GE26991@opensource.wolfsonmicro.com>
+ <20120821115123.GE26899@gmail.com>
+ <20120821123951.GC7995@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1345528867.15491.12.camel@lappyti>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: Ricardo Neri <ricardo.neri@ti.com>, Liam Girdwood <lrg@ti.com>, "Brown, Mark" <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Guiriec, Sebastien" <s-guiriec@ti.com>, DRI development list <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id B584B265B51
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 14:58:14 +0200 (CEST)
+Received: by eaa13 with SMTP id 13so1835801eaa.38
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 05:58:15 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20120821123951.GC7995@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 21, 2012 at 1:01 AM, Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
-> On Mon, 2012-08-20 at 20:47 -0500, Ricardo Neri wrote:
->> Hello!
->>
->> I have been working on prototypes for the ASoC OMAP HDMI audio driver to
->> propagate events from the HDMI output (e.g., display getting
->> enabled/disabled/suspended). This for the users of the driver to react
->> to such events. For instance, if the display is disabled or disconected,
->> audio could be stopped, rerouted or whatever other decision the user
->> makes. This is needed because, if, for instance, the  HDMI IP goes off,
->> audio will stall and the audio users will only see a "playback write
->> error (DMA or IRQ trouble?)"
->>
->> In my prototypes I have used snd_soc_jack for this purpose and I have
->> some questions:
->>
->> *I see snd_soc_jack is used mostly for headsets and microphones with
->> actual external mechanical connections. Strictly, in my case I propagate
->> events originated by the OMAP display driver (changes in the power
->> state), and not from external events. Some of these events are generated
->> from an actual HDMI cable connection/disconnection, though.
->>
->> *Maybe the event should be propagated by omapdss/omapdrm/drm and the
->> entity in charge of the audio policy should listen those events instead.
->>
->> *I do see SND_JACK_VIDEOOUT and SND_JACK_AVOUT types so maybe it is
->> feasible for an audio driver to report events from an AV output.
->>
->> I was wondering about how much sense does it make to you guys use a
->> snd_soc_jack in this case?
->
-> How does DRM handle audio? I made a quick grep, but I see the drm
-> drivers only enabling the audio in the HW, nothing else.
-
-I confess to not knowing too much about audio/alsa, but what does
-audio driver need from hdmi?  Just hotplug events?
-
->From a quick look, it seems most of what the existing drm drivers are
-doing is detecting if the display supports audio, and then turning
-on/off the hw.. (and some infoframe stuff in some cases).
-
-Does ASoC support 'hotplug' of audio devices?  If so, maybe it makes
-some sense to have some support in drm core.  At least all the edid
-parsing stuff to determine if the display supports audio should be
-generic and not driver specific.
-
-BR,
--R
-
-> If there's a common generic way to handle this, we should obviously use
-> that. But if we need to choose between doing something custom or doing
-> it in omapdrm driver, I think we should go for drm the only solution and
-> forget about audio with omapfb.
->
->  Tomi
->
+T24gVHVlLCBBdWcgMjEsIDIwMTIgYXQgMDE6Mzk6NTFQTSArMDEwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBPbiBUdWUsIEF1ZyAyMSwgMjAxMiBhdCAxMjo1MToyNFBNICswMTAwLCBMZWUgSm9uZXMg
+d3JvdGU6Cj4gPiBPbiBNb24sIEF1ZyAyMCwgMjAxMiBhdCAwMzozNjo1M1BNICswMTAwLCBNYXJr
+IEJyb3duIHdyb3RlOgo+IAo+ID4gPiA+IEZyb206IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFy
+by5vcmc+Cj4gPiA+ID4gRGF0ZTogRnJpLCAyNyBKdWwgMjAxMiAwODo1MDowNSArMDEwMAo+IAo+
+ID4gPiBQbGVhc2UgcmVzZW5kIHRoaXMgc2VyaWVzIHdpdGggYWxsIHRoZSBhY2tzIHlvdSd2ZSBn
+b3QgcmF0aGVyIHRoYW4KPiA+ID4gbWl4aW5nIGluY3JlbWVudGFsIHVwZGF0ZXMgaW4gbGlrZSB0
+aGlzLgo+IAo+ID4gSSdtIHdhaXRpbmcgdW50aWwgSSBoYXZlIGEgZmV3IG1vcmUgQWNrcyBiZWZv
+cmUgSSByZXNlbmQgdGhlIGVudGlyZQo+ID4gcGF0Y2gtc2V0IGFnYWluLiBBY3R1YWxseSBpdCdz
+IHlvdSBhbmQgb25lIG90aGVyIHRoYXQgSSdtIHdhaXRpbmcgZm9yCj4gPiB0byByZXZpZXcgKGFu
+ZCBBY2sgYXMgbmVjZXNzYXJ5KSB0aGUgb25lcyByZXF1ZXN0ZWQgYnkgTGludXMsIHRoZW4gCj4g
+PiByZXNlbmQgd2l0aCB0aGUgY29ycmVjdGlvbnMuCj4gCj4gV2VsbCwgSSdtIHRoZSBwZXJzb24g
+d2hvJ3MgZ29pbmcgdG8gYXBwbHkgdGhlIHBhdGNoZXMgc28gSSdtIHVubGlrZWx5Cj4gdG8gYWNr
+IHRoZW0uLi4gIEkgd2FzIHdhaXRpbmcgZm9yIGFyY2gvYXJtIHJldmlldyBiZWZvcmUgSSBsb29r
+ZWQgYXQKCkkgaGF2ZSBhbGwgb2YgTGludXMnIEFja3MuIFRoZSBvbmx5IG9uZXMgbWlzc2luZyBh
+cmUgeW91cnMgYW5kIE9sYSdzLApidXQgSSB0aGluayBPbGEgaXMgb24gdmFjYXRpb24gc3RpbGws
+IHNvIGhlJ3MgYXNrZWQgUm9nZXIgdG8gZG8gaXQuCkkgZG9uJ3Qga25vdyBpZiB5b3Ugc2F3LCBi
+dXQgTGludXMgaGFzIHBsYWNlZCBsb3RzIG9mIEFja2VkLWJ5J3Mgd2hpY2gKYXJlIGRlcGVuZGVu
+dCBvbiB5b3VyIHNheS1zbywgaGVuY2Ugd2h5IEkgd2FzIHdhaXRpbmcgZm9yIHlvdXIgcmVzcG9u
+c2UuCgo+IHRoZW0gZHVlIHRvIHRoZSBudW1iZXIgb2YgcmVzZW5kcy4KCkJpbmdvLCB0aHVzIHdo
+eSBJIHdhcyBkdWJpb3VzIGFib3V0IHJlc2VuZGluZyB0aGUgZW50aXJlIHBhdGNoLXNldCB0b28K
+cHJlbWF0dXJlbHkuCgo+ID4gPiBQbGVhc2UgYWxzbyBzZW5kIHBhdGNoZXMgaW4KPiA+ID4gdGhl
+IGZvcm1hdCBkb2N1bWVudGVkIGluIFN1Ym1pdHRpbmdQYXRjaGVzLgo+IAo+ID4gVGhhdCdzIGEg
+YmlnIGRvY3VtZW50LCBtb3N0IG9mIHdoaWNoIEkgZ3Vlc3MgSSdtIGFkaGVyaW5nIHRvLiBDYXJl
+IHRvCj4gPiBiZSBhIGxpdHRsZSBtb3JlIHNwZWNpZmljPwo+IAo+IFRoZSBiaXQgSSBxdW90ZWQg
+aXMgdGhlIG1haW4gZXhhbXBsZSwgeW91J3JlIGluY2x1ZGluZyByYW5kb20gbWFpbAo+IGhlYWRl
+cnMgaW4gdGhlIGJvZHkgb2YgdGhlIG1haWwuCgpUaGV5J3JlIG5vdCBtYWlsIGhlYWRlcnMgcGVy
+LXNheSwgdGhleSdyZSBgZ2l0IGZvcm1hdC1wYXRjaGAgaGVhZGVycy4KSSB0aG91Z2h0IHRoaXMg
+d2FzIGFjY2VwdGFibGUgZm9yIHNpbmdsZSBwYXRjaGVzLCBoZW5jZSB3aHkgSSd2ZSBkb25lCml0
+IGxvdHMgb2YgdGltZXMgYW5kIGhhZCBubyBjb21wbGFpbnRzICh1bnRpbCBub3cpLgoKSWYgdGhl
+cmUgYXJlIHNvbWUgY2hhbmdlcyByZXF1aXJlZCBpbiBhIHNpbmdsZSBwYXRjaCwgSSB1c3VhbGx5
+IGZpeAppdCB1cCwgY3JlYXRlIGEgcGF0Y2ggd2l0aCBgZ2l0IGZvcm1hdC1wYXRjaGAgYW5kIHNl
+bmQgaXQgYXMgYSByZXBseQp0byBlaXRoZXIgdGhlIG9yaWdpbmFsIHBhdGNoIGluIHRoZSBzZXJp
+ZXMgb3IgdGhlIG1haWwgY29udGFpbmluZyB0aGUKc3VnZ2VzdGlvbi4gSWYgdGhpcyBpcyB3cm9u
+ZyBwbGVhc2UgZWR1Y2F0ZSBtZSBhcyBJIHRob3VnaHQgdGhpcyB3YXMKYWNjZXB0YWJsZSwgYXMg
+SSB0aG91Z2h0IGl0IHdvdWxkIGJlIGxlc3MgcGFpbiB0aGFuIHNlbmRpbmcgdGhlCmVudGlyZSBw
+YXRjaC1zZXQgYWdhaW4gZm9yIGp1c3Qgb25lIGNoYW5nZT8KCi0tIApMZWUgSm9uZXMKTGluYXJv
+IFNULUVyaWNzc29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNl
+IHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIg
+fCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
