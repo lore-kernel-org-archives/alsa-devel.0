@@ -1,24 +1,19 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/1] ASoC: codecs: Enable AB8500 CODEC for
-	Device Tree
-Date: Tue, 21 Aug 2012 12:51:24 +0100
-Message-ID: <20120821115123.GE26899@gmail.com>
-References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
- <1344527268-5964-9-git-send-email-lee.jones@linaro.org>
- <s5h628lu0q9.wl%tiwai@suse.de> <20120820113427.GN8450@gmail.com>
- <20120820143653.GE26991@opensource.wolfsonmicro.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: SAIF configuration on imx28
+Date: Tue, 21 Aug 2012 08:56:05 -0300
+Message-ID: <CAOMZO5C9ezzU7S0M-AN0f8gk7SBWs3WNbA6cG2S+7BF8j+dVxA@mail.gmail.com>
+References: <CAACwSTK-fzSy+HG+u5H0aNU_wfSa7gvAsH2fVMdczssnYtpJXw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 61109265B49
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 13:51:27 +0200 (CEST)
-Received: by eaa13 with SMTP id 13so1813478eaa.38
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 04:51:28 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20120820143653.GE26991@opensource.wolfsonmicro.com>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97005265B9C
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 13:56:05 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so10477585obb.38
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 04:56:06 -0700 (PDT)
+In-Reply-To: <CAACwSTK-fzSy+HG+u5H0aNU_wfSa7gvAsH2fVMdczssnYtpJXw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,30 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linux-arm-kernel@lists.infradead.org
+To: George Stefan <stefan.george87@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <b29396@freescale.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgMjAsIDIwMTIgYXQgMDM6MzY6NTNQTSArMDEwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBNb24sIEF1ZyAyMCwgMjAxMiBhdCAxMjozNDozMVBNICswMTAwLCBMZWUgSm9uZXMg
-d3JvdGU6Cj4gPiBGcm9tOiBMZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgo+ID4gRGF0
-ZTogRnJpLCAyNyBKdWwgMjAxMiAwODo1MDowNSArMDEwMAo+ID4gU3ViamVjdDogW1BBVENIIDEv
-MV0gQVNvQzogY29kZWNzOiBFbmFibGUgQUI4NTAwIENPREVDIGZvciBEZXZpY2UgVHJlZQo+ID4g
-Cj4gPiBXZSBjb250aW51ZSB0byBhbGxvdyB0aGUgQUI4NTAwIENPREVDIHRvIGJlIHJlZ2lzdGVy
-ZWQgdmlhIHRoZSBBQjg1MDAKPiA+IE11bHRpIEZ1bmN0aW9uYWwgRGV2aWNlIEFQSSwgb25seSB0
-aGlzIHRpbWUgd2UgZXh0cmFjdCBpdHMgY29uZmlndXJhdGlvbgo+ID4gZnJvbSB0aGUgRGV2aWNl
-IFRyZWUgYmluYXJ5Lgo+IAo+IFBsZWFzZSByZXNlbmQgdGhpcyBzZXJpZXMgd2l0aCBhbGwgdGhl
-IGFja3MgeW91J3ZlIGdvdCByYXRoZXIgdGhhbgo+IG1peGluZyBpbmNyZW1lbnRhbCB1cGRhdGVz
-IGluIGxpa2UgdGhpcy4KCkknbSB3YWl0aW5nIHVudGlsIEkgaGF2ZSBhIGZldyBtb3JlIEFja3Mg
-YmVmb3JlIEkgcmVzZW5kIHRoZSBlbnRpcmUKcGF0Y2gtc2V0IGFnYWluLiBBY3R1YWxseSBpdCdz
-IHlvdSBhbmQgb25lIG90aGVyIHRoYXQgSSdtIHdhaXRpbmcgZm9yCnRvIHJldmlldyAoYW5kIEFj
-ayBhcyBuZWNlc3NhcnkpIHRoZSBvbmVzIHJlcXVlc3RlZCBieSBMaW51cywgdGhlbiAKcmVzZW5k
-IHdpdGggdGhlIGNvcnJlY3Rpb25zLgoKPiBQbGVhc2UgYWxzbyBzZW5kIHBhdGNoZXMgaW4KPiB0
-aGUgZm9ybWF0IGRvY3VtZW50ZWQgaW4gU3VibWl0dGluZ1BhdGNoZXMuCgpUaGF0J3MgYSBiaWcg
-ZG9jdW1lbnQsIG1vc3Qgb2Ygd2hpY2ggSSBndWVzcyBJJ20gYWRoZXJpbmcgdG8uIENhcmUgdG8K
-YmUgYSBsaXR0bGUgbW9yZSBzcGVjaWZpYz8KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNULUVyaWNz
-c29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJl
-IGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi George,
+
+On Tue, Aug 21, 2012 at 8:24 AM, George Stefan
+<stefan.george87@gmail.com> wrote:
+
+> My problem is, although i am receiving dma irqs when i record ( arecord -f
+> S16_LE -r 8000 -c 1 <file>.wav), when i play the resulting file its just
+> silence.
+>
+> [ 5295.890000] dump @ mxs_saif_trigger
+> [ 5295.890000] scr 101  , 107
+> [ 5295.890000] stat 80010041    , 80010071
+> [ 5295.890000] data 0   , ffffffff
+> [ 5295.890000] version 1010000  , 1010000
+> This  is a dump for arecord!
+>
+> Do you have any ideeas?
+
+Can you please to record as:
+arecord -D hw:0,1 -d 5 -f S16_LE -r 44100 -c 2 1.wav
+
+,as suggested here: http://www.spinics.net/lists/arm-kernel/msg186015.html
+
+Regards,
+
+Fabio Estevam
