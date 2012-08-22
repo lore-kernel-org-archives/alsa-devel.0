@@ -1,18 +1,20 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [pulseaudio-discuss] Documentation for how
-	rewinding works
-Date: Wed, 22 Aug 2012 08:16:11 +0300
-Message-ID: <1345612571.16615.20.camel@laptop>
-References: <1345374419.4864.64.camel@laptop>
- <CAN8cciY=T4vXbwW-Hsz7dDkrCoLgMyvHKStnzhzf_XBSss50fg@mail.gmail.com>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH 1/5] ASoC/ARM: Davinci: McASP: split asp
+ header into platform and audio specific
+Date: Wed, 22 Aug 2012 07:06:17 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA64A1D@DBDE01.ent.ti.com>
+References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
+ <1344948125-5649-2-git-send-email-gururaja.hebbar@ti.com>
+ <502E89D8.2090304@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7027F2660BF
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 07:16:13 +0200 (CEST)
-In-Reply-To: <CAN8cciY=T4vXbwW-Hsz7dDkrCoLgMyvHKStnzhzf_XBSss50fg@mail.gmail.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7289E265005
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 09:06:26 +0200 (CEST)
+In-Reply-To: <502E89D8.2090304@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+To: "Nori, Sekhar" <nsekhar@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Ujfalusi,
+ Peter" <peter.ujfalusi@ti.com>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDEyLTA4LTIyIGF0IDA5OjE0ICswODAwLCBSYXltb25kIFlhdSB3cm90ZToKPiAy
-MDEyLTgtMTkg5LiL5Y2INzoxNyDmlrwgIlRhbnUgS2Fza2luZW4iIDx0YW51a0Bpa2kuZmk+IOWv
-q+mBk++8mgo+ID4KPiA+IEhpLAo+ID4KPiA+IFdoaWxlIHJldmlld2luZyBhIHJld2luZCByZWxh
-dGVkIHBhdGNoLCBJIG5vdGljZWQgdGhhdCBJIGRvbid0Cj4gPiB1bmRlcnN0YW5kIHRoZSByZXdp
-bmRpbmcgY29kZSB0aG9yb3VnaGx5LCBldmVuIHRob3VnaCBJIGhhdmUgc3R1ZGllZCBpdAo+ID4g
-YSBmZXcgdGltZXMgaW4gdGhlIHBhc3QuIEkgZGVjaWRlZCB0aGF0IEkgc2hvdWxkIHdyaXRlIGEg
-d2lraSBwYWdlIGZvcgo+ID4gdGhlIGNvZGUgc28gdGhhdCB3b3JraW5nIHdpdGggaXQgd291bGQg
-YmUgZWFzaWVyIGluIHRoZSBmdXR1cmUgZm9yIG1lCj4gPiBhbmQgZXZlcnlib2R5IGVsc2UuCj4g
-Pgo+ID4gU28sIGhlcmUncyB0aGUgcmVzdWx0Ogo+ID4KPiBodHRwOi8vd3d3LmZyZWVkZXNrdG9w
-Lm9yZy93aWtpL1NvZnR3YXJlL1B1bHNlQXVkaW8vRG9jdW1lbnRhdGlvbi9EZXZlbG9wZXIvUmV3
-aW5kaW5nCj4gPgo+ID4gV2hpbGUgZG9pbmcgdGhhdCwgSSBmb3VuZCBxdWl0ZSBhIGZldyBidWdz
-LCB3aGljaCBhcmUgbm90ZWQgb24gdGhhdAo+ID4gcGFnZS4gSSBkb24ndCBwbGFuIGZpeGluZyB0
-aGVtIGFueSB0aW1lIHNvb24gKGhlbHAgd2l0aCB0aGF0IHdvdWxkIGJlCj4gPiB2ZXJ5IHdlbGNv
-bWUpLCBzbyBJIHdpbGwganVzdCBmaWxlIGJ1Z3MgYWJvdXQgdGhlIGlzc3VlcyBzbyB0aGF0IHRo
-ZXkKPiA+IGFyZSBub3QgZm9yZ290dGVuLgo+ID4KPiBpdCBzZWVtIHRoYXQgdGhlIGFsc2Egc2lu
-ayBpcyBtb3JlIGNvbXBsaWNhdGVkIHRoYW4geW91ciBmaWd1cmUuCgpUaGUgZmFjdCB0aGF0IHRo
-ZXJlJ3MgYSByZWdpb24gaW4gdGhlIGJlZ2lubmluZyBvZiB0aGUgc2luayBidWZmZXIgdGhhdApz
-aG91bGRuJ3QgYmUgcmV3b3VuZCBpcyBhbiBpbXBsZW1lbnRhdGlvbiBkZXRhaWwgb2YgYWxzYSBz
-aW5rLCBhbmQgZG9lcwpub3QgbmVlZCB0byBiZSB0YWtlbiBpbnRvIGFjY291bnQgaW4gdGhlIGdl
-bmVyYWwgcmV3aW5kIGhhbmRsaW5nLiBUaGUKYWxzYSBzaW5rIGlzIGFibGUgdG8gdGFrZSBjYXJl
-IG9mIGl0IGludGVybmFsbHkuCgo+IFJlZmVyIHRvIGZpZ3VyZSAxNCBIRCBBdWRpbyBETUEgYW5k
-IGJ1ZmZlcmluZyAsIHNlY3Rpb24gNC42IEVuZXJneQo+IEVmZmljaWVudCBIQSBhdWRpbyBtZWNo
-YW5pc20KPiAKPiBtb3N0IHNvdW5kIGNhcmRzIGhhdmUgZml4ZWQgc2l6ZSBGSUZPIGJ1ZmZlciBp
-bnN0ZWFkIG9mIGR5bmFtaWMgRklGTyBhbmQKPiBtaW5pbXVtIHRyYW5zZmVyIHNpemUoYnJ1c3Qp
-IHNpbWlsYXIgdG8gaGRhIGNvbnRyb2xsZXIgd2hpY2ggc25kX3BjbV9yZXdpbmQKPiBjYW5ub3Qg
-cmV3aW5kIGFueSBhdWRpbyBkYXRhIGluIHRob3NlIGZpcnN0IGluIGZpcnN0IG91dCBidWZmZXIu
-Cj4gCj4gaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL3B1bHNlYXVkaW8vcHVsc2VhdWRpby9j
-b21taXQvc3JjL21vZHVsZXMvYWxzYT9pZD00ZGY0NDNiYmU2ODIwNTVhNDFlN2MyMjQ4ODc3ZGNj
-NzY4MmE2OWI4CgpUaGFua3MgZm9yIGJyaW5naW5nIHRoYXQgY29tbWl0IGludG8gYXR0ZW50aW9u
-LCBiZWNhdXNlIGl0IHNlZW1zIHRvCmludHJvZHVjZSBhIG5ldyBidWcgKGFsdGhvdWdoIGp1ZGdp
-bmcgZnJvbSB0aGUgY29tbWl0IG1lc3NhZ2UsIFBpZXJyZQp3YXMgYXdhcmUgb2YgaXQgYW5kIGNv
-bnNpZGVyZWQgaXQgYSBmZWF0dXJlKTogdGhlIGNvZGUgZG9lc24ndCB0YWtlCnRzY2hlZF93YXRl
-cm1hcmsgaW50byBhY2NvdW50IGFueW1vcmUgd2hlbiBkb2luZyByZXdpbmRzLiBUaGUgcG9pbnQg
-b2YKdHNjaGVkX3dhdGVybWFyayBpcyB0byBlbnN1cmUgdGhhdCBwdWxzZWF1ZGlvIGhhcyBlbm91
-Z2ggdGltZSB0byBmaWxsCnRoZSBzaW5rIGJ1ZmZlci4gSWYgaXQncyBpZ25vcmVkIHdoZW4gcmV3
-aW5kaW5nLCBpdCdzIGxpa2VseSB0aGF0IHRoZXJlCndpbGwgYmUgYW4gdW5kZXJydW4gd2hlbiBy
-ZWZpbGxpbmcgdGhlIHNpbmsgYnVmZmVyLCBpZiB0c2NoZWRfd2F0ZXJtYXJrCmlzIGdyZWF0ZXIg
-dGhhbiByZXdpbmRfc2FmZWd1YXJkLgoKPiAxKSBkbyB0aGUgc2VydmVyIHJlYWxseSBuZWVkIHRv
-IHJld2luZCB3aGVuIHRoZXJlIGlzIG9ubHkgb25lIHB1bHNlIGNsaWVudCA/CgpZZXMuIFRoZSBz
-aW5rIGJ1ZmZlciBtYXkgaGF2ZSB1cCB0byAyIHNlY29uZHMgb2YgYXVkaW8gZnJvbSB0aGUgb25l
-CnB1bHNlIGNsaWVudCwgYW5kIGlmIHlvdSB0aGVuIGNoYW5nZSB0aGUgc29mdHdhcmUgdm9sdW1l
-IG9mIHRoZSBzaW5rIChvcgpzaW5rIGlucHV0LCBkb2Vzbid0IG1hdHRlciksIHlvdSB3aWxsIGhh
-dmUgdG8gcmV3cml0ZSB0aGUgc2luayBidWZmZXIKY29udGVudHMgdW5sZXNzIHlvdSB3YW50IHRv
-IHdhaXQgMiBzZWNvbmRzIHVudGlsIHRoZSB2b2x1bWUgY2hhbmdlCmJlY29tZXMgYXVkaWJsZS4K
-Cj4gMikgZG9lcyBwdWxzZWF1ZGlvIGFkZCB0aGlzIHJld2luZCBzYWZlZ3VhcmQgZGVsYXkgdG8g
-dGhlIGxhdGVuY3kgPwoKVW5sZXNzIEknbSBtaXN1bmRlcnN0YW5kaW5nIHdoYXQgeW91IG1lYW4g
-YnkgInRoZSBsYXRlbmN5IiwgdGhlIHJld2luZApzYWZlZ3VhcmQgZG9lc24ndCBhZGQgYW55IGxh
-dGVuY3ksIHNvIHRoZXJlJ3Mgbm90aGluZyB0byB3b3JyeSBhYm91dC4KCi0tIApUYW51CgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Aug 17, 2012 at 23:43:44, Nori, Sekhar wrote:
+> Hi Gururaja,
+> 
+> On 8/14/2012 6:12 PM, Hebbar, Gururaja wrote:
+> > Davinci McASP header & driver are shared by few OMAP platforms (like
+> > TI81xx, AM335x). Splitting asp header into Davinci platform specific
+> > header and Audio specific header helps to share them across platforms.
+> > 
+> > Audio specific defines is moved to to common
+> > <linux/platform_data/davinci_asp.h> so that the header can be
+> > accessed by all related platforms.
+> > 
+> > While here, correct the header usage (remove multiple header
+> > re-definitions and unused headers) and remove platform names from
+> > structures comments and enum
+> > 
+> > Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+> > Acked-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
+> 
+> This patch looks good to me. See a minor nit below.
+> 
+> Acked-by: Sekhar Nori <nsekhar@ti.com>
+> 
+> > diff --git a/arch/arm/mach-davinci/asp.h b/arch/arm/mach-davinci/asp.h
+> > new file mode 100644
+> > index 0000000..8fd5238
+> > --- /dev/null
+> > +++ b/arch/arm/mach-davinci/asp.h
+> > @@ -0,0 +1,49 @@
+> > +/*
+> > + * TI DaVinci Audio definitions
+> > + */
+> > +#ifndef __ASM_ARCH_DAVINCI_ASP_H
+> > +#define __ASM_ARCH_DAVINCI_ASP_H
+> > +
+> > +/* Bases of dm644x and dm355 register banks */
+> > +#define DAVINCI_ASP0_BASE	0x01E02000
+> > +#define DAVINCI_ASP1_BASE	0x01E04000
+> > +
+> > +/* Bases of dm365 register banks */
+> > +#define DAVINCI_DM365_ASP0_BASE	0x01D02000
+> > +
+> > +/* Bases of dm646x register banks */
+> > +#define	DAVINCI_DM646X_MCASP0_REG_BASE		0x01D01000
+> > +#define DAVINCI_DM646X_MCASP1_REG_BASE		0x01D01800
+> 
+> Can you remove usage of tabs after 'define'. I understand this is coming
+> from existing code.
+
+Ok. I have got few more comments from Mark. Will add this into it.
+
+> 
+> Thanks,
+> Sekhar
+> 
+
+
+Regards, 
+Gururaja
