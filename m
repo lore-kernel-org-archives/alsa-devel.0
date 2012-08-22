@@ -1,15 +1,19 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: ARM: OMAP: twl-common: Add helper function to
- register the omap-twl4030 audio driver
-Date: Wed, 22 Aug 2012 10:18:03 -0500
-Message-ID: <alpine.DEB.2.02.1208221008320.24654@heelrod.ad.cirrus.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/5] ASoC: Davinci: pcm: Add device tree
+	bindings
+Date: Wed, 22 Aug 2012 16:58:08 +0100
+Message-ID: <20120822155808.GP7995@opensource.wolfsonmicro.com>
+References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
+ <1344948125-5649-4-git-send-email-gururaja.hebbar@ti.com>
+ <20120817223122.GA21445@opensource.wolfsonmicro.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA67DA1@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-673913920-1345648683=:24654"
+Content-Type: multipart/mixed; boundary="===============8120512297307371117=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A480266135
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 17:20:28 +0200 (CEST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33C9126613C
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 17:58:10 +0200 (CEST)
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EA67DA1@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: peter.ujfalusi@ti.com, tony@atomide.com, broonie@opensource.wolfsonmicro.com
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "Nori,
+ Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Ujfalusi,
+ Peter" <peter.ujfalusi@ti.com>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
---8323329-673913920-1345648683=:24654
-Content-Type: text/plain; format=flowed; charset="ISO-8859-7"
+
+--===============8120512297307371117==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uIq33vy618f2J7at"
+Content-Disposition: inline
+
+
+--uIq33vy618f2J7at
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hey guys,
+On Wed, Aug 22, 2012 at 01:50:09PM +0000, Hebbar, Gururaja wrote:
 
-This commit 552d9dc316cfedd134ee882cd1ae24ca6934ffc0
-breaks the build for OMAP3 Beagelboard. with the following error.
+> From your for-3.7 branch, I could only find such implementation in Tegra
+> Platform.=20
+> Most Freescale platforms implements this through a device/driver method.
+> Exception being sound/soc/mxs/mxs-pcm.c
 
-CC      arch/arm/mach-omap2/twl-common.o=20
-arch/arm/mach-omap2/twl-common.c:562: error: conflicting types for=20
-=A1omap_twl4030_audio_init=A2
-arch/arm/mach-omap2/twl-common.h:62: error: previous declaration of=20
-=A1omap_twl4030_audio_init=A2 was here
-make[1]: *** [arch/arm/mach-omap2/twl-common.o] Error 1
-make: *** [arch/arm/mach-omap2] Error 2
+> So should I follow tegra implementation?
 
-You added a redifinition of omap_twl4030_audio_init in twl-common.c=20
-with the extra parameter of sysclk, but the header file has the definitio=
-n=20
-with just the card_name.
+Tegra and mxs should be good examples, yes.
 
-I'm not sure which way ya'll wanted to go on this so I didnt submit a=20
-patch.  Just letting it be known.
+--uIq33vy618f2J7at
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-This is off of for-next.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Regards,
-Brian
---8323329-673913920-1345648683=:24654
+iQIcBAEBAgAGBQJQNQGJAAoJEFJkBDiqVpZ4O2MQAIMb22zAqnOU8su/FurwKoFf
++8AG1i3wSfX7GNjakSduYhdhQGrNfCgQGmAHDLPur76/N9/TbBqAQ3elJqP+9Hxw
+GzJij9K+XsWT2uXEKeuIayAQkgk4RdnsXByvTxCzuvjDA4zEDGQA0DThHaf1jWQu
+lHG4eI7qUcbt8sCJUTtC0E/n+es56HD5H0jCYEQlL03ifhVRVkNWbyod7cXfHPW0
+ohHw6uBSTwY43//o+JAnau9ymdN06yE3AblGaxSi6rwYt/6L3MYe8YuIyil9lcW8
+ufHyU0cuCUpmBi+0fIm+KX/ZHGWqTMcUEUR2u9OP4cjMT1ROnLDksiRbXUNiu6Un
+6fOFok4jus4BAOfVxbVMl7K87I8EUVV10IQH3TLu2UHo4EGExam4oIdrY0cEdbHz
+4N2u6CLovEJ8G1QuTauX14KA/+SLGDzWEcJ8fD3bcO2lETrLwOEWdNqfPYkxmFn3
+0K8d0VtJOvYdioTdUhdYfYc7gt84CBdtylfRizR+O7cwP/QcHMevmSy9vMmlrve4
+IrKNqy2WFsbYiANVVUrsyh5gFxiHg0PEsYn9m7fu7/10dq9Se2TayVBQXf/p9k0C
+U3icmzmsWV+8IRG0FZd7i29v97GEXF5qi+kYgupHpgVhA+Iwm46z2GZlvCs3R3Od
+QgkNCjccBlHT6Oqd/+v4
+=VdVq
+-----END PGP SIGNATURE-----
+
+--uIq33vy618f2J7at--
+
+--===============8120512297307371117==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---8323329-673913920-1345648683=:24654--
+--===============8120512297307371117==--
