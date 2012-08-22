@@ -1,20 +1,22 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH 4/5] ASoC: Davinci: machine: Add device
-	tree binding
-Date: Wed, 22 Aug 2012 11:35:11 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA658C7@DBDE01.ent.ti.com>
-References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
- <1344948125-5649-5-git-send-email-gururaja.hebbar@ti.com>
- <20120817224327.GK18871@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [pulseaudio-discuss] [PATCH v0 07/20] Consider
+ unknown availability in module-switch-on-port-available
+Date: Wed, 22 Aug 2012 20:00:52 +0800
+Message-ID: <CAN8cciYOFdiFD5oHAo=5DnGOTWfGbmgUhMB71Xy+UidnV7FOng@mail.gmail.com>
+References: <1345622913-16470-1-git-send-email-mikel.astiz.oss@gmail.com>
+ <1345622913-16470-8-git-send-email-mikel.astiz.oss@gmail.com>
+ <5034A2B6.5080905@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 727C02663D8
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 13:35:17 +0200 (CEST)
-In-Reply-To: <20120817224327.GK18871@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B5E92663D8
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 14:00:52 +0200 (CEST)
+Received: by qadz3 with SMTP id z3so738034qad.17
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 05:00:53 -0700 (PDT)
+In-Reply-To: <5034A2B6.5080905@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +26,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
- Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "Nori,
- Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Ujfalusi,
- Peter" <peter.ujfalusi@ti.com>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 18, 2012 at 04:13:28, Mark Brown wrote:
-> On Tue, Aug 14, 2012 at 06:12:04PM +0530, Hebbar, Gururaja wrote:
-> 
-> > +- ti,codec-clock : The Codec Clock from the board
-> 
-> I think this is the clock rate?  Please specify it more specifically.
-
-I will correct it in v2.
-
-> 
-> > +"<CODEC DAI Name>",	"<true if evm_aic3x_init is required, else false>",
-> > +"<evm ops required, evm_ops or evm_spdif_ops>";
-> 
-> Please be more specific as to what these actually do - consider the user
-> who is reading the bindings with a view to implementing them for their
-> board, or writing drivers for another OS.
-
-Will add more detail in V2
-
-> 
-
-
-Regards, 
-Gururaja
+MjAxMi04LTIyIOS4i+WNiDU6MTMg5pa8ICJEYXZpZCBIZW5uaW5nc3NvbiIgPGRhdmlkLmhlbm5p
+bmdzc29uQGNhbm9uaWNhbC5jb20+IOWvq+mBk++8mgo+Cj4gT24gMDgvMjIvMjAxMiAxMDowOCBB
+TSwgTWlrZWwgQXN0aXogd3JvdGU6Cj4+Cj4+IEZyb206IE1pa2VsIEFzdGl6IDxtaWtlbC5hc3Rp
+ekBibXctY2FyaXQuZGU+Cj4+Cj4+IEEgcG9ydCB3aXRoIHRoZSBhdmFpbGFiaWxpdHkgc3RhdGUg
+ZmxhZyBzZXQgdG8gdW5rbm93biBzaG91bGQgbm90IGJlCj4+IGNvbnNpZGVyZWQgYW4gYWN0aXZl
+IHBvcnQuCj4+IC0tLQo+PiAgIHNyYy9tb2R1bGVzL21vZHVsZS1zd2l0Y2gtb24tcG9ydC1hdmFp
+bGFibGUuYyB8ICAgIDIgKy0KPj4gICAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwg
+MSBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3NyYy9tb2R1bGVzL21vZHVsZS1zd2l0
+Y2gtb24tcG9ydC1hdmFpbGFibGUuYwpiL3NyYy9tb2R1bGVzL21vZHVsZS1zd2l0Y2gtb24tcG9y
+dC1hdmFpbGFibGUuYwo+PiBpbmRleCAxZGE2MTJkLi44YzE2ODIxIDEwMDY0NAo+PiAtLS0gYS9z
+cmMvbW9kdWxlcy9tb2R1bGUtc3dpdGNoLW9uLXBvcnQtYXZhaWxhYmxlLmMKPj4gKysrIGIvc3Jj
+L21vZHVsZXMvbW9kdWxlLXN3aXRjaC1vbi1wb3J0LWF2YWlsYWJsZS5jCj4+IEBAIC04NSw3ICs4
+NSw3IEBAIHN0YXRpYyBwYV9ib29sX3QgdHJ5X3RvX3N3aXRjaF9wcm9maWxlKHBhX2NhcmQgKmNh
+cmQsCnBhX2RldmljZV9wb3J0ICpwb3J0KSB7Cj4+ICAgICAgICAgICAgICAgUEFfSURYU0VUX0ZP
+UkVBQ0goc2luaywgY2FyZC0+c2lua3MsIHN0YXRlMikgewo+PiAgICAgICAgICAgICAgICAgICBp
+ZiAoIXNpbmstPmFjdGl2ZV9wb3J0KQo+PiAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7
+Cj4+IC0gICAgICAgICAgICAgICAgaWYgKHNpbmstPmFjdGl2ZV9wb3J0LT5hdmFpbGFibGUgIT0K
+UEFfUE9SVF9BVkFJTEFCTEVfTk8pCj4+ICsgICAgICAgICAgICAgICAgaWYgKHNpbmstPmFjdGl2
+ZV9wb3J0LT5hdmFpbGFibGUgPT0KUEFfUE9SVF9BVkFJTEFCTEVfWUVTKQo+PiAgICAgICAgICAg
+ICAgICAgICAgICAgZm91bmRfYWN0aXZlX3BvcnQgPSBUUlVFOwo+PiAgICAgICAgICAgICAgIH0K
+Pj4KPj4KPgo+IEkgdGhpbmsgdGhpcyB3aWxsIGJyZWFrIHRoZSBmb2xsb3dpbmcgdXNlIGNhc2Ug
+KG9uIGEgbm9ybWFsIGxhcHRvcCkgOgo+Cj4gQXNzdW1lIHdlIHBsdWcgaW4gSERNSS4gV2l0aCB0
+aGlzIHBhdGNoIHdlIHdpbGwgZ2V0IGluY29uc2lzdGVudApiZWhhdmlvdXI6IGlmIGhlYWRwaG9u
+ZXMgYXJlIHBsdWdnZWQgaW4gKGF2YWlsYWJsZSA9IHllcyksIHdlIHdvbid0IHN3aXRjaAp0byBI
+RE1JLCBidXQgaWYgbm90IChzcGVha2VycyBhcmUgYXZhaWxhYmxlID0gdW5rbm93biksIHdlIHdp
+bGwgc3dpdGNoIHRvCkhETUkuCj4KPgoKaWYgeW91IGxvb2sgYXQgdGhvc2UgYnVnIHJlcG9ydHMg
+b2Ygbm8gc291bmQgZm9yIHRob3NlIG9uLWJvYXJkIGFjOTcgY29kZWNzCndpdGggdWJ1bnR1IDEy
+LjA0CgpodHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9hbHNhLWRyaXZl
+ci8rYnVnLzEwMzM5OTYKCmhvdyBkb2VzIHB1bHNlYXVkaW8gZGV0ZXJtaW5lIHdoaWNoIGNvbnRy
+b2xzIGFyZSBlZmZlY3RpdmUgaW4gdGhlIGhlYWRwaG9uZQpwYXRoIGFuZCBzcGVha2VyIHBhdGgg
+b2YgdGhvc2UgYWM5NyAgY29kZWNzID8KCnRoZSBhbmFsb2ctb3V0cHV0LXN0ZXJlbyBwcm9maWxl
+IGZvciB0aGUgbGluZSBvdXQgamFjayBpcyBtaXNzaW5nCgooIDAuMDU2fCAwLjAwMCkgRDogW3B1
+bHNlYXVkaW9dIGFsc2EtbWl4ZXIuYzogUmVtb3ZpbmcgcGF0aCAnYW5hbG9nLW91dHB1dCcKYXMg
+aXQgaXMgYSBzdWJzZXQgb2YgJ2FuYWxvZy1vdXRwdXQtaGVhZHBob25lCgppcyB0aGVyZSBhbnkg
+c29sdXRpb24gZm9yIHRob3NlIHNuZC1pbnRlbDh4MCBhbmQgdGhvc2Ugb25ib2FyZCBhYzk3IGNv
+ZGVjcwp3aXRoIGhlYWRwaG9uZSBwbGF5YmFjayB2b2x1bWUgY29udHJvbCAoIG5vIGN0bGphY2sg
+Y29udHJvbCBhbmQgbm8gcGhhbnRvbQpwb3J0KT8KCmh0dHA6Ly9jZ2l0LmZyZWVkZXNrdG9wLm9y
+Zy9wdWxzZWF1ZGlvL3B1bHNlYXVkaW8vY29tbWl0L3NyYy9tb2R1bGVzL2Fsc2EvYWxzYS1taXhl
+ci5jP2lkPTkxYjI1MDA1OTc4ZDM0M2E5ODljOTQ4NWUyMjZkYzlhMThhMmZiMjgKCmh0dHA6Ly9n
+aXQuZnJlZWRlc2t0b3Aub3JnL3B1bHNlYXVkaW8vcHVsc2VhdWRpby9jb21taXQvc3JjL21vZHVs
+ZXMvYWxzYS9hbHNhLW1peGVyLmM/aWQ9NWM4MzJhNWI4YTJiYzJjZTc0NDdlYWIxMGFjYWVlZDMw
+Y2QzZWQ3OApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
