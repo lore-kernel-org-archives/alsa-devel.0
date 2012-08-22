@@ -1,19 +1,18 @@
-From: Ian Minett <ian_minett@creativelabs.com>
-Subject: Re: [PATCHv2.1-CA0132 HDA Codec 1/1] Draft DSP loader
-	update #2
-Date: Tue, 21 Aug 2012 18:36:01 -0700
-Message-ID: <OFC7C35A7D.8D857BE7-ON88257A62.0004AEB8-88257A62.0008CAB7@cli.creative.com>
-References: <s5hobmh9a1f.wl%tiwai@suse.de>	<1345009806-3293-1-git-send-email-ian_minett@creativelabs.com>
- <s5h628kocq9.wl%tiwai@suse.de>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: [pulseaudio-discuss] Documentation for how
+	rewinding works
+Date: Wed, 22 Aug 2012 08:16:11 +0300
+Message-ID: <1345612571.16615.20.camel@laptop>
+References: <1345374419.4864.64.camel@laptop>
+ <CAN8cciY=T4vXbwW-Hsz7dDkrCoLgMyvHKStnzhzf_XBSss50fg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-outbound2.cli.creative.com
- (smtp-outbound2.cli.creative.com [124.246.64.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CEF7265F16
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 03:36:10 +0200 (CEST)
-In-Reply-To: <s5h628kocq9.wl%tiwai@suse.de>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7027F2660BF
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 07:16:13 +0200 (CEST)
+In-Reply-To: <CAN8cciY=T4vXbwW-Hsz7dDkrCoLgMyvHKStnzhzf_XBSss50fg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,36 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-
-
-
->There shouldn't be any addition of controls, etc, at this point.
->Just do load the firmware.  This is the very first start.
->
->I can help debugging or give review / advise.  But obviously you are
->at the better position start writing it since you have the test
->hardware and the firmware data, both of which are missing for other
->developers (including me).
->
->Once when a draft patch is ready or you face to a problem, let me
->know.
-
-Ok, thanks.
-We do seem to be having problems in the DSP load prepare function:
-
-void *(*load_dsp_prepare)(struct hda_codec *codec, unsigned int format,
-                          unsigned int byte_size);
-
-This is the place where the buffer gets allocated, and BDL and DMA set up, and the
-pointer returned.
-Is there any sample code or other info you could provide, to give us a better idea
-of how the function and these actions should be implemented?
-
-Thanks very much,
-- Ian
+T24gV2VkLCAyMDEyLTA4LTIyIGF0IDA5OjE0ICswODAwLCBSYXltb25kIFlhdSB3cm90ZToKPiAy
+MDEyLTgtMTkg5LiL5Y2INzoxNyDmlrwgIlRhbnUgS2Fza2luZW4iIDx0YW51a0Bpa2kuZmk+IOWv
+q+mBk++8mgo+ID4KPiA+IEhpLAo+ID4KPiA+IFdoaWxlIHJldmlld2luZyBhIHJld2luZCByZWxh
+dGVkIHBhdGNoLCBJIG5vdGljZWQgdGhhdCBJIGRvbid0Cj4gPiB1bmRlcnN0YW5kIHRoZSByZXdp
+bmRpbmcgY29kZSB0aG9yb3VnaGx5LCBldmVuIHRob3VnaCBJIGhhdmUgc3R1ZGllZCBpdAo+ID4g
+YSBmZXcgdGltZXMgaW4gdGhlIHBhc3QuIEkgZGVjaWRlZCB0aGF0IEkgc2hvdWxkIHdyaXRlIGEg
+d2lraSBwYWdlIGZvcgo+ID4gdGhlIGNvZGUgc28gdGhhdCB3b3JraW5nIHdpdGggaXQgd291bGQg
+YmUgZWFzaWVyIGluIHRoZSBmdXR1cmUgZm9yIG1lCj4gPiBhbmQgZXZlcnlib2R5IGVsc2UuCj4g
+Pgo+ID4gU28sIGhlcmUncyB0aGUgcmVzdWx0Ogo+ID4KPiBodHRwOi8vd3d3LmZyZWVkZXNrdG9w
+Lm9yZy93aWtpL1NvZnR3YXJlL1B1bHNlQXVkaW8vRG9jdW1lbnRhdGlvbi9EZXZlbG9wZXIvUmV3
+aW5kaW5nCj4gPgo+ID4gV2hpbGUgZG9pbmcgdGhhdCwgSSBmb3VuZCBxdWl0ZSBhIGZldyBidWdz
+LCB3aGljaCBhcmUgbm90ZWQgb24gdGhhdAo+ID4gcGFnZS4gSSBkb24ndCBwbGFuIGZpeGluZyB0
+aGVtIGFueSB0aW1lIHNvb24gKGhlbHAgd2l0aCB0aGF0IHdvdWxkIGJlCj4gPiB2ZXJ5IHdlbGNv
+bWUpLCBzbyBJIHdpbGwganVzdCBmaWxlIGJ1Z3MgYWJvdXQgdGhlIGlzc3VlcyBzbyB0aGF0IHRo
+ZXkKPiA+IGFyZSBub3QgZm9yZ290dGVuLgo+ID4KPiBpdCBzZWVtIHRoYXQgdGhlIGFsc2Egc2lu
+ayBpcyBtb3JlIGNvbXBsaWNhdGVkIHRoYW4geW91ciBmaWd1cmUuCgpUaGUgZmFjdCB0aGF0IHRo
+ZXJlJ3MgYSByZWdpb24gaW4gdGhlIGJlZ2lubmluZyBvZiB0aGUgc2luayBidWZmZXIgdGhhdApz
+aG91bGRuJ3QgYmUgcmV3b3VuZCBpcyBhbiBpbXBsZW1lbnRhdGlvbiBkZXRhaWwgb2YgYWxzYSBz
+aW5rLCBhbmQgZG9lcwpub3QgbmVlZCB0byBiZSB0YWtlbiBpbnRvIGFjY291bnQgaW4gdGhlIGdl
+bmVyYWwgcmV3aW5kIGhhbmRsaW5nLiBUaGUKYWxzYSBzaW5rIGlzIGFibGUgdG8gdGFrZSBjYXJl
+IG9mIGl0IGludGVybmFsbHkuCgo+IFJlZmVyIHRvIGZpZ3VyZSAxNCBIRCBBdWRpbyBETUEgYW5k
+IGJ1ZmZlcmluZyAsIHNlY3Rpb24gNC42IEVuZXJneQo+IEVmZmljaWVudCBIQSBhdWRpbyBtZWNo
+YW5pc20KPiAKPiBtb3N0IHNvdW5kIGNhcmRzIGhhdmUgZml4ZWQgc2l6ZSBGSUZPIGJ1ZmZlciBp
+bnN0ZWFkIG9mIGR5bmFtaWMgRklGTyBhbmQKPiBtaW5pbXVtIHRyYW5zZmVyIHNpemUoYnJ1c3Qp
+IHNpbWlsYXIgdG8gaGRhIGNvbnRyb2xsZXIgd2hpY2ggc25kX3BjbV9yZXdpbmQKPiBjYW5ub3Qg
+cmV3aW5kIGFueSBhdWRpbyBkYXRhIGluIHRob3NlIGZpcnN0IGluIGZpcnN0IG91dCBidWZmZXIu
+Cj4gCj4gaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL3B1bHNlYXVkaW8vcHVsc2VhdWRpby9j
+b21taXQvc3JjL21vZHVsZXMvYWxzYT9pZD00ZGY0NDNiYmU2ODIwNTVhNDFlN2MyMjQ4ODc3ZGNj
+NzY4MmE2OWI4CgpUaGFua3MgZm9yIGJyaW5naW5nIHRoYXQgY29tbWl0IGludG8gYXR0ZW50aW9u
+LCBiZWNhdXNlIGl0IHNlZW1zIHRvCmludHJvZHVjZSBhIG5ldyBidWcgKGFsdGhvdWdoIGp1ZGdp
+bmcgZnJvbSB0aGUgY29tbWl0IG1lc3NhZ2UsIFBpZXJyZQp3YXMgYXdhcmUgb2YgaXQgYW5kIGNv
+bnNpZGVyZWQgaXQgYSBmZWF0dXJlKTogdGhlIGNvZGUgZG9lc24ndCB0YWtlCnRzY2hlZF93YXRl
+cm1hcmsgaW50byBhY2NvdW50IGFueW1vcmUgd2hlbiBkb2luZyByZXdpbmRzLiBUaGUgcG9pbnQg
+b2YKdHNjaGVkX3dhdGVybWFyayBpcyB0byBlbnN1cmUgdGhhdCBwdWxzZWF1ZGlvIGhhcyBlbm91
+Z2ggdGltZSB0byBmaWxsCnRoZSBzaW5rIGJ1ZmZlci4gSWYgaXQncyBpZ25vcmVkIHdoZW4gcmV3
+aW5kaW5nLCBpdCdzIGxpa2VseSB0aGF0IHRoZXJlCndpbGwgYmUgYW4gdW5kZXJydW4gd2hlbiBy
+ZWZpbGxpbmcgdGhlIHNpbmsgYnVmZmVyLCBpZiB0c2NoZWRfd2F0ZXJtYXJrCmlzIGdyZWF0ZXIg
+dGhhbiByZXdpbmRfc2FmZWd1YXJkLgoKPiAxKSBkbyB0aGUgc2VydmVyIHJlYWxseSBuZWVkIHRv
+IHJld2luZCB3aGVuIHRoZXJlIGlzIG9ubHkgb25lIHB1bHNlIGNsaWVudCA/CgpZZXMuIFRoZSBz
+aW5rIGJ1ZmZlciBtYXkgaGF2ZSB1cCB0byAyIHNlY29uZHMgb2YgYXVkaW8gZnJvbSB0aGUgb25l
+CnB1bHNlIGNsaWVudCwgYW5kIGlmIHlvdSB0aGVuIGNoYW5nZSB0aGUgc29mdHdhcmUgdm9sdW1l
+IG9mIHRoZSBzaW5rIChvcgpzaW5rIGlucHV0LCBkb2Vzbid0IG1hdHRlciksIHlvdSB3aWxsIGhh
+dmUgdG8gcmV3cml0ZSB0aGUgc2luayBidWZmZXIKY29udGVudHMgdW5sZXNzIHlvdSB3YW50IHRv
+IHdhaXQgMiBzZWNvbmRzIHVudGlsIHRoZSB2b2x1bWUgY2hhbmdlCmJlY29tZXMgYXVkaWJsZS4K
+Cj4gMikgZG9lcyBwdWxzZWF1ZGlvIGFkZCB0aGlzIHJld2luZCBzYWZlZ3VhcmQgZGVsYXkgdG8g
+dGhlIGxhdGVuY3kgPwoKVW5sZXNzIEknbSBtaXN1bmRlcnN0YW5kaW5nIHdoYXQgeW91IG1lYW4g
+YnkgInRoZSBsYXRlbmN5IiwgdGhlIHJld2luZApzYWZlZ3VhcmQgZG9lc24ndCBhZGQgYW55IGxh
+dGVuY3ksIHNvIHRoZXJlJ3Mgbm90aGluZyB0byB3b3JyeSBhYm91dC4KCi0tIApUYW51CgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
