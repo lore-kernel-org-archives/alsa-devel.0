@@ -1,20 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [pulseaudio-discuss] Documentation for how
-	rewinding works
-Date: Wed, 22 Aug 2012 09:14:54 +0800
-Message-ID: <CAN8cciY=T4vXbwW-Hsz7dDkrCoLgMyvHKStnzhzf_XBSss50fg@mail.gmail.com>
-References: <1345374419.4864.64.camel@laptop>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: Re: [RFC] ASoC: snd_soc_jack for HDMI audio: does it
+ make	sense?
+Date: Tue, 21 Aug 2012 20:24:45 -0500
+Message-ID: <503434DD.8030003@ti.com>
+References: <5032E8A5.8070108@ti.com> <s5hlih895kt.wl%tiwai@suse.de>
+ <20120821120511.GB7995@opensource.wolfsonmicro.com>
+ <50337F7B.1060501@canonical.com>
+ <20120821131625.GD7995@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 65BEF265EA9
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 03:14:54 +0200 (CEST)
-Received: by qadz3 with SMTP id z3so471890qad.17
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2012 18:14:55 -0700 (PDT)
-In-Reply-To: <1345374419.4864.64.camel@laptop>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCCE3265EDD
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2012 03:26:07 +0200 (CEST)
+In-Reply-To: <20120821131625.GD7995@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,33 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Valkeinen,
+ Tomi" <tomi.valkeinen@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@ti.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi04LTE5IOS4i+WNiDc6MTcg5pa8ICJUYW51IEthc2tpbmVuIiA8dGFudWtAaWtpLmZpPiDl
-r6vpgZPvvJoKPgo+IEhpLAo+Cj4gV2hpbGUgcmV2aWV3aW5nIGEgcmV3aW5kIHJlbGF0ZWQgcGF0
-Y2gsIEkgbm90aWNlZCB0aGF0IEkgZG9uJ3QKPiB1bmRlcnN0YW5kIHRoZSByZXdpbmRpbmcgY29k
-ZSB0aG9yb3VnaGx5LCBldmVuIHRob3VnaCBJIGhhdmUgc3R1ZGllZCBpdAo+IGEgZmV3IHRpbWVz
-IGluIHRoZSBwYXN0LiBJIGRlY2lkZWQgdGhhdCBJIHNob3VsZCB3cml0ZSBhIHdpa2kgcGFnZSBm
-b3IKPiB0aGUgY29kZSBzbyB0aGF0IHdvcmtpbmcgd2l0aCBpdCB3b3VsZCBiZSBlYXNpZXIgaW4g
-dGhlIGZ1dHVyZSBmb3IgbWUKPiBhbmQgZXZlcnlib2R5IGVsc2UuCj4KPiBTbywgaGVyZSdzIHRo
-ZSByZXN1bHQ6Cj4KaHR0cDovL3d3dy5mcmVlZGVza3RvcC5vcmcvd2lraS9Tb2Z0d2FyZS9QdWxz
-ZUF1ZGlvL0RvY3VtZW50YXRpb24vRGV2ZWxvcGVyL1Jld2luZGluZwo+Cj4gV2hpbGUgZG9pbmcg
-dGhhdCwgSSBmb3VuZCBxdWl0ZSBhIGZldyBidWdzLCB3aGljaCBhcmUgbm90ZWQgb24gdGhhdAo+
-IHBhZ2UuIEkgZG9uJ3QgcGxhbiBmaXhpbmcgdGhlbSBhbnkgdGltZSBzb29uIChoZWxwIHdpdGgg
-dGhhdCB3b3VsZCBiZQo+IHZlcnkgd2VsY29tZSksIHNvIEkgd2lsbCBqdXN0IGZpbGUgYnVncyBh
-Ym91dCB0aGUgaXNzdWVzIHNvIHRoYXQgdGhleQo+IGFyZSBub3QgZm9yZ290dGVuLgo+Cml0IHNl
-ZW0gdGhhdCB0aGUgYWxzYSBzaW5rIGlzIG1vcmUgY29tcGxpY2F0ZWQgdGhhbiB5b3VyIGZpZ3Vy
-ZS4KClJlZmVyIHRvIGZpZ3VyZSAxNCBIRCBBdWRpbyBETUEgYW5kIGJ1ZmZlcmluZyAsIHNlY3Rp
-b24gNC42IEVuZXJneQpFZmZpY2llbnQgSEEgYXVkaW8gbWVjaGFuaXNtCgptb3N0IHNvdW5kIGNh
-cmRzIGhhdmUgZml4ZWQgc2l6ZSBGSUZPIGJ1ZmZlciBpbnN0ZWFkIG9mIGR5bmFtaWMgRklGTyBh
-bmQKbWluaW11bSB0cmFuc2ZlciBzaXplKGJydXN0KSBzaW1pbGFyIHRvIGhkYSBjb250cm9sbGVy
-IHdoaWNoIHNuZF9wY21fcmV3aW5kCmNhbm5vdCByZXdpbmQgYW55IGF1ZGlvIGRhdGEgaW4gdGhv
-c2UgZmlyc3QgaW4gZmlyc3Qgb3V0IGJ1ZmZlci4KCmh0dHA6Ly9jZ2l0LmZyZWVkZXNrdG9wLm9y
-Zy9wdWxzZWF1ZGlvL3B1bHNlYXVkaW8vY29tbWl0L3NyYy9tb2R1bGVzL2Fsc2E/aWQ9NGRmNDQz
-YmJlNjgyMDU1YTQxZTdjMjI0ODg3N2RjYzc2ODJhNjliOAoKMSkgZG8gdGhlIHNlcnZlciByZWFs
-bHkgbmVlZCB0byByZXdpbmQgd2hlbiB0aGVyZSBpcyBvbmx5IG9uZSBwdWxzZSBjbGllbnQgPwoK
-MikgZG9lcyBwdWxzZWF1ZGlvIGFkZCB0aGlzIHJld2luZCBzYWZlZ3VhcmQgZGVsYXkgdG8gdGhl
-IGxhdGVuY3kgPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+
+On 08/21/2012 08:16 AM, Mark Brown wrote:
+> On Tue, Aug 21, 2012 at 02:30:51PM +0200, David Henningsson wrote:
+>> On 08/21/2012 02:05 PM, Mark Brown wrote:
+>
+>>>   - sound/core/ctljack.c which was added later and provides separate
+>>>     in-kernel and userspace APIs and is currently only used by HDA.
+>
+>> This is wrong. PulseAudio uses the new ctljack API. I started out
+>> with an implementation which used the input device API
+>> (sound/core/jack.c), but since some people did not like this API,
+>> the ctljack API was designed and implemented for PA to use, which it
+>> does (since PulseAudio 2.0 - the input device API implementation in
+>> PulseAudio was never merged upstream).
+>
+> ...and the only thing using this API to generate events is HDA which is
+> what I was talking about here given that this is a question from a
+> driver point of view.
+>
+>>> What I'd like to see happening is that we merge ctljack into jack (since
+>>> only HDA is going to be affected by that change it seems like the right
+>>> direction to make the merge) and also add extcon support, I have looked
+>>> at the extcon support.
+>
+>> I don't know either why we have two different interfaces for jack
+>> detection (not counting extcon) for driver writers. I think we
+>> should merge jack and ctljack, as long as that does not mean you
+>> break anything I'm relying on in ctljack.
+>
+>> Maybe something for discussion at Plumbers?
+>
+> We discussed this last time we all met and came to the above conclusion :/
+>
+>>> Short term for drivers used on embedded systems I'd have to recommend
+>>> extcon rather than anything ALSA-specific.
+>
+>> I thought that when Takashi did the new ctljack interface, that
+>> would effectively deprecate the old input device interface, and that
+>> ctljack was the new recommendation.
+>
+> Android currently uses the out of tree version of the extcon ABI (like I
+> say it's where the code originated), and some OSs do use the input ABI
+> also but realistically if you've got to pick one Android is where the
+> market is at.
+
+So, it seems that the way to go is extcon. I guess that ALSA will use 
+extcon just like today snd_jack uses the input driver. is this correct? 
+Is there any chance that ctrljack will propagate the events through 
+extcon? Is there any early implementation that I could look at? I am 
+asking to know how feasible is to use ctljack today and be compatible 
+with extcon in the future.
+
+Thanks!
+
+Ricardo
+
+>
+> To my knowledge no embedded OS is using the control jacks, it's possible
+> that there's something using them as a function of using PulseAudio but
+> the ones I'm famililar with currently ignore PulseAudio routing and just
+> use the mixing facilities.  Given the dependency on alsa-lib it'd be an
+> inconvenient ABI to adopt for most of them.
+>
