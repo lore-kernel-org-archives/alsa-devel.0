@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: [PATCH] ASoC: dapm: Don't force card bias level to be
 	updated
-Date: Thu, 23 Aug 2012 18:21:20 +0100
-Message-ID: <1345742480-17953-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Thu, 23 Aug 2012 18:25:51 +0100
+Message-ID: <1345742751-19068-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 74BFD265CEC
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 19:21:22 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A58242665D2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 19:25:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,7 +20,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 Commit 412312 (ASoC: dapm: Make sure all dapm contexts are updated) means
