@@ -1,28 +1,24 @@
-From: George Stefan <stefan.george87@gmail.com>
-Subject: Re: SAIF configuration on imx28
-Date: Thu, 23 Aug 2012 15:54:52 +0300
-Message-ID: <CAACwST+DAEd_8rVV14WBVFikCt5ed=KZnF6W43BJ9tnXDA6Z4w@mail.gmail.com>
-References: <CAACwSTK-fzSy+HG+u5H0aNU_wfSa7gvAsH2fVMdczssnYtpJXw@mail.gmail.com>
- <CAOMZO5C9ezzU7S0M-AN0f8gk7SBWs3WNbA6cG2S+7BF8j+dVxA@mail.gmail.com>
- <CAACwSTKiN17gAHnUs5BoHZH_K5NNo0z7X9QbVRFu9FZGCUw2mg@mail.gmail.com>
- <CAACwST+=owJQ+KGAKYLgpGY4k1hGNSC4ptSGMyVObSRpUightQ@mail.gmail.com>
- <CAOMZO5BGiU7J6W8TSybe8ELqnfLD=SYf9c_uVz6ppb4E2MOnzw@mail.gmail.com>
- <CAACwSTKkNFw9kC54VJ8en+tWpO9vpnHsszfyDtufWDeWhZCY5Q@mail.gmail.com>
- <20120823064844.GD10057@shlinux2.ap.freescale.net>
- <CAACwSTLLKCKj8rOfvqVZ5zCBTCUaFEJMEeA3oNBgnQRHFtciKQ@mail.gmail.com>
- <20120823074617.GI10057@shlinux2.ap.freescale.net>
- <CAACwSTL4MG3opgQTve9k1nt1eZbpTJcn7Fw84GQufW8+J-qg3Q@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
+ probe rather than as a device
+Date: Thu, 23 Aug 2012 13:59:04 +0100
+Message-ID: <20120823125903.GA7995@opensource.wolfsonmicro.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+ <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
+ <002801cd7c31$14d3d0c0$3e7b7240$@se>
+ <20120820085111.GJ8450@gmail.com>
+ <006d01cd7f5a$65937840$30ba68c0$@se>
+ <20120823092216.GA27264@gmail.com>
+ <20120823113922.GZ7995@opensource.wolfsonmicro.com>
+ <20120823121936.GA1047@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0997421103957869484=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id DC6192661AA
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 14:54:52 +0200 (CEST)
-Received: by eaa13 with SMTP id 13so174724eaa.38
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 05:54:52 -0700 (PDT)
-In-Reply-To: <CAACwSTL4MG3opgQTve9k1nt1eZbpTJcn7Fw84GQufW8+J-qg3Q@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 270842661E5
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 14:59:06 +0200 (CEST)
+In-Reply-To: <20120823121936.GA1047@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,122 +28,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Fabio Estevam <festevam@gmail.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: roger.xr.nilsson@stericsson.com, 'Linus Walleij' <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Ola Lilja <olalilja@yahoo.se>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2012/8/23 George Stefan <stefan.george87@gmail.com>
 
->
->
-> 2012/8/23 Dong Aisheng <b29396@freescale.com>
->
->> On Thu, Aug 23, 2012 at 03:13:11PM +0800, George Stefan wrote:
->> >    2012/8/23 Dong Aisheng <b29396@freescale.com>
->> >
->> >      On Thu, Aug 23, 2012 at 02:41:30PM +0800, George Stefan wrote:
->> >      ...
->> >      >    /*set the saif clk mux, saif0/saif1 both use saif0 clk*/
->> >      >    __raw_writel(BF_DIGCTL_CTRL_SAIF_CLKMUX_SEL(0x0),
->>   \
->> >      Should this be 0x2 if both saif0 and saif1 are using saif0 clk?
->> >      >    IO_ADDRESS(DIGCTL_PHYS_ADDR) + HW_DIGCTL_CTRL);
->> >      >    Using this configuration i am not able to receive IRQs from
->> DMA and
->> >      i
->> >      >    think the reason
->> >      >    is that SAIF is not receiving the CLK.
->> >      >    What do you think?
->> >      >    Thanks,
->> >      >    George.
->> >
->> >      Regards
->> >      Dong Aisheng
->> >
->> >    Yes, it should be 0x2 if they are using saif0 clk. but it they are
->> using
->> >    the CLK from an external device
->> >    which is master, i think that they should use an independent clock.
->> >    "In slave clocking mode, the SAIF configures the BITCLK and LRCLK
->> pins as
->> >    inputs, and
->> >    the off-chip codec is responsible for driving both clocks to the
->> >    SAIF"(imx28 reference manual)
->> >    0x0 - DIRECT - SAIF0 clock pins selected for SAIF0 input clocks, and
->> SAIF1
->> >    clock pins selected for
->> >    SAIF1 input clocks.
->> >    Am i interpreting this in the wrong way?
->> Your understand is right if all are working on slave mode.
->> But be noted that the current driver in mainline only supports master
->> mode,
->> mainly due to playback can not work on slave mode(see spec) while capture
->> can.
->> If all are in slave mode, that means the playback may not work.
->> You should make sure if your requirements really wants that.
->> And if you want to run in slave mode, you need change the mainline driver
->> to support it.
->>
->> Regards
->> Dong Aisheng
->>
->> The problem in using SAIF as master, is that in slave mode the modem uses
-> short frame sync(SND_SOC_DAIFMT_DSP_A),
-> which is not supported in the current driver.
->
->
-I have added support for SND_SOC_DAIFMT_DSP_A
-    case SND_SOC_DAIFMT_DSP_A:
-                scr &= ~BM_SAIF_CTRL_DELAY;
-                scr |= BM_SAIF_CTRL_LRCLK_POLARITY;
-                scr |= BM_SAIF_CTRL_JUSTIFY;
-                scr |= BM_SAIF_CTRL_BITCLK_EDGE;
+--===============0997421103957869484==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="K2zDyWOedq9OeiNe"
+Content-Disposition: inline
 
-}
-The clock is set at 256 KHZ:
- /* set the SAIF system clock as output */
-        snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 2560000,
-SND_SOC_CLOCK_OUT);
 
-I test record with:
-arecord -d 5 -f S16_LE -r 8000 -c 2 1.wav
+--K2zDyWOedq9OeiNe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Dump for 1.wav
-exdump -C 1.wav
-00000000  52 49 46 46 24 71 02 00  57 41 56 45 66 6d 74 20
- |RIFF$q..WAVEfmt |
-00000010  10 00 00 00 01 00 02 00  40 1f 00 00 00 7d 00 00
- |........@....}..|
-00000020  04 00 10 00 64 61 74 61  00 71 02 00 00 00 00 00
- |....data.q......|
-00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
- |................|
-*
-00004b90  00 00 00 18 00 00 30 00  00 00 00 00 00 00 00 00
- |......0.........|
-00004ba0  00 07 00 00 1c 00 00 00  02 00 00 00 00 00 00 03
- |................|
-00004bb0  e0 41 7c 78 07 10 c1 84  f0 e0 1e 3c 83 0f f0 c1
- |.A|x.......<....|
-00004bc0  3c 78 0f 03 c1 83 f8 f0  1f 3c 83 07 f0 e1 3e 78
- |<x.......<....>x|
-00004bd0  07 1f e1 83 78 f0 1f 3e  c3 07 f0 e0 3e 7c 07 0f
- |....x..>....>|..|
-00004be0  e0 c3 7c f0 0f 3e c1 87  f8 e0 1e 7c 87 0f e0 c1
- |..|..>.....|....|
-00004bf0  7c f8 0f 1e c1 83 f8 f0  1f 3c 83 0f f0 c1 3c f8
- ||........<....<.|
-00004c00  07 1f e1 83 78 f0 1f 3e  83 07 f0 e1 3e 78 07 0f
- |....x..>....>x..|
-00004c10  e0 c3 7c f0 0f 3e c3 07  f0 e0 3e 7c 87 0f e0 c1
- |..|..>....>|....|
-00004c20  fc f9 0f 1e c3 87 fc f0  1f fe f3 0f f0 c1 ff fb
- |................|
-00004c30  ff df c1 83 ff f0 ff ff  e7 07 ff e1 3e ff ff 1f
- |............>...|
-00004c40  ff 83 fe ff ff 3f cf f7  ff ff bf ff ff ff ff ff
- |.....?..........|
-00004c50  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
- |................|
-*
-00027120
+On Thu, Aug 23, 2012 at 01:20:03PM +0100, Lee Jones wrote:
+> > I say I don't understand the motivation for this change.  All the modern
+> > DT bindings are perfectly happy handling this without an explicit shim
+> > in the device tree to bodge things for Linux, adding them in seems like
+> > it'd be a retrograde step.  What benefit do you believe this brings?
+
+> How do the all the other DT:ed audio drivers handle the PCM then? More
+> importantly, how would you like to see it handled? Ola has NACKed this
+> patch and explained why:
+
+They instantiate the PCM driver dynamically from the DAI when it's
+probed which is pretty much what you're patch is doing.
+
+> "I'm sorry but this patch is breaking the design of ASoC. The ASoC-
+> platform is the DMA-block (in combination with the MSP-block), and
+> there should be a platform-driver for the DMA/PCM. The platform-driver=20
+> then has a DAI which is the MSP. The ASoC DAI-link-struct should have
+> one driver for each of these, so the dummy-driver for PCM should be
+> there."
+
+> So I don't really know where to go with it. Any ideas?
+
+I think Ola is suggesting probing the DMA driver from the machine which
+will also work though I'm not 100% sure if I'm parsing the above
+correctly.  The issue in DT terms is that if the DMA controller is
+shared with a bunch of other IPs then it should have one node shared
+between them all and not a bunch of shim nodes inserted in the middle
+which only exists due to the way Linux instantiates stuff.
+
+--K2zDyWOedq9OeiNe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQNijOAAoJEFJkBDiqVpZ4EK8P+wWshc+fXiAY6r/T9dVfQX20
+75oB7ejh7nEAI+ejT1OR/KDrEqoyVbsn4fhY42EfvmQ0K+z7RN6894f2fMq3Yj9s
+RT/SxDKaQA/GSeINwW6KqDsbP1j5NzrfgqZnylblR0zmYUiNCsLmCT+Q7V5JwsTY
+QDHYz0qrCMsB7wzG+kMpDbW4vhgFKarUcwutKGkNBIVhOO8ydI+oYrM+FvSYP2Lw
+FFcb7AAp/JT5s2j8sLSdstuNmwZB6juF2w4By4Dm87c9+7LCEl8uS82QsZcvcyzT
+nBT9OEhtd2E8J32zGM15kQnAS6zHnYbOtfOGHpPZMCEjg0nkeg/cjo4H7k4egN3w
+aizcXcwM4sYDV3SZSajZ9kEFbqClYKGcKXufwVeSIMdcJrH+AWiY2GzrTz6fCS/H
+x29WIK2OG4XaUyrWWNE5HjVBd+iHiOIypEJK/TtclYOugMNVPdYnHvvogDeqwGp7
+m5BtgvJdP8eLLn23YDBmM4SGBKbTRmmPglKppzLK3cVAbP8kmaqcSBUsYzvM26UJ
++/I90EPL5r9JQLAwIZ3PXCvjP/VjDun3egrD5hOEwWe+Pcb7F0gXXBDAarC9wXQI
+OaOfXR6UyGDopUpMLZbiUBn5/rwbNsJVdtbWvkSoy/k1JXMxgw0tgmwxRrZhBGS4
+iiZLujcGLdckuFU0ieSu
+=bMcE
+-----END PGP SIGNATURE-----
+
+--K2zDyWOedq9OeiNe--
+
+--===============0997421103957869484==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0997421103957869484==--
