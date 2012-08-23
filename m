@@ -1,25 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
- probe rather than as a device
-Date: Thu, 23 Aug 2012 15:37:57 +0100
-Message-ID: <20120823143757.GB7995@opensource.wolfsonmicro.com>
-References: <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
- <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
- <002801cd7c31$14d3d0c0$3e7b7240$@se>
- <20120820085111.GJ8450@gmail.com>
- <006d01cd7f5a$65937840$30ba68c0$@se>
- <20120823092216.GA27264@gmail.com>
- <20120823113922.GZ7995@opensource.wolfsonmicro.com>
- <20120823121936.GA1047@gmail.com>
- <20120823125903.GA7995@opensource.wolfsonmicro.com>
- <20120823132618.GB1047@gmail.com>
+Subject: Re: [PATCH] ARM: OMAP2+: twl-common: Fix compile time
+ error when omap-twl4030 audio is not enabled
+Date: Thu, 23 Aug 2012 15:39:43 +0100
+Message-ID: <20120823143943.GC7995@opensource.wolfsonmicro.com>
+References: <1345703701-27283-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4857698716389358393=="
+Content-Type: multipart/mixed; boundary="===============8153577186576456791=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0286D265CD6
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 16:37:59 +0200 (CEST)
-In-Reply-To: <20120823132618.GB1047@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C98A9265CCD
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 16:39:51 +0200 (CEST)
+In-Reply-To: <1345703701-27283-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,74 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: roger.xr.nilsson@stericsson.com, 'Linus Walleij' <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Ola Lilja <olalilja@yahoo.se>, linux-arm-kernel@lists.infradead.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4857698716389358393==
+--===============8153577186576456791==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1ZI8SPMLIPHYPwRk"
+	protocol="application/pgp-signature"; boundary="12mfjY/2IcLDkfPj"
 Content-Disposition: inline
 
 
---1ZI8SPMLIPHYPwRk
-Content-Type: text/plain; charset=us-ascii
+--12mfjY/2IcLDkfPj
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 23, 2012 at 02:26:19PM +0100, Lee Jones wrote:
+On Thu, Aug 23, 2012 at 09:35:01AM +0300, Peter Ujfalusi wrote:
+> Fixes:
+> CC      arch/arm/mach-omap2/twl-common.o arch/arm/mach-omap2/twl-common.c=
+:562: error: conflicting types for =E2=80=98omap_twl4030_audio_init=E2=80=99
+> arch/arm/mach-omap2/twl-common.h:62: error: previous declaration of =E2=
+=80=98omap_twl4030_audio_init=E2=80=99 was here
+> make[1]: *** [arch/arm/mach-omap2/twl-common.o] Error 1
+> make: *** [arch/arm/mach-omap2] Error 2
 
-> > I think Ola is suggesting probing the DMA driver from the machine which
-> > will also work though I'm not 100% sure if I'm parsing the above
-> > correctly.  The issue in DT terms is that if the DMA controller is
-> > shared with a bunch of other IPs then it should have one node shared
-> > between them all and not a bunch of shim nodes inserted in the middle
-> > which only exists due to the way Linux instantiates stuff.
+Applied, thanks.
 
-> When you say 'machine', do you mean from arch/<arch>/mach-*? If so, I'm
-> keen for that not to happen.
-
-No, sound/soc/ux500/snowball.c or whatever.  At least that's my guess.
-
-> > They instantiate the PCM driver dynamically from the DAI when it's
-> > probed which is pretty much what you're patch is doing.
-
-> So they do it in the same why I have with this patch? Do you know why
-> Ola might think this is a bad idea?
-
-I'm not 100% sure, I'm guessing it might be down to the fact that you
-end up with multiple PCM drivers.  We could avoid that with refcounting
-but nobody's really worried about it.
-
---1ZI8SPMLIPHYPwRk
+--12mfjY/2IcLDkfPj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQNkA+AAoJEFJkBDiqVpZ4lWYP/jCsFjDYo6psXAknvVMUeg9G
-PB8ugyWT3xfi8lDFGx8+J9gQTRTBJpAERHKna62M9WFPTsXE4yYBZ9Sv+y7igreY
-vC/dCloETJSJx2Ssk/viBML3m/e6nJYeO6DHTFKolZ9N75/7ZcYgHUP9jVO3IyDe
-NCFHcU5G3JNdibMkkE5YN0CycAEF4CfeBDhfa8OyJuCcxGcifHajS0cRFDFIAXJ3
-anxq82IPXqRivs8hxq/06AZ7ppaNO7tmXFu0byB+HDw7wrjM/MH/u2cUR1BANbZE
-hwCzmVJHhwt/zUysSFW6GF+O1h5PA2KbO0dPTT3m5Zvjg0UCzY7TxfPZwtDIxEup
-hWxnAxz6MXg3ebQL1rmVbTW3YBqSf+InhIJxq8Dwd+BoDLk7EkDK4ykGOKg/O5LN
-IWDMiuIYq6ne5RkVVbPbdCt1zqa4a6c2/XoAk1HOMupbNpDLEAyGWPbK6w1X7OvW
-QiDh+e1AI5K8fYxpHPG5MnEgWJVqrMXRsNWBmKJWlZQ8MVipGrvhd4Re/LxRaY4B
-Br+6e7HPwxGSjTWjJ3ozQSY9VIQ63zklRuPwWsuArnljFFb7b4Z0tiKJ52Oc6QxO
-9q/fllw5f1J97P1DiYvynuwgwXOvFdLIOYoBM3isLlFWW5pSr6C8E6Ty1BhtAnX/
-XWMlGbg5f6LNZ8CCoRQs
-=KI6x
+iQIcBAEBAgAGBQJQNkCmAAoJEFJkBDiqVpZ4b9YP/3Vkt1jQOL2oS8u5mObNoWKX
+vi5naBhFSY70MMByAotV38KG/GQQjQOElTdzrr7yT+78q82PmKaHzAu8tGbUWbgV
+9Opg56dboKHt+bXcjaVPvkb44omCQBPuuRY+kpH1QZN1DoQ+X/DvYe7nvaOJPIBq
+rEcRmq8NrQHCmi995AZX8d4mDzkrCLRVaVM5Xok9Bno4Mej4Byvai/dIXRHA0++A
+TieXvlyBlkD1V+xbLlWv/KlPC9fTW6oLmgwYmIcSu9Wenbm3pjeAscGNpIhMKLnZ
+9uoDDjmZUxcy1EwF26NAcmWdjcvdcKavnh6vBxCSj5x24rqvbvVPw5qVSR/JyBYl
+3QAxNvXCVebO03LZGftjBWxtQWftJA8nVBCORusFcKS4QH2VDYdw9MTSaIF7akHW
+kHQn8hMSUj9i7o/ZfrnUuuSewQG4IlpMk+/X0fURT3yMquYg/gmLMpO5/MOimKSL
+PJEE+1bCE3CfTzc8jReN7I9EnxZaBglh3yTWu+avJyr4ez56fqorUPE3US7HCvJ3
+ayoBjMhWUp20VONBtYuc4A/NghrtI1VG1tGzSkcQaYHVWKu7n1Jpp/92NUW6qNuV
+xMGfyRJhITZcs2q/xL/YInpa/yAAgVkQNSJSc89T2+bESSYlE5sS1uuSn+bI9Blw
+PjpRwe/ua+B9qNucp1Q+
+=RLTd
 -----END PGP SIGNATURE-----
 
---1ZI8SPMLIPHYPwRk--
+--12mfjY/2IcLDkfPj--
 
---===============4857698716389358393==
+--===============8153577186576456791==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4857698716389358393==--
+--===============8153577186576456791==--
