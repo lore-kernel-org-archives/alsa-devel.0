@@ -1,31 +1,14 @@
-From: George Stefan <stefan.george87@gmail.com>
-Subject: Re: SAIF configuration on imx28
-Date: Thu, 23 Aug 2012 17:50:53 +0300
-Message-ID: <CAACwSTKZ+h12JSRAu4iPcPcfRsLOQnQqbeK6PsZ51XAp8ucCrA@mail.gmail.com>
-References: <CAACwSTK-fzSy+HG+u5H0aNU_wfSa7gvAsH2fVMdczssnYtpJXw@mail.gmail.com>
- <CAOMZO5C9ezzU7S0M-AN0f8gk7SBWs3WNbA6cG2S+7BF8j+dVxA@mail.gmail.com>
- <CAACwSTKiN17gAHnUs5BoHZH_K5NNo0z7X9QbVRFu9FZGCUw2mg@mail.gmail.com>
- <CAACwST+=owJQ+KGAKYLgpGY4k1hGNSC4ptSGMyVObSRpUightQ@mail.gmail.com>
- <CAOMZO5BGiU7J6W8TSybe8ELqnfLD=SYf9c_uVz6ppb4E2MOnzw@mail.gmail.com>
- <CAACwSTKkNFw9kC54VJ8en+tWpO9vpnHsszfyDtufWDeWhZCY5Q@mail.gmail.com>
- <20120823064844.GD10057@shlinux2.ap.freescale.net>
- <CAACwSTLLKCKj8rOfvqVZ5zCBTCUaFEJMEeA3oNBgnQRHFtciKQ@mail.gmail.com>
- <20120823074617.GI10057@shlinux2.ap.freescale.net>
- <CAACwSTL4MG3opgQTve9k1nt1eZbpTJcn7Fw84GQufW8+J-qg3Q@mail.gmail.com>
- <CAACwST+DAEd_8rVV14WBVFikCt5ed=KZnF6W43BJ9tnXDA6Z4w@mail.gmail.com>
- <CAOMZO5BV_j1P4x3_niyZ3XqjnJGwR_b0aagyArHsFq_iEFy5sg@mail.gmail.com>
- <CAACwSTLzfm5Pdw8y6P5MqOT_W3XChdm+tG9EP0zYmQF1Rb-mxg@mail.gmail.com>
- <CAOMZO5AA1uRGopKfdiG7XN65aC2p58Q0esUWdekXyQL+5iW5Ww@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Update for new WM1811 variants
+Date: Thu, 23 Aug 2012 15:57:42 +0100
+Message-ID: <1345733862-19092-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FA44265CCD
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 16:50:54 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so258900eek.38
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 07:50:53 -0700 (PDT)
-In-Reply-To: <CAOMZO5AA1uRGopKfdiG7XN65aC2p58Q0esUWdekXyQL+5iW5Ww@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6488F265CD7
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 16:57:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,27 +18,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <b29396@freescale.com>, Lauri Hintsala <lauri.hintsala@bluegiga.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-2012/8/23 Fabio Estevam <festevam@gmail.com>
+There are some new WM1811 variants distinguished by both revision and
+cust_id which need slightly different handling.
 
-> On Thu, Aug 23, 2012 at 10:09 AM, George Stefan
-> <stefan.george87@gmail.com> wrote:
->
-> > That is my main problem. I have a modem...which is a "black box" and i am
-> > not sure if
-> > it is emitting valid data. I just configure an audio loop on the modem
-> side.
-> > If i play this on my laptop, its just a spike...at the begining and then
-> > silence.
->
-> From your first message in this thread, you say you are running
-> 2.6.35. Please try it on a mainline kernel instead.
->
-> Regards,
->
-> Fabio Estevam
->
-I am afraid i don't have this option!
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 8d5b65a..c7dbbd4 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3823,14 +3823,20 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 		wm8994->hubs.no_cache_dac_hp_direct = true;
+ 		wm8994->fll_byp = true;
+ 
+-		switch (wm8994->revision) {
++		switch (control->cust_id) {
+ 		case 0:
+-		case 1:
+ 		case 2:
+-		case 3:
+ 			wm8994->hubs.dcs_codes_l = -9;
+ 			wm8994->hubs.dcs_codes_r = -7;
+ 			break;
++		case 1:
++		case 3:
++			wm8994->hubs.dcs_codes_l = -8;
++			wm8994->hubs.dcs_codes_r = -7;
++			break;
++		default:
++			break;
++		}
+ 		default:
+ 			break;
+ 		}
+@@ -3919,7 +3925,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	switch (control->type) {
+ 	case WM1811:
+-		if (wm8994->revision > 1) {
++		if (control->cust_id > 1 || wm8994->revision > 1) {
+ 			ret = wm8994_request_irq(wm8994->wm8994,
+ 						 WM8994_IRQ_GPIO(6),
+ 						 wm1811_jackdet_irq, "JACKDET",
+-- 
+1.7.10.4
