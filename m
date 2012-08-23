@@ -1,113 +1,59 @@
-From: Tim Jiang <tim.jiang77@live.com>
-Subject: [Cross compile issue] - I met problem when to cross
- compile alsa-lib and alsa-utils.Could you please help on it?
-Date: Thu, 23 Aug 2012 10:46:39 +0000
-Message-ID: <COL116-W40A81806CE366DDEFB100396BE0@phx.gbl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ARM: OMAP2+: twl-common: Fix compile time error when
+ omap-twl4030 audio is not enabled
+Date: Thu, 23 Aug 2012 12:22:04 +0100
+Message-ID: <20120823112204.GY7995@opensource.wolfsonmicro.com>
+References: <1345703701-27283-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc3-s6.col0.hotmail.com (col0-omc3-s6.col0.hotmail.com
- [65.55.34.144]) by alsa0.perex.cz (Postfix) with ESMTP id 10563265CB4
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 12:46:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+qWNqCDaOkLiPcHd"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1345703701-27283-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-next@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--+qWNqCDaOkLiPcHd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi experts,
+On Thu, Aug 23, 2012 at 09:35:01AM +0300, Peter Ujfalusi wrote:
+> Fixes:
+> CC      arch/arm/mach-omap2/twl-common.o arch/arm/mach-omap2/twl-common.c=
+:562: error: conflicting types for =E2=80=98omap_twl4030_audio_init=E2=80=99
+> arch/arm/mach-omap2/twl-common.h:62: error: previous declaration of =E2=
+=80=98omap_twl4030_audio_init=E2=80=99 was here
+> make[1]: *** [arch/arm/mach-omap2/twl-common.o] Error 1
+> make: *** [arch/arm/mach-omap2] Error 2
+>=20
+> When building the kernel with !SND_OMAP_SOC_OMAP_TWL4030
 
-#My question: I met problem when to cross compile alsa-lib and alsa-utils.Could you please help on it?
-Thanks in advance.
+Which branch needs this?
 
-#details
-My host PC: ubuntu 11.10 64-bit; 
-Alsa-lib source code version: 1.0.23;
-Alsa-utils source code version: 1.0.23;
-My target platform: PandaBoard;
-My build shell script:
-#!/bin/bash
-echo "=======================start build alsa-lib-1.0.23=============="
-cd ./alsa-lib-1.0.23/
-export CC=arm-linux-gnueabi-gcc
-echo "-------------->`pwd`"
-./configure  --target=arm-linux  --host=i686-linux  --prefix=/home/tim/work/dev_board/tools/ALSA/output/alsa_lib   --disable-python
-make clean
-make
-make install
-cd -
-echo "========================end  build alsa-lib-1.0.23==============="
+--+qWNqCDaOkLiPcHd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-echo "=======================start build alsa-utils-1.0.23===================="
-cd ./alsa-utils-1.0.23/
-echo "-------------->`pwd`"
-./configure --target=arm-linux  --host=i686-linux --with-alsa-inc-prefix=/home/tim/work/dev_board/tools/ALSA/output/alsa_lib/include --with-alsa-prefix=/home/tim/work/dev_board/tools/ALSA/output/alsa_lib/lib --disable-alsamixer --disable-xmlto 
-make 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-I can build Alsa-lib successfully but error happened when to build Alsa-utils.
-=======================start build alsa-utils-1.0.23====================
--------------->/home/tim/work/dev_board/tools/ALSA/alsa-utils-1.0.23
-configure: WARNING: If you wanted to set the --build type, don't use --host.
-    If a cross compiler is detected then cross compile mode will be used.
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether build environment is sane... yes
-checking for gawk... no
-checking for mawk... mawk
-checking whether make sets $(MAKE)... yes
-checking for i686-linux-strip... no
-checking for strip... strip
-checking whether NLS is requested... yes
-checking for msgfmt... /usr/bin/msgfmt
-checking for gmsgfmt... /usr/bin/msgfmt
-checking for xgettext... /usr/bin/xgettext
-checking for msgmerge... /usr/bin/msgmerge
-checking for style of include used by make... GNU
-checking for i686-linux-gcc... arm-linux-gnueabi-gcc
-checking for C compiler default output file name... a.out
-checking whether the C compiler works... yes
-checking whether we are cross compiling... yes
-checking for suffix of executables... 
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether arm-linux-gnueabi-gcc accepts -g... yes
-checking for arm-linux-gnueabi-gcc option to accept ISO C89... none needed
-checking dependency style of arm-linux-gnueabi-gcc... gcc3
-checking build system type... x86_64-unknown-linux-gnu
-checking host system type... i686-pc-linux-gnu
-checking for ld used by GCC... /usr/arm-linux-gnueabi/bin/ld
-checking if the linker (/usr/arm-linux-gnueabi/bin/ld) is GNU ld... yes
-checking for shared library run path origin... done
-checking for CFPreferencesCopyAppValue... no
-checking for CFLocaleCopyCurrent... no
-checking for GNU gettext in libc... yes
-checking whether to use NLS... yes
-checking where the gettext function comes from... libc
-checking for i686-linux-gcc... (cached) arm-linux-gnueabi-gcc
-checking whether we are using the GNU C compiler... (cached) yes
-checking whether arm-linux-gnueabi-gcc accepts -g... (cached) yes
-checking for arm-linux-gnueabi-gcc option to accept ISO C89... (cached) none needed
-checking dependency style of arm-linux-gnueabi-gcc... (cached) gcc3
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether ln -s works... yes
-checking for ALSA CFLAGS...  -I/home/tim/work/dev_board/tools/ALSA/output/alsa_lib/include
-checking for ALSA LDFLAGS...  -L/home/tim/work/dev_board/tools/ALSA/output/alsa_lib/lib -lasound -lm -ldl -lpthread
-checking for libasound headers version >= 1.0.16... found.
-checking for snd_ctl_open in -lasound... no
-configure: error: No linkable libasound was found.
-make: *** No targets specified and no makefile found.  Stop.
+iQIcBAEBAgAGBQJQNhJVAAoJEFJkBDiqVpZ45xMQALaEulyLb6VhJyrawMLRXopY
+hfWwecSoEu7hO4nH7CpGgSAbmX00upFUJjYEop6TSE+1s1eX2/GFGBmB24qQVbJM
+P5QkqHZhuzez0aI7Ku2uIy8kRKroy41SPG6dMMRPWK0yjAdUivfAADGldmvYIrcC
+su1WNRJ5dffoxFEdlwBjqRRTArOSJ8lwu5zNtRWOkvIYTknSWKedBaMinl+V6Ipp
+bWvc9PrU/H+7O6hFbjNDj0g0ua6iGoxyksMJnAbvKE6nVVrBHhlxBnXiEsX8Tabv
+SBUFgy2ISm+o0jWhDVU4bZgIO9vaI4Kv7kZnQVF5qBWz6g2igemVnI8OsA7/pj51
+U7bJ8fI1SJQFAGxzewRMTX3yoA8sBlgpd19T9YuLUGcjhEzIgBWXqPKywy8SNuhT
+l45u38n0mssQaU+3gXlhu6b6Dfo3pNg14nxSBEZZ4JI+o5cEIf4VFfhBmNmaNncf
+9KEWMs0sBvx+fa/IDerjaglLmnfw0PjPajpAhvPamHho952hQyVAM9+0oTSK9+CY
+1tlSoyRqHmI44SC1klztG7ran6kFVcWgccoSceE6Q0Cm1tOYDQOv1L70FC8H2cnL
+HKbRlKnaO7las0exG4vdy+oA6E/2fmXJM595ivMNGcbaKKwdWxgWKUs1yd8uTWtd
+Q+PX69bS3uXV/gp5eInZ
+=ovMv
+-----END PGP SIGNATURE-----
 
-
-
-Best Regards,
-Tim
-
- 		 	   		  
+--+qWNqCDaOkLiPcHd--
