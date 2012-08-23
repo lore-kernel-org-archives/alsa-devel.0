@@ -1,21 +1,20 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH 3/5] ASoC: Davinci: pcm: Add device tree
-	bindings
-Date: Thu, 23 Aug 2012 05:13:59 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA68662@DBDE01.ent.ti.com>
-References: <1344948125-5649-1-git-send-email-gururaja.hebbar@ti.com>
- <1344948125-5649-4-git-send-email-gururaja.hebbar@ti.com>
- <20120817223122.GA21445@opensource.wolfsonmicro.com>
- <1BAFE6F6C881BF42822005164F1491C33EA67DA1@DBDE01.ent.ti.com>
- <20120822155808.GP7995@opensource.wolfsonmicro.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v3 2/2] [ALSA] hda - suspend
+	the	controller	only if all codecs support stop-clk in D3
+Date: Thu, 23 Aug 2012 06:25:49 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F81BC58B@SHSMSX101.ccr.corp.intel.com>
+References: <1345632404-5629-1-git-send-email-mengdong.lin@intel.com>
+ <s5h1uiz15qv.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F81B8301@SHSMSX101.ccr.corp.intel.com>
+ <s5hd32jymxc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id B7A75266195
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 07:14:08 +0200 (CEST)
-In-Reply-To: <20120822155808.GP7995@opensource.wolfsonmicro.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 720A5264F0B
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 08:25:54 +0200 (CEST)
+In-Reply-To: <s5hd32jymxc.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,29 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
- Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "Nori,
- Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Ujfalusi,
- Peter" <peter.ujfalusi@ti.com>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 22, 2012 at 21:28:08, Mark Brown wrote:
-> On Wed, Aug 22, 2012 at 01:50:09PM +0000, Hebbar, Gururaja wrote:
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
 > 
-> > From your for-3.7 branch, I could only find such implementation in Tegra
-> > Platform. 
-> > Most Freescale platforms implements this through a device/driver method.
-> > Exception being sound/soc/mxs/mxs-pcm.c
+> Thinking on it again, maybe a cleaner option would be something like:
 > 
-> > So should I follow tegra implementation?
 > 
-> Tegra and mxs should be good examples, yes.
-
-Ok. Will update in V2
-
+> static void azx_power_notify(struct hda_bus *bus) {
+> 	struct azx *chip = bus->private_data;
 > 
+> 	if (bus->power_keep_link_on || !codec->d3_stop_clk_ok)
+> 		return;
+> 
+> 	if (codec->power_on)
+> 		pm_runtime_get_sync(&chip->pci->dev);
+> 	else
+>  		pm_runtime_put_sync(&chip->pci->dev);
+> }
+> 
+> Then in call azx_init_chip() and azx_stop_chip() in the runtime PM.
+> (In the power-down case, it should check power_save_controller there.
+>  Eventually we can deprecate this option later.)
+
+This would be much cleaner and can avoid race among multiple codecs. I'll update code as you suggested and merge the two patches into one.
+And I support deprecate power_save_controller, because it seems a duplicate of runtime PM on/off control.
 
 
-Regards, 
-Gururaja
+> The azx_init_chip() and azx_stop_chip() calls were needed in
+> azx_power_notify() because the PM resume didn't kick off the initialization
+> immediately in the earlier version, but left uninitialized until the power-ON
+> via power-save is triggered.
+> 
+> This was changed because of some ugly bugs (e.g. inconsistent mute LED).
+> Now the hardware is always initialized after PM resume.
+> Thus, for powersave case, chip init/stop can be simply put in the runtime PM
+> side, as far as I see.
+
+Thanks for sharing the code history.
+Mengdong
