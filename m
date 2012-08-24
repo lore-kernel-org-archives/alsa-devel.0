@@ -1,39 +1,178 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 09/17] ARM: ux500: Add AB8500 CODEC node to DB8500 Device Tree
-Date: Fri, 24 Aug 2012 15:01:45 +0100
-Message-ID: <1345816913-4113-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 04/17] ASoC: codecs: Enable AB8500 CODEC for
+	Device Tree
+Date: Fri, 24 Aug 2012 15:01:40 +0100
+Message-ID: <1345816913-4113-5-git-send-email-lee.jones@linaro.org>
 References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B8C6265E26
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 16:02:19 +0200 (CEST)
+Received: by wibhm2 with SMTP id hm2so1686340wib.2
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 07:02:18 -0700 (PDT)
 In-Reply-To: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, ola.o.lilja@stericsson.com, roger.xr.nilsson@stericsson.com, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, roger.xr.nilsson@stericsson.com, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ensure correct probing and pass though important configuration
-options to the AB8500 CODEC driver when DT is enabled
+We continue to allow the AB8500 CODEC to be registered via the AB8500
+Multi Functional Device API, only this time we extract its configuration
+from the Device Tree binary.
 
+CC: alsa-devel@alsa-project.org
+Acked-by: Ola Lilja <ola.o.lilja@stericsson.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/dbx5x0.dtsi |    6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/mfd/abx500/ab8500-codec.h |    6 ++-
+ sound/soc/codecs/ab8500-codec.c         |   81 +++++++++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/dbx5x0.dtsi b/arch/arm/boot/dts/dbx5x0.dtsi
-index 3180a9c..7f8c9db 100644
---- a/arch/arm/boot/dts/dbx5x0.dtsi
-+++ b/arch/arm/boot/dts/dbx5x0.dtsi
-@@ -389,6 +389,12 @@
- 					compatible = "stericsson,ab8500-debug";
- 				};
+diff --git a/include/linux/mfd/abx500/ab8500-codec.h b/include/linux/mfd/abx500/ab8500-codec.h
+index dc65292..d707941 100644
+--- a/include/linux/mfd/abx500/ab8500-codec.h
++++ b/include/linux/mfd/abx500/ab8500-codec.h
+@@ -23,7 +23,8 @@ enum amic_type {
+ /* Mic-biases */
+ enum amic_micbias {
+ 	AMIC_MICBIAS_VAMIC1,
+-	AMIC_MICBIAS_VAMIC2
++	AMIC_MICBIAS_VAMIC2,
++	AMIC_MICBIAS_UNKNOWN
+ };
  
-+				codec: ab8500-codec {
-+					compatible = "stericsson,ab8500-codec";
+ /* Bias-voltage */
+@@ -31,7 +32,8 @@ enum ear_cm_voltage {
+ 	EAR_CMV_0_95V,
+ 	EAR_CMV_1_10V,
+ 	EAR_CMV_1_27V,
+-	EAR_CMV_1_58V
++	EAR_CMV_1_58V,
++	EAR_CMV_UNKNOWN
+ };
+ 
+ /* Analog microphone settings */
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 23b4018..99dffcf 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -34,6 +34,7 @@
+ #include <linux/mfd/abx500/ab8500-sysctrl.h>
+ #include <linux/mfd/abx500/ab8500-codec.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -2394,9 +2395,65 @@ struct snd_soc_dai_driver ab8500_codec_dai[] = {
+ 	}
+ };
+ 
++static void ab8500_codec_of_probe(struct device *dev, struct device_node *np,
++				struct ab8500_codec_platform_data *codec)
++{
++	u32 value;
 +
-+					stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+				};
++	if (of_get_property(np, "stericsson,amic1-type-single-ended", NULL))
++		codec->amics.mic1_type = AMIC_TYPE_SINGLE_ENDED;
++	else
++		codec->amics.mic1_type = AMIC_TYPE_DIFFERENTIAL;
 +
- 				ab8500-regulators {
- 					compatible = "stericsson,ab8500-regulator";
++	if (of_get_property(np, "stericsson,amic2-type-single-ended", NULL))
++		codec->amics.mic2_type = AMIC_TYPE_SINGLE_ENDED;
++	else
++		codec->amics.mic2_type = AMIC_TYPE_DIFFERENTIAL;
++
++	/* Has a non-standard Vamic been requested? */
++	if (of_get_property(np, "stericsson,amic1a-bias-vamic2", NULL))
++		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC2;
++	else
++		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC1;
++
++	if (of_get_property(np, "stericsson,amic1b-bias-vamic2", NULL))
++		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC2;
++	else
++		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC1;
++
++	if (of_get_property(np, "stericsson,amic2-bias-vamic1", NULL))
++		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC1;
++	else
++		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC2;
++
++	if (!of_property_read_u32(np, "stericsson,earpeice-cmv", &value)) {
++		switch (value) {
++		case 950 :
++			codec->ear_cmv = EAR_CMV_0_95V;
++			break;
++		case 1100 :
++			codec->ear_cmv = EAR_CMV_1_10V;
++			break;
++		case 1270 :
++			codec->ear_cmv = EAR_CMV_1_27V;
++			break;
++		case 1580 :
++			codec->ear_cmv = EAR_CMV_1_58V;
++			break;
++		default :
++			codec->ear_cmv = EAR_CMV_UNKNOWN;
++			dev_err(dev, "Unsuitable earpiece voltage found in DT\n");
++		}
++	} else {
++		dev_warn(dev, "No earpiece voltage found in DT - using default\n");
++		codec->ear_cmv = EAR_CMV_0_95V;
++	}
++}
++
+ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct device *dev = codec->dev;
++	struct device_node *np = dev->of_node;
+ 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
+ 	struct ab8500_platform_data *pdata;
+ 	struct filter_control *fc;
+@@ -2407,6 +2464,30 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
+ 	/* Setup AB8500 according to board-settings */
+ 	pdata = (struct ab8500_platform_data *)dev_get_platdata(dev->parent);
+ 
++	if (np) {
++		if (!pdata)
++			pdata = devm_kzalloc(dev,
++					sizeof(struct ab8500_platform_data),
++					GFP_KERNEL);
++
++		if (pdata && !pdata->codec)
++			pdata->codec
++				= devm_kzalloc(dev,
++					sizeof(struct ab8500_codec_platform_data),
++					GFP_KERNEL);
++
++		if (!(pdata && pdata->codec))
++			return -ENOMEM;
++
++		ab8500_codec_of_probe(dev, np, pdata->codec);
++
++	} else {
++		if (!(pdata && pdata->codec)) {
++			dev_err(dev, "No codec platform data or DT found\n");
++			return -EINVAL;
++		}
++	}
++
+ 	/* Inform SoC Core that we have our own I/O arrangements. */
+ 	codec->control_data = (void *)true;
  
 -- 
 1.7.9.5
