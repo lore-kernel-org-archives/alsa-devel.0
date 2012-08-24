@@ -1,15 +1,23 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v2 1/1] [ALSA] hda - bug fix on references
-	without checking CONFIG_SND_HDA_POWER_SAVE
-Date: Fri, 24 Aug 2012 12:06:30 +0800
-Message-ID: <1345781190-2193-1-git-send-email-mengdong.lin@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: How to define card specific pcm devices?
+Date: Fri, 24 Aug 2012 12:20:04 +0800
+Message-ID: <CAN8cciacZ7NZkkBHo0KVfnGWdbuc-tX=QMg=-=m0+xDFGswoRA@mail.gmail.com>
+References: <1344597903.4283.68.camel@IT-D-4QB9Z4J>
+ <1345215040.2530.26.camel@IT-D-4QB9Z4J>
+ <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
+ <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
+ <1345262953.4864.12.camel@laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id C93E326660B
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 06:06:33 +0200 (CEST)
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CCDF264EF7
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 06:20:06 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so948198qcs.38
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 21:20:05 -0700 (PDT)
+In-Reply-To: <1345262953.4864.12.camel@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,79 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>
+To: Tanu Kaskinen <tanuk@iki.fi>
+Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+>
+> > how about the 4 channel mic?
+>
+> What about it? The discussion stopped when I asked what should be the
+> name for the device. I asked whether "4channelinput" would be good, but
+> got no answers. At PulseAudio side we figured that "hw" works well
+> enough in practice
 
-The patch to support runtime PM introduced a bug:
-Module parameter 'power_save_controller', and the codec flag 'd3_stop_clk'
-'d3_stop_clk_ok' are defined only when HDA power save is enabled in config. But
-there are references to them without checking macro CONFIG_SND_HDA_POWER_SAVE.
+http://www.rrfx.net/2009/11/ps3-eye-4-channel-audio-tests-on-ubuntu.html
 
-This patch is to fix the bug.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
----
- sound/pci/hda/hda_codec.c |    6 ++++++
- sound/pci/hda/hda_intel.c |    2 ++
- 2 files changed, 8 insertions(+)
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index d6b3a6d..e618394 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1320,11 +1320,13 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
- 					   AC_VERB_GET_SUBSYSTEM_ID, 0);
- 	}
- 
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
- 	codec->d3_stop_clk = snd_hda_codec_get_supported_ps(codec,
- 					codec->afg ? codec->afg : codec->mfg,
- 					AC_PWRST_CLKSTOP);
- 	if (!codec->d3_stop_clk)
- 		bus->power_keep_link_on = 1;
-+#endif
- 
- 	/* power-up all before initialization */
- 	hda_set_power_state(codec,
-@@ -3523,7 +3525,9 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
- 	int count;
- 	unsigned int state;
- 
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
- 	codec->d3_stop_clk_ok = 0;
-+#endif
- 
- 	if (codec->patch_ops.set_power_state) {
- 		codec->patch_ops.set_power_state(codec, fg, power_state);
-@@ -3548,9 +3552,11 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
- 			break;
- 	}
- 
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
- 	if ((power_state == AC_PWRST_D3)
- 		&& codec->d3_stop_clk && (state & AC_PWRST_CLK_STOP_OK))
- 		codec->d3_stop_clk_ok = 1;
-+#endif
- }
- 
- #ifdef CONFIG_SND_HDA_HWDEP
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 2baa3ee..97307df 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2515,8 +2515,10 @@ static int azx_runtime_suspend(struct device *dev)
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
- 
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
- 	if (!power_save_controller)
- 		return -EAGAIN;
-+#endif
- 
- 	azx_stop_chip(chip);
- 	azx_clear_irq_pending(chip);
--- 
-1.7.9.5
+the geometry of the microphone array is an important factor for how to
+perform downmixing to mono as there are delay between the four mics and the
+channel map of mic array is different from the channel map of surround
+speakers
