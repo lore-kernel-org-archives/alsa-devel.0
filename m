@@ -1,30 +1,22 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: Re: [PATCH] ASoC: samsung dma - prepare dma in
- start/resume trigger path
-Date: Fri, 24 Aug 2012 19:06:52 +0900
-Message-ID: <00f001cd81e0$2ed8ccf0$8c8a66d0$@com>
-References: <1345755069-9512-1-git-send-email-dgreid@chromium.org>
- <00df01cd81cb$e21d2f00$a6578d00$@com>
- <CAEUnVG58NPNKuf_PRyBEegYnH95dkTN81PGZGYxDt41jhH2uaQ@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 2/4] ASoC: omap-mcbsp: Only print
+ warning if the st_data is missing for the port
+Date: Fri, 24 Aug 2012 14:23:28 +0300
+Message-ID: <50376430.2060301@ti.com>
+References: <1345630303-26291-1-git-send-email-peter.ujfalusi@ti.com>
+ <1345630303-26291-3-git-send-email-peter.ujfalusi@ti.com>
+ <503735EA.5080907@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A8B3265D53
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 12:06:54 +0200 (CEST)
-Received: from epcpsbgm1.samsung.com (mailout3.samsung.com [203.254.224.33])
- by mailout3.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0M99000BM83EN450@mailout3.samsung.com> for
- alsa-devel@alsa-project.org; Fri, 24 Aug 2012 19:06:51 +0900 (KST)
-Received: from DOSBKIM7302 ([10.90.35.108])
- by mmp1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTPA id <0M990051F83EQR50@mmp1.samsung.com> for
- alsa-devel@alsa-project.org; Fri, 24 Aug 2012 19:06:50 +0900 (KST)
-In-reply-to: <CAEUnVG58NPNKuf_PRyBEegYnH95dkTN81PGZGYxDt41jhH2uaQ@mail.gmail.com>
-Content-language: ko
+Received: from na3sys009aog134.obsmtp.com (na3sys009aog134.obsmtp.com
+ [74.125.149.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id A230B265CBD
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 13:23:29 +0200 (CEST)
+Received: by obbtb18 with SMTP id tb18so5219763obb.21
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 04:23:27 -0700 (PDT)
+In-Reply-To: <503735EA.5080907@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,18 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Dylan Reid' <dgreid@chromium.org>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, alim.akhtar@samsung.com, padma.v@samsung.com, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, olofj@chromium.org, linux-arm-kernel@lists.infradead.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 24, 2012 at 4:52 PM, Dylan Reid wrote:
-> Yes. Currently, if I suspend while playing, after resume it won't work
-> until I close and reopen the device.  the call to snd_pcm_resume is
-> not indicating an error, but a write error comes from snd_pcm_write a
-> little later.
+On 08/24/2012 11:06 AM, Jarkko Nikula wrote:
+> I acked the set but a little note here: I guess this is something what
+> only developer can hit, by calling omap_mcbsp_st_add_controls for a port
+> not having the sidetone, so would blocking the probe be better than warni=
+ng?
 
-Ok, 
-Please let me know your test environment.
+I was hesitating when I did this patch but at the end only developers can h=
+it
+this - either trying to enable the ST on McBSP which does not physically ha=
+ve
+ST block, or as of now booting their kernel with DT.
+I'm rolling several patches for omap-twl4030 machine driver (support for Mc=
+BSP
+master configuration, ST support, etc). It is really annoying when you test=
+ a
+change which is not ST related and when you boot with DT there is no card ->
+so you need to modify the kernel between DT boot and non DT boot.
 
-Thanks,
-Sangbeom.
+We have the warning about it, we do not add the ST controls but the audio
+otherwise works.
+
+The ST controls are not part of DAPM so the audio routing is not affected.
+
+For us, developers it is better this way and for the users this does not
+really matter.
+
+-- =
+
+P=E9ter
