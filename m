@@ -1,20 +1,15 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [RFC] ASoC: snd_soc_jack for HDMI audio: does it
- make sense?
-Date: Thu, 23 Aug 2012 20:57:20 -0600
-Message-ID: <5036ED90.4080508@wwwdotorg.org>
-References: <5032E8A5.8070108@ti.com> <1345528867.15491.12.camel@lappyti>
- <CAO8GWq=B8wa1tWOiT5ja80T2VrxHiSKSp4U6fHydV9iyOg=+Zg@mail.gmail.com>
- <50342E9A.9010707@ti.com> <s5htxvv8iot.wl%tiwai@suse.de>
- <5036DC80.90200@ti.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2 1/1] [ALSA] hda - bug fix on references
+	without checking CONFIG_SND_HDA_POWER_SAVE
+Date: Fri, 24 Aug 2012 12:06:30 +0800
+Message-ID: <1345781190-2193-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 01C3B266603
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 04:57:22 +0200 (CEST)
-In-Reply-To: <5036DC80.90200@ti.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id C93E326660B
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 06:06:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +19,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Brown, Mark" <broonie@opensource.wolfsonmicro.com>, DRI development list <dri-devel@lists.freedesktop.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Clark, Rob" <rob@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/23/2012 07:44 PM, Ricardo Neri wrote:
-> On 08/22/2012 02:55 AM, Takashi Iwai wrote:
->> At Tue, 21 Aug 2012 19:58:02 -0500,
->> Ricardo Neri wrote:
-...
->>> Maybe the lack of audio support in drm is because the audio users should
->>> not talk to drm directly but to a lower level component (omapdrm,
->>> omapdss?). However, today there exists video technology supports audio
->>> as well, such as DisplayPort or HDMI. Could it make more sense now to
->>> provide audio support?
->>
->> The reason is that the audio and video handling are already separated
->> in the hardware level, at least, for desktop graphics.
-> 
-> Separated in what sense? Do they have separate register banks in
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-For NVIDIA desktop GPUs, this is certainly true, and I think so for any
-Intel Azalia/HDA controller. The separate register banks are in
-different PCI functions on the chip. The Intel Azalia/HDA spec also
-architects specific ways that the audio and video parts interact (i.e.
-ELD representation of EDID data, unsolicited response messages when the
-video state changes, etc.) Oh, I see Takashi mentioned this below.
+The patch to support runtime PM introduced a bug:
+Module parameter 'power_save_controller', and the codec flag 'd3_stop_clk'
+'d3_stop_clk_ok' are defined only when HDA power save is enabled in config. But
+there are references to them without checking macro CONFIG_SND_HDA_POWER_SAVE.
 
-> independent power domains?
+This patch is to fix the bug.
 
-Most likely yes.
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+---
+ sound/pci/hda/hda_codec.c |    6 ++++++
+ sound/pci/hda/hda_intel.c |    2 ++
+ 2 files changed, 8 insertions(+)
 
-> Can audio an video work with complete
-> independence. What happens if someone decides to power off video. Is the
-> audio able to continue if required?
-
-I believe audio DMA isn't affect by the video state, but I'm not 100%
-sure of that.
-
->> The audio infoframe is passed via ELD to the audio controller part
->> upon plug/unplugging via HD-audio unsolicited event, and the audio
->> driver sets up the stuff according to the given ELD.  Thus no extra
->> interface between drm and ALSA was required in the kernel API level,
->> so far.
-> 
-> I see that the unsolicited event is used only to parse the EDID,
-> correct? It also notifies about the jack status. Hence, if there the
-> cable is disconnected the application will know and act accordingly. Is
-> this understanding correct?
-
-The kernel will know, and then passes the information on to user-space.
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index d6b3a6d..e618394 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1320,11 +1320,13 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
+ 					   AC_VERB_GET_SUBSYSTEM_ID, 0);
+ 	}
+ 
++#ifdef CONFIG_SND_HDA_POWER_SAVE
+ 	codec->d3_stop_clk = snd_hda_codec_get_supported_ps(codec,
+ 					codec->afg ? codec->afg : codec->mfg,
+ 					AC_PWRST_CLKSTOP);
+ 	if (!codec->d3_stop_clk)
+ 		bus->power_keep_link_on = 1;
++#endif
+ 
+ 	/* power-up all before initialization */
+ 	hda_set_power_state(codec,
+@@ -3523,7 +3525,9 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
+ 	int count;
+ 	unsigned int state;
+ 
++#ifdef CONFIG_SND_HDA_POWER_SAVE
+ 	codec->d3_stop_clk_ok = 0;
++#endif
+ 
+ 	if (codec->patch_ops.set_power_state) {
+ 		codec->patch_ops.set_power_state(codec, fg, power_state);
+@@ -3548,9 +3552,11 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
+ 			break;
+ 	}
+ 
++#ifdef CONFIG_SND_HDA_POWER_SAVE
+ 	if ((power_state == AC_PWRST_D3)
+ 		&& codec->d3_stop_clk && (state & AC_PWRST_CLK_STOP_OK))
+ 		codec->d3_stop_clk_ok = 1;
++#endif
+ }
+ 
+ #ifdef CONFIG_SND_HDA_HWDEP
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 2baa3ee..97307df 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2515,8 +2515,10 @@ static int azx_runtime_suspend(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
++#ifdef CONFIG_SND_HDA_POWER_SAVE
+ 	if (!power_save_controller)
+ 		return -EAGAIN;
++#endif
+ 
+ 	azx_stop_chip(chip);
+ 	azx_clear_irq_pending(chip);
+-- 
+1.7.9.5
