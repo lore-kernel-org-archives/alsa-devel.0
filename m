@@ -1,142 +1,63 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 08/17] ARM: ux500: Clean-up MSP platform code
-Date: Fri, 24 Aug 2012 15:01:44 +0100
-Message-ID: <1345816913-4113-9-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 17/17] Documentation: Add the AB8500 CODEC device to the MFD AB8500 doc
+Date: Fri, 24 Aug 2012 15:01:53 +0100
+Message-ID: <1345816913-4113-18-git-send-email-lee.jones@linaro.org>
 References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id E2256265EF8
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 16:02:25 +0200 (CEST)
-Received: by mail-wi0-f179.google.com with SMTP id hq4so709837wib.2
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 07:02:25 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, roger.xr.nilsson@stericsson.com, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
+Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, ola.o.lilja@stericsson.com, roger.xr.nilsson@stericsson.com, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch contains a couple of general MSP clean-ups pertaining to
-layout changes and changing functions to be void instead of int instead
-of regardlessly returning '0'.
+Here we document the AB8500 Audio CODEC in the existing MFD AB8500 document.
 
+CC: alsa-devel@alsa-project.org
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/mach-ux500/board-mop500-msp.c |   24 +++++++++++-------------
- arch/arm/mach-ux500/board-mop500-msp.h |   14 --------------
- arch/arm/mach-ux500/board-mop500.c     |    1 -
- arch/arm/mach-ux500/board-mop500.h     |    3 +++
- 4 files changed, 14 insertions(+), 28 deletions(-)
- delete mode 100644 arch/arm/mach-ux500/board-mop500-msp.h
+ Documentation/devicetree/bindings/mfd/ab8500.txt |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
-index fc78d5d..1a67577 100644
---- a/arch/arm/mach-ux500/board-mop500-msp.c
-+++ b/arch/arm/mach-ux500/board-mop500-msp.c
-@@ -144,20 +144,20 @@ static struct platform_device *db8500_add_msp_i2s(struct device *parent,
+diff --git a/Documentation/devicetree/bindings/mfd/ab8500.txt b/Documentation/devicetree/bindings/mfd/ab8500.txt
+index 69e757a..ce83c8d 100644
+--- a/Documentation/devicetree/bindings/mfd/ab8500.txt
++++ b/Documentation/devicetree/bindings/mfd/ab8500.txt
+@@ -23,6 +23,7 @@ Device                     IRQ Names              Supply Names   Description
+ ab8500-bm                :                      :              : Battery Manager
+ ab8500-btemp             :                      :              : Battery Temperature
+ ab8500-charger           :                      :              : Battery Charger
++ab8500-codec             :                      :              : Audio Codec
+ ab8500-fg                :                      :              : Fuel Gauge
+ ab8500-gpadc             : HW_CONV_END          : vddadc       : Analogue to Digital Converter
+                            SW_CONV_END          :              :
+@@ -52,6 +53,14 @@ Optional child device properties:
+                            supplied in the interrupts property
+ - <supply_name>-supply   : contains a phandle to the regulator supply node in Device Tree
  
- /* Platform device for ASoC MOP500 machine */
- static struct platform_device snd_soc_mop500 = {
--		.name = "snd-soc-mop500",
--		.id = 0,
--		.dev = {
--			.platform_data = NULL,
--		},
-+	.name = "snd-soc-mop500",
-+	.id = 0,
-+	.dev = {
-+		.platform_data = NULL,
-+	},
- };
++Non-standard child device properties:
++ - Audio CODEC:
++   - stericsson,amic[1|2]-type-single-ended : Single-ended Analoge Mic (default: differential)
++   - stericsson,amic1a-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,amic1b-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,amic2-bias-vamic1           : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,earpeice-cmv                : Earpeice voltage (only: 950 | 1100 | 1270 | 1580)
++
+ ab8500@5 {
+          compatible = "stericsson,ab8500";
+          reg = <5>; /* mailbox 5 is i2c */
+@@ -110,6 +119,12 @@ ab8500@5 {
+                 compatible = "stericsson,ab8500-pwm";
+         };
  
- /* Platform device for Ux500-PCM */
- static struct platform_device ux500_pcm = {
--		.name = "ux500-pcm",
--		.id = 0,
--		.dev = {
--			.platform_data = NULL,
--		},
-+	.name = "ux500-pcm",
-+	.id = 0,
-+	.dev = {
-+		.platform_data = NULL,
-+	},
- };
++	codec: ab8500-codec {
++		compatible = "stericsson,ab8500-codec";
++
++		stericsson,earpeice-cmv = <950>; /* Units in mV. */
++	};
++
+         ab8500-regulators {
+                 compatible = "stericsson,ab8500-regulator";
  
- static struct msp_i2s_platform_data msp2_platform_data = {
-@@ -172,7 +172,7 @@ static struct msp_i2s_platform_data msp3_platform_data = {
- 	.msp_i2s_dma_tx	= NULL,
- };
- 
--int mop500_msp_init(struct device *parent)
-+void mop500_msp_init(struct device *parent)
- {
- 	pr_info("%s: Register platform-device 'snd-soc-mop500'.\n", __func__);
- 	platform_device_register(&snd_soc_mop500);
-@@ -189,6 +189,4 @@ int mop500_msp_init(struct device *parent)
- 
- 	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
- 	platform_device_register(&ux500_pcm);
--
--	return 0;
- }
-diff --git a/arch/arm/mach-ux500/board-mop500-msp.h b/arch/arm/mach-ux500/board-mop500-msp.h
-deleted file mode 100644
-index 6fcfb5e..0000000
---- a/arch/arm/mach-ux500/board-mop500-msp.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/*
-- * Copyright (C) ST-Ericsson SA 2012
-- *
-- * Author: Ola Lilja <ola.o.lilja@stericsson.com>,
-- *         for ST-Ericsson.
-- *
-- * License terms:
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as published
-- * by the Free Software Foundation.
-- */
--
--void mop500_msp_init(struct device *parent);
-diff --git a/arch/arm/mach-ux500/board-mop500.c b/arch/arm/mach-ux500/board-mop500.c
-index 5d9600b..11dd962 100644
---- a/arch/arm/mach-ux500/board-mop500.c
-+++ b/arch/arm/mach-ux500/board-mop500.c
-@@ -54,7 +54,6 @@
- #include "devices-db8500.h"
- #include "board-mop500.h"
- #include "board-mop500-regulators.h"
--#include "board-mop500-msp.h"
- 
- static struct gpio_led snowball_led_array[] = {
- 	{
-diff --git a/arch/arm/mach-ux500/board-mop500.h b/arch/arm/mach-ux500/board-mop500.h
-index d04a8e6..1d7316b 100644
---- a/arch/arm/mach-ux500/board-mop500.h
-+++ b/arch/arm/mach-ux500/board-mop500.h
-@@ -92,6 +92,9 @@ void __init mop500_stuib_init(void);
- void __init mop500_pinmaps_init(void);
- void __init snowball_pinmaps_init(void);
- void __init hrefv60_pinmaps_init(void);
-+void mop500_msp_init(struct device *parent);
-+/* Due for removal once the MSP driver has been fully DT:ed. */
-+void mop500_of_msp_init(struct device *parent);
- 
- int __init mop500_uib_init(void);
- void mop500_uib_i2c_add(int busnum, struct i2c_board_info *info,
 -- 
 1.7.9.5
