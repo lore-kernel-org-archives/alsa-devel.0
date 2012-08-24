@@ -1,91 +1,88 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/17] Documentation: Define the MSP Driver
-	Device Tree bindings
-Date: Fri, 24 Aug 2012 15:01:43 +0100
-Message-ID: <1345816913-4113-8-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 15/17] ARM: ux500: Add nodes for the MSP into Device Tree
+Date: Fri, 24 Aug 2012 15:01:51 +0100
+Message-ID: <1345816913-4113-16-git-send-email-lee.jones@linaro.org>
 References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CE3A265E37
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 16:02:24 +0200 (CEST)
-Received: by mail-we0-f179.google.com with SMTP id x10so944124wey.38
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 07:02:24 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, roger.xr.nilsson@stericsson.com, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
+Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, ola.o.lilja@stericsson.com, roger.xr.nilsson@stericsson.com, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Here we add the required documentation for the new Device Tree
-bindings pertaining to the MSP CPU-side DAI Driver.
+This patch inserts all known MSP devices into the DBx5x0 Device Tree
+disabled and enables the two important ones for the Snowball low-cost
+development board.
 
-CC: alsa-devel@alsa-project.org
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../devicetree/bindings/sound/ux500-msp.txt        |   43 ++++++++++++++++++++
- 1 file changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ux500-msp.txt
+ arch/arm/boot/dts/dbx5x0.dtsi  |   33 +++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/snowball.dts |    8 ++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ux500-msp.txt b/Documentation/devicetree/bindings/sound/ux500-msp.txt
-new file mode 100644
-index 0000000..99acd9c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ux500-msp.txt
-@@ -0,0 +1,43 @@
-+* ux500 MSP (CPU-side Digital Audio Interface)
+diff --git a/arch/arm/boot/dts/dbx5x0.dtsi b/arch/arm/boot/dts/dbx5x0.dtsi
+index 7f8c9db..b297957 100644
+--- a/arch/arm/boot/dts/dbx5x0.dtsi
++++ b/arch/arm/boot/dts/dbx5x0.dtsi
+@@ -586,6 +586,39 @@
+ 			status = "disabled";
+ 		};
+ 
++		msp0: msp@80123000 {
++			compatible = "stericsson,ux500-msp-i2s";
++			reg = <0x80123000 0x1000>;
++			interrupts = <0 31 0x4>;
++			v-ape-supply = <&db8500_vape_reg>;
++			status = "disabled";
++		};
 +
-+Required properties:
-+ - compatible       :"stericsson,ux500-msp-i2s"
-+ - reg              : Physical base address and length of the device's registers.
++		msp1: msp@80124000 {
++			compatible = "stericsson,ux500-msp-i2s";
++			reg = <0x80124000 0x1000>;
++			interrupts = <0 62 0x4>;
++			v-ape-supply = <&db8500_vape_reg>;
++			status = "disabled";
++		};
 +
-+Optional properties:
-+ - interrupts       : The interrupt output from the device.
-+ - interrupt-parent : The parent interrupt controller.
-+ - <name>-supply    : Phandle to the regulator <name> supply
++		// HDMI sound
++		msp2: msp@80117000 {
++			compatible = "stericsson,ux500-msp-i2s";
++			reg = <0x80117000 0x1000>;
++			interrupts = <0 98 0x4>;
++			v-ape-supply = <&db8500_vape_reg>;
++			status = "disabled";
++		};
 +
-+Example:
++		msp3: msp@80125000 {
++			compatible = "stericsson,ux500-msp-i2s";
++			reg = <0x80125000 0x1000>;
++			interrupts = <0 62 0x4>;
++			v-ape-supply = <&db8500_vape_reg>;
++			status = "disabled";
++		};
 +
-+	sound {
-+		compatible = "stericsson,snd-soc-mop500";
+ 		external-bus@50000000 {
+ 			compatible = "simple-bus";
+ 			reg = <0x50000000 0x4000000>;
+diff --git a/arch/arm/boot/dts/snowball.dts b/arch/arm/boot/dts/snowball.dts
+index df6fc57..fce4a00 100644
+--- a/arch/arm/boot/dts/snowball.dts
++++ b/arch/arm/boot/dts/snowball.dts
+@@ -83,6 +83,14 @@
+ 	};
+ 
+ 	soc-u9500 {
++		msp1: msp@80124000 {
++			status = "okay";
++		};
 +
-+		stericsson,platform-pcm-dma = <&pcm>;
-+		stericsson,cpu-dai = <&msp1 &msp3>;
-+		stericsson,audio-codec = <&codec>;
-+	};
++		msp3: msp@80125000 {
++			status = "okay";
++		};
 +
-+	pcm: ux500-pcm {
-+		compatible = "stericsson,ux500-pcm";
-+	};
-+
-+	msp1: msp@80124000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80124000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	msp3: msp@80125000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80125000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	codec: ab8500-codec {
-+		compatible = "stericsson,ab8500-codec";
-+		stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+	};
+ 		external-bus@50000000 {
+ 			status = "okay";
+ 
 -- 
 1.7.9.5
