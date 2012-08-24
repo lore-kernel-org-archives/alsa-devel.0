@@ -1,19 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: multistream singlechanel DACs
-Date: Fri, 24 Aug 2012 09:55:39 +0800
-Message-ID: <CAN8cciYgXicrTaYnjHbPsOWk4QxmW462LXDKctdD9KPwXfr-6Q@mail.gmail.com>
-References: <212966EEC07D4CAE9753E9DA50F80AF7@mediascore.mediascore.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH] [ALSA] hda - bug fix on references without
+	checking CONFIG_SND_HDA_POWER_SAVE
+Date: Fri, 24 Aug 2012 10:48:24 +0800
+Message-ID: <1345776504-28931-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id E825B26659C
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 03:55:40 +0200 (CEST)
-Received: by qadz3 with SMTP id z3so228983qad.17
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2012 18:55:40 -0700 (PDT)
-In-Reply-To: <212966EEC07D4CAE9753E9DA50F80AF7@mediascore.mediascore.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 837C92665C6
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 04:48:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rafal Powierski <powierski@mediascore.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi04LTI0IOS4iuWNiDE6MTAg5pa8ICJSYWZhbCBQb3dpZXJza2kiIDxwb3dpZXJza2lAbWVk
-aWFzY29yZS5kZT4g5a+r6YGT77yaCj4KPiBEZXZlbG9wZXJzLAo+Cj4gaG93IHRvIGVuYWJsZSBt
-dWx0aXBsZSBwbGF5YmFjayBzdHJlYW1pbmc/Ogo+Cj4gSSBhbSBtYW5pcHVsYXRpbmcgYmlvcyB2
-ZXJiIHBpbiB0YWJsZSwgZm9yIHNwZWNpYWwgYW5hbG9nIGhhcmR3YXJlLCB1c2luZwpBTEM4ODYg
-YW5kIGt1YnVudHUgLyA2NGJpdC4KCmNhbiB5b3UgcG9zdCB0aGUgb3V0cHV0IG9mIGFsc2EtaW5m
-by5zaCA/Cgo+Cj4gSSBuZWVkIGEgbnVtYmVyIG9mIHNlcGFyYXRlIHN0ZXJlbyAob25seSBzdGVy
-ZW8pIGkvbydzCj4gSSBoYXZlIGNvcnJlY3RseSBjb25maWd1cmVkIGlucHV0czoKPiA0LiBzaW5n
-bGUgc3RlcmVvIGFkYyBwb3J0LUMgMUFoCj4gNS4gc2luZ2xlIHNwZGlmIGlucHV0IDFGaAo+IEkg
-aGF2ZSBjb25maWd1cmVkIDMgaW5kZXBlbmRlbnQgc3RlcmVvIG91dHB1dHMsIGJ1dCBBTFNBIGlz
-IGpvaW5pbmcgdGhlbQppbnRvIG9uZSBwY21DMUQwcCBkZXZpY2UuCj4gMS5wb3J0LUEsMTVoCj4g
-Mi5wb3J0LUUsMUJoCj4gMy5wb3J0LUQsMTRoCgpob3cgZG8geW91IGNvbmZpZ3VyZSB0aGVtIGFz
-IG5vbiBtdWx0aSBjaGFubmVsIHBpbiBjb21wbGV4ID8gZGlmZmVyZW50CmFzc29jaWF0aW9uIGFu
-ZCB6ZXJvIHNlcXVlbmNlIGluc3RlYWQgb2Ygc2FtZSBhc3Nvc2ljYXRpb24gYW5kIGFzc2NlbmRp
-bmcKc2VxdWVuY2UgZm9yIG11bHRpIGNoYW5uZWwgcGluIGNvbXBsZXggd2l0aCBjb2xvciBqYWNr
-cy4KCj4gSSBoYXZlIHRyaWVkIHRoaXMgb24gd2luNyBhbmQgSSBnb3QgYWxsIGFzc29jaWF0aW9u
-cyBhcyBhIHNlcGFyYXRlCmRldmljZXMuCgo+IGluIG15IGt1YnVudHUgMTIuNExUUyBJIGhhdmUg
-b25seSBvbmUgcGxheWJhY2sgZGV2aWNlLgoKdGhpcyBpcyB0aGUgbXVsdGkgY2hhbm5lbCBvdXQg
-ZGV2aWNlIHdpdGggaGVhZHBob25lIHVzaW5nIGZyb250IGNoYW5uZWwKCnRoZSBtYWpvciBwcm9i
-bGVtIGlzIHB1bHNlYXVkaW8gZG9lcyBub3Qgc3VwcG9ydCBtdWx0aS0gc3RyZWFtaW5nCgp0aGUg
-aGVhZHBob25lIHBsYXliYWNrIHZvbHVtZSBjb250cm9sIGlzIHRoZSBzbGF2ZSBvZiB2aXJ0dWFs
-IG1hc3RlcgpwbGF5YmFjayB2b2x1bWUgY29udHJvbC4KCj4gTWl4ZXIgaXMgc2hvd2luZyBldmVu
-IG1vcmUgdGhlbiBuZWVkZWQgbnVtYmVyIG9mIHZvbHVtZSBjb250cm9scywKPiBCdXQgdGhlcmUg
-aXMgb25seSBvbmUgcGxheWJhY2sgZGV2aWNlLgo+IGl0IHNlYW1zLCBhbGwgMyBvdXRwdXRzIGFy
-ZSBjb25uZWN0ZWQgdG8gc2luZ2xlIERBQy4KPiBJIGhhdmUgdHJpZWQgdG8gYnVpbGR1cCBtb3Jl
-IGlucHV0IGRldmljZXMgLSB0aGlzIGlzIHdvcmtpbmcgZ29vZC4KPiBJIGNhbiBoYXZlIHVwIHRv
-IDMgKHBjbUMxRDBjLCBwY21DMUQxYyBwY21DMUQyYykKCml0IGlzIHBvc3NpYmxlIHRvIHVzZSB0
-d28gb3IgbW9yZSBBRENzIGZvciBtdWx0aSAgY2hhbm5lbHMgY2FwdHVyZSBzaW1pbGFyCnRvIHRo
-ZSBtdWx0aSBjaGFubmVscyBwbGF5YmFjayBieSBhc3NpZ24gc2FtZSBzdHJlYW0gdGFnIGFuZCAg
-Y2hhbm5lbCB0YWcKdG8gdGhlIHRocmVlIEFEQ3MKCj4gSSBjYW4gYWxzbyBoYXZlIDIgb3V0cHV0
-cyBpZiBJIGVuYWJsZSBzcGRpZi1vdXQuCgp0aGUgYWxjODg4cy12YyBzZWVtIGhhcyB0d28gaW5k
-ZXBlbmRlbnQgZGlnaXRhbCBvdXRwdXQgZm9yIHNwZGlmIGFuZCBoZG1pCgo+IEJ1dCB0aGVyZSBp
-cyBubyBzZXBhcmF0ZSBEQUMgYXNzaWdubWVudCAgdG8gc2VwYXJhdGUgZGV2aWNlcyByZXN1bHRp
-bmcKZnJvbQo+IG15ICBjb25maWcuCj4KPiBJcyBpdCBwb3NzaWJsZSB0byBnZXQgaW5kZXBlbmRl
-bnQgREFDcyBkZXZpY2VzIHVuZGVyIEFMU0E/Cgp5b3UgY2FuIHVzZSBhbHRfYW5hbG9nX3BsYXli
-YWNrIHN0cmVhbSBmb3IgaW5kZXBlbmRlbnQgaGVhZHBob25lIHBvcnQtQQpzaW1pbGFyIHRvIHRo
-b3NlIFZJQSBjb2RlY3MKCnRoZSBkYXRhc2hlZXQgb25seSBtZW50aW9uIDcuMSArIDIgbXVsdGkg
-c3RyZWFtaW5nIHVzaW5nIGZyb250IGFuZCByZWFyCmF1ZGlvIHBhbmVsCgppZiBpdCByZWFsbHkg
-d29yayBvbiBvdGhlciBvcGVyYXRpbmcgc3lzdGVtLCB5b3UgbWF5IHRyeSB0byBpbmNyZWFzZSB0
-aGUKbnVtYmVyIG9mIHN1YnN0cmVhbXMgb2YgdGhlIGFsdF9hbmFsb2dfcGxheWJhY2sgYW5kIGFz
-c2lnbiBEQUNzIHRvIGVhY2gKYWx0X2FuYWxvZ19wbGF5YmFjayAgc3Vic3RyZWFtcyBzaW1pbGFy
-IHRvIHRoZSB3YXkgd2hpY2ggdGhlIGRyaXZlciBhc3NpZ24KQURDcyB0byB0aGUgY2FwdHVyZSBz
-dWJzdHJlYW1zCgpob3dldmVyIHlvdSBuZWVkIHRvIGRpc2FibGUgdGhlIG11bHRpIGNoYW5uZWwg
-YW5hbG9nICBwbGF5YmFjayBzdHJlYW0KCj4gb3IgZWxzZSBpcyBubyBzdWNoIGNvbmZpZ3VyYXRp
-b24gcG9zc2libGUgYW5kIEkgaGF2ZSB0byB1c2Ugc2luZ2xlCm11bHRpcGxlIGNoYW5uZWwgZGV2
-aWNlPwo+Cgp0aGUgYWx0ZXJuYXRpdmUgaXMgdG8gdXNlIGphY2tkCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Mengdong Lin <mengdong.lin@intel.com>
+
+The patch to support runtime PM introduced a bug:
+Module parameter 'power_save_controller', and the codec flag 'd3_stop_clk'
+'d3_stop_clk_ok' are defined only when HDA power save is enabled in config. But
+there are references to them without checking macro CONFIG_SND_HDA_POWER_SAVE.
+
+This patch is to fix the bug.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+---
+ sound/pci/hda/hda_intel.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 2baa3ee..97307df 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2515,8 +2515,10 @@ static int azx_runtime_suspend(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
++#ifdef CONFIG_SND_HDA_POWER_SAVE
+ 	if (!power_save_controller)
+ 		return -EAGAIN;
++#endif
+ 
+ 	azx_stop_chip(chip);
+ 	azx_clear_irq_pending(chip);
+-- 
+1.7.9.5
