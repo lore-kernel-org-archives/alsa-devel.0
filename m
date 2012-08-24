@@ -1,22 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/4] ASoC: omap-mcbsp: Only print
- warning if the st_data is missing for the port
-Date: Fri, 24 Aug 2012 14:23:28 +0300
-Message-ID: <50376430.2060301@ti.com>
-References: <1345630303-26291-1-git-send-email-peter.ujfalusi@ti.com>
- <1345630303-26291-3-git-send-email-peter.ujfalusi@ti.com>
- <503735EA.5080907@bitmer.com>
+From: Ola Lilja <ola.o.lilja@stericsson.com>
+Subject: Re: FW: [PATCH 07/22] ASoC: Ux500: Initialise PCM from
+ MSP probe rather than as a device
+Date: Fri, 24 Aug 2012 15:05:17 +0200
+Message-ID: <50377C0D.2060905@stericsson.com>
+References: <014401cd8165$99960c40$ccc224c0$@se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog134.obsmtp.com (na3sys009aog134.obsmtp.com
- [74.125.149.83])
- by alsa0.perex.cz (Postfix) with ESMTP id A230B265CBD
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 13:23:29 +0200 (CEST)
-Received: by obbtb18 with SMTP id tb18so5219763obb.21
- for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 04:23:27 -0700 (PDT)
-In-Reply-To: <503735EA.5080907@bitmer.com>
+Received: from eu1sys200aog120.obsmtp.com (eu1sys200aog120.obsmtp.com
+ [207.126.144.149])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB2F6265D72
+ for <alsa-devel@alsa-project.org>; Fri, 24 Aug 2012 15:05:50 +0200 (CEST)
+In-Reply-To: <014401cd8165$99960c40$ccc224c0$@se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,36 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lee.jones@linaro.org
+Cc: roger.xr.nilsson@stericsson.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus Walleij <linus.walleij@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/24/2012 11:06 AM, Jarkko Nikula wrote:
-> I acked the set but a little note here: I guess this is something what
-> only developer can hit, by calling omap_mcbsp_st_add_controls for a port
-> not having the sidetone, so would blocking the probe be better than warni=
-ng?
-
-I was hesitating when I did this patch but at the end only developers can h=
-it
-this - either trying to enable the ST on McBSP which does not physically ha=
-ve
-ST block, or as of now booting their kernel with DT.
-I'm rolling several patches for omap-twl4030 machine driver (support for Mc=
-BSP
-master configuration, ST support, etc). It is really annoying when you test=
- a
-change which is not ST related and when you boot with DT there is no card ->
-so you need to modify the kernel between DT boot and non DT boot.
-
-We have the warning about it, we do not add the ST controls but the audio
-otherwise works.
-
-The ST controls are not part of DAPM so the audio routing is not affected.
-
-For us, developers it is better this way and for the users this does not
-really matter.
-
--- =
-
-P=E9ter
+T24gMDgvMjMvMjAxMiAwOToyOSBQTSwgT2xhIExpbGphIHdyb3RlOgoKPiAKPiAKPj4gLS0tLS1P
+cmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gRnJvbTogTGVlIEpvbmVzIFttYWlsdG86bGVlLmpvbmVz
+QGxpbmFyby5vcmddCj4+IFNlbnQ6IGRlbiAyMyBhdWd1c3RpIDIwMTIgMTY6NTkKPj4gVG86IE1h
+cmsgQnJvd24KPj4gQ2M6IE9sYSBMaWxqYTsgJ0xpbnVzIFdhbGxlaWonOyByb2dlci54ci5uaWxz
+c29uQHN0ZXJpY3Nzb24uY29tOyBsaW51eC0KPj4gYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
+b3JnOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gU3ViamVjdDogUmU6IFtQQVRDSCAw
+Ny8yMl0gQVNvQzogVXg1MDA6IEluaXRpYWxpc2UgUENNIGZyb20gTVNQIHByb2JlCj4+IHJhdGhl
+ciB0aGFuIGFzIGEgZGV2aWNlCj4+IAo+PiBPbiBUaHUsIEF1ZyAyMywgMjAxMiBhdCAwMzozNzo1
+N1BNICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOgo+PiA+IE9uIFRodSwgQXVnIDIzLCAyMDEyIGF0
+IDAyOjI2OjE5UE0gKzAxMDAsIExlZSBKb25lcyB3cm90ZToKPj4gPgo+PiA+ID4gPiBJIHRoaW5r
+IE9sYSBpcyBzdWdnZXN0aW5nIHByb2JpbmcgdGhlIERNQSBkcml2ZXIgZnJvbSB0aGUgbWFjaGlu
+ZQo+PiA+ID4gPiB3aGljaCB3aWxsIGFsc28gd29yayB0aG91Z2ggSSdtIG5vdCAxMDAlIHN1cmUg
+aWYgSSdtIHBhcnNpbmcgdGhlCj4+ID4gPiA+IGFib3ZlIGNvcnJlY3RseS4gIFRoZSBpc3N1ZSBp
+biBEVCB0ZXJtcyBpcyB0aGF0IGlmIHRoZSBETUEKPj4gPiA+ID4gY29udHJvbGxlciBpcyBzaGFy
+ZWQgd2l0aCBhIGJ1bmNoIG9mIG90aGVyIElQcyB0aGVuIGl0IHNob3VsZAo+PiBoYXZlCj4+ID4g
+PiA+IG9uZSBub2RlIHNoYXJlZCBiZXR3ZWVuIHRoZW0gYWxsIGFuZCBub3QgYSBidW5jaCBvZiBz
+aGltIG5vZGVzCj4+ID4gPiA+IGluc2VydGVkIGluIHRoZSBtaWRkbGUgd2hpY2ggb25seSBleGlz
+dHMgZHVlIHRvIHRoZSB3YXkgTGludXgKPj4gaW5zdGFudGlhdGVzIHN0dWZmLgoKCkkgaGF2ZW4n
+dCBmb2xsb3dlZCBldmVyeXRoaW5nIGluIHRoaXMgZGlzY3Vzc2lvbiwgYnV0IHdoYXQgSSBtZWFu
+dCBpbiBhbiBlYXJsaWVyCm1haWwgd2FzIHRoYXQgdXNpbmcgdGhlIGRldmljZSBmb3IgcGxhdGZv
+cm0tREFJIChNU1BfSTJTKSBhbHNvCmFzIHBsYXRmb3JtIGludCB0aGUgREFJLWxpbmsgc3RydWN0
+IGlzIG5vdCBhbnl0aGluZyBJIGNhbiBzZWUgZml0IChhcyBpbiB0aGUKcGF0Y2ggTGVlIGZpcnN0
+IHN1Ym1pdHRlZCkuCkkgY2FuIHNlZSBhIGZldyBhY2NlcHRhYmxlIHNvbHV0aW9uczoKMSkgVXNl
+IGl0IGFzIGl0IGlzISAoQSB2aXJ0dWFsIGRldmljZSBmb3IgUENNIGlzIGNyZWF0ZWQgaW4gYXJj
+aC9hcm0gYW5kIHRoZQpwcm9iZSBpcyBpbnZva2VkIGZyb20gdGhlIG1hY2hpbmUtZHJpdmVyKS4K
+MikgU2luY2UgdGhlIGFjdHVhbCBwbGF0Zm9ybSBpcyB0aGUgRE1BLWJsb2NrLCBtYXliZSB0aGVy
+ZSBpcyBzb21lIHdheSBvZiBtYWtpbmcKdGhlIGRldmljZSAibm9uLXZpcnR1YWwiIGJ5IGhhdmlu
+ZyBzb21lIHN1Yi1kZXZpY2UgaW4gdGhlIERNQS1kcml2ZXIgdGhhdCBpcwppbnN0ZWFkIHRyaWdn
+ZXJlZCBpbiB0aGUgc2FtZSB3YXkgYXMgaW4gMSkuCjMpIE1vdmUgaXQgdG8gRFQsIGJ1dCBpdCBz
+ZWVtcyB0aGF0IGl0IGlzIG5vdCBwb3NzaWJsZSB3aGVuIGl0IGlzIG5vdyBhIHZpcnR1YWwKZGV2
+aWNlLgoKQW55IG9mIHRoZXNlIHRocmVlIHdvdWxkIGJlIGZpbmUgd2l0aCBtZS4KCj4+ID4KPj4g
+PiA+IFdoZW4geW91IHNheSAnbWFjaGluZScsIGRvIHlvdSBtZWFuIGZyb20gYXJjaC88YXJjaD4v
+bWFjaC0qPyBJZiBzbywKPj4gPiA+IEknbSBrZWVuIGZvciB0aGF0IG5vdCB0byBoYXBwZW4uCj4+
+ID4KPj4gPiBObywgc291bmQvc29jL3V4NTAwL3Nub3diYWxsLmMgb3Igd2hhdGV2ZXIuICBBdCBs
+ZWFzdCB0aGF0J3MgbXkKPj4gZ3Vlc3MuCj4+IAo+PiBBaCwgSSBzZWUuIE1heWJlIHRoZSBtb3A1
+MDAuYyBmaWxlIHRoZW4uCj4+IAo+PiA+ID4gPiBUaGV5IGluc3RhbnRpYXRlIHRoZSBQQ00gZHJp
+dmVyIGR5bmFtaWNhbGx5IGZyb20gdGhlIERBSSB3aGVuCj4+IGl0J3MKPj4gPiA+ID4gcHJvYmVk
+IHdoaWNoIGlzIHByZXR0eSBtdWNoIHdoYXQgeW91J3JlIHBhdGNoIGlzIGRvaW5nLgo+PiA+Cj4+
+ID4gPiBTbyB0aGV5IGRvIGl0IGluIHRoZSBzYW1lIHdoeSBJIGhhdmUgd2l0aCB0aGlzIHBhdGNo
+PyBEbyB5b3Uga25vdwo+PiA+ID4gd2h5IE9sYSBtaWdodCB0aGluayB0aGlzIGlzIGEgYmFkIGlk
+ZWE/Cj4+ID4KPj4gPiBJJ20gbm90IDEwMCUgc3VyZSwgSSdtIGd1ZXNzaW5nIGl0IG1pZ2h0IGJl
+IGRvd24gdG8gdGhlIGZhY3QgdGhhdCB5b3UKPj4gPiBlbmQgdXAgd2l0aCBtdWx0aXBsZSBQQ00g
+ZHJpdmVycy4gIFdlIGNvdWxkIGF2b2lkIHRoYXQgd2l0aAo+PiA+IHJlZmNvdW50aW5nIGJ1dCBu
+b2JvZHkncyByZWFsbHkgd29ycmllZCBhYm91dCBpdC4KPj4gCj4+IEkgdGhpbmsgSSdsbCB3YWl0
+IGZvciBPbGEgdG8gZ2V0IGJhY2ssIGFzIGhlJ3MgdGhlIGV4cGVydCBvbiB0aGlzCj4+IHN0dWZm
+Lgo+PiAKPj4gSSdsbCBhdHRlbXB0IHRvIHJlLWppZyB0aGUgcGF0Y2gtc2V0LCBhcyB0aGlzIGlz
+IGEgYmxvY2tlciBhdG0uCj4+IAo+PiAtLQo+PiBMZWUgSm9uZXMKPj4gTGluYXJvIFNULUVyaWNz
+c29uIExhbmRpbmcgVGVhbSBMZWFkCj4+IExpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3
+YXJlIGZvciBBUk0gU29DcyBGb2xsb3cgTGluYXJvOiBGYWNlYm9vawo+PiB8IFR3aXR0ZXIgfCBC
+bG9nCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
