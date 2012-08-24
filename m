@@ -1,7 +1,7 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 17/17] Documentation: Add the AB8500 CODEC device to the MFD AB8500 doc
-Date: Fri, 24 Aug 2012 15:01:53 +0100
-Message-ID: <1345816913-4113-18-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 13/17] ARM: ux500: Remove platform registration of MSP devices
+Date: Fri, 24 Aug 2012 15:01:49 +0100
+Message-ID: <1345816913-4113-14-git-send-email-lee.jones@linaro.org>
 References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
@@ -10,54 +10,37 @@ To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, broonie@opensource.wolfsonmicro.com, ola.o.lilja@stericsson.com, roger.xr.nilsson@stericsson.com, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Here we document the AB8500 Audio CODEC in the existing MFD AB8500 document.
+This patch removes platform device registration of all 4 MSP
+devices. It also takes care of all redundant infrastructure now
+that each of the ux500 audio components have been Device Tree
+enabled.
 
-CC: alsa-devel@alsa-project.org
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- Documentation/devicetree/bindings/mfd/ab8500.txt |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/arm/mach-ux500/board-mop500-msp.c |   10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/ab8500.txt b/Documentation/devicetree/bindings/mfd/ab8500.txt
-index 69e757a..ce83c8d 100644
---- a/Documentation/devicetree/bindings/mfd/ab8500.txt
-+++ b/Documentation/devicetree/bindings/mfd/ab8500.txt
-@@ -23,6 +23,7 @@ Device                     IRQ Names              Supply Names   Description
- ab8500-bm                :                      :              : Battery Manager
- ab8500-btemp             :                      :              : Battery Temperature
- ab8500-charger           :                      :              : Battery Charger
-+ab8500-codec             :                      :              : Audio Codec
- ab8500-fg                :                      :              : Fuel Gauge
- ab8500-gpadc             : HW_CONV_END          : vddadc       : Analogue to Digital Converter
-                            SW_CONV_END          :              :
-@@ -52,6 +53,14 @@ Optional child device properties:
-                            supplied in the interrupts property
- - <supply_name>-supply   : contains a phandle to the regulator supply node in Device Tree
- 
-+Non-standard child device properties:
-+ - Audio CODEC:
-+   - stericsson,amic[1|2]-type-single-ended : Single-ended Analoge Mic (default: differential)
-+   - stericsson,amic1a-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
-+   - stericsson,amic1b-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
-+   - stericsson,amic2-bias-vamic1           : Analoge Mic wishes to use a non-standard Vamic
-+   - stericsson,earpeice-cmv                : Earpeice voltage (only: 950 | 1100 | 1270 | 1580)
-+
- ab8500@5 {
-          compatible = "stericsson,ab8500";
-          reg = <5>; /* mailbox 5 is i2c */
-@@ -110,6 +119,12 @@ ab8500@5 {
-                 compatible = "stericsson,ab8500-pwm";
-         };
- 
-+	codec: ab8500-codec {
-+		compatible = "stericsson,ab8500-codec";
-+
-+		stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+	};
-+
-         ab8500-regulators {
-                 compatible = "stericsson,ab8500-regulator";
- 
+diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
+index 41e4df2..2af017f 100644
+--- a/arch/arm/mach-ux500/board-mop500-msp.c
++++ b/arch/arm/mach-ux500/board-mop500-msp.c
+@@ -175,16 +175,6 @@ struct msp_i2s_platform_data msp3_platform_data = {
+ /* Due for removal once the MSP driver has been fully DT:ed. */
+ void mop500_of_msp_init(struct device *parent)
+ {
+-	pr_info("Initialize MSP I2S-devices.\n");
+-	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
+-			   &msp0_platform_data);
+-	db8500_add_msp_i2s(parent, 1, U8500_MSP1_BASE, IRQ_DB8500_MSP1,
+-			   &msp1_platform_data);
+-	db8500_add_msp_i2s(parent, 2, U8500_MSP2_BASE, IRQ_DB8500_MSP2,
+-			   &msp2_platform_data);
+-	db8500_add_msp_i2s(parent, 3, U8500_MSP3_BASE, IRQ_DB8500_MSP1,
+-			   &msp3_platform_data);
+-
+ 	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
+ 	platform_device_register(&ux500_pcm);
+ }
 -- 
 1.7.9.5
