@@ -1,47 +1,40 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm0010: Enable 44.1kHz support
-Date: Sat, 25 Aug 2012 06:07:01 -0700
-Message-ID: <1345900022-14930-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Bruno Wolff III <bruno@wolff.to>
+Subject: Re: Logitech USB headset not working in 3.6-rc3
+Date: Sat, 25 Aug 2012 10:00:33 -0500
+Message-ID: <20120825150033.GA10578@wolff.to>
+References: <20120824190808.GC20043@zod.bos.redhat.com>
+ <5038007E.5060505@gmail.com>
+ <20120825111749.GA17048@wolff.to>
+ <20120825115423.GA14327@wolff.to>
+ <5038BEEB.6090303@gmail.com>
+ <20120825120740.GA19539@wolff.to>
+ <20120825121326.GE20043@zod.bos.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6CFC9265D7E
- for <alsa-devel@alsa-project.org>; Sat, 25 Aug 2012 16:46:31 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120825121326.GE20043@zod.bos.redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Josh Boyer <jwboyer@redhat.com>
+Cc: Daniel Mack <zonque@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-With appropriate clocking configuration the WM0010 driver supports 44.1kHz
-audio; enable that.
+On Sat, Aug 25, 2012 at 08:13:27 -0400,
+   Josh Boyer <jwboyer@redhat.com> wrote:
+>On Sat, Aug 25, 2012 at 07:07:40AM -0500, Bruno Wolff III wrote:
+>> On Sat, Aug 25, 2012 at 14:02:51 +0200,
+>>   Daniel Mack <zonque@gmail.com> wrote:
+>> >
+>> >Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
+>> >scheduling-while-atomic bug in PCM capture stream") and see if that
+>>
+>> I can try that, but it takes a long time to build a new kernel on my
+>> old hardware.
+>
+>I started a scratch build of a kernel with that patch reverted (via
+>patch -R).  You'll find it here when it finishes:
+>
+>http://koji.fedoraproject.org/koji/taskinfo?taskID=4421817
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm0010.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index e1315e0..f820b57 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -722,7 +722,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm0010 = {
- 	.num_dapm_routes = ARRAY_SIZE(wm0010_dapm_routes),
- };
- 
--#define WM0010_RATES (SNDRV_PCM_RATE_48000)
-+#define WM0010_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
- #define WM0010_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
- 			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |\
- 			SNDRV_PCM_FMTBIT_S32_LE)
--- 
-1.7.10.4
+I tested this on two of the three (the other is at work) that I was having 
+the problem on and they both work as expected now.
