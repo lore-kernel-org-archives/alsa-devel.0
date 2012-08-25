@@ -1,38 +1,35 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH] sound: tegra_alc5632: remove HP detect GPIO inversion
-Date: Fri, 24 Aug 2012 21:20:15 -0600
-Message-ID: <1345864815-19539-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+From: Bruno Wolff III <bruno@wolff.to>
+Subject: Re: Logitech USB headset not working in 3.6-rc3
+Date: Sat, 25 Aug 2012 06:17:49 -0500
+Message-ID: <20120825111749.GA17048@wolff.to>
+References: <20120824190808.GC20043@zod.bos.redhat.com>
+ <5038007E.5060505@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5038007E.5060505@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Josh Boyer <jwboyer@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Sat, Aug 25, 2012 at 00:30:22 +0200,
+   Daniel Mack <zonque@gmail.com> wrote:
+>
+>So what does "isn't working anymore" refer to precisely? Are there any
+>more dmesg entries generated once the stream is started?
 
-Both the schematics and practical testing show that the HP detect GPIO
-is high when the headphones are plugged in. Hence, the snd_soc_jack_gpio
-should not specify to invert the signal.
+When I try to play music, the progress bar for the song doesn't advance and 
+there is no audbile sound. I am able to use sound preferences to change 
+the configuration for the device. (The headset has a few different output 
+modes and the like.)
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>
-Cc: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
-Cc: <stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org> # v3.4 v3.5
----
- sound/soc/tegra/tegra_alc5632.c |    1 -
- 1 file changed, 1 deletion(-)
+I saved dmesg output in a file, tried to start a song, saved dmesg output 
+to another file. diff reported the two files as identical. So trying to 
+play music doesn't seem to trigger dmesg output.
 
-diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
-index e463529..76cb1b3 100644
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -89,7 +89,6 @@ static struct snd_soc_jack_gpio tegra_alc5632_hp_jack_gpio = {
- 	.name = "Headset detection",
- 	.report = SND_JACK_HEADSET,
- 	.debounce_time = 150,
--	.invert = 1,
- };
- 
- static const struct snd_soc_dapm_widget tegra_alc5632_dapm_widgets[] = {
--- 
-1.7.9.5
+I see this behavior on three different computers. Rebooting into an old
+enough kernel gets things working again. The older kernels also have 
+older initramfs images. I could rebuild those to see if there is some 
+issue there instead of the kernels themselves?
