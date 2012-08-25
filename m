@@ -1,40 +1,67 @@
-From: Bruno Wolff III <bruno@wolff.to>
-Subject: Re: Logitech USB headset not working in 3.6-rc3
-Date: Sat, 25 Aug 2012 10:00:33 -0500
-Message-ID: <20120825150033.GA10578@wolff.to>
-References: <20120824190808.GC20043@zod.bos.redhat.com>
- <5038007E.5060505@gmail.com>
- <20120825111749.GA17048@wolff.to>
- <20120825115423.GA14327@wolff.to>
- <5038BEEB.6090303@gmail.com>
- <20120825120740.GA19539@wolff.to>
- <20120825121326.GE20043@zod.bos.redhat.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm0010: Add dummy widget for CLKIN
+Date: Sat, 25 Aug 2012 09:18:45 -0700
+Message-ID: <1345911525-24448-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120825121326.GE20043@zod.bos.redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Josh Boyer <jwboyer@redhat.com>
-Cc: Daniel Mack <zonque@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C98C9265D90
+ for <alsa-devel@alsa-project.org>; Sat, 25 Aug 2012 18:18:48 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 25, 2012 at 08:13:27 -0400,
-   Josh Boyer <jwboyer@redhat.com> wrote:
->On Sat, Aug 25, 2012 at 07:07:40AM -0500, Bruno Wolff III wrote:
->> On Sat, Aug 25, 2012 at 14:02:51 +0200,
->>   Daniel Mack <zonque@gmail.com> wrote:
->> >
->> >Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
->> >scheduling-while-atomic bug in PCM capture stream") and see if that
->>
->> I can try that, but it takes a long time to build a new kernel on my
->> old hardware.
->
->I started a scratch build of a kernel with that patch reverted (via
->patch -R).  You'll find it here when it finishes:
->
->http://koji.fedoraproject.org/koji/taskinfo?taskID=4421817
+Make it easier to integrate the management of the clock supplying the
+WM0010 with DAPM by providing a dummy supply widget which supplies the
+interface widgets, this can be connected to clock outputs by the machines.
 
-I tested this on two of the three (the other is at work) that I was having 
-the problem on and they both work as expected now.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm0010.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index f820b57..b6f7097 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -118,9 +118,18 @@ struct wm0010_spi_msg {
+ 	size_t len;
+ };
+ 
++static const struct snd_soc_dapm_widget wm0010_dapm_widgets[] = {
++SND_SOC_DAPM_SUPPLY("CLKIN",  SND_SOC_NOPM, 0, 0, NULL, 0),
++};
++
+ static const struct snd_soc_dapm_route wm0010_dapm_routes[] = {
+ 	{ "SDI2 Capture", NULL, "SDI1 Playback" },
+ 	{ "SDI1 Capture", NULL, "SDI2 Playback" },
++
++	{ "SDI1 Capture", NULL, "CLKIN" },
++	{ "SDI2 Capture", NULL, "CLKIN" },
++	{ "SDI1 Playback", NULL, "CLKIN" },
++	{ "SDI2 Playback", NULL, "CLKIN" },
+ };
+ 
+ static const char *wm0010_state_to_str(enum wm0010_state state)
+@@ -718,6 +727,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm0010 = {
+ 	.set_bias_level = wm0010_set_bias_level,
+ 	.set_sysclk = wm0010_set_sysclk,
+ 
++	.dapm_widgets = wm0010_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm0010_dapm_widgets),
+ 	.dapm_routes = wm0010_dapm_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(wm0010_dapm_routes),
+ };
+-- 
+1.7.10.4
