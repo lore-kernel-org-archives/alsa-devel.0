@@ -1,54 +1,34 @@
-From: Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>
-Subject: Re: [PATCH] sound: tegra_alc5632: remove HP detect GPIO inversion
-Date: Sun, 26 Aug 2012 21:55:49 +0200
-Message-ID: <3199962.US3JxCkD1s@ax5200p>
-References: <1345864815-19539-1-git-send-email-swarren@wwwdotorg.org>
+From: Aaron Fulkerson <aaronallenfulkerson@gmail.com>
+Subject: Driver for HT|OMEGA eCLARO (C-Media 8788 ***PCIe***)
+Date: Sun, 26 Aug 2012 15:53:43 -0700
+Message-ID: <CAB5Lu93CJe-AcTUD4QOdKwn5BkmD=fGWuxDdGhcRZPisnHs+bw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1345864815-19539-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, Andrey Danin <danindrey-JGs/UdohzUI@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01B27265E11
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 00:53:43 +0200 (CEST)
+Received: by qadz3 with SMTP id z3so1576455qad.17
+ for <alsa-devel@alsa-project.org>; Sun, 26 Aug 2012 15:53:43 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stephen,
+Hello and nice to meet you all. This will be my first post if the previous
+one did not work.
 
-On Friday 24 August 2012 21:20:15 Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> 
-> Both the schematics and practical testing show that the HP detect GPIO
-> is high when the headphones are plugged in. Hence, the snd_soc_jack_gpio
-> should not specify to invert the signal.
-> 
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> Cc: Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>
-> Cc: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
-> Cc: <stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org> # v3.4 v3.5
-
-I tested it and evtest gives back the right stuff with your patch. Can't test 
-more because I have no headphone/mic here (I just inserted a screwdriver, 
-grr). On 3.1 kernels, we also have no pin inversion, so unless Leon or Andrey 
-(cc'ed) have different opinions, this can go through. Just give them a week...
-
-Thanks!
-
-Marc
-
-> ---
->  sound/soc/tegra/tegra_alc5632.c |    1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/soc/tegra/tegra_alc5632.c
-> b/sound/soc/tegra/tegra_alc5632.c index e463529..76cb1b3 100644
-> --- a/sound/soc/tegra/tegra_alc5632.c
-> +++ b/sound/soc/tegra/tegra_alc5632.c
-> @@ -89,7 +89,6 @@ static struct snd_soc_jack_gpio tegra_alc5632_hp_jack_gpio
-> = { .name = "Headset detection",
->  	.report = SND_JACK_HEADSET,
->  	.debounce_time = 150,
-> -	.invert = 1,
->  };
-> 
->  static const struct snd_soc_dapm_widget tegra_alc5632_dapm_widgets[] = {
+The problem is this: there is not a working driver for the HT|OMEGA eCLARO.
+The card is based on the C-Media 8788 chip for which there is an existing
+driver, however, due to the fact that the eCLARO is a PCIe-based card, the
+driver doesn't function properly. What are the chances of a working driver
+being written for this card?
