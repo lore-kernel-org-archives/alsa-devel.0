@@ -1,25 +1,19 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Kernel module build workflow (Re: Logitech USB
- headset not working in 3.6-rc3)
-Date: Mon, 27 Aug 2012 19:22:02 +0200
-Message-ID: <CAFz=ag47OU1GbS-a8GUug4bJ04JA6kn_uBUZ0LiBjzUCJ0fN_w@mail.gmail.com>
-References: <20120824190808.GC20043@zod.bos.redhat.com>
- <5038007E.5060505@gmail.com> <20120825111749.GA17048@wolff.to>
- <20120825115423.GA14327@wolff.to> <5038BEEB.6090303@gmail.com>
- <20120825120740.GA19539@wolff.to>
- <20120825121326.GE20043@zod.bos.redhat.com>
- <20120825121621.GA24462@wolff.to> <s5h1uit95yr.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V2 6/6] ASoC: tlv320aic3x: Add device tree
+	bindings
+Date: Mon, 27 Aug 2012 10:26:20 -0700
+Message-ID: <20120827172620.GQ4339@opensource.wolfsonmicro.com>
+References: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
+ <1346074004-22172-7-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B59B265E69
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 19:22:03 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so8274579obb.38
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 10:22:02 -0700 (PDT)
-In-Reply-To: <s5h1uit95yr.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E3E3265E63
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 19:26:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1346074004-22172-7-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,29 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Bruno Wolff III <bruno@wolff.to>, alsa-devel@alsa-project.org, Josh Boyer <jwboyer@redhat.com>, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, alsa-user@lists.sourceforge.net, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Mon, Aug 27, 2012 at 06:56:44PM +0530, Hebbar, Gururaja wrote:
 
-Am 26.08.2012 14:46 schrieb "Takashi Iwai" <tiwai@suse.de>:
+> Device tree support for tlv320aic3x CODEC driver.
 
->
-> Actually you don't have to rebuild the whole kernel at all just for
-> debugging this usb-audio bug.  The workflow below is what I do often
-> for debugging a driver problem on a distro kernel.[...]
-
-
-
-> [...]
-
-If you want to take back to the original module, just remove updates
-> module directory and run depmod again.  Pretty convenient, eh?
->
->
- Could you please put this somewhere on alsa-project.org?
-
-Thanks,
-
-Felix
+Applied, thanks.
