@@ -1,40 +1,75 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
- snd_soc_set_fmt()
-Date: Mon, 27 Aug 2012 13:45:51 -0700
-Message-ID: <20120827204550.GA4400@opensource.wolfsonmicro.com>
-References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH] ASoC: ams-delta: fix card initalization failure
+Date: Mon, 27 Aug 2012 23:28:30 +0200
+Message-ID: <1346102910-8610-1-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: =?utf-8?B?77+92rvvv73vv73vv70=?= <sangsu4u.park@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, lrg@ti.com, sbkim73@samsung.com, ben-linux@fluff.org, Kukjin Kim <kgene.kim@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2EE5265EC1
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 23:32:37 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 26, 2012 at 05:45:54PM +0900, =EF=BF=BD=DA=BB=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD wrote:
-> SND_SOC_DAIFMT_CONT option is now needed because of below commit:
->=20
-> ASoC: Allow DAI formats to be specified in the dai_link
+Since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d, 'device-core:
+Ensure drvdata = NULL when no driver is bound', the Amstrad Delta sound
+card no longer initializes correctly due to drvdata reset to NULL by an
+upper layer before the codec device, required for successful card setup,
+is registered. Fix this by moving the codec registration bits up, before
+the card is probed for.
 
-Clearly it's not a direct consequence of this commit, that just
-introduces a new optional facility which...
+Created and tested against linux-3.6-rc3
 
->  	/* Set the cpu DAI configuration */
->  	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
-> +				| SND_SOC_DAIFMT_CONT
->  				| SND_SOC_DAIFMT_IB_NF
->  				| SND_SOC_DAIFMT_CBS_CFS);
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
+ sound/soc/omap/ams-delta.c |   18 ++++++++++--------
+ 1 files changed, 10 insertions(+), 8 deletions(-)
 
-=2E..isn't being used by the driver.
-
-Looking at the above it looks like the PCM driver is doing something
-very odd - _CONT doesn't make a whole lot of sense on the slave side,
-it's related to the clock generation so should have no effect at all on
-the slave side.  The driver code looks reasonably sensible though.
-
-What specifically is going wrong here?
+diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
+index 7d4fa8e..270de9c 100644
+--- a/sound/soc/omap/ams-delta.c
++++ b/sound/soc/omap/ams-delta.c
+@@ -590,20 +590,22 @@ static int __init ams_delta_module_init(void)
+ 	if (!ams_delta_audio_platform_device)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(ams_delta_audio_platform_device,
+-				&ams_delta_audio_card);
+-
+-	ret = platform_device_add(ams_delta_audio_platform_device);
+-	if (ret)
+-		goto err;
+-
+ 	/*
+ 	 * Codec platform device could be registered from elsewhere (board?),
+ 	 * but I do it here as it makes sense only if used with the card.
++	 * Moreover, it must be registered before the card is probed for,
++	 * or the card setup fails due to drvdata reset by upper layers.
+ 	 */
+ 	cx20442_platform_device =
+ 		platform_device_register_simple("cx20442-codec", -1, NULL, 0);
+-	return 0;
++
++	platform_set_drvdata(ams_delta_audio_platform_device,
++			     &ams_delta_audio_card);
++
++	ret = platform_device_add(ams_delta_audio_platform_device);
++	if (!ret)
++		return ret;
++
+ err:
+ 	platform_device_put(ams_delta_audio_platform_device);
+ 	return ret;
+-- 
+1.7.3.4
