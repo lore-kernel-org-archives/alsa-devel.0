@@ -1,20 +1,17 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [pulseaudio-discuss] Documentation for how
-	rewinding works
-Date: Mon, 27 Aug 2012 16:29:29 +0300
-Message-ID: <1346074169.26563.26.camel@laptop>
-References: <1345374419.4864.64.camel@laptop>
- <CAN8cciY=T4vXbwW-Hsz7dDkrCoLgMyvHKStnzhzf_XBSss50fg@mail.gmail.com>
- <1345612571.16615.20.camel@laptop>
- <CAN8ccibMVLUjmfRpBcBGGQK1P4C4aWiYQ8GoDGLfGS6Nk9wmGg@mail.gmail.com>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: [PATCH V2 6/6] ASoC: tlv320aic3x: Add device tree
+	bindings
+Date: Mon, 27 Aug 2012 18:56:44 +0530
+Message-ID: <1346074004-22172-7-git-send-email-gururaja.hebbar@ti.com>
+References: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D1E20265E49
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 15:29:32 +0200 (CEST)
-In-Reply-To: <CAN8ccibMVLUjmfRpBcBGGQK1P4C4aWiYQ8GoDGLfGS6Nk9wmGg@mail.gmail.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52CAD265E49
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 15:43:43 +0200 (CEST)
+In-Reply-To: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,111 +21,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+To: tony@atomide.com, lrg@ti.com, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, gururaja.hebbar@ti.com, alsa-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-08-27 at 09:41 +0800, Raymond Yau wrote:
-> 
-> > > >
-> > > it seem that the alsa sink is more complicated than your figure.
-> >
-> > The fact that there's a region in the beginning of the sink buffer
-> that
-> > shouldn't be rewound is an implementation detail of alsa sink, and
-> does
-> > not need to be taken into account in the general rewind handling.
-> The
-> > alsa sink is able to take care of it internally.
-> >
-> > > Refer to figure 14 HD Audio DMA and buffering , section 4.6 Energy
-> > > Efficient HA audio mechanism
-> > >
-> > > most sound cards have fixed size FIFO buffer instead of dynamic
-> FIFO and
-> > > minimum transfer size(brust) similar to hda controller which
-> snd_pcm_rewind
-> > > cannot rewind any audio data in those first in first out buffer.
-> > >
-> > >
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa?id=4df443bbe682055a41e7c2248877dcc7682a69b8
-> >
-> > Thanks for bringing that commit into attention, because it seems to
-> > introduce a new bug (although judging from the commit message,
-> Pierre
-> > was aware of it and considered it a feature): the code doesn't take
-> > tsched_watermark into account anymore when doing rewinds. The point
-> of
-> > tsched_watermark is to ensure that pulseaudio has enough time to
-> fill
-> > the sink buffer. If it's ignored when rewinding, it's likely that
-> there
-> > will be an underrun when refilling the sink buffer, if
-> tsched_watermark
-> > is greater than rewind_safeguard.
-> 
-> how about those sound cards which minimum latency is much higher than
-> that of pulse plugin
-> 
-> http://thread.gmane.org/gmane.linux.alsa.devel/89157/focus=89167
-> 
-> snd-ymfpci update the hwptr at 5.33 ms interval while pulse plugin
-> claim to support as low as 1ms
-> 
-> does the driver need to add another constraints which restrict the
-> period bytes to be multiple of 1024 at 48000Hz in addition to forcing
-> the driver to run at 48000Hz since hwptr only change at period
-> boundary ?
+Device tree support for tlv320aic3x CODEC driver.
 
-The period size doesn't affect much anything when pulseaudio is using
-timer based scheduling. If the period size has implications on how much
-it's safe to rewind, then that information would be nice to have, but I
-don't know if there's any such connection.
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+---
+Changes from V1:
+	- use standard DT GPIO reference by phandle to populate gpio based DT
+	  parameters
 
-> with minimum period of 3 , the minimum buffer time of snd-ymfpci is
-> 16ms
-> 
-> can pa server reject the pulse client when it request latency lower
-> than 16ms (minimum period * minimum period time of the sound driver)?
+:000000 100644 0000000... e7b98f4... A	Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+:100644 100644 01485bd... 5708a97... M	sound/soc/codecs/tlv320aic3x.c
+ .../devicetree/bindings/sound/tlv320aic3x.txt      |   20 +++++++++++++
+ sound/soc/codecs/tlv320aic3x.c                     |   31 ++++++++++++++++++++
+ 2 files changed, 51 insertions(+), 0 deletions(-)
 
-I'm not familiar with how the minimum latency affects alsa clients. I
-think there has been complaints that things aren't currently handled
-very well if the minimum latency conflicts with what an alsa application
-has requested, so maybe I'll have a look at this at some point.
-
-> >
-> > > 1) do the server really need to rewind when there is only one
-> pulse client ?
-> >
-> > Yes. The sink buffer may have up to 2 seconds of audio from the one
-> > pulse client, and if you then change the software volume of the sink
-> (or
-> > sink input, doesn't matter), you will have to rewrite the sink
-> buffer
-> > contents unless you want to wait 2 seconds until the volume change
-> > becomes audible.
-> 
-> when module-suspend-on-idle is loaded pa server close the sink after 5
-> seconds of no activity for power saving  and reopen the sink when
-> another appllication connect to play audio,  does it mean that rewind
-> is not necessary in this situation ?
-
-What rewind are you talking about here? Rewinds related to volume
-changes are always necessary. But maybe you're talking about some
-rewinds that happen when a new stream is created? If the sink was not
-suspended when a new stream is connected to it, a rewind is definitely
-needed. But if the sink was suspended, then it's less clear.
-
-If the stream is immediately able to provide data to the sink, then
-there's no need for a rewind (there's nothing to rewind anyway). But the
-usual case is that the stream doesn't have any data available at the
-moment when it's created (all native protocol streams fall into this
-category, except maybe streams that start in the corked state...). In
-this case the sink gets woken up from suspend, and since there's no data
-available, it will fill its buffer with silence. When the stream gets
-data from somewhere (a client, usually), then a rewind is made so that
-the received audio doesn't have to wait for the silence to be played
-first.
-
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+new file mode 100644
+index 0000000..e7b98f4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+@@ -0,0 +1,20 @@
++Texas Instruments - tlv320aic3x Codec module
++
++The tlv320aic3x serial control bus communicates through I2C protocols
++
++Required properties:
++- compatible - "string" -  "ti,tlv320aic3x"
++- reg - <int> -  I2C slave address
++
++
++Optional properties:
++
++- gpio-reset - gpio pin number used for codec reset
++- ai3x-gpio-func - <array of 2 int> - AIC3X_GPIO1 & AIC3X_GPIO2 Functionality
++
++Example:
++
++tlv320aic3x: tlv320aic3x@1b {
++	compatible = "ti,tlv320aic3x";
++	reg = <0x1b>;
++};
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 01485bd..5708a97 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -40,6 +40,7 @@
+ #include <linux/i2c.h>
+ #include <linux/gpio.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -1457,6 +1458,8 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct aic3x_pdata *pdata = i2c->dev.platform_data;
+ 	struct aic3x_priv *aic3x;
++	struct aic3x_setup_data *ai3x_setup;
++	struct device_node *np = i2c->dev.of_node;
+ 	int ret;
+ 
+ 	aic3x = devm_kzalloc(&i2c->dev, sizeof(struct aic3x_priv), GFP_KERNEL);
+@@ -1471,6 +1474,25 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata) {
+ 		aic3x->gpio_reset = pdata->gpio_reset;
+ 		aic3x->setup = pdata->setup;
++	} else if (np) {
++		ai3x_setup = devm_kzalloc(&i2c->dev, sizeof(*ai3x_setup),
++								GFP_KERNEL);
++		if (ai3x_setup == NULL) {
++			dev_err(&i2c->dev, "failed to create private data\n");
++			return -ENOMEM;
++		}
++
++		ret = of_get_named_gpio(np, "gpio-reset", 0);
++		if (ret >= 0)
++			aic3x->gpio_reset = ret;
++		else
++			aic3x->gpio_reset = -1;
++
++		if (of_property_read_u32_array(np, "ai3x-gpio-func",
++					ai3x_setup->gpio_func, 2) >= 0) {
++			aic3x->setup = ai3x_setup;
++		}
++
+ 	} else {
+ 		aic3x->gpio_reset = -1;
+ 	}
+@@ -1488,11 +1510,20 @@ static int aic3x_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id tlv320aic3x_of_match[] = {
++	{ .compatible = "ti,tlv320aic3x", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, tlv320aic3x_of_match);
++#endif
++
+ /* machine i2c codec control layer */
+ static struct i2c_driver aic3x_i2c_driver = {
+ 	.driver = {
+ 		.name = "tlv320aic3x-codec",
+ 		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(tlv320aic3x_of_match),
+ 	},
+ 	.probe	= aic3x_i2c_probe,
+ 	.remove = aic3x_i2c_remove,
 -- 
-Tanu
+1.7.1
