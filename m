@@ -1,15 +1,15 @@
 From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: [PATCH V2 1/6] ASoC: davinci: davinci-pcm does not
-	need to be a plaform_driver
-Date: Mon, 27 Aug 2012 18:56:39 +0530
-Message-ID: <1346074004-22172-2-git-send-email-gururaja.hebbar@ti.com>
+Subject: [PATCH V2 5/6] ASoC: Davinci: machine: Add device tree
+	binding
+Date: Mon, 27 Aug 2012 18:56:43 +0530
+Message-ID: <1346074004-22172-6-git-send-email-gururaja.hebbar@ti.com>
 References: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 55A8D265E4A
+ by alsa0.perex.cz (Postfix) with ESMTP id 57676265E50
  for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 15:43:43 +0200 (CEST)
 In-Reply-To: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,256 +25,331 @@ To: tony@atomide.com, lrg@ti.com, broonie@opensource.wolfsonmicro.com
 Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, gururaja.hebbar@ti.com, alsa-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Same as the commit 518de86 (ASoC: tegra: register 'platform' from DAIs,
-get rid of pdev). It makes davinci-pcm not a platform_driver but helper
-to register "platform", so that the platform_device for davinci-pcm can
-be saved completely.
+Device tree support for tlv320aic3x CODEC driver
+
+When the board boots with device tree, the driver will receive card,
+codec, dai interface details (like the card name, DAPM routing map,
+phandle for the audio components described in the dts file, codec mclk
+speed).
+
+The card will be set up based on this information.
+Since the routing is provided via DT we can mark the card fully routed
+so core can take care of disconnecting the unused pins.
+
+When here, code indentation and comment style is also fixed
 
 Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
 ---
 Changes from V1:
-	- New Commit. Instanciate seudo-device (davinci-pcm) directly from DAI
-	  driver rather than having a separate virtual-device registered
+	- Change DT parameter from "ti,codec-clock" to "ti,codec-clock-rate"
+	- add more explanation to DT parameters
 
-:100644 100644 c80c20a... 4b37e2a... M	sound/soc/davinci/davinci-evm.c
-:100644 100644 0a74b95... 407df72... M	sound/soc/davinci/davinci-i2s.c
-:100644 100644 6a2c54c... 34ee2f1... M	sound/soc/davinci/davinci-mcasp.c
-:100644 100644 97d77b2... 4b70828... M	sound/soc/davinci/davinci-pcm.c
-:100644 100644 c0d6c9b... 5e55164... M	sound/soc/davinci/davinci-pcm.h
-:100644 100644 f71175b... 5be65aa... M	sound/soc/davinci/davinci-sffsdr.c
-:100644 100644 da030ff... 07bde2e... M	sound/soc/davinci/davinci-vcif.c
- sound/soc/davinci/davinci-evm.c    |   15 ++++++++-------
- sound/soc/davinci/davinci-i2s.c    |   10 ++++++++++
- sound/soc/davinci/davinci-mcasp.c  |   10 ++++++++++
- sound/soc/davinci/davinci-pcm.c    |   23 ++++++-----------------
- sound/soc/davinci/davinci-pcm.h    |    3 +++
- sound/soc/davinci/davinci-sffsdr.c |    2 +-
- sound/soc/davinci/davinci-vcif.c   |    8 ++++++++
- 7 files changed, 46 insertions(+), 25 deletions(-)
+:000000 100644 0000000... fcbcd24... A	Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+:100644 100644 ab0ad45... ca2a547... M	sound/soc/davinci/davinci-evm.c
+ .../bindings/sound/davinci-evm-audio.txt           |   63 +++++++
+ sound/soc/davinci/davinci-evm.c                    |  185 +++++++++++++++++--
+ 2 files changed, 228 insertions(+), 20 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+new file mode 100644
+index 0000000..fcbcd24
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+@@ -0,0 +1,63 @@
++* Texas Instruments SoC audio setups with TLV320AIC3X Codec
++
++Required properties:
++- compatible : "ti,davinci-evm-audio"
++- ti,model : The user-visible name of this sound complex.
++- ti,audio-routing : A list of the connections between audio components.
++  Each entry is a pair of strings, the first being the connection's sink,
++  the second being the connection's source. Valid names for sources and
++  sinks are the codec's pins, and the jacks on the board:
++
++  Codec pins:
++
++  * MIC3L
++  * MIC3R
++  * LINE1L
++  * LINE2L
++  * LINE1R
++  * LINE2R
++
++  Board connectors:
++
++  * Headphone Jack
++  * Line Out
++  * Mic Jack
++
++- ti,mcasp-controller : The phandle of the McASP controller
++- ti,audio-codec : The phandle of the TLV320AIC3x audio codec
++- ti,codec-clock-rate : The Codec Clock rate (in Hz) applied to the Codec
++
++- dai-data		: A list of DAI data used by SOC code to register
++			  DAI, Codecs platform.
++			  The string index "should" be as shown below.
++dai-data =
++"<DAI Name>", 		"<DAI Stream Name>",
++"<CODEC DAI Name>",	"<true if evm_aic3x_init is required, else false>",
++"<evm ops required (evm_ops or evm_spdif_ops)>";
++
++Here fields
++"<DAI Name>"		: used to indicate the DAI Name
++"<DAI Stream Name>"	: used to indicate the Stream Name
++"<CODEC DAI Name>"	: used to bind the link between Codec DAI and ASOC DAI
++
++Machine related options
++"<true/false>"		: Whether the machine specific initialization
++			: evm_aic3x_init() is required
++
++"<evm ops required>"	: Which hardware ops function is to be used.
++			: (evm_ops or evm_spdif_ops)
++
++
++Example:
++
++sound {
++	compatible = "ti,davinci-evm-audio";
++	ti,model = "DA830 EVM";
++	ti,audio-codec = <&tlv320aic3x>;
++	ti,mcasp-controller = <&mcasp1>;
++	ti,codec-clock-rate = <12000000>;
++	dai-data =
++		"TLV320AIC3X", 		"AIC3X",
++		"tlv320aic3x-hifi",	"true",
++		"evm-ops";
++};
 diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index c80c20a..4b37e2a 100644
+index ab0ad45..ca2a547 100644
 --- a/sound/soc/davinci/davinci-evm.c
 +++ b/sound/soc/davinci/davinci-evm.c
-@@ -159,7 +159,7 @@ static struct snd_soc_dai_link dm6446_evm_dai = {
- 	.cpu_dai_name = "davinci-mcbsp",
- 	.codec_dai_name = "tlv320aic3x-hifi",
- 	.codec_name = "tlv320aic3x-codec.1-001b",
--	.platform_name = "davinci-pcm-audio",
-+	.platform_name = "davinci-mcbsp",
- 	.init = evm_aic3x_init,
- 	.ops = &evm_ops,
- };
-@@ -170,7 +170,7 @@ static struct snd_soc_dai_link dm355_evm_dai = {
- 	.cpu_dai_name = "davinci-mcbsp.1",
- 	.codec_dai_name = "tlv320aic3x-hifi",
- 	.codec_name = "tlv320aic3x-codec.1-001b",
--	.platform_name = "davinci-pcm-audio",
-+	.platform_name = "davinci-mcbsp.1",
- 	.init = evm_aic3x_init,
- 	.ops = &evm_ops,
- };
-@@ -184,14 +184,15 @@ static struct snd_soc_dai_link dm365_evm_dai = {
- 	.init = evm_aic3x_init,
- 	.codec_name = "tlv320aic3x-codec.1-0018",
- 	.ops = &evm_ops,
-+	.platform_name = "davinci-mcbsp",
- #elif defined(CONFIG_SND_DM365_VOICE_CODEC)
- 	.name = "Voice Codec - CQ93VC",
- 	.stream_name = "CQ93",
- 	.cpu_dai_name = "davinci-vcif",
- 	.codec_dai_name = "cq93vc-hifi",
- 	.codec_name = "cq93vc-codec",
-+	.platform_name = "avinci-vcif",
- #endif
--	.platform_name = "davinci-pcm-audio",
- };
+@@ -34,27 +34,38 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_card *soc_card = codec->card;
++	struct device_node *np = soc_card->dev->of_node;
+ 	int ret = 0;
+ 	unsigned sysclk;
  
- static struct snd_soc_dai_link dm6467_evm_dai[] = {
-@@ -200,7 +201,7 @@ static struct snd_soc_dai_link dm6467_evm_dai[] = {
- 		.stream_name = "AIC3X",
- 		.cpu_dai_name= "davinci-mcasp.0",
- 		.codec_dai_name = "tlv320aic3x-hifi",
--		.platform_name ="davinci-pcm-audio",
-+		.platform_name = "davinci-mcasp.0",
- 		.codec_name = "tlv320aic3x-codec.0-001a",
- 		.init = evm_aic3x_init,
- 		.ops = &evm_ops,
-@@ -211,7 +212,7 @@ static struct snd_soc_dai_link dm6467_evm_dai[] = {
- 		.cpu_dai_name= "davinci-mcasp.1",
- 		.codec_dai_name = "dit-hifi",
- 		.codec_name = "spdif_dit",
--		.platform_name = "davinci-pcm-audio",
-+		.platform_name = "davinci-mcasp.1",
- 		.ops = &evm_spdif_ops,
- 	},
- };
-@@ -222,7 +223,7 @@ static struct snd_soc_dai_link da830_evm_dai = {
- 	.cpu_dai_name = "davinci-mcasp.1",
- 	.codec_dai_name = "tlv320aic3x-hifi",
- 	.codec_name = "tlv320aic3x-codec.1-0018",
--	.platform_name = "davinci-pcm-audio",
-+	.platform_name = "davinci-mcasp.1",
- 	.init = evm_aic3x_init,
- 	.ops = &evm_ops,
- };
-@@ -233,7 +234,7 @@ static struct snd_soc_dai_link da850_evm_dai = {
- 	.cpu_dai_name= "davinci-mcasp.0",
- 	.codec_dai_name = "tlv320aic3x-hifi",
- 	.codec_name = "tlv320aic3x-codec.1-0018",
--	.platform_name = "davinci-pcm-audio",
-+	.platform_name = "davinci-mcasp.0",
- 	.init = evm_aic3x_init,
- 	.ops = &evm_ops,
- };
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 0a74b95..407df72 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -732,8 +732,16 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	if (ret != 0)
- 		goto err_release_clk;
- 
-+	ret = davinci_soc_platform_register(&pdev->dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		goto err_unregister_dai;
+-	/* ASP1 on DM355 EVM is clocked by an external oscillator */
+-	if (machine_is_davinci_dm355_evm() || machine_is_davinci_dm6467_evm() ||
+-	    machine_is_davinci_dm365_evm())
+-		sysclk = 27000000;
+-
+-	/* ASP0 in DM6446 EVM is clocked by U55, as configured by
+-	 * board-dm644x-evm.c using GPIOs from U18.  There are six
+-	 * options; here we "know" we use a 48 KHz sample rate.
+-	 */
+-	else if (machine_is_davinci_evm())
+-		sysclk = 12288000;
+-
+-	else if (machine_is_davinci_da830_evm() ||
+-				machine_is_davinci_da850_evm())
+-		sysclk = 24576000;
+-
+-	else
+-		return -EINVAL;
++	if (np) {
++		ret = of_property_read_u32(np, "ti,codec-clock-rate", &sysclk);
++		if (ret < 0)
++			return ret;
++	} else {
++		/* ASP1 on DM355 EVM is clocked by an external oscillator */
++		if (machine_is_davinci_dm355_evm() ||
++			machine_is_davinci_dm6467_evm() ||
++			machine_is_davinci_dm365_evm())
++			sysclk = 27000000;
++
++		/*
++		 * ASP0 in DM6446 EVM is clocked by U55, as configured by
++		 * board-dm644x-evm.c using GPIOs from U18.  There are six
++		 * options; here we "know" we use a 48 KHz sample rate.
++		 */
++		else if (machine_is_davinci_evm())
++			sysclk = 12288000;
++
++		else if (machine_is_davinci_da830_evm() ||
++					machine_is_davinci_da850_evm())
++			sysclk = 24576000;
++
++		else
++			return -EINVAL;
 +	}
-+
- 	return 0;
  
-+err_unregister_dai:
-+	snd_soc_unregister_dai(&pdev->dev);
- err_release_clk:
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
-@@ -745,6 +753,8 @@ static int davinci_i2s_remove(struct platform_device *pdev)
- 	struct davinci_mcbsp_dev *dev = dev_get_drvdata(&pdev->dev);
+ 	/* set codec DAI configuration */
+ 	ret = snd_soc_dai_set_fmt(codec_dai, AUDIO_FORMAT);
+@@ -127,13 +138,22 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct device_node *np = codec->card->dev->of_node;
++	int ret;
  
- 	snd_soc_unregister_dai(&pdev->dev);
-+	davinci_soc_platform_unregister(&pdev->dev);
-+
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
- 	dev->clk = NULL;
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 6a2c54c..34ee2f1 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -951,8 +951,17 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	/* Add davinci-evm specific widgets */
+ 	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
+ 				  ARRAY_SIZE(aic3x_dapm_widgets));
  
- 	if (ret != 0)
- 		goto err_release_clk;
-+
-+	ret = davinci_soc_platform_register(&pdev->dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		goto err_unregister_dai;
+-	/* Set up davinci-evm specific audio path audio_map */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
++	if (np) {
++		ret = snd_soc_of_parse_audio_routing(codec->card,
++							"ti,audio-routing");
++		if (ret)
++			return ret;
++	} else {
++		/* Set up davinci-evm specific audio path audio_map */
++		snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 +	}
+ 
+ 	/* not connected */
+ 	snd_soc_dapm_disable_pin(dapm, "MONO_LOUT");
+@@ -282,6 +302,113 @@ static struct snd_soc_card da850_snd_soc_card = {
+ 	.num_links = 1,
+ };
+ 
++#if defined(CONFIG_OF)
++/*
++ * This struct is just used as place holder. It will be filled with
++ * data from dt node
++ */
++static struct snd_soc_dai_link evm_dai = {
++};
 +
- 	return 0;
- 
-+err_unregister_dai:
-+	snd_soc_unregister_dai(&pdev->dev);
- err_release_clk:
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-@@ -963,6 +972,7 @@ static int davinci_mcasp_remove(struct platform_device *pdev)
- {
- 
- 	snd_soc_unregister_dai(&pdev->dev);
-+	davinci_soc_platform_unregister(&pdev->dev);
- 
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index 97d77b2..4b70828 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -864,28 +864,17 @@ static struct snd_soc_platform_driver davinci_soc_platform = {
- 	.pcm_free = 	davinci_pcm_free,
- };
- 
--static int __devinit davinci_soc_platform_probe(struct platform_device *pdev)
-+int davinci_soc_platform_register(struct device *dev)
- {
--	return snd_soc_register_platform(&pdev->dev, &davinci_soc_platform);
-+	return snd_soc_register_platform(dev, &davinci_soc_platform);
- }
-+EXPORT_SYMBOL_GPL(davinci_soc_platform_register);
- 
--static int __devexit davinci_soc_platform_remove(struct platform_device *pdev)
-+void davinci_soc_platform_unregister(struct device *dev)
- {
--	snd_soc_unregister_platform(&pdev->dev);
--	return 0;
-+	snd_soc_unregister_platform(dev);
- }
--
--static struct platform_driver davinci_pcm_driver = {
--	.driver = {
--			.name = "davinci-pcm-audio",
--			.owner = THIS_MODULE,
--	},
--
--	.probe = davinci_soc_platform_probe,
--	.remove = __devexit_p(davinci_soc_platform_remove),
--};
--
--module_platform_driver(davinci_pcm_driver);
-+EXPORT_SYMBOL_GPL(davinci_soc_platform_unregister);
- 
- MODULE_AUTHOR("Vladimir Barinov");
- MODULE_DESCRIPTION("TI DAVINCI PCM DMA module");
-diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
-index c0d6c9b..5e55164 100644
---- a/sound/soc/davinci/davinci-pcm.h
-+++ b/sound/soc/davinci/davinci-pcm.h
-@@ -28,4 +28,7 @@ struct davinci_pcm_dma_params {
- 	unsigned int fifo_level;
- };
- 
-+int davinci_soc_platform_register(struct device *dev);
-+void davinci_soc_platform_unregister(struct device *dev);
++/* davinci evm audio machine driver */
++static struct snd_soc_card evm_soc_card = {
++	.owner = THIS_MODULE,
++	.dai_link = &evm_dai,
++	.num_links = 1,
++};
 +
- #endif
-diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
-index f71175b..5be65aa 100644
---- a/sound/soc/davinci/davinci-sffsdr.c
-+++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -86,7 +86,7 @@ static struct snd_soc_dai_link sffsdr_dai = {
- 	.cpu_dai_name = "davinci-mcbsp",
- 	.codec_dai_name = "pcm3008-hifi",
- 	.codec_name = "pcm3008-codec",
--	.platform_name = "davinci-pcm-audio",
-+	.platform_name = "davinci-mcbsp",
- 	.ops = &sffsdr_ops,
- };
- 
-diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
-index da030ff..07bde2e 100644
---- a/sound/soc/davinci/davinci-vcif.c
-+++ b/sound/soc/davinci/davinci-vcif.c
-@@ -240,12 +240,20 @@ static int davinci_vcif_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ret = davinci_soc_platform_register(&pdev->dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		snd_soc_unregister_dai(&pdev->dev);
++static int davinci_evm_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	const char *stringPtr, *propname;
++	u32 val;
++	int ret = 0;
++
++	propname = "dai-data";
++	val = of_property_count_strings(np, propname);
++	if (val < 0)
++		return val;
++
++	ret = of_property_read_string_index(np, propname, 0, &evm_dai.name);
++	if (ret < 0)
 +		return ret;
++
++	ret = of_property_read_string_index(np, propname, 1,
++						&evm_dai.stream_name);
++	if (ret < 0)
++		return ret;
++
++	ret = of_property_read_string_index(np, propname, 2,
++						&evm_dai.codec_dai_name);
++	if (ret < 0)
++		return ret;
++
++	ret = of_property_read_string_index(np, propname, 3, &stringPtr);
++	if (ret < 0)
++		return ret;
++	else
++		if (strcasecmp(stringPtr, "true") == 0)
++			evm_dai.init = evm_aic3x_init;
++
++	ret = of_property_read_string_index(np, propname, 4, &stringPtr);
++	if (ret < 0) {
++		return ret;
++	} else {
++		if (strcasecmp(stringPtr, "evm-ops") == 0)
++			evm_dai.ops = &evm_ops;
++		else if (strcasecmp(stringPtr, "evm-spdif-ops") == 0)
++			evm_dai.ops = &evm_spdif_ops;
 +	}
 +
- 	return 0;
- }
++	evm_dai.codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
++	if (!evm_dai.codec_of_node)
++		return -EINVAL;
++
++	evm_dai.cpu_dai_of_node = of_parse_phandle(np,
++						"ti,mcasp-controller", 0);
++	if (!evm_dai.cpu_dai_of_node)
++		return -EINVAL;
++
++	evm_dai.platform_of_node = evm_dai.cpu_dai_of_node;
++
++	evm_soc_card.dev = &pdev->dev;
++	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
++	if (ret)
++		return ret;
++
++	ret = snd_soc_register_card(&evm_soc_card);
++	if (ret)
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++
++	return ret;
++}
++
++static int __devexit davinci_evm_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++
++	return 0;
++}
++
++static const struct of_device_id davinci_evm_dt_ids[] = {
++	{ .compatible = "ti,davinci-evm-audio", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, davinci_mcasp_dt_ids);
++
++static struct platform_driver davinci_evm_driver = {
++	.probe		= davinci_evm_probe,
++	.remove		= __devexit_p(davinci_evm_remove),
++	.driver		= {
++		.name	= "davinci_evm",
++		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(davinci_evm_dt_ids),
++	},
++};
++#endif
++
+ static struct platform_device *evm_snd_device;
  
- static int davinci_vcif_remove(struct platform_device *pdev)
+ static int __init evm_init(void)
+@@ -289,6 +416,14 @@ static int __init evm_init(void)
+ 	struct snd_soc_card *evm_snd_dev_data;
+ 	int index;
+ 	int ret;
++#if defined(CONFIG_OF)
++	struct device_node *np;
++
++	np = of_find_compatible_node(NULL, NULL, "ti,davinci-evm-audio");
++	if (np) {
++		return platform_driver_register(&davinci_evm_driver);
++	}
++#endif
+ 
+ 	if (machine_is_davinci_evm()) {
+ 		evm_snd_dev_data = &dm6446_snd_soc_card_evm;
+@@ -325,6 +460,16 @@ static int __init evm_init(void)
+ 
+ static void __exit evm_exit(void)
  {
- 	snd_soc_unregister_dai(&pdev->dev);
-+	davinci_soc_platform_unregister(&pdev->dev);
- 
- 	return 0;
++#if defined(CONFIG_OF)
++	struct device_node *np;
++
++	np = of_find_compatible_node(NULL, NULL, "ti,davinci-evm-audio");
++	if (np) {
++		platform_driver_unregister(&davinci_evm_driver);
++		return;
++	}
++#endif
++
+ 	platform_device_unregister(evm_snd_device);
  }
+ 
 -- 
 1.7.1
