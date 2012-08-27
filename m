@@ -1,16 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [RFC PATCH 05/11] ALSA: implement MEDIA_IOC_ENUM_LINKS
-	(2)
-Date: Tue, 28 Aug 2012 00:31:53 +0200
-Message-ID: <503BF559.7090204@ladisch.de>
+Subject: [RFC PATCH 06/11] ALSA: implement MEDIA_IOC_SETUP_LINK
+Date: Tue, 28 Aug 2012 00:32:31 +0200
+Message-ID: <503BF57F.6060703@ladisch.de>
 References: <503BF48E.1090100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 174CD265230
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:32:52 +0200 (CEST)
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6FB47265230
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:33:28 +0200 (CEST)
 In-Reply-To: <503BF48E.1090100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,194 +23,70 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Allow drivers to create links between entities.
+Just for compatibility with the media controller API, implement the
+setup link ioctl, which does not actually do anything.
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- include/sound/core.h  |    3 ++
- include/sound/media.h |   11 ++++++
- sound/core/media.c    |   86 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 100 insertions(+), 0 deletions(-)
+ sound/core/media.c |   41 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 41 insertions(+), 0 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 072b642..f6577ec 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -43,6 +43,7 @@ struct module;
- struct device;
- struct device_attribute;
- struct snd_media_card_ops;
-+struct snd_media_link;
-
- /* device allocation stuff */
-
-@@ -152,6 +153,8 @@ struct snd_card {
- 	const struct snd_media_card_ops *media_ops;
- 	struct mutex media_mutex;
- 	struct list_head media_entities;
-+	unsigned int media_links_count;
-+	struct snd_media_link *media_links;
- #endif
- };
-
-diff --git a/include/sound/media.h b/include/sound/media.h
-index 65dd068..ebb7c7d 100644
---- a/include/sound/media.h
-+++ b/include/sound/media.h
-@@ -44,6 +44,11 @@ int snd_media_entity_create(struct snd_card *card,
- 			    unsigned int id,
- 			    unsigned int sinks, unsigned int sources,
- 			    void *private_data);
-+int snd_media_link_create(struct snd_card *card,
-+			  unsigned int source_entity,
-+			  unsigned int source_pad,
-+			  unsigned int sink_entity,
-+			  unsigned int sink_pad);
-
- int snd_media_create(struct snd_card *card);
- void __init snd_media_init(void);
-@@ -59,6 +64,12 @@ static inline int snd_media_entity_create(struct snd_card *card,
- 					  unsigned int sinks, unsigned int sources,
- 					  void *private_data)
- { return 0; }
-+static inline int snd_media_link_create(struct snd_card *card,
-+					unsigned int source_entity,
-+					unsigned int source_pad,
-+					unsigned int sink_entity,
-+					unsigned int sink_pad)
-+{ return 0; }
-
-
- static inline int snd_media_create(struct snd_card *card)
 diff --git a/sound/core/media.c b/sound/core/media.c
-index 96b09a3..aa90848 100644
+index aa90848..cbc51d9 100644
 --- a/sound/core/media.c
 +++ b/sound/core/media.c
-@@ -36,6 +36,13 @@ struct snd_media_entity {
- 	unsigned int sinks, sources;
- };
-
-+struct snd_media_link {
-+	unsigned int source_entity;
-+	unsigned int sink_entity;
-+	unsigned short source_pad;
-+	unsigned short sink_pad;
-+};
-+
- static struct snd_media_entity *search_entity(struct snd_card *card,
- 					      unsigned int id)
- {
-@@ -82,6 +89,47 @@ int snd_media_entity_create(struct snd_card *card,
+@@ -289,6 +289,45 @@ static int snd_media_enum_links(struct snd_card *card,
+ 	return 0;
  }
- EXPORT_SYMBOL(snd_media_entity_create);
 
-+int snd_media_link_create(struct snd_card *card,
-+			  unsigned int source_entity,
-+			  unsigned int source_pad,
-+			  unsigned int sink_entity,
-+			  unsigned int sink_pad)
++static int snd_media_setup_link(struct snd_card *card,
++				struct media_link_desc __user *descp)
 +{
-+	struct snd_media_link link;
-+	struct snd_media_link *links;
-+	size_t new_size = 0;
-+
-+	link.source_entity = source_entity;
-+	link.sink_entity = sink_entity;
-+	link.source_pad = source_pad;
-+	link.sink_pad = sink_pad;
-+
-+	mutex_lock(&card->media_mutex);
-+
-+	if (card->media_links) {
-+		size_t allocated = ksize(card->media_links);
-+		if (allocated < (card->media_links_count + 1) * sizeof(link))
-+			new_size = allocated * 2;
-+	} else {
-+		new_size = 4 * sizeof(link);
-+	}
-+	if (new_size > 0) {
-+		links = krealloc(card->media_links, new_size, GFP_KERNEL);
-+		if (!links) {
-+			mutex_unlock(&card->media_mutex);
-+			return -ENOMEM;
-+		}
-+		card->media_links = links;
-+	}
-+
-+	card->media_links[card->media_links_count++] = link;
-+
-+	mutex_unlock(&card->media_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_media_link_create);
-+
- static int snd_media_dev_free(struct snd_device *device)
- {
- 	struct snd_card *card = device->device_data;
-@@ -94,6 +142,8 @@ static int snd_media_dev_free(struct snd_device *device)
- 		kfree(e);
- 	}
-
-+	kfree(card->media_links);
-+
- 	return 0;
- }
-
-@@ -136,6 +186,7 @@ static int snd_media_enum_entities(struct snd_card *card,
- {
- 	struct media_entity_desc desc;
- 	struct snd_media_entity *entity;
++	struct media_link_desc desc;
++	struct snd_media_entity *source, *sink;
++	struct snd_media_link *link;
 +	unsigned int i;
- 	int err;
-
- 	if (copy_from_user(&desc, descp, sizeof(desc)))
-@@ -152,7 +203,13 @@ static int snd_media_enum_entities(struct snd_card *card,
- 	desc.flags = 0;
- 	desc.group_id = 0;
- 	desc.pads = entity->sinks + entity->sources;
++	int err;
 +
- 	desc.links = 0;
++	if (copy_from_user(&desc, descp, sizeof(desc)))
++		return -EFAULT;
++
++	if (desc.flags != (MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE))
++		return -EINVAL;
++
 +	mutex_lock(&card->media_mutex);
-+	for (i = 0; i < card->media_links_count; i++)
-+		if (card->media_links[i].source_entity == desc.id)
-+			desc.links++;
++	source = search_entity(card, desc.source.entity);
++	sink   = search_entity(card, desc.sink.entity);
 +	mutex_unlock(&card->media_mutex);
-
- 	err = entity->get_desc(card, entity->private_data, &desc);
- 	if (err < 0)
-@@ -200,6 +257,35 @@ static int snd_media_enum_links(struct snd_card *card,
- 		}
- 	}
-
-+	if (links.links) {
-+		struct media_link_desc desc;
-+		struct snd_media_link *link;
-+		unsigned int i;
++	if (!source || !sink)
++		return -EINVAL;
 +
-+		memset(&desc, 0, sizeof(desc));
-+		desc.source.entity = links.entity;
-+		desc.source.flags = MEDIA_PAD_FL_SOURCE;
-+		desc.sink.flags = MEDIA_PAD_FL_SINK;
-+		desc.flags = MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE;
-+
-+		mutex_lock(&card->media_mutex);
-+		for (i = 0; i < card->media_links_count; i++) {
-+			link = &card->media_links[i];
-+			if (link->source_entity != links.entity)
-+				continue;
-+
-+			desc.source.index = link->source_pad;
-+			desc.sink.entity = link->sink_entity;
-+			desc.sink.index = link->sink_pad;
-+			if (copy_to_user(links.links, &desc, sizeof(desc))) {
-+				mutex_unlock(&card->media_mutex);
-+				return -EFAULT;
-+			}
-+			links.links++;
++	err = -EINVAL;
++	mutex_lock(&card->media_mutex);
++	for (i = 0; i < card->media_links_count; i++) {
++		link = &card->media_links[i];
++		if (link->source_entity == desc.source.entity &&
++		    link->sink_entity == desc.sink.entity &&
++		    link->source_pad == desc.source.index &&
++		    link->sink_pad == desc.sink.index) {
++			err = 0;
++			break;
 +		}
-+		mutex_unlock(&card->media_mutex);
 +	}
++	mutex_unlock(&card->media_mutex);
 +
- 	return 0;
- }
++	return err;
++}
++
+ static int snd_media_control_ioctl(struct snd_card *card,
+ 				   struct snd_ctl_file *ctl_file,
+ 				   unsigned int cmd, unsigned long arg)
+@@ -302,6 +341,8 @@ static int snd_media_control_ioctl(struct snd_card *card,
+ 		return snd_media_enum_entities(card, argp);
+ 	case MEDIA_IOC_ENUM_LINKS:
+ 		return snd_media_enum_links(card, argp);
++	case MEDIA_IOC_SETUP_LINK:
++		return snd_media_setup_link(card, argp);
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
