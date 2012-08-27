@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [RFC PATCH 07/11] [media] media: add entity types for
-	ALSA
-Date: Tue, 28 Aug 2012 00:33:07 +0200
-Message-ID: <503BF5A3.1030908@ladisch.de>
+Subject: [RFC PATCH 08/11] ALSA: usb-audio: implement card
+	get_info callback
+Date: Tue, 28 Aug 2012 00:33:46 +0200
+Message-ID: <503BF5CA.2050001@ladisch.de>
 References: <503BF48E.1090100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C30B1265230
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:34:04 +0200 (CEST)
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id AE909265F52
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:34:43 +0200 (CEST)
 In-Reply-To: <503BF48E.1090100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,42 +24,112 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add entity types for describing the topology of sound devices.
-
-JACK entities represent connections to the outside world.  Properties of
-the jack will be described by a TLV on the jack entity.
-
-MIXER entities add their inputs together, while SELECTOR entities route
-on of their inputs to the output.  PROCESSING entities represent volume/
-mute controls or other effects processing units.  These entities may
-have ALSA controls associated with them, which is indicated by those
-controls having a TLV containing the entity ID and the control type.
-
-SPLIT and MERGE entities are needed for HDA codecs, whose topology is
-constructed of stereo channel pairs.
+Add a helper for retrieving information about USB devices.
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- include/linux/media.h |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ include/sound/media.h |   16 ++++++++++++++++
+ sound/core/media.c    |   28 ++++++++++++++++++++++++++++
+ sound/usb/card.c      |    2 ++
+ 3 files changed, 46 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/media.h b/include/linux/media.h
-index 0ef8833..9d2ad75 100644
---- a/include/linux/media.h
-+++ b/include/linux/media.h
-@@ -57,6 +57,15 @@ struct media_device_info {
- #define MEDIA_ENT_T_V4L2_SUBDEV_FLASH	(MEDIA_ENT_T_V4L2_SUBDEV + 2)
- #define MEDIA_ENT_T_V4L2_SUBDEV_LENS	(MEDIA_ENT_T_V4L2_SUBDEV + 3)
+diff --git a/include/sound/media.h b/include/sound/media.h
+index ebb7c7d..5339acb 100644
+--- a/include/sound/media.h
++++ b/include/sound/media.h
+@@ -39,6 +39,15 @@ typedef int (*snd_media_entity_get_desc_t)(struct snd_card *card,
 
-+#define MEDIA_ENT_T_JACK		(3 << MEDIA_ENT_TYPE_SHIFT)
+ #define snd_card_set_media_ops(card, ops) ((card)->media_ops = (ops))
+
++#if defined(CONFIG_USB) || defined(CONFIG_USB_MODULE)
++int snd_media_get_usb_card_info(struct snd_card *card,
++				struct media_device_info *info);
 +
-+#define MEDIA_ENT_T_ALSA		(4 << MEDIA_ENT_TYPE_SHIFT)
-+#define MEDIA_ENT_T_ALSA_MIXER		(MEDIA_ENT_T_ALSA + 1)
-+#define MEDIA_ENT_T_ALSA_SELECTOR	(MEDIA_ENT_T_ALSA + 2)
-+#define MEDIA_ENT_T_ALSA_PROCESSING	(MEDIA_ENT_T_ALSA + 3)
-+#define MEDIA_ENT_T_ALSA_SPLIT		(MEDIA_ENT_T_ALSA + 4)
-+#define MEDIA_ENT_T_ALSA_MERGE		(MEDIA_ENT_T_ALSA + 5)
++extern const struct snd_media_card_ops snd_media_default_usb_ops;
++#define snd_card_set_media_ops_default_usb(card) \
++		snd_card_set_media_ops((card), &snd_media_default_usb_ops)
++#endif
 +
- #define MEDIA_ENT_FL_DEFAULT		(1 << 0)
+ int snd_media_entity_create(struct snd_card *card,
+ 			    snd_media_entity_get_desc_t get_desc,
+ 			    unsigned int id,
+@@ -58,6 +67,13 @@ void __exit snd_media_exit(void);
 
- struct media_entity_desc {
+ #define snd_card_set_media_ops(card, ops)
+
++#if defined(CONFIG_USB) || defined(CONFIG_USB_MODULE)
++#define snd_card_set_media_ops_default_usb(card)
++static inline int snd_media_get_usb_card_info(struct snd_card *card,
++					      struct media_device_info *info)
++{ return 0; }
++#endif
++
+ static inline int snd_media_entity_create(struct snd_card *card,
+ 					  snd_media_entity_get_desc_t get_desc,
+ 					  unsigned int id,
+diff --git a/sound/core/media.c b/sound/core/media.c
+index cbc51d9..f42e00b 100644
+--- a/sound/core/media.c
++++ b/sound/core/media.c
+@@ -24,6 +24,7 @@
+ #include <linux/media.h>
+ #include <linux/string.h>
+ #include <linux/uaccess.h>
++#include <linux/usb.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/media.h>
+@@ -328,6 +329,33 @@ static int snd_media_setup_link(struct snd_card *card,
+ 	return err;
+ }
+
++#if defined(CONFIG_USB) || defined(CONFIG_USB_MODULE)
++int snd_media_get_usb_card_info(struct snd_card *card,
++				struct media_device_info *info)
++{
++	struct usb_interface *intf;
++	struct usb_device *usb;
++
++	if (snd_BUG_ON(!card->dev))
++		return -ENXIO;
++	intf = to_usb_interface(card->dev);
++	usb = interface_to_usbdev(intf);
++
++	if (usb->serial)
++		strlcpy(info->serial, usb->serial, sizeof(info->serial));
++	usb_make_path(usb, info->bus_info, sizeof(info->bus_info));
++	info->hw_revision = le16_to_cpu(usb->descriptor.bcdDevice);
++
++	return 0;
++}
++EXPORT_SYMBOL(snd_media_get_usb_card_info);
++
++const struct snd_media_card_ops snd_media_default_usb_ops = {
++	.get_info = snd_media_get_usb_card_info,
++};
++EXPORT_SYMBOL(snd_media_default_usb_ops);
++#endif
++
+ static int snd_media_control_ioctl(struct snd_card *card,
+ 				   struct snd_ctl_file *ctl_file,
+ 				   unsigned int cmd, unsigned long arg)
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index d5b5c33..311366b 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -52,6 +52,7 @@
+ #include <sound/control.h>
+ #include <sound/core.h>
+ #include <sound/info.h>
++#include <sound/media.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/initval.h>
+@@ -490,6 +491,7 @@ snd_usb_audio_probe(struct usb_device *dev,
+ 					goto __error;
+ 				}
+ 				snd_card_set_dev(chip->card, &intf->dev);
++				snd_card_set_media_ops_default_usb(chip->card);
+ 				chip->pm_intf = intf;
+ 				break;
+ 			}
