@@ -1,39 +1,40 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] ASoC: snd_soc_jack for HDMI audio: does it
- make	sense?
-Date: Mon, 27 Aug 2012 11:55:42 -0700
-Message-ID: <20120827185541.GB4339@opensource.wolfsonmicro.com>
-References: <5032E8A5.8070108@ti.com> <s5hlih895kt.wl%tiwai@suse.de>
- <20120821120511.GB7995@opensource.wolfsonmicro.com>
- <1345792237.11808.85.camel@localhost>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
+ snd_soc_set_fmt()
+Date: Mon, 27 Aug 2012 13:45:51 -0700
+Message-ID: <20120827204550.GA4400@opensource.wolfsonmicro.com>
+References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7F224265EAD
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 20:55:44 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1345792237.11808.85.camel@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Ricardo Neri <ricardo.neri@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Valkeinen, Tomi" <tomi.valkeinen@ti.com>, "Guiriec,
- Sebastien" <s-guiriec@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: =?utf-8?B?77+92rvvv73vv73vv70=?= <sangsu4u.park@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, lrg@ti.com, sbkim73@samsung.com, ben-linux@fluff.org, Kukjin Kim <kgene.kim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 24, 2012 at 12:40:37PM +0530, Arun Raghavan wrote:
+On Sun, Aug 26, 2012 at 05:45:54PM +0900, =EF=BF=BD=DA=BB=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD wrote:
+> SND_SOC_DAIFMT_CONT option is now needed because of below commit:
+>=20
+> ASoC: Allow DAI formats to be specified in the dai_link
 
-> It's been in shambles for an absurdly long time. Would be good to
-> actually try to tackle it again at Plumbers or sth.
+Clearly it's not a direct consequence of this commit, that just
+introduces a new optional facility which...
 
-I think all this really needs is someone with the time to do the work -
-it's more a coding problem with unifying the in kernel API than an issue
-with working out what to do.
+>  	/* Set the cpu DAI configuration */
+>  	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
+> +				| SND_SOC_DAIFMT_CONT
+>  				| SND_SOC_DAIFMT_IB_NF
+>  				| SND_SOC_DAIFMT_CBS_CFS);
+
+=2E..isn't being used by the driver.
+
+Looking at the above it looks like the PCM driver is doing something
+very odd - _CONT doesn't make a whole lot of sense on the slave side,
+it's related to the clock generation so should have no effect at all on
+the slave side.  The driver code looks reasonably sensible though.
+
+What specifically is going wrong here?
