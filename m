@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [RFC PATCH 10/11] ALSA: usb-audio: add terminal/unit
- entities and links
-Date: Tue, 28 Aug 2012 00:35:44 +0200
-Message-ID: <503BF640.1030509@ladisch.de>
+Subject: [RFC PATCH 11/11] ALSA: hda-intel: implement card
+	get_info callback
+Date: Tue, 28 Aug 2012 00:36:48 +0200
+Message-ID: <503BF680.4050206@ladisch.de>
 References: <503BF48E.1090100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id F1E3D265230
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:36:42 +0200 (CEST)
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 4C198265230
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:37:45 +0200 (CEST)
 In-Reply-To: <503BF48E.1090100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,323 +24,126 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use the terminal/unit descriptors to create entities and links.
+Add a helper for retrieving information about PCI devices.
 
-(This should be integrated with parse_audio_unit(), but that function
-does not yet support all unit types.)
+(Codec topology information is not yet implemented.)
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/usb/mixer.c |  278 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 278 insertions(+), 0 deletions(-)
+ include/sound/media.h     |   16 ++++++++++++++++
+ sound/core/media.c        |   36 ++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_intel.c |    2 ++
+ 3 files changed, 54 insertions(+), 0 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 4f40ba8..a5fa807 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -45,6 +45,7 @@
- #include <linux/bitops.h>
+diff --git a/include/sound/media.h b/include/sound/media.h
+index 5339acb..e030e4c 100644
+--- a/include/sound/media.h
++++ b/include/sound/media.h
+@@ -39,6 +39,15 @@ typedef int (*snd_media_entity_get_desc_t)(struct snd_card *card,
+
+ #define snd_card_set_media_ops(card, ops) ((card)->media_ops = (ops))
+
++#ifdef CONFIG_PCI
++int snd_media_get_pci_card_info(struct snd_card *card,
++				struct media_device_info *info);
++
++extern const struct snd_media_card_ops snd_media_default_pci_ops;
++#define snd_card_set_media_ops_default_pci(card) \
++		snd_card_set_media_ops((card), &snd_media_default_pci_ops)
++#endif
++
+ #if defined(CONFIG_USB) || defined(CONFIG_USB_MODULE)
+ int snd_media_get_usb_card_info(struct snd_card *card,
+ 				struct media_device_info *info);
+@@ -67,6 +76,13 @@ void __exit snd_media_exit(void);
+
+ #define snd_card_set_media_ops(card, ops)
+
++#ifdef CONFIG_PCI
++#define snd_card_set_media_ops_default_pci(card)
++static inline int snd_media_get_pci_card_info(struct snd_card *card,
++					      struct media_device_info *info)
++{ return 0; }
++#endif
++
+ #if defined(CONFIG_USB) || defined(CONFIG_USB_MODULE)
+ #define snd_card_set_media_ops_default_usb(card)
+ static inline int snd_media_get_usb_card_info(struct snd_card *card,
+diff --git a/sound/core/media.c b/sound/core/media.c
+index f42e00b..9da058d 100644
+--- a/sound/core/media.c
++++ b/sound/core/media.c
+@@ -18,10 +18,12 @@
+  */
+
+ #include <linux/device.h>
++#include <linux/export.h>
  #include <linux/init.h>
+ #include <linux/kernel.h>
  #include <linux/list.h>
-+#include <linux/media.h>
- #include <linux/slab.h>
+ #include <linux/media.h>
++#include <linux/pci.h>
  #include <linux/string.h>
+ #include <linux/uaccess.h>
  #include <linux/usb.h>
-@@ -55,6 +56,7 @@
- #include <sound/control.h>
- #include <sound/hwdep.h>
- #include <sound/info.h>
-+#include <sound/media.h>
- #include <sound/tlv.h>
-
- #include "usbaudio.h"
-@@ -1969,6 +1971,278 @@ static int snd_usb_mixer_dev_free(struct snd_device *device)
- 	return 0;
+@@ -329,6 +331,40 @@ static int snd_media_setup_link(struct snd_card *card,
+ 	return err;
  }
 
-+static void unit_name(struct media_entity_desc *entity,
-+		      const u8 *desc, const char *prefix)
++#ifdef CONFIG_PCI
++int snd_media_get_pci_card_info(struct snd_card *card,
++				struct media_device_info *info)
 +{
-+	/* TODO: read the terminal name from the device */
-+	sprintf(entity->name, "%s%u", prefix, desc[3]);
-+}
++	struct pci_dev *pci;
 +
-+static int input_terminal_get_desc(struct snd_card *card,
-+				   void *private_data,
-+				   struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "IT");
-+	desc->type = MEDIA_ENT_T_JACK;
-+	return 0;
-+}
++	if (snd_BUG_ON(!card->dev))
++		return -ENXIO;
++	pci = to_pci_dev(card->dev);
 +
-+static int output_terminal_get_desc(struct snd_card *card,
-+				    void *private_data,
-+				    struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "OT");
-+	desc->type = MEDIA_ENT_T_JACK;
-+	return 0;
-+}
++	if (pci_is_pcie(pci)) {
++		int pos = pci_find_ext_capability(pci, PCI_EXT_CAP_ID_DSN);
++		if (pos) {
++			u32 eui[2];
 +
-+static int mixer_unit_get_desc(struct snd_card *card,
-+			       void *private_data,
-+			       struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "MU");
-+	desc->type = MEDIA_ENT_T_ALSA_MIXER;
-+	return 0;
-+}
-+
-+static int selector_unit_get_desc(struct snd_card *card,
-+				  void *private_data,
-+				  struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "SU");
-+	desc->type = MEDIA_ENT_T_ALSA_SELECTOR;
-+	return 0;
-+}
-+
-+static int feature_unit_get_desc(struct snd_card *card,
-+				 void *private_data,
-+				 struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "FU");
-+	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
-+	return 0;
-+}
-+
-+static int processing_unit_get_desc(struct snd_card *card,
-+				    void *private_data,
-+				    struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "PU");
-+	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
-+	return 0;
-+}
-+
-+static int extension_unit_get_desc(struct snd_card *card,
-+				   void *private_data,
-+				   struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "XU");
-+	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
-+	return 0;
-+}
-+
-+static int effect_unit_v2_get_desc(struct snd_card *card,
-+				   void *private_data,
-+				   struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "EU");
-+	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
-+	return 0;
-+}
-+
-+static int src_v2_get_desc(struct snd_card *card,
-+			   void *private_data,
-+			   struct media_entity_desc *desc)
-+{
-+	unit_name(desc, private_data, "SRC");
-+	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
-+	return 0;
-+}
-+
-+static int snd_usb_mixer_entity(struct mixer_build *state, const u8 *desc)
-+{
-+	snd_media_entity_get_desc_t get_desc = NULL;
-+	unsigned int sinks = 0, sources = 0, source_ids_count = 0, i;
-+	const u8 *source_ids = NULL;
-+	u8 source_id = 0;
-+	int err;
-+
-+	if (desc[0] < 4)
-+		return 0;
-+
-+	if (state->mixer->protocol == UAC_VERSION_1) {
-+		switch (desc[2]) {
-+		case UAC_INPUT_TERMINAL:
-+			if (desc[0] >= 6 &&
-+			    desc[5] != (UAC_TERMINAL_STREAMING >> 8)) {
-+				get_desc = &input_terminal_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC_OUTPUT_TERMINAL:
-+			if (desc[0] >= 8) {
-+				source_id = desc[7];
-+				if (desc[5] != (UAC_TERMINAL_STREAMING >> 8))
-+					get_desc = &output_terminal_get_desc;
-+			}
-+			break;
-+		case UAC_MIXER_UNIT:
-+			if (desc[0] >= 6) {
-+				source_ids = &desc[5];
-+				get_desc = &mixer_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC_SELECTOR_UNIT:
-+			if (desc[0] >= 6) {
-+				source_ids = &desc[5];
-+				get_desc = &selector_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC_FEATURE_UNIT:
-+			if (desc[0] >= 5) {
-+				source_id = desc[4];
-+				get_desc = &feature_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC1_PROCESSING_UNIT:
-+			if (desc[0] >= 8) {
-+				source_ids = &desc[7];
-+				get_desc = &processing_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC1_EXTENSION_UNIT:
-+			if (desc[0] >= 7 && desc[0] >= 7 + desc[6]) {
-+				source_ids_count = desc[6];
-+				source_ids = &desc[7];
-+				get_desc = &extension_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		}
-+	} else {
-+		switch (desc[2]) {
-+		case UAC_INPUT_TERMINAL:
-+			if (desc[0] >= 6 &&
-+			    desc[5] != (UAC_TERMINAL_STREAMING >> 8)) {
-+				get_desc = &input_terminal_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC_OUTPUT_TERMINAL:
-+			if (desc[0] >= 8) {
-+				source_id = desc[7];
-+				if (desc[5] != (UAC_TERMINAL_STREAMING >> 8))
-+					get_desc = &output_terminal_get_desc;
-+			}
-+			break;
-+		case UAC_MIXER_UNIT:
-+			if (desc[0] >= 5 && desc[0] >= 5 + desc[4]) {
-+				source_ids_count = desc[4];
-+				source_ids = &desc[5];
-+				get_desc = &mixer_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC_SELECTOR_UNIT:
-+			if (desc[0] >= 5 && desc[0] >= 5 + desc[4]) {
-+				source_ids_count = desc[4];
-+				source_ids = &desc[5];
-+				get_desc = &selector_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC_FEATURE_UNIT:
-+			if (desc[0] >= 5) {
-+				source_id = desc[4];
-+				get_desc = &feature_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC2_EFFECT_UNIT:
-+			if (desc[0] >= 7) {
-+				source_id = desc[6];
-+				get_desc = &effect_unit_v2_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC2_PROCESSING_UNIT_V2:
-+			if (desc[0] >= 7 && desc[0] >= 7 + desc[6]) {
-+				source_ids_count = desc[6];
-+				source_ids = &desc[7];
-+				get_desc = &processing_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC2_EXTENSION_UNIT_V2:
-+			if (desc[0] >= 7 && desc[0] >= 7 + desc[6]) {
-+				source_ids_count = desc[6];
-+				source_ids = &desc[7];
-+				get_desc = &extension_unit_get_desc;
-+				sources = 1;
-+			}
-+			break;
-+		case UAC2_SAMPLE_RATE_CONVERTER:
-+			if (desc[0] >= 5) {
-+				source_id = desc[4];
-+				get_desc = &src_v2_get_desc;
-+				sources = 1;
-+			}
-+			break;
++			pci_read_config_dword(pci, pos + 4, &eui[0]);
++			pci_read_config_dword(pci, pos + 8, &eui[1]);
++			sprintf(info->serial, "%08x%08x", eui[1], eui[0]);
 +		}
 +	}
-+
-+	if (source_id != 0) {
-+		err = snd_media_link_create(state->chip->card,
-+					    source_id, 0, desc[3], 0);
-+		if (err < 0)
-+			return err;
-+		sinks = 1;
-+	}
-+	else if (source_ids != NULL) {
-+		if (source_ids_count == 0 &&
-+		    source_ids + source_ids_count <= desc + desc[0])
-+			source_ids_count = desc + desc[0] - source_ids;
-+		for (i = 0; i < source_ids_count; i++) {
-+			err = snd_media_link_create(state->chip->card,
-+						    source_ids[i], 0,
-+						    desc[3], i);
-+			if (err < 0)
-+				return err;
-+		}
-+		sinks = source_ids_count;
-+	}
-+
-+	if (get_desc) {
-+		err = snd_media_entity_create(state->chip->card, get_desc,
-+					      desc[3], sinks, sources,
-+					      (void *)desc);
-+		if (err < 0)
-+			return err;
-+	}
++	snprintf(info->bus_info, sizeof(info->bus_info), "%s:%s",
++		 pci_is_pcie(pci) ? "PCIe" : "PCI", pci_name(pci));
++	info->hw_revision = pci->revision;
 +
 +	return 0;
 +}
++EXPORT_SYMBOL(snd_media_get_pci_card_info);
 +
-+static int snd_usb_mixer_entities(struct mixer_build *state)
-+{
-+	void *p;
-+	int err;
++const struct snd_media_card_ops snd_media_default_pci_ops = {
++	.get_info = snd_media_get_pci_card_info,
++};
++EXPORT_SYMBOL(snd_media_default_pci_ops);
++#endif
 +
-+	p = NULL;
-+	while ((p = snd_usb_find_desc(state->mixer->hostif->extra,
-+				      state->mixer->hostif->extralen,
-+				      p, USB_DT_CS_INTERFACE)) != NULL) {
-+		err = snd_usb_mixer_entity(state, p);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- /*
-  * create mixer controls
-  *
-@@ -1997,6 +2271,10 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 		}
+ #if defined(CONFIG_USB) || defined(CONFIG_USB_MODULE)
+ int snd_media_get_usb_card_info(struct snd_card *card,
+ 				struct media_device_info *info)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1c9c779..a01a43c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -54,6 +54,7 @@
+ #endif
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/media.h>
+ #include <linux/vgaarb.h>
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+@@ -3305,6 +3306,7 @@ static int __devinit azx_probe(struct pci_dev *pci,
  	}
 
-+	err = snd_usb_mixer_entities(&state);
-+	if (err < 0)
-+		return err;
-+
- 	p = NULL;
- 	while ((p = snd_usb_find_csint_desc(mixer->hostif->extra, mixer->hostif->extralen,
- 					    p, UAC_OUTPUT_TERMINAL)) != NULL) {
+ 	snd_card_set_dev(card, &pci->dev);
++	snd_card_set_media_ops_default_pci(card);
+
+ 	err = azx_create(card, pci, dev, pci_id->driver_data, &chip);
+ 	if (err < 0)
