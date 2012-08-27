@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [RFC PATCH 09/11] ALSA: usb-audio: create PCM device
-	entities
-Date: Tue, 28 Aug 2012 00:34:24 +0200
-Message-ID: <503BF5F0.10209@ladisch.de>
+Subject: [RFC PATCH 10/11] ALSA: usb-audio: add terminal/unit
+ entities and links
+Date: Tue, 28 Aug 2012 00:35:44 +0200
+Message-ID: <503BF640.1030509@ladisch.de>
 References: <503BF48E.1090100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9285F265230
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:35:22 +0200 (CEST)
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id F1E3D265230
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 00:36:42 +0200 (CEST)
 In-Reply-To: <503BF48E.1090100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,127 +24,323 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Use the terminal/unit descriptors to create entities and links.
+
+(This should be integrated with parse_audio_unit(), but that function
+does not yet support all unit types.)
+
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/usb/quirks.c |    4 ++--
- sound/usb/stream.c |   16 +++++++++++-----
- sound/usb/stream.h |    1 +
- 3 files changed, 14 insertions(+), 7 deletions(-)
+ sound/usb/mixer.c |  278 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 278 insertions(+), 0 deletions(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 2781726..293b4ba 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -152,7 +152,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 4f40ba8..a5fa807 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -45,6 +45,7 @@
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/list.h>
++#include <linux/media.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/usb.h>
+@@ -55,6 +56,7 @@
+ #include <sound/control.h>
+ #include <sound/hwdep.h>
+ #include <sound/info.h>
++#include <sound/media.h>
+ #include <sound/tlv.h>
 
- 	stream = (fp->endpoint & USB_DIR_IN)
- 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
--	err = snd_usb_add_audio_stream(chip, stream, fp);
-+	err = snd_usb_add_audio_stream(chip, stream, 0, fp);
- 	if (err < 0) {
- 		kfree(fp);
- 		kfree(rate_table);
-@@ -258,7 +258,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
-
- 	stream = (fp->endpoint & USB_DIR_IN)
- 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
--	err = snd_usb_add_audio_stream(chip, stream, fp);
-+	err = snd_usb_add_audio_stream(chip, stream, 0, fp);
- 	if (err < 0) {
- 		kfree(fp);
- 		return err;
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index e166eb5..145324d 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -78,7 +78,7 @@ static void snd_usb_audio_pcm_free(struct snd_pcm *pcm)
-  */
-
- static void snd_usb_init_substream(struct snd_usb_stream *as,
--				   int stream,
-+				   int stream, u8 terminal_id,
- 				   struct audioformat *fp)
- {
- 	struct snd_usb_substream *subs = &as->substream[stream];
-@@ -98,6 +98,9 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
- 	subs->num_formats++;
- 	subs->fmt_type = fp->fmt_type;
- 	subs->ep_num = fp->endpoint;
-+
-+	if (terminal_id > 0)
-+		snd_pcm_media_entities_create(as->pcm, stream, terminal_id);
+ #include "usbaudio.h"
+@@ -1969,6 +1971,278 @@ static int snd_usb_mixer_dev_free(struct snd_device *device)
+ 	return 0;
  }
 
++static void unit_name(struct media_entity_desc *entity,
++		      const u8 *desc, const char *prefix)
++{
++	/* TODO: read the terminal name from the device */
++	sprintf(entity->name, "%s%u", prefix, desc[3]);
++}
++
++static int input_terminal_get_desc(struct snd_card *card,
++				   void *private_data,
++				   struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "IT");
++	desc->type = MEDIA_ENT_T_JACK;
++	return 0;
++}
++
++static int output_terminal_get_desc(struct snd_card *card,
++				    void *private_data,
++				    struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "OT");
++	desc->type = MEDIA_ENT_T_JACK;
++	return 0;
++}
++
++static int mixer_unit_get_desc(struct snd_card *card,
++			       void *private_data,
++			       struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "MU");
++	desc->type = MEDIA_ENT_T_ALSA_MIXER;
++	return 0;
++}
++
++static int selector_unit_get_desc(struct snd_card *card,
++				  void *private_data,
++				  struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "SU");
++	desc->type = MEDIA_ENT_T_ALSA_SELECTOR;
++	return 0;
++}
++
++static int feature_unit_get_desc(struct snd_card *card,
++				 void *private_data,
++				 struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "FU");
++	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
++	return 0;
++}
++
++static int processing_unit_get_desc(struct snd_card *card,
++				    void *private_data,
++				    struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "PU");
++	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
++	return 0;
++}
++
++static int extension_unit_get_desc(struct snd_card *card,
++				   void *private_data,
++				   struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "XU");
++	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
++	return 0;
++}
++
++static int effect_unit_v2_get_desc(struct snd_card *card,
++				   void *private_data,
++				   struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "EU");
++	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
++	return 0;
++}
++
++static int src_v2_get_desc(struct snd_card *card,
++			   void *private_data,
++			   struct media_entity_desc *desc)
++{
++	unit_name(desc, private_data, "SRC");
++	desc->type = MEDIA_ENT_T_ALSA_PROCESSING;
++	return 0;
++}
++
++static int snd_usb_mixer_entity(struct mixer_build *state, const u8 *desc)
++{
++	snd_media_entity_get_desc_t get_desc = NULL;
++	unsigned int sinks = 0, sources = 0, source_ids_count = 0, i;
++	const u8 *source_ids = NULL;
++	u8 source_id = 0;
++	int err;
++
++	if (desc[0] < 4)
++		return 0;
++
++	if (state->mixer->protocol == UAC_VERSION_1) {
++		switch (desc[2]) {
++		case UAC_INPUT_TERMINAL:
++			if (desc[0] >= 6 &&
++			    desc[5] != (UAC_TERMINAL_STREAMING >> 8)) {
++				get_desc = &input_terminal_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC_OUTPUT_TERMINAL:
++			if (desc[0] >= 8) {
++				source_id = desc[7];
++				if (desc[5] != (UAC_TERMINAL_STREAMING >> 8))
++					get_desc = &output_terminal_get_desc;
++			}
++			break;
++		case UAC_MIXER_UNIT:
++			if (desc[0] >= 6) {
++				source_ids = &desc[5];
++				get_desc = &mixer_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC_SELECTOR_UNIT:
++			if (desc[0] >= 6) {
++				source_ids = &desc[5];
++				get_desc = &selector_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC_FEATURE_UNIT:
++			if (desc[0] >= 5) {
++				source_id = desc[4];
++				get_desc = &feature_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC1_PROCESSING_UNIT:
++			if (desc[0] >= 8) {
++				source_ids = &desc[7];
++				get_desc = &processing_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC1_EXTENSION_UNIT:
++			if (desc[0] >= 7 && desc[0] >= 7 + desc[6]) {
++				source_ids_count = desc[6];
++				source_ids = &desc[7];
++				get_desc = &extension_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		}
++	} else {
++		switch (desc[2]) {
++		case UAC_INPUT_TERMINAL:
++			if (desc[0] >= 6 &&
++			    desc[5] != (UAC_TERMINAL_STREAMING >> 8)) {
++				get_desc = &input_terminal_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC_OUTPUT_TERMINAL:
++			if (desc[0] >= 8) {
++				source_id = desc[7];
++				if (desc[5] != (UAC_TERMINAL_STREAMING >> 8))
++					get_desc = &output_terminal_get_desc;
++			}
++			break;
++		case UAC_MIXER_UNIT:
++			if (desc[0] >= 5 && desc[0] >= 5 + desc[4]) {
++				source_ids_count = desc[4];
++				source_ids = &desc[5];
++				get_desc = &mixer_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC_SELECTOR_UNIT:
++			if (desc[0] >= 5 && desc[0] >= 5 + desc[4]) {
++				source_ids_count = desc[4];
++				source_ids = &desc[5];
++				get_desc = &selector_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC_FEATURE_UNIT:
++			if (desc[0] >= 5) {
++				source_id = desc[4];
++				get_desc = &feature_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC2_EFFECT_UNIT:
++			if (desc[0] >= 7) {
++				source_id = desc[6];
++				get_desc = &effect_unit_v2_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC2_PROCESSING_UNIT_V2:
++			if (desc[0] >= 7 && desc[0] >= 7 + desc[6]) {
++				source_ids_count = desc[6];
++				source_ids = &desc[7];
++				get_desc = &processing_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC2_EXTENSION_UNIT_V2:
++			if (desc[0] >= 7 && desc[0] >= 7 + desc[6]) {
++				source_ids_count = desc[6];
++				source_ids = &desc[7];
++				get_desc = &extension_unit_get_desc;
++				sources = 1;
++			}
++			break;
++		case UAC2_SAMPLE_RATE_CONVERTER:
++			if (desc[0] >= 5) {
++				source_id = desc[4];
++				get_desc = &src_v2_get_desc;
++				sources = 1;
++			}
++			break;
++		}
++	}
++
++	if (source_id != 0) {
++		err = snd_media_link_create(state->chip->card,
++					    source_id, 0, desc[3], 0);
++		if (err < 0)
++			return err;
++		sinks = 1;
++	}
++	else if (source_ids != NULL) {
++		if (source_ids_count == 0 &&
++		    source_ids + source_ids_count <= desc + desc[0])
++			source_ids_count = desc + desc[0] - source_ids;
++		for (i = 0; i < source_ids_count; i++) {
++			err = snd_media_link_create(state->chip->card,
++						    source_ids[i], 0,
++						    desc[3], i);
++			if (err < 0)
++				return err;
++		}
++		sinks = source_ids_count;
++	}
++
++	if (get_desc) {
++		err = snd_media_entity_create(state->chip->card, get_desc,
++					      desc[3], sinks, sources,
++					      (void *)desc);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++static int snd_usb_mixer_entities(struct mixer_build *state)
++{
++	void *p;
++	int err;
++
++	p = NULL;
++	while ((p = snd_usb_find_desc(state->mixer->hostif->extra,
++				      state->mixer->hostif->extralen,
++				      p, USB_DT_CS_INTERFACE)) != NULL) {
++		err = snd_usb_mixer_entity(state, p);
++		if (err < 0)
++			return err;
++	}
++	return 0;
++}
++
  /*
-@@ -106,7 +109,7 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
-  * if not, create a new pcm stream.
-  */
- int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
--			     int stream,
-+			     int stream, u8 terminal_id,
- 			     struct audioformat *fp)
- {
- 	struct list_head *p;
-@@ -138,7 +141,7 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 		err = snd_pcm_new_stream(as->pcm, stream, 1);
- 		if (err < 0)
- 			return err;
--		snd_usb_init_substream(as, stream, fp);
-+		snd_usb_init_substream(as, stream, terminal_id, fp);
- 		return 0;
+  * create mixer controls
+  *
+@@ -1997,6 +2271,10 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ 		}
  	}
 
-@@ -166,7 +169,7 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 	else
- 		strcpy(pcm->name, "USB Audio");
-
--	snd_usb_init_substream(as, stream, fp);
-+	snd_usb_init_substream(as, stream, terminal_id, fp);
-
- 	list_add(&as->list, &chip->pcm_list);
- 	chip->pcm_devs++;
-@@ -260,6 +263,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 	struct audioformat *fp = NULL;
- 	int num, protocol, clock = 0;
- 	struct uac_format_type_i_continuous_descriptor *fmt;
-+	u8 terminal_id = 0;
-
- 	dev = chip->dev;
-
-@@ -324,6 +328,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 			}
-
- 			format = le16_to_cpu(as->wFormatTag); /* remember the format value */
-+			terminal_id = as->bTerminalLink;
- 			break;
- 		}
-
-@@ -347,6 +352,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
-
- 			num_channels = as->bNrChannels;
- 			format = le32_to_cpu(as->bmFormats);
-+			terminal_id = as->bTerminalLink;
-
- 			/* lookup the terminal associated to this interface
- 			 * to extract the clock */
-@@ -460,7 +466,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 		}
-
- 		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint %#x\n", dev->devnum, iface_no, altno, fp->endpoint);
--		err = snd_usb_add_audio_stream(chip, stream, fp);
-+		err = snd_usb_add_audio_stream(chip, stream, terminal_id, fp);
- 		if (err < 0) {
- 			kfree(fp->rate_table);
- 			kfree(fp);
-diff --git a/sound/usb/stream.h b/sound/usb/stream.h
-index c97f679..31f17c0 100644
---- a/sound/usb/stream.h
-+++ b/sound/usb/stream.h
-@@ -6,6 +6,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
-
- int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 			     int stream,
-+			     u8 terminal_id,
- 			     struct audioformat *fp);
-
- #endif /* __USBAUDIO_STREAM_H */
++	err = snd_usb_mixer_entities(&state);
++	if (err < 0)
++		return err;
++
+ 	p = NULL;
+ 	while ((p = snd_usb_find_csint_desc(mixer->hostif->extra, mixer->hostif->extralen,
+ 					    p, UAC_OUTPUT_TERMINAL)) != NULL) {
