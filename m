@@ -1,18 +1,20 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH] ASoC: ams-delta: fix card initalization
-	failure
-Date: Tue, 28 Aug 2012 17:13:05 +0200
-Message-ID: <3048168.EXxi4fR4e7@acer>
-References: <1346102910-8610-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <20120827213835.GE4400@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 02/14] MFD: twl4030-audio: Convert to
+	use devm_kzalloc
+Date: Tue, 28 Aug 2012 09:48:26 -0700
+Message-ID: <20120828164825.GA4534@opensource.wolfsonmicro.com>
+References: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>
+ <1344954162-7985-3-git-send-email-peter.ujfalusi@ti.com>
+ <1346147410.2182.96.camel@sokoban>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EC2D265CD7
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 17:20:39 +0200 (CEST)
-In-Reply-To: <20120827213835.GE4400@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F1FD1266106
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 18:48:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1346147410.2182.96.camel@sokoban>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, linux-kernel@vger.kernel.org
+To: Tero Kristo <t-kristo@ti.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Aug 2012 14:38:35 Mark Brown wrote:
-> On Mon, Aug 27, 2012 at 11:28:30PM +0200, Janusz Krzysztofik wrote:
-> 
-> > -	platform_set_drvdata(ams_delta_audio_platform_device,
-> > -				&ams_delta_audio_card);
-> > -
-> > -	ret = platform_device_add(ams_delta_audio_platform_device);
-> > -	if (ret)
-> > -		goto err;
-> 
-> The real fix here is that you should be using platform data here, not
-> driver data.  Is there some reason not to do that?
+On Tue, Aug 28, 2012 at 12:50:10PM +0300, Tero Kristo wrote:
+> On Tue, 2012-08-14 at 17:22 +0300, Peter Ujfalusi wrote:
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Mark,
+> I think this one could use a short commit message, also about why
+> kfree():s are dropped (handled internally by devm_* etc.)
 
-Do you think the change you propose is suitable for the rc cycle? I'm 
-trying to fix a regression in the first place. Converting the ams-delta 
-asoc to a platform driver is on my todo list and I'm going to take care 
-of this as soon as I have enough spare time.
-
-Thanks,
-Janusz
+Honestly I think people should be able to figure this out, it's not like
+it's an obscure API nobody ever used before.
