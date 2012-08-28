@@ -1,82 +1,64 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
- working with 1.0.24 and above (OK with 1.0.23)
-Date: Tue, 28 Aug 2012 10:50:32 +0200
-Message-ID: <503C8658.400@gmail.com>
-References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
- <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
- <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
- <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
+From: Sangsu Park <sangsu4u.park@samsung.com>
+Subject: [RESUBMIT PATCH] ASoC: SAMSUNG: Change Kconfig to support all SAMSUNG
+ ASoC
+Date: Tue, 28 Aug 2012 17:55:49 +0900
+Message-ID: <003301cd84fa$eb8a6b20$c29f4160$@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id E115A2652CA
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:50:37 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so1320299bkc.38
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 01:50:37 -0700 (PDT)
-In-Reply-To: <503C85BA.6020505@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kostas <hunter18@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Kukjin Kim' <kgene.kim@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, lrg@ti.com, sbkim73@samsung.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjguMDguMjAxMiAxMDo0NywgS29zdGFzIHdyb3RlOgo+IE9uIDI4LzA4LzIwMTIgMDg6NDQg
-w4/CgMOOwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+PiBPbiAyOC4wOC4yMDEyIDAwOjE5LCBLb3N0
-YXMgd3JvdGU6Cj4+PiBPbiAyNy8wOC8yMDEyIDA2OjU0IMOOwrzDjsK8LCBLb3N0YXMgd3JvdGU6
-Cj4+Pj4gT24gMjcvMDgvMjAxMiAwMjo0NCDDjsK8w47CvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+
-Pj4+IE9uIDI3LjA4LjIwMTIgMTI6MzMsIEtvc3RhcyB3cm90ZToKPj4+Pj4+IE9uIDI3LzA4LzIw
-MTIgMTI6MjYgw47CvMOOwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4+IE9uIDI3LjA4LjIw
-MTIgMTE6MDAsIEtvc3RhcyB3cm90ZToKPj4+Pj4+Pj4gSGkgQWxsLAo+Pj4+Pj4+Pgo+Pj4+Pj4+
-PiBJIGhhdmUgYSAnVHJ1c3QgV2ViY2FtJyAoVVNCIElEOiAxNDVmOjAxNWIpIHRoYXQgY29tZXMg
-d2l0aCBhIAo+Pj4+Pj4+PiBtaWNyb3Bob25lLgo+Pj4+Pj4+PiBUaGUgbWljcm9waG9uZSB3b3Jr
-cyB3aXRoIEFsc2EgMS4wLjIzIGJ1dCBpdCBkb2VzIG5vdCB3b3JrIHdpdGggdGhlCj4+Pj4+Pj4+
-IGxhdGVzdCBBbHNhIDEuMC4yNSBuZWl0aGVyIHdpdGggQWxzYSAxLjAuMjQuCj4+Pj4+Pj4+IEFw
-cGFyZW50bHkgdGhpcyBpcyBhIHJlZ3Jlc3Npb24uCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFdoYXQgc2hh
-bGwgSSBkbyB0byBmaWd1cmUgb3V0IHRoZSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0/Cj4+Pj4+Pj4+
-Cj4+Pj4+Pj4+IEhlcmUgYXJlIGF0dGFjaGVkIG15IGFsc2EtaW5mb3MsIHdpdGggQWxzYSAxLjAu
-MjMgKHdvcmtpbmcpLCAKPj4+Pj4+Pj4gMS4wLjI0IChOT1QKPj4+Pj4+Pj4gd29ya2luZykgYW5k
-IDEuMC4yNSAoTk9UIHdvcmtpbmcpLgo+Pj4+Pj4+IENhbiB5b3UgcHJvdmlkZSBkbWVzZyBwcm90
-b2NvbHMgZm9yIGJvdGggYSB3b3JraW5nIGFuZCBhIG5vbi13b3JraW5nCj4+Pj4+Pj4gY2FzZSBw
-bGVhc2U/Cj4+Pj4+Pj4KPj4+Pj4+Pgo+Pj4+Pj4gQmVsb3cgYXJlIGF0dGFjaGVkIHRoZSBkbWVz
-ZyBmaWxlcy4KPj4+Pj4+Cj4+Pj4+IFRoYW5rcyAtIHRoZSBsb2dzIGxvb2sgYm90aCBnb29kLCBJ
-IGd1ZXNzIHRoZSBpbnRlcmVzdGluZyBtZXNzYWdlcyBhcmUKPj4+Pj4gb25seSBnZW5lcmF0ZWQg
-b25jZSB5b3UgdHJ5IHRvIHN0YXJ0IHRoZSBzdHJlYW0uIENhbiB5b3UgdHJ5IHRoaXM/Cj4+Pj4g
-SG93IGkgZG8gdGhhdD8KPj4+PiBJIHRyaWVkIHRvIG1ha2UgYSB0ZXN0IGNhbGwgaW4gc2t5cGUg
-YW5kIGFsc28gcmVjb3JkaW5nIGEgdmlkZW8gaW4gCj4+Pj4gY2hlZXNlIGJ1dCBubyBjaGFuZ2Vz
-IGluIGRtZXNnLgo+Pj4+IElzIHRoZXJlIGFub3RoZXIgd2F5IHRvIHN0YXJ0IHRoZSBzdHJlYW0/
-Cj4+PiBBbHNvIHRyaWVkIHRvIHJlY29yZCB2b2ljZSB3aXRoIHNvdW5kIHJlY29yZGVyLi4ud2l0
-aCBhbHNhIDEuMC4yMyAKPj4+IHJlY29yZGluZyBpcyBmaW5lLi5pIGhlYXIgbXkgdm9pY2Ugd2hl
-biBwbGF5YmFjayB0aGUgZmlsZSBidXQgd2l0aCBhbHNhIAo+Pj4gMS4wLjI0IGFuZCBhYm92ZSBu
-b3RoaW5nIGlzIHJlY29yZGVkLgo+Pj4gSW4gYm90aCBjYXNlcyBub3RoaW5nIGlzIGNoYW5nZWQg
-aW4gZG1lc2cgb3V0cHV0Lgo+Pj4gV2hhdCBlbHNlIGNvdWxkIGkgZG8gdG8gaGVscCB5b3Ugb3V0
-Pwo+Pj4KPj4gQ29tcGFyaW5nIHRoZSB0d28gZG1lc2cgbG9ncywgSSdtIHVuZGVyIHRoZSBpbXBy
-ZXNzaW9uIHRoYXQgaW4gdGhlCj4+IHNlY29uZCBjYXNlICh0aGUgbmV3ZXIga2VybmVsKSwgdGhl
-IGhkYSBkcml2ZXIga2lja3MgaW4gYW5kIGNyZWF0ZXMgYQo+PiBzb3VuZCBkZXZpY2UgYmVmb3Jl
-IHRoZSB1c2IgYXVkaW8gZHJpdmVyIGRvZXMuIEhlbmNlLCB0aGUgZGVmYXVsdCBjYXJkCj4+IGNo
-YW5nZXMgYW5kIHlvdSdyZSByZWNvcmRpbmcgZnJvbSB5b3VyIGludGVybmFsIHNvdW5kIGNhcmQg
-cmF0aGVyIHRoYW4KPj4gdGhlIFdlYmNhbS4KPj4KPj4gQ291bGQgeW91IHBsZWFzZSBzZW5kIHRo
-ZSBvdXRwdXQgb2YgJ2FwbGF5IC1sJyBpbiBib3RoIGNhc2VzPwo+Pgo+Pgo+PiBEYW5pZWwKPj4K
-PiBPdXRwdXQgb2Ygd29ya2luZyBjYXNlCj4gKioqKiBMaXN0IG9mIFBMQVlCQUNLIEhhcmR3YXJl
-IERldmljZXMgKioqKgo+IGNhcmQgMDogU0IgW0hEQSBBVEkgU0JdLCBkZXZpY2UgMDogQUQxOTh4
-IEFuYWxvZyBbQUQxOTh4IEFuYWxvZ10KPiDDgiAgU3ViZGV2aWNlczogMS8xCj4gw4IgIFN1YmRl
-dmljZSAjMDogc3ViZGV2aWNlICMwCj4gY2FyZCAwOiBTQiBbSERBIEFUSSBTQl0sIGRldmljZSAx
-OiBBRDE5OHggRGlnaXRhbCBbQUQxOTh4IERpZ2l0YWxdCj4gw4IgIFN1YmRldmljZXM6IDEvMQo+
-IMOCICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAo+IGNhcmQgMjogR2VuZXJpYyBbSEQtQXVk
-aW8gR2VuZXJpY10sIGRldmljZSAzOiBIRE1JIDAgW0hETUkgMF0KPiDDgiAgU3ViZGV2aWNlczog
-MS8xCj4gw4IgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgpTb3JyeSwgdGhlcmUncyBvZiBj
-b3Vyc2Ugbm8gcGxheWJhY2sgb24gYSB3ZWJjYW0uIFRyeSAnYXJlY29yZCAtbCcKaW5zdGVhZCwg
-cGxlYXNlLgoKCkRhbmllbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+All SAMSUNG ASoC needs SND_SOC_SAMSUNG configuration.
+This patch change Kconfig to support all SAMSUNG ASoC.
+
+Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
+---
+ sound/soc/samsung/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index f17dd25..e7b8317 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_SOC_SAMSUNG
+ 	tristate "ASoC support for Samsung"
+-	depends on ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210 || ARCH_S5P64X0 || ARCH_EXYNOS4
++	depends on PLAT_SAMSUNG
+ 	select S3C64XX_DMA if ARCH_S3C64XX
+ 	select S3C2410_DMA if ARCH_S3C24XX
+ 	help
+-- 
+1.7.1
+
+On 08/28/12 8:00, Kukjin Kim wrote:
+> On 08/27/12 11:08, Mark Brown wrote:
+> > On Mon, Aug 27, 2012 at 11:06:47AM -0700, Kukjin Kim wrote:
+> >
+> >> Hmm, all of Samsung stuff is available...so how about?
+> >>
+> >> +	depends on PLAT_SAMSUNG
+> >
+> > Yes, that's a very good idea!
+> 
+> Mark, thanks.
+> 
+> Sangsu, could you please re-submit as per my suggestion?
+> 
+> Thanks.
+> 
+
+Kukjin, thanks. 
+This is re-submit patch. In fact, I'd wanted to submit your idea :)
+Thanks.
+
+> Best regards,
+> Kgene.
+> --
+> Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer, SW Solution Development Team, Samsung
+> Electronics Co., Ltd.
