@@ -1,24 +1,24 @@
-From: Tero Kristo <t-kristo@ti.com>
-Subject: Re: [PATCH v2 00/14] MFD/ASoC/Input: twl4030-audio submodule DT
- support
-Date: Tue, 28 Aug 2012 12:51:50 +0300
-Message-ID: <1346147510.2182.98.camel@sokoban>
-References: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>
-Reply-To: <t-kristo@ti.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: RE: [alsa-devel] [RESUBMIT PATCH] ASoC: SAMSUNG: Change Kconfig to
+ support all SAMSUNG ASoC
+Date: Tue, 28 Aug 2012 18:54:47 +0900
+Message-ID: <019801cd8503$28e031f0$7aa095d0$@com>
+References: <003301cd84fa$eb8a6b20$c29f4160$@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>, linux-kernel@vger.kernel.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <003301cd84fa$eb8a6b20$c29f4160$@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Sangsu Park' <sangsu4u.park@samsung.com>, 'Kukjin Kim' <kgene.kim@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+On Mon, Aug 28, 2012 at 05:56PM, Sangsu Park wrote:
+> All SAMSUNG ASoC needs SND_SOC_SAMSUNG configuration.
+> This patch change Kconfig to support all SAMSUNG ASoC.
+> 
+> Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
 
-The MFD patches in this set look good to me except for the minor comment
-on patch 2 I just sent. That is with my limited knowledge of DT
-though...
-
--Tero
+Acked-by: Sangbeom Kim <sbkim73@samsung.com>
