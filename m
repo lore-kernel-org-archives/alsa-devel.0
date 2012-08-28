@@ -1,64 +1,98 @@
-From: Sangsu Park <sangsu4u.park@samsung.com>
-Subject: [RESUBMIT PATCH] ASoC: SAMSUNG: Change Kconfig to support all SAMSUNG
- ASoC
-Date: Tue, 28 Aug 2012 17:55:49 +0900
-Message-ID: <003301cd84fa$eb8a6b20$c29f4160$@samsung.com>
+From: Kostas <hunter18@gmail.com>
+Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
+ working with 1.0.24 and above (OK with 1.0.23)
+Date: Tue, 28 Aug 2012 11:56:13 +0300
+Message-ID: <503C87AD.2010204@gmail.com>
+References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
+ <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
+ <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
+ <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
+ <503C8658.400@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Kukjin Kim' <kgene.kim@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, lrg@ti.com, sbkim73@samsung.com, ben-linux@fluff.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 213E6265CD0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:56:17 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so1322436bkc.38
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 01:56:16 -0700 (PDT)
+In-Reply-To: <503C8658.400@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-All SAMSUNG ASoC needs SND_SOC_SAMSUNG configuration.
-This patch change Kconfig to support all SAMSUNG ASoC.
-
-Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
----
- sound/soc/samsung/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index f17dd25..e7b8317 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -1,6 +1,6 @@
- config SND_SOC_SAMSUNG
- 	tristate "ASoC support for Samsung"
--	depends on ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210 || ARCH_S5P64X0 || ARCH_EXYNOS4
-+	depends on PLAT_SAMSUNG
- 	select S3C64XX_DMA if ARCH_S3C64XX
- 	select S3C2410_DMA if ARCH_S3C24XX
- 	help
--- 
-1.7.1
-
-On 08/28/12 8:00, Kukjin Kim wrote:
-> On 08/27/12 11:08, Mark Brown wrote:
-> > On Mon, Aug 27, 2012 at 11:06:47AM -0700, Kukjin Kim wrote:
-> >
-> >> Hmm, all of Samsung stuff is available...so how about?
-> >>
-> >> +	depends on PLAT_SAMSUNG
-> >
-> > Yes, that's a very good idea!
-> 
-> Mark, thanks.
-> 
-> Sangsu, could you please re-submit as per my suggestion?
-> 
-> Thanks.
-> 
-
-Kukjin, thanks. 
-This is re-submit patch. In fact, I'd wanted to submit your idea :)
-Thanks.
-
-> Best regards,
-> Kgene.
-> --
-> Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer, SW Solution Development Team, Samsung
-> Electronics Co., Ltd.
+T24gMjgvMDgvMjAxMiAxMTo1MCDPgM68LCBEYW5pZWwgTWFjayB3cm90ZToKPiBPbiAyOC4wOC4y
+MDEyIDEwOjQ3LCBLb3N0YXMgd3JvdGU6Cj4+IE9uIDI4LzA4LzIwMTIgMDg6NDQgw4/CgMOOwrws
+IERhbmllbCBNYWNrIHdyb3RlOgo+Pj4gT24gMjguMDguMjAxMiAwMDoxOSwgS29zdGFzIHdyb3Rl
+Ogo+Pj4+IE9uIDI3LzA4LzIwMTIgMDY6NTQgw47CvMOOwrwsIEtvc3RhcyB3cm90ZToKPj4+Pj4g
+T24gMjcvMDgvMjAxMiAwMjo0NCDDjsK8w47CvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+Pj4+PiBP
+biAyNy4wOC4yMDEyIDEyOjMzLCBLb3N0YXMgd3JvdGU6Cj4+Pj4+Pj4gT24gMjcvMDgvMjAxMiAx
+MjoyNiDDjsK8w47CvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+Pj4+Pj4+IE9uIDI3LjA4LjIwMTIg
+MTE6MDAsIEtvc3RhcyB3cm90ZToKPj4+Pj4+Pj4+IEhpIEFsbCwKPj4+Pj4+Pj4+Cj4+Pj4+Pj4+
+PiBJIGhhdmUgYSAnVHJ1c3QgV2ViY2FtJyAoVVNCIElEOiAxNDVmOjAxNWIpIHRoYXQgY29tZXMg
+d2l0aCBhCj4+Pj4+Pj4+PiBtaWNyb3Bob25lLgo+Pj4+Pj4+Pj4gVGhlIG1pY3JvcGhvbmUgd29y
+a3Mgd2l0aCBBbHNhIDEuMC4yMyBidXQgaXQgZG9lcyBub3Qgd29yayB3aXRoIHRoZQo+Pj4+Pj4+
+Pj4gbGF0ZXN0IEFsc2EgMS4wLjI1IG5laXRoZXIgd2l0aCBBbHNhIDEuMC4yNC4KPj4+Pj4+Pj4+
+IEFwcGFyZW50bHkgdGhpcyBpcyBhIHJlZ3Jlc3Npb24uCj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gV2hh
+dCBzaGFsbCBJIGRvIHRvIGZpZ3VyZSBvdXQgdGhlIHNvdXJjZSBvZiB0aGUgcHJvYmxlbT8KPj4+
+Pj4+Pj4+Cj4+Pj4+Pj4+PiBIZXJlIGFyZSBhdHRhY2hlZCBteSBhbHNhLWluZm9zLCB3aXRoIEFs
+c2EgMS4wLjIzICh3b3JraW5nKSwKPj4+Pj4+Pj4+IDEuMC4yNCAoTk9UCj4+Pj4+Pj4+PiB3b3Jr
+aW5nKSBhbmQgMS4wLjI1IChOT1Qgd29ya2luZykuCj4+Pj4+Pj4+IENhbiB5b3UgcHJvdmlkZSBk
+bWVzZyBwcm90b2NvbHMgZm9yIGJvdGggYSB3b3JraW5nIGFuZCBhIG5vbi13b3JraW5nCj4+Pj4+
+Pj4+IGNhc2UgcGxlYXNlPwo+Pj4+Pj4+Pgo+Pj4+Pj4+Pgo+Pj4+Pj4+IEJlbG93IGFyZSBhdHRh
+Y2hlZCB0aGUgZG1lc2cgZmlsZXMuCj4+Pj4+Pj4KPj4+Pj4+IFRoYW5rcyAtIHRoZSBsb2dzIGxv
+b2sgYm90aCBnb29kLCBJIGd1ZXNzIHRoZSBpbnRlcmVzdGluZyBtZXNzYWdlcyBhcmUKPj4+Pj4+
+IG9ubHkgZ2VuZXJhdGVkIG9uY2UgeW91IHRyeSB0byBzdGFydCB0aGUgc3RyZWFtLiBDYW4geW91
+IHRyeSB0aGlzPwo+Pj4+PiBIb3cgaSBkbyB0aGF0Pwo+Pj4+PiBJIHRyaWVkIHRvIG1ha2UgYSB0
+ZXN0IGNhbGwgaW4gc2t5cGUgYW5kIGFsc28gcmVjb3JkaW5nIGEgdmlkZW8gaW4KPj4+Pj4gY2hl
+ZXNlIGJ1dCBubyBjaGFuZ2VzIGluIGRtZXNnLgo+Pj4+PiBJcyB0aGVyZSBhbm90aGVyIHdheSB0
+byBzdGFydCB0aGUgc3RyZWFtPwo+Pj4+IEFsc28gdHJpZWQgdG8gcmVjb3JkIHZvaWNlIHdpdGgg
+c291bmQgcmVjb3JkZXIuLi53aXRoIGFsc2EgMS4wLjIzCj4+Pj4gcmVjb3JkaW5nIGlzIGZpbmUu
+LmkgaGVhciBteSB2b2ljZSB3aGVuIHBsYXliYWNrIHRoZSBmaWxlIGJ1dCB3aXRoIGFsc2EKPj4+
+PiAxLjAuMjQgYW5kIGFib3ZlIG5vdGhpbmcgaXMgcmVjb3JkZWQuCj4+Pj4gSW4gYm90aCBjYXNl
+cyBub3RoaW5nIGlzIGNoYW5nZWQgaW4gZG1lc2cgb3V0cHV0Lgo+Pj4+IFdoYXQgZWxzZSBjb3Vs
+ZCBpIGRvIHRvIGhlbHAgeW91IG91dD8KPj4+Pgo+Pj4gQ29tcGFyaW5nIHRoZSB0d28gZG1lc2cg
+bG9ncywgSSdtIHVuZGVyIHRoZSBpbXByZXNzaW9uIHRoYXQgaW4gdGhlCj4+PiBzZWNvbmQgY2Fz
+ZSAodGhlIG5ld2VyIGtlcm5lbCksIHRoZSBoZGEgZHJpdmVyIGtpY2tzIGluIGFuZCBjcmVhdGVz
+IGEKPj4+IHNvdW5kIGRldmljZSBiZWZvcmUgdGhlIHVzYiBhdWRpbyBkcml2ZXIgZG9lcy4gSGVu
+Y2UsIHRoZSBkZWZhdWx0IGNhcmQKPj4+IGNoYW5nZXMgYW5kIHlvdSdyZSByZWNvcmRpbmcgZnJv
+bSB5b3VyIGludGVybmFsIHNvdW5kIGNhcmQgcmF0aGVyIHRoYW4KPj4+IHRoZSBXZWJjYW0uCj4+
+Pgo+Pj4gQ291bGQgeW91IHBsZWFzZSBzZW5kIHRoZSBvdXRwdXQgb2YgJ2FwbGF5IC1sJyBpbiBi
+b3RoIGNhc2VzPwo+Pj4KPj4+Cj4+PiBEYW5pZWwKPj4+Cj4+IE91dHB1dCBvZiB3b3JraW5nIGNh
+c2UKPj4gKioqKiBMaXN0IG9mIFBMQVlCQUNLIEhhcmR3YXJlIERldmljZXMgKioqKgo+PiBjYXJk
+IDA6IFNCIFtIREEgQVRJIFNCXSwgZGV2aWNlIDA6IEFEMTk4eCBBbmFsb2cgW0FEMTk4eCBBbmFs
+b2ddCj4+IMOCICBTdWJkZXZpY2VzOiAxLzEKPj4gw4IgIFN1YmRldmljZSAjMDogc3ViZGV2aWNl
+ICMwCj4+IGNhcmQgMDogU0IgW0hEQSBBVEkgU0JdLCBkZXZpY2UgMTogQUQxOTh4IERpZ2l0YWwg
+W0FEMTk4eCBEaWdpdGFsXQo+PiDDgiAgU3ViZGV2aWNlczogMS8xCj4+IMOCICBTdWJkZXZpY2Ug
+IzA6IHN1YmRldmljZSAjMAo+PiBjYXJkIDI6IEdlbmVyaWMgW0hELUF1ZGlvIEdlbmVyaWNdLCBk
+ZXZpY2UgMzogSERNSSAwIFtIRE1JIDBdCj4+IMOCICBTdWJkZXZpY2VzOiAxLzEKPj4gw4IgIFN1
+YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4gU29ycnksIHRoZXJlJ3Mgb2YgY291cnNlIG5vIHBs
+YXliYWNrIG9uIGEgd2ViY2FtLiBUcnkgJ2FyZWNvcmQgLWwnCj4gaW5zdGVhZCwgcGxlYXNlLgo+
+Cj4KPiBEYW5pZWwKPgpPdXRwdXQgb2Ygbm9uLXdvcmtpbmcgY2FzZQoqKioqIExpc3Qgb2YgQ0FQ
+VFVSRSBIYXJkd2FyZSBEZXZpY2VzICoqKioKY2FyZCAwOiBTQiBbSERBIEFUSSBTQl0sIGRldmlj
+ZSAwOiBBRDE5OHggQW5hbG9nIFtBRDE5OHggQW5hbG9nXQogICBTdWJkZXZpY2VzOiAzLzMKICAg
+U3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKICAgU3ViZGV2aWNlICMxOiBzdWJkZXZpY2UgIzEK
+ICAgU3ViZGV2aWNlICMyOiBzdWJkZXZpY2UgIzIKY2FyZCAxOiBXZWJjYW0gW1RydXN0IDJNUCBB
+dXRvIEZvY3VzIFdlYmNhbV0sIGRldmljZSAwOiBVU0IgQXVkaW8gW1VTQiAKQXVkaW9dCiAgIFN1
+YmRldmljZXM6IDEvMQogICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKCk91dHB1dCBvZiB3
+b3JraW5nIGNhc2UKKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNh
+cmQgMDogU0IgW0hEQSBBVEkgU0JdLCBkZXZpY2UgMDogQUQxOTh4IEFuYWxvZyBbQUQxOTh4IEFu
+YWxvZ10KICAgU3ViZGV2aWNlczogMy8zCiAgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCiAg
+IFN1YmRldmljZSAjMTogc3ViZGV2aWNlICMxCiAgIFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMy
+CmNhcmQgMTogZGVmYXVsdCBbVHJ1c3QgMk1QIEF1dG8gRm9jdXMgV2ViY2FtIF0sIGRldmljZSAw
+OiBVU0IgQXVkaW8gW1VTQiAKQXVkaW9dCiAgIFN1YmRldmljZXM6IDEvMQogICBTdWJkZXZpY2Ug
+IzA6IHN1YmRldmljZSAjMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
