@@ -1,18 +1,17 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel
-	chips
-Date: Tue, 28 Aug 2012 11:00:05 +0300
-Message-ID: <c2d7db2a89025272868a3b8ef38cac2d@mail.onse.fi>
-References: <1346136381-26087-1-git-send-email-xingchao.wang@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Fix runtime PM accounting
+Date: Tue, 28 Aug 2012 08:14:43 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F81DA4D0@SHSMSX101.ccr.corp.intel.com>
+References: <s5hwr0l7msk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id BB9E0265FBB
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:00:13 +0200 (CEST)
-In-Reply-To: <1346136381-26087-1-git-send-email-xingchao.wang@intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 475102652CA
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:14:46 +0200 (CEST)
+In-Reply-To: <s5hwr0l7msk.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,206 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wang Xingchao <xingchao.wang@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, fengguang.wu@intel.com, alanwww1@xbmc.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 28.08.2012 09:46, Wang Xingchao wrote:
-> HDMI channel remapping apparently effects HBR packets on Intel's 
-> chips.
-> For compressed non-PCM audio, use "straight-through" channel mapping.
-> For uncompressed multi-channel pcm audio, use normal mapping.
->
-> Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
-> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Sunday, August 26, 2012 10:26 PM
 
-For the record, I haven't acked this patch yet (comments below).
-I guess Wang Xingchao wanted to give me credit for my idea behind the
-patch.
+> The flag codec->d3_clk_stop_ok isn't always set when the codec is powered
+> off.  If it's not set, the controller driver doesn't change the runtime PM
+> count.  This causes an unblanced accounting when multiple codecs are
+> present.  
 
-> ---
->  sound/pci/hda/patch_hdmi.c |   50
-> +++++++++++++++++++++++++++-----------------
->  1 file changed, 31 insertions(+), 19 deletions(-)
->
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index d9439c5..fda89e3 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -231,6 +231,11 @@ static struct cea_channel_speaker_allocation
-> channel_allocations[] = {
->  { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,
-> FR,  FL } },
->  				 /* Dolby Surround */
->  { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,
-> FR,  FL } },
-> +{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,
-> FR,  FL } },
-> +{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,
-> FR,  FL } },
-> +{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,
-> FR,  FL } },
-> +{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,
-> FR,  FL } },
-> +{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,
-> FR,  FL } },
->  				 /* surround40 */
->  { .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,
-> FR,  FL } },
->  				 /* surround41 */
-> @@ -239,22 +244,15 @@ static struct cea_channel_speaker_allocation
-> channel_allocations[] = {
->  { .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,
-> FR,  FL } },
->  				 /* surround51 */
->  { .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,
-> FR,  FL } },
-> -				 /* 6.1 */
-> -{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,
-> FR,  FL } },
-> -				 /* surround71 */
-> -{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
-> FR,  FL } },
-> -
-> -{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,
-> FR,  FL } },
-> -{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,
-> FR,  FL } },
-> -{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,
-> FR,  FL } },
-> -{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,
-> FR,  FL } },
-> -{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,
-> FR,  FL } },
->  { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,
-> FR,  FL } },
->  { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,
-> FR,  FL } },
->  { .ca_index = 0x0e,  .speakers = {   0,   RC,  RR,  RL,  FC,    0,
-> FR,  FL } },
-> +{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,
-> FR,  FL } },
->  { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,
-> FR,  FL } },
->  { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,
-> FR,  FL } },
->  { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,
-> FR,  FL } },
-> +				 /* surround71 */
-> +{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
-> FR,  FL } },
->  { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,
-> FR,  FL } },
->  { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,
-> FR,  FL } },
->  { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,
-> FR,  FL } },
+If the flag codec->d3_clk_stop_ok is not set on changes to D3, this flag will keep 0 and the same codec will not call pm_runtime_get_sync() on change back to D0. So I feel the runtime PM count is still balanced although the controller may lose a chance to suspend itself.
 
-Doesn't this reordering change the selected CAs? (they are listed in 
-priority order)
+Usually, the first codec is powered down with CLK_STOP_OK=0,
+> then the next codec with CLK_STOP_OK=1.  At this moment, the first codec
+> is changed also to CLK_STOP_OK=1, but this isn't informed to the controller.
+> Thus it still thinks as if one codec is active.
 
+Does this conflict with spec? The spec says that PS-ClkStopOk should be set or cleared *before* entering D3: "if the codec requires BCLK to be available in D3 state, while a pass through loop is active, then it must indicate so by clearing the PS-ClkStopOk bit before entering D3 state, otherwise it must set that bit." If this is not true, then checking later is necessary.
 
-> @@ -537,22 +535,36 @@ static void hdmi_debug_channel_mapping(struct
-> hda_codec *codec,
->
->  static void hdmi_setup_channel_mapping(struct hda_codec *codec,
->  				       hda_nid_t pin_nid,
-> +				       hda_nid_t cvt_nid,
->  				       int ca)
->  {
->  	int i;
->  	int err;
-> -
-> -	if (hdmi_channel_mapping[ca][1] == 0) {
-> -		for (i = 0; i < channel_allocations[ca].channels; i++)
-> -			hdmi_channel_mapping[ca][i] = i | (i << 4);
-> +	unsigned short val;
-> +	int tmp_mapping[8];
-> +	bool non_pcm = false;
+> For fixing this issue, move the check of CLK_STOP_OK bit at the runtime
+> suspend time, and simple up/down by the codec power save in
+> azx_power_notifier().  For CLK_STOP_OK bit checks of all codecs, a new
+> helper function is introduced.
+
+I've tested your patch but with a little change. Because one of my codecs cannot support stop-clock, I pretend it can by setting codec->d3_clk_stop. Then I found snd_hda_bus_ready_for_d3() blocks when getting this codec's power state, and so the runtime PM status keeps SUSPENDING. I'm not sure it's because this codec cannot support 'get state' after entering D3 for some time, or other reason. 
+I've just got a new codec that should support 'stop-clk' in D3 and I'll test the new codec. My platform is not stable and it may take some time to do the test. Thanks!
+
+> +/* check whether all codecs are ready to stop clock */ bool
+> +snd_hda_bus_ready_for_d3(struct hda_bus *bus) {
+> +	struct hda_codec *codec;
 > +
-> +	val = snd_hda_codec_read(codec, cvt_nid, 0, 
-> AC_VERB_GET_DIGI_CONVERT_1, 0);
-> +	non_pcm = !!(val & AC_DIG1_NONAUDIO);
-
-AFAICS you could use snd_hda_spdif_out_of_nid() and spdif->status here 
-to avoid
-having to read the value from HW.
-
+> +	list_for_each_entry(codec, &bus->codec_list, list) {
+> +		unsigned int state;
+> +		int fg = codec->afg ? codec->afg : codec->mfg;
 > +
-> +	if (hdmi_channel_mapping[ca][1] == 0 || non_pcm) {
-> +		for (i = 0; i < channel_allocations[ca].channels; i++) {
-> +			if (non_pcm)
-> +				tmp_mapping[i] = i | (i << 4);
-> +			else
-> +				hdmi_channel_mapping[ca][i] = i | (i << 4);
-> +		}
->  		for (; i < 8; i++)
-> -			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
-> +			if (non_pcm)
-> +				tmp_mapping[i] = 0xf | (i << 4);
-> +			else
-> +				hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
->  	}
+> +		if (!codec->d3_stop_clk)
+> +			return false;
+> +		state = snd_hda_codec_read(codec, fg, 0,
+> +					   AC_VERB_GET_POWER_STATE, 0);   ... blocked here.
+> +		if (!(state & AC_PWRST_CLK_STOP_OK))
+> +			return false;
+> +	}
+> +	return true;
+> +}
 
-I don't think it makes much sense to create the mapping dynamically, 
-since it
-is always 0x00 0x11 0x22 0x33 0x44 0x55 0x66 0x77. It also complicates 
-the code.
-
-
->  	for (i = 0; i < 8; i++) {
->  		err = snd_hda_codec_write(codec, pin_nid, 0,
->  					  AC_VERB_SET_HDMI_CHAN_SLOT,
-> -					  hdmi_channel_mapping[ca][i]);
-> +					  non_pcm ? tmp_mapping[i] : hdmi_channel_mapping[ca][i]);
->  		if (err) {
->  			snd_printdd(KERN_NOTICE
->  				    "HDMI: channel mapping failed\n");
-> @@ -686,7 +698,7 @@ static bool hdmi_infoframe_uptodate(struct
-> hda_codec *codec, hda_nid_t pin_nid,
->  }
->
->  static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int 
-> pin_idx,
-> -					struct snd_pcm_substream *substream)
-> +					hda_nid_t cvt_nid, struct snd_pcm_substream *substream)
->  {
->  	struct hdmi_spec *spec = codec->spec;
->  	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
-> @@ -731,13 +743,13 @@ static void hdmi_setup_audio_infoframe(struct
-> hda_codec *codec, int pin_idx,
->  	 * sizeof(*dp_ai) to avoid partial match/update problems when
->  	 * the user switches between HDMI/DP monitors.
->  	 */
-> +	hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, ca);
->  	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
->  					sizeof(ai))) {
->  		snd_printdd("hdmi_setup_audio_infoframe: "
->  			    "pin=%d channels=%d\n",
->  			    pin_nid,
->  			    channels);
-> -		hdmi_setup_channel_mapping(codec, pin_nid, ca);
->  		hdmi_stop_infoframe_trans(codec, pin_nid);
->  		hdmi_fill_audio_infoframe(codec, pin_nid,
->  					    ai.bytes, sizeof(ai));
-
-I wonder if we could avoid always rewriting channel mapping... I'm not
-immediately sure of the best way of doing that (or even if it is worth 
-it),
-though.
-
-
-> @@ -1151,7 +1163,7 @@ static int
-> generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
->
->  	hdmi_set_channel_count(codec, cvt_nid, 
-> substream->runtime->channels);
->
-> -	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
-> +	hdmi_setup_audio_infoframe(codec, pin_idx, cvt_nid, substream);
->
->  	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
->  				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-
--- 
-Anssi Hannula
+Thanks
+Mengdong
