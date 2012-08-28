@@ -1,23 +1,21 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] sound: tegra_alc5632: remove HP detect GPIO inversion
-Date: Tue, 28 Aug 2012 10:09:44 -0700
-Message-ID: <20120828170943.GD4534@opensource.wolfsonmicro.com>
-References: <1345864815-19539-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RESUBMIT PATCH] ASoC: SAMSUNG: Change Kconfig to support all
+ SAMSUNG ASoC
+Date: Tue, 28 Aug 2012 10:17:16 -0700
+Message-ID: <20120828171716.GG4534@opensource.wolfsonmicro.com>
+References: <003301cd84fa$eb8a6b20$c29f4160$@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1345864815-19539-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
+In-Reply-To: <003301cd84fa$eb8a6b20$c29f4160$@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangsu Park <sangsu4u.park@samsung.com>
+Cc: 'Kukjin Kim' <kgene.kim@samsung.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, lrg@ti.com, sbkim73@samsung.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 24, 2012 at 09:20:15PM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> 
-> Both the schematics and practical testing show that the HP detect GPIO
-> is high when the headphones are plugged in. Hence, the snd_soc_jack_gpio
-> should not specify to invert the signal.
+On Tue, Aug 28, 2012 at 05:55:49PM +0900, Sangsu Park wrote:
+> All SAMSUNG ASoC needs SND_SOC_SAMSUNG configuration.
+> This patch change Kconfig to support all SAMSUNG ASoC.
 
 Applied, thanks.
