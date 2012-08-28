@@ -1,18 +1,18 @@
 From: "Wang, Xingchao" <xingchao.wang@intel.com>
 Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel
 	chips
-Date: Tue, 28 Aug 2012 08:30:00 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48900FF5BC93@SHSMSX102.ccr.corp.intel.com>
+Date: Tue, 28 Aug 2012 08:45:53 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48900FF5BCD1@SHSMSX102.ccr.corp.intel.com>
 References: <1346136381-26087-1-git-send-email-xingchao.wang@intel.com>
- <c2d7db2a89025272868a3b8ef38cac2d@mail.onse.fi>
+ <20120828075309.GA8479@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 11FD82652CA
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:30:08 +0200 (CEST)
-In-Reply-To: <c2d7db2a89025272868a3b8ef38cac2d@mail.onse.fi>
+ by alsa0.perex.cz (Postfix) with ESMTP id F36A22652CA
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:46:09 +0200 (CEST)
+In-Reply-To: <20120828075309.GA8479@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,38 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wu,
- Fengguang" <fengguang.wu@intel.com>, "alanwww1@xbmc.org" <alanwww1@xbmc.org>
+To: "Wu, Fengguang" <fengguang.wu@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "anssi.hannula@iki.fi" <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alanwww1@xbmc.org" <alanwww1@xbmc.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Anssi,
+Hi Fengguang,
 
 > -----Original Message-----
-> From: Anssi Hannula [mailto:anssi.hannula@iki.fi]
-> Sent: Tuesday, August 28, 2012 4:00 PM
+> From: Wu, Fengguang
+> Sent: Tuesday, August 28, 2012 3:53 PM
 > To: Wang, Xingchao
-> Cc: alsa-devel@alsa-project.org; Wu, Fengguang; tiwai@suse.de;
+> Cc: alsa-devel@alsa-project.org; tiwai@suse.de; anssi.hannula@iki.fi;
 > alanwww1@xbmc.org
 > Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel chips
 > 
-> On 28.08.2012 09:46, Wang Xingchao wrote:
-> > HDMI channel remapping apparently effects HBR packets on Intel's
-> > chips.
+> On Tue, Aug 28, 2012 at 02:46:21PM +0800, Wang Xingchao wrote:
+> > HDMI channel remapping apparently effects HBR packets on Intel's chips.
 > > For compressed non-PCM audio, use "straight-through" channel mapping.
 > > For uncompressed multi-channel pcm audio, use normal mapping.
-> >
+> 
+> Xingchao, have you also tested the legacy 2/5/6/8-channel HDMI PCM
+> playbacks?
+
+I tested 6/8 channels HDMI PCM, did not test 2/5.
+> 
 > > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
 > > Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> 
-> For the record, I haven't acked this patch yet (comments below).
-> I guess Wang Xingchao wanted to give me credit for my idea behind the patch.
-
-Yeah, that's true. :)
-> 
 > > ---
 > >  sound/pci/hda/patch_hdmi.c |   50
-> > +++++++++++++++++++++++++++-----------------
+> +++++++++++++++++++++++++++-----------------
 > >  1 file changed, 31 insertions(+), 19 deletions(-)
 > >
 > > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
@@ -62,83 +59,80 @@ Yeah, that's true. :)
 > > --- a/sound/pci/hda/patch_hdmi.c
 > > +++ b/sound/pci/hda/patch_hdmi.c
 > > @@ -231,6 +231,11 @@ static struct cea_channel_speaker_allocation
-> > channel_allocations[] = {
-> >  { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,
-> > FR,  FL } },
+> channel_allocations[] = {
+> >  { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,  FR,
+> FL } },
 > >  				 /* Dolby Surround */
-> >  { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,
-> > FR,  FL } },
-> > +{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,
-> > FR,  FL } },
-> > +{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,
-> > FR,  FL } },
-> > +{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,
-> > FR,  FL } },
-> > +{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,
-> > FR,  FL } },
-> > +{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,
-> > FR,  FL } },
+> >  { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,  FR,
+> FL } },
+> > +{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,
+> FL } },
+> > +{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,
+> FL } },
+> > +{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,
+> FL } },
+> > +{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,
+> FL } },
+> > +{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,
+> FL } },
+> 
+> What are you doing here? Please check the comment above
+> channel_allocations[] for the ordering rule.
+
+It's a bug fix, please see comments in another mail thread.
+
+> 
 > >  				 /* surround40 */
-> >  { .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,
-> > FR,  FL } },
+> >  { .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,  FR,
+> FL } },
 > >  				 /* surround41 */
 > > @@ -239,22 +244,15 @@ static struct cea_channel_speaker_allocation
-> > channel_allocations[] = {
-> >  { .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,
-> > FR,  FL } },
+> channel_allocations[] = {
+> >  { .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,  FR,
+> FL } },
 > >  				 /* surround51 */
-> >  { .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,
-> > FR,  FL } },
+> >  { .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,  FR,
+> FL } },
 > > -				 /* 6.1 */
-> > -{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,
-> > FR,  FL } },
+> > -{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,
+> FL } },
 > > -				 /* surround71 */
 > > -{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
 > > FR,  FL } },
 > > -
-> > -{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,
-> > FR,  FL } },
-> > -{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,
-> > FR,  FL } },
-> > -{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,
-> > FR,  FL } },
-> > -{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,
-> > FR,  FL } },
-> > -{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,
-> > FR,  FL } },
-> >  { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,
-> > FR,  FL } },
-> >  { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,
-> > FR,  FL } },
+> > -{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,
+> FL } },
+> > -{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,
+> FL } },
+> > -{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,
+> FL } },
+> > -{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,
+> FL } },
+> > -{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,
+> FL } },
+> >  { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,  FR,
+> FL } },
+> >  { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,  FR,
+> FL } },
 > >  { .ca_index = 0x0e,  .speakers = {   0,   RC,  RR,  RL,  FC,    0,
-> > FR,  FL } },
-> > +{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,
-> > FR,  FL } },
-> >  { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,
-> > FR,  FL } },
-> >  { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,
-> > FR,  FL } },
-> >  { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,
-> > FR,  FL } },
+> FR,  FL } },
+> > +{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,
+> FL } },
+> >  { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,  FR,
+> FL } },
+> >  { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,  FR,
+> FL } },
+> >  { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,  FR,
+> FL } },
 > > +				 /* surround71 */
 > > +{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
-> > FR,  FL } },
-> >  { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,
-> > FR,  FL } },
-> >  { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,
-> > FR,  FL } },
-> >  { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,
-> > FR,  FL } },
-> 
-> Doesn't this reordering change the selected CAs? (they are listed in priority
-> order)
-
-I changed this order because there's a bug during my test.
-In hdmi_setup_channel_mapping(), when ca=0x13 for 7.1 channels, channel_allocations[ca].channels actually be 7 not 8.
-So I think both array channel_allocation[] and channel_mapping[] should have the same order.
-
-> 
-> 
+> > +FR,  FL } },
+> >  { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,  FR,
+> FL } },
+> >  { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,  FR,
+> FL } },
+> >  { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,  FR,
+> FL } },
 > > @@ -537,22 +535,36 @@ static void hdmi_debug_channel_mapping(struct
 > > hda_codec *codec,
 > >
@@ -155,19 +149,19 @@ So I think both array channel_allocation[] and channel_mapping[] should have the
 > > -			hdmi_channel_mapping[ca][i] = i | (i << 4);
 > > +	unsigned short val;
 > > +	int tmp_mapping[8];
+> 
+> Better to use pre-initialized hbr_mapping[] = { ... } and avoid changing code
+> below.
+
+Hm, I use tmp_mapping[] here for *ALL* compressed audio, not only HBR.
+If it's only for HBR, I prefer your suggestion above.
+
+> 
 > > +	bool non_pcm = false;
 > > +
 > > +	val = snd_hda_codec_read(codec, cvt_nid, 0,
-> > AC_VERB_GET_DIGI_CONVERT_1, 0);
+> AC_VERB_GET_DIGI_CONVERT_1, 0);
 > > +	non_pcm = !!(val & AC_DIG1_NONAUDIO);
-> 
-> AFAICS you could use snd_hda_spdif_out_of_nid() and spdif->status here
-> to avoid
-> having to read the value from HW.
-
-Good idea, will change to use that in next version.
-
-> 
 > > +
 > > +	if (hdmi_channel_mapping[ca][1] == 0 || non_pcm) {
 > > +		for (i = 0; i < channel_allocations[ca].channels; i++) {
@@ -183,19 +177,7 @@ Good idea, will change to use that in next version.
 > > +			else
 > > +				hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
 > >  	}
-> 
-> I don't think it makes much sense to create the mapping dynamically,
-> since it
-> is always 0x00 0x11 0x22 0x33 0x44 0x55 0x66 0x77. It also complicates
-> the code.
-
-Above channels mapping is good for 8 channels compressed audio stream, but will make "speaker-test -c8"
-generate sound from wrong speaker position. i.e. you will heard "Front_center" from another speaker, while the real front_center speaker
-play another position audio. 
-
-So I think the default hdmi_channel_mapping should be left as default and use dynamically channel_mapping for compressed audio, not only 8 channels.
-> 
-> 
+> >
 > >  	for (i = 0; i < 8; i++) {
 > >  		err = snd_hda_codec_write(codec, pin_nid, 0,
 > >  					  AC_VERB_SET_HDMI_CHAN_SLOT,
@@ -204,21 +186,21 @@ So I think the default hdmi_channel_mapping should be left as default and use dy
 > hdmi_channel_mapping[ca][i]);
 > >  		if (err) {
 > >  			snd_printdd(KERN_NOTICE
-> >  				    "HDMI: channel mapping failed\n");
-> > @@ -686,7 +698,7 @@ static bool hdmi_infoframe_uptodate(struct
-> > hda_codec *codec, hda_nid_t pin_nid,
-> >  }
+> >  				    "HDMI: channel mapping failed\n"); @@ -686,7
+> +698,7 @@ static
+> > bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t
+> > pin_nid,  }
 > >
 > >  static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int
-> > pin_idx,
+> pin_idx,
 > > -					struct snd_pcm_substream *substream)
 > > +					hda_nid_t cvt_nid, struct snd_pcm_substream
 > *substream)
 > >  {
 > >  	struct hdmi_spec *spec = codec->spec;
-> >  	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
-> > @@ -731,13 +743,13 @@ static void hdmi_setup_audio_infoframe(struct
-> > hda_codec *codec, int pin_idx,
+> >  	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx]; @@ -731,13
+> > +743,13 @@ static void hdmi_setup_audio_infoframe(struct hda_codec
+> *codec, int pin_idx,
 > >  	 * sizeof(*dp_ai) to avoid partial match/update problems when
 > >  	 * the user switches between HDMI/DP monitors.
 > >  	 */
@@ -230,20 +212,68 @@ So I think the default hdmi_channel_mapping should be left as default and use dy
 > >  			    pin_nid,
 > >  			    channels);
 > > -		hdmi_setup_channel_mapping(codec, pin_nid, ca);
+> 
+> Why move hdmi_setup_channel_mapping() up? This might re-introduce the
+> half-second silence bug. Please do retest if you really need the move.
+> 
+
+Yes, I noticed the harf-second silence, it's "Front_Left" sound missing at first time.
+I force hdmi_setup_channel_mapping() everytime because I have not find a better idea
+to switch between playing compressed audio stream and normal pcm stream. There should be the channel mapping update between
+the switch but actually not.
+Anyway here need a change, thanks Fengguang.
+
+--thanks
+--xingchao
+
+
+> Background info:
+> 
+> commit ef18beded8ddbaafdf4914bab209f77e60ae3a18
+> Author: Wu Fengguang <fengguang.wu@intel.com>
+> Date:   Fri Dec 25 13:14:27 2009 +0800
+> 
+>     ALSA: hda - HDMI sticky stream tag support
+> 
+>     When we run the following commands in turn (with
+>     CONFIG_SND_HDA_POWER_SAVE_DEFAULT=0),
+> 
+>         speaker-test -Dhw:0,3 -c2 -twav  # HDMI
+>         speaker-test -Dhw:0,0 -c2 -twav  # Analog
+> 
+>     The second command will produce sound in the analog lineout _as well as_
+>     HDMI sink. The root cause is, device 0 "reuses" the same stream tag that
+>     was used by device 3, and the "intelhdmi - sticky stream id" patch leaves
+>     the HDMI codec in a functional state. So the HDMI codec happily accepts
+>     the audio samples which reuse its stream tag.
+> 
+>     The proposed solution is to remember the last device each azx_dev was
+>     assigned to, and prefer to
+>     1) reuse the azx_dev (and hence the stream tag) the HDMI codec last
+> used
+>     2) or assign a never-used azx_dev for HDMI
+> 
+>     With this patch and the above two speaker-test commands,
+>     HDMI codec will use stream tag 8 and Analog codec will use 5.
+> 
+>     The stream tag used by HDMI codec won't be reused by others, as long
+>     as we don't run out of the 4 playback azx_dev's. The legacy Analog
+>     codec will continue to use stream tag 5 because its device id is 0
+>     (this is a bit tricky).
+> 
 > >  		hdmi_stop_infoframe_trans(codec, pin_nid);
 > >  		hdmi_fill_audio_infoframe(codec, pin_nid,
 > >  					    ai.bytes, sizeof(ai));
-> 
-> I wonder if we could avoid always rewriting channel mapping... I'm not
-> immediately sure of the best way of doing that (or even if it is worth
-> it),
-> though.
-
-It's another bug. When switch test between "speaker-test -c8" and HBR stream, there's no audio_infoframe update 
-thus "speaker-test -c8" use wrong channel mapping, as described above.
-
-I tested this patch on my Yamaha receiver, both DTS-HD and TrueHD HBR streams work well, normal DTS/AC3(2 channels) streams work well,
-Speaker-test could play correct sound from each speaker. 
-
-Thanks
---xingchao
+> > @@ -1151,7 +1163,7 @@ static int
+> > generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+> >
+> >  	hdmi_set_channel_count(codec, cvt_nid,
+> > substream->runtime->channels);
+> >
+> > -	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
+> > +	hdmi_setup_audio_infoframe(codec, pin_idx, cvt_nid, substream);
+> >
+> >  	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+> >  				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+> > --
+> > 1.7.9.5
