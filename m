@@ -1,19 +1,23 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel
-	chips
-Date: Tue, 28 Aug 2012 08:45:53 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48900FF5BCD1@SHSMSX102.ccr.corp.intel.com>
-References: <1346136381-26087-1-git-send-email-xingchao.wang@intel.com>
- <20120828075309.GA8479@localhost>
+From: Kostas <hunter18@gmail.com>
+Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
+ working with 1.0.24 and above (OK with 1.0.23)
+Date: Tue, 28 Aug 2012 11:47:54 +0300
+Message-ID: <503C85BA.6020505@gmail.com>
+References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
+ <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
+ <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
+ <503C5AA4.8070408@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id F36A22652CA
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:46:09 +0200 (CEST)
-In-Reply-To: <20120828075309.GA8479@localhost>
-Content-Language: en-US
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1200E2652CA
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 10:47:58 +0200 (CEST)
+Received: by bkcjk13 with SMTP id jk13so1319293bkc.38
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 01:47:57 -0700 (PDT)
+In-Reply-To: <503C5AA4.8070408@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,257 +27,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Wu, Fengguang" <fengguang.wu@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "anssi.hannula@iki.fi" <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alanwww1@xbmc.org" <alanwww1@xbmc.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fengguang,
-
-> -----Original Message-----
-> From: Wu, Fengguang
-> Sent: Tuesday, August 28, 2012 3:53 PM
-> To: Wang, Xingchao
-> Cc: alsa-devel@alsa-project.org; tiwai@suse.de; anssi.hannula@iki.fi;
-> alanwww1@xbmc.org
-> Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel chips
-> 
-> On Tue, Aug 28, 2012 at 02:46:21PM +0800, Wang Xingchao wrote:
-> > HDMI channel remapping apparently effects HBR packets on Intel's chips.
-> > For compressed non-PCM audio, use "straight-through" channel mapping.
-> > For uncompressed multi-channel pcm audio, use normal mapping.
-> 
-> Xingchao, have you also tested the legacy 2/5/6/8-channel HDMI PCM
-> playbacks?
-
-I tested 6/8 channels HDMI PCM, did not test 2/5.
-> 
-> > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
-> > Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> > ---
-> >  sound/pci/hda/patch_hdmi.c |   50
-> +++++++++++++++++++++++++++-----------------
-> >  1 file changed, 31 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > index d9439c5..fda89e3 100644
-> > --- a/sound/pci/hda/patch_hdmi.c
-> > +++ b/sound/pci/hda/patch_hdmi.c
-> > @@ -231,6 +231,11 @@ static struct cea_channel_speaker_allocation
-> channel_allocations[] = {
-> >  { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,  FR,
-> FL } },
-> >  				 /* Dolby Surround */
-> >  { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,  FR,
-> FL } },
-> > +{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,
-> FL } },
-> > +{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,
-> FL } },
-> > +{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,
-> FL } },
-> > +{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,
-> FL } },
-> > +{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,
-> FL } },
-> 
-> What are you doing here? Please check the comment above
-> channel_allocations[] for the ordering rule.
-
-It's a bug fix, please see comments in another mail thread.
-
-> 
-> >  				 /* surround40 */
-> >  { .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,  FR,
-> FL } },
-> >  				 /* surround41 */
-> > @@ -239,22 +244,15 @@ static struct cea_channel_speaker_allocation
-> channel_allocations[] = {
-> >  { .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,  FR,
-> FL } },
-> >  				 /* surround51 */
-> >  { .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,  FR,
-> FL } },
-> > -				 /* 6.1 */
-> > -{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,
-> FL } },
-> > -				 /* surround71 */
-> > -{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
-> > FR,  FL } },
-> > -
-> > -{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,
-> FL } },
-> > -{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,
-> FL } },
-> > -{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,
-> FL } },
-> > -{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,
-> FL } },
-> > -{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,
-> FL } },
-> >  { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,  FR,
-> FL } },
-> >  { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,  FR,
-> FL } },
-> >  { .ca_index = 0x0e,  .speakers = {   0,   RC,  RR,  RL,  FC,    0,
-> FR,  FL } },
-> > +{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,
-> FL } },
-> >  { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,  FR,
-> FL } },
-> >  { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,  FR,
-> FL } },
-> >  { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,  FR,
-> FL } },
-> > +				 /* surround71 */
-> > +{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
-> > +FR,  FL } },
-> >  { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,  FR,
-> FL } },
-> >  { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,  FR,
-> FL } },
-> >  { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,  FR,
-> FL } },
-> > @@ -537,22 +535,36 @@ static void hdmi_debug_channel_mapping(struct
-> > hda_codec *codec,
-> >
-> >  static void hdmi_setup_channel_mapping(struct hda_codec *codec,
-> >  				       hda_nid_t pin_nid,
-> > +				       hda_nid_t cvt_nid,
-> >  				       int ca)
-> >  {
-> >  	int i;
-> >  	int err;
-> > -
-> > -	if (hdmi_channel_mapping[ca][1] == 0) {
-> > -		for (i = 0; i < channel_allocations[ca].channels; i++)
-> > -			hdmi_channel_mapping[ca][i] = i | (i << 4);
-> > +	unsigned short val;
-> > +	int tmp_mapping[8];
-> 
-> Better to use pre-initialized hbr_mapping[] = { ... } and avoid changing code
-> below.
-
-Hm, I use tmp_mapping[] here for *ALL* compressed audio, not only HBR.
-If it's only for HBR, I prefer your suggestion above.
-
-> 
-> > +	bool non_pcm = false;
-> > +
-> > +	val = snd_hda_codec_read(codec, cvt_nid, 0,
-> AC_VERB_GET_DIGI_CONVERT_1, 0);
-> > +	non_pcm = !!(val & AC_DIG1_NONAUDIO);
-> > +
-> > +	if (hdmi_channel_mapping[ca][1] == 0 || non_pcm) {
-> > +		for (i = 0; i < channel_allocations[ca].channels; i++) {
-> > +			if (non_pcm)
-> > +				tmp_mapping[i] = i | (i << 4);
-> > +			else
-> > +				hdmi_channel_mapping[ca][i] = i | (i << 4);
-> > +		}
-> >  		for (; i < 8; i++)
-> > -			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
-> > +			if (non_pcm)
-> > +				tmp_mapping[i] = 0xf | (i << 4);
-> > +			else
-> > +				hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
-> >  	}
-> >
-> >  	for (i = 0; i < 8; i++) {
-> >  		err = snd_hda_codec_write(codec, pin_nid, 0,
-> >  					  AC_VERB_SET_HDMI_CHAN_SLOT,
-> > -					  hdmi_channel_mapping[ca][i]);
-> > +					  non_pcm ? tmp_mapping[i] :
-> hdmi_channel_mapping[ca][i]);
-> >  		if (err) {
-> >  			snd_printdd(KERN_NOTICE
-> >  				    "HDMI: channel mapping failed\n"); @@ -686,7
-> +698,7 @@ static
-> > bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t
-> > pin_nid,  }
-> >
-> >  static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int
-> pin_idx,
-> > -					struct snd_pcm_substream *substream)
-> > +					hda_nid_t cvt_nid, struct snd_pcm_substream
-> *substream)
-> >  {
-> >  	struct hdmi_spec *spec = codec->spec;
-> >  	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx]; @@ -731,13
-> > +743,13 @@ static void hdmi_setup_audio_infoframe(struct hda_codec
-> *codec, int pin_idx,
-> >  	 * sizeof(*dp_ai) to avoid partial match/update problems when
-> >  	 * the user switches between HDMI/DP monitors.
-> >  	 */
-> > +	hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, ca);
-> >  	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
-> >  					sizeof(ai))) {
-> >  		snd_printdd("hdmi_setup_audio_infoframe: "
-> >  			    "pin=%d channels=%d\n",
-> >  			    pin_nid,
-> >  			    channels);
-> > -		hdmi_setup_channel_mapping(codec, pin_nid, ca);
-> 
-> Why move hdmi_setup_channel_mapping() up? This might re-introduce the
-> half-second silence bug. Please do retest if you really need the move.
-> 
-
-Yes, I noticed the harf-second silence, it's "Front_Left" sound missing at first time.
-I force hdmi_setup_channel_mapping() everytime because I have not find a better idea
-to switch between playing compressed audio stream and normal pcm stream. There should be the channel mapping update between
-the switch but actually not.
-Anyway here need a change, thanks Fengguang.
-
---thanks
---xingchao
-
-
-> Background info:
-> 
-> commit ef18beded8ddbaafdf4914bab209f77e60ae3a18
-> Author: Wu Fengguang <fengguang.wu@intel.com>
-> Date:   Fri Dec 25 13:14:27 2009 +0800
-> 
->     ALSA: hda - HDMI sticky stream tag support
-> 
->     When we run the following commands in turn (with
->     CONFIG_SND_HDA_POWER_SAVE_DEFAULT=0),
-> 
->         speaker-test -Dhw:0,3 -c2 -twav  # HDMI
->         speaker-test -Dhw:0,0 -c2 -twav  # Analog
-> 
->     The second command will produce sound in the analog lineout _as well as_
->     HDMI sink. The root cause is, device 0 "reuses" the same stream tag that
->     was used by device 3, and the "intelhdmi - sticky stream id" patch leaves
->     the HDMI codec in a functional state. So the HDMI codec happily accepts
->     the audio samples which reuse its stream tag.
-> 
->     The proposed solution is to remember the last device each azx_dev was
->     assigned to, and prefer to
->     1) reuse the azx_dev (and hence the stream tag) the HDMI codec last
-> used
->     2) or assign a never-used azx_dev for HDMI
-> 
->     With this patch and the above two speaker-test commands,
->     HDMI codec will use stream tag 8 and Analog codec will use 5.
-> 
->     The stream tag used by HDMI codec won't be reused by others, as long
->     as we don't run out of the 4 playback azx_dev's. The legacy Analog
->     codec will continue to use stream tag 5 because its device id is 0
->     (this is a bit tricky).
-> 
-> >  		hdmi_stop_infoframe_trans(codec, pin_nid);
-> >  		hdmi_fill_audio_infoframe(codec, pin_nid,
-> >  					    ai.bytes, sizeof(ai));
-> > @@ -1151,7 +1163,7 @@ static int
-> > generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
-> >
-> >  	hdmi_set_channel_count(codec, cvt_nid,
-> > substream->runtime->channels);
-> >
-> > -	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
-> > +	hdmi_setup_audio_infoframe(codec, pin_idx, cvt_nid, substream);
-> >
-> >  	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
-> >  				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-> > --
-> > 1.7.9.5
+T24gMjgvMDgvMjAxMiAwODo0NCDDj8KAw47CvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gT24gMjgu
+MDguMjAxMiAwMDoxOSwgS29zdGFzIHdyb3RlOgo+PiBPbiAyNy8wOC8yMDEyIDA2OjU0IMOOwrzD
+jsK8LCBLb3N0YXMgd3JvdGU6Cj4+PiBPbiAyNy8wOC8yMDEyIDAyOjQ0IMOOwrzDjsK8LCBEYW5p
+ZWwgTWFjayB3cm90ZToKPj4+PiBPbiAyNy4wOC4yMDEyIDEyOjMzLCBLb3N0YXMgd3JvdGU6Cj4+
+Pj4+IE9uIDI3LzA4LzIwMTIgMTI6MjYgw47CvMOOwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+
+Pj4gT24gMjcuMDguMjAxMiAxMTowMCwgS29zdGFzIHdyb3RlOgo+Pj4+Pj4+IEhpIEFsbCwKPj4+
+Pj4+Pgo+Pj4+Pj4+IEkgaGF2ZSBhICdUcnVzdCBXZWJjYW0nIChVU0IgSUQ6IDE0NWY6MDE1Yikg
+dGhhdCBjb21lcyB3aXRoIGEKPj4+Pj4+PiBtaWNyb3Bob25lLgo+Pj4+Pj4+IFRoZSBtaWNyb3Bo
+b25lIHdvcmtzIHdpdGggQWxzYSAxLjAuMjMgYnV0IGl0IGRvZXMgbm90IHdvcmsgd2l0aCB0aGUK
+Pj4+Pj4+PiBsYXRlc3QgQWxzYSAxLjAuMjUgbmVpdGhlciB3aXRoIEFsc2EgMS4wLjI0Lgo+Pj4+
+Pj4+IEFwcGFyZW50bHkgdGhpcyBpcyBhIHJlZ3Jlc3Npb24uCj4+Pj4+Pj4KPj4+Pj4+PiBXaGF0
+IHNoYWxsIEkgZG8gdG8gZmlndXJlIG91dCB0aGUgc291cmNlIG9mIHRoZSBwcm9ibGVtPwo+Pj4+
+Pj4+Cj4+Pj4+Pj4gSGVyZSBhcmUgYXR0YWNoZWQgbXkgYWxzYS1pbmZvcywgd2l0aCBBbHNhIDEu
+MC4yMyAod29ya2luZyksCj4+Pj4+Pj4gMS4wLjI0IChOT1QKPj4+Pj4+PiB3b3JraW5nKSBhbmQg
+MS4wLjI1IChOT1Qgd29ya2luZykuCj4+Pj4+PiBDYW4geW91IHByb3ZpZGUgZG1lc2cgcHJvdG9j
+b2xzIGZvciBib3RoIGEgd29ya2luZyBhbmQgYSBub24td29ya2luZwo+Pj4+Pj4gY2FzZSBwbGVh
+c2U/Cj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4gQmVsb3cgYXJlIGF0dGFjaGVkIHRoZSBkbWVzZyBmaWxl
+cy4KPj4+Pj4KPj4+PiBUaGFua3MgLSB0aGUgbG9ncyBsb29rIGJvdGggZ29vZCwgSSBndWVzcyB0
+aGUgaW50ZXJlc3RpbmcgbWVzc2FnZXMgYXJlCj4+Pj4gb25seSBnZW5lcmF0ZWQgb25jZSB5b3Ug
+dHJ5IHRvIHN0YXJ0IHRoZSBzdHJlYW0uIENhbiB5b3UgdHJ5IHRoaXM/Cj4+PiBIb3cgaSBkbyB0
+aGF0Pwo+Pj4gSSB0cmllZCB0byBtYWtlIGEgdGVzdCBjYWxsIGluIHNreXBlIGFuZCBhbHNvIHJl
+Y29yZGluZyBhIHZpZGVvIGluCj4+PiBjaGVlc2UgYnV0IG5vIGNoYW5nZXMgaW4gZG1lc2cuCj4+
+PiBJcyB0aGVyZSBhbm90aGVyIHdheSB0byBzdGFydCB0aGUgc3RyZWFtPwo+PiBBbHNvIHRyaWVk
+IHRvIHJlY29yZCB2b2ljZSB3aXRoIHNvdW5kIHJlY29yZGVyLi4ud2l0aCBhbHNhIDEuMC4yMwo+
+PiByZWNvcmRpbmcgaXMgZmluZS4uaSBoZWFyIG15IHZvaWNlIHdoZW4gcGxheWJhY2sgdGhlIGZp
+bGUgYnV0IHdpdGggYWxzYQo+PiAxLjAuMjQgYW5kIGFib3ZlIG5vdGhpbmcgaXMgcmVjb3JkZWQu
+Cj4+IEluIGJvdGggY2FzZXMgbm90aGluZyBpcyBjaGFuZ2VkIGluIGRtZXNnIG91dHB1dC4KPj4g
+V2hhdCBlbHNlIGNvdWxkIGkgZG8gdG8gaGVscCB5b3Ugb3V0Pwo+Pgo+IENvbXBhcmluZyB0aGUg
+dHdvIGRtZXNnIGxvZ3MsIEknbSB1bmRlciB0aGUgaW1wcmVzc2lvbiB0aGF0IGluIHRoZQo+IHNl
+Y29uZCBjYXNlICh0aGUgbmV3ZXIga2VybmVsKSwgdGhlIGhkYSBkcml2ZXIga2lja3MgaW4gYW5k
+IGNyZWF0ZXMgYQo+IHNvdW5kIGRldmljZSBiZWZvcmUgdGhlIHVzYiBhdWRpbyBkcml2ZXIgZG9l
+cy4gSGVuY2UsIHRoZSBkZWZhdWx0IGNhcmQKPiBjaGFuZ2VzIGFuZCB5b3UncmUgcmVjb3JkaW5n
+IGZyb20geW91ciBpbnRlcm5hbCBzb3VuZCBjYXJkIHJhdGhlciB0aGFuCj4gdGhlIFdlYmNhbS4K
+Pgo+IENvdWxkIHlvdSBwbGVhc2Ugc2VuZCB0aGUgb3V0cHV0IG9mICdhcGxheSAtbCcgaW4gYm90
+aCBjYXNlcz8KPgo+Cj4gRGFuaWVsCj4KT3V0cHV0IG9mIHdvcmtpbmcgY2FzZQoqKioqIExpc3Qg
+b2YgUExBWUJBQ0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogU0IgW0hEQSBBVEkgU0Jd
+LCBkZXZpY2UgMDogQUQxOTh4IEFuYWxvZyBbQUQxOTh4IEFuYWxvZ10Kw4IgIFN1YmRldmljZXM6
+IDEvMQrDgiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKY2FyZCAwOiBTQiBbSERBIEFUSSBT
+Ql0sIGRldmljZSAxOiBBRDE5OHggRGlnaXRhbCBbQUQxOTh4IERpZ2l0YWxdCsOCICBTdWJkZXZp
+Y2VzOiAxLzEKw4IgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMjogR2VuZXJpYyBb
+SEQtQXVkaW8gR2VuZXJpY10sIGRldmljZSAzOiBIRE1JIDAgW0hETUkgMF0Kw4IgIFN1YmRldmlj
+ZXM6IDEvMQrDgiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKCk91dHB1dCBvZiBub24td29y
+a2luZyBjYXNlIChuZXdlciBrZXJuZWwpCioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBE
+ZXZpY2VzICoqKioKY2FyZCAwOiBTQiBbSERBIEFUSSBTQl0sIGRldmljZSAwOiBBRDE5OHggQW5h
+bG9nIFtBRDE5OHggQW5hbG9nXQogICBTdWJkZXZpY2VzOiAxLzEKICAgU3ViZGV2aWNlICMwOiBz
+dWJkZXZpY2UgIzAKY2FyZCAwOiBTQiBbSERBIEFUSSBTQl0sIGRldmljZSAxOiBBRDE5OHggRGln
+aXRhbCBbQUQxOTh4IERpZ2l0YWxdCiAgIFN1YmRldmljZXM6IDEvMQogICBTdWJkZXZpY2UgIzA6
+IHN1YmRldmljZSAjMApjYXJkIDI6IEdlbmVyaWMgW0hELUF1ZGlvIEdlbmVyaWNdLCBkZXZpY2Ug
+MzogSERNSSAwIFtIRE1JIDBdCiAgIFN1YmRldmljZXM6IDEvMQogICBTdWJkZXZpY2UgIzA6IHN1
+YmRldmljZSAjMAoKSW4gYSBncmVlayBmb3J1bSB3aGVyZSBpIGFsc28gc3VibWl0dGVkIG15IHBy
+b2JsZW0gYSB1c2VyIG5vdGljZWQgdGhhdCAKaW4gbmV3ZXIga2VybmVsIGluIGFsc2EgaW5mbyB0
+aGVyZSBpcyB0aGUgYmVsb3cgdGV4dApjYXJkIDE6IFdlYmNhbSBbVHJ1c3QgMk1QIEF1dG8gRm9j
+dXMgV2ViY2FtXSwgZGV2aWNlIDA6IFVTQiBBdWRpbyBbVVNCIApBdWRpb10KU3ViZGV2aWNlczow
+LzEKCkluIGFsc2EgMS4wLjIzIGFsc2EtaW5mbyBnYXZlCmNhcmQgMTogV2ViY2FtIFtUcnVzdCAy
+TVAgQXV0byBGb2N1cyBXZWJjYW1dLCBkZXZpY2UgMDogVVNCIEF1ZGlvIFtVU0IgCkF1ZGlvXQpT
+dWJkZXZpY2VzOjEvMQoKSSBkb24ndCBrbm93IGlmIHRoYXQgaGVscHMuCgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
