@@ -1,22 +1,14 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
- working with 1.0.24 and above (OK with 1.0.23)
-Date: Tue, 28 Aug 2012 07:44:04 +0200
-Message-ID: <503C5AA4.8070408@gmail.com>
-References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
- <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
- <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
+From: Wang Xingchao <xingchao.wang@intel.com>
+Subject: [PATCH] ALSA: HDMI - Enable HBR feature on Intel chips
+Date: Tue, 28 Aug 2012 14:46:21 +0800
+Message-ID: <1346136381-26087-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D70F265F66
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 07:44:10 +0200 (CEST)
-Received: by bkcjk13 with SMTP id jk13so1270597bkc.38
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2012 22:44:10 -0700 (PDT)
-In-Reply-To: <503BF284.4060300@gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E62C1264F0B
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 08:59:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,43 +18,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kostas <hunter18@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, anssi.hannula@iki.fi, fengguang.wu@intel.com, alanwww1@xbmc.org, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjguMDguMjAxMiAwMDoxOSwgS29zdGFzIHdyb3RlOgo+IE9uIDI3LzA4LzIwMTIgMDY6NTQg
-zrzOvCwgS29zdGFzIHdyb3RlOgo+PiBPbiAyNy8wOC8yMDEyIDAyOjQ0IM68zrwsIERhbmllbCBN
-YWNrIHdyb3RlOgo+Pj4gT24gMjcuMDguMjAxMiAxMjozMywgS29zdGFzIHdyb3RlOgo+Pj4+IE9u
-IDI3LzA4LzIwMTIgMTI6MjYgzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+Pj4+IE9uIDI3LjA4
-LjIwMTIgMTE6MDAsIEtvc3RhcyB3cm90ZToKPj4+Pj4+IEhpIEFsbCwKPj4+Pj4+Cj4+Pj4+PiBJ
-IGhhdmUgYSAnVHJ1c3QgV2ViY2FtJyAoVVNCIElEOiAxNDVmOjAxNWIpIHRoYXQgY29tZXMgd2l0
-aCBhIAo+Pj4+Pj4gbWljcm9waG9uZS4KPj4+Pj4+IFRoZSBtaWNyb3Bob25lIHdvcmtzIHdpdGgg
-QWxzYSAxLjAuMjMgYnV0IGl0IGRvZXMgbm90IHdvcmsgd2l0aCB0aGUKPj4+Pj4+IGxhdGVzdCBB
-bHNhIDEuMC4yNSBuZWl0aGVyIHdpdGggQWxzYSAxLjAuMjQuCj4+Pj4+PiBBcHBhcmVudGx5IHRo
-aXMgaXMgYSByZWdyZXNzaW9uLgo+Pj4+Pj4KPj4+Pj4+IFdoYXQgc2hhbGwgSSBkbyB0byBmaWd1
-cmUgb3V0IHRoZSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0/Cj4+Pj4+Pgo+Pj4+Pj4gSGVyZSBhcmUg
-YXR0YWNoZWQgbXkgYWxzYS1pbmZvcywgd2l0aCBBbHNhIDEuMC4yMyAod29ya2luZyksIAo+Pj4+
-Pj4gMS4wLjI0IChOT1QKPj4+Pj4+IHdvcmtpbmcpIGFuZCAxLjAuMjUgKE5PVCB3b3JraW5nKS4K
-Pj4+Pj4gQ2FuIHlvdSBwcm92aWRlIGRtZXNnIHByb3RvY29scyBmb3IgYm90aCBhIHdvcmtpbmcg
-YW5kIGEgbm9uLXdvcmtpbmcKPj4+Pj4gY2FzZSBwbGVhc2U/Cj4+Pj4+Cj4+Pj4+Cj4+Pj4gQmVs
-b3cgYXJlIGF0dGFjaGVkIHRoZSBkbWVzZyBmaWxlcy4KPj4+Pgo+Pj4gVGhhbmtzIC0gdGhlIGxv
-Z3MgbG9vayBib3RoIGdvb2QsIEkgZ3Vlc3MgdGhlIGludGVyZXN0aW5nIG1lc3NhZ2VzIGFyZQo+
-Pj4gb25seSBnZW5lcmF0ZWQgb25jZSB5b3UgdHJ5IHRvIHN0YXJ0IHRoZSBzdHJlYW0uIENhbiB5
-b3UgdHJ5IHRoaXM/Cj4+IEhvdyBpIGRvIHRoYXQ/Cj4+IEkgdHJpZWQgdG8gbWFrZSBhIHRlc3Qg
-Y2FsbCBpbiBza3lwZSBhbmQgYWxzbyByZWNvcmRpbmcgYSB2aWRlbyBpbiAKPj4gY2hlZXNlIGJ1
-dCBubyBjaGFuZ2VzIGluIGRtZXNnLgo+PiBJcyB0aGVyZSBhbm90aGVyIHdheSB0byBzdGFydCB0
-aGUgc3RyZWFtPwo+IEFsc28gdHJpZWQgdG8gcmVjb3JkIHZvaWNlIHdpdGggc291bmQgcmVjb3Jk
-ZXIuLi53aXRoIGFsc2EgMS4wLjIzIAo+IHJlY29yZGluZyBpcyBmaW5lLi5pIGhlYXIgbXkgdm9p
-Y2Ugd2hlbiBwbGF5YmFjayB0aGUgZmlsZSBidXQgd2l0aCBhbHNhIAo+IDEuMC4yNCBhbmQgYWJv
-dmUgbm90aGluZyBpcyByZWNvcmRlZC4KPiBJbiBib3RoIGNhc2VzIG5vdGhpbmcgaXMgY2hhbmdl
-ZCBpbiBkbWVzZyBvdXRwdXQuCj4gV2hhdCBlbHNlIGNvdWxkIGkgZG8gdG8gaGVscCB5b3Ugb3V0
-Pwo+IAoKQ29tcGFyaW5nIHRoZSB0d28gZG1lc2cgbG9ncywgSSdtIHVuZGVyIHRoZSBpbXByZXNz
-aW9uIHRoYXQgaW4gdGhlCnNlY29uZCBjYXNlICh0aGUgbmV3ZXIga2VybmVsKSwgdGhlIGhkYSBk
-cml2ZXIga2lja3MgaW4gYW5kIGNyZWF0ZXMgYQpzb3VuZCBkZXZpY2UgYmVmb3JlIHRoZSB1c2Ig
-YXVkaW8gZHJpdmVyIGRvZXMuIEhlbmNlLCB0aGUgZGVmYXVsdCBjYXJkCmNoYW5nZXMgYW5kIHlv
-dSdyZSByZWNvcmRpbmcgZnJvbSB5b3VyIGludGVybmFsIHNvdW5kIGNhcmQgcmF0aGVyIHRoYW4K
-dGhlIFdlYmNhbS4KCkNvdWxkIHlvdSBwbGVhc2Ugc2VuZCB0aGUgb3V0cHV0IG9mICdhcGxheSAt
-bCcgaW4gYm90aCBjYXNlcz8KCgpEYW5pZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+HDMI channel remapping apparently effects HBR packets on Intel's chips.
+For compressed non-PCM audio, use "straight-through" channel mapping.
+For uncompressed multi-channel pcm audio, use normal mapping.
+
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ sound/pci/hda/patch_hdmi.c |   50 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 19 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d9439c5..fda89e3 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -231,6 +231,11 @@ static struct cea_channel_speaker_allocation channel_allocations[] = {
+ { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,  FR,  FL } },
+ 				 /* Dolby Surround */
+ { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,  FR,  FL } },
++{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,  FL } },
++{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,  FL } },
++{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,  FL } },
++{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,  FL } },
++{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,  FL } },
+ 				 /* surround40 */
+ { .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,  FR,  FL } },
+ 				 /* surround41 */
+@@ -239,22 +244,15 @@ static struct cea_channel_speaker_allocation channel_allocations[] = {
+ { .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,  FR,  FL } },
+ 				 /* surround51 */
+ { .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,  FR,  FL } },
+-				 /* 6.1 */
+-{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,  FL } },
+-				 /* surround71 */
+-{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,  FR,  FL } },
+-
+-{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,  FL } },
+-{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,  FL } },
+-{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,  FL } },
+-{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,  FL } },
+-{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,  FR,  FL } },
+ { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x0e,  .speakers = {   0,   RC,  RR,  RL,  FC,    0,  FR,  FL } },
++{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,  FR,  FL } },
+ { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,  FR,  FL } },
++				 /* surround71 */
++{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,  FR,  FL } },
+ { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,  FR,  FL } },
+@@ -537,22 +535,36 @@ static void hdmi_debug_channel_mapping(struct hda_codec *codec,
+ 
+ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid,
++				       hda_nid_t cvt_nid,
+ 				       int ca)
+ {
+ 	int i;
+ 	int err;
+-
+-	if (hdmi_channel_mapping[ca][1] == 0) {
+-		for (i = 0; i < channel_allocations[ca].channels; i++)
+-			hdmi_channel_mapping[ca][i] = i | (i << 4);
++	unsigned short val;
++	int tmp_mapping[8];
++	bool non_pcm = false;
++
++	val = snd_hda_codec_read(codec, cvt_nid, 0, AC_VERB_GET_DIGI_CONVERT_1, 0);
++	non_pcm = !!(val & AC_DIG1_NONAUDIO);
++
++	if (hdmi_channel_mapping[ca][1] == 0 || non_pcm) {
++		for (i = 0; i < channel_allocations[ca].channels; i++) {
++			if (non_pcm)
++				tmp_mapping[i] = i | (i << 4);
++			else
++				hdmi_channel_mapping[ca][i] = i | (i << 4);
++		}
+ 		for (; i < 8; i++)
+-			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
++			if (non_pcm)
++				tmp_mapping[i] = 0xf | (i << 4);
++			else
++				hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
+ 	}
+ 
+ 	for (i = 0; i < 8; i++) {
+ 		err = snd_hda_codec_write(codec, pin_nid, 0,
+ 					  AC_VERB_SET_HDMI_CHAN_SLOT,
+-					  hdmi_channel_mapping[ca][i]);
++					  non_pcm ? tmp_mapping[i] : hdmi_channel_mapping[ca][i]);
+ 		if (err) {
+ 			snd_printdd(KERN_NOTICE
+ 				    "HDMI: channel mapping failed\n");
+@@ -686,7 +698,7 @@ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
+ }
+ 
+ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
+-					struct snd_pcm_substream *substream)
++					hda_nid_t cvt_nid, struct snd_pcm_substream *substream)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+ 	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
+@@ -731,13 +743,13 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
+ 	 * sizeof(*dp_ai) to avoid partial match/update problems when
+ 	 * the user switches between HDMI/DP monitors.
+ 	 */
++	hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, ca);
+ 	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
+ 					sizeof(ai))) {
+ 		snd_printdd("hdmi_setup_audio_infoframe: "
+ 			    "pin=%d channels=%d\n",
+ 			    pin_nid,
+ 			    channels);
+-		hdmi_setup_channel_mapping(codec, pin_nid, ca);
+ 		hdmi_stop_infoframe_trans(codec, pin_nid);
+ 		hdmi_fill_audio_infoframe(codec, pin_nid,
+ 					    ai.bytes, sizeof(ai));
+@@ -1151,7 +1163,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 
+ 	hdmi_set_channel_count(codec, cvt_nid, substream->runtime->channels);
+ 
+-	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
++	hdmi_setup_audio_infoframe(codec, pin_idx, cvt_nid, substream);
+ 
+ 	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+ 				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+-- 
+1.7.9.5
