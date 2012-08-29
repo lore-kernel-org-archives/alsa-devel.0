@@ -1,41 +1,101 @@
-From: Bruno Wolff III <bruno@wolff.to>
-Subject: Re: Logitech USB headset not working in 3.6-rc3
-Date: Wed, 29 Aug 2012 13:50:34 -0500
-Message-ID: <20120829185034.GA16456@wolff.to>
-References: <20120825115423.GA14327@wolff.to>
- <5038BEEB.6090303@gmail.com>
- <20120825120740.GA19539@wolff.to>
- <5038C186.7000107@gmail.com>
- <20120825121758.GF20043@zod.bos.redhat.com>
- <503DFC61.3000104@gmail.com>
- <s5hsjb56d40.wl%tiwai@suse.de>
- <503E19F2.3080302@gmail.com>
- <20120829170753.GA1895@zod.bos.redhat.com>
- <20120829172254.GB1895@zod.bos.redhat.com>
+From: Kostas <hunter18@gmail.com>
+Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
+ working with 1.0.24 and above (OK with 1.0.23)
+Date: Wed, 29 Aug 2012 21:59:54 +0300
+Message-ID: <503E66AA.8060503@gmail.com>
+References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
+ <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
+ <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
+ <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
+ <503C8658.400@gmail.com> <503C87AD.2010204@gmail.com>
+ <503C8A03.809@gmail.com> <503C8CCC.2000801@gmail.com>
+ <503C8F9A.7020104@gmail.com> <503C93B8.1010505@gmail.com>
+ <503C95A2.6010308@gmail.com> <503D4355.2050304@gmail.com>
+ <503D4B71.6020209@gmail.com> <503D5E97.9040100@gmail.com>
+ <503DB54A.60401@gmail.com> <503E0563.1050506@gmail.com>
+ <503E071A.7050103@gmail.com> <503E3D67.3040502@gmail.com>
+ <503E4189.4010309@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120829172254.GB1895@zod.bos.redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Josh Boyer <jwboyer@redhat.com>
-Cc: Daniel Mack <zonque@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBA6B265F27
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 20:59:57 +0200 (CEST)
+Received: by bkuw5 with SMTP id w5so415955bku.38
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 11:59:57 -0700 (PDT)
+In-Reply-To: <503E4189.4010309@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 29, 2012 at 13:22:54 -0400,
-   Josh Boyer <jwboyer@redhat.com> wrote:
->On Wed, Aug 29, 2012 at 01:07:53PM -0400, Josh Boyer wrote:
->> > Right. New patch attached.
->>
->> I'll try and get another kernel built with this later today.  I'm at
->> Plumbers so it might have to wait a bit.
->
->OK, I got impatient with myself and got the kernel building sooner than
->I said.  Bruno, you can find the kernel here when the build finishes:
->
->http://koji.fedoraproject.org/koji/taskinfo?taskID=4434883
->
->Please test and let us know.
-
-I tested 3.6.0-0.rc3.git2.1.3.fc18.x86_64 on my machine at work and sound 
-through the headset is working. I'll test my i686 machines at home tonight.
+T24gMjkvMDgvMjAxMiAwNzoyMSDOvM68LCBEYW5pZWwgTWFjayB3cm90ZToKPiBPbiAyOS4wOC4y
+MDEyIDE4OjAzLCBLb3N0YXMgd3JvdGU6Cj4+IE9uIDI5LzA4LzIwMTIgMDM6MTIgzrzOvCwgRGFu
+aWVsIE1hY2sgd3JvdGU6Cj4+PiBPbiAyOS4wOC4yMDEyIDE0OjA0LCBLb3N0YXMgd3JvdGU6Cj4+
+Pj4gT24gMjkvMDgvMjAxMiAwOToyMyDPgM68LCBEYW5pZWwgTWFjayB3cm90ZToKPj4+Pj4gT24g
+MjkuMDguMjAxMiAwMjoxMywgS29zdGFzIHdyb3RlOgo+Pj4gWy4uLl0KPj4+Cj4+Pj4+PiBDb21t
+YW5kIGdpdCBiaXNlY3QgZ29vZCAxLjAuMjMgZ2l2ZXMgbWUgdGhlIG91dHB1dAo+Pj4+Pj4gZmF0
+YWw6IE5lZWRlZCBhIHNpbmdsZSByZXZpc2lvbgo+Pj4+Pj4gQmFkIHJldiBpbnB1dDogMS4wLjIz
+Cj4+Pj4+Pgo+Pj4+Pj4gSG93IGNhbiBpIGZpZ3VyZSBvdXQgdGhlIHJldmlzaW9uIG51bWJlcj8K
+Pj4+Pj4+Cj4+Pj4+IFdoZW4gd29ya2luZyB3aXRoIHRoZSBrZXJuZWwgZ2l0LCB5b3UgaGF2ZSB0
+byB0YWtlIHRoZSBrZXJuZWwgdmVyc2lvbgo+Pj4+PiBudW1iZXJzLgo+Pj4+Pgo+Pj4+IFNvcnJ5
+IGkgcmVhbGx5IGNhbid0IHVuZGVyc3RhbmQgd2hhdCB0byBkby4KPj4+PiBUaGUgc3RlcHMgaSBk
+aWQgd2VyZQo+Pj4+IGdpdCBjbG9uZSBnaXQ6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWtl
+cm5lbC5naXQgYWxzYS1rZXJuZWwKPj4+PiBnaXQgYmlzZWN0IHN0YXJ0IGFsc2Eta2VybmVsLwo+
+Pj4+IGdpdCBiaXNlY3QgYmFkCj4+Pj4gZ2l0IGJpc2VjdCBnb29kIChIZXJlIGkgZG9uJ3Qga25v
+dyB3aGF0IG51bWJlciB0byBnaXZlKQo+Pj4+Cj4+Pj4gSSB3aWxsIGtlZXAgcmVhZGluZyBiZWNh
+dXNlIHRoZSB3aG9sZSB0aGluZyBpcyBpbnRlcmVzdGluZyB0byBtZS4uLmJ1dAo+Pj4+IGZvciBu
+b3cgaSBjYW4ndCB1bmRlcnN0YW5kIGFueXRoaW5nLgo+Pj4gTm8gcHJvYmxlbS4gQWNjb3JkaW5n
+IHRvIHlvdXIgZG1lc2cgbG9ncywga2VybmVsIDIuNi4zOCB3YXMgd29ya2luZyBmb3IKPj4+IHlv
+dSwgYW5kIDMuMi4wIGlzbid0Lgo+Pj4KPj4+IEZpcnN0LCBjbG9uZSB0aGUgbWFpbmxpbmUgTGlu
+dXggZ2l0Ogo+Pj4KPj4+ICAgIGdpdCBjbG9uZSBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
+L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgKPj4+ICAgIGNkIGxpbnV4Cj4+Pgo+Pj4g
+VGVzdCBhZ2FpbiB0aGF0IDIuNi4zOCBpcyB3b3JraW5nOgo+Pj4KPj4+ICAgIGdpdCBjaGVja291
+dCB2Mi42LjM4Cj4+PiAgICBjb21waWxlICsgdGVzdAo+Pj4KPj4+IHRlc3QgYWdhaW4gdGhhdCAz
+LjIuMCBpcyBub3Qgd29ya2luZzoKPj4+Cj4+PiAgICBnaXQgY2hlY2tvdXQgdjMuMgo+Pj4gICAg
+Y29tcGlsZSBhbmQgdGVzdAo+Pj4KPj4+IFRoZW4gZG8gdGhlIGJpc2VjdDoKPj4+Cj4+PiAgICBn
+aXQgYmlzZWN0IHN0YXJ0Cj4+PiAgICBnaXQgYmlzZWN0IGdvb2QgdjIuNi4zOAo+Pj4gICAgZ2l0
+IGJpc2VjdCBiYWQgdjMuMgo+Pj4KPj4+IENvbXBpbGUgYW5kIHRlc3QgZWFjaCBzdGVwIHRoZSBi
+aXNlY3QgZHJvcHMgeW91IHRvLCBhbmQgdGhlbiBjYWxsIGVpdGhlcgo+Pj4gImdpdCBiaXNlY3Qg
+Z29vZCIgb3IgImdpdCBiaXNlY3QgYmFkIi4gSWYgYSBzdGVwIGNhbm5vdCBiZSBjb21waWxlZCBv
+cgo+Pj4gdGVzdGVkLCBjYWxsICJnaXQgYmlzZWN0IHNraXAiLgo+Pj4KPj4+IElmIGFsbCBnb2Vz
+IHdlbGwsIHlvdSB3aWxsIGJlIHRvbGQgd2hpY2ggY29tbWl0IGlzIHRoZSBmaXJzdCBvbmUgdGhh
+dAo+Pj4gZG9lcyBub3Qgd29yayBhbnltb3JlLgo+Pj4KPj4+Cj4+PiBEYW5pZWwKPj4+Cj4+Pgo+
+Pj4KPj4+Cj4+IEkgY2FuJ3QgY29tcGlsZSB0aGUga2VybmVsIGZyb20gZ2l0IHNvdXJjZS4KPj4g
+QWZ0ZXIgaSBlbnRlciB0aGUgY29tbWFuZHxDT05DVVJSRU5DWV9MRVZFTD1gZ2V0Y29uZiBfTlBS
+T0NFU1NPUlNfT05MTmAKPj4gZmFrZXJvb3QgbWFrZS1rcGtnIC0taW5pdHJkIC0tYXBwZW5kLXRv
+LXZlcnNpb249LWN1c3RvbSBrZXJuZWxfaW1hZ2UKPj4ga2VybmVsX2hlYWRlcnMKPj4gfGkgZ2V0
+IGFmdGVyIGEgd2hpbGUgdGhpcyBlcnJvcgo+Pgo+PiAvdG1wL2NjQ2VJMkdZLnM6IEFzc2VtYmxl
+ciBtZXNzYWdlczoKPj4gL3RtcC9jY0NlSTJHWS5zOiBFcnJvcjogLnNpemUgZXhwcmVzc2lvbiBm
+b3IgZG9faHlwZXJ2aXNvcl9jYWxsYmFjayBkb2VzCj4+IG5vdCBldmFsdWF0ZSB0byBhIGNvbnN0
+YW50Cj4+IG1ha2VbM106ICoqKiBbYXJjaC94ODYva2VybmVsL2VudHJ5XzY0Lm9dIEVycm9yIDEK
+Pj4gbWFrZVsyXTogKioqIFthcmNoL3g4Ni9rZXJuZWxdIEVycm9yIDIKPj4gbWFrZVsxXTogKioq
+IFthcmNoL3g4Nl0gRXJyb3IgMgo+PiBtYWtlWzFdOiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hl
+ZCBqb2JzLi4uLgo+PiAgICBMRCAgICAgIGluaXQvbW91bnRzLm8KPj4gICAgTEQgICAgICBpbml0
+L2J1aWx0LWluLm8KPj4gbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2tvc3Rhcy9s
+aW51eCcKPj4gbWFrZTogKioqIFtkZWJpYW4vc3RhbXAvYnVpbGQva2VybmVsXSBFcnJvciAyCj4+
+Cj4+Cj4+Cj4gU2V0IENPTkZJR19YRU49biBpbiB5b3VyIC5jb25maWcKPgo+Cj4KU28gbWFueSBo
+b3VycyBpbiBmcm9udCBvZiB0aGUgY29tcHV0ZXIgYW5kIHN0aWxsIGNhbid0IGNvbXBpbGUgdGhl
+IAprZXJuZWwuLi5ub3cgaXQgZ2l2ZXMgbWUgdGhlIGVycm9yCgpsZDogZHJpdmVycy93YXRjaGRv
+Zy93bTgzNTBfd2R0Lm86IGJhZCByZWxvYyBzeW1ib2wgaW5kZXggKDB4MjAwMDAwMzMgPj0gCjB4
+NTApIGZvciBvZmZzZXQgMHg3YTI4IGluIHNlY3Rpb24gYC5kZWJ1Z19pbmZvJwpkcml2ZXJzL3dh
+dGNoZG9nL3dtODM1MF93ZHQubzogY291bGQgbm90IHJlYWQgc3ltYm9sczogQmFkIHZhbHVlCm1h
+a2VbMl06ICoqKiBbZHJpdmVycy93YXRjaGRvZy93bTgzNTBfd2R0LmtvXSBFcnJvciAxCm1ha2Vb
+Ml06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4uCm1ha2VbMV06ICoqKiBbbW9k
+dWxlc10gRXJyb3IgMgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUva29zdGFzL2xp
+bnV4JwptYWtlOiAqKiogW2RlYmlhbi9zdGFtcC9idWlsZC9rZXJuZWxdIEVycm9yIDIKCkFkdmlj
+ZSBtZSBpZiB5b3UgY2FuIHdoYXQgdG8gZG8uLi5pIHN0YXJ0ZWQgdG8gaGF2ZSBhIGhlYWRhY2hl
+LgpXaWxsIGNvbnRpbnVlIHRvbW9ycm93Li4uCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
