@@ -1,28 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
- working with 1.0.24 and above (OK with 1.0.23)
-Date: Wed, 29 Aug 2012 08:23:06 +0200
-Message-ID: <503DB54A.60401@gmail.com>
-References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
- <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
- <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
- <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
- <503C8658.400@gmail.com> <503C87AD.2010204@gmail.com>
- <503C8A03.809@gmail.com> <503C8CCC.2000801@gmail.com>
- <503C8F9A.7020104@gmail.com> <503C93B8.1010505@gmail.com>
- <503C95A2.6010308@gmail.com> <503D4355.2050304@gmail.com>
- <503D4B71.6020209@gmail.com> <503D5E97.9040100@gmail.com>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: [PATCH V2 1/6] ASoC: davinci: davinci-pcm does not
+ need to be a plaform_driver
+Date: Wed, 29 Aug 2012 10:25:34 +0400
+Message-ID: <20120829062534.GB11919@newmaster.mivlgu.local>
+References: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
+ <1346074004-22172-2-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0014219327172838928=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id A150F264F11
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 08:23:12 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so51994bku.38
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2012 23:23:12 -0700 (PDT)
-In-Reply-To: <503D5E97.9040100@gmail.com>
+Received: from mail.mivlgu.ru (mivlgu.ru [195.20.195.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36961264F11
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 08:25:40 +0200 (CEST)
+In-Reply-To: <1346074004-22172-2-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,152 +21,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kostas <hunter18@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, broonie@opensource.wolfsonmicro.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, alsa-user@lists.sourceforge.net, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjkuMDguMjAxMiAwMjoxMywgS29zdGFzIHdyb3RlOgo+IE9uIDI5LzA4LzIwMTIgMDE6NTEg
-z4DOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+IE9uIDI5LjA4LjIwMTIgMDA6MTYsIEtvc3RhcyB3
-cm90ZToKPj4+IE9uIDI4LzA4LzIwMTIgMTI6NTUgw47CvMOOwrwsIERhbmllbCBNYWNrIHdyb3Rl
-Ogo+Pj4+IE9uIDI4LjA4LjIwMTIgMTE6NDcsIEtvc3RhcyB3cm90ZToKPj4+Pj4gT24gMjgvMDgv
-MjAxMiAxMjozMCDDjsK8w47CvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+Pj4+PiBPbiAyOC4wOC4y
-MDEyIDExOjE4LCBLb3N0YXMgd3JvdGU6Cj4+Pj4+Pj4gT24gMjgvMDgvMjAxMiAxMjowNiDDg8KO
-w4LCvMODwo7DgsK8LCBEYW5pZWwgTWFjayB3cm90ZToKPj4+Pj4+Pj4gT24gMjguMDguMjAxMiAx
-MDo1NiwgS29zdGFzIHdyb3RlOgo+Pj4+Pj4+Pj4gT24gMjgvMDgvMjAxMiAxMTo1MCDDg8KPw4LC
-gMODwo7DgsK8LCBEYW5pZWwgTWFjayB3cm90ZToKPj4+Pj4+Pj4+PiBPbiAyOC4wOC4yMDEyIDEw
-OjQ3LCBLb3N0YXMgd3JvdGU6Cj4+Pj4+Pj4+Pj4+IE9uIDI4LzA4LzIwMTIgMDg6NDQgw4PCg8OC
-wo/Dg8KCw4LCgMODwoPDgsKOw4PCgsOCwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4+Pj4+
-Pj4gT24gMjguMDguMjAxMiAwMDoxOSwgS29zdGFzIHdyb3RlOgo+Pj4+Pj4+Pj4+Pj4+IE9uIDI3
-LzA4LzIwMTIgMDY6NTQgw4PCg8OCwo7Dg8KCw4LCvMODwoPDgsKOw4PCgsOCwrwsIEtvc3RhcyB3
-cm90ZToKPj4+Pj4+Pj4+Pj4+Pj4gT24gMjcvMDgvMjAxMiAwMjo0NCDDg8KDw4LCjsODwoLDgsK8
-w4PCg8OCwo7Dg8KCw4LCvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+PiBPbiAy
-Ny4wOC4yMDEyIDEyOjMzLCBLb3N0YXMgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+Pj4gT24gMjcvMDgv
-MjAxMiAxMjoyNiDDg8KDw4LCjsODwoLDgsK8w4PCg8OCwo7Dg8KCw4LCvCwgRGFuaWVsIE1hY2sg
-d3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+IE9uIDI3LjA4LjIwMTIgMTE6MDAsIEtvc3RhcyB3cm90
-ZToKPj4+Pj4+Pj4+Pj4+Pj4+Pj4+IEhpIEFsbCwKPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+
-Pj4+Pj4+Pj4+PiBJIGhhdmUgYSAnVHJ1c3QgV2ViY2FtJyAoVVNCIElEOiAxNDVmOjAxNWIpIHRo
-YXQgY29tZXMgd2l0aCBhCj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiBtaWNyb3Bob25lLgo+Pj4+Pj4+Pj4+
-Pj4+Pj4+Pj4gVGhlIG1pY3JvcGhvbmUgd29ya3Mgd2l0aCBBbHNhIDEuMC4yMyBidXQgaXQgZG9l
-cyBub3Qgd29yayB3aXRoIHRoZQo+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4gbGF0ZXN0IEFsc2EgMS4wLjI1
-IG5laXRoZXIgd2l0aCBBbHNhIDEuMC4yNC4KPj4+Pj4+Pj4+Pj4+Pj4+Pj4+IEFwcGFyZW50bHkg
-dGhpcyBpcyBhIHJlZ3Jlc3Npb24uCj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+Pj4+
-Pj4gV2hhdCBzaGFsbCBJIGRvIHRvIGZpZ3VyZSBvdXQgdGhlIHNvdXJjZSBvZiB0aGUgcHJvYmxl
-bT8KPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiBIZXJlIGFyZSBhdHRhY2hl
-ZCBteSBhbHNhLWluZm9zLCB3aXRoIEFsc2EgMS4wLjIzICh3b3JraW5nKSwKPj4+Pj4+Pj4+Pj4+
-Pj4+Pj4+IDEuMC4yNCAoTk9UCj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiB3b3JraW5nKSBhbmQgMS4wLjI1
-IChOT1Qgd29ya2luZykuCj4+Pj4+Pj4+Pj4+Pj4+Pj4+IENhbiB5b3UgcHJvdmlkZSBkbWVzZyBw
-cm90b2NvbHMgZm9yIGJvdGggYSB3b3JraW5nIGFuZCBhIG5vbi13b3JraW5nCj4+Pj4+Pj4+Pj4+
-Pj4+Pj4+IGNhc2UgcGxlYXNlPwo+Pj4+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+Pj4+Pgo+
-Pj4+Pj4+Pj4+Pj4+Pj4+IEJlbG93IGFyZSBhdHRhY2hlZCB0aGUgZG1lc2cgZmlsZXMuCj4+Pj4+
-Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+Pj4+IFRoYW5rcyAtIHRoZSBsb2dzIGxvb2sgYm90aCBn
-b29kLCBJIGd1ZXNzIHRoZSBpbnRlcmVzdGluZyBtZXNzYWdlcyBhcmUKPj4+Pj4+Pj4+Pj4+Pj4+
-IG9ubHkgZ2VuZXJhdGVkIG9uY2UgeW91IHRyeSB0byBzdGFydCB0aGUgc3RyZWFtLiBDYW4geW91
-IHRyeSB0aGlzPwo+Pj4+Pj4+Pj4+Pj4+PiBIb3cgaSBkbyB0aGF0Pwo+Pj4+Pj4+Pj4+Pj4+PiBJ
-IHRyaWVkIHRvIG1ha2UgYSB0ZXN0IGNhbGwgaW4gc2t5cGUgYW5kIGFsc28gcmVjb3JkaW5nIGEg
-dmlkZW8gaW4KPj4+Pj4+Pj4+Pj4+Pj4gY2hlZXNlIGJ1dCBubyBjaGFuZ2VzIGluIGRtZXNnLgo+
-Pj4+Pj4+Pj4+Pj4+PiBJcyB0aGVyZSBhbm90aGVyIHdheSB0byBzdGFydCB0aGUgc3RyZWFtPwo+
-Pj4+Pj4+Pj4+Pj4+IEFsc28gdHJpZWQgdG8gcmVjb3JkIHZvaWNlIHdpdGggc291bmQgcmVjb3Jk
-ZXIuLi53aXRoIGFsc2EgMS4wLjIzCj4+Pj4+Pj4+Pj4+Pj4gcmVjb3JkaW5nIGlzIGZpbmUuLmkg
-aGVhciBteSB2b2ljZSB3aGVuIHBsYXliYWNrIHRoZSBmaWxlIGJ1dCB3aXRoIGFsc2EKPj4+Pj4+
-Pj4+Pj4+PiAxLjAuMjQgYW5kIGFib3ZlIG5vdGhpbmcgaXMgcmVjb3JkZWQuCj4+Pj4+Pj4+Pj4+
-Pj4gSW4gYm90aCBjYXNlcyBub3RoaW5nIGlzIGNoYW5nZWQgaW4gZG1lc2cgb3V0cHV0Lgo+Pj4+
-Pj4+Pj4+Pj4+IFdoYXQgZWxzZSBjb3VsZCBpIGRvIHRvIGhlbHAgeW91IG91dD8KPj4+Pj4+Pj4+
-Pj4+Pgo+Pj4+Pj4+Pj4+Pj4gQ29tcGFyaW5nIHRoZSB0d28gZG1lc2cgbG9ncywgSSdtIHVuZGVy
-IHRoZSBpbXByZXNzaW9uIHRoYXQgaW4gdGhlCj4+Pj4+Pj4+Pj4+PiBzZWNvbmQgY2FzZSAodGhl
-IG5ld2VyIGtlcm5lbCksIHRoZSBoZGEgZHJpdmVyIGtpY2tzIGluIGFuZCBjcmVhdGVzIGEKPj4+
-Pj4+Pj4+Pj4+IHNvdW5kIGRldmljZSBiZWZvcmUgdGhlIHVzYiBhdWRpbyBkcml2ZXIgZG9lcy4g
-SGVuY2UsIHRoZSBkZWZhdWx0IGNhcmQKPj4+Pj4+Pj4+Pj4+IGNoYW5nZXMgYW5kIHlvdSdyZSBy
-ZWNvcmRpbmcgZnJvbSB5b3VyIGludGVybmFsIHNvdW5kIGNhcmQgcmF0aGVyIHRoYW4KPj4+Pj4+
-Pj4+Pj4+IHRoZSBXZWJjYW0uCj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4gQ291bGQgeW91IHBs
-ZWFzZSBzZW5kIHRoZSBvdXRwdXQgb2YgJ2FwbGF5IC1sJyBpbiBib3RoIGNhc2VzPwo+Pj4+Pj4+
-Pj4+Pj4KPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+PiBEYW5pZWwKPj4+Pj4+Pj4+Pj4+Cj4+Pj4+
-Pj4+Pj4+IE91dHB1dCBvZiB3b3JraW5nIGNhc2UKPj4+Pj4+Pj4+Pj4gKioqKiBMaXN0IG9mIFBM
-QVlCQUNLIEhhcmR3YXJlIERldmljZXMgKioqKgo+Pj4+Pj4+Pj4+PiBjYXJkIDA6IFNCIFtIREEg
-QVRJIFNCXSwgZGV2aWNlIDA6IEFEMTk4eCBBbmFsb2cgW0FEMTk4eCBBbmFsb2ddCj4+Pj4+Pj4+
-Pj4+IMODwoPDgsKCICBTdWJkZXZpY2VzOiAxLzEKPj4+Pj4+Pj4+Pj4gw4PCg8OCwoIgIFN1YmRl
-dmljZSAjMDogc3ViZGV2aWNlICMwCj4+Pj4+Pj4+Pj4+IGNhcmQgMDogU0IgW0hEQSBBVEkgU0Jd
-LCBkZXZpY2UgMTogQUQxOTh4IERpZ2l0YWwgW0FEMTk4eCBEaWdpdGFsXQo+Pj4+Pj4+Pj4+PiDD
-g8KDw4LCgiAgU3ViZGV2aWNlczogMS8xCj4+Pj4+Pj4+Pj4+IMODwoPDgsKCICBTdWJkZXZpY2Ug
-IzA6IHN1YmRldmljZSAjMAo+Pj4+Pj4+Pj4+PiBjYXJkIDI6IEdlbmVyaWMgW0hELUF1ZGlvIEdl
-bmVyaWNdLCBkZXZpY2UgMzogSERNSSAwIFtIRE1JIDBdCj4+Pj4+Pj4+Pj4+IMODwoPDgsKCICBT
-dWJkZXZpY2VzOiAxLzEKPj4+Pj4+Pj4+Pj4gw4PCg8OCwoIgIFN1YmRldmljZSAjMDogc3ViZGV2
-aWNlICMwCj4+Pj4+Pj4+Pj4gU29ycnksIHRoZXJlJ3Mgb2YgY291cnNlIG5vIHBsYXliYWNrIG9u
-IGEgd2ViY2FtLiBUcnkgJ2FyZWNvcmQgLWwnCj4+Pj4+Pj4+Pj4gaW5zdGVhZCwgcGxlYXNlLgo+
-Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBEYW5pZWwKPj4+Pj4+Pj4+Pgo+Pj4+Pj4+
-Pj4gT3V0cHV0IG9mIG5vbi13b3JraW5nIGNhc2UKPj4+Pj4+Pj4+ICoqKiogTGlzdCBvZiBDQVBU
-VVJFIEhhcmR3YXJlIERldmljZXMgKioqKgo+Pj4+Pj4+Pj4gY2FyZCAwOiBTQiBbSERBIEFUSSBT
-Ql0sIGRldmljZSAwOiBBRDE5OHggQW5hbG9nIFtBRDE5OHggQW5hbG9nXQo+Pj4+Pj4+Pj4gICAg
-ICAgIFN1YmRldmljZXM6IDMvMwo+Pj4+Pj4+Pj4gICAgICAgIFN1YmRldmljZSAjMDogc3ViZGV2
-aWNlICMwCj4+Pj4+Pj4+PiAgICAgICAgU3ViZGV2aWNlICMxOiBzdWJkZXZpY2UgIzEKPj4+Pj4+
-Pj4+ICAgICAgICBTdWJkZXZpY2UgIzI6IHN1YmRldmljZSAjMgo+Pj4+Pj4+Pj4gY2FyZCAxOiBX
-ZWJjYW0gW1RydXN0IDJNUCBBdXRvIEZvY3VzIFdlYmNhbV0sIGRldmljZSAwOiBVU0IgQXVkaW8g
-W1VTQgo+Pj4+Pj4+Pj4gQXVkaW9dCj4+Pj4+Pj4+PiAgICAgICAgU3ViZGV2aWNlczogMS8xCj4+
-Pj4+Pj4+PiAgICAgICAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKPj4+Pj4+Pj4+Cj4+Pj4+
-Pj4+Pgo+Pj4+Pj4+Pj4gT3V0cHV0IG9mIHdvcmtpbmcgY2FzZQo+Pj4+Pj4+Pj4gKioqKiBMaXN0
-IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCj4+Pj4+Pj4+PiBjYXJkIDA6IFNCIFtI
-REEgQVRJIFNCXSwgZGV2aWNlIDA6IEFEMTk4eCBBbmFsb2cgW0FEMTk4eCBBbmFsb2ddCj4+Pj4+
-Pj4+PiAgICAgICAgU3ViZGV2aWNlczogMy8zCj4+Pj4+Pj4+PiAgICAgICAgU3ViZGV2aWNlICMw
-OiBzdWJkZXZpY2UgIzAKPj4+Pj4+Pj4+ICAgICAgICBTdWJkZXZpY2UgIzE6IHN1YmRldmljZSAj
-MQo+Pj4+Pj4+Pj4gICAgICAgIFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMyCj4+Pj4+Pj4+PiBj
-YXJkIDE6IGRlZmF1bHQgW1RydXN0IDJNUCBBdXRvIEZvY3VzIFdlYmNhbSBdLCBkZXZpY2UgMDog
-VVNCIEF1ZGlvIFtVU0IKPj4+Pj4+Pj4+IEF1ZGlvXQo+Pj4+Pj4+Pj4gICAgICAgIFN1YmRldmlj
-ZXM6IDEvMQo+Pj4+Pj4+Pj4gICAgICAgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4+Pj4+
-Pj4+Pgo+Pj4+Pj4+PiBUcnkgJ2FyZWNvcmQgLWYgY2QgLURwbHVnaHc6MSBmb28ud2F2JyBhbmQg
-c2VlIGlmIHRoYXQgd29ya3MuIEZvcgo+Pj4+Pj4+PiB3aGF0ZXZlciByZWFzb24sIHRoZSB3ZWJj
-YW0gaXMgbm90IHRoZSBkZWZhdWx0IGluIHRoZSBub24td29ya2luZyBjYXNlLgo+Pj4+Pj4+PiBB
-cmUgeW91IHVzaW5nIHRoZSBzYW1lIHVzZXJzcGFjZSBhbmQgY29uZmlncyBpbiBib3RoIGNhc2Vz
-Pwo+Pj4+Pj4+Pgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBEYW5pZWwKPj4+Pj4+Pj4KPj4+Pj4+PiBVbmZv
-cnR1bmF0ZWx5IGl0IGRvZXNuJ3Qgd29yay4uLnZvaWNlIGlzIHJlY29yZGVkIG9ubHkgaW4gMS4w
-LjIzIGFsc2EKPj4+Pj4+PiB2ZXJzaW9uLgo+Pj4+Pj4+IEluIGFib3ZlIHZlcnNpb24gbm90aGlu
-ZyBpcyByZWNvcmRlZC4KPj4+Pj4+PiBJIHVzZSB0aGUgc2FtZSBVYnVudHUgcmVsZWFzZSBqdXN0
-IHRoZSBrZXJuZWwgY2hhbmdlcwo+Pj4+Pj4+IDEuMC4yMyBhbHNhIGlzIGluIGtlcm5lbCAyLjYu
-MzgKPj4+Pj4+PiBuZXdlciBhbHNhIHZlcnNpb25zIHRoYXQgZG9uJ3Qgd29yayBhcmUgaW4gbmV3
-ZXIga2VybmVscy4KPj4+Pj4+IEkgc3RpbGwgdGhpbmsgaXQgaXMgYWxsIHJlbGF0ZWQgdG8gY29u
-ZmlncyBhbmQgc2V0dGluZ3MuIENhbiB5b3UgcGxlYXNlCj4+Pj4+PiBnbyBjaGVjayBhbGwgcmVs
-ZXZhbnQgdm9sdW1lIHNldHRpbmdzIGFuZCByb3V0aW5nIHN3aXRjaGVzIHdpdGggYW1peGVyCj4+
-Pj4+PiBvciBhbHNhbWl4ZXI/IFRoZSBmYWN0IHRoYXQgdGhlIGRlZmF1bHQgY2hhbmdlcyB0ZWxs
-cyBtZSB0aGF0Cj4+Pj4+PiBzb21ldGhpbmcncyBkaWZmZXJlbnQgaW4gdGhlIGJlaGF2aW91ciBp
-biB3aGljaCBBTFNBIGhhbmRsZXMgdGhlIGRldmljZXMuCj4+Pj4+Pgo+Pj4+Pj4gQWxzbyBub3Rl
-IHRoYXQgMS4wLjI0IGlzIHJhdGhlciBhbmNpZW50IGFscmVhZHksIGFuZCB3aGlsZSB0aGUgZHJp
-dmVyCj4+Pj4+PiBoYXMgc2VlbiBxdWlldCBzb21lIHJlZmFjdG9yaW5nIGxhdGVseSwgSSBoYXZl
-bid0IGhlYXJkIGFib3V0Cj4+Pj4+PiByZWdyZXNzaW9ucyBpbiB0aGF0IHZlcnNpb24geWV0IC0g
-YW5kIEknbSBzdXJlIHdlIHdvdWxkIGhhdmUgZ290dGVuIGEKPj4+Pj4+IHdob2xlIGxvdCBvZiBy
-ZXBvcnRzIGlmIHRoZXJlIHdhcyBzdWNoIGEgdHJlbWVuZG91cyBicmVha2FnZS4gQW5kCj4+Pj4+
-PiB0aGVyZSdzIG5vIHNpZ25zIG9mIGVycm9ycyBpbiB0aGUga2VybmVsIGxvZ3MgZWl0aGVyLiBC
-dXQgeW91IG5ldmVyCj4+Pj4+PiBrbm93LCBvZiBjb3Vyc2UuCj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+
-IERhbmllbAo+Pj4+Pj4KPj4+Pj4gQWxzYW1peGVyIHdvcmtpbmcgY2FzZWh0dHA6Ly9pbWFnZWJp
-bi5vcmcvMjI2MTQzCj4+Pj4+IEFsc2FtaXhlciBub24td29ya2luZyBjYXNlaHR0cDovL2ltYWdl
-YmluLm9yZy8yMjYxNDIKPj4+Pj4KPj4+Pj4gSSBhbHNvIGF0dGFjaCBhbWl4ZXIgb3V0cHV0IGZv
-ciBib3RoIGNhc2VzLgo+Pj4+Pgo+Pj4+IEJvdGggaW4gdGhlIGltYWdlcyBhbmQgaW4gdGhlIHRl
-eHQgb3V0cHV0IHlvdSBzZWVtIHRvIGhhdmUgbWlzc2VkCj4+Pj4gcG9pbnRpbmcgYW1peGVyL2Fs
-c2FtaXhlciB0aGUgY29ycmVjdCBkZXZpY2UuIGFsc2FtaXhlciBpcyBhbHNvIGluIHRoZQo+Pj4+
-IHBsYXliYWNrIHBhbmUsIHdoaWNoIGRvZXNuJ3QgZXhpc3QgZm9yIHRoZSBXZWJjYW0uCj4+Pj4K
-Pj4+PiBUcnkgJ2Fsc2FtaXhlciAtYzEgLVYgY2FwdHVyZScKPj4+Pgo+Pj4gSSBmaW5hbGx5IGZp
-Z3VyZWQgaXQgb3V0IHdpdGggYW1peGVyIGNvbW1hbmQKPj4+IG5vbiB3b3JraW5nIHZlcnNpb24g
-Z2l2ZXMgbWUgdGhpcyBvdXRwdXQKPj4+Cj4+PiBrb3N0YXNAa29zdGFzLWhvbWU6fiQgYW1peGVy
-IC1jMQo+Pj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01pYycsMAo+Pj4gw4IgIENhcGFiaWxpdGll
-czogY3ZvbHVtZSBjdm9sdW1lLWpvaW5lZCBjc3dpdGNoIGNzd2l0Y2gtam9pbmVkIHBlbnVtCj4+
-PiDDgiAgQ2FwdHVyZSBjaGFubmVsczogTW9ubwo+Pj4gw4IgIExpbWl0czogQ2FwdHVyZSAwIC0g
-NDA5Ngo+Pj4gw4IgIE1vbm86IENhcHR1cmUgMjcyMyBbNjYlXSBbMTAuNjNkQl0gW29uXQo+Pj4K
-Pj4+IFRoZSB3b3JraW5nIHZlcnNpb24gZ2l2ZXMgdGhpcyBvdXRwdXQKPj4+IGtvc3Rhc0Brb3N0
-YXMtaG9tZTp+JCBhbWl4ZXIgLWMxCj4+PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnTWljJywwCj4+
-PiAgICAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lIGN2b2x1bWUtam9pbmVkIGNzd2l0Y2ggY3N3aXRj
-aC1qb2luZWQgcGVudW0KPj4+ICAgICBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCj4+PiAgICAgTGlt
-aXRzOiBDYXB0dXJlIDAgLSA0MDk2Cj4+PiAgICAgTW9ubzogQ2FwdHVyZSA0MDk2IFsxMDAlXSBb
-MTYuMDBkQl0gW29uXQo+PiBPaywgdGhhbmtzLiBJbiB0aGUgZ2l2ZW4gY2FzZSwgSSBoYXZlIHRv
-IGFzayB5b3UgdG8gZG8gYSBnaXQgYmlzZWN0Lgo+PiBUaGF0IHdpbGwgcG9pbnQgdXMgdG8gdGhl
-IGNvbW1pdCB0aGF0IGNhdXNlcyB5b3VyIHByb2JsZW1zLiBTb3JyeSB0aGF0IEkKPj4gY2FuJ3Qg
-aGVscCB5b3UgYW55IGZ1cnRoZXIgcmlnaHQgbm93LCBpdCdzIGp1c3QgdW5jbGVhciB3aGljaCBj
-b21taXQgaW4KPj4gdGhlIGFuY2llbnQgaGlzdG9yeSBjYXVzZXMgeW91ciBwcm9ibGVtLgo+Pgo+
-PiBTZWUgaGVyZSBmb3IgaW5zdHJ1Y3Rpb25zIG9uIGhvdyB0byBkbyB0aGF0Ogo+Pgo+PiAgICBo
-dHRwczovL3d3dy5rZXJuZWwub3JnL3B1Yi9zb2Z0d2FyZS9zY20vZ2l0L2RvY3MvZ2l0LWJpc2Vj
-dC5odG1sCj4+ICAgIGh0dHA6Ly9naXQtc2NtLmNvbS9ib29rL2VuL0dpdC1Ub29scy1EZWJ1Z2dp
-bmctd2l0aC1HaXQKPj4KPj4KPj4gVGhhbmtzIGZvciB5b3VyIGhlbHAgYW5kIHBhdGllbmNlLAo+
-PiBEYW5pZWwKPj4KPiBDb21tYW5kIGdpdCBiaXNlY3QgZ29vZCAxLjAuMjMgZ2l2ZXMgbWUgdGhl
-IG91dHB1dAo+IGZhdGFsOiBOZWVkZWQgYSBzaW5nbGUgcmV2aXNpb24KPiBCYWQgcmV2IGlucHV0
-OiAxLjAuMjMKPiAKPiBIb3cgY2FuIGkgZmlndXJlIG91dCB0aGUgcmV2aXNpb24gbnVtYmVyPwo+
-IAoKV2hlbiB3b3JraW5nIHdpdGggdGhlIGtlcm5lbCBnaXQsIHlvdSBoYXZlIHRvIHRha2UgdGhl
-IGtlcm5lbCB2ZXJzaW9uCm51bWJlcnMuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+
+--===============0014219327172838928==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rJwd6BRFiFCcLxzm"
+Content-Disposition: inline
+
+
+--rJwd6BRFiFCcLxzm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Aug 27, 2012 at 06:56:39PM +0530, Hebbar, Gururaja wrote:
+> Same as the commit 518de86 (ASoC: tegra: register 'platform' from DAIs,
+> get rid of pdev). It makes davinci-pcm not a platform_driver but helper
+> to register "platform", so that the platform_device for davinci-pcm can
+> be saved completely.
+>=20
+> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+> ---
+> Changes from V1:
+> 	- New Commit. Instanciate seudo-device (davinci-pcm) directly from DAI
+> 	  driver rather than having a separate virtual-device registered
+>=20
+> :100644 100644 c80c20a... 4b37e2a... M	sound/soc/davinci/davinci-evm.c
+> :100644 100644 0a74b95... 407df72... M	sound/soc/davinci/davinci-i2s.c
+> :100644 100644 6a2c54c... 34ee2f1... M	sound/soc/davinci/davinci-mcasp.c
+> :100644 100644 97d77b2... 4b70828... M	sound/soc/davinci/davinci-pcm.c
+> :100644 100644 c0d6c9b... 5e55164... M	sound/soc/davinci/davinci-pcm.h
+> :100644 100644 f71175b... 5be65aa... M	sound/soc/davinci/davinci-sffsdr.c
+> :100644 100644 da030ff... 07bde2e... M	sound/soc/davinci/davinci-vcif.c
+>  sound/soc/davinci/davinci-evm.c    |   15 ++++++++-------
+>  sound/soc/davinci/davinci-i2s.c    |   10 ++++++++++
+>  sound/soc/davinci/davinci-mcasp.c  |   10 ++++++++++
+>  sound/soc/davinci/davinci-pcm.c    |   23 ++++++-----------------
+>  sound/soc/davinci/davinci-pcm.h    |    3 +++
+>  sound/soc/davinci/davinci-sffsdr.c |    2 +-
+>  sound/soc/davinci/davinci-vcif.c   |    8 ++++++++
+>  7 files changed, 46 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-=
+evm.c
+> index c80c20a..4b37e2a 100644
+> --- a/sound/soc/davinci/davinci-evm.c
+> +++ b/sound/soc/davinci/davinci-evm.c
+> @@ -159,7 +159,7 @@ static struct snd_soc_dai_link dm6446_evm_dai =3D {
+>  	.cpu_dai_name =3D "davinci-mcbsp",
+>  	.codec_dai_name =3D "tlv320aic3x-hifi",
+>  	.codec_name =3D "tlv320aic3x-codec.1-001b",
+> -	.platform_name =3D "davinci-pcm-audio",
+> +	.platform_name =3D "davinci-mcbsp",
+>  	.init =3D evm_aic3x_init,
+>  	.ops =3D &evm_ops,
+>  };
+> @@ -170,7 +170,7 @@ static struct snd_soc_dai_link dm355_evm_dai =3D {
+>  	.cpu_dai_name =3D "davinci-mcbsp.1",
+>  	.codec_dai_name =3D "tlv320aic3x-hifi",
+>  	.codec_name =3D "tlv320aic3x-codec.1-001b",
+> -	.platform_name =3D "davinci-pcm-audio",
+> +	.platform_name =3D "davinci-mcbsp.1",
+>  	.init =3D evm_aic3x_init,
+>  	.ops =3D &evm_ops,
+>  };
+> @@ -184,14 +184,15 @@ static struct snd_soc_dai_link dm365_evm_dai =3D {
+>  	.init =3D evm_aic3x_init,
+>  	.codec_name =3D "tlv320aic3x-codec.1-0018",
+>  	.ops =3D &evm_ops,
+> +	.platform_name =3D "davinci-mcbsp",
+>  #elif defined(CONFIG_SND_DM365_VOICE_CODEC)
+>  	.name =3D "Voice Codec - CQ93VC",
+>  	.stream_name =3D "CQ93",
+>  	.cpu_dai_name =3D "davinci-vcif",
+>  	.codec_dai_name =3D "cq93vc-hifi",
+>  	.codec_name =3D "cq93vc-codec",
+> +	.platform_name =3D "avinci-vcif",
+
+Typo?
+
+--rJwd6BRFiFCcLxzm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iD8DBQFQPbXeW82GfkQfsqIRAnQVAJ4icoBpoX8wTeh6eY7TbztZ6ytZiwCdGURZ
+4lVnzGOGR7KOvesX8Crwues=
+=1r94
+-----END PGP SIGNATURE-----
+
+--rJwd6BRFiFCcLxzm--
+
+--===============0014219327172838928==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0014219327172838928==--
