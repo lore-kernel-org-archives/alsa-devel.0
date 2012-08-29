@@ -1,195 +1,194 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Logitech USB headset not working in 3.6-rc3
-Date: Wed, 29 Aug 2012 13:26:25 +0200
-Message-ID: <503DFC61.3000104@gmail.com>
-References: <20120824190808.GC20043@zod.bos.redhat.com> <5038007E.5060505@gmail.com> <20120825111749.GA17048@wolff.to> <20120825115423.GA14327@wolff.to> <5038BEEB.6090303@gmail.com> <20120825120740.GA19539@wolff.to> <5038C186.7000107@gmail.com> <20120825121758.GF20043@zod.bos.redhat.com>
+From: Kostas <hunter18@gmail.com>
+Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
+ working with 1.0.24 and above (OK with 1.0.23)
+Date: Wed, 29 Aug 2012 15:04:51 +0300
+Message-ID: <503E0563.1050506@gmail.com>
+References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
+ <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
+ <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
+ <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
+ <503C8658.400@gmail.com> <503C87AD.2010204@gmail.com>
+ <503C8A03.809@gmail.com> <503C8CCC.2000801@gmail.com>
+ <503C8F9A.7020104@gmail.com> <503C93B8.1010505@gmail.com>
+ <503C95A2.6010308@gmail.com> <503D4355.2050304@gmail.com>
+ <503D4B71.6020209@gmail.com> <503D5E97.9040100@gmail.com>
+ <503DB54A.60401@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070202060108000404060508"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120825121758.GF20043@zod.bos.redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Josh Boyer <jwboyer@redhat.com>
-Cc: Bruno Wolff III <bruno@wolff.to>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3045F265D20
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 14:04:55 +0200 (CEST)
+Received: by lags15 with SMTP id s15so392869lag.38
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 05:04:54 -0700 (PDT)
+In-Reply-To: <503DB54A.60401@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070202060108000404060508
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-On 25.08.2012 14:17, Josh Boyer wrote:
-> On Sat, Aug 25, 2012 at 02:13:58PM +0200, Daniel Mack wrote:
->> On 25.08.2012 14:07, Bruno Wolff III wrote:
->>> On Sat, Aug 25, 2012 at 14:02:51 +0200,
->>>    Daniel Mack <zonque@gmail.com> wrote:
->>>>
->>>> Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
->>>> scheduling-while-atomic bug in PCM capture stream") and see if that
->>>
->>> I can try that, but it takes a long time to build a new kernel on my 
->>> old hardware.
->>>
->>>> helps? If not, can you summarize again which kernels still work for you
->>>> and which don't?
->>>
->>> The latest kernel that works is 3.6.0-0.rc2.git1.2.fc18. The earliest that 
->>> doesn't work is 3.6.0-0.rc2.git2.1.fc18.
->>>
->>
->> The report you sent doesn't look like it could be caused by e9ba389c5.
->> It fixes a kernel Ooops. But as it is the only relevant patch in that
->> area, it would be interesting if reverting it fixes anything.
-> 
-> Yep, agreed.  If this revert kernel doesn't work, we're likely down to a
-> git bisect, Bruno.
-> 
->> Btw - thanks a lot for testing -rc kernels, much appreciated!
-> 
-> Indeed!
-
-Could you please try this patch on top of Takashi's? Thanks again!
-
-
-Daniel
-
-
---------------070202060108000404060508
-Content-Type: text/x-patch;
- name="0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch"
-
->From 6617bb2463ae3fad21390b59cc2a71f96b9e9ca8 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <zonque@gmail.com>
-Date: Wed, 29 Aug 2012 13:17:05 +0200
-Subject: [PATCH] ALSA: snd-usb: Fix URB cancellation at stream start
-
-Commit e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic bug in
-PCM capture stream") fixed a scheduling-while-atomic bug that happened
-when snd_usb_endpoint_start was called from the trigger callback, which
-is an atmic context. However, the patch breaks the idea of the endpoints
-reference counting, which is the reason why the driver has been
-refactored lately.
-
-Revert that commit and let snd_usb_endpoint_start() take care of the URB
-cancellation again. As this function is called from both atomic and
-non-atomic context, add a flag to denote whether the function may sleep.
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: stable@kernel.org [3.5+]
----
- sound/usb/endpoint.c | 10 ++++++++--
- sound/usb/endpoint.h |  2 +-
- sound/usb/pcm.c      | 13 +++++--------
- 3 files changed, 14 insertions(+), 11 deletions(-)
-
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index c411812..678456c 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -799,7 +799,9 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- /**
-  * snd_usb_endpoint_start: start an snd_usb_endpoint
-  *
-- * @ep: the endpoint to start
-+ * @ep:		the endpoint to start
-+ * @can_sleep:	flag indicating whether the operation is executed in
-+ * 		non-atomic context
-  *
-  * A call to this function will increment the use count of the endpoint.
-  * In case it is not already running, the URBs for this endpoint will be
-@@ -809,7 +811,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
-  *
-  * Returns an error if the URB submission failed, 0 in all other cases.
-  */
--int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
-+int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int can_sleep)
- {
- 	int err;
- 	unsigned int i;
-@@ -821,6 +823,10 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 	if (++ep->use_count != 1)
- 		return 0;
- 
-+	/* just to be sure */
-+	deactivate_urbs(ep, 0, can_sleep);
-+	wait_clear_urbs(ep);
-+
- 	ep->active_mask = 0;
- 	ep->unlink_mask = 0;
- 	ep->phase = 0;
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index ee2723f..a8e60c1 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -13,7 +13,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 				struct audioformat *fmt,
- 				struct snd_usb_endpoint *sync_ep);
- 
--int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep);
-+int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int can_sleep);
- void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep,
- 			   int force, int can_sleep, int wait);
- int  snd_usb_endpoint_activate(struct snd_usb_endpoint *ep);
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 62ec808..1546577 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -212,7 +212,7 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
- 	}
- }
- 
--static int start_endpoints(struct snd_usb_substream *subs)
-+static int start_endpoints(struct snd_usb_substream *subs, int can_sleep)
- {
- 	int err;
- 
-@@ -225,7 +225,7 @@ static int start_endpoints(struct snd_usb_substream *subs)
- 		snd_printdd(KERN_DEBUG "Starting data EP @%p\n", ep);
- 
- 		ep->data_subs = subs;
--		err = snd_usb_endpoint_start(ep);
-+		err = snd_usb_endpoint_start(ep, can_sleep);
- 		if (err < 0) {
- 			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
- 			return err;
-@@ -239,7 +239,7 @@ static int start_endpoints(struct snd_usb_substream *subs)
- 		snd_printdd(KERN_DEBUG "Starting sync EP @%p\n", ep);
- 
- 		ep->sync_slave = subs->data_endpoint;
--		err = snd_usb_endpoint_start(ep);
-+		err = snd_usb_endpoint_start(ep, can_sleep);
- 		if (err < 0) {
- 			clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
- 			return err;
-@@ -544,13 +544,10 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- 	subs->last_frame_number = 0;
- 	runtime->delay = 0;
- 
--	/* clear the pending deactivation on the target EPs */
--	deactivate_endpoints(subs);
--
- 	/* for playback, submit the URBs now; otherwise, the first hwptr_done
- 	 * updates for all URBs would happen at the same time when starting */
- 	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
--		return start_endpoints(subs);
-+		return start_endpoints(subs, 1);
- 
- 	return 0;
- }
-@@ -1175,7 +1172,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		err = start_endpoints(subs);
-+		err = start_endpoints(subs, 0);
- 		if (err < 0)
- 			return err;
- 
--- 
-1.7.11.4
-
-
---------------070202060108000404060508--
+T24gMjkvMDgvMjAxMiAwOToyMyDPgM68LCBEYW5pZWwgTWFjayB3cm90ZToKPiBPbiAyOS4wOC4y
+MDEyIDAyOjEzLCBLb3N0YXMgd3JvdGU6Cj4+IE9uIDI5LzA4LzIwMTIgMDE6NTEgz4DOvCwgRGFu
+aWVsIE1hY2sgd3JvdGU6Cj4+PiBPbiAyOS4wOC4yMDEyIDAwOjE2LCBLb3N0YXMgd3JvdGU6Cj4+
+Pj4gT24gMjgvMDgvMjAxMiAxMjo1NSDDjsK8w47CvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+Pj4+
+IE9uIDI4LjA4LjIwMTIgMTE6NDcsIEtvc3RhcyB3cm90ZToKPj4+Pj4+IE9uIDI4LzA4LzIwMTIg
+MTI6MzAgw47CvMOOwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4+IE9uIDI4LjA4LjIwMTIg
+MTE6MTgsIEtvc3RhcyB3cm90ZToKPj4+Pj4+Pj4gT24gMjgvMDgvMjAxMiAxMjowNiDDg8KOw4LC
+vMODwo7DgsK8LCBEYW5pZWwgTWFjayB3cm90ZToKPj4+Pj4+Pj4+IE9uIDI4LjA4LjIwMTIgMTA6
+NTYsIEtvc3RhcyB3cm90ZToKPj4+Pj4+Pj4+PiBPbiAyOC8wOC8yMDEyIDExOjUwIMODwo/DgsKA
+w4PCjsOCwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4+Pj4+PiBPbiAyOC4wOC4yMDEyIDEw
+OjQ3LCBLb3N0YXMgd3JvdGU6Cj4+Pj4+Pj4+Pj4+PiBPbiAyOC8wOC8yMDEyIDA4OjQ0IMODwoPD
+gsKPw4PCgsOCwoDDg8KDw4LCjsODwoLDgsK8LCBEYW5pZWwgTWFjayB3cm90ZToKPj4+Pj4+Pj4+
+Pj4+PiBPbiAyOC4wOC4yMDEyIDAwOjE5LCBLb3N0YXMgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+IE9u
+IDI3LzA4LzIwMTIgMDY6NTQgw4PCg8OCwo7Dg8KCw4LCvMODwoPDgsKOw4PCgsOCwrwsIEtvc3Rh
+cyB3cm90ZToKPj4+Pj4+Pj4+Pj4+Pj4+IE9uIDI3LzA4LzIwMTIgMDI6NDQgw4PCg8OCwo7Dg8KC
+w4LCvMODwoPDgsKOw4PCgsOCwrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4+Pj4+Pj4+Pj4+
+IE9uIDI3LjA4LjIwMTIgMTI6MzMsIEtvc3RhcyB3cm90ZToKPj4+Pj4+Pj4+Pj4+Pj4+Pj4gT24g
+MjcvMDgvMjAxMiAxMjoyNiDDg8KDw4LCjsODwoLDgsK8w4PCg8OCwo7Dg8KCw4LCvCwgRGFuaWVs
+IE1hY2sgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiBPbiAyNy4wOC4yMDEyIDExOjAwLCBLb3N0
+YXMgd3JvdGU6Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4gSGkgQWxsLAo+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+
+Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4gSSBoYXZlIGEgJ1RydXN0IFdlYmNhbScgKFVTQiBJRDogMTQ1
+ZjowMTViKSB0aGF0IGNvbWVzIHdpdGggYQo+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+IG1pY3JvcGhvbmUu
+Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4gVGhlIG1pY3JvcGhvbmUgd29ya3Mgd2l0aCBBbHNhIDEuMC4y
+MyBidXQgaXQgZG9lcyBub3Qgd29yayB3aXRoIHRoZQo+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+IGxhdGVz
+dCBBbHNhIDEuMC4yNSBuZWl0aGVyIHdpdGggQWxzYSAxLjAuMjQuCj4+Pj4+Pj4+Pj4+Pj4+Pj4+
+Pj4gQXBwYXJlbnRseSB0aGlzIGlzIGEgcmVncmVzc2lvbi4KPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pgo+
+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+IFdoYXQgc2hhbGwgSSBkbyB0byBmaWd1cmUgb3V0IHRoZSBzb3Vy
+Y2Ugb2YgdGhlIHByb2JsZW0/Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+Pj4+Pj4+
+PiBIZXJlIGFyZSBhdHRhY2hlZCBteSBhbHNhLWluZm9zLCB3aXRoIEFsc2EgMS4wLjIzICh3b3Jr
+aW5nKSwKPj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiAxLjAuMjQgKE5PVAo+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+
+IHdvcmtpbmcpIGFuZCAxLjAuMjUgKE5PVCB3b3JraW5nKS4KPj4+Pj4+Pj4+Pj4+Pj4+Pj4+IENh
+biB5b3UgcHJvdmlkZSBkbWVzZyBwcm90b2NvbHMgZm9yIGJvdGggYSB3b3JraW5nIGFuZCBhIG5v
+bi13b3JraW5nCj4+Pj4+Pj4+Pj4+Pj4+Pj4+PiBjYXNlIHBsZWFzZT8KPj4+Pj4+Pj4+Pj4+Pj4+
+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+Pj4+PiBCZWxvdyBhcmUgYXR0YWNo
+ZWQgdGhlIGRtZXNnIGZpbGVzLgo+Pj4+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+Pj4+IFRo
+YW5rcyAtIHRoZSBsb2dzIGxvb2sgYm90aCBnb29kLCBJIGd1ZXNzIHRoZSBpbnRlcmVzdGluZyBt
+ZXNzYWdlcyBhcmUKPj4+Pj4+Pj4+Pj4+Pj4+PiBvbmx5IGdlbmVyYXRlZCBvbmNlIHlvdSB0cnkg
+dG8gc3RhcnQgdGhlIHN0cmVhbS4gQ2FuIHlvdSB0cnkgdGhpcz8KPj4+Pj4+Pj4+Pj4+Pj4+IEhv
+dyBpIGRvIHRoYXQ/Cj4+Pj4+Pj4+Pj4+Pj4+PiBJIHRyaWVkIHRvIG1ha2UgYSB0ZXN0IGNhbGwg
+aW4gc2t5cGUgYW5kIGFsc28gcmVjb3JkaW5nIGEgdmlkZW8gaW4KPj4+Pj4+Pj4+Pj4+Pj4+IGNo
+ZWVzZSBidXQgbm8gY2hhbmdlcyBpbiBkbWVzZy4KPj4+Pj4+Pj4+Pj4+Pj4+IElzIHRoZXJlIGFu
+b3RoZXIgd2F5IHRvIHN0YXJ0IHRoZSBzdHJlYW0/Cj4+Pj4+Pj4+Pj4+Pj4+IEFsc28gdHJpZWQg
+dG8gcmVjb3JkIHZvaWNlIHdpdGggc291bmQgcmVjb3JkZXIuLi53aXRoIGFsc2EgMS4wLjIzCj4+
+Pj4+Pj4+Pj4+Pj4+IHJlY29yZGluZyBpcyBmaW5lLi5pIGhlYXIgbXkgdm9pY2Ugd2hlbiBwbGF5
+YmFjayB0aGUgZmlsZSBidXQgd2l0aCBhbHNhCj4+Pj4+Pj4+Pj4+Pj4+IDEuMC4yNCBhbmQgYWJv
+dmUgbm90aGluZyBpcyByZWNvcmRlZC4KPj4+Pj4+Pj4+Pj4+Pj4gSW4gYm90aCBjYXNlcyBub3Ro
+aW5nIGlzIGNoYW5nZWQgaW4gZG1lc2cgb3V0cHV0Lgo+Pj4+Pj4+Pj4+Pj4+PiBXaGF0IGVsc2Ug
+Y291bGQgaSBkbyB0byBoZWxwIHlvdSBvdXQ/Cj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4g
+Q29tcGFyaW5nIHRoZSB0d28gZG1lc2cgbG9ncywgSSdtIHVuZGVyIHRoZSBpbXByZXNzaW9uIHRo
+YXQgaW4gdGhlCj4+Pj4+Pj4+Pj4+Pj4gc2Vjb25kIGNhc2UgKHRoZSBuZXdlciBrZXJuZWwpLCB0
+aGUgaGRhIGRyaXZlciBraWNrcyBpbiBhbmQgY3JlYXRlcyBhCj4+Pj4+Pj4+Pj4+Pj4gc291bmQg
+ZGV2aWNlIGJlZm9yZSB0aGUgdXNiIGF1ZGlvIGRyaXZlciBkb2VzLiBIZW5jZSwgdGhlIGRlZmF1
+bHQgY2FyZAo+Pj4+Pj4+Pj4+Pj4+IGNoYW5nZXMgYW5kIHlvdSdyZSByZWNvcmRpbmcgZnJvbSB5
+b3VyIGludGVybmFsIHNvdW5kIGNhcmQgcmF0aGVyIHRoYW4KPj4+Pj4+Pj4+Pj4+PiB0aGUgV2Vi
+Y2FtLgo+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4gQ291bGQgeW91IHBsZWFzZSBzZW5kIHRo
+ZSBvdXRwdXQgb2YgJ2FwbGF5IC1sJyBpbiBib3RoIGNhc2VzPwo+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+
+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+PiBEYW5pZWwKPj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4g
+T3V0cHV0IG9mIHdvcmtpbmcgY2FzZQo+Pj4+Pj4+Pj4+Pj4gKioqKiBMaXN0IG9mIFBMQVlCQUNL
+IEhhcmR3YXJlIERldmljZXMgKioqKgo+Pj4+Pj4+Pj4+Pj4gY2FyZCAwOiBTQiBbSERBIEFUSSBT
+Ql0sIGRldmljZSAwOiBBRDE5OHggQW5hbG9nIFtBRDE5OHggQW5hbG9nXQo+Pj4+Pj4+Pj4+Pj4g
+w4PCg8OCwoIgIFN1YmRldmljZXM6IDEvMQo+Pj4+Pj4+Pj4+Pj4gw4PCg8OCwoIgIFN1YmRldmlj
+ZSAjMDogc3ViZGV2aWNlICMwCj4+Pj4+Pj4+Pj4+PiBjYXJkIDA6IFNCIFtIREEgQVRJIFNCXSwg
+ZGV2aWNlIDE6IEFEMTk4eCBEaWdpdGFsIFtBRDE5OHggRGlnaXRhbF0KPj4+Pj4+Pj4+Pj4+IMOD
+woPDgsKCICBTdWJkZXZpY2VzOiAxLzEKPj4+Pj4+Pj4+Pj4+IMODwoPDgsKCICBTdWJkZXZpY2Ug
+IzA6IHN1YmRldmljZSAjMAo+Pj4+Pj4+Pj4+Pj4gY2FyZCAyOiBHZW5lcmljIFtIRC1BdWRpbyBH
+ZW5lcmljXSwgZGV2aWNlIDM6IEhETUkgMCBbSERNSSAwXQo+Pj4+Pj4+Pj4+Pj4gw4PCg8OCwoIg
+IFN1YmRldmljZXM6IDEvMQo+Pj4+Pj4+Pj4+Pj4gw4PCg8OCwoIgIFN1YmRldmljZSAjMDogc3Vi
+ZGV2aWNlICMwCj4+Pj4+Pj4+Pj4+IFNvcnJ5LCB0aGVyZSdzIG9mIGNvdXJzZSBubyBwbGF5YmFj
+ayBvbiBhIHdlYmNhbS4gVHJ5ICdhcmVjb3JkIC1sJwo+Pj4+Pj4+Pj4+PiBpbnN0ZWFkLCBwbGVh
+c2UuCj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+IERhbmllbAo+Pj4+Pj4+Pj4+
+Pgo+Pj4+Pj4+Pj4+IE91dHB1dCBvZiBub24td29ya2luZyBjYXNlCj4+Pj4+Pj4+Pj4gKioqKiBM
+aXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCj4+Pj4+Pj4+Pj4gY2FyZCAwOiBT
+QiBbSERBIEFUSSBTQl0sIGRldmljZSAwOiBBRDE5OHggQW5hbG9nIFtBRDE5OHggQW5hbG9nXQo+
+Pj4+Pj4+Pj4+ICAgICAgICAgU3ViZGV2aWNlczogMy8zCj4+Pj4+Pj4+Pj4gICAgICAgICBTdWJk
+ZXZpY2UgIzA6IHN1YmRldmljZSAjMAo+Pj4+Pj4+Pj4+ICAgICAgICAgU3ViZGV2aWNlICMxOiBz
+dWJkZXZpY2UgIzEKPj4+Pj4+Pj4+PiAgICAgICAgIFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMy
+Cj4+Pj4+Pj4+Pj4gY2FyZCAxOiBXZWJjYW0gW1RydXN0IDJNUCBBdXRvIEZvY3VzIFdlYmNhbV0s
+IGRldmljZSAwOiBVU0IgQXVkaW8gW1VTQgo+Pj4+Pj4+Pj4+IEF1ZGlvXQo+Pj4+Pj4+Pj4+ICAg
+ICAgICAgU3ViZGV2aWNlczogMS8xCj4+Pj4+Pj4+Pj4gICAgICAgICBTdWJkZXZpY2UgIzA6IHN1
+YmRldmljZSAjMAo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBPdXRwdXQgb2Ygd29y
+a2luZyBjYXNlCj4+Pj4+Pj4+Pj4gKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNl
+cyAqKioqCj4+Pj4+Pj4+Pj4gY2FyZCAwOiBTQiBbSERBIEFUSSBTQl0sIGRldmljZSAwOiBBRDE5
+OHggQW5hbG9nIFtBRDE5OHggQW5hbG9nXQo+Pj4+Pj4+Pj4+ICAgICAgICAgU3ViZGV2aWNlczog
+My8zCj4+Pj4+Pj4+Pj4gICAgICAgICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAo+Pj4+Pj4+
+Pj4+ICAgICAgICAgU3ViZGV2aWNlICMxOiBzdWJkZXZpY2UgIzEKPj4+Pj4+Pj4+PiAgICAgICAg
+IFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMyCj4+Pj4+Pj4+Pj4gY2FyZCAxOiBkZWZhdWx0IFtU
+cnVzdCAyTVAgQXV0byBGb2N1cyBXZWJjYW0gXSwgZGV2aWNlIDA6IFVTQiBBdWRpbyBbVVNCCj4+
+Pj4+Pj4+Pj4gQXVkaW9dCj4+Pj4+Pj4+Pj4gICAgICAgICBTdWJkZXZpY2VzOiAxLzEKPj4+Pj4+
+Pj4+PiAgICAgICAgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4+Pj4+Pj4+Pj4KPj4+Pj4+
+Pj4+IFRyeSAnYXJlY29yZCAtZiBjZCAtRHBsdWdodzoxIGZvby53YXYnIGFuZCBzZWUgaWYgdGhh
+dCB3b3Jrcy4gRm9yCj4+Pj4+Pj4+PiB3aGF0ZXZlciByZWFzb24sIHRoZSB3ZWJjYW0gaXMgbm90
+IHRoZSBkZWZhdWx0IGluIHRoZSBub24td29ya2luZyBjYXNlLgo+Pj4+Pj4+Pj4gQXJlIHlvdSB1
+c2luZyB0aGUgc2FtZSB1c2Vyc3BhY2UgYW5kIGNvbmZpZ3MgaW4gYm90aCBjYXNlcz8KPj4+Pj4+
+Pj4+Cj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gRGFuaWVsCj4+Pj4+Pj4+Pgo+Pj4+Pj4+PiBVbmZvcnR1
+bmF0ZWx5IGl0IGRvZXNuJ3Qgd29yay4uLnZvaWNlIGlzIHJlY29yZGVkIG9ubHkgaW4gMS4wLjIz
+IGFsc2EKPj4+Pj4+Pj4gdmVyc2lvbi4KPj4+Pj4+Pj4gSW4gYWJvdmUgdmVyc2lvbiBub3RoaW5n
+IGlzIHJlY29yZGVkLgo+Pj4+Pj4+PiBJIHVzZSB0aGUgc2FtZSBVYnVudHUgcmVsZWFzZSBqdXN0
+IHRoZSBrZXJuZWwgY2hhbmdlcwo+Pj4+Pj4+PiAxLjAuMjMgYWxzYSBpcyBpbiBrZXJuZWwgMi42
+LjM4Cj4+Pj4+Pj4+IG5ld2VyIGFsc2EgdmVyc2lvbnMgdGhhdCBkb24ndCB3b3JrIGFyZSBpbiBu
+ZXdlciBrZXJuZWxzLgo+Pj4+Pj4+IEkgc3RpbGwgdGhpbmsgaXQgaXMgYWxsIHJlbGF0ZWQgdG8g
+Y29uZmlncyBhbmQgc2V0dGluZ3MuIENhbiB5b3UgcGxlYXNlCj4+Pj4+Pj4gZ28gY2hlY2sgYWxs
+IHJlbGV2YW50IHZvbHVtZSBzZXR0aW5ncyBhbmQgcm91dGluZyBzd2l0Y2hlcyB3aXRoIGFtaXhl
+cgo+Pj4+Pj4+IG9yIGFsc2FtaXhlcj8gVGhlIGZhY3QgdGhhdCB0aGUgZGVmYXVsdCBjaGFuZ2Vz
+IHRlbGxzIG1lIHRoYXQKPj4+Pj4+PiBzb21ldGhpbmcncyBkaWZmZXJlbnQgaW4gdGhlIGJlaGF2
+aW91ciBpbiB3aGljaCBBTFNBIGhhbmRsZXMgdGhlIGRldmljZXMuCj4+Pj4+Pj4KPj4+Pj4+PiBB
+bHNvIG5vdGUgdGhhdCAxLjAuMjQgaXMgcmF0aGVyIGFuY2llbnQgYWxyZWFkeSwgYW5kIHdoaWxl
+IHRoZSBkcml2ZXIKPj4+Pj4+PiBoYXMgc2VlbiBxdWlldCBzb21lIHJlZmFjdG9yaW5nIGxhdGVs
+eSwgSSBoYXZlbid0IGhlYXJkIGFib3V0Cj4+Pj4+Pj4gcmVncmVzc2lvbnMgaW4gdGhhdCB2ZXJz
+aW9uIHlldCAtIGFuZCBJJ20gc3VyZSB3ZSB3b3VsZCBoYXZlIGdvdHRlbiBhCj4+Pj4+Pj4gd2hv
+bGUgbG90IG9mIHJlcG9ydHMgaWYgdGhlcmUgd2FzIHN1Y2ggYSB0cmVtZW5kb3VzIGJyZWFrYWdl
+LiBBbmQKPj4+Pj4+PiB0aGVyZSdzIG5vIHNpZ25zIG9mIGVycm9ycyBpbiB0aGUga2VybmVsIGxv
+Z3MgZWl0aGVyLiBCdXQgeW91IG5ldmVyCj4+Pj4+Pj4ga25vdywgb2YgY291cnNlLgo+Pj4+Pj4+
+Cj4+Pj4+Pj4KPj4+Pj4+PiBEYW5pZWwKPj4+Pj4+Pgo+Pj4+Pj4gQWxzYW1peGVyIHdvcmtpbmcg
+Y2FzZWh0dHA6Ly9pbWFnZWJpbi5vcmcvMjI2MTQzCj4+Pj4+PiBBbHNhbWl4ZXIgbm9uLXdvcmtp
+bmcgY2FzZWh0dHA6Ly9pbWFnZWJpbi5vcmcvMjI2MTQyCj4+Pj4+Pgo+Pj4+Pj4gSSBhbHNvIGF0
+dGFjaCBhbWl4ZXIgb3V0cHV0IGZvciBib3RoIGNhc2VzLgo+Pj4+Pj4KPj4+Pj4gQm90aCBpbiB0
+aGUgaW1hZ2VzIGFuZCBpbiB0aGUgdGV4dCBvdXRwdXQgeW91IHNlZW0gdG8gaGF2ZSBtaXNzZWQK
+Pj4+Pj4gcG9pbnRpbmcgYW1peGVyL2Fsc2FtaXhlciB0aGUgY29ycmVjdCBkZXZpY2UuIGFsc2Ft
+aXhlciBpcyBhbHNvIGluIHRoZQo+Pj4+PiBwbGF5YmFjayBwYW5lLCB3aGljaCBkb2Vzbid0IGV4
+aXN0IGZvciB0aGUgV2ViY2FtLgo+Pj4+Pgo+Pj4+PiBUcnkgJ2Fsc2FtaXhlciAtYzEgLVYgY2Fw
+dHVyZScKPj4+Pj4KPj4+PiBJIGZpbmFsbHkgZmlndXJlZCBpdCBvdXQgd2l0aCBhbWl4ZXIgY29t
+bWFuZAo+Pj4+IG5vbiB3b3JraW5nIHZlcnNpb24gZ2l2ZXMgbWUgdGhpcyBvdXRwdXQKPj4+Pgo+
+Pj4+IGtvc3Rhc0Brb3N0YXMtaG9tZTp+JCBhbWl4ZXIgLWMxCj4+Pj4gU2ltcGxlIG1peGVyIGNv
+bnRyb2wgJ01pYycsMAo+Pj4+IMOCICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUgY3ZvbHVtZS1qb2lu
+ZWQgY3N3aXRjaCBjc3dpdGNoLWpvaW5lZCBwZW51bQo+Pj4+IMOCICBDYXB0dXJlIGNoYW5uZWxz
+OiBNb25vCj4+Pj4gw4IgIExpbWl0czogQ2FwdHVyZSAwIC0gNDA5Ngo+Pj4+IMOCICBNb25vOiBD
+YXB0dXJlIDI3MjMgWzY2JV0gWzEwLjYzZEJdIFtvbl0KPj4+Pgo+Pj4+IFRoZSB3b3JraW5nIHZl
+cnNpb24gZ2l2ZXMgdGhpcyBvdXRwdXQKPj4+PiBrb3N0YXNAa29zdGFzLWhvbWU6fiQgYW1peGVy
+IC1jMQo+Pj4+IFNpbXBsZSBtaXhlciBjb250cm9sICdNaWMnLDAKPj4+PiAgICAgIENhcGFiaWxp
+dGllczogY3ZvbHVtZSBjdm9sdW1lLWpvaW5lZCBjc3dpdGNoIGNzd2l0Y2gtam9pbmVkIHBlbnVt
+Cj4+Pj4gICAgICBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCj4+Pj4gICAgICBMaW1pdHM6IENhcHR1
+cmUgMCAtIDQwOTYKPj4+PiAgICAgIE1vbm86IENhcHR1cmUgNDA5NiBbMTAwJV0gWzE2LjAwZEJd
+IFtvbl0KPj4+IE9rLCB0aGFua3MuIEluIHRoZSBnaXZlbiBjYXNlLCBJIGhhdmUgdG8gYXNrIHlv
+dSB0byBkbyBhIGdpdCBiaXNlY3QuCj4+PiBUaGF0IHdpbGwgcG9pbnQgdXMgdG8gdGhlIGNvbW1p
+dCB0aGF0IGNhdXNlcyB5b3VyIHByb2JsZW1zLiBTb3JyeSB0aGF0IEkKPj4+IGNhbid0IGhlbHAg
+eW91IGFueSBmdXJ0aGVyIHJpZ2h0IG5vdywgaXQncyBqdXN0IHVuY2xlYXIgd2hpY2ggY29tbWl0
+IGluCj4+PiB0aGUgYW5jaWVudCBoaXN0b3J5IGNhdXNlcyB5b3VyIHByb2JsZW0uCj4+Pgo+Pj4g
+U2VlIGhlcmUgZm9yIGluc3RydWN0aW9ucyBvbiBob3cgdG8gZG8gdGhhdDoKPj4+Cj4+PiAgICAg
+aHR0cHM6Ly93d3cua2VybmVsLm9yZy9wdWIvc29mdHdhcmUvc2NtL2dpdC9kb2NzL2dpdC1iaXNl
+Y3QuaHRtbAo+Pj4gICAgIGh0dHA6Ly9naXQtc2NtLmNvbS9ib29rL2VuL0dpdC1Ub29scy1EZWJ1
+Z2dpbmctd2l0aC1HaXQKPj4+Cj4+Pgo+Pj4gVGhhbmtzIGZvciB5b3VyIGhlbHAgYW5kIHBhdGll
+bmNlLAo+Pj4gRGFuaWVsCj4+Pgo+PiBDb21tYW5kIGdpdCBiaXNlY3QgZ29vZCAxLjAuMjMgZ2l2
+ZXMgbWUgdGhlIG91dHB1dAo+PiBmYXRhbDogTmVlZGVkIGEgc2luZ2xlIHJldmlzaW9uCj4+IEJh
+ZCByZXYgaW5wdXQ6IDEuMC4yMwo+Pgo+PiBIb3cgY2FuIGkgZmlndXJlIG91dCB0aGUgcmV2aXNp
+b24gbnVtYmVyPwo+Pgo+IFdoZW4gd29ya2luZyB3aXRoIHRoZSBrZXJuZWwgZ2l0LCB5b3UgaGF2
+ZSB0byB0YWtlIHRoZSBrZXJuZWwgdmVyc2lvbgo+IG51bWJlcnMuCj4KU29ycnkgaSByZWFsbHkg
+Y2FuJ3QgdW5kZXJzdGFuZCB3aGF0IHRvIGRvLgpUaGUgc3RlcHMgaSBkaWQgd2VyZQpnaXQgY2xv
+bmUgZ2l0Oi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1rZXJuZWwuZ2l0IGFsc2Eta2VybmVs
+CmdpdCBiaXNlY3Qgc3RhcnQgYWxzYS1rZXJuZWwvCmdpdCBiaXNlY3QgYmFkCmdpdCBiaXNlY3Qg
+Z29vZCAoSGVyZSBpIGRvbid0IGtub3cgd2hhdCBudW1iZXIgdG8gZ2l2ZSkKCkkgd2lsbCBrZWVw
+IHJlYWRpbmcgYmVjYXVzZSB0aGUgd2hvbGUgdGhpbmcgaXMgaW50ZXJlc3RpbmcgdG8gbWUuLi5i
+dXQgCmZvciBub3cgaSBjYW4ndCB1bmRlcnN0YW5kIGFueXRoaW5nLgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
