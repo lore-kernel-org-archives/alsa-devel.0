@@ -1,66 +1,71 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH V2 1/6] ASoC: davinci: davinci-pcm does not
- need to be a plaform_driver
-Date: Wed, 29 Aug 2012 06:29:19 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA6D3D0@DBDE01.ent.ti.com>
-References: <1346074004-22172-1-git-send-email-gururaja.hebbar@ti.com>
- <1346074004-22172-2-git-send-email-gururaja.hebbar@ti.com>
- <20120829062534.GB11919@newmaster.mivlgu.local>
+From: Sangsu Park <sangsu4u.park@samsung.com>
+Subject: RE: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
+ snd_soc_set_fmt()
+Date: Wed, 29 Aug 2012 20:06:32 +0900
+Message-ID: <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
+References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
+ <20120827204550.GA4400@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 57360264F11
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 08:29:32 +0200 (CEST)
-In-Reply-To: <20120829062534.GB11919@newmaster.mivlgu.local>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sergey Vlasov <vsu@altlinux.ru>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
- Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "Girdwood,
- Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20120827204550.GA4400@opensource.wolfsonmicro.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, 'Kukjin Kim' <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 29, 2012 at 11:55:34, Sergey Vlasov wrote:
-> On Mon, Aug 27, 2012 at 06:56:39PM +0530, Hebbar, Gururaja wrote:
-> > Same as the commit 518de86 (ASoC: tegra: register 'platform' from DAIs,
-> > get rid of pdev). It makes davinci-pcm not a platform_driver but helper
-> > to register "platform", so that the platform_device for davinci-pcm can
-> > be saved completely.
-> > 
-> > Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
-> > ---
-> > Changes from V1:
-> > 	- New Commit. Instanciate seudo-device (davinci-pcm) directly from DAI
-> > 	  driver rather than having a separate virtual-device registered
-> > 
-> > :100644 100644 c80c20a... 4b37e2a... M	sound/soc/davinci/davinci-evm.c
-> > :100644 100644 0a74b95... 407df72... M	sound/soc/davinci/davinci-i2s.c
-> > :100644 100644 6a2c54c... 34ee2f1... M	sound/soc/davinci/davinci-mcasp.c
+On Sun, Aug 26, 2012 at 05:45:54PM +0900, Mark Brown wrote:
+> On Sun, Aug 26, 2012 at 05:45:54PM +0900,  =DA=BB    wrote:
+> > SND_SOC_DAIFMT_CONT option is now needed because of below commit:
+> >
+> > ASoC: Allow DAI formats to be specified in the dai_link
+>=20
+> Clearly it's not a direct consequence of this commit, that just intro=
+duces a new optional facility
+> which...
+OK, I'll change it.
+>=20
+> >  	/* Set the cpu DAI configuration */
+> >  	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
+> > +				| SND_SOC_DAIFMT_CONT
+> >  				| SND_SOC_DAIFMT_IB_NF
+> >  				| SND_SOC_DAIFMT_CBS_CFS);
+>=20
+> ...isn't being used by the driver.
+>=20
+> Looking at the above it looks like the PCM driver is doing something =
+very odd - _CONT doesn't make
+> a whole lot of sense on the slave side, it's related to the clock gen=
+eration so should have no
+> effect at all on the slave side.  The driver code looks reasonably se=
+nsible though.
+You mean cpu side is slave?=20
+And I think that pcm driver can be changed to solve this issue.
+>=20
+> What specifically is going wrong here?
+SND_SOC_DAIFMT_CONT is used sound/soc/Samsung/pcm.c (s3c_pcm_set_fmt())=
+ like below.
 
-...snip...
-...snip...
+switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
+        case SND_SOC_DAIFMT_CONT:
+                pcm->idleclk =3D 1;
+                break;
+        case SND_SOC_DAIFMT_GATED:
+                pcm->idleclk =3D 0;
+                break;
+        default:
+                dev_err(pcm->dev, "Invalid Clock gating request!\n");
+                ret =3D -EINVAL;
+                goto exit;
+        }
 
-> >  	.name = "Voice Codec - CQ93VC",
-> >  	.stream_name = "CQ93",
-> >  	.cpu_dai_name = "davinci-vcif",
-> >  	.codec_dai_name = "cq93vc-hifi",
-> >  	.codec_name = "cq93vc-codec",
-> > +	.platform_name = "avinci-vcif",
-> 
-> Typo?
-> 
+If fmt argument has no SND_SOC_DAIFMT_ option, s3c_pcm_set_fmt() return=
+ -EINVAL.
 
-Oops. Sorry. Will send back a corrected patch ASAP
-
-Regards, 
-Gururaja
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
