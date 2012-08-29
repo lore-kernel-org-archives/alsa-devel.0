@@ -1,71 +1,195 @@
-From: Sangsu Park <sangsu4u.park@samsung.com>
-Subject: RE: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
- snd_soc_set_fmt()
-Date: Wed, 29 Aug 2012 20:06:32 +0900
-Message-ID: <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
-References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
- <20120827204550.GA4400@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Logitech USB headset not working in 3.6-rc3
+Date: Wed, 29 Aug 2012 13:26:25 +0200
+Message-ID: <503DFC61.3000104@gmail.com>
+References: <20120824190808.GC20043@zod.bos.redhat.com> <5038007E.5060505@gmail.com> <20120825111749.GA17048@wolff.to> <20120825115423.GA14327@wolff.to> <5038BEEB.6090303@gmail.com> <20120825120740.GA19539@wolff.to> <5038C186.7000107@gmail.com> <20120825121758.GF20043@zod.bos.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20120827204550.GA4400@opensource.wolfsonmicro.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, 'Kukjin Kim' <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed;
+ boundary="------------070202060108000404060508"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120825121758.GF20043@zod.bos.redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Josh Boyer <jwboyer@redhat.com>
+Cc: Bruno Wolff III <bruno@wolff.to>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 26, 2012 at 05:45:54PM +0900, Mark Brown wrote:
-> On Sun, Aug 26, 2012 at 05:45:54PM +0900,  =DA=BB    wrote:
-> > SND_SOC_DAIFMT_CONT option is now needed because of below commit:
-> >
-> > ASoC: Allow DAI formats to be specified in the dai_link
->=20
-> Clearly it's not a direct consequence of this commit, that just intro=
-duces a new optional facility
-> which...
-OK, I'll change it.
->=20
-> >  	/* Set the cpu DAI configuration */
-> >  	ret =3D snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
-> > +				| SND_SOC_DAIFMT_CONT
-> >  				| SND_SOC_DAIFMT_IB_NF
-> >  				| SND_SOC_DAIFMT_CBS_CFS);
->=20
-> ...isn't being used by the driver.
->=20
-> Looking at the above it looks like the PCM driver is doing something =
-very odd - _CONT doesn't make
-> a whole lot of sense on the slave side, it's related to the clock gen=
-eration so should have no
-> effect at all on the slave side.  The driver code looks reasonably se=
-nsible though.
-You mean cpu side is slave?=20
-And I think that pcm driver can be changed to solve this issue.
->=20
-> What specifically is going wrong here?
-SND_SOC_DAIFMT_CONT is used sound/soc/Samsung/pcm.c (s3c_pcm_set_fmt())=
- like below.
+This is a multi-part message in MIME format.
+--------------070202060108000404060508
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
-        case SND_SOC_DAIFMT_CONT:
-                pcm->idleclk =3D 1;
-                break;
-        case SND_SOC_DAIFMT_GATED:
-                pcm->idleclk =3D 0;
-                break;
-        default:
-                dev_err(pcm->dev, "Invalid Clock gating request!\n");
-                ret =3D -EINVAL;
-                goto exit;
-        }
+On 25.08.2012 14:17, Josh Boyer wrote:
+> On Sat, Aug 25, 2012 at 02:13:58PM +0200, Daniel Mack wrote:
+>> On 25.08.2012 14:07, Bruno Wolff III wrote:
+>>> On Sat, Aug 25, 2012 at 14:02:51 +0200,
+>>>    Daniel Mack <zonque@gmail.com> wrote:
+>>>>
+>>>> Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
+>>>> scheduling-while-atomic bug in PCM capture stream") and see if that
+>>>
+>>> I can try that, but it takes a long time to build a new kernel on my 
+>>> old hardware.
+>>>
+>>>> helps? If not, can you summarize again which kernels still work for you
+>>>> and which don't?
+>>>
+>>> The latest kernel that works is 3.6.0-0.rc2.git1.2.fc18. The earliest that 
+>>> doesn't work is 3.6.0-0.rc2.git2.1.fc18.
+>>>
+>>
+>> The report you sent doesn't look like it could be caused by e9ba389c5.
+>> It fixes a kernel Ooops. But as it is the only relevant patch in that
+>> area, it would be interesting if reverting it fixes anything.
+> 
+> Yep, agreed.  If this revert kernel doesn't work, we're likely down to a
+> git bisect, Bruno.
+> 
+>> Btw - thanks a lot for testing -rc kernels, much appreciated!
+> 
+> Indeed!
 
-If fmt argument has no SND_SOC_DAIFMT_ option, s3c_pcm_set_fmt() return=
- -EINVAL.
+Could you please try this patch on top of Takashi's? Thanks again!
 
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+Daniel
+
+
+--------------070202060108000404060508
+Content-Type: text/x-patch;
+ name="0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch"
+
+>From 6617bb2463ae3fad21390b59cc2a71f96b9e9ca8 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <zonque@gmail.com>
+Date: Wed, 29 Aug 2012 13:17:05 +0200
+Subject: [PATCH] ALSA: snd-usb: Fix URB cancellation at stream start
+
+Commit e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic bug in
+PCM capture stream") fixed a scheduling-while-atomic bug that happened
+when snd_usb_endpoint_start was called from the trigger callback, which
+is an atmic context. However, the patch breaks the idea of the endpoints
+reference counting, which is the reason why the driver has been
+refactored lately.
+
+Revert that commit and let snd_usb_endpoint_start() take care of the URB
+cancellation again. As this function is called from both atomic and
+non-atomic context, add a flag to denote whether the function may sleep.
+
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Cc: stable@kernel.org [3.5+]
+---
+ sound/usb/endpoint.c | 10 ++++++++--
+ sound/usb/endpoint.h |  2 +-
+ sound/usb/pcm.c      | 13 +++++--------
+ 3 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index c411812..678456c 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -799,7 +799,9 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ /**
+  * snd_usb_endpoint_start: start an snd_usb_endpoint
+  *
+- * @ep: the endpoint to start
++ * @ep:		the endpoint to start
++ * @can_sleep:	flag indicating whether the operation is executed in
++ * 		non-atomic context
+  *
+  * A call to this function will increment the use count of the endpoint.
+  * In case it is not already running, the URBs for this endpoint will be
+@@ -809,7 +811,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+  *
+  * Returns an error if the URB submission failed, 0 in all other cases.
+  */
+-int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
++int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int can_sleep)
+ {
+ 	int err;
+ 	unsigned int i;
+@@ -821,6 +823,10 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+ 	if (++ep->use_count != 1)
+ 		return 0;
+ 
++	/* just to be sure */
++	deactivate_urbs(ep, 0, can_sleep);
++	wait_clear_urbs(ep);
++
+ 	ep->active_mask = 0;
+ 	ep->unlink_mask = 0;
+ 	ep->phase = 0;
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index ee2723f..a8e60c1 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -13,7 +13,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
+ 				struct audioformat *fmt,
+ 				struct snd_usb_endpoint *sync_ep);
+ 
+-int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep);
++int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int can_sleep);
+ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep,
+ 			   int force, int can_sleep, int wait);
+ int  snd_usb_endpoint_activate(struct snd_usb_endpoint *ep);
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 62ec808..1546577 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -212,7 +212,7 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+ 	}
+ }
+ 
+-static int start_endpoints(struct snd_usb_substream *subs)
++static int start_endpoints(struct snd_usb_substream *subs, int can_sleep)
+ {
+ 	int err;
+ 
+@@ -225,7 +225,7 @@ static int start_endpoints(struct snd_usb_substream *subs)
+ 		snd_printdd(KERN_DEBUG "Starting data EP @%p\n", ep);
+ 
+ 		ep->data_subs = subs;
+-		err = snd_usb_endpoint_start(ep);
++		err = snd_usb_endpoint_start(ep, can_sleep);
+ 		if (err < 0) {
+ 			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
+ 			return err;
+@@ -239,7 +239,7 @@ static int start_endpoints(struct snd_usb_substream *subs)
+ 		snd_printdd(KERN_DEBUG "Starting sync EP @%p\n", ep);
+ 
+ 		ep->sync_slave = subs->data_endpoint;
+-		err = snd_usb_endpoint_start(ep);
++		err = snd_usb_endpoint_start(ep, can_sleep);
+ 		if (err < 0) {
+ 			clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
+ 			return err;
+@@ -544,13 +544,10 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	subs->last_frame_number = 0;
+ 	runtime->delay = 0;
+ 
+-	/* clear the pending deactivation on the target EPs */
+-	deactivate_endpoints(subs);
+-
+ 	/* for playback, submit the URBs now; otherwise, the first hwptr_done
+ 	 * updates for all URBs would happen at the same time when starting */
+ 	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		return start_endpoints(subs);
++		return start_endpoints(subs, 1);
+ 
+ 	return 0;
+ }
+@@ -1175,7 +1172,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+-		err = start_endpoints(subs);
++		err = start_endpoints(subs, 0);
+ 		if (err < 0)
+ 			return err;
+ 
+-- 
+1.7.11.4
+
+
+--------------070202060108000404060508--
