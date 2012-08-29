@@ -1,29 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
- working with 1.0.24 and above (OK with 1.0.23)
-Date: Wed, 29 Aug 2012 14:12:10 +0200
-Message-ID: <503E071A.7050103@gmail.com>
-References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
- <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
- <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
- <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
- <503C8658.400@gmail.com> <503C87AD.2010204@gmail.com>
- <503C8A03.809@gmail.com> <503C8CCC.2000801@gmail.com>
- <503C8F9A.7020104@gmail.com> <503C93B8.1010505@gmail.com>
- <503C95A2.6010308@gmail.com> <503D4355.2050304@gmail.com>
- <503D4B71.6020209@gmail.com> <503D5E97.9040100@gmail.com>
- <503DB54A.60401@gmail.com> <503E0563.1050506@gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Fix runtime PM accounting
+Date: Wed, 29 Aug 2012 12:19:32 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F81DAFDF@SHSMSX101.ccr.corp.intel.com>
+References: <s5hwr0l7msk.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F81DA4D0@SHSMSX101.ccr.corp.intel.com>
+ <s5h7gsj6i6x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C615265D27
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 14:12:21 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so211444bku.38
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 05:12:19 -0700 (PDT)
-In-Reply-To: <503E0563.1050506@gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAD96265CBD
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 14:19:35 +0200 (CEST)
+In-Reply-To: <s5h7gsj6i6x.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,36 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kostas <hunter18@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjkuMDguMjAxMiAxNDowNCwgS29zdGFzIHdyb3RlOgo+IE9uIDI5LzA4LzIwMTIgMDk6MjMg
-z4DOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+IE9uIDI5LjA4LjIwMTIgMDI6MTMsIEtvc3RhcyB3
-cm90ZToKClsuLi5dCgo+Pj4gQ29tbWFuZCBnaXQgYmlzZWN0IGdvb2QgMS4wLjIzIGdpdmVzIG1l
-IHRoZSBvdXRwdXQKPj4+IGZhdGFsOiBOZWVkZWQgYSBzaW5nbGUgcmV2aXNpb24KPj4+IEJhZCBy
-ZXYgaW5wdXQ6IDEuMC4yMwo+Pj4KPj4+IEhvdyBjYW4gaSBmaWd1cmUgb3V0IHRoZSByZXZpc2lv
-biBudW1iZXI/Cj4+Pgo+PiBXaGVuIHdvcmtpbmcgd2l0aCB0aGUga2VybmVsIGdpdCwgeW91IGhh
-dmUgdG8gdGFrZSB0aGUga2VybmVsIHZlcnNpb24KPj4gbnVtYmVycy4KPj4KPiBTb3JyeSBpIHJl
-YWxseSBjYW4ndCB1bmRlcnN0YW5kIHdoYXQgdG8gZG8uCj4gVGhlIHN0ZXBzIGkgZGlkIHdlcmUK
-PiBnaXQgY2xvbmUgZ2l0Oi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1rZXJuZWwuZ2l0IGFs
-c2Eta2VybmVsCj4gZ2l0IGJpc2VjdCBzdGFydCBhbHNhLWtlcm5lbC8KPiBnaXQgYmlzZWN0IGJh
-ZAo+IGdpdCBiaXNlY3QgZ29vZCAoSGVyZSBpIGRvbid0IGtub3cgd2hhdCBudW1iZXIgdG8gZ2l2
-ZSkKPiAKPiBJIHdpbGwga2VlcCByZWFkaW5nIGJlY2F1c2UgdGhlIHdob2xlIHRoaW5nIGlzIGlu
-dGVyZXN0aW5nIHRvIG1lLi4uYnV0IAo+IGZvciBub3cgaSBjYW4ndCB1bmRlcnN0YW5kIGFueXRo
-aW5nLgoKTm8gcHJvYmxlbS4gQWNjb3JkaW5nIHRvIHlvdXIgZG1lc2cgbG9ncywga2VybmVsIDIu
-Ni4zOCB3YXMgd29ya2luZyBmb3IKeW91LCBhbmQgMy4yLjAgaXNuJ3QuCgpGaXJzdCwgY2xvbmUg
-dGhlIG1haW5saW5lIExpbnV4IGdpdDoKCiAgZ2l0IGNsb25lIGdpdDovL2dpdC5rZXJuZWwub3Jn
-L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eAogIGNkIGxpbnV4CgpUZXN0
-IGFnYWluIHRoYXQgMi42LjM4IGlzIHdvcmtpbmc6CgogIGdpdCBjaGVja291dCB2Mi42LjM4CiAg
-Y29tcGlsZSArIHRlc3QKCnRlc3QgYWdhaW4gdGhhdCAzLjIuMCBpcyBub3Qgd29ya2luZzoKCiAg
-Z2l0IGNoZWNrb3V0IHYzLjIKICBjb21waWxlIGFuZCB0ZXN0CgpUaGVuIGRvIHRoZSBiaXNlY3Q6
-CgogIGdpdCBiaXNlY3Qgc3RhcnQKICBnaXQgYmlzZWN0IGdvb2QgdjIuNi4zOAogIGdpdCBiaXNl
-Y3QgYmFkIHYzLjIKCkNvbXBpbGUgYW5kIHRlc3QgZWFjaCBzdGVwIHRoZSBiaXNlY3QgZHJvcHMg
-eW91IHRvLCBhbmQgdGhlbiBjYWxsIGVpdGhlcgoiZ2l0IGJpc2VjdCBnb29kIiBvciAiZ2l0IGJp
-c2VjdCBiYWQiLiBJZiBhIHN0ZXAgY2Fubm90IGJlIGNvbXBpbGVkIG9yCnRlc3RlZCwgY2FsbCAi
-Z2l0IGJpc2VjdCBza2lwIi4KCklmIGFsbCBnb2VzIHdlbGwsIHlvdSB3aWxsIGJlIHRvbGQgd2hp
-Y2ggY29tbWl0IGlzIHRoZSBmaXJzdCBvbmUgdGhhdApkb2VzIG5vdCB3b3JrIGFueW1vcmUuCgoK
-RGFuaWVsCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+> Now I introduced codec->epss flag that is initialized once in
+> snd_hda_codec_new(), and let the codec driver overrides this flag.
+> One bonus is that you can avoid the unnecessary codec parameter read at
+> each power change.
+
+Yes, this is better. And the patch works well for me - [PATCH 1/2] ALSA: hda - Avoid unnecessary parameter read for EPSS.
+
+> In anyway, there are a few issues:
+> - The refcounting gets broken after module unload.  It's because we
+>   leave the codec's pm_runtime usages after removal.
+
+Thanks for pointing out this! But I think the following codec can introduce risk of race among multiple codecs to modify ' chip->power_count',
+because only one codec's power on/off is serialized.
+static void azx_power_notify(struct hda_bus *bus, struct hda_codec *codec)
+{
+	 ...
+	if (codec->power_on) {
+		pm_runtime_get_sync(&chip->pci->dev);
+		chip->power_count++;
+	} else {
+		pm_runtime_put_sync(&chip->pci->dev);
+		chip->power_count--;
+	}
+}
+
+How about calling pm_runtime_put_noidle() when freeing a codec in D0? 
+Maybe we can add a bus notify function like this:
+Static void azx_codec_free_notify(struct hda_codec *codec)
+{
+	If(codec->power_on)
+		pm_runtime_put_noidle(&codec->bus->pci->dev);
+}
+And snd_hda_codec_free() can trigger this notify.
+
+> - The D3-stop-clock check isn't done properly for the codecs providing
+>   own set_power_state ops.
+
+I cannot test the branch 'if (codec->patch_ops.set_power_state)' in hda_set_power_state() for lack of such a codec. 
+But the logic seems right and the other branch works well for me :-)
+
+> - Ditto for the repeated power-set sequence, the error check, etc.
+In hda_sync_power_state(), 
+	if ((state & 0xff) == power_state)   ... should be if ((state & 0xf0)>> 4 == power_state), because PS-Act is bits 7:4
+		break;
+
+And would you please explain why changing to D3 need not wait? One of my codec does have a delay on change from D0 to D3.
+
+Thanks
+Mengdong
