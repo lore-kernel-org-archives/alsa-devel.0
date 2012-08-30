@@ -1,8 +1,7 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 1/3] ALSA: Make snd_sgbuf_get_{ptr|addr}()
-	available for non-SG cases.
-Date: Thu, 30 Aug 2012 13:21:04 -0700
-Message-ID: <1346358066-7851-2-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 2/3] ALSA: Add new DSP loader callback routines
+Date: Thu, 30 Aug 2012 13:21:05 -0700
+Message-ID: <1346358066-7851-3-git-send-email-ian_minett@creativelabs.com>
 References: <1346358066-7851-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,206 +25,351 @@ From: Ian Minett <ian_minett@creativelabs.com>
 
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index c425062..9201520 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -98,8 +98,10 @@ static inline unsigned int snd_sgbuf_aligned_pages(size_t size)
- /*
-  * return the physical address at the corresponding offset
-  */
--static inline dma_addr_t snd_sgbuf_get_addr(struct snd_sg_buf *sgbuf, size_t offset)
-+static inline dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab,
-+					    size_t offset)
- {
-+	struct snd_sg_buf *sgbuf = dmab->private_data;
- 	dma_addr_t addr = sgbuf->table[offset >> PAGE_SHIFT].addr;
- 	addr &= PAGE_MASK;
- 	return addr + offset % PAGE_SIZE;
-@@ -108,10 +110,31 @@ static inline dma_addr_t snd_sgbuf_get_addr(struct snd_sg_buf *sgbuf, size_t off
- /*
-  * return the virtual address at the corresponding offset
-  */
--static inline void *snd_sgbuf_get_ptr(struct snd_sg_buf *sgbuf, size_t offset)
-+static inline void *snd_sgbuf_get_ptr(struct snd_dma_buffer *dmab,
-+				      size_t offset)
- {
-+	struct snd_sg_buf *sgbuf = dmab->private_data;
- 	return sgbuf->table[offset >> PAGE_SHIFT].buf + offset % PAGE_SIZE;
- }
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 194d625..a7ff2c4 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -244,4 +244,12 @@ config SND_HDA_POWER_SAVE_DEFAULT
+ 	  The default time-out value in seconds for HD-audio automatic
+ 	  power-save mode.  0 means to disable the power-save mode.
+ 
++config SND_HDA_DSP_LOADER
++	bool "Enable DSP firmware loader"
++	depends on FW_LOADER
++	default y
++	help
++	  Say Y here to enable the DSP firmware loader, used by certain
++	  codecs (e.g. CA0132) to transfer their DSP binaries to the hardware.
 +
-+unsigned int snd_sgbuf_get_chunk_size(struct snd_dma_buffer *dmab,
-+				      unsigned int ofs, unsigned int size);
+ endif
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 1b35115..d90e1b3 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2390,7 +2390,7 @@ typedef int (*map_slave_func_t)(void *, struct snd_kcontrol *);
+ 
+ /* apply the function to all matching slave ctls in the mixer list */
+ static int map_slaves(struct hda_codec *codec, const char * const *slaves,
+-		      const char *suffix, map_slave_func_t func, void *data) 
++		      const char *suffix, map_slave_func_t func, void *data)
+ {
+ 	struct hda_nid_item *items;
+ 	const char * const *s;
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 72477cc..faa3067 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -337,15 +337,15 @@ enum {
+ #define AC_KNBCAP_DELTA			(1<<7)
+ 
+ /* HDMI LPCM capabilities */
+-#define AC_LPCMCAP_48K_CP_CHNS		(0x0f<<0) /* max channels w/ CP-on */	
++#define AC_LPCMCAP_48K_CP_CHNS		(0x0f<<0) /* max channels w/ CP-on */
+ #define AC_LPCMCAP_48K_NO_CHNS		(0x0f<<4) /* max channels w/o CP-on */
+ #define AC_LPCMCAP_48K_20BIT		(1<<8)	/* 20b bitrate supported */
+ #define AC_LPCMCAP_48K_24BIT		(1<<9)	/* 24b bitrate supported */
+-#define AC_LPCMCAP_96K_CP_CHNS		(0x0f<<10) /* max channels w/ CP-on */	
++#define AC_LPCMCAP_96K_CP_CHNS		(0x0f<<10) /* max channels w/ CP-on */
+ #define AC_LPCMCAP_96K_NO_CHNS		(0x0f<<14) /* max channels w/o CP-on */
+ #define AC_LPCMCAP_96K_20BIT		(1<<18)	/* 20b bitrate supported */
+ #define AC_LPCMCAP_96K_24BIT		(1<<19)	/* 24b bitrate supported */
+-#define AC_LPCMCAP_192K_CP_CHNS		(0x0f<<20) /* max channels w/ CP-on */	
++#define AC_LPCMCAP_192K_CP_CHNS		(0x0f<<20) /* max channels w/ CP-on */
+ #define AC_LPCMCAP_192K_NO_CHNS		(0x0f<<24) /* max channels w/o CP-on */
+ #define AC_LPCMCAP_192K_20BIT		(1<<28)	/* 20b bitrate supported */
+ #define AC_LPCMCAP_192K_24BIT		(1<<29)	/* 24b bitrate supported */
+@@ -618,6 +618,17 @@ struct hda_bus_ops {
+ 	/* notify power-up/down from codec to controller */
+ 	void (*pm_notify)(struct hda_bus *bus, struct hda_codec *codec);
+ #endif
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++	/* prepare DSP transfer */
++	int (*load_dsp_prepare)(struct hda_bus *bus, unsigned int format,
++				unsigned int byte_size,
++				struct snd_dma_buffer *bufp);
++	/* start/stop DSP transfer */
++	void (*load_dsp_trigger)(struct hda_bus *bus, bool start);
++	/* clean up DSP transfer */
++	void (*load_dsp_cleanup)(struct hda_bus *bus,
++				 struct snd_dma_buffer *dmab);
++#endif
+ };
+ 
+ /* template to pass to the bus constructor */
+@@ -689,7 +700,7 @@ struct hda_codec_preset {
+ 	const char *name;
+ 	int (*patch)(struct hda_codec *codec);
+ };
+-	
++
+ struct hda_codec_preset_list {
+ 	const struct hda_codec_preset *preset;
+ 	struct module *owner;
+@@ -1132,6 +1143,40 @@ static inline void snd_hda_power_sync(struct hda_codec *codec)
+ int snd_hda_load_patch(struct hda_bus *bus, size_t size, const void *buf);
+ #endif
+ 
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++static inline int
++snd_hda_codec_load_dsp_prepare(struct hda_codec *codec, unsigned int format,
++				unsigned int size,
++				struct snd_dma_buffer *bufp)
++{
++	return codec->bus->ops.load_dsp_prepare(codec->bus, format, size, bufp);
++}
++static inline void
++snd_hda_codec_load_dsp_trigger(struct hda_codec *codec, bool start)
++{
++	return codec->bus->ops.load_dsp_trigger(codec->bus, start);
++}
++static inline void
++snd_hda_codec_load_dsp_cleanup(struct hda_codec *codec,
++				struct snd_dma_buffer *dmab)
++{
++	return codec->bus->ops.load_dsp_cleanup(codec->bus, dmab);
++}
 +#else
-+/* non-SG versions */
-+static inline dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab,
-+					    size_t offset)
++static inline int
++snd_hda_codec_load_dsp_prepare(struct hda_codec *codec, unsigned int format,
++				unsigned int size,
++				struct snd_dma_buffer *bufp)
 +{
-+	return dmab->addr + offset;
++	return 0;
 +}
++static inline void
++snd_hda_codec_load_dsp_trigger(struct hda_codec *codec, bool start) {}
++static inline void
++snd_hda_codec_load_dsp_cleanup(struct hda_codec *codec,
++				struct snd_dma_buffer *dmab) {}
++#endif
 +
-+static inline void *snd_sgbuf_get_ptr(struct snd_dma_buffer *dmab,
-+				      size_t offset)
-+{
-+	return dmab->area + offset;
-+}
-+
-+#define snd_sgbuf_get_chunk_size(dmab, ofs, size)	(size)
-+
- #endif /* CONFIG_SND_DMA_SGBUF */
- 
- /* allocate/release a buffer */
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index cdca2ab..0c054b9 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -982,53 +982,42 @@ static int snd_pcm_lib_alloc_vmalloc_32_buffer
- 	_snd_pcm_lib_alloc_vmalloc_buffer \
- 			(subs, size, GFP_KERNEL | GFP_DMA32 | __GFP_ZERO)
- 
-+#define snd_pcm_get_dma_buf(substream) ((substream)->runtime->dma_buffer_p)
-+
- #ifdef CONFIG_SND_DMA_SGBUF
  /*
-  * SG-buffer handling
+  * Codec modularization
   */
- #define snd_pcm_substream_sgbuf(substream) \
--	((substream)->runtime->dma_buffer_p->private_data)
--
--static inline dma_addr_t
--snd_pcm_sgbuf_get_addr(struct snd_pcm_substream *substream, unsigned int ofs)
--{
--	struct snd_sg_buf *sg = snd_pcm_substream_sgbuf(substream);
--	return snd_sgbuf_get_addr(sg, ofs);
--}
--
--static inline void *
--snd_pcm_sgbuf_get_ptr(struct snd_pcm_substream *substream, unsigned int ofs)
--{
--	struct snd_sg_buf *sg = snd_pcm_substream_sgbuf(substream);
--	return snd_sgbuf_get_ptr(sg, ofs);
--}
-+	snd_pcm_get_dma_buf(substream)->private_data
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1c9c779..248d70a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -31,7 +31,7 @@
+  *  CHANGES:
+  *
+  *  2004.12.01	Major rewrite by tiwai, merged the work of pshou
+- * 
++ *
+  */
  
- struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream,
- 				    unsigned long offset);
--unsigned int snd_pcm_sgbuf_get_chunk_size(struct snd_pcm_substream *substream,
--					  unsigned int ofs, unsigned int size);
--
- #else /* !SND_DMA_SGBUF */
+ #include <linux/delay.h>
+@@ -600,8 +600,8 @@ static char *driver_short_names[] DELAYED_INITDATA_MARK = {
+ 	[AZX_DRIVER_SIS] = "HDA SIS966",
+ 	[AZX_DRIVER_ULI] = "HDA ULI M5461",
+ 	[AZX_DRIVER_NVIDIA] = "HDA NVidia",
+-	[AZX_DRIVER_TERA] = "HDA Teradici", 
+-	[AZX_DRIVER_CTX] = "HDA Creative", 
++	[AZX_DRIVER_TERA] = "HDA Teradici",
++	[AZX_DRIVER_CTX] = "HDA Creative",
+ 	[AZX_DRIVER_CTHDA] = "HDA Creative",
+ 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
+ };
+@@ -1036,6 +1036,15 @@ static unsigned int azx_get_response(struct hda_bus *bus,
+ static void azx_power_notify(struct hda_bus *bus, struct hda_codec *codec);
+ #endif
+ 
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
++				unsigned int byte_size,
++				struct snd_dma_buffer *bufp);
++static void azx_load_dsp_trigger(struct hda_bus *bus, bool start);
++static void azx_load_dsp_cleanup(struct hda_bus *bus,
++				 struct snd_dma_buffer *dmab);
++#endif
++
+ /* reset codec link */
+ static int azx_reset(struct azx *chip, int full_reset)
+ {
+@@ -1093,7 +1102,7 @@ static int azx_reset(struct azx *chip, int full_reset)
+ 
  /*
-  * fake using a continuous buffer
-  */
-+#define snd_pcm_sgbuf_ops_page	NULL
-+#endif /* SND_DMA_SGBUF */
-+
- static inline dma_addr_t
- snd_pcm_sgbuf_get_addr(struct snd_pcm_substream *substream, unsigned int ofs)
- {
--	return substream->runtime->dma_addr + ofs;
-+	return snd_sgbuf_get_addr(snd_pcm_get_dma_buf(substream), ofs);
- }
- 
- static inline void *
- snd_pcm_sgbuf_get_ptr(struct snd_pcm_substream *substream, unsigned int ofs)
- {
--	return substream->runtime->dma_area + ofs;
-+	return snd_sgbuf_get_ptr(snd_pcm_get_dma_buf(substream), ofs);
- }
- 
--#define snd_pcm_sgbuf_ops_page	NULL
--
--#define snd_pcm_sgbuf_get_chunk_size(subs, ofs, size)	(size)
--
--#endif /* SND_DMA_SGBUF */
-+static inline unsigned int
-+snd_pcm_sgbuf_get_chunk_size(struct snd_pcm_substream *substream,
-+			     unsigned int ofs, unsigned int size)
-+{
-+	return snd_sgbuf_get_chunk_size(snd_pcm_get_dma_buf(substream), ofs, size);
-+}
- 
- /* handle mmap counter - PCM mmap callback should handle this counter properly */
- static inline void snd_pcm_mmap_data_open(struct vm_area_struct *area)
-diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
-index 9571313..69e01c4 100644
---- a/sound/core/pcm_memory.c
-+++ b/sound/core/pcm_memory.c
-@@ -327,32 +327,6 @@ struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream, unsigne
- }
- 
- EXPORT_SYMBOL(snd_pcm_sgbuf_ops_page);
--
--/*
-- * compute the max chunk size with continuous pages on sg-buffer
-- */
--unsigned int snd_pcm_sgbuf_get_chunk_size(struct snd_pcm_substream *substream,
--					  unsigned int ofs, unsigned int size)
--{
--	struct snd_sg_buf *sg = snd_pcm_substream_sgbuf(substream);
--	unsigned int start, end, pg;
--
--	start = ofs >> PAGE_SHIFT;
--	end = (ofs + size - 1) >> PAGE_SHIFT;
--	/* check page continuity */
--	pg = sg->table[start].addr >> PAGE_SHIFT;
--	for (;;) {
--		start++;
--		if (start > end)
--			break;
--		pg++;
--		if ((sg->table[start].addr >> PAGE_SHIFT) != pg)
--			return (start << PAGE_SHIFT) - ofs;
--	}
--	/* ok, all on continuous pages */
--	return size;
--}
--EXPORT_SYMBOL(snd_pcm_sgbuf_get_chunk_size);
- #endif /* CONFIG_SND_DMA_SGBUF */
- 
- /**
-diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
-index d0f0035..da3c619 100644
---- a/sound/core/sgbuf.c
-+++ b/sound/core/sgbuf.c
-@@ -22,6 +22,7 @@
- #include <linux/slab.h>
- #include <linux/mm.h>
- #include <linux/vmalloc.h>
-+#include <linux/export.h>
- #include <sound/memalloc.h>
- 
- 
-@@ -136,3 +137,30 @@ void *snd_malloc_sgbuf_pages(struct device *device,
- 	snd_free_sgbuf_pages(dmab); /* free the table */
- 	return NULL;
- }
-+
-+
-+/*
-+ * compute the max chunk size with continuous pages on sg-buffer
+  * Lowlevel interface
+- */  
 + */
-+unsigned int snd_sgbuf_get_chunk_size(struct snd_dma_buffer *dmab,
-+				      unsigned int ofs, unsigned int size)
-+{
-+	struct snd_sg_buf *sg = dmab->private_data;
-+	unsigned int start, end, pg;
+ 
+ /* enable interrupts */
+ static void azx_int_enable(struct azx *chip)
+@@ -1306,7 +1315,7 @@ static irqreturn_t azx_interrupt(int irq, void *dev_id)
+ 		spin_unlock(&chip->reg_lock);
+ 		return IRQ_NONE;
+ 	}
+-	
 +
-+	start = ofs >> PAGE_SHIFT;
-+	end = (ofs + size - 1) >> PAGE_SHIFT;
-+	/* check page continuity */
-+	pg = sg->table[start].addr >> PAGE_SHIFT;
-+	for (;;) {
-+		start++;
-+		if (start > end)
-+			break;
-+		pg++;
-+		if ((sg->table[start].addr >> PAGE_SHIFT) != pg)
-+			return (start << PAGE_SHIFT) - ofs;
-+	}
-+	/* ok, all on continuous pages */
-+	return size;
+ 	for (i = 0; i < chip->num_streams; i++) {
+ 		azx_dev = &chip->azx_dev[i];
+ 		if (status & azx_dev->sd_int_sta_mask) {
+@@ -1348,7 +1357,7 @@ static irqreturn_t azx_interrupt(int irq, void *dev_id)
+ 		azx_writeb(chip, STATESTS, 0x04);
+ #endif
+ 	spin_unlock(&chip->reg_lock);
+-	
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -1357,7 +1366,7 @@ static irqreturn_t azx_interrupt(int irq, void *dev_id)
+  * set up a BDL entry
+  */
+ static int setup_bdle(struct azx *chip,
+-		      struct snd_pcm_substream *substream,
++		      struct snd_dma_buffer *dmab,
+ 		      struct azx_dev *azx_dev, u32 **bdlp,
+ 		      int ofs, int size, int with_ioc)
+ {
+@@ -1370,12 +1379,12 @@ static int setup_bdle(struct azx *chip,
+ 		if (azx_dev->frags >= AZX_MAX_BDL_ENTRIES)
+ 			return -EINVAL;
+ 
+-		addr = snd_pcm_sgbuf_get_addr(substream, ofs);
++		addr = snd_sgbuf_get_addr(dmab, ofs);
+ 		/* program the address field of the BDL entry */
+ 		bdl[0] = cpu_to_le32((u32)addr);
+ 		bdl[1] = cpu_to_le32(upper_32_bits(addr));
+ 		/* program the size field of the BDL entry */
+-		chunk = snd_pcm_sgbuf_get_chunk_size(substream, ofs, size);
++		chunk = snd_sgbuf_get_chunk_size(dmab, ofs, size);
+ 		/* one BDLE cannot cross 4K boundary on CTHDA chips */
+ 		if (chip->driver_caps & AZX_DCAPS_4K_BDLE_BOUNDARY) {
+ 			u32 remain = 0x1000 - (ofs & 0xfff);
+@@ -1434,9 +1443,9 @@ static int azx_setup_periods(struct azx *chip,
+ 				   bdl_pos_adj[chip->dev_index]);
+ 			pos_adj = 0;
+ 		} else {
+-			ofs = setup_bdle(chip, substream, azx_dev,
+-					 &bdl, ofs, pos_adj,
+-					 !substream->runtime->no_period_wakeup);
++			ofs = setup_bdle(chip, snd_pcm_get_dma_buf(substream),
++					azx_dev, &bdl, ofs, pos_adj,
++					!substream->runtime->no_period_wakeup);
+ 			if (ofs < 0)
+ 				goto error;
+ 		}
+@@ -1444,10 +1453,12 @@ static int azx_setup_periods(struct azx *chip,
+ 		pos_adj = 0;
+ 	for (i = 0; i < periods; i++) {
+ 		if (i == periods - 1 && pos_adj)
+-			ofs = setup_bdle(chip, substream, azx_dev, &bdl, ofs,
++			ofs = setup_bdle(chip, snd_pcm_get_dma_buf(substream),
++					azx_dev, &bdl, ofs,
+ 					 period_bytes - pos_adj, 0);
+ 		else
+-			ofs = setup_bdle(chip, substream, azx_dev, &bdl, ofs,
++			ofs = setup_bdle(chip, snd_pcm_get_dma_buf(substream),
++					 azx_dev, &bdl, ofs,
+ 					 period_bytes,
+ 					 !substream->runtime->no_period_wakeup);
+ 		if (ofs < 0)
+@@ -1609,6 +1620,11 @@ static int DELAYED_INIT_MARK azx_codec_create(struct azx *chip, const char *mode
+ 	bus_temp.power_save = &power_save;
+ 	bus_temp.ops.pm_notify = azx_power_notify;
+ #endif
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++	bus_temp.ops.load_dsp_prepare = azx_load_dsp_prepare;
++	bus_temp.ops.load_dsp_trigger = azx_load_dsp_trigger;
++	bus_temp.ops.load_dsp_cleanup = azx_load_dsp_cleanup;
++#endif
+ 
+ 	err = snd_hda_bus_new(chip->card, &bus_temp, &chip->bus);
+ 	if (err < 0)
+@@ -2462,6 +2478,93 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ #define azx_del_card_list(chip) /* NOP */
+ #endif /* CONFIG_SND_HDA_POWER_SAVE */
+ 
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++/*
++ * DSP loading code (e.g. for CA0132)
++ */
++
++/*use the first stream for loading DSP*/
++static struct azx_dev*
++azx_get_dsp_loader_dev(struct azx *chip)
++{
++	return &chip->azx_dev[chip->playback_index_offset];
 +}
-+EXPORT_SYMBOL(snd_sgbuf_get_chunk_size);
++
++static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
++				unsigned int byte_size,
++				struct snd_dma_buffer *bufp)
++{
++	u32 *bdl;
++	struct azx *chip = bus->private_data;
++	struct azx_dev *azx_dev;
++	int err;
++
++	if (snd_hda_lock_devices(bus))
++		return -EBUSY;
++
++	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG,
++				  snd_dma_pci_data(chip->pci),
++				  byte_size, bufp);
++	if (err < 0)
++		goto error;
++
++	azx_dev = azx_get_dsp_loader_dev(chip);
++	azx_dev->bufsize = byte_size;
++	azx_dev->period_bytes = byte_size;
++	azx_dev->format_val = format;
++
++	azx_stream_reset(chip, azx_dev);
++
++	/* reset BDL address */
++	azx_sd_writel(azx_dev, SD_BDLPL, 0);
++	azx_sd_writel(azx_dev, SD_BDLPU, 0);
++
++	azx_dev->frags = 0;
++	bdl = (u32 *)azx_dev->bdl.area;
++	err = setup_bdle(chip, bufp, azx_dev, &bdl, 0, byte_size, 0);
++	if (err < 0)
++		goto error;
++
++	azx_setup_controller(chip, azx_dev);
++	return azx_dev->stream_tag;
++
++error:
++	snd_hda_unlock_devices(bus);
++	return err;
++}
++
++static void azx_load_dsp_trigger(struct hda_bus *bus, bool start)
++{
++	struct azx *chip = bus->private_data;
++	struct azx_dev *azx_dev = azx_get_dsp_loader_dev(chip);
++
++	if (start)
++		azx_stream_start(chip, azx_dev);
++	else
++		azx_stream_stop(chip, azx_dev);
++	azx_dev->running = start;
++}
++
++static void azx_load_dsp_cleanup(struct hda_bus *bus,
++				 struct snd_dma_buffer *dmab)
++{
++	struct azx *chip = bus->private_data;
++	struct azx_dev *azx_dev = azx_get_dsp_loader_dev(chip);
++
++	/* reset BDL address */
++	azx_sd_writel(azx_dev, SD_BDLPL, 0);
++	azx_sd_writel(azx_dev, SD_BDLPU, 0);
++	azx_sd_writel(azx_dev, SD_CTL, 0);
++	azx_dev->bufsize = 0;
++	azx_dev->period_bytes = 0;
++	azx_dev->format_val = 0;
++
++	snd_dma_free_pages(dmab);
++
++	snd_hda_unlock_devices(bus);
++}
++#endif /* CONFIG_SND_HDA_DSP_LOADER */
++
+ #if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
+ /*
+  * power management
 -- 
 1.7.4.1
