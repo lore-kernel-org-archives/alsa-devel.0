@@ -1,108 +1,30 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
- working with 1.0.24 and above (OK with 1.0.23)
-Date: Thu, 30 Aug 2012 08:50:53 +0200
-Message-ID: <503F0D4D.3080806@gmail.com>
-References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
- <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
- <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
- <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
- <503C8658.400@gmail.com> <503C87AD.2010204@gmail.com>
- <503C8A03.809@gmail.com> <503C8CCC.2000801@gmail.com>
- <503C8F9A.7020104@gmail.com> <503C93B8.1010505@gmail.com>
- <503C95A2.6010308@gmail.com> <503D4355.2050304@gmail.com>
- <503D4B71.6020209@gmail.com> <503D5E97.9040100@gmail.com>
- <503DB54A.60401@gmail.com> <503E0563.1050506@gmail.com>
- <503E071A.7050103@gmail.com> <503E3D67.3040502@gmail.com>
- <503E4189.4010309@gmail.com> <503E66AA.8060503@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 02/14] MFD: twl4030-audio: Convert to use devm_kzalloc
+Date: Thu, 30 Aug 2012 12:19:22 +0300
+Message-ID: <503F301A.1090200@ti.com>
+References: <1344954162-7985-1-git-send-email-peter.ujfalusi@ti.com>  <1344954162-7985-3-git-send-email-peter.ujfalusi@ti.com> <1346147410.2182.96.camel@sokoban>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D7DC026530B
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 08:52:15 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so552602bku.38
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 23:52:15 -0700 (PDT)
-In-Reply-To: <503E66AA.8060503@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kostas <hunter18@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1346147410.2182.96.camel@sokoban>
+Sender: linux-kernel-owner@vger.kernel.org
+To: t-kristo@ti.com
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <rob.herring@calxeda.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, Benoit Cousson <b-cousson@ti.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjkuMDguMjAxMiAyMDo1OSwgS29zdGFzIHdyb3RlOgo+IE9uIDI5LzA4LzIwMTIgMDc6MjEg
-zrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+IE9uIDI5LjA4LjIwMTIgMTg6MDMsIEtvc3RhcyB3
-cm90ZToKPj4+IE9uIDI5LzA4LzIwMTIgMDM6MTIgzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+
-Pj4gT24gMjkuMDguMjAxMiAxNDowNCwgS29zdGFzIHdyb3RlOgo+Pj4+PiBPbiAyOS8wOC8yMDEy
-IDA5OjIzIM+AzrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4gT24gMjkuMDguMjAxMiAwMjox
-MywgS29zdGFzIHdyb3RlOgo+Pj4+IFsuLi5dCj4+Pj4KPj4+Pj4+PiBDb21tYW5kIGdpdCBiaXNl
-Y3QgZ29vZCAxLjAuMjMgZ2l2ZXMgbWUgdGhlIG91dHB1dAo+Pj4+Pj4+IGZhdGFsOiBOZWVkZWQg
-YSBzaW5nbGUgcmV2aXNpb24KPj4+Pj4+PiBCYWQgcmV2IGlucHV0OiAxLjAuMjMKPj4+Pj4+Pgo+
-Pj4+Pj4+IEhvdyBjYW4gaSBmaWd1cmUgb3V0IHRoZSByZXZpc2lvbiBudW1iZXI/Cj4+Pj4+Pj4K
-Pj4+Pj4+IFdoZW4gd29ya2luZyB3aXRoIHRoZSBrZXJuZWwgZ2l0LCB5b3UgaGF2ZSB0byB0YWtl
-IHRoZSBrZXJuZWwgdmVyc2lvbgo+Pj4+Pj4gbnVtYmVycy4KPj4+Pj4+Cj4+Pj4+IFNvcnJ5IGkg
-cmVhbGx5IGNhbid0IHVuZGVyc3RhbmQgd2hhdCB0byBkby4KPj4+Pj4gVGhlIHN0ZXBzIGkgZGlk
-IHdlcmUKPj4+Pj4gZ2l0IGNsb25lIGdpdDovL2dpdC5hbHNhLXByb2plY3Qub3JnL2Fsc2Eta2Vy
-bmVsLmdpdCBhbHNhLWtlcm5lbAo+Pj4+PiBnaXQgYmlzZWN0IHN0YXJ0IGFsc2Eta2VybmVsLwo+
-Pj4+PiBnaXQgYmlzZWN0IGJhZAo+Pj4+PiBnaXQgYmlzZWN0IGdvb2QgKEhlcmUgaSBkb24ndCBr
-bm93IHdoYXQgbnVtYmVyIHRvIGdpdmUpCj4+Pj4+Cj4+Pj4+IEkgd2lsbCBrZWVwIHJlYWRpbmcg
-YmVjYXVzZSB0aGUgd2hvbGUgdGhpbmcgaXMgaW50ZXJlc3RpbmcgdG8gbWUuLi5idXQKPj4+Pj4g
-Zm9yIG5vdyBpIGNhbid0IHVuZGVyc3RhbmQgYW55dGhpbmcuCj4+Pj4gTm8gcHJvYmxlbS4gQWNj
-b3JkaW5nIHRvIHlvdXIgZG1lc2cgbG9ncywga2VybmVsIDIuNi4zOCB3YXMgd29ya2luZyBmb3IK
-Pj4+PiB5b3UsIGFuZCAzLjIuMCBpc24ndC4KPj4+Pgo+Pj4+IEZpcnN0LCBjbG9uZSB0aGUgbWFp
-bmxpbmUgTGludXggZ2l0Ogo+Pj4+Cj4+Pj4gICAgZ2l0IGNsb25lIGdpdDovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eAo+Pj4+ICAgIGNkIGxp
-bnV4Cj4+Pj4KPj4+PiBUZXN0IGFnYWluIHRoYXQgMi42LjM4IGlzIHdvcmtpbmc6Cj4+Pj4KPj4+
-PiAgICBnaXQgY2hlY2tvdXQgdjIuNi4zOAo+Pj4+ICAgIGNvbXBpbGUgKyB0ZXN0Cj4+Pj4KPj4+
-PiB0ZXN0IGFnYWluIHRoYXQgMy4yLjAgaXMgbm90IHdvcmtpbmc6Cj4+Pj4KPj4+PiAgICBnaXQg
-Y2hlY2tvdXQgdjMuMgo+Pj4+ICAgIGNvbXBpbGUgYW5kIHRlc3QKPj4+Pgo+Pj4+IFRoZW4gZG8g
-dGhlIGJpc2VjdDoKPj4+Pgo+Pj4+ICAgIGdpdCBiaXNlY3Qgc3RhcnQKPj4+PiAgICBnaXQgYmlz
-ZWN0IGdvb2QgdjIuNi4zOAo+Pj4+ICAgIGdpdCBiaXNlY3QgYmFkIHYzLjIKPj4+Pgo+Pj4+IENv
-bXBpbGUgYW5kIHRlc3QgZWFjaCBzdGVwIHRoZSBiaXNlY3QgZHJvcHMgeW91IHRvLCBhbmQgdGhl
-biBjYWxsIGVpdGhlcgo+Pj4+ICJnaXQgYmlzZWN0IGdvb2QiIG9yICJnaXQgYmlzZWN0IGJhZCIu
-IElmIGEgc3RlcCBjYW5ub3QgYmUgY29tcGlsZWQgb3IKPj4+PiB0ZXN0ZWQsIGNhbGwgImdpdCBi
-aXNlY3Qgc2tpcCIuCj4+Pj4KPj4+PiBJZiBhbGwgZ29lcyB3ZWxsLCB5b3Ugd2lsbCBiZSB0b2xk
-IHdoaWNoIGNvbW1pdCBpcyB0aGUgZmlyc3Qgb25lIHRoYXQKPj4+PiBkb2VzIG5vdCB3b3JrIGFu
-eW1vcmUuCj4+Pj4KPj4+Pgo+Pj4+IERhbmllbAo+Pj4+Cj4+Pj4KPj4+Pgo+Pj4+Cj4+PiBJIGNh
-bid0IGNvbXBpbGUgdGhlIGtlcm5lbCBmcm9tIGdpdCBzb3VyY2UuCj4+PiBBZnRlciBpIGVudGVy
-IHRoZSBjb21tYW5kfENPTkNVUlJFTkNZX0xFVkVMPWBnZXRjb25mIF9OUFJPQ0VTU09SU19PTkxO
-YAo+Pj4gZmFrZXJvb3QgbWFrZS1rcGtnIC0taW5pdHJkIC0tYXBwZW5kLXRvLXZlcnNpb249LWN1
-c3RvbSBrZXJuZWxfaW1hZ2UKPj4+IGtlcm5lbF9oZWFkZXJzCj4+PiB8aSBnZXQgYWZ0ZXIgYSB3
-aGlsZSB0aGlzIGVycm9yCj4+Pgo+Pj4gL3RtcC9jY0NlSTJHWS5zOiBBc3NlbWJsZXIgbWVzc2Fn
-ZXM6Cj4+PiAvdG1wL2NjQ2VJMkdZLnM6IEVycm9yOiAuc2l6ZSBleHByZXNzaW9uIGZvciBkb19o
-eXBlcnZpc29yX2NhbGxiYWNrIGRvZXMKPj4+IG5vdCBldmFsdWF0ZSB0byBhIGNvbnN0YW50Cj4+
-PiBtYWtlWzNdOiAqKiogW2FyY2gveDg2L2tlcm5lbC9lbnRyeV82NC5vXSBFcnJvciAxCj4+PiBt
-YWtlWzJdOiAqKiogW2FyY2gveDg2L2tlcm5lbF0gRXJyb3IgMgo+Pj4gbWFrZVsxXTogKioqIFth
-cmNoL3g4Nl0gRXJyb3IgMgo+Pj4gbWFrZVsxXTogKioqIFdhaXRpbmcgZm9yIHVuZmluaXNoZWQg
-am9icy4uLi4KPj4+ICAgIExEICAgICAgaW5pdC9tb3VudHMubwo+Pj4gICAgTEQgICAgICBpbml0
-L2J1aWx0LWluLm8KPj4+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9rb3N0YXMv
-bGludXgnCj4+PiBtYWtlOiAqKiogW2RlYmlhbi9zdGFtcC9idWlsZC9rZXJuZWxdIEVycm9yIDIK
-Pj4+Cj4+Pgo+Pj4KPj4gU2V0IENPTkZJR19YRU49biBpbiB5b3VyIC5jb25maWcKPj4KPj4KPj4K
-PiBTbyBtYW55IGhvdXJzIGluIGZyb250IG9mIHRoZSBjb21wdXRlciBhbmQgc3RpbGwgY2FuJ3Qg
-Y29tcGlsZSB0aGUgCj4ga2VybmVsLi4ubm93IGl0IGdpdmVzIG1lIHRoZSBlcnJvcgo+IAo+IGxk
-OiBkcml2ZXJzL3dhdGNoZG9nL3dtODM1MF93ZHQubzogYmFkIHJlbG9jIHN5bWJvbCBpbmRleCAo
-MHgyMDAwMDAzMyA+PSAKPiAweDUwKSBmb3Igb2Zmc2V0IDB4N2EyOCBpbiBzZWN0aW9uIGAuZGVi
-dWdfaW5mbycKPiBkcml2ZXJzL3dhdGNoZG9nL3dtODM1MF93ZHQubzogY291bGQgbm90IHJlYWQg
-c3ltYm9sczogQmFkIHZhbHVlCj4gbWFrZVsyXTogKioqIFtkcml2ZXJzL3dhdGNoZG9nL3dtODM1
-MF93ZHQua29dIEVycm9yIDEKPiBtYWtlWzJdOiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBq
-b2JzLi4uLgo+IG1ha2VbMV06ICoqKiBbbW9kdWxlc10gRXJyb3IgMgo+IG1ha2VbMV06IExlYXZp
-bmcgZGlyZWN0b3J5IGAvaG9tZS9rb3N0YXMvbGludXgnCj4gbWFrZTogKioqIFtkZWJpYW4vc3Rh
-bXAvYnVpbGQva2VybmVsXSBFcnJvciAyCgpZZXMsIGl0IGNhbiBiZSBoYXJkIGF0IHRpbWVzLCBh
-cyB5b3UgaGF2ZSB0byBmaWdodCB3aXRoIGFsbCBzb3J0cyBvZgpidWlsZCBicmVha2FnZS4KCj4g
-QWR2aWNlIG1lIGlmIHlvdSBjYW4gd2hhdCB0byBkby4uLmkgc3RhcnRlZCB0byBoYXZlIGEgaGVh
-ZGFjaGUuCj4gV2lsbCBjb250aW51ZSB0b21vcnJvdy4uLgoKUnVuICJtYWtlIGxvY2FsbW9kY29u
-ZmlnIi4gVGhhdCB3aWxsIGdlbmVyYXRlIGEgLmNvbmZpZyBiYXNlZCBvbiB0aGUKbW9kdWxlcyBj
-dXJyZW50bHkgbG9hZGVkIGluIHlvdXIga2VybmVsLiBUaGF0IHdpbGwgYWxzbyBzcGVlZCB1cCB0
-aGUKYmlzZWN0IGFzIHdheSBsZXNzIGRyaXZlcnMgaGF2ZSB0byBiZSBidWlsdC4KCgpIVEgsCkRh
-bmllbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Tero,
+
+On 08/28/2012 12:50 PM, Tero Kristo wrote:
+> On Tue, 2012-08-14 at 17:22 +0300, Peter Ujfalusi wrote:
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>=20
+> I think this one could use a short commit message, also about why
+> kfree():s are dropped (handled internally by devm_* etc.)
+
+I don't like empty commit messages either but this patch is self explai=
+ning I
+would think that the commit title explains it.
+
+--=20
+P=C3=A9ter
