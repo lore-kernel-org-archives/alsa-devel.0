@@ -1,42 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Fix compilation error due to leftover
- code
-Date: Thu, 30 Aug 2012 11:02:20 -0700
-Message-ID: <20120830180219.GI4356@opensource.wolfsonmicro.com>
-References: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: [PATCH 0/3] introduce device_buffer
+Date: Fri, 31 Aug 2012 00:42:35 +0530
+Message-ID: <1346353958-7746-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-next-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CC8926627F
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 21:05:40 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 30, 2012 at 05:06:15PM +0300, Peter Ujfalusi wrote:
-> Part of commit (which patches sound/soc/omap/mcbsp.c file):
-> 8fef626 ARM/ASoC: omap-mcbsp: Remove CLKR/FSR mux configuration code
-> 
-> since the tree where it has been applied did not had the earlier patch:
-> d0db84e ASoC: omap-mcbsp: Fix 6pin mux configuration
-> which changed code around omap_mcbsp_6pin_src_mux().
-> 
-> Because of the missing part from 8fef626 the sound/soc/omap/mcbsp.c does
-> not compile in linux-next.
+Old wine ina  new bottle, so here is the second attempt for adding the notion of
+how devices (in my case a DSP) can buffer data and that can be used by sound
+core
 
-This makes little sense to me.  If the other patch is a dependency why
-not merge that dependency?  What does this mean at the code level?
-You're just talking about textual issues here, there's no semantic
-information about what any of this stuff does or how the changes relate
-to each other at all.
+Vinod Koul (3):
+  ALSA: pcm - introduce device_buffer
+  ASoC: add device_buffer in asoc
+  ASoC: mid-x86 - implement buffer query in sst_platform driver
 
-> When you applied 8fef626 you mentioned that it did not applied cleanly.
-> The reason was that the branch did not had commit d0db84e applied prior to the
-> series:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/054668.html
+ include/sound/pcm.h              |    1 +
+ include/sound/soc-dai.h          |    6 ++++++
+ include/sound/soc.h              |    7 ++++++-
+ sound/core/pcm_lib.c             |   14 +++++++++++---
+ sound/core/pcm_native.c          |    6 +++---
+ sound/soc/mid-x86/sst_platform.c |   23 +++++++++++++++++++++++
+ sound/soc/mid-x86/sst_platform.h |    4 +++-
+ sound/soc/soc-pcm.c              |   13 +++++++++++++
+ 8 files changed, 66 insertions(+), 8 deletions(-)
 
-> Now I can not find the d0db84e commit in the asoc tree (not in for-3.6, for-3.7
-> and not in for-next branch) anymore.
-
-The above doesn't mean much to me.
+-- 
+1.7.9.5
