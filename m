@@ -1,16 +1,18 @@
-From: Raymond Celius <raymond@oblitech.com>
-Subject: NRPACKS setting
-Date: Wed, 29 Aug 2012 22:55:28 +0200
-Message-ID: <B4C63CB1-2287-4B06-A8F7-8D7912816432@oblitech.com>
-References: <mailman.530.1346249660.854.alsa-devel@alsa-project.org>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH V3] ASoC: Davinci: machine: Add device tree
+	binding
+Date: Thu, 30 Aug 2012 04:01:00 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA6DDAD@DBDE01.ent.ti.com>
+References: <1346148830-2965-1-git-send-email-gururaja.hebbar@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from submit01.uniweb.no (submit01.uniweb.no [91.207.158.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D3F0265F91
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 22:55:31 +0200 (CEST)
-In-Reply-To: <mailman.530.1346249660.854.alsa-devel@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA8EB265D69
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 06:01:14 +0200 (CEST)
+In-Reply-To: <1346148830-2965-1-git-send-email-gururaja.hebbar@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,809 +22,357 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "Nori,
+ Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Girdwood,
+ Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
+
 
 Hi,
 
-Is the NRPACKS setting equal to the number of packets per URB ?
+Gentle Ping.
 
-Best regards,
-Raymond
 
-Den 29. aug.. 2012 kl. 16.14 skrev alsa-devel-request@alsa-project.org:
+On Tue, Aug 28, 2012 at 15:43:50, Hebbar, Gururaja wrote:
+> Device tree support for Davinci Machine driver
+> 
+> When the board boots with device tree, the driver will receive card,
+> codec, dai interface details (like the card name, DAPM routing map,
+> phandle for the audio components described in the dts file, codec mclk
+> speed).
+> The card will be set up based on this information.
+> Since the routing is provided via DT we can mark the card fully routed
+> so core can take care of disconnecting the unused pins.
+> 
+> When here, code indentation and comment style is also fixed
+> 
+> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+> ---
+> Changes from V1:
+> 	- Change DT parameter from "ti,codec-clock" to "ti,codec-clock-rate"
+> 	- add more explanation to DT parameters
+> 
+> Changes from V2:
+> 	- Update Documentation details
+> 	- Remove irrelevant commit message
+> 
+> :000000 100644 0000000... b248014... A	Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+> :100644 100644 ab0ad45... ca2a547... M	sound/soc/davinci/davinci-evm.c
+>  .../bindings/sound/davinci-evm-audio.txt           |   66 +++++++
+>  sound/soc/davinci/davinci-evm.c                    |  185 +++++++++++++++++--
+>  2 files changed, 231 insertions(+), 20 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+> new file mode 100644
+> index 0000000..b248014
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+> @@ -0,0 +1,66 @@
+> +* Texas Instruments SoC audio setups with TLV320AIC3X Codec
+> +
+> +Required properties:
+> +- compatible : "ti,davinci-evm-audio"
+> +- ti,model : The user-visible name of this sound complex.
+> +- ti,audio-routing : A list of the connections between audio components.
+> +  Each entry is a pair of strings, the first being the connection's sink,
+> +  the second being the connection's source. Valid names for sources and
+> +  sinks are the codec's pins, and the jacks on the board:
+> +
+> +  Codec pins:
+> +
+> +  * MIC3L
+> +  * MIC3R
+> +  * LINE1L
+> +  * LINE2L
+> +  * LINE1R
+> +  * LINE2R
+> +
+> +  Board connectors:
+> +
+> +  * Headphone Jack
+> +  * Line Out
+> +  * Mic Jack
+> +
+> +- ti,mcasp-controller : The phandle of the McASP controller
+> +- ti,audio-codec : The phandle of the TLV320AIC3x audio codec
+> +- ti,codec-clock-rate : The Codec Clock rate (in Hz) applied to the Codec
+> +
+> +- dai-data		: A list of DAI data used by SOC code to register
+> +			  DAI, Codecs platform.
+> +			  The string index "should" be as shown below.
+> +dai-data =
+> +"<DAI Name>", 		"<DAI Stream Name>",
+> +"<CODEC DAI Name>",	"<true if evm_aic3x_init is required, else false>",
+> +"<evm ops required (evm_ops or evm_spdif_ops)>";
+> +
+> +Here fields
+> +"<DAI Name>"		: used to indicate the DAI Name
+> +"<DAI Stream Name>"	: used to indicate the Stream Name
+> +"<CODEC DAI Name>"	: used to bind the link between Codec DAI and ASOC DAI
+> +
+> +Machine related options
+> +"<true/false>"		: Whether the machine specific initialization
+> +			: evm_aic3x_init() is required
+> +
+> +"<evm ops required>"	: Which hardware ops function is to be used.
+> +			: (evm_ops or evm_spdif_ops)
+> +			: use evm-spdif-ops if DAI is working in DIT mode
+> +			: else use evm-ops. These ops setup hw param callbacks
+> +			: which are used to setup CODEC/cpu DAI configuration
+> +			: and codec system clock.
+> +
+> +Example:
+> +
+> +sound {
+> +	compatible = "ti,davinci-evm-audio";
+> +	ti,model = "DA830 EVM";
+> +	ti,audio-codec = <&tlv320aic3x>;
+> +	ti,mcasp-controller = <&mcasp1>;
+> +	ti,codec-clock-rate = <12000000>;
+> +	dai-data =
+> +		"TLV320AIC3X", 		"AIC3X",
+> +		"tlv320aic3x-hifi",	"true",
+> +		"evm-ops";
+> +};
+> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+> index ab0ad45..ca2a547 100644
+> --- a/sound/soc/davinci/davinci-evm.c
+> +++ b/sound/soc/davinci/davinci-evm.c
+> @@ -34,27 +34,38 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>  	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	struct snd_soc_codec *codec = rtd->codec;
+> +	struct snd_soc_card *soc_card = codec->card;
+> +	struct device_node *np = soc_card->dev->of_node;
+>  	int ret = 0;
+>  	unsigned sysclk;
+>  
+> -	/* ASP1 on DM355 EVM is clocked by an external oscillator */
+> -	if (machine_is_davinci_dm355_evm() || machine_is_davinci_dm6467_evm() ||
+> -	    machine_is_davinci_dm365_evm())
+> -		sysclk = 27000000;
+> -
+> -	/* ASP0 in DM6446 EVM is clocked by U55, as configured by
+> -	 * board-dm644x-evm.c using GPIOs from U18.  There are six
+> -	 * options; here we "know" we use a 48 KHz sample rate.
+> -	 */
+> -	else if (machine_is_davinci_evm())
+> -		sysclk = 12288000;
+> -
+> -	else if (machine_is_davinci_da830_evm() ||
+> -				machine_is_davinci_da850_evm())
+> -		sysclk = 24576000;
+> -
+> -	else
+> -		return -EINVAL;
+> +	if (np) {
+> +		ret = of_property_read_u32(np, "ti,codec-clock-rate", &sysclk);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		/* ASP1 on DM355 EVM is clocked by an external oscillator */
+> +		if (machine_is_davinci_dm355_evm() ||
+> +			machine_is_davinci_dm6467_evm() ||
+> +			machine_is_davinci_dm365_evm())
+> +			sysclk = 27000000;
+> +
+> +		/*
+> +		 * ASP0 in DM6446 EVM is clocked by U55, as configured by
+> +		 * board-dm644x-evm.c using GPIOs from U18.  There are six
+> +		 * options; here we "know" we use a 48 KHz sample rate.
+> +		 */
+> +		else if (machine_is_davinci_evm())
+> +			sysclk = 12288000;
+> +
+> +		else if (machine_is_davinci_da830_evm() ||
+> +					machine_is_davinci_da850_evm())
+> +			sysclk = 24576000;
+> +
+> +		else
+> +			return -EINVAL;
+> +	}
+>  
+>  	/* set codec DAI configuration */
+>  	ret = snd_soc_dai_set_fmt(codec_dai, AUDIO_FORMAT);
+> @@ -127,13 +138,22 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+>  {
+>  	struct snd_soc_codec *codec = rtd->codec;
+>  	struct snd_soc_dapm_context *dapm = &codec->dapm;
+> +	struct device_node *np = codec->card->dev->of_node;
+> +	int ret;
+>  
+>  	/* Add davinci-evm specific widgets */
+>  	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
+>  				  ARRAY_SIZE(aic3x_dapm_widgets));
+>  
+> -	/* Set up davinci-evm specific audio path audio_map */
+> -	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+> +	if (np) {
+> +		ret = snd_soc_of_parse_audio_routing(codec->card,
+> +							"ti,audio-routing");
+> +		if (ret)
+> +			return ret;
+> +	} else {
+> +		/* Set up davinci-evm specific audio path audio_map */
+> +		snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+> +	}
+>  
+>  	/* not connected */
+>  	snd_soc_dapm_disable_pin(dapm, "MONO_LOUT");
+> @@ -282,6 +302,113 @@ static struct snd_soc_card da850_snd_soc_card = {
+>  	.num_links = 1,
+>  };
+>  
+> +#if defined(CONFIG_OF)
+> +/*
+> + * This struct is just used as place holder. It will be filled with
+> + * data from dt node
+> + */
+> +static struct snd_soc_dai_link evm_dai = {
+> +};
+> +
+> +/* davinci evm audio machine driver */
+> +static struct snd_soc_card evm_soc_card = {
+> +	.owner = THIS_MODULE,
+> +	.dai_link = &evm_dai,
+> +	.num_links = 1,
+> +};
+> +
+> +static int davinci_evm_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	const char *stringPtr, *propname;
+> +	u32 val;
+> +	int ret = 0;
+> +
+> +	propname = "dai-data";
+> +	val = of_property_count_strings(np, propname);
+> +	if (val < 0)
+> +		return val;
+> +
+> +	ret = of_property_read_string_index(np, propname, 0, &evm_dai.name);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = of_property_read_string_index(np, propname, 1,
+> +						&evm_dai.stream_name);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = of_property_read_string_index(np, propname, 2,
+> +						&evm_dai.codec_dai_name);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = of_property_read_string_index(np, propname, 3, &stringPtr);
+> +	if (ret < 0)
+> +		return ret;
+> +	else
+> +		if (strcasecmp(stringPtr, "true") == 0)
+> +			evm_dai.init = evm_aic3x_init;
+> +
+> +	ret = of_property_read_string_index(np, propname, 4, &stringPtr);
+> +	if (ret < 0) {
+> +		return ret;
+> +	} else {
+> +		if (strcasecmp(stringPtr, "evm-ops") == 0)
+> +			evm_dai.ops = &evm_ops;
+> +		else if (strcasecmp(stringPtr, "evm-spdif-ops") == 0)
+> +			evm_dai.ops = &evm_spdif_ops;
+> +	}
+> +
+> +	evm_dai.codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
+> +	if (!evm_dai.codec_of_node)
+> +		return -EINVAL;
+> +
+> +	evm_dai.cpu_dai_of_node = of_parse_phandle(np,
+> +						"ti,mcasp-controller", 0);
+> +	if (!evm_dai.cpu_dai_of_node)
+> +		return -EINVAL;
+> +
+> +	evm_dai.platform_of_node = evm_dai.cpu_dai_of_node;
+> +
+> +	evm_soc_card.dev = &pdev->dev;
+> +	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = snd_soc_register_card(&evm_soc_card);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int __devexit davinci_evm_remove(struct platform_device *pdev)
+> +{
+> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
+> +
+> +	snd_soc_unregister_card(card);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id davinci_evm_dt_ids[] = {
+> +	{ .compatible = "ti,davinci-evm-audio", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, davinci_mcasp_dt_ids);
+> +
+> +static struct platform_driver davinci_evm_driver = {
+> +	.probe		= davinci_evm_probe,
+> +	.remove		= __devexit_p(davinci_evm_remove),
+> +	.driver		= {
+> +		.name	= "davinci_evm",
+> +		.owner	= THIS_MODULE,
+> +		.of_match_table = of_match_ptr(davinci_evm_dt_ids),
+> +	},
+> +};
+> +#endif
+> +
+>  static struct platform_device *evm_snd_device;
+>  
+>  static int __init evm_init(void)
+> @@ -289,6 +416,14 @@ static int __init evm_init(void)
+>  	struct snd_soc_card *evm_snd_dev_data;
+>  	int index;
+>  	int ret;
+> +#if defined(CONFIG_OF)
+> +	struct device_node *np;
+> +
+> +	np = of_find_compatible_node(NULL, NULL, "ti,davinci-evm-audio");
+> +	if (np) {
+> +		return platform_driver_register(&davinci_evm_driver);
+> +	}
+> +#endif
+>  
+>  	if (machine_is_davinci_evm()) {
+>  		evm_snd_dev_data = &dm6446_snd_soc_card_evm;
+> @@ -325,6 +460,16 @@ static int __init evm_init(void)
+>  
+>  static void __exit evm_exit(void)
+>  {
+> +#if defined(CONFIG_OF)
+> +	struct device_node *np;
+> +
+> +	np = of_find_compatible_node(NULL, NULL, "ti,davinci-evm-audio");
+> +	if (np) {
+> +		platform_driver_unregister(&davinci_evm_driver);
+> +		return;
+> +	}
+> +#endif
+> +
+>  	platform_device_unregister(evm_snd_device);
+>  }
+>  
+> -- 
+> 1.7.1
+> 
+> 
 
-> Send Alsa-devel mailing list submissions to
-> 	alsa-devel@alsa-project.org
->
-> To subscribe or unsubscribe via the World Wide Web, visit
-> 	http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> or, via email, send a message with subject or body 'help' to
-> 	alsa-devel-request@alsa-project.org
->
-> You can reach the person managing the list at
-> 	alsa-devel-owner@alsa-project.org
->
-> When replying, please edit your Subject line so it is more specific
-> than "Re: Contents of Alsa-devel digest..."
->
->
-> Today's Topics:
->
->   1. Re: [PATCH] ALSA: hda - Fix runtime PM accounting (Lin, Mengdong)
->   2. Re: Logitech USB headset not working in 3.6-rc3 (Takashi Iwai)
->   3. Re: Logitech USB headset not working in 3.6-rc3 (Daniel Mack)
->   4. Re: [PATCH] ALSA: hda - Fix runtime PM accounting (Takashi Iwai)
->   5. Re: Logitech USB headset not working in 3.6-rc3 (Takashi Iwai)
->
->
-> ----------------------------------------------------------------------
->
-> Message: 1
-> Date: Wed, 29 Aug 2012 12:19:32 +0000
-> From: "Lin, Mengdong" <mengdong.lin@intel.com>
-> To: Takashi Iwai <tiwai@suse.de>
-> Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Fix runtime PM
-> 	accounting
-> Message-ID:
-> 	<F46914AEC2663F4A9BB62374E5EEF8F81DAFDF@SHSMSX101.ccr.corp.intel.com>
-> Content-Type: text/plain; charset="us-ascii"
->
->> Now I introduced codec->epss flag that is initialized once in
->> snd_hda_codec_new(), and let the codec driver overrides this flag.
->> One bonus is that you can avoid the unnecessary codec parameter  
->> read at
->> each power change.
->
-> Yes, this is better. And the patch works well for me - [PATCH 1/2]  
-> ALSA: hda - Avoid unnecessary parameter read for EPSS.
->
->> In anyway, there are a few issues:
->> - The refcounting gets broken after module unload.  It's because we
->>  leave the codec's pm_runtime usages after removal.
->
-> Thanks for pointing out this! But I think the following codec can  
-> introduce risk of race among multiple codecs to modify ' chip- 
-> >power_count',
-> because only one codec's power on/off is serialized.
-> static void azx_power_notify(struct hda_bus *bus, struct hda_codec  
-> *codec)
-> {
-> 	 ...
-> 	if (codec->power_on) {
-> 		pm_runtime_get_sync(&chip->pci->dev);
-> 		chip->power_count++;
-> 	} else {
-> 		pm_runtime_put_sync(&chip->pci->dev);
-> 		chip->power_count--;
-> 	}
-> }
->
-> How about calling pm_runtime_put_noidle() when freeing a codec in D0?
-> Maybe we can add a bus notify function like this:
-> Static void azx_codec_free_notify(struct hda_codec *codec)
-> {
-> 	If(codec->power_on)
-> 		pm_runtime_put_noidle(&codec->bus->pci->dev);
-> }
-> And snd_hda_codec_free() can trigger this notify.
->
->> - The D3-stop-clock check isn't done properly for the codecs  
->> providing
->>  own set_power_state ops.
->
-> I cannot test the branch 'if (codec->patch_ops.set_power_state)' in  
-> hda_set_power_state() for lack of such a codec.
-> But the logic seems right and the other branch works well for me :-)
->
->> - Ditto for the repeated power-set sequence, the error check, etc.
-> In hda_sync_power_state(),
-> 	if ((state & 0xff) == power_state)   ... should be if ((state &  
-> 0xf0)>> 4 == power_state), because PS-Act is bits 7:4
-> 		break;
->
-> And would you please explain why changing to D3 need not wait? One  
-> of my codec does have a delay on change from D0 to D3.
->
-> Thanks
-> Mengdong
->
->
->
-> ------------------------------
->
-> Message: 2
-> Date: Wed, 29 Aug 2012 15:29:03 +0200
-> From: Takashi Iwai <tiwai@suse.de>
-> To: Daniel Mack <zonque@gmail.com>
-> Cc: Bruno Wolff III <bruno@wolff.to>, alsa-devel@alsa-project.org,
-> 	linux-kernel@vger.kernel.org, Josh Boyer <jwboyer@redhat.com>
-> Subject: Re: [alsa-devel] Logitech USB headset not working in 3.6-rc3
-> Message-ID: <s5hsjb56d40.wl%tiwai@suse.de>
-> Content-Type: text/plain; charset=US-ASCII
->
-> At Wed, 29 Aug 2012 13:26:25 +0200,
-> Daniel Mack wrote:
->>
->> [1  <text/plain; ISO-8859-1 (7bit)>]
->> On 25.08.2012 14:17, Josh Boyer wrote:
->>> On Sat, Aug 25, 2012 at 02:13:58PM +0200, Daniel Mack wrote:
->>>> On 25.08.2012 14:07, Bruno Wolff III wrote:
->>>>> On Sat, Aug 25, 2012 at 14:02:51 +0200,
->>>>>   Daniel Mack <zonque@gmail.com> wrote:
->>>>>>
->>>>>> Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
->>>>>> scheduling-while-atomic bug in PCM capture stream") and see if  
->>>>>> that
->>>>>
->>>>> I can try that, but it takes a long time to build a new kernel  
->>>>> on my
->>>>> old hardware.
->>>>>
->>>>>> helps? If not, can you summarize again which kernels still work  
->>>>>> for you
->>>>>> and which don't?
->>>>>
->>>>> The latest kernel that works is 3.6.0-0.rc2.git1.2.fc18. The  
->>>>> earliest that
->>>>> doesn't work is 3.6.0-0.rc2.git2.1.fc18.
->>>>>
->>>>
->>>> The report you sent doesn't look like it could be caused by  
->>>> e9ba389c5.
->>>> It fixes a kernel Ooops. But as it is the only relevant patch in  
->>>> that
->>>> area, it would be interesting if reverting it fixes anything.
->>>
->>> Yep, agreed.  If this revert kernel doesn't work, we're likely  
->>> down to a
->>> git bisect, Bruno.
->>>
->>>> Btw - thanks a lot for testing -rc kernels, much appreciated!
->>>
->>> Indeed!
->>
->> Could you please try this patch on top of Takashi's? Thanks again!
->>
->>
->> Daniel
->>
->> [2 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch  
->> <text/x-patch (7bit)>]
->>> From 6617bb2463ae3fad21390b59cc2a71f96b9e9ca8 Mon Sep 17 00:00:00  
->>> 2001
->> From: Daniel Mack <zonque@gmail.com>
->> Date: Wed, 29 Aug 2012 13:17:05 +0200
->> Subject: [PATCH] ALSA: snd-usb: Fix URB cancellation at stream start
->>
->> Commit e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic bug  
->> in
->> PCM capture stream") fixed a scheduling-while-atomic bug that  
->> happened
->> when snd_usb_endpoint_start was called from the trigger callback,  
->> which
->> is an atmic context. However, the patch breaks the idea of the  
->> endpoints
->> reference counting, which is the reason why the driver has been
->> refactored lately.
->>
->> Revert that commit and let snd_usb_endpoint_start() take care of  
->> the URB
->> cancellation again. As this function is called from both atomic and
->> non-atomic context, add a flag to denote whether the function may  
->> sleep.
->>
->> Signed-off-by: Daniel Mack <zonque@gmail.com>
->> Cc: stable@kernel.org [3.5+]
->> ---
->> sound/usb/endpoint.c | 10 ++++++++--
->> sound/usb/endpoint.h |  2 +-
->> sound/usb/pcm.c      | 13 +++++--------
->> 3 files changed, 14 insertions(+), 11 deletions(-)
->>
->> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->> index c411812..678456c 100644
->> --- a/sound/usb/endpoint.c
->> +++ b/sound/usb/endpoint.c
->> @@ -799,7 +799,9 @@ int snd_usb_endpoint_set_params(struct  
->> snd_usb_endpoint *ep,
->> /**
->>  * snd_usb_endpoint_start: start an snd_usb_endpoint
->>  *
->> - * @ep: the endpoint to start
->> + * @ep:		the endpoint to start
->> + * @can_sleep:	flag indicating whether the operation is executed in
->> + * 		non-atomic context
->>  *
->>  * A call to this function will increment the use count of the  
->> endpoint.
->>  * In case it is not already running, the URBs for this endpoint  
->> will be
->> @@ -809,7 +811,7 @@ int snd_usb_endpoint_set_params(struct  
->> snd_usb_endpoint *ep,
->>  *
->>  * Returns an error if the URB submission failed, 0 in all other  
->> cases.
->>  */
->> -int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
->> +int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int  
->> can_sleep)
->> {
->> 	int err;
->> 	unsigned int i;
->> @@ -821,6 +823,10 @@ int snd_usb_endpoint_start(struct  
->> snd_usb_endpoint *ep)
->> 	if (++ep->use_count != 1)
->> 		return 0;
->>
->> +	/* just to be sure */
->> +	deactivate_urbs(ep, 0, can_sleep);
->> +	wait_clear_urbs(ep);
->
-> It'd be safer to protect the call of wait_clear_urbs() when
-> can_sleep=0.
->
->
-> thanks,
->
-> Takashi
->
->
-> ------------------------------
->
-> Message: 3
-> Date: Wed, 29 Aug 2012 15:32:34 +0200
-> From: Daniel Mack <zonque@gmail.com>
-> To: Takashi Iwai <tiwai@suse.de>
-> Cc: Bruno Wolff III <bruno@wolff.to>, alsa-devel@alsa-project.org,
-> 	linux-kernel@vger.kernel.org, Josh Boyer <jwboyer@redhat.com>
-> Subject: Re: [alsa-devel] Logitech USB headset not working in 3.6-rc3
-> Message-ID: <503E19F2.3080302@gmail.com>
-> Content-Type: text/plain; charset="iso-8859-1"
->
-> On 29.08.2012 15:29, Takashi Iwai wrote:
->> At Wed, 29 Aug 2012 13:26:25 +0200,
->> Daniel Mack wrote:
->>>
->>> [1  <text/plain; ISO-8859-1 (7bit)>]
->>> On 25.08.2012 14:17, Josh Boyer wrote:
->>>> On Sat, Aug 25, 2012 at 02:13:58PM +0200, Daniel Mack wrote:
->>>>> On 25.08.2012 14:07, Bruno Wolff III wrote:
->>>>>> On Sat, Aug 25, 2012 at 14:02:51 +0200,
->>>>>>   Daniel Mack <zonque@gmail.com> wrote:
->>>>>>>
->>>>>>> Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
->>>>>>> scheduling-while-atomic bug in PCM capture stream") and see if  
->>>>>>> that
->>>>>>
->>>>>> I can try that, but it takes a long time to build a new kernel  
->>>>>> on my
->>>>>> old hardware.
->>>>>>
->>>>>>> helps? If not, can you summarize again which kernels still  
->>>>>>> work for you
->>>>>>> and which don't?
->>>>>>
->>>>>> The latest kernel that works is 3.6.0-0.rc2.git1.2.fc18. The  
->>>>>> earliest that
->>>>>> doesn't work is 3.6.0-0.rc2.git2.1.fc18.
->>>>>>
->>>>>
->>>>> The report you sent doesn't look like it could be caused by  
->>>>> e9ba389c5.
->>>>> It fixes a kernel Ooops. But as it is the only relevant patch in  
->>>>> that
->>>>> area, it would be interesting if reverting it fixes anything.
->>>>
->>>> Yep, agreed.  If this revert kernel doesn't work, we're likely  
->>>> down to a
->>>> git bisect, Bruno.
->>>>
->>>>> Btw - thanks a lot for testing -rc kernels, much appreciated!
->>>>
->>>> Indeed!
->>>
->>> Could you please try this patch on top of Takashi's? Thanks again!
->>>
->>>
->>> Daniel
->>>
->>> [2 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch  
->>> <text/x-patch (7bit)>]
->>>> From 6617bb2463ae3fad21390b59cc2a71f96b9e9ca8 Mon Sep 17 00:00:00  
->>>> 2001
->>> From: Daniel Mack <zonque@gmail.com>
->>> Date: Wed, 29 Aug 2012 13:17:05 +0200
->>> Subject: [PATCH] ALSA: snd-usb: Fix URB cancellation at stream start
->>>
->>> Commit e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic  
->>> bug in
->>> PCM capture stream") fixed a scheduling-while-atomic bug that  
->>> happened
->>> when snd_usb_endpoint_start was called from the trigger callback,  
->>> which
->>> is an atmic context. However, the patch breaks the idea of the  
->>> endpoints
->>> reference counting, which is the reason why the driver has been
->>> refactored lately.
->>>
->>> Revert that commit and let snd_usb_endpoint_start() take care of  
->>> the URB
->>> cancellation again. As this function is called from both atomic and
->>> non-atomic context, add a flag to denote whether the function may  
->>> sleep.
->>>
->>> Signed-off-by: Daniel Mack <zonque@gmail.com>
->>> Cc: stable@kernel.org [3.5+]
->>> ---
->>> sound/usb/endpoint.c | 10 ++++++++--
->>> sound/usb/endpoint.h |  2 +-
->>> sound/usb/pcm.c      | 13 +++++--------
->>> 3 files changed, 14 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->>> index c411812..678456c 100644
->>> --- a/sound/usb/endpoint.c
->>> +++ b/sound/usb/endpoint.c
->>> @@ -799,7 +799,9 @@ int snd_usb_endpoint_set_params(struct  
->>> snd_usb_endpoint *ep,
->>> /**
->>>  * snd_usb_endpoint_start: start an snd_usb_endpoint
->>>  *
->>> - * @ep: the endpoint to start
->>> + * @ep:		the endpoint to start
->>> + * @can_sleep:	flag indicating whether the operation is executed in
->>> + * 		non-atomic context
->>>  *
->>>  * A call to this function will increment the use count of the  
->>> endpoint.
->>>  * In case it is not already running, the URBs for this endpoint  
->>> will be
->>> @@ -809,7 +811,7 @@ int snd_usb_endpoint_set_params(struct  
->>> snd_usb_endpoint *ep,
->>>  *
->>>  * Returns an error if the URB submission failed, 0 in all other  
->>> cases.
->>>  */
->>> -int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
->>> +int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int  
->>> can_sleep)
->>> {
->>> 	int err;
->>> 	unsigned int i;
->>> @@ -821,6 +823,10 @@ int snd_usb_endpoint_start(struct  
->>> snd_usb_endpoint *ep)
->>> 	if (++ep->use_count != 1)
->>> 		return 0;
->>>
->>> +	/* just to be sure */
->>> +	deactivate_urbs(ep, 0, can_sleep);
->>> +	wait_clear_urbs(ep);
->>
->> It'd be safer to protect the call of wait_clear_urbs() when
->> can_sleep=0.
->
-> Right. New patch attached.
->
-> -------------- next part --------------
-> A non-text attachment was scrubbed...
-> Name: 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
-> Type: text/x-patch
-> Size: 4689 bytes
-> Desc: not available
-> URL: <http://mailman.alsa-project.org/pipermail/alsa-devel/attachments/20120829/502d1fab/attachment-0001.bin 
-> >
->
-> ------------------------------
->
-> Message: 4
-> Date: Wed, 29 Aug 2012 15:34:35 +0200
-> From: Takashi Iwai <tiwai@suse.de>
-> To: "Lin, Mengdong" <mengdong.lin@intel.com>
-> Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Fix runtime PM
-> 	accounting
-> Message-ID: <s5hr4qp6cus.wl%tiwai@suse.de>
-> Content-Type: text/plain; charset=US-ASCII
->
-> At Wed, 29 Aug 2012 12:19:32 +0000,
-> Lin, Mengdong wrote:
->>
->>> Now I introduced codec->epss flag that is initialized once in
->>> snd_hda_codec_new(), and let the codec driver overrides this flag.
->>> One bonus is that you can avoid the unnecessary codec parameter  
->>> read at
->>> each power change.
->>
->> Yes, this is better. And the patch works well for me - [PATCH 1/2]  
->> ALSA: hda - Avoid unnecessary parameter read for EPSS.
->>
->>> In anyway, there are a few issues:
->>> - The refcounting gets broken after module unload.  It's because we
->>>  leave the codec's pm_runtime usages after removal.
->>
->> Thanks for pointing out this! But I think the following codec can  
->> introduce risk of race among multiple codecs to modify ' chip- 
->> >power_count',
->> because only one codec's power on/off is serialized.
->> static void azx_power_notify(struct hda_bus *bus, struct hda_codec  
->> *codec)
->> {
->> 	 ...
->> 	if (codec->power_on) {
->> 		pm_runtime_get_sync(&chip->pci->dev);
->> 		chip->power_count++;
->> 	} else {
->> 		pm_runtime_put_sync(&chip->pci->dev);
->> 		chip->power_count--;
->> 	}
->> }
->>
->> How about calling pm_runtime_put_noidle() when freeing a codec in D0?
->> Maybe we can add a bus notify function like this:
->> Static void azx_codec_free_notify(struct hda_codec *codec)
->> {
->> 	If(codec->power_on)
->> 		pm_runtime_put_noidle(&codec->bus->pci->dev);
->> }
->> And snd_hda_codec_free() can trigger this notify.
->
-> That's my second idea but I didn't want to introduce yet another op
-> point.  But maybe it shall be the choice in the end...
->
->>> - The D3-stop-clock check isn't done properly for the codecs  
->>> providing
->>>  own set_power_state ops.
->>
->> I cannot test the branch 'if (codec->patch_ops.set_power_state)' in  
->> hda_set_power_state() for lack of such a codec.
->> But the logic seems right and the other branch works well for me :-)
->>
->>> - Ditto for the repeated power-set sequence, the error check, etc.
->> In hda_sync_power_state(),
->> 	if ((state & 0xff) == power_state)   ... should be if ((state &  
->> 0xf0)>> 4 == power_state), because PS-Act is bits 7:4
->> 		break;
->
-> Ah thanks, I forgot that.
->
->> And would you please explain why changing to D3 need not wait? One  
->> of my codec does have a delay on change from D0 to D3.
->
-> It was skipped because the driver doesn't need to wait.  It's just a
-> power down and doesn't matter even if you proceed if you go to the
-> next codec.  But as we are checking stop-clock bit, D3 should be
-> sync'ed as well, indeed.  I'm going to remove the exception of D3,
-> too.
->
->
-> thanks,
->
-> Takashi
->
->
-> ------------------------------
->
-> Message: 5
-> Date: Wed, 29 Aug 2012 16:14:15 +0200
-> From: Takashi Iwai <tiwai@suse.de>
-> To: Daniel Mack <zonque@gmail.com>
-> Cc: Bruno Wolff III <bruno@wolff.to>, alsa-devel@alsa-project.org,
-> 	linux-kernel@vger.kernel.org, Josh Boyer <jwboyer@redhat.com>
-> Subject: Re: [alsa-devel] Logitech USB headset not working in 3.6-rc3
-> Message-ID: <s5hoblt6b0o.wl%tiwai@suse.de>
-> Content-Type: text/plain; charset=US-ASCII
->
-> At Wed, 29 Aug 2012 15:32:34 +0200,
-> Daniel Mack wrote:
->>
->> [1  <text/plain; ISO-8859-1 (7bit)>]
->> On 29.08.2012 15:29, Takashi Iwai wrote:
->>> At Wed, 29 Aug 2012 13:26:25 +0200,
->>> Daniel Mack wrote:
->>>>
->>>> [1  <text/plain; ISO-8859-1 (7bit)>]
->>>> On 25.08.2012 14:17, Josh Boyer wrote:
->>>>> On Sat, Aug 25, 2012 at 02:13:58PM +0200, Daniel Mack wrote:
->>>>>> On 25.08.2012 14:07, Bruno Wolff III wrote:
->>>>>>> On Sat, Aug 25, 2012 at 14:02:51 +0200,
->>>>>>>   Daniel Mack <zonque@gmail.com> wrote:
->>>>>>>>
->>>>>>>> Can you revert commit e9ba389c5 ("ALSA: usb-audio: Fix
->>>>>>>> scheduling-while-atomic bug in PCM capture stream") and see  
->>>>>>>> if that
->>>>>>>
->>>>>>> I can try that, but it takes a long time to build a new kernel  
->>>>>>> on my
->>>>>>> old hardware.
->>>>>>>
->>>>>>>> helps? If not, can you summarize again which kernels still  
->>>>>>>> work for you
->>>>>>>> and which don't?
->>>>>>>
->>>>>>> The latest kernel that works is 3.6.0-0.rc2.git1.2.fc18. The  
->>>>>>> earliest that
->>>>>>> doesn't work is 3.6.0-0.rc2.git2.1.fc18.
->>>>>>>
->>>>>>
->>>>>> The report you sent doesn't look like it could be caused by  
->>>>>> e9ba389c5.
->>>>>> It fixes a kernel Ooops. But as it is the only relevant patch  
->>>>>> in that
->>>>>> area, it would be interesting if reverting it fixes anything.
->>>>>
->>>>> Yep, agreed.  If this revert kernel doesn't work, we're likely  
->>>>> down to a
->>>>> git bisect, Bruno.
->>>>>
->>>>>> Btw - thanks a lot for testing -rc kernels, much appreciated!
->>>>>
->>>>> Indeed!
->>>>
->>>> Could you please try this patch on top of Takashi's? Thanks again!
->>>>
->>>>
->>>> Daniel
->>>>
->>>> [2 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch  
->>>> <text/x-patch (7bit)>]
->>>>> From 6617bb2463ae3fad21390b59cc2a71f96b9e9ca8 Mon Sep 17  
->>>>> 00:00:00 2001
->>>> From: Daniel Mack <zonque@gmail.com>
->>>> Date: Wed, 29 Aug 2012 13:17:05 +0200
->>>> Subject: [PATCH] ALSA: snd-usb: Fix URB cancellation at stream  
->>>> start
->>>>
->>>> Commit e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic  
->>>> bug in
->>>> PCM capture stream") fixed a scheduling-while-atomic bug that  
->>>> happened
->>>> when snd_usb_endpoint_start was called from the trigger callback,  
->>>> which
->>>> is an atmic context. However, the patch breaks the idea of the  
->>>> endpoints
->>>> reference counting, which is the reason why the driver has been
->>>> refactored lately.
->>>>
->>>> Revert that commit and let snd_usb_endpoint_start() take care of  
->>>> the URB
->>>> cancellation again. As this function is called from both atomic and
->>>> non-atomic context, add a flag to denote whether the function may  
->>>> sleep.
->>>>
->>>> Signed-off-by: Daniel Mack <zonque@gmail.com>
->>>> Cc: stable@kernel.org [3.5+]
->>>> ---
->>>> sound/usb/endpoint.c | 10 ++++++++--
->>>> sound/usb/endpoint.h |  2 +-
->>>> sound/usb/pcm.c      | 13 +++++--------
->>>> 3 files changed, 14 insertions(+), 11 deletions(-)
->>>>
->>>> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->>>> index c411812..678456c 100644
->>>> --- a/sound/usb/endpoint.c
->>>> +++ b/sound/usb/endpoint.c
->>>> @@ -799,7 +799,9 @@ int snd_usb_endpoint_set_params(struct  
->>>> snd_usb_endpoint *ep,
->>>> /**
->>>>  * snd_usb_endpoint_start: start an snd_usb_endpoint
->>>>  *
->>>> - * @ep: the endpoint to start
->>>> + * @ep:		the endpoint to start
->>>> + * @can_sleep:	flag indicating whether the operation is executed  
->>>> in
->>>> + * 		non-atomic context
->>>>  *
->>>>  * A call to this function will increment the use count of the  
->>>> endpoint.
->>>>  * In case it is not already running, the URBs for this endpoint  
->>>> will be
->>>> @@ -809,7 +811,7 @@ int snd_usb_endpoint_set_params(struct  
->>>> snd_usb_endpoint *ep,
->>>>  *
->>>>  * Returns an error if the URB submission failed, 0 in all other  
->>>> cases.
->>>>  */
->>>> -int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
->>>> +int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int  
->>>> can_sleep)
->>>> {
->>>> 	int err;
->>>> 	unsigned int i;
->>>> @@ -821,6 +823,10 @@ int snd_usb_endpoint_start(struct  
->>>> snd_usb_endpoint *ep)
->>>> 	if (++ep->use_count != 1)
->>>> 		return 0;
->>>>
->>>> +	/* just to be sure */
->>>> +	deactivate_urbs(ep, 0, can_sleep);
->>>> +	wait_clear_urbs(ep);
->>>
->>> It'd be safer to protect the call of wait_clear_urbs() when
->>> can_sleep=0.
->>
->> Right. New patch attached.
->
-> Thanks.  This makes me thinking whether we really need to call
-> deactivate_urbs() at snd_usb_endpoint_start().  deactivate_endpoints()
-> is called already in prepare (at the beginning).  Which possibility is
-> considered?  The comment "just to be sure" implies that my original
-> code before your stream model change was simply optional.  Now I'm not
-> quite sure whether we can drop it or not...
->
->
-> thanks,
->
-> Takashi
->
->>
->> [2 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch  
->> <text/x-patch (7bit)>]
->>> From 42ff3e2d34427dc4c6faa09052a2531f2e71d7d6 Mon Sep 17 00:00:00  
->>> 2001
->> From: Daniel Mack <zonque@gmail.com>
->> Date: Wed, 29 Aug 2012 13:17:05 +0200
->> Subject: [PATCH] ALSA: snd-usb: Fix URB cancellation at stream start
->>
->> Commit e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic bug  
->> in
->> PCM capture stream") fixed a scheduling-while-atomic bug that  
->> happened
->> when snd_usb_endpoint_start was called from the trigger callback,  
->> which
->> is an atmic context. However, the patch breaks the idea of the  
->> endpoints
->> reference counting, which is the reason why the driver has been
->> refactored lately.
->>
->> Revert that commit and let snd_usb_endpoint_start() take care of  
->> the URB
->> cancellation again. As this function is called from both atomic and
->> non-atomic context, add a flag to denote whether the function may  
->> sleep.
->>
->> Signed-off-by: Daniel Mack <zonque@gmail.com>
->> Cc: stable@kernel.org [3.5+]
->> ---
->> sound/usb/endpoint.c | 11 +++++++++--
->> sound/usb/endpoint.h |  2 +-
->> sound/usb/pcm.c      | 13 +++++--------
->> 3 files changed, 15 insertions(+), 11 deletions(-)
->>
->> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->> index c411812..b896c55 100644
->> --- a/sound/usb/endpoint.c
->> +++ b/sound/usb/endpoint.c
->> @@ -799,7 +799,9 @@ int snd_usb_endpoint_set_params(struct  
->> snd_usb_endpoint *ep,
->> /**
->>  * snd_usb_endpoint_start: start an snd_usb_endpoint
->>  *
->> - * @ep: the endpoint to start
->> + * @ep:		the endpoint to start
->> + * @can_sleep:	flag indicating whether the operation is executed in
->> + * 		non-atomic context
->>  *
->>  * A call to this function will increment the use count of the  
->> endpoint.
->>  * In case it is not already running, the URBs for this endpoint  
->> will be
->> @@ -809,7 +811,7 @@ int snd_usb_endpoint_set_params(struct  
->> snd_usb_endpoint *ep,
->>  *
->>  * Returns an error if the URB submission failed, 0 in all other  
->> cases.
->>  */
->> -int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
->> +int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int  
->> can_sleep)
->> {
->> 	int err;
->> 	unsigned int i;
->> @@ -821,6 +823,11 @@ int snd_usb_endpoint_start(struct  
->> snd_usb_endpoint *ep)
->> 	if (++ep->use_count != 1)
->> 		return 0;
->>
->> +	/* just to be sure */
->> +	deactivate_urbs(ep, 0, can_sleep);
->> +	if (can_sleep)
->> +		wait_clear_urbs(ep);
->> +
->> 	ep->active_mask = 0;
->> 	ep->unlink_mask = 0;
->> 	ep->phase = 0;
->> diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
->> index ee2723f..a8e60c1 100644
->> --- a/sound/usb/endpoint.h
->> +++ b/sound/usb/endpoint.h
->> @@ -13,7 +13,7 @@ int snd_usb_endpoint_set_params(struct  
->> snd_usb_endpoint *ep,
->> 				struct audioformat *fmt,
->> 				struct snd_usb_endpoint *sync_ep);
->>
->> -int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep);
->> +int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep, int  
->> can_sleep);
->> void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep,
->> 			   int force, int can_sleep, int wait);
->> int  snd_usb_endpoint_activate(struct snd_usb_endpoint *ep);
->> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
->> index 62ec808..1546577 100644
->> --- a/sound/usb/pcm.c
->> +++ b/sound/usb/pcm.c
->> @@ -212,7 +212,7 @@ int snd_usb_init_pitch(struct snd_usb_audio  
->> *chip, int iface,
->> 	}
->> }
->>
->> -static int start_endpoints(struct snd_usb_substream *subs)
->> +static int start_endpoints(struct snd_usb_substream *subs, int  
->> can_sleep)
->> {
->> 	int err;
->>
->> @@ -225,7 +225,7 @@ static int start_endpoints(struct  
->> snd_usb_substream *subs)
->> 		snd_printdd(KERN_DEBUG "Starting data EP @%p\n", ep);
->>
->> 		ep->data_subs = subs;
->> -		err = snd_usb_endpoint_start(ep);
->> +		err = snd_usb_endpoint_start(ep, can_sleep);
->> 		if (err < 0) {
->> 			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
->> 			return err;
->> @@ -239,7 +239,7 @@ static int start_endpoints(struct  
->> snd_usb_substream *subs)
->> 		snd_printdd(KERN_DEBUG "Starting sync EP @%p\n", ep);
->>
->> 		ep->sync_slave = subs->data_endpoint;
->> -		err = snd_usb_endpoint_start(ep);
->> +		err = snd_usb_endpoint_start(ep, can_sleep);
->> 		if (err < 0) {
->> 			clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
->> 			return err;
->> @@ -544,13 +544,10 @@ static int snd_usb_pcm_prepare(struct  
->> snd_pcm_substream *substream)
->> 	subs->last_frame_number = 0;
->> 	runtime->delay = 0;
->>
->> -	/* clear the pending deactivation on the target EPs */
->> -	deactivate_endpoints(subs);
->> -
->> 	/* for playback, submit the URBs now; otherwise, the first  
->> hwptr_done
->> 	 * updates for all URBs would happen at the same time when  
->> starting */
->> 	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
->> -		return start_endpoints(subs);
->> +		return start_endpoints(subs, 1);
->>
->> 	return 0;
->> }
->> @@ -1175,7 +1172,7 @@ static int  
->> snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
->>
->> 	switch (cmd) {
->> 	case SNDRV_PCM_TRIGGER_START:
->> -		err = start_endpoints(subs);
->> +		err = start_endpoints(subs, 0);
->> 		if (err < 0)
->> 			return err;
->>
->> -- 
->> 1.7.11.4
->>
->
->
-> ------------------------------
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
-> End of Alsa-devel Digest, Vol 66, Issue 173
-> *******************************************
+
+Regards, 
+Gururaja
