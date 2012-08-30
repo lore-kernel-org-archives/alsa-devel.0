@@ -1,57 +1,42 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
- snd_soc_set_fmt()
-Date: Thu, 30 Aug 2012 10:43:18 -0700
-Message-ID: <20120830174317.GG4356@opensource.wolfsonmicro.com>
-References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
- <20120827204550.GA4400@opensource.wolfsonmicro.com>
- <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Fix compilation error due to leftover
+ code
+Date: Thu, 30 Aug 2012 11:02:20 -0700
+Message-ID: <20120830180219.GI4356@opensource.wolfsonmicro.com>
+References: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Return-path: <linux-next-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sangsu Park <sangsu4u.park@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, 'Kukjin Kim' <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 29, 2012 at 08:06:32PM +0900, Sangsu Park wrote:
+On Thu, Aug 30, 2012 at 05:06:15PM +0300, Peter Ujfalusi wrote:
+> Part of commit (which patches sound/soc/omap/mcbsp.c file):
+> 8fef626 ARM/ASoC: omap-mcbsp: Remove CLKR/FSR mux configuration code
+> 
+> since the tree where it has been applied did not had the earlier patch:
+> d0db84e ASoC: omap-mcbsp: Fix 6pin mux configuration
+> which changed code around omap_mcbsp_6pin_src_mux().
+> 
+> Because of the missing part from 8fef626 the sound/soc/omap/mcbsp.c does
+> not compile in linux-next.
 
-Please check your mailer configuration, it looks like it's reformatting
-all the text with much longer line widths.
+This makes little sense to me.  If the other patch is a dependency why
+not merge that dependency?  What does this mean at the code level?
+You're just talking about textual issues here, there's no semantic
+information about what any of this stuff does or how the changes relate
+to each other at all.
 
-> On Sun, Aug 26, 2012 at 05:45:54PM +0900, Mark Brown wrote:
+> When you applied 8fef626 you mentioned that it did not applied cleanly.
+> The reason was that the branch did not had commit d0db84e applied prior to the
+> series:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/054668.html
 
-> > a whole lot of sense on the slave side, it's related to the clock generation so should have no
-> > effect at all on the slave side.  The driver code looks reasonably sensible though.
+> Now I can not find the d0db84e commit in the asoc tree (not in for-3.6, for-3.7
+> and not in for-next branch) anymore.
 
-> You mean cpu side is slave? 
-
-Yes.
-
-
-> > What specifically is going wrong here?
-
-> SND_SOC_DAIFMT_CONT is used sound/soc/Samsung/pcm.c (s3c_pcm_set_fmt()) like below.
-
-> switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
->         case SND_SOC_DAIFMT_CONT:
->                 pcm->idleclk = 1;
->                 break;
->         case SND_SOC_DAIFMT_GATED:
->                 pcm->idleclk = 0;
->                 break;
->         default:
->                 dev_err(pcm->dev, "Invalid Clock gating request!\n");
->                 ret = -EINVAL;
->                 goto exit;
->         }
-
-> If fmt argument has no SND_SOC_DAIFMT_ option, s3c_pcm_set_fmt() return -EINVAL.
-
-So, clearly this is unrelated to the change you mentioned in your commit
-message - it looks like this is just a plain issue in the machine
-driver.  That said the above code should be changed to at least ignore
-the setting in slave mode (since the clock shouldn't be being driven and
-it doesn't matter).
+The above doesn't mean much to me.
