@@ -1,14 +1,15 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH 2/3] ASoC: add device_buffer in asoc
-Date: Fri, 31 Aug 2012 00:42:37 +0530
-Message-ID: <1346353958-7746-3-git-send-email-vinod.koul@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: mid-x86 - implement buffer query in
+	sst_platform driver
+Date: Fri, 31 Aug 2012 00:42:38 +0530
+Message-ID: <1346353958-7746-4-git-send-email-vinod.koul@linux.intel.com>
 References: <1346353958-7746-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 364132662AA
+ by alsa0.perex.cz (Postfix) with ESMTP id 39E822662CA
  for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 21:05:40 +0200 (CEST)
 In-Reply-To: <1346353958-7746-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,77 +27,72 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
 ---
- include/sound/soc-dai.h |    6 ++++++
- include/sound/soc.h     |    7 ++++++-
- sound/soc/soc-pcm.c     |   13 +++++++++++++
- 3 files changed, 25 insertions(+), 1 deletion(-)
+ sound/soc/mid-x86/sst_platform.c |   23 +++++++++++++++++++++++
+ sound/soc/mid-x86/sst_platform.h |    4 +++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 628db7b..b0c84df 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -182,6 +182,12 @@ struct snd_soc_dai_ops {
- 	 */
- 	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
- 		struct snd_soc_dai *);
-+	/*
-+	 * For hardware based buffer reporting
-+	 * Optional.
-+	 */
-+	snd_pcm_sframes_t (*buffer)(struct snd_pcm_substream *,
-+		struct snd_soc_dai *);
+diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
+index a263cbe..ec8773f 100644
+--- a/sound/soc/mid-x86/sst_platform.c
++++ b/sound/soc/mid-x86/sst_platform.c
+@@ -424,6 +424,28 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+ 	return stream->stream_info.buffer_ptr;
+ }
+ 
++static snd_pcm_sframes_t sst_platform_pcm_buffer(
++		struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct sst_runtime_stream *stream;
++	int ret_val, status;
++	struct pcm_stream_info *str_info;
++
++	stream = substream->runtime->private_data;
++	status = sst_get_stream_status(stream);
++	if (status == SST_PLATFORM_INIT)
++		return 0;
++	str_info = &stream->stream_info;
++	ret_val = stream->ops->device_control(
++				SST_SND_BUFFER_DELTA, str_info);
++	if (ret_val) {
++		pr_err("sst: error code = %d\n", ret_val);
++		return ret_val;
++	}
++	return stream->stream_info.buffer_delta;
++}
++
+ static int sst_platform_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params)
+ {
+@@ -669,6 +691,7 @@ static struct snd_soc_platform_driver sst_soc_platform_drv = {
+ 	.compr_ops	= &sst_platform_compr_ops,
+ 	.pcm_new	= sst_pcm_new,
+ 	.pcm_free	= sst_pcm_free,
++	.buffer		= sst_platform_pcm_buffer,
  };
  
- /*
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 313b766..0d5046b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -795,7 +795,12 @@ struct snd_soc_platform_driver {
- 	 */
- 	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
- 		struct snd_soc_dai *);
--
-+	/*
-+	 * For hardware based buffer reporting
-+	 * Optional.
-+	 */
-+	snd_pcm_sframes_t (*buffer)(struct snd_pcm_substream *,
-+		struct snd_soc_dai *);
- 	/* platform stream pcm ops */
- 	struct snd_pcm_ops *ops;
+ static int sst_platform_probe(struct platform_device *pdev)
+diff --git a/sound/soc/mid-x86/sst_platform.h b/sound/soc/mid-x86/sst_platform.h
+index d61c5d5..300b45f 100644
+--- a/sound/soc/mid-x86/sst_platform.h
++++ b/sound/soc/mid-x86/sst_platform.h
+@@ -50,6 +50,7 @@ struct pcm_stream_info {
+ 	void *mad_substream;
+ 	void (*period_elapsed) (void *mad_substream);
+ 	unsigned long long buffer_ptr;
++	unsigned long long buffer_delta;
+ 	int sfreq;
+ };
  
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ef22d0b..cd7b10f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -674,6 +674,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_uframes_t offset = 0;
- 	snd_pcm_sframes_t delay = 0;
-+	snd_pcm_sframes_t buffer = 0;
+@@ -70,7 +71,8 @@ enum sst_controls {
+ 	SST_SND_BUFFER_POINTER =	0x05,
+ 	SST_SND_STREAM_INIT =		0x06,
+ 	SST_SND_START	 =		0x07,
+-	SST_MAX_CONTROLS =		0x07,
++	SST_SND_BUFFER_DELTA =		0x08,
++	SST_MAX_CONTROLS =		0x08,
+ };
  
- 	if (platform->driver->ops && platform->driver->ops->pointer)
- 		offset = platform->driver->ops->pointer(substream);
-@@ -687,7 +688,19 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 	if (platform->driver->delay)
- 		delay += platform->driver->delay(substream, codec_dai);
- 
-+	if (cpu_dai->driver->ops->buffer)
-+		buffer += cpu_dai->driver->ops->buffer(substream, cpu_dai);
-+
-+	if (codec_dai->driver->ops->buffer)
-+		buffer += codec_dai->driver->ops->buffer(substream, codec_dai);
-+
-+	if (platform->driver->buffer)
-+		buffer += platform->driver->buffer(substream, codec_dai);
-+
-+
-+
- 	runtime->delay = delay;
-+	runtime->device_buffer = buffer;
- 
- 	return offset;
- }
+ enum sst_stream_ops {
 -- 
 1.7.9.5
