@@ -1,15 +1,21 @@
-From: Pavel Roskin <proski@gnu.org>
-Subject: [PATCH] ALSA: snd-usb: use list_for_each_safe for
-	endpoint resources
-Date: Thu, 30 Aug 2012 17:11:17 -0400
-Message-ID: <20120830211116.15374.52284.stgit@mj>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 01/17] ASoC: Ux500: Move MSP pinctrl setup
+	into the MSP driver
+Date: Thu, 30 Aug 2012 16:46:17 -0700
+Message-ID: <CACRpkdai+RObHsq7xe0+Fk24K7r-Wzoc8o3RbvHT78=EeHkjSQ@mail.gmail.com>
+References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
+ <1345816913-4113-2-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from c60.cesmail.net (c60.cesmail.net [216.154.195.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 19E50265DC7
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 23:11:20 +0200 (CEST)
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 271242661CA
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 01:46:18 +0200 (CEST)
+Received: by wibhm2 with SMTP id hm2so766186wib.2
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 16:46:17 -0700 (PDT)
+In-Reply-To: <1345816913-4113-2-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,38 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, roger.xr.nilsson@stericsson.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, STEricsson_nomadik_linux@list.st.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_usb_endpoint_free() frees the structure that contains its argument.
+On Fri, Aug 24, 2012 at 7:01 AM, Lee Jones <lee.jones@linaro.org> wrote:
 
-Signed-off-by: Pavel Roskin <proski@gnu.org>
-Cc: stable@vger.kernel.org
----
+> In the initial submission of the MSP driver msp1 and msp3's associated
+> pinctrl mechanism was passed back to platform code using a plat_init()
+> call-back routine, but it has no place in platform code. The MSP driver
+> should set this up for the appropriate ports. Instead we use a use_pinctrl
+> identifier which is passed from platform_data/Device Tree which indicates
+> which ports should use pinctrl.
+>
+> CC: alsa-devel@alsa-project.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
- sound/usb/card.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Looks good to me, so Acked-by: Linus Walleij <linus.walleij@linaro.org>
+for the ux500 mach part.
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index d5b5c33..4a469f0 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -553,7 +553,7 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
- 				     struct snd_usb_audio *chip)
- {
- 	struct snd_card *card;
--	struct list_head *p;
-+	struct list_head *p, *n;
- 
- 	if (chip == (void *)-1L)
- 		return;
-@@ -570,7 +570,7 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
- 			snd_usb_stream_disconnect(p);
- 		}
- 		/* release the endpoint resources */
--		list_for_each(p, &chip->ep_list) {
-+		list_for_each_safe(p, n, &chip->ep_list) {
- 			snd_usb_endpoint_free(p);
- 		}
- 		/* release the midi resources */
+However I'd request Ola/Roger to ACK it too on the ALSA side.
+
+Yours,
+Linus Walleij
