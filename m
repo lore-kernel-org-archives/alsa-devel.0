@@ -1,18 +1,31 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH V3] ASoC: Davinci: machine: Add device tree
-	binding
-Date: Thu, 30 Aug 2012 04:01:00 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA6DDAD@DBDE01.ent.ti.com>
-References: <1346148830-2965-1-git-send-email-gururaja.hebbar@ti.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: REGRESSION: Webcam mic for 145f:015b not longer
+ working with 1.0.24 and above (OK with 1.0.23)
+Date: Thu, 30 Aug 2012 08:50:53 +0200
+Message-ID: <503F0D4D.3080806@gmail.com>
+References: <503B372B.4050807@gmail.com> <503B3D48.5030206@gmail.com>
+ <503B4CEE.2070200@gmail.com> <503B5DB9.9080804@gmail.com>
+ <503B982E.4060703@gmail.com> <503BF284.4060300@gmail.com>
+ <503C5AA4.8070408@gmail.com> <503C85BA.6020505@gmail.com>
+ <503C8658.400@gmail.com> <503C87AD.2010204@gmail.com>
+ <503C8A03.809@gmail.com> <503C8CCC.2000801@gmail.com>
+ <503C8F9A.7020104@gmail.com> <503C93B8.1010505@gmail.com>
+ <503C95A2.6010308@gmail.com> <503D4355.2050304@gmail.com>
+ <503D4B71.6020209@gmail.com> <503D5E97.9040100@gmail.com>
+ <503DB54A.60401@gmail.com> <503E0563.1050506@gmail.com>
+ <503E071A.7050103@gmail.com> <503E3D67.3040502@gmail.com>
+ <503E4189.4010309@gmail.com> <503E66AA.8060503@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id DA8EB265D69
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 06:01:14 +0200 (CEST)
-In-Reply-To: <1346148830-2965-1-git-send-email-gururaja.hebbar@ti.com>
-Content-Language: en-US
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7DC026530B
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 08:52:15 +0200 (CEST)
+Received: by bkuw5 with SMTP id w5so552602bku.38
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2012 23:52:15 -0700 (PDT)
+In-Reply-To: <503E66AA.8060503@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,357 +35,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
- Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "Nori,
- Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Girdwood,
- Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Kostas <hunter18@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi,
-
-Gentle Ping.
-
-
-On Tue, Aug 28, 2012 at 15:43:50, Hebbar, Gururaja wrote:
-> Device tree support for Davinci Machine driver
-> 
-> When the board boots with device tree, the driver will receive card,
-> codec, dai interface details (like the card name, DAPM routing map,
-> phandle for the audio components described in the dts file, codec mclk
-> speed).
-> The card will be set up based on this information.
-> Since the routing is provided via DT we can mark the card fully routed
-> so core can take care of disconnecting the unused pins.
-> 
-> When here, code indentation and comment style is also fixed
-> 
-> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
-> ---
-> Changes from V1:
-> 	- Change DT parameter from "ti,codec-clock" to "ti,codec-clock-rate"
-> 	- add more explanation to DT parameters
-> 
-> Changes from V2:
-> 	- Update Documentation details
-> 	- Remove irrelevant commit message
-> 
-> :000000 100644 0000000... b248014... A	Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-> :100644 100644 ab0ad45... ca2a547... M	sound/soc/davinci/davinci-evm.c
->  .../bindings/sound/davinci-evm-audio.txt           |   66 +++++++
->  sound/soc/davinci/davinci-evm.c                    |  185 +++++++++++++++++--
->  2 files changed, 231 insertions(+), 20 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-> new file mode 100644
-> index 0000000..b248014
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-> @@ -0,0 +1,66 @@
-> +* Texas Instruments SoC audio setups with TLV320AIC3X Codec
-> +
-> +Required properties:
-> +- compatible : "ti,davinci-evm-audio"
-> +- ti,model : The user-visible name of this sound complex.
-> +- ti,audio-routing : A list of the connections between audio components.
-> +  Each entry is a pair of strings, the first being the connection's sink,
-> +  the second being the connection's source. Valid names for sources and
-> +  sinks are the codec's pins, and the jacks on the board:
-> +
-> +  Codec pins:
-> +
-> +  * MIC3L
-> +  * MIC3R
-> +  * LINE1L
-> +  * LINE2L
-> +  * LINE1R
-> +  * LINE2R
-> +
-> +  Board connectors:
-> +
-> +  * Headphone Jack
-> +  * Line Out
-> +  * Mic Jack
-> +
-> +- ti,mcasp-controller : The phandle of the McASP controller
-> +- ti,audio-codec : The phandle of the TLV320AIC3x audio codec
-> +- ti,codec-clock-rate : The Codec Clock rate (in Hz) applied to the Codec
-> +
-> +- dai-data		: A list of DAI data used by SOC code to register
-> +			  DAI, Codecs platform.
-> +			  The string index "should" be as shown below.
-> +dai-data =
-> +"<DAI Name>", 		"<DAI Stream Name>",
-> +"<CODEC DAI Name>",	"<true if evm_aic3x_init is required, else false>",
-> +"<evm ops required (evm_ops or evm_spdif_ops)>";
-> +
-> +Here fields
-> +"<DAI Name>"		: used to indicate the DAI Name
-> +"<DAI Stream Name>"	: used to indicate the Stream Name
-> +"<CODEC DAI Name>"	: used to bind the link between Codec DAI and ASOC DAI
-> +
-> +Machine related options
-> +"<true/false>"		: Whether the machine specific initialization
-> +			: evm_aic3x_init() is required
-> +
-> +"<evm ops required>"	: Which hardware ops function is to be used.
-> +			: (evm_ops or evm_spdif_ops)
-> +			: use evm-spdif-ops if DAI is working in DIT mode
-> +			: else use evm-ops. These ops setup hw param callbacks
-> +			: which are used to setup CODEC/cpu DAI configuration
-> +			: and codec system clock.
-> +
-> +Example:
-> +
-> +sound {
-> +	compatible = "ti,davinci-evm-audio";
-> +	ti,model = "DA830 EVM";
-> +	ti,audio-codec = <&tlv320aic3x>;
-> +	ti,mcasp-controller = <&mcasp1>;
-> +	ti,codec-clock-rate = <12000000>;
-> +	dai-data =
-> +		"TLV320AIC3X", 		"AIC3X",
-> +		"tlv320aic3x-hifi",	"true",
-> +		"evm-ops";
-> +};
-> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-> index ab0ad45..ca2a547 100644
-> --- a/sound/soc/davinci/davinci-evm.c
-> +++ b/sound/soc/davinci/davinci-evm.c
-> @@ -34,27 +34,38 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
->  	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	struct snd_soc_card *soc_card = codec->card;
-> +	struct device_node *np = soc_card->dev->of_node;
->  	int ret = 0;
->  	unsigned sysclk;
->  
-> -	/* ASP1 on DM355 EVM is clocked by an external oscillator */
-> -	if (machine_is_davinci_dm355_evm() || machine_is_davinci_dm6467_evm() ||
-> -	    machine_is_davinci_dm365_evm())
-> -		sysclk = 27000000;
-> -
-> -	/* ASP0 in DM6446 EVM is clocked by U55, as configured by
-> -	 * board-dm644x-evm.c using GPIOs from U18.  There are six
-> -	 * options; here we "know" we use a 48 KHz sample rate.
-> -	 */
-> -	else if (machine_is_davinci_evm())
-> -		sysclk = 12288000;
-> -
-> -	else if (machine_is_davinci_da830_evm() ||
-> -				machine_is_davinci_da850_evm())
-> -		sysclk = 24576000;
-> -
-> -	else
-> -		return -EINVAL;
-> +	if (np) {
-> +		ret = of_property_read_u32(np, "ti,codec-clock-rate", &sysclk);
-> +		if (ret < 0)
-> +			return ret;
-> +	} else {
-> +		/* ASP1 on DM355 EVM is clocked by an external oscillator */
-> +		if (machine_is_davinci_dm355_evm() ||
-> +			machine_is_davinci_dm6467_evm() ||
-> +			machine_is_davinci_dm365_evm())
-> +			sysclk = 27000000;
-> +
-> +		/*
-> +		 * ASP0 in DM6446 EVM is clocked by U55, as configured by
-> +		 * board-dm644x-evm.c using GPIOs from U18.  There are six
-> +		 * options; here we "know" we use a 48 KHz sample rate.
-> +		 */
-> +		else if (machine_is_davinci_evm())
-> +			sysclk = 12288000;
-> +
-> +		else if (machine_is_davinci_da830_evm() ||
-> +					machine_is_davinci_da850_evm())
-> +			sysclk = 24576000;
-> +
-> +		else
-> +			return -EINVAL;
-> +	}
->  
->  	/* set codec DAI configuration */
->  	ret = snd_soc_dai_set_fmt(codec_dai, AUDIO_FORMAT);
-> @@ -127,13 +138,22 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
->  {
->  	struct snd_soc_codec *codec = rtd->codec;
->  	struct snd_soc_dapm_context *dapm = &codec->dapm;
-> +	struct device_node *np = codec->card->dev->of_node;
-> +	int ret;
->  
->  	/* Add davinci-evm specific widgets */
->  	snd_soc_dapm_new_controls(dapm, aic3x_dapm_widgets,
->  				  ARRAY_SIZE(aic3x_dapm_widgets));
->  
-> -	/* Set up davinci-evm specific audio path audio_map */
-> -	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
-> +	if (np) {
-> +		ret = snd_soc_of_parse_audio_routing(codec->card,
-> +							"ti,audio-routing");
-> +		if (ret)
-> +			return ret;
-> +	} else {
-> +		/* Set up davinci-evm specific audio path audio_map */
-> +		snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
-> +	}
->  
->  	/* not connected */
->  	snd_soc_dapm_disable_pin(dapm, "MONO_LOUT");
-> @@ -282,6 +302,113 @@ static struct snd_soc_card da850_snd_soc_card = {
->  	.num_links = 1,
->  };
->  
-> +#if defined(CONFIG_OF)
-> +/*
-> + * This struct is just used as place holder. It will be filled with
-> + * data from dt node
-> + */
-> +static struct snd_soc_dai_link evm_dai = {
-> +};
-> +
-> +/* davinci evm audio machine driver */
-> +static struct snd_soc_card evm_soc_card = {
-> +	.owner = THIS_MODULE,
-> +	.dai_link = &evm_dai,
-> +	.num_links = 1,
-> +};
-> +
-> +static int davinci_evm_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	const char *stringPtr, *propname;
-> +	u32 val;
-> +	int ret = 0;
-> +
-> +	propname = "dai-data";
-> +	val = of_property_count_strings(np, propname);
-> +	if (val < 0)
-> +		return val;
-> +
-> +	ret = of_property_read_string_index(np, propname, 0, &evm_dai.name);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = of_property_read_string_index(np, propname, 1,
-> +						&evm_dai.stream_name);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = of_property_read_string_index(np, propname, 2,
-> +						&evm_dai.codec_dai_name);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = of_property_read_string_index(np, propname, 3, &stringPtr);
-> +	if (ret < 0)
-> +		return ret;
-> +	else
-> +		if (strcasecmp(stringPtr, "true") == 0)
-> +			evm_dai.init = evm_aic3x_init;
-> +
-> +	ret = of_property_read_string_index(np, propname, 4, &stringPtr);
-> +	if (ret < 0) {
-> +		return ret;
-> +	} else {
-> +		if (strcasecmp(stringPtr, "evm-ops") == 0)
-> +			evm_dai.ops = &evm_ops;
-> +		else if (strcasecmp(stringPtr, "evm-spdif-ops") == 0)
-> +			evm_dai.ops = &evm_spdif_ops;
-> +	}
-> +
-> +	evm_dai.codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
-> +	if (!evm_dai.codec_of_node)
-> +		return -EINVAL;
-> +
-> +	evm_dai.cpu_dai_of_node = of_parse_phandle(np,
-> +						"ti,mcasp-controller", 0);
-> +	if (!evm_dai.cpu_dai_of_node)
-> +		return -EINVAL;
-> +
-> +	evm_dai.platform_of_node = evm_dai.cpu_dai_of_node;
-> +
-> +	evm_soc_card.dev = &pdev->dev;
-> +	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = snd_soc_register_card(&evm_soc_card);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __devexit davinci_evm_remove(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +
-> +	snd_soc_unregister_card(card);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id davinci_evm_dt_ids[] = {
-> +	{ .compatible = "ti,davinci-evm-audio", },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, davinci_mcasp_dt_ids);
-> +
-> +static struct platform_driver davinci_evm_driver = {
-> +	.probe		= davinci_evm_probe,
-> +	.remove		= __devexit_p(davinci_evm_remove),
-> +	.driver		= {
-> +		.name	= "davinci_evm",
-> +		.owner	= THIS_MODULE,
-> +		.of_match_table = of_match_ptr(davinci_evm_dt_ids),
-> +	},
-> +};
-> +#endif
-> +
->  static struct platform_device *evm_snd_device;
->  
->  static int __init evm_init(void)
-> @@ -289,6 +416,14 @@ static int __init evm_init(void)
->  	struct snd_soc_card *evm_snd_dev_data;
->  	int index;
->  	int ret;
-> +#if defined(CONFIG_OF)
-> +	struct device_node *np;
-> +
-> +	np = of_find_compatible_node(NULL, NULL, "ti,davinci-evm-audio");
-> +	if (np) {
-> +		return platform_driver_register(&davinci_evm_driver);
-> +	}
-> +#endif
->  
->  	if (machine_is_davinci_evm()) {
->  		evm_snd_dev_data = &dm6446_snd_soc_card_evm;
-> @@ -325,6 +460,16 @@ static int __init evm_init(void)
->  
->  static void __exit evm_exit(void)
->  {
-> +#if defined(CONFIG_OF)
-> +	struct device_node *np;
-> +
-> +	np = of_find_compatible_node(NULL, NULL, "ti,davinci-evm-audio");
-> +	if (np) {
-> +		platform_driver_unregister(&davinci_evm_driver);
-> +		return;
-> +	}
-> +#endif
-> +
->  	platform_device_unregister(evm_snd_device);
->  }
->  
-> -- 
-> 1.7.1
-> 
-> 
-
-
-Regards, 
-Gururaja
+T24gMjkuMDguMjAxMiAyMDo1OSwgS29zdGFzIHdyb3RlOgo+IE9uIDI5LzA4LzIwMTIgMDc6MjEg
+zrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+IE9uIDI5LjA4LjIwMTIgMTg6MDMsIEtvc3RhcyB3
+cm90ZToKPj4+IE9uIDI5LzA4LzIwMTIgMDM6MTIgzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4+
+Pj4gT24gMjkuMDguMjAxMiAxNDowNCwgS29zdGFzIHdyb3RlOgo+Pj4+PiBPbiAyOS8wOC8yMDEy
+IDA5OjIzIM+AzrwsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4+Pj4gT24gMjkuMDguMjAxMiAwMjox
+MywgS29zdGFzIHdyb3RlOgo+Pj4+IFsuLi5dCj4+Pj4KPj4+Pj4+PiBDb21tYW5kIGdpdCBiaXNl
+Y3QgZ29vZCAxLjAuMjMgZ2l2ZXMgbWUgdGhlIG91dHB1dAo+Pj4+Pj4+IGZhdGFsOiBOZWVkZWQg
+YSBzaW5nbGUgcmV2aXNpb24KPj4+Pj4+PiBCYWQgcmV2IGlucHV0OiAxLjAuMjMKPj4+Pj4+Pgo+
+Pj4+Pj4+IEhvdyBjYW4gaSBmaWd1cmUgb3V0IHRoZSByZXZpc2lvbiBudW1iZXI/Cj4+Pj4+Pj4K
+Pj4+Pj4+IFdoZW4gd29ya2luZyB3aXRoIHRoZSBrZXJuZWwgZ2l0LCB5b3UgaGF2ZSB0byB0YWtl
+IHRoZSBrZXJuZWwgdmVyc2lvbgo+Pj4+Pj4gbnVtYmVycy4KPj4+Pj4+Cj4+Pj4+IFNvcnJ5IGkg
+cmVhbGx5IGNhbid0IHVuZGVyc3RhbmQgd2hhdCB0byBkby4KPj4+Pj4gVGhlIHN0ZXBzIGkgZGlk
+IHdlcmUKPj4+Pj4gZ2l0IGNsb25lIGdpdDovL2dpdC5hbHNhLXByb2plY3Qub3JnL2Fsc2Eta2Vy
+bmVsLmdpdCBhbHNhLWtlcm5lbAo+Pj4+PiBnaXQgYmlzZWN0IHN0YXJ0IGFsc2Eta2VybmVsLwo+
+Pj4+PiBnaXQgYmlzZWN0IGJhZAo+Pj4+PiBnaXQgYmlzZWN0IGdvb2QgKEhlcmUgaSBkb24ndCBr
+bm93IHdoYXQgbnVtYmVyIHRvIGdpdmUpCj4+Pj4+Cj4+Pj4+IEkgd2lsbCBrZWVwIHJlYWRpbmcg
+YmVjYXVzZSB0aGUgd2hvbGUgdGhpbmcgaXMgaW50ZXJlc3RpbmcgdG8gbWUuLi5idXQKPj4+Pj4g
+Zm9yIG5vdyBpIGNhbid0IHVuZGVyc3RhbmQgYW55dGhpbmcuCj4+Pj4gTm8gcHJvYmxlbS4gQWNj
+b3JkaW5nIHRvIHlvdXIgZG1lc2cgbG9ncywga2VybmVsIDIuNi4zOCB3YXMgd29ya2luZyBmb3IK
+Pj4+PiB5b3UsIGFuZCAzLjIuMCBpc24ndC4KPj4+Pgo+Pj4+IEZpcnN0LCBjbG9uZSB0aGUgbWFp
+bmxpbmUgTGludXggZ2l0Ogo+Pj4+Cj4+Pj4gICAgZ2l0IGNsb25lIGdpdDovL2dpdC5rZXJuZWwu
+b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eAo+Pj4+ICAgIGNkIGxp
+bnV4Cj4+Pj4KPj4+PiBUZXN0IGFnYWluIHRoYXQgMi42LjM4IGlzIHdvcmtpbmc6Cj4+Pj4KPj4+
+PiAgICBnaXQgY2hlY2tvdXQgdjIuNi4zOAo+Pj4+ICAgIGNvbXBpbGUgKyB0ZXN0Cj4+Pj4KPj4+
+PiB0ZXN0IGFnYWluIHRoYXQgMy4yLjAgaXMgbm90IHdvcmtpbmc6Cj4+Pj4KPj4+PiAgICBnaXQg
+Y2hlY2tvdXQgdjMuMgo+Pj4+ICAgIGNvbXBpbGUgYW5kIHRlc3QKPj4+Pgo+Pj4+IFRoZW4gZG8g
+dGhlIGJpc2VjdDoKPj4+Pgo+Pj4+ICAgIGdpdCBiaXNlY3Qgc3RhcnQKPj4+PiAgICBnaXQgYmlz
+ZWN0IGdvb2QgdjIuNi4zOAo+Pj4+ICAgIGdpdCBiaXNlY3QgYmFkIHYzLjIKPj4+Pgo+Pj4+IENv
+bXBpbGUgYW5kIHRlc3QgZWFjaCBzdGVwIHRoZSBiaXNlY3QgZHJvcHMgeW91IHRvLCBhbmQgdGhl
+biBjYWxsIGVpdGhlcgo+Pj4+ICJnaXQgYmlzZWN0IGdvb2QiIG9yICJnaXQgYmlzZWN0IGJhZCIu
+IElmIGEgc3RlcCBjYW5ub3QgYmUgY29tcGlsZWQgb3IKPj4+PiB0ZXN0ZWQsIGNhbGwgImdpdCBi
+aXNlY3Qgc2tpcCIuCj4+Pj4KPj4+PiBJZiBhbGwgZ29lcyB3ZWxsLCB5b3Ugd2lsbCBiZSB0b2xk
+IHdoaWNoIGNvbW1pdCBpcyB0aGUgZmlyc3Qgb25lIHRoYXQKPj4+PiBkb2VzIG5vdCB3b3JrIGFu
+eW1vcmUuCj4+Pj4KPj4+Pgo+Pj4+IERhbmllbAo+Pj4+Cj4+Pj4KPj4+Pgo+Pj4+Cj4+PiBJIGNh
+bid0IGNvbXBpbGUgdGhlIGtlcm5lbCBmcm9tIGdpdCBzb3VyY2UuCj4+PiBBZnRlciBpIGVudGVy
+IHRoZSBjb21tYW5kfENPTkNVUlJFTkNZX0xFVkVMPWBnZXRjb25mIF9OUFJPQ0VTU09SU19PTkxO
+YAo+Pj4gZmFrZXJvb3QgbWFrZS1rcGtnIC0taW5pdHJkIC0tYXBwZW5kLXRvLXZlcnNpb249LWN1
+c3RvbSBrZXJuZWxfaW1hZ2UKPj4+IGtlcm5lbF9oZWFkZXJzCj4+PiB8aSBnZXQgYWZ0ZXIgYSB3
+aGlsZSB0aGlzIGVycm9yCj4+Pgo+Pj4gL3RtcC9jY0NlSTJHWS5zOiBBc3NlbWJsZXIgbWVzc2Fn
+ZXM6Cj4+PiAvdG1wL2NjQ2VJMkdZLnM6IEVycm9yOiAuc2l6ZSBleHByZXNzaW9uIGZvciBkb19o
+eXBlcnZpc29yX2NhbGxiYWNrIGRvZXMKPj4+IG5vdCBldmFsdWF0ZSB0byBhIGNvbnN0YW50Cj4+
+PiBtYWtlWzNdOiAqKiogW2FyY2gveDg2L2tlcm5lbC9lbnRyeV82NC5vXSBFcnJvciAxCj4+PiBt
+YWtlWzJdOiAqKiogW2FyY2gveDg2L2tlcm5lbF0gRXJyb3IgMgo+Pj4gbWFrZVsxXTogKioqIFth
+cmNoL3g4Nl0gRXJyb3IgMgo+Pj4gbWFrZVsxXTogKioqIFdhaXRpbmcgZm9yIHVuZmluaXNoZWQg
+am9icy4uLi4KPj4+ICAgIExEICAgICAgaW5pdC9tb3VudHMubwo+Pj4gICAgTEQgICAgICBpbml0
+L2J1aWx0LWluLm8KPj4+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9rb3N0YXMv
+bGludXgnCj4+PiBtYWtlOiAqKiogW2RlYmlhbi9zdGFtcC9idWlsZC9rZXJuZWxdIEVycm9yIDIK
+Pj4+Cj4+Pgo+Pj4KPj4gU2V0IENPTkZJR19YRU49biBpbiB5b3VyIC5jb25maWcKPj4KPj4KPj4K
+PiBTbyBtYW55IGhvdXJzIGluIGZyb250IG9mIHRoZSBjb21wdXRlciBhbmQgc3RpbGwgY2FuJ3Qg
+Y29tcGlsZSB0aGUgCj4ga2VybmVsLi4ubm93IGl0IGdpdmVzIG1lIHRoZSBlcnJvcgo+IAo+IGxk
+OiBkcml2ZXJzL3dhdGNoZG9nL3dtODM1MF93ZHQubzogYmFkIHJlbG9jIHN5bWJvbCBpbmRleCAo
+MHgyMDAwMDAzMyA+PSAKPiAweDUwKSBmb3Igb2Zmc2V0IDB4N2EyOCBpbiBzZWN0aW9uIGAuZGVi
+dWdfaW5mbycKPiBkcml2ZXJzL3dhdGNoZG9nL3dtODM1MF93ZHQubzogY291bGQgbm90IHJlYWQg
+c3ltYm9sczogQmFkIHZhbHVlCj4gbWFrZVsyXTogKioqIFtkcml2ZXJzL3dhdGNoZG9nL3dtODM1
+MF93ZHQua29dIEVycm9yIDEKPiBtYWtlWzJdOiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBq
+b2JzLi4uLgo+IG1ha2VbMV06ICoqKiBbbW9kdWxlc10gRXJyb3IgMgo+IG1ha2VbMV06IExlYXZp
+bmcgZGlyZWN0b3J5IGAvaG9tZS9rb3N0YXMvbGludXgnCj4gbWFrZTogKioqIFtkZWJpYW4vc3Rh
+bXAvYnVpbGQva2VybmVsXSBFcnJvciAyCgpZZXMsIGl0IGNhbiBiZSBoYXJkIGF0IHRpbWVzLCBh
+cyB5b3UgaGF2ZSB0byBmaWdodCB3aXRoIGFsbCBzb3J0cyBvZgpidWlsZCBicmVha2FnZS4KCj4g
+QWR2aWNlIG1lIGlmIHlvdSBjYW4gd2hhdCB0byBkby4uLmkgc3RhcnRlZCB0byBoYXZlIGEgaGVh
+ZGFjaGUuCj4gV2lsbCBjb250aW51ZSB0b21vcnJvdy4uLgoKUnVuICJtYWtlIGxvY2FsbW9kY29u
+ZmlnIi4gVGhhdCB3aWxsIGdlbmVyYXRlIGEgLmNvbmZpZyBiYXNlZCBvbiB0aGUKbW9kdWxlcyBj
+dXJyZW50bHkgbG9hZGVkIGluIHlvdXIga2VybmVsLiBUaGF0IHdpbGwgYWxzbyBzcGVlZCB1cCB0
+aGUKYmlzZWN0IGFzIHdheSBsZXNzIGRyaXZlcnMgaGF2ZSB0byBiZSBidWlsdC4KCgpIVEgsCkRh
+bmllbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
