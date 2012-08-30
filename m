@@ -1,66 +1,57 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: Re: Sound issues with ALC269VB-based hardware
-Date: Thu, 30 Aug 2012 18:57:11 +0200
-Message-ID: <20120830185711.1326d311@destiny.ordissimo>
-References: <20120717151109.66d239a5@destiny.ordissimo>
- <s5htxx6jum7.wl%tiwai@suse.de> <s5hmx2yjtoj.wl%tiwai@suse.de>
- <20120717175040.55779252@destiny.ordissimo>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
+ snd_soc_set_fmt()
+Date: Thu, 30 Aug 2012 10:43:18 -0700
+Message-ID: <20120830174317.GG4356@opensource.wolfsonmicro.com>
+References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
+ <20120827204550.GA4400@opensource.wolfsonmicro.com>
+ <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D9CA5265DB2
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 18:57:28 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so712536eek.38
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 09:57:28 -0700 (PDT)
-In-Reply-To: <20120717175040.55779252@destiny.ordissimo>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangsu Park <sangsu4u.park@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, 'Kukjin Kim' <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+On Wed, Aug 29, 2012 at 08:06:32PM +0900, Sangsu Park wrote:
 
-On Tue, 17 Jul 2012 17:50:40 +0200, Anisse Astier <anisse@astier.eu> wrote :
+Please check your mailer configuration, it looks like it's reformatting
+all the text with much longer line widths.
 
-> On Tue, 17 Jul 2012 17:25:48 +0200, Takashi Iwai <tiwai@suse.de> wrote :
-> 
-> > At Tue, 17 Jul 2012 17:05:36 +0200,
-> > Takashi Iwai wrote:
-> > > 
-> > > All sounds like that your BIOS setup is broken.
-> > > 
-> > > You have two internal mics on 0x12 and 0x19.  Judging from your
-> > > comment, the pin 0x12 seems bogus.
-> 
-> Thanks, I will explore this and maybe come back to you.
-> 
+> On Sun, Aug 26, 2012 at 05:45:54PM +0900, Mark Brown wrote:
 
-I used David's tool and came up with this fixup:
+> > a whole lot of sense on the slave side, it's related to the clock generation so should have no
+> > effect at all on the slave side.  The driver code looks reasonably sensible though.
 
-[codec]
-0x10ec0269 0x1b7da831 0
+> You mean cpu side is slave? 
 
-[pincfg]
-0x18 0x411111f0
-0x12 0x99a3092f
+Yes.
 
 
-The problem is I can't seem to get a sense on the mic port (0x19).
+> > What specifically is going wrong here?
 
-I tried it on Windows, and the Realtek HD Audio tool can detect the jack
-on the headphone and mic port independently. I didn't use any
-vendor-provided (oem specific) driver on Windows.
+> SND_SOC_DAIFMT_CONT is used sound/soc/Samsung/pcm.c (s3c_pcm_set_fmt()) like below.
 
-Regards,
+> switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
+>         case SND_SOC_DAIFMT_CONT:
+>                 pcm->idleclk = 1;
+>                 break;
+>         case SND_SOC_DAIFMT_GATED:
+>                 pcm->idleclk = 0;
+>                 break;
+>         default:
+>                 dev_err(pcm->dev, "Invalid Clock gating request!\n");
+>                 ret = -EINVAL;
+>                 goto exit;
+>         }
 
-Anisse
+> If fmt argument has no SND_SOC_DAIFMT_ option, s3c_pcm_set_fmt() return -EINVAL.
+
+So, clearly this is unrelated to the change you mentioned in your commit
+message - it looks like this is just a plain issue in the machine
+driver.  That said the above code should be changed to at least ignore
+the setting in slave mode (since the clock shouldn't be being driven and
+it doesn't matter).
