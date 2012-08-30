@@ -1,21 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 3/3] ALSA: snd-usb: fix cross-interface
-	streaming devices
-Date: Thu, 30 Aug 2012 18:54:18 +0200
-Message-ID: <503F9ABA.8060003@gmail.com>
-References: <1346345551-8956-1-git-send-email-zonque@gmail.com>
- <1346345551-8956-4-git-send-email-zonque@gmail.com>
+From: Anisse Astier <anisse@astier.eu>
+Subject: Re: Sound issues with ALC269VB-based hardware
+Date: Thu, 30 Aug 2012 18:57:11 +0200
+Message-ID: <20120830185711.1326d311@destiny.ordissimo>
+References: <20120717151109.66d239a5@destiny.ordissimo>
+ <s5htxx6jum7.wl%tiwai@suse.de> <s5hmx2yjtoj.wl%tiwai@suse.de>
+ <20120717175040.55779252@destiny.ordissimo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F4DD265DB2
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 18:54:24 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so798404bku.38
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 09:54:23 -0700 (PDT)
-In-Reply-To: <1346345551-8956-4-git-send-email-zonque@gmail.com>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9CA5265DB2
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 18:57:28 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so712536eek.38
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 09:57:28 -0700 (PDT)
+In-Reply-To: <20120717175040.55779252@destiny.ordissimo>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: tiwai@suse.de, linux@romal.de, alsa-devel@alsa-project.org, clemens@ladisch.de, linuxaudio@showlabor.de
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 30.08.2012 18:52, Daniel Mack wrote:
-> Commit 68e67f40b ("ALSA: snd-usb: move calls to usb_set_interface")
-> saved us some unnecessary calls to snd_usb_set_interface() but ignored
-> the fact that there is at least one device out there which operates on
-> two endpoint in different interfaces simultaniously.
-> 
-> Take care for this by catching the case where data and sync endpoints
-> are located on different interfaces and calling snd_usb_set_interface()
-> between the start of the two endpoints.
-> 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
-> Reported-by: Robert M. Albrecht <linux@romal.de>
+Hi again,
 
-Cc: stable@kernel.org [v3.5+]
+On Tue, 17 Jul 2012 17:50:40 +0200, Anisse Astier <anisse@astier.eu> wrote :
+
+> On Tue, 17 Jul 2012 17:25:48 +0200, Takashi Iwai <tiwai@suse.de> wrote :
+> 
+> > At Tue, 17 Jul 2012 17:05:36 +0200,
+> > Takashi Iwai wrote:
+> > > 
+> > > All sounds like that your BIOS setup is broken.
+> > > 
+> > > You have two internal mics on 0x12 and 0x19.  Judging from your
+> > > comment, the pin 0x12 seems bogus.
+> 
+> Thanks, I will explore this and maybe come back to you.
+> 
+
+I used David's tool and came up with this fixup:
+
+[codec]
+0x10ec0269 0x1b7da831 0
+
+[pincfg]
+0x18 0x411111f0
+0x12 0x99a3092f
 
 
-> ---
->  sound/usb/pcm.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index e80b668..fd5e982 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -236,6 +236,21 @@ static int start_endpoints(struct snd_usb_substream *subs, int can_sleep)
->  	    !test_and_set_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
->  		struct snd_usb_endpoint *ep = subs->sync_endpoint;
->  
-> +		if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
-> +		    subs->data_endpoint->alt_idx != subs->sync_endpoint->alt_idx) {
-> +			err = usb_set_interface(subs->dev,
-> +						subs->sync_endpoint->iface,
-> +						subs->sync_endpoint->alt_idx);
-> +			if (err < 0) {
-> +				snd_printk(KERN_ERR
-> +					   "%d:%d:%d: cannot set interface (%d)\n",
-> +					   subs->dev->devnum,
-> +					   subs->sync_endpoint->iface,
-> +					   subs->sync_endpoint->alt_idx, err);
-> +				return -EIO;
-> +			}
-> +		}
-> +
->  		snd_printdd(KERN_DEBUG "Starting sync EP @%p\n", ep);
->  
->  		ep->sync_slave = subs->data_endpoint;
-> 
+The problem is I can't seem to get a sense on the mic port (0x19).
+
+I tried it on Windows, and the Realtek HD Audio tool can detect the jack
+on the headphone and mic port independently. I didn't use any
+vendor-provided (oem specific) driver on Windows.
+
+Regards,
+
+Anisse
