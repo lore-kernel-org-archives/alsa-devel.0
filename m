@@ -1,18 +1,17 @@
 From: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH 0/3] ALSA: snd-usb: Regression fixes for 3.5
-Date: Fri, 31 Aug 2012 20:15:00 +0200
-Message-ID: <5040FF24.5060409@gmail.com>
+Date: Fri, 31 Aug 2012 20:15:30 +0200
+Message-ID: <5040FF42.4060207@gmail.com>
 References: <5040B517.5050101@sharpsaw.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 9718026648E
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 20:15:08 +0200 (CEST)
-Received: by wibhm6 with SMTP id hm6so1501404wib.2
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 11:15:08 -0700 (PDT)
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCCD126648E
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 20:15:39 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so1890058wgb.20
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 11:15:39 -0700 (PDT)
 In-Reply-To: <5040B517.5050101@sharpsaw.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
