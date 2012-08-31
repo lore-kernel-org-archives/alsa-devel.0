@@ -1,18 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/3] ALSA: snd-usb: Regression fixes for 3.5
-Date: Fri, 31 Aug 2012 20:15:30 +0200
-Message-ID: <5040FF42.4060207@gmail.com>
-References: <5040B517.5050101@sharpsaw.org>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [asoc:for-next 127/128] make[1]: *** No rule to
+ make target `sound/soc/ep93xx'.
+Date: Fri, 31 Aug 2012 12:44:01 -0700
+Message-ID: <20120831194401.GB13655@localhost>
+References: <20120829053856.GA6107@localhost>
+ <20120829201338.bc007a27.shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id BCCD126648E
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 20:15:39 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so1890058wgb.20
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 11:15:39 -0700 (PDT)
-In-Reply-To: <5040B517.5050101@sharpsaw.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCC2526648E
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 21:44:18 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20120829201338.bc007a27.shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?4piIa2luZw==?= <alsa-devel@sharpsaw.org>
-Cc: alsa-devel@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMzEuMDguMjAxMiAxNDo1OSwg4piIa2luZyB3cm90ZToKPiBJIGFtIGhhdmluZyB0aGUgZm9s
-bG93aW5nIHN5bXB0b21zLCBiZWZvcmUgYW5kIGFmdGVyIGFwcGxpY2F0aW9uIG9mIHRoaXMKPiB0
-aHJlYWQncyBwYXRjaGVzOgo+IAo+IEdpdmVuOgo+IC0gQW4gb25ib2FyZCBjYXJkCj4gLSBBIExv
-Z2l0ZWNoIGgzOTAgVVNCIGhlYWRzZXQKPiAtIGFsc2EtaW5mbyBvZjogaHR0cDovL3d3dy5hbHNh
-LXByb2plY3Qub3JnL2RiLz9mPTk0MmI1ZTk2YjUzYTY2NzI3MGY4OTVlYzUwNjFjYTE0YWYwMzM5
-ZWUKPiAKPiBXaGVuOgo+IC0gSSBkbzogYXBsYXkgJChsb2NhdGUgLndhdiB8IGdyZXAgRnJvbnQp
-Cj4gICBpdCBvdXRwdXRzOgo+ICAgYWxzYSBBTFNBIGxpYiBwY21fZGlyZWN0LmM6OTgwOihzbmQx
-X3BjbV9kaXJlY3RfaW5pdGlhbGl6ZV9zbGF2ZSkKPiB1bmFibGUgdG8gaW5zdGFsbCBodyBwYXJh
-bXMKPiAgIEFMU0EgbGliIHBjbV9kbWl4LmM6MTAzMDooc25kX3BjbV9kbWl4X29wZW4pIHVuYWJs
-ZSB0byBpbml0aWFsaXplIHNsYXZlCj4gICBhcGxheTogbWFpbjo2ODI6IGF1ZGlvIG9wZW4gZXJy
-b3I6IEJyb2tlbiBwaXBlCj4gLSBJIGRvIGEgU2t5cGUgIk1ha2UgYSB0ZXN0IHNvdW5kIgo+ICAg
-L3Zhci9sb2cvbWVzc2FnZXMgc3RyZWFtcyBkb3plbnMgb2YgdGhlc2U6Cj4gICBrZXJuZWw6IGNh
-bm5vdCBzdWJtaXQgdXJiIDAsIGVycm9yIC0yODogbm90IGVub3VnaCBiYW5kd2lkdGgKPiAKPiBO
-b3RlIHRoYXQgdGhpcyBpcyBhIG5ldyBsYXB0b3AgYW5kIGhlYWRzZXQsIHNvIEkgaGF2ZW4ndCBj
-b21wYXJlZCBob3cKPiBlaXRoZXIgd29ya3Mgb24gb3RoZXIgc2V0dXBzLCBzdWNoIGFzIHdpdGgg
-b3RoZXIga2VybmVscyBvciBhbHNhIHZlcnNpb25zLgo+IAo+IEFueSBoaW50cz8gQW55IGZ1cnRo
-ZXIgaW5mbyBuZWVkZWQ/CgpXaGF0IGtlcm5lbCBkbyB5b3Ugd29yayBvbj8gRGlkIHlvdSB0cnkg
-dGhlIG90aGVyIHBhdGNoIHRoYXQgSSBzZW50IHNvbWUKZGF5cyBhZ28gYW5kIHRoYXQgYWxyZWFk
-eSB3ZW50IG1haW5saW5lPwoKCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2VybmVs
-L2dpdC90aXdhaS9zb3VuZC5naXQ7YT1jb21taXQ7aD0wMTU2MThiOTAyYWU4ZTI4NzA1YjdhZjli
-NDY2ODYxNWZlYTQ4ZGRkCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Wed, Aug 29, 2012 at 08:13:38PM +0400, Alexander Shiyan wrote:
+> On Tue, 28 Aug 2012 22:38:56 -0700
+> Fengguang Wu <fengguang.wu@intel.com> wrote:
+> 
+> > FYI, kernel build failed on
+> > tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> > head:   03a5da2b72ba426ed475795db375fc7780338ff4
+> > commit: 0ed275eff31029c39355828cb48c46c0a006e2f8 [127/128] ASoC: Rename ep93xx soc directory to cirrus
+> > config: x86_64-allyesconfig (attached as .config)
+> > Build errors:
+> > make[1]: *** No rule to make target `sound/soc/ep93xx'.
+> 
+> Cannot reproduce this bug.  Possible this breakage may be resolved by run
+> "make distclean" before "make all".
+
+Sorry! It's actually a bug of the build system.. I just fixed it.
+
+Thanks,
+Fengguang
