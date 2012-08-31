@@ -1,23 +1,20 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - Fix runtime PM accounting
-Date: Fri, 31 Aug 2012 01:57:09 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F81DCD51@SHSMSX101.ccr.corp.intel.com>
-References: <s5hwr0l7msk.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F81DA4D0@SHSMSX101.ccr.corp.intel.com>
- <s5h7gsj6i6x.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F81DAFDF@SHSMSX101.ccr.corp.intel.com>
- <s5hr4qp6cus.wl%tiwai@suse.de>	<s5hligx68xn.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F81DB7AA@SHSMSX101.ccr.corp.intel.com>
- <s5ha9xc5thz.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 1/3] ALSA: pcm - introduce device_buffer
+Date: Fri, 31 Aug 2012 10:06:12 +0800
+Message-ID: <CAN8ccibyigPF3W-ntvK_OofNrgKc=QKGo8qxMR1=CD-MQ5rddg@mail.gmail.com>
+References: <1346375684-4145-1-git-send-email-vinod.koul@linux.intel.com>
+ <1346375684-4145-2-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 78F2B2663DF
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 03:57:17 +0200 (CEST)
-In-Reply-To: <s5ha9xc5thz.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37D5E2663DF
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 04:06:13 +0200 (CEST)
+Received: by qadz3 with SMTP id z3so693830qad.17
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2012 19:06:12 -0700 (PDT)
+In-Reply-To: <1346375684-4145-2-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,35 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, August 30, 2012 10:45 PM
-> 
-> Yeah, the check seems slipped from my previous post by some reason.
-> Maybe I cherry-picked a wrong branch.
-> It should be
-> 	if (codec->power_on)
-> 		hda_call_pm_notify(codec->bus, false); and it should be called
-> before module_put().
-> 
-> It's not needed.  In the case of snd_hda_codec_free(), the only interest is
-> whether pm_notify down was already called for this this particular codec.
-> And this can be checked by codec->power_on flag.
-> 
-
-Yes, an extra power flag is not needed. 
-
-I think 'codec->d3_stop_clk_ok' flag is more suitable than 'codec->power_on' for this check:
-if (!codec->d3_stop_clk_ok)				... either not suspended or d3_stop_clk_ok is not set for last suspending
-	hda_call_pm_notify(codec->bus, false);
-
-It's because the codec will call pm_notify down only when PS-ClkStopOk is set on its last suspending to D3.
-And PS-ClkStopOk is dynamic flag while CLKSTOP is static. It's possible that a codec supports CLKSTOP but
-does not set PS-ClkStopOk on every transition to D3.
-
-Thanks
-Mengdong
+MjAxMi04LTMxIOS4iuWNiDk6MDgg5pa8ICJWaW5vZCBLb3VsIiA8dmlub2Qua291bEBsaW51eC5p
+bnRlbC5jb20+IOWvq+mBk++8mgo+Cj4gSW4gbWFueSBtb2Rlcm4gU29DcyB0aGUgYXVkaW8gRFNQ
+IGNhbiBidWZmZXIgdGhlIFBDTSByaW5nIGJ1ZmZlciBkYXRhLAp0eXBpY2FsbHkKPiBpbiBTUkFN
+cyBvciBhbnkgb3RoZXIgbWVtb3J5IGF2YWlsYWJsZS4KPiBUb2RheSB3ZSBoYXZlIG5vIG1lYW5z
+IHRvIHJlcHJlc2VudCB0aGlzIGJ1ZmZlcmluZyBhbmQgQUxTQSBpbiBzb21lIGNhc2VzCndoZW4K
+PiBkZXZpY2Ugc3RpbGwgaGFzIHRvIHJlbmRlciB0aGlzIGJ1ZmZlciBidXQgYXBwX3B0ciBpcyBl
+cXVhbCB0byBod19wdHIgYWxzYQo+IHdyb25nbHkgZGV0ZWN0cyBhbiBvdmVycnVuCj4KPiBUaGlz
+IHBhdGNoIHRyaWVzIHRvIGFkZCBhIG5ldyBmaWVsZCAiZGV2aWNlX2J1ZmZlciIgdG8gcmVwcmVz
+ZW50CmJ1ZmZlcmluZyBkb25lIGluCj4gRFNQcy4gVGhpcyB2YWx1ZSBpcyBhbHNvIHVzZWQgZm9y
+IHRoZSB4cnVuIGNhbGN1bGF0aW9ucyBpbiBBTFNBCj4KPiBTaWduZWQtb2ZmLWJ5OiBWaW5vZCBL
+b3VsIDx2aW5vZC5rb3VsQGxpbnV4LmludGVsLmNvbT4KPiAtLS0KCmFyZSB0aGVzZSBidWZmZXIg
+c2ltaWxhciB0byBoZGEgJ3MgRklGTyA/CgpjYW4gdGhlIGFsc2EgYXBwbGljYXRpb24gdXNlIHNu
+ZF9wY21fcmV3aW5kIHRvIHJld2luZCB0aGUgYXBwX3B0ciA/Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
