@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: samsung dma - Don't indicate support
- for pause/resume.
-Date: Fri, 31 Aug 2012 10:41:36 -0700
-Message-ID: <20120831174135.GF25575@opensource.wolfsonmicro.com>
-References: <1346387854-22222-1-git-send-email-dgreid@chromium.org>
+From: =?UTF-8?B?4piIa2luZw==?= <alsa-devel@sharpsaw.org>
+Subject: Re: [PATCH 0/3] ALSA: snd-usb: Regression fixes for 3.5
+Date: Fri, 31 Aug 2012 06:59:03 -0600
+Message-ID: <5040B517.5050101@sharpsaw.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5DA3A266488
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 19:41:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1346387854-22222-1-git-send-email-dgreid@chromium.org>
+Received: from sharpsaw.org (li455-14.members.linode.com [50.116.25.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id B38BF266471
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 20:04:11 +0200 (CEST)
+Received: from [10.0.0.8] (unknown [74.197.124.13])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by sharpsaw.org (Postfix) with ESMTPSA id 166639539E
+ for <alsa-devel@alsa-project.org.>; Fri, 31 Aug 2012 18:04:11 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,23 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, ben-linux@fluff.org, padma.v@samsung.com, clemens@ladisch.de, alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 30, 2012 at 09:37:34PM -0700, Dylan Reid wrote:
-
-> index f3ebc38..56a507a 100644
-> --- a/sound/soc/samsung/dma.c
-> +++ b/sound/soc/samsung/dma.c
-> @@ -34,9 +34,7 @@ static const struct snd_pcm_hardware dma_hardware = {
->  	.info			= SNDRV_PCM_INFO_INTERLEAVED |
->  				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
->  				    SNDRV_PCM_INFO_MMAP |
-> -				    SNDRV_PCM_INFO_MMAP_VALID |
-> -				    SNDRV_PCM_INFO_PAUSE |
-> -				    SNDRV_PCM_INFO_RESUME,
-> +				    SNDRV_PCM_INFO_MMAP_VALID,
-
-I'd expect to also see an update to the trigger function to not accept
-the suspend and resume triggers?
+SSBhbSBoYXZpbmcgdGhlIGZvbGxvd2luZyBzeW1wdG9tcywgYmVmb3JlIGFuZCBhZnRlciBhcHBs
+aWNhdGlvbiBvZiB0aGlzCnRocmVhZCdzIHBhdGNoZXM6CgpHaXZlbjoKLSBBbiBvbmJvYXJkIGNh
+cmQKLSBBIExvZ2l0ZWNoIGgzOTAgVVNCIGhlYWRzZXQKLSBhbHNhLWluZm8gb2Y6IGh0dHA6Ly93
+d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj05NDJiNWU5NmI1M2E2NjcyNzBmODk1ZWM1MDYxY2Ex
+NGFmMDMzOWVlCgpXaGVuOgotIEkgZG86IGFwbGF5ICQobG9jYXRlIC53YXYgfCBncmVwIEZyb250
+KQogIGl0IG91dHB1dHM6CiAgYWxzYSBBTFNBIGxpYiBwY21fZGlyZWN0LmM6OTgwOihzbmQxX3Bj
+bV9kaXJlY3RfaW5pdGlhbGl6ZV9zbGF2ZSkKdW5hYmxlIHRvIGluc3RhbGwgaHcgcGFyYW1zCiAg
+QUxTQSBsaWIgcGNtX2RtaXguYzoxMDMwOihzbmRfcGNtX2RtaXhfb3BlbikgdW5hYmxlIHRvIGlu
+aXRpYWxpemUgc2xhdmUKICBhcGxheTogbWFpbjo2ODI6IGF1ZGlvIG9wZW4gZXJyb3I6IEJyb2tl
+biBwaXBlCi0gSSBkbyBhIFNreXBlICJNYWtlIGEgdGVzdCBzb3VuZCIKICAvdmFyL2xvZy9tZXNz
+YWdlcyBzdHJlYW1zIGRvemVucyBvZiB0aGVzZToKICBrZXJuZWw6IGNhbm5vdCBzdWJtaXQgdXJi
+IDAsIGVycm9yIC0yODogbm90IGVub3VnaCBiYW5kd2lkdGgKCk5vdGUgdGhhdCB0aGlzIGlzIGEg
+bmV3IGxhcHRvcCBhbmQgaGVhZHNldCwgc28gSSBoYXZlbid0IGNvbXBhcmVkIGhvdwplaXRoZXIg
+d29ya3Mgb24gb3RoZXIgc2V0dXBzLCBzdWNoIGFzIHdpdGggb3RoZXIga2VybmVscyBvciBhbHNh
+IHZlcnNpb25zLgoKQW55IGhpbnRzPyBBbnkgZnVydGhlciBpbmZvIG5lZWRlZD8KClRoYW5rcyEK
+4oCU4piICgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
