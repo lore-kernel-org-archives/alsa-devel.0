@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] introduce device_buffer
-Date: Fri, 31 Aug 2012 14:22:03 -0700
-Message-ID: <20120831212202.GA5495@opensource.wolfsonmicro.com>
-References: <1346353958-7746-1-git-send-email-vinod.koul@linux.intel.com>
+Subject: Re: [PATCH] ASoC: correct the check for NULL
+	dma_buffer pointer
+Date: Fri, 31 Aug 2012 14:24:36 -0700
+Message-ID: <20120831212435.GB5495@opensource.wolfsonmicro.com>
+References: <1346383521-2990-1-git-send-email-prasadjoshi.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9429326648E
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 23:22:08 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB29A26648E
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2012 23:24:39 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1346353958-7746-1-git-send-email-vinod.koul@linux.intel.com>
+In-Reply-To: <1346383521-2990-1-git-send-email-prasadjoshi.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com
+To: Prasad Joshi <prasadjoshi.linux@gmail.com>
+Cc: alsa-devel@alsa-project.org, rajeev-dlh.kumar@st.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 31, 2012 at 12:42:35AM +0530, Vinod Koul wrote:
-> Old wine ina  new bottle, so here is the second attempt for adding the notion of
-> how devices (in my case a DSP) can buffer data and that can be used by sound
-> core
+On Fri, Aug 31, 2012 at 08:55:21AM +0530, Prasad Joshi wrote:
+> The if condition
+> 	if (!buf && !buf->area)
+> 
+> checks if the buf pointer is NULL and then dereferences it again to
+> check if the buffer area is NULL, resulting in possible NULL
+> dereference.
 
-This all looks good for me.
+Applied, thanks.
