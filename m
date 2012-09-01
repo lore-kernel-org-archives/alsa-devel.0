@@ -1,18 +1,20 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH] ASoC: ams-delta: fix card initalization
-	failure
-Date: Sat, 01 Sep 2012 11:09:18 +0200
-Message-ID: <1939338.OUN9Uq58XY@vclass>
-References: <1346102910-8610-1-git-send-email-jkrzyszt@tis.icnet.pl>
- <1809544.cvZPIRmRr5@acer> <20120831213103.GC5495@opensource.wolfsonmicro.com>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: dapm: Ensure bypass paths are
+	suspended and resumed
+Date: Sat, 1 Sep 2012 15:21:47 +0100
+Message-ID: <CABS+qY0tKuq92PUmZ-Op2S_t2DJFRv6OH1JmFis-wyf5uB7sTA@mail.gmail.com>
+References: <1346460069-27418-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 89E4A265E27
- for <alsa-devel@alsa-project.org>; Sat,  1 Sep 2012 11:29:46 +0200 (CEST)
-In-Reply-To: <20120831213103.GC5495@opensource.wolfsonmicro.com>
+Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
+ [74.125.149.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id D878E26028E
+ for <alsa-devel@alsa-project.org>; Sat,  1 Sep 2012 16:21:50 +0200 (CEST)
+Received: by lags15 with SMTP id s15so2411188lag.38
+ for <alsa-devel@alsa-project.org>; Sat, 01 Sep 2012 07:21:47 -0700 (PDT)
+In-Reply-To: <1346460069-27418-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-RG5pYSBwacSFdGVrLCAzMSBzaWVycG5pYSAyMDEyIDE0OjMxOjA0IE1hcmsgQnJvd24gcGlzemU6
-Cj4gT24gV2VkLCBBdWcgMjksIDIwMTIgYXQgMDc6MDQ6NDhBTSArMDIwMCwgSmFudXN6IEtyenlz
-enRvZmlrIHdyb3RlOgo+ID4gT24gVHVlLCAyOCBBdWcgMjAxMiAxMToxMzozOSBNYXJrIEJyb3du
-IHdyb3RlOgo+IAo+ID4gPiBUaGUgYWJvdmUgbG9va3MgbGlrZSB5b3UgYWxyZWFkeSBoYXZlIGEg
-cGxhdGZvcm0gZHJpdmVyPyAKCk1hcmssCkkgc2hvdWxkIGhhdmUgcmF0aGVyIGFuc3dlcmVkOiBO
-bywgYW1zLWRlbHRhLmMgaXMgbm90IGEgcGxhdGZvcm0gZHJpdmVyLCAKb25seSBhIG1vZHVsZSB3
-aGljaCByZWdpc3RlcmVzIGEgc29jLWF1ZGlvIGRldmljZSBhbmQgcHJvdmlkZXMgZGV2aWNlIApz
-cGVjaWZpYyBkYXRhIGFuZCBjYWxsYmFja3MgdG8gdGhlIHNvYy1hdWRpbyBwbGF0Zm9ybSBkcml2
-ZXIuCgo+ID4gPiBBbGwgSSdtCj4gPiA+IHN1Z2dlc3RpbmcgaXMgY2hhbmdpbmcgdGhlIGFib3Zl
-IHRvIHVzZSBwbGF0Zm9ybSByYXRoZXIgdGhhbiAKZHJpdmVyCj4gPiA+IGRhdGEuCj4gLi4uCj4g
-cy9kcnZkYXRhL3BsYXRkYXRhLyBpbiB0aGUgY29kZS4gCgpUYWtpbmcgdGhlIGFib3ZlIGludG8g
-YWNjb3VudCwgSSB3b3VsZCBoYXZlIHRvIGFwcGx5IHRoaXMgc3Vic3RpdHVlIHRvIAp0aGUgc29j
-LWNvcmUuYywgd2hpY2ggaXMgYWN0dWFsbHkgdGhlIHBsYXRmb3JtIGRyaXZlciBmb3IgdGhlIGFt
-cy1kZWx0YSAKQVNvQyBkZXZpY2UsIGFuZCB0aGlzIHdvdWxkIGJyZWFrIGEgbG90IG9mIG90aGVy
-IGNhcmRzLgoKPiBJZiB5b3UgY2FuJ3QgZG8gdGhpcyB0aGVuIGp1c3QKPiByZWZlcmVuY2luZyB0
-aGUgZGF0YSBkaXJlY3RseSBpbiB0aGUgY29kZSB3b3VsZCBiZSBiZXR0ZXIgdGhhbiB0aGlzCj4g
-Ym9kZ2UsIGl0J2QgYmUgbXVjaCBsZXNzIGZyYWdpbGUuCgpJIHNlZSB5b3VyIHBvaW50LCBob3dl
-dmVyIGZvciBub3cgSSBjYW4gc2VlIG5vIGJldHRlciB3YXkgb2YgcmVmZXJlbmNpbmcgCnRoZSBk
-YXRhIChvZiB0eXBlIHN0cnVjdCBzbmRfc29jX2NhcmQpIHRoZW4gcGFzc2luZyBpdCB0byAKc25k
-X3NvY19yZWdpc3Rlcl9jYXJkKCkuIEJ1dCBmb3IgdGhpcyB0byB3b3JrLCBJIHdvdWxkIGhhdmUg
-dG8gcmVnaXN0ZXIgCnN1Y2Nlc3NmdWxseSBhbiBhbXMtZGVsdGEgc3BlY2lmaWMgcGxhdGZvcm0g
-ZGV2aWNlIGZpcnN0LCBub3QgdGhlIHNvYy0KYXVkaW8uIFRoaXMsIGV2ZW4gaWYgc3RpbGwgZG9u
-ZSBmcm9tIHRoZSBzb3VuZC9zb2Mvb21hcC9hbXMtZGVsdGEuYywgbm90IApmcm9tIGFuIGFyY2gg
-Ym9hcmQgZmlsZSwgd291bGQgcmVxdWlyZSBub3cgbm90IGV4aXN0aW5nIGFtcy1kZWx0YSBBU29D
-IApwbGF0Zm9ybSBkcml2ZXIgcHJvYmUvcmVtb3ZlIGNhbGxiYWNrcyBhdCBsZWFzdC4gSSdtIHN0
-aWxsIG5vdCBjb252aW5jZWQgCmlmIHN1Y2ggbW9kaWZpY2F0aW9uIHdvdWxkIGJlIGFjY2VwdGFi
-bGUgaW4gdGhlIG1pZGRsZSBvZiB0aGUgcmMgY3ljbGUuCgpJZiB0aGVyZSBpcyBhIHNpbXBsZXIs
-IGxlc3MgaW50cnVzaXZlIHdheSB0byBkbyB0aGlzLCB0aGVuIHNvcnJ5LCBJIApzdGlsbCBjYW4n
-dCBzZWUgaXQuCgpUaGFua3MsCkphbnVzegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On 1 September 2012 01:41, Mark Brown
+<broonie@opensource.wolfsonmicro.com>wrote:
+
+> Since bypass paths aren't part of DAPM streams and we may not have any
+> DAPM streams there may not be anything that triggers a DAPM sync for
+> them. Mark all input and output widgets as dirty and then sync to do so
+> at the end of suspend and resume.
+>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>
+
+Acked-by: Liam Girdwood <lrg@ti.com>
