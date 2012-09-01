@@ -1,34 +1,32 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: Davinci: evm: Fix typo in cpu
-	dai name
-Date: Fri, 31 Aug 2012 17:47:25 -0700
-Message-ID: <20120901004724.GC21451@opensource.wolfsonmicro.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
- <1346417459-30042-4-git-send-email-gururaja.hebbar@ti.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 2/4] ARM: OMAP: Split plat/hardware.h, introduce local
+ hardware.h and soc.h for omap2+
+Date: Fri, 31 Aug 2012 19:06:54 -0700
+Message-ID: <20120901020654.GT1303@atomide.com>
+References: <20120901002534.23715.28654.stgit@muffinssi.local>
+ <20120901002622.23715.68557.stgit@muffinssi.local>
+ <20120901002753.GA21451@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 400462664AD
- for <alsa-devel@alsa-project.org>; Sat,  1 Sep 2012 02:47:34 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1346417459-30042-4-git-send-email-gururaja.hebbar@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20120901002753.GA21451@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-watchdog@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Wim Van Sebroeck <wim@iguana.be>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 31, 2012 at 06:20:59PM +0530, Hebbar, Gururaja wrote:
-> Fix typo caused by recent commit (cf53756 - ASoC: davinci: davinci-pcm
-> does not need to be a plaform_driver)
+* Mark Brown <broonie@opensource.wolfsonmicro.com> [120831 17:28]:
+> On Fri, Aug 31, 2012 at 05:26:22PM -0700, Tony Lindgren wrote:
+> > As the plat and mach includes need to disappear for single zImage work,
+> > we need to remove plat/hardware.h.
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+> There's a topic/omap branch in ASoC which you can pull in to help reduce
+> conflicts, or I could merge this there if that's sensible.
 
-Applied, thanks.
+Thanks. Did not see it yet at git://opensource.wolfsonmicro.com/linux-2.6-asoc,
+maybe it's not yet pushed out?
+
+Tony
