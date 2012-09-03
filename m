@@ -1,127 +1,101 @@
-From: =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
-Subject: [PATCH] ASoC: imx-mc13783: use defines instead of
-	numerical address of register
-Date: Mon,  3 Sep 2012 10:49:21 +0200
-Message-ID: <1346662161-7642-1-git-send-email-gcembed@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Fix compilation error due to leftover
+ code
+Date: Mon, 03 Sep 2012 11:56:21 +0300
+Message-ID: <504470B5.20404@ti.com>
+References: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com> <20120830180219.GI4356@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 86F6A264FBB
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 10:50:26 +0200 (CEST)
-Received: by wibhq4 with SMTP id hq4so2807486wib.2
- for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2012 01:50:26 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, =?UTF-8?q?Philippe=20R=C3=A9tornaz?= <philippe.retornaz@epfl.ch>, Sascha Hauer <kernel@pengutronix.de>, =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20120830180219.GI4356@opensource.wolfsonmicro.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyB1c2VzIGFscmVhZHkgZGVmaW5lZCBuYW1lIG9mIHJlZ2lzdGVycyBhbmQgbWFrZXMgY29k
-ZSBtb3JlIHJlYWRhYmxlLgoKU2lnbmVkLW9mZi1ieTogR2HDq3RhbiBDYXJsaWVyIDxnY2VtYmVk
-QGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYyB8ICAgNTggKysrKysr
-KysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAz
-MSBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-Y29kZWNzL21jMTM3ODMuYyBiL3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jCmluZGV4IDhmNzI2
-YzAuLmJiZmE1NTMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jCisrKyBi
-L3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jCkBAIC00MjYsMTYgKzQyNiwxNiBAQCBzdGF0aWMg
-aW50IG1jMTM3ODNfc2V0X3RkbV9zbG90X3N5bmMoc3RydWN0IHNuZF9zb2NfZGFpICpkYWksCiB9
-CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBtYzFsX2FtcF9jdGwgPQot
-CVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgMzgsIDcsIDEsIDApOworCVNPQ19EQVBNX1NJTkdM
-RSgiU3dpdGNoIiwgTUMxMzc4M19BVURJT19UWCwgNywgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc25kX2tjb250cm9sX25ldyBtYzFyX2FtcF9jdGwgPQotCVNPQ19EQVBNX1NJTkdMRSgi
-U3dpdGNoIiwgMzgsIDUsIDEsIDApOworCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgTUMxMzc4
-M19BVURJT19UWCwgNSwgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9s
-X25ldyBtYzJfYW1wX2N0bCA9Ci0JU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCAzOCwgOSwgMSwg
-MCk7CisJU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1RYLCA5LCAxLCAw
-KTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGF0eF9hbXBfY3RsID0K
-LQlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIDM4LCAxMSwgMSwgMCk7CisJU09DX0RBUE1fU0lO
-R0xFKCJTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1RYLCAxMSwgMSwgMCk7CiAKIAogLyogVmlydHVh
-bCBtdXguIFRoZSBjaGlwIGRvZXMgdGhlIGlucHV0IHNlbGVjdGlvbiBhdXRvbWF0aWNhbGx5CkBA
-IC00NjEsMjIgKzQ2MSwyMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcg
-cmlnaHRfaW5wdXRfbXV4ID0KIAlTT0NfREFQTV9FTlVNX1ZJUlQoIlJvdXRlIiwgYWRjcl9lbnVt
-KTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHNhbXBfY3RsID0KLQlT
-T0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIDM2LCAzLCAxLCAwKTsKKwlTT0NfREFQTV9TSU5HTEUo
-IlN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgwLCAzLCAxLCAwKTsKIAogc3RhdGljIGNvbnN0IHN0
-cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGxhbXBfY3RsID0KLQlTT0NfREFQTV9TSU5HTEUoIlN3aXRj
-aCIsIDM2LCA1LCAxLCAwKTsKKwlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIE1DMTM3ODNfQVVE
-SU9fUlgwLCA1LCAxLCAwKTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3
-IGhsYW1wX2N0bCA9Ci0JU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCAzNiwgMTAsIDEsIDApOwor
-CVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDAsIDEwLCAxLCAwKTsK
-IAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGhyYW1wX2N0bCA9Ci0JU09D
-X0RBUE1fU0lOR0xFKCJTd2l0Y2giLCAzNiwgOSwgMSwgMCk7CisJU09DX0RBUE1fU0lOR0xFKCJT
-d2l0Y2giLCBNQzEzNzgzX0FVRElPX1JYMCwgOSwgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBzdHJ1
-Y3Qgc25kX2tjb250cm9sX25ldyBsbGFtcF9jdGwgPQotCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNo
-IiwgMzYsIDE2LCAxLCAwKTsKKwlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIE1DMTM3ODNfQVVE
-SU9fUlgwLCAxNiwgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25l
-dyBscmFtcF9jdGwgPQotCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgMzYsIDE1LCAxLCAwKTsK
-KwlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgwLCAxNSwgMSwgMCk7
-CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgzX2RhcG1f
-d2lkZ2V0c1tdID0gewogLyogSW5wdXQgKi8KQEAgLTQ4NywxMyArNDg3LDEzIEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgzX2RhcG1fd2lkZ2V0c1tdID0g
-ewogCVNORF9TT0NfREFQTV9JTlBVVCgiUlhJTkwiKSwKIAlTTkRfU09DX0RBUE1fSU5QVVQoIlRY
-SU4iKSwKIAotCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMSBCaWFzIiwgMzgsIDAsIDAsIE5VTEws
-IDApLAotCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMiBCaWFzIiwgMzgsIDEsIDAsIE5VTEwsIDAp
-LAorCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMSBCaWFzIiwgTUMxMzc4M19BVURJT19UWCwgMCwg
-MCwgTlVMTCwgMCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgiTUMyIEJpYXMiLCBNQzEzNzgzX0FV
-RElPX1RYLCAxLCAwLCBOVUxMLCAwKSwKIAotCVNORF9TT0NfREFQTV9TV0lUQ0goIk1DMUwgQW1w
-IiwgMzgsIDcsIDAsICZtYzFsX2FtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIk1DMVIg
-QW1wIiwgMzgsIDUsIDAsICZtYzFyX2FtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIk1D
-MiBBbXAiLCAzOCwgOSwgMCwgJm1jMl9hbXBfY3RsKSwKLQlTTkRfU09DX0RBUE1fU1dJVENIKCJU
-WElOIEFtcCIsIDM4LCAxMSwgMCwgJmF0eF9hbXBfY3RsKSwKKwlTTkRfU09DX0RBUE1fU1dJVENI
-KCJNQzFMIEFtcCIsIE1DMTM3ODNfQVVESU9fVFgsIDcsIDAsICZtYzFsX2FtcF9jdGwpLAorCVNO
-RF9TT0NfREFQTV9TV0lUQ0goIk1DMVIgQW1wIiwgTUMxMzc4M19BVURJT19UWCwgNSwgMCwgJm1j
-MXJfYW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiTUMyIEFtcCIsIE1DMTM3ODNfQVVE
-SU9fVFgsIDksIDAsICZtYzJfYW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiVFhJTiBB
-bXAiLCBNQzEzNzgzX0FVRElPX1RYLCAxMSwgMCwgJmF0eF9hbXBfY3RsKSwKIAogCVNORF9TT0Nf
-REFQTV9WSVJUX01VWCgiUEdBIExlZnQgSW5wdXQgTXV4IiwgU05EX1NPQ19OT1BNLCAwLCAwLAog
-CQkJICAgICAgJmxlZnRfaW5wdXRfbXV4KSwKQEAgLTUwMywxMiArNTAzLDEyIEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgzX2RhcG1fd2lkZ2V0c1tdID0g
-ewogCVNORF9TT0NfREFQTV9QR0EoIlBHQSBMZWZ0IElucHV0IiwgU05EX1NPQ19OT1BNLCAwLCAw
-LCBOVUxMLCAwKSwKIAlTTkRfU09DX0RBUE1fUEdBKCJQR0EgUmlnaHQgSW5wdXQiLCBTTkRfU09D
-X05PUE0sIDAsIDAsIE5VTEwsIDApLAogCi0JU05EX1NPQ19EQVBNX0FEQygiQURDIiwgIkNhcHR1
-cmUiLCA0MCwgMTEsIDApLAotCVNORF9TT0NfREFQTV9TVVBQTFkoIkFEQ19SZXNldCIsIDQwLCAx
-NSwgMCwgTlVMTCwgMCksCisJU05EX1NPQ19EQVBNX0FEQygiQURDIiwgIkNhcHR1cmUiLCBNQzEz
-NzgzX0FVRElPX0NPREVDLCAxMSwgMCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgiQURDX1Jlc2V0
-IiwgTUMxMzc4M19BVURJT19DT0RFQywgMTUsIDAsIE5VTEwsIDApLAogCiAvKiBPdXRwdXQgKi8K
-LQlTTkRfU09DX0RBUE1fU1VQUExZKCJEQUNfRSIsIDQxLCAxMSwgMCwgTlVMTCwgMCksCi0JU05E
-X1NPQ19EQVBNX1NVUFBMWSgiREFDX1Jlc2V0IiwgNDEsIDE1LCAwLCBOVUxMLCAwKSwKKwlTTkRf
-U09DX0RBUE1fU1VQUExZKCJEQUNfRSIsIE1DMTM3ODNfQVVESU9fREFDLCAxMSwgMCwgTlVMTCwg
-MCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgiREFDX1Jlc2V0IiwgTUMxMzc4M19BVURJT19EQUMs
-IDE1LCAwLCBOVUxMLCAwKSwKIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJSWE9VVEwiKSwKIAlTTkRf
-U09DX0RBUE1fT1VUUFVUKCJSWE9VVFIiKSwKIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJIU0wiKSwK
-QEAgLTUxNiwxNCArNTE2LDE4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dp
-ZGdldCBtYzEzNzgzX2RhcG1fd2lkZ2V0c1tdID0gewogCVNORF9TT0NfREFQTV9PVVRQVVQoIkxT
-UCIpLAogCVNORF9TT0NfREFQTV9PVVRQVVQoIlNQIiksCiAKLQlTTkRfU09DX0RBUE1fU1dJVENI
-KCJTcGVha2VyIEFtcCIsIDM2LCAzLCAwLCAmc2FtcF9jdGwpLAorCVNORF9TT0NfREFQTV9TV0lU
-Q0goIlNwZWFrZXIgQW1wIiwgTUMxMzc4M19BVURJT19SWDAsIDMsIDAsICZzYW1wX2N0bCksCiAJ
-U05EX1NPQ19EQVBNX1NXSVRDSCgiTG91ZHNwZWFrZXIgQW1wIiwgU05EX1NPQ19OT1BNLCAwLCAw
-LCAmbGFtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIkhlYWRzZXQgQW1wIExlZnQiLCAz
-NiwgMTAsIDAsICZobGFtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIkhlYWRzZXQgQW1w
-IFJpZ2h0IiwgMzYsIDksIDAsICZocmFtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIkxp
-bmUgb3V0IEFtcCBMZWZ0IiwgMzYsIDE2LCAwLCAmbGxhbXBfY3RsKSwKLQlTTkRfU09DX0RBUE1f
-U1dJVENIKCJMaW5lIG91dCBBbXAgUmlnaHQiLCAzNiwgMTUsIDAsICZscmFtcF9jdGwpLAotCVNO
-RF9TT0NfREFQTV9EQUMoIkRBQyIsICJQbGF5YmFjayIsIDM2LCAyMiwgMCksCi0JU05EX1NPQ19E
-QVBNX1BHQSgiREFDIFBHQSIsIDM3LCA1LCAwLCBOVUxMLCAwKSwKKwlTTkRfU09DX0RBUE1fU1dJ
-VENIKCJIZWFkc2V0IEFtcCBMZWZ0IiwgTUMxMzc4M19BVURJT19SWDAsIDEwLCAwLAorCQkJJmhs
-YW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiSGVhZHNldCBBbXAgUmlnaHQiLCBNQzEz
-NzgzX0FVRElPX1JYMCwgOSwgMCwKKwkJCSZocmFtcF9jdGwpLAorCVNORF9TT0NfREFQTV9TV0lU
-Q0goIkxpbmUgb3V0IEFtcCBMZWZ0IiwgTUMxMzc4M19BVURJT19SWDAsIDE2LCAwLAorCQkJJmxs
-YW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiTGluZSBvdXQgQW1wIFJpZ2h0IiwgTUMx
-Mzc4M19BVURJT19SWDAsIDE1LCAwLAorCQkJJmxyYW1wX2N0bCksCisJU05EX1NPQ19EQVBNX0RB
-QygiREFDIiwgIlBsYXliYWNrIiwgTUMxMzc4M19BVURJT19SWDAsIDIyLCAwKSwKKwlTTkRfU09D
-X0RBUE1fUEdBKCJEQUMgUEdBIiwgTUMxMzc4M19BVURJT19SWDEsIDUsIDAsIE5VTEwsIDApLAog
-fTsKIAogc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUgbWMxMzc4M19yb3V0ZXNbXSA9
-IHsKLS0gCjEuNy43LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+Hi Mark,
+
+On 08/30/2012 09:02 PM, Mark Brown wrote:
+> On Thu, Aug 30, 2012 at 05:06:15PM +0300, Peter Ujfalusi wrote:
+>> Part of commit (which patches sound/soc/omap/mcbsp.c file):
+>> 8fef626 ARM/ASoC: omap-mcbsp: Remove CLKR/FSR mux configuration code
+>>
+>> since the tree where it has been applied did not had the earlier pat=
+ch:
+>> d0db84e ASoC: omap-mcbsp: Fix 6pin mux configuration
+>> which changed code around omap_mcbsp_6pin_src_mux().
+>>
+>> Because of the missing part from 8fef626 the sound/soc/omap/mcbsp.c =
+does
+>> not compile in linux-next.
+>=20
+> This makes little sense to me.  If the other patch is a dependency wh=
+y
+> not merge that dependency?  What does this mean at the code level?
+
+Commit d0db84e ASoC: omap-mcbsp: Fix 6pin mux configuration
+
+changed a line within omap_mcbsp_6pin_src_mux() function to fix an erro=
+r which
+prevents the mux configuration in 3.4, 3.5, 3.6 kernels.
+
+Commit 8fef626 ARM/ASoC: omap-mcbsp: Remove CLKR/FSR mux configuration =
+code
+
+should remove this function fir 3.7 and the mux configuration should be=
+ done
+in the board files or via DTS.
+
+You have reported when you applied the McBSP DT series that commit 8fef=
+626 had
+conflict when you applied it. This was because I have created the serie=
+s on on
+a branch where the 6pin function was already fixed since I knew it is g=
+oing to
+be in 3.6 when the 3.7 merge will open.
+
+> You're just talking about textual issues here, there's no semantic
+> information about what any of this stuff does or how the changes rela=
+te
+> to each other at all.
+>=20
+>> When you applied 8fef626 you mentioned that it did not applied clean=
+ly.
+>> The reason was that the branch did not had commit d0db84e applied pr=
+ior to the
+>> series:
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/054=
+668.html
+>=20
+>> Now I can not find the d0db84e commit in the asoc tree (not in for-3=
+=2E6, for-3.7
+>> and not in for-next branch) anymore.
+>=20
+> The above doesn't mean much to me.
+
+So how can we resolve this?
+Are you going to rebase or update your 3.7, for-next topic/omap branche=
+s on
+mainline so they will contain the mainline patch (d0db84e)?
+Not sure if I mentioned it but I have created a branch (for you to take=
+, or
+observe):
+git://gitorious.org/omap-audio/linux-audio.git peter/topic/for-mark/oma=
+p-3.7
+
+Here I have your topic/omap branch rebased on mainline and I have fixed=
+ the
+commit 8fef626 and added the missing chunk in order to avoid build fail=
+ure.
+
+A patch against your 3.7, for-next, topic/omap will not apply in linux-=
+next
+and a patch on top of linux-next would not apply in the asoc tree.
+
+Please let me know how can I help to resolve this - I do not want 3.7-r=
+c1 to
+be broken when it comes out for OMAP audio.
+
+Thank you,
+P=E9ter
