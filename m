@@ -1,43 +1,31 @@
-From: Philippe =?ISO-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: Re: [PATCH] ASoC: imx-mc13783: use defines instead of
-	numerical address of register
-Date: Mon, 03 Sep 2012 11:59:01 +0200
-Message-ID: <17721311.9OuuZgtFko@laptop>
-References: <1346662161-7642-1-git-send-email-gcembed@gmail.com>
+From: "Mohammed, Afzal" <afzal@ti.com>
+Subject: RE: [PATCH 6/9] ARM: OMAP: Move gpio.h to
+ include/linux/platform_data
+Date: Mon, 3 Sep 2012 10:14:54 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9DC3AF@DBDE01.ent.ti.com>
+References: <20120831004828.28732.902.stgit@muffinssi.local>
+ <20120831005234.28732.10624.stgit@muffinssi.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.218])
- by alsa0.perex.cz (Postfix) with SMTP id 39A6126077C
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 11:59:05 +0200 (CEST)
-In-Reply-To: <1346662161-7642-1-git-send-email-gcembed@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Ga=EBtan?= Carlier <gcembed@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20120831005234.28732.10624.stgit@muffinssi.local>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Linus Walleij <linus.walleij@linaro.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-> This uses already defined name of registers and makes code more readable.
-> =
-
-> Signed-off-by: Ga=EBtan Carlier <gcembed@gmail.com>
-
-I've added Mark Brown in CC.
-
-I'm not sure you need it, but anyway:
-
-Acked-by: Philippe Retornaz <philippe.retornaz@epfl.ch>
-
-Thanks !
-
-Philippe
+SGksDQoNCk9uIEZyaSwgQXVnIDMxLCAyMDEyIGF0IDA2OjIyOjM0LCBUb255IExpbmRncmVuIHdy
+b3RlOg0KPiBUaGlzIHdheSB3ZSBjYW4gcmVtb3ZlIGluY2x1ZGVzIG9mIHBsYXQvZ3Bpby5oIHdo
+aWNoIHdvbid0IHdvcmsNCj4gd2l0aCB0aGUgc2luZ2xlIHpJbWFnZSBzdXBwb3J0Lg0KPiANCj4g
+Tm90ZSB0aGF0IHdlIGFsc28gcmVtb3ZlIHRoZSBjcHVfY2xhc3NfaXNfb21hcDIoKSBjaGVjaw0K
+PiBpbiBncGlvLW9tYXAuYyBhcyB0aGUgZHJpdmVycyBzaG91bGQgbm90IGNhbGwgaXQgYXMgd2Ug
+bmVlZCB0bw0KPiBtYWtlIGl0IGxvY2FsIHRvIGFyY2gvYXJtL21hY2gtb21hcDIgZm9yIHNpbmds
+ZSB6SW1hZ2Ugc3VwcG9ydC4NCj4gDQo+IFdoaWxlIGF0IGl0LCBhcnJhbmdlIHRoZSByZWxhdGVk
+IGluY2x1ZGVzIGluIHRoZSBzdGFuZGFyZCB3YXkuDQo+IA0KPiBDYzogR3JhbnQgTGlrZWx5IDxn
+cmFudC5saWtlbHlAc2VjcmV0bGFiLmNhPg0KPiBDYzogTGludXMgV2FsbGVpaiA8bGludXMud2Fs
+bGVpakBsaW5hcm8ub3JnPg0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4g
+Q2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KPiBBY2tlZC1ieTogVG9ueSBMaW5kZ3Jl
+biA8dG9ueUBhdG9taWRlLmNvbT4NCg0KSSB0aGluayB0aGVyZSBpcyBvbmx5IG9uZSBUb255IDsp
+DQoNClJlZ2FyZHMNCkFmemFsDQo=
