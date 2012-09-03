@@ -1,33 +1,27 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: Re: [ASoC] Fix: Revert 'ASoC: imx-ssi: Remove mono support'.
-Date: Mon, 3 Sep 2012 13:16:38 -0300
-Message-ID: <5044D7E6.5070901@freescale.com>
-References: <1346660831-9662-1-git-send-email-javier.martin@vista-silicon.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [RFC 0/3] Initial stab at converting OMAP ASoC support to DMA
+	engine
+Date: Mon, 3 Sep 2012 17:58:32 +0100
+Message-ID: <20120903165832.GA31511@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1346660831-9662-1-git-send-email-javier.martin@vista-silicon.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Javier Martin <javier.martin@vista-silicon.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, festevam@gmail.com, broonie@opensource.wolfsonmicro.com, gcembed@gmail.com, s.hauer@pengutronix.de
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, Santosh Shilimkar <santosh.shilimkar@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Javier,
+The following series of three patches is an attempt to convert the OMAP
+ASoC backend to use the DMA engine support.
 
-Javier Martin wrote:
-> The following commit should be reverted: 0865a75d4166bddc533fd50831829ceefb94f9b0
-> 
-> The bug this patch is meant to solve doesn't occur in Visstrim_M10 boards.
-> Furthermore, after applying this patch sound in Visstrim_M10 is played
-> at slower rates.
+I'll bring your attention to the comments in patch 3 which highlight
+some of the features lost in this process.  Some questions need
+answering there (in particular the one concerning pause/resume)
+especially as it seems the present driver could well be buggy wrt
+comments recently on the mailing list about ALSA pause/resume
+requirements.
 
-Acked-by: Fabio Estevam <fabio.estevam@freescale.com>
-
-Sorry for breaking this.
-
-Ok, I managed to fix the original issue inside the mc13783 codec driver and just sent a patch.
-
-Thanks,
-
-Fabio Estevam
+This works for me, given the wind is in the right direction and if
+it's sunny outside.  I find the audio support on OMAP to be rather
+flakey at best, requiring reboots if it doesn't work first time.
