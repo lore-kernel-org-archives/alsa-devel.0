@@ -1,15 +1,16 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: [PATCH V2] ASoC: Davinci: McASP: add support new McASP
-	IP Variant
-Date: Mon, 3 Sep 2012 13:40:40 +0530
-Message-ID: <1346659840-18228-1-git-send-email-gururaja.hebbar@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Remove unused 'saved_value' field from
+	snd_soc_dapm_widget struct
+Date: Mon,  3 Sep 2012 10:34:26 +0200
+Message-ID: <1346661266-21894-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 87168264FEC
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 10:28:42 +0200 (CEST)
+Received: from smtp-out-197.synserver.de (smtp-out-197.synserver.de
+ [212.40.185.197])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C821264FEC
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 10:30:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,203 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org
-Cc: sudhakar.raj@ti.com, tony@atomide.com, broonie@opensource.wolfsonmicro.com, nsekhar@ti.com, gururaja.hebbar@ti.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The OMAP2+ variant of McASP is different from Davinci variant w.r.to
-some register offset.
+The only user was removed over two years ago in commit a6c65736 ("ASoC: Remove
+current PGA control handling").
 
-Changes
-- Add new MCASP_VERSION_3 to identify new variant. New DT compatible
-  "ti,omap2-mcasp-audio" to identify version 3 controller.
-- The register offsets are handled depending on the version.
-
-Note:
-    DMA parameters (dma fifo offset) are not updated and will be done later.
-
-Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-Changes in V2:
-    Use "switch" instead of "if" statement to allow future revisions
+ include/sound/soc-dapm.h |    1 -
+ 1 file changed, 1 deletion(-)
 
-:100644 100644 e6148ec... 374e145... M	Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-:100644 100644 79c26aa... d0c5825... M	include/linux/platform_data/davinci_asp.h
-:100644 100644 c3eae1d... 714e51e... M	sound/soc/davinci/davinci-mcasp.c
- .../bindings/sound/davinci-mcasp-audio.txt         |    1 +
- include/linux/platform_data/davinci_asp.h          |    1 +
- sound/soc/davinci/davinci-mcasp.c                  |   86 +++++++++++++++++---
- 3 files changed, 75 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-index e6148ec..374e145 100644
---- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-@@ -4,6 +4,7 @@ Required properties:
- - compatible :
- 	"ti,dm646x-mcasp-audio"	: for DM646x platforms
- 	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
-+	"ti,omap2-mcasp-audio"	: for OMAP2 platforms (TI81xx, AM33xx)
- 
- - reg : Should contain McASP registers offset and length
- - interrupts : Interrupt number for McASP
-diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
-index 79c26aa..d0c5825 100644
---- a/include/linux/platform_data/davinci_asp.h
-+++ b/include/linux/platform_data/davinci_asp.h
-@@ -87,6 +87,7 @@ struct snd_platform_data {
- enum {
- 	MCASP_VERSION_1 = 0,	/* DM646x */
- 	MCASP_VERSION_2,	/* DA8xx/OMAPL1x */
-+	MCASP_VERSION_3,        /* TI81xx/AM33xx */
- };
- 
- enum mcbsp_clk_input_pin {
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index c3eae1d..714e51e 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -111,6 +111,10 @@
- #define DAVINCI_MCASP_WFIFOSTS		(0x1014)
- #define DAVINCI_MCASP_RFIFOCTL		(0x1018)
- #define DAVINCI_MCASP_RFIFOSTS		(0x101C)
-+#define MCASP_VER3_WFIFOCTL		(0x1000)
-+#define MCASP_VER3_WFIFOSTS		(0x1004)
-+#define MCASP_VER3_RFIFOCTL		(0x1008)
-+#define MCASP_VER3_RFIFOSTS		(0x100C)
- 
- /*
-  * DAVINCI_MCASP_PWREMUMGT_REG - Power Down and Emulation Management
-@@ -384,18 +388,36 @@ static void davinci_mcasp_start(struct davinci_audio_dev *dev, int stream)
- {
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (dev->txnumevt) {	/* enable FIFO */
--			mcasp_clr_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
-+			switch (dev->version) {
-+			case MCASP_VERSION_3:
-+				mcasp_clr_bits(dev->base + MCASP_VER3_WFIFOCTL,
- 								FIFO_ENABLE);
--			mcasp_set_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
-+				mcasp_set_bits(dev->base + MCASP_VER3_WFIFOCTL,
- 								FIFO_ENABLE);
-+				break;
-+			default:
-+				mcasp_clr_bits(dev->base +
-+					DAVINCI_MCASP_WFIFOCTL,	FIFO_ENABLE);
-+				mcasp_set_bits(dev->base +
-+					DAVINCI_MCASP_WFIFOCTL,	FIFO_ENABLE);
-+			}
- 		}
- 		mcasp_start_tx(dev);
- 	} else {
- 		if (dev->rxnumevt) {	/* enable FIFO */
--			mcasp_clr_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
-+			switch (dev->version) {
-+			case MCASP_VERSION_3:
-+				mcasp_clr_bits(dev->base + MCASP_VER3_RFIFOCTL,
- 								FIFO_ENABLE);
--			mcasp_set_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
-+				mcasp_set_bits(dev->base + MCASP_VER3_RFIFOCTL,
- 								FIFO_ENABLE);
-+				break;
-+			default:
-+				mcasp_clr_bits(dev->base +
-+					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
-+				mcasp_set_bits(dev->base +
-+					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
-+			}
- 		}
- 		mcasp_start_rx(dev);
- 	}
-@@ -416,14 +438,31 @@ static void mcasp_stop_tx(struct davinci_audio_dev *dev)
- static void davinci_mcasp_stop(struct davinci_audio_dev *dev, int stream)
- {
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (dev->txnumevt)	/* disable FIFO */
--			mcasp_clr_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
-+		if (dev->txnumevt) {	/* disable FIFO */
-+			switch (dev->version) {
-+			case MCASP_VERSION_3:
-+				mcasp_clr_bits(dev->base + MCASP_VER3_WFIFOCTL,
- 								FIFO_ENABLE);
-+				break;
-+			default:
-+				mcasp_clr_bits(dev->base +
-+					DAVINCI_MCASP_WFIFOCTL,	FIFO_ENABLE);
-+			}
-+		}
- 		mcasp_stop_tx(dev);
- 	} else {
--		if (dev->rxnumevt)	/* disable FIFO */
--			mcasp_clr_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
-+		if (dev->rxnumevt) {	/* disable FIFO */
-+			switch (dev->version) {
-+			case MCASP_VERSION_3:
-+				mcasp_clr_bits(dev->base + MCASP_VER3_RFIFOCTL,
- 								FIFO_ENABLE);
-+			break;
-+
-+			default:
-+				mcasp_clr_bits(dev->base +
-+					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
-+			}
-+		}
- 		mcasp_stop_rx(dev);
- 	}
- }
-@@ -622,20 +661,37 @@ static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
- 		if (dev->txnumevt * tx_ser > 64)
- 			dev->txnumevt = 1;
- 
--		mcasp_mod_bits(dev->base + DAVINCI_MCASP_WFIFOCTL, tx_ser,
-+		switch (dev->version) {
-+		case MCASP_VERSION_3:
-+			mcasp_mod_bits(dev->base + MCASP_VER3_WFIFOCTL, tx_ser,
- 								NUMDMA_MASK);
--		mcasp_mod_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
-+			mcasp_mod_bits(dev->base + MCASP_VER3_WFIFOCTL,
- 				((dev->txnumevt * tx_ser) << 8), NUMEVT_MASK);
-+			break;
-+		default:
-+			mcasp_mod_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
-+							tx_ser,	NUMDMA_MASK);
-+			mcasp_mod_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
-+				((dev->txnumevt * tx_ser) << 8), NUMEVT_MASK);
-+		}
- 	}
- 
- 	if (dev->rxnumevt && stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		if (dev->rxnumevt * rx_ser > 64)
- 			dev->rxnumevt = 1;
--
--		mcasp_mod_bits(dev->base + DAVINCI_MCASP_RFIFOCTL, rx_ser,
-+		switch (dev->version) {
-+		case MCASP_VERSION_3:
-+			mcasp_mod_bits(dev->base + MCASP_VER3_RFIFOCTL, rx_ser,
- 								NUMDMA_MASK);
--		mcasp_mod_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
-+			mcasp_mod_bits(dev->base + MCASP_VER3_RFIFOCTL,
-+				((dev->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
-+			break;
-+		default:
-+			mcasp_mod_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
-+							rx_ser,	NUMDMA_MASK);
-+			mcasp_mod_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
- 				((dev->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
-+		}
- 	}
- }
- 
-@@ -874,6 +930,10 @@ static const struct of_device_id mcasp_dt_ids[] = {
- 		.compatible = "ti,da830-mcasp-audio",
- 		.data = (void *)MCASP_VERSION_2,
- 	},
-+	{
-+		.compatible = "ti,omap2-mcasp-audio",
-+		.data = (void *)MCASP_VERSION_3,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mcasp_dt_ids);
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index abe373d..0a15537 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -510,7 +510,6 @@ struct snd_soc_dapm_widget {
+ 	/* dapm control */
+ 	int reg;				/* negative reg = no direct dapm */
+ 	unsigned char shift;			/* bits to shift */
+-	unsigned int saved_value;		/* widget saved value */
+ 	unsigned int value;				/* widget current value */
+ 	unsigned int mask;			/* non-shifted mask */
+ 	unsigned int on_val;			/* on state value */
 -- 
-1.7.1
+1.7.10.4
