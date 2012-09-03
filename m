@@ -1,19 +1,19 @@
 From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH V3] ASoC: Davinci: machine: Add device tree
-	binding
-Date: Mon, 3 Sep 2012 05:21:05 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA717B6@DBDE01.ent.ti.com>
-References: <1346148830-2965-1-git-send-email-gururaja.hebbar@ti.com>
- <1BAFE6F6C881BF42822005164F1491C33EA70165@DBDE01.ent.ti.com>
- <20120831172729.GE25575@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: Davinci: McASP: add support new
+ McASP IP Variant
+Date: Mon, 3 Sep 2012 06:57:22 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA718B0@DBDE01.ent.ti.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+ <1346417459-30042-2-git-send-email-gururaja.hebbar@ti.com>
+ <20120901004443.GB21451@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 490FE264F22
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 07:21:14 +0200 (CEST)
-In-Reply-To: <20120831172729.GE25575@opensource.wolfsonmicro.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 932F4264F25
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 08:57:30 +0200 (CEST)
+In-Reply-To: <20120901004443.GB21451@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,27 +31,37 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
  Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 31, 2012 at 22:57:30, Mark Brown wrote:
-> On Fri, Aug 31, 2012 at 08:55:39AM +0000, Hebbar, Gururaja wrote:
-> > 
-> > Gentle Ping. Any updates about this version or can it be pulled into the tree.
-> > 
-> > On Thu, Aug 30, 2012 at 09:29:55, Hebbar, Gururaja wrote:
-> 
-> Please don't do this:
-> 
->  - Never top post.
->  - If the patch genuinely has been forgotten you need to resend it.
->  - You've allowed less than 24 hours for a reply, this is unreasonable.
->    Unless there's a critical bug fix you should only be worrying after a
->    few weeks or so.
-> 
+On Sat, Sep 01, 2012 at 06:14:44, Mark Brown wrote:
+> On Fri, Aug 31, 2012 at 06:20:57PM +0530, Hebbar, Gururaja wrote:
+> =
 
-I am really sorry for this. I will not repeat this in the future. 
-I was in a little hurry because there were some dependent patches and you 
-wanted to clear the pipeline.
+> > +			if (dev->version =3D=3D MCASP_VERSION_3) {
+> > +				mcasp_clr_bits(dev->base + MCASP_VER3_RFIFOCTL,
+> >  								FIFO_ENABLE);
+> > -			mcasp_set_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
+> > +				mcasp_set_bits(dev->base + MCASP_VER3_RFIFOCTL,
+> >  								FIFO_ENABLE);
+> > +			} else {
+> > +				mcasp_clr_bits(dev->base +
+> > +					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
+> > +				mcasp_set_bits(dev->base +
+> > +					DAVINCI_MCASP_RFIFOCTL,	FIFO_ENABLE);
+> > +			}
+> =
 
-Sorry again for the trouble.
+> This is all basically OK but it seems like it'd be better if all these
+> dev->version checks were switch statements.  That way when the hardware
+> designers get bored and add version 4 of the register map it'll slot in
+> naturally, and it'll be more clear what the code currently handles.
 
-Regards, 
+Ok I will update this. Since 3/3 is already accepted & I don=92t see any re=
+views
+for 2/3, I will only resend this patch (1/3). Is it ok?
+
+> =
+
+
+
+Regards, =
+
 Gururaja
