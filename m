@@ -1,48 +1,47 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RFC update 0/2] dmaengine/ASoC: omap: Enable
-	element mode in cyclic DMA
-Date: Wed, 05 Sep 2012 00:37:30 +0200
-Message-ID: <11245085.Nc6xDQ9liJ@acer>
-References: <E1T8a09-0002vz-Bl@rmk-PC.arm.linux.org.uk>
- <1346760482-12794-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
- by alsa0.perex.cz (Postfix) with ESMTP id AA1242652A8
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 00:40:16 +0200 (CEST)
-In-Reply-To: <1346760482-12794-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, linux-arm-kernel@lists.infradead.org, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH] ASoC: tegra: move platform data header
+Date: Tue,  4 Sep 2012 16:43:46 -0600
+Message-ID: <1346798626-28925-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 4 Sep 2012 15:08:00 Peter Ujfalusi wrote:
-> Hi Russell,
-> 
-> Enable the element mode (thus allowing mono playback and probably unblocking
-> OMAP1, OMAP2420) in OMAP dmaengine and omap-pcm.
-> 
-> Janusz: would it be possible for you to test Russell's series plus this on
-> OMAP1 to make sure that we do not broke it?
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Hi Peter, Russell,
-I'll be happy to make this test for you. This will take some time (I 
-work away from home), but I expect to have it done by Monday.
+Move the Tegra+WM8903 ASoC platform data header out of
+arch/arm/mach-tegra, as a pre-requisite of single zImage.
 
-BTW, I haven't been following OMAP development very closely last weeks, 
-and I didn't even know about the OMAP DMA engine availability. Which 
-Linux version should I base my test on? Would 3.6-rc be OK? Or l-o 
-master?
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+ .../sound/tegra_wm8903.h                           |    0
+ sound/soc/tegra/tegra_wm8903.c                     |    3 +--
+ 2 files changed, 1 insertions(+), 2 deletions(-)
+ rename arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h => include/sound/tegra_wm8903.h (100%)
 
-Thanks,
-Janusz
+diff --git a/arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h b/include/sound/tegra_wm8903.h
+similarity index 100%
+rename from arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h
+rename to include/sound/tegra_wm8903.h
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index d4f14e4..cee13b7 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -34,13 +34,12 @@
+ #include <linux/gpio.h>
+ #include <linux/of_gpio.h>
+ 
+-#include <mach/tegra_wm8903_pdata.h>
+-
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/tegra_wm8903.h>
+ 
+ #include "../codecs/wm8903.h"
+ 
+-- 
+1.7.0.4
