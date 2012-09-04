@@ -1,20 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC 1/3] ASoC: dmaengine: Don't use
- runtime	private data for dmaengine data
-Date: Mon, 03 Sep 2012 22:59:54 +0200
-Message-ID: <50451A4A.9000108@metafoo.de>
-References: <20120903165832.GA31511@n2100.arm.linux.org.uk>
- <E1T8ZzV-0002vp-2j@rmk-PC.arm.linux.org.uk> <5045124D.3050604@metafoo.de>
- <20120903204325.GA728@n2100.arm.linux.org.uk>
+From: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
+Subject: Re: [ASoC] Fix: Revert 'ASoC: imx-ssi: Remove mono
+	support'.
+Date: Tue, 04 Sep 2012 08:35:07 +0200
+Message-ID: <5045A11B.3070300@gmail.com>
+References: <1346660831-9662-1-git-send-email-javier.martin@vista-silicon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D0FC26521C
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2012 23:00:09 +0200 (CEST)
-In-Reply-To: <20120903204325.GA728@n2100.arm.linux.org.uk>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id A215126523F
+ for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2012 08:36:07 +0200 (CEST)
+Received: by wibhm6 with SMTP id hm6so3637093wib.2
+ for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2012 23:36:07 -0700 (PDT)
+In-Reply-To: <1346660831-9662-1-git-send-email-javier.martin@vista-silicon.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Javier Martin <javier.martin@vista-silicon.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/03/2012 10:43 PM, Russell King - ARM Linux wrote:
-> On Mon, Sep 03, 2012 at 10:25:49PM +0200, Lars-Peter Clausen wrote:
->> On 09/03/2012 06:59 PM, Liam Girdwood wrote:
->>> Use a dedicated member to store dmaengine data so that drivers can
->>> use private data for their own purposes.
->>>
->>
->> The idea was that we'll eventually get to a point where we won't need private
->> data for the drivers using the generic dmaengine code. But for the transitional
->> period there is snd_dmaengine_pcm_{set,get}_data which allows to attach driver
->> private data to the dmaengine pcm. For an example see how the other users of
->> dmaengine pcm handle this.
-> 
-> That's fine if you are writing new drivers from scatch, or know the
-> driver you're converting inside-out.  Neither applies here (I've
-> struggled to do anything with the OMAP audio stuff for many many
-> reasons.)
-> 
-> I rather wish that people who did know the OMAP ASoC driver had stepped
-> up to this conversion, but alas they haven't.
-> 
-> In any case, if you want people to use the this soc-dmaengine helper
-> then you have to make the conversion to it simple, and requiring
-> everyone to totally restructure their drivers to use it does not make
-> that process simple.
-> 
-> What you have here is the result of several transformations to the
-> driver, which would _not_ have been possible without this first patch
-> from Liam.
-
-Ok, it might have been helpful in the conversion process, but for the final
-patch it would be nice if you could replace
-
-struct snd_pcm_runtime *runtime = substream->runtime;
-struct omap_runtime_data *prtd = runtime->private_data;
-struct omap_pcm_dma_data *dma_data = prtd->dma_data;
-with
-struct omap_pcm_dma_data *dma_data = snd_dmaengine_pcm_get_data(substream);
-
-and in the hwparams callback use
-
-snd_dmaengine_pcm_set_data(substream, dma_data);
-
-and then drop patch 1 and 2 from the series.
+SGkgSmF2aWVyLApPbiAwOS8wMy8yMDEyIDEwOjI3IEFNLCBKYXZpZXIgTWFydGluIHdyb3RlOgo+
+IFRoZSBmb2xsb3dpbmcgY29tbWl0IHNob3VsZCBiZSByZXZlcnRlZDogMDg2NWE3NWQ0MTY2YmRk
+YzUzM2ZkNTA4MzE4MjljZWVmYjk0ZjliMAo+Cj4gVGhlIGJ1ZyB0aGlzIHBhdGNoIGlzIG1lYW50
+IHRvIHNvbHZlIGRvZXNuJ3Qgb2NjdXIgaW4gVmlzc3RyaW1fTTEwIGJvYXJkcy4KPiBGdXJ0aGVy
+bW9yZSwgYWZ0ZXIgYXBwbHlpbmcgdGhpcyBwYXRjaCBzb3VuZCBpbiBWaXNzdHJpbV9NMTAgaXMg
+cGxheWVkCj4gYXQgc2xvd2VyIHJhdGVzLgo+Cj4gU2lnbmVkLW9mZi1ieTogSmF2aWVyIE1hcnRp
+biA8amF2aWVyLm1hcnRpbkB2aXN0YS1zaWxpY29uLmNvbT4KPiAtLS0KPiBkaWZmIC0tZ2l0IGIv
+c291bmQvc29jL2ZzbC9pbXgtc3NpLmMgYS9zb3VuZC9zb2MvZnNsL2lteC1zc2kuYwo+IGluZGV4
+IGFjMzM3YWMuLjI4ZGQ3NmMgMTAwNjQ0Cj4gLS0tIGIvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMK
+PiArKysgYS9zb3VuZC9zb2MvZnNsL2lteC1zc2kuYwo+IEBAIC0zODAsMTMgKzM4MCwxMyBAQCBz
+dGF0aWMgaW50IGlteF9zc2lfZGFpX3Byb2JlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQo+ICAg
+c3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgaW14X3NzaV9kYWkgPSB7Cj4gICAJLnBy
+b2JlID0gaW14X3NzaV9kYWlfcHJvYmUsCj4gICAJLnBsYXliYWNrID0gewo+IC0JCS5jaGFubmVs
+c19taW4gPSAyLAo+ICsJCS5jaGFubmVsc19taW4gPSAxLAo+ICAgCQkuY2hhbm5lbHNfbWF4ID0g
+MiwKPiAgIAkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF85NjAwMCwKPiAgIAkJLmZvcm1h
+dHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSwKPiAgIAl9LAo+ICAgCS5jYXB0dXJlID0gewo+
+IC0JCS5jaGFubmVsc19taW4gPSAyLAo+ICsJCS5jaGFubmVsc19taW4gPSAxLAo+ICAgCQkuY2hh
+bm5lbHNfbWF4ID0gMiwKPiAgIAkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF85NjAwMCwK
+PiAgIAkJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSwKPgpXaGVuIGFwcGxpZWQg
+b24gbGludXgtbmV4dC0yMDEyMDgyNCwgdGhlIHBhdGNoIGZhaWxlZCBiZWNhdXNlIG9yaWdpbmFs
+IAppbXgtc3NpLmMgZmlsZSBsb29rcyBsaWtlIDoKc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9k
+cml2ZXIgaW14X3NzaV9kYWkgPSB7CgkucHJvYmUgPSBpbXhfc3NpX2RhaV9wcm9iZSwKCS5wbGF5
+YmFjayA9IHsKCQkvKiBUaGUgU1NJIGRvZXMgbm90IHN1cHBvcnQgbW9uYXVyYWwgYXVkaW8uICov
+CgkJLmNoYW5uZWxzX21pbiA9IDIsCgkJLmNoYW5uZWxzX21heCA9IDIsCgkJLnJhdGVzID0gU05E
+UlZfUENNX1JBVEVfODAwMF85NjAwMCwKCQkuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2
+X0xFLAoJfSwKCS5jYXB0dXJlID0gewoJCS5jaGFubmVsc19taW4gPSAyLAoJCS5jaGFubmVsc19t
+YXggPSAyLAoJCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfOTYwMDAsCgkJLmZvcm1hdHMg
+PSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSwKCX0sCgkub3BzID0gJmlteF9zc2lfcGNtX2RhaV9v
+cHMsCn07CgpUaGUgY29tbWVudCBsaW5lIGlzIG1pc3NpbmcgaW4geW91ciBwYXRjaC4gSGVyZSBp
+cyB0aGUgcmlnaHQgcGF0Y2ggOgoKQEAgLTM3OCwxOCArMzc4LDE3IEBAIHN0YXRpYyBpbnQgaW14
+X3NzaV9kYWlfcHJvYmUoc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCiAgfQoKICBzdGF0aWMgc3Ry
+dWN0IHNuZF9zb2NfZGFpX2RyaXZlciBpbXhfc3NpX2RhaSA9IHsKICAJLnByb2JlID0gaW14X3Nz
+aV9kYWlfcHJvYmUsCiAgCS5wbGF5YmFjayA9IHsKLQkJLyogVGhlIFNTSSBkb2VzIG5vdCBzdXBw
+b3J0IG1vbmF1cmFsIGF1ZGlvLiAqLwotCQkuY2hhbm5lbHNfbWluID0gMiwKKwkJLmNoYW5uZWxz
+X21pbiA9IDEsCiAgCQkuY2hhbm5lbHNfbWF4ID0gMiwKICAJCS5yYXRlcyA9IFNORFJWX1BDTV9S
+QVRFXzgwMDBfOTYwMDAsCiAgCQkuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFLAog
+IAl9LAogIAkuY2FwdHVyZSA9IHsKLQkJLmNoYW5uZWxzX21pbiA9IDIsCisJCS5jaGFubmVsc19t
+aW4gPSAxLAogIAkJLmNoYW5uZWxzX21heCA9IDIsCiAgCQkucmF0ZXMgPSBTTkRSVl9QQ01fUkFU
+RV84MDAwXzk2MDAwLAogIAkJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSwKICAJ
+fSwKICAJLm9wcyA9ICZpbXhfc3NpX3BjbV9kYWlfb3BzLAoKUmVnYXJkcywKR2HDq3RhbiBDYXJs
+aWVyLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
