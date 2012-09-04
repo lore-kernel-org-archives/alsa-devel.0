@@ -1,15 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ALSA: core: add support for compress_offload
-Date: Tue, 4 Sep 2012 19:33:00 +0300
-Message-ID: <20120904163300.GA12172@elgon.mountain>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC PATCH 1/11] expose sound device topology
+	information
+Date: Tue, 04 Sep 2012 20:02:57 +0200
+Message-ID: <50464251.7030601@ladisch.de>
+References: <503BF48E.1090100@ladisch.de> <s5hehmh233w.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
- by alsa0.perex.cz (Postfix) with ESMTP id 105A126526D
- for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2012 18:33:09 +0200 (CEST)
-Content-Disposition: inline
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6329B265285
+ for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2012 20:03:59 +0200 (CEST)
+In-Reply-To: <s5hehmh233w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,38 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@linux.intel.com
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Vinod Koul,
+Takashi Iwai wrote:
+> Clemens Ladisch wrote:
+>> The media controller API <linux/media.h> allows prividing routing
+>> information, but its implementation does not quite fit the sound
+>> drivers:
+>> * it allows reconfiguration of links, but not in a way that would be
+>>   useful for ALSA selector controls
 
-The patch b21c60a4edd2: "ALSA: core: add support for
-compress_offload" from Dec 23, 2011, leads to the following warning:
-sound/core/compress_offload.c:85 snd_compr_open()
-	 warn: bitwise AND condition is false here
+I didn't mention why:  it is not possible to enable two links to a sink
+pad, and neither can one change the state of two links atomically;
+therefore, an enum control with exactly one active input cannot be
+modelled.  (It might be possible to change the media controller API to
+allow this.)
 
-    83          if (f->f_flags & O_WRONLY)
-    84                  dirn = SND_COMPRESS_PLAYBACK;
-    85          else if (f->f_flags & O_RDONLY)
-    86                  dirn = SND_COMPRESS_CAPTURE;
-    87          else {
-    88                  pr_err("invalid direction\n");
-    89                  return -EINVAL;
-    90          }
+Mute controls _could_ be modelled by disabling links, but with all other
+mixer control types not represented in the media controller API, this
+doesn't appear to be very useful.
 
-O_RDONLY is 0 so we never do compressed capture.  Perhaps the tests
-should be:
+> But what about multiple codecs on a single control device?  Can they
+> be represented well?
 
-	if ((file->f_flags & O_ACCMODE) == O_WRONLY)
-		dirn = SND_COMPRESS_PLAYBACK;
-	else if (file->f_flags & O_ACCMODE) == O_RDONLY)
-		dirn = SND_COMPRESS_CAPTURE;
-	else
-		return -EINVAL;
+The driver has to choose the entity IDs so that they don't conflict;
+something like busnumber<<20 | codecaddress<<10 | nodeid.
+The USB audio driver will have this problem if there are multiple audio
+control interfaces, so I guess it will have to include the interface
+number.
 
-Also it seems like a bad thing to print an error here, because can the
-user flood dmesg?
 
-regards,
-dan carpenter
+Regards,
+Clemens
