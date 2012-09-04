@@ -1,61 +1,48 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [RFC 1/3] ASoC: dmaengine: Don't use runtime
-	private data for dmaengine data
-Date: Tue, 4 Sep 2012 19:14:06 +0100
-Message-ID: <20120904181406.GB24189@n2100.arm.linux.org.uk>
-References: <20120903165832.GA31511@n2100.arm.linux.org.uk> <E1T8ZzV-0002vp-2j@rmk-PC.arm.linux.org.uk> <5045124D.3050604@metafoo.de> <20120903204325.GA728@n2100.arm.linux.org.uk> <50451A4A.9000108@metafoo.de> <s5ha9x62an0.wl%tiwai@suse.de> <50460184.4000404@ti.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC update 0/2] dmaengine/ASoC: omap: Enable
+	element mode in cyclic DMA
+Date: Wed, 05 Sep 2012 00:37:30 +0200
+Message-ID: <11245085.Nc6xDQ9liJ@acer>
+References: <E1T8a09-0002vz-Bl@rmk-PC.arm.linux.org.uk>
+ <1346760482-12794-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <50460184.4000404@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA1242652A8
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 00:40:16 +0200 (CEST)
+In-Reply-To: <1346760482-12794-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, linux-arm-kernel@lists.infradead.org, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 04, 2012 at 04:26:28PM +0300, Peter Ujfalusi wrote:
-> Hi Takashi,
+On Tue, 4 Sep 2012 15:08:00 Peter Ujfalusi wrote:
+> Hi Russell,
 > 
-> On 09/04/2012 04:14 PM, Takashi Iwai wrote:
-> >> Ok, it might have been helpful in the conversion process, but for the final
-> >> patch it would be nice if you could replace
-> >>
-> >> struct snd_pcm_runtime *runtime = substream->runtime;
-> >> struct omap_runtime_data *prtd = runtime->private_data;
-> >> struct omap_pcm_dma_data *dma_data = prtd->dma_data;
-> >> with
-> >> struct omap_pcm_dma_data *dma_data = snd_dmaengine_pcm_get_data(substream);
-> >>
-> >> and in the hwparams callback use
-> >>
-> >> snd_dmaengine_pcm_set_data(substream, dma_data);
-> >>
-> >> and then drop patch 1 and 2 from the series.
-> > 
-> > We discussed with Liam about the addition of new field in ALSA core,
-> > and concluded that a bit different approach, at least, more generic
-> > name is preferred, even if a new field is inevitably needed.
-> > 
-> > So, eventually some change may happen in near future in ALSA core
-> > side, but still it'd be really helpful if the callers have been
-> > standardized beforehand with a helper function like above.
+> Enable the element mode (thus allowing mono playback and probably unblocking
+> OMAP1, OMAP2420) in OMAP dmaengine and omap-pcm.
 > 
-> If the omap-pcm dmaengine conversion works on all OMAP versions (from OMAP1 to
-> OMAP5) it is possible to avoid the additional field.
-> My main concern at the moment is if we will need two sets of drivers to
-> support OMAP1 and OMAP2/3/4/5.
-> In all case we use the same omap-mcbsp driver which would need deal with two
-> different type of ASoC platform driver (dmaengine and non-dmaengine).
-> I hope we get confirmation from Janusz soon regarding to OMAP1 with dmaengine
-> so we can plan on how to move forward.
+> Janusz: would it be possible for you to test Russell's series plus this on
+> OMAP1 to make sure that we do not broke it?
 
-As the target for the DMA engine work is to kill off the OMAP private DMA
-APIs, then if OMAP1 doesn't work with the OMAP DMA engine driver, that's
-what needs fixing, rather than having two ASoC platform drivers.
+Hi Peter, Russell,
+I'll be happy to make this test for you. This will take some time (I 
+work away from home), but I expect to have it done by Monday.
 
-Note that time is ticking for the removal of the OMAP private DMA APIs (see
-feature-removal-schedule.txt) and it has to happen so that the next stage
-of the OMAP DMA engine conversion can happen - that is, to make the OMAP
-DMA engine support be a proper driver rather than just a DMA Engine to OMAP
-private DMA API conversion shim.
+BTW, I haven't been following OMAP development very closely last weeks, 
+and I didn't even know about the OMAP DMA engine availability. Which 
+Linux version should I base my test on? Would 3.6-rc be OK? Or l-o 
+master?
+
+Thanks,
+Janusz
