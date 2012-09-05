@@ -1,22 +1,37 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH V2] ASoC: tegra: move platform data header
-Date: Thu, 6 Sep 2012 06:29:25 +0800
-Message-ID: <20120905222924.GC10580@opensource.wolfsonmicro.com>
-References: <1346862434-12012-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm0010: Fix warning,
+	use format %zu for type size_t
+Date: Thu, 6 Sep 2012 06:29:46 +0800
+Message-ID: <20120905222945.GD10580@opensource.wolfsonmicro.com>
+References: <1346876544-24514-1-git-send-email-emilgoode@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4A236260318
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 00:29:53 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1346862434-12012-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+In-Reply-To: <1346876544-24514-1-git-send-email-emilgoode@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Emil Goode <emilgoode@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, kernel-janitors@vger.kernel.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 05, 2012 at 10:27:14AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> 
-> Move the Tegra+WM8903 ASoC platform data header out of
-> arch/arm/mach-tegra, as a pre-requisite of single zImage.
-
-Applied, thanks.
+T24gV2VkLCBTZXAgMDUsIDIwMTIgYXQgMTA6MjI6MjRQTSArMDIwMCwgRW1pbCBHb29kZSB3cm90
+ZToKPiBGaXggd2FybmluZyBieSB1c2luZyBmb3JtYXQgc3BlY2lmaWVyICV6dSBmb3IgdHlwZSBz
+aXplX3QKPiAKPiBTcGFyc2Ugd2FybmluZzoKPiBzb3VuZC9zb2MvY29kZWNzL3dtMDAxMC5jOjQx
+MToyOiB3YXJuaW5nOgo+ICAgICAgICAgZm9ybWF0IOKAmCVk4oCZIGV4cGVjdHMgYXJndW1lbnQg
+b2YgdHlwZSDigJhpbnTigJksCj4gICAgICAgICBidXQgYXJndW1lbnQgNCBoYXMgdHlwZSDigJhz
+aXplX3TigJkgWy1XZm9ybWF0XQoKQXBwbGllZCwgdGhhbmtzLgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
