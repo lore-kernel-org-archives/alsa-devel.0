@@ -1,17 +1,24 @@
-From: Pierre Ossman <pierre-list@ossman.eu>
-Subject: Re: radeon multi-channel lpcm
-Date: Wed, 5 Sep 2012 19:22:39 +0200
-Message-ID: <20120905192239.6a212683@mjolnir.ossman.eu>
-References: <20120831223447.065fcb62@mjolnir.ossman.eu>
- <20120905181923.2e330a63@mjolnir.ossman.eu>
- <s5h4nnczaoq.wl%tiwai@suse.de>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [asoc:for-3.7 95/95]
+ sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary
+ handler requested without IRQF_ONESHOT
+Date: Wed, 5 Sep 2012 22:01:12 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1209052200280.1912@hadrien>
+References: <20120830151652.GB11964@localhost>
+ <20120905054024.GA16276@sirena.org.uk> <20120905055609.GA7463@localhost>
+ <20120905120546.GB16276@sirena.org.uk>
+ <alpine.DEB.2.02.1209051533070.2122@hadrien>
+ <20120905134827.GA8694@localhost>
+ <alpine.DEB.2.02.1209051552190.2122@hadrien> <20120905140651.GA8947@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8753699189189154075=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-relay.ossman.eu (saehrimnir.ossman.eu [193.12.253.10])
- by alsa0.perex.cz (Postfix) with ESMTP id D7E9526007E
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 19:22:44 +0200 (CEST)
-In-Reply-To: <s5h4nnczaoq.wl%tiwai@suse.de>
+Received: from mail1-relais-roc.national.inria.fr
+ (mail1-relais-roc.national.inria.fr [192.134.164.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50099260309
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 22:01:14 +0200 (CEST)
+In-Reply-To: <20120905140651.GA8947@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,90 +28,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Julia Lawall <julia.lawall@lip6.fr>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
-
---===============8753699189189154075==
-Content-Type: multipart/signed; micalg=PGP-SHA256; protocol="application/pgp-signature"; boundary="=_freyr.ossman.eu-26335-1346865763-0001-2"
-
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
-
---=_freyr.ossman.eu-26335-1346865763-0001-2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 05 Sep 2012 18:39:01 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Wed, 5 Sep 2012 18:19:23 +0200,
-> Pierre Ossman wrote:
-> >=20
-> > Noone with any insight? I'm ready to do some leg work, but I couldn't
-> > find anything in either the HDA specification, or the AMD
-> > documentation. :/
->=20
-> Well, HD-audio HDMI codec driver just extracts the available channel
-> setup from the given ELD, and the ELD data is sent from the graphics
-> driver.  So, if anything missing in ELD, it's supposed to be in the
-> graphics driver side.  In other words, if ELD doesn't give 6 channels,
-> HD-audio codec won't follow that channel setup, too.
->=20
-
-I see. I got a bit confused by this code though:
-
-	/* Restrict capabilities by ELD if this isn't disabled */
-	if (!static_hdmi_pcm && eld->eld_valid) {
-
-Which made me think that the ELD was just used to make sure you didn't
-send something the other end couldn't handle. IOW, eld_valid =3D=3D false
-would give you all features the hw was capable off.
 
 
-Some follow up questions, to confirm I haven't confused things:
+On Wed, 5 Sep 2012, Fengguang Wu wrote:
 
- - The ELD really needs to go into the hardware, not just end up in the
-   hands of the audio driver? IOW, we cannot override this?
+> On Wed, Sep 05, 2012 at 03:55:13PM +0200, Julia Lawall wrote:
+> > On Wed, 5 Sep 2012, Fengguang Wu wrote:
+> >
+> > > On Wed, Sep 05, 2012 at 03:33:26PM +0200, Julia Lawall wrote:
+> > > > On Wed, 5 Sep 2012, Mark Brown wrote:
+> > > >
+> > > > > On Wed, Sep 05, 2012 at 01:56:09PM +0800, Fengguang Wu wrote:
+> > > > > > On Wed, Sep 05, 2012 at 06:40:25AM +0100, Mark Brown wrote:
+> > > > > > > On Thu, Aug 30, 2012 at 08:16:52AM -0700, Fengguang Wu wrote:
+> > > > >
+> > > > > > > Julia generally does a pretty good job of formatting her mails, perhaps
+> > > > > > > there's some scripts she uses whcih would help?
+> > > > >
+> > > > > > Julia Lawall? Added CC to her.
+> > > > >
+> > > > > Yes.
+> > > >
+> > > > I'm missing some context...
+> > >
+> > > Julia, you've posted some pretty neat (coccinelle generated?) patches
+> > > to the list. So we wonder whether you have some scripts for formatting
+> > > patches based on the coccinelle output?
+> >
+> > I do have a tool, but it doesn't exactly take the output produced by
+> > coccicheck.  I can look into how this could be done.
+> >
+> > The input desired would be the text printed by Coccinelle and a patch
+> > generated by git?
+>
+> I'm just adapting the coccinelle generated diff into a mechanically
+> formated patch.
+>
+> Here is the discussed patch, generated by a simple script.
+> It mainly serves as a good start point for patch submission.
+>
+> : [PATCH] wm0010: fix coccinelle warnings
+> :
+> : sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary handler requested without IRQF_ONESHOT
+> :
+> :  Make sure threaded IRQs without a primary handler are always request with
+> :  IRQF_ONESHOT
+> :
+> : Generated by: scripts/coccinelle/misc/irqf_oneshot.cocci
+> :
+> : Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+> : ---
+> :
+> : Please take the patch only if it's a positive warning. Thanks!
+> :
+> :  cocci-output-17570-fcfaec-wm0010.c |    2 +-
+> :  1 file changed, 1 insertion(+), 1 deletion(-)
+> :
+> : --- a/sound/soc/codecs/wm0010.c
+> : +++ b/sound/soc/codecs/wm0010.c
+> : @@ -847,7 +847,7 @@ static int wm0010_probe(struct snd_soc_c
+> :                 trigger = IRQF_TRIGGER_FALLING;
+> :         trigger |= IRQF_ONESHOT;
+> :
+> : -       ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger,
+> : +       ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger | IRQF_ONESHOT,
+> :                                    "wm0010", wm0010);
+> :         if (ret)
+> :                 dev_err(wm0010->dev, "Failed to request IRQ %d: %d\n",
+> :
 
- - The HDA interface only defines reading the ELD, so writing it would
-   have to be done by the graphics driver using some GPU interface?
+I'm not sure what could be done better...
 
-If so, I need to poke the AMD guys as I couldn't find any information
-in the public documentation about writing the ELD.
-
-Thanks
---=20
-     -- Pierre Ossman
-
-  WARNING: This correspondence is being monitored by FRA, a
-  Swedish intelligence agency. Make sure your server uses
-  encryption for SMTP traffic and consider using PGP for
-  end-to-end encryption.
-
---=_freyr.ossman.eu-26335-1346865763-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iF4EAREIAAYFAlBHimIACgkQopDLsoqlmEK0rQEAyQaf87b4u8DDp9IZRFPmKtUZ
-UuplEHWK5d/0b7WKaoMA/1E3sEZTnXMfnjxv7MbiToB3X3vbVAq3XWp1R3peCTRh
-=XPno
------END PGP SIGNATURE-----
-
---=_freyr.ossman.eu-26335-1346865763-0001-2--
-
---===============8753699189189154075==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8753699189189154075==--
+julia
