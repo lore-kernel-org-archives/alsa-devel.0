@@ -1,20 +1,16 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [asoc:for-3.7 95/95]
- sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary
- handler requested without IRQF_ONESHOT
-Date: Wed, 5 Sep 2012 13:56:09 +0800
-Message-ID: <20120905055609.GA7463@localhost>
-References: <20120830151652.GB11964@localhost>
- <20120905054024.GA16276@sirena.org.uk>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: [RFC] Channel mapping API (take 2)
+Date: Wed, 05 Sep 2012 09:00:12 +0300
+Message-ID: <1346824812.3629.29.camel@laptop>
+References: <s5hhard23jb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id B42802652D0
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 07:56:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20120905054024.GA16276@sirena.org.uk>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 55FA92652DB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 08:00:15 +0200 (CEST)
+In-Reply-To: <s5hhard23jb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Julia Lawall <julia.lawall@lip6.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 05, 2012 at 06:40:25AM +0100, Mark Brown wrote:
-> On Thu, Aug 30, 2012 at 08:16:52AM -0700, Fengguang Wu wrote:
-> 
-> > [PATCH] wm0010: fix coccinelle warnings
-> > 
-> > /c/kernel-tests/src/linux/sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary handler requested without IRQF_ONESHOT
-> 
-> Gah, just noticed the patch buried in here.  If you're generating stuff
-> like this I'd suggest restructuring the submission so it comes out as an
-> normal patch, it's not at all obvious that there's a patch in the mail
-> and even if one notices.  In this case I'd mostly ignored your mail as I
-> expected Dimitris to fix it, will apply now.
+On Tue, 2012-09-04 at 17:47 +0200, Takashi Iwai wrote:
+> The rest aren't so much changed.  Only slight bug fixes.
 
-Oh I forgot it, too. Sorry! It does look better be submitted as a
-patch rather than a coccinelle warning.
+I have a couple of comments about "the rest". I haven't been following
+the development of the channel map API very closely, so I'm relying on
+the pcm.h file only.
 
-> Julia generally does a pretty good job of formatting her mails, perhaps
-> there's some scripts she uses whcih would help?
 
-Julia Lawall? Added CC to her.
+/** channel map list type */
+enum snd_pcm_chmap_type {
+	SND_CHMAP_NONE = 0,	/** unspecified channel position */
+	SND_CHMAP_FIXED,	/** fixed channel position */
+	SND_CHMAP_VAR,		/** freely swappable channel position */
+	SND_CHMAP_PAIRED,	/** pair-wise swappable channel position */
+};
 
-Thanks,
-Fengguang
+It's not clear to me what the VAR and PAIRED types actually mean. It
+would be nice to explain in more detail the concepts in the header.
+
+
+The snd_pcm_chmap_position enum doesn't contain an entry for mono. I
+think it would be a useful channel to have. Up/downmixing decisions may
+be different with mono than, for example, a single channel declared as
+front left.
+
+-- 
+Tanu
