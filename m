@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Fix typo in 44.1kHz rates
-Date: Thu,  6 Sep 2012 06:59:25 +0800
-Message-ID: <1346885965-12460-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: [PATCH -next] soc: fix wm0010.c printk format warning
+Date: Wed, 05 Sep 2012 16:24:57 -0700
+Message-ID: <5047DF49.6070502@xenotime.net>
+References: <20120905161230.3bab1de6d4c8c8e466c3b0df@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8ED4A264EEC
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 00:59:32 +0200 (CEST)
+Received: from oproxy12-pub.bluehost.com (oproxy12-pub.bluehost.com
+ [50.87.16.10]) by alsa0.perex.cz (Postfix) with SMTP id 50B7E264EF4
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 01:25:19 +0200 (CEST)
+In-Reply-To: <20120905161230.3bab1de6d4c8c8e466c3b0df@canb.auug.org.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,30 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Heather Lomond <hlomond@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: alsa-devel@alsa-project.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Heather Lomond <hlomond@opensource.wolfsonmicro.com>
+From: Randy Dunlap <rdunlap@xenotime.net>
 
-Signed-off-by: Heather Lomond <hlomond@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Fix printk format warning:
+
+sound/soc/codecs/wm0010.c:411:2: warning: format '%d' expects type 'int', but argument 4 has type 'size_t'
+
+Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 ---
- sound/soc/codecs/arizona.c |    2 +-
+ sound/soc/codecs/wm0010.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 5c9caca..1cf7a32 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -426,7 +426,7 @@ static const int arizona_44k1_bclk_rates[] = {
- 	940800,
- 	1411200,
- 	1881600,
--	2882400,
-+	2822400,
- 	3763200,
- 	5644800,
- 	7526400,
--- 
-1.7.10.4
+--- linux-next-20120905.orig/sound/soc/codecs/wm0010.c
++++ linux-next-20120905/sound/soc/codecs/wm0010.c
+@@ -408,7 +408,7 @@ static int wm0010_boot(struct snd_soc_co
+ 	wm0010->state = WM0010_BOOTROM;
+ 	spin_unlock_irqrestore(&wm0010->irq_lock, flags);
+ 
+-	dev_dbg(codec->dev, "Downloading %d byte stage 2 loader\n", fw->size);
++	dev_dbg(codec->dev, "Downloading %zu byte stage 2 loader\n", fw->size);
+ 
+ 	/* Copy to local buffer first as vmalloc causes problems for dma */
+ 	img = kzalloc(fw->size, GFP_KERNEL);
