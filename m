@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [asoc:for-3.7 95/95]
- sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary
- handler requested without IRQF_ONESHOT
-Date: Wed, 5 Sep 2012 13:05:50 +0100
-Message-ID: <20120905120546.GB16276@sirena.org.uk>
-References: <20120830151652.GB11964@localhost>
- <20120905054024.GA16276@sirena.org.uk>
- <20120905055609.GA7463@localhost>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: wm0010: unlock on error path
+Date: Wed, 5 Sep 2012 15:29:46 +0300
+Message-ID: <20120905122946.GA6128@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 72812265346
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 14:05:54 +0200 (CEST)
+Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BA76265346
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 14:30:00 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120905055609.GA7463@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,17 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fengguang Wu <fengguang.wu@intel.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Julia Lawall <julia.lawall@lip6.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 05, 2012 at 01:56:09PM +0800, Fengguang Wu wrote:
-> On Wed, Sep 05, 2012 at 06:40:25AM +0100, Mark Brown wrote:
-> > On Thu, Aug 30, 2012 at 08:16:52AM -0700, Fengguang Wu wrote:
+We're holding the wm0010->lock mutex when we goto err_core.
 
-> > Julia generally does a pretty good job of formatting her mails, perhaps
-> > there's some scripts she uses whcih would help?
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+This driver is only in linux-next.
 
-> Julia Lawall? Added CC to her.
-
-Yes.
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 5f99148..1c052d6 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -663,7 +663,9 @@ abort:
+ 	wm0010_halt(codec);
+ 	mutex_unlock(&wm0010->lock);
+ 	return ret;
++
+ err_core:
++	mutex_unlock(&wm0010->lock);
+ 	regulator_bulk_disable(ARRAY_SIZE(wm0010->core_supplies),
+ 			       wm0010->core_supplies);
+ err:
