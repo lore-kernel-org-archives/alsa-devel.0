@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [asoc:for-3.7 95/95]
- sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary
- handler requested without IRQF_ONESHOT
-Date: Wed, 5 Sep 2012 06:40:25 +0100
-Message-ID: <20120905054024.GA16276@sirena.org.uk>
-References: <20120830151652.GB11964@localhost>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: How to define card specific pcm devices?
+Date: Wed, 05 Sep 2012 08:41:02 +0300
+Message-ID: <1346823662.3629.17.camel@laptop>
+References: <1344597903.4283.68.camel@IT-D-4QB9Z4J>
+ <1345215040.2530.26.camel@IT-D-4QB9Z4J>
+ <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
+ <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
+ <1345262953.4864.12.camel@laptop>
+ <CAN8cciYojFegq+cQ-=h6Yt4njO4pPyGB_zG2WkMT4A8euDV6Ww@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 926D32652C1
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 07:40:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20120830151652.GB11964@localhost>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 02BCD2652C4
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 07:41:06 +0200 (CEST)
+In-Reply-To: <CAN8cciYojFegq+cQ-=h6Yt4njO4pPyGB_zG2WkMT4A8euDV6Ww@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,21 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fengguang Wu <fengguang.wu@intel.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 30, 2012 at 08:16:52AM -0700, Fengguang Wu wrote:
+On Wed, 2012-08-29 at 09:44 +0800, Raymond Yau wrote:
+> strictly speaking your mic is not a true stereo mic and the channel
+> map is [left, null] instead of the normal map [left,right] of line-in
+> or stereo mic
 
-> [PATCH] wm0010: fix coccinelle warnings
-> 
-> /c/kernel-tests/src/linux/sound/soc/codecs/wm0010.c:850:7-27: ERROR: Threaded IRQ with no primary handler requested without IRQF_ONESHOT
+I think specifying the channel map like you suggest would be a good
+solution. Supporting it would require some extra work in PulseAudio, but
+I think PulseAudio will anyway have to be extended to query the channel
+map information from UCM.
 
-Gah, just noticed the patch buried in here.  If you're generating stuff
-like this I'd suggest restructuring the submission so it comes out as an
-normal patch, it's not at all obvious that there's a patch in the mail
-and even if one notices.  In this case I'd mostly ignored your mail as I
-expected Dimitris to fix it, will apply now.
+Now the problem is that UCM doesn't provide the channel map information
+at all. Should the channel map be provided in the device "Value"
+section? Like this:
 
-Julia generally does a pretty good job of formatting her mails, perhaps
-there's some scripts she uses whcih would help?
+SectionDevice."my-mono-mic" {
+
+        ...
+
+        Value {
+                # Does this value become redundant if
+                # the "CaptureChannelMap" value is added?
+                CaptureChannels "2"
+
+		# Channel names match the constants in
+                # Takashi's proposed channel map API
+                CaptureChannelMap "FL, NA"
+        }
+
+}
+
+Opinions? (Liam added to CC - am I right in that you should be CC'd in
+all UCM related discussions?)
+
+-- 
+Tanu
