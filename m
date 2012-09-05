@@ -1,67 +1,272 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Fix compilation error due to leftover
- code
-Date: Wed, 5 Sep 2012 14:48:07 +1000
-Message-ID: <20120905144807.8daf3637d5937917d423b32a@canb.auug.org.au>
-References: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com>
+From: Wang Xingchao <wangxingchao2011@gmail.com>
+Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel
+	chips
+Date: Wed, 5 Sep 2012 13:08:59 +0800
+Message-ID: <CA+v+29gj_KbwTNX8Qs1rb_x-b_8fk8-3qCpraqJD-=x-Thn_2w@mail.gmail.com>
+References: <1346136381-26087-1-git-send-email-xingchao.wang@intel.com>
+ <c2d7db2a89025272868a3b8ef38cac2d@mail.onse.fi>
+ <46B810F6945F7C4788E11DCE57EC48900FF5BC93@SHSMSX102.ccr.corp.intel.com>
+ <s5hzk57ijtx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Wed__5_Sep_2012_14_48_07_+1000_uybSYvVVuQ8aePvJ"
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <1346335575-1592-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D79622652C1
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 07:09:20 +0200 (CEST)
+Received: by qadz3 with SMTP id z3so313177qad.17
+ for <alsa-devel@alsa-project.org>; Tue, 04 Sep 2012 22:09:20 -0700 (PDT)
+In-Reply-To: <s5hzk57ijtx.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wu,
+ Fengguang" <fengguang.wu@intel.com>, "alanwww1@xbmc.org" <alanwww1@xbmc.org>, "Wang, Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---Signature=_Wed__5_Sep_2012_14_48_07_+1000_uybSYvVVuQ8aePvJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Peter,
-
-On Thu, 30 Aug 2012 17:06:15 +0300 Peter Ujfalusi <peter.ujfalusi@ti.com> w=
-rote:
+2012/9/3 Takashi Iwai <tiwai@suse.de>:
+> At Tue, 28 Aug 2012 08:30:00 +0000,
+> Wang, Xingchao wrote:
+>>
+>> Hi Anssi,
+>>
+>> > -----Original Message-----
+>> > From: Anssi Hannula [mailto:anssi.hannula@iki.fi]
+>> > Sent: Tuesday, August 28, 2012 4:00 PM
+>> > To: Wang, Xingchao
+>> > Cc: alsa-devel@alsa-project.org; Wu, Fengguang; tiwai@suse.de;
+>> > alanwww1@xbmc.org
+>> > Subject: Re: [PATCH] ALSA: HDMI - Enable HBR feature on Intel chips
+>> >
+>> > On 28.08.2012 09:46, Wang Xingchao wrote:
+>> > > HDMI channel remapping apparently effects HBR packets on Intel's
+>> > > chips.
+>> > > For compressed non-PCM audio, use "straight-through" channel mapping.
+>> > > For uncompressed multi-channel pcm audio, use normal mapping.
+>> > >
+>> > > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+>> > > Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+>> >
+>> > For the record, I haven't acked this patch yet (comments below).
+>> > I guess Wang Xingchao wanted to give me credit for my idea behind the patch.
+>>
+>> Yeah, that's true. :)
+>> >
+>> > > ---
+>> > >  sound/pci/hda/patch_hdmi.c |   50
+>> > > +++++++++++++++++++++++++++-----------------
+>> > >  1 file changed, 31 insertions(+), 19 deletions(-)
+>> > >
+>> > > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+>> > > index d9439c5..fda89e3 100644
+>> > > --- a/sound/pci/hda/patch_hdmi.c
+>> > > +++ b/sound/pci/hda/patch_hdmi.c
+>> > > @@ -231,6 +231,11 @@ static struct cea_channel_speaker_allocation
+>> > > channel_allocations[] = {
+>> > >  { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,
+>> > > FR,  FL } },
+>> > >                            /* Dolby Surround */
+>> > >  { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,
+>> > > FR,  FL } },
+>> > > +{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,
+>> > > FR,  FL } },
+>> > > +{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,
+>> > > FR,  FL } },
+>> > > +{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,
+>> > > FR,  FL } },
+>> > > +{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,
+>> > > FR,  FL } },
+>> > > +{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,
+>> > > FR,  FL } },
+>> > >                            /* surround40 */
+>> > >  { .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,
+>> > > FR,  FL } },
+>> > >                            /* surround41 */
+>> > > @@ -239,22 +244,15 @@ static struct cea_channel_speaker_allocation
+>> > > channel_allocations[] = {
+>> > >  { .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,
+>> > > FR,  FL } },
+>> > >                            /* surround51 */
+>> > >  { .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,
+>> > > FR,  FL } },
+>> > > -                          /* 6.1 */
+>> > > -{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,
+>> > > FR,  FL } },
+>> > > -                          /* surround71 */
+>> > > -{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
+>> > > FR,  FL } },
+>> > > -
+>> > > -{ .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,
+>> > > FR,  FL } },
+>> > > -{ .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,
+>> > > FR,  FL } },
+>> > > -{ .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,
+>> > > FR,  FL } },
+>> > > -{ .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,
+>> > > FR,  FL } },
+>> > > -{ .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x0e,  .speakers = {   0,   RC,  RR,  RL,  FC,    0,
+>> > > FR,  FL } },
+>> > > +{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,
+>> > > FR,  FL } },
+>> > > +                          /* surround71 */
+>> > > +{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,
+>> > > FR,  FL } },
+>> > >  { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,
+>> > > FR,  FL } },
+>> >
+>> > Doesn't this reordering change the selected CAs? (they are listed in priority
+>> > order)
+>>
+>> I changed this order because there's a bug during my test.
+>> In hdmi_setup_channel_mapping(), when ca=0x13 for 7.1 channels, channel_allocations[ca].channels actually be 7 not 8.
+>> So I think both array channel_allocation[] and channel_mapping[] should have the same order.
 >
-> Part of commit (which patches sound/soc/omap/mcbsp.c file):
-> 8fef626 ARM/ASoC: omap-mcbsp: Remove CLKR/FSR mux configuration code
->=20
-> since the tree where it has been applied did not had the earlier patch:
-> d0db84e ASoC: omap-mcbsp: Fix 6pin mux configuration
-> which changed code around omap_mcbsp_6pin_src_mux().
->=20
-> Because of the missing part from 8fef626 the sound/soc/omap/mcbsp.c does
-> not compile in linux-next.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> In general it's bad to mix up the fixes for different things in a
+> single patch.  And it's much worse if you do it secretly.
+> So, don't do that.  Make it a separate patch.
 
-I used this as a merge fix patch when I merged the sound-asoc tree today.
+Thanks for clarification, i had wrote single patch to fix bugs and add
+new features.
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
+>
+>
+>>
+>> >
+>> >
+>> > > @@ -537,22 +535,36 @@ static void hdmi_debug_channel_mapping(struct
+>> > > hda_codec *codec,
+>> > >
+>> > >  static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+>> > >                                  hda_nid_t pin_nid,
+>> > > +                                hda_nid_t cvt_nid,
+>> > >                                  int ca)
+>> > >  {
+>> > >   int i;
+>> > >   int err;
+>> > > -
+>> > > - if (hdmi_channel_mapping[ca][1] == 0) {
+>> > > -         for (i = 0; i < channel_allocations[ca].channels; i++)
+>> > > -                 hdmi_channel_mapping[ca][i] = i | (i << 4);
+>> > > + unsigned short val;
+>> > > + int tmp_mapping[8];
+>> > > + bool non_pcm = false;
+>> > > +
+>> > > + val = snd_hda_codec_read(codec, cvt_nid, 0,
+>> > > AC_VERB_GET_DIGI_CONVERT_1, 0);
+>> > > + non_pcm = !!(val & AC_DIG1_NONAUDIO);
+>> >
+>> > AFAICS you could use snd_hda_spdif_out_of_nid() and spdif->status here
+>> > to avoid
+>> > having to read the value from HW.
+>>
+>> Good idea, will change to use that in next version.
+>>
+>> >
+>> > > +
+>> > > + if (hdmi_channel_mapping[ca][1] == 0 || non_pcm) {
+>> > > +         for (i = 0; i < channel_allocations[ca].channels; i++) {
+>> > > +                 if (non_pcm)
+>> > > +                         tmp_mapping[i] = i | (i << 4);
+>> > > +                 else
+>> > > +                         hdmi_channel_mapping[ca][i] = i | (i << 4);
+>> > > +         }
+>> > >           for (; i < 8; i++)
+>> > > -                 hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
+>> > > +                 if (non_pcm)
+>> > > +                         tmp_mapping[i] = 0xf | (i << 4);
+>> > > +                 else
+>> > > +                         hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
+>> > >   }
+>> >
+>> > I don't think it makes much sense to create the mapping dynamically,
+>> > since it
+>> > is always 0x00 0x11 0x22 0x33 0x44 0x55 0x66 0x77. It also complicates
+>> > the code.
+>>
+>> Above channels mapping is good for 8 channels compressed audio stream, but will make "speaker-test -c8"
+>> generate sound from wrong speaker position. i.e. you will heard "Front_center" from another speaker, while the real front_center speaker
+>> play another position audio.
+>>
+>> So I think the default hdmi_channel_mapping should be left as default and use dynamically channel_mapping for compressed audio, not only 8 channels.
+>
+> Yes, but still the code looks more complex than needed, IMO.
+> You don't have to touch the code creating hdmi_channel_mapping[].
+> Simply add the block for non_pcm like
+>
+>         if (non_pcm) {
+>                 for (i = 0; i < channel_allocations[ca].channels; i++)
+>                         tmp_mapping[i] = i | (i << 4);
+>                 for (; i < 8; i++)
+>                         tmp_mapping[i] = 0xf | (i << 4);
+>         }
+>
+> (snip)
 
---Signature=_Wed__5_Sep_2012_14_48_07_+1000_uybSYvVVuQ8aePvJ
-Content-Type: application/pgp-signature
+Looks better, i changed the code in your type already.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+>> > > @@ -731,13 +743,13 @@ static void hdmi_setup_audio_infoframe(struct
+>> > > hda_codec *codec, int pin_idx,
+>> > >    * sizeof(*dp_ai) to avoid partial match/update problems when
+>> > >    * the user switches between HDMI/DP monitors.
+>> > >    */
+>> > > + hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, ca);
+>> > >   if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
+>> > >                                   sizeof(ai))) {
+>> > >           snd_printdd("hdmi_setup_audio_infoframe: "
+>> > >                       "pin=%d channels=%d\n",
+>> > >                       pin_nid,
+>> > >                       channels);
+>> > > -         hdmi_setup_channel_mapping(codec, pin_nid, ca);
+>> > >           hdmi_stop_infoframe_trans(codec, pin_nid);
+>> > >           hdmi_fill_audio_infoframe(codec, pin_nid,
+>> > >                                       ai.bytes, sizeof(ai));
+>> >
+>> > I wonder if we could avoid always rewriting channel mapping... I'm not
+>> > immediately sure of the best way of doing that (or even if it is worth
+>> > it),
+>> > though.
+>>
+>> It's another bug. When switch test between "speaker-test -c8" and HBR stream, there's no audio_infoframe update
+>> thus "speaker-test -c8" use wrong channel mapping, as described above.
+>
+> Then you should check whether the channel map is actually changed or
+> not.  The driver knows what were written beforehand, and what to be
+> written now.  Unconditionally writing the verb doesn't sound good.
+>
 
-iQIcBAEBCAAGBQJQRtmHAAoJEECxmPOUX5FENM8QAJpxvGAPijNbTN9joldPun6Q
-EIsHlDgxevKx/xHzwiiThsOWP9iCDAHcVdfOBJ+Zbx0W9ygylRvwmbpp4F4yAUNM
-RqihHYt+wVgas4IY3TffalMs1etirure2wmEYyWsLrNY4VdxFqnj/3B5sx28dsLo
-lyuQUctlQzFNEWaVOM+3BZsPEyHoBqCnDncgaV3n2dYc4aGcWFhu7eXKg2vL2ZSG
-vp2DeyOl28I+326GxD62qATbC+3hVuVvFNSsV6s0oSCN5UNN6ZMPsrWW31hCs+y8
-YTlc/tLDSsuMODJkNKmsW22MHB9sKKA0lGyHMwUFMmas6BEz6rtSN+lLkMdIJlKr
-EPD1hUgj+SKFjf0sjnitTAXNI7Si1c8gtUb6QAYQUWMZSRxxx7ouXyR+8R+9MZHB
-sAFNH2rZupTMt+VgZ1D/CizLxWnzStU5gu8qsw+GXAl3/aRtniNnEu7L0ltXeB+F
-xog+LA2SOaCoOETeuuN2jdqKnpwqvdE3Q9BGRaNS5k9oEJ1zCZ0o9yNM/Koe/K99
-ruzsw+FmFeVx/kJiztQWRklDn0LAU74l8AFXiFIJE3EGjH2fA5y4XN8thSQ/D/c0
-gPmq0t9swBTmgglQCvppMDsyQLXWUoe1fpnRZUDev8njI5C6UNUu4dGy8esnBIDQ
-sPoQJ2oYxOSB1jCaAUQ5
-=z/El
------END PGP SIGNATURE-----
+Hmm, i do not have a better idea  to implement that. I added a bool
+"non_pcm" in hdmi_spec_per_cvt to remember
+the last time audio type, pcm or non-pcm. And compare with current
+audio type, then only update channel mapping
+when there's a audio type change.
 
---Signature=_Wed__5_Sep_2012_14_48_07_+1000_uybSYvVVuQ8aePvJ--
+Because i have no A/V receiver handy, i could not test the patches
+right now. Takashi, could i send the patches out in RFC version for
+review first to gather some ideas?
+
+thanks
+--xingchao
