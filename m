@@ -1,97 +1,77 @@
-From: Pierre Ossman <pierre-list@ossman.eu>
-Subject: Re: radeon multi-channel lpcm
-Date: Wed, 5 Sep 2012 18:19:23 +0200
-Message-ID: <20120905181923.2e330a63@mjolnir.ossman.eu>
-References: <20120831223447.065fcb62@mjolnir.ossman.eu>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6435070454593624007=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-relay.ossman.eu (saehrimnir.ossman.eu [193.12.253.10])
- by alsa0.perex.cz (Postfix) with ESMTP id E4AEA265382
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2012 18:19:29 +0200 (CEST)
-In-Reply-To: <20120831223447.065fcb62@mjolnir.ossman.eu>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH V2] ASoC: tegra: move platform data header
+Date: Wed,  5 Sep 2012 10:27:14 -0600
+Message-ID: <1346862434-12012-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
---===============6435070454593624007==
-Content-Type: multipart/signed; micalg=PGP-SHA256; protocol="application/pgp-signature"; boundary="=_freyr.ossman.eu-22386-1346861965-0001-2"
+Move the Tegra+WM8903 ASoC platform data header out of
+arch/arm/mach-tegra, as a pre-requisite of single zImage.
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+v2:
+* Remove stale filename from comment.
+* Add include guards
+---
+ .../sound/tegra_wm8903.h                           |    7 +++++--
+ sound/soc/tegra/tegra_wm8903.c                     |    3 +--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+ rename arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h => include/sound/tegra_wm8903.h (89%)
 
---=_freyr.ossman.eu-22386-1346861965-0001-2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Noone with any insight? I'm ready to do some leg work, but I couldn't
-find anything in either the HDA specification, or the AMD
-documentation. :/
-
-On Fri, 31 Aug 2012 22:34:47 +0200
-Pierre Ossman <pierre-list@ossman.eu> wrote:
-
-> Hi,
->=20
-> I figured I'd have a go at finishing up support for multi-channel lcpm
-> over HDMI on radeon cards. I read a post from the AMD guys stating that
-> the GPU portions were already in place, and it was the audio pieces
-> that were missing. Unfortunately I was unable to figure out exactly what
-> it is that remains to be done.
->=20
-> I poked around in patch_hdmi.c, and concluded that the generic code is
-> what's being used for modern radeon cards. The card exposes two widgets
-> (and output widget and a pin complex). But both widgets indicate
-> through their capability registers that they only support stereo.
->=20
-> I don't know enough about HDA to have any clue where to go from here.
-> Should the capability field be ignored for HDMI? Or does it need some
-> coaxing to allow more than stereo? The ELD stuff isn't properly updated
-> from the radeon driver, but the code seems to suggest it is just for
-> hints, and not critical.
->=20
-> Rgds
-
-
---=20
-     -- Pierre Ossman
-
-  WARNING: This correspondence is being monitored by FRA, a
-  Swedish intelligence agency. Make sure your server uses
-  encryption for SMTP traffic and consider using PGP for
-  end-to-end encryption.
-
---=_freyr.ossman.eu-22386-1346861965-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iF4EAREIAAYFAlBHe40ACgkQopDLsoqlmELubAEAm+/+3munFnhZZVlK6CTHeOwq
-sFJDdOa83KFaZJeSN6YBALuZWPVdgcRJascioHKIB0b8ZKmKZeAhdBG2gQNG+++g
-=g5Ql
------END PGP SIGNATURE-----
-
---=_freyr.ossman.eu-22386-1346861965-0001-2--
-
---===============6435070454593624007==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6435070454593624007==--
+diff --git a/arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h b/include/sound/tegra_wm8903.h
+similarity index 89%
+rename from arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h
+rename to include/sound/tegra_wm8903.h
+index 9d29334..57b202e 100644
+--- a/arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h
++++ b/include/sound/tegra_wm8903.h
+@@ -1,6 +1,4 @@
+ /*
+- * arch/arm/mach-tegra/include/mach/tegra_wm8903_pdata.h
+- *
+  * Copyright 2011 NVIDIA, Inc.
+  *
+  * This software is licensed under the terms of the GNU General Public
+@@ -14,6 +12,9 @@
+  *
+  */
+ 
++#ifndef __SOUND_TEGRA_WM38903_H
++#define __SOUND_TEGRA_WM38903_H
++
+ struct tegra_wm8903_platform_data {
+ 	int gpio_spkr_en;
+ 	int gpio_hp_det;
+@@ -21,3 +22,5 @@ struct tegra_wm8903_platform_data {
+ 	int gpio_int_mic_en;
+ 	int gpio_ext_mic_en;
+ };
++
++#endif
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index d4f14e4..cee13b7 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -34,13 +34,12 @@
+ #include <linux/gpio.h>
+ #include <linux/of_gpio.h>
+ 
+-#include <mach/tegra_wm8903_pdata.h>
+-
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/tegra_wm8903.h>
+ 
+ #include "../codecs/wm8903.h"
+ 
+-- 
+1.7.0.4
