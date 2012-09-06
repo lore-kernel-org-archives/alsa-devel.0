@@ -1,55 +1,35 @@
-From: Markus Trippelsdorf <markus@trippelsdorf.de>
-Subject: Re: snd-usb: "delay: estimated 0, actual 352"
-Date: Thu, 6 Sep 2012 15:17:58 +0200
-Message-ID: <20120906131758.GA256@x4>
-References: <20120906060220.GA252@x4>
- <504843BA.2040808@gmail.com>
- <s5hehmfir46.wl%tiwai@suse.de>
- <20120906065340.GA257@x4>
- <50484BEB.4020103@gmail.com>
- <20120906071757.GB257@x4>
- <s5h627rioxt.wl%tiwai@suse.de>
- <s5hsjavh88c.wl%tiwai@suse.de>
- <20120906094348.GA257@x4>
- <s5hvcfrxpsc.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: samsung dma - Don't indicate
+ support for pause/resume.
+Date: Thu, 6 Sep 2012 18:56:39 +0800
+Message-ID: <20120906105626.GH22330@opensource.wolfsonmicro.com>
+References: <1346488699-11027-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1765C2615D4
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 16:22:14 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hvcfrxpsc.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Mack <zonque@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1346488699-11027-1-git-send-email-dgreid@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, clemens@ladisch.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2012.09.06 at 15:08 +0200, Takashi Iwai wrote:
-> At Thu, 6 Sep 2012 11:43:48 +0200,
-> Markus Trippelsdorf wrote:
-> > 
-> > On 2012.09.06 at 10:21 +0200, Takashi Iwai wrote:
-> > > At Thu, 06 Sep 2012 09:35:26 +0200,
-> > > Takashi Iwai wrote:
-> > > 
-> > > In short, a patch like below may fix the issue (note: completely
-> > > untested!)
-> > 
-> > No it doesn't, unfortunately...
-> 
-> OK, I start tracking down the problem a bit more deeply now.
-> 
-> The issue happens when the first two URBs are passed to
-> retire_playback_urb().  These are URBs filled before start_endpoints()
-> are set, so they contain actually zero size.  Even though these are
-> a sort of dummy packets, the driver still tries to check with the
-> queued delay account, and gives bogus errors.
-> 
-> So, essentially the messages are harmless and nothing to worry too
-> much, but surely it doesn't look sexy.
-> 
-> The patch below should fix the problem.  Please give it a try.
+On Sat, Sep 01, 2012 at 01:38:19AM -0700, Dylan Reid wrote:
+> The pause and resume operations indicate that the stream can be
+> un-paused/resumed from the exact location they were paused/suspended.
+> This is not true for this driver, the pause and suspend triggers share
+> the same code path with stop, they flush all pending DMA transfers.
 
-Yes, your patch finally fixes the problem. 
-Thank you Takashi-san.
-
--- 
-Markus
+Applied, thanks.
