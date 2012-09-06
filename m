@@ -1,26 +1,18 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: How to define card specific pcm devices?
-Date: Thu, 06 Sep 2012 18:18:34 +0100
-Message-ID: <1346951914.4893.6.camel@odin>
-References: <1344597903.4283.68.camel@IT-D-4QB9Z4J>
- <1345215040.2530.26.camel@IT-D-4QB9Z4J>
- <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
- <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
- <1345262953.4864.12.camel@laptop>
- <CAN8cciYojFegq+cQ-=h6Yt4njO4pPyGB_zG2WkMT4A8euDV6Ww@mail.gmail.com>
- <1346823662.3629.17.camel@laptop>
- <CABS+qY3kEPr3aknPvTU+iRyGxSo2G_iDawv+fr7WBJrJQUO+2w@mail.gmail.com>
+From: louis@museresearch.com
+Subject: UAC2 clock selector for AudioBox 1818VSL
+Date: Thu, 6 Sep 2012 13:20:53 -0700
+Message-ID: <76bd1b6473c857ddd3160280e278e4fb.squirrel@master.museresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog136.obsmtp.com (na3sys009aog136.obsmtp.com
- [74.125.149.85])
- by alsa0.perex.cz (Postfix) with ESMTP id E7618261603
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 19:18:39 +0200 (CEST)
-Received: by wibhq4 with SMTP id hq4so1343646wib.2
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 10:18:37 -0700 (PDT)
-In-Reply-To: <CABS+qY3kEPr3aknPvTU+iRyGxSo2G_iDawv+fr7WBJrJQUO+2w@mail.gmail.com>
+Received: from master.museresearch.com (master.museresearch.com [69.59.28.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01128261646
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 22:20:58 +0200 (CEST)
+Received: from localhost ([127.0.0.1]:39994 helo=master.museresearch.com)
+ by master.museresearch.com with esmtpa (Exim 4.77)
+ (envelope-from <louis@museresearch.com>) id 1T9iZJ-0005Go-Va
+ for alsa-devel@alsa-project.org; Thu, 06 Sep 2012 13:20:54 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,67 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tanu Kaskinen <tanuk@iki.fi>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-09-05 at 12:24 +0100, Girdwood, Liam wrote:
-> On 5 September 2012 06:41, Tanu Kaskinen <tanuk@iki.fi> wrote:
->         On Wed, 2012-08-29 at 09:44 +0800, Raymond Yau wrote:
->         > strictly speaking your mic is not a true stereo mic and the
->         channel
->         > map is [left, null] instead of the normal map [left,right]
->         of line-in
->         > or stereo mic
->         
->         
->         I think specifying the channel map like you suggest would be a
->         good
->         solution. Supporting it would require some extra work in
->         PulseAudio, but
->         I think PulseAudio will anyway have to be extended to query
->         the channel
->         map information from UCM.
->         
->         Now the problem is that UCM doesn't provide the channel map
->         information
->         at all. Should the channel map be provided in the device
->         "Value"
->         section? Like this:
->         
->         SectionDevice."my-mono-mic" {
->         
->                 ...
->         
->                 Value {
->                         # Does this value become redundant if
->                         # the "CaptureChannelMap" value is added?
->                         CaptureChannels "2"
->         
+Hi!
+  I'm attempting to get the "Clock Selector" mixer control to work with
+the PreSonus AudioBox 1818VSL (a UAC2 device).
 
-I would expect to see a "1" here unless we cannot open the pcm in mono
-mode.
+The control shows up in amixer as an enumerated value, but I don't seem to
+be able to set it (I've tried amixer, alsactl, and setting it
+programmatically). The possible values are correct (listing Internal
+Clock, S/PDIF Clock, and ADAT Clock as possible options); It just doesn't
+appear to take my setting, by which I mean amixer doesn't update the
+settings, I still have the occasional click when the sampling rates match
+over S/PDIF and I attempt to use external sync. No error is returned.
 
->                         # Channel names match the constants in
->                         # Takashi's proposed channel map API
->                         CaptureChannelMap "FL, NA"
->                 }
->         
->         }
+After digging around USB specs and ALSA's usb/mixer.c and being unfamiliar
+with both the USB audio spec and the inner workings of ALSA, I thought
+it'd be best to ask the list about this: How would I check to see if ALSA
+is asking the device to change clock source at all?
 
-This seems fine and should be a simple patch for UCM too. Pulsaudio
-could use the map information/preference from UCM (like above) to
-configure the driver using Takashi's new channel map API.
-
->         
->         Opinions? (Liam added to CC - am I right in that you should be
->         CC'd in
->         all UCM related discussions?)
-
-Yes, please and Mark too (now on CC).
-
-Thanks
-
-Liam
-
-> 
+-Louis
