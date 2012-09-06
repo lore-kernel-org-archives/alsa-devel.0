@@ -1,17 +1,15 @@
 From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH 1/3] ALSA: HDMI - Fix channel_allocation array
-	wrong order
-Date: Thu,  6 Sep 2012 10:02:36 +0800
-Message-ID: <1346896958-21080-2-git-send-email-xingchao.wang@intel.com>
-References: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
+Subject: =?utf-8?q?=5BPATCH_0/3=5D_HDMI_HBR=28High_Bit_Rate?=
+	=?utf-8?q?=29_Feature_bug_fix_for_Intel=27s_Chips?=
+Date: Thu,  6 Sep 2012 10:02:35 +0800
+Message-ID: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 720B32652BF
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:16:00 +0200 (CEST)
-In-Reply-To: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B642D26520D
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:15:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +23,40 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, anssi.hannula@iki.fi, alanwww1@xbmc.org, fengguang.wu@intel.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The array channel_allocations[] is an ordered list, add function to get
-correct order by ca_index.
-
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
----
- sound/pci/hda/patch_hdmi.c |   15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index d9439c5..6ac21d4 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -469,6 +469,17 @@ static void init_channel_allocations(void)
- 	}
- }
- 
-+static int get_channel_allocation_order(int ca)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(channel_allocations); i++) {
-+		if (channel_allocations[i].ca_index == ca)
-+			break;
-+	}
-+	return i;
-+}
-+
- /*
-  * The transformation takes two steps:
-  *
-@@ -541,9 +552,11 @@ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
- {
- 	int i;
- 	int err;
-+	int order;
- 
-+	order = get_channel_allocation_order(ca);
- 	if (hdmi_channel_mapping[ca][1] == 0) {
--		for (i = 0; i < channel_allocations[ca].channels; i++)
-+		for (i = 0; i < channel_allocations[order].channels; i++)
- 			hdmi_channel_mapping[ca][i] = i | (i << 4);
- 		for (; i < 8; i++)
- 			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
--- 
-1.7.9.5
+QXMgaSBoYXZlIG5vIEEvViByZWNlaXZlciBoYW5keSBhbmQgY291bGQgbm90IHRlc3QgSEJSIHBs
+YXliYWNrIGRpcmVjdGx5LCBpCnJlbW92ZWQgdGhlICJSRkMiIHR5cGUgdW50aWwgdGhlIHBhdGNo
+c2V0IHdhcyB0ZXN0ZWQgYW5kIHByb3ZlZCB3b3JraW5nIHdlbGwuClRoZSBwYXRjaHNldCB3YXMg
+dGVzdGVkIG9uIEludGVsIGNoaXBzIGFuZCBnZXQgcG9zaXRpdmUgZmVlZGJhY2suIAoKUXVvdGUg
+ZnJvbSAiw5h5dmluZCBLdsOlbHN2b2xsIDxveXZpbmRAa3ZhbHN2b2xsLmNvbT4iOgoiVHJ1ZUhE
+IGFuZCBEVFMtTUEgd29yayBmaW5lIGZyb20gWEJNQywgMi1jaCBwbGF5YmFjayBhbHNvIHdvcmtz
+IGZpbmUKZnJvbSBYQk1DLgpDaGFubmVscyBhcmUgYWxsIG1hcHBlZCB0byB0aGUgcmlnaHQgc3Bl
+YWtlciwgYWxsIDcuMS4iIAoKUXVvdGUgZnJvbSBhbGFud3d3MToKIkkgdGVzdGVkIHRoZSBwYXRj
+aGVzLiBUaGV5IHdvcmsgcGVyZmVjdGx5LiBJIHRlc3RlZCBpdCB3aXRoIGJvdGggRFRTIE1hc3Rl
+cgpBdWRpbyBhbmQgRG9sYnkgVHJ1IEhEIHN0cmVhbXMuCkFsc28gdGVzdGVkIHdpdGggc3BlYWtl
+ci10ZXN0LiBDaGFubmVsIG1hcHBpbmcgd2FzIHJpZ2h0LiIKRnJvbTogaHR0cDovL2ZvcnVtLnhi
+bWMub3JnL3Nob3d0aHJlYWQucGhwP3RpZD0xMjgyOTgmcGlkPTExODQ1NzQjcGlkMTE4NDU3NAoK
+TWF5YmUgdGhlcmUncyBzdGlsbCBwb3RlbnRpYWwgYnVnIGFuZCBpIHdpbGwga2VlcCBvbiB0cmFj
+ayB0aGF0LgoKVGhlIGlkZWEgb2YgdGhpcyBwYXRjaCBjb21lcyBmcm9tIEFuc3NpLCBCaWcgY3Jl
+ZGl0IHRvIGhpbSBhdCBmaXJzdCEKVGhhbmtzIHRoZSBndXlzIGZyb20gWEJNQyBmb3J1bSB3aGlj
+aCBoZWxwIHRlc3QgdGhlIHBhdGNoZXMuCgpGb3IgcGVvcGxlIGludGVyZXN0ZWQgdG8gdGVzdCB0
+aGUgcGF0Y2gsIHBsZWFzZSByZW1lbWJlciB0byBhcHBseSBhbm90aGVyIGNoYW5nZSBpbgphbHNh
+LWxpYiBzaWRlLCB5b3UgY2FuIHJlZmVyIHRvIHRoZSBwYXRjaCBkZXRhaWwgZnJvbSBYQk1DIGZv
+cnVtOgpodHRwOi8vZm9ydW0ueGJtYy5vcmcvc2hvd3RocmVhZC5waHA/dGlkPTEyODI5OCZwaWQ9
+MTE3ODc3NiNwaWQxMTc4Nzc2CgpJIHdpbGwgc2VuZCB0aGF0IHBhdGNoIHRvIGFsc2EtbGliIG1h
+aWwtbGlzdCBsYXRlci4KCkNoYW5nZWxvZzoKKiBkbyBub3QgdG91Y2ggY2hhbm5lbF9hbGxvY2F0
+aW9uIHByaW9yaXR5IG9yZGVyLCB1c2UgbmV3IGFwaSB0byBnZXQKY29ycmVjdCBjaGFubmVscyBu
+dW1iZXIKKiB1c2Ugc3BkaWYtPnN0YXR1cyB0byBjaGVjayBhdWRpbyB0eXBlLCBwY20gb3Igbm9u
+LXBjbSAKKiBjcmVhdGUgbmV3IG5vbl9wY21fbWFwcGluZ1tdIGZvciBub25fcGNtIGF1ZGlvIGlu
+IHNlcGVyYXRlIGJsb2NrCiogYWRkIG5vbl9wY20gaGRtaV9zcGVjX3Blcl9jdnQgdG8gcmVtZW1i
+ZXIgcHJldmlvdXMgYXVkaW8gdHlwZSwgdXNlZCB0byAKICBkZXRlcm1pbmUgd2hldGhlciBuZWVk
+IGEgY2hhbm5lbCBtYXBwaW5nIHVwZGF0ZSBkdXJpbmcgdGhlIHBjbS9ub24tcGNtIAogIHN0cmVh
+bSBzd2l0Y2ggd2l0aCBzYW1lIGNoYW5uZWwgbnVtYmVyLgoKCldhbmcgWGluZ2NoYW8gKDMpOgog
+IEFMU0E6IEhETUkgLSBGaXggY2hhbm5lbF9hbGxvY2F0aW9uIGFycmF5IHdyb25nIG9yZGVyCiAg
+QUxTQTogSERNSSAtIEVuYWJsZSBIQlIgZmVhdHVyZSBvbiBJbnRlbCBjaGlwcwogIEFMU0E6IEhE
+TUkgLSBTZXR1cCBjaGFubmVsIG1hcHBpbmcgZm9yIG5vbl9wY20gYXVkaW8KCiBzb3VuZC9wY2kv
+aGRhL3BhdGNoX2hkbWkuYyB8ICAgNTYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKy0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1MSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9u
+cygtKQoKLS0gCjEuNy45LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
