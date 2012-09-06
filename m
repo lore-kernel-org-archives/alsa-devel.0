@@ -1,45 +1,42 @@
-From: louis@museresearch.com
-Subject: UAC2 clock selector for AudioBox 1818VSL
-Date: Thu, 6 Sep 2012 13:20:53 -0700
-Message-ID: <76bd1b6473c857ddd3160280e278e4fb.squirrel@master.museresearch.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 6/9] ARM: OMAP: Move gpio.h to
+ include/linux/platform_data
+Date: Thu, 6 Sep 2012 13:36:54 -0700
+Message-ID: <20120906203653.GI1303@atomide.com>
+References: <20120831004828.28732.902.stgit@muffinssi.local>
+ <20120831005234.28732.10624.stgit@muffinssi.local>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9DC3AF@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from master.museresearch.com (master.museresearch.com [69.59.28.231])
- by alsa0.perex.cz (Postfix) with ESMTP id 01128261646
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 22:20:58 +0200 (CEST)
-Received: from localhost ([127.0.0.1]:39994 helo=master.museresearch.com)
- by master.museresearch.com with esmtpa (Exim 4.77)
- (envelope-from <louis@museresearch.com>) id 1T9iZJ-0005Go-Va
- for alsa-devel@alsa-project.org; Thu, 06 Sep 2012 13:20:54 -0700
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9DC3AF@DBDE01.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Mohammed, Afzal" <afzal@ti.com>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Grant Likely <grant.likely@secretlab.ca>, Linus Walleij <linus.walleij@linaro.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-  I'm attempting to get the "Clock Selector" mixer control to work with
-the PreSonus AudioBox 1818VSL (a UAC2 device).
+* Mohammed, Afzal <afzal@ti.com> [120903 03:15]:
+> Hi,
+> 
+> On Fri, Aug 31, 2012 at 06:22:34, Tony Lindgren wrote:
+> > This way we can remove includes of plat/gpio.h which won't work
+> > with the single zImage support.
+> > 
+> > Note that we also remove the cpu_class_is_omap2() check
+> > in gpio-omap.c as the drivers should not call it as we need to
+> > make it local to arch/arm/mach-omap2 for single zImage support.
+> > 
+> > While at it, arrange the related includes in the standard way.
+> > 
+> > Cc: Grant Likely <grant.likely@secretlab.ca>
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: linux-mtd@lists.infradead.org
+> > Cc: alsa-devel@alsa-project.org
+> > Acked-by: Tony Lindgren <tony@atomide.com>
+> 
+> I think there is only one Tony ;)
 
-The control shows up in amixer as an enumerated value, but I don't seem to
-be able to set it (I've tried amixer, alsactl, and setting it
-programmatically). The possible values are correct (listing Internal
-Clock, S/PDIF Clock, and ADAT Clock as possible options); It just doesn't
-appear to take my setting, by which I mean amixer doesn't update the
-settings, I still have the occasional click when the sampling rates match
-over S/PDIF and I attempt to use external sync. No error is returned.
+Heh thanks I'll tell myself to replace it with Signed-off-by :)
 
-After digging around USB specs and ALSA's usb/mixer.c and being unfamiliar
-with both the USB audio spec and the inner workings of ALSA, I thought
-it'd be best to ask the list about this: How would I check to see if ALSA
-is asking the device to change clock source at all?
-
--Louis
+Tony
