@@ -1,16 +1,16 @@
 From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH 2/3] ALSA: HDMI - Enable HBR feature on Intel
-	chips
-Date: Thu,  6 Sep 2012 10:02:37 +0800
-Message-ID: <1346896958-21080-3-git-send-email-xingchao.wang@intel.com>
+Subject: [PATCH 3/3] ALSA: HDMI - Setup channel mapping for
+	non_pcm audio
+Date: Thu,  6 Sep 2012 10:02:38 +0800
+Message-ID: <1346896958-21080-4-git-send-email-xingchao.wang@intel.com>
 References: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5051426530A
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:16:02 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C096F2652C5
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:16:03 +0200 (CEST)
 In-Reply-To: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,133 +25,30 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, anssi.hannula@iki.fi, alanwww1@xbmc.org, fengguang.wu@intel.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-HDMI channel remapping apparently effects HBR packets on Intel's chips.
-For compressed non-PCM audio, use "straight-through" channel mapping.
-For uncompressed multi-channel pcm audio, use normal channel mapping.
+For HBR stream test, use straight channel mapping way.
+when switched back to "speaker-test -c8", even the audio
+infoframe is up-to-date, there should be correct channel mapping setup.
 
 Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
 ---
- sound/pci/hda/patch_hdmi.c |   36 ++++++++++++++++++++++++++++++++----
- 1 file changed, 32 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_hdmi.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 6ac21d4..a87f8b2 100644
+index a87f8b2..bcb0939 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -34,6 +34,7 @@
- #include <linux/module.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-+#include <sound/asoundef.h>
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_jack.h"
-@@ -60,6 +61,7 @@ struct hdmi_spec_per_cvt {
- 	u32 rates;
- 	u64 formats;
- 	unsigned int maxbps;
-+	bool non_pcm;
- };
- 
- struct hdmi_spec_per_pin {
-@@ -548,13 +550,17 @@ static void hdmi_debug_channel_mapping(struct hda_codec *codec,
- 
- static void hdmi_setup_channel_mapping(struct hda_codec *codec,
- 				       hda_nid_t pin_nid,
-+				       hda_nid_t cvt_nid,
-+				       bool non_pcm,
- 				       int ca)
- {
- 	int i;
- 	int err;
- 	int order;
-+	int non_pcm_mapping[8];
- 
- 	order = get_channel_allocation_order(ca);
-+
- 	if (hdmi_channel_mapping[ca][1] == 0) {
- 		for (i = 0; i < channel_allocations[order].channels; i++)
- 			hdmi_channel_mapping[ca][i] = i | (i << 4);
-@@ -562,10 +568,17 @@ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
- 			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
- 	}
- 
-+	if (non_pcm) {
-+		for (i = 0; i < channel_allocations[order].channels; i++)
-+			non_pcm_mapping[i] = i | (i << 4);
-+		for (; i < 8; i++)
-+			non_pcm_mapping[i] = 0xf | (i << 4);
-+	}
-+
- 	for (i = 0; i < 8; i++) {
- 		err = snd_hda_codec_write(codec, pin_nid, 0,
- 					  AC_VERB_SET_HDMI_CHAN_SLOT,
--					  hdmi_channel_mapping[ca][i]);
-+					  non_pcm ? non_pcm_mapping[i] : hdmi_channel_mapping[ca][i]);
- 		if (err) {
- 			snd_printdd(KERN_NOTICE
- 				    "HDMI: channel mapping failed\n");
-@@ -699,15 +712,27 @@ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
- }
- 
- static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
--					struct snd_pcm_substream *substream)
-+					hda_nid_t cvt_nid, struct snd_pcm_substream *substream)
- {
- 	struct hdmi_spec *spec = codec->spec;
- 	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
-+	struct hdmi_spec_per_cvt *per_cvt;
-+	struct hda_spdif_out *spdif;
- 	hda_nid_t pin_nid = per_pin->pin_nid;
- 	int channels = substream->runtime->channels;
- 	struct hdmi_eld *eld;
- 	int ca;
-+	int cvt_idx;
- 	union audio_infoframe ai;
-+	bool non_pcm = false;
-+
-+	cvt_idx = cvt_nid_to_cvt_index(spec, cvt_nid);
-+	per_cvt = &spec->cvts[cvt_idx];
-+
-+	mutex_lock(&codec->spdif_mutex);
-+	spdif = snd_hda_spdif_out_of_nid(codec, cvt_nid);
-+	non_pcm = !!(spdif->status & IEC958_AES0_NONAUDIO);
-+	mutex_unlock(&codec->spdif_mutex);
- 
- 	eld = &spec->pins[pin_idx].sink_eld;
- 	if (!eld->monitor_present)
-@@ -750,12 +775,14 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
- 			    "pin=%d channels=%d\n",
- 			    pin_nid,
- 			    channels);
--		hdmi_setup_channel_mapping(codec, pin_nid, ca);
-+		hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, non_pcm, ca);
- 		hdmi_stop_infoframe_trans(codec, pin_nid);
+@@ -780,6 +780,11 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
  		hdmi_fill_audio_infoframe(codec, pin_nid,
  					    ai.bytes, sizeof(ai));
  		hdmi_start_infoframe_trans(codec, pin_nid);
++	} else {
++		/* For non-pcm audio switch, setup new channel mapping
++		 * accordingly */
++		if (per_cvt->non_pcm != non_pcm)
++			hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, non_pcm, ca);
  	}
-+
-+	per_cvt->non_pcm = non_pcm;
- }
  
- 
-@@ -1077,6 +1104,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
- 
- 	per_cvt->cvt_nid = cvt_nid;
- 	per_cvt->channels_min = 2;
-+	per_cvt->non_pcm = false;
- 	if (chans <= 16)
- 		per_cvt->channels_max = chans;
- 
-@@ -1164,7 +1192,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 
- 	hdmi_set_channel_count(codec, cvt_nid, substream->runtime->channels);
- 
--	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
-+	hdmi_setup_audio_infoframe(codec, pin_idx, cvt_nid, substream);
- 
- 	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
- 				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+ 	per_cvt->non_pcm = non_pcm;
 -- 
 1.7.9.5
