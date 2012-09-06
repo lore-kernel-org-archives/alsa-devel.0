@@ -1,19 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: UAC2 clock selector for AudioBox 1818VSL
-Date: Thu, 06 Sep 2012 22:53:01 +0200
-Message-ID: <50490D2D.3060207@gmail.com>
-References: <76bd1b6473c857ddd3160280e278e4fb.squirrel@master.museresearch.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v3 10/14] ARM: OMAP/ASoC: Zoom2: Let the
+ codec to handle the hs_extmute GPIO
+Date: Thu, 6 Sep 2012 14:02:35 -0700
+Message-ID: <20120906210235.GP1303@atomide.com>
+References: <1346933541-21547-1-git-send-email-peter.ujfalusi@ti.com>
+ <1346933541-21547-11-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id F043D261616
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 22:53:08 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so870160bku.38
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 13:53:08 -0700 (PDT)
-In-Reply-To: <76bd1b6473c857ddd3160280e278e4fb.squirrel@master.museresearch.com>
+Received: from mho-02-ewr.mailhop.org (mho-04-ewr.mailhop.org [204.13.248.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AAA8261606
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 23:02:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1346933541-21547-11-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: louis@museresearch.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tero Kristo <t-kristo@ti.com>, alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 06.09.2012 22:20, louis@museresearch.com wrote:
-> Hi!
->   I'm attempting to get the "Clock Selector" mixer control to work with
-> the PreSonus AudioBox 1818VSL (a UAC2 device).
->
-> The control shows up in amixer as an enumerated value, but I don't seem to
-> be able to set it (I've tried amixer, alsactl, and setting it
-> programmatically). The possible values are correct (listing Internal
-> Clock, S/PDIF Clock, and ADAT Clock as possible options); It just doesn't
-> appear to take my setting, by which I mean amixer doesn't update the
-> settings, I still have the occasional click when the sampling rates match
-> over S/PDIF and I attempt to use external sync. No error is returned.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [120906 05:13]:
+> Remove the use of set_hs_extmute callback and let the codec driver to
+> handle the extmute GPIO.
 > 
-> After digging around USB specs and ALSA's usb/mixer.c and being unfamiliar
-> with both the USB audio spec and the inner workings of ALSA, I thought
-> it'd be best to ask the list about this: How would I check to see if ALSA
-> is asking the device to change clock source at all?
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  arch/arm/mach-omap2/board-zoom-peripherals.c  | 9 ++-------
+>  arch/arm/mach-omap2/include/mach/board-zoom.h | 2 --
 
-Hmm. A clock selector is handled like any other control entity on the
-hardware. Some thoughts:
+Here board-zoom.h will be moved to be just #include "board-zoom.h".
+But we can deal with that once I have an immutable header cleanup
+branch that you can pull in.
 
-- Are you able to control other settings like the volume?
-
-- It's fairly common for devices to not accept a new clock source
-setting if they can't lock to the external source within some time. Did
-you connect anything to the digital inputs?
-
-- Are you able to control that setting with the native Mac OS X driver?
-(IOW, without installing a 3rd-party driver)
-
-Also, please send the output of "lsusb -v" for that device.
-
-
-Daniel
+Acked-by: Tony Lindgren <tony@atomide.com>
