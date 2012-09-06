@@ -1,33 +1,37 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2] ASoC: Davinci: McASP: add support new
-	McASP IP Variant
-Date: Thu, 6 Sep 2012 08:20:43 +0800
-Message-ID: <20120906002041.GT10580@opensource.wolfsonmicro.com>
-References: <1346659840-18228-1-git-send-email-gururaja.hebbar@ti.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add SND_SOC_DAIFMT_CONT option for
+ snd_soc_set_fmt()
+Date: Thu, 6 Sep 2012 08:21:46 +0800
+Message-ID: <20120906002145.GU10580@opensource.wolfsonmicro.com>
+References: <003101cd8367$3476e650$9d64b2f0$@samsung.com>
+ <20120827204550.GA4400@opensource.wolfsonmicro.com>
+ <001d01cd85d6$59298040$0b7c80c0$@samsung.com>
+ <20120830174317.GG4356@opensource.wolfsonmicro.com>
+ <001001cd8979$3b260d10$b1722730$@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3ED00264F2B
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 02:20:48 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1346659840-18228-1-git-send-email-gururaja.hebbar@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <001001cd8979$3b260d10$b1722730$@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangsu Park <sangsu4u.park@samsung.com>
+Cc: alsa-devel@alsa-project.org, 'Kukjin Kim' <kgene.kim@samsung.com>, sbkim73@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 03, 2012 at 01:40:40PM +0530, Hebbar, Gururaja wrote:
-> The OMAP2+ variant of McASP is different from Davinci variant w.r.to
-> some register offset.
+On Mon, Sep 03, 2012 at 11:10:03AM +0900, Sangsu Park wrote:
+> On Sun, Aug 31, 2012 at 2:43 AM +0900, Mark Brown wrote:
+> > On Wed, Aug 29, 2012 at 08:06:32PM +0900, Sangsu Park wrote:
 
-Applied, thanks.
+> > Please check your mailer configuration, it looks like it's reformatting
+> > all the text with much longer line widths.
+
+> I've changed line width configuration. Is it ok now?
+
+Looks like it, thanks.
+
+> Do you think that changing pcm driver is right approach?
+> Then I'll fix pcm driver. (I think that pcm driver has some strange code.)
+
+Well, we could do both.  It'd certainly be more natural to make it have
+a default given that this isn't something that normally needs to be
+configured.
