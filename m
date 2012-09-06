@@ -1,31 +1,99 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ARM: OMAP: Split plat/hardware.h, introduce local
- hardware.h and soc.h for omap2+
-Date: Thu, 6 Sep 2012 15:03:46 +0800
-Message-ID: <20120906070344.GB22330@opensource.wolfsonmicro.com>
-References: <20120901002534.23715.28654.stgit@muffinssi.local>
- <20120901002622.23715.68557.stgit@muffinssi.local>
- <20120901002753.GA21451@opensource.wolfsonmicro.com>
- <20120901020654.GT1303@atomide.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: snd-usb: "delay: estimated 0, actual 352"
+Date: Thu, 06 Sep 2012 09:08:27 +0200
+Message-ID: <50484BEB.4020103@gmail.com>
+References: <s5hmx1526mg.wl%tiwai@suse.de> <20120906060220.GA252@x4>
+ <504843BA.2040808@gmail.com> <s5hehmfir46.wl%tiwai@suse.de>
+ <20120906065340.GA257@x4>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120901020654.GT1303@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-watchdog@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Wim Van Sebroeck <wim@iguana.be>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07690265CA7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 09:08:31 +0200 (CEST)
+Received: by bkuw5 with SMTP id w5so505260bku.38
+ for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 00:08:31 -0700 (PDT)
+In-Reply-To: <20120906065340.GA257@x4>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Trippelsdorf <markus@trippelsdorf.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 31, 2012 at 07:06:54PM -0700, Tony Lindgren wrote:
-> * Mark Brown <broonie@opensource.wolfsonmicro.com> [120831 17:28]:
+On 06.09.2012 08:53, Markus Trippelsdorf wrote:
+> On 2012.09.06 at 08:48 +0200, Takashi Iwai wrote:
+>> At Thu, 06 Sep 2012 08:33:30 +0200,
+>> Daniel Mack wrote:
+>>>
+>>> On 06.09.2012 08:02, Markus Trippelsdorf wrote:
+>>>> On 2012.09.04 at 16:40 +0200, Takashi Iwai wrote:
+>>>>> ----------------------------------------------------------------
+>>>>> Sound fixes for 3.6-rc5
+>>>>>
+>>>>> There are nothing scaring, contains only small fixes for HD-audio and
+>>>>> USB-audio:
+>>>>> - EPSS regression fix and GPIO fix for HD-audio IDT codecs
+>>>>> - A series of USB-audio regression fixes that are found since 3.5 kernel
+>>>>>
+>>>>> ----------------------------------------------------------------
+>>>>> Daniel Mack (4):
+>>>>>       ALSA: snd-usb: Fix URB cancellation at stream start
+>>>>>       ALSA: snd-usb: restore delay information
+>>>>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+>>>> The commit fbcfbf5f above causes the following lines to be printed
+>>>> whenever I start a new song:
+>>>
+>>> Copied Pierre-Louis Bossart - he wrote the code in 294c4fb8 which this
+>>> patch (fbcfbf5f) brings back now.
+>>>
+>>>> delay: estimated 0, actual 352
+>>>> delay: estimated 353, actual 705
+>>>>
+>>>> (44.1 * 8 = 352.8)
+>>>>
+>>>> This happens with an USB-DAC that identifies itself as "C-Media USB
+>>>> Headphone Set".
+>>>
+>>> And you didn't you see these lines with 3.4?
+>>
+>> Maybe the difference of start condition?
+>>
+>> Markus, does the patch below fix anything?
+> 
+> Unfortunately no.
+> However reverting the following fixes the problem:
+> 
+> commit 245baf983cc39524cce39c24d01b276e6e653c9e
+> Author: Daniel Mack <zonque@gmail.com>
+> Date:   Thu Aug 30 18:52:30 2012 +0200
+> 
+>     ALSA: snd-usb: fix calls to next_packet_size
+> 
 
-> > There's a topic/omap branch in ASoC which you can pull in to help reduce
-> > conflicts, or I could merge this there if that's sensible.
+No, this one certainly fixes a problem and does the right thing by
+restoring the original code.
 
-> Thanks. Did not see it yet at git://opensource.wolfsonmicro.com/linux-2.6-asoc,
-> maybe it's not yet pushed out?
+If you wouldn't state that you didn't see the same effect with 3.4(!),
+before the refactoring done in 3.5, I would believe the device is simply
+slightly off in its feedback rate and the tighter delay code complains
+about it while compensating, just as it did before.
 
-Nobody said to apply it in ASoC and it was part of a series.  If people
-want me to apply it directly to the OMAP branch please let me know (a
-resend would help...).
+Are there any more than these two lines? And is audio working at all? Is
+it distorted in any way?
+
+Pierre-Louis, could you check whether I did the right thing when I
+ported over your delay bits to the new endpoint logic? Maybe I'm missing
+something here, but I currently don't see it.
+
+
+Thanks,
+Daniel
