@@ -1,17 +1,19 @@
-From: =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
-Subject: [PATCH 1/1] [ASoC] Fix v2: Revert 'ASoC: imx-ssi:
-	Remove mono support'.
-Date: Thu,  6 Sep 2012 08:25:53 +0200
-Message-ID: <1346912753-2030-1-git-send-email-gcembed@gmail.com>
+From: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
+Subject: Re: [PATCH 1/1] [ASoC] Fix v2: Revert 'ASoC: imx-ssi:
+ Remove mono support'.
+Date: Thu, 06 Sep 2012 08:29:51 +0200
+Message-ID: <504842DF.3060503@gmail.com>
+References: <1346912753-2030-1-git-send-email-gcembed@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B8A26031A
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 08:28:14 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so925987wgb.20
- for <alsa-devel@alsa-project.org>; Wed, 05 Sep 2012 23:28:14 -0700 (PDT)
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DF98264F53
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 08:30:49 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so472331eek.38
+ for <alsa-devel@alsa-project.org>; Wed, 05 Sep 2012 23:30:49 -0700 (PDT)
+In-Reply-To: <1346912753-2030-1-git-send-email-gcembed@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,28 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Javier Martin <javier.martin@vista-silicon.com>, linux-arm-kernel@lists.infradead.org, =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
+To: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Javier Martin <javier.martin@vista-silicon.com>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-V2hlbiBwYXRjaCBvZiBKYXZpZXIgTWFydGluIGlzIGFwcGxpZWQgb24gbGludXgtbmV4dC0yMDEy
-MDgyNAp0aGUgcGF0Y2ggZmFpbGVkIGJlY2F1c2UgY29tbWVudCBsaW5lIGlzIG1pc3NpbmcuCgpT
-aWduZWQtb2ZmLWJ5OiBHYcOrdGFuIENhcmxpZXIgPGdjZW1iZWRAZ21haWwuY29tPgpTaWduZWQt
-b2ZmLWJ5OiBKYXZpZXIgTWFydGluIDxqYXZpZXIubWFydGluQHZpc3RhLXNpbGljb24uY29tPgot
-LS0KIHNvdW5kL3NvYy9mc2wvaW14LXNzaS5jIHwgICAgNSArKy0tLQogMSBmaWxlcyBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L2ZzbC9pbXgtc3NpLmMgYi9zb3VuZC9zb2MvZnNsL2lteC1zc2kuYwppbmRleCA3MDc0YWU2Li4z
-YzUyMGM0IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZnNsL2lteC1zc2kuYworKysgYi9zb3VuZC9z
-b2MvZnNsL2lteC1zc2kuYwpAQCAtMzgwLDE0ICszODAsMTMgQEAgc3RhdGljIGludCBpbXhfc3Np
-X2RhaV9wcm9iZShzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKIHN0YXRpYyBzdHJ1Y3Qgc25kX3Nv
-Y19kYWlfZHJpdmVyIGlteF9zc2lfZGFpID0gewogCS5wcm9iZSA9IGlteF9zc2lfZGFpX3Byb2Jl
-LAogCS5wbGF5YmFjayA9IHsKLQkJLyogVGhlIFNTSSBkb2VzIG5vdCBzdXBwb3J0IG1vbmF1cmFs
-IGF1ZGlvLiAqLwotCQkuY2hhbm5lbHNfbWluID0gMiwKKwkJLmNoYW5uZWxzX21pbiA9IDEsCiAJ
-CS5jaGFubmVsc19tYXggPSAyLAogCQkucmF0ZXMgPSBTTkRSVl9QQ01fUkFURV84MDAwXzk2MDAw
-LAogCQkuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFLAogCX0sCiAJLmNhcHR1cmUg
-PSB7Ci0JCS5jaGFubmVsc19taW4gPSAyLAorCQkuY2hhbm5lbHNfbWluID0gMSwKIAkJLmNoYW5u
-ZWxzX21heCA9IDIsCiAJCS5yYXRlcyA9IFNORFJWX1BDTV9SQVRFXzgwMDBfOTYwMDAsCiAJCS5m
-b3JtYXRzID0gU05EUlZfUENNX0ZNVEJJVF9TMTZfTEUsCi0tIAoxLjcuNy40CgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+SGksClNvcnJ5IEkgbWlzc2VkIHRoZSBwYXRjaCBzZW5kIGJ5IEZhYmlvIGVhcmxpZXIuCklnbm9y
+ZSB0aGlzIG9uZS4KUmVnYXJkcywKR2HDq3RhbiBDYXJsaWVyLgoKT24gMDkvMDYvMjAxMiAwODoy
+NSBBTSwgR2HDq3RhbiBDYXJsaWVyIHdyb3RlOgo+IFdoZW4gcGF0Y2ggb2YgSmF2aWVyIE1hcnRp
+biBpcyBhcHBsaWVkIG9uIGxpbnV4LW5leHQtMjAxMjA4MjQKPiB0aGUgcGF0Y2ggZmFpbGVkIGJl
+Y2F1c2UgY29tbWVudCBsaW5lIGlzIG1pc3NpbmcuCj4KPiBTaWduZWQtb2ZmLWJ5OiBHYcOrdGFu
+IENhcmxpZXIgPGdjZW1iZWRAZ21haWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEphdmllciBNYXJ0
+aW4gPGphdmllci5tYXJ0aW5AdmlzdGEtc2lsaWNvbi5jb20+Cj4gLS0tCj4gICBzb3VuZC9zb2Mv
+ZnNsL2lteC1zc2kuYyB8ICAgIDUgKystLS0KPiAgIDEgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRp
+b25zKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvaW14
+LXNzaS5jIGIvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMKPiBpbmRleCA3MDc0YWU2Li4zYzUyMGM0
+IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jCj4gKysrIGIvc291bmQvc29j
+L2ZzbC9pbXgtc3NpLmMKPiBAQCAtMzgwLDE0ICszODAsMTMgQEAgc3RhdGljIGludCBpbXhfc3Np
+X2RhaV9wcm9iZShzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPiAgIHN0YXRpYyBzdHJ1Y3Qgc25k
+X3NvY19kYWlfZHJpdmVyIGlteF9zc2lfZGFpID0gewo+ICAgCS5wcm9iZSA9IGlteF9zc2lfZGFp
+X3Byb2JlLAo+ICAgCS5wbGF5YmFjayA9IHsKPiAtCQkvKiBUaGUgU1NJIGRvZXMgbm90IHN1cHBv
+cnQgbW9uYXVyYWwgYXVkaW8uICovCj4gLQkJLmNoYW5uZWxzX21pbiA9IDIsCj4gKwkJLmNoYW5u
+ZWxzX21pbiA9IDEsCj4gICAJCS5jaGFubmVsc19tYXggPSAyLAo+ICAgCQkucmF0ZXMgPSBTTkRS
+Vl9QQ01fUkFURV84MDAwXzk2MDAwLAo+ICAgCQkuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRf
+UzE2X0xFLAo+ICAgCX0sCj4gICAJLmNhcHR1cmUgPSB7Cj4gLQkJLmNoYW5uZWxzX21pbiA9IDIs
+Cj4gKwkJLmNoYW5uZWxzX21pbiA9IDEsCj4gICAJCS5jaGFubmVsc19tYXggPSAyLAo+ICAgCQku
+cmF0ZXMgPSBTTkRSVl9QQ01fUkFURV84MDAwXzk2MDAwLAo+ICAgCQkuZm9ybWF0cyA9IFNORFJW
+X1BDTV9GTVRCSVRfUzE2X0xFLAo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
