@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Revert 'ASoC: imx-ssi: Remove mono
-	support'
-Date: Thu, 6 Sep 2012 08:44:28 +0800
-Message-ID: <20120906004427.GW10580@opensource.wolfsonmicro.com>
-References: <1346891410-4379-1-git-send-email-festevam@gmail.com>
+From: Wang Xingchao <xingchao.wang@intel.com>
+Subject: [PATCH 1/3] ALSA: HDMI - Fix channel_allocation array
+	wrong order
+Date: Thu,  6 Sep 2012 10:02:36 +0800
+Message-ID: <1346896958-21080-2-git-send-email-xingchao.wang@intel.com>
+References: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D584F265072
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 02:44:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1346891410-4379-1-git-send-email-festevam@gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 720B32652BF
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:16:00 +0200 (CEST)
+In-Reply-To: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,17 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: alsa-devel@alsa-project.org, Javier Martin <javier.martin@vista-silicon.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, anssi.hannula@iki.fi, alanwww1@xbmc.org, fengguang.wu@intel.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 05, 2012 at 09:30:10PM -0300, Fabio Estevam wrote:
-> From: Javier Martin <javier.martin@vista-silicon.com>
-> 
-> Revert 0865a75(ASoC: imx-ssi: Remove mono support).
-> 
-> The bug this patch is meant to solve doesn't occur in Visstrim_M10 boards.
-> Furthermore, after applying this patch sound in Visstrim_M10 is played
-> at slower rates.
+The array channel_allocations[] is an ordered list, add function to get
+correct order by ca_index.
 
-Applied, thanks.
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+---
+ sound/pci/hda/patch_hdmi.c |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d9439c5..6ac21d4 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -469,6 +469,17 @@ static void init_channel_allocations(void)
+ 	}
+ }
+ 
++static int get_channel_allocation_order(int ca)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(channel_allocations); i++) {
++		if (channel_allocations[i].ca_index == ca)
++			break;
++	}
++	return i;
++}
++
+ /*
+  * The transformation takes two steps:
+  *
+@@ -541,9 +552,11 @@ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ {
+ 	int i;
+ 	int err;
++	int order;
+ 
++	order = get_channel_allocation_order(ca);
+ 	if (hdmi_channel_mapping[ca][1] == 0) {
+-		for (i = 0; i < channel_allocations[ca].channels; i++)
++		for (i = 0; i < channel_allocations[order].channels; i++)
+ 			hdmi_channel_mapping[ca][i] = i | (i << 4);
+ 		for (; i < 8; i++)
+ 			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
+-- 
+1.7.9.5
