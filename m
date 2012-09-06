@@ -1,21 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: snd-usb: "delay: estimated 0, actual 352"
-Date: Thu, 06 Sep 2012 09:08:27 +0200
-Message-ID: <50484BEB.4020103@gmail.com>
-References: <s5hmx1526mg.wl%tiwai@suse.de> <20120906060220.GA252@x4>
- <504843BA.2040808@gmail.com> <s5hehmfir46.wl%tiwai@suse.de>
- <20120906065340.GA257@x4>
+From: Pierre Ossman <pierre-list@ossman.eu>
+Subject: Re: radeon multi-channel lpcm
+Date: Thu, 6 Sep 2012 09:09:00 +0200
+Message-ID: <20120906090900.63328552@mjolnir.ossman.eu>
+References: <20120831223447.065fcb62@mjolnir.ossman.eu>
+ <20120905181923.2e330a63@mjolnir.ossman.eu>
+ <s5h4nnczaoq.wl%tiwai@suse.de>
+ <20120905192239.6a212683@mjolnir.ossman.eu>
+ <s5hpq5zitd3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3147681848262334688=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 07690265CA7
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 09:08:31 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so505260bku.38
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 00:08:31 -0700 (PDT)
-In-Reply-To: <20120906065340.GA257@x4>
+Received: from smtp-relay.ossman.eu (saehrimnir.ossman.eu [193.12.253.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49E76265CA7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 09:09:05 +0200 (CEST)
+In-Reply-To: <s5hpq5zitd3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,75 +23,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Trippelsdorf <markus@trippelsdorf.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06.09.2012 08:53, Markus Trippelsdorf wrote:
-> On 2012.09.06 at 08:48 +0200, Takashi Iwai wrote:
->> At Thu, 06 Sep 2012 08:33:30 +0200,
->> Daniel Mack wrote:
->>>
->>> On 06.09.2012 08:02, Markus Trippelsdorf wrote:
->>>> On 2012.09.04 at 16:40 +0200, Takashi Iwai wrote:
->>>>> ----------------------------------------------------------------
->>>>> Sound fixes for 3.6-rc5
->>>>>
->>>>> There are nothing scaring, contains only small fixes for HD-audio and
->>>>> USB-audio:
->>>>> - EPSS regression fix and GPIO fix for HD-audio IDT codecs
->>>>> - A series of USB-audio regression fixes that are found since 3.5 kernel
->>>>>
->>>>> ----------------------------------------------------------------
->>>>> Daniel Mack (4):
->>>>>       ALSA: snd-usb: Fix URB cancellation at stream start
->>>>>       ALSA: snd-usb: restore delay information
->>>>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
->>>> The commit fbcfbf5f above causes the following lines to be printed
->>>> whenever I start a new song:
->>>
->>> Copied Pierre-Louis Bossart - he wrote the code in 294c4fb8 which this
->>> patch (fbcfbf5f) brings back now.
->>>
->>>> delay: estimated 0, actual 352
->>>> delay: estimated 353, actual 705
->>>>
->>>> (44.1 * 8 = 352.8)
->>>>
->>>> This happens with an USB-DAC that identifies itself as "C-Media USB
->>>> Headphone Set".
->>>
->>> And you didn't you see these lines with 3.4?
->>
->> Maybe the difference of start condition?
->>
->> Markus, does the patch below fix anything?
-> 
-> Unfortunately no.
-> However reverting the following fixes the problem:
-> 
-> commit 245baf983cc39524cce39c24d01b276e6e653c9e
-> Author: Daniel Mack <zonque@gmail.com>
-> Date:   Thu Aug 30 18:52:30 2012 +0200
-> 
->     ALSA: snd-usb: fix calls to next_packet_size
-> 
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-No, this one certainly fixes a problem and does the right thing by
-restoring the original code.
+--===============3147681848262334688==
+Content-Type: multipart/signed; micalg=PGP-SHA256; protocol="application/pgp-signature"; boundary="=_freyr.ossman.eu-18617-1346915343-0001-2"
 
-If you wouldn't state that you didn't see the same effect with 3.4(!),
-before the refactoring done in 3.5, I would believe the device is simply
-slightly off in its feedback rate and the tighter delay code complains
-about it while compensating, just as it did before.
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-Are there any more than these two lines? And is audio working at all? Is
-it distorted in any way?
+--=_freyr.ossman.eu-18617-1346915343-0001-2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Pierre-Louis, could you check whether I did the right thing when I
-ported over your delay bits to the new endpoint logic? Maybe I'm missing
-something here, but I currently don't see it.
+On Thu, 06 Sep 2012 07:59:52 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Wed, 5 Sep 2012 19:22:39 +0200,
+> Pierre Ossman wrote:
+> >=20
+> > Some follow up questions, to confirm I haven't confused things:
+> >=20
+> >  - The ELD really needs to go into the hardware, not just end up in the
+> >    hands of the audio driver? IOW, we cannot override this?
+>=20
+> Usually ELD won't go to the hardware as is but translated in a
+> different way in the graphics side.
+>=20
+> >  - The HDA interface only defines reading the ELD, so writing it would
+> >    have to be done by the graphics driver using some GPU interface?
+>=20
+> Yes.
+>=20
+> > If so, I need to poke the AMD guys as I couldn't find any information
+> > in the public documentation about writing the ELD.
+>=20
+> It's not about "writing" ELD.  If you got no valid ELD, it is the
+> graphics driver who didn't send it.  The graphics hardware certainly
+> sends some audio information, and the graphics driver translates into
+> an ELD and notifies to the audio codec.  This part is missing or
+> wrongly done, supposedly.
+>=20
+
+I've studied the Intel driver to get some feel for it, and it seems to
+work like this:
+
+ 1) The graphics driver gets the EDID data from the GPU.
+
+ 2) The kernel constructs the ELD structure from the EDID.
+
+ 3) The graphics driver writes the ELD to some GPU registers.
+
+ 4) The audio driver reads the ELD via the HDA interface.
+
+But if you're saying that the hardware doesn't really need the ELD,
+then steps 3-4 could be replaced by a pure software channel. This would
+be convenient as it is currently unknown how to do 3) on radeon.
+
+(2 is currently missing in the radeon driver, but it is trivial to add
+AFAICT)
+
+I am a bit confused though. If the hardware doesn't actually look at
+the ELD, why are the widgets caps not indicating support for 8
+channels? Isn't that coming straight from the hardware?
+
+And static_hdmi_pcm is described as "Don't restrict PCM parameters per
+ELD info", which doesn't seem to be the case as I cannot get more than
+2 channels no matter the setting of that parameter.
+
+Rgds
+--=20
+     -- Pierre Ossman
+
+  WARNING: This correspondence is being monitored by FRA, a
+  Swedish intelligence agency. Make sure your server uses
+  encryption for SMTP traffic and consider using PGP for
+  end-to-end encryption.
+
+--=_freyr.ossman.eu-18617-1346915343-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iF4EAREIAAYFAlBITA8ACgkQopDLsoqlmELYiAEAu0oYHNRa+KTd38jpSB+NPDyM
+bgzO3/pHMWuwbsqPITsA/06gNCgyZYBO1WC3Sr1px3PVKQlocyRDM+YowUfywC78
+=xmI1
+-----END PGP SIGNATURE-----
+
+--=_freyr.ossman.eu-18617-1346915343-0001-2--
+
+--===============3147681848262334688==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-Thanks,
-Daniel
+--===============3147681848262334688==--
