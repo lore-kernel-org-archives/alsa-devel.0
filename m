@@ -1,15 +1,17 @@
 From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: =?utf-8?q?=5BPATCH_0/3=5D_HDMI_HBR=28High_Bit_Rate?=
-	=?utf-8?q?=29_Feature_bug_fix_for_Intel=27s_Chips?=
-Date: Thu,  6 Sep 2012 10:02:35 +0800
-Message-ID: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
+Subject: [PATCH 2/3] ALSA: HDMI - Enable HBR feature on Intel
+	chips
+Date: Thu,  6 Sep 2012 10:02:37 +0800
+Message-ID: <1346896958-21080-3-git-send-email-xingchao.wang@intel.com>
+References: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B642D26520D
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:15:59 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5051426530A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 04:16:02 +0200 (CEST)
+In-Reply-To: <1346896958-21080-1-git-send-email-xingchao.wang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +25,133 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, anssi.hannula@iki.fi, alanwww1@xbmc.org, fengguang.wu@intel.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-QXMgaSBoYXZlIG5vIEEvViByZWNlaXZlciBoYW5keSBhbmQgY291bGQgbm90IHRlc3QgSEJSIHBs
-YXliYWNrIGRpcmVjdGx5LCBpCnJlbW92ZWQgdGhlICJSRkMiIHR5cGUgdW50aWwgdGhlIHBhdGNo
-c2V0IHdhcyB0ZXN0ZWQgYW5kIHByb3ZlZCB3b3JraW5nIHdlbGwuClRoZSBwYXRjaHNldCB3YXMg
-dGVzdGVkIG9uIEludGVsIGNoaXBzIGFuZCBnZXQgcG9zaXRpdmUgZmVlZGJhY2suIAoKUXVvdGUg
-ZnJvbSAiw5h5dmluZCBLdsOlbHN2b2xsIDxveXZpbmRAa3ZhbHN2b2xsLmNvbT4iOgoiVHJ1ZUhE
-IGFuZCBEVFMtTUEgd29yayBmaW5lIGZyb20gWEJNQywgMi1jaCBwbGF5YmFjayBhbHNvIHdvcmtz
-IGZpbmUKZnJvbSBYQk1DLgpDaGFubmVscyBhcmUgYWxsIG1hcHBlZCB0byB0aGUgcmlnaHQgc3Bl
-YWtlciwgYWxsIDcuMS4iIAoKUXVvdGUgZnJvbSBhbGFud3d3MToKIkkgdGVzdGVkIHRoZSBwYXRj
-aGVzLiBUaGV5IHdvcmsgcGVyZmVjdGx5LiBJIHRlc3RlZCBpdCB3aXRoIGJvdGggRFRTIE1hc3Rl
-cgpBdWRpbyBhbmQgRG9sYnkgVHJ1IEhEIHN0cmVhbXMuCkFsc28gdGVzdGVkIHdpdGggc3BlYWtl
-ci10ZXN0LiBDaGFubmVsIG1hcHBpbmcgd2FzIHJpZ2h0LiIKRnJvbTogaHR0cDovL2ZvcnVtLnhi
-bWMub3JnL3Nob3d0aHJlYWQucGhwP3RpZD0xMjgyOTgmcGlkPTExODQ1NzQjcGlkMTE4NDU3NAoK
-TWF5YmUgdGhlcmUncyBzdGlsbCBwb3RlbnRpYWwgYnVnIGFuZCBpIHdpbGwga2VlcCBvbiB0cmFj
-ayB0aGF0LgoKVGhlIGlkZWEgb2YgdGhpcyBwYXRjaCBjb21lcyBmcm9tIEFuc3NpLCBCaWcgY3Jl
-ZGl0IHRvIGhpbSBhdCBmaXJzdCEKVGhhbmtzIHRoZSBndXlzIGZyb20gWEJNQyBmb3J1bSB3aGlj
-aCBoZWxwIHRlc3QgdGhlIHBhdGNoZXMuCgpGb3IgcGVvcGxlIGludGVyZXN0ZWQgdG8gdGVzdCB0
-aGUgcGF0Y2gsIHBsZWFzZSByZW1lbWJlciB0byBhcHBseSBhbm90aGVyIGNoYW5nZSBpbgphbHNh
-LWxpYiBzaWRlLCB5b3UgY2FuIHJlZmVyIHRvIHRoZSBwYXRjaCBkZXRhaWwgZnJvbSBYQk1DIGZv
-cnVtOgpodHRwOi8vZm9ydW0ueGJtYy5vcmcvc2hvd3RocmVhZC5waHA/dGlkPTEyODI5OCZwaWQ9
-MTE3ODc3NiNwaWQxMTc4Nzc2CgpJIHdpbGwgc2VuZCB0aGF0IHBhdGNoIHRvIGFsc2EtbGliIG1h
-aWwtbGlzdCBsYXRlci4KCkNoYW5nZWxvZzoKKiBkbyBub3QgdG91Y2ggY2hhbm5lbF9hbGxvY2F0
-aW9uIHByaW9yaXR5IG9yZGVyLCB1c2UgbmV3IGFwaSB0byBnZXQKY29ycmVjdCBjaGFubmVscyBu
-dW1iZXIKKiB1c2Ugc3BkaWYtPnN0YXR1cyB0byBjaGVjayBhdWRpbyB0eXBlLCBwY20gb3Igbm9u
-LXBjbSAKKiBjcmVhdGUgbmV3IG5vbl9wY21fbWFwcGluZ1tdIGZvciBub25fcGNtIGF1ZGlvIGlu
-IHNlcGVyYXRlIGJsb2NrCiogYWRkIG5vbl9wY20gaGRtaV9zcGVjX3Blcl9jdnQgdG8gcmVtZW1i
-ZXIgcHJldmlvdXMgYXVkaW8gdHlwZSwgdXNlZCB0byAKICBkZXRlcm1pbmUgd2hldGhlciBuZWVk
-IGEgY2hhbm5lbCBtYXBwaW5nIHVwZGF0ZSBkdXJpbmcgdGhlIHBjbS9ub24tcGNtIAogIHN0cmVh
-bSBzd2l0Y2ggd2l0aCBzYW1lIGNoYW5uZWwgbnVtYmVyLgoKCldhbmcgWGluZ2NoYW8gKDMpOgog
-IEFMU0E6IEhETUkgLSBGaXggY2hhbm5lbF9hbGxvY2F0aW9uIGFycmF5IHdyb25nIG9yZGVyCiAg
-QUxTQTogSERNSSAtIEVuYWJsZSBIQlIgZmVhdHVyZSBvbiBJbnRlbCBjaGlwcwogIEFMU0E6IEhE
-TUkgLSBTZXR1cCBjaGFubmVsIG1hcHBpbmcgZm9yIG5vbl9wY20gYXVkaW8KCiBzb3VuZC9wY2kv
-aGRhL3BhdGNoX2hkbWkuYyB8ICAgNTYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKy0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1MSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9u
-cygtKQoKLS0gCjEuNy45LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+HDMI channel remapping apparently effects HBR packets on Intel's chips.
+For compressed non-PCM audio, use "straight-through" channel mapping.
+For uncompressed multi-channel pcm audio, use normal channel mapping.
+
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+---
+ sound/pci/hda/patch_hdmi.c |   36 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 6ac21d4..a87f8b2 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -34,6 +34,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
++#include <sound/asoundef.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+ #include "hda_jack.h"
+@@ -60,6 +61,7 @@ struct hdmi_spec_per_cvt {
+ 	u32 rates;
+ 	u64 formats;
+ 	unsigned int maxbps;
++	bool non_pcm;
+ };
+ 
+ struct hdmi_spec_per_pin {
+@@ -548,13 +550,17 @@ static void hdmi_debug_channel_mapping(struct hda_codec *codec,
+ 
+ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid,
++				       hda_nid_t cvt_nid,
++				       bool non_pcm,
+ 				       int ca)
+ {
+ 	int i;
+ 	int err;
+ 	int order;
++	int non_pcm_mapping[8];
+ 
+ 	order = get_channel_allocation_order(ca);
++
+ 	if (hdmi_channel_mapping[ca][1] == 0) {
+ 		for (i = 0; i < channel_allocations[order].channels; i++)
+ 			hdmi_channel_mapping[ca][i] = i | (i << 4);
+@@ -562,10 +568,17 @@ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
+ 	}
+ 
++	if (non_pcm) {
++		for (i = 0; i < channel_allocations[order].channels; i++)
++			non_pcm_mapping[i] = i | (i << 4);
++		for (; i < 8; i++)
++			non_pcm_mapping[i] = 0xf | (i << 4);
++	}
++
+ 	for (i = 0; i < 8; i++) {
+ 		err = snd_hda_codec_write(codec, pin_nid, 0,
+ 					  AC_VERB_SET_HDMI_CHAN_SLOT,
+-					  hdmi_channel_mapping[ca][i]);
++					  non_pcm ? non_pcm_mapping[i] : hdmi_channel_mapping[ca][i]);
+ 		if (err) {
+ 			snd_printdd(KERN_NOTICE
+ 				    "HDMI: channel mapping failed\n");
+@@ -699,15 +712,27 @@ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
+ }
+ 
+ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
+-					struct snd_pcm_substream *substream)
++					hda_nid_t cvt_nid, struct snd_pcm_substream *substream)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+ 	struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
++	struct hdmi_spec_per_cvt *per_cvt;
++	struct hda_spdif_out *spdif;
+ 	hda_nid_t pin_nid = per_pin->pin_nid;
+ 	int channels = substream->runtime->channels;
+ 	struct hdmi_eld *eld;
+ 	int ca;
++	int cvt_idx;
+ 	union audio_infoframe ai;
++	bool non_pcm = false;
++
++	cvt_idx = cvt_nid_to_cvt_index(spec, cvt_nid);
++	per_cvt = &spec->cvts[cvt_idx];
++
++	mutex_lock(&codec->spdif_mutex);
++	spdif = snd_hda_spdif_out_of_nid(codec, cvt_nid);
++	non_pcm = !!(spdif->status & IEC958_AES0_NONAUDIO);
++	mutex_unlock(&codec->spdif_mutex);
+ 
+ 	eld = &spec->pins[pin_idx].sink_eld;
+ 	if (!eld->monitor_present)
+@@ -750,12 +775,14 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
+ 			    "pin=%d channels=%d\n",
+ 			    pin_nid,
+ 			    channels);
+-		hdmi_setup_channel_mapping(codec, pin_nid, ca);
++		hdmi_setup_channel_mapping(codec, pin_nid, cvt_nid, non_pcm, ca);
+ 		hdmi_stop_infoframe_trans(codec, pin_nid);
+ 		hdmi_fill_audio_infoframe(codec, pin_nid,
+ 					    ai.bytes, sizeof(ai));
+ 		hdmi_start_infoframe_trans(codec, pin_nid);
+ 	}
++
++	per_cvt->non_pcm = non_pcm;
+ }
+ 
+ 
+@@ -1077,6 +1104,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 
+ 	per_cvt->cvt_nid = cvt_nid;
+ 	per_cvt->channels_min = 2;
++	per_cvt->non_pcm = false;
+ 	if (chans <= 16)
+ 		per_cvt->channels_max = chans;
+ 
+@@ -1164,7 +1192,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 
+ 	hdmi_set_channel_count(codec, cvt_nid, substream->runtime->channels);
+ 
+-	hdmi_setup_audio_infoframe(codec, pin_idx, substream);
++	hdmi_setup_audio_infoframe(codec, pin_idx, cvt_nid, substream);
+ 
+ 	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+ 				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+-- 
+1.7.9.5
