@@ -1,18 +1,21 @@
-From: =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
-Subject: [PATCH Resend2] ASoC: imx-mc13783: use defines instead
-	of numerical address of register
-Date: Thu,  6 Sep 2012 09:40:12 +0200
-Message-ID: <1346917212-2824-1-git-send-email-gcembed@gmail.com>
+From: Pierre Ossman <pierre-list@ossman.eu>
+Subject: Re: radeon multi-channel lpcm
+Date: Thu, 6 Sep 2012 09:52:51 +0200
+Message-ID: <20120906095251.65f81ffc@mjolnir.ossman.eu>
+References: <20120831223447.065fcb62@mjolnir.ossman.eu>
+ <20120905181923.2e330a63@mjolnir.ossman.eu>
+ <s5h4nnczaoq.wl%tiwai@suse.de>
+ <20120905192239.6a212683@mjolnir.ossman.eu>
+ <s5hpq5zitd3.wl%tiwai@suse.de>
+ <20120906090900.63328552@mjolnir.ossman.eu>
+ <s5h7gs7ip8r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6610112485246468878=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 90DDB265CA9
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 09:41:58 +0200 (CEST)
-Received: by weyx10 with SMTP id x10so850249wey.38
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 00:41:58 -0700 (PDT)
+Received: from smtp-relay.ossman.eu (saehrimnir.ossman.eu [193.12.253.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54DBB265CAA
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 09:52:57 +0200 (CEST)
+In-Reply-To: <s5h7gs7ip8r.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, =?UTF-8?B?UGhpbGlwcGUgUsOpdG9ybmF6?= <philippe.retornaz@epfl.ch>, broonie@opensource.wolfsonmicro.com, Sascha Hauer <kernel@pengutronix.de>, =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyB1c2VzIGFscmVhZHkgZGVmaW5lZCBuYW1lIG9mIHJlZ2lzdGVycyBhbmQgbWFrZXMgY29k
-ZSBtb3JlIHJlYWRhYmxlLgoKU2lnbmVkLW9mZi1ieTogR2HDq3RhbiBDYXJsaWVyIDxnY2VtYmVk
-QGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYyB8ICAgNTggKysrKysr
-KysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAz
-MSBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-Y29kZWNzL21jMTM3ODMuYyBiL3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jCmluZGV4IDhmNzI2
-YzAuLmJiZmE1NTMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jCisrKyBi
-L3NvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5jCkBAIC00MjYsMTYgKzQyNiwxNiBAQCBzdGF0aWMg
-aW50IG1jMTM3ODNfc2V0X3RkbV9zbG90X3N5bmMoc3RydWN0IHNuZF9zb2NfZGFpICpkYWksCiB9
-CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBtYzFsX2FtcF9jdGwgPQot
-CVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgMzgsIDcsIDEsIDApOworCVNPQ19EQVBNX1NJTkdM
-RSgiU3dpdGNoIiwgTUMxMzc4M19BVURJT19UWCwgNywgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc25kX2tjb250cm9sX25ldyBtYzFyX2FtcF9jdGwgPQotCVNPQ19EQVBNX1NJTkdMRSgi
-U3dpdGNoIiwgMzgsIDUsIDEsIDApOworCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgTUMxMzc4
-M19BVURJT19UWCwgNSwgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9s
-X25ldyBtYzJfYW1wX2N0bCA9Ci0JU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCAzOCwgOSwgMSwg
-MCk7CisJU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1RYLCA5LCAxLCAw
-KTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGF0eF9hbXBfY3RsID0K
-LQlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIDM4LCAxMSwgMSwgMCk7CisJU09DX0RBUE1fU0lO
-R0xFKCJTd2l0Y2giLCBNQzEzNzgzX0FVRElPX1RYLCAxMSwgMSwgMCk7CiAKIAogLyogVmlydHVh
-bCBtdXguIFRoZSBjaGlwIGRvZXMgdGhlIGlucHV0IHNlbGVjdGlvbiBhdXRvbWF0aWNhbGx5CkBA
-IC00NjEsMjIgKzQ2MSwyMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcg
-cmlnaHRfaW5wdXRfbXV4ID0KIAlTT0NfREFQTV9FTlVNX1ZJUlQoIlJvdXRlIiwgYWRjcl9lbnVt
-KTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHNhbXBfY3RsID0KLQlT
-T0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIDM2LCAzLCAxLCAwKTsKKwlTT0NfREFQTV9TSU5HTEUo
-IlN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgwLCAzLCAxLCAwKTsKIAogc3RhdGljIGNvbnN0IHN0
-cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGxhbXBfY3RsID0KLQlTT0NfREFQTV9TSU5HTEUoIlN3aXRj
-aCIsIDM2LCA1LCAxLCAwKTsKKwlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIE1DMTM3ODNfQVVE
-SU9fUlgwLCA1LCAxLCAwKTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3
-IGhsYW1wX2N0bCA9Ci0JU09DX0RBUE1fU0lOR0xFKCJTd2l0Y2giLCAzNiwgMTAsIDEsIDApOwor
-CVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgTUMxMzc4M19BVURJT19SWDAsIDEwLCAxLCAwKTsK
-IAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGhyYW1wX2N0bCA9Ci0JU09D
-X0RBUE1fU0lOR0xFKCJTd2l0Y2giLCAzNiwgOSwgMSwgMCk7CisJU09DX0RBUE1fU0lOR0xFKCJT
-d2l0Y2giLCBNQzEzNzgzX0FVRElPX1JYMCwgOSwgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBzdHJ1
-Y3Qgc25kX2tjb250cm9sX25ldyBsbGFtcF9jdGwgPQotCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNo
-IiwgMzYsIDE2LCAxLCAwKTsKKwlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIE1DMTM3ODNfQVVE
-SU9fUlgwLCAxNiwgMSwgMCk7CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25l
-dyBscmFtcF9jdGwgPQotCVNPQ19EQVBNX1NJTkdMRSgiU3dpdGNoIiwgMzYsIDE1LCAxLCAwKTsK
-KwlTT0NfREFQTV9TSU5HTEUoIlN3aXRjaCIsIE1DMTM3ODNfQVVESU9fUlgwLCAxNSwgMSwgMCk7
-CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgzX2RhcG1f
-d2lkZ2V0c1tdID0gewogLyogSW5wdXQgKi8KQEAgLTQ4NywxMyArNDg3LDEzIEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgzX2RhcG1fd2lkZ2V0c1tdID0g
-ewogCVNORF9TT0NfREFQTV9JTlBVVCgiUlhJTkwiKSwKIAlTTkRfU09DX0RBUE1fSU5QVVQoIlRY
-SU4iKSwKIAotCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMSBCaWFzIiwgMzgsIDAsIDAsIE5VTEws
-IDApLAotCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMiBCaWFzIiwgMzgsIDEsIDAsIE5VTEwsIDAp
-LAorCVNORF9TT0NfREFQTV9TVVBQTFkoIk1DMSBCaWFzIiwgTUMxMzc4M19BVURJT19UWCwgMCwg
-MCwgTlVMTCwgMCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgiTUMyIEJpYXMiLCBNQzEzNzgzX0FV
-RElPX1RYLCAxLCAwLCBOVUxMLCAwKSwKIAotCVNORF9TT0NfREFQTV9TV0lUQ0goIk1DMUwgQW1w
-IiwgMzgsIDcsIDAsICZtYzFsX2FtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIk1DMVIg
-QW1wIiwgMzgsIDUsIDAsICZtYzFyX2FtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIk1D
-MiBBbXAiLCAzOCwgOSwgMCwgJm1jMl9hbXBfY3RsKSwKLQlTTkRfU09DX0RBUE1fU1dJVENIKCJU
-WElOIEFtcCIsIDM4LCAxMSwgMCwgJmF0eF9hbXBfY3RsKSwKKwlTTkRfU09DX0RBUE1fU1dJVENI
-KCJNQzFMIEFtcCIsIE1DMTM3ODNfQVVESU9fVFgsIDcsIDAsICZtYzFsX2FtcF9jdGwpLAorCVNO
-RF9TT0NfREFQTV9TV0lUQ0goIk1DMVIgQW1wIiwgTUMxMzc4M19BVURJT19UWCwgNSwgMCwgJm1j
-MXJfYW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiTUMyIEFtcCIsIE1DMTM3ODNfQVVE
-SU9fVFgsIDksIDAsICZtYzJfYW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiVFhJTiBB
-bXAiLCBNQzEzNzgzX0FVRElPX1RYLCAxMSwgMCwgJmF0eF9hbXBfY3RsKSwKIAogCVNORF9TT0Nf
-REFQTV9WSVJUX01VWCgiUEdBIExlZnQgSW5wdXQgTXV4IiwgU05EX1NPQ19OT1BNLCAwLCAwLAog
-CQkJICAgICAgJmxlZnRfaW5wdXRfbXV4KSwKQEAgLTUwMywxMiArNTAzLDEyIEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBtYzEzNzgzX2RhcG1fd2lkZ2V0c1tdID0g
-ewogCVNORF9TT0NfREFQTV9QR0EoIlBHQSBMZWZ0IElucHV0IiwgU05EX1NPQ19OT1BNLCAwLCAw
-LCBOVUxMLCAwKSwKIAlTTkRfU09DX0RBUE1fUEdBKCJQR0EgUmlnaHQgSW5wdXQiLCBTTkRfU09D
-X05PUE0sIDAsIDAsIE5VTEwsIDApLAogCi0JU05EX1NPQ19EQVBNX0FEQygiQURDIiwgIkNhcHR1
-cmUiLCA0MCwgMTEsIDApLAotCVNORF9TT0NfREFQTV9TVVBQTFkoIkFEQ19SZXNldCIsIDQwLCAx
-NSwgMCwgTlVMTCwgMCksCisJU05EX1NPQ19EQVBNX0FEQygiQURDIiwgIkNhcHR1cmUiLCBNQzEz
-NzgzX0FVRElPX0NPREVDLCAxMSwgMCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgiQURDX1Jlc2V0
-IiwgTUMxMzc4M19BVURJT19DT0RFQywgMTUsIDAsIE5VTEwsIDApLAogCiAvKiBPdXRwdXQgKi8K
-LQlTTkRfU09DX0RBUE1fU1VQUExZKCJEQUNfRSIsIDQxLCAxMSwgMCwgTlVMTCwgMCksCi0JU05E
-X1NPQ19EQVBNX1NVUFBMWSgiREFDX1Jlc2V0IiwgNDEsIDE1LCAwLCBOVUxMLCAwKSwKKwlTTkRf
-U09DX0RBUE1fU1VQUExZKCJEQUNfRSIsIE1DMTM3ODNfQVVESU9fREFDLCAxMSwgMCwgTlVMTCwg
-MCksCisJU05EX1NPQ19EQVBNX1NVUFBMWSgiREFDX1Jlc2V0IiwgTUMxMzc4M19BVURJT19EQUMs
-IDE1LCAwLCBOVUxMLCAwKSwKIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJSWE9VVEwiKSwKIAlTTkRf
-U09DX0RBUE1fT1VUUFVUKCJSWE9VVFIiKSwKIAlTTkRfU09DX0RBUE1fT1VUUFVUKCJIU0wiKSwK
-QEAgLTUxNiwxNCArNTE2LDE4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dp
-ZGdldCBtYzEzNzgzX2RhcG1fd2lkZ2V0c1tdID0gewogCVNORF9TT0NfREFQTV9PVVRQVVQoIkxT
-UCIpLAogCVNORF9TT0NfREFQTV9PVVRQVVQoIlNQIiksCiAKLQlTTkRfU09DX0RBUE1fU1dJVENI
-KCJTcGVha2VyIEFtcCIsIDM2LCAzLCAwLCAmc2FtcF9jdGwpLAorCVNORF9TT0NfREFQTV9TV0lU
-Q0goIlNwZWFrZXIgQW1wIiwgTUMxMzc4M19BVURJT19SWDAsIDMsIDAsICZzYW1wX2N0bCksCiAJ
-U05EX1NPQ19EQVBNX1NXSVRDSCgiTG91ZHNwZWFrZXIgQW1wIiwgU05EX1NPQ19OT1BNLCAwLCAw
-LCAmbGFtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIkhlYWRzZXQgQW1wIExlZnQiLCAz
-NiwgMTAsIDAsICZobGFtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIkhlYWRzZXQgQW1w
-IFJpZ2h0IiwgMzYsIDksIDAsICZocmFtcF9jdGwpLAotCVNORF9TT0NfREFQTV9TV0lUQ0goIkxp
-bmUgb3V0IEFtcCBMZWZ0IiwgMzYsIDE2LCAwLCAmbGxhbXBfY3RsKSwKLQlTTkRfU09DX0RBUE1f
-U1dJVENIKCJMaW5lIG91dCBBbXAgUmlnaHQiLCAzNiwgMTUsIDAsICZscmFtcF9jdGwpLAotCVNO
-RF9TT0NfREFQTV9EQUMoIkRBQyIsICJQbGF5YmFjayIsIDM2LCAyMiwgMCksCi0JU05EX1NPQ19E
-QVBNX1BHQSgiREFDIFBHQSIsIDM3LCA1LCAwLCBOVUxMLCAwKSwKKwlTTkRfU09DX0RBUE1fU1dJ
-VENIKCJIZWFkc2V0IEFtcCBMZWZ0IiwgTUMxMzc4M19BVURJT19SWDAsIDEwLCAwLAorCQkJJmhs
-YW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiSGVhZHNldCBBbXAgUmlnaHQiLCBNQzEz
-NzgzX0FVRElPX1JYMCwgOSwgMCwKKwkJCSZocmFtcF9jdGwpLAorCVNORF9TT0NfREFQTV9TV0lU
-Q0goIkxpbmUgb3V0IEFtcCBMZWZ0IiwgTUMxMzc4M19BVURJT19SWDAsIDE2LCAwLAorCQkJJmxs
-YW1wX2N0bCksCisJU05EX1NPQ19EQVBNX1NXSVRDSCgiTGluZSBvdXQgQW1wIFJpZ2h0IiwgTUMx
-Mzc4M19BVURJT19SWDAsIDE1LCAwLAorCQkJJmxyYW1wX2N0bCksCisJU05EX1NPQ19EQVBNX0RB
-QygiREFDIiwgIlBsYXliYWNrIiwgTUMxMzc4M19BVURJT19SWDAsIDIyLCAwKSwKKwlTTkRfU09D
-X0RBUE1fUEdBKCJEQUMgUEdBIiwgTUMxMzc4M19BVURJT19SWDEsIDUsIDAsIE5VTEwsIDApLAog
-fTsKIAogc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUgbWMxMzc4M19yb3V0ZXNbXSA9
-IHsKLS0gCjEuNy43LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
+
+--===============6610112485246468878==
+Content-Type: multipart/signed; micalg=PGP-SHA256; protocol="application/pgp-signature"; boundary="=_freyr.ossman.eu-21391-1346917974-0001-2"
+
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
+
+--=_freyr.ossman.eu-21391-1346917974-0001-2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 06 Sep 2012 09:28:52 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Thu, 6 Sep 2012 09:09:00 +0200,
+> Pierre Ossman wrote:
+> >=20
+> > But if you're saying that the hardware doesn't really need the ELD,
+> > then steps 3-4 could be replaced by a pure software channel.
+>=20
+> No, what I meant is about the audio codec perspective.  From the audio
+> codec, it has no direct hardware access to GPU that actually handles
+> the ELD register things.  It always communicate via HD-audio verbs to
+> send/receive DIP bytes so the actual work is purely in the graphics
+> driver side.
+>=20
+
+I assume "codec" here is in the HDA sense, as in the hardware hiding
+somewhere behind the HDA interface.
+
+In the Intel case, I'd say the audio hardware as a whole does have some
+back channel to the GPU since a write to a GPU register somehow results
+in data in the audio hardware. But yes, it would be a purely graphics
+driver thing as it has both the ELD, and access to the registers you
+can write to.
+
+I'm working on the assumption that the radeon hardware works in similar
+fashion as the Intel ones.
+
+> > This would
+> > be convenient as it is currently unknown how to do 3) on radeon.
+> >=20
+> > (2 is currently missing in the radeon driver, but it is trivial to add
+> > AFAICT)
+>=20
+> Yeah, that's the big missing piece.
+>=20
+
+So I'll go poke the AMD people, as I cannot find anything in the public
+docs about ELD registers. Hopefully it's not something that's still
+classified... :/
+
+Thanks
+--=20
+     -- Pierre Ossman
+
+  WARNING: This correspondence is being monitored by FRA, a
+  Swedish intelligence agency. Make sure your server uses
+  encryption for SMTP traffic and consider using PGP for
+  end-to-end encryption.
+
+--=_freyr.ossman.eu-21391-1346917974-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iF4EAREIAAYFAlBIVlUACgkQopDLsoqlmEI7mAEAip5fpN493q5vqJRF4Wq320qn
+HGxPt0miEF4zzSKzHB4A/j1tU3QHhOreYRCKjulM1LFmzQZlMzhC2pUd+daylYAx
+=pzQS
+-----END PGP SIGNATURE-----
+
+--=_freyr.ossman.eu-21391-1346917974-0001-2--
+
+--===============6610112485246468878==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6610112485246468878==--
