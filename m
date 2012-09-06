@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [ASoC] Fix: Revert 'ASoC: imx-ssi: Remove mono
-	support'.
-Date: Thu, 6 Sep 2012 08:19:18 +0800
-Message-ID: <20120906001917.GS10580@opensource.wolfsonmicro.com>
-References: <1346660831-9662-1-git-send-email-javier.martin@vista-silicon.com>
- <5045A11B.3070300@gmail.com>
- <CACKLOr1nobfaKRnVVuiODAfCUugCYJ2=pDvbz6wn1Yexy7qb6A@mail.gmail.com>
+Subject: Re: [PATCH V2] ASoC: Davinci: McASP: add support new
+	McASP IP Variant
+Date: Thu, 6 Sep 2012 08:20:43 +0800
+Message-ID: <20120906002041.GT10580@opensource.wolfsonmicro.com>
+References: <1346659840-18228-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 240B5264F25
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 02:19:23 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3ED00264F2B
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 02:20:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CACKLOr1nobfaKRnVVuiODAfCUugCYJ2=pDvbz6wn1Yexy7qb6A@mail.gmail.com>
+In-Reply-To: <1346659840-18228-1-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, =?iso-8859-1?Q?Ga=EBtan?= Carlier <gcembed@gmail.com>
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 04, 2012 at 11:09:20AM +0200, javier Martin wrote:
+On Mon, Sep 03, 2012 at 01:40:40PM +0530, Hebbar, Gururaja wrote:
+> The OMAP2+ variant of McASP is different from Davinci variant w.r.to
+> some register offset.
 
-> could you pick up the fixed patch sent by Ga=EBtan?
-
-It's mangled, can someone resend please (ideally with an appropriate
-subject line and so on).
+Applied, thanks.
