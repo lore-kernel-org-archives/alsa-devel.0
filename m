@@ -1,98 +1,139 @@
-From: Daniel Mack <zonque@gmail.com>
+From: Markus Trippelsdorf <markus@trippelsdorf.de>
 Subject: Re: snd-usb: "delay: estimated 0, actual 352"
-Date: Thu, 06 Sep 2012 12:25:16 +0200
-Message-ID: <50487A0C.4080204@gmail.com>
-References: <s5hmx1526mg.wl%tiwai@suse.de> <20120906060220.GA252@x4>
- <504843BA.2040808@gmail.com> <s5hehmfir46.wl%tiwai@suse.de>
- <20120906065340.GA257@x4> <50484BEB.4020103@gmail.com>
- <20120906071757.GB257@x4> <s5h627rioxt.wl%tiwai@suse.de>
+Date: Thu, 6 Sep 2012 12:30:16 +0200
+Message-ID: <20120906103016.GA257@x4>
+References: <s5hmx1526mg.wl%tiwai@suse.de>
+ <20120906060220.GA252@x4>
+ <504843BA.2040808@gmail.com>
+ <s5hehmfir46.wl%tiwai@suse.de>
+ <20120906065340.GA257@x4>
+ <50484BEB.4020103@gmail.com>
+ <20120906071757.GB257@x4>
+ <s5h627rioxt.wl%tiwai@suse.de>
+ <50487A0C.4080204@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id E63CE2615A1
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 12:25:23 +0200 (CEST)
-Received: by bkuw5 with SMTP id w5so592304bku.38
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 03:25:23 -0700 (PDT)
-In-Reply-To: <s5h627rioxt.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Markus Trippelsdorf <markus@trippelsdorf.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <50487A0C.4080204@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDYuMDkuMjAxMiAwOTozNSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgNiBTZXAg
-MjAxMiAwOToxNzo1NyArMDIwMCwKPiBNYXJrdXMgVHJpcHBlbHNkb3JmIHdyb3RlOgo+Pgo+PiBP
-biAyMDEyLjA5LjA2IGF0IDA5OjA4ICswMjAwLCBEYW5pZWwgTWFjayB3cm90ZToKPj4+IE9uIDA2
-LjA5LjIwMTIgMDg6NTMsIE1hcmt1cyBUcmlwcGVsc2RvcmYgd3JvdGU6Cj4+Pj4gT24gMjAxMi4w
-OS4wNiBhdCAwODo0OCArMDIwMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+PiBBdCBUaHUsIDA2
-IFNlcCAyMDEyIDA4OjMzOjMwICswMjAwLAo+Pj4+PiBEYW5pZWwgTWFjayB3cm90ZToKPj4+Pj4+
-Cj4+Pj4+PiBPbiAwNi4wOS4yMDEyIDA4OjAyLCBNYXJrdXMgVHJpcHBlbHNkb3JmIHdyb3RlOgo+
-Pj4+Pj4+IE9uIDIwMTIuMDkuMDQgYXQgMTY6NDAgKzAyMDAsIFRha2FzaGkgSXdhaSB3cm90ZToK
-Pj4+Pj4+Pj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQo+Pj4+Pj4+PiBTb3VuZCBmaXhlcyBmb3IgMy42LXJjNQo+Pj4+Pj4+
-Pgo+Pj4+Pj4+PiBUaGVyZSBhcmUgbm90aGluZyBzY2FyaW5nLCBjb250YWlucyBvbmx5IHNtYWxs
-IGZpeGVzIGZvciBIRC1hdWRpbyBhbmQKPj4+Pj4+Pj4gVVNCLWF1ZGlvOgo+Pj4+Pj4+PiAtIEVQ
-U1MgcmVncmVzc2lvbiBmaXggYW5kIEdQSU8gZml4IGZvciBIRC1hdWRpbyBJRFQgY29kZWNzCj4+
-Pj4+Pj4+IC0gQSBzZXJpZXMgb2YgVVNCLWF1ZGlvIHJlZ3Jlc3Npb24gZml4ZXMgdGhhdCBhcmUg
-Zm91bmQgc2luY2UgMy41IGtlcm5lbAo+Pj4+Pj4+Pgo+Pj4+Pj4+PiAtLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+Pj4+Pj4+
-IERhbmllbCBNYWNrICg0KToKPj4+Pj4+Pj4gICAgICAgQUxTQTogc25kLXVzYjogRml4IFVSQiBj
-YW5jZWxsYXRpb24gYXQgc3RyZWFtIHN0YXJ0Cj4+Pj4+Pj4+ICAgICAgIEFMU0E6IHNuZC11c2I6
-IHJlc3RvcmUgZGVsYXkgaW5mb3JtYXRpb24KPj4+Pj4+PiAgICAgICAgIF5eXl5eXl5eXl5eXl5e
-Xl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl4gCj4+Pj4+Pj4gVGhlIGNvbW1pdCBmYmNmYmY1ZiBh
-Ym92ZSBjYXVzZXMgdGhlIGZvbGxvd2luZyBsaW5lcyB0byBiZSBwcmludGVkCj4+Pj4+Pj4gd2hl
-bmV2ZXIgSSBzdGFydCBhIG5ldyBzb25nOgo+Pj4+Pj4KPj4+Pj4+IENvcGllZCBQaWVycmUtTG91
-aXMgQm9zc2FydCAtIGhlIHdyb3RlIHRoZSBjb2RlIGluIDI5NGM0ZmI4IHdoaWNoIHRoaXMKPj4+
-Pj4+IHBhdGNoIChmYmNmYmY1ZikgYnJpbmdzIGJhY2sgbm93Lgo+Pj4+Pj4KPj4+Pj4+PiBkZWxh
-eTogZXN0aW1hdGVkIDAsIGFjdHVhbCAzNTIKPj4+Pj4+PiBkZWxheTogZXN0aW1hdGVkIDM1Mywg
-YWN0dWFsIDcwNQo+Pj4+Pj4+Cj4+Pj4+Pj4gKDQ0LjEgKiA4ID0gMzUyLjgpCj4+Pj4+Pj4KPj4+
-Pj4+PiBUaGlzIGhhcHBlbnMgd2l0aCBhbiBVU0ItREFDIHRoYXQgaWRlbnRpZmllcyBpdHNlbGYg
-YXMgIkMtTWVkaWEgVVNCCj4+Pj4+Pj4gSGVhZHBob25lIFNldCIuCj4+Pj4+Pgo+Pj4+Pj4gQW5k
-IHlvdSBkaWRuJ3QgeW91IHNlZSB0aGVzZSBsaW5lcyB3aXRoIDMuND8KPj4+Pj4KPj4+Pj4gTWF5
-YmUgdGhlIGRpZmZlcmVuY2Ugb2Ygc3RhcnQgY29uZGl0aW9uPwo+Pj4+Pgo+Pj4+PiBNYXJrdXMs
-IGRvZXMgdGhlIHBhdGNoIGJlbG93IGZpeCBhbnl0aGluZz8KPj4+Pgo+Pj4+IFVuZm9ydHVuYXRl
-bHkgbm8uCj4+Pj4gSG93ZXZlciByZXZlcnRpbmcgdGhlIGZvbGxvd2luZyBmaXhlcyB0aGUgcHJv
-YmxlbToKPj4+Pgo+Pj4+IGNvbW1pdCAyNDViYWY5ODNjYzM5NTI0Y2NlMzljMjRkMDFiMjc2ZTZl
-NjUzYzllCj4+Pj4gQXV0aG9yOiBEYW5pZWwgTWFjayA8em9ucXVlQGdtYWlsLmNvbT4KPj4+PiBE
-YXRlOiAgIFRodSBBdWcgMzAgMTg6NTI6MzAgMjAxMiArMDIwMAo+Pj4+Cj4+Pj4gICAgIEFMU0E6
-IHNuZC11c2I6IGZpeCBjYWxscyB0byBuZXh0X3BhY2tldF9zaXplCj4+Pj4KPj4+Cj4+PiBObywg
-dGhpcyBvbmUgY2VydGFpbmx5IGZpeGVzIGEgcHJvYmxlbSBhbmQgZG9lcyB0aGUgcmlnaHQgdGhp
-bmcgYnkKPj4+IHJlc3RvcmluZyB0aGUgb3JpZ2luYWwgY29kZS4KPj4+Cj4+PiBJZiB5b3Ugd291
-bGRuJ3Qgc3RhdGUgdGhhdCB5b3UgZGlkbid0IHNlZSB0aGUgc2FtZSBlZmZlY3Qgd2l0aCAzLjQo
-ISksCj4+PiBiZWZvcmUgdGhlIHJlZmFjdG9yaW5nIGRvbmUgaW4gMy41LCBJIHdvdWxkIGJlbGll
-dmUgdGhlIGRldmljZSBpcyBzaW1wbHkKPj4+IHNsaWdodGx5IG9mZiBpbiBpdHMgZmVlZGJhY2sg
-cmF0ZSBhbmQgdGhlIHRpZ2h0ZXIgZGVsYXkgY29kZSBjb21wbGFpbnMKPj4+IGFib3V0IGl0IHdo
-aWxlIGNvbXBlbnNhdGluZywganVzdCBhcyBpdCBkaWQgYmVmb3JlLgo+Pj4KPj4+IEFyZSB0aGVy
-ZSBhbnkgbW9yZSB0aGFuIHRoZXNlIHR3byBsaW5lcz8gQW5kIGlzIGF1ZGlvIHdvcmtpbmcgYXQg
-YWxsPyBJcwo+Pj4gaXQgZGlzdG9ydGVkIGluIGFueSB3YXk/Cj4+Cj4+IFRoZXJlIGFyZSBvbmx5
-IHRoZXNlIHR3byBsaW5lcyAocHJpbnRlZCB3aGVuZXZlciBzb3VuZCBzdGFydHMpLiBBdWRpbyBp
-cwo+PiB3b3JraW5nIGp1c3QgZmluZSB3aXRoIG5vIGRpc3RvcnRpb25zLgo+Pgo+PiBJIGRpZCBz
-ZWUgc2ltaWxhciBsaW5lcyBiZWZvcmUgd2hlbiB0aGUgc3lzdGVtIGxvYWQgd2FzIHZlcnkgaGln
-aAo+PiAoaGFwcGVuZCBkdXJpbmcgIm1ha2UgY2hlY2siIHdoZW4gYnVpbGRpbmcgZ2xpYmMpLgo+
-Pgo+PiBIZXJlIGlzIHdoYXQgUGllcnJlLUxvdWlzIHdyb3RlIGluIE5vdmVtYmVyIDIwMTE6Cj4+
-Cj4+IMOCwrtUaGlzIHdhcyBzdXBwb3NlZCB0byBiZSBhbiBpbmZvcm1hdGlvbmFsIG1lc3NhZ2Us
-IEkgdGhvdWdodCBpdCB3YXMgb25seQo+PiBlbmFibGVkIGZvciBkZWJ1Zy4gUmVndWxhciB1c2Vy
-cyBkb24ndCByZWFsbHkgbmVlZCB0byBrbm93LsOCwqsKPiAKPiBJIGd1ZXNzIHRoZSBwcm9ibGVt
-IGlzIHRoYXQgdGhlIG5ldyBlbmRwb2ludCBzY2hlbWUgZG9lc24ndCBjb3VudCB0aGUKPiBsYXN0
-X2RlbGF5IHVwZGF0ZSB1bmxlc3MgdGhlIHN0cmVhbSBpcyB0cmlnZ2VyZWQuICBJbiB0aGUgb2xk
-IGNvZGUsCj4gcmV0aXJlX3BsYXliYWNrX3VyYiBpcyBhbHdheXMgY2FsbGVkIGV2ZW4gYmVmb3Jl
-IHRoZSB0cmlnZ2VyKFNUQVJUKSBpcwo+IHNldC4gIEFuZCwgdGhlcmUgcmV0aXJlX3BsYXliYWNr
-X3VyYigpIGRvZXMgbm90aGluZyBidXQgdXBkYXRpbmcgdGhlCj4gZGVsYXkgaW5mb3JtYXRpb24u
-Cj4gCj4gSW4gdGhlIG5ldyBjb2RlLCByZXRpcmVfcGxheWJhY2tfdXJiIGlzIHNldCBvbmx5IGF0
-Cj4gc25kX3VzYl9zdWJzdHJlYW1fcGxheWJhY2tfdHJpZ2dlcigpLiAgVGh1cyBhdCB0aGUgdmVy
-eSBmaXJzdCBzaG90LAo+IHRoZSBkZWxheSBhY2NvdW50IGdvdCBjb25mdXNlZC4KCkluIHRoYXQg
-Y2FzZSwgSSdkIHNheSB3ZSBjYW4gYWxzbyBzYWZlbHkgcmVtb3ZlIHRoZSBkZWJ1ZyBvdXRwdXQg
-dGhlbi4KTGV0J3Mgd2FpdCBmb3IgUGllcnJlLUxvdWlzJyBqdWRnZW1lbnQgaGVyZS4KCgpEYW5p
-ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 2012.09.06 at 12:25 +0200, Daniel Mack wrote:
+> On 06.09.2012 09:35, Takashi Iwai wrote:
+> > At Thu, 6 Sep 2012 09:17:57 +0200,
+> > Markus Trippelsdorf wrote:
+> >>
+> >> On 2012.09.06 at 09:08 +0200, Daniel Mack wrote:
+> >>> On 06.09.2012 08:53, Markus Trippelsdorf wrote:
+> >>>> On 2012.09.06 at 08:48 +0200, Takashi Iwai wrote:
+> >>>>> At Thu, 06 Sep 2012 08:33:30 +0200,
+> >>>>> Daniel Mack wrote:
+> >>>>>>
+> >>>>>> On 06.09.2012 08:02, Markus Trippelsdorf wrote:
+> >>>>>>> On 2012.09.04 at 16:40 +0200, Takashi Iwai wrote:
+> >>>>>>>> ------------------------------------------------------------=
+----
+> >>>>>>>> Sound fixes for 3.6-rc5
+> >>>>>>>>
+> >>>>>>>> There are nothing scaring, contains only small fixes for HD-=
+audio and
+> >>>>>>>> USB-audio:
+> >>>>>>>> - EPSS regression fix and GPIO fix for HD-audio IDT codecs
+> >>>>>>>> - A series of USB-audio regression fixes that are found sinc=
+e 3.5 kernel
+> >>>>>>>>
+> >>>>>>>> ------------------------------------------------------------=
+----
+> >>>>>>>> Daniel Mack (4):
+> >>>>>>>>       ALSA: snd-usb: Fix URB cancellation at stream start
+> >>>>>>>>       ALSA: snd-usb: restore delay information
+> >>>>>>>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=20
+> >>>>>>> The commit fbcfbf5f above causes the following lines to be pr=
+inted
+> >>>>>>> whenever I start a new song:
+> >>>>>>
+> >>>>>> Copied Pierre-Louis Bossart - he wrote the code in 294c4fb8 wh=
+ich this
+> >>>>>> patch (fbcfbf5f) brings back now.
+> >>>>>>
+> >>>>>>> delay: estimated 0, actual 352
+> >>>>>>> delay: estimated 353, actual 705
+> >>>>>>>
+> >>>>>>> (44.1 * 8 =3D 352.8)
+> >>>>>>>
+> >>>>>>> This happens with an USB-DAC that identifies itself as "C-Med=
+ia USB
+> >>>>>>> Headphone Set".
+> >>>>>>
+> >>>>>> And you didn't you see these lines with 3.4?
+> >>>>>
+> >>>>> Maybe the difference of start condition?
+> >>>>>
+> >>>>> Markus, does the patch below fix anything?
+> >>>>
+> >>>> Unfortunately no.
+> >>>> However reverting the following fixes the problem:
+> >>>>
+> >>>> commit 245baf983cc39524cce39c24d01b276e6e653c9e
+> >>>> Author: Daniel Mack <zonque@gmail.com>
+> >>>> Date:   Thu Aug 30 18:52:30 2012 +0200
+> >>>>
+> >>>>     ALSA: snd-usb: fix calls to next_packet_size
+> >>>>
+> >>>
+> >>> No, this one certainly fixes a problem and does the right thing b=
+y
+> >>> restoring the original code.
+> >>>
+> >>> If you wouldn't state that you didn't see the same effect with 3.=
+4(!),
+> >>> before the refactoring done in 3.5, I would believe the device is=
+ simply
+> >>> slightly off in its feedback rate and the tighter delay code comp=
+lains
+> >>> about it while compensating, just as it did before.
+> >>>
+> >>> Are there any more than these two lines? And is audio working at =
+all? Is
+> >>> it distorted in any way?
+> >>
+> >> There are only these two lines (printed whenever sound starts). Au=
+dio is
+> >> working just fine with no distortions.
+> >>
+> >> I did see similar lines before when the system load was very high
+> >> (happend during "make check" when building glibc).
+> >>
+> >> Here is what Pierre-Louis wrote in November 2011:
+> >>
+> >> =C3=82=C2=BBThis was supposed to be an informational message, I th=
+ought it was only
+> >> enabled for debug. Regular users don't really need to know.=C3=82=C2=
+=AB
+> >=20
+> > I guess the problem is that the new endpoint scheme doesn't count t=
+he
+> > last_delay update unless the stream is triggered.  In the old code,
+> > retire_playback_urb is always called even before the trigger(START)=
+ is
+> > set.  And, there retire_playback_urb() does nothing but updating th=
+e
+> > delay information.
+> >=20
+> > In the new code, retire_playback_urb is set only at
+> > snd_usb_substream_playback_trigger().  Thus at the very first shot,
+> > the delay account got confused.
+>=20
+> In that case, I'd say we can also safely remove the debug output then=
+=2E
+> Let's wait for Pierre-Louis' judgement here.
+
+v3.5 and v3.6-rc4 with commit fbcfbf5f67 (restore delay information)
+applied on top are both fine.
+
+--=20
+Markus
