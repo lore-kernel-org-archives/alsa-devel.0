@@ -1,22 +1,26 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v3 08/14] Input: twl4030-vibra: Support for
- DT booted kernel
-Date: Thu, 6 Sep 2012 09:19:33 -0700
-Message-ID: <20120906161933.GA18562@core.coreip.homeip.net>
-References: <1346933541-21547-1-git-send-email-peter.ujfalusi@ti.com>
- <1346933541-21547-9-git-send-email-peter.ujfalusi@ti.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: How to define card specific pcm devices?
+Date: Thu, 06 Sep 2012 18:18:34 +0100
+Message-ID: <1346951914.4893.6.camel@odin>
+References: <1344597903.4283.68.camel@IT-D-4QB9Z4J>
+ <1345215040.2530.26.camel@IT-D-4QB9Z4J>
+ <CAN8cciYX4krbJvb9PWQFswAKq0AqiC_oh20n+NB2Ak=BF8Zgxw@mail.gmail.com>
+ <CAN8cciZH2SL7Dm0ykA+hfRoksngo9Z15pkTLHp+pXDYSKpm90w@mail.gmail.com>
+ <1345262953.4864.12.camel@laptop>
+ <CAN8cciYojFegq+cQ-=h6Yt4njO4pPyGB_zG2WkMT4A8euDV6Ww@mail.gmail.com>
+ <1346823662.3629.17.camel@laptop>
+ <CABS+qY3kEPr3aknPvTU+iRyGxSo2G_iDawv+fr7WBJrJQUO+2w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C7F4261605
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 18:19:41 +0200 (CEST)
-Received: by pbbro8 with SMTP id ro8so2628682pbb.38
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 09:19:40 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1346933541-21547-9-git-send-email-peter.ujfalusi@ti.com>
+Received: from na3sys009aog136.obsmtp.com (na3sys009aog136.obsmtp.com
+ [74.125.149.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7618261603
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 19:18:39 +0200 (CEST)
+Received: by wibhq4 with SMTP id hq4so1343646wib.2
+ for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 10:18:37 -0700 (PDT)
+In-Reply-To: <CABS+qY3kEPr3aknPvTU+iRyGxSo2G_iDawv+fr7WBJrJQUO+2w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,58 +30,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tero Kristo <t-kristo@ti.com>, alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, Benoit Cousson <b-cousson@ti.com>
+To: Tanu Kaskinen <tanuk@iki.fi>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+On Wed, 2012-09-05 at 12:24 +0100, Girdwood, Liam wrote:
+> On 5 September 2012 06:41, Tanu Kaskinen <tanuk@iki.fi> wrote:
+>         On Wed, 2012-08-29 at 09:44 +0800, Raymond Yau wrote:
+>         > strictly speaking your mic is not a true stereo mic and the
+>         channel
+>         > map is [left, null] instead of the normal map [left,right]
+>         of line-in
+>         > or stereo mic
+>         
+>         
+>         I think specifying the channel map like you suggest would be a
+>         good
+>         solution. Supporting it would require some extra work in
+>         PulseAudio, but
+>         I think PulseAudio will anyway have to be extended to query
+>         the channel
+>         map information from UCM.
+>         
+>         Now the problem is that UCM doesn't provide the channel map
+>         information
+>         at all. Should the channel map be provided in the device
+>         "Value"
+>         section? Like this:
+>         
+>         SectionDevice."my-mono-mic" {
+>         
+>                 ...
+>         
+>                 Value {
+>                         # Does this value become redundant if
+>                         # the "CaptureChannelMap" value is added?
+>                         CaptureChannels "2"
+>         
 
-On Thu, Sep 06, 2012 at 03:12:15PM +0300, Peter Ujfalusi wrote:
-> Add support when the kernel has been booted with DT blob. In this case the
-> pdata is NULL, we need to reach up to the core node and check if the codec
-> part has been enabled to determine if we need to coexist with the codec or
-> not.
+I would expect to see a "1" here unless we cannot open the pcm in mono
+mode.
+
+>                         # Channel names match the constants in
+>                         # Takashi's proposed channel map API
+>                         CaptureChannelMap "FL, NA"
+>                 }
+>         
+>         }
+
+This seems fine and should be a simple patch for UCM too. Pulsaudio
+could use the map information/preference from UCM (like above) to
+configure the driver using Takashi's new channel map API.
+
+>         
+>         Opinions? (Liam added to CC - am I right in that you should be
+>         CC'd in
+>         all UCM related discussions?)
+
+Yes, please and Mark too (now on CC).
+
+Thanks
+
+Liam
+
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  drivers/input/misc/twl4030-vibra.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/misc/twl4030-vibra.c b/drivers/input/misc/twl4030-vibra.c
-> index fc0ed9b..15620f8 100644
-> --- a/drivers/input/misc/twl4030-vibra.c
-> +++ b/drivers/input/misc/twl4030-vibra.c
-> @@ -26,6 +26,7 @@
->  #include <linux/module.h>
->  #include <linux/jiffies.h>
->  #include <linux/platform_device.h>
-> +#include <linux/of.h>
->  #include <linux/workqueue.h>
->  #include <linux/i2c/twl.h>
->  #include <linux/mfd/twl4030-audio.h>
-> @@ -194,13 +195,28 @@ static int twl4030_vibra_resume(struct device *dev)
->  static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
->  			 twl4030_vibra_suspend, twl4030_vibra_resume);
->  
-> +static bool twl4030_vibra_check_coexist(struct twl4030_vibra_data *pdata,
-> +			      struct device_node *node)
-> +{
-> +	if (pdata && pdata->coexist)
-> +		return true;
-> +
-> +#ifdef CONFIG_OF
-> +	if (of_find_node_by_name(node, "codec"))
-> +		return true;
-> +#endif
-
-In patch 6 you added a stub for of_find_node_by_name(), so do you really
-need this #ifdef?
-
-Otherwise it looks good.
-
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-Thanks.
-
--- 
-Dmitry
