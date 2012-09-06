@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH Resend2] ASoC: imx-mc13783: use defines
- instead of numerical address of register
-Date: Thu, 6 Sep 2012 18:47:51 +0800
-Message-ID: <20120906104733.GG22330@opensource.wolfsonmicro.com>
-References: <1346917212-2824-1-git-send-email-gcembed@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC] Channel mapping API (take 2)
+Date: Thu, 6 Sep 2012 19:47:16 +0800
+Message-ID: <CAN8cciZcZ+ij8GFh1veAi+uQxS=v3vDboXvDOu=yPrHhHJkCFg@mail.gmail.com>
+References: <s5hhard23jb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E3132602C1
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 12:50:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1346917212-2824-1-git-send-email-gcembed@gmail.com>
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD4CA2602C1
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 13:47:17 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so670810qcs.38
+ for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2012 04:47:17 -0700 (PDT)
+In-Reply-To: <s5hhard23jb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,11 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Ga=EBtan?= Carlier <gcembed@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 06, 2012 at 09:40:12AM +0200, Ga=EBtan Carlier wrote:
-> This uses already defined name of registers and makes code more readable.
-
-Applied, thanks.
+MjAxMi05LTQg5LiL5Y2IMTE6NDcg5pa8ICJUYWthc2hpIEl3YWkiIDx0aXdhaUBzdXNlLmRlPiDl
+r6vpgZPvvJoKPgo+IEhpLAo+Cj4gbXkgcHJvcG9zYWwgZm9yIGNoYW5uZWwgbWFwcGluZyBBUEkg
+c2VlbXMgYWNjZXB0ZWQgZmFpcmx5IHdlbGwgdGhyb3VnaAo+IGRpc2N1c3Npb25zIGF0IFBsdW1i
+ZXJzLCBzbyBJIGNvbnRpbnVlZCB0byB3b3JrIG9uIGl0IGFuZCB1cGxvYWRlZCB0aGUKPiB1cGRh
+dGVkIHZlcnNpb24uCj4KPiBUaGUga2VybmVsIHBhcnQgaXMgZm91bmQgaW4gc291bmQtdW5zdGFi
+bGUgdHJlZSB0b3BpYy90bHYtY2htYXAgYnJhbmNoCj4gICBnaXQ6Ly9naXQua2VybmVsLm9yZy9w
+dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtdW5zdGFibGUuZ2l0Cj4KPiBhbmQg
+dGhlIGFsc2EtbGliIHBhcnQgaXMgZm91bmQgaW4gZ2l0aHViIHRyZWUgdG9waWMvY2htYXAgYnJh
+bmNoCj4gICBnaXQ6Ly9naXQuZ2l0aHViLmNvbS90aXdhaS9hbHNhLWxpYi5naXQKPgo+IFRoZSB1
+cGRhdGVkIHBhcnRzIGFyZToKPgo+IC0gU05EUlZfQ0hNQVBfTkEgd2FzIG5ld2x5IGFkZGVkLCBp
+bmRpY2F0aW5nIHRoZSBjaGFubmVsIGlzIG5vdAo+ICAgYXZhaWxhYmxlIG9yIHNpbGVudC4KPgo+
+IC0gVGhlIGNoYW5uZWwgcG9zaXRpb24gdmFsdWUgaXMgbWFza2VkIGluIGxvd2VyIDE2Yml0Lgo+
+ICAgVGhlIHVwcGVyIGJpdHMgYXJlIHVzZWQgZm9yIG1vcmUgY2hhbm5lbCBhdHRyaWJ1dGVzIGFz
+IGJpdCBmbGFncy4KPgo+ICAgI2RlZmluZSBTTkRSVl9DSE1BUF9QT1NJVElPTl9NQVNLICAgICAw
+eGZmZmYKPgo+ICAgVGhlIHBoYXNlIGludmVydGVkIGNoYW5uZWwgaGFzIHRoaXMgYml0Ogo+ICAg
+I2RlZmluZSBTTkRSVl9DSE1BUF9QSEFTRV9JTlZFUlNFICAgICAoMHgwMSA8PCAxNikKPgo+ICAg
+QW5kIHRoZSBkcml2ZXItc3BlY2lmaWMgbm9uLXN0YW5kYXJkIGNoYW5uZWwgcG9zaXRpb24gaGFz
+IHRoaXM6Cj4gICAjZGVmaW5lIFNORFJWX0NITUFQX0RSSVZFUl9TUEVDICAgICAgICgweDAyIDw8
+IDE2KQo+Cj4gLSBUaGUgYWxzYS1saWIgQVBJIGZ1bmN0aW9ucyB1c2Ugc25kX3BjbV9jaG1hcF9x
+dWVyeV90IGFuZAo+ICAgc25kX3BjbV9jaG1hcF90IGluc3RlYWQgb2YgYW1iaWd1b3VzIGludGVn
+ZXIgYXJyYXlzLgo+Cj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQo+IC8qKiB0aGUgY2hhbm5lbCBtYXAgaGVhZGVyICovCj4g
+dHlwZWRlZiBzdHJ1Y3Qgc25kX3BjbV9jaG1hcCB7Cj4gICAgICAgICB1bnNpZ25lZCBpbnQgY2hh
+bm5lbHM7Cj4gICAgICAgICB1bnNpZ25lZCBpbnQgcG9zWzBdOwo+IH0gc25kX3BjbV9jaG1hcF90
+Owo+Cj4gLyoqIHRoZSBoZWFkZXIgb2YgYXJyYXkgaXRlbXMgcmV0dXJuZWQgZnJvbSBzbmRfcGNt
+X3F1ZXJ5X2NobWFwcygpICovCj4gdHlwZWRlZiBzdHJ1Y3Qgc25kX3BjbV9jaG1hcF9xdWVyeSB7
+Cj4gICAgICAgICBlbnVtIHNuZF9wY21fY2htYXBfdHlwZSB0eXBlOwo+ICAgICAgICAgc25kX3Bj
+bV9jaG1hcF90IG1hcDsKPiB9IHNuZF9wY21fY2htYXBfcXVlcnlfdDsKPgo+Cj4gc25kX3BjbV9j
+aG1hcF9xdWVyeV90ICoqc25kX3BjbV9xdWVyeV9jaG1hcHMoc25kX3BjbV90ICpwY20pOwo+IHZv
+aWQgc25kX3BjbV9mcmVlX2NobWFwcyhzbmRfcGNtX2NobWFwX3F1ZXJ5X3QgKiptYXBzKTsKPiBz
+bmRfcGNtX2NobWFwX3QgKnNuZF9wY21fZ2V0X2NobWFwKHNuZF9wY21fdCAqcGNtKTsKPiBpbnQg
+c25kX3BjbV9zZXRfY2htYXAoc25kX3BjbV90ICpwY20sIGNvbnN0IHNuZF9wY21fY2htYXBfdCAq
+bWFwKTsKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09Cj4KPiBUaGUgcmVzdCBhcmVuJ3Qgc28gbXVjaCBjaGFuZ2VkLiAgT25s
+eSBzbGlnaHQgYnVnIGZpeGVzLgo+Cj4gQSBiaWcgcmVtYWluaW5nIHF1ZXN0aW9uIGlzIHdoZXRo
+ZXIgdGhlIGN1cnJlbnQga2VybmVsLXNpZGUKPiBpbXBsZW1lbnRhdGlvbiBpcyBPSy4gIFdlIG1h
+eSBhZGQgc29tZSBQQ00gb3BzIHBvaW50ZXIgaW5zdGVhZCBvZiB0aGUKPiBjdXJyZW50IHN0eWxl
+IHVzaW5nIHRoZSBkaXJlY3QgY29udHJvbCB0bHYvcmVhZC93cml0ZSBvdmVycmlkZS4KPiBCdXQg
+dGhlIGtlcm5lbC1zaWRlIEFQSSBjYW4gYmUgY2hhbmdlZCBldmVuIGxhdGVyLCBzbyBJIGRvbid0
+IHdvcnJ5Cj4gYWJvdXQgaXQgc28gbXVjaCBmb3Igbm93LCBhcyBsb25nIGFzIHdlIGNhbiBrZWVw
+IHRoZSBBQkkgZGVmaW5pdGlvbi4KPgo+CnNvbWUgaGRhIGNvZGVjIHN1cHBvcnQgQUNfV0NBUF9M
+Ul9TV0FQIChlLmcuIHRoZSAiU3dhcCBDZW50ZXIvTEZFIiBzd2l0Y2gpCgpnaXQua2VybmVsLm9y
+Zy8/cD1saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdDthPWNvbW1pdDtoPTBmYjg3YmI0
+NzRmOTc4NDQ2Nzg2MjYzZGVmZjYyNjMyODRlNmUwMTEKCmRvZXMgeW91ciBpbXBsZW1lbnRhdGlv
+biBoYXZlIHR3byBjaGFubmVsIG1hcHMgZm9yIHN1cnJvdW5kIDUuMSBmb3IgdGhlc2UKaWR0IGNv
+ZGVjcz8KCmhvdyBhYm91dCB0aGUgY2hhbm5hbCBtYXAgb2YgdGhvc2UgaW50ZXJuYWwgc3Vid29v
+ZmVyIG9mIG5vdGVib29rIGFuZCB0aG9zZQpleHRlcm5hbCBzdWJ3b29mZXIgKGUuZy4gc29uaWNt
+YXN0ZXIgc3Vid29vZmVyICkgIGFsYzY2MyB1c2luZyBhc3VzLW1vZGU0CgpodHRwczovL2J1Z3Mu
+bGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9hbHNhLWRyaXZlci8rYnVnLzg3MTgwOApfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
