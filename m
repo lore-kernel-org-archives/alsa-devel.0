@@ -1,19 +1,19 @@
-From: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
-Subject: Re: [PATCH 1/1] [ASoC] Fix v2: Revert 'ASoC: imx-ssi:
- Remove mono support'.
-Date: Thu, 06 Sep 2012 08:29:51 +0200
-Message-ID: <504842DF.3060503@gmail.com>
-References: <1346912753-2030-1-git-send-email-gcembed@gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: (no subject)
+Date: Thu, 06 Sep 2012 08:33:30 +0200
+Message-ID: <504843BA.2040808@gmail.com>
+References: <s5hmx1526mg.wl%tiwai@suse.de> <20120906060220.GA252@x4>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DF98264F53
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 08:30:49 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so472331eek.38
- for <alsa-devel@alsa-project.org>; Wed, 05 Sep 2012 23:30:49 -0700 (PDT)
-In-Reply-To: <1346912753-2030-1-git-send-email-gcembed@gmail.com>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBB2926537D
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 08:33:39 +0200 (CEST)
+Received: by bkuw5 with SMTP id w5so494918bku.38
+ for <alsa-devel@alsa-project.org>; Wed, 05 Sep 2012 23:33:39 -0700 (PDT)
+In-Reply-To: <20120906060220.GA252@x4>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Javier Martin <javier.martin@vista-silicon.com>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Markus Trippelsdorf <markus@trippelsdorf.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksClNvcnJ5IEkgbWlzc2VkIHRoZSBwYXRjaCBzZW5kIGJ5IEZhYmlvIGVhcmxpZXIuCklnbm9y
-ZSB0aGlzIG9uZS4KUmVnYXJkcywKR2HDq3RhbiBDYXJsaWVyLgoKT24gMDkvMDYvMjAxMiAwODoy
-NSBBTSwgR2HDq3RhbiBDYXJsaWVyIHdyb3RlOgo+IFdoZW4gcGF0Y2ggb2YgSmF2aWVyIE1hcnRp
-biBpcyBhcHBsaWVkIG9uIGxpbnV4LW5leHQtMjAxMjA4MjQKPiB0aGUgcGF0Y2ggZmFpbGVkIGJl
-Y2F1c2UgY29tbWVudCBsaW5lIGlzIG1pc3NpbmcuCj4KPiBTaWduZWQtb2ZmLWJ5OiBHYcOrdGFu
-IENhcmxpZXIgPGdjZW1iZWRAZ21haWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEphdmllciBNYXJ0
-aW4gPGphdmllci5tYXJ0aW5AdmlzdGEtc2lsaWNvbi5jb20+Cj4gLS0tCj4gICBzb3VuZC9zb2Mv
-ZnNsL2lteC1zc2kuYyB8ICAgIDUgKystLS0KPiAgIDEgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRp
-b25zKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvaW14
-LXNzaS5jIGIvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMKPiBpbmRleCA3MDc0YWU2Li4zYzUyMGM0
-IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jCj4gKysrIGIvc291bmQvc29j
-L2ZzbC9pbXgtc3NpLmMKPiBAQCAtMzgwLDE0ICszODAsMTMgQEAgc3RhdGljIGludCBpbXhfc3Np
-X2RhaV9wcm9iZShzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKPiAgIHN0YXRpYyBzdHJ1Y3Qgc25k
-X3NvY19kYWlfZHJpdmVyIGlteF9zc2lfZGFpID0gewo+ICAgCS5wcm9iZSA9IGlteF9zc2lfZGFp
-X3Byb2JlLAo+ICAgCS5wbGF5YmFjayA9IHsKPiAtCQkvKiBUaGUgU1NJIGRvZXMgbm90IHN1cHBv
-cnQgbW9uYXVyYWwgYXVkaW8uICovCj4gLQkJLmNoYW5uZWxzX21pbiA9IDIsCj4gKwkJLmNoYW5u
-ZWxzX21pbiA9IDEsCj4gICAJCS5jaGFubmVsc19tYXggPSAyLAo+ICAgCQkucmF0ZXMgPSBTTkRS
-Vl9QQ01fUkFURV84MDAwXzk2MDAwLAo+ICAgCQkuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRf
-UzE2X0xFLAo+ICAgCX0sCj4gICAJLmNhcHR1cmUgPSB7Cj4gLQkJLmNoYW5uZWxzX21pbiA9IDIs
-Cj4gKwkJLmNoYW5uZWxzX21pbiA9IDEsCj4gICAJCS5jaGFubmVsc19tYXggPSAyLAo+ICAgCQku
-cmF0ZXMgPSBTTkRSVl9QQ01fUkFURV84MDAwXzk2MDAwLAo+ICAgCQkuZm9ybWF0cyA9IFNORFJW
-X1BDTV9GTVRCSVRfUzE2X0xFLAo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+On 06.09.2012 08:02, Markus Trippelsdorf wrote:
+> On 2012.09.04 at 16:40 +0200, Takashi Iwai wrote:
+>> ----------------------------------------------------------------
+>> Sound fixes for 3.6-rc5
+>>
+>> There are nothing scaring, contains only small fixes for HD-audio and
+>> USB-audio:
+>> - EPSS regression fix and GPIO fix for HD-audio IDT codecs
+>> - A series of USB-audio regression fixes that are found since 3.5 kernel
+>>
+>> ----------------------------------------------------------------
+>> Daniel Mack (4):
+>>       ALSA: snd-usb: Fix URB cancellation at stream start
+>>       ALSA: snd-usb: restore delay information
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+> The commit fbcfbf5f above causes the following lines to be printed
+> whenever I start a new song:
+
+Copied Pierre-Louis Bossart - he wrote the code in 294c4fb8 which this
+patch (fbcfbf5f) brings back now.
+
+> delay: estimated 0, actual 352
+> delay: estimated 353, actual 705
+> 
+> (44.1 * 8 = 352.8)
+> 
+> This happens with an USB-DAC that identifies itself as "C-Media USB
+> Headphone Set".
+
+And you didn't you see these lines with 3.4?
+
+
+Daniel
