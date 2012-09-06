@@ -1,74 +1,64 @@
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH -next] soc: fix wm0010.c printk format warning
-Date: Thu, 6 Sep 2012 02:22:22 +0200
-Message-ID: <CA+icZUWKMrRoNL-vBpnAPPCdnJXRnOjJuQW9m7nJ3emjyOVOZQ@mail.gmail.com>
-References: <20120905161230.3bab1de6d4c8c8e466c3b0df@canb.auug.org.au>
-	<5047DF49.6070502@xenotime.net>
-	<20120906000612.GO10580@opensource.wolfsonmicro.com>
-	<5047EA1C.7080608@xenotime.net>
-Reply-To: sedat.dilek@gmail.com
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: Revert 'ASoC: imx-ssi: Remove mono
+	support'
+Date: Wed,  5 Sep 2012 21:30:10 -0300
+Message-ID: <1346891410-4379-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <5047EA1C.7080608@xenotime.net>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gh0-f179.google.com (mail-gh0-f179.google.com
+ [209.85.160.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53C77264F53
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2012 02:30:20 +0200 (CEST)
+Received: by ghbg2 with SMTP id g2so208861ghb.38
+ for <alsa-devel@alsa-project.org>; Wed, 05 Sep 2012 17:30:19 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, Javier Martin <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 6, 2012 at 2:11 AM, Randy Dunlap <rdunlap@xenotime.net> wrote:
-> On 09/05/2012 05:06 PM, Mark Brown wrote:
->
->> On Wed, Sep 05, 2012 at 04:24:57PM -0700, Randy Dunlap wrote:
->>> From: Randy Dunlap <rdunlap@xenotime.net>
->>>
->>> Fix printk format warning:
->>
->> Somone already sent this.  As ever please try to use subject lines
->> appropriate for the subsystem.  Please also consider who you're CCing -
->
->
-> Unfortunately the MAINTAINERS file does not tell me what to include
-> in the $subject line for the subsystem.
-> What would you like to see there, please?  Maybe ASoC?
->
+From: Javier Martin <javier.martin@vista-silicon.com>
 
-git log --oneline sound/soc/codecs/wm0010.c
+Revert 0865a75(ASoC: imx-ssi: Remove mono support).
 
-Label looks like "ASoC: wm0010:"... (ASoC kills my shift key, I would
-like to see all labels lower-case).
+The bug this patch is meant to solve doesn't occur in Visstrim_M10 boards.
+Furthermore, after applying this patch sound in Visstrim_M10 is played
+at slower rates.
 
->> there's no need to copy -next on things like this which aren't
->
->
-> I have always done a reply-to-all for linux-next patches, so after
-> a few years someone days Don't Do That (IYO).
->
+Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+---
+ sound/soc/fsl/imx-ssi.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Then maintainers should check compiler-warnings in their area - regularly?
-
-$ grep warning: v3.6.0-rc4-next20120905-1-iniza-generic/deb-pkg.log |
-grep 'sound/soc' | wc -l
-10
-
-I agree that breakage and regressions should be dealt with higher
-priority... Such patches like this should be welcome, anyway.
-
->> integration issues for example, if we start doing that then it'd get
->> drowned in noise from all the development.
->
->
-> Agreed, many of us are already drowning from 1000+ emails per day.
-> (seriously)
->
-
-Spam will one day eliminate Email, it's perverted.
-
-- Sedat -
-
-> --
-> ~Randy
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-next" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index 7074ae6..3c520c4 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -380,14 +380,13 @@ static int imx_ssi_dai_probe(struct snd_soc_dai *dai)
+ static struct snd_soc_dai_driver imx_ssi_dai = {
+ 	.probe = imx_ssi_dai_probe,
+ 	.playback = {
+-		/* The SSI does not support monaural audio. */
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_96000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.capture = {
+-		.channels_min = 2,
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_96000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-- 
+1.7.9.5
