@@ -1,16 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA release cycle
-Date: Fri, 07 Sep 2012 14:53:30 +0200
-Message-ID: <5049EE4A.4090704@perex.cz>
-References: <5049DCA4.6000607@canonical.com>
+From: "Merx, Thomas" <thomas.merx@intel.com>
+Subject: [alsa-jack-plugin] Feedback to modification proposal
+Date: Fri, 7 Sep 2012 13:00:59 +0000
+Message-ID: <D2B94D961C99E941B2B362FCFFEC367119BD3249@IRSMSX103.ger.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id AD6ED2616B5
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 14:53:30 +0200 (CEST)
-In-Reply-To: <5049DCA4.6000607@canonical.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3259D2616D6
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 15:01:07 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +19,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Date 7.9.2012 13:38, David Henningsson wrote:
-> Hi,
-> 
-> At Plumber's we discussed the ALSA release cycle. Our releases recently 
-> have been irregular, and the reasoning behind why a release was done at 
-> that time, has not been very obvious.
+Hello all,
 
-It is not. I depends mostly on my free time to do so.
+I would like to get some feedback here from you experts on the alsa-jack-plugin. In my project there is a jack-plugin that provides several jack input ports were different streams from different source applications shall be connectable. The source applications would provide the audio samples to jack via the alsa-jack-plugin. On top of that there is a control layer that has to connect the jack output ports of the alsa-jack-plugin with the input ports of my jack-plugin. The API of the control layer simply uses an ID for the source and an ID for the sink to know which jack output ports have to be connected to which input ports. The challenge I'm now facing is that the full name of the jack ports registered by the alsa-jack-plugin are changing from startup to startup because they include the p
+ rocess id of the playback application. Considering the case that there could be two instances of the same application and each of them providing a playback stream via the alsa-jack-plugin, it is cha
+ llenging for the control layer to choose the correct stream for connecting it to my jack-plugin. So my main problem is that I cannot associate the IDs used for the control layer with the jack port names automatically created by the alsa-jack-plugin.
+A possible solution to my problem could be to add an additional entry in the asound.conf section where the jack plugin is defined to provide a name which shall be chosen as a prefix for the full jack port name, instead of the default naming scheme currently chosen. To have it backward compatible it could be implemented in a way that if the entry in the asound.conf is missing the current naming scheme is chosen and only if the new entry is set it will be used for the name to be registered at the jack server. What do you think about that? Does it make sense to have that functionality? 
 
-> IIRC, we kind of leaned towards releasing every six months. I don't 
-> remember if there was any consensus about whether to try to align this 
-> cycle to something else (e g Gnome, KDE, Fedora, Ubuntu, etc), or not.
-
-I would prefer to keep the releases on demand. If you look to the 25->26
-user space changes, there are just few of them. Now, when the API will
-be enhanced, I will do more releases.
-
-For the driver stuff, we can talk what's best to do. The correlation
-with the kernel releases are mostly only by the release date, but the
-driver repositories contains the latest code (which is more related to
-the linux-next tree than the stable linux trees). The alsa-lib tries to
-be compatible with all previous code using the kernel<->user space API
-versioning, so there is no potential problem in this area.
-
-Because the most of changes are in the drivers now, I'm thinking to do
-more driver releases (probably using the fourth version number) between
-the standard releases of all packages. But I'm not sure if it's worth to
-do these releases, because the tar-balls with the actual code for all
-packages are available immediately
-(http://www.alsa-project.org/snapshot/). Users have a way to get the
-latest code. I see only issues with the kernel interface changes - it
-may make the driver code non-compilable on older kernels. Actually, I'm
-trying to create a self-testing framework which will be triggered after
-each repo commit and it will notify developers to the alsa-devel list
-that the alsa-driver repository is broken for some kernels.
-
-> We also said that we should discuss this on the mailinglist as the ALSA 
-> release manager (Jaroslav Kysela) was not present during Plumber's. So 
-> this effectively is a mail to kick off that discussion. Any opinions?
-> 
-> Also, as a side note (or perhaps proof of the problem!), it seems ALSA 
-> 1.0.26 was just released without even a notification on this mailinglist...?
-
-I'm sorry, I was testing the packages in the Fedora build system. I
-found some issues with the alsa-tools package (missing header files for
-hdajackretast in the tar-ball) yesterday and I was able to finish my
-tests today. I postponed the e-mail notification for this reason.
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Best regards
+Thomas
+Intel GmbH
+Dornacher Strasse 1
+85622 Feldkirchen/Muenchen, Deutschland
+Sitz der Gesellschaft: Feldkirchen bei Muenchen
+Geschaeftsfuehrer: Peter Gleissner, Christian Lamprechter, Hannes Schwaderer, Douglas Lusk
+Registergericht: Muenchen HRB 47456
+Ust.-IdNr./VAT Registration No.: DE129385895
+Citibank Frankfurt a.M. (BLZ 502 109 00) 600119052
