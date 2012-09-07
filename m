@@ -1,20 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/4] ASoC: dapm: Add flags to regulator
-	supplies
-Date: Fri, 07 Sep 2012 16:04:23 +0100
-Message-ID: <1347030263.4625.1.camel@odin>
-References: <1346994116-17873-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: [PATCH] ALSA: hda - Remove ignore_misc_bit
+Date: Fri, 07 Sep 2012 18:39:15 +0300
+Message-ID: <1347032355.8883.4.camel@laptop>
+References: <1346995544-6754-1-git-send-email-david.henningsson@canonical.com>
+ <s5hligmw3s0.wl%tiwai@suse.de> <5049D9EB.5070301@canonical.com>
+ <s5h8vcmvy9s.wl%tiwai@suse.de> <5049E5F6.8010007@canonical.com>
+ <s5h1uievwk6.wl%tiwai@suse.de> <5049ECD4.2040501@canonical.com>
+ <s5hwr06ugi4.wl%tiwai@suse.de> <504A0483.3050807@canonical.com>
+ <s5hipbpvr7u.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
- [74.125.149.246])
- by alsa0.perex.cz (Postfix) with ESMTP id AEEBE26171E
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 17:04:27 +0200 (CEST)
-Received: by wibhm2 with SMTP id hm2so678425wib.2
- for <alsa-devel@alsa-project.org>; Fri, 07 Sep 2012 08:04:25 -0700 (PDT)
-In-Reply-To: <1346994116-17873-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 15871261739
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 17:39:19 +0200 (CEST)
+In-Reply-To: <s5hipbpvr7u.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,15 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, 939161@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2012-09-07 at 13:01 +0800, Mark Brown wrote:
-> This will be used to enable additional control of the regulators.
+On Fri, 2012-09-07 at 16:32 +0200, Takashi Iwai wrote:
+> > Hmm, I'm afraid it's not so easy to turn off PulseAudio's jack detection 
+> > without being root. Maybe it's possible using some .asoundrc magic?
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> That's bad.  asoundrc is equally cryptic like udev rules :)
+> 
+> Honestly, can't the whole /usr/share/pulseaudio/* files be specified
+> via an environment variable, or automatically looking at
+> ~/.pulse/alsa-mixer/paths/* or such?
 
-All
+FWIW, I'm in favor of looking at the home directory...
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+-- 
+Tanu
