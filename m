@@ -1,19 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Remove ignore_misc_bit
-Date: Fri, 07 Sep 2012 14:17:58 +0200
-Message-ID: <5049E5F6.8010007@canonical.com>
-References: <1346995544-6754-1-git-send-email-david.henningsson@canonical.com>
- <s5hligmw3s0.wl%tiwai@suse.de> <5049D9EB.5070301@canonical.com>
- <s5h8vcmvy9s.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA package release v1.0.26 (user space)
+Date: Fri, 07 Sep 2012 14:19:17 +0200
+Message-ID: <5049E645.2000101@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 55D072616CE
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 14:17:59 +0200 (CEST)
-In-Reply-To: <s5h8vcmvy9s.wl%tiwai@suse.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C8572616CE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 14:19:18 +0200 (CEST)
+Received: from server.perex.cz (unknown [172.16.0.20])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 6C372149923
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 14:19:18 +0200 (CEST)
+Received: from t510.perex-int.cz (localhost [127.0.0.1])
+ by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id 43A1D844D9
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 14:19:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,65 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, 939161@bugs.launchpad.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/07/2012 01:59 PM, Takashi Iwai wrote:
-> At Fri, 07 Sep 2012 13:26:35 +0200,
-> David Henningsson wrote:
->>
->> On 09/07/2012 12:01 PM, Takashi Iwai wrote:
->>> At Fri,  7 Sep 2012 07:25:44 +0200,
->>> David Henningsson wrote:
->>>>
->>>> The purpose of this flag is unclear. If the problem is that some machines
->>>> have broken misc/NO_PRESENCE bits, they should be fixed by pin fixups.
->>>>
->>>> In addition, this causes jack detection functionality to be flawed on
->>>> the M31EI, where there are two jacks without jack detection (which is
->>>> properly marked as NO_PRESENCE), but due to ignore_misc_bit, these
->>>> jacks are instead being reported as being present but always unplugged.
->>>>
->>>> BugLink: https://bugs.launchpad.net/bugs/939161
->>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>>
->>> So this will fix this one case but will break some others certainly.
->>> It's a difficult to judge, but more removal is better, so I'll take
->>> this.
->>
->> Ok. Do you have a sense for how many machines that will regress due to
->> this patch? If it is common to set all pins to the wrong value, maybe
->> its the M31EI that is the exception.
->
-> Maybe a few Acer and ASUS ones with old codecs.
-> Possibly some desktops with unknown mobos might hit, but that's not
-> what I do care so much for now.
+Hello all,
 
-Hrm, ok. I still don't like the idea of regressing machines...maybe this 
-patch needs further research.
+	I would like to notify you, that ALSA packages version 1.0.26 are
+available for download:
 
->>> But I still wonder why PulseAudio cares the headphone jack state even
->>> though this has only one output at all?
->>
->> When seeing the system as a whole, there can be other outputs on other
->> cards - HDMI, USB etc. If somebody e g plugs a USB headset in it will be
->> simpler for the user if PulseAudio does not also show the unplugged 3.5
->> mm jack.
->
-> OK, but masking it out unconditionally isn't always nice.  There are
-> always corner cases...
+ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.26.tar.bz2
+ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.26.tar.bz2
+ftp://ftp.alsa-project.org/pub/tools/alsa-tools-1.0.26.1.tar.bz2
+ftp://ftp.alsa-project.org/pub/plugins/alsa-plugins-1.0.26.tar.bz2
+ftp://ftp.alsa-project.org/pub/pyalsa/pyalsa-1.0.26.tar.bz2
 
-Not sure what corner case you mean here, but if you like, you can 
-configure this behaviour in 
-/usr/share/pulseaudio/alsa-mixer/paths/analog-output-headphones.conf, 
-causing the jack detection to be ignored if you prefer. And you can 
-quirk a specific machine to use another .conf file based on udev rules.
+	The alsa-firmware and alsa-oss packages have no changes and they were
+not released this time.
 
-Or is the corner case that ALSA don't give the correct jack detection 
-value? If so I prefer it to be fixed in ALSA ;-)
+	The changelog is available at this URL:
 
+http://www.alsa-project.org/main/index.php/Changes_v1.0.25_v1.0.26
+
+	The alsa-driver package will be released in next weeks once the driver
+repository with the build code and the mirrored kernel code will be
+reorganized to be more "GIT pull" friendly for those using the whole
+kernel tree as the development platform.
+
+					Jaroslav
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
