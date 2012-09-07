@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH 01/11] ALSA: implement
-	MEDIA_IOC_DEVICE_INFO
-Date: Fri, 7 Sep 2012 10:13:10 +0800
-Message-ID: <20120907021309.GD6827@opensource.wolfsonmicro.com>
-References: <503BF48E.1090100@ladisch.de>
- <503BF4CD.6000207@ladisch.de>
+Subject: [PATCH 4/4] ASoC: wm5110: Enable bypass mode for MICVDD
+Date: Fri,  7 Sep 2012 13:01:56 +0800
+Message-ID: <1346994116-17873-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1346994116-17873-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 083EB261672
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 04:21:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <503BF4CD.6000207@ladisch.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 71D3326036E
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2012 07:02:17 +0200 (CEST)
+In-Reply-To: <1346994116-17873-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 28, 2012 at 12:29:33AM +0200, Clemens Ladisch wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5110.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +config SND_MEDIA
-> +	bool "Media Controller API (EXPERIMENTAL)"
-> +	depends on EXPERIMENTAL
-> +	help
-> +	  Say Y here to enable the media controller API, which allows to
-> +	  retrieve the internal topology of sound devices.
-
-I think there's a general consensus these days that EXPERIMENTAL is
-pretty meaningless so we probably shouldn't bother with it.  The text is
-also a bit confusing, it enables use of the media controller API for
-ALSA devices really.
-
-I have to say I'm also a bit surprised that there's no core framework
-for media controller and we're open coding ioctl() implementations here,
-I'd have thought there would at least be a way of enumerating all media
-controller devices in the system...
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index e7f8d17..acd30f4 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -362,7 +362,7 @@ SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", ARIZONA_OUTPUT_ASYNC_CLOCK,
+ SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD2", 0, 0),
+ SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD3", 0, 0),
+ SND_SOC_DAPM_REGULATOR_SUPPLY("CPVDD", 20, 0),
+-SND_SOC_DAPM_REGULATOR_SUPPLY("MICVDD", 0, 0),
++SND_SOC_DAPM_REGULATOR_SUPPLY("MICVDD", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
+ SND_SOC_DAPM_REGULATOR_SUPPLY("SPKVDDL", 0, 0),
+ SND_SOC_DAPM_REGULATOR_SUPPLY("SPKVDDR", 0, 0),
+ 
+-- 
+1.7.10.4
