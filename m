@@ -1,15 +1,11 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: snd-intel-hda: screaming IRQ with 3.5.3 kernel (HDMI)
-Date: Sat, 08 Sep 2012 14:59:09 +0100
-Message-ID: <504B4F2D.40002@yahoo.com>
+From: sgiurgiu11@gmail.com
+Subject: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
+Date: Sat,  8 Sep 2012 15:09:59 -0400
+Message-ID: <504b9831.aac4320a.1f39.ffff8a9f@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm17-vm0.bullet.mail.ird.yahoo.com
- (nm17-vm0.bullet.mail.ird.yahoo.com [77.238.189.214])
- by alsa0.perex.cz (Postfix) with SMTP id 6CE4E2625D4
- for <alsa-devel@alsa-project.org>; Sat,  8 Sep 2012 15:59:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,99 +15,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Sergiu Giurgiu <sgiurgiu11@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Sergiu Giurgiu <sgiurgiu11@gmail.com>
 
-I have recently added a Radeon HD4670 to one of my older PCs, and have noticed 
-that it has IRQ trouble when I try to enable the HDMI audio:
 
-irq 17: nobody cared (try booting with the "irqpoll" option)
-Pid: 0, comm: swapper/0 Not tainted 3.5.3 #2
-Call Trace:
-  [<c1063806>] ? __report_bad_irq+0x11/0x94
-  [<c1063a2d>] ? note_interrupt+0x120/0x19b
-  [<c1062325>] ? handle_irq_event_percpu+0xe8/0xfb
-  [<c1062361>] ? handle_irq_event+0x29/0x40
-  [<c10640fc>] ? handle_level_irq+0x93/0x93
-  [<c1064163>] ? handle_fasteoi_irq+0x67/0x90
-  <IRQ>  [<c1003625>] ? do_IRQ+0x2e/0x83
-  [<c1229829>] ? common_interrupt+0x29/0x30
-  [<c106007b>] ? audit_update_watch+0x59/0x285
-  [<c1007479>] ? default_idle+0x23/0x3b
-  [<c1007b38>] ? cpu_idle+0x4b/0x7e
-  [<c1314877>] ? start_kernel+0x2a4/0x2a7
-handlers:
-[<f8c97b75>] azx_interrupt [snd_hda_intel]
-Disabling IRQ #17
+Signed-off-by: Sergiu Giurgiu <sgiurgiu11@gmail.com>
 
-This is frequently followed by KMS trouble too:
-
-irq 16: nobody cared (try booting with the "irqpoll" option)
-Pid: 0, comm: swapper/0 Not tainted 3.5.3 #2
-Call Trace:
-  [<c1063806>] ? __report_bad_irq+0x11/0x94
-  [<c1063a2d>] ? note_interrupt+0x120/0x19b
-  [<c1062325>] ? handle_irq_event_percpu+0xe8/0xfb
-  [<c1062361>] ? handle_irq_event+0x29/0x40
-  [<c10640fc>] ? handle_level_irq+0x93/0x93
-  [<c1064163>] ? handle_fasteoi_irq+0x67/0x90
-  <IRQ>  [<c1003625>] ? do_IRQ+0x2e/0x83
-  [<c1229829>] ? common_interrupt+0x29/0x30
-  [<c106007b>] ? audit_update_watch+0x59/0x285
-  [<c1007479>] ? default_idle+0x23/0x3b
-  [<c1007b38>] ? cpu_idle+0x4b/0x7e
-  [<c1314877>] ? start_kernel+0x2a4/0x2a7
-handlers:
-[<f818bfb3>] radeon_driver_irq_handler_kms [radeon]
-[<f81fe55f>] usb_hcd_irq [usbcore]
-Disabling IRQ #16
-
-The PCI entries are:
-
-01:00.1 Audio device: ATI Technologies Inc RV710/730
-         Subsystem: ATI Technologies Inc RV710/730
-         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR- FastB2B- DisINTx-
-         Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-         Latency: 64 (2000ns min), Cache Line Size: 64 bytes
-         Interrupt: pin B routed to IRQ 17
-         Region 0: Memory at ff8ec000 (32-bit, non-prefetchable) [size=16K]
-         Capabilities: [50] Power Management version 3
-                 Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-         Kernel driver in use: snd_hda_intel
-
-and:
-
-01:00.0 VGA compatible controller: ATI Technologies Inc RV730 Pro AGP [Radeon HD 
-4600 Series] (prog-if 00 [VGA controller])
-         Subsystem: ATI Technologies Inc Device 0028
-         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR+ FastB2B- DisINTx-
-         Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR- INTx+
-         Latency: 64 (2000ns min), Cache Line Size: 64 bytes
-         Interrupt: pin A routed to IRQ 16
-         Region 0: Memory at e0000000 (32-bit, prefetchable) [size=256M]
-         Region 1: I/O ports at ec00 [size=256]
-         Region 2: Memory at ff8f0000 (32-bit, non-prefetchable) [size=64K]
-         Expansion ROM at ff800000 [disabled] [size=128K]
-         Capabilities: [50] Power Management version 3
-                 Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-         Capabilities: [58] AGP version 3.0
-                 Status: RQ=256 Iso- ArqSz=0 Cal=0 SBA+ ITACoh- GART64- HTrans- 
-64bit- FW+ AGP3+ Rate=x4,x8
-                 Command: RQ=32 ArqSz=2 Cal=0 SBA+ AGP+ GART64- 64bit- FW- Rate=x8
-         Kernel driver in use: radeon
-
-Does anyone have any suggestions, please?
-
-Thanks,
-Chris
+diff --git a/mirror/sound/pci/oxygen/virtuoso.c b/mirror/sound/pci/oxygen/virtuoso.c
+index 3d71423..8104eab 100644
+--- a/mirror/sound/pci/oxygen/virtuoso.c
++++ b/mirror/sound/pci/oxygen/virtuoso.c
+@@ -52,6 +52,7 @@ static DEFINE_PCI_DEVICE_TABLE(xonar_ids) = {
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x835d) },
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x835e) },
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x838e) },
++	{ OXYGEN_PCI_SUBID(0x1043, 0x8522) },
+ 	{ OXYGEN_PCI_SUBID_BROKEN_EEPROM },
+ 	{ }
+ };
+diff --git a/mirror/sound/pci/oxygen/xonar_wm87x6.c b/mirror/sound/pci/oxygen/xonar_wm87x6.c
+index 63cff90..af91016 100644
+--- a/mirror/sound/pci/oxygen/xonar_wm87x6.c
++++ b/mirror/sound/pci/oxygen/xonar_wm87x6.c
+@@ -1321,6 +1321,40 @@ static const struct oxygen_model model_xonar_hdav_slim = {
+ 	.adc_i2s_format = OXYGEN_I2S_FORMAT_LJUST,
+ };
+ 
++static const struct oxygen_model model_xonar_dsx = {
++	.shortname = "Xonar DSX",
++	.longname = "Asus Virtuoso 66",
++	.chip = "AV200",
++	.init = xonar_ds_init,
++	.mixer_init = xonar_ds_mixer_init,
++	.cleanup = xonar_ds_cleanup,
++	.suspend = xonar_ds_suspend,
++	.resume = xonar_ds_resume,
++	.pcm_hardware_filter = wm8776_adc_hardware_filter,
++	.set_dac_params = set_wm87x6_dac_params,
++	.set_adc_params = set_wm8776_adc_params,
++	.update_dac_volume = update_wm87x6_volume,
++	.update_dac_mute = update_wm87x6_mute,
++	.update_center_lfe_mix = update_wm8766_center_lfe_mix,
++	.gpio_changed = xonar_ds_gpio_changed,
++	.dump_registers = dump_wm87x6_registers,
++	.dac_tlv = wm87x6_dac_db_scale,
++	.model_data_size = sizeof(struct xonar_wm87x6),
++	.device_config = PLAYBACK_0_TO_I2S |
++			 PLAYBACK_1_TO_SPDIF |
++			 CAPTURE_0_FROM_I2S_1 |
++			 CAPTURE_1_FROM_SPDIF,
++	.dac_channels_pcm = 8,
++	.dac_channels_mixer = 8,
++	.dac_volume_min = 255 - 2*60,
++	.dac_volume_max = 255,
++	.function_flags = OXYGEN_FUNCTION_SPI,
++	.dac_mclks = OXYGEN_MCLKS(256, 256, 128),
++	.adc_mclks = OXYGEN_MCLKS(256, 256, 128),
++	.dac_i2s_format = OXYGEN_I2S_FORMAT_LJUST,
++	.adc_i2s_format = OXYGEN_I2S_FORMAT_LJUST,
++};
++
+ int __devinit get_xonar_wm87x6_model(struct oxygen *chip,
+ 				     const struct pci_device_id *id)
+ {
+@@ -1331,6 +1365,9 @@ int __devinit get_xonar_wm87x6_model(struct oxygen *chip,
+ 	case 0x835e:
+ 		chip->model = model_xonar_hdav_slim;
+ 		break;
++	case 0x8522:
++		chip->model = model_xonar_dsx;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+1.7.10.4
