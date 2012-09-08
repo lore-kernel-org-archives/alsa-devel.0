@@ -1,19 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: UAC2 clock selector for AudioBox 1818VSL
-Date: Sat, 08 Sep 2012 14:24:13 +0200
-Message-ID: <504B38ED.2070904@gmail.com>
-References: <76bd1b6473c857ddd3160280e278e4fb.squirrel@master.museresearch.com>
- <50490D2D.3060207@gmail.com>
- <192dce6984143a00813e593a60c5a5f4.squirrel@master.museresearch.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: snd-intel-hda: screaming IRQ with 3.5.3 kernel (HDMI)
+Date: Sat, 08 Sep 2012 14:59:09 +0100
+Message-ID: <504B4F2D.40002@yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030008000200050606010304"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id AF51026086D
- for <alsa-devel@alsa-project.org>; Sat,  8 Sep 2012 14:24:20 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so321339wgb.20
- for <alsa-devel@alsa-project.org>; Sat, 08 Sep 2012 05:24:20 -0700 (PDT)
-In-Reply-To: <192dce6984143a00813e593a60c5a5f4.squirrel@master.museresearch.com>
+Received: from nm17-vm0.bullet.mail.ird.yahoo.com
+ (nm17-vm0.bullet.mail.ird.yahoo.com [77.238.189.214])
+ by alsa0.perex.cz (Postfix) with SMTP id 6CE4E2625D4
+ for <alsa-devel@alsa-project.org>; Sat,  8 Sep 2012 15:59:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,96 +19,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: louis@museresearch.com
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030008000200050606010304
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi,
 
-On 07.09.2012 19:57, louis@museresearch.com wrote:
-> Hi Daniel,
->   Thanks for the quick reply. I am able to set the clock on my Mac, though
-> I do need to do further tests and make sure that the sync is actually
-> reliable there. The setting is available from the built-in, standard OS
-> X audio setup application "Audio MIDI Setup".
-> 
-> There should be a S/PDIF clock signal going to the digital inputs on the
-> device. Some of the other controls such as per-channel mute also appear to
-> work. I've also attached the lsusb output.
-> 
-> There are some other details that may be relevant, but I didn't want to
-> make my initial post too long/confusing because these extra details may
-> end up just being a red herring: Each mixer element name (as seen in
-> amixer) is prefixed with "AudioBox 1818 VSL Clock Selector" even if it is
-> not a clock selector.
+I have recently added a Radeon HD4670 to one of my older PCs, and have noticed 
+that it has IRQ trouble when I try to enable the HDMI audio:
 
-That strange but I believe not related. We should still fix that :)
+irq 17: nobody cared (try booting with the "irqpoll" option)
+Pid: 0, comm: swapper/0 Not tainted 3.5.3 #2
+Call Trace:
+  [<c1063806>] ? __report_bad_irq+0x11/0x94
+  [<c1063a2d>] ? note_interrupt+0x120/0x19b
+  [<c1062325>] ? handle_irq_event_percpu+0xe8/0xfb
+  [<c1062361>] ? handle_irq_event+0x29/0x40
+  [<c10640fc>] ? handle_level_irq+0x93/0x93
+  [<c1064163>] ? handle_fasteoi_irq+0x67/0x90
+  <IRQ>  [<c1003625>] ? do_IRQ+0x2e/0x83
+  [<c1229829>] ? common_interrupt+0x29/0x30
+  [<c106007b>] ? audit_update_watch+0x59/0x285
+  [<c1007479>] ? default_idle+0x23/0x3b
+  [<c1007b38>] ? cpu_idle+0x4b/0x7e
+  [<c1314877>] ? start_kernel+0x2a4/0x2a7
+handlers:
+[<f8c97b75>] azx_interrupt [snd_hda_intel]
+Disabling IRQ #17
 
-> I am confident though that the control I've been
-> playing with is the clock selector because it lists the different clock
-> types as options. I also see this when I plug the device in or load the
-> ALSA driver:
-> 
-> ALSA sound/usb/mixer.c:342 cannot get ctl value: req = 0x83, wValue =
-> 0x201, wIndex = 0xa00, type = 4
-> ALSA sound/usb/mixer.c:846 10:0: cannot get min/max values for control 2
-> (id 10)
-> ALSA sound/usb/mixer.c:342 cannot get ctl value: req = 0x83, wValue =
-> 0x200, wIndex = 0xa00, type = 4
-> ALSA sound/usb/mixer.c:846 10:0: cannot get min/max values for control 2
-> (id 10)
-> ALSA sound/usb/mixer.c:342 cannot get ctl value: req = 0x83, wValue =
-> 0x201, wIndex = 0xb00, type = 4
-> ALSA sound/usb/mixer.c:846 11:0: cannot get min/max values for control 2
-> (id 11)
-> ALSA sound/usb/mixer.c:342 cannot get ctl value: req = 0x83, wValue =
-> 0x200, wIndex = 0xb00, type = 4
-> ALSA sound/usb/mixer.c:846 11:0: cannot get min/max values for control 2
-> (id 11)
+This is frequently followed by KMS trouble too:
 
-Do you see any messages when you try to set the clock selector with amixer?
+irq 16: nobody cared (try booting with the "irqpoll" option)
+Pid: 0, comm: swapper/0 Not tainted 3.5.3 #2
+Call Trace:
+  [<c1063806>] ? __report_bad_irq+0x11/0x94
+  [<c1063a2d>] ? note_interrupt+0x120/0x19b
+  [<c1062325>] ? handle_irq_event_percpu+0xe8/0xfb
+  [<c1062361>] ? handle_irq_event+0x29/0x40
+  [<c10640fc>] ? handle_level_irq+0x93/0x93
+  [<c1064163>] ? handle_fasteoi_irq+0x67/0x90
+  <IRQ>  [<c1003625>] ? do_IRQ+0x2e/0x83
+  [<c1229829>] ? common_interrupt+0x29/0x30
+  [<c106007b>] ? audit_update_watch+0x59/0x285
+  [<c1007479>] ? default_idle+0x23/0x3b
+  [<c1007b38>] ? cpu_idle+0x4b/0x7e
+  [<c1314877>] ? start_kernel+0x2a4/0x2a7
+handlers:
+[<f818bfb3>] radeon_driver_irq_handler_kms [radeon]
+[<f81fe55f>] usb_hcd_irq [usbcore]
+Disabling IRQ #16
 
-If you're running a recent kernel, try the following patch. That will
-produce log messages for each mixer related control packet that is sent
-out to the device.
+The PCI entries are:
 
+01:00.1 Audio device: ATI Technologies Inc RV710/730
+         Subsystem: ATI Technologies Inc RV710/730
+         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
+Stepping- SERR- FastB2B- DisINTx-
+         Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+         Latency: 64 (2000ns min), Cache Line Size: 64 bytes
+         Interrupt: pin B routed to IRQ 17
+         Region 0: Memory at ff8ec000 (32-bit, non-prefetchable) [size=16K]
+         Capabilities: [50] Power Management version 3
+                 Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+         Kernel driver in use: snd_hda_intel
+
+and:
+
+01:00.0 VGA compatible controller: ATI Technologies Inc RV730 Pro AGP [Radeon HD 
+4600 Series] (prog-if 00 [VGA controller])
+         Subsystem: ATI Technologies Inc Device 0028
+         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
+Stepping- SERR+ FastB2B- DisINTx-
+         Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR- INTx+
+         Latency: 64 (2000ns min), Cache Line Size: 64 bytes
+         Interrupt: pin A routed to IRQ 16
+         Region 0: Memory at e0000000 (32-bit, prefetchable) [size=256M]
+         Region 1: I/O ports at ec00 [size=256]
+         Region 2: Memory at ff8f0000 (32-bit, non-prefetchable) [size=64K]
+         Expansion ROM at ff800000 [disabled] [size=128K]
+         Capabilities: [50] Power Management version 3
+                 Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+         Capabilities: [58] AGP version 3.0
+                 Status: RQ=256 Iso- ArqSz=0 Cal=0 SBA+ ITACoh- GART64- HTrans- 
+64bit- FW+ AGP3+ Rate=x4,x8
+                 Command: RQ=32 ArqSz=2 Cal=0 SBA+ AGP+ GART64- 64bit- FW- Rate=x8
+         Kernel driver in use: radeon
+
+Does anyone have any suggestions, please?
 
 Thanks,
-Daniel
-
-
-
-
---------------030008000200050606010304
-Content-Type: text/x-patch;
- name="mixer-debug.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="mixer-debug.diff"
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 4f40ba8..fce9b88 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -446,6 +446,9 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
- 				    validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
- 				    buf, val_len) >= 0) {
-+			snd_printk(" DEBUG: %s(): request %08x requesttype %08x, value %04x, index %04x, size %d\n",
-+					__func__, request, USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-+					validx, snd_usb_ctrl_intf(chip) | (cval->id << 8), val_len);
- 			snd_usb_autosuspend(chip);
- 			return 0;
- 		}
-
---------------030008000200050606010304
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------030008000200050606010304--
+Chris
