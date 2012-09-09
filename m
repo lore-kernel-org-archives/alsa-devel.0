@@ -1,11 +1,18 @@
-From: sgiurgiu11@gmail.com
-Subject: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
-Date: Sun,  9 Sep 2012 05:14:15 -0400
-Message-ID: <504c9632.8697320a.1336.4b37@mx.google.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC update 0/2] dmaengine/ASoC: omap: Enable
+	element mode in cyclic DMA
+Date: Sun, 09 Sep 2012 21:57:15 +0200
+Message-ID: <1402174.PkzhGH5Vno@acer>
+References: <E1T8a09-0002vz-Bl@rmk-PC.arm.linux.org.uk>
+ <1346760482-12794-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D8F8264ECA
+ for <alsa-devel@alsa-project.org>; Sun,  9 Sep 2012 21:59:07 +0200 (CEST)
+In-Reply-To: <1346760482-12794-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -15,61 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Sergiu Giurgiu <sgiurgiu11@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, linux-arm-kernel@lists.infradead.org, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sergiu Giurgiu <sgiurgiu11@gmail.com>
+On Tue, 4 Sep 2012 15:08:00 Peter Ujfalusi wrote:
+> 
+> Enable the element mode (thus allowing mono playback and probably 
+unblocking
+> OMAP1, OMAP2420) in OMAP dmaengine and omap-pcm.
+> 
+> Janusz: would it be possible for you to test Russell's series plus 
+this on
+> OMAP1 to make sure that we do not broke it?
 
-This patch adds support for ASUS - Xonar DSX sound cards. Tested on openSUSE 12.2 with kernel:
-Linux 3.4.6-2.10-desktop #1 SMP PREEMPT Thu Jul 26 09:36:26 UTC 2012 (641c197) x86_64 x86_64 x86_64 GNU/Linux
-Works:
- - play sounds
- - adjust volume on master channel.
- - mute .
+Hi,
+I can confirm that sound works for me as before, both capture and 
+playback, on my OMAP1 Amstrad Delta with Russell's and Peter's patches 
+applied on top of linux-3.6-rc3, with the OMAP DMA engine driver built 
+in. I was not able make audible tests with applications other than a 
+soft phone as I didn't get back home for this weekend, but I think that 
+the asterisk soft phone is quite a demanding use case.
 
-Since Xonar DS uses the same chip, everything that works for DS should work for DSX as well.
+The only thing I'm not sure about is why the sysfs provided 
+bytes_transferred values never change from their initial zeros.
 
-Thank you,
-Sergiu Giurgiu.
+For OMAP1:
+Tested-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-Signed-off-by: Sergiu Giurgiu <sgiurgiu11@gmail.com>
-
-diff --git a/mirror/sound/pci/oxygen/virtuoso.c b/mirror/sound/pci/oxygen/virtuoso.c
-index 3d71423..8104eab 100644
---- a/mirror/sound/pci/oxygen/virtuoso.c
-+++ b/mirror/sound/pci/oxygen/virtuoso.c
-@@ -52,6 +52,7 @@ static DEFINE_PCI_DEVICE_TABLE(xonar_ids) = {
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x835d) },
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x835e) },
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x838e) },
-+	{ OXYGEN_PCI_SUBID(0x1043, 0x8522) },
- 	{ OXYGEN_PCI_SUBID_BROKEN_EEPROM },
- 	{ }
- };
-diff --git a/mirror/sound/pci/oxygen/xonar_wm87x6.c b/mirror/sound/pci/oxygen/xonar_wm87x6.c
-index 63cff90..b555b62 100644
---- a/mirror/sound/pci/oxygen/xonar_wm87x6.c
-+++ b/mirror/sound/pci/oxygen/xonar_wm87x6.c
-@@ -1255,7 +1255,6 @@ static void dump_wm87x6_registers(struct oxygen *chip,
- }
- 
- static const struct oxygen_model model_xonar_ds = {
--	.shortname = "Xonar DS",
- 	.longname = "Asus Virtuoso 66",
- 	.chip = "AV200",
- 	.init = xonar_ds_init,
-@@ -1327,6 +1326,11 @@ int __devinit get_xonar_wm87x6_model(struct oxygen *chip,
- 	switch (id->subdevice) {
- 	case 0x838e:
- 		chip->model = model_xonar_ds;
-+		chip->model.shortname = "Xonar DS";
-+		break;
-+	case 0x8522:
-+		chip->model = model_xonar_ds;
-+		chip->model.shortname = "Xonar DSX";
- 		break;
- 	case 0x835e:
- 		chip->model = model_xonar_hdav_slim;
--- 
-1.7.10.4
+Thanks,
+Janusz
