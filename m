@@ -1,19 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 05/14] MFD: twl4030-audio: Get audio MCLK
-	via twl-core API instead of pdata
-Date: Mon, 10 Sep 2012 13:46:23 +0300
-Message-ID: <1347273992-9107-6-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v4 06/14] dt: Add empty of_find_node_by_name()
+	function
+Date: Mon, 10 Sep 2012 13:46:24 +0300
+Message-ID: <1347273992-9107-7-git-send-email-peter.ujfalusi@ti.com>
 References: <1347273992-9107-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog114.obsmtp.com (na3sys009aog114.obsmtp.com
- [74.125.149.211])
- by alsa0.perex.cz (Postfix) with ESMTP id 25B5A2650D2
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 12:46:25 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so2439630obb.38
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 03:46:24 -0700 (PDT)
+Received: from na3sys009aog135.obsmtp.com (na3sys009aog135.obsmtp.com
+ [74.125.149.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id A11492650F0
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 12:46:29 +0200 (CEST)
+Received: by oagl20 with SMTP id l20so408523oag.38
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 03:46:28 -0700 (PDT)
 In-Reply-To: <1347273992-9107-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,26 +28,30 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-twl-core has API to get the boot time configured HFCLK rate which has the
-same rate as the audio MCLK.
+This commit adds an empty of_find_node_by_name() function for !CONFIG_OF
+builds.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/mfd/twl4030-audio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/of.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mfd/twl4030-audio.c b/drivers/mfd/twl4030-audio.c
-index ca2d669..a48bf3a 100644
---- a/drivers/mfd/twl4030-audio.c
-+++ b/drivers/mfd/twl4030-audio.c
-@@ -175,7 +175,7 @@ static int __devinit twl4030_audio_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 1b11632..5c7a158 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -315,6 +315,12 @@ static inline const char* of_node_full_name(struct device_node *np)
+ 	return "<no-node>";
+ }
  
- 	mutex_init(&audio->mutex);
--	audio->audio_mclk = pdata->audio_mclk;
-+	audio->audio_mclk = twl_get_hfclk_rate();
- 
- 	/* Configure APLL_INFREQ and disable APLL if enabled */
- 	switch (audio->audio_mclk) {
++static inline struct device_node *of_find_node_by_name(struct device_node *from,
++	const char *name)
++{
++	return NULL;
++}
++
+ static inline bool of_have_populated_dt(void)
+ {
+ 	return false;
 -- 
 1.7.12
