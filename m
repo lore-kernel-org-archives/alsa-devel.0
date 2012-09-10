@@ -1,17 +1,15 @@
-From: Catalin Iacob <iacobcatalin@gmail.com>
-Subject: [PATCH] ALSA: hda_intel: add position_fix quirk for
-	Asus K53E
-Date: Sun,  9 Sep 2012 21:41:11 +0000
-Message-ID: <1347226871-2552-1-git-send-email-iacobcatalin@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: sta32x: Move regulator acquisition
+	to I2C probe
+Date: Mon, 10 Sep 2012 11:01:42 +0800
+Message-ID: <1347246103-10010-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 34234264EF9
- for <alsa-devel@alsa-project.org>; Sun,  9 Sep 2012 23:42:02 +0200 (CEST)
-Received: by wgbed3 with SMTP id ed3so986014wgb.20
- for <alsa-devel@alsa-project.org>; Sun, 09 Sep 2012 14:42:01 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 24097264F15
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 05:01:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +19,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Seth Heasley <seth.heasley@intel.com>, Catalin Iacob <iacobcatalin@gmail.com>
+To: Liam Girdwood <lrg@ti.com>, Johannes Stezenbach <js@sig21.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit c20c5a841cbe47f5b7812b57bd25397497e5fbc0 changed some chipsets to
-default to POS_FIX_COMBO so they now use POS_FIX_LPIB instead of
-POS_FIX_POSBUF. Since then I've been getting artifacts on playback, including
-repeated sounds on my Asus laptop.
+This is better style as it ensures we don't try to do the ASoC probe
+without required resources. Also convert to devm_ while we're at it,
+saving a bit of code, and fix a leak of enable on error.
 
-My hardware is Cougar Point which the commit log of
-c20c5a841cbe47f5b7812b57bd25397497e5fbc0 mentions as tested so POS_FIX_COMBO
-probably works in general but apparently it doesn't on Asus K53E therefore the
-need for the quirk.
-
-Signed-off-by: Catalin Iacob <iacobcatalin@gmail.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/pci/hda/hda_intel.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/sta32x.c |   32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 60882c6..228cdf9 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2701,6 +2701,7 @@ static struct snd_pci_quirk position_fix_list[] __devinitdata = {
- 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1043, 0x81e7, "ASUS M2V", POS_FIX_LPIB),
-+	SND_PCI_QUIRK(0x1043, 0x1b43, "ASUS K53E", POS_FIX_POSBUF),
- 	SND_PCI_QUIRK(0x104d, 0x9069, "Sony VPCS11V9E", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x10de, 0xcb89, "Macbook Pro 7,1", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1297, 0x3166, "Shuttle", POS_FIX_LPIB),
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index 51b7313..039597e 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -825,22 +825,11 @@ static int sta32x_probe(struct snd_soc_codec *codec)
+ 	sta32x->codec = codec;
+ 	sta32x->pdata = dev_get_platdata(codec->dev);
+ 
+-	/* regulators */
+-	for (i = 0; i < ARRAY_SIZE(sta32x->supplies); i++)
+-		sta32x->supplies[i].supply = sta32x_supply_names[i];
+-
+-	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sta32x->supplies),
+-				 sta32x->supplies);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
+-		goto err;
+-	}
+-
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
+ 				    sta32x->supplies);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
+-		goto err_get;
++		return ret;
+ 	}
+ 
+ 	/* Tell ASoC what kind of I/O to use to read the registers.  ASoC will
+@@ -849,7 +838,7 @@ static int sta32x_probe(struct snd_soc_codec *codec)
+ 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "failed to set cache I/O (ret=%i)\n", ret);
+-		return ret;
++		goto err;
+ 	}
+ 
+ 	/* Chip documentation explicitly requires that the reset values
+@@ -915,9 +904,8 @@ static int sta32x_probe(struct snd_soc_codec *codec)
+ 
+ 	return 0;
+ 
+-err_get:
+-	regulator_bulk_free(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
+ err:
++	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
+ 	return ret;
+ }
+ 
+@@ -928,7 +916,6 @@ static int sta32x_remove(struct snd_soc_codec *codec)
+ 	sta32x_watchdog_stop(sta32x);
+ 	sta32x_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
+-	regulator_bulk_free(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
+ 
+ 	return 0;
+ }
+@@ -966,13 +953,24 @@ static __devinit int sta32x_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+ 	struct sta32x_priv *sta32x;
+-	int ret;
++	int ret, i;
+ 
+ 	sta32x = devm_kzalloc(&i2c->dev, sizeof(struct sta32x_priv),
+ 			      GFP_KERNEL);
+ 	if (!sta32x)
+ 		return -ENOMEM;
+ 
++	/* regulators */
++	for (i = 0; i < ARRAY_SIZE(sta32x->supplies); i++)
++		sta32x->supplies[i].supply = sta32x_supply_names[i];
++
++	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(sta32x->supplies),
++				      sta32x->supplies);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
++		return ret;
++	}
++
+ 	i2c_set_clientdata(i2c, sta32x);
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev, &sta32x_codec, &sta32x_dai, 1);
 -- 
-1.7.11.5
+1.7.10.4
