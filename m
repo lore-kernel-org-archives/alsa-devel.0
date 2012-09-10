@@ -1,21 +1,16 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: snd-intel-hda: screaming IRQ with 3.5.3 kernel
-	(HDMI)
-Date: Mon, 10 Sep 2012 14:21:54 -0700 (PDT)
-Message-ID: <1347312114.44166.YahooMailNeo@web120301.mail.ne1.yahoo.com>
-References: <504B4F2D.40002@yahoo.com> <s5hligitcd0.wl%tiwai@suse.de>
- <1347272938.6237.YahooMailNeo@web120301.mail.ne1.yahoo.com>
- <s5hfw6qtbhq.wl%tiwai@suse.de>
-Reply-To: Chris Rankin <rankincj@yahoo.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH 1/2] ASoC: core: display the platform node name
+	if there is no platform name
+Date: Mon, 10 Sep 2012 17:02:55 -0500
+Message-ID: <1347314576-13832-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm4-vm1.bullet.mail.ne1.yahoo.com
- (nm4-vm1.bullet.mail.ne1.yahoo.com [98.138.91.44])
- by alsa0.perex.cz (Postfix) with SMTP id 73382260744
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 23:21:56 +0200 (CEST)
-In-Reply-To: <s5hfw6qtbhq.wl%tiwai@suse.de>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1B2826514E
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 00:03:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,32 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------ Original Message -----
+A platform can be matched by either a string name or a device tree node
+pointer, so we can't assume that dai_link->platform_name is valid.  Fix
+an error message in soc_bind_dai_link() to use the device tree node
+name if the platform name is null.
 
->=A0 Did you try any workaround boot options such as irqpoll, pci=3Dnocrs o=
-r whatever?
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/soc-core.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-Actually, it turns out that booting with "irqpoll=3D1" simply means that th=
-is problem takes longer to happen:
-
-irq 17: nobody cared (try booting with the "irqpoll" option)
-Pid: 3347, comm: wineserver Not tainted 3.5.3 #2
-Call Trace:
-=A0[<c1063806>] ? __report_bad_irq+0x11/0x94
-=A0[<c1063a2d>] ? note_interrupt+0x120/0x19b
-=A0[<c1062325>] ? handle_irq_event_percpu+0xe8/0xfb
-=A0[<c1062361>] ? handle_irq_event+0x29/0x40
-=A0[<c1064163>] ? handle_fasteoi_irq+0x67/0x90
-=A0[<c1003957>] ? handle_irq+0x63/0x70
-=A0[<c1003625>] ? do_IRQ+0x2e/0x83
-=A0[<c1229829>] ? common_interrupt+0x29/0x30
-handlers:
-[<f8d09b75>] azx_interrupt [snd_hda_intel]
-Disabling IRQ #17
-
-Cheers,
-Chris
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ad65459..d81ef5b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -897,7 +897,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+ 	}
+ 	if (!rtd->platform) {
+ 		dev_err(card->dev, "platform %s not registered\n",
+-			dai_link->platform_name);
++			dai_link->platform_name ? :
++				dai_link->platform_of_node->full_name);
+ 		return -EPROBE_DEFER;
+ 	}
+ 
+-- 
+1.7.3.4
