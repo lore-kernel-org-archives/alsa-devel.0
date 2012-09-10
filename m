@@ -1,18 +1,21 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 3/3] Revert "ASoC: AC97 doesn't use regmap by
-	default"
-Date: Mon, 10 Sep 2012 13:10:10 -0300
-Message-ID: <1347293410-23683-3-git-send-email-fabio.estevam@freescale.com>
-References: <1347293410-23683-1-git-send-email-fabio.estevam@freescale.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 07/17] Documentation: Define the MSP Driver
+ Device Tree bindings
+Date: Mon, 10 Sep 2012 17:43:34 +0100
+Message-ID: <20120910164333.GB24506@gmail.com>
+References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
+ <1345816913-4113-8-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe010.messaging.microsoft.com [216.32.180.30])
- by alsa0.perex.cz (Postfix) with ESMTP id 2497C26510E
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 18:10:25 +0200 (CEST)
-In-Reply-To: <1347293410-23683-1-git-send-email-fabio.estevam@freescale.com>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 235D62650E3
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 18:43:39 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so1101571eek.38
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 09:43:38 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1345816913-4113-8-git-send-email-lee.jones@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, manuel.lauss@googlemail.com, lee.jones@linaro.org, alsa-devel@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, roger.xr.nilsson@stericsson.com, broonie@opensource.wolfsonmicro.com, STEricsson_nomadik_linux@list.st.com
 List-Id: alsa-devel@alsa-project.org
 
-Since commit 98d3088e5 (SoC: core: Fix check before defaulting to regmap)
-, it is not necessary to provide codec->control_data anymore.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/ad1980.c   |    1 -
- sound/soc/codecs/stac9766.c |    1 -
- sound/soc/codecs/wm9712.c   |    1 -
- sound/soc/codecs/wm9713.c   |    1 -
- 4 files changed, 4 deletions(-)
-
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index 11b1b71..8c39ddd 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -186,7 +186,6 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
- 
- 	printk(KERN_INFO "AD1980 SoC Audio Codec\n");
- 
--	codec->control_data = codec;	/* we don't use regmap! */
- 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
- 	if (ret < 0) {
- 		printk(KERN_ERR "ad1980: failed to register AC97 codec\n");
-diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
-index 33c0f3d..982e437 100644
---- a/sound/soc/codecs/stac9766.c
-+++ b/sound/soc/codecs/stac9766.c
-@@ -340,7 +340,6 @@ static int stac9766_codec_probe(struct snd_soc_codec *codec)
- 
- 	printk(KERN_INFO "STAC9766 SoC Audio Codec %s\n", STAC9766_VERSION);
- 
--	codec->control_data = codec;	/* we don't use regmap! */
- 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
- 	if (ret < 0)
- 		goto codec_err;
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 1992a62..4dd73ea 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -635,7 +635,6 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- {
- 	int ret = 0;
- 
--	codec->control_data = codec;	/* we don't use regmap! */
- 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
- 	if (ret < 0) {
- 		printk(KERN_ERR "wm9712: failed to register AC97 codec\n");
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index d0b8a32..3eb19fb 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1196,7 +1196,6 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
- 	if (wm9713 == NULL)
- 		return -ENOMEM;
- 	snd_soc_codec_set_drvdata(codec, wm9713);
--	codec->control_data = wm9713;	/* we don't use regmap! */
- 
- 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
- 	if (ret < 0)
--- 
-1.7.9.5
+T2xhIHBva2UuCgpPbiBGcmksIEF1ZyAyNCwgMjAxMiBhdCAwMzowMTo0M1BNICswMTAwLCBMZWUg
+Sm9uZXMgd3JvdGU6Cj4gSGVyZSB3ZSBhZGQgdGhlIHJlcXVpcmVkIGRvY3VtZW50YXRpb24gZm9y
+IHRoZSBuZXcgRGV2aWNlIFRyZWUKPiBiaW5kaW5ncyBwZXJ0YWluaW5nIHRvIHRoZSBNU1AgQ1BV
+LXNpZGUgREFJIERyaXZlci4KPiAKPiBDQzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4g
+U2lnbmVkLW9mZi1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4KPiAtLS0KPiAg
+Li4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbXNwLnR4dCAgICAgICAgfCAgIDQz
+ICsrKysrKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA0MyBpbnNlcnRpb25zKCsp
+Cj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c291bmQvdXg1MDAtbXNwLnR4dAo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbXNwLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9zb3VuZC91eDUwMC1tc3AudHh0Cj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQK
+PiBpbmRleCAwMDAwMDAwLi45OWFjZDljCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC91eDUwMC1tc3AudHh0Cj4gQEAgLTAsMCAr
+MSw0MyBAQAo+ICsqIHV4NTAwIE1TUCAoQ1BVLXNpZGUgRGlnaXRhbCBBdWRpbyBJbnRlcmZhY2Up
+Cj4gKwo+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICsgLSBjb21wYXRpYmxlICAgICAgIDoic3Rl
+cmljc3Nvbix1eDUwMC1tc3AtaTJzIgo+ICsgLSByZWcgICAgICAgICAgICAgIDogUGh5c2ljYWwg
+YmFzZSBhZGRyZXNzIGFuZCBsZW5ndGggb2YgdGhlIGRldmljZSdzIHJlZ2lzdGVycy4KPiArCj4g
+K09wdGlvbmFsIHByb3BlcnRpZXM6Cj4gKyAtIGludGVycnVwdHMgICAgICAgOiBUaGUgaW50ZXJy
+dXB0IG91dHB1dCBmcm9tIHRoZSBkZXZpY2UuCj4gKyAtIGludGVycnVwdC1wYXJlbnQgOiBUaGUg
+cGFyZW50IGludGVycnVwdCBjb250cm9sbGVyLgo+ICsgLSA8bmFtZT4tc3VwcGx5ICAgIDogUGhh
+bmRsZSB0byB0aGUgcmVndWxhdG9yIDxuYW1lPiBzdXBwbHkKPiArCj4gK0V4YW1wbGU6Cj4gKwo+
+ICsJc291bmQgewo+ICsJCWNvbXBhdGlibGUgPSAic3Rlcmljc3NvbixzbmQtc29jLW1vcDUwMCI7
+Cj4gKwo+ICsJCXN0ZXJpY3Nzb24scGxhdGZvcm0tcGNtLWRtYSA9IDwmcGNtPjsKPiArCQlzdGVy
+aWNzc29uLGNwdS1kYWkgPSA8Jm1zcDEgJm1zcDM+Owo+ICsJCXN0ZXJpY3Nzb24sYXVkaW8tY29k
+ZWMgPSA8JmNvZGVjPjsKPiArCX07Cj4gKwo+ICsJcGNtOiB1eDUwMC1wY20gewo+ICsJCWNvbXBh
+dGlibGUgPSAic3Rlcmljc3Nvbix1eDUwMC1wY20iOwo+ICsJfTsKPiArCj4gKwltc3AxOiBtc3BA
+ODAxMjQwMDAgewo+ICsJCWNvbXBhdGlibGUgPSAic3Rlcmljc3Nvbix1eDUwMC1tc3AtaTJzIjsK
+PiArCQlyZWcgPSA8MHg4MDEyNDAwMCAweDEwMDA+Owo+ICsJCWludGVycnVwdHMgPSA8MCA2MiAw
+eDQ+Owo+ICsJCXYtYXBlLXN1cHBseSA9IDwmZGI4NTAwX3ZhcGVfcmVnPjsKPiArCX07Cj4gKwo+
+ICsJbXNwMzogbXNwQDgwMTI1MDAwIHsKPiArCQljb21wYXRpYmxlID0gInN0ZXJpY3Nzb24sdXg1
+MDAtbXNwLWkycyI7Cj4gKwkJcmVnID0gPDB4ODAxMjUwMDAgMHgxMDAwPjsKPiArCQlpbnRlcnJ1
+cHRzID0gPDAgNjIgMHg0PjsKPiArCQl2LWFwZS1zdXBwbHkgPSA8JmRiODUwMF92YXBlX3JlZz47
+Cj4gKwl9Owo+ICsKPiArCWNvZGVjOiBhYjg1MDAtY29kZWMgewo+ICsJCWNvbXBhdGlibGUgPSAi
+c3Rlcmljc3NvbixhYjg1MDAtY29kZWMiOwo+ICsJCXN0ZXJpY3Nzb24sZWFycGVpY2UtY212ID0g
+PDk1MD47IC8qIFVuaXRzIGluIG1WLiAqLwo+ICsJfTsKPiAtLSAKPiAxLjcuOS41Cj4gCgotLSAK
+TGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3Jn
+IOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFj
+ZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
