@@ -1,20 +1,21 @@
-From: Catalin Iacob <iacobcatalin@gmail.com>
-Subject: Re: [PATCH] ALSA: hda_intel: add position_fix quirk
-	for Asus K53E
-Date: Mon, 10 Sep 2012 22:48:18 +0200
-Message-ID: <CAHg_5gpaN9P08eo8Np6b2vAwmvtxPkrbGUz5tWFr=TjndscZeA@mail.gmail.com>
-References: <1347226871-2552-1-git-send-email-iacobcatalin@gmail.com>
- <s5hy5kitgxq.wl%tiwai@suse.de>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: snd-intel-hda: screaming IRQ with 3.5.3 kernel
+	(HDMI)
+Date: Mon, 10 Sep 2012 14:21:54 -0700 (PDT)
+Message-ID: <1347312114.44166.YahooMailNeo@web120301.mail.ne1.yahoo.com>
+References: <504B4F2D.40002@yahoo.com> <s5hligitcd0.wl%tiwai@suse.de>
+ <1347272938.6237.YahooMailNeo@web120301.mail.ne1.yahoo.com>
+ <s5hfw6qtbhq.wl%tiwai@suse.de>
+Reply-To: Chris Rankin <rankincj@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E306260744
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 22:48:39 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so1257703eek.38
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 13:48:39 -0700 (PDT)
-In-Reply-To: <s5hy5kitgxq.wl%tiwai@suse.de>
+Received: from nm4-vm1.bullet.mail.ne1.yahoo.com
+ (nm4-vm1.bullet.mail.ne1.yahoo.com [98.138.91.44])
+ by alsa0.perex.cz (Postfix) with SMTP id 73382260744
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2012 23:21:56 +0200 (CEST)
+In-Reply-To: <s5hfw6qtbhq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Seth Heasley <seth.heasley@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 10, 2012 at 10:34 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> What sound backend are you using?  PulseAudio?
-PulseAudio yes.
+----- Original Message -----
 
-> Also, setting bdl_pos_adj=0 option makes any difference?
-No, the artifacts are still present.
+>=A0 Did you try any workaround boot options such as irqpoll, pci=3Dnocrs o=
+r whatever?
 
-The artifacts appear only with some applications, for example VLC and
-Skype have them but KDE's startup sound and music played in Amarok
-don't. The artifacts also go away after around 10 - 30 seconds of
-playback and happen again for some tens of seconds after restarting
-the application.
+Actually, it turns out that booting with "irqpoll=3D1" simply means that th=
+is problem takes longer to happen:
 
-The alsa-info output is available at [1] for the working case and [2]
-for the broken case.
+irq 17: nobody cared (try booting with the "irqpoll" option)
+Pid: 3347, comm: wineserver Not tainted 3.5.3 #2
+Call Trace:
+=A0[<c1063806>] ? __report_bad_irq+0x11/0x94
+=A0[<c1063a2d>] ? note_interrupt+0x120/0x19b
+=A0[<c1062325>] ? handle_irq_event_percpu+0xe8/0xfb
+=A0[<c1062361>] ? handle_irq_event+0x29/0x40
+=A0[<c1064163>] ? handle_fasteoi_irq+0x67/0x90
+=A0[<c1003957>] ? handle_irq+0x63/0x70
+=A0[<c1003625>] ? do_IRQ+0x2e/0x83
+=A0[<c1229829>] ? common_interrupt+0x29/0x30
+handlers:
+[<f8d09b75>] azx_interrupt [snd_hda_intel]
+Disabling IRQ #17
 
-[1] http://www.alsa-project.org/db/?f=005f377cccf46c8093c4a640ace396313ffd8102
-[2] http://www.alsa-project.org/db/?f=b274a421ab04dab698b5d4d585dc7dbef06f7764
-
-Does this help? Thanks,
-Catalin
+Cheers,
+Chris
