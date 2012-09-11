@@ -1,57 +1,50 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: compress_core: fix open flags test in
-	snd_compr_open()
-Date: Tue, 11 Sep 2012 14:12:43 +0300
-Message-ID: <20120911111243.GC22259@elgon.mountain>
+From: Wim Van Sebroeck <wim@iguana.be>
+Subject: Re: [PATCH 15/17] ARM: OMAP: Split plat/hardware.h, use local soc.h for omap2+
+Date: Tue, 11 Sep 2012 12:48:38 +0200
+Message-ID: <20120911104838.GE27604@spo001.leaseweb.com>
+References: <20120911052934.29637.9190.stgit@muffinssi.local> <20120911053117.29637.2499.stgit@muffinssi.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
- by alsa0.perex.cz (Postfix) with ESMTP id 71CA326156C
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 13:12:54 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jesper Juhl <jj@chaosbits.net>, Namarta Kohli <namartax.kohli@intel.com>
+In-Reply-To: <20120911053117.29637.2499.stgit@muffinssi.local>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-watchdog@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-O_RDONLY is zero so the original test (f->f_flags & O_RDONLY) is always
-false and it will never do compress capture.  The test for O_WRONLY is
-also slightly off.  The original test would consider "->flags =
-(O_WRONLY | O_RDWR)" as write only instead of rejecting it as invalid.
+Hi Tony,
 
-I've also removed the pr_err() because that could flood dmesg.
+> As the plat and mach includes need to disappear for single zImage work,
+> we need to remove plat/hardware.h.
+> 
+> Do this by splitting plat/hardware.h into omap1 and omap2+ specific files.
+> 
+> The old plat/hardware.h already has omap1 only defines, so it gets moved
+> to mach/hardware.h for omap1. For omap2+, we use the local soc.h
+> that for now just includes the related SoC headers to keep this patch more
+> readable.
+> 
+> Note that the local soc.h still includes plat/cpu.h that can be dealt
+> with in later patches. Let's also include plat/serial.h from common.h for
+> all the board-*.c files. This allows making the include files local later
+> on without patching these files again.
+> 
+> Note that only minimal changes are done in this patch for the
+> drivers/watchdog/omap_wdt.c driver to keep things compiling. Further
+> patches are needed to eventually remove cpu_is_omap usage in the drivers.
+> 
+> Also only minimal changes are done to sound/soc/omap/* to remove the
+> unneeded includes and to define OMAP44XX_MCPDM_L3_BASE locally so there's
+> no need to include omap44xx.h.
+> 
+> While at it, also sort some of the includes in the standard way.
+> 
+> Cc: linux-watchdog@vger.kernel.org
+> Cc: Wim Van Sebroeck <wim@iguana.be>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by for the watchdog part.
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index ec2118d..eb60cb8 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -80,14 +80,12 @@ static int snd_compr_open(struct inode *inode, struct file *f)
- 	int maj = imajor(inode);
- 	int ret;
- 
--	if (f->f_flags & O_WRONLY)
-+	if ((f->f_flags & O_ACCMODE) == O_WRONLY)
- 		dirn = SND_COMPRESS_PLAYBACK;
--	else if (f->f_flags & O_RDONLY)
-+	else if ((f->f_flags & O_ACCMODE) == O_RDONLY)
- 		dirn = SND_COMPRESS_CAPTURE;
--	else {
--		pr_err("invalid direction\n");
-+	else
- 		return -EINVAL;
--	}
- 
- 	if (maj == snd_major)
- 		compr = snd_lookup_minor_data(iminor(inode),
+Kind regards,
+Wim.
+
