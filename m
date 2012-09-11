@@ -1,174 +1,37 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH 2/2] ASoC: fsl: use snd_soc_register_card to
-	register the card
-Date: Mon, 10 Sep 2012 17:02:56 -0500
-Message-ID: <1347314576-13832-2-git-send-email-timur@freescale.com>
-References: <1347314576-13832-1-git-send-email-timur@freescale.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: fix maxburst settings in dmaengine code
+Date: Tue, 11 Sep 2012 08:05:46 +0800
+Message-ID: <20120911000539.GB30699@opensource.wolfsonmicro.com>
+References: <1346975253-2935-1-git-send-email-swarren@wwwdotorg.org>
+ <20120907010050.GE4400@opensource.wolfsonmicro.com>
+ <50494F8C.3030906@wwwdotorg.org>
+ <504E2B73.2020006@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
- by alsa0.perex.cz (Postfix) with ESMTP id B3766260744
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 00:03:03 +0200 (CEST)
-In-Reply-To: <1347314576-13832-1-git-send-email-timur@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <504E2B73.2020006-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_register_card() instead of platform_device_alloc("soc-audio")
-to register the sound card from the machine drivers.
+On Mon, Sep 10, 2012 at 12:03:31PM -0600, Stephen Warren wrote:
 
-Although platform_device_alloc is officially deprecated, it is still used
-by several other drivers.  Unfortunately, something is broken somewhere
-and the Freescale drivers don't register properly when using it.  Since
-we need to transition to snd_soc_register_card() anyway, this fixes the
-problem and updates our code at the same time.
+> Anyway, since this patch didn't make 3.6-rc5, it is difficult for me to
+> use as a baseline for any branches destined for 3.7, since I'm supposed
+> to send my pull requests to arm-soc before 3.6-rc6 is released, yet if
+> this patch goes into 3.6, it won't be there until 3.6-rc6 at the earliest.
 
-We also transition the module initialize to late_initcall(), so that
-the machine driver loads last.  Although this is technically not
-necessary, it does avoid this error message at boot time:
+> I'm not sure how best to resolve this; is it possible for me to take the
+> patch through the Tegra tree instead, as I originally intended?
 
-	ALSA device list:
-	  No soundcards found.
+Just merge the pull request in.  I should send something out
+on Thursday I expect, though no guarantees about -rc6.  It doesn't seem
+sensible to not merge the fix.
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/fsl/mpc8610_hpcd.c |   25 ++++++-------------------
- sound/soc/fsl/p1022_ds.c     |   24 +++++-------------------
- 2 files changed, 11 insertions(+), 38 deletions(-)
-
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 60bcba1..65347de 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -192,7 +192,6 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
- 		container_of(dev, struct platform_device, dev);
- 	struct device_node *np = ssi_pdev->dev.of_node;
- 	struct device_node *codec_np = NULL;
--	struct platform_device *sound_device = NULL;
- 	struct mpc8610_hpcd_data *machine_data;
- 	int ret = -ENODEV;
- 	const char *sprop;
-@@ -341,34 +340,22 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
- 	machine_data->card.probe = mpc8610_hpcd_machine_probe;
- 	machine_data->card.remove = mpc8610_hpcd_machine_remove;
- 	machine_data->card.name = pdev->name; /* The platform driver name */
-+	machine_data->card.owner = THIS_MODULE;
-+	machine_data->card.dev = &pdev->dev;
- 	machine_data->card.num_links = 2;
- 	machine_data->card.dai_link = machine_data->dai;
- 
--	/* Allocate a new audio platform device structure */
--	sound_device = platform_device_alloc("soc-audio", -1);
--	if (!sound_device) {
--		dev_err(&pdev->dev, "platform device alloc failed\n");
--		ret = -ENOMEM;
--		goto error;
--	}
--
--	/* Associate the card data with the sound device */
--	platform_set_drvdata(sound_device, &machine_data->card);
--
- 	/* Register with ASoC */
--	ret = platform_device_add(sound_device);
-+	ret = snd_soc_register_card(&machine_data->card);
- 	if (ret) {
--		dev_err(&pdev->dev, "platform device add failed\n");
--		goto error_sound;
-+		dev_err(&pdev->dev, "could not register card\n");
-+		goto error;
- 	}
--	dev_set_drvdata(&pdev->dev, sound_device);
- 
- 	of_node_put(codec_np);
- 
- 	return 0;
- 
--error_sound:
--	platform_device_put(sound_device);
- error:
- 	kfree(machine_data);
- error_alloc:
-@@ -443,7 +430,7 @@ static void __exit mpc8610_hpcd_exit(void)
- 	platform_driver_unregister(&mpc8610_hpcd_driver);
- }
- 
--module_init(mpc8610_hpcd_init);
-+late_initcall(mpc8610_hpcd_init);
- module_exit(mpc8610_hpcd_exit);
- 
- MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index 50adf40..13110c4 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -202,7 +202,6 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 		container_of(dev, struct platform_device, dev);
- 	struct device_node *np = ssi_pdev->dev.of_node;
- 	struct device_node *codec_np = NULL;
--	struct platform_device *sound_device = NULL;
- 	struct machine_data *mdata;
- 	int ret = -ENODEV;
- 	const char *sprop;
-@@ -349,36 +348,23 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 	mdata->card.probe = p1022_ds_machine_probe;
- 	mdata->card.remove = p1022_ds_machine_remove;
- 	mdata->card.name = pdev->name; /* The platform driver name */
-+	mdata->card.owner = THIS_MODULE;
-+	mdata->card.dev = &pdev->dev;
- 	mdata->card.num_links = 2;
- 	mdata->card.dai_link = mdata->dai;
- 
--	/* Allocate a new audio platform device structure */
--	sound_device = platform_device_alloc("soc-audio", -1);
--	if (!sound_device) {
--		dev_err(&pdev->dev, "platform device alloc failed\n");
--		ret = -ENOMEM;
--		goto error;
--	}
--
--	/* Associate the card data with the sound device */
--	platform_set_drvdata(sound_device, &mdata->card);
--
- 	/* Register with ASoC */
--	ret = platform_device_add(sound_device);
-+	ret = snd_soc_register_card(&mdata->card);
- 	if (ret) {
--		dev_err(&pdev->dev, "platform device add failed\n");
-+		dev_err(&pdev->dev, "could not register card\n");
- 		goto error;
- 	}
--	dev_set_drvdata(&pdev->dev, sound_device);
- 
- 	of_node_put(codec_np);
- 
- 	return 0;
- 
- error:
--	if (sound_device)
--		platform_device_put(sound_device);
--
- 	kfree(mdata);
- error_put:
- 	of_node_put(codec_np);
-@@ -453,7 +439,7 @@ static void __exit p1022_ds_exit(void)
- 	platform_driver_unregister(&p1022_ds_driver);
- }
- 
--module_init(p1022_ds_init);
-+late_initcall(p1022_ds_init);
- module_exit(p1022_ds_exit);
- 
- MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
--- 
-1.7.3.4
+Or bend the rules for arm-soc by putting it in your own -next branch and
+then rebasing before it gets pulled into arm-soc.  This would seem a
+sensible thing in general given arm-soc has this sort of model, it'd
+avoid what is essentially an extended merge window for arm-soc but still
+give things exposure in -next before they hit arm-soc itself.
