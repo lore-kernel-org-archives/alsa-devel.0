@@ -1,20 +1,20 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: Re: [PATCH 01/17] ASoC: Ux500: Move MSP pinctrl setup
- into the MSP driver
-Date: Tue, 11 Sep 2012 11:28:16 +0200
-Message-ID: <504F0430.8070009@stericsson.com>
+Subject: Re: [PATCH 05/17] ASoC: Ux500: Minor coding layout
+	changes
+Date: Tue, 11 Sep 2012 11:03:41 +0200
+Message-ID: <504EFE6D.3090901@stericsson.com>
 References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
- <1345816913-4113-2-git-send-email-lee.jones@linaro.org>
- <20120910164628.GG24506@gmail.com>
+ <1345816913-4113-6-git-send-email-lee.jones@linaro.org>
+ <20120910164448.GD24506@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
- [207.126.144.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FE132602F7
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 11:28:23 +0200 (CEST)
-In-Reply-To: <20120910164628.GG24506@gmail.com>
+Received: from eu1sys200aog105.obsmtp.com (eu1sys200aog105.obsmtp.com
+ [207.126.144.119])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35DFF2602F7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 11:37:55 +0200 (CEST)
+In-Reply-To: <20120910164448.GD24506@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,309 +28,56 @@ To: Lee Jones <lee.jones@linaro.org>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, "arnd@arndb.de" <arnd@arndb.de>, Roger NILSSON1 <roger.xr.nilsson@stericsson.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2012 06:46 PM, Lee Jones wrote:
+On 09/10/2012 06:44 PM, Lee Jones wrote:
 
 > Ola poke.
 > 
-> On Fri, Aug 24, 2012 at 03:01:37PM +0100, Lee Jones wrote:
->> In the initial submission of the MSP driver msp1 and msp3's associated
->> pinctrl mechanism was passed back to platform code using a plat_init()
->> call-back routine, but it has no place in platform code. The MSP driver
->> should set this up for the appropriate ports. Instead we use a use_pinctrl
->> identifier which is passed from platform_data/Device Tree which indicates
->> which ports should use pinctrl.
+> On Fri, Aug 24, 2012 at 03:01:41PM +0100, Lee Jones wrote:
+>> Includes removal of duplicate debug print affirming entry into
+>> the probe function, an unnecessary line break of a coding line
+>> <80 chars and a white space change (unintentional tab).
 >> 
->> CC: alsa-devel@alsa-project.org
 >> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 >> ---
->>  arch/arm/mach-ux500/board-mop500-msp.c |   75 +-------------------------------
->>  arch/arm/mach-ux500/include/mach/msp.h |    2 -
->>  sound/soc/ux500/ux500_msp_i2s.c        |   67 +++++++++++++++++++++-------
->>  sound/soc/ux500/ux500_msp_i2s.h        |    8 +++-
->>  4 files changed, 58 insertions(+), 94 deletions(-)
+>>  sound/soc/ux500/mop500.c |    7 ++-----
+>>  1 file changed, 2 insertions(+), 5 deletions(-)
 >> 
->> diff --git a/arch/arm/mach-ux500/board-mop500-msp.c b/arch/arm/mach-ux500/board-mop500-msp.c
->> index df15646..fc78d5d 100644
->> --- a/arch/arm/mach-ux500/board-mop500-msp.c
->> +++ b/arch/arm/mach-ux500/board-mop500-msp.c
->> @@ -23,53 +23,6 @@
->>  #include "devices-db8500.h"
->>  #include "pins-db8500.h"
+>> diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+>> index 6840df7..356611d 100644
+>> --- a/sound/soc/ux500/mop500.c
+>> +++ b/sound/soc/ux500/mop500.c
+>> @@ -88,8 +88,6 @@ static int __devinit mop500_probe(struct platform_device *pdev)
+>>  	struct device_node *np = pdev->dev.of_node;
+>>  	int ret;
 >>  
->> -/* MSP1/3 Tx/Rx usage protection */
->> -static DEFINE_SPINLOCK(msp_rxtx_lock);
+>> -	pr_debug("%s: Enter.\n", __func__);
 >> -
->> -/* Reference Count */
->> -static int msp_rxtx_ref;
->> -
->> -/* Pin modes */
->> -struct pinctrl *msp1_p;
->> -struct pinctrl_state *msp1_def;
->> -struct pinctrl_state *msp1_sleep;
->> -
->> -int msp13_i2s_init(void)
->> -{
->> -	int retval = 0;
->> -	unsigned long flags;
->> -
->> -	spin_lock_irqsave(&msp_rxtx_lock, flags);
->> -	if (msp_rxtx_ref == 0 && !(IS_ERR(msp1_p) || IS_ERR(msp1_def))) {
->> -		retval = pinctrl_select_state(msp1_p, msp1_def);
->> -		if (retval)
->> -			pr_err("could not set MSP1 defstate\n");
->> -	}
->> -	if (!retval)
->> -		msp_rxtx_ref++;
->> -	spin_unlock_irqrestore(&msp_rxtx_lock, flags);
->> -
->> -	return retval;
->> -}
->> -
->> -int msp13_i2s_exit(void)
->> -{
->> -	int retval = 0;
->> -	unsigned long flags;
->> -
->> -	spin_lock_irqsave(&msp_rxtx_lock, flags);
->> -	WARN_ON(!msp_rxtx_ref);
->> -	msp_rxtx_ref--;
->> -	if (msp_rxtx_ref == 0 && !(IS_ERR(msp1_p) || IS_ERR(msp1_sleep))) {
->> -		retval = pinctrl_select_state(msp1_p, msp1_sleep);
->> -		if (retval)
->> -			pr_err("could not set MSP1 sleepstate\n");
->> -	}
->> -	spin_unlock_irqrestore(&msp_rxtx_lock, flags);
->> -
->> -	return retval;
->> -}
->> -
->>  static struct stedma40_chan_cfg msp0_dma_rx = {
->>  	.high_priority = true,
->>  	.dir = STEDMA40_PERIPH_TO_MEM,
->> @@ -132,8 +85,6 @@ static struct msp_i2s_platform_data msp1_platform_data = {
->>  	.id = MSP_I2S_1,
->>  	.msp_i2s_dma_rx = NULL,
->>  	.msp_i2s_dma_tx = &msp1_dma_tx,
->> -	.msp_i2s_init = msp13_i2s_init,
->> -	.msp_i2s_exit = msp13_i2s_exit,
->>  };
+>>  	dev_dbg(&pdev->dev, "%s: Enter.\n", __func__);
 >>  
->>  static struct stedma40_chan_cfg msp2_dma_rx = {
->> @@ -219,47 +170,23 @@ static struct msp_i2s_platform_data msp3_platform_data = {
->>  	.id		= MSP_I2S_3,
->>  	.msp_i2s_dma_rx	= &msp1_dma_rx,
->>  	.msp_i2s_dma_tx	= NULL,
->> -	.msp_i2s_init = msp13_i2s_init,
->> -	.msp_i2s_exit = msp13_i2s_exit,
->>  };
+>>  	mop500_card.dev = &pdev->dev;
+>> @@ -117,8 +115,7 @@ static int __devinit mop500_probe(struct platform_device *pdev)
+>>  	ret = snd_soc_register_card(&mop500_card);
+>>  	if (ret)
+>>  		dev_err(&pdev->dev,
+>> -			"Error: snd_soc_register_card failed (%d)!\n",
+>> -			ret);
+>> +			"Error: snd_soc_register_card failed (%d)!\n", ret);
 >>  
->>  int mop500_msp_init(struct device *parent)
->>  {
->> -	struct platform_device *msp1;
->> -
->>  	pr_info("%s: Register platform-device 'snd-soc-mop500'.\n", __func__);
->>  	platform_device_register(&snd_soc_mop500);
+>>  	return ret;
+>>  }
+>> @@ -131,7 +128,7 @@ static int __devexit mop500_remove(struct platform_device *pdev)
 >>  
->>  	pr_info("Initialize MSP I2S-devices.\n");
->>  	db8500_add_msp_i2s(parent, 0, U8500_MSP0_BASE, IRQ_DB8500_MSP0,
->>  			   &msp0_platform_data);
->> -	msp1 = db8500_add_msp_i2s(parent, 1, U8500_MSP1_BASE, IRQ_DB8500_MSP1,
->> +	db8500_add_msp_i2s(parent, 1, U8500_MSP1_BASE, IRQ_DB8500_MSP1,
->>  			   &msp1_platform_data);
->>  	db8500_add_msp_i2s(parent, 2, U8500_MSP2_BASE, IRQ_DB8500_MSP2,
->>  			   &msp2_platform_data);
->>  	db8500_add_msp_i2s(parent, 3, U8500_MSP3_BASE, IRQ_DB8500_MSP1,
->>  			   &msp3_platform_data);
->>  
->> -	/* Get the pinctrl handle for MSP1 */
->> -	if (msp1) {
->> -		msp1_p = pinctrl_get(&msp1->dev);
->> -		if (IS_ERR(msp1_p))
->> -			dev_err(&msp1->dev, "could not get MSP1 pinctrl\n");
->> -		else {
->> -			msp1_def = pinctrl_lookup_state(msp1_p,
->> -							PINCTRL_STATE_DEFAULT);
->> -			if (IS_ERR(msp1_def)) {
->> -				dev_err(&msp1->dev,
->> -					"could not get MSP1 defstate\n");
->> -			}
->> -			msp1_sleep = pinctrl_lookup_state(msp1_p,
->> -							  PINCTRL_STATE_SLEEP);
->> -			if (IS_ERR(msp1_sleep))
->> -				dev_err(&msp1->dev,
->> -					"could not get MSP1 idlestate\n");
->> -		}
->> -	}
->> -
->>  	pr_info("%s: Register platform-device 'ux500-pcm'\n", __func__);
->>  	platform_device_register(&ux500_pcm);
->>  
->> diff --git a/arch/arm/mach-ux500/include/mach/msp.h b/arch/arm/mach-ux500/include/mach/msp.h
->> index 798be19..3cc7142 100644
->> --- a/arch/arm/mach-ux500/include/mach/msp.h
->> +++ b/arch/arm/mach-ux500/include/mach/msp.h
->> @@ -22,8 +22,6 @@ struct msp_i2s_platform_data {
->>  	enum msp_i2s_id id;
->>  	struct stedma40_chan_cfg *msp_i2s_dma_rx;
->>  	struct stedma40_chan_cfg *msp_i2s_dma_tx;
->> -	int (*msp_i2s_init) (void);
->> -	int (*msp_i2s_exit) (void);
->>  };
->>  
->>  #endif
->> diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
->> index 36be11e..08813c5 100644
->> --- a/sound/soc/ux500/ux500_msp_i2s.c
->> +++ b/sound/soc/ux500/ux500_msp_i2s.c
->> @@ -15,6 +15,7 @@
->>  
->>  #include <linux/module.h>
->>  #include <linux/platform_device.h>
->> +#include <linux/pinctrl/consumer.h>
->>  #include <linux/delay.h>
->>  #include <linux/slab.h>
->>  
->> @@ -25,6 +26,9 @@
->>  
->>  #include "ux500_msp_i2s.h"
->>  
->> +/* MSP1/3 Tx/Rx usage protection */
->> +static DEFINE_SPINLOCK(msp_rxtx_lock);
->> +
->>   /* Protocol desciptors */
->>  static const struct msp_protdesc prot_descs[] = {
->>  	{ /* I2S */
->> @@ -352,17 +356,23 @@ static int configure_multichannel(struct ux500_msp *msp,
->>  
->>  static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
->>  {
->> -	int status = 0;
->> +	int status = 0, retval = 0;
->>  	u32 reg_val_DMACR, reg_val_GCR;
->> +	unsigned long flags;
->>  
->>  	/* Check msp state whether in RUN or CONFIGURED Mode */
->> -	if ((msp->msp_state == MSP_STATE_IDLE) && (msp->plat_init)) {
->> -		status = msp->plat_init();
->> -		if (status) {
->> -			dev_err(msp->dev, "%s: ERROR: Failed to init MSP (%d)!\n",
->> -				__func__, status);
->> -			return status;
->> +	if (msp->msp_state == MSP_STATE_IDLE) {
->> +		spin_lock_irqsave(&msp_rxtx_lock, flags);
->> +		if (msp->pinctrl_rxtx_ref == 0 &&
->> +			!(IS_ERR(msp->pinctrl_p) || IS_ERR(msp->pinctrl_def))) {
->> +			retval = pinctrl_select_state(msp->pinctrl_p,
->> +						msp->pinctrl_def);
->> +			if (retval)
->> +				pr_err("could not set MSP defstate\n");
->>  		}
->> +		if (!retval)
->> +			msp->pinctrl_rxtx_ref++;
->> +		spin_unlock_irqrestore(&msp_rxtx_lock, flags);
->>  	}
->>  
->>  	/* Configure msp with protocol dependent settings */
->> @@ -620,7 +630,8 @@ int ux500_msp_i2s_trigger(struct ux500_msp *msp, int cmd, int direction)
->>  
->>  int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
->>  {
->> -	int status = 0;
->> +	int status = 0, retval = 0;
->> +	unsigned long flags;
->>  
->>  	dev_dbg(msp->dev, "%s: Enter (dir = 0x%01x).\n", __func__, dir);
->>  
->> @@ -631,12 +642,19 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
->>  		writel((readl(msp->registers + MSP_GCR) &
->>  			       (~(FRAME_GEN_ENABLE | SRG_ENABLE))),
->>  			      msp->registers + MSP_GCR);
->> -		if (msp->plat_exit)
->> -			status = msp->plat_exit();
->> -			if (status)
->> -				dev_warn(msp->dev,
->> -					"%s: WARN: ux500_msp_i2s_exit failed (%d)!\n",
->> -					__func__, status);
->> +
->> +		spin_lock_irqsave(&msp_rxtx_lock, flags);
->> +		WARN_ON(!msp->pinctrl_rxtx_ref);
->> +		msp->pinctrl_rxtx_ref--;
->> +		if (msp->pinctrl_rxtx_ref == 0 &&
->> +			!(IS_ERR(msp->pinctrl_p) || IS_ERR(msp->pinctrl_sleep))) {
->> +			retval = pinctrl_select_state(msp->pinctrl_p,
->> +						msp->pinctrl_sleep);
->> +			if (retval)
->> +				pr_err("could not set MSP sleepstate\n");
->> +		}
->> +		spin_unlock_irqrestore(&msp_rxtx_lock, flags);
->> +
->>  		writel(0, msp->registers + MSP_GCR);
->>  		writel(0, msp->registers + MSP_TCF);
->>  		writel(0, msp->registers + MSP_RCF);
->> @@ -678,8 +696,6 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
->>  
->>  	msp->id = platform_data->id;
->>  	msp->dev = &pdev->dev;
->> -	msp->plat_init = platform_data->msp_i2s_init;
->> -	msp->plat_exit = platform_data->msp_i2s_exit;
->>  	msp->dma_cfg_rx = platform_data->msp_i2s_dma_rx;
->>  	msp->dma_cfg_tx = platform_data->msp_i2s_dma_tx;
->>  
->> @@ -717,6 +733,25 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
->>  	dev_dbg(&pdev->dev, "I2S device-name: '%s'\n", i2s_cont->name);
->>  	msp->i2s_cont = i2s_cont;
->>  
->> +	msp->pinctrl_p = pinctrl_get(msp->dev);
->> +	if (IS_ERR(msp->pinctrl_p))
->> +		dev_err(&pdev->dev, "could not get MSP pinctrl\n");
->> +	else {
->> +		msp->pinctrl_def = pinctrl_lookup_state(msp->pinctrl_p,
->> +						PINCTRL_STATE_DEFAULT);
->> +		if (IS_ERR(msp->pinctrl_def)) {
->> +			dev_err(&pdev->dev,
->> +				"could not get MSP defstate (%li)\n",
->> +				PTR_ERR(msp->pinctrl_def));
->> +		}
->> +		msp->pinctrl_sleep = pinctrl_lookup_state(msp->pinctrl_p,
->> +						PINCTRL_STATE_SLEEP);
->> +		if (IS_ERR(msp->pinctrl_sleep))
->> +			dev_err(&pdev->dev,
->> +				"could not get MSP idlestate (%li)\n",
->> +				PTR_ERR(msp->pinctrl_def));
->> +	}
+>>  	snd_soc_unregister_card(mop500_card);
+>>  	mop500_ab8500_remove(mop500_card);
+>> -	
 >> +
 >>  	return 0;
+>>  }
 >>  
->>  err_i2s_cont:
->> diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
->> index 2d9136d..1311c0d 100644
->> --- a/sound/soc/ux500/ux500_msp_i2s.h
->> +++ b/sound/soc/ux500/ux500_msp_i2s.h
->> @@ -524,14 +524,18 @@ struct ux500_msp {
->>  	struct dma_chan *rx_pipeid;
->>  	enum msp_state msp_state;
->>  	int (*transfer) (struct ux500_msp *msp, struct i2s_message *message);
->> -	int (*plat_init) (void);
->> -	int (*plat_exit) (void);
->>  	struct timer_list notify_timer;
->>  	int def_elem_len;
->>  	unsigned int dir_busy;
->>  	int loopback_enable;
->>  	u32 backup_regs[MAX_MSP_BACKUP_REGS];
->>  	unsigned int f_bitclk;
->> +	/* Pin modes */
->> +	struct pinctrl *pinctrl_p;
->> +	struct pinctrl_state *pinctrl_def;
->> +	struct pinctrl_state *pinctrl_sleep;
->> +	/* Reference Count */
->> +	int pinctrl_rxtx_ref;
->>  };
->>  
->>  struct ux500_msp_dma_params {
 >> -- 
 >> 1.7.9.5
 >> 
 > 
 
 
-Looks OK from my perspective!
+Nothing to say about this one. Looks OK.
