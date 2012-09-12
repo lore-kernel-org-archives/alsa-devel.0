@@ -1,20 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Channel map API patches: to be 3.7 or not to be?
-Date: Wed, 12 Sep 2012 18:32:26 +0200
-Message-ID: <5050B91A.7020303@ladisch.de>
-References: <s5hk3w1g4e2.wl%tiwai@suse.de>
- <CAN8cciYtoH91sFjwes+aTAjO+4z8CCMdOYgM4kdWbGNr3iuheQ@mail.gmail.com>
- <s5hbohdezpc.wl%tiwai@suse.de> <s5hehm8rc2s.wl%tiwai@suse.de>
- <504F2C65.1090204@ladisch.de> <s5hbohcrbme.wl%tiwai@suse.de>
- <s5hbohb1b5e.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: core: Mark regmap CODEC register
+ maps as dirty when suspending
+Date: Wed, 12 Sep 2012 17:36:41 +0100
+Message-ID: <1347467801.5312.0.camel@odin>
+References: <1347423794-8606-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 98808261722
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 18:32:28 +0200 (CEST)
-In-Reply-To: <s5hbohb1b5e.wl%tiwai@suse.de>
+Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
+ [74.125.149.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63047261722
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 18:36:46 +0200 (CEST)
+Received: by weyx10 with SMTP id x10so1021544wey.38
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 09:36:43 -0700 (PDT)
+In-Reply-To: <1347423794-8606-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,25 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->> Clemens Ladisch wrote:
->>> Takashi Iwai wrote:
->>>>   is it useful to add SND_CHMAP_MONO, or is it just redundant?
->>>
->>> What would it be used for?
->
-> Looking at PulseAudio and gstreamer codes, they seem to have explicit
-> MONO channel definition.
-> [...]
-> So, defining MONO seems rather standard.  Now I'm inclined to define
-> SND_CHMAP_MONO...
+On Wed, 2012-09-12 at 12:23 +0800, Mark Brown wrote:
+> The core has for a long time had support for marking the register maps of
+> devices dirty when suspending so that they are resynced on resume. Also
+> implement this feature for CODECs using regmap.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-core.c |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 0c7e477..b94ce32 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -635,6 +635,8 @@ int snd_soc_suspend(struct device *dev)
+>  				codec->driver->suspend(codec);
+>  				codec->suspended = 1;
+>  				codec->cache_sync = 1;
+> +				if (codec->using_regmap)
+> +					regcache_mark_dirty(codec->control_data);
+>  				break;
+>  			default:
+>  				dev_dbg(codec->dev, "CODEC is on over suspend\n");
 
-Okay; if they want it, they can get it ...
-
-
-Regards,
-Clemens
+Acked-by: Liam Girdwood <lrg@ti.com>
