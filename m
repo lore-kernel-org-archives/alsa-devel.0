@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] ASoC: fsl: mpc5200-soc-audio driver
-Date: Wed, 12 Sep 2012 11:11:22 +0800
-Message-ID: <20120912031121.GG9162@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/5] arch/powerpc/boot/dts pcm030 add
+ mpc5200-soc-audio node
+Date: Wed, 12 Sep 2012 11:17:20 +0800
+Message-ID: <20120912031719.GH9162@opensource.wolfsonmicro.com>
 References: <1347416089-23393-1-git-send-email-emillbrandt@dekaresearch.com>
- <1347416089-23393-4-git-send-email-emillbrandt@dekaresearch.com>
+ <1347416089-23393-5-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A825E2615E3
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 05:11:33 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 335772615EE
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 05:17:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1347416089-23393-4-git-send-email-emillbrandt@dekaresearch.com>
+In-Reply-To: <1347416089-23393-5-git-send-email-emillbrandt@dekaresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,45 +27,16 @@ To: Eric Millbrandt <emillbrandt@dekaresearch.com>
 Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Anatolij Gustschin <agust@denx.de>, linuxppc-dev@lists.ozlabs.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 11, 2012 at 10:14:47PM -0400, Eric Millbrandt wrote:
-> Add a generic mpc5200 driver that allows asoc cards to be defined in the
-> device tree.
+On Tue, Sep 11, 2012 at 10:14:48PM -0400, Eric Millbrandt wrote:
 
-ASoC - you've misspelt this throughout.
+> +		analog@0 {
+> +			stream-name = "AC97 Analog";
+> +			codec-name = "wm9712-codec.0";
 
-This changelog should discuss the subset of devices supported by your
-binding, it's only possible to define bindings like this for a subset of
-possible cards.  Looking at the code it seems like this driver can only
-work for CODECs which require no runtime configuration (which is a very
-small subset of CODEC drivers).
-
-> --- a/Documentation/devicetree/bindings/powerpc/fsl/mpc5200.txt
-> +++ b/Documentation/devicetree/bindings/powerpc/fsl/mpc5200.txt
-
-Audio bindings generally go under sound.
-
-> +Multiple DAI nodes may be attached to a sound node
-> +- stream-name         - The asoc name of the platform DAI stream
-> +- codec-name          - The name of codec to bind to
-> +- codec-dai-name      - The codec DAI to bind to
-> +- cpu-dai-name        - The cpu DAI to bind to
-
-What are the allowable values for these strings?
-
-> +config SND_MPC52xx_SOC_AUDIO
-> +	tristate "SoC Generic Audio support for MPC5200"
-> +	depends on (SND_SOC_MPC5200_AC97 || SND_SOC_MPC5200_I2S)
-
-It seems wrong that this depends on both AC'97 and I2S - users should be
-able to use one or the other.  Given how AC'97 works we really should be
-defining it as a bus in the device tree anyway, and ideally trying to
-enumerate the CODECs at runtime, so it should probably be a separate
-binding.
-
-> +#define DEBUG
-
-Remove this for mainline.
-
-> +	card = kzalloc(sizeof(struct snd_soc_card), GFP_KERNEL);
-
-devm_kzalloc()
+This name is fairly clearly an internal implementation detail of how
+Linux does audio drivers, we shouldn't be using it in device tree
+bindings.  We should instead be doing something like referencing a
+device tree node for the CODEC.  Look at how drivers like the nVidia
+Tegra ones handle this, though for AC'97 we should really be able to
+figure out a standard hookup like this automatically at runtime, it's
+all enumerable.
