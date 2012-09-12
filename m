@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: fsl: mpc5200 multi-codec fixups
-Date: Wed, 12 Sep 2012 11:04:59 +0800
-Message-ID: <20120912030457.GF9162@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/5] ASoC: fsl: mpc5200-soc-audio driver
+Date: Wed, 12 Sep 2012 11:11:22 +0800
+Message-ID: <20120912031121.GG9162@opensource.wolfsonmicro.com>
 References: <1347416089-23393-1-git-send-email-emillbrandt@dekaresearch.com>
- <1347416089-23393-2-git-send-email-emillbrandt@dekaresearch.com>
+ <1347416089-23393-4-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2EA502615E3
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 05:05:05 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A825E2615E3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 05:11:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1347416089-23393-2-git-send-email-emillbrandt@dekaresearch.com>
+In-Reply-To: <1347416089-23393-4-git-send-email-emillbrandt@dekaresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,45 +26,45 @@ To: Eric Millbrandt <emillbrandt@dekaresearch.com>
 Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Anatolij Gustschin <agust@denx.de>, linuxppc-dev@lists.ozlabs.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 11, 2012 at 10:14:45PM -0400, Eric Millbrandt wrote:
-> Add platform DAI information that is needed to successfully register the
-> mpc5200 platform.
+On Tue, Sep 11, 2012 at 10:14:47PM -0400, Eric Millbrandt wrote:
+> Add a generic mpc5200 driver that allows asoc cards to be defined in the
+> device tree.
 
-I'm really not clear what this patch is supposed to be doing.  What are
-the problems you are trying to fix and how does your patch fix them?
-This should almost certainly be split into a bunch of smaller patches
-with focused changelogs.
+ASoC - you've misspelt this throughout.
 
-> --- a/arch/powerpc/platforms/52xx/Kconfig
-> +++ b/arch/powerpc/platforms/52xx/Kconfig
-> @@ -1,6 +1,7 @@
->  config PPC_MPC52xx
->  	bool "52xx-based boards"
->  	depends on 6xx
-> +	select FSL_SOC
->  	select PPC_CLOCK
->  	select PPC_PCI_CHOICE
+This changelog should discuss the subset of devices supported by your
+binding, it's only possible to define bindings like this for a subset of
+possible cards.  Looking at the code it seems like this driver can only
+work for CODECs which require no runtime configuration (which is a very
+small subset of CODEC drivers).
 
-This doesnt seem to have much to do with the commit message...
+> --- a/Documentation/devicetree/bindings/powerpc/fsl/mpc5200.txt
+> +++ b/Documentation/devicetree/bindings/powerpc/fsl/mpc5200.txt
 
-> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-> index 9a3f7c5..46fb518 100644
-> --- a/sound/soc/fsl/mpc5200_dma.c
-> +++ b/sound/soc/fsl/mpc5200_dma.c
-> @@ -366,8 +366,8 @@ static void psc_dma_free(struct snd_pcm *pcm)
->  
->  static struct snd_soc_platform_driver mpc5200_audio_dma_platform = {
->  	.ops		= &psc_dma_ops,
-> -	.pcm_new	= &psc_dma_new,
-> -	.pcm_free	= &psc_dma_free,
-> +	.pcm_new	= psc_dma_new,
-> +	.pcm_free	= psc_dma_free,
->  };
+Audio bindings generally go under sound.
 
-Nor does this.
+> +Multiple DAI nodes may be attached to a sound node
+> +- stream-name         - The asoc name of the platform DAI stream
+> +- codec-name          - The name of codec to bind to
+> +- codec-dai-name      - The codec DAI to bind to
+> +- cpu-dai-name        - The cpu DAI to bind to
 
-> -/* ALSA only supports a single AC97 device so static is recommend here */
-> +/* ALSA only supports a single AC97 bus device so static is recommend here */
->  static struct psc_dma *psc_dma;
+What are the allowable values for these strings?
 
-Or this.
+> +config SND_MPC52xx_SOC_AUDIO
+> +	tristate "SoC Generic Audio support for MPC5200"
+> +	depends on (SND_SOC_MPC5200_AC97 || SND_SOC_MPC5200_I2S)
+
+It seems wrong that this depends on both AC'97 and I2S - users should be
+able to use one or the other.  Given how AC'97 works we really should be
+defining it as a bus in the device tree anyway, and ideally trying to
+enumerate the CODECs at runtime, so it should probably be a separate
+binding.
+
+> +#define DEBUG
+
+Remove this for mainline.
+
+> +	card = kzalloc(sizeof(struct snd_soc_card), GFP_KERNEL);
+
+devm_kzalloc()
