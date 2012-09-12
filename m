@@ -1,21 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Channel map API patches: to be 3.7 or not to be?
-Date: Wed, 12 Sep 2012 09:35:20 +0800
-Message-ID: <CAN8ccib1bbVtGDcEqiizbzQg+iZg13redh_fPMYX-fQsGKtStw@mail.gmail.com>
-References: <s5hk3w1g4e2.wl%tiwai@suse.de>
- <CAN8cciYtoH91sFjwes+aTAjO+4z8CCMdOYgM4kdWbGNr3iuheQ@mail.gmail.com>
- <s5hbohdezpc.wl%tiwai@suse.de> <s5hehm8rc2s.wl%tiwai@suse.de>
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+Subject: [RFC PATCH 0/5] mpc5200 asoc fixups
+Date: Tue, 11 Sep 2012 22:14:44 -0400
+Message-ID: <1347416089-23393-1-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EF3B2615E3
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:35:21 +0200 (CEST)
-Received: by qcse14 with SMTP id e14so700654qcs.38
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 18:35:20 -0700 (PDT)
-In-Reply-To: <s5hehm8rc2s.wl%tiwai@suse.de>
+Received: from norco.coldhaus.com (norco.coldhaus.com [64.32.230.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id B23A92615E3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 04:15:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,67 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: lukasz.wojnilowicz@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, pulseaudio-discuss@lists.freedesktop.org
+To: Grant Likely <grant.likely@secretlab.ca>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Anatolij Gustschin <agust@denx.de>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi05LTExIOS4i+WNiDg6MTQg5pa8ICJUYWthc2hpIEl3YWkiIDx0aXdhaUBzdXNlLmRlPiDl
-r6vpgZPvvJoKPgo+IEF0IFR1ZSwgMTEgU2VwIDIwMTIgMTA6MjI6MjMgKzAyMDAsCj4gVGFrYXNo
-aSBJd2FpIHdyb3RlOgo+ID4KPiA+IEF0IFR1ZSwgMTEgU2VwIDIwMTIgMTY6MTA6NDMgKzA4MDAs
-Cj4gPiBSYXltb25kIFlhdSB3cm90ZToKPiA+ID4KPiA+ID4gMjAxMi05LTExIOS4iuWNiDE6NDMg
-5pa8ICJUYWthc2hpIEl3YWkiIDx0aXdhaUBzdXNlLmRlPiDlr6vpgZPvvJoKPiA+ID4gPgo+ID4g
-PiA+IEhpLAo+ID4gPiA+Cj4gPiA+ID4gZG9lcyBhbnlvbmUgaGF2ZSBjb25jZXJuIGlmIEkgcHVz
-aCB0aGUgY3VycmVudCBjaGFubmVsIG1hcCBBUEkKcGF0Y2hlcwo+ID4gPiA+IChpbiBzb3VuZC11
-bnN0YWJsZSBnaXQgdHJlZSB0b3BpYy90bHYtY2htYXAgYnJhbmNoKSBmb3IgbGludXgtbmV4dCwK
-PiA+ID4gPiBpLmUuIGZvciBpbmNsdXNpb24gdG8gMy43IGtlcm5lbD8KPiA+ID4gPgo+ID4gPiA+
-IEkgZG9uJ3Qgd29ycnkgdG9vIG11Y2ggYWJvdXQgdGhlIGtlcm5lbCBBUEkuICBUaGlzIGNhbiBi
-ZSByZWZhY3RvcmVkCj4gPiA+ID4gbGF0ZXIuICBCdXQgdGhlIGtlcm5lbCBBQkkgbXVzdCByZXRh
-aW4sIHNvIHdlIHdvbid0IGNoYW5nZSBpbiBhbgo+ID4gPiA+IGluY29tcGF0aWJsZSB3YXkgYW55
-IGxvbmdlciBvbmNlIGFmdGVyIGl0J3MgbWVyZ2VkIHRvIHRoZSB1cHN0cmVhbS4KPiA+ID4gPgo+
-ID4gPiA+IFNvLCBpZiBhbnlvbmUgc2VlcyBhIGZsYXcgaW4gdGhlIGtlcm5lbCBBQkkgZGVmaW5p
-dGlvbiB1c2luZyBjb250cm9sCj4gPiA+ID4gZWxlbWVudHMsIGxldCBtZSBrbm93Lgo+ID4gPiA+
-Cj4gPiA+ID4gKEJ1dCBub3RlIHRoYXQgdGhlIEFQSSBjYW4ndCBiZSBwZXJmZWN0IGZvciBhbGwg
-Z2VuZXJpYyBwdXJwb3Nlcy4KPiA+ID4gPiAgSXQncyBkZXNpZ25lZCB0byBiZSAiZ29vZCBlbm91
-Z2giIGZvciBhIGJpZyBsYWNrIGZvciBtdWx0aS1jaGFubmVsCj4gPiA+ID4gIHN0cmVhbWluZy4g
-IE9mIGNvdXJzZSwgdGhpcyBkb2Vzbid0IGRpc2NvdXJhZ2UgdG8gdXNlIHRoZSBBUEkgZm9yCmFu
-eQo+ID4gPiA+ICBvdGhlciBwdXJwb3Nlcy4pCj4gPiA+ID4KPiA+ID4KPiA+ID4gSG93IGFib3V0
-IHRoZSBjaGFubmVsIG1hcCBvZiB0aGUgdXNiIG1vbm8gcGxheWJhY2sgZGV2aWNlIGFuZCB0aG9z
-ZQpzb3VuZAo+ID4gPiBjYXJkIHdoaWNoIGNhbiBwYW4gbW9ubyB0byBzdGVyZW8gc3BlYWtlcnMg
-YW5kIGhlYWRwaG9uZT8KPiA+Cj4gPiBJZiB0aGUgZGV2aWNlIHNwZWNpZmllcyB3aGljaCBzcGVh
-a2VyIHBvc2l0aW9uIHRoZSBtb25vIGNoYW5uZWwgaXMKPiA+IGZvciwgdGhlbiB5b3UgY2FuIG1h
-cCBpdCBwcm9wZXJseS4gIFVubGVzcyBpdCdzIHJlYWxseSBzcGVjaWZpZWQgYnkKPiA+IHRoZSBk
-ZXZpY2UsIHRoZSBtb25vIHN0cmVhbSBpcyBVTktOT1dOIHBvc2l0aW9uIGluIGdlbmVyYWwuCj4K
-PiBCVFcsIHRoaXMgcmVtaW5kcyBtZSBvZiBhbiBvcGVuIHF1ZXN0aW9uOgo+ICAgaXMgaXQgdXNl
-ZnVsIHRvIGFkZCBTTkRfQ0hNQVBfTU9OTywgb3IgaXMgaXQganVzdCByZWR1bmRhbnQ/Cj4KPiBJ
-dCdzIG5vdGhpbmcgYnV0IGluZGljYXRpbmcgYSBtb25vIGNoYW5uZWwgd2l0aG91dCBhbnkgY2hh
-bm5lbAo+IHBvc2l0aW9uLCBzbyBJIHN1cHBvc2VkIFNORF9DSE1BUF9VTktOT1dOIGJlaW5nIHN1
-ZmZpY2llbnQuICBPVE9ILAo+IFNORF9DSE1BUF9NT05PIHdvdWxkIGdpdmUgYSBjbGVhciBzaWdu
-IG9mIG1vbm8gc3RyZWFtcyB3aGlsZQo+IFNORF9DSE1BUF9VTktOT1dOIGNvdWxkIGJlIHVzZWQg
-Zm9yIGFueSBvdGhlciBleGNlcHRpb25hbCBwdXJwb3Nlcy4KPgo+CgpIb3cgYWJvdXQgdGhvc2Ug
-c291bmQgY2FyZCB3aGljaCB1c2UgbXVsdGkgcGx1Z2luIGZvciBtdWx0aSBjaGFubmVscyAoZS5n
-LgplbXUxMGsxICwgYzAxMDYgYW5kIGNzNDYzMCkgYXMgdGhleSBjYW4gYWxzbyBwcm92aWRlIGEg
-cmVhciBvciBjbGZlIGRldmljZQpmb3IgaW5kZXBlbmRlbnQgc3RlcmVvIHBsYXliYWNrID8KCkl0
-IHNlZW0gdGhlIGJyYW5jaCBzdGlsbCBtaXNzIHRoZSBwYXRjaCBmb3IgYXU4OHgwIGFuZCB5bWZw
-Y2kgd2hpY2ggbmVlZCB0bwpjaGVjayB0aGUgc2RhYyBiaXQgb2YgYWM5NyBjb2RlYyBmb3IgYWRk
-aW5nIHRoZSA0IGNoYW5uZWxzIG1hcAoKTW9zdCBvZiAyLjEgZXh0ZXJuYWwgc3BlYWtlciBzZXQg
-b25seSBoYXZlIGdyZWVuIGphY2sgYW5kIHRob3NlIGNyZWF0aXZlCjQuMSBmcHMgaGF2ZSBncmVl
-biBhbmQgYmxhY2sgamFja3Mgd2hlcmUgdGhlIHZvbHVtZSBvZiBzdWJ3b29mZXIgaXMKY29udHJv
-bGxlZCBieSB0aGUgdm9sdW1lIGtub2Igb2YgdGhlIHN1Yndvb2ZlcgoKaHR0cHM6Ly9idWdzLmxh
-dW5jaHBhZC5uZXQvdWJ1bnR1Lytzb3VyY2UvYWxzYS1kcml2ZXIvK2J1Zy8xMDQ3NTQzCgpIb3dl
-dmVyIHNvbWUgb2YgdGhvc2UgMi4xIGludGVybmFsIHNwZWFrZXIgaW4gbm90ZWJvb2sgbWF5IG5l
-ZWQgc3RlcmVvCmNoYW5uZWwgbWFwIChlLmcuIHN0YWM5MjB4IGhkYSBjb2RlYyB1c2luZyBtb25v
-IHdpZGdldCkKClNvbWUgbm90ZWJvb2sgKGUuZy4gYWNlciBhc3BpcmUgNDkzMGcpIGhkYSBjb2Rl
-YykgbWF5IG5lZWQgYSBzcGVjaWFsCmNoYW5uZWwgbWFwIGZvciB0aGUgaW50ZXJuYWwgMi4xIHNw
-ZWFrZXIgYnV0IGEgc3RlcmVvIGNoYW5uZWwgbWFwIGZvciB0aGUKZXh0ZXJuYWwgMi4xIHNwZWFr
-ZXIgYW5kIHNvbWUgQXN1cyBsYXB0b3BzIGhhdmUgcHJvcGVydGlhcnkgamFjayBmb3IgdGhlCmV4
-dGVybmFsIHN1Yndvb2ZlcgoKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9n
-aXQvdGl3YWkvc291bmQuZ2l0O2E9Y29tbWl0O2g9Nzg2YzUxZjkxNjhjZmQyZDQ5MjUwYzZlNWU2
-MDAzNWNiYjJmZDVhMQoKRG9lcyB0aG9zZSAzc3RhY2stNmNoIGxhcHRvcC9kZXNrdG9wIGhhdmUg
-dGhvc2UgNS4xIGNoYW5uZWwgbWFwIGJlZm9yZSB0aGUKaW5wdXQgamFjayByZXRhc2tlZCBhcyBv
-dXRwdXQ/CgpJZiB5ZXMsIGRvZXMgdGhlIHJldGFza2luZyBpcyBwZXJmb3JtZWQgYXV0b21hdGlj
-YWxseSBieSB0aGUgc2V0IGNoYW5uZWwKbWFwIGZ1bmN0aW9uPwoKaHR0cDovL2dpdC5rZXJuZWwu
-b3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtdW5zdGFibGUuZ2l0O2E9Y29tbWl0
-O2g9OWM5YTUxNzVlNjViMjY2NzAwMWU2YTNiNmRlZGRkZWJlZWU4MmFhMgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The mpc5200 asoc code did not run after the multi-codec patches.  This series
+fixes the existing code and adds a generic platform driver that allows the
+audio layout to be described in the device tree.
+
+Eric Millbrandt (5):
+  ASoC: fsl: mpc5200 multi-codec fixups
+  ASoC: fsl: mpc5200 combine psc_dma platform data
+  ASoC: fsl: mpc5200-soc-audio driver
+  arch/powerpc/boot/dts pcm030 add mpc5200-soc-audio node
+  ASoC: fsl: mpc5200 remove pcm030 and efika audio fabric
+
+ .../devicetree/bindings/powerpc/fsl/mpc5200.txt    |   17 ++
+ arch/powerpc/boot/dts/pcm030.dts                   |   23 ++-
+ arch/powerpc/platforms/52xx/Kconfig                |    1 +
+ sound/soc/fsl/Kconfig                              |   20 +--
+ sound/soc/fsl/Makefile                             |    3 +-
+ sound/soc/fsl/efika-audio-fabric.c                 |   91 --------
+ sound/soc/fsl/mpc5200_dma.c                        |   28 +--
+ sound/soc/fsl/mpc5200_dma.h                        |    3 +
+ sound/soc/fsl/mpc5200_psc_ac97.c                   |   13 +-
+ sound/soc/fsl/mpc5200_psc_i2s.c                    |    8 +
+ sound/soc/fsl/mpc5200_soc_audio.c                  |  232 ++++++++++++++++++++
+ sound/soc/fsl/pcm030-audio-fabric.c                |   91 --------
+ 12 files changed, 306 insertions(+), 224 deletions(-)
+ delete mode 100644 sound/soc/fsl/efika-audio-fabric.c
+ create mode 100644 sound/soc/fsl/mpc5200_soc_audio.c
+ delete mode 100644 sound/soc/fsl/pcm030-audio-fabric.c
+
+-- 
+1.7.2.5
