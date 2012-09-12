@@ -1,14 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/7] ASoC: wm8510: Convert to devm_kzalloc()
-Date: Wed, 12 Sep 2012 09:32:54 +0800
-Message-ID: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/7] ASoC: wm8580: Convert to devm_kzalloc()
+Date: Wed, 12 Sep 2012 09:32:55 +0800
+Message-ID: <1347413580-11137-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6C1C72615E3
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:33:35 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 45FCB2615E3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:33:36 +0200 (CEST)
+In-Reply-To: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +26,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8510.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm8580.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 56a0495..98f28a0 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -592,7 +592,8 @@ static int __devinit wm8510_spi_probe(struct spi_device *spi)
- 	struct wm8510_priv *wm8510;
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index 7c68226..cc198df 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -899,7 +899,8 @@ static int wm8580_i2c_probe(struct i2c_client *i2c,
+ 	struct wm8580_priv *wm8580;
  	int ret;
  
--	wm8510 = kzalloc(sizeof(struct wm8510_priv), GFP_KERNEL);
-+	wm8510 = devm_kzalloc(&spi->dev, sizeof(struct wm8510_priv),
+-	wm8580 = kzalloc(sizeof(struct wm8580_priv), GFP_KERNEL);
++	wm8580 = devm_kzalloc(&i2c->dev, sizeof(struct wm8580_priv),
 +			      GFP_KERNEL);
- 	if (wm8510 == NULL)
+ 	if (wm8580 == NULL)
  		return -ENOMEM;
  
-@@ -601,8 +602,7 @@ static int __devinit wm8510_spi_probe(struct spi_device *spi)
+@@ -908,15 +909,13 @@ static int wm8580_i2c_probe(struct i2c_client *i2c,
  
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_dev_wm8510, &wm8510_dai, 1);
+ 	ret =  snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8580, wm8580_dai, ARRAY_SIZE(wm8580_dai));
 -	if (ret < 0)
--		kfree(wm8510);
+-		kfree(wm8580);
 +
  	return ret;
  }
  
-@@ -630,7 +630,8 @@ static __devinit int wm8510_i2c_probe(struct i2c_client *i2c,
- 	struct wm8510_priv *wm8510;
- 	int ret;
- 
--	wm8510 = kzalloc(sizeof(struct wm8510_priv), GFP_KERNEL);
-+	wm8510 = devm_kzalloc(&i2c->dev, sizeof(struct wm8510_priv),
-+			      GFP_KERNEL);
- 	if (wm8510 == NULL)
- 		return -ENOMEM;
- 
-@@ -639,8 +640,7 @@ static __devinit int wm8510_i2c_probe(struct i2c_client *i2c,
- 
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8510, &wm8510_dai, 1);
--	if (ret < 0)
--		kfree(wm8510);
-+
- 	return ret;
+ static int wm8580_i2c_remove(struct i2c_client *client)
+ {
+ 	snd_soc_unregister_codec(&client->dev);
+-	kfree(i2c_get_clientdata(client));
+ 	return 0;
  }
  
 -- 
