@@ -1,67 +1,59 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: codecs: Add DA9055 codec driver
-Date: Wed, 12 Sep 2012 20:49:34 +0800
-Message-ID: <20120912124932.GC19055@opensource.wolfsonmicro.com>
-References: <1347375823.12329.14.camel@matrix>
- <20120912025709.GD9162@opensource.wolfsonmicro.com>
- <1347454578.23366.305.camel@matrix>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 11/11] ASoC: omap-pcm: Convert to use dmaengine
+Date: Wed, 12 Sep 2012 15:53:47 +0300
+Message-ID: <505085DB.5000407@ti.com>
+References: <1347450427-27627-1-git-send-email-peter.ujfalusi@ti.com> <1347450427-27627-12-git-send-email-peter.ujfalusi@ti.com> <20120912120028.GC28448@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 767C22616A1
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 14:49:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1347454578.23366.305.camel@matrix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120912120028.GC28448@n2100.arm.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 12, 2012 at 06:26:18PM +0530, Ashish Chavan wrote:
-> On Wed, 2012-09-12 at 10:57 +0800, Mark Brown wrote:
+On 09/12/2012 03:00 PM, Russell King - ARM Linux wrote:
+> On Wed, Sep 12, 2012 at 02:47:07PM +0300, Peter Ujfalusi wrote:
+>> 2. Pause/Resume
+>>    OMAP DMA engine backend does not support pausing and resuming
+>>    an in-progress transfer.  It is unclear from the specs what
+>>    effect clearing the enable bit has on the DMA position of a
+>>    destination synchronized transfer, and whether the transfer
+>>    can be restarted from the exact point that it was paused (or
+>>    whether the data in the FIFO read from memory is simply
+>>    discarded.)
+>=20
+> It's worth noting that this comment (which was in my original patch)
+> is there to spark _comment_ and _discussion_ and should not make its
+> way into the final version of these patches.
+>=20
+> Given that suspend/resume is important on OMAP platforms, it's someth=
+ing
+> that needs to be resolved - in a way that complies with what ALSA exp=
+ects.
+> I do not believe that the way the existing drivers do this is complia=
+nt
+> as the manuals imply that stopping memory->peripheral transfers resul=
+ts
+> in data being discarded from the DMA's FIFOs.  As I understand it, AL=
+SA
+> requires no data to be discarded.
+>=20
+> As we have no way to know how much data may be discarded from the DMA
+> FIFO...
 
-> > Why is any of this being exposed to userspace?  If this should be
-> > configured I'd expect it to be static platform data, not something that
-> > gets changed at runtime.
+I need to look at this, but at first look we do wait for the drain in
+omap_stop_dma(). We used to use omap_stop_dma/omap_start_dma for pause/=
+resume
+operations.
+But sDMA also have a bit: CDPi: PAUSE_LINK_LIST which should do what we=
+ are
+looking for.
+Need to read the relevant parts of the TRM, but AFAIK we are using norm=
+al mode
+with linked list (self linking).
+I already have the patch for this, I just need to test it on HW.
 
-> These parameters are exposed considering the fact that DMIC itself is
-> not part of the codec. Codec only provides DMIC interface using which an
-> external DMIC can be attached. These parameters depend on the actual
-> DMIC hardware and hence kept configurable to allow runtime plug in of
-> any DMIC hardware. Doesn't it make sense to keep them runtime
-> configurable?
-
-No.  The only realistic way to attach a new DMIC to a board is to solder
-it down, that's not something people are going to do while the system is
-actve.  It's something that's fixed at PCB design time.
-
-> > > +	/* In slave mode, there is only one set of divisors */
-> > > +	if (!da9055->master)
-> > > +		fout = 2822400;
-
-> > Should check the user supplied this value
-
-> Can you explain which value / user supplied value you are referring to?
-> It is not quite clear to me.
-
-The specified output frequency, you just totally ignore it.
-
-> For other things like input mixers, Headphone and Lineouts, DAPM is
-> already used to control power specific bits. The confusion is because
-> there are two separate control bits for these blocks. One bit is for
-> "Enabling" that block and other is for "Enabling Amplifier" of that
-> block.
-> e.g for headphone, one bit is for "output enable" while other is for
-> "output amplifier enable".
-
-So document this.
+--=20
+P=E9ter
