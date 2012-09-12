@@ -1,52 +1,76 @@
-From: Tanu Kaskinen <tanu.kaskinen@jollamobile.com>
-Subject: Re: [alsa-devel] Channel map API patches: to
- be 3.7 or not to be?
-Date: Wed, 12 Sep 2012 20:20:10 +0300
-Message-ID: <1347470410.14342.3.camel@laptop>
-References: <s5hk3w1g4e2.wl%tiwai@suse.de>
-	<CAN8cciYtoH91sFjwes+aTAjO+4z8CCMdOYgM4kdWbGNr3iuheQ@mail.gmail.com>
-	<s5hbohdezpc.wl%tiwai@suse.de> <s5hehm8rc2s.wl%tiwai@suse.de>
-	<504F2C65.1090204@ladisch.de> <s5hbohcrbme.wl%tiwai@suse.de>
-	<s5hbohb1b5e.wl%tiwai@suse.de> <5050B91A.7020303@ladisch.de>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: ucm: hardware resource arbitration
+Date: Wed, 12 Sep 2012 15:51:15 -0700
+Message-ID: <505111E3.9090506@codeaurora.org>
+References: <504EDF0F.70809@codeaurora.org> <1347458022.6888.31.camel@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <5050B91A.7020303@ladisch.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+ [199.106.114.254])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC84C2616F9
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 00:51:18 +0200 (CEST)
+In-Reply-To: <1347458022.6888.31.camel@laptop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tanu Kaskinen <tanuk@iki.fi>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-09-12 at 18:32 +0200, Clemens Ladisch wrote:
-> Takashi Iwai wrote:
-> >> Clemens Ladisch wrote:
-> >>> Takashi Iwai wrote:
-> >>>>   is it useful to add SND_CHMAP_MONO, or is it just redundant?
-> >>>
-> >>> What would it be used for?
-> >
-> > Looking at PulseAudio and gstreamer codes, they seem to have explicit
-> > MONO channel definition.
-> > [...]
-> > So, defining MONO seems rather standard.  Now I'm inclined to define
-> > SND_CHMAP_MONO...
-> 
-> Okay; if they want it, they can get it ...
+On 9/12/2012 6:53 AM, Tanu Kaskinen wrote:
+> On Mon, 2012-09-10 at 23:49 -0700, Patrick Lai wrote:
+>> Hi,
+>>
+>> I have two use cases which can acquire same CODEC path but they cannot
+>> run concurrently through mixing. When such scenario does arise,
+>> arbitration is required based on priority of use cases. On the other
+>> hand, same use cases on different platform may use different CODEC
+>> paths so arbitration is not required. In order to decide whether
+>> arbitration is required, I think the best place to do so is in UCM. I
+>> looked at existing UCM APIs but I do not believe existing APIs have
+>> concept of arbitration built in. If I am wrong, how can I handle
+>> arbitration with existing UCM APIs. If I am correct, is there anyone
+>> looking to expand UCM APIs for similar scenario?
+>
+> In my opinion routing priorities don't belong in the UCM configuration.
+> UI designers will want to dictate the routing policy (i.e. what device
+> to prefer in which use case).
 
-Speaking as a PulseAudio developer, "wanting" is a bit strong word. I
-initially wanted it, but I don't anymore think that it's necessary. I
-don't think it will do any harm either, though...
+Thanks for your feedback. Actually, I am not looking at routing policy 
+in term of preferred device for a given use case. I agree that
+something above alsa/ucm should decide. My problem is two use cases
+cannot co-exist on certain platforms but not on the others. Two use 
+cases are coming from two SW entities which are not aware of each other 
+but they all talk to UCM for hardware configuration. Each SW entity 
+decides its own use case and preferred device. Please correct me if I am 
+wrong. UCM is designed to abstract hardware configuration detail. So, it 
+seems appropriate to me that UCM can  contain information about the use 
+cases a given platform can support/not support concurrently. Since 
+UCM(assuming it's singleton) is the entity that has visibility to all 
+use cases exercised by all SW entities, It makes sense to me to have UCM 
+notify clients if its use case is to be preempted. Even if we want to 
+create a resource manager on top of UCM for two SW entities to 
+communicate, does UCM already have API allowing client to know its use 
+case is a go or no go?
+
+Thanks
+Patrick
+
+The same hardware may end up being used in
+> different products, and the UI designers for those different products
+> may not all want the same policy.  Therefore, I don't want UCM
+> configurations to include any routing policy. The policy configuration
+> belongs to some component that sits above alsa and UCM.
+>
 
 -- 
-Tanu
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
