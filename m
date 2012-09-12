@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/7] ASoC: wm8728: Convert to devm_kzalloc()
-Date: Wed, 12 Sep 2012 09:32:57 +0800
-Message-ID: <1347413580-11137-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Channel map API patches: to be 3.7 or not to be?
+Date: Wed, 12 Sep 2012 09:35:20 +0800
+Message-ID: <CAN8ccib1bbVtGDcEqiizbzQg+iZg13redh_fPMYX-fQsGKtStw@mail.gmail.com>
+References: <s5hk3w1g4e2.wl%tiwai@suse.de>
+ <CAN8cciYtoH91sFjwes+aTAjO+4z8CCMdOYgM4kdWbGNr3iuheQ@mail.gmail.com>
+ <s5hbohdezpc.wl%tiwai@suse.de> <s5hehm8rc2s.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BFD92615E6
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:33:38 +0200 (CEST)
-In-Reply-To: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EF3B2615E3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:35:21 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so700654qcs.38
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2012 18:35:20 -0700 (PDT)
+In-Reply-To: <s5hehm8rc2s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,73 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: lukasz.wojnilowicz@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8728.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
-index 1467f97..f274c25 100644
---- a/sound/soc/codecs/wm8728.c
-+++ b/sound/soc/codecs/wm8728.c
-@@ -280,7 +280,8 @@ static int __devinit wm8728_spi_probe(struct spi_device *spi)
- 	struct wm8728_priv *wm8728;
- 	int ret;
- 
--	wm8728 = kzalloc(sizeof(struct wm8728_priv), GFP_KERNEL);
-+	wm8728 = devm_kzalloc(&spi->dev, sizeof(struct wm8728_priv),
-+			      GFP_KERNEL);
- 	if (wm8728 == NULL)
- 		return -ENOMEM;
- 
-@@ -289,15 +290,14 @@ static int __devinit wm8728_spi_probe(struct spi_device *spi)
- 
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_dev_wm8728, &wm8728_dai, 1);
--	if (ret < 0)
--		kfree(wm8728);
-+
- 	return ret;
- }
- 
- static int __devexit wm8728_spi_remove(struct spi_device *spi)
- {
- 	snd_soc_unregister_codec(&spi->dev);
--	kfree(spi_get_drvdata(spi));
-+
- 	return 0;
- }
- 
-@@ -319,7 +319,8 @@ static __devinit int wm8728_i2c_probe(struct i2c_client *i2c,
- 	struct wm8728_priv *wm8728;
- 	int ret;
- 
--	wm8728 = kzalloc(sizeof(struct wm8728_priv), GFP_KERNEL);
-+	wm8728 = devm_kzalloc(&i2c->dev, sizeof(struct wm8728_priv),
-+			      GFP_KERNEL);
- 	if (wm8728 == NULL)
- 		return -ENOMEM;
- 
-@@ -328,15 +329,13 @@ static __devinit int wm8728_i2c_probe(struct i2c_client *i2c,
- 
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8728, &wm8728_dai, 1);
--	if (ret < 0)
--		kfree(wm8728);
-+
- 	return ret;
- }
- 
- static __devexit int wm8728_i2c_remove(struct i2c_client *client)
- {
- 	snd_soc_unregister_codec(&client->dev);
--	kfree(i2c_get_clientdata(client));
- 	return 0;
- }
- 
--- 
-1.7.10.4
+MjAxMi05LTExIOS4i+WNiDg6MTQg5pa8ICJUYWthc2hpIEl3YWkiIDx0aXdhaUBzdXNlLmRlPiDl
+r6vpgZPvvJoKPgo+IEF0IFR1ZSwgMTEgU2VwIDIwMTIgMTA6MjI6MjMgKzAyMDAsCj4gVGFrYXNo
+aSBJd2FpIHdyb3RlOgo+ID4KPiA+IEF0IFR1ZSwgMTEgU2VwIDIwMTIgMTY6MTA6NDMgKzA4MDAs
+Cj4gPiBSYXltb25kIFlhdSB3cm90ZToKPiA+ID4KPiA+ID4gMjAxMi05LTExIOS4iuWNiDE6NDMg
+5pa8ICJUYWthc2hpIEl3YWkiIDx0aXdhaUBzdXNlLmRlPiDlr6vpgZPvvJoKPiA+ID4gPgo+ID4g
+PiA+IEhpLAo+ID4gPiA+Cj4gPiA+ID4gZG9lcyBhbnlvbmUgaGF2ZSBjb25jZXJuIGlmIEkgcHVz
+aCB0aGUgY3VycmVudCBjaGFubmVsIG1hcCBBUEkKcGF0Y2hlcwo+ID4gPiA+IChpbiBzb3VuZC11
+bnN0YWJsZSBnaXQgdHJlZSB0b3BpYy90bHYtY2htYXAgYnJhbmNoKSBmb3IgbGludXgtbmV4dCwK
+PiA+ID4gPiBpLmUuIGZvciBpbmNsdXNpb24gdG8gMy43IGtlcm5lbD8KPiA+ID4gPgo+ID4gPiA+
+IEkgZG9uJ3Qgd29ycnkgdG9vIG11Y2ggYWJvdXQgdGhlIGtlcm5lbCBBUEkuICBUaGlzIGNhbiBi
+ZSByZWZhY3RvcmVkCj4gPiA+ID4gbGF0ZXIuICBCdXQgdGhlIGtlcm5lbCBBQkkgbXVzdCByZXRh
+aW4sIHNvIHdlIHdvbid0IGNoYW5nZSBpbiBhbgo+ID4gPiA+IGluY29tcGF0aWJsZSB3YXkgYW55
+IGxvbmdlciBvbmNlIGFmdGVyIGl0J3MgbWVyZ2VkIHRvIHRoZSB1cHN0cmVhbS4KPiA+ID4gPgo+
+ID4gPiA+IFNvLCBpZiBhbnlvbmUgc2VlcyBhIGZsYXcgaW4gdGhlIGtlcm5lbCBBQkkgZGVmaW5p
+dGlvbiB1c2luZyBjb250cm9sCj4gPiA+ID4gZWxlbWVudHMsIGxldCBtZSBrbm93Lgo+ID4gPiA+
+Cj4gPiA+ID4gKEJ1dCBub3RlIHRoYXQgdGhlIEFQSSBjYW4ndCBiZSBwZXJmZWN0IGZvciBhbGwg
+Z2VuZXJpYyBwdXJwb3Nlcy4KPiA+ID4gPiAgSXQncyBkZXNpZ25lZCB0byBiZSAiZ29vZCBlbm91
+Z2giIGZvciBhIGJpZyBsYWNrIGZvciBtdWx0aS1jaGFubmVsCj4gPiA+ID4gIHN0cmVhbWluZy4g
+IE9mIGNvdXJzZSwgdGhpcyBkb2Vzbid0IGRpc2NvdXJhZ2UgdG8gdXNlIHRoZSBBUEkgZm9yCmFu
+eQo+ID4gPiA+ICBvdGhlciBwdXJwb3Nlcy4pCj4gPiA+ID4KPiA+ID4KPiA+ID4gSG93IGFib3V0
+IHRoZSBjaGFubmVsIG1hcCBvZiB0aGUgdXNiIG1vbm8gcGxheWJhY2sgZGV2aWNlIGFuZCB0aG9z
+ZQpzb3VuZAo+ID4gPiBjYXJkIHdoaWNoIGNhbiBwYW4gbW9ubyB0byBzdGVyZW8gc3BlYWtlcnMg
+YW5kIGhlYWRwaG9uZT8KPiA+Cj4gPiBJZiB0aGUgZGV2aWNlIHNwZWNpZmllcyB3aGljaCBzcGVh
+a2VyIHBvc2l0aW9uIHRoZSBtb25vIGNoYW5uZWwgaXMKPiA+IGZvciwgdGhlbiB5b3UgY2FuIG1h
+cCBpdCBwcm9wZXJseS4gIFVubGVzcyBpdCdzIHJlYWxseSBzcGVjaWZpZWQgYnkKPiA+IHRoZSBk
+ZXZpY2UsIHRoZSBtb25vIHN0cmVhbSBpcyBVTktOT1dOIHBvc2l0aW9uIGluIGdlbmVyYWwuCj4K
+PiBCVFcsIHRoaXMgcmVtaW5kcyBtZSBvZiBhbiBvcGVuIHF1ZXN0aW9uOgo+ICAgaXMgaXQgdXNl
+ZnVsIHRvIGFkZCBTTkRfQ0hNQVBfTU9OTywgb3IgaXMgaXQganVzdCByZWR1bmRhbnQ/Cj4KPiBJ
+dCdzIG5vdGhpbmcgYnV0IGluZGljYXRpbmcgYSBtb25vIGNoYW5uZWwgd2l0aG91dCBhbnkgY2hh
+bm5lbAo+IHBvc2l0aW9uLCBzbyBJIHN1cHBvc2VkIFNORF9DSE1BUF9VTktOT1dOIGJlaW5nIHN1
+ZmZpY2llbnQuICBPVE9ILAo+IFNORF9DSE1BUF9NT05PIHdvdWxkIGdpdmUgYSBjbGVhciBzaWdu
+IG9mIG1vbm8gc3RyZWFtcyB3aGlsZQo+IFNORF9DSE1BUF9VTktOT1dOIGNvdWxkIGJlIHVzZWQg
+Zm9yIGFueSBvdGhlciBleGNlcHRpb25hbCBwdXJwb3Nlcy4KPgo+CgpIb3cgYWJvdXQgdGhvc2Ug
+c291bmQgY2FyZCB3aGljaCB1c2UgbXVsdGkgcGx1Z2luIGZvciBtdWx0aSBjaGFubmVscyAoZS5n
+LgplbXUxMGsxICwgYzAxMDYgYW5kIGNzNDYzMCkgYXMgdGhleSBjYW4gYWxzbyBwcm92aWRlIGEg
+cmVhciBvciBjbGZlIGRldmljZQpmb3IgaW5kZXBlbmRlbnQgc3RlcmVvIHBsYXliYWNrID8KCkl0
+IHNlZW0gdGhlIGJyYW5jaCBzdGlsbCBtaXNzIHRoZSBwYXRjaCBmb3IgYXU4OHgwIGFuZCB5bWZw
+Y2kgd2hpY2ggbmVlZCB0bwpjaGVjayB0aGUgc2RhYyBiaXQgb2YgYWM5NyBjb2RlYyBmb3IgYWRk
+aW5nIHRoZSA0IGNoYW5uZWxzIG1hcAoKTW9zdCBvZiAyLjEgZXh0ZXJuYWwgc3BlYWtlciBzZXQg
+b25seSBoYXZlIGdyZWVuIGphY2sgYW5kIHRob3NlIGNyZWF0aXZlCjQuMSBmcHMgaGF2ZSBncmVl
+biBhbmQgYmxhY2sgamFja3Mgd2hlcmUgdGhlIHZvbHVtZSBvZiBzdWJ3b29mZXIgaXMKY29udHJv
+bGxlZCBieSB0aGUgdm9sdW1lIGtub2Igb2YgdGhlIHN1Yndvb2ZlcgoKaHR0cHM6Ly9idWdzLmxh
+dW5jaHBhZC5uZXQvdWJ1bnR1Lytzb3VyY2UvYWxzYS1kcml2ZXIvK2J1Zy8xMDQ3NTQzCgpIb3dl
+dmVyIHNvbWUgb2YgdGhvc2UgMi4xIGludGVybmFsIHNwZWFrZXIgaW4gbm90ZWJvb2sgbWF5IG5l
+ZWQgc3RlcmVvCmNoYW5uZWwgbWFwIChlLmcuIHN0YWM5MjB4IGhkYSBjb2RlYyB1c2luZyBtb25v
+IHdpZGdldCkKClNvbWUgbm90ZWJvb2sgKGUuZy4gYWNlciBhc3BpcmUgNDkzMGcpIGhkYSBjb2Rl
+YykgbWF5IG5lZWQgYSBzcGVjaWFsCmNoYW5uZWwgbWFwIGZvciB0aGUgaW50ZXJuYWwgMi4xIHNw
+ZWFrZXIgYnV0IGEgc3RlcmVvIGNoYW5uZWwgbWFwIGZvciB0aGUKZXh0ZXJuYWwgMi4xIHNwZWFr
+ZXIgYW5kIHNvbWUgQXN1cyBsYXB0b3BzIGhhdmUgcHJvcGVydGlhcnkgamFjayBmb3IgdGhlCmV4
+dGVybmFsIHN1Yndvb2ZlcgoKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9n
+aXQvdGl3YWkvc291bmQuZ2l0O2E9Y29tbWl0O2g9Nzg2YzUxZjkxNjhjZmQyZDQ5MjUwYzZlNWU2
+MDAzNWNiYjJmZDVhMQoKRG9lcyB0aG9zZSAzc3RhY2stNmNoIGxhcHRvcC9kZXNrdG9wIGhhdmUg
+dGhvc2UgNS4xIGNoYW5uZWwgbWFwIGJlZm9yZSB0aGUKaW5wdXQgamFjayByZXRhc2tlZCBhcyBv
+dXRwdXQ/CgpJZiB5ZXMsIGRvZXMgdGhlIHJldGFza2luZyBpcyBwZXJmb3JtZWQgYXV0b21hdGlj
+YWxseSBieSB0aGUgc2V0IGNoYW5uZWwKbWFwIGZ1bmN0aW9uPwoKaHR0cDovL2dpdC5rZXJuZWwu
+b3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtdW5zdGFibGUuZ2l0O2E9Y29tbWl0
+O2g9OWM5YTUxNzVlNjViMjY2NzAwMWU2YTNiNmRlZGRkZWJlZWU4MmFhMgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
