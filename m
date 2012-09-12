@@ -1,15 +1,14 @@
 From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Subject: [PATCH 4/5] arch/powerpc/boot/dts pcm030 add
-	mpc5200-soc-audio node
-Date: Tue, 11 Sep 2012 22:14:48 -0400
-Message-ID: <1347416089-23393-5-git-send-email-emillbrandt@dekaresearch.com>
+Subject: [PATCH 1/5] ASoC: fsl: mpc5200 multi-codec fixups
+Date: Tue, 11 Sep 2012 22:14:45 -0400
+Message-ID: <1347416089-23393-2-git-send-email-emillbrandt@dekaresearch.com>
 References: <1347416089-23393-1-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from norco.coldhaus.com (norco.coldhaus.com [64.32.230.18])
- by alsa0.perex.cz (Postfix) with ESMTP id BCEF82615F6
+ by alsa0.perex.cz (Postfix) with ESMTP id B67472615EE
  for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 04:15:36 +0200 (CEST)
 In-Reply-To: <1347416089-23393-1-git-send-email-emillbrandt@dekaresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,51 +24,112 @@ To: Grant Likely <grant.likely@secretlab.ca>, Liam Girdwood <lrg@ti.com>, Mark B
 Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-Describe the audio codec on the pcm030 baseboard.
+Add platform DAI information that is needed to successfully register the
+mpc5200 platform.
 
 Signed-off-by: Eric Millbrandt <emillbrandt@dekaresearch.com>
 ---
- arch/powerpc/boot/dts/pcm030.dts |   23 ++++++++++++++++++++++-
- 1 files changed, 22 insertions(+), 1 deletions(-)
+ arch/powerpc/platforms/52xx/Kconfig |    1 +
+ sound/soc/fsl/mpc5200_dma.c         |    4 ++--
+ sound/soc/fsl/mpc5200_psc_ac97.c    |    8 ++++++--
+ sound/soc/fsl/mpc5200_psc_i2s.c     |    3 +++
+ 4 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/boot/dts/pcm030.dts b/arch/powerpc/boot/dts/pcm030.dts
-index 9e35499..e9475e9 100644
---- a/arch/powerpc/boot/dts/pcm030.dts
-+++ b/arch/powerpc/boot/dts/pcm030.dts
-@@ -59,7 +59,7 @@
- 			#gpio-cells = <2>;
- 		};
+diff --git a/arch/powerpc/platforms/52xx/Kconfig b/arch/powerpc/platforms/52xx/Kconfig
+index 90f4496..fb35944 100644
+--- a/arch/powerpc/platforms/52xx/Kconfig
++++ b/arch/powerpc/platforms/52xx/Kconfig
+@@ -1,6 +1,7 @@
+ config PPC_MPC52xx
+ 	bool "52xx-based boards"
+ 	depends on 6xx
++	select FSL_SOC
+ 	select PPC_CLOCK
+ 	select PPC_PCI_CHOICE
  
--		psc@2000 { /* PSC1 in ac97 mode */
-+		audio_platform: psc@2000 { /* PSC1 in ac97 mode */
- 			compatible = "mpc5200b-psc-ac97","fsl,mpc5200b-psc-ac97";
- 			cell-index = <0>;
- 		};
-@@ -134,4 +134,25 @@
- 	localbus {
- 		status = "disabled";
- 	};
-+
-+	sound {
-+		compatible = "fsl,mpc5200b-soc-audio","fsl,mpc5200-soc-audio";
-+		card-name = "pcm030";
-+		audio-platform = <&audio_platform>;
-+		number-of-dais = <2>;
-+
-+		analog@0 {
-+			stream-name = "AC97 Analog";
-+			codec-name = "wm9712-codec.0";
-+			codec-dai-name = "wm9712-hifi";
-+			cpu-dai-name = "mpc5200-psc-ac97.0";
-+		};
-+
-+		digital@1 {
-+			stream-name = "AC97 IEC958";
-+			codec-name = "wm9712-codec.0";
-+			codec-dai-name = "wm9712-aux";
-+			cpu-dai-name = "mpc5200-psc-ac97.0";
-+		};
-+	};
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index 9a3f7c5..46fb518 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -366,8 +366,8 @@ static void psc_dma_free(struct snd_pcm *pcm)
+ 
+ static struct snd_soc_platform_driver mpc5200_audio_dma_platform = {
+ 	.ops		= &psc_dma_ops,
+-	.pcm_new	= &psc_dma_new,
+-	.pcm_free	= &psc_dma_free,
++	.pcm_new	= psc_dma_new,
++	.pcm_free	= psc_dma_free,
  };
+ 
+ static int mpc5200_hpcd_probe(struct platform_device *op)
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index ffa00a2..2f70729 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -28,7 +28,7 @@
+ 
+ #define DRV_NAME "mpc5200-psc-ac97"
+ 
+-/* ALSA only supports a single AC97 device so static is recommend here */
++/* ALSA only supports a single AC97 bus device so static is recommend here */
+ static struct psc_dma *psc_dma;
+ 
+ static unsigned short psc_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+@@ -237,15 +237,18 @@ static const struct snd_soc_dai_ops psc_ac97_digital_ops = {
+ 
+ static struct snd_soc_dai_driver psc_ac97_dai[] = {
+ {
++	.name = "mpc5200_psc_ac97.0",
+ 	.ac97_control = 1,
+ 	.probe	= psc_ac97_probe,
+ 	.playback = {
++		.stream_name	= "AC97 Playback",
+ 		.channels_min   = 1,
+ 		.channels_max   = 6,
+ 		.rates          = SNDRV_PCM_RATE_8000_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S32_BE,
+ 	},
+ 	.capture = {
++		.stream_name	= "AC97 Capture",
+ 		.channels_min   = 1,
+ 		.channels_max   = 2,
+ 		.rates          = SNDRV_PCM_RATE_8000_48000,
+@@ -254,8 +257,10 @@ static struct snd_soc_dai_driver psc_ac97_dai[] = {
+ 	.ops = &psc_ac97_analog_ops,
+ },
+ {
++	.name = "mpc5200_psc_ac97.1",
+ 	.ac97_control = 1,
+ 	.playback = {
++		.stream_name	= "AC97 SPDIF",
+ 		.channels_min   = 1,
+ 		.channels_max   = 2,
+ 		.rates          = SNDRV_PCM_RATE_32000 | \
+@@ -330,4 +335,3 @@ module_platform_driver(psc_ac97_driver);
+ MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
+ MODULE_DESCRIPTION("mpc5200 AC97 module");
+ MODULE_LICENSE("GPL");
+-
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index 7b53032..3cf21df 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -130,13 +130,16 @@ static const struct snd_soc_dai_ops psc_i2s_dai_ops = {
+ };
+ 
+ static struct snd_soc_dai_driver psc_i2s_dai[] = {{
++	.name = "mpc5200_psc_i2s.0",
+ 	.playback = {
++		.stream_name = "I2S Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = PSC_I2S_RATES,
+ 		.formats = PSC_I2S_FORMATS,
+ 	},
+ 	.capture = {
++		.stream_name = "I2S Capture",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = PSC_I2S_RATES,
 -- 
 1.7.2.5
