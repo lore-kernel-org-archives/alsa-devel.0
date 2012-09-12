@@ -1,78 +1,152 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 4/5] arch/powerpc/boot/dts pcm030 add
- mpc5200-soc-audio node
-Date: Tue, 11 Sep 2012 20:41:47 -0600
-Message-ID: <504FF66B.8020009@wwwdotorg.org>
-References: <1347416089-23393-1-git-send-email-emillbrandt@dekaresearch.com>
- <1347416089-23393-5-git-send-email-emillbrandt@dekaresearch.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: codecs: Add DA9055 codec driver
+Date: Wed, 12 Sep 2012 10:57:10 +0800
+Message-ID: <20120912025709.GD9162@opensource.wolfsonmicro.com>
+References: <1347375823.12329.14.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id A838C2615E3
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 04:41:48 +0200 (CEST)
-In-Reply-To: <1347416089-23393-5-git-send-email-emillbrandt@dekaresearch.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grant Likely <grant.likely@secretlab.ca>, Anatolij Gustschin <agust@denx.de>, linuxppc-dev@lists.ozlabs.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1347375823.12329.14.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/11/2012 08:14 PM, Eric Millbrandt wrote:
-> Describe the audio codec on the pcm030 baseboard.
+On Tue, Sep 11, 2012 at 08:33:43PM +0530, Ashish Chavan wrote:
 
-> +++ b/arch/powerpc/boot/dts/pcm030.dts
+> +/* LDO voltage level value */
+> +static const char * const da9055_ldo_lvl_select_txt[] = {
+> +	"1.05V", "1.1V", "1.2V", "1.4V"
+> +};
 
-> +	sound {
-> +		compatible = "fsl,mpc5200b-soc-audio","fsl,mpc5200-soc-audio";
-> +		card-name = "pcm030";
-> +		audio-platform = <&audio_platform>;
-> +		number-of-dais = <2>;
+> +static const struct soc_enum da9055_ldo_lvl_select =
+> +	SOC_ENUM_SINGLE(DA9055_LDO_CTRL, 4, 4, da9055_ldo_lvl_select_txt);
+
+There's a regulator API, if configuration is required we should be using
+that.
+
+> +/* Digital MIC clock rate select */
+> +static const char * const da9055_dmic_clk_rate_txt[] = {
+> +	"3MHz", "1.5MHz"
+> +};
 > +
-> +		analog@0 {
-
-Purely from a DT perspective (i.e. I didn't look at the code that parses
-this), you don't need to include the "@0" and "@1" in the node names,
-because the two node names "analog" and "digital" are already unique.
-
-However, in general I can see that you might want multiple analog DAIs.
-There are a couple choices for differentiating the node names in that case:
-
-1) If you want to use the "@0" unit address syntax in the node names to
-differentiate them, each child node needs a reg property containing the
-same value, and the parent node needs properties #address-cells=<1>,
-#size-cells=<0>;
-
-2) Or, since this is within an individual device binding rather than
-something within a standardized bus, you can simply choose to make the
-node names unique in some other way, such as "analog0", "analog1", i.e.
-without the "@"; I believe the "@" syntax would be explicitly reserved
-for representing a unit address as in (1).
-
-Of course, I could be wrong about this assertion that the "@n" is
-reserved for the unit address even with the privacy of an individual
-binding; it'd be best to validate it by posting to the
-devicetree-discuss mailing list.
-
-> +			stream-name = "AC97 Analog";
-> +			codec-name = "wm9712-codec.0";
-> +			codec-dai-name = "wm9712-hifi";
-> +			cpu-dai-name = "mpc5200-psc-ac97.0";
-> +		};
+> +static const struct soc_enum da9055_dmic_clk_rate =
+> +	SOC_ENUM_SINGLE(DA9055_MIC_CONFIG, 2, 2, da9055_dmic_clk_rate_txt);
 > +
-> +		digital@1 {
-> +			stream-name = "AC97 IEC958";
-> +			codec-name = "wm9712-codec.0";
-> +			codec-dai-name = "wm9712-aux";
-> +			cpu-dai-name = "mpc5200-psc-ac97.0";
-> +		};
-> +	};
->  };
+> +/* Digital MIC sample phase select */
+> +static const char * const da9055_dmic_phase_txt[] = {
+> +	"Sample on DMICCLK edges", "Sample between DMICCLK edges"
+> +};
+> +
+> +static const struct soc_enum da9055_dmic_phase =
+> +	SOC_ENUM_SINGLE(DA9055_MIC_CONFIG, 1, 2, da9055_dmic_phase_txt);
+> +
+> +/* Digital MIC channel select */
+> +static const char * const da9055_dmic_channel_select_txt[] = {
+> +	"Rising Left Falling Right", "Falling Left Rising Right"
+> +};
+
+Why is any of this being exposed to userspace?  If this should be
+configured I'd expect it to be static platform data, not something that
+gets changed at runtime.
+
+> +/* MIC bias voltage level select */
+> +static const char * const da9055_mic_bias_level_txt[] = {
+> +	"1.6V", "1.8V", "2.1V", "2.2V"
+> +};
+
+Again, why is this being exposed to userspace/  I'm fairly sure we went
+through similar stuff with your last driver...
+
+> +	SOC_DOUBLE_R_TLV("HeadPhone Volume",
+> +			 DA9055_HP_L_GAIN, DA9055_HP_R_GAIN,
+> +			 0, 0x3f, 0, hp_vol_tlv),
+
+Headphone.
+
+> +	/* Mute controls */
+> +	SOC_DOUBLE_R("Mic Mute Switch", DA9055_MIC_L_CTRL,
+> +		     DA9055_MIC_R_CTRL, 6, 1, 0),
+> +	SOC_DOUBLE_R("Aux Mute Switch", DA9055_AUX_L_CTRL,
+> +		     DA9055_AUX_R_CTRL, 6, 1, 0),
+> +	SOC_DOUBLE_R("Mixin PGA Mute Switch", DA9055_MIXIN_L_CTRL,
+> +		     DA9055_MIXIN_R_CTRL, 6, 1, 0),
+> +	SOC_DOUBLE_R("ADC Mute Switch", DA9055_ADC_L_CTRL,
+> +		     DA9055_ADC_R_CTRL, 6, 1, 0),
+> +	SOC_DOUBLE_R("HeadPhone Mute Switch", DA9055_HP_L_CTRL,
+> +		     DA9055_HP_R_CTRL, 6, 1, 0),
+> +	SOC_SINGLE("Lineout Mute Switch", DA9055_LINE_CTRL, 6, 1, 0),
+> +	SOC_SINGLE("DAC Soft Mute Switch", DA9055_DAC_FILTERS5, 7, 1, 0),
+
+No "Mute".  Again, I'm fairly sure we had the same issue last time.
+
+> +	/* LDO control */
+> +	SOC_SINGLE("LDO Enable", DA9055_LDO_CTRL, 7, 1, 0),
+> +	SOC_ENUM("LDO Level Select", da9055_ldo_lvl_select),
+
+The LDO enable should absolutely not be being exposed to userspace!
+
+> +	/* DMIC controls */
+> +	SOC_DOUBLE_R("DMIC Enable", DA9055_MIXIN_L_SELECT,
+> +		     DA9055_MIXIN_R_SELECT, 7, 1, 0),
+
+Switch if this is a mute.
+
+> +	/* MIC PGA input selection controls */
+> +	SOC_ENUM("Mic Left Input Select", da9055_mic_l_select),
+> +	SOC_ENUM("Mic Right Input Select", da9055_mic_r_select),
+
+DAPM.
+
+> +
+> +	/* ALC Controls */
+> +	SOC_DOUBLE_EXT("ALC Enable", DA9055_ALC_CTRL1, 3, 7, 1, 0,
+> +		       snd_soc_get_volsw, da9055_put_alc_sw),
+
+ALC Switch.  All enable controls should be switches.
+
+> +static int da9055_hw_params(struct snd_pcm_substream *substream,
+> +			    struct snd_pcm_hw_params *params,
+> +			    struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct da9055_priv *da9055 = snd_soc_codec_get_drvdata(codec);
+> +	u8 aif_ctrl, fs;
+> +	u32 sysclk;
+> +
+> +	/* Set AIF source to Left and Right ADC */
+> +	snd_soc_write(codec, DA9055_DIG_ROUTING_AIF,
+> +		      DA9055_AIF_L_SRC | DA9055_AIF_R_SRC);
+
+This should be in DAPM.
+
+> +	aif_ctrl = snd_soc_read(codec, DA9055_AIF_CTRL) & 0xf3;
+
+Use snd_soc_update_bits() later on.
+
+> +	aif_ctrl |= (DA9055_AIF_OE | DA9055_AIF_EN);
+
+DAPM.
+
+> +	/* In slave mode, there is only one set of divisors */
+> +	if (!da9055->master)
+> +		fout = 2822400;
+
+Should check the user supplied this value - also, what happens if the
+user sets the device to slave mode after setting up the PLL?
+
+> +	/* Enable VMID reference & master bias */
+> +	snd_soc_write(codec, DA9055_REFERENCES,
+> +		      DA9055_VMID_EN | DA9055_BIAS_EN);
+
+set_bias_level()
+
+> +	/* Enable Mic Bias */
+> +	snd_soc_write(codec, DA9055_MIC_BIAS_CTRL, DA9055_MIC_BIAS_EN);
+
+DAPM for this and most of the rest of this funciton.
+
+> +	da9055->regmap = regmap_init_i2c(i2c, &da9055_regmap_config);
+
+devm_regmap_init_i2c()
