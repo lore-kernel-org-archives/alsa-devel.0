@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/7] ASoC: wm8711: Convert to devm_kzalloc()
-Date: Wed, 12 Sep 2012 09:32:56 +0800
-Message-ID: <1347413580-11137-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/7] ASoC: wm8990: Convert to devm_kzalloc()
+Date: Wed, 12 Sep 2012 09:32:59 +0800
+Message-ID: <1347413580-11137-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2B252615F0
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:33:36 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 487452615E3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 03:33:37 +0200 (CEST)
 In-Reply-To: <1347413580-11137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,65 +26,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8711.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8990.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
-index 0b76d1d..1b1209a 100644
---- a/sound/soc/codecs/wm8711.c
-+++ b/sound/soc/codecs/wm8711.c
-@@ -414,7 +414,8 @@ static int __devinit wm8711_spi_probe(struct spi_device *spi)
- 	struct wm8711_priv *wm8711;
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index db63c97..c28c83e 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -1388,7 +1388,8 @@ static __devinit int wm8990_i2c_probe(struct i2c_client *i2c,
+ 	struct wm8990_priv *wm8990;
  	int ret;
  
--	wm8711 = kzalloc(sizeof(struct wm8711_priv), GFP_KERNEL);
-+	wm8711 = devm_kzalloc(&spi->dev, sizeof(struct wm8711_priv),
+-	wm8990 = kzalloc(sizeof(struct wm8990_priv), GFP_KERNEL);
++	wm8990 = devm_kzalloc(&i2c->dev, sizeof(struct wm8990_priv),
 +			      GFP_KERNEL);
- 	if (wm8711 == NULL)
+ 	if (wm8990 == NULL)
  		return -ENOMEM;
  
-@@ -423,15 +424,14 @@ static int __devinit wm8711_spi_probe(struct spi_device *spi)
+@@ -1396,15 +1397,14 @@ static __devinit int wm8990_i2c_probe(struct i2c_client *i2c,
  
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_dev_wm8711, &wm8711_dai, 1);
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8990, &wm8990_dai, 1);
 -	if (ret < 0)
--		kfree(wm8711);
+-		kfree(wm8990);
 +
  	return ret;
  }
  
- static int __devexit wm8711_spi_remove(struct spi_device *spi)
- {
- 	snd_soc_unregister_codec(&spi->dev);
--	kfree(spi_get_drvdata(spi));
-+
- 	return 0;
- }
- 
-@@ -453,7 +453,8 @@ static __devinit int wm8711_i2c_probe(struct i2c_client *client,
- 	struct wm8711_priv *wm8711;
- 	int ret;
- 
--	wm8711 = kzalloc(sizeof(struct wm8711_priv), GFP_KERNEL);
-+	wm8711 = devm_kzalloc(&client->dev, sizeof(struct wm8711_priv),
-+			      GFP_KERNEL);
- 	if (wm8711 == NULL)
- 		return -ENOMEM;
- 
-@@ -462,15 +463,13 @@ static __devinit int wm8711_i2c_probe(struct i2c_client *client,
- 
- 	ret =  snd_soc_register_codec(&client->dev,
- 			&soc_codec_dev_wm8711, &wm8711_dai, 1);
--	if (ret < 0)
--		kfree(wm8711);
-+
- 	return ret;
- }
- 
- static __devexit int wm8711_i2c_remove(struct i2c_client *client)
+ static __devexit int wm8990_i2c_remove(struct i2c_client *client)
  {
  	snd_soc_unregister_codec(&client->dev);
 -	kfree(i2c_get_clientdata(client));
++
  	return 0;
  }
  
