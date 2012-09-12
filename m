@@ -1,148 +1,79 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 11/11] ASoC: omap-pcm: Convert to use dmaengine
-Date: Wed, 12 Sep 2012 17:35:56 +0300
-Message-ID: <50509DCC.4000503@ti.com>
-References: <1347450427-27627-1-git-send-email-peter.ujfalusi@ti.com> <1347450427-27627-12-git-send-email-peter.ujfalusi@ti.com> <20120912120028.GC28448@n2100.arm.linux.org.uk> <505085DB.5000407@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <505085DB.5000407@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>
+From: Peter Senna Tschudin <peter.senna@gmail.com>
+Subject: [PATCH 8/9] sound/soc/soc-core.c: Remove useless kfree
+Date: Wed, 12 Sep 2012 17:06:46 +0200
+Message-ID: <1347462407-13499-8-git-send-email-peter.senna@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/12/2012 03:53 PM, Peter Ujfalusi wrote:
-> I need to look at this, but at first look we do wait for the drain in
-> omap_stop_dma(). We used to use omap_stop_dma/omap_start_dma for paus=
-e/resume
-> operations.
-> But sDMA also have a bit: CDPi: PAUSE_LINK_LIST which should do what =
-we are
-> looking for.
-> Need to read the relevant parts of the TRM, but AFAIK we are using no=
-rmal mode
-> with linked list (self linking).
-> I already have the patch for this, I just need to test it on HW.
+From: Peter Senna Tschudin <peter.senna@gmail.com>
 
-We can get the PAUSE/RESUME work either:
-1.
-drivers/dma/omap-dma.c
-static int omap_dma_pause(struct omap_chan *c)
- {
--       /* FIXME: not supported by platform private API */
--       return -EINVAL;
-+       /* Only in cyclic mode */
-+       if (!c->cyclic)
-+               return -EINVAL;
-+
-+       if (!c->paused) {
-+               omap_stop_dma(c->dma_ch);
-+               c->paused =3D true;
-+       }
-+
-+       return 0;
- }
+Remove useless kfree() and clean up code related to the removal.
 
- static int omap_dma_resume(struct omap_chan *c)
- {
--       /* FIXME: not supported by platform private API */
--       return -EINVAL;
-+       /* Only in cyclic mode */
-+       if (!c->cyclic)
-+               return -EINVAL;
-+
-+       if (c->paused) {
-+               omap_start_dma(c->dma_ch);
-+               c->paused =3D false;
-+       }
-+
-+       return 0;
- }
+The semantic patch that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
 
+// <smpl>
+@r exists@
+position p1,p2;
+expression x;
+@@
 
-2.
-arch/arm/plat-omap/dma.c
-+void omap_pause_linked_dma(int lch)
-+{
-+       u32 l;
-+       unsigned long flags;
-+
-+       local_irq_save(flags);
-+       l =3D p->dma_read(CDP, lch);
-+       l |=3D 0x80; /* PAUSE_LINK_LIST */
-+       p->dma_write(l, CDP, lch);
-+       local_irq_restore(flags);
-+}
-+EXPORT_SYMBOL(omap_pause_linked_dma);
-+
-+void omap_resume_linked_dma(int lch)
-+{
-+       u32 l;
-+       unsigned long flags;
-+
-+       local_irq_save(flags);
-+       l =3D p->dma_read(CDP, lch);
-+       l &=3D (~0x80); /* PAUSE_LINK_LIST */
-+       p->dma_write(l, CDP, lch);
-+       local_irq_restore(flags);
-+}
-+EXPORT_SYMBOL(omap_resume_linked_dma);
+if (x@p1 == NULL) { ... kfree@p2(x); ... return ...; }
 
-drivers/dma/omap-dma.c
- static int omap_dma_pause(struct omap_chan *c)
- {
--       /* FIXME: not supported by platform private API */
--       return -EINVAL;
-+       /* Only in cyclic mode */
-+       if (!c->cyclic)
-+               return -EINVAL;
-+
-+       if (!c->paused) {
-+               omap_pause_linked_dma(c->dma_ch);
-+               c->paused =3D true;
-+       }
-+
-+       return 0;
- }
+@unchanged exists@
+position r.p1,r.p2;
+expression e <= r.x,x,e1;
+iterator I;
+statement S;
+@@
 
- static int omap_dma_resume(struct omap_chan *c)
- {
--       /* FIXME: not supported by platform private API */
--       return -EINVAL;
-+       /* Only in cyclic mode */
-+       if (!c->cyclic)
-+               return -EINVAL;
-+
-+       if (c->paused) {
-+               omap_resume_linked_dma(c->dma_ch);
-+               c->paused =3D false;
-+       }
-+
-+       return 0;
- }
+if (x@p1 == NULL) { ... when != I(x,...) S
+                        when != e = e1
+                        when != e += e1
+                        when != e -= e1
+                        when != ++e
+                        when != --e
+                        when != e++
+                        when != e--
+                        when != &e
+   kfree@p2(x); ... return ...; }
 
+@ok depends on unchanged exists@
+position any r.p1;
+position r.p2;
+expression x;
+@@
 
-Both works fine (have tested it on BeagleBoard with mplayer).
-With [1] we have identical way of dealing with the PAUSE/RESUME as we h=
-ad
-previously, so it is know to work fine on OMAP1/2/3/4/5
+... when != true x@p1 == NULL
+kfree@p2(x);
 
-We have never used [2] in the past, but I think that is not going to wo=
-rk on
-OMAP1 and OMAP2420. Also we need to add code to arch/arm/plat-omap/dma.=
-c for
-this...
+@depends on !ok && unchanged@
+position r.p2;
+expression x;
+@@
 
-I can resend the series with either of these to fix this regression cau=
-sed by
-the dmaengine conversion (after cleanup off course).
+*kfree@p2(x);
+// </smpl>
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Peter Senna Tschudin <peter.senna@gmail.com>
+
+---
+ sound/soc/soc-core.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2a4c7bb..6b29c73 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4052,8 +4052,6 @@ int snd_soc_register_codec(struct device *dev,
+ 	return 0;
+ 
+ fail:
+-	kfree(codec->reg_def_copy);
+-	codec->reg_def_copy = NULL;
+ 	kfree(codec->name);
+ 	kfree(codec);
+ 	return ret;
