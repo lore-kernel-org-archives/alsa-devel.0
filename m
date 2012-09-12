@@ -1,15 +1,19 @@
-From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH] drm/i915: HDMI - Clear Audio Enable bit for
-	Hot Plug
-Date: Thu, 13 Sep 2012 07:43:22 +0800
-Message-ID: <1347493402-2531-1-git-send-email-xingchao.wang@intel.com>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH 2/3] ASoC: Davinci: pcm: add support for
+ sram-support-less platforms
+Date: Wed, 12 Sep 2012 07:50:31 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA7F8CF@DBDE01.ent.ti.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+ <1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id A453C2615E9
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 09:43:24 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id B694B2615E9
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 09:50:41 +0200 (CEST)
+In-Reply-To: <1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +23,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, daniel.vetter@ffwll.ch
-Cc: tiwai@suse.de, michael.fu@intel.com, fengguang.wu@intel.com, yakui.zhao@intel.com, Wang Xingchao <xingchao.wang@intel.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Cc: "tony@atomide.com" <tony@atomide.com>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>, "Girdwood,
+ Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Clear Audio Enable bit to trigger unsolicated event to notify Audio
-Driver part the HDMI hot plug change. The patch fixed the bug when
-remove HDMI cable the bit was not cleared correctly.
+On Fri, Aug 31, 2012 at 18:20:58, Hebbar, Gururaja wrote:
+> OMAP2+ platforms (like TI81xx, AM33xx) uses davinci-pcm driver. SRAM is
+> not needed/used in EDMA transfers for audio on such platforms. However
+> they do not provide generic SRAM APIs (sram_alloc() and sram_free()). In
+> such cases the pcm driver cannot be used directly as it results in
+> compilation failure on OMAP2 platforms.
+> 
+> Fix this by providing a config option to indicate missing SRAM API
+> support. This config is enabled by default on Davinci platform so as to
+> not break existing platforms. For OMAP2+ platforms, the config is
+> disabled.
 
-In intel_hdmi_dpms(), if intel_hdmi->has_audio been true, the "Audio enable bit" will 
-be set to trigger unsolicated event to notify Alsa driver the change.
+Gentle ping. Is there any comments/review for this patch? 
+If not, can this be pulled in?
 
-intel_hdmi->has_audio will be reset to false from intel_hdmi_detect() after
-remove the hdmi cable, here's debug log:
+> 
+> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+> ---
+> :100644 100644 9e11a14... 328b463... M	sound/soc/davinci/Kconfig
+> :100644 100644 93ea3bf... 7ac5a19... M	sound/soc/davinci/davinci-pcm.c
+>  sound/soc/davinci/Kconfig       |    5 +++++
+>  sound/soc/davinci/davinci-pcm.c |    8 ++++++++
+>  2 files changed, 13 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+> index 9e11a14..328b463 100644
+> --- a/sound/soc/davinci/Kconfig
+> +++ b/sound/soc/davinci/Kconfig
+> @@ -15,6 +15,11 @@ config SND_DAVINCI_SOC_MCASP
+>  config SND_DAVINCI_SOC_VCIF
+>  	tristate
+>  
+> +config SND_DAVINCI_HAVE_SRAM
+> +	bool
+> +	default y if ARCH_DAVINCI=y
+> +	default n if ARCH_OMAP=y
+> +
+>  config SND_DAVINCI_SOC_EVM
+>  	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
+>  	depends on SND_DAVINCI_SOC
+> diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+> index 93ea3bf..7ac5a19 100644
+> --- a/sound/soc/davinci/davinci-pcm.c
+> +++ b/sound/soc/davinci/davinci-pcm.c
+> @@ -23,7 +23,9 @@
+>  #include <sound/soc.h>
+>  
+>  #include <asm/dma.h>
+> +#if defined(CONFIG_SND_DAVINCI_HAVE_SRAM)
+>  #include <mach/sram.h>
+> +#endif
+>  
+>  #include "davinci-pcm.h"
+>  
+> @@ -259,6 +261,7 @@ static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
+>  	}
+>  }
+>  
+> +#if defined(CONFIG_SND_DAVINCI_HAVE_SRAM)
+>  static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+>  		struct snd_pcm_hardware *ppcm)
+>  {
+> @@ -289,6 +292,7 @@ exit2:
+>  exit1:
+>  	return -ENOMEM;
+>  }
+> +#endif
+>  
+>  /*
+>   * Only used with ping/pong.
+> @@ -676,7 +680,9 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
+>  
+>  	ppcm = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+>  			&pcm_hardware_playback : &pcm_hardware_capture;
+> +#if defined(CONFIG_SND_DAVINCI_HAVE_SRAM)
+>  	allocate_sram(substream, params->sram_size, ppcm);
+> +#endif
+>  	snd_soc_set_runtime_hwparams(substream, ppcm);
+>  	/* ensure that buffer size is a multiple of period size */
+>  	ret = snd_pcm_hw_constraint_integer(runtime,
+> @@ -817,11 +823,13 @@ static void davinci_pcm_free(struct snd_pcm *pcm)
+>  		dma_free_writecombine(pcm->card->dev, buf->bytes,
+>  				      buf->area, buf->addr);
+>  		buf->area = NULL;
+> +#if defined(CONFIG_SND_DAVINCI_HAVE_SRAM)
+>  		iram_dma = buf->private_data;
+>  		if (iram_dma) {
+>  			sram_free(iram_dma->area, iram_dma->bytes);
+>  			kfree(iram_dma);
+>  		}
+> +#endif
+>  	}
+>  }
+>  
+> -- 
+> 1.7.1
+> 
+> 
 
-[  187.494153] [drm:output_poll_execute], [CONNECTOR:17:HDMI-A-1] status updated from 1 to 2
-[  187.525349] [drm:intel_hdmi_detect], HDMI: has_audio = 0
 
-so when comes back to intel_hdmi_dpms(), the "Audio enable bit" will not be cleared. And this
-cause the eld infomation and pin presence doesnot update accordingly in alsa driver side.
-
-This patch will also trigger unsolicated event to alsa driver to notify the hot plug event:
-
-[  187.853159] ALSA sound/pci/hda/patch_hdmi.c:772 HDMI hot plug event: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=1
-[  187.853268] ALSA sound/pci/hda/patch_hdmi.c:990 HDMI status: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=0
-
-
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
----
- drivers/gpu/drm/i915/intel_hdmi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
-index 98f6024..12dc330 100644
---- a/drivers/gpu/drm/i915/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/intel_hdmi.c
-@@ -609,7 +609,7 @@ static void intel_hdmi_dpms(struct drm_encoder *encoder, int mode)
- 	u32 temp;
- 	u32 enable_bits = SDVO_ENABLE;
- 
--	if (intel_hdmi->has_audio)
-+	if (intel_hdmi->has_audio || mode != DRM_MODE_DPMS_ON)
- 		enable_bits |= SDVO_AUDIO_ENABLE;
- 
- 	temp = I915_READ(intel_hdmi->sdvox_reg);
--- 
-1.7.9.5
+Regards, 
+Gururaja
