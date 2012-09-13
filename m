@@ -1,20 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [pulseaudio-discuss] [PATCH] alsa-mixer: Don't use
- the mono path in the analog-stereo mapping.
-Date: Thu, 13 Sep 2012 12:37:54 +0800
-Message-ID: <CAN8cciZBg19it5ejUi5rUrp8atQ5ARfcT=v_un25S_8RJJBnsw@mail.gmail.com>
-References: <1347455039-8636-1-git-send-email-tanuk@iki.fi>
+From: a@opensource.wolfsonmicro.com
+Subject: [PATCH 2/2] ASoC: wm8961: Move device identification
+	and reset to I2C probe
+Date: Thu, 13 Sep 2012 13:32:46 +0800
+Message-ID: <25062.4837157831$1347515110@news.gmane.org>
+References: <1347514366-17641-1-git-send-email-a>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id D87032625CF
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 06:37:55 +0200 (CEST)
-Received: by qcse14 with SMTP id e14so1610511qcs.38
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 21:37:55 -0700 (PDT)
-In-Reply-To: <1347455039-8636-1-git-send-email-tanuk@iki.fi>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 426552625CF
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 07:45:00 +0200 (CEST)
+In-Reply-To: <1347514366-17641-1-git-send-email-a>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,48 +21,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, tiwai@suse.de, georgepee@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi05LTEyIOS4i+WNiDk6MDQg5pa8ICJUYW51IEthc2tpbmVuIiA8dGFudWtAaWtpLmZpPiDl
-r6vpgZPvvJoKPgo+IEFzIGZhciBhcyBJIGNhbiBzZWUsIGhhdmluZyBhIG1vbm8gcGF0aCBpbiBh
-IHN0ZXJlbyBtYXBwaW5nIGRvZXNuJ3QKPiBtYWtlIGFueSBzZW5zZS4gSXQgYWxzbyBjYXVzZXMg
-YnJlYWthZ2U6IGlmIHRoZSBNYXN0ZXIgTW9ubyBtaXhlcgo+IGVsZW1lbnQgaGFzIHR3byB2b2x1
-bWUgY2hhbm5lbHMsCgpCZWNhdXNlIGFjOTcgY29kZWNzIGhhdmUgYW4gYW5hbG9nIG1peGVyIHdo
-aWNoIGNhbiBkb3dubWl4IHN0ZXJlbyB0byB0aGUKbW9ubyBvdXQgcGluLgoKU29tZSBoZGEgY29k
-ZWNzIGFsc28gaGF2ZSB0aGUgbW9ubyBvdXQgcGluIHdoaWNoIGNvbm5lY3RlZCB0byBhIG1peGVy
-CndpZGdldCBmb3IgZG93bm1peGluZyBzdGVyZW8gZnJvbSBzdGVyZW8gREFDIHRvIG1vbm8KClRo
-ZSBtYXN0ZXIgbW9ubyBwbGF5YmFjayB2b2x1bWUgY29udHJvbCBvZiBhYzk3IGhhcyBvbmx5IG9u
-ZSBjaGFubmVsICwgc28KaXQgaXMgYSBidWcgb2Ygdm0gJ3MgYWM5NyBjb2RlYyByZWdpc3RlciBl
-bXVsYXRpb24gaWYgdGhlIGNvbnRyb2wgaGFzIHR3bwp2b2x1bWUgY2hhbm5lbHMKCkVpdGhlciBy
-ZW1vdmVkIHRoZSBtYXN0ZXIgbW9ubyByZWdpc3RlciBlbXVsYXRpb24gZnJvbSB2bSBvciBwdWxz
-ZWF1ZGlvCmlnbm9yZSB0aGUgbWFzdGVyIG1vbm8gc3dpdGNoIG9mIHZtJ3MgYWM5NyBjb2RlYwoK
-PiB0aGUgYW5hbG9nLW91dHB1dCBwYXRoIGdldHMgcmVtb3ZlZAo+IGR1ZSB0byBiZWluZyBhIHN1
-YnNldCBvZiBhbmFsb2ctb3V0cHV0LW1vbm8sIGFuZCB0aGF0IGluIHR1cm4gY2F1c2VzCj4gdGhl
-IE1hc3RlciBlbGVtZW50IGdldHRpbmcgbXV0ZWQuCgpodHRwOi8vY2dpdC5mcmVlZGVza3RvcC5v
-cmcvcHVsc2VhdWRpby9wdWxzZWF1ZGlvL2NvbW1pdC9zcmMvbW9kdWxlcy9hbHNhL2Fsc2EtbWl4
-ZXIuYz9pZD01YzgzMmE1YjhhMmJjMmNlNzQ0N2VhYjEwYWNhZWVkMzBjZDNlZDc4CgpUaGUgYWJv
-dmUgcGF0Y2ggdHJ5IHRvIGFzc2lnbiB0aGUgaGVhZHBob25lIHBhdGggZm9yIHRoZSBVU0IgaGVh
-ZHNldHMgd2hpY2gKaGF2ZSBzcGVha2VyIHBsYXliYWNrIHZvbHVtZSBjb250cm9sIHNpbmNlIHNw
-ZWFrZXIgcGxheWJhY2sgdm9sdW1lIGNvbnRyb2wKaXMgbm90IGluIHB1bHNlYXVkaW8gJyBzIGhl
-YWRwaG9uZSBwYXRoLgoKPlVzZXJzIGdlbmVyYWxseSBkb24ndCBsaWtlIHRoYXQuCj4KPiBCdWdM
-aW5rOiBodHRwczovL2J1Z3MuZnJlZWRlc2t0b3Aub3JnL3Nob3dfYnVnLmNnaT9pZD01NDY3MwoK
-SXQgbG9vayBsaWtlIGEgYnVnIGluIG91dHB1dCB2b2x1bWUgY2FsY3VsYXRpb24gb2YgYWM5NyBj
-b2RlYyBlbXVsYXRpb24gaW4KdGhvc2UgdmlydHVhbCBtYWNoaW5lIGlmIHRoZSBlbXVsYXRlZCBh
-Yzk3IGNvZGVjIG9ubHkgaGFzIDE2IGJpdHMgREFDCnJlc29sdXRpb24KCm9yIHB1bHNlYXVkaW8g
-ZG9lcyBub3QgdW5tdXRlIHBjbSBwbGF5YmFjayBzd2l0Y2ggb24gdGhvc2UgIGFjOTcgY29kZWMK
-YWZ0ZXIgdXNlciBtdXRlIHRoZSBzb3VuZCBpbiBzb3VuZCBwcmVmZXJlbmNlIGFuZCBwdWxzZWF1
-ZGlvIG11dGUgYm90aAptYXN0ZXIgcGxheWJhY2sgc3dpdGNoIGFuZCBwY20gcGxheWJhY2sgc3dp
-dGNoCgpTb21lIHRhYmxldCB3aXRoIGFsYzIwMwp1c2UgdGhlIG1hc3RlciBtb25vIG91dHB1dCBm
-b3IgdGhlIG1vbm8gc3BlYWtlcgoKaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFsc2Et
-a2VybmVsLmdpdDthPWNvbW1pdGRpZmY7aD04ZjRmNGVmNmZlZDU1YTM2MzZkYjMxNDZhM2U1MGI3
-ZmViY2JkN2RlO2hwPWI5YzE5NmUxNDUyZTFkNGNiZjBhMTQ5OWYxZTljMWIzZWRmNTkzMjAKCkZv
-ciBhbHM0MDAwIHRoZSBtYXN0ZXIgbW9ubyBpcyBvbmx5IGVudW0gY29udHJvbCAgdG8gIGNoYW5n
-ZSB0aGUgY2hhbm5lbAptYXAgb2YgdGhlIG1vbm8gb3V0CgpTaW1wbGUgbWl4ZXIgY29udHJvbCAn
-TWFzdGVyIE1vbm8nLDAKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQgY2Vu
-dW0KICBJdGVtczogJ0wgY2hhbiBvbmx5JyAnUiBjaGFuIG9ubHknICdMIGNoLzIgKyBSIGNoLzIn
-CiAgSXRlbTA6ICdMIGNoYW4gb25seScKCmh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50
-dS8rc291cmNlL3B1bHNlYXVkaW8vK2J1Zy84MjczOTMKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+This is more idiomatic as it means we verify that the device is there
+prior to trying to do the card probe.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8961.c |   60 +++++++++++++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 27 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
+index 4ea64d6e..f387670 100644
+--- a/sound/soc/codecs/wm8961.c
++++ b/sound/soc/codecs/wm8961.c
+@@ -187,11 +187,6 @@ static bool wm8961_readable(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static int wm8961_reset(struct snd_soc_codec *codec)
+-{
+-	return snd_soc_write(codec, WM8961_SOFTWARE_RESET, 0);
+-}
+-
+ /*
+  * The headphone output supports special anti-pop sequences giving
+  * silent power up and power down.
+@@ -840,7 +835,6 @@ static struct snd_soc_dai_driver wm8961_dai = {
+ 
+ static int wm8961_probe(struct snd_soc_codec *codec)
+ {
+-	struct wm8961_priv *wm8961 = snd_soc_codec_get_drvdata(codec);
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret = 0;
+ 	u16 reg;
+@@ -851,27 +845,6 @@ static int wm8961_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
+-	reg = snd_soc_read(codec, WM8961_SOFTWARE_RESET);
+-	if (reg != 0x1801) {
+-		dev_err(codec->dev, "Device is not a WM8961: ID=0x%x\n", reg);
+-		return -EINVAL;
+-	}
+-
+-	/* This isn't volatile - readback doesn't correspond to write */
+-	regcache_cache_bypass(wm8961->regmap, true);
+-	reg = snd_soc_read(codec, WM8961_RIGHT_INPUT_VOLUME);
+-	regcache_cache_bypass(wm8961->regmap, false);
+-	dev_info(codec->dev, "WM8961 family %d revision %c\n",
+-		 (reg & WM8961_DEVICE_ID_MASK) >> WM8961_DEVICE_ID_SHIFT,
+-		 ((reg & WM8961_CHIP_REV_MASK) >> WM8961_CHIP_REV_SHIFT)
+-		 + 'A');
+-
+-	ret = wm8961_reset(codec);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset\n");
+-		return ret;
+-	}
+-
+ 	/* Enable class W */
+ 	reg = snd_soc_read(codec, WM8961_CHARGE_PUMP_B);
+ 	reg |= WM8961_CP_DYN_PWR_MASK;
+@@ -968,6 +941,7 @@ static __devinit int wm8961_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+ 	struct wm8961_priv *wm8961;
++	unsigned int val;
+ 	int ret;
+ 
+ 	wm8961 = devm_kzalloc(&i2c->dev, sizeof(struct wm8961_priv),
+@@ -979,6 +953,38 @@ static __devinit int wm8961_i2c_probe(struct i2c_client *i2c,
+ 	if (IS_ERR(wm8961->regmap))
+ 		return PTR_ERR(wm8961->regmap);
+ 
++	ret = regmap_read(wm8961->regmap, WM8961_SOFTWARE_RESET, &val);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
++		return ret;
++	}
++
++	if (val != 0x1801) {
++		dev_err(&i2c->dev, "Device is not a WM8961: ID=0x%x\n", val);
++		return -EINVAL;
++	}
++
++	/* This isn't volatile - readback doesn't correspond to write */
++	regcache_cache_bypass(wm8961->regmap, true);
++	ret = regmap_read(wm8961->regmap, WM8961_RIGHT_INPUT_VOLUME, &val);
++	regcache_cache_bypass(wm8961->regmap, false);
++
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to read chip revision: %d\n", ret);
++		return ret;
++	}
++
++	dev_info(&i2c->dev, "WM8961 family %d revision %c\n",
++		 (val & WM8961_DEVICE_ID_MASK) >> WM8961_DEVICE_ID_SHIFT,
++		 ((val & WM8961_CHIP_REV_MASK) >> WM8961_CHIP_REV_SHIFT)
++		 + 'A');
++
++	ret = regmap_write(wm8961->regmap, WM8961_SOFTWARE_RESET, 0x1801);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to issue reset: %d\n", ret);
++		return ret;
++	}
++
+ 	i2c_set_clientdata(i2c, wm8961);
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+-- 
+1.7.10.4
