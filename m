@@ -1,15 +1,15 @@
 From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Subject: [PATCH 2/7] ASoC: fsl: mpc5200 combine psc_dma
-	platform data
-Date: Thu, 13 Sep 2012 17:43:11 -0400
-Message-ID: <1347572596-37540-3-git-send-email-emillbrandt@dekaresearch.com>
+Subject: [PATCH 3/7] ASoC: fsl: mpc5200 add missing information
+	to snd_soc_dai_driver
+Date: Thu, 13 Sep 2012 17:43:12 -0400
+Message-ID: <1347572596-37540-4-git-send-email-emillbrandt@dekaresearch.com>
 References: <1347572596-37540-1-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from norco.coldhaus.com (norco.coldhaus.com [64.32.230.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E69A265342
+ by alsa0.perex.cz (Postfix) with ESMTP id 31FCB265345
  for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 23:43:27 +0200 (CEST)
 In-Reply-To: <1347572596-37540-1-git-send-email-emillbrandt@dekaresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,118 +25,71 @@ To: Grant Likely <grant.likely@secretlab.ca>, Liam Girdwood <lrg@ti.com>, Mark B
 Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-The mpc5200_psc_ac97 and mpc5200_psc_i2s modules rely on shared platform data
-with mpc5200_dma.
+Add missing dai_driver information to avoid these runtime errors
+
+[   16.433788] asoc: error - multiple DAI f0002c00.i2s registered with no name
+[   16.453551] Failed to register DAI
+[   16.461222] mpc5200-psc-i2s: probe of f0002c00.i2s failed with error -22
+[   16.475242] asoc: error - multiple DAI f0002000.ac97 registered with no name
+[   16.488087] mpc5200-psc-ac97 f0002000.ac97: Failed to register DAI
+[   16.502222] mpc5200-psc-ac97: probe of f0002000.ac97 failed with error -22
 
 Signed-off-by: Eric Millbrandt <emillbrandt@dekaresearch.com>
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 9a3f7c5..9997c03 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -370,7 +370,7 @@ static struct snd_soc_platform_driver mpc5200_audio_dma_platform = {
- 	.pcm_free	= &psc_dma_free,
- };
- 
--static int mpc5200_hpcd_probe(struct platform_device *op)
-+int mpc5200_audio_dma_create(struct platform_device *op)
- {
- 	phys_addr_t fifo;
- 	struct psc_dma *psc_dma;
-@@ -487,8 +487,9 @@ out_unmap:
- 	iounmap(regs);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(mpc5200_audio_dma_create);
- 
--static int mpc5200_hpcd_remove(struct platform_device *op)
-+int mpc5200_audio_dma_destroy(struct platform_device *op)
- {
- 	struct psc_dma *psc_dma = dev_get_drvdata(&op->dev);
- 
-@@ -510,24 +511,7 @@ static int mpc5200_hpcd_remove(struct platform_device *op)
- 
- 	return 0;
- }
--
--static struct of_device_id mpc5200_hpcd_match[] = {
--	{ .compatible = "fsl,mpc5200-pcm", },
--	{}
--};
--MODULE_DEVICE_TABLE(of, mpc5200_hpcd_match);
--
--static struct platform_driver mpc5200_hpcd_of_driver = {
--	.probe		= mpc5200_hpcd_probe,
--	.remove		= mpc5200_hpcd_remove,
--	.driver = {
--		.owner		= THIS_MODULE,
--		.name		= "mpc5200-pcm-audio",
--		.of_match_table    = mpc5200_hpcd_match,
--	}
--};
--
--module_platform_driver(mpc5200_hpcd_of_driver);
-+EXPORT_SYMBOL_GPL(mpc5200_audio_dma_destroy);
- 
- MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
- MODULE_DESCRIPTION("Freescale MPC5200 PSC in DMA mode ASoC Driver");
-diff --git a/sound/soc/fsl/mpc5200_dma.h b/sound/soc/fsl/mpc5200_dma.h
-index a3c0cd5..dff253f 100644
---- a/sound/soc/fsl/mpc5200_dma.h
-+++ b/sound/soc/fsl/mpc5200_dma.h
-@@ -81,4 +81,7 @@ to_psc_dma_stream(struct snd_pcm_substream *substream, struct psc_dma *psc_dma)
- 	return &psc_dma->playback;
- }
- 
-+int mpc5200_audio_dma_create(struct platform_device *op);
-+int mpc5200_audio_dma_destroy(struct platform_device *op);
-+
- #endif /* __SOUND_SOC_FSL_MPC5200_DMA_H__ */
 diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
-index ffa00a2..9a09453 100644
+index 9a09453..a313c0a 100644
 --- a/sound/soc/fsl/mpc5200_psc_ac97.c
 +++ b/sound/soc/fsl/mpc5200_psc_ac97.c
-@@ -278,6 +278,10 @@ static int __devinit psc_ac97_of_probe(struct platform_device *op)
- 	struct snd_ac97 ac97;
- 	struct mpc52xx_psc __iomem *regs;
+@@ -237,15 +237,18 @@ static const struct snd_soc_dai_ops psc_ac97_digital_ops = {
  
-+	rc = mpc5200_audio_dma_create(op);
-+	if (rc != 0)
-+		return rc;
-+
- 	rc = snd_soc_register_dais(&op->dev, psc_ac97_dai, ARRAY_SIZE(psc_ac97_dai));
- 	if (rc != 0) {
- 		dev_err(&op->dev, "Failed to register DAI\n");
-@@ -303,6 +307,7 @@ static int __devinit psc_ac97_of_probe(struct platform_device *op)
- 
- static int __devexit psc_ac97_of_remove(struct platform_device *op)
+ static struct snd_soc_dai_driver psc_ac97_dai[] = {
  {
-+	mpc5200_audio_dma_destroy(op);
- 	snd_soc_unregister_dais(&op->dev, ARRAY_SIZE(psc_ac97_dai));
- 	return 0;
- }
++	.name = "mpc5200-psc-ac97.0",
+ 	.ac97_control = 1,
+ 	.probe	= psc_ac97_probe,
+ 	.playback = {
++		.stream_name	= "AC97 Playback",
+ 		.channels_min   = 1,
+ 		.channels_max   = 6,
+ 		.rates          = SNDRV_PCM_RATE_8000_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S32_BE,
+ 	},
+ 	.capture = {
++		.stream_name	= "AC97 Capture",
+ 		.channels_min   = 1,
+ 		.channels_max   = 2,
+ 		.rates          = SNDRV_PCM_RATE_8000_48000,
+@@ -254,8 +257,10 @@ static struct snd_soc_dai_driver psc_ac97_dai[] = {
+ 	.ops = &psc_ac97_analog_ops,
+ },
+ {
++	.name = "mpc5200-psc-ac97.1",
+ 	.ac97_control = 1,
+ 	.playback = {
++		.stream_name	= "AC97 SPDIF",
+ 		.channels_min   = 1,
+ 		.channels_max   = 2,
+ 		.rates          = SNDRV_PCM_RATE_32000 | \
 diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
-index 7b53032..c0b7a23 100644
+index c0b7a23..ba1f0a6 100644
 --- a/sound/soc/fsl/mpc5200_psc_i2s.c
 +++ b/sound/soc/fsl/mpc5200_psc_i2s.c
-@@ -156,6 +156,10 @@ static int __devinit psc_i2s_of_probe(struct platform_device *op)
- 	struct psc_dma *psc_dma;
- 	struct mpc52xx_psc __iomem *regs;
+@@ -130,13 +130,16 @@ static const struct snd_soc_dai_ops psc_i2s_dai_ops = {
+ };
  
-+	rc = mpc5200_audio_dma_create(op);
-+	if (rc != 0)
-+		return rc;
-+
- 	rc = snd_soc_register_dais(&op->dev, psc_i2s_dai, ARRAY_SIZE(psc_i2s_dai));
- 	if (rc != 0) {
- 		pr_err("Failed to register DAI\n");
-@@ -200,6 +204,7 @@ static int __devinit psc_i2s_of_probe(struct platform_device *op)
- 
- static int __devexit psc_i2s_of_remove(struct platform_device *op)
- {
-+	mpc5200_audio_dma_destroy(op);
- 	snd_soc_unregister_dais(&op->dev, ARRAY_SIZE(psc_i2s_dai));
- 	return 0;
- }
+ static struct snd_soc_dai_driver psc_i2s_dai[] = {{
++	.name = "mpc5200-psc-i2s.0",
+ 	.playback = {
++		.stream_name = "I2S Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = PSC_I2S_RATES,
+ 		.formats = PSC_I2S_FORMATS,
+ 	},
+ 	.capture = {
++		.stream_name = "I2S Capture",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = PSC_I2S_RATES,
 -- 
 1.7.2.5
