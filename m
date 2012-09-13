@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Need help with WM8960
-Date: Thu, 13 Sep 2012 11:31:30 +0800
-Message-ID: <20120913033127.GA6732@opensource.wolfsonmicro.com>
-References: <5051160C.2010802@freescale.com>
- <20120913024245.GA4467@opensource.wolfsonmicro.com>
- <6AE080B68D46FC4BA2D2769E68D765B7080568F2@039-SN2MPN1-023.039d.mgd.msft.net>
+From: Wang Xingchao <xingchao.wang@intel.com>
+Subject: [PATCH v2] drm/i915: HDMI - Clear Audio Enable bit for
+	Hot Plug unconditionally
+Date: Thu, 13 Sep 2012 11:19:00 +0800
+Message-ID: <1347506340-2683-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E75D52625CF
- for <Alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 05:31:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <6AE080B68D46FC4BA2D2769E68D765B7080568F2@039-SN2MPN1-023.039d.mgd.msft.net>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1DFE265228
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 05:32:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, daniel.vetter@ffwll.ch, Wang Xingchao <xingchao.wang@intel.com>, yakui.zhao@intel.com, michael.fu@intel.com, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 13, 2012 at 03:26:03AM +0000, Tabi Timur-B04825 wrote:
-> Mark Brown wrote:
+Clear Audio Enable bit to trigger unsolicated event to notify Audio
+Driver part the HDMI hot plug change. The patch fixed the bug when
+remove HDMI cable the bit was not cleared correctly.
 
-> > No, it's something that the application should do.
+In intel_enable_hdmi(), if intel_hdmi->has_audio been true, the "Audio enable bit" will
+be set to trigger unsolicated event to notify Alsa driver the change.
 
-> How would the application know to unmute those two particular controls? 
-> The only way I figured it out is by launching alsamixer and playing with 
-> every control until I heard sound.
+intel_hdmi->has_audio will be reset to false from intel_hdmi_detect() after
+remove the hdmi cable, here's debug log:
 
-The user needs to configure this as part of their system integration.
-There's no real way to know what configuration is sane for a given
-machine and the user is already doing system integration anyway; putting
-things into userspace makes things much easier to maintain.  Even for
-something like this we'd need to know if the output is connected to
-headphone or line outputs as the volumes configured would generally be
-rather different (and of course that can vary at runtime...).
+[  187.494153] [drm:output_poll_execute], [CONNECTOR:17:HDMI-A-1] status updated from 1 to 2
+[  187.525349] [drm:intel_hdmi_detect], HDMI: has_audio = 0
+
+so when comes back to intel_disable_hdmi(), the "Audio enable bit" will not be cleared. And this
+cause the eld infomation and pin presence doesnot update accordingly in alsa driver side.
+
+This patch will also trigger unsolicated event to alsa driver to notify the hot plug event:
+
+[  187.853159] ALSA sound/pci/hda/patch_hdmi.c:772 HDMI hot plug event: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=1
+[  187.853268] ALSA sound/pci/hda/patch_hdmi.c:990 HDMI status: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=0
+
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+---
+ drivers/gpu/drm/i915/intel_hdmi.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
+index 5d02aad..229897f 100644
+--- a/drivers/gpu/drm/i915/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/intel_hdmi.c
+@@ -674,10 +674,7 @@ static void intel_disable_hdmi(struct intel_encoder *encoder)
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	struct intel_hdmi *intel_hdmi = enc_to_intel_hdmi(&encoder->base);
+ 	u32 temp;
+-	u32 enable_bits = SDVO_ENABLE;
+-
+-	if (intel_hdmi->has_audio)
+-		enable_bits |= SDVO_AUDIO_ENABLE;
++	u32 enable_bits = SDVO_ENABLE | SDVO_AUDIO_ENABLE;
+ 
+ 	temp = I915_READ(intel_hdmi->sdvox_reg);
+ 
+-- 
+1.7.9.5
