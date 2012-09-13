@@ -1,19 +1,17 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: Need help with WM8960
-Date: Thu, 13 Sep 2012 11:29:10 -0500
-Message-ID: <505209D6.2080206@freescale.com>
-References: <5051160C.2010802@freescale.com>
- <20120913024245.GA4467@opensource.wolfsonmicro.com>
- <5051F0F4.5090205@freescale.com> <5051FF73.2030504@freescale.com>
+Subject: Re: [PATCH] ASoC: wm8960: Support shared LRCLK
+Date: Thu, 13 Sep 2012 13:47:54 -0500
+Message-ID: <50522A5A.10006@freescale.com>
+References: <1347508108-24248-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BA112625CC
- for <Alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 18:29:22 +0200 (CEST)
-In-Reply-To: <5051FF73.2030504@freescale.com>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe003.messaging.microsoft.com [213.199.154.206])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4F9A265335
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 20:48:01 +0200 (CEST)
+In-Reply-To: <1347508108-24248-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> +               iprop = of_get_property(np, "wlf,discharge-resistance", &len);
-> +               if (iprop && len == sizeof(uint32_t))
-> +                       pdata->dres = be32_to_cpup(iprop);
+Mark Brown wrote:
+> +		ret = regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2,
+> +					 0x4, 0x4);
 
-I just noticed that pdata->dres isn't actually used in the driver.  In
-fact, I'm also confused by the DISOP bit.  The datasheet says that the
-default value of DISOP is 0.  However, the only time we touch register R29
-is here:
+This is not enough to get the codec working on my board.
 
-case SND_SOC_BIAS_STANDBY:
-	switch (codec->dapm.bias_level) {
-	case SND_SOC_BIAS_PREPARE:
-		/* Disable HP discharge */
-		snd_soc_update_bits(codec, WM8960_APOP2,
-				    WM8960_DISOP | WM8960_DRES_MASK,
-				    0);
-
-All we do here is set DISOP and DRES_MASK to 0, which they should already be.
-
-Am I missing something?
+What is the actual mechanism that enables the clock on the WM8960?  I
+don't have an oscilloscope, not it's hard to tell what the hardware is
+actually doing.  However, I suspect that the LRCLK is not running.
 
 -- 
 Timur Tabi
