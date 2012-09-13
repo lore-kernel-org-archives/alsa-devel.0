@@ -1,53 +1,35 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC: wm8960: Support shared LRCLK
-Date: Thu, 13 Sep 2012 17:33:16 -0500
-Message-ID: <50525F2C.4080607@freescale.com>
-References: <1347508108-24248-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <50522A5A.10006@freescale.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 0/5] ARM: tegra: move all APB DMA client to dmaengine
+ based driver
+Date: Thu, 13 Sep 2012 17:35:20 -0600
+Message-ID: <50526DB8.3090808@wwwdotorg.org>
+References: <1345126397-28864-1-git-send-email-ldewangan@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
- (db3ehsobe002.messaging.microsoft.com [213.199.154.140])
- by alsa0.perex.cz (Postfix) with ESMTP id C95B0262608
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 00:33:23 +0200 (CEST)
-In-Reply-To: <50522A5A.10006@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1345126397-28864-1-git-send-email-ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
->> > +		ret = regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2,
->> > +					 0x4, 0x4);
-> This is not enough to get the codec working on my board.
+On 08/16/2012 08:13 AM, Laxman Dewangan wrote:
+> This patch series enable the dmaengine based Tegra APB DMA driver
+> and remove the support code for the legacy dma driver from different
+> APB DMA clients.
+> Patch 1 enable the dmaengine based dma drie and disable the legacy dma driver
+>         in config file.
+> Patch 2 remove the legacy dma driver.
+> Patch 3,4, 5 remove the support code from different APB DMA clients to support
+>         legacy dma driver.
 > 
-> What is the actual mechanism that enables the clock on the WM8960?  I
-> don't have an oscilloscope, not it's hard to tell what the hardware is
-> actually doing.  However, I suspect that the LRCLK is not running.
+> Please note that this series will depends on patch
+> dma: tegra: enable/disable dma clock
+> which is not in 3.6-rc1 but will be available in next RC (rc2) of 3.6 as
+> part of fixes.
 
-Never mind, it works now.  I understand that the DAPM controls need to be
-enabled for the clocks to actually run, as described here:
-
-http://www.alsa-project.org/main/index.php/DAPM#When_things_don.27t_work
-
-On the #alsa-soc, I was told that I could force on the control in my
-machine driver.  Specifically, I was told this:
-
-	"in your board file you can always make an always on output in the DAPM map"
-
-Can you tell me how to do this?  Is there an example?  I don't want to
-have to rely on user-space configuration to get playback to work.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+I have applied this series to Tegra's for-3.7/dmaengine branch. Right
+now, that branch is based directly on Mark Brown's ASoC for-3.6 branch
+in order to pick up the fix it depends on. However, I'll rebase on the
+3.6 pull request tag he sends for that branch as soon as it's available.
