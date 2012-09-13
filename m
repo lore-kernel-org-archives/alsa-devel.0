@@ -1,93 +1,115 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 12/15] ASoC: OMAP: mcbsp, mcpdm, dmic: Let omap-pcm to pick the dma_type
-Date: Thu, 13 Sep 2012 16:38:02 +0300
-Message-ID: <1347543485-339-13-git-send-email-peter.ujfalusi@ti.com>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>, Lars-Peter Clausen <lars@metafoo.de>
+From: Wang Xingchao <wangxingchao2011@gmail.com>
+Subject: Re: [PATCH v2] drm/i915: HDMI - Clear Audio Enable bit
+ for Hot Plug unconditionally
+Date: Thu, 13 Sep 2012 21:53:12 +0800
+Message-ID: <CA+v+29iZRjp0ha6cFhR5o5xySQuF4Wgrd_tmiHOR=n0oM=B0Yw@mail.gmail.com>
+References: <1347506340-2683-1-git-send-email-xingchao.wang@intel.com>
+ <s5hipbie7px.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94C102625DB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 15:53:35 +0200 (CEST)
+Received: by qadz3 with SMTP id z3so2184506qad.17
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 06:53:32 -0700 (PDT)
+In-Reply-To: <s5hipbie7px.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@intel.com>, yakui.zhao@intel.com, stable@vger.kernel.org, michael.fu@intel.com, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-omap-pcm can figure out the correct dma_type based on the stream's format.
-In this way we can get rid of the plat/dma.h include from these drivers.
+Hi Takashi,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/omap-dmic.c  | 2 --
- sound/soc/omap/omap-mcbsp.c | 3 ---
- sound/soc/omap/omap-mcpdm.c | 3 ---
- 3 files changed, 8 deletions(-)
+2012/9/13 Takashi Iwai <tiwai@suse.de>:
+> At Thu, 13 Sep 2012 11:19:00 +0800,
+> Wang Xingchao wrote:
+>>
+>> Clear Audio Enable bit to trigger unsolicated event to notify Audio
+>> Driver part the HDMI hot plug change. The patch fixed the bug when
+>> remove HDMI cable the bit was not cleared correctly.
+>>
+>> In intel_enable_hdmi(), if intel_hdmi->has_audio been true, the "Audio enable bit" will
+>> be set to trigger unsolicated event to notify Alsa driver the change.
+>>
+>> intel_hdmi->has_audio will be reset to false from intel_hdmi_detect() after
+>> remove the hdmi cable, here's debug log:
+>>
+>> [  187.494153] [drm:output_poll_execute], [CONNECTOR:17:HDMI-A-1] status updated from 1 to 2
+>> [  187.525349] [drm:intel_hdmi_detect], HDMI: has_audio = 0
+>>
+>> so when comes back to intel_disable_hdmi(), the "Audio enable bit" will not be cleared. And this
+>> cause the eld infomation and pin presence doesnot update accordingly in alsa driver side.
+>>
+>> This patch will also trigger unsolicated event to alsa driver to notify the hot plug event:
+>>
+>> [  187.853159] ALSA sound/pci/hda/patch_hdmi.c:772 HDMI hot plug event: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=1
+>> [  187.853268] ALSA sound/pci/hda/patch_hdmi.c:990 HDMI status: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=0
+>>
+>> Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+>
+> We need the same fix for stable kernels, too, but unfortunately this
+> can't be applied to 3.6 or earlier.
 
-diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-index 60b7b8c..df0ff24 100644
---- a/sound/soc/omap/omap-dmic.c
-+++ b/sound/soc/omap/omap-dmic.c
-@@ -33,7 +33,6 @@
- #include <linux/slab.h>
- #include <linux/pm_runtime.h>
- #include <linux/of_device.h>
--#include <plat/dma.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -63,7 +62,6 @@ struct omap_dmic {
-  */
- static struct omap_pcm_dma_data omap_dmic_dai_dma_params = {
- 	.name		= "DMIC capture",
--	.data_type	= OMAP_DMA_DATA_TYPE_S32,
- };
- 
- static inline void omap_dmic_write(struct omap_dmic *dmic, u16 reg, u32 val)
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 5b3bacc..a230646 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -34,7 +34,6 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- 
--#include <plat/dma.h>
- #include <plat/mcbsp.h>
- #include "mcbsp.h"
- #include "omap-mcbsp.h"
-@@ -234,11 +233,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
--		dma_data->data_type = OMAP_DMA_DATA_TYPE_S16;
- 		wlen = 16;
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
--		dma_data->data_type = OMAP_DMA_DATA_TYPE_S32;
- 		wlen = 32;
- 		break;
- 	default:
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index f90d5de..84743d4 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -40,7 +40,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- 
--#include <plat/dma.h>
- #include <plat/omap_hwmod.h>
- #include "omap-mcpdm.h"
- #include "omap-pcm.h"
-@@ -71,11 +70,9 @@ struct omap_mcpdm {
- static struct omap_pcm_dma_data omap_mcpdm_dai_dma_params[] = {
- 	{
- 		.name = "Audio playback",
--		.data_type = OMAP_DMA_DATA_TYPE_S32,
- 	},
- 	{
- 		.name = "Audio capture",
--		.data_type = OMAP_DMA_DATA_TYPE_S32,
- 	},
- };
- 
--- 
-1.7.12
+I had another patch against 3.6 kernel, I send it out at first. This
+v2 version is based on Daniel's drm-intel-next branch.
+so i will resend that seperate patch to Greg.
 
+The patch for 3.6 kernel:
+http://lists.freedesktop.org/archives/intel-gfx/2012-September/020413.html
+
+thanks
+--xingchao
+>
+> Greg prefers still having a Cc to stable even in such a case, and then
+> send a separate patch applicable to the existing kernels.
+>         http://lwn.net/Articles/515528/
+> So better to have a Cc to stable in the patch.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> ---
+>>  drivers/gpu/drm/i915/intel_hdmi.c |    5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
+>> index 5d02aad..229897f 100644
+>> --- a/drivers/gpu/drm/i915/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/intel_hdmi.c
+>> @@ -674,10 +674,7 @@ static void intel_disable_hdmi(struct intel_encoder *encoder)
+>>       struct drm_i915_private *dev_priv = dev->dev_private;
+>>       struct intel_hdmi *intel_hdmi = enc_to_intel_hdmi(&encoder->base);
+>>       u32 temp;
+>> -     u32 enable_bits = SDVO_ENABLE;
+>> -
+>> -     if (intel_hdmi->has_audio)
+>> -             enable_bits |= SDVO_AUDIO_ENABLE;
+>> +     u32 enable_bits = SDVO_ENABLE | SDVO_AUDIO_ENABLE;
+>>
+>>       temp = I915_READ(intel_hdmi->sdvox_reg);
+>>
+>> --
+>> 1.7.9.5
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
