@@ -1,19 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
 Subject: Re: Need help with WM8960
-Date: Thu, 13 Sep 2012 10:44:51 -0500
-Message-ID: <5051FF73.2030504@freescale.com>
+Date: Thu, 13 Sep 2012 11:29:10 -0500
+Message-ID: <505209D6.2080206@freescale.com>
 References: <5051160C.2010802@freescale.com>
  <20120913024245.GA4467@opensource.wolfsonmicro.com>
- <5051F0F4.5090205@freescale.com>
+ <5051F0F4.5090205@freescale.com> <5051FF73.2030504@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
- (db3ehsobe001.messaging.microsoft.com [213.199.154.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E65C2625E5
- for <Alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 17:44:57 +0200 (CEST)
-In-Reply-To: <5051F0F4.5090205@freescale.com>
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe003.messaging.microsoft.com [65.55.88.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BA112625CC
+ for <Alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 18:29:22 +0200 (CEST)
+In-Reply-To: <5051FF73.2030504@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,58 +28,26 @@ Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Timur Tabi wrote:
-> Also, how do I get the platform data to the codec driver?  Do I need to
-> create some arch code that reads the device tree properties and parses
-> them into a wm8960_data object, and then (somehow) injects that into the
-> wm8960 driver?
+> +               iprop = of_get_property(np, "wlf,discharge-resistance", &len);
+> +               if (iprop && len == sizeof(uint32_t))
+> +                       pdata->dres = be32_to_cpup(iprop);
 
-So, I'm guessing that there is no magical way to inject platform data into
-an OF-initialized driver.  What do you think about this patch:
+I just noticed that pdata->dres isn't actually used in the driver.  In
+fact, I'm also confused by the DISOP bit.  The datasheet says that the
+default value of DISOP is 0.  However, the only time we touch register R29
+is here:
 
-@@ -1029,6 +1030,7 @@ static const struct regmap_config wm8960_regmap = {
- static __devinit int wm8960_i2c_probe(struct i2c_client *i2c,
-                                      const struct i2c_device_id *id)
- {
-+       struct device_node *np = i2c->dev.of_node;
-        struct wm8960_data *pdata = dev_get_platdata(&i2c->dev);
-        struct wm8960_priv *wm8960;
-        int ret;
-@@ -1038,6 +1040,31 @@ static __devinit int wm8960_i2c_probe(struct
-i2c_client *i2c,
-        if (wm8960 == NULL)
-                return -ENOMEM;
+case SND_SOC_BIAS_STANDBY:
+	switch (codec->dapm.bias_level) {
+	case SND_SOC_BIAS_PREPARE:
+		/* Disable HP discharge */
+		snd_soc_update_bits(codec, WM8960_APOP2,
+				    WM8960_DISOP | WM8960_DRES_MASK,
+				    0);
 
-+       /*
-+        * Are we running on an OF platform?  If so, then parse the device
-+        * tree node for properties and create the platform data object
-+        * ourselves.
-+        */
-+       if (np && !pdata) {
-+               const __be32 *iprop;
-+               int len;
-+
-+               pdata = devm_kzalloc(&i2c->dev, sizeof(struct wm8960_data),
-+                                    GFP_KERNEL);
-+               if (!pdata)
-+                       return -ENOMEM;
-+
-+               if (of_find_property(np, "wlf,capless", NULL))
-+                       pdata->capless = true;
-+
-+               iprop = of_get_property(np, "wlf,discharge-resistance", &len);
-+               if (iprop && len == sizeof(uint32_t))
-+                       pdata->dres = be32_to_cpup(iprop);
-+
-+               if (of_find_property(np, "wlf,shared-lrclk", NULL))
-+                       pdata->shared_lrclk = true;
-+
-+               i2c->dev.platform_data = pdata;
-+       }
-+
-        wm8960->regmap = regmap_init_i2c(i2c, &wm8960_regmap);
-        if (IS_ERR(wm8960->regmap))
-                return PTR_ERR(wm8960->regmap);
+All we do here is set DISOP and DRES_MASK to 0, which they should already be.
 
+Am I missing something?
 
 -- 
 Timur Tabi
