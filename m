@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: codecs: Add DA9055 codec driver
-Date: Thu, 13 Sep 2012 20:03:53 +0800
-Message-ID: <20120913120351.GA8374@opensource.wolfsonmicro.com>
-References: <1347375823.12329.14.camel@matrix>
- <20120912025709.GD9162@opensource.wolfsonmicro.com>
- <1347538116.16763.6.camel@matrix>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 00/15] ASoC: OMAP: Convert to use dmaengine
+Date: Thu, 13 Sep 2012 16:37:50 +0300
+Message-ID: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3BE9A2625E6
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 14:03:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1347538116.16763.6.camel@matrix>
+Received: from na3sys009aog124.obsmtp.com (na3sys009aog124.obsmtp.com
+ [74.125.149.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id E758B2625DB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 15:37:38 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so4451988obb.38
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 06:37:36 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +21,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 13, 2012 at 05:38:36PM +0530, Ashish Chavan wrote:
-> On Wed, 2012-09-12 at 10:57 +0800, Mark Brown wrote:
+Hello,
 
-> > > +	aif_ctrl |= (DA9055_AIF_OE | DA9055_AIF_EN);
+Changelog:
+- Support for pause/resume for OMAP audio via dmaengine
+- dmaengine: support for NO_PERIOD_WAKEUP in cyclic mode
+ - OMAP to keep supporting NO_PERIOD_WAKEUP for audio
+ - Other plaforms can also try to enable this mode since we have now generic
+   interface to do so.
 
-> > DAPM.
+This series will switch the OMAP audio to use dmaengine.
+The final patch which does the switch was based on Russell King's earlier patch.
 
-> Here the trouble in making it DAPM based is that there is no separate
-> control for AIF input and output. It is confirmed that AIF_EN is the
-> master control bit, which enables both output as well as input. The AIF
-> _OE bit is redundant. If we use the same control bit(i.e AIF_EN) for
-> both DAPM_AIF_IN and DAPM_AIF_OUT, there will be obvious side effects.
-> Is there any other way to take care of this? Or should we leave it
-> outside DAPM?
+The first 10 patch is to prepare the OMAP audio drivers for a smooth change to
+dmaengine:
+- sDMA FRAME sync mode is removed and replaced with PACKET mode
+- dai drivers no longer need to configure sDMA sync mode
+- dai drivers does not need to specify the DMA word length - with the exception
+  of the omap-hdmi driver which requires 32bit word length regardless of the
+  audio format in use
+- the McPDM driver used (to my surprise) hackish way of getting the DMA channel
+  and address - via defines from some header files
 
-Use a supply widget.
+After the conversion OMAP audio support should have the same features as before,
+no regressions expected.
+
+I have tested the series on:
+- BeagleBoard (audio via McBSP): 
+ - aplay/arecord. In element mode and in threshold mode with different period
+   sizes
+ - mplayer -ao alsa: for direct ALSA access
+ - mplayer -ao pulse: via PulseAudio to test NO_PERIOD_WAKEUP feature
+- OMAP4 Blaze (audio via McPDM and DMIC)
+ - aplay/arecord
+ - mplayer -ao alsa: for direct ALSA access
+ - mplayer -ao pulse: via PulseAudio to test NO_PERIOD_WAKEUP feature
+
+The patches has been generated against:
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.7
+
+Janusz: Can you retest this series on OMAP1 to be sure I have not broken it?
+Ricardo: Can you test the omap-hmdi if it is still working?
+
+Regards,
+Peter
+---
+Peter Ujfalusi (15):
+  dmaengine: omap: Support for element mode in cyclic DMA
+  dmaengine: omap: Add support for pause/resume in cyclic dma mode
+  dmaengine: Add no_wakeup parameter to dmaengine_prep_dma_cyclic()
+  dmaengine: Pass no_wakeup parameter via device_prep_dma_cyclic()
+    callback
+  dmaengine: omap-dma: Add support for no_wakeup in cyclic mode
+  ASoC: omap-mcbsp: Use sDMA packet mode instead of frame mode
+  ASoC: omap-pcm: Select sDMA synchronization based on packet_size
+  ASoC: OMAP: Remove sync_mode from omap_pcm_dma_data struct
+  ASoC: omap-pcm: Prepare to configure the DMA data_type based on
+    stream properties
+  ARM: OMAP4: hwmod_data: Add resource names to McPDM memory ranges
+  ASoC: omap-mcpdm: Use platform_get_resource_* to get resources
+  ASoC: OMAP: mcbsp, mcpdm, dmic: Let omap-pcm to pick the dma_type
+  ASoC: omap-pcm, omap-dmic: Change the use of
+    omap_pcm_dma_data->data_type
+  ASoC: OMAP: mcbsp, mcpdm, dmic, hdmi: Set dma_data at startup time
+  ASoC: omap-pcm: Convert to use dmaengine
+
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c |   2 +
+ drivers/dma/at_hdmac.c                     |   3 +-
+ drivers/dma/ep93xx_dma.c                   |   4 +-
+ drivers/dma/imx-dma.c                      |   2 +-
+ drivers/dma/imx-sdma.c                     |   2 +-
+ drivers/dma/mmp_tdma.c                     |   2 +-
+ drivers/dma/mxs-dma.c                      |   2 +-
+ drivers/dma/omap-dma.c                     |  47 ++++--
+ drivers/dma/pl330.c                        |   2 +-
+ drivers/dma/sa11x0-dma.c                   |   2 +-
+ drivers/dma/sirf-dma.c                     |   2 +-
+ drivers/dma/ste_dma40.c                    |   3 +-
+ drivers/dma/tegra20-apb-dma.c              |   2 +-
+ include/linux/dmaengine.h                  |   8 +-
+ sound/soc/omap/Kconfig                     |   3 +-
+ sound/soc/omap/omap-dmic.c                 |   9 +-
+ sound/soc/omap/omap-hdmi.c                 |  17 ++-
+ sound/soc/omap/omap-mcbsp.c                |  60 +++-----
+ sound/soc/omap/omap-mcpdm.c                |  40 +++--
+ sound/soc/omap/omap-pcm.c                  | 236 ++++++++---------------------
+ sound/soc/omap/omap-pcm.h                  |   4 +-
+ sound/soc/soc-dmaengine-pcm.c              |   3 +-
+ 22 files changed, 186 insertions(+), 269 deletions(-)
+
+-- 
+1.7.12
