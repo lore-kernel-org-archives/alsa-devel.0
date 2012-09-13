@@ -1,35 +1,86 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v2 03/15] dmaengine: Add no_wakeup parameter to
-	dmaengine_prep_dma_cyclic()
-Date: Thu, 13 Sep 2012 16:38:24 +0100
-Message-ID: <20120913153824.GK28448@n2100.arm.linux.org.uk>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com> <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com> <5051FB4D.3000009@metafoo.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: Need help with WM8960
+Date: Thu, 13 Sep 2012 10:44:51 -0500
+Message-ID: <5051FF73.2030504@freescale.com>
+References: <5051160C.2010802@freescale.com>
+ <20120913024245.GA4467@opensource.wolfsonmicro.com>
+ <5051F0F4.5090205@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5051FB4D.3000009@metafoo.de>
-Sender: linux-omap-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db3outboundpool.messaging.microsoft.com
+ (db3ehsobe001.messaging.microsoft.com [213.199.154.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E65C2625E5
+ for <Alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 17:44:57 +0200 (CEST)
+In-Reply-To: <5051F0F4.5090205@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 13, 2012 at 05:27:09PM +0200, Lars-Peter Clausen wrote:
-> Hm... Do you think it would work as well if we implement this by setting the
-> callback for the descriptor to NULL? If the callback is NULL there is
-> nothing to at the end of a transfer/period and the dma engine driver may
-> choose to disable interrupts. This would also benefit non cyclic transfers
-> where the callback is NULL and we do not need add the new parameter to
-> dmaengine_prep_dma_cyclic.
+Timur Tabi wrote:
+> Also, how do I get the platform data to the codec driver?  Do I need to
+> create some arch code that reads the device tree properties and parses
+> them into a wm8960_data object, and then (somehow) injects that into the
+> wm8960 driver?
 
-Actually, there's a way to do that already.  DMA_PREP_INTERRUPT.
-Unfortunately, most DMA engine slave API users don't set it when they
-setup their transfer:
+So, I'm guessing that there is no magical way to inject platform data into
+an OF-initialized driver.  What do you think about this patch:
 
- * @DMA_PREP_INTERRUPT - trigger an interrupt (callback) upon completion of
- *  this transaction
+@@ -1029,6 +1030,7 @@ static const struct regmap_config wm8960_regmap = {
+ static __devinit int wm8960_i2c_probe(struct i2c_client *i2c,
+                                      const struct i2c_device_id *id)
+ {
++       struct device_node *np = i2c->dev.of_node;
+        struct wm8960_data *pdata = dev_get_platdata(&i2c->dev);
+        struct wm8960_priv *wm8960;
+        int ret;
+@@ -1038,6 +1040,31 @@ static __devinit int wm8960_i2c_probe(struct
+i2c_client *i2c,
+        if (wm8960 == NULL)
+                return -ENOMEM;
 
-if we fixed that, then we could use the lack of it to avoid the interrupt.
++       /*
++        * Are we running on an OF platform?  If so, then parse the device
++        * tree node for properties and create the platform data object
++        * ourselves.
++        */
++       if (np && !pdata) {
++               const __be32 *iprop;
++               int len;
++
++               pdata = devm_kzalloc(&i2c->dev, sizeof(struct wm8960_data),
++                                    GFP_KERNEL);
++               if (!pdata)
++                       return -ENOMEM;
++
++               if (of_find_property(np, "wlf,capless", NULL))
++                       pdata->capless = true;
++
++               iprop = of_get_property(np, "wlf,discharge-resistance", &len);
++               if (iprop && len == sizeof(uint32_t))
++                       pdata->dres = be32_to_cpup(iprop);
++
++               if (of_find_property(np, "wlf,shared-lrclk", NULL))
++                       pdata->shared_lrclk = true;
++
++               i2c->dev.platform_data = pdata;
++       }
++
+        wm8960->regmap = regmap_init_i2c(i2c, &wm8960_regmap);
+        if (IS_ERR(wm8960->regmap))
+                return PTR_ERR(wm8960->regmap);
 
-However, cyclic transfers don't have the flags parameter used to pass this
-bit.  Yet another bit of yucky inconsistent design in DMA engine land...
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
