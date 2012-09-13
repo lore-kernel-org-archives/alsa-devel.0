@@ -1,15 +1,18 @@
 From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH] drm/i915: HDMI - Clear Audio Enable bit for
-	Hot Plug unconditionally
-Date: Thu, 13 Sep 2012 10:56:16 +0800
-Message-ID: <1347504976-2342-1-git-send-email-xingchao.wang@intel.com>
+Subject: Re: [PATCH] drm/i915: HDMI - Clear Audio Enable bit
+ for Hot Plug unconditionally
+Date: Thu, 13 Sep 2012 10:58:53 +0800
+Message-ID: <20120913025853.GA2494@wxc-intel>
+References: <1347504976-2342-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DB7BD2616E3
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 05:09:45 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2388E2616E3
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 05:12:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1347504976-2342-1-git-send-email-xingchao.wang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, daniel.vetter@ffwll.ch, Wang Xingchao <xingchao.wang@intel.com>, yakui.zhao@intel.com, michael.fu@intel.com, fengguang.wu@intel.com
+Cc: tiwai@suse.de, daniel.vetter@ffwll.ch, fengguang.wu@intel.com, yakui.zhao@intel.com, michael.fu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Clear Audio Enable bit to trigger unsolicated event to notify Audio
-Driver part the HDMI hot plug change. The patch fixed the bug when
-remove HDMI cable the bit was not cleared correctly.
+Hi Daniel,
 
-In intel_enable_hdmi(), if intel_hdmi->has_audio been true, the "Audio enable bit" will
-be set to trigger unsolicated event to notify Alsa driver the change.
+I tested this patch with drm-intel-next branch under ubuntu 12.04, the HDMI
+hot plug could work correctly.
 
-intel_hdmi->has_audio will be reset to false from intel_hdmi_detect() after
-remove the hdmi cable, here's debug log:
+thanks
+--xingchao
 
-[  187.494153] [drm:output_poll_execute], [CONNECTOR:17:HDMI-A-1] status updated from 1 to 2
-[  187.525349] [drm:intel_hdmi_detect], HDMI: has_audio = 0
-
-so when comes back to intel_disable_hdmi(), the "Audio enable bit" will not be cleared. And this
-cause the eld infomation and pin presence doesnot update accordingly in alsa driver side.
-
-This patch will also trigger unsolicated event to alsa driver to notify the hot plug event:
-
-[  187.853159] ALSA sound/pci/hda/patch_hdmi.c:772 HDMI hot plug event: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=1
-[  187.853268] ALSA sound/pci/hda/patch_hdmi.c:990 HDMI status: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=0
-
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
----
- drivers/gpu/drm/i915/intel_hdmi.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
-index 5d02aad..d39ed58 100644
---- a/drivers/gpu/drm/i915/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/intel_hdmi.c
-@@ -676,8 +676,7 @@ static void intel_disable_hdmi(struct intel_encoder *encoder)
- 	u32 temp;
- 	u32 enable_bits = SDVO_ENABLE;
- 
--	if (intel_hdmi->has_audio)
--		enable_bits |= SDVO_AUDIO_ENABLE;
-+	enable_bits |= SDVO_AUDIO_ENABLE;
- 
- 	temp = I915_READ(intel_hdmi->sdvox_reg);
- 
--- 
-1.7.9.5
+On Thu, Sep 13, 2012 at 10:56:16AM +0800, Wang Xingchao wrote:
+> Clear Audio Enable bit to trigger unsolicated event to notify Audio
+> Driver part the HDMI hot plug change. The patch fixed the bug when
+> remove HDMI cable the bit was not cleared correctly.
+> 
+> In intel_enable_hdmi(), if intel_hdmi->has_audio been true, the "Audio enable bit" will
+> be set to trigger unsolicated event to notify Alsa driver the change.
+> 
+> intel_hdmi->has_audio will be reset to false from intel_hdmi_detect() after
+> remove the hdmi cable, here's debug log:
+> 
+> [  187.494153] [drm:output_poll_execute], [CONNECTOR:17:HDMI-A-1] status updated from 1 to 2
+> [  187.525349] [drm:intel_hdmi_detect], HDMI: has_audio = 0
+> 
+> so when comes back to intel_disable_hdmi(), the "Audio enable bit" will not be cleared. And this
+> cause the eld infomation and pin presence doesnot update accordingly in alsa driver side.
+> 
+> This patch will also trigger unsolicated event to alsa driver to notify the hot plug event:
+> 
+> [  187.853159] ALSA sound/pci/hda/patch_hdmi.c:772 HDMI hot plug event: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=1
+> [  187.853268] ALSA sound/pci/hda/patch_hdmi.c:990 HDMI status: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=0
+> 
+> Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+> ---
+>  drivers/gpu/drm/i915/intel_hdmi.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
+> index 5d02aad..d39ed58 100644
+> --- a/drivers/gpu/drm/i915/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/intel_hdmi.c
+> @@ -676,8 +676,7 @@ static void intel_disable_hdmi(struct intel_encoder *encoder)
+>  	u32 temp;
+>  	u32 enable_bits = SDVO_ENABLE;
+>  
+> -	if (intel_hdmi->has_audio)
+> -		enable_bits |= SDVO_AUDIO_ENABLE;
+> +	enable_bits |= SDVO_AUDIO_ENABLE;
+>  
+>  	temp = I915_READ(intel_hdmi->sdvox_reg);
+>  
+> -- 
+> 1.7.9.5
+> 
