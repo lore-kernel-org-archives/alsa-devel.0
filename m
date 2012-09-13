@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/11] ASoC: OMAP: Convert to use dmaengine
-Date: Thu, 13 Sep 2012 16:11:43 +0800
-Message-ID: <20120913081141.GD20959@opensource.wolfsonmicro.com>
-References: <1347450427-27627-1-git-send-email-peter.ujfalusi@ti.com>
+From: Vitaly Chernooky via LinkedIn <member@linkedin.com>
+Subject: Invitation to connect on LinkedIn
+Date: Thu, 13 Sep 2012 09:14:57 +0000 (UTC)
+Message-ID: <676413423.2422683.1347527697793.JavaMail.app@ela4-app2312.prod>
+Reply-To: Vitaly Chernooky <vitaly.v.ch@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09F28265288
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 10:11:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1347450427-27627-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mailb-aa.linkedin.com (mailb-aa.linkedin.com [69.28.147.146])
+ by alsa0.perex.cz (Postfix) with ESMTP id 459E9261985
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 11:14:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,17 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: abdul moiz <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 12, 2012 at 02:46:56PM +0300, Peter Ujfalusi wrote:
-> Hello,
-> 
-> This series will switch the OMAP audio to use dmaengine.
-> The final patch which does the switch was based on Russell King's earlier patch.
+LinkedIn
+------------
 
-I'm fine with this from the ASoC side but it sounds like you're going to
-respin anyway.  Are the earlier bits of the series safe to apply without
-the last bit, it seems like that's the only bit that really needs a
-respin so we may as well go ahead and apply the earlier bits now?
+
+
+
+    Vitaly Chernooky requested to add you as a connection on LinkedIn:
+  
+
+------------------------------------------
+
+abdul,
+
+I'd like to add you to my professional network on LinkedIn.
+
+- Vitaly
+
+Accept invitation from Vitaly Chernooky
+http://www.linkedin.com/e/jpxkk3-h71n762j-6i/uii-rtptP1H4ViCg9YiBUOvto1r4_5GcrJPkip6lXT/blk/I231277962_135/3wOtCVFbmdxnSVFbm8JrnpKqlZJrmZzbmNJpjRQnOpBtn9QfmhBt71BoSd1p65Lr6lOfPkPclYOdzATdP8NcP99bShjl4FFpRdvbPcMcP8Od3AOdzwLrCBxbOYWrSlI/eml-comm_invm-b-in_ac-inv28/?hs=false&tok=3y5la0MkGGIlo1
+
+View profile of Vitaly Chernooky
+http://www.linkedin.com/e/jpxkk3-h71n762j-6i/rso/18329483/HTJa/name/138036396_I231277962_135/?hs=false&tok=3pLu-ucLiGIlo1
+------------------------------------------
+You are receiving Invitation emails.
+
+
+This email was intended for abdul moiz.
+Learn why this is included: http://www.linkedin.com/e/jpxkk3-h71n762j-6i/plh/http%3A%2F%2Fhelp%2Elinkedin%2Ecom%2Fapp%2Fanswers%2Fdetail%2Fa_id%2F4788/-GXI/?hs=false&tok=1igNxNik-GIlo1
+
+(c) 2012, LinkedIn Corporation. 2029 Stierlin Ct, Mountain View, CA 94043, USA.
