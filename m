@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 00/11] ASoC: OMAP: Convert to use dmaengine
-Date: Thu, 13 Sep 2012 12:20:31 +0300
-Message-ID: <5051A55F.9070902@ti.com>
-References: <1347450427-27627-1-git-send-email-peter.ujfalusi@ti.com>
- <20120913081141.GD20959@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: ad193x: Use managed regmap init
+Date: Thu, 13 Sep 2012 12:03:23 +0200
+Message-ID: <1347530603-13957-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog137.obsmtp.com (na3sys009aog137.obsmtp.com
- [74.125.149.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 3639826257D
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 11:19:58 +0200 (CEST)
-Received: by oagl20 with SMTP id l20so1704500oag.38
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 02:19:51 -0700 (PDT)
-In-Reply-To: <20120913081141.GD20959@opensource.wolfsonmicro.com>
+Received: from smtp-out-026.synserver.de (smtp-out-026.synserver.de
+ [212.40.185.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6013726257D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 12:02:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,33 +19,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/13/2012 11:11 AM, Mark Brown wrote:
-> On Wed, Sep 12, 2012 at 02:46:56PM +0300, Peter Ujfalusi wrote:
->> Hello,
->>
->> This series will switch the OMAP audio to use dmaengine.
->> The final patch which does the switch was based on Russell King's earlie=
-r patch.
-> =
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ad193x.c |   50 +++++++++------------------------------------
+ 1 file changed, 10 insertions(+), 40 deletions(-)
 
-> I'm fine with this from the ASoC side but it sounds like you're going to
-> respin anyway.  Are the earlier bits of the series safe to apply without
-> the last bit, it seems like that's the only bit that really needs a
-> respin so we may as well go ahead and apply the earlier bits now?
-
-Yes, I'm preparing the second series (adding the pause/resume support).
-Patch 2-10 is to prepare the OMAP audio drivers for the dmaengine conversion
-they can be applied earlier IMHO.
-I can in turn can send only dmaengine related patches in v2 (patch 1 and 10
-from this series and additional ones).
-Anyways I need some time to figure out how to add back the support for
-SNDRV_PCM_INFO_NO_PERIOD_WAKEUP.
-Either way is good for me.
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 13e62be..2f75266 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -381,40 +381,25 @@ static const struct regmap_config ad193x_spi_regmap_config = {
+ static int __devinit ad193x_spi_probe(struct spi_device *spi)
+ {
+ 	struct ad193x_priv *ad193x;
+-	int ret;
+ 
+ 	ad193x = devm_kzalloc(&spi->dev, sizeof(struct ad193x_priv),
+ 			      GFP_KERNEL);
+ 	if (ad193x == NULL)
+ 		return -ENOMEM;
+ 
+-	ad193x->regmap = regmap_init_spi(spi, &ad193x_spi_regmap_config);
+-	if (IS_ERR(ad193x->regmap)) {
+-		ret = PTR_ERR(ad193x->regmap);
+-		goto err_out;
+-	}
++	ad193x->regmap = devm_regmap_init_spi(spi, &ad193x_spi_regmap_config);
++	if (IS_ERR(ad193x->regmap))
++		return PTR_ERR(ad193x->regmap);
+ 
+ 	spi_set_drvdata(spi, ad193x);
+ 
+-	ret = snd_soc_register_codec(&spi->dev,
+-			&soc_codec_dev_ad193x, &ad193x_dai, 1);
+-	if (ret < 0)
+-		goto err_regmap_exit;
+-
+-	return 0;
+-
+-err_regmap_exit:
+-	regmap_exit(ad193x->regmap);
+-err_out:
+-	return ret;
++	return snd_soc_register_codec(&spi->dev, &soc_codec_dev_ad193x,
++			&ad193x_dai, 1);
+ }
+ 
+ static int __devexit ad193x_spi_remove(struct spi_device *spi)
+ {
+-	struct ad193x_priv *ad193x = spi_get_drvdata(spi);
+-
+ 	snd_soc_unregister_codec(&spi->dev);
+-	regmap_exit(ad193x->regmap);
+ 	return 0;
+ }
+ 
+@@ -449,40 +434,25 @@ static int __devinit ad193x_i2c_probe(struct i2c_client *client,
+ 		const struct i2c_device_id *id)
+ {
+ 	struct ad193x_priv *ad193x;
+-	int ret;
+ 
+ 	ad193x = devm_kzalloc(&client->dev, sizeof(struct ad193x_priv),
+ 			      GFP_KERNEL);
+ 	if (ad193x == NULL)
+ 		return -ENOMEM;
+ 
+-	ad193x->regmap = regmap_init_i2c(client, &ad193x_i2c_regmap_config);
+-	if (IS_ERR(ad193x->regmap)) {
+-		ret = PTR_ERR(ad193x->regmap);
+-		goto err_out;
+-	}
++	ad193x->regmap = devm_regmap_init_i2c(client, &ad193x_i2c_regmap_config);
++	if (IS_ERR(ad193x->regmap))
++		return PTR_ERR(ad193x->regmap);
+ 
+ 	i2c_set_clientdata(client, ad193x);
+ 
+-	ret =  snd_soc_register_codec(&client->dev,
+-			&soc_codec_dev_ad193x, &ad193x_dai, 1);
+-	if (ret < 0)
+-		goto err_regmap_exit;
+-
+-	return 0;
+-
+-err_regmap_exit:
+-	regmap_exit(ad193x->regmap);
+-err_out:
+-	return ret;
++	return snd_soc_register_codec(&client->dev, &soc_codec_dev_ad193x,
++			&ad193x_dai, 1);
+ }
+ 
+ static int __devexit ad193x_i2c_remove(struct i2c_client *client)
+ {
+-	struct ad193x_priv *ad193x = i2c_get_clientdata(client);
+-
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(ad193x->regmap);
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
