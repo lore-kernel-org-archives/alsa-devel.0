@@ -1,18 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Need help with WM8960
-Date: Thu, 13 Sep 2012 09:43:00 -0500
-Message-ID: <5051F0F4.5090205@freescale.com>
-References: <5051160C.2010802@freescale.com>
- <20120913024245.GA4467@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 03/15] dmaengine: Add no_wakeup
+	parameter to dmaengine_prep_dma_cyclic()
+Date: Thu, 13 Sep 2012 17:27:09 +0200
+Message-ID: <5051FB4D.3000009@metafoo.de>
+References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
+ <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
- by alsa0.perex.cz (Postfix) with ESMTP id AC5BF2625E2
- for <Alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 16:43:10 +0200 (CEST)
-In-Reply-To: <20120913024245.GA4467@opensource.wolfsonmicro.com>
+Received: from smtp-out-028.synserver.de (smtp-out-028.synserver.de
+ [212.40.185.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 284832625E3
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 17:26:34 +0200 (CEST)
+In-Reply-To: <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,26 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
+On 09/13/2012 03:37 PM, Peter Ujfalusi wrote:
+> The dmaengine_prep_dma_cyclic() function primarily used by audio for cyclic
+> transfer required by ALSA.
+> With this new parameter it is going to be possible to enable the
+> SNDRV_PCM_INFO_NO_PERIOD_WAKEUP mode on platforms where it is possible.
+> This patch only changes the public API first. Followup patch will change
+> the device_prep_dma_cyclic() callback parameters to pass this information
+> towards the dma drivers.
+> 
 
-> So, it should be fairly clear from the code that its looking for a
-> struct wm8960_data.  You can actually leave this totally blank but it's
-> important that the capless setting is correct one way or another - you
-> need to look at the schematic and check to see if there are capacitors
-> on the output not.
+Hi,
 
-There are 120uF capacitors connected to HP_L and HP_R.  Unfortunately, I
-can't quite figure out whether I need platform data or not.
+Hm... Do you think it would work as well if we implement this by setting the
+callback for the descriptor to NULL? If the callback is NULL there is
+nothing to at the end of a transfer/period and the dma engine driver may
+choose to disable interrupts. This would also benefit non cyclic transfers
+where the callback is NULL and we do not need add the new parameter to
+dmaengine_prep_dma_cyclic.
 
-Also, how do I get the platform data to the codec driver?  Do I need to
-create some arch code that reads the device tree properties and parses
-them into a wm8960_data object, and then (somehow) injects that into the
-wm8960 driver?
+- Lars
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> ---
+>  include/linux/dmaengine.h     | 3 ++-
+>  sound/soc/soc-dmaengine-pcm.c | 3 ++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> index 9c02a45..990444b 100644
+> --- a/include/linux/dmaengine.h
+> +++ b/include/linux/dmaengine.h
+> @@ -653,7 +653,8 @@ static inline struct dma_async_tx_descriptor *dmaengine_prep_rio_sg(
+>  
+>  static inline struct dma_async_tx_descriptor *dmaengine_prep_dma_cyclic(
+>  		struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
+> -		size_t period_len, enum dma_transfer_direction dir)
+> +		size_t period_len, enum dma_transfer_direction dir,
+> +		bool no_wakeup)
+>  {
+>  	return chan->device->device_prep_dma_cyclic(chan, buf_addr, buf_len,
+>  						period_len, dir, NULL);
+> diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+> index 5df529e..6b70adb 100644
+> --- a/sound/soc/soc-dmaengine-pcm.c
+> +++ b/sound/soc/soc-dmaengine-pcm.c
+> @@ -147,7 +147,8 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+>  	desc = dmaengine_prep_dma_cyclic(chan,
+>  		substream->runtime->dma_addr,
+>  		snd_pcm_lib_buffer_bytes(substream),
+> -		snd_pcm_lib_period_bytes(substream), direction);
+> +		snd_pcm_lib_period_bytes(substream), direction,
+> +		substream->runtime->no_period_wakeup);
+>  
+>  	if (!desc)
+>  		return -ENOMEM;
