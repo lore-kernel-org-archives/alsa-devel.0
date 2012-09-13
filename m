@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 8/9] sound/soc/soc-core.c: Remove useless
-	kfree
-Date: Thu, 13 Sep 2012 12:30:30 +0800
-Message-ID: <20120913043028.GD6732@opensource.wolfsonmicro.com>
-References: <1347462407-13499-8-git-send-email-peter.senna@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [pulseaudio-discuss] [PATCH] alsa-mixer: Don't use
+ the mono path in the analog-stereo mapping.
+Date: Thu, 13 Sep 2012 12:37:54 +0800
+Message-ID: <CAN8cciZBg19it5ejUi5rUrp8atQ5ARfcT=v_un25S_8RJJBnsw@mail.gmail.com>
+References: <1347455039-8636-1-git-send-email-tanuk@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 02E892616F1
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 06:30:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1347462407-13499-8-git-send-email-peter.senna@gmail.com>
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id D87032625CF
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2012 06:37:55 +0200 (CEST)
+Received: by qcse14 with SMTP id e14so1610511qcs.38
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2012 21:37:55 -0700 (PDT)
+In-Reply-To: <1347455039-8636-1-git-send-email-tanuk@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,16 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Senna Tschudin <peter.senna@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, tiwai@suse.de, georgepee@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 12, 2012 at 05:06:46PM +0200, Peter Senna Tschudin wrote:
-> From: Peter Senna Tschudin <peter.senna@gmail.com>
-> 
-> Remove useless kfree() and clean up code related to the removal.
-> 
-> The semantic patch that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
-
-Applied, thanks.
+MjAxMi05LTEyIOS4i+WNiDk6MDQg5pa8ICJUYW51IEthc2tpbmVuIiA8dGFudWtAaWtpLmZpPiDl
+r6vpgZPvvJoKPgo+IEFzIGZhciBhcyBJIGNhbiBzZWUsIGhhdmluZyBhIG1vbm8gcGF0aCBpbiBh
+IHN0ZXJlbyBtYXBwaW5nIGRvZXNuJ3QKPiBtYWtlIGFueSBzZW5zZS4gSXQgYWxzbyBjYXVzZXMg
+YnJlYWthZ2U6IGlmIHRoZSBNYXN0ZXIgTW9ubyBtaXhlcgo+IGVsZW1lbnQgaGFzIHR3byB2b2x1
+bWUgY2hhbm5lbHMsCgpCZWNhdXNlIGFjOTcgY29kZWNzIGhhdmUgYW4gYW5hbG9nIG1peGVyIHdo
+aWNoIGNhbiBkb3dubWl4IHN0ZXJlbyB0byB0aGUKbW9ubyBvdXQgcGluLgoKU29tZSBoZGEgY29k
+ZWNzIGFsc28gaGF2ZSB0aGUgbW9ubyBvdXQgcGluIHdoaWNoIGNvbm5lY3RlZCB0byBhIG1peGVy
+CndpZGdldCBmb3IgZG93bm1peGluZyBzdGVyZW8gZnJvbSBzdGVyZW8gREFDIHRvIG1vbm8KClRo
+ZSBtYXN0ZXIgbW9ubyBwbGF5YmFjayB2b2x1bWUgY29udHJvbCBvZiBhYzk3IGhhcyBvbmx5IG9u
+ZSBjaGFubmVsICwgc28KaXQgaXMgYSBidWcgb2Ygdm0gJ3MgYWM5NyBjb2RlYyByZWdpc3RlciBl
+bXVsYXRpb24gaWYgdGhlIGNvbnRyb2wgaGFzIHR3bwp2b2x1bWUgY2hhbm5lbHMKCkVpdGhlciBy
+ZW1vdmVkIHRoZSBtYXN0ZXIgbW9ubyByZWdpc3RlciBlbXVsYXRpb24gZnJvbSB2bSBvciBwdWxz
+ZWF1ZGlvCmlnbm9yZSB0aGUgbWFzdGVyIG1vbm8gc3dpdGNoIG9mIHZtJ3MgYWM5NyBjb2RlYwoK
+PiB0aGUgYW5hbG9nLW91dHB1dCBwYXRoIGdldHMgcmVtb3ZlZAo+IGR1ZSB0byBiZWluZyBhIHN1
+YnNldCBvZiBhbmFsb2ctb3V0cHV0LW1vbm8sIGFuZCB0aGF0IGluIHR1cm4gY2F1c2VzCj4gdGhl
+IE1hc3RlciBlbGVtZW50IGdldHRpbmcgbXV0ZWQuCgpodHRwOi8vY2dpdC5mcmVlZGVza3RvcC5v
+cmcvcHVsc2VhdWRpby9wdWxzZWF1ZGlvL2NvbW1pdC9zcmMvbW9kdWxlcy9hbHNhL2Fsc2EtbWl4
+ZXIuYz9pZD01YzgzMmE1YjhhMmJjMmNlNzQ0N2VhYjEwYWNhZWVkMzBjZDNlZDc4CgpUaGUgYWJv
+dmUgcGF0Y2ggdHJ5IHRvIGFzc2lnbiB0aGUgaGVhZHBob25lIHBhdGggZm9yIHRoZSBVU0IgaGVh
+ZHNldHMgd2hpY2gKaGF2ZSBzcGVha2VyIHBsYXliYWNrIHZvbHVtZSBjb250cm9sIHNpbmNlIHNw
+ZWFrZXIgcGxheWJhY2sgdm9sdW1lIGNvbnRyb2wKaXMgbm90IGluIHB1bHNlYXVkaW8gJyBzIGhl
+YWRwaG9uZSBwYXRoLgoKPlVzZXJzIGdlbmVyYWxseSBkb24ndCBsaWtlIHRoYXQuCj4KPiBCdWdM
+aW5rOiBodHRwczovL2J1Z3MuZnJlZWRlc2t0b3Aub3JnL3Nob3dfYnVnLmNnaT9pZD01NDY3MwoK
+SXQgbG9vayBsaWtlIGEgYnVnIGluIG91dHB1dCB2b2x1bWUgY2FsY3VsYXRpb24gb2YgYWM5NyBj
+b2RlYyBlbXVsYXRpb24gaW4KdGhvc2UgdmlydHVhbCBtYWNoaW5lIGlmIHRoZSBlbXVsYXRlZCBh
+Yzk3IGNvZGVjIG9ubHkgaGFzIDE2IGJpdHMgREFDCnJlc29sdXRpb24KCm9yIHB1bHNlYXVkaW8g
+ZG9lcyBub3QgdW5tdXRlIHBjbSBwbGF5YmFjayBzd2l0Y2ggb24gdGhvc2UgIGFjOTcgY29kZWMK
+YWZ0ZXIgdXNlciBtdXRlIHRoZSBzb3VuZCBpbiBzb3VuZCBwcmVmZXJlbmNlIGFuZCBwdWxzZWF1
+ZGlvIG11dGUgYm90aAptYXN0ZXIgcGxheWJhY2sgc3dpdGNoIGFuZCBwY20gcGxheWJhY2sgc3dp
+dGNoCgpTb21lIHRhYmxldCB3aXRoIGFsYzIwMwp1c2UgdGhlIG1hc3RlciBtb25vIG91dHB1dCBm
+b3IgdGhlIG1vbm8gc3BlYWtlcgoKaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFsc2Et
+a2VybmVsLmdpdDthPWNvbW1pdGRpZmY7aD04ZjRmNGVmNmZlZDU1YTM2MzZkYjMxNDZhM2U1MGI3
+ZmViY2JkN2RlO2hwPWI5YzE5NmUxNDUyZTFkNGNiZjBhMTQ5OWYxZTljMWIzZWRmNTkzMjAKCkZv
+ciBhbHM0MDAwIHRoZSBtYXN0ZXIgbW9ubyBpcyBvbmx5IGVudW0gY29udHJvbCAgdG8gIGNoYW5n
+ZSB0aGUgY2hhbm5lbAptYXAgb2YgdGhlIG1vbm8gb3V0CgpTaW1wbGUgbWl4ZXIgY29udHJvbCAn
+TWFzdGVyIE1vbm8nLDAKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQgY2Vu
+dW0KICBJdGVtczogJ0wgY2hhbiBvbmx5JyAnUiBjaGFuIG9ubHknICdMIGNoLzIgKyBSIGNoLzIn
+CiAgSXRlbTA6ICdMIGNoYW4gb25seScKCmh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50
+dS8rc291cmNlL3B1bHNlYXVkaW8vK2J1Zy84MjczOTMKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
