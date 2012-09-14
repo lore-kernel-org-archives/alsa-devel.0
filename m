@@ -1,21 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH v2 03/15] dmaengine: Add no_wakeup
- parameter to dmaengine_prep_dma_cyclic()
-Date: Fri, 14 Sep 2012 10:18:45 +0300
-Message-ID: <5052DA55.5080102@ti.com>
+	parameter to dmaengine_prep_dma_cyclic()
+Date: Fri, 14 Sep 2012 10:13:30 +0200
+Message-ID: <5052E72A.8040207@metafoo.de>
 References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
  <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com>
  <5051FB4D.3000009@metafoo.de> <1347593217.1943.26.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
- [74.125.149.199])
- by alsa0.perex.cz (Postfix) with ESMTP id 767B0265343
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 09:18:05 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so5812771obb.38
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 00:18:04 -0700 (PDT)
+Received: from smtp-out-028.synserver.de (smtp-out-028.synserver.de
+ [212.40.185.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BAB9262617
+ for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 10:12:52 +0200 (CEST)
 In-Reply-To: <1347593217.1943.26.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,10 +25,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/14/2012 06:26 AM, Vinod Koul wrote:
+On 09/14/2012 05:26 AM, Vinod Koul wrote:
 > On Thu, 2012-09-13 at 17:27 +0200, Lars-Peter Clausen wrote:
 >> Hi,
 >>
@@ -48,12 +46,6 @@ On 09/14/2012 06:26 AM, Vinod Koul wrote:
 > interrupts to AP in undesired. The interrupts still happen and it just
 > that dmaengine driver is not notifying client.
 
-Yes, this is correct. We could go and hack around later if the callback is =
-not
-present and modify the irq requests for the platform but it is really not
-elegant way of dealing with the issue IMHO.
-
-
--- =
-
-P=E9ter
+Well, the idea was that the driver would disable interrupts if there is no
+callback to call, since there would be nothing to do in the interrupt
+handler anyway. But I guess the flags approach should work fine as well.
