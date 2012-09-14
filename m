@@ -1,8 +1,7 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 8/8] ALSA: Change return value for
-	load_dsp_prepare() to -ENOSYS
-Date: Thu, 13 Sep 2012 18:15:58 -0700
-Message-ID: <1347585358-2403-9-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 6/8] ALSA: Add firmware caching to CA0132 codec
+Date: Thu, 13 Sep 2012 18:15:56 -0700
+Message-ID: <1347585358-2403-7-git-send-email-ian_minett@creativelabs.com>
 References: <1347585358-2403-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,20 +23,69 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
+
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 159e07a..ac60300 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -1164,7 +1164,7 @@ snd_hda_codec_load_dsp_prepare(struct hda_codec *codec, unsigned int format,
- 				unsigned int size,
- 				struct snd_dma_buffer *bufp)
- {
--	return 0;
-+	return -ENOSYS;
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 11f5910..ef66817 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -2025,6 +2025,24 @@ static int dspload_image(struct hda_codec *codec,
+ 	return status;
  }
- static inline void
- snd_hda_codec_load_dsp_trigger(struct hda_codec *codec, bool start) {}
+ 
++static const struct firmware *fw_efx;
++
++static int request_firmware_cached(const struct firmware **firmware_p,
++	const char *name, struct device *device)
++{
++	if (*firmware_p)
++		return 0;  /* already loaded */
++	return request_firmware(firmware_p, name, device);
++}
++
++static void release_cached_firmware(void)
++{
++	if (fw_efx) {
++		release_firmware(fw_efx);
++		fw_efx = NULL;
++	}
++}
++
+ static bool dspload_is_loaded(struct hda_codec *codec)
+ {
+ 	unsigned int data = 0;
+@@ -2542,18 +2560,15 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ {
+ 	bool dsp_loaded = false;
+ 	const struct dsp_image_seg *dsp_os_image;
+-	const struct firmware *fw_entry;
+ 
+-	if (request_firmware(&fw_entry, EFX_FILE, codec->bus->card->dev) != 0)
++	if (request_firmware_cached(&fw_efx, EFX_FILE,
++				    codec->bus->card->dev) != 0)
+ 		return false;
+ 
+-	dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
++	dsp_os_image = (struct dsp_image_seg *)(fw_efx->data);
+ 	dspload_image(codec, dsp_os_image, 0, 0, true, 0);
+ 	dsp_loaded = dspload_wait_loaded(codec);
+ 
+-	release_firmware(fw_entry);
+-
+-
+ 	return dsp_loaded;
+ }
+ 
+@@ -2662,7 +2677,8 @@ static int __init patch_ca0132_init(void)
+ }
+ 
+ static void __exit patch_ca0132_exit(void)
+-{
++{
++	release_cached_firmware();
+ 	snd_hda_delete_codec_preset(&ca0132_list);
+ }
+ 
 -- 
 1.7.4.1
