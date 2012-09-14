@@ -1,23 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 03/15] dmaengine: Add no_wakeup
-	parameter to dmaengine_prep_dma_cyclic()
-Date: Fri, 14 Sep 2012 12:28:28 +0300
-Message-ID: <5052F8BC.4020102@ti.com>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
- <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com>
- <5051FB4D.3000009@metafoo.de> <1347593217.1943.26.camel@vkoul-udesk3>
- <5052E72A.8040207@metafoo.de> <1347612630.1943.29.camel@vkoul-udesk3>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [patch] ALSA: compress_core: integer overflow in
+ snd_compr_allocate_buffer()
+Date: Fri, 14 Sep 2012 14:54:42 +0530
+Message-ID: <1347614682.1943.35.camel@vkoul-udesk3>
+References: <20120905123217.GD6128@elgon.mountain>
+ <s5hwr08ziyx.wl%tiwai@suse.de> <20120906145912.GK19410@mwanda>
+ <s5h627rxjpw.wl%tiwai@suse.de>  <s5hligdc6su.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
- [74.125.149.207])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F7B7265CAA
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 11:27:48 +0200 (CEST)
-Received: by oagl20 with SMTP id l20so2671249oag.38
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 02:27:47 -0700 (PDT)
-In-Reply-To: <1347612630.1943.29.camel@vkoul-udesk3>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 665A3265CF8
+ for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 11:28:11 +0200 (CEST)
+In-Reply-To: <s5hligdc6su.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,45 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jesper Juhl <jj@chaosbits.net>, Namarta Kohli <namartax.kohli@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, 2012-09-14 at 11:06 +0200, Takashi Iwai wrote:
+> > So, we actually should have two distinct fixes.
+> 
+> I took Dan's patch now for next branch.  But it's still better to
+> filter weird parameters in the caller side, too.
+> 
+> Vinod, care to write such a patch and submit? 
+Yes am already on it :)
 
-On 09/14/2012 11:50 AM, Vinod Koul wrote:
->> Well, the idea was that the driver would disable interrupts if there is =
-no
->> callback to call, since there would be nothing to do in the interrupt
->> handler anyway. But I guess the flags approach should work fine as well.
-> Yes we _could_ do that, but this relies on dmaengine driver to have this
-> implicit understanding. Anyone using dmaengine library in ASoC may or
-> may not be aware of this, so i would consider it hackish.
-> =
-
-> Using this flag explicitly makes everyone aware what the intended
-> behaviour is.
-
-I'm not sure about which flags should ASoC set for the two case we are going
-to have. I think it should be something like this:
-
-unsigned long flags =3D DMA_CTRL_ACK;
-
-if (!substream->runtime->no_period_wakeup)
-	flags |=3D DMA_PREP_INTERRUPT;
-
-I'm not 100% sure of the role of DMA_CTRL_ACK in this case. Or should we on=
-ly
-handle the DMA_PREP_INTERRUPT flag, like this:
-
-unsigned long flags =3D 0;
-
-if (!substream->runtime->no_period_wakeup)
-	flags |=3D DMA_PREP_INTERRUPT;
-
-
-What do you think?
-
--- =
-
-P=E9ter
+-- 
+~Vinod
