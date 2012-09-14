@@ -1,21 +1,21 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] ALSA: compress_core: integer overflow in
- snd_compr_allocate_buffer()
-Date: Fri, 14 Sep 2012 12:35:27 +0300
-Message-ID: <20120914093527.GD4587@mwanda>
-References: <20120905123217.GD6128@elgon.mountain>
- <s5hwr08ziyx.wl%tiwai@suse.de> <20120906145912.GK19410@mwanda>
- <s5h627rxjpw.wl%tiwai@suse.de> <s5hligdc6su.wl%tiwai@suse.de>
- <1347614682.1943.35.camel@vkoul-udesk3>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v2 03/15] dmaengine: Add no_wakeup
+ parameter to dmaengine_prep_dma_cyclic()
+Date: Fri, 14 Sep 2012 15:08:08 +0530
+Message-ID: <1347615488.1943.47.camel@vkoul-udesk3>
+References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
+ <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com>
+ <5051FB4D.3000009@metafoo.de> <1347593217.1943.26.camel@vkoul-udesk3>
+ <5052E72A.8040207@metafoo.de> <1347612630.1943.29.camel@vkoul-udesk3>
+ <5052F8BC.4020102@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
- by alsa0.perex.cz (Postfix) with ESMTP id B6F7D265CCB
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 11:35:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1347614682.1943.35.camel@vkoul-udesk3>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34B68265CCB
+ for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 11:41:39 +0200 (CEST)
+In-Reply-To: <5052F8BC.4020102@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jesper Juhl <jj@chaosbits.net>, Namarta Kohli <namartax.kohli@intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 14, 2012 at 02:54:42PM +0530, Vinod Koul wrote:
-> On Fri, 2012-09-14 at 11:06 +0200, Takashi Iwai wrote:
-> > > So, we actually should have two distinct fixes.
-> > 
-> > I took Dan's patch now for next branch.  But it's still better to
-> > filter weird parameters in the caller side, too.
-> > 
-> > Vinod, care to write such a patch and submit? 
-> Yes am already on it :)
+On Fri, 2012-09-14 at 12:28 +0300, Peter Ujfalusi wrote:
+> Hi,
 > 
+> On 09/14/2012 11:50 AM, Vinod Koul wrote:
+> >> Well, the idea was that the driver would disable interrupts if there is no
+> >> callback to call, since there would be nothing to do in the interrupt
+> >> handler anyway. But I guess the flags approach should work fine as well.
+> > Yes we _could_ do that, but this relies on dmaengine driver to have this
+> > implicit understanding. Anyone using dmaengine library in ASoC may or
+> > may not be aware of this, so i would consider it hackish.
+> > 
+> > Using this flag explicitly makes everyone aware what the intended
+> > behaviour is.
+> 
+> I'm not sure about which flags should ASoC set for the two case we are going
+> to have. I think it should be something like this:
+> 
+> unsigned long flags = DMA_CTRL_ACK;
+usage of ACK flag is mostly async_tx thingy, we can skip it for slave.
+> 
+> if (!substream->runtime->no_period_wakeup)
+> 	flags |= DMA_PREP_INTERRUPT;
+> I'm not 100% sure of the role of DMA_CTRL_ACK in this case. Or should we only
+> handle the DMA_PREP_INTERRUPT flag, like this:
+> 
+> unsigned long flags = 0;
+> 
+> if (!substream->runtime->no_period_wakeup)
+> 	flags |= DMA_PREP_INTERRUPT;
+> 
+> 
+> What do you think?
+Looks fine.
 
-Thanks.  I've had my text editor open to the file all week, but it
-felt like there was probably a better limit to use than just what
-would overflow...  I just don't know the code very well.  I'm glad
-that Vinod is handling this.
-
-regards,
-dan carpenter
+-- 
+~Vinod
