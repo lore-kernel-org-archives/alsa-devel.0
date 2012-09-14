@@ -1,35 +1,86 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v2 03/15] dmaengine: Add no_wakeup parameter to
-	dmaengine_prep_dma_cyclic()
-Date: Fri, 14 Sep 2012 11:01:40 +0100
-Message-ID: <20120914100140.GA12445@n2100.arm.linux.org.uk>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com> <1347543485-339-4-git-send-email-peter.ujfalusi@ti.com> <5051FB4D.3000009@metafoo.de> <1347593217.1943.26.camel@vkoul-udesk3> <5052E72A.8040207@metafoo.de> <1347612630.1943.29.camel@vkoul-udesk3> <5052F8BC.4020102@ti.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 06/17] Documentation: Define the MOP500
+ Audio Machine Driver Device Tree bindings
+Date: Fri, 14 Sep 2012 11:02:57 +0100
+Message-ID: <20120914100254.GR3374@gmail.com>
+References: <1345816913-4113-1-git-send-email-lee.jones@linaro.org>
+ <1345816913-4113-7-git-send-email-lee.jones@linaro.org>
+ <20120910164413.GC24506@gmail.com>
+ <504EFEF8.6020707@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2345D265CF8
+ for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 12:03:01 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so2058261eek.38
+ for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2012 03:03:00 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <5052F8BC.4020102@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>
+In-Reply-To: <504EFEF8.6020707@stericsson.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, "arnd@arndb.de" <arnd@arndb.de>, Roger NILSSON1 <roger.xr.nilsson@stericsson.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 14, 2012 at 12:28:28PM +0300, Peter Ujfalusi wrote:
-> I'm not sure about which flags should ASoC set for the two case we are going
-> to have. I think it should be something like this:
-> 
-> unsigned long flags = DMA_CTRL_ACK;
-> 
-> if (!substream->runtime->no_period_wakeup)
-> 	flags |= DMA_PREP_INTERRUPT;
-
-That looks about right.  I would encourage DMA_CTRL_ACK to always be set
-for slave stuff, because it will (according to my understanding of it)
-make the behaviour no different from the async_tx stuff... which is
-important when support for that stuff gets added.
-
-We could, of course, set DMA_CTRL_ACK in the slave APIs beneath the
-user, but the user has access to tx->flags between the prepare and
-submit calls...  And doing it in the submit callback will force DMA
-engine drivers to have two separate submission paths (as tx'es can't
-be acked at submission time.)
+T24gVHVlLCBTZXAgMTEsIDIwMTIgYXQgMTE6MDY6MDBBTSArMDIwMCwgT2xhIExpbGphIHdyb3Rl
+Ogo+IE9uIDA5LzEwLzIwMTIgMDY6NDQgUE0sIExlZSBKb25lcyB3cm90ZToKPiAKPiA+IE9sYSBw
+b2tlLgo+ID4gCj4gPiBPbiBGcmksIEF1ZyAyNCwgMjAxMiBhdCAwMzowMTo0MlBNICswMTAwLCBM
+ZWUgSm9uZXMgd3JvdGU6Cj4gPj4gSGVyZSB3ZSBhZGQgdGhlIHJlcXVpcmVkIGRvY3VtZW50YXRp
+b24gZm9yIHRoZSBuZXcgRGV2aWNlIFRyZWUKPiA+PiBiaW5kaW5ncyBwZXJ0YWluaW5nIHRvIHRo
+ZSBNT1A1MDAgQXVkaW8gTWFjaGluZSBkcml2ZXIuCj4gPj4gCj4gPj4gQ0M6IGFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwo+ID4+IFNpZ25lZC1vZmYtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVz
+QGxpbmFyby5vcmc+Cj4gPj4gLS0tCj4gPj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
+L3V4NTAwLW1vcDUwMC50eHQgICAgIHwgICAzOSArKysrKysrKysrKysrKysrKysrKwo+ID4+ICAx
+IGZpbGUgY2hhbmdlZCwgMzkgaW5zZXJ0aW9ucygrKQo+ID4+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3V4NTAwLW1vcDUwMC50eHQK
+PiA+PiAKPiA+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L3NvdW5kL3V4NTAwLW1vcDUwMC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc291bmQvdXg1MDAtbW9wNTAwLnR4dAo+ID4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gPj4g
+aW5kZXggMDAwMDAwMC4uNDhlMDcxYwo+ID4+IC0tLSAvZGV2L251bGwKPiA+PiArKysgYi9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbW9wNTAwLnR4dAo+ID4+
+IEBAIC0wLDAgKzEsMzkgQEAKPiA+PiArKiBNT1A1MDAgQXVkaW8gTWFjaGluZSBEcml2ZXIKPiA+
+PiArCj4gPj4gK1RoaXMgbm9kZSBpcyByZXNwb25zaWJsZSBmb3IgbGlua2luZyB0b2dldGhlciBh
+bGwgdXg1MDAgQXVkaW8gRHJpdmVyIGNvbXBvbmVudHMuCj4gPj4gKwo+ID4+ICtSZXF1aXJlZCBw
+cm9wZXJ0aWVzOgo+ID4+ICsgLSBjb21wYXRpYmxlICAgICAgICAgICAgICA6ICJzdGVyaWNzc29u
+LHNuZC1zb2MtbW9wNTAwIgo+ID4+ICsKPiA+PiArTm9uLXN0YW5kYXJkIHByb3BlcnRpZXM6Cj4g
+Pj4gKyAtIHN0ZXJpY3Nzb24sY3B1LWRhaSAgICAgIDogUGhhbmRsZSB0byB0aGUgQ1BVLXNpZGUg
+REFJCj4gPj4gKyAtIHN0ZXJpY3Nzb24sYXVkaW8tY29kZWMgIDogUGhhbmRsZSB0byB0aGUgQXVk
+aW8gQ09ERUMKPiA+PiArIC0gc3Rlcmljc3NvbixjYXJkLW5hbWUgICAgOiBPdmVyLXJpZGUgZGVm
+YXVsdCBjYXJkIG5hbWUKPiA+PiArCj4gPj4gK0V4YW1wbGU6Cj4gPj4gKwo+ID4+ICsJc291bmQg
+ewo+ID4+ICsJCWNvbXBhdGlibGUgPSAic3Rlcmljc3NvbixzbmQtc29jLW1vcDUwMCI7Cj4gPj4g
+Kwo+ID4+ICsJCXN0ZXJpY3Nzb24sY3B1LWRhaSA9IDwmbXNwMSAmbXNwMz47Cj4gPj4gKwkJc3Rl
+cmljc3NvbixhdWRpby1jb2RlYyA9IDwmY29kZWM+Owo+ID4+ICsJfTsKPiA+PiArCj4gPj4gKwlt
+c3AxOiBtc3BAODAxMjQwMDAgewo+ID4+ICsJCWNvbXBhdGlibGUgPSAic3Rlcmljc3Nvbix1eDUw
+MC1tc3AtaTJzIjsKPiA+PiArCQlyZWcgPSA8MHg4MDEyNDAwMCAweDEwMDA+Owo+ID4+ICsJCWlu
+dGVycnVwdHMgPSA8MCA2MiAweDQ+Owo+ID4+ICsJCXYtYXBlLXN1cHBseSA9IDwmZGI4NTAwX3Zh
+cGVfcmVnPjsKPiAKPiAKPiBJJ20gbm8gRFQtZXhwZXJ0LCBidXQgd2h5IGFyZSB5b3UgYWRkaW5n
+IE1TUC1zdHVmZiBpbiB0aGUgbWFjaGluZS1kcml2ZXI/IFRoZXkKPiBhcmUgYWxzbyBhZGRlZCBp
+biB0aGUgbmV4dCBwYXRjaC4KClRoaXMgaXMgYSBkb2N1bWVudGF0aW9uIGZpbGUuIER1cGxpY2F0
+aW9uIGlzIG5vdCBpbXBvcnRhbnQsIGFzIGl0J3Mgb25seSB0aGVyZQpmb3IgcmVmZXJlbmNlLgoK
+PiA+PiArCX07Cj4gPj4gKwo+ID4+ICsJbXNwMzogbXNwQDgwMTI1MDAwIHsKPiA+PiArCQljb21w
+YXRpYmxlID0gInN0ZXJpY3Nzb24sdXg1MDAtbXNwLWkycyI7Cj4gPj4gKwkJcmVnID0gPDB4ODAx
+MjUwMDAgMHgxMDAwPjsKPiA+PiArCQlpbnRlcnJ1cHRzID0gPDAgNjIgMHg0PjsKPiA+PiArCQl2
+LWFwZS1zdXBwbHkgPSA8JmRiODUwMF92YXBlX3JlZz47Cj4gPj4gKwl9Owo+ID4+ICsKPiA+PiAr
+CWNvZGVjOiBhYjg1MDAtY29kZWMgewo+ID4+ICsJCWNvbXBhdGlibGUgPSAic3Rlcmljc3Nvbixh
+Yjg1MDAtY29kZWMiOwo+ID4+ICsJCXN0ZXJpY3Nzb24sZWFycGVpY2UtY212ID0gPDk1MD47IC8q
+IFVuaXRzIGluIG1WLiAqLwo+IAo+IAo+IE9ubHkgZm91ciB2b2x0YWdlcyBhcmUgYWxsb3dlZCBo
+ZXJlLiBNYXliZSBlbnVtZXJhdGUgdGhlbSBpbiB0aGUgY29tbWVudD8KClRoaXMgaXNuJ3QgdGhl
+IGFiODUwMC1jb2RlYyBkb2N1bWVudGF0aW9uLiBGb3IgdmFsaWQgZWFycGllY2UgdmFsdWVzIHBs
+ZWFzZQpzZWUgdGhlIGRvY3VtZW50YXRpb24gaW4gcGF0Y2ggIkRvY3VtZW50YXRpb246IEFkZCB0
+aGUgQUI4NTAwIENPREVDIGRldmljZQp0byB0aGUgTUZEIEFCODUwMCBkb2MiCgpBcGFydCBmcm9t
+IHRoZXNlIGNvbW1lbnRzIGRvZXMgdGhlIHBhdGNoIGxvb2tzIG9rYXk/CgotLSAKTGVlIEpvbmVz
+CkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVu
+IHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBU
+d2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
