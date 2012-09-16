@@ -1,17 +1,17 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH v3 00/15] ASoC: OMAP: Convert to use
-	dmaengine
-Date: Sat, 15 Sep 2012 23:38:32 +0200
-Message-ID: <3759862.8IETAs1y1n@acer>
-References: <1347624358-25582-1-git-send-email-peter.ujfalusi@ti.com>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: ucm: hardware resource arbitration
+Date: Sun, 16 Sep 2012 09:40:56 +0300
+Message-ID: <1347777656.3371.25.camel@laptop>
+References: <504EDF0F.70809@codeaurora.org>
+ <1347458022.6888.31.camel@laptop> <505111E3.9090506@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A4432602DC
- for <alsa-devel@alsa-project.org>; Sat, 15 Sep 2012 23:40:58 +0200 (CEST)
-In-Reply-To: <1347624358-25582-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 77000260311
+ for <alsa-devel@alsa-project.org>; Sun, 16 Sep 2012 08:41:00 +0200 (CEST)
+In-Reply-To: <505111E3.9090506@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vinod Koul <vinod.koul@intel.com>, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-RG5pYSBwacSFdGVrLCAxNCB3cnplxZtuaWEgMjAxMiAxNTowNTo0MyBQZXRlciBVamZhbHVzaSBw
-aXN6ZToKPiBIZWxsbywKPiAKPiBDaGFuZ2VzIHNpbmNlIHYyOgo+IC0gQXMgaXQgaGFzIGJlZW4g
-ZGlzY3Vzc2VkIHRoZSBub193YWtldXAgcGFyYW1ldGVyIGhhcyBiZWVuIHJlcGxhY2VkIHdpdGgg
-ZmxhZ3MKPiAgIGZvciB0aGUgZG1hZW5naW5lIEFQSXMKPiAKPiBDaGFuZ2VzIHNpbmNlIHYxOgo+
-IC0gU3VwcG9ydCBmb3IgcGF1c2UvcmVzdW1lIGZvciBPTUFQIGF1ZGlvIHZpYSBkbWFlbmdpbmUK
-PiAtIGRtYWVuZ2luZTogc3VwcG9ydCBmb3IgTk9fUEVSSU9EX1dBS0VVUCBpbiBjeWNsaWMgbW9k
-ZQo+ICAtIE9NQVAgdG8ga2VlcCBzdXBwb3J0aW5nIE5PX1BFUklPRF9XQUtFVVAgZm9yIGF1ZGlv
-Cj4gIC0gT3RoZXIgcGxhZm9ybXMgY2FuIGFsc28gdHJ5IHRvIGVuYWJsZSB0aGlzIG1vZGUgc2lu
-Y2Ugd2UgaGF2ZSBub3cgZ2VuZXJpYwo+ICAgIGludGVyZmFjZSB0byBkbyBzby4KPiAKPiBUaGlz
-IHNlcmllcyB3aWxsIHN3aXRjaCB0aGUgT01BUCBhdWRpbyB0byB1c2UgZG1hZW5naW5lLgo+IFRo
-ZSBmaW5hbCBwYXRjaCB3aGljaCBkb2VzIHRoZSBzd2l0Y2ggd2FzIGJhc2VkIG9uIFJ1c3NlbGwg
-S2luZydzIGVhcmxpZXIgcGF0Y2guCj4gCj4gVGhlIGZpcnN0IDEwIHBhdGNoIGlzIHRvIHByZXBh
-cmUgdGhlIE9NQVAgYXVkaW8gZHJpdmVycyBmb3IgYSBzbW9vdGggY2hhbmdlIHRvCj4gZG1hZW5n
-aW5lOgo+IC0gc0RNQSBGUkFNRSBzeW5jIG1vZGUgaXMgcmVtb3ZlZCBhbmQgcmVwbGFjZWQgd2l0
-aCBQQUNLRVQgbW9kZQo+IC0gZGFpIGRyaXZlcnMgbm8gbG9uZ2VyIG5lZWQgdG8gY29uZmlndXJl
-IHNETUEgc3luYyBtb2RlCj4gLSBkYWkgZHJpdmVycyBkb2VzIG5vdCBuZWVkIHRvIHNwZWNpZnkg
-dGhlIERNQSB3b3JkIGxlbmd0aCAtIHdpdGggdGhlIGV4Y2VwdGlvbgo+ICAgb2YgdGhlIG9tYXAt
-aGRtaSBkcml2ZXIgd2hpY2ggcmVxdWlyZXMgMzJiaXQgd29yZCBsZW5ndGggcmVnYXJkbGVzcyBv
-ZiB0aGUKPiAgIGF1ZGlvIGZvcm1hdCBpbiB1c2UKPiAtIHRoZSBNY1BETSBkcml2ZXIgdXNlZCAo
-dG8gbXkgc3VycHJpc2UpIGhhY2tpc2ggd2F5IG9mIGdldHRpbmcgdGhlIERNQSBjaGFubmVsCj4g
-ICBhbmQgYWRkcmVzcyAtIHZpYSBkZWZpbmVzIGZyb20gc29tZSBoZWFkZXIgZmlsZXMKPiAKPiBB
-ZnRlciB0aGUgY29udmVyc2lvbiBPTUFQIGF1ZGlvIHN1cHBvcnQgc2hvdWxkIGhhdmUgdGhlIHNh
-bWUgZmVhdHVyZXMgYXMgYmVmb3JlLAo+IG5vIHJlZ3Jlc3Npb25zIGV4cGVjdGVkLgo+IAo+IEkg
-aGF2ZSB0ZXN0ZWQgdGhlIHNlcmllcyBvbjoKPiAtIEJlYWdsZUJvYXJkIChhdWRpbyB2aWEgTWNC
-U1ApOiAKPiAgLSBhcGxheS9hcmVjb3JkLiBJbiBlbGVtZW50IG1vZGUgYW5kIGluIHRocmVzaG9s
-ZCBtb2RlIHdpdGggZGlmZmVyZW50IHBlcmlvZAo+ICAgIHNpemVzCj4gIC0gbXBsYXllciAtYW8g
-YWxzYTogZm9yIGRpcmVjdCBBTFNBIGFjY2Vzcwo+ICAtIG1wbGF5ZXIgLWFvIHB1bHNlOiB2aWEg
-UHVsc2VBdWRpbyB0byB0ZXN0IE5PX1BFUklPRF9XQUtFVVAgZmVhdHVyZQo+IC0gT01BUDQgQmxh
-emUgKGF1ZGlvIHZpYSBNY1BETSBhbmQgRE1JQykKPiAgLSBhcGxheS9hcmVjb3JkCj4gIC0gbXBs
-YXllciAtYW8gYWxzYTogZm9yIGRpcmVjdCBBTFNBIGFjY2Vzcwo+ICAtIG1wbGF5ZXIgLWFvIHB1
-bHNlOiB2aWEgUHVsc2VBdWRpbyB0byB0ZXN0IE5PX1BFUklPRF9XQUtFVVAgZmVhdHVyZQo+IAo+
-IFRoZSBwYXRjaGVzIGhhcyBiZWVuIGdlbmVyYXRlZCBhZ2FpbnN0Ogo+IGdpdDovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9icm9vbmllL3NvdW5kLmdpdCBmb3ItMy43
-Cj4gCj4gSmFudXN6OiBDYW4geW91IHJldGVzdCB0aGlzIHNlcmllcyBvbiBPTUFQMSB0byBiZSBz
-dXJlIEkgaGF2ZSBub3QgYnJva2VuIGl0PwoKSGkgUGV0ZXIsCkl0IGxvb2tzIGxpa2UgeW91IGhh
-dmVuJ3QgOi0pLgoKRm9yIE9NQVAxOgpUZXN0ZWQtYnk6IEphbnVzeiBLcnp5c3p0b2ZpayA8amty
-enlzenRAdGlzLmljbmV0LnBsPgoKVGhhbmtzLApKYW51c3oKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, 2012-09-12 at 15:51 -0700, Patrick Lai wrote:
+> On 9/12/2012 6:53 AM, Tanu Kaskinen wrote:
+> > In my opinion routing priorities don't belong in the UCM configuration.
+> > UI designers will want to dictate the routing policy (i.e. what device
+> > to prefer in which use case).
+> 
+> Thanks for your feedback. Actually, I am not looking at routing policy 
+> in term of preferred device for a given use case. I agree that
+> something above alsa/ucm should decide. My problem is two use cases
+> cannot co-exist on certain platforms but not on the others. Two use 
+> cases are coming from two SW entities which are not aware of each other 
+> but they all talk to UCM for hardware configuration. Each SW entity 
+> decides its own use case and preferred device. Please correct me if I am 
+> wrong. UCM is designed to abstract hardware configuration detail. So, it 
+> seems appropriate to me that UCM can  contain information about the use 
+> cases a given platform can support/not support concurrently. Since 
+> UCM(assuming it's singleton) is the entity that has visibility to all 
+> use cases exercised by all SW entities, It makes sense to me to have UCM 
+> notify clients if its use case is to be preempted. Even if we want to 
+> create a resource manager on top of UCM for two SW entities to 
+> communicate, does UCM already have API allowing client to know its use 
+> case is a go or no go?
+
+It sounds like you think UCM is a daemon, to which clients connect.
+AFAIK, UCM is only a library. There are no "UCM clients", only
+applications that read the UCM configuration files and activate things
+by using the library. While it probably wouldn't be impossible to have a
+notification mechanism even without a central daemon, I don't think that
+such mechanism currently exists, nor do I think that such mechanism is
+needed. If a system has multiple audio applications that may run
+simultaneously, I think there should be a "resource manager" application
+between UCM and the applications.
+
+Regarding the problem of "two use cases [can] co-exist on certain
+platforms but not on the others": I think this should be solvable by
+using the ConflictingDevice list inside SectionDevice. In your example
+you have two applications that can or can not use the hardware at the
+same time, depending on the platform. The applications should use the
+resource manager, and it's then up to the resource manager to decide
+which application can use the hardware. The resource manager needs to
+somehow know what device the application needs (maybe this information
+comes directly from the application), and based on the ConflictingDevice
+information in UCM and some priority configuration it can do the
+decision.
+
+-- 
+Tanu
