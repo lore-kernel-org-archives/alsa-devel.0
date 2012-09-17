@@ -1,26 +1,46 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH RESEND 5/5] ASoC: tegra: remove support of legacy DMA
- driver based access
-Date: Mon, 17 Sep 2012 05:47:37 -0400
-Message-ID: <20120917094736.GB4829@opensource.wolfsonmicro.com>
-References: <1347639089-2520-1-git-send-email-swarren@wwwdotorg.org>
- <1347639089-2520-5-git-send-email-swarren@wwwdotorg.org>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v3 00/15] ASoC: OMAP: Convert to use
+ dmaengine
+Date: Mon, 17 Sep 2012 15:21:41 +0530
+Message-ID: <1347875501.1943.142.camel@vkoul-udesk3>
+References: <1347624358-25582-1-git-send-email-peter.ujfalusi@ti.com>
+ <1347851866.1943.126.camel@vkoul-udesk3>  <5056E300.809@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1347639089-2520-5-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0F9B261680
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 11:55:46 +0200 (CEST)
+In-Reply-To: <5056E300.809@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 14, 2012 at 10:11:29AM -0600, Stephen Warren wrote:
-> From: Laxman Dewangan <ldewangan-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Mon, 2012-09-17 at 11:44 +0300, Peter Ujfalusi wrote:
+> Hi Vinod,
 > 
-> Remove the support code which uses the legacy APB DMA driver
-> for accessing the I2S FIFO.
-> The driver will use the dmaengine based APB DMA driver for
-> accessing reqding/writing to I2S FIFO.
+> On 09/17/2012 06:17 AM, Vinod Koul wrote:
+> > On Fri, 2012-09-14 at 15:05 +0300, Peter Ujfalusi wrote:
+> >> Hello,
+> > 
+> > dmaengine parts look good to me. How do you want to get this merged,
+> > dmaengine or ASoC tree?
+> 
+> Thank you, I would prefer it to go via ASoC if it is not a problem. It is
+> possible to separate the dmaengine core related patches and the patches for
+> the OMAP drivers but I think it is better to keep them together so we can have
+> them in a same tree for testing it further.
+Sure I think this is better way to do.
 
-Acked-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+-- 
+~Vinod
