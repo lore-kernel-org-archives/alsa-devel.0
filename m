@@ -1,23 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA: hda - Remove ignore_misc_bit
-Date: Mon, 17 Sep 2012 16:44:16 +0800
-Message-ID: <CAN8cciZQyzsvNRNQdP++vga5CypWWM584agfWts78FqSN5WuUw@mail.gmail.com>
-References: <1346995544-6754-1-git-send-email-david.henningsson@canonical.com>
- <s5hligmw3s0.wl%tiwai@suse.de> <5049D9EB.5070301@canonical.com>
- <s5h8vcmvy9s.wl%tiwai@suse.de> <5049E5F6.8010007@canonical.com>
- <s5h1uievwk6.wl%tiwai@suse.de> <5049ECD4.2040501@canonical.com>
- <CAN8cciYOMpjXfEpQxYFwTve94rz_LLzJyA=nBdCCdtwOJ5Lnbw@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 04/15] dmaengine: Pass no_wakeup
+ parameter via device_prep_dma_cyclic() callback
+Date: Mon, 17 Sep 2012 11:01:23 +0200
+Message-ID: <CACRpkdYAxFzPAZgMsdj9C3YVLzMc_w41Xs0SiqX-1DWaZqxAdw@mail.gmail.com>
+References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
+ <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 6328C26165D
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 10:44:17 +0200 (CEST)
-Received: by qcse14 with SMTP id e14so5036672qcs.38
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 01:44:16 -0700 (PDT)
-In-Reply-To: <CAN8cciYOMpjXfEpQxYFwTve94rz_LLzJyA=nBdCCdtwOJ5Lnbw@mail.gmail.com>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 588C7261651
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 11:01:26 +0200 (CEST)
+Received: by wibhm6 with SMTP id hm6so1791309wib.2
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 02:01:25 -0700 (PDT)
+In-Reply-To: <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, ian_minett@creativelabs.com, 995156@bugs.launchpad.net, 1033996@bugs.launchpad.net
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Laxman Dewangan <ldewangan@nvidia.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Vinod Koul <vinod.koul@intel.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Liam Girdwood <lrg@ti.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, Barry Song <baohua.song@csr.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Vista Silicon <javier.martin@vista-silicon.com>, Dan Williams <djbw@fb.com>, Shawn Guo <shawn.guo@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
->>>>>> But I still wonder why PulseAudio cares the headphone jack state even
->>>>>> though this has only one output at all?
->>>>>
->>>>>
->>>>> When seeing the system as a whole, there can be other outputs on other
->>>>> cards - HDMI, USB etc. If somebody e g plugs a USB headset in it will
-be
->>>>> simpler for the user if PulseAudio does not also show the unplugged
-3.5
->>>>> mm jack
+On Thu, Sep 13, 2012 at 3:37 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
 
-phantom port of internal speaker or internal Mic is ok but
-
-how about those jack spdif, CD , Aux which does not have jack detect
-circuit
-
-Is it feasible for driver implement a read/ write kcontrol for those port
-and allow the user to change the state of those port by using special
-application (e.g. qashctl) ?
-
+> Change the parameter list of device_prep_dma_cyclic() so the DMA drivers
+> can receive the no_wakeup request coming from client drivers.
+> This feature can be used during audio operation to disable all audio
+> related interrupts.
 >
-> That said, it's not super difficult to comment out a few lines in
-> /usr/share/pulseaudio/alsa-mixer/paths/*.conf, and also, most mixer UIs
-(e g pavucontrol) still allows you to route audio to an unavailable port.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> CC: Nicolas Ferre <nicolas.ferre@atmel.com>
+> CC: Barry Song <baohua.song@csr.com>
+> CC: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
+> CC: Russell King - ARM Linux <linux@arm.linux.org.uk>
+> CC: Vista Silicon <javier.martin@vista-silicon.com>
+> CC: Zhangfei Gao <zhangfei.gao@marvell.com>
+> CC: Shawn Guo <shawn.guo@linaro.org>
+> CC: Laxman Dewangan <ldewangan@nvidia.com>
 
-For ad1988 which still not support auto mute nor hda jack detect. The user
-still able to use the card in gnome but not in unity.
+After some discussion with clever people I know I have come to the conclusion
+that this is a good idea, so:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/995169
-
-And ca0132 which does not implement auto mute ?
-
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1043621
-
-And the other ad198x which support auto mute but not implement hda jack
-detect
-
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1051494
-
-The other cases are those on-board ac97 controller (e.g.  Intel8x0,
-atiixp,...) with ac97 codecs which have the headphone playback volume
-control.
-
-What is the usage of those "Headphone Jack Sense" control of AC97 codecs ?
-Some of them seem have inverted control
-
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1033996
+Yours,
+Linus Walleij
