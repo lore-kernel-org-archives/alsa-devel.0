@@ -1,14 +1,16 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH 1/2] ALSA: compress - move the buffer check
-Date: Mon, 17 Sep 2012 11:51:25 +0530
-Message-ID: <1347862886-29396-1-git-send-email-vinod.koul@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: Compress - add codec parameter checks
+Date: Mon, 17 Sep 2012 11:51:26 +0530
+Message-ID: <1347862886-29396-2-git-send-email-vinod.koul@linux.intel.com>
+References: <1347862886-29396-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id D9E8F2615F6
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 08:25:39 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A7FF5261601
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 08:25:40 +0200 (CEST)
+In-Reply-To: <1347862886-29396-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +24,44 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-Commit ALSA: compress_core: integer overflow in snd_compr_allocate_buffer()
-added a new error check for input params.
-this add new routine for input checks and moves buffer overflow check to this
-new routine. This allows the error value to be propogated to user space
-
 Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
 ---
- sound/core/compress_offload.c |   20 ++++++++++++++++----
- 1 files changed, 16 insertions(+), 4 deletions(-)
+ include/sound/compress_params.h |    1 +
+ sound/core/compress_offload.c   |   10 ++++++++++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
 
+diff --git a/include/sound/compress_params.h b/include/sound/compress_params.h
+index da4a456..602dc6c 100644
+--- a/include/sound/compress_params.h
++++ b/include/sound/compress_params.h
+@@ -72,6 +72,7 @@
+ #define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
+ #define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
+ #define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
++#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_G729
+ 
+ /*
+  * Profile and modes are listed with bit masks. This allows for a
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 68fe02c..bd7f28e 100644
+index bd7f28e..c40ae57 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -407,10 +407,6 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
- 	unsigned int buffer_size;
- 	void *buffer;
+@@ -432,6 +432,16 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+ 			params->buffer.fragments > SIZE_MAX / params->buffer.fragment_size)
+ 		return -EINVAL;
  
--	if (params->buffer.fragment_size == 0 ||
--	    params->buffer.fragments > SIZE_MAX / params->buffer.fragment_size)
--		return -EINVAL;
--
- 	buffer_size = params->buffer.fragment_size * params->buffer.fragments;
- 	if (stream->ops->copy) {
- 		buffer = NULL;
-@@ -429,6 +425,16 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
++	/* now codec parameters */
++	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
++		return -EINVAL;
++
++	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
++		return -EINVAL;
++
++	if (!(params->codec.sample_rate & SNDRV_PCM_RATE_8000_192000))
++		return -EINVAL;
++
  	return 0;
  }
  
-+static int snd_compress_check_input(struct snd_compr_params *params)
-+{
-+	/* first let's check the buffer parameter's */
-+	if (params->buffer.fragment_size == 0 ||
-+			params->buffer.fragments > SIZE_MAX / params->buffer.fragment_size)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- static int
- snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
- {
-@@ -447,11 +453,17 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
- 			retval = -EFAULT;
- 			goto out;
- 		}
-+
-+		retval = snd_compress_check_input(params);
-+		if (retval)
-+			goto out;
-+
- 		retval = snd_compr_allocate_buffer(stream, params);
- 		if (retval) {
- 			retval = -ENOMEM;
- 			goto out;
- 		}
-+
- 		retval = stream->ops->set_params(stream, params);
- 		if (retval)
- 			goto out;
 -- 
 1.7.0.4
