@@ -1,16 +1,22 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH 2/2] ALSA: Compress - add codec parameter checks
-Date: Mon, 17 Sep 2012 11:51:26 +0530
-Message-ID: <1347862886-29396-2-git-send-email-vinod.koul@linux.intel.com>
-References: <1347862886-29396-1-git-send-email-vinod.koul@linux.intel.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 04/15] dmaengine: Pass no_wakeup
+ parameter via device_prep_dma_cyclic() callback
+Date: Mon, 17 Sep 2012 14:34:53 +0800
+Message-ID: <20120917063451.GB6413@S2101-09.ap.freescale.net>
+References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
+ <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A7FF5261601
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 08:25:40 +0200 (CEST)
-In-Reply-To: <1347862886-29396-1-git-send-email-vinod.koul@linux.intel.com>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C9302615F6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 08:34:44 +0200 (CEST)
+Received: by pbbro8 with SMTP id ro8so10278105pbb.38
+ for <alsa-devel@alsa-project.org>; Sun, 16 Sep 2012 23:34:43 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, dan.carpenter@oracle.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, Laxman Dewangan <ldewangan@nvidia.com>, Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>, linux-arm-kernel@lists.infradead.org, Barry Song <baohua.song@csr.com>, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Vista Silicon <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
----
- include/sound/compress_params.h |    1 +
- sound/core/compress_offload.c   |   10 ++++++++++
- 2 files changed, 11 insertions(+), 0 deletions(-)
+On Thu, Sep 13, 2012 at 04:37:54PM +0300, Peter Ujfalusi wrote:
+> Change the parameter list of device_prep_dma_cyclic() so the DMA drivers
+> can receive the no_wakeup request coming from client drivers.
+> This feature can be used during audio operation to disable all audio
+> related interrupts.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> CC: Nicolas Ferre <nicolas.ferre@atmel.com>
+> CC: Barry Song <baohua.song@csr.com>
+> CC: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
+> CC: Russell King - ARM Linux <linux@arm.linux.org.uk>
+> CC: Vista Silicon <javier.martin@vista-silicon.com>
+> CC: Zhangfei Gao <zhangfei.gao@marvell.com>
+> CC: Shawn Guo <shawn.guo@linaro.org>
+> CC: Laxman Dewangan <ldewangan@nvidia.com>
+> ---
+>  drivers/dma/at_hdmac.c        | 3 ++-
+>  drivers/dma/ep93xx_dma.c      | 4 +++-
+>  drivers/dma/imx-dma.c         | 2 +-
+>  drivers/dma/imx-sdma.c        | 2 +-
+>  drivers/dma/mmp_tdma.c        | 2 +-
+>  drivers/dma/mxs-dma.c         | 2 +-
+>  drivers/dma/omap-dma.c        | 3 ++-
+>  drivers/dma/pl330.c           | 2 +-
+>  drivers/dma/sa11x0-dma.c      | 2 +-
+>  drivers/dma/sirf-dma.c        | 2 +-
+>  drivers/dma/ste_dma40.c       | 3 ++-
+>  drivers/dma/tegra20-apb-dma.c | 2 +-
+>  include/linux/dmaengine.h     | 5 +++--
+>  13 files changed, 20 insertions(+), 14 deletions(-)
+> 
+API changes without updating users?
 
-diff --git a/include/sound/compress_params.h b/include/sound/compress_params.h
-index da4a456..602dc6c 100644
---- a/include/sound/compress_params.h
-+++ b/include/sound/compress_params.h
-@@ -72,6 +72,7 @@
- #define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
- #define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
- #define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
-+#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_G729
- 
- /*
-  * Profile and modes are listed with bit masks. This allows for a
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index bd7f28e..c40ae57 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -432,6 +432,16 @@ static int snd_compress_check_input(struct snd_compr_params *params)
- 			params->buffer.fragments > SIZE_MAX / params->buffer.fragment_size)
- 		return -EINVAL;
- 
-+	/* now codec parameters */
-+	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
-+		return -EINVAL;
-+
-+	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
-+		return -EINVAL;
-+
-+	if (!(params->codec.sample_rate & SNDRV_PCM_RATE_8000_192000))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
--- 
-1.7.0.4
+Regards,
+Shawn
