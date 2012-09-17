@@ -1,20 +1,17 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH 1/3] ALSA: usb-audio: set period_bytes in
-	substream.
-Date: Mon, 17 Sep 2012 13:11:37 -0700
-Message-ID: <1347912699-9969-2-git-send-email-dgreid@chromium.org>
-References: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
+Subject: [PATCH 0/3] Allow suspend/resume with USB audio.
+Date: Mon, 17 Sep 2012 13:11:36 -0700
+Message-ID: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f201.google.com (mail-wi0-f201.google.com
- [209.85.212.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AC072616CD
+Received: from mail-lpp01m010-f73.google.com (mail-lpp01m010-f73.google.com
+ [209.85.215.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C9AB2616D2
  for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 22:11:58 +0200 (CEST)
-Received: by wibhm2 with SMTP id hm2so136298wib.2
+Received: by lahi5 with SMTP id i5so391123lah.2
  for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:11:57 -0700 (PDT)
-In-Reply-To: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,27 +25,32 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Set the peiod_bytes member of snd_usb_substream.  It was no longer being
-set, but will be needed to resume properly in a future commit.
+Problem being addressed:
+shell one$ aplay -Dhw:<usbcard> file.wav
+shell two$ echo mem > /sys/power/state
+After resume, aplay attempts resume, then restart, then after a timeout
+gets a write error and no audio will be played until it is restarted.
 
-Change-Id: I4cf4681f16f8a71d26c586520afed9e8c27433b2
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/usb/pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+During suspend/resume, if the USB port remains powered the audio device
+will still be present upon resume.  The interface and endpoint have to
+be reconfigured however.  These patches move the configuration from
+hw_params to prepare causing re-configuration during resume.
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index f782ce1..786f7a0 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -486,6 +486,8 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	if (changed) {
-+		subs->period_bytes = params_period_bytes(hw_params);
-+
- 		mutex_lock(&subs->stream->chip->shutdown_mutex);
- 		/* format changed */
- 		stop_endpoints(subs, 0, 0, 0);
+Is this the right way to fix this?  Or is there an easier way I am
+missing?
+
+Thanks for looking.
+
+Dylan Reid (3):
+  ALSA: usb-audio: set period_bytes in substream.
+  ALSA: usb-audio: Don't require hw_params in endpoint.
+  ALSA: usb-audio: Move configuration to prepare.
+
+ sound/usb/card.h     |   2 +
+ sound/usb/endpoint.c |  29 +++++++-----
+ sound/usb/endpoint.h |   5 ++-
+ sound/usb/pcm.c      | 121 +++++++++++++++++++++++++++++++--------------------
+ 4 files changed, 97 insertions(+), 60 deletions(-)
+
 -- 
 1.7.12.146.g16d26b1
