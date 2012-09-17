@@ -1,20 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 16/34] ASoC: imx-ssi: remove unneeded
-	mach/hardware.h inclusion
-Date: Mon, 17 Sep 2012 14:30:35 +0000
-Message-ID: <201209171430.35804.arnd@arndb.de>
-References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <1347860103-4141-17-git-send-email-shawn.guo@linaro.org>
- <20120917114543.GG5401@opensource.wolfsonmicro.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH 1/3] ALSA: usb-audio: set period_bytes in
+	substream.
+Date: Mon, 17 Sep 2012 13:11:37 -0700
+Message-ID: <1347912699-9969-2-git-send-email-dgreid@chromium.org>
+References: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E00526164D
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 16:30:47 +0200 (CEST)
-In-Reply-To: <20120917114543.GG5401@opensource.wolfsonmicro.com>
+Received: from mail-wi0-f201.google.com (mail-wi0-f201.google.com
+ [209.85.212.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AC072616CD
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 22:11:58 +0200 (CEST)
+Received: by wibhm2 with SMTP id hm2so136298wib.2
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:11:57 -0700 (PDT)
+In-Reply-To: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 17 September 2012, Mark Brown wrote:
-> On Mon, Sep 17, 2012 at 01:34:45PM +0800, Shawn Guo wrote:
-> 
-> >  #include <linux/platform_data/asoc-imx-ssi.h>
-> > -#include <mach/hardware.h>
-> 
-> This doesn't apply - there's no platform data header for imx-ssi at the
-> minute (and I don't see a patch in this series related to that in the
-> series).  I checked -next and there doesn't seem to be anything via a
-> non-ASoC tree either.
-> 
+Set the peiod_bytes member of snd_usb_substream.  It was no longer being
+set, but will be needed to resume properly in a future commit.
 
-It's in my testing/platform-data series, and will be in linux-next in
-a few days.
+Change-Id: I4cf4681f16f8a71d26c586520afed9e8c27433b2
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/usb/pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-	Arnd
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index f782ce1..786f7a0 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -486,6 +486,8 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	if (changed) {
++		subs->period_bytes = params_period_bytes(hw_params);
++
+ 		mutex_lock(&subs->stream->chip->shutdown_mutex);
+ 		/* format changed */
+ 		stop_endpoints(subs, 0, 0, 0);
+-- 
+1.7.12.146.g16d26b1
