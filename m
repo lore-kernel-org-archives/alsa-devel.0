@@ -1,17 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Dynamic HDMI PCM creation
-Date: Mon, 17 Sep 2012 13:03:56 +0200
-Message-ID: <5057039C.50906@perex.cz>
-References: <s5htxv6rq0e.wl%tiwai@suse.de> <5056F83B.7080602@canonical.com>
- <s5h7grtx78l.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 02/34] ASoC: mx27vis: retrieve gpio numbers
+ from platform_data
+Date: Mon, 17 Sep 2012 07:07:42 -0400
+Message-ID: <20120917110741.GD5401@opensource.wolfsonmicro.com>
+References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
+ <1347860103-4141-3-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 92B10261693
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:03:56 +0200 (CEST)
-In-Reply-To: <s5h7grtx78l.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 94E482625C6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:07:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1347860103-4141-3-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,87 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Javier Martin <javier.martin@vista-silicon.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 17.9.2012 12:40, Takashi Iwai wrote:
-> At Mon, 17 Sep 2012 12:15:23 +0200,
-> David Henningsson wrote:
->>
->> On 09/10/2012 03:01 PM, Takashi Iwai wrote:
->>> Hi David,
->>>
->>> as we discussed at Plumbers, I tried some hack to create/delete
->>> HDMI/DP PCM stream per hotplug/unplug.  Test patches are found in
->>> sound-unstable git tree topic/hdmi-dynamic-pcm branch
->>>    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git
->>>
->>> The patches are all small and easy, but it's still in a pretty rough
->>> cut.  It won't handle some cases, e.g. unplug during suspend, or
->>> such, I'm afraid.  After all, it's just a test.
->>>
->>> With these patches, the PCM device appears and disappears properly
->>> upon HDMI/DP hotplug/unplug on my system.  On mine, it appears as
->>> /dev/snd/pcmC0D8 as it's an Intel on-board.  So far, so good.
->>>
->>> Now the problem is that PA gets confused when this happens.  It can
->>> switch to HDMI/DP, but then the analog output disappears from PA's
->>> profile.  You cannot switch back to analog output after that, even
->>> after you unplug HDMI/DP cable.
->>>
->>> Or, it might be my PA version...  I'll check newer one.
->>> But it'd be good if you also check in your side.
->>
->> Hmm.
->>
->> As you probably know, PA does extensively test opening device strings at 
->> startup, and then never again.
->> As such, I can understand that PA gets confused if you start adding and 
->> removing PCM devices, because that changes whether and how different 
->> device strings can be opened.
->>
->> Looking forward, with HDMI, it's a reality that this will happen. And 
->> therefore we need to deal with it in PA somehow, even if this is 
->> non-trivial. So the first question would be - what notification 
->> mechanism should we have to trigger "reprobing"? Are we recommended to 
->> use the jack detection kcontrol API, or is there something else that 
->> tells us that suddenly "hdmi:1,2" will actually be worth trying again?
-> 
-> The kcontrol API is already implemented, so it's good to support for
-> it.
+On Mon, Sep 17, 2012 at 01:34:31PM +0800, Shawn Guo wrote:
 
-You refer ELD interface?
+I've applied this since Javier says it fixes a bug but I'm not terribly
+enthused about it.
 
-> If we do check the dynamic PCM probing for HDMI, I'd propose for
-> adding a new PCM class SNDRV_PCM_CLASS_HDMI or such, and set this
+>  arch/arm/mach-imx/mach-imx27_visstrim_m10.c |   42 ++++++++++++++++++++++++++-
+>  include/linux/platform_data/asoc-mx27vis.h  |   11 +++++++
+>  sound/soc/fsl/mx27vis-aic32x4.c             |   42 +++++++++++++--------------
 
-I'm not sure if HDMI devices are different than others. For example, for
-digital S/PDIF inputs, the input stream parameters can change too
-including the signal presence. It would be good to propose one mechanism
-for all plug-and-play wiring schemas.
+Audio drivers put their platform data in include/sound.
 
-> class in patch_hdmi.c.  Then PA can check the sysfs entry and
-> decide whether to reprobe the HDMI entry.
+>  3 files changed, 72 insertions(+), 23 deletions(-)
 
-Please, could you describe more, why we need to have dynamic PCMs for
-HDMI? I would prefer to have just a notification, if the cable is
-connected and the PCM layer is ready (ELD stuff). Also, if some physical
-connectors are not used on some hardware, they should/may be blacklisted
-so the driver won't create PCM devices for them.
-
-Also, the stream parameter checks seems missing in the HDMI PCM
-implementation. It may be good to fail with -EIO when the cable is not
-connected or unplugged and, eventually, if the end-point PCM parameters
-are changed.
-
-If the dynamic HDMI PCMs are implemented, are the device numbers fixed
-(related) to physical connectors?
-
-					Thanks,
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+This also seems like we're just going to be going for bloat, given that
+this is a general change we should be (finally) getting round to having
+a generic GPIO based CODEC driver.
