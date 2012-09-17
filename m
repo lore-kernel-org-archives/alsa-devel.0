@@ -1,18 +1,17 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 33/34] ARM: imx: remove header file
-	mach/irqs.h
-Date: Mon, 17 Sep 2012 11:32:52 +0000
-Message-ID: <201209171132.52380.arnd@arndb.de>
+Subject: Re: [PATCH 00/34] i.MX multi-platform support
+Date: Mon, 17 Sep 2012 11:38:13 +0000
+Message-ID: <201209171138.13327.arnd@arndb.de>
 References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <1347860103-4141-34-git-send-email-shawn.guo@linaro.org>
+ <20120917075138.GN6180@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D4C8264FF8
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:33:11 +0200 (CEST)
-In-Reply-To: <1347860103-4141-34-git-send-email-shawn.guo@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA7C926505A
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:38:17 +0200 (CEST)
+In-Reply-To: <20120917075138.GN6180@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>, linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org, rtc-linux@googlegroups.com, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>, Vinod Koul <vinod.koul@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>, Andrew Morton <akpm@linux-foundation.org>, Shawn
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 17 September 2012, Shawn Guo wrote:
-> @@ -269,6 +268,8 @@ static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
->         return 0;
->  }
->  
-> +extern int mxc_set_irq_fiq(unsigned int irq, unsigned int type);
-> +
->  static void imx_pcm_fiq_free(struct snd_pcm *pcm)
->  {
->         mxc_set_irq_fiq(ssi_irq, 0);
+On Monday 17 September 2012, Sascha Hauer wrote:
+> On Mon, Sep 17, 2012 at 01:34:29PM +0800, Shawn Guo wrote:
+> > The series enables multi-platform support for imx.  Since the required
+> > frameworks (clk, pwm) and spare_irq have already been adopted on imx,
+> > the series is all about cleaning up mach/* headers.  Along with the
+> > changes, arch/arm/plat-mxc gets merged into arch/arm/mach-imx.
+> > 
+> > It's based on a bunch of branches (works from others), Rob's initial
+> > multi-platform series, Arnd's platform-data and smp_ops (Marc's) and
+> > imx 3.7 material (Sascha and myself).
+> > 
+> > It's available on branch below.
+> > 
+> >   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform
+> > 
+> > It's been tested on imx5 and imx6, and only compile-tested on imx2 and
+> > imx3, so testing on imx2/3 are appreciated.
+> 
+> Great work! This really pushes the i.MX architecture one step closer to
+> a clean code base.
 
-Hmm, this is quite hacky, I can see why you left it all the way
-to the end of the otherwise excellent series ;-)
+I agree, this series is wonderful, I thought it would take much longer
+to get this far.
 
-We already have some fiq specific stuff in the
-include/linux/platform_data/asoc-imx-ssi.h header file,
-so I think it's best to put this declaration there, too.
+Two small comments on the last two patches from me, but overall I really
+love it.
 
-If we want to eventually clean up the fiq usage in this driver,
-I think we should extend the DT binding for the interrupt controller
-to describe the fiq correctly so it can all be done transparently.
-
-	Arnd
+Acked-by: Arnd Bergmann <arnd@arndb.de>
