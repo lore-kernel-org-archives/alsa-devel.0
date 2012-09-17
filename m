@@ -1,30 +1,88 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 04/15] dmaengine: Pass no_wakeup parameter via
- device_prep_dma_cyclic() callback
-Date: Mon, 17 Sep 2012 15:23:26 +0800
-Message-ID: <20120917072323.GD1338@S2101-09.ap.freescale.net>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
- <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
- <20120917063451.GB6413@S2101-09.ap.freescale.net>
- <5056CE65.9080401@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Remove ignore_misc_bit
+Date: Mon, 17 Sep 2012 09:39:01 +0200
+Message-ID: <5056D395.4090603@canonical.com>
+References: <1346995544-6754-1-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciYZBU+LaaQFXrn9kPoFc=MdYahw0ucKNmAhrG=CT0+C5g@mail.gmail.com>
+ <s5h392rhbyu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5056CE65.9080401@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Ricardo Neri <ricardo.neri@ti.com>, Lars-Peter Clausen <lars@metafoo.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, Barry Song <baohua.song@csr.com>, Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vista Silicon <javier.martin@vista-silicon.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, Laxman Dewangan <ldewangan@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD6702615F6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 09:39:02 +0200 (CEST)
+In-Reply-To: <s5h392rhbyu.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, 939161@bugs.launchpad.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 17, 2012 at 10:16:53AM +0300, Peter Ujfalusi wrote:
-> All users of this callback is updated with this patch.
-> The public API (dmaengine_prep_dma_cyclic) is only used by ASoC, which has
-> been updated by the previous patch.
-> 
-Ah, ok.  You actually changed dmaengine_prep_dma_cyclic signature before
-this patch.  Sorry, I overlooked that.
-
--- 
-Regards,
-Shawn
+T24gMDkvMDkvMjAxMiAwOTo1MCBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFNhdCwgOCBT
+ZXAgMjAxMiAwOToxMDoxNCArMDgwMCwKPiBSYXltb25kIFlhdSB3cm90ZToKPj4KPj4gMjAxMi05
+LTcg5LiL5Y2IMToyNiDmlrwgIkRhdmlkIEhlbm5pbmdzc29uIiA8ZGF2aWQuaGVubmluZ3Nzb25A
+Y2Fub25pY2FsLmNvbT4g5a+r6YGT77yaCj4+Pgo+Pj4gVGhlIHB1cnBvc2Ugb2YgdGhpcyBmbGFn
+IGlzIHVuY2xlYXIuIElmIHRoZSBwcm9ibGVtIGlzIHRoYXQgc29tZSBtYWNoaW5lcwo+Pj4gaGF2
+ZSBicm9rZW4gbWlzYy9OT19QUkVTRU5DRSBiaXRzLCB0aGV5IHNob3VsZCBiZSBmaXhlZCBieSBw
+aW4gZml4dXBzLgo+Pj4KPj4+IEluIGFkZGl0aW9uLCB0aGlzIGNhdXNlcyBqYWNrIGRldGVjdGlv
+biBmdW5jdGlvbmFsaXR5IHRvIGJlIGZsYXdlZCBvbgo+Pj4gdGhlIE0zMUVJLCB3aGVyZSB0aGVy
+ZSBhcmUgdHdvIGphY2tzIHdpdGhvdXQgamFjayBkZXRlY3Rpb24gKHdoaWNoIGlzCj4+PiBwcm9w
+ZXJseSBtYXJrZWQgYXMgTk9fUFJFU0VOQ0UpLCBidXQgZHVlIHRvIGlnbm9yZV9taXNjX2JpdCwg
+dGhlc2UKPj4+IGphY2tzIGFyZSBpbnN0ZWFkIGJlaW5nIHJlcG9ydGVkIGFzIGJlaW5nIHByZXNl
+bnQgYnV0IGFsd2F5cyB1bnBsdWdnZWQuCj4+Pgo+Pj4gQnVnTGluazogCQo+Pgo+PiBkbyB5b3Ug
+bWVhbiB0aGUgY29tbWl0IGRvZXMgbm90IGZpeCB0aGUgYnVnPwo+Pgo+PiBBTFNBOiBoZGEgLSBh
+ZGQgc3VwcG9ydCBmb3IgVW5pd2lsbCBFQ1MgTTMxRUkgbm90ZWJvb2sKPj4KPj4gVGhpcyBoYXJk
+d2FyZSByZXF1aXJlcyBzYW1lIGZpeHVwIGZvciB0aGUgbm9kZSAweDBmIGxpa2UgQXN1cyBBNlJw
+Lgo+PiBNb3JlIGluZm9ybWF0aW9uOiBodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5jb20vc2hvd19i
+dWcuY2dpP2lkPTc4NTQxNwo+Pgo+PiBodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2Vy
+bmVsL2dpdC90aXdhaS9zb3VuZC5naXQ7YT1jb21taXQ7aD00MTY4NDZkMmIzMWZjNzQwZWQ5ZDVh
+NWVjMTE2OTY0ZmI0M2M0MzU4CgpUaGUgUENJIFNTSURzIGFyZSBkaWZmZXJlbnQsIHNvIEkgZG9u
+J3QgdGhpbmsgdGhhdCBjb21taXQgd2lsbCBhZmZlY3QgCnRoZSBidWcgSSB3YXMgdHJ5aW5nIHRv
+IGZpeC4KCj4+IHRoZSByZWFsIGNhc2VzIGFyZSB0aG9zZSBkZXNrdG9wIHdoaWNoIGRvZXMgbm90
+IHVzZSBoZGEgZnJvbnQgYXVkaW8gcGFuZWwgLAo+PiB0aGV5IGp1c3QgbG9zcyB0aGUgYXV0byBt
+dXRlIHNpbmNlIHRoZXJlIGlzIG5vIGphY2sgZGV0ZWN0IGNpcmN1aXQgYnV0IHRoZXkKPj4gY2Fu
+IHN0aWxsIGhlYXIgc291bmQgZnJvbSB0aGUgaGVhZHBob25lIGF0IGFueXRpbWUKCklmIHRoZXJl
+IGlzIG5vIEhEQSBmcm9udCBwYW5lbCBjb25uZWN0ZWQgdG8gdGhlIG1vdGhlcmJvYXJkIHBoeXNp
+Y2FsbHksIAp0aGUgY29kZWMgc2hvdWxkIHJlcG9ydCBmcm9udCBoZWFkcGhvbmUgYW5kIG1pYyBh
+cyB1bmNvbm5lY3RlZC4KCklmIHRoZXJlIGlzIGFuIEFDJzk3IGZyb250IHBhbmVsIGNvbm5lY3Rl
+ZCwgdGhlIEJJT1Mgc2hvdWxkIHNldCAKTk9fUFJFU0VOQ0UgaW4gdGhlIG1pc2MgYml0LgoKSWYg
+QklPUy9IVyBkb2VzIG5vdCBzdXBwb3J0IHRoZXNlIHNpbXBsZSBydWxlcywgd2UgbmVlZCB0byBx
+dWlyayB0aGVtLgoKPj4gZG8gcHVsc2VhdWRpbyBuZWVkIGEgcGhhbnRvbSBwb3J0IGZvciB0aGUg
+ZnJvbnQgcGFuZWwgaGVhZHBob25lIGFuZCBtaWMKPj4gd2l0aG91dCBqYWNrIGRldGVjdGlvbiA/
+Cj4KPiBBY3R1YWxseSB0aGlzIGlzIG9uZSBnb29kIHBvaW50Lgo+IFRoZSBqYWNrIGRldGVjdGlv
+biBpc24ndCBhbHdheXMgcmVsaWFibHkgb24gc3VjaCBvbGQgbWFjaGluZXMsIGFuZAo+IEJJT1Mg
+Y2Fubm90IGtub3csIHRvby4KCkNhbiB5b3UgYmUgYSBiaXQgbW9yZSBzcGVjaWZpYyBhYm91dCB0
+aGlzIGNsYWltPyBXaGF0IG1hY2hpbmVzPyBIb3cgbWFueSAKbWFjaGluZXM/IEluIHdoYXQgd2F5
+IGlzIGl0IHVucmVsaWFibGU/CgogPiBUaGF0IGlzLCBpdCBoYXMgdG8gYmUgYWRqdXN0ZWQgYnkg
+dXNlcgogPiBtYW51YWxseSwgd2hldGhlciB0aGUgamFjayBkZXRlY3Rpb24gaXMgZW5hYmxlZCBv
+ciBub3QuCj4KPiBTbyBmYXIsIHdlIHNvbHZlZCB0aGlzIGJ5IHByb3ZpZGluZyAiQXV0by1NdXRl
+IE1vZGUiIG1peGVyIHN3aXRjaC4KClRoaXMgaXMgbm90IGEgcHJvcGVyIHdheSB0byAic29sdmUi
+IGl0IC0gIkF1dG8tTXV0ZSBtb2RlIiBhcyB0aGUgY29udHJvbCAKbmFtZSBzYXlzIGlzIG1vcmUg
+Y2xvc2VseSByZWxhdGVkIHRvIHRoZSBtdXRpbmcgb2Ygb3V0cHV0cywgdGhhbiBpdCBpcyAKdG8g
+dGhlIGFjdHVhbCBqYWNrIGRldGVjdGlvbi4KCkFsc28sICJBdXRvLU11dGUgbW9kZSIgaXMgMSkg
+b25seSByZWxhdGVkIHRvIG91dHB1dHMgYW5kIDIpIG5vdCAKYXZhaWxhYmxlIGdlbmVyaWNhbGx5
+IGJ1dCBvbmx5IGZvciBzcGVjaWZpYyBjb2RlY3MuCgo+IEJ1dCB0aGUgamFjayBkZXRlY3Rpb24g
+Y29udHJvbHMgZG9uJ3QgZm9sbG93IHRoaXMgeWV0LiAgTWF5YmUgd2UgY2FuCj4gc2V0IHN1Y2gg
+YSBqYWNrIGNvbnRyb2wgYXMgaW5hY3RpdmUgc3RhdGUgd2hlbiB0aGUgamFjayBkZXRlY3Rpb24g
+aXMKPiBkaXNhYmxlZC4KPgo+IChBbmQgdGhpcyByZW1pbmRzIG1lIHRoYXQgd2UgY2FuIGN1dCBv
+ZmYgIlBoYW50b20iIG5hbWUgaGFjayBieQo+ICAgZm9sbG93aW5nIHRoZSBzYW1lIHJ1bGUgLS0g
+anVzdCBzZXQgdGhlIGNvbnRyb2wgaW5hY3RpdmUgd2hlbiBpdCBoYXMKPiAgIG5vIHJlYWwgZGV0
+ZWN0aW9uLiAgQnV0IGl0IHN0aWxsIGFwcGVhcnMgaW4gY29udHJvbCBsaXN0LikKCkxvb2tpbmcg
+YXQgdGhlIGFsc2EtbGliIEFQSSwgdGhpcyBzZWVtcyBkb2FibGUuIEl0IHNlZW1zIHBvc3NpYmxl
+IHRvIApmaWd1cmUgb3V0IHVzaW5nIHNuZF9oY3RsX2VsZW1faW5mbyBhbmQgdGhlbiAKc25kX2N0
+bF9lbGVtX2luZm9faXNfaW5hY3RpdmUuIElmIGl0IGlzIGFsc28gcnVudGltZSBjaGFuZ2VhYmxl
+IChpIGUgCmRlcGVuZGluZyBvbiBzb21lIG90aGVyIG1peGVyIGNvbnRyb2wpLCB3ZSBuZWVkIGEg
+Y2FsbGJhY2sgdG8gZmlyZSBvbiAKdGhlIGhjdGwuCgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBD
+YW5vbmljYWwgTHRkLgpodHRwczovL2xhdW5jaHBhZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
