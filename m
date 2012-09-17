@@ -1,73 +1,105 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 00/34] i.MX multi-platform support
-Date: Mon, 17 Sep 2012 09:51:38 +0200
-Message-ID: <20120917075138.GN6180@pengutronix.de>
-References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [alsa-devel] [PATCH v2] drm/i915: HDMI - Clear
+ Audio Enable bit for	Hot Plug unconditionally
+Date: Mon, 17 Sep 2012 09:58:55 +0200
+Message-ID: <20120917075855.GB5522@phenom.ffwll.local>
+References: <1347506340-2683-1-git-send-email-xingchao.wang@intel.com>
+	<s5hipbie7px.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id D905E261643
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 09:51:46 +0200 (CEST)
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>, linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org, rtc-linux@googlegroups.com, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>, Vinod Koul <vinod.koul@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>, Andrew Morton <akpm@l>
+In-Reply-To: <s5hipbie7px.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, michael.fu@intel.com, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shawn,
-
-On Mon, Sep 17, 2012 at 01:34:29PM +0800, Shawn Guo wrote:
-> The series enables multi-platform support for imx.  Since the required
-> frameworks (clk, pwm) and spare_irq have already been adopted on imx,
-> the series is all about cleaning up mach/* headers.  Along with the
-> changes, arch/arm/plat-mxc gets merged into arch/arm/mach-imx.
+On Thu, Sep 13, 2012 at 08:51:22AM +0200, Takashi Iwai wrote:
+> At Thu, 13 Sep 2012 11:19:00 +0800,
+> Wang Xingchao wrote:
+> > 
+> > Clear Audio Enable bit to trigger unsolicated event to notify Audio
+> > Driver part the HDMI hot plug change. The patch fixed the bug when
+> > remove HDMI cable the bit was not cleared correctly.
+> > 
+> > In intel_enable_hdmi(), if intel_hdmi->has_audio been true, the "Audio enable bit" will
+> > be set to trigger unsolicated event to notify Alsa driver the change.
+> > 
+> > intel_hdmi->has_audio will be reset to false from intel_hdmi_detect() after
+> > remove the hdmi cable, here's debug log:
+> > 
+> > [  187.494153] [drm:output_poll_execute], [CONNECTOR:17:HDMI-A-1] status updated from 1 to 2
+> > [  187.525349] [drm:intel_hdmi_detect], HDMI: has_audio = 0
+> > 
+> > so when comes back to intel_disable_hdmi(), the "Audio enable bit" will not be cleared. And this
+> > cause the eld infomation and pin presence doesnot update accordingly in alsa driver side.
+> > 
+> > This patch will also trigger unsolicated event to alsa driver to notify the hot plug event:
+> > 
+> > [  187.853159] ALSA sound/pci/hda/patch_hdmi.c:772 HDMI hot plug event: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=1
+> > [  187.853268] ALSA sound/pci/hda/patch_hdmi.c:990 HDMI status: Codec=3 Pin=5 Presence_Detect=0 ELD_Valid=0
+> > 
+> > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
 > 
-> It's based on a bunch of branches (works from others), Rob's initial
-> multi-platform series, Arnd's platform-data and smp_ops (Marc's) and
-> imx 3.7 material (Sascha and myself).
+> We need the same fix for stable kernels, too, but unfortunately this
+> can't be applied to 3.6 or earlier.
 > 
-> It's available on branch below.
+> Greg prefers still having a Cc to stable even in such a case, and then
+> send a separate patch applicable to the existing kernels.
+> 	http://lwn.net/Articles/515528/
+> So better to have a Cc to stable in the patch.
+
+I've merged both this patch for -next and the previous patch for -fixes
+(with cc: stable added for -fixes).  Linus/Dave will have some fun with
+the conflict ;-)
+
+Thanks, Daniel
 > 
->   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform
 > 
-> It's been tested on imx5 and imx6, and only compile-tested on imx2 and
-> imx3, so testing on imx2/3 are appreciated.
-
-Great work! This really pushes the i.MX architecture one step closer to
-a clean code base.
-
-I gave it a test on i.MX1, i.MX27, i.MX31 and i.MX35. All run fine, but
-the last patch breaks the imx_v4_v5_defconfig: Somehow it now defaults
-to ARMv7 based machines. I haven't looked into it, just reenabled
-ARMv4/ARMv5 and the boards again -> works. The config should be updated
-with the last patch.
-
-I'm fine with the changes to mx2-camera, but Javier should give his ok
-to it, he has worked on it quite a lot recently.
-
-One other issue related to imx-dma, see comment to that patch.
-
-Otherwise:
-
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
-
-Thanks
- Sascha
+> thanks,
+> 
+> Takashi
+> 
+> > ---
+> >  drivers/gpu/drm/i915/intel_hdmi.c |    5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
+> > index 5d02aad..229897f 100644
+> > --- a/drivers/gpu/drm/i915/intel_hdmi.c
+> > +++ b/drivers/gpu/drm/i915/intel_hdmi.c
+> > @@ -674,10 +674,7 @@ static void intel_disable_hdmi(struct intel_encoder *encoder)
+> >  	struct drm_i915_private *dev_priv = dev->dev_private;
+> >  	struct intel_hdmi *intel_hdmi = enc_to_intel_hdmi(&encoder->base);
+> >  	u32 temp;
+> > -	u32 enable_bits = SDVO_ENABLE;
+> > -
+> > -	if (intel_hdmi->has_audio)
+> > -		enable_bits |= SDVO_AUDIO_ENABLE;
+> > +	u32 enable_bits = SDVO_ENABLE | SDVO_AUDIO_ENABLE;
+> >  
+> >  	temp = I915_READ(intel_hdmi->sdvox_reg);
+> >  
+> > -- 
+> > 1.7.9.5
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
