@@ -1,26 +1,38 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] ASoC: ams-delta: Convert to use snd_soc_register_card()
-Date: Sun, 16 Sep 2012 13:44:23 -0700
-Message-ID: <20120916204422.GJ4521@atomide.com>
-References: <20120906073633.GC22330@opensource.wolfsonmicro.com>
- <1347823023-24922-1-git-send-email-jkrzyszt@tis.icnet.pl>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v3 02/15] dmaengine: omap: Add support for
+ pause/resume in cyclic dma mode
+Date: Mon, 17 Sep 2012 08:43:57 +0530
+Message-ID: <1347851637.1943.125.camel@vkoul-udesk3>
+References: <1347624358-25582-1-git-send-email-peter.ujfalusi@ti.com>
+ <1347624358-25582-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1347823023-24922-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D1022615D3
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 05:17:59 +0200 (CEST)
+In-Reply-To: <1347624358-25582-3-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120916 12:18]:
-> 
-> Tony,
-> Please give your ack on the arch/arm/mach-omap1 bits if acceptable. I
-> believe there should be no merge conflicts if this change goes through
-> sound/soc.
+On Fri, 2012-09-14 at 15:05 +0300, Peter Ujfalusi wrote:
+> -       /* FIXME: not supported by platform private API */
+> -       return -EINVAL;
+> +       /* Pause/Resume only allowed with cyclic mode */
+> +       if (!c->cyclic)
+> +               return -EINVAL; 
+This is not a dma restriction right?
 
-Yes looks good to me:
-
-Acked-by: Tony Lindgren <tony@atomide.com>
+-- 
+~Vinod
