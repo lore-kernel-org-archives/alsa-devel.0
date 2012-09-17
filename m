@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/34] ASoC: mx27vis: retrieve gpio numbers
- from platform_data
-Date: Mon, 17 Sep 2012 07:07:42 -0400
-Message-ID: <20120917110741.GD5401@opensource.wolfsonmicro.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 33/34] ARM: imx: remove header file
+	mach/irqs.h
+Date: Mon, 17 Sep 2012 11:32:52 +0000
+Message-ID: <201209171132.52380.arnd@arndb.de>
 References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <1347860103-4141-3-git-send-email-shawn.guo@linaro.org>
+ <1347860103-4141-34-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 94E482625C6
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:07:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1347860103-4141-3-git-send-email-shawn.guo@linaro.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D4C8264FF8
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:33:11 +0200 (CEST)
+In-Reply-To: <1347860103-4141-34-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Javier Martin <javier.martin@vista-silicon.com>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 17, 2012 at 01:34:31PM +0800, Shawn Guo wrote:
+On Monday 17 September 2012, Shawn Guo wrote:
+> @@ -269,6 +268,8 @@ static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
+>         return 0;
+>  }
+>  
+> +extern int mxc_set_irq_fiq(unsigned int irq, unsigned int type);
+> +
+>  static void imx_pcm_fiq_free(struct snd_pcm *pcm)
+>  {
+>         mxc_set_irq_fiq(ssi_irq, 0);
 
-I've applied this since Javier says it fixes a bug but I'm not terribly
-enthused about it.
+Hmm, this is quite hacky, I can see why you left it all the way
+to the end of the otherwise excellent series ;-)
 
->  arch/arm/mach-imx/mach-imx27_visstrim_m10.c |   42 ++++++++++++++++++++++++++-
->  include/linux/platform_data/asoc-mx27vis.h  |   11 +++++++
->  sound/soc/fsl/mx27vis-aic32x4.c             |   42 +++++++++++++--------------
+We already have some fiq specific stuff in the
+include/linux/platform_data/asoc-imx-ssi.h header file,
+so I think it's best to put this declaration there, too.
 
-Audio drivers put their platform data in include/sound.
+If we want to eventually clean up the fiq usage in this driver,
+I think we should extend the DT binding for the interrupt controller
+to describe the fiq correctly so it can all be done transparently.
 
->  3 files changed, 72 insertions(+), 23 deletions(-)
-
-This also seems like we're just going to be going for bloat, given that
-this is a general change we should be (finally) getting round to having
-a generic GPIO based CODEC driver.
+	Arnd
