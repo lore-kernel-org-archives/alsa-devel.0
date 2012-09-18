@@ -1,19 +1,17 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH 3/3] ALSA: usb-audio: Move configuration to
-	prepare.
-Date: Mon, 17 Sep 2012 13:11:39 -0700
-Message-ID: <1347912699-9969-4-git-send-email-dgreid@chromium.org>
-References: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 00/34] i.MX multi-platform support
+Date: Tue, 18 Sep 2012 09:52:13 +0200
+Message-ID: <20120918075213.GD24458@pengutronix.de>
+References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f73.google.com (mail-wg0-f73.google.com [74.125.82.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 679A22616D7
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 22:11:58 +0200 (CEST)
-Received: by wgbdt12 with SMTP id dt12so113620wgb.2
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2012 13:11:58 -0700 (PDT)
-In-Reply-To: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B2AEF261713
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 09:52:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,236 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, zonque@gmail.com
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>, linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org, rtc-linux@googlegroups.com, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>, Vinod Koul <vinod.koul@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>, Andrew Morton <akpm@l>
 List-Id: alsa-devel@alsa-project.org
 
-Move interface and endpoint configuration from hw_params to prepare
-callback.  During system suspend/resume when the USB device power isn't
-cycled the interface and endpoint configuration need to be set before
-audio playback can continue.  Resume involves another call to prepare
-but not to hw_params, moving it here allows a playing stream to continue
-after resume.
+Hi Shawn,
 
-Change-Id: I6a34251c1245352ff2b9f004d781afcb3bf7cda2
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/usb/card.h |   2 +
- sound/usb/pcm.c  | 133 +++++++++++++++++++++++++++++++------------------------
- 2 files changed, 76 insertions(+), 59 deletions(-)
+On Mon, Sep 17, 2012 at 01:34:29PM +0800, Shawn Guo wrote:
+> The series enables multi-platform support for imx.  Since the required
+> frameworks (clk, pwm) and spare_irq have already been adopted on imx,
+> the series is all about cleaning up mach/* headers.  Along with the
+> changes, arch/arm/plat-mxc gets merged into arch/arm/mach-imx.
+> 
+> It's based on a bunch of branches (works from others), Rob's initial
+> multi-platform series, Arnd's platform-data and smp_ops (Marc's) and
+> imx 3.7 material (Sascha and myself).
+> 
+> It's available on branch below.
+> 
+>   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform
+> 
+> It's been tested on imx5 and imx6, and only compile-tested on imx2 and
+> imx3, so testing on imx2/3 are appreciated.
+> 
+> Subsystem maintainers,
+> 
+> I plan to send the whole series via arm-soc tree at the end of 3.7
+> merge window when all dependant bits hit mainline.  Please have a
+> look at the patches you get copied and provide ACKs if the changes
+> are good.  Thanks.
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 23b6f23..6cc883c 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -107,6 +107,8 @@ struct snd_usb_substream {
- 	int interface;	/* current interface */
- 	int endpoint;	/* assigned endpoint */
- 	struct audioformat *cur_audiofmt;	/* current audioformat pointer (for hw_params callback) */
-+	snd_pcm_format_t pcm_format;	/* current audio format (for hw_params callback) */
-+	unsigned int channels;		/* current number of channels (for hw_params callback) */
- 	unsigned int cur_rate;		/* current rate (for hw_params callback) */
- 	unsigned int period_bytes;	/* current period bytes (for hw_params callback) */
- 	unsigned int altset_idx;     /* USB data format: index of alternate setting */
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 62ab4fd..d19ff07 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -82,8 +82,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
- /*
-  * find a matching audio format
-  */
--static struct audioformat *find_format(struct snd_usb_substream *subs, unsigned int format,
--				       unsigned int rate, unsigned int channels)
-+static struct audioformat *find_format(struct snd_usb_substream *subs)
- {
- 	struct list_head *p;
- 	struct audioformat *found = NULL;
-@@ -92,16 +91,17 @@ static struct audioformat *find_format(struct snd_usb_substream *subs, unsigned
- 	list_for_each(p, &subs->fmt_list) {
- 		struct audioformat *fp;
- 		fp = list_entry(p, struct audioformat, list);
--		if (!(fp->formats & (1uLL << format)))
-+		if (!(fp->formats & (1uLL << subs->pcm_format)))
- 			continue;
--		if (fp->channels != channels)
-+		if (fp->channels != subs->channels)
- 			continue;
--		if (rate < fp->rate_min || rate > fp->rate_max)
-+		if (subs->cur_rate < fp->rate_min ||
-+		    subs->cur_rate > fp->rate_max)
- 			continue;
- 		if (! (fp->rates & SNDRV_PCM_RATE_CONTINUOUS)) {
- 			unsigned int i;
- 			for (i = 0; i < fp->nr_rates; i++)
--				if (fp->rate_table[i] == rate)
-+				if (fp->rate_table[i] == subs->cur_rate)
- 					break;
- 			if (i >= fp->nr_rates)
- 				continue;
-@@ -436,6 +436,42 @@ add_sync_ep:
- }
- 
- /*
-+ * configure endpoint params
-+ *
-+ * called  during initial setup and upon resume
-+ */
-+static int configure_endpoint(struct snd_usb_substream *subs)
-+{
-+	int ret;
-+
-+	mutex_lock(&subs->stream->chip->shutdown_mutex);
-+	/* format changed */
-+	stop_endpoints(subs, 0, 0, 0);
-+	ret = snd_usb_endpoint_set_params(subs->data_endpoint,
-+					  subs->pcm_format,
-+					  subs->channels,
-+					  subs->period_bytes,
-+					  subs->cur_rate,
-+					  subs->cur_audiofmt,
-+					  subs->sync_endpoint);
-+	if (ret < 0)
-+		goto unlock;
-+
-+	if (subs->sync_endpoint)
-+		ret = snd_usb_endpoint_set_params(subs->data_endpoint,
-+						  subs->pcm_format,
-+						  subs->channels,
-+						  subs->period_bytes,
-+						  subs->cur_rate,
-+						  subs->cur_audiofmt,
-+						  NULL);
-+
-+unlock:
-+	mutex_unlock(&subs->stream->chip->shutdown_mutex);
-+	return ret;
-+}
-+
-+/*
-  * hw_params callback
-  *
-  * allocate a buffer and set the given audio format.
-@@ -451,74 +487,32 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
- 	struct audioformat *fmt;
- 	unsigned int channels, rate, format;
--	int ret, changed;
-+	int ret;
- 
- 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
- 					       params_buffer_bytes(hw_params));
- 	if (ret < 0)
- 		return ret;
- 
--	format = params_format(hw_params);
--	rate = params_rate(hw_params);
--	channels = params_channels(hw_params);
--	fmt = find_format(subs, format, rate, channels);
-+	subs->pcm_format = params_format(hw_params);
-+	subs->period_bytes = params_period_bytes(hw_params);
-+	subs->channels = params_channels(hw_params);
-+	subs->cur_rate = params_rate(hw_params);
-+
-+	fmt = find_format(subs);
- 	if (!fmt) {
- 		snd_printd(KERN_DEBUG "cannot set format: format = %#x, rate = %d, channels = %d\n",
--			   format, rate, channels);
-+			   subs->pcm_format, rate, subs->channels);
- 		return -EINVAL;
- 	}
- 
--	changed = subs->cur_audiofmt != fmt ||
--		subs->period_bytes != params_period_bytes(hw_params) ||
--		subs->cur_rate != rate;
- 	if ((ret = set_format(subs, fmt)) < 0)
- 		return ret;
- 
--	if (subs->cur_rate != rate) {
--		struct usb_host_interface *alts;
--		struct usb_interface *iface;
--		iface = usb_ifnum_to_if(subs->dev, fmt->iface);
--		alts = &iface->altsetting[fmt->altset_idx];
--		ret = snd_usb_init_sample_rate(subs->stream->chip, fmt->iface, alts, fmt, rate);
--		if (ret < 0)
--			return ret;
--		subs->cur_rate = rate;
--	}
--
--	if (changed) {
--		subs->period_bytes = params_period_bytes(hw_params);
-+	subs->interface = fmt->iface;
-+	subs->altset_idx = fmt->altset_idx;
- 
--		mutex_lock(&subs->stream->chip->shutdown_mutex);
--		/* format changed */
--		stop_endpoints(subs, 0, 0, 0);
--		ret = snd_usb_endpoint_set_params(subs->data_endpoint,
--						  format,
--						  channels,
--						  subs->period_bytes,
--						  rate,
--						  fmt,
--						  subs->sync_endpoint);
--		if (ret < 0)
--			goto unlock;
--
--		if (subs->sync_endpoint)
--			ret = snd_usb_endpoint_set_params(subs->data_endpoint,
--							  format,
--							  channels,
--							  subs->period_bytes,
--							  rate,
--							  fmt,
--							  NULL);
--unlock:
--		mutex_unlock(&subs->stream->chip->shutdown_mutex);
--	}
--
--	if (ret == 0) {
--		subs->interface = fmt->iface;
--		subs->altset_idx = fmt->altset_idx;
--	}
--
--	return ret;
-+	return 0;
- }
- 
- /*
-@@ -549,6 +543,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_usb_substream *subs = runtime->private_data;
-+	struct usb_host_interface *alts;
-+	struct usb_interface *iface;
-+	int ret;
- 
- 	if (! subs->cur_audiofmt) {
- 		snd_printk(KERN_ERR "usbaudio: no format is specified!\n");
-@@ -558,6 +555,24 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- 	if (snd_BUG_ON(!subs->data_endpoint))
- 		return -EIO;
- 
-+	ret = set_format(subs, subs->cur_audiofmt);
-+	if (ret < 0)
-+		return ret;
-+
-+	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
-+	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
-+	ret = snd_usb_init_sample_rate(subs->stream->chip,
-+				       subs->cur_audiofmt->iface,
-+				       alts,
-+				       subs->cur_audiofmt,
-+				       subs->cur_rate);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = configure_endpoint(subs);
-+	if (ret < 0)
-+		return ret;
-+
- 	/* some unit conversions in runtime */
- 	subs->data_endpoint->maxframesize =
- 		bytes_to_frames(runtime, subs->data_endpoint->maxpacksize);
+I just had a look at the remaining initcalls in arch-imx. Most of them
+are protected with a cpu_is_*, but this one should be fixed before i.MX
+is enabled for multi platform:
+
+arch/arm/mach-imx/devices/devices.c:48:core_initcall(mxc_device_init);
+
+I think this won't harm others directly, but it will register i.MX
+related devices on foreign platforms.
+
+Sascha
+
 -- 
-1.7.12.146.g16d26b1
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
