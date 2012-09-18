@@ -1,15 +1,17 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 1/2] ASoC: fsl_ssi: Let it understand mono
-Date: Tue, 18 Sep 2012 13:03:53 -0300
-Message-ID: <1347984234-9275-1-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 2/2] ASoC: cs4270: Remove mono support
+Date: Tue, 18 Sep 2012 13:03:54 -0300
+Message-ID: <1347984234-9275-2-git-send-email-fabio.estevam@freescale.com>
+References: <1347984234-9275-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe003.messaging.microsoft.com [216.32.180.186])
- by alsa0.perex.cz (Postfix) with ESMTP id C5BD82650CC
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 18:04:16 +0200 (CEST)
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe001.messaging.microsoft.com [213.199.154.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EA782650D0
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 18:04:28 +0200 (CEST)
+In-Reply-To: <1347984234-9275-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +25,34 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@freescale.com, javier.martin@vista-silicon.com
 List-Id: alsa-devel@alsa-project.org
 
-Currently there are two variants for the FSL SSI driver:
-
-- fsl_ssi.c is the device tree driver version for the FSL SSI driver
-(used by PowerPC and i.MX)
-
-- imx-ssi.c is the non device tree version that runs on some i.MX processors that
-are not yet converted to dt.
-
-Commit 0865a7 (ASoC: imx-ssi: Remove mono support) attempted to fix mono audio 
-playback issue inside imx-ssi.c, which according to 104c22 
-(ASoC: Revert 'ASoC: imx-ssi: Remove mono support' ) caused problem on another 
-i.MX platform.
-
-The original mono playback issue was later fixed inside the mc13783 codec driver.
-
-As the long term goal is to move other platforms to dt, then fsl_ssi needs to 
-have the same fix for channels_min as in imx-ssi.
+According to cs4270 datasheet, there is no reference to mono mode.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
-Timur,
+ sound/soc/codecs/cs4270.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Can you please try to play a mono track on your PowerPC platform with these 
-series applied?
-
- sound/soc/fsl/fsl_ssi.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 4ed2afd..7768b93 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -559,14 +559,13 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- /* Template for the CPU dai driver structure */
- static struct snd_soc_dai_driver fsl_ssi_dai_template = {
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 815b53b..8e47798 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -459,7 +459,7 @@ static struct snd_soc_dai_driver cs4270_dai = {
+ 	.name = "cs4270-hifi",
  	.playback = {
--		/* The SSI does not support monaural audio. */
--		.channels_min = 2,
-+		.channels_min = 1,
+ 		.stream_name = "Playback",
+-		.channels_min = 1,
++		.channels_min = 2,
  		.channels_max = 2,
- 		.rates = FSLSSI_I2S_RATES,
- 		.formats = FSLSSI_I2S_FORMATS,
+ 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.rate_min = 4000,
+@@ -468,7 +468,7 @@ static struct snd_soc_dai_driver cs4270_dai = {
  	},
  	.capture = {
--		.channels_min = 2,
-+		.channels_min = 1,
+ 		.stream_name = "Capture",
+-		.channels_min = 1,
++		.channels_min = 2,
  		.channels_max = 2,
- 		.rates = FSLSSI_I2S_RATES,
- 		.formats = FSLSSI_I2S_FORMATS,
+ 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.rate_min = 4000,
 -- 
 1.7.9.5
