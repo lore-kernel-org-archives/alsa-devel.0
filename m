@@ -1,22 +1,22 @@
 From: Dylan Reid <dgreid@chromium.org>
 Subject: Re: [PATCH 3/3] ALSA: usb-audio: Move configuration to
 	prepare.
-Date: Tue, 18 Sep 2012 09:41:17 -0700
-Message-ID: <CAEUnVG7f6b6tMeGBj19=w1=8AOOKYi85tWqrfVvmogy1FBMifg@mail.gmail.com>
+Date: Tue, 18 Sep 2012 09:42:11 -0700
+Message-ID: <CAEUnVG6BGWFm_FEmEgn=GJt1eT3R+xP7WRMSZnkNZXzAitpPJw@mail.gmail.com>
 References: <1347912699-9969-1-git-send-email-dgreid@chromium.org>
  <1347912699-9969-4-git-send-email-dgreid@chromium.org>
- <s5hboh3o5uf.wl%tiwai@suse.de>
+ <s5hsjaf4u90.wl%tiwai@suse.de> <s5h8vc7o5ao.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C0392650D7
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 18:41:38 +0200 (CEST)
-Received: by weyx10 with SMTP id x10so24089wey.38
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 09:41:38 -0700 (PDT)
-In-Reply-To: <s5hboh3o5uf.wl%tiwai@suse.de>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7578B2650DD
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 18:42:32 +0200 (CEST)
+Received: by wibhm6 with SMTP id hm6so3499111wib.2
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 09:42:32 -0700 (PDT)
+In-Reply-To: <s5h8vc7o5ao.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,30 +30,115 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 18, 2012 at 5:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 17 Sep 2012 13:11:39 -0700,
-> Dylan Reid wrote:
+On Tue, Sep 18, 2012 at 5:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 18 Sep 2012 10:20:43 +0200,
+> Takashi Iwai wrote:
 >>
->> @@ -451,74 +487,32 @@ static int snd_usb_hw_params(struct snd_pcm_substr=
-eam *substream,
->>       struct snd_usb_substream *subs =3D substream->runtime->private_dat=
-a;
->>       struct audioformat *fmt;
->>       unsigned int channels, rate, format;
+>> At Mon, 17 Sep 2012 13:11:39 -0700,
+>> Dylan Reid wrote:
+>> >
+>> > Move interface and endpoint configuration from hw_params to prepare
+>> > callback.  During system suspend/resume when the USB device power isn't
+>> > cycled the interface and endpoint configuration need to be set before
+>> > audio playback can continue.  Resume involves another call to prepare
+>> > but not to hw_params, moving it here allows a playing stream to continue
+>> > after resume.
+>> >
+>> > Change-Id: I6a34251c1245352ff2b9f004d781afcb3bf7cda2
+>> > Signed-off-by: Dylan Reid <dgreid@chromium.org>
+>>
+>> I don't think we need to set up EP unconditionally in the prepare.
+>> For normal operations, setting up in hw_params makes more sense, as
+>> it's necessary done only once.
+>>
+>> So, maybe better to add some flag indicating that the re-setup is
+>> needed in prepare, and set it in the suspend callback.
 >
-> Need to delete this line, as these variables won't be used any longer.
->
-> sound/usb/pcm.c: In function =91snd_usb_hw_params=92:
-> sound/usb/pcm.c:494:31: warning: unused variable =91format=92 [-Wunused-v=
-ariable]
-> sound/usb/pcm.c:494:15: warning: unused variable =91channels=92 [-Wunused=
--variable]
-> sound/usb/pcm.c:509:15: warning: =91rate=92 may be used uninitialized in =
-this function [-Wuninitialized]
+> I meant the patch like below.
 
-Sorry about that, thanks for catching it, I'll send an updated series.
+I tested this on two systems, works great, thanks for the quick review
+and optimization!
 
->
+
 >
 >
 > Takashi
+>
+> ===
+>
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: usb-audio: Avoid unnecessary EP setups in prepare
+>
+> The recent fix for USB suspend breakage moved the code to set up EP
+> from hw_params to prepare, but it means also the EP setup might be
+> called multiple times unnecessarily because the prepare callback can
+> be called multiple times without starting the stream (e.g. OSS
+> emulation).
+>
+> This patch adds a new flag to struct snd_usb_substream indicating
+> whether the setup of EP is required, and do it only when necessary,
+> i.e. right after open or suspend.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/card.c |  2 ++
+>  sound/usb/card.h |  1 +
+>  sound/usb/pcm.c  | 10 +++++++---
+>  3 files changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index 4a469f0..561bb74 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -646,6 +646,8 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+>                         list_for_each(p, &chip->pcm_list) {
+>                                 as = list_entry(p, struct snd_usb_stream, list);
+>                                 snd_pcm_suspend_all(as->pcm);
+> +                               as->substream[0].need_setup_ep =
+> +                                       as->substream[1].need_setup_ep = true;
+>                         }
+>                 }
+>         } else {
+> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> index 6cc883c..afa4f9e 100644
+> --- a/sound/usb/card.h
+> +++ b/sound/usb/card.h
+> @@ -125,6 +125,7 @@ struct snd_usb_substream {
+>         struct snd_usb_endpoint *data_endpoint;
+>         struct snd_usb_endpoint *sync_endpoint;
+>         unsigned long flags;
+> +       bool need_setup_ep;             /* (re)configure EP at prepare? */
+>
+>         u64 formats;                    /* format bitmasks (all or'ed) */
+>         unsigned int num_formats;               /* number of supported audio formats (list) */
+> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> index d19ff07..ceb3342 100644
+> --- a/sound/usb/pcm.c
+> +++ b/sound/usb/pcm.c
+> @@ -569,9 +569,12 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>         if (ret < 0)
+>                 return ret;
+>
+> -       ret = configure_endpoint(subs);
+> -       if (ret < 0)
+> -               return ret;
+> +       if (subs->need_setup_ep) {
+> +               ret = configure_endpoint(subs);
+> +               if (ret < 0)
+> +                       return ret;
+> +               subs->need_setup_ep = false;
+> +       }
+>
+>         /* some unit conversions in runtime */
+>         subs->data_endpoint->maxframesize =
+> @@ -983,6 +986,7 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
+>         runtime->hw = snd_usb_hardware;
+>         runtime->private_data = subs;
+>         subs->pcm_substream = substream;
+> +       subs->need_setup_ep = true;
+>         /* runtime PM is also done there */
+>         return setup_hw_info(runtime, subs);
+>  }
+> --
+> 1.7.11.5
+>
