@@ -1,20 +1,16 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v2 04/15] dmaengine: Pass no_wakeup
-	parameter via	device_prep_dma_cyclic() callback
-Date: Tue, 18 Sep 2012 09:31:46 +0100
-Message-ID: <20120918083146.GE12445@n2100.arm.linux.org.uk>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
- <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
- <CACRpkdYAxFzPAZgMsdj9C3YVLzMc_w41Xs0SiqX-1DWaZqxAdw@mail.gmail.com>
+From: Richard Zhao <richard.zhao@freescale.com>
+Subject: [PATCH] ASoC: imx-audmux: remove null check of
+	audmux_base in audmux_read_file
+Date: Tue, 18 Sep 2012 16:38:30 +0800
+Message-ID: <1347957510-20590-1-git-send-email-richard.zhao@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 8F53E261716
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 10:32:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYAxFzPAZgMsdj9C3YVLzMc_w41Xs0SiqX-1DWaZqxAdw@mail.gmail.com>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe002.messaging.microsoft.com [216.32.180.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CFCB261793
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 10:37:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vinod Koul <vinod.koul@intel.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, Laxman Dewangan <ldewangan@nvidia.com>, Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>, linux-arm-kernel@lists.infradead.org, Barry Song <baohua.song@csr.com>, Dan Williams <djbw@fb.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Vista Silicon <javier.martin@vista-silicon.com>
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, shawn.guo@linaro.org, Richard Zhao <richard.zhao@freescale.com>, lrg@ti.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 17, 2012 at 11:01:23AM +0200, Linus Walleij wrote:
-> On Thu, Sep 13, 2012 at 3:37 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
-> 
-> > Change the parameter list of device_prep_dma_cyclic() so the DMA drivers
-> > can receive the no_wakeup request coming from client drivers.
-> > This feature can be used during audio operation to disable all audio
-> > related interrupts.
-> >
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> > CC: Nicolas Ferre <nicolas.ferre@atmel.com>
-> > CC: Barry Song <baohua.song@csr.com>
-> > CC: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
-> > CC: Russell King - ARM Linux <linux@arm.linux.org.uk>
-> > CC: Vista Silicon <javier.martin@vista-silicon.com>
-> > CC: Zhangfei Gao <zhangfei.gao@marvell.com>
-> > CC: Shawn Guo <shawn.guo@linaro.org>
-> > CC: Laxman Dewangan <ldewangan@nvidia.com>
-> 
-> After some discussion with clever people I know I have come to the conclusion
-> that this is a good idea, so:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+When audmux_read_file is called, it means the driver is already
+initialised successfully, so we don't need to check audmux_base.
 
-NAKed-by: me
+It also fix smatch warning:
+sound/soc/fsl/imx-audmux.c:78 audmux_read_file() warn: possible memory leak of 'buf'
 
-If you look at the other sub-threads of the patch you're acking, you'll
-notice that there's a v3 of this patch set which changes the way this is
-done.
+Signed-off-by: Richard Zhao <richard.zhao@freescale.com>
+---
+ sound/soc/fsl/imx-audmux.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index e7c800e..524ce62 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -74,9 +74,6 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	if (!audmux_base)
+-		return -ENOSYS;
+-
+ 	if (audmux_clk)
+ 		clk_prepare_enable(audmux_clk);
+ 
+-- 
+1.7.9.5
