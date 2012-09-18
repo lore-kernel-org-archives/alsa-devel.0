@@ -1,41 +1,39 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 33/34] ARM: imx: remove header file
-	mach/irqs.h
-Date: Tue, 18 Sep 2012 16:13:02 +0800
-Message-ID: <20120918081300.GC6377@S2101-09.ap.freescale.net>
+Subject: Re: [PATCH 00/34] i.MX multi-platform support
+Date: Tue, 18 Sep 2012 16:20:58 +0800
+Message-ID: <20120918082055.GD6377@S2101-09.ap.freescale.net>
 References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <1347860103-4141-34-git-send-email-shawn.guo@linaro.org>
- <201209171132.52380.arnd@arndb.de>
+ <20120917075138.GN6180@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 184C9261716
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 10:12:48 +0200 (CEST)
-Received: by pbbro8 with SMTP id ro8so12587164pbb.38
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 01:12:48 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mmc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <201209171132.52380.arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20120917075138.GN6180@pengutronix.de>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-arm-kernel@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>, Rob Herring <rob.herring@calxeda.com>, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, linux-fbdev@vger.kernel.org, Chris Ball <cjb@laptop.org>, linux-mmc@vger.kernel.org, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-media@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, rtc-linux@googlegroups.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>, linux-i2c@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Vinod Koul <vinod.koul@linux.intel.com>, Javier Martin <javier.mart>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 17, 2012 at 11:32:52AM +0000, Arnd Bergmann wrote:
-> We already have some fiq specific stuff in the
-> include/linux/platform_data/asoc-imx-ssi.h header file,
-> so I think it's best to put this declaration there, too.
+On Mon, Sep 17, 2012 at 09:51:38AM +0200, Sascha Hauer wrote:
+> I gave it a test on i.MX1, i.MX27, i.MX31 and i.MX35. All run fine, but
+> the last patch breaks the imx_v4_v5_defconfig: Somehow it now defaults
+> to ARMv7 based machines. I haven't looked into it, just reenabled
+> ARMv4/ARMv5 and the boards again -> works. The config should be updated
+> with the last patch.
 > 
-That's indeed a better place.  Thanks for the idea, Arnd.
+Yes, I will rework the patch with all these and Arnd's comment on the
+last patch taken into account.
+
+> I'm fine with the changes to mx2-camera, but Javier should give his ok
+> to it, he has worked on it quite a lot recently.
+> 
+> One other issue related to imx-dma, see comment to that patch.
+> 
+> Otherwise:
+> 
+> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+> 
+Thanks a lot.
 
 Shawn
