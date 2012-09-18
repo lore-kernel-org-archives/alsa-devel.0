@@ -1,18 +1,17 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH v2 1/4] ALSA: usb-audio: set period_bytes in
-	substream.
-Date: Tue, 18 Sep 2012 09:49:46 -0700
-Message-ID: <1347986988-11382-2-git-send-email-dgreid@chromium.org>
+Subject: [PATCH v2 3/4] ALSA: usb-audio: Move configuration to
+	prepare.
+Date: Tue, 18 Sep 2012 09:49:48 -0700
+Message-ID: <1347986988-11382-4-git-send-email-dgreid@chromium.org>
 References: <1347986988-11382-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f201.google.com (mail-wi0-f201.google.com
- [209.85.212.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 5471D2650E2
+Received: from mail-wg0-f73.google.com (mail-wg0-f73.google.com [74.125.82.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82D8F2650E3
  for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 18:49:53 +0200 (CEST)
-Received: by wibhm2 with SMTP id hm2so2553wib.2
+Received: by wgbdt12 with SMTP id dt12so2495wgb.2
  for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 09:49:53 -0700 (PDT)
 In-Reply-To: <1347986988-11382-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,27 +27,233 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Set the peiod_bytes member of snd_usb_substream.  It was no longer being
-set, but will be needed to resume properly in a future commit.
+Move interface and endpoint configuration from hw_params to prepare
+callback.  During system suspend/resume when the USB device power isn't
+cycled the interface and endpoint configuration need to be set before
+audio playback can continue.  Resume involves another call to prepare
+but not to hw_params, moving it here allows a playing stream to continue
+after resume.
 
-Change-Id: I4cf4681f16f8a71d26c586520afed9e8c27433b2
+Change-Id: I6a34251c1245352ff2b9f004d781afcb3bf7cda2
 Signed-off-by: Dylan Reid <dgreid@chromium.org>
 ---
- sound/usb/pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/card.h |   2 +
+ sound/usb/pcm.c  | 134 ++++++++++++++++++++++++++++++-------------------------
+ 2 files changed, 76 insertions(+), 60 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 23b6f23..6cc883c 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -107,6 +107,8 @@ struct snd_usb_substream {
+ 	int interface;	/* current interface */
+ 	int endpoint;	/* assigned endpoint */
+ 	struct audioformat *cur_audiofmt;	/* current audioformat pointer (for hw_params callback) */
++	snd_pcm_format_t pcm_format;	/* current audio format (for hw_params callback) */
++	unsigned int channels;		/* current number of channels (for hw_params callback) */
+ 	unsigned int cur_rate;		/* current rate (for hw_params callback) */
+ 	unsigned int period_bytes;	/* current period bytes (for hw_params callback) */
+ 	unsigned int altset_idx;     /* USB data format: index of alternate setting */
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index f782ce1..786f7a0 100644
+index 62ab4fd..ae783d4 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -486,6 +486,8 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+@@ -82,8 +82,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
+ /*
+  * find a matching audio format
+  */
+-static struct audioformat *find_format(struct snd_usb_substream *subs, unsigned int format,
+-				       unsigned int rate, unsigned int channels)
++static struct audioformat *find_format(struct snd_usb_substream *subs)
+ {
+ 	struct list_head *p;
+ 	struct audioformat *found = NULL;
+@@ -92,16 +91,17 @@ static struct audioformat *find_format(struct snd_usb_substream *subs, unsigned
+ 	list_for_each(p, &subs->fmt_list) {
+ 		struct audioformat *fp;
+ 		fp = list_entry(p, struct audioformat, list);
+-		if (!(fp->formats & (1uLL << format)))
++		if (!(fp->formats & (1uLL << subs->pcm_format)))
+ 			continue;
+-		if (fp->channels != channels)
++		if (fp->channels != subs->channels)
+ 			continue;
+-		if (rate < fp->rate_min || rate > fp->rate_max)
++		if (subs->cur_rate < fp->rate_min ||
++		    subs->cur_rate > fp->rate_max)
+ 			continue;
+ 		if (! (fp->rates & SNDRV_PCM_RATE_CONTINUOUS)) {
+ 			unsigned int i;
+ 			for (i = 0; i < fp->nr_rates; i++)
+-				if (fp->rate_table[i] == rate)
++				if (fp->rate_table[i] == subs->cur_rate)
+ 					break;
+ 			if (i >= fp->nr_rates)
+ 				continue;
+@@ -436,6 +436,42 @@ add_sync_ep:
+ }
+ 
+ /*
++ * configure endpoint params
++ *
++ * called  during initial setup and upon resume
++ */
++static int configure_endpoint(struct snd_usb_substream *subs)
++{
++	int ret;
++
++	mutex_lock(&subs->stream->chip->shutdown_mutex);
++	/* format changed */
++	stop_endpoints(subs, 0, 0, 0);
++	ret = snd_usb_endpoint_set_params(subs->data_endpoint,
++					  subs->pcm_format,
++					  subs->channels,
++					  subs->period_bytes,
++					  subs->cur_rate,
++					  subs->cur_audiofmt,
++					  subs->sync_endpoint);
++	if (ret < 0)
++		goto unlock;
++
++	if (subs->sync_endpoint)
++		ret = snd_usb_endpoint_set_params(subs->data_endpoint,
++						  subs->pcm_format,
++						  subs->channels,
++						  subs->period_bytes,
++						  subs->cur_rate,
++						  subs->cur_audiofmt,
++						  NULL);
++
++unlock:
++	mutex_unlock(&subs->stream->chip->shutdown_mutex);
++	return ret;
++}
++
++/*
+  * hw_params callback
+  *
+  * allocate a buffer and set the given audio format.
+@@ -450,75 +486,32 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 	struct audioformat *fmt;
+-	unsigned int channels, rate, format;
+-	int ret, changed;
++	int ret;
+ 
+ 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 					       params_buffer_bytes(hw_params));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	format = params_format(hw_params);
+-	rate = params_rate(hw_params);
+-	channels = params_channels(hw_params);
+-	fmt = find_format(subs, format, rate, channels);
++	subs->pcm_format = params_format(hw_params);
++	subs->period_bytes = params_period_bytes(hw_params);
++	subs->channels = params_channels(hw_params);
++	subs->cur_rate = params_rate(hw_params);
++
++	fmt = find_format(subs);
+ 	if (!fmt) {
+ 		snd_printd(KERN_DEBUG "cannot set format: format = %#x, rate = %d, channels = %d\n",
+-			   format, rate, channels);
++			   subs->pcm_format, subs->cur_rate, subs->channels);
+ 		return -EINVAL;
  	}
  
- 	if (changed) {
-+		subs->period_bytes = params_period_bytes(hw_params);
+-	changed = subs->cur_audiofmt != fmt ||
+-		subs->period_bytes != params_period_bytes(hw_params) ||
+-		subs->cur_rate != rate;
+ 	if ((ret = set_format(subs, fmt)) < 0)
+ 		return ret;
+ 
+-	if (subs->cur_rate != rate) {
+-		struct usb_host_interface *alts;
+-		struct usb_interface *iface;
+-		iface = usb_ifnum_to_if(subs->dev, fmt->iface);
+-		alts = &iface->altsetting[fmt->altset_idx];
+-		ret = snd_usb_init_sample_rate(subs->stream->chip, fmt->iface, alts, fmt, rate);
+-		if (ret < 0)
+-			return ret;
+-		subs->cur_rate = rate;
+-	}
+-
+-	if (changed) {
+-		subs->period_bytes = params_period_bytes(hw_params);
++	subs->interface = fmt->iface;
++	subs->altset_idx = fmt->altset_idx;
+ 
+-		mutex_lock(&subs->stream->chip->shutdown_mutex);
+-		/* format changed */
+-		stop_endpoints(subs, 0, 0, 0);
+-		ret = snd_usb_endpoint_set_params(subs->data_endpoint,
+-						  format,
+-						  channels,
+-						  subs->period_bytes,
+-						  rate,
+-						  fmt,
+-						  subs->sync_endpoint);
+-		if (ret < 0)
+-			goto unlock;
+-
+-		if (subs->sync_endpoint)
+-			ret = snd_usb_endpoint_set_params(subs->data_endpoint,
+-							  format,
+-							  channels,
+-							  subs->period_bytes,
+-							  rate,
+-							  fmt,
+-							  NULL);
+-unlock:
+-		mutex_unlock(&subs->stream->chip->shutdown_mutex);
+-	}
+-
+-	if (ret == 0) {
+-		subs->interface = fmt->iface;
+-		subs->altset_idx = fmt->altset_idx;
+-	}
+-
+-	return ret;
++	return 0;
+ }
+ 
+ /*
+@@ -549,6 +542,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_usb_substream *subs = runtime->private_data;
++	struct usb_host_interface *alts;
++	struct usb_interface *iface;
++	int ret;
+ 
+ 	if (! subs->cur_audiofmt) {
+ 		snd_printk(KERN_ERR "usbaudio: no format is specified!\n");
+@@ -558,6 +554,24 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (snd_BUG_ON(!subs->data_endpoint))
+ 		return -EIO;
+ 
++	ret = set_format(subs, subs->cur_audiofmt);
++	if (ret < 0)
++		return ret;
 +
- 		mutex_lock(&subs->stream->chip->shutdown_mutex);
- 		/* format changed */
- 		stop_endpoints(subs, 0, 0, 0);
++	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
++	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
++	ret = snd_usb_init_sample_rate(subs->stream->chip,
++				       subs->cur_audiofmt->iface,
++				       alts,
++				       subs->cur_audiofmt,
++				       subs->cur_rate);
++	if (ret < 0)
++		return ret;
++
++	ret = configure_endpoint(subs);
++	if (ret < 0)
++		return ret;
++
+ 	/* some unit conversions in runtime */
+ 	subs->data_endpoint->maxframesize =
+ 		bytes_to_frames(runtime, subs->data_endpoint->maxpacksize);
 -- 
 1.7.12.146.g16d26b1
