@@ -1,24 +1,16 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 04/15] dmaengine: Pass no_wakeup
- parameter via device_prep_dma_cyclic() callback
-Date: Tue, 18 Sep 2012 14:22:59 +0200
-Message-ID: <CACRpkdbphfZ+Q9L1H3x_cs_nxjYYg4xuerOHJzzdkogsKu948Q@mail.gmail.com>
-References: <1347543485-339-1-git-send-email-peter.ujfalusi@ti.com>
- <1347543485-339-5-git-send-email-peter.ujfalusi@ti.com>
- <CACRpkdYAxFzPAZgMsdj9C3YVLzMc_w41Xs0SiqX-1DWaZqxAdw@mail.gmail.com>
- <20120918083146.GE12445@n2100.arm.linux.org.uk>
- <1347958810.1943.176.camel@vkoul-udesk3>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - limit internal mic boost for Asus
+	X202E
+Date: Tue, 18 Sep 2012 14:26:59 +0200
+Message-ID: <1347971219-4823-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BDA12625E6
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 14:23:00 +0200 (CEST)
-Received: by weyx10 with SMTP id x10so4231993wey.38
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 05:23:00 -0700 (PDT)
-In-Reply-To: <1347958810.1943.176.camel@vkoul-udesk3>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E09926509E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2012 14:27:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,29 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Ricardo Neri <ricardo.neri@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Zhangfei Gao <zhangfei.gao@marvell.com>, Laxman Dewangan <ldewangan@nvidia.com>, Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>, linux-arm-kernel@lists.infradead.org, Barry Song <baohua.song@csr.com>, Dan Williams <djbw@fb.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Vista Silicon <javier.martin@vista-silicon.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 1052460@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 18, 2012 at 11:00 AM, Vinod Koul <vinod.koul@linux.intel.com> wrote:
-> On Tue, 2012-09-18 at 09:31 +0100, Russell King - ARM Linux wrote:
->> On Mon, Sep 17, 2012 at 11:01:23AM +0200, Linus Walleij wrote:
->> > On Thu, Sep 13, 2012 at 3:37 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
->> >
->> > After some discussion with clever people I know I have come to the conclusion
->> > that this is a good idea, so:
->> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
->>
->> NAKed-by: me
->>
->> If you look at the other sub-threads of the patch you're acking, you'll
->> notice that there's a v3 of this patch set which changes the way this is
->> done.
->
-> Was it a genuine mistake, think v3 reply v2? Or less caffeine..... :)
+When the input gain for the internal mic is set to its maximum level,
+the background noise becomes so high - and any relevant signal clipped -
+that the setting becomes unusable. It is better to limit the amplification.
 
-I think both, stupid me.
-Ack on v3 indeed, I was probably fooled by some gmail autothreading, grrr.
+BugLink: https://bugs.launchpad.net/bugs/1052460
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
 
-Yours,
-Linus Walleij
+Feel free to add cc to stable if you think it makes sense to do so.
+Alsa info available at:
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1052460/+attachment/3322585/+files/alsa-info.txt.unplugged
+
+ sound/pci/hda/patch_via.c |   29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index d5f36a1..74fb6fd 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -3666,6 +3666,32 @@ static void set_widgets_power_state_vt2002P(struct hda_codec *codec)
+ 		update_power_state(codec, 0x21, AC_PWRST_D3);
+ }
+ 
++/*
++ * pin fix-up
++ */
++enum {
++	VIA_FIXUP_INTMIC_BOOST,
++};
++
++static void via_fixup_intmic_boost(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
++{
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		override_mic_boost(codec, 0x30, 0, 2, 40);
++}
++
++static const struct hda_fixup via_fixups[] = {
++	[VIA_FIXUP_INTMIC_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = via_fixup_intmic_boost,
++	},
++};
++
++static const struct snd_pci_quirk vt2002p_fixups[] = {
++	SND_PCI_QUIRK(0x1043, 0x8532, "Asus X202E", VIA_FIXUP_INTMIC_BOOST),
++	{}
++};
++
+ /* patch for vt2002P */
+ static int patch_vt2002P(struct hda_codec *codec)
+ {
+@@ -3682,6 +3708,9 @@ static int patch_vt2002P(struct hda_codec *codec)
+ 	override_mic_boost(codec, 0x29, 0, 3, 40);
+ 	add_secret_dac_path(codec);
+ 
++	snd_hda_pick_fixup(codec, NULL, vt2002p_fixups, via_fixups);
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
+ 	/* automatic parse from the BIOS config */
+ 	err = via_parse_auto_config(codec);
+ 	if (err < 0) {
+-- 
+1.7.9.5
