@@ -1,20 +1,18 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: Internal speaker output from Sony Vaio Z (2010
- model) lost somewhere between 3.1.0 and 3.2.6
-Date: Wed, 19 Sep 2012 13:47:09 -0700
-Message-ID: <1348087629.1618.0.camel@vaioz>
-References: <1331939409.22414.29.camel@adam> <s5hty1nh7i6.wl%tiwai@suse.de>
- <1343253173.6396.8.camel@adam> <s5htxwv6plt.wl%tiwai@suse.de>
- <1343366802.6396.48.camel@adam> <s5hpq7hr5xa.wl%tiwai@suse.de>
- <1343429741.6396.74.camel@adam> <s5h8ve3kmyu.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/7] ASoC: fsl: add PPC_MPC52xx
+	dependency to	SND_POWERPC_SOC
+Date: Wed, 19 Sep 2012 21:47:31 +0100
+Message-ID: <20120919204730.GB12297@opensource.wolfsonmicro.com>
+References: <1348066285-87741-1-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 9976526522C
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 22:47:12 +0200 (CEST)
-In-Reply-To: <s5h8ve3kmyu.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1B6926522C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 22:47:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1348066285-87741-1-git-send-email-emillbrandt@dekaresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2012-07-29 at 10:09 +0200, Takashi Iwai wrote:
-
-> > OK, a re-diffed version of that patch against 3.5 works. (For the
-> > record, it looks like it's against a newer version of the file than is
-> > included in 3.5, and also it seems to have spaces in place of tabs - not
-> > sure if that's a problem on your end or on mine). So that looks good to
-> > me, assuming none of the stuff on the Launchpad bug is a roadblock.
-> > Thanks! One small nit: it's just the 'Vaio Z', not 'Vaio TT Z'. 'Vaio
-> > TT' is a separate (rather older) system; there's no such thing as a 'TT
-> > Z', to my knowledge. You might want to say 'some Vaio Zs', or something
-> > like that, since there have been several generations of the Z, some of
-> > which this won't apply to...
+On Wed, Sep 19, 2012 at 10:51:25AM -0400,  wrote:
+> From: Eric Millbrandt <emillbrandt@dekaresearch.com>
 > 
-> OK, I fixed the comment and applied the patch now to sound git tree.
+> mpc52xx socs need to define SND_POWERPC_SOC to build ASoC drivers.
+> 
+> Signed-off-by: Eric Millbrandt <emillbrandt@dekaresearch.com>
+> ---
+> Changes since v1:
+> Patch was "powerpc/52xx: define FSL_SOC"
+> Changed from defining FSL_SOC for PPC_MPC52xx to adding PPC_MPC52xx as a
+> dependency of SND_POWERPC_SOC as per Anatolij Gustschin's comment.
 
-Any chance this'll make it to 3.5 upstream? It'd be nice to have it
-fixed for the distros using that kernel series. I'm on 3.5.4 now and it
-still doesn't seem to be in.
--- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
-http://www.happyassassin.net
+Patches 2 to 7 appear to have gone AWOL?
