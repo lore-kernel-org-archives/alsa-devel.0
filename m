@@ -1,34 +1,53 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [Resend PATCH] ASoC: wm8904: remove redundant code
-Date: Wed, 19 Sep 2012 13:52:49 +0800
-Message-ID: <1348033969-14909-1-git-send-email-voice.shen@atmel.com>
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 16/34] ASoC: imx-ssi: remove unneeded
+	mach/hardware.h inclusion
+Date: Wed, 19 Sep 2012 08:01:23 +0000
+Message-ID: <201209190801.23616.arnd@arndb.de>
+References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
+ <201209171430.35804.arnd@arndb.de>
+ <20120919032337.GU8832@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+ [212.227.126.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C170262624
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 10:01:27 +0200 (CEST)
+In-Reply-To: <20120919032337.GU8832@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The core_intercon register two times for wm8904
-Remove one
+On Wednesday 19 September 2012, Mark Brown wrote:
+> On Mon, Sep 17, 2012 at 02:30:35PM +0000, Arnd Bergmann wrote:
+> > On Monday 17 September 2012, Mark Brown wrote:
+> > > On Mon, Sep 17, 2012 at 01:34:45PM +0800, Shawn Guo wrote:
+> 
+> > > >  #include <linux/platform_data/asoc-imx-ssi.h>
+> > > > -#include <mach/hardware.h>
+> 
+> > > This doesn't apply - there's no platform data header for imx-ssi at the
+> > > minute (and I don't see a patch in this series related to that in the
+> > > series).  I checked -next and there doesn't seem to be anything via a
+> > > non-ASoC tree either.
+> 
+> > It's in my testing/platform-data series, and will be in linux-next in
+> > a few days.
+> 
+> Hrm, that seems odd - why are we adding platform data to the driver?
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
- sound/soc/codecs/wm8904.c |    2 --
- 1 file changed, 2 deletions(-)
+We're not adding it, we just rename the header file from mach/imx.h
+to linux/platform-data/asoc-imx-ssi.h, along with 94 other header files
+that get moved to the same directory.
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index dc4262e..7c8df52 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1185,8 +1185,6 @@ static int wm8904_add_widgets(struct snd_soc_codec *codec)
- 		snd_soc_dapm_new_controls(dapm, wm8904_dapm_widgets,
- 					  ARRAY_SIZE(wm8904_dapm_widgets));
- 
--		snd_soc_dapm_add_routes(dapm, core_intercon,
--					ARRAY_SIZE(core_intercon));
- 		snd_soc_dapm_add_routes(dapm, adc_intercon,
- 					ARRAY_SIZE(adc_intercon));
- 		snd_soc_dapm_add_routes(dapm, dac_intercon,
--- 
-1.7.9.5
-
+	Arnd
