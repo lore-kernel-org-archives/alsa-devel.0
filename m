@@ -1,140 +1,183 @@
 From: Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 04/29] ARM: OMAP1: Move board-ams-delta.h from plat to mach
-Date: Wed, 19 Sep 2012 14:05:43 -0700
-Message-ID: <20120919210543.28074.10214.stgit@muffinssi>
+Subject: [PATCH 08/29] ARM: OMAP2+: Make board-zoom.h local
+Date: Wed, 19 Sep 2012 14:05:54 -0700
+Message-ID: <20120919210554.28074.2280.stgit@muffinssi>
 References: <20120919205732.28074.43697.stgit@muffinssi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id C858C265232
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 23:05:57 +0200 (CEST)
 In-Reply-To: <20120919205732.28074.43697.stgit@muffinssi>
-Sender: linux-omap-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org
-Cc: linux-fbdev@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-mtd@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is only used by omap1.
+This can be local to mach-omap2 after we rip out the messed up
+extmute stuff from board-zoom-peripherals.c that's all over
+the place and probably does not even work because of all the
+hardcoded GPIO numbers.
 
-And to fix things properly, this should not be included
-from the drivers at all.
+I also suggest ASoC gusy remove all extmute handling from
+sound/soc/codecs/twl4030.c unless it's been tested to work
+and implemented in a saner way.
 
-Cc: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: linux-fbdev@vger.kernel.org
-Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Cc: Liam Girdwood <lrg@ti.com>
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- arch/arm/mach-omap1/ams-delta-fiq-handler.S        |    2 +-
- arch/arm/mach-omap1/ams-delta-fiq.c                |    2 +-
- arch/arm/mach-omap1/board-ams-delta.c              |    2 +-
- arch/arm/mach-omap1/include/mach/board-ams-delta.h |    0 
- drivers/input/serio/ams_delta_serio.c              |    2 +-
- drivers/mtd/nand/ams-delta.c                       |    2 +-
- drivers/video/omap/lcd_ams_delta.c                 |    2 +-
- sound/soc/omap/ams-delta.c                         |    2 +-
- 8 files changed, 7 insertions(+), 7 deletions(-)
- rename arch/arm/{plat-omap/include/plat/board-ams-delta.h => mach-omap1/include/mach/board-ams-delta.h} (100%)
+ arch/arm/mach-omap2/board-3630sdp.c           |    2 +-
+ arch/arm/mach-omap2/board-ldp.c               |    2 +-
+ arch/arm/mach-omap2/board-zoom-debugboard.c   |    2 +-
+ arch/arm/mach-omap2/board-zoom-display.c      |    2 +-
+ arch/arm/mach-omap2/board-zoom-peripherals.c  |   16 +---------------
+ arch/arm/mach-omap2/board-zoom.c              |    2 +-
+ arch/arm/mach-omap2/board-zoom.h              |    0 
+ sound/soc/omap/zoom2.c                        |    2 +-
+ 8 files changed, 7 insertions(+), 21 deletions(-)
+ rename arch/arm/mach-omap2/{include/mach/board-zoom.h => board-zoom.h} (100%)
 
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq-handler.S b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-index d2b6acc..3d1e1c2 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-+++ b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
+diff --git a/arch/arm/mach-omap2/board-3630sdp.c b/arch/arm/mach-omap2/board-3630sdp.c
+index 8518b13..c7d6ea2 100644
+--- a/arch/arm/mach-omap2/board-3630sdp.c
++++ b/arch/arm/mach-omap2/board-3630sdp.c
+@@ -20,7 +20,7 @@
+ #include <plat/gpmc-smc91x.h>
+ #include <plat/usb.h>
+ 
+-#include <mach/board-zoom.h>
++#include "board-zoom.h"
+ 
+ #include "board-flash.h"
+ #include "mux.h"
+diff --git a/arch/arm/mach-omap2/board-ldp.c b/arch/arm/mach-omap2/board-ldp.c
+index 3f3a552..d0372a6 100644
+--- a/arch/arm/mach-omap2/board-ldp.c
++++ b/arch/arm/mach-omap2/board-ldp.c
+@@ -36,7 +36,7 @@
+ #include <plat/mcspi.h>
+ #include "common.h"
+ #include <plat/gpmc.h>
+-#include <mach/board-zoom.h>
++#include "board-zoom.h"
+ #include <plat/usb.h>
+ #include <plat/gpmc-smsc911x.h>
+ 
+diff --git a/arch/arm/mach-omap2/board-zoom-debugboard.c b/arch/arm/mach-omap2/board-zoom-debugboard.c
+index 0d8d919..42c97c2 100644
+--- a/arch/arm/mach-omap2/board-zoom-debugboard.c
++++ b/arch/arm/mach-omap2/board-zoom-debugboard.c
+@@ -20,7 +20,7 @@
+ #include <plat/gpmc.h>
+ #include <plat/gpmc-smsc911x.h>
+ 
+-#include <mach/board-zoom.h>
++#include "board-zoom.h"
+ 
+ #include "soc.h"
+ #include "common.h"
+diff --git a/arch/arm/mach-omap2/board-zoom-display.c b/arch/arm/mach-omap2/board-zoom-display.c
+index ea79bc2..6a162fb 100644
+--- a/arch/arm/mach-omap2/board-zoom-display.c
++++ b/arch/arm/mach-omap2/board-zoom-display.c
 @@ -16,7 +16,7 @@
- #include <linux/linkage.h>
- #include <asm/assembler.h>
+ #include <linux/spi/spi.h>
+ #include <plat/mcspi.h>
+ #include <video/omapdss.h>
+-#include <mach/board-zoom.h>
++#include "board-zoom.h"
  
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
+ #include "common.h"
  
- #include <mach/irqs.h>
- #include <mach/ams-delta-fiq.h>
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq.c b/arch/arm/mach-omap1/ams-delta-fiq.c
-index 68e8e56..f12a12a 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq.c
-+++ b/arch/arm/mach-omap1/ams-delta-fiq.c
-@@ -19,7 +19,7 @@
- #include <linux/module.h>
- #include <linux/io.h>
+diff --git a/arch/arm/mach-omap2/board-zoom-peripherals.c b/arch/arm/mach-omap2/board-zoom-peripherals.c
+index 6bcc107..c8377b71 100644
+--- a/arch/arm/mach-omap2/board-zoom-peripherals.c
++++ b/arch/arm/mach-omap2/board-zoom-peripherals.c
+@@ -28,7 +28,7 @@
+ #include "common.h"
+ #include <plat/usb.h>
  
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
+-#include <mach/board-zoom.h>
++#include "board-zoom.h"
  
- #include <asm/fiq.h>
+ #include "mux.h"
+ #include "hsmmc.h"
+@@ -245,12 +245,6 @@ static int zoom_twl_gpio_setup(struct device *dev,
+ 	return ret;
+ }
  
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index 05af063..b9929cb 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -35,7 +35,7 @@
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
+-/* EXTMUTE callback function */
+-static void zoom2_set_hs_extmute(int mute)
+-{
+-	gpio_set_value(ZOOM2_HEADSET_EXTMUTE_GPIO, mute);
+-}
+-
+ static struct twl4030_gpio_platform_data zoom_gpio_data = {
+ 	.setup		= zoom_twl_gpio_setup,
+ };
+@@ -271,14 +265,6 @@ static int __init omap_i2c_init(void)
+ 			TWL_COMMON_PDATA_MADC | TWL_COMMON_PDATA_AUDIO,
+ 			TWL_COMMON_REGULATOR_VDAC | TWL_COMMON_REGULATOR_VPLL2);
  
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
- #include <plat/keypad.h>
- #include <mach/mux.h>
+-	if (machine_is_omap_zoom2()) {
+-		struct twl4030_codec_data *codec_data;
+-		codec_data = zoom_twldata.audio->codec;
+-
+-		codec_data->ramp_delay_value = 3;	/* 161 ms */
+-		codec_data->hs_extmute = 1;
+-		codec_data->set_hs_extmute = zoom2_set_hs_extmute;
+-	}
+ 	omap_pmic_init(1, 2400, "twl5030", 7 + OMAP_INTC_START, &zoom_twldata);
+ 	omap_register_i2c_bus(2, 400, NULL, 0);
+ 	omap_register_i2c_bus(3, 400, NULL, 0);
+diff --git a/arch/arm/mach-omap2/board-zoom.c b/arch/arm/mach-omap2/board-zoom.c
+index 4994438..cbfd9df 100644
+--- a/arch/arm/mach-omap2/board-zoom.c
++++ b/arch/arm/mach-omap2/board-zoom.c
+@@ -24,7 +24,7 @@
+ #include "common.h"
+ #include <plat/usb.h>
  
-diff --git a/arch/arm/plat-omap/include/plat/board-ams-delta.h b/arch/arm/mach-omap1/include/mach/board-ams-delta.h
+-#include <mach/board-zoom.h>
++#include "board-zoom.h"
+ 
+ #include "board-flash.h"
+ #include "mux.h"
+diff --git a/arch/arm/mach-omap2/include/mach/board-zoom.h b/arch/arm/mach-omap2/board-zoom.h
 similarity index 100%
-rename from arch/arm/plat-omap/include/plat/board-ams-delta.h
-rename to arch/arm/mach-omap1/include/mach/board-ams-delta.h
-diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
-index f5fbdf9..45887e3 100644
---- a/drivers/input/serio/ams_delta_serio.c
-+++ b/drivers/input/serio/ams_delta_serio.c
-@@ -27,7 +27,7 @@
- #include <linux/module.h>
- 
+rename from arch/arm/mach-omap2/include/mach/board-zoom.h
+rename to arch/arm/mach-omap2/board-zoom.h
+diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
+index 920e0d9..187cb0c 100644
+--- a/sound/soc/omap/zoom2.c
++++ b/sound/soc/omap/zoom2.c
+@@ -28,7 +28,6 @@
  #include <asm/mach-types.h>
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
- 
- #include <mach/ams-delta-fiq.h>
- 
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index c28eec0..9e7723a 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -29,7 +29,7 @@
- #include <asm/io.h>
- #include <asm/sizes.h>
- 
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
- 
  #include <mach/hardware.h>
- 
-diff --git a/drivers/video/omap/lcd_ams_delta.c b/drivers/video/omap/lcd_ams_delta.c
-index 5cca6b3..ed4cad8 100644
---- a/drivers/video/omap/lcd_ams_delta.c
-+++ b/drivers/video/omap/lcd_ams_delta.c
-@@ -27,7 +27,7 @@
- #include <linux/lcd.h>
- #include <linux/gpio.h>
- 
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
- 
- #include "omapfb.h"
- 
-diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
-index 7b18b74..98e25d5 100644
---- a/sound/soc/omap/ams-delta.c
-+++ b/sound/soc/omap/ams-delta.c
-@@ -32,7 +32,7 @@
- 
- #include <asm/mach-types.h>
- 
--#include <plat/board-ams-delta.h>
-+#include <mach/board-ams-delta.h>
+ #include <mach/gpio.h>
+-#include <mach/board-zoom.h>
  #include <plat/mcbsp.h>
  
- #include "omap-mcbsp.h"
-
+ /* Register descriptions for twl4030 codec part */
+@@ -39,6 +38,7 @@
+ #include "omap-pcm.h"
+ 
+ #define ZOOM2_HEADSET_MUX_GPIO		(OMAP_MAX_GPIO_LINES + 15)
++#define ZOOM2_HEADSET_EXTMUTE_GPIO     153
+ 
+ static int zoom2_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
