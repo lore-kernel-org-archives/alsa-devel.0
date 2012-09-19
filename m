@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: codecs: Add DA9055 codec driver
-Date: Tue, 18 Sep 2012 22:50:36 -0400
-Message-ID: <20120919025035.GI8832@opensource.wolfsonmicro.com>
-References: <1347622057.16763.27.camel@matrix>
+Subject: Re: [PATCH] ASoC: Avoid recalculating the bitmask for
+ SOC_ENUM controls
+Date: Tue, 18 Sep 2012 22:51:14 -0400
+Message-ID: <20120919025112.GJ8832@opensource.wolfsonmicro.com>
+References: <1347623847-25287-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0885E26514A
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 04:50:39 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 215B426514A
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 04:51:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1347622057.16763.27.camel@matrix>
+In-Reply-To: <1347623847-25287-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 14, 2012 at 04:57:37PM +0530, Ashish Chavan wrote:
+On Fri, Sep 14, 2012 at 01:57:27PM +0200, Lars-Peter Clausen wrote:
+> For ENUM controls the bitmask is calculated based on the number of items.
+> Currently this is done each time the control is accessed. And while the
+> performance impact of this should be negligible we can easily do better. The
+> roundup_pow_of_two macro performs the same calculation which is currently done
+> manually, but it is also possible to use this macro with compile time constants
+> and so it can be used to initialize static data. So we can use it to initialize
+> the mask field of a ENUM control during its declaration.
 
-This looks like a good improvement, a few issues remain though:
-
-> +	/* DAC Routing control */
-> +	SOC_ENUM("DAC Left Select", da9055_dac_l_select),
-> +	SOC_ENUM("DAC Right Select", da9055_dac_r_select),
-
-DAPM.  This even says its a routing control...
-
-> +	/* To select if MIC Bias powers MIC 1 or MIC 2 */
-> +	SOC_ENUM("Mic Bias Select", da9055_mic_bias_select),
-
-This would normally be something controlled by the board...  what
-exactly is this doing?  How does the MICBIAS relate to the microphone
-inputs?
-
-> +	case SND_SOC_BIAS_STANDBY:
-> +		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-> +			/* Enable VMID reference & master bias */
-> +			snd_soc_update_bits(codec, DA9055_REFERENCES,
-> +					    DA9055_VMID_EN | DA9055_BIAS_EN,
-> +					    DA9055_VMID_EN | DA9055_BIAS_EN);
-> +		}
-> +		regcache_sync(da9055->regmap);
-
-Doing the sync every time is very odd, why is it only done on
-transitions from _OFF?  Given that there's no regulator support here
-it's also a bit surprising that you need to do a sync outside of system
-suspend...
-
-> +	da9055->mclk_rate       = 0;    /* This will be set from set_sysclk() */
-> +	da9055->master          = 0;    /* This will be set from set_fmt() */
-
-You use kzalloc...
+Applied, thanks.
