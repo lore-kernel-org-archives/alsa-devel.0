@@ -1,21 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 00/14] MFD/ASoC/Input: twl4030-audio
-	submodule DT support
-Date: Wed, 19 Sep 2012 11:34:17 +0300
-Message-ID: <50598389.6020600@ti.com>
-References: <1347273992-9107-1-git-send-email-peter.ujfalusi@ti.com>
- <20120919002439.GB3647@sortiz-mobl>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - avoid non-standard "Docking" name
+	in mixers
+Date: Wed, 19 Sep 2012 12:19:47 +0200
+Message-ID: <1348049987-6150-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
- [74.125.149.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 9487A262639
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 10:33:28 +0200 (CEST)
-Received: by oagl20 with SMTP id l20so744337oag.38
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 01:33:26 -0700 (PDT)
-In-Reply-To: <20120919002439.GB3647@sortiz-mobl>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC582262626
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 12:19:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +20,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: Tero Kristo <t-kristo@ti.com>, alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Samuel,
+The standard name (and what PulseAudio picks up) is "Dock Mic",
+not "Docking Mic" or "Docking-Station".
 
-On 09/19/2012 03:24 AM, Samuel Ortiz wrote:
-> Hi Peter,
-> =
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_analog.c   |   14 +++++++-------
+ sound/pci/hda/patch_conexant.c |    4 ++--
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-> On Mon, Sep 10, 2012 at 01:46:18PM +0300, Peter Ujfalusi wrote:
->> Hello,
->>
->> Generated on top of:
->> git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/omap
-> I applied the first 8 patches, but I'd like to get Mark's ACK for the res=
-t of
-> the serie.
-> Unless you're expecting Mark to take the whole thing, in which case you c=
-an
-> add my:
-> =
-
-> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-> =
-
-> to the MFD patches.
-> Please let me know how you'd like to proceed.
-
-If Mark is still OK with it I think it would be better to queue this series
-via ASoC so we can keep them in one place (also I think patch 14 needs patc=
-h 6
-in order to not break x86/x86_64 allmodconfig).
-On the other hand if they go separately (1-8 via MFD, 9-14 via ASoC) they w=
-ill
-meet in linux-next where this matters the most.
-
-Thank you,
-P=E9ter
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 1a82cce..cdd43ea 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -1810,7 +1810,7 @@ static const struct hda_input_mux ad1981_hp_capture_source = {
+ 	.num_items = 3,
+ 	.items = {
+ 		{ "Mic", 0x0 },
+-		{ "Docking-Station", 0x1 },
++		{ "Dock Mic", 0x1 },
+ 		{ "Mix", 0x2 },
+ 	},
+ };
+@@ -1834,8 +1834,8 @@ static const struct snd_kcontrol_new ad1981_hp_mixers[] = {
+ 	 */
+ 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x12, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE("Mic Playback Switch", 0x12, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_VOLUME("Docking-Station Playback Volume", 0x13, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE("Docking-Station Playback Switch", 0x13, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("Dock Mic Playback Volume", 0x13, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Dock Mic Playback Switch", 0x13, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME("Internal Mic Playback Volume", 0x1c, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE("Internal Mic Playback Switch", 0x1c, 0x0, HDA_OUTPUT),
+ 	/* FIXME: does this laptop have analog CD connection? */
+@@ -3565,7 +3565,7 @@ static const struct hda_amp_list ad1884_loopbacks[] = {
+ 
+ static const char * const ad1884_slave_vols[] = {
+ 	"PCM", "Mic", "Mono", "Front Mic", "Mic", "CD",
+-	"Internal Mic", "Docking Mic", /* "Beep", */ "IEC958",
++	"Internal Mic", "Dock Mic", /* "Beep", */ "IEC958",
+ 	NULL
+ };
+ 
+@@ -3626,7 +3626,7 @@ static const struct hda_input_mux ad1984_thinkpad_capture_source = {
+ 		{ "Mic", 0x0 },
+ 		{ "Internal Mic", 0x1 },
+ 		{ "Mix", 0x3 },
+-		{ "Docking-Station", 0x4 },
++		{ "Dock Mic", 0x4 },
+ 	},
+ };
+ 
+@@ -3655,8 +3655,8 @@ static const struct snd_kcontrol_new ad1984_thinkpad_mixers[] = {
+ 	HDA_CODEC_MUTE("Internal Mic Playback Switch", 0x20, 0x01, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Beep Playback Volume", 0x20, 0x03, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Beep Playback Switch", 0x20, 0x03, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Docking Mic Playback Volume", 0x20, 0x04, HDA_INPUT),
+-	HDA_CODEC_MUTE("Docking Mic Playback Switch", 0x20, 0x04, HDA_INPUT),
++	HDA_CODEC_VOLUME("Dock Mic Playback Volume", 0x20, 0x04, HDA_INPUT),
++	HDA_CODEC_MUTE("Dock Mic Playback Switch", 0x20, 0x04, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Mic Boost Volume", 0x14, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Internal Mic Boost Volume", 0x15, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Dock Mic Boost Volume", 0x25, 0x0, HDA_OUTPUT),
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 7d70210..b871b013 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -1710,8 +1710,8 @@ static const struct snd_kcontrol_new cxt5051_capture_mixers[] = {
+ 	HDA_CODEC_MUTE("Internal Mic Switch", 0x14, 0x00, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Mic Volume", 0x14, 0x01, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Mic Switch", 0x14, 0x01, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Docking Mic Volume", 0x15, 0x00, HDA_INPUT),
+-	HDA_CODEC_MUTE("Docking Mic Switch", 0x15, 0x00, HDA_INPUT),
++	HDA_CODEC_VOLUME("Dock Mic Volume", 0x15, 0x00, HDA_INPUT),
++	HDA_CODEC_MUTE("Dock Mic Switch", 0x15, 0x00, HDA_INPUT),
+ 	{}
+ };
+ 
+-- 
+1.7.9.5
