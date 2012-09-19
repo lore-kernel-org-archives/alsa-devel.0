@@ -1,20 +1,21 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 16/34] ASoC: imx-ssi: remove unneeded
-	mach/hardware.h inclusion
-Date: Wed, 19 Sep 2012 08:01:23 +0000
-Message-ID: <201209190801.23616.arnd@arndb.de>
-References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <201209171430.35804.arnd@arndb.de>
- <20120919032337.GU8832@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 00/14] MFD/ASoC/Input: twl4030-audio
+	submodule DT support
+Date: Wed, 19 Sep 2012 11:34:17 +0300
+Message-ID: <50598389.6020600@ti.com>
+References: <1347273992-9107-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120919002439.GB3647@sortiz-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C170262624
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 10:01:27 +0200 (CEST)
-In-Reply-To: <20120919032337.GU8832@opensource.wolfsonmicro.com>
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+ [74.125.149.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9487A262639
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 10:33:28 +0200 (CEST)
+Received: by oagl20 with SMTP id l20so744337oag.38
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 01:33:26 -0700 (PDT)
+In-Reply-To: <20120919002439.GB3647@sortiz-mobl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Tero Kristo <t-kristo@ti.com>, alsa-devel@alsa-project.org, Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dtor@mail.ru>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 September 2012, Mark Brown wrote:
-> On Mon, Sep 17, 2012 at 02:30:35PM +0000, Arnd Bergmann wrote:
-> > On Monday 17 September 2012, Mark Brown wrote:
-> > > On Mon, Sep 17, 2012 at 01:34:45PM +0800, Shawn Guo wrote:
-> 
-> > > >  #include <linux/platform_data/asoc-imx-ssi.h>
-> > > > -#include <mach/hardware.h>
-> 
-> > > This doesn't apply - there's no platform data header for imx-ssi at the
-> > > minute (and I don't see a patch in this series related to that in the
-> > > series).  I checked -next and there doesn't seem to be anything via a
-> > > non-ASoC tree either.
-> 
-> > It's in my testing/platform-data series, and will be in linux-next in
-> > a few days.
-> 
-> Hrm, that seems odd - why are we adding platform data to the driver?
+Hi Samuel,
 
-We're not adding it, we just rename the header file from mach/imx.h
-to linux/platform-data/asoc-imx-ssi.h, along with 94 other header files
-that get moved to the same directory.
+On 09/19/2012 03:24 AM, Samuel Ortiz wrote:
+> Hi Peter,
+> =
 
-	Arnd
+> On Mon, Sep 10, 2012 at 01:46:18PM +0300, Peter Ujfalusi wrote:
+>> Hello,
+>>
+>> Generated on top of:
+>> git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/omap
+> I applied the first 8 patches, but I'd like to get Mark's ACK for the res=
+t of
+> the serie.
+> Unless you're expecting Mark to take the whole thing, in which case you c=
+an
+> add my:
+> =
+
+> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+> =
+
+> to the MFD patches.
+> Please let me know how you'd like to proceed.
+
+If Mark is still OK with it I think it would be better to queue this series
+via ASoC so we can keep them in one place (also I think patch 14 needs patc=
+h 6
+in order to not break x86/x86_64 allmodconfig).
+On the other hand if they go separately (1-8 via MFD, 9-14 via ASoC) they w=
+ill
+meet in linux-next where this matters the most.
+
+Thank you,
+P=E9ter
