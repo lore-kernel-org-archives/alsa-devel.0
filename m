@@ -1,17 +1,30 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Dynamic HDMI PCM creation
-Date: Wed, 19 Sep 2012 13:54:28 +0200
-Message-ID: <5059B274.40805@canonical.com>
-References: <s5htxv6rq0e.wl%tiwai@suse.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
+ probe rather than as a device
+Date: Wed, 19 Sep 2012 14:29:47 +0200
+Message-ID: <20120919122943.GB25479@gmail.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+ <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
+ <002801cd7c31$14d3d0c0$3e7b7240$@se>
+ <20120820085111.GJ8450@gmail.com>
+ <006d01cd7f5a$65937840$30ba68c0$@se>
+ <20120823092216.GA27264@gmail.com>
+ <20120823113922.GZ7995@opensource.wolfsonmicro.com>
+ <20120823121936.GA1047@gmail.com>
+ <20120823125903.GA7995@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B4FA2651AC
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 13:54:25 +0200 (CEST)
-In-Reply-To: <s5htxv6rq0e.wl%tiwai@suse.de>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDEDA2651AE
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 14:29:51 +0200 (CEST)
+Received: by eaa13 with SMTP id 13so260851eaa.38
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 05:29:51 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20120823125903.GA7995@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +34,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: roger.xr.nilsson@stericsson.com, 'Linus Walleij' <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Ola Lilja <olalilja@yahoo.se>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2012 03:01 PM, Takashi Iwai wrote:
-> Hi David,
->
-> as we discussed at Plumbers, I tried some hack to create/delete
-> HDMI/DP PCM stream per hotplug/unplug.  Test patches are found in
-> sound-unstable git tree topic/hdmi-dynamic-pcm branch
->    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git
->
-> The patches are all small and easy, but it's still in a pretty rough
-> cut.  It won't handle some cases, e.g. unplug during suspend, or
-> such, I'm afraid.  After all, it's just a test.
->
-> With these patches, the PCM device appears and disappears properly
-> upon HDMI/DP hotplug/unplug on my system.  On mine, it appears as
-> /dev/snd/pcmC0D8 as it's an Intel on-board.  So far, so good.
->
-> Now the problem is that PA gets confused when this happens.  It can
-> switch to HDMI/DP, but then the analog output disappears from PA's
-> profile.  You cannot switch back to analog output after that, even
-> after you unplug HDMI/DP cable.
->
-> Or, it might be my PA version...  I'll check newer one.
-
-Which PA version are you testing with?
-
-> But it'd be good if you also check in your side.
-
-Trying to figure out what's happening here - could you give the output 
-of "pacmd list" both before and after things go wrong, as well as a more 
-detailed instruction of what you do in what order?
-
-It seems very strange that a profile would disappear during a card's 
-lifetime, so probably it's something different happening.
-
-Also; just to clarify - by default PulseAudio only tries one output + 
-one input during its probing, which means that if you have a card which 
-has both analog and HDMI outputs, by default it does not support 
-simultaneous output to both.
-As such it seems that "cannot switch back to analog output" is the 
-troublesome point here, so exactly how are you trying to switch back, 
-and do you get an error message?
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+T24gVGh1LCBBdWcgMjMsIDIwMTIgYXQgMDE6NTk6MDRQTSArMDEwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBPbiBUaHUsIEF1ZyAyMywgMjAxMiBhdCAwMToyMDowM1BNICswMTAwLCBMZWUgSm9uZXMg
+d3JvdGU6Cj4gPiA+IEkgc2F5IEkgZG9uJ3QgdW5kZXJzdGFuZCB0aGUgbW90aXZhdGlvbiBmb3Ig
+dGhpcyBjaGFuZ2UuICBBbGwgdGhlIG1vZGVybgo+ID4gPiBEVCBiaW5kaW5ncyBhcmUgcGVyZmVj
+dGx5IGhhcHB5IGhhbmRsaW5nIHRoaXMgd2l0aG91dCBhbiBleHBsaWNpdCBzaGltCj4gPiA+IGlu
+IHRoZSBkZXZpY2UgdHJlZSB0byBib2RnZSB0aGluZ3MgZm9yIExpbnV4LCBhZGRpbmcgdGhlbSBp
+biBzZWVtcyBsaWtlCj4gPiA+IGl0J2QgYmUgYSByZXRyb2dyYWRlIHN0ZXAuICBXaGF0IGJlbmVm
+aXQgZG8geW91IGJlbGlldmUgdGhpcyBicmluZ3M/Cj4gCj4gPiBIb3cgZG8gdGhlIGFsbCB0aGUg
+b3RoZXIgRFQ6ZWQgYXVkaW8gZHJpdmVycyBoYW5kbGUgdGhlIFBDTSB0aGVuPyBNb3JlCj4gPiBp
+bXBvcnRhbnRseSwgaG93IHdvdWxkIHlvdSBsaWtlIHRvIHNlZSBpdCBoYW5kbGVkPyBPbGEgaGFz
+IE5BQ0tlZCB0aGlzCj4gPiBwYXRjaCBhbmQgZXhwbGFpbmVkIHdoeToKPiAKPiBUaGV5IGluc3Rh
+bnRpYXRlIHRoZSBQQ00gZHJpdmVyIGR5bmFtaWNhbGx5IGZyb20gdGhlIERBSSB3aGVuIGl0J3MK
+PiBwcm9iZWQgd2hpY2ggaXMgcHJldHR5IG11Y2ggd2hhdCB5b3UncmUgcGF0Y2ggaXMgZG9pbmcu
+CgpDYW4gd2UgaGF2ZSBzb21lIGNsb3N1cmUgb24gdGhpcyBwYXRjaCBwbGVhc2UsIGFzIGl0J3Mg
+YmxvY2tpbmcgdGhlCnBhdGNoLXNldD8gSSdtIGZhaXJseSBzdXJlIHRoZSBwYXRjaCBpcyBkb2lu
+ZyB0aGUgY29ycmVjdCB0aGluZywgYXMKc2Vjb25kZWQgYnkgTWFyay4KCi0tIApMZWUgSm9uZXMK
+TGluYXJvIFNULUVyaWNzc29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4g
+c291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3
+aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
