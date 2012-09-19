@@ -1,22 +1,21 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 5/5] ASoC: add support for the Freescale /
- iVeia P1022 RDK reference board
-Date: Wed, 19 Sep 2012 10:17:10 -0500
-Message-ID: <5059E1F6.7080804@freescale.com>
-References: <1347657278-25295-1-git-send-email-timur@freescale.com>
- <1347657278-25295-5-git-send-email-timur@freescale.com>
- <20120919023259.GB8832@opensource.wolfsonmicro.com>
- <6AE080B68D46FC4BA2D2769E68D765B70805EFB4@039-SN2MPN1-023.039d.mgd.msft.net>
- <20120919031209.GS8832@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Remove ignore_misc_bit
+Date: Wed, 19 Sep 2012 23:20:26 +0800
+Message-ID: <CAN8cciagRyqJ498+rnz2m8542q5BMAWS5h+j72Nzh2Nf=FuDuQ@mail.gmail.com>
+References: <1346995544-6754-1-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciYZBU+LaaQFXrn9kPoFc=MdYahw0ucKNmAhrG=CT0+C5g@mail.gmail.com>
+ <s5h392rhbyu.wl%tiwai@suse.de> <5056D395.4090603@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
- (db3ehsobe004.messaging.microsoft.com [213.199.154.142])
- by alsa0.perex.cz (Postfix) with ESMTP id AACD92651FE
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 17:17:31 +0200 (CEST)
-In-Reply-To: <20120919031209.GS8832@opensource.wolfsonmicro.com>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2EF62651FE
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 17:20:27 +0200 (CEST)
+Received: by qadz3 with SMTP id z3so1129708qad.17
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 08:20:26 -0700 (PDT)
+In-Reply-To: <5056D395.4090603@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, 939161@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/939161
 
-> It's adding a new machine driver, that generally means a new binding.
+00:1b.0 Audio device [0403]: Intel Corporation N10/ICH 7 Family High
+Definition Audio Controller [8086:27d8] (rev 02)
+Subsystem: Uniwill Computer Corp Device [1584:9072]
+>
+>
+> The PCI SSIDs are different, so I don't think that commit will affect the
+bug I was trying to fix.
 
-Not for the way I defined the SSI bindings.  All of the information is
-stored in the SSI and codec nodes.  That's why I did it that way.  There
-is no binding for the machine driver.
+There was a model uniwill-m31
 
-> If it's really an identical binding then it ought to at least add a new
-> compatible property to the existing binding (and extend the set of
-> supported CODECs for that binding).
+what you need is just provide a pin fixup from the patch which remove the
+model
 
-Here's the device tree:
+- [ALC861_UNIWILL_M31] = "uniwill-m31",
 
-http://git.kernel.org/?p=linux/kernel/git/galak/powerpc.git;a=blob;f=arch/powerpc/boot/dts/p1022rdk.dts;h=51d82de223f37c12dfbb33906cac89ce551abcd2;hb=34f84b5b5bc83f4fc208cc278f572e6d926f976b
+- SND_PCI_QUIRK(0x1584, 0x9072, "Uniwill m31", ALC861_UNIWILL_M31),
 
-The only thing that's new is a node for the wm8960.  I could create a
-binding for that.  I asked you in a previous email about the binding for
-that codec, but you never replied.
-
-> Personally given the thing with the interface formats and the fact that
-> it's not sharing code with the other bindings for implementation of the
-> binding I'd be inclined to just document it as a new binding and use it
-> as the model going forwards, leaving the older bindings as legacy.
-
-Again, the only new binding is the codec.
-
->>>> +	/* Tell the WM8960 to set SYSCLK equal to MCLK input (bypass PLL) */
->>>> +	ret = snd_soc_dai_set_clkdiv(rtd->codec_dai, WM8960_SYSCLKDIV,
->>>> +		WM8960_SYSCLK_MCLK | WM8960_SYSCLK_DIV_1);
->>>> +	if (ret < 0) {
->>>> +		dev_err(dev, "could not set codec driver clock source\n");
->>>> +		return ret;
->>>> +	}
-> 
->>> ...we don't appear to use the PLL output anyway so why not just leave it
->>> off?  As this is fixed it's better style to do the setup in late_init()
->>> or the init function for the DAI link.
-> 
->> I just copied this code from iVeia BSP.  I'm not really sure what it does.
-> 
-> You should just be able to drop the call to set_pll(), I expect you'll
-> find that all it does is consume extra power.
-
-Ok, I'll try it.  I have no way to measure power consumption, however.
-
->> I almost never do this, and there are plenty of cases in my existing code 
->> where I don't.  Is this a new policy?
-> 
-> It's not new, it's always been good practice - if something fails we
-> should do as much as possible to tell the user why.
-
-Ok.
-
->> This is the same code as my other two machine drivers that I've been using 
->> for years.  It's part of the SSI binding.  Do you want me to change the 
->> binding and drop the properties?
-> 
-> Well, the existing bindings are out there so can't really be changed but
-> we should do something better going forwards.
-
-Fair enough.  I created those bindings because, back then, I had no idea
-whether they would be needed or not.  Now that I've created three boards
-that use the SSI, I see that it's not helpful.  I can fix that.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commitdiff;h=9fbbc94fe0f0a85d048b74fced3cfca404d78a3c;hp=6ebb80530b0ed6b2e93f2e6497890b4437807055
