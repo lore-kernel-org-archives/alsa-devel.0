@@ -1,144 +1,34 @@
-From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Subject: [PATCH 2/3] ASoC: fsl: pcm030-audio-fabric use
-	snd_soc_register_card
-Date: Thu, 20 Sep 2012 10:36:44 -0400
-Message-ID: <1348151805-93991-2-git-send-email-emillbrandt@dekaresearch.com>
-References: <1348151805-93991-1-git-send-email-emillbrandt@dekaresearch.com>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
+Date: Thu, 20 Sep 2012 22:53:44 +0800
+Message-ID: <20120920145342.GI2450@S2101-09.ap.freescale.net>
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+ <201209200739.34899.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from norco.coldhaus.com (norco.coldhaus.com [64.32.230.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 65467265B46
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 16:37:29 +0200 (CEST)
-In-Reply-To: <1348151805-93991-1-git-send-email-emillbrandt@dekaresearch.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <201209200739.34899.arnd-r2nGTMty4D4@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Javier Martin <javier.martin-N4RbWZIug12MkV8/HQOAswC/G2K4zDHf@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Florian Tobias Schandinat <FlorianSchandinat-Mmb7MZpHnFY@public.gmane.org>, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chris Ball <cjb-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org>, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Guennadi Liakhovetski <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Artem Bityutskiy <artem.bityutskiy-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Wolfram Sang <w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Wim Van Sebroeck <wim-IQzOog9fTRqzQB+pC5nmwQ@public.gmane.org>, linux-watchdog-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Paulius
 List-Id: alsa-devel@alsa-project.org
 
-Convert pcm030-audio-fabric to use the new snd_soc_register_card api
-instead of the older method of registering a separate platform device.
-Create the dai_link to the mpc5200_psc_ac97 platform using the device tree.
-Convert the pcm030-audio-fabric driver to a platform-driver and add a
-remove function.
+On Thu, Sep 20, 2012 at 07:39:34AM +0000, Arnd Bergmann wrote:
+> The first five branches are scheduled to go through the arm-soc tree, so
+> I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
+> to expect that hitting mainline. If it always gets in very early during the
+> merge window, it's probably ok to put the imx/multi-platform patches into
+> the same branch as the other ones in arm-soc and wait for the sound stuff
+> to hit mainline first, otherwise I'd suggest we start a second
+> next/multiplatform-2 branch for imx and send the first part early on
+> but then wait with the second batch before sound gets in.
+> 
+It seems that we will have to go with next/multiplatform-2.  I just
+tried to merge the series with linux-next together, and got some
+non-trivial conflicts with media and mtd tree.  I might have to rebase
+my series on top of these trees to sort out those conflicts.  That said,
+I will have several dependencies outside arm-soc tree, and have to pend
+my series until all those trees get merged into mainline.
 
-Signed-off-by: Eric Millbrandt <emillbrandt@dekaresearch.com>
----
- sound/soc/fsl/pcm030-audio-fabric.c |   65 +++++++++++++++++++++++++----------
- 1 files changed, 47 insertions(+), 18 deletions(-)
-
-diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
-index 1353e8f..893e240 100644
---- a/sound/soc/fsl/pcm030-audio-fabric.c
-+++ b/sound/soc/fsl/pcm030-audio-fabric.c
-@@ -28,7 +28,6 @@ static struct snd_soc_dai_link pcm030_fabric_dai[] = {
- 	.stream_name = "AC97 Analog",
- 	.codec_dai_name = "wm9712-hifi",
- 	.cpu_dai_name = "mpc5200-psc-ac97.0",
--	.platform_name = "mpc5200-pcm-audio",
- 	.codec_name = "wm9712-codec",
- },
- {
-@@ -36,44 +35,74 @@ static struct snd_soc_dai_link pcm030_fabric_dai[] = {
- 	.stream_name = "AC97 IEC958",
- 	.codec_dai_name = "wm9712-aux",
- 	.cpu_dai_name = "mpc5200-psc-ac97.1",
--	.platform_name = "mpc5200-pcm-audio",
- 	.codec_name = "wm9712-codec",
- },
- };
- 
--static struct snd_soc_card card = {
-+static struct snd_soc_card pcm030_card = {
- 	.name = "pcm030",
- 	.owner = THIS_MODULE,
- 	.dai_link = pcm030_fabric_dai,
- 	.num_links = ARRAY_SIZE(pcm030_fabric_dai),
- };
- 
--static __init int pcm030_fabric_init(void)
-+static int __init pcm030_fabric_probe(struct platform_device *op)
- {
--	struct platform_device *pdev;
--	int rc;
-+	struct device_node *np = op->dev.of_node;
-+	struct device_node *platform_np;
-+	struct snd_soc_card *card = &pcm030_card;
-+	int ret;
-+	int i;
- 
- 	if (!of_machine_is_compatible("phytec,pcm030"))
- 		return -ENODEV;
- 
--	pdev = platform_device_alloc("soc-audio", 1);
--	if (!pdev) {
--		pr_err("pcm030_fabric_init: platform_device_alloc() failed\n");
-+	card->dev = &op->dev;
-+	platform_set_drvdata(op, card);
-+
-+	platform_np = of_parse_phandle(np, "asoc-platform", 0);
-+	if (!platform_np) {
-+		dev_err(&op->dev, "ac97 not registered\n");
- 		return -ENODEV;
- 	}
- 
--	platform_set_drvdata(pdev, &card);
-+	for (i = 0; i < card->num_links; i++)
-+		card->dai_link[i].platform_of_node = platform_np;
- 
--	rc = platform_device_add(pdev);
--	if (rc) {
--		pr_err("pcm030_fabric_init: platform_device_add() failed\n");
--		platform_device_put(pdev);
--		return -ENODEV;
--	}
--	return 0;
-+	ret = snd_soc_register_card(card);
-+	if (ret)
-+		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
-+
-+	return ret;
- }
- 
--module_init(pcm030_fabric_init);
-+static int __devexit pcm030_fabric_remove(struct platform_device *op)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(op);
-+	int ret;
-+
-+	ret = snd_soc_unregister_card(card);
-+
-+	return ret;
-+}
-+
-+static struct of_device_id pcm030_audio_match[] = {
-+	{ .compatible = "phytec,pcm030-audio-fabric", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, pcm030_audio_match);
-+
-+static struct platform_driver pcm030_fabric_driver = {
-+	.probe		= pcm030_fabric_probe,
-+	.remove		= __devexit_p(pcm030_fabric_remove),
-+	.driver		= {
-+		.name	= DRV_NAME,
-+		.owner	= THIS_MODULE,
-+		.of_match_table    = pcm030_audio_match,
-+	},
-+};
-+
-+module_platform_driver(pcm030_fabric_driver);
- 
- 
- MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
--- 
-1.7.2.5
+Shawn
