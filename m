@@ -1,15 +1,16 @@
 From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Subject: [PATCH v2 1/3] ASoC: fsl: add PPC_MPC52xx dependency
-	to SND_POWERPC_SOC
-Date: Thu, 20 Sep 2012 10:36:43 -0400
-Message-ID: <1348151805-93991-1-git-send-email-emillbrandt@dekaresearch.com>
+Subject: [PATCH 3/3] ASoC: fsl: register the wm9712-codec
+Date: Thu, 20 Sep 2012 10:36:45 -0400
+Message-ID: <1348151805-93991-3-git-send-email-emillbrandt@dekaresearch.com>
+References: <1348151805-93991-1-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from norco.coldhaus.com (norco.coldhaus.com [64.32.230.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 6723C265B4D
+ by alsa0.perex.cz (Postfix) with ESMTP id 620BB26538A
  for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 16:37:29 +0200 (CEST)
+In-Reply-To: <1348151805-93991-1-git-send-email-emillbrandt@dekaresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +24,86 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
-mpc52xx socs do not define FSL_SOC but need SND_POWERPC_SOC defined to build
-ASoC drivers.
+The mpc5200-psc-ac97 driver does not enumerate attached ac97 devices, so
+register the device here.
 
 Signed-off-by: Eric Millbrandt <emillbrandt@dekaresearch.com>
 ---
-Changes since v1:
-Patch was "powerpc/52xx: define FSL_SOC"
-Changed from defining FSL_SOC for PPC_MPC52xx to adding PPC_MPC52xx as a
-dependency of SND_POWERPC_SOC as per Anatolij Gustschin's comment.
+ sound/soc/fsl/pcm030-audio-fabric.c |   32 +++++++++++++++++++++++++++++---
+ 1 files changed, 29 insertions(+), 3 deletions(-)
 
- sound/soc/fsl/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index d701330..4563b28 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -6,7 +6,7 @@ config SND_SOC_FSL_UTILS
+diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
+index 893e240..4b63ec8 100644
+--- a/sound/soc/fsl/pcm030-audio-fabric.c
++++ b/sound/soc/fsl/pcm030-audio-fabric.c
+@@ -22,6 +22,11 @@
  
- menuconfig SND_POWERPC_SOC
- 	tristate "SoC Audio for Freescale PowerPC CPUs"
--	depends on FSL_SOC
-+	depends on FSL_SOC || PPC_MPC52xx
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the PowerPC CPUs.
+ #define DRV_NAME "pcm030-audio-fabric"
+ 
++struct pcm030_audio_data {
++	struct snd_soc_card *card;
++	struct platform_device *codec_device;
++};
++
+ static struct snd_soc_dai_link pcm030_fabric_dai[] = {
+ {
+ 	.name = "AC97",
+@@ -51,14 +56,22 @@ static int __init pcm030_fabric_probe(struct platform_device *op)
+ 	struct device_node *np = op->dev.of_node;
+ 	struct device_node *platform_np;
+ 	struct snd_soc_card *card = &pcm030_card;
++	struct pcm030_audio_data *pdata;
+ 	int ret;
+ 	int i;
+ 
+ 	if (!of_machine_is_compatible("phytec,pcm030"))
+ 		return -ENODEV;
+ 
++	pdata = devm_kzalloc(&op->dev, sizeof(struct pcm030_audio_data),
++			     GFP_KERNEL);
++	if (!pdata)
++		return -ENOMEM;
++
+ 	card->dev = &op->dev;
+-	platform_set_drvdata(op, card);
++	platform_set_drvdata(op, pdata);
++
++	pdata->card = card;
+ 
+ 	platform_np = of_parse_phandle(np, "asoc-platform", 0);
+ 	if (!platform_np) {
+@@ -69,6 +82,18 @@ static int __init pcm030_fabric_probe(struct platform_device *op)
+ 	for (i = 0; i < card->num_links; i++)
+ 		card->dai_link[i].platform_of_node = platform_np;
+ 
++	ret = request_module("snd-soc-wm9712");
++	if (ret)
++		dev_err(&op->dev, "request_module returned: %d\n", ret);
++
++	pdata->codec_device = platform_device_alloc("wm9712-codec", -1);
++	if (!pdata->codec_device)
++		dev_err(&op->dev, "platform_device_alloc() failed\n");
++
++	ret = platform_device_add(pdata->codec_device);
++	if (ret)
++		dev_err(&op->dev, "platform_device_add() failed: %d\n", ret);
++
+ 	ret = snd_soc_register_card(card);
+ 	if (ret)
+ 		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
+@@ -78,10 +103,11 @@ static int __init pcm030_fabric_probe(struct platform_device *op)
+ 
+ static int __devexit pcm030_fabric_remove(struct platform_device *op)
+ {
+-	struct snd_soc_card *card = platform_get_drvdata(op);
++	struct pcm030_audio_data *pdata = platform_get_drvdata(op);
+ 	int ret;
+ 
+-	ret = snd_soc_unregister_card(card);
++	ret = snd_soc_unregister_card(pdata->card);
++	platform_device_unregister(pdata->codec_device);
+ 
+ 	return ret;
+ }
 -- 
 1.7.2.5
