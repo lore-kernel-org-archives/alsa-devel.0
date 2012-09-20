@@ -1,73 +1,80 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 7/7] Documentation: Define the MSP Driver Device Tree bindings
-Date: Thu, 20 Sep 2012 14:09:16 +0200
-Message-ID: <1348142956-1872-8-git-send-email-lee.jones@linaro.org>
-References: <1348142956-1872-1-git-send-email-lee.jones@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1348142956-1872-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com
-Cc: STEricsson_nomadik_linux@list.st.com, linus.walleij@stericsson.com, arnd@arndb.de, ola.o.lilja@stericsson.com, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 04/32] Documentation: Add the AB8500 CODEC
+	device to the MFD AB8500 doc
+Date: Thu, 20 Sep 2012 14:12:22 +0200
+Message-ID: <1348143170-2130-5-git-send-email-lee.jones@linaro.org>
+References: <1348143170-2130-1-git-send-email-lee.jones@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id E42862652E6
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 14:13:08 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so1317052wgb.20
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 05:13:08 -0700 (PDT)
+In-Reply-To: <1348143170-2130-1-git-send-email-lee.jones@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, olof.johansson@gmail.com, linus.walleij@stericsson.com, arnd@arndb.de, STEricsson_nomadik_linux@list.st.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Here we add the required documentation for the new Device Tree
-bindings pertaining to the MSP CPU-side DAI Driver.
+Here we document the AB8500 Audio CODEC in the existing MFD AB8500 document.
 
-Acked-by: Ola Lilja <ola.o.lilja@stericsson.com>
+CC: alsa-devel@alsa-project.org
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../devicetree/bindings/sound/ux500-msp.txt        |   43 ++++++++++++++++++++
- 1 file changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ux500-msp.txt
+ Documentation/devicetree/bindings/mfd/ab8500.txt |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ux500-msp.txt b/Documentation/devicetree/bindings/sound/ux500-msp.txt
-new file mode 100644
-index 0000000..99acd9c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ux500-msp.txt
-@@ -0,0 +1,43 @@
-+* ux500 MSP (CPU-side Digital Audio Interface)
+diff --git a/Documentation/devicetree/bindings/mfd/ab8500.txt b/Documentation/devicetree/bindings/mfd/ab8500.txt
+index 69e757a..ce83c8d 100644
+--- a/Documentation/devicetree/bindings/mfd/ab8500.txt
++++ b/Documentation/devicetree/bindings/mfd/ab8500.txt
+@@ -23,6 +23,7 @@ Device                     IRQ Names              Supply Names   Description
+ ab8500-bm                :                      :              : Battery Manager
+ ab8500-btemp             :                      :              : Battery Temperature
+ ab8500-charger           :                      :              : Battery Charger
++ab8500-codec             :                      :              : Audio Codec
+ ab8500-fg                :                      :              : Fuel Gauge
+ ab8500-gpadc             : HW_CONV_END          : vddadc       : Analogue to Digital Converter
+                            SW_CONV_END          :              :
+@@ -52,6 +53,14 @@ Optional child device properties:
+                            supplied in the interrupts property
+ - <supply_name>-supply   : contains a phandle to the regulator supply node in Device Tree
+ 
++Non-standard child device properties:
++ - Audio CODEC:
++   - stericsson,amic[1|2]-type-single-ended : Single-ended Analoge Mic (default: differential)
++   - stericsson,amic1a-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,amic1b-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,amic2-bias-vamic1           : Analoge Mic wishes to use a non-standard Vamic
++   - stericsson,earpeice-cmv                : Earpeice voltage (only: 950 | 1100 | 1270 | 1580)
 +
-+Required properties:
-+ - compatible       :"stericsson,ux500-msp-i2s"
-+ - reg              : Physical base address and length of the device's registers.
-+
-+Optional properties:
-+ - interrupts       : The interrupt output from the device.
-+ - interrupt-parent : The parent interrupt controller.
-+ - <name>-supply    : Phandle to the regulator <name> supply
-+
-+Example:
-+
-+	sound {
-+		compatible = "stericsson,snd-soc-mop500";
-+
-+		stericsson,platform-pcm-dma = <&pcm>;
-+		stericsson,cpu-dai = <&msp1 &msp3>;
-+		stericsson,audio-codec = <&codec>;
-+	};
-+
-+	pcm: ux500-pcm {
-+		compatible = "stericsson,ux500-pcm";
-+	};
-+
-+	msp1: msp@80124000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80124000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
-+	msp3: msp@80125000 {
-+		compatible = "stericsson,ux500-msp-i2s";
-+		reg = <0x80125000 0x1000>;
-+		interrupts = <0 62 0x4>;
-+		v-ape-supply = <&db8500_vape_reg>;
-+	};
-+
+ ab8500@5 {
+          compatible = "stericsson,ab8500";
+          reg = <5>; /* mailbox 5 is i2c */
+@@ -110,6 +119,12 @@ ab8500@5 {
+                 compatible = "stericsson,ab8500-pwm";
+         };
+ 
 +	codec: ab8500-codec {
 +		compatible = "stericsson,ab8500-codec";
++
 +		stericsson,earpeice-cmv = <950>; /* Units in mV. */
 +	};
++
+         ab8500-regulators {
+                 compatible = "stericsson,ab8500-regulator";
+ 
 -- 
 1.7.9.5
