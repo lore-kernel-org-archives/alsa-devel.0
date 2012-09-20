@@ -1,15 +1,16 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Audio codec volume control
-Date: Thu, 20 Sep 2012 13:26:39 +0530
-Message-ID: <505ACC37.3060209@st.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: usb - disable broken hw volume for Tenx
+	TP6911
+Date: Thu, 20 Sep 2012 10:20:41 +0200
+Message-ID: <1348129241-3507-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
- [207.126.144.137])
- by alsa0.perex.cz (Postfix) with ESMTP id EB0BC260744
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 09:56:45 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70EBF264EBF
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 10:20:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, 559939@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+While going through Ubuntu bugs, I discovered this patch being
+posted and a confirmation that the patch works as expected.
 
-We have three volume control in audio codec.
-1. Master volume: control both left and right channel volume
-2. left volume: control left channel vol
-3. right volume: control right channel vol.
+Finding out how the hw volume really works would be preferrable
+to just disabling the broken one, but this would be better than
+nothing.
 
-So we can provide interfaces for all volume control to the user. Please
-find below the control I can provide to the user space
+Credit: sndfnsdfin (qawsnews)
+BugLink: https://bugs.launchpad.net/bugs/559939
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/usb/mixer.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-case 1:
-1. Provide master volume control
-2. Provide Left channel volume control.
-3. Provide Right channel volume control.
-
-case 2:
-
-1. Provide master volume control
-2. Instead of providing separate control for left and right channel,
-combined it and provide a single control to user space. so that left and 
-right volume is always in sync.
-
-
-Please let me know which case is better and why?
-
-Thank you very much for your support.
-
-Best Regards
-Rajeev
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 4f40ba8..fe56c9d 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1267,6 +1267,13 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 		/* disable non-functional volume control */
+ 		master_bits &= ~UAC_CONTROL_BIT(UAC_FU_VOLUME);
+ 		break;
++	case USB_ID(0x1130, 0xf211):
++		snd_printk(KERN_INFO
++			   "usbmixer: volume control quirk for Tenx TP6911 Audio Headset\n");
++		/* disable non-functional volume control */
++		channels = 0;
++		break;
++
+ 	}
+ 	if (channels > 0)
+ 		first_ch_bits = snd_usb_combine_bytes(bmaControls + csize, csize);
+-- 
+1.7.9.5
