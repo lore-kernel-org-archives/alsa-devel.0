@@ -1,34 +1,52 @@
 From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 04/29] ARM: OMAP1: Move board-ams-delta.h from plat to
- mach
-Date: Thu, 20 Sep 2012 10:12:41 -0700
-Message-ID: <20120920171134.GB28835@atomide.com>
+Subject: Re: [PATCH 08/29] ARM: OMAP2+: Make board-zoom.h local
+Date: Thu, 20 Sep 2012 10:15:34 -0700
+Message-ID: <20120920171534.GC28835@atomide.com>
 References: <20120919205732.28074.43697.stgit@muffinssi>
- <20120919210543.28074.10214.stgit@muffinssi>
- <20120920011630.GB17666@opensource.wolfsonmicro.com>
+ <20120919210554.28074.2280.stgit@muffinssi>
+ <505AC5D3.1040907@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mho-02-ewr.mailhop.org (mho-04-ewr.mailhop.org [204.13.248.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DD95265B6D
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 19:15:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120920011630.GB17666@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-mtd@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <505AC5D3.1040907@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [120919 19:05]:
-> On Wed, Sep 19, 2012 at 02:05:43PM -0700, Tony Lindgren wrote:
-> > This is only used by omap1.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [120920 00:29]:
+> Hi Tony,
+> 
+> 
+> On 09/20/2012 12:05 AM, Tony Lindgren wrote:
+> > This can be local to mach-omap2 after we rip out the messed up
+> > extmute stuff from board-zoom-peripherals.c that's all over
+> > the place and probably does not even work because of all the
+> > hardcoded GPIO numbers.
 > > 
-> > And to fix things properly, this should not be included
-> > from the drivers at all.
+> > I also suggest ASoC gusy remove all extmute handling from
+> > sound/soc/codecs/twl4030.c unless it's been tested to work
+> > and implemented in a saner way.
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> 
-> or I can apply it if that's easier.
+> I just wanted to note that I also have pending patch for zoom2.c as part of
+> the twl4030 audio module DT support series:
+> http://lkml.indiana.edu/hypermail/linux/kernel/1209.1/00711.html
 
-Thanks I'll do a series for Arnd on top of the multiplatform
-changes to avoid more merge conflicts.
+Oh great, that makes it quite a bit saner. I'll drop this
+for now as after your patch I can just move it.
 
 Regards,
 
