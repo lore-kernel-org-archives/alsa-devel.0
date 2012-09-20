@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 08/29] ARM: OMAP2+: Make board-zoom.h local
-Date: Wed, 19 Sep 2012 21:24:34 -0400
-Message-ID: <20120920012433.GC17666@opensource.wolfsonmicro.com>
-References: <20120919205732.28074.43697.stgit@muffinssi>
- <20120919210554.28074.2280.stgit@muffinssi>
+Subject: Re: [PATCH v2 1/7] ASoC: fsl: add PPC_MPC52xx
+ dependency to SND_POWERPC_SOC
+Date: Wed, 19 Sep 2012 21:30:37 -0400
+Message-ID: <20120920013036.GE17666@opensource.wolfsonmicro.com>
+References: <1348066285-87741-1-git-send-email-emillbrandt@dekaresearch.com>
+ <20120919204730.GB12297@opensource.wolfsonmicro.com>
+ <0A40042D85E7C84DB443060EC44B3FD3459868BAC0@dekaexchange07.deka.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EA33D26525E
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 04:04:22 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C61EF265290
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 04:04:25 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120919210554.28074.2280.stgit@muffinssi>
+In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD3459868BAC0@dekaexchange07.deka.local>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Eric Millbrandt <emillbrandt@dekaresearch.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 19, 2012 at 02:05:54PM -0700, Tony Lindgren wrote:
-> This can be local to mach-omap2 after we rip out the messed up
-> extmute stuff from board-zoom-peripherals.c that's all over
-> the place and probably does not even work because of all the
-> hardcoded GPIO numbers.
-> 
-> I also suggest ASoC gusy remove all extmute handling from
-> sound/soc/codecs/twl4030.c unless it's been tested to work
-> and implemented in a saner way.
+On Wed, Sep 19, 2012 at 05:07:34PM -0400, Eric Millbrandt wrote:
+> On 2012-09-19 Mark Brown wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > Patches 2 to 7 appear to have gone AWOL?
 
-or I can apply it if that's easier.
+> No changes to 2 through 7, so I didn't repost the full series.
+
+Then this isn't patch 1/7, it's just a patch.  The fact that you may
+have posted some patches earlier isn't relevant and creates confusion
+like this.
