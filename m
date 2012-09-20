@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [GIT PULL] MOP500 Audio patches due for ASoC
-Date: Thu, 20 Sep 2012 07:57:15 -0400
-Message-ID: <20120920115713.GK17666@opensource.wolfsonmicro.com>
-References: <20120920113715.GB17429@gmail.com>
+Subject: Re: [PATCH v2] ASoC: codecs: Add DA9055 codec driver
+Date: Thu, 20 Sep 2012 07:59:10 -0400
+Message-ID: <20120920115908.GL17666@opensource.wolfsonmicro.com>
+References: <1347622057.16763.27.camel@matrix>
+ <20120919025035.GI8832@opensource.wolfsonmicro.com>
+ <1348142335.18996.17.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 667E42652E6
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 13:57:26 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 88D6A2652E6
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 13:59:25 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20120920113715.GB17429@gmail.com>
+In-Reply-To: <1348142335.18996.17.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: ola.o.lilja@stericsson.com, linus.walleij@linaro.org, alsa-devel@alsa-project.org, arnd@arndb.de
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 20, 2012 at 01:37:15PM +0200, Lee Jones wrote:
-> The following changes since commit 5698bd757d55b1bb87edd1a9744ab09c142abfc2:
-> 
->   Linux 3.6-rc6 (2012-09-16 14:58:51 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.linaro.org/people/ljones/linux-3.0-ux500.git for-asoc-next
-> 
-> for you to fetch changes up to b4cad7af6665743647f28119b689e1552326d4da:
-> 
->   Documentation: Define the MSP Driver Device Tree bindings (2012-09-20 09:10:59 +0200)
+On Thu, Sep 20, 2012 at 05:28:55PM +0530, Ashish Chavan wrote:
 
-Please post the actual patches for review as well.  The normal thing is
-to post the patches as a followup to the pull request making the pull
-request a cover letter for the series, and obviously if they are from
-your previous serieses it's been some considerable time since that
-happend.
+> > > +	/* To select if MIC Bias powers MIC 1 or MIC 2 */
+> > > +	SOC_ENUM("Mic Bias Select", da9055_mic_bias_select),
+
+> > This would normally be something controlled by the board...  what
+> > exactly is this doing?  How does the MICBIAS relate to the microphone
+> > inputs?
+
+> Yes, it should be controlled by the board.
+> This control selects which of the two MIC Bias pins acts as the BIAS
+> source. Earlier we misinterpreted it because of a hardware modification
+> which was present on the board without our knowledge.
+
+OK, that sounds like it should either be hooked up in the DAPM graph
+or supplied as platform data then.
+
+> > Given that there's no regulator support here
+> > it's also a bit surprising that you need to do a sync outside of system
+> > suspend...
+
+> I am not sure if I understood this fully. Do you mean a sync is not
+> required here?
+
+You only need to resync if the device might have lost power and
+forgotten it's register settings (or might've forgotten them for some
+other reason).  If the device is left powered up then this isn't needed.
