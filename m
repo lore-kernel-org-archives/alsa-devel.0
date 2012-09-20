@@ -1,17 +1,18 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [GIT PULL] MOP500 Audio patches due for ASoC
-Date: Thu, 20 Sep 2012 13:37:15 +0200
-Message-ID: <20120920113715.GB17429@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
+Date: Thu, 20 Sep 2012 07:41:50 -0400
+Message-ID: <20120920114148.GH17666@opensource.wolfsonmicro.com>
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+ <201209200739.34899.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B36E2652E0
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 13:37:20 +0200 (CEST)
-Received: by eeke50 with SMTP id e50so782597eek.38
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 04:37:20 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77C002652E5
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 13:42:03 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <201209200739.34899.arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: ola.o.lilja@stericsson.com, linus.walleij@linaro.org, alsa-devel@alsa-project.org, arnd@arndb.de
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>, linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org, rtc-linux@googlegroups.com, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>, Andrew Morton <akpm@linux-foundation.org>, Shawn Guo <shawn.guo@linaro.org>, Guennadi Liakhovetski <g.liakhove>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA1Njk4YmQ3NTdkNTViMWJiODdlZGQx
-YTk3NDRhYjA5YzE0MmFiZmMyOgoKICBMaW51eCAzLjYtcmM2ICgyMDEyLTA5LTE2IDE0OjU4OjUx
-IC0wNzAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDov
-L2dpdC5saW5hcm8ub3JnL3Blb3BsZS9sam9uZXMvbGludXgtMy4wLXV4NTAwLmdpdCBmb3ItYXNv
-Yy1uZXh0Cgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gYjRjYWQ3YWY2NjY1NzQzNjQ3
-ZjI4MTE5YjY4OWUxNTUyMzI2ZDRkYToKCiAgRG9jdW1lbnRhdGlvbjogRGVmaW5lIHRoZSBNU1Ag
-RHJpdmVyIERldmljZSBUcmVlIGJpbmRpbmdzICgyMDEyLTA5LTIwIDA5OjEwOjU5ICswMjAwKQoK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpMZWUgSm9uZXMgKDcpOgogICAgICBBU29DOiBVeDUwMDogTW92ZSBNU1AgcGluY3Ry
-bCBzZXR1cCBpbnRvIHRoZSBNU1AgZHJpdmVyCiAgICAgIEFTb0M6IFV4NTAwOiBFbmFibGUgTU9Q
-NTAwIGRyaXZlciBmb3IgRGV2aWNlIFRyZWUKICAgICAgQVNvQzogVXg1MDA6IEVuYWJsZSB1eDUw
-MCBNU1AgZHJpdmVyIGZvciBEZXZpY2UgVHJlZQogICAgICBBU29DOiBjb2RlY3M6IEVuYWJsZSBB
-Qjg1MDAgQ09ERUMgZm9yIERldmljZSBUcmVlCiAgICAgIEFTb0M6IFV4NTAwOiBNaW5vciBjb2Rp
-bmcgbGF5b3V0IGNoYW5nZXMKICAgICAgRG9jdW1lbnRhdGlvbjogRGVmaW5lIHRoZSBNT1A1MDAg
-QXVkaW8gTWFjaGluZSBEcml2ZXIgRGV2aWNlIFRyZWUgYmluZGluZ3MKICAgICAgRG9jdW1lbnRh
-dGlvbjogRGVmaW5lIHRoZSBNU1AgRHJpdmVyIERldmljZSBUcmVlIGJpbmRpbmdzCgogLi4uL2Rl
-dmljZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbW9wNTAwLnR4dCAgICAgfCAgIDM5ICsrKysr
-KysrKwogLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbXNwLnR4dCAgICAgICAg
-fCAgIDQzICsrKysrKysrKysKIGFyY2gvYXJtL21hY2gtdXg1MDAvYm9hcmQtbW9wNTAwLW1zcC5j
-ICAgICAgICAgICAgIHwgICA3OSArLS0tLS0tLS0tLS0tLS0tLQogYXJjaC9hcm0vbWFjaC11eDUw
-MC9pbmNsdWRlL21hY2gvbXNwLmggICAgICAgICAgICAgfCAgICAyIC0KIGluY2x1ZGUvbGludXgv
-bWZkL2FieDUwMC9hYjg1MDAtY29kZWMuaCAgICAgICAgICAgIHwgICAgNiArLQogc291bmQvc29j
-L2NvZGVjcy9hYjg1MDAtY29kZWMuYyAgICAgICAgICAgICAgICAgICAgfCAgIDgxICsrKysrKysr
-KysrKysrKysrKwogc291bmQvc29jL3V4NTAwL21vcDUwMC5jICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgIDQ3ICsrKysrKysrKy0tCiBzb3VuZC9zb2MvdXg1MDAvdXg1MDBfbXNwX2RhaS5j
-ICAgICAgICAgICAgICAgICAgICB8ICAgIDYgKysKIHNvdW5kL3NvYy91eDUwMC91eDUwMF9tc3Bf
-aTJzLmMgICAgICAgICAgICAgICAgICAgIHwgICA4OSArKysrKysrKysrKysrKystLS0tLQogc291
-bmQvc29jL3V4NTAwL3V4NTAwX21zcF9pMnMuaCAgICAgICAgICAgICAgICAgICAgfCAgICA4ICst
-CiAxMCBmaWxlcyBjaGFuZ2VkLCAyOTIgaW5zZXJ0aW9ucygrKSwgMTA4IGRlbGV0aW9ucygtKQog
-Y3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3Vu
-ZC91eDUwMC1tb3A1MDAudHh0CiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL3NvdW5kL3V4NTAwLW1zcC50eHQKCi0tIApMZWUgSm9uZXMKTGluYXJv
-IFNULUVyaWNzc29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNl
-IHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIg
-fCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, Sep 20, 2012 at 07:39:34AM +0000, Arnd Bergmann wrote:
+
+> The first five branches are scheduled to go through the arm-soc tree, so
+> I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
+> to expect that hitting mainline. If it always gets in very early during the
+> merge window, it's probably ok to put the imx/multi-platform patches into
+> the same branch as the other ones in arm-soc and wait for the sound stuff
+> to hit mainline first, otherwise I'd suggest we start a second
+> next/multiplatform-2 branch for imx and send the first part early on
+> but then wait with the second batch before sound gets in.
+
+It's usually pretty early but Takashi will be on holiday this time so
+I'm not sure if things might be different (he was going to send the pull
+request from holiday).  I also didn't guarantee that it'll be stable
+yet, can someone please tell me what the depenency is here?
