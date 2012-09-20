@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: twl4030: Convert to use DAI DAPM widgets
-Date: Thu, 20 Sep 2012 16:32:02 +0300
-Message-ID: <1348147922-22527-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: twl6040: Convert to use DAI DAPM widgets
+Date: Thu, 20 Sep 2012 16:32:15 +0300
+Message-ID: <1348147935-22562-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog129.obsmtp.com (na3sys009aog129.obsmtp.com
- [74.125.149.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 58EE426531D
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 15:31:16 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so2018788obb.38
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 06:31:12 -0700 (PDT)
+Received: from na3sys009aog122.obsmtp.com (na3sys009aog122.obsmtp.com
+ [74.125.149.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id D651426531D
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 15:31:23 +0200 (CEST)
+Received: by obbeh20 with SMTP id eh20so2018968obb.38
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 06:31:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,99 +27,94 @@ List-Id: alsa-devel@alsa-project.org
 
 Use DAPM mapping for stream events and give unique names for the streams.
 This change also fixes the following warning:
-twl4030-codec twl4030-codec: Failed to create Capture debugfs file
+twl6040-codec twl6040-codec: Failed to create Capture debugfs file
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl4030.c | 48 +++++++++++++++++++++++++++-------------------
- 1 file changed, 28 insertions(+), 20 deletions(-)
+ sound/soc/codecs/twl6040.c | 43 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 2548f5c..962341d 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1237,16 +1237,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("Virtual Voice OUT"),
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index c084c54..e8f97af 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -727,10 +727,8 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
+ 			TWL6040_REG_MICRCTL, 1, 0, NULL, 0),
+ 
+ 	/* ADCs */
+-	SND_SOC_DAPM_ADC("ADC Left", "Left Front Capture",
+-			TWL6040_REG_MICLCTL, 2, 0),
+-	SND_SOC_DAPM_ADC("ADC Right", "Right Front Capture",
+-			TWL6040_REG_MICRCTL, 2, 0),
++	SND_SOC_DAPM_ADC("ADC Left", NULL, TWL6040_REG_MICLCTL, 2, 0),
++	SND_SOC_DAPM_ADC("ADC Right", NULL, TWL6040_REG_MICRCTL, 2, 0),
+ 
+ 	/* Microphone bias */
+ 	SND_SOC_DAPM_SUPPLY("Headset Mic Bias",
+@@ -743,15 +741,12 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
+ 			    TWL6040_REG_DMICBCTL, 4, 0, NULL, 0),
  
  	/* DACs */
--	SND_SOC_DAPM_DAC("DAC Right1", "Right Front HiFi Playback",
+-	SND_SOC_DAPM_DAC("HSDAC Left", "Headset Playback", SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_DAC("HSDAC Right", "Headset Playback", SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_DAC("HFDAC Left", "Handsfree Playback",
+-			 TWL6040_REG_HFLCTL, 0, 0),
+-	SND_SOC_DAPM_DAC("HFDAC Right", "Handsfree Playback",
+-			 TWL6040_REG_HFRCTL, 0, 0),
++	SND_SOC_DAPM_DAC("HSDAC Left", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("HSDAC Right", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("HFDAC Left", NULL, TWL6040_REG_HFLCTL, 0, 0),
++	SND_SOC_DAPM_DAC("HFDAC Right", NULL, TWL6040_REG_HFRCTL, 0, 0),
+ 	/* Virtual DAC for vibra path (DL4 channel) */
+-	SND_SOC_DAPM_DAC("VIBRA DAC", "Vibra Playback",
 -			SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC("DAC Left1", "Left Front HiFi Playback",
--			SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC("DAC Right2", "Right Rear HiFi Playback",
--			SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC("DAC Left2", "Left Rear HiFi Playback",
--			SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC("DAC Voice", "Voice Playback",
--			SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC Right1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC Left1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC Right2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC Left2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC Voice", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("VIBRA DAC", NULL, SND_SOC_NOPM, 0, 0),
  
- 	/* Analog bypasses */
- 	SND_SOC_DAPM_SWITCH("Right1 Analog Loopback", SND_SOC_NOPM, 0, 0,
-@@ -1375,14 +1370,10 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 
- 	/* Introducing four virtual ADC, since TWL4030 have four channel for
- 	   capture */
--	SND_SOC_DAPM_ADC("ADC Virtual Left1", "Left Front Capture",
--		SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_ADC("ADC Virtual Right1", "Right Front Capture",
--		SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_ADC("ADC Virtual Left2", "Left Rear Capture",
--		SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_ADC("ADC Virtual Right2", "Right Rear Capture",
--		SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC Virtual Left1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC Virtual Right1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC Virtual Left2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC Virtual Right2", NULL, SND_SOC_NOPM, 0, 0),
- 
- 	/* Analog/Digital mic path selection.
- 	   TX1 Left/Right: either analog Left/Right or Digimic0
-@@ -1426,6 +1417,23 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Handsfree Left Playback",
+ 			SND_SOC_NOPM, 0, 0, &hfl_mux_controls),
+@@ -810,6 +805,26 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
  };
  
  static const struct snd_soc_dapm_route intercon[] = {
 +	/* Stream -> DAC mapping */
-+	{"DAC Right1", NULL, "HiFi Playback"},
-+	{"DAC Left1", NULL, "HiFi Playback"},
-+	{"DAC Right2", NULL, "HiFi Playback"},
-+	{"DAC Left2", NULL, "HiFi Playback"},
-+	{"DAC Voice", NULL, "Voice Playback"},
++	{"HSDAC Left", NULL, "Legacy Playback"},
++	{"HSDAC Left", NULL, "Headset Playback"},
++	{"HSDAC Right", NULL, "Legacy Playback"},
++	{"HSDAC Right", NULL, "Headset Playback"},
++
++	{"HFDAC Left", NULL, "Legacy Playback"},
++	{"HFDAC Left", NULL, "Handsfree Playback"},
++	{"HFDAC Right", NULL, "Legacy Playback"},
++	{"HFDAC Right", NULL, "Handsfree Playback"},
++
++	{"VIBRA DAC", NULL, "Legacy Playback"},
++	{"VIBRA DAC", NULL, "Vibra Playback"},
 +
 +	/* ADC -> Stream mapping */
-+	{"HiFi Capture", NULL, "ADC Virtual Left1"},
-+	{"HiFi Capture", NULL, "ADC Virtual Right1"},
-+	{"HiFi Capture", NULL, "ADC Virtual Left2"},
-+	{"HiFi Capture", NULL, "ADC Virtual Right2"},
-+	{"Voice Capture", NULL, "ADC Virtual Left1"},
-+	{"Voice Capture", NULL, "ADC Virtual Right1"},
-+	{"Voice Capture", NULL, "ADC Virtual Left2"},
-+	{"Voice Capture", NULL, "ADC Virtual Right2"},
++	{"ADC Left", NULL, "Legacy Capture"},
++	{"ADC Left", NULL, "Capture"},
++	{"ADC Right", NULL, "Legacy Capture"},
++	{"ADC Right", NULL, "Capture"},
 +
- 	{"Digital L1 Playback Mixer", NULL, "DAC Left1"},
- 	{"Digital R1 Playback Mixer", NULL, "DAC Right1"},
- 	{"Digital L2 Playback Mixer", NULL, "DAC Left2"},
-@@ -2170,7 +2178,7 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
- 		.formats = TWL4030_FORMATS,
- 		.sig_bits = 24,},
+ 	/* Capture path */
+ 	{"Analog Left Capture Route", "Headset Mic", "HSMIC"},
+ 	{"Analog Left Capture Route", "Main Mic", "MAINMIC"},
+@@ -1028,14 +1043,14 @@ static struct snd_soc_dai_driver twl6040_dai[] = {
+ {
+ 	.name = "twl6040-legacy",
+ 	.playback = {
+-		.stream_name = "Playback",
++		.stream_name = "Legacy Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 5,
+ 		.rates = TWL6040_RATES,
+ 		.formats = TWL6040_FORMATS,
+ 	},
  	.capture = {
 -		.stream_name = "Capture",
-+		.stream_name = "HiFi Capture",
- 		.channels_min = 2,
- 		.channels_max = 4,
- 		.rates = TWL4030_RATES,
-@@ -2187,7 +2195,7 @@ static struct snd_soc_dai_driver twl4030_dai[] = {
- 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
- 	.capture = {
--		.stream_name = "Capture",
-+		.stream_name = "Voice Capture",
++		.stream_name = "Legacy Capture",
  		.channels_min = 1,
  		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
+ 		.rates = TWL6040_RATES,
 -- 
 1.7.12
