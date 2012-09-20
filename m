@@ -1,19 +1,15 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 08/29] ARM: OMAP2+: Make board-zoom.h local
-Date: Thu, 20 Sep 2012 10:15:34 -0700
-Message-ID: <20120920171534.GC28835@atomide.com>
-References: <20120919205732.28074.43697.stgit@muffinssi>
- <20120919210554.28074.2280.stgit@muffinssi>
- <505AC5D3.1040907@ti.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [RFC PATCH v3 0/5] snd-ice1712: Add Philips PSC724
+	Ultimate Edge
+Date: Thu, 20 Sep 2012 20:37:50 +0200
+Message-ID: <1348166275-13203-1-git-send-email-linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-04-ewr.mailhop.org [204.13.248.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DD95265B6D
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 19:15:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <505AC5D3.1040907@ti.com>
+Received: from mail.atlantis.sk (mail-1-out2.atlantis.sk [80.94.52.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC74B265B8D
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 20:38:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +19,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [120920 00:29]:
-> Hi Tony,
-> 
-> 
-> On 09/20/2012 12:05 AM, Tony Lindgren wrote:
-> > This can be local to mach-omap2 after we rip out the messed up
-> > extmute stuff from board-zoom-peripherals.c that's all over
-> > the place and probably does not even work because of all the
-> > hardcoded GPIO numbers.
-> > 
-> > I also suggest ASoC gusy remove all extmute handling from
-> > sound/soc/codecs/twl4030.c unless it's been tested to work
-> > and implemented in a saner way.
-> 
-> I just wanted to note that I also have pending patch for zoom2.c as part of
-> the twl4030 audio module DT support series:
-> http://lkml.indiana.edu/hypermail/linux/kernel/1209.1/00711.html
 
-Oh great, that makes it quite a bit saner. I'll drop this
-for now as after your patch I can just move it.
+Hello,
+this is third attempt to add Philips PSC724 Ultimate Edge sound card
+support to snd-ice1712 driver. Unlike other snd-ice1712 subdrivers, the codec
+code is splitted into separate files, reusable by other ice1712 subdrivers.
 
-Regards,
+Working: all analog outputs (front, rear, center+lfe, headphone) and inputs
+(front mic, rear mic, line, cd, aux), mixer, headphone jack detection,
+suspend/resume
 
-Tony
+Currently untested: SPDIF
+
+Buggy: switching AGC mode in mixer causes alsamixer to crash - looks like
+it does not like notifications about control activating/deactivating
