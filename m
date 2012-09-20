@@ -1,16 +1,17 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Linux Kernel-3.5 crashed as dapm is not supported by
-	codec
-Date: Thu, 20 Sep 2012 16:46:27 +0530
-Message-ID: <505AFB0B.7010306@st.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [GIT PULL] MOP500 Audio patches due for ASoC
+Date: Thu, 20 Sep 2012 13:37:15 +0200
+Message-ID: <20120920113715.GB17429@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog106.obsmtp.com (eu1sys200aog106.obsmtp.com
- [207.126.144.121])
- by alsa0.perex.cz (Postfix) with ESMTP id E65002652E4
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 13:16:35 +0200 (CEST)
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B36E2652E0
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 13:37:20 +0200 (CEST)
+Received: by eeke50 with SMTP id e50so782597eek.38
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 04:37:20 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,107 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@opensource.wolfsonmicro.com
+Cc: ola.o.lilja@stericsson.com, linus.walleij@linaro.org, alsa-devel@alsa-project.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello Peter
-
-I am working on Linux Kernel-3.5.
-
-I have not provided the dapm support in codec. When the system goes in 
-hibernation state it gets crashed. command for putting the system in 
-hibernation:
-
-echo disk > /sys/power/state
-
-Please find below the crash log
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000008
-pgd = bd470000
-[00000008] *pgd=3d43b831, *pte=00000000, *ppte=00000000
-Internal error: Oops: 17 [#1] SMP ARM
-Modules linked in:
-CPU: 1    Not tainted  (3.5.0-lsp-3.3.0-rc1 #5)
-PC is at snd_soc_dapm_shutdown+0x48/0x11c
-LR is at snd_soc_poweroff+0x68/0x70
-pc : [<80372438>]    lr : [<8036ccf4>]    psr: 00000013
-sp : bd5bbd98  ip : bd5bbdc8  fp : bd5bbdc4
-r10: 806a6048  r9 : 8044e200  r8 : bd5bbd98
-r7 : 807260c4  r6 : bebceec8  r5 : ffffffec  r4 : bebcee08
-r3 : 00000000  r2 : bebcec10  r1 : 00000000  r0 : 807260c4
-Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 10c53c7d  Table: 3d47004a  DAC: 00000015
-Process disk.sh (pid: 1932, stack limit = 0xbd5ba2f0)
-Stack: (0xbd5bbd98 to 0xbd5bc000)
-bd80:                                                       bd5bbd98 
-bd5bbd98
-bda0: bd5bbdc4 807260c4 000016b0 00000004 00000000 8024397c bd5bbde4 
-bd5bbdc8
-bdc0: 8036ccf4 803723fc 8036cc8c be9b2808 be9b2808 00000000 bd5bbdf4 
-bd5bbde8
-bde0: 802439bc 8036cc98 bd5bbe2c bd5bbdf8 80247a28 80243988 80435b80 
-8008fc18
-be00: 00000000 00000000 bd5bbe2c be9b2808 00000004 be9b283c 8072359c 
-00000004
-be20: bd5bbe54 bd5bbe30 80248564 802479f8 806a5c98 009b2880 be9b2880 
-00000000
-be40: 806a6008 be9b2808 bd5bbe8c bd5bbe58 80248dac 80248450 3a87fb94 
-00000023
-be60: 3a87fb94 00000023 00000004 806f6e58 00000004 00000005 be863e00 
-bd4a2918
-be80: bd5bbea4 bd5bbe90 80249144 80248cfc 00000001 00000000 bd5bbebc 
-bd5bbea8
-bea0: 800590a8 802490e4 00000000 806953ac bd5bbed4 bd5bbec0 800592dc 
-8005906c
-bec0: bde8b000 be863f00 bd5bbefc bd5bbed8 80057444 80059194 00000005 
-be863f00
-bee0: bd4a2900 bd5bbf70 be863e00 bd4a2918 bd5bbf0c bd5bbf00 801e5e18 
-80057394
-bf00: bd5bbf3c bd5bbf10 80124f18 801e5e08 bd5bbf70 00000005 bdcd9300 
-76fc6000
-bf20: bd5bbf70 00000000 00000000 00000000 bd5bbf6c bd5bbf40 800cf8b0 
-80124e0c
-bf40: 00000000 bde7b500 00000003 bdcd9300 76fc6000 00000005 00000004 
-00000000
-bf60: bd5bbfa4 bd5bbf70 800cfb2c 800cf7f8 00000000 00000000 00000005 
-00000000
-bf80: 00000004 76f87628 00000005 76fc6000 8000e088 bd5ba000 00000000 
-bd5bbfa8
-bfa0: 8000dde0 800cfaec 76f87628 00000005 00000001 76fc6000 00000005 
-00000000
-bfc0: 76f87628 00000005 76fc6000 00000004 00000005 76fc74c0 000b0094 
-0005dae8
-bfe0: 00000005 7e8df7c8 76ed713c 76f1fafc 60000010 00000001 3fffe821 
-3fffec21
-[<80372438>] (snd_soc_dapm_shutdown+0x48/0x11c) from [<8036ccf4>] 
-(snd_soc_poweroff+0x68/0x70)
-[<8036ccf4>] (snd_soc_poweroff+0x68/0x70) from [<802439bc>] 
-(platform_pm_poweroff+0x40/0x58)
-[<802439bc>] (platform_pm_poweroff+0x40/0x58) from [<80247a28>] 
-(dpm_run_callback.isra.12+0x3c/0x74)
-[<80247a28>] (dpm_run_callback.isra.12+0x3c/0x74) from [<80248564>] 
-(__device_suspend+0x120/0x194)
-[<80248564>] (__device_suspend+0x120/0x194) from [<80248dac>] 
-(dpm_suspend+0xbc/0x224)
-[<80248dac>] (dpm_suspend+0xbc/0x224) from [<80249144>] 
-(dpm_suspend_start+0x6c/0x74)
-[<80249144>] (dpm_suspend_start+0x6c/0x74) from [<800590a8>] 
-(hibernation_platform_enter+0x48/0x128)
-[<800590a8>] (hibernation_platform_enter+0x48/0x128) from [<800592dc>] 
-(hibernate+0x154/0x21c)
-[<800592dc>] (hibernate+0x154/0x21c) from [<80057444>] 
-(state_store+0xbc/0xd0)
-[<80057444>] (state_store+0xbc/0xd0) from [<801e5e18>] 
-(kobj_attr_store+0x1c/0x28)
-[<801e5e18>] (kobj_attr_store+0x1c/0x28) from [<80124f18>] 
-(sysfs_write_file+0x118/0x14c)
-[<80124f18>] (sysfs_write_file+0x118/0x14c) from [<800cf8b0>] 
-(vfs_write+0xc4/0x140)
-[<800cf8b0>] (vfs_write+0xc4/0x140) from [<800cfb2c>] (sys_write+0x4c/0x78)
-[<800cfb2c>] (sys_write+0x4c/0x78) from [<8000dde0>] 
-(ret_fast_syscall+0x0/0x48)
-Code: e59350f8 e3a03000 e2455014 ea00000f (e595201c)
-
-Best Regards
-Rajeev
+VGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA1Njk4YmQ3NTdkNTViMWJiODdlZGQx
+YTk3NDRhYjA5YzE0MmFiZmMyOgoKICBMaW51eCAzLjYtcmM2ICgyMDEyLTA5LTE2IDE0OjU4OjUx
+IC0wNzAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDov
+L2dpdC5saW5hcm8ub3JnL3Blb3BsZS9sam9uZXMvbGludXgtMy4wLXV4NTAwLmdpdCBmb3ItYXNv
+Yy1uZXh0Cgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gYjRjYWQ3YWY2NjY1NzQzNjQ3
+ZjI4MTE5YjY4OWUxNTUyMzI2ZDRkYToKCiAgRG9jdW1lbnRhdGlvbjogRGVmaW5lIHRoZSBNU1Ag
+RHJpdmVyIERldmljZSBUcmVlIGJpbmRpbmdzICgyMDEyLTA5LTIwIDA5OjEwOjU5ICswMjAwKQoK
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpMZWUgSm9uZXMgKDcpOgogICAgICBBU29DOiBVeDUwMDogTW92ZSBNU1AgcGluY3Ry
+bCBzZXR1cCBpbnRvIHRoZSBNU1AgZHJpdmVyCiAgICAgIEFTb0M6IFV4NTAwOiBFbmFibGUgTU9Q
+NTAwIGRyaXZlciBmb3IgRGV2aWNlIFRyZWUKICAgICAgQVNvQzogVXg1MDA6IEVuYWJsZSB1eDUw
+MCBNU1AgZHJpdmVyIGZvciBEZXZpY2UgVHJlZQogICAgICBBU29DOiBjb2RlY3M6IEVuYWJsZSBB
+Qjg1MDAgQ09ERUMgZm9yIERldmljZSBUcmVlCiAgICAgIEFTb0M6IFV4NTAwOiBNaW5vciBjb2Rp
+bmcgbGF5b3V0IGNoYW5nZXMKICAgICAgRG9jdW1lbnRhdGlvbjogRGVmaW5lIHRoZSBNT1A1MDAg
+QXVkaW8gTWFjaGluZSBEcml2ZXIgRGV2aWNlIFRyZWUgYmluZGluZ3MKICAgICAgRG9jdW1lbnRh
+dGlvbjogRGVmaW5lIHRoZSBNU1AgRHJpdmVyIERldmljZSBUcmVlIGJpbmRpbmdzCgogLi4uL2Rl
+dmljZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbW9wNTAwLnR4dCAgICAgfCAgIDM5ICsrKysr
+KysrKwogLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvdXg1MDAtbXNwLnR4dCAgICAgICAg
+fCAgIDQzICsrKysrKysrKysKIGFyY2gvYXJtL21hY2gtdXg1MDAvYm9hcmQtbW9wNTAwLW1zcC5j
+ICAgICAgICAgICAgIHwgICA3OSArLS0tLS0tLS0tLS0tLS0tLQogYXJjaC9hcm0vbWFjaC11eDUw
+MC9pbmNsdWRlL21hY2gvbXNwLmggICAgICAgICAgICAgfCAgICAyIC0KIGluY2x1ZGUvbGludXgv
+bWZkL2FieDUwMC9hYjg1MDAtY29kZWMuaCAgICAgICAgICAgIHwgICAgNiArLQogc291bmQvc29j
+L2NvZGVjcy9hYjg1MDAtY29kZWMuYyAgICAgICAgICAgICAgICAgICAgfCAgIDgxICsrKysrKysr
+KysrKysrKysrKwogc291bmQvc29jL3V4NTAwL21vcDUwMC5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgIDQ3ICsrKysrKysrKy0tCiBzb3VuZC9zb2MvdXg1MDAvdXg1MDBfbXNwX2RhaS5j
+ICAgICAgICAgICAgICAgICAgICB8ICAgIDYgKysKIHNvdW5kL3NvYy91eDUwMC91eDUwMF9tc3Bf
+aTJzLmMgICAgICAgICAgICAgICAgICAgIHwgICA4OSArKysrKysrKysrKysrKystLS0tLQogc291
+bmQvc29jL3V4NTAwL3V4NTAwX21zcF9pMnMuaCAgICAgICAgICAgICAgICAgICAgfCAgICA4ICst
+CiAxMCBmaWxlcyBjaGFuZ2VkLCAyOTIgaW5zZXJ0aW9ucygrKSwgMTA4IGRlbGV0aW9ucygtKQog
+Y3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3Vu
+ZC91eDUwMC1tb3A1MDAudHh0CiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL3NvdW5kL3V4NTAwLW1zcC50eHQKCi0tIApMZWUgSm9uZXMKTGluYXJv
+IFNULUVyaWNzc29uIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNl
+IHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIg
+fCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
