@@ -1,49 +1,53 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
-Date: Thu, 20 Sep 2012 07:39:34 +0000
-Message-ID: <201209200739.34899.arnd@arndb.de>
-References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Audio codec volume control
+Date: Thu, 20 Sep 2012 13:26:39 +0530
+Message-ID: <505ACC37.3060209@st.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, linux-fbdev@vger.kernel.org, Chris Ball <cjb@laptop.org>, linux-mmc@vger.kernel.org, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-media@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, rtc-linux@googlegroups.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>, linux-i2c@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Vinod Koul <vinod.koul@linux.intel.com>, Paulius
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
+ [207.126.144.137])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB0BC260744
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 09:56:45 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 20 September 2012, Shawn Guo wrote:
-> 
-> Here is the second post, which should have addressed the comments that
-> reviewers put on v1.
-> 
-> It's available on branch below.
-> 
->   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform-v2
-> 
-> And it's based on the following branches.
-> 
->   calxeda/multi-plat
->   arm-soc/multiplatform/platform-data
->   arm-soc/multiplatform/smp_ops
->   arm-soc/imx/cleanup
->   arm-soc/imx/dt
->   sound/for-3.7
-> 
-> Subsystem maintainers,
-> 
-> I plan to send the whole series for 3.7 via arm-soc tree.  Please let
-> me know if you have problem with that.  Thanks.
+Hello Mark,
 
-The first five branches are scheduled to go through the arm-soc tree, so
-I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
-to expect that hitting mainline. If it always gets in very early during the
-merge window, it's probably ok to put the imx/multi-platform patches into
-the same branch as the other ones in arm-soc and wait for the sound stuff
-to hit mainline first, otherwise I'd suggest we start a second
-next/multiplatform-2 branch for imx and send the first part early on
-but then wait with the second batch before sound gets in.
+We have three volume control in audio codec.
+1. Master volume: control both left and right channel volume
+2. left volume: control left channel vol
+3. right volume: control right channel vol.
 
-	Arnd
+So we can provide interfaces for all volume control to the user. Please
+find below the control I can provide to the user space
+
+case 1:
+1. Provide master volume control
+2. Provide Left channel volume control.
+3. Provide Right channel volume control.
+
+case 2:
+
+1. Provide master volume control
+2. Instead of providing separate control for left and right channel,
+combined it and provide a single control to user space. so that left and 
+right volume is always in sync.
+
+
+Please let me know which case is better and why?
+
+Thank you very much for your support.
+
+Best Regards
+Rajeev
