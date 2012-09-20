@@ -1,21 +1,19 @@
-From: Adam Williamson <awilliam@redhat.com>
-Subject: Re: Internal speaker output from Sony Vaio Z (2010
- model) lost somewhere between 3.1.0 and 3.2.6
-Date: Wed, 19 Sep 2012 23:00:16 -0700
-Message-ID: <1348120816.3462.6.camel@adam>
-References: <1331939409.22414.29.camel@adam> <s5hty1nh7i6.wl%tiwai@suse.de>
- <1343253173.6396.8.camel@adam> <s5htxwv6plt.wl%tiwai@suse.de>
- <1343366802.6396.48.camel@adam> <s5hpq7hr5xa.wl%tiwai@suse.de>
- <1343429741.6396.74.camel@adam> <s5h8ve3kmyu.wl%tiwai@suse.de>
- <1348087629.1618.0.camel@vaioz> <s5h392dnt84.wl%tiwai@suse.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: snd_usb changes broke audio
+Date: Thu, 20 Sep 2012 08:41:06 +0200
+Message-ID: <505ABA82.6040108@gmail.com>
+References: <CAMRX0_iPdK15wtn2YP4-K+GtRbe59KCeB4giqKFnROpx51bGpg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id ACCCF260202
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 08:00:20 +0200 (CEST)
-In-Reply-To: <s5h392dnt84.wl%tiwai@suse.de>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11EB1260305
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 08:41:15 +0200 (CEST)
+Received: by bkuw5 with SMTP id w5so756725bku.38
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 23:41:14 -0700 (PDT)
+In-Reply-To: <CAMRX0_iPdK15wtn2YP4-K+GtRbe59KCeB4giqKFnROpx51bGpg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Nate Garner <nathanegarner@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2012-09-20 at 07:44 +0200, Takashi Iwai wrote:
-> At Wed, 19 Sep 2012 13:47:09 -0700,
-> Adam Williamson wrote:
-> > 
-> > On Sun, 2012-07-29 at 10:09 +0200, Takashi Iwai wrote:
-> > 
-> > > > OK, a re-diffed version of that patch against 3.5 works. (For the
-> > > > record, it looks like it's against a newer version of the file than is
-> > > > included in 3.5, and also it seems to have spaces in place of tabs - not
-> > > > sure if that's a problem on your end or on mine). So that looks good to
-> > > > me, assuming none of the stuff on the Launchpad bug is a roadblock.
-> > > > Thanks! One small nit: it's just the 'Vaio Z', not 'Vaio TT Z'. 'Vaio
-> > > > TT' is a separate (rather older) system; there's no such thing as a 'TT
-> > > > Z', to my knowledge. You might want to say 'some Vaio Zs', or something
-> > > > like that, since there have been several generations of the Z, some of
-> > > > which this won't apply to...
-> > > 
-> > > OK, I fixed the comment and applied the patch now to sound git tree.
-> > 
-> > Any chance this'll make it to 3.5 upstream? It'd be nice to have it
-> > fixed for the distros using that kernel series. I'm on 3.5.4 now and it
-> > still doesn't seem to be in.
-> 
-> I submitted the rebased patch to stable kernel right now.
+(Cc the ALSA list - please don't drop it in replies)
 
-Got the mail for that, thanks a lot!
--- 
-Adam Williamson
-Fedora QA Community Monkey
-IRC: adamw | Twitter: AdamW_Fedora | identi.ca: adamwfedora
-http://www.happyassassin.net
+On 20.09.2012 02:16, Nate Garner wrote:
+> I recently updated my kernel from 3.5.3 to 3.5.4. Upon rebooting, I no
+> longer got any audio through my external sound card, but my headphones
+> worked. I noticed in the kernel change log that you made some changes to
+> snd-usb, and thought that might be the culprit. I hope you're the right
+> person to report this too, if not, feel free to ignore.
+> Relevant info:
+> Distro: arch linux, x86_64
+> sound card: creative labs model SB0490 (soundblaser Live! 24-bit
+> external (link here
+> <http://support.creative.com/Products/ProductDetails.aspx?catID=1&subCatID=206&prodID=10702&prodName=Live!%2024-bit%20External&subCatName=Live!&CatName=Sound+Blas&VARSET=prodfaq:PRODFAQ_10702,VARSET=CategoryID:1>)
+> alsa version 1.0.26
+> pulseaudio version 2.1
+
+Argh! I believed we finally fixed all the regressions.
+
+Are there any messages in the logs or in dmesg that look releated? Can
+you send the output of "lsusb -v", please?
+
+
+Daniel
