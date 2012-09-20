@@ -1,136 +1,49 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 08/29] ARM: OMAP2+: Make board-zoom.h local
-Date: Thu, 20 Sep 2012 10:29:23 +0300
-Message-ID: <505AC5D3.1040907@ti.com>
-References: <20120919205732.28074.43697.stgit@muffinssi>
- <20120919210554.28074.2280.stgit@muffinssi>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
+Date: Thu, 20 Sep 2012 07:39:34 +0000
+Message-ID: <201209200739.34899.arnd@arndb.de>
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
- [74.125.149.201])
- by alsa0.perex.cz (Postfix) with ESMTP id F079E264EBF
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 09:28:30 +0200 (CEST)
-Received: by obbeh20 with SMTP id eh20so1761418obb.38
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 00:28:29 -0700 (PDT)
-In-Reply-To: <20120919210554.28074.2280.stgit@muffinssi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>, Rob Herring <rob.herring@calxeda.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, linux-fbdev@vger.kernel.org, Chris Ball <cjb@laptop.org>, linux-mmc@vger.kernel.org, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-media@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, rtc-linux@googlegroups.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>, linux-i2c@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Vinod Koul <vinod.koul@linux.intel.com>, Paulius
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVG9ueSwKCgpPbiAwOS8yMC8yMDEyIDEyOjA1IEFNLCBUb255IExpbmRncmVuIHdyb3RlOgo+
-IFRoaXMgY2FuIGJlIGxvY2FsIHRvIG1hY2gtb21hcDIgYWZ0ZXIgd2UgcmlwIG91dCB0aGUgbWVz
-c2VkIHVwCj4gZXh0bXV0ZSBzdHVmZiBmcm9tIGJvYXJkLXpvb20tcGVyaXBoZXJhbHMuYyB0aGF0
-J3MgYWxsIG92ZXIKPiB0aGUgcGxhY2UgYW5kIHByb2JhYmx5IGRvZXMgbm90IGV2ZW4gd29yayBi
-ZWNhdXNlIG9mIGFsbCB0aGUKPiBoYXJkY29kZWQgR1BJTyBudW1iZXJzLgo+IAo+IEkgYWxzbyBz
-dWdnZXN0IEFTb0MgZ3VzeSByZW1vdmUgYWxsIGV4dG11dGUgaGFuZGxpbmcgZnJvbQo+IHNvdW5k
-L3NvYy9jb2RlY3MvdHdsNDAzMC5jIHVubGVzcyBpdCdzIGJlZW4gdGVzdGVkIHRvIHdvcmsKPiBh
-bmQgaW1wbGVtZW50ZWQgaW4gYSBzYW5lciB3YXkuCgpJIGp1c3Qgd2FudGVkIHRvIG5vdGUgdGhh
-dCBJIGFsc28gaGF2ZSBwZW5kaW5nIHBhdGNoIGZvciB6b29tMi5jIGFzIHBhcnQgb2YKdGhlIHR3
-bDQwMzAgYXVkaW8gbW9kdWxlIERUIHN1cHBvcnQgc2VyaWVzOgpodHRwOi8vbGttbC5pbmRpYW5h
-LmVkdS9oeXBlcm1haWwvbGludXgva2VybmVsLzEyMDkuMS8wMDcxMS5odG1sCgoKPiAKPiBDYzog
-UGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4KPiBDYzogSmFya2tvIE5pa3Vs
-YSA8amFya2tvLm5pa3VsYUBiaXRtZXIuY29tPgo+IENjOiBMaWFtIEdpcmR3b29kIDxscmdAdGku
-Y29tPgo+IENjOiBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNv
-bT4KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gU2lnbmVkLW9mZi1ieTogVG9u
-eSBMaW5kZ3JlbiA8dG9ueUBhdG9taWRlLmNvbT4KPiAtLS0KPiAgYXJjaC9hcm0vbWFjaC1vbWFw
-Mi9ib2FyZC0zNjMwc2RwLmMgICAgICAgICAgIHwgICAgMiArLQo+ICBhcmNoL2FybS9tYWNoLW9t
-YXAyL2JvYXJkLWxkcC5jICAgICAgICAgICAgICAgfCAgICAyICstCj4gIGFyY2gvYXJtL21hY2gt
-b21hcDIvYm9hcmQtem9vbS1kZWJ1Z2JvYXJkLmMgICB8ICAgIDIgKy0KPiAgYXJjaC9hcm0vbWFj
-aC1vbWFwMi9ib2FyZC16b29tLWRpc3BsYXkuYyAgICAgIHwgICAgMiArLQo+ICBhcmNoL2FybS9t
-YWNoLW9tYXAyL2JvYXJkLXpvb20tcGVyaXBoZXJhbHMuYyAgfCAgIDE2ICstLS0tLS0tLS0tLS0t
-LS0KPiAgYXJjaC9hcm0vbWFjaC1vbWFwMi9ib2FyZC16b29tLmMgICAgICAgICAgICAgIHwgICAg
-MiArLQo+ICBhcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLXpvb20uaCAgICAgICAgICAgICAgfCAg
-ICAwIAo+ICBzb3VuZC9zb2Mvb21hcC96b29tMi5jICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-ICAyICstCj4gIDggZmlsZXMgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAyMSBkZWxldGlvbnMo
-LSkKPiAgcmVuYW1lIGFyY2gvYXJtL21hY2gtb21hcDIve2luY2x1ZGUvbWFjaC9ib2FyZC16b29t
-LmggPT4gYm9hcmQtem9vbS5ofSAoMTAwJSkKPiAKPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFj
-aC1vbWFwMi9ib2FyZC0zNjMwc2RwLmMgYi9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLTM2MzBz
-ZHAuYwo+IGluZGV4IDg1MThiMTMuLmM3ZDZlYTIgMTAwNjQ0Cj4gLS0tIGEvYXJjaC9hcm0vbWFj
-aC1vbWFwMi9ib2FyZC0zNjMwc2RwLmMKPiArKysgYi9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJk
-LTM2MzBzZHAuYwo+IEBAIC0yMCw3ICsyMCw3IEBACj4gICNpbmNsdWRlIDxwbGF0L2dwbWMtc21j
-OTF4Lmg+Cj4gICNpbmNsdWRlIDxwbGF0L3VzYi5oPgo+ICAKPiAtI2luY2x1ZGUgPG1hY2gvYm9h
-cmQtem9vbS5oPgo+ICsjaW5jbHVkZSAiYm9hcmQtem9vbS5oIgo+ICAKPiAgI2luY2x1ZGUgImJv
-YXJkLWZsYXNoLmgiCj4gICNpbmNsdWRlICJtdXguaCIKPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0v
-bWFjaC1vbWFwMi9ib2FyZC1sZHAuYyBiL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtbGRwLmMK
-PiBpbmRleCAzZjNhNTUyLi5kMDM3MmE2IDEwMDY0NAo+IC0tLSBhL2FyY2gvYXJtL21hY2gtb21h
-cDIvYm9hcmQtbGRwLmMKPiArKysgYi9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLWxkcC5jCj4g
-QEAgLTM2LDcgKzM2LDcgQEAKPiAgI2luY2x1ZGUgPHBsYXQvbWNzcGkuaD4KPiAgI2luY2x1ZGUg
-ImNvbW1vbi5oIgo+ICAjaW5jbHVkZSA8cGxhdC9ncG1jLmg+Cj4gLSNpbmNsdWRlIDxtYWNoL2Jv
-YXJkLXpvb20uaD4KPiArI2luY2x1ZGUgImJvYXJkLXpvb20uaCIKPiAgI2luY2x1ZGUgPHBsYXQv
-dXNiLmg+Cj4gICNpbmNsdWRlIDxwbGF0L2dwbWMtc21zYzkxMXguaD4KPiAgCj4gZGlmZiAtLWdp
-dCBhL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS1kZWJ1Z2JvYXJkLmMgYi9hcmNoL2Fy
-bS9tYWNoLW9tYXAyL2JvYXJkLXpvb20tZGVidWdib2FyZC5jCj4gaW5kZXggMGQ4ZDkxOS4uNDJj
-OTdjMiAxMDA2NDQKPiAtLS0gYS9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLXpvb20tZGVidWdi
-b2FyZC5jCj4gKysrIGIvYXJjaC9hcm0vbWFjaC1vbWFwMi9ib2FyZC16b29tLWRlYnVnYm9hcmQu
-Ywo+IEBAIC0yMCw3ICsyMCw3IEBACj4gICNpbmNsdWRlIDxwbGF0L2dwbWMuaD4KPiAgI2luY2x1
-ZGUgPHBsYXQvZ3BtYy1zbXNjOTExeC5oPgo+ICAKPiAtI2luY2x1ZGUgPG1hY2gvYm9hcmQtem9v
-bS5oPgo+ICsjaW5jbHVkZSAiYm9hcmQtem9vbS5oIgo+ICAKPiAgI2luY2x1ZGUgInNvYy5oIgo+
-ICAjaW5jbHVkZSAiY29tbW9uLmgiCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtb21hcDIv
-Ym9hcmQtem9vbS1kaXNwbGF5LmMgYi9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLXpvb20tZGlz
-cGxheS5jCj4gaW5kZXggZWE3OWJjMi4uNmExNjJmYiAxMDA2NDQKPiAtLS0gYS9hcmNoL2FybS9t
-YWNoLW9tYXAyL2JvYXJkLXpvb20tZGlzcGxheS5jCj4gKysrIGIvYXJjaC9hcm0vbWFjaC1vbWFw
-Mi9ib2FyZC16b29tLWRpc3BsYXkuYwo+IEBAIC0xNiw3ICsxNiw3IEBACj4gICNpbmNsdWRlIDxs
-aW51eC9zcGkvc3BpLmg+Cj4gICNpbmNsdWRlIDxwbGF0L21jc3BpLmg+Cj4gICNpbmNsdWRlIDx2
-aWRlby9vbWFwZHNzLmg+Cj4gLSNpbmNsdWRlIDxtYWNoL2JvYXJkLXpvb20uaD4KPiArI2luY2x1
-ZGUgImJvYXJkLXpvb20uaCIKPiAgCj4gICNpbmNsdWRlICJjb21tb24uaCIKPiAgCj4gZGlmZiAt
-LWdpdCBhL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS1wZXJpcGhlcmFscy5jIGIvYXJj
-aC9hcm0vbWFjaC1vbWFwMi9ib2FyZC16b29tLXBlcmlwaGVyYWxzLmMKPiBpbmRleCA2YmNjMTA3
-Li5jODM3N2I3MSAxMDA2NDQKPiAtLS0gYS9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLXpvb20t
-cGVyaXBoZXJhbHMuYwo+ICsrKyBiL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS1wZXJp
-cGhlcmFscy5jCj4gQEAgLTI4LDcgKzI4LDcgQEAKPiAgI2luY2x1ZGUgImNvbW1vbi5oIgo+ICAj
-aW5jbHVkZSA8cGxhdC91c2IuaD4KPiAgCj4gLSNpbmNsdWRlIDxtYWNoL2JvYXJkLXpvb20uaD4K
-PiArI2luY2x1ZGUgImJvYXJkLXpvb20uaCIKPiAgCj4gICNpbmNsdWRlICJtdXguaCIKPiAgI2lu
-Y2x1ZGUgImhzbW1jLmgiCj4gQEAgLTI0NSwxMiArMjQ1LDYgQEAgc3RhdGljIGludCB6b29tX3R3
-bF9ncGlvX3NldHVwKHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgCXJldHVybiByZXQ7Cj4gIH0KPiAg
-Cj4gLS8qIEVYVE1VVEUgY2FsbGJhY2sgZnVuY3Rpb24gKi8KPiAtc3RhdGljIHZvaWQgem9vbTJf
-c2V0X2hzX2V4dG11dGUoaW50IG11dGUpCj4gLXsKPiAtCWdwaW9fc2V0X3ZhbHVlKFpPT00yX0hF
-QURTRVRfRVhUTVVURV9HUElPLCBtdXRlKTsKPiAtfQo+IC0KPiAgc3RhdGljIHN0cnVjdCB0d2w0
-MDMwX2dwaW9fcGxhdGZvcm1fZGF0YSB6b29tX2dwaW9fZGF0YSA9IHsKPiAgCS5zZXR1cAkJPSB6
-b29tX3R3bF9ncGlvX3NldHVwLAo+ICB9Owo+IEBAIC0yNzEsMTQgKzI2NSw2IEBAIHN0YXRpYyBp
-bnQgX19pbml0IG9tYXBfaTJjX2luaXQodm9pZCkKPiAgCQkJVFdMX0NPTU1PTl9QREFUQV9NQURD
-IHwgVFdMX0NPTU1PTl9QREFUQV9BVURJTywKPiAgCQkJVFdMX0NPTU1PTl9SRUdVTEFUT1JfVkRB
-QyB8IFRXTF9DT01NT05fUkVHVUxBVE9SX1ZQTEwyKTsKPiAgCj4gLQlpZiAobWFjaGluZV9pc19v
-bWFwX3pvb20yKCkpIHsKPiAtCQlzdHJ1Y3QgdHdsNDAzMF9jb2RlY19kYXRhICpjb2RlY19kYXRh
-Owo+IC0JCWNvZGVjX2RhdGEgPSB6b29tX3R3bGRhdGEuYXVkaW8tPmNvZGVjOwo+IC0KPiAtCQlj
-b2RlY19kYXRhLT5yYW1wX2RlbGF5X3ZhbHVlID0gMzsJLyogMTYxIG1zICovCj4gLQkJY29kZWNf
-ZGF0YS0+aHNfZXh0bXV0ZSA9IDE7Cj4gLQkJY29kZWNfZGF0YS0+c2V0X2hzX2V4dG11dGUgPSB6
-b29tMl9zZXRfaHNfZXh0bXV0ZTsKPiAtCX0KPiAgCW9tYXBfcG1pY19pbml0KDEsIDI0MDAsICJ0
-d2w1MDMwIiwgNyArIE9NQVBfSU5UQ19TVEFSVCwgJnpvb21fdHdsZGF0YSk7Cj4gIAlvbWFwX3Jl
-Z2lzdGVyX2kyY19idXMoMiwgNDAwLCBOVUxMLCAwKTsKPiAgCW9tYXBfcmVnaXN0ZXJfaTJjX2J1
-cygzLCA0MDAsIE5VTEwsIDApOwo+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLW9tYXAyL2Jv
-YXJkLXpvb20uYyBiL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS5jCj4gaW5kZXggNDk5
-NDQzOC4uY2JmZDlkZiAxMDA2NDQKPiAtLS0gYS9hcmNoL2FybS9tYWNoLW9tYXAyL2JvYXJkLXpv
-b20uYwo+ICsrKyBiL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS5jCj4gQEAgLTI0LDcg
-KzI0LDcgQEAKPiAgI2luY2x1ZGUgImNvbW1vbi5oIgo+ICAjaW5jbHVkZSA8cGxhdC91c2IuaD4K
-PiAgCj4gLSNpbmNsdWRlIDxtYWNoL2JvYXJkLXpvb20uaD4KPiArI2luY2x1ZGUgImJvYXJkLXpv
-b20uaCIKPiAgCj4gICNpbmNsdWRlICJib2FyZC1mbGFzaC5oIgo+ICAjaW5jbHVkZSAibXV4Lmgi
-Cj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtb21hcDIvaW5jbHVkZS9tYWNoL2JvYXJkLXpv
-b20uaCBiL2FyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS5oCj4gc2ltaWxhcml0eSBpbmRl
-eCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC9hcm0vbWFjaC1vbWFwMi9pbmNsdWRlL21hY2gvYm9h
-cmQtem9vbS5oCj4gcmVuYW1lIHRvIGFyY2gvYXJtL21hY2gtb21hcDIvYm9hcmQtem9vbS5oCj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL3pvb20yLmMgYi9zb3VuZC9zb2Mvb21hcC96b29t
-Mi5jCj4gaW5kZXggOTIwZTBkOS4uMTg3Y2IwYyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mvb21h
-cC96b29tMi5jCj4gKysrIGIvc291bmQvc29jL29tYXAvem9vbTIuYwo+IEBAIC0yOCw3ICsyOCw2
-IEBACj4gICNpbmNsdWRlIDxhc20vbWFjaC10eXBlcy5oPgo+ICAjaW5jbHVkZSA8bWFjaC9oYXJk
-d2FyZS5oPgo+ICAjaW5jbHVkZSA8bWFjaC9ncGlvLmg+Cj4gLSNpbmNsdWRlIDxtYWNoL2JvYXJk
-LXpvb20uaD4KPiAgI2luY2x1ZGUgPHBsYXQvbWNic3AuaD4KPiAgCj4gIC8qIFJlZ2lzdGVyIGRl
-c2NyaXB0aW9ucyBmb3IgdHdsNDAzMCBjb2RlYyBwYXJ0ICovCj4gQEAgLTM5LDYgKzM4LDcgQEAK
-PiAgI2luY2x1ZGUgIm9tYXAtcGNtLmgiCj4gIAo+ICAjZGVmaW5lIFpPT00yX0hFQURTRVRfTVVY
-X0dQSU8JCShPTUFQX01BWF9HUElPX0xJTkVTICsgMTUpCj4gKyNkZWZpbmUgWk9PTTJfSEVBRFNF
-VF9FWFRNVVRFX0dQSU8gICAgIDE1Mwo+ICAKPiAgc3RhdGljIGludCB6b29tMl9od19wYXJhbXMo
-c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gIAkJCQlzdHJ1Y3Qgc25kX3Bj
-bV9od19wYXJhbXMgKnBhcmFtcykKPiAKCgotLSAKUMOpdGVyCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thursday 20 September 2012, Shawn Guo wrote:
+> 
+> Here is the second post, which should have addressed the comments that
+> reviewers put on v1.
+> 
+> It's available on branch below.
+> 
+>   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform-v2
+> 
+> And it's based on the following branches.
+> 
+>   calxeda/multi-plat
+>   arm-soc/multiplatform/platform-data
+>   arm-soc/multiplatform/smp_ops
+>   arm-soc/imx/cleanup
+>   arm-soc/imx/dt
+>   sound/for-3.7
+> 
+> Subsystem maintainers,
+> 
+> I plan to send the whole series for 3.7 via arm-soc tree.  Please let
+> me know if you have problem with that.  Thanks.
+
+The first five branches are scheduled to go through the arm-soc tree, so
+I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
+to expect that hitting mainline. If it always gets in very early during the
+merge window, it's probably ok to put the imx/multi-platform patches into
+the same branch as the other ones in arm-soc and wait for the sound stuff
+to hit mainline first, otherwise I'd suggest we start a second
+next/multiplatform-2 branch for imx and send the first part early on
+but then wait with the second batch before sound gets in.
+
+	Arnd
