@@ -1,19 +1,23 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_ssi: Let it understand mono
-Date: Wed, 19 Sep 2012 16:49:15 -0500
-Message-ID: <505A3DDB.4060208@freescale.com>
-References: <1347984234-9275-1-git-send-email-fabio.estevam@freescale.com>
- <50589DD7.8050409@freescale.com>
- <CAOMZO5D-oHc8hdakFHPHSW_duAZ+dMuM77wUn=K=7jUMwxmg-A@mail.gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 02/34] ASoC: mx27vis: retrieve gpio numbers
+ from platform_data
+Date: Thu, 20 Sep 2012 09:14:59 +0800
+Message-ID: <20120920011456.GC2450@S2101-09.ap.freescale.net>
+References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
+ <1347860103-4141-3-git-send-email-shawn.guo@linaro.org>
+ <20120917110741.GD5401@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe003.messaging.microsoft.com [216.32.180.186])
- by alsa0.perex.cz (Postfix) with ESMTP id 30434265228
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 23:49:30 +0200 (CEST)
-In-Reply-To: <CAOMZO5D-oHc8hdakFHPHSW_duAZ+dMuM77wUn=K=7jUMwxmg-A@mail.gmail.com>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0A3B265257
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2012 03:15:04 +0200 (CEST)
+Received: by pbbro8 with SMTP id ro8so3849561pbb.38
+ for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2012 18:15:03 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20120917110741.GD5401@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +27,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, javier.martin@vista-silicon.com, Sascha Hauer <kernel@pengutronix.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <rob.herring@calxeda.com>, Javier Martin <javier.martin@vista-silicon.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Fabio Estevam wrote:
-> On Tue, Sep 18, 2012 at 1:14 PM, Timur Tabi <timur@freescale.com> wrote:
->> Fabio Estevam wrote:
->>>
->>> Can you please try to play a mono track on your PowerPC platform with these
->>> series applied?
->>
->> I'm pretty sure this won't work.  The SSI is programmed to expect a left
->> and right sample.  There is no code in fsl_ssi.c for checking the channel
->> count and adjusting the hardware accordingly.  I don't see any code like
->> that in imx-ssi.c either, so I don't even know how it's supposed to work.
+On Mon, Sep 17, 2012 at 07:07:42AM -0400, Mark Brown wrote:
+> On Mon, Sep 17, 2012 at 01:34:31PM +0800, Shawn Guo wrote:
 > 
-> It works for me on mx6qsabrelite.
-
-I just don't see how that's possible.
-
-> However, in order to play the mono track at the correct rate I also need:
+> I've applied this since Javier says it fixes a bug but I'm not terribly
+> enthused about it.
 > 
-> --- a/sound/soc/codecs/sgtl5000.c
-> +++ b/sound/soc/codecs/sgtl5000.c
-> @@ -938,7 +938,7 @@ static struct snd_soc_dai_driver sgtl5000_dai = {
->         .name = "sgtl5000",
->         .playback = {
->                 .stream_name = "Playback",
-> -               .channels_min = 1,
-> +               .channels_min = 2,
->                 .channels_max = 2,
->                 /*
->                  * only support 8~48K + 96
+Ok.  But now we have a cross-tree dependency.  Please ensure your
+for-3.7 branch is stable, so that I can ask arm-soc folks to pull
+it as dependency of my series.  Or you need to create a topic branch
+for this patch.
 
-That's because the SGTL5000 codec has (apparently) support for mono audio:
-
-	/* set mono to save power */
-	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER, stereo,
-			channels == 1 ? 0 : stereo);
-
-The problem I have with mono support is that the I2S standard says the
-LRCLK is used to distinguish between the left and right channels of a
-given sample.
-
-I do not know of any way to get the SSI to treat the left and right
-channel as two separate samples.
-
-I can imagine, however, a situation where the SSI is *tricked* into
-thinking that it's playing stereo audio when it really isn't.  The codec
-then treats the left and right channels as two different samples, and
-fakes out the clock as well.
-
-I don't know of any codec that does this.
-
-I do know of codecs that support a "left/right fill mode" where it
-duplicates the data automatically in the left and right timeslots.  But I
-don't think any codec that I've used supports this.
-
-> I would like to understand when channels_min should be set to 1 or 2
-> in the platform driver (sound/soc/fsl/fsl_ssi.c in this case) or
-> inside the codec. Could anyone clarify this, please?
-
-I still have seen no explanation as to how mono audio can work on an I2S
-device.  The I2S standard calls for a left and right channel in every
-sample, and the playback frequency is based on that sample rate.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Shawn
