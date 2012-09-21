@@ -1,8 +1,8 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 03/10] ALSA: Add CA0132 register definitions
-	file.
-Date: Thu, 20 Sep 2012 20:29:14 -0700
-Message-ID: <1348198161-9256-4-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 04/10] ALSA: Add DSP firmware enums and defs to
+	CA0132 codec
+Date: Thu, 20 Sep 2012 20:29:15 -0700
+Message-ID: <1348198161-9256-5-git-send-email-ian_minett@creativelabs.com>
 References: <1348198161-9256-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,436 +24,117 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
-
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
-diff --git a/sound/pci/hda/ca0132_regs.h b/sound/pci/hda/ca0132_regs.h
-new file mode 100644
-index 0000000..831ca9c
---- /dev/null
-+++ b/sound/pci/hda/ca0132_regs.h
-@@ -0,0 +1,409 @@
-+/*
-+ * HD audio interface patch for Creative CA0132 chip.
-+ * CA0132 registers defines.
-+ *
-+ * Copyright (c) 2011, Creative Technology Ltd.
-+ *
-+ *  This driver is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ *  This driver is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *  GNU General Public License for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software
-+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ */
-+
-+#ifndef __CA0132_REGS_H
-+#define __CA0312_REGS_H
-+
-+#define DSP_CHIP_OFFSET                0x100000
-+#define DSP_DBGCNTL_MODULE_OFFSET      0xE30
-+#define DSP_DBGCNTL_INST_OFFSET \
-+	(DSP_CHIP_OFFSET + DSP_DBGCNTL_MODULE_OFFSET)
-+
-+#define DSP_DBGCNTL_EXEC_LOBIT         0x0
-+#define DSP_DBGCNTL_EXEC_HIBIT         0x3
-+#define DSP_DBGCNTL_EXEC_MASK          0xF
-+
-+#define DSP_DBGCNTL_SS_LOBIT           0x4
-+#define DSP_DBGCNTL_SS_HIBIT           0x7
-+#define DSP_DBGCNTL_SS_MASK            0xF0
-+
-+#define DSP_DBGCNTL_STATE_LOBIT        0xA
-+#define DSP_DBGCNTL_STATE_HIBIT        0xD
-+#define DSP_DBGCNTL_STATE_MASK         0x3C00
-+
-+#define XRAM_CHIP_OFFSET               0x0
-+#define XRAM_XRAM_CHANNEL_COUNT        0xE000
-+#define XRAM_XRAM_MODULE_OFFSET        0x0
-+#define XRAM_XRAM_CHAN_INCR            4
-+#define XRAM_XRAM_INST_OFFSET(_chan) \
-+	(XRAM_CHIP_OFFSET + XRAM_XRAM_MODULE_OFFSET + \
-+	(_chan * XRAM_XRAM_CHAN_INCR))
-+
-+#define YRAM_CHIP_OFFSET               0x40000
-+#define YRAM_YRAM_CHANNEL_COUNT        0x8000
-+#define YRAM_YRAM_MODULE_OFFSET        0x0
-+#define YRAM_YRAM_CHAN_INCR            4
-+#define YRAM_YRAM_INST_OFFSET(_chan) \
-+	(YRAM_CHIP_OFFSET + YRAM_YRAM_MODULE_OFFSET + \
-+	(_chan * YRAM_YRAM_CHAN_INCR))
-+
-+#define UC_CHIP_OFFSET                 0x80000
-+#define UC_UC_CHANNEL_COUNT            0x10000
-+#define UC_UC_MODULE_OFFSET            0x0
-+#define UC_UC_CHAN_INCR                4
-+#define UC_UC_INST_OFFSET(_chan) \
-+	(UC_CHIP_OFFSET + UC_UC_MODULE_OFFSET + \
-+	(_chan * UC_UC_CHAN_INCR))
-+
-+#define AXRAM_CHIP_OFFSET              0x3C000
-+#define AXRAM_AXRAM_CHANNEL_COUNT      0x1000
-+#define AXRAM_AXRAM_MODULE_OFFSET      0x0
-+#define AXRAM_AXRAM_CHAN_INCR          4
-+#define AXRAM_AXRAM_INST_OFFSET(_chan) \
-+	(AXRAM_CHIP_OFFSET + AXRAM_AXRAM_MODULE_OFFSET + \
-+	(_chan * AXRAM_AXRAM_CHAN_INCR))
-+
-+#define AYRAM_CHIP_OFFSET              0x78000
-+#define AYRAM_AYRAM_CHANNEL_COUNT      0x1000
-+#define AYRAM_AYRAM_MODULE_OFFSET      0x0
-+#define AYRAM_AYRAM_CHAN_INCR          4
-+#define AYRAM_AYRAM_INST_OFFSET(_chan) \
-+	(AYRAM_CHIP_OFFSET + AYRAM_AYRAM_MODULE_OFFSET + \
-+	(_chan * AYRAM_AYRAM_CHAN_INCR))
-+
-+#define DSPDMAC_CHIP_OFFSET            0x110000
-+#define DSPDMAC_DMA_CFG_CHANNEL_COUNT  12
-+#define DSPDMAC_DMACFG_MODULE_OFFSET   0xF00
-+#define DSPDMAC_DMACFG_CHAN_INCR       0x10
-+#define DSPDMAC_DMACFG_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_DMACFG_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_DMACFG_CHAN_INCR))
-+
-+#define DSPDMAC_DMACFG_DBADR_LOBIT     0x0
-+#define DSPDMAC_DMACFG_DBADR_HIBIT     0x10
-+#define DSPDMAC_DMACFG_DBADR_MASK      0x1FFFF
-+#define DSPDMAC_DMACFG_LP_LOBIT        0x11
-+#define DSPDMAC_DMACFG_LP_HIBIT        0x11
-+#define DSPDMAC_DMACFG_LP_MASK         0x20000
-+
-+#define DSPDMAC_DMACFG_AINCR_LOBIT     0x12
-+#define DSPDMAC_DMACFG_AINCR_HIBIT     0x12
-+#define DSPDMAC_DMACFG_AINCR_MASK      0x40000
-+
-+#define DSPDMAC_DMACFG_DWR_LOBIT       0x13
-+#define DSPDMAC_DMACFG_DWR_HIBIT       0x13
-+#define DSPDMAC_DMACFG_DWR_MASK        0x80000
-+
-+#define DSPDMAC_DMACFG_AJUMP_LOBIT     0x14
-+#define DSPDMAC_DMACFG_AJUMP_HIBIT     0x17
-+#define DSPDMAC_DMACFG_AJUMP_MASK      0xF00000
-+
-+#define DSPDMAC_DMACFG_AMODE_LOBIT     0x18
-+#define DSPDMAC_DMACFG_AMODE_HIBIT     0x19
-+#define DSPDMAC_DMACFG_AMODE_MASK      0x3000000
-+
-+#define DSPDMAC_DMACFG_LK_LOBIT        0x1A
-+#define DSPDMAC_DMACFG_LK_HIBIT        0x1A
-+#define DSPDMAC_DMACFG_LK_MASK         0x4000000
-+
-+#define DSPDMAC_DMACFG_AICS_LOBIT      0x1B
-+#define DSPDMAC_DMACFG_AICS_HIBIT      0x1F
-+#define DSPDMAC_DMACFG_AICS_MASK       0xF8000000
-+
-+#define DSPDMAC_DMACFG_LP_SINGLE                 0
-+#define DSPDMAC_DMACFG_LP_LOOPING                1
-+
-+#define DSPDMAC_DMACFG_AINCR_XANDY               0
-+#define DSPDMAC_DMACFG_AINCR_XORY                1
-+
-+#define DSPDMAC_DMACFG_DWR_DMA_RD                0
-+#define DSPDMAC_DMACFG_DWR_DMA_WR                1
-+
-+#define DSPDMAC_DMACFG_AMODE_LINEAR              0
-+#define DSPDMAC_DMACFG_AMODE_RSV1                1
-+#define DSPDMAC_DMACFG_AMODE_WINTLV              2
-+#define DSPDMAC_DMACFG_AMODE_GINTLV              3
-+
-+#define DSPDMAC_DSP_ADR_OFS_CHANNEL_COUNT 12
-+#define DSPDMAC_DSPADROFS_MODULE_OFFSET 0xF04
-+#define DSPDMAC_DSPADROFS_CHAN_INCR    0x10
-+#define DSPDMAC_DSPADROFS_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_DSPADROFS_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_DSPADROFS_CHAN_INCR))
-+
-+#define DSPDMAC_DSPADROFS_COFS_LOBIT   0x0
-+#define DSPDMAC_DSPADROFS_COFS_HIBIT   0xF
-+#define DSPDMAC_DSPADROFS_COFS_MASK    0xFFFF
-+
-+#define DSPDMAC_DSPADROFS_BOFS_LOBIT   0x10
-+#define DSPDMAC_DSPADROFS_BOFS_HIBIT   0x1F
-+#define DSPDMAC_DSPADROFS_BOFS_MASK    0xFFFF0000
-+
-+#define DSPDMAC_DSP_ADR_WOFS_CHANNEL_COUNT 12
-+#define DSPDMAC_DSPADRWOFS_MODULE_OFFSET 0xF04
-+#define DSPDMAC_DSPADRWOFS_CHAN_INCR   0x10
-+
-+#define DSPDMAC_DSPADRWOFS_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_DSPADRWOFS_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_DSPADRWOFS_CHAN_INCR))
-+
-+#define DSPDMAC_DSPADRWOFS_WCOFS_LOBIT 0x0
-+#define DSPDMAC_DSPADRWOFS_WCOFS_HIBIT 0xA
-+#define DSPDMAC_DSPADRWOFS_WCOFS_MASK  0x7FF
-+
-+#define DSPDMAC_DSPADRWOFS_WCBFR_LOBIT 0xB
-+#define DSPDMAC_DSPADRWOFS_WCBFR_HIBIT 0xF
-+#define DSPDMAC_DSPADRWOFS_WCBFR_MASK  0xF800
-+
-+#define DSPDMAC_DSPADRWOFS_WBOFS_LOBIT 0x10
-+#define DSPDMAC_DSPADRWOFS_WBOFS_HIBIT 0x1A
-+#define DSPDMAC_DSPADRWOFS_WBOFS_MASK  0x7FF0000
-+
-+#define DSPDMAC_DSPADRWOFS_WBBFR_LOBIT 0x1B
-+#define DSPDMAC_DSPADRWOFS_WBBFR_HIBIT 0x1F
-+#define DSPDMAC_DSPADRWOFS_WBBFR_MASK  0xF8000000
-+
-+#define DSPDMAC_DSP_ADR_GOFS_CHANNEL_COUNT 12
-+#define DSPDMAC_DSPADRGOFS_MODULE_OFFSET 0xF04
-+#define DSPDMAC_DSPADRGOFS_CHAN_INCR   0x10
-+#define DSPDMAC_DSPADRGOFS_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_DSPADRGOFS_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_DSPADRGOFS_CHAN_INCR))
-+
-+#define DSPDMAC_DSPADRGOFS_GCOFS_LOBIT 0x0
-+#define DSPDMAC_DSPADRGOFS_GCOFS_HIBIT 0x9
-+#define DSPDMAC_DSPADRGOFS_GCOFS_MASK  0x3FF
-+
-+#define DSPDMAC_DSPADRGOFS_GCS_LOBIT   0xA
-+#define DSPDMAC_DSPADRGOFS_GCS_HIBIT   0xC
-+#define DSPDMAC_DSPADRGOFS_GCS_MASK    0x1C00
-+
-+#define DSPDMAC_DSPADRGOFS_GCBFR_LOBIT 0xD
-+#define DSPDMAC_DSPADRGOFS_GCBFR_HIBIT 0xF
-+#define DSPDMAC_DSPADRGOFS_GCBFR_MASK  0xE000
-+
-+#define DSPDMAC_DSPADRGOFS_GBOFS_LOBIT 0x10
-+#define DSPDMAC_DSPADRGOFS_GBOFS_HIBIT 0x19
-+#define DSPDMAC_DSPADRGOFS_GBOFS_MASK  0x3FF0000
-+
-+#define DSPDMAC_DSPADRGOFS_GBS_LOBIT   0x1A
-+#define DSPDMAC_DSPADRGOFS_GBS_HIBIT   0x1C
-+#define DSPDMAC_DSPADRGOFS_GBS_MASK    0x1C000000
-+
-+#define DSPDMAC_DSPADRGOFS_GBBFR_LOBIT 0x1D
-+#define DSPDMAC_DSPADRGOFS_GBBFR_HIBIT 0x1F
-+#define DSPDMAC_DSPADRGOFS_GBBFR_MASK  0xE0000000
-+
-+#define DSPDMAC_XFR_CNT_CHANNEL_COUNT  12
-+#define DSPDMAC_XFRCNT_MODULE_OFFSET   0xF08
-+#define DSPDMAC_XFRCNT_CHAN_INCR       0x10
-+
-+#define DSPDMAC_XFRCNT_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_XFRCNT_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_XFRCNT_CHAN_INCR))
-+
-+#define DSPDMAC_XFRCNT_CCNT_LOBIT      0x0
-+#define DSPDMAC_XFRCNT_CCNT_HIBIT      0xF
-+#define DSPDMAC_XFRCNT_CCNT_MASK       0xFFFF
-+
-+#define DSPDMAC_XFRCNT_BCNT_LOBIT      0x10
-+#define DSPDMAC_XFRCNT_BCNT_HIBIT      0x1F
-+#define DSPDMAC_XFRCNT_BCNT_MASK       0xFFFF0000
-+
-+#define DSPDMAC_IRQ_CNT_CHANNEL_COUNT  12
-+#define DSPDMAC_IRQCNT_MODULE_OFFSET   0xF0C
-+#define DSPDMAC_IRQCNT_CHAN_INCR       0x10
-+#define DSPDMAC_IRQCNT_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_IRQCNT_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_IRQCNT_CHAN_INCR))
-+
-+#define DSPDMAC_IRQCNT_CICNT_LOBIT     0x0
-+#define DSPDMAC_IRQCNT_CICNT_HIBIT     0xF
-+#define DSPDMAC_IRQCNT_CICNT_MASK      0xFFFF
-+
-+#define DSPDMAC_IRQCNT_BICNT_LOBIT     0x10
-+#define DSPDMAC_IRQCNT_BICNT_HIBIT     0x1F
-+#define DSPDMAC_IRQCNT_BICNT_MASK      0xFFFF0000
-+
-+#define DSPDMAC_AUD_CHSEL_CHANNEL_COUNT 12
-+#define DSPDMAC_AUDCHSEL_MODULE_OFFSET 0xFC0
-+#define DSPDMAC_AUDCHSEL_CHAN_INCR     0x4
-+#define DSPDMAC_AUDCHSEL_INST_OFFSET(_chan) \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_AUDCHSEL_MODULE_OFFSET + \
-+	(_chan * DSPDMAC_AUDCHSEL_CHAN_INCR))
-+
-+#define DSPDMAC_AUDCHSEL_ACS_LOBIT     0x0
-+#define DSPDMAC_AUDCHSEL_ACS_HIBIT     0x1F
-+#define DSPDMAC_AUDCHSEL_ACS_MASK      0xFFFFFFFF
-+
-+#define DSPDMAC_CHNLSTART_MODULE_OFFSET 0xFF0
-+#define DSPDMAC_CHNLSTART_INST_OFFSET \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_CHNLSTART_MODULE_OFFSET)
-+
-+#define DSPDMAC_CHNLSTART_EN_LOBIT     0x0
-+#define DSPDMAC_CHNLSTART_EN_HIBIT     0xB
-+#define DSPDMAC_CHNLSTART_EN_MASK      0xFFF
-+
-+#define DSPDMAC_CHNLSTART_VAI1_LOBIT   0xC
-+#define DSPDMAC_CHNLSTART_VAI1_HIBIT   0xF
-+#define DSPDMAC_CHNLSTART_VAI1_MASK    0xF000
-+
-+#define DSPDMAC_CHNLSTART_DIS_LOBIT    0x10
-+#define DSPDMAC_CHNLSTART_DIS_HIBIT    0x1B
-+#define DSPDMAC_CHNLSTART_DIS_MASK     0xFFF0000
-+
-+#define DSPDMAC_CHNLSTART_VAI2_LOBIT   0x1C
-+#define DSPDMAC_CHNLSTART_VAI2_HIBIT   0x1F
-+#define DSPDMAC_CHNLSTART_VAI2_MASK    0xF0000000
-+
-+#define DSPDMAC_CHNLSTATUS_MODULE_OFFSET 0xFF4
-+#define DSPDMAC_CHNLSTATUS_INST_OFFSET \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_CHNLSTATUS_MODULE_OFFSET)
-+
-+#define DSPDMAC_CHNLSTATUS_ISC_LOBIT   0x0
-+#define DSPDMAC_CHNLSTATUS_ISC_HIBIT   0xB
-+#define DSPDMAC_CHNLSTATUS_ISC_MASK    0xFFF
-+
-+#define DSPDMAC_CHNLSTATUS_AOO_LOBIT   0xC
-+#define DSPDMAC_CHNLSTATUS_AOO_HIBIT   0xC
-+#define DSPDMAC_CHNLSTATUS_AOO_MASK    0x1000
-+
-+#define DSPDMAC_CHNLSTATUS_AOU_LOBIT   0xD
-+#define DSPDMAC_CHNLSTATUS_AOU_HIBIT   0xD
-+#define DSPDMAC_CHNLSTATUS_AOU_MASK    0x2000
-+
-+#define DSPDMAC_CHNLSTATUS_AIO_LOBIT   0xE
-+#define DSPDMAC_CHNLSTATUS_AIO_HIBIT   0xE
-+#define DSPDMAC_CHNLSTATUS_AIO_MASK    0x4000
-+
-+#define DSPDMAC_CHNLSTATUS_AIU_LOBIT   0xF
-+#define DSPDMAC_CHNLSTATUS_AIU_HIBIT   0xF
-+#define DSPDMAC_CHNLSTATUS_AIU_MASK    0x8000
-+
-+#define DSPDMAC_CHNLSTATUS_IEN_LOBIT   0x10
-+#define DSPDMAC_CHNLSTATUS_IEN_HIBIT   0x1B
-+#define DSPDMAC_CHNLSTATUS_IEN_MASK    0xFFF0000
-+
-+#define DSPDMAC_CHNLSTATUS_VAI0_LOBIT  0x1C
-+#define DSPDMAC_CHNLSTATUS_VAI0_HIBIT  0x1F
-+#define DSPDMAC_CHNLSTATUS_VAI0_MASK   0xF0000000
-+
-+#define DSPDMAC_CHNLPROP_MODULE_OFFSET 0xFF8
-+#define DSPDMAC_CHNLPROP_INST_OFFSET \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_CHNLPROP_MODULE_OFFSET)
-+
-+#define DSPDMAC_CHNLPROP_DCON_LOBIT    0x0
-+#define DSPDMAC_CHNLPROP_DCON_HIBIT    0xB
-+#define DSPDMAC_CHNLPROP_DCON_MASK     0xFFF
-+
-+#define DSPDMAC_CHNLPROP_FFS_LOBIT     0xC
-+#define DSPDMAC_CHNLPROP_FFS_HIBIT     0xC
-+#define DSPDMAC_CHNLPROP_FFS_MASK      0x1000
-+
-+#define DSPDMAC_CHNLPROP_NAJ_LOBIT     0xD
-+#define DSPDMAC_CHNLPROP_NAJ_HIBIT     0xD
-+#define DSPDMAC_CHNLPROP_NAJ_MASK      0x2000
-+
-+#define DSPDMAC_CHNLPROP_ENH_LOBIT     0xE
-+#define DSPDMAC_CHNLPROP_ENH_HIBIT     0xE
-+#define DSPDMAC_CHNLPROP_ENH_MASK      0x4000
-+
-+#define DSPDMAC_CHNLPROP_MSPCE_LOBIT   0x10
-+#define DSPDMAC_CHNLPROP_MSPCE_HIBIT   0x1B
-+#define DSPDMAC_CHNLPROP_MSPCE_MASK    0xFFF0000
-+
-+#define DSPDMAC_CHNLPROP_AC_LOBIT      0x1C
-+#define DSPDMAC_CHNLPROP_AC_HIBIT      0x1F
-+#define DSPDMAC_CHNLPROP_AC_MASK       0xF0000000
-+
-+#define DSPDMAC_ACTIVE_MODULE_OFFSET   0xFFC
-+#define DSPDMAC_ACTIVE_INST_OFFSET \
-+	(DSPDMAC_CHIP_OFFSET + DSPDMAC_ACTIVE_MODULE_OFFSET)
-+
-+#define DSPDMAC_ACTIVE_AAR_LOBIT       0x0
-+#define DSPDMAC_ACTIVE_AAR_HIBIT       0xB
-+#define DSPDMAC_ACTIVE_AAR_MASK        0xFFF
-+
-+#define DSPDMAC_ACTIVE_WFR_LOBIT       0xC
-+#define DSPDMAC_ACTIVE_WFR_HIBIT       0x17
-+#define DSPDMAC_ACTIVE_WFR_MASK        0xFFF000
-+
-+#define DSP_AUX_MEM_BASE            0xE000
-+#define INVALID_CHIP_ADDRESS        (~0UL)
-+
-+#define X_SIZE  (XRAM_XRAM_CHANNEL_COUNT   * XRAM_XRAM_CHAN_INCR)
-+#define Y_SIZE  (YRAM_YRAM_CHANNEL_COUNT   * YRAM_YRAM_CHAN_INCR)
-+#define AX_SIZE (AXRAM_AXRAM_CHANNEL_COUNT * AXRAM_AXRAM_CHAN_INCR)
-+#define AY_SIZE (AYRAM_AYRAM_CHANNEL_COUNT * AYRAM_AYRAM_CHAN_INCR)
-+#define UC_SIZE (UC_UC_CHANNEL_COUNT       * UC_UC_CHAN_INCR)
-+
-+#define XEXT_SIZE (X_SIZE + AX_SIZE)
-+#define YEXT_SIZE (Y_SIZE + AY_SIZE)
-+
-+#define U64K 0x10000UL
-+
-+#define X_END  (XRAM_CHIP_OFFSET  + X_SIZE)
-+#define X_EXT  (XRAM_CHIP_OFFSET  + XEXT_SIZE)
-+#define AX_END (XRAM_CHIP_OFFSET  + U64K*4)
-+
-+#define Y_END  (YRAM_CHIP_OFFSET  + Y_SIZE)
-+#define Y_EXT  (YRAM_CHIP_OFFSET  + YEXT_SIZE)
-+#define AY_END (YRAM_CHIP_OFFSET  + U64K*4)
-+
-+#define UC_END (UC_CHIP_OFFSET    + UC_SIZE)
-+
-+#define X_RANGE_MAIN(a, s) \
-+	(((a)+((s)-1)*XRAM_XRAM_CHAN_INCR <  X_END))
-+#define X_RANGE_AUX(a, s)  \
-+	(((a) >= X_END) && ((a)+((s)-1)*XRAM_XRAM_CHAN_INCR < AX_END))
-+#define X_RANGE_EXT(a, s)  \
-+	(((a)+((s)-1)*XRAM_XRAM_CHAN_INCR <  X_EXT))
-+#define X_RANGE_ALL(a, s)  \
-+	(((a)+((s)-1)*XRAM_XRAM_CHAN_INCR < AX_END))
-+
-+#define Y_RANGE_MAIN(a, s) \
-+	(((a) >= YRAM_CHIP_OFFSET) && \
-+	((a)+((s)-1)*YRAM_YRAM_CHAN_INCR <  Y_END))
-+#define Y_RANGE_AUX(a, s)  \
-+	(((a) >= Y_END) && \
-+	((a)+((s)-1)*YRAM_YRAM_CHAN_INCR < AY_END))
-+#define Y_RANGE_EXT(a, s)  \
-+	(((a) >= YRAM_CHIP_OFFSET) && \
-+	((a)+((s)-1)*YRAM_YRAM_CHAN_INCR <  Y_EXT))
-+#define Y_RANGE_ALL(a, s)  \
-+	(((a) >= YRAM_CHIP_OFFSET) && \
-+	((a)+((s)-1)*YRAM_YRAM_CHAN_INCR < AY_END))
-+
-+#define UC_RANGE(a, s) \
-+	(((a) >= UC_CHIP_OFFSET) && \
-+	((a)+((s)-1)*UC_UC_CHAN_INCR     < UC_END))
-+
-+#define X_OFF(a) \
-+	(((a) - XRAM_CHIP_OFFSET) / XRAM_XRAM_CHAN_INCR)
-+#define AX_OFF(a) \
-+	(((a) % (AXRAM_AXRAM_CHANNEL_COUNT * \
-+	AXRAM_AXRAM_CHAN_INCR)) / AXRAM_AXRAM_CHAN_INCR)
-+
-+#define Y_OFF(a) \
-+	(((a) - YRAM_CHIP_OFFSET) / YRAM_YRAM_CHAN_INCR)
-+#define AY_OFF(a) \
-+	(((a) % (AYRAM_AYRAM_CHANNEL_COUNT * \
-+	AYRAM_AYRAM_CHAN_INCR)) / AYRAM_AYRAM_CHAN_INCR)
-+
-+#define UC_OFF(a)  (((a) - UC_CHIP_OFFSET) / UC_UC_CHAN_INCR)
-+
-+#define X_EXT_MAIN_SIZE(a)  (XRAM_XRAM_CHANNEL_COUNT - X_OFF(a))
-+#define X_EXT_AUX_SIZE(a, s) ((s) - X_EXT_MAIN_SIZE(a))
-+
-+#define Y_EXT_MAIN_SIZE(a)  (YRAM_YRAM_CHANNEL_COUNT - Y_OFF(a))
-+#define Y_EXT_AUX_SIZE(a, s) ((s) - Y_EXT_MAIN_SIZE(a))
-+
-+#endif
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 49750a9..da65535 100644
+index da65535..846826d 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -32,6 +32,8 @@
+@@ -27,6 +27,7 @@
+ #include <linux/pci.h>
+ #include <linux/mutex.h>
+ #include <linux/module.h>
++#include <linux/firmware.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
  #include "hda_local.h"
- #include "hda_auto_parser.h"
+@@ -34,12 +35,33 @@
  
-+#include "ca0132_regs.h"
+ #include "ca0132_regs.h"
+ 
++#define DSP_DMA_WRITE_BUFLEN_INIT (1UL<<18)
++#define DSP_DMA_WRITE_BUFLEN_OVLY (1UL<<15)
++
++#define DMA_TRANSFER_FRAME_SIZE_NWORDS		8
++#define DMA_TRANSFER_MAX_FRAME_SIZE_NWORDS	32
++#define DMA_OVERLAY_FRAME_SIZE_NWORDS		2
++
++#define MASTERCONTROL				0x80
++#define MASTERCONTROL_ALLOC_DMA_CHAN		9
 +
  #define WIDGET_CHIP_CTRL      0x15
  #define WIDGET_DSP_CTRL       0x16
+ 
+ #define WUH_MEM_CONNID        10
+ #define DSP_MEM_CONNID        16
+ 
++#define MEM_CONNID_MICIN1     3
++#define MEM_CONNID_MICIN2     5
++#define MEM_CONNID_MICOUT1    12
++#define MEM_CONNID_MICOUT2    14
++#define MEM_CONNID_WUH        10
++#define MEM_CONNID_DSP        16
++#define MEM_CONNID_DMIC       100
++
++#define SCP_SET    0
++#define SCP_GET    1
++
+ enum hda_cmd_vendor_io {
+ 	/* for DspIO node */
+ 	VENDOR_DSPIO_SCP_WRITE_DATA_LOW      = 0x000,
+@@ -64,7 +86,11 @@ enum hda_cmd_vendor_io {
+ 	VENDOR_CHIPIO_HIC_POST_READ          = 0x702,
+ 	VENDOR_CHIPIO_HIC_READ_DATA          = 0xF03,
+ 
++	VENDOR_CHIPIO_8051_DATA_WRITE        = 0x707,
++	VENDOR_CHIPIO_8051_DATA_READ         = 0xF07,
++
+ 	VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE   = 0x70A,
++	VENDOR_CHIPIO_CT_EXTENSIONS_GET      = 0xF0A,
+ 
+ 	VENDOR_CHIPIO_PLL_PMU_WRITE          = 0x70C,
+ 	VENDOR_CHIPIO_PLL_PMU_READ           = 0xF0C,
+@@ -72,18 +98,27 @@ enum hda_cmd_vendor_io {
+ 	VENDOR_CHIPIO_8051_ADDRESS_HIGH      = 0x70E,
+ 	VENDOR_CHIPIO_FLAG_SET               = 0x70F,
+ 	VENDOR_CHIPIO_FLAGS_GET              = 0xF0F,
+-	VENDOR_CHIPIO_PARAMETER_SET          = 0x710,
+-	VENDOR_CHIPIO_PARAMETER_GET          = 0xF10,
++	VENDOR_CHIPIO_PARAM_SET              = 0x710,
++	VENDOR_CHIPIO_PARAM_GET              = 0xF10,
+ 
+ 	VENDOR_CHIPIO_PORT_ALLOC_CONFIG_SET  = 0x711,
+ 	VENDOR_CHIPIO_PORT_ALLOC_SET         = 0x712,
+ 	VENDOR_CHIPIO_PORT_ALLOC_GET         = 0xF12,
+ 	VENDOR_CHIPIO_PORT_FREE_SET          = 0x713,
+ 
+-	VENDOR_CHIPIO_PARAMETER_EX_ID_GET    = 0xF17,
+-	VENDOR_CHIPIO_PARAMETER_EX_ID_SET    = 0x717,
+-	VENDOR_CHIPIO_PARAMETER_EX_VALUE_GET = 0xF18,
+-	VENDOR_CHIPIO_PARAMETER_EX_VALUE_SET = 0x718
++	VENDOR_CHIPIO_PARAM_EX_ID_GET        = 0xF17,
++	VENDOR_CHIPIO_PARAM_EX_ID_SET        = 0x717,
++	VENDOR_CHIPIO_PARAM_EX_VALUE_GET     = 0xF18,
++	VENDOR_CHIPIO_PARAM_EX_VALUE_SET     = 0x718,
++
++	VENDOR_CHIPIO_DMIC_CTL_SET           = 0x788,
++	VENDOR_CHIPIO_DMIC_CTL_GET           = 0xF88,
++	VENDOR_CHIPIO_DMIC_PIN_SET           = 0x789,
++	VENDOR_CHIPIO_DMIC_PIN_GET           = 0xF89,
++	VENDOR_CHIPIO_DMIC_MCLK_SET          = 0x78A,
++	VENDOR_CHIPIO_DMIC_MCLK_GET          = 0xF8A,
++
++	VENDOR_CHIPIO_EAPD_SEL_SET           = 0x78D
+ };
+ 
+ /*
+@@ -133,7 +168,7 @@ enum control_flag_id {
+ 	/* Impedance for ramp generator on Port_A 16 Ohm/10K Ohm */
+ 	CONTROL_FLAG_PORT_A_10KOHM_LOAD     = 20,
+ 	/* Impedance for ramp generator on Port_D, 16 Ohm/10K Ohm */
+-	CONTROL_FLAG_PORT_D_10K0HM_LOAD     = 21,
++	CONTROL_FLAG_PORT_D_10KOHM_LOAD     = 21,
+ 	/* ASI rate is 48kHz/96kHz */
+ 	CONTROL_FLAG_ASI_96KHZ              = 22,
+ 	/* DAC power settings able to control attached ports no/yes */
+@@ -147,7 +182,7 @@ enum control_flag_id {
+ /*
+  * Control parameter IDs
+  */
+-enum control_parameter_id {
++enum control_param_id {
+ 	/* 0: force HDA, 1: allow DSP if HDA Spdif1Out stream is idle */
+ 	CONTROL_PARAM_SPDIF1_SOURCE            = 2,
  
 -- 
 1.7.4.1
