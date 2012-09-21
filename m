@@ -1,20 +1,14 @@
-From: Julien Danjou <julien@danjou.info>
-Subject: Re: Constant noise on HDA ALC275
-Date: Fri, 21 Sep 2012 16:08:20 +0200
-Message-ID: <87d31fii3v.fsf@dex.adm.naquadah.org>
-References: <87obl7bg02.fsf@dex.adm.naquadah.org>
- <s5h4nmrbln3.wl%tiwai@suse.de> <87wqznim1k.fsf@dex.adm.naquadah.org>
- <s5hzk4ja5hz.wl%tiwai@suse.de> <87pq5fiklg.fsf@dex.adm.naquadah.org>
- <s5hwqzna4pn.wl%tiwai@suse.de> <87haqrijiz.fsf@dex.adm.naquadah.org>
- <s5htxura31x.wl%tiwai@suse.de>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: [PATCH v3] ASoC: codecs: Add DA9055 codec driver
+Date: Fri, 21 Sep 2012 20:16:17 +0530
+Message-ID: <1348238777.32148.8.camel@matrix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1029374329360980107=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.naquadah.org (prometheus.naquadah.org [212.85.154.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 133D1265D92
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 16:08:58 +0200 (CEST)
-In-Reply-To: <s5htxura31x.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
- 21 Sep 2012 16:00:42 +0200")
+Received: from tx2outboundpool.messaging.microsoft.com (mail-tx2.bigfish.com
+ [65.55.88.10]) by alsa0.perex.cz (Postfix) with ESMTP id A7BB1265D8B
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 16:35:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,1155 +18,1632 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============1029374329360980107==
-Content-Type: multipart/signed; boundary="==-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
-
---==-=-=
-Content-Type: multipart/mixed; boundary="=-=-="
-
---=-=-=
-Content-Type: text/plain
-
-On Fri, Sep 21 2012, Takashi Iwai wrote:
-
-> OK, then could you give the alsa-info.sh output at the state where the
-> speaker makes noise?  The one you attached is apparently without the
-> speaker.
-
-Sure, attached. Nothing plugged in the jack, and I hear the noise.
-
-
---=-=-=
-Content-Type: text/plain
-Content-Disposition: attachment; filename=alsa-info.txt.gZzguKbOkX
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.61
-!!################################
-
-!!Script ran on: Fri Sep 21 14:07:29 UTC 2012
-
-
-!!Linux Distribution
-!!------------------
-
-Debian GNU/Linux wheezy/sid \n \l PRETTY_NAME="Debian GNU/Linux wheezy/sid" NAME="Debian GNU/Linux" ID=debian
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      Sony Corporation
-Product Name:      SVZ1311C5E
-Product Version:   J004SF49
-Firmware Version:  R0092C6
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    3.5-trunk-amd64
-Operating System:  GNU/Linux
-Architecture:      x86_64
-Processor:         unknown
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     1.0.25
-Library version:    1.0.25
-Utilities version:  1.0.25
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-snd_hda_intel
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-Pulseaudio:
-      Installed - Yes (/usr/bin/pulseaudio)
-      Running - Yes
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [PCH            ]: HDA-Intel - HDA Intel PCH
-                      HDA Intel PCH at 0xd7400000 irq 44
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation 7 Series/C210 Series Chipset Family High Definition Audio Controller (rev 04)
-
-
-!!Advanced information - PCI Vendor/Device/Subsystem ID's
-!!-------------------------------------------------------
-
-00:1b.0 0403: 8086:1e20 (rev 04)
-	Subsystem: 104d:90a5
-
-
-!!Modprobe options (Sound related)
-!!--------------------------------
-
-snd_pcsp: index=-2
-snd_usb_audio: index=-2
-snd_atiixp_modem: index=-2
-snd_intel8x0m: index=-2
-snd_via82xx_modem: index=-2
-
-
-!!Loaded sound module options
-!!---------------------------
-
-!!Module: snd_hda_intel
-	align_buffer_size : -1
-	bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	beep_mode : 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-	enable : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	index : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	model : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	patch : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	position_fix : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	power_save : 0
-	power_save_controller : Y
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	single_cmd : N
-	snoop : Y
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC275
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0275
-Subsystem Id: 0x104d6600
-Revision Id: 0x100008
-No Modem Function Group found
-Default PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=4, o=0, i=0, unsolicited=1, wake=1
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="ALC275 Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x18 0x18]
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x18 0x18]
-  Converter: stream=8, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x611: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x90 0x90]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x90 0x90]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x23
-Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="Beep Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="Beep Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 5
-     0x18 0x19 0x1a 0x1b 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00] [0x80]
-  Connection: 2
-     0x0c 0x0d
-Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Control: name="Capture Switch", index=0, device=0
-  Control: name="Capture Volume", index=0, device=0
-  Device: name="ALC275 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x14 0x14]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x22
-Node 0x12 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-  Control: name="Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x02 0x02]
-  Pincap 0x00000020: IN
-  Pin Default 0x90a60120: [Fixed] Mic at Int N/A
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x13 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x14 [Pin Complex] wcaps 0x40050d: Stereo Amp-Out
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00010050: OUT EAPD Balanced
-  EAPD 0x2: EAPD
-  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x0c 0x0d*
-Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001001c: OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=01, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x16 [Pin Complex] wcaps 0x40050c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x19 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x22: IN VREF_GRD
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1a [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Pin Complex] wcaps 0x400400: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x1e [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x411110f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=64
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x12* 0x13
-Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1d 0x0b
-Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1d 0x0b
-Codec: Intel PantherPoint HDMI
-Address: 3
-AFG Function Id: 0x1 (unsol 0)
-Vendor Id: 0x80862806
-Subsystem Id: 0x104d6600
-Revision Id: 0x100000
-No Modem Function Group found
-Default PCM:
-    rates [0x0]:
-    bits [0x0]:
-    formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x02 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled
-  Digital category: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x04 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled
-  Digital category: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="HDMI/DP,pcm=3 Jack", index=0, device=0
-  Control: name="IEC958 Playback Con Mask", index=0, device=0
-  Control: name="IEC958 Playback Pro Mask", index=0, device=0
-  Control: name="IEC958 Playback Default", index=0, device=0
-  Control: name="IEC958 Playback Switch", index=0, device=0
-  Control: name="ELD", index=0, device=3
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x09000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=01, enabled=1
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x02
-Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x80]
-  Pincap 0x09000094: OUT Detect HBR HDMI DP
-  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x03
-Node 0x07 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x80]
-  Pincap 0x09000094: OUT Detect HBR HDMI DP
-  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x04
-Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw---T+ 1 root audio 116,  7 Sep 15 14:19 /dev/snd/controlC0
-crw-rw---T+ 1 root audio 116,  6 Sep 15 14:19 /dev/snd/hwC0D0
-crw-rw---T+ 1 root audio 116,  5 Sep 15 14:19 /dev/snd/hwC0D3
-crw-rw---T+ 1 root audio 116,  4 Sep 19 11:43 /dev/snd/pcmC0D0c
-crw-rw---T+ 1 root audio 116,  3 Sep 21 15:49 /dev/snd/pcmC0D0p
-crw-rw---T+ 1 root audio 116,  2 Sep 15 14:19 /dev/snd/pcmC0D3p
-crw-rw---T+ 1 root audio 116,  1 Sep 15 14:19 /dev/snd/seq
-crw-rw---T+ 1 root audio 116, 33 Sep 15 14:19 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  60 Sep 15 14:19 .
-drwxr-xr-x 3 root root 220 Sep 15 14:19 ..
-lrwxrwxrwx 1 root root  12 Sep 15 14:19 pci-0000:00:1b.0 -> ../controlC0
-
-
-!!Aplay/Arecord output
-!!--------------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: PCH [HDA Intel PCH], device 0: ALC275 Analog [ALC275 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: PCH [HDA Intel PCH], device 0: ALC275 Analog [ALC275 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [PCH]
-
-Card hw:0 'PCH'/'HDA Intel PCH at 0xd7400000 irq 44'
-  Mixer name	: 'Intel PantherPoint HDMI'
-  Components	: 'HDA:10ec0275,104d6600,00100008 HDA:80862806,104d6600,00100000'
-  Controls      : 21
-  Simple ctrls  : 10
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined penum
-  Playback channels: Mono
-  Limits: Playback 0 - 64
-  Mono: Playback 25 [39%] [-39.00dB] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 63 [98%] [0.00dB] [on]
-  Front Right: Playback 63 [98%] [0.00dB] [on]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 63 [98%] [0.00dB] [on]
-  Front Right: Playback 63 [98%] [0.00dB] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 253 [99%] [0.40dB]
-  Front Right: Playback 253 [99%] [0.40dB]
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 2 [67%] [20.00dB]
-  Front Right: 2 [67%] [20.00dB]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined penum
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Beep',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 11 [35%] [-18.00dB] [on]
-  Front Right: Playback 11 [35%] [-18.00dB] [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 46
-  Front Left: Capture 20 [43%] [3.00dB] [on]
-  Front Right: Capture 20 [43%] [3.00dB] [on]
-Simple mixer control 'Auto-Mute Mode',0
-  Capabilities: enum
-  Items: 'Disabled' 'Enabled'
-  Item0: 'Enabled'
-Simple mixer control 'Digital',0
-  Capabilities: cvolume penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 120
-  Front Left: Capture 0 [0%] [-30.00dB]
-  Front Right: Capture 0 [0%] [-30.00dB]
-
-
-!!Alsactl output
-!!--------------
-
---startcollapse--
-state.PCH {
-	control.1 {
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 63
-		value.1 63
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 64'
-			dbmin -6300
-			dbmax 100
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.2 {
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.3 {
-		iface MIXER
-		name 'Speaker Playback Volume'
-		value.0 63
-		value.1 63
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 64'
-			dbmin -6300
-			dbmax 100
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.4 {
-		iface MIXER
-		name 'Speaker Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.5 {
-		iface MIXER
-		name 'Auto-Mute Mode'
-		value Enabled
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 Disabled
-			item.1 Enabled
-		}
-	}
-	control.6 {
-		iface MIXER
-		name 'Mic Boost Volume'
-		value.0 2
-		value.1 2
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 3'
-			dbmin 0
-			dbmax 3000
-			dbvalue.0 2000
-			dbvalue.1 2000
-		}
-	}
-	control.7 {
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.8 {
-		iface MIXER
-		name 'Capture Volume'
-		value.0 20
-		value.1 20
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 46'
-			dbmin -1700
-			dbmax 2900
-			dbvalue.0 300
-			dbvalue.1 300
-		}
-	}
-	control.9 {
-		iface MIXER
-		name 'Beep Playback Volume'
-		value.0 11
-		value.1 11
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 -1800
-			dbvalue.1 -1800
-		}
-	}
-	control.10 {
-		iface MIXER
-		name 'Beep Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.11 {
-		iface MIXER
-		name 'Master Playback Volume'
-		value 25
-		comment {
-			access 'read write'
-			type INTEGER
-			count 1
-			range '0 - 64'
-			dbmin -6400
-			dbmax 0
-			dbvalue.0 -3900
-		}
-	}
-	control.12 {
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.13 {
-		iface CARD
-		name 'Headphone Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.14 {
-		iface CARD
-		name 'HDMI/DP,pcm=3 Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.15 {
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.16 {
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.17 {
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access 'read write'
-			type IEC958
-			count 1
-		}
-	}
-	control.18 {
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.19 {
-		iface PCM
-		device 3
-		name ELD
-		value '100009006a105e01000000000000000026cd0d56504c45323430374844530907010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type BYTES
-			count 83
-		}
-	}
-	control.20 {
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 253
-		value.1 253
-		comment {
-			access 'read write user'
-			type INTEGER
-			count 2
-			range '0 - 255'
-			tlv '0000000100000008ffffec1400000014'
-			dbmin -5100
-			dbmax 0
-			dbvalue.0 -40
-			dbvalue.1 -40
-		}
-	}
-	control.21 {
-		iface MIXER
-		name 'Digital Capture Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write user'
-			type INTEGER
-			count 2
-			range '0 - 120'
-			tlv '0000000100000008fffff44800000032'
-			dbmin -3000
-			dbmax 3000
-			dbvalue.0 -3000
-			dbvalue.1 -3000
-		}
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-nls_utf8
-nls_cp437
-vfat
-fat
-hid_generic
-usb_storage
-uas
-ipt_MASQUERADE
-iptable_nat
-nf_nat
-nf_conntrack_ipv4
-nf_defrag_ipv4
-nf_conntrack
-ip6table_filter
-ip6_tables
-iptable_filter
-ip_tables
-ebtable_nat
-ebtables
-x_tables
-parport_pc
-ppdev
-lp
-parport
-bnep
-rfcomm
-bluetooth
-cpufreq_powersave
-pci_stub
-cpufreq_userspace
-vboxpci
-cpufreq_stats
-cpufreq_conservative
-vboxnetadp
-vboxnetflt
-vboxdrv
-binfmt_misc
-uinput
-nfsd
-nfs
-nfs_acl
-auth_rpcgss
-fscache
-lockd
-sunrpc
-loop
-fuse
-snd_hda_codec_hdmi
-snd_hda_codec_realtek
-tpm_infineon
-uvcvideo
-videobuf2_vmalloc
-videobuf2_memops
-videobuf2_core
-videodev
-media
-joydev
-arc4
-coretemp
-kvm_intel
-snd_hda_intel
-kvm
-snd_hda_codec
-snd_hwdep
-snd_pcm
-snd_page_alloc
-snd_seq
-snd_seq_device
-psmouse
-acpi_cpufreq
-battery
-snd_timer
-serio_raw
-microcode
-pcspkr
-i2c_i801
-tpm_tis
-iwlwifi
-tpm
-snd
-tpm_bios
-mac80211
-sony_laptop
-mperf
-rts_pstor
-cfg80211
-rfkill
-soundcore
-lpc_ich
-mfd_core
-evdev
-processor
-ac
-ext4
-crc16
-jbd2
-mbcache
-sha256_generic
-dm_crypt
-dm_mod
-raid0
-md_mod
-hid_logitech_dj
-usbhid
-hid
-sg
-sd_mod
-crc_t10dif
-crc32c_intel
-ghash_clmulni_intel
-aesni_intel
-i915
-ahci
-libahci
-aes_x86_64
-libata
-ehci_hcd
-aes_generic
-cryptd
-r8169
-mii
-scsi_mod
-usbcore
-video
-button
-i2c_algo_bit
-usb_common
-drm_kms_helper
-drm
-i2c_core
-thermal
-thermal_sys
-
-
-!!Sysfs Files
-!!-----------
-
-/sys/class/sound/hwC0D0/init_pin_configs:
-0x12 0x90a60120
-0x13 0x411111f0
-0x14 0x90170110
-0x15 0x0421101f
-0x16 0x411111f0
-0x18 0x411111f0
-0x19 0x411111f0
-0x1a 0x411111f0
-0x1b 0x411111f0
-0x1d 0x411111f0
-0x1e 0x411110f0
-
-/sys/class/sound/hwC0D0/driver_pin_configs:
-
-/sys/class/sound/hwC0D0/user_pin_configs:
-
-/sys/class/sound/hwC0D0/init_verbs:
-
-/sys/class/sound/hwC0D3/init_pin_configs:
-0x05 0x18560010
-0x06 0x585600f0
-0x07 0x585600f0
-
-/sys/class/sound/hwC0D3/driver_pin_configs:
-
-/sys/class/sound/hwC0D3/user_pin_configs:
-
-/sys/class/sound/hwC0D3/init_verbs:
-
-
-!!ALSA/HDA dmesg
-!!--------------
-
-[332064.706938] ehci_hcd 0000:00:1d.0: setting latency timer to 64
-[332064.706954] snd_hda_intel 0000:00:1b.0: irq 44 for MSI/MSI-X
-[332064.706967] ahci 0000:00:1f.2: setting latency timer to 64
---
-[355387.645103] ehci_hcd 0000:00:1a.0: setting latency timer to 64
-[355387.645179] snd_hda_intel 0000:00:1b.0: irq 44 for MSI/MSI-X
-[355387.645243] ehci_hcd 0000:00:1d.0: setting latency timer to 64
---
-[480708.869417] r8169 0000:05:00.0: wake-up capability disabled by ACPI
-[480708.869424] snd_hda_intel 0000:00:1b.0: irq 44 for MSI/MSI-X
-[480708.907221] [drm] Enabling RC6 states: RC6 on, RC6p on, RC6pp off
---
-[490572.893698] ehci_hcd 0000:00:1d.0: setting latency timer to 64
-[490572.893709] snd_hda_intel 0000:00:1b.0: irq 44 for MSI/MSI-X
-[490572.893725] ahci 0000:00:1f.2: setting latency timer to 64
-
-
-
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-=2D-=20
-Julien Danjou
-;; Free Software hacker & freelance
-;; http://julien.danjou.info
-
---=-=-=--
-
---==-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQXHTUAAoJEGEbqVCLeKXCsYEQAKxTSsWQDAR5DEi0Y947m20k
-cwm2WCSl8e86OGT77y1a9ut1THDTLD5MpCtJ1pTG3Kw1bzfbD8BpGOAPkx0hhig0
-VYVrXLwIb85QFuiyLTnXYXxwtaMXaYxLvteX1eYjauQuLuPxTTcD5w4Osq8eMzxb
-IuE7MS0qwevkPlU3PANXEIfZShjzf2eIkg7OhCYu4vv0/U64EEV8qKO/GeHLAgjQ
-0EuZYeXL6cXskz0sGwtcy2RNfC4tcCcjmAVjgY8KczUIZl6mTsLEm5c0OjdY+iwr
-Pzq6Zu1Xpie5dBDp20FgTYJ+JLl7WE3et42exlUU25Af7OINWj/s8FKgaOhHujc2
-NSR/+ket87ipt7R077F0t5hEehj3wWz//oTf7hYRi7RQY16YBUJW/dmag3ghJFv7
-dyrczACRAv4RBqZOPy6LZooP+9LG2N1VLpPnPsV0VPFDSGRNFMoPnse2qsuQF4OQ
-CcJio0QPDcxveOewJ8RpiYXOrGg37aTbAYdGFWWrRwcKbwBFtJzFJdHOXGNknVX9
-s4r/Q5SNLqNk5XxvzYHsYI/fYbI7ZqrUDJjqnNfZJ8J2ApjY6KX2YVShTyWQ2ovl
-/cb4UqgOWGZaYP47Co+ez73mecYW4JIbRfrcbM8Pk7HlDcu2smkPWpV3dgtdtj0Q
-Zxan5SbAv+3UbcSiV7bO
-=E4US
------END PGP SIGNATURE-----
---==-=-=--
-
---===============1029374329360980107==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1029374329360980107==--
+This patch adds support for Dialog semiconductor's DA9055 audio codec.
+
+This has been tested on DA9055 EVB with Samsung SMDK6410 board.
+
+Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Signed-off-by: David Dajun Chen <david.chen@diasemi.com>
+---
+Changes since v2:
+
+- Added platform data support for Mic bias voltage and source
+- Used DAPM for DAC source selection
+- Other minor improvements
+---
+Changes since v1:
+
+- Made extensive use of DAPM throughout the driver
+- Removed LDO, DMIC and other non used controls
+- Corrected names for many controls
+- Other minor improvements
+---
+ include/sound/da9055.h    |   33 +
+ sound/soc/codecs/Kconfig  |    4 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/da9055.c | 1510 +++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 1549 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/da9055.h b/include/sound/da9055.h
+new file mode 100644
+index 0000000..cf1241b
+--- /dev/null
++++ b/include/sound/da9055.h
+@@ -0,0 +1,33 @@
++/*
++ * DA9055 ALSA Soc codec driver
++ *
++ * Copyright (c) 2012 Dialog Semiconductor
++ *
++ * Tested on (Samsung SMDK6410 board + DA9055 EVB) using I2S and I2C
++ * Written by David Chen <david.chen@diasemi.com> and
++ * Ashish Chavan <ashish.chavan@kpitcummins.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ */
++
++#ifndef __SOUND_DA9055_H__
++#define __SOUND_DA9055_H__
++
++enum da9055_micbias_voltage {
++	DA9055_MICBIAS_1_6V = 0,
++	DA9055_MICBIAS_1_8V = 1,
++	DA9055_MICBIAS_2_1V = 2,
++	DA9055_MICBIAS_2_2V = 3,
++};
++
++struct da9055_platform_data {
++	/* Selects which of the two MicBias pins acts as the bias source */
++	bool micbias_source;
++	/* Selects the micbias voltage */
++	enum da9055_micbias_voltage micbias;
++};
++
++#endif
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 3684255..b92759a 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -37,6 +37,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_CX20442
+ 	select SND_SOC_DA7210 if I2C
+ 	select SND_SOC_DA732X if I2C
++	select SND_SOC_DA9055 if I2C
+ 	select SND_SOC_DFBMCS320
+ 	select SND_SOC_ISABELLE if I2C
+ 	select SND_SOC_JZ4740_CODEC
+@@ -239,6 +240,9 @@ config SND_SOC_DA7210
+ config SND_SOC_DA732X
+         tristate
+ 
++config SND_SOC_DA9055
++	tristate
++
+ config SND_SOC_DFBMCS320
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index ca508b2..9bd4d95 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -24,6 +24,7 @@ snd-soc-cs4271-objs := cs4271.o
+ snd-soc-cx20442-objs := cx20442.o
+ snd-soc-da7210-objs := da7210.o
+ snd-soc-da732x-objs := da732x.o
++snd-soc-da9055-objs := da9055.o
+ snd-soc-dfbmcs320-objs := dfbmcs320.o
+ snd-soc-dmic-objs := dmic.o
+ snd-soc-isabelle-objs := isabelle.o
+@@ -144,6 +145,7 @@ obj-$(CONFIG_SND_SOC_CS4271)	+= snd-soc-cs4271.o
+ obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
+ obj-$(CONFIG_SND_SOC_DA7210)	+= snd-soc-da7210.o
+ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
++obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
+ obj-$(CONFIG_SND_SOC_DFBMCS320)	+= snd-soc-dfbmcs320.o
+ obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
+ obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+new file mode 100644
+index 0000000..185d8dd
+--- /dev/null
++++ b/sound/soc/codecs/da9055.c
+@@ -0,0 +1,1510 @@
++/*
++ * DA9055 ALSA Soc codec driver
++ *
++ * Copyright (c) 2012 Dialog Semiconductor
++ *
++ * Tested on (Samsung SMDK6410 board + DA9055 EVB) using I2S and I2C
++ * Written by David Chen <david.chen@diasemi.com> and
++ * Ashish Chavan <ashish.chavan@kpitcummins.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ */
++
++#include <linux/delay.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++#include <sound/da9055.h>
++
++/* DA9055 register space */
++
++/* Status Registers */
++#define DA9055_STATUS1			0x02
++#define DA9055_PLL_STATUS		0x03
++#define DA9055_AUX_L_GAIN_STATUS	0x04
++#define DA9055_AUX_R_GAIN_STATUS	0x05
++#define DA9055_MIC_L_GAIN_STATUS	0x06
++#define DA9055_MIC_R_GAIN_STATUS	0x07
++#define DA9055_MIXIN_L_GAIN_STATUS	0x08
++#define DA9055_MIXIN_R_GAIN_STATUS	0x09
++#define DA9055_ADC_L_GAIN_STATUS	0x0A
++#define DA9055_ADC_R_GAIN_STATUS	0x0B
++#define DA9055_DAC_L_GAIN_STATUS	0x0C
++#define DA9055_DAC_R_GAIN_STATUS	0x0D
++#define DA9055_HP_L_GAIN_STATUS		0x0E
++#define DA9055_HP_R_GAIN_STATUS		0x0F
++#define DA9055_LINE_GAIN_STATUS		0x10
++
++/* System Initialisation Registers */
++#define DA9055_CIF_CTRL			0x20
++#define DA9055_DIG_ROUTING_AIF		0X21
++#define DA9055_SR			0x22
++#define DA9055_REFERENCES		0x23
++#define DA9055_PLL_FRAC_TOP		0x24
++#define DA9055_PLL_FRAC_BOT		0x25
++#define DA9055_PLL_INTEGER		0x26
++#define DA9055_PLL_CTRL			0x27
++#define DA9055_AIF_CLK_MODE		0x28
++#define DA9055_AIF_CTRL			0x29
++#define DA9055_DIG_ROUTING_DAC		0x2A
++#define DA9055_ALC_CTRL1		0x2B
++
++/* Input - Gain, Select and Filter Registers */
++#define DA9055_AUX_L_GAIN		0x30
++#define DA9055_AUX_R_GAIN		0x31
++#define DA9055_MIXIN_L_SELECT		0x32
++#define DA9055_MIXIN_R_SELECT		0x33
++#define DA9055_MIXIN_L_GAIN		0x34
++#define DA9055_MIXIN_R_GAIN		0x35
++#define DA9055_ADC_L_GAIN		0x36
++#define DA9055_ADC_R_GAIN		0x37
++#define DA9055_ADC_FILTERS1		0x38
++#define DA9055_MIC_L_GAIN		0x39
++#define DA9055_MIC_R_GAIN		0x3A
++
++/* Output - Gain, Select and Filter Registers */
++#define DA9055_DAC_FILTERS5		0x40
++#define DA9055_DAC_FILTERS2		0x41
++#define DA9055_DAC_FILTERS3		0x42
++#define DA9055_DAC_FILTERS4		0x43
++#define DA9055_DAC_FILTERS1		0x44
++#define DA9055_DAC_L_GAIN		0x45
++#define DA9055_DAC_R_GAIN		0x46
++#define DA9055_CP_CTRL			0x47
++#define DA9055_HP_L_GAIN		0x48
++#define DA9055_HP_R_GAIN		0x49
++#define DA9055_LINE_GAIN		0x4A
++#define DA9055_MIXOUT_L_SELECT		0x4B
++#define DA9055_MIXOUT_R_SELECT		0x4C
++
++/* System Controller Registers */
++#define DA9055_SYSTEM_MODES_INPUT	0x50
++#define DA9055_SYSTEM_MODES_OUTPUT	0x51
++
++/* Control Registers */
++#define DA9055_AUX_L_CTRL		0x60
++#define DA9055_AUX_R_CTRL		0x61
++#define DA9055_MIC_BIAS_CTRL		0x62
++#define DA9055_MIC_L_CTRL		0x63
++#define DA9055_MIC_R_CTRL		0x64
++#define DA9055_MIXIN_L_CTRL		0x65
++#define DA9055_MIXIN_R_CTRL		0x66
++#define DA9055_ADC_L_CTRL		0x67
++#define DA9055_ADC_R_CTRL		0x68
++#define DA9055_DAC_L_CTRL		0x69
++#define DA9055_DAC_R_CTRL		0x6A
++#define DA9055_HP_L_CTRL		0x6B
++#define DA9055_HP_R_CTRL		0x6C
++#define DA9055_LINE_CTRL		0x6D
++#define DA9055_MIXOUT_L_CTRL		0x6E
++#define DA9055_MIXOUT_R_CTRL		0x6F
++
++/* Configuration Registers */
++#define DA9055_LDO_CTRL			0x90
++#define DA9055_IO_CTRL			0x91
++#define DA9055_GAIN_RAMP_CTRL		0x92
++#define DA9055_MIC_CONFIG		0x93
++#define DA9055_PC_COUNT			0x94
++#define DA9055_CP_VOL_THRESHOLD1	0x95
++#define DA9055_CP_DELAY			0x96
++#define DA9055_CP_DETECTOR		0x97
++#define DA9055_AIF_OFFSET		0x98
++#define DA9055_DIG_CTRL			0x99
++#define DA9055_ALC_CTRL2		0x9A
++#define DA9055_ALC_CTRL3		0x9B
++#define DA9055_ALC_NOISE		0x9C
++#define DA9055_ALC_TARGET_MIN		0x9D
++#define DA9055_ALC_TARGET_MAX		0x9E
++#define DA9055_ALC_GAIN_LIMITS		0x9F
++#define DA9055_ALC_ANA_GAIN_LIMITS	0xA0
++#define DA9055_ALC_ANTICLIP_CTRL	0xA1
++#define DA9055_ALC_ANTICLIP_LEVEL	0xA2
++#define DA9055_ALC_OFFSET_OP2M_L	0xA6
++#define DA9055_ALC_OFFSET_OP2U_L	0xA7
++#define DA9055_ALC_OFFSET_OP2M_R	0xAB
++#define DA9055_ALC_OFFSET_OP2U_R	0xAC
++#define DA9055_ALC_CIC_OP_LVL_CTRL	0xAD
++#define DA9055_ALC_CIC_OP_LVL_DATA	0xAE
++#define DA9055_DAC_NG_SETUP_TIME	0xAF
++#define DA9055_DAC_NG_OFF_THRESHOLD	0xB0
++#define DA9055_DAC_NG_ON_THRESHOLD	0xB1
++#define DA9055_DAC_NG_CTRL		0xB2
++
++/* SR bit fields */
++#define DA9055_SR_8000			(0x1 << 0)
++#define DA9055_SR_11025			(0x2 << 0)
++#define DA9055_SR_12000			(0x3 << 0)
++#define DA9055_SR_16000			(0x5 << 0)
++#define DA9055_SR_22050			(0x6 << 0)
++#define DA9055_SR_24000			(0x7 << 0)
++#define DA9055_SR_32000			(0x9 << 0)
++#define DA9055_SR_44100			(0xA << 0)
++#define DA9055_SR_48000			(0xB << 0)
++#define DA9055_SR_88200			(0xE << 0)
++#define DA9055_SR_96000			(0xF << 0)
++
++/* REFERENCES bit fields */
++#define DA9055_BIAS_EN			(1 << 3)
++#define DA9055_VMID_EN			(1 << 7)
++
++/* PLL_CTRL bit fields */
++#define DA9055_PLL_INDIV_10_20_MHZ	(1 << 2)
++#define DA9055_PLL_SRM_EN		(1 << 6)
++#define DA9055_PLL_EN			(1 << 7)
++
++/* AIF_CLK_MODE bit fields */
++#define DA9055_AIF_BCLKS_PER_WCLK_32	(0 << 0)
++#define DA9055_AIF_BCLKS_PER_WCLK_64	(1 << 0)
++#define DA9055_AIF_BCLKS_PER_WCLK_128	(2 << 0)
++#define DA9055_AIF_BCLKS_PER_WCLK_256	(3 << 0)
++#define DA9055_AIF_CLK_EN_SLAVE_MODE	(0 << 7)
++#define DA9055_AIF_CLK_EN_MASTER_MODE	(1 << 7)
++
++/* AIF_CTRL bit fields */
++#define DA9055_AIF_FORMAT_I2S_MODE	(0 << 0)
++#define DA9055_AIF_FORMAT_LEFT_J	(1 << 0)
++#define DA9055_AIF_FORMAT_RIGHT_J	(2 << 0)
++#define DA9055_AIF_WORD_S16_LE		(0 << 2)
++#define DA9055_AIF_WORD_S20_3LE		(1 << 2)
++#define DA9055_AIF_WORD_S24_LE		(2 << 2)
++#define DA9055_AIF_WORD_S32_LE		(3 << 2)
++
++/* MIXIN_L_CTRL bit fields */
++#define DA9055_MIXIN_L_MIX_EN		(1 << 3)
++
++/* MIXIN_R_CTRL bit fields */
++#define DA9055_MIXIN_R_MIX_EN		(1 << 3)
++
++/* ADC_L_CTRL bit fields */
++#define DA9055_ADC_L_EN			(1 << 7)
++
++/* ADC_R_CTRL bit fields */
++#define DA9055_ADC_R_EN			(1 << 7)
++
++/* DAC_L_CTRL bit fields */
++#define DA9055_DAC_L_MUTE_EN		(1 << 6)
++
++/* DAC_R_CTRL bit fields */
++#define DA9055_DAC_R_MUTE_EN		(1 << 6)
++
++/* HP_L_CTRL bit fields */
++#define DA9055_HP_L_AMP_OE		(1 << 3)
++
++/* HP_R_CTRL bit fields */
++#define DA9055_HP_R_AMP_OE		(1 << 3)
++
++/* LINE_CTRL bit fields */
++#define DA9055_LINE_AMP_OE		(1 << 3)
++
++/* MIXOUT_L_CTRL bit fields */
++#define DA9055_MIXOUT_L_MIX_EN		(1 << 3)
++
++/* MIXOUT_R_CTRL bit fields */
++#define DA9055_MIXOUT_R_MIX_EN		(1 << 3)
++
++/* MIC bias select bit fields */
++#define DA9055_MICBIAS2_EN		(1 << 6)
++
++/* ALC_CIC_OP_LEVEL_CTRL bit fields */
++#define DA9055_ALC_DATA_MIDDLE		(2 << 0)
++#define DA9055_ALC_DATA_TOP		(3 << 0)
++#define DA9055_ALC_CIC_OP_CHANNEL_LEFT	(0 << 7)
++#define DA9055_ALC_CIC_OP_CHANNEL_RIGHT	(1 << 7)
++
++#define DA9055_AIF_BCLK_MASK		(3 << 0)
++#define DA9055_AIF_CLK_MODE_MASK	(1 << 7)
++#define DA9055_AIF_FORMAT_MASK		(3 << 0)
++#define DA9055_AIF_WORD_LENGTH_MASK	(3 << 2)
++#define DA9055_GAIN_RAMPING_EN		(1 << 5)
++#define DA9055_MICBIAS_LEVEL_MASK	(3 << 4)
++
++#define DA9055_ALC_OFFSET_15_8		0x00FF00
++#define DA9055_ALC_OFFSET_17_16		0x030000
++#define DA9055_ALC_AVG_ITERATIONS	5
++
++struct pll_div {
++	int fref;
++	int fout;
++	u8 frac_top;
++	u8 frac_bot;
++	u8 integer;
++	u8 mode;	/* 0 = slave, 1 = master */
++};
++
++/* PLL divisor table */
++static const struct pll_div da9055_pll_div[] = {
++	/* for MASTER mode, fs = 44.1Khz and its harmonics */
++	{11289600, 2822400, 0x00, 0x00, 0x20, 1},	/* MCLK=11.2896Mhz */
++	{12000000, 2822400, 0x03, 0x61, 0x1E, 1},	/* MCLK=12Mhz */
++	{12288000, 2822400, 0x0C, 0xCC, 0x1D, 1},	/* MCLK=12.288Mhz */
++	{13000000, 2822400, 0x19, 0x45, 0x1B, 1},	/* MCLK=13Mhz */
++	{13500000, 2822400, 0x18, 0x56, 0x1A, 1},	/* MCLK=13.5Mhz */
++	{14400000, 2822400, 0x02, 0xD0, 0x19, 1},	/* MCLK=14.4Mhz */
++	{19200000, 2822400, 0x1A, 0x1C, 0x12, 1},	/* MCLK=19.2Mhz */
++	{19680000, 2822400, 0x0B, 0x6D, 0x12, 1},	/* MCLK=19.68Mhz */
++	{19800000, 2822400, 0x07, 0xDD, 0x12, 1},	/* MCLK=19.8Mhz */
++	/* for MASTER mode, fs = 48Khz and its harmonics */
++	{11289600, 3072000, 0x1A, 0x8E, 0x22, 1},	/* MCLK=11.2896Mhz */
++	{12000000, 3072000, 0x18, 0x93, 0x20, 1},	/* MCLK=12Mhz */
++	{12288000, 3072000, 0x00, 0x00, 0x20, 1},	/* MCLK=12.288Mhz */
++	{13000000, 3072000, 0x07, 0xEA, 0x1E, 1},	/* MCLK=13Mhz */
++	{13500000, 3072000, 0x04, 0x11, 0x1D, 1},	/* MCLK=13.5Mhz */
++	{14400000, 3072000, 0x09, 0xD0, 0x1B, 1},	/* MCLK=14.4Mhz */
++	{19200000, 3072000, 0x0F, 0x5C, 0x14, 1},	/* MCLK=19.2Mhz */
++	{19680000, 3072000, 0x1F, 0x60, 0x13, 1},	/* MCLK=19.68Mhz */
++	{19800000, 3072000, 0x1B, 0x80, 0x13, 1},	/* MCLK=19.8Mhz */
++	/* for SLAVE mode with SRM */
++	{11289600, 2822400, 0x0D, 0x47, 0x21, 0},	/* MCLK=11.2896Mhz */
++	{12000000, 2822400, 0x0D, 0xFA, 0x1F, 0},	/* MCLK=12Mhz */
++	{12288000, 2822400, 0x16, 0x66, 0x1E, 0},	/* MCLK=12.288Mhz */
++	{13000000, 2822400, 0x00, 0x98, 0x1D, 0},	/* MCLK=13Mhz */
++	{13500000, 2822400, 0x1E, 0x33, 0x1B, 0},	/* MCLK=13.5Mhz */
++	{14400000, 2822400, 0x06, 0x50, 0x1A, 0},	/* MCLK=14.4Mhz */
++	{19200000, 2822400, 0x14, 0xBC, 0x13, 0},	/* MCLK=19.2Mhz */
++	{19680000, 2822400, 0x05, 0x66, 0x13, 0},	/* MCLK=19.68Mhz */
++	{19800000, 2822400, 0x01, 0xAE, 0x13, 0},	/* MCLK=19.8Mhz  */
++};
++
++enum clk_src {
++	DA9055_CLKSRC_MCLK
++};
++
++/* Gain and Volume */
++
++static const unsigned int aux_vol_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0x0, 0x10, TLV_DB_SCALE_ITEM(-5400, 0, 0),
++	/* -54dB to 15dB */
++	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0)
++};
++
++static const unsigned int digital_gain_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0x0, 0x07, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
++	/* -78dB to 12dB */
++	0x08, 0x7f, TLV_DB_SCALE_ITEM(-7800, 75, 0)
++};
++
++static const unsigned int alc_analog_gain_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0x0, 0x0, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
++	/* 0dB to 36dB */
++	0x01, 0x07, TLV_DB_SCALE_ITEM(0, 600, 0)
++};
++
++static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, -600, 600, 0);
++static const DECLARE_TLV_DB_SCALE(mixin_gain_tlv, -450, 150, 0);
++static const DECLARE_TLV_DB_SCALE(eq_gain_tlv, -1050, 150, 0);
++static const DECLARE_TLV_DB_SCALE(hp_vol_tlv, -5700, 100, 0);
++static const DECLARE_TLV_DB_SCALE(lineout_vol_tlv, -4800, 100, 0);
++static const DECLARE_TLV_DB_SCALE(alc_threshold_tlv, -9450, 150, 0);
++static const DECLARE_TLV_DB_SCALE(alc_gain_tlv, 0, 600, 0);
++
++/* ADC and DAC high pass filter cutoff value */
++static const char * const da9055_hpf_cutoff_txt[] = {
++	"Fs/24000", "Fs/12000", "Fs/6000", "Fs/3000"
++};
++
++static const struct soc_enum da9055_dac_hpf_cutoff =
++	SOC_ENUM_SINGLE(DA9055_DAC_FILTERS1, 4, 4, da9055_hpf_cutoff_txt);
++
++static const struct soc_enum da9055_adc_hpf_cutoff =
++	SOC_ENUM_SINGLE(DA9055_ADC_FILTERS1, 4, 4, da9055_hpf_cutoff_txt);
++
++/* ADC and DAC voice mode (8kHz) high pass cutoff value */
++static const char * const da9055_vf_cutoff_txt[] = {
++	"2.5Hz", "25Hz", "50Hz", "100Hz", "150Hz", "200Hz", "300Hz", "400Hz"
++};
++
++static const struct soc_enum da9055_dac_vf_cutoff =
++	SOC_ENUM_SINGLE(DA9055_DAC_FILTERS1, 0, 8, da9055_vf_cutoff_txt);
++
++static const struct soc_enum da9055_adc_vf_cutoff =
++	SOC_ENUM_SINGLE(DA9055_ADC_FILTERS1, 0, 8, da9055_vf_cutoff_txt);
++
++/* Gain ramping rate value */
++static const char * const da9055_gain_ramping_txt[] = {
++	"nominal rate", "nominal rate * 4", "nominal rate * 8",
++	"nominal rate / 8"
++};
++
++static const struct soc_enum da9055_gain_ramping_rate =
++	SOC_ENUM_SINGLE(DA9055_GAIN_RAMP_CTRL, 0, 4, da9055_gain_ramping_txt);
++
++/* DAC noise gate setup time value */
++static const char * const da9055_dac_ng_setup_time_txt[] = {
++	"256 samples", "512 samples", "1024 samples", "2048 samples"
++};
++
++static const struct soc_enum da9055_dac_ng_setup_time =
++	SOC_ENUM_SINGLE(DA9055_DAC_NG_SETUP_TIME, 0, 4,
++			da9055_dac_ng_setup_time_txt);
++
++/* DAC noise gate rampup rate value */
++static const char * const da9055_dac_ng_rampup_txt[] = {
++	"0.02 ms/dB", "0.16 ms/dB"
++};
++
++static const struct soc_enum da9055_dac_ng_rampup_rate =
++	SOC_ENUM_SINGLE(DA9055_DAC_NG_SETUP_TIME, 2, 2,
++			da9055_dac_ng_rampup_txt);
++
++/* DAC noise gate rampdown rate value */
++static const char * const da9055_dac_ng_rampdown_txt[] = {
++	"0.64 ms/dB", "20.48 ms/dB"
++};
++
++static const struct soc_enum da9055_dac_ng_rampdown_rate =
++	SOC_ENUM_SINGLE(DA9055_DAC_NG_SETUP_TIME, 3, 2,
++			da9055_dac_ng_rampdown_txt);
++
++/* DAC soft mute rate value */
++static const char * const da9055_dac_soft_mute_rate_txt[] = {
++	"1", "2", "4", "8", "16", "32", "64"
++};
++
++static const struct soc_enum da9055_dac_soft_mute_rate =
++	SOC_ENUM_SINGLE(DA9055_DAC_FILTERS5, 4, 7,
++			da9055_dac_soft_mute_rate_txt);
++
++/* DAC routing select */
++static const char * const da9055_dac_src_txt[] = {
++	"ADC output left", "ADC output right", "AIF input left",
++	"AIF input right"
++};
++
++static const struct soc_enum da9055_dac_l_src =
++	SOC_ENUM_SINGLE(DA9055_DIG_ROUTING_DAC, 0, 4, da9055_dac_src_txt);
++
++static const struct soc_enum da9055_dac_r_src =
++	SOC_ENUM_SINGLE(DA9055_DIG_ROUTING_DAC, 4, 4, da9055_dac_src_txt);
++
++/* MIC PGA Left source select */
++static const char * const da9055_mic_l_src_txt[] = {
++	"MIC1_P_N", "MIC1_P", "MIC1_N", "MIC2_L"
++};
++
++static const struct soc_enum da9055_mic_l_src =
++	SOC_ENUM_SINGLE(DA9055_MIXIN_L_SELECT, 4, 4, da9055_mic_l_src_txt);
++
++/* MIC PGA Right source select */
++static const char * const da9055_mic_r_src_txt[] = {
++	"MIC2_R_L", "MIC2_R", "MIC2_L"
++};
++
++static const struct soc_enum da9055_mic_r_src =
++	SOC_ENUM_SINGLE(DA9055_MIXIN_R_SELECT, 4, 3, da9055_mic_r_src_txt);
++
++/* ALC Input Signal Tracking rate select */
++static const char * const da9055_signal_tracking_rate_txt[] = {
++	"1/4", "1/16", "1/256", "1/65536"
++};
++
++static const struct soc_enum da9055_integ_attack_rate =
++	SOC_ENUM_SINGLE(DA9055_ALC_CTRL3, 4, 4,
++			da9055_signal_tracking_rate_txt);
++
++static const struct soc_enum da9055_integ_release_rate =
++	SOC_ENUM_SINGLE(DA9055_ALC_CTRL3, 6, 4,
++			da9055_signal_tracking_rate_txt);
++
++/* ALC Attack Rate select */
++static const char * const da9055_attack_rate_txt[] = {
++	"44/fs", "88/fs", "176/fs", "352/fs", "704/fs", "1408/fs", "2816/fs",
++	"5632/fs", "11264/fs", "22528/fs", "45056/fs", "90112/fs", "180224/fs"
++};
++
++static const struct soc_enum da9055_attack_rate =
++	SOC_ENUM_SINGLE(DA9055_ALC_CTRL2, 0, 13, da9055_attack_rate_txt);
++
++/* ALC Release Rate select */
++static const char * const da9055_release_rate_txt[] = {
++	"176/fs", "352/fs", "704/fs", "1408/fs", "2816/fs", "5632/fs",
++	"11264/fs", "22528/fs", "45056/fs", "90112/fs", "180224/fs"
++};
++
++static const struct soc_enum da9055_release_rate =
++	SOC_ENUM_SINGLE(DA9055_ALC_CTRL2, 4, 11, da9055_release_rate_txt);
++
++/* ALC Hold Time select */
++static const char * const da9055_hold_time_txt[] = {
++	"62/fs", "124/fs", "248/fs", "496/fs", "992/fs", "1984/fs", "3968/fs",
++	"7936/fs", "15872/fs", "31744/fs", "63488/fs", "126976/fs",
++	"253952/fs", "507904/fs", "1015808/fs", "2031616/fs"
++};
++
++static const struct soc_enum da9055_hold_time =
++	SOC_ENUM_SINGLE(DA9055_ALC_CTRL3, 0, 16, da9055_hold_time_txt);
++
++static int da9055_get_alc_data(struct snd_soc_codec *codec, u8 reg_val)
++{
++	int mid_data, top_data;
++	int sum = 0;
++	u8 iteration;
++
++	for (iteration = 0; iteration < DA9055_ALC_AVG_ITERATIONS;
++	     iteration++) {
++		/* Select the left or right channel and capture data */
++		snd_soc_write(codec, DA9055_ALC_CIC_OP_LVL_CTRL, reg_val);
++
++		/* Select middle 8 bits for read back from data register */
++		snd_soc_write(codec, DA9055_ALC_CIC_OP_LVL_CTRL,
++			      reg_val | DA9055_ALC_DATA_MIDDLE);
++		mid_data = snd_soc_read(codec, DA9055_ALC_CIC_OP_LVL_DATA);
++
++		/* Select top 8 bits for read back from data register */
++		snd_soc_write(codec, DA9055_ALC_CIC_OP_LVL_CTRL,
++			      reg_val | DA9055_ALC_DATA_TOP);
++		top_data = snd_soc_read(codec, DA9055_ALC_CIC_OP_LVL_DATA);
++
++		sum += ((mid_data << 8) | (top_data << 16));
++	}
++
++	return sum / DA9055_ALC_AVG_ITERATIONS;
++}
++
++static int da9055_put_alc_sw(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	u8 reg_val, adc_left, adc_right;
++	int avg_left_data, avg_right_data, offset_l, offset_r;
++
++	if (ucontrol->value.integer.value[0]) {
++		/*
++		 * While enabling ALC (or ALC sync mode), calibration of the DC
++		 * offsets must be done first
++		 */
++
++		/* Save current values from ADC control registers */
++		adc_left = snd_soc_read(codec, DA9055_ADC_L_CTRL);
++		adc_right = snd_soc_read(codec, DA9055_ADC_R_CTRL);
++
++		/* Enable ADC Left and Right */
++		snd_soc_update_bits(codec, DA9055_ADC_L_CTRL,
++				    DA9055_ADC_L_EN, DA9055_ADC_L_EN);
++		snd_soc_update_bits(codec, DA9055_ADC_R_CTRL,
++				    DA9055_ADC_R_EN, DA9055_ADC_R_EN);
++
++		/* Calculate average for Left and Right data */
++		/* Left Data */
++		avg_left_data = da9055_get_alc_data(codec,
++				DA9055_ALC_CIC_OP_CHANNEL_LEFT);
++		/* Right Data */
++		avg_right_data = da9055_get_alc_data(codec,
++				 DA9055_ALC_CIC_OP_CHANNEL_RIGHT);
++
++		/* Calculate DC offset */
++		offset_l = -avg_left_data;
++		offset_r = -avg_right_data;
++
++		reg_val = (offset_l & DA9055_ALC_OFFSET_15_8) >> 8;
++		snd_soc_write(codec, DA9055_ALC_OFFSET_OP2M_L, reg_val);
++		reg_val = (offset_l & DA9055_ALC_OFFSET_17_16) >> 16;
++		snd_soc_write(codec, DA9055_ALC_OFFSET_OP2U_L, reg_val);
++
++		reg_val = (offset_r & DA9055_ALC_OFFSET_15_8) >> 8;
++		snd_soc_write(codec, DA9055_ALC_OFFSET_OP2M_R, reg_val);
++		reg_val = (offset_r & DA9055_ALC_OFFSET_17_16) >> 16;
++		snd_soc_write(codec, DA9055_ALC_OFFSET_OP2U_R, reg_val);
++
++		/* Restore original values of ADC control registers */
++		snd_soc_write(codec, DA9055_ADC_L_CTRL, adc_left);
++		snd_soc_write(codec, DA9055_ADC_R_CTRL, adc_right);
++	}
++
++	return snd_soc_put_volsw(kcontrol, ucontrol);
++}
++
++static const struct snd_kcontrol_new da9055_snd_controls[] = {
++
++	/* Volume controls */
++	SOC_DOUBLE_R_TLV("Mic Volume",
++			 DA9055_MIC_L_GAIN, DA9055_MIC_R_GAIN,
++			 0, 0x7, 0, mic_vol_tlv),
++	SOC_DOUBLE_R_TLV("Aux Volume",
++			 DA9055_AUX_L_GAIN, DA9055_AUX_R_GAIN,
++			 0, 0x3f, 0, aux_vol_tlv),
++	SOC_DOUBLE_R_TLV("Mixin PGA Volume",
++			 DA9055_MIXIN_L_GAIN, DA9055_MIXIN_R_GAIN,
++			 0, 0xf, 0, mixin_gain_tlv),
++	SOC_DOUBLE_R_TLV("ADC Volume",
++			 DA9055_ADC_L_GAIN, DA9055_ADC_R_GAIN,
++			 0, 0x7f, 0, digital_gain_tlv),
++
++	SOC_DOUBLE_R_TLV("DAC Volume",
++			 DA9055_DAC_L_GAIN, DA9055_DAC_R_GAIN,
++			 0, 0x7f, 0, digital_gain_tlv),
++	SOC_DOUBLE_R_TLV("Headphone Volume",
++			 DA9055_HP_L_GAIN, DA9055_HP_R_GAIN,
++			 0, 0x3f, 0, hp_vol_tlv),
++	SOC_SINGLE_TLV("Lineout Volume", DA9055_LINE_GAIN, 0, 0x3f, 0,
++		       lineout_vol_tlv),
++
++	/* DAC Equalizer controls */
++	SOC_SINGLE("DAC EQ Switch", DA9055_DAC_FILTERS4, 7, 1, 0),
++	SOC_SINGLE_TLV("DAC EQ1 Volume", DA9055_DAC_FILTERS2, 0, 0xf, 0,
++		       eq_gain_tlv),
++	SOC_SINGLE_TLV("DAC EQ2 Volume", DA9055_DAC_FILTERS2, 4, 0xf, 0,
++		       eq_gain_tlv),
++	SOC_SINGLE_TLV("DAC EQ3 Volume", DA9055_DAC_FILTERS3, 0, 0xf, 0,
++		       eq_gain_tlv),
++	SOC_SINGLE_TLV("DAC EQ4 Volume", DA9055_DAC_FILTERS3, 4, 0xf, 0,
++		       eq_gain_tlv),
++	SOC_SINGLE_TLV("DAC EQ5 Volume", DA9055_DAC_FILTERS4, 0, 0xf, 0,
++		       eq_gain_tlv),
++
++	/* High Pass Filter and Voice Mode controls */
++	SOC_SINGLE("ADC HPF Switch", DA9055_ADC_FILTERS1, 7, 1, 0),
++	SOC_ENUM("ADC HPF Cutoff", da9055_adc_hpf_cutoff),
++	SOC_SINGLE("ADC Voice Mode Switch", DA9055_ADC_FILTERS1, 3, 1, 0),
++	SOC_ENUM("ADC Voice Cutoff", da9055_adc_vf_cutoff),
++
++	SOC_SINGLE("DAC HPF Switch", DA9055_DAC_FILTERS1, 7, 1, 0),
++	SOC_ENUM("DAC HPF Cutoff", da9055_dac_hpf_cutoff),
++	SOC_SINGLE("DAC Voice Mode Switch", DA9055_DAC_FILTERS1, 3, 1, 0),
++	SOC_ENUM("DAC Voice Cutoff", da9055_dac_vf_cutoff),
++
++	/* Mute controls */
++	SOC_DOUBLE_R("Mic Switch", DA9055_MIC_L_CTRL,
++		     DA9055_MIC_R_CTRL, 6, 1, 0),
++	SOC_DOUBLE_R("Aux Switch", DA9055_AUX_L_CTRL,
++		     DA9055_AUX_R_CTRL, 6, 1, 0),
++	SOC_DOUBLE_R("Mixin PGA Switch", DA9055_MIXIN_L_CTRL,
++		     DA9055_MIXIN_R_CTRL, 6, 1, 0),
++	SOC_DOUBLE_R("ADC Switch", DA9055_ADC_L_CTRL,
++		     DA9055_ADC_R_CTRL, 6, 1, 0),
++	SOC_DOUBLE_R("Headphone Switch", DA9055_HP_L_CTRL,
++		     DA9055_HP_R_CTRL, 6, 1, 0),
++	SOC_SINGLE("Lineout Switch", DA9055_LINE_CTRL, 6, 1, 0),
++	SOC_SINGLE("DAC Soft Mute Switch", DA9055_DAC_FILTERS5, 7, 1, 0),
++	SOC_ENUM("DAC Soft Mute Rate", da9055_dac_soft_mute_rate),
++
++	/* Zero Cross controls */
++	SOC_DOUBLE_R("Aux ZC Switch", DA9055_AUX_L_CTRL,
++		     DA9055_AUX_R_CTRL, 4, 1, 0),
++	SOC_DOUBLE_R("Mixin PGA ZC Switch", DA9055_MIXIN_L_CTRL,
++		     DA9055_MIXIN_R_CTRL, 4, 1, 0),
++	SOC_DOUBLE_R("Headphone ZC Switch", DA9055_HP_L_CTRL,
++		     DA9055_HP_R_CTRL, 4, 1, 0),
++	SOC_SINGLE("Lineout ZC Switch", DA9055_LINE_CTRL, 4, 1, 0),
++
++	/* Gain Ramping controls */
++	SOC_DOUBLE_R("Aux Gain Ramping Switch", DA9055_AUX_L_CTRL,
++		     DA9055_AUX_R_CTRL, 5, 1, 0),
++	SOC_DOUBLE_R("Mixin Gain Ramping Switch", DA9055_MIXIN_L_CTRL,
++		     DA9055_MIXIN_R_CTRL, 5, 1, 0),
++	SOC_DOUBLE_R("ADC Gain Ramping Switch", DA9055_ADC_L_CTRL,
++		     DA9055_ADC_R_CTRL, 5, 1, 0),
++	SOC_DOUBLE_R("DAC Gain Ramping Switch", DA9055_DAC_L_CTRL,
++		     DA9055_DAC_R_CTRL, 5, 1, 0),
++	SOC_DOUBLE_R("Headphone Gain Ramping Switch", DA9055_HP_L_CTRL,
++		     DA9055_HP_R_CTRL, 5, 1, 0),
++	SOC_SINGLE("Lineout Gain Ramping Switch", DA9055_LINE_CTRL, 5, 1, 0),
++	SOC_ENUM("Gain Ramping Rate", da9055_gain_ramping_rate),
++
++	/* DAC Noise Gate controls */
++	SOC_SINGLE("DAC NG Switch", DA9055_DAC_NG_CTRL, 7, 1, 0),
++	SOC_SINGLE("DAC NG ON Threshold", DA9055_DAC_NG_ON_THRESHOLD,
++		   0, 0x7, 0),
++	SOC_SINGLE("DAC NG OFF Threshold", DA9055_DAC_NG_OFF_THRESHOLD,
++		   0, 0x7, 0),
++	SOC_ENUM("DAC NG Setup Time", da9055_dac_ng_setup_time),
++	SOC_ENUM("DAC NG Rampup Rate", da9055_dac_ng_rampup_rate),
++	SOC_ENUM("DAC NG Rampdown Rate", da9055_dac_ng_rampdown_rate),
++
++	/* DAC Invertion control */
++	SOC_SINGLE("DAC Left Invert", DA9055_DIG_CTRL, 3, 1, 0),
++	SOC_SINGLE("DAC Right Invert", DA9055_DIG_CTRL, 7, 1, 0),
++
++	/* DMIC controls */
++	SOC_DOUBLE_R("DMIC Switch", DA9055_MIXIN_L_SELECT,
++		     DA9055_MIXIN_R_SELECT, 7, 1, 0),
++
++	/* ALC Controls */
++	SOC_DOUBLE_EXT("ALC Switch", DA9055_ALC_CTRL1, 3, 7, 1, 0,
++		       snd_soc_get_volsw, da9055_put_alc_sw),
++	SOC_SINGLE_EXT("ALC Sync Mode Switch", DA9055_ALC_CTRL1, 1, 1, 0,
++		       snd_soc_get_volsw, da9055_put_alc_sw),
++	SOC_SINGLE("ALC Offset Switch", DA9055_ALC_CTRL1, 0, 1, 0),
++	SOC_SINGLE("ALC Anticlip Mode Switch", DA9055_ALC_ANTICLIP_CTRL,
++		   7, 1, 0),
++	SOC_SINGLE("ALC Anticlip Level", DA9055_ALC_ANTICLIP_LEVEL,
++		   0, 0x7f, 0),
++	SOC_SINGLE_TLV("ALC Min Threshold Volume", DA9055_ALC_TARGET_MIN,
++		       0, 0x3f, 1, alc_threshold_tlv),
++	SOC_SINGLE_TLV("ALC Max Threshold Volume", DA9055_ALC_TARGET_MAX,
++		       0, 0x3f, 1, alc_threshold_tlv),
++	SOC_SINGLE_TLV("ALC Noise Threshold Volume", DA9055_ALC_NOISE,
++		       0, 0x3f, 1, alc_threshold_tlv),
++	SOC_SINGLE_TLV("ALC Max Gain Volume", DA9055_ALC_GAIN_LIMITS,
++		       4, 0xf, 0, alc_gain_tlv),
++	SOC_SINGLE_TLV("ALC Max Attenuation Volume", DA9055_ALC_GAIN_LIMITS,
++		       0, 0xf, 0, alc_gain_tlv),
++	SOC_SINGLE_TLV("ALC Min Analog Gain Volume",
++		       DA9055_ALC_ANA_GAIN_LIMITS,
++		       0, 0x7, 0, alc_analog_gain_tlv),
++	SOC_SINGLE_TLV("ALC Max Analog Gain Volume",
++		       DA9055_ALC_ANA_GAIN_LIMITS,
++		       4, 0x7, 0, alc_analog_gain_tlv),
++	SOC_ENUM("ALC Attack Rate", da9055_attack_rate),
++	SOC_ENUM("ALC Release Rate", da9055_release_rate),
++	SOC_ENUM("ALC Hold Time", da9055_hold_time),
++	/*
++	 * Rate at which input signal envelope is tracked as the signal gets
++	 * larger
++	 */
++	SOC_ENUM("ALC Integ Attack Rate", da9055_integ_attack_rate),
++	/*
++	 * Rate at which input signal envelope is tracked as the signal gets
++	 * smaller
++	 */
++	SOC_ENUM("ALC Integ Release Rate", da9055_integ_release_rate),
++};
++
++/* DAPM Controls */
++
++/* Mic PGA Left Source */
++static const struct snd_kcontrol_new da9055_mic_l_mux_controls =
++SOC_DAPM_ENUM("Route", da9055_mic_l_src);
++
++/* Mic PGA Right Source */
++static const struct snd_kcontrol_new da9055_mic_r_mux_controls =
++SOC_DAPM_ENUM("Route", da9055_mic_r_src);
++
++/* In Mixer Left */
++static const struct snd_kcontrol_new da9055_dapm_mixinl_controls[] = {
++	SOC_DAPM_SINGLE("Aux Left Switch", DA9055_MIXIN_L_SELECT, 0, 1, 0),
++	SOC_DAPM_SINGLE("Mic Left Switch", DA9055_MIXIN_L_SELECT, 1, 1, 0),
++	SOC_DAPM_SINGLE("Mic Right Switch", DA9055_MIXIN_L_SELECT, 2, 1, 0),
++};
++
++/* In Mixer Right */
++static const struct snd_kcontrol_new da9055_dapm_mixinr_controls[] = {
++	SOC_DAPM_SINGLE("Aux Right Switch", DA9055_MIXIN_R_SELECT, 0, 1, 0),
++	SOC_DAPM_SINGLE("Mic Right Switch", DA9055_MIXIN_R_SELECT, 1, 1, 0),
++	SOC_DAPM_SINGLE("Mic Left Switch", DA9055_MIXIN_R_SELECT, 2, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Left Switch", DA9055_MIXIN_R_SELECT, 3, 1, 0),
++};
++
++/* DAC Left Source */
++static const struct snd_kcontrol_new da9055_dac_l_mux_controls =
++SOC_DAPM_ENUM("Route", da9055_dac_l_src);
++
++/* DAC Right Source */
++static const struct snd_kcontrol_new da9055_dac_r_mux_controls =
++SOC_DAPM_ENUM("Route", da9055_dac_r_src);
++
++/* Out Mixer Left */
++static const struct snd_kcontrol_new da9055_dapm_mixoutl_controls[] = {
++	SOC_DAPM_SINGLE("Aux Left Switch", DA9055_MIXOUT_L_SELECT, 0, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Left Switch", DA9055_MIXOUT_L_SELECT, 1, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Right Switch", DA9055_MIXOUT_L_SELECT, 2, 1, 0),
++	SOC_DAPM_SINGLE("DAC Left Switch", DA9055_MIXOUT_L_SELECT, 3, 1, 0),
++	SOC_DAPM_SINGLE("Aux Left Invert Switch", DA9055_MIXOUT_L_SELECT,
++			4, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Left Invert Switch", DA9055_MIXOUT_L_SELECT,
++			5, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Right Invert Switch", DA9055_MIXOUT_L_SELECT,
++			6, 1, 0),
++};
++
++/* Out Mixer Right */
++static const struct snd_kcontrol_new da9055_dapm_mixoutr_controls[] = {
++	SOC_DAPM_SINGLE("Aux Right Switch", DA9055_MIXOUT_R_SELECT, 0, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Right Switch", DA9055_MIXOUT_R_SELECT, 1, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Left Switch", DA9055_MIXOUT_R_SELECT, 2, 1, 0),
++	SOC_DAPM_SINGLE("DAC Right Switch", DA9055_MIXOUT_R_SELECT, 3, 1, 0),
++	SOC_DAPM_SINGLE("Aux Right Invert Switch", DA9055_MIXOUT_R_SELECT,
++			4, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Right Invert Switch", DA9055_MIXOUT_R_SELECT,
++			5, 1, 0),
++	SOC_DAPM_SINGLE("Mixin Left Invert Switch", DA9055_MIXOUT_R_SELECT,
++			6, 1, 0),
++};
++
++/* DAPM widgets */
++static const struct snd_soc_dapm_widget da9055_dapm_widgets[] = {
++	/* Input Side */
++
++	/* Input Lines */
++	SND_SOC_DAPM_INPUT("MIC1"),
++	SND_SOC_DAPM_INPUT("MIC2"),
++	SND_SOC_DAPM_INPUT("AUXL"),
++	SND_SOC_DAPM_INPUT("AUXR"),
++
++	/* MUXs for Mic PGA source selection */
++	SND_SOC_DAPM_MUX("Mic Left Source", SND_SOC_NOPM, 0, 0,
++			 &da9055_mic_l_mux_controls),
++	SND_SOC_DAPM_MUX("Mic Right Source", SND_SOC_NOPM, 0, 0,
++			 &da9055_mic_r_mux_controls),
++
++	/* Input PGAs */
++	SND_SOC_DAPM_PGA("Mic Left", DA9055_MIC_L_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Mic Right", DA9055_MIC_R_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Aux Left", DA9055_AUX_L_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Aux Right", DA9055_AUX_R_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("MIXIN Left", DA9055_MIXIN_L_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("MIXIN Right", DA9055_MIXIN_R_CTRL, 7, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("Mic Bias", DA9055_MIC_BIAS_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("AIF", DA9055_AIF_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Charge Pump", DA9055_CP_CTRL, 7, 0, NULL, 0),
++
++	/* Input Mixers */
++	SND_SOC_DAPM_MIXER("In Mixer Left", SND_SOC_NOPM, 0, 0,
++			   &da9055_dapm_mixinl_controls[0],
++			   ARRAY_SIZE(da9055_dapm_mixinl_controls)),
++	SND_SOC_DAPM_MIXER("In Mixer Right", SND_SOC_NOPM, 0, 0,
++			   &da9055_dapm_mixinr_controls[0],
++			   ARRAY_SIZE(da9055_dapm_mixinr_controls)),
++
++	/* ADCs */
++	SND_SOC_DAPM_ADC("ADC Left", "Capture", DA9055_ADC_L_CTRL, 7, 0),
++	SND_SOC_DAPM_ADC("ADC Right", "Capture", DA9055_ADC_R_CTRL, 7, 0),
++
++	/* Output Side */
++
++	/* MUXs for DAC source selection */
++	SND_SOC_DAPM_MUX("DAC Left Source", SND_SOC_NOPM, 0, 0,
++			 &da9055_dac_l_mux_controls),
++	SND_SOC_DAPM_MUX("DAC Right Source", SND_SOC_NOPM, 0, 0,
++			 &da9055_dac_r_mux_controls),
++
++	/* AIF input */
++	SND_SOC_DAPM_AIF_IN("AIFIN Left", "Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIFIN Right", "Playback", 0, SND_SOC_NOPM, 0, 0),
++
++	/* DACs */
++	SND_SOC_DAPM_DAC("DAC Left", "Playback", DA9055_DAC_L_CTRL, 7, 0),
++	SND_SOC_DAPM_DAC("DAC Right", "Playback", DA9055_DAC_R_CTRL, 7, 0),
++
++	/* Output Mixers */
++	SND_SOC_DAPM_MIXER("Out Mixer Left", SND_SOC_NOPM, 0, 0,
++			   &da9055_dapm_mixoutl_controls[0],
++			   ARRAY_SIZE(da9055_dapm_mixoutl_controls)),
++	SND_SOC_DAPM_MIXER("Out Mixer Right", SND_SOC_NOPM, 0, 0,
++			   &da9055_dapm_mixoutr_controls[0],
++			   ARRAY_SIZE(da9055_dapm_mixoutr_controls)),
++
++	/* Output PGAs */
++	SND_SOC_DAPM_PGA("MIXOUT Left", DA9055_MIXOUT_L_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("MIXOUT Right", DA9055_MIXOUT_R_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Lineout", DA9055_LINE_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Headphone Left", DA9055_HP_L_CTRL, 7, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Headphone Right", DA9055_HP_R_CTRL, 7, 0, NULL, 0),
++
++	/* Output Lines */
++	SND_SOC_DAPM_OUTPUT("HPL"),
++	SND_SOC_DAPM_OUTPUT("HPR"),
++	SND_SOC_DAPM_OUTPUT("LINE"),
++};
++
++/* DAPM audio route definition */
++static const struct snd_soc_dapm_route da9055_audio_map[] = {
++	/* Dest       Connecting Widget    source */
++
++	/* Input path */
++	{"Mic Left Source", "MIC1_P_N", "MIC1"},
++	{"Mic Left Source", "MIC1_P", "MIC1"},
++	{"Mic Left Source", "MIC1_N", "MIC1"},
++	{"Mic Left Source", "MIC2_L", "MIC2"},
++
++	{"Mic Right Source", "MIC2_R_L", "MIC2"},
++	{"Mic Right Source", "MIC2_R", "MIC2"},
++	{"Mic Right Source", "MIC2_L", "MIC2"},
++
++	{"Mic Left", NULL, "Mic Left Source"},
++	{"Mic Right", NULL, "Mic Right Source"},
++
++	{"Aux Left", NULL, "AUXL"},
++	{"Aux Right", NULL, "AUXR"},
++
++	{"In Mixer Left", "Mic Left Switch", "Mic Left"},
++	{"In Mixer Left", "Mic Right Switch", "Mic Right"},
++	{"In Mixer Left", "Aux Left Switch", "Aux Left"},
++
++	{"In Mixer Right", "Mic Right Switch", "Mic Right"},
++	{"In Mixer Right", "Mic Left Switch", "Mic Left"},
++	{"In Mixer Right", "Aux Right Switch", "Aux Right"},
++	{"In Mixer Right", "Mixin Left Switch", "MIXIN Left"},
++
++	{"MIXIN Left", NULL, "In Mixer Left"},
++	{"ADC Left", NULL, "MIXIN Left"},
++
++	{"MIXIN Right", NULL, "In Mixer Right"},
++	{"ADC Right", NULL, "MIXIN Right"},
++
++	{"ADC Left", NULL, "AIF"},
++	{"ADC Right", NULL, "AIF"},
++
++	/* Output path */
++	{"AIFIN Left", NULL, "AIF"},
++	{"AIFIN Right", NULL, "AIF"},
++
++	{"DAC Left Source", "ADC output left", "ADC Left"},
++	{"DAC Left Source", "ADC output right", "ADC Right"},
++	{"DAC Left Source", "AIF input left", "AIFIN Left"},
++	{"DAC Left Source", "AIF input right", "AIFIN Right"},
++
++	{"DAC Right Source", "ADC output left", "ADC Left"},
++	{"DAC Right Source", "ADC output right", "ADC Right"},
++	{"DAC Right Source", "AIF input left", "AIFIN Left"},
++	{"DAC Right Source", "AIF input right", "AIFIN Right"},
++
++	{"DAC Left", NULL, "DAC Left Source"},
++	{"DAC Right", NULL, "DAC Right Source"},
++
++	{"Out Mixer Left", "Aux Left Switch", "Aux Left"},
++	{"Out Mixer Left", "Mixin Left Switch", "MIXIN Left"},
++	{"Out Mixer Left", "Mixin Right Switch", "MIXIN Right"},
++	{"Out Mixer Left", "Aux Left Invert Switch", "Aux Left"},
++	{"Out Mixer Left", "Mixin Left Invert Switch", "MIXIN Left"},
++	{"Out Mixer Left", "Mixin Right Invert Switch", "MIXIN Right"},
++	{"Out Mixer Left", "DAC Left Switch", "DAC Left"},
++
++	{"Out Mixer Right", "Aux Right Switch", "Aux Right"},
++	{"Out Mixer Right", "Mixin Right Switch", "MIXIN Right"},
++	{"Out Mixer Right", "Mixin Left Switch", "MIXIN Left"},
++	{"Out Mixer Right", "Aux Right Invert Switch", "Aux Right"},
++	{"Out Mixer Right", "Mixin Right Invert Switch", "MIXIN Right"},
++	{"Out Mixer Right", "Mixin Left Invert Switch", "MIXIN Left"},
++	{"Out Mixer Right", "DAC Right Switch", "DAC Right"},
++
++	{"MIXOUT Left", NULL, "Out Mixer Left"},
++	{"Headphone Left", NULL, "MIXOUT Left"},
++	{"Headphone Left", NULL, "Charge Pump"},
++	{"HPL", NULL, "Headphone Left"},
++
++	{"MIXOUT Right", NULL, "Out Mixer Right"},
++	{"Headphone Right", NULL, "MIXOUT Right"},
++	{"Headphone Right", NULL, "Charge Pump"},
++	{"HPR", NULL, "Headphone Right"},
++
++	{"MIXOUT Right", NULL, "Out Mixer Right"},
++	{"Lineout", NULL, "MIXOUT Right"},
++	{"LINE", NULL, "Lineout"},
++};
++
++/* Codec private data */
++struct da9055_priv {
++	struct regmap *regmap;
++	unsigned int mclk_rate;
++	int master;
++	struct da9055_platform_data *pdata;
++};
++
++static struct reg_default da9055_reg_defaults[] = {
++	{ 0x21, 0x10 },
++	{ 0x22, 0x0A },
++	{ 0x23, 0x00 },
++	{ 0x24, 0x00 },
++	{ 0x25, 0x00 },
++	{ 0x26, 0x00 },
++	{ 0x27, 0x0C },
++	{ 0x28, 0x01 },
++	{ 0x29, 0x08 },
++	{ 0x2A, 0x32 },
++	{ 0x2B, 0x00 },
++	{ 0x30, 0x35 },
++	{ 0x31, 0x35 },
++	{ 0x32, 0x00 },
++	{ 0x33, 0x00 },
++	{ 0x34, 0x03 },
++	{ 0x35, 0x03 },
++	{ 0x36, 0x6F },
++	{ 0x37, 0x6F },
++	{ 0x38, 0x80 },
++	{ 0x39, 0x01 },
++	{ 0x3A, 0x01 },
++	{ 0x40, 0x00 },
++	{ 0x41, 0x88 },
++	{ 0x42, 0x88 },
++	{ 0x43, 0x08 },
++	{ 0x44, 0x80 },
++	{ 0x45, 0x6F },
++	{ 0x46, 0x6F },
++	{ 0x47, 0x61 },
++	{ 0x48, 0x35 },
++	{ 0x49, 0x35 },
++	{ 0x4A, 0x35 },
++	{ 0x4B, 0x00 },
++	{ 0x4C, 0x00 },
++	{ 0x60, 0x44 },
++	{ 0x61, 0x44 },
++	{ 0x62, 0x00 },
++	{ 0x63, 0x40 },
++	{ 0x64, 0x40 },
++	{ 0x65, 0x40 },
++	{ 0x66, 0x40 },
++	{ 0x67, 0x40 },
++	{ 0x68, 0x40 },
++	{ 0x69, 0x48 },
++	{ 0x6A, 0x40 },
++	{ 0x6B, 0x41 },
++	{ 0x6C, 0x40 },
++	{ 0x6D, 0x40 },
++	{ 0x6E, 0x10 },
++	{ 0x6F, 0x10 },
++	{ 0x90, 0x80 },
++	{ 0x92, 0x02 },
++	{ 0x93, 0x00 },
++	{ 0x99, 0x00 },
++	{ 0x9A, 0x00 },
++	{ 0x9B, 0x00 },
++	{ 0x9C, 0x3F },
++	{ 0x9D, 0x00 },
++	{ 0x9E, 0x3F },
++	{ 0x9F, 0xFF },
++	{ 0xA0, 0x71 },
++	{ 0xA1, 0x00 },
++	{ 0xA2, 0x00 },
++	{ 0xA6, 0x00 },
++	{ 0xA7, 0x00 },
++	{ 0xAB, 0x00 },
++	{ 0xAC, 0x00 },
++	{ 0xAD, 0x00 },
++	{ 0xAF, 0x08 },
++	{ 0xB0, 0x00 },
++	{ 0xB1, 0x00 },
++	{ 0xB2, 0x00 },
++};
++
++static bool da9055_volatile_register(struct device *dev,
++				     unsigned int reg)
++{
++	switch (reg) {
++	case DA9055_STATUS1:
++	case DA9055_PLL_STATUS:
++	case DA9055_AUX_L_GAIN_STATUS:
++	case DA9055_AUX_R_GAIN_STATUS:
++	case DA9055_MIC_L_GAIN_STATUS:
++	case DA9055_MIC_R_GAIN_STATUS:
++	case DA9055_MIXIN_L_GAIN_STATUS:
++	case DA9055_MIXIN_R_GAIN_STATUS:
++	case DA9055_ADC_L_GAIN_STATUS:
++	case DA9055_ADC_R_GAIN_STATUS:
++	case DA9055_DAC_L_GAIN_STATUS:
++	case DA9055_DAC_R_GAIN_STATUS:
++	case DA9055_HP_L_GAIN_STATUS:
++	case DA9055_HP_R_GAIN_STATUS:
++	case DA9055_LINE_GAIN_STATUS:
++	case DA9055_ALC_CIC_OP_LVL_DATA:
++		return 1;
++	default:
++		return 0;
++	}
++}
++
++/* Set DAI word length */
++static int da9055_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct da9055_priv *da9055 = snd_soc_codec_get_drvdata(codec);
++	u8 aif_ctrl, fs;
++	u32 sysclk;
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		aif_ctrl = DA9055_AIF_WORD_S16_LE;
++		break;
++	case SNDRV_PCM_FORMAT_S20_3LE:
++		aif_ctrl = DA9055_AIF_WORD_S20_3LE;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		aif_ctrl = DA9055_AIF_WORD_S24_LE;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		aif_ctrl = DA9055_AIF_WORD_S32_LE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* Set AIF format */
++	snd_soc_update_bits(codec, DA9055_AIF_CTRL, DA9055_AIF_WORD_LENGTH_MASK,
++			    aif_ctrl);
++
++	switch (params_rate(params)) {
++	case 8000:
++		fs		= DA9055_SR_8000;
++		sysclk		= 3072000;
++		break;
++	case 11025:
++		fs		= DA9055_SR_11025;
++		sysclk		= 2822400;
++		break;
++	case 12000:
++		fs		= DA9055_SR_12000;
++		sysclk		= 3072000;
++		break;
++	case 16000:
++		fs		= DA9055_SR_16000;
++		sysclk		= 3072000;
++		break;
++	case 22050:
++		fs		= DA9055_SR_22050;
++		sysclk		= 2822400;
++		break;
++	case 32000:
++		fs		= DA9055_SR_32000;
++		sysclk		= 3072000;
++		break;
++	case 44100:
++		fs		= DA9055_SR_44100;
++		sysclk		= 2822400;
++		break;
++	case 48000:
++		fs		= DA9055_SR_48000;
++		sysclk		= 3072000;
++		break;
++	case 88200:
++		fs		= DA9055_SR_88200;
++		sysclk		= 2822400;
++		break;
++	case 96000:
++		fs		= DA9055_SR_96000;
++		sysclk		= 3072000;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (da9055->mclk_rate) {
++		/* PLL Mode, Write actual FS */
++		snd_soc_write(codec, DA9055_SR, fs);
++	} else {
++		/*
++		 * Non-PLL Mode
++		 * When PLL is bypassed, chip assumes constant MCLK of
++		 * 12.288MHz and uses sample rate value to divide this MCLK
++		 * to derive its sys clk. As sys clk has to be 256 * Fs, we
++		 * need to write constant sample rate i.e. 48KHz.
++		 */
++		snd_soc_write(codec, DA9055_SR, DA9055_SR_48000);
++	}
++
++	if (da9055->mclk_rate && (da9055->mclk_rate != sysclk)) {
++		/* PLL Mode */
++		if (!da9055->master) {
++			/* PLL slave mode, enable PLL and also SRM */
++			snd_soc_update_bits(codec, DA9055_PLL_CTRL,
++					    DA9055_PLL_EN | DA9055_PLL_SRM_EN,
++					    DA9055_PLL_EN | DA9055_PLL_SRM_EN);
++		} else {
++			/* PLL master mode, only enable PLL */
++			snd_soc_update_bits(codec, DA9055_PLL_CTRL,
++					    DA9055_PLL_EN, DA9055_PLL_EN);
++		}
++	} else {
++		/* Non PLL Mode, disable PLL */
++		snd_soc_update_bits(codec, DA9055_PLL_CTRL, DA9055_PLL_EN, 0);
++	}
++
++	return 0;
++}
++
++/* Set DAI mode and Format */
++static int da9055_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct da9055_priv *da9055 = snd_soc_codec_get_drvdata(codec);
++	u8 aif_clk_mode, aif_ctrl, mode;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* DA9055 in I2S Master Mode */
++		mode = 1;
++		aif_clk_mode = DA9055_AIF_CLK_EN_MASTER_MODE;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* DA9055 in I2S Slave Mode */
++		mode = 0;
++		aif_clk_mode = DA9055_AIF_CLK_EN_SLAVE_MODE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* Don't allow change of mode if PLL is enabled */
++	if ((snd_soc_read(codec, DA9055_PLL_CTRL) & DA9055_PLL_EN) &&
++	    (da9055->master != mode))
++		return -EINVAL;
++
++	da9055->master = mode;
++
++	/* Only I2S is supported */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		aif_ctrl = DA9055_AIF_FORMAT_I2S_MODE;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		aif_ctrl = DA9055_AIF_FORMAT_LEFT_J;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		aif_ctrl = DA9055_AIF_FORMAT_RIGHT_J;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* By default only 32 BCLK per WCLK is supported */
++	aif_clk_mode |= DA9055_AIF_BCLKS_PER_WCLK_32;
++
++	snd_soc_update_bits(codec, DA9055_AIF_CLK_MODE,
++			    (DA9055_AIF_CLK_MODE_MASK | DA9055_AIF_BCLK_MASK),
++			    aif_clk_mode);
++	snd_soc_update_bits(codec, DA9055_AIF_CTRL, DA9055_AIF_FORMAT_MASK,
++			    aif_ctrl);
++	return 0;
++}
++
++static int da9055_mute(struct snd_soc_dai *dai, int mute)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	if (mute) {
++		snd_soc_update_bits(codec, DA9055_DAC_L_CTRL,
++				    DA9055_DAC_L_MUTE_EN, DA9055_DAC_L_MUTE_EN);
++		snd_soc_update_bits(codec, DA9055_DAC_R_CTRL,
++				    DA9055_DAC_R_MUTE_EN, DA9055_DAC_R_MUTE_EN);
++	} else {
++		snd_soc_update_bits(codec, DA9055_DAC_L_CTRL,
++				    DA9055_DAC_L_MUTE_EN, 0);
++		snd_soc_update_bits(codec, DA9055_DAC_R_CTRL,
++				    DA9055_DAC_R_MUTE_EN, 0);
++	}
++
++	return 0;
++}
++
++#define DA9055_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
++
++static int da9055_set_dai_sysclk(struct snd_soc_dai *codec_dai,
++				 int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct da9055_priv *da9055 = snd_soc_codec_get_drvdata(codec);
++
++	switch (clk_id) {
++	case DA9055_CLKSRC_MCLK:
++		switch (freq) {
++		case 11289600:
++		case 12000000:
++		case 12288000:
++		case 13000000:
++		case 13500000:
++		case 14400000:
++		case 19200000:
++		case 19680000:
++		case 19800000:
++			da9055->mclk_rate = freq;
++			return 0;
++		default:
++			dev_err(codec_dai->dev, "Unsupported MCLK value %d\n",
++				freq);
++			return -EINVAL;
++		}
++		break;
++	default:
++		dev_err(codec_dai->dev, "Unknown clock source %d\n", clk_id);
++		return -EINVAL;
++	}
++}
++
++/*
++ * da9055_set_dai_pll	: Configure the codec PLL
++ * @param codec_dai	: Pointer to codec DAI
++ * @param pll_id	: da9055 has only one pll, so pll_id is always zero
++ * @param fref		: Input MCLK frequency
++ * @param fout		: FsDM value
++ * @return int		: Zero for success, negative error code for error
++ *
++ * Note: Supported PLL input frequencies are 11.2896MHz, 12MHz, 12.288MHz,
++ *	 13MHz, 13.5MHz, 14.4MHz, 19.2MHz, 19.6MHz and 19.8MHz
++ */
++static int da9055_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
++			      int source, unsigned int fref, unsigned int fout)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct da9055_priv *da9055 = snd_soc_codec_get_drvdata(codec);
++
++	u8 pll_frac_top, pll_frac_bot, pll_integer, cnt;
++
++	/* Disable PLL before setting the divisors */
++	snd_soc_update_bits(codec, DA9055_PLL_CTRL, DA9055_PLL_EN, 0);
++
++	/* In slave mode, there is only one set of divisors */
++	if (!da9055->master && (fout != 2822400))
++		goto pll_err;
++
++	/* Search pll div array for correct divisors */
++	for (cnt = 0; cnt < ARRAY_SIZE(da9055_pll_div); cnt++) {
++		/* Check fref, mode  and fout */
++		if ((fref == da9055_pll_div[cnt].fref) &&
++		    (da9055->master ==  da9055_pll_div[cnt].mode) &&
++		    (fout == da9055_pll_div[cnt].fout)) {
++			/* All match, pick up divisors */
++			pll_frac_top = da9055_pll_div[cnt].frac_top;
++			pll_frac_bot = da9055_pll_div[cnt].frac_bot;
++			pll_integer = da9055_pll_div[cnt].integer;
++			break;
++		}
++	}
++	if (cnt >= ARRAY_SIZE(da9055_pll_div))
++		goto pll_err;
++
++	/* Write PLL dividers */
++	snd_soc_write(codec, DA9055_PLL_FRAC_TOP, pll_frac_top);
++	snd_soc_write(codec, DA9055_PLL_FRAC_BOT, pll_frac_bot);
++	snd_soc_write(codec, DA9055_PLL_INTEGER, pll_integer);
++
++	return 0;
++pll_err:
++	dev_err(codec_dai->dev, "Error in setting up PLL\n");
++	return -EINVAL;
++}
++
++/* DAI operations */
++static const struct snd_soc_dai_ops da9055_dai_ops = {
++	.hw_params	= da9055_hw_params,
++	.set_fmt	= da9055_set_dai_fmt,
++	.set_sysclk	= da9055_set_dai_sysclk,
++	.set_pll	= da9055_set_dai_pll,
++	.digital_mute	= da9055_mute,
++};
++
++static struct snd_soc_dai_driver da9055_dai = {
++	.name = "da9055-hifi",
++	/* Playback Capabilities */
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = DA9055_FORMATS,
++	},
++	/* Capture Capabilities */
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = DA9055_FORMATS,
++	},
++	.ops = &da9055_dai_ops,
++	.symmetric_rates = 1,
++};
++
++static int da9055_set_bias_level(struct snd_soc_codec *codec,
++				 enum snd_soc_bias_level level)
++{
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++	case SND_SOC_BIAS_PREPARE:
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			/* Enable VMID reference & master bias */
++			snd_soc_update_bits(codec, DA9055_REFERENCES,
++					    DA9055_VMID_EN | DA9055_BIAS_EN,
++					    DA9055_VMID_EN | DA9055_BIAS_EN);
++		}
++		break;
++	case SND_SOC_BIAS_OFF:
++		/* Disable VMID reference & master bias */
++		snd_soc_update_bits(codec, DA9055_REFERENCES,
++				    DA9055_VMID_EN | DA9055_BIAS_EN, 0);
++		break;
++	}
++	codec->dapm.bias_level = level;
++	return 0;
++}
++
++static int da9055_probe(struct snd_soc_codec *codec)
++{
++	int ret;
++	struct da9055_priv *da9055 = snd_soc_codec_get_drvdata(codec);
++
++	codec->control_data = da9055->regmap;
++	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
++	}
++
++	/* Enable all Gain Ramps */
++	snd_soc_update_bits(codec, DA9055_AUX_L_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_AUX_R_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_MIXIN_L_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_MIXIN_R_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_ADC_L_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_ADC_R_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_DAC_L_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_DAC_R_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_HP_L_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_HP_R_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++	snd_soc_update_bits(codec, DA9055_LINE_CTRL,
++			    DA9055_GAIN_RAMPING_EN, DA9055_GAIN_RAMPING_EN);
++
++	/*
++	 * There are two separate control bits for input and output mixers as
++	 * well as headphone and line outs.
++	 * One to enable corresponding amplifier and other to enable its
++	 * output. As amplifier bits are related to power control, they are
++	 * being managed by DAPM while other (non power related) bits are
++	 * enabled here
++	 */
++	snd_soc_update_bits(codec, DA9055_MIXIN_L_CTRL,
++			    DA9055_MIXIN_L_MIX_EN, DA9055_MIXIN_L_MIX_EN);
++	snd_soc_update_bits(codec, DA9055_MIXIN_R_CTRL,
++			    DA9055_MIXIN_R_MIX_EN, DA9055_MIXIN_R_MIX_EN);
++
++	snd_soc_update_bits(codec, DA9055_MIXOUT_L_CTRL,
++			    DA9055_MIXOUT_L_MIX_EN, DA9055_MIXOUT_L_MIX_EN);
++	snd_soc_update_bits(codec, DA9055_MIXOUT_R_CTRL,
++			    DA9055_MIXOUT_R_MIX_EN, DA9055_MIXOUT_R_MIX_EN);
++
++	snd_soc_update_bits(codec, DA9055_HP_L_CTRL,
++			    DA9055_HP_L_AMP_OE, DA9055_HP_L_AMP_OE);
++	snd_soc_update_bits(codec, DA9055_HP_R_CTRL,
++			    DA9055_HP_R_AMP_OE, DA9055_HP_R_AMP_OE);
++
++	snd_soc_update_bits(codec, DA9055_LINE_CTRL,
++			    DA9055_LINE_AMP_OE, DA9055_LINE_AMP_OE);
++
++	/* Set this as per your system configuration */
++	snd_soc_write(codec, DA9055_PLL_CTRL, DA9055_PLL_INDIV_10_20_MHZ);
++
++	/* Set platform data values */
++	if (da9055->pdata) {
++		/* set mic bias source */
++		if (da9055->pdata->micbias_source) {
++			snd_soc_update_bits(codec, DA9055_MIXIN_R_SELECT,
++					    DA9055_MICBIAS2_EN,
++					    DA9055_MICBIAS2_EN);
++		} else {
++			snd_soc_update_bits(codec, DA9055_MIXIN_R_SELECT,
++					    DA9055_MICBIAS2_EN, 0);
++		}
++		/* set mic bias voltage */
++		switch (da9055->pdata->micbias) {
++		case DA9055_MICBIAS_2_2V:
++		case DA9055_MICBIAS_2_1V:
++		case DA9055_MICBIAS_1_8V:
++		case DA9055_MICBIAS_1_6V:
++			snd_soc_update_bits(codec, DA9055_MIC_CONFIG,
++					    DA9055_MICBIAS_LEVEL_MASK,
++					    (da9055->pdata->micbias) << 4);
++			break;
++		}
++	}
++	return 0;
++}
++
++static struct snd_soc_codec_driver soc_codec_dev_da9055 = {
++	.probe			= da9055_probe,
++	.set_bias_level		= da9055_set_bias_level,
++
++	.controls		= da9055_snd_controls,
++	.num_controls		= ARRAY_SIZE(da9055_snd_controls),
++
++	.dapm_widgets		= da9055_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(da9055_dapm_widgets),
++	.dapm_routes		= da9055_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(da9055_audio_map),
++};
++
++static const struct regmap_config da9055_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++
++	.reg_defaults = da9055_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(da9055_reg_defaults),
++	.volatile_reg = da9055_volatile_register,
++	.cache_type = REGCACHE_RBTREE,
++};
++
++static int __devinit da9055_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
++{
++	struct da9055_priv *da9055;
++	struct da9055_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	int ret;
++
++	da9055 = devm_kzalloc(&i2c->dev, sizeof(struct da9055_priv),
++			      GFP_KERNEL);
++	if (!da9055)
++		return -ENOMEM;
++
++	if (pdata)
++		da9055->pdata = pdata;
++
++	i2c_set_clientdata(i2c, da9055);
++
++	da9055->regmap = devm_regmap_init_i2c(i2c, &da9055_regmap_config);
++	if (IS_ERR(da9055->regmap)) {
++		ret = PTR_ERR(da9055->regmap);
++		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_da9055, &da9055_dai, 1);
++	if (ret < 0) {
++		dev_err(&i2c->dev, "Failed to register da9055 codec: %d\n",
++			ret);
++	}
++	return ret;
++}
++
++static int __devexit da9055_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	return 0;
++}
++
++static const struct i2c_device_id da9055_i2c_id[] = {
++	{ "da9055", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, da9055_i2c_id);
++
++/* I2C codec control layer */
++static struct i2c_driver da9055_i2c_driver = {
++	.driver = {
++		.name = "da9055",
++		.owner = THIS_MODULE,
++	},
++	.probe		= da9055_i2c_probe,
++	.remove		= __devexit_p(da9055_remove),
++	.id_table	= da9055_i2c_id,
++};
++
++module_i2c_driver(da9055_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC DA9055 Codec driver");
++MODULE_AUTHOR("David Chen, Ashish Chavan");
++MODULE_LICENSE("GPL");
+-- 
+1.7.1
