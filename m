@@ -1,14 +1,19 @@
-From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 10/10] ALSA: Remove unnecessary struct
-	hda_stream_format from CA0132
-Date: Thu, 20 Sep 2012 20:29:21 -0700
-Message-ID: <1348198161-9256-11-git-send-email-ian_minett@creativelabs.com>
-References: <1348198161-9256-1-git-send-email-ian_minett@creativelabs.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: Linux Kernel-3.5 crashed as dapm is not supported
+	by codec
+Date: Fri, 21 Sep 2012 09:27:47 +0530
+Message-ID: <505BE5BB.5010008@st.com>
+References: <505AFB0B.7010306@st.com>
+ <20120920114951.GJ17666@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1348198161-9256-1-git-send-email-ian_minett@creativelabs.com>
+Received: from eu1sys200aog120.obsmtp.com (eu1sys200aog120.obsmtp.com
+ [207.126.144.149])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98DB7265CBF
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 05:57:54 +0200 (CEST)
+In-Reply-To: <20120920114951.GJ17666@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,126 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ian Minett <ian_minett@creativelabs.com>
+Hello Mark,
 
+On 9/20/2012 5:19 PM, Mark Brown wrote:
+> On Thu, Sep 20, 2012 at 04:46:27PM +0530, Rajeev kumar wrote:
+>
+>> I have not provided the dapm support in codec. When the system goes
+>> in hibernation state it gets crashed. command for putting the system
+>> in hibernation:
+>
+> DAPM is mandatory now, though any device with an audio interface
+> connected should have some DAPM widgets added transparently so its not
+> always explicitly present in the CODEC driver.  It's just causing too
+> much pain to special case non-DAPM devices and theres really not any
+> cases where there's no need for widgets.
+>
 
-Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
+Is DAPM operates on event? In my device event generation is not 
+there.Please correct me if I am wrong.
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 7a0425f..5c6a056 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -356,13 +356,6 @@ enum dsp_download_state {
- 	DSP_DOWNLOADED      = 2
- };
- 
--struct hda_stream_format {
--	unsigned int   sample_rate;
--	unsigned short valid_bits_per_sample;
--	unsigned short container_size;
--	unsigned short number_channels;
--};
--
- /* retrieve parameters from hda format */
- #define get_hdafmt_chs(fmt)	(fmt & 0xf)
- #define get_hdafmt_bits(fmt)	((fmt >> 4) & 0x7)
-@@ -1585,16 +1578,17 @@ enum dma_state {
- };
- 
- static int dma_convert_to_hda_format(
--		struct hda_stream_format *stream_format,
-+		unsigned int sample_rate,
-+		unsigned short channels,
- 		unsigned short *hda_format)
- {
- 	unsigned int format_val;
- 
- 	format_val = snd_hda_calc_stream_format(
--				stream_format->sample_rate,
--				stream_format->number_channels,
-+				sample_rate,
-+				channels,
- 				SNDRV_PCM_FORMAT_S32_LE,
--				stream_format->container_size, 0);
-+				32, 0);
- 
- 	if (hda_format)
- 		*hda_format = (unsigned short)format_val;
-@@ -1940,14 +1934,17 @@ static int dspxfr_one_seg(struct hda_codec *codec,
-  * @fls_data: pointer to a fast load image
-  * @reloc: Relocation address for loading single-segment overlays, or 0 for
-  *	   no relocation
-- * @format: format of the stream used for DSP download
-+ * @sample_rate: sampling rate of the stream used for DSP download
-+ * @number_channels: channels of the stream used for DSP download
-  * @ovly: TRUE if overlay format is required
-  *
-  * Returns zero or a negative error code.
-  */
- static int dspxfr_image(struct hda_codec *codec,
- 			const struct dsp_image_seg *fls_data,
--			unsigned int reloc, struct hda_stream_format *format,
-+			unsigned int reloc,
-+			unsigned int sample_rate,
-+			unsigned short channels,
- 			bool ovly)
- {
- 	struct ca0132_spec *spec = codec->spec;
-@@ -1976,7 +1973,7 @@ static int dspxfr_image(struct hda_codec *codec,
- 	}
- 
- 	dma_engine->codec = codec;
--	dma_convert_to_hda_format(format, &hda_format);
-+	dma_convert_to_hda_format(sample_rate, channels, &hda_format);
- 	dma_engine->m_converter_format = hda_format;
- 	dma_engine->buf_size = (ovly ? DSP_DMA_WRITE_BUFLEN_OVLY :
- 			DSP_DMA_WRITE_BUFLEN_INIT) * 2;
-@@ -2104,7 +2101,8 @@ static int dspload_image(struct hda_codec *codec,
- 			int router_chans)
- {
- 	int status = 0;
--	struct hda_stream_format stream_format;
-+	unsigned int sample_rate;
-+	unsigned short channels;
- 
- 	snd_printdd(KERN_INFO "---- dspload_image begin ------");
- 	if (router_chans == 0) {
-@@ -2114,17 +2112,14 @@ static int dspload_image(struct hda_codec *codec,
- 			router_chans = DMA_OVERLAY_FRAME_SIZE_NWORDS;
- 	}
- 
--	stream_format.sample_rate = 48000;
--	stream_format.number_channels = (unsigned short)router_chans;
-+	sample_rate = 48000;
-+	channels = (unsigned short)router_chans;
- 
--	while (stream_format.number_channels > 16) {
--		stream_format.sample_rate *= 2;
--		stream_format.number_channels /= 2;
-+	while (channels > 16) {
-+		sample_rate *= 2;
-+		channels /= 2;
- 	}
- 
--	stream_format.container_size = 32;
--	stream_format.valid_bits_per_sample = 32;
--
- 	do {
- 		snd_printdd(KERN_INFO "Ready to program DMA");
- 		if (!ovly)
-@@ -2134,7 +2129,8 @@ static int dspload_image(struct hda_codec *codec,
- 			break;
- 
- 		snd_printdd(KERN_INFO "dsp_reset() complete");
--		status = dspxfr_image(codec, fls, reloc, &stream_format, ovly);
-+		status = dspxfr_image(codec, fls, reloc, sample_rate, channels,
-+				      ovly);
- 
- 		if (status < 0)
- 			break;
--- 
-1.7.4.1
+Are there some dummy interface for DAPM? What are those interfaces?
+
+Best Regards
+Rajeev
