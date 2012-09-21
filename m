@@ -1,8 +1,8 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 09/10] ALSA: Update chipio functions and DSP
-	write wait timeout
-Date: Thu, 20 Sep 2012 20:29:20 -0700
-Message-ID: <1348198161-9256-10-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 10/10] ALSA: Remove unnecessary struct
+	hda_stream_format from CA0132
+Date: Thu, 20 Sep 2012 20:29:21 -0700
+Message-ID: <1348198161-9256-11-git-send-email-ian_minett@creativelabs.com>
 References: <1348198161-9256-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,104 +24,120 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
-Tidy up and condense chipio_write_address|addx() functions.
-Improve dspio_write_wait() to use jiffies for timeout calc.
 
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index a7b216e..7a0425f 100644
+index 7a0425f..5c6a056 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -460,8 +460,12 @@ static int chipio_send(struct hda_codec *codec,
- static int chipio_write_address(struct hda_codec *codec,
- 				unsigned int chip_addx)
- {
-+	struct ca0132_spec *spec = codec->spec;
- 	int res;
+@@ -356,13 +356,6 @@ enum dsp_download_state {
+ 	DSP_DOWNLOADED      = 2
+ };
  
-+	if (spec->curr_chip_addx == chip_addx)
-+			return 0;
-+
- 	/* send low 16 bits of the address */
- 	res = chipio_send(codec, VENDOR_CHIPIO_ADDRESS_LOW,
- 			  chip_addx & 0xffff);
-@@ -472,37 +476,14 @@ static int chipio_write_address(struct hda_codec *codec,
- 				  chip_addx >> 16);
+-struct hda_stream_format {
+-	unsigned int   sample_rate;
+-	unsigned short valid_bits_per_sample;
+-	unsigned short container_size;
+-	unsigned short number_channels;
+-};
+-
+ /* retrieve parameters from hda format */
+ #define get_hdafmt_chs(fmt)	(fmt & 0xf)
+ #define get_hdafmt_bits(fmt)	((fmt >> 4) & 0x7)
+@@ -1585,16 +1578,17 @@ enum dma_state {
+ };
+ 
+ static int dma_convert_to_hda_format(
+-		struct hda_stream_format *stream_format,
++		unsigned int sample_rate,
++		unsigned short channels,
+ 		unsigned short *hda_format)
+ {
+ 	unsigned int format_val;
+ 
+ 	format_val = snd_hda_calc_stream_format(
+-				stream_format->sample_rate,
+-				stream_format->number_channels,
++				sample_rate,
++				channels,
+ 				SNDRV_PCM_FORMAT_S32_LE,
+-				stream_format->container_size, 0);
++				32, 0);
+ 
+ 	if (hda_format)
+ 		*hda_format = (unsigned short)format_val;
+@@ -1940,14 +1934,17 @@ static int dspxfr_one_seg(struct hda_codec *codec,
+  * @fls_data: pointer to a fast load image
+  * @reloc: Relocation address for loading single-segment overlays, or 0 for
+  *	   no relocation
+- * @format: format of the stream used for DSP download
++ * @sample_rate: sampling rate of the stream used for DSP download
++ * @number_channels: channels of the stream used for DSP download
+  * @ovly: TRUE if overlay format is required
+  *
+  * Returns zero or a negative error code.
+  */
+ static int dspxfr_image(struct hda_codec *codec,
+ 			const struct dsp_image_seg *fls_data,
+-			unsigned int reloc, struct hda_stream_format *format,
++			unsigned int reloc,
++			unsigned int sample_rate,
++			unsigned short channels,
+ 			bool ovly)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -1976,7 +1973,7 @@ static int dspxfr_image(struct hda_codec *codec,
  	}
  
-+	spec->curr_chip_addx = (res < 0) ? ~0UL : chip_addx;
-+
- 	return res;
- }
- 
--static int chipio_write_addx(struct hda_codec *codec, u32 chip_addx)
--{
--	struct ca0132_spec *spec = codec->spec;
--	int status;
--
--	if (spec->curr_chip_addx == chip_addx)
--		return 0;
--
--	/* send low 16 bits of the address */
--	status = chipio_send(codec, VENDOR_CHIPIO_ADDRESS_LOW,
--			  chip_addx & 0xffff);
--
--	if (status < 0)
--		return status;
--
--	/* send high 16 bits of the address */
--	status = chipio_send(codec, VENDOR_CHIPIO_ADDRESS_HIGH,
--			  chip_addx >> 16);
--
--	spec->curr_chip_addx = (status < 0) ? ~0UL : chip_addx;
--
--	return status;
--}
--
- /*
-  * Write data through the vendor widget -- NOT protected by the Mutex!
-  */
--
- static int chipio_write_data(struct hda_codec *codec, unsigned int data)
+ 	dma_engine->codec = codec;
+-	dma_convert_to_hda_format(format, &hda_format);
++	dma_convert_to_hda_format(sample_rate, channels, &hda_format);
+ 	dma_engine->m_converter_format = hda_format;
+ 	dma_engine->buf_size = (ovly ? DSP_DMA_WRITE_BUFLEN_OVLY :
+ 			DSP_DMA_WRITE_BUFLEN_INIT) * 2;
+@@ -2104,7 +2101,8 @@ static int dspload_image(struct hda_codec *codec,
+ 			int router_chans)
  {
- 	int res;
-@@ -604,7 +585,7 @@ static int chipio_write_multiple(struct hda_codec *codec,
- 	int status;
+ 	int status = 0;
+-	struct hda_stream_format stream_format;
++	unsigned int sample_rate;
++	unsigned short channels;
  
- 	mutex_lock(&spec->chipio_mutex);
--	status = chipio_write_addx(codec, chip_addx);
-+	status = chipio_write_address(codec, chip_addx);
- 	if (status < 0)
- 		goto error;
+ 	snd_printdd(KERN_INFO "---- dspload_image begin ------");
+ 	if (router_chans == 0) {
+@@ -2114,17 +2112,14 @@ static int dspload_image(struct hda_codec *codec,
+ 			router_chans = DMA_OVERLAY_FRAME_SIZE_NWORDS;
+ 	}
  
-@@ -742,18 +723,17 @@ static int dspio_send(struct hda_codec *codec, unsigned int reg,
-  */
- static void dspio_write_wait(struct hda_codec *codec)
- {
--	int cur_val, prv_val;
--	int retry = 50;
-+	int status;
-+	unsigned long timeout = jiffies + msecs_to_jiffies(1000);
+-	stream_format.sample_rate = 48000;
+-	stream_format.number_channels = (unsigned short)router_chans;
++	sample_rate = 48000;
++	channels = (unsigned short)router_chans;
  
--	cur_val = 0;
+-	while (stream_format.number_channels > 16) {
+-		stream_format.sample_rate *= 2;
+-		stream_format.number_channels /= 2;
++	while (channels > 16) {
++		sample_rate *= 2;
++		channels /= 2;
+ 	}
+ 
+-	stream_format.container_size = 32;
+-	stream_format.valid_bits_per_sample = 32;
+-
  	do {
--		prv_val = cur_val;
--		msleep(20);
--		dspio_send(codec, VENDOR_DSPIO_SCP_POST_COUNT_QUERY, 1);
--		dspio_send(codec, VENDOR_DSPIO_STATUS, 0);
--		cur_val = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0,
--					   VENDOR_DSPIO_SCP_READ_COUNT, 0);
--	} while (cur_val && (cur_val == prv_val) && --retry);
-+		status = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0,
-+						VENDOR_DSPIO_STATUS, 0);
-+		if ((status == VENDOR_STATUS_DSPIO_OK) ||
-+		    (status == VENDOR_STATUS_DSPIO_SCP_RESPONSE_QUEUE_EMPTY))
-+			break;
-+		msleep(1);
-+	} while (time_before(jiffies, timeout));
- }
+ 		snd_printdd(KERN_INFO "Ready to program DMA");
+ 		if (!ovly)
+@@ -2134,7 +2129,8 @@ static int dspload_image(struct hda_codec *codec,
+ 			break;
  
- /*
+ 		snd_printdd(KERN_INFO "dsp_reset() complete");
+-		status = dspxfr_image(codec, fls, reloc, &stream_format, ovly);
++		status = dspxfr_image(codec, fls, reloc, sample_rate, channels,
++				      ovly);
+ 
+ 		if (status < 0)
+ 			break;
 -- 
 1.7.4.1
