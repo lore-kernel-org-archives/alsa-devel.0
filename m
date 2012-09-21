@@ -1,18 +1,21 @@
-From: Julien Danjou <julien@danjou.info>
-Subject: Re: Constant noise on HDA ALC275
-Date: Fri, 21 Sep 2012 15:14:35 +0200
-Message-ID: <87pq5fiklg.fsf@dex.adm.naquadah.org>
-References: <87obl7bg02.fsf@dex.adm.naquadah.org>
- <s5h4nmrbln3.wl%tiwai@suse.de> <87wqznim1k.fsf@dex.adm.naquadah.org>
- <s5hzk4ja5hz.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
+ pinctrl when registering a DAI
+Date: Fri, 21 Sep 2012 16:16:26 +0300
+Message-ID: <505C68AA.7080907@ti.com>
+References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120921111352.GA21524@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3855321938500147077=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.naquadah.org (prometheus.naquadah.org [212.85.154.174])
- by alsa0.perex.cz (Postfix) with ESMTP id B6788265D12
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 15:15:12 +0200 (CEST)
-In-Reply-To: <s5hzk4ja5hz.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
- 21 Sep 2012 15:07:52 +0200")
+Received: from na3sys009aog129.obsmtp.com (na3sys009aog129.obsmtp.com
+ [74.125.149.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id C71A2265D48
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 15:15:30 +0200 (CEST)
+Received: by oagl20 with SMTP id l20so3141445oag.38
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 06:15:29 -0700 (PDT)
+In-Reply-To: <20120921111352.GA21524@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +25,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============3855321938500147077==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+On 09/21/2012 02:13 PM, Mark Brown wrote:
+> On Fri, Sep 21, 2012 at 10:54:26AM +0300, Peter Ujfalusi wrote:
+>> pinctrl framework now becoming widely available for SoCs to configure pin
+>> multiplexing.
+>> Instead of adding the same code to all dai drivers the core can take care
+>> of this transparently.
+>> Do not make too much noise if pinctrl is not provided via DT for the dai
+>> but just use dev_info().
+> =
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> Please fix your word wrapping, I've mentioned this to you before...
 
-On Fri, Sep 21 2012, Takashi Iwai wrote:
+I'll reformat it. BTW: The text is edited so it fits in the 'Commit Message'
+part of git gui.
 
-> But my question was: if you plug to an external mic jack and leave the
-> headphone jack, the speaker noise is still there, right?
+>> +/*
+>> + * Simple function to be used in snd_soc_dai_register_dai/s to set the =
+default
+>> + * pinmuxing for the dai.
+> =
 
-Oh. If I understand correctly you're talking about 2 jacks, but there's
-only one jack on this laptop, doing both mic and speaker.
+> I would be more inclined to do this on card init time, doing it at
+> registration seems wrong as systems typically have interfaces that
+> aren't used and share pins with other functions.  By the time we are
+> setting up a card we've got a good idea we actually want to use the IP
+> but at probe time that's not the case.
 
-> Turning EAPD on/off on node 0x14 makes difference?
+Make sense. My first candidate to do this is the soc_probe_link_dais()
+function and to call snd_soc_configure_dai_pins() for both the cpu_dai and
+codec_dai.
 
-Yes, turning it off makes the noise disappear. But I can't hear
-anything, e.g. playing music makes no sound unless I turn it back on. :)
+> It also seems bad that we're ignoring errors, does the pinctl API not
+> stub itself out well enough.
 
-(note that this may be obvious to you, but I don't understand what's
-EAPD on 0x14 so I'm just explaining what I hear ;-)
+pinctrl_get_select() returns with a pointer to struct pinctrl. If the platf=
+orm
+does not have CONFIG_PINCTRL enabled it will return with NULL.
+If no pinctrl has been specified for the device it will return with error
+(-ENODEV).
+Neither of these cases should be considered as error. We do print out with
+dev_info() to notify the developer, but having pinctrl mux should not be
+mandatory.
 
-=2D-=20
-Julien Danjou
-// Free Software hacker & freelance
-// http://julien.danjou.info
+-- =
 
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQXGg7AAoJEGEbqVCLeKXCvhQQAJEpQj6vXOMOPzngJnLYX2k1
-IqqEA7YT/j5VKy93MnQpUkO4TFppQExls484Nf/i920pw9NTSD7gNHlHCYYiWRrp
-jxML4IBkfs4OhG4yIVTcCuulEgEMjb1vTJ3CAiK/JGNM8RQWTDZg+HqM0wCkTSCU
-C0hmO8MQDv93Vmx2EbCPaiGjevtmBWQs2h9f20lqVSjxeu/4qiIHLCvbu7pHc3sL
-x6nEBKcr589RE82srIwybr3xtyGafzqXcmk7LMFsnYnDN9mJ28Ysmu/2GOMxMx5D
-iwPbDw4B9XDIMXZfE2/r9iG15DUhwf1HyqlougekdO5GC9+yEQeilxqY20vzIgaP
-SvWlBjlP4BrhdBA2r9EhKvmHTyI3n7hAVeTSp/0f3pOZo/ooAsUmhKUHbCD+IMat
-bRAMYUpXcZROCH1LOCw4Wq0h9xLpuoNFcxvI0B5CEez5sotFtZICV2hf0aevMhJO
-jpa3OaMX8zFY3O6ifPqEjGnKT4VN6BJgPbtRwfQz3OXXwPGMG6n6iZ1+Hm/emaTe
-PRqZA0bkArZppRmK7AIrEwKRTqKSi+o0mdSLtVLrHlzfzDIjT+E3VS9eYc2aBOP/
-XcKPpOmXIeIYzB30Ir4GBeasRKkdp3W1Bcixl3bwvcKmw9s34gRMdyE0QWMzxKTC
-aEPt4sWblaR9KI0B6ZCZ
-=CIdI
------END PGP SIGNATURE-----
---=-=-=--
-
---===============3855321938500147077==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3855321938500147077==--
+P=E9ter
