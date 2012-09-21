@@ -1,8 +1,8 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 04/10] ALSA: Add DSP firmware enums and defs to
-	CA0132 codec
-Date: Thu, 20 Sep 2012 20:29:15 -0700
-Message-ID: <1348198161-9256-5-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 06/10] ALSA: Add firmware caching to CA0132
+	codec.
+Date: Thu, 20 Sep 2012 20:29:17 -0700
+Message-ID: <1348198161-9256-7-git-send-email-ian_minett@creativelabs.com>
 References: <1348198161-9256-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,117 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
+
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index da65535..846826d 100644
+index f5aea78..4d8a7ed 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -27,6 +27,7 @@
- #include <linux/pci.h>
- #include <linux/mutex.h>
- #include <linux/module.h>
-+#include <linux/firmware.h>
- #include <sound/core.h>
- #include "hda_codec.h"
- #include "hda_local.h"
-@@ -34,12 +35,33 @@
+@@ -2025,6 +2025,24 @@ static int dspload_image(struct hda_codec *codec,
+ 	return status;
+ }
  
- #include "ca0132_regs.h"
- 
-+#define DSP_DMA_WRITE_BUFLEN_INIT (1UL<<18)
-+#define DSP_DMA_WRITE_BUFLEN_OVLY (1UL<<15)
++static const struct firmware *fw_efx;
 +
-+#define DMA_TRANSFER_FRAME_SIZE_NWORDS		8
-+#define DMA_TRANSFER_MAX_FRAME_SIZE_NWORDS	32
-+#define DMA_OVERLAY_FRAME_SIZE_NWORDS		2
++static int request_firmware_cached(const struct firmware **firmware_p,
++	const char *name, struct device *device)
++{
++	if (*firmware_p)
++		return 0;  /* already loaded */
++	return request_firmware(firmware_p, name, device);
++}
 +
-+#define MASTERCONTROL				0x80
-+#define MASTERCONTROL_ALLOC_DMA_CHAN		9
++static void release_cached_firmware(void)
++{
++	if (fw_efx) {
++		release_firmware(fw_efx);
++		fw_efx = NULL;
++	}
++}
 +
- #define WIDGET_CHIP_CTRL      0x15
- #define WIDGET_DSP_CTRL       0x16
+ static bool dspload_is_loaded(struct hda_codec *codec)
+ {
+ 	unsigned int data = 0;
+@@ -2542,18 +2560,15 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ {
+ 	bool dsp_loaded = false;
+ 	const struct dsp_image_seg *dsp_os_image;
+-	const struct firmware *fw_entry;
  
- #define WUH_MEM_CONNID        10
- #define DSP_MEM_CONNID        16
+-	if (request_firmware(&fw_entry, EFX_FILE, codec->bus->card->dev) != 0)
++	if (request_firmware_cached(&fw_efx, EFX_FILE,
++				    codec->bus->card->dev) != 0)
+ 		return false;
  
-+#define MEM_CONNID_MICIN1     3
-+#define MEM_CONNID_MICIN2     5
-+#define MEM_CONNID_MICOUT1    12
-+#define MEM_CONNID_MICOUT2    14
-+#define MEM_CONNID_WUH        10
-+#define MEM_CONNID_DSP        16
-+#define MEM_CONNID_DMIC       100
-+
-+#define SCP_SET    0
-+#define SCP_GET    1
-+
- enum hda_cmd_vendor_io {
- 	/* for DspIO node */
- 	VENDOR_DSPIO_SCP_WRITE_DATA_LOW      = 0x000,
-@@ -64,7 +86,11 @@ enum hda_cmd_vendor_io {
- 	VENDOR_CHIPIO_HIC_POST_READ          = 0x702,
- 	VENDOR_CHIPIO_HIC_READ_DATA          = 0xF03,
+-	dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
++	dsp_os_image = (struct dsp_image_seg *)(fw_efx->data);
+ 	dspload_image(codec, dsp_os_image, 0, 0, true, 0);
+ 	dsp_loaded = dspload_wait_loaded(codec);
  
-+	VENDOR_CHIPIO_8051_DATA_WRITE        = 0x707,
-+	VENDOR_CHIPIO_8051_DATA_READ         = 0xF07,
-+
- 	VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE   = 0x70A,
-+	VENDOR_CHIPIO_CT_EXTENSIONS_GET      = 0xF0A,
+-	release_firmware(fw_entry);
+-
+-
+ 	return dsp_loaded;
+ }
  
- 	VENDOR_CHIPIO_PLL_PMU_WRITE          = 0x70C,
- 	VENDOR_CHIPIO_PLL_PMU_READ           = 0xF0C,
-@@ -72,18 +98,27 @@ enum hda_cmd_vendor_io {
- 	VENDOR_CHIPIO_8051_ADDRESS_HIGH      = 0x70E,
- 	VENDOR_CHIPIO_FLAG_SET               = 0x70F,
- 	VENDOR_CHIPIO_FLAGS_GET              = 0xF0F,
--	VENDOR_CHIPIO_PARAMETER_SET          = 0x710,
--	VENDOR_CHIPIO_PARAMETER_GET          = 0xF10,
-+	VENDOR_CHIPIO_PARAM_SET              = 0x710,
-+	VENDOR_CHIPIO_PARAM_GET              = 0xF10,
+@@ -2665,6 +2680,7 @@ static int __init patch_ca0132_init(void)
  
- 	VENDOR_CHIPIO_PORT_ALLOC_CONFIG_SET  = 0x711,
- 	VENDOR_CHIPIO_PORT_ALLOC_SET         = 0x712,
- 	VENDOR_CHIPIO_PORT_ALLOC_GET         = 0xF12,
- 	VENDOR_CHIPIO_PORT_FREE_SET          = 0x713,
- 
--	VENDOR_CHIPIO_PARAMETER_EX_ID_GET    = 0xF17,
--	VENDOR_CHIPIO_PARAMETER_EX_ID_SET    = 0x717,
--	VENDOR_CHIPIO_PARAMETER_EX_VALUE_GET = 0xF18,
--	VENDOR_CHIPIO_PARAMETER_EX_VALUE_SET = 0x718
-+	VENDOR_CHIPIO_PARAM_EX_ID_GET        = 0xF17,
-+	VENDOR_CHIPIO_PARAM_EX_ID_SET        = 0x717,
-+	VENDOR_CHIPIO_PARAM_EX_VALUE_GET     = 0xF18,
-+	VENDOR_CHIPIO_PARAM_EX_VALUE_SET     = 0x718,
-+
-+	VENDOR_CHIPIO_DMIC_CTL_SET           = 0x788,
-+	VENDOR_CHIPIO_DMIC_CTL_GET           = 0xF88,
-+	VENDOR_CHIPIO_DMIC_PIN_SET           = 0x789,
-+	VENDOR_CHIPIO_DMIC_PIN_GET           = 0xF89,
-+	VENDOR_CHIPIO_DMIC_MCLK_SET          = 0x78A,
-+	VENDOR_CHIPIO_DMIC_MCLK_GET          = 0xF8A,
-+
-+	VENDOR_CHIPIO_EAPD_SEL_SET           = 0x78D
- };
- 
- /*
-@@ -133,7 +168,7 @@ enum control_flag_id {
- 	/* Impedance for ramp generator on Port_A 16 Ohm/10K Ohm */
- 	CONTROL_FLAG_PORT_A_10KOHM_LOAD     = 20,
- 	/* Impedance for ramp generator on Port_D, 16 Ohm/10K Ohm */
--	CONTROL_FLAG_PORT_D_10K0HM_LOAD     = 21,
-+	CONTROL_FLAG_PORT_D_10KOHM_LOAD     = 21,
- 	/* ASI rate is 48kHz/96kHz */
- 	CONTROL_FLAG_ASI_96KHZ              = 22,
- 	/* DAC power settings able to control attached ports no/yes */
-@@ -147,7 +182,7 @@ enum control_flag_id {
- /*
-  * Control parameter IDs
-  */
--enum control_parameter_id {
-+enum control_param_id {
- 	/* 0: force HDA, 1: allow DSP if HDA Spdif1Out stream is idle */
- 	CONTROL_PARAM_SPDIF1_SOURCE            = 2,
+ static void __exit patch_ca0132_exit(void)
+ {
++	release_cached_firmware();
+ 	snd_hda_delete_codec_preset(&ca0132_list);
+ }
  
 -- 
 1.7.4.1
