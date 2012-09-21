@@ -1,20 +1,22 @@
-From: Andrew Eikum <aeikum@codeweavers.com>
-Subject: Infinite loop in snd_pcm_hw_htimestamp() for capture
-	PCMs?
-Date: Fri, 21 Sep 2012 10:53:43 -0500
-Message-ID: <20120921155343.GH4615@foghorn.codeweavers.com>
+From: Julien Danjou <julien@danjou.info>
+Subject: Re: Constant noise on HDA ALC275
+Date: Fri, 21 Sep 2012 17:55:18 +0200
+Message-ID: <87vcf7gyl5.fsf@dex.adm.naquadah.org>
+References: <87obl7bg02.fsf@dex.adm.naquadah.org>
+ <s5h4nmrbln3.wl%tiwai@suse.de> <87wqznim1k.fsf@dex.adm.naquadah.org>
+ <s5hzk4ja5hz.wl%tiwai@suse.de> <87pq5fiklg.fsf@dex.adm.naquadah.org>
+ <s5hwqzna4pn.wl%tiwai@suse.de> <87haqrijiz.fsf@dex.adm.naquadah.org>
+ <s5htxura31x.wl%tiwai@suse.de> <87d31fii3v.fsf@dex.adm.naquadah.org>
+ <s5hmx0ja08z.wl%tiwai@suse.de> <874nmried6.fsf@dex.adm.naquadah.org>
+ <s5hfw6bpen9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="n+lFg1Zro7sl44OB"
+Content-Type: multipart/mixed; boundary="===============7274507610704137747=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.codeweavers.com (mail.codeweavers.com [216.251.189.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AC55265D7C
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 17:53:46 +0200 (CEST)
-Received: from foghorn.codeweavers.com ([216.251.189.130])
- by mail.codeweavers.com with esmtpsa (TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16)
- (Exim 4.72) (envelope-from <aeikum@codeweavers.com>)
- id 1TF5Y0-0003FT-Eq
- for alsa-devel@alsa-project.org; Fri, 21 Sep 2012 10:53:44 -0500
-Content-Disposition: inline
+Received: from mx1.naquadah.org (prometheus.naquadah.org [212.85.154.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E4E2265D7C
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 17:55:57 +0200 (CEST)
+In-Reply-To: <s5hfw6bpen9.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
+ 21 Sep 2012 17:41:14 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,119 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============7274507610704137747==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 
---n+lFg1Zro7sl44OB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Hi folks,
+On Fri, Sep 21 2012, Takashi Iwai wrote:
 
-I've found some unexpected behavior in alsa-lib. The attached program
-uses 100% CPU in an infinite loop, when I'd expect it to return either
-an error or a valid htimestamp. I believe the loop occurs in
-<src/pcm/pcm_hw.c:snd_pcm_hw_htimestamp()>. Am I not supposed to call
-htimestamp() on this type of PCM? Is the PCM still in an invalid state
-when htimestamp() is called?
+> Hm then I have no more clue.  Sony must have done something weird...
 
-Card: HDA ATI SB
-Chip: Realtek ALC889
+Too bad, but thanks a lot anyway for your help!
 
-Happy for any insight.
-Andrew
+=2D-=20
+Julien Danjou
+=2D- Free Software hacker & freelance
+=2D- http://julien.danjou.info
 
---n+lFg1Zro7sl44OB
-Content-Type: text/x-csrc; charset=utf-8
-Content-Disposition: inline; filename="capture_inf_loop.c"
+--=-=-=
+Content-Type: application/pgp-signature
 
-/* Causes an infinite loop in alsa-lib's snd_pcm_hw_htimestamp() in the
- * capture direction
- *
- * Build with:
- * $ gcc -o test -Wall capture_inf_loop.c -lasound
- */
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-#include <alsa/asoundlib.h>
+iQIcBAEBAgAGBQJQXI3mAAoJEGEbqVCLeKXCSNgQAJ8D/8E3T3tLSyhEM9YnEzpU
+Qiomqj8QtiPJzXGQgm6zOhloczZmSDN+pn8qRbipSlSM4VCuC/wDt5Pm7UlTVFVB
+Z0ol3Yb3mG6s2q0vLPmkt7qdfuH7YWDD91hUuJHY+wugb9VDFv6JEU9bjDgDAUbd
+3Yoq11XuhWkcfaQKVJ+xAuklH9kXFybDjfTxUS8Wz7R/LrqAk9yziPmNuko3Q7/I
+GQKdHuKQfQ5bVgK1tpmYlvtujgNLV3PLerTduOc84hgS/mkeyUlnYHu9oZZ50NRX
+MTxGblmivW+F/3VNmpTIVOSh7BbfCVKdZnxwuey2Z8rYL+sgOuR2kryPP4I3ljLF
+hA0C2VMswGaIMccLZa3Hs2fbprlcjv7gCW+HGulkhvwaGqzWcFuXMa4Nmq4Wo+Se
+N/1U2TMskduSOSk/bbeTiM5pkSh61VGXvsE9jHHatK2Vkf9PaCu0sRy2sB9sbldt
+VAYpqc0sNXe/JsvLrX3PWAGnud069y9IYu68HPAB5GVOzhhNMuetNVKbYgrGkKkD
+chzCrPeYiZgGUkxBDKxzHJR+/stSkDisReDEs8hXqEwgvoy3FGjbUcWNsH0f0kfc
+ReCAfN8on+nMba16BHBuC8rqiVfzri1jmjt/g91vnkPtB3Q39AEujhwaiM0GdRLv
+6mPwiI8K3XHWmWYPwFUV
+=As5P
+-----END PGP SIGNATURE-----
+--=-=-=--
 
-int main(int argc, char **argv)
-{
-    snd_pcm_t *pcm;
-    snd_pcm_uframes_t avail;
-    snd_pcm_hw_params_t *hw_params;
-    int err;
-    struct timespec ts;
-    unsigned int rate = 44100;
-
-    err = snd_pcm_open(&pcm, "default", SND_PCM_STREAM_CAPTURE,
-            SND_PCM_NONBLOCK);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_open: %s\n", snd_strerror(err));
-        return 1;
-    }
-
-    snd_pcm_hw_params_malloc(&hw_params);
-
-    err = snd_pcm_hw_params_any(pcm, hw_params);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_hw_params_any: %s\n", snd_strerror(err));
-        return 1;
-    }
-
-    err = snd_pcm_hw_params_set_access(pcm, hw_params,
-            SND_PCM_ACCESS_RW_INTERLEAVED);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_hw_params_set_access: %s\n",
-                snd_strerror(err));
-        return 1;
-    }
-
-    err = snd_pcm_hw_params_set_format(pcm, hw_params,
-            SND_PCM_FORMAT_S16_LE);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_hw_params_set_access: %s\n",
-                snd_strerror(err));
-        return 1;
-    }
-
-    err = snd_pcm_hw_params_set_rate_near(pcm, hw_params, &rate, NULL);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_hw_params_set_rate_near: %s\n",
-                snd_strerror(err));
-        return 1;
-    }
-
-    err = snd_pcm_hw_params_set_channels(pcm, hw_params, 2);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_hw_params_set_rate_near: %s\n",
-                snd_strerror(err));
-        return 1;
-    }
-
-    err = snd_pcm_hw_params(pcm, hw_params);
-    if(err < 0){
-        fprintf(stderr, "snd_pcm_hw_params: %s\n", snd_strerror(err));
-        return 1;
-    }
-
-    fprintf(stderr, "avail_update\n");
-    snd_pcm_avail_update(pcm);
-
-    fprintf(stderr, "entering htimestamp...\n");
-    snd_pcm_htimestamp(pcm, &avail, &ts);
-    fprintf(stderr, "done with htimestamp\n");
-
-    snd_pcm_close(pcm);
-
-    return 0;
-}
-
---n+lFg1Zro7sl44OB
+--===============7274507610704137747==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---n+lFg1Zro7sl44OB--
+--===============7274507610704137747==--
