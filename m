@@ -1,18 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: =?utf-8?q?=5BPATCH_v2=5D_ASoC=3A_eukrea-tlv320=3A_Co?=
-	=?utf-8?q?nvert_it_to_platform_driver?=
-Date: Sat, 22 Sep 2012 12:27:31 -0300
-Message-ID: <1348327652-21567-1-git-send-email-festevam@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
+ pinctrl when registering a DAI
+Date: Sat, 22 Sep 2012 11:28:41 -0400
+Message-ID: <20120922152840.GM4495@opensource.wolfsonmicro.com>
+References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120921111352.GA21524@opensource.wolfsonmicro.com>
+ <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
- [209.85.213.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DA67261651
- for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 17:27:49 +0200 (CEST)
-Received: by yenl2 with SMTP id l2so98732yen.38
- for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 08:27:48 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFED6261651
+ for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 17:28:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <505C9496.1050307@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: linux-arm-kernel@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, eric@eukrea.com, kernel@pengutronix.de
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogRmFiaW8gRXN0ZXZhbSA8ZmFiaW8uZXN0ZXZhbUBmcmVlc2NhbGUuY29tPgoKQ29udmVy
-dCBldWtyZWEtdGx2MzIwIHRvIHBsYXRmb3JtIGRyaXZlci4KClNpZ25lZC1vZmYtYnk6IEZhYmlv
-IEVzdGV2YW0gPGZhYmlvLmVzdGV2YW1AZnJlZXNjYWxlLmNvbT4KLS0tCkNoYW5nZXMgc2luY2Ug
-djE6Ci0gTm8gY2hhbmdlcywgb25seSBDQydlZCBBUk0ga2VybmVsIGxpc3QgYXMgcmVxdWVzdGVk
-IGJ5IE1hcmsgQnJvd24KCiBhcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXgyNy1iYXNlYm9h
-cmQuYyAgIHwgICAgMSArCiBhcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXhzZDI1LWJhc2Vi
-b2FyZC5jIHwgICAgMSArCiBhcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXhzZDM1LWJhc2Vi
-b2FyZC5jIHwgICAgMSArCiBhcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXhzZDUxLWJhc2Vi
-b2FyZC5jIHwgICAgMSArCiBzb3VuZC9zb2MvZnNsL2V1a3JlYS10bHYzMjAuYyAgICAgICAgICAg
-ICAgICAgIHwgICAzNyArKysrKysrKysrKystLS0tLS0tLS0tLS0KIDUgZmlsZXMgY2hhbmdlZCwg
-MjMgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0v
-bWFjaC1pbXgvZXVrcmVhX21iaW14MjctYmFzZWJvYXJkLmMgYi9hcmNoL2FybS9tYWNoLWlteC9l
-dWtyZWFfbWJpbXgyNy1iYXNlYm9hcmQuYwppbmRleCBmZDMxNzdmLi45OGFlZjU3IDEwMDY0NAot
-LS0gYS9hcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXgyNy1iYXNlYm9hcmQuYworKysgYi9h
-cmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXgyNy1iYXNlYm9hcmQuYwpAQCAtMzQ4LDQgKzM0
-OCw1IEBAIHZvaWQgX19pbml0IGV1a3JlYV9tYmlteDI3X2Jhc2Vib2FyZF9pbml0KHZvaWQpCiAJ
-aW14MjdfYWRkX2lteF9rZXlwYWQoJmV1a3JlYV9tYmlteDI3X2tleW1hcF9kYXRhKTsKIAogCWdw
-aW9fbGVkX3JlZ2lzdGVyX2RldmljZSgtMSwgJmV1a3JlYV9tYmlteDI3X2dwaW9fbGVkX2luZm8p
-OworCWlteF9hZGRfcGxhdGZvcm1fZGV2aWNlKCJldWtyZWFfdGx2MzIwIiwgMCwgTlVMTCwgMCwg
-TlVMTCwgMCk7CiB9CmRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXhz
-ZDI1LWJhc2Vib2FyZC5jIGIvYXJjaC9hcm0vbWFjaC1pbXgvZXVrcmVhX21iaW14c2QyNS1iYXNl
-Ym9hcmQuYwppbmRleCBkZmQyZGE4Li4wYjg0NjY2IDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNo
-LWlteC9ldWtyZWFfbWJpbXhzZDI1LWJhc2Vib2FyZC5jCisrKyBiL2FyY2gvYXJtL21hY2gtaW14
-L2V1a3JlYV9tYmlteHNkMjUtYmFzZWJvYXJkLmMKQEAgLTMwNiw0ICszMDYsNSBAQCB2b2lkIF9f
-aW5pdCBldWtyZWFfbWJpbXhzZDI1X2Jhc2Vib2FyZF9pbml0KHZvaWQpCiAJcGxhdGZvcm1fYWRk
-X2RldmljZXMocGxhdGZvcm1fZGV2aWNlcywgQVJSQVlfU0laRShwbGF0Zm9ybV9kZXZpY2VzKSk7
-CiAJZ3Bpb19sZWRfcmVnaXN0ZXJfZGV2aWNlKC0xLCAmZXVrcmVhX21iaW14c2RfbGVkX2luZm8p
-OwogCWlteF9hZGRfZ3Bpb19rZXlzKCZldWtyZWFfbWJpbXhzZF9idXR0b25fZGF0YSk7CisJaW14
-X2FkZF9wbGF0Zm9ybV9kZXZpY2UoImV1a3JlYV90bHYzMjAiLCAwLCBOVUxMLCAwLCBOVUxMLCAw
-KTsKIH0KZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtaW14L2V1a3JlYV9tYmlteHNkMzUtYmFz
-ZWJvYXJkLmMgYi9hcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXhzZDM1LWJhc2Vib2FyZC5j
-CmluZGV4IDZlOWRkMTIuLmM2NTMyYTAgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL21hY2gtaW14L2V1
-a3JlYV9tYmlteHNkMzUtYmFzZWJvYXJkLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgvZXVrcmVh
-X21iaW14c2QzNS1iYXNlYm9hcmQuYwpAQCAtMzE1LDQgKzMxNSw1IEBAIHZvaWQgX19pbml0IGV1
-a3JlYV9tYmlteHNkMzVfYmFzZWJvYXJkX2luaXQodm9pZCkKIAlwbGF0Zm9ybV9hZGRfZGV2aWNl
-cyhwbGF0Zm9ybV9kZXZpY2VzLCBBUlJBWV9TSVpFKHBsYXRmb3JtX2RldmljZXMpKTsKIAlncGlv
-X2xlZF9yZWdpc3Rlcl9kZXZpY2UoLTEsICZldWtyZWFfbWJpbXhzZF9sZWRfaW5mbyk7CiAJaW14
-X2FkZF9ncGlvX2tleXMoJmV1a3JlYV9tYmlteHNkX2J1dHRvbl9kYXRhKTsKKwlpbXhfYWRkX3Bs
-YXRmb3JtX2RldmljZSgiZXVrcmVhX3RsdjMyMCIsIDAsIE5VTEwsIDAsIE5VTEwsIDApOwogfQpk
-aWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1pbXgvZXVrcmVhX21iaW14c2Q1MS1iYXNlYm9hcmQu
-YyBiL2FyY2gvYXJtL21hY2gtaW14L2V1a3JlYV9tYmlteHNkNTEtYmFzZWJvYXJkLmMKaW5kZXgg
-OTZhMjRiNy4uOGIwZGUzMCAxMDA2NDQKLS0tIGEvYXJjaC9hcm0vbWFjaC1pbXgvZXVrcmVhX21i
-aW14c2Q1MS1iYXNlYm9hcmQuYworKysgYi9hcmNoL2FybS9tYWNoLWlteC9ldWtyZWFfbWJpbXhz
-ZDUxLWJhc2Vib2FyZC5jCkBAIC0yMjgsNCArMjI4LDUgQEAgdm9pZCBfX2luaXQgZXVrcmVhX21i
-aW14c2Q1MV9iYXNlYm9hcmRfaW5pdCh2b2lkKQogCiAJZ3Bpb19sZWRfcmVnaXN0ZXJfZGV2aWNl
-KC0xLCAmZXVrcmVhX21iaW14c2Q1MV9sZWRfaW5mbyk7CiAJaW14X2FkZF9ncGlvX2tleXMoJmV1
-a3JlYV9tYmlteHNkNTFfYnV0dG9uX2RhdGEpOworCWlteF9hZGRfcGxhdGZvcm1fZGV2aWNlKCJl
-dWtyZWFfdGx2MzIwIiwgMCwgTlVMTCwgMCwgTlVMTCwgMCk7CiB9CmRpZmYgLS1naXQgYS9zb3Vu
-ZC9zb2MvZnNsL2V1a3JlYS10bHYzMjAuYyBiL3NvdW5kL3NvYy9mc2wvZXVrcmVhLXRsdjMyMC5j
-CmluZGV4IGVmYjllZGUuLjI2N2Q1YjQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9mc2wvZXVrcmVh
-LXRsdjMyMC5jCisrKyBiL3NvdW5kL3NvYy9mc2wvZXVrcmVhLXRsdjMyMC5jCkBAIC05Myw5ICs5
-Myw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIGV1a3JlYV90bHYzMjAgPSB7CiAJLm51
-bV9saW5rcwk9IDEsCiB9OwogCi1zdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZXVrcmVh
-X3RsdjMyMF9zbmRfZGV2aWNlOwotCi1zdGF0aWMgaW50IF9faW5pdCBldWtyZWFfdGx2MzIwX2lu
-aXQodm9pZCkKK3N0YXRpYyBpbnQgX19kZXZpbml0IGV1a3JlYV90bHYzMjBfcHJvYmUoc3RydWN0
-IHBsYXRmb3JtX2RldmljZSAqcGRldikKIHsKIAlpbnQgcmV0OwogCWludCBpbnRfcG9ydCA9IDAs
-IGV4dF9wb3J0OwpAQCAtMTM2LDI5ICsxMzQsMzIgQEAgc3RhdGljIGludCBfX2luaXQgZXVrcmVh
-X3RsdjMyMF9pbml0KHZvaWQpCiAJCXJldHVybiAwOwogCX0KIAotCWV1a3JlYV90bHYzMjBfc25k
-X2RldmljZSA9IHBsYXRmb3JtX2RldmljZV9hbGxvYygic29jLWF1ZGlvIiwgLTEpOwotCWlmICgh
-ZXVrcmVhX3RsdjMyMF9zbmRfZGV2aWNlKQotCQlyZXR1cm4gLUVOT01FTTsKLQotCXBsYXRmb3Jt
-X3NldF9kcnZkYXRhKGV1a3JlYV90bHYzMjBfc25kX2RldmljZSwgJmV1a3JlYV90bHYzMjApOwot
-CXJldCA9IHBsYXRmb3JtX2RldmljZV9hZGQoZXVrcmVhX3RsdjMyMF9zbmRfZGV2aWNlKTsKLQot
-CWlmIChyZXQpIHsKLQkJcHJpbnRrKEtFUk5fRVJSICJBU29DOiBQbGF0Zm9ybSBkZXZpY2UgYWxs
-b2NhdGlvbiBmYWlsZWRcbiIpOwotCQlwbGF0Zm9ybV9kZXZpY2VfcHV0KGV1a3JlYV90bHYzMjBf
-c25kX2RldmljZSk7Ci0JfQorCWV1a3JlYV90bHYzMjAuZGV2ID0gJnBkZXYtPmRldjsKKwlyZXQg
-PSBzbmRfc29jX3JlZ2lzdGVyX2NhcmQoJmV1a3JlYV90bHYzMjApOworCWlmIChyZXQpCisJCWRl
-dl9lcnIoJnBkZXYtPmRldiwgInNuZF9zb2NfcmVnaXN0ZXJfY2FyZCBmYWlsZWQgKCVkKVxuIiwg
-cmV0KTsKIAogCXJldHVybiByZXQ7CiB9CiAKLXN0YXRpYyB2b2lkIF9fZXhpdCBldWtyZWFfdGx2
-MzIwX2V4aXQodm9pZCkKK3N0YXRpYyBpbnQgX19kZXZleGl0IGV1a3JlYV90bHYzMjBfcmVtb3Zl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiB7Ci0JcGxhdGZvcm1fZGV2aWNlX3VucmVn
-aXN0ZXIoZXVrcmVhX3RsdjMyMF9zbmRfZGV2aWNlKTsKKwlzbmRfc29jX3VucmVnaXN0ZXJfY2Fy
-ZCgmZXVrcmVhX3RsdjMyMCk7CisKKwlyZXR1cm4gMDsKIH0KIAotbW9kdWxlX2luaXQoZXVrcmVh
-X3RsdjMyMF9pbml0KTsKLW1vZHVsZV9leGl0KGV1a3JlYV90bHYzMjBfZXhpdCk7CitzdGF0aWMg
-c3RydWN0IHBsYXRmb3JtX2RyaXZlciBldWtyZWFfdGx2MzIwX2RyaXZlciA9IHsKKwkuZHJpdmVy
-ID0geworCQkubmFtZSA9ICJldWtyZWFfdGx2MzIwIiwKKwkJLm93bmVyID0gVEhJU19NT0RVTEUs
-CisJfSwKKwkucHJvYmUgPSBldWtyZWFfdGx2MzIwX3Byb2JlLAorCS5yZW1vdmUgPSBfX2RldmV4
-aXRfcChldWtyZWFfdGx2MzIwX3JlbW92ZSksfTsKKworbW9kdWxlX3BsYXRmb3JtX2RyaXZlcihl
-dWtyZWFfdGx2MzIwX2RyaXZlcik7CiAKIE1PRFVMRV9BVVRIT1IoIkVyaWMgQsOpbmFyZCA8ZXJp
-Y0BldWtyZWEuY29tPiIpOwogTU9EVUxFX0RFU0NSSVBUSU9OKCJDUFVJTVggQUxTQSBTb0MgZHJp
-dmVyIik7CiBNT0RVTEVfTElDRU5TRSgiR1BMIik7CitNT0RVTEVfQUxJQVMoInBsYXRmb3JtOmV1
-a3JlYV90bHYzMjAiKTsKLS0gCjEuNy45LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Fri, Sep 21, 2012 at 10:23:50AM -0600, Stephen Warren wrote:
+> On 09/21/2012 07:16 AM, Peter Ujfalusi wrote:
+
+> > pinctrl_get_select() returns with a pointer to struct pinctrl. If the platform
+> > does not have CONFIG_PINCTRL enabled it will return with NULL.
+> > If no pinctrl has been specified for the device it will return with error
+> > (-ENODEV).
+> > Neither of these cases should be considered as error. We do print out with
+> > dev_info() to notify the developer, but having pinctrl mux should not be
+> > mandatory.
+
+> Indeed - what about a platform like Tegra which has pinctrl enabled, yet
+> doesn't specify any pinctrl configuration for any device other than the
+> pin controller itself? Do we want to force every device into having to
+> specify an empty pin control configuration? If we take this route, we
+> should really have the driver core or platform bus set up the initial
+> pinctrl state, and I believe that approach was explicitly decided against.
+
+Well, the other options are for pinctrl to either not return an error in
+the no configuration case or change to a void return type.  The current
+behaviour seems a bit pointless since we can't usefully do anything with
+the errors, we can just factor the error logs into the core and have
+done with it since it's not possible to treat errors as such.
