@@ -1,14 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] test: add audio_time
-Date: Fri, 21 Sep 2012 20:05:18 -0500
-Message-ID: <1348275918-24559-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: line-out mute on "phantom" HP jack (Via codec)
+Date: Sat, 22 Sep 2012 09:50:41 +0800
+Message-ID: <CAN8cciZpFCRNW5G1iuHeBhZjDgE=xAivN6x_VyWSAkQyquN1ww@mail.gmail.com>
+References: <1348271119-15115-1-git-send-email-herton.krzesinski@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id ABA1D265DF8
- for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 03:05:30 +0200 (CEST)
+Received: from mail-qc0-f178.google.com (mail-qc0-f178.google.com
+ [209.85.216.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1E4B265E12
+ for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 03:50:42 +0200 (CEST)
+Received: by qcoj34 with SMTP id j34so2419954qco.9
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2012 18:50:41 -0700 (PDT)
+In-Reply-To: <1348271119-15115-1-git-send-email-herton.krzesinski@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,270 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lydia Wang <lydiawang@viatech.com.cn>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Simple test to create playback and capture streams, and
-check elapsed time vs. sample counts reported by driver.
-This should be helpful for driver developers and anyone
-interested in system/audio time drift.
-
-tested only on HDAudio
-
-TODO:
-- make period configurable
-- better output messages
-- support for wall clock when it's in the mainline
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- test/audio_time.c |  237 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 237 insertions(+)
- create mode 100644 test/audio_time.c
-
-diff --git a/test/audio_time.c b/test/audio_time.c
-new file mode 100644
-index 0000000..a910783
---- /dev/null
-+++ b/test/audio_time.c
-@@ -0,0 +1,237 @@
-+/*
-+ * This program only tracks the difference between system time
-+ * and audio time, as reported in snd_pcm_status(). It should be
-+ * helpful to verify the information reported by drivers.
-+ */
-+
-+#include "../include/asoundlib.h"
-+#include <math.h>
-+
-+static char *device = "hw:0,0";
-+
-+snd_output_t *output = NULL;
-+
-+long long timestamp2ns(snd_htimestamp_t t)
-+{
-+	long long nsec;
-+
-+	nsec = t.tv_sec * 1000000000;
-+	nsec += t.tv_nsec;
-+
-+	return nsec;
-+}
-+
-+long long timediff(snd_htimestamp_t t1, snd_htimestamp_t t2)
-+{
-+	long long nsec1, nsec2;
-+
-+	nsec1 = timestamp2ns(t1);
-+	nsec2 = timestamp2ns(t2);
-+
-+	return nsec1 - nsec2;
-+}
-+
-+void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
-+		  snd_htimestamp_t *trigger_timestamp,
-+		  snd_pcm_uframes_t *avail, snd_pcm_sframes_t *delay)
-+{
-+	int err;
-+	snd_pcm_status_t *status;
-+
-+	snd_pcm_status_alloca(&status);
-+	if ((err = snd_pcm_status(handle, status)) < 0) {
-+		printf("Stream status error: %s\n", snd_strerror(err));
-+		exit(0);
-+	}
-+	snd_pcm_status_get_trigger_htstamp(status, trigger_timestamp);
-+	snd_pcm_status_get_htstamp(status, timestamp);
-+	*avail = snd_pcm_status_get_avail(status);
-+	*delay = snd_pcm_status_get_delay(status);
-+}
-+
-+#define PERIOD 6000
-+#define PCM_LINK        /* sync start for playback and capture */
-+#define TRACK_CAPTURE   /* dump capture timing info  */
-+#define TRACK_PLAYBACK  /* dump playback timing info */
-+#define PLAYBACK_BUFFERS 4
-+
-+
-+int main(void)
-+{
-+        int err;
-+        unsigned int i;
-+        snd_pcm_t *handle_p = NULL;
-+        snd_pcm_t *handle_c = NULL;
-+        snd_pcm_sframes_t frames;
-+	snd_htimestamp_t tstamp_c, tstamp_p;
-+	snd_htimestamp_t trigger_tstamp_c, trigger_tstamp_p;
-+	unsigned char buffer_p[PERIOD*4*4];
-+	unsigned char buffer_c[PERIOD*4*4];
-+
-+	snd_pcm_sw_params_t *swparams_p;
-+	snd_pcm_sw_params_t *swparams_c;
-+
-+	snd_pcm_uframes_t curr_count_c;
-+	snd_pcm_uframes_t frame_count_c = 0;
-+	snd_pcm_uframes_t curr_count_p;
-+	snd_pcm_uframes_t frame_count_p = 0;
-+
-+	snd_pcm_sframes_t delay_p, delay_c;
-+	snd_pcm_uframes_t avail_p, avail_c;
-+
-+	if ((err = snd_pcm_open(&handle_p, device, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
-+		printf("Playback open error: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+	if ((err = snd_pcm_set_params(handle_p,
-+	                              SND_PCM_FORMAT_S16,
-+	                              SND_PCM_ACCESS_RW_INTERLEAVED,
-+	                              2,
-+	                              48000,
-+	                              0,
-+	                              500000)) < 0) {	/* 0.5sec */
-+		printf("Playback open error: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	snd_pcm_sw_params_alloca(&swparams_p);
-+	/* get the current swparams */
-+	err = snd_pcm_sw_params_current(handle_p, swparams_p);
-+	if (err < 0) {
-+		printf("Unable to determine current swparams_p: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	/* enable tstamp */
-+	err = snd_pcm_sw_params_set_tstamp_mode(handle_p, swparams_p, SND_PCM_TSTAMP_ENABLE);
-+	if (err < 0) {
-+		printf("Unable to set tstamp mode : %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	/* write the sw parameters */
-+	err = snd_pcm_sw_params(handle_p, swparams_p);
-+	if (err < 0) {
-+		printf("Unable to set swparams_p : %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	if ((err = snd_pcm_open(&handle_c, device, SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK)) < 0) {
-+		printf("Capture open error: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+	if ((err = snd_pcm_set_params(handle_c,
-+	                              SND_PCM_FORMAT_S16,
-+	                              SND_PCM_ACCESS_RW_INTERLEAVED,
-+	                              2,
-+	                              48000,
-+	                              0,
-+	                              500000)) < 0) {	/* 0.5sec */
-+		printf("Capture open error: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	snd_pcm_sw_params_alloca(&swparams_c);
-+	/* get the current swparams */
-+	err = snd_pcm_sw_params_current(handle_c, swparams_c);
-+	if (err < 0) {
-+		printf("Unable to determine current swparams_c: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	/* enable tstamp */
-+	err = snd_pcm_sw_params_set_tstamp_mode(handle_c, swparams_c, SND_PCM_TSTAMP_ENABLE);
-+	if (err < 0) {
-+		printf("Unable to set tstamp mode : %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+	/* write the sw parameters */
-+	err = snd_pcm_sw_params(handle_c, swparams_c);
-+	if (err < 0) {
-+		printf("Unable to set swparams_c : %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+
-+#ifdef PCM_LINK
-+	if ((err = snd_pcm_link(handle_c, handle_p)) < 0) {
-+		printf("Streams link error: %s\n", snd_strerror(err));
-+		exit(0);
-+	}
-+#endif
-+
-+	i = PLAYBACK_BUFFERS;
-+	while (i--) {
-+                frames = snd_pcm_writei(handle_p, buffer_p, PERIOD);
-+                if (frames < 0) {
-+                        printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
-+                        goto _exit;
-+                }
-+		frame_count_p += frames;
-+	}
-+
-+	if (PLAYBACK_BUFFERS != 4)
-+		snd_pcm_start(handle_p);
-+
-+#ifndef PCM_LINK
-+	/* need to start capture explicitly */
-+	snd_pcm_start(handle_c);
-+#endif
-+
-+        while (1) {
-+
-+		frames = snd_pcm_wait(handle_c, -1);
-+		if (frames < 0) {
-+			printf("snd_pcm_wait failed: %s\n", snd_strerror(frames));
-+                        goto _exit;
-+		}
-+
-+		frames = snd_pcm_readi(handle_c, buffer_c, PERIOD);
-+                if (frames < 0) {
-+                        printf("snd_pcm_readi failed: %s\n", snd_strerror(frames));
-+                        goto _exit;
-+                }
-+		frame_count_c += frames;
-+
-+                frames = snd_pcm_writei(handle_p, buffer_p, PERIOD);
-+                if (frames < 0) {
-+                        printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
-+                        goto _exit;
-+                }
-+
-+		frame_count_p += frames;
-+
-+#if defined(TRACK_PLAYBACK)
-+		gettimestamp(handle_p, &tstamp_p, &trigger_tstamp_p, &avail_p, &delay_p);
-+
-+		curr_count_p = frame_count_p - delay_p; /* written minus queued */
-+
-+		printf("playback: systime: %lli nsec, sample time %lli nsec \tsystime delta %lli \n",
-+			timediff(tstamp_p,trigger_tstamp_p),
-+			(long long)round(((float)curr_count_p * 1000000000.0 / 48000.0)),
-+		       timediff(tstamp_p, trigger_tstamp_p) - (long long)round((double)curr_count_p * 1000000000.0 / 48000.0)
-+		       );
-+#endif
-+
-+#if defined(TRACK_CAPTURE)
-+		gettimestamp(handle_c, &tstamp_c, &trigger_tstamp_c, &avail_c, &delay_c);
-+
-+		curr_count_c = frame_count_c + delay_c; /* read plus queued */
-+
-+		printf("\t capture: systime: %lli nsec, sample time %lli nsec \tsystime delta %lli \n",
-+			timediff(tstamp_c,trigger_tstamp_c),
-+			(long long)round(((float)curr_count_c * 1000000000.0 / 48000.0)),
-+		       timediff(tstamp_c, trigger_tstamp_c) - (long long)round((double)curr_count_c * 1000000000.0 / 48000.0)
-+		       );
-+#endif
-+
-+        }
-+
-+_exit:
-+	if (handle_p)
-+		snd_pcm_close(handle_p);
-+	if (handle_c)
-+		snd_pcm_close(handle_c);
-+
-+	return 0;
-+}
--- 
-1.7.9.5
+MjAxMi05LTIyIOS4iuWNiDc6NDUg5pa8ICJIZXJ0b24gUm9uYWxkbyBLcnplc2luc2tpIiA8Cmhl
+cnRvbi5rcnplc2luc2tpQGNhbm9uaWNhbC5jb20+IOWvq+mBk++8mgo+Cj4gSGksCj4KPiBPbiBW
+aWEgY29kZWNzIHJlcG9ydGVkIG9uIGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvMTA1
+MjQ5OSwgd2hpbGUKPiBpbnZlc3RpZ2F0aW5nIHRoZSByZXBvcnQsIGl0IGNhbiBiZSBzZWVuIHRo
+YXQgb24gSGVhZHBob25lIHBpbiB0aGUKPiBwbHVnIGlzIG5vdCBkZXRlY3RhYmxlIChOT19QUkVT
+RU5DRSkuIEl0IGNvdWxkIGJlIHRoYXQgZnJvbnQgcGFuZWwgaXMKPiBBQzk3IHdpcmluZyBvciBz
+b21ldGhpbmcgZWxzZSwgSSBkb24ndCBrbm93LiBCdXQgaXQgbWFrZXMgdGhlIGphY2sKPiBkZXRl
+Y3Rpb24gaGFuZGxpbmcgY29kZSB0byBhZGQgdGhlIGhlYWRwaG9uZSBqYWNrIGFzICJwaGFudG9t
+Iiwgd2hpY2gKPiBtYWtlcyBzbmRfaGRhX2phY2tfZGV0ZWN0IHJldHVybiBoZWFkcGhvbmUgamFj
+ayBhcyBhbHdheXMgcHJlc2VudAo+IChjb21taXQgODBjOGJmYmU3NjggaXMgYXBwbGllZC9jaGVy
+cnktcGlja2VkIG9uIHRoZSByZXBvcnRlZCBrZXJuZWwpLgo+Cj4gVGh1cyBhZnRlciBqYWNrcyBh
+cmUgYWRkZWQsIHRoZSBhdXRvbXV0ZSBjb2RlIHdpbGwgYWx3YXlzIGRldGVjdCBIUCBhcwo+IHBy
+ZXNlbnQsIGFuZCBrZWVwIG11dGVkIGFsbCBsaW5lLW91dHMuIFRoZSBwcm9wb3NlZCBzb2x1dGlv
+biBmb2xsb3dpbmcKPiB0aGlzIGlzIHVzaW5nIGlzX2phY2tfZGV0ZWN0YWJsZSBpbnNpZGUgdmlh
+X2hwX2F1dG9tdXRlIHRvIGhhbmRsZSB0aGlzLAo+IG90aGVyIGNvZGVjcyBzZWVtIHRvIHVzZSBh
+bHNvIGlzX2phY2tfZGV0ZWN0YWJsZSBhdCB0aGUgbW9tZW50IGluCj4gc2ltaWxhciBzaXR1YXRp
+b25zLiBPdGhlciBhcHByb2FjaCBjb3VsZCBiZSBhbHNvIHRvIG5vdCByZXBvcnQgcHJlc2VuY2UK
+PiBvbiBwaGFudG9tIGphY2tzIHdpdGggSFAgb3IgTGluZSBPdXRzLgoKTW9zdCBWSUEgY29kZWNz
+IHN1cHBvcnQgaW5kZXBlbmRlbnQgaGVhZHBob25lIHdoaWNoIGFsbG93IHVzZXIgdG8gcGxheQpk
+aWZmZXJlbnQgYXVkaW8gc3RyZWFtcyB0byByZWFyIHBhbmVsIGphY2sgYW5kIGZyb250IHBhbmVs
+IGhlYWRwaG9uZS4KCmlmIGluZGVwZW5kZW50IGhlYWRwaG9uZSBzd2l0Y2ggaXMgT04sIHB1bHNl
+YXVkaW8gc2hvdWxkIG5vdCBtdXRlIHRoZSByZWFyCmxpbmUgb3V0CgpBUExBWQoKKioqKiBMaXN0
+IG9mIFBMQVlCQUNLIEhhcmR3YXJlIERldmljZXMgKioqKgpjYXJkIDA6IE5WaWRpYSBbSERBIE5W
+aWRpYV0sIGRldmljZSAwOiBWVDE3MDUgQW5hbG9nIFtWVDE3MDUgQW5hbG9nXQogIFN1YmRldmlj
+ZXM6IDAvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMDogTlZpZGlhIFtIREEg
+TlZpZGlhXSwgZGV2aWNlIDI6IFZUMTcwNSBIUCBbVlQxNzA1IEhQXQogIFN1YmRldmljZXM6IDEv
+MQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
