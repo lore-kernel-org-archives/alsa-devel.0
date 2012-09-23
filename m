@@ -1,22 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Dynamic HDMI PCM creation
-Date: Sun, 23 Sep 2012 10:47:56 +0800
-Message-ID: <CAN8ccia3vn9r0FP7NekZt7gBHWnt_W2eyz+n9yrarsU6HD7swA@mail.gmail.com>
-References: <s5htxv6rq0e.wl%tiwai@suse.de> <5056F83B.7080602@canonical.com>
- <s5h7grtx78l.wl%tiwai@suse.de> <5057039C.50906@perex.cz>
- <s5hwqzsx476.wl%tiwai@suse.de> <50571596.8000207@perex.cz>
- <50572594.3090900@canonical.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
+ pinctrl when registering a DAI
+Date: Sat, 22 Sep 2012 21:23:25 -0600
+Message-ID: <505E80AD.9050000@wwwdotorg.org>
+References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120921111352.GA21524@opensource.wolfsonmicro.com>
+ <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
+ <20120922152840.GM4495@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id F1DB22602AD
- for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2012 04:47:57 +0200 (CEST)
-Received: by qcsb14 with SMTP id b14so1547942qcs.38
- for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 19:47:56 -0700 (PDT)
-In-Reply-To: <50572594.3090900@canonical.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id B97882615A7
+ for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2012 05:23:31 +0200 (CEST)
+In-Reply-To: <20120922152840.GM4495@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,65 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
->
-> Another question PA needs to deal with is, when this new HDMI PCM device
-is plugged in, what other streams can coexist with this new HDMI stream?
-What if we have an analog + HDMI combined card, but the controller only
-supports one stream to either of them? In that case, we can not even probe
-the HDMI device without disturbing the stream potentially being played back
-through analog.
+On 09/22/2012 09:28 AM, Mark Brown wrote:
+> On Fri, Sep 21, 2012 at 10:23:50AM -0600, Stephen Warren wrote:
+>> On 09/21/2012 07:16 AM, Peter Ujfalusi wrote:
+> 
+>>> pinctrl_get_select() returns with a pointer to struct pinctrl. If the platform
+>>> does not have CONFIG_PINCTRL enabled it will return with NULL.
+>>> If no pinctrl has been specified for the device it will return with error
+>>> (-ENODEV).
+>>> Neither of these cases should be considered as error. We do print out with
+>>> dev_info() to notify the developer, but having pinctrl mux should not be
+>>> mandatory.
+> 
+>> Indeed - what about a platform like Tegra which has pinctrl enabled, yet
+>> doesn't specify any pinctrl configuration for any device other than the
+>> pin controller itself? Do we want to force every device into having to
+>> specify an empty pin control configuration? If we take this route, we
+>> should really have the driver core or platform bus set up the initial
+>> pinctrl state, and I believe that approach was explicitly decided against.
+> 
+> Well, the other options are for pinctrl to either not return an error in
+> the no configuration case or change to a void return type.  The current
+> behaviour seems a bit pointless since we can't usefully do anything with
+> the errors, we can just factor the error logs into the core and have
+> done with it since it's not possible to treat errors as such.
 
-Refer to ICH8 datasheet
+(I'm not 100% sure if everyone agrees on this and I'm not sure if it's
+been explicitly stated, so perhaps this is my personal opinion. However,
+the more I think about this, the more it makes sense).
 
-Independent Bus Master logic for eight general purpose streams: four input
-and four output
-Support four external Codecs
+I think the errors shouldn't be ignored at all; it's an error for a
+driver to explicitly go out and request a pinctrl state if that state is
+not defined. In turn, this means that no generic code should be going
+out and requesting a pinctrl state on behalf of the driver; it has no
+idea if the driver has defined that it needs pinctrl set up for it.
 
-does it mean that for those hda codecs which support two independent spdif
-, the driver can be configured to support two spdif device instead of
-slaves ?
+I'll explain this in a slightly different way that will probably make
+more sense.
 
-e.g. alc1200
+For any pinctrl configuration that is static, that configuration should
+be applied one time as the system boots using the "hog" feature of the
+pin controller itself, i.e. the pin controller driver should apply that
+state during its own probe(). Individual drivers should only ever
+request a pinctrl state if they need to dynamically switch between
+different states at run-time. This is (a) likely to be fairly rare, and
+(b) the need is likely to be defined directly by the kind of protocol
+that the driver/HW is implementing.
 
-Node 0x11 [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x99430140: [Fixed] SPDIF Out at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x4, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x10
+So in other words, I'd expect to see an almost complete system-wide
+"default" pinctrl state defined for the pin controller, and quite
+possibly no other drivers with pinctrl states defined at all.
 
-Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x01456130: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Orange
-    DefAssociation = 0x3, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x06
+Drivers that might switch between pinctrl states are say
+I2C/SPI/MDIO/... bus muxes that use an SoC's pinctrl module to perform
+the muxing, or perhaps some kind of high-speed data bus that might need
+different pin configuration (say biasing/equalization/... stuff rather
+than muxing) based on the runtime-selected bus clock.
 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=6a05ac4afa90ac9c38fedd3f6940fe8da5d1fcf6
-
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=0852d7a654f75d22a3c09fd7da4a3551bbb37740
-
-The other case is audio codec and hdmi codec with NVidia controller
-
-can the hda controller support more than two streams?
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: NVidia [HDA NVidia], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: NVidia [HDA NVidia], device 1: AD198x Digital [AD198x Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Given all this, that probably means that none of your (Peter's) DAI
+drivers need to touch pinctrl at all, so this patch isn't needed in any
+form?
