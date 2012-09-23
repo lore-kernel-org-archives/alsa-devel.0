@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: wm2000: Add regulator support
-Date: Sat, 22 Sep 2012 18:35:39 -0400
-Message-ID: <1348353339-11880-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1348353339-11880-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Dynamic HDMI PCM creation
+Date: Sun, 23 Sep 2012 10:47:56 +0800
+Message-ID: <CAN8ccia3vn9r0FP7NekZt7gBHWnt_W2eyz+n9yrarsU6HD7swA@mail.gmail.com>
+References: <s5htxv6rq0e.wl%tiwai@suse.de> <5056F83B.7080602@canonical.com>
+ <s5h7grtx78l.wl%tiwai@suse.de> <5057039C.50906@perex.cz>
+ <s5hwqzsx476.wl%tiwai@suse.de> <50571596.8000207@perex.cz>
+ <50572594.3090900@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5ED48260728
- for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2012 00:41:43 +0200 (CEST)
-In-Reply-To: <1348353339-11880-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1DB22602AD
+ for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2012 04:47:57 +0200 (CEST)
+Received: by qcsb14 with SMTP id b14so1547942qcs.38
+ for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2012 19:47:56 -0700 (PDT)
+In-Reply-To: <50572594.3090900@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,180 +26,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm2000.c |   53 ++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 47 insertions(+), 6 deletions(-)
+>
+> Another question PA needs to deal with is, when this new HDMI PCM device
+is plugged in, what other streams can coexist with this new HDMI stream?
+What if we have an analog + HDMI combined card, but the controller only
+supports one stream to either of them? In that case, we can not even probe
+the HDMI device without disturbing the stream potentially being played back
+through analog.
 
-diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
-index 6675477..b723e91 100644
---- a/sound/soc/codecs/wm2000.c
-+++ b/sound/soc/codecs/wm2000.c
-@@ -31,6 +31,7 @@
- #include <linux/i2c.h>
- #include <linux/regmap.h>
- #include <linux/debugfs.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -43,6 +44,14 @@
- 
- #include "wm2000.h"
- 
-+#define WM2000_NUM_SUPPLIES 3
-+
-+static const char *wm2000_supplies[WM2000_NUM_SUPPLIES] = {
-+	"SPKVDD",
-+	"DBVDD",
-+	"DCVDD",
-+};
-+
- enum wm2000_anc_mode {
- 	ANC_ACTIVE = 0,
- 	ANC_BYPASS = 1,
-@@ -54,6 +63,8 @@ struct wm2000_priv {
- 	struct i2c_client *i2c;
- 	struct regmap *regmap;
- 
-+	struct regulator_bulk_data supplies[WM2000_NUM_SUPPLIES];
-+
- 	enum wm2000_anc_mode anc_mode;
- 
- 	unsigned int anc_active:1;
-@@ -126,6 +137,12 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
- 
- 	dev_dbg(&i2c->dev, "Beginning power up\n");
- 
-+	ret = regulator_bulk_enable(WM2000_NUM_SUPPLIES, wm2000->supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
- 	if (!wm2000->mclk_div) {
- 		dev_dbg(&i2c->dev, "Disabling MCLK divider\n");
- 		wm2000_write(i2c, WM2000_REG_SYS_CTL2,
-@@ -143,12 +160,14 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
- 	if (!wm2000_poll_bit(i2c, WM2000_REG_ANC_STAT,
- 			     WM2000_ANC_ENG_IDLE)) {
- 		dev_err(&i2c->dev, "ANC engine failed to reset\n");
-+		regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
- 		return -ETIMEDOUT;
- 	}
- 
- 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
- 			     WM2000_STATUS_BOOT_COMPLETE)) {
- 		dev_err(&i2c->dev, "ANC engine failed to initialise\n");
-+		regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -163,11 +182,13 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
- 			      wm2000->anc_download_size);
- 	if (ret < 0) {
- 		dev_err(&i2c->dev, "i2c_transfer() failed: %d\n", ret);
-+		regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
- 		return ret;
- 	}
- 	if (ret != wm2000->anc_download_size) {
- 		dev_err(&i2c->dev, "i2c_transfer() failed, %d != %d\n",
- 			ret, wm2000->anc_download_size);
-+		regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
- 		return -EIO;
- 	}
- 
-@@ -201,6 +222,7 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
- 	if (!wm2000_poll_bit(i2c, WM2000_REG_SYS_STATUS,
- 			     WM2000_STATUS_MOUSE_ACTIVE)) {
- 		dev_err(&i2c->dev, "Timed out waiting for device\n");
-+		regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -238,6 +260,8 @@ static int wm2000_power_down(struct i2c_client *i2c, int analogue)
- 		return -ETIMEDOUT;
- 	}
- 
-+	regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
-+
- 	dev_dbg(&i2c->dev, "powered off\n");
- 	wm2000->anc_mode = ANC_OFF;
- 
-@@ -747,7 +771,7 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
- 	struct wm2000_platform_data *pdata;
- 	const char *filename;
- 	const struct firmware *fw = NULL;
--	int ret;
-+	int ret, i;
- 	int reg;
- 	u16 id;
- 
-@@ -768,6 +792,22 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
- 		goto out;
- 	}
- 
-+	for (i = 0; i < WM2000_NUM_SUPPLIES; i++)
-+		wm2000->supplies[i].supply = wm2000_supplies[i];
-+
-+	ret = devm_regulator_bulk_get(&i2c->dev, WM2000_NUM_SUPPLIES,
-+				      wm2000->supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to get supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(WM2000_NUM_SUPPLIES, wm2000->supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
- 	/* Verify that this is a WM2000 */
- 	reg = wm2000_read(i2c, WM2000_REG_ID1);
- 	id = reg << 8;
-@@ -777,7 +817,7 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
- 	if (id != 0x2000) {
- 		dev_err(&i2c->dev, "Device is not a WM2000 - ID %x\n", id);
- 		ret = -ENODEV;
--		goto out;
-+		goto err_supplies;
- 	}
- 
- 	reg = wm2000_read(i2c, WM2000_REG_REVISON);
-@@ -796,7 +836,7 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
- 	ret = request_firmware(&fw, filename, &i2c->dev);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to acquire ANC data: %d\n", ret);
--		goto out;
-+		goto err_supplies;
- 	}
- 
- 	/* Pre-cook the concatenation of the register address onto the image */
-@@ -807,7 +847,7 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
- 	if (wm2000->anc_download == NULL) {
- 		dev_err(&i2c->dev, "Out of memory\n");
- 		ret = -ENOMEM;
--		goto out;
-+		goto err_supplies;
- 	}
- 
- 	wm2000->anc_download[0] = 0x80;
-@@ -822,8 +862,9 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
- 	wm2000_reset(wm2000);
- 
- 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm2000, NULL, 0);
--	if (!ret)
--		goto out;
-+
-+err_supplies:
-+	regulator_bulk_disable(WM2000_NUM_SUPPLIES, wm2000->supplies);
- 
- out:
- 	release_firmware(fw);
--- 
-1.7.10.4
+Refer to ICH8 datasheet
+
+Independent Bus Master logic for eight general purpose streams: four input
+and four output
+Support four external Codecs
+
+does it mean that for those hda codecs which support two independent spdif
+, the driver can be configured to support two spdif device instead of
+slaves ?
+
+e.g. alc1200
+
+Node 0x11 [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x99430140: [Fixed] SPDIF Out at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+    DefAssociation = 0x4, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x10
+
+Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x01456130: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Orange
+    DefAssociation = 0x3, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x06
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=6a05ac4afa90ac9c38fedd3f6940fe8da5d1fcf6
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=0852d7a654f75d22a3c09fd7da4a3551bbb37740
+
+The other case is audio codec and hdmi codec with NVidia controller
+
+can the hda controller support more than two streams?
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: NVidia [HDA NVidia], device 0: AD198x Analog [AD198x Analog]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 1: AD198x Digital [AD198x Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
