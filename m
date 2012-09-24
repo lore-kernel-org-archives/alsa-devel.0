@@ -1,33 +1,81 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH 0/2] dmaengine: Fix compillation issues in
- device_prep_dma_cyclic()
-Date: Mon, 24 Sep 2012 14:10:09 +0530
-Message-ID: <1348476009.1943.187.camel@vkoul-udesk3>
-References: <20120924133923.130c4db72aa8105cb5647d7a@canb.auug.org.au>
-	 <1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
+ pinctrl when registering a DAI
+Date: Mon, 24 Sep 2012 11:20:16 +0200
+Message-ID: <CACRpkdbewb0SVYJoT9O4PAajFWny+YOcmf2CLUKL1NzxGWoa5A@mail.gmail.com>
+References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
+ <20120921111352.GA21524@opensource.wolfsonmicro.com>
+ <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
+ <20120922152840.GM4495@opensource.wolfsonmicro.com>
+ <505E80AD.9050000@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D86FB2602F9
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 11:20:16 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so3555507wgb.20
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 02:20:16 -0700 (PDT)
+In-Reply-To: <505E80AD.9050000@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-09-24 at 10:58 +0300, Peter Ujfalusi wrote:
-> Hello,
-> 
-> The reason for the breakage is the patch 1 got lost somewhere in the process.
-> I also greped the whole tree for device_prep_dma_cyclic() and the second patch
-> is the result of that.
-> 
-> PS: I did build tested the series on ARM (OMAP), x86_32, x86_64 but not for ppc
-> for sure.
-I though patch 1 was part of the series Mark was supposed to apply.
+On Sun, Sep 23, 2012 at 5:23 AM, Stephen Warren <swarren@wwwdotorg.org> wrote:
 
-Anyway both look fine to me so:
-Both Acked-By: Vinod Koul <vinod.koul@linux.intel.com>
+> I think the errors shouldn't be ignored at all; it's an error for a
+> driver to explicitly go out and request a pinctrl state if that state is
+> not defined. In turn, this means that no generic code should be going
+> out and requesting a pinctrl state on behalf of the driver; it has no
+> idea if the driver has defined that it needs pinctrl set up for it.
 
--- 
-~Vinod
+This makes perfect sense to me, right now atleast.
+
+So the problem with the patch we're discussing is that it's
+"too far up" in the framework, and handling pinctrl should be done
+somewhere below.
+
+> For any pinctrl configuration that is static, that configuration should
+> be applied one time as the system boots using the "hog" feature of the
+> pin controller itself,
+
+Agreed. Even in the docs luckily :-)
+
+> i.e. the pin controller driver should apply that
+> state during its own probe(). Individual drivers should only ever
+> request a pinctrl state if they need to dynamically switch between
+> different states at run-time. This is (a) likely to be fairly rare,
+
+The Ux500 smash this completely by having almost no static
+configurations at all and needing to switch everything at runtime,
+tied in with runtime PM. This is how we save some microamps.
+
+Sorry for this, I'm happy for you if Tegra is simpler to handle for
+low-power :-)
+
+> and
+> (b) the need is likely to be defined directly by the kind of protocol
+> that the driver/HW is implementing.
+
+Yes. This is 100% true. It needs to be close to the driver and
+its subsystem. (I don't know if the patch under disussion is at
+the right level, seems controversial...)
+
+> So in other words, I'd expect to see an almost complete system-wide
+> "default" pinctrl state defined for the pin controller, and quite
+> possibly no other drivers with pinctrl states defined at all.
+
+Hehe not for us :-)
+
+Yours,
+Linus Walleij
