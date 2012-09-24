@@ -1,25 +1,19 @@
-From: Jannis Achstetter <jannis_achstetter@web.de>
-Subject: Re: Can't connect to MIDI output of Edirol UA-1000
-Date: Mon, 24 Sep 2012 10:23:44 +0000 (UTC)
-Message-ID: <loom.20120924T122214-841@post.gmane.org>
-References: <50587F96.8080005@googlemail.com>
+From: Henning Thielemann <alsa@henning-thielemann.de>
+Subject: Re: snd_seq_parse_address accesses uninitialised data
+Date: Mon, 24 Sep 2012 19:22:55 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1209241919140.6917@anubis.informatik.uni-halle.de>
+References: <alpine.DEB.2.00.1209231903310.21223@anubis.informatik.uni-halle.de>
+ <s5hsja7onmn.wl%tiwai@suse.de>
+ <alpine.DEB.2.00.1209241614170.2471@anubis.informatik.uni-halle.de>
+ <s5hk3vj8luz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id F216F2615FB
- for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 17:50:01 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TGAv6-0000XX-JM
- for alsa-devel@alsa-project.org; Mon, 24 Sep 2012 17:50:04 +0200
-Received: from 193.175.21.66 ([193.175.21.66])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 17:50:04 +0200
-Received: from jannis_achstetter by 193.175.21.66 with local (Gmexim 0.1
- (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 17:50:04 +0200
+Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
+ [141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 22FD92616B7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 19:22:57 +0200 (CEST)
+In-reply-to: <s5hk3vj8luz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,15 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin Fletcher <colin.m.fletcher <at> googlemail.com> writes:
 
-> aconnect simply reports "Connection failed (Input/output error)";
-> a2jmidid -e says "ERROR: a2j_port_create: snd_seq_connect_to() for
-> 20:0 failed with error -5"; and qjackctl reports no error but refuses
-> to make the connection.
+On Mon, 24 Sep 2012, Takashi Iwai wrote:
 
-I just want to note that the problem is exactly the same with the Edirol UA-101
-(uses the same driver) and linux-3.5.3
+> At Mon, 24 Sep 2012 16:20:50 +0200 (CEST),
+> Henning Thielemann wrote:
+>>
+>> For me valgrind is pretty useless if I have to manually distinguish real
+>> problems from false alarms in a long list of valgrind messages. Are you
+>> sure that it is generally ok to pass pointers to uninitialized data to
+>> ioctl also if in this particular case the pointer is not touched by ioctl?
+>
+> Only client field is read, and this is the field properly initialized
+> in alsa-lib code.  Others are fields to be filled by the kernel, so it
+> doesn't matter at all what's left there.
+>
+>> If yes, then I think valgrind must be somehow teached to ignore this
+>> particular case.
+>
+> I have no idea how to teach valgrind, sorry.
+
+I also asked in the valgrind mailing list and got this answer:
+    http://sourceforge.net/mailarchive/forum.php?thread_name=506089CA.5030309%40bitwagon.com&forum_name=valgrind-users
+
+Of course, I can suppress the message for me, but I expect that more 
+people will stumble on it. Thus I'd prefer a resolution of the problem in 
+ALSA.
