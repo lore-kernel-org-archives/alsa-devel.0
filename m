@@ -1,21 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_ssi: Let it understand mono
-Date: Mon, 24 Sep 2012 08:50:41 -0500
-Message-ID: <50606531.8000606@freescale.com>
-References: <1347984234-9275-1-git-send-email-fabio.estevam@freescale.com>
- <50589DD7.8050409@freescale.com>
- <CAOMZO5D-oHc8hdakFHPHSW_duAZ+dMuM77wUn=K=7jUMwxmg-A@mail.gmail.com>
- <505A3DDB.4060208@freescale.com>
- <20120922145619.GB4495@opensource.wolfsonmicro.com>
+From: Henning Thielemann <alsa@henning-thielemann.de>
+Subject: Re: snd_seq_parse_address accesses uninitialised data
+Date: Mon, 24 Sep 2012 16:20:50 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1209241614170.2471@anubis.informatik.uni-halle.de>
+References: <alpine.DEB.2.00.1209231903310.21223@anubis.informatik.uni-halle.de>
+ <s5hsja7onmn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 399E62615DD
- for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 15:50:49 +0200 (CEST)
-In-Reply-To: <20120922145619.GB4495@opensource.wolfsonmicro.com>
+Received: from mailgate5.urz.uni-halle.de (mailgate5.urz.uni-halle.de
+ [141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 240992615DE
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 16:20:55 +0200 (CEST)
+In-reply-to: <s5hsja7onmn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, javier.martin@vista-silicon.com, Sascha Hauer <kernel@pengutronix.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> In I2S mono just means ignoring the right channel or duplicating the
-> left channel into the right channel at one end of the link or the other.
-> As you say the clocking always has to be for an even number of channels.
 
-Let me see if I understand this correctly.  In order for I2S mono to work,
-we need the following:
+On Mon, 24 Sep 2012, Takashi Iwai wrote:
 
-1) The I2S controller (the SSI in this case) needs to be programmed to DMA
-data from memory into the left channel only of each frame, and it needs to
-pump dummy data into the right channel.  If it automatically pumps the
-same data into the right channel, then the codec doesn't need to do
-anything.  Otherwise, we need one of these:
+> At Sun, 23 Sep 2012 19:08:09 +0200 (CEST),
+> Henning Thielemann wrote:
+>>
+>> ==27797== Syscall param ioctl(generic) points to uninitialised byte(s)
+>> ==27797==    at 0x5209D27: ioctl (syscall-template.S:82)
+>> ==27797==    by 0x4EC9168: snd_seq_hw_query_next_client (seq_hw.c:367)
+>> ==27797==    by 0x4ECF3E2: snd_seq_parse_address (seqmid.c:416)
+>> ==27797==    by 0x40069D: main (in /home/thielema/programming/haskell/alsa-seq/ctest/parse-address)
+>> ==27797==  Address 0x7fefffd24 is on thread 1's stack
+>
+> This is no bug.  The uninitialized fields aren't referred in the ioctl
+> at all.  valgrind is just too picky, so you can safely ignore it.
 
-2a) The codec needs to be programmed to ignore the right channel and
-internally duplicate the left channel into both left and right analog signals.
 
-2b) The board needs to be wired such that only the left analog signal gets
-routed to the speakers.
+For me valgrind is pretty useless if I have to manually distinguish real 
+problems from false alarms in a long list of valgrind messages. Are you 
+sure that it is generally ok to pass pointers to uninitialized data to 
+ioctl also if in this particular case the pointer is not touched by ioctl? 
+If yes, then I think valgrind must be somehow teached to ignore this 
+particular case.
 
-For item #1, as far as I know, there is only one way to get the SSI to do
-that: use dual-FIFO mode.  The "left" FIFO points to the audio data as
-normal, and the right FIFO points to whatever.  If the right FIFO also
-points to the same audio data, then we don't need any codec changes.
 
-I can say for certain that fsl_ssi.c does not implement dual-FIFO mode.  I
-considered it once, but I figured it wasn't worth the effort.  Getting it
-to work for audio capture would be difficult, and the feature must be
-enabled for both capture and playback.  I don't think I could support
-simultaneous playback and capture in dual-FIFO mode.
-
-I do not see any code in imx-ssi.c that enables dual-FIFO mode.  This
-would be done by setting SSI_SCR_TCH_EN in the SCR, and I don't see that
-bit being set anywhere.
-
-So unless there's some hackery happening on the mx6qsabrelite board, I
-can't believe that any of these patches actually work.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Best,
+Henning
