@@ -1,20 +1,23 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
 Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
  pinctrl when registering a DAI
-Date: Mon, 24 Sep 2012 09:38:43 -0600
-Message-ID: <50607E83.6010805@wwwdotorg.org>
+Date: Mon, 24 Sep 2012 09:41:22 -0600
+Message-ID: <50607F22.4070903@wwwdotorg.org>
 References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
  <20120921111352.GA21524@opensource.wolfsonmicro.com>
  <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
- <CACRpkdZ=_qm-g-LDth8m43Cug4LoMsD3FuvTiiyQgP=chGTAUw@mail.gmail.com>
+ <20120922152840.GM4495@opensource.wolfsonmicro.com>
+ <505E80AD.9050000@wwwdotorg.org>
+ <CACRpkdbewb0SVYJoT9O4PAajFWny+YOcmf2CLUKL1NzxGWoa5A@mail.gmail.com>
+ <20120924101757.GC21375@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id B52722615E7
- for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 17:38:50 +0200 (CEST)
-In-Reply-To: <CACRpkdZ=_qm-g-LDth8m43Cug4LoMsD3FuvTiiyQgP=chGTAUw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B58832615F5
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 17:41:25 +0200 (CEST)
+In-Reply-To: <20120924101757.GC21375@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +27,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/24/2012 02:34 AM, Linus Walleij wrote:
-> On Fri, Sep 21, 2012 at 6:23 PM, Stephen Warren <swarren@wwwdotorg.org> wrote:
->> On 09/21/2012 07:16 AM, Peter Ujfalusi wrote:
->>>
->>> pinctrl_get_select() returns with a pointer to struct pinctrl. If the platform
->>> does not have CONFIG_PINCTRL enabled it will return with NULL.
->>> If no pinctrl has been specified for the device it will return with error
->>> (-ENODEV).
->>> Neither of these cases should be considered as error. We do print out with
->>> dev_info() to notify the developer, but having pinctrl mux should not be
->>> mandatory.
->>
->> Indeed - what about a platform like Tegra which has pinctrl enabled, yet
->> doesn't specify any pinctrl configuration for any device other than the
->> pin controller itself?
+On 09/24/2012 04:17 AM, Mark Brown wrote:
+> On Mon, Sep 24, 2012 at 11:20:16AM +0200, Linus Walleij wrote:
+>> On Sun, Sep 23, 2012 at 5:23 AM, Stephen Warren <swarren@wwwdotorg.org> wrote:
 > 
-> It would be fixed by calling pinctrl_provide_dummies() right?
+>>> I think the errors shouldn't be ignored at all; it's an error for a
+>>> driver to explicitly go out and request a pinctrl state if that state is
+>>> not defined. In turn, this means that no generic code should be going
+>>> out and requesting a pinctrl state on behalf of the driver; it has no
+>>> idea if the driver has defined that it needs pinctrl set up for it.
 > 
-> Not that it's elegant or anything ...
+>> This makes perfect sense to me, right now atleast.
+> 
+>> So the problem with the patch we're discussing is that it's
+>> "too far up" in the framework, and handling pinctrl should be done
+>> somewhere below.
+> 
+> Well, the problem here is that people keep wanting to add one shot
+> pinctrl calls in drivers which clearly suggests that it ought to be
+> factored out.
+> 
+>>> For any pinctrl configuration that is static, that configuration should
+>>> be applied one time as the system boots using the "hog" feature of the
+>>> pin controller itself,
+> 
+>> Agreed. Even in the docs luckily :-)
+> 
+> Which is one way of factoring out, though it doesn't seem to be
+> universally applied (and I don't immediately see how it scales when the
+> device is used in multiple SoCs some of which need runtime configuration
+> and some of which don't).
 
-Right - calling pinctrl_provide_dummies() ends up telling the pinctrl
-core never to return an error even when it "should". I don't think it's
-appropriate to use that API at all except to help out transitioning a
-particular SoC to use pinctrl.
+Anywhere that particular device is used needs to have a pinctrl state
+defined. On SoCs that need the pinctrl changed, the pinctrl state would
+be populated with meaningful data. On SoCs that don't need pinctrl
+changed, the pinctrl state would be empty; essentially a dummy just to
+represent the fact that someone thought about the issue and decided
+nothing was needed.
+
+But I still find it unlikely that this situation will occur; surely
+there's some specific reason directly related to the device itself, or
+the protocol it implements, that defines whether it needs dynamic
+pinctrl, and hence no matter what SoC that device is inserted into, it
+will either need or not-need dynamic pinctrl. Are there any extant
+examples to refute this?
