@@ -1,28 +1,35 @@
-From: "Shen, Voice" <Voice.Shen@atmel.com>
-Subject: Re: [Resend PATCH] ASoC: wm8904: remove redundant code
-Date: Mon, 24 Sep 2012 01:34:05 +0000
-Message-ID: <C8203A76-3CAA-41CB-BC7A-196853261E79@atmel.com>
-References: <1348033969-14909-1-git-send-email-voice.shen@atmel.com>,<20120919114756.GW8832@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20120919114756.GW8832@opensource.wolfsonmicro.com>
-Content-Language: zh-CN
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/2] dmaengine: Fix compillation issues in device_prep_dma_cyclic()
+Date: Mon, 24 Sep 2012 10:58:03 +0300
+Message-ID: <1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
+References: <20120924133923.130c4db72aa8105cb5647d7a@canb.auug.org.au>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120924133923.130c4db72aa8105cb5647d7a@canb.auug.org.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Kukjin Kim <kgene.kim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
+The reason for the breakage is the patch 1 got lost somewhere in the process.
+I also greped the whole tree for device_prep_dma_cyclic() and the second patch
+is the result of that.
 
-在 2012-9-19，19:48，"Mark Brown" <broonie@opensource.wolfsonmicro.com> 写道：
+PS: I did build tested the series on ARM (OMAP), x86_32, x86_64 but not for ppc
+for sure.
 
-> On Wed, Sep 19, 2012 at 01:52:49PM +0800, Bo Shen wrote:
->> The core_intercon register two times for wm8904
->> Remove one
-> 
-> This patch is already present in -next...  it had been applied and not
-> pushed from the looks of it.
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  dmaengine: Add flags parameter to dmaengine_prep_dma_cyclic()
+  ARM: SAMSUNG: dma-ops: Fix dmaengine_prep_dma_cyclic() parameter list
 
-Got it, thanks.
+ arch/arm/plat-samsung/dma-ops.c | 3 ++-
+ include/linux/dmaengine.h       | 3 ++-
+ sound/soc/soc-dmaengine-pcm.c   | 6 +++++-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+-- 
+1.7.12
