@@ -1,17 +1,16 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH v3 00/15] ASoC: OMAP: Convert to use
-	dmaengine
-Date: Mon, 24 Sep 2012 18:36:01 -0500
-Message-ID: <5060EE61.1000902@ti.com>
-References: <1347624358-25582-1-git-send-email-peter.ujfalusi@ti.com>
+From: Daniel J Blueman <daniel@quora.org>
+Subject: [3.6-rc7] switcheroo race with Intel HDA...
+Date: Tue, 25 Sep 2012 13:20:05 +0800
+Message-ID: <CAMVG2st1-3kz-KRrm-zXZOGw8=QnyYbB3n5e8Z36xAbmD4b5RQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id AA97E2616E0
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 01:37:58 +0200 (CEST)
-In-Reply-To: <1347624358-25582-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C42B2616F8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 07:20:06 +0200 (CEST)
+Received: by wgbed3 with SMTP id ed3so4172629wgb.20
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2012 22:20:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +20,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-arm-kernel@lists.infradead.org, Dan Williams <djbw@fb.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Dave Airlie <airlied@redhat.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter, Mark,
+On my Macbook with a discrete Nvidia GPU, there is a race between
+selecting the integrated GPU and putting the discrete GPU into D3 [1],
+reliably causing a kernel oops [2].
 
-On 09/14/2012 07:05 AM, Peter Ujfalusi wrote:
-> Hello,
->
-> Changes since v2:
-> - As it has been discussed the no_wakeup parameter has been replaced with flags
->    for the dmaengine APIs
->
-> Changes since v1:
-> - Support for pause/resume for OMAP audio via dmaengine
-> - dmaengine: support for NO_PERIOD_WAKEUP in cyclic mode
->   - OMAP to keep supporting NO_PERIOD_WAKEUP for audio
->   - Other plaforms can also try to enable this mode since we have now generic
->     interface to do so.
->
-> This series will switch the OMAP audio to use dmaengine.
-> The final patch which does the switch was based on Russell King's earlier patch.
->
-> The first 10 patch is to prepare the OMAP audio drivers for a smooth change to
-> dmaengine:
-> - sDMA FRAME sync mode is removed and replaced with PACKET mode
-> - dai drivers no longer need to configure sDMA sync mode
-> - dai drivers does not need to specify the DMA word length - with the exception
->    of the omap-hdmi driver which requires 32bit word length regardless of the
->    audio format in use
-> - the McPDM driver used (to my surprise) hackish way of getting the DMA channel
->    and address - via defines from some header files
->
-> After the conversion OMAP audio support should have the same features as before,
-> no regressions expected.
->
-> I have tested the series on:
-> - BeagleBoard (audio via McBSP):
->   - aplay/arecord. In element mode and in threshold mode with different period
->     sizes
->   - mplayer -ao alsa: for direct ALSA access
->   - mplayer -ao pulse: via PulseAudio to test NO_PERIOD_WAKEUP feature
-> - OMAP4 Blaze (audio via McPDM and DMIC)
->   - aplay/arecord
->   - mplayer -ao alsa: for direct ALSA access
->   - mplayer -ao pulse: via PulseAudio to test NO_PERIOD_WAKEUP feature
->
-> The patches has been generated against:
-> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.7
->
-> Janusz: Can you retest this series on OMAP1 to be sure I have not broken it?
-> Ricardo: Can you test the omap-hmdi if it is still working?
+Introducing a delay of ~1s between the calls prevents this. When the
+second 'OFF' write path executes, it looks like struct azx at
+card->private_data hasn't yet been allocated yet [3], so there is
+likely some locking missing.
 
-I tested these changes from Mark's for-3.7 branch. HDMI audio is working 
-fine after applying patch 03. Such patch is missing in Mark's branch and 
-this causes a build break with omap2plus_defconfig. Not sure if this is 
-expected, Most likely not.
+I'm happy to perform further testing and debug of course...
 
-Tested-by: Ricardo Neri <ricardo.neri@ti.com>
+Thanks,
+  Daniel
 
-Ricardo
+--- [1]
+
+echo IGD > /sys/kernel/debug/vgaswitcheroo/switch
+echo OFF > /sys/kernel/debug/vgaswitcheroo/switch
+
+--- [2]
+
+BUG: unable to handle kernel NULL pointer dereference at 0000000000000170
+IP: [<ffffffffa01ba936>] azx_vs_set_state+0x26/0x178 [snd_hda_intel]
+PGD 259c26067 PUD 25a0fd067 PMD 0
+Oops: 0000 [#1] SMP DEBUG_PAGEALLOC
+Modules linked in: snd_hda_codec_hdmi bnep rfcomm b43 joydev nfsd ssb
+nfs_acl auth_rpcgss binfmt_misc nfs lockd sunrpc uvcvideo bcm5974
+videobuf2_core videobuf2_vmalloc videobuf2_memops coretemp kvm_intel
+snd_hda_codec_cirrus kvm applesmc input_polldev microcode bcma lpc_ich
+mfd_core mei snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm
+snd_timer snd snd_page_alloc nls_iso8859_1 apple_gmux mac_hid apple_bl
+btrfs hid_apple sdhci_pci ghash_clmulni_intel tg3 sdhci i915 nouveau
+ttm drm_kms_helper hwmon mxm_wmi video
+CPU 2
+Pid: 961, comm: sh Not tainted 3.6.0-rc7 #2 Apple Inc.
+MacBookPro10,1/Mac-C3EC7CD22292981F
+RIP: 0010:[<ffffffffa01ba936>] [<ffffffffa01ba936>]
+azx_vs_set_state+0x26/0x178 [snd_hda_intel]
+RSP: 0018:ffff880264271e48 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff88025a2f5280 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: 0000000000000000 RDI: ffff880265479098
+RBP: ffff880264271e68 R08: 2222222222222222 R09: 2222222222222222
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff880265479098
+R13: 0000000000000000 R14: ffff880264271f50 R15: 0000000000000000
+FS: 00007fa4fe183700(0000) GS:ffff88026f280000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000170 CR3: 00000002641a7000 CR4: 00000000001407e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Process sh (pid: 961, threadinfo ffff880264270000, task ffff880264503a00)
+Stack:
+ 2222222222222222 ffff88025a2f5280 0000000000000000 ffff880264271e98
+ ffff880264271e88 ffffffff812e83a7 ffff8802622835c0 0000000000000004
+ ffff880264271ef8 ffffffff812e89ac ffff88020a46464f ffff880264503a00
+Call Trace:
+ [<ffffffff812e83a7>] set_audio_state+0x67/0x70
+ [<ffffffff812e89ac>] vga_switcheroo_debugfs_write+0xbc/0x380
+ [<ffffffff81108773>] vfs_write+0xa3/0x160
+ [<ffffffff81108a75>] sys_write+0x45/0xa0
+ [<ffffffff815231a6>] system_call_fastpath+0x1a/0x1f
+Code: 00 00 00 00 00 55 48 89 e5 48 83 ec 20 4c 89 65 f0 4c 8d a7 98
+00 00 00 4c 89 e7 48 89 5d e8 4c 89 6d f8 41 89 f5 e8 2a 35 13 e1 <48>
+8b 98 70 01 00 00 0f b6 83 55 02 00 00 a8 08 75 34 45 85 ed
+RIP [<ffffffffa01ba936>] azx_vs_set_state+0x26/0x178 [snd_hda_intel]
+ RSP <ffff880264271e48>
+CR2: 0000000000000170
+
+--- [3]
+
+(gdb) list *(azx_vs_set_state+0x26)
+0x2936 is in azx_vs_set_state (sound/pci/hda/hda_intel.c:2505).
+2500	
+2501	static void azx_vs_set_state(struct pci_dev *pci,
+2502				   enum vga_switcheroo_state state)
+2503	{
+2504		struct snd_card *card = pci_get_drvdata(pci);
+2505		struct azx *chip = card->private_data;
+2506		bool disabled;
+2507	
+2508		if (chip->init_failed)
+2509			return;
+-- 
+Daniel J Blueman
