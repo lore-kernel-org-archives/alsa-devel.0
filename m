@@ -1,28 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
- pinctrl when registering a DAI
-Date: Tue, 25 Sep 2012 14:24:23 +0300
-Message-ID: <50619467.3040203@ti.com>
-References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
- <20120921111352.GA21524@opensource.wolfsonmicro.com>
- <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
- <20120922152840.GM4495@opensource.wolfsonmicro.com>
- <505E80AD.9050000@wwwdotorg.org>
- <CACRpkdbewb0SVYJoT9O4PAajFWny+YOcmf2CLUKL1NzxGWoa5A@mail.gmail.com>
- <20120924101757.GC21375@opensource.wolfsonmicro.com>
- <CACRpkdZKL62n02maO7CJ4Q1mNFW+=nTFOF1CWcs3b1Od3mGBbg@mail.gmail.com>
- <20120925111146.GC4428@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 06/10] ALSA: Add firmware caching to CA0132
+ codec.
+Date: Tue, 25 Sep 2012 12:26:35 +0100
+Message-ID: <20120925112634.GB32685@sirena.org.uk>
+References: <1348198161-9256-1-git-send-email-ian_minett@creativelabs.com>
+ <1348198161-9256-7-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
- [74.125.149.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 67ABD2615FE
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 13:23:18 +0200 (CEST)
-Received: by oagn12 with SMTP id n12so1323627oag.38
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 04:23:16 -0700 (PDT)
-In-Reply-To: <20120925111146.GC4428@opensource.wolfsonmicro.com>
+Content-Disposition: inline
+In-Reply-To: <1348198161-9256-7-git-send-email-ian_minett@creativelabs.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,61 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>
+To: Ian Minett <ian_minett@creativelabs.com>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/25/2012 02:11 PM, Mark Brown wrote:
-> On Mon, Sep 24, 2012 at 04:37:23PM +0200, Linus Walleij wrote:
->> On Mon, Sep 24, 2012 at 12:17 PM, Mark Brown
-> =
+On Thu, Sep 20, 2012 at 08:29:17PM -0700, Ian Minett wrote:
 
->>> Well, the problem here is that people keep wanting to add one shot
->>> pinctrl calls in drivers which clearly suggests that it ought to be
->>> factored out.
-> =
+> +static int request_firmware_cached(const struct firmware **firmware_p,
+> +	const char *name, struct device *device)
+> +{
+> +	if (*firmware_p)
+> +		return 0;  /* already loaded */
+> +	return request_firmware(firmware_p, name, device);
+> +}
 
->> OK so can we find some suitable middle ground here?
-> =
+This looks *awfully* like it should be a part of the generic firmware
+loading infrastructure rather than driver local (the name of the
+function is even likely to collide with something in the core code).
 
->> Something like drivers could add some boolean flag to
->> "opt-in" for the core to handle this or so?
-> =
-
-> Well, I don't know if we need to - it sounds like the platforms that are
-> running around adding these pinctrl calls to all the drivers are doing
-> it wrong and should be fixed.
-
-In the scope of audio...
-I guess it is one thing to use the pinctrl framework to configure the mux f=
-or
-the pins (which was the original idea of the patch). This should be taken c=
-are
-in some centralized place, I agree.
-But the pinctrl could be used to change the mux runtime. For example in OMAP
-for most of the audio related pins we need to select MODE0 mux configuration
-in order to route the signal to the pin. However the same pin can be
-configured to SAFE_MODE which disconnects the pin from outside.
-During audio activity we obviously need to configure these pins to MODE0 but
-when there is not activity we could set them to SAFE_MODE which could result
-some power savings (preventing leakage, etc).
-
-For this to work it would be ideal to use the pm_runtime as a centralized
-place to handle clocks, pinctrl, etc...
-But again, what to do with the cases when this is not needed (the pinctrl p=
-art
-for the devices)?
-
->> After all only some MMC drivers call up to
->> mmc_regulator_set_ocr() to set voltages, it's optional
->> but centralized.
-> =
-
-> This is mostly a historical thing, though - pinctrl is new.
-> =
-
-
-
--- =
-
-P=E9ter
+More generally, why is this driver different to other Linux drivers
+which don't normally cache the firmware?  There's some uses for this
+(see all the hassle with suspend and resume on USB devices...) so it
+seems like it'd be useful to have in the framework, possibly as the
+default behaviour and probably with a mechanism to discard the firmware.
