@@ -1,8 +1,8 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
  pinctrl when registering a DAI
-Date: Tue, 25 Sep 2012 12:22:31 +0100
-Message-ID: <20120925112231.GD4428@opensource.wolfsonmicro.com>
+Date: Tue, 25 Sep 2012 14:24:23 +0300
+Message-ID: <50619467.3040203@ti.com>
 References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
  <20120921111352.GA21524@opensource.wolfsonmicro.com>
  <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
@@ -10,16 +10,19 @@ References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
  <505E80AD.9050000@wwwdotorg.org>
  <CACRpkdbewb0SVYJoT9O4PAajFWny+YOcmf2CLUKL1NzxGWoa5A@mail.gmail.com>
  <20120924101757.GC21375@opensource.wolfsonmicro.com>
- <50607F22.4070903@wwwdotorg.org>
+ <CACRpkdZKL62n02maO7CJ4Q1mNFW+=nTFOF1CWcs3b1Od3mGBbg@mail.gmail.com>
+ <20120925111146.GC4428@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB66E2616BA
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 13:22:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <50607F22.4070903@wwwdotorg.org>
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+ [74.125.149.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67ABD2615FE
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 13:23:18 +0200 (CEST)
+Received: by oagn12 with SMTP id n12so1323627oag.38
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 04:23:16 -0700 (PDT)
+In-Reply-To: <20120925111146.GC4428@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,23 +32,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 24, 2012 at 09:41:22AM -0600, Stephen Warren wrote:
+On 09/25/2012 02:11 PM, Mark Brown wrote:
+> On Mon, Sep 24, 2012 at 04:37:23PM +0200, Linus Walleij wrote:
+>> On Mon, Sep 24, 2012 at 12:17 PM, Mark Brown
+> =
 
-> But I still find it unlikely that this situation will occur; surely
-> there's some specific reason directly related to the device itself, or
-> the protocol it implements, that defines whether it needs dynamic
-> pinctrl, and hence no matter what SoC that device is inserted into, it
-> will either need or not-need dynamic pinctrl. Are there any extant
-> examples to refute this?
+>>> Well, the problem here is that people keep wanting to add one shot
+>>> pinctrl calls in drivers which clearly suggests that it ought to be
+>>> factored out.
+> =
 
-Linus' example of adjusting the pinctrl state to relax power usage is an
-obvious one, and one that should be implementable on almost any system.
-It's really a function of the SoC integration rather than of the device
-itself (the IP isn't accomplishing anything for itself, it's allowing
-the SoC to save some power when it doesn't need to do anything with the
-hardware.  Essentially any IP could implement this, but the gains from
-doing it are likely to vary with SoC.
+>> OK so can we find some suitable middle ground here?
+> =
+
+>> Something like drivers could add some boolean flag to
+>> "opt-in" for the core to handle this or so?
+> =
+
+> Well, I don't know if we need to - it sounds like the platforms that are
+> running around adding these pinctrl calls to all the drivers are doing
+> it wrong and should be fixed.
+
+In the scope of audio...
+I guess it is one thing to use the pinctrl framework to configure the mux f=
+or
+the pins (which was the original idea of the patch). This should be taken c=
+are
+in some centralized place, I agree.
+But the pinctrl could be used to change the mux runtime. For example in OMAP
+for most of the audio related pins we need to select MODE0 mux configuration
+in order to route the signal to the pin. However the same pin can be
+configured to SAFE_MODE which disconnects the pin from outside.
+During audio activity we obviously need to configure these pins to MODE0 but
+when there is not activity we could set them to SAFE_MODE which could result
+some power savings (preventing leakage, etc).
+
+For this to work it would be ideal to use the pm_runtime as a centralized
+place to handle clocks, pinctrl, etc...
+But again, what to do with the cases when this is not needed (the pinctrl p=
+art
+for the devices)?
+
+>> After all only some MMC drivers call up to
+>> mmc_regulator_set_ocr() to set voltages, it's optional
+>> but centralized.
+> =
+
+> This is mostly a historical thing, though - pinctrl is new.
+> =
+
+
+
+-- =
+
+P=E9ter
