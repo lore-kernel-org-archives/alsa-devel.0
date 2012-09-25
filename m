@@ -1,25 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: core: Configure pin muxing via
- pinctrl when registering a DAI
-Date: Tue, 25 Sep 2012 07:11:47 -0400
-Message-ID: <20120925111146.GC4428@opensource.wolfsonmicro.com>
-References: <1348214066-28384-1-git-send-email-peter.ujfalusi@ti.com>
- <20120921111352.GA21524@opensource.wolfsonmicro.com>
- <505C68AA.7080907@ti.com> <505C9496.1050307@wwwdotorg.org>
- <20120922152840.GM4495@opensource.wolfsonmicro.com>
- <505E80AD.9050000@wwwdotorg.org>
- <CACRpkdbewb0SVYJoT9O4PAajFWny+YOcmf2CLUKL1NzxGWoa5A@mail.gmail.com>
- <20120924101757.GC21375@opensource.wolfsonmicro.com>
- <CACRpkdZKL62n02maO7CJ4Q1mNFW+=nTFOF1CWcs3b1Od3mGBbg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] dmaengine: Fix compillation issues in
+ device_prep_dma_cyclic()
+Date: Tue, 25 Sep 2012 12:19:37 +0100
+Message-ID: <20120925111937.GA32685@sirena.org.uk>
+References: <20120924133923.130c4db72aa8105cb5647d7a@canb.auug.org.au>
+ <1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
+ <s5hmx0fomwk.wl%tiwai@suse.de> <s5h8vbz8fa7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C30D260744
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 13:11:48 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB5C0261608
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2012 13:19:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CACRpkdZKL62n02maO7CJ4Q1mNFW+=nTFOF1CWcs3b1Od3mGBbg@mail.gmail.com>
+In-Reply-To: <s5h8vbz8fa7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,28 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-next@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 24, 2012 at 04:37:23PM +0200, Linus Walleij wrote:
-> On Mon, Sep 24, 2012 at 12:17 PM, Mark Brown
+On Mon, Sep 24, 2012 at 08:08:32PM +0200, Takashi Iwai wrote:
+> At Mon, 24 Sep 2012 10:17:15 +0200,
 
-> > Well, the problem here is that people keep wanting to add one shot
-> > pinctrl calls in drivers which clearly suggests that it ought to be
-> > factored out.
+> > Mark, could you tell me when it's ready?  Since I'll be off from
+> > tomorrow, I'd like to resolve sooner.
 
-> OK so can we find some suitable middle ground here?
+> My time is up, so I merged Peter's two patches on the top of for-next
+> branch of sound git tree now.  Mark, please pull them to your tree if
+> needed.
 
-> Something like drivers could add some boolean flag to
-> "opt-in" for the core to handle this or so?
-
-Well, I don't know if we need to - it sounds like the platforms that are
-running around adding these pinctrl calls to all the drivers are doing
-it wrong and should be fixed.
-
-> After all only some MMC drivers call up to
-> mmc_regulator_set_ocr() to set voltages, it's optional
-> but centralized.
-
-This is mostly a historical thing, though - pinctrl is new.
+Oh, well.  I was travelling for the entire time between Peter posting
+the patches and you applying them :/
