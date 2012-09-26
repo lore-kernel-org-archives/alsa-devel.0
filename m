@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC fix for 3.6
-Date: Wed, 26 Sep 2012 12:16:27 +0100
-Message-ID: <20120926111627.GN4428@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: wm0010: Initialise chip state before
+	we register the interrupt
+Date: Wed, 26 Sep 2012 13:54:34 +0100
+Message-ID: <1348664074-26928-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1348664074-26928-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 319F82615F7
- for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2012 13:21:44 +0200 (CEST)
-Content-Disposition: inline
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F2B92625EA
+ for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2012 14:54:37 +0200 (CEST)
+In-Reply-To: <1348664074-26928-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 5698bd757d55b1bb87edd1a9744ab09c142abfc2:
+The interrupt handler uses the chip state.
 
-  Linux 3.6-rc6 (2012-09-16 14:58:51 -0700)
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm0010.c |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.6
-
-for you to fetch changes up to d0e12f3ff3472cbd8f52d3c0e6ee07a841787c40:
-
-  ASoC: wm2000: Correct register size (2012-09-26 12:06:20 +0100)
-
-----------------------------------------------------------------
-ASoC: Updates for 3.6
-
-One small and obvious driver-specific fix.
-
-----------------------------------------------------------------
-Mark Brown (1):
-      ASoC: wm2000: Correct register size
-
- sound/soc/codecs/wm2000.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 780110a..99afc00 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -810,7 +810,6 @@ static int wm0010_probe(struct snd_soc_codec *codec)
+ 
+ static int __devinit wm0010_spi_probe(struct spi_device *spi)
+ {
+-	unsigned long flags;
+ 	unsigned long gpio_flags;
+ 	int ret;
+ 	int trigger;
+@@ -877,6 +876,8 @@ static int __devinit wm0010_spi_probe(struct spi_device *spi)
+ 		return -EINVAL;
+ 	}
+ 
++	wm0010->state = WM0010_POWER_OFF;
++
+ 	irq = spi->irq;
+ 	if (wm0010->pdata.irq_flags)
+ 		trigger = wm0010->pdata.irq_flags;
+@@ -898,10 +899,6 @@ static int __devinit wm0010_spi_probe(struct spi_device *spi)
+ 	else
+ 		wm0010->board_max_spi_speed = 0;
+ 
+-	spin_lock_irqsave(&wm0010->irq_lock, flags);
+-	wm0010->state = WM0010_POWER_OFF;
+-	spin_unlock_irqrestore(&wm0010->irq_lock, flags);
+-
+ 	ret = snd_soc_register_codec(&spi->dev,
+ 				     &soc_codec_dev_wm0010, wm0010_dai,
+ 				     ARRAY_SIZE(wm0010_dai));
+-- 
+1.7.10.4
