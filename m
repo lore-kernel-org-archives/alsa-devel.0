@@ -1,18 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
 Subject: Re: [PATCH] ALSA: hda/realtek - Fix detection of
 	ALC271X codec
-Date: Thu, 27 Sep 2012 15:50:04 +0200
-Message-ID: <5064598C.30303@canonical.com>
+Date: Thu, 27 Sep 2012 11:04:35 -0300
+Message-ID: <20120927140434.GA3211@herton-Z68MA-D2H-B3>
 References: <1348753094-15618-1-git-send-email-herton.krzesinski@canonical.com>
+ <5064598C.30303@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id F3388264EF1
- for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2012 15:49:59 +0200 (CEST)
-In-Reply-To: <1348753094-15618-1-git-send-email-herton.krzesinski@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D55B264F02
+ for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2012 16:04:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <5064598C.30303@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,71 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
+To: David Henningsson <david.henningsson@canonical.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/27/2012 03:38 PM, Herton Ronaldo Krzesinski wrote:
-> In commit af741c1 ("ALSA: hda/realtek - Call alc_auto_parse_customize_define()
-> always after fixup"), alc_auto_parse_customize_define was moved after
-> detection of ALC271X.
->
-> The problem is that detection of ALC271X relies on spec->cdefine.platform_type,
-> and it's set on alc_auto_parse_customize_define.
->
-> Move the alc_auto_parse_customize_define and its required fixup setup
-> before the block doing the ALC271X and other codec setup.
->
-> BugLink: https://bugs.launchpad.net/bugs/1006690
-> Signed-off-by: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
+On Thu, Sep 27, 2012 at 03:50:04PM +0200, David Henningsson wrote:
+> On 09/27/2012 03:38 PM, Herton Ronaldo Krzesinski wrote:
+> >In commit af741c1 ("ALSA: hda/realtek - Call alc_auto_parse_customize_define()
+> >always after fixup"), alc_auto_parse_customize_define was moved after
+> >detection of ALC271X.
+> >
+> >The problem is that detection of ALC271X relies on spec->cdefine.platform_type,
+> >and it's set on alc_auto_parse_customize_define.
+> >
+> >Move the alc_auto_parse_customize_define and its required fixup setup
+> >before the block doing the ALC271X and other codec setup.
+> >
+> >BugLink: https://bugs.launchpad.net/bugs/1006690
+> >Signed-off-by: Herton Ronaldo Krzesinski <herton.krzesinski@canonical.com>
+> 
+> Looks good. I would add a cc to stable though.
+> 
+> Reviewed-by: David Henningsson <david.henningsson@canonical.com>
 
-Looks good. I would add a cc to stable though.
-
-Reviewed-by: David Henningsson <david.henningsson@canonical.com>
-
-> ---
->   sound/pci/hda/patch_realtek.c |   12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
->
-> It looks safe to move the functions before the block
-> "if (codec->vendor_id == 0x10ec0269) {", as nothing on the fixups seems
-> to depend on what's done there. But if wanted we could just move the
-> detection/codec rename of ALC271X below too.
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index c4c4b01..3b187e9 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6273,6 +6273,12 @@ static int patch_alc269(struct hda_codec *codec)
->
->   	spec = codec->spec;
->
-> +	alc_pick_fixup(codec, alc269_fixup_models,
-> +		       alc269_fixup_tbl, alc269_fixups);
-> +	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
-> +
-> +	alc_auto_parse_customize_define(codec);
-> +
->   	if (codec->vendor_id == 0x10ec0269) {
->   		spec->codec_variant = ALC269_TYPE_ALC269VA;
->   		switch (alc_get_coef0(codec) & 0x00f0) {
-> @@ -6300,12 +6306,6 @@ static int patch_alc269(struct hda_codec *codec)
->   		alc269_fill_coef(codec);
->   	}
->
-> -	alc_pick_fixup(codec, alc269_fixup_models,
-> -		       alc269_fixup_tbl, alc269_fixups);
-> -	alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
-> -
-> -	alc_auto_parse_customize_define(codec);
-> -
->   	/* automatic parse from the BIOS config */
->   	err = alc269_parse_auto_config(codec);
->   	if (err < 0)
->
-
-
+Thanks. Indeed, we should add a cc stable to this one (3.4+), forgot
+about it.
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+[]'s
+Herton
