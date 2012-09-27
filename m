@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5110: Adding missing volume update
-	bits.
-Date: Thu, 27 Sep 2012 17:49:52 +0100
-Message-ID: <1348764592-8580-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: dapm: Allow regulators to bypass as well as
+ disable when idle
+Date: Thu, 27 Sep 2012 22:57:58 +0300
+Message-ID: <20120927195758.GA10652@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ACA712602F3
- for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2012 18:56:42 +0200 (CEST)
+Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C71326030B
+ for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2012 21:58:14 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Hi Mark,
 
-The volume update bits were being set on all but one input and one output.
+I had a question about patch c05b84d14b23: "ASoC: dapm: Allow regulators
+to bypass as well as disable when idle" from Sep 7, 2012.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |    4 ++++
- 1 file changed, 4 insertions(+)
+  1022          if (SND_SOC_DAPM_EVENT_ON(event)) {
+  1023                  if (w->invert & SND_SOC_DAPM_REGULATOR_BYPASS) {
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index b99451e..9211e41 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -916,6 +916,8 @@ static unsigned int wm5110_digital_vu[] = {
- 	ARIZONA_ADC_DIGITAL_VOLUME_2R,
- 	ARIZONA_ADC_DIGITAL_VOLUME_3L,
- 	ARIZONA_ADC_DIGITAL_VOLUME_3R,
-+	ARIZONA_ADC_DIGITAL_VOLUME_4L,
-+	ARIZONA_ADC_DIGITAL_VOLUME_4R,
- 
- 	ARIZONA_DAC_DIGITAL_VOLUME_1L,
- 	ARIZONA_DAC_DIGITAL_VOLUME_1R,
-@@ -927,6 +929,8 @@ static unsigned int wm5110_digital_vu[] = {
- 	ARIZONA_DAC_DIGITAL_VOLUME_4R,
- 	ARIZONA_DAC_DIGITAL_VOLUME_5L,
- 	ARIZONA_DAC_DIGITAL_VOLUME_5R,
-+	ARIZONA_DAC_DIGITAL_VOLUME_6L,
-+	ARIZONA_DAC_DIGITAL_VOLUME_6R,
- };
- 
- static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
--- 
-1.7.10.4
+  1024                          ret = regulator_allow_bypass(w->regulator, true);
+  1025                          if (ret != 0)
+  1026                                  dev_warn(w->dapm->dev,
+  1027                                           "Failed to bypass %s: %d\n",
+  1028                                           w->name, ret);
+  1029                  }
+  1030  
+  1031                  return regulator_enable(w->regulator);
+  1032          } else {
+  1033                  if (w->invert & SND_SOC_DAPM_REGULATOR_BYPASS) {
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Right now ->invert is a single bit bitfield.  We mostly test
+"if (w->invert) {...".  Are we planning to add some more bits in there?
+
+  1034                          ret = regulator_allow_bypass(w->regulator, false);
+  1035                          if (ret != 0)
+  1036                                  dev_warn(w->dapm->dev,
+  1037                                           "Failed to unbypass %s: %d\n",
+  1038                                           w->name, ret);
+  1039                  }
+
+regards,
+dan carpenter
