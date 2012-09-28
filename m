@@ -1,14 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/2] ALSA: core: add hooks for audio timestamps
-Date: Fri, 28 Sep 2012 03:15:41 -0500
-Message-ID: <1348820142-15822-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: hda: support for wallclock timestamps
+Date: Fri, 28 Sep 2012 03:15:42 -0500
+Message-ID: <1348820142-15822-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1348820142-15822-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 94FA92615CD
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2012 10:15:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DDBC261618
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2012 10:15:57 +0200 (CEST)
+In-Reply-To: <1348820142-15822-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,201 +24,160 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-ALSA did not provide any direct means to infer the audio time for A/V
-sync and system/audio time correlations (eg. PulseAudio).
-Applications had to track the number of samples read/written and
-add/subtract the number of samples queued in the ring buffer.  This
-accounting led to small errors, typically several samples, due to the
-two-step process.  Computing the audio time in the kernel is more
-direct, as all the information is available in the same routines.
+Reuse code from clocksource to handle wall clock counter.
+Since wrapparound occurs, the audio timestamp is reinitialized
+to zero on a trigger. Synchronized linked devices will
+start counting from same reference to avoid any drift.
 
-Also add new .audio_wallclock routine to enable fine-grain synchronization
-between monotonic system time and audio hardware time.
-Using the wallclock, if supported in hardware, allows for a
-much better sub-microsecond precision and a common drift tracking for
-all devices sharing the same wall clock (master clock).
+Max buffer time is limited to 178 seconds to make sure
+wall clock counter does not overflow
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/asound.h  |    7 +++++--
- include/sound/pcm.h     |    2 ++
- sound/core/pcm_compat.c |   13 +++++++++++--
- sound/core/pcm_lib.c    |   29 +++++++++++++++++++++++++++--
- sound/core/pcm_native.c |    2 ++
- 5 files changed, 47 insertions(+), 6 deletions(-)
+ sound/pci/hda/hda_intel.c |   89 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 0876a1e..2d1ba63 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -152,7 +152,7 @@ struct snd_hwdep_dsp_image {
-  *                                                                           *
-  *****************************************************************************/
- 
--#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 10)
-+#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 11)
- 
- typedef unsigned long snd_pcm_uframes_t;
- typedef signed long snd_pcm_sframes_t;
-@@ -274,6 +274,7 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
- #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
- #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
-+#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
- #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
- 
- typedef int __bitwise snd_pcm_state_t;
-@@ -422,7 +423,8 @@ struct snd_pcm_status {
- 	snd_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
- 	snd_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
- 	snd_pcm_state_t suspended_state; /* suspended stream state */
--	unsigned char reserved[60];	/* must be filled with zero */
-+	struct timespec audio_tstamp;	/* from sample counter or wall clock */
-+	unsigned char reserved[60-sizeof(struct timespec)]; /* must be filled with zero */
- };
- 
- struct snd_pcm_mmap_status {
-@@ -431,6 +433,7 @@ struct snd_pcm_mmap_status {
- 	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
- 	struct timespec tstamp;		/* Timestamp */
- 	snd_pcm_state_t suspended_state; /* RO: suspended stream state */
-+	struct timespec audio_tstamp;	/* from sample counter or wall clock */
- };
- 
- struct snd_pcm_mmap_control {
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index cdca2ab..35c2bbf 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -71,6 +71,8 @@ struct snd_pcm_ops {
- 	int (*prepare)(struct snd_pcm_substream *substream);
- 	int (*trigger)(struct snd_pcm_substream *substream, int cmd);
- 	snd_pcm_uframes_t (*pointer)(struct snd_pcm_substream *substream);
-+	int (*wall_clock)(struct snd_pcm_substream *substream,
-+			  struct timespec *audio_ts);
- 	int (*copy)(struct snd_pcm_substream *substream, int channel,
- 		    snd_pcm_uframes_t pos,
- 		    void __user *buf, snd_pcm_uframes_t count);
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index 91cdf94..ab4c953 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -190,7 +190,8 @@ struct snd_pcm_status32 {
- 	u32 avail_max;
- 	u32 overrange;
- 	s32 suspended_state;
--	unsigned char reserved[60];
-+	struct timespec audio_tstamp;
-+	unsigned char reserved[60-sizeof(struct timespec)];
- } __attribute__((packed));
- 
- 
-@@ -215,7 +216,9 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
- 	    put_user(status.avail, &src->avail) ||
- 	    put_user(status.avail_max, &src->avail_max) ||
- 	    put_user(status.overrange, &src->overrange) ||
--	    put_user(status.suspended_state, &src->suspended_state))
-+	    put_user(status.suspended_state, &src->suspended_state) ||
-+	    put_user(status.audio_tstamp.tv_sec, &src->audio_tstamp.tv_sec) ||
-+	    put_user(status.audio_tstamp.tv_nsec, &src->audio_tstamp.tv_nsec))
- 		return -EFAULT;
- 
- 	return err;
-@@ -364,6 +367,7 @@ struct snd_pcm_mmap_status32 {
- 	u32 hw_ptr;
- 	struct compat_timespec tstamp;
- 	s32 suspended_state;
-+	struct compat_timespec audio_tstamp;
- } __attribute__((packed));
- 
- struct snd_pcm_mmap_control32 {
-@@ -426,12 +430,17 @@ static int snd_pcm_ioctl_sync_ptr_compat(struct snd_pcm_substream *substream,
- 	sstatus.hw_ptr = status->hw_ptr % boundary;
- 	sstatus.tstamp = status->tstamp;
- 	sstatus.suspended_state = status->suspended_state;
-+	sstatus.audio_tstamp = status->audio_tstamp;
- 	snd_pcm_stream_unlock_irq(substream);
- 	if (put_user(sstatus.state, &src->s.status.state) ||
- 	    put_user(sstatus.hw_ptr, &src->s.status.hw_ptr) ||
- 	    put_user(sstatus.tstamp.tv_sec, &src->s.status.tstamp.tv_sec) ||
- 	    put_user(sstatus.tstamp.tv_nsec, &src->s.status.tstamp.tv_nsec) ||
- 	    put_user(sstatus.suspended_state, &src->s.status.suspended_state) ||
-+	    put_user(sstatus.audio_tstamp.tv_sec,
-+		    &src->s.status.audio_tstamp.tv_sec) ||
-+	    put_user(sstatus.audio_tstamp.tv_nsec,
-+		    &src->s.status.audio_tstamp.tv_nsec) ||
- 	    put_user(scontrol.appl_ptr, &src->c.control.appl_ptr) ||
- 	    put_user(scontrol.avail_min, &src->c.control.avail_min))
- 		return -EFAULT;
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 7ae6719..ee0c931 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -315,6 +315,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	unsigned long jdelta;
- 	unsigned long curr_jiffies;
- 	struct timespec curr_tstamp;
-+	struct timespec audio_tstamp;
- 
- 	old_hw_ptr = runtime->status->hw_ptr;
- 
-@@ -326,9 +327,14 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index b682442..208f73d 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -46,6 +46,10 @@
+ #include <linux/mutex.h>
+ #include <linux/reboot.h>
+ #include <linux/io.h>
++
++#include <linux/clocksource.h>
++#include <linux/time.h>
++
+ #ifdef CONFIG_X86
+ /* for snoop control */
+ #include <asm/pgtable.h>
+@@ -406,6 +410,9 @@ struct azx_dev {
  	 */
- 	pos = substream->ops->pointer(substream);
- 	curr_jiffies = jiffies;
--	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
-+	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
- 		snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
- 
-+		if ((runtime->hw.info & SNDRV_PCM_INFO_HAS_WALL_CLOCK) &&
-+			(substream->ops->wall_clock))
-+			substream->ops->wall_clock(substream, &audio_tstamp);
-+	}
+ 	unsigned int insufficient :1;
+ 	unsigned int wc_marked:1;
 +
- 	if (pos == SNDRV_PCM_POS_XRUN) {
- 		xrun(substream);
- 		return -EPIPE;
-@@ -506,8 +512,27 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 	runtime->hw_ptr_base = hw_base;
- 	runtime->status->hw_ptr = new_hw_ptr;
- 	runtime->hw_ptr_jiffies = curr_jiffies;
--	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
-+	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
- 		runtime->status->tstamp = curr_tstamp;
-+		if (!(runtime->hw.info & SNDRV_PCM_INFO_HAS_WALL_CLOCK)) {
-+			/*
-+			 * no wall clock available, provide audio timestamp
-+			 * derived from pointer position+delay
-+			 */
-+			u64 audio_frames, audio_nsecs;
-+
-+			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+				audio_frames = runtime->status->hw_ptr
-+					- runtime->delay;
-+			else
-+				audio_frames = runtime->status->hw_ptr
-+					+ runtime->delay;
-+			audio_nsecs = audio_frames * 1000000000LL /
-+				runtime->rate;
-+			audio_tstamp = ns_to_timespec(audio_nsecs);
-+		}
-+		runtime->status->audio_tstamp = audio_tstamp;
-+	}
++	struct timecounter  azx_tc;
++	struct cyclecounter azx_cc;
+ };
  
- 	return snd_pcm_update_state(substream, runtime);
+ /* CORB/RIRB */
+@@ -1703,6 +1710,64 @@ static inline void azx_release_device(struct azx_dev *azx_dev)
+ 	azx_dev->opened = 0;
  }
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 53b5ada..c5206f4 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -594,6 +594,8 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
- 		snd_pcm_update_hw_ptr(substream);
- 		if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
- 			status->tstamp = runtime->status->tstamp;
-+			status->audio_tstamp =
-+				runtime->status->audio_tstamp;
- 			goto _tstamp_end;
- 		}
- 	}
+ 
++static cycle_t azx_cc_read(const struct cyclecounter *cc)
++{
++	struct azx_dev *azx_dev = container_of(cc, struct azx_dev, azx_cc);
++	struct snd_pcm_substream *substream = azx_dev->substream;
++	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
++	struct azx *chip = apcm->chip;
++
++	return azx_readl(chip, WALLCLK);
++}
++
++static void azx_timecounter_init(struct snd_pcm_substream *substream,
++				bool force, cycle_t last)
++{
++	struct azx_dev *azx_dev = get_azx_dev(substream);
++	struct timecounter *tc = &azx_dev->azx_tc;
++	struct cyclecounter *cc = &azx_dev->azx_cc;
++	u64 nsec;
++
++	cc->read = azx_cc_read;
++	cc->mask = CLOCKSOURCE_MASK(32);
++
++	/*
++	 * Converting from 24 MHz to ns means applying a 125/3 factor.
++	 * To avoid any saturation issues in intermediate operations,
++	 * the 125 factor is applied first. The division is applied
++	 * last after reading the timecounter value.
++	 * Applying the 1/3 factor as part of the multiplication
++	 * requires at least 20 bits for a decent precision, however
++	 * overflows occur after about 4 hours or less, not a option.
++	 */
++
++	cc->mult = 125; /* saturation after 195 years */
++	cc->shift = 0;
++
++	nsec = 0; /* audio time is elapsed time since trigger */
++	timecounter_init(tc, cc, nsec);
++	if (force)
++		/*
++		 * force timecounter to use predefined value,
++		 * used for synchronized starts
++		 */
++		tc->cycle_last = last;
++}
++
++static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
++				struct timespec *ts)
++{
++	struct azx_dev *azx_dev = get_azx_dev(substream);
++	u64 nsec;
++
++	nsec = timecounter_read(&azx_dev->azx_tc);
++	nsec /= 3; /* can be optimized */
++
++	*ts = ns_to_timespec(nsec);
++
++	return 0;
++}
++
+ static struct snd_pcm_hardware azx_pcm_hw = {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_INTERLEAVED |
+@@ -1712,6 +1777,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 				 /* SNDRV_PCM_INFO_RESUME |*/
+ 				 SNDRV_PCM_INFO_PAUSE |
+ 				 SNDRV_PCM_INFO_SYNC_START |
++				 SNDRV_PCM_INFO_HAS_WALL_CLOCK |
+ 				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
+ 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates =		SNDRV_PCM_RATE_48000,
+@@ -1751,6 +1817,12 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 	runtime->hw.rates = hinfo->rates;
+ 	snd_pcm_limit_hw_rates(runtime);
+ 	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++
++	/* avoid wrap-around with wall-clock */
++	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME,
++				20,
++				178000000);
++
+ 	if (chip->align_buffer_size)
+ 		/* constrain buffer sizes to be multiple of 128
+ 		   bytes. This is more efficient in terms of memory
+@@ -2024,6 +2096,22 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 			azx_readl(chip, OLD_SSYNC) & ~sbits);
+ 	else
+ 		azx_writel(chip, SSYNC, azx_readl(chip, SSYNC) & ~sbits);
++	if (start) {
++		azx_timecounter_init(substream, 0, 0);
++		if (nsync > 1) {
++			cycle_t cycle_last;
++
++			/* same start cycle for master and group */
++			azx_dev = get_azx_dev(substream);
++			cycle_last = azx_dev->azx_tc.cycle_last;
++
++			snd_pcm_group_for_each_entry(s, substream) {
++				if (s->pcm->card != substream->pcm->card)
++					continue;
++				azx_timecounter_init(s, 1, cycle_last);
++			}
++		}
++	}
+ 	spin_unlock(&chip->reg_lock);
+ 	return 0;
+ }
+@@ -2260,6 +2348,7 @@ static struct snd_pcm_ops azx_pcm_ops = {
+ 	.prepare = azx_pcm_prepare,
+ 	.trigger = azx_pcm_trigger,
+ 	.pointer = azx_pcm_pointer,
++	.wall_clock =  azx_get_wallclock_tstamp,
+ 	.mmap = azx_pcm_mmap,
+ 	.page = snd_pcm_sgbuf_ops_page,
+ };
 -- 
 1.7.9.5
