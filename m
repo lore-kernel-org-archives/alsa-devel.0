@@ -1,21 +1,18 @@
-From: Gabriel Beddingfield <gabrbedd@gmail.com>
-Subject: Re: Delay calculations for USB audio?
-Date: Fri, 28 Sep 2012 13:01:44 -0500
-Message-ID: <CAPbw_hz3O2hWHn9EZArcmRYTidGxVTTnNaXGw4p0GGz1OgNebQ@mail.gmail.com>
-References: <5065834E.4010707@canonical.com> <506588A2.4070602@gmail.com>
- <5065907C.8030904@canonical.com> <5065987A.1080703@ladisch.de>
- <5065DE65.5090004@canonical.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH] ALSA: hda - Fix hang caused by race during
+	suspend.
+Date: Fri, 28 Sep 2012 15:57:01 -0700
+Message-ID: <1348873021-28522-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 53C30264FF0
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2012 20:01:45 +0200 (CEST)
-Received: by obblz20 with SMTP id lz20so3160999obb.38
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2012 11:01:44 -0700 (PDT)
-In-Reply-To: <5065DE65.5090004@canonical.com>
+Received: from mail-lb0-f201.google.com (mail-lb0-f201.google.com
+ [209.85.217.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78FC5265005
+ for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2012 00:57:17 +0200 (CEST)
+Received: by lbjn8 with SMTP id n8so114396lbj.2
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2012 15:57:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,18 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 28, 2012 at 12:29 PM, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> Okay, so if I get some time to dig deeper into this, where should I start
-> looking? Maybe in the bluetooth controller driver, if that's what's
-> interfering?
+There was a race condition when the system suspends while hda_power_work
+is running in the work queue.  If system suspend (snd_hda_suspend)
+happens after the work queue releases power_lock but before it calls
+hda_call_codec_suspend,  codec_suspend runs with power_on=0, causing the
+codec to power up for register reads, and hanging when it calls
+cancel_delayed_work_sync from the running work queue.
 
-My guess is that either the bluetooth driver is reserving bandwidth
-(and didn't before), or the USB host controller is /enforcing/ the
-bandwidth (and didn't before).
+The call chain from the work queue will look like this:
+hda_power_work <<- power_on = 1, unlock, then power_on cleard by suspend
+  hda_call_codec_suspend
+    hda_set_power_state
+      snd_hda_codec_read
+        codec_exec_verb
+          snd_hda_power_up
+	    snd_hda_power_save
+	      __snd_hda_power_up
+	        cancel_delayed_work_sync <<-- cancelling executing wq
 
--gabriel
+Fix this by waiting for the work queue to finish before starting suspend
+if suspend is not happening on the work queue.
+
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/pci/hda/hda_codec.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 960800b..c0ab72c 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3612,7 +3612,7 @@ static inline void hda_exec_init_verbs(struct hda_codec *codec) {}
+  * call suspend and power-down; used both from PM and power-save
+  * this function returns the power state in the end
+  */
+-static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
++static unsigned int hda_call_codec_suspend(struct hda_codec *codec, bool in_wq)
+ {
+ 	unsigned int state;
+ 
+@@ -3620,7 +3620,9 @@ static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
+ 		codec->patch_ops.suspend(codec);
+ 	hda_cleanup_all_streams(codec);
+ 	state = hda_set_power_state(codec, AC_PWRST_D3);
+-	cancel_delayed_work(&codec->power_work);
++	/* Cancel delayed work if we aren't currently running from it. */
++	if (!in_wq)
++		cancel_delayed_work_sync(&codec->power_work);
+ 	spin_lock(&codec->power_lock);
+ 	snd_hda_update_power_acct(codec);
+ 	trace_hda_power_down(codec);
+@@ -4478,7 +4480,7 @@ static void hda_power_work(struct work_struct *work)
+ 	}
+ 	spin_unlock(&codec->power_lock);
+ 
+-	state = hda_call_codec_suspend(codec);
++	state = hda_call_codec_suspend(codec, true);
+ 	codec->pm_down_notified = 0;
+ 	if (!bus->power_keep_link_on && (state & AC_PWRST_CLK_STOP_OK)) {
+ 		codec->pm_down_notified = 1;
+@@ -5127,7 +5129,7 @@ int snd_hda_suspend(struct hda_bus *bus)
+ 
+ 	list_for_each_entry(codec, &bus->codec_list, list) {
+ 		if (hda_codec_is_power_on(codec))
+-			hda_call_codec_suspend(codec);
++			hda_call_codec_suspend(codec, false);
+ 	}
+ 	return 0;
+ }
+-- 
+1.7.12.146.g16d26b1
