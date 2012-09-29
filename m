@@ -1,17 +1,17 @@
-From: George Stefan <stefan.george87@gmail.com>
-Subject: imx28 pcm issue
-Date: Sat, 29 Sep 2012 16:16:23 +0300
-Message-ID: <CAACwST+gFQ-whaRThF0U=aHcw1Q6E0zzj5QNOCAE=6_MMZEaWA@mail.gmail.com>
+From: Andrey Gusakov <dron0gus@gmail.com>
+Subject: Problem with AC97 and WM9714 on S3C6410
+Date: Sat, 29 Sep 2012 21:19:15 +0400
+Message-ID: <CAA11ShCy9SWmcyrOJB1ZD0_JpcK1XBggOWAuBdtxX-a7-3TOrA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 82F102615A1
- for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2012 15:16:23 +0200 (CEST)
-Received: by eaaf14 with SMTP id f14so1137480eaa.38
- for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2012 06:16:23 -0700 (PDT)
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id CAB4C2615ED
+ for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2012 19:19:16 +0200 (CEST)
+Received: by pbbrp16 with SMTP id rp16so6377918pbb.38
+ for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2012 10:19:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +24,64 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-I have an issues with a modem connected to the SAIF port of an imx28.
-I have the following configuration running on the modem:
-  -modem is slave(but still have to fix the clock at 256 khz)
-  -"short frame" sync.
-PCM data is always formatted as 16-bit uncompressed two=92s complement. Als=
-o,
-all PCM data and frame synchronization signals are written to the PCM bus
-on the rising
-clock edge and read on the falling edge.
- - 16 bits liniar sample, MSB first.
+Hi.
 
-On the imx side i have the following configuration
+I'm working with mini6410 devkit/demoboard.
+Itry to move forward from old kernel to last samsung kernel from git.
+I run into interesting problem with ALSA and WM9714 codec.
+On kernel boot I see some activity on AC97 bus, but then BCLK and SYNC stops.
+As i figure out clock stops after write to WM9714 register 0x00. As I
+understand it's a reset comand. But it brokes all communication. No
+blayback or control regiter read/write posible after. And there is no
+reset or warm_reset commands after it.
+If i filter out all writes to register 0x00 in samsung AC97 driver,
+everything seems to work corect. But it's a dirty fix.
+I use dump_stack() to collect some aditional info. That what i got:
+Try to reset codec! (write at 0x00)
+[<c0014978>] (unwind_backtrace+0x0/0xf4) from [<c035caf0>]
+(ac97_write+0x4c/0x64)
+[<c035caf0>] (ac97_write+0x4c/0x64) from [<c034d00c>] (snd_soc_write+0xc/0x10)
+[<c034d00c>] (snd_soc_write+0xc/0x10) from [<c035355c>]
+(soc_widget_update_bits_locked+0x114/0x190)
+[<c035355c>] (soc_widget_update_bits_locked+0x114/0x190) from
+[<c0353830>] (dapm_seq_run_coalesced+0x114/0x16c)
+[<c0353830>] (dapm_seq_run_coalesced+0x114/0x16c) from [<c0353b88>]
+(dapm_seq_run+0x300/0x4a0)
+[<c0353b88>] (dapm_seq_run+0x300/0x4a0) from [<c0354be0>]
+(dapm_power_widgets+0x404/0x600)
+[<c0354be0>] (dapm_power_widgets+0x404/0x600) from [<c03577ec>]
+(snd_soc_dapm_new_widgets+0x2ac/0x6ac)
+[<c03577ec>] (snd_soc_dapm_new_widgets+0x2ac/0x6ac) from [<c034f940>]
+(soc_post_component_init+0x44/0x27c)
+[<c034f940>] (soc_post_component_init+0x44/0x27c) from [<c03513f4>]
+(snd_soc_register_card+0xc44/0x1a00)
+[<c03513f4>] (snd_soc_register_card+0xc44/0x1a00) from [<c03521e8>]
+(soc_probe+0x38/0x64)
+[<c03521e8>] (soc_probe+0x38/0x64) from [<c025f9d8>]
+(platform_drv_probe+0x18/0x1c)
+[<c025f9d8>] (platform_drv_probe+0x18/0x1c) from [<c025e518>]
+(driver_probe_device+0x78/0x1fc)
+[<c025e518>] (driver_probe_device+0x78/0x1fc) from [<c025cd9c>]
+(bus_for_each_drv+0x60/0x8c)
+[<c025cd9c>] (bus_for_each_drv+0x60/0x8c) from [<c025e810>]
+(device_attach+0x80/0x98)
+[<c025e810>] (device_attach+0x80/0x98) from [<c025d8bc>]
+(bus_probe_device+0x84/0xac)
+[<c025d8bc>] (bus_probe_device+0x84/0xac) from [<c025c6ec>]
+(device_add+0x5b0/0x67c)
+[<c025c6ec>] (device_add+0x5b0/0x67c) from [<c025ffa8>]
+(platform_device_add+0xf4/0x20c)
+[<c025ffa8>] (platform_device_add+0xf4/0x20c) from [<c060b3a4>]
+(mini6410_init+0x60/0xa0)
+[<c060b3a4>] (mini6410_init+0x60/0xa0) from [<c00085d0>]
+(do_one_initcall+0x34/0x178)
+[<c00085d0>] (do_one_initcall+0x34/0x178) from [<c05f3310>]
+(kernel_init+0xe0/0x1ac)
+[<c05f3310>] (kernel_init+0xe0/0x1ac) from [<c000f848>]
+(kernel_thread_exit+0x0/0x8)
 
-priv->sysclk =3D 512 * rate;
-snd_soc_dai_set_clkdiv(cpu_dai, IMX_SSP_SYS_MCLK, 32);
-dai_format =3D SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF |
-             SND_SOC_DAIFMT_CBM_CFM;
+I'm begginer in kernel programing and have no enouth experience to
+figure what's happening.
+Can any one help with this problem?
 
-snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, priv->sysclk,
-SND_SOC_CLOCK_OUT);
-
-The modem has the 2 options for testing, either outputing a tone or an
-audio loop.
-My problem is that i cannot receive anything else but noise.
-
-arecord -f S16_LE -c2 -r8000 test.wav
-hexdump -C test.wav
-
-00000000  52 49 46 46 24 c4 09 00  57 41 56 45 66 6d 74 20
- |RIFF$...WAVEfmt |
-00000010  10 00 00 00 01 00 02 00  40 1f 00 00 00 7d 00 00
- |........@....}..|
-00000020  04 00 10 00 64 61 74 61  00 c4 09 00 00 00 00 00
- |....data........|
-00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
- |................|
-*
-00040f10  00 00 00 00 f0 03 00 00  00 00 00 00 00 00 00 00
- |................|
-00040f20  00 00 0f 00 ff ff ff ff  ff ff f0 ff fc 00 00 00
- |................|
-00040f30  00 00 00 00 00 00 00 00  00 00 ff 01 ff ff ff ff
- |................|
-00040f40  00 fc 03 00 00 e0 00 00  00 00 00 00 00 00 00 00
- |................|
-00040f50  00 00 ff 1f ff ff ff ff  00 ff ff 1f 00 f8 00 00
- |................|
-00040f60  00 00 00 00 00 00 00 00  03 00 ff ff ff ff ff ff
- |................|
-00040f70  81 ff ff ff 00 00 00 00  00 00 00 00 00 00 00 00
- |................|
-00040f80  3f 00 ff ff ff ff 80 ff  00 00 00 00 00 00 00 00
- |?...............|
-
-When i select the audio loop mode, play a wav sample, and record it at the
-same time, i hear noise
-every time i play that wav and silence between them(so something is moving
-out there)
-
-Do you have any suggestions on why this is happening?
-Regards.
+Thank you.
