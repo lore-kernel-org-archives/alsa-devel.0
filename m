@@ -1,25 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 2/2] ALSA: hda: support for wallclock
-	timestamps
-Date: Sun, 30 Sep 2012 12:12:09 +0200
-Message-ID: <50681AF9.8000004@ladisch.de>
-References: <1348820142-15822-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1348820142-15822-2-git-send-email-pierre-louis.bossart@linux.intel.com>
- <50656F02.5030005@ladisch.de> <5067562D.50704@linux.intel.com>
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: 0.2ms latency
+Date: Sun, 30 Sep 2012 16:14:13 -0400
+Message-ID: <20120930161413.urutablgsgccswkc-cebfxv@webmail.spamcop.net>
+References: <op.wlgpa3ob6426ze@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 3BE0F2616A4
- for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2012 12:13:18 +0200 (CEST)
-Received: from compute2.internal (compute2.nyi.mail.srv.osa [10.202.2.42])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id BB2D720645
- for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2012 06:13:17 -0400 (EDT)
-Received: from [192.168.42.248] (unknown [176.1.55.215])
- by mail.messagingengine.com (Postfix) with ESMTPA id 11AC94827AB
- for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2012 06:13:16 -0400 (EDT)
-In-Reply-To: <5067562D.50704@linux.intel.com>
+In-Reply-To: <op.wlgpa3ob6426ze@localhost.localdomain>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,29 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Louis Bossart wrote:
-> On 09/28/2012 04:33 AM, Clemens Ladisch wrote:
->> Pierre-Louis Bossart wrote:
->>> @@ -1712,6 +1777,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
->>>                    /* SNDRV_PCM_INFO_RESUME |*/
->>>                    SNDRV_PCM_INFO_PAUSE |
->>>                    SNDRV_PCM_INFO_SYNC_START |
->>> +                 SNDRV_PCM_INFO_HAS_WALL_CLOCK |
->>
->> ... but not if this device is connected to an S/PDIF input.
+Quoting Uwaysi Bin Kareem <uwaysi.bin.kareem@paradoxuncreated.com>:
+
+> Hi. I am aiming for 0.2ms latency with a HDA onboard soundcard.
 >
-> Yeah, but I can't figure out what happens here. HDAudio is the clock
-> master in all cases
+> I recently did 0.3ms on a firewire card, with realtime streams. (which
+> is the lowest possible for firewire protocol.)
+> This does not work with the alsa HDA device. (some clicking)
+> Is this a weakness software-wise, that can be improved?
+> I also do notice that the driver (probably) seems to allow lower
+> latencies at 96k.
 
-Except for those cases described in section 5.4.3 of the HDA spec.
+Hello!
 
-Finding out whether a device is connected to an S/PDIF input is not easy
-and might change dynamically.
+This is the first time I got a message from this list.  I subscribed  
+to it about a month ago to report a kernel bug.  I guess this mailing  
+list is defunct and the discussion is happening elsewhere.
 
-It might be easiest to omit HAS_WALL_CLOCK for inputs ...
-
-
+-- 
 Regards,
-Clemens
+Pavel Roskin
