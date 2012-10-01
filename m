@@ -1,44 +1,126 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 2/3] ASoC: Davinci: pcm: add support for
-	sram-support-less platforms
-Date: Mon, 1 Oct 2012 16:54:11 +0100
-Message-ID: <20121001155410.GR4360@opensource.wolfsonmicro.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
-	<1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
-	<20120922153313.GN4495@opensource.wolfsonmicro.com>
-	<1BAFE6F6C881BF42822005164F1491C33EA92A1D@DBDE01.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm2200: Convert to devm APIs
+Date: Mon,  1 Oct 2012 20:01:05 +0100
+Message-ID: <1349118065-10614-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EA92A1D-Er742YJ7I/eIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org" <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "Girdwood,  Liam" <lrg-l0cyMroinI0@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6B3F260315
+ for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2012 21:01:08 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 27, 2012 at 06:57:49AM +0000, Hebbar, Gururaja wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm2200.c |   39 ++++++++++++++-------------------------
+ 1 file changed, 14 insertions(+), 25 deletions(-)
 
-> I have no knowledge about multi-platform builds yet.
-
-> Currently this driver is shared between OMAP & DaVinci and both of them 
-> doesn't exist in single image build.
-
-...due to issues like having compile time things selecting between the
-platforms.  In other words what these ifdefs would do is move us further
-away from that goal rather than towards it as we should be doing.
-
-> There was a effort done for this SRAM Consolidation [1] but it didn't progress.
-> Hence I took this approach as a time-being/workaround. This was we can get 
-> affected platforms (like AM335x) get going/working.
-
-Looks like it just needs more people pushing it...
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index efa93dbb..02ea49e 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -2011,7 +2011,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	wm2200->dev = &i2c->dev;
+ 	init_completion(&wm2200->fll_lock);
+ 
+-	wm2200->regmap = regmap_init_i2c(i2c, &wm2200_regmap);
++	wm2200->regmap = devm_regmap_init_i2c(i2c, &wm2200_regmap);
+ 	if (IS_ERR(wm2200->regmap)) {
+ 		ret = PTR_ERR(wm2200->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+@@ -2027,8 +2027,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	for (i = 0; i < ARRAY_SIZE(wm2200->core_supplies); i++)
+ 		wm2200->core_supplies[i].supply = wm2200_core_supply_names[i];
+ 
+-	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm2200->core_supplies),
+-				 wm2200->core_supplies);
++	ret = devm_regulator_bulk_get(&i2c->dev,
++				      ARRAY_SIZE(wm2200->core_supplies),
++				      wm2200->core_supplies);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to request core supplies: %d\n",
+ 			ret);
+@@ -2044,8 +2045,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	if (wm2200->pdata.ldo_ena) {
+-		ret = gpio_request_one(wm2200->pdata.ldo_ena,
+-				       GPIOF_OUT_INIT_HIGH, "WM2200 LDOENA");
++		ret = devm_gpio_request_one(&i2c->dev, wm2200->pdata.ldo_ena,
++					    GPIOF_OUT_INIT_HIGH,
++					    "WM2200 LDOENA");
+ 		if (ret < 0) {
+ 			dev_err(&i2c->dev, "Failed to request LDOENA %d: %d\n",
+ 				wm2200->pdata.ldo_ena, ret);
+@@ -2055,8 +2057,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	if (wm2200->pdata.reset) {
+-		ret = gpio_request_one(wm2200->pdata.reset,
+-				       GPIOF_OUT_INIT_HIGH, "WM2200 /RESET");
++		ret = devm_gpio_request_one(&i2c->dev, wm2200->pdata.reset,
++					    GPIOF_OUT_INIT_HIGH,
++					    "WM2200 /RESET");
+ 		if (ret < 0) {
+ 			dev_err(&i2c->dev, "Failed to request /RESET %d: %d\n",
+ 				wm2200->pdata.reset, ret);
+@@ -2165,23 +2168,16 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ err_pm_runtime:
+ 	pm_runtime_disable(&i2c->dev);
+ err_reset:
+-	if (wm2200->pdata.reset) {
++	if (wm2200->pdata.reset)
+ 		gpio_set_value_cansleep(wm2200->pdata.reset, 0);
+-		gpio_free(wm2200->pdata.reset);
+-	}
+ err_ldo:
+-	if (wm2200->pdata.ldo_ena) {
++	if (wm2200->pdata.ldo_ena)
+ 		gpio_set_value_cansleep(wm2200->pdata.ldo_ena, 0);
+-		gpio_free(wm2200->pdata.ldo_ena);
+-	}
+ err_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm2200->core_supplies),
+ 			       wm2200->core_supplies);
+ err_core:
+-	regulator_bulk_free(ARRAY_SIZE(wm2200->core_supplies),
+-			    wm2200->core_supplies);
+ err_regmap:
+-	regmap_exit(wm2200->regmap);
+ err:
+ 	return ret;
+ }
+@@ -2193,17 +2189,10 @@ static __devexit int wm2200_i2c_remove(struct i2c_client *i2c)
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, wm2200);
+-	if (wm2200->pdata.reset) {
++	if (wm2200->pdata.reset)
+ 		gpio_set_value_cansleep(wm2200->pdata.reset, 0);
+-		gpio_free(wm2200->pdata.reset);
+-	}
+-	if (wm2200->pdata.ldo_ena) {
++	if (wm2200->pdata.ldo_ena)
+ 		gpio_set_value_cansleep(wm2200->pdata.ldo_ena, 0);
+-		gpio_free(wm2200->pdata.ldo_ena);
+-	}
+-	regulator_bulk_free(ARRAY_SIZE(wm2200->core_supplies),
+-			    wm2200->core_supplies);
+-	regmap_exit(wm2200->regmap);
+ 
+ 	return 0;
+ }
+-- 
+1.7.10.4
