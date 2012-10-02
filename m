@@ -1,60 +1,62 @@
-From: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: Davinci: pcm: add support for
- sram-support-less platforms
-Date: Tue, 2 Oct 2012 16:36:54 +0530
-Message-ID: <506ACACE.4030308@ti.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
- <1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
- <20120922153313.GN4495@opensource.wolfsonmicro.com> <506A9C65.5040309@ti.com>
- <20121002093753.GU4360@opensource.wolfsonmicro.com>
- <506AC303.9080906@gmail.com>
+From: Peter Meerwald <pmeerw@pmeerw.net>
+Subject: [PATCH] ASoC: fix documentation in soc-jack
+Date: Tue,  2 Oct 2012 14:08:19 +0200
+Message-ID: <1349179699-8737-1-git-send-email-pmeerw@pmeerw.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <506AC303.9080906@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "Porter, Matt" <mporter@ti.com>, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, davinci-linux-open-source@linux.davincidsp.com, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pmeerw.net (ns.pmeerw.net [87.118.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03F60261600
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 14:09:07 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Peter Meerwald <pmeerw@pmeerw.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/2/2012 4:03 PM, Daniel Mack wrote:
-> On 02.10.2012 11:37, Mark Brown wrote:
->> On Tue, Oct 02, 2012 at 10:48:53AM +0300, Peter Ujfalusi wrote:
->>
->>> I also agree that ifdef is not a good solution.
->>> It is better to have this information passed as device_data and via DT it can
->>> be decided based on the compatible property for the device.
->>
->> That's not really the problem here - the problem is that the APIs used
->> to get the SRAM are DaVinci only so it's not possible to build on OMAP
->> or other platforms.  The SRAM code needs to move to a standard API.
-> 
-> What about following Matt Porter's idea and ignore the SRAM code
-> entirely and port the entire PCM code to generic dmaengine code first?
-> The EDMA driver needs to learn support for cyclic DMA for that, and I
-> might give that a try in near future.
-> 
-> Later on, the SRAM ping-pong code can get added back using genalloc
-> functions, as Sekhar proposed. That needs to be done by someone who has
-> access to a Davinci board though, I only have a AM33xx/OMAP here.
+From: Peter Meerwald <p.meerwald@bct-electronic.com>
 
-We cannot "get rid" of SRAM code and add it back "later". It is required
-for most DaVinci parts. The SRAM code can be converted to use genalloc
-(conversion should be straightforward and I can help test it) and the
-code that uses SRAM can probably keep using the private EDMA API till
-the dmaengine EDMA driver has cyclic DMA support. Matt has already
-posted patches to move private EDMA APIs to a common location. That
-should keep AM335x build from breaking. Is this something that is feasible?
+Signed-off-by: Peter Meerwald <pmeerw@pmeerw.net>
+---
+ sound/soc/soc-jack.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Thanks,
-Sekhar
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 0c17293..b24cd53 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -22,7 +22,7 @@
+ 
+ /**
+  * snd_soc_jack_new - Create a new jack
+- * @card:  ASoC card
++ * @codec: ASoC codec
+  * @id:    an identifying string for this jack
+  * @type:  a bitmask of enum snd_jack_type values that can be detected by
+  *         this jack
+@@ -139,12 +139,13 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_add_zones);
+ 
+ /**
+  * snd_soc_jack_get_type - Based on the mic bias value, this function returns
+- * the type of jack from the zones delcared in the jack type
++ * the type of jack from the zones declared in the jack type
+  *
++ * @jack:  ASoC jack
+  * @micbias_voltage:  mic bias voltage at adc channel when jack is plugged in
+  *
+  * Based on the mic bias value passed, this function helps identify
+- * the type of jack from the already delcared jack zones
++ * the type of jack from the already declared jack zones
+  */
+ int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage)
+ {
+-- 
+1.7.9.5
