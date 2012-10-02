@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-emu: Improve directory/path handling for
-	testsuite
-Date: Tue,  2 Oct 2012 17:41:27 +0200
-Message-ID: <1349192487-7969-1-git-send-email-david.henningsson@canonical.com>
+From: Sander Jansen <s.jansen@gmail.com>
+Subject: hdmi output (switching sample format/rates)
+Date: Tue, 2 Oct 2012 11:25:12 -0500
+Message-ID: <CACj81kGTmA7HT7OHX8eP8F3DP+-quDwfkgy_wSKzrbzjXiD9Fw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E1A57261627
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 17:41:28 +0200 (CEST)
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 429B2261627
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 18:25:18 +0200 (CEST)
+Received: by iebc10 with SMTP id c10so14139636ieb.38
+ for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2012 09:25:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,120 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There were some shortcomings when running the test scripts from
-a random directory. Also added functionality to test an entire
-directory tree at the same time.
----
- tester/runner.py  |    9 ++++++++-
- tester/summary.py |   28 ++++++++++++++++++++++++----
- 2 files changed, 32 insertions(+), 5 deletions(-)
+In my audio application when I sometimes  need to switch to a
+different sample format and/or rate, I usually leave the audio device
+open and merely reconfigure the device to the new parameters. This
+works with all the regular pcm devices, but it fails when I use the
+"hdmi" device. It seemed to just silently fail and no audio output is
+heard. As far as I know, no error condition is triggered (but I'll
+admit, my knowledge of the alsa api is rather limited).
 
-With this improvement we can run it over the entire alsa-info database.
-The initial result is 619 of 5911 (10%) failing, mostly due to invalid verbs sent
-(no input/output-amp, invalid amp index, setting *_EN without caps, etc).
+My question, Is this a bug or is it supposed to work this way and if
+so are there ways to detect whether a devices needs to be reopened or
+not.
 
-diff --git a/tester/runner.py b/tester/runner.py
-index b585ad3..30118ce 100644
---- a/tester/runner.py
-+++ b/tester/runner.py
-@@ -44,10 +44,13 @@ class ControlInfo():
- class HdaEmuRunner():
- 
-     def __init__(self):
--        self.child_args = "../hda-emu -M -F"
-+        import os.path
-+        hda_emu_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"../hda-emu")
-+        self.child_args = '"' + hda_emu_path + '" -M -F'
-         self.alsa_info = "/proc/asound/card0/codec#0"
-         self.errors = 0
-         self.warnings = 0
-+        self.fatals = 0
-         self.print_errors = False
-         self.comm_log_enabled = False
-         self.last_command = None
-@@ -81,6 +84,8 @@ class HdaEmuRunner():
-             self.warnings += 1
-         else:
-             self.errors += 1
-+            if severity == "Fatal":
-+                self.fatals += 1
-         if self.print_errors:
-             if not self.last_command_printed:
-                 if self.last_command:
-@@ -89,6 +94,8 @@ class HdaEmuRunner():
-                     print "Encountered during initial parsing:"
-                 self.last_command_printed = True
-             print "  ", message
-+        if self.fatals > 0:
-+            raise Exception(message)
- 
-     def check_stdout(self):
-         s = os.read(self.child.stdout.fileno(), 65536)
-diff --git a/tester/summary.py b/tester/summary.py
-index 6e94c9b..0f9fbf3 100755
---- a/tester/summary.py
-+++ b/tester/summary.py
-@@ -18,6 +18,11 @@
- #    You should have received a copy of the GNU General Public License along 
- #    with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
-+def defaultpath(s):
-+    import os.path
-+    q = os.path.dirname(os.path.realpath(__file__))
-+    return os.path.join(q, s)
-+
- def main():
-     import os
-     import os.path
-@@ -26,18 +31,28 @@ def main():
-     import argparse
-     parser = argparse.ArgumentParser(description='Hda-emu automated test wrapper.')
-     parser.add_argument('--verbose', '-v', action='count')
-+    parser.add_argument('--directory', '-d', action='store', default=defaultpath("../codecs/canonical/"))
-+    parser.add_argument('--recursive', '-r', action="store_true", default=False)
-+
-     parser_dict = parser.parse_args()
-     verbose = parser_dict.verbose
-+    directory = parser_dict.directory
- 
--    os.chdir(os.path.dirname(os.path.realpath(__file__)))
--    directory = "../codecs/canonical/"
--    files = os.listdir(directory)
-+    if parser_dict.recursive:
-+        files = [os.path.join(root, filename) for root, _, filenames in os.walk(directory) for filename in filenames]
-+    else:
-+        files = os.listdir(directory)
-+    files.sort()
- 
-     successes = 0
-     fails = 0
-     warnings = 0
-     errors = 0
-+    index = 0
-     for f in files:
-+        index += 1
-+        if verbose > 2:
-+            print '[{0}/{1}]: Testing {2}'.format(index, len(files), f)
-         try:
-             r = runner.HdaEmuRunner()
-             r.set_alsa_info_file(os.path.join(directory, f))
-@@ -51,7 +66,12 @@ def main():
-                     print '{0} errors, {1} warnings. ({2})'.format(r.errors, r.warnings, f)
-             else:
-                 successes += 1
--        except:
-+        except KeyboardInterrupt:
-+            import sys
-+            sys.exit(1)
-+        except Exception as e:
-+            if verbose > 0:
-+                print 'Fatal error for {0}: {1}'.format(f, e)
-             errors += 1
-             fails += 1
- 
--- 
-1.7.9.5
+Thanks,
+
+Sander
