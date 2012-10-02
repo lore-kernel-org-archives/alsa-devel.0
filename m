@@ -1,55 +1,101 @@
-From: Matt Porter <mporter@ti.com>
+From: Matt Porter <mporter-l0cyMroinI0@public.gmane.org>
 Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: Davinci: pcm: add support for
- sram-support-less platforms
-Date: Tue, 2 Oct 2012 12:30:00 -0400
-Message-ID: <20121002163000.GS5641@beef>
+	sram-support-less platforms
+Date: Tue, 2 Oct 2012 12:41:16 -0400
+Message-ID: <20121002164116.GT5641@beef>
 References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
- <1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
- <20120922153313.GN4495@opensource.wolfsonmicro.com>
- <506A9C65.5040309@ti.com>
- <20121002093753.GU4360@opensource.wolfsonmicro.com>
- <506AC303.9080906@gmail.com>
+	<1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
+	<20120922153313.GN4495@opensource.wolfsonmicro.com>
+	<506A9C65.5040309@ti.com>
+	<20121002093753.GU4360@opensource.wolfsonmicro.com>
+	<506AC303.9080906@gmail.com> <506ACACE.4030308@ti.com>
+	<506AEF57.2000306@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <506AC303.9080906@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, davinci-linux-open-source@linux.davincidsp.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <506AEF57.2000306-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 02, 2012 at 12:33:39PM +0200, Daniel Mack wrote:
-> On 02.10.2012 11:37, Mark Brown wrote:
-> > On Tue, Oct 02, 2012 at 10:48:53AM +0300, Peter Ujfalusi wrote:
+On Tue, Oct 02, 2012 at 03:42:47PM +0200, Daniel Mack wrote:
+> On 02.10.2012 13:06, Sekhar Nori wrote:
+> > On 10/2/2012 4:03 PM, Daniel Mack wrote:
+> >> On 02.10.2012 11:37, Mark Brown wrote:
+> >>> On Tue, Oct 02, 2012 at 10:48:53AM +0300, Peter Ujfalusi wrote:
+> >>>
+> >>>> I also agree that ifdef is not a good solution.
+> >>>> It is better to have this information passed as device_data and via DT it can
+> >>>> be decided based on the compatible property for the device.
+> >>>
+> >>> That's not really the problem here - the problem is that the APIs used
+> >>> to get the SRAM are DaVinci only so it's not possible to build on OMAP
+> >>> or other platforms.  The SRAM code needs to move to a standard API.
+> >>
+> >> What about following Matt Porter's idea and ignore the SRAM code
+> >> entirely and port the entire PCM code to generic dmaengine code first?
+> >> The EDMA driver needs to learn support for cyclic DMA for that, and I
+> >> might give that a try in near future.
+> >>
+> >> Later on, the SRAM ping-pong code can get added back using genalloc
+> >> functions, as Sekhar proposed. That needs to be done by someone who has
+> >> access to a Davinci board though, I only have a AM33xx/OMAP here.
 > > 
-> >> I also agree that ifdef is not a good solution.
-> >> It is better to have this information passed as device_data and via DT it can
-> >> be decided based on the compatible property for the device.
-> > 
-> > That's not really the problem here - the problem is that the APIs used
-> > to get the SRAM are DaVinci only so it's not possible to build on OMAP
-> > or other platforms.  The SRAM code needs to move to a standard API.
+> > We cannot "get rid" of SRAM code and add it back "later". It is required
+> > for most DaVinci parts. The SRAM code can be converted to use genalloc
+> > (conversion should be straightforward and I can help test it) and the
+> > code that uses SRAM can probably keep using the private EDMA API till
+> > the dmaengine EDMA driver has cyclic DMA support. Matt has already
+> > posted patches to move private EDMA APIs to a common location. That
+> > should keep AM335x build from breaking. Is this something that is feasible?
 > 
-> What about following Matt Porter's idea and ignore the SRAM code
-> entirely and port the entire PCM code to generic dmaengine code first?
-> The EDMA driver needs to learn support for cyclic DMA for that, and I
-> might give that a try in near future.
+> Yes - by "later" I just meant in a subsequent patch. But you're probably
+> right, we can also do that first.
 > 
-> Later on, the SRAM ping-pong code can get added back using genalloc
-> functions, as Sekhar proposed. That needs to be done by someone who has
-> access to a Davinci board though, I only have a AM33xx/OMAP here.
+> I'm looking at that right now and the problem seems that we don't have a
+> sane way to dynamically look up gen_pools independently of the actual
+> run-time platform. All users of gen_pools seem to know which platform
+> they run on and access a platform-specific pool. So I don't currently
+> see how we could implement multi-platform code, gen_pools are fine but
+> don't solve the problem here.
+> 
+> Would it be an idea to add a char* member to gen_pools and a function
+> that can be used to dynamically look it up again? If a buffer with a
+> certain name exists, we can use it and install that ping-pong buffer,
+> otherwise we just don't. While that would be easy to do, it's a
+> tree-wide change.
+> 
+> Is there a better way that I miss?
 
-I already backed away from that idea since the older SoCs without a
-FIFO absolutely need ping-pong buffering in SRAM.
+At the high level there's two platform models we have to handle, the
+boot from board file !DT case, and then the boot from DT case. Since
+Davinci is just starting DT conversion, we mostly care about the !DT
+base in which the struct gen_pool * is passed in pdata to the ASoC
+driver. It is then selectable on a per-platform basis where the decision
+should be made.
+
+Given a separate discussion with Sekhar, we're only going to have one
+SRAM pool on any DaVinci part right now...this was only a question on
+L138 anyway. But regardless, the created gen_pool will be passed via
+pdata. Since DT conversion is starting and we need to consider that now,
+the idea there is to use the DT-based generic sram driver [1] such that
+when we do boot from DT on Davinci, the genpool is provided via phandle
+and the pointer extracted with the OF helpers that are part of the
+series.
+
+That's pretty much it. I'm reworking the backend support as discussed
+with Sekhar wrt to my uio_pruss series. I can post a standalone series
+that just replaces sram_* with genalloc for davinci ASoC.
 
 -Matt
