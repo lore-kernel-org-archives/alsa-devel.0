@@ -1,41 +1,61 @@
-From: Sander Jansen <s.jansen@gmail.com>
-Subject: hdmi output (switching sample format/rates)
-Date: Tue, 2 Oct 2012 11:25:12 -0500
-Message-ID: <CACj81kGTmA7HT7OHX8eP8F3DP+-quDwfkgy_wSKzrbzjXiD9Fw@mail.gmail.com>
+From: Matt Porter <mporter-l0cyMroinI0@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: Davinci: pcm: add support for
+	sram-support-less platforms
+Date: Tue, 2 Oct 2012 12:28:33 -0400
+Message-ID: <20121002162833.GR5641@beef>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+	<1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
+	<20120922153313.GN4495@opensource.wolfsonmicro.com>
+	<506A9C65.5040309@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
- [209.85.223.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 429B2261627
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 18:25:18 +0200 (CEST)
-Received: by iebc10 with SMTP id c10so14139636ieb.38
- for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2012 09:25:12 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <506A9C65.5040309-l0cyMroinI0@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In my audio application when I sometimes  need to switch to a
-different sample format and/or rate, I usually leave the audio device
-open and merely reconfigure the device to the new parameters. This
-works with all the regular pcm devices, but it fails when I use the
-"hdmi" device. It seemed to just silently fail and no audio output is
-heard. As far as I know, no error condition is triggered (but I'll
-admit, my knowledge of the alsa api is rather limited).
+On Tue, Oct 02, 2012 at 10:48:53AM +0300, Peter Ujfalusi wrote:
+> On 09/22/2012 06:33 PM, Mark Brown wrote:
+> > On Fri, Aug 31, 2012 at 06:20:58PM +0530, Hebbar, Gururaja wrote:
+> > 
+> >> +config SND_DAVINCI_HAVE_SRAM
+> >> +	bool
+> >> +	default y if ARCH_DAVINCI=y
+> >> +	default n if ARCH_OMAP=y
+> >> +
+> > 
+> > I've been sitting on this mostly since it seems like a step back from
+> > multi-platform kernels (which is where we're trying to get to) and I've
+> > been trying to decide what the best approach is.  I'm thinking that we
+> > do want a generic API for allocating this stuff, it's a fairly generic
+> > feature (there's TCMs as well).  
+> > 
+> > Adding ifdefs like this does just doesn't seem good.
+> 
+> I also agree that ifdef is not a good solution.
+> It is better to have this information passed as device_data and via DT it can
+> be decided based on the compatible property for the device.
 
-My question, Is this a bug or is it supposed to work this way and if
-so are there ways to detect whether a devices needs to be reopened or
-not.
+The driver is going to be used by both !DT and DT only platforms for a
+while so DT-centric solutions just don't make sense. There's a clean way
+to do this that was used for uio_pruss.c. When davinci is further along
+on DT conversion we can make use of the devicetree-based generic sram
+driver that's progressing along right now [1]. It needs some minor help
+to allow specifying the gen_pool allocation order, but it will work
+nicely for getting access to the right sram pool.
 
-Thanks,
+-Matt
 
-Sander
+[1] https://patchwork.kernel.org/patch/1421961/
