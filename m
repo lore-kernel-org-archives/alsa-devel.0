@@ -1,52 +1,51 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 0/3] ASoC: Davinci: McASP: add support new
- McASP IP Variant
-Date: Wed, 03 Oct 2012 00:28:45 +0200
-Message-ID: <506B6A9D.3090100@gmail.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, broonie@opensource.wolfsonmicro.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+From: Thomas Abraham <thomas.abraham@linaro.org>
+Subject: [PATCH] ASoC: SAMSUNG: ac97: use clk_prepare_enable and clk_disable_unprepare
+Date: Wed,  3 Oct 2012 08:46:01 +0900
+Message-ID: <1349221561-2896-1-git-send-email-thomas.abraham@linaro.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: lrg@ti.com, broonie@opensource.wolfsonmicro.com, jassisinghbrar@gmail.com, kgene.kim@samsung.com, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 31.08.2012 14:50, Hebbar, Gururaja wrote:
-> The OMAP2+ variant of McASP is different from Davinci variant w.r.to some
-> register offset and missing generic SRAM APIs support
-> 
-> Changes
-> - Add new MCASP_VERSION_3 to identify new variant. New DT compatible
->   "ti,omap2-mcasp-audio" to identify version 3 controller.
-> - The register offsets are handled depending on the version.
-> - Provide a config option to indicate missing SRAM API support.
+Convert clk_enable/clk_disable to clk_prepare_enable/clk_disable_unprepare
+calls as required by common clock framework.
 
-Could you give some insight which hardware this was tested on? I'm
-trying to get this up and running on a AM33xx board, and the patches
-look all reasonable to me. My problem is that I can't make the DMA
-engine move forward, I fail to receive a single interrupt on this
-peripheral after the stream starts. I will continue searching for the
-reason of this tomorrow, but maybe you can give me some hint by
-explaining your setup?
+Signed-off-by: Thomas Abraham <thomas.abraham@linaro.org>
+---
+ sound/soc/samsung/ac97.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Note that I'm using your patches together with Matt's from this series:
-
-  https://github.com/ohporter/linux/tree/edma-dmaengine-am33xx-rfc-v1
-
-... but it doesn't work without those either.
-
-
-
-Thanks,
-Daniel
+diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+index 14fbcd3..386bab1 100644
+--- a/sound/soc/samsung/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -442,7 +442,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 		ret = -ENODEV;
+ 		goto err2;
+ 	}
+-	clk_enable(s3c_ac97.ac97_clk);
++	clk_prepare_enable(s3c_ac97.ac97_clk);
+ 
+ 	if (ac97_pdata->cfg_gpio(pdev)) {
+ 		dev_err(&pdev->dev, "Unable to configure gpio\n");
+@@ -468,7 +468,7 @@ err5:
+ 	free_irq(irq_res->start, NULL);
+ err4:
+ err3:
+-	clk_disable(s3c_ac97.ac97_clk);
++	clk_disable_unprepare(s3c_ac97.ac97_clk);
+ 	clk_put(s3c_ac97.ac97_clk);
+ err2:
+ 	iounmap(s3c_ac97.regs);
+@@ -488,7 +488,7 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
+ 	if (irq_res)
+ 		free_irq(irq_res->start, NULL);
+ 
+-	clk_disable(s3c_ac97.ac97_clk);
++	clk_disable_unprepare(s3c_ac97.ac97_clk);
+ 	clk_put(s3c_ac97.ac97_clk);
+ 
+ 	iounmap(s3c_ac97.regs);
+-- 
+1.7.4.1
