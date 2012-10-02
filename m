@@ -1,22 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/3] ASoC: Davinci: pcm: add support for
- sram-support-less platforms
-Date: Tue, 02 Oct 2012 10:48:53 +0300
-Message-ID: <506A9C65.5040309@ti.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
- <1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
- <20120922153313.GN4495@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - fix indices on boost volume on
+	Conexant
+Date: Tue,  2 Oct 2012 10:14:23 +0200
+Message-ID: <1349165663-16030-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
- [74.125.149.203])
- by alsa0.perex.cz (Postfix) with ESMTP id DDE4F260308
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 09:47:42 +0200 (CEST)
-Received: by oagn12 with SMTP id n12so6191539oag.38
- for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2012 00:47:40 -0700 (PDT)
-In-Reply-To: <20120922153313.GN4495@opensource.wolfsonmicro.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18A912615E1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 10:14:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,37 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: David Henningsson <david.henningsson@canonical.com>, 1059523@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-On 09/22/2012 06:33 PM, Mark Brown wrote:
-> On Fri, Aug 31, 2012 at 06:20:58PM +0530, Hebbar, Gururaja wrote:
-> =
+After the recent patch "ALSA: hda - use both input paths on Conexant
+auto parser" suddenly we can have more than one "Mic Boost", this
+happened on Acer Aspire One 722. Therefore we must add the possibility
+to put an index on this "Mic Boost" just as we do for the other
+"Mic Boost" earlier in the same function.
 
->> +config SND_DAVINCI_HAVE_SRAM
->> +	bool
->> +	default y if ARCH_DAVINCI=3Dy
->> +	default n if ARCH_OMAP=3Dy
->> +
-> =
+BugLink: https://bugs.launchpad.net/bugs/1059523
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_conexant.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I've been sitting on this mostly since it seems like a step back from
-> multi-platform kernels (which is where we're trying to get to) and I've
-> been trying to decide what the best approach is.  I'm thinking that we
-> do want a generic API for allocating this stuff, it's a fairly generic
-> feature (there's TCMs as well).  =
-
-> =
-
-> Adding ifdefs like this does just doesn't seem good.
-
-I also agree that ifdef is not a good solution.
-It is better to have this information passed as device_data and via DT it c=
-an
-be decided based on the compatible property for the device.
-
--- =
-
-P=E9ter
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index c03d3b8..c11ad8a 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -4273,7 +4273,7 @@ static int cx_auto_add_boost_volume(struct hda_codec *codec, int idx,
+ 
+ 	if (get_wcaps(codec, mux) & AC_WCAP_OUT_AMP) {
+ 		spec->imux_info[idx].boost = mux;
+-		return cx_auto_add_volume(codec, label, " Boost", 0,
++		return cx_auto_add_volume(codec, label, " Boost", cidx,
+ 					  mux, HDA_OUTPUT);
+ 	}
+ 	return 0;
+-- 
+1.7.9.5
