@@ -1,14 +1,17 @@
-From: Peter Meerwald <pmeerw@pmeerw.net>
-Subject: [PATCH] ASoC: fix documentation in soc-jack
-Date: Tue,  2 Oct 2012 14:08:19 +0200
-Message-ID: <1349179699-8737-1-git-send-email-pmeerw@pmeerw.net>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: omap-abe-twl6040: Fix typo of Vibrator
+Date: Tue,  2 Oct 2012 15:31:16 +0300
+Message-ID: <1349181076-31402-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pmeerw.net (ns.pmeerw.net [87.118.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 03F60261600
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 14:09:07 +0200 (CEST)
+Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
+ [74.125.149.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9E1F261600
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 14:30:16 +0200 (CEST)
+Received: by obblz20 with SMTP id lz20so6280792obb.38
+ for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2012 05:30:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,45 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Peter Meerwald <pmeerw@pmeerw.net>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Meerwald <p.meerwald@bct-electronic.com>
+It is not Vinrator but Vibrator.
 
-Signed-off-by: Peter Meerwald <pmeerw@pmeerw.net>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/soc-jack.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/omap/omap-abe-twl6040.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 0c17293..b24cd53 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -22,7 +22,7 @@
- 
- /**
-  * snd_soc_jack_new - Create a new jack
-- * @card:  ASoC card
-+ * @codec: ASoC codec
-  * @id:    an identifying string for this jack
-  * @type:  a bitmask of enum snd_jack_type values that can be detected by
-  *         this jack
-@@ -139,12 +139,13 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_add_zones);
- 
- /**
-  * snd_soc_jack_get_type - Based on the mic bias value, this function returns
-- * the type of jack from the zones delcared in the jack type
-+ * the type of jack from the zones declared in the jack type
-  *
-+ * @jack:  ASoC jack
-  * @micbias_voltage:  mic bias voltage at adc channel when jack is plugged in
-  *
-  * Based on the mic bias value passed, this function helps identify
-- * the type of jack from the already delcared jack zones
-+ * the type of jack from the already declared jack zones
-  */
- int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage)
- {
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index be525df..750d595 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -220,7 +220,7 @@ static int omap_abe_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+ 	twl6040_disconnect_pin(dapm, pdata->has_hf, "Ext Spk");
+ 	twl6040_disconnect_pin(dapm, pdata->has_ep, "Earphone Spk");
+ 	twl6040_disconnect_pin(dapm, pdata->has_aux, "Line Out");
+-	twl6040_disconnect_pin(dapm, pdata->has_vibra, "Vinrator");
++	twl6040_disconnect_pin(dapm, pdata->has_vibra, "Vibrator");
+ 	twl6040_disconnect_pin(dapm, pdata->has_hsmic, "Headset Mic");
+ 	twl6040_disconnect_pin(dapm, pdata->has_mainmic, "Main Handset Mic");
+ 	twl6040_disconnect_pin(dapm, pdata->has_submic, "Sub Handset Mic");
 -- 
-1.7.9.5
+1.7.12
