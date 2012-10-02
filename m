@@ -1,52 +1,39 @@
-From: Roman Haefeli <reduzent@gmail.com>
-Subject: Re: hdsp rpm support
-Date: Mon, 01 Oct 2012 22:00:56 +0200
-Message-ID: <1349121656.2263.3.camel@yoyo5>
-References: <1326877559.24738.84.camel@yoyo4>
- <20120118102658.GA5351@linuxaudio.org> <1349046242.2195.6.camel@yoyo5>
- <50694EB0.8060700@faberman.de>
+From: "Do Q.Thang" <dq-thang@jinso.co.jp>
+Subject: Re: [PATCH] ASoC: fixup simple-card probe order
+Date: Tue, 02 Oct 2012 12:41:31 +0900
+Message-ID: <506A626B.4030404@jinso.co.jp>
+References: <5068E775.7040601@jinso.co.jp> <20121001100154.GA4360@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 23790260728
- for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2012 22:01:00 +0200 (CEST)
-Received: by bkue19 with SMTP id e19so4175720bku.38
- for <alsa-devel@alsa-project.org>; Mon, 01 Oct 2012 13:00:59 -0700 (PDT)
-In-Reply-To: <50694EB0.8060700@faberman.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20121001100154.GA4360@opensource.wolfsonmicro.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Simon Horman <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2012-10-01 at 10:05 +0200, Florian Faber wrote:
-> On 10/01/12 01:04, Roman Haefeli wrote:
-> 
-> >> AFAICS, the problem is with the code that identifies the card
-> >> as an RPM, Multiface or Digiface, and that triggers ths HW into
-> >> accepting the firmware. Once past this point everything works
-> >> perfectly, including switching the phone preamps etc.
-> > How are you able to switch the phone preamps? Even in the git version of
-> > hdspconf, there is no mentioning of the RPM at all. To me it looks there
-> > isn't any support at all in hdspconf for HDSP RPM. Do you have some
-> > unofficial version of hdspconf that _does_ support the RPM?
-> 
-> Use alsamixer.
+On 10/01/2012 07:01 PM, Mark Brown wrote:
+> On Mon, Oct 01, 2012 at 09:44:37AM +0900, Do Q.Thang wrote:
+>> Hi all,
+>>
+>> KZM-A9-GT board and Armadillo-800eva board use the asoc-simple-card.
+>> but probe of this sound card needs the fsi-dai's registered before.
+>> So this message appear in the bootlog.
+>>
+>> " asoc-simple-card asoc-simple-card.0: CPU DAI fsia-dai not registered
+>> platform asoc-simple-card.0: Driver asoc-simple-card requests probe
+>> deferral "
+>>
+>> The asoc-simple-card was probed while fsi-dai probe hasn't run yet.
+>> So asoc-simple-card probe deferral is requested.
+>> I think the simple-card should be probed after the fsi-dai probe.
+>> I think this patch can fix this issue.
+>>
+>> What do you think about this?
+> The above is normal and expected behaviour, there is no issue here.
+>
 
-That is great. Thanks for the tip.
+thanks.
 
-The switches for buffer size and sr don't seem to be working. However, I
-seem to be able to set those from jackd. I don't get all advertised (by
-RME) sampling rates, though: 32k, 44.1k, 48k work, 88.2k and 96k do not
-(it silently fails back to 48k). 
 
-Roman
