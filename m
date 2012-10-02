@@ -1,79 +1,139 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: Davinci: pcm: add support for
- sram-support-less platforms
-Date: Tue, 02 Oct 2012 15:42:47 +0200
-Message-ID: <506AEF57.2000306@gmail.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
- <1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
- <20120922153313.GN4495@opensource.wolfsonmicro.com> <506A9C65.5040309@ti.com>
- <20121002093753.GU4360@opensource.wolfsonmicro.com>
- <506AC303.9080906@gmail.com> <506ACACE.4030308@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: Improve directory/path handling for
+	testsuite
+Date: Tue,  2 Oct 2012 17:41:27 +0200
+Message-ID: <1349192487-7969-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <506ACACE.4030308@ti.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Sekhar Nori <nsekhar@ti.com>
-Cc: "Porter, Matt" <mporter@ti.com>, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, davinci-linux-open-source@linux.davincidsp.com, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1A57261627
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 17:41:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02.10.2012 13:06, Sekhar Nori wrote:
-> On 10/2/2012 4:03 PM, Daniel Mack wrote:
->> On 02.10.2012 11:37, Mark Brown wrote:
->>> On Tue, Oct 02, 2012 at 10:48:53AM +0300, Peter Ujfalusi wrote:
->>>
->>>> I also agree that ifdef is not a good solution.
->>>> It is better to have this information passed as device_data and via DT it can
->>>> be decided based on the compatible property for the device.
->>>
->>> That's not really the problem here - the problem is that the APIs used
->>> to get the SRAM are DaVinci only so it's not possible to build on OMAP
->>> or other platforms.  The SRAM code needs to move to a standard API.
->>
->> What about following Matt Porter's idea and ignore the SRAM code
->> entirely and port the entire PCM code to generic dmaengine code first?
->> The EDMA driver needs to learn support for cyclic DMA for that, and I
->> might give that a try in near future.
->>
->> Later on, the SRAM ping-pong code can get added back using genalloc
->> functions, as Sekhar proposed. That needs to be done by someone who has
->> access to a Davinci board though, I only have a AM33xx/OMAP here.
-> 
-> We cannot "get rid" of SRAM code and add it back "later". It is required
-> for most DaVinci parts. The SRAM code can be converted to use genalloc
-> (conversion should be straightforward and I can help test it) and the
-> code that uses SRAM can probably keep using the private EDMA API till
-> the dmaengine EDMA driver has cyclic DMA support. Matt has already
-> posted patches to move private EDMA APIs to a common location. That
-> should keep AM335x build from breaking. Is this something that is feasible?
+There were some shortcomings when running the test scripts from
+a random directory. Also added functionality to test an entire
+directory tree at the same time.
+---
+ tester/runner.py  |    9 ++++++++-
+ tester/summary.py |   28 ++++++++++++++++++++++++----
+ 2 files changed, 32 insertions(+), 5 deletions(-)
 
-Yes - by "later" I just meant in a subsequent patch. But you're probably
-right, we can also do that first.
+With this improvement we can run it over the entire alsa-info database.
+The initial result is 619 of 5911 (10%) failing, mostly due to invalid verbs sent
+(no input/output-amp, invalid amp index, setting *_EN without caps, etc).
 
-I'm looking at that right now and the problem seems that we don't have a
-sane way to dynamically look up gen_pools independently of the actual
-run-time platform. All users of gen_pools seem to know which platform
-they run on and access a platform-specific pool. So I don't currently
-see how we could implement multi-platform code, gen_pools are fine but
-don't solve the problem here.
-
-Would it be an idea to add a char* member to gen_pools and a function
-that can be used to dynamically look it up again? If a buffer with a
-certain name exists, we can use it and install that ping-pong buffer,
-otherwise we just don't. While that would be easy to do, it's a
-tree-wide change.
-
-Is there a better way that I miss?
-
-
-Daniel
+diff --git a/tester/runner.py b/tester/runner.py
+index b585ad3..30118ce 100644
+--- a/tester/runner.py
++++ b/tester/runner.py
+@@ -44,10 +44,13 @@ class ControlInfo():
+ class HdaEmuRunner():
+ 
+     def __init__(self):
+-        self.child_args = "../hda-emu -M -F"
++        import os.path
++        hda_emu_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"../hda-emu")
++        self.child_args = '"' + hda_emu_path + '" -M -F'
+         self.alsa_info = "/proc/asound/card0/codec#0"
+         self.errors = 0
+         self.warnings = 0
++        self.fatals = 0
+         self.print_errors = False
+         self.comm_log_enabled = False
+         self.last_command = None
+@@ -81,6 +84,8 @@ class HdaEmuRunner():
+             self.warnings += 1
+         else:
+             self.errors += 1
++            if severity == "Fatal":
++                self.fatals += 1
+         if self.print_errors:
+             if not self.last_command_printed:
+                 if self.last_command:
+@@ -89,6 +94,8 @@ class HdaEmuRunner():
+                     print "Encountered during initial parsing:"
+                 self.last_command_printed = True
+             print "  ", message
++        if self.fatals > 0:
++            raise Exception(message)
+ 
+     def check_stdout(self):
+         s = os.read(self.child.stdout.fileno(), 65536)
+diff --git a/tester/summary.py b/tester/summary.py
+index 6e94c9b..0f9fbf3 100755
+--- a/tester/summary.py
++++ b/tester/summary.py
+@@ -18,6 +18,11 @@
+ #    You should have received a copy of the GNU General Public License along 
+ #    with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
++def defaultpath(s):
++    import os.path
++    q = os.path.dirname(os.path.realpath(__file__))
++    return os.path.join(q, s)
++
+ def main():
+     import os
+     import os.path
+@@ -26,18 +31,28 @@ def main():
+     import argparse
+     parser = argparse.ArgumentParser(description='Hda-emu automated test wrapper.')
+     parser.add_argument('--verbose', '-v', action='count')
++    parser.add_argument('--directory', '-d', action='store', default=defaultpath("../codecs/canonical/"))
++    parser.add_argument('--recursive', '-r', action="store_true", default=False)
++
+     parser_dict = parser.parse_args()
+     verbose = parser_dict.verbose
++    directory = parser_dict.directory
+ 
+-    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+-    directory = "../codecs/canonical/"
+-    files = os.listdir(directory)
++    if parser_dict.recursive:
++        files = [os.path.join(root, filename) for root, _, filenames in os.walk(directory) for filename in filenames]
++    else:
++        files = os.listdir(directory)
++    files.sort()
+ 
+     successes = 0
+     fails = 0
+     warnings = 0
+     errors = 0
++    index = 0
+     for f in files:
++        index += 1
++        if verbose > 2:
++            print '[{0}/{1}]: Testing {2}'.format(index, len(files), f)
+         try:
+             r = runner.HdaEmuRunner()
+             r.set_alsa_info_file(os.path.join(directory, f))
+@@ -51,7 +66,12 @@ def main():
+                     print '{0} errors, {1} warnings. ({2})'.format(r.errors, r.warnings, f)
+             else:
+                 successes += 1
+-        except:
++        except KeyboardInterrupt:
++            import sys
++            sys.exit(1)
++        except Exception as e:
++            if verbose > 0:
++                print 'Fatal error for {0}: {1}'.format(f, e)
+             errors += 1
+             fails += 1
+ 
+-- 
+1.7.9.5
