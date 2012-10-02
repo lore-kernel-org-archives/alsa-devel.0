@@ -1,45 +1,142 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm2200: Fix non-inverted OUT2 mute
-	control
-Date: Tue,  2 Oct 2012 19:13:40 +0100
-Message-ID: <1349201620-12217-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1FA226163F
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2012 20:13:44 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH] ARM: tegra: remove <mach/dma.h>
+Date: Tue,  2 Oct 2012 13:30:45 -0600
+Message-ID: <1349206245-22560-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm2200.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 664067c..6ca9bcc 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -1028,7 +1028,7 @@ SOC_DOUBLE_R_TLV("OUT2 Digital Volume", WM2200_DAC_DIGITAL_VOLUME_2L,
- 		 WM2200_DAC_DIGITAL_VOLUME_2R, WM2200_OUT2L_VOL_SHIFT, 0x9f, 0,
- 		 digital_tlv),
- SOC_DOUBLE("OUT2 Switch", WM2200_PDM_1, WM2200_SPK1L_MUTE_SHIFT,
--	   WM2200_SPK1R_MUTE_SHIFT, 1, 0),
-+	   WM2200_SPK1R_MUTE_SHIFT, 1, 1),
- };
+Remove includes of <mach/dma.h> from sound/soc; nothing from it is used.
+
+Remove include of <mach/dma.h> from mach-tegra/apbio.c; since the DMA
+transfers made by this file don't need flow-control with any peripheral,
+there's no need to set any slave ID.
+
+Once those changes are made, there are no remaining users of <mach/dma.h>
+so remove it. Drivers should get this information from device tree. This
+removal is necessary for single zImage.
+
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+Mark, I'd like to take this through the Tegra tree please, unless you want
+me to split out the ASoC parts of the patch, and have you apply them to 3.7.
+
+ arch/arm/mach-tegra/apbio.c            |    3 --
+ arch/arm/mach-tegra/include/mach/dma.h |   54 --------------------------------
+ sound/soc/tegra/tegra30_ahub.c         |    1 -
+ sound/soc/tegra/tegra_pcm.h            |    2 -
+ 4 files changed, 0 insertions(+), 60 deletions(-)
+ delete mode 100644 arch/arm/mach-tegra/include/mach/dma.h
+
+diff --git a/arch/arm/mach-tegra/apbio.c b/arch/arm/mach-tegra/apbio.c
+index b5015d0..bc949fb 100644
+--- a/arch/arm/mach-tegra/apbio.c
++++ b/arch/arm/mach-tegra/apbio.c
+@@ -24,8 +24,6 @@
+ #include <linux/sched.h>
+ #include <linux/mutex.h>
  
- WM2200_MIXER_ENUMS(OUT1L, WM2200_OUT1LMIX_INPUT_1_SOURCE);
+-#include <mach/dma.h>
+-
+ #include "apbio.h"
+ 
+ #if defined(CONFIG_TEGRA20_APB_DMA)
+@@ -71,7 +69,6 @@ bool tegra_apb_dma_init(void)
+ 
+ 	dma_sconfig.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	dma_sconfig.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	dma_sconfig.slave_id = TEGRA_DMA_REQ_SEL_CNTR;
+ 	dma_sconfig.src_maxburst = 1;
+ 	dma_sconfig.dst_maxburst = 1;
+ 
+diff --git a/arch/arm/mach-tegra/include/mach/dma.h b/arch/arm/mach-tegra/include/mach/dma.h
+deleted file mode 100644
+index 3081cc6..0000000
+--- a/arch/arm/mach-tegra/include/mach/dma.h
++++ /dev/null
+@@ -1,54 +0,0 @@
+-/*
+- * arch/arm/mach-tegra/include/mach/dma.h
+- *
+- * Copyright (c) 2008-2009, NVIDIA Corporation.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+- */
+-
+-#ifndef __MACH_TEGRA_DMA_H
+-#define __MACH_TEGRA_DMA_H
+-
+-#include <linux/list.h>
+-
+-#define TEGRA_DMA_REQ_SEL_CNTR			0
+-#define TEGRA_DMA_REQ_SEL_I2S_2			1
+-#define TEGRA_DMA_REQ_SEL_I2S_1			2
+-#define TEGRA_DMA_REQ_SEL_SPD_I			3
+-#define TEGRA_DMA_REQ_SEL_UI_I			4
+-#define TEGRA_DMA_REQ_SEL_MIPI			5
+-#define TEGRA_DMA_REQ_SEL_I2S2_2		6
+-#define TEGRA_DMA_REQ_SEL_I2S2_1		7
+-#define TEGRA_DMA_REQ_SEL_UARTA			8
+-#define TEGRA_DMA_REQ_SEL_UARTB			9
+-#define TEGRA_DMA_REQ_SEL_UARTC			10
+-#define TEGRA_DMA_REQ_SEL_SPI			11
+-#define TEGRA_DMA_REQ_SEL_AC97			12
+-#define TEGRA_DMA_REQ_SEL_ACMODEM		13
+-#define TEGRA_DMA_REQ_SEL_SL4B			14
+-#define TEGRA_DMA_REQ_SEL_SL2B1			15
+-#define TEGRA_DMA_REQ_SEL_SL2B2			16
+-#define TEGRA_DMA_REQ_SEL_SL2B3			17
+-#define TEGRA_DMA_REQ_SEL_SL2B4			18
+-#define TEGRA_DMA_REQ_SEL_UARTD			19
+-#define TEGRA_DMA_REQ_SEL_UARTE			20
+-#define TEGRA_DMA_REQ_SEL_I2C			21
+-#define TEGRA_DMA_REQ_SEL_I2C2			22
+-#define TEGRA_DMA_REQ_SEL_I2C3			23
+-#define TEGRA_DMA_REQ_SEL_DVC_I2C		24
+-#define TEGRA_DMA_REQ_SEL_OWR			25
+-#define TEGRA_DMA_REQ_SEL_INVALID		31
+-
+-#endif
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index bf56101..64b67a3 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -26,7 +26,6 @@
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <mach/clk.h>
+-#include <mach/dma.h>
+ #include <sound/soc.h>
+ #include "tegra30_ahub.h"
+ 
+diff --git a/sound/soc/tegra/tegra_pcm.h b/sound/soc/tegra/tegra_pcm.h
+index b40279b..bc8b46a 100644
+--- a/sound/soc/tegra/tegra_pcm.h
++++ b/sound/soc/tegra/tegra_pcm.h
+@@ -31,8 +31,6 @@
+ #ifndef __TEGRA_PCM_H__
+ #define __TEGRA_PCM_H__
+ 
+-#include <mach/dma.h>
+-
+ struct tegra_pcm_dma_params {
+ 	unsigned long addr;
+ 	unsigned long wrap;
 -- 
-1.7.10.4
+1.7.0.4
