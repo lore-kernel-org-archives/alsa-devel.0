@@ -1,66 +1,62 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 3.7-rc1] omap zoom2.c: Fix compile error by
- including correct header files
-Date: Wed, 03 Oct 2012 17:52:20 +0300
-Message-ID: <506C5124.3050200@ti.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 3.7-rc1] omap zoom2.c: Fix compile error by including
+ correct header files
+Date: Wed, 3 Oct 2012 08:59:01 -0700
+Message-ID: <20121003155900.GA4840@atomide.com>
 References: <1349274686-45668-1-git-send-email-tim.gardner@canonical.com>
+ <506C5124.3050200@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
- [74.125.149.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 402A92625CB
- for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2012 16:51:07 +0200 (CEST)
-Received: by oagn12 with SMTP id n12so7669555oag.38
- for <alsa-devel@alsa-project.org>; Wed, 03 Oct 2012 07:51:05 -0700 (PDT)
-In-Reply-To: <1349274686-45668-1-git-send-email-tim.gardner@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Gardner <tim.gardner@canonical.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <506C5124.3050200@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tim Gardner <tim.gardner@canonical.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/03/2012 05:31 PM, Tim Gardner wrote:
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: linux-omap@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-> ---
->  sound/soc/omap/zoom2.c |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [121003 07:52]:
+> On 10/03/2012 05:31 PM, Tim Gardner wrote:
+> > Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+> > Cc: Liam Girdwood <lrg@ti.com>
+> > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > Cc: Jaroslav Kysela <perex@perex.cz>
+> > Cc: Takashi Iwai <tiwai@suse.de>
+> > Cc: linux-omap@vger.kernel.org
+> > Cc: alsa-devel@alsa-project.org
+> > Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> > ---
+> >  sound/soc/omap/zoom2.c |    3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
+> > index 23de2b2..d0a8c92 100644
+> > --- a/sound/soc/omap/zoom2.c
+> > +++ b/sound/soc/omap/zoom2.c
+> > @@ -27,9 +27,10 @@
+> >  
+> >  #include <asm/mach-types.h>
+> >  #include <mach/hardware.h>
+> > -#include <mach/gpio.h>
+> > +#include <linux/gpio.h>
+> >  #include <mach/board-zoom.h>
+> >  #include <linux/platform_data/asoc-ti-mcbsp.h>
+> > +#include <linux/platform_data/gpio-omap.h>
+> >  
+> >  /* Register descriptions for twl4030 codec part */
+> >  #include <linux/mfd/twl4030-audio.h>
+> > 
 > 
-> diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
-> index 23de2b2..d0a8c92 100644
-> --- a/sound/soc/omap/zoom2.c
-> +++ b/sound/soc/omap/zoom2.c
-> @@ -27,9 +27,10 @@
->  
->  #include <asm/mach-types.h>
->  #include <mach/hardware.h>
-> -#include <mach/gpio.h>
-> +#include <linux/gpio.h>
->  #include <mach/board-zoom.h>
->  #include <linux/platform_data/asoc-ti-mcbsp.h>
-> +#include <linux/platform_data/gpio-omap.h>
->  
->  /* Register descriptions for twl4030 codec part */
->  #include <linux/mfd/twl4030-audio.h>
-> 
+> I have the same patch stashed away for the same issue. Was waiting for rc1 to
+> send it.
 
-I have the same patch stashed away for the same issue. Was waiting for rc1 to
-send it.
+Can you please update the patch to also to remove the
+"#include <mach/board-zoom.h>" while at it?
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+AFAIK it's not needed at all and just adds a dependency to asoc with
+my upcoming plat header cleanup patches.
+
+Regards,
+
+Tony
