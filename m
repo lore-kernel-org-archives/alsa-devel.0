@@ -1,85 +1,118 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH 0/3] ASoC: Davinci: McASP: add support new
-	McASP IP Variant
-Date: Wed, 3 Oct 2012 07:16:30 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EA99A40@DBDE01.ent.ti.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
-	<506B6A9D.3090100@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - avoid unneccesary indices on
+	"Headphone Jack" controls
+Date: Wed,  3 Oct 2012 11:12:53 +0200
+Message-ID: <1349255573-11321-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <506B6A9D.3090100-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org" <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "Girdwood,  Liam" <lrg-l0cyMroinI0@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5ED12615D4
+ for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2012 11:12:58 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: David Henningsson <david.henningsson@canonical.com>, 1060729@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 03, 2012 at 03:58:45, Daniel Mack wrote:
-> On 31.08.2012 14:50, Hebbar, Gururaja wrote:
-> > The OMAP2+ variant of McASP is different from Davinci variant w.r.to some
-> > register offset and missing generic SRAM APIs support
-> > 
-> > Changes
-> > - Add new MCASP_VERSION_3 to identify new variant. New DT compatible
-> >   "ti,omap2-mcasp-audio" to identify version 3 controller.
-> > - The register offsets are handled depending on the version.
-> > - Provide a config option to indicate missing SRAM API support.
-> 
-> Could you give some insight which hardware this was tested on? I'm
-> trying to get this up and running on a AM33xx board, and the patches
-> look all reasonable to me. My problem is that I can't make the DMA
-> engine move forward, I fail to receive a single interrupt on this
-> peripheral after the stream starts. I will continue searching for the
-> reason of this tomorrow, but maybe you can give me some hint by
-> explaining your setup?
-> 
-> Note that I'm using your patches together with Matt's from this series:
-> 
->   https://github.com/ohporter/linux/tree/edma-dmaengine-am33xx-rfc-v1
-> 
-> ... but it doesn't work without those either.
+In case there is one "Headphone Jack" and one "Dock Headphone Jack",
+one of them will get an index, even though that is not needed.
+This patch fixes that issue.
 
+BugLink: https://bugs.launchpad.net/bugs/1060729
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_auto_parser.c |   49 +++++++++++++++++++++++++++++----------
+ 1 file changed, 37 insertions(+), 12 deletions(-)
 
-When I started working on adding DT support to McASP driver, Matt Porter 
-EDMA port was not yet ready. 
+Alsa-info at: https://launchpadlibrarian.net/118211803/AlsaInfo
 
-So 
-1. I took existing edma driver from AM335x Arago release [1] (driver + edma 
-   device init). 
-2. Added this to Vaibhav's Local (linux-next + AM335x patches) tree [2] 
-
-3. Added DT support to McASP driver.
-
-I tested this on AM335x EVM board. 
-
-If you need the code, I can share it as a patch (I will send the patch as a 
-private mail since the patch is huge).
-
-
-[1]
-http://arago-project.org/git/projects/?p=linux-am33x.git;a=commit;h=d7e124e8074cccf9958290e773c88a4b2b36412b
-
-[2]
-https://github.com/hvaibhav/am335x-linux/tree/am335x-upstream-staging
-
-> 
-> 
-> 
-> Thanks,
-> Daniel
-> 
-> 
-
-
-Regards, 
-Gururaja
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index a98e25e..4ec6dc8 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -498,6 +498,38 @@ static const char *check_output_sfx(hda_nid_t nid, const hda_nid_t *pins,
+ 	return channel_sfx[i];
+ }
+ 
++static const char *check_output_pfx(struct hda_codec *codec, hda_nid_t nid)
++{
++	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
++	int attr = snd_hda_get_input_pin_attr(def_conf);
++
++	/* check the location */
++	switch (attr) {
++	case INPUT_PIN_ATTR_DOCK:
++		return "Dock ";
++	case INPUT_PIN_ATTR_FRONT:
++		return "Front ";
++	}
++	return "";
++}
++
++static int get_hp_label_index(struct hda_codec *codec, hda_nid_t nid,
++			      const hda_nid_t *pins, int num_pins)
++{
++	int i, j, idx = 0;
++
++	const char *pfx = check_output_pfx(codec, nid);
++
++	i = find_idx_in_nid_list(nid, pins, num_pins);
++	if (i < 0)
++		return -1;
++	for (j = 0; j < i; j++)
++		if (pfx == check_output_pfx(codec, pins[j]))
++			idx++;
++
++	return idx;
++}
++
+ static int fill_audio_out_name(struct hda_codec *codec, hda_nid_t nid,
+ 			       const struct auto_pin_cfg *cfg,
+ 			       const char *name, char *label, int maxlen,
+@@ -505,20 +537,13 @@ static int fill_audio_out_name(struct hda_codec *codec, hda_nid_t nid,
+ {
+ 	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
+ 	int attr = snd_hda_get_input_pin_attr(def_conf);
+-	const char *pfx = "", *sfx = "";
++	const char *pfx, *sfx = "";
+ 
+ 	/* handle as a speaker if it's a fixed line-out */
+ 	if (!strcmp(name, "Line Out") && attr == INPUT_PIN_ATTR_INT)
+ 		name = "Speaker";
+-	/* check the location */
+-	switch (attr) {
+-	case INPUT_PIN_ATTR_DOCK:
+-		pfx = "Dock ";
+-		break;
+-	case INPUT_PIN_ATTR_FRONT:
+-		pfx = "Front ";
+-		break;
+-	}
++	pfx = check_output_pfx(codec, nid);
++
+ 	if (cfg) {
+ 		/* try to give a unique suffix if needed */
+ 		sfx = check_output_sfx(nid, cfg->line_out_pins, cfg->line_outs,
+@@ -528,8 +553,8 @@ static int fill_audio_out_name(struct hda_codec *codec, hda_nid_t nid,
+ 					       indexp);
+ 		if (!sfx) {
+ 			/* don't add channel suffix for Headphone controls */
+-			int idx = find_idx_in_nid_list(nid, cfg->hp_pins,
+-						       cfg->hp_outs);
++			int idx = get_hp_label_index(codec, nid, cfg->hp_pins,
++						     cfg->hp_outs);
+ 			if (idx >= 0)
+ 				*indexp = idx;
+ 			sfx = "";
+-- 
+1.7.9.5
