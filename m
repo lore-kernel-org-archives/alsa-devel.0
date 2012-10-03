@@ -1,18 +1,24 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RESEND][PATCH] ASoC: ams-delta: Convert to use
-	snd_soc_register_card()
-Date: Wed, 03 Oct 2012 15:51:23 +0200
-Message-ID: <6691562.6MvWD9K1dk@vclass>
-References: <20120906073633.GC22330@opensource.wolfsonmicro.com>
- <1582731.dIkBtAuyKn@vclass>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/3] ASoC: Davinci: McASP: add support new
+ McASP IP Variant
+Date: Wed, 03 Oct 2012 16:07:41 +0200
+Message-ID: <506C46AD.1090807@gmail.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+ <506B6A9D.3090100@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA99A40@DBDE01.ent.ti.com>
+ <506C1E97.1070700@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
- by alsa0.perex.cz (Postfix) with ESMTP id BB1A826173F
- for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2012 15:52:27 +0200 (CEST)
-In-Reply-To: <1582731.dIkBtAuyKn@vclass>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C17B52625C4
+ for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2012 16:07:47 +0200 (CEST)
+Received: by bkue19 with SMTP id e19so5008310bku.38
+ for <alsa-devel@alsa-project.org>; Wed, 03 Oct 2012 07:07:47 -0700 (PDT)
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +28,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-TWFyaywKUGxlYXNlIG5vdGUgd2UgaGF2ZSBhbiBBY2sgZnJvbSBUb255LgpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTItU2VwdGVtYmVyLzA1
-NTQ5My5odG1sCgpUaGFua3MsCkphbnVzegoKLS0tClN1YmplY3Q6IFJlOiBbUEFUQ0hdIEFTb0M6
-IGFtcy1kZWx0YTogQ29udmVydCB0byB1c2Ugc25kX3NvY19yZWdpc3Rlcl9jYXJkKCkKRGF0ZTog
-bmllZHppZWxhLCAxNiB3cnplxZtuaWEgMjAxMiwgMTM6NDQ6MjMKRnJvbTogVG9ueSBMaW5kZ3Jl
-biA8dG9ueUBhdG9taWRlLmNvbT4KVG86IEphbnVzeiBLcnp5c3p0b2ZpayA8amtyenlzenRAdGlz
-LmljbmV0LnBsPgpDYzogTWFyayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNy
-by5jb20+LCBMaWFtIEdpcmR3b29kIDxscmdAdGkuY29tPiwgbGludXgtb21hcEB2Z2VyLmtlcm5l
-bC5vcmcsIGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZywgYWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCgoqIEphbnVzeiBLcnp5c3p0b2ZpayA8amtyenlzenRAdGlzLmljbmV0
-LnBsPiBbMTIwOTE2IDEyOjE4XToKPiAKPiBUb255LAo+IFBsZWFzZSBnaXZlIHlvdXIgYWNrIG9u
-IHRoZSBhcmNoL2FybS9tYWNoLW9tYXAxIGJpdHMgaWYgYWNjZXB0YWJsZS4gSQo+IGJlbGlldmUg
-dGhlcmUgc2hvdWxkIGJlIG5vIG1lcmdlIGNvbmZsaWN0cyBpZiB0aGlzIGNoYW5nZSBnb2VzIHRo
-cm91Z2gKPiBzb3VuZC9zb2MuCgpZZXMgbG9va3MgZ29vZCB0byBtZToKCkFja2VkLWJ5OiBUb255
-IExpbmRncmVuIDx0b255QGF0b21pZGUuY29tPgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 03.10.2012 14:57, Hebbar, Gururaja wrote:
+> On Wed, Oct 03, 2012 at 16:46:39, Daniel Mack wrote:
+>> On 03.10.2012 09:16, Hebbar, Gururaja wrote:
+>>> On Wed, Oct 03, 2012 at 03:58:45, Daniel Mack wrote:
+>>>> On 31.08.2012 14:50, Hebbar, Gururaja wrote:
+>>>>> The OMAP2+ variant of McASP is different from Davinci variant w.r.to some
+>>>>> register offset and missing generic SRAM APIs support
+>>>>>
+>>>>> Changes
+>>>>> - Add new MCASP_VERSION_3 to identify new variant. New DT compatible
+>>>>>   "ti,omap2-mcasp-audio" to identify version 3 controller.
+>>>>> - The register offsets are handled depending on the version.
+>>>>> - Provide a config option to indicate missing SRAM API support.
+>>>>
+>>>> Could you give some insight which hardware this was tested on? I'm
+>>>> trying to get this up and running on a AM33xx board, and the patches
+>>>> look all reasonable to me. My problem is that I can't make the DMA
+>>>> engine move forward, I fail to receive a single interrupt on this
+>>>> peripheral after the stream starts. I will continue searching for the
+>>>> reason of this tomorrow, but maybe you can give me some hint by
+>>>> explaining your setup?
+>>>>
+>>>> Note that I'm using your patches together with Matt's from this series:
+>>>>
+>>>>   https://github.com/ohporter/linux/tree/edma-dmaengine-am33xx-rfc-v1
+>>>>
+>>>> ... but it doesn't work without those either.
+>>>
+>>>
+>>> When I started working on adding DT support to McASP driver, Matt Porter 
+>>> EDMA port was not yet ready. 
+>>>
+>>> So 
+>>> 1. I took existing edma driver from AM335x Arago release [1] (driver + edma 
+>>>    device init). 
+>>> 2. Added this to Vaibhav's Local (linux-next + AM335x patches) tree [2] 
+>>>
+>>> 3. Added DT support to McASP driver.
+>>>
+>>> I tested this on AM335x EVM board. 
+>>
+>> Hmm, so I think there's a tiny bit missing for the EDMA conversion on DT
+>> kernels.
+>>
+>>> If you need the code, I can share it as a patch (I will send the patch as a 
+>>> private mail since the patch is huge).
+>>
+>> Please do :) Or just push your entire tree somewhere.
+> 
+> I have pushed the code at below git repo
+> Repo :https://github.com/hvaibhav/am335x-linux
+> Branch : am335x-upstream-staging-audio
+> 
+> This includes 
+> 1. (linux-next + AM335x patches)
+> 2. McASP DT conversion
+> 3. EDMA hack
+> 4. AM335x audio specific DT blobs
+> 5. Am335x dma DT blobs [hack]
+
+Ha, that 5th point was what I was missing, in particular these DMA
+offset matching bits. Thanks a lot! I'll get back to you soon with some
+patches for the mcasp driver.
+
+
+Daniel
