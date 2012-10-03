@@ -1,81 +1,42 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-emu: Add check for unnecessary indices of
-	kcontrols to testsuite
-Date: Wed,  3 Oct 2012 16:23:25 +0200
-Message-ID: <1349274205-16304-1-git-send-email-david.henningsson@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 049A926257D
- for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2012 16:23:26 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: David Henningsson <david.henningsson@canonical.com>
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: [PATCH 3.7-rc1] omap zoom2.c: Fix compile error by including correct header files
+Date: Wed,  3 Oct 2012 08:31:26 -0600
+Message-ID: <1349274686-45668-1-git-send-email-tim.gardner@canonical.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Tim Gardner <tim.gardner@canonical.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: linux-omap@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
 ---
- tester/runner.py |   29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
+ sound/soc/omap/zoom2.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tester/runner.py b/tester/runner.py
-index 30118ce..1e7ecf9 100644
---- a/tester/runner.py
-+++ b/tester/runner.py
-@@ -25,7 +25,9 @@ class ControlInfo():
-         self.runner = runner
-         carr = list_info.split(":")
-         self.numid = carr[1]
--        self.name = carr[2]
-+        self.name = carr[2][1:]
-+        self.index, _ = tuple(carr[3].split(" "))
-+        self.index = int(self.index)
+diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
+index 23de2b2..d0a8c92 100644
+--- a/sound/soc/omap/zoom2.c
++++ b/sound/soc/omap/zoom2.c
+@@ -27,9 +27,10 @@
  
-     def add_info(self, get_info):
-         minmax_regex = re.compile("MIN/MAX: (\d+)/(\d+),\s+VAL:(( \\[\d+\\])+)")
-@@ -222,13 +224,28 @@ class HdaEmuRunner():
-             if (int(a) != int(b)):
-                 self.add_error("Tried to set " + c.name + " to " + str([int(x) for x in values]) + ", but got " + str(c.values) + " instead", "Error")
+ #include <asm/mach-types.h>
+ #include <mach/hardware.h>
+-#include <mach/gpio.h>
++#include <linux/gpio.h>
+ #include <mach/board-zoom.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
++#include <linux/platform_data/gpio-omap.h>
  
--    def run_kcontrol_test(self):
--        minmax_regex = re.compile("MIN/MAX: (\d+)/(\d+),\s+VAL:(( \\[\d+\\])+)")
--        val_regex = re.compile(" \\[(\d+)\\]")
-+    def check_kcontrol_indices(self, cinfo):
-+        d = {}
-+        for c in cinfo:
-+            if not c.name in d:
-+                d[c.name] = []
-+            d[c.name].append(c.index)
-+
-+        for k, v in d.iteritems():
-+            j = 0
-+            for i in sorted(v):
-+                if i > j:
-+                    self.add_error("Unneccesary index on control '" + k + "' (" + str(i) + ")", "Error")
-+# Commented out - gives false positives for 'Playback Channel Map'
-+#                elif i < j:
-+#                    self.add_error("Duplicate control '" + k + "' (" + str(i) + ")", "Error")
-+                j = i+1
- 
-+    def run_kcontrol_test(self):
-         controls = self.run_command("list")
--        for control in controls:
--            c = ControlInfo(self, control)
-+        cinfo = [ControlInfo(self, control) for control in controls]
-+        self.check_kcontrol_indices(cinfo)
-+        for c in cinfo:
-             c.add_info(self.run_command("get " + c.numid))
-             if "minval" in c.__dict__:
-                 minval = c.minval
+ /* Register descriptions for twl4030 codec part */
+ #include <linux/mfd/twl4030-audio.h>
 -- 
 1.7.9.5
+
